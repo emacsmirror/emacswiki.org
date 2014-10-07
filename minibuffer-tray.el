@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2014, Andy Stewart, all rights reserved.
 ;; Created: 2014-01-26 01:00:18
-;; Version: 0.1
-;; Last-Updated: 2014-01-26 01:00:18
+;; Version: 0.2
+;; Last-Updated: 2014-10-08 00:52:01
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/minibuffer-tray.el
 ;; Keywords:
@@ -54,8 +54,7 @@
 ;; NOTE: just minibuffer-tray.el can't work, you need install below depends first:
 ;;       * PyQt5:       http://www.riverbankcomputing.co.uk/software/pyqt/intro
 ;;       * Python-Xlib: https://pypi.python.org/pypi/python-xlib
-;;       * Python-EPC:  https://github.com/tkf/python-epc
-;;       
+;;
 ;; Detail description please look: http://www.emacswiki.org/emacs/MiniBufferTray
 ;;
 ;; Then put minibuffer-tray.el to your load-path.
@@ -66,6 +65,7 @@
 ;; And the following to your ~/.emacs startup file.
 ;;
 ;; (require 'minibuffer-tray)
+;; (minibuffer-tray-mode 1)
 ;;
 ;; No need more.
 
@@ -78,6 +78,10 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2014/10/08
+;;      * Use DBus instead Python-EPC as communication between Emacs and PyQt process.
+;;      Elisp and python code much simple after switch to DBus implementation.
 ;;
 ;; 2014/01/26
 ;;      * First released.
@@ -95,21 +99,26 @@
 
 ;;; Require
 
-(require 'epc)
-(when noninteractive
-  (load "subr")
-  (load "byte-run"))
-(eval-when-compile (require 'cl))
+(require 'dbus)
 
 ;;; Code:
 
-(defvar minibuffer-tray-python-file (expand-file-name "tray.py" (file-name-directory load-file-name)))
+(defvar minibuffer-tray-python-file (expand-file-name "minibuffer_tray.py" (file-name-directory load-file-name)))
 
-(defvar minibuffer-tray-epc
-  (epc:start-epc (or (getenv "PYTHON") "python")
-                 (list minibuffer-tray-python-file)))
+(defvar minibuffer-tray-process nil)
+
+(defvar minibuffer-tray-process-name "*minibuffer tray*")
 
 (defvar minibuffer-tray-height 20)
+
+(defun minibuffer-tray-call (method &rest args)
+  (with-demoted-errors "minibuffer-tray-call ERROR: %s"
+    (apply 'dbus-call-method
+           :session                      ; use the session (not system) bus
+           "com.deepin.minibuffer_tray"  ; service name
+           "/com/deepin/minibuffer_tray" ; path name
+           "com.deepin.minibuffer_tray"  ; interface name
+           method args)))
 
 (defun minibuffer-tray-get-emacs-xid ()
   (frame-parameter nil 'window-id))
@@ -132,19 +141,18 @@
          (y (nth 1 window-allocation))
          (w (nth 2 window-allocation))
          (h (nth 3 window-allocation)))
-    (epc:call-deferred minibuffer-tray-epc 'init (list (minibuffer-tray-get-emacs-xid) minibuffer-tray-height))
-    (epc:call-deferred minibuffer-tray-epc 'show ())
-    (epc:call-deferred minibuffer-tray-epc 'set_minibuffer_allocation (list x y w h))
+    (minibuffer-tray-call "show")
+    (minibuffer-tray-call "set_minibuffer_allocation" x y w h)
     )
   )
 
 (defun minibuffer-tray-hide ()
   (interactive)
-  (epc:call-deferred minibuffer-tray-epc 'hide ())
+  (minibuffer-tray-call "hide")
   )
 
 (defun minibuffer-tray-update-cursor-pos ()
-  (epc:call-deferred minibuffer-tray-epc 'update_pos (list (line-number-at-pos) (current-column) (minibuffer-tray-get-line-number)))
+  (minibuffer-tray-call "update_pos" (line-number-at-pos) (current-column) (minibuffer-tray-get-line-number))
   )
 
 (defun minibuffer-tray-monitor-frame-change ()
@@ -154,29 +162,50 @@
          (w (nth 2 window-allocation))
          (h (nth 3 window-allocation))
          )
-    (epc:call-deferred minibuffer-tray-epc 'set_minibuffer_allocation (list x y w h))
+    (minibuffer-tray-call "set_minibuffer_allocation" x y w h)
     ))
+
+(defun minibuffer-tray-start-process ()
+  (setq minibuffer-tray-process
+        (apply 'start-process
+               minibuffer-tray-process-name
+               minibuffer-tray-process-name
+               "python" (list minibuffer-tray-python-file (minibuffer-tray-get-emacs-xid) (format "%s" minibuffer-tray-height))))
+  (set-process-sentinel
+   minibuffer-tray-process
+   #'(lambda (process event)
+       (message (format "%s %s" process event))
+       ))
+  )
+
+(defun minibuffer-tray-stop-process ()
+  (delete-process minibuffer-tray-process)
+  )
+
+(defun minibuffer-tray-enable ()
+  (progn
+    (minibuffer-tray-start-process)
+    (minibuffer-tray-show)
+    (add-hook 'window-configuration-change-hook #'minibuffer-tray-monitor-frame-change)
+    (add-hook 'post-command-hook 'minibuffer-tray-update-cursor-pos)
+    )
+  )
+
+(defun minibuffer-tray-disable ()
+  (minibuffer-tray-hide)
+  (remove-hook 'window-configuration-change-hook 'minibuffer-tray-monitor-frame-change)
+  (remove-hook 'post-command-hook 'minibuffer-tray-update-cursor-pos)
+  (minibuffer-tray-stop-process)
+
+  )
 
 (define-minor-mode minibuffer-tray-mode
   :global t
   :group 'minibuffer-tray-mode
   (if minibuffer-tray-mode
-      (progn
-        (minibuffer-tray-show)
-        (add-hook 'window-configuration-change-hook #'minibuffer-tray-monitor-frame-change)
-        )
-    (minibuffer-tray-hide)
-    (remove-hook 'window-configuration-change-hook 'minibuffer-tray-monitor-frame-change))
+      (minibuffer-tray-enable)
+    (minibuffer-tray-disable))
   )
-
-(epc:define-method minibuffer-tray-epc
-                   'message
-                   (lambda (&rest args) (message "%S" args)))
-
-(epc:define-method minibuffer-tray-epc
-                   'update-cursor-pos
-                   (lambda (&rest args)
-                     (minibuffer-tray-update-cursor-pos)))
 
 (provide 'minibuffer-tray)
 
