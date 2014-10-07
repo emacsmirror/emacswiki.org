@@ -62,15 +62,13 @@ If you want anchors in your wikis, take a look at WikiAnchor.
 
 '''Producing Link Graphs'''
 
-See WikiDot for lisp code that allows you to parse all wiki files and generate a dot file.  The dot file can then be transformed into graphs by other tools.  The result looks similar to EmacsWikiGraph.
+See WikiDot for lisp code that allows you to parse all wiki files and generate a dot file.  The dot file can then be transformed into graphs by other tools.
 
 [new]
 BTW if anybody has managed to get good looking results with WikiDot (I haven't for any nontrivial graphs), please publish the relevant parameters. -- AlexSchroeder
 
-[new]
-I'm considering to use also a local wiki with Emacs. But I don't know yet which of the four possibilities I should use. (WikiMode, EmacsWikiMode, HowmMode). What is more interesting as a comment here is maybe a nice conversion extension which converts all the Emacs LocalWikiPages into the TouchGraphLinkBrowser XmlFormat could be written. Here is TGLinkBrowser and you need Java: http://www.touchgraph.com/newLB/TGLinkBrowser.html Another interesting point might be having an extension which can convert all Emacs LocalWikiPages into the MindSetCsv format. Here is the MindSetCsv format defintion and for what it can be used: http://www.ms.lt/mindset.html#mindsetcsv (BTW I've written a simple PhpCode which converts the MindSetCsv format into the TGLinkBrowser format so that you can surf all the interconnected KnowledgeBase in the form of a MindSetCsv file (which might come in future also from the local Emacs WikiMode) via the nice TouchGraphLinkBrowser graphical interface. 
-
 '''Setup examples'''
+
 * Alex's SampleWikiModeSetup
 * Simon's SampleWikiModeSetupTwo
 
