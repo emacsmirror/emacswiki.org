@@ -2,6 +2,7 @@ Modes/functions/packages to hide stuff by other means than using OutlineMode (se
 
 * BasicNarrowing -- Restrict actions, including viewing, to a
 specified region of the buffer.
+* FoldingMode -- Folds buffers based on special comments containing {{{ and }}}.
 * HideOrIgnoreComments -- Command '''`hide/show-comments'''' to hide/show all comments or all comments in [[region]].  Lisp macro '''`with-comments-hidden'''', to do something while ignoring commented text.
 * HideIfDef -- Hide code within `ifdef' constructs that the C preprocessor
 would eliminate.
