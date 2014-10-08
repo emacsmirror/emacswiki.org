@@ -3,7 +3,7 @@
 ;; Copyright (C) 2008 Zachary McGrew 
 
 ;; Authors: Zachary McGrew <zmcgrew @-A-T-@ lunar-linux.org>
-;;          Paul Tipper <bluefoo at googlemail dot com>
+;;          Tabitha Tipper <bluefoo at googlemail dot com>
 ;; Keywords: cheezburger, lolcat
 ;; Created: 19 Nov 2008
 
