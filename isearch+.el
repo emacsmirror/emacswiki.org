@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct  8 15:22:14 2014 (-0700)
+;; Last-Updated: Wed Oct  8 15:25:01 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3429
+;;     Update #: 3434
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -307,7 +307,7 @@
 ;;
 ;;    (NOTE: To use a prefix arg within Isearch, you must set
 ;;    `isearch-allow-prefix' (if available) or `isearch-allow-scroll'
-;;    to non-nil.)
+;;    to non-`nil'.)
 ;;
 ;;  * When you use on-demand replacement (with `C-M-RET') the
 ;;    replacement text can be either inserted literally, as is, or
@@ -374,8 +374,8 @@
 ;;    register to use.  This is the same key that is bound globally to
 ;;    `insert-register'.  If you want this key to instead exit Isearch
 ;;    and insert the register in the buffer, then define this key in
-;;    `isearch-mode-map' as nil (i.e., unbind it), and optionally bind
-;;    `isearchp-append-register' to a different key in
+;;    `isearch-mode-map' as `nil' (i.e., unbind it), and optionally
+;;    bind `isearchp-append-register' to a different key in
 ;;    `isearch-mode-map'.
 ;;
 ;;  * `C-M-y' (`isearch-yank-secondary') yanks the secondary selection
@@ -451,7 +451,7 @@
 ;;                     text.  You can always see your last input, even
 ;;                     if it is a mismatch.  And it is available for
 ;;                     editing using `M-e'.
-;;    nil            - Your current input is appended, even if the
+;;    `nil'          - Your current input is appended, even if the
 ;;                     previous input has a mismatched portion.
 ;;    anything else  - Your current input is ignored (removed) if it
 ;;                     causes a mismatch.  The search string always
@@ -466,20 +466,20 @@
 ;;    `M-c' (case-sensitivity) and `M-s i' (matching hidden text).
 ;;
 ;;  * `M-c' (`isearch-toggle-case-fold') toggles case sensitivity.  If
-;;    option `isearchp-toggle-option-flag' is non-nil then it toggles
-;;    option `isearchp-case-fold' to change the sensitivity from now
-;;    on.  Otherwise, the option value is not changed, so the effect
-;;    is for the current search only.
+;;    option `isearchp-toggle-option-flag' is non-`nil' then it
+;;    toggles option `isearchp-case-fold' to change the sensitivity
+;;    from now on.  Otherwise, the option value is not changed, so the
+;;    effect is for the current search only.
 ;;
 ;;  * `M-s i' (`isearch-toggle-invisible') toggles invisible-text
-;;    sensitivity.  If option `isearchp-toggle-option-flag' is non-nil
-;;    then it toggles option `search-invisible' to change the
-;;    sensitivity from now on.  Otherwise, the option value is not
+;;    sensitivity.  If option `isearchp-toggle-option-flag' is
+;;    non-`nil' then it toggles option `search-invisible' to change
+;;    the sensitivity from now on.  Otherwise, the option value is not
 ;;    changed, so the effect is for the current search only.
 ;;
 ;;  * `C-+' (`isearchp-toggle-search-invisible') toggles the value of
 ;;    option `search-invisible'.  The effect is like that of `M-s i'
-;;    with no prefix argument and with non-nil
+;;    with no prefix argument and with non-`nil'
 ;;    `isearchp-toggle-option-flag'.
 ;;
 ;;  * Other bindings during Isearch:
