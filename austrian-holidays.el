@@ -1,4 +1,4 @@
-;; AUSTRIAN HOLIDAYS ;;
+{{{;; AUSTRIAN HOLIDAYS ;;
 ; THIS IS AN ADAPTED COPY OF FRENCH-HOLIDAYS.EL SUITED FOR HOLIDAY DATES IN AUSTRIA
 ;
 ; Not every holiday is listed below because there are region specific holidays which might have not been adressed.
@@ -48,3 +48,4 @@
 	(holiday-fixed 5 0 2 "Muttertag")
 	(holiday-fixed 6 0 2 "Vatertag")
 (provide 'austrian-holidays)
+}}}
