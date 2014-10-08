@@ -146,7 +146,7 @@ This is an example where you have a single inbox, but want to select an identity
         ("business"
          (wl-from . "Me <me@example.com>")
          ("From" . wl-from)
-         ("Organization" . "My Business Name))
+         ("Organization" . "My Business Name"))
         ("Something else"
          (wl-from . "Me <chairman@example.org>")
          ("From" . wl-from)
