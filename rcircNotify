@@ -1,6 +1,7 @@
 Libnotify notifications for [[rcirc]].
 
 == Installation ==
+
 Source:
 
 * [https://github.com/nicferrier/rcirc-notify/blob/master/rcirc-notify.el rcirc-notify.el]
@@ -24,14 +25,15 @@ This library tries to use the following binaries to send the message:
 ; growlnotify: Newer Mac OSX
 ; osascript: Older Mac OSX
 
+
 == How do I change the messages? ==
 
-Redefine `rcirc-notify-message`, `rcirc-notify-keyword` and `rcirc-notify-message-private`. Use %s for where you want the name of the person calling your name to go.
+Redefine ##rcirc-notify-message##, ##rcirc-notify-keyword## and ##rcirc-notify-message-private##. Use %s for where you want the name of the person calling your name to go.
+
 
 == How do I play a sound with the notification or perform some other action? ==
 
-There's a hook called `rcirc-notify-page-me-hooks`, just add your desired functionality there.
-
+There's a hook called ##rcirc-notify-page-me-hooks##, just add your desired functionality there.
 
 
 == OSX ==
@@ -50,7 +52,6 @@ rcirc-notify tries to find growlnotify like this:
 }}}
 
 if you can get that to work then probably rcirc-notify will work as well.
-
 
 
 == Windows ==
@@ -73,6 +74,7 @@ Test it by evaluating ##(my-page-me "foo")##.
 # edit ##%USERPROFILE%\appdata\local\growl\2.0.0.0\user.config##
 # replace "Alt+X" with "Alt-Shift-Y" or whatever suits you
 # restart Growl
+
 
 == See also ==
 
