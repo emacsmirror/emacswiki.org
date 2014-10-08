@@ -18,7 +18,7 @@ To install, put it in your LoadPath (or install from marmalade) and add the foll
 
 This library tries to use the following binaries to send the message:
 
-; terminal-notify
+; terminal-notify: Unsure where this is avaliable
 ; terminal-notifier: Works with new notifications in Mac OSX > 10.8
 ; notify-send: Available in packages libnotify-bin on Ubuntu, for example
 ; growlnotify: Newer Mac OSX
