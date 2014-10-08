@@ -130,4 +130,41 @@ With the modified code below (non-header conses moved from wl-template-alist to 
 (setq wl-auto-save-drafts-interval nil)
 }}}
 ----
+
+== Single inbox, select identity when writing a new email ==
+
+This is an example where you have a single inbox, but want to select an identity when writing a new email:
+
+----
+~/.wl
+{{{
+;; List of identities
+(setq wl-template-alist
+      '(("personal"
+         (wl-from . "Me <me@example.org>")
+         ("From" . wl-from))
+        ("business"
+         (wl-from . "Me <me@example.com>")
+         ("From" . wl-from)
+         ("Organization" . "My Business Name))
+        ("Something else"
+         (wl-from . "Me <chairman@example.org>")
+         ("From" . wl-from)
+         ("Organization" . "Ratepayers Association"))))
+
+;; Cycle through templates with arrow keys
+(define-key wl-template-mode-map (kbd "<right>") 'wl-template-next)
+(define-key wl-template-mode-map (kbd "<left>") 'wl-template-prev)
+
+;; Run (wl-template_select) when writing a new email
+(defadvice wl-summary-write (after wl-summary-write-after activate)
+  "Run wl-template-select when writing a new email"
+  (wl-template-select))
+
+(defadvice wl-draft (after wl-draft-after activate)
+  "Run wl-template-select when writing a new email"
+  (wl-template-select))
+}}}}
+
+----
 Wanderlust
