@@ -528,10 +528,10 @@ you can easily adapt it to other scenarios.
 Where is it on the GNU emacs CVS site? I was unable to find it (but have to confess to not being interested in spending all afternoon looking for it...).
 
 - Alan
-[new:PaulTipper:2009-06-05 21:51 UTC]
+[new:TabithaTipper:2009-06-05 21:51 UTC]
 : I don't believe its in GNU Emacs CVS,  [http://www.google.co.uk/search?q=tabbar+site%3Ahttp%3A%2F%2Fcvs.savannah.gnu.org%2Fviewvc%2Femacs%2F%3Froot%3Demacs&btnG=Search a quick search]  : and a look in my CVS copy of emacs seems to confirm this (so I think the page is wrong above).  Aquamacs has it, as does emhacks.  They both claim to be tabbar 2.0 from a quick look, I've got tabbar 1.3 and it seems okay with GNU Emacs 23.0.60.1
 :
-: - PaulTipper
+: - TabithaTipper
 
 ----
 
