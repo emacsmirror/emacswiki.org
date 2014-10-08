@@ -1,8 +1,8 @@
 ;;; keychain-environment.el --- Loads keychain environment variables into emacs
 
-;; Copyright (C) 2008-2011 Paul Tipper
+;; Copyright (C) 2008-2011 Tabitha Tipper
 
-;; Original Author:  Paul Tipper <bluefoo at googlemail dot com>
+;; Original Author:  Tabitha Tipper <bluefoo at googlemail dot com>
 ;; Heavy Patches from: Michael "cofi" Markert <markert dot michael at googlemail dot com>
 ;;                     Jonas Bernoulli <jonas at emacsmirror dot org>
 ;;                     Philip Hudson <phil dot hudson at iname dot com>
