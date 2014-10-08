@@ -589,6 +589,31 @@ In older versions of Wanderlust, mime-encoding did not play nice with Emacs 23. 
 (setq mime-header-accept-quoted-encoded-words t)
 }}}
 
+== Wanderlust is asking me all these questions about how to open an attachment! How do I make Wanderlust just open it? ==
+First,
+
+{{{
+(setq mime-view-mailcap-files '("~/.mailcap"))
+}}}
+
+This needs to be done *before* SEMI is loaded. You can use ##customize-variable## for this. Next, use the following (and only the following) in your ##~/.mailcap## file:
+
+{{{
+application/*; xdg-open %s
+image/*; xdg-open %s
+text/*; xdg-open %s
+video/*; xdg-open %s
+audio/*; xdg-open %s
+}}}
+
+Finally:
+
+{{{
+(setq mime-play-find-every-situations nil)
+}}}
+
+This depends on having a command, ##xdg-open##, that can deal with all types of files. This should be present on modern Linux desktops. I believe there is a similar command on a Mac.
+
 == See Also ==
 WanderLust
 
