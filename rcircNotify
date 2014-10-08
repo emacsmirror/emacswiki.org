@@ -3,7 +3,8 @@ Libnotify notifications for [[rcirc]].
 == Installation ==
 Source:
 
-* [https://github.com/kensanata/elisp/blob/master/rcirc-notify.el rcirc-notify.el]
+* [https://github.com/nicferrier/rcirc-notify/blob/master/rcirc-notify.el rcirc-notify.el]
+* [https://github.com/kzar/rcirc-notify Latest version awaiting pull request]
 
 You can also download from marmalade-repo:
 
@@ -17,38 +18,27 @@ To install, put it in your LoadPath (or install from marmalade) and add the foll
 
 This library tries to use the following binaries to send the message:
 
+; terminal-notify
+; terminal-notifier: Works with new notifications in Mac OSX > 10.8
 ; notify-send: Available in packages libnotify-bin on Ubuntu, for example
 ; growlnotify: Newer Mac OSX
 ; osascript: Older Mac OSX
 
-== How do I change the message? ==
+== How do I change the messages? ==
 
-Redefine `my-rcirc-notify-message`. Use %s for where you want the name of the person calling your name to go.
+Redefine `rcirc-notify-message`, `rcirc-notify-keyword` and `rcirc-notify-message-private`. Use %s for where you want the name of the person calling your name to go.
 
-== Strange notifications? ==
+== How do I play a sound with the notification or perform some other action? ==
 
-You might see a message saying "X is calling your name" but when you check your active rcirc buffers, you see nothing.
-What happened?
+There's a hook called `rcirc-notify-page-me-hooks`, just add your desired functionality there.
 
-I found the following to be useful:
 
-{{{
-(defun occur-irc (regexp)
-  "Run `multi-occur' for all buffers in `rcirc-mode'."
-  (interactive "sList lines matching regexp: ")
-  (multi-occur (let (result)
-		 (dolist (buf (buffer-list))
-		   (with-current-buffer buf
-		     (when (eq major-mode 'rcirc-mode)
-		       (setq result (cons buf result)))))
-		 result) regexp))
-}}}
-
-Use it to find X in all your rcirc buffers. I discovered what had happened: ##*** X MODE +oooo kensanata## -- aaaah! :)
 
 == OSX ==
 
-You have to install the following programs:
+If you're running Mac OS X 10.8 or newer (Mavericks up) install [https://github.com/alloy/terminal-notifier terminal-notifier] which is free and integrates with the new notification system in OS X.
+
+If you're using an older version you need to use Growl. Install these applications:
 
 * growl
 * growlnotify
@@ -60,6 +50,8 @@ rcirc-notify tries to find growlnotify like this:
 }}}
 
 if you can get that to work then probably rcirc-notify will work as well.
+
+
 
 == Windows ==
 
