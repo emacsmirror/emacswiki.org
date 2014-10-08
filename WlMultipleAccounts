@@ -157,11 +157,11 @@ This is an example where you have a single inbox, but want to select an identity
 (define-key wl-template-mode-map (kbd "<left>") 'wl-template-prev)
 
 ;; Run (wl-template_select) when writing a new email
-(defadvice wl-summary-write (after wl-summary-write-after activate)
+(defadvice wl-summary-write (after wl-summary-write-select-template activate)
   "Run wl-template-select when writing a new email"
   (wl-template-select))
 
-(defadvice wl-draft (after wl-draft-after activate)
+(defadvice wl-draft (after wl-draft-select-template activate)
   "Run wl-template-select when writing a new email"
   (wl-template-select))
 }}}}
