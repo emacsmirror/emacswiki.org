@@ -60,6 +60,31 @@ If you get errors due to remove-if-not not being defined, you might need some co
            (sort
 }}}
 
+6. Suggestion: remove warnings because two of the lambdas are quoted incorrectly:
+
+{{{
+--- a/framemove.el      2014-10-08 14:50:32.000001000 -0400
++++ b/framemove.el      2014-10-08 14:49:59.002167000 -0400
+@@ -109,7 +109,7 @@
+            (remove-if-not
+             '(lambda (f) (fm-frame-is-to-dir-of f dir thisframe))
+             (visible-frame-list))
+-           '(lambda (f1 f2) (fm-frame-is-to-dir-of f1 (fm-opposite dir) f2)))))
++           #'(lambda (f1 f2) (fm-frame-is-to-dir-of f1 (fm-opposite dir) f2)))))
+     (if possible-frames
+         (let ((frames-in-line-of-cursor
+                ;; try to find frame in line with cursor
+@@ -123,7 +123,7 @@
+                 (remove-if-not
+                  '(lambda (f) (fm-range-overlap thisframe f dir))
+                  possible-frames)
+-                '(lambda (f1 f2)
++                #'(lambda (f1 f2)
+                    (< (fm-dist-from-coords coords-projected-in-dir f1)
+                       (fm-dist-from-coords coords-projected-in-dir f2))))))
+           (select-frame-set-input-focus
+}}}
+
 
 ----
 
