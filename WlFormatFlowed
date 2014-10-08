@@ -12,6 +12,11 @@ To read flowed formated messages in Wanderlust put the following in your .wl fil
 
 If you want to write flowed formated messages:
 
- (mime-edit-insert-tag "text" "plain" "; format=flowed")
+(defun my-mail-setup ()
+  (save-excursion
+    (mail-text)
+    (mime-edit-insert-tag "text" "plain" "; format=flowed")))
+
+(add-hook 'wl-mail-setup-hook 'my-mail-setup)
 ----
 WanderLust | CategoryMail
