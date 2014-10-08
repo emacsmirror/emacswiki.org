@@ -131,7 +131,7 @@ from the ACCESS_proxy environment variables."
   :group 'url)
 }}}
 
-Example (borrowed from PaulTipper)
+Example (borrowed from TabithaTipper)
 
 {{{
 (setq url-proxy-services
