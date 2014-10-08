@@ -352,11 +352,21 @@ Description=Emacs: the extensible, self-documenting text editor
 Type=forking
 ExecStart=/usr/bin/emacs --daemon
 ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
+Environment=SSH_AUTH_SOCK=%t/keyring/ssh
 Restart=always
 
 [Install]
 WantedBy=default.target
 }}}
+
+Make sure the <code>SSH_AUTH_SOCK</code> is the correct one by checking the output of the following:
+
+{{{
+$ echo $SSH_AUTH_SOCK
+/run/user/1000/keyring/ssh
+}}}
+
+When you see <code>%t</code> in the <code>emacs.service</code> file, it means the value of <code>XDG_RUNTIME_DIR</code> (which equals to <code>/run/user/1000</code> on my computer).
 
 Enable the unit for your user
 {{{
