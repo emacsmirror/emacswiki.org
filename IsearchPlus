@@ -135,6 +135,16 @@ hits (up to the search limit).
 [:isearchp-retrieve-last-quit-search]
 * '''`M-g'''' ('''`isearchp-retrieve-last-quit-search'''') yanks the last successful search string (regexp or plain) from when you last hit `C-g' in Isearch.  Sometimes you search for something but abandon the search --- you just want to check the locations of something, without staying at any of them.  Afterward, if you want to find them again, use `M-g'.  This yanks that search string, so you can append it to whatever you are already searching for.
 
+[:isearchp-append-register]
+* '''`C-x r g'''' ('''`isearchp-append-register'''') appends the contents of a
+[[register]] to the search string.  You are prompted for the
+register to use.  This is the same key that is bound globally to
+`insert-register'.  If you want this key to instead exit Isearch and
+insert the register in the buffer, then define this key in
+`isearch-mode-map' as `nil` (i.e., unbind it), and optionally bind
+`isearchp-append-register' to a different key in
+`isearch-mode-map'.
+
 [:isearch-yank-secondary]
 * '''`C-M-y'''' ('''`isearch-yank-secondary'''') yanks the [[secondary selection]] onto the search string, if you also use library <tt>[[second-sel.el]]</tt> (see [[SecondarySelection#secondary-sel.el|secondary selection enhancements]]).
 
