@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct  8 15:18:55 2014 (-0700)
+;; Last-Updated: Wed Oct  8 15:22:14 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3428
+;;     Update #: 3429
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -372,8 +372,8 @@
 ;;  * `C-x r g' (`isearchp-append-register') appends the contents of a
 ;;    register to the search string.  You are prompted for the
 ;;    register to use.  This is the same key that is bound globally to
-;;    `C-x r g'.  If you want this key to instead exit Isearch and
-;;    insert the register in the buffer, then define this key in
+;;    `insert-register'.  If you want this key to instead exit Isearch
+;;    and insert the register in the buffer, then define this key in
 ;;    `isearch-mode-map' as nil (i.e., unbind it), and optionally bind
 ;;    `isearchp-append-register' to a different key in
 ;;    `isearch-mode-map'.
