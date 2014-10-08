@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct  1 08:25:55 2014 (-0700)
+;; Last-Updated: Wed Oct  8 15:18:55 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3413
+;;     Update #: 3428
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -75,8 +75,9 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `isearchp-act-on-demand' (Emacs 22+), `isearch-char-by-name'
-;;    (Emacs 23-24.3), `isearchp-cycle-mismatch-removal',
+;;    `isearchp-act-on-demand' (Emacs 22+),
+;;    `isearchp-append-register', `isearch-char-by-name' (Emacs
+;;    23-24.3), `isearchp-cycle-mismatch-removal',
 ;;    `isearchp-fontify-buffer-now', `isearchp-init-edit',
 ;;    `isearchp-open-recursive-edit' (Emacs 22+),
 ;;    `isearchp-retrieve-last-quit-search',
@@ -187,6 +188,7 @@
 ;;    `C-h'        `isearch-mode-help'
 ;;    `C-x n'      `isearchp-toggle-region-restriction' (Emacs 24.3+)
 ;;    `C-x o'      `isearchp-open-recursive-edit' (Emacs 22+)
+;;    `C-x r g'    `isearchp-append-register'
 ;;    `C-x 8 RET'  `isearch-char-by-name' (Emacs 23-24.3)
 ;;    `C-y C-_'    `isearchp-yank-symbol-or-char' (Emacs 22+)
 ;;    `C-y C-('    `isearchp-yank-sexp-symbol-or-char' (Emacs 22+)
@@ -367,6 +369,15 @@
 ;;    string, so you can append it to whatever you are already
 ;;    searching for.
 ;;
+;;  * `C-x r g' (`isearchp-append-register') appends the contents of a
+;;    register to the search string.  You are prompted for the
+;;    register to use.  This is the same key that is bound globally to
+;;    `C-x r g'.  If you want this key to instead exit Isearch and
+;;    insert the register in the buffer, then define this key in
+;;    `isearch-mode-map' as nil (i.e., unbind it), and optionally bind
+;;    `isearchp-append-register' to a different key in
+;;    `isearch-mode-map'.
+;;
 ;;  * `C-M-y' (`isearch-yank-secondary') yanks the secondary selection
 ;;    into the search string, if you also use library `second-sel.el'.
 ;;
@@ -523,6 +534,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2014/10/08 dadams
+;;     Added: isearchp-append-register.  Bound to C-x r g.
 ;; 2014/09/03 dadams
 ;;     Changed C-c binding for isearchp-yank-char to C-z.
 ;; 2014/09/02 dadams
@@ -1815,6 +1828,17 @@ in another Emacs session."
   (sit-for 1)
   (isearch-update))
 
+(defun isearchp-append-register ()      ; Bound to `C-x r g', the same as `insert-register' globally.
+  "Insert register contents at point in search string.
+You are prompted for the register to use."
+  (interactive)
+  (let ((current-prefix-arg  t)
+        string)
+    (with-temp-buffer
+      (call-interactively 'insert-register)
+      (setq string  (buffer-substring (point-min) (point-max))))
+    (isearch-yank-string string)))
+
 (defun isearchp-retrieve-last-quit-search () ; Bound to `M-g' in `isearch-mode-map'.
   "Insert last successful search string from when you hit `C-g' in Isearch.
 Bound to `\\<isearch-mode-map>\\[isearchp-retrieve-last-quit-search]' during Isearch."
@@ -2942,6 +2966,8 @@ Other Isearch+ Commands that Require Library `isearch-prop.el'
   (when (> emacs-major-version 22)      ; Emacs 23+ (supports Unicode)
     (define-key isearch-mode-map "\C-x8"          nil)
     (define-key isearch-mode-map "\C-x8\r"        'isearch-char-by-name)))
+
+(define-key isearch-mode-map "\C-xrg" 'isearchp-append-register)
 
 (define-key isearch-mode-map "\C-y"               nil) ; Put all yanking commands on prefix `C-y'.
 (when (fboundp 'isearch-yank-internal)
