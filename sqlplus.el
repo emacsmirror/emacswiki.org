@@ -3380,22 +3380,7 @@ not detected."
 (defun sqlplus-draw-table (lst &optional slips-count)
   "SLIPS-COUNT (nil means compute automatically)."
   ;; current buffer: SQL*Plus output buffer
-  (when window-system
-    (if (>= (sqlplus-color-percentage (face-background 'default)) 50)
-	(progn
-	  (set-face-attribute 'sqlplus-table-head-face nil
-			      :background (sqlplus-shine-color (face-background 'default) -70) :foreground (face-background 'default))
-	  (set-face-attribute 'sqlplus-table-even-rows-face nil
-			      :background (sqlplus-shine-color (face-background 'default) -20) :overline (face-background 'default))
-	  (set-face-attribute 'sqlplus-table-odd-rows-face nil
-			      :background (sqlplus-shine-color (face-background 'default) -30) :overline (face-background 'default)))
-      (set-face-attribute 'sqlplus-table-head-face nil
-			  :background (sqlplus-shine-color (face-background 'default) +70) :foreground (face-background 'default))
-      (set-face-attribute 'sqlplus-table-even-rows-face nil
-			  :background (sqlplus-shine-color (face-background 'default) +20) :overline (face-background 'default))
-      (set-face-attribute 'sqlplus-table-odd-rows-face nil
-			  :background (sqlplus-shine-color (face-background 'default) +30) :overline (face-background 'default))))
-  (let* ((column-infos (car lst))
+    (let* ((column-infos (car lst))
          (rows (cadr lst))
          (slip-width 0)
          (table-header-height 1)
