@@ -1,6 +1,8 @@
 This page is about '''[::Isearch+]''', that is,  library '''<tt>[[isearch+.el]]</tt>''' and its companion library '''<tt>[[isearch-prop.el]]</tt>'''.  These libraries extend standard Emacs library ##isearch.el##, which provides IncrementalSearch.  (Neither of these extension libraries requires the other. They are complementary, but they enhance each other.)
 
-Features:
+----
+
+<tt>[[isearch+.el]]</tt> Features:
 
 * Case-sensitivity is indicated in the [[mode line]] minor-mode lighter: '''`ISEARCH'''' for case-insensitive; '''`Isearch'''' for case-sensitive.
 
@@ -241,6 +243,17 @@ with no prefix argument and with non-`nil'
 * You can, by default, select text with the mouse, then hit `C-s'
 etc. to search for it.  This is controlled by [[user option]] '''`isearchp-mouse-2-flag''''.
 
+
+
+
+
+
+
+----
+
+<tt>[[isearch-prop.el]]</tt> Features:
+
+
 [:isearchp-property-forward]
 [:isearchp-property-forward-regexp]
 * You can search ''within character-property zones''.  Example: search within zones having a `face' text property with a value of `font-lock-comment-face' or `font-lock-string-face'.  Search [[overlay]]s or [[text property|text properties]]. From within Isearch: '''`C-t'''' (or '''`C-M-t'''' for [[regexp]] search).  First time, or with a [[prefix argument]], you are prompted for the property and its values.  See the doc string of command '''`isearchp-property-forward''''.
@@ -320,6 +333,10 @@ ignoring comments during Isearch, using '''`##C-M-;##'''' (command
 '''`isearchp-toggle-ignoring-comments'''').
 
 
+
+
+
+----
 
 '''See Also:'''
 
