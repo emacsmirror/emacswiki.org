@@ -1,0 +1,4 @@
+You may want to avoid using `adaptive-wrap` together with `variable-pitch-mode` (as you may be tempted to do when writing text/html/latex/markdown), because it doesn't look pretty at all. (Is this a feature request?)
+
+-- [http://flavors.me/peppe Cal.] 2014-10-09 11:24 UTC
+
