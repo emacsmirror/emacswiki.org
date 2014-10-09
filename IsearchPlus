@@ -1,4 +1,4 @@
-This page is about '''[::Isearch+]''', that is,  library <tt>[[isearch+.el]]</tt> and its companion library <tt>[[isearch-prop.el]]</tt>.  These libraries extend standard Emacs library ##isearch.el##, which provides IncrementalSearch.  (Neither of these extension libraries requires the other. They are complementary, but they enhance each other.)
+This page is about '''[::Isearch+]''', that is,  library '''<tt>[[isearch+.el]]</tt>''' and its companion library '''<tt>[[isearch-prop.el]]</tt>'''.  These libraries extend standard Emacs library ##isearch.el##, which provides IncrementalSearch.  (Neither of these extension libraries requires the other. They are complementary, but they enhance each other.)
 
 Features:
 
@@ -10,25 +10,10 @@ Features:
 search: regexp, word, multiple-buffer, and whether searching has
 wrapped around the buffer (Emacs 22+ only).
 
-[:isearchp-property-forward]
-[:isearchp-property-forward-regexp]
-* Ability to search ''within character-property zones''.  Example: search within zones having a `face' text property with a value of `font-lock-comment-face' or `font-lock-string-face'.  Search [[overlay]]s or [[text property|text properties]]. From within Isearch: '''`C-t'''' (or '''`C-M-t'''' for [[regexp]] search).  First time, or with a [[prefix argument]], you are prompted for the property and its values.  See the doc string of command '''`isearchp-property-forward''''.
-
-[:isearchp-put-prop-on-region]
-* Besides relying on other code to set `face' and other text
-properties for use with `C-t', you can use command
-'''`isearchp-put-prop-on-region'''' (outside of Isearch) to add a text
-property to a zone of text.  By default, it applies the last
-property and value whose zones you searched using `C-t', but a
-[[prefix argument]] lets you specify the property and value to apply.
-This gives you an interactive way to set up zones for
-text-property search (`C-t').  For property `face', empty input
-removes all faces from the region.
-
 
 [:isearchp-restrict-to-region-flag]
 [:isearchp-deactivate-region-flag]
-* Optional restriction of search to the [[active region]], controlled by [[option]] '''`isearchp-restrict-to-region-flag''''.  Deactivation of the active region, controlled by option
+* Optional restriction of search to the [[active region]], controlled by option '''`isearchp-restrict-to-region-flag''''.  Deactivation of the active region, controlled by option
 '''`isearchp-deactivate-region-flag''''.  Both of these are available
 for Emacs 24.3 and later.  You can use '''`C-x n'''' (command '''`isearchp-toggle-region-restriction'''') during search to toggle `isearchp-restrict-to-region-flag'.
 
@@ -255,6 +240,85 @@ with no prefix argument and with non-`nil'
 [:isearchp-mouse-2-flag]
 * You can, by default, select text with the mouse, then hit `C-s'
 etc. to search for it.  This is controlled by [[user option]] '''`isearchp-mouse-2-flag''''.
+
+[:isearchp-property-forward]
+[:isearchp-property-forward-regexp]
+* You can search ''within character-property zones''.  Example: search within zones having a `face' text property with a value of `font-lock-comment-face' or `font-lock-string-face'.  Search [[overlay]]s or [[text property|text properties]]. From within Isearch: '''`C-t'''' (or '''`C-M-t'''' for [[regexp]] search).  First time, or with a [[prefix argument]], you are prompted for the property and its values.  See the doc string of command '''`isearchp-property-forward''''.
+
+[:isearchp-put-prop-on-region]
+* Besides relying on other code to set `face' and other text
+properties for use with `C-t', you can use command
+'''`isearchp-put-prop-on-region'''' (outside of Isearch) to add a text
+property to a zone of text.  By default, it applies the last
+property and value whose zones you searched using `C-t', but a
+[[prefix argument]] lets you specify the property and value to apply.
+This gives you an interactive way to set up zones for
+text-property search (`C-t').  For property `face', empty input
+removes all faces from the region.
+
+
+[:isearchp-toggle-complementing-domain]
+* You can search zones of text/overlays that have a given property, as described above, or you can search the ''complement'': the zones that do ''NOT'' have a given property.  You can toggle this search-domain complementing at any time during Isearch,
+using '''`##C-M-~##'''' (command `isearchp-toggle-complementing-domain').
+
+[:isearchp-dim-non-prop-zones-flag]
+[:isearchp-dimming-color]
+*  When you search propertied zones, the non-searchable zones are
+''dimmed'', to make the searchable areas stand out.  [[option|Option]]
+'''`isearchp-dim-non-prop-zones-flag'''' controls whether such dimming
+occurs.  You can toggle it anytime during Isearch, using '''`C-M-D''''
+(aka `C-M-S-d').  Option '''`isearchp-dimming-color'''' defines the
+dimming behavior.  It specifies a given background color to use
+always, or it specifies that the current background color is to
+be dimmed a given amount.
+
+[:isearchp-thing]
+[:isearchp-thing-define-contexts]
+* You can search the text of THINGS of various kind (sexps, lists,
+defuns, lines, pages, sentences, filenames, strings, comments,
+xml/html elements, symbols,...), using command '''`isearchp-thing''''.
+This is equivalent to using command
+'''`isearchp-thing-define-contexts'''', which marks such zones with a
+text property, and then using `isearchp-property-forward'.
+
+[:isearchp-next-visible-thing]
+[:isearchp-previous-visible-thing]
+* Not related to searching, but you can also move forward and
+backward among things of a given kind, using the repeatable
+commands '''`isearchp-next-visible-thing'''' and
+'''`isearchp-previous-visible-thing''''.  For best results I 
+recommend that you also use library <tt>[[thingatpt+.el]]</tt>.  It
+enhances the vanilla treatment of THINGS and fixes various
+vanilla thing-at-point bugs.
+
+
+[:isearchp-imenu]
+[:isearchp-imenu-command]
+[:isearchp-imenu-macro]
+[:isearchp-imenu-non-interactive-function]
+* You can search the text of EmacsLisp definitions of different
+kinds, using commands '''`isearchp-imenu'''',
+'''`isearchp-imenu-command'''', '''`isearchp-imenu-macro'''', and
+'''`isearchp-imenu-non-interactive-function''''.  Since ImenuMode is based
+on regexps that recognize definitions, these commands are based
+on the behavior of `isearchp-regexp-context-search'.
+
+[:isearchp-remove-property]
+[:isearchp-remove-all-properties]
+* You can ''remove properties'' from text or overlays using commands
+'''`isearchp-remove-property'''' and '''`isearchp-remove-all-properties''''.
+By default, the latter removes only properties whose names begin
+with `isearchp-'.  These are the properties inserted
+automatically by the commands of library <tt>[[isearch-prop.el]]</tt>, when you do not
+specify a property.
+
+[:isearchp-toggle-hiding-comments]
+[:isearchp-toggle-ignoring-comments]
+* You can hide or show code comments during Isearch, using '''`##M-;##''''
+(command '''`isearchp-toggle-hiding-comments'''').  You can toggle
+ignoring comments during Isearch, using '''`##C-M-;##'''' (command
+'''`isearchp-toggle-ignoring-comments'''').
+
 
 
 '''See Also:'''
