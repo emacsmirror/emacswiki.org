@@ -33,3 +33,21 @@ You're welcome.  Thanks for the bug report. -- DrewAdams
 
 
 [new]
+
+----
+
+Hi, I installed hep-fns+ with el-get, but I can't find the functions with M-x I have to explicitly add (require 'help-fns+) in my init file. Is this an issue with el-get or help-fns+? 
+Thank you!
+Here's my setting in the init file for el-get if it helps.
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+(unless (require 'el-get nil 'noerror)
+(with-current-buffer
+(url-retrieve-synchronously
+"https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
+(goto-char (point-max))
+(eval-print-last-sexp)))
+(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
+(el-get 'sync)
+
+-- Anonymous 2014-10-09 17:42 UTC
+
