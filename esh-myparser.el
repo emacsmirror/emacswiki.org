@@ -1,5 +1,5 @@
 ;;;; esh-myparser.el --- Define original Eshell cmdline parser by bypassing original parser
-;; Time-stamp: <2011-03-20 17:03:21 rubikitch>
+;; Time-stamp: <2014-10-09 21:49:36 rubikitch>
 
 ;; Copyright (C) 2011,2012  rubikitch
 
@@ -28,7 +28,7 @@
 ;; as, zsh or ruby.
 ;;
 ;; Example of ruby:
-;; 
+;;
 ;; $ rb 1+3
 ;; 4
 ;; $ rb "hogehoge".length
@@ -89,75 +89,48 @@
   "esh-myparser"
   :group 'eshell)
 
-(defvar eshell-bypassing-parser nil)
-(defadvice eshell-parse-command-input (around eshell-myparser activate)
-  "If your own eshell parser is available, use it."
-  (setq eshell-bypassing-parser nil)
-  (let ((parser-cmd (eshell-get-parser-command (ad-get-arg 0) (ad-get-arg 1))))
-    (if (not parser-cmd)
-        ad-do-it
-      (setq eshell-bypassing-parser t)
-      (setq ad-return-value parser-cmd))))
-;; (progn (ad-disable-advice 'eshell-parse-command-input 'around 'eshell-myparser) (ad-update 'eshell-parse-command-input))
+;;; [2014-10-09 Thu] new implementation
+(defvar eshell-myparsers-regexp-cache nil)
+(defun eshell-myparsers-regexp ()
+  (setq eshell-myparsers-regexp-cache
+        (or eshell-myparsers-regexp-cache
+            (regexp-opt (mapcar (lambda (cmd) (substring (symbol-name cmd) 14))
+                                (apropos-internal "^eshell-parser/" 'fboundp))
+                        t))))
+(defun eshell-update-myparsers ()
+  (interactive)
+  (setq eshell-myparsers-regexp-cache nil)
+  (eshell-myparsers-regexp))
+(add-hook 'eshell-mode-hook 'eshell-update-myparsers)
 
-(defadvice eshell-hist-parse-arguments (around eshell-myparser activate)
-  "To avoid error in `eshell-parse-arguments'.
+;; (defun eshell-parser/xxx (str) str)
+;; (fmakunbound 'eshell-parser/xxx)
 
-For example `<' char is interpreted input redirection."
-  (ignore-errors ad-do-it))
-;; (progn (ad-disable-advice 'eshell-hist-parse-arguments 'around 'eshell-my) (ad-update 'eshell-hist-parse-arguments))
+(defun eshell-parse-argument-hook--myparser ()
+  ;; ex. "rb[3+3]"
+  (when (looking-at (concat (eshell-myparsers-regexp) "\\[\\(.+\\)\\]"))
+    (goto-char (1- (match-beginning 2))) ;point is at [
+    (let ((s (1+ (point))))
+      (goto-char (1+ (eshell-find-delimiter ?\[ ?\]))) ;after ]
+      (eshell-finish-arg `(eshell--myparser ,(match-string 1) ,(buffer-substring s (1- (point)))))))
+  ;; ex. "rb 3+3"
+  (when (looking-at (concat (eshell-myparsers-regexp) " "))
+    (goto-char (match-end 0))
+    (let ((s (point)))
+      (end-of-line)
+      (eshell-finish-arg `(eshell--myparser ,(match-string 1) ,(buffer-substring s (point)))))))
 
+(defun eshell--myparser (name arg)
+  (funcall (intern (format "eshell-parser/%s" name)) arg))
+(defun eshell-rewrite-command-hook--myparser (terms)
+  (if (and (listp (car terms))
+	   (eq (caar terms) 'eshell--myparser))
+      (cl-destructuring-bind (cmd &rest args) (eval (car terms))
+        `(eshell-named-command ,cmd
+                               (list ,@(mapcar (lambda (x) `(eshell-escape-arg ,x)) args))))))
+(add-hook 'eshell-parse-argument-hook 'eshell-parse-argument-hook--myparser)
+(add-hook 'eshell-rewrite-command-hook 'eshell-rewrite-command-hook--myparser)
 
-
-(defadvice eshell-invoke-directly (around eshell-myparser activate)
-  "Return t if your own eshell parser is usable."
-  (if eshell-bypassing-parser
-      (setq ad-return-value nil)
-    ad-do-it))
-;; (progn (ad-disable-advice 'eshell-invoke-directly 'around 'eshell-myparser) (ad-update 'eshell-invoke-directly))
-
-(defun eshell-get-parser-command (s e)
-  "Use your own eshell parser,
-if the first word in command line is XX and
-`eshell-parser/XX' function is defined,
-
-Given command line region between S and E."
-  (when (save-excursion (goto-char s)
-                        (re-search-forward "\\(\\S +\\) " nil t))
-    (let ((func (intern-soft (format "eshell-parser/%s" (match-string 1)))))
-      (when (fboundp func)
-        `(eshell-commands
-          (progn
-            (run-hooks 'eshell-pre-command-hook)
-            (eshell-update-markers eshell-last-output-end)
-            (let ((ret (,func ,(buffer-substring (match-end 0) e))))
-              (eshell-named-command (car ret) (mapcar 'eshell-escape-arg (cdr ret))))
-            (run-hooks 'eshell-post-command-hook)))))))
-
-(defadvice eshell-complete-commands-list (after eshell-myparser activate)
-  "Add eshell-parser/* to completion."
-  (setq ad-return-value
-        (append (mapcar (lambda (name) (substring name 14))
-                        (all-completions (concat "eshell-parser/" pcomplete-stub)
-                                         obarray 'functionp))
-                ad-return-value)))
-;; (progn (ad-disable-advice 'eshell-complete-commands-list 'after 'eshell-myparser) (ad-update 'eshell-complete-commands-list))
-
-(defadvice eshell-expand-history-references (around eshell-myparser activate)
-  "Prevent cmdline from parsing."
-  (if eshell-bypassing-parser
-      (setq ad-return-value nil)
-    ad-do-it))
-;; (progn (ad-disable-advice 'eshell-expand-history-references 'around 'eshell-myparser) (ad-update 'eshell-expand-history-references))
-
-;;; Utility function
-(defun eshell-get-process-output (program &rest args)
-  "Get output string from PROGRAM with ARGS."
-  (let ((tempbuf (generate-new-buffer " *eshell-get-process-output*")))
-    ;; FIXME use start-process
-    (apply 'call-process program nil tempbuf nil args)
-    (prog1 (with-current-buffer tempbuf (buffer-string))
-      (kill-buffer tempbuf))))
 
 ;;; Sample parser: Ruby
 ;;;
