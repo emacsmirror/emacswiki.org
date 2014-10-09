@@ -208,6 +208,25 @@ Get over it. Emacs lisp is designed to be an extension language for Emacs editor
 
  -- unlocksmith
 
+= What about Emacs Lisp 2? =
+* There are several common misconceptions voiced here
+# "Better" Lisps have concurrency. Nope, not really. They do in practice (because you can't really not have it in 21'st century), but the standard has nothing to say about it. This is really up to the implementation to provide this feature (for now at least).
+# Scheme is a lot simpler than Common Lisp. Even if true, not by much. In the end of the day, you will still find yourself needing the same tools. In one instance those will come from the standard library, in another instance those will come from a library developed by community.
+# There are more developers in Scheme or Common Lisp than there are people writing Emacs Lisp. Not according to Github statistics at least. If anything, of all Lisps (unless you count JavaScript), Emacs Lisp seems to be the most popular one. Ahem. It's not popular due to its features, but because it serves a purpose no other language can (being the scripting language of Emacs).
+
+I think I read somewhere about the history of Emacs Lisp, and I think that Stallman said so himself that many of the language-related decisions were motivated by the simplicity and the implementation and the time it would take to come up with one as well as the presence of the practical problems the language had to address. In other words, in a sense, Emacs Lisp was (and still is) a prototype language, and as such it did an unthinkably good job. But there are some roadblocks, where the development of the language seems to have come to a stand-still because the change / update will require things to be thrown away.
+
+* In my view, these problems are
+# Performance. There's really so much you can do with an interpreted language. In order to manage large projects on par with other modern editors the language needs to do better. Emacs Lisp needs an optimizing compiler. I think that LLVM might be a good target to compile to.
+# Concurrency model. Not just threads and other low-level tools needed for synchronization or mutual exclusion (I'd even prefer that those be hidden from sight), but a thought-through system based on either Actors model, or Concurrent C / Ada, or maybe something else, genuinely new?
+# Collections. Good programs must have good tools to work with data. This, again, means that there needs to be a system, a good design: perhaps, like iterators in C++, or perhaps such as Java collections, or maybe look into functional data types? Whichever way it will be, it'll be still better than the current state, where one can't even iterate over two hash-tables at once.
+# Interface with the outside world. If CFFI seems like a threat, than, perhaps, a different mechanism?
+# Security? It's not always appropriate to trust the code written by other people blindly. Some concept of sandboxes would be nice for loading semi/untrusted code.
+# Modules (information hiding in general).
+# Types? On one hand these make programs more difficult to write, on the other hand, these make them compile better.
+
+-- wvxvw
+
 ----
 CategoryCode
 CategoryHistory
