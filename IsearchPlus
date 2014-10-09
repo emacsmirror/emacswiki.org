@@ -1,4 +1,4 @@
-This page is about '''[::Isearch+]''', that is,  library <tt>[[isearch+.el]]</tt>.  This extends standard Emacs library ##isearch.el##, which provides IncrementalSearch.
+This page is about '''[::Isearch+]''', that is,  library <tt>[[isearch+.el]]</tt> and its companion library <tt>[[isearch-prop.el]]</tt>.  These libraries extend standard Emacs library ##isearch.el##, which provides IncrementalSearch.  (Neither of these extension libraries requires the other. They are complementary, but they enhance each other.)
 
 Features:
 
@@ -10,9 +10,9 @@ Features:
 search: regexp, word, multiple-buffer, and whether searching has
 wrapped around the buffer (Emacs 22+ only).
 
-[:isearchp-char-prop-forward]
-[:isearchp-char-prop-forward-regexp]
-* Ability to search ''within character-property zones''.  Example: search within zones having a `face' text property with a value of `font-lock-comment-face' or `font-lock-string-face'.  Search [[overlay]]s or [[text property|text properties]]. From within Isearch: '''`C-t'''' (or '''`C-M-t'''' for [[regexp]] search).  First time, or with a [[prefix argument]], you are prompted for the property and its values.  See the doc string of command '''`isearchp-char-prop-forward''''.
+[:isearchp-property-forward]
+[:isearchp-property-forward-regexp]
+* Ability to search ''within character-property zones''.  Example: search within zones having a `face' text property with a value of `font-lock-comment-face' or `font-lock-string-face'.  Search [[overlay]]s or [[text property|text properties]]. From within Isearch: '''`C-t'''' (or '''`C-M-t'''' for [[regexp]] search).  First time, or with a [[prefix argument]], you are prompted for the property and its values.  See the doc string of command '''`isearchp-property-forward''''.
 
 [:isearchp-put-prop-on-region]
 * Besides relying on other code to set `face' and other text
