@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Sep 12 10:19:56 2014 (-0700)
+;; Last-Updated: Fri Oct 10 10:46:55 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15016
+;;     Update #: 15017
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -8819,8 +8819,7 @@ file-name completion candidates."
 For MS Windows, if `icicle-network-drive-means-remote-flag' is non-nil
 then this includes a file on a mapped network drive.
 
-Otherwise, use, in order, `ffap-file-remote-p' or `file-remote-p'.  If
-those functions are not defined then return nil.
+Otherwise, use `file-remote-p' if defined, or return nil if not.
 
 FILENAME is normally a string, but it can also be a cons whose car is
 a string.  This is so that the function can be used to filter absolute
@@ -8830,8 +8829,8 @@ file-name completion candidates."
            ;; $$$$  (save-match-data   ; IS THIS NEEDED?
            (let ((case-fold-search  t)) (string-match "\\`\\([a-z]:\\)" filename))
            (eq 0 (condition-case nil
-                (icicle-ms-windows-NET-USE (match-string 1 filename))
-              (error nil)))
+                     (icicle-ms-windows-NET-USE (match-string 1 filename))
+                   (error nil)))
            icicle-network-drive-means-remote-flag)
       (and (fboundp 'file-remote-p)  (file-remote-p filename))
       (and (stringp filename)  (string-match "\\`/[^/]+:" filename)  (match-string 0 filename))))
