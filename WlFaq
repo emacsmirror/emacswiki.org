@@ -616,8 +616,12 @@ audio/*; xdg-open %s
 Finally:
 
 {{{
-(setq mime-play-find-every-situations nil)
+(setq mime-play-find-every-situations nil
+  mime-play-delete-file-immediately nil
+  process-connection-type nil)
 }}}
+
+On very new versions of Wanderlust, setting ##process-connection-type## should no longer be necessary.
 
 This depends on having a command, ##xdg-open##, that can deal with all types of files. This should be present on modern Linux desktops. I believe there is a similar command on a Mac.
 
