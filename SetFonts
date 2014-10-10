@@ -1,5 +1,9 @@
 The most important info first. Here's how to change the default font in your InitFile: use ##M-x customize-face## to customize the ##default## face.
 
+
+
+
+[:InspectingAndChangingFonts]
 == Inspecting and Changing Fonts ==
 
 * Use `<code>S-down-mouse-1</code>' to see the font and fontset menu. Emacs starts
