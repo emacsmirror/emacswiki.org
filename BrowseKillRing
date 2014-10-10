@@ -10,16 +10,20 @@ This page is about ways to browse the [[kill ring]], choosing a kill to [[yank]]
 ** <tt>[[browse-kill-ring.el]]</tt> is an older version of this package, it lacks some of the features of the github version.
 
 
+[:browse-kill-ring+.el]
+* <tt>[[browse-kill-ring+.el]]</tt> -- Enhancements to ##browse-kill-ring.el##.
+** You can browse (or pop) other rings, in addition to the `kill-ring' --- in particular, the `secondary-selection-ring' (see [[SecondarySelection#secondary-sel.el|secondary-sel.el]]).
+** You can copy or move selections from one ring to another (using `c').
+** You can toggle the display style (new command and key binding).
+** Does the right thing when you use DeleteSelectionMode: deletes (replaces) the [[active region]] whenever you insert a kill.
 
 
-
-* [[Icicles]]
+* [[Icicles]] -- You can clean up the ring selectively during completion, deleting entries on the fly. And you can sort completions in various ways.  All Icicles completion features are available, including [[progressive completion]].  Two ways:
 
 ** `C-- C-y' yanks from the kill ring using completion.
 
 ** `M-y' at top level (i.e., not after a yank from either the kill ring or the `secondary-selection-ring' of <tt>[[second-sel.el]]</tt>) yanks from one of those rings using completion.  It yanks a kill by default, but a secondary selection if you use a [[prefix argument]].
 
-:: In both cases you can clean up the ring selectively during completion, deleting entries on the fly. And you can sort completions in various ways.  All '''Icicles''' completion features are available, including [[progressive completion]].
 
 
 
@@ -29,20 +33,13 @@ This page is about ways to browse the [[kill ring]], choosing a kill to [[yank]]
 ** Works in minibuffer, so it don't open other buffers. Every match is cut, so basically you see only 10 first characters, 10 last characters and number of cutted characters in the middle. To preview whole text, use Lisp:ido-preview.el
 
 
-[:browse-kill-ring+.el]
-* <tt>[[browse-kill-ring+.el]]</tt> -- Enhancements to ##browse-kill-ring.el##.
-** You can browse (or pop) other rings, in addition to the `kill-ring' --- in particular, the `secondary-selection-ring' (see [[SecondarySelection#secondary-sel.el|secondary-sel.el]]).
-** You can copy or move selections from one ring to another (using `c').
-** You can toggle the display style (new command and key binding).
-** Does the right thing when you use DeleteSelectionMode: deletes (replaces) the [[active region]] whenever you insert a kill.
+* KillRingSearch -- incremental search of the kill ring
 
+
+* <tt>[[popup-kill-ring.el]]</tt> -- interactively insert item from kill-ring
 
 
 * [[view-kill.el]] – Displays the entire kill ring as a menu.
-
-* KillRingSearch -- incremental search of the kill ring
-
-* <tt>[[popup-kill-ring.el]]</tt> -- interactively insert item from kill-ring
 
 * <tt>[[wuxch-browse-kill-ring.el]]</tt> -- key bindings, customization
 
@@ -51,25 +48,17 @@ This page is about ways to browse the [[kill ring]], choosing a kill to [[yank]]
        (global-set-key "\C-cy" '(lambda ()
                                  (interactive)
                                  (popup-menu 'yank-menu)))
-* Yet another mean to get access to the kill ring with completion, let anything, icicles, ido or any other stuff that customize completing-read do the rest:
 
- (defun konix/kill-ring-insert ()
-   (interactive)
-   (let (
-        (to_insert (completing-read "Yank : "
-                                    (delete-duplicates kill-ring :test #'equal)
-                                    )
-                   )
-        )
-    (when (and to_insert
-               (region-active-p)
-               )
-      ;; the currently highlighted section is to be replaced by the yank
-      (delete-region (region-beginning) (region-end))
-      )
-    (insert to_insert)
-    )
-   )
+* Yet another way to get access to the kill ring with completion. Let [[Anything]], [[Icicles]], [[Ido]] or any other library that customizes `completing-read' do the rest:
+
+         (defun konix/kill-ring-insert ()
+           (interactive)
+           (let ((to_insert (completing-read "Yank : "
+                                            (delete-duplicates kill-ring :test #'equal))))
+            (when (and to_insert (region-active-p))
+              ;; the currently highlighted section is to be replaced by the yank
+              (delete-region (region-beginning) (region-end)))
+            (insert to_insert)))
 
 * Similar function with
 [[Anything]], a candidate selection framework. Start with `M-x anything-show-kill-ring', narrow the list by typing some patterns(multiple patterns are space-delimited string),
