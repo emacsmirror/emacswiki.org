@@ -4,13 +4,10 @@ This page is about ways to browse the [[kill ring]], choosing a kill to [[yank]]
 == Browsing the Kill Ring ==
 
 
-* ##browse-kill-ring.el## -- a package by ColinWalters, and later maintained by NickHurley. You can get it here:
+* ##browse-kill-ring.el## -- a package by ColinWalters, and later maintained by Nick Hurley. You can get it here:
 ** https://github.com/browse-kill-ring/browse-kill-ring Created in agreement with Nick Hurley.
-** There is a version with some bug fixes at [https://github.com/T-J-Teru/browse-kill-ring], plus a patch which doesn't seem include there at [http://alioth.debian.org/scm/viewvc.php/emacs-goodies-el/debian/patches/50_browse-kill-ring_bug224751.diff?view=markup&revision=1.1&root=pkg-goodies-el]
-** <tt>[[browse-kill-ring.el]]</tt> -- I uploaded ##browse-kill-ring.el## from www.todesschaf.org, I guess this makes it at least semi-official :-) --ClausBrunzema
 ** Debian: ##apt-get install emacs-goodies-el## (DebianPackage:emacs-goodies-el)
-** http://www.todesschaf.org/files/browse-kill-ring.el -- Another link, though I have no idea whether it is "official" in any way.   -- OliverScholz
-** It used to be at [http://opensource.cis.ohio-state.edu/~hurley/browse-kill-ring.el], but this link seems dead.
+** <tt>[[browse-kill-ring.el]]</tt> is an older version of this package, it lacks some of the features of the github version.
 
 
 
