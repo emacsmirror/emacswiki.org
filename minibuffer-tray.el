@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2014, Andy Stewart, all rights reserved.
 ;; Created: 2014-01-26 01:00:18
-;; Version: 0.2
-;; Last-Updated: 2014-10-08 00:52:01
+;; Version: 0.3
+;; Last-Updated: 2014-10-10 08:07:08
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/minibuffer-tray.el
 ;; Keywords:
@@ -67,6 +67,13 @@
 ;; (require 'minibuffer-tray)
 ;; (minibuffer-tray-mode 1)
 ;;
+;; You can use below code to remove mode-line:
+;; (custom-set-faces
+;; '(mode-line ((t (:background "#3E0303" :foreground "#3E0303" :height 1))))
+;; '(mode-line-highlight ((t (:height 1))))
+;; '(mode-line-inactive ((t (:background "gray10" :foreground "gray10" :height 1))))
+;; )
+;;
 ;; No need more.
 
 ;;; Customize:
@@ -78,6 +85,10 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2014/10/10
+;;      * Don't query user minibuffer-tray process when emacs exit.
+;;      * Add remove mode-line code in header comment.
 ;;
 ;; 2014/10/08
 ;;      * Use DBus instead Python-EPC as communication between Emacs and PyQt process.
@@ -171,6 +182,7 @@
                minibuffer-tray-process-name
                minibuffer-tray-process-name
                "python" (list minibuffer-tray-python-file (minibuffer-tray-get-emacs-xid) (format "%s" minibuffer-tray-height))))
+  (set-process-query-on-exit-flag minibuffer-tray-process nil)
   (set-process-sentinel
    minibuffer-tray-process
    #'(lambda (process event)
@@ -196,7 +208,6 @@
   (remove-hook 'window-configuration-change-hook 'minibuffer-tray-monitor-frame-change)
   (remove-hook 'post-command-hook 'minibuffer-tray-update-cursor-pos)
   (minibuffer-tray-stop-process)
-
   )
 
 (define-minor-mode minibuffer-tray-mode
