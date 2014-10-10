@@ -51,3 +51,12 @@ Here's my setting in the init file for el-get if it helps.
 
 -- Anonymous 2014-10-09 17:42 UTC
 
+
+----
+
+I replied to your posting of the same question [[http://stackoverflow.com/a/26290889/729907 here]].
+
+I'm no expert on el-get; sorry. Perhaps someone else can help with that. I would say just put <tt>[[help-fns+.el]]</tt> in your `load-path' and `require' it - done. - DrewAdams
+
+-- DrewAdams 2014-10-10 02:57 UTC
+
