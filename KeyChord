@@ -52,6 +52,23 @@ If you use german, here are some you could check (rare letter combinations): dp,
 Arne: I would recommend you avoid combinations that are even slightly common in your writing (prose or programming). Even very infrequent clashes can be very irritating. I am not fluent in german, but the above list match a lot of not so uncommon words: s**oz**ial, **zo**gen, Schu**lz**, plöt**zl**ich, M**aj**or, **Ja**hre, Kau**fm**ann, U**mf**ang, Se**gm**ent, **Gm**bH, Wol**fg**ang, sor**gf**ältig, e**rw**arten, Ve**rw**altung, bestim**mt**, Ers**tm**al, Sa**ms**tag, Ministeriu**ms**, Sch**ul**e, r**uh**ig, and many hundreds more. And sorry to say, the letter+dot and letter+comma is just stupid. I have also seen other examples where key-chord is used with way to common letter pairs. Please check your texts thorolly before chosing chords.
 -- DavidAndersson
 
+[new]
+If, like me you need to undefine a key chord and key-chord-unset-global does not help, try the following:
+{{{
+(defun alf/key-chord-undefine (keys)
+  "Undefine the key chord identified by KEYS.
+This should be done by key-chord-unset-global, however that
+does not work for me."
+  (let ((key1 (logand 255 (aref keys 0)))
+        (key2 (logand 255 (aref keys 1))))
+    (if (eq key1 key2)
+        (global-unset-key (vector 'key-chord key1 key2))
+      ;; else
+      (global-unset-key (vector 'key-chord key1 key2))
+      (global-unset-key (vector 'key-chord key2 key1)))))
+}}}
+
+-- Alf Lervåg
 ----
 CategoryKeys
 
