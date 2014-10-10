@@ -66,7 +66,8 @@ These libraries let you switch among buffers and files based on matching their c
 
 There are several libraries that let you cycle among buffers:
 
-* Emacs 22.1 has new commands `previous-buffer' and `next-buffer'; if you have XEmacs or an older Emacs, you could use Lisp:prev-next-buffer.el to define them. The Emacs 22.1 key bindings for these functions (by default, `<code>C-x <left></code>' and `<code>C-x <right></code>' respectively) are inconvenient, so you may want to rebind them (see KeyBindingNotation) regardless of Emacs version. DrewAdams: or look at Lisp:setup-keys.el, in which I bind them to chords `<code>C-<pause></code>' and `<code>M-<pause></code>' — ''chords'' are convenient and easily to repeat single-gesture keystrokes, see ChordDefined. (However, I still prefer `icicle-buffer'.)
+* GnuEmacs (22 or later) has commands `previous-buffer' and `next-buffer'. 
+The Emacs key bindings for `previous-buffer' and `next-buffer' (by default, `##C-x <left>##' and `##C-x <right>##') are inconvenient, so you may want to rebind them (see KeyBindingNotation). <tt>[[setup-keys.el]]</tt> binds them to chords `##C-<pause>##' and `##M-<pause>##' — chords are convenient and easily to repeat single-gesture keystrokes, see ChordDefined.
 * [[Icicles]] -- Use the arrow keys to cycle buffer names in the MiniBuffer. Can be combined with completion, including ''regexp'' ("apropos") completion.
 * DoReMi -- Use the arrow keys and/or mouse wheel with command `doremi-buffers' to cycle among buffers directly.
 * SwBuff -- Simple, direct, agreeable buffer cycling.
