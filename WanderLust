@@ -35,8 +35,10 @@ An easy way to get the latest Wanderlust and all its dependencies is by installi
 
 One of the developers Erik Hetzner [http://permalink.gmane.org/gmane.mail.wanderlust.general/5548 set up a package archive].
 
+    (package-initialize)
     (add-to-list 'package-archives
        '("e6h" . "http://www.e6h.org/packages/"))
+    (package-refresh-contents))
 
 == Basic Usage ==
 Wanderlust has four basic buffers: Folder buffer, summary buffer, message buffer/view, and draft buffer. 
