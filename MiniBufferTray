@@ -9,15 +9,6 @@ When you compare the file vertically, mode-line waste a lot of space and interfe
 If you want detail information of current buffer, `Ctrl + h m' is enough.
 So why not remove mode-line ?
 
-You can use below code to *remove* mode-line:
-{{{
-(custom-set-faces
-  '(mode-line ((t (:background "#3E0303" :foreground "#3E0303" :height 1))))
-  '(mode-line-highlight ((t (:height 1))))
-  '(mode-line-inactive ((t (:background "gray10" :foreground "gray10" :height 1))))
-)
-}}}
-
 ==What's minibuffer-tray ?==
 minibuffer-tray just contain  necessary information (column, row, percent, time, date)
 and stay on the bottom right corner of the emacs.
