@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2014, Andy Stewart, all rights reserved.
 ;; Created: 2014-01-26 01:00:18
-;; Version: 0.3
-;; Last-Updated: 2014-10-10 08:07:08
+;; Version: 0.4
+;; Last-Updated: 2014-10-11 09:20:04
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/minibuffer-tray.el
 ;; Keywords:
@@ -67,24 +67,22 @@
 ;; (require 'minibuffer-tray)
 ;; (minibuffer-tray-mode 1)
 ;;
-;; You can use below code to remove mode-line:
-;; (custom-set-faces
-;; '(mode-line ((t (:background "#3E0303" :foreground "#3E0303" :height 1))))
-;; '(mode-line-highlight ((t (:height 1))))
-;; '(mode-line-inactive ((t (:background "gray10" :foreground "gray10" :height 1))))
-;; )
-;;
 ;; No need more.
 
 ;;; Customize:
 ;;
-;;
+;; `minibuffer-tray-hide-mode-line' default is t to hide mode-line.
+;; `minibuffer-tray-height' the height of minibuffer-tray.
+;; `minibuffer-tray-name' the name of minibuffer-tray buffer.
 ;;
 ;; All of the above can customize by:
 ;;      M-x customize-group RET minibuffer-tray RET
 ;;
 
 ;;; Change log:
+;;
+;; 2014/10/11
+;;      * Add customize options.
 ;;
 ;; 2014/10/10
 ;;      * Don't query user minibuffer-tray process when emacs exit.
@@ -118,9 +116,30 @@
 
 (defvar minibuffer-tray-process nil)
 
-(defvar minibuffer-tray-process-name "*minibuffer tray*")
+(defcustom minibuffer-tray-name "*minibuffer tray*"
+  "Name of minibuffer-tray buffer."
+  :type 'string
+  :group 'minibuffer-tray)
 
-(defvar minibuffer-tray-height 20)
+(defcustom minibuffer-tray-height 20
+  "Height of minibuffer-tray."
+  :type 'int
+  :group 'minibuffer-tray)
+
+(defcustom minibuffer-tray-hide-mode-line t
+  "Hide mode-line.
+Default is t."
+  :type 'boolean
+  :set (lambda (symbol value)
+         (set symbol value)
+         (if value
+             (custom-set-faces
+              '(mode-line ((t (:background "#3E0303" :foreground "#3E0303" :height 1))))
+              '(mode-line-highlight ((t (:height 1))))
+              '(mode-line-inactive ((t (:background "gray10" :foreground "gray10" :height 1))))
+              )
+           ))
+  :group 'minibuffer-tray)
 
 (defun minibuffer-tray-call (method &rest args)
   (with-demoted-errors "minibuffer-tray-call ERROR: %s"
@@ -179,8 +198,8 @@
 (defun minibuffer-tray-start-process ()
   (setq minibuffer-tray-process
         (apply 'start-process
-               minibuffer-tray-process-name
-               minibuffer-tray-process-name
+               minibuffer-tray-name
+               minibuffer-tray-name
                "python" (list minibuffer-tray-python-file (minibuffer-tray-get-emacs-xid) (format "%s" minibuffer-tray-height))))
   (set-process-query-on-exit-flag minibuffer-tray-process nil)
   (set-process-sentinel
