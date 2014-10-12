@@ -89,6 +89,7 @@ then in DotEmacs
     	))
 
 And then the <code>~/info/dir</code> file will include, at the top
+The '^_' are special chars (input in hexl-mode: 1f0a 0a is newline) you can also copy and paste them from the e.g. /usr/share/info/dir -file.
 
     ^_
     File: dir,		Node: Top,	Up: (/usr/info/dir)
@@ -111,6 +112,48 @@ Also remember that even if a manual is not on the menu you're looking
 at, you can move to any node, say <code>(texinfo)Directory File</code>
 along any of Info's paths with <code>Info-goto-node</code>, at
 <code>g</code>.  Do mind the parentheses.
+
+I have tried all of the above, nothing works(v23.4+1-4 debian wheezy).
+I found the solution in the elpa package.el-file:
+Put this in the .emacs:
+
+ ;; FIXME: not the friendliest, but simple.
+ (require 'info)
+ (info-initialize)
+ (push "/home/user/info" Info-directory-list)
+
+
+Then create a 'dir'-file in that path:
+
+ This is the file .../home/user/dir, which contains the
+ topmost node of the Info hierarchy, called (dir)Top.
+ The first time you invoke Info you start off looking at this node.
+  
+ File: dir,	Node: Top	This is the top of the INFO tree
+ 
+         This is your very own [D]irectory of Info manuals.
+         To see the common directory set up for the system,
+         move [U]p from here.
+ * Menu:
+ Emacs
+ * Emacs: (emacs).               The extensible self-documenting text editor.
+ * elisp: (elisp).		Emacs elisp reference manual.
+ * eintr: (eintr).		An Introduction to Programming in Emacs Lisp.
+
+Note: no '--- end mark ---\n' at the end of the file was needed.
+
+Note: Above the line with 'File: dir...' there is a line with a unprintable char, which is showed by emacs as '^_', it is actually one byte (1f in hex), you can input hex-chars with the M-x hexl-mode.
+
+Note: C-h i mixes the different sub-group-menus into one single view, e.g. the group 'Emacs' in the above case.
+
+Note: lines that begin with '*'-char are: 
+
+<code>* menu-name: (file-name)     description </code>
+
++ menu-name can be selected with the input 'mmenu-name' (use expansion)
+
++ file-name is without the 'info.gz' suffix the file might have
+
 
 ----
 CategoryDocumentation
