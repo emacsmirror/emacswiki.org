@@ -146,9 +146,11 @@ Note: Above the line with 'File: dir...' there is a line with a unprintable char
 
 Note: C-h i mixes the different sub-group-menus into one single view, e.g. the group 'Emacs' in the above case.
 
-Note: lines that begin with '*'-char are: 
+Note: lines that begin with '*'-char have the following form:
 
-<code>* menu-name: (file-name)     description </code>
+ * menu-name: (file-name)     description
+
+Here's what it means:
 
 * menu-name can be selected with the input 'mmenu-name' (use expansion)
 
