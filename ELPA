@@ -209,6 +209,15 @@ You can make packages work in Emacs 23, you need to add something like this to y
 In order to use package.el in Emacs 23, the following package.el (link found on github) version is needed:
 http://bit.ly/pkg-el23 (source of info:https://github.com/technomancy/package.el)
 
+In case Emacs 23 shows this error at startup: //File error: Cannot load file, package//, a solution to this error message is to add the following code to the Emacs init file:
+
+{{{
+(when
+    (load
+     (expand-file-name "~/.emacs.d/package.el"))
+}}}
+(Idea is from http://ergoemacs.org/emacs/emacs23_install_elpa.html)
+
 == Other Repositories ==
 
 AndrewHyatt has written an [http://code.google.com/p/elpa-on-appengine/ implementation of ELPA for AppEngine], written in Go.  It is not yet running publicly yet, as of April 2013.
