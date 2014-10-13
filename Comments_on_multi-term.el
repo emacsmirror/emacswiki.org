@@ -18,3 +18,16 @@ Melpa pulls in updates automatically, I think, so it should always match the ver
 
 -- Anonymous 2014-05-17 14:27 UTC
 
+
+----
+
+Hi, I've just switched to FreeBSD from Linux and noted an odd behaviour.  
+
+On Linux, I changed directory inside the terminal, the Emacs current directory changed for that buffer.  So I could do, say "cd ~/foo" in the terminal, then "M-x find-file-in-project" and find-file-in-project would treat "~/foo" as its current directory.
+
+In FreeBSD this doesn't happen; if I "cd ~/foo" the current directory doesn't change, so a subsequent "M-x find-file-in-project" treats the current directory as being wherever Emacs was started in.
+
+Is there anything I can do to ensure that multi-term.el behaves the same way on FreeBSD?
+
+-- [https://duncan-bayne.github.com/ duncan_bayne] 2014-10-13 01:00 UTC
+
