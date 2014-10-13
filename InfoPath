@@ -136,11 +136,11 @@ Then create a 'dir'-file in that path:
          move [U]p from here.
  * Menu:
  Emacs
- * Emacs: (emacs).               The extensible self-documenting text editor.
+ * Emacs: (emacs).              The extensible self-documenting text editor.
  * elisp: (elisp).		Emacs elisp reference manual.
  * eintr: (eintr).		An Introduction to Programming in Emacs Lisp.
 
-Note: no '--- end mark ---\n' at the end of the file was needed.
+Note: no ##--- end mark ---\n## at the end of the file was needed.
 
 Note: Above the line with 'File: dir...' there is a line with a unprintable char, which is showed by emacs as '^_', it is actually one byte (1f in hex), you can input hex-chars with the M-x hexl-mode.
 
@@ -150,9 +150,9 @@ Note: lines that begin with '*'-char are:
 
 <code>* menu-name: (file-name)     description </code>
 
-+ menu-name can be selected with the input 'mmenu-name' (use expansion)
+* menu-name can be selected with the input 'mmenu-name' (use expansion)
 
-+ file-name is without the 'info.gz' suffix the file might have
+* file-name is without the 'info.gz' suffix the file might have
 
 
 ----
