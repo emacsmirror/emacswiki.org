@@ -31,3 +31,14 @@ Is there anything I can do to ensure that multi-term.el behaves the same way on 
 
 -- [https://duncan-bayne.github.com/ duncan_bayne] 2014-10-13 01:00 UTC
 
+
+----
+
+The manual says: "Unlike Shell mode, Term mode does not track the current directory by
+examining your input.  But some shells can tell Term what the current
+directory is.  This is done automatically by `bash' version 1.15 and
+later."
+I therefore assume that you're not using the same shell?
+
+-- AlexSchroeder 2014-10-13 07:00 UTC
+
