@@ -1,4 +1,4 @@
-There are actually several ErsatzEmacs editors known under a common name MicroEmacs, or uemacs (for the similarity of u and the greek &#x3bc;). They originated all from a common ancestor, written somewhen around 1985 by Dave Conroy, Steve Wilhite and George Jones, and later greatly modified and introduced to the "masses" by Daniel Lawrence.
+There are actually several ErsatzEmacs editors known under a common name MicroEmacs, or uemacs (for the similarity of u and the greek &#x3bc;). They originated all from a common ancestor, written somewhen around 1985 by Dave Conroy.  George Jones ported the sources to the Amiga and posted them to the USENET group comp.sources.amiga.  [http://en.wikipedia.org/wiki/Steve_Wilhite Steve Wilhite] also worked on the code prior to it's posting.  Daniel Lawrence later greatly modified and maintained the source.
 (See EditorsUsedByOthers and EmacsImplementations.)
 
 It came to a certain fame after Linus Torvalds was known to use a particular version of it around the time it was the only editor he had on Linux.
