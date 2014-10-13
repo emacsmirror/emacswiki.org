@@ -6,7 +6,7 @@ There are several GrepMode-like interfaces for Ack:
 * [https://github.com/leoliu/ack-el ack.el and pcmpl-ack.el]
 * [http://rooijan.za.net/code/emacs-lisp/ack-el Another ack.el]
 * FullAck
-* [https://github.com/jhelwig/ack-and-a-half ack-and-a-half] -- a merger of FullAck and ack.el (seems to have disappeared although there's a fork [https://github.com/mgalgs/ack-and-a-half here]
+* [https://github.com/jhelwig/ack-and-a-half ack-and-a-half] -- a merger of FullAck and ack.el (seems to have disappeared although there's a fork [https://github.com/mgalgs/ack-and-a-half here])
 
 A minimalistic interface to Ack is:
 {{{
