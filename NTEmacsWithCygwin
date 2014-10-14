@@ -11,6 +11,10 @@ This shell then is rather useless, because apart from the missing job control so
 
 The helpful people from the Cygwin mailing list suggest that it is an NTEmacs problem. This issue does not seem to be resolved yet(as of 15 Mar 2012).
 
+[new:DrewAdams:2014-10-14 16:51 UTC]
+Still a problem as of October 2014. -- DrewAdams
+[new]
+
 Workarounds: 
 # Use Cygwin Emacs (package emacs-w32 uses the windows GUI, there are also X11 and console packages)
 # Don't upgrade Cygwin above, I think Cygwin1.dll, version 1.7.9.
