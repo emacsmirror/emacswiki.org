@@ -1,5 +1,5 @@
 ;;; anything-kyr.el --- Show context-aware commands
-;; $Id: anything-kyr.el,v 1.7 2009/03/04 00:02:14 rubikitch Exp $
+;; $Id: anything-kyr.el,v 1.8 2014/10/14 12:05:29 rubikitch Exp $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -55,6 +55,9 @@
 ;;; History:
 
 ;; $Log: anything-kyr.el,v $
+;; Revision 1.8  2014/10/14 12:05:29  rubikitch
+;; new function: anything-kyr-should-notify-p
+;;
 ;; Revision 1.7  2009/03/04 00:02:14  rubikitch
 ;; Command description support (thanks tk159)
 ;;
@@ -80,7 +83,7 @@
 
 ;;; Code:
 
-(defvar anything-kyr-version "$Id: anything-kyr.el,v 1.7 2009/03/04 00:02:14 rubikitch Exp $")
+(defvar anything-kyr-version "$Id: anything-kyr.el,v 1.8 2014/10/14 12:05:29 rubikitch Exp $")
 (require 'anything)
 
 (defvar anything-c-source-kyr
@@ -134,6 +137,12 @@ It is a list of elements of (CONDITION COMMAND1 ...).")
 (defun anything-kyr ()
   (interactive)
   (anything 'anything-c-source-kyr))
+
+(defun anything-kyr-should-notify-p ()
+  (setq anything-kyr-should-notify-p
+        (loop for (condition . cmds) in anything-kyr-commands-by-condition
+              when (save-excursion (ignore-errors (eval condition)))
+              return t)))
 
 ;;;; unit test
 ;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-expectations.el")
@@ -203,7 +212,7 @@ It is a list of elements of (CONDITION COMMAND1 ...).")
       (expect '("find-file" "switch-to-buffer \tBuffer Switch")
         (let (anything-kyr-commands-by-major-mode
               anything-kyr-commands-by-file-name
-              (anything-kyr-display-format "%s \t%s") 
+              (anything-kyr-display-format "%s \t%s")
               (anything-kyr-commands-by-condition
                '((t find-file (switch-to-buffer . "Buffer Switch")))))
           (anything-kyr-candidates)))
