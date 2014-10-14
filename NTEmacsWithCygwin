@@ -12,7 +12,7 @@ This shell then is rather useless, because apart from the missing job control so
 The helpful people from the Cygwin mailing list suggest that it is an NTEmacs problem. This issue does not seem to be resolved yet(as of 15 Mar 2012).
 
 [new:DrewAdams:2014-10-14 16:51 UTC]
-Still a problem as of October 2014. -- DrewAdams
+Still a problem as of October 2014, with all Emacs versions (starting with Emacs 20, at least), including Emacs 25 dev snapshots. -- DrewAdams
 [new]
 
 Workarounds: 
