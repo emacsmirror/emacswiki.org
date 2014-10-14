@@ -32,6 +32,11 @@ Evil can be alternatively downloaded and installed with:
    
     M-x el-get-install RET evil RET
 
+==Install via QUELPA==
+
+    M-x quelpa
+    evil
+
 ==Install from source==
 
 Evil lives in a Git repository. To download Evil, do:
