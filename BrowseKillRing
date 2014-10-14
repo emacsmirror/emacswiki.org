@@ -162,6 +162,9 @@ diff --git a/libs/popup-kill-ring.el b/libs/popup-kill-ring.el
 The problem with browse-kill-ring is that when my frame is split into two windows, a and b, it will open in b if my focus is on a. When I close it (by pressing ‘q’) b is closed and what I had there is buried (I can select that it won’t close the window it creates, but that’s also not good; I might have just one window initially and I don’t want to end up with two). The ideal behaviour would be similar to bs-mode (open in it’s own small window and close when I press ‘q’ or once I select an entry).
 
 --user19865
+
+[new]
+The version of browse-kill-ring on github will, by default, preserve the window/buffer configuration when browse-kill-ring is invoked, and restore it when you quit, this should solve the issue of the disappearing window/buffers. 
 ----
 
 CategoryEditing
