@@ -283,6 +283,10 @@ In Emacs 22 (Carbon Port, CVS version) you can use the variable `mac-control-mod
 
 == Microsoft Windows ==
 
+=== Windows Server 2003 Resource Kit Tools===
+
+Use remapkey.exe from [http://www.microsoft.com/en-us/download/details.aspx?id=17657 Windows Server 2003 Resource Kit Tools] to remap windows keyboard layout.
+
 === AutoHotkey ===
 On Windows you can use the [http://www.autohotkey.com/ AutoHotkey] program which uses "scripts" to remap the keyboard.
 
