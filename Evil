@@ -34,8 +34,7 @@ Evil can be alternatively downloaded and installed with:
 
 ==Install via QUELPA==
 
-    M-x quelpa
-    evil
+    M-x quelpa RET evil RET
 
 ==Install from source==
 
