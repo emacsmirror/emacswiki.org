@@ -1,4 +1,11 @@
 ==Emacs Notes==
+===New code in github===
+[2014 10 14] It's be a while since the last code update.
+
+I've uploaded my latest emacs configuration files to github, including setup for OSX and for Windows (using Cygwin utilities on native Emacs).
+
+You can find the repository [https://github.com/cmcmahan/elisp.git here]
+
 ===Geektools and Org-mode===
 [2011 04 08] I've discovered GeekTools for OS X
 
