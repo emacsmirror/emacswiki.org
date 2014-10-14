@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:41:30 2013 (-0800)
+;; Last-Updated: Tue Oct 14 11:20:42 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 605
+;;     Update #: 610
 ;; URL: http://www.emacswiki.org/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -57,6 +57,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/10/14 dadams
+;;     Added :group for defcustom and defface.
 ;; 2013/09/30 dadams
 ;;     Removed force-time-redisplay.
 ;; 2012/11/10 dadams
@@ -183,7 +185,7 @@
 ;;;###autoload
 (defcustom mode-line-reminder-duration 10
   "*Maximum number of seconds to display a reminder in the mode-line."
-  :type 'integer)
+  :group 'help :type 'integer)
 
 (defun display-in-mode-line (text)
   "Display TEXT in mode line for `mode-line-reminder-duration' seconds."
@@ -328,12 +330,13 @@ If the region is not active or is empty, then bob and eob are used."
 (defcustom notifying-user-of-mode-flag t
   "*Non-nil means to display messages notifying user of mode changes.
 See function `notify-user-of-mode'."
-  :type 'boolean)
+  :group 'help :type 'boolean)
 
 (defface notify-user-of-mode '((((background dark)) (:foreground "cyan"))
                                (t (:foreground "dark blue")))
   "*Face used for notifying user of current major mode.
-See function `notify-user-of-mode'.")
+See function `notify-user-of-mode'."
+  :group 'help)
 
 (defun notify-user-of-mode (&optional buffer anyway)
   "Display msg naming major mode of BUFFER (default: current buffer).
@@ -434,7 +437,7 @@ Optional arg KILL-BUF-AFTER non-nil means kill buffer after saving it."
      upcase-word vc-insert-headers whitespace-cleanup
      whitespace-cleanup-region yank yank-pop yank-rectangle zap-to-char))
   "*Buffer-modifying commands used in `undefine-killer-commands'."
-  :type '(repeat symbol))
+  :group 'editing :type '(repeat symbol))
 
 (defun undefine-keys-bound-to (command keymap)
   "Undefine all keys bound only by inheritance to COMMAND in KEYMAP.
