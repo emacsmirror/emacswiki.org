@@ -1,3 +1,4 @@
+[[de:indonesia]]
 The Emacs ModeLine is configurable, offering special modes and functions that change its functionality.
 
 Display of some standard information in the mode line is governed by these minor modes (each toggle on and off):
