@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 28 15:25:43 2014 (-0700)
+;; Last-Updated: Wed Oct 15 08:47:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8448
+;;     Update #: 8450
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -70,6 +70,9 @@
 ;;  Use `(' anytime to toggle this hiding.  You can use option
 ;;  `diredp-hide-details-initially-flag' to change the default/initial
 ;;  state.  See also option `diredp-hide-details-propagate-flag'.
+;;  However, if you do not want to hide details initially then you
+;;  must set at least one of these option values to `nil' *BEFORE*
+;;  loading `dired+.el'.
 ;;
 ;;  If you have an Emacs version older than 24.4, you can use library
 ;;  `dired-details+.el' (plus `dired-details.el') to get similar
