@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Wed Oct 15 11:22:10 2014 (-0700)
+;; Last-Updated: Wed Oct 15 12:49:32 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7061
+;;     Update #: 7062
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6761,8 +6761,8 @@ using `icicle-search'.  For more information, see the doc for command
   (let ((icicle-multi-completing-p  (and current-prefix-arg
                                          (not (zerop (prefix-numeric-value current-prefix-arg)))
                                          icicle-show-multi-completion-flag))
-        (fg (face-foreground        'icicle-search-main-regexp-others))
-        (bg (face-background        'icicle-search-main-regexp-others))
+        (fg                         (face-foreground 'icicle-search-main-regexp-others))
+        (bg                         (face-background 'icicle-search-main-regexp-others))
         (icicle-transform-function  (and (not (interactive-p))  icicle-transform-function)))
     (unwind-protect
          (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
