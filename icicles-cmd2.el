@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Thu Sep 11 13:52:33 2014 (-0700)
+;; Last-Updated: Wed Oct 15 11:22:10 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7057
+;;     Update #: 7061
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -441,6 +441,7 @@
 (defvar icicle-package-completing-p)    ; Here
 (defvar icicle-search-ecm)              ; In `icicle-search'
 (defvar icicle-track-pt)                ; In `icicle-insert-thesaurus-entry'
+(defvar imenu-after-jump-hook)          ; In `imenu.el' (Emacs 22+)
 (defvar replace-count)                  ; In `replace.el'
 (defvar wide-n-lighter-narrow-part)     ; In `wide-n.el'
 (defvar wide-n-restrictions)            ; In `wide-n.el'
@@ -6935,8 +6936,7 @@ information about the arguments, see the doc for command
   ;; Is there a better test we can use, to make sure the current mode inherits from `comint-mode'?
   (unless (where-is-internal 'comint-send-input (keymap-parent (current-local-map)))
     (icicle-user-error "Current mode must be derived from comint mode"))
-  (let ((orig-search-hook           icicle-search-hook)
-        (icicle-transform-function  'icicle-remove-duplicates))
+  (let ((icicle-transform-function  'icicle-remove-duplicates))
     (add-hook 'icicle-search-hook 'icicle-comint-search-send-input)
     (unwind-protect
          (icicle-search beg end (concat comint-prompt-regexp "\\S-.*") nil) ; Match not required (edit).
@@ -7593,15 +7593,21 @@ The other args are as for `icicle-search'."
                    (and (not (interactive-p))  icicle-transform-function)))
              (unless (stringp regexp)
                (if submenu (setq regexp  (cadr (assoc submenu menus))) (icicle-user-error "No match")))
-             (icicle-search
-              beg end regexp require-match where predicate
-              ;; We rely on the match data having been preserved.
-              ;; $$$$$$ An alternative fn for Lisp only: (lambda () (up-list -1) (forward-sexp))))))
-              (and fullp  (lambda ()
-                            (goto-char (match-beginning 0))
-                            (condition-case icicle-imenu-1
-                                (forward-sexp)
-                              (error (goto-char (match-end 0))))))))) ; Punt: just use regexp match.
+             (unwind-protect
+                  (progn (when (boundp 'imenu-after-jump-hook)
+                           (dolist (fn  imenu-after-jump-hook) (add-hook 'icicle-search-hook fn)))
+                         (icicle-search beg end regexp require-match where predicate
+                                        ;; We rely on the match data having been preserved.
+                                        ;; $$$$$$ An alternative fn for Lisp only:
+                                        ;;        (lambda () (up-list -1) (forward-sexp))))))
+                                        (and fullp  (lambda ()
+                                                      (goto-char (match-beginning 0))
+                                                      (condition-case icicle-imenu-1
+                                                          (forward-sexp)
+                                                        ;; Punt: just use regexp match.
+                                                        (error (goto-char (match-end 0))))))))
+               (when (boundp 'imenu-after-jump-hook)
+                 (dolist (fn  imenu-after-jump-hook) (remove-hook 'icicle-search-hook fn))))))
       (set-syntax-table old-table))))
 
 (defun icicle-imenu-in-buffer-p (menu)
