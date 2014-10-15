@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 15 09:03:15 2014 (-0700)
+;; Last-Updated: Wed Oct 15 09:19:31 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8451
+;;     Update #: 8461
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -69,10 +69,12 @@
 ;;  Starting with Emacs 24.4, listing details are hidden by default.
 ;;  Use `(' anytime to toggle this hiding.  You can use option
 ;;  `diredp-hide-details-initially-flag' to change the default/initial
-;;  state.  However, if you do not want to hide details initially then
-;;  you must set `diredp-hide-details-initially-flag' to `nil'
-;;  *BEFORE* loading `dired+.el'.  See also option
-;;  `diredp-hide-details-propagate-flag'.
+;;  state.  See also option `diredp-hide-details-propagate-flag'.
+;;
+;;  NOTE: If you do not want to hide details initially then you must
+;;        either (1) change `diredp-hide-details-initially-flag' using
+;;        Customize (recommended) or (2) set it to `nil' (e.g., using
+;;        `setq') *BEFORE* loading `dired+.el'.
 ;;
 ;;  If you have an Emacs version older than 24.4, you can use library
 ;;  `dired-details+.el' (plus `dired-details.el') to get similar
@@ -578,6 +580,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/10/15 dadams
+;;     diredp-hide-details-initially-flag:
+;;       Added :set, to ensure that diredp-hide-details-last-state is kept up-to-date.
 ;; 2014/09/28 dadams
 ;;     Added: diredp-recent-dirs, diredp-read-include/exclude, diredp-root-directory-p, diredp-remove-if.
 ;;     diredp-dired-recent-dirs(-other-window): Added optional ARG.  Use diredp-recent-dirs.  Pass SWITCHES.
@@ -1433,7 +1438,10 @@ This option has no effect for Emacs versions prior to Emacs 22."
 (when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
   (defcustom diredp-hide-details-initially-flag t
     "*Non-nil means hide details in Dired from the outset."
-    :type 'boolean :group 'Dired-Plus)
+    :type 'boolean :group 'Dired-Plus
+    :set (lambda (sym defs)
+           (custom-set-default sym defs)
+           (setq diredp-hide-details-last-state  diredp-hide-details-initially-flag)))
 
   (defcustom diredp-hide-details-propagate-flag t
     "*Non-nil means display the next Dired buffer the same way as the last.
