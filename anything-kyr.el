@@ -1,5 +1,5 @@
 ;;; anything-kyr.el --- Show context-aware commands
-;; $Id: anything-kyr.el,v 1.8 2014/10/14 12:05:29 rubikitch Exp $
+;; $Id: anything-kyr.el,v 1.13 2014/10/14 18:29:34 rubikitch Exp $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -55,6 +55,21 @@
 ;;; History:
 
 ;; $Log: anything-kyr.el,v $
+;; Revision 1.13  2014/10/14 18:29:34  rubikitch
+;; Notify strings
+;;
+;; Revision 1.12  2014/10/14 18:05:00  rubikitch
+;; indentation (no code change)
+;;
+;; Revision 1.11  2014/10/14 18:03:33  rubikitch
+;; better display string
+;;
+;; Revision 1.10  2014/10/14 17:55:54  rubikitch
+;; anything-kyr-candidates: return (display . real)
+;;
+;; Revision 1.9  2014/10/14 17:44:35  rubikitch
+;; org-link support
+;;
 ;; Revision 1.8  2014/10/14 12:05:29  rubikitch
 ;; new function: anything-kyr-should-notify-p
 ;;
@@ -83,15 +98,16 @@
 
 ;;; Code:
 
-(defvar anything-kyr-version "$Id: anything-kyr.el,v 1.8 2014/10/14 12:05:29 rubikitch Exp $")
+(defvar anything-kyr-version "$Id: anything-kyr.el,v 1.13 2014/10/14 18:29:34 rubikitch Exp $")
 (require 'anything)
+(require 'org)
+(require 'org-element)
 
 (defvar anything-c-source-kyr
   '((name . "Context-aware Commands")
     (candidates . anything-kyr-candidates)
-    (display-to-real . (lambda (str) (intern-soft (car (split-string str " +\t")))))
-    (action ("Execute" . call-interactively)
-            ("Describe Function" . describe-function))
+    (action)
+    (action-transformer . anything-kyr-action-transformer)
     (persistent-action . describe-function)))
 
 (defvar anything-kyr-commands-by-major-mode nil
@@ -111,9 +127,12 @@ It is a list of elements of (CONDITION COMMAND1 ...).")
      . (lambda (mode) (if (listp mode)
                           (memq major-mode mode)
                         (eq major-mode mode))))))
+(defvar anything-kyr-default-notify-string
+  (propertize "◎" 'face '((:foreground "red")))
+  "Default notify string in mode-line")
+
 ;; (anything 'anything-c-source-kyr)
 
-(defvar anything-kyr-display-format "%-30s\t%-s")
 (defun anything-kyr-candidates ()
   (with-current-buffer anything-current-buffer
     (delq nil
@@ -123,13 +142,36 @@ It is a list of elements of (CONDITION COMMAND1 ...).")
                              (ignore-errors (funcall condition-func condition)))
                       append (mapcar
                               (lambda (command)
-                                (cond ((commandp command)
-                                       (symbol-name command))
+                                (cond ((stringp command)
+                                       (let ((plink (anything-kyr-parse-org-link command)))
+                                         (cons (apply 'anything-kyr-format-string plink) (car plink))))
+                                      ((commandp command)
+                                       (cons (anything-kyr-format-string command) command))
                                       ((and (consp command) (commandp (car command)))
-                                       (format anything-kyr-display-format
-                                               (symbol-name (car command))
-                                               (cdr command)))))
+                                       (cons (anything-kyr-format-string (car command) (cdr command))
+                                             (car command)))))
                               cmds))))))
+
+(defun anything-kyr-format-string (command-or-link &optional description)
+  (if description
+      (format "%s (%s)" description command-or-link)
+      (format "%s" command-or-link)))
+
+(defun anything-kyr-action-transformer (action command)
+  (if (stringp command)
+      '(("Open link" . org-open-link-from-string))
+    '(("Execute" . call-interactively)
+      ("Describe Function" . describe-function))))
+
+(defun anything-kyr-parse-org-link (link)
+  (with-temp-buffer
+    (insert link)
+    (goto-char (point-min))
+    (let ((plink (org-element-link-parser)))
+      (list (org-element-property :raw-link plink)
+            (ignore-errors
+              (buffer-substring (org-element-property :contents-begin plink)
+                                (org-element-property :contents-end plink)))))))
 
 (defun anything-kyr-commands-by-major-mode ()
   (assoc-default major-mode anything-kyr-commands-by-major-mode))
@@ -141,82 +183,11 @@ It is a list of elements of (CONDITION COMMAND1 ...).")
 (defun anything-kyr-should-notify-p ()
   (setq anything-kyr-should-notify-p
         (loop for (condition . cmds) in anything-kyr-commands-by-condition
-              when (save-excursion (ignore-errors (eval condition)))
-              return t)))
-
-;;;; unit test
-;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-expectations.el")
-;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-mock.el")
-(dont-compile
-  (when (fboundp 'expectations)
-    (expectations
-      (desc "anything-kyr-commands-by-condition")
-      (expect '("find-file")
-        (let (anything-kyr-commands-by-major-mode
-              anything-kyr-commands-by-file-name
-              (anything-kyr-commands-by-condition
-               '(((eq t t) find-file)
-                 ((eq t nil) switch-to-buffer))))
-          (anything-kyr-candidates)))
-      (expect '("find-file")
-        (let (anything-kyr-commands-by-major-mode
-              anything-kyr-commands-by-file-name
-              (anything-kyr-commands-by-condition
-               '(((equal buffer-file-name "hoge") find-file)
-                 ((eq t nil) switch-to-buffer)))
-              (buffer-file-name "hoge"))
-          (anything-kyr-candidates)))
-      (desc "anything-kyr-commands-by-file-name")
-      (expect '("describe-variable" "describe-function")
-        (let (anything-kyr-commands-by-major-mode
-              anything-kyr-commands-by-condition
-              (anything-kyr-commands-by-file-name
-               '((".lisp$" describe-variable describe-function)))
-              (buffer-file-name "test.lisp"))
-          (anything-kyr-candidates)))
-      (desc "anything-kyr-commands-by-major-mode")
-      (expect '("gomoku")
-        (let (anything-kyr-commands-by-file-name
-              anything-kyr-commands-by-condition
-              (anything-kyr-commands-by-major-mode
-               '((lisp-mode gomoku)))
-              (major-mode 'lisp-mode))
-          (anything-kyr-candidates)))
-      (expect '("gomoku")
-        (let (anything-kyr-commands-by-file-name
-              anything-kyr-commands-by-condition
-              (anything-kyr-commands-by-major-mode
-               '(((lisp-mode perl-mode) gomoku)))
-              (major-mode 'lisp-mode))
-          (anything-kyr-candidates)))
-      (desc "condition / file-name / major-mode")
-      (expect '("find-file" "describe-variable" "describe-function" "gomoku")
-        (let ((anything-kyr-commands-by-file-name
-               '((".lisp$" describe-variable describe-function)))
-              (anything-kyr-commands-by-major-mode
-               '((lisp-mode gomoku)))
-              (anything-kyr-commands-by-condition
-               '(((eq t t) find-file)
-                 ((eq t nil) switch-to-buffer)))
-              (buffer-file-name "test.lisp")
-              (major-mode 'lisp-mode))
-          (anything-kyr-candidates)))
-      (desc "only commands are listed")
-      (expect '("find-file")
-        (let (anything-kyr-commands-by-major-mode
-              anything-kyr-commands-by-file-name
-              (anything-kyr-commands-by-condition
-               '((t find-file not-command))))
-          (anything-kyr-candidates)))
-      (desc "command with description")
-      (expect '("find-file" "switch-to-buffer \tBuffer Switch")
-        (let (anything-kyr-commands-by-major-mode
-              anything-kyr-commands-by-file-name
-              (anything-kyr-display-format "%s \t%s")
-              (anything-kyr-commands-by-condition
-               '((t find-file (switch-to-buffer . "Buffer Switch")))))
-          (anything-kyr-candidates)))
-      )))
+              for result = (save-excursion (ignore-errors (eval condition)))
+              when (stringp result)
+              collect result
+              else if result
+              return anything-kyr-default-notify-string)))
 
 (provide 'anything-kyr)
 
