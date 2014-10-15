@@ -5,7 +5,6 @@ Libnotify notifications for [[rcirc]].
 Source:
 
 * [https://github.com/nicferrier/rcirc-notify/blob/master/rcirc-notify.el rcirc-notify.el]
-* [https://github.com/kzar/rcirc-notify Latest version awaiting pull request] (Currently required for the hook, using terminal-notifier and other bug fixes.)
 
 You can also download from marmalade-repo:
 
