@@ -108,6 +108,11 @@
            "http://www.emacswiki.org/emacs/download/anything-match-plugin.el" ; Matching algorithm humanely
            "http://www.emacswiki.org/emacs/download/anything-config.el" ; Configuration for anything.el
            ))
+         ("anything-kyr" nil nil
+          (
+           "http://www.emacswiki.org/emacs/download/anything.el" ; Main library
+           "http://www.emacswiki.org/emacs/download/anything-kyr.el" ; 
+           ))
          ("anything-completion-minimal" nil nil
           (
            "anything-minimal"
