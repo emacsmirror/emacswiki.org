@@ -70,7 +70,7 @@ cd ~/source
 git clone --depth 1 -b wip git://git.hcoop.net/git/bpt/emacs.git
 cd emacs
 # These make Emacs' configure stuff find the stuff guile has left
-export ACLOCAL_PATH=$HOME/guile-emacs/guile
+export ACLOCAL_PATH=$HOME/guile-emacs/guile/share/aclocal
 export PKG_CONFIG_PATH=$HOME/guile-emacs/guile/lib/pkgconfig
 export LD_RUN_PATH=$HOME/guile-emacs/guile/lib
 # ... and of course we need to tell Emacs about Guile binaries too...
