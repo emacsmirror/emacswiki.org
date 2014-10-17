@@ -1,6 +1,6 @@
 ;;; emms-get-lyrics.el --- Get the lyrics of the song emms is currently playing
 
-;;; Copyright (C) 2013 andres.ramirez
+;;; Copyright (C) 2013, 2014 andres.ramirez
 ;;; Copyright (C) 2007 Jay Belanger
 
 ;; emms-get-lyrics.el is free software; you can redistribute it and/or 
@@ -57,19 +57,20 @@
 
 (defun emms-get-lyrics-url (artist title)
   (concat
-   "https://duckduckgo.com/?q=!ducky+lyrics007.com+"
-   (replace-regexp-in-string
+   "https://duckduckgo.com/?q=!ducky+"  (base64-decode-string "c2l0ZTplbHlyaWNzLm5ldCs=")
+   (replace-regexp-in-string 
     " " "+"
     (concat
      artist
      " "
-     title ""))))
+     title ""))
+   ""))
 
 (defun emms-get-lyrics-w3m (url buffer)
   (call-process "w3m" nil buffer nil "-dump" url))
 
-
-(defun emms-get-lyrics (artist title fn &optional file) ;"changed by using duckduckgo"
+(defun emms-get-lyrics (artist title fn &optional file)
+  "chg 4 using duckduckgo"
   (let ((bname (concat "Lyrics: " title " by " artist)))
     (cond ((get-buffer bname)
            (switch-to-buffer bname))
@@ -84,22 +85,16 @@
              (set-buffer buffer)
              (funcall fn (emms-get-lyrics-url artist title) buffer)
              (goto-char (point-min))
-
              (if (and
-                  (search-forward "Send Ringtones to your Cell" nil t)
-                  ;; (search-forward "Jump to:" nil t)
-                  (not (search-forward 
-                        "No results." nil t)))
+                  (search-forward "Genre" nil t)
+                  (not (search-forward "No results." nil t)))
                  (let ((frominsert ""))
+                   (forward-line 10)
                    (delete-region (point-min) (1+ (line-end-position)))
-                   (insert title " by " artist "\n")
-                   ;; (insert frominsert "\n")
+                   (insert title " by " artist "\n\n")
                    (goto-char (point-max))
-                   (if (or
-                        (search-backward "Send Ringtones to your Cell" nil t)
-                        ;(search-backward "Retrieved from" nil t)
-                        )
-                       (progn (beginning-of-line)(delete-region (point) (point-max))))
+                   (if (search-backward "Correct these lyrics" nil t)
+                       (progn (beginning-of-line)(forward-line -1)(delete-region (point) (point-max))))
                    (when file 
                      (rename-buffer bname)
                      (save-buffer)))
@@ -107,17 +102,17 @@
                (insert "Unable to find lyrics for " title " by " artist)
                (if file (set-buffer-modified-p nil)))
 
-          (goto-char (point-min))
-          (emms-get-lyrics-mode)
-          (switch-to-buffer buffer)
-          (goto-char (point-min)))))))
+             (goto-char (point-min))
+             (emms-get-lyrics-mode)
+             (switch-to-buffer buffer)
+             (goto-char (point-min)))))))
 
 (defun emms-get-lyrics-current-song ()
   (interactive)
   (let* ((track (emms-playlist-current-selected-track))
          (artist (cdr (assoc 'info-artist track)))
          (title (cdr (assoc 'info-title track))))
-    (if emms-player-playing-p
+    (if (and emms-player-playing-p artist title)
         (emms-get-lyrics artist title 'emms-get-lyrics-w3m
                          (if emms-get-lyrics-use-files
                              (if emms-get-lyrics-dir
@@ -134,7 +129,7 @@
                                (concat
                                 (file-name-sans-extension (cdr (assoc 'name track)))
                                 ".lyrics"))))
-      "Nothing playing right now")))
+      (message "Nothing playing right now, or no artist, title"))))
 
 (provide 'emms-get-lyrics)
 ;;; emms-get-lyrics.el ends here
