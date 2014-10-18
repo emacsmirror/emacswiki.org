@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Wed Oct 15 12:49:32 2014 (-0700)
+;; Last-Updated: Fri Oct 17 18:03:15 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7062
+;;     Update #: 7071
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -8533,20 +8533,28 @@ But IF (a) this command is `icicle-complete-keys' and
            option `icicle-complete-keys-ignored-prefix-keys'
   THEN return [], as if `icicle-complete-keys' was invoked at top
        level, i.e., with no prefix key."
-  (let* ((this-key-sequence  (this-command-keys-vector))
-         (this-prefix        (substring this-key-sequence 0 (1- (length this-key-sequence)))))
-    (when (and (eq this-command 'icicle-complete-keys)
-               (icicle-some icicle-complete-keys-ignored-prefix-keys
-                            this-prefix
-                            #'icicle-same-vector-keyseq-p))
-      (setq this-prefix []))
-    this-prefix))
+    (let* ((this-key-sequence  (this-command-keys-vector))
+           (this-prefix        (substring this-key-sequence 0 (1- (length this-key-sequence)))))
+      (when (or (and (active-minibuffer-window)
+                     (icicle-some icicle-key-complete-keys-for-minibuffer
+                                  this-key-sequence
+                                  #'icicle-same-vector-keyseq-p))
+                (and (eq this-command 'icicle-complete-keys)
+                     (icicle-some icicle-complete-keys-ignored-prefix-keys
+                                  this-prefix
+                                  #'icicle-same-vector-keyseq-p)))
+        (setq this-prefix []))
+      this-prefix))
 
   (defun icicle-same-vector-keyseq-p (key1 key2)
     "Return non-nil if KEY1 and KEY2 represent the same key sequence.
 Each is a vector."
-    (equal (apply #'vector (mapcar #'icicle-unlist key1))
-           (apply #'vector (mapcar #'icicle-unlist key2))))
+    ;; 1. Roundtrip through `key-description' and `kbd' so that [ESC ...] and [27 ...] are treated the same.
+    ;; 2. Use `icicle-read-kbd-macro' instead of just `kbd', because Emacs 20 `read-kbd-macro' chokes the
+    ;;    Emacs 20 byte-compiler.
+    (let ((desc1  (key-description (apply #'vector (mapcar #'icicle-unlist key1))))
+          (desc2  (key-description (apply #'vector (mapcar #'icicle-unlist key2)))))
+      (equal (icicle-read-kbd-macro desc1 nil t) (icicle-read-kbd-macro desc2 nil t))))
 
   ;; Free vars here: `icicle-complete-keys-alist' is bound in `icicles-var.el'.
   ;;
