@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Oct 15 11:24:53 2014 (-0700)
+;; Last-Updated: Fri Oct 17 17:38:59 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11288
+;;     Update #: 11297
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1131,6 +1131,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/10/17 dadams
+;;     icicle-this-command-keys-prefix:
+;;       If in minibuffer, ignore prefix key of icicle-key-complete-keys-for-minibuffer.
+;;     icicle-same-vector-keyseq-p:
+;;       Wrap with (kbd (key-description before comparing, to treat as same: [ESC ...], [27 ...].
 ;; 2014/10/15 dadams
 ;;     icicle-imenu-1: Add contents of imenu-after-jump-hook to icicle-search-hook.
 ;; 2014/09/02 dadams
@@ -7435,6 +7440,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/10/17 dadams
+;;     icicle-key-complete-keys-for-minibuffer: Added [ESC backtab].
 ;; 2014/09/24 dadams
 ;;     icicle-custom-themes-update-flag: Added missing :type and :group.
 ;; 2014/09/15 dadams
