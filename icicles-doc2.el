@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Sep 15 13:41:04 2014 (-0700)
+;; Last-Updated: Fri Oct 17 18:13:17 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29689
+;;     Update #: 29696
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5158,13 +5158,13 @@
 ;;
 ;;  * Option `icicle-key-complete-keys-for-minibuffer' is the list of
 ;;    keys that Icicles binds to `icicle-complete-keys' in the
-;;    minibuffer keymaps.  By default, this is the singleton list
-;;    ([M-backtab]), which means `M-S-TAB'.  `S-TAB' itself is of
+;;    minibuffer keymaps.  By default, this is the list ([M-backtab]
+;;    [ESC backtab]), which means `M-S-TAB' and `ESC S-TAB'
+;;    (essentially equivalent to `M-S-TAB').  `S-TAB' itself is of
 ;;    course used (by default) for apropos completion of your
 ;;    minibuffer input, so it cannot also be used for key completion
 ;;    in the minibuffer.  If your window manager steals `M-S-TAB' then
-;;    customize this option to choose another key, or try `ESC S-TAB'
-;;    (equivalent to `M-S-TAB').
+;;    try `ESC S-TAB' or customize this option to choose another key.
 ;;
 ;;  * Option `icicle-complete-keys-ignored-prefix-keys' is a list of
 ;;    prefix keys to be ignored by `icicle-complete-keys' (`S-TAB').
