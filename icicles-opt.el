@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Wed Sep 24 07:10:07 2014 (-0700)
+;; Last-Updated: Fri Oct 17 17:24:59 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6055
+;;     Update #: 6056
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3414,7 +3414,7 @@ argument to `define-key'.  It is a list mainly in order to accommodate
 different keyboards - for example, `S-tab' and `S-iso-lefttab'."
   :type '(repeat sexp) :group 'Icicles-Key-Completion :group 'Icicles-Key-Bindings)
 
-(defcustom icicle-key-complete-keys-for-minibuffer '([M-backtab]) ; `M-S-TAB'
+(defcustom icicle-key-complete-keys-for-minibuffer '([M-backtab] [ESC backtab]) ; `M-S-TAB', `ESC S-TAB'
   "*Key sequences to use for `icicle-complete-keys' in the minibuffer.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.
