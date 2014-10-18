@@ -764,12 +764,11 @@ keys implement `S-TAB'.
 
 Option '''`icicle-key-complete-keys-for-minibuffer'''' is the list of
 keys that '''Icicles''' binds to `icicle-complete-keys' in the minibuffer
-keymaps.  By default, this is the singleton list ##([M-backtab])##,
-which means `M-S-TAB'.  `S-TAB' itself is of course used (by
+keymaps.  By default, this is the list ##([M-backtab] [ESC backtab])##,
+which means `M-S-TAB' and `ESC S-TAB' (essentially equivalent to `M-S-TAB').  `S-TAB' itself is of course used (by
 default) for apropos completion of your minibuffer input, so it
-cannot also be used for key completion in the minibuffer.  If your window manager steals `M-S-TAB' then
-customize this option to choose another key, or try `ESC S-TAB'
-(equivalent to `M-S-TAB').
+cannot also be used for key completion in the minibuffer.  If your window manager steals `M-S-TAB' then try `ESC S-TAB' or
+customize this option to choose another key.
 
 
 
