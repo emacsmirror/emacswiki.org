@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.08.10
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep 10 14:46:51 2014 (-0700)
+;; Last-Updated: Sun Oct 19 09:59:15 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23638
+;;     Update #: 23639
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -851,7 +851,7 @@
 ;;    `icicle-incremental-completion',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-threshold',
-;;    `icicle-Info-visited-max-candidates',
+;;    `icicle-Info-highlight-visited-nodes',
 ;;    `icicle-inhibit-advice-functions', `icicle-inhibit-ding-flag',
 ;;    `icicle-input-string', `icicle-inter-candidates-min-spaces',
 ;;    `icicle-isearch-complete-keys',
