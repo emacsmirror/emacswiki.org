@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Oct 17 18:13:17 2014 (-0700)
+;; Last-Updated: Sun Oct 19 10:13:52 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29696
+;;     Update #: 29710
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2978,13 +2978,15 @@
 ;;  `icicle-historical-candidate').  (This feature is not available
 ;;  for Emacs 20 or 21.)
 ;;
-;;  But because it takes extra time to track down each of the current
-;;  topic candidates, this can be costly.  You can customize option
-;;  `icicle-Info-visited-max-candidates' to control the behavior.
-;;  This extra highlighting is skipped whenever there are more
-;;  candidates that the option value.  It is also skipped if you turn
-;;  off historical candidate highlighting altogether, by setting
-;;  option `icicle-highlight-historical-candidates-flag' to `nil'.
+;;  This highlighting can be automatic, or you can effect it on demand
+;;  using `C-x C-M-l'.  Because it takes extra time to track down each
+;;  of the current topic candidates, this highlighting can be costly.
+;;  You can customize option `icicle-Info-highlight-visited-nodes' to
+;;  allow and control automatic highlighting.  It is turned off
+;;  (`nil') by default.  Even when the option value is non-`nil',
+;;  automatic highlighting does not occur if you turn off historical
+;;  candidate highlighting altogether, by setting option
+;;  `icicle-highlight-historical-candidates-flag' to `nil'.
 ;;
 ;;(@* "Virtual Info Books")
 ;;  ** Virtual Info Books **
@@ -4919,10 +4921,10 @@
 ;;
 ;;  * In buffer `*Completions*' during completion for multi-command
 ;;    `icicle-Info-index' (`i' in Info), face
-;;    `icicle-historical-candidate-other' is used to highlight index
-;;    topics that refer to Info nodes that you have already visited.
-;;    This highlighting is controlled by user option
-;;    `icicle-Info-visited-max-candidates' as well as option
+;;    `icicle-historical-candidate-other' can be used to highlight
+;;    index topics that refer to Info nodes that you have already
+;;    visited.  This highlighting is controlled by options
+;;    `icicle-Info-highlight-visited-nodes' and
 ;;    `icicle-highlight-historical-candidates-flag'.
 ;;    See (@> "Highlighting Index Topics for Visited Info Nodes").
 ;;
@@ -7224,6 +7226,19 @@
 ;;    `C-x R'         - Toggle whether to include recent files (i.e.,
 ;;                      toggle option
 ;;                      `icicle-buffer-include-recent-files-nflag')
+;;
+;;  The following minibuffer binding during completion refreshes the
+;;  `*Completions*' display.
+;;
+;;    `C-x C-M-l'     - `icicle-display-candidates-in-Completions'
+;;
+;;  You will likely never need to use it for that purpose.  However,
+;;  in Info mode, during command `icicle-Info-index' (bound to `i' in
+;;  Info), the same key, `C-x C-M-l', searches for all nodes that
+;;  correspond to the current completion candidates, and highlights
+;;  those that you have already visited, using face
+;;  `icicle-historical-candidate-other' (which by default looks like a
+;;  link).
 ;;
 ;;  The following minibuffer binding moves the cursor to the start of
 ;;  the part of your input, if any, that is highlighted because it
