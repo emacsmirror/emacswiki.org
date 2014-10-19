@@ -327,17 +327,18 @@ inserted in the minibuffer when you use '''`C-=''''.  See
 [[Icicles - Inserting a Regexp from a Variable or Register]].
 
 
+
 ----
 [:icicle-historical-candidate-other]
-[:icicle-Info-visited-max-candidates]
-==== Option icicle-Info-visited-max-candidates, Face icicle-historical-candidate-other ====
+[:icicle-Info-highlight-visited-nodes]
+==== Option icicle-Info-highlight-visited-nodes, Face icicle-historical-candidate-other ====
 
 In buffer `*Completions*' during completion for [[multi-command]]
 `icicle-Info-index' (`i' in InfoMode), face
-'''`icicle-historical-candidate-other'''' is used to highlight index
+'''`icicle-historical-candidate-other'''' can be used to highlight index
 topics that refer to Info nodes that you have already visited.
-This highlighting is controlled by user option
-'''`icicle-Info-visited-max-candidates'''' as well as option
+This highlighting is controlled by options
+'''`icicle-Info-highlight-visited-nodes'''' and
 `icicle-highlight-historical-candidates-flag'.
 See [[Icicles - Info Enhancements#HighlightTopicsForVisitedNodes|Highlighting Index Topics for Visited Info Nodes]].
 
