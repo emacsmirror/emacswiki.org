@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Oct 17 18:03:15 2014 (-0700)
+;; Last-Updated: Sun Oct 19 10:02:56 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7071
+;;     Update #: 7075
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2676,10 +2676,12 @@ See the comments at the top of `completion.el' for more info."
 
 (defun icicle-Info-index (&optional topic)
   "Like vanilla `Info-index', but you can use multi-command keys `C-RET', `C-up' etc.
-Also, for Emacs 22 and later, completion candidates (index topics) for
-nodes already visited are highlighted with face
-`icicle-historical-candidate-other' if there are fewer matching
-candidates than `icicle-Info-visited-max-candidates'"
+Also, for Emacs 22 and later:
+Completion candidates (index topics) for nodes you have already
+visited may be highlighted automatically with face
+`icicle-historical-candidate-other', depending on the value of option
+`icicle-Info-highlight-visited-nodes'.  You can always effect such
+highlighting on demand, using `C-M-l'."
   ;; We allow an arg only for non-interactive use.  E.g., `Info-virtual-index' calls (Info-index TOPIC).
   (interactive)
   (unless (and (featurep 'info)  (eq major-mode 'Info-mode))
