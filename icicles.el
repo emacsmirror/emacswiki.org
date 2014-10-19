@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.08.10
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 19 09:59:15 2014 (-0700)
+;; Last-Updated: Sun Oct 19 10:55:51 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 23639
+;;     Update #: 23640
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -555,6 +555,7 @@
 ;;    `icicle-dispatch-C-^', `icicle-dispatch-C-.',
 ;;    `icicle-dispatch-C-x.', `icicle-dispatch-M-_',
 ;;    `icicle-dispatch-M-comma', `icicle-dispatch-M-q',
+;;    `icicle-display-candidates-in-Completions',
 ;;    `icicle-doremi-candidate-width-factor+',
 ;;    `icicle-doremi-increment-max-candidates+',
 ;;    `icicle-doremi-increment-swank-prefix-length+',
@@ -1085,8 +1086,7 @@
 ;;    `icicle-dirs-last-p', `icicle-displayable-cand-from-saved-set',
 ;;    `icicle-display-cand-from-full-cand',
 ;;    `icicle-display-completion-list', `icicle-display-Completions',
-;;    `icicle-display-candidates-in-Completions', `icicle-doc-action',
-;;    `icicle-edmacro-parse-keys',
+;;    `icicle-doc-action', `icicle-edmacro-parse-keys',
 ;;    `icicle-ensure-overriding-map-is-bound',
 ;;    `icicle-execute-extended-command-1',
 ;;    `icicle-expanded-common-match',
