@@ -1,14 +1,21 @@
 [[zh:ELPA_(中文)]]
-ELPA is the *Emacs Lisp Package Archive*, originally by TomTromey, now included in Emacs 24 after contributions from others.
 
 == ELPA  ==
-//“Our goal is to make it simple to install, use, and upgrade Emacs Lisp packages. We supply// ##package.el## //a simple package manager for Emacs, and a repository of pre-packed Emacs Lisp code.”//
+ELPA is the *Emacs Lisp Package Archive*, written originally by TomTromey. It is included in GnuEmacs, starting with version 24.  ##package.el##  is the package manager library for ELPA.
 
-##package.el## is a package manager included in Emacs since version 24. It includes a built-in repository of FSF sanctioned Emacs packages, also called ELPA and found at [[http://elpa.gnu.org/|ELPA repository]].
 
-The Emacs version of ##package.el## supports multiple repositories.  You can use the GNU ELPA plus other repositories like this:
+//“Our goal is to make it simple to install, use, and upgrade Emacs Lisp packages.  We supply// ##package.el## //a simple package manager for Emacs, and a repository of pre-packed Emacs Lisp code.”//
 
-create a .emacs file in your ~ folder and add:
+
+##package.el## supports multiple ELPA repositories.  Sometimes "ELPA" is used to refer to an ELPA repository.
+
+
+[::GnuELPA]
+The [[http://elpa.gnu.org/ GNU ELPA]] repository contains FSF-sanctioned Emacs packages.  It is the default repository used by ##package.el##.
+
+You can use other repositories. The following examples show how to access [[Marmalade]] and [[MELPA]] repositories, in addition to GNU ELPA.
+
+Add this to your [[init file]]:
 
 {{{
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -16,34 +23,19 @@ create a .emacs file in your ~ folder and add:
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 }}}
 
-Any combination of repositories is fine.  You should probably always include GNU's core repository but it's not required.
+Any combination of repositories is fine.  You should probably always include "gnu", which is for GNU ELPA, but it is not required.
 
 Package archives may also be [[LocalElpaArchive|local to your machine]].
 
-=== Adding transactionally ===
-You can also do it transactionally.
-
-Adding [[Marmalade]]:
+You can also add repositories one at a time:
 
 {{{
-  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; Org-mode's repository
 }}}
 
-Adding [[MELPA]]:
-
-{{{
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-}}}
-
-Adding [[http://orgmode.org/elpa.html|Org-mode's repository]]:
-
-{{{
-   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-}}}
-
-=== Using customize ===
-
-You can also customize `package-archives'. Try:
+You can also customize [[option]] `package-archives':
 
 {{{
 M-x customize-variable [RET] package-archives [RET]
@@ -63,23 +55,10 @@ INS
    The default value points to the GNU Emacs package repository.
 }}}
 
-=== Contributing to the official repo ===
+=== Contributing to GNU ELPA ===
 
-Package authors may wish (or be invited) to contribute their packages to the official ELPA respository. The first step is making sure you've completed your FSF copyright assignment. Then visit the [[https://savannah.gnu.org/|Savannah GNU website]], and create an account. Once the account is created, you can request inclusion in the "emacs" group. Once that is granted, clone the ELPA repository as shown on [[https://savannah.gnu.org/git/?group=emacs|this page]], using the instructions from the "Member clone" section. Be sure to read the README file in the repository! You should now be able to push to the official repo.
+Package authors may wish to contribute their packages to the GNU ELPA respository. The first step is to complete your FSF copyright assignment. Then visit the [[https://savannah.gnu.org/|Savannah GNU website]] and create an account. Once the account is created, you can request inclusion in the ##emacs## group. Once granted, clone the GNU ELPA repository as shown on [[https://savannah.gnu.org/git/?group=emacs|this page]], using the instructions from section ##Member clone##. Be sure to read the ##README## file in the repository. You should now be able to push to the repo.
 
-==Note On Usage==
-
-This is my first edit, so bear with me.
-
-I didnt see anything here about actually using the program. After setting the variable `package-archives' via the intstructions above, you want to refresh, via:
-`M-x package-refresh-contents'
-
-Then to install a program, for example `geiser', use:
- `M-x package-install' [RET] `geiser' 
-
-*note that geiser requires the marmalade repo.
-
-Another hint, if the installed package doesn't seem to work, is to confirm that the program actually installed via `package-list-packages', seach for the package name, and see if it is said to be installed on uninstalled. The reason I added this step was that I had use install a few times before it actually was verified as installed, after which it worked. During each installation, I got a question about saving the contents to a local file, and Im not sure what that was about. But in the end, I was able to get this running.
 
 == How Packages work in Emacs 24 ==
 
@@ -187,6 +166,19 @@ Starting in emacs 24.4, `with-eval-after-load' is simpler than `eval-after-load'
        (define-key abcd-mode-map (kbd "C-c C-c") 'play-some-abcd-song) ; add some key binding for abcd mode
      )
 }}}
+
+
+[new]
+I (who?) didn't see anything here about actually using the program (what program?). After setting variable `package-archives' via the instructions above, refresh the repository via
+`M-x package-refresh-contents'.
+
+Then to install a program, for example `geiser', use:
+ `M-x package-install RET geiser'.
+(Note package ##geiser## requires the [[Marmalade]] repo.)
+
+Another hint, if the installed package doesn't seem to work, is to confirm that the package is actually installed, using `package-list-packages'. Search for the package name. The reason I added this step was that I had used ##install## a few times before it actually was verified as installed, after which it worked. During each installation, I got a question about saving the contents to a local file, and I'm not sure what that was about. But in the end, I was able to get this running. [[Who?]]
+
+[new]
 
 
 === ELPA policy ===
