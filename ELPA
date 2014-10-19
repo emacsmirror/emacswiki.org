@@ -222,5 +222,9 @@ In case Emacs 23 shows this error at startup: //File error: Cannot load file, pa
 
 AndrewHyatt has written an [http://code.google.com/p/elpa-on-appengine/ implementation of ELPA for AppEngine], written in Go.  It is not yet running publicly yet, as of April 2013.
 
+The source code for [[Marmalade]] is available on
+[[http://github.com/nicferrier/elmarmalade GitHub]]. It is a complete
+EmacsLisp project, an [[Elnode]] webapp.
+
 ----
 CategoryCode CategoryPackaging
