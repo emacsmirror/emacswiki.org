@@ -6,13 +6,13 @@ Get it here:
 
 This version uses Emacs' own Custom code.
 
-There's also an older version that changes the menu bar to show a gnu head:
+There's also an older version that changes the menu bar to show a gnu head, as you can see in the screenshot:
 
 * Lisp:pink-bliss.el from Emacs Wiki, 
 * [[pink-gnu.xpm]] (image required for the tool-bar based on [http://www.gnu.org/graphics/heckert_gnu.html Heckert’s bold gnu head])
 
-This version requires an _image_!
-It switches on the toolbar, removes all the icons, adds a kitten, and binds
+You need to install the _image_!
+The theme switches on the toolbar, removes all the icons, adds a gnu, and binds
 a very simple defun to the button:
 If the current buffer is modified, a click will save the buffer.
 If the current buffer has been saved, a click will open a new file.
