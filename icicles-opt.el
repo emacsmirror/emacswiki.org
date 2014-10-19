@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Oct 17 17:24:59 2014 (-0700)
+;; Last-Updated: Sun Oct 19 10:08:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6056
+;;     Update #: 6066
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -144,7 +144,7 @@
 ;;    `icicle-incremental-completion',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-threshold',
-;;    `icicle-Info-visited-max-candidates',
+;;    `icicle-Info-highlight-visited-nodes',
 ;;    `icicle-inhibit-advice-functions', `icicle-inhibit-ding-flag',
 ;;    `icicle-input-string', `icicle-inter-candidates-min-spaces',
 ;;    `icicle-isearch-complete-keys',
@@ -2103,6 +2103,7 @@ the full candidate object.")
     (,(icicle-kbd "C-x /")     icicle-toggle-expand-directory t)                      ; `C-x /'
     (,(icicle-kbd "C-x C-a")   icicle-toggle-annotation t)                            ; `C-x C-a'
     (,(icicle-kbd "C-x C-0")   icicle-recomplete-from-original-domain t)              ; `C-x C-0'
+    (,(icicle-kbd "C-x C-M-l") icicle-display-candidates-in-Completions t)            ; `C-x C-M-l'
     (,(icicle-kbd "C-x t")     icicle-cycle-image-file-thumbnail                      ; `C-x t'
      (fboundp 'icicle-cycle-image-file-thumbnail))
     (,(icicle-kbd "C-x w")     icicle-doremi-candidate-width-factor+                  ; `C-x w'
@@ -3301,26 +3302,19 @@ value incrementally."
   :type 'integer :group 'Icicles-Completions-Display)
 
 (when (> emacs-major-version 21)
-  (defcustom icicle-Info-visited-max-candidates 10
-    "*Max number of Info index-entry candidates for visited highlighting.
-This is used for command `icicle-Info-index'.
+  (defcustom icicle-Info-highlight-visited-nodes nil
+    "When to automatically highlight visited Info node names in `*Completions*'.
+Regardless of the value, on-demand highlighting is always available,
+using `C-x C-M-l'.
 
-If there are more than this many candidates matching your current
-index-topic input, then no attempt is made to higlight specially those
-that refer to nodes you have visited.  Otherwise, they are highlighted
-using face `icicle-historical-candidate-other'.
-
-Be aware that this highlighting can be costly, especially for large
-values of the option.
-
-If you use `doremi.el' then you can use multi-command
-`icicle-increment-option' anytime to change the option value
-incrementally.
-
-To turn the highlighting off, set the value to 0 or set option
-`icicle-highlight-historical-candidates-flag' to nil.  You can toggle
-that option from the minibuffer anytime using `C-pause'."
-    :type 'integer :group 'Icicles-Completions-Display :group 'Icicles-Matching))
+Automatic highlighting occurs only if this option value is non-nil and
+the value of option `icicle-highlight-historical-candidates-flag' is
+also non-nil."
+    :type '(choice
+            (const   :tag "Always highlight visited candidate Info node names"        t)
+            (integer :tag "Max number of candidates for highlighting visited nodes"   :value 10)
+            (const   :tag "Never highlight visited nodes (highlight on demand only)"  nil))
+    :group 'Icicles-Completions-Display))
 
 (defcustom icicle-inhibit-advice-functions
   `(choose-completion  choose-completion-string  completing-read
