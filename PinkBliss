@@ -2,14 +2,16 @@
 
 Get it here:
 
-* Lisp:pink-bliss.el
+* [https://github.com/kensanata/elisp/blob/master/pink-bliss-theme.el pink-bliss-theme.el] from GitHub
+
+This version uses Emacs' own Custom code.
+
+There's also an older version that changes the menu bar to show a gnu head:
+
+* Lisp:pink-bliss.el from Emacs Wiki, 
 * [[pink-gnu.xpm]] (image required for the tool-bar based on [http://www.gnu.org/graphics/heckert_gnu.html Heckert’s bold gnu head])
 
-The current version of the code no longer requires ColorTheme.
-Conversely, it no longer integrates nicely with Emacs' own Custom code.
-The benefit is that it is simpler to hack, now.
-
-The current version also requires an _image_!
+This version requires an _image_!
 It switches on the toolbar, removes all the icons, adds a kitten, and binds
 a very simple defun to the button:
 If the current buffer is modified, a click will save the buffer.
