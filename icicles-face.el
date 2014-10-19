@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
-;; Last-Updated: Thu Dec 26 09:30:35 2013 (-0800)
+;; Last-Updated: Sun Oct 19 10:17:33 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 713
+;;     Update #: 715
 ;; URL: http://www.emacswiki.org/icicles-face.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -361,13 +361,15 @@ This means that they belong to list `icicle-extra-candidates'."
                                                    :underline t)))
     "*Face to highlight `*Completions*' candidates that were used indirectly.
 That is, you might or might not have entered these candidates but in
-some sense you have used or visited them.  Example: index topics that
-point to Info nodes that you have visited.
+some sense you have used or visited them.  Whether or not such
+highlighting is done is governed by option
+`icicle-highlight-historical-candidates-flag'.
 
-Whether or not such highlighting is done at all is governed by option
-`icicle-highlight-historical-candidates-flag'.  Whether it is done for
-a given set of candidates is governed by option
-`icicle-Info-visited-max-candidates'."
+Example:
+Index topics that point to Info nodes that you have visited.  Whether
+such highlighting occurs automatically for Info-node candidates is
+governed by option `icicle-Info-highlight-visited-nodes'.  But you can
+highlight the nodes on demand, using `C-x C-M-l'."
     :group 'Icicles-Completions-Display :group 'faces))
 
 (defface icicle-input-completion-fail
