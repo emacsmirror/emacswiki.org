@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Oct 19 10:36:28 2014 (-0700)
+;; Last-Updated: Sun Oct 19 11:06:06 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11310
+;;     Update #: 11312
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2130,9 +2130,9 @@
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
 ;; 2014/10/19 dadams
-;;     icicle-display-candidates-in-Completions:
-;;       It is now a command.  Highlight Info index-entry cand on demand with C-x C-M-l,
-;;       or automatically per new option icicle-Info-highlight-visited-nodes.
+;;     icicle-display-candidates-in-Completions: Moved to icicles-mcmd.el.  It is now a command.
+;;       Highlight Info index-entry cand on demand with C-x C-M-l, or automatically per new option
+;;       icicle-Info-highlight-visited-nodes.
 ;; 2014/09/12 dadams
 ;;     icicle-display-candidates-in-Completions:
 ;;       Handle possibility that image-dired-get-thumbnail-image returns nil, i.e.,  if it cannot
@@ -4419,6 +4419,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/10/19 dadams
+;;     icicle-display-candidates-in-Completions: Moved here from icicles-fn.el.
 ;; 2014/09/18 dadams
 ;;     icicle-mouse-candidate-read-fn-invoke, icicle-Completions-mouse-3-menu:
 ;;       Removed unused bindings for POSN-(COLfrom|ROW) from posn-col-row.
