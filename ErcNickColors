@@ -195,4 +195,4 @@ Similar to 1 and 2, but generates the colors automatically. The idea for the lum
 }}}
 
 =Comments=
-I use Option 5, but I'm an emacs n00b. I've found that it seems to take issue with nicknames containing [_]. Could this be fixed? I have no idea how to do it myself.
+I use Option 5, but I'm an emacs n00b. I've found that it seems to take issue with nicknames containing underscores (_), dashes (-), and pipes (|). Could this be fixed? I have no idea how to do it myself.
