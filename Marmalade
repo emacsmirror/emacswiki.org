@@ -8,9 +8,11 @@ Some packages (for instance, slime) are out of date however.
 The repository has had availability problems and is now managed by
 NicFerrier who says he is slowly fixing things.
 
-Unlike MELPA, use of marmalade-repo *is* restricted to only free
-software packages. But unlike ELPA marmalade-repo requires no signing
-of Copyright papers.
+Unlike [[MELPA]], but like GnuELPA:
+* Marmalade cannot automatically upload libraries from the %%EmacsWiki%% ElispArea.
+* Marmalade is restricted to only free software packages.
+
+Unlike GnuELPA, but like MELPA, Marmalade requires no signing of FSF Copyright papers.
 
 == About marmalade ==
 
