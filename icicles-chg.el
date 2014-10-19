@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Oct 17 17:38:59 2014 (-0700)
+;; Last-Updated: Sun Oct 19 10:36:28 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 11297
+;;     Update #: 11310
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1131,6 +1131,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/10/19 dadams
+;;     icicle-Info-index: Updated doc string for highlighting of visited nodes.
 ;; 2014/10/17 dadams
 ;;     icicle-this-command-keys-prefix:
 ;;       If in minibuffer, ignore prefix key of icicle-key-complete-keys-for-minibuffer.
@@ -1991,6 +1993,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2014/10/19 dadams
+;;     icicle-historical-candidate-other: Updated doc string for icicle-Info-highlight-visited-nodes.
 ;; 2013/07/07 dadams
 ;;     Added: icicle-key-complete-menu, icicle-key-complete-menu-local.
 ;; 2013/02/04 dadams
@@ -2125,6 +2129,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/10/19 dadams
+;;     icicle-display-candidates-in-Completions:
+;;       It is now a command.  Highlight Info index-entry cand on demand with C-x C-M-l,
+;;       or automatically per new option icicle-Info-highlight-visited-nodes.
 ;; 2014/09/12 dadams
 ;;     icicle-display-candidates-in-Completions:
 ;;       Handle possibility that image-dired-get-thumbnail-image returns nil, i.e.,  if it cannot
@@ -7440,6 +7448,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/10/19 dadams
+;;     Added: icicle-Info-highlight-visited-nodes (replaces icicle-Info-visited-max-candidates).
+;;     Removed: icicle-Info-visited-max-candidates.
+;;     icicle-completion-key-bindings: Bind icicle-display-candidates-in-Completions to C-x C-M-l.
 ;; 2014/10/17 dadams
 ;;     icicle-key-complete-keys-for-minibuffer: Added [ESC backtab].
 ;; 2014/09/24 dadams
