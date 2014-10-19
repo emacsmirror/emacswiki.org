@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Oct 10 10:46:55 2014 (-0700)
+;; Last-Updated: Sun Oct 19 10:20:11 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15017
+;;     Update #: 15022
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -479,7 +479,7 @@
   (defvar completion-common-substring)
   (defvar completion-extra-properties)
   (defvar completion-root-regexp)
-  (defvar icicle-Info-visited-max-candidates) ; In `icicles-opt.el' (for Emacs 22+)
+  (defvar icicle-Info-highlight-visited-nodes) ; In `icicles-opt.el' (for Emacs 22+)
   (defvar minibuffer-completing-symbol)
   (defvar minibuffer-prompt-properties)
   (defvar partial-completion-mode)
@@ -3368,7 +3368,8 @@ This is a menu filter function which ignores the MENU argument."
 REVERSE-P non-nil means display the candidates in reverse order.
 NO-DISPLAY-P non-nil means do not display the candidates; just
   recompute them.  If the value is `no-msg', then do not show a
-  minibuffer message indicating that candidates were updated."
+  minibuffer message indicating that candidates were updated.
+By default, this is bound to `C-x C-M-l' during completion."
 
   ;; FREE var used here (bound in `icicle-Info-index'): `icicle-Info-hist-list'.
 
@@ -3390,6 +3391,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
 
   ;; Upgrade `icicle-incremental-completion-p' if we are redisplaying, so that completions will
   ;; be updated by `icicle-call-then-update-Completions' when you edit.
+  (interactive)
   (setq icicle-incremental-completion-p  icicle-incremental-completion)
   (when (and (eq t icicle-incremental-completion-p)  (get-buffer-window "*Completions*" 0))
     (setq icicle-incremental-completion-p  'always))
@@ -3558,16 +3560,19 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                  (add-text-properties
                                   beg end `(face ,(setq faces  (cons 'icicle-historical-candidate faces)))))))))
 
-                       ;; Highlight Info index-entry cand (`icicle-historical-candidate-other')
+                       ;; Highlight Info index-entry cand (using face `icicle-historical-candidate-other')
                        ;; if its node has been visited.
                        ;;
                        ;; FREE var here (bound in `icicle-Info-index'): `icicle-Info-hist-list'.
                        (when (and (> emacs-major-version 21)
                                   (memq icicle-last-top-level-command '(Info-index icicle-Info-index))
-                                  icicle-highlight-historical-candidates-flag
                                   (boundp 'icicle-Info-hist-list)  (consp icicle-Info-hist-list)
-                                  (<= nb-cands icicle-Info-visited-max-candidates)
-                                  (progn (message "Highlighting topics in visited nodes...") t))
+                                  (or (eq this-command 'icicle-display-candidates-in-Completions)
+                                      (and icicle-highlight-historical-candidates-flag
+                                           icicle-Info-highlight-visited-nodes
+                                           (or (not (numberp icicle-Info-highlight-visited-nodes))
+                                               (<= nb-cands icicle-Info-highlight-visited-nodes)))))
+                         (message "Highlighting topics in all visited nodes...")
                          (let ((candidate  (icicle-current-completion-in-Completions)))
                            (when (or (assoc candidate icicle-Info-index-cache)
                                      (icicle-some (mapcar 'cadr icicle-Info-hist-list)
