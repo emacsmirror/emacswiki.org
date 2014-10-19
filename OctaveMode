@@ -81,6 +81,12 @@ For off-screen plotting and subsequent printing into a file, one needs to overri
 
 This should make org-babel usable again with octave.
 
+If you run inferior-octave and emacs becomes frozen, consider setting the same prompts for both octave and inferior octave:
+
+    Add PS1(">> ") to ~/.octaverc
+    Add (setq inferior-octave-prompt ">> ") to ~/.emacs
+
+
 ==Location==
 
 Kurt.Hornik says: Octave-mode (octave-mod.el, octave-inf.el
