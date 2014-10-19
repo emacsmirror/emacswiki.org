@@ -636,6 +636,26 @@ buffers in iconified frames.
 
 
 
+The following minibuffer binding during completion refreshes the
+`*Completions*' display.
+
+* '''`C-x C-M-l''''     -- `icicle-display-candidates-in-Completions'
+
+You will likely never need to use it for that purpose.  However,
+in [[Info]] mode, during command `icicle-Info-index' (bound to `i' in
+Info), the same key, '''`C-x C-M-l'''', searches for all nodes that
+correspond to the current completion candidates, and ''highlights
+those that you have already visited'', using face
+<tt>‘[[Icicles - Customization and General Tips#icicle-historical-candidate-other|icicle-historical-candidate-other]]’</tt> (which by default looks like a
+link).
+
+
+
+
+
+
+
+
 [:icicle-goto-kill-failed-input]
 The following minibuffer binding moves the [[cursor]] to the start of
 the part of your input, if any, that is highlighted because it does not match any
@@ -1073,5 +1093,4 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
