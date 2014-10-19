@@ -127,13 +127,17 @@ you have visited''.  It uses face
 `icicle-historical-candidate').  (This feature is not available
 for Emacs 20 or 21.)
 
-But because it takes extra time to track down each of the current
-topic candidates, this can be costly.  You can customize [[option]]
-'''`icicle-Info-visited-max-candidates'''' to control the behavior.
-This extra highlighting is skipped whenever there are more
-candidates that the option value.  It is also skipped if you turn
-off historical candidate highlighting altogether, by setting
-option `icicle-highlight-historical-candidates-flag' to `nil'.
+This highlighting can be automatic, or you can effect it on demand
+using '''`C-x C-M-l''''.  Because it takes extra time to track down each
+of the current topic candidates, this highlighting can be costly.
+You can customize [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-Info-highlight-visited-nodes|icicle-Info-highlight-visited-nodes]]</tt>'''' to
+allow and control automatic highlighting.  It is turned off
+(`nil') by default.  Even when the option value is non-`nil',
+automatic highlighting does not occur if you turn off historical
+candidate highlighting altogether, by setting option
+`<tt>[[Icicles - Customization and General Tips#icicle-highlight-historical-candidates-flag|icicle-highlight-historical-candidates-flag]]</tt>' to `nil'.
+
+
 
 
 
@@ -191,7 +195,8 @@ definition of virtual books and saved Info nodes.  That library
 defines command '''`Info-virtual-book'''', which opens Info on a Table
 of Contents of a virtual book of nodes that you have saved either
 using command '''`Info-save-current-node'''' or by customizing user
-[[option]] '''`Info-saved-nodes''''.
+[[option]] '''`<tt>[[Icicles - Customization and General Tips#Info-saved-nodes|Info-saved-nodes]]</tt>''''.
+
 
 '''Icicles''' command '''`icicle-Info-virtual-book'''' extends
 `Info-virtual-book' by letting you define the virtual book nodes
@@ -331,7 +336,6 @@ CategoryProgrammerUtils
 CategoryCode
 CategorySearchAndReplace
 CategoryShell
-
 
 
 
