@@ -71,3 +71,25 @@ make install
 }}}
 
 Then use ##~/emacs-20131123/bin/emacs## to start it.
+
+
+== Keeping up to date ==
+
+You can use git pull to keep pulling. Emacs is often released against tags so you can pull those too:
+
+{{{
+git checkout -t tag-name
+}}}
+
+To rebuild it's best to:
+
+{{{
+git clean -df  ## cleans up old files
+./autogen.sh
+./configure
+make bootstrap
+sudo make install
+}}}
+
+or use the alternative method to have a prefixed emacs.
+
