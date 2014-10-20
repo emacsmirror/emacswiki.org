@@ -8,9 +8,9 @@
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Sun Oct 19 19:12:49 2014 (-0700)
+;; Last-Updated: Sun Oct 19 20:22:28 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 777 4
+;;     Update #: 779 4
 ;; URL: http://www.emacswiki.org/palette.el
 ;; Doc URL: http://emacswiki.org/ColorPalette
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
@@ -314,6 +314,7 @@
 ;;; Change Log:
 ;;
 ;; 2014/10/19 dadams
+;;     palette-where-is-color: Hack to handle hue=0.0.
 ;;     palette-where-is-color, palette-brightness-scale:
 ;;       Fixed typos: condition-case error handlers.
 ;; 2014/09/02 dadams
@@ -1557,21 +1558,32 @@ option `palette-update-cursor-color-flag' is non-nil."
         (target-sat              (hexrgb-saturation color))
         (hue-sat-win             (get-buffer-window "Palette (Hue x Saturation)" 'visible))
         bg hue sat)
+    (when (hexrgb-approx-equal target-hue 0.0) (setq target-hue  1.0))
     (unless hue-sat-win (error "No Palette displayed - use command `palette'"))
     (select-window hue-sat-win)
     (if (< target-sat 0.049)
         (goto-char (- (point-max) 50)) ; Grayscale color (saturation=0).
-      (while (and (not (eobp)) (setq bg  (palette-background-at-point))
-                  (setq sat  (hexrgb-saturation bg)) (< target-sat sat))
+      (while (and (not (eobp))
+                  (setq bg  (palette-background-at-point))
+                  (setq sat  (hexrgb-saturation bg))
+                  (< target-sat sat))
         (condition-case nil (forward-line 1) (end-of-buffer nil)))
-      (while (and (not (bobp)) (setq bg  (palette-background-at-point))
-                  (setq sat  (hexrgb-saturation bg)) (> target-sat sat))
+      (while (and (not (bobp))
+                  (setq bg  (palette-background-at-point))
+                  (setq sat  (hexrgb-saturation bg))
+                  (> target-sat sat))
         (condition-case nil (forward-line -1) (beginning-of-buffer nil)))
-      (while (and (not (eolp)) (setq bg  (palette-background-at-point))
-                  (setq hue  (hexrgb-hue bg)) (< target-hue hue))
+      (while (and (not (eolp))
+                  (setq bg  (palette-background-at-point))
+                  (setq hue  (hexrgb-hue bg))
+                  (progn (when (hexrgb-approx-equal hue 0.0) (setq hue  1.0)) t)
+                  (< target-hue hue))
         (forward-char))
-      (while (and (not (bolp)) (setq bg  (palette-background-at-point))
-                  (setq hue  (hexrgb-hue bg)) (> target-hue hue))
+      (while (and (not (bolp))
+                  (setq bg  (palette-background-at-point))
+                  (setq hue  (hexrgb-hue bg))
+                  (progn (when (hexrgb-approx-equal hue 0.0) (setq hue  1.0)) t)
+                  (> target-hue hue))
         (backward-char))
       (when palette-update-cursor-color-flag
         (let ((col  (or cursor-color (palette-complement-or-alternative color))))
