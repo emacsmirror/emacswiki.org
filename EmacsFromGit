@@ -16,6 +16,13 @@ The current Git mirror is available from Emacs Savannah presence. See [http://sa
 git clone git://git.savannah.gnu.org/emacs.git
 </pre>
 
+You can also get Emacs speedily from git by ignoring a lot of git objects:
+
+{{{
+git clone --depth 1 git://git.sv.gnu.org/emacs.git
+}}}
+
+
 Note that the GNU Elpa package repository is already now maintained using Git.  See the same page for the clone urls.
 
 <pre>
