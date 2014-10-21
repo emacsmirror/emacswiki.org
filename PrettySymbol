@@ -4,6 +4,7 @@ Emacs 24.4 comes with a builtin ##prettify-symbols-mode##.  It can be customized
 
 * [https://github.com/akatov/pretty-mode pretty-mode]
 * [https://github.com/drothlis/pretty-symbols pretty-symbols-mode] -- an attempt to replace most of the below with a proper package (available on [http://melpa.milkbox.net/ MELPA]) and under source control to facilitate contributions.
+* [https://bitbucket.org/mortiferus/latex-pretty-symbols.el latex-pretty-symbols.el] -- As above, but contains a long list of latex codes and their unicode equivalent. Handles sub/super-scripted numbers and (some) letters. Available on [http://melpa.milkbox.net/#/latex-pretty-symbols MELPA]
 * PrettyLambda -- Show ##lambda## as the Greek letter.
 * PrettyGreek -- Generalization of PrettyLambda for other Greek letters.
 * TrentBuck's pretty symbols -- He says they horribly mess up wrapping (lines become too long) and alignment -- obvious if you do `##C-x v =##'.
