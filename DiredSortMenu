@@ -1,4 +1,4 @@
-'''dired-sort-menu''' is a library that sorts the directory listings in DiredMode in various ways and provides a [[menu bar]] and popup menu. The popup menu is bound to `S-mouse-2', which is compatible with the `mouse-3' popup menus of '''[[DiredPlus|Dired+]]'''.
+'''dired-sort-menu''' is a library by FrancisJWright that sorts the directory listings in DiredMode in various ways and provides a [[menu bar]] and popup menu. The popup menu is bound to `S-mouse-2', which is compatible with the `mouse-3' popup menus of '''[[DiredPlus|Dired+]]'''.
 
 Download ##dired-sort-menu.el## from
 
