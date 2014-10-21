@@ -1,12 +1,4 @@
-CsvMode, [::csv-mode], is a package by FrancisJWright for editing comma separated value files (##.csv##).
-
-From Emacs 24 onwards, csv-mode is available via 
-
-Download ##csv-mode.el## from:
-
-* The GNU [[ELPA]] repository (http://elpa.gnu.org/)
-* http://centaur.maths.qmul.ac.uk/Emacs/
-* Lisp:csv-mode.el
+CsvMode, [::csv-mode], is a package by FrancisJWright for editing comma separated value files (##.csv##). It is available in [[ELPA]].
 
 The commands include sorting numerically or alphabetically on a particular field, cutting and pasting columns of fields, padding to align fields, or removing padding.
 
@@ -20,30 +12,6 @@ See also,
 
 == Patch: Align multibyte characters ==
 This patch enables to align multibyte characters. -- [[Sugawara]]
-
-    --- csv-mode.el~	2007-11-20 17:11:08.296875000 +0900
-    +++ csv-mode.el	2007-11-21 18:46:36.510411700 +0900
-    @@ -1006,7 +1006,7 @@
-     		(setq beg (point))	; beginning of current field
-     		(while (not (eolp))
-     		  (csv-end-of-field)
-    -		  (setq x (- (point) beg)) ; field width
-    +		  (setq x (string-width (buffer-substring beg (point)))) ; field width
-     		  (if w
-     		      (if (> x (car w)) (setcar w x))
-     		    (setq w (list x)
-    @@ -1026,7 +1026,7 @@
-     		  (let ((left-padding 0) (right-padding 0) overlay)
-     		    (csv-end-of-field)
-     		    (set-marker end (point)) ; end of current field
-    -		    (setq x (- (point) beg) ; field width
-    +		    (setq x (string-width (buffer-substring beg (point))) ; field width
-     			  x (- (car w) x)) ; required padding
-     
-     		    ;; beg = beginning of current field
-
-
-In the new version in ELPA, this patch works:
 
     --- csv-mode.el.orig	2013-07-12 12:43:16.474712308 +0200
     +++ csv-mode.el	2013-07-12 12:55:33.382366430 +0200
