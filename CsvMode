@@ -1,4 +1,4 @@
-CsvMode, [::csv-mode], is a package by FrancisJWright for editing comma separated value files (##.csv##). It is available in [[ELPA]].
+CsvMode, [::csv-mode], is a package for editing comma separated value files (##.csv##). It is available in [[ELPA]].
 
 The commands include sorting numerically or alphabetically on a particular field, cutting and pasting columns of fields, padding to align fields, or removing padding.
 
