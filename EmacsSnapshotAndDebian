@@ -84,7 +84,7 @@ git checkout -t tag-name
 To rebuild it's best to:
 
 {{{
-git clean -df  ## cleans up old files
+git clean -dxf  ## cleans up old files
 ./autogen.sh
 ./configure
 make bootstrap
