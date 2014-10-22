@@ -29,7 +29,7 @@ Custom themes are similar to color themes, but:
 
 
 
-
+[:InstallingAColorTheme]
 == Installing Library Color Theme ==
 
 [See http://www.nongnu.org/color-theme for the latest information.]
@@ -83,7 +83,7 @@ Note the "tools" vs "Tools".
 
 
 
-
+[:ChooseFromAMenu]
 == Choosing a Color Theme from a Menu ==
 
 Choosing a color theme by name is only convenient if you already know what color scheme a given name represents.  After installing Color Theme, you can pick and choose from a menu.  This menu can be accessed via `M-x color-theme-select'.
@@ -93,7 +93,7 @@ Choosing a color theme by name is only convenient if you already know what color
 
 
 
-
+[:ChooseByCycling]
 == Choosing a Color Theme or Custom Theme by Cycling ==
 
 An alternative way to choose a theme is to cycle among a set of themes, applying each in turn, and stop when you find one you like -- '''''WYSIWYG'''''.
