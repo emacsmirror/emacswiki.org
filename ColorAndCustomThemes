@@ -5,7 +5,7 @@ This page is about color themes and custom themes.
 EmacsLisp library <tt>color-theme.el</tt> provides many predefined '''[::color theme]s'''
 for your use, and you can easily define additional themes.  For questions about color-theme, see ColorThemeQuestions.  The library has not been updated recently, but you can use it with any Emacs version since at least Emacs 20 (through at least Emacs 24).
 See the color-theme web page at http://www.nongnu.org/color-theme for how to get
-started <tt>color-theme.el</tt>.
+started with <tt>color-theme.el</tt>.
 
 Starting with version 23, vanilla GnuEmacs introduced '''[::custom theme]s''', which are similar to color themes. Emacs 24 added a [[Customize]] interface for custom themes.
 
