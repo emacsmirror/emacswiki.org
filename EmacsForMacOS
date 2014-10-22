@@ -15,7 +15,7 @@ A similar page on a German blog: [https://web.archive.org/web/20120630005123/htt
 === OS X Binary Vanilla builds ===
 These builds are based on the BZR version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available though (e.g. Command-O for opening a file); these are mapped to the Super modifier (i.e., the Apple/Command key functions as Super). 
 
-* [http://emacsformacosx.com/ GNU Emacs 24.2 (Cocoa)]
+* http://emacsformacosx.com/ -- "Pure Emacs! No Extras! No Nonsense!"
 
 The site makes available [http://emacsformacosx.com/builds Releases, Pretests & Nightlies].
 
