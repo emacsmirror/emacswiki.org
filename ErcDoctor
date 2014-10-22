@@ -59,10 +59,9 @@ Features:
                              (cdr last-message)
                            last-message))))
     (erc-send-message
-     (concat erc-doctor-id
-             ;; Only display sender if not in a query buffer
-             (if (not (erc-query-buffer-p))
+     (concat (if (not (erc-query-buffer-p))
                  (concat last-sender ": "))
+	     erc-doctor-id
              (save-excursion
                (if (get-buffer doctor-buffer)
                    (set-buffer doctor-buffer)
