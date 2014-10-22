@@ -69,7 +69,8 @@ Features:
                  (set-buffer (get-buffer-create doctor-buffer))
                  (make-doctor-variables))
                (erase-buffer)
-               (doctor-doc text)
+	       (setq doctor-sent text)
+               (doctor-doc)
                (buffer-string))))))
 }}}
 
