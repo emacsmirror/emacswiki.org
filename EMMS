@@ -51,7 +51,7 @@ emms-player-simple - info is in the manual)
 
 * Add multiple entry editing, to the tag editor. Like be able to highlight a region of a playlist and edit the Artist entry of the tag at each one at once.
 
--- That's a really good idea. I'll work on that. - yrk
+-- This works in Emms and is documented in the manual - yrk
 
 ** Have you thought of using mpg321's remote control capabilities
 (LOAD <file>, PAUSE, JUMP [+-]<frames>, STOP, QUIT)?
