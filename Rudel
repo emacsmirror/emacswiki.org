@@ -243,6 +243,9 @@ error in process filter: format: Wrong type argument: integerp, nil
 error in process filter: Wrong type argument: integerp, nil
 }}}
 
+[new]
+I also get stuck on on "Joining (new)". I don't get any warning or error messages. I'm running an infinoted 0.5 process remotely with TLS and I'm able to connect securely using the Gobby client. At first I thought it was because of using a self-signed cert, but after switching to a signed cert and no longer getting a warning message from Gobby, Rudel still gets stuck. I use obby as protocol backend, tcp as transport, and use encryption.
+
 == Contributed Code ==
 
 === Send Chat Messages (obby Protocol only) ===
