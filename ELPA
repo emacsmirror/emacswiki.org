@@ -19,7 +19,7 @@ Add this to your [[init file]]:
 
 {{{
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("marmalade" . "https://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 }}}
 
@@ -30,7 +30,7 @@ Package archives may also be [[LocalElpaArchive|local to your machine]].
 You can also add repositories one at a time:
 
 {{{
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; Org-mode's repository
 }}}
@@ -48,7 +48,7 @@ Hide Package Archives:
 INS DEL Archive name: gnu
             URL or directory name: http://elpa.gnu.org/packages/
 INS DEL Archive name: marmalade
-            URL or directory name: http://marmalade-repo.org/packages/
+            URL or directory name: https://marmalade-repo.org/packages/
 INS
     State : SAVED and set.
    An alist of archives from which to fetch. Hide
@@ -57,7 +57,7 @@ INS
 
 === Contributing to GNU ELPA ===
 
-Package authors may wish to contribute their packages to the GNU ELPA respository. The first step is to complete your FSF copyright assignment. Then visit the [[https://savannah.gnu.org/|Savannah GNU website]] and create an account. Once the account is created, you can request inclusion in the ##emacs## group. Once granted, clone the GNU ELPA repository as shown on [[https://savannah.gnu.org/git/?group=emacs|this page]], using the instructions from section ##Member clone##. Be sure to read the ##README## file in the repository. You should now be able to push to the repo.
+Package authors may wish to contribute their packages to the GNU ELPA repository. The first step is to complete your FSF copyright assignment. Then visit the [[https://savannah.gnu.org/|Savannah GNU website]] and create an account. Once the account is created, you can request inclusion in the ##emacs## group. Once granted, clone the GNU ELPA repository as shown on [[https://savannah.gnu.org/git/?group=emacs|this page]], using the instructions from section ##Member clone##. Be sure to read the ##README## file in the repository. You should now be able to push to the repo.
 
 
 == How Packages work in Emacs 24 ==
@@ -194,7 +194,7 @@ You can make packages work in Emacs 23, you need to add something like this to y
 ;; Any add to list for package-archives (to add marmalade or melpa) goes here
 (add-to-list 'package-archives 
     '("marmalade" .
-      "http://marmalade-repo.org/packages/"))
+      "https://marmalade-repo.org/packages/"))
 (package-initialize)
 }}}
 
