@@ -1,5 +1,9 @@
 See also EshellFunctions for more elaborate examples.
 
+== Reloading the aliases file ==
+
+The eshell aliases are stored in a file whose name is in the variable ##eshell-aliases-file## (this defaults to something like ~/.emacs.d/eshell/aliases). If you edit it by hand then (as the manual says), you'll need to refresh eshell's cache of the values. To do this, run the ##eshell-read-aliases-list## function (which, of course, you can do by typing its name in eshell!)
+
 == open file ==
 
 I used this in my .emacs so that I can simply open file instead of
