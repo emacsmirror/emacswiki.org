@@ -7,7 +7,7 @@ To get 256 colors for Emacs running inside your xterm (##emacs -nw##), follow th
 
 To check how many your terminal is supposed to handle, run ##tput colors## on the command line.
 
-More info available from [[twb]]’s [ftp://twb.ath.cx/words/term256.html Terminal Emulator 256 Color Support] page.
+More info available from [[twb]]’s [ftp://twb.ath.cx/words/term256.html Terminal Emulator 256 Color Support] page.  /(dead link, but try the one in [::twb]'s user page)/
 
 ----
 CategoryFaces
