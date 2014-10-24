@@ -89,7 +89,7 @@ and
 
 '''Question:'''  Can I retrieve parts of EmacsWiki with a network distributed VersionControl system like DaRcs, SubVersion or [[CVS]]?
 
-'''Answer:''' (Feb 2009): yes, see [[WikiDownload]]. There is a [[SVN repository]].
+'''Answer:''' (Feb 2009): yes, see [[WikiDownload]]. There is a [[Git repository]].
 ----
 
 '''Question:'''  Do per page RSS feeds work properly in Emacs Wiki? They seem to return some content when subscribing, but there is no update afterwards even if the page is changed several times.
