@@ -65,5 +65,38 @@ Example of a more fancy eshell prompt with different colors, time, pwd, version 
   (setq eshell-prompt-function 'shk-eshell-prompt)
   (setq eshell-highlight-prompt nil)
 
+== Summarising the path ==
+
+I've always rather liked the fish shell's habit of squashing path components down to their first character when your working directory gets too long, so wrote this function. If I were being really clever, I'd make sure that the names never became ambiguous (so if "baz" and "buz" both exist in "/foo/bar", then we'd shorten to "ba" or "bu", respectively). But I'm not feeling that clever and haven't been burned by that ambiguity yet...
+
+    (defun shortened-path (path max-len)
+      "Return a modified version of `path', replacing some components
+      with single characters starting from the left to try and get
+      the path down to `max-len'"
+      (let* ((components (split-string (abbreviate-file-name path) "/"))
+             (len (+ (1- (length components))
+                     (reduce '+ components :key 'length)))
+             (str ""))
+        (while (and (> len max-len)
+                    (cdr components))
+          (setq str (concat str (if (= 0 (length (car components)))
+                                    "/"
+                                  (string (elt (car components) 0) ?/)))
+                len (- len (1- (length (car components))))
+                components (cdr components)))
+        (concat str (reduce (lambda (a b) (concat a "/" b)) components))))
+
+    (defun rjs-eshell-prompt-function ()
+      (concat (shortened-path (eshell/pwd) 40)
+              (if (= (user-uid) 0) " # " " $ ")))
+
+What it looks like:
+
+<pre>
+~ $ mkdir -p some/ridiculously/long/directory/tree/which/is/too/deep/to/be/shown
+~ $ cd some/ridiculously/long/directory/tree/which/is/too/deep/to/be/shown/
+~/s/r/l/d/t/w/is/too/deep/to/be/shown $
+</pre>
+
 ----
 CategoryEshell
