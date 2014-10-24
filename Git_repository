@@ -6,7 +6,7 @@ It uses [[Git]] and can be [http://github.com/emacsmirror/emacswiki.org found] o
 
 == History ==
 
-The master branch contains the full history of all pages and libraries since the 8th August 2009. The first 800 commits have been created by importing from the [[SVN_repository]]. Each of these commits contains all changes of a complete day and has no meaningful commit messages.
+The master branch contains the full history of all pages and libraries since the 8th August 2009. The first 800 commits have been created by importing from the (now defunct SVN repository). Each of these commits contains all changes of a complete day and has no meaningful commit messages.
 
 Since the 20th November 2011 this repository is integrated with Oddmuse -- every edit results in a separate commit. The announcement can be found [http://www.emacswiki.org/emacs/2011-11-04 here].
 
