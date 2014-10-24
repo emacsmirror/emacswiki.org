@@ -1,5 +1,5 @@
 ;;; eshell-autojump.el -- autojump command for Eshell
-;; Copyright 2013  Alex Schroeder
+;; Copyright 2013-2014  Alex Schroeder
 
 ;; This program is free software: you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by the Free
@@ -22,98 +22,43 @@
 
 (require 'eshell)
 
-(defcustom eshell-autojump-file
-  (expand-file-name "autojump" eshell-directory-name)
-  "The name of the file to read/write the directories for autojumping."
-  :type 'file
-  :group 'eshell-dirs)
-
-(defvar eshell-autojump-map nil
-  "Hash map with directories and how often they were called.")
-
-(defun eshell-autojump-load ()
-  "Read the initial value of `eshell-autojump-map' from `eshell-autojump-file'.
-The file format is a simple alist.
-Ignore non-directories."
-  (let ((map (make-hash-table :test 'equal)))
-    (when (file-exists-p eshell-autojump-file)
-      (dolist (element (with-temp-buffer
-			 (insert-file eshell-autojump-file)
-			 (goto-char (point-min))
-			 (read (current-buffer))))
-	(when (file-directory-p (car element))
-	  (puthash (car element) (cdr element) map))))
-    (setq eshell-autojump-map map)))
-
-(add-hook 'kill-emacs-hook 'eshell-autojump-save)
-
-(defun eshell-autojump-save ()
-  "Save the value of `eshell-autojump-map' to `eshell-autojump-file'.
-The file format is a simple alist.
-Reduce values by 1% such that eventually unused items fall off the list
-after not being used in a hundred sessions."
-  (when (and eshell-autojump-file eshell-autojump-map)
-    (with-temp-buffer
-      (let ((standard-output (current-buffer)))
-	(insert "(")
-	(maphash (lambda (key value)
-		   (when (> value 0)
-		     (insert "(")
-		     (prin1 key)
-		     (insert " . ")
-		     (prin1 (- value 0.01))
-		     (insert ")\n")))
-		 eshell-autojump-map)
-	  (delete-char -1); eat newline
-	  (insert ")"))
-      (write-file eshell-autojump-file))))
-
-(add-hook 'eshell-directory-change-hook
-	  'eshell-autojump-record)
-
-(defun eshell-autojump-record ()
-  "Record the current directory.
-`curdir' is set by `eshell/cd'."
-  (unless eshell-autojump-map
-    (eshell-autojump-load))
-  (if (gethash curdir eshell-autojump-map)
-      (puthash curdir (1+ (gethash curdir eshell-autojump-map)) eshell-autojump-map)
-    (puthash curdir 1 eshell-autojump-map)))
-
-(defun eshell-autojump-candidates ()
-  "Return the most popular directories.
-Return list of keys sorted by value, descending, from `eshell-autojump-map'."
-  (unless eshell-autojump-map
-    (eshell-autojump-load))
-  (let (keys)
-    (maphash (lambda (key value)
-	       (setq keys (cons key keys)))
-	     eshell-autojump-map)
-    (sort keys (lambda (a b)
-		 (> (gethash a eshell-autojump-map)
-		    (gethash b eshell-autojump-map))))))
-
-(defun eshell/j (&rest args)           ; all but first ignored
+(defun eshell/j (&rest args)
   "Jump to a directory you often cd to.
 This compares the argument with the list of directories you usually jump to.
 Without an argument, list the ten most common directories.
 With a positive integer argument, list the n most common directories.
 Otherwise, call `eshell/cd' with the result."
   (setq args (eshell-flatten-list args))
-  (let ((path (car args))
-	(candidates (eshell-autojump-candidates))
+  (let ((arg (or (car args) 10))
+	(map (make-hash-table :test 'equal))
 	(case-fold-search (eshell-under-windows-p))
+	candidates
 	result)
-    (when (not path)
-      (setq path 10))
-    (if (and (integerp path) (> path 0))
+    ;; count paths in the ring and produce a map
+    (dolist (dir (ring-elements eshell-last-dir-ring))
+      (if (gethash dir map)
+	  (puthash dir (1+ (gethash dir map)) map)
+	(puthash dir 1 map)))
+    ;; use the map to build a sorted list of candidates
+    (maphash (lambda (key value)
+	       (setq candidates (cons key candidates)))
+	     map)
+    (setq candidates (sort candidates
+			   (lambda (a b)
+			     (> (gethash a map)
+				(gethash b map)))))
+    ;; list n candidates or jump to most popular candidate
+    (if (and (integerp arg) (> arg 0))
 	(progn
-	  (let ((n (nthcdr (1- path) candidates)))
+	  (let ((n (nthcdr (1- arg) candidates)))
 	    (when n
 	      (setcdr n nil)))
-	  (eshell-lisp-command (mapconcat 'identity candidates "\n")))
+	  (eshell-lisp-command
+	   (mapconcat (lambda (s)
+			(format "%4d %s" (gethash s map) s))
+		      candidates "\n")))
       (while (and candidates (not result))
-	(if (string-match path (car candidates))
+	(if (string-match arg (car candidates))
 	    (setq result (car candidates))
 	  (setq candidates (cdr candidates))))
       (eshell/cd result))))
