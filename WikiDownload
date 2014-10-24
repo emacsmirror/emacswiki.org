@@ -2,8 +2,6 @@ Here is how to download the wiki:
 
 * [[Git repository]] of the raw EmacsWiki pages. Every change on the Emacswiki is checked in individually. Also contains branches for individual packages with intact history. Great in every regard ;-)
 
-* [[SVN repository]] of the raw EmacsWiki pages. Great for grepping.
-
 * [[Rsync repository]] -- help making decentralized backups of the entire setup. Great for mirrors, forks, and the like.
 
 * DownloadPartOfWiki -- download a small part of Emacs Wiki, using `wget'. Tricky.
