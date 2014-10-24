@@ -182,6 +182,8 @@ I use the following code.  It makes C-a go to the beginning of the command line,
 
 == Changing the default prompt ==
 
+For more examples of changing the prompt, see EshellPrompt (the text below should probably be merged into that page).
+
 Here's how to add a gaudy prompt instead of the default in your
 ~/.emacs.  The date and time will be updated with each command as
 necessary as it does in bash \w \h or zsh %w %T.  In this case, there
