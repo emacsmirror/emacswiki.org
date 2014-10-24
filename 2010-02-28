@@ -4,7 +4,7 @@ e.g. just webpages or just Emacs lisp files.
 
 The [[Git repository]] is part of the [[Emacsmirror]] which now contains repositories
 for most packages distributed on the EmacsWiki.  These repositories contain as much
-of the package's history as available in the [[SVN repository]] though the commit
+of the package's history as available in the SVN repository though the commit
 messages are just timestamps.
 
 -- JonasBernoulli
