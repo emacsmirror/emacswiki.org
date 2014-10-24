@@ -29,7 +29,7 @@ possible to upload or download packages without HTTPS.
 Marmalade uses an [[http://marmalade-repo.org/packages/marmalade-client Emacs client]]
 to upload and download packages.
 
-== About marmalade ==
+== About Marmalade ==
 
 Marmalade is a fully EmacsLisp project. An [[Elnode]] web application
 maintained by NicFerrier in
