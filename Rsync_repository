@@ -11,11 +11,6 @@ Here's how to get or update a copy into the ##emacswiki## directory:
 
     rsync -avz --no-perms theshire.emacs.cl::emacswiki emacswiki
 
-Alternatively, get a copy of the raw text files via the [[SVN repository]].
-Or if you're just interested in source files, get them via the [[CVS repository]].
-
-Sources for this stuff: [http://www.emacswiki.org/scripts/backup backup] shell script.
-
 (Back to WikiDownload.)
 
 == What will you get? ==
