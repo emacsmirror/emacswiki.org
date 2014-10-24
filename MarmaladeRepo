@@ -14,7 +14,7 @@ NicFerrier who says he is slowly fixing things.
 == Marmalade vs ELPA vs MELPA ==
 
 Unlike [[MELPA]], but like GnuELPA, Marmalade cannot automatically
-upload libraries from the %%EmacsWiki%% ElispArea.
+upload libraries from the %%EmacsWiki%% ElispArea.\\
 This is considered a feature by Marmalade users.
 
 Unlike [[MELPA]], but like GnuELPA, Marmalade is restricted to only
