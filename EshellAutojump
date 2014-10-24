@@ -5,21 +5,18 @@ This is an eshell extension to facilitate directory switching.
 Use `j' to list your favorite directories (as determined by your usage of `cd').
 Use `j regexp' to jump to your most favorite directory matching the regular expression.
 
-Your favorite directories are saved in `~/.eshell/autojump'.
+The list of directories is based on `eshell-last-dir-ring' which gets saved in `~/.eshell/lastdir'.
+You can increase the ring size by setting `eshell-last-dir-ring-size'.
 
-Instead of measuring how much time you spend in a particular directory, I just measure how often you switch /to/ a particular directory.
-The code hooks into `eshell-directory-change-hook'.
-
-Note that the *standard eshell comes with a very similar mechanism*: it maintains a ring the last 32 directories seen.
+Note that the *standard eshell comes with a very similar mechanism* based on the same ring of directories:
 
 : To view the ring: `cd ='
 : Changing to an index within the ring: `cd -4'
 : Note that `cd -' is the same as `cd -0'
 : Use a regular expression: `cd =regexp'
 
-The ring is saved in `~/.eshell/lastdir'. You can increase the ring size by setting `eshell-last-dir-ring-size'. Perhaps this is good enough for you, making autojump unnecessary. The only benefit autojump offers is that it sorts the entries by /how often/ you switched there instead of /when/ you switched there.
-
-Here's how I installed it in my ~/.emacs file:
+The only benefit autojump offers is that it sorts the entries by /how often/ you switched there instead of /when/ you switched there.
+Perhaps this is good enough for you, making autojump unnecessary.
 
 {{{
 (eval-after-load 'eshell
