@@ -23,8 +23,8 @@ free software packages.
 Unlike GnuELPA, but like MELPA, Marmalade requires no signing of FSF
 Copyright papers.
 
-Marmalade is currently the only HTTPS secured repository. It is not
-possible to upload or download packages without HTTPS.
+As of October 2014, Marmalade is the only HTTPS secured repository. It
+is not possible to upload or download packages without HTTPS.
 
 Marmalade uses an [[http://marmalade-repo.org/packages/marmalade-client Emacs client]]
 to upload and download packages.
