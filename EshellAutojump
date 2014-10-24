@@ -21,6 +21,8 @@ Perhaps this is good enough for you, making autojump unnecessary.
 {{{
 (eval-after-load 'eshell
   '(require 'eshell-autojump nil t))
+
+(setq eshell-last-dir-ring-size 500)
 }}}
 
 ----
