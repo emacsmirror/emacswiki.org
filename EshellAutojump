@@ -5,7 +5,7 @@ This is an eshell extension to facilitate directory switching.
 Use `j' to list your favorite directories (as determined by your usage of `cd').
 Use `j regexp' to jump to your most favorite directory matching the regular expression.
 
-The list of directories is based on `eshell-last-dir-ring' which gets saved in `~/.eshell/lastdir'.
+The list of directories is based on `eshell-last-dir-ring' which gets saved in ##~/.eshell/lastdir##.
 You can increase the ring size by setting `eshell-last-dir-ring-size'.
 
 Note that the *standard eshell comes with a very similar mechanism* based on the same ring of directories:
