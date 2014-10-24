@@ -1,3 +1,5 @@
+DeletedPage
+
 The SVN repository is run by [[kensanata]] and hosted by [http://savannah.gnu.org/ Savannah].
 It contains the raw text of all wiki pages.
 A cron job updates the repository every 24h. Check it out: [https://savannah.nongnu.org/projects/emacswiki Emacs Wiki at Savannah].
@@ -12,6 +14,8 @@ Sources for this stuff: [http://www.emacswiki.org/scripts/emacs-svn-update emacs
 [new:AlexDaniel:2014-10-24 14:02 UTC]
 It seems like the last commit was made 6 months ago. If svn is not used anymore, lets remove this page? -- AlexDaniel
 
+[new]
+Yeah! -- AlexSchroeder
 
 ----
 CategoryEmacsWikiSite
