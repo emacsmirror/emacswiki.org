@@ -1,4 +1,4 @@
-The [[Git repository]] is now available. It is an import of the [[SVN repository]]
+The [[Git repository]] is now available. It is an import of the SVN repository
 but also features branches that contain only reasonable subsets of all files, like
 e.g. just webpages or just Emacs lisp files.
 
