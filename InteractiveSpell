@@ -25,6 +25,8 @@ On my linux setup I use the following:
 )
 </pre>
 
+
+[:Hunspell]
 === Hunspell, no external package ===
 
 The code below comes from http://unix.stackexchange.com/questions/86554/make-hunspell-work-with-emacs-and-german-language, and works for me.
@@ -52,6 +54,8 @@ The code below comes from http://unix.stackexchange.com/questions/86554/make-hun
       ispell-dictionary   "deutsch-hunspell") ; Default dictionary to use
 </pre>
 
+
+[:GnuAspell]
 === GNU Aspell ===
 
 [http://aspell.net/ Aspell] was originally designed as a replacement for Ispell; its primary advantage today is the quality of its suggested replacements. This is particularly useful when used with flyspell-auto-correct-previous-word, where you can iterate through suggested spellings -- it's much more useful when the correct spelling is near the head of the list.
@@ -60,6 +64,8 @@ Aspell is a lot slower than Ispell; on modern machines, this probably doesn't ma
 
     (setq ispell-extra-args '("--sug-mode=fast"))
 
+
+[:Ispell]
 === Ispell ===
 
 [http://fmg-www.cs.ucla.edu/geoff/ispell.html Ispell], short for "international spell", is a successor of the original "spell" spelling program. The main reason to use it is if it has a better dictionary (or any dictionary) for the language you want to check.
