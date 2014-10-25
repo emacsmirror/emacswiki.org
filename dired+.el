@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 15 09:19:31 2014 (-0700)
+;; Last-Updated: Sat Oct 25 10:11:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8461
+;;     Update #: 8463
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -580,6 +580,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/10/25 dadams
+;;     dired (defadvice): Corrected doc string for prefix arg >= and <= 0.
 ;; 2014/10/15 dadams
 ;;     diredp-hide-details-initially-flag:
 ;;       Added :set, to ensure that diredp-hide-details-last-state is kept up-to-date.
@@ -2032,9 +2034,9 @@ If non-empty, STRING should begin with a SPC."
 (defadvice dired (before diredp-doc-cons-arg activate)
   "Interactively, a prefix argument changes the behavior as follows:
 
-* If <= 0, you are first prompted for the `ls' switches to use.
+* If >= 0, you are first prompted for the `ls' switches to use.
 
-* If >= 0, you are prompted first for the name of the Dired  buffer.
+* If <= 0, you are prompted first for the name of the Dired  buffer.
   Then you are prompted repeatedly for the names of the directories
   or files to list in the buffer.  You can use file-name wildcards
   (i.e., `*' for globbing), to include the matching files and
