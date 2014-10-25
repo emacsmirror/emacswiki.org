@@ -1,3 +1,10 @@
+[new]
+There is a GPL version labelled as "A C refactoring tool for emacs" at http://sourceforge.net/projects/c-xref/files/
+All other references to the original Xrefactory seems to be gone...
+
+[http://www.responsive.se/thomas/2014/08/30/xrefactory-to-c-xref-refactoring-c-with-emacs/ Here's] a write up of recent experience with it.
+
+[old]
 [http://www.xref-tech.com/xrefactory/main.html Xrefactory] is a tool for C and C++ providing code completion, source browsing and refactoring.
 
 It is [http://www.xref-tech.com/xrefactory/license.html not Free Software].  Investigate a free RefactoringBrowser, instead.
@@ -15,8 +22,6 @@ I used Xrefactory in my previous job, on a fairly large Java code
   newer JDKs). --Damien Diederen
 [new]
 These products (xrefactory c/java, xrefactory c++) seems to be abandoned. The c++ version does not work very well with recent c++ code (like one found in new versions of boost). 
-[new]
-There is a GPL version labelled as "A C refactoring tool for emacs" at http://sourceforge.net/projects/c-xref/files/
 
 ----
 CategoryProgrammerUtils
