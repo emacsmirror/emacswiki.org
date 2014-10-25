@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct 25 10:11:40 2014 (-0700)
+;; Last-Updated: Sat Oct 25 14:19:52 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8463
+;;     Update #: 8486
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -581,6 +581,9 @@
 ;;; Change Log:
 ;;
 ;; 2014/10/25 dadams
+;;     diredp-dired-union-interactive-spec: Typo: quote buffer-name-history.  Pass other-window STRING.
+;;     diredp-dired-union-other-window: Pass other-window STRING.
+;;     dired-read-dir-and-switches: Include STRING for reading buffer name also.
 ;;     dired (defadvice): Corrected doc string for prefix arg >= and <= 0.
 ;; 2014/10/15 dadams
 ;;     diredp-hide-details-initially-flag:
@@ -1883,8 +1886,8 @@ With a non-positive prefix arg, read the Dired buffer name and then
  to include the matching files and directories.  Use `C-g' when done
  entering files and directories to list.
 
-STRING is appended to the prompt, unless prefix arg is non-positive.
-If non-empty, STRING should begin with a SPC."
+STRING is added to the prompt after \"Dired \".  If not \"\", it should
+end with a space."
   (let* ((switchs                                     (and current-prefix-arg
                                                            (natnump (prefix-numeric-value current-prefix-arg))
                                                            (read-string "Dired listing switches: "
@@ -1908,7 +1911,7 @@ If non-empty, STRING should begin with a SPC."
          (icicle-all-candidates-list-alt-action-fn ; M-|'
           (lambda (files)
             (let ((enable-recursive-minibuffers  t))
-              (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
+              (dired-other-window (cons (read-string (format "Dired %s(buffer name): " string)) files)))))
          (icicle-sort-comparer                        (or (and (boundp 'icicle-file-sort) ; If not reading files
                                                                icicle-file-sort) ; then dirs first.
                                                           (and (> (prefix-numeric-value current-prefix-arg) 0)
@@ -1979,7 +1982,8 @@ If non-empty, STRING should begin with a SPC."
                        (format "Dired %s(directory): " string) nil default-directory nil)
             (let (;; $$$$$$$$ (insert-default-directory  nil)
                   (files                     ())
-                  (dirbuf                    (completing-read "Dired buffer name: " dired-buffers))
+                  (dirbuf                    (completing-read (format "Dired %s(buffer name): " string)
+                                                              dired-buffers))
                   file)
               (while (condition-case nil ; Use lax completion, to allow wildcards.
                          (setq file  (read-file-name "File or dir (C-g when done): "))
@@ -4100,7 +4104,7 @@ A new list is returned - list THINGS is not modified."
 ;;;         (read-string "Dired listing switches: " dired-listing-switches))))
 
 ;;;###autoload
-(defun diredp-dired-union (dirbufs &optional switches) ; Not bound
+(defun diredp-dired-union (dirbufs &optional switches) ; Bound to `C-x D' in Dired
   "Create a Dired buffer that is the union of some existing Dired buffers.
 With a prefix arg, read `ls' switches.
 You are prompted for the Dired buffers.  Use `C-g' when done choosing
@@ -4121,9 +4125,9 @@ hidden, but its contained files are also listed."
   (diredp-dired-union-1 dirbufs switches))
 
 ;;;###autoload
-(defun diredp-dired-union-other-window (dirbufs &optional switches) ; Not bound
+(defun diredp-dired-union-other-window (dirbufs &optional switches) ; Bound to `C-x 4 D' in Dired
   "Same as `diredp-dired-union' but uses another window."
-  (interactive (diredp-dired-union-interactive-spec ""))
+  (interactive (diredp-dired-union-interactive-spec "other window "))
   (diredp-dired-union-1 dirbufs switches 'OTHER-WINDOW))
 
 ;; $$$$$ Maybe I should set `dired-sort-inhibit' to t for now (?),
@@ -4175,12 +4179,13 @@ hidden, but its contained files are also listed."
         (save-excursion
           (dolist (dir  hidden-dirs)  (when (dired-goto-subdir dir) (dired-hide-subdir 1))))))))
 
-(defun diredp-dired-union-interactive-spec (str)
+(defun diredp-dired-union-interactive-spec (string)
   "`interactive' spec for `diredp-dired-dired' commands.
-STR is a string appended to the prompt.
-With a prefix arg, read switches.
 Read names of Dired buffers to include, and then the new, Dired-union
- buffer name.  User uses `C-g' when done reading Dired buffer names."
+ buffer name.  User uses `C-g' when done reading Dired buffer names.
+With a prefix arg, read switches after Dired buffer names.
+STRING is added to the prompt after \"Dired-UNION\".  If not \"\", it
+ should end with a space."
   (list
    (let ((bufs     ())
          dirbufs buf)
@@ -4190,13 +4195,13 @@ Read names of Dired buffers to include, and then the new, Dired-union
      (while (and dirbufs  (condition-case nil
                               (setq buf  (completing-read
                                           "Dired buffer to include (C-g when done): "
-                                          dirbufs nil t nil buffer-name-history
+                                          dirbufs nil t nil 'buffer-name-history
                                           (and dirbufs  (car (assoc (buffer-name) dirbufs)))))
                             (quit nil)))
        (push buf bufs)
        (setq dirbufs  (delete (cons buf (with-current-buffer buf default-directory)) dirbufs)))
      (setq bufs  (nreverse bufs))
-     (cons (read-string "Dired-union buffer name: ") bufs))
+     (cons (read-string (format "Dired-UNION %s(buffer name): " string)) bufs))
    (and current-prefix-arg  (read-string "Dired listing switches: " dired-listing-switches))))
 
 ;;;###autoload
