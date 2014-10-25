@@ -8,9 +8,9 @@
 ;; Created: Thu Jan 25 14:22:13 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Feb 16 08:44:11 2014 (-0800)
+;; Last-Updated: Sat Oct 25 10:57:12 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 206
+;;     Update #: 210
 ;; URL: http://www.emacswiki.org/window%2b.el
 ;; Doc URL: http://emacswiki.org/Delete_Frames_Easily_-_But_Not_Too_Easily
 ;; Doc URL: http://www.emacswiki.org/cgi-bin/wiki/OneOnOneEmacs
@@ -46,6 +46,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/10/25 dadams
+;;     special-display-popup-frame: Protect set-window-prev-buffers with fboundp.
 ;; 2014/02/16 dadams
 ;;     special-display-popup-frame:
 ;;       Use vanilla Emacs 24 code for display-buffer-record-window,
@@ -207,7 +209,8 @@ arguments."
            (display-buffer-record-window 'frame window buffer))
 	 (unless (eq buffer (window-buffer window))
 	   (set-window-buffer window buffer)
-	   (set-window-prev-buffers window nil))
+           (when (fboundp 'set-window-prev-buffers) ; Emacs 24+
+             (set-window-prev-buffers window ())))
 	 (set-window-dedicated-p window t)
          ;; Now call `fit-frame', with WINDOW selected.
          ;; Needs to be `save-window-excursion', not just `save-selected-window'.
