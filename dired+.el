@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct 25 14:19:52 2014 (-0700)
+;; Last-Updated: Sat Oct 25 14:25:57 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 8486
+;;     Update #: 8488
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -4183,7 +4183,7 @@ hidden, but its contained files are also listed."
   "`interactive' spec for `diredp-dired-dired' commands.
 Read names of Dired buffers to include, and then the new, Dired-union
  buffer name.  User uses `C-g' when done reading Dired buffer names.
-With a prefix arg, read switches after Dired buffer names.
+With a prefix arg, read `ls' switches after Dired-union buffer name.
 STRING is added to the prompt after \"Dired-UNION\".  If not \"\", it
  should end with a space."
   (list
