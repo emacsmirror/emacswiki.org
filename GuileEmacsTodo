@@ -21,6 +21,7 @@
 * Reduce excessive indirection for variable storage
 * Publish benchmarks
 * Fixed nested backquotes in Guile-Elisp (though not yet used in Emacs)
+* ERC messages from others go to wrong buffer
 
 == User-visible issues ==
 
