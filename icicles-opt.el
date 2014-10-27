@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Oct 26 19:14:20 2014 (-0700)
+;; Last-Updated: Sun Oct 26 19:18:03 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 6069
+;;     Update #: 6070
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2908,7 +2908,7 @@ See also option `icicle-buffer-skip-functions'."
     Info-menu
     lisp-complete-symbol
     ;; Emacs 25+ uses `elisp-completion-at-point', not `lisp-completion-at-point'.
-    ,@(if (fboundp elisp-completion-at-point) '(elisp-completion-at-point) '(lisp-completion-at-point))
+    ,@(if (fboundp 'elisp-completion-at-point) '(elisp-completion-at-point) '(lisp-completion-at-point))
     minibuffer-default-add-completions
     read-char-by-name                    read-color
     read-from-minibuffer                 read-string
