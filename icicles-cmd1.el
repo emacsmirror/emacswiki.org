@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Oct 26 19:01:46 2014 (-0700)
+;; Last-Updated: Sun Oct 26 19:12:30 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27324
+;;     Update #: 27331
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2311,22 +2311,19 @@ considered."
 ;;
 ;; Select `*Completions*' window even if on another frame.
 ;;
-(when (and (fboundp 'completion-at-point) ; Emacs 23.2+
-           (or (< emacs-major-version 24)
-               (and (= emacs-major-version 24)  (< emacs-minor-version 4))))
+(when (and (fboundp 'completion-at-point)  (not (fboundp 'elisp-completion-at-point))) ; Emacs 23.2 through 24.4.
   (unless (fboundp 'icicle-ORIG-lisp-completion-at-point)
     (defalias 'icicle-ORIG-lisp-completion-at-point (symbol-function 'lisp-completion-at-point))
     ;; Return a function that does all of the completion.
     (defun icicle-lisp-completion-at-point () #'icicle-lisp-complete-symbol)))
 
 
-;; REPLACE ORIGINAL `elisp-completion-at-point' (>= Emacs 24.4),
+;; REPLACE ORIGINAL `elisp-completion-at-point' (>= Emacs 25),
 ;; defined in `elisp-mode.el', saving it for restoration when you toggle `icicle-mode'.
 ;;
 ;; Select `*Completions*' window even if on another frame.
 ;;
-(when (or (> emacs-major-version 24)
-          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+(when (fboundp 'elisp-completion-at-point) ; Emacs 25+.
   (unless (fboundp 'icicle-ORIG-lisp-completion-at-point)
     (defalias 'icicle-ORIG-lisp-completion-at-point (symbol-function 'elisp-completion-at-point))
     ;; Return a function that does all of the completion.
