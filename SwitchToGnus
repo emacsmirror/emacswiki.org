@@ -10,7 +10,6 @@ Here is a function to switch to the most relevant Gnus buffer.
      *mail or *reply or *wide reply
      *Summary or
      *Group*
-
     Use a prefix argument to start Gnus if no candidate exists."
       (interactive "P")
       (let (candidate
@@ -48,6 +47,8 @@ The test for a buffer-size greater than 0 is because on my system,
 I often end up with an empty *Group* buffer after startup.  I have
 not yet found why this happens.  But switching to that buffer would
 be the wrong, anyway.  Thus the test.
+
+See also [http://www.github.com/yyr/door-gnus] for enhanced version of above snippet.
 
 I run Gnus in a seperate xemacs process to spoof asynchronous access
 to the 'net and still leave my main xemacs session free for editing
