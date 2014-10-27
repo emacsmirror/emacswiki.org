@@ -48,7 +48,8 @@ I often end up with an empty *Group* buffer after startup.  I have
 not yet found why this happens.  But switching to that buffer would
 be the wrong, anyway.  Thus the test.
 
-See also [http://www.github.com/yyr/door-gnus] for enhanced version of above snippet.
+==door-gnus==
+Enhanced version of above snippet is at [http://www.github.com/yyr/door-gnus door-gnus package]
 
 I run Gnus in a seperate xemacs process to spoof asynchronous access
 to the 'net and still leave my main xemacs session free for editing
