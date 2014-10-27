@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Aug 22 18:05:06 2014 (-0700)
+;; Last-Updated: Sun Oct 26 19:01:46 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27297
+;;     Update #: 27324
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2306,14 +2306,29 @@ considered."
     (insert new)))
 
 
-;; REPLACE ORIGINAL `lisp-completion-at-point' (>= Emacs 23.2),
+;; REPLACE ORIGINAL `lisp-completion-at-point' (>= Emacs 23.2 and <= Emacs 24.3),
 ;; defined in `lisp.el', saving it for restoration when you toggle `icicle-mode'.
 ;;
 ;; Select `*Completions*' window even if on another frame.
 ;;
-(when (fboundp 'completion-at-point)    ; Emacs 23.2+.
+(when (and (fboundp 'completion-at-point) ; Emacs 23.2+
+           (or (< emacs-major-version 24)
+               (and (= emacs-major-version 24)  (< emacs-minor-version 4))))
   (unless (fboundp 'icicle-ORIG-lisp-completion-at-point)
     (defalias 'icicle-ORIG-lisp-completion-at-point (symbol-function 'lisp-completion-at-point))
+    ;; Return a function that does all of the completion.
+    (defun icicle-lisp-completion-at-point () #'icicle-lisp-complete-symbol)))
+
+
+;; REPLACE ORIGINAL `elisp-completion-at-point' (>= Emacs 24.4),
+;; defined in `elisp-mode.el', saving it for restoration when you toggle `icicle-mode'.
+;;
+;; Select `*Completions*' window even if on another frame.
+;;
+(when (or (> emacs-major-version 24)
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+  (unless (fboundp 'icicle-ORIG-lisp-completion-at-point)
+    (defalias 'icicle-ORIG-lisp-completion-at-point (symbol-function 'elisp-completion-at-point))
     ;; Return a function that does all of the completion.
     (defun icicle-lisp-completion-at-point () #'icicle-lisp-complete-symbol)))
 
@@ -8014,6 +8029,7 @@ default separator."
 During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
 can use the following keys:
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
  * C-x C-t *    - narrow to files with all of the tags you specify
  * C-x C-t +    - narrow to files with some of the tags you specify
@@ -8045,6 +8061,7 @@ can use the following keys:
 During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
 can use the following keys:
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
@@ -8112,7 +8129,9 @@ or `mouse-2') - a prefix arg has no effect for that.
 
 During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
 can use the following keys:
+   C-c C-d      - change the `default-directory' (with a prefix arg)
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
@@ -8202,6 +8221,7 @@ During completion (`*' means this requires library `Bookmark+')\\<minibuffer-loc
 can use the following keys:
    C-c C-d      - change the `default-directory' (a la `cd')
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
@@ -8375,6 +8395,7 @@ read-only mode.
 During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
 can use the following keys:
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
@@ -8636,6 +8657,7 @@ flips the behavior specified by that option.
 During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
 can use the following keys:
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
@@ -8739,6 +8761,7 @@ requires library `Bookmark+')\\<minibuffer-local-completion-map>:
 
    C-c C-d      - change the `default-directory' (a la `cd')
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
@@ -8899,6 +8922,7 @@ During completion, you can use the following keys (`*' means this
 requires library `Bookmark+')\\<minibuffer-local-completion-map>:
 
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
@@ -9075,6 +9099,7 @@ During completion (`*' means this requires library `Bookmark+')\\<minibuffer-loc
 can use the following keys:
    C-c C-d      - change the `default-directory' (a la `cd')
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
@@ -9185,6 +9210,7 @@ remote file-name syntax.
 During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
 can use the following keys:
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
@@ -9570,6 +9596,7 @@ remote file-name syntax.
 During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
 can use the following keys:
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
@@ -9745,6 +9772,7 @@ During completion (`*' means this requires library `Bookmark+')\\<minibuffer-loc
 can use the following keys:
    C-c C-d      - change the `default-directory' (a la `cd')
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
@@ -9856,6 +9884,7 @@ remote file-name syntax.
 During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
 can use the following keys:
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
@@ -10645,6 +10674,7 @@ list.
 During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
 can use the following keys:
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
@@ -10722,6 +10752,7 @@ directory from the minibuffer when you want to match proxy candidates.
 During completion (`*' means this requires library `Bookmark+')\\<minibuffer-local-completion-map>, you
 can use the following keys:
    C-c +        - create a new directory
+   C-backspace  - go up one directory level
    \\[icicle-all-candidates-list-alt-action]          - open Dired on the currently matching file names
    \\[icicle-delete-candidate-object]     - delete candidate file or (empty) dir
  * C-x C-t *    - narrow to files with all of the tags you specify
