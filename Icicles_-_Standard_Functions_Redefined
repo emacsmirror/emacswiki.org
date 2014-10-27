@@ -24,7 +24,7 @@ functions:
 * `Info-index'
 * `Info-menu'
 * `lisp-complete-symbol'
-* `lisp-completion-at-point'
+* `elisp-completion-at-point' (or `lisp-completion-at-point', prior to Emacs 25)
 * `minibuffer-default-add-completions'
 * `read-char-by-name'
 * `read-color'
