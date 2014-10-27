@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Aug 22 15:56:22 2014 (-0700)
+;; Last-Updated: Mon Oct 27 11:14:40 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15710
+;;     Update #: 15713
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/10/27 dadams
+;;     Added: Redefinition of bookmark-insert-annotation.
+;;     bookmark-edit-annotation-mode: Use bookmark-insert-annotation.
 ;; 2014/08/22 dadams
 ;;     bmkp-desktop-file-p: Redefined to not visit the file: use insert-file-contents-literally.
 ;;                          Added (not (file-directory-p filename)) condition.
