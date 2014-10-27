@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Oct 19 10:13:52 2014 (-0700)
+;; Last-Updated: Sun Oct 26 19:30:46 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29710
+;;     Update #: 29712
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7773,7 +7773,8 @@
 ;;    `comint-replace-by-expanded-filename',
 ;;    `ess-complete-object-name' (from ESS),
 ;;    `gud-gdb-complete-command', `Info-goto-node', `Info-index',
-;;    `Info-menu', `lisp-complete-symbol', `lisp-completion-at-point',
+;;    `Info-menu', `lisp-complete-symbol', `elisp-completion-at-point'
+;;    (or `lisp-completion-at-point', prior to Emacs 25),
 ;;    `minibuffer-default-add-completions', `read-char-by-name',
 ;;    `read-color', `read-from-minibuffer', `read-string',
 ;;    `recentf-make-menu-items'.
