@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Oct 26 19:12:30 2014 (-0700)
+;; Last-Updated: Sun Oct 26 19:25:44 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 27331
+;;     Update #: 27335
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2325,9 +2325,9 @@ considered."
 ;;
 (when (fboundp 'elisp-completion-at-point) ; Emacs 25+.
   (unless (fboundp 'icicle-ORIG-lisp-completion-at-point)
-    (defalias 'icicle-ORIG-lisp-completion-at-point (symbol-function 'elisp-completion-at-point))
+    (defalias 'icicle-ORIG-elisp-completion-at-point (symbol-function 'elisp-completion-at-point))
     ;; Return a function that does all of the completion.
-    (defun icicle-lisp-completion-at-point () #'icicle-lisp-complete-symbol)))
+    (defun icicle-elisp-completion-at-point () #'icicle-lisp-complete-symbol)))
 
 (defun icicle-customize-icicles-group ()
   "Customize Icicles options and faces.  View their documentation."
