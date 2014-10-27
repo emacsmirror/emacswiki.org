@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Aug 28 19:58:06 2014 (-0700)
+;; Last-Updated: Mon Oct 27 11:03:06 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 7398
+;;     Update #: 7410
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -530,8 +530,8 @@
 ;;
 ;;    `bookmark-delete', `bookmark-edit-annotation',
 ;;    `bookmark-edit-annotation-mode', `bookmark-insert',
-;;    `bookmark-insert-location', `bookmark-jump',
-;;    `bookmark-jump-other-window', `bookmark-load',
+;;    `bookmark-insert-annotation', `bookmark-insert-location',
+;;    `bookmark-jump', `bookmark-jump-other-window', `bookmark-load',
 ;;    `bookmark-relocate', `bookmark-rename', `bookmark-save',
 ;;    `bookmark-send-edited-annotation', `bookmark-set',
 ;;    `bookmark-set-name', `bookmark-yank-word'.
@@ -1887,9 +1887,26 @@ bookmark file.  Saving the file depends on `bookmark-save-flag'."
     bmk))                               ; Return the bookmark.
 
 
+;; REPLACES ORIGINAL in `bookmark.el' (Emacs 24.4+).
+;;
+;; Usable for older Emacs versions also.
+;;
+;;;###autoload (autoload 'bookmark-insert-annotation "bookmark+")
+(defun bookmark-insert-annotation (bookmark)
+  "Insert annotation for BOOKMARK.
+BOOKMARK is a bookmark name or a bookmark record."
+  (insert (funcall (if (boundp 'bookmark-edit-annotation-text-func)
+                       bookmark-edit-annotation-text-func
+                     bookmark-read-annotation-text-func)
+                   bookmark))
+  (let ((annotation  (bookmark-get-annotation bookmark)))
+    (when (and annotation  (not (string-equal annotation ""))) (insert annotation))))
+
+
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; BUG fix: Need bookmark arg in `interactive' spec.
+;; 1. Emacs BUG fix: Need bookmark arg in `interactive' spec.
+;; 2. Usable for older Emacs versions also.
 ;;
 ;;;###autoload (autoload 'bookmark-edit-annotation-mode "bookmark+")
 (defun bookmark-edit-annotation-mode (bookmark)
@@ -1906,16 +1923,9 @@ BOOKMARK is a bookmark name or a bookmark record.
   (setq bookmark-annotation-name  bookmark)
   (use-local-map bookmark-edit-annotation-mode-map)
   (setq major-mode  'bookmark-edit-annotation-mode
-        mode-name  "Edit Bookmark Annotation")
-  (insert (funcall (if (boundp 'bookmark-edit-annotation-text-func)
-                       bookmark-edit-annotation-text-func
-                     bookmark-read-annotation-text-func)
-                   bookmark))
-  (let ((annotation  (bookmark-get-annotation bookmark)))
-    (when (and annotation  (not (string-equal annotation ""))) (insert annotation)))
-  (if (fboundp 'run-mode-hooks)
-      (run-mode-hooks 'text-mode-hook)
-    (run-hooks 'text-mode-hook)))
+        mode-name   "Edit Bookmark Annotation")
+  (bookmark-insert-annotation bookmark)
+  (if (fboundp 'run-mode-hooks) (run-mode-hooks 'text-mode-hook) (run-hooks 'text-mode-hook)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1931,8 +1941,7 @@ BOOKMARK is a bookmark name or a bookmark record.
   "Use buffer contents as annotation for a bookmark.
 Lines beginning with `#' are ignored."
   (interactive)
-  (unless (eq major-mode 'bookmark-edit-annotation-mode)
-    (error "Not in bookmark-edit-annotation-mode"))
+  (unless (eq major-mode 'bookmark-edit-annotation-mode) (error "Not in `bookmark-edit-annotation-mode'"))
   (goto-char (point-min))
   (while (< (point) (point-max))
     (if (bmkp-looking-at-p "^#")
