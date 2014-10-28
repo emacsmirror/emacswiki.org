@@ -54,7 +54,7 @@ In other words: package name, version, summary. All strings.
 
 Marmalade has a demo multifile package that shows how you can do it:
 
-[[https://github.com/nicferrier/elmarmalade/tree/master/demo-multifile]]
+[https://github.com/nicferrier/elmarmalade/tree/master/demo-multifile]
 
 but also tools like Cask and ELPAKit will help you build packages as well.
 
