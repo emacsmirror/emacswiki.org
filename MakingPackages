@@ -1,7 +1,15 @@
+[[ELPA]] packages come in two forms. The first is a relatively simple
+single file package, the second is a more complicated multi-file
+format. Most of this page discusses the multi-file format because it
+causes the most problems.
+
+
+== Multifile packages ==
+
 [[ELPA]] multifile packages have a complex structure. They are not
 simple tar archives. This page attempts to describe how to make them.
 
-== When do you need to build a package? ==
+=== When do you need to build a multifile package? ===
 
 MELPA builds packages for you, with it's own build system. You don't
 build packages with MELPA.
@@ -22,7 +30,7 @@ M-x package-install-file
 for example.
 
 
-== An example package ==
+=== An example package ===
 
 Let's imagine you have a package `alchemist`, basically you need to
 create a directory that looks like this:
@@ -59,7 +67,7 @@ a package with simple unix tools, do it but also tools like Cask and
 ELPAKit will help you build packages as well.
 
 
-== Advantages and Disadvantages of manually building packages ==
+=== Advantages and Disadvantages of manually building packages ===
 
 NicFerrier says that the requirement of Marmalade to take a package
 tar file is a feature:
@@ -73,7 +81,7 @@ of doing that is to make the package yourself.\\
 NicFerrier
 
 
-== Cask ==
+=== Cask ===
 
 You can use [[http://cask.github.io/why-cask.html cask package]] and
 it does the right thing:
@@ -85,7 +93,7 @@ it does the right thing:
 Then you can install or upload somewhere.
 
 
-== ELPAKit ==
+=== ELPAKit ===
 
 [[https://marmalade-repo.org/packages/elpakit ELPAKit]] does the right
 thing too. With no python:
@@ -98,7 +106,7 @@ in the package directory of a multi-file package.
 
 
 
-== Marmalade peculiarities ==
+=== Marmalade peculiarities ===
 
 MarmaladeRepo has some odd stuff about how it displays commentary
 about a package. Commentary isn't normally part of multi-file
