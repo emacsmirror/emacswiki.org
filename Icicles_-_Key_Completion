@@ -476,6 +476,8 @@ quick way to insert characters.
 Starting with Emacs 23, vanilla Emacs has ''Unicode'' support, and you
 can insert any Unicode characters using either an input method or  '''`C-x 8 RET''''.   `C-x 8 RET' is bound by default in Emacs to command `insert-char' (called `ucs-insert' prior to Emacs 24).  If you use my library <tt>[[ucs-cmds.el]]</tt> then you might want to remap that command to command '''`ucsc-insert'''', which is an enhancement.
 
+
+[:icicle-read-char-by-name-multi-completion-flag]
 If option '''`<tt>[[Icicles - Customization and General Tips#icicle-read-char-by-name-multi-completion-flag|icicle-read-char-by-name-multi-completion-flag]]</tt>''''  is
 non-`nil' then '''Icicles''' enhances this in a few ways:
 
@@ -562,6 +564,5 @@ CategoryProgrammerUtils
 CategoryCode
 CategoryAccessibility
 CategoryMenus
-
 
 
