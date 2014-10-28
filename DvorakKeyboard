@@ -100,8 +100,10 @@ Beware that as soon as you evaluate the first expression, C-x does not work anym
 
 [new]
 I would recommend to use:
+
  (define-key key-translation-map [?\C-x] [?\C-u])
  (define-key key-translation-map [?\C-u] [?\C-x])
+
 keyboard-translate doesn't work in daemon mode. See http://lists.gnu.org/archive/html/help-gnu-emacs/2009-10/msg00505.html for details.
 
 ----
