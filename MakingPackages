@@ -4,10 +4,59 @@ format. Most of this page discusses the multi-file format because it
 causes the most problems.
 
 
+== Singlefile packages ==
+
+These are very simple, they just follow a standard markup. This is
+almost exactly as you would get with AutoInsertMode:
+
+{{{
+;;; test.el --- a simple package                     -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2014  Nic Ferrier
+
+;; Author: Nic Ferrier <nferrier@ferrier.me.uk>
+;; Keywords: lisp
+;; Version: 0.0.1
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; Put a description of the package here
+
+;;; Code:
+
+;; code goes here
+
+(provide 'test)
+;;; test.el ends here
+}}}
+
+Things that people tend to forget or not notice about this:
+
+* significant comments start with `;;;` - 3 semicolons, not 2
+* there *must* be a Version header, unless you're only supporting [[MELPA]]
+* the Commentary section should be present
+* the `;;; Code:` marker is important, it shows the end of the Commentary
+* the end marker *must* be present
+
+
 == Multifile packages ==
 
 [[ELPA]] multifile packages have a complex structure. They are not
 simple tar archives. This page attempts to describe how to make them.
+
 
 === When do you need to build a multifile package? ===
 
