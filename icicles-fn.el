@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Oct 19 11:08:10 2014 (-0700)
+;; Last-Updated: Mon Oct 27 22:59:24 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 15025
+;;     Update #: 15036
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2248,7 +2248,8 @@ CHARS defaults to the value of `icicle-read-char-history'."
 ;;
 ;; 1. Use `icicle-ucs-names', not `ucs-names'.
 ;; 2. Exclude character names "" and "VARIATION SELECTOR*".
-;; 3. Display the character itself, after its name, in `*Completions*'.
+;; 3. If `icicle-read-char-by-name-multi-completion-flag' is non-nil, show the character itself, after its name,
+;;    in `*Completions*'.
 ;; 4. Added optional arg NAMES.
 ;; 5. Add char read to `icicle-read-char-history'.
 ;; 6. See doc string for the rest.
@@ -2270,14 +2271,15 @@ character, but whose car is a list (NAME CODE SCHAR), where:
 Properties `help-echo' and `icicle-mode-line-help' are put on NAME,
 showing both NAME and the code point (in hex, octal, and decimal)."
     (and (not (string= "" (car name.char)))
-         ;; $$$$$$ Maybe make this optional?
-         ;; (not (string-match "\\`VARIATION SELECTOR" (car name.char))))
-         (let* ((name  (copy-sequence (car name.char)))
-                (char  (cdr name.char)))
-           (icicle-candidate-short-help (format "Char: %-10cCode Point: x%X, o%o, %d" char char char char) name)
-           (cons (list name (format "%X" char) (format "%c" char)) char))))
-
-
+         (if icicle-read-char-by-name-multi-completion-flag
+             ;; $$$$$$ Maybe make this optional?
+             ;; (not (string-match "\\`VARIATION SELECTOR" (car name.char))))
+             (let* ((name  (copy-sequence (car name.char)))
+                    (char  (cdr name.char)))
+               (icicle-candidate-short-help
+                (format "Char: %-10cCode Point: x%X, o%o, %d" char char char char) name)
+               (cons (list name (format "%X" char) (format "%c" char)) char))
+           name.char)))
 
   (unless (fboundp 'icicle-ORIG-read-char-by-name)
     (defalias 'icicle-ORIG-read-char-by-name (symbol-function 'read-char-by-name)))
@@ -2289,7 +2291,8 @@ Unicode property `name' or `old-name'.  Return the char as a number.
 
 You can use completion against the Unicode name of the character.
 
-In Icicle mode:
+In Icicle mode, if `icicle-read-char-by-name-multi-completion-flag' is
+non-nil:
 
 * The Unicode code point of the char and the char itself appear next
   to the char name in `*Completions*' - WYSIWYG.
@@ -2326,13 +2329,13 @@ such a return value: (CHAR-NAME . CHAR-CODE)."
     (let* ((new-prompt                             (copy-sequence prompt))
            (enable-recursive-minibuffers           t)
            (completion-ignore-case                 t)
-           (icicle-show-multi-completion-flag      t) ; Override user setting.
-           (icicle-multi-completing-p              t)
+           (icicle-multi-completing-p              (and icicle-read-char-by-name-multi-completion-flag
+                                                        icicle-show-multi-completion-flag))
            (icicle-list-use-nth-parts              '(1))
            (icicle-transform-before-sort-p         t)
            (icicle-list-join-string                "\t")
            (icicle-candidate-properties-alist      '((3 (face icicle-candidate-part))))
-           (icicle-whole-candidate-as-text-prop-p  t)
+           (icicle-whole-candidate-as-text-prop-p  icicle-multi-completing-p)
            (mctized-cands                          (car (icicle-mctize-all names nil)))
            (collection-fn                          `(lambda (string pred action)
                                                      (if (eq action 'metadata)
@@ -2343,8 +2346,10 @@ such a return value: (CHAR-NAME . CHAR-CODE)."
            chr)
       (setq chr  (cond ((string-match-p "\\`[0-9a-fA-F]+\\'" input)  (string-to-number input 16))
                        ((string-match-p "^#" input)                  (read input))
-                       ((cddr (assoc-string input mctized-cands t))) ; INPUT is a multi-completion.
-                       (t
+                       ((if icicle-multi-completing-p
+                            (cddr (assoc-string input mctized-cands t)) ; INPUT is one of the multi-completions.
+                          (cdr (assoc-string input mctized-cands t)))) ; INPUT is a character name.
+                       (icicle-multi-completing-p
                         (let ((completion  (try-completion input collection-fn)))
                           (and (stringp completion)
                                ;; INPUT is not a multi-completion, but it may match a single sulti-completion.
@@ -2366,7 +2371,7 @@ such a return value: (CHAR-NAME . CHAR-CODE)."
       (add-to-list 'icicle-read-char-history chr)
       chr))
 
-  ;; This would not be needed if there were not Emacs bug #9653.
+  ;; This would not be needed if there were not STILL Emacs bug #9653.
   (defun icicle-ucs-names ()
     "Same as `ucs-names', except remove entries with an empty name: \"\"."
     (setq ucs-names  (assq-delete-all "" (ucs-names))))) ; Free var here: `ucs-names'.
