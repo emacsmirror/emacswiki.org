@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Oct 26 19:30:46 2014 (-0700)
+;; Last-Updated: Mon Oct 27 23:28:15 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 29712
+;;     Update #: 29718
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6447,6 +6447,32 @@
 ;;    by setting this to `ignore', or users who might want to manage
 ;;    such option saving using their own function instead of the
 ;;    default value, `customize-save-variable'.
+;;
+;;  * Non-`nil' option
+;;    `icicle-read-char-by-name-multi-completion-flag' means that
+;;    `icicle-read-char-by-name' (which, by the default value of
+;;    option `icicle-functions-to-redefine', replaces vanilla
+;;    `read-char-by-name' in Icicle mode) uses multi-completion and
+;;    shows helpful information about the current completion candidate
+;;    in the mode line (the character name and code point, in hex,
+;;    octal, and decimal notation).
+;;
+;;    The 3-part multi-completion, NAME CODE CHAR, shows three ways to
+;;    represent the character as text:
+;;
+;;    * NAME is the Unicode name
+;;    * CODE is the Unicode code point, as a hexidecimal numeral
+;;    * CHAR is the character (as it appears in text, not an integer)
+;;
+;;    Setting this option to `nil' can speed up reading a character
+;;    considerably, but it does not give you the advantages of seeing
+;;    the character (WYSIWYG) or matching its code point.
+;;    
+;;    Instead of using a `nil' value, you can also speed things up by:
+;;
+;;    * turning off incremental completion
+;;    * choosing a strong input pattern, before asking for candidate
+;;      matching
 ;;
 ;;  * Option `icicle-zap-to-char-candidates' determines which
 ;;    character names are used for `icicle-zap-to-char' (bound to
