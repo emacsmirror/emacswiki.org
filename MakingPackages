@@ -2,11 +2,10 @@
 simple tar archives. This page attempts to describe how to make them.
 
 
-== Dump of a GitHub conversation ==
+== An example package ==
 
-//to be edited//
-
-Basically you need to create a direcctory that looks like this:
+Let's imagine you have a package `alchemist`, basically you need to
+create a directory that looks like this:
 
 {{{
 alchemist-0.0.2/alchemist-buffer.el
