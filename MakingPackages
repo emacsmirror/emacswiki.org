@@ -52,11 +52,10 @@ The pkg file, `alchemist-pkg.el`, must look like this:
 In other words: package name, version, summary. All strings.
 
 
-Marmalade has a demo multifile package that shows how you can do it:
-
-[https://github.com/nicferrier/elmarmalade/tree/master/demo-multifile]
-
-but also tools like Cask and ELPAKit will help you build packages as well.
+Marmalade has a
+[[https://github.com/nicferrier/elmarmalade/tree/master/demo-multifile demo multifile package]]
+that shows how you can do it but also tools
+like Cask and ELPAKit will help you build packages as well.
 
 
 == Advantages and Disadvantages of manually building packages ==
