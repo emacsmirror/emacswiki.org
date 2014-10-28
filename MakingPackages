@@ -1,0 +1,2 @@
+[[ELPA]] multifile packages have a complex structure. They are not simple tar archives. This page attempts to describe how to make them.
+
