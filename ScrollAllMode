@@ -31,6 +31,11 @@ Possible workaround for the mouse wheel issue:
 (tested with Emacs 24.2.1)
 [new]
 
+[new]
+Make the arguments to 'mwheel-scroll-all-scroll-down-all and
+'mwheel-scroll-all-scroll-up-all optional to avoid errors when scrolling 
+past the beginning of a buffer.
+
 In emacs before 2002, scrolling by full pages was buggy.
 
 ==See also==
