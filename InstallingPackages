@@ -1,5 +1,5 @@
 [[zh:安装软件包]]
-== Installing packages from Internet ==
+== Installing packages from the Internet ==
 
 The most common method of installing packages of Emacs Lisp since Emacs 24 has been [[ELPA]] packages.
 
