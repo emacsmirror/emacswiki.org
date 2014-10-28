@@ -2541,6 +2541,35 @@ saving using their own function instead of the default value,
 
 
 ----
+[:icicle-read-char-by-name-multi-completion-flag]
+==== Option icicle-read-char-by-name-multi-completion-flag ====
+
+Non-`nil' option '''`icicle-read-char-by-name-multi-completion-flag'''' means that
+`icicle-read-char-by-name' (which, by the default value of option `icicle-functions-to-redefine', replaces vanilla
+`read-char-by-name' in ''Icicle'' mode) uses multi-completion and
+shows helpful information about the current completion candidate
+in the mode line (the character name and code point, in hex,
+octal, and decimal notation).
+
+The 3-part [[multi-completion]], ##NAME CODE CHAR##, shows three ways to
+represent the character as text:
+
+* ##NAME## is the Unicode name
+* ##CODE## is the Unicode code point, as a hexidecimal numeral
+* ##CHAR## is the character (as it appears in text, not an integer)
+
+Setting this option to `nil' can speed up reading a character
+considerably, but it does not give you the advantages of seeing
+the character (WYSIWYG) or matching its code point.
+   
+Instead of using a `nil' value, you can also speed things up by:
+
+* turning off incremental completion
+* choosing a strong input pattern, before asking for candidate matching
+
+
+
+----
 [:icicle-zap-to-char-candidates]
 ==== Option icicle-zap-to-char-candidates ====
 
