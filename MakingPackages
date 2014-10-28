@@ -168,9 +168,7 @@ What Marmalade does to try to find commentary for a package is to try
 to present any README it can find. If you add a plain text README it
 will get displayed.
 
-In fact Marmalade will display *any* README it finds:
-
-[[https://github.com/nicferrier/elmarmalade/blob/master/marmalade-service.el#L127]]
+In fact Marmalade will [[https://github.com/nicferrier/elmarmalade/blob/master/marmalade-service.el#L127 display *any* README it finds]]
 
 I could add more logic to this if you think there are better ways to find package description. One thing that springs to mind is:
 
