@@ -57,13 +57,13 @@ In other words: package name, version, summary. All strings.
 NicFerrier says that the requirement of Marmalade to take a package
 tar file is a feature:
 
-::Some things just builds these packages for you. I don't like that
-:on principle because then you can't actually test what you're
+: Some things just builds these packages for you. I don't like that
+on principle because then you can't actually test what you're
 building. There are certain things about packages that are good to
 test yourself (especially after you have a user base already using
 your package - you want to just release a broken one?). The best way
 of doing that is to make the package yourself.\\
-::NicFerrier
+:: NicFerrier
 
 Marmalade has a demo multifile package that shows how you can do it:
 
