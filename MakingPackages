@@ -67,8 +67,11 @@ Ok, I used cask package and actually it does the right thing.
 The upload worked well.
 
 
-== ELPAKIT ==
-Elpakit does the right thing too. With no python. :-)
+== ELPAKit ==
+
+[[https://marmalade-repo.org/packages/elpakit ELPAKit]] does the right
+thing too. With no python.
+
 
 
 == Marmalade peculiarities ==
