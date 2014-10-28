@@ -51,6 +51,8 @@ Things that people tend to forget or not notice about this:
 * the `;;; Code:` marker is important, it shows the end of the Commentary
 * the end marker *must* be present
 
+One more note, the LexicalBinding declaration is optional. Although
+these days you should consider it a default.
 
 == Multifile packages ==
 
