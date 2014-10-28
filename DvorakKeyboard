@@ -99,12 +99,10 @@ This does a low-level translation of the keys before mapping them to commands. T
 Beware that as soon as you evaluate the first expression, C-x does not work anymore, and you can't issue C-x C-e to evaluate the second expression; therefore you'd better evaluate them with eval-region. 
 
 [new]
-I would recommend to use 
- <code>
+I would recommend to use:
  (define-key key-translation-map [?\C-x] [?\C-u])
  (define-key key-translation-map [?\C-u] [?\C-x])
-</code>
-because keyboard-translate doesn't work in daemon mode. See http://lists.gnu.org/archive/html/help-gnu-emacs/2009-10/msg00505.html for details.
+keyboard-translate doesn't work in daemon mode. See http://lists.gnu.org/archive/html/help-gnu-emacs/2009-10/msg00505.html for details.
 
 ----
 CategoryKeys
