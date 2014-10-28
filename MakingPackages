@@ -1,2 +1,92 @@
-[[ELPA]] multifile packages have a complex structure. They are not simple tar archives. This page attempts to describe how to make them.
+[[ELPA]] multifile packages have a complex structure. They are not
+simple tar archives. This page attempts to describe how to make them.
+
+
+== Dump of a GitHub conversation ==
+
+//to be edited//
+
+Basically you need to create a direcctory that looks like this:
+
+{{{
+alchemist-0.0.2/alchemist-buffer.el
+alchemist-0.0.2/alchemist-compile.el
+alchemist-0.0.2/alchemist-execute.el
+alchemist-0.0.2/alchemist-hooks.el
+alchemist-0.0.2/alchemist-mix.el
+alchemist-0.0.2/alchemist-utils.el
+alchemist-0.0.2/alchemist.el
+alchemist-0.0.2/alchemist-pkg.el
+}}}
+
+and then tar that.
+
+The pkg file must look like this:
+
+{{{
+(define-package
+    "demo-multifile"
+    "0.0.2"
+  "a demo multifile package.")
+}}}
+
+In other words: name, version, summary.
+
+So the requirements are quite complex. Marmalade has the same
+requirements as Emacs itself. In other words you can test that this
+stuff works by doing:
+
+{{{
+M-x package-install-file [RET] your-package [RET]
+}}}
+
+I consider that a feature of Marmalade. Maybe an even better feature
+would be to cope with all the common errors people make and correct
+them.
+
+MELPA of course just builds these packages for you. I don't like that
+on principle because then you can't actually test what you're
+building. There are certain things about packages that are good to
+test yourself (especially after you have a user base already using
+your package - you want to just release a broken one?). The best way
+of doing that is to make the package yourself.
+
+Marmalade has a demo multifile package that shows how you can do it:
+
+https://github.com/nicferrier/elmarmalade/tree/master/demo-multifile
+
+but also tools like elpakit and cask will help you build packages as well.
+
+== Cask ==
+Ok, I used cask package and actually it does the right thing.
+
+* create a directory called dist
+* with the alchemist-[VERSION].tar in it
+* inclusive a alchemist-pkg.el file.
+
+The upload worked well.
+
+
+== ELPAKIT ==
+Elpakit does the right thing too. With no python. :-)
+
+
+== Marmalade peculiarities ==
+
+But is there also a way to add more information which will be shown in
+the about part on the marmalade client?
+
+What Marmalade does to try to find a package description for a package
+is to try to present any README it can find. If you add a plain text
+README it will get displayed.
+
+In fact Marmalade will display any README it finds:
+
+[[https://github.com/nicferrier/elmarmalade/blob/master/marmalade-service.el#L127]]
+
+I could add more logic to this if you think there are better ways to find package description. One thing that springs to mind is:
+
+* if no README
+* find the elisp file that is named the same as the package
+* find a commentary section in that
 
