@@ -1,6 +1,26 @@
 [[ELPA]] multifile packages have a complex structure. They are not
 simple tar archives. This page attempts to describe how to make them.
 
+== When do you need to build a package? ==
+
+MELPA builds packages for you, with it's own build system. You don't
+build packages with MELPA.
+
+ELPA requires you to have the directory sturcture here checked into
+the ELPA git repository. You don't build the actual tar file.
+
+Marmalade requires that you submit the actual tar file of your built
+package.
+
+Emacs requires that you build tar file packages if you want to install
+them from the file system with:
+
+{{{
+M-x package-install-file
+}}}
+
+for example.
+
 
 == An example package ==
 
@@ -20,35 +40,30 @@ alchemist-0.0.2/alchemist-pkg.el
 
 and then tar that.
 
-The pkg file must look like this:
+The pkg file, `alchemist-pkg.el`, must look like this:
 
 {{{
 (define-package
-    "demo-multifile"
+    "alchemist"
     "0.0.2"
-  "a demo multifile package.")
+  "A package to help with alchemy.")
 }}}
 
-In other words: name, version, summary.
+In other words: package name, version, summary. All strings.
 
-So the requirements are quite complex. Marmalade has the same
-requirements as Emacs itself. In other words you can test that this
-stuff works by doing:
 
-{{{
-M-x package-install-file [RET] your-package [RET]
-}}}
+== Advantages and Disadvantages of manually building packages ==
 
-I consider that a feature of Marmalade. Maybe an even better feature
-would be to cope with all the common errors people make and correct
-them.
+NicFerrier says that the requirement of Marmalade to take a package
+tar file is a feature:
 
-MELPA of course just builds these packages for you. I don't like that
-on principle because then you can't actually test what you're
-building. There are certain things about packages that are good to
-test yourself (especially after you have a user base already using
-your package - you want to just release a broken one?). The best way
-of doing that is to make the package yourself.
+:Some things just builds these packages for you. I don't like that
+:on principle because then you can't actually test what you're
+:building. There are certain things about packages that are good to
+:test yourself (especially after you have a user base already using
+:your package - you want to just release a broken one?). The best way
+:of doing that is to make the package yourself.\\
+:NicFerrier
 
 Marmalade has a demo multifile package that shows how you can do it:
 
