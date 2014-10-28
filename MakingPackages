@@ -63,7 +63,7 @@ building. There are certain things about packages that are good to
 test yourself (especially after you have a user base already using
 your package - you want to just release a broken one?). The best way
 of doing that is to make the package yourself.\\
-:: NicFerrier
+: NicFerrier
 
 Marmalade has a demo multifile package that shows how you can do it:
 
