@@ -54,8 +54,9 @@ In other words: package name, version, summary. All strings.
 
 Marmalade has a
 [[https://github.com/nicferrier/elmarmalade/tree/master/demo-multifile demo multifile package]]
-that shows how you can do it but also tools
-like Cask and ELPAKit will help you build packages as well.
+with a Makefile that shows how you can build
+a package with simple unix tools, do it but also tools like Cask and
+ELPAKit will help you build packages as well.
 
 
 == Advantages and Disadvantages of manually building packages ==
@@ -74,33 +75,41 @@ NicFerrier
 
 == Cask ==
 
-Ok, I used [[http://cask.github.io/why-cask.html cask package]]
-and actually it does the right thing.
+You can use [[http://cask.github.io/why-cask.html cask package]] and
+it does the right thing:
 
 * create a directory called dist
 * with the alchemist-[VERSION].tar in it
 * inclusive a alchemist-pkg.el file.
 
-The upload worked well.
+Then you can install or upload somewhere.
 
 
 == ELPAKit ==
 
 [[https://marmalade-repo.org/packages/elpakit ELPAKit]] does the right
-thing too. With no python.
+thing too. With no python:
+
+{{{
+M-x elpakit-make-multi
+}}}
+
+in the package directory of a multi-file package.
 
 
 
 == Marmalade peculiarities ==
 
-But is there also a way to add more information which will be shown in
-the about part on the marmalade client?
+MarmaladeRepo has some odd stuff about how it displays commentary
+about a package. Commentary isn't normally part of multi-file
+packages, but is there a way to add more information which will
+be shown in the about part on the marmalade website.
 
-What Marmalade does to try to find a package description for a package
-is to try to present any README it can find. If you add a plain text
-README it will get displayed.
+What Marmalade does to try to find commentary for a package is to try
+to present any README it can find. If you add a plain text README it
+will get displayed.
 
-In fact Marmalade will display any README it finds:
+In fact Marmalade will display *any* README it finds:
 
 [[https://github.com/nicferrier/elmarmalade/blob/master/marmalade-service.el#L127]]
 
