@@ -58,7 +58,9 @@ https://github.com/nicferrier/elmarmalade/tree/master/demo-multifile
 but also tools like elpakit and cask will help you build packages as well.
 
 == Cask ==
-Ok, I used cask package and actually it does the right thing.
+
+Ok, I used [[http://cask.github.io/why-cask.html cask package]]
+and actually it does the right thing.
 
 * create a directory called dist
 * with the alchemist-[VERSION].tar in it
