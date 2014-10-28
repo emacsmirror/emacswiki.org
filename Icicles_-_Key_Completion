@@ -476,23 +476,26 @@ quick way to insert characters.
 Starting with Emacs 23, vanilla Emacs has ''Unicode'' support, and you
 can insert any Unicode characters using either an input method or  '''`C-x 8 RET''''.   `C-x 8 RET' is bound by default in Emacs to command `insert-char' (called `ucs-insert' prior to Emacs 24).  If you use my library <tt>[[ucs-cmds.el]]</tt> then you might want to remap that command to command '''`ucsc-insert'''', which is an enhancement.
 
-'''Icicles''' enhances this by showing in `*Completions*',
+If option '''`<tt>[[Icicles - Customization and General Tips#icicle-read-char-by-name-multi-completion-flag|icicle-read-char-by-name-multi-completion-flag]]</tt>''''  is
+non-`nil' then '''Icicles''' enhances this in a few ways:
+
+* It shows in `*Completions*',
 for each candidate Unicode character, its name and code point, as well as the character itself.
 
-Also, when you cycle among the matching candidates, the name and code point of the current candidate are shown in the [[mode line]].
+* When you cycle among the matching candidates, the name and code point of the current candidate are shown in the [[mode line]].
 The code point is shown in hexadecimal, octal, and decimal
 notations.
 
-Completion candidates are in fact [[multi-completion]]s, meaning that
+* Completion candidates are in fact [[multi-completion]]s, meaning that
 you can match the name or the code point, or both.
 
-You can even match the character itself.  Why might you
+* You can even match the character itself.  Why might you
 want to do that?  To see the corresponding Unicode character
 name(s), including any old names.  For example, for the character
 '''`''' (grave accent) you get these two completion candidates:
 
-      GRAVE ACCENT      60      `
-      SPACING GRAVE     60      `
+          GRAVE ACCENT      60      `
+          SPACING GRAVE     60      `
 
 The main purpose for this is to show you the characters and code points together with their names (WYSIWYG).  The characters are shown in `*Completions*'
 using the same font as the frame from which you invoked `C-x 8 RET'.  That you can also match against the characters themselves is
@@ -559,7 +562,6 @@ CategoryProgrammerUtils
 CategoryCode
 CategoryAccessibility
 CategoryMenus
-
 
 
 
