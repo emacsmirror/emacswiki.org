@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Aug 22 16:26:38 2014 (-0700)
+;; Last-Updated: Mon Oct 27 23:36:51 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 28298
+;;     Update #: 28310
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7134,25 +7134,28 @@
 ;;  my library `ucs-cmds.el' then you might want to remap that command
 ;;  to command `ucsc-insert', which is an enhancement.
 ;;
-;;  Icicles enhances this by showing in `*Completions*', for each
-;;  candidate Unicode character, its name and code point, as well as
-;;  the character itself.
+;;  If option `icicle-read-char-by-name-multi-completion-flag' is
+;;  non-`nil' then Icicles enhances this in a few ways:
 ;;
-;;  Also, when you cycle among the matching candidates, the name and
-;;  code point of the current candidate are shown in the mode line.
-;;  The code point is shown in hexadecimal, octal, and decimal
-;;  notations.
+;;  * It shows in `*Completions*', for each candidate Unicode
+;;    character, its name and code point, as well as the character
+;;    itself.
 ;;
-;;  Completion candidates are in fact multi-completions, meaning that
-;;  you can match against the name or the code point, or both.
+;;  * When you cycle among the matching candidates, the name and code
+;;    point of the current candidate are shown in the mode line.  The
+;;    code point is shown in hexadecimal, octal, and decimal
+;;    notations.
 ;;
-;;  You can even match the character itself.  Why might you want to do
-;;  that?  To see the corresponding Unicode character name(s),
-;;  including any old names.  For example, for the character ` (grave
-;;  accent) you get these two completion candidates:
+;;  * Completion candidates are in fact multi-completions, meaning
+;;    that you can match against the name or the code point, or both.
 ;;
-;;    GRAVE ACCENT      60      `
-;;    SPACING GRAVE     60      `
+;;  * You can even match the character itself.  Why might you want to
+;;    do that?  To see the corresponding Unicode character name(s),
+;;    including any old names.  For example, for the character `
+;;    (grave accent) you get these two completion candidates:
+;;
+;;      GRAVE ACCENT      60      `
+;;      SPACING GRAVE     60      `
 ;;
 ;;  The main purpose for this is to show you the characters and code
 ;;  points together with their names (WYSIWYG).  The characters are
