@@ -1,4 +1,11 @@
 [[zh:安装软件包]]
+== Installing packages from Internet ==
+
+The most common method of installing packages of Emacs Lisp since Emacs 24 has been [[ELPA]] packages.
+
+Additional package archives such as  [[MELPA]] or [[MarmaladeRepo]] exist to supplement what is in [[ELPA]].
+
+
 == Installing a new file ==
 
 Make sure you have a local directory where you put elisp files.  I use ~/elisp, for example.
@@ -36,9 +43,6 @@ This requires some knowledge about the package, of course.  In the above case, f
 knew that erc-auto defines lots of autoloads, but does not autoload ''erc'' itself (use ''erc-select''
 to connect to network)...
 
-== Installing packages from Internet ==
-
-There exist hundreds of Emacs Lisp libraries. Many of these can be installed using a *package manager* such as [[ELPA]], [[MELPA]] or [[Marmalade]].
 
 ----
 CategoryDotEmacs.
