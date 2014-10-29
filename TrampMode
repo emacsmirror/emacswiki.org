@@ -113,6 +113,12 @@ If you use zsh and Tramp hangs every time you try to connect, try placing this i
 [[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ '
 }}}
 
+Make it foolproof by putting it at the very top of your .zshrc and adding a return to ensure that nothing later in your .zshrc re-enables PS1:
+
+{{{
+[[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return
+}}}
+
 Alternatively, I had success using the following in my .zshrc:
 
 {{{
