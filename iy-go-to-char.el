@@ -6,8 +6,8 @@
 ;; Filename: iy-go-to-char.el
 ;; Description: Go to char
 ;; Created: 2009-08-23 01:27:34
-;; Version: 3.2.1
-;; Last-Updated: 2013-09-01 15:22:34
+;; Version: 3.2.2
+;; Last-Updated: 2014-10-29 22:39:29
 ;; URL: https://github.com/doitian/iy-go-to-char
 ;; Compatibility: GNU Emacs 23.1.1
 
@@ -60,13 +60,18 @@
 ;; You also can bind go-to methods and up-to methods to different keys.
 ;;
 ;; Except repeating the char key, followings keys are defined before
-;; quitting the search:
+;; quitting the search (which can be disabled by setting
+;; `iy-go-to-char-override-local-map' to nil):
+;;
+;;    X   -- where X is the char to be searched. Repeating it will search
+;;           forward the char. Can be disabled through
+;;           `iy-go-to-char-continue-when-repeating'
 ;;
 ;;    ;   -- search forward the char, customizable:
-;;           `iy-go-to-char-key-forward'
+;;           `iy-go-to-char-key-forward', `iy-go-to-char-use-key-forward'
 ;;
 ;;    ,   -- search backward the char, customizable:
-;;           `iy-go-to-char-key-backward'
+;;           `iy-go-to-char-key-backward', `iy-go-to-char-use-key-backward'
 ;;
 ;;    C-g -- quit
 ;;
@@ -96,6 +101,15 @@
 ;; `iy-go-to-char-continue-backward'.
 
 ;;; Change Log:
+;; 2014-10-29 (3.2.2)
+;;
+;;    - Add options `iy-go-to-char-use-key-forward',
+;;      `iy-go-to-char-use-key-backward' and
+;;      `iy-go-to-char-continue-when-repeating' to toggle the feature that
+;;      continuing search by repeat typing a single key.
+;;    - Add option `iy-go-to-char-override-local-map' to disable the temporary
+;;      map after activate `iy-go-to-char'.
+;;
 ;; 2013-04-28 (3.2.1)
 ;;
 ;;    - Fix documentations.
@@ -117,9 +131,11 @@
 ;;
 ;; 2013-03-25 (2.1)
 ;;    - Fix a but that I forget to set `mc--this-command'
+;;
 ;; 2013-03-25 (2.0)
 ;;    - Use overriding-local-map to setup keymap
 ;;    - multiple-cursors compatible
+;;
 ;; 2012-04-16 (1.1)
 ;;    - fix C-s/C-r to enter isearch
 
@@ -132,12 +148,28 @@
   :group 'matching)
 
 (defcustom iy-go-to-char-key-forward ?\;
-  "Default key used to go to next occurence of the char."
+  "Default key used to go to next occurrence of the char."
   :type 'character
   :group 'iy-go-to-char)
+(defcustom iy-go-to-char-use-key-forward t
+  "Whether bind `iy-go-to-char-key-forward' to go to next occurrence of the char."
+  :type 'boolean
+  :group 'iy-go-to-char)
 (defcustom iy-go-to-char-key-backward ?\,
-  "Default key used to go to previous occurence of the char."
+  "Default key used to go to previous occurrence of the char."
   :type 'character
+  :group 'iy-go-to-char)
+(defcustom iy-go-to-char-use-key-backward t
+  "Whether bind `iy-go-to-char-key-backward' to go to next occurrence of the char."
+  :type 'boolean
+  :group 'iy-go-to-char)
+(defcustom iy-go-to-char-continue-when-repeating t
+  "Whether continue the search by repeating the search char."
+  :type 'boolean
+  :group 'iy-go-to-char)
+(defcustom iy-go-to-char-override-local-map t
+  "Whether use the temporary key bindings following `iy-go-to-char'."
+  :type 'boolean
   :group 'iy-go-to-char)
 
 (defvar iy-go-to-char-start-pos nil
@@ -191,16 +223,20 @@ Set to `exclude' so the next matched char is excluded in the region.")
 
 (defun iy-go-to-char--override-local-map (char)
   "Override the local key map for jump char CHAR."
-  (setq overriding-local-map
+  (when iy-go-to-char-override-local-map
+   (setq overriding-local-map
         (let ((map (copy-keymap iy-go-to-char-keymap)))
 
-          (define-key map (string char) 'iy-go-to-or-up-to-continue)
-          (define-key map (string iy-go-to-char-key-forward) 'iy-go-to-or-up-to-continue)
-          (define-key map (string iy-go-to-char-key-backward) 'iy-go-to-or-up-to-continue-backward)
+          (when iy-go-to-char-continue-when-repeating
+            (define-key map (string char) 'iy-go-to-or-up-to-continue))
+          (when iy-go-to-char-use-key-forward
+            (define-key map (string iy-go-to-char-key-forward) 'iy-go-to-or-up-to-continue))
+          (when iy-go-to-char-use-key-backward
+            (define-key map (string iy-go-to-char-key-backward) 'iy-go-to-or-up-to-continue-backward))
 
           (define-key map [t] 'iy-go-to-char-pass-through)
 
-          map)))
+          map))))
 
  
 
@@ -430,3 +466,5 @@ Set `STOP-POSITION' to overwrite the last used stop position strategy."
 (provide 'iy-go-to-char)
 
 ;;; iy-go-to-char.el ends here
+
+;;  LocalWords:  customizable
