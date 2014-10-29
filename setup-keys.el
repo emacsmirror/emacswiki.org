@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May 23 14:45:15 2014 (-0700)
+;; Last-Updated: Wed Oct 29 15:43:54 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 1254
+;;     Update #: 1256
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -68,6 +68,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/10/29 dadams
+;;     Bind (next|previous)-buffer-repeat.
 ;; 2014/05/23 dadams
 ;;     Bind narrow-indirect.el commands.
 ;; 2014/05/19 dadams
@@ -673,7 +675,10 @@
     (define-key ctl-x-map [(control ?\;)] 'comment-region-lines)               ; `C-x C-;'
     (define-key ctl-x-map "\M-f" 'region-to-file)                              ; `C-x M-f'
     (define-key ctl-x-map "L"    'goto-longest-line)                           ; `C-x L'
-    (when (fboundp 'undo-repeat) (global-set-key [remap undo] 'undo-repeat)))) ; `C-x u' etc.
+    (when (fboundp 'undo-repeat) (global-set-key [remap undo] 'undo-repeat))   ; `C-x u' etc.
+    (when (fboundp 'next-buffer-repeat)
+      (global-set-key [remap previous-buffer] 'previous-buffer-repeat)         ; `C-x left'
+      (global-set-key [remap next-buffer]     'next-buffer-repeat))))          ; `C-x right'
   
 ;; In `chistory.el'.
 (define-key ctl-x-map [(meta ?x)] 'repeat-matching-complex-command)            ; `C-x M-x'
