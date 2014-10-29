@@ -206,9 +206,11 @@ and so on:
            "."))))
     (setq gnus-group-line-format "%M%S%p%P%5y:%B%(%ug%)\n")
 
-== Header Formatting  ==
+== Article Buffer Formatting ==
 
-=== Date Header ===
+=== Header Formatting  ===
+
+==== Date Header ====
 
 <code>gnus-article-date-headers</code> variable have many customizations out of the box, one of most useful
 customization is <code>combined-lapsed</code> which displays original date header with the elapsed
