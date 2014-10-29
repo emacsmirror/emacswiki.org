@@ -1,4 +1,4 @@
-shr.el is a HTML renderer in [[Gnus]] and the upcomming Emacs release (24.4). It is the basis of the [[eww]] web browser. http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/lisp/net/shr.el
+shr.el is a HTML renderer in [[Gnus]]. It was added to Emacs 24.4. It is the basis of the [[eww]] web browser. http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/lisp/net/shr.el
 
 ----
 
