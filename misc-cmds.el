@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 17 13:02:03 2014 (-0700)
+;; Last-Updated: Wed Oct 29 15:39:04 2014 (-0700)
 ;;           By: dradams
-;;     Update #: 3130
+;;     Update #: 3139
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
@@ -41,7 +41,8 @@
 ;;    `indirect-buffer', `kill-buffer-and-its-windows',
 ;;    `list-colors-nearest', `list-colors-nearest-color-at',
 ;;    `mark-buffer-after-point', `mark-buffer-before-point',
-;;    `old-rename-buffer', `recenter-top-bottom',
+;;    `next-buffer-repeat' (Emacs 22+), `old-rename-buffer',
+;;    `previous-buffer-repeat' (Emacs 22+), `recenter-top-bottom',
 ;;    `recenter-top-bottom-1', `recenter-top-bottom-2',
 ;;    `region-length', `region-to-buffer', `region-to-file',
 ;;    `resolve-file-name', `revert-buffer-no-confirm',
@@ -51,7 +52,8 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `line-number-at-pos', `read-shell-file-command'.
+;;    `line-number-at-pos', `read-shell-file-command',
+;;    `repeat-command'.
 ;;
 ;;
 ;;  ***** NOTE: These EMACS PRIMITIVES have been REDEFINED HERE:
@@ -82,10 +84,16 @@
 ;;   (define-key visual-line-mode-map "\C-a" 'beginning-of-visual-line+)
 ;;   (define-key visual-line-mode-map "\C-e" 'end-of-visual-line+)
 ;;
+;;   (global-set-key [remap previous-buffer] 'previous-buffer-repeat)
+;;   (global-set-key [remap next-buffer]     'next-buffer-repeat)
+;;   (global-set-key [remap undo]            'undo-repeat)
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2014/10/29 dadams
+;;     Added: next-buffer-repeat, previous-buffer-repeat, repeat-command.
 ;; 2014/08/17 dadams
 ;;     Applied renaming: icicle-read-color-wysiwyg -> icicle-read-color-WYSIWYG.
 ;; 2013/12/31 dadams
@@ -311,6 +319,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
+
+;; Quiet the byte compiler.
+(defvar last-repeatable-command)        ; Defined in `repeat.el'.
 
 (eval-when-compile (require 'cl)) ;; case, plus for Emacs < 21: dolist, pop
 
@@ -1306,6 +1317,32 @@ E.g., if bound to `C-x u' then you can use `C-x u u u...' to repeat."
       (funcall fun (let ((map  (make-sparse-keymap)))
                      (define-key map "u" 'undo-repeat)
                      map)))))
+
+;; Suggested: rebind `previous-buffer' keys to `previous-buffer-repeat' and
+;;                   `next-buffer'     keys to `next-buffer-repeat'.
+;; (global-set-key [remap previous-buffer] 'previous-buffer-repeat)
+;; (global-set-key [remap next-buffer]     'next-buffer-repeat)
+
+(when (> emacs-major-version 21)
+  (defun repeat-command (command)
+    "Repeat COMMAND."
+    (let ((repeat-message-function  'ignore))
+      (setq last-repeatable-command  command)
+      (repeat nil)))
+
+  (defun previous-buffer-repeat ()
+    "Switch to the previous buffer in the selected window.
+You can repeat this by hitting the last key again..."
+    (interactive)
+    (require 'repeat nil t)
+    (repeat-command 'next-buffer))
+
+  (defun next-buffer-repeat ()
+    "Switch to the next buffer in the selected window.
+You can repeat this by hitting the last key again..."
+    (interactive)
+    (require 'repeat nil t)
+    (repeat-command 'next-buffer)))
 
 ;;;###autoload
 (defun view-X11-colors ()
