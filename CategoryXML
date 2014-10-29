@@ -11,7 +11,7 @@ These are some packages used for XML processing in Emacs or XEmacs:
 * XmlSoxMode -- edit XML in a [http://www.langdale.com.au/SOX/ SOX] view.
 * [http://www.menteith.com/wiki/xslide xslide] -- major mode for editing XSLT
 * [http://xslt-process.sourceforge.net/ XSLT-process] -- minor mode for doing XSLT processing and debugging
-* [https://github.com/maksle/xslt-dependencies] -- minor mode for viewing XSLT 1.0 dependencies in a graph
+* [https://github.com/maksle/xslt-dependencies XSLT-dependencies] -- minor mode for viewing XSLT 1.0 dependencies in a graph
 * XmlRpc -- package for RPC calls using XML.
 * TeXmacs -- intends to support native editing of XML documents (not quite Emacs, but it has a similar spirit)
 * DtmlMode -- editing Zope's DTML
