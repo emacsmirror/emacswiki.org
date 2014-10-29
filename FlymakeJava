@@ -63,6 +63,71 @@ If you are using the JavaDevelopmentEnvironment, check JdeeFlymake.
 - NascifAbousalhNeto
 
 (JdeeFlymake and the[http://www.emacswiki.org/cgi-bin/emacs/jde-eclipse-compiler-server.el alternative] did not work for me and after some hacking I came up with a workable situation: FlyMakeJdeeEclipse
+[[ja:FlymakeJava-ja]]
+== You will need these lines in your .emacs file ==
+<pre>(require 'flymake)
+(add-hook 'java-mode-hook 'flymake-mode-on)
+</pre>
+
+== Adhoc single files ==
+To use flymake with individual Java files use the following init function, along with the stock flymake-simple-cleanup function:
+
+<pre>(defun my-java-flymake-init ()
+  (list "javac" (list (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-with-folder-structure))))
+</pre>
+
+Then, to use these functions:
+<pre>(add-to-list 'flymake-allowed-file-name-masks '("\\.java$" my-java-flymake-init flymake-simple-cleanup))
+</pre>
+
+== Java syntax checking with Make ==
+
+This is the command that stock flymake.el runs on a Java source file:
+
+<pre>make -s -C ~/src/java/hello/ CHK_SOURCES=/tmp/../hello.java SYNTAX_CHECK_MODE=1 check-syntax
+</pre>
+To get this to work, add this stanza to your Makefile:
+
+<pre>.PHONY: check-syntax
+
+check-syntax:
+	javac -Xlint $(CHK_SOURCES)
+</pre>
+
+I also add the following. Typing "make test-fast" will compile and run the most recently modified Java program:
+
+<pre>RECENT_JAVA := $(shell ls -1t *.java | head -1)
+
+test-fast: $(basename $(RECENT_JAVA)).run
+
+%.run:	%.class
+	java $(basename $<)
+%.class:	%.java
+	javac $<
+</pre>
+
+
+To make sure Flymake is working correctly, and to tune your experience, try adding these lines to your ~/.emacs.d/init.el file:
+
+<pre>(when (require 'flymake)
+  (set-variable 'flymake-log-level 9)
+  (setq flymake-start-syntax-check-on-newline nil)
+  (setq flymake-no-changes-timeout 10)
+  (add-hook 'java-mode-hook 'flymake-mode-on))
+</pre>
+
+
+
+
+== Java syntax checking with JDEE ==
+
+
+If you are using the JavaDevelopmentEnvironment, check JdeeFlymake.
+
+- NascifAbousalhNeto
+
+(JdeeFlymake and the[http://www.emacswiki.org/cgi-bin/emacs/jde-eclipse-compiler-server.el alternative] did not work for me and after some hacking I came up with a workable situation: FlyMakeJdeeEclipse
 
 - jwickers
 
@@ -70,6 +135,8 @@ I have also posted some instructions on how you can tweak the ECJ options to be 
 
 If you are not using jdee, but still want to run flymake for java you can try to use [http://www.khelekore.org/~robo/ecj-flymake/|ecj flymake]
 
-
+----
+== Comments ==
+Flymake does not like lower-cased makefile names. I had to rename it to "Makefile" to make flymake stop complaining about a missing makefile. Very strange.
 ----
 FlyMake CategoryJava
