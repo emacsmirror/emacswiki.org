@@ -12,7 +12,7 @@ Click on the heading to search for all pages related to emulating other software
 ** [[Sunrise Commander]] -- also based on dired, but with many more features than mc.el and heavily influenced by the Orthodox File Manager standard.
 * PcSelectionMode -- Manage your regions like Motif, MAC or MS-Windows.
 * WholeLineOrRegion -- Operate on a line if nothing is selected.
-* Imititating Vi and Vim.
+* Imitating Vi and Vim.
 ** [[vim-current-buffer]] - a simple asynchronous call to vim / gvim to open current buffer
 ** [[Evil]] -- an extensible Vi layer, the successor of Vimpulse and VimMode (see below)
 ** ViperMode -- A comprehensive mode that comes with Emacs.
