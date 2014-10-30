@@ -2,3 +2,10 @@ The Framemove works for me when emacs is not in full screen, but when I switch t
 
 -- [http://www.arcanegarden.com Anonymous] 2014-10-30 17:41 UTC
 
+
+----
+
+Framemove works fine on Mac, but in Ubuntu it only works when the emacs frames are not full screen. What could be going on??
+
+-- [http://www.arcanegarden.com Anonymous] 2014-10-30 17:41 UTC
+
