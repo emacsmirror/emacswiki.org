@@ -26,6 +26,7 @@ Click on the heading to search for all pages related to emulating other software
 *** RepeatingCommandsLikeVi
 *** SearchAtPoint
 *** ZapUpToChar
+*** [https://github.com/thierryvolpiatto/zop-to-char ZopToChar] - A visual zap-to-char command for emacs
 ** VimMode -- A mode emulating many Vi and Vim features.
 * Notes for those with VisualStudio habits:
 ** EmacsForDevStudioUsers
