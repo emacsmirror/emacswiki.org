@@ -24,6 +24,7 @@ Now you're part of the process. You're acting as package manager and as a releas
 [center]👾[/center]
 
 In the mean time, I've added a Git link to pages containing files (the ones with a download button).
+It will start showing up whenever you edit a file.
 One example is this one here: AlexSchroederConfigWindows.
 Many of these stand alone packages deserve their own repositories, though.
 This is simply band aid.
