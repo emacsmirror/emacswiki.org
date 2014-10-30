@@ -1,0 +1,22 @@
+[new:AlexSchroeder:2014-10-30 12:13 UTC]
+Who creates new pages containing Emacs Lisp on the wiki? How many packages were posted to Emacs Wiki in recent times?
+Here's the list of all the pages that were created between 2013-01-01 and now, with a page name ending in ##.el##.
+The list also includes pages that were subsequently deleted, unfortunately. But it's a start!
+
+* http://paste.lisp.org/display/144219
+
+Why do we care? Back when the wiki got started, many people posted new code to nntp:gnu.emacs.sources. It was a lousy way to distribute code.
+The wiki was a bit better than that. It didn't require you to subscribe to a newsgroup or to a mailing list, and it made it easier to search for code.
+
+A lot has changed since 2002, however. We have public version control systems like [https://savannah.nongnu.org/ Savannah].
+Emacs comes with a package manager.
+
+And here's the rub: People have different expectations these days. /Finding a package/ is no longer good enough. They want to use the package manager to install code. So the first thing they do is upload code they found on the wiki to a package manager. Now the situation is a bit better, because they can use the package manager to install code. But people expect better. They expect proper releases. They expect proper channels for bug reports.
+
+In fact, what people expect, is package managers and release managers doing their job. Unfortunately, people uploading code they found on wiki pages to Marmalade aren't providing the package and release management users want.
+
+Thus, I'd like to recommend the following:
+
+If you are uploading code hosted on the wiki to a package manager, stop. Create a project on Savannah or any of the many alternatives out there, make proper releases, and replace the code on this wiki with a link to your repository. The absolute minimum, I think, would be the use of [[Gists]]: “Gist is a simple way to share snippets and pastes with others. All gists are git repositories, so they are automatically versioned, forkable and usable as a git repository.”
+
+Now you're part of the process. You're acting as package manager and as a release manager. Thank you!
