@@ -9,20 +9,23 @@
 (require 'cl)
 
 (add-to-list 'load-path (expand-file-name "elisp" (getenv "HOME")))
-(add-to-list 'exec-path "C:/Programme/cygwin/bin")
-(add-to-list 'exec-path "C:/Programme/GnuWin32/bin")
+;; Git shell provides some stuff?
+;; (add-to-list 'exec-path "c:/Users/asc/AppData/Local/GitHub/PortableGit_015aa71ef18c047ce8509ffb2f9e4bb0e3e73f13/bin")
+;; prefer Cygwin to Git shell
+(add-to-list 'exec-path "C:/cygwin64/bin")
+;; prefer GnuWin32 stuff to Cygwin? No security updates?
+;; (add-to-list 'exec-path "c:/Program Files (x86)/GnuWin32/bin")
 (add-to-list 'exec-path "C:/Program Files (x86)/Growl for Windows")
-(add-to-list 'exec-path "c:/Users/asc/AppData/Local/GitHub/PortableGit_015aa71ef18c047ce8509ffb2f9e4bb0e3e73f13/bin"); git
 (setenv "RSH" "SSH")
-
-(let (seen)
-  (dolist (path (mapcar 'file-truename
-			(append exec-path
-				(split-string (getenv "PATH") ";" t))))
-    (when (and (file-exists-p path)
-	       (not (member path seen)))
-      (setq seen (cons path seen))))
-  (setenv "PATH" (mapconcat 'identity (nreverse seen) ";" )))
+(setenv "LANG" "de_CH")
+;; (let (seen)
+;;   (dolist (path (mapcar 'file-truename
+;; 			(append exec-path
+;; 				(split-string (getenv "PATH") ";" t))))
+;;     (when (and (file-exists-p path)
+;; 	       (not (member path seen)))
+;;       (setq seen (cons path seen))))
+;;   (setenv "PATH" (mapconcat 'identity (nreverse seen) ";" )))
 
 (setenv "CYGWIN" "nodosfilewarning")
 
@@ -32,6 +35,7 @@
 (setenv "WikiDataDir" "test-data")
 (setq visible-bell t)
 (setq mouse-drag-copy-region t)
+(setq history-length 1000)
 
 ;; (set-face-attribute 'default nil :family "Garamond" :height 140)
 (set-face-attribute 'default nil :family "Consolas" :height 110)
@@ -40,7 +44,9 @@
 ;; Download http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html
 ;; Docs http://the.earth.li/~sgtatham/putty/0.60/htmldoc/Chapter7.html#plink
 (setq tramp-auto-save-directory (getenv "TEMP"))
-(setq tramp-default-method "plink")
+;; (setq tramp-default-method "pscp")
+;; (add-to-list 'exec-path "c:/Program Files/PuTTY")
+;; (find-file "/alex@66.111.62.85:campaignwiki.org/add-link.pl")
 
 ;;; pink-bliss color-theme
 
@@ -95,6 +101,12 @@
 		 (list from (query-replace-read-to from "Replace" nil))))
   (query-replace from to))
 
+;; expand region
+(add-to-list 'load-path (expand-file-name "elisp/expand-region.el"
+					  (getenv "HOME")))
+(autoload 'er/expand-region "expand-region" nil t)
+(global-set-key (kbd "C-'") 'er/expand-region)
+
 ;; printing PDF
 (setq ps-printer-name "\\\\fileserver03\\PDF_FOR_ALL"
       ps-spool-duplex t
@@ -111,7 +123,7 @@
 ;;   (global-set-key (kbd "C-c o") 'helm-occur)
 ;;   (define-key isearch-mode-map (kbd "C-o") 'helm-swoop-from-isearch))
 
-;; iswitchb
+;; iswitchb is obsolete!
 (iswitchb-mode 1)
 
 ;; FIXME: This doesn't seem to work. Grr.
@@ -259,6 +271,29 @@ Indent by DEPTH, if required"
 ;; 	  (setq path (cons (match-string 1) path))))
 ;;       (message (mapconcat 'identity path " - ")))))
 
+(defun scout-add-texts ()
+  (interactive)
+  (save-excursion
+    (remove-overlays)
+    (goto-char (point-min))
+    (let ((map (make-hash-table :test 'equal)))
+      (while (re-search-forward
+	      "<text id=\"\\(t[0-9]+\\)\" lang=\"en\">\\([^<]+\\)</text>"
+	      nil t)
+	(puthash (match-string-no-properties 1) (match-string-no-properties 2) map))
+      (goto-char (point-min))
+      (while (re-search-forward "\"\\(t[0-9]+\\)\"" nil t)
+	(unless (string= "<text id="
+			 (buffer-substring
+			  (- (match-beginning 0) 9)
+			  (match-beginning 0)))
+	  (overlay-put (make-overlay (match-beginning 1)
+				     (match-end 1))
+		       'display
+		       (gethash (match-string-no-properties 1) map)))))))
+
+	     
+
 ;;; Java
 
 ;; coworkers use TAB to indent code
@@ -268,41 +303,6 @@ Indent by DEPTH, if required"
 				  indent-tabs-mode t)))
 
 ;;; sql
-
-(autoload 'sqlplus "sqlplus" nil t)
-(autoload 'sqlplus-mode "sqlplus" nil t)
-
-;; (dolist (item '(("\\.sqp\\'" . sqlplus-mode)
-;; 		("\\.sql\\'" . sqlplus-mode)))
-;;   (add-to-list 'auto-mode-alist item))
-
-;; (autoload 'plsql-mode "plsql" nil t)
-
-;; (dolist (item '(("\\.pls\\'" . plsql-mode) ("\\.pkg\\'" . plsql-mode)
-;; 		("\\.pks\\'" . plsql-mode) ("\\.pkb\\'" . plsql-mode)
-;; 		("\\.prc\\'" . plsql-mode) ("\\.fnc\\'" . plsql-mode)
-;; 		("\\.trg\\'" . plsql-mode) ("\\.vw\\'" . plsql-mode)))
-;;   ("\\.sql\\'" . plsql-mode)
-;;   (add-to-list 'auto-mode-alist item))
-
-;; (global-set-key (kbd "C-c q") 'sqlplus)
-
-(add-hook 'sqlplus-mode-hook
-	  (lambda ()
-	    (local-set-key (kbd "C-z") 'bury-buffer)
-	    (set-process-coding-system (get-process (sqlplus-get-process-name sqlplus-connect-string))
-				       'latin-1 'latin-1)))
-
-;; (add-hook 'plsql-mode-hook
-;; 	  (lambda ()
-;; 	    (setq indent-tabs-mode nil)
-;; 	    (local-set-key (kbd "<C-return>") 'sqlplus-send-current)))
-
-;; (add-hook 'sql-mode-hook (lambda () 
-;; 			   (setq c-basic-offset 3
-;; 				 tab-width 3
-;; 				 indent-tabs-mode nil)
-;; 			   (local-set-key (kbd "C-c w") 'sql-copy-word)))
 
 ;; (defun sql-copy-word ()
 ;;   "Copy current word to the end of the buffer."
@@ -314,9 +314,11 @@ Indent by DEPTH, if required"
 
 (global-set-key (kbd "C-c q") 'sql-oracle)
 
-(setq sql-user "pista" sql-password "pista" sql-database "pista")
+(setq sql-user "pista" sql-password "pista" sql-database "pista_11")
+(setenv "NLS_LANG" "GERMAN_SWITZERLAND.UTF8")
 ;; (setenv "NLS_LANG" "AMERICAN_AMERICA.UTF8")
-;; (add-to-list 'process-coding-system-alist '("SQL" . utf-8));; no effect?
+
+(add-to-list 'process-coding-system-alist '("sqlplus" . utf-8))
 
 (setq sql-input-ring-file-name "~/.sql_history"
       sql-product 'oracle
@@ -330,25 +332,33 @@ Indent by DEPTH, if required"
   nil
   "substr(ors_util.get_user_code(" _ ", 246), 0, 30) \"code\"")
 
-(define-abbrev-table 'sql-mode-abbrev-table nil)
-(define-abbrev sql-mode-abbrev-table "orsuc" "" 'ors-uc)
+;; (define-abbrev-table 'sql-mode-abbrev-table nil)
+;; (define-abbrev sql-mode-abbrev-table "orsuc" "" 'ors-uc)
 
 (add-hook 'sql-mode-hook
 	  (lambda ()
 	    (setq indent-tabs-mode nil)
-	    (abbrev-mode 1)
+	    ;; (abbrev-mode 1)
 	    (local-set-key (kbd "C-z") 'sql-oracle)
 	    (local-set-key (kbd "C-c n") 'my-insert-next-key)
 	    (local-set-key (kbd "C-c C-c") 'sql-send-modified-paragraph)
 	    (local-set-key (kbd "C-c C-d") 'sql-oracle-describe)
 	    (local-set-key (kbd "<C-return>") 'sql-send-modified-paragraph)))
+
 (add-hook 'sql-interactive-mode-hook
 	  (lambda ()
-	    (local-set-key (kbd "C-z") 'bury-buffer)
-	    (abbrev-mode 1)
-	    (set-process-coding-system (get-buffer-process sql-buffer) 'latin-1 'latin-1)))
+	    (local-set-key (kbd "C-z") 'bury-buffer)))
 
 (add-hook 'sql-interactive-mode-hook 'my-sql-set-buffer)
+(defun my-sql-set-buffer ()
+  "Sets the SQLi buffer for all unconnected SQL buffers.
+Called from `sql-interactive-mode-hook'."
+  (let ((new-buffer (current-buffer)))
+    (dolist (buf (buffer-list))
+      (with-current-buffer buf
+	(unless (buffer-live-p sql-buffer)
+	  (setq sql-buffer new-buffer)
+	  (run-hooks 'sql-set-sqli-hook))))))
 
 (defun my-sql-quote (start end)
   (interactive "r")
@@ -381,6 +391,16 @@ Indent by DEPTH, if required"
   (forward-char -1)
   (untabify start end))
 
+(defun my-sql-unquote-from-java (start end)
+  (interactive "r")
+  (setq end (copy-marker end))
+  (goto-char end)
+  (set-mark (point))
+  (goto-char start)
+  (save-excursion
+    (while (re-search-forward "\\(^\\s-*\\(\\+\\s-*\\)?\"\\|\\s-*\"\\s-*\\(\\+\\s-*\\)?$\\)" end t)
+      (replace-match ""))))
+
 (defun my-code-quote-for-java (start end)
   (interactive "r")
   (setq end (copy-marker end))
@@ -396,15 +416,13 @@ Indent by DEPTH, if required"
   (insert "\"")
   (untabify start end))
 
-(defun my-sql-set-buffer ()
-  "Sets the SQLi buffer for all unconnected SQL buffers.
-Called from `sql-interactive-mode-hook'."
-  (let ((new-buffer (current-buffer)))
-    (dolist (buf (buffer-list))
-      (with-current-buffer buf
-	(unless (buffer-live-p sql-buffer)
-	  (setq sql-buffer new-buffer)
-	  (run-hooks 'sql-set-sqli-hook))))))
+(defun my-sql-in-java-rewrite-plus (start end)
+  (interactive "r")
+  (setq end (copy-marker end))
+  (goto-char start)
+  (save-excursion
+    (while (re-search-forward "\"\\s-*\\+\n\\(\\s-*\\)\"" end t)
+      (replace-match "\"\n\\1+ \""))))
 
 (defcustom sql-replacements
   '(("#W#" . ""))
@@ -542,6 +560,7 @@ Each line consists of a lastname, a tab, and a firstname."
 (setq dired-recursive-deletes 'top
       dired-recursive-copies 'top
       dired-dwim-target t
+      delete-by-moving-to-trash t
       dired-guess-shell-alist-user '(("\\.pdf$" "start")))
 
 (defface dired-pdf-face '((t (:foreground "firebrick"))) "PDF files")
@@ -566,14 +585,37 @@ Each line consists of a lastname, a tab, and a firstname."
 
 (setq sentence-end-double-space nil)
 
+;;; sunrise
+(add-to-list 'load-path "~/elisp/sunrise-commander")
+(require 'sunrise-commander nil t)
+(require 'sunrise-x-w32-addons nil t)
+(global-set-key (kbd "C-c m") 'sunrise)
+(setq sr-cursor-follows-mouse nil)
+(define-key sr-mode-map [backtab]        'sr-change-window)
+(define-key sr-mode-map [mouse-1]        nil)
+(define-key sr-mode-map [mouse-movement] nil)
+
+(defadvice windmove-do-window-select (after sr-windmove-do-window-select (dir &optional arg window))
+  "Handle window selections from `windmove-left' and family"
+  (when (and sr-running (eq (selected-window) (sr-other 'window)))
+    (sr-change-window)))
+
+(ad-activate 'windmove-do-window-select)
+
+;; http://en.wikipedia.org/wiki/Sentence_spacing
+(dolist (hook '(emacs-lisp-mode-hook
+		lisp-mode-hook
+		change-log-mode
+		texinfo-mode-hook))
+  (add-hook hook (lambda ()
+		   (set (make-local-variable 'sentence-end-double-space) t))))
+
 (dolist (hook '(emacs-lisp-mode-hook
 		lisp-mode-hook
 		rcirc-mode
 		change-log-mode
 		texinfo-mode-hook))
-  (add-hook hook (lambda ()
-		   (eldoc-mode 1)
-		   (set (make-local-variable 'sentence-end-double-space) t))))
+  (add-hook hook 'eldoc-mode))
 
 (defun highlight-fixme ()
   (font-lock-add-keywords nil'(("\\<\\(FIXME!?\\)"
@@ -642,7 +684,7 @@ Each line consists of a lastname, a tab, and a firstname."
 	try-complete-file-name-partially try-complete-file-name))
 
 ;;; shell
-(setq shell-file-name "C:/Programme/cygwin/bin/bash.exe")
+(setq shell-file-name "C:/cygwin64/bin/bash.exe")
 
 ;;; eshell
 (global-set-key (kbd "C-z") 'eshell)
@@ -678,12 +720,19 @@ Each line consists of a lastname, a tab, and a firstname."
       rcirc-log-directory "~/IRC Logs"
       rcirc-keywords '("ken" "kens" "kensa" "kensanatas" "kensanta"
 		       "alex")
+      gnutls-min-prime-bits 1024
       rcirc-server-alist
-      '(("irc.freenode.net" :channels ("#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	 "#emacs" "#sql" "#eclipse-de" "#eclipse-scout" "#emacswiki" "#emacs-ops"))
-	("irc.perl.org" :channels ("#perlde" "#oddmuse")))
+      ;; irc.freenode.net
+      '(("chat.freenode.net" :port 6697 :encryption tls
+	 :channels ("#rcirc" "#wiki" "#oddmuse" "#social"
+		    "#emacs" "#sql" "#eclipse-scout"
+		    "#indiewebcamp" "#microformats"
+		    "#emacswiki" "#emacs-ops" "#perl"))
+	;; ("irc.oftc.net" :port 6697 :encryption tls :channels ("#emacs"))
+	("irc.perl.org" :channels ("#perlde" "#oddmuse" "#perl")))
       rcirc-decode-coding-system 'undecided
-      rcirc-ignore-list '("consolers" "jordanb" "dustpuppy" "rudybot" "AL-76" "enometh")
+      rcirc-ignore-list '("consolers" "jordanb" "dustpuppy" "rudybot"
+			  "AL-76" "enometh" "GumbyPAN" "Loqi")
       rcirc-activity-string ""
       frame-title-format '("%b " rcirc-activity-string)
       rcirc-authinfo (let ((file "~/.rcirc-authinfo"))
@@ -759,6 +808,7 @@ Each line consists of a lastname, a tab, and a firstname."
 (global-set-key (kbd "C-c e") 'rcirc)
 
 (eval-after-load 'rcirc '(require 'rcirc-color nil t))
+(eval-after-load 'rcirc '(require 'circe-color nil t))
 (eval-after-load 'rcirc '(require 'rcirc-controls nil t))
 (eval-after-load 'rcirc '(require 'rcirc-notify nil t))
 (eval-after-load 'rcirc '(require 'rcirc-pounce nil t))
@@ -1010,17 +1060,33 @@ Example use: /all away food or /all quit zzzz."
 
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
-;;; oddmuse
+;;; Oddmuse
 
-(autoload 'oddmuse-edit "Edit a page on an Oddmuse wiki." t)
-(autoload 'oddmuse-post "Post the current buffer to an Oddmuse wiki." t)
-(autoload 'oddmuse-mode "Yadda yadda." t)
+(setq oddmuse-username "AlexSchroeder"
+      oddmuse-directory "~/.emacs.d/oddmuse")
+(add-to-list 'auto-mode-alist
+	     (cons (expand-file-name oddmuse-directory) 'oddmuse-mode))
+(autoload 'oddmuse-edit "oddmuse-curl"
+  "Edit a page on an Oddmuse wiki." t)
+(add-to-list 'vc-handled-backends 'oddmuse)
+(defun vc-oddmuse-registered (file)
+  "Handle files in `oddmuse-directory'."
+  (string-match (concat "^" (expand-file-name oddmuse-directory))
+		(file-name-directory file)))
+
+(autoload 'oddmuse-edit "oddmuse-curl"
+  "Edit a page on an Oddmuse wiki." t)
+(autoload 'oddmuse-post "oddmuse-curl"
+  "Post the current buffer to an Oddmuse wiki." t)
+(autoload 'oddmuse-mode "oddmuse-curl"
+  "A mode for editing Oddmuse wiki text." t)
 (setq oddmuse-wikis
-      '(("TestWiki" . "http://www.emacswiki.org/cgi-bin/test")
-	("EmacsWiki" . "http://www.emacswiki.org/cgi-bin/emacs")
-	("CommunityWiki" . "http://www.communitywiki.org/cw")
-	("OddmuseWiki" . "http://www.oddmuse.org/cgi-bin/oddmuse")
-	("Alex" . "http://www.emacswiki.org/cgi-bin/alex")))
+      '(("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs"
+	 utf-8 "uihnscuskc" nil)
+	("Alex" "https://alexschroeder.ch/wiki"
+	 utf-8 "question" "Alex Schroeder")
+	("Oddmuse" "http://oddmuse.org/wiki"
+	 utf-8 "ham" "Alex Schröder")))
 
 (add-hook 'text-mode-hook
 	  (lambda ()
@@ -1112,13 +1178,13 @@ cells by columns first."
 
 ;;; isearch & occur
 
-;; (defun isearch-occur ()
-;;   "Invoke `occur' from within isearch."
-;;   (interactive)
-;;   (let ((case-fold-search isearch-case-fold-search))
-;;     (occur (if isearch-regexp isearch-string (regexp-quote isearch-string)))))
+(defun isearch-occur ()
+  "Invoke `occur' from within isearch."
+  (interactive)
+  (let ((case-fold-search isearch-case-fold-search))
+    (occur (if isearch-regexp isearch-string (regexp-quote isearch-string)))))
 
-;; (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
+(define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
 
 (defun isearch-highlight-phrase ()
   "Invoke `highligh-phrase' from within isearch."
@@ -1244,7 +1310,8 @@ br.page {
 
 ;;; aspell using Cygwin
 
-(setq ispell-dictionary-alist
+(setq ispell-program-name "c:/cygwin64/bin/aspell.exe"
+      ispell-dictionary-alist
       '((nil "[A-Za-z]" "[^A-Za-z]" "[']" nil
 	 ("-B" "--dict-dir=/lib/aspell" "--master=english")
 	 nil iso-8859-1)
@@ -1332,3 +1399,31 @@ Use `reverse-region' to reverse the lines in the region."
 	  "insert into user_code(code_id, language_id, code, code_type_id, ext_key) values (,  246, 'Default  für neue E570 Apparate', 114733, '');\n"
 	  "insert into user_code(code_id, language_id, code, code_type_id, ext_key) values (, 1303, 'Default  for new E570 devices', 114733, '');\n"
 	  "\n"))
+
+;;; Unicode fonts (Roland Walker)
+;; (dolist (lib '("font-utils" "unicode-fonts" "ucs-utils" "list-utils"))
+;;   (add-to-list 'load-path
+;; 	       (expand-file-name lib (concat (getenv "HOME") "/elisp"))))
+;; (require 'unicode-fonts)
+;; (setq unicode-fonts-block-font-mapping
+;;       '(("Emoticons"
+;; 	 ("Apple Color Emoji" "Symbola" "Quivira")))
+;;       unicode-fonts-fontset-names '("fontset-default"))
+;; (unicode-fonts-setup)
+
+;;; Emoji Setup by Wasama
+;; https://github.com/wasamasa/dotemacs/blob/master/setup/setup-ui.el
+(set-fontset-font "fontset-default" '(#x2580 . #x277F) "Symbola")
+(set-fontset-font "fontset-default" '(#x10000 . #x1ffff) "Symbola")
+
+;; MELPA
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(defadvice magit-expand-git-file-name
+  (before magit-expand-git-file-name-cygwin activate)
+  "Handle Cygwin directory names such as /cygdrive/c/*
+by changing them to C:/*"
+  (when (string-match "^/cygdrive/\\([a-z]\\)/\\(.*\\)" filename)
+    (setq filename (concat (match-string 1 filename) ":/"
+			   (match-string 2 filename)))))
