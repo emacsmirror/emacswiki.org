@@ -87,5 +87,6 @@ Problems encountered:
 * Even though it shows up in the info pages, there is no <tt>dirtrack-mode</tt> function. There is a <tt>dirtrack-toggle</tt> but that doesn't take any arguments so it will always toggle. That makes <tt>dirtrack-toggle</tt> useless for forcing the mode on. Instead, I add the dirtrack hook myself via <tt>add-hook</tt>.
 * I had to turn off the standard <tt>shell-dirtrack</tt>. <tt>(shell-dirtrack-mode nil)</tt> does this fine but causes the script to whine in the minibuffer. I haven't attempted to fix this.
 * <tt>dirtrack-list</tt> is <tt>buffer-local</tt> so setting that has to be inside the <tt>shell-mode</tt> hook.
+* If your prompt has color codes embedded, either turn off colors or update the regexp to include them.
 
 CategoryShell
