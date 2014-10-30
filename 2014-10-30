@@ -20,3 +20,10 @@ Thus, I'd like to recommend the following:
 If you are uploading code hosted on the wiki to a package manager, stop. Create a project on Savannah or any of the many alternatives out there, make proper releases, and replace the code on this wiki with a link to your repository. The absolute minimum, I think, would be the use of [[Gists]]: “Gist is a simple way to share snippets and pastes with others. All gists are git repositories, so they are automatically versioned, forkable and usable as a git repository.”
 
 Now you're part of the process. You're acting as package manager and as a release manager. Thank you!
+
+[center]👾[/center]
+
+In the mean time, I've added a Git link to pages containing files (the ones with a download button).
+One example is this one here: AlexSchroederConfigWindows.
+Many of these stand alone packages deserve their own repositories, though.
+This is simply band aid.
