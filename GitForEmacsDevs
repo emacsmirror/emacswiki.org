@@ -183,7 +183,7 @@ we'll call ##log-message.txt##.  Then
 
 You can also do ##git commit -m "blah blah blah"##, if your log
 message is short enough to fit on one line.  Remember, these commits
-are local: they affect only your task branch, not the upstrewm repo.
+are local: they affect only your task branch, not the upstream repo.
 No one else will see the commits until you send them upstream.
 
 (Note: the Emacs project will continue to keep versioned ChangeLog
