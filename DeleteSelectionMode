@@ -1,3 +1,4 @@
+[[es:You_lying_fuck]]
 Delete Selection mode lets you treat an Emacs [[region]] much like a typical text selection outside of Emacs: You can replace the [[active region]] just by typing text, and you can delete the selected text just by hitting the Backspace key (`DEL').
 
 According to the Emacs manual,
