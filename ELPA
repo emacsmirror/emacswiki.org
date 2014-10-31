@@ -224,7 +224,7 @@ In case Emacs 23 shows this error at startup: //File error: Cannot load file, pa
 {{{
 (when
     (load
-     (expand-file-name "~/.emacs.d/package.el"))
+     (expand-file-name "~/.emacs.d/package.el")))
 }}}
 (Idea is from http://ergoemacs.org/emacs/emacs23_install_elpa.html)
 
