@@ -204,7 +204,9 @@ Subversion.
 From time to time you may wish to refresh the local repository by
 updating to get changes from upstream:
 
+      git checkout master
       git pull
+      git checkout TASKNAME
 
 And after refreshing, you'll want to get those changes into your task
 branch, by merging them:
