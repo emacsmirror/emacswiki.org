@@ -2,8 +2,8 @@
 
 == See Also ==
 
+* [https://github.com/erlang/otp/tree/maint/lib/tools/emacs The OTP distribution of erlang.el]
 * [http://www.erlang.org/doc/man/erlang.el.html The manual]
-* [http://www.erlang.org/download/contrib/erlang.el erlang.el]
 * FlymakeErlang
 
 ------
