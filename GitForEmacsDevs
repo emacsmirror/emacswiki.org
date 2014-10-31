@@ -215,7 +215,7 @@ branch, by merging them:
 The merge may fail due to an upstream change that conflicts with your
 branch.  You'll need to fix the problem (looking for conflict markers
 and editing, just as in CVS and Bazaar). Then use ##git add## on the
-resolved file to mark that it shoild be added to the next commit.
+resolved file to mark that it should be added to the next commit.
 
       git add file-you-changed ...      # Mark these conflicts as resolved.
                                         # Git keeps track of unresolved conflicts,
