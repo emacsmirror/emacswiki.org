@@ -69,6 +69,14 @@ does not work for me."
 }}}
 
 -- Alf Lervåg
+
+[new:AlexDaniel:2014-11-01 19:25 UTC]
+This is amazing! But I have to point out one negative effect... When I started learning emacs, I was frustrated by all of the weird key combinations I had to use. It felt very uncomfortable so I started searching for a solution and found KeyChord. Since then I was mapping every command to chords if I used it at least once in two days. It feels great!
+
+However, I have a real tough time when I'm not using my config (for example, if something went wrong and my config failed). I barely remember how to open a file in pure emacs. And I always imagine someone standing behind me and looking how I type "how to save a buffer in emacs" into the search engine... So embarrassing!
+
+--AlexDaniel
+
 ----
 CategoryKeys
 
