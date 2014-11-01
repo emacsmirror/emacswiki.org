@@ -1,4 +1,4 @@
-<code>
+<pre>
 ;; dir-list
 ;; Author: scopeview126 dot gmail dot com
 ;;
@@ -129,4 +129,4 @@
   (dirlist-redisplay dir-list))
 
 (provide 'dir-list)
-</code>
+</pre>
