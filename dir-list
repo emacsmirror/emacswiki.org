@@ -1,0 +1,130 @@
+;; dir-list
+;; Author: scopeview126 dot gmail dot com
+;;
+;; I have used dirlist for several months and it works well.
+;; If any requirement, please let me know.
+;;
+;; add following to your .emacs
+;;	(require 'dir-list)
+;;	(global-set-key [(f10)] 'dirlist)
+;;
+;; following is my frequently used list, you can add them to .emacs
+;; (add-to-list 'dir-list '("k" . "~/kernel/linux-3.10"))
+;; (add-to-list 'dir-list '("kdoc" . "~/kernel/linux-3.10/Documentation/"))
+;; (add-to-list 'dir-list '("errno" . "/usr/include/asm-generic/errno-base.h"))
+;; (add-to-list 'dir-list '("errc" . "/usr/include/c++/4.7/i486-linux-gnu/bits/error_constants.h"))
+;; (add-to-list 'dir-list '("signum" . "/usr/include/bits/signum.h"))
+;; (add-to-list 'dir-list '("syscall" . "~/kernel/linux-3.10/include/linux/syscalls.h"))
+;; (add-to-list 'dir-list '("w" . "~/work/"))
+;; (add-to-list 'dir-list '("c++" . "/usr/include/c++/4.7/bits"))
+;;
+;; usage:
+;; - add above to your .emacs and start emacs
+;; - press f10 and k
+
+
+(defcustom dir-list nil
+  "*dir lists used by `dir-list'."
+  :type 'list
+  :group nil)
+
+(defvar dirlists-buffer-name "*dirlist*")
+(defvar dirlists-buffer)
+(defvar dirlists-chars "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_=+().")
+(defvar dirlists-input-string "")
+(defvar dirlists-shortname-field-width 20)
+
+(defvar dirlist-catagory-defaults nil)
+(setq dirlist-shortname-catagory-defaults
+      `(face git-permission-face))
+(setq dirlist-path-catagory-defaults
+      `(face compilation-info))
+
+(setplist 'dirlist-shortname-catagory dirlist-shortname-catagory-defaults)
+(setplist 'dirlist-path-catagory dirlist-path-catagory-defaults)
+
+(defun dirlist-setup-local-bindings ()
+  (local-set-key (kbd "<DEL>") 'dirlist-input)
+  (local-set-key (kbd "C-q") 'dirlist-quit-window)
+  (local-set-key (kbd "C-g") 'dirlist-revert)
+  (local-set-key (kbd "RET") 'dirlist-go)
+  (dolist (char (string-to-list dirlists-chars))
+    (local-set-key (vector char) 'dirlist-input)))
+
+(defun dirlist-filter-entry (entry)
+  (let ((shortname (car entry)))
+    (if (string-match (regexp-quote dirlists-input-string) shortname)
+	entry
+      nil)))
+
+(defun dirlist-filter ()
+  (when dirlists-input-string
+    (map 'list 'dirlist-filter-entry dir-list)))
+
+(defun dirlist-input ()
+  (interactive)
+  (let ((char last-input-event))
+    (if (eq char 127)
+	(unless (eq dirlists-input-string "")
+	  (setq dirlists-input-string (substring dirlists-input-string 0 -1)))
+      (setq dirlists-input-string (concat dirlists-input-string (string char))))
+    (dirlist-redisplay (dirlist-filter))))
+
+(defun dirlist-quit-window (&optional kill-buffer)
+  (interactive)
+  (setq dirlists-input-string "")
+  (quit-window kill-buffer (selected-window)))
+
+(defun dirlist-revert ()
+  (interactive)
+  (setq dirlists-input-string "")
+  (dirlist-redisplay dir-list))
+
+(defun dirlist-go ()
+  (interactive)
+  (setq dirlists-input-string "")
+  (find-file (buffer-substring (text-property-any (line-beginning-position)
+						  (line-end-position)
+						  'category
+						  'dirlist-path-catagory)
+			       (line-end-position))))
+
+(defun dirlist-select ()
+  (interactive)
+  (goto-char (point-min))
+  (next-line (- last-input-event 49))
+  (dirlist-go))
+
+(defun dirlist-redisplay (dir-list)
+  (let (shortname
+	path)
+    (setq dirlists-buffer (get-buffer-create dirlists-buffer-name))
+    (with-current-buffer dirlists-buffer
+      (read-only-mode -1)
+      (erase-buffer)
+      (dirlist-setup-local-bindings)
+
+      (dolist (entry dir-list)
+	(when entry
+	  (setq shortname (car entry))
+	  (setq path (cdr entry))
+	  (add-text-properties 0 (length shortname) `(category dirlist-shortname-catagory) shortname)
+	  (insert shortname)
+	  (insert (make-string (- dirlists-shortname-field-width (length shortname)) ? ))
+
+	  (add-text-properties 0 (length path) `(category dirlist-path-catagory) path)
+	  (insert path)
+	  (insert "\n")))
+      (unless (eq (point-min) (point-max))
+	(delete-backward-char 1))
+      (goto-char (point-min))
+      (read-only-mode))
+    (unless (eq (window-buffer) dirlists-buffer)
+      (switch-to-buffer-other-window dirlists-buffer))
+    (message "dirlist filter string: \"%s\". Type C-g to cancel all. Type C-q to quit" dirlists-input-string)))
+
+(defun dirlist ()
+  (interactive)
+  (dirlist-redisplay dir-list))
+
+(provide 'dir-list)
