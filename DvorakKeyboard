@@ -83,6 +83,15 @@ thing is no problem anymore and Dvorak feels like the most natural
 layout for Emacs.  I swear it just seems like the keys were meant for
 this layout.
 
+[new:AlexDaniel:2014-11-01 20:45 UTC]
+That's exactly my thoughts!
+So it seems like a lot of emacs bindings are actually meant for dvorak
+layout, but how did that happen? I don't believe in such coincidences! 
+Maybe it happened automagically because most bindings are set to the
+first letters of real words and dvorak just has these located in a better way?
+
+-- AlexDaniel
+
 == Making C-x easier to hit ==
 C-x is the by far the most common key I use so it has to be comfortable.
 
