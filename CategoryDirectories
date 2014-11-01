@@ -53,6 +53,7 @@ Click the heading to search for all pages related to manipulating files and dire
 * [[Runner]] -- Associate a file with a set of commands or external apps.
 * SystemTrash - Set up emacs to use the same trash can as GNOME and KDE (the freedesktop.org trash spec)
 * Try ##C-h v directory-abbrev-alist RET## for information on an elegant way to shorten your paths. Suppose you'd like long paths like ##/opt/some/software/project/source/file.c## to be shortened to ##/proj/source/file.c##. The solution would be setting an appropriate symlink named ##proj## in your root directory and adding the following to your [[InitFile]]: <tt>(setq directory-abbrev-alist '("^/opt/some/software/project" . "/proj"))</tt>
+* [[dir-list]] -- quickly access to your frequently directory or file from a configured directory/file list
 [new]
 Concerning <tt>directory-abbrev-alist</tt>: If there is a symbolic link in the file system, why do we need this translation table, should it not work even without it?
 [new]
