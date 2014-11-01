@@ -612,8 +612,6 @@ Thx -- DrewAdams
 [new]
 Perfect! This was exactly what I was looking for. Thanks Drew! -- Christoph
 
-[new]
-If I customize `font-lock-maximum-decoration`, will this affect other modes or just dired+?, and I if it affect other modes, is it possible to place something in the `dired-mode-hook` in order to change the value of this variable only for dired buffers? -- Roberto
 
 
 
