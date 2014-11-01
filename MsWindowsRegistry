@@ -339,6 +339,10 @@ This fn depends on the prior fn that allows reading a specific value from the Wi
 
 : Any comments?
 
+* The section "Which Registry key should I use?" 
+  could be titled  
+  "Which Registry root should I use for the Emacs registry key?"
+  to be more precise.
 ----
 
 CategoryWThirtyTwo CategoryPorts CategoryCustomize
