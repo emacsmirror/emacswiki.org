@@ -89,6 +89,35 @@ The ''latest'' discussion entry is '''[[#LatestEntry|here]]'''.
 
 
 
+[new:JimmyBongos:2014-11-02 16:41 UTC]
+Here is some cool code which provides completions in shell-mode from bash itself:
+
+  https://github.com/monsanto/readline-complete.el
+
+The reason this is better than the built-in completions of Emacs is:
+
+    $ ls -R /usr/share/bash-completion   /etc/bash_completion.d   | wc -l
+    713
+
+There aren't enough hours in the day to rewrite all that code as Emacs completion sources.
+
+Would it be possible to weld the Icicles front-end onto the readline-complete backend? I've looked at [[Icicles_-_Defining_Completion_for_Comint_Modes]] and `icicle-shell-dynamic-complete-command' but I don't understand how to convert that to something like the function `company-readline' provided at the bottom of readline-complete.
+
+Better yet would be an Icicles comint-completion mode which used the ideas from readline-complete and came built-in to Icicles.
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+
+
+
 [new:] 
 I have one small feature request. I think it would often be handy, espacially when only very few completion candidates are available, if TAB could cycle through the completions after completing to greatest common prefix. So in the case that a further TAB press will have no effect this (unused key) could be used to quickly cycle through the candidates. Same thing for S-TAB. -- HannesJanetzek
 
