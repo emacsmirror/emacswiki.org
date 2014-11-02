@@ -3,7 +3,7 @@ Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 = Comparison =
 
 || library        || elisp files || size  || last update || url                                                 ||
-|| web-mode       ||           1 || 365 kb ||  2014-08-18 || http://web-mode.org                  ||
+|| web-mode       ||           1 || 364 kb ||  2014-11-02 || http://web-mode.org                  ||
 || polymode  || 7              || 120 kb || 2014-05-07 || https://github.com/vitoshka/polymode ||
 || mmm-mode       ||          17 || 185 kb ||  2013-10-27 || https://github.com/purcell/mmm-mode                 ||
 || multi-web-mode ||           1 || 16 kb  ||  2013-08-23 || https://github.com/fgallina/multi-web-mode          ||
