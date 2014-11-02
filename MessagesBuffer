@@ -4,7 +4,7 @@ information that appears in the EchoArea (except for keystroke echoes).
 You can adjust the number of messages kept in the buffer with the
 variable <code>message-log-max</code>.
 
-The [[XEmacs]] equivalent of the MessagesBuffer is " *Message-Log*". switch-to-buffer will get you there, although it's hidden by default; you may also want to bind a key to (defun show-message-log () (interactive) (switch-to-buffer " *Message-Log*")).
+The [[XEmacs]] equivalent of the MessagesBuffer is <code>" *Message-Log*"</code>.  The name starts with a space and does not include the quotes.  switch-to-buffer will get you there, although it's hidden by default; you may also want to bind a key to <code>(defun show-message-log () (interactive) (switch-to-buffer " *Message-Log*"))</code>.
 
 You can also see recent messages in the lossage buffer, accessible via `C-h l'. 
 
