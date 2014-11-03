@@ -73,6 +73,23 @@ make install
 Then use ##~/emacs-20131123/bin/emacs## to start it.
 
 
+== Optional multi character library ==
+
+For non-latin scripts you might want to add:
+
+{{{
+libm17n-dev
+}}}
+
+as a library and:
+
+{{{
+--with--m17n-flt
+}}}
+
+as a configure option.
+
+
 == Keeping up to date ==
 
 You can use git pull to keep pulling. Emacs is often released against tags so you can pull those too:
