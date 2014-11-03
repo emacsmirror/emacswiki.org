@@ -5,8 +5,10 @@ Please also read the [http://wiki.gohome.org/wl/ FAQ] at the home page.
 Check your distributions package repository for package named "wl" or "wl-beta". You can also install via an ELPA package archive:
 
 {{{
+    (require 'package) ;; You might already have this line
     (add-to-list 'package-archives
-       '("e6h" . "http://www.e6h.org/packages/"))
+                 '("e6h" . "http://www.e6h.org/packages/") t)
+    (package-initialize) ;; You might already have this line
 }}}
 
 Alternatively install it through el-get (an emacs package repository), which will give you the latest version.
