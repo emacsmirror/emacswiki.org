@@ -34,6 +34,7 @@ The following packages are available through apt-get/aptitude and might need to 
 * libgtk2.0-dev
 * libjpeg-dev
 * libncurses5-dev
+* libdbus-1-dev
 * libgif-dev
 * libtiff-dev
 * libm17n-dev
@@ -44,7 +45,7 @@ The following packages are available through apt-get/aptitude and might need to 
 Copy and paste this for easy apt-get lines:
 
 {{{
-autoconf automake libtool texinfo build-essential xorg-dev libgtk2.0-dev libjpeg-dev libncurses5-dev libgif-dev libtiff-dev libm17n-dev libpng12-dev librsvg2-dev libotf-dev
+autoconf automake libtool texinfo build-essential xorg-dev libgtk2.0-dev libjpeg-dev libncurses5-dev libdbus-1-dev libgif-dev libtiff-dev libm17n-dev libpng12-dev librsvg2-dev libotf-dev
 }}}
 
 === Building from the source ===
