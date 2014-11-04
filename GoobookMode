@@ -1,0 +1,4 @@
+Goobook (https://code.google.com/p/goobook/) is a way to work with Google Contacts from the command line.
+
+Goobook mode is a (hastily put together) interface for goobook from Emacs.
+It is available at http://vh213601.truman.edu/~belanger/Elisp/goobook.el
