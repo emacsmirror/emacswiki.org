@@ -60,3 +60,10 @@ I'm no expert on el-get; sorry. Perhaps someone else can help with that. I would
 
 -- DrewAdams 2014-10-10 02:57 UTC
 
+
+----
+
+Hello Drew. Are commands `describe-buffer' and `describe-keymap' missing autoload cookie on purpose?
+
+-- myeffort 2014-11-05 04:09 UTC
+
