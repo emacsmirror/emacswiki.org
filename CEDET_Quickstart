@@ -80,7 +80,7 @@ The example obove is very outdated and brought up many errors. As this is more a
 (ac-config-default)
 }}}
 
-:: Problems
+* Problems
 
 There are some problems with loading the requirements of EDE. If you encounter the following error message while loading a EDE project, try to require all proj-* files.
 
