@@ -1,0 +1,62 @@
+It’s time for the irregular EmacsChannel ChatClient test again!
+
+{{{
+ 198 irssi
+ 118 znc
+ 109 weechat
+  99 erc
+  54 xchat
+  38 irccloud
+  22 textual
+  21 rcirc
+  20 quassel
+  18 hexchat
+  14 limechat
+  14 purple
+  14 circe
+  10 unknown
+   7 bip
+   5 mirc
+   3 konversation
+   3 dircproxy
+   3 kvirc
+   2 tiarra
+   2 fuck
+   2 thunderbird
+   2 colloquy
+   2 ircii
+   1 android
+   1 netcat
+   1 smuxi
+   1 version
+   1 not4u2know
+   1 e?
+   1 whorev
+   1 that
+   1 bitchx
+   1 andchat
+   1 cl
+   1 microsoft
+   1 no.
+   1 irc
+   1 ichat
+   1 elitebnc
+   1 go
+   1 nbs
+   1 nettalk
+   1 beepboopiamarobot
+   1 better
+   1 all
+   1 cheese
+   1 nil
+   1 miranda
+   1 butterfly
+----
+ 806 total
+}}}
+
+IrcClientSurvey says how I produced the list. No manual editing.
+
+– AlexSchroeder
+
+Previous issues: [[2012-05-22]]
