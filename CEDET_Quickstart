@@ -79,9 +79,8 @@ The example obove is very outdated and brought up many errors. As this is more a
              "~/.emacs.d/ac-comphist.dat"))
 (ac-config-default)
 }}}
-----
-CategoryProgrammerUtils
 
+: Problems
 
 There are some problems with loading the requirements of EDE. If you encounter the following error message while loading a EDE project, try to require all proj-* files.
 
@@ -107,4 +106,10 @@ Fix:
     (require 'ede/proj-prog)
     (require 'ede/proj-scheme)
     (require 'ede/proj-shared)
+
+----
+CategoryProgrammerUtils
+
+
+
 
