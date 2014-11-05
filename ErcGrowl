@@ -29,3 +29,30 @@ ToDoChiKu is another alternative, that works with Growl, Snarl or libnotify.
 
 (add-hook 'erc-text-matched-hook 'my-erc-hook)
 </pre>
+
+Or, on Yosemite, you can install and use the teminal-notifier.app instead.
+
+ <pre>
+(defvar notify-command (executable-find "terminal-notifier") "The path to terminal-notifier")
+
+(defun notify (title message)
+  "Shows a message through the Notification center system using
+ `notify-command` as the program."
+  (flet ((encfn (s) (encode-coding-string s (keyboard-coding-system))) )
+    (let* ((process (start-process "notify" nil
+                                   notify-command
+                                   "-title" (encfn title)
+                                   "-message" (encfn message))))))
+  t)
+
+(defun my-erc-hook (match-type nick message)
+  "Shows a notification, when user's nick was mentioned. If the buffer is currently not visible, makes it sticky."
+  (unless (posix-string-match "^\\** *Users on #" message)
+    (notify
+     (concat "ERC: name mentioned on: " (buffer-name (current-buffer)))
+     message
+     )))
+
+(when (bound-and-true-p notify-command)
+  (add-hook 'erc-text-matched-hook 'my-erc-hook))
+</pre>
