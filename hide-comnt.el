@@ -8,9 +8,9 @@
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb  6 10:25:29 2014 (-0800)
+;; Last-Updated: Wed Nov  5 10:39:33 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 126
+;;     Update #: 166
 ;; URL: http://www.emacswiki.org/hide-comnt.el
 ;; Doc URL: http://www.emacswiki.org/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
@@ -51,10 +51,26 @@
 ;;  versions and used there.  This is the only real use of this
 ;;  library for Emacs 20: it provides macro `with-comments-hidden'.
 ;;
+;;  Note for Emacs 21: It lacks the `comment-forward' function, so we
+;;  rely on the `comment-end' variable to determine the end of a
+;;  comment. This means that only one type of comment terminator is
+;;  supported.  For example, `c++-mode' sets `comment-end' to "",
+;;  which is the convention for single-line comments ("// COMMENT").
+;;  So "/* */" comments are treated as single-line commentsonly the
+;;  first line of such comments is hidden.  The "*/" terminator is not
+;;  taken into account.
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2014/11/05 dadams
+;;     hide/show-comments: Thx to Hinrik Sigurosson.
+;;       Use comment-forward even for "", so handle setting CEND correctly, e.g., for C++,
+;;       where comment-end is "" but multi-line comments are also OK.
+;;       Do not hide newline after single-line comments.
+;;       hide-whitespace-before-comment-flag non-nil no longer hides empty lines.
+;;       Prevent infloop for comment at bol.
 ;; 2014/02/06 dadams
 ;;     Added: hide-whitespace-before-comment-flag.
 ;;     hide/show-comments:
@@ -105,7 +121,8 @@
 
 ;;;###autoload
 (defcustom hide-whitespace-before-comment-flag t
-  "*Non-nil means `hide/show-comments' hides whitespace preceding a comment."
+  "*Non-nil means `hide/show-comments' hides whitespace preceding a comment.
+It does not hide empty lines (newline chars), however."
   :type 'boolean :group 'matching)
 
 
@@ -122,10 +139,9 @@ Note that prior to Emacs 21, this never hides comments."
     `(let ((,ostart  ,start)
            (,oend    ,end)
            ,result)
-      (unwind-protect
-           (setq ,result  (progn (when ignore-comments-flag
-                                   (hide/show-comments 'hide ,ostart ,oend))
-                                 ,@body))
+      (unwind-protect (setq ,result  (progn (when ignore-comments-flag
+                                              (hide/show-comments 'hide ,ostart ,oend))
+                                            ,@body))
         (when ignore-comments-flag (hide/show-comments 'show ,ostart ,oend))
         ,result))))
 
@@ -159,10 +175,10 @@ it needs `comment-search-forward'."
              (list (point-min) (point-max))
            (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point))))))
   (when (require 'newcomment nil t)     ; `comment-search-forward', Emacs 21+.
-    (comment-normalize-vars)            ; Per Stefan, should call this first.
+    (comment-normalize-vars)            ; Must call this first.
     (unless start (setq start  (point-min)))
     (unless end   (setq end    (point-max)))
-    (unless (<= start end) (setq start  (prog1 end (setq end  start))))
+    (unless (<= start end) (setq start  (prog1 end (setq end  start)))) ; Swap.
     (let ((bufmodp           (buffer-modified-p))
           (buffer-read-only  nil)
           cbeg cend)
@@ -171,31 +187,28 @@ it needs `comment-search-forward'."
              (goto-char start)
              (while (and (< start end)
                          (save-excursion
-                           (setq cbeg  (comment-search-forward end 'NOERROR))
-                           cbeg))
+                           (setq cbeg  (comment-search-forward end 'NOERROR))))
+               (goto-char cbeg)
+               (save-excursion
+                 (setq cend  (cond ((fboundp 'comment-forward) ; Emacs 22+
+                                    (if (comment-forward 1)
+                                        (if (= (char-before) ?\n) (1- (point)) (point))
+                                      end))
+                                   ((string= "" comment-end) (min (line-end-position) end))
+                                   (t (search-forward comment-end end 'NOERROR)))))
                (when hide-whitespace-before-comment-flag ; Hide preceding whitespace.
                  (save-excursion
-                   (goto-char cbeg)
-                   (if (not (fboundp 'looking-back)) ; Emacs 21
-                       (while (memq (char-before cbeg) '(?\   ?\t ?\n ?\f))
-                         (setq cbeg  (1- cbeg)))
-                     (looking-back "\\(\n\\|\\s-+\\)" nil 'GREEDY) ; Emacs 22+
-                     (setq cbeg  (match-beginning 0)))))
-               (when (string= "" comment-end) (goto-char cbeg))
-               (setq cend  (if (string= "" comment-end)
-                               (min (1+ (line-end-position)) (point-max))
-                             (cond ((fboundp 'comment-forward) ; Emacs 22+
-                                    (goto-char cbeg)
-                                    (and (comment-forward 1)  (point)))
-                                   ((goto-char cbeg)
-                                    (search-forward comment-end end 'NOERROR)))))
-               (when (and hide-whitespace-before-comment-flag ; Hide also newline at end.
-                          (= (char-after cend) ?\n))
-                 (setq cend  (min (1+ cend) (point-max))))
+                   (if (fboundp 'looking-back) ; Emacs 22+
+                       (when (looking-back "\n?\\s-*" nil 'GREEDY)
+                         (setq cbeg  (match-beginning 0)))
+                     (while (memq (char-before cbeg) '(?\   ?\t ?\f))
+                       (setq cbeg  (1- cbeg)))
+                     (when (eq (char-before cbeg) ?\n) (setq cbeg  (1- cbeg)))))
+                 ;; First line: Hide newline after comment.
+                 (when (and (= cbeg (point-min))  (= (char-after cend) ?\n))
+                   (setq cend  (min (1+ cend) end))))
                (when (and cbeg  cend)
-                 (if (eq 'hide hide/show)
-                     (put-text-property cbeg cend 'invisible t)
-                   (put-text-property cbeg cend 'invisible nil)))
+                 (put-text-property cbeg cend 'invisible (eq 'hide hide/show)))
                (goto-char (setq start  (or cend  end)))))
         (set-buffer-modified-p bufmodp)))))
 
@@ -216,7 +229,7 @@ See `hide/show-comments' for more information."
                    (list (point-min) (point-max))
                  (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point)))))
   (when (require 'newcomment nil t) ; `comment-search-forward', Emacs 21+.
-    (comment-normalize-vars)     ; Per Stefan, should call this first.
+    (comment-normalize-vars)     ; Must call this first.
     (if (save-excursion (goto-char start) (and (comment-search-forward end 'NOERROR)
                                                (get-text-property (point) 'invisible)))
         (hide/show-comments 'show start end)
