@@ -75,7 +75,7 @@ Yes.  Autoload cookies need to be at top-level, and it is not necessarily the ca
 
 The simplest approach, IMO, is to just `require' a library.  But you can also add `autoload' statements to your init file. For example:
 
-    (autoload 'describe-buffer "help-fns+ "Describe an existing buffer." t)
+    (autoload 'describe-buffer "help-fns+" "Describe an existing buffer." t)
 
 -- DrewAdams 2014-11-05 19:14 UTC
 
