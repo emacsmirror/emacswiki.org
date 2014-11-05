@@ -68,3 +68,14 @@ I'm also starting a new emacs init based on el-get and this seems to be the root
 
 -- myeffort 2014-11-05 04:09 UTC
 
+
+----
+
+Yes.  Autoload cookies need to be at top-level, and it is not necessarily the case that loading the file will define those functions - they are not defined for some versions of Emacs.
+
+The simplest approach, IMO, is to just `require' a library.  But you can also add `autoload' statements to your init file. For example:
+
+    (autoload 'describe-buffer "help-fns+ "Describe an existing buffer." t)
+
+-- DrewAdams 2014-11-05 19:14 UTC
+
