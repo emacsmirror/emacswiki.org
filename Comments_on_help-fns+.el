@@ -64,6 +64,7 @@ I'm no expert on el-get; sorry. Perhaps someone else can help with that. I would
 ----
 
 Hello Drew. Are commands `describe-buffer' and `describe-keymap' missing autoload cookie on purpose?
+I'm also starting a new emacs init based on el-get and this seems to be the root of the problem that person above me encountered.
 
 -- myeffort 2014-11-05 04:09 UTC
 
