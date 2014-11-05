@@ -1,0 +1,36 @@
+My experience with latex monthly landscape calendars has been variable, over the years.  I am printing on letterpaper.  Different printers may print differently.  One size does not seem to fit all: each time I print some calendars, I must make adjustments to the LaTeX code.  
+
+For November 2014---a month requiring six rows---the following was working for me, on a Brother Laser Printer.   I copy over a few lines from the latex code:
+
+%%%%%%%%%%%%
+
+\begin{document}% 
+
+\pagestyle{empty}% 
+
+\setlength{\cellwidth}{22.3cm}%                  %%%  (was 24cm)
+
+\setlength{\cellwidth}{0.157143\cellwidth}
+
+\setlength{\cellheight}{17.4cm}%                %%%   (was 18cm) 
+
+\setlength{\cellheight}{0.166667\cellheight}
+
+\ \par{}% 
+
+\vspace*{-2.3cm}%                                     %%%   (was 3cm)
+
+\def\calmonth#1#2%
+
+{\begin{center}%
+
+\Huge\bf\uppercase{#1} #2 \\[1cm]%
+
+\end{center}}%
+
+\vspace*{-1.5cm}%
+
+%%%%%%%%%%%%%%
+
+-- lngndvs 2014-11-05 05:55 UTC
+
