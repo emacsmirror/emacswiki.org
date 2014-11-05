@@ -32,9 +32,7 @@ ToDoChiKu is another alternative, that works with Growl, Snarl or libnotify.
 
 Or, on Yosemite, you can install and use the teminal-notifier.app instead.
 
- <pre>
-
-(defvar notify-command (executable-find "terminal-notifier") "The path to terminal-notifier")
+ <pre>(defvar notify-command (executable-find "terminal-notifier") "The path to terminal-notifier")
 
 (defun notify (title message)
   "Shows a message through the Notification center system using
@@ -55,6 +53,4 @@ Or, on Yosemite, you can install and use the teminal-notifier.app instead.
      )))
 
 (when (bound-and-true-p notify-command)
-  (add-hook 'erc-text-matched-hook 'my-erc-hook))
-
-</pre>
+  (add-hook 'erc-text-matched-hook 'my-erc-hook))</pre>
