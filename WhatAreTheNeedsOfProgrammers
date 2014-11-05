@@ -18,6 +18,8 @@ In brief:
 
 These needs are especially important when calling library code written by someone else and stored in include/ and lib/ outside my project.
 
+UPDATE: The problem listed here are solved with this guide [http://tuhdo.github.io/c-ide.html C/C++ Development Environment for Emacs]
+
 Let us explain those needs one by one.
 
 ===Quick confirmation/reminder of a member's name===
