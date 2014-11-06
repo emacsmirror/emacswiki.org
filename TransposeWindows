@@ -145,7 +145,7 @@ The above version isn't totally correct. Because the while loop continues only w
 The above version forgets the point in each windows buffer, also it would be nice to be able to rotate both ways. Below is a slight modification to the above function which does both aforementioned things.  The below function now accepts the prefix argument which rotates the other direction.
 {{{
 (defun rotate-windows (arg)
-  "Rotate your windows"
+  "Rotate your windows; use the prefix argument to rotate the other direction"
   (interactive "P")
   (if (not (> (count-windows) 1))
       (message "You can't rotate a single window!")
