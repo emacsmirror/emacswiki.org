@@ -53,6 +53,7 @@ File management:
 * ChangeLog -- Log the changes to your source files.
 * EmacsCodeBrowser -- provides views of directories and files that go one step beyond what SpeedBar does
 * [https://github.com/mattkeller/mk-project/ mk-project] -- Quickly switch between projects and perform operations on a per-project basis
+* [[Projectile]] -- easy project management and navigation
 * ProjectSettings -- Configuration settings for an entire project (directory).
 * ProjectWizard -- simple, customizable project wizard
 * ProjmanMode -- move between different projects (directories) maintaining options and open buffers for each
