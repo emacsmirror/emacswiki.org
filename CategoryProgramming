@@ -42,6 +42,9 @@ Development environments:
 * IdeSkel -- simple environment for svn/cvs projects, with embedded "speedbars"
 * ObjectOrientedBrowser -- supports C++, Java, Python, and a few other languages
 * ProjectBufferMode -- generic mode to handle projects
+* For !JavaScript -- try [https://github.com/mooz/js2-mode js2-mode] and [http://ternjs.net/ Tern]
+* For Perl5 -- try CPerlMode and [https://metacpan.org/pod/Devel::PerlySense Devel::PerlySense]
+* For OCaml -- try [https://github.com/ocaml/tuareg tuareg] and [https://github.com/MarcWeber/merlin Merlin]
 
 File management:
 
