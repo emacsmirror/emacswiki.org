@@ -15,7 +15,7 @@ TomBreton wrote a nice recipe for skeletons: RecipeForSkeletonMode.
 
 === Full example ===
 
-Here is an example that sets up a general LaTeX letter, creating a skeleton with ##define-skeleton##. 
+Here is an example that sets up a general LaTeX letter, creating a skeleton with ##define-skeleton##.
 
 The first string is the DocString, a short textual description of the skeleton. Then follows the skeleton itself, which is mostly plain strings inserted as-is. However, the string right after the !DocString, ##"Empfänger: "##, is the ''prompt string'', which the minibuffer uses for prompting for a user-entered value whenever the ##str## symbol occurs in the skeleton. The value entered is substituted in place of ##str##.
 
@@ -261,16 +261,16 @@ snippets. When creating skeleton templates, you can use the "@" sign
 to indicate positions that will be saved in the variable
 skeleton-positions. Here's a simple example:
 
-        (define-skeleton skel-defun
-          "Insert a defun template."
-          "Name: "
-          "(defun " str " (" @ - ")" \n
-          "(" @ _ ")" \n)
+   (define-skeleton skel-defun
+     "Insert a defun template."
+     "Name: "
+     "(defun " str " (" @ - ")" \n
+     "(" @ _ ")" \n)
 
 The template above inserts a skeleton that looks like this (after the prompt):
 
-        (defun some-function ()
-          ()
+   (defun some-function ()
+     ()
 
 Because of the "-", the cursor is placed inside the first set of
 parentheses. And because of the "_", any active region is placed
@@ -279,36 +279,37 @@ these locations have also been saved in skeleton-positions, making it
 possible (with some handy elisp) to jump back and forth between the
 entry points:
 
-       (defvar *skeleton-markers* nil
-         "Markers for locations saved in skeleton-positions")
+  (defvar *skeleton-markers* nil
+    "Markers for locations saved in skeleton-positions")
 
-       (add-hook 'skeleton-end-hook 'skeleton-make-markers)
+  (add-hook 'skeleton-end-hook 'skeleton-make-markers)
 
-       (defun skeleton-make-markers ()
-         (while *skeleton-markers*
-           (set-marker (pop *skeleton-markers*) nil))
-         (setq *skeleton-markers *
-               (mapcar 'copy-marker (reverse skeleton-positions))))
+  (defun skeleton-make-markers ()
+    (while *skeleton-markers*
+      (set-marker (pop *skeleton-markers*) nil))
+    (setq *skeleton-markers *
+          (mapcar 'copy-marker (reverse skeleton-positions))))
 
-      (defun skeleton-next-position (&optional reverse)
-  "Jump to next position in skeleton.
-    REVERSE - Jump to previous position in skeleton"
+  (defun skeleton-next-position (&optional reverse)
+    "Jump to next position in skeleton.
+         REVERSE - Jump to previous position in skeleton"
     (interactive "P")
     (let* ((positions (mapcar 'marker-position *skeleton-markers*))
-	    (positions (if reverse (reverse positions) positions))
-	    (comp (if reverse '> '<))
-	    pos)
-    (when positions
-      (if (catch 'break
-	    (while (setq pos (pop positions))
-	      (when (funcall comp (point) pos)
-		(throw 'break t))))
-	  (goto-char pos)
-	(goto-char (marker-position
-		    (car *skeleton-markers*)))))))
+           (positions (if reverse (reverse positions) positions))
+           (comp (if reverse '> '<))
+           pos)
+      (when positions
+        (if (catch 'break
+              (while (setq pos (pop positions))
+                (when (funcall comp (point) pos)
+                  (throw 'break t))))
+            (goto-char pos)
+          (goto-char (marker-position
+                      (car *skeleton-markers*)))))))
+
 
 Simply bind skeleton-next-position to some convenient key and you'll
-be able to cycle through the completion points within the template. 
+be able to cycle through the completion points within the template.
 
 == More Information ==
 
