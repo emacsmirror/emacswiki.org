@@ -151,9 +151,7 @@ The above version forgets the point in each windows buffer, also it would be nic
       (message "You can't rotate a single window!")
     (let ((direction (if (equal arg '(4))
                          'reverse
-                         (lambda (x)
-                           "Identity function"
-                           x)))
+                         (lambda (x) x)))
           (i 0))
       (while  (< i (- (count-windows) 1))
          (let* ((w1 (elt (funcall direction (window-list)) i))
