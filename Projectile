@@ -1,3 +1,4 @@
+=What is Projectile=
 *Projectile* is a project interaction library for Emacs. Its goal is to provide a nice set of features operating on a project level without introducing external dependencies. For instance - finding project files is done in pure Emacs Lisp without the use of GNU find.
 
 Projectile also tries to be practical - if some external tools could speed up some task substantially and the tools are available, Projectile will leverage them.
@@ -15,6 +16,24 @@ This library provides easy project management and navigation. The concept of a p
 * run make in a project with a single key chord
 
 More information and installation instructions are available on [https://github.com/bbatsov/projectile GitHub].
+
+= Work with ECB=
+The following code will set ECB source path automatically using ##projectile-get-project-directories## 
+{{{
+(defvar default-ecb-source-path (list '("~/Documents/workspace" "Workspace")
+								 '("~/" "~/")
+								 '("/" "/")))
+
+(add-hook 'ecb-basic-buffer-sync-hook
+		  (lambda ()
+			(when (functionp 'projectile-get-project-directories)
+			  (when (projectile-project-p)
+				(dolist (path-dir (projectile-get-project-directories))
+				  (unless (member (list path-dir path-dir) default-ecb-source-path)
+					(push (list path-dir path-dir) default-ecb-source-path)
+					(customize-set-variable 'ecb-source-pathdefault-ecb-source-path)
+					))))))
+}}}
 
 ---
 
