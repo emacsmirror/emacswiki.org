@@ -79,8 +79,6 @@ This one is a lot more basic than shell-switcher and multi-eshell, but I didn't 
   (let* ((k (position (current-buffer) multi-esh-buffers))
          (n (length multi-esh-buffers))
          (buf (nth (mod (+ k offset) n) multi-esh-buffers)))
-    (message "%S %S %S %S %S" offset k n buf multi-esh-buffers)
-    (message "%S" (mod (+ k offset) n))
     (switch-to-buffer buf)))
 
 (defun multi-esh-next (&optional offset)
