@@ -1,0 +1,576 @@
+JorgenSchaefer cleaned up the page on 2014-11-06, tossing out most of it. That's good in general, but he tossed some stuff that might still be useful to some people. 
+
+The sections about ClipX on MS Windows, Separating the kill-ring and the system pasteboard, functions for working with the clipboard, visual yank feedback, and adding clipboard stuff to kill-ring, for instance. I'm pasting the old page here, so that if someone wants to spend the time to properly update the page to include some of the now-missing info, that will be possible (otherwise, it will soon be lost).
+
+----
+
+== Alternatives to Kill & Yank ==
+
+*Quick tip:* if you're here looking to fix the fact that in Emacs shift-insert no longer pastes that text you highlighted with the mouse in your browser, the 2014 answer is to set x-select-enable-primary to true, and set mouse-drag-copy-region to true to go the other way - I can't imagine why this /excellent/ default was changed but it's very hard to find the answer in the verbiage below.
+
+If you don't care for the DefaultKillingAndYanking [[key binding]]s (##C-w##, ##M-w##, ##C-y##, ##M-y##, and so on), then consider these alternatives:
+
+* PcSelectionMode -- the Windows and Motif flavour with ##C-<ins>##, ##C-<del>##, and ##S-<ins>##.
+* CuaMode -- use ##C-x##, ##C-c## and ##C-v## to copy and paste
+* CuaLightMode -- something between PcSelectionMode and CuaMode
+* DeleteSelectionMode -- ##DEL## deletes the region; just typing replaces it.
+* WholeLineOrRegion -- ##C-w## and ##M-w## act on the current line when TransientMarkMode is not active
+
+== X11 Copy & Paste to/from Emacs: ==
+
+If you are having issues with cutting and pasting between emacs and other applications, it may be an issue with interactions between the UI's clipboard or selection buffer and the emacs.   Windows has a single clipboard buffer. X11 has more than one buffer.  Consider these solutions:
+
+=== XEmacs: ===
+
+ (setq interprogram-cut-function 'own-clipboard)
+ (setq interprogram-paste-function 'get-clipboard)
+
+=== GNU Emacs 21.2.1 & newer: ===
+
+ (setq x-select-enable-clipboard t)
+
+See also http://www.oreillynet.com/lpt/wlg/6162 which suggests
+
+ (setq x-select-enable-clipboard t) ; as above
+ (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+
+=== GNU Emacs CVS / 23 : ===
+
+This has recently been expanded with more possible customisations.
+
+The following represents something extremely close in "feel" to other modern X11 desktop apps, but with "bonus" kill ring features. "feel"? that is to say, the precise key bindings are different to other X11 apps unless maybe you also turn on cua-mode, but the behaviour is very similar to C-x/C-c/C-v clipboard in other apps:
+
+* clipboard and primary X11 selections are kept separate, yet clipboard X11 selection and kill-ring are friends.
+
+It is perhaps easier for some to learn that different keys doing similar things than the same keys doing different things, i.e.  a newbie to emacs might analogise:
+
+* C-w => Cut (really kill)
+* M-w => Copy (really kill-ring-save)
+* C-y => Paste (really yank)
+* M-y (after C-y) => Historic Paste of old cuts/copies "bonus" (really yank-pop, that is to say the kill-ring cometh)
+
+and with the following customizations, that analogy might actually work out okay:
+
+   ; (transient-mark-mode 1)  ; Now on by default: makes the region act quite like the text "highlight" in many apps.
+   ; (setq shift-select-mode t) ; Now on by default: allows shifted cursor-keys to control the region.
+   (setq mouse-drag-copy-region nil)  ; stops selection with a mouse being immediately injected to the kill ring
+   (setq x-select-enable-primary nil)  ; stops killing/yanking interacting with primary X11 selection
+   (setq x-select-enable-clipboard t)  ; makes killing/yanking interact with clipboard X11 selection
+
+   ;; these will probably be already set to these values, leave them that way if so!
+   ; (setf interprogram-cut-function 'x-select-text)
+   ; (setf interprogram-paste-function 'x-cut-buffer-or-selection-value)
+
+   ; You need an emacs with bug #902 fixed for this to work properly. It has now been fixed in CVS HEAD.
+   ; it makes "highlight/middlebutton" style (X11 primary selection based) copy-paste work as expected
+   ; if you're used to other modern apps (that is to say, the mere act of highlighting doesn't
+   ; overwrite the clipboard or alter the kill ring, but you can paste in merely highlighted
+   ; text with the mouse if you want to)
+   (setq select-active-regions t) ;  active region sets primary X11 selection
+   (global-set-key [mouse-2] 'mouse-yank-primary)  ; make mouse middle-click only paste from primary X11 selection, not clipboard and kill ring.
+
+   ;; with this, doing an M-y will also affect the X11 clipboard, making emacs act as a sort of clipboard history, at
+   ;; least of text you've pasted into it in the first place.
+   ; (setq yank-pop-change-selection t)  ; makes rotating the kill ring change the X11 clipboard.
+
+=== Alternate method (recent Emacs): ===
+
+Not sure when this appeared in GNU emacs, or if it's how the developers intended things, buts it's useful for me (I habitually use emacs from CVS, BTW, so not sure when this tip first applies):
+The "x-select-enable-clipboard t" method seems to resuscitate the "traditional" (and IMHO deeply strange) emacs interaction with the X11 primary and clipboard selections.  EVERYTHING you highlight as a region winds up in both PRIMARY and CLIPBOARD X11 selections.  That is... painful. (but N.B. no longer true in CVS emacs, which has x-select-enable-primary to manage primary behaviour separately as above).
+
+
+But, some heroic emacs developer saw fit to produce the following functions, though they are by default bound to X keys that I doubt many people have (actual keys called <code>cut/copy/paste</code>), so one can put the following in <code>.emacs</code> instead:
+<pre>
+(global-set-key "\C-w" 'clipboard-kill-region)
+(global-set-key "\M-w" 'clipboard-kill-ring-save)
+(global-set-key "\C-y" 'clipboard-yank)
+</pre>
+
+
+If you want to keep the C-w, M-w, and C-y original settings, there is another way is to bind these keys by using the default X11: -- XinShi
+<pre>
+(global-set-key [(shift delete)] 'clipboard-kill-region)
+(global-set-key [(control insert)] 'clipboard-kill-ring-save)
+(global-set-key [(shift insert)] 'clipboard-yank)
+</pre>
+
+Another way to preserve the default C-w, M-w, and C-y behaviors is to assign one keystroke to an intelligent clipboard integration function. The following function either copies the current region to the system clipboard or, if no region is active, yanks the clipboard at point:
+<pre>
+(defun clipboard-dwim ()
+  (interactive)
+  (if (region-active-p)
+      (clipboard-kill-ring-save (region-beginning) (region-end))
+    (clipboard-yank)))
+
+(global-set-key (kbd "C-c w") 'clipboard-dwim)
+</pre>
+
+The emacs menu bar cut/copy/paste probably uses these too I think, but of course you've turned that off as you've been told that having the menu bar on will impede learning emacs. :-)
+
+This produces behaviour I like: The current region becomes PRIMARY as one might expect (like most freedesktop.org compliant apps, so it can be directly middle-button pasted in X apps), but CLIPBOARD is NOT munged by merely highlighting a region (again like most freedesktop.org compliant apps, and unlike x-select-enable-clipboard) - Iff you kill and yank, it interacts with the X CLIPBOARD in a vaguely sane manner (as if <code>C-w/M-w/C-y</code> were like <code>C-x/C-c/C-v</code> in other X11 apps, roughly).  This makes interacting with other X11 applications pleasant I think - you just learn that emacs uses different keys for cut/copy/paste, basically - though of course this behaviour might cause people to think the kill ring was a mere clipboard, which it isn't, as a press of <code>M-y</code> after a few kills will readily demonstrate :-).
+
+<code>clipboard-yank</code> in particular seems eerily smart.
+
+=== Alternate alternate method ===
+
+Instead of relying on the above, you can install the xsel program for manipulating the X selection and pipe the region contents to it like this:
+
+<pre>
+(defun yank-to-x-clipboard ()
+  (interactive)
+  (if (region-active-p)
+	  (progn
+		(shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
+		(message "Yanked region to clipboard!")
+		(deactivate-mark))
+	(message "No region active; can't yank to clipboard!")))
+
+(global-set-key [f8] 'yank-to-x-clipboard)
+</pre>
+
+Delete '-b' from the 'xsel' command above if you want the default behaviour of copying to the 'Primary Selection' rather than the 'Clipboard Selection'.
+
+----
+AlexSchroeder originally reported in CategoryRegion:
+
+A long time ago I used pc-selection-mode.  Then I got a Kinesis keyboard (did not help my fingers) which made using shift and the arrow keys much harder.  So I decided to switch to transient-mark-mode plus delete-selection-mode, and use f5 for mark, f6 for copy, f7 for paste, and f8 for delete.
+
+Later I decided to get rid of delete-selection-mode, because getting out of an isearch (and stay) required me to type RET, and getting out of an active region required me to type C-g.  Hitting C-g in isearch returns to the start of the search.  And hitting RET with an active region replaced the text.  Bad usability, here.
+
+[new:DrewAdams:2004-12-24 21:58 UTC]
+: Sorry, I must be low on coffee today. I don't understand how/why Delete Selection mode would affect isearch, and I don't know what you mean by "getting out of an active region". I use Delete Selection mode and isearch with no problems such as you suggest, but I'm probably missing something in your explanation. Could you list the steps you take that lead to a problem? -- DrewAdams
+
+[new]
+:: Without delete-selection-mode, I now got an extra newline, which is less surprising than replacing the region with a newline.  But then I finally saw the light: Without transient-mark-mode, even the last problem disappears!  So now I am trying that -- the default setting!
+
+:: Note that I bind a key (f3 in my case) to comment-region.  This key was bound to comment-dwim, but that function only works on regions in transient-mark-mode.
+
+[new:DrewAdams:2006-03-09 16:36 UTC]
+::: Coming back to this old thread on 2006-03-09 (sorry if this interrupts the flow). I still don't understand the problem. You seem to be saying that if 1) the region is active and 2) `transient-mark-mode' is enabled and 3) `delete-selection-mode' is enabled, then if you search within the active region and end the search by `RET' (some or all of) the region is replaced by a newline.
+
+::: Do I understand you correctly? If so, that's not what I see on MS Windows in Emacs 22 (or Emacs 20). When I hit `RET' the search stops; that's all. The buffer is not modified. I get this (good) behavior in ##emacs -q## with either the standard ##delsel.el## or my own version (Lisp:delsel.el).
+
+::: If I misunderstood you, can you please provide a recipe to demonstrate the problem, so I can understand it? Thanks. -- DrewAdams
+
+
+[new:DrewAdams:2011-09-30 14:01 UTC]
+:::: Ditto for Emacs 23 and 24.  For me, `RET' just ends Isearch, without modifying the buffer, leaving the [[active region]] active (of course [[point]] has moved, so the region has likely been reduced or extended.  -- DrewAdams
+
+
+[new]
+LeWang adds:
+
+I completely agree with what Alex said.  CUA-mode is too heavy handed, but it has some very nice non-cua related features.  When Kim Strom refactors out the rectangle functionality, I'll be a very happy man.
+
+I'm now rolling my in my init file based on cua-lite-mode.
+
+Incidently XEmacs has with very nice shift-select stuff built in.
+
+[new]
+TransientMarkMode usually only makes sense if your region is not usually active.  You can deactivate the mark by using a command which uses the mark and does not change the buffer.  I use M-w a lot to do that -- even if I don't really need the region in the kill-ring.  If the region is inactive, the mark is still there and C-x C-x will still exchange point and mark and reactivate the region.
+
+I have switched from PcSelectionMode to TransientMarkMode + DeleteSelectionMode because I stopped using the Shift+cursor keys to mark the region.  I think that adds strain to your hands.  But these days I use the default setup.  I find that it works just as well.  -- AlexSchroeder
+
+[new]
+I have added the following lines to my .emacs file:
+
+    (require 'pc-select)
+    (pc-selection-mode)
+
+Now PC-like copy-and-paste works great, except when I try to copy to another application.  To copy to another application, I now have to use the mouse.  Is there any way for control-insert to mark a region as well as put it in the kill ring?
+
+I am using GNU Emacs 20.7.1 on Linux.
+
+-- SteveHowell
+
+[new]
+: Check the setting of <code>interprogram-cut-function</code> - you can use <code>M-x apropos</code> to do this.  Mine is set to copy to the X11 clipboard by default, I think, but then I don't use pc-select. -- CharlesSebold
+
+[new]
+: Okay, I can find docs for the interprogram-cut-function now, but I don't know what to set it to.  I see where it's set to nil in my simple.elc.  The cua.el above does not seem to use it.  Thanks for your patience on this, Charles; I am definitely learning and making progress. -- SteveHowell
+
+[new]
+:: Sorry, wasn't clear; cua.el does something else altogether to pass the region out to the clipboard, I think. <code>interprogram-cut-function</code> should be set to the string <code>"x-select-text"</code>, if I am not mistaken.  Sorry I wasn't being clear before; it is very strange to me that on my Emacs (running "vanilla," -q -no-site-file), this variable defaulted to "x-select-text," which is why I wasn't being more specific.  You are running this in X11, right?  Or is this on the console? Ah-ha... bet that's the problem.  I'm out of my depth now; as far as I know there is no way to pass the region to the Linux console clipboard.  Anybody else know about this...?  -- CharlesSebold
+
+[new]
+:: X-select-text did the trick!  I am running a Gnome desktop.  I am still pretty confused about Linux GUI technologies, but they are getting the job done. I can now cut-and-paste from emacs to Netscape, with no mouse, and with all Windows-like keystrokes. Thanks for all your help, Charles!  -- SteveHowell
+
+[new]
+::: Glad I could help.  Now I'm curious if there's some way to interface to gpm's clipboard for the console, though (even though you didn't ask about that as it turns out...). -- CharlesSebold
+
+[new]
+:: To make yanking use the clipboard too, do:
+
+        (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+
+: I've studied the documenation on <code>interprogram-cut-function</code> as well and also can't seem to find what it should be set to.  The defun <code>x-select-text</code> doesn't exist in XEmacs. -- LathI
+
+----
+:: For [[XEmacs]]:
+
+        (setq interprogram-cut-function 'own-clipboard)
+        (setq interprogram-paste-function 'get-clipboard)
+
+In Emacs 21.2.1 and newer you can simply do <code>(setq x-select-enable-clipboard t)</code> to make cutting and pasting use the X clipboard.
+----
+
+[new]
+I am sometimes using several Emacsen in a screen session. Does someone know a way to do cutnpaste from one of those Emacsen to another? I thought about a shared kill-ring in a file in the homedirectory. Does something existing this direction?
+
+MarioLang
+
+[new]
+: AlexSchroeder has put the answer to this under [[Frame]] (thanks Alex). -- CharlesSebold
+
+[new]
+: Did you find the answer to this one, Mario? I can't seem to see anything relevant in [[Frame]]. I suspect a pair of functions to dump selection to ~/.primary_selection and restore selection from that file would handle the basics. Implementing a ring would be more complicated. -- DamienElmes
+
+----
+
+[new]
+What is the benefit of CuaLightMode over CuaMode once KimStorm
+separates CUA functionality from the keybindings (I think he planned
+to do that eventually)? -- AlexSchroeder
+
+[new]
+: It appears to address shortcomings in earlier versions of CUA Mode. In my own copy of CUA mode that I distribute with an Xemacs configuration for PC users (who have never seen emacs), I do essentially the opposite of CUA-Lite, keeping Ctrl-X for cut, and disabling the shifted motion keys, which XEmacs supports out of the box.  -- ChuckAdams
+
+----
+
+This page should also address the problems with copy/paste and Unicode. Currently
+it seems that no released version of emacs or xemacs supports UTF8_STRING selections, so pasting text from browsers with UTF-8 hyphens, "smart quotes", or other non-ASCII characters yields a mess. See e.g. http://mail.nl.linux.org/linux-utf8/2003-04/msg00060.html and http://lists.freedesktop.org/archives/xdg/2003-December/003081.html
+
+See the spec in http://www.pps.jussieu.fr/~jch/software/UTF8_STRING/
+
+It seems that this is fixed in the yet-to-be-released emacs 22, and probably in xemacs 21.5 (?).  In the meantime, I'd love to at least see a utility applet to convert UTF8_STRING selections to the closest Latin-1 equivalent --NealMcBurnett
+
+----
+
+One of the drawbacks of integrating the GNU Emacs copy-and-paste mechanism with X is that Emacs will grab the clipboard or selection every time you do a kill. This becomes a problem over slow network links (such as, for example, a DSL connection from home to work, and from there to a remote datacenter).  I wrote replacements for myself that make clipboard operations explicit.  This works with CVS GNU Emacs.  Note that this affects the clipboard, so it will work with Firefox and "modern" X apps, but older X apps like xterm need to be modified to use CLIPBOARD rather than the PRIMARY selection.
+
+  ;; Disable automatic cutting and pasting to the clipboard.
+  ;; This causes noticeable delays over slow network links.
+  ;; The function `insert-clipboard-contents' and the function
+  ;; `set-clipboard-contents' let me do this explicitly.
+  (setq interprogram-cut-function nil)
+  (setq interprogram-paste-function nil)
+
+  (defun get-clipboard-contents-as-string ()
+    "Return the value of the clipboard contents as a string."
+    (let ((x-select-enable-clipboard t))
+      (or (x-cut-buffer-or-selection-value)
+          x-last-selected-text-clipboard)))
+
+  (defun insert-clipboard-contents ()
+    "Insert the value of the current X selection at point.
+  Uses the clipboard value if it is defined or not empty, otherwise
+  falls back on the primary selection."
+    (interactive)
+    (let ((text (get-clipboard-contents-as-string)))
+      (when text
+        ;; This operation is very much like a yank, so set mark like
+        ;; yank does.  Note that the "longlines" mode advice on this
+        ;; function depends on mark having been set.
+        (push-mark)
+        (insert text))))
+
+  (defun set-clipboard-contents-from-string (str)
+    "Copy the value of string STR into the clipboard."
+    (let ((x-select-enable-clipboard t))
+      (x-select-text str)))
+
+  (defun set-clipboard-contents (beg end)
+    "Copy the value of the current region into the clipboard."
+    (interactive "r")
+    (set-clipboard-contents-from-string
+     (buffer-substring-no-properties beg end))
+    (setq deactivate-mark t))
+
+  (defun set-clipboard-contents-delete (beg end)
+    "Cut the value of the current region into the clipboard.
+  The current region is deleted (without updating the kill ring)."
+    (interactive "r")
+    (set-clipboard-contents-from-string
+     (buffer-substring-no-properties beg end))
+    (delete-region beg end)
+    (setq deactivate-mark t))
+
+  (defun set-clipboard-contents-and-kill-ring-from-string (str)
+    "Copy the value of string STR into the clipboard, and make it the latest kill."
+    (set-clipboard-contents-from-string str)
+    (kill-new str)
+    (message "%s" str))
+
+  (eval-after-load "longlines"
+    '(progn
+       (defadvice insert-clipboard-contents (after longlines-decode-kill activate)
+         ;; Depends on insert-clipboard-contents having set mark at the
+         ;; begging of the text.  If we have to stop doing that, we
+         ;; should turn this into "around" advice that can capture point
+         ;; before doing the insert.
+         (when longlines-mode
+           (longlines-decode-region (point) (mark t))
+           (when longlines-showing
+             (longlines-show-hard-newlines))))
+       (defadvice set-clipboard-contents (around longlines-encode-kill activate)
+         (if longlines-mode
+             (let ((str (buffer-substring beg end)))
+               (with-temp-buffer
+                 (insert str)
+                 (longlines-encode-region (point-min) (point-max))
+                 (setq beg (point-min))
+                 (setq end (point-max))
+                 ad-do-it))
+           ad-do-it))
+       (defadvice set-clipboard-contents-delete (before longlines-encode-kill activate)
+         (when longlines-mode
+           (longlines-encode-region beg end)))))
+
+  (defun path-to-clipboard ()
+    "Copy the current file's path to the clipboard.
+
+  If the current buffer has no file, copy the buffer's default directory."
+    (interactive)
+    (let ((path (expand-file-name (or (buffer-file-name) default-directory))))
+      (set-clipboard-contents-from-string path)
+      (message "%s" path)))
+
+  (defun npath-to-clipboard ()
+    "Copy the current file's path to the clipboard, with a network filename.
+  The resulting value will have the correct syntax to use with SCP.
+
+  If the current buffer has no file, copy the buffer's default directory."
+    (interactive)
+    (let* ((host (system-name))
+           (path (expand-file-name (or (buffer-file-name) default-directory)))
+           (network-path (concat host ":" path)))
+      (set-clipboard-contents-from-string network-path)
+      (message "%s" network-path)))
+
+Some of these functions then get bound to keys.  Rather than going with a full CUA interface, I free up Control-Z as a new prefix.
+
+  ;; Turn Control-z into another keymap.  The previous binding becomes
+  ;; `Control-z Control-z'.  This frees up some easy-to-reach
+  ;; keybindings for my own use.
+  (defvar ctrl-z-map (make-sparse-keymap))
+  (let ((orig-ctrl-z-binding (lookup-key (current-global-map) [(control ?z)])))
+    (global-set-key [(control ?z)] ctrl-z-map)
+    (global-set-key [(control ?z) (control ?z)] orig-ctrl-z-binding))
+  (global-set-key [(control ?z) (control ?g)] 'keyboard-quit)
+
+  ;; Control-Z has been converted to be a new keymap, like Control-X.
+  ;; This is a backup for when the mouse's rocker switch isn't working
+  ;; (such as in Exceed).
+  (global-set-key [(control ?z) (control ?x)] 'set-clipboard-contents-delete)
+  (global-set-key [(control ?z) (control ?c)] 'set-clipboard-contents)
+  (global-set-key [(control ?z) (control ?v)] 'insert-clipboard-contents)
+
+  ;; Buttons 6 and 7 on my mouse are a rocker switch; forward is 6,
+  ;; backward is 7.  When I push forward, I'm "pushing the clipboard
+  ;; contents into Emacs".  When I pull backward, I'm "pulling from
+  ;; Emacs into the clipboard".
+  (global-set-key [(mouse-6)] 'insert-clipboard-contents)
+  (global-set-key [(mouse-7)] 'set-clipboard-contents)
+
+
+----
+I've been trying off and on for several months to be able to copy and paste text between X and Emacs. I'm using Emacs 22.1.1 and KDE 3.5.8 and I run Emacs inside a Konsole window. I have the following in my .emacs:
+
+  (setq x-select-enable-clipboard t)
+  (global-set-key [(shift delete)] 'clipboard-kill-region)
+  (global-set-key [(control insert)] 'clipboard-kill-ring-save)
+  (global-set-key [(shift insert)] 'clipboard-yank)
+
+I also have delete-selection-mode enabled. And I've tried setting various values for interprogram-paste-function and interprogram-cut-function most of which tend to stop even normal yanking and killing from working! I've tried with and without Klipper (KDE's clipboard management tool).
+
+The result is that I can't move text from the Emacs kill ring (or an Emacs selection) into my X11 clipboard. I can paste from the X11 clipboard into Emacs using Konsole's paste function (though this has the effect that, from Emacs' point of view, the text was typed). The only thing I ''can'' do is use Konsole's copy function. However this has some serious drawbacks: it requires that I select text with the mouse; it doesn't handle correctly lines which Emacs has wrapped (it interprets them as being multiple lines ending with "/"s); and of course you can't select more text from a buffer than you can fit in a window.
+
+I wonder whether there is a solution to this?
+
+[new]
+If Emacs is running inside of Konsole, then it doesn't consider itself to be running in X.  It's running in a terminal.  None of the X clipboard functions are going to to anything.  What are working for you in your experiments are the Konsole bindings.  You need to get Emacs to display its frame outside of Konsole.
+
+[new]
+I use gnome-terminal with Emacs with xt-mouse.el. To get text from X11's clipboard into Emacs, I use shift-middle click and to get text out of Emacs, shift-select some text and then middle click to paste in some other app. In gnome-terminal holding shift bypasses any program's that run in the terminal that use the mouse (like xt-mouse.el), this probably works in Konsole, too.
+
+[new]
+Guess with the most recent CVS emacs enabling cua-mode is enough. Anything else causes problems.
+
+=== Alternate method (tested with emacs 23.0.90.1): ===
+
+I'm a fan of independent CLIPBOARD (accessed via explicit edit commands like ''copy'' and ''paste'') and PRIMARY (accessed via mouse marking and middle mouse click) selections and have a setup as advised here:
+
+http://standards.freedesktop.org/clipboards-spec/clipboards-latest.txt
+
+CLIPBOARD is always in sync with the head of the kill ring, that is, yank will either insert kill ring's top entry or an external copy, whichever is more recent.  Cutting or copying will also export this element as CLIPBOARD to other programs.  S-insert and middle mouse button are used for pasting the PRIMARY selection, created via mouse selection.
+
+  (custom-set-variables
+   '(mouse-sel-mode t)
+  )
+
+  (defun insert-from-clipboard ()
+    "Insert the text from the current x-selection."
+    (interactive)
+    (insert (x-selection-value 'PRIMARY)))
+  (global-set-key [(S-insert)] 'insert-from-clipboard)
+
+  ;; export last insert into kill-ring as PRIMARY selection to other apps
+  (defun my-x-select-text (text &optional push)
+    (let ((x-select-enable-clipboard t)
+          (x-select-enable-primary nil))
+      (x-select-text text push)))
+  (setq interprogram-cut-function 'my-x-select-text)
+
+  ; We have to be very carefull never to return the same thing twice, as
+  ; it will be put into the kill-ring.
+  ; If we want to express (car kill-ring), just return nil
+  (defun my-x-yank ()
+    (interactive)
+    (let ((ck (car kill-ring))
+          (xgsc (x-selection-value 'CLIPBOARD)))
+      (if (not (string= ck xgsc))
+          xgsc
+        nil ;; caller uses (car kill-ring)
+        )))
+  (when (string= (window-system) "x")
+    (setq interprogram-paste-function 'my-x-yank))
+
+Enjoy.
+
+== GNU Emacs in Terminal + OS X 10.8.3 + tmux ==
+##1. ## Link Emacs to OS X
+<pre>
+(defun copy-from-osx ()
+  (shell-command-to-string "pbpaste"))
+
+(defun paste-to-osx (text &optional push)
+  (let ((process-connection-type nil))
+    (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+      (process-send-string proc text)
+      (process-send-eof proc))))
+
+(setq interprogram-cut-function 'paste-to-osx)
+(setq interprogram-paste-function 'copy-from-osx)
+</pre>
+
+##2. ## Link tmux to OS X by setting <code>reattach-to-user-namespace</code> as the tmux default command as explained at: https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard
+
+== Interfacing with ClipX on Windows ==
+
+[http://bluemars.org/clipx/ Clipx] uses C-v to insert clipboard contents, so if you don't use standard Emacs keys for scrolling then you can remap C-v to `yank' and this makes Clipx interaction seamless:
+
+<pre>
+    (global-set-key (kbd "C-v") 'yank)
+</pre>
+
+
+== Separating the killring and the system pasteboard ==
+
+Emacs 23.1 joined the killring and the system pasteboard. I prefer the old behavior, when they were separate.  This will achieve just that (tested on OS X):
+
+<pre>
+;; (setq interprogram-cut-function 'x-select-text)
+;; (setq interprogram-paste-function x-cut-buffer-or-selection-value)
+(setq interprogram-cut-function nil)
+(setq interprogram-paste-function nil)
+(defun paste-from-pasteboard ()
+  (interactive)
+  (and mark-active (filter-buffer-substring (region-beginning) (region-end) t))
+  (insert (ns-get-pasteboard))
+  )
+(defun copy-to-pasteboard (p1 p2)
+  (interactive "r*")
+  (ns-set-pasteboard (buffer-substring p1 p2))
+  (message "Copied selection to pasteboard")
+  )
+(defun cut-to-pasteboard (p1 p2) (interactive "r*") (ns-set-pasteboard (filter-buffer-substring p1 p2 t)) )
+(global-set-key (kbd "s-v") 'paste-from-pasteboard)
+(global-set-key (kbd "s-c") 'copy-to-pasteboard)
+(global-set-key (kbd "s-x") 'cut-to-pasteboard)
+</pre>
+
+[new::roland.walker]
+[[Simpleclip]] is a more general library for separating the kill ring and the system clipboard. -- [[roland.walker]]
+
+[:ClipboardFunctions]
+== Functions for working with the clipboard ==
+
+Brought this from the WishList page.
+
+* I'd like copy, paste and cut command which working with the clipboard instead kill-ring. I write it for myself 
+{{{
+(defun copy (beg end)
+  "Copy region into clipboard"
+  (interactive "r")
+  (if mark-active
+      (progn
+        (x-set-selection 'CLIPBOARD (buffer-substring beg end))
+        (setq mark-active nil)
+        (message "Marked text copied"))
+    (progn
+      (x-set-selection 'CLIPBOARD (buffer-substring line-beginning-position line-end-position))
+      (setq mark-active nil)
+      (message "Current line is copied"))))
+
+(defun cut (beg end)
+  "Copy region into clipboard and kill"
+  (interactive "r")
+  (if mark-active
+      (progn
+        (x-set-selection 'CLIPBOARD (buffer-substring beg end))
+        (delete-region beg end)
+        (setq mark-active nil)
+        (message "Marked text cut"))
+    (progn
+      (x-set-selection 'CLIPBOARD (buffer-substring line-beginning-position line-end-position))
+      (delete-region line-beginning-position line-end-position)
+      (setq mark-active nil)
+      (message "Current line is cut"))))
+
+(defun paste (beg end)
+  "Paste contents of clipboard into point"
+  (interactive "r")
+  (if mark-active
+      (delete-region beg end))
+  (insert (x-selection 'CLIPBOARD)))
+
+}}}
+But i think what it very useful function for everyone.
+
+== Visual feedback of Yank and Yank-Pop operations ==
+
+[http://www.emacswiki.org/emacs/volatile-highlights.el VolatileHighlightsMode] brings visual
+feedback of "yank" and "yank-pop" operations by making highlights on text inserted by these commands.
+
+==Add every X clipboard selection to kill ring==
+
+I like having my emacs and X clipboards synced as much as possible.  I don't use any sort of DE clipboard manager, but I wanted to be able to put every X "clipboard" selection onto the emacs kill-ring.  This is a script that can be run in background to do this.
+
+  #!/bin/bash
+  
+  POLL_TIME=1
+  
+  STRING=first
+  while :
+  do
+      CUR=`xclip -selection c -o`
+      if [ "$CUR" != "$STRING" ]; then
+  	STRING=$CUR
+  	emacsclient -e "(kill-new \"$STRING\")" > /dev/null
+      fi
+      sleep $POLL_TIME
+  done
+
+Possible improvements:
+
+* check if emacs server is running
+* reimplement as C program to prevent a process being spawned every second
+* use X events to avoid polling, if possible
+
+
+== How can I get left-mouse button highlights, middle-mouse button pastes? ==
+
+Years ago the default behavior on X11+emacs was that anything highlighted in any application with the left-mouse button could be pasted with a single click of the middle button into emacs.  Copy and paste with ONE click and ZERO keystrokes from any application.  That is the behavior I want.  How can I restore this behavior in modern versions of emacs?  Thank you.
+
+-- DrewAdams 2014-11-07 15:50 UTC
+
