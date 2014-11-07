@@ -51,3 +51,71 @@ multi-eshell-function calls multi-eshell-shell-function that may change default-
  ;;;(defvar multi-eshell-function `(shell) ) ;;; Defines the shell. ('shell) or ('eshell)
  ;(defvar multi-eshell-name "*eshell*") ;;; Name of default shell or eshell buffer
 }}}
+
+== Multi-Esh (not to be confused with multi-eshell) ==
+This one is a lot more basic than shell-switcher and multi-eshell, but I didn't like the way they work.  It's kind of a stripped down cross between multi-term.el and multi-eshell.el
+{{{
+;;;; Implements an eshell multiplexer
+;;;; Author: Qudit314159
+;;;; Not to be confused with multi-eshell.el
+
+(defvar multi-esh-last-buffer nil
+  "The buffer to go back to in `multi-esh-next' and `multi-esh-next' if the current buffer is not a terminal buffer.")
+
+(defvar multi-esh-buffers nil)
+
+(defun multi-esh-filter-buffers ()
+  (setq multi-esh-buffers (filter 'buffer-live-p multi-esh-buffers)))
+
+(defun multi-esh ()
+  "Create a new term buffer."
+  (interactive)
+  (eshell t)
+  (setq multi-esh-buffers (nconc multi-esh-buffers (list (current-buffer))))
+  (setq multi-esh-last-buffer (current-buffer)))
+
+(defun multi-esh-switch (offset)
+  (multi-esh-filter-buffers)
+  (let* ((k (position (current-buffer) multi-esh-buffers))
+         (n (length multi-esh-buffers))
+         (buf (nth (mod (+ k offset) n) multi-esh-buffers)))
+    (message "%S %S %S %S %S" offset k n buf multi-esh-buffers)
+    (message "%S" (mod (+ k offset) n))
+    (switch-to-buffer buf)))
+
+(defun multi-esh-next (&optional offset)
+  "Go to the next eshell buffer if in an eshell or the last
+eshell buffer otherwise.  If OFFSET is `non-nil', will goto the
+next term buffer with OFFSET."
+  (interactive "P")
+  (if (null offset)
+      (setq offset 1))
+  (cond
+   ((and (not (eq major-mode 'eshell-mode))
+         (buffer-live-p multi-esh-last-buffer))
+    (switch-to-buffer multi-esh-last-buffer))
+   (t
+    (multi-esh-switch offset))))
+
+(defun multi-esh-previous (&optional offset)
+  "Go to the next eshell buffer if in an eshell or the last
+eshell buffer otherwise.  If OFFSET is `non-nil', will goto the
+previous eshell buffer with OFFSET."
+  (interactive "P")
+  (if (null offset)
+      (setq offset 1))
+  (cond
+   ((and (not (eq major-mode 'eshell-mode))
+         (buffer-live-p multi-esh-last-buffer))
+    (switch-to-buffer multi-esh-last-buffer))
+   (t
+    (multi-esh-switch (- offset)))))
+
+(dolist (fun '(set-buffer select-window select-frame))
+  (eval `(defadvice ,fun (after set-last-multi-esh-buffer activate)
+           "If eshell is running in the buffer switched to, remember that it was the last eshell buffer."
+           (when (eq major-mode 'eshell-mode)
+             (setq multi-esh-last-buffer (current-buffer))))))
+
+(provide 'multi-esh)
+}}}
