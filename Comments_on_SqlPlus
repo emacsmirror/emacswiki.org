@@ -1,0 +1,6 @@
+Trying to get this working with Aquamacs, and no dice. After starting a connection, I get the standard SQL-Plus Release and Copyright messages, but then it just hangs.
+
+I wonder if this is Aquamacs, or perhaps the fact I am using the Instant Client.
+
+-- Anonymous 2014-11-07 23:20 UTC
+
