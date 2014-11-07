@@ -67,6 +67,8 @@ As of september 2012, the CVS ecb version does not work with the bzr Emacs versi
 
 There is patched version of ECB that works with fresh Emacs & CEDET.  See http://alexott.blogspot.com/2012/06/ecb-fresh-emacscedet.html for more details on installation
 
+=== Via package ===
+The patched version of ECB is also available on the [[MELPA]] package repository.
 ----
 CategoryModes
 CategoryProgrammerUtils
