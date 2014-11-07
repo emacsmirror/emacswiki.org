@@ -31,7 +31,7 @@ The following code will set ECB source path automatically using ##projectile-get
 				(dolist (path-dir (projectile-get-project-directories))
 				  (unless (member (list path-dir path-dir) default-ecb-source-path)
 					(push (list path-dir path-dir) default-ecb-source-path)
-					(customize-set-variable 'ecb-source-pathdefault-ecb-source-path)
+					(customize-set-variable 'ecb-source-path default-ecb-source-path)
 					))))))
 }}}
 
