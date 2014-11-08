@@ -1,4 +1,3 @@
-[[ja:Gauche_Scheme]]
 Here is [[gosh.el]].  If you (load "gosh.el") in your ~/.emacs and do M-x gosh then it will run an `inferior' Gauche shell within emacs.  Tab completion can be done on function and variable names.  Plus you can send expressions to the gosh process from the editing pane by typing C-x C-e.
 
 
