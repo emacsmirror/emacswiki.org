@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Sun Aug 24 09:14:10 2014 (-0700)
+;; Last-Updated: Fri Nov  7 16:07:45 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1263
+;;     Update #: 1265
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -38,7 +38,8 @@
 ;;    `icicle-define-search-bookmark-command',
 ;;    `icicle-define-sort-command', `icicle-file-bindings',
 ;;    `icicle-menu-bar-make-toggle', `icicle-user-error',
-;;    `icicle-with-help-window', `icicle-with-selected-window'.
+;;    `icicle-with-help-window', `icicle-with-icy-mode-OFF',
+;;    `icicle-with-icy-mode-ON', `icicle-with-selected-window'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -1069,6 +1070,26 @@ setting the variable and displaying a status message (not MESSAGE)."
   (if (fboundp 'with-help-window)
       `(with-help-window ,buffer ,@body)
     `(with-output-to-temp-buffer ,buffer ,@body)))
+
+(defmacro icicle-with-icy-mode-OFF (&rest body)
+  "Turn off `icicle-mode' for the evaluation of BODY forms.
+The current value of `icicle-mode' before evaluating the forms is
+restored after their evaluation.  It is also restored in case of error
+or other non-local exit."
+  (let ((g-orig  (make-symbol "orig-val-icicle-mode")))
+    `(let ((,g-orig  icicle-mode))
+       (unwind-protect (progn (when icicle-mode (icy-mode -1)) ,@body)
+         (when ,g-orig (icy-mode 1)))))) ; No-op if it was already off.
+
+(defmacro icicle-with-icy-mode-ON (&rest body)
+  "Turn on `icicle-mode' for the evaluation of BODY forms.
+The current value of `icicle-mode' before evaluating the forms is
+restored after their evaluation.  It is also restored in case of error
+or other non-local exit."
+  (let ((g-orig  (make-symbol "orig-val-icicle-mode")))
+    `(let ((,g-orig  icicle-mode))
+       (unwind-protect (progn (unless icicle-mode (icy-mode 1)) ,@body)
+         (unless ,g-orig (icy-mode -1)))))) ; No-op if it was already off.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
