@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Mon Oct 27 22:59:24 2014 (-0700)
+;; Last-Updated: Fri Nov  7 16:12:34 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 15036
+;;     Update #: 15037
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -491,7 +491,8 @@
 (when (< emacs-major-version 23)
   (defvar completion--embedded-envvar-re) ; In `minibuffer.el'.
   (defvar completion-styles)            ; In `minibuffer.el'
-  (defvar icicle-Completions-text-scale-decrease)) ; In `icicles-opt.el' (for Emacs 23)
+  (defvar icicle-Completions-text-scale-decrease) ; In `icicles-opt.el' (for Emacs 23+)
+  (defvar icicle-read-char-by-name-multi-completion-flag)) ; In `icicles-opt.el' (for Emacs 23+)
 
 (defvar completion-root-regexp)         ; In `simple.el' (for Emacs 22 and 23.1)
 (defvar crm-local-completion-map)       ; In `crm.el'
