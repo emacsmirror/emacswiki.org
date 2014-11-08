@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Oct 27 23:28:15 2014 (-0700)
+;; Last-Updated: Fri Nov  7 16:45:41 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 29718
+;;     Update #: 29724
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -9964,7 +9964,25 @@
 ;;     doc string to tell users that they can cycle
 ;;     `icicle-incremental-completion' using `C-#'.
 ;;
-;;  9. Another of my libraries that can help programmers provide
+;;  9. Yes, you can define commands that do or do not use Icicles.
+;;     That is, users can take advantage of Icicles behavior during
+;;     particular commands, even while in general leaving Icicle mode
+;;     off.  Conversely, they can get vanilla Emacs behavior while in
+;;     general leaving Icicle mode on.
+;;
+;;     When you define a command, you can use macro
+;;     `icicle-with-icy-mode-ON' to enable Icicle mode during the
+;;     evaluation of its body sexps.  The original value of Icicle
+;;     mode (on or off) is restored when done.  If Icicle mode was
+;;     already on then enabling it is skipped (a no-op).
+;;
+;;     Similarly, you can use macro `icicle-with-icy-mode-OFF' to
+;;     disable Icicle mode during the evaluation of its body sexps.
+;;     The original value of Icicle mode (on or off) is restored when
+;;     done.  If Icicle mode was already off then disabling it is
+;;     skipped (a no-op).
+;;
+;; 10. Another of my libraries that can help programmers provide
 ;;     default values is `thingatpt+.el'.  It provides functions for
 ;;     picking up symbols, sexps, numbers, words, and other sorts of
 ;;     thing near the text cursor (`point').
