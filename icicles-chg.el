@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Oct 27 22:58:45 2014 (-0700)
+;; Last-Updated: Fri Nov  7 16:08:25 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 11327
+;;     Update #: 11328
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4173,6 +4173,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2014/11/07 dadams
+;;     Added: icicle-with-icy-mode-OFF, icicle-with-icy-mode-ON.
 ;; 2014/08/24 dadams
 ;;     icicle-define-search-bookmark-command: Better prompt for context regexp.
 ;; 2014/08/23 dadams
