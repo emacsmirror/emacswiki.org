@@ -11,6 +11,7 @@ Here are some simple guidelines for using '''Icicles''' in EmacsLisp
 programming:
 
 
+[:UseIt]
 '''1.''' '''''Use it!''''' Even if you do not do anything else, include this in
 your library: 
 
@@ -22,6 +23,7 @@ consequences if '''Icicles''' is not present in the user's
 however, then users can take advantage of each use you make of
 `completing-read' and `read-file-name' in your code.
 
+[:UseCompletion]
 '''2.''' Use an input-[[completion]] read function, such as
  `completing-read' or `read-file-name', when you read input!  There is almost
 never a reason ''not'' to use an input-completion function when reading user
@@ -39,20 +41,26 @@ users considerably.
 If you want to also give users a way to customize a (different) predicate that applies only to the textual candidates that are displayed in buffer `*Completions*', as opposed to the full [[alist]]-entry candidates that are supplied to
 `completing-read' or `read-file-name', then you can define a new [[user option]] and then bind internal [[variable]] `icicle-must-pass-predicate' to the value of that option.  See [[Icicles - Global Filters]].
 
+[:AvoidLiteralInteractiveString]
 '''3.''' Avoid using a literal-string `interactive' spec (e.g. ##(interactive "fFile: ")##) that reads input with completion.  Instead, call `completing-read' or `read-file-name' within the `interactive' spec.  This saves '''Icicles''' users of ''[[progressive completion]]'' the need to hit `RET' multiple times to pass their input up through multiple levels of recursive [[minibuffer]]s to the top level. See [[Icicles - Progressive Completion]].
 
+[:DefineMulticommands]
 '''4.''' In many cases, it makes sense to define a ''[[multi-command]]'', rather
 than a simple command.  People can always use a multi-command
 as a simple command, but not vice versa.  See [[Icicles - Multi-Commands]]  and [[Icicles - Defining Icicles Commands]].
 
+
+[:UseHistoryCompletion]
 '''5.''' Consider using '''`icicle-completing-read-history'''' instead of
 `read-from-minibuffer' or `read-string' for most purposes.
 This lets users complete their input against previously entered
 input.  Completion is [[lax]], so they can also enter new input.
 
+[:SortCandidates]
 '''6.''' You can bind '''`icicle-sort-comparer'''' temporarily to any sort
 function you need.
 
+[:DefineYourOwnCompletionAndCycling]
 '''7.''' Function '''`icicle-next-candidate'''' is a ''general framework'' for
 letting users [[Icicles - Cycling Completions|cycle]] completions of partial input strings.  I
 use it to define the cycling behavior for both [[prefix completion|prefix]] and
@@ -62,6 +70,7 @@ behavior.  Just supply it with a function that takes the
 current partial user input (a string) and returns a list of
 candidate completions, however those might be defined.
 
+[:TurnOffIcompletion]
 '''8.''' If the potential number of completion candidates is enormous,
 then [[Icicles - Icompletion|icompletion]] display in `*Completions*' can be slow.  In that
 case, consider turning it off for the duration of the command,
@@ -71,8 +80,29 @@ alternative to turning it off is the approach taken in '''Icicles'''
 Just add a reminder to the doc string to tell users that they
 can cycle `icicle-incremental-completion' using `<tt>C-#</tt>'.
 
-'''9.''' Another of my libraries that can help programmers provide
-default values is '''<tt>[[thingatpt+.el]]</tt>'''.  It provides functions for
+
+[:icicle-with-icy-mode-OFF]
+[:icicle-with-icy-mode-ON]
+[:CommandsWithOrWithoutIcicleMode]
+'''9.''' Yes, you can define commands that do or do not use '''Icicles'''.
+That is, users can take advantage of '''Icicles''' behavior during particular commands, even
+while in general leaving ''Icicle'' mode off.  Conversely, they can get
+vanilla Emacs behavior while in general leaving ''Icicle'' mode on.
+
+When you define a command, you can use macro '''`icicle-with-icy-mode-ON'''' to enable ''Icicle'' mode
+during the evaluation of its body [[sexp]]s.  The original value of
+''Icicle'' mode (on or off) is restored when done.  If ''Icicle'' mode
+was already on then enabling it is skipped (a no-op).
+
+Similarly, you can use macro '''`icicle-with-icy-mode-OFF'''' to disable
+''Icicle'' mode during the evaluation of its body sexps.  The
+original value of ''Icicle mode'' (on or off) is restored when
+done.  If ''Icicle mode'' was already off then disabling it is
+skipped (a no-op).
+
+[:ThingAtPointPlus]
+'''10.''' Another of my libraries that can help programmers provide
+default values is '''[[ThingAtPointPlus|Thing At Point+]]''' ('''<tt>[[thingatpt+.el]]</tt>''').  It provides functions for
 picking up [[symbol]]s, [[sexp]]s, numbers, words, and other sorts of
 thing near the [[cursor]] (and [[point]]).
 
