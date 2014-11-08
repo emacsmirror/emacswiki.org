@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 10 15:00:37 2014 (-0700)
+;; Last-Updated: Sat Nov  8 07:16:28 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1846
+;;     Update #: 1849
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,8 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `cl', `cl-lib', `gv', `help-fns', `help-mode', `info',
-;;   `macroexp', `naked', `wid-edit', `wid-edit+'.
+;;   `button', `cl', `help-fns', `help-mode', `naked', `view',
+;;   `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,6 +117,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/11/08 dadams
+;;     describe-mode-1: Show major-mode also (Emacs bug #18992).
 ;; 2014/08/10 dadams
 ;;     describe-command: Bind completion-annotate-function for use with Icicles.
 ;; 2014/05/11 dadams
@@ -891,7 +893,7 @@ have their own back/forward buttons."
             (let ((start  (point)))
               (insert (format-mode-line mode nil nil buffer))
               (add-text-properties start (point) '(face bold)))))
-        (princ " mode")
+        (princ (format " mode (`%s')" major-mode))
         (let* ((mode       major-mode)
                (file-name  (find-lisp-object-file-name mode nil)))
           (when file-name
