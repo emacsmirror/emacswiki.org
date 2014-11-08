@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.08.10
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 19 10:55:51 2014 (-0700)
+;; Last-Updated: Fri Nov  7 16:16:25 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 23640
+;;     Update #: 23641
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -111,7 +111,8 @@
 ;;    `icicle-find-file-of-content-action-1',
 ;;    `icicle-maybe-cached-action', `icicle-menu-bar-make-toggle',
 ;;    `icicle-search-modes', `icicle-with-comments-hidden',
-;;    `icicle-with-help-window', `icicle-with-selected-window'.
+;;    `icicle-with-help-window', `icicle-with-icy-mode-OFF',
+;;    `icicle-with-icy-mode-ON', `icicle-with-selected-window'.
 ;;
 ;;  Commands defined in Icicles -
 ;;
