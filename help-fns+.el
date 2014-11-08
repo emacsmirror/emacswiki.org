@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov  8 07:58:54 2014 (-0800)
+;; Last-Updated: Sat Nov  8 08:44:17 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1870
+;;     Update #: 1892
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -118,7 +118,7 @@
 ;;; Change Log:
 ;;
 ;; 2014/11/08 dadams
-;;     describe-mode-1: Show major-mode and mode-function also, on a separate line (Emacs bug #18992).
+;;     describe-mode-1: Show major-mode and mode-function also, on a separate line (Emacs bug #18992), filling.
 ;; 2014/08/10 dadams
 ;;     describe-command: Bind completion-annotate-function for use with Icicles.
 ;; 2014/05/11 dadams
@@ -838,8 +838,7 @@ whose documentation describes the minor mode."
 Does everything except create the help window and set up the
 back/forward buttons, so you can use this in other help commands that
 have their own back/forward buttons."
-    ;; For the sake of `help-do-xref' and `help-xref-go-back', do not switch buffers
-    ;; before calling `help-buffer'.
+    ;; For the sake of `help-do-xref' and `help-xref-go-back', do not switch buffers before calling `help-buffer'.
     (with-current-buffer buffer
       (let (minor-modes)
         ;; Older packages do not register in minor-mode-list but only in `minor-mode-alist'.
@@ -875,10 +874,10 @@ have their own back/forward buttons."
                   ;; Document the minor modes fully.
                   (insert pretty-minor-mode)
                   (princ (format " minor mode:\n(`%s'; %s)\n" mode-function (if (zerop (length indicator))
-                                                                              "no indicator"
-                                                                            (format "indicator%s" indicator))))
+                                                                                "no indicator"
+                                                                              (format "indicator%s" indicator))))
                   (save-excursion
-                   (fill-region-as-paragraph (line-beginning-position 0) (line-end-position 0) nil t t))
+                    (fill-region-as-paragraph (line-beginning-position 0) (line-end-position 0) nil t t))
                   (with-current-buffer standard-output
                     (insert (help-documentation mode-function nil 'ADD-HELP-BUTTONS)))
                   (Info-make-manuals-xref mode-function
@@ -895,15 +894,18 @@ have their own back/forward buttons."
             (let ((start  (point)))
               (insert (format-mode-line mode nil nil buffer))
               (add-text-properties start (point) '(face bold)))))
-        (princ (format " mode (`%s')" major-mode))
+        (princ " mode")
         (let* ((mode       major-mode)
                (file-name  (find-lisp-object-file-name mode nil)))
           (when file-name
             (princ (concat " defined in `" (file-name-nondirectory file-name) "'"))
             (with-current-buffer standard-output ; Make a hyperlink to the library.
               (save-excursion (re-search-backward "`\\([^`']+\\)'" nil t)
-                              (help-xref-button 1 'help-function-def mode file-name)))))
-        (princ ":\n")
+                              (help-xref-button 1 'help-function-def mode file-name))))
+          (with-current-buffer standard-output
+            (insert (format " (`%s'):\n" mode))
+            (save-excursion
+              (fill-region-as-paragraph (line-beginning-position 0) (line-end-position 0) nil t t))))
         (let* ((maj      major-mode)
                (maj-doc  (help-documentation maj nil 'ADD-HELP-BUTTONS)))
           (with-current-buffer standard-output
