@@ -31,6 +31,7 @@ EmacsLisp doesn't offer namespaces. Multiple ideas and implementations abound, h
 
 * [http://nic.ferrier.me.uk/blog/2013_06/adding-namespaces-to-elisp Hatching a plan to add namespaces to EmacsLisp] is a blog post talking about namespaces with some pointers to discussions on [[emacs-devel]].
 
+* [https://github.com/Bruce-Connor/names The Names package] “is designed as a practical, complete, robust, and debuggable tool which writes your namespaces for you.”  See [https://github.com/Bruce-Connor/names/blob/master/UsageExample.org this usage example] that shows namespaces are added to your library.
 
 ----
 CategoryCode
