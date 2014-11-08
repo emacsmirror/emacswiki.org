@@ -1,0 +1,8 @@
+With key-chord-mode enabled, calc mode's key help no longer works.  In calc, pressing 'm' followed by '?' is supposed to show what keys can follow 'm' in the minibuffer.  With key-chord-mode enabled, these messages appear to get over-written really quickly so they are no visible at all or only visible for a fraction of a second.
+
+On the other hand, having key-chord enabled globally is really useful for things like changing windows (I have 'yy' bound to other-window, .eg.).
+
+Anyone else notice this?  Any ideas for a fix.
+
+-- ddoherty03 2014-11-08 14:37 UTC
+
