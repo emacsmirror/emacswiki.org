@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov  8 07:16:28 2014 (-0800)
+;; Last-Updated: Sat Nov  8 07:58:54 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1849
+;;     Update #: 1870
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -118,7 +118,7 @@
 ;;; Change Log:
 ;;
 ;; 2014/11/08 dadams
-;;     describe-mode-1: Show major-mode also (Emacs bug #18992).
+;;     describe-mode-1: Show major-mode and mode-function also, on a separate line (Emacs bug #18992).
 ;; 2014/08/10 dadams
 ;;     describe-command: Bind completion-annotate-function for use with Icicles.
 ;; 2014/05/11 dadams
@@ -874,9 +874,11 @@ have their own back/forward buttons."
                   (push (point-marker) help-button-cache)
                   ;; Document the minor modes fully.
                   (insert pretty-minor-mode)
-                  (princ (format " minor mode (%s):\n" (if (zerop (length indicator))
-                                                           "no indicator"
-                                                         (format "indicator%s" indicator))))
+                  (princ (format " minor mode:\n(`%s'; %s)\n" mode-function (if (zerop (length indicator))
+                                                                              "no indicator"
+                                                                            (format "indicator%s" indicator))))
+                  (save-excursion
+                   (fill-region-as-paragraph (line-beginning-position 0) (line-end-position 0) nil t t))
                   (with-current-buffer standard-output
                     (insert (help-documentation mode-function nil 'ADD-HELP-BUTTONS)))
                   (Info-make-manuals-xref mode-function
