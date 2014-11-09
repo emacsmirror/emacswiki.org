@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Oct 28 16:17:07 2014 (-0700)
+;; Last-Updated: Sat Nov  8 19:05:51 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7426
+;;     Update #: 7430
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8507,7 +8507,7 @@ in the same directory, then you will need to relock it.)"
       (icicle-candidate-set-retrieve))))
 
 ;;;###autoload (autoload 'bmkp-retrieve-icicle-search-hits "bookmark+")
-(defun bmkp-retrieve-icicle-search-hits ()
+(defun bmkp-retrieve-icicle-search-hits () ; Bound to `C-x C-M-<' during Icicles completion.
   "Replace the current set of Icicles search hits by those from a bookmark.
 You are prompted for the bookmark name.
 This makes sense only if the buffer(s) or file(s) currently being
@@ -8517,7 +8517,7 @@ searched correspond to the recorded search hits."
   (bmkp-retrieve-icicle-search-hits-1))
 
 ;;;###autoload (autoload 'bmkp-retrieve-more-icicle-search-hits "bookmark+")
-(defun bmkp-retrieve-more-icicle-search-hits ()
+(defun bmkp-retrieve-more-icicle-search-hits () ; Bound to `C-x C-<' during Icicles completion.
   "Add the Icicles search hits from a bookmark to the current set of hits.
 You are prompted for the bookmark name.
 This makes sense only if the buffer(s) or file(s) currently being
@@ -8542,7 +8542,7 @@ searched correspond to the recorded search hits."
     (bookmark-jump bmk)))
 
 ;;;###autoload (autoload 'bmkp-set-icicle-search-hits-bookmark "bookmark+")
-(defun bmkp-set-icicle-search-hits-bookmark ()
+(defun bmkp-set-icicle-search-hits-bookmark () ; Bound to `C-x C-M->' during Icicles completion.
   "Record the current set of Icicles search-hit candidates as a bookmark."
   (interactive)
   (unless (and (boundp 'icicle-searching-p)  icicle-searching-p)
