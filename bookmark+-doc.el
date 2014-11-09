@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Sep  4 09:04:27 2014 (-0700)
+;; Last-Updated: Sat Nov  8 20:05:59 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 14828
+;;     Update #: 14830
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -324,9 +324,16 @@
 ;;       (bookmark) name.  Then copy it to the `kill-ring' anytime, in
 ;;       any Emacs session.
 ;;
-;;     - Icicles search-hits bookmarks.  Save a set of search results
-;;       as a bookmark, then jump to the bookmark to restore them.
-;;       (You need library Icicles to use this feature.)
+;;     - Icicles search-hits bookmarks.  (You need library Icicles to
+;;       use this feature.)  During Icicles search you can use `C-x
+;;       C-M->' to save the current set of completion candidates
+;;       (search hits matching your current input) as an Icicles
+;;       search-hits bookmark.  During a later Icicles search you can
+;;       retrieve those search hits saved in the bookmark, by using
+;;       `C-x C-M-<`.  You can add to (instead of replacing) the
+;;       current set of hits with hits retrieved from a bookmark using
+;;       `C-x C-<'.  This is the only way you can "jump" to such a
+;;       bookmark.
 ;;
 ;;     In particular, note that you can use the following kinds of
 ;;     bookmarks to quickly switch among different projects (sets of
