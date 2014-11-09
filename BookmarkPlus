@@ -239,7 +239,7 @@ any Emacs session.
 '''`##C-x C-M-<##''''.  You can ''add to'' (instead of ''replacing'') the
 current set of hits with the hits retrieved from a bookmark using
 '''`##C-x C-<##''''.  This is the only way you can "jump" to such a
-bookmark.  See also [[Icicles - Bookmark Enhancements#BookmarkingIciclesSearchHits|Bookmarking Icicles Search Hits]]
+bookmark.  See also [[Icicles - Bookmark Enhancements#BookmarkingIciclesSearchHits|Bookmarking Icicles Search Hits]].
 
 
 
