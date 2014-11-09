@@ -235,9 +235,13 @@ other bookmarks.
 any Emacs session.
 
 [:IciclesSearchHitsBookmarks]
-* '''[[Icicles]] search-hits''' bookmarks.  Save a set of search results
-as a bookmark, then jump to the bookmark to restore them.
-(You need library '''Icicles''' to use this feature.)
+* '''[[Icicles]] search-hits''' bookmarks.  (You need library '''Icicles''' to use this feature.)  During '''[[Icicles - Search Commands, Overview|Icicles search]]''' you can use '''`##C-x C-M->##'''' to save the current set of completion candidates (search hits matching your current input) as an '''Icicles''' search-hits bookmark.  During a later '''Icicles''' search you can retrieve those search hits saved in the bookmark, by using
+'''`##C-x C-M-<##''''.  You can ''add to'' (instead of ''replacing'') the
+current set of hits with the hits retrieved from a bookmark using
+'''`##C-x C-<##''''.  This is the only way you can "jump" to such a
+bookmark.  See also [[Icicles - Bookmark Enhancements#BookmarkingIciclesSearchHits|Bookmarking Icicles Search Hits]]
+
+
 
 In particular, note that you can use the following kinds of bookmarks
 to quickly switch among different ''projects'' (sets of bookmarks):
