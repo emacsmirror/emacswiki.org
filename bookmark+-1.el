@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Nov  8 19:05:51 2014 (-0800)
+;; Last-Updated: Sat Nov  8 19:17:07 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7430
+;;     Update #: 7431
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -7753,15 +7753,14 @@ the file is an image file then the description includes the following:
                                                  (pp-to-string (bookmark-prop-get bookmark 'function))))))
                    (variable-list-p  (format "Variable list:\n%s\n"
                                              (pp-to-string (bookmark-prop-get bookmark 'variables))))
-                   (search-hits-p    (concat "Icicles search hits:\n%s\n"
+                   (search-hits-p    (format "Icicles search hits:\n%s\n\n"
                                              (mapconcat (lambda (hit)
                                                           (let ((hit-copy  (copy-sequence hit)))
                                                             (set-text-properties 0 (length hit-copy) ()
                                                                                  hit-copy)
                                                             hit-copy))
                                                         (bookmark-prop-get bookmark 'hits)
-                                                        "\n\t")
-                                             "\n"))
+                                                        "\n\t")))
                    (gnus-p           (format "Gnus, group:\t\t%s, article: %s, message-id: %s\n"
                                              (bookmark-prop-get bookmark 'group)
                                              (bookmark-prop-get bookmark 'article)
