@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Nov  7 16:12:34 2014 (-0800)
+;; Last-Updated: Sat Nov  8 19:01:05 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 15037
+;;     Update #: 15043
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6098,24 +6098,27 @@ Character FROM is affected (possibly deleted).  Character TO is not."
       (buffer-string))))
 
 (defun icicle-barf-if-outside-minibuffer ()
-  "Raise an error if `this-command' is called outside the minibuffer."
-  (unless (eq (current-buffer) (window-buffer (minibuffer-window)))
-    (icicle-user-error "Command `%s' must be called from the minibuffer" this-command)))
+  "Raise an error if `this-command' is called outside the minibuffer.
+Return non-nil otherwise."
+  (or (eq (current-buffer) (window-buffer (minibuffer-window)))
+      (icicle-user-error "Command `%s' must be called from the minibuffer" this-command)))
 
 (defun icicle-barf-if-outside-Completions ()
-  "Raise error if `this-command' is called outside buffer `*Completions*'."
-  (unless (eq (current-buffer) (get-buffer "*Completions*"))
-    (icicle-user-error "Command `%s' must be called from `*Completions*' buffer" this-command)))
+  "Raise error if `this-command' is called outside buffer `*Completions*'.
+Return non-nil otherwise."
+  (or (eq (current-buffer) (get-buffer "*Completions*"))
+      (icicle-user-error "Command `%s' must be called from `*Completions*' buffer" this-command)))
 
 (defun icicle-barf-if-outside-Completions-and-minibuffer ()
-  "Error if `this-command' called outside `*Completions*' and minibuffer."
-  (unless (or (eq (current-buffer) (window-buffer (minibuffer-window)))
-              (eq (current-buffer) (get-buffer "*Completions*")))
-    (icicle-user-error "`%s' must be called from `*Completions*' or minibuffer" this-command)))
+  "Error if `this-command' called outside `*Completions*' and minibuffer.
+Return non-nil otherwise."
+  (or (or (eq (current-buffer) (window-buffer (minibuffer-window)))
+          (eq (current-buffer) (get-buffer "*Completions*")))
+      (icicle-user-error "`%s' must be called from `*Completions*' or minibuffer" this-command)))
 
 (defun icicle-command-abbrev-save ()
   "Save `icicle-command-abbrev-alist'.  Used on `kill-emacs-hook'."
-  (icicle-condition-case-no-debug err   ; Don't raise an error, since it's on `kill-emacs-hook.
+  (icicle-condition-case-no-debug err   ; Don't raise an error, since it's on `kill-emacs-hook'.
       (let ((sav  (get 'icicle-command-abbrev-alist 'saved-value)))
         (unless (and (or (null sav)
                          (and (consp sav)  (consp (car sav))  (consp (cdar sav))
