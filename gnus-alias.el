@@ -1300,8 +1300,8 @@ responsible for the subsequent mess)."
   "Goto beginning of signature or end of buffer."
   (goto-char (point-min))
   (save-match-data
-    (re-search-forward message-signature-separator nil 'move))
-  (beginning-of-line))
+    (when (re-search-forward message-signature-separator nil 'move)
+      (beginning-of-line))))
 
 ;;; **************************************************************************
 (defun gnus-alias-goto-first-empty-header (or-body)
