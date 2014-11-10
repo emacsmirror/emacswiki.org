@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Nov  8 20:05:59 2014 (-0800)
+;; Last-Updated: Sun Nov  9 18:16:45 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 14830
+;;     Update #: 14861
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -124,6 +124,7 @@
 ;;    (@> "Bookmark+ Features")
 ;;    (@> "Bookmark Basics")
 ;;    (@> "Different Types of Jump Commands")
+;;    (@> "Bookmark Annotations")
 ;;    (@> "Bookmark Tags")
 ;;    (@> "Bookmark Tags Can Have Values")
 ;;    (@> "Function, Sequence, and Variable-List Bookmarks")
@@ -218,6 +219,20 @@
 ;;  provides.  Some of these are detailed in other sections, below.
 ;;
 ;;  * Richer bookmarks.  They record more.  They are more accurate.
+;;
+;;     - An optional bookmark annotation is user-supplied text that is
+;;       saved as part of the bookmark.  You can use any text you
+;;       like, and you can use it for any purpose you like.  In
+;;       Bookmark+, the mode for viewing and editing a bookmark
+;;       annotation is Org mode, by default.
+;;
+;;     - In addition, Bookmark+ lets you optionally use a separate
+;;       file, URL, or bookmark to annotate any bookmark.  Accessing
+;;       ("showing") such an external annotation visits its
+;;       destination.  So for example, you can use bookmarks to one or
+;;       more Org files to annotate one or more bookmarks.  The
+;;       annotation saved with the bookmark itself just specifies the
+;;       destination.  See (@> "Bookmark Annotations").
 ;;
 ;;     - You can tag bookmarks, a la del.icio.us.  In effect, tags
 ;;       define bookmark sets.  A bookmark can have any number of
@@ -856,14 +871,58 @@
 ;;  bookmark from such a navigation list, use `C-x j N' or `C-x 4 j N'
 ;;  (`bmkp-jump-in-navlist' or `bmkp-jump-in-navlist-other-window').
  
-;;(@* "Bookmark Tags")
-;;  ** Bookmark Tags **
+;;(@* "Bookmark Annotations")
+;;  ** Bookmark Annotations **
 ;;
 ;;  With Bookmark+ you can bookmark many kinds of Emacs object.
 ;;  Bookmarks record locations - that is their primary purpose.  They
 ;;  can also record annotations: general free-text descriptions of
-;;  your choosing.
+;;  your choosing.  An annotation is thus metadata that is associated
+;;  with a bookmark.  You can use it for any purpose you like.
 ;;
+;;  A bookmark annotation is stored as part of the bookmark itself.
+;;  For this reason, you typically want to keep it fairly short.  In
+;;  Bookmark+, the mode for viewing and editing a bookmark annotation
+;;  is Org mode, by default.
+;;
+;;  You can obtain the effect of using longer annotations, and some
+;;  other advantages as well, by using "external annotations".  These
+;;  are annotations that are short and serve only as pointers to
+;;  external files, URLs, or other bookmarks.  When you "show" the
+;;  annotation of a bookmark (e.g., using `a' in the `*Bookmark List*'
+;;  display) and the annotation is such a pointer, the effect is to
+;;  visit the destination.  So for example, you can use bookmarks to
+;;  one or more Org files to annotate (provide metadata for) one or
+;;  more bookmarks.
+;;
+;;  You create an external annotation for a bookmark by using one of
+;;  these forms as the annotation text.
+;;
+;;     bmkp-annot-url: "FILE"
+;;     bmkp-annot-url: "URL"
+;;     bmkp-annot-url: "BOOKMARK"
+;;
+;;  * FILE is an absolute file name.  It is handled by
+;;    `find-file-other-window'.
+;;  * URL is a URL.  It is handled by `browse-url'.
+;;  * BOOKMARK is the name of a bookmark in the current bookmark
+;;    alist.
+;;
+;;  The double-quote characters are necessary, so that you can include
+;;  characters such as `SPC' in the name.  The text must be on the
+;;  first line of the annotation (not counting the commented
+;;  instruction lines).  It can be preceded only by whitespace.
+;;
+;;  You can include other text in the annotation, after the
+;;  destination specification, and you can see or edit it when you
+;;  edit the annotation (e.g., using `C-u a' in buffer `*Bookmark
+;;  List*'), but it is ignored when the annotation is "shown" (e.g.,
+;;  using `a').
+ 
+;;(@* "Bookmark Tags")
+;;  ** Bookmark Tags **
+;;
+;;  In addition to annotating bookmarks with arbitrary metadata,
 ;;  Bookmark+ bookmarks can also be tagged, as a way to organize them,
 ;;  which also means as a way to organize the objects that are
 ;;  bookmarked.
