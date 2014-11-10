@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Nov  9 18:34:26 2014 (-0800)
+;; Last-Updated: Mon Nov 10 11:03:13 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7439
+;;     Update #: 7447
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -531,10 +531,11 @@
 ;;  ***** NOTE: The following commands defined in `bookmark.el'
 ;;              have been REDEFINED HERE:
 ;;
-;;    `bookmark-delete', `bookmark-edit-annotation',
-;;    `bookmark-edit-annotation-mode', `bookmark-insert',
-;;    `bookmark-insert-annotation', `bookmark-insert-location',
-;;    `bookmark-jump', `bookmark-jump-other-window', `bookmark-load',
+;;    `bookmark-default-annotation-text', `bookmark-delete',
+;;    `bookmark-edit-annotation', `bookmark-edit-annotation-mode',
+;;    `bookmark-insert', `bookmark-insert-annotation',
+;;    `bookmark-insert-location', `bookmark-jump',
+;;    `bookmark-jump-other-window', `bookmark-load',
 ;;    `bookmark-relocate', `bookmark-rename', `bookmark-save',
 ;;    `bookmark-send-edited-annotation', `bookmark-set',
 ;;    `bookmark-set-name', `bookmark-yank-word'.
@@ -1899,6 +1900,23 @@ bookmark file.  Saving the file depends on `bookmark-save-flag'."
     bmk))                               ; Return the bookmark.
 
 
+;; REPLACES ORIGINAL in `bookmark.el'.
+;;
+;; Mention `C-c C-M-c', not `C-c C-c'.
+;;
+;;;###autoload (autoload 'bookmark-default-annotation-text "bookmark+")
+(defun bookmark-default-annotation-text (bookmark-name)
+  "Return default annotation text for BOOKMARK-NAME.
+The default annotation text is simply some text explaining how to use
+annotations."
+  (concat "#  Type the annotation for bookmark `" bookmark-name "' here.\n"
+	  "#  All lines that start with a `#' will be deleted.\n"
+	  "#  Type `C-c C-M-c' when done.\n#\n"
+	  "#  Author: " (user-full-name) " <" (user-login-name) "@"
+	  (system-name) ">\n"
+	  "#  Date:    " (current-time-string) "\n"))
+
+
 ;; REPLACES ORIGINAL in `bookmark.el' (Emacs 24.4+).
 ;;
 ;; Usable for older Emacs versions also.
@@ -1931,7 +1949,7 @@ BOOKMARK is a bookmark name or a bookmark record."
    (define-derived-mode bookmark-edit-annotation-mode ,bmkp-edit-annotation-mode-inherit-from
        "Edit Bookmark Annotation"
      "Mode for editing the annotation of a bookmark.
-When you have finished composing, use \\[bookmark-send-edited-annotation].
+When you have finished composing, use `C-c C-M-c'.
 
 \\{bookmark-edit-annotation-mode-map}")
    ;; Define this key because Org mode co-opts `C-c C-c' as a prefix key.
@@ -1947,7 +1965,7 @@ When you have finished composing, use \\[bookmark-send-edited-annotation].
 ;; 5. Delete window also, if `misc-cmds.el' loaded.
 ;;
 ;;;###autoload (autoload 'bookmark-send-edited-annotation "bookmark+")
-(defun bookmark-send-edited-annotation ()
+(defun bookmark-send-edited-annotation () ; Bound to `C-c C-M-c' in `bookmark-edit-annotation-mode'.
   "Use buffer contents as annotation for a bookmark.
 Lines beginning with `#' are ignored."
   (interactive)
