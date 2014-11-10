@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Nov  9 18:33:07 2014 (-0800)
+;; Last-Updated: Mon Nov 10 11:07:57 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 15727
+;;     Update #: 15729
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/11/10 dadams
+;;     Added (redefinition of): bookmark-default-annotation-text.
+;;     bookmark-edit-annotation-mode:
+;;       Use literal C-c C-M-c, since bookmark-send-edited-annotation is also bound to C-c C-c.
 ;; 2014/11/09/dadams
 ;;     Added: bmkp-get-external-annotation, bmkp-visit-external-annotation.
 ;;     bookmark-show-annotation: If the annotation is external then jump to its destination.
