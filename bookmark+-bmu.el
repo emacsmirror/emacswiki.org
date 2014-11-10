@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Nov  9 18:20:49 2014 (-0800)
+;; Last-Updated: Mon Nov 10 10:46:17 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3379
+;;     Update #: 3380
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4002,7 +4002,7 @@ the value of variable `bmkp-copied-tags' before pasting."
 ;;  *** General Menu-List (`-*bmenu-*') Commands and Functions ***
 
 ;;;###autoload (autoload 'bmkp-bmenu-show-or-edit-annotation "bookmark+")
-(defun bmkp-bmenu-show-or-edit-annotation (editp msg-p)
+(defun bmkp-bmenu-show-or-edit-annotation (editp msg-p) ; Bound to `a' in bookmark list.
   "Show annotation for current bookmark in another window.  `C-u': Edit.
 With no prefix arg, show the annotation.  With a prefix arg, edit it."
   (interactive "P\np")
