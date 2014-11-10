@@ -17,7 +17,7 @@ to rename a frame named ##OLD-NAME## to ##NEW-NAME##.
 
 The frame title is changed by changing the value of the variable
 `frame-title-format'. Likewise, the icon title can be changed with `icon-title-format'. They recognize the same special characters
-as variable `mode-line-format':
+as variable `mode-line-format' [except that %c and %l constructs are ignored] :
 
   A string is printed verbatim in the mode line except for %-constructs:
     (%-constructs are allowed when the string is the entire mode-line-format
