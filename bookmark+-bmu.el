@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Aug 22 13:54:33 2014 (-0700)
+;; Last-Updated: Sun Nov  9 18:20:49 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3377
+;;     Update #: 3379
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -584,7 +584,7 @@ Don't forget to mention your Emacs and library versions."))
   :group 'bookmark-plus :group 'faces)
 
 (defface bmkp-no-jump
-    '((t (:foreground "gray60")))
+    '((t (:foreground "gray50")))
   "*Face used for a bookmark you cannot jump to from `*Bookmark List*'."
   :group 'bookmark-plus :group 'faces)
 
@@ -2005,10 +2005,12 @@ See `bookmark-jump' for info about the prefix arg."
 ;; 1. Added optional arg MSG-P.
 ;; 2. Call `bookmark-show-annotation' with arg MSG-P.
 ;; 3. Raise error if not in buffer `*Bookmark List*'.
+;; 4. Doc string reflects enhanced behavior of `bookmark-show-annotation'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-show-annotation "bookmark+")
 (defun bookmark-bmenu-show-annotation (msg-p) ; Only in `mouse-3' menu.
-  "Show the annotation for the current bookmark in another window.
+  "Show the annotation for the current bookmark, or follow it if external.
+If the annotation is external then jump to its destination.
 Non-interactively, non-nil MSG-P means display messages."
   (interactive "p")
   (bmkp-bmenu-barf-if-not-in-menu-list)
