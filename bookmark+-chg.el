@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Nov  8 19:19:30 2014 (-0800)
+;; Last-Updated: Sun Nov  9 18:33:07 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 15722
+;;     Update #: 15727
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/11/09/dadams
+;;     Added: bmkp-get-external-annotation, bmkp-visit-external-annotation.
+;;     bookmark-show-annotation: If the annotation is external then jump to its destination.
 ;; 2014/11/08 dadams
 ;;     bmkp-bookmark-description: Corrected formatting for search-hits-p.
 ;; 2014/10/28 dadams
@@ -1057,6 +1060,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/11/09 dadams
+;;     bookmark-bmenu-show-annotation: Updated doc string to reflect updated bookmark-show-annotation.
 ;; 2014/08/22 dadams
 ;;     bmkp-looking-at-p: Do not defalias to Emacs looking-at-p because that is a defsubst.
 ;; 2014/07/20 dadams
