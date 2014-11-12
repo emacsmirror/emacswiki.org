@@ -103,7 +103,7 @@ to use the provided anything.el integration should one wish.
 Download: [http://github.com/jrockway/eproject eproject.el]
 
 eproject is similar to project-root.el, but less invasive and more customizable.  The docs
-in the file are pretty descriptive, as is [http://blog.jrock.us/articles/eproject.pod this blog post].
+in the file are pretty descriptive, as is [https://web.archive.org/web/20090815213845/http://blog.jrock.us/articles/eproject.pod this blog post] [https://web.archive.org/web/20090815213845/http://blog.jrock.us/articles/eproject.pod source code of blog post].
 
 Basically, you can declare project types like:
 
