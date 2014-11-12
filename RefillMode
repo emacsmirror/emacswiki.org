@@ -34,6 +34,22 @@ paragraphs with the following commands:
 
 You can either run these commands on a region and perform that action for the region (Hint: C-x h marks the entire buffer as a region), or you can set justification and start typing.  Emacs tries to be smart -- i.e. if you set-justification-full on a paragraph it'll be justified full and any paragraphs you type after it will be justified full, but it can be tempermental.
 
+== Best Practices ==
+
+Refill-mode has lots of quirky out of the box behaviour that you can customize to you liking. This section will only cover some of the topics. More information can be found in the emacs manual "Adaptive Fill."
+
+Refill-mode assumes the user follows the American typist's convention of adding 2 spaces between each sentences.  If you do not include 2 spaces between each sentence, them refill-mode won't be able to tell between sentence endings and abbreviations. If you want refill-mode to work properly, then use 2 spaces between each sentence. Also, emacs assumes that paragraphs are separated by a blank line. In order for refill-mode to work as expected insert a blank line between paragraphs like this:
+
+This is paragraph 1.
+This is still paragraph 1.
+You guessed it; we're still in paragraph 1.
+
+Wow, we made it to paragraph 2.
+Yup. This is still paragraph 2.
+
+Ok, this is paragraph 3, and I promise it'll be the last paragraph is this trivial example.
+
+
 == History ==
 
 This was a replacement for ManiacMode by DaveLove.  It is now part of
