@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov  8 08:44:17 2014 (-0800)
+;; Last-Updated: Wed Nov 12 15:50:05 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1892
+;;     Update #: 1917
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,8 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `cl', `help-fns', `help-mode', `naked', `view',
-;;   `wid-edit', `wid-edit+'.
+;;   `button', `cl', `cl-lib', `gv', `help-fns', `help-mode', `info',
+;;   `macroexp', `naked', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,6 +117,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/11/12 dadams
+;;     describe-package:
+;;       Added version for Emacs 24.4+ - Use package-alist, package--builtins, or package-archive-contents.
 ;; 2014/11/08 dadams
 ;;     describe-mode-1: Show major-mode and mode-function also, on a separate line (Emacs bug #18992), filling.
 ;; 2014/08/10 dadams
@@ -2710,32 +2713,77 @@ Completion is available for the keymap name."
 ;; Call `Info-make-manuals-xref' to create a cross-ref link to manuals.
 ;;
 (when (fboundp 'describe-package)       ; Emacs 24+
-  (defun describe-package (package)
-    "Display the full documentation of PACKAGE (a symbol)."
-    (interactive
-     (let* ((guess  (function-called-at-point)))
-       (require 'finder-inf nil t)
-       ;; Load the package list if necessary (but don't activate them).
-       (unless package--initialized (package-initialize t))
-       (let ((packages  (append (mapcar 'car package-alist) (mapcar 'car package-archive-contents)
-                                (mapcar 'car package--builtins))))
-         (unless (memq guess packages) (setq guess  nil))
-         (setq packages  (mapcar 'symbol-name packages))
-         (let ((val  (completing-read (if guess
-                                          (format "Describe package (default %s): " guess)
-                                        "Describe package: ")
-                                      packages nil t nil nil guess)))
-           (list (if (equal val "") guess (intern val)))))))
-    (if (not (or (and (fboundp 'package-desc-p)  (package-desc-p package))
-                 (and package (symbolp package))))
-        (when (called-interactively-p 'interactive) (message "No package specified"))
-      (help-setup-xref (list #'describe-package package) (called-interactively-p 'interactive))
-      (with-help-window (help-buffer)
-        (with-current-buffer standard-output
-          (describe-package-1 package)
-          (when (fboundp 'package-desc-name)  (setq package  (package-desc-name package))) ; Emacs 24.4+
-          (Info-make-manuals-xref (concat (symbol-name package) " package")
-                                  nil nil (not (called-interactively-p 'interactive)))))))) ; Link to manuals
+
+  (when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 24)))
+    (defun describe-package (package)
+      "Display the full documentation of PACKAGE (a symbol)."
+      (interactive
+       (let* ((guess (function-called-at-point)))
+         (require 'finder-inf nil t)
+         ;; Load the package list if necessary (but don't activate them).
+         (unless package--initialized
+           (package-initialize t))
+         (let ((packages (append (mapcar 'car package-alist)
+                                 (mapcar 'car package-archive-contents)
+                                 (mapcar 'car package--builtins))))
+           (unless (memq guess packages)
+             (setq guess nil))
+           (setq packages (mapcar 'symbol-name packages))
+           (let ((val
+                  (completing-read (if guess
+                                       (format "Describe package (default %s): "
+                                               guess)
+                                     "Describe package: ")
+                                   packages nil t nil nil guess)))
+             (list (intern val))))))
+      (if (not (or (package-desc-p package) (and package (symbolp package))))
+          (message "No package specified")
+        (help-setup-xref (list #'describe-package package)
+                         (called-interactively-p 'interactive))
+        (with-help-window (help-buffer)
+          (with-current-buffer standard-output
+            (describe-package-1 package)
+            (let* ((desc  (or (and (package-desc-p package)  package)
+                              (cadr (assq package package-alist))
+                              (let ((built-in  (assq package package--builtins)))
+                                (if built-in
+                                    (package--from-builtin built-in)
+                                  (cadr (assq package package-archive-contents))))))
+                   (name  (if desc (package-desc-name desc) package)))
+              (setq package  name)
+              (Info-make-manuals-xref (concat (symbol-name package) " package")
+                                      nil nil (not (called-interactively-p 'interactive))))))))) ; Link to manuals
+
+  (unless (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 24)))
+    (defun describe-package (package)
+      "Display the full documentation of PACKAGE (a symbol)."
+      (interactive
+       (let* ((guess  (function-called-at-point)))
+         (require 'finder-inf nil t)
+         ;; Load the package list if necessary (but don't activate them).
+         (unless package--initialized (package-initialize t))
+         (let ((packages  (append (mapcar 'car package-alist) (mapcar 'car package-archive-contents)
+                                  (mapcar 'car package--builtins))))
+           (unless (memq guess packages) (setq guess  nil))
+           (setq packages  (mapcar 'symbol-name packages))
+           (let ((val  (completing-read (if guess
+                                            (format "Describe package (default %s): " guess)
+                                          "Describe package: ")
+                                        packages nil t nil nil guess)))
+             (list (if (equal val "") guess (intern val)))))))
+      (if (not (or (and (fboundp 'package-desc-p)  (package-desc-p package))
+                   (and package (symbolp package))))
+          (when (called-interactively-p 'interactive) (message "No package specified"))
+        (help-setup-xref (list #'describe-package package) (called-interactively-p 'interactive))
+        (with-help-window (help-buffer)
+          (with-current-buffer standard-output
+            (describe-package-1 package)
+            (when (fboundp 'package-desc-name)  (setq package  (package-desc-name package))) ; Emacs 24.4
+            (Info-make-manuals-xref (concat (symbol-name package) " package")
+                                    nil nil (not (called-interactively-p 'interactive)))))))) ; Link to manuals
+
+  )
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
