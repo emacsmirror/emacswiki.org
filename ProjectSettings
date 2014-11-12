@@ -32,6 +32,7 @@ KimStorm suggested to store the stuff in a function.
 Note how the function executes everytime C mode runs.
 
 == Helper code based on existing files and subdirectories: project-root.el ==
+2014-11-12: project-root.el appears to have disappeared off the net, these locations don't work anymore.
 
 [http://www.shellarchive.co.uk/content/emacs.html project-root.el]
 (Updated version with new features: [http://piranha.org.ua/project-root/ project-root.el])
