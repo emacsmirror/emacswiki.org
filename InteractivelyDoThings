@@ -501,6 +501,27 @@ On my system (Debian squeeze), there are "files" in the root directory ending in
              (sixth (file-attributes (concat ido-current-directory a))))))))
 }}}
 
+[new:Berend:2014-11-12 21:05-38 UTC]
+
+On my system, when I type //, ido-sort-mtime breaks. This is due to having pseudo files in the root like @berend (they don't exist, they just show up in this sort routine). That breaks the sort with an error message. The following simply checks if the file starts with "@":
+
+{{{
+(defun ido-sort-mtime ()
+  (message ido-current-directory)
+  (setq ido-temp-list
+        (sort ido-temp-list
+              (lambda (a b)
+                if (not (or (char-equal (string-to-char a) ?@) (char-equal (string-to-char b) ?@)))
+                (time-less-p
+                 (sixth (file-attributes (concat ido-current-directory b))
+                        (sixth (file-attributes (concat ido-current-directory a)))))
+                 nil)))
+                      (ido-to-end  ;; move . files to end (again)
+                       (delq nil (mapcar
+                                  (lambda (x) (and (string-match-p "^\\.." x) x))
+                                  ido-temp-list))))
+}}}
+
 See also [[#SortOrder]].
 
 === A better (IMHO) ido-edit-input function ===
