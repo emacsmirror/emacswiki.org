@@ -32,3 +32,10 @@ You should '''''never''''' bind `C-u'.  It is important that it remain bound to 
 
 -- DrewAdams 2014-08-01 16:52 UTC
 
+
+----
+
+The quick install instructions are wrong. Somebody who cares about evil-mode should fix them
+
+-- Anonymous 2014-11-12 10:42 UTC
+
