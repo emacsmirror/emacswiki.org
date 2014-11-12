@@ -52,68 +52,94 @@ multi-eshell-function calls multi-eshell-shell-function that may change default-
  ;(defvar multi-eshell-name "*eshell*") ;;; Name of default shell or eshell buffer
 }}}
 
-== Multi-Esh (not to be confused with multi-eshell) ==
-This one is a lot more basic than shell-switcher and multi-eshell, but I didn't like the way they work.  It's kind of a stripped down cross between multi-term.el and multi-eshell.el
+== Multi-Sh ==
+This one is fairly minimal, but I didn't like how multi-eshell and shell-switcher work.  Unlike multi-eshell and shell-switcher, it allows multiplexing different types of shells at the same time (so for instance you can use terms and eshells at the same time and switch between them).  The main functions are multi-sh-new, multi-sh-next, multi-sh-previous and multi-sh-switch-to-buffer.  Previous and next functions order the shells by when they were last visited.
+
 {{{
-;;;; Implements an eshell multiplexer
+;;;; Implements a shell multiplexer for emacs shell and terminal modes
 ;;;; Author: Qudit314159
-;;;; Not to be confused with multi-eshell.el
+;;;; http://www.emacswiki.org/cgi-bin/emacs#toc4
 
-(defvar multi-esh-last-buffer nil
-  "The buffer to go back to in `multi-esh-next' and `multi-esh-next' if the current buffer is not a terminal buffer.")
+(require 'cl)
+(require 'dash)
 
-(defvar multi-esh-buffers nil)
+(defvar multi-sh-buffers nil
+  "The buffers tracked by multi-sh listed in order of how recently they were visited.")
 
-(defun multi-esh-filter-buffers ()
-  (setq multi-esh-buffers (filter 'buffer-live-p multi-esh-buffers)))
+(defun multi-sh-filter-buffers ()
+  (setq multi-sh-buffers (filter 'buffer-live-p multi-sh-buffers)))
 
-(defun multi-esh ()
-  "Create a new term buffer."
+(defun multi-sh-new (new-shell-function)
+  "Create a new multi-sh buffer by calling new-shell-function."
+  (multi-sh-filter-buffers)
+  (funcall new-shell-function)
+  (when current-prefix-arg
+    (rename-buffer (read-from-minibuffer "Buffer name: ")))
+  (setq multi-sh-buffers (cons (current-buffer) multi-sh-buffers)))
+
+(defun multi-sh-p (buf)
+  "Determine if the buffer is being tracked."
+  (member buf multi-sh-buffers))
+
+(defun multi-sh-switch (offset dir)
+  (multi-sh-filter-buffers)
+  (if (null offset)
+      (setq offset (cl-ecase dir
+                    (next 1)
+                    (previous -1))))
+  (if multi-sh-buffers
+      (let* ((n (length multi-sh-buffers))
+             (buf (nth (mod offset n) multi-sh-buffers))
+             (multi-sh-buffers-orig (cl-copy-list multi-sh-buffers)) ; Some code in this function (such as with-selected-window which calls select-window (triggering our advice)) so we save this first.
+             multi-sh-wins
+             multi-sh-win)
+        ;; If a multi-sh buffer is in a visible window, select it first instead of using the current window.
+        (dolist (win (window-list))
+          (with-selected-window win
+            (when (multi-sh-p (current-buffer))
+              (push win multi-sh-wins))
+            (when (equal (current-buffer) (car multi-sh-buffers-orig))
+              (setq multi-sh-win win))))
+        (unless multi-sh-win
+          (setq multi-sh-win (car multi-sh-wins)))
+        (if (not (multi-sh-p (current-buffer)))
+            (progn
+              (when multi-sh-win
+                (select-window multi-sh-win))
+              (switch-to-buffer (car multi-sh-buffers-orig)))
+          (switch-to-buffer buf))
+        (setq multi-sh-buffers (-rotate (- (cl-position (current-buffer) multi-sh-buffers-orig))
+                                        multi-sh-buffers-orig)))
+    (message "Nothing to switch to...")))
+
+(defun multi-sh-next (&optional offset)
+  "Go to the next multi-sh buffer if in a multi-sh buffer or the
+last multi-sh buffer otherwise.  If OFFSET is `non-nil', will
+goto the next term buffer with OFFSET."
+  (interactive "P")
+  (multi-sh-switch offset 'next))
+
+(defun multi-sh-previous (&optional offset)
+  "Go to the previous multi-sh buffer if in a multi-sh buffer or the
+last multi-sh buffer otherwise.  If OFFSET is `non-nil', will
+goto the previous term buffer with OFFSET."
+  (interactive "P")
+  (multi-sh-switch offset 'previous))
+
+(defun multi-sh-switch-to-buffer ()
+  "Switch to a tracked buffer."
   (interactive)
-  (eshell t)
-  (setq multi-esh-buffers (nconc multi-esh-buffers (list (current-buffer))))
-  (setq multi-esh-last-buffer (current-buffer)))
+  (multi-sh-filter-buffers)
+  (let* ((buffer-names (mapcar 'buffer-name multi-sh-buffers))
+         (buffer (completing-read "pattern: " buffer-names)))
+    (switch-to-buffer buffer)))
 
-(defun multi-esh-switch (offset)
-  (multi-esh-filter-buffers)
-  (let* ((k (position (current-buffer) multi-esh-buffers))
-         (n (length multi-esh-buffers))
-         (buf (nth (mod (+ k offset) n) multi-esh-buffers)))
-    (switch-to-buffer buf)))
+(dolist (fun '(switch-to-buffer select-window select-frame))
+  (eval `(defadvice ,fun (after set-last-multi-sh-buffer activate)
+           "If the buffer switched to is being tracked, remember that it was the last multi-sh buffer."
+           (when (multi-sh-p (current-buffer))
+             (setq multi-sh-buffers (cons (current-buffer)
+                                          (remove (current-buffer) multi-sh-buffers)))))))
 
-(defun multi-esh-next (&optional offset)
-  "Go to the next eshell buffer if in an eshell or the last
-eshell buffer otherwise.  If OFFSET is `non-nil', will goto the
-next term buffer with OFFSET."
-  (interactive "P")
-  (if (null offset)
-      (setq offset 1))
-  (cond
-   ((and (not (eq major-mode 'eshell-mode))
-         (buffer-live-p multi-esh-last-buffer))
-    (switch-to-buffer multi-esh-last-buffer))
-   (t
-    (multi-esh-switch offset))))
-
-(defun multi-esh-previous (&optional offset)
-  "Go to the next eshell buffer if in an eshell or the last
-eshell buffer otherwise.  If OFFSET is `non-nil', will goto the
-previous eshell buffer with OFFSET."
-  (interactive "P")
-  (if (null offset)
-      (setq offset 1))
-  (cond
-   ((and (not (eq major-mode 'eshell-mode))
-         (buffer-live-p multi-esh-last-buffer))
-    (switch-to-buffer multi-esh-last-buffer))
-   (t
-    (multi-esh-switch (- offset)))))
-
-(dolist (fun '(set-buffer select-window select-frame))
-  (eval `(defadvice ,fun (after set-last-multi-esh-buffer activate)
-           "If eshell is running in the buffer switched to, remember that it was the last eshell buffer."
-           (when (eq major-mode 'eshell-mode)
-             (setq multi-esh-last-buffer (current-buffer))))))
-
-(provide 'multi-esh)
+(provide 'multi-sh)
 }}}
