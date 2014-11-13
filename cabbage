@@ -1,0 +1,15 @@
+Cabbage helps you to manage your emacs configuration and allows you to stay in sync with other fellow emacs users. It is designed to be a community-driven framework to build your emacs configuration. The ultimate goal of cabbage is to provide a hassle-free, fast and robust emacs setup.
+
+=== Bundles ===
+
+Cabbage fundamental organization are bundles. You can enable and disable the configuration on a per bundle basis. The bundles live in cabbage/bundles. The active bundles are configured in your ~/.emacs.d/config.el file in the cabbage-bundles variable. The following bundles are supported [https://github.com/senny/cabbage/tree/master/bundles currently].
+
+=== Install Cabbage ===
+
+;;; /usr/bin/env bash -c "$(curl -fsSL https://raw.github.com/senny/cabbage/master/scripts/install.sh)"
+
+Paste that at a Terminal prompt.
+
+=== More information ===
+
+If you want to get more detailed informations about installation and how bundles work, please have a look at the [https://github.com/senny/cabbage/blob/master/README.md documentation].
