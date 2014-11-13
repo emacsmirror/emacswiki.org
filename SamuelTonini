@@ -1,0 +1,29 @@
+portrait:https://avatars3.githubusercontent.com/u/55331?v=3&s=80
+
+I am [::samueltonini], a software developer and dance teacher.
+
+These days I have been coding heavily with Elixir, Emacs Lisp, Ruby and JavaScript.
+
+Since a [http://www.emacswiki.org/emacs/senny friend] introduced me to Emacs, I use Emacs every day all the time for everything.
+
+
+
+
+== Projects ==
+* [[alchemist.el]] -- https://github.com/tonini/alchemist.el
+* [[karma.el]] -- https://github.com/tonini/karma.el
+* [[gitconfig.el]] -- https://github.com/tonini/gitconfig.el
+* [[emacsrookie]] -- http://emacsrookie.com
+* [[elixir-model]] -- https://github.com/elixir-lang/emacs-elixir (Maintainer)
+* [[cabbage]] -- https://github.com/senny/cabbage (Contributor)
+
+== My Emacs configuration ==
+My Emacs setup is based on [[cabbage]]
+
+[[cabbage]] fundamental organization are bundles. You can enable and disable the configuration on a per bundle basis.
+
+Have a look at my [https://github.com/tonini/emacs.d config] and see how you could setup everything properly through bundles.
+
+== Where you can find me ==
+
+You can find me on [https://github.com/tonini github] or have a look at my [https://twitter.com/samueltonini tweets] to follow my daily grind.
