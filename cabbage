@@ -6,7 +6,7 @@ Cabbage fundamental organization are bundles. You can enable and disable the con
 
 === Install Cabbage ===
 
-;;; /usr/bin/env bash -c "$(curl -fsSL https://raw.github.com/senny/cabbage/master/scripts/install.sh)"
+    /usr/bin/env bash -c "$(curl -fsSL https://raw.github.com/senny/cabbage/master/scripts/install.sh)"
 
 Paste that at a Terminal prompt.
 
