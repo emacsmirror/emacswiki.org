@@ -138,9 +138,8 @@ directly to the master branch if you want:
 
 ##git## will automatically identify you as the committer and author of
 these changes (see [[#PersonalizingGit]]).  If you are integrating
-another developer's work, you can use ##--author 'J. Other Hacker
-<jhacker@gnu.org.invalid>'## to identify JO Hacker as the author of
-the change.
+another developer's work, you can use ##--author 'J. Other Hacker <jhacker@gnu.org.invalid>'##
+to identify JO Hacker as the author of the change.
 
 //Note:// For larger tasks, such as a complicated bug fix or new
 feature that might require multiple commits and rounds of feedback, we
