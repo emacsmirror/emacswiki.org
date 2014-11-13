@@ -1,9 +1,9 @@
 Emacs. Git. [https://lists.gnu.org/archive/html/emacs-devel/2014-11/msg00681.html Emacs and Git].
 
 {{{
-From:	Eric S. Raymond
-Subject:	New Git repository is up.
-Date:	Wed, 12 Nov 2014 22:12:55 -0500
+From: Eric S. Raymond
+Subject: New Git repository is up.
+Date: Wed, 12 Nov 2014 22:12:55 -0500
 
 I repacked, push-mirrored it, then recloned.  It looks correct as far as
 I can tell in the limited time I've had to inspect it.
