@@ -1,0 +1,6 @@
+Provides font-locking, indentation and navigation support for the [http://elixir-lang.org/ Elixir] programming language.
+
+More information and installation instructions are available on [https://github.com/elixir-lang/emacs-elixir GitHub].
+
+----
+ElixirLanguage ProgrammingModes
