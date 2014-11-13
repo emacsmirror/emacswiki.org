@@ -13,8 +13,8 @@ Since a [http://www.emacswiki.org/emacs/senny friend] introduced me to Emacs, I 
 * [[alchemist.el]] -- https://github.com/tonini/alchemist.el
 * [[karma.el]] -- https://github.com/tonini/karma.el
 * [[gitconfig.el]] -- https://github.com/tonini/gitconfig.el
-* [[emacsrookie]] -- http://emacsrookie.com
-* [[elixir-model]] -- https://github.com/elixir-lang/emacs-elixir (Maintainer)
+* emacsrookie blog -- http://emacsrookie.com
+* [[ElixirMode | elixir-mode]] -- https://github.com/elixir-lang/emacs-elixir (Maintainer)
 * [[cabbage]] -- https://github.com/senny/cabbage (Contributor)
 
 == My Emacs configuration ==
