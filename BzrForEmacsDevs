@@ -1,7 +1,7 @@
 [:Introduction]
 == Introduction ==
 
-Some features described on EmacsWiki are available only in the latest '''[::EmacsDevelopmentVersion]'''. To obtain those features, you will need to build Emacs using the development source code. This page is about that source code and how to use it.
+Some features described on EmacsWiki are available only in the latest Emacs development version. To obtain those features, you will need to build Emacs using the development source code. This page is about that source code and how to use it.
 
 This is a quick-start guide to using [http://bazaar-vcs.org Bazaar] for Emacs development.  It assumes familiarity with the old CVS ways.  The focus at present is on /easing the transition/ from CVS to Bazaar, /not/ on teaching you how to be a power Bazaar user.  However, once you have read this, you will have a basic understanding of distributed version control and Bazaar.
 
