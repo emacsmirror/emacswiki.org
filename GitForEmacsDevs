@@ -282,7 +282,7 @@ First, update your repository:
       cd $DEVHOME/emacs
       git checkout master
       git pull
-      git merge ../TASKNAME
+      git merge TASKNAME
       git push
 
 Run the tests:
@@ -322,13 +322,12 @@ commit.
 When you're done with your work and it's all been sent upstream, you
 can delete your task branch...
 
-      cd ..
-      rm -rf TASKNAME/
+      git branch -d TASKNAME
 
 When you decide to work on the next task, create a new task branch:
 
       cd $DEVHOME/emacs
-      git branch NEW_TASKNAME
+      git checkout -b NEW_TASKNAME
 
 ...and you know what to do from here.
 
@@ -336,7 +335,7 @@ When you decide to work on the next task, create a new task branch:
 == Resources ==
 
 If you've read this far, you should have a basic understanding of Git,
-and how develop Emacs using Git.  Below are some more resources that
+and how to develop Emacs using Git.  Below are some more resources that
 you or people you work with might find useful.
 
 [:CasualDevs]
