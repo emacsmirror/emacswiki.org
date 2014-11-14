@@ -15,3 +15,5 @@ Commits are open. Have at it.
 }}}
 
 [http://lars.ingebrigtsen.no/2014/11/13/welcome-new-emacs-developers/ Welcome, New Emacs Developers] -- a blog post by LarsMagneIngebrigtsen explaining how to check it out, how to take a look at the wishlist, how to contribute patches.
+
+If you're building on a Mac, remember to use ##./configure --with-ns## or you'll get an executable requiring X11 or working on the terminal, only.
