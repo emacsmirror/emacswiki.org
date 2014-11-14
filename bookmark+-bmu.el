@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Nov 10 10:46:17 2014 (-0800)
+;; Last-Updated: Fri Nov 14 08:52:19 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3380
+;;     Update #: 3382
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1898,13 +1898,13 @@ Non-nil optional arg NO-MSG-P means do not show progress messages."
 ;; 2. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-1-window "bookmark+")
-(defun bookmark-bmenu-1-window (&optional use-region-p) ; Bound to `1' in bookmark list
+(defun bookmark-bmenu-1-window (&optional flip-use-region-p) ; Bound to `1' in bookmark list
   "Select this line's bookmark, alone, in full frame.
 See `bookmark-jump' for info about the prefix arg."
   (interactive "P")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
-  (bmkp-jump-1 (bookmark-bmenu-bookmark) 'pop-to-buffer use-region-p)
+  (bmkp-jump-1 (bookmark-bmenu-bookmark) 'pop-to-buffer flip-use-region-p)
   (bury-buffer (other-buffer))
   (delete-other-windows))
 
@@ -1915,7 +1915,7 @@ See `bookmark-jump' for info about the prefix arg."
 ;; 2. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-2-window "bookmark+")
-(defun bookmark-bmenu-2-window (&optional use-region-p) ; Bound to `2' in bookmark list
+(defun bookmark-bmenu-2-window (&optional flip-use-region-p) ; Bound to `2' in bookmark list
   "Select this line's bookmark, with previous buffer in second window.
 See `bookmark-jump' for info about the prefix arg."
   (interactive "P")
@@ -1927,7 +1927,7 @@ See `bookmark-jump' for info about the prefix arg."
     (delete-other-windows)
     (switch-to-buffer (other-buffer))
     ;; (let ((bookmark-automatically-show-annotations nil)) ; $$$$$$ Needed?
-    (bmkp-jump-1 bookmark-name 'pop-to-buffer use-region-p)
+    (bmkp-jump-1 bookmark-name 'pop-to-buffer flip-use-region-p)
     (bury-buffer menu)))
 
 
@@ -1937,14 +1937,14 @@ See `bookmark-jump' for info about the prefix arg."
 ;; 2. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-this-window "bookmark+")
-(defun bookmark-bmenu-this-window (&optional use-region-p) ; Bound to `RET' in bookmark list
+(defun bookmark-bmenu-this-window (&optional flip-use-region-p) ; Bound to `RET' in bookmark list
   "Select this line's bookmark in this window.
 See `bookmark-jump' for info about the prefix arg."
   (interactive "P")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
   (let ((bookmark-name  (bookmark-bmenu-bookmark)))
-    (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p)))
+    (bmkp-jump-1 bookmark-name 'switch-to-buffer flip-use-region-p)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1954,7 +1954,7 @@ See `bookmark-jump' for info about the prefix arg."
 ;; 3. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-other-window "bookmark+")
-(defun bookmark-bmenu-other-window (&optional use-region-p) ; Bound to `o' in bookmark list
+(defun bookmark-bmenu-other-window (&optional flip-use-region-p) ; Bound to `o' in bookmark list
   "Select this line's bookmark in other window.  Show `*Bookmark List*' still.
 See `bookmark-jump' for info about the prefix arg."
   (interactive "P")
@@ -1962,7 +1962,7 @@ See `bookmark-jump' for info about the prefix arg."
   (bookmark-bmenu-ensure-position)
   (let ((bookmark-name  (bookmark-bmenu-bookmark)))
     ;; (bookmark-automatically-show-annotations  t)) ; $$$$$$ Needed?
-    (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p)))
+    (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1971,7 +1971,7 @@ See `bookmark-jump' for info about the prefix arg."
 ;; 2. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-switch-other-window "bookmark+")
-(defun bookmark-bmenu-switch-other-window (&optional use-region-p) ; Bound to `C-o' in bookmark list
+(defun bookmark-bmenu-switch-other-window (&optional flip-use-region-p) ; Bound to `C-o' in bookmark list
   "Make the other window select this line's bookmark.
 The current window remains selected.
 See `bookmark-jump' for info about the prefix arg."
@@ -1983,7 +1983,7 @@ See `bookmark-jump' for info about the prefix arg."
         (same-window-buffer-names  ())
         (same-window-regexps       ()))
     ;; (bookmark-automatically-show-annotations t)) ; $$$$$$ Needed?
-    (bmkp-jump-1 bookmark-name 'display-buffer use-region-p)))
+    (bmkp-jump-1 bookmark-name 'display-buffer flip-use-region-p)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1992,12 +1992,13 @@ See `bookmark-jump' for info about the prefix arg."
 ;; 2. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-other-window-with-mouse "bookmark+")
-(defun bookmark-bmenu-other-window-with-mouse (event &optional use-region-p)
-  "Select clicked bookmark in other window.  Show `*Bookmark List*' still."
+(defun bookmark-bmenu-other-window-with-mouse (event &optional flip-use-region-p)
+  "Select clicked bookmark in other window.  Show `*Bookmark List*' still.
+See `bookmark-jump' for info about the prefix arg."
   (interactive "e\nP")
   (with-current-buffer (window-buffer (posn-window (event-end event)))
     (save-excursion (goto-char (posn-point (event-end event)))
-                    (bookmark-bmenu-other-window use-region-p))))
+                    (bookmark-bmenu-other-window flip-use-region-p))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -4263,9 +4264,9 @@ Save the command definition in `bmkp-bmenu-commands-file'."
                                           bmkp-bmenu-marked-bookmarks))))
          (fn     (intern (read-string "Define command to jump to a bookmark now marked: " nil
                                       bmkp-bmenu-define-command-history)))
-         (def    `(defun ,fn (bookmark-name &optional use-region-p)
+         (def    `(defun ,fn (bookmark-name &optional flip-use-region-p)
                    (interactive (list (bmkp-read-bookmark-for-type nil ',cands t) current-prefix-arg))
-                   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))))
+                   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p))))
     (eval def)
     (with-current-buffer (find-file-noselect bmkp-bmenu-commands-file)
       (goto-char (point-max))
