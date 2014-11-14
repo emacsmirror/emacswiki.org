@@ -164,6 +164,11 @@ review easier, too.  So first create a new branch:
       git branch TASKNAME
       git checkout TASKNAME
 
+The last two commands can be combined by using the -b option
+
+       cd $DEVHOME/emacs
+       git checkout -b TASKNAME
+
 ...where "TASKNAME" could be, e.g., the bug tracker ticket number of
 the bug you're trying to fix, or just a short, descriptive name for
 the task.
