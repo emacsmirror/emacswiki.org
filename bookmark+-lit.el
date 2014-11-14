@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2014, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sun Jul  6 10:28:17 2014 (-0700)
+;; Last-Updated: Fri Nov 14 08:54:11 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 887
+;;     Update #: 888
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -528,7 +528,7 @@ last non-nil value if nil."
                         "OFF"))))
                                         
 ;;;###autoload (autoload 'bmkp-lighted-jump "bookmark+")
-(defun bmkp-lighted-jump (bookmark-name &optional use-region-p) ; `C-x j h'
+(defun bmkp-lighted-jump (bookmark-name &optional flip-use-region-p) ; `C-x j h'
   "Jump to a highlighted bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -536,10 +536,10 @@ for info about using a prefix argument."
    (let ((alist  (bmkp-lighted-alist-only)))
      (unless alist  (error "No highlighted bookmarks"))
      (list (bookmark-completing-read "Jump to highlighted bookmark" nil alist) current-prefix-arg)))
-  (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
+  (bmkp-jump-1 bookmark-name 'switch-to-buffer flip-use-region-p))
 
 ;;;###autoload (autoload 'bmkp-lighted-jump-other-window "bookmark+")
-(defun bmkp-lighted-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j h'
+(defun bmkp-lighted-jump-other-window (bookmark-name &optional flip-use-region-p) ; `C-x 4 j h'
   "Jump to a highlighted bookmark in another window.
 See `bmkp-lighted-jump'."
   (interactive
@@ -547,7 +547,7 @@ See `bmkp-lighted-jump'."
      (unless alist  (error "No highlighted bookmarks"))
      (list (bookmark-completing-read "Jump to highlighted bookmark in another window" nil alist)
            current-prefix-arg)))
-  (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))
+  (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p))
 
 ;;;###autoload (autoload 'bmkp-unlight-bookmark "bookmark+")
 (defun bmkp-unlight-bookmark (bookmark &optional noerrorp msgp)
