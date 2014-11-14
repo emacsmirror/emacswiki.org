@@ -360,6 +360,73 @@ I could not get decrypting to work in emacs on OS X - emacs would background a p
 
  -sh
 
+== Caching Password for Symmetric Encription==
+Warning! This is risky if other people than you can access your own session. Despite you should always have to lock the screen when you leave your computer turned on, it is recommended you use this with caution.
+
+For some reason, using Emacs 24 and enabling <code>epa-file-cache-passphrase-for-symmetric-encryption</code> doesn't work and this is so because there's no elisp code for handling passphrase at the epg library (that have the base functions to interact with GPG tool).
+
+So we need to edit <code>epg--start</code> function adding this behaviour. Apply this patch to the epg.el file:
+
+{{{
+*** epg.el	2014-11-14 18:42:27.809875834 -0300
+--- epg-modified.el	2014-11-14 18:42:59.660206317 -0300
+***************
+*** 1140,1145 ****
+--- 1140,1148 ----
+  		       (if (and (not (eq (epg-context-protocol context) 'CMS))
+  				(epg-context-progress-callback context))
+  			   '("--enable-progress-filter"))
++ 		       (if (and (not (eq (epg-context-protocol context) 'CMS))
++ 				(epg-context-passphrase-callback context))
++ 			   '("--passphrase-fd" "0"))
+  		       (if epg-gpg-home-directory
+  			   (list "--homedir" epg-gpg-home-directory))
+  		       (unless (eq (epg-context-protocol context) 'CMS)
+***************
+*** 1191,1199 ****
+  			 epg-gpg-program)
+  		       args)))
+        (set-default-file-modes orig-mode))
+      (set-process-filter process #'epg--process-filter)
+!     (epg-context-set-process context process)))
+  
+  (defun epg--process-filter (process input)
+    (if epg-debug
+        (save-excursion
+--- 1194,1224 ----
+  			 epg-gpg-program)
+  		       args)))
+        (set-default-file-modes orig-mode))
++     (process-sending-password process context)
+      (set-process-filter process #'epg--process-filter)
+!     (epg-context-set-process context process)
+!     ))
+! 
+  
++ (defun process-sending-password (process context)
++   (let ((passphrase (funcall
++ 		     (car (epg-context-passphrase-callback context))
++ 		     context 
++ 		     'SYM
++ 		     (cdr (epg-context-passphrase-callback context))))
++ 	)
++     (process-send-string process (concat passphrase "\n"))    
++     )
++   (with-current-buffer (process-buffer process)
++     (save-excursion
++       (goto-char (point-min))
++       (when (search-forward "DECRYPTION_FAILED" nil t)
++ 	(message "Decryption Failed... Password may be wrong?")
++ 	(setq epa-file-passphrase-alist nil)
++ 	)
++       )
++     )
++   )
+  (defun epg--process-filter (process input)
+    (if epg-debug
+        (save-excursion
+}}}
+
 ----
 CategoryCryptography
 CategoryInterface
