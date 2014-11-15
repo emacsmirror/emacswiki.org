@@ -261,7 +261,7 @@ A hack to make Eldoc show the argument list in the echo area only after you type
 <pre>
 (setq eldoc-documentation-function
       (lambda ()
-        (when (eql last-command-char 32)
+        (when (eql last-command-event 32)
           (let (eldoc-documentation-function)
             (eldoc-print-current-symbol-info)))))
 </pre>
