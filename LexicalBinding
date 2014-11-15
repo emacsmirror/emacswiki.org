@@ -101,8 +101,8 @@ To enable lexical binding in your elisp library, put a line like this at the top
 ;; -*- lexical-binding: t -*-
 }}}
 
-This will enable lexical-binding for the code in the file, but note that *global variables declared with <code>defvar</code>, <code>defcustom</code> or <code>defconst</code> will be dynamically bound* due to the global binding being marked as "special" by those forms.\\
-Note: as of Emacs 24.4, any closures created **before** the marking the variable as "special" are unaffected by this effect. 
+This will enable lexical-binding for the code in the file, but <b>note that global variables declared with <code>defvar</code>, <code>defcustom</code> or <code>defconst</code> will be dynamically bound</b> due to the global binding being marked as "special" by those forms.\\
+Note: as of Emacs 24.4, any closures created **before** marking the variable as "special" are unaffected by this effect. It's not clear whether this is intentional. (I could reproduce this in SBCL, but not CLISP. Maybe it's supposed to have undefined behavior.)
 
 Note: as of Emacs 24.4, the undocumented <code>internal-make-var-non-special</code> function does *not* work as expected, and the only known way to revert a special variable status is restarting Emacs. <code>makunbound</code> doesn't help, either.
 
