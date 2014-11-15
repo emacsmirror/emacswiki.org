@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Nov 14 09:25:28 2014 (-0800)
+;; Last-Updated: Sat Nov 15 12:46:37 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 15749
+;;     Update #: 15753
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/11/15 dadams
+;;     Added: bmkp-region-jump-narrow-indirect-other-window, bmkp-handle-region+narrow-indirect.
+;;     bmkp-jump-man: Updated for Emacs 24+, where Man-getpage-in-background returns process buffer.
 ;; 2014/11/14 dadams
 ;;     bmkp-jump-1: Made arg FLIP-USE-REGION-P optional.  Corrected doc string for it: it flips.
 ;;     bmkp-snippet-to-kill-ring, bmkp-autonamed-*jump*, bmkp-temporary-jump*, bmkp-w32-browser-jump,
