@@ -1,4 +1,4 @@
-Timestamp: Fri Jun  7 10:14:42 BST 2013
+Timestamp: Fri Nov 14 14:51:14 GMT 2014
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -1717,6 +1717,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 [http://download.gna.org/planner-el/ planner.el] --- The Emacs Planner (by John Sullivan)
 
 [http://groups.google.com/groups?selm=87elghya25.fsf%40foo.foo&output=gplain playlist.el] --- A music file playlist (by Shawn Betts)
+
+[ftp://ftp.kednos.com/pub/tools/plimode.el plimode.el] --- [Electric PLI mode: indenting and flashing and filling] (by Mark Riggle)
 
 [ftp://ftp.gnu.org/pub/gnu/windows/emacs/docs/ntemacs/contrib/sql/ pls-mode.el] --- An Emacs major-mode for editing PL/SQL source. (by Dmitry Nizhegorodov)
 
