@@ -1,28 +1,27 @@
 For a discussion, see DynamicBindingVsLexicalBinding.
 
-Emacs 24 has lexical binding, if you want it.
-To use it, set `lexical-binding' and evaluate code in the same buffer.
+Emacs 24 has optional lexical binding, which can be enabled on a per-buffer basis.\\
+To use it, set the buffer-local variable `lexical-binding' to a non-<code>nil</code> value.
 
-You can have closures in Emacs -- no need for FakeClosures!
+For closures on previous versions of Emacs, see FakeClosures.
 
 {{{
 (setq lexical-binding t)
 (setq test (let ((foo "bar"))
 	     (lambda () 
-	       (message foo))))
-=> (closure ((foo . "bar") t) nil (message foo))
+	       foo)))
+=> (closure ((foo . "bar") t) nil foo)
 (funcall test)
-=> "bar"
+=> "bar"                                ; without lexical binding, it would have failed due to an unbound variable
 (let ((foo "something-else"))
   (funcall test))
-=> "bar"                                ; would have printed "something-else" with dynamic binding
+=> "bar"                                ; without lexical binding, it would have returned "something-else"
 }}}
 
-==Using defun in lexically bound contexts.==
+==Problem with defun in lexically bound contexts. (For Emacs 24 prior to 24.3)==
 
-the <code>defun</code> special form doesn't work properly in lexically bound
-contexts (i.e. when <code>lexical-bindint</code> has value <code>t</code>) as of
-Emacs 24.2.1.  For example: 
+Prior to Emacs 24.3, the <code>defun</code> special form didn't work properly in lexically bound
+contexts (i.e. when the buffer-local variable <code>lexical-binding</code> in not <code>nil</code>).  For example: 
 
 <pre>
 (let ((counter 0))
@@ -30,24 +29,20 @@ Emacs 24.2.1.  For example:
     (setq counter (1+ counter))))
 </pre>
 
-will not work as expected because the symbol <code>counter</code> in the
-<code>defun</code> will be bound to the global variable of that name, if there is
-one and not the lexical variable define in the <code>let</code>.  When the
-function <code>counting</code> is called, if the variable doesn't, exist then it
-will obviously fail.  Hoever if there is such a global variable it be updated,
-which is probably not what was intended and could be a hard to trace bug since
-the function might appear to be working properly.
+would not work as expected because the symbol <code>counter</code> in the
+function's body would be dynamically bound instead of binding to the variable defined in the <code>let</code>.
 
-The byte compiler does give a warning if you use <code>defun</code> in this way
-and presumably the issue will be addressed in some future version of Emacs, but
-until then the following macro can be used:
+The byte compiler did give a warning if you used <code>defun</code> in this way.
+
+This issue was resolved in Emacs 24.3, where the <code>defun</code> special form was replaced by a macro that doesn't have this issue.\\
+In versions prior to 24.3, the following macro can be used as a work-around:
 
 <pre>
 (defmacro defun** (name arglist &rest body)
   "Define NAME as a function in a lexically bound context.
 
 Like normal `defun', except that it works correctly in lexically
-bound contexts.
+bound contexts in versions of Emacs 24 prior to 24.3.
 
 \(fn NAME ARGLIST [DOCSTRING] BODY...)"
   (when (fboundp `,name)
@@ -56,7 +51,7 @@ bound contexts.
      (fset (quote ,name) (lambda (,@arglist) ,@body))))
 </pre>
 
-If you define <code>counter</code> as follows:
+If you define <code>counting</code> as follows:
 
 <pre>
 (let ((counter 0))
@@ -65,10 +60,10 @@ If you define <code>counter</code> as follows:
 </pre>
 
 it will work as expected and update the lexically bound variable
-<code>count</code> every time it is invoked, while returning the new value.
+<code>counter</code> every time it is invoked, while returning the new value.
 
 **NOTE:** The macro *always* makes a globally visible function
-  even if you try binding the function to a lexical variable.
+  even if you try to use it in a lexical closure.
   For instance, if you do the following:
 
 <pre>
@@ -78,25 +73,38 @@ it will work as expected and update the lexically bound variable
     .........))
 </pre>
 
-you get two symbols with the same name: <code>something</code>.  One is lexically bound to number 10 and one is bound to a non-lexically bound function.  If you want lexically bound functions you can use the <code>lables</code> macro from the **cl** package.
+you get a lexical closure with a variable binding for the symbol <code>something</code>, but the function being defined will still be stored in the function cell of the symbol <code>something</code>, which is global. In short, remember that elisp is a lisp-2, and <code>let</code> binds variables only.\\
+
+If you want lexically bound functions, you can use <code>cl-flet</code> or <code>cl-lables</code> from the **cl** package.\\
+Alternatively, you can assign lambdas to variables and then use them with <code>funcall</code>, for example:
+<pre>
+(let ((foo (lambda ()
+	     "I am foo.")))
+  (defun bar ()
+    (funcall foo)))
+(bar)
+=> "I am foo."
+</pre>
+However, like with <code>cl-flet</code>, this doesn't allow the functions to recurse.\\  
+If you know of a simple way (other than <code>cl-flet</code>) to have lexically-bound functions that can recurse, please edit this page.
+
 
 Note: I have named the macro <code>defun**</code> so that it doesn't clash with
 the macro <code>defun*</code> in the **cl** package, however it doesn't depend on
 that package. --- [[Bernard Hurley]]
 
-As of 2013-01-15, `defun` in the Emacs trunk appears to work correctly in lexically bound contexts
-so this hack is no longer needed. --- [[Bernard Hurley]]
-
 == Using lexical binding in elisp libraries ==
 
-To enable lexical binding in your elisp library put a line like this at the top of the file:
+To enable lexical binding in your elisp library, put a line like this at the top of the file:
 
 {{{
 ;; -*- lexical-binding: t -*-
 }}}
 
-This will enable lexical-binding for the code in the file, but global variables declared with `defvar' will still be
-dynamically bound.
+This will enable lexical-binding for the code in the file, but note that *global variables declared with <code>defvar</code>, <code>defcustom</code> or <code>defconst</code> will be dynamically bound* due to the global binding being marked as "special" by those forms.\\
+Note: as of Emacs 24.4, any closures created **before** the marking the variable as "special" are unaffected by this effect. 
+
+Note: as of Emacs 24.4, the undocumented <code>internal-make-var-non-special</code> function does *not* work as expected, and the only known way to revert a special variable status is restarting Emacs. <code>makunbound</code> doesn't help, either.
 
 === Real world issues ===
 One problem with using lexical binding is debugging. `eval' in especially in edebbug is unusable because the `print'ed version of the closures would take half a screen. Is there any way to tell emacs to reduce the printout a closure (e.g. #<closure>)? --LinhDang
