@@ -87,7 +87,7 @@ Overview of the Git work routine:
 # Do trivial, single-commit work on /master/ and commit to upstream from there; do your non-trivial work in local feature branches, committing locally as you go (more about that below).
 # From time to time, update to get upstream newness with ##git pull## (this is like <tt>cvs update</tt> or <tt>bzr up</tt>).
 # When a task is finished (a local branch's changes are complete), then either
-## merge them into the master branch (if you're a maintainer and have the necessary access rights --- this is analogous to committing in CVS), /or/
+## merge them into the master branch and push (if you're a maintainer and have the necessary access rights --- this is analogous to committing in CVS), /or/
 ## package up your changes with ##git format-patch## and send them as a patch series to the project mailing list (analogous to posting a patch).
 # Receive feedback.
 # Lather, rinse, repeat until the change is accepted.
