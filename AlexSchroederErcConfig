@@ -80,8 +80,7 @@ When called repeatedly, cycle through the buffers."
       erc-text-matched-hook '(erc-log-matches)
       erc-encoding-coding-alist (mapcar (lambda (i) (cons i 'latin-1))
 					'("mama" "hans-peter" "dom" "norbert" "rw"
-					  "JakubUSA" "Sektat" "oli"))
-      erc-nickserv-passwords '((freenode (("kensanata" . "Habakuck")))))
+					  "JakubUSA" "Sektat" "oli")))
 
 (defun erc-directed-at-fool-p (msg)
   "Check whether MSG is about a fool."
