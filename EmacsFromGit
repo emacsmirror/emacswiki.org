@@ -10,7 +10,7 @@ To clone (download) Emacs:
 git clone git://git.savannah.gnu.org/emacs.git
 </pre>
 
-You can also get Emacs speedily from git by ignoring a lot of Emacs history:
+You can also get Emacs speedily from git by ignoring a lot of Emacs history. This makes the download size much smaller:
 
 <pre>
 git clone --depth 1 git://git.sv.gnu.org/emacs.git
