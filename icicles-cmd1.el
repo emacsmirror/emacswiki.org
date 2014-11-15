@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Oct 26 19:25:44 2014 (-0700)
+;; Last-Updated: Sat Nov 15 08:52:23 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 27335
+;;     Update #: 27343
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2812,8 +2812,8 @@ See `icicle-apropos' for a description of PATTERN."
              (icompletep                              (and (featurep 'icomplete)  icomplete-mode))
              (icicle-must-pass-after-match-predicate  (and (not icompletep)  pred)))
         (list (completing-read
-               (concat "Apropos user option (regexp" (and (>= emacs-major-version 22)  " or words")
-                       "): ") obarray (and icompletep  pred) nil nil 'regexp-history)
+               (concat "Apropos user option (regexp" (and (>= emacs-major-version 22)  " or words") "): ")
+               obarray (and icompletep  pred) nil nil 'regexp-history)
               t)))
      (let ((apropos-do-all  nil)
            (icicle-candidate-alt-action-fn
@@ -2912,8 +2912,8 @@ See `icicle-apropos' for a description of PATTERN."
                       (or icicle-all-candidates-list-alt-action-fn
                           (icicle-alt-act-fn-for-type "function"))))
                 (completing-read
-                 (concat "Apropos function (regexp" (and (>= emacs-major-version 22)  " or words")
-                         "): ") obarray (and icompletep  pred) nil nil 'regexp-history)))
+                 (concat "Apropos function (regexp" (and (>= emacs-major-version 22)  " or words") "): ")
+                 obarray (and icompletep  pred) nil nil 'regexp-history)))
          (mapatoms (lambda (symb) (put symb 'icicle-special-candidate nil))))
        t))
      (when (and (> emacs-major-version 21)  (require 'apropos nil t)
@@ -2939,8 +2939,8 @@ See `icicle-apropos' for a description of PATTERN."
              (icicle-all-candidates-list-alt-action-fn  (or icicle-all-candidates-list-alt-action-fn ; `M-|'
                                                             (icicle-alt-act-fn-for-type "command"))))
         (list (completing-read
-               (concat "Apropos command (regexp" (and (>= emacs-major-version 22)  " or words")
-                       "): ") obarray (and icompletep  pred) nil nil 'regexp-history)
+               (concat "Apropos command (regexp" (and (>= emacs-major-version 22)  " or words") "): ")
+               obarray (and icompletep  pred) nil nil 'regexp-history)
               t)))
      (when (and (> emacs-major-version 21)  (require 'apropos nil t)
                 (string= (regexp-quote pattern) pattern)
@@ -7089,7 +7089,7 @@ These options, when non-nil, control candidate matching and filtering:
 For example, to change the default behavior to show only buffers that
 are associated with files, set `icicle-buffer-predicate' to this:
 
- (lambda (buf) (buffer-file-name buf))
+ (lambda (bufname) (buffer-file-name (get-buffer bufname)))
 
 Option `icicle-buffer-require-match-flag' can be used to override
 option `icicle-require-match-flag'.
@@ -8906,11 +8906,12 @@ use this input pattern:
 
 quine.*^G^J.*^G^J.*curry
 
-A prefix argument has a different meaning when used when you act on an
+A prefix argument has a different meaning when you act on an
 individual completion candidate.  It means that you visit that file or
 directory in read-only mode.  This includes when you act on all
-candidates using \\<minibuffer-local-completion-map>`\\[icicle-all-candidates-action]': \
-precede the `\\[icicle-all-candidates-action]' with a prefix arg.
+candidates using
+\\<minibuffer-local-completion-map>`\\[icicle-all-candidates-action]':
+\ precede the `\\[icicle-all-candidates-action]' with a prefix arg.
 
 This does not apply to the final candidate chosen (using `RET' or
 `mouse-2') - a prefix arg has no effect for that.
