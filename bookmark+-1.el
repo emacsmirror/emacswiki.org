@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Nov 14 08:50:30 2014 (-0800)
+;; Last-Updated: Sat Nov 15 12:23:53 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7472
+;;     Update #: 7480
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -242,11 +242,12 @@
 ;;    `bmkp-previous-bookmark-w32',
 ;;    `bmkp-previous-bookmark-w32-repeat',
 ;;    `bmkp-purge-notags-autofiles', `bmkp-read-bookmark-for-type',
-;;    `bmkp-region-jump', `bmkp-region-jump-other-window',
-;;    `bmkp-remote-file-jump', `bmkp-remote-file-jump-other-window',
-;;    `bmkp-remove-all-tags', `bmkp-remove-tags',
-;;    `bmkp-remove-tags-from-all', `bmkp-rename-tag',
-;;    `bmkp-retrieve-icicle-search-hits',
+;;    `bmkp-region-jump',
+;;    `bmkp-region-jump-narrow-indirect-other-window',
+;;    `bmkp-region-jump-other-window', `bmkp-remote-file-jump',
+;;    `bmkp-remote-file-jump-other-window', `bmkp-remove-all-tags',
+;;    `bmkp-remove-tags', `bmkp-remove-tags-from-all',
+;;    `bmkp-rename-tag', `bmkp-retrieve-icicle-search-hits',
 ;;    `bmkp-retrieve-more-icicle-search-hits',
 ;;    `bmkp-revert-bookmark-file', `bmkp-save-menu-list-state',
 ;;    `bmkp-send-bug-report', `bmkp-set-autonamed-bookmark',
@@ -394,7 +395,8 @@
 ;;    `bmkp-get-tag-value', `bmkp-get-tags', `bmkp-get-visit-time',
 ;;    `bmkp-get-visits-count', `bmkp-gnus-alist-only',
 ;;    `bmkp-gnus-bookmark-p', `bmkp-gnus-cp', `bmkp-goto-position',
-;;    `bmkp-handle-region-default', `bmkp-handler-cp',
+;;    `bmkp-handle-region-default',
+;;    `bmkp-handle-region+narrow-indirect', `bmkp-handler-cp',
 ;;    `bmkp-handler-pred', `bmkp-has-tag-p',
 ;;    `bmkp-icicle-search-hits-alist-only',
 ;;    `bmkp-icicle-search-hits-bookmark-p', `bmkp-image-alist-only',
@@ -9093,14 +9095,23 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Handler function for `man' page bookmark created by `man'.
 BOOKMARK is a bookmark name or a bookmark record."
   (require 'man)
-  (let ((Man-notify-method
-         (case bmkp-jump-display-function
-           ((nil display-buffer)                                                           'quiet)
-           (switch-to-buffer                                                               'pushy)
-           ((bmkp-select-buffer-other-window switch-to-buffer-other-window pop-to-buffer)  'friendly)
-           (t                                                                              'quiet))))
-    (Man-getpage-in-background (bookmark-prop-get bookmark 'man-args))
-    (while (get-process "man") (sit-for 0.2))
+  (let* ((man-args           (bookmark-prop-get bookmark 'man-args))
+         ;; `Man-notify-method' binding needs to be in effect during the calls to both
+         ;; `Man-getpage-in-background' and `accept-process-output'.
+         (Man-notify-method  (case bmkp-jump-display-function
+                               ((nil display-buffer)  'quiet)
+                               (switch-to-buffer      'pushy)
+                               ((bmkp-select-buffer-other-window
+                                 switch-to-buffer-other-window
+                                 pop-to-buffer)
+                                'friendly)
+                               (t                     'quiet)))
+         (buf                (Man-getpage-in-background man-args))
+         (proc               (and (bufferp buf) ; Emacs 24+
+                                  (get-buffer-process buf))))
+    (if proc
+        (while (and proc (eq (process-status proc) 'run)) (accept-process-output proc))
+      (while (get-process "man") (sit-for 0.2)))
     (bookmark-default-handler (bookmark-get-bookmark bookmark))))
 
 (defun bmkp-dired-remember-*-marks (beg end)
@@ -9519,6 +9530,35 @@ This is a specialization of `bookmark-jump', but without a prefix arg."
   (interactive (list (bmkp-read-bookmark-for-type "region" (bmkp-region-alist-only) t nil
                                                   'bmkp-region-history)))
   (let ((bmkp-use-region  t)) (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window)))
+
+;; This command accepts no argument.  It calls another command interactively, which reads the bookmark name.
+;;
+;;;###autoload (autoload 'bmkp-region-jump-narrow-indirect-other-window "bookmark+")
+(defun bmkp-region-jump-narrow-indirect-other-window ()
+  "Jump to a region bookmark and narrow to it in a cloned indirect buffer.
+You are prompted for the region bookmark.
+
+The region is selected as usual, in the bookmarked file/buffer.  A
+separate window is opened on the region text, for the cloned indirect
+buffer.
+
+You need library `narrow-indirect.el' to use this command."
+  (interactive)
+  (unless (require 'narrow-indirect nil t)
+    (error "You need library `narrow-indirect.el' for this command"))
+  (let ((bmkp-handle-region-function 'bmkp-handle-region+narrow-indirect))
+    (call-interactively
+     (if (and (boundp 'icicle-mode)  icicle-mode) ; Icicles
+         #'icicle-bookmark-region-other-window
+       #'bmkp-region-jump-other-window))))
+
+(defun bmkp-handle-region+narrow-indirect (bookmark)
+  "`bmkp-handle-region-default', then narrow to region in cloned buffer."
+  (let ((bmkp-handle-region-function  'bmkp-handle-region-default))
+    (bookmark-handle-bookmark bookmark))
+  (if (get major-mode 'no-clone-indirect) ; e.g., `Info-mode'
+      (message "Cannot indirectly clone a buffer in `%s' mode" major-mode)
+    (ni-narrow-to-region-indirect-other-window (region-beginning) (region-end) (point))))
 
 ;;;###autoload (autoload 'bmkp-remote-file-jump "bookmark+")
 (defun bmkp-remote-file-jump (bookmark-name &optional flip-use-region-p) ; `C-x j n'
