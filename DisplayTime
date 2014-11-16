@@ -7,7 +7,7 @@ display-time-string-forms for the more complex requirements (such as
 InternetTime).
 
 ----
-== Controling the Format of the Displayed Time ==
+== Controlling the Format of the Displayed Time ==
 You can control the format of the displayed time by configuring these variables (see their respective documentation with `C-h v <variable-name> RET'):
 
 display-time-day-and-date
