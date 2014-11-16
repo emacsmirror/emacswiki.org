@@ -3,59 +3,59 @@ Click on the header to search for pages about EmacsForWindows.
 
 Where to get it:
 
-* Official supported binaries http://www.gnu.org/software/emacs/windows/faq2.html#where-precompiled
+* **Official supported binaries** - http://www.gnu.org/software/emacs/windows/faq2.html#where-precompiled
+
 ** stable
 *** ftp://ftp.gnu.org/gnu/emacs/windows/
 *** http://ftp.gnu.org/gnu/emacs/windows/
 *** Note that most people will want the bin file, not the barebin file. The barebin file includes only the compiled binaries, not the rest of Emacs. (It's intended for people who downloaded the source and then changed their mind about compiling it themselves.)
+
 ** weekly builds
 *** http://alpha.gnu.org/gnu/emacs/windows/
+
 ** pretests
 *** ftp://alpha.gnu.org/gnu/emacs/pretest/windows/
 *** http://alpha.gnu.org/gnu/emacs/pretest/windows/
 
-* Unofficial/Development versions (it is however normally very stable):
-** **emacs-bin** Binary distributions of GNU Emacs. https://sourceforge.net/projects/emacs-bin
-** **2012-08-25** -- http://ntemacs.sourceforge.net/ -- **Emacs bzr for w32** [24.2.50.1]
+----
+
+* **Unofficial/Development binaries** (normally very stable):
+
+** **2014-11-15** **Emacs-w64** -- Native 64-bit build -- http://emacsbinw64.sourceforge.net/
+*** Unmodified source code from git mirror.
+*** Includes development snapshot, pretests, and release builds.
+*** Supports JPEG, GIF, PNG, TIFF, SVG, and XML2.
+*** Compiled with optimization.
+
+** **2014-11-08** **emacs-bin** Binary distributions of GNU Emacs. https://sourceforge.net/projects/emacs-bin
+
+** **2013-03-11** **Emacs for Windows Modified** (http://vgoulet.act.ulaval.ca/en/emacs/windows) -- Emacs 24.3 with a few modifications, most notably an installer, AUCTeX, ESS and image libraries.
+
+** **2012-08-25** **ntemacs** -- http://ntemacs.sourceforge.net/ -- **Emacs bzr for w32** [24.2.50.1]
 *** Clean, optimized w32 build of latest Emacs development trunk (Bazaar).
-*** Support for images enabled:
-**** giflib-4.1.6
-**** jpeg-8c
-**** libpng-1.4.4
-**** libtiff-3.9.2
-**** libxpm-3.5.8
-**** zlib-1.2.5
-**** gnutls-3.0.22
-**** libxml2-2.7.8
+*** Support for images enabled: giflib jpeg libpng libtiff libxpm zlib gnutls libxml2
 *** Built with MinGW32/GCC-4.7.0, optimized for Prescott and above.
 *** Uses 7z for distribution. Decompress the bin package anywhere (preferably C: or D: root) and run addpm.exe in \ntemacs24\bin.
-** **Precompiled Emacs for Windows binaries** -- http://code.google.com/p/emacs-for-windows/
+
+** **2011-12-23** **Precompiled Emacs for Windows binaries** -- http://code.google.com/p/emacs-for-windows/
 *** Source code checked out from latest Bazaar repository
 *** Both stable and bleeding edge nightly build binaries
-*** Last update 2011.11
-** **2009-11-04** -- [[EmacsW32]] -- **CVS Emacs 23.1.50.1**
+
+** **2009-11-04** -- Emacs 23.1.50.1 CVS [[EmacsW32]]
 *** Does some extra setup to work better on MS-Windows and includes some unix programs (grep etc) from gnuwin32 and image libraries. It is also slightly patched for the same reason.
 *** For other reasons the packages also includes [NxmlMode nXhtml].
 *** Untested versions of EmacsW32 (I use them myself though I am not satisfied enough with them) is uploaded more often to http://ourcomments.org/Emacs/DL/EmacsW32/test/.
 
-** **Emacs-w64** -- Native 64-bit build -- http://emacsbinw64.sourceforge.net/
-*** Unmodified source code from git mirror.
-*** Including development snapshot, pretests, and release.
-*** Supporting JPEG, GIF, PNG, TIFF, SVG, and XML2.
-*** Compiled with optimization.
-
-** or build it yourself BuildingOnWindowsTableofContents.
-
-* Emacs for Windows Modified (http://vgoulet.act.ulaval.ca/en/emacs/windows) -- Latest stable release of Emacs with a few modifications, most notably an installer, AUCTeX, ESS and image libraries.
-
-* Emacs 22
-** **2007-10-08** -- http://www.crasseux.com/emacs/
-** **2005-06-26** -- http://nqmacs.sf.net
+** **2007-10-08** -- Emacs 22 -- http://www.crasseux.com/emacs
+** **2007-07-07** -- Emacs 22.0.50 -- ftp://alpha.gnu.org/gnu/auctex/ -- Includes a preconfigured AUCTeX and preview-latex. (gone)
+** **2005-06-26** -- Emacs 22 -- http://nqmacs.sf.net
 ** See [[Meadow]] below on this page for a Japanese-oriented fork. (looks like it is gone)
-
-* Old gone:
-** **2007-07-07** -- ftp://alpha.gnu.org/gnu/auctex/ -- **Emacs 22.0.50 ** . Includes a preconfigured AUCTeX and preview-latex. (gone)
 ** It seems that LucasBonnet also maintains a build. Search for "win32" or "EmacsCVS" on his page. (gone)
+
+----
+
+or build it yourself - see BuildingOnWindowsTableofContents.
+
 
 Help:
 
