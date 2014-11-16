@@ -16,3 +16,23 @@ why doesnt the column highlight extend to the first line?
 
 -- jonnymnemonic 2014-11-16 20:15 UTC
 
+
+----
+
+@jonnymnemonic:
+Good question.  Taking a quick look, the problem is in the vline.el code defining `vline-show'.  It seems to fix the problem if you do this:
+
+* Change `##<##' to`##<=##' for the two tests in the `and' of the `while'.
+
+* `let'-bind `done' to `nil' around the `while'.
+
+* Change the `##(not (bobp))##' in the `and' of the `while' to `(not done)'.
+
+* Add this as the first sexp after the `while' condition:
+
+        (when (bobp) (setq done  t))
+
+Give it a try.  Pound on it a bit.  If it seems right, send it to the `vline.el' author as a fix.  And let me know.  If you never hear back from the `vline.el' author then maybe I'll update the `vline.el' copy on the wiki, noting the change in a comment.
+
+-- DrewAdams 2014-11-16 20:47 UTC
+
