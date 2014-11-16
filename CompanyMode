@@ -51,7 +51,7 @@ Yes, just bind `company-manual-begin', `company-complete-common', `company-compl
 
   (global-set-key "\t" 'company-complete-common)
 
-Alternatively, you can set `company-idle-delay' to t, to always complete immediately.
+Alternatively, you can set `company-idle-delay' to 0, to always complete immediately.
 
 ==== I don't like the default colors! ====
 
