@@ -258,8 +258,8 @@ augmented patch format that Git understands:
 
       git format-patch <BEGIN>..<END>
 
-where <BEGIN> and <END> identifies thr range of commits in your change.
-This will produce a seqence of files, one per commit in the equence, 
+where <BEGIN> and <END> identifies the range of commits in your change.
+This will produce a sequence of files, one per commit in the sequence, 
 each with a name generated from the summary line of the commit.
 
 Send mail to the Emacs Devel list describing the change; attach the
