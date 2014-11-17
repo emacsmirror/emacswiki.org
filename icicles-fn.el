@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sat Nov  8 19:01:05 2014 (-0800)
+;; Last-Updated: Sat Nov 15 13:10:32 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 15043
+;;     Update #: 15051
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -152,8 +152,7 @@
 ;;    `icicle-get-alist-candidate',
 ;;    `icicle-get-candidates-from-saved-set', `icicle-get-safe',
 ;;    `icicle-dired-guess-shell-command',
-;;    `icicle-handle-default-for-prompt', `icicle-help-line-buffer',
-;;    `icicle-help-line-file',
+;;    `icicle-handle-default-for-prompt',
 ;;    `icicle-highlight-candidate-in-Completions',
 ;;    `icicle-highlight-complete-input',
 ;;    `icicle-highlight-initial-whitespace',
@@ -236,9 +235,7 @@
 ;;    `icicle-save-raw-input', `icicle-scatter',
 ;;    `icicle-scatter-match', `icicle-scroll-or-update-Completions',
 ;;    `icicle-set-difference', `icicle-set-intersection',
-;;    `icicle-set-union', `icicle-show-help-in-mode-line',
-;;    `icicle-show-in-mode-line', `icicle-some',
-;;    `icicle-special-candidate-p',
+;;    `icicle-set-union', `icicle-some', `icicle-special-candidate-p',
 ;;    `icicle-special-candidates-first-p', `icicle-special-display-p',
 ;;    `icicle-special-variable-p',
 ;;    `icicle-start-of-candidates-in-Completions',
@@ -4435,144 +4432,6 @@ occurrence of `*'.  Otherwise, this is just `file-name-directory'."
            (string-match "/[^/]*\\*" filename))
       (substring filename 0 (1+ (match-beginning 0)))
     (or (file-name-directory filename)  ""))) ; Don't return nil, in any case.
-
-;; Note: Property `icicle-mode-line-help' with a function value is not used yet in Icicles code.
-(defun icicle-show-help-in-mode-line (candidate)
-  "If short help for CANDIDATE is available, show it in the mode-line.
-Do this only if `icicle-help-in-mode-line-delay' is positive.
-
-For a string or symbol CANDIDATE: Use the help from property
-`icicle-mode-line-help', if that is non-nil, or the help from
-property `help-echo' if that is non-nil.  For a string CANDIDATE,
-check only the first char for the property.
-
-The value of property `icicle-mode-line-help' can be a string or a
-function.  If a string, use that as the help.  If a function, apply
-the function to the candidate and use the result as the help."
-  (when (> icicle-help-in-mode-line-delay 0)
-    (let* ((cand       (cond (;; Call to `lacarte-execute(-menu)-command' (in `lacarte.el').
-                              ;; Use command associated with menu item.
-                              (consp lacarte-menu-items-alist)
-                              (cdr (assoc candidate lacarte-menu-items-alist)))
-                             (;; Key-completion candidate.  Get command from candidate.
-                              icicle-completing-keys-p
-                              (if (string= ".." candidate)
-                                  "GO UP"
-                                (let ((cmd-name  (save-match-data
-                                                   (string-match "\\(.+\\)  =  \\(.+\\)" candidate)
-                                                   (substring candidate (match-beginning 2)
-                                                              (match-end 2)))))
-                                  (if (string= "..." cmd-name) "Prefix key" (intern-soft cmd-name)))))
-                             (;; Buffer or file name.
-                              (or (get-buffer candidate)
-                                  (icicle-file-name-input-p)
-                                  icicle-abs-file-candidates)
-                              (icicle-transform-multi-completion candidate))
-                             (t         ; Convert to symbol or nil.
-                              (intern-soft (icicle-transform-multi-completion candidate)))))
-           (doc        (progn (when (stringp candidate)
-                                (setq candidate  (icicle-transform-multi-completion candidate)))
-                              (cond ((and (stringp candidate) ; String with help as property.
-                                          (let ((prop  (or (get-text-property 0 'icicle-mode-line-help
-                                                                              candidate)
-                                                           (get-text-property 0 'help-echo candidate))))
-                                            (and prop
-                                                 (icicle-propertize
-                                                  (if (functionp prop) (funcall prop candidate) prop)
-                                                  'face 'icicle-mode-line-help)))))
-                                    ((and cand
-                                          (symbolp cand) ; Symbol.
-                                          (let ((doc2
-                                                 (cond ((get cand 'icicle-mode-line-help)) ; Icicles help prop.
-                                                       ((get cand 'help-echo)) ; General help prop.
-                                                       ((fboundp cand) ; Function.
-                                                        (or (documentation cand t) ; Functon's doc string.
-                                                            (if (string-match ; Easy-menu item.
-                                                                 "^menu-function-[0-9]+$" (symbol-name cand))
-                                                                (format "%s" (symbol-function cand))
-                                                              (format "Command `%s'" cand))))
-                                                       ((facep cand) (face-documentation cand)) ; Face.
-                                                       (t (documentation-property ; Variable.
-                                                           cand 'variable-documentation t)))))
-                                            (and doc2
-                                                 (icicle-propertize doc2  'face 'icicle-mode-line-help)))))
-                                    ((and (consp cand)  (eq (car cand) 'lambda)) ; Lambda form.
-                                     (icicle-propertize (format "%s" cand) 'face 'icicle-mode-line-help))
-                                    ((and (stringp cand) ; Prefix key, `..'.
-                                          (member cand '("Prefix key" "GO UP")))
-                                     (icicle-propertize cand 'face 'icicle-mode-line-help))
-                                    ((stringp candidate) ; String without help property.
-                                     (cond ((and (or (icicle-file-name-input-p) ; File name.
-                                                     icicle-abs-file-candidates)
-                                                 (or (icicle-file-remote-p candidate) ; Avoid Tramp.
-                                                     (file-exists-p candidate)))
-                                            (if (get-file-buffer candidate)
-                                                (concat (icicle-help-line-buffer (get-file-buffer candidate)
-                                                                                 'NO-BYTES-P
-                                                                                 'NO-FILE-P)
-                                                        " "
-                                                        (icicle-help-line-file cand))
-                                              (icicle-help-line-file candidate)))
-                                           ((get-buffer candidate) ; Non-file buffer.
-                                            (icicle-help-line-buffer candidate))
-                                           (t nil)))))) ; Punt.
-           (doc-line1  (and (stringp doc)  (string-match ".+$" doc)  (match-string 0 doc))))
-      (when doc-line1
-        (icicle-show-in-mode-line
-         doc-line1
-         (cond ((get-buffer-window "*Completions*" 'visible) "*Completions*")
-               ((eq (current-buffer) (window-buffer (minibuffer-window))) (cadr (buffer-list)))
-               (t (current-buffer))))))))
-
-(defun icicle-help-line-buffer (buffer &optional no-bytes-p no-file-p)
-  "Simple help string for BUFFER.
-Non-nil NO-BYTES-P means do not include the number of bytes.
-Non-nil NO-FILE-P means do not include the buffer's file name."
-  (with-current-buffer buffer
-    (let* ((mode   (format "Mode: %s"
-                           (icicle-propertize
-                            (if (fboundp 'format-mode-line) (format-mode-line mode-name) mode-name)
-                            'face 'icicle-mode-line-help)))
-           (bytes  (format "Bytes: %s"
-                           (icicle-propertize (let ((size  (buffer-size)))
-                                                (if (> size most-positive-fixnum)
-                                                    (format "> %d" most-positive-fixnum)
-                                                  size))
-                                              'face 'icicle-mode-line-help)))
-           (file   (or (buffer-file-name)
-                       (and (eq major-mode 'dired-mode)  default-directory))))
-      (cond ((and no-bytes-p  no-file-p)  mode)
-            ((or no-file-p  (not file))   (concat mode ", " bytes))
-            (t
-             (setq file  (format "File: %s" (icicle-propertize (icicle-abbreviate-or-expand-file-name file)
-                                                               'face 'icicle-mode-line-help)))
-             (if no-bytes-p (concat mode ", " file) (concat mode ", " bytes ", " file)))))))
-
-(defun icicle-help-line-file (file)
-  "Simple help string for FILE."
-  (let ((attrs  (file-attributes file)))
-    (and attrs  (format "Bytes: %s, Saved: %s, Access: %s, Perm: %s"
-                        (let ((size  (nth 7 attrs)))
-                          (icicle-propertize (if (> size most-positive-fixnum)
-                                                 (format "> %d" most-positive-fixnum)
-                                               size)
-                                             'face 'icicle-mode-line-help))
-                        (icicle-propertize (format-time-string  "%c" (nth 5 attrs)) ; "%Y-%m-%d %H"
-                                           'face 'icicle-mode-line-help)
-                        (icicle-propertize (format-time-string  "%c" (nth 4 attrs)) ; "%Y-%m-%d %H"
-                                           'face 'icicle-mode-line-help)
-                        (icicle-propertize (nth 8 attrs) 'face 'icicle-mode-line-help)))))
-
-(defun icicle-show-in-mode-line (text &optional buffer)
-  "Display TEXT in BUFFER's mode line.
-The text is shown for `icicle-help-in-mode-line-delay' seconds, or
-until a user event.  So call this last in a sequence of user-visible
-actions."
-  (message nil)                         ; Remove any msg, such as "Computing completion candidates...".
-  (with-current-buffer (or buffer  (current-buffer))
-    (make-local-variable 'mode-line-format) ; Needed for Emacs 21+.
-    (let ((mode-line-format  text))  (force-mode-line-update) (sit-for icicle-help-in-mode-line-delay))
-    (force-mode-line-update)))
 
 (defun icicle-recompute-candidates (nth candidates-fn saved-last-input)
   "Recompute `icicle-completion-candidates', if needed.
