@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Nov  8 19:04:15 2014 (-0800)
+;; Last-Updated: Sun Nov 16 16:56:44 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 11330
+;;     Update #: 11334
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2131,6 +2131,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/11/15 dadams
+;;     Moved to icicles-mode.el: icicle-help-line-buffer, icicle-help-line-file,
+;;                               icicle-show-help-in-mode-line, icicle-show-in-mode-line.
 ;; 2014/11/08 dadams
 ;;     icicle-barf-if-*: Use or, not unless, so return non-nil if no error raised.
 ;; 2014/10/27 dadams
@@ -6165,6 +6168,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2014/11/15 dadams
+;;     Moved here from icicles-fn.el: icicle-help-line-buffer, icicle-help-line-file,
+;;                                    icicle-show-help-in-mode-line, icicle-show-in-mode-line.
 ;; 2014/08/23 dadams
 ;;     describe-face (advice): face-at-point arity is different for Emacs 24 < 24.4.
 ;; 2014/08/10 dadams
