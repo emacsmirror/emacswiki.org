@@ -203,6 +203,11 @@ Another hint, if the installed package doesn't seem to work, is to confirm that 
 
 ELPA policy for Emacs 24 was discussed here: http://thread.gmane.org/gmane.emacs.devel/132634/focus=132640
 
+=== Downgrading to an earlier version of a package ===
+Suppose that Auctex 11.88 complains about TeX-auto-add-type . One lazy solution is to downgrade to an earlier version. If auctex 11.88 came from elpa, go to http://elpa.gnu.org/packages/ and then to auctex and download the tar file of the latest version of auctex 11.87 and save  it under your elpa archives (~/.emacs.d/elpa/auctex-11.87.7.tar). Then suppress the 11.88 with list-package, marking d on auctex and x to execute the deletion. 
+
+Now, type the command 'package-install-file' and load file ~/.emacs.d/elpa/auctex-11.87.7.tar . The tar file must contain a -pkg.el file which is the cas from the elpa.gnu.org site.
+
 == How packages work in Emacs 23 ==
 
 You can make packages work in Emacs 23, you need to add something like this to your //init.el//:
