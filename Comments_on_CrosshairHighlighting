@@ -32,7 +32,7 @@ Good question.  Taking a quick look, the problem is in the vline.el code definin
 
         (when (bobp) (setq done  t))
 
-Give it a try.  Pound on it a bit.  If it seems right, send it to the `vline.el' author as a fix.  And let me know.  If you never hear back from the `vline.el' author then maybe I'll update the `vline.el' copy on the wiki, noting the change in a comment.
+Give it a try.  Pound on it a bit.  If it seems right, send it to the `vline.el' author as a fix.  And let me know.  If you never hear back from the `vline.el' author then maybe I'll update the `vline.el' copy on the wiki, noting the change in a comment.  If my description of the fix is not clear, let me know.
 
 -- DrewAdams 2014-11-16 20:47 UTC
 
