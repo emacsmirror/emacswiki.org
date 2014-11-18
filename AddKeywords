@@ -44,6 +44,7 @@ Every Element has one of the following forms:
 
 ; (REGEXP . FACE): Highlight REGEXP with FACE
 ; (REGEXP N FACE): Highlight group N in REGEXP with FACE
+; (REGEXP (N1 FACE1) (N2 FACE2) (N3 FACE3) …) : Highlight group Ni in REGEXP with FACEi
 
 
 = Add keywords to all major modes =
@@ -72,6 +73,8 @@ there to be two spaces unless we're talking about abbreviations.)
 
 
 == More info ==
+
+Manual: https://www.gnu.org/software/emacs/manual/html_node/elisp/Customizing-Keywords.html
 
 For even more information, see FontLockKeywords.  
 
