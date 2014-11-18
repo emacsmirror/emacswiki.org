@@ -113,6 +113,42 @@ identified as the committer (so you can handle technical issues with
 the commit), but not as the author.  In that case you can use the
 ##--author## option to ##git commit## to specify the author.
 
+[:MergeChangeLog]
+=== Merge Driver for ChangeLog files ===
+
+The default merge driver does not know how to merge ChangeLog files
+and thus there will always be merge conflicts in ChangeLog files.  The
+Gnulib project contains a
+[http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob;f=lib/git-merge-changelog.c
+merge driver for ChangeLog files].
+
+It can be installed using
+
+    git clone git://git.savannah.gnu.org/gnulib.git
+    cd gnulib
+    ./gnulib-tool --create-testdir --dir=/tmp/testdir123 git-merge-changelog
+    cd /tmp/testdir123
+    ./configure
+    make
+    make install
+
+Some GNU/Linux distributions also provide packages for it.  To enable
+it, add to .git/config of the checkout (or to your $HOME/.gitconfig)
+the lines
+
+    [merge "merge-changelog"]
+    name = GNU-style ChangeLog merge driver
+    driver = /usr/local/bin/git-merge-changelog %O %A %B
+
+To the ~/.gitattributes file add the line
+
+    ChangeLog    merge=merge-changelog
+
+See
+[https://www.kernel.org/pub/software/scm/git/docs/gitattributes.html
+gitattributes(5)] for more info.
+
+
 [:InitializingYourGitRepo]
 === Initializing Your Local Git Repository ===
 
