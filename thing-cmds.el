@@ -8,13 +8,13 @@
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 0
 ;; Package-Requires: ((hide-comnt "0"))
-;; Last-Updated: Sat Jun  7 07:31:27 2014 (-0700)
+;; Last-Updated: Mon Nov 17 18:21:13 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 741
+;;     Update #: 751
 ;; URL: http://www.emacswiki.org/thing-cmds.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointCommands
 ;; Keywords: thingatpt, thing, region, selection
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -66,6 +66,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/11/17 dadams
+;;     Top level: Added eval-when-compile for cl.el, for Emacs 20.
+;;     thing-types: Need require cl.el at compile time, for push and dolist, for Emacs 20.
 ;; 2013/11/07 dadams
 ;;     Renamed: mark-enclosing-sexp* to mark-enclosing-list*.
 ;;     mark-enclosing-list-(forward|backward): 2nd arg to mark-enclosing sexp just needs to be t.
@@ -153,6 +156,8 @@
 ;;
 ;;; Code:
 
+(when (< emacs-version 22) (eval-when-compile (require 'cl))) ;; for Emacs 20: dolist
+
 (require 'thingatpt) ;; bounds-of-thing-at-point
 (when (and (require 'thingatpt+ nil t)  ; (no error if not found): tap-bounds-of-thing-at-point
            (fboundp 'tap-put-thing-at-point-props)) ; >= 2012-08-21
@@ -193,6 +198,8 @@ if non-nil, set SYNTAX-TABLE for the duration."
         (functionp thing-fn))))
 
 (defcustom thing-types (let ((types  ()))
+                         (eval-when-compile ;; `push', `dolist', for Emacs 20
+                          (when (< emacs-major-version 21) (require 'cl)))
                          (mapatoms
                           (lambda (tt)
                             (when (thgcmd-defined-thing-p tt) (push (symbol-name tt) types))))
@@ -348,7 +355,7 @@ to select more THINGS of the last kind selected."
   (setq deactivate-mark  nil))
 
 ;;;###autoload
-(defun mark-enclosing-list (&optional arg allow-extend) ; `C-M-U'
+(defun mark-enclosing-list (&optional arg allow-extend) ; `C-M-U' (aka `C-M-S-u')
   "Select a list surrounding the current cursor position.
 If the mark is active (e.g. when the command is repeated), widen the
 region to a list that encloses it.
