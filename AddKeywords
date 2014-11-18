@@ -8,19 +8,6 @@ Let us start with the simplest example:
 
 It makes "foo" a keyword in EmacsLisp mode.
 
-== XEmacs ==
-
-If you write a ~/.emacs for both Emacs and XEmacs, you might be using
-`font-lock-add-keywords' a lot.  This function is in XEmacs 21.5, but not 
-earlier versions. If you are are using 21.4 or older, use the following workaround.
-See ComparativeEmacsology for similar problems.
-
-<pre>
-(unless (fboundp 'font-lock-add-keywords)
-  (defalias 'font-lock-add-keywords 'ignore))
-</pre>
-
-See AddBufferKeywords for an alternative but Emacs-agnostic approach.
 
 == More Examples ==
 
@@ -37,9 +24,7 @@ It adds two fontification patterns for C mode, to fontify `FIXME:'
 words, even in comments, and to fontify `and', `or' and `not' words as
 keywords.
 
-Here's an example for plain HtmlMode; it had bad or no highlighting in
-Emacs 20 (can't remember, I've been using the following code for so
-long).
+Here's an example for plain HtmlMode:
 
 <pre>
 (defvar html-mode-keywords
@@ -52,12 +37,16 @@ long).
 (font-lock-add-keywords 'html-mode html-mode-keywords)
 </pre>
 
+
 == Explanation ==
 
 Every Element has one of the following forms:
 
 ; (REGEXP . FACE): Highlight REGEXP with FACE
 ; (REGEXP N FACE): Highlight group N in REGEXP with FACE
+
+
+= Add keywords to all major modes =
 
 Here's another example.  Here, we don't just call
 font-lock-add-keywords -- we loop over a list of major modes and add
@@ -81,21 +70,13 @@ the keywords to all the modes in the list.
 The second REGEXP highlights all single spaces after a point.  (I want
 there to be two spaces unless we're talking about abbreviations.)
 
-== ctypes ==
-There exists a module 
-[http://simon.nitro.dk/dotfiles/emacs/ctypes.el ctypes.el], 
-written by AndersLindgren, that will
-spider through your open buffers looking for typedefs and dynamically cause
-them to be interpreted as type names for the purposes of syntax coloring.  It
-works with C and "maybe" C++ sources.
 
-See Lisp:ctypes.el.
-
-== More ==
+== More info ==
 
 For even more information, see FontLockKeywords.  
 
 For other ways to highlight keywords, take a look at the different packages in: [http://www.emacswiki.org/emacs/HighlightTemporarily Highlight Temporarily]
+
 
 == Adding a Bunch of Scheme Keywords ==
 
@@ -140,10 +121,14 @@ The former is usually preferred.
 
 Feel free to generalize this (to all Lisps?).
 
-== Format Specifier ==
-highlighting printf format specifier like vim ...
+
+== Printf Format Specifier ==
+
+A highlighting printf format specifier like vim...
+
 <pre>
-(defvar font-lock-format-specifier-face		'font-lock-format-specifier-face
+(defvar font-lock-format-specifier-face		
+  'font-lock-format-specifier-face
   "Face name to use for format specifiers.")
 
 (defface font-lock-format-specifier-face
@@ -161,5 +146,34 @@ highlighting printf format specifier like vim ...
 </pre>
 Note that this will highlight printf specifiers outside of strings, so "a=num%amount" will have the "%a" highlighted.
 
+
+== C typedefs ==
+
+There exists a module 
+[http://simon.nitro.dk/dotfiles/emacs/ctypes.el ctypes.el], 
+written by AndersLindgren, that will
+spider through your open buffers looking for typedefs and dynamically cause
+them to be interpreted as type names for the purposes of syntax coloring.  It
+works with C and "maybe" C++ sources.
+
+See Lisp:ctypes.el.
+
+
+== XEmacs ==
+
+If you write a ~/.emacs for both Emacs and XEmacs, you might be using
+`font-lock-add-keywords' a lot.  This function is in XEmacs 21.5, but not 
+earlier versions. If you are are using 21.4 or older, use the following workaround.
+See ComparativeEmacsology for similar problems.
+
+<pre>
+(unless (fboundp 'font-lock-add-keywords)
+  (defalias 'font-lock-add-keywords 'ignore))
+</pre>
+
+See AddBufferKeywords for an alternative but Emacs-agnostic approach.
+
+
 ----
+
 CategoryFaces
