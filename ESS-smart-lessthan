@@ -1,7 +1,6 @@
 For working with some R code and/or packages, it is convenient to avoid a smart underscore.
 Or, if you just prefer to have a different smart key such as less-than.  
-
-<code>
+<pre>
 (require 'ess-site)
 
 (setq ess-S-assign "_")
@@ -30,4 +29,4 @@ Or, if you just prefer to have a different smart key such as less-than.
 
 (add-hook 'R-mode-hook (lambda () (local-set-key ess-my-smart-key 'ess-smart-lt)))
 (add-hook 'inferior-ess-mode-hook (lambda () (local-set-key ess-my-smart-key 'ess-smart-lt)))
-</code>
+</pre>
