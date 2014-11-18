@@ -1,6 +1,6 @@
 ==What snippet is==
 
-[http://www.kazmier.com/computer/snippet.el snippet.el] is a templating system by
+[https://github.com/pkazmier/snippet.el snippet.el] is a templating system by
 Pete Kazmier similar to the one reported to be found in the proprietary OSX
 editor TextMate.  A snippet is defined as a string that has special
 instructions inside.
@@ -64,7 +64,7 @@ Here's an example of a setup of snippet for javascript-mode:
 
 ==Download==
 
-You can find snippet.el at [http://www.kazmier.com/computer/snippet.el snippet.el]
+You can find snippet.el at [https://github.com/pkazmier/snippet.el snippet.el]
 
 
 == Small bug with Hippie Expand ==
