@@ -8,13 +8,13 @@
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Wed Aug 27 09:37:14 2014 (-0700)
+;; Last-Updated: Mon Nov 17 18:23:09 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1748
+;;     Update #: 1760
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -163,6 +163,7 @@
 ;;    `thumfr-dethumbify-all-frames', `thumfr-dethumbify-frame',
 ;;    `thumfr-doremi-thumbnail-frames+', `thumfr-fisheye',
 ;;    `thumfr-fisheye-next-frame', `thumfr-fisheye-previous-frame',
+;;    `thumfr--frame-parameters-:set-function',
 ;;    `thumfr-iconify-thumbnail-frames', `thumfr-only-raise-frame',
 ;;    `thumfr-nset-difference', `thumfr-next-stack-position',
 ;;    `thumfr-really-iconify-frame',
@@ -272,6 +273,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/11/17 dadams
+;;     Added: thumfr--frame-parameters-:set-function.
+;;     thumfr-frame-parameters: Use thumfr--frame-parameters-:set-function.  Need for Emacs 20.
 ;; 2014/08/27 dadams
 ;;     thumfr-frame-parameters: Added scroll-bar-height.
 ;; 2013/08/09 dadams
@@ -508,6 +512,15 @@ along the right edge from top to bottom."
   :group 'Thumbnail-Frames)
 
 ;;;###autoload
+(defun thumfr--frame-parameters-:set-function (sym defs)
+  "Used for :set of `thumfr-frame-parameters' defcustom.
+Needed because Emacs 20 does not have `dolist' without `cl.el'."
+  (custom-set-default sym defs)
+  (dolist (frm  (frame-list))
+    (when (and (frame-live-p frm)  (frame-parameter frm 'thumfr-thumbnail-frame))
+      (modify-frame-parameters frm thumfr-frame-parameters))))
+
+;;;###autoload
 (defcustom thumfr-frame-parameters
   '((menu-bar-lines . 0) (tool-bar-lines . 0) (scroll-bar-width . 6) (scroll-bar-height . 6))
   "*Frame parameters for thumbnail frames.
@@ -515,11 +528,7 @@ Use this to show or hide things like the menu bar, tool bar, tab bar,
 and scroll bars for thumbnail frames."
   :type '(repeat (cons symbol sexp))
   :group 'Thumbnail-Frames
-  :set (lambda (sym defs)
-         (custom-set-default sym defs)
-         (dolist (frm  (frame-list))
-           (when (and (frame-live-p frm)  (frame-parameter frm 'thumfr-thumbnail-frame))
-             (modify-frame-parameters frm thumfr-frame-parameters)))))
+  :set 'thumfr--frame-parameters-:set-function)
 
 ;;;###autoload
 (defcustom thumfr-sort-function 'thumfr-sort-by-name
