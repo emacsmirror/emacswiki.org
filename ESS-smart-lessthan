@@ -8,7 +8,7 @@ Or, if you just prefer to have a different smart key such as less-than.
 
 (defun ess-insert-S-assign-mod ()
   (interactive)
-  (let ((ess-S-assign " <- ") (assign-len (length ess-S-assign))) ; 11/17/14
+  (let ((ess-S-assign " <- ") (assign-len (length ess-S-assign))) 
     (if (and
 	 (>= (point) (+ assign-len (point-min)))
 	 (save-excursion
