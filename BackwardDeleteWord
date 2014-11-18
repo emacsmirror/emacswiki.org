@@ -1,4 +1,4 @@
-I think M-backspace should delete, rather than kill.  Here code for .emacs to accomplish that.
+I think M-backspace should delete, rather than kill.  Here is some code for .emacs to accomplish that.
 
 <pre>
 (defun delete-word (arg)
