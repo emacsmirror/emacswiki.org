@@ -1,0 +1,33 @@
+For working with some R code and/or packages, it is convenient to avoid a smart underscore.
+Or, if you just prefer to have a different smart key such as less-than.  
+
+<code>
+(require 'ess-site)
+
+(setq ess-S-assign "_")
+(setq ess-my-smart-key "<")
+
+(defun ess-insert-S-assign-mod ()
+  (interactive)
+  (let ((ess-S-assign " <- ") (assign-len (length ess-S-assign))) ; 11/17/14
+    (if (and
+	 (>= (point) (+ assign-len (point-min)))
+	 (save-excursion
+	   (backward-char assign-len)
+	   (looking-at ess-S-assign)))
+	(progn
+	  (delete-char (- assign-len))
+	  (insert ess-my-smart-key))
+      (delete-horizontal-space)
+      (insert ess-S-assign))))
+
+(defun ess-smart-lt ()
+  (interactive)
+  (if (or (looking-at ess-S-assign)
+	  (ess-inside-string-or-comment-p (point)))
+      (insert ess-my-smart-key)
+    (ess-insert-S-assign-mod)))
+
+(add-hook 'R-mode-hook (lambda () (local-set-key ess-my-smart-key 'ess-smart-lt)))
+(add-hook 'inferior-ess-mode-hook (lambda () (local-set-key ess-my-smart-key 'ess-smart-lt)))
+</code>
