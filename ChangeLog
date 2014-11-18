@@ -11,6 +11,8 @@ To merge !ChangeLog files but maintain the chronological order, use `M-x change-
 
 For more about !ChangeLog files, see http://www.gnu.org/software/emacs/manual/html_node/emacs/Change-Log.html.
 
+Gnulib contains a merge driver for !ChangeLog files to be used with VCS' like git, bzr, or mercurial.  See the [[GitForEmacsDevs#MergeChangeLog]] for more info.
+
 See also EmbeddedChangelog, VcAddLogEntries.
 
 ----
