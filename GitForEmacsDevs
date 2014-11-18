@@ -117,7 +117,7 @@ the commit), but not as the author.  In that case you can use the
 === Merge Driver for ChangeLog files ===
 
 The default merge driver does not know how to merge ChangeLog files
-and thus there will always be merge conflicts in ChangeLog files.  The
+and thus there will always be merge conflicts in !ChangeLog files.  The
 Gnulib project contains a
 [http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob;f=lib/git-merge-changelog.c
 merge driver for ChangeLog files].
@@ -137,8 +137,8 @@ it, add to .git/config of the checkout (or to your $HOME/.gitconfig)
 the lines
 
     [merge "merge-changelog"]
-    name = GNU-style ChangeLog merge driver
-    driver = /usr/local/bin/git-merge-changelog %O %A %B
+      name = GNU-style ChangeLog merge driver
+      driver = /usr/local/bin/git-merge-changelog %O %A %B
 
 To the ~/.gitattributes file add the line
 
@@ -146,8 +146,22 @@ To the ~/.gitattributes file add the line
 
 See
 [https://www.kernel.org/pub/software/scm/git/docs/gitattributes.html
-gitattributes(5)] for more info.
+gitattributes(5)] for more info.  Additionally it can be useful to
+define a custom hunk-header (the text shown after the @@ in the
+textual diff output) for Emacs lisp related files.  Add the following
+lines to the .gitconfig file
 
+    [diff "lisp"]
+      xfuncname = "^(\\(.*)$"
+    [diff "texinfo"]
+      xfuncname = "^@node[ \t][ \t]*\\([^,][^,]*\\)"
+
+and to the .gitattributes file
+
+    *.c     diff=cpp
+    *.h     diff=cpp
+    *.el    diff=lisp
+    *.texi* diff=texinfo
 
 [:InitializingYourGitRepo]
 === Initializing Your Local Git Repository ===
