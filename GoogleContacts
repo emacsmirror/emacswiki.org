@@ -5,12 +5,15 @@ A package to integrate Google Contacts into Emacs.
 See also:
 GoogleClient
 
-== Questions: ==
-
+== Questions ==
+[new:]
 Can this be made to work without entering a passphrase each time it is used?  
 After setting it up, it works fine for me for a little while, but then eventually asks for a 
 passphrase for PLSTORE (...oauth2.plstore).  I'm not even sure what the passphrase 
 is or should be.
+
+[new:Divinenephron: Tue Nov 18 14:45 GMT 2014]
+When you first use GoogleContacts you are asked to paste an oauth2 token into the emacs minbuffer. Then you're asked to enter a passphrase. It's not obvious, but here you are creating a new passphrase to encrypt the oauth2 token with. If you enter the same passphrase next time you're asked, GoogleContacts will work. This happens because GoogleContacts uses [https://github.com/emacsmirror/oauth2/blob/master/oauth2.el oauth2.el], which stores authentication information in a GPG encrypted file using [https://github.com/emacsmirror/gnus/blob/master/lisp/plstore.el plstore.el]. 
 
 ----
 CategoryInterface
