@@ -74,8 +74,7 @@ there to be two spaces unless we're talking about abbreviations.)
 
 == More info ==
 
-Manual: https://www.gnu.org/software/emacs/manual/html_node/elisp/Customizing-Keywords.html  
-and https://www.gnu.org/software/emacs/manual/html_node/elisp/Search_002dbased-Fontification.html
+Manual: https://www.gnu.org/software/emacs/manual/html_node/elisp/Font-Lock-Mode.html
 
 For even more information, see FontLockKeywords.  
 
