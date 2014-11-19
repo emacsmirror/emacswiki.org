@@ -5,7 +5,7 @@ Org-journal is a set of functions to maintain a simple personal diary / journal 
 Feel free to use, modify and improve the code!
 --- mtvoid, bastibe
 
-*Breaking Changes in 0.6*
+*Breaking Changes in 1.6*
 
 Key bindings have been changed from ##C-c j##, ##C-c f##, and ##C-c b## to ##C-c C-j##, ##C-c C-f##, and ##C-c C-b##, in order to comply with Emacs' conventions of reserving ##C-c [a-zA-Z]## for user-defined keys.
 
