@@ -62,6 +62,13 @@ Open (toggle) NeoTree:
 
 == Useful tips ==
 
+=== Work with Projectile ===
+
+When running `projectile-switch-project' (C-c p p), `neotree' will change root automatically.
+
+   (setq projectile-switch-project-action 'neotree-projectile-action)
+
+
 === find-file-in-project ===
 
 If you use the <code>find-file-in-project</code> (ffip) library, you can open NeoTree at your directory root by
