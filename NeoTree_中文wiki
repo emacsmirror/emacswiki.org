@@ -64,9 +64,9 @@ Clone project:
 
 === 与 Projectile 联动 ===
 
-当执行 <code>projectile-switch-project<code> (C-c p p) 时，NeoTree 会自动改变根目录。
+当执行 <code>projectile-switch-project</code> (C-c p p) 时，NeoTree 会自动改变根目录。
 
- (setq projectile-switch-project-action 'neotree-projectile-action)
+   (setq projectile-switch-project-action 'neotree-projectile-action)
 
 
 === find-file-in-project ===
