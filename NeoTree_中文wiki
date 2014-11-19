@@ -59,6 +59,59 @@ Clone project:
 * <code>neotree-delete-node</code> 删除 文件/目录
 * <code>neotree-create-node</code> 创建文件，当以 <code>/</code> 结尾时表示创建目录 
 
+
+== Useful tips ==
+
+=== 与 Projectile 联动 ===
+
+当执行 <code>projectile-switch-project<code> (C-c p p) 时，NeoTree 会自动改变根目录。
+
+ (setq projectile-switch-project-action 'neotree-projectile-action)
+
+
+=== find-file-in-project ===
+
+如果使用 <code>find-file-in-project</code> (ffip), 你可以添加下面代码到 <code>.emacs.d</code>，
+就可以随时切换根到项目目录：
+
+  (defun neotree-ffip-project-dir ()
+    "Open NeoTree using the git root."
+    (interactive)
+    (let ((project-dir (ffip-project-root))
+          (file-name (buffer-file-name)))
+      (if project-dir
+          (progn
+            (neotree-dir project-dir)
+            (neotree-find file-name))
+        (message "Could not find git project root."))))
+  
+  (define-key map (kbd "C-c C-p") 'neotree-ffip-project-dir)
+
+
+=== Use with evil mode ===
+
+如果你使用 <code>evil-mode</code>, 默认会有键冲突。如 你不能用 <code>q</code> 来关掉 NeoTree. 
+
+  (add-hook 'neotree-mode-hook
+            (lambda ()
+              (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter)
+              (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-enter)
+              (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
+              (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
+
+
+=== popwin ===
+
+如果你使用 <code>popwin</code>, 当 NeoTree 和 popwin 同时打开, 会在一旁出现另外一个新的 NeoTree buffer (#50).
+可以使用下面代码解决。
+
+  (when neo-persist-show
+    (add-hook 'popwin:before-popup-hook
+              (lambda () (setq neo-persist-show nil)))
+    (add-hook 'popwin:after-popup-hook
+              (lambda () (setq neo-persist-show t))))
+
+
 == ChangeLog ==
 
 0.2 （2014-08-09）
