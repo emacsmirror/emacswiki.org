@@ -5,19 +5,23 @@ Org-journal is a set of functions to maintain a simple personal diary / journal 
 Feel free to use, modify and improve the code!
 --- mtvoid, bastibe
 
+*Breaking Changes in 0.6*
+
+Key bindings have been changed from ##C-c j##, ##C-c f##, and ##C-c b## to ##C-c C-j##, ##C-c C-f##, and ##C-c C-b##, in order to comply with Emacs' conventions of reserving ##C-c [a-zA-Z]## for user-defined keys.
+
 This file is also available from [http://marmalade-repo.org marmalade], [http://melpa.milkbox.net melpa] and [http://melpa-stable.milkbox.net melpa-stable] under the name
 org-journal or on [https://github.com/bastibe/emacs-journal GitHub]. After installing, add the line ##(require 'org-journal)## to your /.emacs/ or /init.el/ to activate it. You may also want to specify the directory where your journal files will be saved. You can do this by setting the variable ##org-journal-dir## (remember to add a trailing slash). ##org-journal-dir## is also a customizable variable. The default value for ##org-journal-dir## is ##~/Documents/journal/##.  Note: you have to customize ##org-journal-dir## before you load ##org-journal## as otherwise Emacs would not set the mode correctly.
 
 You can add all those calendar files to your org-agenda by adding ##org-journal-dir## to ##org-agenda-files## and setting ##org-agenda-file-regexp## to include files with an all-numeric name (##\\`[^.].*\\.org'\\|[0-9]+##). That way, you can use org-agenda to search for /TODO/ items or tagged items in your org-journal.
 
-Inside the journal directory, a separate file is created for each day with a journal entry, with a file name in the format /YYYYMMDD/. Each journal entry is an org-mode file that begins with a date entry on the top, followed by a entries for different times. Any subsequent entries on the same day are written as additional headings in the same file, with their own time. To start writing a journal entry, press ##C-c j##.
+Inside the journal directory, a separate file is created for each day with a journal entry, with a file name in the format /YYYYMMDD/. Each journal entry is an org-mode file that begins with a date entry on the top, followed by a entries for different times. Any subsequent entries on the same day are written as additional headings in the same file, with their own time. To start writing a journal entry, press ##C-c C-j##.
 
 You can customize the date and time formats using the variables ##org-journal-date-format## and ##org-journal-time-format##. If you do not want to use org headings and sub-headings for date and time entries, customize ##org-journal-date-prefix## and ##org-journal-time-prefix##. For example, you could set ##org-journal-date-prefix## to ###+TITLE:## in order to begin every file with a title instead of a heading. If you want to store your journal entries with different file names, customize ##org-journal-file-format##. 
 
 You can browse through existing journal entries on disk via the calendar. All dates for which an entry is present are highlighted. Pressing ##j## will open it up for viewing. Pressing ##[## or ##]## will select the date with the previous or next journal entry, respectively. Pressing ##i j## will create a new entry for the chosen date.
 
 Quick summary:
-* To create a new journal entry: ##C-c j##
+* To create a new journal entry: ##C-c C-j##
 
 In calendar view:
 * ##j## to view an entry
@@ -26,8 +30,8 @@ In calendar view:
 * ##]## to go to next entry
 
 When viewing a journal entry:
-* ##C-c f## to view next entry
-* ##C-c b## to view previous entry
+* ##C-c C-f## to view next entry
+* ##C-c C-b## to view previous entry
 
 A typical journal entry for a day would look like this:
 
