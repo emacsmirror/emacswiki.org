@@ -48,6 +48,10 @@ Library <tt>[[dired-details+.el]]</tt> provides some minor but convenient enhanc
 
 When editing file names with `dired-toggle-read-only' and committing, everything works as expected, but if changes are aborted details are displayed until the listing is refreshed.
 
+== Discussion ==
+
+It would be good if when copying text from a dired buffer with details hidden, the details are not also copied (which is what happens at the moment), e.g. when sending somebody a message with a list of filenames.
+
 ----
 CategoryDirectories
 CategoryDisplay
