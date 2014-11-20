@@ -54,18 +54,16 @@ terminology in this guide confusing, read
 [https://www.kernel.org/pub/software/scm/git/docs/v1.4.4.4/cvs-migration.html
 Git for CVS Users] and come back.
 
-If you are used to Bazaar, bear in mind that the work unit you will
-clone when using Git is not a branch but an entire repository with all
-its branches. You'll still be pushing commits to a branch, by default
-the mainline branch.  The mainline branch of the public Emacs
-repository will be called the /master branch/, /master/ for short, or
-/upstream master branch/ for emphasis.  (The mainline branch is the
-one containing the changes targeted for future public releases.)
+If you are used to Bazaar, bear in mind that the data you will clone
+when using Git is not for a branch but for the entire repository with all
+its branches.  You can switch between these branches as you need.
+You'll still be pushing commits to a branch, either
+the /master/ branch, or the release branch (currently called /emacs-24/,
+but that will change as future Emacs versions are released).
 
-The command examples are generally given in Unix command-line style,
-although we did try to use forms that would work on MS-Windows as
-well.  If you use Windows or some other system, please feel free to
-add examples appropriate for that system.
+The command examples are generally given in Unix command-line style;
+on MS-Windows, if you use the msysGit Bash, the commands look the
+same.
 
 [:GettingStarted]
 == Getting Started ==
