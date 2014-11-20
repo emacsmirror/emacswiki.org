@@ -61,9 +61,9 @@ You'll still be pushing commits to a branch, either
 the /master/ branch, or the release branch (currently called /emacs-24/,
 but that will change as future Emacs versions are released).
 
-The command examples are generally given in Unix command-line style;
-on MS-Windows, if you use the msysGit Bash, the commands look the
-same.
+The command examples are generally given in Unix command-line style,
+but they are equally applicable to MS-Windows, if you use the msysGit Bash
+prompt installed and configured by msysGit.
 
 [:GettingStarted]
 == Getting Started ==
