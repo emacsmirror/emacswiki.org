@@ -1,6 +1,6 @@
 == Git quick start guide for Emacs Developers ==
 
-Emacs is about to switch to Git as its version control system.
+Emacs uses Git as its version control system.
 
 If you are an Emacs contributor without experience using Git in
 particular and Distributed Version Control Systems (dVCS) in general,
@@ -13,9 +13,10 @@ The "workflow" described in this document allows you to:
 * Have a starting point for learning the full capabilities of Git.
 
 There is a separate document, [[GitForEmacsDevs]], that describes
-several workflows that take advantage of the fact that Git is a
-*distributed* version control system.  Such workflows are particularly
-useful if you are making substantial changes to Emacs.
+several slightly more complex, but also more flexible workflows that
+take advantage of the Git's advanced features.  Such workflows are
+particularly useful if you are frequently making substantial changes
+to Emacs.  You are encouraged to use the workflows described there.
 
 === Conventions and basic info ===
 
@@ -34,20 +35,21 @@ your name among humans and the other to set your email address:
 
 : ##git config --global user.name "Your Name Here"##
 
-: ##git config --global user.email "you@wherever.net"##
+: ##git config --global user.email "your@email.address.here"##
 
 Next, you need to clone a copy of the Emacs repository:
 
 * ##git clone URL_TO_UPSTREAM_MASTER##
 
 This will take a couple of minutes even on a fast connection;
-it downloads about 300MB of data.
+it downloads a few hundreds of megabytes of data.  It could
+take 15 or even 30 minutes on slower connections.
 
 === Daily work ===
 
 If you're using the command-line:
 
-* ##git pull##
+* ##git pull --rebase##
 * Edit files
 * ##git commit -a##
 * ##git push##
@@ -57,12 +59,13 @@ diff## to view the changed which will be committed by ##git commit
 -a## (with no filename arguments) and unknown files which will be
 ignored by ##git commit##.  "Unknown" means that the file neither
 matches a pattern in .gitignore nor is registered with Git.
-Typically unknown files are newly added.  In order to track changes in
-them, use the ##git add## command:
+Typically unknown files are those you added with the intent to commit
+them.  In order to tell Git to track changes in them, use the ##git add##
+command:
 
 ##git add new-file ...##
 
-then commit them as usual with the rest of the appropriate changeset.
+Then commit them as usual with the rest of the appropriate changeset.
 You can also commit using VC-dir:
 
 * ##M-x vc-dir RET##
@@ -77,6 +80,10 @@ If Git complains about conflicts after the update, fix them and use
 
 (##git add## cannot fix any conflicts itself; it only marks a file
 as being ready to commit after *you* fix the conflicts.)
+
+If you use VC as shown above, the ##git push## command
+must be typed manually, after you commit, as VC doesn't
+support that command yet.
 
 With Git you shouldn't commit the changed files one at a time if
 they belong to the same logical change. So please don't do:
@@ -104,12 +111,28 @@ well-defined purpose which is completely achieved with the
 corresponding commit as, for instance, "Fix bug #342" or "Implement
 feature Foo".
 
-Before committing, not just the files you are committing but _all_
+Before pushing, not just the files you are committing but _all_
 your local source files must be up to date with upstream. So if
-somebody else commits to upstream between the ##git pull## and the ##git
-commit## commands, you'll need to ##git pull## again.
+somebody else pushes to upstream between the ##git pull## and the ##git
+push## commands, you'll need to ##git pull --rebase## again, and repeat
+the ##git push## command.
 
+=== If you made a mistake ===
 
+If you commit something by mistake, or forgot to commit a file, or want to
+fix a stupid typo in the commit log message, all is not lost.  Be sure to catch
+these problems before you ##git push##, then the error was not yet propagated
+upstream, and you can easily fix it.
+
+To fix the last commit log message, use ##git commit --amend##.
+To re-do the commit from scratch, use ##git reset --soft##, then fix whatever
+needs fixing, and commit again.
+To cancel the commit and all your changes, and revert to the previous
+version of the branch, use ##git reset --hard##.
+
+If you caught your mistake only after ##git push##, the only way to fix it is
+to push another commit.  Try to avoid that, as log messages cannot be
+fixed this way.
 
 === More branches ===
 
