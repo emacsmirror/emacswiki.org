@@ -143,7 +143,7 @@ directly to the master branch if you want:
       <<<make your edit>>>
       git status                  # (optional) sanity check -- lists changed and unknown files
       git commit -a -m "Fix silly typo in README."
-      git show                 # double-check what you will be pushing
+      git show                    # double-check what you will be pushing
       git push
 
 ##git## will automatically identify you as the committer and author of
