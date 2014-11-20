@@ -116,52 +116,13 @@ the commit), but not as the author.  In that case you can use the
 [:MergeChangeLog]
 === Merge Driver for ChangeLog files ===
 
-The default merge driver does not know how to merge ChangeLog files
-and thus there will always be merge conflicts in !ChangeLog files.  The
+The default merge driver is not aware of the special structure of ChangeLog files
+and thus will frequently create merge conflicts in those files when you merge your
+local changes with upstream, or merge 2 branches that diverged a little.  The
 Gnulib project contains a
 [http://git.savannah.gnu.org/gitweb/?p=gnulib.git;a=blob;f=lib/git-merge-changelog.c
-merge driver for ChangeLog files].
-
-It can be installed using
-
-    git clone git://git.savannah.gnu.org/gnulib.git
-    cd gnulib
-    ./gnulib-tool --create-testdir --dir=/tmp/testdir123 git-merge-changelog
-    cd /tmp/testdir123
-    ./configure
-    make
-    make install
-
-Some GNU/Linux distributions also provide packages for it.  To enable
-it, add to .git/config of the checkout (or to your $HOME/.gitconfig)
-the lines
-
-    [merge "merge-changelog"]
-      name = GNU-style ChangeLog merge driver
-      driver = /usr/local/bin/git-merge-changelog %O %A %B
-
-To the ~/.gitattributes file add the line
-
-    ChangeLog    merge=merge-changelog
-
-See
-[https://www.kernel.org/pub/software/scm/git/docs/gitattributes.html
-gitattributes(5)] for more info.  Additionally it can be useful to
-define a custom hunk-header (the text shown after the @@ in the
-textual diff output) for Emacs lisp related files.  Add the following
-lines to the .gitconfig file
-
-    [diff "lisp"]
-      xfuncname = "^(\\(.*)$"
-    [diff "texinfo"]
-      xfuncname = "^@node[ \t][ \t]*\\([^,][^,]*\\)"
-
-and to the .gitattributes file
-
-    *.c     diff=cpp
-    *.h     diff=cpp
-    *.el    diff=lisp
-    *.texi* diff=texinfo
+merge driver for ChangeLog files] that avoids these problems.  Please consider
+installing it; for the instructions, see  [[#UsefulAddOns]] near the end of this page.
 
 [:InitializingYourGitRepo]
 === Initializing Your Local Git Repository ===
@@ -184,6 +145,7 @@ directly to the master branch if you want:
       <<<make your edit>>>
       git status                  # (optional) sanity check -- lists changed and unknown files
       git commit -a -m "Fix silly typo in README."
+      git show                 # double-check what you will be pushing
       git push
 
 ##git## will automatically identify you as the committer and author of
@@ -228,15 +190,15 @@ the task.
 At this point, you're ready to do work.  You edit the source files,
 build and test as needed.  When you've accomplished a subtask, it's a
 good idea to stop and commit your work to the branch.  Here, you often
-have a larger ChangeLog than can comfortably be entered on the command
-line with ##-m##.  In this case, you put the log message in a file
-we'll call ##log-message.txt##.  Then
+have a larger commit log message than cannot comfortably be entered
+on the command line with ##-m##.  In this case, you put the log
+message in a file we'll call ##log-message.txt##.  Then
 
       git status                  # (optional) sanity check -- lists changed and unknown files
       git commit -a -F log-message.txt
 
 You can also do ##git commit -m "blah blah blah"##, if your log
-message is short enough to fit on one line.  Remember, these commits
+message is short enough.  Remember, these commits
 are local: they affect only your task branch, not the upstream repo.
 No one else will see the commits until you send them upstream.
 
@@ -294,9 +256,16 @@ upstream yourself (see [[#MergeToUpstream]]).
 [:GoodCommentingPractice]
 === Good Commenting Practice ===
 
-Comments should have a standalone first line not over 72 characters long - 50 is better.  Do this so the summary listings displayed by gitk(1) and similar tools are intelligible.
+Commit log messagess should have a standalone first line not over 72
+characters long.  Do this so the summary listings displayed by
+##git log --oneline## and similar tools are intelligible.
 
-Avoid using git hashes as references to previous commits.  These will break if we ever have to change version-control systems again; given that Emacs has been through no fewer that four VCSes in its lifetime it is not a good idea to depend on this never happening again.  Instead, quote a distinguishing part of the comment for the commit, or write something like "my last commit" when appropriate.
+Avoid using git hashes as references to previous commits.  These will
+break if we ever have to change version-control systems again; given
+that Emacs has been through no fewer that four VCSes in its lifetime,
+it is not a good idea to depend on this never happening again.
+Instead, quote a distinguishing part of the comment for the commit,
+or write something like "last commit" when appropriate.
 
 
 [:SendAPatchSet]
@@ -333,7 +302,6 @@ First, update your repository:
       git checkout master
       git pull
       git merge TASKNAME
-      git push
 
 Run the tests:
 
@@ -345,18 +313,25 @@ and then commit
       git commit -m "fixes debbugs:12345"
 
 which merges all your new commits to the upstream
-master.
+master.  Now last-minute check of what you are going to deliver:
+
+      git show
+
+Finally, push upstream
+
+      git push
 
 Alternatively, if you use VC in Emacs, Emacs will populate the commit
-message from your ChangeLog updates. If the ChangeLogs reference the
-bug, VC also generates the --fixes flag when it carries out the
-commit. To use VC:
+message from your ChangeLog updates. To use VC:
 
   vc-dir the root directory of Emacs sources
   vc-dir-mark to mark files to commit
   vc-next-action to edit a commit message
   log-edit-insert-changelog to populate from ChangeLogs, possibly using prefix-arg
   vc-next-action to commit
+
+Note that VC does not yet support ##git push##, so you will need to
+type that command manually.
 
 In this process, updating your ##master## with ##git pull## is not
 really optional.  There is a race condition here, just as in CVS and
@@ -403,6 +378,60 @@ soon as you can -- not because you necessarily plan to become a
 regular contributor, but because then your setup will be the same as
 what most other people are using, so they can better help you if you
 have questions.
+
+[:UsefulAddOns]
+=== Useful Add-On Configuration ===
+
+We have mentioned the git-merge-changelog tool above.  Here are
+some instructions on installing it and on configuring your Git to use it.
+
+It can be installed using
+
+    git clone git://git.savannah.gnu.org/gnulib.git
+    cd gnulib
+    ./gnulib-tool --create-testdir --dir=/tmp/testdir123 git-merge-changelog
+    cd /tmp/testdir123
+    ./configure
+    make
+    make install
+
+Some GNU/Linux distributions also provide packages for it.
+
+MS-Windows users can find a pre-compiled binary here:
+
+[http://sourceforge.net/projects/ezwinports/files/git-merge-changelog-0.1-2-w32-bin.zip/download]
+
+To enable  git-merge-changelog, add to .git/config of the checkout (or to your $HOME/.gitconfig)
+the lines
+
+    [merge "merge-changelog"]
+      name = GNU-style ChangeLog merge driver
+      driver = /usr/local/bin/git-merge-changelog %O %A %B
+
+To the ~/.gitattributes file add the line
+
+    ChangeLog    merge=merge-changelog
+
+See
+[https://www.kernel.org/pub/software/scm/git/docs/gitattributes.html
+gitattributes(5)] for more info.  Additionally it can be useful to
+define a custom hunk-header (the text shown after the @@ in the
+textual diff output) for Emacs lisp related files.  Add the following
+lines to the .gitconfig file
+
+    [diff "lisp"]
+      xfuncname = "^(\\(.*)$"
+    [diff "texinfo"]
+      xfuncname = "^@node[ \t][ \t]*\\([^,][^,]*\\)"
+
+and to the .gitattributes file
+
+    *.c     diff=cpp
+    *.h     diff=cpp
+    *.el    diff=lisp
+    *.texi* diff=texinfo
+
+
 
 [:OtherResources]
 === Other Resources ===
