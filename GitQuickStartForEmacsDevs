@@ -54,14 +54,14 @@ If you're using the command-line:
 * ##git commit -a##
 * ##git push##
 
-Optionally, before doing a commit, you can do ##git status## and ##git
-diff## to view the changed which will be committed by ##git commit
--a## (with no filename arguments) and unknown files which will be
+Optionally, before doing a commit, you can do ##git status## and
+##git diff## to view the changed which will be committed by ##git commit -a##
+(with no filename arguments) and unknown files which will be
 ignored by ##git commit##.  "Unknown" means that the file neither
 matches a pattern in .gitignore nor is registered with Git.
-Typically unknown files are those you added with the intent to commit
-them.  In order to tell Git to track changes in them, use the ##git add##
-command:
+Typically, unknown files are those you added with the intent to commit
+them.  In order to register a file with Git and tell Git to track changes in
+them, use the ##git add## command:
 
 ##git add new-file ...##
 
