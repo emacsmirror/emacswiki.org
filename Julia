@@ -1,7 +1,0 @@
-Julia is a high-level, high-performance dynamic programming language for technical computing, with syntax that is familiar to users of other technical computing environments. 
-
-http://julialang.org/
-
-An Emacs mode for editing Julia code, called `julia-mode', is part of the Julia contrib: https://github.com/JuliaLang/julia/blob/master/contrib/julia-mode.el EmacsSpeaksStatistics also features Julia support.
-
-A blog post about editing Julia code with Emacs http://www.wilfred.me.uk/blog/2014/11/16/editing-julia-code-with-emacs/
