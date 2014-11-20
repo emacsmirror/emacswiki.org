@@ -1,6 +1,6 @@
 This page is about '''[::Emacs Speaks Statistics]''', also sometimes called EmacsStatisticalSystem, but usually called '''[::ESS]'''. As always, you can click the page heading to list all pages related to ESS.
 
-ESS is a package that integrates various statistical software with Emacs. S, R (a free implementation of S), Stata, Julia, and SAS modes are all supported by ESS, making it possible to hook writing and programming in Emacs right into your stats. It's pretty slick.
+ESS is a package that integrates various statistical software with Emacs. S, GNU R (a free implementation of S), Stata, [[Julia]], and SAS modes are all supported by ESS, making it possible to hook writing and programming in Emacs right into your stats. It's pretty slick.
 
 * ESS: http://ESS.R-project.org/
 
