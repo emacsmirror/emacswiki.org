@@ -398,7 +398,7 @@ It can be installed using
 Some GNU/Linux distributions also provide packages for it.
 
 MS-Windows users can find a pre-compiled binary from
-[http://sourceforge.net/projects/ezwinports/files/git-merge-changelog-0.1-2-w32-bin.zip/download the ezwinports site]
+[http://sourceforge.net/projects/ezwinports/files/git-merge-changelog-0.1-2-w32-bin.zip/download the ezwinports site].
 
 To enable  git-merge-changelog, add to .git/config of the checkout (or to your $HOME/.gitconfig)
 the lines
