@@ -73,9 +73,9 @@ add examples appropriate for that system.
 [:Help]
 === Getting help on Git ===
 
-Git provides both Unix-style man pages (start with ##man git##) and
-embedded help (start with ##git help##). See [[#OtherResources]] for
-more documentation.
+Git provides both Unix-style man pages (start with ##man git##; doesn't
+work on Windows) and embedded help (start with ##git help##).
+See [[#OtherResources]] for more documentation.
 
 [:RegularContributors]
 === The Git Work Routine ===
