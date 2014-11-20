@@ -22,7 +22,7 @@ when you have docbook2X and toolchains for SGML, XML, and Texinfo
 installed.
 
 Here's how the result looks like with the 8.3.3 docs:
-* [[http://gate450.dyndns.org/~andreas/postgres.info.gz|PostgreSQL info]]
+* [[http://ansel.ydns.eu/~andreas/postgres.info.gz|PostgreSQL info]]
 
 == Using outline-minor-mode with SQL Dumps ==
 
