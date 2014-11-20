@@ -50,7 +50,21 @@ When editing file names with `dired-toggle-read-only' and committing, everything
 
 == Discussion ==
 
-It would be good if when copying text from a dired buffer with details hidden, the details are not also copied (which is what happens at the moment), e.g. when sending somebody a message with a list of filenames.
+
+[new]
+It would be good if when copying text from a dired buffer with details hidden, the details are not also copied (which is what happens at the moment), e.g. when sending somebody a message with a list of filenames. -- JoeBloggs
+
+[new:DrewAdams:2014-11-20 16:03 UTC]
+This applies to hidden details in Emacs 23 and later, as well to details hidden by ##dired-details.el##.
+
+1. You can control this with user option `yank-excluded-properties'.  By default, yanking text that has property `invisible' (as is the case here) strips the text of that property, which means that the hidden text is not hidden after yanking.
+
+You can, for example, define a yank command for use in this context that binds `yank-excluded-properties' to its current value minus any `invisible' entry and then calls `yank' or `insert-for-yank'.  Such a command could be useful for cases like this, where you want to hide invisible text after yanking.
+
+But Emacs has no way of knowing, unless you tell it, that in general you do want to strip property `invisible' when you yank, but you do not want to strip it in some particular contexts, such as this one. 
+
+2. But all of that concerns only yanking in Emacs, not pasting to some other application. It does not remove the text that was invisible, it just keeps it invisible.  If you want to actually remove invisible text from the copied string then you need to jump through different hoops.  You can do what you want using functions from library '''<tt>[[subr+.el]]</tt>'''. Function '''`buffer-substring-visible'''', for example, returns the buffer text between any two positions, but with invisible parts of it stripped out. You can see an example of using `buffer-substring-visible' in library <tt>[[narrow-indirect.el]]</tt> -- see function `ni-buffer-substring-collapsed-visible', where the buffer text between two limits has its invisible text removed and its whitespace collapsed. -- DrewAdams
+
 
 ----
 CategoryDirectories
