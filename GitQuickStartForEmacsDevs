@@ -113,9 +113,9 @@ feature Foo".
 
 Before pushing, not just the files you are committing but _all_
 your local source files must be up to date with upstream. So if
-somebody else pushes to upstream between the ##git pull## and the ##git
-push## commands, you'll need to ##git pull --rebase## again, and repeat
-the ##git push## command.
+somebody else pushes to upstream between the ##git pull## 
+and the ##git push## commands, you'll need to ##git pull --rebase##
+again, and repeat the ##git push## command.
 
 === If you made a mistake ===
 
