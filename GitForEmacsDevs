@@ -71,7 +71,7 @@ prompt installed and configured by msysGit.
 [:Help]
 === Getting help on Git ===
 
-Git provides both Unix-style man pages (start with ##man git##; doesn't
+Git provides both Unix-style man pages (start with ##man git##; requires Cygwin to 
 work on Windows) and embedded help (start with ##git help##).
 See [[#OtherResources]] for more documentation.
 
