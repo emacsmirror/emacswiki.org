@@ -125,10 +125,8 @@ these problems before you ##git push##, then the error was not yet propagated
 upstream, and you can easily fix it.
 
 To fix the last commit log message, use ##git commit --amend##.
-To re-do the commit from scratch, use ##git reset --soft##, then fix whatever
+To re-do the commit from scratch, use ##git reset HEAD^##, then fix whatever
 needs fixing, and commit again.
-To cancel the commit and all your changes, and revert to the previous
-version of the branch, use ##git reset --hard##.
 
 If you caught your mistake only after ##git push##, the only way to fix it is
 to push another commit.  Try to avoid that, as log messages cannot be
