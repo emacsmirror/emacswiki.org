@@ -6,14 +6,14 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Nov 15 08:52:23 2014 (-0800)
+;; Last-Updated: Sat Nov 22 08:53:36 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 27343
+;;     Update #: 27357
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -7075,13 +7075,13 @@ Those are default key bindings, but you can change them using option
 
 These options, when non-nil, control candidate matching and filtering:
 
- `icicle-buffer-extras'             - Extra buffers to display
+ `icicle-buffer-extras'             - Extra buffer names to display
  `icicle-buffer-ignore-space-prefix-flag' - Ignore space-prefix names
  `icicle-buffer-include-cached-files-nflag' - Include cached files
  `icicle-buffer-include-recent-files-nflag' - Include recent files
- `icicle-buffer-match-regexp'       - Regexp that buffers must match
- `icicle-buffer-no-match-regexp'    - Regexp buffers must not match
- `icicle-buffer-predicate'          - Predicate buffer names satisfy
+ `icicle-buffer-match-regexp'       - Regexp buffer names must match
+ `icicle-buffer-no-match-regexp'    - Regexp names must not match
+ `icicle-buffer-predicate'          - Predicate names must satisfy
  `icicle-buffer-sort'               - Sort function for candidates
  `icicle-buffer-skip-functions'     - Exclude from content searching
  `icicle-file-skip-functions'       - Same, but cached/recent files
@@ -7218,7 +7218,13 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
   (setq strg  icicle-current-input)
   (lexical-let* ((name-pat     (let ((icicle-list-use-nth-parts  '(1)))
                                  (icicle-transform-multi-completion strg)))
-                 (name-pat     (if (memq icicle-current-completion-mode '(nil apropos))
+                 ;; FIXME.  We want to prepend "^" here for any Icicles prefix completion method that needs it.
+                 ;;         For now, do not do it for a `vanilla' value of `icicle-current-TAB-method',
+                 ;;         regardless of the particular value of `completion-styles' or
+                 ;;         `completion-category-overrides'.  But really there are some such values for which it
+                 ;;         should be appropriate - `basic', `emacs-21', and `emacs-22', for instance.
+                 (name-pat     (if (or (memq icicle-current-completion-mode '(nil apropos))
+                                       (eq 'vanilla icicle-current-TAB-method))
                                    name-pat
                                  (concat "^" (regexp-quote name-pat))))
                  (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
@@ -10440,10 +10446,10 @@ The list of names (strings) is returned.
 These options, when non-nil, control candidate matching and filtering:
 
  `icicle-buffer-ignore-space-prefix-flag' - Ignore space-prefix names
- `icicle-buffer-extras'             - Extra buffers to display
- `icicle-buffer-match-regexp'       - Regexp that buffers must match
- `icicle-buffer-no-match-regexp'    - Regexp buffers must not match
- `icicle-buffer-predicate'          - Predicate buffer names satisfy
+ `icicle-buffer-extras'             - Extra buffer names to display
+ `icicle-buffer-match-regexp'       - Regexp that names must match
+ `icicle-buffer-no-match-regexp'    - Regexp names must not match
+ `icicle-buffer-predicate'          - Predicate names must satisfy
  `icicle-buffer-sort'               - Sort function for candidates
 
 Note: The prefix arg is tested, even when this is called
