@@ -8,13 +8,13 @@
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 15 09:48:38 2014 (-0700)
+;; Last-Updated: Sat Nov 22 10:23:09 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1682
+;;     Update #: 1691
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -63,7 +63,7 @@
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `icomplete.el'
-;;              have been REDEFINED HERE:
+;;              have been REDEFINED OR ADVISED HERE:
 ;;
 ;;    `icomplete-get-keys' (Emacs < 24.3) -
 ;;       1. Respect `icompletep-include-menu-items-flag'.
@@ -82,6 +82,8 @@
 ;;       1. Save match-data.
 ;;       2. Do not insert if input begins with `(' (e.g. `repeat-complex-command').
 ;;       3. Ensure that the insertion does not deactivate mark.
+;;
+;;    `icomplete-mode' - Advised to provide Icomplete+ doc.
 ;;
 ;;
 ;;  This file should be loaded after loading the standard GNU file
@@ -1412,7 +1414,22 @@ Turning it off does not turn Icomplete mode on or off."
           (when icompletep-cycling-mode (icomplete-mode 99)) ; Turn on Icomplete if cycling is on.
           (setq icomplete-minibuffer-map  (and icompletep-cycling-mode
                                            icompletep-ORIG-icomplete-minibuffer-map))))
-  (icompletep-cycling-mode -99))        ; Turn it off by default.
+  (icompletep-cycling-mode -99)         ; Turn it off by default.
+
+  (defadvice icomplete-mode (before icompletep-doc activate)
+    "
+Icomplete+ enhances vanilla Icomplete mode in these ways:
+ * Better display of candidates - highlighting and showing how many.
+ * Shows key bindings for command, optionally including menu bindings.
+ * Does not bind keys for cycling in `icomplete-mode', so you can use
+   those keys normally in the minibuffer.  If you want cycling then
+   enable minor mode `icompletep-cycling-mode'.
+ * Provides support for Icicles:
+   . Respects Icicles sort order, which you can cycle using `C-,'.
+   . When you change direction cycling candidates with Icicles, shows
+     the number of other cycle candidates.")
+
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
