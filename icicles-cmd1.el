@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Nov 22 08:53:36 2014 (-0800)
+;; Last-Updated: Sat Nov 22 09:18:50 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 27357
+;;     Update #: 27360
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7224,7 +7224,7 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                  ;;         `completion-category-overrides'.  But really there are some such values for which it
                  ;;         should be appropriate - `basic', `emacs-21', and `emacs-22', for instance.
                  (name-pat     (if (or (memq icicle-current-completion-mode '(nil apropos))
-                                       (eq 'vanilla icicle-current-TAB-method))
+                                       (icicle-not-basic-prefix-completion-p))
                                    name-pat
                                  (concat "^" (regexp-quote name-pat))))
                  (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
