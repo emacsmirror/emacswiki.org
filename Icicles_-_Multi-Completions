@@ -89,11 +89,11 @@ type inheritance into account.  You can match a type as a [[sexp]]
 or using a regexp.  You can match a type expression or match the
 option's current [[symbol value|value]] against a type.  See [[Icicles - A Propos d'Apropos#Type-AwareVariable-AproposMulti-Commands|Type-Aware Variable-Apropos Multi-Commands]].
 
-Other '''Icicles''' commands that use multi-completion include
+'''Icicles''' [[Icicles - File-Name Input#LocateByDate|file-name commands that use multi-completion]] include
 `icicle-locate-file', `icicle-locate-file-other-window',
 `icicle-recent-file', and `icicle-recent-file-other-window'.
-These commands let you match against two-part multi-completion
-candidates that are composed of an absolute file name and the
+These commands let you match against multi-completion
+candidates that have an absolute file name part and a part that is the
 file's last modification date.  This means that you can easily
 find those notes you took sometime last week...
 
@@ -414,7 +414,5 @@ CategoryDocumentation
 CategoryHelp
 CategoryProgrammerUtils
 CategoryCode
-
-
 
 
