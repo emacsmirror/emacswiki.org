@@ -10,7 +10,7 @@
 ## By default, the keystrokes of term.el conflict with global-mode keystrokes, which makes it difficult for the user to integrate term.el with Emacs.
 ## By default, executing the *NIX command "exit" from term-mode will leave an unused buffer.
 ## term.el won't quit running sub-process when you kill terminal buffer forcibly.
-## It doesn't have a dedicated window for a debugging program. 
+## It doesn't have a dedicated window for a debugging program.
 
 : And multi-term.el is enhanced with those features.
 
@@ -38,12 +38,12 @@
 [:KeyBindings]
 ==Note==
 
-* You have to carefully consider which keys you want to pass to your multi-term shell and which you want to use to control Emacs.  Pass over too few and you won't be able to control the program you want.  Pass over the wrong ones and you wont be able to make use of emacs global commands.  
+* You have to carefully consider which keys you want to pass to your multi-term shell and which you want to use to control Emacs.  Pass over too few and you won't be able to control the program you want.  Pass over the wrong ones and you wont be able to make use of emacs global commands.
  There is a simple mechanism to do this.
 * `term-unbind-key-list' is a list of keys which emacs keeps for itself.  By default it contains ("C-z" "C-c" "C-x" "C-h" "C-y" "<ESC>")
 * `term-bind-key-alist' is a list of keys and functions which you can use, for example to use Emacs style cursor movement to the multi-terminal.  The default is long, so I'll let you look it up yourself.
 * How to use "C-x C-c" to terminate an emacs session running in a multi-term.el buffer:
-:: I found that some some people like to run emacs-within-emacs by calling "emacs -nw" inside a multi-term.el (though surely this is just for bragging rights!).   However, by default the prefix keys "C-x" and "C-c" are unbound by multi-term (that is, they are processed by the host Emacs).  But this means that you can't quit your nested emacs session with "C-x C-c".  If if you want to do this, remove "C-x" and "C-c" from option `term-unbind-key-list', and remove "C-c C-c" from the option `term-bind-key-alist'.  
+:: I found that some some people like to run emacs-within-emacs by calling "emacs -nw" inside a multi-term.el (though surely this is just for bragging rights!).   However, by default the prefix keys "C-x" and "C-c" are unbound by multi-term (that is, they are processed by the host Emacs).  But this means that you can't quit your nested emacs session with "C-x C-c".  If if you want to do this, remove "C-x" and "C-c" from option `term-unbind-key-list', and remove "C-c C-c" from the option `term-bind-key-alist'.
 
 You may have to experiment to get the behavior you want.
 
@@ -60,7 +60,7 @@ multi-term.el provides the following interactive functions:
 
 ==Tips==
 
-* You can type "C-u" before the commands `multi-term' or `multi-term-dedicated-open'.  You will then be prompted for the shell command to use for the your new terminal buffer. 
+* You can type "C-u" before the commands `multi-term' or `multi-term-dedicated-open'.  You will then be prompted for the shell command to use for the your new terminal buffer.
 ** If you want to define a function that starts a new multi-term buffer with a non-default shell, without being prompted, you can do this:
 {{{
                 (defun multi-term-foo ()
@@ -102,13 +102,13 @@ If `others' scroll only those that are not the selected window.
 : "multi-term-switch-after-close" try to switch to another `multi-term' buffer after closing the current one. If you don't like this feature just set it with nil.
 
 * Keystroke:
-** Unbind keystroke: 
+** Unbind keystroke:
 
-:: The keystroke list to unbind when terminal is created. 
+:: The keystroke list to unbind when terminal is created.
 :: The format is '("KEY-A" "KEY-B" "KEY-C")
-** Bind keystroke: 
+** Bind keystroke:
 
-:: The keystroke alist to bind when terminal is created. 
+:: The keystroke alist to bind when terminal is created.
 :: The format is '(("KEY-A" . COMMAND-A) ("KEY-B" . COMMAND-B) ("KEY-C" . COMMAND-C))
 
 * Dedicated window:
@@ -145,17 +145,17 @@ Please make this option with t if you want focus terminal window.
     (defun last-term-buffer (l)
       "Return most recently used term buffer."
       (when l
-	(if (eq 'term-mode (with-current-buffer (car l) major-mode))
-	    (car l) (last-term-buffer (cdr l)))))
+  (if (eq 'term-mode (with-current-buffer (car l) major-mode))
+      (car l) (last-term-buffer (cdr l)))))
 
     (defun get-term ()
       "Switch to the term buffer last used, or create a new one if
     none exists, or if the current buffer is already a term."
       (interactive)
       (let ((b (last-term-buffer (buffer-list))))
-	(if (or (not b) (eq 'term-mode major-mode))
-	    (multi-term)
-	  (switch-to-buffer b))))
+  (if (or (not b) (eq 'term-mode major-mode))
+      (multi-term)
+    (switch-to-buffer b))))
 }}}
 ==Screenshot==
 
@@ -186,8 +186,8 @@ However I found one deficiency:
   (interactive)
   (if (multi-term-dedicated-exist-p)
       (progn
-	(multi-term-dedicated-toggle)
-	(switch-to-buffer-other-window old-buf))
+  (multi-term-dedicated-toggle)
+  (switch-to-buffer-other-window old-buf))
     (progn
       (setq old-buf (current-buffer))
       (multi-term-dedicated-toggle))
@@ -206,7 +206,7 @@ After multi-term.el 0.8.13 , you just need use below code to make you happy: -- 
 Ilya - you might watch to use select-window and selected-window rather than switching buffers when you restore state. ---MPH
 
 [new]
-Sorry Ilya, i have [http://www.emacswiki.org/emacs/AndyStewart#toc14 LeaveEmacs] , 
+Sorry Ilya, i have [http://www.emacswiki.org/emacs/AndyStewart#toc14 LeaveEmacs] ,
 haven't time write any elisp code even i really want help you.
 So sorry.
 
@@ -218,18 +218,18 @@ So sorry.
 Hi! it seems pretty cool. I used to run M-x shell in my emacs and play a lot of my daily job in it. But I found that in the terminal mode I just not able to send a Ctrl-r charactor to my shell. You know it used to invoke a (reverse-i-search) in bash command history. Anytime when I type C-r in the terminal it just invoke (isearch-backward) in Emacs, even when I type C-q C-r. I can unset the default key binding on C-r in Emacs, but it seems not work for terminal mode. Then I made a term-mode-hook and it really runs, but the key binding of C-r is still there. It's quite strange.
 
 {{{
-(add-hook 'term-mode-hook 
-	  (lambda()
-	    (global-unset-key (kbd "C-r"))
+(add-hook 'term-mode-hook
+    (lambda()
+      (global-unset-key (kbd "C-r"))
 ;	    (local-unset-key (kbd "C-r"))
-	    (message "%s" "This is in term mode and hook enabled.")
+      (message "%s" "This is in term mode and hook enabled.")
 ))
 }}}
 
 Of course I can copy a ^R charactor from somewhere else and paste it into terminal window, it really works but it's too annoying. Does anybody has good idea?
 
    -- DoveYoung
-   
+
 : Try type M-r i think that's your need. :)
 : Because C-r is default keystroke for isearch-backward, for avoid conflict with C-r, i binding M-r to send "C-r" character to shell.
 : You can use option term-bind-key-alist/term-unbind-key-list to binding/unbinding special keystroke in multi-term.el, and don't use term-mode-hook. :)  -- AndyStewart
@@ -256,8 +256,8 @@ Then use a convenient key to send ESC to terminal. I am fine with "C-c C-e"
 
 --Noorul
 
-[new] 
-I have merge term-send-esc feature in lastest multi-term.el , thanks Noorul -- AndyStewart 
+[new]
+I have merge term-send-esc feature in lastest multi-term.el , thanks Noorul -- AndyStewart
 
 [new]
 Hi!  Please add 256 color support to multiterm!
@@ -265,10 +265,10 @@ Hi!  Please add 256 color support to multiterm!
 --Daniel
 
 [new]
-Hi Andy - thanks for multiterm :)  I'm experiencing an odd issue in FreeBSD, which seems shell-independent (happens with sh and zsh).  On Linux, if I change directory inside a multi-term, that changes the default directory for the containing buffer in Emacs.  So I can {{{cd}}} into a directory in a multiterm, then do a {{{find-file-in-project}}} and it'll run from the directory I've changed into.  On FreeBSD that doesn't happen; the default directory for the buffer remains unchanged after issuing a {{{cd}}} inside multiterm.
+Hi Andy - thanks for multiterm :)  I'm experiencing an odd issue in FreeBSD, which seems shell-independent (happens with sh and zsh).  On Linux, if I change directory inside a multi-term, that changes the default directory for the containing buffer in Emacs.  So I can cd into a directory in a multiterm, then do a find-file-in-project and it'll run from the directory I've changed into.  On FreeBSD that doesn't happen; the default directory for the buffer remains unchanged after issuing a cd inside multiterm.
 
--- Duncan Bayne
+-- duncan_bayne
 
 ----
 CategoryShell
- 
+
