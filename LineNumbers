@@ -31,7 +31,15 @@ LinumPlus
 
 The ##nlinum.el## library, available from GNU ELPA (http://elpa.gnu.org/packages/nlinum.html) is meant as a replacement for linum.el, using the jit-lock infrastructure to fix various corner case bugs in linum.el.  It should usually be about as fast or faster than linum.el.
 
-
+To precalculate the line number width to avoid horizontal jumps on scrolling:
+<pre>
+;; Preset width nlinum
+(add-hook 'nlinum-mode-hook
+          (lambda ()
+            (setq nlinum--width
+              (length (number-to-string
+                       (count-lines (point-min) (point-max)))))))
+</pre>
 
 == Linum ==
 
