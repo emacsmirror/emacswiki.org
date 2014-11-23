@@ -264,6 +264,11 @@ Hi!  Please add 256 color support to multiterm!
 
 --Daniel
 
+[new]
+Hi Andy - thanks for multiterm :)  I'm experiencing an odd issue in FreeBSD, which seems shell-independent (happens with sh and zsh).  On Linux, if I change directory inside a multi-term, that changes the default directory for the containing buffer in Emacs.  So I can {{{cd}}} into a directory in a multiterm, then do a {{{find-file-in-project}}} and it'll run from the directory I've changed into.  On FreeBSD that doesn't happen; the default directory for the buffer remains unchanged after issuing a {{{cd}}} inside multiterm.
+
+-- Duncan Bayne
+
 ----
 CategoryShell
  
