@@ -61,9 +61,9 @@ this.
 
 == Installation ==
 
-Direct link to ##iflipb.el##: http://hg.rosdahl.net/iflipb/raw-file/tip/iflipb.el
+Direct link to ##iflipb.el##: https://raw.githubusercontent.com/jrosdahl/iflipb/master/iflipb.el
 
-Mercurial repository: http://hg.rosdahl.net/iflipb
+Source code repository: https://github.com/jrosdahl/iflipb
 
 To load *iflipb*, store ##iflipb.el## in your Emacs load path and put
 
@@ -104,15 +104,6 @@ Have fun!
 //Joel Rosdahl <joel@rosdahl.net>//
 
 == Discussion ==
-
-[new]
-Cause error when buffer name contains %.
-
-  (defun iflipb-message (text)
-    (let (message-log-max)
-      (message "%s" text)))
-
--- [[rubikitch]]
 
 [new:익명:2012-05-09 01:33 UTC]
 After several days of using other buffer switching packages, I've settled down on yours. Thanks. neat implementation.
