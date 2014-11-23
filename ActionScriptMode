@@ -13,6 +13,7 @@ Austin Haas has created an actionscript-mode for AS3:
 * A recent version is archived here: Lisp:actionscript-mode-haas-7.0.el
 ** This does not work with newer Emacsen (CC-mode 5.30 and up)
 *** Is this comment referring to an older version? Because there was a time when my actionscript-mode didn't work with Emacs22, but it wasn't this version. As far as I know, this version works fine and it doesn't depend on cc-mode at all. - Austin Haas
+*** At first glance, the Github head seems to work fine for me in GNU Emacs 24.4.
 ** Also, there are a few indentation bugs.
 *** This is true. I borrowed the tabbing code from Aemon Cannon's as3-mode, which is [https://github.com/aemoncannon/as3-mode/blob/master/as3-mode.el here]. It's a smart but simple approach and doing a complete tabbing solution is beyond my limits. - Austin Haas
 * Somewhat older version which indents correctly and works with newer Emacsen: Lisp:actionscript-mode-haas-5.6.el
