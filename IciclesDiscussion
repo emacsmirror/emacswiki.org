@@ -86,7 +86,18 @@ Here a few ungelled ideas from my own "maybe-to-do" list, to prime the pump.  Du
 The ''latest'' discussion entry is '''[[#LatestEntry|here]]'''.
 
 
+[new:]
 
+When using `M-x' or `C-x C-f' for example you can then type `C-r' to search back through the history of what you've typed previously. It would be nice to have icicle completion available when doing this.
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
 
 
 [new:JimmyBongos:2014-11-02 16:41 UTC]
