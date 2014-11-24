@@ -80,6 +80,9 @@ If Git complains about conflicts after the update, fix them and use
 
 (##git add## cannot fix any conflicts itself; it only marks a file
 as being ready to commit after *you* fix the conflicts.)
+Fixing conflicts in Emacs turns on the smerge-mode, which
+automatically invokes ##git add## for every file you save, so
+the manual ##git add## command is unnecessary.
 
 If you use VC as shown above, the ##git push## command
 must be typed manually, after you commit, as VC doesn't
