@@ -131,7 +131,10 @@ contributions to Emacs (whether or not you're one of the Emacs
 maintainers).  You can also use this way just to track the Emacs
 sources, even if you never contribute changes.
 
-For the general public, Emacs's repo lives at ##git://git.sv.gnu.org/emacs##. Committers should prefix it with their Savannah user-id: ##<membername>@git.sv.gnu.org:/srv/git/emacs.git##. Apply ##git clone## to these; it will clone the repo into a directory named 'emacs'.
+For the general public, Emacs's repo lives at ##git://git.sv.gnu.org/emacs##. Committers should prefix it with their Savannah user-id: ##<membername>@git.sv.gnu.org:/srv/git/emacs.git##. Apply ##git clone## to these; it will clone the repo into a directory named 'emacs':
+
+      git clone <membername>@git.sv.gnu.org:/srv/git/emacs.git  # For those with write access
+      git clone git://git.sv.gnu.org/emacs                      # For the rest of us
 
 [:QuickFix]
 === Doing Quick Fixes ===
