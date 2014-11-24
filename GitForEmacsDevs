@@ -353,13 +353,13 @@ type that command manually.
 In this process, updating your ##master## with ##git pull## is not
 really optional.  There is a race condition here, just as in CVS and
 Bazaar: if your mirror is not up-to-date because another developer has
-committed since you last updated, your commit will fail.  In this case
-you should abort the merge
+pushed since you last updated, your push will fail.  In this case
+you should abort the merge:
 
       git reset
 
-do another ##git pull##, merge from the ##TASKNAME## branch again, and
-commit.
+Then do another ##git pull##, merge from the ##TASKNAME## branch
+again, and push.
 
 When you're done with your work and it's all been sent upstream, you
 can delete your task branch...
