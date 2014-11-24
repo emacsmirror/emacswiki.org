@@ -5,7 +5,7 @@ tests (both kinds, test/unit and rspec) right from the editor, instead
 of dropping to the command line. This also works for rails projects
 where it picks the right script/spec script.
 
-=== Features
+== Features
 * Run whole file
 * Re-running last test
 * Run individual testcase or example
