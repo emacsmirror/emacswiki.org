@@ -5,14 +5,14 @@ tests (both kinds, test/unit and rspec) right from the editor, instead
 of dropping to the command line. This also works for rails projects
 where it picks the right script/spec script.
 
-== Features
+== Features ==
 * Run whole file
 * Re-running last test
 * Run individual testcase or example
 * Clickable backtraces
 * Toggle test and implementation (for Rails, or using a customized mapping regex)
 
-== How Tests Are Picked
+== How Tests Are Picked ==
 
 The command `ruby-test-run-file' has three ways to pick the test to
 run, and the first test that turns up gets picked for execution. 
