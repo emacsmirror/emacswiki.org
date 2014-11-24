@@ -10,7 +10,7 @@ A small binding for Emacs' [[VersionControl]] feature is included in the source 
 
 Currently, it does not explicitly support branches, nor `C-x v a' (`vc-update-change-log').
 
-SvnStatusMode can operate on multiple files in a SubVersion repository at once.
+SvnStatusMode can operate on multiple files in a Subversion repository at once.
 
 == Subversion command-line client using Emacs ==
 
@@ -64,7 +64,7 @@ http://svn.collab.net/viewvc/*checkout*/svn/trunk/contrib/client-side/emacs/vc-s
 [new]
 A minor mod to the code there lets it load with my non-CVS emacs-21.3.1, but I'm still not sure how to work it.  I'm certain I need an updated vc.el package as well.  Sad.
 [new]
-Good news!!!  You didn't dig far enough.  I (SteveByrne) did.  This page here:
+Good news!  You didn't dig far enough.  I (SteveByrne) did.  This page here:
 * http://rpm.pbone.net/index.php3/stat/4/idpl/2499374/com/emacs-subversion-1.2.3-alt2.i586.rpm.html
 
 gives you an RPM that lets you use subversion (even with ssh) seamlessly from within Emacs using the C-x v commands.  You don't need to get the /etc/emacs/site-start.d rpm if you're good with RPMS -- you can just unpack the emacs-subversion-1.2.3-alt2.i586.rpm.html and load the subversion.el that it contains, which will set everything up for you.  I recommend using ssh-agent before starting emacs, because sometimes the prompts for the ssh passphrase create a nice popup window, but not always.  Besides, it's a pain to have to give the passphrase frequently.
@@ -94,7 +94,6 @@ For help setting up Emacs to be used as Subversion's graphical merge tool via
 ediff-merge-files-with-ancestor
 }}}
 please see the following blog post: http://bit.ly/m9ozZr
-
 
 ----
 CategoryVersionControl
