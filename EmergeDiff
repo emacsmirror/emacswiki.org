@@ -18,7 +18,7 @@ If you want to use emerge as git-mergetool, and want to start emacs using emacs 
 * create a script $HOME/bin/emerge-for-git, and run chmod +x on it.
 
     #!/bin/sh
-    emacs -Q $*
+    emacs -Q "$@"
 
 * set path for emerge
 
