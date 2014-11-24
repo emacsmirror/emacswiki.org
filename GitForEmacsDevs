@@ -414,7 +414,7 @@ It can be installed using
 
 Some GNU/Linux distributions also provide packages for it.
 
-MS-Windows users can find a pre-compiled binary from
+MS-Windows users can download a pre-compiled binary from
 [http://sourceforge.net/projects/ezwinports/files/git-merge-changelog-0.1-2-w32-bin.zip/download the ezwinports site].
 
 To enable  git-merge-changelog, add to .git/config of the checkout (or to your $HOME/.gitconfig)
@@ -424,7 +424,8 @@ the lines
       name = GNU-style ChangeLog merge driver
       driver = /usr/local/bin/git-merge-changelog %O %A %B
 
-To the ~/.gitattributes file add the line
+(change the "/usr/local/bin/" part to name the directory where
+you installed the program). To the ~/.gitattributes file add the line
 
     ChangeLog    merge=merge-changelog
 
