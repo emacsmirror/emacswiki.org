@@ -150,6 +150,20 @@ directly to the master branch if you want:
       git show                    # double-check what you will be pushing
       git push
 
+The last ##git push## command might fail if someone else pushed
+their changes while you were working on yours.  In that case, you
+will need to re-sync with upstream:
+
+      git pull --rebase
+
+If this fails and announces merge conflicts, resolve the conflicts
+by editing the files mentioned in the error message, and tell
+##git## to continue with rebasing:
+
+      git rebase --continue
+
+Finally, type ##git push## again to push to upstream.
+
 ##git## will automatically identify you as the committer and author of
 these changes (see [[#PersonalizingGit]]).  If you are integrating
 another developer's work, you can use ##--author 'J. Other Hacker <jhacker@gnu.org.invalid>'##
