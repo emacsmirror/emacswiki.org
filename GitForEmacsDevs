@@ -243,8 +243,8 @@ Once you have achieved a clean merge, commit it:
       git status                  # (recommended) sanity check -- lists changed and unknown files
       git commit -m "Merge from mainline."
 
-Note that you will need this ##commit## command even if there were no
-conflicts detected during the merge.
+Note that you will need this ##commit## command only if conflicts were
+detected during the merge.
 
 Once you have completed the task, you'll want to send it for review or
 maybe even put it into upstream.  You can send for review either by
