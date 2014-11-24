@@ -205,6 +205,7 @@ on the command line with ##-m##.  In this case, you put the log
 message in a file we'll call ##log-message.txt##.  Then
 
       git status                  # (optional) sanity check -- lists changed and unknown files
+      git add FILE1 ...           # to tell Git to track any new files created for this task
       git commit -a -F log-message.txt
 
 You can also do ##git commit -m "blah blah blah"##, if your log
