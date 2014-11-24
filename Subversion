@@ -1,0 +1,99 @@
+= Foreword =
+
+As time passed, the limitations of [[CVS]] became obvious. [::Subversion] aka. [::SVN] was designed to fix those problems while staying as close to CVS as possible.
+
+* Homepage: http://subversion.apache.org/
+
+A small binding for Emacs' [[VersionControl]] feature is included in the source distribution starting with GNU Emacs 22.
+
+* See GIT:vc/vc-svn.el
+
+Currently, it does not explicitly support branches, nor `C-x v a' (`vc-update-change-log').
+
+SvnStatusMode can operate on multiple files in a Subversion repository at once.
+
+== Subversion command-line client using Emacs ==
+
+This is for people who don't do everything in Emacs. Or perhaps people who use the M-x shell.
+
+When you commit a change to Subversion using the <tt>svn</tt> command-line tool, you can interactively edit the commit message with the editor of your choice. Usually you specify the editor based on environment variable SVN_EDITOR or EDITOR. See Subversion manuals for complete details.
+
+The simplest way to take advantage of this for Emacs users is to set SVN_EDITOR to your emacs executable in your path. Subversion will run an emacs session to collect the commit message.
+
+Perhaps a more responsive way is to tell Subversion to contact an already running Emacs instance. You can achieve this by using gnuserv/gnuclient, eg. SVN_EDITOR=gnuclient
+
+If you are using Windows, make sure to specify gnuclient, not gnuclientw.
+
+== Diff switches ==
+
+Occasionally, one would like to change the switches used for the `vc-diff' command, either on a tempoary basis or a permanent one.  This is traditionally done with `vc-diff-switches`.  Because Subversion has its own internal implementation of diff, it doesn't support many switches as, say, GNU diff.  The current Subversion backend for VC uses a sentintel value to keep from using the switches set by the user.  However, Subversion's diff command can be told to use the diff installed on the system.  The Subversion backend to VC even knows how to do this.  Simply, set `vc-svn-diff-switches' to `nil', rather than `t' and you'll get `vc-diff' to do what you wanted again.
+
+Here's an example of how to require a "normal" diff from GNU diff with whitespace and newline changes ignored:
+
+  M-x set-variable RET vc-svn-diff-switches RET nil RET
+  M-x set-variable RET vc-diff-switches RET ("--normal" "-bB") RET
+
+Alternatively, if you'd rather stick with Subversion's built-in diff tool, you can pass Subversion-specific diff switches by setting `vc-svn-diff-switches` to a string or list of strings.  For example, to tell `svn diff` to ignore EOL conventions and other whitespace, use
+
+  (setq vc-svn-diff-switches '("-x --ignore-eol-style" "-x -w"))
+
+in your .emacs.
+
+== Subversion 1.7 ==
+
+Emacs 24 supports Subversion 1.7, but Emacs 23 does not. If you want to use Subversion 1.7 on Emacs 23, you can use [[https://github.com/buzztaiki/vc-svn17-el/blob/master/vc-svn17.el vc-svn17.el]] for this purpose.
+
+
+== Discussion ==
+
+[new]
+So SubVersion does not yet work easily with C-x v v (vc-next-action)?   Or there is some small binding in some file in the SubVersion source distribution that links C-x v v to the psvn.el mode code?  Digging around at 
+* http://svn.collab.net/repos/svn/trunk/ led to 
+* http://svn.collab.net/repos/svn/trunk/contrib/client-side/emacs/vc-svn.el which says that the proper place for the VC binding is 
+* http://savannah.gnu.org/cgi-bin/viewcvs/emacs/emacs/lisp/vc-svn.el
+
+[new]
+Bad news: just downloading the savannah.gnu.org......vc-svn.el and tossing it into the lisp directory for windows gnu emacs 21.3.1, adding (add-to-list 'vc-handled-backends `SVN)
+to my InitFile failed miserably, when opening an SVN controlled file I get the error message: "Wrong number of arguments: #<subr defalias>,3". 
+Good News:
+The subversion released one mentioned below from the subversion source seems to work, here is a direct link to it: 
+http://svn.collab.net/viewvc/*checkout*/svn/trunk/contrib/client-side/emacs/vc-svn.el
+
+-- G Wait, 23 June 2006
+
+[new]
+A minor mod to the code there lets it load with my non-CVS emacs-21.3.1, but I'm still not sure how to work it.  I'm certain I need an updated vc.el package as well.  Sad.
+[new]
+Good news!  You didn't dig far enough.  I (SteveByrne) did.  This page here:
+* http://rpm.pbone.net/index.php3/stat/4/idpl/2499374/com/emacs-subversion-1.2.3-alt2.i586.rpm.html
+
+gives you an RPM that lets you use subversion (even with ssh) seamlessly from within Emacs using the C-x v commands.  You don't need to get the /etc/emacs/site-start.d rpm if you're good with RPMS -- you can just unpack the emacs-subversion-1.2.3-alt2.i586.rpm.html and load the subversion.el that it contains, which will set everything up for you.  I recommend using ssh-agent before starting emacs, because sometimes the prompts for the ssh passphrase create a nice popup window, but not always.  Besides, it's a pain to have to give the passphrase frequently.
+
+The next version of emacs (Emacs 22) supports subversion directly via vc-mode. Not all bugs have been ironed out, but it works a lot better with TrampMode than the version in the subversion distribution.
+
+The http://svn.collab.net/viewvc/svn/trunk/contrib/client-side/emacs/vc-svn.el?view=log page reveals that the pre error message version of vc-svn.el has been put back into the contrib module of Subversion's own subversion repository.
+
+[new]
+Even with the following setting, find-file does not ignore .svn folders when completing file names:
+{{{
+completion-ignored-extensions's value is 
+("CVS/" ".svn/" ...)
+}}}
+Am I missing something?
+
+I ran into the same problem.  I don't know why completion-ignored-extensions doesn't work, but I found that this other variable does do the trick:
+{{{
+(setq completion-regexp-list '("^[^\.]"))
+}}}
+
+This has the larger effect of making autocomplete ignore all files and directories beginning with a dot ("."), which may or may not be desired.  The default value of completion-regexp-list is nil.
+
+[new]
+For help setting up Emacs to be used as Subversion's graphical merge tool via
+{{{
+ediff-merge-files-with-ancestor
+}}}
+please see the following blog post: http://bit.ly/m9ozZr
+
+----
+CategoryVersionControl
