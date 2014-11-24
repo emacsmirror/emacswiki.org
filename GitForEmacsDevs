@@ -222,22 +222,23 @@ If the task isn't done yet, keep working.  Edit yet more source files,
 until you reach a good stopping point:
 
       git status                   # (optional) sanity check -- lists changed and unknown files
+      git add more-new-files ...
       git commit -a -F another-log-message.txt
 
 etc.  You can commit any time you reach a good checkpoint.  We
 recommend committing much more frequently than you might with CVS or
-Subversion.
+Subversion.  This makes it easier to find the commit that introduced a bug.
 
 From time to time you may wish to refresh the local repository by
 updating to get changes from upstream:
 
       git checkout master
       git pull
-      git checkout TASKNAME
 
 And after refreshing, you'll want to get those changes into your task
 branch, by merging them:
 
+      git checkout TASKNAME
       git merge master
       git status                  # (recommended) sanity check -- lists changed and unknown files
 
@@ -249,6 +250,11 @@ resolved file to mark that it should be added to the next commit.
       git add file-you-changed ...      # Mark these conflicts as resolved.
                                         # Git keeps track of unresolved conflicts,
                                         # and won't let you commit until all are resolved.
+
+If you fix conflicts by editing the files in Emacs, you should see the
+smerge-mode turned on automatically for files with conflict markers.
+Saving files when smerge-mode is active automatically invokes ##git add##
+for that file, so manual ##git add## commands are no longer necessary.
 
 Once you have achieved a clean merge, commit it:
 
