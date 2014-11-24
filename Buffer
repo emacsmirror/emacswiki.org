@@ -1,3 +1,4 @@
+[[ko:버퍼]]
 (This is a [[CategoryGlossary|glossary]] page. It is not for how-to information.)
 
 A '''[::buffer]''' is similar to what is sometimes called a ''workspace'' or a ''document'' in other editors.  A buffer can contain text and images. Often the contents of a buffer come from a file -- use `C-h v buffer-file-name' to see the file name.
