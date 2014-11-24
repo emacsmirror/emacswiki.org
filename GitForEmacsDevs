@@ -187,12 +187,6 @@ the changes from interfering with concurrent work (including your
 own!), and to keep the history separate from other work.  This makes
 review easier, too.  So first create a new branch:
 
-      cd $DEVHOME/emacs
-      git branch TASKNAME
-      git checkout TASKNAME
-
-The last two commands can be combined by using the -b option
-
        cd $DEVHOME/emacs
        git checkout -b TASKNAME
 
