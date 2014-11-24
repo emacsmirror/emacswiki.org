@@ -136,6 +136,9 @@ For the general public, Emacs's repo lives at ##git://git.sv.gnu.org/emacs##. Co
       git clone <membername>@git.sv.gnu.org:/srv/git/emacs.git  # For those with write access
       git clone git://git.sv.gnu.org/emacs.git                  # For the rest of us
 
+[:RegularDevelopmentBranch]
+== Workflow for Regular Development ==
+
 [:QuickFix]
 === Doing Quick Fixes ===
 
@@ -175,10 +178,6 @@ always recommend creating a "task branch" dedicated to that fix or
 feature -- see [[#FeatureBranch]].
 
 [:InitializeBranch]
-[:FeatureBranch]
-[:RegularDevelopmentBranch]
-== Workflow for Regular Development ==
-
 === Creating a Task Branch ===
 
 When you are working on a task that touches many files, or requires a
@@ -201,6 +200,7 @@ The last two commands can be combined by using the -b option
 the bug you're trying to fix, or just a short, descriptive name for
 the task.
 
+[:FeatureBranch]
 === Working in a Task Branch ===
 
 At this point, you're ready to do work.  You edit the source files,
