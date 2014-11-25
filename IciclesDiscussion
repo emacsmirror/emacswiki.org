@@ -1025,6 +1025,7 @@ Add new entries here.
 
 </pre>
 
+Icicle completion when searching back through input history:
 When using `M-x' or `C-x C-f' for example you can then type `C-r' to search back through the history of what you've typed previously. It would be nice to have icicle completion available when doing this. -- WellDone
 
 
