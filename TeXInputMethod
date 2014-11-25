@@ -15,5 +15,28 @@ You can add more rules to this function call.
 		      ("^\\alpha" ?ᵅ)))
 }}}
 
+== An alternative to the TeX input method==
+
+Using the package `math-symbol-lists' (available on MELPA), one can define a more comprehensive mathematical input method, containing all symbols and characters defined in the `unicode-math' LaTeX package.  This includes a myriad of symbols, alternative alphabets, and accents.  Install the `math-symbol-lists'  package and add the following to your init file
+
+{{{
+(package-initialize)
+(require 'math-symbol-lists)
+(quail-define-package "math" "UTF-8" "Ω" t)
+(quail-define-rules ; add whatever extra rules you want to define here...
+ ("\\from"    #X2190)
+ ("\\to"      #X2192)
+ ("\\lhd"     #X22B2)
+ ("\\rhd"     #X22B3)
+ ("\\unlhd"   #X22B4)
+ ("\\unrhd"   #X22B5))
+(mapc (lambda (x)
+        (if (cddr x)
+            (quail-defrule (cadr x) (car (cddr x)))))
+      (append math-symbol-list-basic math-symbol-list-extended))
+}}}
+
+To activate the input method, type `C-u C-\ math RET'. Then, typing \mscrC yields 𝒞, \lParen yields ⦅, \gamma\dot yields γ̇, etc
+
 ----
 TeX
