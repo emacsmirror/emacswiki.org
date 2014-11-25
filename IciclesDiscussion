@@ -1029,8 +1029,9 @@ Icicle completion when searching back through input history:
 When using `M-x' or `C-x C-f' for example you can then type `C-r' to search back through the history of what you've typed previously. It would be nice to have icicle completion available when doing this. -- WellDone
 
 
+[new:DrewAdams:2014-11-25 06:01 UTC]
 
-
+If I understand your question correctly, that feature is already available.  And not just during completion (e.g. of command names or file names) but for any minibuffer input (e.g. even `read-string', which does not provide completion).  See '''<tt>[[Icicles - History Enhancements#InsertPreviousInputs|`M-o']]</tt>'''. -- DrewAdams
 
 
 
