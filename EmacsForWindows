@@ -3,7 +3,7 @@ http://www.gnu.org/software/emacs/windows/ntemacs.html .
 Many issues concerning Emacs and MS-Windows are treated there.
 The page has also links to the precompiled binaries for MS-Windows of the current Emacs or earlier versions. 
 
-If you want precompiled binaries for the latest Emacses (version 23.2 is officially released stable; v24 is in early development phase) please see CategoryWThirtyTwo.
+If you want precompiled binaries for the latest Emacses (version 24.4 is officially released stable), please see CategoryWThirtyTwo.
 
 Project ntemacs at (http://ntemacs.sourceforge.net/) provides clean, optimized binary builds of the latest Emacs bzr snapshot, with image support enabled and necessary dependencies bundled in the package.
 
