@@ -182,6 +182,28 @@ non-`nil'.
 
 
 
+=== Iswitchb-Like Behavior for Buffers ===
+
+
+If you want '''Icicles''' to behave like IswitchB during buffer switching, you can advice icicle-buffer:
+
+  (defadvice icicle-buffer (around ic-substring-completion activate)
+              (interactive)
+              (let* ((icicle-current-TAB-method 'vanilla)
+                     (icicle-incremental-completion 'always)
+                     (icicle-top-level-when-sole-completion-flag 't))
+    ad-do-it))
+   (ad-activate 'icicle-buffer)
+
+
+
+
+Note that this also immediately selects the only available candidate that matches your input, without the need to push `RET'. If you don't want that, just remove '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|icicle-top-level-when-sole-completion-flag]]</tt>'''' binding from the advice.
+
+
+
+
+
 '''See Also:'''
 
 * [[Icicles - S-RET]]
