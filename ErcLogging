@@ -97,7 +97,7 @@ Here's a log (edited for brevity) from the EmacsChannel, about RCS-directories:
 
 So the conclusion would be something like (untested by me): 
 
-    (defadvice save-buffers-kill-emacs (before save-logs (arg) activate)
+    (defadvice save-buffers-kill-emacs (before save-logs (&rest arg) activate)
       (mapc (lambda(buf)
           (save-excursion
                 (set-buffer buf)
