@@ -6,7 +6,7 @@ Please delimit these with a "%" character on the first column, so that fortune d
 To make a fortune file from these quotes, use:
 
 <pre>
-lynx -nolist -dump http://www.emacswiki.org/cgi-bin/wiki/EmacsChannelQuotes \
+lynx -nolist -dump "http://www.emacswiki.org/cgi-bin/wiki/EmacsChannelQuo""tes" \
 | awk '/^ *% *$/ && nhr > 0 {print "%"}
        /^ *% *$/ {nhr++}
        /^ *_+ *$/ {nhr=0}
@@ -30,7 +30,7 @@ lynx -nolist -dump http://www.emacswiki.org/cgi-bin/wiki/EmacsChannelQuotes \
 <bojohan> sorry, you're not a n00b :P
 <Lukhas> hey ! :)
 %
-<ZwaX> the sourceforce ERC homepage is sponsored by "Buy Viagra Online".  does
+<ZwaX> the sourceforce ERC homepage is sponsored by "Buy Via﻿gra Online".  does
        ERC have side-effects?
 %
 <SynrG> i can hide/show subtrees using the menu, but the keys to do this are hopelessly complicated
@@ -224,12 +224,12 @@ lynx -nolist -dump http://www.emacswiki.org/cgi-bin/wiki/EmacsChannelQuotes \
 <hynek> "Russian" *run&hide* ;)
 %
 <elf> so, for the record (meaning ,,emacschannelquotes ), when i ask "does
-      anyone here use viagra? the answer is supposed to be "yes, if you want
+      anyone here use via﻿gra? the answer is supposed to be "yes, if you want
       it to come up faster than emacs."
-<elf> does anyone here use viagra?
+<elf> does anyone here use via﻿gra?
 <mkennedy> emacs is always up
 <Riastradh> Emacs is bigger than vi!
-<Riastradh> Emacs doesn't need no stinking viagra to _get_ big; it already _is_ big!
+<Riastradh> Emacs doesn't need no stinking via﻿gra to _get_ big; it already _is_ big!
 %
 <elf> ,poll maritalstatus vote 1
 <TerryP> hehe
