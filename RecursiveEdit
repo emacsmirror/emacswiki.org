@@ -4,7 +4,7 @@ For example, when replacing some text with `##M-%##' or `##M-C-%##' you can repl
 
 While saving buffers with `C-x s', type `C-r' to view the current file in ViewMode.
 
-While querying with `##C-x q##' in a keyboard macro, `##C-r##' enters a recursive edit.
+While querying with `C-x q' in a keyboard macro, `C-r' enters a recursive edit.
 
 The EmacsManual says:
 
