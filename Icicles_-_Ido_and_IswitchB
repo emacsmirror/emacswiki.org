@@ -182,24 +182,49 @@ non-`nil'.
 
 
 
-=== Iswitchb-Like Behavior for Buffers ===
+=== IswitchB-Like Behavior for `icicle-buffer' ===
 
+As mentioned, you can use IswitchB with '''Icicles'''.  GnuEmacs
+deprecated %%IswitchB%% starting with Emacs 24.4, but it is still
+available.
 
-If you want '''Icicles''' to behave like IswitchB during buffer switching, you can advice icicle-buffer:
+If you want to get %%IswitchB%%-like behavior with '''Icicles'''
+without using %%IswitchB%% then you can advise `icicle-buffer'.
 
+There are at least two ways to do this, depending on what behavior
+you want.  Let's assume that in any case (a) you want incremental
+completion from the outset (no need to hit `TAB' or `S-TAB', and
+(b) you want to Emacs to accept as your choice the sole candidate as
+soon as you narrow matching to a single candidate.  For (a), you bind '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion|icicle-incremental-completion]]</tt>'''' to `always'.  For (b), you bind '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|icicle-top-level-when-sole-completion-flag]]</tt>'''' to `t'.
 
-  (defadvice icicle-buffer (around icicle-buffer activate)
-    (interactive)
-    (let* ((icicle-default-cycling-mode  'apropos)
-	   (icicle-incremental-completion  'always)
-	   (icicle-top-level-when-sole-completion-flag 't))
-      ad-do-it))
-  (ad-activate 'icicle-buffer)
+1. In the first case, prefix completion is the default (as usual),
+   but `icicle-buffer' uses vanilla Emacs completion as the
+   Icicles `TAB' completion method.  This reflects %%IswitchB%%'s
+   substring matching.  To do this, you bind '''`<tt>[[Icicles - Customization and General Tips#icicle-current-TAB-method|icicle-current-TAB-method]]</tt>'''' to `vanilla'.
 
+2. In the second case, `icicle-buffer' starts out with apropos
+   completion, not prefix completion.  This too reflects
+   %%IswitchB%%'s substring matching, but it extends it to regexp
+   completion.  To do this, you bind '''`<tt>[[Icicles - Customization and General Tips#icicle-default-cycling-mode|icicle-default-cycling-mode]]</tt>'''' to `apropos'.
 
+    ;; 1. Use vanilla Emacs matching for prefix completion by default.
+    (defadvice icicle-buffer (around iswitchb-like-1 activate)
+      (interactive)
+      (let* ((icicle-current-TAB-method                   'vanilla)
+             (icicle-incremental-completion               'always)
+             (icicle-top-level-when-sole-completion-flag  't))
+        ad-do-it))
+    (ad-activate 'icicle-buffer)
 
+    ;; 2. Start with apropos completion by default.
+    (defadvice icicle-buffer (around iswitchb-like-2 activate)
+      (interactive)
+      (let* ((icicle-default-cycling-mode  'apropos)
+                (icicle-incremental-completion  'always)
+                (icicle-top-level-when-sole-completion-flag 't))
+        ad-do-it))
+    (ad-activate 'icicle-buffer)
 
-Note that this also immediately selects the only available candidate that matches your input, without the need to push `RET'. If you don't want that, just remove '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|icicle-top-level-when-sole-completion-flag]]</tt>'''' binding from the advice.
 
 
 
@@ -246,7 +271,6 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
 
 
