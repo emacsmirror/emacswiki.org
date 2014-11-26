@@ -3,14 +3,14 @@ Libraries providing multiple [[MajorMode]]s in a buffer. See also MinorMode.
 = Comparison =
 
 || library        || elisp files || size  || last update || url                                                 ||
-|| web-mode       ||           1 || 364 kb ||  2014-11-02 || http://web-mode.org                  ||
-|| polymode  || 7              || 120 kb || 2014-05-07 || https://github.com/vitoshka/polymode ||
-|| mmm-mode       ||          17 || 185 kb ||  2013-10-27 || https://github.com/purcell/mmm-mode                 ||
+|| web-mode       ||           1 || 364 kb ||  2014-11-21 || http://web-mode.org                  ||
+|| mmm-mode       ||          17 || 185 kb ||  2014-11-04 || https://github.com/purcell/mmm-mode                 ||
+|| polymode  || 7              || 120 kb || 2014-06-14 || https://github.com/vitoshka/polymode ||
 || multi-web-mode ||           1 || 16 kb  ||  2013-08-23 || https://github.com/fgallina/multi-web-mode          ||
 || mumamo          ||         115 || 3090 kb ||  2010-04-25 || http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html ||
 || multi-mode     ||           1 || 23 kb  ||        2009 || http://www.loveshack.ukfsn.org/emacs/multi-mode.el  ||
 
-(as of 2014-01-19)
+(as of 2014-11-24)
 
 -----------
 = polymode =
