@@ -137,7 +137,7 @@ It's easy to create interactive skeletons for multiple distinct inputs. Here's a
 
 == Using Multiple Variables with Skeleton Mode ==
 
-##define-skeleton## has a few limitations. You can't bind more than one variable at a time, and skeletons after the first ''must'' repeat.
+##define-skeleton## has this limitation: you can't bind more than one variable at a time.
 
 The skeleton provides a) the two symbols ##v1## and ##v2## (preserved for the user) and b) `skeleton-read' to query for a string during the execution of the skeleton. Thus:
 
