@@ -1,0 +1,10 @@
+On the configuration step:
+```
+;; Configure
+M-x customize-group znc RET
+```
+
+I am adding my ZNC server, but what do I add for `network slug`? the default value is `network-slug`.
+
+-- [http://lukeswart.net lswart] 2014-11-26 12:06 UTC
+
