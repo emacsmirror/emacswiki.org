@@ -1,0 +1,44 @@
+Significant change in Windows binaries from https://ftp.gnu.org/gnu/emacs/windows/
+
+Previous zip archives of Win32 Emacs binaries took the form **emacs-NN.M-bin-i386.zip**. They contained the version number as the first directory of the archive, and contained 6 subdirectories: bin, etc, info, leim, lisp, and site-lisp. 
+
+[code]
+$ unzip -l emacs-24.3-bin-i386.zip | sed -nr '1,3p; \_^([^/]+/){1,2}$_p; '
+Archive:  emacs-24.3-bin-i386.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  03-17-2013 13:52   emacs-24.3/
+        0  03-17-2013 13:52   emacs-24.3/bin/
+        0  03-17-2013 13:52   emacs-24.3/etc/
+        0  03-17-2013 13:52   emacs-24.3/info/
+        0  03-17-2013 13:52   emacs-24.3/leim/
+        0  03-17-2013 13:52   emacs-24.3/lisp/
+        0  03-17-2013 13:52   emacs-24.3/site-lisp/
+[/code]
+
+The latest zip archive for Win32 Emacs appears as **emacs-24.4-bin-i686-pc-mingw32.zip**. It contains no primary subdirectories, and begins with only 4 directories: bin, libexec, share, and var
+
+[code]
+ $ unzip -l emacs-24.4-bin-i686-pc-mingw32.zip | sed -nr '1,3p; \_^([^/]+/){1,2}$_p; '
+Archive:  emacs-24.4-bin-i686-pc-mingw32.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  10-25-2014 09:02   bin/
+        0  10-24-2014 22:15   libexec/
+        0  10-24-2014 22:15   libexec/emacs/
+        0  10-24-2014 22:12   share/
+        0  10-24-2014 22:12   share/applications/
+        0  10-24-2014 22:15   share/emacs/
+        0  10-24-2014 22:12   share/icons/
+        0  10-24-2014 22:12   share/info/
+        0  10-24-2014 22:12   share/man/
+        0  10-24-2014 22:15   var/
+        0  10-24-2014 22:15   var/games/
+[/code]
+
+The lisp code, which used to be 2 levels down in "{version}/lisp", is now 4 levels down in "share/emacs/24.4/lisp". Similar changes occur with site-lisp and most other common directory locations.
+
+This particular change will probably require some readjustment ... unless a different, non-mingw32 version is forthcoming.
+
+-- epement 2014-11-26 18:40 UTC
+
