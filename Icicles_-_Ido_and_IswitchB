@@ -187,13 +187,14 @@ non-`nil'.
 
 If you want '''Icicles''' to behave like IswitchB during buffer switching, you can advice icicle-buffer:
 
-  (defadvice icicle-buffer (around ic-substring-completion activate)
-              (interactive)
-              (let* ((icicle-current-TAB-method 'vanilla)
-                     (icicle-incremental-completion 'always)
-                     (icicle-top-level-when-sole-completion-flag 't))
-    ad-do-it))
-   (ad-activate 'icicle-buffer)
+
+  (defadvice icicle-buffer (around icicle-buffer activate)
+    (interactive)
+    (let* ((icicle-default-cycling-mode  'apropos)
+	   (icicle-incremental-completion  'always)
+	   (icicle-top-level-when-sole-completion-flag 't))
+      ad-do-it))
+  (ad-activate 'icicle-buffer)
 
 
 
