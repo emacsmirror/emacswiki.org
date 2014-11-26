@@ -8,3 +8,10 @@ I am adding my ZNC server, but what do I add for `network slug`? the default val
 
 -- [http://lukeswart.net lswart] 2014-11-26 12:06 UTC
 
+
+----
+
+Just as a clarification, I figured it out. I couldn't find the definition for "network-slug" anywhere, but in this context, we should add the URL of our IRC network (ie irc.freenode.net)
+
+-- [http://lukeswart.net lswart] 2014-11-26 23:48 UTC
+
