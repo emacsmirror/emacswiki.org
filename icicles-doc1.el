@@ -6,14 +6,14 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Oct 27 23:36:51 2014 (-0700)
+;; Last-Updated: Tue Nov 25 19:45:47 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 28310
+;;     Update #: 28323
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -3791,6 +3791,55 @@
 ;;  `icicle-buffers-ido-like-flag' and `icicle-files-ido-like-flag' to
 ;;  non-`nil'.
 ;;
+;;(@* "IswitchB-Like Behavior for `icicle-buffer'")
+;;  ** IswitchB-Like Behavior for `icicle-buffer' **
+;;
+;;  As mentioned, you can use IswitchB with Icicles.  GNU Emacs
+;;  deprecated IswitchB starting with Emacs 24.4, but it is still
+;;  available.
+;;
+;;  If you want to get IswitchB-like behavior with Icicles without
+;;  using IswitchB then you can advise `icicle-buffer'.
+;;
+;;  There are at least two ways to do this, depending on what behavior
+;;  you want.  Let's assume that in any case (a) you want incremental
+;;  completion from the outset (no need to hit `TAB' or `S-TAB', and
+;;  (b) you want to Emacs to accept as your choice the sole candidate
+;;  as soon as you narrow matching to a single candidate.  For (a),
+;;  you bind `icicle-incremental-completion' to `always'.  For (b),
+;;  you bind `icicle-top-level-when-sole-completion-flag' to `t'.
+;;
+;;  1. In the first case, prefix completion is the default (as usual),
+;;     but `icicle-buffer' uses vanilla Emacs completion as the
+;;     Icicles `TAB' completion method.  This reflects IswitchB's
+;;     substring matching.  To do this, you bind
+;;     `icicle-current-TAB-method' to `vanilla'.
+;;
+;;  2. In the second case, `icicle-buffer' starts out with apropos
+;;     completion, not prefix completion.  This too reflects
+;;     IswitchB's substring matching, but it extends it to regexp
+;;     completion.  To do this, you bind `icicle-default-cycling-mode'
+;;     to `apropos'.
+;;
+;;  ;; 1. Use vanilla Emacs matching for prefix completion by default.
+;;  (defadvice icicle-buffer (around iswitchb-like-1 activate)
+;;    (interactive)
+;;    (let* ((icicle-current-TAB-method                   'vanilla)
+;;           (icicle-incremental-completion               'always)
+;;           (icicle-top-level-when-sole-completion-flag  't))
+;;      ad-do-it))
+;;  (ad-activate 'icicle-buffer)
+;;
+;;  ;; 2. Start with apropos completion by default.
+;;  (defadvice icicle-buffer (around iswitchb-like-2 activate)
+;;    (interactive)
+;;    (let* ((icicle-default-cycling-mode  'apropos)
+;; 	     (icicle-incremental-completion  'always)
+;; 	     (icicle-top-level-when-sole-completion-flag 't))
+;;      ad-do-it))
+;;  (ad-activate 'icicle-buffer)
+;;
+;;
 ;;  See Also:
 ;;
 ;;  * (@> "Exiting the Minibuffer Without Confirmation")
@@ -5580,10 +5629,10 @@
 ;;  Icicles file-name commands that use multi-completion include
 ;;  `icicle-locate-file', `icicle-locate-file-other-window',
 ;;  `icicle-recent-file', and `icicle-recent-file-other-window'.
-;;  These commands let you match against two-part multi-completion
-;;  candidates that are composed of an absolute file name and the
-;;  file's last modification date.  This means that you can easily
-;;  find those notes you took sometime last week...
+;;  These commands let you match against multi-completion candidates
+;;  that have an absolute file name part and a part that is the file's
+;;  last modification date.  This means that you can easily find those
+;;  notes you took sometime last week...
 ;;
 ;;  The way multi-completion commands work is a bit inelegant perhaps,
 ;;  and it can take a little getting used to, but it is quite powerful
