@@ -208,6 +208,8 @@ Suppose that Auctex 11.88 complains about TeX-auto-add-type . One lazy solution 
 
 Now, type the command 'package-install-file' and load file ~/.emacs.d/elpa/auctex-11.87.7.tar . The tar file must contain a -pkg.el file which is the cas from the elpa.gnu.org site.
 
+(Note: Auctex 11.88 from gnu archives works fine for me. Only auctex from melpa complains about TeX-auto-add-type.)
+
 == How packages work in Emacs 23 ==
 
 You can make packages work in Emacs 23, you need to add something like this to your //init.el//:
