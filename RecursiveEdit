@@ -1,12 +1,12 @@
 '''Recursive edit''' helps when you want to break out of the current command that you're currently doing and temporarily pursue something else, with the ability to snap back to where you were before.
 
-For example, when replacing some text with `##M-%##' or `##M-C-%##' you can replace and edit the matches with `C-w' or just edit with `C-r' to touch up some of the entries you are replacing along the way when they are a special case.  When you're done you punch `C-M-c' and you snap back into `query-replace' or `query-replace-regexp'.  You can even change buffers or visit other files -- almost anything.
+# For example, when replacing some text with `##M-%##' or `##M-C-%##' you can replace and edit the matches with `C-w' or just edit with `C-r' to touch up some of the entries you are replacing along the way when they are a special case.  When you're done you punch `C-M-c' and you snap back into `query-replace' or `query-replace-regexp'.  You can even change buffers or visit other files -- almost anything.
 
-While saving buffers with `C-x s', type `C-r' to view the current file in ViewMode.
+# While saving buffers with `C-x s', type `C-r' to view the current file in ViewMode.
 
-While querying with `C-x q' in a keyboard macro, `C-r' enters a recursive edit.
+# While querying with `C-x q' in a keyboard macro, `C-r' enters a recursive edit.
 
-<code>(setq enable-recursive-minibuffers t)</code> allows to use for example `C-u M-!' within the minibuffer,
+# <code>(setq enable-recursive-minibuffers t)</code> allows to use for example `C-u M-!' within the minibuffer,
 <code>( minibuffer-depth-indicate-mode t)</code> is advisable when latter variable is set.
 
 The EmacsManual says:
