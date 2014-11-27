@@ -13,6 +13,8 @@
 # <code>(setq enable-recursive-minibuffers t)</code> allows to use for example `C-u M-! date -I' within the minibuffer, when doing `C-x C-f'. 
 <code>( minibuffer-depth-indicate-mode t)</code> is advisable when former variable is set, because here the recursion depth is not indicated by brackets in the mode line.
 
+** You might also using `C-x h ...' in a command which activates a region (e. g. `C-x SPC') without inactivating the region.
+
 The EmacsManual says:
 
 : ''It is possible to be in recursive edits within recursive edits.  For
