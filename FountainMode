@@ -26,8 +26,8 @@ The following features are not yet supported:
 
 Most common features are accessible from the menu. For a full list of
 functions and key-bindings, type ##C-h m##. Bugs and feature requests
-are encouraged on the GitHub [https://github.com/rnkn/fountain-mode/issues/ Issues] page, or you can email me
-directly (email in the source code header).
+are encouraged on the [mailto:emacs.fountain@librelist.com mailing list (emacs.fountain@librelist.com)]
+or the [https://github.com/rnkn/fountain-mode/issues/ GitHub Issues] page.
 
 == Requirements ==
 
