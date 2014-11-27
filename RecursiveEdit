@@ -6,6 +6,9 @@ While saving buffers with `C-x s', type `C-r' to view the current file in ViewMo
 
 While querying with `C-x q' in a keyboard macro, `C-r' enters a recursive edit.
 
+<code>(setq enable-recursive-minibuffers t)</code> allows to use for example `C-u M-!' within the minibuffer,
+<code>( minibuffer-depth-indicate-mode t)</code> is advisable when latter variable is set.
+
 The EmacsManual says:
 
 : ''It is possible to be in recursive edits within recursive edits.  For
