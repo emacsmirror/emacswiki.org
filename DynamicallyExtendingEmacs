@@ -6,9 +6,13 @@ DaveLove released a follow up for Emacs that uses libtool.  According to Dave, "
 
 * http://www.loveshack.ukfsn.org/emacs/dynamic-loading 
 
+The patch doesn't apply properly even on Emacs 22.
+
 [[XEmacs]] already has something of an FFI:
 
 * [http://www.xemacs.org/Documentation/21.5/html/emodules.html XEmacs using C Modules]
+
+[[aaptel]] is working (2014-11-27) on a new branch in the git repo (<code>dynamic-modules</code>) dedicated to dynamic loading using libtool (ltdl).
 
 see Also:
 
