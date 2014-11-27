@@ -5,12 +5,12 @@ the Fountain markup format, visit http://fountain.io/. Fountain Mode is created 
 
 * support for the Fountain 1.1 specification (scene numbers and dual dialog are forthcoming)
 * Auto-align elements for a kind of WYSIWYG (display only, does not modify file contents)
-* Integration with `outline` to toggle visibility of sections and scenes (not yet available in stable release, see below)
+* Integration with ##outline## to toggle visibility of sections and scenes (not yet available in stable release, see below)
 * exporting to HTML and PDF (requires [http://www.princexml.com/ Prince])
 * include or omit a title page
 * multiple levels of syntax highlighting for all elements (see below)
 * add/remove continued dialog to successively speaking characters
-* `occur` navigator for section headings, synopses, notes and scene
+* ##occur## navigator for section headings, synopses, notes and scene
   headings
 * templates for inserting synopses, notes and metadata
 * navigate by scene heading and character
