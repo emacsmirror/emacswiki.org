@@ -6,7 +6,7 @@
 
 # While querying with `C-x q' in a keyboard macro, `C-r' enters a recursive edit.
 
-# While spell checking `M-x ispell-buffer' or on a word or region with `C-%', `C-r' enters a recursive edit.
+# While spell checking the buffer with `M-x ispell-buffer' or a word (or the active region) with `C-%', `C-r' enters a recursive edit.
 
 # You can search the minibuffer history for regexps with `M-s' (next-matching-history-element)
 
