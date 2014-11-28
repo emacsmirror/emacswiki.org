@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Nov 22 09:16:31 2014 (-0800)
+;; Last-Updated: Fri Nov 28 10:12:19 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 11337
+;;     Update #: 11338
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6170,6 +6170,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2014/11/28 dadams
+;;     icicle-show-help-in-mode-line: No-op if last command exited minibuffer.
 ;; 2014/11/15 dadams
 ;;     Moved here from icicles-fn.el: icicle-help-line-buffer, icicle-help-line-file,
 ;;                                    icicle-show-help-in-mode-line, icicle-show-in-mode-line.
