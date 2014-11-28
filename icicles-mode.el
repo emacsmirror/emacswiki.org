@@ -6,14 +6,14 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sat Nov 15 13:10:31 2014 (-0800)
+;; Last-Updated: Fri Nov 28 10:11:24 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10242
+;;     Update #: 10245
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -3567,7 +3567,8 @@ if `icicle-change-region-background-flag' is non-nil."
 ;; Note: Property `icicle-mode-line-help' with a function value is not used yet in Icicles code.
 (defun icicle-show-help-in-mode-line (candidate)
   "If short help for CANDIDATE is available, show it in the mode-line.
-Do this only if `icicle-help-in-mode-line-delay' is positive.
+Do this only if `icicle-help-in-mode-line-delay' is positive and the
+last command was not one that exits the minibuffer.
 
 For a string or symbol CANDIDATE: Use the help from property
 `icicle-mode-line-help', if that is non-nil, or the help from
@@ -3577,7 +3578,8 @@ check only the first char for the property.
 The value of property `icicle-mode-line-help' can be a string or a
 function.  If a string, use that as the help.  If a function, apply
 the function to the candidate and use the result as the help."
-  (when (> icicle-help-in-mode-line-delay 0)
+  (when (and (> icicle-help-in-mode-line-delay 0)
+             (not (memq last-command '(exit-minibuffer minibuffer-complete-and-exit))))
     (let* ((cand       (cond (;; Call to `lacarte-execute(-menu)-command' (in `lacarte.el').
                               ;; Use command associated with menu item.
                               (consp lacarte-menu-items-alist)
