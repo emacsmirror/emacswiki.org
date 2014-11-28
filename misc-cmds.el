@@ -8,12 +8,12 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 29 15:39:04 2014 (-0700)
+;; Last-Updated: Fri Nov 28 13:51:17 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3139
+;;     Update #: 3142
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -92,6 +92,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/11/28 dadams
+;;     previous-buffer-repeat: Typo: next-buffer -> previous-buffer.
 ;; 2014/10/29 dadams
 ;;     Added: next-buffer-repeat, previous-buffer-repeat, repeat-command.
 ;; 2014/08/17 dadams
@@ -1335,7 +1337,7 @@ E.g., if bound to `C-x u' then you can use `C-x u u u...' to repeat."
 You can repeat this by hitting the last key again..."
     (interactive)
     (require 'repeat nil t)
-    (repeat-command 'next-buffer))
+    (repeat-command 'previous-buffer))
 
   (defun next-buffer-repeat ()
     "Switch to the next buffer in the selected window.
