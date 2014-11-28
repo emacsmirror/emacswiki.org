@@ -8,13 +8,13 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Wed Sep  3 09:52:07 2014 (-0700)
+;; Last-Updated: Fri Nov 28 08:39:45 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 2961
+;;     Update #: 3012
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -223,7 +223,8 @@
 ;;    `1on1-minibuffer-frame-width',
 ;;    `1on1-minibuffer-frame-width-percent',
 ;;    `1on1-remap-other-frame-command-flag',
-;;    `1on1-special-display-frame-alist'.
+;;    `1on1-special-display-frame-alist', `1on1-task-bar-height'
+;;    (Emacs < 24.4).
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -253,6 +254,7 @@
 ;;    `1on1-default-frame-upper-left-corner', `1on1-divider-width',
 ;;    `1on1-last-cursor-type', `1on1-minibuffer-frame',
 ;;    `1on1-minibuffer-frame-background',
+;;    `1on1-minibuffer-frame-bottom-offset',
 ;;    `1on1-minibuffer-frame-cursor-color',
 ;;    `1on1-minibuffer-frame-font',
 ;;    `1on1-minibuffer-frame-foreground',
@@ -285,6 +287,12 @@
  
 ;;; Change Log:
 ;;
+;; 2014/11/27 dadams
+;;     Added: 1on1-task-bar-height, 1on1-minibuffer-frame-bottom-offset.
+;;     1on1-emacs: Set 1on1-minibuffer-frame-bottom-offset (Emacs 24.4+ only).
+;;     1on1-set-minibuffer-frame-top/bottom:
+;;       Use *-minibuffer-frame-bottom-offset (or *-task-bar-height) instead of 2 * char height.
+;;     1on1-set-minibuffer-frame-width: Use monitor width instead of x-display-pixel-width.
 ;; 2014/09/03 dadams
 ;;     1on1-minibuffer-frame-alist: No horizontal scroll bars.
 ;; 2014/08/28 dadams
@@ -685,6 +693,17 @@ to generally use a separate frame.
 If you change this variable, you will need to restart Emacs for it to
 take effect."
   :type 'boolean :group 'One-On-One)
+
+(unless (fboundp 'display-monitor-attributes-list) ; Emacs < 24.4.
+  (defcustom 1on1-task-bar-height 28
+    "Height of area at screen bottom that is not available for Emacs.
+Space reserved for the MS Windows task bar, for example.
+Not used for Emacs release 24.4 or later. "
+    :type 'integer :group 'One-On-One))
+
+(defvar 1on1-minibuffer-frame-bottom-offset nil
+  "Offset for bottom of minibuffer frame, from monitor bottom.
+The value is negative, and measured in pixels.")
 
 ;;;###autoload
 (defcustom 1on1-remap-other-frame-command-flag (> emacs-major-version 23)
@@ -1438,7 +1457,24 @@ If `1on1-separate-minibuffer-*Completions*-flag' is non-nil, then
             (let ((after-make-frame-functions  ())) ; E.g. inhibit `fit-frame'.
               (make-frame 1on1-minibuffer-frame-alist))))
 
-    ;; Resize and reposition it.  If variable `1on1-minibuffer-frame-width'
+    ;; Set `1on1-minibuffer-frame-bottom-offset' (Emacs 24.4+ only).
+    (when (and (not 1on1-minibuffer-frame-bottom-offset)
+               (fboundp 'display-monitor-attributes-list))
+      (catch '1on1-emacs
+        (dolist (attr  (display-monitor-attributes-list))
+          (when (memq 1on1-minibuffer-frame (cdr (assoc 'frames attr)))
+            (setq 1on1-minibuffer-frame-bottom-offset
+                  (- (nth 4 (assoc 'workarea attr))
+                     (nth 4 (assoc 'geometry attr))
+                     (or (- (frame-parameter 1on1-minibuffer-frame 'border-width))  0)))
+            (throw '1on1-emacs nil)))
+        ;; Fallback - should not happen.  No monitor has minibuffer frame.
+        (setq 1on1-minibuffer-frame-bottom-offset
+              (- (nth 4 (assoc 'workarea (car (display-monitor-attributes-list))))
+                 (nth 4 (assoc 'geometry (car (display-monitor-attributes-list))))
+                 (or (- (frame-parameter 1on1-minibuffer-frame 'border-width))  0)))))
+
+    ;; Resize and reposition frame.  If variable `1on1-minibuffer-frame-width'
     ;; or `1on1-minibuffer-frame-top/bottom' is nil, calculate automatically.
     (1on1-set-minibuffer-frame-width)
     (1on1-set-minibuffer-frame-top/bottom)
@@ -1787,29 +1823,36 @@ Use `1on1-minibuffer-frame-top/bottom' if non-nil.
 Else, place minibuffer at bottom of display."
   (when 1on1-minibuffer-frame
     (condition-case nil
-        (if nil;; $$$$$$ (fboundp 'redisplay)
+        (if nil ;; $$$$$$ (fboundp 'redisplay)
             (redisplay t)
           (force-mode-line-update t))
-      (error nil))                      ; Ignore errors from, e.g., killed buffers.
+      (error nil))         ; Ignore errors from, e.g., killed buffers.
     (modify-frame-parameters
      1on1-minibuffer-frame
      `((top ,@ (or 1on1-minibuffer-frame-top/bottom
-                (- (* 2 (frame-char-height 1on1-minibuffer-frame)))))))))
+                   (if (not (fboundp 'display-monitor-attributes-list))
+                       (- 1on1-task-bar-height)
+                     1on1-minibuffer-frame-bottom-offset)))))))
 
 (defun 1on1-set-minibuffer-frame-width ()
   "Set width of minibuffer frame, in characters.
 Use `1on1-minibuffer-frame-width' if not nil.
 Else, set width relative to character size of `1on1-minibuffer-frame'
-and display size, and depending on
-`1on1-minibuffer-frame-width-percent':
-
-  (/ (* 1on1-minibuffer-frame-width-percent (x-display-pixel-width))
-     (* 100 (frame-char-width 1on1-minibuffer-frame)))"
+and display monitor size, and depending on
+`1on1-minibuffer-frame-width-percent'."
   (when 1on1-minibuffer-frame
     (set-frame-width
      1on1-minibuffer-frame
      (or 1on1-minibuffer-frame-width
-         (/ (* 1on1-minibuffer-frame-width-percent (x-display-pixel-width))
+         (/ (* 1on1-minibuffer-frame-width-percent
+               (if (not (fboundp 'display-monitor-attributes-list))
+                   (x-display-pixel-width)
+                 (catch '1on1-set-minibuffer-frame-width
+                   (dolist (attr  (display-monitor-attributes-list))
+                     (when (memq 1on1-minibuffer-frame (cdr (assoc 'frames attr)))
+                       (throw '1on1-set-minibuffer-frame-width (nth 3 (assoc 'geometry attr)))))
+                   ;; Fallback - should not happen.  No monitor has minibuffer frame.
+                   (nth 3 (assoc 'geometry (car (display-monitor-attributes-list)))))))
             (* 100 (frame-char-width 1on1-minibuffer-frame)))))))
 
 ;;;###autoload
