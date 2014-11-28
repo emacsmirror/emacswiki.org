@@ -59,7 +59,7 @@ INS
 
 Package authors may wish to contribute their packages to the GNU ELPA repository.
 
-The first step is to complete your FSF copyright assignment.
+The **first and main step** is to complete your FSF copyright assignment to cover changes to Emacs, and to make sure that all significant contributors to the package have done the same.
 
 Then visit the [[https://savannah.gnu.org/|Savannah GNU website]] and
 create an account. You can request inclusion in the ##emacs## group.
