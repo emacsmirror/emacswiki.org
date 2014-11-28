@@ -8,12 +8,12 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 29 15:43:54 2014 (-0700)
+;; Last-Updated: Fri Nov 28 14:11:48 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1256
+;;     Update #: 1264
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -68,6 +68,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/11/28 dadams
+;;     Bind compare-windows-repeat instead of compare-windows, if available.
 ;; 2014/10/29 dadams
 ;;     Bind (next|previous)-buffer-repeat.
 ;; 2014/05/23 dadams
@@ -552,17 +554,21 @@
 ;;    (global-set-key [C-M-S-mouse-3] 'ignore)))
 
 ;; Comparisons: windows, buffers, files.
-(global-set-key [(control meta ?=)] 'compare-windows) ; Defined in `compare-w.el'.
+(global-set-key [(control meta ?=)] (if (fboundp 'compare-windows-repeat)
+                                        'compare-windows-repeat ; In `misc-cmds.el'.
+                                      'compare-windows)) ; In `compare-w.el'.
 (defvar comparison-map (lookup-key global-map [?\C-=])
   "Prefix keymap for comparison commands.")
 (unless (keymapp comparison-map)
   (setq comparison-map (make-sparse-keymap))
   (global-set-key [(control ?=)] comparison-map)
-  (define-key comparison-map "b" 'ediff-buffers) ; Defined in `ediff.el'.        ; `C-= b'
-  (define-key comparison-map "e" 'ediff-files) ; Defined in `ediff.el'.          ; `C-= e'
-  (define-key comparison-map "f" 'ediff-files) ; Defined in `ediff.el'.          ; `C-= f'
-  (define-key comparison-map "d" 'diff) ; Defined in `diff+.el'.                 ; `C-= d'
-  (define-key comparison-map "w" 'compare-windows)) ; Defined in `compare-w.el'. ; `C-= w'
+  (define-key comparison-map "b" 'ediff-buffers) ; In `ediff.el'.                ; `C-= b'
+  (define-key comparison-map "e" 'ediff-files) ; In `ediff.el'.                  ; `C-= e'
+  (define-key comparison-map "f" 'ediff-files) ; In `ediff.el'.                  ; `C-= f'
+  (define-key comparison-map "d" 'diff) ; In `diff+.el'.                         ; `C-= d'
+  (define-key comparison-map "w" (if (fboundp 'compare-windows-repeat)           ; `C-= w'
+                                     'compare-windows-repeat ; In `misc-cmds.el'.
+                                   'compare-windows))) ; In `compare-w.el'.
 
 ;; Completions (non-minibuffer).
 ;(global-set-key "\M-\r" 'complete)      ; Defined in `completion.el':
