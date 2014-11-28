@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 28 13:51:17 2014 (-0800)
+;; Last-Updated: Fri Nov 28 14:15:51 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3142
+;;     Update #: 3147
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -33,20 +33,21 @@
 ;;    `clear-regexp-search-history', `clear-regexp-search-ring'
 ;;    `clear-search-history', `clear-search-ring',
 ;;    `clear-search-histories', `comment-region-lines',
-;;    `count-chars-in-region', `delete-extra-windows-for-buffer',
-;;    `delete-lines', `delete-window-maybe-kill-buffer.',
-;;    `end-of-line+', `end-of-visual-line+.',
-;;    `forward-char-same-line', `forward-overlay',
-;;    `goto-previous-mark', `indent-rigidly-tab-stops',
-;;    `indirect-buffer', `kill-buffer-and-its-windows',
-;;    `list-colors-nearest', `list-colors-nearest-color-at',
-;;    `mark-buffer-after-point', `mark-buffer-before-point',
-;;    `next-buffer-repeat' (Emacs 22+), `old-rename-buffer',
-;;    `previous-buffer-repeat' (Emacs 22+), `recenter-top-bottom',
-;;    `recenter-top-bottom-1', `recenter-top-bottom-2',
-;;    `region-length', `region-to-buffer', `region-to-file',
-;;    `resolve-file-name', `revert-buffer-no-confirm',
-;;    `selection-length', `switch-to-alternate-buffer',
+;;    `compare-windows-repeat', `count-chars-in-region',
+;;    `delete-extra-windows-for-buffer', `delete-lines',
+;;    `delete-window-maybe-kill-buffer.', `end-of-line+',
+;;    `end-of-visual-line+.', `forward-char-same-line',
+;;    `forward-overlay', `goto-previous-mark',
+;;    `indent-rigidly-tab-stops', `indirect-buffer',
+;;    `kill-buffer-and-its-windows', `list-colors-nearest',
+;;    `list-colors-nearest-color-at', `mark-buffer-after-point',
+;;    `mark-buffer-before-point', `next-buffer-repeat' (Emacs 22+),
+;;    `old-rename-buffer', `previous-buffer-repeat' (Emacs 22+),
+;;    `recenter-top-bottom', `recenter-top-bottom-1',
+;;    `recenter-top-bottom-2', `region-length', `region-to-buffer',
+;;    `region-to-file', `resolve-file-name',
+;;    `revert-buffer-no-confirm', `selection-length',
+;;    `switch-to-alternate-buffer',
 ;;    `switch-to-alternate-buffer-other-window', `undo-repeat' (Emacs
 ;;    24.3+), `view-X11-colors'.
 ;;
@@ -93,6 +94,8 @@
 ;;; Change Log:
 ;;
 ;; 2014/11/28 dadams
+;;     Added: compare-windows-repeat.
+;;     (next|previous)-buffer-repeat: Use hard, not soft, require of repeat.el.
 ;;     previous-buffer-repeat: Typo: next-buffer -> previous-buffer.
 ;; 2014/10/29 dadams
 ;;     Added: next-buffer-repeat, previous-buffer-repeat, repeat-command.
@@ -1336,15 +1339,23 @@ E.g., if bound to `C-x u' then you can use `C-x u u u...' to repeat."
     "Switch to the previous buffer in the selected window.
 You can repeat this by hitting the last key again..."
     (interactive)
-    (require 'repeat nil t)
+    (require 'repeat)
     (repeat-command 'previous-buffer))
 
   (defun next-buffer-repeat ()
     "Switch to the next buffer in the selected window.
 You can repeat this by hitting the last key again..."
     (interactive)
-    (require 'repeat nil t)
-    (repeat-command 'next-buffer)))
+    (require 'repeat)
+    (repeat-command 'next-buffer))
+
+  (defun compare-windows-repeat (ignore-whitespace)
+    "Compare text in current window with text in next window.
+You can repeat this by hitting the last key again...
+See `compare-windows' - this is the same, except repeatable."
+    (interactive "P")
+    (require 'repeat)
+    (repeat-command 'compare-windows)))
 
 ;;;###autoload
 (defun view-X11-colors ()
