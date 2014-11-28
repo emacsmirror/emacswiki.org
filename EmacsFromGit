@@ -16,6 +16,11 @@ You can also get Emacs speedily from git by ignoring a lot of Emacs history. Thi
 git clone --depth 1 git://git.sv.gnu.org/emacs.git
 </pre>
 
+and if you just want a particular branch
+<pre>
+git ls-remote (to see a list of remote branches)
+git clone --depth 1 --branch emacs-24.4 git://git.sv.gnu.org/emacs.git
+</pre>
 == ELPA package sources ==
 
 The GNU Elpa package repository is also maintained using Git.
