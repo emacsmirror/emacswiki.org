@@ -1,10 +1,10 @@
-;;; delight.el - A dimmer switch for your lighter text.
+;;; delight.el --- A dimmer switch for your lighter text.
 ;;
 ;; Author: Phil S.
 ;; URL: http://www.emacswiki.org/emacs/DelightedModes
 ;; Version: 1.03
 
-;; Commentary:
+;;; Commentary:
 ;;
 ;; Enables you to customise the mode names displayed in the mode line.
 ;;
@@ -163,3 +163,4 @@ When `mode-name' is displayed in other contexts (such as in the
     ad-do-it))
 
 (provide 'delight)
+;;; delight.el ends here
