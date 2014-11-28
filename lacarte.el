@@ -8,14 +8,14 @@
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb  1 12:44:20 2014 (-0800)
+;; Last-Updated: Fri Nov 28 12:10:52 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 915
+;;     Update #: 918
 ;; URL: http://www.emacswiki.org/lacarte.el
 ;; Doc URL: http://www.emacswiki.org/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
 ;;           completion, matching, local, internal, extensions,
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -265,6 +265,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2014/11/28 dadams
+;;     lacarte-get-a-menu-item-alist-22+: Do not try to handle non-keymap as a keymap.
 ;; 2014/02/01 dadams
 ;;     Added: lacarte-key-description, lacarte-propertize, face lacarte-shortcut.
 ;;     lacarte-add-if-menu-item, lacarte-get-a-menu-item-alist-pre-22:
@@ -607,7 +609,8 @@ Returns `lacarte-menu-items-alist' which it modifies."
 ROOT is the accumulated part of a menu item so far.
 DONE is the alist of accumulated completion candidates so far.
 Returns `lacarte-menu-items-alist', which it modifies."
-  (map-keymap (lambda (event binding) (lacarte-add-if-menu-item event binding root done)) keymap)
+  (when (keymapp keymap)                ; Ignore `nil', in particular.
+    (map-keymap (lambda (event binding) (lacarte-add-if-menu-item event binding root done)) keymap))
   lacarte-menu-items-alist)
 
 ;;; Free vars here: ROOT, DONE.  Bound in `lacarte-get-a-menu-item-alist'.
