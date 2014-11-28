@@ -6,6 +6,8 @@ It is similar in purpose to DiminishedModes but it accounts for major modes as w
 
 Lisp:delight.el
 
+(or install the ##delight## package from [[MELPA]].)
+
 ==Example usage==
 
 Modifying a single mode at a time:
