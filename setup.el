@@ -8,12 +8,12 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan 26 10:22:01 2014 (-0800)
+;; Last-Updated: Fri Nov 28 22:27:13 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 780
+;;     Update #: 787
 ;; URL: http://www.emacswiki.org/setup.el
 ;; Keywords: internal, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -51,6 +51,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/11/28 dadams
+;;     Set cursor-in-non-selected-windows to box, by default.
 ;; 2014/01/26 dadams
 ;;     lisp-indentation-hack:
 ;;       For Emacs 22+, use load-history-filename-element, not assoc.
@@ -159,6 +161,8 @@
                        ;; show-paren-match-face, show-paren-mode
 (require 'oneonone nil t) ;; (no error if not found):
                               ;; 1on1-emacs, 1on1-toggle-box-cursor-when-idle
+
+(defvar cursor-in-non-selected-windows) ; Emacs 22+
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 (eval-after-load "pp-c-l" '(pretty-control-l-mode 1)) ; Turn on pretty display of `^L'.
@@ -217,6 +221,9 @@
 (setq-default require-final-newline  99999) ; Ask if want newline at eof.
 
 (eval-after-load "paren" '(show-paren-mode 999)) ; Show matching parentheses.
+
+(when (boundp 'cursor-in-non-selected-windows)
+  (setq-default cursor-in-non-selected-windows  'box))
 
 ;; This must be done *after* loading `paren.el'.
 ;(setq window-setup-hook                 ; Note: `setq', *not* `add-hook'.  This
