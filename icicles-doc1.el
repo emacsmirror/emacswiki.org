@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Nov 25 19:45:47 2014 (-0800)
+;; Last-Updated: Fri Nov 28 20:50:12 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 28323
+;;     Update #: 28327
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6580,6 +6580,7 @@
 ;;  * `icicle-find-file-read-only' (`C-x C-r') - Visit read-only
 ;;  * `icicle-find-first-tag' (`C-x 4 .') - Trip among tag hits
 ;;  * `icicle-find-tag' (`M-.')        - Trip among tag hits
+;;  * `icicle-goto-any-marker' (`C-0 C-SPC') - Trip among all markers
 ;;  * `icicle-goto-global-marker' (`C-- C-x C-SPC') - Trip among
 ;;                                       global markers
 ;;  * `icicle-goto-marker' (`C-- C-SPC') - Trip among local markers
@@ -6653,11 +6654,12 @@
 ;;  `wide-n.el' for `icicle-wide-n'.)
 ;;
 ;;  Note: Icicles search commands and commands `icicle-find-tag',
-;;  `icicle-goto-marker', and `icicle-goto-global-marker' effectively
-;;  bind user option `icicle-incremental-completion' to `always',
-;;  because I think you typically want to start them out with
-;;  incremental completion turned on.  Remember that you can use `C-#'
-;;  (once or twice) to turn incremental completion off.
+;;  `icicle-goto-marker', `icicle-goto-any-marker', and
+;;  `icicle-goto-global-marker' effectively bind user option
+;;  `icicle-incremental-completion' to `always', because I think you
+;;  typically want to start them out with incremental completion
+;;  turned on.  Remember that you can use `C-#' (once or twice) to
+;;  turn incremental completion off.
 ;;
 ;;(@* "Highlighting the Destination")
 ;;  ** Highlighting the Destination **
