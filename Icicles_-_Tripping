@@ -95,6 +95,7 @@ navigate.
 [:icicle-find-tag]
 [:icicle-goto-global-marker]
 [:icicle-goto-marker]
+[:icicle-goto-any-marker]
 [:icicle-imenu]
 [:icicle-imenu-full]
 [:icicle-imenu-command]
@@ -222,8 +223,8 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 * '''`icicle-find-file-read-only'''' ('''`C-x C-r'''') -- Visit files in read-only mode (`C-u' to flip)
 * '''`icicle-find-first-tag'''' ('''`##C-x 4 .##'''') -- Trip among [[tag]] hits
 * '''`icicle-find-tag'''' ('''`##M-.##'''') -- Trip among tag hits
-* '''`icicle-goto-global-marker'''' ('''`C-- C-x C-SPC'''') -- Trip among
-  global [[marker]]s
+* '''`icicle-goto-any-marker'''' ('''`C-0 C-SPC'''') -- Trip among all [[marker]]s
+* '''`icicle-goto-global-marker'''' ('''`C-- C-x C-SPC'''') -- Trip among global markers
 * '''`icicle-goto-marker'''' ('''`C-- C-SPC'''') -- Trip among local markers
 * '''`icicle-imenu'''' ('''`##C-c =##'''') -- Trip among definitions
 ('''`icicle-imenu-full'''' to search full definitions)
@@ -289,7 +290,7 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 <tt>[[wide-n.el]]</tt> for `icicle-wide-n'.)
 
 Note: '''Icicles''' search commands and commands `icicle-find-tag',
-`icicle-goto-marker', and `icicle-goto-global-marker' effectively
+`icicle-goto-marker', `icicle-goto-any-marker', and `icicle-goto-global-marker' effectively
 bind [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion|icicle-incremental-completion]]</tt>'''' to `always',
 because I think you typically want to start them out with
 incremental completion turned on.  Remember that you can use `<tt>C-#</tt>'
