@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Nov 28 20:39:49 2014 (-0800)
+;; Last-Updated: Sat Nov 29 13:52:24 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7087
+;;     Update #: 7092
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3937,10 +3937,16 @@ See also commands `icicle-goto-any-marker' and
     (icicle-goto-marker-1 mark-ring)))
 
 (defun icicle-goto-any-marker ()        ; Bound to `C-0 C-@', `C-0 C-SPC'.
-  "Like `icicle-goto-marker', but visits markers in all buffers.
+  "Like `icicle-goto-marker', but lets you visit markers in all buffers.
 If user option `icicle-show-multi-completion-flag' is non-nil, then
-each completion candidate is annotated (prefixed) with the name of the
-marker's buffer, to facilitate orientation.
+each completion candidate is has two parts, the first of which is the
+name of the marker's buffer, and the second of which is the text from
+the marker's line.
+
+By default, candidates are sorted in buffer order and then marker
+order, that is, buffer positions.  Use `C-M-,' or `C-,' to change the
+sort order.  Remember too that you can use `C-A' to toggle
+case-sensitivity (e.g., for buffer names).
 
 See also command `icicle-goto-global-marker'."
   (interactive)
@@ -3957,8 +3963,14 @@ See also command `icicle-goto-global-marker'."
 (defun icicle-goto-global-marker ()     ; Bound to `C-- C-x C-@', `C-- C-x C-SPC'.
   "Like `icicle-goto-marker', but visits global, not local, markers.
 If user option `icicle-show-multi-completion-flag' is non-nil, then
-each completion candidate is annotated (prefixed) with the name of the
-marker's buffer, to facilitate orientation.
+each completion candidate is has two parts, the first of which is the
+name of the marker's buffer, and the second of which is the text from
+the marker's line.
+
+By default, candidates are sorted in buffer order and then marker
+order, that is, buffer positions.  Use `C-M-,' or `C-,' to change the
+sort order.  Remember too that you can use `C-A' to toggle
+case-sensitivity (e.g., for buffer names).
 
 See also command `icicle-goto-any-marker'."
   (interactive)
