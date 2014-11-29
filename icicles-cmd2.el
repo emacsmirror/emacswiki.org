@@ -6,14 +6,14 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Oct 19 10:02:56 2014 (-0700)
+;; Last-Updated: Fri Nov 28 20:17:38 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7075
+;;     Update #: 7084
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -87,7 +87,7 @@
 ;;    (+)`icicle-find-file-tagged-other-window', (+)`icicle-font',
 ;;    (+)`icicle-font-lock-keyword', (+)`icicle-frame-bg',
 ;;    (+)`icicle-frame-fg', (+)`icicle-fundoc',
-;;    (+)`icicle-goto-global-marker',
+;;    (+)`icicle-goto-any-marker', (+)`icicle-goto-global-marker',
 ;;    (+)`icicle-goto-global-marker-or-pop-global-mark',
 ;;    (+)`icicle-goto-marker',
 ;;    (+)`icicle-goto-marker-or-set-mark-command',
@@ -3869,16 +3869,24 @@ Note:
     (select-frame-set-input-focus (selected-frame))))
 
 (defun icicle-goto-marker-or-set-mark-command (arg) ; Bound to `C-@', `C-SPC'.
-  "With prefix arg < 0, `icicle-goto-marker'; else `set-mark-command'.
+  "Set mark or goto a marker.
+With no prefix arg or a prefix arg > 0, this is `set-mark-command'.
+\(This includes the cases of `C-u' and `C-u C-u'.) 
+With a prefix arg = 0, this is `icicle-goto-any-marker'.
+With a prefix arg < 0, this is `icicle-goto-marker'.
+
+See each of those commands for more information.
+
 By default, Icicle mode remaps all key sequences that are normally
 bound to `set-mark-command' to
 `icicle-goto-marker-or-set-mark-command'.  If you do not want this
 remapping, then customize option `icicle-top-level-key-bindings'."
   (interactive "P")
-  (if (not (wholenump (prefix-numeric-value arg)))
-      (icicle-goto-marker)
-    (setq this-command 'set-mark-command) ; Let `C-SPC C-SPC' activate if not `transient-mark-mode'.
-    (set-mark-command arg)))
+  (cond ((< (prefix-numeric-value arg) 0) (icicle-goto-marker))
+        ((= (prefix-numeric-value arg) 0) (icicle-goto-any-marker))
+        (t
+         (setq this-command 'set-mark-command) ; Let `C-SPC C-SPC' activate if not `transient-mark-mode'.
+         (set-mark-command arg))))
 
 (defun icicle-goto-global-marker-or-pop-global-mark (arg) ; Bound to `C-x C-@', `C-x C-SPC'.
   "With prefix arg < 0, `icicle-goto-global-marker'; else `pop-global-mark'.
@@ -3925,6 +3933,22 @@ command `icicle-mode'."
         (icicle-sort-comparer      'icicle-cdr-lessp))
     (icicle-goto-marker-1 mark-ring)))
 
+(defun icicle-goto-any-marker ()        ; Bound to `C-0 C-@', `C-0 C-SPC'.
+  "Like `icicle-goto-marker', but visits markers in all buffers.
+If user option `icicle-show-multi-completion-flag' is non-nil, then
+each completion candidate is annotated (prefixed) with the name of the
+marker's buffer, to facilitate orientation."
+  (interactive)
+  (let ((icicle-multi-completing-p          icicle-show-multi-completion-flag)
+        (icicle-list-nth-parts-join-string  "\t")
+        (icicle-list-join-string            "\t")
+        (icicle-sort-orders-alist           (cons '("by buffer, then by position" . icicle-part-1-cdr-lessp)
+                                                  icicle-sort-orders-alist))
+        (icicle-sort-comparer               'icicle-part-1-cdr-lessp)
+        (icicle-candidate-properties-alist  (and icicle-show-multi-completion-flag
+                                                 '((1 (face icicle-candidate-part))))))
+    (icicle-goto-marker-1 'all)))
+
 (defun icicle-goto-global-marker ()     ; Bound to `C-- C-x C-@', `C-- C-x C-SPC'.
   "Like `icicle-goto-marker', but visits global, not local, markers.
 If user option `icicle-show-multi-completion-flag' is non-nil, then
@@ -3942,36 +3966,40 @@ marker's buffer, to facilitate orientation."
     (icicle-goto-marker-1 global-mark-ring)))
 
 (defun icicle-goto-marker-1 (ring)
-  "Helper function for `icicle-goto-marker', `icicle-goto-global-marker'.
-RING is the marker ring to use."
-  (unwind-protect
-       (let* ((global-ring-p
-               (memq this-command '(icicle-goto-global-marker
-                                    icicle-goto-global-marker-or-pop-global-mark)))
-              (markers
-               (if (and (not global-ring-p)  (marker-buffer (mark-marker)))
-                   (cons (mark-marker) (icicle-markers ring))
-                 (icicle-markers ring)))
-              (icicle-delete-candidate-object
-               (lambda (cand)
-                 (let ((mrkr+txt  (funcall icicle-get-alist-candidate-function cand)))
-                   (move-marker (cdr mrkr+txt) nil))))
-              (icicle-alternative-sort-comparer  nil)
-              (icicle-last-sort-comparer         nil)
-              (icicle-orig-buff                  (current-buffer)))
-         (unless (consp markers)
-           (icicle-user-error (if global-ring-p "No global markers" "No markers in this buffer")))
-         (cond ((cdr markers)
-                (icicle-apply (mapcar (lambda (mrkr) (icicle-marker+text mrkr global-ring-p))
-                                      markers)
-                              #'icicle-goto-marker-1-action
-                              'nomsg
-                              (lambda (cand)
-                                (marker-buffer (cdr cand)))))
-               ((= (point) (car markers)) (message "Already at marker: %d" (point)))
-               (t
-                (icicle-goto-marker-1-action (icicle-marker+text (car markers) global-ring-p)))))
-    (when (fboundp 'crosshairs-unhighlight) (crosshairs-unhighlight 'even-if-frame-switch))))
+  "Helper function for Icicles functions for navigating amoung markers.
+RING is the marker ring to use, or the symbol `all', which means use
+the markers in each buffer."
+  (let ((icicle-transform-function  'icicle-remove-duplicates))
+    (unwind-protect
+         (let* ((allp     (eq ring 'all))
+                (globalp  (and (not allp)
+                               (memq this-command '(icicle-goto-global-marker
+                                                    icicle-goto-global-marker-or-pop-global-mark))))
+                (bufs     (if globalp
+                              'global
+                            (if allp
+                                (icicle-remove-if #'minibufferp (buffer-list))
+                              (and (not (minibufferp (current-buffer)))  (list (current-buffer))))))
+                (markers  (icicle-markers bufs))
+                (icicle-delete-candidate-object
+                 (lambda (cand)
+                   (let ((mrkr+txt  (funcall icicle-get-alist-candidate-function cand)))
+                     (move-marker (cdr mrkr+txt) nil))))
+                (icicle-alternative-sort-comparer  nil)
+                (icicle-last-sort-comparer         nil)
+                (icicle-orig-buff                  (current-buffer)))
+           (unless (consp markers) (icicle-user-error (cond (globalp "No global markers")
+                                                            (allp "No markers")
+                                                            (t "No markers in this buffer"))))
+           (cond ((cdr markers)
+                  (icicle-apply (mapcar (lambda (mrkr) (icicle-marker+text mrkr (or allp  globalp))) markers)
+                                #'icicle-goto-marker-1-action
+                                'nomsg
+                                (lambda (cand) (marker-buffer (cdr cand)))))
+                 ((= (point) (car markers)) (message "Already at marker: %d" (point)))
+                 (t
+                  (icicle-goto-marker-1-action (icicle-marker+text (car markers) (or allp  globalp))))))
+      (when (fboundp 'crosshairs-unhighlight) (crosshairs-unhighlight 'even-if-frame-switch)))))
 
 (defun icicle-goto-marker-1-action (cand)
   "Action function for `icicle-goto-marker-1'."
@@ -3981,37 +4009,48 @@ RING is the marker ring to use."
   (unless (pos-visible-in-window-p) (recenter icicle-recenter))
   (when (fboundp 'crosshairs-highlight) (crosshairs-highlight)))
 
-(defun icicle-marker+text (marker &optional globalp)
+(defun icicle-marker+text (marker &optional show-bufname-p)
   "Cons of text line that includes MARKER with MARKER itself.
 If the marker is on an empty line, then text \"<EMPTY LINE>\" is used.
-If both optional argument GLOBALP and option
+If both optional argument SHOW-BUFNAME-P and option
 `icicle-show-multi-completion-flag' are non-nil, then the text is
 prefixed by MARKER's buffer name."
-  (with-current-buffer (marker-buffer marker)
-    (save-excursion
-      (goto-char marker)
-      (let ((line  (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
-                     (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
-            (buff  (and globalp  icicle-show-multi-completion-flag  (buffer-name)))
-            (help  (and (or (> icicle-help-in-mode-line-delay 0) ; Get it only if user will see it.
-                            (and (boundp 'tooltip-mode)  tooltip-mode))
-                        (format "Line: %d, Char: %d" (line-number-at-pos) (point)))))
-        (when (string= "" line) (setq line  "<EMPTY LINE>"))
-        (when help
-          (icicle-candidate-short-help help line)
-          (when (and globalp  icicle-show-multi-completion-flag)
-            (icicle-candidate-short-help help buff)))
-        (if (and globalp  icicle-show-multi-completion-flag)
-            (cons (list buff line) marker)
-          (cons line marker))))))
+  (when (buffer-live-p (marker-buffer marker))
+    (with-current-buffer (marker-buffer marker)
+      (save-excursion
+        (goto-char marker)
+        (let ((line  (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
+                       (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+              (buff  (and show-bufname-p  icicle-show-multi-completion-flag  (buffer-name)))
+              (help  (and (or (> icicle-help-in-mode-line-delay 0) ; Get it only if user will see it.
+                              (and (boundp 'tooltip-mode)  tooltip-mode))
+                          (format "Line: %d, Char: %d" (line-number-at-pos) (point)))))
+          (when (string= "" line) (setq line  "<EMPTY LINE>"))
+          (when help
+            (icicle-candidate-short-help help line)
+            (when (and show-bufname-p  icicle-show-multi-completion-flag)
+              (icicle-candidate-short-help help buff)))
+          (if (and show-bufname-p  icicle-show-multi-completion-flag)
+              (cons (list buff line) marker)
+            (cons line marker)))))))
 
-(defun icicle-markers (ring)
-  "Marks in mark RING that are in live buffers other than a minibuffer."
+(defun icicle-markers (buffers)
+  "Return the list of markers in the mark rings of BUFFERS.
+If BUFFERS is the symbol `global' then return the list of markers in
+the `global-mark-ring' that are in live buffers other than
+minibuffers."
   (let ((markers  ()))
-    (dolist (mkr  ring)
-      (when (and (buffer-live-p (marker-buffer mkr))
-                 (not (string-match "\\` \\*Minibuf-[0-9]+\\*\\'" (buffer-name (marker-buffer mkr)))))
-        (push mkr markers)))
+    (if (eq buffers 'global)
+        (dolist (mkr  global-mark-ring)
+          (when (and (buffer-live-p (marker-buffer mkr))
+                     (not (string-match "\\` \\*Minibuf-[0-9]+\\*\\'" (buffer-name (marker-buffer mkr)))))
+            (push mkr markers)))
+      (dolist (buf  buffers)
+        (when (buffer-live-p buf)
+          (with-current-buffer buf
+            (setq markers  (nconc markers (if (and (mark-marker)  (marker-buffer (mark-marker)))
+                                              (cons (mark-marker) (copy-sequence mark-ring))
+                                            (copy-sequence mark-ring))))))))
     markers))
 
 (defun icicle-exchange-point-and-mark (&optional arg) ; Bound to `C-x C-x'.
