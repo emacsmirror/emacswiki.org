@@ -8,14 +8,14 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2014.08.10
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov  7 16:16:25 2014 (-0800)
+;; Last-Updated: Fri Nov 28 20:17:26 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 23641
+;;     Update #: 23643
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -291,7 +291,8 @@
 ;;    `icicle-find-file-tagged-other-window', `icicle-find-first-tag',
 ;;    `icicle-find-first-tag-other-window', `icicle-find-tag',
 ;;    `icicle-font', `icicle-font-lock-keyword', `icicle-frame-bg',
-;;    `icicle-frame-fg', `icicle-fundoc', `icicle-goto-global-marker',
+;;    `icicle-frame-fg', `icicle-fundoc', `icicle-goto-any-marker',
+;;    `icicle-goto-global-marker',
 ;;    `icicle-goto-global-marker-or-pop-global-mark',
 ;;    `icicle-goto-marker', `icicle-goto-marker-or-set-mark-command',
 ;;    `icicle-grep-saved-file-candidates',
