@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Nov 28 20:17:38 2014 (-0800)
+;; Last-Updated: Fri Nov 28 20:39:49 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7084
+;;     Update #: 7087
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3927,7 +3927,10 @@ With prefix `C-M-' instead of `C-', the same keys (`C-M-mouse-2',
 
 Use `mouse-2', `RET', or `S-RET' to choose a candidate as the final
 destination, or `C-g' to quit.  This is an Icicles command - see
-command `icicle-mode'."
+command `icicle-mode'.
+
+See also commands `icicle-goto-any-marker' and
+`icicle-goto-global-marker'."
   (interactive)
   (let ((icicle-sort-orders-alist  (cons '("by position" .  icicle-cdr-lessp) icicle-sort-orders-alist))
         (icicle-sort-comparer      'icicle-cdr-lessp))
@@ -3937,7 +3940,9 @@ command `icicle-mode'."
   "Like `icicle-goto-marker', but visits markers in all buffers.
 If user option `icicle-show-multi-completion-flag' is non-nil, then
 each completion candidate is annotated (prefixed) with the name of the
-marker's buffer, to facilitate orientation."
+marker's buffer, to facilitate orientation.
+
+See also command `icicle-goto-global-marker'."
   (interactive)
   (let ((icicle-multi-completing-p          icicle-show-multi-completion-flag)
         (icicle-list-nth-parts-join-string  "\t")
@@ -3953,7 +3958,9 @@ marker's buffer, to facilitate orientation."
   "Like `icicle-goto-marker', but visits global, not local, markers.
 If user option `icicle-show-multi-completion-flag' is non-nil, then
 each completion candidate is annotated (prefixed) with the name of the
-marker's buffer, to facilitate orientation."
+marker's buffer, to facilitate orientation.
+
+See also command `icicle-goto-any-marker'."
   (interactive)
   (let ((icicle-multi-completing-p          icicle-show-multi-completion-flag)
         (icicle-list-nth-parts-join-string  "\t")
