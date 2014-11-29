@@ -8,14 +8,14 @@
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jun 17 07:23:36 2014 (-0700)
+;; Last-Updated: Fri Nov 28 19:03:55 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 493
+;;     Update #: 496
 ;; URL: http://www.emacswiki.org/hl-line+.el
 ;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
 ;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
 ;; Keywords: highlight, cursor, accessibility
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -288,6 +288,7 @@ use `\\[toggle-hl-line-when-idle]."
 (defun hl-line-unhighlight-now ()
   "Turn off `global-hl-line-mode' and unhighlight current line now."
   (global-hl-line-mode -1)
+  ;; $$$$$$ Do we need to worry about `global-hl-line-unhighlight-all' here?
   (global-hl-line-unhighlight)
   (remove-hook 'pre-command-hook 'hl-line-unhighlight-now))
 
