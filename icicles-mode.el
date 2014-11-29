@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Fri Nov 28 10:11:24 2014 (-0800)
+;; Last-Updated: Fri Nov 28 20:13:44 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 10245
+;;     Update #: 10250
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1346,10 +1346,15 @@ Used on `pre-command-hook'."
 
     (define-key icicle-goto-menu-map [icicle-goto-global-marker]
       '(menu-item "+ Global Marker..." icicle-goto-global-marker
-        :enable (consp (icicle-markers global-mark-ring)) :keys "C-- C-x C-SPC"
+        :enable (consp global-mark-ring) :keys "C-- C-x C-SPC"
         :help "Go to a global marker, choosing it by the line that includes it"))
+    (define-key icicle-goto-menu-map [icicle-goto-any-marker]
+      '(menu-item "+ Marker Anywhere..." icicle-goto-any-marker
+        :enable (consp global-mark-ring) ; We do not use this ring, but this is a good test.
+        :keys "C-0 C-SPC"
+        :help "Go to a marker in any buffer, choosing it by the line that includes it"))
     (define-key icicle-goto-menu-map [icicle-goto-marker]
-      '(menu-item "+ Marker..." icicle-goto-marker
+      '(menu-item "+ Marker in This Buffer..." icicle-goto-marker
         :enable (mark t) :keys "C-- C-SPC"
         :help "Go to a marker in this buffer, choosing it by the line that includes it"))
     (define-key icicle-goto-menu-map [icicle-select-bookmarked-region]
