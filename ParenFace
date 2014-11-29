@@ -4,6 +4,7 @@ The parenface and paren-face packages dim (or highlight) all parentheses in some
 
 * The original http://www.davep.org/emacs/parenface.el
 * A fork with enables it for more major modes and paren types https://github.com/grettke/parenface
+** As of this is being merged with paren-face 2014-11-29
 * A cleaner implementation https://github.com/tarsius/paren-face
 
 ----
