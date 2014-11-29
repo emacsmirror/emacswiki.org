@@ -8,18 +8,19 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Nov 12 15:50:05 2014 (-0800)
+;; Last-Updated: Sat Nov 29 10:23:35 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 1917
+;;     Update #: 1972
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `cl', `cl-lib', `gv', `help-fns', `help-mode', `info',
-;;   `macroexp', `naked', `wid-edit', `wid-edit+'.
+;;   `backquote', `button', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `gv', `help-fns', `help-mode', `info', `macroexp', `naked',
+;;   `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,6 +118,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/11/29 dadams
+;;     Info-make-manuals-xref: Control number of newlines before.
+;;     describe-function-1: Use same def for Emacs 25.
+;;     describe-variable-value: Changed the default colors.
+;;     describe-variable: Use face describe-variable-value always.  Fill region for value always.
+;;                        Control number of newlines before and after Value:, and after manuals xref.
+;;       
 ;; 2014/11/12 dadams
 ;;     describe-package:
 ;;       Added version for Emacs 24.4+ - Use package-alist, package--builtins, or package-archive-contents.
@@ -619,12 +627,15 @@ the manuals."
               (symb-name     (if (stringp object) object (symbol-name object))))
           (when (or (not search-now-p)
                     (save-current-buffer (Info-first-index-occurrence symb-name () books nomsg)))
-            (let ((buffer-read-only  nil))
-              (insert (format "\n\nFor more information %s the "
-                              (if (cdr manuals-spec) "see" "check")))
+            (let ((buffer-read-only  nil)
+                  (nl-before         (cond ((looking-back "[\n][\n]") "")
+                                           ((looking-back "[\n]")     "\n")
+                                           (t                         "\n\n"))))
+              (insert (format "%sFor more information %s the " nl-before (if (cdr manuals-spec) "see" "check")))
               (help-insert-xref-button "manuals" 'help-info-manual-lookup symb-name () books)
               (insert ".")
               (unless no-newlines-after-p (insert "\n\n"))))))))
+
   (when (and (> emacs-major-version 21)
              (condition-case nil (require 'help-mode nil t) (error nil))
              (get 'help-xref 'button-category-symbol)) ; In `button.el'
@@ -1460,7 +1471,7 @@ Return the description that was displayed, as a string."
               (Info-make-manuals-xref function)) ; Link to manuals.  (With progress message.)
             (insert (or doc  "Not documented."))))))))
 
-(when (and (= emacs-major-version 24)  (> emacs-minor-version 3))
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
   (defun describe-function-1 (function)
     (let* ((advised        (and (symbolp function)
                                 (featurep 'nadvice)
@@ -2003,8 +2014,8 @@ file local variable.\n")
 ;;
 (when (> emacs-major-version 23)
 
-  (defface describe-variable-value '((((background dark)) (:foreground "#B19E6A64B19E")) ; a dark magenta
-                                     (t (:foreground "DarkGreen")))
+  (defface describe-variable-value '((((background dark)) (:foreground "#58DFFA4FFFFF")) ; a dark cyan
+                                     (t (:foreground "Firebrick")))
     "*Face used to highlight the variable value, for `describe-variable'."
     :group 'help :group 'faces)
 
@@ -2080,12 +2091,15 @@ it is displayed along with the global value."
                         (print-rep  (let ((print-quoted  t))
                                       (prin1-to-string val))))
                     (if (< (+ (length print-rep) (point) (- line-beg)) 68)
-                        (insert print-rep)
+                        (progn (insert print-rep)
+                               (put-text-property from (point) 'face 'describe-variable-value))
                       (terpri)
                       (unless (or (numberp val)  (symbolp val)  (characterp val)
                                   (and (stringp val)  (string-match-p "[\n]" val)))
                         (terpri))
-                      (pp val)
+                      (let ((opoint  (point)))
+                        (pp val)
+                        (save-excursion (fill-region-as-paragraph opoint (point) nil t t)))
                       (put-text-property from (point) 'face 'describe-variable-value)
                       (if (< (point) (+ 68 (line-beginning-position 0)))
                           (delete-region from (1+ from))
@@ -2101,7 +2115,10 @@ it is displayed along with the global value."
                         (unless (or (numberp origval)  (symbolp origval)  (characterp origval)
                                     (and (stringp origval)  (string-match-p "[\n]" origval)))
                           (terpri))
-                        (pp origval)
+                        (let ((opoint  (point)))
+                          (pp origval)
+                          (save-excursion (fill-region-as-paragraph opoint (point) nil t t)))
+                        (put-text-property from (point) 'face 'describe-variable-value)
                         (when (< (point) (+ from 20)) (delete-region (1- from) from)))))))
               (terpri)
               (when locus
@@ -2139,7 +2156,12 @@ it is displayed along with the global value."
                   ;; The line below previously read as (delete-region (point) (progn (end-of-line) (point))),
                   ;; which suppressed display of the buffer local value for large values.
                   (when (looking-at "value is") (replace-match ""))
-                  (save-excursion (insert "\n\nValue:") (terpri) ; Vanilla Emacs has no `terpri' here.
+                  (save-excursion (let ((nl-before  (cond ((looking-back "[\n][\n]") "")
+                                                          ((looking-back "[\n]")     "\n")
+                                                          (t                         "\n\n")))
+                                        (nl-after   (cond ((looking-at   "[\n]")     "")
+                                                          (t                         "\n"))))
+                                    (insert (format "%sValue:%s" nl-before nl-after)))
                                   (set (make-local-variable 'help-button-cache) (point-marker)))
                   (insert "value is shown ")
                   (insert-button "below" 'action help-button-cache 'follow-link t
@@ -2230,7 +2252,12 @@ it is displayed along with the global value."
                   (when output (terpri) (terpri) (princ output))))
               (unless valvoid
                 (with-current-buffer standard-output ; Link to manuals.
-                  (Info-make-manuals-xref variable nil nil (not (called-interactively-p 'interactive)))))
+                  (Info-make-manuals-xref variable nil nil (not (called-interactively-p 'interactive)))
+                  (let ((nb-nls  (cond ((looking-at "[\n][\n][\n]")  3)
+                                       ((looking-at "[\n][\n]")      2)
+                                       ((looking-at "[\n]")          1)
+                                       (t                            0))))
+                    (delete-region (- (line-beginning-position) nb-nls) (line-beginning-position)))))
               (with-current-buffer standard-output (buffer-string))))))))) ; Return the text displayed.
 
 ;;;###autoload
