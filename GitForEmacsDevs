@@ -373,6 +373,148 @@ When you decide to work on the next task, create a new task branch:
 
 ...and you know what to do from here.
 
+[:ReleaseBranch]
+== Working with the Release Branch ==
+
+=== Switching Between Master and the Release Branch ===
+
+If you are a frequent contributor or a core developer, you will need
+to work both on the master branch and the release branch (the latter
+is currently called "emacs-24", but that changes with every major
+release).  In Emacs development, changes that fix bugs that are
+present on the release branch are pushed there and later merged to the
+master branch.  In addition, some changes pushed to master are
+back-ported to the release branch.
+
+This means you will have to switch frequently between the master and
+the release branch.  Switching branches in git is easy:
+
+      git checkout emacs-24  # switch to the release branch
+      git checkout master    # switch to the master branch
+
+In general, you can use the same workflow with the master and the
+release branches as outlined above for a feature branch.  However, due
+to the high rate of changes on master, it diverges from the release
+branch very quickly: there are many changes in infrastructure, many
+new files appear, old files are deleted, etc.  The result of this is
+that switching between master and the release branch almost always
+needs a long build (to byte-compile many Lisp files), and frequently
+will require a full bootstrap.  If the time this takes annoys you, you
+can use one of the following alternatives.
+
+The first alternative is simply to clone the upstream Savannah
+repository twice:
+
+      git clone <membername>@git.sv.gnu.org:/srv/git/emacs.git emacs-trunk
+      git clone <membername>@git.sv.gnu.org:/srv/git/emacs.git emacs-branch
+
+This will clone the repository into 2 sibling directories,
+##emacs-trunk## and ##emacs-branch## (you can use any other
+names, of course).  By default, cloning always checks out the master
+branch, so you need to switch to the release branch in the ##emacs-branch## clone:
+
+      cd emacs-branch && git checkout emacs-24
+
+After this one-time setup, you do all the master-related work in
+##emacs-master## and all the release branch-related work in
+##emacs-branch##; switching branches then boils down to switching
+directories.  Don't forget to issue the ##git pull## command in each
+branch, before you begin making changes!
+
+This workflow has the advantage of being very simple, but it wastes
+disk storage, since the repository meta-data is stored twice.  If you
+want to avoid waste of storage, you can use 2 variations:
+
+# Make the second clone local.  With this method, you make the second
+clone from the first one, not from the Savannah URL.  Then the common
+meta-data files will be hard-linked, and only one copy will actually
+be present on the disk.  To update the second clone, issue
+the ##git pull## command in the 1st clone, then one more time in the
+second one.
+
+# Use the git-new-workdir script to create a second working tree from the
+same repository meta-data.  Please read the documentation of that
+script for the details.
+
+=== Merging Changes from the Release Branch to Master ===
+
+From time to time, bugfixes pushed to the release branch should be
+merged onto master.  We recommend to use the ##admin/gitmerge.el##
+file for that purpose.  It will take care of many things which would
+otherwise have to be done manually, like ignoring commits that should
+not land in master, fixing up ChangeLog entries, and automatically
+dealing with certain types of conflicts.
+
+Before merging, make sure to ##git pull## to get your repository in
+synch with upstream.
+
+Then load ##gitmerge.el## and invoke ##M-x gitmerge RET## in a buffer
+whose default-directory is the top-level repository directory.  It
+will prompt for the branch from which to merge, defaulting to
+##origin/emacs-24##, which you should accept.
+
+You will then be presented with a list of commits not yet merged to
+master, with some of them already marked for being skipped (because
+whoever pushed them decided they shouldn't be merged to master for
+some reason).  Review the commits, using 's' to toggle their "skip"
+mark as needed.  You can use the 'l' command to show the log of the
+commit at point, 'f' to show the files it modified, and 'd' to show
+its diffs.  When you're done, hit 'm' to start the merge.
+
+If there are merge conflicts that ##gitmerge.el## cannot fix
+automatically, it will stop and present the list of files with
+conflicts.  Resolve these conflicts, save the modified files, and
+invoke ##M-x gitmerge## again in a buffer whose default-directory is
+the top-level repository directory.
+
+Another aspect that might need manual intervention is the order of
+entries in the ChangeLog files.  You should make sure the entries from
+the merged changes all appear at the top of their respective ChangeLog
+files and have today's date, and that there are no duplicate entries.
+
+When you are done with resolving the conflicts, the results of the
+merge will be committed locally to the master branch of your
+repository.  Review the merge-commit one last time:
+
+      git diff origin/master
+
+If satisfied, push:
+
+      git push
+
+If the push fails because someone pushed since your last ##git pull##,
+rebase on the latest master and push again:
+
+      git pull --rebase
+      git push
+
+=== Back-porting Changes from Master to the Release Branch ===
+
+Sometimes, a change pushed to master will be deemed to need to be
+back-ported to the release branch.  To do this, use the cherry-pick
+method.  First use the ##git log## command to find the commit you are
+looking for.  Then switch to the release branch, update it, and do the
+cherry-pick:
+
+      cd ../emacs-branch     # only if you use a separate directory for emacs-24
+      git pull
+      git checkout emacs-24  # make sure you have the release branch checked-out
+      git cherry-pick -xe COMMIT
+
+where COMMIT will typically be the SHA1 checksum of the commit you
+want to back-port, copy-pasted from the ##git log## display.  You can
+use only the 7 leading hex digits of the SHA1 value.
+
+The ##-e## option you pass to Git allows you to edit the commit
+message; use that to add an indication of back-porting, e.g. add
+"Backport:" to the commit log.  This is so ##gitmerge.el## will skip
+this commit during the next merge onto master.
+
+Finally, review your back-port and push:
+
+      git show
+      git push
+
 [:Resources]
 == Resources ==
 
