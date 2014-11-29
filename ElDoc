@@ -206,14 +206,15 @@ for Emacs version 24.4 use (elisp documentation only):
   (with-eval-after-load 'elisp-mode
       (defadvice elisp--get-fnsym-args-string (after add-docstring activate compile)
         "Add a 1st line of docstring to ElDoc's function information."
-        (let* ((doc (elisp--docstring-first-line (documentation (ad-get-arg 0) t)))
-               (w (frame-width))
-               (color-doc (propertize doc 'face 'font-lock-comment-face)))
-          (when (and doc (not (string= doc "")))
-            (setq ad-return-value (concat ad-return-value " " color-doc))
-            (when (> (length doc) w)
-              (setq ad-return-value (substring ad-return-value 0 (1- w))))))  
-        ad-return-value))
+        (when ad-return-value
+          (let* ((doc (elisp--docstring-first-line (documentation (ad-get-arg 0) t)))
+                 (w (frame-width))
+                 (color-doc (propertize doc 'face 'font-lock-comment-face)))
+            (when (and doc (not (string= doc "")))
+              (setq ad-return-value (concat ad-return-value " " color-doc))
+              (when (> (length doc) w)
+                (setq ad-return-value (substring ad-return-value 0 (1- w))))))  
+          ad-return-value)))
 
 -- ukaszg
 
