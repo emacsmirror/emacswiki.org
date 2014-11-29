@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 28 14:15:51 2014 (-0800)
+;; Last-Updated: Fri Nov 28 21:10:54 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3147
+;;     Update #: 3149
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -1349,6 +1349,7 @@ You can repeat this by hitting the last key again..."
     (require 'repeat)
     (repeat-command 'next-buffer))
 
+  ;; This is really only useful if you have Emacs 25+ with the fix to Emacs bug #19170.
   (defun compare-windows-repeat (ignore-whitespace)
     "Compare text in current window with text in next window.
 You can repeat this by hitting the last key again...
