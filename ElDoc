@@ -201,6 +201,20 @@ I like to get a little documentation as well, so I add the first line of the doc
 
 -- [[nschum]]
 
+for Emacs version 24.4 use (elisp documentation only):
+
+  (with-eval-after-load 'elisp-mode
+      (defadvice elisp--get-fnsym-args-string (after uki activate compile)
+        "Add a 1st line of docstring to ElDoc's function information."
+        (let* ((doc (elisp--docstring-first-line (documentation (ad-get-arg 0) t)))
+               (w (frame-width))
+               (color-doc (propertize doc 'face 'font-lock-comment-face)))
+          (when (and doc (not (string= doc "")))
+            (setq ad-return-value (concat ad-return-value " " color-doc))
+            (when (> (length doc) w)
+              (setq ad-return-value (substring ad-return-value 0 (1- w))))))  
+        ad-return-value))
+
 Good idea! I found it a bit hard to quickly scan to the docstring with
 so much information in the minibuffer area, so I tried to fix that by
 using different faces and changing the formatting a bit. I came up
