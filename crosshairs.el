@@ -8,13 +8,13 @@
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 0
 ;; Package-Requires: ((hl-line+ "0") (col-highlight "0") (vline "0"))
-;; Last-Updated: Tue Jul 22 16:33:57 2014 (-0700)
+;; Last-Updated: Fri Nov 28 19:25:29 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 489
+;;     Update #: 502
 ;; URL: http://www.emacswiki.org/crosshairs.el
 ;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -97,6 +97,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/11/28 dadams
+;;     crosshairs-mode: Call global-hl-line-unhighlight-all (Emacs 24.4+).
+;;     crosshairs-highlight:
+;;       Push global-hl-line-overlay to global-hl-line-overlays (Emacs 24.4+).
+;;     crosshairs-unhighlight: Call global-hl-line-unhighlight-all (Emacs 24.4+).
 ;; 2014/07/22 dadams
 ;;     Removed extra, vestigial package-requires.
 ;; 2012/12/25 dadams
@@ -168,6 +173,8 @@
 (require 'hl-line+) ;; Requires `hl-line.el'.
 (require 'col-highlight) ;; Requires `vline.el'.
 
+(defvar global-hl-line-overlays)        ; In `hl-line.el' (Emacs 24.4+)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;###autoload
@@ -228,6 +235,8 @@ Don't forget to mention your Emacs and library versions."))
         (t
          (global-hl-line-mode -1)
          (global-hl-line-unhighlight)
+         (when (fboundp 'global-hl-line-unhighlight-all) ; Emacs 24.4+
+           (global-hl-line-unhighlight-all))
          (column-highlight-mode -1)
          (message "Point: %d - Crosshairs mode disabled" (point)))))
 
@@ -284,6 +293,7 @@ both for SECONDS seconds."
       (when seconds
         (setq line-period    (prefix-numeric-value seconds)
               column-period  line-period))
+      ;; $$$$$$ Do we need to worry about `global-hl-line-unhighlight-all' here?
       (setq crosshairs-flash-line-timer (run-at-time
                                          line-period nil
                                          #'global-hl-line-unhighlight)
@@ -331,6 +341,9 @@ Return current position as a marker."
       (unless global-hl-line-overlay
         (setq global-hl-line-overlay (make-overlay 1 1)) ; to be moved
         (overlay-put global-hl-line-overlay 'face hl-line-face))
+      (when (and (boundp 'global-hl-line-overlays)
+                 (not (member global-hl-line-overlay global-hl-line-overlays)))
+	(push global-hl-line-overlay global-hl-line-overlays))
       (overlay-put global-hl-line-overlay 'window (selected-window))
       (hl-line-move global-hl-line-overlay))
     (when (and (fboundp 'col-highlight-highlight) (not (eq mode 'line-only)))
@@ -355,6 +368,8 @@ Optional arg nil means do nothing if this event is a frame switch."
 ;;       (when crosshairs-overlay-priority
 ;;         (overlay-put global-hl-line-overlay 'priority nil))
       (delete-overlay global-hl-line-overlay))
+    (when (fboundp 'global-hl-line-unhighlight-all) ; Emacs 24.4+
+      (global-hl-line-unhighlight-all))
     (remove-hook 'pre-command-hook 'crosshairs-unhighlight)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
