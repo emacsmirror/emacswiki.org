@@ -108,7 +108,7 @@ Note: `icicle-apply' binds user option
 typically want to start it out with incremental completion turned
 on.  Functions that call `icicle-apply' thus also turn on
 incremental completion.  This includes the predefined '''Icicles'''
-commands `icicle-goto-marker' and `icicle-goto-global-marker'.
+commands `icicle-goto-marker', `icicle-goto-any-marker', and `icicle-goto-global-marker'.
 Remember that you can use `<tt>C-#</tt>' (once or twice) to turn 
 incremental completion off.
 
