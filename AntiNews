@@ -1,17 +1,20 @@
 : "For those users who live backwards in time, here is information about
 downgrading to Emacs version XX.X."
 
+/etc/ANTINEWS:
 * [http://www.uni-hohenheim.de/~schaefer/manuals/emacs_34.html Emacs 17 Antinews]
 * [http://www.kfa-juelich.de/zam/docs/bhb/bhb_html/d0115/emacs_398.html Emacs 18 Antinews]
 * [http://sunsite.univie.ac.at/textbooks/emacs/emacs_38.html Emacs 19 Antinews]
+The Antinews become part of the info manual:
 * [http://snotty.org/manual/emacs-21.2/html_chapter/emacs_35.html Emacs 20 Antinews]
 * [http://snotty.org/manual/elisp-manual-21-2.8/html_chapter/elisp_41.html Emacs 20 Antinews, Lisp]
 * [http://www.ldc.usb.ve/docs/emacs/Antinews.html Emacs 21 Antinews]
-* Emacs 21 Antinews, Lisp
-* [http://www.gnu.org/software/emacs/manual/html_node/emacs/Antinews.html Emacs 22 Antinews]
-* [http://www.gnu.org/software/emacs/manual/html_node/elisp/Antinews.html Emacs 22 Antinews, Lisp]
-* ([http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/man/anti.texi?&content-type=text/plain Emacs CVS Antinews])
-* ([http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/lispref/anti.texi?content-type=text/plain Emacs CVS Antinews, Lisp])
+
+ Emacs 21 Antinews, Lisp
+* [http://www.gnu.org/software/emacs/manual/html_node/emacs/Antinews.html Emacs stable Antinews ]
+* [http://www.gnu.org/software/emacs/manual/html_node/elisp/Antinews.html Emacs stable Antinews, Lisp]
+* ([http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/man/anti.texi?&content-type=text/plain Emacs CVS Antinews, TeXinfo])
+* ([http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/lispref/anti.texi?content-type=text/plain Emacs CVS Antinews, TeXinfo])
 
 ----
 CategoryDocumentation
