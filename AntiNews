@@ -13,9 +13,9 @@ The Antinews become part of the info manual:
 * Emacs 21 Antinews, Lisp
 * [http://www.gnu.org/software/emacs/manual/html_node/emacs/Antinews.html Emacs stable Antinews ]
 * [http://www.gnu.org/software/emacs/manual/html_node/elisp/Antinews.html Emacs stable Antinews, Lisp]
-* ([http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/man/anti.texi?&content-type=text/plain Emacs CVS Antinews, TeXinfo])
-* ([http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/lispref/anti.texi?content-type=text/plain Emacs CVS Antinews, TeXinfo])
-* [http://git.savannah.gnu.org/cgit/emacs.git/tree/doc/emacs/anti.texi Emacs Git AntiNews, TeXinfo]
+* ([http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/man/anti.texi?&content-type=text/plain Emacs-24.4 CVS Antinews, TeXinfo])
+* ([http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/emacs/emacs/lispref/anti.texi?content-type=text/plain Emacs-24.4 CVS Antinews, TeXinfo])
+* [http://git.savannah.gnu.org/cgit/emacs.git/tree/doc/emacs/anti.texi Emacs git master branch AntiNews, TeXinfo]
 ----
 CategoryDocumentation
 CategoryHistory
