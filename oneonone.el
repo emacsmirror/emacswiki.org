@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Fri Nov 28 08:39:45 2014 (-0800)
+;; Last-Updated: Sun Nov 30 12:19:45 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3012
+;;     Update #: 3019
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -200,6 +200,7 @@
 ;;    `1on1-*Help*-frame-flag',
 ;;    `1on1-active-minibuffer-frame-background',
 ;;    `1on1-active-mode-line-background',
+;;    `1on1-change-cursor-on-input-method-flag',
 ;;    `1on1-change-cursor-on-overwrite/read-only-flag',
 ;;    `1on1-color-minibuffer-frame-on-exit-increment',
 ;;    `1on1-color-minibuffer-frame-on-setup-increment',
@@ -287,6 +288,11 @@
  
 ;;; Change Log:
 ;;
+;; 2014/11/30 dadams
+;;     1on1-emacs, 1on1-change-cursor-on-overwrite/read-only:
+;;       Use cursor-type setting in default-frame-alist, not 1on1-default-frame-cursor-type.
+;;     1on1-change-cursor-on-input-method:
+;;       Use cursor-color setting in default-frame-alist, not 1on1-default-frame-cursor-color.
 ;; 2014/11/27 dadams
 ;;     Added: 1on1-task-bar-height, 1on1-minibuffer-frame-bottom-offset.
 ;;     1on1-emacs: Set 1on1-minibuffer-frame-bottom-offset (Emacs 24.4+ only).
@@ -1500,7 +1506,7 @@ show/hide: hold CTRL + click in window"))
     (remove-hook 'post-command-hook '1on1-fit-minibuffer-frame))
   (if 1on1-change-cursor-on-overwrite/read-only-flag
       (add-hook 'post-command-hook '1on1-change-cursor-on-overwrite/read-only)
-    (1on1-set-cursor-type 1on1-default-frame-cursor-type)
+    (1on1-set-cursor-type (cdr (assq 'cursor-type default-frame-alist)))
     (remove-hook 'post-command-hook '1on1-change-cursor-on-overwrite/read-only))
   (if 1on1-change-cursor-on-input-method-flag
       (add-hook 'post-command-hook '1on1-change-cursor-on-input-method)
@@ -1523,7 +1529,7 @@ show/hide: hold CTRL + click in window"))
 
 ;; This is inspired by code from Juri Linkov <juri@jurta.org>.
 (defun 1on1-change-cursor-on-input-method ()
-  "Set cursor type depending on whether an input method is used or not."
+  "Set cursor color depending on whether an input method is used or not."
   (when 1on1-change-cursor-on-input-method-flag
     (set-cursor-color
      (if current-input-method
@@ -1534,7 +1540,7 @@ show/hide: hold CTRL + click in window"))
                ((eq 1on1-minibuffer-frame (selected-frame))
                 1on1-minibuffer-frame-cursor-color)
                ((special-display-p bufname) 1on1-special-frame-cursor-color)
-               (t 1on1-default-frame-cursor-color)))))))
+               (t (cdr (assq 'cursor-color default-frame-alist)))))))))
 
 ;; This is from Juri Linkov <juri@jurta.org>, with read-only added.
 (defun 1on1-change-cursor-on-overwrite/read-only ()
@@ -1543,7 +1549,7 @@ That is, use one cursor type for overwrite mode and read-only buffers,
 and another cursor type otherwise."
   (1on1-set-cursor-type (if (or buffer-read-only overwrite-mode)
                             1on1-default-frame-cursor-type-overwrite/read-only
-                          1on1-default-frame-cursor-type)))
+                          (cdr (assq 'cursor-type default-frame-alist)))))
 
 (unless (fboundp 'set-cursor-type) (defalias 'set-cursor-type '1on1-set-cursor-type))
 ;; This is essentially from Juri Linkov <juri@jurta.org>.
