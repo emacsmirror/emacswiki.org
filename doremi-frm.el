@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0") (faces+ "0") (frame-fns "0") (hexrgb "0"))
-;; Last-Updated: Sun Nov 30 11:20:55 2014 (-0800)
+;; Last-Updated: Sun Nov 30 20:32:51 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3006
+;;     Update #: 3007
 ;; URL: http://www.emacswiki.org/doremi-frm.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
@@ -277,8 +277,6 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2014/11/30 dadams
-;;     For Emacs 23+: require ring.el - the functions are not autoloaded.  See bug #19232.
 ;; 2013/06/06 dadams
 ;;     Do not require ring+.el unless prior to Emacs 23.
 ;; 2012/03/02 dadams
@@ -573,9 +571,9 @@
                   ;; hexrgb-defined-colors, hexrgb-defined-colors-alist,
                   ;; hexrgb-increment-blue, hexrgb-increment-green, hexrgb-increment-red,
                   ;; hexrgb-hsv-to-rgb, hexrgb-rgb-to-hsv
-(require 'ring)
-(unless (fboundp 'ring-member);; ring-insert, ring-member, ring-next
-  (if (> emacs-version 22) (require 'ring) (require 'ring+)))
+(require 'ring) ;; ring-insert, ring-member, ring-next (Emacs 23)
+(unless (fboundp 'ring-member)          ; < Emacs 23
+  (require 'ring+)) ;; ring-insert, ring-member, ring-next
 (require 'frame-fns) ;; frame-geom-spec-cons, frame-geom-value-cons, get-a-frame
 (require 'faces+) ;; face-background-20+, face-foreground-20+, Emacs 20: read-face-name
 (if (fboundp 'defvaralias) ;; Emacs 22
