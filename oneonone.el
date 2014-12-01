@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Sun Nov 30 12:19:45 2014 (-0800)
+;; Last-Updated: Mon Dec  1 08:19:45 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3019
+;;     Update #: 3038
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -288,6 +288,12 @@
  
 ;;; Change Log:
 ;;
+;; 2014/12/01 dadams
+;;     1on1-default-frame-cursor-type(-overwrite/read-only), 1on1-emacs,
+;;       1on1-change-cursor-on-overwrite/read-only:
+;;         Ensure that cursor type cannot be set to nil.
+;;     1on1-change-cursor-on-input-method:
+;;       Do not set it if there is no setting based on null entry in default-frame-alist.
 ;; 2014/11/30 dadams
 ;;     1on1-emacs, 1on1-change-cursor-on-overwrite/read-only:
 ;;       Use cursor-type setting in default-frame-alist, not 1on1-default-frame-cursor-type.
@@ -1155,7 +1161,9 @@ for the new value to take effect.  Furthermore, if
 `1on1-emacs', you will need to toggle that variable to non-nil (and
 back to nil, if that's the value you want).  Otherwise, the new value
 will take effect only after you restart Emacs."
-  :type 'symbol :group 'One-On-One)
+  ;; Ensure that it cannot be set to `nil'.
+  :type '(restricted-sexp :match-alternatives ((lambda (x) (and x  (symbolp x)))) :value bar)
+  :group 'One-On-One)
 
 (defvar 1on1-last-cursor-type 1on1-default-frame-cursor-type "Saved last cursor type.")
 
@@ -1166,7 +1174,9 @@ This applies only to non-special frames.  This has no effect if
 `1on1-change-cursor-on-overwrite/read-only-flag' is nil.  If you
 customize this variable, you will need to rerun `1on1-emacs' for the
 new value to take effect."
-  :type 'symbol :group 'One-On-One)
+  ;; Ensure that it cannot be set to `nil'.
+  :type '(restricted-sexp :match-alternatives ((lambda (x) (and x  (symbolp x)))) :value box)
+  :group 'One-On-One)
 
 (defvar 1on1-box-cursor-when-idle-p t
   "Non-nil means to use a box cursor whenever Emacs is idle.
@@ -1506,7 +1516,8 @@ show/hide: hold CTRL + click in window"))
     (remove-hook 'post-command-hook '1on1-fit-minibuffer-frame))
   (if 1on1-change-cursor-on-overwrite/read-only-flag
       (add-hook 'post-command-hook '1on1-change-cursor-on-overwrite/read-only)
-    (1on1-set-cursor-type (cdr (assq 'cursor-type default-frame-alist)))
+    (let ((deflt-ctype  (cdr (assq 'cursor-type default-frame-alist))))
+      (when deflt-ctype (1on1-set-cursor-type deflt-ctype)))
     (remove-hook 'post-command-hook '1on1-change-cursor-on-overwrite/read-only))
   (if 1on1-change-cursor-on-input-method-flag
       (add-hook 'post-command-hook '1on1-change-cursor-on-input-method)
@@ -1529,27 +1540,33 @@ show/hide: hold CTRL + click in window"))
 
 ;; This is inspired by code from Juri Linkov <juri@jurta.org>.
 (defun 1on1-change-cursor-on-input-method ()
-  "Set cursor color depending on whether an input method is used or not."
+  "Set cursor color, depending on whether an input method is used or not."
   (when 1on1-change-cursor-on-input-method-flag
-    (set-cursor-color
-     (if current-input-method
-         1on1-default-frame-cursor-color-input-method
-       (let ((bufname  (buffer-name (current-buffer))))
-         (cond ((string= "*Help*" bufname) 1on1-help-frame-mouse+cursor-color)
-               ((string= "*Completions*" bufname) 1on1-completions-frame-mouse+cursor-color)
-               ((eq 1on1-minibuffer-frame (selected-frame))
-                1on1-minibuffer-frame-cursor-color)
-               ((special-display-p bufname) 1on1-special-frame-cursor-color)
-               (t (cdr (assq 'cursor-color default-frame-alist)))))))))
+    (if current-input-method
+        (set-cursor-color 1on1-default-frame-cursor-color-input-method)
+      (let ((bufname  (buffer-name (current-buffer))))
+        (cond ((string= "*Help*" bufname)
+               (set-cursor-color 1on1-help-frame-mouse+cursor-color))
+              ((string= "*Completions*" bufname)
+               (set-cursor-color 1on1-completions-frame-mouse+cursor-color))
+              ((eq 1on1-minibuffer-frame (selected-frame))
+               (set-cursor-color 1on1-minibuffer-frame-cursor-color))
+              ((special-display-p bufname)
+               (set-cursor-color 1on1-special-frame-cursor-color))
+              ;; Do not set it if there is no setting for it in `default-frame-alist'.
+              ((cdr (assq 'cursor-color default-frame-alist))
+               (set-cursor-color (cdr (assq 'cursor-color default-frame-alist)))))))))
 
 ;; This is from Juri Linkov <juri@jurta.org>, with read-only added.
 (defun 1on1-change-cursor-on-overwrite/read-only ()
   "Set cursor type differently for overwrite mode and read-only buffer.
 That is, use one cursor type for overwrite mode and read-only buffers,
 and another cursor type otherwise."
-  (1on1-set-cursor-type (if (or buffer-read-only overwrite-mode)
-                            1on1-default-frame-cursor-type-overwrite/read-only
-                          (cdr (assq 'cursor-type default-frame-alist)))))
+  (let ((deflt-ctype  (cdr (assq 'cursor-type default-frame-alist))))
+    (when (or buffer-read-only  overwrite-mode  deflt-ctype)
+      (1on1-set-cursor-type (if (or buffer-read-only  overwrite-mode)
+                                1on1-default-frame-cursor-type-overwrite/read-only
+                              deflt-ctype)))))
 
 (unless (fboundp 'set-cursor-type) (defalias 'set-cursor-type '1on1-set-cursor-type))
 ;; This is essentially from Juri Linkov <juri@jurta.org>.
