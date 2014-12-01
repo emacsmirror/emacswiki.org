@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Mon Dec  1 08:19:45 2014 (-0800)
+;; Last-Updated: Mon Dec  1 13:54:21 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3038
+;;     Update #: 3050
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -64,6 +64,16 @@
 ;;  By default, if you use a standalone minibuffer frame, it is
 ;;  automatically sized to the full width of your display and placed
 ;;  at the bottom of the display.
+;;
+;;  If you use a standalone minibuffer frame then option
+;;  `minibuffer-auto-raise' can make a difference.  This library does
+;;  not change the option value.  A value of nil can make sense for
+;;  some window managers that force the refocusing of a frame whenever
+;;  it is raised.  If you use MS Windows then this is not a problem:
+;;  command `1on1-emacs' sets the Windows-specific option
+;;  `w32-grab-focus-on-raise' to nil, so that frame raising and
+;;  focusing are decoupled.  So on MS Windows, at least, a non-nil
+;;  value for `minibuffer-auto-raise' can make sense.
 ;;
 ;;  If `1on1-fit-minibuffer-frame-flag' is non-nil,
 ;;  `1on1-minibuffer-frame-flag' is non-nil, and you also use library
@@ -289,6 +299,7 @@
 ;;; Change Log:
 ;;
 ;; 2014/12/01 dadams
+;;     1on1-emacs: Do not set minibuffer-auto-raise to nil.  Let user do it based on window mgr.
 ;;     1on1-default-frame-cursor-type(-overwrite/read-only), 1on1-emacs,
 ;;       1on1-change-cursor-on-overwrite/read-only:
 ;;         Ensure that cursor type cannot be set to nil.
@@ -1499,7 +1510,7 @@ If `1on1-separate-minibuffer-*Completions*-flag' is non-nil, then
     (when (fboundp 'rename-frame)
       (rename-frame 1on1-minibuffer-frame "Emacs minibuffer                         \
 show/hide: hold CTRL + click in window"))
-    (setq minibuffer-auto-raise  t)
+    ;; (setq minibuffer-auto-raise  t) ; $$$$$$$ Let user decide, based on window mgr behavior.
     ;; Background colors of minibuffer frame: 3 states
     (add-hook 'isearch-mode-hook '1on1-color-isearch-minibuffer-frame)
     (add-hook 'isearch-mode-end-hook '1on1-color-minibuffer-frame-on-exit)
