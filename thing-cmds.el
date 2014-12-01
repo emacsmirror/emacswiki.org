@@ -8,9 +8,9 @@
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 0
 ;; Package-Requires: ((hide-comnt "0"))
-;; Last-Updated: Mon Nov 17 18:21:13 2014 (-0800)
+;; Last-Updated: Mon Dec  1 10:12:25 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 751
+;;     Update #: 753
 ;; URL: http://www.emacswiki.org/thing-cmds.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointCommands
 ;; Keywords: thingatpt, thing, region, selection
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `thingatpt', `thingatpt+'.
+;;   `cl', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -66,6 +66,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/12/01 dadams
+;;     Typo: emacs-version -> emacs-major-version.
 ;; 2014/11/17 dadams
 ;;     Top level: Added eval-when-compile for cl.el, for Emacs 20.
 ;;     thing-types: Need require cl.el at compile time, for push and dolist, for Emacs 20.
@@ -156,7 +158,7 @@
 ;;
 ;;; Code:
 
-(when (< emacs-version 22) (eval-when-compile (require 'cl))) ;; for Emacs 20: dolist
+(when (< emacs-major-version 22) (eval-when-compile (require 'cl))) ;; for Emacs 20: dolist
 
 (require 'thingatpt) ;; bounds-of-thing-at-point
 (when (and (require 'thingatpt+ nil t)  ; (no error if not found): tap-bounds-of-thing-at-point
