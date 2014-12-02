@@ -20,3 +20,14 @@ The documentation doesn't specify how to exit the function.
 
 -- Anonymous 2014-03-30 03:53 UTC
 
+
+----
+
+When runing "M-x awk-t" after I set a mark, I got an error "Symbol's value as variable is void: kbd".
+I tried to debug the script step by step from "(defun awk-it-full ...)", however this time the above error was gone
+and the expect awk-it message was shown.
+Any idea on this? Is it possible a problem related to timing since when debugging the execution is slow enough.
+I am using GNU Emacs 24.4.1 on Cygwin, Window 7 Service Pack 1, Intel i5-3380M CPU.
+
+-- Riverlei 2014-12-02 16:01 UTC
+
