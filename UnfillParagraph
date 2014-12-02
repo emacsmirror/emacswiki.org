@@ -4,11 +4,11 @@ line. It is the contrary of FillParagraph.
 It works where a line ends with a newline character ("\n") and paragraphs are separated by blank lines.  To make a paragraph end in a single newline then use the function below:
 
     ;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph    
-    (defun unfill-paragraph ()
+    (defun unfill-paragraph (&optional region)
       "Takes a multi-line paragraph and makes it into a single line of text."
-      (interactive)
+      (interactive (progn (barf-if-buffer-read-only) '(t)))
       (let ((fill-column (point-max)))
-        (fill-paragraph nil)))
+        (fill-paragraph nil region)))
 
     ;; Handy key definition
     (define-key global-map "\M-Q" 'unfill-paragraph)
