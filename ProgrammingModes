@@ -10,6 +10,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * [[Asm86Mode]] -- Asm86 Mode is an Emacs major mode that helps the often-tedious task of coding assembly for the Asm86 assembler.
 * AutoLispMode
 * AxcessMode -- also Netlinx
+* BatMode -- Dos scripts (batch files)
 * BefungeMode -- interpreter for the esoteric Befunge language
 * BisonMode
 * BooMode
@@ -32,8 +33,6 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * DelphiMode -- for Borland Delphi's Object Pascal syntax
 * DevelockMode -- highlight faulty formatted source
 * DevKitEmacs -- simplified interface to DevkitPro, for devloping 
-* DosMode -- Dos scripts (batch files)
-* DosScripts -- Dos scripts (batch files)
 * DoxyMacs -- Doxygen
 * ECMAScriptMode -- similar to JavaScriptMode
 * ElDoc -- documentation for EmacsLisp
