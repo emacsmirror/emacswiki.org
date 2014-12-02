@@ -2,7 +2,7 @@
 
 Provides syntax highlighting, a basic template, access to help pages, imenu/outline navigation, and the ability to run scripts from within Emacs.
 
-Part of core Emacs. Simply open a *.bat or *.cmd file, or run ##M-x bat-mode## in Emacs version 24.4 or later.
+Part of core Emacs. Simply open a *.bat or *.cmd file, or run ##M-x bat-mode## in Emacs version 24.4 onwards.
 
 The DosScripts page compares previous Emacs modes for editing Dos scripts.
 
