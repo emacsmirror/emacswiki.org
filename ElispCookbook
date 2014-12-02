@@ -709,7 +709,9 @@ The elements in the copy remain in the original.  More importantly, they are in 
 
 Filtering:
 
-EmacsLisp doesn't come with a `filter' function to keep elements that satisfy a conditional and remove elements that do not satisfy it.  You can use `dolist' or `mapcar' to iterate over a list with a conditional, and then use `delq' to remove the `nil' values.
+A `filter' macro has been added to the Emacs development tree. It does what you expect: filters a list, returning a copy that keeps elements that satisfy a predicate and omitting elements that do not satisfy it. 
+
+If your Emacs does not yet have this built in, you can use `dolist' or `mapcar' to iterate over a list with a conditional, and then use `delq' to remove the `nil' values.
 
   (defun my-filter (condp lst)
     (delq nil
