@@ -1,0 +1,38 @@
+Sometimes when one does a vc-revert and abandons the changes he regrets the action and wants to retrieve the changes. This package helps in that. If you install it then after a vc-revert you can access previous diffs with M-x my-list-revert-history.
+
+    (defvar my-revert-history-length 30)
+    
+    (defvar my-revert-history nil)
+    
+    (defadvice vc-diff-internal (after my-vc-diff-internal activate)
+      (if (eq this-command 'vc-revert)
+          (let ((diff (buffer-substring (point-min) (point-max))))
+            (push diff my-revert-history)
+            (if (> (length my-revert-history) my-revert-history-length)
+                (setq my-revert-history
+                      (subseq my-revert-history 0 (1- my-revert-history-length)))))))
+    
+    (defun my-list-revert-history ()
+      (interactive)
+      (pop-to-buffer "*revert history*")
+      (erase-buffer)
+      (dolist (i my-revert-history)
+        (insert (car (split-string i "\n")))
+        (put-text-property (line-beginning-position) (line-end-position)
+                           'revert-history-item i)
+        (insert "\n"))
+      (goto-char (point-min))
+      (local-set-key (kbd "<RET>") 'my-visit-revert-history)
+      (local-set-key (kbd "q") 'bury-buffer))
+    
+    
+    (defun my-visit-revert-history ()
+      (interactive)
+      (let ((diff (get-text-property (line-beginning-position) 'revert-history-item)))
+        (when diff
+          (pop-to-buffer "*revert history item*")
+          (erase-buffer)
+          (insert diff)
+          (local-set-key (kbd "q") 'bury-buffer)
+          (goto-char (point-min)))))
+                 
