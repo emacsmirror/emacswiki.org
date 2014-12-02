@@ -4,3 +4,17 @@ I wonder if this is Aquamacs, or perhaps the fact I am using the Instant Client.
 
 -- Anonymous 2014-11-07 23:20 UTC
 
+
+----
+
+hello, I've got some bug in sqlplus output. The data of the result table is shifted to the left and does not correspond to the columns name. This is so with russian letters in columns.
+
+ ADSTRNAME                                                                            ADDRES_ID  
+ Советский р-н                                                            29           0        
+
+29 must be under addres_id...
+
+How could I fix this to enjoy this wonderful emacs mode?
+
+-- tercoz 2014-12-02 06:42 UTC
+
