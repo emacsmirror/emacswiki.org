@@ -7,13 +7,13 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Nov 14 08:52:19 2014 (-0800)
+;; Last-Updated: Tue Dec  2 19:03:43 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3382
+;;     Update #: 3387
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -3033,7 +3033,7 @@ If none are marked, toggle status of the bookmark of the current line."
 ;;;###autoload (autoload 'bmkp-bmenu-dired-marked "bookmark+")
 (defun bmkp-bmenu-dired-marked (dirbufname) ; Bound to `M-d >' in bookmark list
   "Dired in another window for the marked file and directory bookmarks.
-\(Do not include omitted bookmarks.)
+\(Does not include omitted bookmarks.)
 Absolute file names are used for the entries in the Dired buffer.
 The only entries are for the marked files and directories.  These can
 be located anywhere.  (In Emacs versions prior to release 23.2, remote
@@ -3106,7 +3106,7 @@ But if you use a prefix arg then such duplication is allowed."
 (defun bmkp-bmenu-copy-marked-to-bookmark-file (file &optional duplicates-ok batchp)
                                         ; Bound to `Y > +' in bookmark list
   "Copy the marked bookmarks to bookmark file FILE.
-\(Do not include omitted bookmarks.)
+\(Does not include omitted bookmarks.)
 You are prompted for FILE.
 If no bookmark is marked then copy the bookmark of the current line.
 The marked bookmarks are appended to those already in FILE.
@@ -3413,7 +3413,7 @@ You can then mark some of them and use `\\<bookmark-bmenu-mode-map>\\[bmkp-bmenu
   (defun bmkp-bmenu-isearch-marked-bookmarks (&optional allp) ; Bound to `M-s a C-s' in bookmark list
     "Isearch the marked bookmark locations, in their current order.
 If no bookmark is marked, search the bookmark of the current line.
-\(Do not include omitted bookmarks.)
+\(Does not include omitted bookmarks.)
 If no bookmark is marked, search the bookmark of the current line.
 With a prefix arg, search all bookmarks."
     (interactive "P")
@@ -3425,7 +3425,7 @@ With a prefix arg, search all bookmarks."
   (defun bmkp-bmenu-isearch-marked-bookmarks-regexp (&optional allp) ; `M-s a M-C-s' in bookmark list
     "Regexp Isearch the marked bookmark locations, in their current order.
 If no bookmark is marked, search the bookmark of the current line.
-\(Do not include omitted bookmarks.)
+\(Does not include omitted bookmarks.)
 If no bookmark is marked, search the bookmark of the current line.
 With a prefix arg, search all bookmarks."
     (interactive "P")
@@ -3438,7 +3438,7 @@ With a prefix arg, search all bookmarks."
 (defun bmkp-bmenu-search-marked-bookmarks-regexp (regexp &optional allp) ; `M-s a M-s' in bookmark list
   "Search the marked file bookmarks, in their current order, for REGEXP.
 If no bookmark is marked, search the bookmark of the current line.
-\(Do not include omitted bookmarks.)
+\(Does not include omitted bookmarks.)
 With a prefix arg, search all bookmarks.
 Use `\\[tags-loop-continue]' to advance among the search hits.
 Marked directory and non-file bookmarks are ignored."
@@ -3459,7 +3459,7 @@ Marked directory and non-file bookmarks are ignored."
                                                          &optional delimited)
   "`query-replace-regexp' FROM with TO, for all marked file bookmarks.
 If no bookmark is marked, act on the bookmark of the current line.
-\(Do not include omitted bookmarks.)
+\(Does not include omitted bookmarks.)
 DELIMITED (prefix arg) means replace only word-delimited matches.
 If you exit (`\\[keyboard-quit]', `RET' or `q'), you can use \
 `\\[tags-loop-continue]' to resume where
@@ -3541,7 +3541,7 @@ Interactively, you are required to confirm."
 (defun bmkp-bmenu-set-tag-value-for-marked (tag value &optional allp msg-p) ; `T > v' in bookmark list
   "Set the value of TAG to VALUE, for each of the marked bookmarks.
 If no bookmark is marked, act on the bookmark of the current line.
-\(Do not include omitted bookmarks.)
+\(Does not include omitted bookmarks.)
 With a prefix arg, act on all bookmarks.
 If any of the bookmarks has no tag named TAG, then add one with VALUE.
 
@@ -3576,9 +3576,9 @@ Non-interactively, non-nil MSG-P means display messages."
 ;;;###autoload (autoload 'bmkp-bmenu-add-tags-to-marked "bookmark+")
 (defun bmkp-bmenu-add-tags-to-marked (tags &optional allp msg-p) ; Bound to `T > +' in bookmark list
   "Add TAGS to each of the marked bookmarks.
+\(Does not include omitted bookmarks.)
 TAGS is a list of strings.
 If no bookmark is marked, act on the bookmark of the current line.
-\(Do not include omitted bookmarks.)
 With a prefix arg, act on all bookmarks.
 
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
@@ -3607,7 +3607,7 @@ Non-interactively, non-nil MSG-P means display messages."
 (defun bmkp-bmenu-remove-tags-from-marked (tags &optional allp msg-p) ; Bound to `T > -' in bookmark list
   "Remove TAGS from each of the marked bookmarks.
 If no bookmark is marked, act on the bookmark of the current line.
-\(Do not include omitted bookmarks.)
+\(Does not include omitted bookmarks.)
 With a prefix arg, act on all bookmarks.
 
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
@@ -3958,7 +3958,7 @@ the value of variable `bmkp-copied-tags' before pasting."
 (defun bmkp-bmenu-paste-add-tags-to-marked (&optional allp msg-p) ; `T > p', `T > C-y'
   "Add tags that were copied from another bookmark to the marked bookmarks.
 If no bookmark is marked, act on the bookmark of the current line.
-\(Do not include omitted bookmarks.)
+\(Does not include omitted bookmarks.)
 With a prefix arg, act on all bookmarks."
   (interactive (list current-prefix-arg 'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
@@ -3977,7 +3977,7 @@ With a prefix arg, act on all bookmarks."
 (defun bmkp-bmenu-paste-replace-tags-for-marked (&optional allp msg-p) ; `T > q'
   "Replace tags for the marked bookmarks with tags copied previously.
 If no bookmark is marked, act on the bookmark of the current line.
-\(Do not include omitted bookmarks.)
+\(Does not include omitted bookmarks.)
 With a prefix arg, act on all bookmarks.
 
 NOTE: It is by design that you can *remove all* tags from a bookmark
@@ -4549,6 +4549,7 @@ If you use this function non-interactively, be sure to load library
 ;;;###autoload (autoload 'bmkp-bmenu-relocate-marked "bookmark+")
 (defun bmkp-bmenu-relocate-marked (directory &optional msgp) ; Bound to `M-R' in bookmark list
   "Relocate target files of all (visible) bookmarks that are marked `>'.
+\(Does not include omitted bookmarks.)
 You are prompted for the relocation target directory.
 Non-nil optional MSGP means show status message.
 Return the number of bookmarks relocated to DIRECTORY."
@@ -4616,7 +4617,7 @@ The current bookmark list is then updated to reflect your edits."
 (defun bmkp-bmenu-edit-marked (&optional allp) ; Bound to `E' in bookmark list
   "Edit the full records (the Lisp sexps) of the marked bookmarks.
 If no bookmark is marked, edit the bookmark of the current line.
-\(Do not include omitted bookmarks.)
+\(Does not include omitted bookmarks.)
 With a prefix arg, edit all bookmark records.
 When you finish editing, use `\\[bmkp-edit-bookmark-records-send]'.
 The current bookmark list is then updated to reflect your edits."
@@ -5180,9 +5181,9 @@ With a prefix argument, show the internal definition of the bookmark."
 ;;;###autoload (autoload 'bmkp-bmenu-describe-marked "bookmark+")
 (defun bmkp-bmenu-describe-marked (&optional defn) ; Bound to `C-h >' in bookmark list
   "Describe the marked bookmarks, in the current sort order.
+\(Does not include omitted bookmarks.)
 With a prefix argument, show the internal definitions.
-If no bookmark is marked, act on the bookmark of the current line.
-\(Do not include omitted bookmarks.)"
+If no bookmark is marked, act on the bookmark of the current line."
   (interactive "P")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (help-setup-xref (list #'bmkp-describe-bookmark-marked) (interactive-p))
