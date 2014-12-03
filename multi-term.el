@@ -5,8 +5,8 @@
 ;; Copyright (C) 2008, 2009, 2014 Andy Stewart, all rights reserved.
 ;; Copyright (C) 2010, ahei, all rights reserved.
 ;; Created: <2008-09-19 23:02:42>
-;; Version: 1.1
-;; Last-Updated: 2014-08-27 14:58:52
+;; Version: 1.2
+;; Last-Updated: 2014-12-04 00:51:15
 ;; URL: http://www.emacswiki.org/emacs/download/multi-term.el
 ;; Keywords: term, terminal, multiple buffer
 ;; Compatibility: GNU Emacs 23.2.1, GNU Emacs 24.4 (and prereleases)
@@ -127,9 +127,14 @@
 
 ;;; Change log:
 ;;
+;; 2014/12/04
+;;      * Ernesto Rodriguez Reina <erreina@gmail.com>
+;;      Fixed the bug of cursor not return to the position it was before opened the dedicated terminal window when
+;;      `multi-term-dedicated-close-back-to-open-buffer-p' and `multi-term-dedicated-select-after-open-p' are t.
+;;
 ;; 2014/08/27
 ;;      * Kevin Peng <kkpengboy@gmail.com>
-;;      Keep multi-term buffer list make multi-term-next/prev can switch temrinal buffer even terminal buffer's name is changed. 
+;;      Keep multi-term buffer list make multi-term-next/prev can switch temrinal buffer even terminal buffer's name is changed.
 ;;
 ;; 2014/07/21
 ;;      * Andy Stewart
@@ -524,9 +529,9 @@ Will prompt you shell name when you type `C-u' before this command."
                  multi-term-dedicated-close-buffer)
             (switch-to-buffer multi-term-dedicated-close-buffer)
           ))
-    (multi-term-dedicated-open)
     (if multi-term-dedicated-close-back-to-open-buffer-p
         (setq multi-term-dedicated-close-buffer (current-buffer)))
+    (multi-term-dedicated-open)
     ))
 
 ;;;###autoload
