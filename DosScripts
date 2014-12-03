@@ -33,7 +33,7 @@ CmdMode does not recognize ::comments, :.labels, /options, -options, or --option
 By Arni Magnusson (2003-2013). Predecessor of BatMode.
 
 [new]
-I added indentation for ##dos-mode## via the lisp file DosIndent -- Matthew Fidler
+I added indentation for DosMode via the lisp file DosIndent -- Matthew Fidler
 
 == ntcmd-mode ==
 
@@ -45,15 +45,15 @@ Lisp:ntcmd.el is a new DOS script mode that uses a parser to fully understand th
 == General discussion ==
 
 [new]
-Why is ##dos-mode## "the recommended mode for editing Dos scripts"? -- Lennart Borgman
+Why is DosMode "the recommended mode for editing Dos scripts"? -- Lennart Borgman
 
 [new]
-Mainly because of the shortcomings of ##batch-mode## and ##cmd-mode## listed above, improved code navigation, better documentation, and the code conforming to Emacs Lisp major mode conventions.
+Mainly because of the shortcomings of `batch-mode' and CmdMode listed above, improved code navigation, better documentation, and the code conforming to Emacs Lisp major mode conventions.
 
-The three modes are really quite similar, so it would be best to combine all desired features in one mode. If there are any features you find lacking in ##dos-mode##, please leave comments here so I can include them in the next release. Users can also add personal features with ##dos-mode-hook##. -- Arni Magnusson
+The three modes are really quite similar, so it would be best to combine all desired features in one mode. If there are any features you find lacking in DosMode, please leave comments here so I can include them in the next release. Users can also add personal features with `dos-mode-hook'. -- Arni Magnusson
 
 [new]
-While ##dos-mode## does have navigation support, the current version does it through generic emacs outline-mode, while ##cmd-mode## does it through native, integrated navigation.  The problem with the native emacs outline-mode is that you don't get syntax highlighting, for one thing, while you are in outline mode.  So I prefer ##cmd-mode## just because of that. -- Eli Boling
+While DosMode does have navigation support, the current version does it through generic emacs outline-mode, while CmdMode does it through native, integrated navigation.  The problem with the native emacs outline-mode is that you don't get syntax highlighting, for one thing, while you are in outline mode.  So I prefer CmdMode just because of that. -- Eli Boling
 
 
 ----
