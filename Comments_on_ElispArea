@@ -1,1 +1,422 @@
+This page is for recording (or discussion) of Suggestions about the ElispArea.
 
+== Notes about encodings ==
+
+[new]
+Pasting file content into a browser form has problems with 8-bit characters.  For example, my .el files contain the Latin 1 copyright symbol (decimal 169, octal 251), which was converted to a question mark. -- KevinRodgers
+[new]
+Oh, you are one of those scaaary guys who dare use ASCII > 127 :) Even if I often think it *should* work I usually try to avoid it, to be on the safe side. -- MaDa
+[new]
+That problem seems to be caused by your browser not handling the clipboard
+correctly.  One way to do this would be to switch to a browser that allows
+an external editor such as Emacs.  Personally I would recommend the text
+browser w3m, for example. -- AlexSchroeder
+
+[new]
+Library Lisp:icicles-opt.el has a string that contains control characters ^G and ^J (Control-G and Control-J). Uploading that file wipes out the ^G character. This means that users downloading the library will not get the correct default value for string variable `icicle-list-join-string'. -- DrewAdams
+
+[new]
+Yeah, I started stripping most control characters after I realized that the validator started complaining about it. I looked it up in the spec and indeed: It seems that only the following characters are allowed: ###x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]##. [http://www.w3.org/TR/REC-xml/#charsets] Can you use escapes in your EmacsLisp files? "\007" should be ^G and "\012" should be ^J. -- AlexSchroeder
+
+[new:DrewAdams:2006-10-02 23:10 UTC]
+Bummer. If you mean to try entering \007 and \012 as octal escapes (via `C-q 007'), the result is the same: that just inserts a ^G and ^J. Did you mean something else? Could you perhaps use a CDATA section or something for the actual EmacsLisp part of the page? (Just a thought -- probably that would ruin the colored display.) Anyway, I've written a comment in the file, telling people to change the characters if they don't appear to be ^G and ^J. -- DrewAdams
+
+[new]
+No, I'm suggesting you use octal escapes in your source files. I'm not sure what you need, but perhaps the following would do:
+
+    (defcustom icicle-list-join-string "\007\012")
+
+This is different from using `C-q 0 0 7' to insert the bell character using its number in octal. -- Alex
+
+[new:DrewAdams:2006-10-03 22:54 UTC]
+Also, ^L is stripped, I just discovered. It is used commonly in EmacsLisp files as a code-section (page) separator. -- DrewAdams
+
+[new]
+Yeah. That is a bummer. I guess if you really care about this, you must upload files using the _Replace text with file_ link. -- Alex
+
+[new:DrewAdams:2006-10-04 02:02 UTC]
+I guess I'd forgotten about octal escapes. I supposed you were speaking of entering control chars using octal codes. Thanks. Yeah, too bad about ^L. Life goes on... -- DrewAdams
+
+[new]
+My humble contribution: in Emacs 22, I figured that the best (most sure) way to make sure that your buffer is in UTF-8 is to write it to a file, forcing the use of UTF-8. You can do that with C-x RET f. Check the lower left corner of the editor window for a small u, which indicates that your buffer is in UTF-8. -- !LeonelGayard
+
+== Suggestion: Syntax Highlighting for code snippets ==
+
+[new]
+* It would be nice to have syntax highlighting also for code snippets inside ordinary Wiki pages. Perhaps <code><elisp></code> or <code><pre lang="elisp"></code> instead of <code><pre></code> for including snippets (and <code><code lang="elisp"></code>). -- JakubNarebski
+
+[new:AlexSchroeder:2005-07-28 19:36 UTC]
+The code I use is the Beautifier Perl module.  Any page that starts with three semicolons is highlighted as a Scheme file.  Any page that starts with "#!/usr/bin/perl" is highlighted as a Perl file.  The highlighting uses a language definition file that uses codes.  Every code is then assigned a color in the HTML Output module.
+
+So there's two tasks, here:
+
+# The transition from Scheme to Lisp or EmacsLisp.
+# The mapping of codes to colors.
+
+Links:
+
+* http://www.emacswiki.org/emacs/config -- config file; look for the sub !MyRules
+* And the following in http://www.emacswiki.org/scripts/
+* ##Beautifier/## -- the Perl module, not interesting
+* ##HFile/## -- the language definition files
+* ##Output/## -- the files producing the output
+* ##beautify.pl## -- the Oddmuse extension that allows blocks of code being highlighted; not yet used on this wiki
+
+I'm particularly interested in changing the Output::HTML module and getting a copy
+of HFile_elisp.pm running.  Any help would be appreciated.
+
+[new]
+I have sent via email to AlexSchroeder, and to Beautifier module lists: CSS.pm (containing Output::CSS module), Output::HTML.css which generates the same colors from Output::CSS as Output::HTML, and HFile_lisp.pm (converted from HFile_lisp.phps).
+
+I made use of the files which had both PHP and Perl version, namely Output_HTML.phps and HTML.pm for generating CSS.pm from Output_css.phps; and HFile_scheme.phps and HFile_scheme.pm to generate HFile_lisp.pm from HFile_lisp.phps.  You can probably remove some comments.
+
+You have to add <code><link type="text/css" rel="stylesheet" hreff="/emacs/beautify.css" /></code> [hreff should be href, but needed to avoid spamming rules] (where of course instead of <code>beautify.css</code> you have to put correct name of Beautifier CSS) somewhere in the header of either all file, or only in the header for EmacsLisp wiki pages.  Or add to <code>wiki.css</code>.
+
+Beautifier PHP / Perl syntax highlighting homepage: http://www.beautifier.org
+
+-- JakubNarebski
+
+Any Emacs Lisp code that contains ?\" ends up being fontified incorrectly thereafter (or until another matches it).  There is an example on the tal-mode.el page.
+
+[new]
+Any suggestions on how to fix the code?
+I use [http://www.emacswiki.org/scripts/Beautifier/ Beautifier::Core],
+[http://www.emacswiki.org/scripts/HFile HFile::HFile_lisp], and
+[http://www.emacswiki.org/scripts/Output Output::CSS].
+-- AlexSchroeder
+
+[new]
+I've never written perl so I've no idea what I'm talking about but could it be as simple as changing this one line in <code> HFile/HFile_elisp.pm </code> ?
+
+<pre>
+  <   $self->{escchar}           = "";
+  >   $self->{escchar}           = "\\";
+</pre>
+
+[new]
+We're still using the HFile_lisp file, not HFile_elisp, because I was unable to get the elisp version working in reasonable time. -- AlexSchroeder
+
+[new]
+I make a test in local machine. Changing HFile_lisp.pm the lines <code>$self->{escchar} = ""</code> to <code>$self->{escchar} = "\\"</code>, seem correctly highlight my elisp files. Is it work here?
+
+[new]
+I have installed that change, but it didn't have the intended effect for [[tal-mode.el]]. :( -- AlexSchroeder
+
+[new]
+Oh, I don't notice this problem. I only tested the escape quote in docstring. The escape charactor only take effect in a quote string. So ?\" still need a commend to rescue. The line should be 
+<pre>
+    (modify-syntax-entry ?\" "." st)   ; wiki bug " 
+</pre> 
+now.
+
+== Suggestion: Emacs Lisp Files Categories ==
+
+[new]
+Is there a possibility in addition to flat alphabetic list of files adding automatically some hierarchical structure? E.g. automatic adding files into keywords, as noted by
+
+     ;; Keywords:
+
+in header (with standard keywords for example in boldface), and for those files who has it into Customize hierarchy, as noted e.g. by first defgroup call. --
+JakubNarebski (jnareb@wp.pl)
+
+[new:DrewAdams:2005-02-11 15:40 UTC]
+Good question. If something like that were done, it should probably be on separate pages, to reduce clutter.
+
+On a related note, someone asked me if there was a way to download all of my libraries at once, and I replied no. That might be something else to consider, along the same lines as keyword grouping: Provide a way to select and then download multiple files all at once. -- DrewAdams
+
+[new]
+I think we should use the wiki for that.  This is where we can put the links to the files in any structure we want.
+The automatism suggested above with the use of keywords will end up being awkward, since there is no way to get more info.
+We'll end up reprogramming the package finder from Emacs as a CGI script.  Better to use wiki-power.
+
+[new]
+I'm not suggesting making some kind of CGI or other script *searching* the EmacsLisp files. I was thinking about some way of putting EmacsLisp files into categories on the *upload* (and of course, ran once for the code present now in EmacsLisp area). Would it be separate index pages for each keyword and wiki page for keywords, or simply directories corresponding to keywords with (symbolic) links to files... that is left for discussion.
+
+It would be better to have for each EmacsLisp file or group of EmacsLisp files have separate wiki page... but it wouldn't happen by itself. Proposed solution is worse than separate wiki pages, but better than nothing.
+-- JakubNarebski (jnareb@wp.pl)
+
+== Suggestion: Interface & Usability ==
+
+[new:DrewAdams:2005-07-26 00:05 UTC]
+Thanks, Alex. Looks good.
+
+It does take a little more work to add or update a file with the new system, but the advantage of the pseudo-font-lock highlighting is appreciated.
+
+I notice that if, instead of copying and pasting the EmacsLisp file text, you click '''Replace this text with a file''', you can, in effect upload the file and have a "Download" link replace it on the wiki page (although the link does not show the '''Download:''' prefix). Accessing the file that way, like before, does not show the highlighting, however (bummer).
+
+And there seems to be no way to edit the page with the download link. You can ''replace'' the link with any text (e.g. copying and pasting), but that puts us back to the situation now -- you can't ''add'' text to the page that has the download link. You essentially have a choice: download link or displayed program. Why not both?
+
+'''''Suggestion''''' -- Would it be possible to have the script for uploading this way ('''Replace text with file''') do the following?
+
+# Upload the file, as it does now, creating a download link on a normal Wiki page (which has headers and footers).
+# Perhaps make the text of that page editable, so you can add to it.
+# Insert the file text below the download link, so that it appears with highlighting.
+
+Number 2 is optional -- the main thing would be to have both the download link and the file text displayed on the same web page. And having the download link created automatically would be handy.
+
+Perhaps this isn't feasible technically, but it if it is, it would help usability, IMO.
+
+Anyway, thanks -- DrewAdams
+
+[new:DrewAdams:2005-07-26 00:34 UTC]
+I added back the link to the library index. I tried to come up with a link for a chronological list, using the URL for the index as inspiration, but there is probably a better URL to use -- what I used doesn't really work. Is there any way to get a link that does just what changelog used to do? Any way to get a diff link for each library (in the overall list), like before?
+
+IOW, this page used to be a great place to access EmacsLisp libraries and see what has changed recently. Now, users have only search and the substitute links I added above.
+
+Also, on the index page, these links do not seem correctly named, and perhaps they should not even be present -- they don't seem to have anything to do with EmacsLisp libraries:
+
+* "Without normal pages"
+* "Without permanent anchors"
+* "Include near pages"
+
+I admit that I don't know much about how this works. My impression is that it needs just a little polishing to be more usable, but I'm probably missing something. -- DrewAdams
+
+[new:AlexSchroeder:2005-07-26 07:12 UTC]
+Another benefit of the new system is that changes are now integrated into regular RecentChanges and will get much better peer review.
+
+== Problem: Uploading ==
+
+[new:AlexSchroeder:2005-07-26 07:12 UTC]
+If you upload files instead of pasting them you loose the benefit of being able to diff.  Looking at the diff is a big part of peer review.  Without it, we can still see who changed which files, but if we want to know /what/ was changed, we need to download two versions of the file and diff on the local system.  This is a major drawback.  We should only suffer it if we are forced to it because we're dealing with binary files (archives or images).
+
+Not being able to edit pages if you follow the download link is unfortunate but I see no other way around it.  If you want to offer a direct link to the source for people to download and save to disk, then that source file has to be plain text.  No header, no footer, no javascript, nothing.  And thus, no way to edit it.
+
+Since you in particular uploaded a gazillion files, consider using a script to post your files.  Oddmuse:wikiput might be just the script you need.  You could even consider uploading all the files -- if they haven't changed, Oddmuse will not save a new revision.  So you can do something like the following:
+
+    cd ~/elisp
+    for f in *.el; do
+      echo $f
+      wikiput -u DrewAdams -s "Sync with developer" \
+         http://www.emacswiki.org/cgi-bin/emacs/$f  \
+         < $f
+      sleep 10
+    done
+
+The sleep is important so you don't trigger the SurgeProtector.
+
+[new:DrewAdams:2005-07-26 15:49 UTC]
+
+: Thanks. I probably won't try to upload everything each time I make a change, however ;-).
+
+: Needing to copy & paste to the wiki page is no worse than what we did before (paste into the form), so I can live with that. The new upload method, however, where you just browse to your disk files and select them, is very convenient. I was hoping for something like that for uploading (instead of pasting) to regular wiki pages. If that's not possible, as I say, I can live with copy+paste. -- DrewAdams
+
+[new]
+For the time being, that's how it is going to remain.  Right now it doesn't seem to be too urgent,
+so I'll just keep it in mind for later.  I would have to assume that all MIME types starting with
+"text" will be rendered correctly using a text formatting rule.  At the moment the two are not
+identical -- the rule kicks in when the page starts with ";;;" or "#!" I think, and not all text
+MIME types would do that.
+
+[new]
+Seems like the instructions for uploading needs some rewrite. I can only find "Downloading" at the beginning of this page.
+
+[new:DrewAdams:2005-08-01 15:43 UTC]
+Done.
+
+This page needs some cleanup, in general. Perhaps after the threads about recent changes have died down a bit.  -- DrewAdams
+
+[new]
+I just tried to update minibuffer-complete-cycle.el by uploading a file using Firefox 1.5.0.4 on Windows XP, but received an error page stating application/octet-stream files are not accepted.  Why does the Wiki think a .el file is anything but text/plain or application/emacs-lisp (or is that x-application/... or .../x-emacs-lisp)?  In case it matters, the file is in a Unix directory on a mapped network drive.  I got around it by pasting the file contents. -- KevinRodgers
+
+[new]
+The wiki uses whatever your browser claims the file to be. Usually this involves the entire MIME setup on your system. On your system, the .el files have no particular MIME type and therefore application/octet-stream is used by your browser.
+
+In general, however, if you want to upload a single elisp file, I suggest you /paste/ the file into an ordinary page. If the page text starts with three semicolons, it will be highlighted and a convenient download link will appear automatically.
+-- AlexSchroeder
+
+== Problem: Alphabetical and Chronological List ==
+
+[new:AlexSchroeder:2005-07-26 07:12 UTC]
+
+There was no way to filter recent changes for pages that look like EmacsLisp code only.
+I've now added that feature to the wiki script, and changed the redirect accordingly.
+The changelog.html link will redirect to the correct filtered recent changes.
+
+[new:DrewAdams:2005-07-26 15:49 UTC]
+
+: Thanks -- seems to work well. And it shows the (diff) link and last modifier and date. Any chance of having that additional info also in the alphabetical index? IOW, it would be great if the alphabetical list had the same info as the chronological list, the only difference being the sort order (and the number of files listed). -- DrewAdams
+
+[new:AlexSchroeder:2011-10-19 11:55 UTC]
+What do you think of Self:action=elisp-area?
+
+[new:DrewAdams:2011-10-19 14:34 UTC]
+I like it, but I would also like to see something nearly as simple and compact as the current alphabetic sort: just one line per entry:
+
+: <tt>[[icicles-mcmd.el]]</tt>   05:00 UTC
+
+Or maybe also with a ##(diff)## link (dunno about that).  -- DrewAdams
+
+[new:AlexSchroeder:2011-10-19 18:13 UTC]
+No problem -- I added Self:action=elisp-area;context=0.
+
+[new:DrewAdams:2011-10-19 18:35 UTC]
+Great.  Can we have that in place of the current alphabetical listing (linked from the download page)?  And if possible, it would be more readable if there were a tab (i.e., some kind of aligned spacing) before the time -- just a "nice-to-have".  Thx! -- DrewAdams
+
+[new:Alex:2011-10-19 22:05 UTC]
+I used a table instead of single lines in a paragraph and I'll use the link to replace what we currently have.
+
+[new:DrewAdams:2011-10-19 22:17 UTC]
+Yowza! Looks good to me.  Thx -- DrewAdams
+
+[new:AlexSchroeder:2012-07-08 23:37 UTC]
+As the alphabetical listing was taking a long time (every page file has to be opened to determine meta data such as last author and last modification date), a cron job will be computing this list every four hours.
+
+The following two URLs are rewritten as follows:
+
+* http://www.emacswiki.org/emacs/?action=elisp-area;context=0 -> http://www.emacswiki.org/emacs/elisp-area-compact.html
+* http://www.emacswiki.org/emacs/?action=elisp-area -> http://www.emacswiki.org/emacs/elisp-area.html
+
+== Suggestion: Adding provide form to libraries that miss it ==
+
+[new]
+A lot of Emacs Lisp files on the Emacswiki do not provide a feature.  I have fixed a lot of them or got the authors to do so.  I remove most of the discussion since it is not relevant anymore.
+
+To sum up: There are legitimate reasons why a library does not provide a feature.  However the Elisp manual, node Coding Conventions, recommends explicitly to add provide to each file.  Because of this it is probably a good idea to add a comment stating why the provide form is missing, right where you would normally put it. -- JonasBernoulli
+
+== Suggestion: Tools to improve adherence to Coding Conventions ==
+
+[new:DrewAdams:2008-12-07 17:50 UTC]
+(...) I agree that it could be helpful for a library that doesn't use `provide' to provide a commentary saying that that is deliberate. It would also be good if the commentary explained why. It might be good to state that somewhere on the wiki as a suggestion (guideline).
+
+Is there an EmacsLisp library or command that checks an Emacs-Lisp library or buffer for style and conventions -- the way that `checkdoc' checks doc strings? If so, then perhaps such a check for `provide' could be added to it. The byte-compiler provides some suggestions, e.g. wrt deprecated forms. Perhaps the byte-compiler should also suggest that a `provide' might be appropriate (when it is run on a complete file and there is no `provide'). (...) -- DrewAdams
+
+[new]
+There is lm-verify in lisp-mnt.el distributed with Emacs. I have also written a library that extends lisp-mnt but mostly to extract information from faulty libraries. It's quite ugly and not yet released (and contains a few hacks particular to your libraries - you made some good additions to the conventions ;-)). I will continue to improve that library and release it soon. lisp-mnt.el contains some bugs too, I will inform emacs-dev about that.
+
+And we could put some information on the wiki about lm-verify. -- JonasBernoulli
+
+== Problem: Downloading Elisp Files ==
+
+There was recently a discussion on the developers list about saving elisp files from a web browser.
+AFAICS if you save what you see in the browser you can get problem with certain characters.
+This problem will be bigger the more non-ascii characters the elisp file contains.
+The simplest way to avoid this seems to me to be to right click the file and choose /Save Link As/ or something similar.
+
+What about telling this beside the /Download/ link on the elisp pages? -- LennartBorgman
+
+[new]
+I actually have a suggestion in the ElispArea telling people to try and avoid anything but ASCII or UTF-8 encoded files when uploading. I'm not sure your suggestion works. If it does, it certainly seems like a hack to me. The problem is that the server sends a HTTP header indicating that the content is UTF-8 encoded. If it is not, then the bytes are simply invalid. Whether the browser handles the bytes correctly, ignores the HTTP header, or drops the characters is undefined, as far as I am concerned. If you really need those ISO-2022 or KOI-8 encoded files, then use the _Replace text with a file_ link below the Save button to really upload a file. This file will then be handled correctly by the browser since in almost all cases, the browser will offer to save it instead of displaying it. -- AlexSchroeder
+
+[new]
+I am not sure. However please read the message from Jason here:
+http://lists.gnu.org/archive/html/emacs-pretest-bug/2007-02/msg00241.html.
+To me it looks like this leads to the same conclusion that I came to.
+If the webserver is not properly configured the way I suggested above may still be a way to download a file as binary.
+
+[new]
+The way I read it, Jason doesn't provide any new information. He says the webserver doesn't change anything. That is correct. I say that the browser is getting incorrectly encoded bytes, and what happens when you do a "save" or "save as" is undefined. It might work in most cases. In the same thread Drew also mentions that the wiki strips control characters, since those are illegal in XHTML pages, irrespective of encoding used. Thus, using "save as" instead of "save" will probably solve many problems, but certainly not all. The only way to be sure that all problems are solved correctly is by replacing the page text with an uploaded file, as explained elsewhere.
+
+The only thing we could do is either refuse page edits that attempt to add control characters or invalid encoding, thereby warning users, or automatically convert it into an uploaded page, hopefully with an appropriate explanation somewhere.
+
+-- Alex
+
+[new]
+I do not believe the browser recieves incorrectly encoded bytes. I thought that it recieved the raw bytes and then interpreted them with the help of the mime headers. Is that not the case?
+
+Using right-click + save-as solves the downloading problem, but not the problem with editing.
+-- LennartBorgman
+
+[new]
+And the control character problem remains unsolved (mostly ^L, of course). -- Alex
+
+
+== Suggestion: Elisp files status ==
+
+I just saw that Elena had tested some libraries for capitalising and found that
+
+  > auto-cap.el doesn't work;
+  > - auto-capitalize.el raises an error after the first word, then it
+  > doesn't work any more.
+
+This could be a lot of work for different users. Could we please try to find a way to mark libraries as working/nonworking? Maybe for different Emacs versions?
+
+This is not the first time I make a suggestion similar to this.
+However it is a very difficult problem so it is no surprise that we have not made any giant step forwards here,
+but maybe we should try...?
+
+Since elisp files are treated a bit special maybe there is some way to hook in new functionality like the one above?
+(And maybe there could be added another functionality: storing the files in a repository like Launchpad - but that is another story.)
+
+[new:DrewAdams:2009-08-07 02:34 UTC]
+Yes, we've been around this block before... Bad idea (depending on what you mean). Individual libraries typically have some page associated with them where a user can provide feedback about problems. Notifying the library author is the best way to handle such feedback -- the author is likely to be the only one to do anything about fixing problems, in any case.
+
+It's certainly a bad idea to have some simple yes/no or score as an indication of whether or how well a library works. And one person's "works" is another persons "doesn't work". Better to post specific problem descriptions. And it's best to deliver them to the person who will fix them (either via the wiki or in some other way).
+
+Treating software problems via bug reports is, as always, the way to go. Just one opinion. -- DrewAdams
+
+[new]
+Yes, just working/non-working is of course not what I mean.
+But the current situation is in my opinion unacceptable.
+If someone has found a problem there should be an easy uniform way to report it (so it gets reported) --
+and an easy uniform way to know about it (so that next person does not need to try and the author can get aware of what has happened).
+
+Some kind of a bug tracker tailored to the needs here. -- LennartBorgman
+
+[new:DrewAdams:2009-08-07 05:35 UTC]
+Reported to whom? 
+
+1. Reported to the library maintainer? That's best done on an individual basis. Some code is posted here but its maintainers seldom look here -- in that case, it's best to contact them by whatever means are described in the library. Even for other libraries here, I don't see the point of a central bug repository or scoreboard.
+
+I look on the wiki often, and users can post bug reports for my libraries here, no problem. But I prefer to get bug reports by email, since there is often an back-and-forth of information that is simpler by email. I prefer that [[Icicles]] users use `M-x icicle-send-bug-report', which prepares an email. I imagine that different library maintainers have different preferences. Jane might like Twitter; John might like smoke signals.
+
+2. Reported to other users? That too is best done on the particular page dedicated to that library -- that's where its users look for tips, problems, Q&A, and other info about that particular library. Again, a central tips or problem-description repository would be much less useful, IMO.
+
+Bug ''tracking''? That's something else again. That too tends to be specific to the particular library and maintainer. Don't expect someone whose file was posted here long ago or by someone else to follow bugs through an EmacsWiki bug tracker.
+
+I really think handling any kind of information relative to code posted here -- whether questions, bugs, tips, discussion, or anything else, is best handled in the pages here that concern that particular code, not in some consolidating bug tracker. That's in the nature of wiki contribution and sharing. I don't see the value of the "uniformity" you propose. Again, just one opinion. -- DrewAdams
+
+[new]
+Ok, you are against my proposal.
+You seem to think the current situation is the best.
+
+So why do you think of that it currently does not work?
+Is not that a problem?
+
+What do you think that a user that download a library that does not work think?
+
+Where should the problem currently be reported on the wiki?
+Should a user that founds a problem change the code in the library to say "this does not work", or?
+(That might be a way, actually.) -- LennartBorgman
+
+[new:DrewAdams:2009-08-07 14:30 UTC]
+I don't see a particular problem, but I recognize that it could happen that a user not know how to contact the maintainer of some code s?he finds here. If that happens (no contact info in the file, no wiki homepage for the maintainer, no other info about the maintainer anywhere, no help from Google), then I suppose the user's only recourse is to write something up here, asking if others know how to contact the maintainer.
+
+I'm not saying you don't see a problem. I'm saying I don't see your proposal as being a good solution. But it would be good to hear from others. Just one opinion. -- DrewAdams
+
+[new]
+I see a problem for example in the case I started this thread with and I have seen a lot of similar problems before.
+
+I also see a problem in that there is no place to put the information in so that it can be shared.
+Should a user that discovers a problem simply change the elisp file so that it barks or just put a comment in it, or?
+
+And there is no "problem history" which also could help users trying something or finding a problem.
+
+Beeing able to search for a special error message is something more that can be useful.
+(Yes, it can be put in a comment in the elisp file, but that will disappear from searching after the problem is fixed so no one will see it if they are not fast enough
+to discover the problem.)
+
+I could go on...
+
+[new]
+In general, I think adding a bug tracker to the site and maintaining it is a chore I'm not looking forward to. Does anybody volunteer? I'd be willing to add code that will not only print a _Download_ link but also a bugtracking link for every source file.
+
+I agree with Drew's sentiment, however. The individual files are not big projects. At least for my own files, I get about one or two emails per year, and most of them I no longer maintain anyway. I'd never check a bucktracking site, I'd never set up some sort of email notification, I wouldn't provide more support, work harder on bugs, or prioritize according to the needs of strangers on the Internet. I don't see myself in the target audience for a bug tracker.
+
+Now, if *somebody else* set up a bugtracker, and authors who want to use it add some sort of special token to their source files, and I automatically link to the appropriate bug tracker accounts -- that might be worth an experiment. -- AlexSchroeder
+
+[new]
+Maybe a common bugtracker for all elisp files hosted on Emacs Wiki?
+Then individual authors could add a token to those files for which they want to use that bugtracker.
+They should then of course subscribe themselves to this bug tracker.
+
+However I would like some structured bug handling including at least Emacs version.
+Is there any bugtracker that can handle this?
+(I suppose we should use one of the bugtrackers available and hosted on some good site like Launchpad.)
+-- LennartBorgman
+
+[new]
+Will you set something up? I'm willing to write some code to connect elisp sources hosted on Emcs Wiki to link to an external bugtracker. -- Alex
+
+[new]
+I believe we maybe should think more about the structure needed first.
+And how we can lower the threshold for users to use it (or perhaps whether there are any benefits of lowering the threshold?).
