@@ -1,35 +1,45 @@
-At least three Emacs modes have been released for editing Dos scripts (batch files):
+Several Emacs modes have been released for editing Dos scripts (batch files).
 
-== dos-mode ==
+BatMode is the default mode for editing *.bat and *.cmd files, part of core Emacs 24.4 onwards.
 
-By Arni Magnusson (2003-2013). The recommended mode for editing Dos scripts.
+== bat-mode ==
 
-DosMode supports all of the features listed above, borrowing and improving ideas from ##batch-mode## and ##cmd-mode##. It also provides imenu+outline navigation and code templates. Size: 7KB
+By Arni Magnusson (2014).
 
-[new]
-I added indentation for ##dos-mode## via the lisp file DosIndent -- Matthew Fidler
+BatMode provides syntax highlighting, a basic template, access to help pages, imenu/outline navigation, and the ability to run scripts from within Emacs.
+
+== bat-generic-mode ==
+
+By Peter Breton (1996-2013).
+
+Was part of core Emacs 20.3 to 24.3. Made obsolete by BatMode in Emacs 24.4.
 
 == batch-mode ==
 
-By Agnar Renolen and Matthew Fidler (2002-2009). Similar to ##dos-mode##, but with fewer features.
+By Agnar Renolen and Matthew Fidler (2002-2009). Similar to BatMode, but with fewer features.
 
-Lisp:batch-mode.el does not recognize ::comments, :.labels, %~args, underscored_variables, -options, or --options. No commands to run script or show help for Dos commands. No code navigation support or code templates. Size: 6KB
+Lisp:batch-mode.el does not recognize ::comments, :.labels, -options, or --options. No commands to run script or show help for Dos commands. No code navigation support or code templates.
 
 Using the term /batch mode/ here can be misleading, since the GNU Emacs Manual says: "Batch mode is used for running programs written in Emacs Lisp from shell scripts, makefiles, and so on." This is what BatchMode is about.
 
 == cmd-mode ==
 
-By Tadamegu Furukawa (2001-2005). Similar to ##dos-mode##, but with fewer features.
+By Tadamegu Furukawa (2001-2005). Similar to BatMode, but with fewer features.
 
-CmdMode does not recognize ::comments, :.labels, /options, -options, or --options. Script cannot be run from Emacs with args. Code navigation misses :.labels and is not as feature-rich as imenu+outline. Size: 25KB
+CmdMode does not recognize ::comments, :.labels, /options, -options, or --options. Script cannot be run from Emacs with args. Code navigation misses :.labels and is not as feature-rich as imenu+outline.
+
+== dos-mode ==
+
+By Arni Magnusson (2003-2013). Predecessor of BatMode.
+
+[new]
+I added indentation for ##dos-mode## via the lisp file DosIndent -- Matthew Fidler
 
 == ntcmd-mode ==
 
 By Daniel Colascione (2010). Emphasis on language parser.
 
-Lisp:ntcmd.el is a new DOS script mode that uses a parser to fully
-understand the cmd language. Does not natively include templating and
-outlining: use other minor modes, like [[Yasnippet]], for that. Size: 45KB
+Lisp:ntcmd.el is a new DOS script mode that uses a parser to fully understand the cmd language. Does not natively include templating and outlining: use other minor modes, like [[Yasnippet]], for that.
 
 ----
 == General discussion ==
