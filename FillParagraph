@@ -55,9 +55,9 @@ Emacs comes with a `fill-single-word-nobreak-p' to not dangle the first or last 
 By default, text-mode assumes that empty lines separate paragraphs.  The boundaries of paragraphs are determined by two variables.  You might want to change these two variables if you are writing a new major mode for a programming language, or if you are unhappy with the defaults.  Here is an example:  If you write a bulleted list, you need to separate items by an empty line if you want to fill them using <code>M-q</code>:
 
     * One item
-
+    
     * Another item
-
+    
     * The last item
 
 If you want to write this without empty lines, filling will fuse the items:
@@ -72,41 +72,16 @@ turns into
 
 In order to prevent this, we need to tell Emacs that the bullet indicates the start of a new paragraph.  Here is how:
 
-    ;; The original value is ""\f\\|[      ]*$", add to it bullet (*) and (-).
+    ;; The original value is "\f\\|[      ]*$", so we add the bullets (-), (+), and (*).
     ;; There is no need for "^" as the regexp is matched at the beginning of line.
+    (setq paragraph-start "\f\\|[ \t]*$\\|[ \t]*[-+*] ")
 
-    (setq paragraph-start "\f\\|[ \t]*$\\|[-*] +.+$" 
+To cover other cases, such as numbered lists, it may be helpful to copy from the settings in MarkdownMode (or simply use it for plain text).
+
+In older Emacs (prior to 20.7), it may be necessary to use something closer to this:
+
+    (setq paragraph-start "\f\\|[ \t]*$\\|[ \t]*[-+*] +.+$"
           paragraph-separate "$")
-
-<i>Note: The handling of these two variables was broken in Emacs 20.7, so the above example might not work for you.  I applied the following patch to my Emacs 20.7, so it works now.</i>
-
- From: StefanMonnier
- Subject: Re: adaptive fill question
- To: AlexSchroeder
- Date: 02 Mar 2001 16:43:40 -0500
-
-Could you try the trivial patch below to textmodes/fill.el ?  I believe it's a bug, but it's old code and there are so many different possible situations that it's hard to tell whether the code is the way it is just by happenstance or if it is due to a particular problem.
-
-The patch fixes the problem for me, but please try it in other cases as well, to see if it introduces unexpected problems.
-
-Stefan
-
-    Index: fill.el
-    ===================================================================
-    RCS file: /cvs/emacs/lisp/textmodes/fill.el,v
-    retrieving revision 1.126
-    diff -u -u -b -r1.126 fill.el
-    --- fill.el	2001/02/22 20:08:33	1.126
-    +++ fill.el	2001/03/02 21:38:28
-    @@ -225,7 +235,7 @@
-           (move-to-left-margin)
-           (setq start (point))
-           (setq first-line-prefix
-    -	    (cond ((looking-at paragraph-start) nil)
-    +	    (cond ;; ((looking-at paragraph-start) nil)
-                      ((and adaptive-fill-regexp (looking-at adaptive-fill-regexp))
-                       (buffer-substring-no-properties start (match-end 0)))
-                      (adaptive-fill-function (funcall adaptive-fill-function))))
 
 == Problems ==
 === Setting the fill column seems not to work ===
