@@ -1127,6 +1127,8 @@ Setting the `default-directory' to a directory allows
 
 === Traversing ===
 
+A file-tree-walk function has been added to the Emacs development tree.  Until it lands in your version, you can use this:
+
     (defun walk-path (dir action)
        "walk DIR executing ACTION with (dir file)"
        (cond ((file-directory-p dir)
