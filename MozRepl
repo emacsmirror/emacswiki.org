@@ -38,18 +38,18 @@ Also, if you have multiple tabs/windows open it might initially pick the wrong w
 (add-hook 'html-mode-hook 'auto-reload-firefox-on-after-save-hook)
 (add-hook 'css-mode-hook 'auto-reload-firefox-on-after-save-hook)
 </pre>
-[new]
-Nice, but if you are going to experiment with this it might be good to use a named function in the hook instead of a lambda.
-That way you can change it and you can also delete it from the hook if you want to.
 
-== Live-Preview: Mirror buffer changes instantly in the browser (improved)==
 I suggest using below code,
 <pre>
 (comint-send-string (inferior-moz-process)
                                            "setTimeout(function(){content.document.location.reload(true);}, '500');")
 </pre>
 instead of BrowserReload. The difference is this solution won't cache the user input after web page refreshed. 
+[new]
+Nice, but if you are going to experiment with this it might be good to use a named function in the hook instead of a lambda.
+That way you can change it and you can also delete it from the hook if you want to.
 
+== Live-Preview: auto-refresh the browser, improved version==
 Make the auto-refresh browser smarter, using below code, which is all you need,
 <pre>
 (defun my-moz-refresh-browser-condition (current-file)
