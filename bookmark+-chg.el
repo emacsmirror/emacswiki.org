@@ -6,13 +6,13 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Nov 15 12:46:37 2014 (-0800)
+;; Last-Updated: Thu Dec  4 18:42:20 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 15753
+;;     Update #: 15777
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -1074,6 +1074,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/12/04 dadams
+;;     *-dired-marked, *-move-marked-to-bookmark-file, *-copy-marked-to-bookmark-file,
+;;       *-create-bookmark-file-from-marked, *-set-bookmark-file-bookmark-from-marked,
+;;       *-(i)search-marked-bookmarks(-regexp), *-query-replace-marked-bookmarks-regexp
+;;       *-set-tag-value-for-marked, *-add-tags-to-marked, *-remove-tags-from-marked,
+;;       *-paste-(add|replace)-tags-to-marked, *-relocate-marked, *-edit-marked, *-describe-marked:
+;;         Added arg INCLUDE-OMITTED-P.
 ;; 2014/11/09 dadams
 ;;     bookmark-bmenu-show-annotation: Updated doc string to reflect updated bookmark-show-annotation.
 ;; 2014/08/22 dadams
