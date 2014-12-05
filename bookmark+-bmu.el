@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Dec  4 18:40:36 2014 (-0800)
+;; Last-Updated: Thu Dec  4 18:50:47 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3496
+;;     Update #: 3497
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3070,11 +3070,12 @@ Optional arg NO-CONFIRM-P non-nil means do not ask for confirmation."
                                         ; Bound to `Y > -' in bookmark list
   "Move the marked bookmarks to bookmark file FILE.
 You are prompted for FILE.
-If no bookmark is marked then move the bookmark of the current line.
 The marked bookmarks are removed from the current bookmark file and
 appended to those in FILE.  If any of them has the same name as a
 bookmark already in FILE then it is renamed by appending a numeric
 suffix \"<N>\" (N=2,3...).
+
+If no bookmark is marked then move the bookmark of the current line.
 
 Normally, any of the marked bookmarks that are already present in FILE
 are ignored, rather than duplicating them under a new, suffixed name.
