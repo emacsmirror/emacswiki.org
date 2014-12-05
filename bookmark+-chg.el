@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Dec  4 18:42:20 2014 (-0800)
+;; Last-Updated: Thu Dec  4 19:04:03 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 15777
+;;     Update #: 15778
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1077,7 +1077,7 @@
 ;; 2014/12/04 dadams
 ;;     *-dired-marked, *-move-marked-to-bookmark-file, *-copy-marked-to-bookmark-file,
 ;;       *-create-bookmark-file-from-marked, *-set-bookmark-file-bookmark-from-marked,
-;;       *-(i)search-marked-bookmarks(-regexp), *-query-replace-marked-bookmarks-regexp
+;;       *-(i)search-marked-bookmarks(-regexp), *-query-replace-marked-bookmarks-regexp,
 ;;       *-set-tag-value-for-marked, *-add-tags-to-marked, *-remove-tags-from-marked,
 ;;       *-paste-(add|replace)-tags-to-marked, *-relocate-marked, *-edit-marked, *-describe-marked:
 ;;         Added arg INCLUDE-OMITTED-P.
