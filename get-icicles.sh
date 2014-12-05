@@ -64,7 +64,7 @@ do
   esac
 done
 
-if [ -z $no_backup && -d "$dir" ]; then
+if [ -z "$no_backup" -a -d "$dir" ]; then
   typeset -i i=0
   while [ -d "${dir}_OLD$i" ]; do
     i="$i + 1"
