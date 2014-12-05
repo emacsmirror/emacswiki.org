@@ -6,14 +6,14 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Nov  9 18:16:45 2014 (-0800)
+;; Last-Updated: Thu Dec  4 19:15:01 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 14861
+;;     Update #: 14867
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -2535,6 +2535,18 @@
 ;;  You can un-omit all of the omitted bookmarks at once, using `- U'
 ;;  (`bmkp-unomit-all').  You can also call this command from outside
 ;;  the bookmark-list display.
+;;
+;;  Omitted bookmarks that are marked are generally not included when
+;;  you use a command that acts on the marked bookmarks.  However, if
+;;  you use a negative prefix argument with the command then they are.
+;;
+;;  For some commands this is relaxed so that any prefix arg has this
+;;  effect.  For other commands a non-negative prefix arg has a
+;;  different effect.  In some cases, a non-negative prefix arg has
+;;  one effect and a non-positive prefix arg has the effect of
+;;  including omitted marked bookmarks, so that a zero prefix arg has
+;;  both effects.  For any given command, consult the doc string for
+;;  full information.
 ;;
 ;;
 ;;(@* "Sorting Bookmarks")
