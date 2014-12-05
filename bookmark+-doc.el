@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Dec  4 19:15:01 2014 (-0800)
+;; Last-Updated: Fri Dec  5 12:26:37 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 14867
+;;     Update #: 14874
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -270,6 +270,15 @@
 ;;       you jump to a bookmark that records a region, the region is
 ;;       activated (see option `bmkp-use-region').  (Region activation
 ;;       is not supported for Gnus bookmarks.)
+;;
+;;       You can define your own region handler for bookmarks that
+;;       record regions.  (This is in addition to being able to define
+;;       bookmark handlers.)  Use option `bmkp-handle-region-function'
+;;       for this.  As one example, command
+;;       `bmkp-region-jump-narrow-indirect-other-window' binds the
+;;       option to a function that narrows the targeted region in a
+;;       cloned indirect buffer.  (You need library
+;;       `narrow-indirect.el' for this command.)
 ;;
 ;;     - Bookmarks are relocated better than for vanilla Emacs when
 ;;       the contextual text changes.
