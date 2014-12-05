@@ -1,16 +1,16 @@
 ;;; vel.el --- keyboard/mouse-based "self-scroller"
-;; Time-stamp: <2003-02-26 09:19:41 deego>
+;; Time-stamp: <2014-06-09 01:45:30 deego>
 ;; Copyright (C) 2002 D. Goel
 ;; Emacs Lisp Archive entry
 ;; Filename: vel.el
 ;; Package: vel
-;; Author: D. Goel <deego@glue.umd.edu>
+;; Author: Dave Goel <deego3@gmail.com>
 ;; Version: 0.9dev
-;; Author's homepage: http://deego.gnufans.org/~deego
+;; Author's homepage: http://www.gnufans.net
 ;; For latest version: 
 
 (defvar vel-home-page
-  "http://deego.gnufans.org/~deego/pub/emacspub/lisp-mine/vel/")
+  "http://www.gnufans.net/~deego/pub/emacspub/lisp-mine/vel/")
 
 
  
@@ -49,7 +49,8 @@ scrolling too, do an M-x toggle-truncate-lines and turn off
 automatic-hscrolling in your .emacs before loading vel.el. 
 
 That's it...  now customize away if not happy with anything.. and let
-me know too.")
+me know too.  You may try turning on the experimental fractional
+scrolling by typing M-x vel-scroll-fractional-p-toggle")
 
 (defun vel-quick-start ()
   "Provides electric help regarding variable `vel-quick-start'."
@@ -62,14 +63,13 @@ me know too.")
 ;; as introduction
 (defvar vel-introduction
   " In this scroll-style, you control the velocity, not scroll-amount.
-Press right mouse and see emacs scroll as long as the mouse is
-pressed..  Release the mouse when done.  Alt., rightclick to enter the
-scroll-phase, and right/left click when done.  Also, keys like ESC-up
-and ESC-down (or M-down or M-pgdn) land you into that special
-temporary vel-croll phase. Wherein the screen keeps scrolling by
-itself and you control the velocity by gently moving the mouse or by
-using up/down arrows or pgup/down.  Anything else gets you out of that
-mode.  Type M-x vel-quick-start.
+Press and hold right mouse and move it up or down to see emacs
+scroll as long as the mouse is pressed..  Move up or down more to
+increase the scroll rate. Release the mouse when done.  
+
+Alternatively, press M-down (up) to start scrolling down (up),
+press again to increase the speed, and so on. Press any key to
+stop scrolling.  Type M-x vel-quick-start.
 
 I know there are still some weird bugs in the mouse-based vel.el
 scrolling, they have stopped showing up for me on my setup.  If you
@@ -124,7 +124,7 @@ New in v. 0.3
  Many thanks to Christoph Conrad and Doug Gerecht for useful
  suggestions.  Thanks to Alex Shroeder and Mario Lang on #emacs for
  help with keybindings.  Suggestions/patches welcome.
- Thanks to J&#65533;r&#65533;me.Bouat@wanadoo.fr <jerome.bouat@wanadoo.fr>@wanadoo.fr
+ Thanks to Jérôme.Bouat@wanadoo.fr <jerome.bouat@wanadoo.fr>@wanadoo.fr
  for suggesting fractional movements, and thanks to Kim F. Storm for
  help in accomplishing it. ")
 
@@ -181,7 +181,7 @@ actually reach the end... for larse scrolls,. that doesn't happen..
 ;;==========================================
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile '(require 'cl))
 
 (defvar vel-debug-p nil "internal")
 (defgroup vel nil 
@@ -250,7 +250,6 @@ Changing this variable will NOT affect the speed.  This variable is
 just served as a least-count for vel.el. "
   :group 'vel)
 
-(defvar vel-ver-moves 0)
 (defvar vel-err-var nil)
 
 (defcustom vel-key-horizontal-p nil
@@ -756,7 +755,7 @@ vel-hor-moves at their previous values..."
   '(keymap))
 
 (defcustom vel-mode-map vel-mode-map-default
-  "Change this to what yoyu like inn your .emacs"
+  "Change this to what yoyu like in your .emacs"
   :group 'vel)  
 
 (define-key vel-mode-map-default
@@ -814,9 +813,6 @@ vel-hor-moves at their previous values..."
  nil
  vel-doscroll-mode-string
  'vel-doscroll-mode-map)
-
-
-
 
 
 
