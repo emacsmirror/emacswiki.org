@@ -16,7 +16,7 @@
 ;;           : Randolph M. Fritz <randolph@panix.com>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
 ;; Version: 1.4.13 (2013-06-29)
-;; Serial Version: %Id: 43%
+;; Serial Version: %Id: 44%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
@@ -593,7 +593,7 @@ Commands:
                 (setq font-lock-keywords visual-basic-font-lock-keywords)))
 
          (if visual-basic-winemacs-p
-             (font-lock-fontify-buffer)
+             (font-lock-ensure)
            (font-lock-mode 1)))))
 
 ;; KJW should add some odds and bobs here to cover "end if" one way
@@ -687,7 +687,7 @@ Commands:
       (zmacs-activate-region)))
 
 (defun visual-basic-indent-defun ()
-  "Indent the function within which the pointer is located.  This has a border on mark."
+  "Indent the function within which the pointer is located.  This has a border effect on mark."
   ;; VB1 to Lennart: is border effect on mark an issue ?
   (interactive)
   (save-excursion
