@@ -2770,6 +2770,16 @@ You can un-omit ''all'' of the omitted bookmarks at once, using '''`##- U##''''
 ('''`bmkp-unomit-all'''').  You can also call this command from
 outside the bookmark-list display.
 
+Omitted bookmarks that are marked are generally not included when
+you use a command that acts on the marked bookmarks.  However, if
+you use a ''negative [[prefix argument]]'' with the command then they are.
+
+For some commands this is relaxed so that any prefix arg has this effect.  For other commands a non-negative
+prefix arg has a different effect.  In some cases, a non-negative
+prefix arg has one effect and a non-positive prefix arg has the
+effect of including omitted marked bookmarks, so that a zero
+prefix arg has both effects.  For any given command, consult the
+doc string for full information.
 
 
 
