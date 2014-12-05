@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Dec  4 18:50:47 2014 (-0800)
+;; Last-Updated: Thu Dec  4 19:01:26 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3497
+;;     Update #: 3522
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3075,12 +3075,12 @@ appended to those in FILE.  If any of them has the same name as a
 bookmark already in FILE then it is renamed by appending a numeric
 suffix \"<N>\" (N=2,3...).
 
-If no bookmark is marked then move the bookmark of the current line.
-
 Normally, any of the marked bookmarks that are already present in FILE
 are ignored, rather than duplicating them under a new, suffixed name.
 But if you use a non-negative prefix arg then such duplication is
 allowed.
+
+If no bookmark is marked then move the bookmark of the current line.
 
 Omitted bookmarks are excluded, by default.  With a non-positive
 prefix arg, any that are marked are included.
@@ -3119,7 +3119,6 @@ confirm moving to new, empty file if no existing file."
                                         ; Bound to `Y > +' in bookmark list
   "Copy the marked bookmarks to bookmark file FILE.
 You are prompted for FILE.
-If no bookmark is marked then copy the bookmark of the current line.
 The marked bookmarks are appended to those already in FILE.
 If any of them has the same name as a bookmark already in FILE then it
 is renamed by appending a numeric suffix \"<N>\" (N=2,3...).
@@ -3129,6 +3128,8 @@ are ignored, rather than duplicating them under a new, suffixed name.
 But if you use a non-negative prefix arg then such duplication is
 allowed.  Use this, for example, to duplicate a bookmark in the
 current bookmark file (use that file as FILE).
+
+If no bookmark is marked then copy the bookmark of the current line.
 
 Omitted bookmarks are excluded, by default.  With a non-positive
 prefix arg, any that are marked are included.
@@ -3183,12 +3184,14 @@ confirm moving to new, empty file if no existing file."
                                                     &optional include-omitted-p batchp)
                                         ; Bound to `Y > 0' in bookmark list
   "Create bookmark file FILE by copying the marked bookmarks.
+You are prompted for FILE.
 They are not deleted from the current bookmark file.  To delete them, use \
 \\<bookmark-bmenu-mode-map>`\\[bmkp-bmenu-delete-marked]'.
-You are prompted for FILE.
 
 With a non-negative prefix arg, create also a bookmark-file bookmark
 for FILE.  You are prompted for the bookmark name.
+
+If no bookmark is marked then copy the bookmark of the current line.
 
 Omitted bookmarks are excluded, by default.  With a non-positive
 prefix arg, any that are marked are included.
@@ -3228,6 +3231,8 @@ bookmark-file bookmark.
 
 This is the same as using a non-negative prefix arg with
 `bmkp-bmenu-create-bookmark-file-from-marked'.
+
+If no bookmark is marked then use the bookmark of the current line.
 
 Omitted bookmarks are excluded, by default.  With a prefix arg, any
 that are marked are included.
@@ -3452,10 +3457,10 @@ If no bookmark is marked, search the bookmark of the current line.
 
 With a non-negative prefix arg, search all bookmarks.
 
-Omitted bookmarks are excluded, by default.  With a non-positive
-prefix arg, any that are marked are included."
+Omitted bookmarks are excluded, by default.  With a negative prefix
+arg, any that are marked are included."
     (interactive (list (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
-                       (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))))
+                       (and current-prefix-arg  (<  (prefix-numeric-value current-prefix-arg) 0))))
     (bmkp-bmenu-barf-if-not-in-menu-list)
     (let ((bookmarks        (mapcar #'car (bmkp-sort-omit
                                            (bmkp-bmenu-marked-or-this-or-all allp include-omitted-p))))
@@ -3466,12 +3471,13 @@ prefix arg, any that are marked are included."
                                         ; `M-s a M-C-s' in bookmark list
     "Regexp Isearch the marked bookmark locations, in their current order.
 If no bookmark is marked, search the bookmark of the current line.
+
 With a non-negative prefix arg, search all bookmarks.
 
-Omitted bookmarks are excluded, by default.  With a non-positive
-prefix arg, any that are marked are included."
+Omitted bookmarks are excluded, by default.  With a negative prefix
+arg, any that are marked are included."
     (interactive (list (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
-                       (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))))
+                       (and current-prefix-arg  (<  (prefix-numeric-value current-prefix-arg) 0))))
     (bmkp-bmenu-barf-if-not-in-menu-list)
     (let ((bookmarks        (mapcar #'car (bmkp-sort-omit
                                            (bmkp-bmenu-marked-or-this-or-all allp include-omitted-p))))
@@ -3489,11 +3495,11 @@ If no bookmark is marked, search the bookmark of the current line.
 
 With a non-negative prefix arg, search all bookmarks.
 
-Omitted bookmarks are excluded, by default.  With a non-positive
-prefix arg, any that are marked are included."
+Omitted bookmarks are excluded, by default.  With a negative prefix
+arg, any that are marked are included."
   (interactive (list (bmkp-read-regexp "Search marked file bookmarks (regexp): ")
                      (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
-                     (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))))
+                     (and current-prefix-arg  (<  (prefix-numeric-value current-prefix-arg) 0))))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (tags-search regexp '(let ((files  ())
                              file)
@@ -3605,14 +3611,14 @@ If no bookmark is marked, act on the bookmark of the current line.
 
 With a non-negative prefix arg, act on all bookmarks.
 
-Omitted bookmarks are excluded, by default.  With a non-positive
-prefix arg, any that are marked are included.
+Omitted bookmarks are excluded, by default.  With a negative prefix
+arg, any that are marked are included.
 
 Non-interactively, non-nil MSG-P means display messages."
   (interactive (list (bmkp-read-tag-completing)
                      (read (read-string "Value: "))
                      (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
-                     (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                     (and current-prefix-arg  (<  (prefix-numeric-value current-prefix-arg) 0))
                      'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (when msg-p (message "Setting tag values..."))
@@ -3653,15 +3659,15 @@ If no bookmark is marked, act on the bookmark of the current line.
 
 With a non-negative prefix arg, act on all bookmarks.
 
-Omitted bookmarks are excluded, by default.  With a non-positive
-prefix arg, any that are marked are included.
+Omitted bookmarks are excluded, by default.  With a negative prefix
+arg, any that are marked are included.
 
 Non-interactively:
  TAGS is a list of strings.
  Non-nil MSG-P means display messages."
   (interactive (list (bmkp-read-tags-completing)
                      (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
-                     (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                     (and current-prefix-arg  (<  (prefix-numeric-value current-prefix-arg) 0))
                      'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((marked                (bmkp-bmenu-marked-or-this-or-all allp include-omitted-p))
@@ -3690,14 +3696,14 @@ If no bookmark is marked, act on the bookmark of the current line.
 
 With a non-negative prefix arg, act on all bookmarks.
 
-Omitted bookmarks are excluded, by default.  With a non-positive
-prefix arg, any that are marked are included.
+Omitted bookmarks are excluded, by default.  With a negative prefix
+arg, any that are marked are included.
 
 Non-interactively, non-nil MSG-P means display messages."
   (interactive
    (let ((tgs  ())
          (all  (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0)))
-         (omt  (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))))
+         (omt  (and current-prefix-arg  (<  (prefix-numeric-value current-prefix-arg) 0))))
            
      (dolist (bmk  (bmkp-bmenu-marked-or-this-or-all all omt))
        (setq tgs  (bmkp-set-union tgs (bmkp-get-tags bmk))))
@@ -4051,12 +4057,12 @@ If no bookmark is marked, act on the bookmark of the current line.
 
 With a non-negative prefix arg, act on all bookmarks.
 
-Omitted bookmarks are excluded, by default.  With a non-positive
-prefix arg, any that are marked are included.
+Omitted bookmarks are excluded, by default.  With a negative prefix
+arg, any that are marked are included.
 
 Non-interactively, non-nil MSG-P means display messages."
   (interactive (list (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
-                     (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                     (and current-prefix-arg  (<  (prefix-numeric-value current-prefix-arg) 0))
                      'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((marked              (bmkp-bmenu-marked-or-this-or-all allp include-omitted-p))
@@ -4073,22 +4079,22 @@ Non-interactively, non-nil MSG-P means display messages."
 ;;;###autoload (autoload 'bmkp-bmenu-paste-replace-tags-for-marked "bookmark+")
 (defun bmkp-bmenu-paste-replace-tags-for-marked (&optional allp include-omitted-p msg-p) ; `T > q'
   "Replace tags for the marked bookmarks with tags copied previously.
-If no bookmark is marked, act on the bookmark of the current line.
-
 NOTE: It is by design that you can *remove all* tags from a bookmark
 by copying an empty set of tags and then pasting to that bookmark
 using this command.  So be careful using it.  If you want to be sure
 that you do not replace tags with an empty list of tags, you can check
 the value of variable `bmkp-copied-tags' before pasting.
 
+If no bookmark is marked, act on the bookmark of the current line.
+
 With a non-negative prefix arg, act on all bookmarks.
 
-Omitted bookmarks are excluded, by default.  With a non-positive
-prefix arg, any that are marked are included.
+Omitted bookmarks are excluded, by default.  With a negative prefix
+arg, any that are marked are included.
 
 Non-interactively, non-nil MSG-P means display messages."
   (interactive (list (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
-                     (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                     (and current-prefix-arg  (<  (prefix-numeric-value current-prefix-arg) 0))
                      'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((marked              (bmkp-bmenu-marked-or-this-or-all allp include-omitted-p))
@@ -4732,10 +4738,10 @@ If no bookmark is marked, edit the bookmark of the current line.
 
 With a non-negative prefix arg, edit all bookmark records.
 
-Omitted bookmarks are excluded, by default.  With a non-positive
-prefix arg, any that are marked are included."
+Omitted bookmarks are excluded, by default.  With a negative prefix
+arg, any that are marked are included."
   (interactive (list (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
-                     (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))))
+                     (and current-prefix-arg  (<  (prefix-numeric-value current-prefix-arg) 0))))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (setq bmkp-last-bmenu-bookmark  (bookmark-bmenu-bookmark))
   ;; No marked bookmarks.  Mark this bookmark, so that `C-c C-c' in edit buffer will find it.
