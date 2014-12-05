@@ -173,11 +173,22 @@ name.)
   component bookmarks in turn.  A component bookmark can itself
   be a sequence bookmark.
 
+[:bmkp-handle-region-function]
+[:bmkp-region-jump-narrow-indirect-other-window]
 [:BookmarkedRegion]
 * You can bookmark a ''[[region]]'' of text, not just a position.  When
      you jump to a bookmark that records a region, the region is
      activated (see [[option]] '''`bmkp-use-region'''').  (Region
      activation is not supported for Gnus bookmarks.)
+You can define your own region handler for bookmarks that
+record regions.  (This is in addition to being able to define
+bookmark handlers.)  Use option '''`bmkp-handle-region-function''''
+for this.  As one example, command
+'''`bmkp-region-jump-narrow-indirect-other-window'''' binds the
+option to a function that narrows the targeted region in a
+cloned indirect buffer.  (You need library
+<tt>[[narrow-indirect.el]]</tt> for this command.)
+
 
 * Bookmarks are relocated better than for vanilla Emacs when the contextual text changes.  By default, when you visit a bookmark that requires relocation, the bookmark is then saved with the new, relocated position information. If you want to turn off this automatic saving, then customize user option '''`bookmark-save-new-location-flag'''' to `nil'.
 
