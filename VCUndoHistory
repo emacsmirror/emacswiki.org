@@ -1,3 +1,4 @@
+[[zh:中文]]
 [[zh:1]]
 Sometimes when one does a vc-revert and abandons the changes he regrets the action and wants to retrieve the changes. This package helps in that. If you install it then after a vc-revert you can access previous diffs with M-x my-list-revert-history.
 
