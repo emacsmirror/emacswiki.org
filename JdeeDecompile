@@ -44,9 +44,18 @@ command and load the decompiled file."
       (apply 'call-process-region 
              (point-min)
 …
-</pre> 
-
+</pre>
 -- 27-Jan-2009, [[DanielClemente]]
+The above change did not work for me using emacs 24.3.1 I added (coding-system-for-write 'raw-text) inside the let statement:
+<pre>
+(defun jdc-buffer ()
+  "Construct the command for decompiling a class file, call the resulting
+command and load the decompiled file."
+  (let ((temp-file-name (concat temporary-file-directory (make-temp-name "jdc") jdc-object-extension))
+        (orig-buffer-name (buffer-name))
+        (orig-file-name (buffer-file-name))
+        (coding-system-for-write 'raw-text))
+</pre>
 
 ===Other minor modifications to make it comfortable===
 ====Put the point at the beginning of the buffer, not at the end====
@@ -64,3 +73,5 @@ index c6dd569..414f5bf 100644
        (delete-file temp-file-name))))
 </pre> 
 -- 26-May-2009, [[DanielClemente]]
+
+
