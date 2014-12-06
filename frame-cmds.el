@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Sat Dec  6 12:56:05 2014 (-0800)
+;; Last-Updated: Sat Dec  6 15:20:03 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3007
+;;     Update #: 3010
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -99,11 +99,13 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `delete-1-window-frames-on', `delete/iconify-window',
-;;    `delete/iconify-windows-on', `delete-other-frames',
-;;    `delete-windows-for', `enlarge-font', `enlarge-frame',
-;;    `enlarge-frame-horizontally', `hide-everything', `hide-frame',
-;;    `iconify-everything', `iconify/map-frame', `iconify/show-frame',
+;;    `create-frame-tiled-horizontally',
+;;    `create-frame-tiled-vertically', `delete-1-window-frames-on',
+;;    `delete/iconify-window', `delete/iconify-windows-on',
+;;    `delete-other-frames', `delete-windows-for', `enlarge-font',
+;;    `enlarge-frame', `enlarge-frame-horizontally',
+;;    `hide-everything', `hide-frame', `iconify-everything',
+;;    `iconify/map-frame', `iconify/show-frame',
 ;;    `jump-to-frame-config-register', `maximize-frame',
 ;;    `maximize-frame-horizontally', `maximize-frame-vertically',
 ;;    `mouse-iconify/map-frame', `mouse-iconify/show-frame',
@@ -274,6 +276,7 @@
 ;;; Change Log:
 ;;
 ;; 2014/12/06 dadams
+;;     Added: create-frame-tiled-horizontally, create-frame-tiled-vertically.
 ;;     Added aliases: tile-frames-side-by-side, tile-frames-top-to-bottom.
 ;;     window-mgr-title-bar-pixel-height: Changed default value for ns to 50.  Thx to Nate Eagleson.
 ;; 2014/10/15 dadams
@@ -1303,6 +1306,22 @@ Interactively:
 If called from a program, all frames in list FRAMES are tiled."
   (interactive (and current-prefix-arg  (frcmds-read-args-for-tiling)))
   (frcmds-tile-frames 'vertical frames))
+
+;;;###autoload
+(defun create-frame-tiled-horizontally ()
+  "Like `\\[make-frame-command]', but horizontally tile it with the selected frame."
+  (interactive)
+  (let* ((fr1  (selected-frame))
+         (fr2  (make-frame-command)))
+    (frcmds-tile-frames 'horizontal (list fr1 fr2))))
+
+;;;###autoload
+(defun create-frame-tiled-vertically ()
+  "Like `\\[make-frame-command]', but vertically tile it with the selected frame."
+  (interactive)
+  (let* ((fr1  (selected-frame))
+         (fr2  (make-frame-command)))
+    (frcmds-tile-frames 'vertical (list fr1 fr2))))
 
 (defun frcmds-tile-frames (direction frames)
   "Tile visible frames horizontally or vertically, depending on DIRECTION.
