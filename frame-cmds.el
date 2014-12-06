@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Sat Dec  6 12:29:47 2014 (-0800)
+;; Last-Updated: Sat Dec  6 12:56:05 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 2996
+;;     Update #: 3007
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -122,7 +122,8 @@
 ;;    `show-a-frame-on', `show-buffer-menu', `show-frame',
 ;;    `show-hide', `shrink-frame', `shrink-frame-horizontally',
 ;;    `tell-customize-var-has-changed', `tile-frames',
-;;    `tile-frames-horizontally', `tile-frames-vertically',
+;;    `tile-frames-horizontally', `tile-frames-side-by-side',
+;;    `tile-frames-top-to-bottom', `tile-frames-vertically',
 ;;    `toggle-max-frame', `toggle-max-frame-horizontally',
 ;;    `toggle-max-frame-vertically'.
 ;;
@@ -273,6 +274,7 @@
 ;;; Change Log:
 ;;
 ;; 2014/12/06 dadams
+;;     Added aliases: tile-frames-side-by-side, tile-frames-top-to-bottom.
 ;;     window-mgr-title-bar-pixel-height: Changed default value for ns to 50.  Thx to Nate Eagleson.
 ;; 2014/10/15 dadams
 ;;     window-mgr-title-bar-pixel-height: Added default value for ns (Next).  Thx to Nate Eagleson.
@@ -1277,9 +1279,11 @@ In Lisp code:
   (show-frame frame))
 
 ;;;###autoload
+(defalias 'tile-frames-side-by-side 'tile-frames-horizontally)
+;;;###autoload
 (defun tile-frames-horizontally (&optional frames)
-  "Tile frames horizontally.
-Interatively:
+  "Tile frames horizontally (side by side).
+Interactively:
   With prefix arg, you are prompted for names of two frames to tile.
   With no prefix arg, all visible frames are tiled, except a
        standalone minibuffer frame, if any.
@@ -1288,9 +1292,11 @@ If called from a program, all frames in list FRAMES are tiled."
   (frcmds-tile-frames 'horizontal frames))
 
 ;;;###autoload
+(defalias 'tile-frames-top-to-bottom 'tile-frames-vertically)
+;;;###autoload
 (defun tile-frames-vertically (&optional frames)
-  "Tile frames vertically.
-Interatively:
+  "Tile frames vertically (stacking from the top of the screen downward).
+Interactively:
   With prefix arg, you are prompted for names of two frames to tile.
   With no prefix arg, all visible frames are tiled, except a
        standalone minibuffer frame, if any.
@@ -1300,7 +1306,9 @@ If called from a program, all frames in list FRAMES are tiled."
 
 (defun frcmds-tile-frames (direction frames)
   "Tile visible frames horizontally or vertically, depending on DIRECTION.
-Arg DIRECTION is `horizontal' or `vertical'.
+Arg DIRECTION is `horizontal' or `vertical' (meaning side by side or
+above and below, respectively).
+
 Arg FRAMES is the list of frames to tile.  If nil, then tile all visible
 frames (except a standalone minibuffer frame, if any)."
   (let ((visible-frames   (or frames
