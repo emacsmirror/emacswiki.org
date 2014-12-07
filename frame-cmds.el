@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Sun Dec  7 13:48:22 2014 (-0800)
+;; Last-Updated: Sun Dec  7 14:19:48 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3020
+;;     Update #: 3030
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -144,7 +144,8 @@
 ;;    `frcmds-read-args-for-tiling',
 ;;    `frcmds-read-buffer-for-delete-windows',
 ;;    `frcmds-set-difference', `frcmds-smart-tool-bar-pixel-height',
-;;    `frcmds-tile-frames', `nbutlast' (Emacs 20).
+;;    `frcmds-split-frame-1', `frcmds-tile-frames', `nbutlast' (Emacs
+;;    20).
 ;;
 ;;  Error symbols defined here:
 ;;
@@ -279,6 +280,7 @@
 ;; 2014/12/07 dadams
 ;;     Added: split-frame-horizontally, split-frame-vertically.
 ;;     frcmds-tile-frames: Added optional args, so can tile within a rectangle.
+;;     create-frame-tiled-(horizontally|vertically): Keep same font size.
 ;; 2014/12/06 dadams
 ;;     Added: create-frame-tiled-horizontally, create-frame-tiled-vertically.
 ;;     Added aliases: tile-frames-side-by-side, tile-frames-top-to-bottom.
@@ -1314,47 +1316,58 @@ If called from a program, all frames in list FRAMES are tiled."
 
 ;;;###autoload
 (defun create-frame-tiled-horizontally ()
-  "Like `\\[make-frame-command]', but horizontally tile it with the selected frame."
+  "Horizontally tile screen with selected frame and a copy.
+The same character size is used for the new frame."
   (interactive)
-  (let* ((fr1  (selected-frame))
-         (fr2  (make-frame-command)))
+  (let* ((fr1    (selected-frame))
+         (font1  (frame-parameter fr1 'font))
+         (fr2    (make-frame-command)))
+    (save-selected-window (select-frame fr2) (set-frame-font font1))
     (frcmds-tile-frames 'horizontal (list fr1 fr2))))
 
 ;;;###autoload
 (defun create-frame-tiled-vertically ()
-  "Like `\\[make-frame-command]', but vertically tile it with the selected frame."
+  "Vertically tile screen with selected frame and a copy.
+The same character size is used for the new frame."
   (interactive)
-  (let* ((fr1  (selected-frame))
-         (fr2  (make-frame-command)))
+  (let* ((fr1    (selected-frame))
+         (font1  (frame-parameter fr1 'font))
+         (fr2    (make-frame-command)))
     (frcmds-tile-frames 'vertical (list fr1 fr2))))
 
 ;;;###autoload
-(defun split-frame-horizontally ()
-  "`\\[make-frame-command]', horizontally tile it with selected frame, with same char size."
-  (interactive)
-  (let* ((fr1    (selected-frame))
-         (font1  (frame-parameter fr1 'font))
-         (x-min  (frame-geom-value-numeric 'left (frame-parameter fr1 'left)))
-         (y-min  (frame-geom-value-numeric 'top  (frame-parameter fr1 'top)))
-         (wid    (* (frame-parameter fr1 'width)  (frame-char-width fr1)))
-         (hght   (* (frame-parameter fr1 'height) (frame-char-height fr1)))
-         (fr2    (make-frame-command)))
-    (save-selected-window (select-frame fr2) (set-frame-font font1))
-    (frcmds-tile-frames 'horizontal (list fr1 fr2) x-min y-min wid hght)))
-
+(defun split-frame-horizontally (num)
+  "Horizontally split the selected frame.
+With a prefix arg, create that many new frames.
+The same character size is used for the new frames."
+  (interactive "p")
+  (frcmds-split-frame-1 'horizontal num))
+  
 ;;;###autoload
-(defun split-frame-vertically ()
-  "`\\[make-frame-command]', vertically tile it with selected frame, with same char size."
-  (interactive)
-  (let* ((fr1    (selected-frame))
-         (font1  (frame-parameter fr1 'font))
-         (x-min  (frame-geom-value-numeric 'left (frame-parameter fr1 'left)))
-         (y-min  (frame-geom-value-numeric 'top  (frame-parameter fr1 'top)))
-         (wid    (* (frame-parameter fr1 'width)  (frame-char-width fr1)))
-         (hght   (* (frame-parameter fr1 'height) (frame-char-height fr1)))
-         (fr2    (make-frame-command)))
-    (save-selected-window (select-frame fr2) (set-frame-font font1))
-    (frcmds-tile-frames 'vertical (list fr1 fr2) x-min y-min wid hght)))
+(defun split-frame-vertically (num)
+  "Vertically split the selected frame.
+With a prefix arg, create that many new frames.
+The same character size is used for the new frames."
+  (interactive "p")
+  (frcmds-split-frame-1 'vertical num))
+
+(defun frcmds-split-frame-1 (direction num)
+  "Helper for `split-frame-horizontally' and `split-frame-vertically'.
+DIRECTION is `horizontal' or `vertical'.
+NUM is the desired number of new frames to create."
+  (let* ((fr1     (selected-frame))
+         (font1   (frame-parameter fr1 'font))
+         (x-min   (frame-geom-value-numeric 'left (frame-parameter fr1 'left)))
+         (y-min   (frame-geom-value-numeric 'top  (frame-parameter fr1 'top)))
+         (wid     (* (frame-parameter fr1 'width)  (frame-char-width fr1)))
+         (hght    (* (frame-parameter fr1 'height) (frame-char-height fr1)))
+         (frames  (list fr1))
+         fr)
+    (dotimes (ii num)
+      (setq fr  (make-frame-command))
+      (save-selected-window (select-frame fr) (set-frame-font font1))
+      (push fr frames))
+    (frcmds-tile-frames direction frames x-min y-min wid hght)))
 
 (defun frcmds-tile-frames (direction frames &optional x-min-pix y-min-pix pix-width pix-height)
   "Tile visible frames horizontally or vertically, depending on DIRECTION.
