@@ -7,7 +7,7 @@ It is not the same as the one from "M-x sgml-mode" in Emacs 22.2, although psgml
 The main development for PSGML mode has moved to the sourceforge at http://sourceforge.net/projects/psgml/.
 As of 2013, last version is of 2005. You can also consider [[NxhtmlMode]] (and nxhtml-mode) which supports also other families of languages.
 
-The last official version on sourceforge mentioned here (1.3.2) does not work with Emacs 24 any longer because of some quirks with backquotes and other minor syntactical changes. These problems have been fixed, and the fixed version (called 1.4.0) is available at http://www.fsavigny.de/gpled-software/psgml-1.4.0.tar.gz. (Except for these fixes, there are absolutely no differences to version 1.3.2.)
+The last official version on sourceforge mentioned here (1.3.2) does not work with Emacs 24 any longer because of some quirks with backquotes and other minor syntactical changes. These problems have been fixed, and the fixed version (called 1.4.1) is available on the Marmalade Lisp Repo at https://marmalade-repo.org/packages/psgml. (Except for these fixes, there are absolutely no differences to version 1.3.2.)
 
 The main PSGML web page (containing a manual) is at
 http://www.lysator.liu.se/~lenst/about_psgml/.
