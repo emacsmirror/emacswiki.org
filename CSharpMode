@@ -2,16 +2,13 @@
 
 Lisp:csharp-mode.el
 
-Provides an editing mode for C# code.  Includes code indentation, fontification, codedoc generation, and integration with compile.el, flymake.el, yasnippet.el, and imenu.el.
+Provides an editing mode for C# code.  Includes code indentation, fontification, codedoc generation, and integration with imenu.el.
 
 [new]
-
-Here's a view of a c# buffer using csharp-mode.  In addition to the fontification and indenting, this animated gif shows off the Imenu integration, new, for v0.8.3 of csharp-mode.el
-
-http://3mb.us/images/359_csharp_imenu.gif
+As of December 2014, the new project is hosted at https://github.com/josteink/csharp-mode and the older version is available at http://code.google.com/p/csharpmode/, and there is a (maybe older) version available here: Lisp:csharp-mode.el.
 
 [new]
-As of May 2010, the latest version is available at  http://code.google.com/p/csharpmode/, and there is a (maybe older) version available here: Lisp:csharp-mode.el.
+v.0.8.7 several longstanding bugs have been fixed. compile, flymake, and yasnippet integration were removed because they either didn't work or were superseded by better support in [http://github.com/sp3ctum/omnisharp-emacs Omnisharp-Emacs].
 
 [new]
 
