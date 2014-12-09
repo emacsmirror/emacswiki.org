@@ -31,14 +31,10 @@ Wandlerlust is hosted on [https://github.com/wanderlust/wanderlust GitHub].
 It is the only emacs mail reader that I have used that seems to handle IMAP properly (i.e., leaves messages on server, cacheing, etc.). Gnus (CategoryGnus) users may disagree. It integrates with BBDB (CategoryBbdb), supports MIME, can handle integrating with mailcrypt (cvs version) (WanderLustEncryption). MIME and PGP/MIME is handled via SEMI (SemiIsEmacsMimeInterface). Key-bindings are, at least to me, a little foreign at first. Documentation in English is sufficient though not overwhelming. 
 
 == Installing Wanderlust ==
-An easy way to get the latest Wanderlust and all its dependencies is by installing it through [http://www.emacswiki.org/emacs/el-get el-get], which is an elisp package manager, that downloads and installs all dependencies from GitHub automatically. You can also install wanderlust through your package manager (for GNU/Linux); search for "wanderlust", "wl", or "wl-beta" (recommended for Debian-based systems).
 
-One of the developers Erik Hetzner [http://permalink.gmane.org/gmane.mail.wanderlust.general/5548 set up a package archive].
+WanderLust is installable via [[MELPA]] or [[el-get]].
 
-    (require 'package) ;; You might already have this line
-    (add-to-list 'package-archives
-                 '("e6h" . "http://www.e6h.org/packages/") t)
-    (package-initialize) ;; You might already have this line
+You can also install wanderlust through your package manager (for GNU/Linux); search for "wanderlust", "wl", or "wl-beta" (recommended for Debian-based systems).
 
 == Basic Usage ==
 Wanderlust has four basic buffers: Folder buffer, summary buffer, message buffer/view, and draft buffer. 
