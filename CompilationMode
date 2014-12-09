@@ -189,6 +189,22 @@ Here is some code to make the background on all lines on which emacs found error
 
   -- This just makes the lines in the compilation buffer pink though, right? Not the lines in the actual source code (mike hearn)
 
+If you want the lines inside the buffer to also be pink, simply change the definition of highlight-error-lines to:
+
+    (defun highlight-error-lines(compilation-buffer process-result)
+      (interactive)
+      (delete-all-overlays)
+      (condition-case nil
+          (while t
+            (next-error)
+            (highlight-current-line)
+            (save-excursion
+              (compilation-next-error-function 0)
+              (highlight-current-line))
+            )
+        (error nil))
+      )
+
 == Java stack traces ==
 
 Here's a snippet that adds Java stack trace support to `compilation-mode' and `next-error'. More details here: https://snarfed.org/java-stack-traces-in-emacs-compilation-mode
