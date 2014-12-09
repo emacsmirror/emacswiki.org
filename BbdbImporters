@@ -19,6 +19,7 @@ DaleSmith wrote this xsl file to convert from Sylpheed xml address format to bbd
 
 == vCard Import == [:VcardImport]
 
+=== gmail2bbdb: === 
 A 2014 simple importer for gmail name and emails: https://github.com/redguardtoo/gmail2bbdb
 
 gmail2bbdb will convert vCard file to ~/.bbdb , It has no dependency on any third party packages and is written in simple Lisp. So it will always works out of the box on any version of Emacs.
