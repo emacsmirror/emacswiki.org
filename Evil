@@ -4,6 +4,8 @@
 
 Current stable version: **1.0.8**
 
+There's a [http://youtu.be/Uz_0i27wYbg four-minute Evil demo] on !YouTube, created by Bailey Ling. The captions in the corner of the frame show the keystrokes which Bailey is entering.
+
 == Quick install ==
 
 Install using the latest version of Emacs and its builtin package system. Start with this in your .emacs:
