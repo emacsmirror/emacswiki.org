@@ -8,18 +8,18 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May  4 13:35:50 2014 (-0700)
+;; Last-Updated: Wed Dec 10 15:32:02 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3714
+;;     Update #: 3718
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos+', `avoid', `cmds-menu', `fit-frame',
-;;   `frame-fns', `help+20', `info', `info+', `menu-bar',
+;;   `frame-fns', `help+20', `info', `info+20', `menu-bar',
 ;;   `misc-cmds', `misc-fns', `naked', `second-sel', `strings',
 ;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
 ;;   `wid-edit', `wid-edit+', `widget'.
@@ -130,6 +130,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/12/10 dadams
+;;     menu-bar-edit-menu [paste]: Use x-get-selection, not x-selection-exists-p.
 ;; 2014/05/04 dadams
 ;;     Emacs 20-22: soft-require info+20.el (new) instead of info+.el.
 ;; 2013/11/-8 dadams
@@ -815,8 +817,8 @@ submenu of the \"Help\" menu."))
   '(menu-item "Paste" yank
     :help "Paste (yank) text most recently cut/copied"
     :enable (and (not buffer-read-only)
-             (or (and (fboundp 'x-selection-exists-p) (x-selection-exists-p))
-              (and x-select-enable-clipboard (x-selection-exists-p 'CLIPBOARD)))))
+             (fboundp 'x-get-selection)
+             (and x-select-enable-clipboard  (x-get-selection 'CLIPBOARD))))
   'copy)
 (when (fboundp 'secondary-dwim)
   (define-key-after menu-bar-edit-menu [secondary-dwim] ; In `second-sel.el'
