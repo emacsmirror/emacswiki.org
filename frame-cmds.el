@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Sun Dec  7 14:19:48 2014 (-0800)
+;; Last-Updated: Tue Dec  9 17:03:02 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 3030
+;;     Update #: 3035
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -277,6 +277,15 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/12/09 dadams
+;;     Added: frcmds-frame-pixel-height.
+;;     frcmds-split-frame-1: Use frame-pixel-width and frcmds-frame-pixel-height, instead of working
+;;                           with width and height frame parameters (char-based).
+;;     frcmds-tile-frames:
+;;       If Emacs 24.4+, use PIXELWISE arg with set-frame-size.
+;;       Otherwise: * Always subtract frcmds-extra-pixels-width.
+;;                  * Do not subtract borders.
+;;                  * Increment origin by one border-width.
 ;; 2014/12/07 dadams
 ;;     Added: split-frame-horizontally, split-frame-vertically.
 ;;     frcmds-tile-frames: Added optional args, so can tile within a rectangle.
@@ -540,7 +549,7 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; case, incf (plus, for Emacs 20: dolist)
+(eval-when-compile (require 'cl)) ;; case, incf (plus, for Emacs 20: dolist, dotimes)
 (require 'frame-fns) ;; frame-geom-value-cons, frame-geom-value-numeric, frames-on, get-frame-name,
                      ;; get-a-frame, read-frame
 (require 'strings nil t) ;; (no error if not found) read-buffer
@@ -1359,8 +1368,8 @@ NUM is the desired number of new frames to create."
          (font1   (frame-parameter fr1 'font))
          (x-min   (frame-geom-value-numeric 'left (frame-parameter fr1 'left)))
          (y-min   (frame-geom-value-numeric 'top  (frame-parameter fr1 'top)))
-         (wid     (* (frame-parameter fr1 'width)  (frame-char-width fr1)))
-         (hght    (* (frame-parameter fr1 'height) (frame-char-height fr1)))
+         (wid     (frame-pixel-width fr1))
+         (hght    (frcmds-frame-pixel-height fr1))
          (frames  (list fr1))
          fr)
     (dotimes (ii num)
@@ -1368,6 +1377,19 @@ NUM is the desired number of new frames to create."
       (save-selected-window (select-frame fr) (set-frame-font font1))
       (push fr frames))
     (frcmds-tile-frames direction frames x-min y-min wid hght)))
+
+(defun frcmds-frame-pixel-height (frame)
+  "Pixel height of FRAME, including the window-manager title bar and menu-bar.
+For the title bar, `window-mgr-title-bar-pixel-height' is used.
+For the menu-bar, the frame char size is multiplied by frame parameter
+`menu-bar-lines'.  But that parameter does not take into account
+menu-bar wrapping."
+  (+ window-mgr-title-bar-pixel-height
+     (frame-pixel-height frame)
+     (if (not (eq window-system 'x))
+         0
+       (+ (* (frame-char-height frame)
+             (cdr (assq 'menu-bar-lines (frame-parameters frame))))))))
 
 (defun frcmds-tile-frames (direction frames &optional x-min-pix y-min-pix pix-width pix-height)
   "Tile visible frames horizontally or vertically, depending on DIRECTION.
@@ -1402,35 +1424,42 @@ the pixel width and height of the rectangle."
       (horizontal  (setq fr-pixel-width   (/ fr-pixel-width  (length visible-frames))))
       (vertical    (setq fr-pixel-height  (/ fr-pixel-height (length visible-frames))))
       (otherwise   (error "`frcmds-tile-frames': DIRECTION must be `horizontal' or `vertical'")))
-    ;;(debug) ; @@@
     (dolist (fr  visible-frames)
-      ;; $$$$$$ (let ((borders (* 2 (+ (cdr (assq 'border-width (frame-parameters fr)))
-      ;;                               (cdr (assq 'internal-border-width (frame-parameters fr)))))))
-      (let ((borders  (* 2 (cdr (assq 'border-width (frame-parameters fr))))))
+      (if (or (> emacs-major-version 24)
+              (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+          (let ((frame-resize-pixelwise  t))
+            (set-frame-size
+             fr
+             ;; Subtract scroll bars, & title bar.
+             (- fr-pixel-width (frcmds-extra-pixels-width fr))
+             (- fr-pixel-height
+                window-mgr-title-bar-pixel-height
+                (if pix-height 0 (frcmds-smart-tool-bar-pixel-height fr))
+                (if (not (eq window-system 'x)) ; Menu bar for X is not in the frame.
+                    0
+                  (* (frame-char-height fr) (cdr (assq 'menu-bar-lines (frame-parameters fr))))))
+             'PIXELWISE))
         (set-frame-size
          fr
-         ;; Subtract borders, scroll bars, & title bar, then convert pixel sizes to char sizes.
-         (/ (or (and pix-width  fr-pixel-width)
-                (- fr-pixel-width borders (frcmds-extra-pixels-width fr)))
+         ;; Subtract scroll bars, & title bar, then convert pixel sizes to char sizes.
+         (/ (- fr-pixel-width
+               (frcmds-extra-pixels-width fr))
             (frame-char-width fr))
-         (- (/ (or (and pix-height  (- fr-pixel-height
-                                       borders
-                                       (frcmds-extra-pixels-height fr)
-                                       window-mgr-title-bar-pixel-height))
-
-                   (- fr-pixel-height borders
-                      (frcmds-extra-pixels-height fr)
-                      window-mgr-title-bar-pixel-height
-                      (frcmds-smart-tool-bar-pixel-height)))
-               (frame-char-height fr))
-            (if (or pix-height  (eq window-system 'mac))
-                0                       ; Menu bar for Carbon Emacs is not in the frame.
-              (cdr (assq 'menu-bar-lines (frame-parameters fr))))))) ; Subtract `menu-bar-lines'.
+         (/ (- fr-pixel-height
+               (frcmds-extra-pixels-height fr)
+               window-mgr-title-bar-pixel-height
+               (if pix-height 0 (frcmds-smart-tool-bar-pixel-height fr))
+               (if (not (eq window-system 'x)) ; Menu bar for X is not in the frame.
+                   0
+                 (* (frame-char-height fr) (cdr (assq 'menu-bar-lines (frame-parameters fr))))))
+            (frame-char-height fr))))
       (set-frame-position fr
                           (if (eq direction 'horizontal) fr-origin (or x-min-pix  0))
                           (if (eq direction 'horizontal) (or y-min-pix  0) fr-origin))
       (show-frame fr)
-      (incf fr-origin (if (eq direction 'horizontal) fr-pixel-width fr-pixel-height)))))
+      ;; Move over the width or height of one frame, and add one border width.
+      (incf fr-origin (+ (or (cdr (assq 'border-width (frame-parameters fr)))  0)
+                         (if (eq direction 'horizontal) fr-pixel-width fr-pixel-height))))))
 
 (defun frcmds-extra-pixels-width (frame)
   "Pixel difference between FRAME total width and its text area width."
