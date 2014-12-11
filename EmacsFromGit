@@ -22,7 +22,7 @@ git ls-remote (to see a list of remote branches)
 git clone --depth 1 --branch emacs-24.4 git://git.sv.gnu.org/emacs.git
 </pre>
 
-Lars Ingebrigtsen has written a helpful post on [http://lars.ingebrigtsen.no/2014/11/13/welcome-new-emacs-developers/ compiling Emacs] for Debian and Ubuntu users.
+Lars Ingebrigtsen has written a helpful guide on [http://lars.ingebrigtsen.no/2014/11/13/welcome-new-emacs-developers/ compiling Emacs] for Debian and Ubuntu users.
 
 == ELPA package sources ==
 
