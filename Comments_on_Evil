@@ -39,3 +39,28 @@ The quick install instructions are wrong. Somebody who cares about evil-mode sho
 
 -- Anonymous 2014-11-12 10:42 UTC
 
+
+----
+
+Yes, "quick install instructions" are missing one line:
+
+<code>(package-initialize)</code>
+
+Someone please fix, I spent 1 hr looking into this issue, somehow I got to [http://wikemacs.org/wiki/Package.el Package.el]. From there I was able to figure it out, under "configuration"
+
+My ~/.emacs:
+
+<code>
+(require 'package)
+(push '("marmalade" . "http://marmalade-repo.org/packages/")
+    package-archives )
+(push '("melpa" . "http://melpa.milkbox.net/packages/")
+    package-archives)
+
+(package-initialize)
+</code>
+
+Thanks
+
+-- luism 2014-12-11 06:27 UTC
+
