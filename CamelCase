@@ -15,7 +15,7 @@ For those runnning an up-to-date version of Emacs (22.1 or newer) an alternative
 
 There's a minor mode for CamelCase (M-x camelCase-mode), written by C. R. Manning, that allows for forward-word and backward-word to stop at each word within a CamelCase word.  It's now available from http://www.eecs.ucf.edu/~leavens/emacs/camelCase/camelCase-mode.el with instructions and commentary at http://www.eecs.ucf.edu/~leavens/emacs/camelCase/camelCase-mode.html
 
-http://www.sixfingeredman.net/proj/xemacs/camelCase-mode.el is a hacked version which actually replaces forward-word and backward-word so that all word-related functions work with camelCase (when the mode is on).
+And http://www.sixfingeredman.net/proj/xemacs/camelCase-mode.el is a hacked version which actually replaces forward-word and backward-word so that all word-related functions work with camelCase (when the mode is on).
 
 : Not sure where else to go for help on this, but I used the above and it's suggested autoload initialization, and I have a problem.  Once I open a .cpp file and camelCase-mode turns on automatically, forward-word and backward-word are broken in any buffer not using camelCase-mode.  It tells me, "if: Wrong number of arguments: #<subr forward-word>, 2" --BryanMurdock
 
@@ -80,6 +80,18 @@ http://www.sixfingeredman.net/proj/xemacs/camelCase-mode.el is a hacked version 
 
  --ivan4th
 
+----
+
+For cycling text between various styles (CamelCase, snake_case, lowerCamelCase, etc) use the string-inflection package (available in MELPA, or at https://github.com/akicho8/string-inflection).
+
+    ;; Cycle between snake case, camel case, etc.
+    (require 'string-inflection)
+    (global-set-key (kbd "C-c i") 'string-inflection-cycle)
+    (global-set-key (kbd "C-c C") 'string-inflection-camelcase)        ;; Force to CamelCase
+    (global-set-key (kbd "C-c L") 'string-inflection-lower-camelcase)  ;; Force to lowerCamelCase
+    (global-set-key (kbd "C-c J") 'string-inflection-java-style-cycle) ;; Cycle through Java styles
+
+This makes the suggestions below obsolete.
 
 ----
 
