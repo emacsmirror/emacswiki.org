@@ -13,7 +13,7 @@ Of course this is not always possible in a non-ambiguous fashion (e.g. all ASCII
 The variable to customize is <code>auto-coding-alist</code>. Similar to AutoModeAlist, you can use that to assign coding systems to whole directories, certain file suffixes or any regexp. For example, to view ASCII art <code>.nfo</code> files, which traditionally are encoded the `cp437-dos' encoding, add this to your DotEmacs file.
 
   ; Associate nfo file suffix with IBM codepage 437 encoding
-  (setq auto-coding-alist (cons '("\\.nfo\\'" . cp437-dos) auto-coding-alist))
+ (add-to-list 'auto-coding-alist '("\\.nfo\\'" . cp437-dos))
 
 
 = Specifying the coding system through a project settings method (NOT) =
