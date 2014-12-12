@@ -16,9 +16,9 @@ If you invoke command '''`thgcmd-bind-keys'''' (e.g. in your [[init file]]) then
 
 * '''`C-M-SPC'''' -- `<tt>[[#mark-thing]]</tt>' (overwrites the standard binding for `mark-sexp'; `<tt>[[sexp]]</tt>' is the default thing type)
 * '''`##M-@##'''' -- `<tt>[[#cycle-thing-region]]</tt>' (overwrites the standard binding for `mark-word')
-* '''`C-M-U'''' (aka `C-M-S-u') -- `<tt>[[#mark-enclosing-sexp]]</tt>'
-* '''`C-M-F'''' (aka `C-M-S-f') -- `<tt>[[#mark-enclosing-sexp-forward]]</tt>'
-* '''`C-M-B'''' (aka `C-M-S-b') -- `<tt>[[#mark-enclosing-sexp-backward]]</tt>'
+* '''`C-M-U'''' (aka `C-M-S-u') -- `<tt>[[#mark-enclosing-list]]</tt>'
+* '''`C-M-F'''' (aka `C-M-S-f') -- `<tt>[[#mark-enclosing-list-forward]]</tt>'
+* '''`C-M-B'''' (aka `C-M-S-b') -- `<tt>[[#mark-enclosing-list-backward]]</tt>'
 * '''`C-x down'''' -- `<tt>[[#next-visible-thing-repeat]]</tt>' (Emacs 22 and later)
 * '''`C-x up'''' -- `<tt>[[#previous-visible-thing-repeat]]</tt>' (Emacs 22 and later)
 
@@ -64,21 +64,21 @@ the original location by using `C-u C-SPC' (once or twice, depending on the thin
 
 
 
-[:mark-enclosing-sexp]
-[:mark-enclosing-sexp-backward]
-[:mark-enclosing-sexp-forward]
+[:mark-enclosing-list]
+[:mark-enclosing-list-backward]
+[:mark-enclosing-list-forward]
 
-== `mark-enclosing-sexp',  `mark-enclosing-sexp-forward', `mark-enclosing-sexp-backward' ==
+== `mark-enclosing-list',  `mark-enclosing-list-forward', `mark-enclosing-list-backward' ==
 
-Command '''`mark-enclosing-sexp'''' selects a [[sexp]] that surrounds the cursor.  If you repeat the command it selects a wider enclosing sexp each time you repeat it.
+Command '''`mark-enclosing-list'''' selects a list that surrounds the cursor.  If you repeat the command it selects a wider enclosing list each time you repeat it.
 
-If you use a numeric [[prefix argument]] then the selection is that many sexps up, surrounding point.  1 means select
-the immediately enclosing sexp.  2 means select the sexp immediately enclosing that first enclosing sexp, and so on.  A negative prefix argument puts point at the beginning of the new region
+If you use a numeric [[prefix argument]] then the selection is that many lists up, surrounding point.  1 means select
+the immediately enclosing list.  2 means select the list immediately enclosing that first enclosing list, and so on.  A negative prefix argument puts point at the beginning of the new region
 instead of the end.
 
 This command moves point, and the starting position is added to the [[mark ring]] before doing anything else, so you can easily return to that position (e.g. using `C-u C-SPC').
 
-Commands '''`mark-enclosing-sexp-backward'''' and '''`mark-enclosing-sexp-forward'''' are the same, but they specifically put point at the end and beginning of the region, respectively.
+Commands '''`mark-enclosing-list-backward'''' and '''`mark-enclosing-list-forward'''' are the same, but they specifically put point at the end and beginning of the region, respectively.
 
 
 
