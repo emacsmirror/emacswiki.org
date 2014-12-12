@@ -1,3 +1,4 @@
+[[de:Bangla]]
 If you keep hitting ##M-q## to fill your paragraphs (see FillParagraph), ##then auto-fill-mode## is for you. It doesn't get rid of ##M-q## altogether (use RefillMode (which replaces ManiacMode) for that), but it is a very good approximation:
 
 Type ##M-x auto-fill-mode## to activate the MinorMode for the current buffer, or put the following in your <tt>[InitFile .emacs]</tt> to activate it for all text mode buffers:
