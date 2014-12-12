@@ -6,14 +6,14 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Nov  7 16:45:41 2014 (-0800)
+;; Last-Updated: Fri Dec 12 08:09:49 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 29724
+;;     Update #: 29734
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -276,9 +276,9 @@
 ;;
 ;;  (@> "Icicles Info Enhancements")
 ;;    (@> "Icicles Completion for Info")
-;;      (@> "Virtual Info Books")
-;;      (@> "Using Icicle-Search With Info")
-;;
+;;    (@> "Highlighting Index Topics for Visited Info Nodes")
+;;    (@> "Virtual Info Books")
+;;    (@> "Finding Nodes Containing Some Text")
 ;;    (@> "Using Icicle-Search With Info")
 ;;
 ;;  (@> "Support for Projects")
@@ -2876,6 +2876,9 @@
 ;;  * You can create virtual Info books composed of an arbitrary set
 ;;    of nodes from any set of manuals.
 ;;
+;;  * You can easily find nodes that contain text matching a
+;;    combination of patterns.
+;;
 ;;  * You can use `icicle-search' on part or all of a manual, if you
 ;;    flatten it first with `Info-merge-subnodes' .
 ;;
@@ -2931,18 +2934,8 @@
 ;;  `g' in Info not only to explore nodes by name, but also as another
 ;;  means to traverse the Info menu hierarchy.
 ;;
-;;  Starting with Emacs 22, command `icicle-Info-goto-node' lets you
-;;  type multi-completion input whose second part (after `C-M-j') is a
-;;  content-searching pattern (regexp).  This means you can search a
-;;  set of nodes (or an entire manual) and choose from the list of
-;;  matching nodes.  The `*Completions*' candidates you see are just
-;;  the node names.  After you choose one of the matching nodes to
-;;  visit, you can use `C-M-s' to find each match of the
-;;  content-search pattern.  See
-;;  (@file :file-name "icicles-doc1.el" :to "Chapter & Verse: Searching Named Containers").
-;;
 ;;(@* "Highlighting Index Topics for Visited Info Nodes")
-;;  *** Highlighting Index Topics for Visited Info Nodes ***
+;;  ** Highlighting Index Topics for Visited Info Nodes **
 ;;
 ;;  When you are looking for something in an Info manual, `i'
 ;;  (multi-command `icicle-Info-index') is your friend.  It is
@@ -3077,6 +3070,30 @@
 ;;  or else that candidate will simply by chosen.  If the value is
 ;;  `t', then this will not work at all.  Any other value presents no
 ;;  problem.  (Personally, I use `nil'.)]
+;;
+;;(@* "Finding Nodes Containing Some Text")
+;;  ** Finding Nodes Containing Some Text **
+;;
+;;  In Icicle mode, `g' (command `icicle-Info-goto-node') lets you
+;;  type multi-completion input whose second part (after `C-M-j') is a
+;;  content-searching pattern (regexp).  This means you can search a
+;;  set of nodes, or an entire manual, and choose from the list of
+;;  matching nodes.  The `*Completions*' candidates you see are just
+;;  the node names.
+;;
+;;  As always during Icicles completion, you can combine any number of
+;;  search patterns (for both node name and content), using
+;;  progressive completion.
+;;
+;;  After you choose one of the matching nodes to visit, you can use
+;;  `C-M-s' to find each match of the content-search pattern.
+;;
+;;  See Also:
+;;
+;;  * (@file :file-name "icicles-doc1.el" :to "Chapter & Verse: Searching Named Containers")
+;;  for information about content-searching.
+;;  * (@> "Using Icicle-Search With Info")
+;;  * (@> "Icicles Completion for Info")
 ;;
 ;;(@* "Using Icicle-Search With Info")
 ;;  ** Using Icicle-Search With Info **
@@ -8967,9 +8984,9 @@
 ;;  typically want to start it out with incremental completion turned
 ;;  on.  Functions that call `icicle-apply' thus also turn on
 ;;  incremental completion.  This includes the predefined Icicles
-;;  commands `icicle-goto-marker' and `icicle-goto-global-marker'.
-;;  Remember that you can use `C-#' (once or twice) to turn
-;;  incremental completion off.
+;;  commands `icicle-goto-marker', `icicle-goto-any-marker', and
+;;  `icicle-goto-global-marker'.  Remember that you can use `C-#'
+;;  (once or twice) to turn incremental completion off.
 ;;
 ;;(@* "Using `icicle-search'")
 ;;  ** Using `icicle-search' **
