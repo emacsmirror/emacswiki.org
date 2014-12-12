@@ -16,6 +16,9 @@ reference nodes you have already visited.
 * You can create virtual Info books composed of an arbitrary set
 of nodes from any set of manuals.
 
+* You can easily find nodes that contain text matching a
+combination of patterns.
+
 * You can use `icicle-search' on part or all of a manual, if you flatten it first with `Info-merge-subnodes' .
 
 These features are described below.
@@ -70,16 +73,6 @@ In addition, except when you are at the `Top' node, a pseudo-node
 takes you up to the parent of the current node.  You can thus use
 '''`g'''' in Info not only to explore nodes by name, but also as another
 means to traverse the Info menu hierarchy.
-
-Starting with Emacs 22, command `icicle-Info-goto-node' lets you
-type [[multi-completion]] input whose second part (after `C-M-j') is a
-content-searching pattern ([[regexp]]).  This means you can search a
-set of nodes (or an entire manual) and choose from the list of
-matching nodes.  The `*Completions*' candidates you see are just
-the node names.  After you choose one of the matching nodes to
-visit, you can use `C-M-s' to find each match of the
-content-search pattern.  See [[Icicles - Searching Named Containers]].
-
 
 
 
@@ -240,6 +233,39 @@ problem.  (Personally, I use `nil'.)]
 
 
 
+
+[:FindingNodesContainingSomeText]
+=== Finding Nodes Containing Some Text ===
+
+In ''Icicle'' mode, `g' (command `icicle-Info-goto-node') lets you
+type [[multi-completion]] input whose second part (after `C-M-j') is a
+''content''-searching pattern ([[regexp]]).  This means you can search a
+set of nodes (or an entire manual) and choose from the list of
+matching nodes.  The `*Completions*' candidates you see are just
+the node names.
+
+As always during '''Icicles''' completion, you can combine any number of
+search patterns (for both node name and content), using
+[[progressive completion]].
+
+After you choose one of the matching nodes to
+visit, you can use `C-M-s' to find each match of the
+content-search pattern.
+
+
+'''See Also:'''
+
+* [[Icicles - Searching Named Containers]] for information about content-searching.
+* [[#UsingIcicleSearchWithInfo|Using Icicle-Search With Info]]
+* [[#IciclesCompletionForInfo|Icicles Completion for Info]]
+
+
+
+
+
+
+
+
 [:UsingIcicleSearchWithInfo]
 === Using Icicle-Search With Info ===
 
@@ -336,6 +362,5 @@ CategoryProgrammerUtils
 CategoryCode
 CategorySearchAndReplace
 CategoryShell
-
 
 
