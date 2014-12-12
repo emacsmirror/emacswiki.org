@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Dec  6 10:02:58 2014 (-0800)
+;; Last-Updated: Fri Dec 12 08:19:18 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 28339
+;;     Update #: 28342
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -399,8 +399,9 @@
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Icicles Info Enhancements")
 ;;    (@file :file-name "icicles-doc2.el" :to "Icicles Completion for Info")
-;;      (@file :file-name "icicles-doc2.el" :to "Virtual Info Books")
-;;
+;;    (@file :file-name "icicles-doc2.el" :to "Highlighting Index Topics for Visited Info Nodes")
+;;    (@file :file-name "icicles-doc2.el" :to "Virtual Info Books")
+;;    (@file :file-name "icicles-doc2.el" :to "Finding Nodes Containing Some Text")
 ;;    (@file :file-name "icicles-doc2.el" :to "Using Icicle-Search With Info")
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Support for Projects")
