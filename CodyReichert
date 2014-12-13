@@ -1,8 +1,13 @@
-I'm Cody Reichert. My current focus is mostly in front end web development on top of various frameworks (mostly Yesod - a Haskell web framework), JavaScript, and Emacs Lisp.
+I'm Cody Reichert. My current focus is mostly in front end web development on top of various frameworks (mostly Yesod - a Haskell web framework), Haskell, JavaScript, and Emacs Lisp.
 
 * web: http://reichertbrothers.com
 * irc: [::CodyReichert] (join us in #rbros on Freenode).
 * mail: codyreichert at gmail dot com
+
+== My .emacs ==
+Below is a link to my .emacs configuration. While it's not the most amazing one out there, there may be quite a few useful functions for people doing web development in Emacs, or for people doing Haskell Development in Emacs.
+
+* http://github.com/CodyReichert/dotfiles
 
 == Contributions ==
 I recently started taking a shot at writing Emacs modes, so I'll update these as I get more done.
