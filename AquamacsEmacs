@@ -35,6 +35,21 @@ Aquamacs is a cutting-edge Emacs based on  GNU Emacs (stable branch, version 22.
 
 Aquamacs is maintained by DavidReitter. A number of people have contributed.
 
+
+==Troubleshooting==
+
+If your customizations from your PreferencesInAquamacs might be interfering with Aquamacs, you can initiate Aquamacs without the initialization file from the command line within OS X Terminal with:
+
+    open -a Aquamacs --args -q
+
+You can try eliminating your PreferencesInAquamacs by removing the directories and files:
+
+    ~/.emacs
+    ~/Library/Preferences/Aquamacs Emacs/
+    ~/Library/Preferences/Emacs/
+    /Library/Preferences/Aquamacs Emacs/
+    /Library/Preferences/Aquamacs Emacs/
+
 ==Still have questions?==
 
 The Aquamacs website lists support options besides the manuals and Google, primarily the Emacs on OS X mailing list, and an e-mail address for bug reports.
