@@ -1,2 +1,188 @@
-I laughed at his innocence and ignorance, or in contempt of the vulgar society?  <a href=http://www.fnas.org/public/index.asp>Oakley Sunglasses</a>  <a href=http://www.ethologger.com/Images/index.asp>Cheap Oakleys</a>  Taking it straight down now is precisely what Calvin Klein CK Classic Red Diamond black boxer briefs wants, he said.  <a href=http://www.hop-pole.com/logouts.asp>Oakley Vault</a>  <a href=http://www.hop-pole.com/logouts.asp>Oakley Forces</a>  If Diego needs a surfboard, a floatplane, or even lunch, PRESTO!  <a href=http://www.ethologger.com/UserFiles/oakleys.asp>Cheap Oakleys</a>  <a href=http://www.ethologger.com/UserFiles/oakleys.asp>Oakley Glasses</a>  Pick a price range, a style, and check out what it sells for and make a list from that.  <a href=http://www.reka-agentur.de/de/oakley.asp>Oakley Canada</a>  A person, a person, wander ;without a tie in the world ;a person, think of a person, laugh at all ;tomorrow.  <a href=http://www.fnas.org/public/index.asp>Oakley Sunglasses</a>  <a href=http://www.fnas.org/public/index.asp>Cheap Oakleys</a>  If they were men, but they will marry me, but they are not men, ha ha!  <a href=http://www.ethologger.com/UserFiles/oakleys.asp>Cheap Oakleys</a>  <a href="http://www.hop-pole.com/logouts.asp" title="Oakley Forces">Oakley Forces</a>  I don class thing, until he, let me the rest of my life, though the same class, but i never noticed him, before he sat next to me and i almost the same group, row, usually he would borrow rubber, can beat my desk, then, i will the rubber to him, almost never said anything.  <a href=http://www.hop-pole.com/logouts.asp>Oakleys</a>  锘?a href="http://www.reka-agentur.de/de/oakley.asp" title="Oakley">Oakley</a>  Good sister said, that day in the north, meeting the who, i was touched me, good sister said, he is a man, dressed in suits, you say, why, i have no such luck, in the bustling streets, meet your i know, this is my last love, have nothing to do with anyone, i will, protect yourself, i want to let oneself have a good occasionally occasionally, in dormitory downstair, see a similar scene, will think of similar people, not with my computer, ask, guotai junan rich easy software, installed him why i said before,,, a friend to fry.  <a href=http://www.reka-agentur.de/de/oakley.asp>Oakley Sunglasses</a>  
-zqqokdkl http://www.fnas.org/public/index.asp  ivvvfyqw
+[[zh:KeyboardMacros_(中文)]]
+
+== Overview ==
+
+Keyboard macros are a powerful Emacs feature. A '''[::keyboard macro]''' is simply a ''recording'' of a sequence of key sequences. A '''[[key sequence]]''' is a series of keyboard keystrokes, mouse actions, or menu actions that is bound to an Emacs command. So, a keyboard macro records a ''sequence of user actions'' that carry out Emacs commands.
+
+Did you note that a "''keyboard''" macro can record nearly any user actions -- ''not'' just ''keyboard'' actions?  Good.
+
+: '''Note:''' Do not confuse mention of a keyboard macro with mention of a Lisp macro. A Lisp macro is similar to a Lisp function (oops -- not that similar), and is defined using ##defmacro##. 
+
+Here is how to ''define'' a keyboard macro:
+* `<code>C-x (</code>' or <code><f3></code>-- start defining a keyboard macro
+* `<code>C-x )</code>' or <code><f4></code>-- stop defining the keyboard macro
+
+And here is how to ''execute'' a keyboard macro you've defined:
+* `C-x e' or <code><f4></code> -- execute the keyboard macro
+
+Here's how to execute the macro 37 times (you use `C-u' to provide the 37):
+* `C-u 37 C-x e'
+
+'''Example:'''
+
+You want to add the text "-- foobar was here" at the end of ''each'' of the lines in a file.
+# Place the TextCursor at the beginning of the first line.
+# `<code>C-x (</code>' to start recording a keyboard macro.
+# `C-e' (or `M-x end-of-line') to move the cursor to the end of the line.
+# Type "<code>-- foobar was here</code>"
+# `C-a' (or `M-x beginning-of-line') to move the cursor to the beginning of the line.
+# `C-n' (or `M-x next-line') to move the cursor to the beginning of the next line.
+# `<code>C-x )</code>' to stop recording the keyboard macro.
+# `C-u 0 C-x e' to execute the macro an infinite number of times until the end of the file is reached (See InfiniteArgument).
+
+What's important here is to stop defining the macro at a ''similar position to where you started it'' -- so that you are in a position to execute it again, after it executes. This is a general rule that you will often follow when defining keyboard macros: try to make them executable ''N'' times in a row.
+
+Actually, although it's good to learn this general rule, there is a shortcut for just applying the last-defined keyboard macro to each of the lines of a region:
+* `M-x apply-macro-to-region-lines'
+
+Or to be more precise (from the documentation of the command): 
+
+  For each complete line between point and mark, move to the beginning
+  of the line, and run the last keyboard macro.
+
+You can name the last-defined keyboard macro, so that you can then execute it by name:
+* `M-x name-last-kbd-macro' -- Name the last-defined keyboard macro.
+
+Why do that? One reason is that it lets you have more than one macro defined at the same time. Once you have named this macro, say, `my-macro', you can define another one that does something else. Then, you can execute the second macro using `C-x e' and execute `my-macro' as if it were a standard Emacs command: `M-x my-macro'. If you also name the second macro, then you can define a third one...
+
+Keyboard macros are only defined for your ''current Emacs session''. If you want to be able to reuse a macro in a future session, then save it in your initialization file (##.emacs## or ##_emacs##). Open the file, then insert the macro definition using this command:
+* `M-x insert-kbd-macro' -- Insert a named keyboard macro into your initialization file.
+
+Now you can use `M-x' to execute the named keyboard macro in future
+sessions -- just as if it were a standard Emacs command of the same name.  If you want to bind it to a key, you can add code like the
+following to your initialization file:
+
+    (global-set-key (kbd "C-c a") 'my-macro)
+
+This binds the key sequence `C-c a' to the macro `my-macro'.
+
+If you want to edit the macro in future sessions, you need to let the ##kmacro## library know that the symbol is indeed a macro by putting the ##kmacro## property on the symbol.
+
+  (put 'my-macro 'kmacro t)
+
+'''See Also:'''
+* DotMode -- An Emacs mode inspired by the Vi command of the same name that will redo a set of commands.
+* http://jfm3-repl.blogspot.com/2007/09/emacs-tricks-6-keyboard-macros.html is a tutorial on using Emacs macros to write C macros with with a nugget of wisdom from a Lisper.
+* http://www.linuxjournal.com/article/3769 for an article about Emacs Macros in the Linux Gazette by JesperPedersen
+* KeybindingGuide for an article on key bindings
+* Functions `local-set-key' and `global-set-key' for more info on key bindings
+* TinyMacro, a simple way to assign macros to keys.
+
+== Problems with Isearch ==
+
+[[Isearch]] is a critical component to recording macros:  Search to the a location in the buffer and perform a command, and the macro can be accurately repeated.  Unfortunately, macros that use Isearch to bring you to a location exhibit the behavior of skipping to the next occurrence and then halting rather than staying in `isearch-mode'.  This was reported as a bug [http://lists.gnu.org/archive/html/bug-gnu-emacs/2005-10/msg00534.html], but is unfortunately not a bug [http://lists.gnu.org/archive/html/bug-gnu-emacs/2005-11/msg00021.html].
+
+== Calling a Keyboard Macro from Emacs Lisp ==
+
+When you use `name-last-kbd-macro', the string that defines the keyboard macro becomes the function definition of the macro name you provide. You cannot call such a macro by name in Emacs Lisp as if it were a function. For example, if you named the keyboard macro "foo", then you cannot simply write ##(foo)## in Lisp to execute the macro. Instead, you must use the function `execute-kbd-macro' as follows:
+
+    (execute-kbd-macro (symbol-function 'foo))
+
+(Function `symbol-function' returns the function definition of its symbol argument. In this case, it returns the string that defines the keyboard macro `foo'.)
+
+== Querying the User During Keyboard Macro Execution ==
+
+You can use `C-x q' (command `kbd-macro-query') to make Emacs pause and query the user at a certain point during keyboard macro execution.
+
+{{{
+C-x q runs the command kbd-macro-query
+   which is an interactive autoloaded Lisp function in `macros'.
+[Arg list not available until function definition is loaded.]
+
+Query user during kbd macro execution.
+  With prefix argument, enters recursive edit, reading keyboard
+commands even within a kbd macro.  You can give different commands
+each time the macro executes.
+  Without prefix argument, asks whether to continue running the macro.
+Your options are:
+Y       Finish this iteration normally and continue with the next.
+N       Skip the rest of this iteration, and start the next.
+RET     Stop the macro entirely right now.
+C-l     Redisplay the screen, then ask again.
+C-r     Enter recursive edit; ask again when you exit from that.
+}}}
+
+== Prompting During Keyboard Macro Execution ==
+
+Using `C-u C-x q' while recording a macro will, at macro execution, drop in to a recursive editing mode allowing you to intervene with custom editing on each macro iteration.
+
+You can also use the following piece of code to prompt for input using the
+MiniBuffer each time the macro executes.
+
+Pressing `C-x Q' during macro definition will present you with a
+minibuffer prompt (using recursive edit). Inserting some text and
+pressing RET will end recursive edit and continue the definition of
+the macro in the minibuffer. Pressing RET again will insert the
+entered text at point. If you don't want to insert the text right away you can instead kill the input at this point (using `C-a C-k RET') and use it later in the macro definition.
+
+    (defun my-macro-query (arg)
+      "Prompt for input using minibuffer during kbd macro execution.
+    With prefix argument, allows you to select what prompt string to use.
+    If the input is non-empty, it is inserted at point."
+      (interactive "P")
+      (let* ((query (lambda () (kbd-macro-query t)))
+             (prompt (if arg (read-from-minibuffer "PROMPT: ") "Input: "))
+             (input (unwind-protect
+                        (progn
+                          (add-hook 'minibuffer-setup-hook query)
+                          (read-from-minibuffer prompt))
+                      (remove-hook 'minibuffer-setup-hook query))))
+        (unless (string= "" input) (insert input))))
+
+    (global-set-key "\C-xQ" 'my-macro-query)
+
+In Emacs 22 we can use a shorter definition:
+
+      (let* ((prompt (if arg (read-from-minibuffer "PROMPT: ") "Input: "))
+             (input (minibuffer-with-setup-hook (lambda () (kbd-macro-query t))
+                      (read-from-minibuffer prompt))))
+        (unless (string= "" input) (insert input)))
+
+
+== One-Key Macros ==
+
+One may wish to bind the following code to a function key, like this:
+
+    (global-set-key '[(f1)]          'call-last-kbd-macro)
+    (global-set-key '[(shift f1)]    'toggle-kbd-macro-recording-on)
+
+It is much faster to use than the original bindings.
+
+The toggling function(s):
+
+<pre>
+    (defun toggle-kbd-macro-recording-on ()
+      "One-key keyboard macros: turn recording on."
+      (interactive)
+      (define-key global-map (this-command-keys)
+        'toggle-kbd-macro-recording-off)
+      (start-kbd-macro nil))
+
+    (defun toggle-kbd-macro-recording-off ()
+      "One-key keyboard macros: turn recording off."
+      (interactive)
+      (define-key global-map (this-command-keys)
+        'toggle-kbd-macro-recording-on)
+      (end-kbd-macro))
+</pre>
+
+== Part of GnuEmacs ==
+
+: ;;; kmacro.el --- enhanced keyboard macros
+: ;;; edmacro.el --- keyboard macro editor
+
+== External Packages ==
+
+While the kmacro package provides excellent support for dealing with keyboard
+macros that have been defined and named during the current Emacs
+session, support for saving, organizing, and reloading keyboard
+macros remains a bit on the weak side. The 
+[http://thbecker.net/free_software_utilities/emacs_lisp/emacros/start_page.html Emacros]
+package facilitates these tasks.
+
+== Keyboard Macro Timer ==
+
+See KeyboardMacroTimer.
+
+----
+CategoryKeys CategoryGlossary
