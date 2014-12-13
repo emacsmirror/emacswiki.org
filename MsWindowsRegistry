@@ -1,12 +1,13 @@
-
 This page will cover the GNU Emacs and the Windows Registry: using the Registry to
 customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#example of setting the registry]]
+
 
 ==What can I do with the Windows Registry for Emacs customization?==
 
 * Change your keyboard keys like Swapping Caps Lock for Control key (see MovingTheCtrlKey). This is probably the most common use.
 * Customize the window size, position, and various other visual or window manager related settings.
 * Set alternate values for Environment Variables, such as <tt>HOME</tt>, <tt>EMACSLOADFOPATH</tt>, <tt>PRELOAD_WINSOCK</tt>
+
 
 ==Why does GNU Emacs use the Windows Registry?==
 
@@ -16,6 +17,7 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
   decided instead of depending on an Xrdb (X resource database) or
   attempt to read a <tt>%HOME%\.Xresources</tt> file directly, to just
   to use the Windows Registry, because it is also a resource database.
+
 
 ==What Registry keys are used? ==
 
@@ -36,13 +38,14 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
 * <tt>HKEY_CURRENT_USER\SOFTWARE\GNU\Meadow\Common</tt>
 * <tt>HKEY_LOCAL_MACHINE\SOFTWARE\GNU\Meadow\3.00</tt>
 
+
 ==Which Registry key should I use?==
 
 : Use the <tt>HKCU</tt> key for personal customization, and use the <tt>HKLM</tt> key
   for system-wide customization.
 
-==How are the X resources searched for in the Registry?==
 
+==How are the X resources searched for in the Registry?==
 
 : Emacs checks the environment if a particular setting is bound and
   set. In particular, in the registry keys above, the Emacs will
@@ -52,6 +55,7 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
   value "Emacs.Background" and set its background color to what ever
   string value setting (e.g. "black"). This is before the first frame
   is created.
+
 
 == What are the X resources searched for in the Registry? ==
 
@@ -157,6 +161,7 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
         MEADOW.internalBorder
         MEADOW.internalBorderWidth
 
+
 == How can I learn of the complete X resources searched for in the Registry? ==
 
 : You could either hope for documentation (where is it?), read the
@@ -164,9 +169,11 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
   SysInternals RegMon. If you try the latter I suggest adding a filter
   include "GNU", because RegMon is very thorough.
 
+
 ==What do the X Resources mean?==
 
 : Check the official documentation for details.
+
 
 ==Is capitalization important?==
 
@@ -176,6 +183,8 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
 * In the string value setting, I don't know. Again, maybe no.
 
 [:example of setting the registry]
+
+
 ==An example of setting the registry==
 
 : Say I have the .Xresource file with the following settings.
@@ -199,6 +208,7 @@ customize Emacs. It is set up as a FAQ. You may want to jump straight to an [[#e
   "Windows Registry Editor Version 5.00" is for Unicode (utf-16-le)
   text files.)
 
+
 == Read Windows Registry ==
 
 This fn reads a registry key - retrieves all the values and the names of all the subkeys. 
@@ -209,18 +219,18 @@ This fn reads a registry key - retrieves all the values and the names of all the
     the name of the key. VALUES is a list of values, each one
     following this form: (NAME TYPE VALUE) where each are strings,
     and the TYPE is like \"REG_DWORD\" and so on.
-
+    
     SUBKEYS is a simple list of strings.
-
+    
     If the path does not exist, it returns nil.
     "
       (let ((reg.exe (concat (getenv "windir") "\\system32\\reg.exe"))
             keyname values subkeys (state 0))
-
+    
         (with-temp-buffer
           (insert (shell-command-to-string
                    (concat reg.exe " query " "\"" key "\"")))
-
+    
           (while (not (= (point-min) (point-max)))
             (goto-char (point-min))
             (let ((start (point))
@@ -229,27 +239,27 @@ This fn reads a registry key - retrieves all the values and the names of all the
               (setq line (buffer-substring-no-properties start end))
               (delete-region start end)
               (delete-char 1) ;; NL
-
+    
               (cond
                ((string/starts-with line "ERROR:")
                 nil)
-
+    
                ((string= "" line)
                 (setq state (1+ state)))
-
+    
                ((not keyname)
                 (setq keyname line
                       state 1))
-
+    
                ((eq state 1)
                 (let ((parts (split-string line nil t)))
                   (setq this-value (mapconcat 'identity (cddr parts) " "))
-
+    
                   ;; convert to integer, maybe
                   (if (string= (nth 1 parts) "REG_DWORD")
                       (setq this-value
                             (string-to-number (substring this-value 2))))
-
+    
                   (setq values (cons (list (nth 0 parts)
                                          (nth 1 parts)
                                          this-value) values))))
@@ -260,9 +270,10 @@ This fn reads a registry key - retrieves all the values and the names of all the
                                  line)
                                subkeys)))
                (t nil)))))
-
+    
         (and keyname
              (list keyname values subkeys))))
+
 
 == Read one Registry Value ==
 
@@ -273,7 +284,7 @@ This fn depends on the previous one, shown above.
     is a list like (NAME TYPE VALUE), where the first two items are
     strings.  TYPE is like \"REG_DWORD\", \"REG_SZ\", \"REG_BINARY\",
     and so on.  If TYPE is \"REG_DWORD\", then the VALUE is a number.
-
+    
     If the key value does not exist, it returns nil.
     "
       (let ((all (w32reg-read-key key))
@@ -288,6 +299,7 @@ This fn depends on the previous one, shown above.
               (setq r n))))
         r))
 
+
 == Read IE Proxy Configuration ==
 
 This fn depends on the prior fn that allows reading a specific value from the Windows registry.
@@ -295,12 +307,12 @@ This fn depends on the prior fn that allows reading a specific value from the Wi
     (defun w32reg-get-ie-proxy-config ()
       "Return the Proxy Server settings configured for IE, if enabled.
     The result is a list of cons cells; like this:
-
+    
       ((\"http\" . \"127.0.0.1:8888\")
        (\"https\" .  \"127.0.0.1:8888\"))
-
+    
     ...which is suitable for use with (setq url-proxy-services ...)
-
+    
     "
       (let* ((rpath "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings")
              (enabled (w32reg-read-value rpath "ProxyEnable"))
@@ -314,11 +326,11 @@ This fn depends on the prior fn that allows reading a specific value from the Wi
                            (cons (car x) (cadr x))))
                       (split-string (nth 2 proxy) ";" t))))))
 
+
 ==Can I edit the Registry from Emacs?==
 
 * Interactively? No (?) Use regedit.exe
 * Programmatically, yes, but be careful of unicode (utf-16-le) issues. Meadow has a library called mw32reg.el to do such a thing.
-
 
 
 ==References==
@@ -331,10 +343,12 @@ This fn depends on the prior fn that allows reading a specific value from the Wi
 * MovingTheCtrlKey
 * CapsKey
 
+
 == Verified ==
 
 : All (initial) information tested on Meadow 3.00 (Emacs CVS HEAD 22.0
   2006/09/08) on Windows XP SP1 and SP2.
+
 
 == Discussion ==
 
@@ -344,6 +358,7 @@ This fn depends on the prior fn that allows reading a specific value from the Wi
   could be titled  
   "Which Registry root should I use for the Emacs registry key?"
   to be more precise.
+
 ----
 
 CategoryWThirtyTwo CategoryPorts CategoryCustomize
