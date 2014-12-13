@@ -1,0 +1,16 @@
+I'm Cody Reichert. My current focus is mostly in front end web development on top of various frameworks (mostly Yesod - a Haskell web framework), JavaScript, and Emacs Lisp.
+
+* web: http://reichertbrothers.com
+* irc: [::CodyReichert] (join us in #rbros on Freenode).
+* mail: codyreichert at gmail dot com
+
+== Contributions ==
+I recently started taking a shot at writing Emacs modes, so I'll update these as I get more done.
+
+=== Shakespeare Mode ===
+
+Shakespeare mode (shakespeare-mode) is a major mode for editing the Shakespearean template family - Hamlet, Lucius, and Julius. I use Shakespearean templates with all of our Yesod sites, and I was using html-mode, less-css-mode, and js-mode separately to support these files. White they mostly worked great, they did not support the full language features and thus had a couple small problems. Shakespeare mode creates three new modes, 'shakespeare-hamlet-mode', 'shakespeare-lucius-mode', and 'shakespeare-julius-mode'. These modes support full syntax highlighting and indentation for all of these file types.
+
+I'm currently still developing out a few things, but is stable enough to use. At the time of writing, I haven't pushed it to any package repositories because I'd like to fix up a few things first. But it's super easy to install, and you can find it here:
+
+* http://github.com/CodyReichert/shakespeare-mode
