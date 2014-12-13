@@ -121,6 +121,17 @@ Now I can quickly toggle between PHP & HTML mode, depending on what I'm mostly g
 
 - JonathanArnold
 
+Alternatively to the method above, I use the following snippet for switching between php-mode and html-mode. Add these two lines to your Emacs configuration file:
+
+{{{
+(define-key php-mode-map [f5] 'html-mode)
+(define-key html-mode-map [f5] 'php-mode)
+}}}
+
+These will use the 'f5' key to switch between php and html mode. The difference to Jonathan's above is that these keys are only used if php-mode or html-mode is the current major mode in the buffer you're in, rather than defining a global key.
+
+- CodyReichert
+
 == Debugging ==
 
 [https://code.google.com/p/geben-on-emacs/ GEBEN] is a basic debug package that I just discovered and am in the process of trying out. It is a DBGp client (i.e. emacs debug mode using XDebug). -M
