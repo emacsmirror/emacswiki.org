@@ -84,7 +84,7 @@ A brief [https://bitbucket.org/lyro/evil/src/master/doc/evil.pdf PDF manual] is 
 
 * [https://github.com/bling/evil-visualstar evil-visualstar]: Uses current visual selection when * or # is pressed.
 
-* [https://github.com/hlissner/evil-snipe evil-snipe]: Port of vim-sneak/vim-seek.
+* [https://github.com/hlissner/evil-snipe evil-snipe]: Port of [https://github.com/justinmk/vim-sneak vim-sneak]/[https://github.com/goldfeld/vim-seek vim-seek].
 
 == Bug tracker ==
 
