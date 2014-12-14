@@ -324,7 +324,7 @@ The following codes allow refile to opened orgmode buffer files. (Currently set 
 	      (org-agenda-files :maxlevel . 3))))
 </pre>
 
-===Run org-todo at a particular date===
+===Run org-todo at a specified date===
 The following code snippet allows you to run <code>org-todo</code> as though it had been executed at some prior time that is interactively selected using <code>org-read-date</code>. This is particularly useful if you use the org-habits module and you are late to file the completion of a habit. If you complete the habit with org-todo it will be completed for the current day, and scheduled to repeat at the next repeat interval based on the current date. If you use <code>org-todo-at-date</code> and set the appropriate date, the task will be scheduled to repeat as though the task had been completed on the specified date.
 <pre>
 (defun org-todo-at-date (date)
