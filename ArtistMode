@@ -38,7 +38,7 @@ I use [[InteractivelyDoThings]] to change drawing operations and settings:
      "Use ido to select a drawing operation in artist-mode"
      (interactive (list (ido-completing-read "Drawing operation: " 
                                              (list "Pen" "Pen Line" "line" "straight line" "rectangle" 
-                                                   "square" "poly-line" "straight poly-line" "ellipsel" 
+                                                   "square" "poly-line" "straight poly-line" "ellipse" 
                                                    "circle" "text see-thru" "text-overwrite" "spray-can" 
                                                    "erase char" "erase rectangle" "vaporize line" "vaporize lines" 
                                                    "cut rectangle" "cut square" "copy rectangle" "copy square" 
