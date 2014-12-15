@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Nov 22 09:18:50 2014 (-0800)
+;; Last-Updated: Mon Dec 15 08:41:25 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 27360
+;;     Update #: 27363
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5991,6 +5991,13 @@ Remove crosshairs highlighting and unbind filtering keys."
   (interactive)
   (when (featurep 'bookmark+)
     (icicle-narrow-candidates-with-predicate #'icicle-bookmark-navlist-p)))
+
+;;; Not used yet.
+;;; (defun icicle-bookmark-non-dir-file-narrow ()   ; Not bound.
+;;;   "Narrow the bookmark candidates to non-directory file bookmarks."
+;;;   (interactive)
+;;;   (when (featurep 'bookmark+)
+;;;     (icicle-narrow-candidates-with-predicate #'icicle-bookmark-non-dir-file-p)))
 
 (defun icicle-bookmark-non-file-narrow () ; Bound to `C-x j b' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to non-file (buffer-only) bookmarks."
