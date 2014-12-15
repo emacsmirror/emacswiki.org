@@ -19,3 +19,12 @@ One thing this page doesn't touch on, which I found a bit odd: how to actually i
 
 -- [http://www.linkedin.com/in/kenahoo kenahoo] 2014-04-14 03:32 UTC
 
+
+----
+
+So I agree with kenahoo.   I came here because there was some functionality that I wanted that wasn't in the base version of emacs, but it IS available in an ELPA package.    I have no need *today* to actually do package devleopment.   I just want to install an ELPA package, and start using it and go on my way.  
+
+BUT I CANNOT FIGURE OUT HOW.  All of the instructions seemed aimed at people who "already know".
+
+-- [http://www.cs.ucsb.edu/~pconrad pconrad] 2014-12-15 17:41 UTC
+
