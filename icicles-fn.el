@@ -6,14 +6,14 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sat Nov 15 13:10:32 2014 (-0800)
+;; Last-Updated: Mon Dec 15 08:08:25 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 15051
+;;     Update #: 15054
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -73,8 +73,9 @@
 ;;    `icicle-bookmark-local-directory-p',
 ;;    `icicle-bookmark-local-file-p', `icicle-bookmark-man-p',
 ;;    `icicle-bookmark-marked-p', `icicle-bookmark-modified-p',
-;;    `icicle-bookmark-navlist-p', `icicle-bookmark-non-file-p',
-;;    `icicle-bookmark-omitted-p', `icicle-bookmark-orphaned-file-p',
+;;    `icicle-bookmark-navlist-p', `icicle-bookmark-non-dir-file-p',
+;;    `icicle-bookmark-non-file-p', `icicle-bookmark-omitted-p',
+;;    `icicle-bookmark-orphaned-file-p',
 ;;    `icicle-bookmark-orphaned-local-file-p',
 ;;    `icicle-bookmark-orphaned-remote-file-p',
 ;;    `icicle-bookmark-region-p', `icicle-bookmark-remote-file-p',
@@ -7623,6 +7624,18 @@ whose first part is the bookmark name."
       (let ((icicle-list-use-nth-parts  '(1)))
         (setq bookmark  (icicle-transform-multi-completion bookmark))))
     (bmkp-navlist-bookmark-p bookmark))
+
+  (defun icicle-bookmark-non-dir-file-p (bookmark)
+    "Return non-nil if BOOKMARK is a non-directory file bookmark.
+If BOOKMARK is a cons with a string car, then the car is used as
+the effective argument.  This is so that the function can be used to
+filter completion candidates.  The string can be a multi-completion
+whose first part is the bookmark name."
+    (when (consp bookmark) (setq bookmark  (car bookmark)))
+    (when icicle-multi-completing-p
+      (let ((icicle-list-use-nth-parts  '(1)))
+        (setq bookmark  (icicle-transform-multi-completion bookmark))))
+    (bmkp-non-dir-file-bookmark-p bookmark))
 
   (defun icicle-bookmark-non-file-p (bookmark)
     "Return non-nil if BOOKMARK is a non-file bookmark (e.g `*scratch*').
