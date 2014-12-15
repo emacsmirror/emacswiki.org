@@ -7,13 +7,13 @@
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Nov 15 12:23:53 2014 (-0800)
+;; Last-Updated: Mon Dec 15 08:21:09 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 7480
+;;     Update #: 7511
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -192,6 +192,8 @@
 ;;    `bmkp-jump-to-type', `bmkp-jump-to-type-other-window',
 ;;    `bmkp-list-all-tags', `bmkp-list-defuns-in-commands-file',
 ;;    `bmkp-local-file-jump', `bmkp-local-file-jump-other-window',
+;;    `bmkp-local-non-dir-file-jump',
+;;    `bmkp-local-non-dir-file-jump-other-window',
 ;;    `bmkp-make-bookmark-savable', `bmkp-make-bookmark-temporary',
 ;;    `bmkp-make-function-bookmark', `bmkp-man-jump',
 ;;    `bmkp-man-jump-other-window', `bmkp-menu-jump-other-window'
@@ -227,6 +229,7 @@
 ;;    `bmkp-next-variable-list-bookmark',
 ;;    `bmkp-next-variable-list-bookmark-repeat',
 ;;    `bmkp-next-url-bookmark', `bmkp-next-url-bookmark-repeat',
+;;    `bmkp-non-dir-file-jump', `bmkp-non-dir-file-jump-other-window',
 ;;    `bmkp-non-file-jump', `bmkp-non-file-jump-other-window',
 ;;    `bmkp-occur-create-autonamed-bookmarks',
 ;;    `bmkp-ORIG-bookmark-insert', `bmkp-occur-target-set',
@@ -245,9 +248,12 @@
 ;;    `bmkp-region-jump',
 ;;    `bmkp-region-jump-narrow-indirect-other-window',
 ;;    `bmkp-region-jump-other-window', `bmkp-remote-file-jump',
-;;    `bmkp-remote-file-jump-other-window', `bmkp-remove-all-tags',
-;;    `bmkp-remove-tags', `bmkp-remove-tags-from-all',
-;;    `bmkp-rename-tag', `bmkp-retrieve-icicle-search-hits',
+;;    `bmkp-remote-file-jump-other-window',
+;;    `bmkp-remote-non-dir-file-jump',
+;;    `bmkp-temote-non-dir-file-jump-other-window',
+;;    `bmkp-remove-all-tags', `bmkp-remove-tags',
+;;    `bmkp-remove-tags-from-all', `bmkp-rename-tag',
+;;    `bmkp-retrieve-icicle-search-hits',
 ;;    `bmkp-retrieve-more-icicle-search-hits',
 ;;    `bmkp-revert-bookmark-file', `bmkp-save-menu-list-state',
 ;;    `bmkp-send-bug-report', `bmkp-set-autonamed-bookmark',
@@ -419,6 +425,8 @@
 ;;    `bmkp-local-file-accessed-more-recently-cp',
 ;;    `bmkp-local-file-alist-only', `bmkp-local-file-bookmark-p',
 ;;    `bmkp-local-file-size-cp', `bmkp-local-file-type-cp',
+;;    `bmkp-local-non-dir-file-alist-only',
+;;    `bmkp-local-non-dir-file-bookmark-p',
 ;;    `bmkp-local-file-updated-more-recently-cp',
 ;;    `bmkp-make-bookmark-file-record',
 ;;    `bmkp-make-bookmark-list-record', `bmkp-make-desktop-record',
@@ -434,7 +442,8 @@
 ;;    `bmkp-modified-cp', `bmkp-msg-about-sort-order',
 ;;    `bmkp-multi-sort', `bmkp-names-same-bookmark-p',
 ;;    `bmkp-navlist-bookmark-p', `bmkp-new-bookmark-default-names',
-;;    `bmkp-non-autonamed-alist-only', `bmkp-non-file-alist-only',
+;;    `bmkp-non-autonamed-alist-only', `bmkp-non-dir-file-alist-only',
+;;    `bmkp-non-dir-file-bookmark-p', `bmkp-non-file-alist-only',
 ;;    `bmkp-non-file-bookmark-p',
 ;;    `bmkp-not-near-other-auto-idle-bmks', `bmkp-omitted-alist-only',
 ;;    `bmkp-orphaned-file-alist-only',
@@ -462,8 +471,9 @@
 ;;    `bmkp-regexp-filtered-tags-alist-only',
 ;;    `bmkp-region-alist-only', `bmkp-region-bookmark-p',
 ;;    `bmkp-remote-file-alist-only', `bmkp-remote-file-bookmark-p',
-;;    `bmkp-remove-dups', `bmkp-remove-if', `bmkp-remove-if-not',
-;;    `bmkp-remove-omitted',
+;;    `bmkp-remote-non-dir-file-alist-only',
+;;    `bmkp-remote-non-dir-file-bookmark-p', `bmkp-remove-dups',
+;;    `bmkp-remove-if', `bmkp-remove-if-not', `bmkp-remove-omitted',
 ;;    `bmkp-rename-for-marked-and-omitted-lists',
 ;;    `bmkp-repeat-command', `bmkp-replace-existing-bookmark',
 ;;    `bmkp-retrieve-icicle-search-hits-1',
@@ -811,17 +821,18 @@ These are the predefined type predicates:
 `bmkp-icicle-search-hits-bookmark-p', `bmkp-image-bookmark-p',
 `bmkp-info-bookmark-p', `bmkp-last-specific-buffer-p',
 `bmkp-last-specific-file-p', `bmkp-local-directory-bookmark-p',
-`bmkp-local-file-bookmark-p', `bmkp-man-bookmark-p',
-`bmkp-marked-bookmark-p', `bmkp-modified-bookmark-p',
-`bmkp-navlist-bookmark-p', `bmkp-non-file-bookmark-p',
+`bmkp-local-file-bookmark-p', `bmkp-local-non-dir-file-bookmark-p',
+`bmkp-man-bookmark-p', `bmkp-marked-bookmark-p',
+`bmkp-modified-bookmark-p', `bmkp-navlist-bookmark-p',
+`bmkp-non-dir-file-bookmark-p', `bmkp-non-file-bookmark-p',
 `bmkp-omitted-bookmark-p', `bmkp-orphaned-file-bookmark-p',
 `bmkp-orphaned-local-file-bookmark-p',
 `bmkp-orphaned-remote-file-bookmark-p', `bmkp-region-bookmark-p',
-`bmkp-remote-file-bookmark-p', `bmkp-sequence-bookmark-p',
-`bmkp-snippet-bookmark-p', `bmkp-temporary-bookmark-p',
-`bmkp-this-buffer-p', `bmkp-this-file-p', `bmkp-url-bookmark-p',
-`bmkp-url-browse-bookmark-p', `bmkp-variable-list-bookmark-p',
-`bmkp-w3m-bookmark-p'"
+`bmkp-remote-file-bookmark-p', `bmkp-remote-non-dir-file-bookmark-p',
+`bmkp-sequence-bookmark-p', `bmkp-snippet-bookmark-p',
+`bmkp-temporary-bookmark-p', `bmkp-this-buffer-p', `bmkp-this-file-p',
+`bmkp-url-bookmark-p', `bmkp-url-browse-bookmark-p',
+`bmkp-variable-list-bookmark-p', `bmkp-w3m-bookmark-p'"
   :type '(repeat symbol) :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-bookmark-name-length-max "bookmark+")
@@ -5222,6 +5233,13 @@ BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (and (bmkp-file-bookmark-p bookmark)  (not (bmkp-remote-file-bookmark-p bookmark))))
 
+(defun bmkp-local-non-dir-file-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK bookmarks a local non-directory file.
+BOOKMARK is a bookmark name or a bookmark record.
+If it is a record then it need not belong to `bookmark-alist'."
+  (let ((file  (bookmark-get-filename bookmark)))
+    (and (bmkp-local-file-bookmark-p bookmark)  (not (file-directory-p file)))))
+
 (defun bmkp-man-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a `man' page bookmark.
 BOOKMARK is a bookmark name or a bookmark record.
@@ -5248,6 +5266,13 @@ If it is a record then it need not belong to `bookmark-alist'."
 BOOKMARK is a bookmark name or a bookmark record."
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (memq bookmark bmkp-nav-alist))
+
+(defun bmkp-non-dir-file-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK bookmarks a non-directory file.
+BOOKMARK is a bookmark name or a bookmark record.
+If it is a record then it need not belong to `bookmark-alist'."
+  (let ((file  (bookmark-get-filename bookmark)))
+    (and (bmkp-file-bookmark-p bookmark)  (not (file-directory-p file)))))
 
 (defun bmkp-non-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a non-file bookmark (e.g *scratch*).
@@ -5328,6 +5353,13 @@ If it is a record then it need not belong to `bookmark-alist'."
          (file      (bookmark-get-filename bookmark))
          (rem-file  (and file  (bmkp-file-remote-p file))))
     (and rem-file  (or (not handler)  (eq handler 'bmkp-jump-dired)))))
+
+(defun bmkp-remote-non-dir-file-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK bookmarks a remote non-directory file.
+BOOKMARK is a bookmark name or a bookmark record.
+If it is a record then it need not belong to `bookmark-alist'."
+  (let ((file  (bookmark-get-filename bookmark)))
+    (and (bmkp-remote-file-bookmark-p bookmark)  (not (file-directory-p file)))))
 
 (defun bmkp-snippet-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a snippet bookmark.
@@ -5729,11 +5761,23 @@ A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-local-file-bookmark-p bookmark-alist))
 
+(defun bmkp-local-non-dir-file-alist-only ()
+  "`bookmark-alist', filtered to retain only local non-dir file bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-local-non-dir-file-bookmark-p bookmark-alist))
+
 (defun bmkp-non-autonamed-alist-only ()
   "`bookmark-alist', with only non-autonamed bookmarks (from any buffers).
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not (lambda (bmk) (not (bmkp-autonamed-bookmark-p bmk))) bookmark-alist))
+
+(defun bmkp-non-dir-file-alist-only ()
+  "`bookmark-alist', filtered to retain only non-directory file bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-non-dir-file-bookmark-p bookmark-alist))
 
 (defun bmkp-non-file-alist-only ()
   "`bookmark-alist', filtered to retain only non-file bookmarks.
@@ -5801,6 +5845,12 @@ A new list is returned (no side effects)."
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-remote-file-bookmark-p bookmark-alist))
+
+(defun bmkp-remote-non-dir-file-alist-only ()
+  "`bookmark-alist', filtered to retain only remote non-dir file bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-remote-non-dir-file-bookmark-p bookmark-alist))
 
 (defun bmkp-sequence-alist-only ()
   "`bookmark-alist', filtered to retain only sequence bookmarks.
@@ -9476,6 +9526,26 @@ for info about using a prefix argument."
            current-prefix-arg)))
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p))
 
+;;;###autoload (autoload 'bmkp-local-non-dir-file-jump "bookmark+")
+(defun bmkp-local-non-dir-file-jump (bookmark-name &optional flip-use-region-p) ; Not bound.
+  "Jump to a local non-directory file bookmark.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
+  (interactive
+   (let ((alist  (bmkp-local-non-dir-file-alist-only)))
+     (list (bmkp-read-bookmark-for-type "local non-dir file" alist nil nil 'bmkp-local-file-history)
+           current-prefix-arg)))
+  (bmkp-jump-1 bookmark-name 'switch-to-buffer flip-use-region-p))
+
+;;;###autoload (autoload 'bmkp-local-non-dir-file-jump-other-window "bookmark+")
+(defun bmkp-local-non-dir-file-jump-other-window (bookmark-name &optional flip-use-region-p) ; Not bound.
+  "`bmkp-local-non-dir-file-jump', but in another window."
+  (interactive
+   (let ((alist  (bmkp-local-non-dir-file-alist-only)))
+     (list (bmkp-read-bookmark-for-type "local non-dir file" alist t nil 'bmkp-local-file-history)
+           current-prefix-arg)))
+  (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p))
+
 ;;;###autoload (autoload 'bmkp-man-jump "bookmark+")
 (defun bmkp-man-jump (bookmark-name &optional flip-use-region-p) ; `C-x j m', (`j' in Man)
   "Jump to a `man'-page bookmark.
@@ -9493,6 +9563,26 @@ for info about using a prefix argument."
   (interactive
    (let ((alist  (bmkp-man-alist-only)))
      (list (bmkp-read-bookmark-for-type "`man'" alist t nil 'bmkp-man-history)
+           current-prefix-arg)))
+  (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p))
+
+;;;###autoload (autoload 'bmkp-non-dir-file-jump "bookmark+")
+(defun bmkp-non-dir-file-jump (bookmark-name &optional flip-use-region-p) ; Not bound.
+  "Jump to a non-directory file bookmark.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
+  (interactive
+   (let ((alist  (bmkp-non-dir-file-alist-only)))
+     (list (bmkp-read-bookmark-for-type "non-dir file" alist nil nil 'bmkp-file-history)
+           current-prefix-arg)))
+  (bmkp-jump-1 bookmark-name 'switch-to-buffer flip-use-region-p))
+
+;;;###autoload (autoload 'bmkp-non-dir-file-jump-other-window "bookmark+")
+(defun bmkp-non-dir-file-jump-other-window (bookmark-name &optional flip-use-region-p) ; Not bound.
+  "`bmkp-non-dir-file-jump', but in another window."
+  (interactive
+   (let ((alist  (bmkp-non-dir-file-alist-only)))
+     (list (bmkp-read-bookmark-for-type "non-dir file" alist t nil 'bmkp-file-history)
            current-prefix-arg)))
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p))
 
@@ -9546,7 +9636,7 @@ You need library `narrow-indirect.el' to use this command."
   (interactive)
   (unless (require 'narrow-indirect nil t)
     (error "You need library `narrow-indirect.el' for this command"))
-  (let ((bmkp-handle-region-function 'bmkp-handle-region+narrow-indirect))
+  (let ((bmkp-handle-region-function  'bmkp-handle-region+narrow-indirect))
     (call-interactively
      (if (and (boundp 'icicle-mode)  icicle-mode) ; Icicles
          #'icicle-bookmark-region-other-window
@@ -9577,6 +9667,26 @@ for info about using a prefix argument."
   (interactive
    (let ((alist  (bmkp-remote-file-alist-only)))
      (list (bmkp-read-bookmark-for-type "remote file" alist t nil 'bmkp-remote-file-history)
+           current-prefix-arg)))
+  (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p))
+
+;;;###autoload (autoload 'bmkp-remote-non-dir-file-jump "bookmark+")
+(defun bmkp-remote-non-dir-file-jump (bookmark-name &optional flip-use-region-p) ; Not bound.
+  "Jump to a remote non-directory file bookmark.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
+  (interactive
+   (let ((alist  (bmkp-remote-non-dir-file-alist-only)))
+     (list (bmkp-read-bookmark-for-type "remote non-dir file" alist nil nil 'bmkp-remote-file-history)
+           current-prefix-arg)))
+  (bmkp-jump-1 bookmark-name 'switch-to-buffer flip-use-region-p))
+
+;;;###autoload (autoload 'bmkp-remote-non-dir-file-jump-other-window "bookmark+")
+(defun bmkp-remote-non-dir-file-jump-other-window (bookmark-name &optional flip-use-region-p) ; Not bound.
+  "`bmkp-remote-non-dir-file-jump', but in another window."
+  (interactive
+   (let ((alist  (bmkp-remote-non-dir-file-alist-only)))
+     (list (bmkp-read-bookmark-for-type "remote non-dir file" alist t nil 'bmkp-remote-file-history)
            current-prefix-arg)))
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p))
 
