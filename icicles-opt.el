@@ -6,14 +6,14 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Mon Oct 27 22:50:09 2014 (-0700)
+;; Last-Updated: Mon Dec 15 08:10:04 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 6087
+;;     Update #: 6089
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -1334,6 +1334,7 @@ with Emacs 23) option `icicle-Completions-text-scale-decrease'."
                                                  "icicle-bookmark-marked-p"
                                                  "icicle-bookmark-modified-p"
                                                  "icicle-bookmark-navlist-p"
+                                                 "icicle-bookmark-non-dir-file-p"
                                                  "icicle-bookmark-non-file-p"
                                                  "icicle-bookmark-omitted-p"
                                                  "icicle-bookmark-orphaned-file-p"
