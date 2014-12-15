@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Nov 28 20:30:06 2014 (-0800)
+;; Last-Updated: Mon Dec 15 08:47:04 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 11353
+;;     Update #: 11359
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2014/12/15 dadams
+;;     Added: icicle-bookmark(-local|-remote)-non-dir-file(-other-window).
+;;     Added (commented out - not used yet): icicle-bookmark-non-dir-file-narrow.
 ;; 2014/11/22 dadams
 ;;     icicle-buffer-multi-complete: Do not prepend ^ if TAB completion method is not basic.
 ;; 2014/10/26 dadams
@@ -2141,6 +2144,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/12/15 dadams
+;;     Added: icicle-bookmark-non-dir-file-p.
 ;; 2014/11/15 dadams
 ;;     Moved to icicles-mode.el: icicle-help-line-buffer, icicle-help-line-file,
 ;;                               icicle-show-help-in-mode-line, icicle-show-in-mode-line.
@@ -6668,7 +6673,7 @@
 ;;       Add only (non-mouse command) symbols to history.
 ;;     icy-mode (Emacs 23+):
 ;;       Enable/disable advice icicle-save-to-history when mode is turned on/off.
-;;       Enable the advics only if non-nil icicle-populate-interactive-history-flag.
+;;       Enable the advice only if non-nil icicle-populate-interactive-history-flag.
 ;;     icy-mode (Emacs 20-21): Remove advice icicle-save-to-history.
 ;; 2009/07/26 dadams
 ;;     Advise call-interactively to save command to icicle-interactive-history.
@@ -7481,6 +7486,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2014/12/15 dadams
+;;     icicle-cand-preds-for-bookmark: Added icicle-bookmark-non-dir-file-p.
 ;; 2014/10/27 dadams
 ;;     Added: icicle-read-char-by-name-multi-completion-flag.
 ;; 2014/10/26 dadams
