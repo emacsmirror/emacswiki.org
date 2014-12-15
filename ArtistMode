@@ -3,7 +3,7 @@ rectangles, squares, poly-lines, ellipses and circles by using your
 mouse and/or keyboard. The shapes are made up with the ascii
 characters |, -, / and \.
 
-It is part of Emacs (though you may need to add a require statement for it) and can also be gotten at
+It is part of Emacs (though you may need to add a require statement for it) and can also be retrieved from
 http://www.lysator.liu.se/~tab/artist/.
 
 You will use the mouse for drawing and painting if you are running Emacs in an X-window, as in other graphics programs. But you can also use artist-mode when you are running on a terminal. To see how it works, type:
@@ -38,7 +38,7 @@ I use [[InteractivelyDoThings]] to change drawing operations and settings:
      "Use ido to select a drawing operation in artist-mode"
      (interactive (list (ido-completing-read "Drawing operation: " 
                                              (list "Pen" "Pen Line" "line" "straight line" "rectangle" 
-                                                   "square" "poly-line" "straight poly-line" "ellipse" 
+                                                   "square" "poly-line" "straight poly-line" "ellipsel" 
                                                    "circle" "text see-thru" "text-overwrite" "spray-can" 
                                                    "erase char" "erase rectangle" "vaporize line" "vaporize lines" 
                                                    "cut rectangle" "cut square" "copy rectangle" "copy square" 
