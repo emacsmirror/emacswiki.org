@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Mon Dec 15 08:41:25 2014 (-0800)
+;; Last-Updated: Mon Dec 15 08:46:06 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 27363
+;;     Update #: 27370
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6146,10 +6146,13 @@ You are prompted for the FILES."
 ;;  `icicle-bookmark-image',                     `icicle-bookmark-image-other-window',
 ;;  `icicle-bookmark-info',                      `icicle-bookmark-info-other-window',
 ;;  `icicle-bookmark-local-file',                `icicle-bookmark-local-file-other-window',
+;;  `icicle-bookmark-local-non-dir-file',        `icicle-bookmark-local-non-dir-file-other-window',
 ;;  `icicle-bookmark-man',                       `icicle-bookmark-man-other-window',
+;;  `icicle-bookmark-non-dir-file',              `icicle-bookmark-non-dir-file-other-window',
 ;;  `icicle-bookmark-non-file',                  `icicle-bookmark-non-file-other-window',
 ;;  `icicle-bookmark-region',                    `icicle-bookmark-region-other-window',
 ;;  `icicle-bookmark-remote-file',               `icicle-bookmark-remote-file-other-window',
+;;  `icicle-bookmark-remote-non-dir-file',       `icicle-bookmark-remote-non-dir-file-other-window',
 ;;  `icicle-bookmark-specific-buffers',          `icicle-bookmark-specific-buffers-other-window'
 ;;  `icicle-bookmark-specific-files',            `icicle-bookmark-specific-files-other-window'
 ;;  `icicle-bookmark-all-tags',                  `icicle-bookmark-all-tags-other-window'
@@ -6215,10 +6218,16 @@ You are prompted for the FILES."
 (icicle-define-bookmark-command              "desktop")                                   ; `C-x j K'
 (icicle-define-bookmark-command              "local-file")                                ; `C-x j l'
 (icicle-define-bookmark-other-window-command "local-file")                                ; `C-x 4 j l'
-(icicle-define-bookmark-command              "man") ; `C-x j m'
+(icicle-define-bookmark-command              "local-non-dir-file")                        ; Not bound
+(icicle-define-bookmark-other-window-command "local-non-dir-file")                        ; Not bound
+(icicle-define-bookmark-command              "man")                                       ; `C-x j m'
 (icicle-define-bookmark-other-window-command "man")                                       ; `C-x 4 j m'
+(icicle-define-bookmark-command              "non-dir-file")                              ; Not bound
+(icicle-define-bookmark-other-window-command "non-dir-file")                              ; Not bound
 (icicle-define-bookmark-command              "remote-file")                               ; `C-x j n'
 (icicle-define-bookmark-other-window-command "remote-file")                               ; `C-x 4 j n'
+(icicle-define-bookmark-command              "remote-non-dir-file")                       ; Not bound
+(icicle-define-bookmark-other-window-command "remote-non-dir-file")                       ; Not bound
 (icicle-define-bookmark-command              "region" "Select region: ")                  ; `C-x j r'
 (icicle-define-bookmark-other-window-command "region" "Select region: ")                  ; `C-x 4 j r'
 (icicle-define-bookmark-command              "all-tags" nil                               ; `C-x j t *'
