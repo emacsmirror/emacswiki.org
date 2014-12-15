@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Dec  4 19:04:03 2014 (-0800)
+;; Last-Updated: Mon Dec 15 08:22:04 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 15778
+;;     Update #: 15785
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,14 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/12/15 dadams
+;;     Added: bmkp-non-dir-file-jump, bmkp-non-dir-file-jump-other-window,
+;;            bmkp-local-non-dir-file-jump, bmkp-local-non-dir-file-jump-other-window,
+;;            bmkp-remote-non-dir-file-jump, bmkp-remote-non-dir-file-jump-other-window,
+;;            bmkp-non-dir-file-alist-only, bmkp-non-dir-file-bookmark-p,
+;;            bmkp-local-non-dir-file-alist-only, bmkp-local-non-dir-file-bookmark-p,
+;;            bmkp-remote-non-dir-file-alist-only, bmkp-remote-non-dir-file-bookmark-p.
+;;     bmkp-autotemp-bookmark-predicates: Added bmkp(-local|-remote)-non-dir-file-bookmark-p.
 ;; 2014/11/15 dadams
 ;;     Added: bmkp-region-jump-narrow-indirect-other-window, bmkp-handle-region+narrow-indirect.
 ;;     bmkp-jump-man: Updated for Emacs 24+, where Man-getpage-in-background returns process buffer.
