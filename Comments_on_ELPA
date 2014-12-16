@@ -28,3 +28,39 @@ BUT I CANNOT FIGURE OUT HOW.  All of the instructions seemed aimed at people who
 
 -- [http://www.cs.ucsb.edu/~pconrad pconrad] 2014-12-15 17:41 UTC
 
+
+----
+
+Okay, maybe the main ELPA page could be clearer. Here is the method, for kenahoo, pconrad, and others:
+
+1. Edit the <tt>~/.emacs</tt> init file. If you can't locate it, type Ctrl-X Ctrl-F (or "M-x find-file") and enter <tt>~/.emacs</tt>.
+
+2. Near the top of this file, but not within a (parenthesized block) of course, include the following hunk of code:
+
+[code](setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "https://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+[/code]
+
+3. Save the file, exit Emacs, restart Emacs.
+
+4. Do either one of the following:
+:  (a) Press function key F10 and navigate to "Options > Manage Emacs Packages", or else
+:  (b) Use the keyboard command "<tt>M-x package-list-packages</tt>"
+
+You may have to wait a minute or two for the connections to be successful. If you do not see a list of packages that are able to be added, then review the *Messages* buffer to see what the error messages display, and then correct them.
+
+5. The displayed list of packages will contain three or four sections: "new" (since last session), "available" (i.e., not installed), "installed" (by having been added via the package manager), and "built-in" (comes with Emacs by default, no need to get it).
+
+6. Do one of the following:
+:   (a) Press function key F10 and navigate to Package and choose one of the options, or else
+:   (b) Use the arrow keys or the Emacs line-motion keys Ctrl-N (next, down) or Ctrl-P (previous, up) to find one or more package you would like. Press "<b>i</b>" to mark it to be installed later. When done selecting, press "<b>x</b>" (for "execute") which will install all the marked packages.
+
+Those packages will be retrieved and installed in your <tt>~/.emacs.d/elpa</tt> directory
+
+It should not be necessary to edit the .emacs file to load them. When you close and re-start Emacs, the new packages should load into Emacs by default. 
+
+Hope this helps  (Emacs experts, tell me if I omitted anything)
+
+-- epement 2014-12-16 13:32 UTC
+
