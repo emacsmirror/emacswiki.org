@@ -101,11 +101,13 @@ To pipe the contents of the file in the current buffer to the wc commandline too
 
  (defun wc () (interactive) (shell-command (concat "wc " buffer-file-name)))
 
+To pipe the contents of *region* to the wc command-line tool:
+
+ (defun wc () (interactive) (shell-command (concat "echo " (buffer-substring (mark) (point)) " | wc")))
+
 Maybe add a keybinding (C-c w):
 
  (global-set-key "\C-cw" 'wc)
-
-As this is using the wc installed on your *nix system, it only works for files saved on a disk, not temporary buffers.
 
 == How many times was each word used? ==
 
