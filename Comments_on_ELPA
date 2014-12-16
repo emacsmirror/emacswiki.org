@@ -1,5 +1,4 @@
 
-
 ----
 
 It would be helpful if this page described how to add a package to Gnu ELPA. Part of the answer is here:
@@ -48,7 +47,7 @@ Okay, maybe the main ELPA page could be clearer. Here is the method, for kenahoo
 :  (a) Press function key F10 and navigate to "Options > Manage Emacs Packages", or else
 :  (b) Use the keyboard command "<tt>M-x package-list-packages</tt>"
 
-You may have to wait a minute or two for the connections to be successful. If you do not see a list of packages that are able to be added, then review the *Messages* buffer to see what the error messages display, and then correct them.
+You may have to wait a minute or two for the connections to be successful. If you do not see a list of packages that are able to be added, then review the <nowiki>*Messages*</nowiki> buffer to see what the error messages display, and then correct them.
 
 5. The displayed list of packages will contain three or four sections: "new" (since last session), "available" (i.e., not installed), "installed" (by having been added via the package manager), and "built-in" (comes with Emacs by default, no need to get it).
 
