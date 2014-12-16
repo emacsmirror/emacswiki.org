@@ -30,64 +30,6 @@ Command `beginning-or-indentation' in Lisp:misc-cmds.el does the same thing. In 
           ((save-excursion (skip-chars-backward " \t") (bolp)) ; At indentation.
            (forward-line 0))
           (t (back-to-indentation))))
-[new]
-[:end-of-code-or-line]
-To get the same same type of functionality at the end of the line, try this function.  I bind it to my <end> key just like the <home> key above.  It jumps between the actual end-of-line and the end of the code line which is different if the line has comments on the end.
-
-  (defun end-of-code-or-line () 
-   "Move to EOL. If already there, to EOL sans comments.
-    That is, the end of the code, ignoring any trailing comment
-    or whitespace.  Note this does not handle 2 character 
-    comment starters like // or /*.  Such will not be skipped."
-    (interactive)
-    (if (not (eolp))
-        (end-of-line)
-      (skip-chars-backward " \t")
-      (let ((pt (point))
-            (lbp (line-beginning-position))
-            (lim))
-        (when (re-search-backward "\\s<" lbp t)
-          (setq lim (point))
-          (if (re-search-forward "\\s>" (1- pt) t)
-              (goto-char pt)
-            (goto-char lim)               ; test here ->
-          (while (looking-back "\\s<" (1- (point)))
-            (backward-char))
-          (skip-chars-backward " \t"))))))
-
-Note the similarity with HtmlEndOfLine.
-[new]
-Here's a "superior" version of the above function. Works in any mode for any comment type, so long as the major mode defines what is a comment. It uses the parse info.
-
- (defun point-in-comment ()
-  "Determine if the point is inside a comment"
-  (interactive)
-  (let ((syn (syntax-ppss)))
-    (and (nth 8 syn)
-         (not (nth 3 syn)))))
-
- (defun end-of-code-or-line+ (arg)
-  "Move to the end of code. If already there, move to the end of line,
-  that is after the possible comment. If at the end of line, move to the
-  end of code.
-
-  Comments are recognized in any mode that sets syntax-ppss properly."
-  (interactive "P")
-  (let ((eoc (save-excursion
-               (move-end-of-line arg)
-               (while (point-in-comment)
-                 (backward-char))
-               (skip-chars-backward " \t")
-               (point))))
-    (cond ((= (point) eoc)
-           (move-end-of-line arg))
-          (t
-           (move-end-of-line arg)
-           (while (point-in-comment)
-             (backward-char))
-           (skip-chars-backward " \t")))))
-
--- Fuco
 
 [new]
 Here comes a function which goes to the indention, begining of line or begining of buffer:
@@ -129,29 +71,58 @@ If on a wrapped part it first goes to the start of the wrapped line.
 Note: Requires the not yet released Emacs 23.
 (There is also a similar function for end of line.)
 
-[new]
-Here is a modification to Fuco's great end-of-code-or-line+ function.  This new one moves first to the end of line, and if there moves to end of code (on the same line).  To use this you will also need Fuco's point-in-comment function.
+
+
+== End of code (before comments) or end of line ==
+
+Similarly to move to end of code but not end of comments
+
+
+ (defun end-of-code-or-line (arg)
+   "Move to end of line, or before start of comments depending on situation.
+ Toggle back and forth positions if we are already at one.
+ Comments are recognized in any mode that sets syntax-ppss
+ properly."
+   (interactive "P")
+   (when (catch 'bol 
+           (let ((start (point))
+                 (bol (save-excursion
+                        (beginning-of-line)
+                        (point)))
+                 (eol (progn (move-end-of-line arg) (point))))
+             (while (point-in-comment)
+               (backward-char)
+               (when (= (point) bol)
+                 (throw 'bol t)))
+             (throw 'bol (and (not (= eol start)) (>= start (point))))))
+     (move-end-of-line arg)))
+
+ (global-set-key (kbd "<end>") 'end-of-code-or-line)
+
+Or to reverse the order, going to end of line first:
 
  (defun end-of-line-or-code (arg)
-  "Move point to end of line. If already there, move back to end of code.
- By 'end of code' we mean before a possible comment. Comments are recognized
- in any mode that sets syntax-ppss properly."
-  (interactive "P")
-  (let ((eol (save-excursion
-	       (move-end-of-line arg)
-               (point))))
-    (cond ((= (point) eol)
-           (move-end-of-line arg)
-           (while (point-in-comment)
-             (backward-char))
-           (skip-chars-backward " \t"))
-          (t (move-end-of-line arg)))))
+   "Move point to end of line. If already there, move back to end of code.
+  By 'end of code' we mean before a possible comment. Comments are recognized
+  in any mode that sets syntax-ppss properly."
+   (interactive "P")
+   (let ((eol (save-excursion
+                (move-end-of-line arg)
+                (point)))
+         (bol (save-excursion
+                (beginning-of-line)
+                (point))))
+     (cond ((= (point) eol)
+            (move-end-of-line arg)
+            (while (and (not (= bol (point)))
+                        (point-in-comment))
+              (backward-char))
+            (skip-chars-backward " \t"))
+           (t (move-end-of-line arg)))))
 
-Then bind with
+    (global-set-key [end] 'end-of-line-or-code)
 
- (global-set-key [end] 'end-of-line-or-code)
 
--dmuenz
 
 ----
 CategoryEditing
