@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Dec 15 08:22:04 2014 (-0800)
+;; Last-Updated: Tue Dec 16 08:17:34 2014 (-0800)
 ;;           By: dradams
-;;     Update #: 15785
+;;     Update #: 15787
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2014/12/16 dadams
+;;     bmkp-last-specific-file-p: Use bmkp-last-specific-file-p, not string=.
 ;; 2014/12/15 dadams
 ;;     Added: bmkp-non-dir-file-jump, bmkp-non-dir-file-jump-other-window,
 ;;            bmkp-local-non-dir-file-jump, bmkp-local-non-dir-file-jump-other-window,
