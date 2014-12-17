@@ -410,7 +410,7 @@ You can also do something like this:
 (GnusWait!)
 </pre>
 
-===tangle and compile org config===
+===tangle and compile org config witihout loading org-mode===
 <pre>
   (let ((src "~/org/dotemacs.org")
         (dst "~/.dotemacs.el"))
