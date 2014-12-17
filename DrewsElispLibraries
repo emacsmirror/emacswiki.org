@@ -976,6 +976,13 @@ Thanks -- [[Bernard Hurley]]
 [new:DrewAdams:2013-10-27 15:29 UTC]
 Thanks for the heads-up. Actually, it was OK for Emacs 24.3 (`apropos-macrop' still exists there), but not for Emacs 24+ (i.e., development snapshots after 24.3).  Should be OK now.  -- DrewAdams
 
+---
+[new]
+
+I think `palette.el' contains a spurious "4" on this line:
+
+    ;;     Update #: 779 4
+
 
 
 
