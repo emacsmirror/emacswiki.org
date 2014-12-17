@@ -983,8 +983,11 @@ I think `palette.el' contains a spurious "4" on this line:
 
     ;;     Update #: 779 4
 
-And the version at one point went from "22.0" to "0".
+And the version at one point went from "22.0" to "0". -- JonasBernoulli
 
+
+[new:DrewAdams:2014-12-17 23:55 UTC]
+I've removed the spurious `4' - thanks.  The version number (`0') is correct. The library is not versioned. -- DrewAdams
 
 
 
