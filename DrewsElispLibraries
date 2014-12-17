@@ -983,7 +983,7 @@ I think `palette.el' contains a spurious "4" on this line:
 
     ;;     Update #: 779 4
 
-And the version at one point went from `22.0' to `0'.
+And the version at one point went from "22.0" to "0".
 
 
 
