@@ -410,6 +410,19 @@ You can also do something like this:
 (GnusWait!)
 </pre>
 
+===tangle and compile org config===
+<pre>
+  (let ((src "~/org/dotemacs.org")
+        (dst "~/.dotemacs.el"))
+    (when (file-newer-than-file-p src dst)
+      (call-process
+       (concat invocation-directory invocation-name)
+       nil nil t
+       "-q" "--batch" "--eval" "(require 'ob-tangle)"
+       "--eval" (format "(org-babel-tangle-file \"%s\" \"%s\")" src dst)))
+    (require 'bytecomp)
+    (byte-recompile-file dst nil 0 t))
+</pre>
 : So, who originally wrote this, anyway? I've seen it in several .emacs files...
 
 ----
