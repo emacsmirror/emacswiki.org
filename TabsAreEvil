@@ -159,6 +159,11 @@ When all is said and done, excessive trailing comments are bad style in any case
     8     return i;
     9 }
 
+== Useful reference ==
+
+Seems to be much more useful for getting plain setup, of tabs just inserting tabs, without all this "advanced" mode related "super smart" handling that only seems to get in a way.
+http://vserver1.cscs.lsa.umich.edu/~rlr/Misc/emacs_tabs.htm
+
 == Discussion ==
 
 Here is why tab characters are evil.
