@@ -389,6 +389,30 @@ You can also use Right Zoom ( http://www.macupdate.com/app/mac/30591/right-zoom 
 
 -dwd
 
+=== Enable / Disable Anti-Aliasing ===
+To turn on/off anti-aliasing, use the following commands. By default, anti-aliasing is on.
+
+ (setq mac-allow-anti-aliasing t)    ;; turn on anti-aliasing (default)
+ (setq mac-allow-anti-aliasing nil)  ;; turn off anti-aliasing
+
+For Emacs >= 24.4 and OS X >= 10.5, the default font backend has changed,
+and no longer supports these commands. The old backend can be used instead
+by running the following command in Terminal.app.
+
+ $ defaults write org.gnu.Emacs FontBackend ns
+
+The commands will then work normally.
+
+Another option is to use the following defaults command, which has some effect,
+but not as much as using the previous method.
+
+ defaults write org.gnu.Emacs AppleAntiAliasingThreshold 100
+
+To reverse the changes, use
+
+ defaults delete org.gnu.Emacs AppleAntiAliasingThreshold
+
+
 == Hacking on the Sources ==
 
 The section is meant to collect useful hacks to the C sources (or to Lisp sources that are executed before any init files are read, such as ##startup.el##).
