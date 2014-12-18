@@ -76,7 +76,9 @@ For Emacs >= 24.4 and OS X >= 10.5, the default font backend has changed,
 and no longer supports these commands. The old backend can be used instead
 by running the following command in Terminal.app.
 
-$ defaults write org.gnu.Emacs FontBackend ns
+ $ defaults write org.gnu.Emacs FontBackend ns
+
+The commands will then work normally.
 
 === Where is the "Help > Carbon Emacs Package" menu? ===
 
