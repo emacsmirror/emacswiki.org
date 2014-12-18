@@ -66,10 +66,17 @@ See http://lists.gnu.org/archive/html/emacs-devel/2007-03/msg01507.html  -- Juli
 
 === How to enable/disable anti-alias rendering? ===
 
-To turn on/off anti-aliasing, use the following lines. By default, anti-aliasing is on.
+To turn on/off anti-aliasing, use the following commands. By default, anti-aliasing is on.
 
  (setq mac-allow-anti-aliasing t)    ;; turn on anti-aliasing (default)
  (setq mac-allow-anti-aliasing nil)  ;; turn off anti-aliasing
+
+[new]
+For Emacs >= 24.4 and OS X >= 10.5, the default font backend has changed,
+and no longer supports these commands. The old backend can be used instead
+by running the following command in Terminal.app.
+
+$ defaults write org.gnu.Emacs FontBackend ns
 
 === Where is the "Help > Carbon Emacs Package" menu? ===
 
