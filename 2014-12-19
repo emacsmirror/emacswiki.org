@@ -1,2 +1,14 @@
 [new:AlexSchroeder:2014-12-19 23:26 UTC]
 As you must have noticed, system recovery has been taken quite some time. Currently the wiki runs under [http://oddmuse.org/wiki/Using_mod_perl mod_perl and ModPerl::Registry]. My notes are [https://alexschroeder.ch/wiki/2014-12-19_Emacs_Wiki_Migration on my blog].
+
+There are many things that still don't work:
+
+# git integration (some issues regarding a cleanup that was planned)
+# backup (due to permission issues which I haven't been able to look into)
+# frequent outages (the page comes up empty) -- I'm not sure what is happening, here: processes crashing? taking too long?
+# we lost foreign language support (at the top it will always say SiteMap even if your browser preferences are for a different language)
+
+And there are probably many more. I haven't looked at the ElispArea, RSS feeds, all the cron jobs, etc. Yikes!
+
+[[image:https://farm8.staticflickr.com/7469/15873652549_b6eec46477_o.jpg|memory today|https://flic.kr/p/qbGBSD]]
+[[image:https://farm8.staticflickr.com/7512/16059020612_59fc211a67_o.png|CPU today|https://flic.kr/p/qt5FkJ]]
