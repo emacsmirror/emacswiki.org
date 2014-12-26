@@ -1,3 +1,4 @@
+[[ru:ru]]
 ;;; minor-mode-hack.el --- Change priority of minor-mode keymaps
 
 ;; $Id: minor-mode-hack.el,v 1.6 2013/02/12 12:28:05 rubikitch Exp $
