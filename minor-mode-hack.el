@@ -1,3 +1,4 @@
+[[ru:ru]]
 [[ru:pt]]
 [[ru:ru]]
 ;;; minor-mode-hack.el --- Change priority of minor-mode keymaps
