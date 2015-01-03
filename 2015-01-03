@@ -1,0 +1,7 @@
+[new:AlexSchroeder:2015-01-03 22:52 UTC]
+Wohoo, we're in 2015! Happy New Year!
+
+NicFerrier and I have been busy setting up a new site. It is paid for and maintained by Nic. It uses nginx as a caching proxy with some pretty aggressive caching rules.
+If you're editing a page, however, and once you have edited a page, you should be bypassing the cache and everything should work as it used to do.
+
+I'm still looking at [https://alexschroeder.ch/wiki/Emacs_Wiki_Migration my backlog] of things to do. All I have to do is test this git backend. If it works, we're ready to make the wiki editable again.
