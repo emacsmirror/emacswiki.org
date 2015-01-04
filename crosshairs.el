@@ -4,13 +4,13 @@
 ;; Description: Highlight the current line and column.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 0
 ;; Package-Requires: ((hl-line+ "0") (col-highlight "0") (vline "0"))
-;; Last-Updated: Fri Nov 28 19:25:29 2014 (-0800)
+;; Last-Updated: Thu Jan  1 10:30:52 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 502
+;;     Update #: 503
 ;; URL: http://www.emacswiki.org/crosshairs.el
 ;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
