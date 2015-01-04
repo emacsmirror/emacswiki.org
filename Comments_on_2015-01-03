@@ -144,3 +144,16 @@ FYI - I just tried 3 times to save icicles-cmd2.el (another fairly large file). 
 
 -- DrewAdams 2015-01-04 22:44 UTC
 
+
+----
+
+Are they supposed to work? My understanding is that everything is namespaced by /emacs/ (/wiki/ is a redirect to /emacs/).
+
+So http://emacswiki.org/WikiPageName will not work but http://emacswiki.org/emacs/WikiPageName will
+
+You are suggesting that my understanding is incorrect?
+
+If so, I don't see many 404s matching what you're suggesting.
+
+-- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-04 22:45 UTC
+
