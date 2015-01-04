@@ -4,13 +4,13 @@
 ;; Description: Extensions to `help-macro.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug 24 15:36:18 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:06:03 2013 (-0800)
+;; Last-Updated: Thu Jan  1 10:50:17 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 122
+;;     Update #: 123
 ;; URL: http://www.emacswiki.org/help-macro+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
