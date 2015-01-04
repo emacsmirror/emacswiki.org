@@ -46,3 +46,10 @@ Hm, I have no idea why these files "lost" their formatting. When I edited the fi
 
 -- AlexSchroeder 2015-01-04 09:57 UTC
 
+
+----
+
+I see. Thanks for taking a look. There are other files with the same problem. I tried to fix `bookmark+-1.el' the same way, for instance, but I got `504 Gateway Time-out' when I tried to save it. I guess I'll just need to wait a bit for this.
+
+-- DrewAdams 2015-01-04 20:56 UTC
+
