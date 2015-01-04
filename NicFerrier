@@ -11,13 +11,15 @@ The last couple of years I've started to look at ELisp as a practical language (
 
 I work for an as yet unnamed Bank as a Technical Architect. I think Technical Architect is a stupid job.  Really what I do is help people understand how to get software live.
 
-I've just started the [[http://emacsbites.com|EmacsBites]], a series of screencasts about programming in Emacs and EmacsLisp. I would like to help more people learn Emacs as a second language so they can build tools for themselves.
-
 I maintain the [[http://marmalade-repo.org|marmalade Emacs package repo]] and I have ported it to [[Elnode]] [[http://github.com/nicferrier/elmarmalade|here]]. Please make a GitHub issue for any problem with marmalade.
+justa 
+I've started the [[http://emacsbites.com|EmacsBites]], a series of screencasts about programming in Emacs and EmacsLisp. I would like to help more people learn Emacs as a second language so they can build tools for themselves. I am struggling to keep this going.
 
 I am the author and maintainer of [[Elnode]], the Emacs Async Webserver; more information about that in this page.
 
 I hang out on [[EmacsChannel|#emacs]] a lot, I'm listed [[EmacsChannelPeople|here]] and [[EmacsChannelDemographics|here]].  I wish that both of those references could be auto-generated.
+
+I am currently paying for the EmacsWiki to be hosted on my servers. This is after AlexSchroeder has been doing it for years.
 
 Check out my [[http://nic.ferrier.me.uk#emacslisp|blog]] which has lots of stuff about Emacs.
 
