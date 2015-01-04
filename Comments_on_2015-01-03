@@ -53,3 +53,10 @@ I see. Thanks for taking a look. There are other files with the same problem. I 
 
 -- DrewAdams 2015-01-04 20:56 UTC
 
+
+----
+
+FYI - I was able to fix `bookmark+-1.el', by trying again. I guess it must be borderline wrt the timeout.
+
+-- DrewAdams 2015-01-04 20:59 UTC
+
