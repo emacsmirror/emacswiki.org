@@ -26,3 +26,16 @@ Thanks; I wasn't sure if I was missing something.
 
 -- DrewAdams 2015-01-04 01:21 UTC
 
+
+----
+
+FYI, just in case you are not aware of it: 
+
+At least some Elisp pages do not appear as code but as if they were HTML. E.g., http://www.emacswiki.org/emacs/palette.el.
+
+Some other libraries show the same problem, but some appear OK. Not sure what the difference is.
+
+HTH.
+
+-- DrewAdams 2015-01-04 03:12 UTC
+
