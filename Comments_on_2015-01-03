@@ -169,7 +169,7 @@ Here is a typical part of an Elisp file header, which refers to such a URL:
 
 Not only that, but such URLs are used in the code itself, to consult the doc on the web (the wiki).
 
-My understanding was that only the /cgi-bin/ parts of URLs (e.g. people's bookmarks, such as http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus) would no longer work, so that people would need to update their bookmarks.
+My understanding was that only the /cgi-bin/wiki parts of URLs (e.g. people's bookmarks, such as http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus) would no longer work, so that people would need to update their bookmarks.
 
 -- DrewAdams 2015-01-04 22:51 UTC
 
