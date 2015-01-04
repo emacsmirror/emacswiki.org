@@ -2148,3 +2148,4 @@ Non-nil HINT-P means provide a hint about how to pick the color."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; palette.el ends here
+
