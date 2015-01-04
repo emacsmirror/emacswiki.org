@@ -128,3 +128,12 @@ Wtf is that? surely everything is namespaced?
 
 -- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-04 22:38 UTC
 
+
+----
+
+@Nic: I don't understand your question.
+
+FYI, that is not an Elisp-file page. It is an ordinary (doc) wiki page. Same thing for other such pages, e.g., http://emacswiki.org/BookmarkPlus.
+
+-- DrewAdams 2015-01-04 22:43 UTC
+
