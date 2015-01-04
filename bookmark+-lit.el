@@ -4,15 +4,15 @@
 ;; Description: Bookmark highlighting for Bookmark+.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2010-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2015, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Fri Nov 14 08:54:11 2014 (-0800)
+;; Last-Updated: Thu Jan  1 10:24:58 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 888
+;;     Update #: 890
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
