@@ -4,18 +4,18 @@
 ;; Description: Extensions to `compile.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 16 16:38:23 2004
 ;; Version: 0
 ;; Package-Requires: ((compile- "0"))
-;; Last-Updated: Thu Dec 26 10:17:05 2013 (-0800)
+;; Last-Updated: Thu Jan  1 10:28:49 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 918
+;;     Update #: 930
 ;; URL: http://www.emacswiki.org/compile+.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Doc URL: http://www.emacswiki.org/CompilationMode
 ;; Keywords: tools, processes
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -119,6 +119,18 @@
 (require 'compile) ;; compilation-error-regexp-alist-alist, compilation-minor-mode-map
 
 (require 'misc-fns nil t) ;; (no error if not found): undefine-killer-commands
+
+
+;; Quiet the byte-compiler.
+(defvar compilation-debug)
+(defvar compilation-enter-directory-face)
+(defvar compilation-error-regexp-alist-alist)
+(defvar compilation-highlight-overlay)
+(defvar compilation-highlight-regexp)
+(defvar compilation-leave-directory-face)
+(defvar next-error-highlight)
+(defvar next-error-highlight-timer)
+(defvar next-error-overlay-arrow-position)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
