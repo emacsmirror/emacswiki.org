@@ -4,11 +4,11 @@
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Dec 12 08:09:49 2014 (-0800)
+;; Last-Updated: Sun Jan  4 15:22:41 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 29734
+;;     Update #: 29739
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -28,10 +28,10 @@
 ;;  Files `icicles-doc1.el' and `icicles-doc2.el' contain the doc for
 ;;  Icicles, including how to install and use Icicles.  You can also
 ;;  read the Icicles doc, in formatted form, on the Emacs-Wiki Web
-;;  site: http://www.emacswiki.org/cgi-bin/wiki/Icicles.  Emacs Wiki
-;;  also has a few addtional pages about Icicles.  In particular, if
-;;  you are new to Emacs, as well as Icicles, see this page:
-;;  http://www.emacswiki.org/cgi-bin/wiki/EmacsNewbieWithIcicles.
+;;  site: http://www.emacswiki.org/Icicles.  Emacs Wiki also has a few
+;;  addtional pages about Icicles.  In particular, if you are new to
+;;  Emacs, as well as Icicles, see this page:
+;;  http://www.emacswiki.org/EmacsNewbieWithIcicles.
 ;;
 ;;  This file continues the Icicles documentation, which starts in
 ;;  file `icicles-doc1.el'.
@@ -47,7 +47,7 @@
 ;;  highlight this Index and render it more readable.  Likewise, for
 ;;  the cross-references and section headings throughout this file.
 ;;  You can get `linkd.el' here:
-;;  http://www.emacswiki.org/cgi-bin/wiki/linkd.el.
+;;  http://www.emacswiki.org/linkd.el.
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "Documentation in File `icicles-doc1.el'")
 ;;  -----------------------------------------------------------
