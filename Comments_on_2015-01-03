@@ -137,3 +137,10 @@ FYI, that is not an Elisp-file page. It is an ordinary (doc) wiki page. Same thi
 
 -- DrewAdams 2015-01-04 22:43 UTC
 
+
+----
+
+FYI - I just tried 3 times to save icicles-cmd2.el (another fairly large file). After two attempts with 504's, I was able to save it.
+
+-- DrewAdams 2015-01-04 22:44 UTC
+
