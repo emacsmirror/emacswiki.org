@@ -4,11 +4,11 @@
 ;; Description: Non-interactive functions for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Mon Dec 15 08:08:25 2014 (-0800)
+;; Last-Updated: Thu Jan  1 10:55:25 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15054
+;;     Update #: 15057
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -50,9 +50,9 @@
 ;;
 ;;    `assq-delete-all', `icicle-2nd-part-string-less-p',
 ;;    `icicle-abbreviate-or-expand-file-name',
-;;    `icicle-all-completions', `icicle-alpha-p',
-;;    `icicle-alt-act-fn-for-type', `icicle-any-candidates-p',
-;;    `icicle-apropos-any-candidates-p',
+;;    `icicle-alist-key-match', `icicle-all-completions',
+;;    `icicle-alpha-p', `icicle-alt-act-fn-for-type',
+;;    `icicle-any-candidates-p', `icicle-apropos-any-candidates-p',
 ;;    `icicle-apropos-any-file-name-candidates-p',
 ;;    `icicle-apropos-candidates', `icicle-assoc-delete-all',
 ;;    `icicle-barf-if-outside-Completions',
@@ -6749,6 +6749,15 @@ For Emacs 22 and prior, return a single default (a string)."
          (funcall #'non-nil-symbol-name-nearest-point))
         ((icicle-thing-at-point 'symbol))
         ((function-called-at-point))))
+
+(defun icicle-alist-key-match (regexp alist)
+  "Return non-nil if REGEXP matches a key of ALIST.
+The non-nil value returned is the first element whose key matches."
+  (catch 'icicle-alist-key-match
+    (dolist (key.val  alist)
+      (when (string-match regexp (car key.val)) (throw 'icicle-alist-key-match key.val)))
+    nil))
+
  
 ;;(@* "Icicles Functions - Sort Functions")
 
