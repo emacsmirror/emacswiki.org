@@ -4,7 +4,7 @@ I use Emacs for nearly everything in daily job:
 * organizing myself with OrgMode
 * or even editing text files.
 
-When it comes to programming, I do most frequently PythonProgrammingInEmacs. I also use AUCTeX regularly.
+When it comes to programming, I use most frequently PythonProgrammingInEmacs and GoLangMode. I also use AUCTeX regularly.
 
 You can find me in the EmacsChannel under the nickname [::Sigma]. 
 
@@ -18,6 +18,7 @@ Since I work on several different computers I need to keep my configuration onli
 * [https://github.com/defunkt/gist.el gist.el]: maintainer. the 'next' branch is based on the [https://github.com/sigma/gh.el gh.el] github binding (and many other improvements)
 * [https://github.com/sigma/mocker.el mocker.el]: a mocking framework for Emacs lisp code
 * [https://github.com/sigma/gh.el gh.el]: an elisp binding for the GitHub API (very alpha)
+* [https://github.com/sigma/marshal.el]: a attempt at replicating some of the Go tagged structs for eieio
 * [https://github.com/sigma/logito logito]: a very basic logging framework
 * [https://github.com/sigma/org-magit org-magit]: link magit repositories/logs/commits from org files
 * [https://github.com/sigma/org-s5 org-s5]: tweak the HTML exporter to generate a S5 presentation
