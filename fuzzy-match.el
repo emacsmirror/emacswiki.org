@@ -4,18 +4,18 @@
 ;; Description: fuzzy matching
 ;; Author: Simon Marshall (concat "simon" "@" "gnu" ".org")
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 1993, 1994 Simon Marshall, all rights reserved.
 ;; Created: 1993, by Simon Marshall
 ;; Version: 1.04
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:03:16 2013 (-0800)
+;; Last-Updated: Thu Jan  1 10:45:16 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 184
+;;     Update #: 186
 ;; URL: http://www.emacswiki.org/fuzzy-match.el
 ;; Doc URL: http://emacswiki.org/Icicles_-_Fuzzy_Completion
 ;; Keywords: matching completion string
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
