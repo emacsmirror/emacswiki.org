@@ -4,16 +4,16 @@
 ;; Description: Extensions to `emacsbug.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2013-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2013-2015, Drew Adams, all rights reserved.
 ;; Created: Sat Jan 19 15:24:48 2013 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 08:52:17 2013 (-0800)
+;; Last-Updated: Thu Jan  1 10:37:18 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 365
+;;     Update #: 367
 ;; URL: http://www.emacswiki.org/emacsbug%2b.el
 ;; Keywords: report bug
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
