@@ -4,11 +4,11 @@
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Nov 29 13:52:24 2014 (-0800)
+;; Last-Updated: Sun Jan  4 14:39:21 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7092
+;;     Update #: 7101
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -319,6 +319,7 @@
 (eval-when-compile (require 'comint))
   ;; comint-check-proc, comint-copy-old-input, comint-get-old-input, comint-input-ring,
   ;; comint-prompt-regexp, comint-send-input
+(eval-when-compile (require 'completion)) ;; completion-string
 (eval-when-compile (require 'imenu)) ;; imenu-syntax-alist
 (eval-when-compile (require 'compile)) ;; compilation-find-buffer
 (eval-when-compile (require 'info)) ;; Info-goto-node
@@ -388,9 +389,9 @@
   ;; icicle-search-overlays, icicle-search-refined-overlays, icicle-search-replacement,
   ;; icicle-transform-before-sort-p, icicle-vardoc-last-initial-cand-set, icicle-whole-candidate-as-text-prop-p
 (require 'icicles-fn)                   ; (This is required anyway by `icicles-mcmd.el'.)
-  ;; icicle-candidate-short-help, icicle-completing-read-history, icicle-defined-thing-p,
-  ;; icicle-highlight-lighter, icicle-insert-cand-in-minibuffer, icicle-some, icicle-read-regexp,
-  ;; icicle-string-match-p, icicle-unlist
+  ;; icicle-alist-key-match, icicle-candidate-short-help, icicle-completing-read-history,
+  ;; icicle-defined-thing-p, icicle-highlight-lighter, icicle-insert-cand-in-minibuffer, icicle-some,
+  ;; icicle-read-regexp, icicle-string-match-p, icicle-unlist
 (require 'icicles-cmd1)
   ;; icicle-bookmark-cleanup, icicle-bookmark-cleanup-on-quit, icicle-bookmark-cmd, icicle-bookmark-help-string,
   ;; icicle-bookmark-propertize-candidate, icicle-buffer-list, icicle-explore, icicle-face-list,
@@ -4033,17 +4034,19 @@ the markers in each buffer."
 If the marker is on an empty line, then text \"<EMPTY LINE>\" is used.
 If both optional argument SHOW-BUFNAME-P and option
 `icicle-show-multi-completion-flag' are non-nil, then the text is
-prefixed by MARKER's buffer name."
+prefixed by MARKER's buffer name and the line number."
   (when (buffer-live-p (marker-buffer marker))
     (with-current-buffer (marker-buffer marker)
       (save-excursion
         (goto-char marker)
-        (let ((line  (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
-                       (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
-              (buff  (and show-bufname-p  icicle-show-multi-completion-flag  (buffer-name)))
-              (help  (and (or (> icicle-help-in-mode-line-delay 0) ; Get it only if user will see it.
-                              (and (boundp 'tooltip-mode)  tooltip-mode))
-                          (format "Line: %d, Char: %d" (line-number-at-pos) (point)))))
+        (let* ((line    (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
+                          (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+               (lineno  (line-number-at-pos))
+               (buff    (and show-bufname-p  icicle-show-multi-completion-flag
+                             (format "%s:%5d" (buffer-name) lineno)))
+               (help    (and (or (> icicle-help-in-mode-line-delay 0) ; Get it only if user will see it.
+                                 (and (boundp 'tooltip-mode)  tooltip-mode))
+                             (format "Line: %d, Char: %d" lineno (point)))))
           (when (string= "" line) (setq line  "<EMPTY LINE>"))
           (when help
             (icicle-candidate-short-help help line)
@@ -7268,7 +7271,7 @@ search multiple regions, buffers, or files, see the doc for command
     (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where 'icicle-imenu-command-p
                   (lambda (menus)
-                    (or (car (assoc "Functions" menus))
+                    (or (car (icicle-alist-key-match "Functions.*" menus))
                         (car (assoc "Other" menus))
                         (icicle-user-error "No command definitions in buffer")))))
 
@@ -7290,7 +7293,7 @@ anytime during completion using `C-u C-x .'"
     (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 'FULL beg end require-match where 'icicle-imenu-command-p
                   (lambda (menus)
-                    (or (car (assoc "Functions" menus))
+                    (or (car (icicle-alist-key-match "Functions.*" menus))
                         (car (assoc "Other" menus))
                         (icicle-user-error "No command definitions in buffer")))))
 
@@ -7321,7 +7324,7 @@ search multiple regions, buffers, or files, see the doc for command
     (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 nil beg end require-match where 'icicle-imenu-non-interactive-function-p
                   (lambda (menus)
-                    (or (car (assoc "Functions" menus))
+                    (or (car (icicle-alist-key-match "Functions.*" menus))
                         (car (assoc "Other" menus))
                         (icicle-user-error "No non-command function definitions in buffer")))))
 
@@ -7343,7 +7346,7 @@ anytime during completion using `C-u C-x .'"
     (icicle-user-error "This command is only for Emacs-Lisp mode"))
   (icicle-imenu-1 'FULL beg end require-match where 'icicle-imenu-non-interactive-function-p
                   (lambda (menus)
-                    (or (car (assoc "Functions" menus))
+                    (or (car (icicle-alist-key-match "Functions.*" menus))
                         (car (assoc "Other" menus))
                         (icicle-user-error "No non-command function definitions in buffer")))))
 
