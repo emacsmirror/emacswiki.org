@@ -157,3 +157,19 @@ If so, I don't see many 404s matching what you're suggesting.
 
 -- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-04 22:45 UTC
 
+
+----
+
+They all worked previously. I have such URLs in the headers of '''all''' of my Elisp files, and they have also been referenced as such over the Web (e.g. StackOverflow) as cross-references. 
+
+Here is a typical part of an Elisp file header, which refers to such a URL:
+
+    ;; URL: http://www.emacswiki.org/icicles-face.el
+    ;; Doc URL: http://www.emacswiki.org/Icicles
+
+Not only that, but such URLs are used in the code itself, to consult the doc on the web (the wiki).
+
+My understanding was that only the /cgi-bin/ parts of URLs (e.g. people's bookmarks, such as http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus) would no longer work, so that people would need to update their bookmarks.
+
+-- DrewAdams 2015-01-04 22:51 UTC
+
