@@ -1,0 +1,14 @@
+''Great news!'' Thanks for all the work, Alex & Nic.
+
+I still cannot get to the Elisp files, however. I go to ElispArea, click the `Downloading' link in the TOC, then the link `Alphabetical list of all Elisp libraries on this Wiki' (URL: http://www.emacswiki.org/emacs?action=elisp-area;context=0), and I just get (eventually): 
+
+  504 Gateway Time-out
+
+  nginx/1.4.6 (Ubuntu)
+
+Am I not doing something I should? I closed all browser windows and cleared the browser cache as well. I'm using Google Chrome at the moment.
+
+Thx -- DrewAdams
+
+-- DrewAdams 2015-01-04 00:27 UTC
+
