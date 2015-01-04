@@ -4,13 +4,13 @@
 ;; Description: Execute menu items as commands, with completion.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 28 12:10:52 2014 (-0800)
+;; Last-Updated: Sun Jan  4 15:49:35 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 918
+;;     Update #: 921
 ;; URL: http://www.emacswiki.org/lacarte.el
 ;; Doc URL: http://www.emacswiki.org/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
@@ -167,7 +167,7 @@
 ;;  entire menu prefix to the item, from the top of the menu on down.
 ;;  With Icicles, you can directly match any parts of a menu item and
 ;;  its hierarchy path.  Icicles is here:
-;;  http://www.emacswiki.org/cgi-bin/wiki/Icicles.
+;;  http://www.emacswiki.org/Icicles.
 ;;
 ;;  Type any part of a menu-item, then use the Page Up and Page Down
 ;;  keys (`prior' and `next') to cycle through all menu commands that
@@ -406,9 +406,9 @@ lacarte.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/cgi-bin/wiki/lacarte.el")
-  :link '(url-link :tag "Description" "http://www.emacswiki.org/cgi-bin/wiki/LaCarte")
+          "http://www.emacswiki.org/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "http://www.emacswiki.org/lacarte.el")
+  :link '(url-link :tag "Description" "http://www.emacswiki.org/LaCarte")
   :link '(emacs-commentary-link :tag "Commentary" "lacarte.el"))
 
 ;;;###autoload
