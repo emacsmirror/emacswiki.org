@@ -60,3 +60,10 @@ FYI - I was able to fix `bookmark+-1.el', by trying again. I guess it must be bo
 
 -- DrewAdams 2015-01-04 20:59 UTC
 
+
+----
+
+Hm, we should keep an eye on 504 errors just in case that's an issue between the caching proxy (nginx) and the web server (apache).
+
+-- AlexSchroeder 2015-01-04 21:17 UTC
+
