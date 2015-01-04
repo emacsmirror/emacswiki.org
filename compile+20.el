@@ -4,12 +4,12 @@
 ;; Description: Extensions to `compile.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 16:55:16 1999
 ;; Version: 0
-;; Last-Updated: Thu Dec 26 10:17:59 2013 (-0800)
+;; Last-Updated: Thu Jan  1 10:29:22 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 943
+;;     Update #: 944
 ;; URL: http://www.emacswiki.org/compile+20.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes
@@ -19,7 +19,7 @@
 ;;
 ;;   `apropos', `apropos+', `avoid', `cmds-menu', `compile',
 ;;   `compile-20', `easymenu', `fit-frame', `font-lock', `frame-fns',
-;;   `help+20', `highlight', `info', `info+', `menu-bar',
+;;   `help+20', `highlight', `info', `info+20', `menu-bar',
 ;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `second-sel',
 ;;   `strings', `thingatpt', `thingatpt+', `unaccent',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
