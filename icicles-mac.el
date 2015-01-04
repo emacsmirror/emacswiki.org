@@ -4,16 +4,16 @@
 ;; Description: Macros for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Fri Nov  7 16:07:45 2014 (-0800)
+;; Last-Updated: Thu Jan  1 10:55:43 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1265
+;;     Update #: 1267
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
