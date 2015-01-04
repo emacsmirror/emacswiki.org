@@ -67,3 +67,10 @@ Hm, we should keep an eye on 504 errors just in case that's an issue between the
 
 -- AlexSchroeder 2015-01-04 21:17 UTC
 
+
+----
+
+FWIW, I see it (504) pretty consistently with the larger files. E.g., I cannot update bookmark+-1.el now - clicking Edit just times out.
+
+-- DrewAdams 2015-01-04 21:20 UTC
+
