@@ -4,15 +4,15 @@
 ;; Description: Bookmark+ key and menu bindings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2010-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Fri Jul 11 20:06:21 2014 (-0700)
+;; Last-Updated: Thu Jan  1 10:24:45 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 703
+;;     Update #: 706
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -370,6 +370,8 @@
 (define-key bmkp-jump-other-window-map "N"    'bmkp-jump-in-navlist-other-window)         ; `C-x 4 j N'
 (define-key bmkp-jump-map              "r"    'bmkp-region-jump)                            ; `C-x j r'
 (define-key bmkp-jump-other-window-map "r"    'bmkp-region-jump-other-window)             ; `C-x 4 j r'
+(define-key bmkp-jump-other-window-map "R"
+  'bmkp-region-jump-narrow-indirect-other-window)                                         ; `C-x 4 j R'
 
 (define-key bmkp-jump-map              "t"    nil) ; For Emacs 20
 (define-key bmkp-jump-other-window-map "t"    nil) ; For Emacs 20
