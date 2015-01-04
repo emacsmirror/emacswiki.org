@@ -4,11 +4,11 @@
 ;; Description: Change logs for Bookmark+ libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Dec 17 08:28:54 2014 (-0800)
+;; Last-Updated: Sun Jan  4 13:26:33 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15788
+;;     Update #: 15801
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/01/01 dadams
+;;     bookmark-default-handler, bmkp-goto-position:
+;;       Do not bind enable-local-variables to nil - the visit is not hidden and temporary.
+;; 2014/12/18 dadams
+;;     bmkp-this-file-bmenu-list: Restore vars if error.
 ;; 2014/12/16 dadams
 ;;     bmkp-last-specific-file-p: Use bmkp-same-file-p, not string=.
 ;; 2014/12/15 dadams
@@ -1084,6 +1089,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2014/12/18 dadams
+;;     bmkp-bmenu-show-only-specific-file: Restore vars if error.
 ;; 2014/12/04 dadams
 ;;     *-dired-marked, *-move-marked-to-bookmark-file, *-copy-marked-to-bookmark-file,
 ;;       *-create-bookmark-file-from-marked, *-set-bookmark-file-bookmark-from-marked,
@@ -1595,6 +1602,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2015/01/04 dadams
+;;     Bind bmkp-region-jump-narrow-indirect-other-window to C-x 4 j R.
 ;; 2014/07/11 dadams
 ;;     bmkp-highlight-menu: Added item Toggle Autofile Highlighting in Dired.
 ;; 2014/07/06 dadams
@@ -1809,6 +1818,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2015/01/04 dadams
+;;     Version 2015.01.04.
 ;; 2013/04/14 dadams
 ;;     Added Version entry to header.  Updated bmkp-version-number to the same thing.
 ;; 2012/10/09 dadams
