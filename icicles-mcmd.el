@@ -4,16 +4,16 @@
 ;; Description: Minibuffer commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Oct 19 11:09:04 2014 (-0700)
+;; Last-Updated: Thu Jan  1 10:55:56 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 19629
+;;     Update #: 19635
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -996,18 +996,20 @@ Handles Icicles dots (`.') and `icicle-list-join-string'."
   (interactive "p")
   (let ((len-dot   (length icicle-anychar-regexp))
         (len-join  (length icicle-list-join-string)))
-    (dotimes (i  (abs n))
-      (or (save-match-data
-            (if (wholenump n)
-                (search-forward icicle-anychar-regexp (min (+ (point) len-dot) (point-max)) t)
-              (search-backward icicle-anychar-regexp
-                               (max (- (point) len-dot) (icicle-minibuffer-prompt-end)) t)))
-          (save-match-data
-            (if (wholenump n)
-                (search-forward icicle-list-join-string (min (+ (point) len-join) (point-max)) t)
-              (search-backward icicle-list-join-string
-                               (max (- (point) len-join) (icicle-minibuffer-prompt-end)) t)))
-          (forward-char (if (wholenump n) 1 -1))))))
+    (save-restriction
+      (narrow-to-region (icicle-minibuffer-prompt-end) (point-max))
+      (condition-case nil               ; Ignore errors, e.g. `beginning-of-buffer' from `(forward-char -1)'.
+          (dotimes (i  (abs n))
+            (or (save-match-data
+                  (if (wholenump n)
+                      (search-forward icicle-anychar-regexp (min (+ (point) len-dot) (point-max)) t)
+                    (search-backward icicle-anychar-regexp (max (- (point) len-dot) (point-min)) t)))
+                (save-match-data
+                  (if (wholenump n)
+                      (search-forward icicle-list-join-string (min (+ (point) len-join) (point-max)) t)
+                    (search-backward icicle-list-join-string (max (- (point) len-join) (point-min)) t)))
+                (forward-char (if (wholenump n) 1 -1))))
+        (error nil)))))
 
 ;; Not used.
 (defun icicle-backward-char-magic (&optional n)
