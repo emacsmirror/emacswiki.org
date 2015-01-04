@@ -100,3 +100,10 @@ it's incredibly slow though. Is that expected? is that just render time for the 
 
 -- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-04 22:09 UTC
 
+
+----
+
+Once it gets cached it's fine. If you're not using caching though (because you're an editor) you're going to be pounding the server.
+
+-- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-04 22:10 UTC
+
