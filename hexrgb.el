@@ -4,18 +4,18 @@
 ;; Description: Functions to manipulate colors, including RGB hex strings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 17 13:10:27 2014 (-0700)
+;; Last-Updated: Thu Jan  1 10:50:56 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 961
+;;     Update #: 963
 ;; URL: http://www.emacswiki.org/hexrgb.el
 ;; Doc URL: http://www.emacswiki.org/SetColor
 ;; Doc URL: http://emacswiki.org/ColorPalette
 ;; Keywords: number, hex, rgb, color, background, frames, display
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
