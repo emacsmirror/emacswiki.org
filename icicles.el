@@ -4,13 +4,13 @@
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2014.08.10
+;; Version: 2015.01.04
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 28 20:17:26 2014 (-0800)
+;; Last-Updated: Sun Jan  4 14:27:46 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 23643
+;;     Update #: 23646
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -944,12 +944,12 @@
 ;;    `custom-variable-p', `icicle-2nd-part-string-less-p',
 ;;    `icicle-abbreviate-or-expand-file-name', `icicle-activate-mark',
 ;;    `icicle-add-key+cmd', `icicle-add-menu-item-to-cmd-history',
-;;    `icicle-all-candidates-action-1', `icicle-all-completions',
-;;    `icicle-all-exif-data', `icicle-alpha-p',
-;;    `icicle-alt-act-fn-for-type', `icicle-any-candidates-p',
-;;    `icicle-anychar-regexp', `icicle-anything-candidate-value',
-;;    `icicle-apply-action', `icicle-apply-list-action',
-;;    `icicle-apply-to-saved-candidate',
+;;    `icicle-alist-key-match', `icicle-all-candidates-action-1',
+;;    `icicle-all-completions', `icicle-all-exif-data',
+;;    `icicle-alpha-p', `icicle-alt-act-fn-for-type',
+;;    `icicle-any-candidates-p', `icicle-anychar-regexp',
+;;    `icicle-anything-candidate-value', `icicle-apply-action',
+;;    `icicle-apply-list-action', `icicle-apply-to-saved-candidate',
 ;;    `icicle-apropos-any-candidates-p',
 ;;    `icicle-apropos-any-file-name-candidates-p',
 ;;    `icicle-apropos-candidates', `icicle-apropos-complete-1',
