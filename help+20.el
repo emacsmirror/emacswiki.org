@@ -4,13 +4,13 @@
 ;; Description: Extensions to `help.el' for Emacs 20.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May  4 10:27:08 2014 (-0700)
+;; Last-Updated: Thu Jan  1 10:49:25 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 2208
+;;     Update #: 2209
 ;; URL: http://www.emacswiki.org/help+20.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
@@ -18,9 +18,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `fit-frame', `frame-fns', `info', `info+', `misc-fns',
-;;   `naked', `strings', `thingatpt', `thingatpt+', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `avoid', `fit-frame', `frame-fns', `info', `info+20',
+;;   `misc-fns', `naked', `strings', `thingatpt', `thingatpt+',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
