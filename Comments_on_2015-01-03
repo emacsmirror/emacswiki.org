@@ -107,3 +107,10 @@ Once it gets cached it's fine. If you're not using caching though (because you'r
 
 -- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-04 22:10 UTC
 
+
+----
+
+It's the same thing with the other largish files, e.g. icicles-chg.el. Note too that at least once I was able to get past the timeout for bookmark+-1.el for both Edit and Save. But only once.
+
+-- DrewAdams 2015-01-04 22:26 UTC
+
