@@ -11655,3 +11655,4 @@ I MSG-P is non-nil then echo the annotation type."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; bookmark+-1.el ends here
+
