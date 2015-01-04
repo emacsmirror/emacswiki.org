@@ -4,17 +4,17 @@
 ;; Description: Extensions to `imenu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2015, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun 21 14:23:33 2014 (-0700)
+;; Last-Updated: Sun Jan  4 15:47:24 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1027
+;;     Update #: 1042
 ;; URL: http://www.emacswiki.org/imenu+.el
 ;; Doc URL: http://emacswiki.org/ImenuMode
 ;; Keywords: tools, menus
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -51,7 +51,9 @@
 ;;    `imenup-emacs-option-defn-regexp', `imenup-last-sort-function',
 ;;    `imenup-lisp-fn-defn-regexp-1', `imenup-lisp-fn-defn-regexp-2',
 ;;    `imenup-lisp-macro-defn-regexp',
-;;    `imenup-lisp-other-defn-regexp', `imenup-lisp-var-defn-regexp',
+;;    `imenup-lisp-other-defn-regexp-1',
+;;    `imenup-lisp-other-defn-regexp-2',
+;;    `imenup-lisp-var-defn-regexp',
 ;;
 ;;
 ;;  ***** NOTE: The following functions and macro defined in `imenu.el'
@@ -77,6 +79,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/12/23 dadams
+;;     lisp-imenu-generic-expression, imenup-emacs-lisp-generic-expression:
+;;       Use distinct submenu names, so no ambiguity: Others 2, Functions 2.
 ;; 2014/06/21 dadams
 ;;     *-lisp-other-defn-regexp-[12], *-lisp-fn-defn-regexp-[12], *-lisp-var-defn-regexp:
 ;;       Allow single-char names: \(\(\sw\|\s_\)+\), not \(\sw\(\sw\|\s_\)+\).
@@ -221,8 +226,8 @@ imenu+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/cgi-bin/wiki/imenu+.el")
+          "http://www.emacswiki.org/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "http://www.emacswiki.org/imenu+.el")
   :link '(url-link :tag "Description" "http://www.emacswiki.org/ImenuMode#ImenuPlus")
   :link '(emacs-commentary-link :tag "Commentary" "imenu+"))
 
@@ -260,7 +265,8 @@ See also `imenup-emacs-key-defn-regexp-1'.")
       (concat "^\\s-*("
               (regexp-opt '("defgroup" "deftheme" "deftype" "cl-deftype" "defstruct" "cl-defstruct"
                             "defclass" "define-condition" "define-widget"
-                            "defpackage") t)
+                            "defpackage")
+                          t)
               "\\s-+'?\\(\\(\\sw\\|\\s_\\)+\\)")
     "(\\s-*def\\(type\\|class\\|ine-condition\\)\\s-+'?\\([^ \t()]+\\)")
   "*Regexp that recognizes other Lisp definitions.")
@@ -282,13 +288,15 @@ See also `imenup-emacs-key-defn-regexp-1'.")
                             "define-derived-mode" "define-generic-mode" "defsetf"
                             "define-setf-expander" "define-method-combination"
                             "defgeneric" "defmethod" "icicle-define-command"
-                            "icicle-define-file-command") t)
+                            "icicle-define-file-command")
+                          t)
               "\\s-+\\(\\(\\sw\\|\\s_\\)+\\)")
     (concat "^\\s-*("
             (regexp-opt
              '("defun" "defun*" "defsubst" "defadvice" "define-skeleton"
                "define-derived-mode" "defsetf" "icicle-define-add-to-alist-command"
-               "icicle-define-command" "icicle-define-file-command") t)
+               "icicle-define-command" "icicle-define-file-command")
+             t)
             "\\s-+\\(\\(\\sw\\|\\s_\\)+\\)"))
   "*Regexp that recognizes Lisp function definitions.")
 
@@ -313,7 +321,8 @@ define-modify-macro\\)\\s-+\\([^ \t()]+\\)"
   (if (>= emacs-major-version 22)
       (concat "^\\s-*("
               (regexp-opt '("defvar" "defconst" "defconstant" "defcustom"
-                            "defparameter" "define-symbol-macro") t)
+                            "defparameter" "define-symbol-macro")
+                          t)
               "\\s-+\\(\\(\\sw\\|\\s_\\)+\\)"
               ;; Because \n has char syntax `>', not whitespace.  See Emacs bug #8638.
               "\\(\\s-\\|[\n]\\)+"
@@ -328,13 +337,13 @@ define-modify-macro\\)\\s-+\\([^ \t()]+\\)"
 ;;
 (defconst lisp-imenu-generic-expression
     (delq nil (list
-               (list "Other"     imenup-lisp-other-defn-regexp-1 2)
+               (list "Other"        imenup-lisp-other-defn-regexp-1 2)
                (and (not (string= "" imenup-lisp-other-defn-regexp-2))
-                    (list "Other"     imenup-lisp-other-defn-regexp-2 2))
-               (list "Macros"    imenup-lisp-macro-defn-regexp 2)
-               (list "Functions" imenup-lisp-fn-defn-regexp-1 (if (string-match "\\(?:\\)" "") 2 6))
-               (list "Functions" imenup-lisp-fn-defn-regexp-2 2)
-               (list "Variables" imenup-lisp-var-defn-regexp 2)
+                    (list "Other 2" imenup-lisp-other-defn-regexp-2 2))
+               (list "Macros"       imenup-lisp-macro-defn-regexp 2)
+               (list "Functions"    imenup-lisp-fn-defn-regexp-1 (if (string-match "\\(?:\\)" "") 2 6))
+               (list "Functions 2"  imenup-lisp-fn-defn-regexp-2 2)
+               (list "Variables"    imenup-lisp-var-defn-regexp 2)
                ))
   "*Imenu generic expression for Lisp mode.
 See `imenu-generic-expression'.")
@@ -343,12 +352,12 @@ See `imenu-generic-expression'.")
   (delq nil (list
              (list "Other"        imenup-lisp-other-defn-regexp-1 2)
              (and (not (string= "" imenup-lisp-other-defn-regexp-2))
-                  (list "Other"        imenup-lisp-other-defn-regexp-2 2))
+                  (list "Other 2" imenup-lisp-other-defn-regexp-2 2))
              (list "Keys in Maps" imenup-emacs-key-defn-regexp-2 5)
              (list "Keys"         imenup-emacs-key-defn-regexp-1 5)
              (list "Macros"       imenup-lisp-macro-defn-regexp 2)
              (list "Functions"    imenup-lisp-fn-defn-regexp-1 (if (string-match "\\(?:\\)" "") 2 6))
-             (list "Functions"    imenup-lisp-fn-defn-regexp-2 2)
+             (list "Functions 2"  imenup-lisp-fn-defn-regexp-2 2)
              (list "Variables"    imenup-lisp-var-defn-regexp 2)
              (list "User Options" imenup-emacs-option-defn-regexp 2)
              (list "Faces"        imenup-emacs-face-defn-regexp 2)
