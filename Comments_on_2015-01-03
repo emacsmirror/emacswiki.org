@@ -85,3 +85,11 @@ So is this the correct url? If so why is apache/perl failing?
 
 -- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-04 21:59 UTC
 
+
+----
+
+Looks like the correct URL to me. There are no errors in the Apache log. It just hangs... Weird!
+The %2b is not the issue. This URL works, for example: http://www.emacswiki.org/emacs/find-func%2b.el
+
+-- AlexSchroeder 2015-01-04 22:05 UTC
+
