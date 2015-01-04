@@ -4,12 +4,12 @@
 ;; Description: Bookmark+ code for the `*Bookmark List*' (bmenu).
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Dec  4 19:01:26 2014 (-0800)
+;; Last-Updated: Thu Jan  1 10:24:19 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 3522
+;;     Update #: 3525
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2360,16 +2360,30 @@ Interactively, read the FILE name.
 If FILE is non-nil, set `bmkp-last-specific-file' to it."
   (interactive (list (bmkp-completing-read-file-name)))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (when file (setq bmkp-last-specific-file  file))
-  (setq bmkp-bmenu-filter-function  'bmkp-last-specific-file-alist-only
-        bmkp-bmenu-title            (format "File `%s' Bookmarks" bmkp-last-specific-file))
-  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
-    (setq bmkp-latest-bookmark-alist  bookmark-alist)
-    (bookmark-bmenu-list 'filteredp))
-  (when (interactive-p)
-    (bmkp-msg-about-sort-order (bmkp-current-sort-order)
-                               (format "Only bookmarks for file `%s' are shown"
-                                       bmkp-last-specific-file))))
+  (let ((orig-last-spec-file  bmkp-last-specific-file)
+        (orig-filter-fn       bmkp-bmenu-filter-function)
+        (orig-title           bmkp-bmenu-title)
+        (orig-latest-alist    bmkp-latest-bookmark-alist))
+    (condition-case err
+        (progn
+          (when file (setq bmkp-last-specific-file  file))
+          (setq bmkp-bmenu-filter-function  'bmkp-last-specific-file-alist-only
+                bmkp-bmenu-title            (format "File `%s' Bookmarks" bmkp-last-specific-file))
+          (let ((bookmark-alist         (funcall bmkp-bmenu-filter-function))
+                (bmkp-bmenu-state-file  nil)) ; Prevent restoring saved state.
+            (setq bmkp-latest-bookmark-alist  bookmark-alist)
+            (bookmark-bmenu-list 'filteredp))
+          (when (interactive-p)
+            (bmkp-msg-about-sort-order (bmkp-current-sort-order)
+                                       (format "Only bookmarks for file `%s' are shown"
+                                               bmkp-last-specific-file)))
+          (raise-frame))
+      (error (progn (setq bmkp-last-specific-file     orig-last-spec-file
+                          bmkp-bmenu-filter-function  orig-filter-fn
+                          bmkp-bmenu-title            orig-title
+                          bmkp-latest-bookmark-alist  orig-latest-alist)
+                    (error "%s" (error-message-string err)))))))
+
 
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-temporary "bookmark+")
 (defun bmkp-bmenu-show-only-temporary () ; Bound to `X S' in bookmark list
@@ -3653,7 +3667,6 @@ Non-interactively, non-nil MSG-P means display messages."
 Hit `RET' to enter each tag, then hit `RET' again after the last tag.
 You can use completion to enter each tag, but you are not limited to
 choosing existing tags.
-
 
 If no bookmark is marked, act on the bookmark of the current line.
 
