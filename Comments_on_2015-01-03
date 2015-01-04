@@ -74,3 +74,14 @@ FWIW, I see it (504) pretty consistently with the larger files. E.g., I cannot u
 
 -- DrewAdams 2015-01-04 21:20 UTC
 
+
+----
+
+The problem is with the url that nginx is sending to Apache or Perl. 
+
+If I do this on the server: http://internal-apache/emacs/bookmark%2b-1.el - it fails
+
+So is this the correct url? If so why is apache/perl failing?
+
+-- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-04 21:59 UTC
+
