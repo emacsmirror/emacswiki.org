@@ -4,17 +4,17 @@
 ;; Description: Extensions to standard library finder.el
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2008-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2008-2015, Drew Adams, all rights reserved.
 ;; Created: Wed Mar 12 10:00:16 2008 (Pacific Standard Time)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 08:59:20 2013 (-0800)
+;; Last-Updated: Thu Jan  1 10:43:16 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 119
+;;     Update #: 121
 ;; URL: http://www.emacswiki.org/finder+.el
 ;; Doc URL: http://emacswiki.org/FinderMode
 ;; Keywords: help
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
