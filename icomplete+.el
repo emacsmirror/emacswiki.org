@@ -4,13 +4,13 @@
 ;; Description: Extensions to `icomplete.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov 22 10:23:09 2014 (-0800)
+;; Last-Updated: Sun Jan  4 15:45:46 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1691
+;;     Update #: 1693
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -315,11 +315,11 @@ icomplete+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+          "http://www.emacswiki.org/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el")
+          "http://www.emacswiki.org/icomplete+.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/IcompleteMode#IcompleteModePlus")
+          "http://www.emacswiki.org/IcompleteMode#IcompleteModePlus")
   :link '(emacs-commentary-link :tag "Commentary" "icomplete+"))
 
 ;;;###autoload
