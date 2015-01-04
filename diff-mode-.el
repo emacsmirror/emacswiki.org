@@ -4,17 +4,17 @@
 ;; Description: Extensions to `diff-mode.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Nov 08 16:36:09 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 08:51:41 2013 (-0800)
+;; Last-Updated: Thu Jan  1 10:34:13 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 709
+;;     Update #: 711
 ;; URL: http://www.emacswiki.org/diff-mode-.el
 ;; Doc URL: http://www.emacswiki.org/DiffEnhancements
 ;; Keywords: data, matching, tools, unix, local, font, face
-;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
