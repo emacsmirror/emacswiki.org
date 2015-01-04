@@ -93,3 +93,10 @@ The %2b is not the issue. This URL works, for example: http://www.emacswiki.org/
 
 -- AlexSchroeder 2015-01-04 22:05 UTC
 
+
+----
+
+it's incredibly slow though. Is that expected? is that just render time for the font-lock for such a large file?
+
+-- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-04 22:09 UTC
+
