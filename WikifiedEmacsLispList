@@ -1,4 +1,4 @@
-Timestamp: Fri Nov 14 14:51:14 GMT 2014
+Timestamp: Wed 24 Dec 2014 11:36:00 GMT
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -254,7 +254,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.wonderworks.com/download/c-comment-edit.el c-comment-edit.el] --- edit C comments (by Kyle Jones)
 
-[http://www.newartisans.com/johnw/Emacs c-includes.el] --- Find all header files included by a source file (by John Wiegley)
+[https://github.com/jwiegley/dot-emacs/blob/master/lisp/c-includes.el c-includes.el] --- Find all header files included by a source file (by John Wiegley)
 
 [http://members.wri.com/billw/cal-catholic/ cal-catholic.el] --- calendar functions for the Roman Catholic liturgical calendar (by Bill White)
 
