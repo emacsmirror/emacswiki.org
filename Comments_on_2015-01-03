@@ -173,3 +173,18 @@ My understanding was that only the /cgi-bin/wiki parts of URLs (e.g. people's bo
 
 -- DrewAdams 2015-01-04 22:51 UTC
 
+
+----
+
+Update:
+
+I was able to upload most of my Elisp files, but not these (consistent timeouts): bookmark+-1.el, icicles-cmd1.el, icicles-chg.el. (Icicles & Bookmark+ are currently broken for download by users, without those first two files.)
+
+Some of the ones I was able to upload took 3 or 4 attempts (504s, but eventually success).
+
+Still cannot access files using http://www.emacswiki.org/*.
+
+Thx.
+
+-- DrewAdams 2015-01-05 01:19 UTC
+
