@@ -195,3 +195,22 @@ Hm, yes, perhaps there was a rewrite rule that got lost in the migration. I'll t
 
 -- AlexSchroeder 2015-01-05 06:39 UTC
 
+
+----
+
+As for bookmark+-1.el: I found the code painfully slow even without colorization (##http://www.emacswiki.org/emacs/raw/bookmark%2b-1.el##). Some investigation led me to the data file parser. Looking at the revision history, I found the following entry from Oct 2006:
+
+    (ParseData): Hand-written to optimize for speed. By getting rid of
+    some regular expressions used for parsing, the code is now more
+    than 10x faster. This is important for default searching, and for
+    indexed search using double-quotes.
+
+Reverting to the old, regular expression based code fixes [[bookmark+-1.el]]?
+I'm not sure why this is so. Perhaps the newer Perl versions are better at some regular expressions.
+In addition to that, the wiki no longer does searching (nor indexed search) – we're letting Duck Duck Go handle that,
+so the drawbacks from 2006 don't affect us whether they're true or not.
+
+So, problem fixed?
+
+-- AlexSchroeder 2015-01-05 07:34 UTC
+
