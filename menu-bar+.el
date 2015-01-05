@@ -4,13 +4,13 @@
 ;; Description: Extensions to `menu-bar.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Dec 10 15:32:02 2014 (-0800)
+;; Last-Updated: Thu Jan  1 11:03:15 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 3718
+;;     Update #: 3726
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -77,8 +77,8 @@
 ;;  Commands defined here:
 ;;
 ;;    `describe-menubar', `fill-paragraph-ala-mode',
-;;    `menu-bar-create-directory', `menu-bar-next-tag-other-window',
-;;    `menu-bar-select-frame' (Emacs 20),
+;;    `menu-bar-create-directory', `menu-bar-next-tag-other-window'
+;;    (Emacs 20), `menu-bar-select-frame' (Emacs 20),
 ;;    `menu-bar-word-search-backward' (Emacs 22+),
 ;;    `menu-bar-word-search-forward' (Emacs 22+),
 ;;    `nonincremental-repeat-search-backward' (Emacs 22+),
@@ -116,8 +116,6 @@
 ;;
 ;;  `menu-bar-select-buffer' (Emacs 20-22) - Uses -other-frame.
 ;;
-;;  `menu-bar-select-frame' - Use Emacs 22 version for Emacs 20.
-;;
 ;;
 ;;  ***** NOTE: The following variables defined in `menu-bar.el' have
 ;;              been REDEFINED HERE:
@@ -130,8 +128,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2014/12/29 dadams
+;;     menu-bar-next-tag-other-window: Define only for Emacs 20.  Do not autoload.
 ;; 2014/12/10 dadams
 ;;     menu-bar-edit-menu [paste]: Use x-get-selection, not x-selection-exists-p.
+;;                                 Enable also if kill-ring or (cdr yank-menu).
 ;; 2014/05/04 dadams
 ;;     Emacs 20-22: soft-require info+20.el (new) instead of info+.el.
 ;; 2013/11/-8 dadams
@@ -817,8 +818,12 @@ submenu of the \"Help\" menu."))
   '(menu-item "Paste" yank
     :help "Paste (yank) text most recently cut/copied"
     :enable (and (not buffer-read-only)
-             (fboundp 'x-get-selection)
-             (and x-select-enable-clipboard  (x-get-selection 'CLIPBOARD))))
+             (or (and (fboundp 'x-get-selection)
+                  x-select-enable-clipboard
+                  (x-get-selection 'CLIPBOARD))
+              (if (featurep 'ns)        ; Like `paste-from-menu'
+                  (cdr yank-menu)
+                kill-ring))))
   'copy)
 (when (fboundp 'secondary-dwim)
   (define-key-after menu-bar-edit-menu [secondary-dwim] ; In `second-sel.el'
@@ -1241,11 +1246,11 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 ;----------------------
 (define-key menu-bar-search-tags-menu [separator-tags-regexp] '("--"))
 
-;;;###autoload
-(defun menu-bar-next-tag-other-window ()
-  "Find the next definition of the tag already specified."
-  (interactive)
-  (find-tag-other-window nil t))
+(unless (fboundp 'menu-bar-next-tag-other-window)
+  (defun menu-bar-next-tag-other-window ()
+    "Find the next definition of the tag already specified."
+    (interactive)
+    (find-tag-other-window nil t)))
 
 (define-key menu-bar-search-tags-menu [next-tag-other-window]
   '(menu-item "Find Next Tag" menu-bar-next-tag-other-window
