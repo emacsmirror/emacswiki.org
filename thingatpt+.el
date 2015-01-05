@@ -4,16 +4,16 @@
 ;; Description: Extensions to `thingatpt.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Fri Aug 22 13:53:20 2014 (-0700)
+;; Last-Updated: Sun Jan  4 16:58:08 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 2197
+;;     Update #: 2200
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -1668,7 +1668,7 @@ Return the signed number of chars moved if /= ARG, else return nil."
       (and (< (abs max) (abs arg))
            max))))
 
-;; Inspired by `find-thing-at-point' at `http://www.emacswiki.org/cgi-bin/wiki/SeanO'.
+;; Inspired by `find-thing-at-point' at `http://www.emacswiki.org/SeanO'.
 ;;;###autoload
 (defun find-fn-or-var-nearest-point (&optional confirmp)
   "Go to the definition of the function or variable nearest the cursor.
