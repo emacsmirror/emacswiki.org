@@ -248,5 +248,7 @@ This doesn't seem to work for links such as ##find-func%2b.el##, however.
 # RewriteRule ^([^/?]+)$ /emacs/$1 [redirect,last]
 }}}
 
+Thus, right now, ##http://emacswiki.org/WikiPageName## no longer redirects to ##http://emacswiki.org/emacs/WikiPageName##.
+
 -- AlexSchroeder 2015-01-05 16:03 UTC
 
