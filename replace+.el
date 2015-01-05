@@ -4,23 +4,23 @@
 ;; Description: Extensions to `replace.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Apr 16 08:59:20 2014 (-0700)
+;; Last-Updated: Thu Jan  1 11:10:45 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1813
+;;     Update #: 1815
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos+', `avoid', `cmds-menu', `easymenu',
 ;;   `fit-frame', `frame-cmds', `frame-fns', `help+20', `highlight',
-;;   `info', `info+', `isearch+', `menu-bar', `menu-bar+',
+;;   `info', `info+20', `isearch+', `menu-bar', `menu-bar+',
 ;;   `misc-cmds', `misc-fns', `naked', `second-sel', `strings',
 ;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
 ;;   `wid-edit', `wid-edit+', `widget'.
