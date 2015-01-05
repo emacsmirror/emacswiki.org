@@ -214,3 +214,12 @@ So, problem fixed?
 
 -- AlexSchroeder 2015-01-05 07:34 UTC
 
+
+----
+
+It looks like whatever you did may have broken the apache accesses munin graph
+
+http://munin-po6.ferrier.me.uk:8080/localdomain/localhost.localdomain/index.html
+
+-- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-05 14:50 UTC
+
