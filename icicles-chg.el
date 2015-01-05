@@ -4,11 +4,11 @@
 ;; Description: Change logs for Icicles libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Dec 15 08:47:04 2014 (-0800)
+;; Last-Updated: Sun Jan  4 14:39:58 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 11359
+;;     Update #: 11374
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1138,6 +1138,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2014/12/28 dadams
+;;     Require completion.el at compile time.
+;;     icicle-marker+text: Prefix buffer name with line number.
+;;     icicle-imenu-(command|non-interactive-function)(-full): Use icicle-alist-key-match, not assoc.
 ;; 2014/11/28 dadams
 ;;     Added: icicle-goto-any-marker.
 ;;     icicle-goto-marker-or-set-mark-command: C-0 is now icicle-goto-any-marker. 
@@ -2144,6 +2148,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2014/12/23 dadams
+;;     Added: icicle-alist-key-match.
 ;; 2014/12/15 dadams
 ;;     Added: icicle-bookmark-non-dir-file-p.
 ;; 2014/11/15 dadams
@@ -4447,6 +4453,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2014/12/23 dadams
+;;     icicle-forward-char-magic:
+;;       Narrow & ignore errors.  C-t in empty minibuffer: "Invalid search bound (wrong side of point)"
 ;; 2014/10/19 dadams
 ;;     icicle-display-candidates-in-Completions: Moved here from icicles-fn.el.
 ;; 2014/09/18 dadams
@@ -8873,6 +8882,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2015/01/04 dadams
+;;     Version 2015.01.04.
 ;; 2014/08/10 dadams
 ;;     New version, 2014.08.09: M-& completes.
 ;; 2014/05/17 dadams
