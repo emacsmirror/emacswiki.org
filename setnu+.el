@@ -4,17 +4,17 @@
 ;; Description: Extensions to `setnu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 30 08:51:07 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Thu Dec 26 09:47:10 2013 (-0800)
+;;; Last-Updated: Thu Jan  1 11:13:14 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 175
+;;     Update #: 177
 ;; URL: http://www.emacswiki.org/setnu%2b.el
 ;; Doc URL: http://emacswiki.org/LineNumbers
 ;; Keywords: lines
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
