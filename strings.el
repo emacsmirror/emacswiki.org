@@ -4,16 +4,16 @@
 ;; Description: Miscellaneous string functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Thu Dec 26 09:51:24 2013 (-0800)
+;;; Last-Updated: Thu Jan  1 11:16:08 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 551
+;;     Update #: 553
 ;; URL: http://www.emacswiki.org/strings.el
 ;; Keywords: internal, strings, text
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
