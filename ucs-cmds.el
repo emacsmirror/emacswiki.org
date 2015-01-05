@@ -4,17 +4,17 @@
 ;; Description: Macro to create commands that insert Unicode chars.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2011-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:54:41 2013 (-0800)
+;; Last-Updated: Sun Jan  4 17:03:33 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 178
+;;     Update #: 181
 ;; URL: http://www.emacswiki.org/ucs-cmds.el
 ;; Doc URL: http://emacswiki.org/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
-;; Compatibility: GNU Emacs: 23.x, 24.x
+;; Compatibility: GNU Emacs: 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -98,7 +98,7 @@
 ;;  The commands created using macro `ucsc-make-commands' or the more
 ;;  general command `ucsc-insert' (or `insert-char') are enhanced if
 ;;  you use `Icicles'
-;;  (http://www.emacswiki.org/cgi-bin/wiki/icicles.el).
+;;  (http://www.emacswiki.org/icicles.el).
 ;;
 ;;  For both, you can use more powerful completion with `Icicles',
 ;;  including regexp, substring (a subset of regexp), and various
