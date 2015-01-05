@@ -43,6 +43,7 @@ See also CategoryVersionControl.
 * JdeDocIndex -- Native Javadoc integration for the Emacs JDE.
 * SemanticRecoder -- Smart comment writer and texinfo code generator.
 * TexiDoclet -- Generate Java documentation in [[Info]] format.
+* [[e2ansi]] -- using Emacs as a filter to highlight pages shown via ##less##.
 
 == Code Navigation ==
 
