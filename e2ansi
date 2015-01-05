@@ -1,0 +1,19 @@
+[https://github.com/Lindydancer/e2ansi e2ansi] is a package that provides Emacs powered syntax highlighting support for "less" and other command line tools, written by [[AndersLindgren|Anders Lindgren]].
+
+The package provides a command-line tool <tt>e2ansi-cat</tt> that starts Emacs in batch mode, opens files, syntax highlight them (using font-lock), and creates ANSI-colored versions of the syntax highlighted files.
+
+You can integrate this into `less` by setting the following variables to, for example:
+
+    export "LESSOPEN=|emacs --batch -Q -l ~/.emacs -l bin/e2ansi-cat %s"
+    export "LESS=-r -j20"
+    export MORE=$LESS
+
+The end result looks like the following:
+
+[[image:e2ansiScreenshot]]
+
+You can vary the colors and attributes like bold, underline, and italics by using a suitable Emacs theme.
+
+== Getting the package ==
+
+The *e2ansi* package is located on [https://github.com/Lindydancer/e2ansi Github].
