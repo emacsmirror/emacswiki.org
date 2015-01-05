@@ -230,3 +230,12 @@ And there's a commensurate increase in the nginx graphs at the same time.
 
 -- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-05 14:51 UTC
 
+
+----
+
+How unfortunate. :(
+
+I'll disable the mod_rewrite thing so that we can check whether that helps.
+
+-- AlexSchroeder 2015-01-05 16:03 UTC
+
