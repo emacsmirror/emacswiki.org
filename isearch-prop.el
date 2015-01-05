@@ -4,21 +4,21 @@
 ;; Description: Search text-property or overlay-property contexts.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2011-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2015, Drew Adams, all rights reserved.
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jul 10 13:59:20 2014 (-0700)
+;; Last-Updated: Thu Jan  1 10:59:50 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 693
+;;     Update #: 695
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
-;; Compatibility: GNU Emacs: 23.x, 24.x
+;; Compatibility: GNU Emacs: 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `color', `thingatpt', `thingatpt+'.
+;;   `hexrgb', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
