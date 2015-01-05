@@ -7,7 +7,7 @@ List what's available:
 
     rsync theshire.emacs.cl::
 
-Here's how to get or update a copy into the ##emacswiki## directory:
+Here's how to get or update a copy into the ##emacswiki## directory, for example:
 
     rsync -avz --no-perms theshire.emacs.cl::emacswiki emacswiki
 
@@ -19,14 +19,8 @@ You will get the files you need to run your own copy of the wiki.
 Actually getting the wiki to run is going to require some [http://www.oddmuse.org/ Oddmuse]
 and webserver experience.
 
-; cgi-bin: The cgi-bin directory
-; emacs: The Oddmuse data directory
-; bin: Various scripts for cron jobs and the like
-; *: The remainig files are things to put into your htdocs directory: .htaccess, some HTML, logos...
-
-The current setup assumes that you put this directory in your htdocs because some of the cron jobs will create RSS files in the data directory and the .htaccess file will rewrite some requests to access them. If you want to get all aspects of the system running, you'll need to investigate the various bits and pieces.
-
-Unfortunately it is not possible to download the files via rsync from emacswiki.org directly.  The hosting provider told me that rsync had too many security problems in the past. That's why we're using a separate rsync repository.
+; emacswiki: The data directory. This is what you'd store in a database, if you wanted to.
+; emacswiki.org: The document root of the web site. This is where the ##emacs.pl## script is which runs Oddmuse.
 
 (Back to WikiDownload.)
 
