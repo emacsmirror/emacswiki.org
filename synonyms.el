@@ -4,17 +4,17 @@
 ;; Description: Look up synonyms for a word or phrase in a thesaurus.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:51:41 2013 (-0800)
+;; Last-Updated: Sun Jan  4 16:56:14 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 2518
+;;     Update #: 2521
 ;; URL: http://www.emacswiki.org/synonyms.el
 ;; Doc URL: http://www.emacswiki.org/ThesauriAndSynonyms
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -616,9 +616,9 @@ synonyms.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/cgi-bin/wiki/synonyms.el")
-  :link '(url-link :tag "Description" "http://www.emacswiki.org/cgi-bin/wiki/Synonyms")
+          "http://www.emacswiki.org/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "http://www.emacswiki.org/synonyms.el")
+  :link '(url-link :tag "Description" "http://www.emacswiki.org/Synonyms")
   :link '(emacs-commentary-link :tag "Commentary" "synonyms"))
 
 ;;;###autoload
