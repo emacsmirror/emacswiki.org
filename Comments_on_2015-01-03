@@ -244,7 +244,7 @@ This doesn't seem to work for links such as ##find-func%2b.el##, however.
 # issue a redirect for http://emacswiki.org/AlexSchroeder
 # if the file ~/emacswiki/page/AlexSchroeder.pg exists
 # RewriteCond %{REQUEST_URI} ^([^/?]+)$
-# RewriteCond -f /home/nicferrier/emacswiki/page/%1
+# RewriteCond -f /home/nicferrier/emacswiki/page/%1.pg
 # RewriteRule ^([^/?]+)$ /emacs/$1 [redirect,last]
 }}}
 
