@@ -4,17 +4,17 @@
 ;; Description: Extensions to `pp.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 09:44:53 2013 (-0800)
+;; Last-Updated: Thu Jan  1 11:09:23 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 217
+;;     Update #: 224
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -161,7 +161,7 @@ With no prefix arg:
  If the value fits on one line (frame width) show it in the echo area.
  Otherwise, show the value in buffer `*Pp Eval Output*'.
 
-This command respects options user `pp-eval-expression-print-length',
+This command respects user options `pp-eval-expression-print-length',
 `pp-eval-expression-print-level', and
 `eval-expression-debug-on-error'.
 
@@ -229,7 +229,7 @@ OUT-BUFFER-NAME."
                       (message "Evaluating...done.  See buffer `%s'."
                                out-buffer-name)))
                 (message "%s" (buffer-substring (point-min) (point))))))))
-    (with-output-to-temp-buffer out-buffer-name
+    (with-output-to-temp-buffer out-buffer-name ; Same code, but for Emacs < 23.
       (pp expression)
       (with-current-buffer standard-output
         (setq buffer-read-only  nil)
