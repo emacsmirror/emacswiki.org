@@ -4,16 +4,16 @@
 ;; Description: Emacs init file for use with libraries from Drew Adams
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 15:54:33 1995
 ;; Version: 0
 ;; Package-Requires: ((start "0"))
-;; Last-Updated: Thu Dec 26 08:51:55 2013 (-0800)
+;; Last-Updated: Thu Jan  1 10:36:48 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 2179
+;;     Update #: 2181
 ;; URL: http://www.emacswiki.org/emacs-init.el
 ;; Keywords: init, .emacs, _emacs, dotemacs
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -36,25 +36,26 @@
 ;;   `find-dired-', `finder', `finder+', `finder-inf', `fit-frame',
 ;;   `font-lock', `font-lock-menus', `frame-cmds', `frame-fns',
 ;;   `fuzzy', `fuzzy-match', `header2', `help+20', `hexrgb',
-;;   `highlight', `icicles', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-mode',
-;;   `icicles-opt', `icicles-var', `icomplete', `icomplete+',
-;;   `image-dired', `imenu', `imenu+', `info', `info+', `isearch+',
-;;   `iso-transl', `kmacro', `lacarte', `levenshtein',
-;;   `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
-;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
-;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `moccur-edit', `mouse', `mouse+', `mouse3',
-;;   `mwheel', `naked', `occur-schroeder', `oneonone', `paren',
-;;   `pcmpl-auto', `pp', `pp+', `pp-c-l', `printing', `ps-print',
-;;   `regexp-opt', `replace+', `ring', `ring+', `savehist-20+',
-;;   `second-sel', `sendmail', `setup', `setup-cygwin', `setup-keys',
-;;   `simple+', `speedbar', `start', `start-opt', `strings',
-;;   `subr-21', `swiss-move', `synonyms', `thing-cmds', `thingatpt',
-;;   `thingatpt+', `thumb-frm', `timer', `timer+', `unaccent', `vc',
-;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `wimpy-del', `window+', `zoom-frm'.
+;;   `highlight', `highlight-chars', `icicles', `icicles-cmd1',
+;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
+;;   `icicles-mode', `icicles-opt', `icicles-var', `icomplete',
+;;   `icomplete+', `image-dired', `image-file', `imenu', `imenu+',
+;;   `info', `info+20', `isearch+', `iso-transl', `kmacro',
+;;   `lacarte', `levenshtein', `lib-requires', `lisp-mnt',
+;;   `loadhist', `local-lpr', `local-ps-print', `lpr', `ls-lisp',
+;;   `ls-lisp+', `ls-lisp-verbosity', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `moccur-edit', `mouse', `mouse+',
+;;   `mouse3', `mwheel', `naked', `occur-schroeder', `oneonone',
+;;   `package', `paren', `pcmpl-auto', `pp', `pp+', `pp-c-l',
+;;   `printing', `ps-print', `regexp-opt', `replace+', `ring',
+;;   `ring+', `savehist-20+', `second-sel', `sendmail', `setup',
+;;   `setup-cygwin', `setup-keys', `simple+', `speedbar', `start',
+;;   `start-opt', `strings', `subr+', `subr-21', `swiss-move',
+;;   `synonyms', `thing-cmds', `thingatpt', `thingatpt+',
+;;   `thumb-frm', `timer', `timer+', `unaccent', `vc', `vc+', `vc-',
+;;   `vc-hooks', `vc-hooks+', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget', `wimpy-del', `window+',
+;;   `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
