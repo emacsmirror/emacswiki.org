@@ -233,22 +233,7 @@ And there's a commensurate increase in the nginx graphs at the same time.
 
 ----
 
-How unfortunate. :(
+The URL rewriting I did affected the server-status page the munin plugin uses. I wrote an exception for server-status and Apache should be fine, now.
 
-I'll disable the mod_rewrite thing so that we can check whether that helps.
-
-Optionally, we could use the two !RewriteConds, here.
-This doesn't seem to work for links such as ##find-func%2b.el##, however.
-
-{{{
-# issue a redirect for http://emacswiki.org/AlexSchroeder
-# if the file ~/emacswiki/page/AlexSchroeder.pg exists
-# RewriteCond %{REQUEST_URI} ^([^/?]+)$
-# RewriteCond -f /home/nicferrier/emacswiki/page/%1.pg
-# RewriteRule ^([^/?]+)$ /emacs/$1 [redirect,last]
-}}}
-
-Thus, right now, ##http://emacswiki.org/WikiPageName## no longer redirects to ##http://emacswiki.org/emacs/WikiPageName##.
-
--- AlexSchroeder 2015-01-05 16:03 UTC
+-- AlexSchroeder 2015-01-05 21:52 CET
 
