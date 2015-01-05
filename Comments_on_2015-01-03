@@ -205,10 +205,10 @@ As for bookmark+-1.el: I found the code painfully slow even without colorization
     than 10x faster. This is important for default searching, and for
     indexed search using double-quotes.
 
-Reverting to the old, regular expression based code fixes [[bookmark+-1.el]]?
+Reverting to the old, regular expression based code fixes [[bookmark+-1.el]].
 I'm not sure why this is so. Perhaps the newer Perl versions are better at some regular expressions.
-In addition to that, the wiki no longer does searching (nor indexed search) – we're letting Duck Duck Go handle that,
-so the drawbacks from 2006 don't affect us whether they're true or not.
+I feel comfortable reverting this change because the drawbacks from 2006 don't affect us whether they're true or not:
+the wiki no longer does searching (nor indexed search) – we're letting Duck Duck Go handle that.
 
 So, problem fixed?
 
