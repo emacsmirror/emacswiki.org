@@ -191,7 +191,7 @@ Thx.
 
 ----
 
-Hm, yes, perhaps there was a rewrite rule that got lost in the migration. I'll take a look.
+Hm, yes, perhaps there was a rewrite rule that got lost in the migration. I'll take a look... OK, right now the problem is that the cache doesn't realize that these requests can be handed to the back-end.
 
 -- AlexSchroeder 2015-01-05 06:39 UTC
 
