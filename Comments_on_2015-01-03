@@ -198,7 +198,7 @@ Hm, yes, perhaps there was a rewrite rule that got lost in the migration. I'll t
 
 ----
 
-As for bookmark+-1.el: I found the code painfully slow even without colorization (##http://www.emacswiki.org/emacs/raw/bookmark%2b-1.el##). Some investigation led me to the data file parser. Looking at the revision history, I found the following entry from Oct 2006:
+As for bookmark+-1.el: I found the code painfully slow even without colorization (##http://www.emacswiki.org/emacs/raw/bookmark%2b-1.el##). Some investigation led me to the data file parser. Looking at the revision history, I found [http://git.savannah.gnu.org/cgit/oddmuse.git/commit/?id=370e15295dc3b4ff0ac405fe4a491127ff076105 the following commit] from Oct 2006:
 
     (ParseData): Hand-written to optimize for speed. By getting rid of
     some regular expressions used for parsing, the code is now more
