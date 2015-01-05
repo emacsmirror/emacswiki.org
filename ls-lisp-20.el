@@ -2,12 +2,12 @@
 
 ;; Copyright (C) 1992, 1994, 2000, 2004 Free Software Foundation, Inc.
 ;;               2005 Lars Hansen
-;;               2010-2014 Drew Adams
+;;               2010-2015 Drew Adams
 
 ;; Author: Sebastian Kremer <sk@thp.uni-koeln.de>
 ;; Modified by: Francis J. Wright <F.J.Wright at qmul.ac.uk>
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Last-Updated: Mon Sep  8 15:23:53 2014 (-0700)
+;; Last-Updated: Thu Jan  1 11:01:59 2015 (-0800)
 ;;           By: dradams
 ;; URL: http://www.emacswiki.org/ls-lisp.el
 ;; Keywords: unix, dired, microsoft windows
