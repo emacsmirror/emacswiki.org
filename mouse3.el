@@ -4,17 +4,17 @@
 ;; Description: Customizable behavior for `mouse-3'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2010-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 21 13:57:19 2014 (-0700)
+;; Last-Updated: Sun Jan  4 16:30:27 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1742
+;;     Update #: 1745
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -439,11 +439,11 @@
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs version and mouse3.el `Update #'."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+          "http://www.emacswiki.org/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cgi-bin/wiki/mouse3.el")
+          "http://www.emacswiki.org/mouse3.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/Mouse3")
+          "http://www.emacswiki.org/Mouse3")
   :link '(emacs-commentary-link :tag "Doc" "mouse3"))
 
 (defun mouse3-nonempty-region-p ()
