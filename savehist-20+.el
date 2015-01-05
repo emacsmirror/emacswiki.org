@@ -1,7 +1,7 @@
 ;;; savehist-20+.el --- Save minibuffer history.
 ;; Author: Hrvoje Niksic <hniksic@xemacs.org>
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2014, Drew Adams
+;; Copyright (C) 2007-2015, Drew Adams
 ;; Copyright (C) 1997, 2005, 2006, 2007  Free Software Foundation, Inc.
 
 ;; Keywords: minibuffer history
