@@ -9,6 +9,7 @@ Packages written or co-written by me:
 * AutoRevertMode -- Automatically reloads buffer when file has been changed (bundled with Emacs)
 * FontLockStudio -- Interactive debugger for FontLockMode keywords
 * [[Multicolumn]] -- Support for multiple side-by-side windows
+* [[e2ansi]] -- Syntax highlighting in "less" and other command line tools, powered by Emacs font-lock
 * CMakeFontLock -- Advanced highlight rules for [[CMake]]
 * ObjcFontLock -- Highlight Objective-C method calls
 * [[Prepaint]] -- Highlight C-style preprocessor directives, with multiline support
