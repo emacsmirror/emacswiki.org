@@ -4,13 +4,13 @@
 ;; Description: Commands for thumbnail frames.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Mon Nov 17 18:23:09 2014 (-0800)
+;; Last-Updated: Sun Jan  4 16:59:31 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1760
+;;     Update #: 1768
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `frame-cmds', `frame-fns', `misc-fns', `strings',
+;;   `avoid', `frame-cmds', `frame-fns', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -451,10 +451,10 @@ thumb-frm.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/cgi-bin/wiki/thumb-frm.el")
+          "http://www.emacswiki.org/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "http://www.emacswiki.org/thumb-frm.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/FisheyeWithThumbs")
+          "http://www.emacswiki.org/FisheyeWithThumbs")
   :link '(emacs-commentary-link :tag "Commentary" "thumb-frm"))
 
 ;;;###autoload
@@ -613,7 +613,7 @@ everywhere, except for `thumfr-really-iconify-frame' and
 (defun thumfr-really-iconify-frame (&optional frame)
   "Iconify FRAME, even if `thumfr-thumbify-dont-iconify-flag' is non-nil."
   (interactive)
-  (setq frame  (or frame (selected-frame)))
+  (setq frame  (or frame  (selected-frame)))
   (let ((thumfr-thumbify-dont-iconify-flag  nil))
     ;; Ensure we iconify, even if [iconify-frame] is bound in `special-event-map'.
     (iconify-frame frame)
@@ -646,7 +646,7 @@ This means that PARAMETER is either `thumbfr-thumbnail-frame' or
 Variable `thumfr-frame-parameters' is used to determine
 which frame parameters (such as `menu-bar-lines') to remove."
   (interactive)
-  (setq frame  (or frame (selected-frame)))
+  (setq frame  (or frame  (selected-frame)))
   (let* ((tf-params      (frame-parameter frame 'thumfr-non-thumbnail-frame))
          (non-tf-params  (thumfr-remove-if #'thumfr-thumfr-parameter-p
                                            (frame-parameters frame))))
@@ -680,7 +680,7 @@ which frame parameters (such as `menu-bar-lines') to remove."
 (defun thumfr-dethumbify-frame (&optional frame)
   "Restore thumbnail FRAME to original size (default: selected frame)."
   (interactive)
-  (setq frame  (or frame (selected-frame)))
+  (setq frame  (or frame  (selected-frame)))
   (let* ((non-tf-params  (frame-parameter frame 'thumfr-thumbnail-frame))
          (tf-params      (thumfr-remove-if #'thumfr-thumfr-parameter-p
                                            (frame-parameters frame))))
@@ -731,7 +731,7 @@ dethumbify, is available as function `thumfr-only-raise-frame'."
   "If FRAME is a thumbnail, restore it; else thumbify it.
 FRAME defaults to the selected frame."
   (interactive)
-  (setq frame  (or frame (selected-frame)))
+  (setq frame  (or frame  (selected-frame)))
   (if (thumfr-thumbnail-frame-p frame)
       (thumfr-dethumbify-frame frame)
     (thumfr-thumbify-frame frame)))
@@ -747,8 +747,8 @@ FRAME is the selected frame, by default."
   (setq frame  (or frame  (selected-frame)))
   (thumfr-dethumbify-frame frame)
   (let ((other-frames  (visible-frame-list)))
-    (setq other-frames  (delq frame other-frames))
-    (setq other-frames  (delq 1on1-minibuffer-frame other-frames))
+    (setq other-frames  (delq frame other-frames)
+          other-frames  (delq 1on1-minibuffer-frame other-frames))
     (dolist (fr  (thumfr-nset-difference other-frames (thumfr-thumbnail-frames)))
       (thumfr-thumbify-frame fr))
     (thumfr-stack-thumbnail-frames))
@@ -793,7 +793,8 @@ whenever possible.
 
 Optional arg KEY is a function used to extract the part of each list
 element to compare."
-  (if (or (null list1) (null list2)) list1
+  (if (or (null list1)  (null list2))
+      list1
     (apply #'thumfr-set-difference list1 list2 key)))
 
 ;; Define this to avoid requiring `cl.el' at runtime.  Same as `icicle-set-difference'.
@@ -805,7 +806,8 @@ element to compare.
 The result list contains all items that appear in LIST1 but not LIST2.
 This is non-destructive; it makes a copy of the data if necessary, to
 avoid corrupting the original LIST1 and LIST2."
-  (if (or (null list1) (null list2)) list1
+  (if (or (null list1)  (null list2))
+      list1
     (let ((keyed-list2  (and key  (mapcar key list2)))
           (result       ()))
       (while list1
@@ -1087,7 +1089,7 @@ Non-nil prefix FORCE-P => Sort iff FORCE-P >= 0."
          (setq thumfr-last-sort-function  thumfr-sort-function) ; Save it.
          (when (or (null force-p)  (<= (prefix-numeric-value force-p) 0))
            (setq thumfr-sort-function  nil))) ; Don't sort.
-        ((or (null force-p) (> (prefix-numeric-value force-p) 0)) ; Ask to sort
+        ((or (null force-p)  (> (prefix-numeric-value force-p) 0)) ; Ask to sort
          (if thumfr-last-sort-function ; Sort using saved sort fn.
              (setq thumfr-sort-function  thumfr-last-sort-function)
            (error "You first need to set `thumfr-sort-function'"))))
@@ -1150,12 +1152,12 @@ the names respecting `read-file-name-completion-ignore-case'."
             (not read-file-name-completion-ignore-case))
         (string-lessp fname1 fname2)
       (let* ((buf1      (get-buffer fname1))
-             (bufname1  (and buf1 (buffer-file-name buf1)))
-             (file1     (and bufname1 (upcase bufname1)))
+             (bufname1  (and buf1  (buffer-file-name buf1)))
+             (file1     (and bufname1  (upcase bufname1)))
              (buf2      (get-buffer fname2))
-             (bufname2  (and buf2 (buffer-file-name buf2)))
-             (file2     (and bufname2 (upcase bufname2))))
-        (if (and file1 file2)
+             (bufname2  (and buf2  (buffer-file-name buf2)))
+             (file2     (and bufname2  (upcase bufname2))))
+        (if (and file1  file2)
             (string-lessp file1 file2)
           (string-lessp fname1 fname2))))))
 
