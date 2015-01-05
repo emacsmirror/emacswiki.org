@@ -17,16 +17,12 @@ We talk about Emacs and the wiki on the EmacsChannel.
 
 == Hosting =
 
-AlexSchroeder is the administrator of this wiki. It is hosted by [http://waldmann-edv.de/ Waldmann EDV] in Germany.
-If Alex gets run over by a truck, contact [http://waldmann-edv.de/WedvHome Thomas Waldmann] (also on IRC).
+AlexSchroeder and NicFerrier are the administrators of this wiki. It is hosted by NicFerrier in the UK.
 
 The first edit (see the first entry of the [Self:action=rc;all=1;from=1;showedit=1;rcidonly=SiteMap complete change log for SiteMap] was made in **2001-05-14**. The [http://web.archive.org/web/20010610005205/http://www.emacswiki.org/cgi-bin/wiki.pl Internet Archive Wayback Machine agrees] and has a snapshot for **2001-06-09**.
 
-The Emacs Wiki is located at 
-http://www.emacswiki.org/, or
-http://emacswiki.wikiwikiweb.de/, if
-emacswiki.org is down.  This is a virtual hosting environment,
-therefore you need to use HTTP/1.1 to access the site.
+The Emacs Wiki is located at http://www.emacswiki.org/.
+This is a virtual hosting environment, therefore you need to use HTTP/1.1 to access the site.
 
 == Backups =
 
@@ -35,16 +31,15 @@ This will help us get the wiki back up and running if it goes down.
 See WikiDownload for more.
 
 An cron job backs the site up on a regular basis.
-Backup space kindly donated by [http://bonmot.ca/ Bonmot Internet Consulting].
-If the wiki disappears in a major crisis and neither Alex nor Thomas Waldmann can help you get to the files in order to resurrect Emacs Wiki,
-contact Daniel !MacKay (contact info available on the Bonmot site).
+Use the [[Rsync repository]] to access our online backup.
+Contact JonathanGonzalez if you ever need access to the backup and the rsync server is down.
 
 == Money =
 
-At the moment AlexSchroeder is paying for the server:
-EUR 20 per month covers bandwidth.
+At the moment NicFerrier is paying for the server.
 
-[new] There will not
+[new]
+There will not
 be any ads on emacswiki.org; I hate them myself.  If you like the site
 and want to contribute something, contribute either time or money:
 Write content, fix typos, clean up pages by removing old discussions,
