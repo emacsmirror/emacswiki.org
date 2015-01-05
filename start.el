@@ -4,16 +4,16 @@
 ;; Description: Main Emacs startup file: require/autoload other files.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2015, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 23 08:12:27 2014 (-0700)
+;; Last-Updated: Sun Jan  4 16:52:58 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 3032
+;;     Update #: 3035
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -468,7 +468,7 @@
 (require 'pcmpl-auto nil t)             ; Pcomplete
 
 ;; `ls-lisp-verbosity.el' is essentially `leo-toggle-ls-lisp-verbosity'
-;;     from (http://www.emacswiki.org/cgi-bin/emacs-en/LsLispToggleVerbosity)
+;;     from (http://www.emacswiki.org/LsLispToggleVerbosity)
 (require 'ls-lisp-verbosity nil t)
 
 ;; Dired-X:
