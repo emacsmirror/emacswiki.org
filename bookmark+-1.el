@@ -4,12 +4,12 @@
 ;; Description: First part of package Bookmark+.
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Dec 16 08:13:11 2014 (-0800)
+;; Last-Updated: Sun Jan  4 15:24:30 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7512
+;;     Update #: 7521
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -46,7 +46,7 @@
 ;;       Web'.
 ;;
 ;;    2. From the Emacs-Wiki Web site:
-;;       http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
+;;       http://www.emacswiki.org/BookmarkPlus.
 ;;
 ;;    3. From the Bookmark+ group customization buffer:
 ;;       `M-x customize-group bookmark-plus', then click link
@@ -1697,21 +1697,22 @@ BOOKMARK is a bookmark name or a bookmark record."
 
   (defvar bookmark-make-record-function 'bookmark-make-record-default
     "Function called with no arguments, to create a bookmark record.
-It should return the new record, which should be a cons cell of the
-form (NAME . ALIST) or just ALIST, where ALIST is as described in
-`bookmark-alist'.  If it cannot construct the record, then it should
-raise an error.
+Modes can set this buffer-locally to enable bookmarking of locations
+that should be treated specially for the mode.  Global commands can
+bind this and then create a bookmark, to get special treatment
+anywhere.
+
+The function value should return a new bookmark record, which should
+be a cons cell of the form (NAME . ALIST) or just ALIST, where ALIST
+is as described in `bookmark-alist'.  If it cannot construct the
+record, then it should raise an error.
 
 NAME is a string that names the new bookmark.  NAME can be nil, in
 which case a default name is used.
 
 ALIST can contain an entry (handler . FUNCTION) which sets the handler
 to FUNCTION, which is then used instead of `bookmark-default-handler'.
-FUNCTION must accept the same arguments as `bookmark-default-handler'.
-
-You can set this variable buffer-locally to enable bookmarking of
-locations that should be treated specially, such as Info nodes, news
-posts, images, pdf documents, etc.")
+FUNCTION must accept the same arguments as `bookmark-default-handler'.")
 
   (defun bookmark-prop-get (bookmark prop)
     "Return property PROP of BOOKMARK, or nil if no such property.
@@ -2625,8 +2626,8 @@ Otherwise, call `bmkp-goto-position' to go to the recorded position."
           (t
            ;; Bookmark with a region.  Go to it and activate the region.
            (if (and file  (file-readable-p file)  (not (buffer-live-p buf)))
-               (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
-                 (setq buf  (buffer-name)))
+;;; $$$$$$$    (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
+               (with-current-buffer (find-file-noselect file) (setq buf  (buffer-name)))
              ;; No file found.  If no buffer either, then signal that file doesn't exist.
              (unless (or (and buf  (get-buffer buf))
                          (and bufname  (get-buffer bufname)  (not (string= buf bufname))))
@@ -4450,22 +4451,34 @@ this is `bmkp-this-buffer-bmenu-list'."
 Set `bmkp-last-specific-file' to the current file name.
 If the current buffer is not visiting a file, prompt for the file name."
   (interactive)
-  (setq bmkp-last-specific-file     (or (buffer-file-name)
-                                        (let ((icicle-unpropertize-completion-result-flag  t))
-                                          (read-file-name "File: ")))
-        bmkp-bmenu-filter-function  'bmkp-last-specific-file-alist-only
-        bmkp-bmenu-title            (format "File `%s' Bookmarks" bmkp-last-specific-file))
-  (let ((bookmark-alist         (funcall bmkp-bmenu-filter-function))
-        (bmkp-bmenu-state-file  nil))   ; Prevent restoring saved state.
-    (unless bookmark-alist (error "No bookmarks for file `%s'" bmkp-last-specific-file))
-    (setq bmkp-latest-bookmark-alist  bookmark-alist)
-    (pop-to-buffer (get-buffer-create "*Bookmark List*"))
-    (bookmark-bmenu-list 'filteredp))
-  (when (interactive-p)
-    (bmkp-msg-about-sort-order (bmkp-current-sort-order)
-                               (format "Only bookmarks for file `%s' are shown"
-                                       bmkp-last-specific-file)))
-  (raise-frame))
+  (unless bookmark-alist (bookmark-maybe-load-default-file)) ; Just to be sure.
+  (let ((orig-last-spec-file  bmkp-last-specific-file)
+        (orig-filter-fn       bmkp-bmenu-filter-function)
+        (orig-title           bmkp-bmenu-title)
+        (orig-latest-alist    bmkp-latest-bookmark-alist))
+    (condition-case err
+        (progn
+          (setq bmkp-last-specific-file     (or (buffer-file-name)
+                                                (let ((icicle-unpropertize-completion-result-flag  t))
+                                                  (read-file-name "File: ")))
+                bmkp-bmenu-filter-function  'bmkp-last-specific-file-alist-only
+                bmkp-bmenu-title            (format "File `%s' Bookmarks" bmkp-last-specific-file))
+          (let ((bookmark-alist         (funcall bmkp-bmenu-filter-function))
+                (bmkp-bmenu-state-file  nil)) ; Prevent restoring saved state.
+            (unless bookmark-alist (error "No bookmarks for file `%s'" bmkp-last-specific-file))
+            (setq bmkp-latest-bookmark-alist  bookmark-alist)
+            (pop-to-buffer (get-buffer-create "*Bookmark List*"))
+            (bookmark-bmenu-list 'filteredp))
+          (when (interactive-p)
+            (bmkp-msg-about-sort-order (bmkp-current-sort-order)
+                                       (format "Only bookmarks for file `%s' are shown"
+                                               bmkp-last-specific-file)))
+          (raise-frame))
+      (error (progn (setq bmkp-last-specific-file     orig-last-spec-file
+                          bmkp-bmenu-filter-function  orig-filter-fn
+                          bmkp-bmenu-title            orig-title
+                          bmkp-latest-bookmark-alist  orig-latest-alist)
+                    (error "%s" (error-message-string err)))))))
 
 ;;;###autoload (autoload 'bmkp-this-buffer-bmenu-list "bookmark+")
 (defun bmkp-this-buffer-bmenu-list ()
@@ -4807,8 +4820,7 @@ and return only the tags for the currently loaded bookmarks."
 If FILE is a relative file name, it is expanded in `default-directory.
 If FILE does not name a valid, bookmark file then nil is returned.
 Non-nil NAMES-ONLY-P means return a list of only the tag names.
-Otherwise, return an alist of the full tags.
-"
+Otherwise, return an alist of the full tags."
   (setq file  (expand-file-name file))
   (let ((bookmark-save-flag  nil)       ; Just to play safe.
         (bmk-alist           ())
@@ -7506,6 +7518,7 @@ use this as the `handler' property.  New sound bookmarks use
 (when (> emacs-major-version 21)
   (defun bmkp-compilation-target-set (&optional prefix) ; Bound to `C-c C-b' in compilation mode
     "Set a bookmark at the start of the line for this compilation hit.
+The bookmark is set in the indicated file at the indicated line.
 You are prompted for the bookmark name.  But with a prefix arg, you
 are prompted only for a PREFIX string.  In that case, and in Lisp
 code, the bookmark name is PREFIX followed by the (relative) file name
@@ -8140,8 +8153,8 @@ Update the recorded position if `bmkp-save-new-location-flag'.
 Arguments are respectively the bookmark, its file, buffer, buffer
 name, recorded position, and the context strings for the position."
   (if (and file  (file-readable-p file)  (not (buffer-live-p buf)))
-      (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
-        (setq buf  (buffer-name)))
+;;; $$$$$$$ (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
+      (with-current-buffer (find-file-noselect file) (setq buf  (buffer-name)))
     ;; No file found.  See if a non-file buffer exists for this.  If not, raise error.
     (unless (or (and buf  (get-buffer buf))
                 (and bufname  (get-buffer bufname)  (not (string= buf bufname))))
@@ -11655,4 +11668,3 @@ I MSG-P is non-nil then echo the annotation type."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; bookmark+-1.el ends here
-
