@@ -4,12 +4,12 @@
 ;; Description: Functions dealing with accented characters.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 11:02:14 1999
 ;; Version: 20.0
-;; Last-Updated: Thu Dec 26 09:55:15 2013 (-0800)
+;; Last-Updated: Thu Jan  1 11:21:24 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 59
+;;     Update #: 60
 ;; URL: http://www.emacswiki.org/unaccent.el
 ;; Keywords: i18n, language, accents
 ;; Compatibility: GNU Emacs 20.x
