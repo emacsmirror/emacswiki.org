@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jan  4 13:26:33 2015 (-0800)
+;; Last-Updated: Mon Jan  5 13:36:47 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15801
+;;     Update #: 15804
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -48,7 +48,7 @@
 ;;       Web'.
 ;;
 ;;    2. From the Emacs-Wiki Web site:
-;;       http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
+;;       http://www.emacswiki.org/BookmarkPlus.
 ;;
 ;;    3. From the Bookmark+ group customization buffer:
 ;;       `M-x customize-group bookmark-plus', then click link
