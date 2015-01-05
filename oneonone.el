@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Thu Jan  1 11:07:41 2015 (-0800)
+;; Last-Updated: Sun Jan  4 17:13:48 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 3051
+;;     Update #: 3053
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -104,7 +104,7 @@
 ;;  of these built-in functions to play well with frames.
 ;;
 ;;  For more information on One-on-One Emacs see
-;;  http://www.emacswiki.org/cgi-bin/wiki/OneOnOneEmacs.
+;;  http://www.emacswiki.org/OneOnOneEmacs.
 ;;
 ;;  To use this library, put the following at the *END* of your init
 ;;  file, `.emacs' (or `_emacs').  In particular, if your init file
@@ -682,15 +682,14 @@
   "Options to define initial frame configuration."
   :prefix "1on1-" :group 'frames
   :link `(url-link :tag "Send Bug Report"
-          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
-oneonone.el bug: \
+          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=oneonone.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/cgi-bin/wiki/oneonone.el")
+          "http://www.emacswiki.org/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "http://www.emacswiki.org/oneonone.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/OneOnOneEmacs")
+          "http://www.emacswiki.org/OneOnOneEmacs")
   :link '(emacs-commentary-link :tag "Commentary" "oneonone"))
 
 (defvar 1on1-divider-width 2
