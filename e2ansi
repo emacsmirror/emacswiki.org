@@ -5,7 +5,7 @@ The package provides a command-line tool <tt>e2ansi-cat</tt> that starts Emacs i
 You can integrate this into `less` by setting the following variables to, for example:
 
     export "LESSOPEN=|emacs --batch -Q -l ~/.emacs -l bin/e2ansi-cat %s"
-    export "LESS=-r -j20"
+    export "LESS=-R"
     export MORE=$LESS
 
 The end result looks like the following:
