@@ -4,17 +4,17 @@
 ;; Description: Require confirmation for large region deletion.
 ;; Author: Bard Bloom, bard@theory.lcs.mit.edu, Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) Bard Bloom, June 1989
 ;; Created: Wed Nov 22 14:57:17 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 15 08:36:33 2014 (-0700)
+;; Last-Updated: Thu Jan  1 11:23:40 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 186
+;;     Update #: 189
 ;; URL: http://www.emacswiki.org/wimpy-del.el
 ;; Keywords: region, cut, kill, copy
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -95,6 +95,10 @@
 
 ;; Free vars here: CMPL-LAST-INSERT-LOCATION, CMPL-ORIGINAL-STRING,
 ;;                 COMPLETION-TO-ACCEPT
+
+(defvar cmpl-last-insert-location)
+(defvar cmpl-original-string)
+(defvar completion-to-accept)
 
 ;;;;;;;;;;;;;;;;;
 
