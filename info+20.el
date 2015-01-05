@@ -4,13 +4,13 @@
 ;; Description: Extensions to `info.el' for Emacs 20-22.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Sun May  4 09:18:30 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May  4 13:03:19 2014 (-0700)
+;; Last-Updated: Thu Jan  1 10:58:54 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 5233
+;;     Update #: 5234
 ;; URL: http://www.emacswiki.org/info+20.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -18,7 +18,8 @@
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `info'.
+;;   `fit-frame', `info', `info+20', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
