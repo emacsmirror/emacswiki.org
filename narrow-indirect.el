@@ -4,17 +4,17 @@
 ;; Description: Narrow using an indirect buffer that is a clone
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2014, Drew Adams, all rights reserved.
+;; Copyright (C) 2014-2015, Drew Adams, all rights reserved.
 ;; Created: Sun May 11 08:05:59 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 14 17:33:04 2014 (-0700)
+;; Last-Updated: Thu Jan  1 11:05:55 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 193
+;;     Update #: 195
 ;; URL: http://www.emacswiki.org/narrow-indirect.el
 ;; Doc URL: http://www.emacswiki.org/NarrowIndirect
 ;; Keywords: narrow indirect buffer clone view multiple-modes
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
