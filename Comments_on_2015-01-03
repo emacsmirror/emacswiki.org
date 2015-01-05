@@ -237,3 +237,18 @@ The URL rewriting I did affected the server-status page the munin plugin uses. I
 
 -- AlexSchroeder 2015-01-05 21:52 CET
 
+
+----
+
+Alex, Nic -
+
+Thanks for all of your work. I am now able to edit pages, including uploading the 3 large Elisp files that I mentioned. I am also able to get to the alphabetical listing in the Elisp Area, although it takes a while. "Bare" URLs (with no "emacs") also work now.
+
+Only the "/cgi-bin/wiki" pages are not recognized. That will affect some referring URLs on the web and some bookmarks, but it's not a big deal.
+
+In sum, things are working well!
+
+Thx - Drew
+
+-- DrewAdams 2015-01-05 22:14 UTC
+
