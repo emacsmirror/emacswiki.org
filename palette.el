@@ -8,9 +8,9 @@
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Thu Jan  1 11:08:48 2015 (-0800)
+;; Last-Updated: Sun Jan  4 16:37:28 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 783
+;;     Update #: 784
 ;; URL: http://www.emacswiki.org/palette.el
 ;; Doc URL: http://emacswiki.org/ColorPalette
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
@@ -34,7 +34,7 @@
 ;;
 ;;    You will also need my library `hexrgb.el'; it is loaded
 ;;    automatically by `palette.el'.  Get it here:
-;;    http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el.
+;;    http://www.emacswiki.org/hexrgb.el.
 ;;
 ;;  After loading, use command `palette' to display a color palette in
 ;;  Color Palette mode (`palette-mode').  This has three sub-palettes
@@ -126,7 +126,7 @@
 ;;    then your font is probably too large.  In that case, customize
 ;;    option `palette-font' - see it for more information.  Here is a
 ;;    screenshot of how the palette should appear:
-;;    http://www.emacswiki.org/cgi-bin/wiki/ColorPalette.el.
+;;    http://www.emacswiki.org/ColorPalette.el.
 ;;
 ;;  * By default, information about the color at any location is only
 ;;    available upon demand, by clicking `mouse-1' or `mouse-2', or
@@ -481,11 +481,11 @@ palette.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+          "http://www.emacswiki.org/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cgi-bin/wiki/palette.el")
+          "http://www.emacswiki.org/palette.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/ColorPalette")
+          "http://www.emacswiki.org/ColorPalette")
   :link '(emacs-commentary-link :tag "Commentary" "palette"))
 
 ;;;###autoload
