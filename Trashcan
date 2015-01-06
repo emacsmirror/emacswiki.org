@@ -1,0 +1,23 @@
+Trashcan implements a recoverable file-deletion system that behaves like the trash can or recycle bin of many operating systems.
+
+*NOTE*: Starting with Emacs 23.2, we have built-in support for using Recycle Bin or system Trash folder.  See NEWS by pressing `C-h n'.
+
+You can find a copy of Trashcan on its [http://davin.50webs.com/research/2006/trashcan.el.html homepage]
+or in [http://davin.50webs.com/research/2006/trashcan-20150105-102908.tar.gz this tarball].
+
+From the commentary:
+
+: This system changes the behaviour of the "x" key in dired mode from
+permanently deleting files to a two stage system. If you are not in
+a trashcan directory, then the selected files are moved into a
+trashcan directory. If you are already in a trashcan directory, the
+the selected files are permanently deleted. Files in a trashcan
+directory can be restored by viewing that directory in dired mode,
+selecting some files and executing the command M-x
+trashcan-restore. All of the files in a trashcan directory can also
+be permanently deleted in one hit by issuing the command M-x
+trashcan-empty. The name "trashcan" comes from my old Amiga
+Computer which I still have fond memories of!
+
+----
+DiredMode
