@@ -260,3 +260,14 @@ I'm sure we'll be able to add a redirect for those “/cgi-bin/wiki” links as 
 
 -- AlexSchroeder 2015-01-06 07:07 UTC
 
+
+----
+
+I'd really like to change the non-namespaced uris
+
+non-namespaced uris are a nightmare because it's very hard to extend things, change architecture or even test things cleanly with them.
+
+But that's a discussion for later I expect.
+
+-- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-06 18:13 UTC
+
