@@ -73,7 +73,7 @@ You can read more about Dired mode by reading the help displayed using `C-h m' i
 ** DiredLis -- Letter `isearch' in dired mode, not nedd press some keys to active `isearch-mode'.
 * OperatingOnFilesInDired – Opening files in associated applications.
 * ThumbsMode -- Modify dired for automatic image previewing.
-* <tt>[[trashcan.el]]</tt> -- A recoverable file-deletion system that behaves like the trash can or recycle bin of many operating systems. NOTE: Starting with Emacs 23.2, we have built-in support for using Recycle Bin or system Trash folder.  See NEWS by pressing C-h n.
+* [[Trashcan]] -- A recoverable file-deletion system that behaves like the trash can or recycle bin of many operating systems.
 * [[Tumme]] -- Lets you navigate among image files in Dired, with thumbnail previews and more.
 
 
