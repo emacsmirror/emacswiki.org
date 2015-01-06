@@ -40,14 +40,14 @@ body attribute, because Oddmuse wikis carry the URL of the wiki in
 their body class.
 
 For all of the above settings to apply to the Emacs Wiki only, and
-only when using the URL http://www.emacswiki.org/cgi-bin/wiki.pl, put
+only when using the URL http://www.emacswiki.org/emacs, put
 the following in your user style sheet:
 
-    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] { background-color: #DDD !important; color: #000 !important; }
-    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] * { background: inherit !important; color: inherit !important; }
-    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] a { color:#00F !important; }
-    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] a:visited { color:#A0A !important; }
-    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] img.logo { border-style:solid !important; }
+    body[class="http://www.emacswiki.org/emacs"] { background-color: #DDD !important; color: #000 !important; }
+    body[class="http://www.emacswiki.org/emacs"] * { background: inherit !important; color: inherit !important; }
+    body[class="http://www.emacswiki.org/emacs"] a { color:#00F !important; }
+    body[class="http://www.emacswiki.org/emacs"] a:visited { color:#A0A !important; }
+    body[class="http://www.emacswiki.org/emacs"] img.logo { border-style:solid !important; }
 
 === Logo ===
 
@@ -61,12 +61,12 @@ choose grey, for example, the logo will look very different, because
 you cannot see the stylized E anymore.  You can hide the logo by
 inserting in the CSS something like:
 
-   body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] img.logo { visibility:hidden;}
+   body[class="http://www.emacswiki.org/emacs"] img.logo { visibility:hidden;}
 
 CSS2 allows you to insert content thus putting your own logo. For instance if you want to put a new logo
 after the header you can use something like:
 
-    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] div.header:after {
+    body[class="http://www.emacswiki.org/emacs"] div.header:after {
         content: url(file:///my/path/my_emacs_wiki_logo.png);
         display: block;
     }
@@ -85,7 +85,7 @@ A useful ressource for more info about generated content:
 
 Take care not to redefine two elements in one line ie:
 
-    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] code, pre {color: #EDC !important; font: 90% monospace;}
+    body[class="http://www.emacswiki.org/emacs"] code, pre {color: #EDC !important; font: 90% monospace;}
 
 This leads to some global redefinitions of some elements (At least for me
 under linux with Mozilla 1.3 and Firebird 0.6).
@@ -103,32 +103,32 @@ RomainFrancoise: I like light gray backgrounds, and narrow columns for
 text.  I also decided to shrink the logo a bit, and to justify text so
 that it's nice to look at.  My "stylesheet" is:
 
-    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] { 
+    body[class="http://www.emacswiki.org/emacs"] { 
     background-color: #d1d1d1 !important; 
     color: #000 !important;
     padding-left: 15% !important;
     padding-right: 15% !important;
     }
-    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] * { 	
+    body[class="http://www.emacswiki.org/emacs"] * { 	
     font-family: verdana, arial, sans-serif !important; 
     background: inherit !important; color: inherit !important;
     }
-    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] a { 
+    body[class="http://www.emacswiki.org/emacs"] a { 
     color: #606060 !important; 
     }
-    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] a:visited { 
+    body[class="http://www.emacswiki.org/emacs"] a:visited { 
     color: #303030 !important; 
     }
-    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] img.logo { 
+    body[class="http://www.emacswiki.org/emacs"] img.logo { 
     border: 1px solid #000 !important;
     width: 98px !important;
     height: 56px !important;
     }
-    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] p, blockquote, li { 
+    body[class="http://www.emacswiki.org/emacs"] p, blockquote, li { 
     max-width: 35em !important;
     text-align: justify !important;
     }
-    body[class="http://www.emacswiki.org/cgi-bin/wiki.pl"] input {
+    body[class="http://www.emacswiki.org/emacs"] input {
     border: 1px dashed #000 !important;
     }
 
