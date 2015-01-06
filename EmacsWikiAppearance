@@ -40,7 +40,7 @@ body attribute, because Oddmuse wikis carry the URL of the wiki in
 their body class.
 
 For all of the above settings to apply to the Emacs Wiki only, and
-only when using the URL http://www.emacswiki.org/emacs, put
+only when using the URL ##http://www.emacswiki.org/emacs##, put
 the following in your user style sheet:
 
     body[class="http://www.emacswiki.org/emacs"] { background-color: #DDD !important; color: #000 !important; }
