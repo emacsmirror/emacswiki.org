@@ -271,3 +271,10 @@ But that's a discussion for later I expect.
 
 -- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-06 18:13 UTC
 
+
+----
+
+Yeah, I think handling those URIs is a pain. But if we all agree that it's the last, catch-all rule, then that's not so bad. New namespaces will probably start with a lower case letter and won't end in ".el" so there won't be a lot of disappointment in the future.
+
+-- AlexSchroeder 2015-01-07 06:26 UTC
+
