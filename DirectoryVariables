@@ -51,7 +51,9 @@ see below.)
 
 ----
 
-== Remote files (via TrampMode) ==
+== Remote files (via Tramp) ==
+
+(See [[TrampMode]].)
 
 This is not enabled by default. See below.
 
