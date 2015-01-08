@@ -78,7 +78,7 @@ For performance reasons, Emacs will *not* attempt to
 apply directory local variables to buffers visiting remote files (via
 tramp); however it can be configured to do so, if you are willing to
 incur the associated performance cost (which can be relatively minimal
-in some situations)
+in some situations).
 
 In Emacs 24.3+, see the `enable-remote-dir-locals' variable.
 
