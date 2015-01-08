@@ -28,6 +28,25 @@ Here's an example of a `.dir-locals.el' file:
       ("src/imported"
        . ((nil . ((change-log-default-name . "ChangeLog.local"))))))
 
+You can also configure directory local variables purely in elisp (i.e. /without/ using a .dir-local.el file). The following example uses [[TrampMode]] paths, and therefore requires directory variable support for remote files to have been enabled (see below).
+
+    (dir-locals-set-class-variables
+     'plone-core
+     '((nil . ((buffer-read-only . t)))))
+    
+    (dir-locals-set-class-variables
+     'plone-instance
+     '((nil . ((indent-tabs-mode . nil)
+               (fill-column . 80)))
+       ;; (python-mode . (()))
+       ))
+    
+    (dir-locals-set-directory-class
+     "/scpc:(user)@(host):/home/(user)/Plone/" 'plone-core)
+    
+    (dir-locals-set-directory-class
+     "/scpc:(user)@(host):/home/(user)/Plone/zinstance/" 'plone-instance)
+
 ----
 
 As of Emacs 24:
@@ -55,28 +74,7 @@ see below.)
 
 (See [[TrampMode]].)
 
-This is not enabled by default. See below.
-
-Example usage /without/ using .dir-locals.el:
-
-    (dir-locals-set-class-variables
-     'plone-core
-     '((nil . ((buffer-read-only . t)))))
-    
-    (dir-locals-set-class-variables
-     'plone-instance
-     '((nil . ((indent-tabs-mode . nil)
-               (fill-column . 80)))
-       ;; (python-mode . (()))
-       ))
-    
-    (dir-locals-set-directory-class
-     "/scpc:(user)@(host):/home/(user)/Plone/" 'plone-core)
-    
-    (dir-locals-set-directory-class
-     "/scpc:(user)@(host):/home/(user)/Plone/zinstance/" 'plone-instance)
-
-By default (for performance reasons), Emacs will *not* attempt to
+For performance reasons, Emacs will *not* attempt to
 apply directory local variables to buffers visiting remote files (via
 tramp); however it can be configured to do so, if you are willing to
 incur the associated performance cost (which can be relatively minimal
