@@ -30,12 +30,31 @@ Here's an example of a `.dir-locals.el' file:
 
 ----
 
-Emacs (23.2.1) will not attempt to apply directory local variables
-to buffers visiting remote files (via tramp).
+As of Emacs 24:
 
-As of Emacs 24.3, you can set the variable `enable-remote-dir-locals'
-to apply such values on remote files. If you're using an earlier version
-of Emacs, read on:
+* You can stop directory local vars from applying to subdirectories.
+Add an element (subdirs . nil) to the alist portion of any variables
+settings to indicate that the section should not apply to
+subdirectories.
+
+* Directory local variables can apply to some file-less buffers.
+Affected modes include dired, vc-dir, and log-edit.  For example,
+adding "(diff-mode . ((mode . whitespace)))" to .dir-locals.el will
+turn on `whitespace-mode' for %%*vc-diff*%% buffers.  Modes should call
+`hack-dir-local-variables-non-file-buffer' to support this.
+
+As of Emacs 24.3:
+
+* You can set the variable `enable-remote-dir-locals' to apply such
+values on remote files. (If you're using an earlier version of Emacs,
+see below.)
+
+----
+
+Prior to version 24.3, Emacs will not attempt to apply directory local
+variables to buffers visiting remote files (via tramp).
+
+(In 24.3+, see the `enable-remote-dir-locals' variable.)
 
 We can advise `hack-dir-local-variables' to work around this, if you
 are willing to incur the associated performance cost (which can be
@@ -70,18 +89,3 @@ And an example of using this without .dir-locals.el:
 
      (dir-locals-set-directory-class
       "/scpc:(user)@(host):/home/(user)/Plone/zinstance/" 'plone-instance)
-
-----
-
-As of Emacs 24:
-
-* You can stop directory local vars from applying to subdirectories.
-Add an element (subdirs . nil) to the alist portion of any variables
-settings to indicate that the section should not apply to
-subdirectories.
-
-* Directory local variables can apply to some file-less buffers.
-Affected modes include dired, vc-dir, and log-edit.  For example,
-adding "(diff-mode . ((mode . whitespace)))" to .dir-locals.el will
-turn on `whitespace-mode' for %%*vc-diff*%% buffers.  Modes should call
-`hack-dir-local-variables-non-file-buffer' to support this.
