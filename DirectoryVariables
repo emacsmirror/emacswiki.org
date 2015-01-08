@@ -51,26 +51,11 @@ see below.)
 
 ----
 
-Prior to version 24.3, Emacs will not attempt to apply directory local
-variables to buffers visiting remote files (via tramp).
+== Remote files (via TrampMode) ==
 
-(In 24.3+, see the `enable-remote-dir-locals' variable.)
+This is not enabled by default. See below.
 
-We can advise `hack-dir-local-variables' to work around this, if you
-are willing to incur the associated performance cost (which can be
-relatively minimal in some situations).
-
-     ;; Enable directory local variables with remote files. This facilitates both
-     ;; the (dir-locals-set-class-variables ...)(dir-locals-set-directory-class ...)
-     ;; and the .dir-locals.el approaches.
-     (defadvice hack-dir-local-variables (around my-remote-dir-local-variables)
-       "Allow directory local variables with remote files, by temporarily redefining
-     `file-remote-p' to return nil unconditionally."
-       (flet ((file-remote-p (&rest) nil))
-         ad-do-it))
-     (ad-activate 'hack-dir-local-variables)
-
-And an example of using this without .dir-locals.el:
+Example usage without using .dir-locals.el:
 
      (dir-locals-set-class-variables
       'plone-core
@@ -81,11 +66,31 @@ And an example of using this without .dir-locals.el:
       '((nil . ((indent-tabs-mode . nil)
                 (fill-column . 80)))
         ;; (python-mode . (()))
-        ;; (nxhtml-mode . (()))
-        ))
+		))
 
      (dir-locals-set-directory-class
       "/scpc:(user)@(host):/home/(user)/Plone/" 'plone-core)
 
      (dir-locals-set-directory-class
       "/scpc:(user)@(host):/home/(user)/Plone/zinstance/" 'plone-instance)
+
+By default (for performance reasons), Emacs will *not* attempt to
+apply directory local variables to buffers visiting remote files (via
+tramp); however it can be configured to do so, if you are willing to
+incur the associated performance cost (which can be relatively minimal
+in some situations)
+
+In Emacs 24.3+, see the `enable-remote-dir-locals' variable.
+
+For earlier versions we can advise `hack-dir-local-variables' to work
+around the default behaviour:
+
+     ;; Enable directory local variables with remote files. This facilitates both
+     ;; the (dir-locals-set-class-variables ...)(dir-locals-set-directory-class ...)
+     ;; and the .dir-locals.el approaches.
+     (defadvice hack-dir-local-variables (around my-remote-dir-local-variables)
+       "Allow directory local variables with remote files, by temporarily redefining
+     `file-remote-p' to return nil unconditionally."
+       (flet ((file-remote-p (&rest) nil))
+         ad-do-it))
+     (ad-activate 'hack-dir-local-variables)
