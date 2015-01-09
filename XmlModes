@@ -1,0 +1,69 @@
+Various modes exist to edit XML.   See also: XmlParsers.
+
+= XML editing modes =
+
+== sgml-mode.el ==
+The simplest mode to edit XML with is sgml-mode.  It comes with Emacs.
+
+It is no longer the default.  To use it add the following to your InitFile.
+
+  (defalias 'xml-mode 'sgml-mode 
+    "Use `sgml-mode' instead of nXML's `xml-mode'.")
+
+== PSGML ==
+The biggest and greatest SGML mode will handle XML as well.  See
+PsgmlMode.
+
+== PSGMLx ==
+psgmlx is a preconfigured set of popular elisp packages used for authoring SGML/XML and related documents with FSF/GNU Emacs.
+
+* http://linux.duke.edu/~mark/psgmlx/
+
+== nXMLMode ==
+NxmlMode was the next big thing in XML editing with Emacs.  As of 2009-09-18 it became the default XML mode.
+
+Tim Bray says:
+
+: There are 12,587 lines of elisp here apparently implementing a complete XML 1.0 processor and RelaxNG validation engine. Words fail me. [http://tbray.org/ongoing/When/200x/2003/09/18/NXML]
+
+== XML-poly ==
+"XML-poly is an XML parser on Emacs. Unlike the former xml.el, XML-poly treats XML names as symbols, of course it can distinguish them by their XML namespace URI." 
+
+* http://www.meadowy.org/xml/ 
+
+== xml-lite.el ==
+This package provides a simple indentation engine for XML.  It is
+intended for use in situations where the full power of PsgmlMode (DTD
+parsing, syntax checking) is not required.  xml-lite is designed to be
+used in conjunction with the default sgml-mode, to provide a
+lightweight XML-editing environment.
+
+* http://www.dogbiscuit.org/mdub/software/xml-lite.el
+
+xml-lite.el has been merged with sgml-mode.el in Emacs CVS, and will be part of 22.1 when it is released.
+
+== XML Authoring Environment (XAE) ==
+The ultimate XML editing environment by PaulKinnucan.  It enables you
+to use Emacs and a browser to create, transform, and display XML
+documents. The XAE requires Java.
+
+* http://xae.sunsite.dk/ *Note:* 2010-12-04 URL is no longer there; the sunsite was shut down 2009.
+
+== XSL-Mode ==
+A modified version of xslide, made into a derived mode of PsgmlMode.  Features intelligent abbreviation expansion.  Part of a future project for editing specific XML document types.  See EmaXML.
+
+
+= Related topics =
+
+== Checking Well Formedness ==
+XmlWellFormednessWindows
+
+== Validating against an XML Schema ==
+XmlSchemaValidationWindows
+
+A simple call to sgml-validate can also allow you to validate using a local application (e.g. xmllint) as indicated by this thread: http://lists.oasis-open.org/archives/docbook-apps/200211/msg00373.html.
+
+----
+CategoryModes
+CategoryXML
+CategoryExternalUtilities
