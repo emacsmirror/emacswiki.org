@@ -316,3 +316,10 @@ transferring the regular expressions from the wiki into a config file – and a 
 
 -- AlexSchroeder 2015-01-09 14:25 UTC
 
+
+----
+
+The thing to use is the X-Forwarded-For header.  Can you read that instead of the IP? A lot of web frameworks just do that for you... maybe perl/CGI doesn't?
+
+-- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-09 20:32 UTC
+
