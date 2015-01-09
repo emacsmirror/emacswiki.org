@@ -1,19 +1,9 @@
-Here are some examples of how to use the XmlParser.
-
-Note: The functions `xml-parse-file', `xml-parse-region' and
-`xml-parse-tag' return a list with the following format:
-
-    xml-list   ::= (node node ...)
-    node       ::= (qname attribute-list . child_node_list)
-    child_node_list ::= child_node child_node ...
-    child_node ::= node | string
-    qname      ::= (:namespace-uri . "name") | "name"
-    attribute_list ::= ((qname . "value") (qname . "value") ...)
-                       | nil
-    string     ::= "..."
+Here are some examples of how to use Emacs's XML parser (xml.el). 
+Other parsers are available: see XmlParsers.
 
 
-[new]
+== Parse a simple XML string ==
+
 How to parse a string containing the following fragment?
 
 <pre>
@@ -67,7 +57,9 @@ a tree-widget using tree-widget.el.  This could form the basis of a really cool 
 
 </pre>
 
-[new]
+
+== Parse an HTML file, walking over the nodes and filtering them ==
+
 I wanted to prepare a list of national days and used the following web page as the source:
 
 * http://www.dfat.gov.au/protocol/NationalDayList/
@@ -194,6 +186,23 @@ And here's the code:
 	     (xml-node-attributes elem)
 	     ""))
 </pre>
+
+
+== Format of lists ==
+
+Note: The functions `xml-parse-file', `xml-parse-region' and
+`xml-parse-tag' return a list with the following format:
+
+    xml-list   ::= (node node ...)
+    node       ::= (qname attribute-list . child_node_list)
+    child_node_list ::= child_node child_node ...
+    child_node ::= node | string
+    qname      ::= (:namespace-uri . "name") | "name"
+    attribute_list ::= ((qname . "value") (qname . "value") ...)
+                       | nil
+    string     ::= "..."
+
+
 
 ----
 CategoryXML
