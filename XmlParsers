@@ -1,20 +1,18 @@
 Various XML parsers. See also XmlModes for XML editing environments.
 
 
-Standard:
-
-* http://www.gnu.org/software/emacs/manual/html_node/elisp/Parsing-HTML_002fXML.html
-
-
 == xml.el ==
 
-This parser by EmmanuelBriot is part of Gnus and part of Emacs 21.
+This parser by EmmanuelBriot is part of Emacs since version 21, and is part of Gnus.
+
+Docs: http://www.gnu.org/software/emacs/manual/html_node/elisp/Parsing-HTML_002fXML.html
 
 Here's a link to the file in Emacs's sources:
 
 * GIT:xml.el
 
-See also XmlParserExamples.
+See XmlParserExamples for some usage examples.
+
 
 == xml-parse.el ==
 
@@ -28,6 +26,7 @@ XML indentation fix.
 You can get the source from here:
 
 * Lisp:xml-parse.el
+
 
 == dom.el ==
 
@@ -103,9 +102,9 @@ SemanticBovinator (CVS only, at the end of 2001).
 
 : Uh, oh! I modified the s-expr grammar in xpath-parser.el without being aware of this ... :-/  -- OliverScholz
 
-
 Related links:
 * [http://www.w3.org/TR/xpath W3 XPATH standard]
+
 
 == xslt.el ==
 
@@ -114,6 +113,7 @@ XSLT and XPATH together make an XSL engine. XEmacs comes with [http://cvs.xemacs
 Related links:
 
 * [http://www.w3.org/TR/xslt W3 XSLT standard]
+
 
 ----
 CategoryCode
