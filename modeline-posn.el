@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 11:04:33 2015 (-0800)
+;; Last-Updated: Fri Jan  9 07:39:42 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 811
+;;     Update #: 812
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
@@ -249,6 +249,7 @@
 
 ;; Quiet the byte-compiler.
 
+(defvar isearchp-reg-beg)                 ; In `isearch+.el'
 (defvar rectangle--string-preview-window) ; In `rect.el' for Emacs 24.4+
 (defvar use-empty-active-region)          ; In `simple.el' for Emacs 23+
 
