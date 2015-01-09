@@ -307,3 +307,12 @@ And then, as Alex says, there are the blogs.  And the email threads.  And the ex
 
 -- DrewAdams 2015-01-07 23:21 UTC
 
+
+----
+
+I noticed that all the edits are now from 127.0.0.1 and so our BannedHosts list of regular expressions won't be of much use.
+Is there an alternative? The greatest solution would be for the caching proxy to handle this, I guess. We just need to find a way of
+transferring the regular expressions from the wiki into a config file – and a way for the administrator's password to override it, just in case we lock ourselves out. Alternatively, can the caching proxy pass this information along in an environment variable?
+
+-- AlexSchroeder 2015-01-09 14:25 UTC
+
