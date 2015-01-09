@@ -1,3 +1,6 @@
+Various XML parsers. See also XmlModes for XML editing environments.
+
+
 Standard:
 
 * http://www.gnu.org/software/emacs/manual/html_node/elisp/Parsing-HTML_002fXML.html
@@ -6,11 +9,6 @@ XML related implementations:
 
 * http://www.garshol.priv.no/download/xmltools/cat_ix.html
 
-XML editing environments:
-
-* NxmlMode -- full xml parsing, highlighting, and schema validations within emacs.
-* XmlMode -- including xml-lite
-* PsgmlMode -- for any SGML document
 == xml.el ==
 
 This parser by EmmanuelBriot is part of Gnus and part of Emacs 21.
