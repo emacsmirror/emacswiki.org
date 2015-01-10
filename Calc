@@ -1,7 +1,16 @@
-**Calc** comes with GNU Emacs starting with version 22.
 
-The latest (1997-01-05) version not included in Emacs is ftp://ftp.gnu.org/pub/gnu/calc/calc-2.02f.tar.gz.
-That version doesn't work out of the box for any recent Emacs.  It works for NT Emacs, but the installation might not be straight forward if you haven't installed make.  The version that works is the one that comes with newer version of GNU Emacs and with EmacsFromCVS.
+**Calc** is a calculator with many advanced features, once described as the poor man's Mathematica. It has been part of GNU Emacs since version 22. 
+
+
+== As a simple calculator ==
+
+If all you need is a simple calculation and don't want to deal with RPN mode, you can use Calc in algebraic mode. 
+To do so, just run Calc with M-x calc <RETURN>, and then hit apostrophe (') -
+now you can type in your formula normally and hit enter for the result. 
+
+    ' 3 + 7 * (5 - 2)
+    24
+
 
 == Quick tutorial ==
 
@@ -56,15 +65,6 @@ find solutions numerically, and it helps you fit curves.
 In short, Calc is a powerful, although mostly non-graphical, computer
 algebra system (disguised as a whimpy little RPN calculator).
 
-== Emacs 21 ==
-
-Note that you have to apply a patch to some of the calc files to make
-this work under Emacs 21, and those patches are incompatible with
-Emacs 20!  I have had to create subdirectories in my lisp directory,
-called "emacs20" and "emacs21", which only are added to the load-path
-in their respective versions, and each of which contains its
-emacs-specific version of this code.  The patch can be found in
-##etc/PROBLEMS## (`C-h P'). -- CharlesSebold
 
 == Calc from Emacs Lisp ==
 
@@ -275,6 +275,24 @@ rewrites. Calc has selections. But the language interface is hard-coded not gene
 Calc indicates that "window-edges" is void when started and quit from an frame with multiple windows under xemacs on Win32, Mac OS X, Linux
 [new]
 "window-edges" is not defined in xemacs.  See [http://list-archive.xemacs.org/xemacs-beta/200203/msg00234.html] for a workaround.
+
+
+
+== Emacs 21 ==
+
+Note that you have to apply a patch to some of the calc files to make
+this work under Emacs 21, and those patches are incompatible with
+Emacs 20!  I have had to create subdirectories in my lisp directory,
+called "emacs20" and "emacs21", which only are added to the load-path
+in their respective versions, and each of which contains its
+emacs-specific version of this code.  The patch can be found in
+##etc/PROBLEMS## (`C-h P'). -- CharlesSebold
+
+The latest (1997-01-05) version not included in Emacs is ftp://ftp.gnu.org/pub/gnu/calc/calc-2.02f.tar.gz.
+That version doesn't work out of the box for any recent Emacs.  It works for NT Emacs, but the installation might not be straight forward if you haven't installed make.  The version that works is the one that comes with newer version of GNU Emacs and with EmacsFromCVS.
+
+
+
 ----
 CategoryCalculators
 CategoryModes
