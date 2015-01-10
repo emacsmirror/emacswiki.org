@@ -326,7 +326,7 @@ The thing to use is the X-Forwarded-For header.  Can you read that instead of th
 
 ----
 
-Yeah, my code just looks at the environment variable. Should be fixed, now.
+Yeah, my code just looks at the environment variable. Fixed it, using your info. Thanks. :)
 
 -- AlexSchroeder 2015-01-10 07:38 UTC
 
