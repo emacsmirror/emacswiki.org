@@ -3,8 +3,8 @@ For various reasons, you might sometime need to redirect one Wiki page to anothe
 Here's how you do it:
 
 # Edit the page to be redirected.
-# Remove all its text, and replace it with this: "<code>#REDIRECT FooBar</code>", where "!FooBar" is the new, target Wiki page. Save.
-## Note that ''Talk'' and other pages that are not camel-cased need to encased in double-brackets to work. E.g. <code>[[Comments_on_OpenQuestions]]</code>
+# Remove all its text, and replace it with this: "<code>#REDIRECT FooBar</code>" for camel case target pages such as "!FooBar" and with <code>#REDIRECT [[Foobar]]</code> for any other target pages.
+# Save.
 
 Benefit: [http://www.w3.org/Provider/Style/URI Cool URIs don't change].
 
