@@ -8,9 +8,9 @@
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Sat Jan 10 10:34:19 2015 (-0800)
+;; Last-Updated: Sat Jan 10 12:47:43 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 332
+;;     Update #: 333
 ;; URL: http://www.emacswiki.org/zoom-frm.el
 ;; Doc URL: http://emacswiki.org/SetFonts
 ;; Keywords: frames, extensions, convenience
@@ -309,7 +309,7 @@ Buffer zooming uses command `text-scale-increase'."
     (interactive "P")
     (when arg
       (setq zoom-frame/buffer  (if (eq zoom-frame/buffer 'frame) 'buffer 'frame))
-      (message "Zooming %sS from now on" (upcase (symbol-name zoom-frame/buffer)))
+      (message "%s zooming from now on" (upcase (symbol-name zoom-frame/buffer)))
       (sit-for 1))
     (if (eq zoom-frame/buffer 'frame)
         (zoom-frm-in)
@@ -328,7 +328,7 @@ Buffer zooming uses command `text-scale-decrease'."
     (interactive "P")
     (when arg
       (setq zoom-frame/buffer  (if (eq zoom-frame/buffer 'frame) 'buffer 'frame))
-      (message "Zooming %sS from now on" (upcase (symbol-name zoom-frame/buffer)))
+      (message "%s zooming from now on" (upcase (symbol-name zoom-frame/buffer)))
       (sit-for 1))
     (if (eq zoom-frame/buffer 'frame)
         (zoom-frm-out)
@@ -372,7 +372,7 @@ Remember that you can also use `C-u' when you are done zooming."
       (when (or (equal arg '(4))  (eq ?\025 last-command-event)) ; `C-u'
         (setq zoom-frame/buffer  (if (eq zoom-frame/buffer 'frame) 'buffer 'frame)
               arg                1)
-        (message "Zooming %sS from now on" (upcase (symbol-name zoom-frame/buffer)))
+        (message "%s zooming from now on" (upcase (symbol-name zoom-frame/buffer)))
         (sit-for 1))    
       (let* ((ev               last-command-event)
              (echo-keystrokes  nil)
