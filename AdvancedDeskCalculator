@@ -1,5 +1,4 @@
-[::Calc]
-comes with GNU Emacs starting with version 22.
+**Calc** comes with GNU Emacs starting with version 22.
 
 The latest (1997-01-05) version not included in Emacs is ftp://ftp.gnu.org/pub/gnu/calc/calc-2.02f.tar.gz.
 That version doesn't work out of the box for any recent Emacs.  It works for NT Emacs, but the installation might not be straight forward if you haven't installed make.  The version that works is the one that comes with newer version of GNU Emacs and with EmacsFromCVS.
