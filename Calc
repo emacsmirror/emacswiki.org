@@ -1,0 +1,280 @@
+**Calc** comes with GNU Emacs starting with version 22.
+
+The latest (1997-01-05) version not included in Emacs is ftp://ftp.gnu.org/pub/gnu/calc/calc-2.02f.tar.gz.
+That version doesn't work out of the box for any recent Emacs.  It works for NT Emacs, but the installation might not be straight forward if you haven't installed make.  The version that works is the one that comes with newer version of GNU Emacs and with EmacsFromCVS.
+
+== Quick tutorial ==
+
+Calc's standard interface acts like a traditional RPN calculator,
+operated by the normal Emacs keyboard.  When you start the Calculator,
+the Emacs screen splits into two windows with the file you were
+editing on top and Calc on the bottom.
+
+     ...
+     --**-Emacs: myfile             (Fundamental)----All----------------------
+     --- Emacs Calculator Mode --                    |Emacs Calc Mode v2.00...
+     2:  17.3                                        |    17.3
+     1:  -5                                          |    3
+         .                                           |    2
+                                                     |    4
+                                                     |  * 8
+                                                     |  ->-5
+                                                     |
+     --%%-Calc: 12 Deg       (Calculator)----All----- --%%-Emacs: *Calc Trail*
+
+As you can see, Calc actually makes two windows side-by-side.  The
+lefthand one is called the "stack window" and the righthand one is
+called the "trail window."  The stack holds the numbers involved in
+the calculation you are currently performing.  The trail holds a
+complete record of all calculations you have done.  In a desk
+calculator with a printer, the trail corresponds to the paper tape
+that records what you do.
+
+In this case, the trail shows that four numbers (17.3, 3, 2, and 4)
+were first entered into the Calculator, then the 2 and 4 were
+multiplied to get 8, then the 3 and 8 were subtracted to get -5.  (The
+`>' symbol shows that this was the most recent calculation.)  The net
+result is the two numbers 17.3 and -5 sitting on the stack.
+
+Most Calculator commands deal explicitly with the stack only, but
+there is a set of commands that allow you to search back through the
+trail and retrieve any previous result.
+
+Calc allows you to work with many different data types: Integers,
+fractions, and floats are various ways of describing real numbers.
+HMS forms also for many purposes act as real numbers.  These types can
+be combined to form complex numbers, modulo forms, error forms, or
+interval forms.  Finally, all these types of numbers may be combined
+into vectors, matrices, or algebraic formulas (hit the apostrophe key
+to enter algebraic expressions).
+
+Calc even allows you to simplify formulas, perform symbolic
+differentiation and integration, numerical integration, and to compute
+taylor series.  It helps you solve equations symbolically, helps you
+find solutions numerically, and it helps you fit curves.
+
+In short, Calc is a powerful, although mostly non-graphical, computer
+algebra system (disguised as a whimpy little RPN calculator).
+
+== Emacs 21 ==
+
+Note that you have to apply a patch to some of the calc files to make
+this work under Emacs 21, and those patches are incompatible with
+Emacs 20!  I have had to create subdirectories in my lisp directory,
+called "emacs20" and "emacs21", which only are added to the load-path
+in their respective versions, and each of which contains its
+emacs-specific version of this code.  The patch can be found in
+##etc/PROBLEMS## (`C-h P'). -- CharlesSebold
+
+== Calc from Emacs Lisp ==
+
+Emacs Lispers frustrated by Emacs's lack of bignum handling:  calc.el
+provides very good bignum capabilities.
+
+If must make sure that calc is loaded before you start using it.
+
+{{{
+(require 'calc-ext)
+(defvar calc-command-flags)
+}}}
+
+The last command defines calc-command-flags as nil.  If this is not defined 
+Calc won't work (but this will be taken care of as of Emacs 23.2).
+
+If you want to make sure that any personal Calc settings are also loaded, you
+might want to run:
+
+{{{
+(load calc-settings-file t)
+}}}
+
+or, if you want to be more careful (the following is from calc-mode in calc.el):
+
+{{{
+(or calc-loaded-settings-file
+    (null calc-settings-file)
+    (equal calc-settings-file user-init-file)
+    (progn
+        (setq calc-loaded-settings-file t)
+	(load (file-name-sans-extension calc-settings-file) t)))
+}}}
+
+Now stuff like (math-add 1 2), (Math-lessp (math-expt 2 100)
+(math-expt 3 50)) will work.
+
+Even "operator overloading" works.  If you use defmath instead of
+defun, then all operators will be replaced with their bignum
+equivalents.  Thus, you can now use < instead of math-lessp.
+
+[::elispexample]
+=== Example of calc used from EmacsLisp ===
+
+calc from EmacsLisp is quite hard to grok, NicFerrier used it in the BSON decoding implementation for mongo-el (MongoDb database adapter for EmacsLisp). 
+
+[[https://github.com/nicferrier/mongo-el/blob/921ddc7185003d42f665659ce98a5bc54aacaac1/bson.el#L170|Here's a link to his implementation]]
+
+== Defining Units ==
+
+You can see the Calculator Units Table with the command
+calc-enter-units-table (bound to u v in the "stack window").
+New units can be added in your .emacs file like so:
+
+{{{
+(eval-after-load "calc-units"
+  '(progn
+     (setq math-additional-units
+           '((Bohr "0.05291772083 * nm" "Atomic unit of distance")
+             (Debye "0.3934301 * e * Bohr" "Unit of dipole moment")
+             (Buckingham "Debye * Ang" "Unit of quadrupole moment")
+             (Hartree "4.35974381e-18 * J" "Atomic unit of energy")
+             (Stone "14 * lb" "Stone (mass)"))
+           math-units-table nil)))
+}}}
+
+== Alternate way to define units ==
+
+Another way to define units is to put your expression on the stack, say
+
+{{{
+0.05291772083 nm
+}}}
+
+and then call calc-define-unit with
+
+{{{
+u d  
+}}}
+
+This new definition can be saved permanently with calc-permanent units by typing
+
+{{{
+u p
+}}}
+
+User defined units can also be edited with
+
+{{{
+s U
+}}}
+
+== Minimalistic calculation ==
+I always calculate something, so there is a way i use calc.el
+
+{{{
+;; usefull mini calculator
+(defun my-mini-calc (expr &optional arg)
+  "Calculate expression
+
+If ARG is given, then insert the result to current-buffer"
+  (interactive
+   (list (read-from-minibuffer "Enter expression: ")
+	 current-prefix-arg))
+
+  (let ((result (calc-eval expr)))
+    (if arg
+	(insert result)
+      (message (format "Result: [%s] = %s" expr result)))))
+}}}
+
+I bind it to `C-c m c' and found it very usefull for calculations at point.
+
+== Quick calc ==
+
+There is also quick-calc, which can be called with `##M-# q##'
+
+It will give you a prompt in the minibuffer, and the result will be given in the minibuffer
+and put in the kill-ring.  If the input is ended with a linefeed (or `C-j') instead of RET,
+the result will be put in the current buffer as well as the minibuffer.
+
+== Embedded Formula To Stack ==
+I was seeking out a function to take an embedded formula, evaluate it and put it on the stack. I didn't find one so here is the one I wrote. Beware, it uses current calc settings. 
+
+{{{
+(defun calc-embedded-formula-to-stack ()
+  (interactive)
+  (save-excursion
+    (save-match-data
+     (calc-embedded-find-bounds)))
+  (let ((eq-str (buffer-substring calc-embed-top calc-embed-bot)))
+    (calc-eval eq-str 'push)))
+}}}
+
+To use defaults replace eq-str with (list eq-str). To specify
+options overriding defaults, replace it with, for example, 
+
+{{{
+(append (list eq-str) '(calc-internal-prec 17 calc-float-format (sci 12)))
+}}}
+
+== Allowing the mouse to insert data ==
+
+When dealing with calc, a common problem I run into is how to yank
+data into calc using the mouse.  The solution I've found is binding
+mouse-2 to the calc-yank function.
+{{{
+   (define-key calc-mode-map [mouse-2] 'calc-yank)
+}}}
+
+== Calculate the Region, Then Insert ==
+
+With the following function you can evaluate an expression using
+Calc's ##calc-eval##. With prefix arg, the result will be appended after
+the region itself, just the way ##shell-command## does.
+
+{{{
+(defun calc-eval-region (arg beg end)
+  "Calculate the region and display the result in the echo area.
+With prefix ARG non-nil, insert the result at the end of region."
+  (interactive "P\nr")
+  (let* ((expr (buffer-substring-no-properties beg end))
+         (result (calc-eval expr)))
+    (if (null arg)
+        (message "%s = %s" expr result)
+      (goto-char end)
+      (save-excursion
+        (insert result)))))
+}}}
+
+-- PiotrMieszkowski
+
+== Feature Proposals ==
+
+Imagine the possible features of Calc:
+
+- Easy defining of new language modes (all the languages you use!)
+
+- External computations (would Maxima or Yacas calculate the
+  indefinite integral differently? maybe Octave should integrate the
+  ODE?)
+
+- Drag & drop (this term goes there, reduce this with that, to the
+  other side of equation with it... and voila!)
+
+- Verification history (no more cheating: let's see how you derived
+  it, Calc)
+
+- Interaction with preview-latex (to minimise post-editing of TeX
+  code; WYSIWYG: What You See Incrementally When You Go on
+  with transforming your formula)
+
+- Support for basic algebra integrated with drag & drop: e.g. registering a function as a quadratic form
+
+What is interesting about Calc is that it's nearly there... (or at
+least, half the way.) Calc has language modes. Calc has powerful
+rewrites. Calc has selections. But the language interface is hard-coded not generally enough. -- LukaszStafiniak
+
+== Other resources ==
+* A nice article in the linux journal
+** [http://www.linuxjournal.com/article/5873 Math-Intensive Reports with GNU Emacs and Calc, Part 1]
+** [http://www.linuxjournal.com/article/6306 Math-Intensive Reports with GNU Emacs and Calc, Part 2]
+* [[Calc Tutorials by Andrew Hyatt]]
+
+== Open Questions ==
+
+[new]
+Calc indicates that "window-edges" is void when started and quit from an frame with multiple windows under xemacs on Win32, Mac OS X, Linux
+[new]
+"window-edges" is not defined in xemacs.  See [http://list-archive.xemacs.org/xemacs-beta/200203/msg00234.html] for a workaround.
+----
+CategoryCalculators
+CategoryModes
