@@ -424,7 +424,8 @@ The resulting HTML doesn't tell you that !ExamplePage has been transcluded, but 
 == Rename / Redirect ==
 
 To change the name of a page without losing all of the archived links to the original name, create a new page with the original content and new name, and ''redirect'' the old name, by replacing the entire page with:
-<code>#REDIRECT FooBar</code>", where "!FooBar" is the new, target Wiki page.
+<code>#REDIRECT FooBar</code>", where "!FooBar" is the new, target Wiki page, 
+or <code>#REDIRECT [[Foobar]]</code> for non-camel-case words. 
 
 More details at PageRedirection
 
