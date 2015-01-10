@@ -323,3 +323,10 @@ The thing to use is the X-Forwarded-For header.  Can you read that instead of th
 
 -- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-09 20:32 UTC
 
+
+----
+
+Yeah, my code just looks at the environment variable. Should be fixed, now.
+
+-- AlexSchroeder 2015-01-10 07:38 UTC
+
