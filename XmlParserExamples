@@ -116,7 +116,7 @@ The results are accumulated whenever the last piece of information is found.
 	       (setq result (cons (list m d c f) result)))
 	      (t
 	       (mapc 'walk (xml-node-children node))))))
-
+    
     (let (d m c f result
           (days (xml-parse-file "data.xml"))
       (walk (car days))
