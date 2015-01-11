@@ -1,3 +1,13 @@
+== MWIM (Move Where I Mean) ==
+
+There is [https://github.com/alezost/mwim.el mwim] package (available on
+[[MELPA]]) that tries to combine the ideas and the code from this page: it
+provides commands for moving to the beginning/end of "code or line" (or
+"line or code").
+
+
+== Back to indentation or beginning of line ==
+
 This function switches the point to before the first non-space character, or if the point is already there it goes to the beginning of the line. Binding "Home" to this function turns it into a very nice DoWhatIMean key.
 
  (defun back-to-indentation-or-beginning () (interactive)
