@@ -11,6 +11,7 @@ Packages written or co-written by me:
 * [[Multicolumn]] -- Support for multiple side-by-side windows
 * [[e2ansi]] -- Syntax highlighting in "less" and other command line tools, powered by Emacs font-lock
 * CMakeFontLock -- Advanced highlight rules for [[CMake]]
+* LispExtraFontLock -- Highlight bound variables and quoted expressions in lisp
 * ObjcFontLock -- Highlight Objective-C method calls
 * [[Prepaint]] -- Highlight C-style preprocessor directives, with multiline support
 * CAlignOperands -- Indentation and electric commands for indenting C operators first on line
