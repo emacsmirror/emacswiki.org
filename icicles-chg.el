@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jan  4 14:39:58 2015 (-0800)
+;; Last-Updated: Sun Jan 11 11:13:42 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 11374
+;;     Update #: 11377
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1138,6 +1138,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2015/01/11 dadams
+;;     icicle-imenu-1: Bind icicle-remove-icicles-props-p to nil (for property icicle-whole-candidate).
 ;; 2014/12/28 dadams
 ;;     Require completion.el at compile time.
 ;;     icicle-marker+text: Prefix buffer name with line number.
