@@ -4,26 +4,66 @@ I've been [s]using[/s] living in Emacs since May, 2012.  I can be found on [[Ema
 
 ===My Packages===
 
-* [https://github.com/alezost/emacs-utils emacs-utils] -- A part of my ".emacs": a lot of additional functions I use.
+* [https://github.com/alezost/ducpel ducpel] -- Original logic game
+  ([https://raw.github.com/alezost/ducpel/master/pic/screenshot.png screenshot]).
 
-* [https://github.com/alezost/alect-themes alect-themes] -- The only color themes I can bear.
+* [https://github.com/alezost/alect-themes alect-themes] -- The only
+  color themes I can bear.
+
+* [b]guix.el[/b] (a part of Guix since v0.8) -- Interface for
+  [http://www.gnu.org/software/guix/ GNU Guix package manager]
+
+* [https://github.com/alezost/aurel aurel] -- A package to search, vote for
+  and download [https://aur.archlinux.org/ AUR packages].
+
+* [https://github.com/alezost/mwim.el mwim] -- "Move Where I Mean" --
+  Move point to the beginning/end of line or code.
+
+* [https://github.com/alezost/imenus.el imenus] -- Imenu for multiple buffers.
 
 * [[Debpaste]] -- Client for [http://paste.debian.net/ paste.debian.net].
 
 * [[MakeColor]] -- "Pick" a color by changing a sample with r/g/b/... keys.
 
-* [https://github.com/alezost/web-search.el web-search] -- Search for text on Internet.
+* [https://gitorious.org/alezost-emacs/pretty-sha-path pretty-sha-path]
+  -- Prettify Guix/Nix store paths.
 
-* [https://github.com/alezost/point-pos.el point-pos] -- Save and restore point positions.
+* [https://github.com/alezost/mana.el mana] -- Start
+  [http://manaplus.org/ ManaPlus] client without prompting for credentials.
 
-* [https://github.com/alezost/aurel aurel] -- Search, vote and download [https://aur.archlinux.org/ AUR packages].
+* [https://github.com/alezost/journal.el journal] -- Org based
+  functionality for working with journal (diary) entries.
 
-* [https://github.com/alezost/guix.el guix.el] -- Interface for [http://www.gnu.org/software/guix/ Guix package manager].
+* [https://github.com/alezost/web-search.el web-search] -- Search for
+  text on Internet.
 
-* [https://gitorious.org/alezost-emacs/pretty-sha-path pretty-sha-path] -- Prettify Guix/Nix store paths.
+* [https://github.com/alezost/point-pos.el point-pos] -- Save and
+  restore point positions.
 
-* [https://github.com/alezost/ducpel ducpel] -- Logic game.
+* [https://github.com/alezost/dvorak-layouts.el dvorak-layouts] --
+  Additional input methods for the Dvorak global (system) layout.
 
+* [https://github.com/alezost/date-at-point.el date-at-point] --
+  Additional `date' thing for `thing-at-point' function.
+
+* [https://gitorious.org/alezost-emacs/echo-msk echo-msk] -- A package I
+  use to listen (with [[EMMS]]) to programs of [http://www.echo.msk.ru/ Эхо Москвы]
+  radio.
+
+* And some other packages that can be found on
+  [https://gitorious.org/alezost-emacs gitorious].
+
+
+===My emacs config===
+
+The most important and useful code for me (and probably the most useless
+for anyone else):
+
+* [https://github.com/alezost/emacs-config emacs-config] -- My ".emacs".
+
+* [https://github.com/alezost/emacs-utils emacs-utils] -- An additional
+  part of my ".emacs": a lot of additional functions I use that are not
+  required for my config to be started successfully.
 
 
 
