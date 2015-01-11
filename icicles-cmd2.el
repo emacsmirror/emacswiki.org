@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Jan  4 14:39:21 2015 (-0800)
+;; Last-Updated: Sun Jan 11 11:09:17 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7101
+;;     Update #: 7106
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7628,25 +7628,23 @@ The other args are as for `icicle-search'."
                   (menus    (mapcar (lambda (menu)
                                       (when (equal (car menu) "Other")
                                         (setq others  (1+ others))
-                                        (when (> others 1)
-                                          (setcar menu (format "Other<%d>" others))))
+                                        (when (> others 1) (setcar menu (format "Other<%d>" others))))
                                       menu)
                                     (icicle-remove-if-not
                                      #'icicle-imenu-in-buffer-p ; Use only menus that match buffer.
                                      (mapcar (lambda (menu) ; Name unlabeled menu(s) `Other[<N>]'.
-                                               (if (stringp (car menu))
-                                                   menu
-                                                 (cons "Other" (cdr menu))))
+                                               (if (stringp (car menu)) menu (cons "Other" (cdr menu))))
                                              imenu-generic-expression))))
                   (submenu  (if submenu-fn
                                 (funcall submenu-fn menus)
                               (if (cadr menus)
-                                  ;; There can be multiple submenus with the same name.
-                                  ;; E.g., `Functions' can come from `defun' or `defalias'.
+                                  ;; There could be multiple submenus with the same name.
+                                  ;; E.g., `Functions' could come from `defun' or `defalias'.
                                   ;; So we cannot just use (cadr (assoc submenus menus)) to get the regexp.
                                   (let* ((icicle-show-Completions-initially-flag  t)
                                          (icicle-whole-candidate-as-text-prop-p   t)
                                          (icicle-candidates-alist                 menus)
+                                         (icicle-remove-icicles-props-p           nil) ;`icicle-whole-candidate'
                                          (completion-ignore-case                  t)
                                          (submnu                                  (completing-read
                                                                                    "Choose: " menus nil t)))
