@@ -8,9 +8,9 @@
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan 11 09:28:30 2015 (-0800)
+;; Last-Updated: Sun Jan 11 09:59:23 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 185
+;;     Update #: 196
 ;; URL: http://www.emacswiki.org/ucs-cmds.el
 ;; Doc URL: http://emacswiki.org/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
@@ -130,6 +130,7 @@
 ;;
 ;; 2015/01/11 dadams
 ;;     ucsc-make-commands, ucsc-insert: Ensure non-nil ARG for non-interactive use.
+;;                                      Mention hex and octal in doc string.
 ;; 2012/12/15 dadams
 ;;     ucsc-insert: Raise error if CHARACTER is not characterp.
 ;; 2012/10/06 dadams
@@ -182,9 +183,10 @@ hyphens (`-'), and the command names are lowercase."
                       (downcase
                        (replace-regexp-in-string " " "-" (car name.code) nil t)))
                  (arg)
-               ,(concat "Insert Unicode character `" (car name.code)
-                        (format "'.\nThis character has code point %d"
-                                (cdr name.code)) ".")
+               ,(format "Insert Unicode character `%s'.
+This char has code point %d decimal \(%X hex, %o octal)."
+                        (car name.code)
+                        (cdr name.code) (cdr name.code) (cdr name.code))
                (interactive "*p")
                (unless arg (setq arg  1))
                (insert (make-string arg ,(cdr name.code))))))))
@@ -254,9 +256,9 @@ command creation."
         (unless char-name
           (error "No such Unicode character: `%s'" character)) ; Impossible?
         (eval `(defun ,(intern cmd-name) (arg)
-                 ,(concat "Insert Unicode character `" char-name
-                          (format "'.\nThis character has code point %d"
-                                  character) ".")
+                 ,(format "Insert Unicode character `%s'.
+This char has code point %d decimal \(%X hex, %o octal)."
+                          char-name character character character)
                  (interactive "*p")
                  (unless arg (setq arg  1))
                  (insert (make-string arg ,character))))
