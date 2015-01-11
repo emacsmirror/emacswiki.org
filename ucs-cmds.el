@@ -8,9 +8,9 @@
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  4 17:03:33 2015 (-0800)
+;; Last-Updated: Sun Jan 11 09:28:30 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 181
+;;     Update #: 185
 ;; URL: http://www.emacswiki.org/ucs-cmds.el
 ;; Doc URL: http://emacswiki.org/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
@@ -128,6 +128,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/01/11 dadams
+;;     ucsc-make-commands, ucsc-insert: Ensure non-nil ARG for non-interactive use.
 ;; 2012/12/15 dadams
 ;;     ucsc-insert: Raise error if CHARACTER is not characterp.
 ;; 2012/10/06 dadams
@@ -184,6 +186,7 @@ hyphens (`-'), and the command names are lowercase."
                         (format "'.\nThis character has code point %d"
                                 (cdr name.code)) ".")
                (interactive "*p")
+               (unless arg (setq arg  1))
                (insert (make-string arg ,(cdr name.code))))))))
 
 
@@ -255,6 +258,7 @@ command creation."
                           (format "'.\nThis character has code point %d"
                                   character) ".")
                  (interactive "*p")
+                 (unless arg (setq arg  1))
                  (insert (make-string arg ,character))))
         (when msgp (message "Created command `%s'"
                             (downcase (replace-regexp-in-string
