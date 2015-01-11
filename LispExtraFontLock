@@ -1,0 +1,9 @@
+[https://github.com/Lindydancer/lisp-extra-font-lock Lisp Extra Font Lock] highlights bound variables and quoted expressions in lisp (including elisp), written by [[AndersLindgren|Anders Lindgren]].
+
+== Example ==
+
+[[image:LispExtraFontLockScreenshot]]
+
+== Getting the package ==
+
+The *Lisp Extra Font Lock* package is located on [https://github.com/Lindydancer/lisp-extra-font-lock Github].
