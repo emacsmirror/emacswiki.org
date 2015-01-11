@@ -1,8 +1,8 @@
 Packages at Melpa
 ----
-[2014-03-22] emacsshot.  Find a function for taking a screenshot of Emacs from within Emacs at https://github.com/marcowahl/emacsshot.
+emacsshot.  Find a function for taking a screenshot of Emacs from within Emacs at https://github.com/marcowahl/emacsshot.
 ----
-[2014-04-05] rope-read-mode.  A mode for genuine bidirectional reading of text by reversing every other line in the visible buffer part.  This mode depends on program 'convert' of the Image Magick-suite.  Get the latest version at https://github.com/marcowahl/rope-read-mode.
+rope-read-mode.  A mode for genuine bidirectional reading of text by reversing every other line in the visible buffer part.  This mode depends on program 'convert' of the Image Magick-suite.  Get the latest version at https://github.com/marcowahl/rope-read-mode.
 ----
 Comments and improvements welcome.
 ----
