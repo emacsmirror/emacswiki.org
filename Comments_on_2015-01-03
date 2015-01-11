@@ -358,3 +358,10 @@ Hum… I got an email 3 hours ago by a person that got an Internal Server Error 
 
 -- AlexSchroeder 2015-01-11 00:17 UTC
 
+
+----
+
+Problem fixed. Captcha should work again (instead of crashing).
+
+-- AlexSchroeder 2015-01-11 13:38 UTC
+
