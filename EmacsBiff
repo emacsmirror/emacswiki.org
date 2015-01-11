@@ -19,5 +19,40 @@ files, which is not always true. May not work on non-unix systems.
 	;; Add it to the modeline
 	(add-to-list 'global-mode-string '(:eval (ebiff)))
 
+Starting from this idea, another version which supports Maildir with
+multiple folders, and displays an envelope icon when running in graphic
+mode.
+
+	(make-face 'my-mail-face)
+	(set-face-attribute 'my-mail-face nil
+			    :inherit 'mode-line :foreground "black" :background "white")
+	
+	(defvar my-mail-icon
+	  (find-image '((:type xpm :file "letter.xpm" :ascent center)
+			(:type pbm :file "letter.pbm" :ascent center))))
+	
+	(defvar my-have-mail-p nil)
+	
+	(defun my-check-mail()
+	  (catch 'have-mail
+	    (dolist (folder 
+		     (cons "~/Maildir/new" (file-expand-wildcards "~/Maildir/.*/new")) 
+		     (throw 'have-mail nil))
+	      (if (not (or (string= folder "~/Maildir/.Trash/new")
+			   (= (length (directory-files folder nil "[^.].*" t)) 0)))
+		  (throw 'have-mail t)))))
+	
+	(defun my-check-mail-timer()
+	  (setq my-have-mail-p (my-check-mail))
+	  (if my-have-mail-p
+	      (run-at-time "5 sec" nil 'my-check-mail-timer)
+	    (run-at-time "60 sec" nil 'my-check-mail-timer)))
+	
+	(my-check-mail-timer)
+	
+	(add-to-list 'global-mode-string 
+		     '(:eval (propertize (if my-have-mail-p " ^| " "") 
+				   'face 'my-mail-face 'display my-mail-icon)))
+
 ----
 CategoryMailAddons
