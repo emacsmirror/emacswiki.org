@@ -130,7 +130,14 @@ There are also '''Icicles''' commands that let you match not only the name of th
 See [[Icicles - Search Commands, Overview]].
 
 
+== Imenus - Imenu for multiple buffers and files ==
 
+Another way to use imenu indexes for multiple buffers or files is
+[https://github.com/alezost/imenus.el imenus] package.  Along with the
+usual `*Rescan*' item it is possible to use a key binding (`M-r' by
+default) to rescan the current index.  Also with other additional key
+bindings (`M-s' and `M-o' by default) you can quickly "jump" from imenu
+prompt to `isearch' or `occur'.
 
 
 
