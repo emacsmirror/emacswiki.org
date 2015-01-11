@@ -1,4 +1,4 @@
-[http://melpa.milkbox.net/ MELPA] is an [[ELPA]]-compatible package repository built automatically on our server from the upstream source code using simple recipes. (Think of it as a server-side version of el-get, or even homebrew.)
+[http://melpa.org/ MELPA] is an [[ELPA]]-compatible package repository built automatically on our server from the upstream source code using simple recipes. (Think of it as a server-side version of el-get, or even homebrew.)
 
 Library authors do not need to upload new versions of their packages to MELPA, since they are built automatically. The MELPA maintainers plan to add support for automatic builds of stable version packages triggered by upstream version tags.
 
