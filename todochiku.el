@@ -321,8 +321,5 @@ This would be better done through a customization probably."
 ;; 	  '(after todochiku-on-message-advice)
 ;; 	  (todochiku-message "Emacs Message" (apply 'format args) "")))
 
-;; We basically provide the same thing as growl.el
-(provide 'growl)
-
 (provide 'todochiku)
 ;;; todochiku.el ends here
