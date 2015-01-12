@@ -1,0 +1,4 @@
+with "--with-x-toolkit=no " and the xmonad window manager, there is a bug with drawing of the window border on my setup. I did have success with passing  --without-toolkit-scroll-bars to the build, though.
+
+-- [http://www.aloni.org da-x] 2015-01-12 15:21 UTC
+
