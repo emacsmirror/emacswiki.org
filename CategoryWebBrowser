@@ -2,7 +2,7 @@
 
 == Browse the Web in Emacs ==
 
-* [[eww]] -- EmacsWebWowser.  The new (shr.el) based web browser in the upcomming Emacs release (24.4?).
+* [[eww]] -- EmacsWebWowser.  The new (shr.el) based web browser in the current Emacs release (24.4).
 * [[w3]] -- the complete web browser written in Emacs Lisp
 * EmacsWebBrowser -- a toy browser that piggybacks onto font-lock
 * [[EmacsXWidgets]] -- The xwidget branch of Emacs has webkit integration, so you can have a browser inside an Emacs window.
