@@ -272,6 +272,22 @@ Here is my calendar configuration. -- [[rubikitch]]
 	(holiday-fixed 12 26 "Stephanstag")))
 </pre>
 
+=== Russian ===
+<pre>
+(setq calendar-holidays
+      `(
+	;; State holidays
+	(holiday-fixed 1 1 "Новый год")
+	(holiday-fixed 2 23 "День защитника Отечества")
+	(holiday-fixed 3 8 "Международный женский день")
+	(holiday-fixed 5 1 "День труда")
+	(holiday-fixed 5 2 "День труда")
+	(holiday-fixed 5 9 "День Победы")
+	(holiday-fixed 6 12 "День России")
+	(holiday-fixed 10 4 "День Народного единства")
+      ))
+</pre>
+
 === Ukrainian ===
 Lisp:ukrainian-holidays.el
 
