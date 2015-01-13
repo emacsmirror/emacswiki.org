@@ -64,6 +64,28 @@ This is a possible identifying function for
 
 Comments to ChrisParsons.
 
+== BBDB v3 version ==
+[new:PhilHudson:2015-01-13 10:12 UTC]
+Here's my (PhilHudson) setting for `bbdb-address-format-list', which is the relevant user option in BBDB v3. It gives the same result as described above. I chose to make UK formatting the default; thus, the last element (with qualifying condition `t'), is the only thing different from the original out-of-the-box setting at time of writing (December 2014):
+
+<pre>
+((("Argentina")
+     "spcSC" "@%s\n@%p, @%c@, %S@\n%C@" "@%c@")
+    (("Australia")
+        "scSpC" "@%s\n@%c@ %S@ %p@\n%C@" "@%c@")
+    (("Austria" "Germany" "Spain" "Switzerland")
+        "spcSC" "@%s\n@%p @%c@ (%S)@\n%C@" "@%c@")
+    (("Canada")
+        "scSCp" "@%s\n@%c@, %S@\n%C@ %p@" "@%c@")
+    (("China")
+        "scpSC" "@%s\n@%c@\n%p@ %S@\n%C@" "@%c@")
+    (("India")
+        "scpSC" "@%s\n@%c@ %p@ (%S)@\n%C@" "@%c@")
+    (("USA")
+        "scSpC" "@%s\n@%c@, %S@ %p@\n%C@" "@%c@")
+    (t "scSpC" "@%s\n@%c\n@%S\n@%p\n@%C@" "@%s ,@%c, @%S ,@%p ,@%C@"))
+</pre>
+
 == Wiki Note ==
 
 Should this node be on <nowiki>BBDBAddressFormatUK</nowiki>? Just followed the existing convention.
