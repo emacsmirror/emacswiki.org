@@ -365,3 +365,10 @@ Problem fixed. Captcha should work again (instead of crashing).
 
 -- AlexSchroeder 2015-01-11 13:38 UTC
 
+
+----
+
+A strange thing is that a new visitor, without a cookie set, seems to get a French copy of the pages. I'm assuming that's because a French copy got cached and the cache doesn't keep separate copies of each URL based on language preferences?
+
+-- AlexSchroeder 2015-01-13 15:36 UTC
+
