@@ -1,0 +1,7 @@
+I use Emacs.
+
+In fact, I've used Emacs just as a text editor for many years now, without ever committing to all the other things it could do. Org-mode finally encouraged me to dig deeper, and now I nearly live inside Emacs -- Org, RMAIL, Eshell, Dired, EWW, ERC, SLIME, and Geiser. OK, I still do most of my web access from Firefox, but EWW is starting to take over routine browsing.
+
+My breathtaking contribution to Emacs was a two-line patch to Makefile.in, adding some Info docs that were being built but not installed. For this, I was graced with a byline in the AUTHORS file. Seems excessive to me, but that's none of my business. ;-)
+
+[[CategoryHomepage]]
