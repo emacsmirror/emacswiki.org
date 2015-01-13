@@ -379,3 +379,10 @@ Site loads in Spanish for me, it should be English. I haven't seen this happen b
 
 -- DerekWhite 2015-01-13 19:53 UTC
 
+
+----
+
+Does this continue after clicking the appropriate language link at the top of SiteMap? If it does, then more is borked. If that fixed it (maybe a Control Shift R to reload is required), then the caching proxy is at fault. Or at least the interaction between caching proxy and wiki. I need to read up on caches and language http headers.
+
+-- [http://alexschroeder.ch/alex/Emacs AlexSchroeder] 2015-01-13 21:22 UTC
+
