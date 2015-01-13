@@ -1,0 +1,7 @@
+== Overview ==
+
+If you've ever used the [[Conkeror]] web browser, you know about the "Follow" command which gives hyperlinks a numeric prefix for easy access from the keyboard. [[eww-lnum]] provides the same feature for [[eww]], Emacs' new built-in browser (as of 24.4). [[eww-lnum]] is available through [[MELPA]] or from its Github page:
+
+* https://github.com/m00natic/eww-lnum
+
+[[CategoryEww]]
