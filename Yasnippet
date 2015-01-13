@@ -15,45 +15,7 @@ Hosted at http://github.com/capitaomorte/yasnippet
 
 == Installation instructions ==
 
-=== Package ===
-
-You have [[Marmalade]] or [[MELPA]] setup?
-
-{{{
-M-x package-install [RET] yasnippet [RET]
-}}}
-
-=== Install by hand ===
-
-To install the normal archive, download and unpack the latest <code>yasnippet-*.tar.bz2</code>. to a suitable directory like <code>~/.emacs.d/packages/</code> and add the following in your <code>~/.emacs</code> InitFile:
-
-{{{
-    (add-to-list 'load-path "~/.emacs.d/packages/yasnippet-x.y.z")
-    (require 'yasnippet) ;; not yasnippet-bundle
-    (yas-global-mode 1)
-}}}
-
-=== With yasnippet-bundle.el ===
-
-To quickly tryout Yasnippet, download the a simpler "bundle" version.
-If you plan to modify the existing templates or make your own, you should
-download the "normal" package.
-
-1. Download <code>yasnippet-bundle-*.el tar gz</code> and unpack it.
-
-2. You'll get a file named <code>yasnippet-bundle.el</code>, put it in <code>~/.emacs.d/packages/</code> (create that directory if not exists).
-
-3. Open the file in Emacs, and type <code>Alt+x eval-buffer</code>.
-
-That's it. Now, open any file, you'll see a menu "YASnippet".  You can
-pull the menu to insert a template. Or, you can type a pre-defined
-abbrev and press TAB to expand it! To have Emacs load YASnippet automatically 
-when it starts, put the following in your <code>~/.emacs</code> file:
-
-{{{
-(add-to-list 'load-path "~/.emacs.d/packages")
-(require 'yasnippet-bundle)
-}}}
+See http://github.com/capitaomorte/yasnippet for installation instructions.
 
 == User contributed templates ==
 
@@ -61,7 +23,6 @@ See [http://www.emacswiki.org/emacs-en/AndyStewart_YasnippetTemplate few  templa
 -- AndyStewart
 
 See http://coderepos.org/share/browser/config/yasnippet for another repository.
-
 
 Here are some templates for the JSP Standard Tag Library: http://github.com/eentzel/yasnippet-jstl/
 [new]
@@ -167,21 +128,12 @@ and map yas-ido-expand with a chord, e.g.:
 
 enjoy ;)
 
+[[rubikitch]] has some additional yasnippet-related functions in  Lisp:yasnippet-config.el
 == Discussion ==
 
 [new]
-YASnippet has recently entered version 0.6.x. For this version many of the tweaks in Lisp:yasnippet-config.el are probably invalid or unnecessary. See the [http://yasnippet.googlecode.com/svn/trunk/doc/changelog.html changelog]
--- JoaoTavora
+I created a new method of importing TextMate templates entirely in Emacs Lisp.  Perhaps later it might be integrated into yasnippet itself.  Here is the code Lisp: [[textmate-to-yas.el]]  -- MatthewFidler
 
-[new]
-This version of Lisp:yasnippet-config.el works fine with 0.6.x. -- [[rubikitch]]
-
-[new]
-I created a new method of importing TexMate templates entirely in emacs lisp.  Perhaps later it might be integrated into yasnippet itself.  Here is the code Lisp: [[textmate-to-yas.el]]  -- MatthewFidler
-
-[new]
-
-I have changed the startup mechanism so it doesn't load every single snippet upon startup.  Only loaded on demand. [[yas-jit.el]] (This file is for the 0.6.0 loading of yansippets OR for reference. After informing the yasnippet developer of the slow load times, he decided to implement his own JIT loading mechanism. For 0.7.0 series, this is now unnecessary.)
-
+(old discussions removed to reduce confusion about yasnippet versions)
 ----
 CategoryTemplates
