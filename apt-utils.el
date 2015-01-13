@@ -1,9 +1,9 @@
 ;;; apt-utils.el --- Emacs interface to APT (Debian package management)
 
-;;; Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007 Matthew P. Hodges
+;;; Copyright (C) 2002-2010 Matthew P. Hodges
 
 ;; Author: Matthew P. Hodges <MPHodges@member.fsf.org>
-;;	$Id: apt-utils.el,v 1.212 2007-10-06 07:55:08 mphodges-guest Exp $
+;;	$Id: apt-utils.el,v 1.220 2010-06-23 07:43:04 mphodges-guest Exp $
 
 ;; apt-utils.el is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -36,20 +36,13 @@
 
 ;;; Code:
 
-(defconst apt-utils-version "2.10.0"
+(defconst apt-utils-version "2.12.0"
   "Version number of this package.")
 
 (require 'browse-url)
 (require 'jka-compr)
 
-(cond
- ((fboundp 'puthash)
-  (defalias 'apt-utils-puthash 'puthash))
- ((and (require 'cl)
-       (fboundp 'cl-puthash))
-  (defalias 'apt-utils-puthash 'cl-puthash))
- (t
-  (error "No puthash function known")))
+(defalias 'apt-utils-puthash 'puthash)
 
 ;; Customizable variables
 
@@ -403,6 +396,7 @@ buffer."
         (apply 'call-process apt-utils-apt-cache-program nil '(t nil) nil
                "search" "--"
                (split-string package apt-utils-search-split-regexp))
+        (apt-utils-sort-result)
         (apt-utils-add-search-links 'search))
        ;; Search for names only
        ((equal type 'search-names-only)
@@ -410,12 +404,14 @@ buffer."
         (apply 'call-process apt-utils-apt-cache-program nil '(t nil) nil
                "search" "--names-only" "--"
                (split-string package apt-utils-search-split-regexp))
+        (apt-utils-sort-result)
         (apt-utils-add-search-links 'search-names-only))
        ;; Search for file names
        ((equal type 'search-file-names)
         (insert (format "Debian package search (file names) for %s\n\n" package))
         (apply 'call-process apt-utils-dpkg-program nil t nil
                "-S" (list package))
+        (apt-utils-sort-result)
         (apt-utils-add-search-links 'search-file-names))
        ;; grep-dctrl search
        ((equal type 'search-grep-dctrl)
@@ -423,10 +419,13 @@ buffer."
                         (concat (format "\"%s\" " (car package))
                                 (mapconcat 'identity (cdr package) " "))))
         (apply 'call-process apt-utils-grep-dctrl-program nil t nil package)
-        (apt-utils-add-package-links)))
+        (apt-utils-sort-result)
+        ;; Don't check installed status; may take forever
+        (let ((apt-utils-display-installed-status nil))
+          (apt-utils-add-package-links))))
       (if apt-utils-use-current-window
           (switch-to-buffer (current-buffer))
-	(select-window (display-buffer (current-buffer))))
+        (select-window (display-buffer (current-buffer))))
       ;; Point only needs setting for new sessions or when choosing
       ;; new packages with apt-utils-follow-link or
       ;; apt-utils-choose-package-link.
@@ -498,7 +497,7 @@ otherwise nil."
                                     elt
                                   nil))
                               files))))))
-    files)))
+      files)))
 
 (defun apt-utils-current-package-installed-p ()
   "Return non-nil if the current-package is installed."
@@ -582,9 +581,7 @@ search is specified by PROMPT."
             (clrhash apt-utils-current-links)))
       (goto-char (point-min))
       ;; Sort results
-      (save-excursion
-        (forward-line 2)
-        (sort-lines nil (point) (point-max)))
+      (apt-utils-sort-result)
       (set-buffer-modified-p nil)
       (setq buffer-read-only t)
       (display-buffer (current-buffer)))))
@@ -621,7 +618,7 @@ search is specified by PROMPT."
       (setq args (append (list regexp fields show) apt-utils-grep-dctrl-args
                          (or apt-utils-grep-dctrl-file-list
                              (directory-files apt-utils-grep-dctrl-file-directory
-                                              t "_Packages"))))
+                                              t "_Packages$"))))
       (insert (format "grep-dctrl search for %s\n\n"
                       (mapconcat
                        (lambda (elt)
@@ -660,13 +657,13 @@ Use PROMPT for `completing-read'."
                         "url"))
         fields)
     (while (> (length chosen) 0)
-        (setq chosen
-              (completing-read prompt
-                               (mapcar (lambda (elt)
-                                         (list elt elt))
-                                       keywords)
-                               nil
-                               t))
+      (setq chosen
+            (completing-read prompt
+                             (mapcar (lambda (elt)
+                                       (list elt elt))
+                                     keywords)
+                             nil
+                             t))
       (setq keywords (delete chosen keywords))
       (if (stringp fields)
           (progn
@@ -1075,12 +1072,10 @@ a choice."
 Directory is DIR, prefix is one of PREFIXES and suffix is one of
 SUFFIXES."
   (catch 'found
-    (mapcar (lambda (prefix)
-              (mapcar (lambda (suffix)
-                        (when (file-readable-p (concat dir prefix suffix))
-                          (throw 'found (concat dir prefix suffix))))
-                      suffixes))
-            prefixes)
+    (dolist (prefix prefixes)
+      (dolist (suffix suffixes)
+        (when (file-readable-p (concat dir prefix suffix))
+          (throw 'found (concat dir prefix suffix)))))
     nil))                               ; Return nil, if no file found
 
 (defun apt-utils-view-file (file)
@@ -1342,16 +1337,16 @@ indicated in `mode-name'."
                           pred))
         ((eq all 'lambda)
          (if (fboundp 'test-completion)
-	     ;; `test-completion' is new in emacs22, and it takes
-	     ;; hashtables, so don't really need to test
-	     ;; apt-utils-completing-read-hashtable-p
+             ;; `test-completion' is new in emacs22, and it takes
+             ;; hashtables, so don't really need to test
+             ;; apt-utils-completing-read-hashtable-p
              (test-completion str (if apt-utils-completing-read-hashtable-p
                                       apt-utils-package-list
                                     (apt-utils-build-completion-table
                                      apt-utils-package-list))
                               pred)
            (and (gethash str apt-utils-package-list)
-		t)))))
+                t)))))
 
 (defun apt-utils-build-completion-table (hash)
   "Build completion table for packages using keys of hashtable HASH."
@@ -1549,26 +1544,26 @@ The type of search is specified by TYPE."
         (if (eq (char-before) ?\:)
             (progn
               (when local-keymap
-		(let ((start (1+ (point)))
-		      (end (save-excursion
-			     (goto-char (apt-utils-line-end-position))
-			     (re-search-backward " (diversion \\(from\\|to\\))"
-						 (apt-utils-line-beginning-position)
-						 t)
-			     (point))))
-		  (add-text-properties start end
-				       `(face apt-utils-file-face
-					      keymap ,local-keymap
-					      ;; Pretend we're a package
-					      ;; so that we can move
-					      ;; here with
-					      ;; apt-utils-next-package
-					      apt-package dummy
-					      apt-package-file
-					      ,(buffer-substring-no-properties start end)
-					      ))))
-	      (goto-char (1+ (apt-utils-line-end-position))))
-	  (skip-chars-forward ", "))))))
+                (let ((start (1+ (point)))
+                      (end (save-excursion
+                             (goto-char (apt-utils-line-end-position))
+                             (re-search-backward " (diversion \\(from\\|to\\))"
+                                                 (apt-utils-line-beginning-position)
+                                                 t)
+                             (point))))
+                  (add-text-properties start end
+                                       `(face apt-utils-file-face
+                                              keymap ,local-keymap
+                                              ;; Pretend we're a package
+                                              ;; so that we can move
+                                              ;; here with
+                                              ;; apt-utils-next-package
+                                              apt-package dummy
+                                              apt-package-file
+                                              ,(buffer-substring-no-properties start end)
+                                              ))))
+              (goto-char (1+ (apt-utils-line-end-position))))
+          (skip-chars-forward ", "))))))
 
 (defun apt-utils-package-type (package &optional no-error)
   "Return what type of package PACKAGE is.
@@ -2033,7 +2028,7 @@ Files associated with installed packages can be accessed using:
     \\[apt-utils-view-changelog] view ChangeLog file
     \\[apt-utils-view-debian-changelog] view Debian ChangeLog file
     \\[apt-utils-view-readme] view README file
-    \\[apt-utils-view-debian-readme] view Debian ChangeLog file
+    \\[apt-utils-view-debian-readme] view Debian README file
     \\[apt-utils-view-news] view NEWS file
     \\[apt-utils-view-debian-news] view Debian NEWS file
     \\[apt-utils-view-copyright] view copyright (licence) file
@@ -2079,6 +2074,12 @@ Key definitions:
                             (not (memq (car-safe (symbol-function sym))
                                        '(autoload macro)))
                             (trace-function-background sym buffer))))))
+
+(defun apt-utils-sort-result ()
+  (save-excursion
+    (goto-char (point-min))
+    (forward-line 2)
+    (sort-lines nil (point) (point-max))))
 
 (provide 'apt-utils)
 
