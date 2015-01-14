@@ -15,10 +15,18 @@ On Emacs 22.2.1, I get "Buffer is read-only error" when I press return. - bvk-ch
 Do you have some hook or minor-mode that overrides 'return' for all modes? - ScottFrazer
 
 [new]
-I ran into the "Buffer is read-only error" also, on Emacs 24.1.1, but only when launching Emacs in the terminal (emacs-nox), not in an X-window.  The difference must be in how the terminal passes input events to emacs.  It turns out that the RETURN key was not recognized in etags-select's mode-map.  It's the same "error" you would receive by pressing a non-mapped key such as "z" in the etags-select window.  I fixed it by changing the following:
+I ran into the "Buffer is read-only error" also, on Emacs 24.1.1, but only when launching Emacs in the terminal (emacs-nox), not in an X-window.  The difference must be in how the terminal passes input events to emacs.  It turns out that the RETURN key was not recognized in etags-select's mode-map.  It's the same "error" you would receive by pressing a non-mapped key such as "z" in the etags-select window.  I addressed it by changing the following:
 <code>
 (define-key map (kbd "RET") 'etags-select-goto-tag)
 (define-key map (kbd "M-RET") 'etags-select-goto-tag-other-window)
+</code>
+-DanHarms
+
+[new]
+I also added a means to scroll the etags window by space and del, as we're used to in other non-editable windows.  
+<code>
+(define-key map (kbd "SPC") 'scroll-up-command)
+(define-key map (kbd "DEL") 'scroll-down-command)
 </code>
 -DanHarms
 
@@ -32,12 +40,26 @@ To find tags in a included tags file, such as TAGS-LISP for Emacs Lisp, re-defin
       (tags-table-check-computed-list)
       tags-table-computed-list))
 [new]
-I was running into an error "wrong-type-argument stringp t" only the first time per session that I followed a tag.  It turned out to originate from tags-table-computed-list having an element that was t, not a proper filename.  Apparently t is used as an initial placeholder for unloaded tables (I use an externally-referenced TAGS table.)  See the documentation for tags-table-extend-computed-list for more details.  So I added the following line to the extended version of etags-select-get-tag-files above:
+I was running into an error "wrong-type-argument stringp t" only the first time per session that I followed a tag.  It turned out to originate from tags-table-computed-list having an element that was t, not a proper filename.  I use a TAGS file that links to external tags files; for every such link, you will receive the above error the first time you look up a tag after loading the main tags file.  The value t is used as an initial placeholder for unloaded tables (see the documentation for tags-table-extend-computed-list for more details).  So I changed the end of etags-select-get-tag-files as follows:  replace
 <code>
-...
 (tags-table-check-computed-list)
-(tags-table-extend-computed-list)
 tags-table-computed-list))
+</code>
+with
+<code>
+(etags-select-remove-placeholders)
+tags-table-computed-list))
+</code>
+where the referenced defun is:
+<code>
+(defun etags-select-remove-placeholders() "Remove placeholder entries from tags-table-computed-list"
+ (let ((list tags-table-computed-list))
+  (while list
+   (if (eq (car list) t)
+       (progn
+        (tags-table-extend-computed-list)
+        (setq list tags-table-computed-list))
+      (setq list (cdr list))))))
 </code>
 -DanHarms
 
@@ -52,6 +74,14 @@ different #define condition). So a *preview* window besides select
 window will be helpful.
 ||||source||
 ||select||preview||  
+
+[new]
+I also preferred the etags window to shrink if it only had a few entries, leaving more of the original source code buffer visible.  Right before the end of etags-select-find, add the following:
+<code>
+(shrink-window-if-larger-than-buffer)
+(etags-select-mode tagname)))))
+</code>
+-DanHarms
 
 == Finding TAGS Files ==
 [new]
