@@ -56,5 +56,9 @@ AlexandrosPrekates
 
 I use EmacsSession, because it doesn't reload all the files and doesn't require a lot of customization like DeskTop does. -- AlexSchroeder
 
+[new]
+
+I'm wondering: what would it take to have Emacs checkpoint all of its state entirely to disk (dumping the process and its memory)?  Would the architecture allow for this on certain platforms?  I wonder in particular because of the way in which Emacs can build itself by dumping core.  I'm wondering about the potential for a high-fidelity suspend and resume.
+
 ----
 CategoryPersistence
