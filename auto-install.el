@@ -1,5 +1,5 @@
 ;;; auto-install.el --- Auto install elisp file
-;; $Id: auto-install.el,v 1.57 2015/01/04 21:58:24 rubikitch Exp $
+;; $Id: auto-install.el,v 1.58 2015/01/14 08:24:23 rubikitch Exp $
 
 ;; Filename: auto-install.el
 ;; Description: Auto install elisp file
@@ -9,7 +9,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.57 $
+;; Version: $Revision: 1.58 $
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -24,7 +24,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.57 2015/01/04 21:58:24 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.58 2015/01/14 08:24:23 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -296,6 +296,9 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.58  2015/01/14 08:24:23  rubikitch
+;; Change auto-install-batch-list-el-url
+;;
 ;; Revision 1.57  2015/01/04 21:58:24  rubikitch
 ;; Don't use wget by default because of problem.
 ;;
@@ -741,7 +744,7 @@ Use M-x `auto-install-batch-edit'. "
   "The real value of `auto-install-batch-list'. ")
 
 (defvar auto-install-batch-list-el-url
-  "http://www.rubyist.net/~rubikitch/archive/auto-install-batch-list.el"
+  "http://rubikitch.com/f/auto-install-batch-list.el"
   "The url of auto-install-batch-list.el.
 It is downloaded and evaluated just after M-x `auto-install-batch'. ")
 
