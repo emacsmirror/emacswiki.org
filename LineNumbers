@@ -99,29 +99,19 @@ If you cant to just align line numbers to the right as well as have a little pad
 
 == Linum: Separating line numbers from text ==
 
-I, personally, wanted a one-space separation between the line number display and the buffer contents. Couldn't find a way through the customisation settings. Perhaps it can only be done in Emacs in X, but I don't use X-based. I've found a simple way to do it, however:
+Putting the following in your .emacs will put one space separation between the linenumber display and the buffer contents:
 
-: On line 157 (in version "0.9wza") of <code>linum.el</code>, change 
-
-<code>(setq width (max width (length str)))</code> 
-
-: to 
-
-<code>(setq width (max width (+ (length str) 1)))</code>
-
-<b>Example screenshot:</b>
-
-[[image:LinumGap]]
-
--- ChrisDone
-
-Putting the following in your .emacs yields almost the same result without modification of linum.el:
-
+<pre>
 (setq linum-format "%d ")
+</pre>
 
 If you want a solid line separator, try something like this:
 
+<pre>
 (setq linum-format "%4d \u2502 ")
+</pre>
+
+-- ChrisDone
 
 [new]
 : I like how "%d " uses only as much space as is needed for what is shown in the buffer. For example, if the largest visible line number is 50, it only uses two characters for the numbers (plus one for the space), even if there are 1000 lines in the file.  But I don't like how it left aligns the numbers. Is there a way to get this behavior with right alignment? dynamic right aligns, but it wastes space. -- [[AaronMeurer]]
