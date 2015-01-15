@@ -199,6 +199,10 @@ Besides enhancing Isearch completion (see [[#MoreIsearchKeys]], above), '''[[Ici
    (setq isearch-message (concat isearch-message "[ " (car search-ring) " ] "))
    (isearch-search-and-update)))
 
+[:TAB completion in ISearch ]
+== Use TAB to trigger dabbrev-like completion ==
+
+Here's a script which does the trick: [https://github.com/Dewdrops/isearch-dabbrev isearch-dabbrev]
 
 
 [:SeeAlso]
@@ -234,4 +238,3 @@ Here's how:
 ----
 SearchAndReplace
 CategoryRegexp
-
