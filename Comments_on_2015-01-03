@@ -447,3 +447,12 @@ I purge cookies frequently -- sometimes several times a day -- but this occurs o
 
 -- EdwardTrumbo 2015-01-15 18:15 UTC
 
+
+----
+
+Well, all I know is that Nic and I proposed the following: any user having a cookie will bypass the cache and get service from Apache and the wiki directly. Anybody else – readers that never edit a page, bots and spiders – will just get the cached pages. At the same time, your theme is and always has been stored in a cookie. So that's already two reasons why you're not seeing a theme: you have no cookie set, so you're getting a cached page, and even you got through to the wiki, you have no theme set because that would have been stored in the cookie. Once you visit an URL with extra parameters such as ##?bootstrap=0;theme=typo;css=## these settings will get stored in a cookie. From then on, you're both bypassing the cache and you've got a theme set in your cookie.
+
+Does that seem plausible? If so, then there doesn't seem to be anything I can do for you directly. It is what it is. You coud, however, bookmark a page such as ##http://www.emacswiki.org/emacs/?action=rc;showedit=1;bootstrap=0;theme=typo## and that would set your cookie whenever you visited Emacs Wiki. What do you think?
+
+-- AlexSchroeder 2015-01-15 22:04 UTC
+
