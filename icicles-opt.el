@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Thu Jan  1 10:56:20 2015 (-0800)
+;; Last-Updated: Wed Jan 14 21:42:00 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 6095
+;;     Update #: 6096
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1723,9 +1723,9 @@ This applies only to Icicles minibuffer completion during command
 on.  That mode is defined in Emacs library `completion.el'.
 
 If nil then Icicles completion for `icicle-complete' includes only
-completions from the completions database.  If nil then it includes
-also completions found dynamically from the currently available
-windows.  These candidates are highlighted using face
+completions from the completions database.  If non-nil then it
+includes also completions found dynamically from the currently
+available windows.  These candidates are highlighted using face
 `icicle-special-candidate' so you can distinguish them.
 
 This is the so-called `CDABBREV' completion method defined in
