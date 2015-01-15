@@ -431,3 +431,10 @@ Let me know what you're finding! :)
 
 -- AlexSchroeder 2015-01-15 16:08 UTC
 
+
+----
+
+I'm starting to think that perhaps the wiki should return [http://is.gd/kBbBZ0 a good value for the Vary HTTP header]. I should list ##Accept-Language##, perhaps? We would have to do some normalization, however. What a bummer. My own, hand-crafted header is ##de-CH,de;q=0.8,en-US;q=0.6,en;q=0.4,fr-CH;q=0.2,fr;q=0.2## but I guess I'm weird like that. If we /know/ that this will get parsed as ##de## for the purposes of Emacs Wiki, then that's what my header should normalize to...
+
+-- AlexSchroeder 2015-01-15 16:16 UTC
+
