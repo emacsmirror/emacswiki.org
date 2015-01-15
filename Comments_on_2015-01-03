@@ -400,3 +400,34 @@ I'm getting an odd thing since the server move: my theme setting isn't honored o
 
 -- EdwardTrumbo 2015-01-15 11:58 UTC
 
+
+----
+
+Hm. This stuff is stored in your cookie, and Nic said that the caching proxy would pass you through if you had a cookie.
+What you could do is this:
+# start a new browser session
+# visit the site
+# you are seeing the bootstrap theme instead of your own theme
+# look at the page info / security info and look at the cookie you're sending. It should say something like boostrap, 0, theme, typo separated by %251e or something like that -- if it lists no cookie, that's a problem; if it lists two cookies, then maybe that's the problem: delete all but one
+# look at the page headers you received -- in this browser it goes via /examine this element/ -> /network/ -> reload page and find the right resource, click on it, /view source/ ... that should give you something like this:
+
+{{{
+HTTP/1.1 200 OK
+Server: nginx/1.4.6 (Ubuntu)
+Date: Thu, 15 Jan 2015 16:05:57 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Content-Location: emacs.pl
+Vary: negotiate
+TCN: choice
+X-EmacsWiki-Source: Apache/CGI
+X-Proxy-Cache: BYPASS
+}}}
+
+If you are sending a cookie and the X-Proxy-Cache header still says you're getting a hit, then that's a problem.
+
+Let me know what you're finding! :)
+
+-- AlexSchroeder 2015-01-15 16:08 UTC
+
