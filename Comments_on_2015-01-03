@@ -393,3 +393,10 @@ We're back pushing page edits to the [https://github.com/emacsmirror/emacswiki.o
 
 -- AlexSchroeder 2015-01-15 08:29 UTC
 
+
+----
+
+I'm getting an odd thing since the server move: my theme setting isn't honored on links within the site, until I manually copy the "/?bootstrap=0;theme=typo;css=" into the URI once. From then on, I get the classic theme on all pages as I want, for the rest of the browser session. If I log out of my user account or reboot, I have to paste the theme setting again. Using Firefox 34.0.5 on Linux.
+
+-- EdwardTrumbo 2015-01-15 11:58 UTC
+
