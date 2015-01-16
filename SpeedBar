@@ -160,3 +160,6 @@ CategoryNavigation
 Integrate speedbar with projectile http://www.emacswiki.org/emacs/projectile-speedbar.el
 
 -AnshulVerma
+----
+: ''Question: Speedbar is only listing about half the methods in my .java file and I'm not sure why.  Where should I start looking to try to solve this problem?  Is there a customization option I need to turn on?  Very new to emacs so sorry if I'm missing something obvious.'' -rkm
+
