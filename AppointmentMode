@@ -1,5 +1,5 @@
 [[ja:アポイントメントモード]]
-DiaryMode is good for keeping daily tasks (things like anniversaries and such).  With the addition of appt.el it can also be useful for time specific appointments.  Here's the setup I have:
+DiaryMode is good for keeping daily tasks (things like anniversaries and such).  With the addition of appt.el it can also be useful for time specific appointments. A setup for XEmacs:
 
 <pre>
 (if (not (featurep 'appt))(require 'appt))
@@ -19,21 +19,20 @@ DiaryMode is good for keeping daily tasks (things like anniversaries and such). 
 (add-hook 'find-file-hooks 'add-diary-save-hook)
 </pre>
 
-The appt-initialize function is what does all the dirty work.  It
+For CvsEmacs, at least, the following seems to work fine. You don't need the require call from above (because the library gets auto-loaded). You may wish to customise the library, of course.
+
+<pre>
+(defun rjs/diary-save-hook ()
+  (when (string-match "diary" (buffer-file-name))
+    (appt-activate 1)))
+(add-hook 'after-save-hook 'rjs/diary-save-hook)
+</pre>
+
+The appt-initialize (on XEmacs) or appt-activate (on Gnu Emacs) function is what does all the dirty work.  It
 actually scans the diary-file for appointments and adds them to the
 list of reminders.  If you add an appointment to your diary and don't
-run appt-initialize, you won't be reminded.  That's why I set the
-after-save-hook for the diary buffer to call appt-initialize.  Because
-after-save-hook is always buffer local, you have to set it after the
-buffer is created.  That's why I had to add another hook to
-find-file-hooks.
-
-Check the variable docs (C-h v) on each of the variables to see what
-they do.  The docs are self-explanatory.
-
-Enjoy!  Update with suggestions and improvements.
-
--- DougAlcorn 15 Aug 2002
+run appt-initialize / appt-activate, you won't be reminded. That's why you want to set the
+after-save-hook for the diary buffer to call appt-initialize. On XEmacs, it seems that after-save-hook is always buffer local. This doesn't seem to be true for Gnu Emacs, so the code can be rather simpler.
 
 ----
 
