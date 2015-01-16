@@ -456,3 +456,10 @@ Does that seem plausible? If so, then there doesn't seem to be anything I can do
 
 -- AlexSchroeder 2015-01-15 22:04 UTC
 
+
+----
+
+I've changed the wiki to add a ##Vary: Accept-Language## header. Let's see whether that helps. My guess is that it only helps if you don't have a cookie set. Instead of getting a random language, you should get the language your browser prefers (and our caching proxy will end up caching all the pages in all the languages...).
+
+-- AlexSchroeder 2015-01-16 13:23 UTC
+
