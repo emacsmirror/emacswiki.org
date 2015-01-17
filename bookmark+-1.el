@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jan  4 15:24:30 2015 (-0800)
+;; Last-Updated: Sat Jan 17 11:14:17 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7521
+;;     Update #: 7526
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2011,7 +2011,7 @@ Lines beginning with `#' are ignored."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Added `interactive' spec.
+;; Make it a command (added `interactive' spec).
 ;;
 ;;;###autoload (autoload 'bookmark-edit-annotation "bookmark+")
 (defun bookmark-edit-annotation (bookmark)
@@ -3204,19 +3204,24 @@ bookmark files that were created using the bookmark functions."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Handle external annotations (jump to their destinations).
-;; 2. Added optional arg MSG-P.  Show message if no annotation.
-;; 3. Name buffer after the bookmark.
-;; 4. MSG-P means message if no annotation.
-;; 5. Fit frame to buffer if `one-windowp'.
-;; 8. Restore frame selection.
+;; 1. Make it a command (added `interactive' spec).
+;; 2. Handle external annotations (jump to their destinations).
+;; 3. Added optional arg MSG-P.  Show message if no annotation.
+;; 4. Name buffer after the bookmark.
+;; 5. MSG-P means message if no annotation.
+;; 6. Fit frame to buffer if `one-windowp'.
+;; 7. Restore frame selection.
 ;;
+;;;###autoload (autoload 'bookmark-show-annotation "bookmark+")
 (defun bookmark-show-annotation (bookmark &optional msg-p)
   "Show the annotation for BOOKMARK, or follow it if external.
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'.
 If the annotation is external then jump to its destination.
 If no annotation and MSG-P is non-nil, show a no-annotation message."
+  (interactive (list (bookmark-completing-read "Show annotation of bookmark"
+                                               (bmkp-default-bookmark-name)
+                                               (bmkp-annotated-alist-only))))
   (let* ((bmk       (bookmark-get-bookmark bookmark 'NOERROR))
          (bmk-name  (bmkp-bookmark-name-from-record bmk))
          (ann       (and bmk  (bookmark-get-annotation bmk)))
@@ -3242,15 +3247,18 @@ If no annotation and MSG-P is non-nil, show a no-annotation message."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Use name `*Bookmark Annotations*', not `*Bookmark Annotation*'.
-;; 2. Don't list bookmarks that have no annotation.
-;; 3. Highlight bookmark names.  Don't indent annotations.  Add a blank line after each annotation.
-;; 4. Use `view-mode'.  `q' uses `quit-window'.
-;; 5. Fit frame to buffer if `one-windowp'.
-;; 6. Restore frame selection.
+;; 1. Make it a command (added `interactive' spec).
+;; 2. Use name `*Bookmark Annotations*', not `*Bookmark Annotation*'.
+;; 3. Don't list bookmarks that have no annotation.
+;; 4. Highlight bookmark names.  Don't indent annotations.  Add a blank line after each annotation.
+;; 5. Use `view-mode'.  `q' uses `quit-window'.
+;; 6. Fit frame to buffer if `one-windowp'.
+;; 7. Restore frame selection.
 ;;
+;;;###autoload (autoload 'bookmark-show-all-annotations "bookmark+")
 (defun bookmark-show-all-annotations ()
   "Display the annotations for all bookmarks."
+  (interactive)
   (let ((oframe  (selected-frame)))
     (save-selected-window
       (pop-to-buffer (get-buffer-create "*Bookmark Annotations*"))
