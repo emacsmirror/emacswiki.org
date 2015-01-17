@@ -1,7 +1,27 @@
-A simple minor mode to display output similar to that of the standard Unix <code>wc</code> command in the mode line: character count, word count, and line count. If there's an active region, it displays <code>wc</code> output for the region instead.
+A simple minor mode to display output similar to that of the standard Unix <code>wc</code> command in the mode line: character count, word count, and line count. If there's an active region, it displays that information for the region instead.
 
 * wc-mode package download: http://www.dr-qubit.org/download.php?file=emacs-misc/wc-mode.el
 * Web-site: http://www.dr-qubit.org/emacs.php#misc
+
+All this small "one-liner" package does is set the `mode-line-position' variable appropriately:
+
+    (setq mode-line-position
+      (append
+       mode-line-position
+       '((wc-mode
+	  (6 (:eval (if (use-region-p)
+			(format " %d,%d,%d"
+				(abs (- (point) (mark)))
+				(count-words-region (point) (mark))
+				(abs (- (line-number-at-pos (point))
+					(line-number-at-pos (mark)))))
+		      (format " %d,%d,%d"
+			      (point-max)
+			      (count-words-region (point-min) (point-max))
+			      (line-number-at-pos (point-max))))))
+	  nil))))
+
+and then define a trivial minor-mode to make it toggleable.
 
 Please send bug reports and suggestions to [mailto:toby-wc-mode@dr-qubit.org toby-wc-mode@dr-qubit.org] (you can post them here as well if you like, of course). I don't check this page regularly, so anything not emailed to me is likely to languish here unnoticed for some time.
 
