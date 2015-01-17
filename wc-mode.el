@@ -1,10 +1,11 @@
+
 ;;; wc-mode.el --- show wc-like information in status bar
 
 
-;; Copyright (C) 2011-2012 Toby Cubitt
+;; Copyright (C) 2011-2015 Toby Cubitt
 
-;; Author: Toby Cubitt <toby-predictive@dr-qubit.org>
-;; Version: 0.1
+;; Author: Toby Cubitt <toby-wc-mode@dr-qubit.org>
+;; Version: 0.2
 ;; Keywords: length, characters, words, lines, mode line
 ;; URL: http://www.dr-qubit.org/emacs.php
 
