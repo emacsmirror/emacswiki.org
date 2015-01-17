@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jan 17 11:47:22 2015 (-0800)
+;; Last-Updated: Sat Jan 17 11:59:10 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7528
+;;     Update #: 7534
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2012,19 +2012,27 @@ Lines beginning with `#' are ignored."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Make it a command (added `interactive' spec).
+;; Make it a command (added `interactive' spec).  Prefix arg means add or edit (choose any bookmark).
 ;;
 ;;;###autoload (autoload 'bookmark-edit-annotation "bookmark+")
 (defun bookmark-edit-annotation (bookmark)
   "Pop up a buffer for editing bookmark BOOKMARK's annotation.
-BOOKMARK is a bookmark name or a bookmark record."
-  (interactive (list (bookmark-completing-read "Edit annotation of bookmark"
-                                               (bmkp-default-bookmark-name)
-                                               (bmkp-annotated-alist-only))))
+Interactively, you are prompted for the bookmark name.  With a prefix
+arg, you can choose any bookmark.  Otherwise, only annotated bookmarks
+are candidates.
+
+Non-interactively, BOOKMARK is a bookmark name or a bookmark record."
+  (interactive
+   (let ((alist  (and (not current-prefix-arg)  (bmkp-annotated-alist-only))))
+     (list (bookmark-completing-read (format "%s annotation for bookmark"
+                                             (if current-prefix-arg "Add or edit" "Edit"))
+                                     (bmkp-default-bookmark-name alist)
+                                     alist))))
   (pop-to-buffer (generate-new-buffer-name "*Bookmark Annotation Compose*"))
   (bookmark-insert-annotation bookmark)
   (bookmark-edit-annotation-mode)
   (set (make-local-variable 'bookmark-annotation-name) bookmark))
+
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
