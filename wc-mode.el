@@ -1,4 +1,3 @@
-
 ;;; wc-mode.el --- show wc-like information in status bar
 
 
