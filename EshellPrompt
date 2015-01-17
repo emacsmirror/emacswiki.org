@@ -104,7 +104,7 @@ The above `shortened-path' function replaces hidden directories with a single do
 
 <pre>
 (defun fish-path (path max-len)
-  "Return a potentially trimmed-down version of a Unix-style PATH, replacing
+  "Return a potentially trimmed-down version of a directory PATH, replacing
 parent directories with their initial characters to try to get the character
 length of PATH (sans directory slashes) down to MAX-LEN."
   (let* ((components (split-string (abbreviate-file-name path) "/"))
