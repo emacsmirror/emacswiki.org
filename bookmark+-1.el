@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jan 17 11:59:10 2015 (-0800)
+;; Last-Updated: Sat Jan 17 12:15:17 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7534
+;;     Update #: 7548
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -97,7 +97,8 @@
 ;;    `bmkp-add-tags', `bmkp-all-tags-jump',
 ;;    `bmkp-all-tags-jump-other-window', `bmkp-all-tags-regexp-jump',
 ;;    `bmkp-all-tags-regexp-jump-other-window',
-;;    `bmkp-autofile-add-tags', `bmkp-autofile-all-tags-jump',
+;;    `bmkp-annotate-bookmark', `bmkp-autofile-add-tags',
+;;    `bmkp-autofile-all-tags-jump',
 ;;    `bmkp-autofile-all-tags-jump-other-window',
 ;;    `bmkp-autofile-all-tags-regexp-jump',
 ;;    `bmkp-autofile-all-tags-regexp-jump-other-window',
@@ -3606,6 +3607,22 @@ Non-nil optional arg SAME-COUNT-P means do not increment
 `bookmark-alist-modification-count'."
   (unless same-count-p (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count)))
   (when (bookmark-time-to-save-p) (bookmark-save)))
+
+;;;###autoload (autoload 'bmkp-annotate-bookmark "bookmark+")
+(defun bmkp-annotate-bookmark (bookmark)
+  "Annotate BOOKMARK.  Pop up a buffer to add or edit the annotation.
+Interactively, this is the same as using command
+`bookmark-edit-annotation' with a prefix arg.  You are prompted for
+the bookmark name.  Command `bookmark-edit-annotation' can be more
+convenient for editing an existing annotation, because you choose
+among only the already annotated bookmarks, not all bookmarks.
+
+Non-interactively, BOOKMARK is a bookmark name or a bookmark record."
+  (interactive (list (bookmark-completing-read "Annotate bookmark" (bmkp-default-bookmark-name))))
+  (pop-to-buffer (generate-new-buffer-name "*Bookmark Annotation Compose*"))
+  (bookmark-insert-annotation bookmark)
+  (bookmark-edit-annotation-mode)
+  (set (make-local-variable 'bookmark-annotation-name) bookmark))
 
 ;;;###autoload (autoload 'bmkp-edit-bookmark-name-and-location "bookmark+")
 (defun bmkp-edit-bookmark-name-and-location (bookmark &optional edit-record-p)
