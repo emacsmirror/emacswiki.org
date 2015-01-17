@@ -1,4 +1,4 @@
-Lisp:show-point-mode.el
+Available from http://www.dr-qubit.org/emacs-misc/show-point-mode-0.3.el
 
 A simple minor mode to display the value of point in the mode line. It is displayed in brackets, adjacent to the line and/or column number if those are being displayed.
 
