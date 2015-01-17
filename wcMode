@@ -1,0 +1,17 @@
+A simple minor mode to display output similar to that of the standard Unix <code>wc</code> command in the mode line: character count, word count, and line count. If there's an active region, it displays <code>wc</code> output for the region instead.
+
+* wc-mode package download: http://www.dr-qubit.org/download.php?file=emacs-misc/wc-mode.el
+* Web-site: http://www.dr-qubit.org/emacs.php#misc
+
+Please send bug reports and suggestions to [mailto:toby-wc-mode@dr-qubit.org toby-wc-mode@dr-qubit.org] (you can post them here as well if you like, of course). I don't check this page regularly, so anything not emailed to me is likely to languish here unnoticed for some time.
+
+Note that other useful and very similar WordCount code is also available. But I had this code lying around, and it works well, so it might as well be made available.
+
+--TobyCubitt
+
+
+
+----
+CategoryDisplay
+CategoryModeLine
+CategoryModeLineConfiguration
