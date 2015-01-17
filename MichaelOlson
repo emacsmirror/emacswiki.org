@@ -28,22 +28,20 @@ I use git.
 
 More of my projects may be found at http://www.mwolson.org/projects/.
 
-* EmacsMuse: Maintainer.
-* [[ERC]]: Release manager/Maintainer.
-* PlannerMode: Former maintainer, contributor.
-* ErBot: Contributor.
-* [[EMMS]]: Contributor.
-* [[DVC]]: Contributor.
+* EmacsMuse: Former maintainer
+* [[ERC]]: Former release manager/maintainer, helped get ERC into Emacs
+* PlannerMode: Former maintainer
+* ErBot: Contributor
+* [[EMMS]]: Contributor
+* [[DVC]]: Contributor
 
 = Configuration =
 
-http://mwolson.org/projects/EmacsConfigFiles.html .
+https://github.com/mwolson/emacs-shared
 
 = Other Wiki homepages =
 
-* [http://wiki.hcoop.net/wiki/MichaelOlson HCoop (Internet Hosting Cooperative)]
-
-* [http://wiki.purduelug.org/MichaelOlson Purdue Linux Users Group]
+* [http://wiki.hcoop.net/MichaelOlson HCoop (Internet Hosting Cooperative)]
 
 * [https://wiki.ubuntu.com/MichaelOlson Ubuntu]
 
