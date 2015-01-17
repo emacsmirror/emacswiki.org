@@ -98,5 +98,35 @@ What it looks like:
 ~/s/r/l/d/t/w/is/too/deep/to/be/shown $
 </pre>
 
+=== With hidden directory abbreviations ===
+
+The above `shortened-path' function replaces hidden directories with a single dot, so "~/.emacs.d/lisp" becomes "~/./lisp". In Fish, hidden parent directories are replaced with a dot plus the first character of the directory name, so "~/.emacs.d/lisp" would become "~/.e/lisp". To get this behavior in Eshell, you can use the following function, only slightly modified from the above `shortened-path':
+
+<pre>
+(defun fish-path (path max-len)
+  "Return a potentially trimmed-down version of a Unix-style PATH, replacing
+parent directories with their initial characters to try to get the character
+length of PATH (sans directory slashes) down to MAX-LEN."
+  (let* ((components (split-string (abbreviate-file-name path) "/"))
+         (len (+ (1- (length components))
+                 (reduce '+ components :key 'length)))
+         (str ""))
+    (while (and (> len max-len)
+                (cdr components))
+      (setq str (concat str
+                        (cond ((= 0 (length (car components))) "/")
+                              ((= 1 (length (car components)))
+                               (concat (car components) "/"))
+                              (t
+                               (if (string= "."
+                                            (string (elt (car components) 0)))
+                                   (concat (substring (car components) 0 2)
+                                           "/")
+                                 (string (elt (car components) 0) ?/)))))
+            len (- len (1- (length (car components))))
+            components (cdr components)))
+    (concat str (reduce (lambda (a b) (concat a "/" b)) components))))
+</pre>
+
 ----
 CategoryEshell
