@@ -934,6 +934,12 @@ can also record '''annotations''': general free-text descriptions of
 your choosing.  An annotation is thus ''metadata'' that is associated
 with a bookmark.  You can use it for any purpose you like.
 
+You can use commands '''`bmkp-annotate'''' and
+'''`bookmark-edit-annotation'''' anywhere to add or edit the annotation
+for a bookmark.  In the `*Bookmark List*', you can use '''`a'''' to show
+or (with a [[prefix argument|prefix arg]]) edit an annotation.
+
+
 A bookmark annotation is ''stored as part of the bookmark itself''.
 For this reason, you typically want to keep it fairly short.  In
 '''Bookmark+''', the mode for viewing and editing a bookmark annotation
