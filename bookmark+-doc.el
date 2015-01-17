@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jan  1 10:24:37 2015 (-0800)
+;; Last-Updated: Sat Jan 17 12:20:48 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 14875
+;;     Update #: 14879
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -47,7 +47,7 @@
 ;;       Web'.
 ;;
 ;;    2. From the Emacs-Wiki Web site:
-;;       http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
+;;       http://www.emacswiki.org/BookmarkPlus.
 ;;    
 ;;    3. From the Bookmark+ group customization buffer:
 ;;       `M-x customize-group bookmark-plus', then click link
@@ -548,7 +548,7 @@
 ;;         customize-group bookmark-plus'), click button `Commentary'.
 ;;
 ;;       . From the Emacs-Wiki Web site,
-;;         http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
+;;         http://www.emacswiki.org/BookmarkPlus.
 ;;
 ;;     - It is easy to recognize orphaned and invalid bookmarks.
 ;;
@@ -888,6 +888,11 @@
 ;;  can also record annotations: general free-text descriptions of
 ;;  your choosing.  An annotation is thus metadata that is associated
 ;;  with a bookmark.  You can use it for any purpose you like.
+;;
+;;  You can use commands `bmkp-annotate' and
+;;  `bookmark-edit-annotation' anywhere to add or edit the annotation
+;;  for a bookmark.  In the `*Bookmark List*', you can use `a' to show
+;;  or (with a prefix arg) edit an annotation.
 ;;
 ;;  A bookmark annotation is stored as part of the bookmark itself.
 ;;  For this reason, you typically want to keep it fairly short.  In
@@ -3457,8 +3462,8 @@
 ;;(@* "Use Bookmark+ with Icicles")
 ;;  ** Use Bookmark+ with Icicles **
 ;;
-;;  `Icicles' (http://www.emacswiki.org/cgi-bin/wiki/Icicles) enhances
-;;  your use of Bookmark+ in several ways.
+;;  `Icicles' (http://www.emacswiki.org/Icicles) enhances your use of
+;;  Bookmark+ in several ways.
 ;;
 ;;  When jumping to a bookmark, you can narrow the completion
 ;;  candidates to bookmarks of a particular type (e.g. Info, using
