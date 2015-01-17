@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jan 17 11:14:17 2015 (-0800)
+;; Last-Updated: Sat Jan 17 11:47:22 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7526
+;;     Update #: 7528
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -543,10 +543,9 @@
 ;;              have been REDEFINED HERE:
 ;;
 ;;    `bookmark-default-annotation-text', `bookmark-delete',
-;;    `bookmark-edit-annotation', `bookmark-edit-annotation-mode',
-;;    `bookmark-insert', `bookmark-insert-annotation',
-;;    `bookmark-insert-location', `bookmark-jump',
-;;    `bookmark-jump-other-window', `bookmark-load',
+;;    `bookmark-edit-annotation-mode', `bookmark-insert',
+;;    `bookmark-insert-annotation', `bookmark-insert-location',
+;;    `bookmark-jump', `bookmark-jump-other-window', `bookmark-load',
 ;;    `bookmark-relocate', `bookmark-rename', `bookmark-save',
 ;;    `bookmark-send-edited-annotation', `bookmark-set',
 ;;    `bookmark-set-name', `bookmark-yank-word'.
@@ -557,16 +556,18 @@
 ;;
 ;;    `bookmark--jump-via', `bookmark-alist-from-buffer',
 ;;    `bookmark-all-names', `bookmark-completing-read',
-;;    `bookmark-default-handler', `bookmark-exit-hook-internal',
-;;    `bookmark-get-bookmark', `bookmark-get-bookmark-record' (Emacs
-;;    20-22), `bookmark-get-handler' (Emacs 20-22),
+;;    `bookmark-default-handler', `bookmark-edit-annotation' (command
+;;    here), `bookmark-exit-hook-internal', `bookmark-get-bookmark',
+;;    `bookmark-get-bookmark-record' (Emacs 20-22),
+;;    `bookmark-get-handler' (Emacs 20-22),
 ;;    `bookmark-import-new-list', `bookmark-handle-bookmark',
 ;;    `bookmark-jump-noselect' (Emacs 20-22), `bookmark-location',
 ;;    `bookmark-make-record', `bookmark-make-record-default',
 ;;    `bookmark-maybe-load-default-file', `bookmark-maybe-rename',
 ;;    `bookmark-prop-get' (Emacs 20-22), `bookmark-prop-set',
-;;    `bookmark-show-annotation', `bookmark-show-all-annotations',
-;;    `bookmark-store' (Emacs 20-22), `bookmark-write-file'.
+;;    `bookmark-show-annotation' (command here),
+;;    `bookmark-show-all-annotations' (command here), `bookmark-store'
+;;    (Emacs 20-22), `bookmark-write-file'.
 ;;
 ;;
 ;;  ***** NOTE: The following variables defined in `bookmark.el'
