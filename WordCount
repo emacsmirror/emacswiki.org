@@ -20,9 +20,13 @@ For emacs24 compatibility, comment out the line that reads "(make-local-hook hoo
 
 == Show "wc"-like info in the mode-line ==
 
-WordCountMode (`wc-mode') is another minor mode that does essentially the same thing: it displays the character count, word count and line count for the buffer in the [[mode line]] (similar to the output of the Unix <code>wc</code> command). If there's an active region, it displays that information for the region instead. It requires Emacs 24 or newer.
+[[wcMode]] (`wc-mode') is another minor mode that does essentially the same thing: it displays the character count, word count and line count for the buffer in the [[mode line]] (similar to the output of the Unix <code>wc</code> command). If there's an active region, it displays that information for the region instead. It requires Emacs 24 or newer.
 
-[Somewhat related:  Library <tt>[[modeline-posn.el]]</tt> shows, in the mode line, the number of characters (not words) in the active [[region]].  That is, the buffer size is replaced in the mode line by the region size whenever the region is active. See ModeLinePosition.]
+All this small "one-liner" package does is set the mode-line-position variable appropriately (see the [http://www.dr-qubit.org/emacs-misc/wc-mode.el code]), conveniently wrapped in a minor-mode to make it toggleable.
+
+
+== Somewhat related:  Library <tt>[[modeline-posn.el]]</tt> ==
+Shows, in the mode line, the number of characters (not words) in the active [[region]].  That is, the buffer size is replaced in the mode line by the region size whenever the region is active. See ModeLinePosition.
 
 
 == Various other ways to show the number of words ==
