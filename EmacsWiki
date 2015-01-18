@@ -59,6 +59,17 @@ See EmacsWikiAdministrators.
 
 This wiki runs [[Oddmuse]].
 
+* [Self:action=version modules installed]
+* [http://www.emacswiki.org/config config file]
+* [http://www.emacswiki.org/bootstrap.js bootstrap compatibility using Javascript]
+* [http://www.emacswiki.org/css/bootstrap.css bootstrap compatible CSS]
+
+Cron jobs:
+
+* one job to copy the EmacsLispList to Emacs Wiki
+* one job to make a backup to the [[Rsync repository]]
+* one job to push commits to the [[Git repository]]
+
 Using a wiki engine written in Lisp or Scheme would have been more in
 the spirit of Emacs and XEmacs, but Perl is ubiquitous, and
 Oddmuse is easy to install.
