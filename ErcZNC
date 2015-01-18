@@ -25,3 +25,6 @@ M-x znc-all
 
 By default, when you kill a channel buffer instead of /parting from the channel, you will detach from it
 This is customizable
+
+[new:PhilHudson:2015-01-18 23:11 UTC]
+Question: what is a "network slug"?
