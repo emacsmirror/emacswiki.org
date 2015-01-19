@@ -100,7 +100,7 @@ What it looks like:
 
 === With hidden directory abbreviations ===
 
-The above `shortened-path' function replaces hidden directories with a single dot, so "~/.emacs.d/lisp" becomes "~/./lisp". In Fish, hidden parent directories are replaced with a dot plus the first character of the directory name, so "~/.emacs.d/lisp" would become "~/.e/lisp". To get this behavior in Eshell, you can use the following function, only slightly modified from the above `shortened-path':
+The above `shortened-path' function replaces hidden directories with a single dot, so "~/.emacs.d/lisp" becomes "~/./lisp". In Fish, hidden parent directories are replaced with a dot plus the first non-dot character of the directory name, so "~/.emacs.d/lisp" would become "~/.e/lisp". To get this behavior in Eshell, you can use the following function, only slightly modified from the above `shortened-path':
 
 <pre>
 (defun fish-path (path max-len)
