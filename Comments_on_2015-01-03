@@ -509,7 +509,7 @@ What /should/ happen is this:
 
 # The cache checks if it already has a version of the page cached for your language. If so, that's what you get. Look for the response header ##X-Proxy-Cache##: it should say ##BYPASS## (Apache and the Wiki served this page) or ##HIT## (nginx served this page from the cache).
 
-If you're seeing a page and its language is garbled, I'd be interested in knowing what the Accept-Language and X-Proxy-Cache headers said. I'm assuming that you got a cache HIT but got served a language that didn't match your accepted languages. How strange.
+If you're seeing a page and its language is random, I'd be interested in knowing what the Accept-Language and X-Proxy-Cache headers said. I'm assuming that you got a cache HIT but got served a language that didn't match your accepted languages. How strange.
 
 -- AlexSchroeder 2015-01-20 13:49 UTC
 
