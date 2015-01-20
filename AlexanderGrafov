@@ -3,27 +3,19 @@ My native language is Russian, I speak English (yet not so good as I wish) and k
 
 == I use Emacs ==
 
-I use GNU/Emacs approximately since 2000. Behind Emacs I use GNU/Linux (Gentoo, Debian, Ubuntu) with Xmonad as WM. In programming I love Lisp and Python (include Monty Python series :) though mostly often programming in PHP.
+I use GNU/Emacs approximately since 2000. I use GNU/Linux (Gentoo, Debian, Ubuntu) with I3 WM and rxvt terminal. I used many programming  languages and like many of them but mostly love Lisp and Forth  (yes they so different but they both are real state of the computer art).
 
-== Init Files ==
+See [https://github.com/grafov] for my programming works.
 
-[https://github.com/siberianlaika/aeis AEIS] — not quit init file but a structure of init-system used by me.
+== Colemacs keyboard layout ==
 
-== My Elisp works ==
-
-Though I am not a newbie Emacs user, but I started programming Elisp only last 2 years and continue to learn Emacs language. My current projects are:
-
-* [http://drupal.org/project/emacs Emacs IDE for Drupal CMS]
-* [https://github.com/siberianlaika/aeis Another Emacs Initialization Set]
+[https://github.com/grafov/keyboard]  It is experiment how to make ergonomic layout  for Emacs on default keyboard. Instead of change keybindings in Emacs I reprogrammed a keyboard layout.
 
 == Contacts ==
 
-axel@drupal.ru — email & jabber
-
-dev@axel.pp.ru, siberianlaika@gmail.com — other mails
-
-
-
+grafov@gmail.com
+also you may cc axel@drupal.ru, dev@axel.pp.ru
+Homepage: http://siberian.laika.name
 
 [new:DrewAdams:2012-03-10 23:16 UTC]
 Welcome to the wiki. -- DrewAdams
