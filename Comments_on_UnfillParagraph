@@ -1,0 +1,12 @@
+Doesn't work on buffers like *scratch*, i.e., with `emacs-lisp-mode', because its `fill-paragraph-function', `lisp-fill-paragraph', ignores `fill-column' if `emacs-lisp-docstring-fill-column' is an integer.  Setting it locally to t solves the issue.
+
+    ;;; A unfill-paragraph that works even in emacs-lisp-mode
+    (defun unfill-paragraph (&optional region)
+      "Takes a multi-line paragraph and makes it into a single line of text."
+      (interactive (progn (barf-if-buffer-read-only) '(t)))
+      (let ((fill-column (point-max))
+            (emacs-lisp-docstring-fill-column t))
+        (fill-paragraph nil region)))
+
+-- Miguel Frasson 2015-01-20 13:50 UTC
+
