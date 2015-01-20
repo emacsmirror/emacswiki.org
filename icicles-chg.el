@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jan 11 11:13:42 2015 (-0800)
+;; Last-Updated: Tue Jan 20 13:04:07 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 11377
+;;     Update #: 11382
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2150,6 +2150,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2015/01/20 dadams
+;;     icicle-choose-completion-string (Emacs 23.2+): Update for Emacs 24+.
+;;       Added arg INSERT-FUNCTION.  Remove mouse-face from copy of CHOICE, before inserting it,
+;;       instead of removing it from buffer text after inserting.
+;;       Delete region up to read-only limits.
 ;; 2014/12/23 dadams
 ;;     Added: icicle-alist-key-match.
 ;; 2014/12/15 dadams
