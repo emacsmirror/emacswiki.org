@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Thu Jan  1 10:55:25 2015 (-0800)
+;; Last-Updated: Tue Jan 20 13:02:51 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15057
+;;     Update #: 15070
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -475,6 +475,7 @@
   (defvar completion-annotate-function)
   (defvar completion-common-substring)
   (defvar completion-extra-properties)
+  (defvar completion-list-insert-choice-function)
   (defvar completion-root-regexp)
   (defvar minibuffer-completing-symbol)
   (defvar minibuffer-prompt-properties)
@@ -709,10 +710,12 @@ the following is true:
 
       ((or (> emacs-major-version 23)   ; Emacs 23.2+
            (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
-       (defun icicle-choose-completion-string (choice &optional buffer base-position)
+       (defun icicle-choose-completion-string (choice &optional buffer base-position insert-function)
          "Switch to BUFFER and insert the completion choice CHOICE.
 BASE-POSITION should be a cons whose car is the position where the
  choice is inserted.  It is ignored if not a cons.
+INSERT-FUNCTION says how to insert the completion and falls
+ back on `completion-list-insert-choice-function' when nil.
 If BUFFER is the minibuffer, then exit the minibuffer, unless one of
  the following is true:
    - it is reading a file name, CHOICE is a directory, and
@@ -737,11 +740,25 @@ If BUFFER is the minibuffer, then exit the minibuffer, unless one of
                       ;; (minibufferp BUFFER).  The last arg used to be BASE-SIZE - keep it to avoid
                       ;; breaking older code.
                       choice buffer base-position nil)
-               ;; Forget about base-size altogether.  Replace the whole input always.
-               (delete-region (if mini-p (minibuffer-prompt-end) (point-min))
-                              (if mini-p (point-max) (point)))
-               (insert choice)
-               (remove-text-properties (- (point) (length choice)) (point) '(mouse-face nil))
+               (let ((choice-copy  (copy-sequence choice)) ; Do not modify original string.
+                     (start        (if mini-p
+                                       (minibuffer-prompt-end)
+                                     (previous-single-property-change (point) 'read-only nil (point-min))))
+                     (end          (if mini-p
+                                       (point-max)
+                                     (next-single-property-change (point) 'read-only nil (point-max)))))
+                 ;; Do not assume that properties have been removed - remove `mouse-face' here.
+                 (remove-text-properties 0 (length choice-copy) '(mouse-face nil) choice-copy)
+                 (if (or insert-function  (boundp 'completion-list-insert-choice-function))
+                     (funcall (or insert-function  completion-list-insert-choice-function)
+                              (or (car  base-position)  (point))
+                              (or (cadr base-position)  (point))
+                              choice-copy)
+                   (delete-region start end) ; Replace the whole input always.
+                   (insert choice-copy)))
+
+               ;; $$$$$$$$ (remove-text-properties (- (point) (length choice)) (point) '(mouse-face nil)))
+
                ;; Update point in the window where BUFFER is showing.
                (let ((window  (get-buffer-window buffer t))) (set-window-point window (point)))
                ;; If completing for the minibuffer, exit it with this choice,
