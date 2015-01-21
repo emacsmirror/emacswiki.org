@@ -8,7 +8,7 @@ Synchronization, as distinct from the above, is a stateful bi-directional operat
 
 == ASynK ==
 
-ASynK is a python program that performs bi-directional synchronization for Contacts, and works between MS Outlook, Google Contacts, and Emacs BBDB. The project page is at: http://karra-asynk.appspot.com/ As of March 2013 the software is under active development. Check out the project website for more information on finding the source, the asynk-users mailing list, announcements, and more.
+ASynK is a python program that performs bi-directional synchronization for Contacts, and works between MS Outlook, MS Exchange, CardDAV servers, Google Contacts, and Emacs BBDB. The project page is at: http://asynk.io/ As of January 2015 the software is under active development. Check out the project website for more information on finding the source, the asynk-users mailing list, announcements, and more.
 
 ==PalmPilot==
 
@@ -22,8 +22,8 @@ Although the Palm handheld products are more or less dead now, they had their sh
 
 Be sure to search the [http://www.mail-archive.com/bbdb-info@lists.sourceforge.net/ BBDB Info mailing-list archives] for the latest stuff.
 
-===CardDav===
+===CardDAV===
 
-CardDav is a IETF standards-track protocol designed from the ground up for keeping PIM clients in sync with a contacts server. It has emerged as the most generic and open standard for contacts synchronization. Apple Addressbook can connect to a CardDav server for synchronization. Gmail can act as a contacts server (you can think of the contacts UI in gmail as google's CardDav client). CardDav is based on vCard format for storing individual contact information.
+CardDAV is a IETF standards-track protocol designed from the ground up for keeping PIM clients in sync with a contacts server. It has emerged as the most generic and open standard for contacts synchronization. Apple Addressbook can connect to a CardDav server for synchronisation. Gmail can act as a contacts server (you can think of the contacts UI in gmail as google's CardDAV client). CardDAV is based on vCard format for storing individual contact information.
 
-As of April 2013 ASynK (http://karra-asynk.appspot.com/) supports bidirectional BBDB <-> CardDAV (at least with BBDB3). See also the github page (https://github.com/skarra/ASynK/). This works with both Owncloud and Apple's carddav server (as well as Google Contacts).
+ASynK (http://asynk.io/) supports bidirectional BBDB <-> CardDAV (at least with BBDB3). See also the github page (https://github.com/skarra/ASynK/). ASynK has been reported to work with the following standalone CardDAV server implementations: OwnCould, Baikal, Apple CalendarServer
