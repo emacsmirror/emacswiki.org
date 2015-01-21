@@ -532,3 +532,15 @@ Does it help?
 
 -- AlexDaniel 2015-01-21 14:07 UTC
 
+
+----
+
+Thanks! I see two issues:
+
+# why are you getting a hit from the proxy cache when you specified no-cache?
+# why are you getting the Spanish page even though you have specified that you prefer English – and even though the wiki itself correctly specified that a separate copy must be kept for each Accept-Language setting (the Vary header).
+
+I think NicFerrier will have to handle this. He's the one who knows how to configure nginx's proxy caching, hopefully.
+
+-- AlexSchroeder 2015-01-21 22:32 UTC
+
