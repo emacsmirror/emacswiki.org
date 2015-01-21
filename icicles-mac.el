@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Thu Jan  1 10:55:43 2015 (-0800)
+;; Last-Updated: Wed Jan 21 08:52:30 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1267
+;;     Update #: 1268
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -827,9 +827,9 @@ DOC-STRING is the doc string of the new command."
         ,doc-string
         (interactive)
         (setq icicle-sort-comparer  #',comparison-fn)
-        (message "Sorting is now %s%s" ,(icicle-propertize
-                                         (concat sort-order (and icicle-reverse-sort-p  ", REVERSED"))
-                                                           'face 'icicle-msg-emphasis))
+        (message "Sorting is now %s" ,(icicle-propertize
+                                       (concat sort-order (and icicle-reverse-sort-p  ", REVERSED"))
+                                       'face 'icicle-msg-emphasis))
         (icicle-complete-again-update)))))
 
 (defmacro icicle-define-bookmark-command (type &optional prompt &rest args)
