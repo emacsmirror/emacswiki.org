@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Jan 20 13:02:51 2015 (-0800)
+;; Last-Updated: Wed Jan 21 08:19:51 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15070
+;;     Update #: 15071
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -749,12 +749,12 @@ If BUFFER is the minibuffer, then exit the minibuffer, unless one of
                                      (next-single-property-change (point) 'read-only nil (point-max)))))
                  ;; Do not assume that properties have been removed - remove `mouse-face' here.
                  (remove-text-properties 0 (length choice-copy) '(mouse-face nil) choice-copy)
+                 (delete-region start end) ; Replace the whole input always.
                  (if (or insert-function  (boundp 'completion-list-insert-choice-function))
                      (funcall (or insert-function  completion-list-insert-choice-function)
                               (or (car  base-position)  (point))
                               (or (cadr base-position)  (point))
                               choice-copy)
-                   (delete-region start end) ; Replace the whole input always.
                    (insert choice-copy)))
 
                ;; $$$$$$$$ (remove-text-properties (- (point) (length choice)) (point) '(mouse-face nil)))
