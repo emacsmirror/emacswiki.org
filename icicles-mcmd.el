@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Jan  1 10:55:56 2015 (-0800)
+;; Last-Updated: Wed Jan 21 09:01:17 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 19635
+;;     Update #: 19644
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -470,10 +470,8 @@
 
 (when (< emacs-major-version 22)
   (defvar icicle-Info-highlight-visited-nodes) ; In `icicles-opt.el' (for Emacs 22+)
-  (defvar overriding-map-is-bound)
   (defvar read-file-name-completion-ignore-case) ; In `minibuffer.el'
   (defvar read-file-name-predicate)
-  (defvar saved-overriding-map)
   (defvar tooltip-mode))
 
 (when (< emacs-major-version 23)
@@ -495,8 +493,11 @@
 (defvar minibuffer-local-filename-completion-map) ; In Emacs 22+.
 (defvar minibuffer-local-filename-must-match-map) ; In Emacs 23.2 (but not Emacs 24+).
 (defvar minibuffer-local-must-match-filename-map) ; In Emacs 22+.
+(defvar overriding-map-is-bound)        ; In Emacs 22-23.
 (defvar recentf-list)                   ; In `recentf.el' (Emacs 21+).
+(defvar saved-overriding-map)           ; In Emacs 22-23.
 (defvar to-insert)                      ; Here.
+(defvar universal-argument-num-events)  ; Emacs 22-24.3.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -720,7 +721,8 @@ Return the number of the candidate: 0 for first, 1 for second, ..."
                 (insert dir)
                 (setq choice     (concat dir choice)
                       base-size  0))))
-          (icicle-choose-completion-string choice buffer base-size))
+          ;; $$$$$$$$ (icicle-choose-completion-string choice buffer base-size))
+          (with-current-buffer buffer (icicle-choose-completion-string choice buffer base-size)))
         icicle-candidate-nb))
 
   (defun icicle-choose-completion ()    ; Emacs < 23.2.
