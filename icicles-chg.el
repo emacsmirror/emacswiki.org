@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Jan 20 13:04:07 2015 (-0800)
+;; Last-Updated: Wed Jan 21 09:13:40 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 11382
+;;     Update #: 11389
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2150,6 +2150,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2015/01/21 dadams
+;;     icicle-choose-completion-string (Emacs 23.2+): Delete region even for INSERT-FUNCTION case.
 ;; 2015/01/20 dadams
 ;;     icicle-choose-completion-string (Emacs 23.2+): Update for Emacs 24+.
 ;;       Added arg INSERT-FUNCTION.  Remove mouse-face from copy of CHOICE, before inserting it,
@@ -4206,6 +4208,8 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2015/01/21 dadams
+;;     icicle-define-sort-command: Removed extra %s in call to message.
 ;; 2014/11/07 dadams
 ;;     Added: icicle-with-icy-mode-OFF, icicle-with-icy-mode-ON.
 ;; 2014/08/24 dadams
@@ -4460,6 +4464,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2015/01/21 dadams
+;;     icicle-choose-completion (Emacs 23.2+):
+;;       Wrap icicle-choose-completion-string in with-current-buffer, per vanilla.
 ;; 2014/12/23 dadams
 ;;     icicle-forward-char-magic:
 ;;       Narrow & ignore errors.  C-t in empty minibuffer: "Invalid search bound (wrong side of point)"
