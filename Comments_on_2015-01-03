@@ -480,20 +480,6 @@ This is good news!
 
 ----
 
-404 http://cx4a.org/software/auto-complete/
-on page http://www.emacswiki.org/emacs/AutoComplete
-
--- nathante 2015-01-19 21:41 UTC
-
-
-----
-
-Yeah, can't do anything about external sites, obviously.
-
--- AlexSchroeder
-
-----
-
 Languages defaults to languages except English it seems.. Except when the site is cached maybe, haven't seen that yet.
 
 Also, when I went to report this I had to add "?interface=en" to understand anything in this part, was in a language which didn't use Latin characters.
