@@ -29,6 +29,7 @@ Move among windows -- alternatives to `C-x o' (`other-window').
 
 == Resizing, Splitting,... Windows ==
 
+* [[https://github.com/ramnes/move-border|move-border.el]] -- Resize windows by moving their own border in a given direction
 * DoReMi -- Resize windows incrementally, using arrow keys or mouse wheel. Hold Meta key to boost resizing increment.
 * HorizontalSplitting -- Force Emacs to always use split-window-horizontally instead of split-window for temporary buffers, like C-x C-b and describe-function.
 * OneWindow -- Make Emacs always use only one window for whatever it does
