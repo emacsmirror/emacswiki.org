@@ -499,6 +499,10 @@ text console, like I usually do.  --SuSo
 
 Is there a way to tell Yaoddmuse to create a page upon follow if it doesn't exist?
 
+[new]
+Some one should modify the default url of "EmacsWiki" in yaoddmuse.el , since the pages have been moved from "http://www.emacswiki.org/cgi-bin/emacs?action=browse;raw=1;id=SiteMap" to
+"http://www.emacswiki.org/emacs?action=browse;raw=1;id=SiteMap" -- xiepan
+
 ----
 CategoryHypermedia
 CategoryOddmuse
