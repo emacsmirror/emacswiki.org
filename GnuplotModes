@@ -1,8 +1,8 @@
 There are now two different modes for editing Gnuplot files. 
 
-== gnuplot-mode (Gnuplot 4.6 compatible) ==
+== gnuplot (Gnuplot 4.6 compatible) ==
 The original gnuplot-mode, developed at [https://github.com/bruceravel/gnuplot-mode github] and installable via MELPA and el-get (see the github page for instructions). Extensive support for menues, and many key-bindings. See GnuplotMode for further (possible out-dated) details.
 
 
 == gnuplot-mode (Gnuplot 4.6 compatible) ==
-A more recent version, with syntax highlighting (compatible with most recent Gnuplot 4.6 addtions such as do-for, else, while, if loops ), and compilation buffer usage, for easy navigation between errors. For further information see: [http://astro.berkeley.edu/~mkmcc/software/gnuplot-mode.html gnuplot-mode] and source is available for download at [https://github.com/mkmcc/gnuplot-mode github]
+A more minimal version, with syntax highlighting (compatible with most recent Gnuplot 4.6 addtions such as do-for, else, while, if loops ), and compilation buffer usage, for easy navigation between errors. For further information see: [http://astro.berkeley.edu/~mkmcc/software/gnuplot-mode.html gnuplot-mode] and source is available for download at [https://github.com/mkmcc/gnuplot-mode github]
