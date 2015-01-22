@@ -1,7 +1,7 @@
 There are now two different modes for editing Gnuplot files. 
 
-== gnuplot-mode (Gnuplot 3.8 compatible) ==
-The original gnuplot-mode, compatible with Gnuplot 3.8, last updated december 13, 2002. Extensive support for menues, and many key-bindings. See GnuplotMode for further details.
+== gnuplot-mode (Gnuplot 4.6 compatible) ==
+The original gnuplot-mode, developed at [https://github.com/bruceravel/gnuplot-mode github] and installable via MELPA and el-get (see the github page for instructions). Extensive support for menues, and many key-bindings. See GnuplotMode for further (possible out-dated) details.
 
 
 == gnuplot-mode (Gnuplot 4.6 compatible) ==
