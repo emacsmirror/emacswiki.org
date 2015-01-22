@@ -253,6 +253,14 @@ Perhaps the download button should carry a warning? Then again, perhaps every pa
 A parenthetical remark concerning my libraries: As an Emacs-Wiki administrator, I lock the wiki pages for the code I upload, so you can be pretty sure that it has not been tampered with. -- DrewAdams
 
 
+[new]
+Hi,
+I'm a user only of emacs.
+As others, I feel frustrated not to have the } character for ending blocks in python. We have to rely on indentation, which is not reliable.
+Would it be possible to add in the python mode a command that would always interpret the pass command as a }  ?
+(the pass is a null command in python)
+thanks
+
 
 
 ----
