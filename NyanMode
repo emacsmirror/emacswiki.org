@@ -8,7 +8,7 @@ http://nyan-mode.buildsomethingamazing.com/screenshot.png
 
 == Customization ==
 
-If you use a custom `mode-line-format', `M-x nyan-mode' may not work for you. Instead, you can put <code>(:eval (list (nyan-create)))</code> somewhere in your `mode-line-format'. Example:
+If you use a custom `mode-line-format', `M-x nyan-mode' may not work for you. Instead, you can put <code>(:eval (list (nyan-create)))</code> somewhere in your `mode-line-format'. Screenshot (with `nyan-wavy-trail' enabled):
 
 [[image:NyanModeWithCustomBackground]]
 
