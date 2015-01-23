@@ -52,6 +52,18 @@ Use SrSpeedbar.
 :: * goes back to the last line that has a "0" at the beginning (instead of point-min above).  These lines determine filenames in the speedbar buffer.
 :: * checks for another line with a "0" at the beginning or end of buffer to stop (instead of just eobp above).
 
+:: Or, alternative, you may use speedbar's function to get to find the current file and expand the line:
+<pre>
+ (defun sb-expand-curren-file ()
+    "Expand current file in speedbar buffer"  
+(interactive)                                                                                                                               
+  (setq current-file (buffer-file-name))
+  (sr-speedbar-refresh)
+  (switch-to-buffer-other-frame "*SPEEDBAR*")
+  (speedbar-find-selected-file current-file)
+  (speedbar-expand-line))
+</pre>
+
 Here's some code that will open the directory tree to the current buffer relative to `project-root`. http://solovyov.net/project-root/
 <pre>
 (defun nm-speedbar-expand-line-list (&optional arg)
