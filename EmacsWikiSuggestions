@@ -139,7 +139,7 @@ What about moving the "Please make sure..." text, plus the Username field above 
 [new]
 At the time I did this on purpose to make sure people read the blurb... :/
 
-As for hitting Preview a lot: The access key should be P, so try M-p or C-p in your browser.
+As for hitting Preview a lot: The access key should be P, so try M-p or C-p in your browser (see [[http://en.wikipedia.org/wiki/Access_key#Access_in_different_browsers this list]] too see which modifiers are used in different browsers).
 
 Other than that, if you have a CSS-based suggestion, we can try it out.
 -- AlexSchroeder
