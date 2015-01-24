@@ -37,18 +37,29 @@ Here's an example from PinkBliss:
     (setq tool-bar-map (make-sparse-keymap))
     (tool-bar-add-item "pink-gnu" 'pink-bliss-save-or-open 'pink-defun))
 
-[:Tool-Bar Plus]
-== Pop-Up Tool Bar: tool-bar+.el ==
 
-(This applies to GNU Emacs 21 and later.)
+
+
+
+
+
+
+
+
+
+[:Tool-Bar Plus]
+[:ToolBarPlus]
+[:tool-bar-here-mode]
+[:tool-bar-pop-up-mode]
+== Pop-Up Tool Bar: tool-bar+.el ==
 
 Tool-bar mode shows or hides the tool bar on ''all frames'', which wastes real estate. That's one reason lots of people just turn it off. 
 
-DrewAdams has written library Lisp:tool-bar+.el, which:
+Library <tt>[[tool-bar+.el]]</tt> provides the following features:
 
 * Adds a minor mode, `tool-bar-here-mode', which is the same as `tool-bar-mode', except that it affects ''only the current frame''.  This saves real estate on frames other than the ones with the tool-bar.
 
-* Adds a "button" named '''Buttons''' to the far right of the MenuBar whenever the tool-bar is not visible (that is, whenever both `tool-bar-here-mode' and `tool-bar-mode' are turned off). You can click '''Buttons''' to ''pop up the tool-bar'' on the current frame just long enough for one command: after you click a tool-bar button, the tool-bar
+* Adds a "button" named '''Buttons''' to the far right of the [[menu-bar]] whenever the tool-bar is not visible (that is, whenever both `tool-bar-here-mode' and `tool-bar-mode' are turned off). You can click '''Buttons''' to ''pop up the tool-bar'' on the current frame just long enough for one command: after you click a tool-bar button, the tool-bar
 disappears again. The '''Buttons''' button is absent whenever the tool-bar is visible, and vice versa.
 
 The idea is to _conserve frame real estate_ but still have quick access to the tool-bar: No reason to have a tool-bar on each frame. No reason to have a tool-bar visible all the time; just pop it up when you need it.
