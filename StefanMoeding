@@ -5,7 +5,7 @@ Emacs helps me daily to hack SQL, Bash, Perl, C, R, LaTeX and Puppet.
 * Email: (concat (rot13-string "fgz") (string ?@) "kill-9" (string ?.) "net")
 * Blog: http://www.moeding.net
 
-
+I also started working on AugeasMode, a major mode to write Augeas code.
 
 
 
