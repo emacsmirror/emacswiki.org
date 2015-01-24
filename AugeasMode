@@ -1,0 +1,13 @@
+== Support for Editing Augeas Code ==
+
+[http://augeas.net Augeas] is a tool to surgically edit Unix configuration files. It can be used to change single entries in a configuration file without accidentally overwriting other parts. A prominent application using Augeas is the configuration management system Puppet.
+
+Augeas mode is a major mode to provide support writing Augeas code. It is still at an early stage and currently provides basic keyword fontification.
+
+The latest version is available from https://github.com/smoeding/emacs-augeas-mode
+
+-- StefanMoeding
+
+----
+CategoryModes
+ProgrammingModes
