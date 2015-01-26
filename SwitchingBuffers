@@ -207,6 +207,9 @@ Thank you for the fast reply, but what I want to do is to catch, so to speak, th
 
 Unfortunately, the condition (one-window-p) does not filter out displaying the menu and tooltips. Also, some resizing events trigger this function. But all I want is to change the frame font if one *switches* to another buffer... Maybe I should advice switch-buffer, but that seems to be a rather unelegant way.
 
+[new]
+What you want is `buffer-list-update-hook'. The buffer list is updated whenever you switch windows or buffers.
+
 ----
 
 [new]
