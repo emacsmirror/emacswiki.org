@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Jan 11 11:09:17 2015 (-0800)
+;; Last-Updated: Mon Jan 26 09:24:48 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7106
+;;     Update #: 7111
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4140,9 +4140,12 @@ specifying a regexp (followed by `RET').
 After specifying the regexp that defines the search contexts, type
 input (e.g. regexp or other pattern) to match within the contexts.
 The contexts that match your input are available as completion
-candidates.  You can use `\\<minibuffer-local-completion-map>\
-\\[icicle-apropos-complete-and-narrow]' to further narrow the candidates,
-typing additional patterns to match.
+candidates.  Use `S-TAB' to show them.  (Use `TAB' if you want prefix
+completion, which is not commonly the case for `icicle-search'.)
+
+You can use `\\<minibuffer-local-completion-map>\
+\\[icicle-apropos-complete-and-narrow]' to further narrow the candidates, typing
+additional patterns to match.
 
 By default, candidates are in order of buffer occurrence, but you can
 sort them in various ways using `\\[icicle-change-sort-order]'.
