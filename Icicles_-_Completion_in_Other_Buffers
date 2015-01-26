@@ -45,7 +45,7 @@ completion, with all of its features: [[Icicles - Cycling Completions|cycling]] 
 [:DynamicCompletionUsingDabbrevEL]
 === Dynamic Completion Using `dabbrev.el' ===
 
-Library ##dabbrev.el## lets you type a few characters
+Library '''##dabbrev.el##''' lets you type a few characters
 in a buffer and then prefix-complete them (in the same buffer) to a full word or symbol name.
 The completion candidates come from words or symbol names in
 buffers that you are editing.  This functionality is called
@@ -85,7 +85,7 @@ as apropos completion and candidate cycling.   In addition, you can complete an 
 [:DynamicCompletionUsingCompletionEL]
 === Dynamic Completion Using `completion.el' ===
 
-Standard Emacs library ##completion.el# is quite old and little known nowadays.
+Standard Emacs library '''##completion.el##''' is quite old and little known nowadays.
 It is nevertheless very useful.  In a way, it is like ##dabbrev.el##
 on steroids.  It is pretty smart, proposing first the completions
 that you have used most recently.  You can use it anywhere, to
