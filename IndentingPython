@@ -20,7 +20,7 @@ To automatically guess the style, use GuessStyle, which automatically detects wh
 
 Enable it like so:
 
-   (add-hook 'python-mode-hook guess-style-guess-tabs-mode)
+   (add-hook 'python-mode-hook 'guess-style-guess-tabs-mode)
    (add-hook 'python-mode-hook (lambda ()
                                   (when indent-tabs-mode
                                     (guess-style-guess-tab-width)))
