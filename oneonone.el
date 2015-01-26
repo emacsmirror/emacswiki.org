@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Sun Jan  4 17:13:48 2015 (-0800)
+;; Last-Updated: Mon Jan 26 08:08:19 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 3053
+;;     Update #: 3066
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -298,6 +298,8 @@
  
 ;;; Change Log:
 ;;
+;; 2015/01/26 dadams
+;;     1on1-display-*Completions*-frame: Use completion-reference-buffer, if displayed.
 ;; 2014/12/01 dadams
 ;;     1on1-emacs: Do not set minibuffer-auto-raise to nil.  Let user do it based on window mgr.
 ;;     1on1-default-frame-cursor-type(-overwrite/read-only), 1on1-emacs,
@@ -1721,7 +1723,14 @@ If `zoom-frm.el' is used, then shrink the text according to
        (selected-frame)                 ; Hard-code 7 here - what does it depend on?
        `((left . ,(- (x-display-pixel-width) (+ (frame-pixel-width) 7))))))
     (raise-frame)
-    (when 1on1-minibuffer-frame (redirect-frame-focus (selected-frame) 1on1-minibuffer-frame))
+    (when (or (get-buffer-window completion-reference-buffer 'visible)  1on1-minibuffer-frame)
+      (redirect-frame-focus
+       (selected-frame)
+       (or (and (get-buffer-window completion-reference-buffer 'visible)
+                (window-frame (get-buffer-window completion-reference-buffer t)))
+           1on1-minibuffer-frame)))
+    ;; $$$$$$$ (when 1on1-minibuffer-frame (redirect-frame-focus (selected-frame)
+    ;;                                                           1on1-minibuffer-frame))
     (when (and 1on1-*Completions*-frame-flag (boundp 'x-pointer-box-spiral))
       (setq x-pointer-shape  old-ptr-shape))
     return-window))
