@@ -1,0 +1,12 @@
+In outlookedit.el I added
+
+   (recode-region (point-min) (point-max) 'utf-8 'raw-text)
+
+after
+
+  (insert body)
+
+because of that shows Umlauts correctly.
+
+-- [http://www.epischel.de/ ErikPischel] 2015-01-27 08:47 UTC
+
