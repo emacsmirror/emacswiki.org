@@ -1,0 +1,24 @@
+The text "beamed" to outlook is quoted-printable when I use Umlauts. I added the main part of "fiddle-quoted-printable" from http://www.emacswiki.org/emacs/MarioStortiEmacsConfigFile after
+
+  (defun fiddle-quoted-printable ()
+  (interactive)
+  (progn
+    ;; hexl doesn't `provide', grrr!
+    (or (fboundp 'hexl-hex-string-to-integer)
+	(load "hexl")
+	)
+    (while (re-search-forward "=\\([0-9a-fA-F][0-9a-fA-F]\\)" nil t)
+      (replace-match (char-to-string
+		      (hexl-hex-string-to-integer
+		       (buffer-substring
+			(match-beginning 1) (match-end 1))))))
+    (goto-char (point-min-marker))
+    
+    ))
+
+  ;;; .... in message-send-mail-with-outlook
+    (delete-region (point-min) (progn (search-forward "--text follows this line--")))
+    (fiddle-quoted-printable)
+
+-- [http://www.epischel.de/ ErikPischel] 2015-01-27 08:45 UTC
+
