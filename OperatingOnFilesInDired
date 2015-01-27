@@ -26,6 +26,9 @@ In my .emacs I have a keybinding for using it from dired:
 
 --- erreina
 
+
+
+[:w32-browser]
 == Dired+ with W32 Browser ==
 
 If you use [[DiredPlus#w32-browser|Dired+]] with <tt>[[w32-browser.el]]</tt> you can take advantage of MS Windows file associations in [[Dired]].  Just use `C-RET' to "open" a file using its file-association '''Open''' operation.  Use `M-RET' to open Windows Explorer to that file or folder.
