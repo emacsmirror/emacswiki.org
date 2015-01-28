@@ -179,12 +179,12 @@ brew install emacs-mac
 !MacPorts [http://www.macports.org/ http://www.macports.org/] is another means of installing Emacs on OS X 
 (and other unix-alikes for that matter).
 
-As of December 6, 2011 it provides the following packages:
-* emacs 23.3
-* emacs-app 23.3 <-- Cocoa native
+As of January 27, 2015 it provides the following packages:
+* emacs 24.4 (Cocoa version)
+* emacs23 23.4.5
+* emacs22 22.3.7
 * emacs-app-devel 20091101
-* emacs-snapshot 20110705
-* emacs22 22.3
+* emacs-snapshot 20140101
 * xemacs 21.4.22
 
 See [http://www.macports.org/ports.php?by=name&substr=emacs Available Ports] for the current list.
