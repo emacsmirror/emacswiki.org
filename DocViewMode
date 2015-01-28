@@ -1,3 +1,4 @@
+[[ja:1]]
 DocViewMode is another file mode viewer like DviViewMode which adds
 support for PDF and PS files written by TassiloHorn.  It's officially
 part of [[Emacs]] starting in version 23.
