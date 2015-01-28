@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jan 17 12:15:51 2015 (-0800)
+;; Last-Updated: Wed Jan 28 15:43:15 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15807
+;;     Update #: 15822
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,18 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/01/28 dadams
+;;     Added: bookmark-automatically-show-annotations, bmkp-show-this-annotation-read-only,
+;;            bmkp-edit-this-annotation.
+;;     Soft-require font-lock+.el.
+;;     bookmark-insert-annotation: Convert BOOKMARK input to its name.
+;;     bookmark-edit-annotation-mode: Bind key C-x C-q to bmkp-show-this-annotation-read-only.
+;;     bookmark-show-annotation-mode: Bind key C-x C-q to bmkp-edit-this-annotation.
+;;     bookmark-show-annotation:
+;;       If bookmark-automatically-show-annotations = edit then just call bookmark-edit-annotation.
+;;       Fix title highlighting (need font-lock+.el) and buffer-modified-p.
+;;       Set bookmark-annotation-name.  Use `, not ', in title.
+;;     bookmark-edit-annotation: Manage buffer-modified-p.
 ;; 2015/01/17 dadams
 ;;     Added bmkp-annotate-bookmark.
 ;;     bookmark-show-annotation, bookmark-show-all-annotations: Made it interactive.
