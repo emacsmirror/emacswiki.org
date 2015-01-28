@@ -1,4 +1,4 @@
-(Note: GnuEmacs 23.1 now has word-wrapping built into the redisplay engine. Use visual-line-mode to turn it on. See [[LineWrap]] for more information.)
+(Note: GnuEmacs 23.1 now has word-wrapping built into the redisplay engine. Use visual-line-mode to turn it on. See [[LineWrap]] for more information. Long Lines has been removed from GnuEmacs 24.4.)
 
 Long Lines [[minor mode]] helps you edit text files that have long lines.
 
