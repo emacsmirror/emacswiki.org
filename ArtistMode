@@ -66,7 +66,29 @@ I use [[InteractivelyDoThings]] to change drawing operations and settings:
 	       (define-key artist-mode-map (kbd "C-c C-a C-o") 'artist-ido-select-operation)
 	       (define-key artist-mode-map (kbd "C-c C-a C-c") 'artist-ido-select-settings)))
 
+--- 
+= Artist Mode Hook=
+You can define custom quick-actions specific to artist mode by attaching it to the artist-mode-hook like so:
 
+    (add-hook 'artist-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "<f1>") 'org-mode)
+	    (local-set-key (kbd "<f2>") 'artist-select-op-pen-line) ; f2 = pen mode
+            (local-set-key (kbd "<f3>") 'artist-select-op-line)     ; f3 = line
+	    (local-set-key (kbd "<f4>") 'artist-select-op-square)   ; f4 = rectangle
+	    (local-set-key (kbd "<f5>") 'artist-select-op-ellipse)  ; f5 = ellipse
+	    (local-set-key (kbd "C-z") 'undo)
+     ))
+
+---
+= Artist Mode and Org-Mode =
+One should note that artist mode doesn't seem to function well in org-mode when headers are collapsed.
+As a workaround, show all headers before activating artist mode:
+
+    (global-set-key (kbd "C-<f1>") (lambda()
+			       (interactive)
+			       (show-all)
+			       (artist-mode)))
 
 ----
 Note: If using the keyboard to draw, use C-u RET to stop drawing.
