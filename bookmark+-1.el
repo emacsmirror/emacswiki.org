@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jan 17 12:15:17 2015 (-0800)
+;; Last-Updated: Wed Jan 28 15:40:47 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7548
+;;     Update #: 7585
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -153,8 +153,9 @@
 ;;    `bmkp-edit-bookmark-name-and-location',
 ;;    `bmkp-edit-bookmark-record', `bmkp-edit-bookmark-record-send',
 ;;    `bmkp-edit-bookmark-records-send', `bmkp-edit-tags',
-;;    `bmkp-edit-tags-send', `bmkp-empty-file',
-;;    `bmkp-file-target-set', `bmkp-file-all-tags-jump',
+;;    `bmkp-edit-tags-send', `bmkp-edit-this-annotation',
+;;    `bmkp-empty-file', `bmkp-file-target-set',
+;;    `bmkp-file-all-tags-jump',
 ;;    `bmkp-file-all-tags-jump-other-window',
 ;;    `bmkp-file-all-tags-regexp-jump',
 ;;    `bmkp-file-all-tags-regexp-jump-other-window', `bmkp-file-jump',
@@ -266,8 +267,10 @@
 ;;    `bmkp-set-restrictions-bookmark', `bmkp-set-sequence-bookmark',
 ;;    `bmkp-set-snippet-bookmark', `bmkp-set-tag-value',
 ;;    `bmkp-set-tag-value-for-navlist',
-;;    `bmkp-set-variable-list-bookmark', `bmkp-snippet-to-kill-ring',
-;;    `bmkp-some-tags-jump', `bmkp-some-tags-jump-other-window',
+;;    `bmkp-set-variable-list-bookmark',
+;;    `bmkp-show-this-annotation-read-only',
+;;    `bmkp-snippet-to-kill-ring', `bmkp-some-tags-jump',
+;;    `bmkp-some-tags-jump-other-window',
 ;;    `bmkp-some-tags-regexp-jump',
 ;;    `bmkp-some-tags-regexp-jump-other-window',
 ;;    `bmkp-specific-buffers-jump',
@@ -552,6 +555,13 @@
 ;;    `bookmark-set-name', `bookmark-yank-word'.
 ;;
 ;;
+;;  ***** NOTE: The following user options defined in `bookmark.el'
+;;              have been REDEFINED HERE:
+;;
+;;    `bookmark-automatically-show-annotations',
+;;    `bookmark-version-control'.
+;;
+;;
 ;;  ***** NOTE: The following non-interactive functions defined in
 ;;              `bookmark.el' have been REDEFINED HERE:
 ;;
@@ -571,13 +581,12 @@
 ;;    (Emacs 20-22), `bookmark-write-file'.
 ;;
 ;;
-;;  ***** NOTE: The following variables defined in `bookmark.el'
-;;              have been REDEFINED HERE:
+;;  ***** NOTE: The following internal variables defined in
+;;              `bookmark.el' have been REDEFINED HERE:
 ;;
 ;;    `bookmark-alist' (doc string only),
 ;;    `bookmark-make-record-function' (Emacs 20-22),
-;;    `bookmarks-already-loaded' (doc string only),
-;;    `bookmark-version-control'.
+;;    `bookmarks-already-loaded' (doc string only).
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `info.el'
@@ -619,6 +628,8 @@
   (tap-define-aliases-wo-prefix)
   (tap-put-thing-at-point-props))
 ;; region-or-non-nil-symbol-name-nearest-point, symbol-nearest-point
+
+(when (> emacs-major-version 21) (require 'font-lock+ nil t)) ;; font-lock-ignore (text property)
 
 (require 'bookmark)
 ;; bookmark-alist, bookmark-alist-modification-count, bookmark-annotation-name,
@@ -1785,6 +1796,23 @@ Deletion' in the Emacs manual."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
+;; Added value `edited'.
+;;
+(defcustom bookmark-automatically-show-annotations t
+  "*Non-nil means show annotations when jumping to a bookmark.
+If the value is `edit' then open the annotation buffer in edit mode.
+ This has the same effect as using command `bookmark-edit-annotation'.
+Any other non-nil value opens it in read-only mode.
+ This has the same effect as using command `bookmark-show-annotation'."
+  :type '(choice
+	  (const :tag "Show annotation read-only"               t)
+	  (const :tag "Edit annotation"                         edit)
+          (const :tag "Do not show annotation automatically"    nil))
+  :group 'bookmark :group 'bookmark-plus)
+
+
+;; REPLACES ORIGINAL in `bookmark.el'.
+;;
 ;; Doc string does not mention `bookmark-alist': does NOT test whether BOOKMARK is in `bookmark-alist'.
 ;;
 (defun bookmark-get-bookmark-record (bookmark)
@@ -1941,6 +1969,7 @@ annotations."
 (defun bookmark-insert-annotation (bookmark)
   "Insert annotation for BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record."
+  (setq bookmark  (bmkp-bookmark-name-from-record bookmark))
   (insert (funcall (if (boundp 'bookmark-edit-annotation-text-func)
                        bookmark-edit-annotation-text-func
                      bookmark-read-annotation-text-func)
@@ -1955,6 +1984,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 ;; 2. First, remove parent map from `bookmark-edit-annotation-mode-map', so it is derived anew.
 ;; 3. Corrected typo in doc string: *send-EDITED-*.
 ;; 4. Need to use `eval', to pick up option value and reset parent keymap.
+;; 5. Bind `C-x C-q' to `bmkp-show-this-annotation-read-only'.
 ;;
 ;;;###autoload (autoload 'bookmark-edit-annotation-mode "bookmark+")
 (eval
@@ -1968,15 +1998,17 @@ BOOKMARK is a bookmark name or a bookmark record."
 When you have finished composing, use `C-c C-M-c'.
 
 \\{bookmark-edit-annotation-mode-map}")
-   ;; Define this key because Org mode co-opts `C-c C-c' as a prefix key.
-   (define-key bookmark-edit-annotation-mode-map "\C-c\C-\M-c" 'bookmark-send-edited-annotation)))
+    (define-key bookmark-edit-annotation-mode-map "\C-x\C-q"    'bmkp-show-this-annotation-read-only)
+    ;; Define this key because Org mode co-opts `C-c C-c' as a prefix key.
+    (define-key bookmark-edit-annotation-mode-map "\C-c\C-\M-c" 'bookmark-send-edited-annotation)))
 
 (define-derived-mode bookmark-show-annotation-mode bookmark-edit-annotation-mode
     "Show Bookmark Annotation"
   "Mode for displaying the annotation of a bookmark.
 
 \\{bookmark-show-annotation-mode-map}"
-  (setq buffer-read-only  t))
+  (setq buffer-read-only  t)
+  (define-key bookmark-show-annotation-mode-map "\C-x\C-q" 'bmkp-edit-this-annotation))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -2013,7 +2045,8 @@ Lines beginning with `#' are ignored."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Make it a command (added `interactive' spec).  Prefix arg means add or edit (choose any bookmark).
+;; 1. Make it a command (added `interactive' spec).  Prefix arg means add or edit (choose any bookmark).
+;; 2. Manage buffer-modified-p.
 ;;
 ;;;###autoload (autoload 'bookmark-edit-annotation "bookmark+")
 (defun bookmark-edit-annotation (bookmark)
@@ -3214,13 +3247,18 @@ bookmark files that were created using the bookmark functions."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Make it a command (added `interactive' spec).
-;; 2. Handle external annotations (jump to their destinations).
-;; 3. Added optional arg MSG-P.  Show message if no annotation.
-;; 4. Name buffer after the bookmark.
-;; 5. MSG-P means message if no annotation.
-;; 6. Fit frame to buffer if `one-windowp'.
-;; 7. Restore frame selection.
+;;  1. Make it a command (added `interactive' spec).
+;;  2. Handle external annotations (jump to their destinations).
+;;  3. Added optional arg MSG-P.  Show message if no annotation.
+;;  4. If `bookmark-automatically-show-annotations' is `edit' then this is `bookmark-edit-annotation'.
+;;  5. Name buffer after the bookmark.
+;;  6. Highlight the title, using face `bmkp-heading'.
+;;  7. MSG-P means message if no annotation.
+;;  8. Set `bookmark-annotation-name'.
+;;  9. Manage `buffer-modified-p'.
+;; 10. Use `, not ', in title.  (Both are tolerated.)
+;; 11. Fit frame to buffer if `one-windowp'.
+;; 12. Restore frame selection.
 ;;
 ;;;###autoload (autoload 'bookmark-show-annotation "bookmark+")
 (defun bookmark-show-annotation (bookmark &optional msg-p)
@@ -3228,31 +3266,43 @@ bookmark files that were created using the bookmark functions."
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'.
 If the annotation is external then jump to its destination.
-If no annotation and MSG-P is non-nil, show a no-annotation message."
+If no annotation and MSG-P is non-nil, show a no-annotation message.
+
+Opens in read-only or edit mode, as chosen by option
+`bookmark-automatically-show-annotations'.  You can toggle between
+read-only and edit mode using `C-x C-q'."
   (interactive (list (bookmark-completing-read "Show annotation of bookmark"
                                                (bmkp-default-bookmark-name)
                                                (bmkp-annotated-alist-only))))
   (let* ((bmk       (bookmark-get-bookmark bookmark 'NOERROR))
-         (bmk-name  (bmkp-bookmark-name-from-record bmk))
+         (bname     (bmkp-bookmark-name-from-record bmk))
          (ann       (and bmk  (bookmark-get-annotation bmk)))
          (external  (and ann  (bmkp-get-external-annotation ann))))
     (if external
         (bmkp-visit-external-annotation external msg-p)
       (if (not (and ann  (not (string-equal ann ""))))
           (when msg-p (message "Bookmark has no annotation"))
-        (let ((oframe  (selected-frame)))
-          (save-selected-window
-            (pop-to-buffer (get-buffer-create (format "*`%s' Annotation*" bmk-name)))
-            (let ((buffer-read-only  nil)) ; Because buffer might already exist, in view mode.
-              (delete-region (point-min) (point-max))
-              (insert (concat "Annotation for bookmark '" bmk-name "':\n\n"))
-              (put-text-property (line-beginning-position -1) (line-end-position 1)
-                                 'face 'bmkp-heading)
-              (insert ann))
-            (goto-char (point-min))
-            (bookmark-show-annotation-mode)
-            (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window)))
-          (select-frame-set-input-focus oframe))))))
+        (if (eq 'edit bookmark-automatically-show-annotations)
+            (bookmark-edit-annotation bookmark)
+          (let ((oframe  (selected-frame)))
+            (save-selected-window
+              (pop-to-buffer (get-buffer-create (format "*`%s' Annotation*" bname)))
+              (let ((buffer-read-only  nil) ; Because buffer might already exist, in view mode.
+                    (buf-modified-p    (buffer-modified-p)))
+                (delete-region (point-min) (point-max))
+                (insert (concat "Annotation for bookmark `" bname "':\n\n"))
+                ;; Use `font-lock-ignore' property from library `font-lock+.el', because Org mode
+                ;; uses font-lock, which would otherwise wipe out the highlighting added here.
+                (add-text-properties (line-beginning-position -1) (line-end-position 1)
+                                     '(face              bmkp-heading
+                                       font-lock-ignore  t))
+                (insert ann)
+                (set-buffer-modified-p buf-modified-p))
+              (goto-char (point-min))
+              (bookmark-show-annotation-mode)
+              (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window))
+              (set (make-local-variable 'bookmark-annotation-name) bmk))
+            (select-frame-set-input-focus oframe)))))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -3623,6 +3673,58 @@ Non-interactively, BOOKMARK is a bookmark name or a bookmark record."
   (bookmark-insert-annotation bookmark)
   (bookmark-edit-annotation-mode)
   (set (make-local-variable 'bookmark-annotation-name) bookmark))
+
+;;;###autoload (autoload 'bmkp-show-this-annotation-read-only "bookmark+")
+(defun bmkp-show-this-annotation-read-only ()
+  "Switch to `Show Bookmark Annotation' mode for this annotation.
+That is, switch from edit mode to read-only mode."
+  (interactive)
+  (unless (eq major-mode 'bookmark-edit-annotation-mode)
+    (error "Buffer is not in `Edit Bookmark Annotation' mode"))
+  (if (not (or (not (buffer-modified-p)) (y-or-n-p "Annotation was modified.  Lose changes?")))
+      (message "OK, canceled - use `C-c C-c' if you want to save changes")
+    (let* ((bmk    (bookmark-get-bookmark bookmark-annotation-name 'NOERROR))
+           (bname  (bookmark-name-from-full-record bmk))
+           (ann    (and bmk  (bookmark-get-annotation bmk)))
+           (obuf   (current-buffer)))
+      (unless bname (error "No such bookmark: `%s'" bmk))
+      (switch-to-buffer (format "*`%s' Annotation*" bname))
+      (let ((buffer-read-only  nil)     ; Because buffer might already exist, in view mode.
+            (buf-modified-p    (buffer-modified-p)))
+        (delete-region (point-min) (point-max))
+        (insert (concat "Annotation for bookmark '" bname "':\n\n"))
+        ;; Use `font-lock-ignore' property from library `font-lock+.el', because Org mode
+        ;; uses font-lock, which would otherwise wipe out the highlighting added here.
+        (add-text-properties (line-beginning-position -1) (line-end-position 1)
+                             '(face              bmkp-heading
+                               font-lock-ignore  t))
+        (insert ann)
+        (set-buffer-modified-p buf-modified-p))
+      (goto-char (point-min))
+      (bookmark-show-annotation-mode)
+      (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window))
+      (set (make-local-variable 'bookmark-annotation-name) bmk)
+      (kill-buffer obuf))))
+
+;;;###autoload (autoload 'bmkp-edit-this-annotation "bookmark+")
+(defun bmkp-edit-this-annotation ()
+  "Switch to `Edit Bookmark Annotation' mode for this annotation.
+That is, switch from read-only mode to edit mode."
+  (interactive)
+  (unless (eq major-mode 'bookmark-show-annotation-mode)
+    (error "Buffer is not in `Show Bookmark Annotation' mode"))
+  (let* ((bmk    (bookmark-get-bookmark bookmark-annotation-name 'NOERROR))
+         (bname  (bookmark-name-from-full-record bmk))
+         (obuf   (current-buffer)))
+    (unless bname (error "No such bookmark: `%s'" bmk))
+    (switch-to-buffer (generate-new-buffer-name "*Bookmark Annotation Compose*"))
+    (let ((buf-modified-p  (buffer-modified-p)))
+      (bookmark-insert-annotation bname)
+      (set-buffer-modified-p buf-modified-p))
+    (bookmark-edit-annotation-mode)
+    (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window))
+    (set (make-local-variable 'bookmark-annotation-name) bmk)
+    (kill-buffer obuf)))
 
 ;;;###autoload (autoload 'bmkp-edit-bookmark-name-and-location "bookmark+")
 (defun bmkp-edit-bookmark-name-and-location (bookmark &optional edit-record-p)
