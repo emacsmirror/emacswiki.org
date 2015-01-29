@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jan 17 12:20:48 2015 (-0800)
+;; Last-Updated: Thu Jan 29 15:15:16 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 14879
+;;     Update #: 14941
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -889,25 +889,51 @@
 ;;  your choosing.  An annotation is thus metadata that is associated
 ;;  with a bookmark.  You can use it for any purpose you like.
 ;;
-;;  You can use commands `bmkp-annotate' and
-;;  `bookmark-edit-annotation' anywhere to add or edit the annotation
-;;  for a bookmark.  In the `*Bookmark List*', you can use `a' to show
-;;  or (with a prefix arg) edit an annotation.
+;;  Command `bookmark-show-annotation' shows an annotation in
+;;  read-only mode.  You can use `C-x C-q' in the annotation buffer to
+;;  switch to edit mode (and back again).
+;;
+;;  You can use command `bookmark-edit-annotation' or `bmkp-annotate'
+;;  anywhere to edit the annotation for a bookmark.  For
+;;  `bookmark-edit-annotation', you can choose among the bookmarks
+;;  that already have annotations.  With a prefix arg, you can choose
+;;  any bookmark (and so create an annotation).  Using `bmkp-annotate'
+;;  is the same as using `bookmark-edit-annotation' with a prefix arg.
+;;
+;;  In the annotation edit buffer, make your changes and then use `C-c
+;;  C-c' to save the result.  Use `C-x C-k' if you do not want to save
+;;  the changes.  You can also use `C-x C-q' and then `y' to confirm
+;;  reverting the changes.
+;;
+;;  Non-`nil' user option `bookmark-automatically-show-annotations'
+;;  means that a bookmark's annotation is popped up whenever you jump
+;;  to the bookmark.  If the non-`nil' value is `edit' then the
+;;  annotation buffer is in edit mode; if it is any other non-`nil'
+;;  value then the buffer is in show (read-only) mode.
+;;
+;;  In the `*Bookmark List*' display, you can use `a' to show or (with
+;;  a prefix arg) edit the existing annotation for the bookmark on the
+;;  current line.  (Bookmarks with annotations are marked by an `a' to
+;;  the left of the bookmark name.)
 ;;
 ;;  A bookmark annotation is stored as part of the bookmark itself.
-;;  For this reason, you typically want to keep it fairly short.  In
-;;  Bookmark+, the mode for viewing and editing a bookmark annotation
-;;  is Org mode, by default.
+;;  For this reason, you typically want to keep the text fairly short.
+;;  In Bookmark+, the mode for viewing and editing a bookmark
+;;  annotation is Org mode, by default.  (To change the mode used,
+;;  customize option `bmkp-annotation-modes-inherit-from'.)
 ;;
 ;;  You can obtain the effect of using longer annotations, and some
 ;;  other advantages as well, by using "external annotations".  These
 ;;  are annotations that are short and serve only as pointers to
-;;  external files, URLs, or other bookmarks.  When you "show" the
-;;  annotation of a bookmark (e.g., using `a' in the `*Bookmark List*'
-;;  display) and the annotation is such a pointer, the effect is to
-;;  visit the destination.  So for example, you can use bookmarks to
-;;  one or more Org files to annotate (provide metadata for) one or
-;;  more bookmarks.
+;;  external files, URLs, or other bookmarks.
+;;
+;;  Whenever you show the annotation of a bookmark (via `a' in the
+;;  `*Bookmark List*' display, `bookmark-show-annotation', or
+;;  `bookmark-automatically-show-annotations') and the annotation is
+;;  such a pointer, the effect is to visit the destination.
+;;
+;;  So for example, you can use bookmarks to one or more Org files to
+;;  annotate (provide metadata for) one or more other bookmarks.
 ;;
 ;;  You create an external annotation for a bookmark by using one of
 ;;  these forms as the annotation text.
@@ -922,9 +948,9 @@
 ;;  * BOOKMARK is the name of a bookmark in the current bookmark
 ;;    alist.
 ;;
-;;  The double-quote characters are necessary, so that you can include
-;;  characters such as `SPC' in the name.  The text must be on the
-;;  first line of the annotation (not counting the commented
+;;  The double-quote characters are necessary here, so that you can
+;;  include characters such as `SPC' in the name.  The text must be on
+;;  the first line of the annotation (not counting the commented
 ;;  instruction lines).  It can be preceded only by whitespace.
 ;;
 ;;  You can include other text in the annotation, after the
