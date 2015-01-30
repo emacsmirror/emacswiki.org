@@ -20,3 +20,12 @@ I removed that term and another common term.  Please try again.
 
 -- DrewAdams 2013-12-20 18:14 UTC
 
+
+----
+
+hi jianli,
+
+Thanks for this nice package. There's a problem with the faces: it is compatible with light themes, but not dark themes. Is it ok to inherit instead of hard coding faces?
+
+-- [http://tuhdo.github.io Tu Do] 2015-01-30 18:23 UTC
+
