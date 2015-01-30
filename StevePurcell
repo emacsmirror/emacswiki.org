@@ -6,5 +6,6 @@ British hacker, maintainer of [http://melpa.org MELPA].
 
 I maintain a comprehensive [https://github.com/purcell/emacs.d Emacs config for polyglot programmers] which seems to have been adopted by a large number of other people, and I've authored a number of original Elisp packages, including LessCssMode, [https://github.com/purcell/elisp-slime-nav elisp-slime-nav], and [https://github.com/purcell/ibuffer-vc ibuffer-vc].
 
+In 2015 I recorded an [https://www.youtube.com/watch?v=Gq0hG_om9xY Emacs Chat] with Sacha Chua, covering my work on MELPA and other Emacs-related things. (Sacha has [http://sachachua.com/blog/2015/01/emacs-chat-with-steve-purcell/ notes on the talk here].)
 ----
 CategoryHomepage
