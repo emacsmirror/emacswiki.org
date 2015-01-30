@@ -5,6 +5,7 @@ Cell-mode is a system for interactively developing custom applications within GN
 Cell-mode combines ideas from dataflow languages like Miller Puckette's PureData, emacs packages like EevMode and from wikis. 
 
 Cell-mode may be downloaded from http://github.com/dto/cell-mode (*Link Broken*)
+* can be found at https://github.com/emacsmirror/cell/blob/master/cell.el (as of 2015年01月30日)
 
 For a quick introduction you shoud open cell.el and read the "Instructions for trying out" (missing as of 2007-11-01).
 
