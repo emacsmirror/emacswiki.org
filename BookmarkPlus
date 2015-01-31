@@ -1855,7 +1855,7 @@ to open using a Windows file association.
 
 Specifying such an association in
 `bmkp-default-handlers-for-file-types' means that bookmarks for such
-a file will have a `file-handler' value of `w332-browser', to
+a file will have a `file-handler' value of `w32-browser', to
 "jump" to (i.e., open) the file.
 
 To set up a given file extension for use this way, add an entry
