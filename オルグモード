@@ -2,81 +2,92 @@
 [[es:ModoOrg]]
 [[es:ModoOrg]]
 [[zh:Org-Mode (中文)]]
-This is Japanese translating page and this is stub. Dont write in english. --gonbei
 
 [:overview]
 == 概要 ==
 
-Org-mode is an Emacs mode for note keeping, project planning, TODO lists and authoring. It is included from Emacs 22.1 onward as default.
+オルグモードはノート取り、プロジェクトプランニング、TODOリスト、そしてオーサリングのためのEmacsモードです.
+Emacs22.1以降はデフォルトでそれは含まれています.
 
-Org-mode's [http://orgmode.org/manual/index.html manual], [http://orgmode.org/guide/ compact guide], the community maintained [http://orgmode.org/worg Worg]  (which includes tutorial, ideas, code snippets, etc.,) and can be accessed at [http://orgmode.org its homepage].
-[http://www.network-theory.co.uk/org/manual/ Paperback manual] is also available. 
+オルグモードの [http://orgmode.org/manual/index.html マニュアル], [http://orgmode.org/guide/ 簡易ガイド], (チュートリアル, アイディア, コードスニペット, などを含む)コミュニティが維持している[http://orgmode.org/worg Worg] そして [http://orgmode.org そのホームページ]にアクセスすることができます.
+[http://www.network-theory.co.uk/org/manual/ Paperback manual]も同様に利用可能です.
+
 [:features]
 === 機能 ===
 
-* Outlines: headlines, TODO items, checklists, numbered lists, searching, filtering
-* Filing: outlines, tagging, refiling, archiving, sorting, flexible enough to build a "getting things done" workflow
-* Timestamp: deadlines, clocking in/out, scheduled items, repeating items, optionally integrated with emacs calendar and diary
-* Markup: bold, italic, lists, links, images, math (via LaTeX), code highlighting
-* Links to URLs, files, gnus, rmail, vm, news, wanderlust, bbdb, irc, shell commands, bookmarks, images, attachments
-* Table: editing, spreadsheets, formulas
-* Export: HTML, LaTeX, Markdown, iCalendar, OpenDocument, Beamer slides, PDF, and more via an extensible exporting system
-* Babel: Literate programming, reproducible research
-* Agenda: Overview of scheduled and TODO items across files
-
+* アウトライン: ヘッドライン, TODO アイテム, チェックリスト, 番号付きリスト, 検索, フィルタリング
+* ファイリング: アウトライン, タギング, 整頓, アーカイブ, ソーティング, Gtting Things Done"ワークフローを構築するには十分な柔軟性
+* タイムスタンプ: デッドライン, 勤怠管理, スケジュールされたアイテム, 繰り返すアイテム, オプションでEmacs カレンダーとダイアリに統合
+* マークアップ: 太字, 斜体, リスト, リンク, イメージ, math (via LaTeX), コード・ハイライティング
+* URL, ファイル, gnus, rmail, vm, news, wanderlust, bbdb, irc, シェルコマンド, ブックマーク, イメージ, 添付ファイルへのリンク
+* テーブル: 編集, スプレッドシート, 計算式
+* エクスポート: HTML, LaTeX, マークダウン, iCalendar, OpenDocument, Beamer slides, PDF, そして拡張可能なエクスポートシステムを介してもっと
+* Babel: 文芸的プログラミング, 再現性の研究
+* アジェンダ: ファイル間のTODOアイテムとスケジュールの概要
 
 [:install]
 == ダウンロードとインストール ==
 
-The development version is at:
+開発版は:
 
     git clone git://orgmode.org/org-mode.git
 
-There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the following to your <code>/etc/apt/sources.list</code>:
+Ubuntuリポジトリに最新のnon-cvs Emacsがあります.
+次のあなたの<code>/etc/apt/sources.list</code>へ追加して:
 
     deb http://ppa.launchpad.net/hexmode/ubuntu gutsy main
     deb-src http://ppa.launchpad.net/hexmode/ubuntu gutsy main
 
 [:using]
-== Texts on using org-mode ==
+== オルグモードを使うにあたってのテキスト ==
 
-David O'Toole has written a [http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html general tutorial] with screenshots. It has been translated into [http://hokmen.chan.googlepages.com/OrgTutorial.en-cn.html Chinese], [http://web.archive.org/web/20080225214358/http://lumiere.ens.fr/~guerry/orgtutorialfr.html French], [http://users.itk.ppke.hu/~mpasztor/orgtutorial/notebook/orgtutorial-hu.html Hungarian], [http://hpcgi1.nifty.com/spen/index.cgi?OrgMode/OrgTutorial Japanese] and [http://jmjeong.com/index.php?display=Emacs/OrgMode Korean]. [http://orgmode.org/worg/ Worg] has many tutorials on specific features. Charles Cave has [http://members.optusnet.com.au/~charles57/GTD/org_dates/index.html has written] on using date and times. Bernt Hansen describes his use and customizations of Org-mode in 70(!) pages long [http://doc.norang.ca/org-mode.html document], which assumes basic familiarity with Org.
+David O'Toole はスクリーンショットつきの[http://orgmode.org/worg/org-tutorials/orgtutorial_dto.html 一般チュートリアル]を書きました.
+それは
+[http://hokmen.chan.googlepages.com/OrgTutorial.en-cn.html 中国語],
+[http://web.archive.org/web/20080225214358/http://lumiere.ens.fr/~guerry/orgtutorialfr.html フランス語],
+[http://users.itk.ppke.hu/~mpasztor/orgtutorial/notebook/orgtutorial-hu.html ハンガリー語],
+[http://hpcgi1.nifty.com/spen/index.cgi?OrgMode/OrgTutorial 日本語]
+そして[http://jmjeong.com/index.php?display=Emacs/OrgMode 韓国語]へ翻訳されています.
 
-One of the major influences in 2006/2007 on task organization has been the book [http://en.wikipedia.org/wiki/Getting_Things_Done Getting Things Done] (GTD).
-Using Org-mode for GTD has been [http://members.optusnet.com.au/~charles57/GTD/orgmode.html described] by Charles Cave and a modest example configuration has been given [http://www.brool.com/index.php/using-org-mode-with-gtd here].
+[http://orgmode.org/worg/ Worg]特定の機能について多くのチュートリアルを持っています.
+Charles Caveは日付を用いたものを[http://members.optusnet.com.au/~charles57/GTD/org_dates/index.html 書いて]いました.
 
-Eric Neilsen has a [http://home.fnal.gov/~neilsen/notebook/orgExamples/org-examples.html cookbook of Org configuration snippets].
-Bernt Hansen wrote about [http://doc.norang.ca/org-mode.html lots of things you can do with Org].
-SachaChua has [http://sachachua.com/blog/2014/01/tips-learning-org-mode-emacs/ a graphical map for learning Org]. 
+Bernt Hansenは彼の使っているオルグモードのカスタマイズについてOrgの基本的な知識を前提として,70ページ(!)にも渡る長い[http://doc.norang.ca/org-mode.html ドキュメント]で説明しています.
 
-Somewhat dated (2007): Both [http://newartisans.com/2007/08/using-org-mode-as-a-day-planner/ John Wiegley] and [http://sachachua.com/wp/2007/12/29/how-to-use-emacs-org-as-a-basic-day-planner/ Sacha Chua] have described day planner usage.
-Another piece by SachaChua is [http://sachachua.com/wp/2007/12/22/a-day-in-a-life-with-org/ "A day in the life with Org"].
+タスクの構成に関する2006/2007年のメジャーな影響の一つは[http://en.wikipedia.org/wiki/Getting_Things_Done Getting Things Done(GTD)]という本になっている.
+GTDのためにオルグモードを使うことについてCharles Caveによって[http://members.optusnet.com.au/~charles57/GTD/orgmode.html 説明されている]そして控えめなコンフィグレーションが[http://www.brool.com/index.php/using-org-mode-with-gtd ここに]与えられています.
+
+Eric Neilsen [http://home.fnal.gov/~neilsen/notebook/orgExamples/org-examples.html オルグコンフィグレーションスニペットの料理本]を持っています.
+Bernt Hansenは[http://doc.norang.ca/org-mode.html オルグであなたができるたくさんのこと]について書きました.
+SachaChuaは[http://sachachua.com/blog/2014/01/tips-learning-org-mode-emacs/ オルグを学ぶためのグラフィカルマップ]持っています.
+
+Somewhat dated (2007): [http://newartisans.com/2007/08/using-org-mode-as-a-day-planner/ John Wiegley]と[http://sachachua.com/wp/2007/12/29/how-to-use-emacs-org-as-a-basic-day-planner/ Sacha Chua]の両者はday plannerの使い方を説明しています.
+SachaChuaによるAnother pieceは[http://sachachua.com/wp/2007/12/22/a-day-in-a-life-with-org/ "A day in the life with Org"]です.
 
 [:publish]
-== 印刷 ==
+== 出版 ==
 
-You can *publish to HTML* using `C-c C-e h', or you can use BhlMode for LaTeX or HTML output. Just switch modes before exporting (`M-x bhl-mode').
-BhlMode should automatically recognize the asterisks as marking sections and subsections.
-See EmacsOutlineToHtml for other alternatives.
+あなたは`C-c C-e h'を使ってHTMLへ出版できる, もしくはあなたはLaTeXもしくはHTML出力のためのBhlModeを使うことができる.
+エクスポートするまえにモードを切り替えるだけ(`M-x bhl-mode').
+BhlModeはセクションとサブセクションをマーキングする際にアスタリスクを自動的に認識するはず.
+他の選択肢のためにEmacsOutlineToHtmlを参照されたし.
 
-[http://dto.mamalala.org/e/org-publish.el org-publish.el] (this comes in the latest version of org-mode) by DavidOtoole
-  is a publishing management system for creating websites composed of all the files within a project (including OrgMode files, images, and source code, if desired).
+DavidOtooleによる[http://dto.mamalala.org/e/org-publish.el org-publish.el] (これはオルグモードの最新版で提供)はウェブサイト内の全てのファイルをプロジェクト内(もし望むならばオルグモードファイル, イメージ, そしてソースコード)で作成するための出版管理システムです.
 
-=== new exporter/publish framework ===
-* [http://orgmode.org/worg/exporters/ox-overview.html The New Org-mode Exporter Framework] - ''As of release 8.0, Org-mode has transitioned to a new export framework, authored primarily (entirely?) by Nicolas Goaziou…''
-* For instructions on how to upgrade from the previous Org-mode exporter, see the [http://orgmode.org/worg/org-8.0.html upgrade guide.]
+=== 新しいエクスポーター/印刷フレームワーク ===
+* [http://orgmode.org/worg/exporters/ox-overview.html 新しいオルグモードエクスポーターフレームワーク] - ''リリース 8.0のように, Nicolas Goaziouによって主に(完全に？)執筆された, オルグモードは新しいエクスポートフレームワークに移行しました…''
+* 前のオルグモードエクスポーターからどうアップグレードするかの手順については, [http://orgmode.org/worg/org-8.0.html アップグレードガイド]を参照されたし.
 
 
 [:conflicts]
 == 衝突 ==
 
-If you're using WindMove, CuaMode or MTorus (with default keybindings), you might want to disable the Org Mode keybindings for Shift+arrow keys:
+もしあなたがWindMove, CuaMode もしくは (デフォルトのキーバインディングで)MTorusを使っているならば, あなたはShift+矢印キーのためにオルグモードのキーバインディングを無効にしたいだろう:
 
     (setq org-replace-disputed-keys t)
 
-(This need to be done before org.el is loaded, or requires a restart of Emacs to be effective.)
-
-This will result in the following replacements:
+(これはorg.elが読み込まれる, もしくは反映させるためにEmacsのリスタートの要求の前に完了している必要がある.)
+これは次のように入れ替わります:
 
 *  S-RET   -> C-S-RET
 *  S-up    -> M-p
@@ -84,20 +95,24 @@ This will result in the following replacements:
 *  S-left  -> M--
 *  S-right -> M-+
 
-If AllOut from Emacs 21 is loaded before org.el, you will be getting a ##Wrong type argument ((keymapp nil))## error. This was fixed in Emacs 22.
+もしEmacs 21からのAllOutがorg.elの前にロードされるならば, あなたは ##Wrong type argument ((keymapp nil))## errorを得るでしょう.
+これはEmacs 22で修正されています.
 
-If you are forced to use Emacs 21, either install a newer version of allout.el, or make sure that org.el is loaded before allout.el.  For example, use ##(require 'org)## before requiring allout.
+もしあなたがEmacs 21を使うことを強いられているのならば, allout.elの新しいバージョンをインストールするか, allout.elの前にorg.elがロードされているか確認するかのどちらか.
 
-If you're using session.el (EmacsSession), you need to excempt a circular data structure from saving:
+例えば, alloutを要求する前に##(require 'org)##を使う.
+
+もしあなたがsession.el (EmacsSession)を使っているなら, あなたは円形データ構造を保存から免除する必要がある:
 
     (add-to-list 'session-globals-exclude 'org-mark-ring)
 
-If you're using Emacs 23 and Org 7.5, then you can also have some pseudo-compatability while maintaining CUA support with Lisp:org-cua-dwim.el
+もしあなたがEmacs 23とOrg 7.5を使っているなら, then you can also have some pseudo-compatability while maintaining CUA support with Lisp:org-cua-dwim.el
 
 [:datasources]
 == 外部データソース ==
 
-If you publish external sources to org mode agenda files, you'll need to refresh those files after changes occur.  Try this snippet to reload those files.
+もしあなたが外部ソースをオルグモードアジェンダファイルへ印刷するならば, あなたは変更が発生する前にこれらのファイルをリフレッシュする必要がある.
+これらのファイルをリロードするためにこのスニペットを試してください.
 
     (defun org-reload ()
       (interactive)
@@ -109,24 +124,23 @@ If you publish external sources to org mode agenda files, you'll need to refresh
 [:addons]]
 == アドオンと他のファイル ==
 
-* Lisp:org-mairix.el integrates Org mode with [http://www.rpcurnow.force9.co.uk/mairix/ mairix] email search.
-
-* [http://www.astro.uva.nl/~dominik/Tools/outline-magic.el outline-magic.el] by CarstenDominik can be used to obtain the feel of org-mode outline
-  navigation when you use OutlineMode or OutlineMinorMode in other types of files (for example, source code.)
-
-* [http://repo.or.cz/w/org-mode.git?a=blob_plain;f=lisp/org-w3m.el;hb=HEAD GIT:org-w3m.el] -- Copy and paste from w3m buffer to [[OrgMode]].
-
-* [http://www.emacswiki.org/emacs/OrgMode-OSD Display Appointments Using OSD on Gnome]
-* [http://gitorious.org/bkuhn-small-hacks/org-mode/blobs/master/planner2org.plx A small Perl script that will convert data to orgmode] format from PlannerMode format.
-* Lisp:org-assoc-tags.el Allow user to have list of associated tags, that are automatically assigned to the item.
-* inlimg.el in [NxhtmlMode nXhtml] (> v 1.88) lets you display images inline in org files.
-* FreeMind lets you import/export between org-mode and freemind file format.
-* [[mobileorg]] ([http://mobileorg.ncogni.to/ home page]) is an iPhone and iPod Touch application for storing, searching, viewing and editing Org-mode files
-* OrgOutlook lets you integrate with Microsoft Outlook
-* OutlookFlagToOrgTask exports emails flagged in Outlook to an Org file.
+* Lisp:org-mairix.el は[http://www.rpcurnow.force9.co.uk/mairix/ mairix]電子メール検索とオルグモードを統合します.
+* CarstenDominik作[http://www.astro.uva.nl/~dominik/Tools/outline-magic.el outline-magic.el]は異なる種類のファイルで(例えば, ソースコード)アウトラインモードもしくはアウトラインマイナーモードをあなたが使うときオルグモードアウトラインナビゲーションのフィールを得ることができる.
+* [http://repo.or.cz/w/org-mode.git?a=blob_plain;f=lisp/org-w3m.el;hb=HEAD GIT:org-w3m.el] -- w3mバッファから[[オルグモード]]へコピペ.
+* [http://www.emacswiki.org/emacs/OrgMode-OSD Gnome上のOSDを使ってアポイントメントを表示する]
+* [[プランナーモード]]フォーマットからオルグモードフォーマットへデータを変換する[http://gitorious.org/bkuhn-small-hacks/org-mode/blobs/master/planner2org.plx 小さなPerlスクリプト].
+* Lisp:org-assoc-tags.el はアイテムに自動的に割り当てられる, 関連タグのリストをユーザが持つことを許します.
+* [NxhtmlMode nXhtml](バージョン1.88以上)のinlimg.elはオルグファイルの行中でイメージを表示できます.
+* FreeMindはオルグモードとfreemindファイル形式の間でインポート/エクスポートできます.
+* [[mobileorg]] ([http://mobileorg.ncogni.to/ ホームページ])はオルグモードファイルを保存, 検索, 閲覧そして編集するためのiPhoneおよびiPod Touchアプリケーションです.
+* OrgOutlookはMicrosoft Outlookと統合できます.
+* OutlookFlagToOrgTask はOutlookでフラグがついているEmailをオルグファイルへエクスポートする.
 * Lisp:org-table-comment.el provides orgtbl-mode (via orgtbl-comment-mode) support for modes that don't support block comments. 
+
 * Lisp:org-occur-goto.el allows you to jump quickly anywhere in your open org buffers using a dynamic version of the multi-occur interface
+
 * Lisp:org-search-goto.el a variant of the above package which supports matching multiple substrings given in any order
+
 * Lisp:org-search-goto-ml.el a variant of the above package which supports matches across line boundaries in the whole entry
 
 
@@ -177,7 +191,6 @@ This function uses org-mode support for plain list to facilitate dragging URLs f
 </pre>
 
 === Turn header lines into apparent visible separators ===
-
 To make header lines more apparently visible in the buffer, set them a background color and change this part of `org-set-font-lock-defaults', so that the header line is drawn across the screen:
 
 <pre>
@@ -189,14 +202,13 @@ To make header lines more apparently visible in the buffer, set them a backgroun
 The only change is the `\xa' character is added before the last closing paren. This feature has been added to org-mode; see `org-fontify-whole-heading-line'.
 
 === リンクを追う ===
-
 To follow links with RET, rather than a 2 key combo:
 
     (setq org-return-follows-link t)
 
 You can also make TAB follow links in a similar way.
 
-=== Opening pdf at specific page ===
+=== 指定したページでPDFを開く ===
 To open links of type [~/test.pdf::3] i.e. open file at page 3:
 <pre>
     (delete '("\\.pdf\\'" . default) org-file-apps)
@@ -214,7 +226,6 @@ To open a link with a program other than the default(e.g. modify a pdf rather th
 </pre>
 
 === Orgテーブルのカラムをソートする ===
-
 Org-Mode provide org-table-sort-lines ##C-c ^## to sort all  the table lines based on a column. But sometime one need to sort just one column :
 <pre>
 
@@ -286,14 +297,12 @@ Org-Mode provide org-table-sort-lines ##C-c ^## to sort all  the table lines bas
 
 </pre>
 === Wikipediaを編集する ===
-
-Org Mode can be easily configured to help edit *Wikipedia* articles by changing outline-regexp in the mode hook:
-
+オルグモードはモードフックでoutline-regexpを変更することによってWikipadiaの記事編集を楽にするための設定を簡単にできるようになります:
 <pre>
 (add-hook 'org-mode-hook '(lambda () (setq outline-regexp "=+")))
 </pre>
 
-If you use WThreeM, add the following instead:
+もしあなたがWThreeMを使っているなら, 次を代わりに追加して:
 <pre>
 (setq w3m-form-textarea-edit-mode 'org-mode)
 (add-hook 'w3m-form-input-textarea-mode-hook
@@ -302,8 +311,7 @@ If you use WThreeM, add the following instead:
 </pre>
 
 === UTF-8 チェックボックスをエクスポートする ===
-
-This snippet turns <code>- [X]</code> into ☑ and <code>- [ ]</code> into ☐.
+このスニペットは<code>- [X]</code>を☑へ<code>- [ ]</code>を☐へ返す.
 
 <pre>
 (defun sacha/org-html-checkbox (checkbox)
@@ -317,8 +325,8 @@ This snippet turns <code>- [X]</code> into ☑ and <code>- [ ]</code> into ☐.
 </pre>
 
 === 開かれているオルグモードバッファを整頓する ===
-The following codes allow refile to opened orgmode buffer files. (Currently set at level 1, to avoid too many refile targets when there are lots of orgmode files opened).
-
+次のコードは開かれているオルグモードバッファをファイルへ整頓することを可能にします.
+(たくさんオルグファイルが開かれているときにたくさんターゲットを整理するのを防ぐために,現在はレベル1に設定されています).
 <pre>
 (defun ixp/org-buffer-files ()
   "Return list of opened orgmode buffer files"
@@ -333,7 +341,7 @@ The following codes allow refile to opened orgmode buffer files. (Currently set 
 
 [:discussion]
 == ディスカッション ==
-Discussion moved to [[Comments_on_OrgMode|Talk page]] 
+ディスカッションは[[Comments_on_OrgMode|Talk page]]へ移されました
 
 
 == カテゴリ ==
