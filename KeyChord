@@ -70,6 +70,8 @@ does not work for me."
 
 -- Alf Lervåg
 
+: Sorry, in version 0.6 there is a bug in 'key-chord-unset-global`. It will be fixed in the next version. (In the mean time, your workaround should work, but I have not tested it. Or you could set a null command to unset a chord: <code>(key-chord-define-global "xy" nil)</code> .) -- DavidAndersson
+
 [new:AlexDaniel:2014-11-01 19:25 UTC]
 This is amazing! But I have to point out one negative effect... When I started learning emacs, I was frustrated by all of the weird key combinations I had to use. It felt very uncomfortable so I started searching for a solution and found KeyChord. Since then I was mapping every command to chords if I used it at least once in two days. It feels great!
 
