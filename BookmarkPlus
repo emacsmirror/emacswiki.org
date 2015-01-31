@@ -1828,7 +1828,7 @@ associated Windows `Open' applications:
 
 * '''`M-RET''''     -- `bmkp-bmenu-w32-open'
 * '''`M-mouse-2'''' -- `bmkp-bmenu-w32-open-with-mouse'
-* '''`M-o''''       -- `bmkp-bmenu-w32-open-select'
+* '''`M-o''''       -- `bmkp-bmenu-w32-jump-to-marked'
 
 Windows file associations are always available to you, in addition
 to any other file associations that you define using
