@@ -197,6 +197,17 @@ You can also accomplish this with AppleScript, allowing you to open Emacs from s
 
 This [https://gist.github.com/jaeschliman/8591515 Gist] shows a modification made to Emacs source which opens each new instance of Emacs with a unique icon. There is a [http://www.reddit.com/r/emacs/comments/1w04hq/change_running_emacsapp_icon/ reddit discussion] that goes into further detail about this hack.
 
+[new]
+Instead of the AppleScript, I added this command to my .emacs:
+
+[code]
+(defun new-emacs ()
+  (interactive)
+  (shell-command "open -n -a /Applications/MacPorts/Emacs.app"))
+[/code]
+
+"M-x new-emacs" from your existing Emacs will open a new instance.
+
 === Problems with shell-mode or TrampMode? ===
 
 If you cannot get TrampMode to login via ssh or even sshx, and you cannot start an ssh session from within ShellMode, try:
