@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jan 29 15:15:16 2015 (-0800)
+;; Last-Updated: Sat Jan 31 08:46:30 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 14941
+;;     Update #: 14942
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1694,7 +1694,7 @@
 ;;
 ;;    `M-RET'     - `bmkp-bmenu-w32-open'
 ;;    `M-mouse-2' - `bmkp-bmenu-w32-open-with-mouse'
-;;    `M-o'       - `bmkp-bmenu-w32-open-select'
+;;    `M-o'       - `bmkp-bmenu-w32-jump-to-marked'
 ;;
 ;;  Windows file associations are always available to you, in addition
 ;;  to any other file associations that you define using
