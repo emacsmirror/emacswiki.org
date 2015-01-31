@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 14 May 2011
 ;; Version: 1
-;; RCS Version: $Rev: 423 $
+;; RCS Version: $Rev: 456 $
 ;; Keywords: sunrise commander, w32, ms windows
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-w32-addons.el
 ;; Compatibility: GNU Emacs 23+
@@ -73,6 +73,9 @@
 ;; the properties (Desktop.ini) of such a folder use the
 ;; `sr-w32-follow-shortcuts' flag as described above.
 
+;; * Use Shift-W to copy the full paths of all marked files and dirs to the kill
+;; ring in windows-compatible form (i.e. using backslash as the file separator).
+
 ;; Enjoy ;-)
 
 ;;; Code:
@@ -96,6 +99,7 @@ affect the target of the shortcut."
   "Local keymap used inside the \"Windows Drives and Special Folders\" pane.")
 
 (define-key sr-mode-map "\C-cw" 'sr-w32-virtual-entries)
+(define-key sr-mode-map "\S-w" 'sr-w32-copy-paths-as-kill)
 
 (defadvice sr-dired-prev-subdir
   (around sr-w32-advice-sr-dired-prev-subdir (&optional count))
@@ -265,6 +269,17 @@ Function resolve_lnk(linkFile)
 End Function")
         (write-file script-path)))
     script-path))
+
+(defun sr-w32-copy-paths-as-kill ()
+  "Copy windows paths of marked (or next ARG) files into the kill ring.
+In all paths copied slash characters are replaced with backslashes.
+The names are separated by a space."
+  (interactive)
+  (let* ((unix (dired-get-marked-files))
+         (winz (mapcar (lambda (x) (replace-regexp-in-string "/" "\\\\" x)) unix))
+         (string (mapconcat #'identity winz " ")))
+    (kill-new string t)
+    (message "%s" string)))
 
 (defun sunrise-x-w32-addons-unload-function ()
   (sr-ad-disable "^sr-w32-"))
