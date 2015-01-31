@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:34:30 2015 (-0800)
+;; Last-Updated: Fri Jan 30 16:05:46 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 8490
+;;     Update #: 8497
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -580,6 +580,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/01/30 dadams
+;;     dired-read-dir-and-switches: Remove any killed buffers from dired-buffers, before using for completion.
 ;; 2014/10/25 dadams
 ;;     diredp-dired-union-interactive-spec: Typo: quote buffer-name-history.  Pass other-window STRING.
 ;;     diredp-dired-union-other-window: Pass other-window STRING.
@@ -1980,6 +1982,8 @@ end with a space."
                            #'read-directory-name
                          #'read-file-name)
                        (format "Dired %s(directory): " string) nil default-directory nil)
+            (dolist (db  dired-buffers) ; Remove any killed buffers from `dired-buffers'.
+              (unless (buffer-name (cdr db)) (setq dired-buffers  (delq db dired-buffers))))
             (let (;; $$$$$$$$ (insert-default-directory  nil)
                   (files                     ())
                   (dirbuf                    (completing-read (format "Dired %s(buffer name): " string)
@@ -3669,11 +3673,11 @@ dired+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+          "http://www.emacswiki.org/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cgi-bin/wiki/dired+.el")
+          "http://www.emacswiki.org/dired+.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/DiredPlus")
+          "http://www.emacswiki.org/DiredPlus")
   :link '(emacs-commentary-link :tag "Commentary" "dired+"))
  
 ;;; Face Definitions
@@ -4127,7 +4131,7 @@ hidden, but its contained files are also listed."
 ;;;###autoload
 (defun diredp-dired-union-other-window (dirbufs &optional switches) ; Bound to `C-x 4 D' in Dired
   "Same as `diredp-dired-union' but uses another window."
-  (interactive (diredp-dired-union-interactive-spec "other window "))
+  (interactive (diredp-dired-union-interactive-spec "in other window "))
   (diredp-dired-union-1 dirbufs switches 'OTHER-WINDOW))
 
 ;; $$$$$ Maybe I should set `dired-sort-inhibit' to t for now (?),
@@ -9292,7 +9296,7 @@ For just the latter, use \\<dired-mode-map>`\\[diredp-dired-plus-help]'."
            (get 'help-xref 'button-category-symbol)) ; `button.el'
   (define-button-type 'diredp-help-button
       :supertype 'help-xref
-      'help-function #'(lambda () (browse-url "http://www.emacswiki.org/cgi-bin/wiki/DiredPlus"))
+      'help-function #'(lambda () (browse-url "http://www.emacswiki.org/DiredPlus"))
       'help-echo
       (purecopy "mouse-2, RET: Dired+ documentation on the Emacs Wiki (requires \
 Internet access)")))
