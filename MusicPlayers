@@ -8,8 +8,8 @@
 * [http://home.gna.org/eap EmacsAlsaPlayer] -- //"Music Without Jolts"// - an extremely lightweight yet versatile Ogg/MP3 player featuring soft volume fading, unlimited playlists  (implemented as directories of symbolic links, which is great for other purposes such as burning CDs) and global control of your music from anywhere within Emacs (no need to switch buffers).  Oh... and there's a pretty comprehensive manual in a variety of formats too
 * [[GIMME]] -- XMMS2 client on Emacs
 * The Idiot Jukebox -- (http://quimby.gnus.org/jukebox/jukebox.html)
-* [https://svn.musicpd.org/libmpdee/trunk/ libmpdee] -- An elisp library to interface with [http://musicpd.org/ MPD], a music player daemon. Contains a small interactive interface as well. Written by [[Ramkumar]]
-* [[Mingus]] -- [http://musicpd.org/ MPD] client based on [https://svn.musicpd.org/libmpdee/trunk/ libmpdee], contains, but not limited to, extensive playlist editing. Written by Niels Giesen (pft)
+* [https://github.com/andyetitmoves/libmpdee libmpdee] -- An elisp library to interface with [http://musicpd.org/ MPD], a music player daemon. Contains a small interactive interface as well. Written by [[Ramkumar]]
+* [[Mingus]] -- [http://musicpd.org/ MPD] client based on [https://github.com/andyetitmoves/libmpdee libmpdee], contains, but not limited to, extensive playlist editing. Written by Niels Giesen (pft)
 * [http://www.asahi-net.or.jp/~pi9s-nnb/monk/ MonK] -- Multimedia Object Navigator Kluge - Interface for reading mp3, CD audio, ogg and more
 * [[Mpc]] -- major mode providing an interface to the [http://musicpd.org/ MPD] music player daemon, which aims to look and behave a bit like Rhythmbox. Bundled with Gnu Emacs 23.2 and later.
 * [[Mpg123]] -- interface to <code>mpg123</code> and <code>ogg123</code> -- works well!
