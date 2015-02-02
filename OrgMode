@@ -122,6 +122,7 @@ If you publish external sources to org mode agenda files, you'll need to refresh
 * Lisp:org-search-goto.el a variant of the above package which supports matching multiple substrings given in any order
 * Lisp:org-search-goto-ml.el a variant of the above package which supports matches across line boundaries in the whole entry
 * For those who track their time using org-mode (in macosx): [https://github.com/koddo/org-clock-statusbar-app|org-clock-statusbar-app]
+* https://github.com/JHeiner/BabelRoot contains code that runs org-babel-execute asynchronously in a term-mode buffer.
 
 [:elisp]
 == Related elisp code ==
