@@ -1,4 +1,3 @@
-[[de:English]]
 Is it possible to set the current directory for Emacs? After
 closing "all" buffers, `C-x C-f' reverts to the home directory.
 
