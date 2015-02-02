@@ -3,10 +3,6 @@ From the project's website: "Emacs-IDE is an Integrated Development Environment 
 http://home.gna.org/emacs-ide/
 
 [new]
-I developed another ide package. You can download it here:
-
-http://scm.mathematek.de/repos/emacside/wiki.html
-[new]
 How is this related to ECB (EmacsCodeBrowser)?
 
 I don't think they are related.  Maybe Emacs-IDE uses ECB, I don't know.  However, the former is designed to be run in a stand-alone Emacs instance, not as a package like the latter is.
