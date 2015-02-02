@@ -54,7 +54,7 @@ background:
 
     (defun gtags-update-hook()
       "Update GTAGS file incrementally upon saving a file"
-      (when ggtags-mode
+      (when gtags-mode
         (when (gtags-root-dir)
           (gtags-update-current-file))))
 
