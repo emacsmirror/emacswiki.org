@@ -1,0 +1,106 @@
+[[en:Glossary]]
+
+This is Japanese translating page and this is stub. Dont write in english. --gonbei
+
+Emacs jargon predates most user interfaces used today.
+See EmacsJargon for an introductory translation to/from Emacs-speak.
+See EmacsSymbolNotation for the ways Emacs and EmacsLisp types are presented.
+
+[[Manual:Glossary]]を参照されたし.
+
+* '''[::atom]''' -- [[cons]]ではないLisp entity. これは [[symbol]]s と文字列を含みます.
+* '''[::alist]''' -- a [[list]] whose elements are [[cons]]es.
+* [[bookmark]] -- just what it sounds like: セーブされたファイルもしくはバッファ中の場所
+* '''[::bound variable]''' -- [[symbol value]]を持つ[[variable]] 
+* [[buffer]] -- editing happens in buffers (ワークスペース)
+* car -- [[cons]]を参照されたし
+* cdr -- [[cons]]を参照されたし
+* '''[::character property]''' --  Emacs Lispマニュアルによれば「どう文字を振るまいどうそれはテキスト処理中に操作されそして表示されるべきか指定する名前付けされた文字の属性」.
+* [[chord]] -- a [[key sequence]] with keys pressed simultaneously
+* [[command]] -- 対話機能an InteractiveFunction
+* [[completion]] -- completing input in the [[minibuffer]] or text in another buffer
+* '''[::cons]''' (aka '''[::cons cell]''') -- A Lisp object that is composed of a pair of Lisp objects of any kind. The first is called the '''[::car]'''; the second is called the '''[::cdr]'''.  See also [[atom]].
+* [[cursor]] (text cursor) -- how it differs from the [[pointer]] (mouse pointer); its relation with [[point]]
+* '''[::custom file]''' -- file, other than your [[init file]] (##~/.emacs##), where customizations from Customize are saved. It is the value of [[variable]] `custom-file'.
+* [[Customize]] -- Emacs user interface for changing and saving preferences (settings)
+* '''[::default directory]''' -- directory assumed for the current buffer; it is the value of [[variable]] `default-directory'
+* [[device]] -- Under XEmacs, [[frame]]s are shown on devices (TTY, X, MS Windows, GTK)
+* [[display]] -- Under GNU Emacs, [[frame]]s are shown on displays (TTY, X)
+* [[doc string]] -- self-documentation for functions and variables
+* [[DWIM]] -- DoWhatIMean: sophisticated user-interface design that sometimes doesn't do what you intend or expect ;-)
+* [[DynamicScoping|dynamic scoping]] -- [[variable]] binding (value) behavior that means the last binding of a given variable wins -- lexical context does not govern binding
+* [[echo area]] -- Occupies the same [[frame]] space as the [[minibuffer]]. Used to display messages.
+* [[Electricity]] -- extra or sophisticated behavior (see also [[DWIM]])
+* [[Emacsen]] -- different Emacs implementations
+* '''[::Emacs Lisp]''' -- the [[Lisp]] dialect that Emacs uses. Much of Emacs is written in Emacs Lisp, and you can use Emacs Lisp to customize or extend Emacs.
+* [[extensible]] -- the `E' in "Emacs"
+* [[face]] -- Is it a [[font]]?  Is it a color?  No, it is a face!
+* [[font]] -- ???????? FIXME
+* [[frame]] -- Emacs [[window]]s are shown in frames (called "windows" outside of Emacs)
+* [[fringe]] -- thin strips at the left and right edges of a [[window]], with glyphs that indicate various things
+* '''[::function cell]''' -- the function associated with a [[symbol]]; aka '''[::symbol function]'''
+* [[GPL]] -- GNU General Public License: publishing license used for free software
+* [[header line]] -- at the top of a [[window]], used by some modes
+* [[Info]] -- Emacs's on-board help system: hypertext manuals (see InfoMode)
+* [[init file]] -- your personal startup file, loaded when Emacs starts up: ##~/.emacs## or ##~/_emacs##
+* InteractiveFunction -- [[command]]
+* '''[::key binding]''' -- a mapping (relation) between an Emacs command and a key sequence. A key binding can be a '''[::global key binding]''', a '''[::local key binding]''' (enabled only for a given [[major mode]]), or a '''[::minor-mode key binding]''' (enabled only for a given [[minor mode]])
+* [[isearch]] -- incremental search, which interactively searches for the search string character-by-character as you type it
+* [[keyboard macro]] -- a recording of [[key sequence]]s that you can replay
+* '''[::keymap]''' -- a collection of [[key binding]]s, that is, a mapping (relation) between Emacs [[command]]s and [[key sequence]]s. A keymap can be a '''[::global keymap]''', a '''[::local keymap]''' (applicable only to a given [[major mode]]), or a '''[::minor-mode keymap]''' (applicable only to a given [[minor mode]])
+* [[key sequence]] -- a key sequence can be bound to a [[command]], to execute it
+* '''[::kill]''' -- cut, that is, delete and copy to the [[kill ring]]
+* '''[::kill ring]''' -- ring of previously killed (cut) or copied text snippets; the value of [[variable]] `kill-ring'
+* [[lambda expression]] -- a function representation that is a [[sexp]] that evaluates to a [[cons]] whose [[car]] is the [[symbol]] `lambda'. (See [[WikiPedia:Lambda calculus]].)
+* [[line]] -- a line of text. See also [[line ending]].
+* [[line ending]] -- one or more characters at the end of a [[line]]
+* [[LineWrap|line wrap]] -- how [[line]]s that are wider than a [[window]] are displayed (unless they are truncated at the right edge)
+* '''[::list]''' -- A '''list''' is the [[symbol]] `nil' or a [[cons]] whose [[cdr]] is a [[list]].
+
+* '''[::macro]''' -- An EmacsLisp form that, when evaluated, translates a [[sexp]] that is a [[list]] into another such, which is then evaluated and its result is returned.  IOW, it rewrites (without evaluating) one sexp as another and then evaluates the latter.  It is typically defined using `defmacro'.  It can be expanded without evaluating the result, using `macroexpand'.  See Manual:macros.
+* [[major mode]] -- each [[buffer]] is in one major mode
+* [[mark]] -- a [[buffer]] location that you can change, return to...
+* '''[::marker]''' -- a Lisp object that contains information about a position in a [[buffer]] that is updated to track the same location should edits insert or delete text around it
+* '''[::mark ring]''' -- ring of [[#mark]]s.  [[#variable|Variable]] `mark-ring' holds the marks of the current buffer; variable `global-mark-ring' holds the global marks (across all buffers).
+* [[menu bar]] -- menus at the top of an Emacs [[frame]]
+* '''[::Meta] key''' (written '''`M-'''') -- a logical modifier key that is usually realized as the '''Alt''' keyboard key
+* [[minibuffer]] -- special [[buffer]] at the bottom of a [[frame]], which you use to enter commands
+* [[minor mode]] -- several minor modes can be active at the same time
+* [[mode line]] -- at the bottom of a [[window]], it describes the current [[buffer]] status
+* [[modifier key]] -- (1) a keyboard key that, when pressed, modifies the behavior of another keyboard key pressed at the same time (e.g. Control, Shift, Alt); (2) a soft key that does the same thing (e.g. Control, Shift, Meta, Hyper, Super)
+* [[mule]] -- multilingual environment
+* [[narrowing]]  -- limiting [[buffer]] scope temporarily
+* '''[::obarray]''' -- a [[symbol]] table implemented as a special kind of vector.  Think of it as a hash table for looking up symbols.  The value of [[variable]] `obarray' is the obarray used by default by `intern' and `read'. See [[Manual:Creating Symbols]].
+* [[overlay]] -- a [[property list]] that is similar to a [[text property]] list, but which is associated with [[buffer]] positions, not with characters. Typically used to highlight text.
+* '''[::page]''' -- A block of text delimited by [[form feed]] (aka [[page break]]) characters  or the beginning or end of the [[buffer]].  See Manual:Pages
+* '''[::plist]''' (aka '''[::property list]''') -- A list with an even number of elements that are treated alternately as keys and their values. Both keys and values can be any Lisp objects. A plist can be part of a [[symbol]] or disembodied (independent of any symbol).
+* [[point]] -- where text insertion occurs (sometimes called "cursor position" outside Emacs).
+* [[pointer]] (mouse pointer) -- how it differs from the [[cursor]] (text cursor)
+* [[prefix argument]] -- a simple way to provide arguments to some [[command]]s: `C-u', `##C-+##', `##C--##', ##C-##''##N##'' (''##N##'' a digit)
+* '''[::prefix key]''' -- a [[key]] that is bound to a [[keymap]], which is called a '''[::prefix keymap]'''
+* [[rectangle]] -- characters between a pair of columns on the screen.
+* [[regexp]] -- a regular expression
+* '''[::regexp search ring]''' -- [[ring]] of previously used [[regexp]] search strings; the value of [[variable]] `regexp-search-ring' (see also [[search ring]])
+* [[region]] -- the area between [[point]] and [[mark]], sometimes active, sometimes inactive
+* '''[::register]''' -- a location for temporarily saving text (a string), a [[rectangle]], a [[buffer]] position, a [[frame]] or [[window]] configuration
+* [[regular expression]] (aka [[regexp]]) -- a symbolic expression with wildcards often used as a search pattern
+* RequiredFeature -- when Lisp code `require's a Lisp library, or '''feature''', the requirement can be '''hard''' or '''soft'''
+* '''[::ring]''' -- a data structure that acts as if it is circular (no end)
+* [[scroll bar]] -- just what you think, controlled by [[command]] and [[variable]] `scroll-bar-mode'
+* '''[::search ring]''' -- [[ring]] of previously used search strings; the value of [[variable]] `search-ring' (see also [[regexp search ring]])
+* [[secondary selection]] -- like an additional [[region]], but less ephemeral
+* [[sexp]] -- a symbolic expression in Lisp
+* [[special display buffer]] (aka [[special buffer]]) -- a [[buffer]] that is always displayed in its own, dedicated frame
+* '''[::symbol]''' (aka '''variable''') -- a Lisp object that has a name, a [[value cell]], a [[function cell]], and a [[plist]] (property list)
+* '''[::tag]''' -- a name indexed in a [[tags file]] so you can quickly look up its definition
+* [[text property]] -- a property attached to a character that affects its display or behavior
+* TtyFrames -- Teletype (TTY), or terminal, screens
+* [[universal argument]] -- the command bound to `C-u'
+* '''[::user option]''' (aka '''[::user variable]''', aka '''[::option]''') -- a [[variable]] that can be customized using Customize or set using `M-x set-variable'
+* '''[::value cell]''' -- the value of a [[symbol]] (variable); aka '''[::symbol value]'''
+* '''[::variable]''' -- a [[symbol]], whether [[bound variable|bound]] or not
+* [[window]] -- a [[frame]] pane; it shows a [[buffer]]
+* '''[::yank]''' -- 貼り付け
+
+----
+[[カテゴリ・用語集]]
