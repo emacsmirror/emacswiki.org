@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb  2 21:08:25 2015 (-0800)
+;; Last-Updated: Mon Feb  2 21:21:27 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 8565
+;;     Update #: 8568
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -257,14 +257,14 @@
 ;;   * `diredp-add-to-dired-buffer' and
 ;;     `diredp-add-to-dired-buffer-other-window', bound globally to
 ;;     `C-x E' and `C-x 4 E' ("E" for extra files), let you add
-;;     arbitrary files to an existing Dired buffer.
+;;     arbitrary file and directory names to an existing Dired buffer.
 ;;
 ;;   * `diredp-dired-union' and `diredp-dired-union-other-window',
 ;;     bound globally to `C-x D' and `C-x 4 D', let you take the union
 ;;     of multiple Dired listings, or convert an ordinary Dired
 ;;     listing to an explicit list of absolute file names.  With a
-;;     non-positive prefix arg, you can add extra files, just as for
-;;     `diredp-add-to-dired-buffer'.
+;;     non-positive prefix arg, you can add extra file and directory
+;;     names, just as for `diredp-add-to-dired-buffer'.
 ;;
 ;;  Some other libraries, such as `Bookmark+' and `Icicles', make it
 ;;  easy to create or re-create Dired buffers that list specific files
