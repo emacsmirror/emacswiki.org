@@ -22,7 +22,7 @@ These hooks are covered in detail in the following sections.
 
 `erc-mode-hook' is called for each ERC buffer, be it a server buffer, channel buffer, or otherwise.
 
-`erc-join-hook` is called when ERC joins a new channel.
+`erc-join-hook' is called when ERC joins a new channel.
 
 `erc-timer-hook' is called every time something is received from the server.
 Note that this is not a true timer, so if there's no activity on the server
