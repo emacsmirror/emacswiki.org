@@ -76,7 +76,7 @@ PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 #change this
 EMACSCLIENT=/opt/emacs23/bin/emacsclient
-EVALEXIT="(progn (setq kill-emacs-hook 'nil) (kill-emacs))"
+EVALEXIT="(progn (kill-emacs))"
 
 # Exit if the package is not installed
 [ -x "$DAEMON" ] || exit 0
@@ -211,12 +211,9 @@ esac
 I use also this start script placed in /usr/bin/emacs
 <pre>
 #!/bin/bash
-USER=`id | sed 's/uid=[0-9][0-9]*(\([^)]*\)).*/\1/'`
-USERID=`user -u $USER`
-if test -e /tmp/emacs$USERID/server
+USERID=`id -u`
+if [ ! -e /tmp/emacs$USERID/server ]
 then
-	echo "Ready."
-else
 	echo "Starting server."
 	/etc/init.d/emacs start
         while [ ! -e "/tmp/emacs$USERID/server" ] ; do sleep 1 ; done
