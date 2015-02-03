@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Jan 28 15:40:47 2015 (-0800)
+;; Last-Updated: Tue Feb  3 13:40:19 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7585
+;;     Update #: 7586
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -7742,8 +7742,7 @@ You can use this only in `Occur' mode (commands such as `occur' and
                          (re-search-forward "^\\s-+\\([0-9]+\\):" (line-end-position) 'NOERROR)
                          (or (format "%5d" (string-to-number (match-string 1))) ""))))
            (mkr   (occur-mode-find-occurrence))
-           (buf   (marker-buffer mkr))
-           (file  (or (buffer-file-name buf) bmkp-non-file-filename)))
+           (buf   (marker-buffer mkr)))
       (save-excursion (with-current-buffer buf
                         (goto-char mkr)
                         (if (not prefix)
