@@ -20,10 +20,10 @@ Here are some of the things '''Dired+''' does:
 
 * Makes navigational commands wrap around (by default -- customize option '''`diredp-wrap-around-flag'''' if you do not want this feature).  For example, if you use `C-M-n' to go to the next inserted subdirectory and there is none, it wraps around to the first one.
 
-* Provides commands `diredp-add-to-dired-buffer' and `diredp-add-to-dired-buffer-other-window', bound globally to
-'''`C-x E'''' and '''`C-x 4 E'''' ("E" for extra files), that let you add arbitrary files to an existing Dired buffer.
+* Provides command `diredp-add-to-dired-buffer', bound globally to
+'''`C-x E'''' ("E" for extra files), which lets you add arbitrary files to an existing Dired buffer.
 
-* Provides commands `diredp-dired-union' and `diredp-dired-union-other-window', bound globally to '''`C-x D'''' and '''`C-x 4 D'''', that let you take the ''union'' of multiple Dired listings, or convert an ordinary Dired
+* Provides command `diredp-dired-union', bound globally to '''`C-x D'''', which lets you take the ''union'' of multiple Dired listings, or convert an ordinary Dired
 listing to an explicit list of absolute file names.  That is, the new Dired buffer contains all of the files and subdirs listed in the Dired buffers you choose.   With a
 non-positive prefix arg, you can add extra files, just as for
 `diredp-add-to-dired-buffer'.  The chosen Dired listings are included in the order you choose
