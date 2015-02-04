@@ -11,3 +11,20 @@ What it does is written on the first line if you visit the site.
 
 -- Lis 2015-02-04 08:36 UTC
 
+
+----
+
+Hm, perhaps it's my browser. All I see is this:
+
+{{{
+Repository URL
+http://scm.mathematek.de/repos/emacside
+master
+15:36d911124czipbrowse
+louis.hoefler@mathematek.de, Feb 3 at 7:45pm
+louis.hoefler@mathematek.de, Feb 3 at 7:45pm
+Fixed ei-reload-project after one has changed eide.el
+}}}
+
+-- AlexSchroeder 2015-02-04 15:11 UTC
+
