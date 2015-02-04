@@ -1,6 +1,12 @@
 Another small yet powefull implementation of an IDE in Emacs.
 
-* http://scm.mathematek.de/repos/emacside/wiki.html -- note the very innocuous zip link
+It is a wrapper for compilers and shells.
+It allows compiling applications just with emacs, without make.
 
+Emacside is simple and does not need any additional packages.
+
+
+* http://scm.mathematek.de/repos/emacside/wiki.html
+Download the zip file on the main review site.
 ----
 CategoryProgramming
