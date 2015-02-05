@@ -1,0 +1,36 @@
+[[en:EmacsSymbolNotation]]
+This is Japanese translating page and this is stub. Dont write in english. -- gonbei
+Here are examples of notational symbols you might find in Emacs and EmacsLisp.
+
+; ##C-x C-s##:  this is a KeySequence, see EmacsKeyNotation.
+; ##\M-a, [(control f12)], (kbd "<f6>"), [\S-f12], [?\C-c ?v ?p]##:  different notations for describing key sequences in Emacs
+; ##77##:  a number
+; ###o115##:  an octal number, in this case 77
+; ###x4d##:  an hexadecimal number, in this case 77
+; ##U+004D##:  is used by Emacs to refer to an Unicode character, in this case M
+; ##?M##:  the character M. It is translated to a number
+; ##"M"##:  a string which contains the letter M
+; ##(a)##:  this is a function call to a function named a
+; ##'a##:  is a symbol named a. The apostrophe means quoting; it's the same as using this function: ##(quote a)##
+; ##a##:  a variable named a
+; ##'(a b)##:  a quoted list with two elements, a and b
+; ##`(a ,b)##:  see BackquoteSyntax. The backquote (`) is like the apostrophe, but items prefixed by a comma (,) are not quoted
+; ##`(a ,@b)##: another backquote operator: ##,@## splices the value of ##b## into the list whose car is ##a##.  That is, the example expression here returns a list whose [[car]] is the [[symbol]] ##a## and whose [[cdr]] is the [[symbol value]] of ##b##.  The value of ##b## is often a list, but it need not be.
+; ##'(2 . (4 5))##:  the dot is the cons operator (it joins `car' and `cdr' and creates a list). It is equivalent to ##(cons 2 '(4 5))##. Both are the same as ##'(2 4 5)##
+; ##:a##:  this is called keyword. It is really a symbol which starts with a colon. You don't need to quote it with '
+; ###'a##:  this is used to quote a function. Just as ##'argument## expands into ##(quote argument)##, ###'argument## expands into (function argument)
+; ##t##:  this is *not* a variable called t; it is a constant symbol which represents true
+; ##nil##:  constant symbol which represents false
+; ##;##:  the character used to comment text until the end of the line
+; ##(let* ((a 3)) a)##:  the asterisk (*) has no special meaning. This is just a normal function which happens to be called let* (just as it could have been called le*t)
+; ##(+ 2 3)##:  the + is just a normal function, which has the one-letter name +
+; ##,(+ 2 3)##:  don't be confused; this is just the syntax that people in the EmacsChannel use to communicate with ErBot :-)
+; ##^L##:  you might see this character inside a file. It is a page break, used to separate a buffer in logical sections. See function narrow-to-page
+; ##^M##: this is the Emacs representation for the RET character | also CARRIAGE RETURN (CR)
+; ##*Messages*##: some buffers have asterisks at their name's start and end; these buffers are typically for system output (ex: log, errors, debug)
+; ###<buffer *ielm*>##: it denotes a buffer (not a buffer name) which you can get with ##(get-buffer "*ielm*")##
+; ###("abc") and #("abc" 0 3 (face bold))##: propertized text strings. Try ##(insert (propertize "abc" 'face 'bold))## on `normal-mode' and you will see that text bold.
+; ###[(x) "^H\301\\\207" [x 3] 2]##: byte-compiled function (see CompiledFile), in this case the result of ##(byte-compile (lambda (x) (+ x 3)))##. That resulting function can then be called with `funcall'.
+
+----
+[[カテゴリ・用語集]]
