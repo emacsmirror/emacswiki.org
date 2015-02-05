@@ -1,36 +1,104 @@
-[[en:EmacsSymbolNotation]]
-This is Japanese translating page and this is stub. Dont write in english. -- gonbei
-Here are examples of notational symbols you might find in Emacs and EmacsLisp.
+[[en:Glossary]]
 
-; ##C-x C-s##:  this is a KeySequence, see EmacsKeyNotation.
-; ##\M-a, [(control f12)], (kbd "<f6>"), [\S-f12], [?\C-c ?v ?p]##:  different notations for describing key sequences in Emacs
-; ##77##:  a number
-; ###o115##:  an octal number, in this case 77
-; ###x4d##:  an hexadecimal number, in this case 77
-; ##U+004D##:  is used by Emacs to refer to an Unicode character, in this case M
-; ##?M##:  the character M. It is translated to a number
-; ##"M"##:  a string which contains the letter M
-; ##(a)##:  this is a function call to a function named a
-; ##'a##:  is a symbol named a. The apostrophe means quoting; it's the same as using this function: ##(quote a)##
-; ##a##:  a variable named a
-; ##'(a b)##:  a quoted list with two elements, a and b
-; ##`(a ,b)##:  see BackquoteSyntax. The backquote (`) is like the apostrophe, but items prefixed by a comma (,) are not quoted
-; ##`(a ,@b)##: another backquote operator: ##,@## splices the value of ##b## into the list whose car is ##a##.  That is, the example expression here returns a list whose [[car]] is the [[symbol]] ##a## and whose [[cdr]] is the [[symbol value]] of ##b##.  The value of ##b## is often a list, but it need not be.
-; ##'(2 . (4 5))##:  the dot is the cons operator (it joins `car' and `cdr' and creates a list). It is equivalent to ##(cons 2 '(4 5))##. Both are the same as ##'(2 4 5)##
-; ##:a##:  this is called keyword. It is really a symbol which starts with a colon. You don't need to quote it with '
-; ###'a##:  this is used to quote a function. Just as ##'argument## expands into ##(quote argument)##, ###'argument## expands into (function argument)
-; ##t##:  this is *not* a variable called t; it is a constant symbol which represents true
-; ##nil##:  constant symbol which represents false
-; ##;##:  the character used to comment text until the end of the line
-; ##(let* ((a 3)) a)##:  the asterisk (*) has no special meaning. This is just a normal function which happens to be called let* (just as it could have been called le*t)
-; ##(+ 2 3)##:  the + is just a normal function, which has the one-letter name +
-; ##,(+ 2 3)##:  don't be confused; this is just the syntax that people in the EmacsChannel use to communicate with ErBot :-)
-; ##^L##:  you might see this character inside a file. It is a page break, used to separate a buffer in logical sections. See function narrow-to-page
-; ##^M##: this is the Emacs representation for the RET character | also CARRIAGE RETURN (CR)
-; ##*Messages*##: some buffers have asterisks at their name's start and end; these buffers are typically for system output (ex: log, errors, debug)
-; ###<buffer *ielm*>##: it denotes a buffer (not a buffer name) which you can get with ##(get-buffer "*ielm*")##
-; ###("abc") and #("abc" 0 3 (face bold))##: propertized text strings. Try ##(insert (propertize "abc" 'face 'bold))## on `normal-mode' and you will see that text bold.
-; ###[(x) "^H\301\\\207" [x 3] 2]##: byte-compiled function (see CompiledFile), in this case the result of ##(byte-compile (lambda (x) (+ x 3)))##. That resulting function can then be called with `funcall'.
+Emacs jargon predates most user interfaces used today.
+
+Emacs語への/からの入門の翻訳のためにEmacsJargonを参照されたし.
+See EmacsSymbolNotation for the ways Emacs and EmacsLisp types are presented.
+
+[[Manual:Glossary]]を参照されたし.
+
+* '''[::atom]''' -- [[cons]]ではないLisp実体. これは[[symbol]]と文字列を含みます.
+* '''[::alist]''' -- その要素が[[cons]]である[[list]].
+* [[bookmark]] -- 正確に言うとそれはセーブされたファイルもしくはバッファ中の場所ような何かに思われる
+* '''[::bound variable]''' -- [[symbol value]]を持つ[[variable]] 
+* [[buffer]] -- 編集することがバッファ(ワークスペース)で起こります
+* car -- [[cons]]を参照されたし
+* cdr -- [[cons]]を参照されたし
+* '''[::character property]''' --  Emacs Lispマニュアルによれば「どう文字を振るまいどうそれはテキスト処理中に操作されそして表示されるべきか指定する名前付けされた文字の属性」.
+* [[chord]] -- a [[key sequence]] with keys pressed simultaneously
+* [[command]] -- 対話機能/InteractiveFunction
+* [[completion]] -- [[minibuffer]]もしくは他のバッファの中のテキストでの入力を完璧にする
+* '''[::cons]''' ('''[::cons cell]'''とも知られている) --  いかなるのLispオブジェクトのペアからなるLispオブジェクト. 最初は'''[::car]'''と呼ばれ; 2番めは'''[::cdr]'''と呼ばれます. [[atom]]も参照されたし.
+* [[cursor]] (テキストカーソル) -- [[pointer]](マウスポインタ)からそれはどう違う; its relation with [[point]]
+* '''[::custom file]''' -- file, other than your [[init file]] (##~/.emacs##), where customizations from Customize are saved. It is the value of [[variable]] `custom-file'.
+* [[Customize]] -- Emacs user interface for changing and saving preferences (settings)
+* '''[::default directory]''' -- directory assumed for the current buffer; it is the value of [[variable]] `default-directory'
+* [[device]] -- XEmacsのもとでは, [[frame]]はデバイス上に表示されます(TTY, X, MS Windows, GTK)
+* [[display]] -- GNU Emacsのもとでは, [[frame]]はディスプレイ上に表示されます(TTY, X)
+* [[doc string|説明文字列]] -- 関数と変数の自己文書化
+* [[DWIM]] -- DoWhatIMean: sophisticated user-interface design that sometimes doesn't do what you intend or expect ;-)
+* [[DynamicScoping|dynamic scoping]] -- [[variable]] binding (value) behavior that means the last binding of a given variable wins -- lexical context does not govern binding
+* [[echo area]] -- [[minibuffer]]として同じ[[frame]]スペースを占拠する. メッセージを表示するのに使われる.
+* [[Electricity]] -- extra or sophisticated behavior ([[DWIM]]も参照されたし)
+* [[Emacsen]] -- 異なるEmacs実装
+* '''[::Emacs Lisp]''' -- the [[Lisp]] dialect that Emacs uses. Much of Emacs is written in Emacs Lisp, and you can use Emacs Lisp to customize or extend Emacs.
+* [[extensible]] -- the `E' in "Emacs"
+* [[face]] -- それは[[font]]ですか?  それは色ですか?  いいえ, それはfaceです!
+* [[font]] -- ???????? 私を修正してください
+* [[frame]] -- Emacs [[window]]s are shown in frames (called "windows" outside of Emacs)
+* [[fringe]] -- thin strips at the left and right edges of a [[window]], with glyphs that indicate various things
+* '''[::function cell]''' -- the function associated with a [[symbol]]; aka '''[::symbol function]'''
+* [[GPL]] -- GNU 一般公衆利用許諾書: フリーソフトウェアのために使われている公開ライセンス
+* [[header line]] -- [[window]]の上部, いくつかのモードによって使われている
+* [[Info]] -- Emacs's on-board help system: hypertext manuals (InfoModeを参照されたし)
+* [[init file]] -- Emacs起動時に読み込まれる, あなたの個人的な起動ファイル: ##~/.emacs## もしくは ##~/.emacs.d/init.el## もしくは ##~/_emacs##
+* InteractiveFunction -- [[command]]
+* '''[::key binding]''' -- a mapping (relation) between an Emacs command and a key sequence. A key binding can be a '''[::global key binding]''', a '''[::local key binding]''' (enabled only for a given [[major mode]]), or a '''[::minor-mode key binding]''' (enabled only for a given [[minor mode]])
+* [[isearch]] -- incremental search, which interactively searches for the search string character-by-character as you type it
+* [[keyboard macro]] -- あなたがリプレイできる[[key sequence]]のレコーディング
+* '''[::keymap]''' -- a collection of [[key binding]]s, that is, a mapping (relation) between Emacs [[command]]s and [[key sequence]]s. A keymap can be a '''[::global keymap]''', a '''[::local keymap]''' (applicable only to a given [[major mode]]), or a '''[::minor-mode keymap]''' (applicable only to a given [[minor mode]])
+* [[key sequence]] -- a key sequence can be bound to a [[command]], to execute it
+* '''[::kill]''' -- 切り取り, それは, 削除して[[kill ring]]へコピーする
+* '''[::kill ring]''' -- ring of previously killed (cut) or copied text snippets; the value of [[variable]] `kill-ring'
+* [[lambda expression]] -- a function representation that is a [[sexp]] that evaluates to a [[cons]] whose [[car]] is the [[symbol]] `lambda'. ([[WikiPedia:Lambda calculus]]を参照されたし.)
+* [[line]] -- テキストの行. [[line ending]]も参照されたし.
+* [[line ending]] -- one or more characters at the end of a [[line]]
+* [[LineWrap|line wrap]] -- how [[line]]s that are wider than a [[window]] are displayed (unless they are truncated at the right edge)
+* '''[::list]''' -- A '''list''' is the [[symbol]] `nil' or a [[cons]] whose [[cdr]] is a [[list]].
+* '''[::macro]''' -- An EmacsLisp form that, when evaluated, translates a [[sexp]] that is a [[list]] into another such, which is then evaluated and its result is returned.  IOW, it rewrites (without evaluating) one sexp as another and then evaluates the latter.  It is typically defined using `defmacro'.  It can be expanded without evaluating the result, using `macroexpand'.  Manual:macrosを参照されたし.
+* [[major mode]] -- each [[buffer]] is in one major mode
+* [[mark]] -- a [[buffer]] location that you can change, return to...
+* '''[::marker]''' -- a Lisp object that contains information about a position in a [[buffer]] that is updated to track the same location should edits insert or delete text around it
+* '''[::mark ring]''' -- ring of [[#mark]]s.  [[#variable|Variable]] `mark-ring' holds the marks of the current buffer; variable `global-mark-ring' holds the global marks (across all buffers).
+* [[menu bar]] -- Emacsの[[frame]]の上部にあるメニュー
+* '''[::Meta] key''' (written '''`M-'''') -- a logical modifier key that is usually realized as the '''Alt''' keyboard key
+* [[minibuffer]] -- [[frame]]の底にあるあなたがコマンドを入力するために使う特別な[[buffer]]
+* [[minor mode]] -- いくつかのマイナーモードは同時にアクティブにすることができます
+* [[mode line]] -- [[window]]の底にある, 現在の[[buffer]]状態を示します
+* [[modifier key]] -- (1) a keyboard key that, when pressed, modifies the behavior of another keyboard key pressed at the same time (e.g. Control, Shift, Alt); (2) a soft key that does the same thing (e.g. Control, Shift, Meta, Hyper, Super)
+* [[mule]] -- 多言語環境
+* [[narrowing]]  -- [[buffer]]スコープを一時的に制限する
+* '''[::obarray]''' -- a [[symbol]] table implemented as a special kind of vector.  Think of it as a hash table for looking up symbols.  The value of [[variable]] `obarray' is the obarray used by default by `intern' and `read'. [[Manual:Creating Symbols]]を参照されたし.
+* [[overlay]] -- [[text property]]リストに似ていながら文字列ではなく[[buffer]]位置に関連付けられる[[property list]]. 慣例的にテキストをハイライトするために使われる.
+* '''[::page]''' -- A block of text delimited by [[form feed]] (aka [[page break]]) characters or the beginning or end of the [[buffer]]. Manual:Pagesを参照されたし
+* '''[::plist]''' ('''[::property list]'''とも知られている) -- A list with an even number of elements that are treated alternately as keys and their values. Both keys and values can be any Lisp objects. A plist can be part of a [[symbol]] or disembodied (independent of any symbol).
+* [[point]] -- テキスト挿入が起こる場所(Emacs外では"cursor position"と時々呼ばれる).
+* [[pointer]] (マウスポインタ) -- [[cursor]](テキストカーソル)との違いについて
+* [[prefix argument]] -- 一部の[[command]]コマンドへ引数を提供する簡単な方法: ''C-u'', ''C-+'', ''C--'', ''C-''''N'' (''N'' a digit)
+* '''[::prefix key]''' -- a [[key]] that is bound to a [[keymap]], which is called a '''[::prefix keymap]'''
+* [[rectangle]] -- スクリーン上のカラムのペアの間の文字.
+* [[regexp]] -- 正規表現
+* '''[::regexp search ring]''' -- 前に使われた[[regexp]]検索語;`regexp-search-ring'[[variable]]の値の[[ring]]([[search ring]]も参照されたし)
+* [[region]] -- [[point]]と[[mark]]間のエリア, 時々アクティブになって, 時々アクティブにならない
+* '''[::register]''' -- テキスト(文字列), [[rectangle]], [[buffer]]ポジション, [[frame]]もしくは[[window]]設定を一時的に保存するための場所を
+* [[regular expression]] ([[regexp]]とも知られている) -- 検索パータンとしてしばしば使われているワイルドカードを伴うシンボリック式
+* RequiredFeature -- when Lisp code `require's a Lisp library, or '''feature''', the requirement can be '''hard''' or '''soft'''
+* '''[::ring]''' -- a data structure that acts as if it is circular (no end)
+* [[scroll bar]] -- just what you think, controlled by [[command]] and [[variable]] `scroll-bar-mode'
+* '''[::search ring]''' -- 前に使われた検索語;`search-ring'[[variable]]の値の[[ring]]([[regexp search ring]]も参照されたし)
+* [[secondary selection]] -- like an additional [[region]], but less ephemeral
+* [[sexp]] -- Lispでのシンボリック式
+* [[special display buffer]] ([[special buffer]]とも知られている) -- [[buffer]] that is always displayed in its own, dedicated frame
+* '''[::symbol]''' (aka '''variable''') -- Lispオブジェクトが持つ名前, [[value cell]], [[function cell]], そして[[plist]] (プロパティリスト)
+* '''[::tag]''' -- [[tags file]]にインデックスされた名前そういうわけであなたは定義をすぐに調べることができる
+* [[text property]] -- a property attached to a character that affects its display or behavior
+* TtyFrames -- テレタイプ(TTY), もしくはターミナル, スクリーン
+* [[universal argument]] -- `C-u'へバインドされているコマンド
+* '''[::user option]''' ('''[::user variable]''',  '''[::option]'''とも知られている) -- `M-x set-variable'を使って設定するかもしくはCustomizeを使ってカスタマイズすることができる[[variable]]
+* '''[::value cell]''' -- [[symbol]]の値 (variable); '''[::symbol value]'''とも知られている
+* '''[::variable]''' -- a [[symbol]], whether [[bound variable|bound]] or not
+* [[window]] -- [[frame]]ペイン; [[buffer]]を表示します
+* '''[::yank]''' -- 貼り付け
 
 ----
 [[カテゴリ・用語集]]
