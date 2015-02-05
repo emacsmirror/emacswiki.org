@@ -1,59 +1,42 @@
 [[en:MusicPlayers]]
 == MP3/Ogg-Vorbis/その他ミュージックプレイヤー (アルファベット順) ==
-
 * [[Amarok]] -- リモートコントロールジャイアントウルフ
 * [[Bongo]] -- 美しく, 柔軟で便利なメディアプレイヤー, EMMS 2.0と並行で開発された
 * [[BookmarkPlus#WindowsFileAssociations|Bookmarks as Playlists]]はMS Windowsファイル関連付けを使った -- 簡易プレイヤー, 何もしない
-* [[EMMS]] -- イーマックス　マルチメディア　システム
-* [http://home.gna.org/eap EmacsAlsaPlayer] -- //"Music Without Jolts"// - 非常に軽量なさらに多用途なOgg/MP3プレイヤーfeaturing ソフトボリュームフェージング, 無制限プレイリスト(CD作成のような他の目的に最適な,シンボリックリンクのディレクトリとして実装される) そしてEmacs中のどこからでもあなたの音楽のグローバル制御 (バッファ切り替えの必要なし).
-Oh... そしてあまりにも様々なフォーマットでのかなり包括的なマニュアルがあります.
-* [[GIMME]] -- Emacs上のXMMS2クライアント
-* The Idiot Jukebox -- (http://quimby.gnus.org/jukebox/jukebox.html)
-* [https://svn.musicpd.org/libmpdee/trunk/ libmpdee] -- ミュージックプレイヤーデーモン[http://musicpd.org/ MPD]のインターフェースへのelispライブラリ. 小さな対話式インターフェースを含む.
-[[Ramkumar]]によって書かれた
-* [[Mingus]] -- [https://svn.musicpd.org/libmpdee/trunk/ libmpdee]を(含む)基にした,これらに限定されない広範囲のプレイリスト編集を含む[http://musicpd.org/ MPD]クライアント.
-Niels Giesen (pft)によって書かれた
+* [[EMMS]] -- イーマックス マルチメディア システム
+* [http://home.gna.org/eap EmacsAlsaPlayer] -- //"Music Without Jolts"// - 非常に軽量なさらに多用途なOgg/MP3プレイヤーfeaturing ソフトボリュームフェージング, 無制限プレイリスト(CD作成のような他の目的に最適な,シンボリックリンクのディレクトリとして実装される) そしてEmacs中のどこからでもあなたの音楽のグローバル制御 (バッファ切り替えの必要なし). Oh... そしてあまりにも様々なフォーマットでのかなり包括的なマニュアルがあります.
+* [[GIMME]] -- <nowiki>Emacs上のXMMS</nowiki>2クライアント
+* [http://quimby.gnus.org/jukebox/jukebox.html The Idiot Jukebox]
+* [https://svn.musicpd.org/libmpdee/trunk/ libmpdee] -- ミュージックプレイヤーデーモン[http://musicpd.org/ MPD]のインターフェースへのelispライブラリ. 小さな対話式インターフェースを含む. [[Ramkumar]]によって書かれた
+* [[Mingus]] -- [https://svn.musicpd.org/libmpdee/trunk/ libmpdee]を(含む)基にした,これらに限定されない広範囲のプレイリスト編集を含む[http://musicpd.org/ MPD]クライアント. Niels Giesen (pft)によって書かれた
 * [http://www.asahi-net.or.jp/~pi9s-nnb/monk/ MonK] -- マルチメディア オブジェクト ナビゲーター Kluge - mp3, CDオーデイオ, ogg そしてそれ以外を読むためのインターフェース
-* [[Mpc]] -- ちょっとRhythmboxに似た見た目と振る舞いを狙った,[http://musicpd.org/ MPD]ミュージックプレイヤーデーモンへのインターフェースを提供するメジャーモード.
-Gnu Emacs 23.2以降に付属.
+* [[Mpc]] -- ちょっとRhythmboxに似た見た目と振る舞いを狙った,[http://musicpd.org/ MPD]ミュージックプレイヤーデーモンへのインターフェースを提供するメジャーモード. Gnu Emacs 23.2以降に付属.
 * [[Mpg123]] -- <code>mpg123</code>と<code>ogg123</code>へのインターフェース -- よく働く!
 * [[MPRIS]] -- dbus経由でのメディアプレイヤーへのインターフェース, http://wiki.xmms2.xmms.se/wiki/MPRIS
 * [http://moc.daper.net/ MOC] -- コンソール上で音楽を, パワフルで簡単に使える. Midnight Commander'sを基にしたNcursesインターフェース. ターミナルから起動すればとても良く働く.
-* MpthreePlayer -- mpg123へのインターフェース -- JeanPhilippeThebergeによる
-* tiny-xmms -- http://dishevelled.net/elisp/tiny-xmms.el
-* <nowiki>XmmsMode</nowiki> -- http://membres.lycos.fr/jbn/software/xmms-mode.el
-
+* MpthreePlayer -- mpg123へのインターフェース -- [[JeanPhilippeTheberge]]による
+* [http://dishevelled.net/elisp/tiny-xmms.el tiny-xmms]
+* [http://membres.lycos.fr/jbn/software/xmms-mode.el XmmsMode]
 
 == CD プレイヤー ==
-
-* CdInterface -- MatthewHodgesによる
-
+* CdInterface -- [[MatthewHodges]]による
 
 == ミキサー (ボリュームコントロール) ==
-
 * [[Aumix]] (様々な方法で)
 * [[Bongo]] volume.el
 
-
 == トラックのエンコード ==
-
 * OggelMode -- ogg-vorbisファイルとしてCDをエンコードする -- Mario Domgoergenによる
 
-
 ==  Last.fm ==
-
 * [[EMMS]] -- はLast.fm サポート (ストリーミング&スクロビング)を搭載している
-* [[emacs-shellfm]] -- Shell.FMコンソールプレイヤーへのちっちゃなEmacsインターフェースです
-
+* [[emacs-shellfm]] -- [http://nex.scrapping.cc/shell-fm/ Shell.FM]コンソールプレイヤーへのちっちゃなEmacsインターフェースです
 
 == 転写と同期 ==
-
 * LyricModeはogg123プロセスを開始しそれから戻ってくる時間情報をパースし,あなたに同期タグを挿入と編集させる.
-　
 
 == 音楽と音の合成/デザイン/性能 ==
-
-SuperCollider
+* SuperCollider
 
 ----
-CategoryModes | MultimediaModes
+[[カテゴリ・モード]] | [[マルチメディアモード]]
