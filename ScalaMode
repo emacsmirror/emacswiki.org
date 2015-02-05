@@ -42,7 +42,7 @@ Here is an example configuration using the old scala-mode with ensime. However e
         (append exec-path (list "~/.opt/scala/bin"))) ;;REPLACE THIS with the directory of your scalac executable!
 }}}
 
-I then use [http://aemoncannon.github.io/ensime/index.html ensime] and [http://code.google.com/p/simple-build-tool/wiki/Setup sbt]. 
+I then use [https://github.com/ensime/ensime-emacs] and [http://code.google.com/p/simple-build-tool/wiki/Setup sbt]. 
 
 Ok, so create a random file in the source directory created by sbt that contains some random code.
 Run ensime-config-project, follow instructions, etc. It should suggest that the project is of type sbt.
