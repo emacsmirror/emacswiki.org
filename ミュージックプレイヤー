@@ -33,7 +33,7 @@
 * [[emacs-shellfm]] -- [http://nex.scrapping.cc/shell-fm/ Shell.FM]コンソールプレイヤーへのちっちゃなEmacsインターフェースです
 
 == 転写と同期 ==
-* LyricModeはogg123プロセスを開始しそれから戻ってくる時間情報をパースし,あなたに同期タグを挿入と編集させる.
+* [[LyricMode]]はogg123プロセスを開始しそれから戻ってくる時間情報をパースし,あなたに同期タグを挿入と編集させる.
 
 == 音楽と音の合成/デザイン/性能 ==
 * SuperCollider
