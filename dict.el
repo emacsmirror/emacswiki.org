@@ -48,7 +48,9 @@
 
 ;;; Code:
 
-(require 'cl)
+
+(if (version<= emacs-version "24.3") (require 'cl )
+  (require 'cl-lib ))
 
 (defgroup Dict nil
   "Browse DICT dictionaries."
