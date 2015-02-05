@@ -1,3 +1,4 @@
+[[ja:イーマックス_シンボル_表記法]]
 Here are examples of notational symbols you might find in Emacs and EmacsLisp.
 
 ; ##C-x C-s##:  this is a KeySequence, see EmacsKeyNotation.
