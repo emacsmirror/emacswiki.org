@@ -13,7 +13,7 @@ And so much more.
 
 == Extended globbing ==
 
-; ##a#.c## : A C file named by at least one '##a##' character
+; ##a#.c## : A C file named by zero or more '##a##' characters
 ; <code>a##.c</code> : A C file named by one or more ##a## characters
 
 == Recursive globbing ==
