@@ -4,14 +4,11 @@ It only does syntax highlighting for the moment, and is still in alpha version. 
 
 The page to get the code and some spare documentation is at :
 
-http://dev.nozav.org/textile-mode.html
-
+https://github.com/juba/textile-mode
 
 For more information about textile, you can take a look at :
 
 http://www.textism.com/tools/textile/
-
-http://hobix.com/textile/
 
 For information on converting textile to html via ruby within emacs, see:
 
