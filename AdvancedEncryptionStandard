@@ -7,7 +7,7 @@ It is recommended to byte-compile the library before usage.
 
 Outdated Version 0.4: Lisp:aes.el
 
-From now on updates will be published on Github https://github.com/gaddhi/aes
+From now on updates will be published on Github https://github.com/Sauermann/emacs-aes
 
 ----
 CategoryCryptography
