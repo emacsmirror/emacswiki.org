@@ -360,6 +360,13 @@ I could not get decrypting to work in emacs on OS X - emacs would background a p
 
  -sh
 
+== Can't save / sign with GnuPG2.1 and Emacs <25 ==
+The patch at http://git.savannah.gnu.org/cgit/emacs.git/commit/?h=emacs-24&id=dbae12c5 fixes the bug where you can't save or sign emails when using gnupg 2.1 or later with emacs <25. If you can't upgrade emacs yet, you can stick that whole version of epg--list-keys-1 in your .emacs to fix it.
+
+(The error message on saving is something unhelpful like
+Opening output file: [pub u 2048 1 912606D3301A36CC 2317511021 nil nil u nil ...], 15
+though the backtrace does end up with epg--list-keys-1)
+
 == Caching Password for Symmetric Encription==
 Warning! This is risky if other people than you can access your own session. Despite you should always have to lock the screen when you leave your computer turned on, it is recommended you use this with caution.
 
