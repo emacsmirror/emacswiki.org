@@ -1,3 +1,5 @@
+PDDL is the [http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language Planning Domain Definition Language].
+
 [http://www.public.asu.edu/~sksinghi/pddl.htm PDDL Mode] <- dead link
 
 PDDL-mode is a major Emacs mode for editing PDDL 2.2 files. It provides syntax highlighting with automatic indentation, templates, auto-completion, and a "Declaration"(imenu) menu which lists all the actions and the problems in the current file.
