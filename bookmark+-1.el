@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Feb  3 13:40:19 2015 (-0800)
+;; Last-Updated: Thu Feb  5 21:47:16 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7586
+;;     Update #: 7588
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1796,7 +1796,7 @@ Deletion' in the Emacs manual."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Added value `edited'.
+;; Added value `edit'.
 ;;
 (defcustom bookmark-automatically-show-annotations t
   "*Non-nil means show annotations when jumping to a bookmark.
@@ -1969,7 +1969,7 @@ annotations."
 (defun bookmark-insert-annotation (bookmark)
   "Insert annotation for BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record."
-  (setq bookmark  (bmkp-bookmark-name-from-record bookmark))
+  (setq bookmark  (bmkp-bookmark-name-from-record (bmkp-get-bookmark-in-alist bookmark)))
   (insert (funcall (if (boundp 'bookmark-edit-annotation-text-func)
                        bookmark-edit-annotation-text-func
                      bookmark-read-annotation-text-func)
