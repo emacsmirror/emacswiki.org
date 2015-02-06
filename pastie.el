@@ -1,3 +1,4 @@
+[[de:pl]]
 ;;; pastie.el --- Emacs integration for pastie.org
 
 ;; Copyright (C) 2006  Christian Neukirchen <purl.org/net/chneukirchen>
