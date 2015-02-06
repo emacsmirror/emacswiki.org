@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Feb  3 13:41:01 2015 (-0800)
+;; Last-Updated: Thu Feb  5 21:52:58 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15823
+;;     Update #: 15824
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/02/05 dadams
+;;     bookmark-insert-annotation: BOOKMARK can be a bookmark or its name.
 ;; 2015/02/03 dadams
 ;;     bmkp-occur-target-set: Removed unused let-binding.
 ;; 2015/01/28 dadams
