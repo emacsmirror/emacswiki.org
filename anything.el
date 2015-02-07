@@ -54,7 +54,7 @@
 ;; `anything-resume'
 ;; Resurrect previously invoked `anything'.
 ;; `anything-resume-window-only'
-;; 
+;;
 ;; `anything-at-point'
 ;; Call anything with symbol at point as initial input.
 ;; `anything-force-update'
@@ -777,7 +777,7 @@ See also `anything-set-source-filter'.")
     (define-key map (kbd "C-t")             'anything-toggle-resplit-window)
     (define-key map (kbd "C-}")             'anything-narrow-window)
     (define-key map (kbd "C-{")             'anything-enlarge-window)
-    
+
     (define-key map (kbd "C-c C-d")         'anything-delete-current-selection)
     (define-key map (kbd "C-c C-y")         'anything-yank-selection)
     (define-key map (kbd "C-c C-k")         'anything-kill-selection-and-quit)
@@ -1349,29 +1349,30 @@ Use it in init, candidates, action, candidate-transformer,
 filtered-candidate-transformer functions."
   (declare (special source))
   ;; The name `anything-get-current-source' should be used in init function etc.
-  (if (and (boundp 'anything-source-name) (stringp anything-source-name))
-      source
-      (with-current-buffer (anything-buffer-get)
-        (or
-         ;; This happen only when `anything-source-in-each-line-flag'
-         ;; is non--nil and there is candidates in buffer.
-         (get-text-property (point) 'anything-source)
-         ;; Return nil when no--candidates.
-         (block exit
-           ;; This goto-char shouldn't be necessary, but point is moved to
-           ;; point-min somewhere else which shouldn't happen.
-           (goto-char (overlay-start anything-selection-overlay))
-           (let* ((header-pos (or (anything-get-previous-header-pos)
-                                  (anything-get-next-header-pos)))
-                  (source-name
-                   (save-excursion
-                     (unless header-pos
-                       (return-from exit nil))
-                     (goto-char header-pos)
-                     (anything-current-line-contents))))
-             (loop for source in (anything-get-sources) thereis
-                   (and (equal (assoc-default 'name source) source-name)
-                        source))))))))
+  (cond ((and (boundp 'anything-source-name) (stringp anything-source-name))
+         source)
+        ((get-buffer (anything-buffer-get))
+         (with-current-buffer (anything-buffer-get)
+           (or
+            ;; This happen only when `anything-source-in-each-line-flag'
+            ;; is non--nil and there is candidates in buffer.
+            (get-text-property (point) 'anything-source)
+            ;; Return nil when no--candidates.
+            (block exit
+              ;; This goto-char shouldn't be necessary, but point is moved to
+              ;; point-min somewhere else which shouldn't happen.
+              (goto-char (overlay-start anything-selection-overlay))
+              (let* ((header-pos (or (anything-get-previous-header-pos)
+                                     (anything-get-next-header-pos)))
+                     (source-name
+                      (save-excursion
+                        (unless header-pos
+                          (return-from exit nil))
+                        (goto-char header-pos)
+                        (anything-current-line-contents))))
+                (loop for source in (anything-get-sources) thereis
+                      (and (equal (assoc-default 'name source) source-name)
+                           source)))))))))
 
 (defun anything-buffer-is-modified (buffer)
   "Return non-nil when BUFFER is modified since `anything' was invoked."
@@ -2034,7 +2035,7 @@ For ANY-PRESELECT ANY-RESUME ANY-KEYMAP, See `anything'."
                (read-from-minibuffer (or any-prompt "pattern: ")
                                      any-input anything-map
                                      nil any-history tap)))))))
-               
+
 (defun anything-maybe-update-keymap ()
   "Handle differents keymaps in multiples sources.
 This function is meant to be run in `anything-move-selection-after-hook'.
@@ -2527,7 +2528,8 @@ is done on whole `anything-buffer' and not on current source."
                    (anything-log "Update preselect candidate %s" preselect)
                    (anything-preselect preselect))
                   (delayed-sources ; Preselection and hooks will run later.
-                   (anything-update-move-first-line 'without-hook))
+                   (anything-update-move-first-line 'without-hook)
+                   )
                   (t ; No delayed sources, run the hooks now.
                    (anything-update-move-first-line)
                    (anything-log-run-hook 'anything-after-update-hook)
