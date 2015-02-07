@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Wed Jan 21 08:19:51 2015 (-0800)
+;; Last-Updated: Sat Feb  7 14:17:40 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15071
+;;     Update #: 15075
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3894,13 +3894,15 @@ over all candidates."
                           (completion--field-metadata (field-beginning))))
                   (icicle-all-completions input minibuffer-completion-table pred)))
                (icicle-extra-candidates
-                (icicle-remove-if-not
-                 (lambda (cand) (save-match-data (string-match (concat "^" (regexp-quote input)) cand)))
-                 icicle-extra-candidates))
+                (let ((relname  (file-name-nondirectory input)))
+                  (icicle-remove-if-not
+                   (lambda (cand) (save-match-data (string-match (concat "^" (regexp-quote relname)) cand)))
+                   icicle-extra-candidates)))
                (icicle-proxy-candidates
-                (icicle-remove-if-not
-                 (lambda (cand) (save-match-data (string-match (concat "^" (regexp-quote input)) cand)))
-                 icicle-proxy-candidates))
+                (let ((relname  (file-name-nondirectory input)))
+                  (icicle-remove-if-not
+                   (lambda (cand) (save-match-data (string-match (concat "^" (regexp-quote relname)) cand)))
+                   icicle-proxy-candidates)))
                (filtered-candidates
                 (icicle-transform-candidates
                  (append icicle-extra-candidates icicle-proxy-candidates
