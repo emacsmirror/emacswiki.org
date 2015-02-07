@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Jan 21 09:13:40 2015 (-0800)
+;; Last-Updated: Sat Feb  7 14:29:10 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 11389
+;;     Update #: 11391
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2150,6 +2150,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2015/02/07 dadams
+;;     icicle-unsorted-file-name-prefix-candidates: For proxy cands and extra cands, use relative name.
 ;; 2015/01/21 dadams
 ;;     icicle-choose-completion-string (Emacs 23.2+): Delete region even for INSERT-FUNCTION case.
 ;; 2015/01/20 dadams
