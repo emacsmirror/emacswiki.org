@@ -14,9 +14,6 @@ section of the EmacsManual,
 
 You can get a snapshot of doc-view.el at [[doc-view.el]].
 
-The homepage of DocViewMode is http://www.tsdh.de/cgi-bin/wiki.pl/doc-view.el.
-PS: The link is broken. Newbie don't know the correct link.
-
 This can be customized via:
 
   M-x customize-group RET doc-view RET
