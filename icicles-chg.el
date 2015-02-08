@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Feb  7 14:29:10 2015 (-0800)
+;; Last-Updated: Sun Feb  8 09:10:13 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 11391
+;;     Update #: 11394
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2015/02/08 dadams
+;;     icicle-bookmark-set: Soft-require Bookmark+ - don't test with featurep.
+;;                          Do not overwrite properties listed in option bmkp-properties-to-keep.
 ;; 2014/12/15 dadams
 ;;     Added: icicle-bookmark(-local|-remote)-non-dir-file(-other-window).
 ;;     Added (commented out - not used yet): icicle-bookmark-non-dir-file-narrow.
