@@ -10,4 +10,4 @@ See [[Git]] for more about Emacs support for git.
 
 [https://github.com/defunkt/gist.el gist.el] provides Emacs integration for [http://gist.github.com gist.github.com]
 
-[https://github.com/rmuslimov/browse-at-remote] opens target github webpage in browser from emacs buffers 
+[https://github.com/rmuslimov/browse-at-remote browse-at-remote.el] opens target github webpage in browser from emacs buffers 
