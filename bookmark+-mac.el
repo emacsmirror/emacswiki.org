@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Thu Jan  1 10:25:12 2015 (-0800)
+;; Last-Updated: Sun Feb  8 14:21:03 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 170
+;;     Update #: 176
 ;; URL: http://www.emacswiki.org/bookmark+-mac.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -46,7 +46,7 @@
 ;;       Web'.
 ;;
 ;;    2. From the Emacs-Wiki Web site:
-;;       http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
+;;       http://www.emacswiki.org/BookmarkPlus.
 ;;
 ;;    3. From the Bookmark+ group customization buffer:
 ;;       `M-x customize-group bookmark-plus', then click link
@@ -100,9 +100,9 @@
 ;;
 ;;    `bmkp-define-cycle-command',
 ;;    `bmkp-define-next+prev-cycle-commands',
-;;    `bmkp-define-sort-command', `bmkp-define-file-sort-predicate',
-;;    `bmkp-menu-bar-make-toggle', `bmkp-with-bookmark-dir',
-;;    `bmkp-with-help-window',
+;;    `bmkp-define-show-only-command', `bmkp-define-sort-command',
+;;    `bmkp-define-file-sort-predicate', `bmkp-menu-bar-make-toggle',
+;;    `bmkp-with-bookmark-dir', `bmkp-with-help-window',
 ;;    `bmkp-with-output-to-plain-temp-buffer'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -257,6 +257,59 @@ See `bmkp-next-%s-bookmark-repeat'." type type)
       (interactive "P")
       (require 'repeat)
       (bmkp-repeat-command ',(intern (format "bmkp-previous-%s-bookmark" type))))))
+
+;; We don't bother making this hygienic.  Presumably only the Bookmark+ code will call it.
+;;;###autoload (autoload 'bmkp-define-show-only-command "bookmark+")
+(defmacro bmkp-define-show-only-command (type doc-string filter-function &optional reset-vars)
+  "Define a command to show only bookmarks of TYPE in *Bookmark List*.
+TYPE is a short string or symbol describing the type of bookmarks.
+
+The new command is named `bmkp-bmenu-show-only-TYPED-bookmarks', where
+TYPED is TYPE, but with any spaces replaced by hyphens (`-').
+Example: `bmkp-bmenu-show-only-tagged-bookmarks', for TYPE `tagged'.
+
+DOC-STRING is the doc string of the new command.
+
+The command shows only the bookmarks allowed by FILTER-FUNCTION.
+
+In case of error, variables `bmkp-bmenu-filter-function',
+`bmkp-bmenu-title', and `bmkp-latest-bookmark-alist' are reset to
+their values before the command was invoked.
+
+RESET-VARS is a list of pairs (VAR VALUE), where VAR is a variable to
+set and VALUE is its new value.  In case of error, these variables too
+are reset to their initial values."
+  (unless (stringp type) (setq type  (symbol-name type)))
+  (let* ((type--   (bmkp-replace-regexp-in-string "\\s-+" "-" type))
+         (command  (intern (format "bmkp-show-only-%s-bookmarks" type--))))
+    `(progn
+      (defun ,command ()
+        ,doc-string
+        (interactive)
+        (bmkp-bmenu-barf-if-not-in-menu-list)
+        (let ((orig-filter-fn      bmkp-bmenu-filter-function)
+              (orig-title          bmkp-bmenu-title)
+              (orig-latest-alist   bmkp-latest-bookmark-alist))
+          (let (,(mapcar (lambda (var+val)
+                           `(,(format "orig-%s" (car var+val))  ,(cadr var+val)))
+                         reset-vars))
+            (condition-case err
+                (progn
+                  (setq bmkp-bmenu-filter-function  ',filter-function
+                        bmkp-bmenu-title            ,(format "%s Bookmarks" (capitalize type)))
+                  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
+                    (setq bmkp-latest-bookmark-alist  bookmark-alist)
+                    ,(mapcar (lambda (var+val)
+                               `(setq ,(cadr var+val) ,(format "orig-%s" (car var+val))))
+                             reset-vars)
+                    (bookmark-bmenu-list 'filteredp))
+                  (when (interactive-p)
+                    (bmkp-msg-about-sort-order (bmkp-current-sort-order)
+                                               ,(format "Only %s bookmarks are shown" type))))
+              (error (progn (setq bmkp-bmenu-filter-function  orig-filter-fn
+                                  bmkp-bmenu-title            orig-title
+                                  bmkp-latest-bookmark-alist  orig-latest-alist)
+                            (error "%s" (error-message-string err)))))))))))
 
 ;;;###autoload (autoload 'bmkp-define-sort-command "bookmark+")
 (defmacro bmkp-define-sort-command (sort-order comparer doc-string)
