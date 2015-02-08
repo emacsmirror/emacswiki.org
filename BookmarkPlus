@@ -296,7 +296,7 @@ Dired, Dired tree, bookmark-list, bookmark-file, and desktop bookmarks.
 
 
 [:Menus]
-=== Extensive Menus. ===
+=== Extensive menus. ===
 
 * In the `##*Bookmark List*##' display, a '''`mouse-3'''' [[#Mouse3PopupMenu|popup menu]] has actions for the
 individual bookmark that you point to when you click the mouse.
@@ -1060,7 +1060,9 @@ indicates whether the file is tagged.
 By default, you create bookmarks without tags and add tags to them
 later.  If you prefer, you can customize option
 '''`bmkp-prompt-for-tags-flag'''' to non-`nil' so that you are prompted to
-add tags immediately whenever you set (create) a bookmark.  There
+add tags immediately whenever you set (create or update) a bookmark.  
+
+There
 are also some commands, such as '''`bmkp-tag-a-file''''  ('''`##C-x p t + a##'''')
 and
 '''`bmkp-untag-a-file'''' ('''`##C-x p t - a##''''), that always prompt for tags to add or remove.  (In general, the key `a' is used in key
@@ -1357,26 +1359,25 @@ variable `bookmark-alist' -- but I'll repeat some of that info
 here.
 
 A '''bookmark record''' is nothing more than a list whose first element
-is a string, the bookmark '''name'''.  The other list elements can be
-thought of as '''attributes''' that define the bookmark: its data.  Each
-such ''attribute is a [[cons]]'': a nonempty list or a dotted list.
+is a string, the bookmark '''name'''.  The other list elements are '''properties''': key+value pairs that define the bookmark data.  Each
+such pair is a [[cons]]: a nonempty list or a dotted list.
 
-The [[car]] of the attribute is its name (a Lisp [[symbol]]).  The [[cdr]] is
-its value.  What the value can be depends on the attribute -- in
+The [[car]] of the property is its name (a Lisp [[symbol]]).  The [[cdr]] is
+its value.  What the value can be depends on the property -- in
 general it can be any Lisp value (number, string, list, symbol,
-etc.).  An attribute with a null cdr means the same thing as
-having no such attribute present.  For example, having the empty
-attribute `##(tags)##' is the same as having to `tags' attribute at
+etc.).  A property with a null cdr means the same thing as
+having no such property present.  For example, having the empty
+property `##(tags)##' is the same as having no `tags' property at
 all.
 
-There is nothing more to it: attributes can be anything you like,
+There is nothing more to it: properties can be anything you like,
 provided you provide some code to recognize them and do something
 with them.
 
-Of course, the types of attributes you use most (maybe always) are
+Of course, the types of properties you use most (maybe always) are
 predefined, and the vanilla ##bookmark.el## code and the '''Bookmark+'''
 code recognize and use them.  The most important and most typical
-attribute is this: `##(filename . "/some/file/name.txt")##', that is,
+property is this: `##(filename . "/some/file/name.txt")##', that is,
 a cons whose car is the symbol '''`filename'''' and whose cdr is the
 name (a string) of the bookmarked file.
 
@@ -1387,15 +1388,15 @@ just means changing the string that is its `filename' -- e.g., from
 
 If you already have a bookmark file, typically `##~/.emacs.bmk##',
 take a look at the bookmark records in it.  A typical bookmark
-also has these attributes, in addition to `filename': '''`position'''',
+also has these properties, in addition to `filename': '''`position'''',
 '''`front-context-string'''', and '''`rear-context-string''''.  You can guess
 what they are -- if not, see the doc string of `bookmark-alist'.
 
-A '''Bookmark+''' bookmark typically has some additional attributes that
-you can also guess.  Attributes '''`time'''' and '''`visits'''' are updated
+A '''Bookmark+''' bookmark typically has some additional properties that
+you can also guess.  Properties '''`time'''' and '''`visits'''' are updated
 automatically each time you access the bookmark.
 
-Some bookmarks have a '''`handler'''' attribute whose value is a
+Some bookmarks have a '''`handler'''' property whose value is a
 function that "jumps" to the bookmark "location".  I put those two
 terms in quotes here because a handler is really just ''any'' function
 -- it can do anything you like, and there need not be any
@@ -1406,8 +1407,8 @@ Some '''Bookmark+''' bookmarks, including [[#AutofileBookmarks|autofile]] bookma
 "jumping" does not necessarily mean visiting the file with Emacs.
 In effect, such bookmarks are just wrappers around the file,
 letting you get the advantage of '''Bookmark+''' features (tags etc.)
-for a file.  Such bookmarks, which you can create using `C-x p c a' or `C-x p c f', contain a '''`file-handler'''' attribute instead of a
-`handler' attribute.  The difference between the two is that the
+for a file.  Such bookmarks, which you can create using `C-x p c a' or `C-x p c f', contain a '''`file-handler'''' property instead of a
+`handler' property.  The difference between the two is that the
 `file-handler' value is a function (Lisp function or shell
 command) to be applied to the file, not to the bookmark.
 
@@ -1425,23 +1426,23 @@ idea to back up your bookmark file from time to time.)
 And if each bookmark record after you edit it is a cons with a
 string car then your bookmarks are generally OK, even if you might
 have ruined the details of one or two of them.  Suppose you
-somehow mistakenly delete the `a' in a `filename' attribute, for
+somehow mistakenly delete the `a' in a `filename' property, for
 instance.  No big deal -- that bookmark no longer has a
 recognizable target location, but the other bookmarks are still
 OK.
 
-The most important attribute for '''Bookmark+''' users is probably
+The most important property for '''Bookmark+''' users (aside from `filename') is probably
 '''`tags''''.  Its value (the cdr) is a list of strings or conses -- the
 bookmark's tags.  When you create a tag, it is typically a string
 (just its name) -- e.g. ##"blue"##.  If you then give it a value as
 well, it becomes a cons with that string (the name) as car and the
-value as cdr -- e.g. `##("blue" . 42)##' or `##("blue" moonbeam 42)##'  -- here the cdr is the list `##(moonbeam 42)##'.  Here is an example
-`tags' attribute: `##(tags "hegel" ("blue" . honeypot) "darwin")##'.
+value as cdr -- e.g. `##("blue" . 42)##' or `##("blue" moonbeam 42)##'  -- here the cdr is the list `##(moonbeam 42)##'.  Here is an example of a
+`tags' property: `##(tags "hegel" ("blue" . honeypot) "darwin")##'.
 Most of the time you will use strings as tags.  See also
 [[#TagsAsAttributes|Bookmark Tags Can Have Values]].
 
 When you edit bookmark records, just try to stay away from
-changing any attributes that you are not familiar with.  And make
+changing any properties that you are not familiar with.  And make
 sure that when you're done you have a proper Lisp list (open
 parens closed etc.).  If you've never played with Lisp before, do
 not panic.
@@ -1455,6 +1456,15 @@ a [[cons]]?  Just a [[car]] with a [[cdr]]!)  If the cdr is a list then we
 typically drop the dot and the list's parens: We write `##(b)##'
 instead of `##(b . ())##' and `##(a b)##' instead of `##(a . (b))##' or `##(a . (b . ()))##'.
 
+Finally, remember that when you set an existing bookmark again,
+e.g., you use `C-x r m' and provide the name of an existing
+bookmark, the existing properties are generally lost.  Some are
+automatically updated.  Any that you might have added by editing
+are lost, and any that are provided by default by the bookmark
+handler are replaced.  The only exceptions to this are the
+properties listed in [[option]] '''`bmkp-properties-to-keep'''', which by
+default means properties `tags' and `annotation'.  Any existing
+tags and annotation are preserved when you update a bookmark.
 
 
 
@@ -1799,7 +1809,7 @@ entries.
 When a bookmark is created using `C-x p c f' or `C-x p c a' for a
 file that matches `bmkp-default-handlers-for-file-types', the shell
 command or Lisp function that "jumps to" (opens) the file is saved
-in the bookmark as attribute '''`file-handler'''' (not `handler').
+in the bookmark as property '''`file-handler'''' (not `handler').
 
 
 
@@ -3894,14 +3904,15 @@ A single key can ''set'' a bookmark or ''visit'' bookmarks.  This key is
 whatever command `bmkp-bookmark-set-confirm-overwrite' would normally be bound to -- e.g. `C-x r m'.  A [[prefix argument]] controls what it does.  If negative
 (`M--'), jump to (browse) bookmarks.  Otherwise, set a bookmark using `bmkp-bookmark-set-confirm-overwrite', as follows:
 
-* Numeric prefix arg (non-negative): No prompt.  Use the buffer
+* No prefix arg: Prompt for the bookmark name.  The candidates are
+bookmarks in the current buffer (or all bookmarks if there are
+none in the current buffer).
+
+* (Non-negative) numeric prefix arg: No prompt.  Use the buffer
   name plus the text of the region (if active) or the current line
   as the bookmark name.  Quickest way to set a bookmark.
 
-* No prefix arg: same as `bmkp-bookmark-set-confirm-overwrite' (prompt for name).
-
-* Plain `C-u': same as `bmkp-bookmark-set-confirm-overwrite' (prompt for name, no
-bookmark overwrite.
+* Plain `C-u': Prompt for name, no bookmark overwrite.
 
 During completion of a bookmark name, most features of the
 [[#BookmarkListDisplay|bookmark-list display]] (see [[#BookmarkListDisplay|The Bookmark List Display]]) are available on the fly.  Buffer `*Completions*' acts like a dynamic version of `##*Bookmark List*##':
