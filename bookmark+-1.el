@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Feb  5 21:47:16 2015 (-0800)
+;; Last-Updated: Sun Feb  8 07:45:21 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7588
+;;     Update #: 7590
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -742,7 +742,7 @@
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
 
-;;;###autoload (autoload 'bmkp-prompt-for-tags-flag "bookmark+")
+;;;###autoload (autoload 'bmkp-autofile-filecache "bookmark+")
 (defcustom bmkp-autofile-filecache 'cache-only
   "*Whether Emacs filecache commands create/set an autofile bookmark.
 The possible values:
@@ -993,7 +993,7 @@ the change to take effect."
   "*Seconds to wait before updating display when filtering bookmarks."
   :type 'number :group 'bookmark-plus)
 
-;; Remove autoload cookie to avoid (void-variable bookmark-default-file) ;;;###autoload
+;; Remove autoload cookie, to avoid (void-variable bookmark-default-file) ;;;###autoload
 (defcustom bmkp-last-as-first-bookmark-file bookmark-default-file
   "*Whether to use the last-used bookmark file as the first used.
 If nil then Emacs always uses the value of `bookmark-default-file' as
