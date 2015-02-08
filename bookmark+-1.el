@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Feb  8 07:45:21 2015 (-0800)
+;; Last-Updated: Sun Feb  8 08:18:42 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7590
+;;     Update #: 7602
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -318,8 +318,8 @@
 ;;    `bmkp-last-as-first-bookmark-file',
 ;;    `bmkp-menu-popup-max-length', `bmkp-new-bookmark-default-names',
 ;;    `bmkp-other-window-pop-to-flag', `bmkp-prompt-for-tags-flag',
-;;    `bmkp-read-bookmark-file-hook', `bmkp-region-search-size',
-;;    `bmkp-save-new-location-flag',
+;;    `bmkp-properties-to-keep', `bmkp-read-bookmark-file-hook',
+;;    `bmkp-region-search-size', `bmkp-save-new-location-flag',
 ;;    `bmkp-sequence-jump-display-function',
 ;;    `bmkp-show-end-of-region-flag', `bmkp-sort-comparer',
 ;;    `bmkp-su-or-sudo-regexp', `bmkp-tags-for-completion',
@@ -1084,8 +1084,18 @@ there is already another window showing the buffer."
 
 ;;;###autoload (autoload 'bmkp-prompt-for-tags-flag "bookmark+")
 (defcustom bmkp-prompt-for-tags-flag nil
-  "*Non-nil means prompt for tags when setting a bookmark interactively."
+  "*Non-nil means setting bookmarks interactively prompts for tags to add.
+For an existing bookmark, if option `bmkp-properties-to-keep' includes
+`tags' (which it does by default), then the tags you enter are added
+to any that the bookmark already has - none are removed."
   :type 'boolean :group 'bookmark-plus)
+
+;;;###autoload (autoload 'bmkp-properties-to-keep "bookmark+")
+(defcustom bmkp-properties-to-keep '(tags annotation)
+  "*List of properties to keep when you set an existing bookmark.
+When you set a bookmark that already exists, its properties are
+updated (overwritten), with the exception of those listed here."
+  :type '(repeat symbol) :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-region-search-size "bookmark+")
 (defcustom bmkp-region-search-size 40
@@ -2211,11 +2221,12 @@ property.  Point is irrelevant and unaffected."
 ;;  4. Use `bmkp-completing-read-lax', choosing from current buffer's bookmarks.
 ;;  5. Numeric prefix arg (diff from plain): all bookmarks as completion candidates.
 ;;  6. Ask for confirmation if (a) not plain `C-u' and (b) NAME names an existing bookmark.
-;;  7. Added optional args INTERACTIVEP and NO-UPDATE-P.
-;;  8. Prompt for tags if `bmkp-prompt-for-tags-flag' is non-nil.
-;;  9. Possibly highlight bookmark and other bookmarks in buffer, per `bmkp-auto-light-when-set'.
-;; 10. Make bookmark temporary, if `bmkp-autotemp-bookmark-predicates' says to.
-;; 11. Run `bmkp-after-set-hook'.
+;;  7. Do not overwrite properties listed in option `bmkp-properties-to-keep'.
+;;  8. Added optional args INTERACTIVEP and NO-UPDATE-P.
+;;  9. Prompt for tags if `bmkp-prompt-for-tags-flag' is non-nil.
+;; 10. Possibly highlight bookmark and other bookmarks in buffer, per `bmkp-auto-light-when-set'.
+;; 11. Make bookmark temporary, if `bmkp-autotemp-bookmark-predicates' says to.
+;; 12. Run `bmkp-after-set-hook'.
 ;;
 ;;;###autoload (autoload 'bookmark-set "bookmark+")
 (defun bookmark-set (&optional name parg interactivep no-update-p) ; `C-x r M', `C-x p c M'
@@ -2276,6 +2287,12 @@ A prefix argument changes the behavior as follows:
    at any given time, but any others named NAME are still available,
    should you decide to delete the most recent one.
 
+Bookmark properties listed in option `bmkp-properties-to-keep' are not
+overwritten when you set an existing bookmark.  Their existing values
+are kept.  Other properties may be updated.  Properties such as
+`position' and `visit' are typically updated, for example, to record
+the new position and the number of visits.
+
 Use `\\[bookmark-delete]' to remove bookmarks (you give it a name, and it removes
 only the first instance of a bookmark with that name from the list of
 bookmarks).
@@ -2317,10 +2334,14 @@ refresh/rebuild the bookmark-list display."
                            (and (or (not parg)  (consp parg)) ; No numeric PARG: all bookmarks.
                                 (bmkp-specific-buffers-alist-only))
                            nil 'bookmark-history)))
-           (when (and interactivep  bmkp-bookmark-set-confirms-overwrite-p  (atom parg)
-                      (bmkp-get-bookmark-in-alist bname 'NOERROR)
-                      (not (y-or-n-p (format "Overwrite bookmark `%s'? " bname))))
-             (error "OK, canceled"))
+           (let ((old-bmk  (bmkp-get-bookmark-in-alist bname 'NOERROR))
+                 old-prop)
+             (when (and interactivep  bmkp-bookmark-set-confirms-overwrite-p  (atom parg)  old-bmk
+                        (not (y-or-n-p (format "Overwrite bookmark `%s'? " bname))))
+               (error "OK, canceled"))
+             (when old-bmk              ; Restore props of existing bookmark per `bmkp-properties-to-keep'.
+               (dolist (prop  bmkp-properties-to-keep)
+                 (bookmark-prop-set record prop (bookmark-prop-get old-bmk prop)))))
            (bookmark-store bname (cdr record) (consp parg) no-update-p (not interactivep))
            (when (and interactivep  bmkp-prompt-for-tags-flag)
              (bmkp-add-tags bname (bmkp-read-tags-completing) 'NO-UPDATE-P)) ; Do not refresh tags. (?)
