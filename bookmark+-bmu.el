@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Jan  1 10:24:19 2015 (-0800)
+;; Last-Updated: Sun Feb  8 13:35:57 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 3525
+;;     Update #: 3529
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -52,7 +52,7 @@
 ;;       Web'.
 ;;
 ;;    2. From the Emacs-Wiki Web site:
-;;       http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
+;;       http://www.emacswiki.org/BookmarkPlus.
 ;;
 ;;    3. From the Bookmark+ group customization buffer:
 ;;       `M-x customize-group bookmark-plus', then click link
@@ -2230,7 +2230,7 @@ With a prefix argument, do not include remote files or directories."
   "Display (only) the Icicles search-hits bookmarks."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (setq bmkp-bmenu-filter-function  'bmkp-icicle-search-hits-alist-only
+  (setq bmkp-bmenu-filter-function  'bmkp-icicles-search-hits-alist-only
         bmkp-bmenu-title            "Icicles Search-Hit Bookmarks")
   (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
     (setq bmkp-latest-bookmark-alist  bookmark-alist)
@@ -2830,7 +2830,7 @@ With a prefix argument, do not mark remote files or directories."
 (defun bmkp-bmenu-mark-icicle-search-hits-bookmarks () ; Bound to `i M' in bookmark list
   "Mark Icicles search-hit bookmarks."
   (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-icicle-search-hits-bookmark-p))
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-icicles-search-hits-bookmark-p))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-image-bookmarks "bookmark+")
 (defun bmkp-bmenu-mark-image-bookmarks () ; Bound to `M-I M-M' in bookmark list
@@ -4844,7 +4844,7 @@ Return the propertized string (the bookmark name)."
             (append (bmkp-face-prop 'bmkp-bookmark-file)
                     '(mouse-face highlight follow-link t
                       help-echo "mouse-2: Load this bookmark's bookmark file")))
-           ((bmkp-icicle-search-hits-bookmark-p bookmark)                ; Icicles search hits bookmark
+           ((bmkp-icicles-search-hits-bookmark-p bookmark)               ; Icicles search hits bookmark
             (append (bmkp-face-prop 'bmkp-no-jump)
                     '(help-echo "You can use this only during Icicles search, NOT HERE")))
            ((bmkp-info-bookmark-p bookmark)                                             ; Info bookmark
