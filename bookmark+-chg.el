@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Feb  8 09:00:55 2015 (-0800)
+;; Last-Updated: Sun Feb  8 14:06:34 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15832
+;;     Update #: 15838
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,7 +147,9 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2015/02/08 dadams
-;;     Added: bmkp-properties-to-keep.
+;;     Added: bmkp-properties-to-keep, bmkp-tagged-alist-only, bmkp-untagged-alist-only.
+;;     Renamed: bmkp-icicle-* to bmkp-icicles-*.
+;;     bmkp-this-buffer-bmenu-list, bmkp-navlist-bmenu-list: Restore original values in case of error.
 ;;     bookmark-set: Do not overwrite properties listed in option bmkp-properties-to-keep.
 ;;     bmkp-prompt-for-tags-flag: Updated doc string wrt adding, not replacing.
 ;;     bmkp-autofile-filecache: Corrected autoload cookie (typo).
@@ -1113,6 +1115,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2015/02/08 dadams
+;;     Renamed: bmkp-icicle-* to bmkp-icicles-*.
 ;; 2014/12/18 dadams
 ;;     bmkp-bmenu-show-only-specific-file: Restore vars if error.
 ;; 2014/12/04 dadams
