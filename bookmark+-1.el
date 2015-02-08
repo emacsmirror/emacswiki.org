@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Feb  8 13:34:11 2015 (-0800)
+;; Last-Updated: Sun Feb  8 14:04:56 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7608
+;;     Update #: 7613
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -492,14 +492,15 @@
 ;;    `bmkp-sort-omit', `bmkp-sound-jump',
 ;;    `bmkp-specific-buffers-alist-only',
 ;;    `bmkp-specific-files-alist-only',
-;;    `bmkp-string-less-case-fold-p', `bmkp-tagged-bookmark-p',
-;;    `bmkp-tagged-cp', `bmkp-tag-name', `bmkp-tags-in-bookmark-file',
-;;    `bmkp-tags-list', `bmkp-temporary-alist-only',
-;;    `bmkp-temporary-bookmark-p', `bmkp-thing-at-point',
-;;    `bmkp-this-buffer-alist-only', `bmkp-this-buffer-p',
-;;    `bmkp-this-file-alist-only', `bmkp-this-file/buffer-alist-only',
-;;    `bmkp-this-file-p', `bmkp-unmarked-bookmarks-only',
-;;    `bmkp-unpropertized-string', `bmkp-upcase',
+;;    `bmkp-string-less-case-fold-p', `bmkp-tagged-alist-only',
+;;    `bmkp-tagged-bookmark-p', `bmkp-tagged-cp', `bmkp-tag-name',
+;;    `bmkp-tags-in-bookmark-file', `bmkp-tags-list',
+;;    `bmkp-temporary-alist-only', `bmkp-temporary-bookmark-p',
+;;    `bmkp-thing-at-point', `bmkp-this-buffer-alist-only',
+;;    `bmkp-this-buffer-p', `bmkp-this-file-alist-only',
+;;    `bmkp-this-file/buffer-alist-only', `bmkp-this-file-p',
+;;    `bmkp-unmarked-bookmarks-only', `bmkp-unpropertized-string',
+;;    `bmkp-untagged-alist-only', `bmkp-upcase',
 ;;    `bmkp-update-autonamed-bookmark', `bmkp-url-alist-only',
 ;;    `bmkp-url-bookmark-p', `bmkp-url-browse-alist-only',
 ;;    `bmkp-url-browse-bookmark-p', `bmkp-url-cp',
@@ -6103,6 +6104,12 @@ A new list is returned (no side effects)."
   (bmkp-remove-if-not (lexical-let ((ff  files)) (lambda (bmk) (member (bookmark-get-filename bmk) ff)))
                       bookmark-alist))
 
+(defun bmkp-tagged-alist-only ()
+  "`bookmark-alist', with only bookmarks that have tags.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-get-tags bookmark-alist))
+
 (defun bmkp-temporary-alist-only ()
   "`bookmark-alist', filtered to retain only temporary bookmarks.
 A new list is returned (no side effects)."
@@ -6130,6 +6137,12 @@ A new list is returned (no side effects).
 See `bmkp-this-file-p'."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-this-file-p bookmark-alist))
+
+(defun bmkp-untagged-alist-only ()
+  "`bookmark-alist', with only bookmarks that do not have tags.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if #'bmkp-get-tags bookmark-alist))
 
 (defun bmkp-url-alist-only ()
   "`bookmark-alist', filtered to retain only URL bookmarks.
