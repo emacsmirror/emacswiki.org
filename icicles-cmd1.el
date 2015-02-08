@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Mon Jan  5 13:47:54 2015 (-0800)
+;; Last-Updated: Sun Feb  8 09:08:07 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 27373
+;;     Update #: 27383
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5089,7 +5089,7 @@ Note: You can use command `icicle-bookmark-set' with a numeric
 prefix arg if you want to complete against all bookmark names,
 instead of those for the current buffer."
   (interactive (list nil current-prefix-arg t))
-  (if (not (featurep 'bookmark+))
+  (if (not (require 'bookmark+ nil t))
       (bookmark-set name parg)
     (unwind-protect
          (let ((enable-recursive-minibuffers           t) ; In case read input, e.g. File changed...
@@ -5149,11 +5149,9 @@ instead of those for the current buffer."
                                 icicle-alpha-p)))
                         '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
                           ("case insensitive" . icicle-case-insensitive-string-less-p)))))
-           (require 'bookmark)
-           (when (featurep 'bookmark+)
-             ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
-             (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
-               (icicle-bookmark-bind-narrow-commands map)))
+           ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
+           (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
+             (icicle-bookmark-bind-narrow-commands map))
            (setq bookmark-current-point   (point)
                  bookmark-current-buffer  (current-buffer))
            (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
@@ -5177,11 +5175,17 @@ instead of those for the current buffer."
                                                                          'bookmark-history
                                                                        'icicle-bookmark-history))))))
              (when (string-equal bname "") (setq bname  defname))
-             (when (and interactivep  (boundp 'bmkp-bookmark-set-confirms-overwrite-p)
-                        bmkp-bookmark-set-confirms-overwrite-p  (atom parg)
-                        (bmkp-get-bookmark-in-alist bname 'NOERROR)
-                        (not (y-or-n-p (format "Overwirte bookmark `%s'? " bname))))
-               (error "OK, canceled"))
+             (let ((old-bmk  (bmkp-get-bookmark-in-alist bname 'NOERROR))
+                   old-prop)
+               (when (and interactivep  (boundp 'bmkp-bookmark-set-confirms-overwrite-p)
+                          bmkp-bookmark-set-confirms-overwrite-p  (atom parg)  old-bmk
+                          (not (y-or-n-p (format "Overwrite bookmark `%s'? " bname))))
+                 (error "OK, canceled"))
+               (when old-bmk            ; Restore props of existing bookmark per `bmkp-properties-to-keep'.
+                 (if (boundp 'bmkp-properties-to-keep)
+                     (dolist (prop  bmkp-properties-to-keep)
+                       (bookmark-prop-set record prop (bookmark-prop-get old-bmk prop)))
+                   (message "You should UPDATE to the latest version of Bookmark+") (sit-for 2)))) ; $$$$$$
              (bookmark-store bname (cdr record) (consp parg))
              (when (and interactivep  bmkp-prompt-for-tags-flag)
                (bmkp-add-tags bname (bmkp-read-tags-completing))) ; Don't bother to refresh tags. (?)
