@@ -1,0 +1,37 @@
+[[en:XEmacsBugs]]
+
+== オープン・バグ ==
+
+来たるバグのために http://list-archive.xemacs.org/xemacs-beta を参照されたし.
+Feature your favorite bugs here and point to the xemacs-beta archive for more information.
+
+
+== 解決済みのバグ ==
+
+=== XEmacsがDOSメッセージウィンドウを起動時にポップアップする ===
+
+: *解決策*
+: 最新版のxlibとxwemパッケージを次の[http://www.xemacs.org/Documentation/packageGuide.html 手引き]に従って手に入れてください.
+: http://www.xemacs.org/Download/win32/setup.exe からの再インストールは http://ftp.xemacs.org/windows/setup.ini から削除されたので xlibもxwemも含みません.
+: pre-releaseエリアからのパッケージアップグレードは同じく問題を解決するでしょう(http://www.xemacs.org/Documentation/packageGuide.html#Where_to_get_the_packages を参照されたし).
+: 最新のXEmacsパッケージの相撲ター玉(http://www.xemacs.org/Documentation/packageGuide.html#The_Sumo_Tarball を参照されたし)は修正されたxlibとxwemパッケージをまだ含みません!
+
+もしあなたがWindowsで走るXEmacsの最近のバージョンを持っているならば, さらに次の問題を抱えているでしょう:
+あなたがXEmacsを起動するときはいつでも対応するコンソールウィンドウでメッセージを得る. 
+
+    Loading xlib-math...
+    Loading xlib-math...done
+    Loading xwem-compat...
+    Loading xwem-compat...done
+
+これはxwemとxlibパッケージにあるバグによって起こされるものです.
+これらはX Windowの指定パッケージなのでそれらをアンインストールするのは安全です.
+(XEmacsパッケージマネージャ経由かまたはsetup.exeインストーラでネットインストール経由のどちらか).
+詳細については次のスレッドを参照されたし.
+
+* [PATCH(xlib,xwem)] これ以上起動メッセージを表示させない - http://list-archive.xemacs.org/xemacs-beta/200407/msg00118.html
+* [Bug: 21.4.13] XEmacsが起動時にDOSメッセージウィンドウをポップアップする - http://list-archive.xemacs.org/xemacs-beta/200406/msg00082.html
+* [c.e.x] XPでインストールするときの問題 - http://list-archive.xemacs.org/xemacs-beta/200407/msg00107.html
+
+----
+[[カテゴリ・要望リスト]]
