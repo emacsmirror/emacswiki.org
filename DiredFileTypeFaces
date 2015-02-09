@@ -6,8 +6,13 @@ Lisp:dired-filetype-face.el
 ==Source code==
  Source code is hosted on github: 
 [[https://github.com/jixiuf/dired-filetype-face dired-filetype-face]]
+==Add new FileType Face ==
+
+   (deffiletype-face "mytype" "Chartreuse")
+   (deffiletype-face-regexp  "^  .*\\(\\.git\\)$"  "mytype" "face regexp for mytype")
+   (deffiletype-setup "mytype" "mytype")
 
 ==Screenshot ==
+[[image:dired-filetype-face-screenshot]]
 
-http://www.emacswiki.org/emacs/dired-filetype-face-screenshot
 
