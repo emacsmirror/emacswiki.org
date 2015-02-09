@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2015, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Thu Jan  1 10:24:58 2015 (-0800)
+;; Last-Updated: Sun Feb  8 15:38:03 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 890
+;;     Update #: 895
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -50,7 +50,7 @@
 ;;       Web'.
 ;;
 ;;    2. From the Emacs-Wiki Web site:
-;;       http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
+;;       http://www.emacswiki.org/BookmarkPlus.
 ;;
 ;;    3. From the Bookmark+ group customization buffer:
 ;;       `M-x customize-group bookmark-plus', then click link
@@ -90,7 +90,7 @@
 ;;
 ;;    `bmkp-bmenu-light', `bmkp-bmenu-light-marked',
 ;;    `bmkp-bmenu-set-lighting', `bmkp-bmenu-set-lighting-for-marked',
-;;    `bmkp-bmenu-show-only-lighted', `bmkp-bmenu-unlight',
+;;    `bmkp-bmenu-show-only-lighted-bookmarks', `bmkp-bmenu-unlight',
 ;;    `bmkp-bmenu-unlight-marked', `bmkp-bookmarks-lighted-at-point',
 ;;    `bmkp-cycle-lighted-this-buffer',
 ;;    `bmkp-cycle-lighted-this-buffer-other-window',
@@ -396,18 +396,9 @@ This option is not used for Emacs versions before Emacs 22."
 ;;(@* "Menu-List (`*-bmenu-*') Commands")
 ;;  *** Menu-List (`*-bmenu-*') Commands ***
 
-;;;###autoload (autoload 'bmkp-bmenu-show-only-lighted "bookmark+")
-(defun bmkp-bmenu-show-only-lighted () ; `H S' in bookmark list
-  "Display a list of highlighted bookmarks (only)."
-  (interactive)
-  (bmkp-bmenu-barf-if-not-in-menu-list)
-  (setq bmkp-bmenu-filter-function  'bmkp-lighted-alist-only
-        bmkp-bmenu-title            "Highlighted Bookmarks")
-  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
-    (setq bmkp-latest-bookmark-alist  bookmark-alist)
-    (bookmark-bmenu-list 'filteredp))
-  (when (interactive-p)
-    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only highlighted bookmarks are shown")))
+;;;###autoload (autoload 'bmkp-bmenu-show-only-lighted-bookmarks "bookmark+")
+(bmkp-define-show-only-command lighted "Display (only) the highlighted bookmarks." ; `H S' in bookmark list
+                               bmkp-lighted-alist-only)
 
 ;;;###autoload (autoload 'bmkp-bmenu-light "bookmark+")
 (defun bmkp-bmenu-light ()              ; `H H' in bookmark list
