@@ -35,7 +35,7 @@ Note how the function executes everytime C mode runs.
 2014-11-12: project-root.el appears to have disappeared off the net, these locations don't work anymore.
 
 [http://www.shellarchive.co.uk/content/emacs.html project-root.el]
-(Updated version with new features: [http://piranha.org.ua/project-root/ project-root.el])
+(Updated version with new features: [http://solovyov.net/project-root/ project-root.el])
 
 Project-root is a very simple module that allows you to define
 projects like this:
