@@ -7,10 +7,10 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Version: 2015.01.04
-;; Last-Updated: Sun Jan  4 13:17:22 2015 (-0800)
+;; Version: 2015.02.08
+;; Last-Updated: Sun Feb  8 16:09:18 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15024
+;;     Update #: 15027
 ;; URL: http://www.emacswiki.org/bookmark+.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -54,7 +54,7 @@
 ;;       Web'.
 ;;
 ;;    2. From the Emacs-Wiki Web site:
-;;       http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
+;;       http://www.emacswiki.org/BookmarkPlus.
 ;;
 ;;    3. From the Bookmark+ group customization buffer:
 ;;       `M-x customize-group bookmark-plus', then click link
