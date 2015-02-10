@@ -1,34 +1,30 @@
 [[en:TodoListModo]]
-This is Japanese translating page and this is stub. Dont write in english. --gonbei
 
-TodoListMode, by [http://www.lamberta.org/ Billy Lamberta], provides color highlighting for a numbered todo list file; simple and straight-forward to use.
-
-
+([http://www.lamberta.org/ Billy Lamberta]による)TodoListModeは簡単で使いやすい;番号付けされたToDoリストファイルのためのカラーハイライトを提供します.
 * [http://github.com/biilly/todo-list-mode GitHub page]
 * [http://github.com/biilly/todo-list-mode/raw/master/todo-list-mode.el todo-list-mode.el]
 
-To include this mode automaticaly, add to your .emacs
+このモードを自動的にインクルードするためには, あなたの.emacsへ追加する
 {{{
-(add-to-list 'load-path "~/emacs/lisp/")    ;my lisp dir
-(autoload 'todo-list-mode "todo-list-mode") ;load when needed
+(add-to-list 'load-path "~/emacs/lisp/")    ;私のlispディレクトリ
+(autoload 'todo-list-mode "todo-list-mode") ;必要とされた時にロード
  
-;a simple function that opens the file and switches to todo-list-mode.
+;ファイルオープンとtodo-list-modeへ切り替えるための簡単な関数.
 (defun open-todo-list ()
   (interactive)
   (find-file "~/notes/TODO") ;path to my todo list
   (todo-list-mode))
- 
-;then bind to control-f12 so i can call it with one keystroke
-;this works well for me because i also bind calendar to f12
+
+;私がそれを1回叩くだけで呼べるようにさらにC-F12へバインドする
+;F12はカレンダーへ同じくバインドしているので私にとってこれはいい働きをする
 (global-set-key [C-f12] 'open-todo-list)
 }}}
 
 [new:]
-There is a simpler way to open *always* the same file: registers.
-
-Here is how I would have done it:
+そこには簡単な方法が*いつも*同じファイルを開けるための:レジスタがある.
+ここには私がどうそれをやったかがある:
 
  (set-register ?o '(file . "~/notes/TODO"))
 
-With that, pressing C-x r j o RET would just open your file (you need
-to add a file header to make it "todo-list-mode" aware)
+それとともに, C-x r j o RET を押すことは単にあなたのファイルを開くであろう
+(あなたはそれを"todo-list-mode"へ気づかせるためにファイルヘッダを追加する必要がある)
