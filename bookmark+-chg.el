@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Feb  9 06:26:03 2015 (-0800)
+;; Last-Updated: Wed Feb 11 10:58:04 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15852
+;;     Update #: 15854
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/02/11 dadams
+;;     Added (redefinition of) bookmark-insert-current-bookmark for Emacs 24.3+.
 ;; 2015/02/08 dadams
 ;;     Added: bmkp-properties-to-keep, bmkp-tagged-alist-only, bmkp-untagged-alist-only.
 ;;     Renamed: bmkp-icicle-* to bmkp-icicles-*.
