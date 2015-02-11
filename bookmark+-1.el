@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Feb  8 14:04:56 2015 (-0800)
+;; Last-Updated: Wed Feb 11 10:56:52 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7613
+;;     Update #: 7620
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -549,7 +549,8 @@
 ;;
 ;;    `bookmark-default-annotation-text', `bookmark-delete',
 ;;    `bookmark-edit-annotation-mode', `bookmark-insert',
-;;    `bookmark-insert-annotation', `bookmark-insert-location',
+;;    `bookmark-insert-annotation',
+;;    `bookmark-insert-current-bookmark', `bookmark-insert-location',
 ;;    `bookmark-jump', `bookmark-jump-other-window', `bookmark-load',
 ;;    `bookmark-relocate', `bookmark-rename', `bookmark-save',
 ;;    `bookmark-send-edited-annotation', `bookmark-set',
@@ -572,7 +573,7 @@
 ;;    here), `bookmark-exit-hook-internal', `bookmark-get-bookmark',
 ;;    `bookmark-get-bookmark-record' (Emacs 20-22),
 ;;    `bookmark-get-handler' (Emacs 20-22),
-;;    `bookmark-import-new-list', `bookmark-handle-bookmark',
+;;    `bookmark-handle-bookmark', `bookmark-import-new-list',
 ;;    `bookmark-jump-noselect' (Emacs 20-22), `bookmark-location',
 ;;    `bookmark-make-record', `bookmark-make-record-default',
 ;;    `bookmark-maybe-load-default-file', `bookmark-maybe-rename',
@@ -1002,7 +1003,7 @@ the initial bookmark file, in any given session.
 
 If non-nil, Emacs uses the last bookmark file you used, in the last
 Emacs session.  If none was recorded then it uses
-`bookmark-default-file'.  The particular non-nil value must be a an
+`bookmark-default-file'.  The particular non-nil value must be an
 absolute file name \(possibly containing `~') - it is not expanded).
 
 NOTE: A non-nil option value is overwritten by Bookmark+, so that it
@@ -2753,6 +2754,22 @@ candidate."
              (not no-update-p))
     (with-current-buffer (get-buffer "*Bookmark List*") ; Do NOT just use `bmkp-refresh/rebuild-menu-list'.
       (bmkp-refresh-menu-list bookmark-name)))) ; So display new location and `*' marker.
+
+
+;; REPLACES ORIGINAL in `bookmark.el' (it was removed from `bookmark.el' in Emacs 24.3 - Emacs bug #19838).
+;;
+;; No change from original, except provide a better doc string.
+;;
+;;;###autoload (autoload 'bookmark-insert-current-bookmark "bookmark+")
+(unless (fboundp 'bookmark-insert-current-bookmark)
+  (defun bookmark-insert-current-bookmark () ; Emacs 24.3+
+    "Insert current-bookmark name or buffer file name, if none.
+That is, if `bookmark-current-bookmark' in `bookmark-current-buffer'
+is not nil then insert that."
+    (interactive)
+    (let ((str  (with-current-buffer bookmark-current-buffer
+                  (or bookmark-current-bookmark  (bookmark-buffer-name)))))
+      (insert str))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
