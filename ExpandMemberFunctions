@@ -33,7 +33,33 @@ Open "Sample.C", and you will see the following:
   {
   }
 
-== Alternative ==
+== Alternativer: Semantic Refactoring ==
+
+Homepage: https://github.com/tuhdo/semantic-refactor
+
+Semantic Refactor is a refactoring tool for C/C++ based on Semantic parser framework
+
+Features:
+
+- Context-sensitive menu offers appropriate refactoring actions
+
+- Generate class implementation (also handles nested class and class template)
+
+- Generate class getters and setters
+
+- Generate function implementation (also handles function template)
+
+- Generate function prototype
+
+- Convert function to function pointer
+
+- Convert function to function parameter
+
+- Move semantic units (class, function, variable)
+
+- Extract function with proper type information
+
+== Other Alternatives ==
 
 See also agulbra-make-member in KDE's emacs setup
 http://websvn.kde.org/trunk/KDE/kdesdk/scripts/kde-emacs/
