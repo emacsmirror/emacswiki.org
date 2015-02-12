@@ -47,8 +47,9 @@ How do I:
 
 ; Code folding: This is done by various modes according to preferences.  The terms to look for are "outline" and "folding".  See CategoryOutline.
 
-; Refactoring:  Ability to refactor source code seems highly dependent on the source code's programming language, so there is no univeral solution for this.  But there is no reason support for refactoring could not be accomplished by extending any of the existing Emacs ProgrammingModes with some EmacsLisp programming.  Emacs offers advanced editing facilities helpful for refactoring source code.  See RefactoringBrowser, [[EmacsNiftyTricks#Editing]], [[EmacsNiftyTricks#Development]], [[EmacsNiftyTricks#Programming]].
+; Refactoring: [https://github.com/tuhdo/semantic-refactor Semantic Refactor] is a refactoring tool for C/C++ based on Semantic parser framework.
 
+Ability to refactor source code seems highly dependent on the source code's programming language, so there is no univeral solution for this.  But there is no reason support for refactoring could not be accomplished by extending any of the existing Emacs ProgrammingModes with some EmacsLisp programming.  Emacs offers advanced editing facilities helpful for refactoring source code.  See RefactoringBrowser, [[EmacsNiftyTricks#Editing]], [[EmacsNiftyTricks#Development]], [[EmacsNiftyTricks#Programming]].
 Also see: [http://www.kuro5hin.org/story/2003/4/1/21741/10470 Making Emacs Stand Up To Visual Studio 7], WThirtyTwoDev,MSVisualStudio
 
 See also, for VisualStudio-style bookmarking:
