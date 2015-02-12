@@ -3,7 +3,7 @@ Trashcan implements a recoverable file-deletion system that behaves like the tra
 *NOTE*: Starting with Emacs 23.2, we have built-in support for using Recycle Bin or system Trash folder.  See NEWS by pressing `C-h n'.
 
 You can find a copy of Trashcan on its [http://davin.50webs.com/research/2006/trashcan.el.html homepage]
-or in [http://davin.50webs.com/research/2006/trashcan-20150105-102908.tar.gz this tarball].
+or in [http://davin.50webs.com/research/2006/trashcan-20150211-162609.tar.gz this tarball].
 
 From the commentary:
 
