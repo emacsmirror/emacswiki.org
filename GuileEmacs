@@ -74,7 +74,7 @@ export ACLOCAL_PATH=$HOME/guile-emacs/guile/share/aclocal
 export PKG_CONFIG_PATH=$HOME/guile-emacs/guile/lib/pkgconfig
 export LD_RUN_PATH=$HOME/guile-emacs/guile/lib
 # ... and of course we need to tell Emacs about Guile binaries too...
-PATH=$PATH:$HOME/guile-emacs/guile/bin
+PATH=$HOME/guile-emacs/guile/bin:$PATH
 ./autogen.sh 
 # ... and build Emacs
 ./configure --prefix=$HOME/guile-emacs/emacs
