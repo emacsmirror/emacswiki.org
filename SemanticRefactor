@@ -1,0 +1,23 @@
+[https://github.com/tuhdo/semantic-refactor Semantic Refactor] is a refactoring tool for C/C++ based on Semantic parser framework.
+
+This package includes the following features:
+
+- Context-sensitive menu offers appropriate refactoring actions
+
+- Generate class implementation (also handles nested class and class template)
+
+- Generate class getters and setters
+
+- Generate function implementation (also handles function template)
+
+- Generate function prototype
+
+- Convert function to function pointer
+
+- Convert function to function parameter
+
+- Move semantic units (class, function, variable)
+
+- Extract function with proper type information
+
+[https://github.com/tuhdo/semantic-refactor/blob/master/srefactor-demos/demos.md More demos and details about each feature].
