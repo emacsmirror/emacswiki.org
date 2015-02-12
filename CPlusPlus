@@ -8,8 +8,8 @@ For other pages about [::C++] programming, [EmacsWiki:search=%22c%5C%2B%5C%2B%22
 
 == Extensions ==
 
-* DoxyMacs -- The purpose of the doxymacs project is to create a LISP package that will make using Doxygen from within {X}Emacs easier.
 * SemanticRefactor is a refactoring tool for C/C++ based on Semantic parser framework
+* DoxyMacs -- The purpose of the doxymacs project is to create a LISP package that will make using Doxygen from within {X}Emacs easier.
 * ExpandMemberFunctions - create empty definitions in a cpp file from member function declarations in a header file.
 * QtMode - Get the Qt specific keywords to work with cc-mode.
 * [http://www.hendawi.com/emacs/sourcepair.el sourcepair.el] -- Load the corresponding C/C++ header or source file for the current buffer (by Mohamed Hendawi). An alternative to FindOtherFile.
