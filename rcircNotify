@@ -16,6 +16,7 @@ M-x package-install rcirc-notify
 To install, put it in your LoadPath (or install from marmalade) and add the following to your InitFile:
 
     (eval-after-load 'rcirc '(require 'rcirc-notify))
+    (eval-after-load 'rcirc '(rcirc-notify-add-hooks))
 
 This library tries to use the following binaries to send the message:
 
