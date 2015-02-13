@@ -508,6 +508,21 @@ emms-streams)."
 
 -- Filipp Gunbin
 
+=== Using EMMS on OSX without installing extra audio players ===
+
+OSX comes with a simple command line audio player called "afplay". This is how you configure it to be the simple-player for emms:
+
+<pre>
+    (define-emms-simple-player afplay '(file)
+      (regexp-opt '(".mp3" ".m4a" ".aac"))
+      "afplay")
+    (setq emms-player-list `(,emms-player-afplay))
+</pre>
+
+More here: [https://github.com/danieroux/emacs/blob/master/mine/djr-emms.el]
+
+-- Danie Roux
+
 == Screenshots ==
 
 [http://www.gnu.org/software/emms/screenshots.html]
