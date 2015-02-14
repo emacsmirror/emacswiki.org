@@ -30,6 +30,12 @@ To remember my key-bindings I use a special function to add the binding and desc
 * SebastiansSplashScreenShot (this one is on windows).
 * The Lisp:CodeSplashScreen code. Contains the function <code>sr-set-global-key</code> that records the keys and theire description for me.
 
+== Update: nowadays I use loader.el ==
+
+See https://github.com/SebastianRose/loader.el/blob/master/elisp/loader.el
+
+loader.el organizes my custom elisp files in a simple way and adds a command to check the key-bindings.
+
 -------------------------------
 
 == Add missing HTML-tags ==
