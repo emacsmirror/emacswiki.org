@@ -8,9 +8,9 @@
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
 ;; Version: 2015.02.08
-;; Last-Updated: Sun Feb  8 16:09:18 2015 (-0800)
+;; Last-Updated: Sun Feb 15 10:46:20 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15027
+;;     Update #: 15028
 ;; URL: http://www.emacswiki.org/bookmark+.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -104,7 +104,7 @@
 ;;         Bookmark+ features.
 ;;
 ;;      2. In your default bookmark file, `bookmark-default-file'
-;;         (`.emacs.bmk'), and in any other bookmark files you might
+;;         (`~/.emacs.bmk'), and in any other bookmark files you might
 ;;         have.
 ;;
 ;;      3. In your `*Bookmark List*' state file,
