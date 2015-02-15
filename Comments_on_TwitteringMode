@@ -1,0 +1,243 @@
+== Discussion ==
+[new:halloleo:2010-01-20 01:00 UTC]
+
+[[halloleo]]: i'm trying this mode and it works pretty good, but i'm not sure how to completely /finish/ using twitter. does 'q' (`twittering-suspend') do this? i don't think so: it only switches to another buffer, therefore the twitter timer still retrieves tweets...
+
+[new]
+[[citizen428]]: @halloleo Have you tried `M-x twittering-stop'?
+
+[new]
+RichardRiley : What packages are needed for icon support? Also, wouldnt
+
+
+      (define-key km "q" 'delete-window)
+
+
+be a good addition?
+
+[new]
+For icon support, try adding ##(twittering-icon-mode)## to your ##.emacs## -- AlbertoGarcia
+
+[new]
+You need wget for icon support on Linux. it can take a while to download icons so be patient - RichardRiley.
+
+[new]
+That's a bug IMHO. The problem is that icons are downloaded while the timeline is being displayed on screen, so the first time a new user appears in your timeline, you won't see their icon because it's still being downloaded. You have to wait till the next refresh (or press "g" to force it) -- AlbertoGarcia.
+
+[new]
+I'm just wondering if I have missed something obvious. The default is to see your friends tweets. But how do I tweet to my tweet account from there? Currently I have to  go to my timeline (C-c C-u)) and then hitting return : is there a quicker way? -- RichardRiley.
+
+[new]
+You can use the somewhat non-obvious keybinding of C-c C-s (twittering-update-status-interactive).
+
+[new]
+Icon support does not work in windows.  I have gnu wget installed and in path, and the icons are downloading to twittering-tmp-dir.  However, they do not display in icon mode. --Tim Hoolihan
+
+[new]
+Icon Works on Windows needs GNU Win32 image packages (http://gnuwin32.sourceforge.net/packages.html) installed, which includes jpeg, libungif, libpng,  xpm, and zlib, etc. And the packages dir must be set into the %PATH% environment various.
+
+BTW: I wish this code would support HTTPS and third-party API in the future. It would be very useful. --Moses
+
+[new]
+I wish twittering-mode would support socket proxy. I only use tor to connect twitter. --rix
+
+[new]
+I wrote some patches so that icon-mode works well without external programs, wget and convert.
+You can get it from my repository on github http://github.com/cvmat/twittering-mode/tree/without-external-program . I confirmed it with NTEmacs on Windows XP and Emacs on Debian. -- Tadashi MATSUO
+
+[new]
+Sorry for my rudeness. At last, I found tor+privoxy can make a http proxy. privoxy's default proxy port is 8118. --rix
+
+[new]
+hayamiz has merged my patches into the main repository. The main repository http://github.com/hayamiz/twittering-mode/tree/master now supports icon-mode without external programs. --Tadashi MATSUO
+
+[new]
+Any chance we can have a count of characters while tweeting in the minibuffer? (twit.el has this, I should look at how it's done)
+
+[new]
+If you use 0.9.0, the count is displayed in default. If you use the latest version on github, you may need the following statement in your .emacs;
+  (setq twittering-use-show-minibuffer-length t)
+But the option is t in default... --Tadashi MATSUO
+
+[new]
+I can't see my followee's retweets. I'm following @ebertchicago(Roger Ebert, a film critik), but can't see his massive retweets. Can anybody tell me how can I fix it? -Jeongtae Roh
+
+[new]
+Do you use 0.9.0? In default, it retrieves friends timeline, which does not include native retweets unless the special option is embedded in the request (described at http://dev.twitter.com/doc/get/statuses/friends_timeline ). I recommend you to use the latest version on github. It supports home timeline, which includes native retweets. --Tadashi MATSUO
+
+[new]
+ Suddenly I get this error message from my twitteringmode client. Strange thing is it was working fine before. Any clues?
+
+error in process sentinel: Search failed: “^M? ^M?
+
+Thanks in advance.
+
+[new]
+The version 0.9.0 seems to have some problems on dealing of newlines. But your problem, which is also reported by other people, may be triggered by recent modification on twitter.com because this problem seems to appear recently. The latest version on github will solve the problem. --Tadashi MATSUO
+
+[new]
+How do I avoid having to authorize the app once and again when using OAuth? -- AlbertoGarcia.
+
+[new]
+With the HEAD version on github, you can store the authorized token with encryption by GnuPG.
+If you have an encrypted token, you no longer need to retrieve PIN code via web browser.
+Instead, you need to input a pass phrase for decryption. You can enable this function by the following code.
+{{{
+    (setq twittering-use-master-password t)
+}}}
+It requires GnuPG and either EasyPG or 'alpaca.el'. Please refer to [http://github.com/hayamiz/twittering-mode/blob/master/NEWS NEWS file on the HEAD] -- Tadashi MATSUO
+
+[new]
+I have just installed 1.0 after removing 0.8.  When I use M-x twit to enter tw-mode, I just get "Authorization via OAuth failed. Type M-x twit to retry." in the minibuffer, and an empty :home buffer.  This is unhelpful.  What can I do to actually authorize? I can't have emacs launch a browser: my emacs session lives on a distant machine and I access it strictly in text, as a dumb tty. -- Krinn
+:[new]
+It is because Twitter has changed the CA certificate required for server authentication of api.twitter.com and search.twitter.com. The CA certificate embedded in 1.0.0 fails. The HEAD and the most recent revision on 1.0.x branch on github have new CA certificate, which can authenticate the servers. -- Tadashi MATSUO
+::[new]
+2010-09-05-133600: I get just the "Authorization via..." message even with the github checkout, don't see any page to open etc. Which page should I open in an external browser? -- JJ
+:::[new]
+The URL must be displayed on the buffer opened just after M-x twit. Then it will be opened by `browse-url' if you allow it. I do not know how to reproduce your case. The HEAD on github may help you. -- Tadashi MATSUO
+[new]
+Fiddled around with the hook and wrote one I think is more useful than the suggested. I also used ToDoChiKu so it should work with growl, snarl, and libnotify.
+
+{{{
+(add-hook 'twittering-new-tweets-hook (lambda ()
+  (let ((n twittering-new-tweets-count))
+    (if (> n 10)
+        (todochiku-message
+          (twittering-timeline-spec-to-string twittering-new-tweets-spec)
+          (format "You have %d new tweet%s"
+            n (if (> n 1) "s" ""))
+          (todochiku-icon 'social))
+      (dolist (el twittering-new-tweets-statuses)
+	(todochiku-message
+          (twittering-timeline-spec-to-string twittering-new-tweets-spec)
+	  (concat (cdr (assoc 'user-screen-name el))
+	     " said: "
+	     (cdr (assoc 'text el)))
+          (todochiku-icon 'social)))))))
+}}}
+
+When more than 10 tweets are retrieved, it makes a message with the spec as the title and the number of tweets in the message.
+If it gets less than 10, a message is made of each. Hope someone else finds it useful. -- DaveKerschner
+
+How can this code works for display only when I receive a mention?. -- Exal
+
+[new]
+2010-09-23 I also installed v1.0 and it works fine on my Linux system but not on my Windows system (get same "Authorization via OAuth failed. Type M-x twit to retry." message). It is the same exact setup that I sync w/unison. Is there something special needed for Windows? - Ed
+:[new]
+For SSL connection, Emacs requires an external program. Do you have `curl', `gnutls_cli' or `openssl' in exec-path? By the way, I recommend the HEAD on github. It supports encrypted local storage of authorized key and xAuth. You need not to take a PIN code repeatedly.
+Note that `curl.exe' (for Windows) distributed with twittering-mode cannot correctly perform HTTPS POST with non-empty post-body via a proxy. So, you cannot use it for xAuth via a proxy. (You can use it for OAuth and tweet retrieval.) In addition, `gnutls_cli' and `openssl' cannot be used with a proxy. -- Tadashi MATSUO
+
+[new]
+'@'-replies from people I follow which are directed to people other than myself don't show up in my :home timeline; is there any way to change this? -- Alexis
+:[new]
+Alias may help you. If you have the below configuration, the timeline __$me__ includes such tweets.
+{{{
+  (setq twittering-timeline-spec-alias
+        `(("me" . "$r(YOUR-USER-NAME)")
+          ("r" . ,(lambda (username) (format "$related-to(%s)" username)))
+          ("related-to" .
+           ,(lambda (username)
+              (if username
+                  (format ":search/to:%s OR from:%s OR @%s/"
+                          username username username)
+                ":home")))))
+}}}
+To read tweets related to someone, you can use the timeline __$r(HIS-OR-HER-USERNAME)__ . -- Tadashi MATSUO
+
+[new]
+Any way to add support for user switching? I.e. if you have multiple Twitter accounts. TwIt had this, but now has been discontinued, with its developer switching to TwitteringMode... -- JJ
+
+:[new]
+I like the feature in /rcirc/ that allows toggling between unread /msgs and the current coding buffer using `C-c C-@' (`@' -> space). Is there a chance of introducing this feature? -- Djui
+
+[new]
+Mar 23, 2011; I had similar problems, getting the message: "Authorization via OAuth failed. Type M-x twit to retry." on GNU Emacs (Windows), twittering-mode-1.0.0. I know SSL works because I write/use other Emacs applications that consume HTTPS content. The following steps fixed the situation for me: 1) Get the updated CA certificate from Git. 2) Save the certificate to twittering-mode-1.0.0/win-curl/equifax.cer 3) In your .emacs, add:
+{{{
+(setq twittering-curl-program (concat site-lisp-path "/twittering-mode-1.0.0/win-curl/curl.exe"))
+(setq twittering-cert-file (concat site-lisp-path "/twittering-mode-1.0.0/win-curl/equifax.cer"))
+}}}
+Where site-lisp-path expands to your Emacs site-lisp directory. Now when I do M-x twit, I see the successful connection in Wireshark and get the request for my OAuth Pin. -- sboles
+
+[new]
+10 May 2011: If you'd like to filter incoming tweets so that those matching a particular pattern aren't displayed in your timeline, you might find the following code useful:
+{{{
+(setq twittering-tweet-filters '("example" "example phrase"))                                   
+(defun twittering-filter-tweets ()                                            
+  (setq non-matching-statuses '())                                            
+  (dolist (status twittering-new-tweets-statuses)                             
+    (setq matched-tweets 0)                                                   
+    (dolist (pat twittering-tweet-filters)                                    
+      (if (string-match pat (cdr (assoc 'text status)))                       
+          (setq matched-tweets (+ 1 matched-tweets))))                        
+    (if (= 0 matched-tweets)                                                  
+        (setq non-matching-statuses (append non-matching-statuses `(,status)))))
+  (setq new-statuses non-matching-statuses))                                  
+(add-hook 'twittering-new-tweets-hook 'twittering-filter-tweets)
+}}}
+The above will not display any tweets containing the text "example" or "example phrase". A filter can consist of any regex accepted by the 'string-match' function.
+
+Tested with emacs 23.2.
+
+-- Alexis
+
+If need filtering URLs (e.g. adf.ly, 4sq.com) and username, try this: 
+https://github.com/hayamiz/twittering-mode/pull/73#issuecomment-27641530
+
+Code is from Alexis' and cvmat's:
+{{{
+;;;; Filtering.
+(defvar twittering-filter-users '()
+  "*List of strings containing usernames (without '@' prefix) whose tweets should not be displayed in timeline.")
+(defvar twittering-filter-tweets '()
+  "*List of strings containing phrases which will prevent a tweet containing one of those phrases from being displayed in timeline.")
+
+(defun twittering-filters-apply ()
+  (setq non-matching-statuses '())
+  (dolist (status twittering-new-tweets-statuses)
+    (setq matched-tweets 0)
+    (dolist (pat twittering-filter-users)
+      (if (string-match pat (cdr (assoc 'user-screen-name status)))
+          (setq matched-tweets (+ 1 matched-tweets))))
+    (dolist (pat twittering-filter-tweets)
+      (if (string-match pat (twittering-make-fontified-tweet-text-with-entity status))
+          (setq matched-tweets (+ 1 matched-tweets))))
+    (if (= 0 matched-tweets)
+        (setq non-matching-statuses (append non-matching-statuses `(,status)))))
+  (setq new-statuses non-matching-statuses))
+(add-hook 'twittering-new-tweets-hook 'twittering-filters-apply)
+
+(setq twittering-filter-tweets '("http://4sq.com/.*" "http://adf.ly/.*" "I liked a @YouTube video"))
+}}}
+
+-- kuanyui
+
+[new]
+Are there commands to view lists of (i) people who you're following and (ii) people who're following you? For that matter, is there any manual?
+
+--BeSlayed
+
+How could I expand the number of twitts retrieved on the mode startup? And why we don't have a command like `twittering-favorite-timeline`?
+
+--FabioCosta
+
+[new]
+Does the image publishing feature being included in the TODO list?
+It is a very important function for twittering...
+
+--Cesc
+
+[new]
+After having trouble installing twittering-mode and EasyPG on the mac, I spent some time and managed to track down a copy of alpaca.el (0.13). I have created a repository for it [https://github.com/unpluggd/alpaca.el here] to make it a little easier to find for anyone wishing to use it in place of EasyPG.
+
+--unpluggd
+
+[new]
+Can I use twitter's lists? I found api-methods in the code, but I don't understand how to use it.
+
+--pimiento
+
+[new]
+Above comments were moved from front page.
+
+-- holocronweaver 2015-02-15 02:00 UTC
+
