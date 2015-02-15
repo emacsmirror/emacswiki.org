@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Feb 15 08:48:29 2015 (-0800)
+;; Last-Updated: Sun Feb 15 10:45:09 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15008
+;;     Update #: 15009
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -80,7 +80,7 @@
 ;;         Bookmark+ features.
 ;;
 ;;      2. In your default bookmark file, `bookmark-default-file'
-;;         (`.emacs.bmk'), and in any other bookmark files you might
+;;         (`~/.emacs.bmk'), and in any other bookmark files you might
 ;;         have.
 ;;
 ;;      3. In your `*Bookmark List*' state file,
