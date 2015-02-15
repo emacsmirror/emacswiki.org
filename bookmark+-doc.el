@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Feb  8 09:27:21 2015 (-0800)
+;; Last-Updated: Sun Feb 15 08:48:29 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 14982
+;;     Update #: 15008
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -121,6 +121,7 @@
 ;;
 ;;  (@> "Documentation")
 ;;    (@> "Installing Bookmark+")
+;;      (@> "Bookmark+ Load Order and Option `bookmark-default-file'")
 ;;    (@> "Bookmark+ Features")
 ;;    (@> "Bookmark Basics")
 ;;    (@> "Different Types of Jump Commands")
@@ -211,6 +212,39 @@
 ;;  vanilla Emacs.  The others are available from the Emacs Wiki web
 ;;  site: http://www.emacswiki.org/.  You also need Emacs 22 or later
 ;;  for this feature.
+;;
+;;
+;;(@* "Bookmark+ Load Order and Option `bookmark-default-file'")
+;;  *** Bookmark+ Load Order and Option `bookmark-default-file' ***
+;;
+;;  Standard option `bookmark-default-file' defines the default
+;;  location of your bookmark file.  Bookmark+ does not change the
+;;  value.  You can change the value, of course, either by customizing
+;;  it (recommended) or using Lisp code (including in your init file).
+;;
+;;  However, the value of `bookmark-default-file' is used when you
+;;  load Bookmark+ to initialize some other variables, in particular
+;;  option `bmkp-last-as-first-bookmark-file' and internal variable
+;;  `bmkp-current-bookmark-file'.
+;;
+;;  This means that if you modify `bookmark-default-file' in your init
+;;  file, and you want your new value to be take into account by
+;;  Bookmark+, then modify it before you load Bookmark+.
+;;
+;;  Be aware also that another library that you load might, itself,
+;;  load Bookmark+, in which case you will for the same reason want to
+;;  load that library after you have modified `bookmark-default-file'.
+;;  An example of this is Icicles, which loads Bookmark+ if Bookmark+
+;;  is in your `load-path'.
+;;
+;;  In general, with Bookmark+ I recommend that you simply set option
+;;  `bookmark-default-file' once and for all at the outset, preferably
+;;  by customizing it.  You can use `bmkp-switch-bookmark-file-create'
+;;  at any time to switch to a different bookmark file - it is bound
+;;  to `C-x p L'.  You can also invoke it in your init file, provided
+;;  Bookmark+ has already been loaded.
+;;
+;;  See Also: (@> "Using Multiple Bookmark Files")
  
 ;;(@* "Bookmark+ Features")
 ;;  ** Bookmark+ Features **
@@ -682,6 +716,7 @@
 ;;  reflects it imperfectly, because it is a snapshot).  So if the
 ;;  bookmark file that is loaded is different from the one that was
 ;;  recorded for the display state, the recorded state is ignored.
+;;
 ;;
 ;;(@* "Automatic Saving")
 ;;  *** Automatic Saving ***
@@ -1273,6 +1308,7 @@
 ;;  As usual, all such commands are also available on the Bookmark+
 ;;  menus.  The menus provide quick reminders of the available keys,
 ;;  as does the help from `?' in the bookmark-list display.
+;;
 ;;
 ;;(@* "Bookmark Records: What A Bookmark Looks Like")
 ;;  *** Bookmark Records: What A Bookmark Looks Like ***
@@ -2141,6 +2177,8 @@
 ;;    bookmark files to access their bookmarks together in a session.
 ;;    Think of your bookmark files as independent modules that you can
 ;;    combine.
+;;
+;;  See Also: (@> "Bookmark+ Load Order and Option `bookmark-default-file'").
 ;;
 ;;
 ;;(@* "Bookmark-File Bookmarks")
@@ -3097,6 +3135,7 @@
 ;;  temporary?  Or what if you want to toggle whether particular
 ;;  bookmarks get saved automatically?
 ;;
+;;
 ;;(@* "Temporary Bookmarking Mode")
 ;;  *** Temporary Bookmarking Mode ***
 ;;
@@ -3134,6 +3173,7 @@
 ;;  In the bookmark-list display, temporary bookmarking mode is
 ;;  indicated in the mode line by `TEMPORARY Bookmarking' in place of
 ;;  `Bookmarks' as the mode name.
+;;
 ;;
 ;;(@* "Making Bookmarks Temporary")
 ;;  *** Making Bookmarks Temporary ***
