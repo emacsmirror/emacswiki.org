@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Feb 11 10:58:04 2015 (-0800)
+;; Last-Updated: Sun Feb 15 11:01:47 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15854
+;;     Update #: 15858
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/02/15 dadams
+;;     bmkp-get-autofile-bookmark: Corrected test for same file to use absolute file names.
+;;     bmkp-read-bookmark-file-default: .emacs.bmk -> ~/.emacs.bmk.
 ;; 2015/02/11 dadams
 ;;     Added (redefinition of) bookmark-insert-current-bookmark for Emacs 24.3+.
 ;; 2015/02/08 dadams
