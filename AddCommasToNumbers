@@ -16,3 +16,6 @@ Note that you can also specify a different separator:
 
     (add-number-grouping 12345 "'")
     => "12'345"
+
+----
+[[CategoryCalculators]]
