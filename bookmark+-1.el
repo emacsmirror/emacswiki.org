@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Feb 11 10:56:52 2015 (-0800)
+;; Last-Updated: Sun Feb 15 10:53:22 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7620
+;;     Update #: 7627
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -995,7 +995,7 @@ the change to take effect."
   "*Seconds to wait before updating display when filtering bookmarks."
   :type 'number :group 'bookmark-plus)
 
-;; Remove autoload cookie, to avoid (void-variable bookmark-default-file) ;;;###autoload
+;; Removed autoload cookie, to avoid (void-variable bookmark-default-file) ;;;###autoload
 (defcustom bmkp-last-as-first-bookmark-file bookmark-default-file
   "*Whether to use the last-used bookmark file as the first used.
 If nil then Emacs always uses the value of `bookmark-default-file' as
@@ -4452,12 +4452,11 @@ The other args are the same as for `read-file-name'."
 
 (defun bmkp-read-bookmark-file-default ()
   "A default value for `bmkp-read-bookmark-file-name' DEFAULT-FILENAME arg.
-A value to use if you want a default and there is none better.
-The value is "
+A value to use if you want a default and there is none better."
   (if (and (> emacs-major-version 22)
-           (not (bmkp-same-file-p ".emacs.bmk" bookmark-default-file)))
-      (list ".emacs.bmk" bookmark-default-file)
-    ".emacs.bmk"))
+           (not (bmkp-same-file-p "~/.emacs.bmk" bookmark-default-file)))
+      (list "~/.emacs.bmk" bookmark-default-file)
+    "~/.emacs.bmk"))
 
 ;;;###autoload (autoload 'bmkp-empty-file "bookmark+")
 (defun bmkp-empty-file (file &optional confirmp) ; Bound to `C-x p 0'
@@ -6444,7 +6443,7 @@ predicate."
 ;;; the summer of 2009 to create non-file bookmarks.  If you did that,
 ;;; then some of those bookmarks might cause vanilla Emacs (emacs -Q) to
 ;;; raise an error.  You can use this command to fix that problem: it
-;;; modifies your existing `bookmark-default-file' (`.emacs.bmk'), after
+;;; modifies your existing `bookmark-default-file' (`~/.emacs.bmk'), after
 ;;; backing up that file (suffixing the name with \"_saveNUMBER\")."
 ;;;   (interactive)
 ;;;   (require 'cl)                         ; For `gensym'
@@ -7513,9 +7512,7 @@ same, except possibly for their directory parts (see previous)."
         (when (string= bname (bmkp-bookmark-name-from-record bmk))
           (let* ((bfil  (bookmark-get-filename bmk))
                  (bdir  (and bfil  (file-name-directory bfil))))
-            (when (and bfil
-                       (bmkp-same-file-p fname (file-name-nondirectory bfil))
-                       (bmkp-same-file-p bdir dir-to-use))
+            (when (and bfil  (bmkp-same-file-p bdir dir-to-use)  (bmkp-same-file-p bfil file))
               (throw 'bmkp-get-autofile-bookmark bmk))))) ; Return the bookmark.
       nil)))
 
