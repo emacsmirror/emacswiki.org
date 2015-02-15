@@ -96,7 +96,7 @@ libraries <tt>[[col-highlight.el]]</tt>, ##hl-line##, <tt>[[hl-line+.el]]</tt>, 
 
 Besides the %%EmacsWiki%% ElispArea, which always has the latest source files for '''Bookmark+''' you can the get '''Bookmark+''' files in the following ways:
 
-* You can download '''Bookmark+''' from [[MELPA]].  If you use Emacs 24 or later, you can both download and install it from within Emacs, easily.  To do that, you first need to add `melpa' to list `package-archives'.  Then use `M-x list-packages' and click `bookmark+' in the list of available pacakges.  Use code like this to add `melpa' to the list of available archives:
+* You can download '''Bookmark+''' from [[MELPA]].  If you use Emacs 24 or later, you can both download and install it from within Emacs, easily.  To do that, you first need to add `melpa' to list `package-archives'.  Then use `M-x list-packages' and click `bookmark+' in the list of available packages.  Use code like this to add `melpa' to the list of available archives:
 
        (when (> emacs-major-version 23)
         (require 'package)
@@ -106,6 +106,50 @@ Besides the %%EmacsWiki%% ElispArea, which always has the latest source files fo
                      'APPEND))
 
 * JonasBernoulli has created a '''Bookmark+''' Git repository here: https://github.com/emacsmirror/bookmark-plus.  (Many other %%EmacsWiki%% libraries are also mirrored at the same Git hub -- see [[Git repository]].)
+
+
+
+
+
+
+
+
+[:LoadOrder]
+[:bookmark-default-file]
+=== Bookmark+ Load Order and Option `bookmark-default-file' ===
+
+Standard option '''`bookmark-default-file'''' defines the default
+location of your bookmark file.  '''Bookmark+''' does not change the
+value.  You can change the value, of course, either by customizing
+it (recommended) or using Lisp code (including in your [[init file]]).
+
+However, the value of `bookmark-default-file' is used when you
+load '''Bookmark+''' to ''initialize some other variables'', in particular
+option '''`bmkp-last-as-first-bookmark-file'''' and internal variable
+'''`bmkp-current-bookmark-file''''.
+
+This means that if you modify `bookmark-default-file' in your init
+file, and you want your new value to be take into account by
+'''Bookmark+''', then modify it ''before'' you load '''Bookmark+'''.
+
+Be aware also that another library that you load might, itself,
+load '''Bookmark+''', in which case you will for the same reason want to
+load that library after you have modified `bookmark-default-file'.
+An example of this is '''[[Icicles]]''', which loads '''Bookmark+''' if '''Bookmark+'''
+is in your `load-path'.
+
+In general, with '''Bookmark+''' I recommend that you simply set option
+`bookmark-default-file' once and for all at the outset, preferably
+by customizing it.  You can use '''`bmkp-switch-bookmark-file-create''''
+at any time to switch to a different bookmark file - it is bound
+to `C-x p L'.  You can also invoke it in your init file, provided
+'''Bookmark+''' has already been loaded.
+
+See Also: [[#UsingMultipleBookmarkFiles|Using Multiple Bookmark Files]]
+
+
+
+
 
 
 
@@ -2309,7 +2353,7 @@ Remember that you can ''load'' multiple bookmark files to access
 their bookmarks together in a session.  Think of your bookmark
 files as independent modules that you can combine.
 
-
+See Also: [[#LoadOrder|Bookmark+ Load Order and Option `bookmark-default-file']].
 
 
 
