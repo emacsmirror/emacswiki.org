@@ -679,7 +679,7 @@ add, rename, delete, etc. a bookmark, this list is updated.
 #2 is on disk.  It is a persistent record of a set of bookmarks.
 
 The bookmark list (#1) is the current value of internal variable
-`bookmark-alist'.  The bookmark file (#2)can be anywhere.  Its
+`bookmark-alist'.  The bookmark file (#2) can be anywhere.  Its
 default filename is the value of [[user option]]
 `bookmark-default-file'.
 
