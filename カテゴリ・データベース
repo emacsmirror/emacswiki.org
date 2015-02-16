@@ -4,7 +4,7 @@ Emacsは異なるデータベースコードをたくさん持っています.
 
 == SQLデータベース ==
 
-EmacsからSQLデータベースを使う方法については[[SQL]]を参照, 及び:
+<nowiki>EmacsからSQLデータベースを使う方法については</nowiki>[[SQL]]を参照, 及び:
 
 * [[PostgreSQL]] - PostgreSQL データベースサーバへの EmacsLisp インターフェース
 * [[MySql]] - MySQL サーバへの EmacsLisp インターフェース
