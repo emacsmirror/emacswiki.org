@@ -1,0 +1,17 @@
+[[es:CategoríaBasesDeDatos]]
+Emacsは異なるデータベースコードをたくさん持っています.
+
+== SQLデータベース ==
+
+EmacsからSQLデータベースを使う方法については[[SQL]]を参照, 及び:
+
+* [[PostgreSQL]] - PostgreSQL データベースサーバへの EmacsLisp インターフェース
+* [[MySql]] - MySQL サーバへの EmacsLisp インターフェース
+* [[EmacsDb]]  -- 抽象データベースインターフェース
+
+== 非SQLデータベース ==
+
+* !MongoDB - EmacsLisp [[https://github.com/m2ym/mongo-el|MongoDbへのインターフェース]]
+* [[BBDB]] - ビッグブラザーデータベース
+* EmacsDb - Emacsデータベースインターフェース
+* RecMode - Emacsからの[[http://www.gnu.org/software/recutils recfiles]]の閲覧と編集
