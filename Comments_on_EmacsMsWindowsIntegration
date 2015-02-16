@@ -12,3 +12,12 @@ Note that this will pretty much break the usual "-F" behavior but it is needed a
 
 -- tux. 2013-09-04 14:25 UTC
 
+
+----
+
+I know this is a pretty old post, but maybe someone will find this useful. for the debugger value this works much better 
+emacsclientw.exe -c -a runemacs.exe -F "%1"
+if you leave off the "%1" then it wont open the file you click.
+
+-- Anonymous 2015-02-16 20:44 UTC
+
