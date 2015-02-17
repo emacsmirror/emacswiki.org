@@ -8,12 +8,12 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2015.01.04
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  4 14:27:46 2015 (-0800)
+;; Last-Updated: Tue Feb 17 06:30:27 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 23646
+;;     Update #: 23647
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
-;; Keywords: extensions, help, abbrev, local, minibuffer,
+;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
