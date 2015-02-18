@@ -3,7 +3,7 @@ Or, if you just prefer to have a different smart key such as less-than.
 <pre>
 (require 'ess-site)
 
-(setq ess-S-assign "_")
+(setq ess-S-assign " <- ")
 (setq ess-my-smart-key "<")
 
 (defun ess-insert-S-assign-mod ()
@@ -29,4 +29,6 @@ Or, if you just prefer to have a different smart key such as less-than.
 
 (add-hook 'R-mode-hook (lambda () (local-set-key ess-my-smart-key 'ess-smart-lt)))
 (add-hook 'inferior-ess-mode-hook (lambda () (local-set-key ess-my-smart-key 'ess-smart-lt)))
+(add-hook 'R-mode-hook (lambda () (local-set-key (kbd "_") 'self-insert-command))) 
+(add-hook 'inferior-ess-mode-hook (lambda () (local-set-key (kbd "_") 'self-insert-command)))
 </pre>
