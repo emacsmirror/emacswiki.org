@@ -1,12 +1,18 @@
 Another small yet powefull implementation of an IDE in Emacs.
 
+Emacside features the ability to run commands native, run emacs lisp commands or run commands within custom a shell.
+
+Every command can have it's own environment. Meaning you do not need to modify environment variables on your system to get a working compiler.
+
+
 It is a wrapper for compilers and shells.
 It allows compiling applications just with emacs, without make.
 
 Emacside is simple and does not need any additional packages.
 
 
-* http://scm.mathematek.de/repos/emacside/wiki.html\\
+* http://scm.mathematek.de/repos/emacside/wiki.html
+
 Download the zip file on the main review site.
 ----
 CategoryProgramming
