@@ -42,3 +42,59 @@ M-: (custom-save-all)
 which will force your customizations to be saved in the new file.
 
 Now, when you start Emacs it will ask you for your GPG key password and then load the customizations from your custom file.
+
+=== Updating keys ===
+
+If you can no longer save documents with epa it might be because your gpg key has expired. 
+
+You have to update the expiry on your key.
+
+* edit the key in question
+
+{{{
+$ gpg --edit me@example.com
+gpg (GnuPG) 1.4.16; Copyright (C) 2013 Free Software Foundation, Inc.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Secret key is available.
+
+pub  4096R/XXXXXXX  created: 2014-02-07  expires: 2016-02-18  usage: SC  
+                     trust: ultimate      validity: ultimate
+sub  4096R/XXXXXXY  created: 2014-02-07  expires: 2016-02-18  usage: E   
+[ultimate] (1). Blah <me@example.com>
+}}}
+
+Use the `expire` command:
+
+{{{
+gpg> expire
+Changing expiration time for the primary key.
+Please specify how long the key should be valid.
+         0 = key does not expire
+      <n>  = key expires in n days
+      <n>w = key expires in n weeks
+      <n>m = key expires in n months
+      <n>y = key expires in n years
+Key is valid for? (0) 
+}}}
+
+for example to change to expire in 1 year just enter: {{{1y}}}
+
+But then you also need to update the "editing" key, that is the second key in the list with the {{{usage: E}}}.
+
+To do that, select the next key:
+
+{{{
+gpg> key 1
+pub  4096R/XXXXXXX  created: 2014-02-07  expires: 2016-02-18  usage: SC  
+                     trust: ultimate      validity: ultimate
+sub* 4096R/XXXXXXY  created: 2014-02-07  expires: 2016-02-18  usage: E   
+[ultimate] (1). Blah <me@example.com>
+}}}
+
+Note the * after the "sub" on the 2nd key, that indicates that you are operating on the second key.
+
+Now you can use the {{{expire}}} command again. Presumably for the same length of time.
+
+Now, in Emacs, everything should work again.
