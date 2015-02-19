@@ -3,51 +3,6 @@ Aka. [::johnw] on the EmacsChannel.
 
 I've been an Emacs user since 1994, but only learned to program in Elisp starting around 1997.
 
-You can find my webpage-of-Emacs-fun at:
-
-* http://johnwiegley.com/
-
-People looking for TimeClock, please note that it is now part of Emacs.
-
-----
-
-For people looking for TimeClock, but are using XEmacs 21.4 -- it is not included with it.  From where should us folks get it?
-
-----
-
-John, have you removed all your elisp stuff from your site?
-
-From JohnWiegley: I am in the midst of recreating my site using the latest version of Muse.  When it's done, the new Emacs page will be here:
-
-* http://johnwiegley.com/emacs.html
-
-----
-[new]
-I have a question about <code>align.el</code> bundled with emacs 22.
-
-The command <code>C-u M-x align</code> in text mode fails to align
-strings of length one:
-
-   1 1 1                            1   1    1    
-   11 11 11            gives        11  11     11 
-   111 111 111                      111 111    111
-
-Why not using the regular expression:
- 
-              "\\(^\\|\\S-\\)\\([ \t]+\\)"  
-
-  instead of  "\\(^\\|\\S-\\)\\([ \t]+\\)\\(\\S-\\|$\\)"
-
-in the <code>text-column</code> part of the <code>align-rules-list</code>
-variable ? This seems to solve the problem.
-
-[new]
-Do you have a new version of scanner.el package (Create elisp scanners using Flex)?
-
-The link http://oneworld.new-era.com/johnw/emacs.html is broken.
-
--- ViniciusJoseLatorre
-
 ----
 
 Those looking for John's Emacs goodness, including chess client, can find it on his github account at http://github.com/jwiegley
