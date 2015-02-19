@@ -18,7 +18,7 @@ To install it, put the following into your InitFile:
 And In order for this to have any effect, `ansi-color-process-output' must
 be in `comint-output-filter-functions'. If not, use the following line to add it.
 
-(add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
+    (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
 
 Some GNU/Linux distributions allow you to install a "color gcc" -- the warnings and errors are colored using escape sequences.  These usually display as garbage within Emacs.  The above code fixes this as well.
 
