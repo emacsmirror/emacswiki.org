@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Jan 21 09:01:17 2015 (-0800)
+;; Last-Updated: Thu Feb 19 07:33:57 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 19644
+;;     Update #: 19645
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5867,7 +5867,8 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
     (if (null icicle-completion-candidates)
         (message "Nothing to delete - use `S-TAB', `TAB', or a cycle key")
       (if allp
-          (if (not (let ((icicle-completion-candidates  icicle-completion-candidates))
+          (if (not (let ((icicle-completion-candidates  icicle-completion-candidates)
+                         (enable-recursive-minibuffers  t))
                      (yes-or-no-p "Are you SURE you want to DELETE ALL of the matching objects? ")))
               (message "OK, nothing deleted")
             (dolist (cand icicle-completion-candidates) (icicle-delete-candidate-object-1 cand t))
