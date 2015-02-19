@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Feb  8 09:10:13 2015 (-0800)
+;; Last-Updated: Thu Feb 19 10:58:10 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 11394
+;;     Update #: 11396
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2015/02/19 dadams
+;;     icicle-buffer-multi-complete: Delete nils introduced by mapcar with buffer-name, from BUFS.
 ;; 2015/02/08 dadams
 ;;     icicle-bookmark-set: Soft-require Bookmark+ - don't test with featurep.
 ;;                          Do not overwrite properties listed in option bmkp-properties-to-keep.
@@ -4469,6 +4471,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2015/02/19 dadams
+;;     icicle-delete-candidate-object: Bind enable-recursive-minibuffers for ALLP confirmation prompt.
 ;; 2015/01/21 dadams
 ;;     icicle-choose-completion (Emacs 23.2+):
 ;;       Wrap icicle-choose-completion-string in with-current-buffer, per vanilla.
