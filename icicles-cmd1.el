@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Feb  8 09:08:07 2015 (-0800)
+;; Last-Updated: Thu Feb 19 10:59:20 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 27383
+;;     Update #: 27387
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7249,7 +7249,7 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                  (concat "^" (regexp-quote name-pat))))
                  (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
                                  (icicle-transform-multi-completion strg)))
-                 (bufs         (mapcar (lambda (buf) (buffer-name buf)) icicle-bufflist))
+                 (bufs         (delq nil (mapcar (lambda (buf) (buffer-name buf)) icicle-bufflist)))
                  (bufs         (if icicle-buffer-ignore-space-prefix-flag
                                    (icicle-remove-if (lambda (buf) (icicle-string-match-p "^ " buf)) bufs)
                                  bufs))
@@ -8133,7 +8133,7 @@ With a prefix argument, use absolute file names
  With a negative prefix arg, you can choose also by date:
   Completion candidates include the last modification date.
 
-all of these commands let you search file content, as well as file
+All of these commands let you search file content, as well as file
 names (unless you use an Emacs version prior to 23).  See
 `icicle-find-file' and `icicle-find-file-absolute' for more
 information.
