@@ -187,7 +187,7 @@ The link posted by the other user has 2 issues:
 
 ----  
 
-I am using Emacs in server environments where I do not have X11 available, so I use it in text terminal. Minimap shows fonts at same size as other buffers if used this way. Is it possible to solve this issue?
+I am using Emacs in server environments where I do not have X11 available, so I use it in text terminal. Minimap shows fonts at same size as other buffers if used this way. Is it possible to solve this issue?  [Nope.]
 
 ----
 
