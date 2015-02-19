@@ -1,19 +1,4 @@
-What are some new and cool features available in the spooky Git/Bazaar tree?
-
-* SupportBiDi
-* Improved Gtk support
-* Improved SELinux support
-* New modes: OccurEditMode, SecretServiceMode
-* Minor modes: ElectricPairMode, ElectricIndentMode, ElectricLayoutMode, EmacsLockMode
-* TabulatedMode generic mode
-* LexicalBinding for Lisp
-* ErtTestLibrary
-* [[ELPA]]
-* ProgMode is a GenericMode for ProgrammingModes
-
-The easiest way to find new stuff is to read [http://repo.or.cz/w/emacs.git/blob/HEAD:/etc/NEWS the Emacs NEWS file in Git]
-
-See also EmacsDevelopmentSources and [http://batsov.com/articles/2011/08/19/a-peek-at-emacs24/ this blog post]
+To know the new and cool features available in the spooky Git tree, see etc/News in Git.  You can browse Emacs Git tree via the web, without having Git locally installed.
 
 ----
 CategoryBuilding
