@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Mon Jan 26 09:24:48 2015 (-0800)
+;; Last-Updated: Fri Feb 20 12:43:17 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7111
+;;     Update #: 7112
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3130,7 +3130,7 @@ the name."
 ;;;;   (defun icicle-Info-multi-read-node-name (strg pred completion-mode)
 ;;;;     "Completion function for `icicle-Info-read-node-of-content'.
 ;;;; This is used as the value of `minibuffer-completion-table'."
-;;;;     (setq strg  icicle-current-input)
+;;;;     (unless strg (setq strg  icicle-current-input))
 ;;;;     (lexical-let* ((node-pat     (let ((icicle-list-use-nth-parts  '(1)))
 ;;;;                                    (icicle-transform-multi-completion strg)))
 ;;;;                    (node-pat     (if (memq icicle-current-completion-mode '(nil apropos))
@@ -3218,7 +3218,7 @@ This is used as the value of `minibuffer-completion-table'."
   (defun icicle-Info-multi-read-node-name (strg pred completion-mode)
     "Completion function for `icicle-Info-read-node-of-content'.
 This is used as the value of `minibuffer-completion-table'."
-    (setq strg  icicle-current-input)
+    (unless strg (setq strg  icicle-current-input))
     (cond
 ;;; $$$$$$ Fix and add back later.  This is the vanilla Emacs approach, which loses parens (so broken).
 ;;;       ((string-match "\\`([^)]*\\'" strg) ; Incomplete file name: `(...' - complete it.
@@ -4874,7 +4874,7 @@ If ACTION is non-nil then it is a function that accepts no arguments.
       (delete-overlay (car icicle-search-refined-overlays))
       (setq icicle-search-refined-overlays  (cdr icicle-search-refined-overlays))))
   (when icicle-search-highlight-all-current-flag
-    (setq input  (or input  icicle-current-input))
+    (unless input (setq input  icicle-current-input))
     (unless (or (string= "" input)  (null icicle-search-overlays))
       (let ((hits  ())
             pos)
