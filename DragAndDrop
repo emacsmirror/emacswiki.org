@@ -1,3 +1,4 @@
+[[ja:ドラッグ_アンド_ドロップ]]
 == OSX ==
 
 Emacs 23 and 24 append files dragged over emacs' window to the current buffer.  If you want Emacs to open the file in a separate buffer like it does in older versions of emacs, use the following:
