@@ -166,7 +166,7 @@ setting x-alt-keysym to meta.
     (setq x-alt-keysym 'meta)
 
 Or, if you want to use the windows key (or penguin key) as meta, you can do it 
-by setting x-super-keysim to meta.
+by setting x-super-keysym to meta.
 
     (setq x-super-keysym 'meta)
 
