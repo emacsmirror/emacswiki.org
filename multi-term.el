@@ -5,8 +5,8 @@
 ;; Copyright (C) 2008, 2009, 2014 Andy Stewart, all rights reserved.
 ;; Copyright (C) 2010, ahei, all rights reserved.
 ;; Created: <2008-09-19 23:02:42>
-;; Version: 1.2
-;; Last-Updated: 2014-12-04 00:51:15
+;; Version: 1.3
+;; Last-Updated: 2015-02-20 21:15:35
 ;; URL: http://www.emacswiki.org/emacs/download/multi-term.el
 ;; Keywords: term, terminal, multiple buffer
 ;; Compatibility: GNU Emacs 23.2.1, GNU Emacs 24.4 (and prereleases)
@@ -127,6 +127,9 @@
 
 ;;; Change log:
 ;;
+;; 2015/02/20
+;;      * Binding C-Backspace to `term-send-backward-kill-word' to follow emacs behaviour. 
+;; 
 ;; 2014/12/04
 ;;      * Ernesto Rodriguez Reina <erreina@gmail.com>
 ;;      Fixed the bug of cursor not return to the position it was before opened the dedicated terminal window when
@@ -354,6 +357,7 @@ If this option is nil, don't switch other `multi-term' buffer."
     ("M-n" . term-send-down)
     ("M-M" . term-send-forward-kill-word)
     ("M-N" . term-send-backward-kill-word)
+    ("<C-backspace>" . term-send-backward-kill-word)
     ("M-r" . term-send-reverse-search-history)
     ("M-," . term-send-raw)
     ("M-." . comint-dynamic-complete))
