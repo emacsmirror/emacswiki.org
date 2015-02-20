@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Feb 19 10:59:20 2015 (-0800)
+;; Last-Updated: Fri Feb 20 12:39:38 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 27387
+;;     Update #: 27391
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3354,7 +3354,7 @@ default for this command:
 (defun icicle-describe-opt-of-type-complete (strg pred completion-mode)
   "Completion function for `icicle-describe-option-of-type'.
 This is used as the value of `minibuffer-completion-table'."
-  (setq strg  icicle-current-input)
+  (unless strg (setq strg  icicle-current-input))
   ;; Parse strg into its option part and its type part: OPS  and TPS.
   ;; Make raw alist of all options and their types: ((a . ta) (b . tb)...).
   (lexical-let* ((num-prefix  (prefix-numeric-value icicle-pref-arg))
@@ -7235,7 +7235,7 @@ Same as `icicle-buffer' except it uses a different window." ; Doc string
   "Completion function for `icicle-buffer'.
 Used as the value of `icicle-buffer-complete-fn' and hence as
 `minibuffer-completion-table'."
-  (setq strg  icicle-current-input)
+  (unless strg (setq strg  icicle-current-input))
   (lexical-let* ((name-pat     (let ((icicle-list-use-nth-parts  '(1)))
                                  (icicle-transform-multi-completion strg)))
                  ;; FIXME.  We want to prepend "^" here for any Icicles prefix completion method that needs it.
