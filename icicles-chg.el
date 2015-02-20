@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Feb 19 10:58:10 2015 (-0800)
+;; Last-Updated: Fri Feb 20 12:46:06 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 11396
+;;     Update #: 11403
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2015/02/20 dadams
+;;     icicle-buffer-multi-complete, icicle-describe-opt-of-type-complete:
+;;       Do not initialize STRG if it is non-nil.
 ;; 2015/02/19 dadams
 ;;     icicle-buffer-multi-complete: Delete nils introduced by mapcar with buffer-name, from BUFS.
 ;; 2015/02/08 dadams
@@ -1143,6 +1146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2015/02/20 dadams
+;;     icicle-Info-multi-read-node-name, icicle-search-highlight-all-input-matches:
+;;       Do not initialize STRG/INPUT if it is non-nil.
 ;; 2015/01/11 dadams
 ;;     icicle-imenu-1: Bind icicle-remove-icicles-props-p to nil (for property icicle-whole-candidate).
 ;; 2014/12/28 dadams
@@ -4471,6 +4477,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2015/02/20 dadams
+;;     icicle-candidate-set-complement: If null icicle-completion-candidates, remove *Completions*.
 ;; 2015/02/19 dadams
 ;;     icicle-delete-candidate-object: Bind enable-recursive-minibuffers for ALLP confirmation prompt.
 ;; 2015/01/21 dadams
