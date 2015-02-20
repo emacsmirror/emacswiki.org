@@ -1,5 +1,7 @@
 == About the Eighty Column Rule ==
-Well, The sacred 80 column rule states that "Thou shalt not cross 80 columns in thy file." This initially was to make printing easier. Nowadays, the newer editors and users of editors have forgotten this and make it really hard to read code.
+The sacred 80 column rule states that "Thou shalt not cross 80 columns in thy file" [http://programmers.stackexchange.com/questions/148677/why-is-80-characters-the-standard-limit-for-code-width originated from IBM 80 column punch cards], was [http://stackoverflow.com/questions/110928/is-there-a-valid-reason-for-enforcing-a-maximum-width-of-80-characters-in-a-code reinforced by early terminal and printout restrictions], and is still common in coding standards today, including [https://google-styleguide.googlecode.com/svn/trunk/javaguide.html#s4.4-column-limit Google's Java standard] and the [https://www.kernel.org/doc/Documentation/CodingStyle Linux kernel standard ].
+
+Nowadays, the newer editors and users of editors have forgotten this and make it really hard to read code.
 
 : Nowadays, there's good reason for 80 columns as well: If your code indents farther than 80 columns, the function is too complicated (Rule of thumb: Exceptions exist, especially in languages like Java where the method names can be really, really long). To quote the Linux kernel Coding Styles:
 
