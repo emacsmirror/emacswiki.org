@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sat Feb  7 14:17:40 2015 (-0800)
+;; Last-Updated: Fri Feb 20 14:29:10 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15075
+;;     Update #: 15085
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -479,6 +479,7 @@
   (defvar completion-root-regexp)
   (defvar minibuffer-completing-symbol)
   (defvar minibuffer-prompt-properties)
+  (defvar mouse-1-click-follows-link)
   (defvar partial-completion-mode)
   (defvar read-file-name-completion-ignore-case)
   (defvar minibuffer-local-filename-completion-map)
@@ -1020,8 +1021,12 @@ only if that option is non-nil."
               ((>= emacs-major-version 22)
                (setq instruction1  (if (display-mouse-p) ; We have a mouse.
                                        (substitute-command-keys
-                                        "Click \\<completion-list-mode-map>\
-\\[mouse-choose-completion] or type \\[choose-completion] on a completion to select it.  ")
+                                        (format "Use `%s' or \\<completion-list-mode-map>`\
+\\[choose-completion]' on a completion to select it.  "
+                                                (if (and (boundp 'mouse-1-click-follows-link)
+                                                         mouse-1-click-follows-link)
+                                                    'mouse-1
+                                                  'mouse-2)))
                                      (substitute-command-keys ; No mouse.
                                       "In this buffer, type \\<completion-list-mode-map>\
 \\[choose-completion] to select the completion near point.  ")))))
@@ -3583,26 +3588,28 @@ Optional arg NUMBER-OF-CANDIDATES is the length of CANDIDATES."
       ;; for this minibuffer reading.  When turn it off, set flag `icicle-auto-no-icomplete-mode-p'.
       (when (and (featurep 'icomplete)  (natnump icicle-icomplete-mode-max-candidates)
                  (> emacs-major-version 22)) ; `icomplete-tidy' does not use overlay with Emacs < 23.
-        (with-current-buffer (if (active-minibuffer-window)
-                                 (window-buffer (active-minibuffer-window))
-                               (current-buffer))
-          (if (< nb-cands icicle-icomplete-mode-max-candidates)
-              (if (and icicle-auto-no-icomplete-mode-p  (not icomplete-mode)) ; Was turned off automatically.
-                  (progn
-                    (if (not icicle-last-icomplete-mode-value)
-                        (icomplete-mode -1)
-                      (icomplete-mode 1)    ; Turn it back on.
-                      (icomplete-exhibit))
-                    (setq icicle-auto-no-icomplete-mode-p  nil)) ; And reset this.
-                (when icomplete-mode (icomplete-exhibit)))
-            (setq icicle-last-icomplete-mode-value  (or icomplete-mode
-                                                        icicle-last-icomplete-mode-value
-                                                        (let ((cval  (or (get 'icomplete-mode 'saved-value)
-                                                                         (get 'icomplete-mode 'standard-value))))
-                                                          (condition-case nil (eval (car cval)) (error nil)))))
-            (icomplete-tidy)
-            (icomplete-mode -1)
-            (setq icicle-auto-no-icomplete-mode-p  t))))
+        (save-excursion
+          (with-current-buffer (if (active-minibuffer-window)
+                                   (window-buffer (active-minibuffer-window))
+                                 (current-buffer))
+            (if (< nb-cands icicle-icomplete-mode-max-candidates)
+                (if (and icicle-auto-no-icomplete-mode-p  (not icomplete-mode)) ; Was turned off automatically.
+                    (progn
+                      (if (not icicle-last-icomplete-mode-value)
+                          (icomplete-mode -1)
+                        (icomplete-mode 1) ; Turn it back on.
+                        (icomplete-exhibit))
+                      (setq icicle-auto-no-icomplete-mode-p  nil)) ; And reset this.
+                  (when icomplete-mode (icomplete-exhibit)))
+              (setq icicle-last-icomplete-mode-value
+                    (or icomplete-mode
+                        icicle-last-icomplete-mode-value
+                        (let ((cval  (or (get 'icomplete-mode 'saved-value)
+                                         (get 'icomplete-mode 'standard-value))))
+                          (condition-case nil (eval (car cval)) (error nil)))))
+              (icomplete-tidy)
+              (icomplete-mode -1)
+              (setq icicle-auto-no-icomplete-mode-p  t)))))
 
       ;; Turn sorting on or off, depending on NB-CANDS.
       ;; Turn it on only if it has already been turned off here (non-nil `icicle-auto-no-sort-p'), for this
