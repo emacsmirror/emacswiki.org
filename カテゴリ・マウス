@@ -1,0 +1,51 @@
+[[en:CategoryMouse]]
+
+This is Japanese translating page and this is stub. Dont write in english. --gonbei.
+
+Emacsでマウスを使うことに関連するページのリストの見出しをクリック.
+
+このカテゴリはEmacsでマウスを使うことについてです.
+それは以下のことについてのトピックを含みます:
+
+* マウス[[pointer]] -- マウスポジションのグラフィックインディケータ.
+Common pointer symbols used in Emacs include an arrow, an hourglass, an ''I''-bar, and a pointing finger.
+* `mouse-face' property -- [[text property|Text property]] whose value is a face that is seen only when the mouse is over text with that property.
+When it is shown, faces used for the `face' text property are not shown.
+Typically, `mouse-face' highlighting indicates that clicking the mouse on the highlighted text will perform an action that is different from clicking it elsewhere.
+Hypertext links are often highlighted using property `mouse-face'.
+* ''mouse actions'' -- Use of mouse buttons, a mouse wheel, and mouse motion in Emacs.
+Mouse actions are a subset of key sequences (see CategoryKeys).
+
+Standard Emacs uses of mouse buttons include setting the [[cursor]] position ([[point]]),  editing text (copy, cut, paste), and following hyperlinks.
+Pages dealing with mouse actions and configuring the mouse (buttons, wheel) are included in category Mouse.
+
+Otherwise, category Mouse does ''not'' include topics that merely mention mouse bindings, unless those bindings do something specifically related to the mouse.
+This also means that Category Mouse does not include topics about mouse-initiated menus (popup menus), except information on how to bind menus to mouse actions or information about menus that pertain to the mouse itself.
+
+In sum, if a page teaches you something about the mouse or about extending use of the mouse, then it belongs in CategoryMouse. 
+ 
+These pages are in category Mouse:
+
+* ArtistMode -- Draw freehand with the mouse.
+* CopyingWholeLines -- Use the mouse to copy lines.
+* [[Dired+]] -- Use the mouse to mark files, including in ways similar to Windows Explorer.
+* DoReMi -- Use the mouse wheel to repeat commands, run commands in sequence, increment things, or cycle through enumerations.
+* [ドラッグ_アンド_ドロップ|ドラッグ アンド ドロップ] -- あなたがものをEmacsへドラッグする時起こることをどうやってコントロールするか
+* EmacsNewbie -- Background about mouse actions and other [[key sequence]]
+* <tt>[[follow-mouse.el]]</tt> -- Make the [[frame]] focus follow the pointer.
+* GrabAndDrag -- Scroll a window by mouse dragging
+* HighLight -- Apply mouse-over (`mouse-face') highlighting to text.
+* [[Mouse3]] -- Customize how `mouse-3' behaves.  Context-sensitive menus.
+* [[Mouse+]] -- Highlight the position where the mouse will paste, until you release the mouse button. Lets you correct your aim. Also: use `mouse-2' in the [[echo area]] to initiate `M-x'.
+* MouseAvoidance -- Automatically move the pointer out of your way.
+* MouseBindingNotation -- How to bind mouse buttons.
+* MouseCopy -- Single-click copy/yank to point
+* MouseEvent -- Write mouse-event code compatible with different EmacsLisp dialects.
+* PointerShape -- Change the shape of the [[pointer]].
+* [[Region]] -- Use the mouse to select, copy, cut, and paste selected text.
+* SecondarySelection -- A second selection (like a second [[region]]).  You can create, copy, cut, and paste it using the mouse, the same way you manipulate the region.
+* StrokeMode -- Trace patterns with the mouse to execute commands.
+
+----
+CategoryKeys
+CategoryDisplay
