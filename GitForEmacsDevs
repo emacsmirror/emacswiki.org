@@ -528,7 +528,7 @@ you or people you work with might find useful.
 Ideally, one-time contributors, beta testers, and anyone else needing
 to follow bleeding-edge Emacs would use the same workflow as described
 above for regular contributors.  However, in case that workflow feels
-like too much trouble, then GitForEmacsCasualDevs offers a couple of
+like too much trouble, then GitQuickStartForEmacsDevs offers a couple of
 slightly simpler setups.
 
 Even if you use one of those simpler setups at first, we still
