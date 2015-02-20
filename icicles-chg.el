@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Feb 20 12:46:06 2015 (-0800)
+;; Last-Updated: Fri Feb 20 14:49:02 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 11403
+;;     Update #: 11408
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2161,6 +2161,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2015/02/20 dadams
+;;     icicle-insert-Completions-help-string:
+;;       Hard-code mouse-[12]. since mouse-choose-completion is no longer an alias (bound).
+;;     icicle-insert-candidates: Wrap Icomplete stuff with save-excursion, so help string is at top.
 ;; 2015/02/07 dadams
 ;;     icicle-unsorted-file-name-prefix-candidates: For proxy cands and extra cands, use relative name.
 ;; 2015/01/21 dadams
