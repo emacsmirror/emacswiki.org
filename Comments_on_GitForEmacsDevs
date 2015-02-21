@@ -5,10 +5,12 @@ Shouldn't 'git push' be the last command for upstream merge? (https://help.githu
 
 ----
 
-Regarding the dual clone example in http://www.emacswiki.org/emacs/GitForEmacsDevs#toc18 :
+Regarding the dual clone example in http://www.emacswiki.org/emacs/GitForEmacsDevs#toc18 :\\
 Just as wasteful of disk, but with half the network usage, do this instead of cloning twice:
+<pre>
  git clone <membername>@git.sv.gnu.org:/srv/git/emacs.git emacs-trunk
  cp -a emacs-trunk emacs-branch
+</pre>
 
 -- [http://steinar.bang.priv.no steinarb] 2015-02-21 15:59 UTC
 
