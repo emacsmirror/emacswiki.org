@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Feb 22 08:33:44 2015 (-0800)
+;; Last-Updated: Sun Feb 22 15:07:20 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 3618
+;;     Update #: 3640
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -431,7 +431,7 @@ Elements of ALIST that are not conses are ignored."
 ;; bmkp-sorted-alist, bmkp-su-or-sudo-regexp, bmkp-tag-name,
 ;; bmkp-tags-list, bmkp-url-bookmark-p, bmkp-url-cp,
 ;; bmkp-unmarked-bookmarks-only, bmkp-variable-list-bookmark-p,
-;; bmkp-visited-more-cp, bookmark-store
+;; bmkp-visited-more-cp
 
 ;; (eval-when-compile (require 'bookmark+-lit nil t))
 ;; bmkp-get-lighting
@@ -1175,7 +1175,7 @@ Non-interactively:
                      bmkp-bmenu-before-hide-unmarked-alist
                      (cdr (assq 'last-bmenu-before-hide-unmarked-alist state))))))
          (setq bmkp-bmenu-first-time-p  nil)
-         (let ((bookmark-alist  (or bmkp-latest-bookmark-alist  bookmark-alist)))
+         (let ((bookmark-alist  (bmkp-refresh-latest-bookmark-list))) ; This sets *-latest-* also.
            (bmkp-bmenu-list-1 'filteredp nil msg-p))
          ;; Propertize bookmark names if not already propertized (lists saved with Emacs 20 or
          ;; not `bmkp-propertize-bookmark-names-flag').  Check only the first, to guess propertized.
@@ -1221,7 +1221,7 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
   (setq bmkp-modified-bookmarks  ()
         bmkp-flagged-bookmarks   ())
   (when reset-p (setq bmkp-bmenu-marked-bookmarks  ()))
-  (unless filteredp (setq bmkp-latest-bookmark-alist  bookmark-alist))
+;; $$$$$$ Took out 2015/01/22. (unless filteredp (setq bmkp-latest-bookmark-alist  bookmark-alist))
   (if interactivep
       (let ((one-win-p  (one-window-p)))
         (pop-to-buffer (get-buffer-create "*Bookmark List*"))
@@ -4371,8 +4371,7 @@ the omit list and the sort & filter information."
                                                             (convert-standard-filename
                                                              (expand-file-name
                                                               bmkp-current-bookmark-file))))
-                 ;;(bmkp-bmenu-refresh-menu-list)
-                 (let ((bookmark-alist  (or bmkp-latest-bookmark-alist  bookmark-alist)))
+                 (let ((bookmark-alist  (bmkp-refresh-latest-bookmark-list))) ; Sets *-latest-* also.
                    (bmkp-bmenu-list-1 'filteredp nil (interactive-p)))
                  (when bmkp-last-bmenu-bookmark
                    (with-current-buffer (get-buffer "*Bookmark List*")
@@ -5460,6 +5459,9 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-quit]
   '(menu-item "Quit" bmkp-bmenu-quit
     :help "Quit the bookmark list, saving its state and the current set of bookmarks"))
+(define-key bmkp-bmenu-menubar-menu [bmkp-list-defuns-in-commands-file]
+  '(menu-item "List User-Defined Bookmark Commands" bmkp-list-defuns-in-commands-file
+    :help "List the functions defined in `bmkp-bmenu-commands-file'"))
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-describe-marked]
   '(menu-item "Describe Marked Bookmarks" bmkp-bmenu-describe-marked
     :help "Describe the marked bookmarks.  With `C-u' show internal format."))
@@ -5516,9 +5518,6 @@ are marked or ALLP is non-nil."
     :help "Set the navigation list to the bookmarks of a certain type"))
 
 (define-key bmkp-bmenu-menubar-menu [top-sep2] '("--")) ; ----------
-(define-key bmkp-bmenu-menubar-menu [bmkp-list-defuns-in-commands-file]
-  '(menu-item "List User-Defined Bookmark Commands" bmkp-list-defuns-in-commands-file
-    :help "List the functions defined in `bmkp-bmenu-commands-file'"))
 
 (defvar bmkp-bmenu-define-command-menu (make-sparse-keymap "Define Command")
     "`Define Command' submenu for menu-bar `Bookmark+' menu.")
@@ -5528,10 +5527,6 @@ are marked or ALLP is non-nil."
 (defvar bmkp-bmenu-bookmark-file-menu (make-sparse-keymap "Bookmark File")
     "`Bookmark File' submenu for menu-bar `Bookmark+' menu.")
 (define-key bmkp-bmenu-menubar-menu [bookmark-file] (cons "Bookmark File" bmkp-bmenu-bookmark-file-menu))
-
-(defvar bmkp-bmenu-toggle-menu (make-sparse-keymap "Toggle")
-    "`Toggle' submenu for menu-bar menus `Bookmark+' and `Bookmarks'.")
-(define-key bmkp-bmenu-menubar-menu [toggle] (cons "Toggle" bmkp-bmenu-toggle-menu))
 
 (when (or (featurep 'bookmark+-lit)
           (and (fboundp 'diredp-highlight-autofiles-mode)  (featurep 'highlight)))
@@ -5566,6 +5561,10 @@ are marked or ALLP is non-nil."
 (defvar bmkp-bmenu-delete-menu (make-sparse-keymap "Delete")
     "`Delete' submenu for menu-bar `Bookmark+' menu.")
 (define-key bmkp-bmenu-menubar-menu [delete] (cons "Delete" bmkp-bmenu-delete-menu))
+
+(defvar bmkp-bmenu-toggle-menu (make-sparse-keymap "Toggle")
+    "`Toggle' submenu for menu-bar menus `Bookmark+' and `Bookmarks'.")
+(define-key bmkp-bmenu-menubar-menu [toggle] (cons "Toggle" bmkp-bmenu-toggle-menu))
 
 
 ;;; `Define Command' submenu -----------------------------------------
@@ -5625,7 +5624,7 @@ are marked or ALLP is non-nil."
                              diredp-highlight-autofiles-mode
                              "Autofile Highlighting in Dired"
                              "Whether to highlight autofile bookmarks in Dired us biw %s"
-                             "Toggle `diredp-highlight-autofiles-mode'"
+                             "Toggle the value of option `diredp-highlight-autofiles-mode'"
                              nil
                              :visible (and (fboundp 'diredp-highlight-autofiles-mode)
                                            (featurep 'highlight))))
@@ -5635,6 +5634,13 @@ are marked or ALLP is non-nil."
                              "Guessing Default File Handler"
                              "Guessing the default handler when creating a file bookmark is now %s"
                              "Toggle the value of option `bmkp-guess-default-handler-for-file-flag'"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-auto-light-when-jump-menu]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-auto-light-when-jump-menu bmkp-auto-light-when-jump
+                             "Automatic Highlighting When Jumping"
+                             "Bookmark highlighting when you jump to a bookmark is now %s"
+                             "Toggle the value of option `bmkp-auto-light-when-jump'"
+                             (bmkp-toggle-auto-light-when-jump)
+                             :visible (featurep 'bookmark+-lit)))
 (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-auto-light-when-set-menu]
   (bmkp-menu-bar-make-toggle bmkp-toggle-auto-light-when-set-menu bmkp-auto-light-when-set
                              "Automatic Highlighting When Setting"
@@ -5661,11 +5667,6 @@ are marked or ALLP is non-nil."
                              "Using Multi-Tabs for W3M"
                              "Using multi-tabs when jumping to a W3M bookmark is now %s"
                              "Toggle the value of option `bmkp-w3m-allow-multi-tabs-flag'"))
-(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-save-desktop-before-switching]
-  (bmkp-menu-bar-make-toggle bmkp-toggle-save-desktop-before-switching bmkp-desktop-jump-save-before-flag
-                             "Autosaving the Desktop Before Switching"
-                             "Autosaving the desktop before jumping to a desktop bookmark is now %s"
-                             "Toggle the value of option `bmkp-desktop-jump-save-before-flag'"))
 (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-showing-region-end]
   (bmkp-menu-bar-make-toggle bmkp-toggle-showing-region-end bmkp-show-end-of-region-flag
                              "Showing Region End"
@@ -5692,7 +5693,22 @@ are marked or ALLP is non-nil."
                                nil
                                :visible (featurep 'crosshairs))))
 
-(define-key bmkp-bmenu-toggle-menu [sep3] '("--")) ; ------------ List display stuff
+(define-key bmkp-bmenu-toggle-menu [sep3] '("--")) ; ------------ Temporary bookmark stuff
+(define-key bmkp-bmenu-toggle-menu [bmkp-bmenu-toggle-marked-temporary/savable]
+  '(menu-item "Temporary/Savable (`X') for Marked" bmkp-bmenu-toggle-marked-temporary/savable
+    :help "Toggle the temporary (`X') vs. savable status of the marked bookmarks"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-temporary-bookmarking-mode]
+  (bmkp-menu-bar-make-toggle bmkp-temporary-bookmarking-mode bmkp-temporary-bookmarking-mode
+                             "Temporary Bookmarking"
+                             "Temporary bookmarking mode is now %s"
+                             "Toggle automatically saving bookmark changes"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-autotemp-on-set]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-autotemp-on-set bmkp-autotemp-all-when-set-p
+                             "Making Bookmarks Temporary When Set"
+                             "Automatically making bookmarks temporary when you set them is now %s"
+                             "Toggle automatically making a bookmark temporary when you set it"))
+
+(define-key bmkp-bmenu-toggle-menu [sep2] '("--")) ; ------------ List display stuff
 (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-bookmark-set-refreshes]
   '(menu-item "Autorefresh for `bmkp-latest-bookmark-alist'" bmkp-toggle-bookmark-set-refreshes
     :help "Toggle whether `bookmark-set' refreshes `bmkp-latest-bookmark-alist'"))
@@ -5734,29 +5750,19 @@ are marked or ALLP is non-nil."
                              :keys "M-t"))
 (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-saving-menu-list-state]
   (bmkp-menu-bar-make-toggle bmkp-toggle-saving-menu-list-state bmkp-bmenu-state-file
-                             "Autosaving Display State"
-                             "Autosaving of bookmark list state is now %s"
+                             "Saving Display State"
+                             "Ability to save bookmark list state, and autosaving, are now %s"
                              "Toggle the value of option `bmkp-bmenu-state-file'"))
-
-(define-key bmkp-bmenu-toggle-menu [sep2] '("--")) ; ------------ Temporary bookmark stuff
-(define-key bmkp-bmenu-toggle-menu [bmkp-bmenu-toggle-marked-temporary/savable]
-  '(menu-item "Temporary/Savable (`X') for Marked" bmkp-bmenu-toggle-marked-temporary/savable
-    :help "Toggle the temporary (`X') vs. savable status of the marked bookmarks"))
-(define-key bmkp-bmenu-toggle-menu [bmkp-temporary-bookmarking-mode]
-  (bmkp-menu-bar-make-toggle bmkp-temporary-bookmarking-mode bmkp-temporary-bookmarking-mode
-                             "Temporary Bookmarking"
-                             "Temporary bookmarking mode is now %s"
-                             "Toggle automatically saving bookmark changes"))
-(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-autotemp-on-set]
-  (bmkp-menu-bar-make-toggle bmkp-toggle-autotemp-on-set bmkp-autotemp-all-when-set-p
-                             "Making Bookmarks Temporary When Set"
-                             "Automatically making bookmarks temporary when you set them is now %s"
-                             "Toggle automatically making a bookmark temporary when you set it"))
 
 (define-key bmkp-bmenu-toggle-menu [sep1] '("--")) ; ------------ Automatic stuff
 (define-key bmkp-bmenu-toggle-menu [bmkp-auto-idle-bookmark-mode]
   '(menu-item "Automatically Creating Bookmarks" bmkp-auto-idle-bookmark-mode
     :help "Toggle the periodic automatic creation of bookmarks"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-save-desktop-before-switching]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-save-desktop-before-switching bmkp-desktop-jump-save-before-flag
+                             "Autosaving the Desktop Before Switching"
+                             "Autosaving the desktop before jumping to a desktop bookmark is now %s"
+                             "Toggle the value of option `bmkp-desktop-jump-save-before-flag'"))
 (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-saving-relocated]
   (bmkp-menu-bar-make-toggle bmkp-toggle-saving-relocated bmkp-save-new-location-flag
                              "Autosaving Relocated Bookmarks"
