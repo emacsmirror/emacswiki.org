@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Feb 21 19:10:06 2015 (-0800)
+;; Last-Updated: Sun Feb 22 08:27:35 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7634
+;;     Update #: 7646
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -481,6 +481,7 @@
 ;;    `bmkp-remove-if', `bmkp-remove-if-not', `bmkp-remove-omitted',
 ;;    `bmkp-rename-for-marked-and-omitted-lists',
 ;;    `bmkp-repeat-command', `bmkp-replace-existing-bookmark',
+;;    `bmkp-reset-bmkp-store-org-link-checking-p' (Emacs 24.4+),
 ;;    `bmkp-retrieve-icicle-search-hits-1',
 ;;    `bmkp-root-or-sudo-logged-p', `bmkp-same-creation-time-p',
 ;;    `bmkp-same-file-p', `bmkp-save-new-region-location',
@@ -538,11 +539,11 @@
 ;;    `bmkp-return-buffer', `bmkp-reverse-multi-sort-p',
 ;;    `bmkp-reverse-sort-p', `bmkp-snippet-history',
 ;;    `bmkp-sorted-alist', `bmkp-specific-buffers-history',
-;;    `bmkp-specific-files-history', `bmkp-tag-history',
-;;    `bmkp-tags-alist', `bmkp-temporary-history', `bmkp-types-alist',
-;;    `bmkp-url-history', `bmkp-use-w32-browser-p',
-;;    `bmkp-variable-list-history', `bmkp-version-number',
-;;    `bmkp-w3m-history'.
+;;    `bmkp-specific-files-history', `bmkp-store-org-link-checking-p',
+;;    `bmkp-tag-history', `bmkp-tags-alist', `bmkp-temporary-history',
+;;    `bmkp-types-alist', `bmkp-url-history',
+;;    `bmkp-use-w32-browser-p', `bmkp-variable-list-history',
+;;    `bmkp-version-number', `bmkp-w3m-history'.
 ;;
 ;;
 ;;  ***** NOTE: The following commands defined in `bookmark.el'
@@ -674,15 +675,12 @@
 ;; bmkp-with-output-to-plain-temp-buffer
 
 (eval-when-compile (require 'bookmark+-bmu))
-;; bmkp-bmenu-before-hide-marked-alist,
-;; bmkp-bmenu-before-hide-unmarked-alist, bmkp-bmenu-commands-file, bmkp-replace-regexp-in-string,
-;; bmkp-bmenu-filter-function, bmkp-bmenu-filter-pattern,
+;; bmkp-bmenu-before-hide-marked-alist, bmkp-bmenu-before-hide-unmarked-alist, bmkp-bmenu-commands-file,
+;; bmkp-replace-regexp-in-string, bmkp-bmenu-filter-function, bmkp-bmenu-filter-pattern,
 ;; bmkp-bmenu-first-time-p, bmkp-flagged-bookmarks, bmkp-bmenu-goto-bookmark-named,
-;; bmkp-bmenu-marked-bookmarks, bmkp-bmenu-omitted-bookmarks,
-;; bmkp-bmenu-refresh-menu-list, bmkp-bmenu-show-all,
-;; bmkp-bmenu-state-file, bmkp-store-org-link-checking-p, bmkp-bmenu-title, bmkp-looking-at-p,
-;; bmkp-maybe-unpropertize-bookmark-names, bmkp-sort-orders-alist,
-;; bookmark-bmenu-toggle-filenames
+;; bmkp-bmenu-marked-bookmarks, bmkp-bmenu-omitted-bookmarks, bmkp-bmenu-refresh-menu-list,
+;; bmkp-bmenu-show-all, bmkp-bmenu-state-file, bmkp-bmenu-title, bmkp-looking-at-p,
+;; bmkp-maybe-unpropertize-bookmark-names, bmkp-sort-orders-alist, bookmark-bmenu-toggle-filenames
 
 
 ;; (eval-when-compile (require 'bookmark+-lit nil t))
@@ -11835,17 +11833,20 @@ Non-interactively:
 ;; is available only for Emacs 24.4+.
 (when (fboundp 'advice-add)
              
+  (defvar bmkp-store-org-link-checking-p nil
+    "Whether `bmkp-(bmenu-)store-org-link(-1)' call is checking applicability.")
+
   (defun bmkp-store-org-link (arg)
     "Store a link to a bookmark for insertion in an Org-mode buffer.
 You are prompted for the bookmark name.
+
 If you use a numeric prefix arg then the bookmark will be jumped to in
 the same window.  Without a numeric prefix arg, the link will use
-another window.  The link type is `bookmark' or
-`bookmark-other-window', respectively."
+another window.  The link type is `bookmark' or `bookmark-other-win',
+respectively."
     (interactive "P")
     (require 'org)
-    (let ((org-store-link-functions  (append org-store-link-functions
-                                             '(bmkp-store-org-link-1))))
+    (let ((org-store-link-functions  (append org-store-link-functions '(bmkp-store-org-link-1))))
       (call-interactively #'org-store-link)))
 
   (defun bmkp-store-org-link-1 ()
@@ -11853,19 +11854,19 @@ another window.  The link type is `bookmark' or
 See command `bmkp-store-org-link'."
     (setq bmkp-store-org-link-checking-p  (not bmkp-store-org-link-checking-p))
     (require 'org)
-    (or bmkp-store-org-link-checking-p
+    (or bmkp-store-org-link-checking-p  ; Non-nil return is all that is needed for checking.
         (let* ((other-win  (and current-prefix-arg  (not (consp current-prefix-arg))))
                (bmk        (bmkp-completing-read-lax
-                            (format "Store %sOrg link for bookmark"
-                                    (if other-win "other-window " ""))))
-               (link       (concat (format "bookmark%s:%s"
-                                           (if (and current-prefix-arg
-                                                    (not (consp current-prefix-arg)))
-                                               "-other-window"
-                                             "")
-                                           bmk)))
+                            (format "Store %sOrg link for bookmark" (if other-win "other-window " ""))))
+               (link       (format "bookmark%s:%s" (if other-win "-other-win" "") bmk))
                (bmk-desc   (format "Bookmark: %s" bmk)))
-          (org-store-link-props :type "bookmark" :link link :description bmk-desc)))))
+          (org-store-link-props :type "bookmark" :link link :description bmk-desc))))
+
+  (advice-add 'org-store-link :before #'bmkp-reset-bmkp-store-org-link-checking-p)
+  (defun bmkp-reset-bmkp-store-org-link-checking-p (&rest _IGNORE)
+    "Reset `bmkp-store-org-link-checking-p' to nil."
+    (setq bmkp-store-org-link-checking-p  nil)))
+
 
 ;; Same as `icicle-thing-at-point'.
 (defun bmkp-thing-at-point (thing &optional syntax-table)
