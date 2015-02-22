@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Feb 15 10:53:22 2015 (-0800)
+;; Last-Updated: Sat Feb 21 19:10:06 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7627
+;;     Update #: 7634
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -276,8 +276,9 @@
 ;;    `bmkp-specific-buffers-jump',
 ;;    `bmkp-specific-buffers-jump-other-window',
 ;;    `bmkp-specific-files-jump',
-;;    `bmkp-specific-files-jump-other-window',
-;;    `bmkp-switch-bookmark-file', `bmkp-switch-bookmark-file-create',
+;;    `bmkp-specific-files-jump-other-window', `bmkp-store-org-link'
+;;    (Emacs 24.4+), `bmkp-switch-bookmark-file',
+;;    `bmkp-switch-bookmark-file-create',
 ;;    `bmkp-switch-to-last-bookmark-file', `bmkp-tag-a-file',
 ;;    `bmkp-temporary-bookmarking-mode', `bmkp-temporary-jump',
 ;;    `bmkp-temporary-jump-other-window',
@@ -491,7 +492,7 @@
 ;;    `bmkp-some-unmarked-p', `bmkp-sorting-description',
 ;;    `bmkp-sort-omit', `bmkp-sound-jump',
 ;;    `bmkp-specific-buffers-alist-only',
-;;    `bmkp-specific-files-alist-only',
+;;    `bmkp-specific-files-alist-only', `bmkp-store-org-link-1',
 ;;    `bmkp-string-less-case-fold-p', `bmkp-tagged-alist-only',
 ;;    `bmkp-tagged-bookmark-p', `bmkp-tagged-cp', `bmkp-tag-name',
 ;;    `bmkp-tags-in-bookmark-file', `bmkp-tags-list',
@@ -679,7 +680,7 @@
 ;; bmkp-bmenu-first-time-p, bmkp-flagged-bookmarks, bmkp-bmenu-goto-bookmark-named,
 ;; bmkp-bmenu-marked-bookmarks, bmkp-bmenu-omitted-bookmarks,
 ;; bmkp-bmenu-refresh-menu-list, bmkp-bmenu-show-all,
-;; bmkp-bmenu-state-file, bmkp-bmenu-title, bmkp-looking-at-p,
+;; bmkp-bmenu-state-file, bmkp-store-org-link-checking-p, bmkp-bmenu-title, bmkp-looking-at-p,
 ;; bmkp-maybe-unpropertize-bookmark-names, bmkp-sort-orders-alist,
 ;; bookmark-bmenu-toggle-filenames
 
@@ -733,6 +734,7 @@
 (defvar Info-current-node)              ; In `info.el'
 (defvar Info-current-file)              ; In `info.el'
 (defvar Man-arguments)                  ; In `man.el'
+(defvar org-store-link-functions)       ; In `org.el'
 (defvar read-file-name-completion-ignore-case) ; Emacs 23+
 (defvar last-repeatable-command)        ; In `repeat.el'
 (defvar w3m-current-title)              ; In `w3m.el'
@@ -11828,6 +11830,42 @@ Non-interactively:
                   (when msg-p (message "Deleted bookmark `%s'" (car bmks-to-delete))))
                  (t
                   (when msg-p (message "No bookmarks at point to delete"))))))))
+
+;; Because of Emacs bug #19915, we need to use `advice-add' for `org-store-link', so this feature
+;; is available only for Emacs 24.4+.
+(when (fboundp 'advice-add)
+             
+  (defun bmkp-store-org-link (arg)
+    "Store a link to a bookmark for insertion in an Org-mode buffer.
+You are prompted for the bookmark name.
+If you use a numeric prefix arg then the bookmark will be jumped to in
+the same window.  Without a numeric prefix arg, the link will use
+another window.  The link type is `bookmark' or
+`bookmark-other-window', respectively."
+    (interactive "P")
+    (require 'org)
+    (let ((org-store-link-functions  (append org-store-link-functions
+                                             '(bmkp-store-org-link-1))))
+      (call-interactively #'org-store-link)))
+
+  (defun bmkp-store-org-link-1 ()
+    "Store a link to a bookmark for insertion in an Org-mode buffer.
+See command `bmkp-store-org-link'."
+    (setq bmkp-store-org-link-checking-p  (not bmkp-store-org-link-checking-p))
+    (require 'org)
+    (or bmkp-store-org-link-checking-p
+        (let* ((other-win  (and current-prefix-arg  (not (consp current-prefix-arg))))
+               (bmk        (bmkp-completing-read-lax
+                            (format "Store %sOrg link for bookmark"
+                                    (if other-win "other-window " ""))))
+               (link       (concat (format "bookmark%s:%s"
+                                           (if (and current-prefix-arg
+                                                    (not (consp current-prefix-arg)))
+                                               "-other-window"
+                                             "")
+                                           bmk)))
+               (bmk-desc   (format "Bookmark: %s" bmk)))
+          (org-store-link-props :type "bookmark" :link link :description bmk-desc)))))
 
 ;; Same as `icicle-thing-at-point'.
 (defun bmkp-thing-at-point (thing &optional syntax-table)
