@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2015, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sun Feb  8 15:38:03 2015 (-0800)
+;; Last-Updated: Sun Feb 22 09:01:13 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 895
+;;     Update #: 901
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -182,11 +182,9 @@
 (eval-when-compile (require 'cl)) ;; case (plus, for Emacs 20: push)
 
 (require 'bookmark)
-;; bookmark-alist, bookmark-bmenu-bookmark, bookmark-completing-read,
-;; bookmark-get-bookmark, bookmark-get-position,
-;; bookmark-handle-bookmark, bookmark-maybe-load-default-file,
-;; bookmark-name-from-full-record, bookmark-name-from-record, bookmark-prop-get,
-;; bookmark-prop-set
+;; bookmark-alist, bookmark-bmenu-bookmark, bookmark-completing-read, bookmark-get-bookmark,
+;; bookmark-get-position, bookmark-handle-bookmark, bookmark-maybe-load-default-file,
+;; bookmark-name-from-full-record, bookmark-name-from-record, bookmark-prop-get, bookmark-prop-set
 
 
 ;; Some general Renamings.
@@ -464,12 +462,11 @@ You are prompted for the highlight style, face, and condition (when)."
         (curr-bmk  (bookmark-bmenu-bookmark)))
     (unless marked (error "No marked bookmarks"))
     (dolist (bmk  marked)
-      (if (or face  style  when)
-          (bookmark-prop-set bmk 'lighting
-                             `(,@(and face   (not (eq face 'auto))   `(:face ,face))
-                               ,@(and style  (not (eq style 'none))  `(:style ,style))
-                               ,@(and when   (not (eq when 'auto))   `(:when ,when))))
-        (bookmark-prop-set bmk 'lighting nil)))
+      (bookmark-prop-set bmk 'lighting (if (or face  style  when)
+                                           `(,@(and face   (not (eq face 'auto))   `(:face ,face))
+                                             ,@(and style  (not (eq style 'none))  `(:style ,style))
+                                             ,@(and when   (not (eq when 'auto))   `(:when ,when)))
+                                         ())))
     (when (get-buffer-create "*Bookmark List*") (bmkp-refresh-menu-list curr-bmk)))
   (when msgp (message "Setting highlighting...done")))
 
@@ -682,12 +679,11 @@ Non-nil LIGHT-NOW-P means apply the highlighting now."
               (and bmk-when   (format "%S" bmk-when)))
              (list 'MSGP (not current-prefix-arg)))))
   (when msgp (message "Setting highlighting..."))
-  (if (or face  style  when)
-      (bookmark-prop-set bookmark-name
-                         'lighting `(,@(and face   (not (eq face 'auto))   `(:face ,face))
-                                     ,@(and style  (not (eq style 'none))  `(:style ,style))
-                                     ,@(and when   (not (eq when 'auto))   `(:when ,when))))
-    (bookmark-prop-set bookmark-name 'lighting nil))
+  (bookmark-prop-set bookmark-name 'lighting (if (or face  style  when)
+                                                 `(,@(and face   (not (eq face 'auto))   `(:face ,face))
+                                                   ,@(and style  (not (eq style 'none))  `(:style ,style))
+                                                   ,@(and when   (not (eq when 'auto))   `(:when ,when)))
+                                               ()))
   (when (get-buffer-create "*Bookmark List*") (bmkp-refresh-menu-list bookmark-name))
   (when msgp (message "Setting highlighting...done"))
   (when light-now-p (bmkp-light-bookmark bookmark-name nil nil msgp))) ; This msg is more informative.
