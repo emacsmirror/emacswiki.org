@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Feb 22 08:27:35 2015 (-0800)
+;; Last-Updated: Sun Feb 22 15:14:50 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7646
+;;     Update #: 7683
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2039,10 +2039,7 @@ Lines beginning with `#' are ignored."
   (unless (derived-mode-p 'bookmark-edit-annotation-mode)
     (error "Not in mode derived from `bookmark-edit-annotation-mode'"))
   (goto-char (point-min))
-  (while (< (point) (point-max))
-    (if (bmkp-looking-at-p "^#")
-        (bookmark-kill-line t)
-      (forward-line 1)))
+  (while (< (point) (point-max)) (if (bmkp-looking-at-p "^#") (bookmark-kill-line t) (forward-line 1)))
   (let ((annotation      (buffer-substring-no-properties (point-min) (point-max)))
         (bookmark        bookmark-annotation-name)
         (annotation-buf  (current-buffer)))
@@ -2496,9 +2493,9 @@ If it is a record then it need not belong to `bookmark-alist'."
          (cell  (assq prop (bmkp-bookmark-data-from-record bmk))))
     (if cell
         (setcdr cell val)
-      (if (consp (car (cadr bmk)))      ; Old format: ("name" ((filename . "f")...))
-          (setcdr bmk (list (cons (cons prop val) (cadr bmk))))
-        (setcdr bmk (cons (cons prop val) (cdr bmk))))) ; New: ("name" (filename . "f")...)
+      (setcdr bmk (if (consp (car (cadr bmk)))
+                      (list (cons (cons prop val) (cadr bmk))) ; Old format: ("name" ((filename . "f")...))
+                    (cons (cons prop val) (cdr bmk))))) ; New format:        ("name" (filename . "f")...)
     ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
     (unless (memq bmk bmkp-modified-bookmarks)
       (setq bmkp-modified-bookmarks  (cons bmk bmkp-modified-bookmarks)))))
@@ -4133,8 +4130,8 @@ Although this function modifies BOOKMARK, it does not increment
 does not count toward needing to save or showing BOOKMARK as modified."
   (let ((vis                      (bookmark-prop-get bookmark 'visits))
         (bmkp-modified-bookmarks  bmkp-modified-bookmarks))
-    (if vis (bookmark-prop-set bookmark 'visits (1+ vis)) (bookmark-prop-set bookmark 'visits 0))
-    (bookmark-prop-set bookmark 'time (current-time))
+    (bookmark-prop-set bookmark 'visits (if vis (1+ vis) 0))
+    (bookmark-prop-set bookmark 'time   (current-time))
     (unless batchp (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P))
     (let ((bookmark-save-flag  nil))  (bmkp-maybe-save-bookmarks 'SAME-COUNT-P))))
 
@@ -8266,11 +8263,9 @@ Otherwise, return non-nil if region was relocated."
   (and bmkp-save-new-location-flag
        (y-or-n-p "Region relocated.  Do you want to save new region limits? ")
        (progn
-         (bookmark-prop-set bookmark 'front-context-string (bmkp-position-post-context-region
-                                                            beg end))
+         (bookmark-prop-set bookmark 'front-context-string (bmkp-position-post-context-region beg end))
          (bookmark-prop-set bookmark 'rear-context-string (bmkp-position-pre-context-region beg))
-         (bookmark-prop-set bookmark 'front-context-region-string (bmkp-end-position-pre-context
-                                                                   beg end))
+         (bookmark-prop-set bookmark 'front-context-region-string (bmkp-end-position-pre-context beg end))
          (bookmark-prop-set bookmark 'rear-context-region-string (bmkp-end-position-post-context end))
          (bookmark-prop-set bookmark 'position beg)
          (bookmark-prop-set bookmark 'end-position end)
