@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Feb 15 10:45:09 2015 (-0800)
+;; Last-Updated: Sat Feb 21 18:43:52 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15009
+;;     Update #: 15034
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -172,6 +172,7 @@
 ;;      (@> "Highlighting Automatically")
 ;;    (@> "Using Highlighted Bookmarks")
 ;;    (@> "Bookmark Links")
+;;      (@> "Org Mode Links that Jump To Bookmarks")
 ;;    (@> "Use Bookmark+ with Icicles")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;    (@> "New Bookmark Structure")
@@ -3535,6 +3536,37 @@
 ;;  `font-lock+.el' just provides this feature of allowing
 ;;  non-font-lock highlighting in a font-locked buffer.  See
 ;;  http://lists.gnu.org/archive/html/emacs-devel/2014-08/msg00540.html.)
+;;
+;;  The links you create this way are not persistent, but you can of
+;;  course re-create them using Lisp.
+;;
+;;
+;;(@* "Org Mode Links that Jump To Bookmarks")
+;;  *** Org Mode Links that Jump To Bookmarks ***
+;;
+;;  You can also easily define Org-mode links that jump to bookmarks.
+;;  These links are persistent.  Again, the bookmark linked can be of
+;;  any type.
+;;
+;;  You can use the standard Org command `org-store-link' (`C-c l') in
+;;  buffer `*Bookmark List*' to store a link to the bookmark at point.
+;;
+;;  Outside buffer `*Bookmark List*' you can use command
+;;  `bmkp-store-org-link' to store a link to any bookmark.  You are
+;;  prompted for the bookmark name.  You can even enter the name of a
+;;  bookmark that does not yet exist.
+;;
+;;  If you use a numeric prefix arg with either command then the
+;;  bookmark link stored will be for jumping to the bookmark in the
+;;  same window.  Without a numeric prefix arg, the link will use
+;;  another window.  (Org mode defines other behaviors for non-numeric
+;;  prefix args, such as `C-u C-u'.)
+;;
+;;  As usual, to insert a bookmark link, you use command
+;;  `org-insert-link'.  Enter the name of the target bookmark at the
+;;  prompt.  In Org mode you can use the usual Org key bindings to
+;;  follow the link.  In any mode you can use standard Org command
+;;  `org-open-at-point-global' (not bound to a key by default).
  
 ;;(@* "Use Bookmark+ with Icicles")
 ;;  ** Use Bookmark+ with Icicles **
