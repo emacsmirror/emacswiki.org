@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Feb 15 11:01:47 2015 (-0800)
+;; Last-Updated: Sat Feb 21 19:04:22 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15858
+;;     Update #: 15864
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/01/21 dadams
+;;     Added: bmkp-store-org-link, bmkp-store-org-link-1.
 ;; 2015/02/15 dadams
 ;;     bmkp-get-autofile-bookmark: Corrected test for same file to use absolute file names.
 ;;     bmkp-read-bookmark-file-default: .emacs.bmk -> ~/.emacs.bmk.
@@ -1120,6 +1122,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2015/02/21 dadams
+;;     Added: bmkp-bmenu-store-org-link, bmkp-reset-bmkp-store-org-link-checking-p,
+;;            bmkp-store-org-link-checking-p.
+;;     Add bmkp-bmenu-store-org-link to org-store-link-functions.
+;;     Advise org-store-link with bmkp-reset-bmkp-store-org-link-checking-p.
+;;     Added bookmark(-other-window) link types via org-add-link-type.
 ;; 2015/02/08 dadams
 ;;     Added: bmkp-bmenu-show-only-untagged-bookmarks.  Added it to bmkp-bmenu-show-types-menu.
 ;;     Renamed: bmkp-bmenu-*icicle-* to bmkp-bmenu-icicles-*,
