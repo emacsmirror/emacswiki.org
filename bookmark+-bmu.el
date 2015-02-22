@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Feb  8 16:04:22 2015 (-0800)
+;; Last-Updated: Sat Feb 21 19:08:26 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 3591
+;;     Update #: 3602
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -256,12 +256,14 @@
 ;;    `bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all',
 ;;    `bmkp-bmenu-mode-line', `bmkp-bmenu-mode-line-string',
 ;;    `bmkp-bmenu-propertize-item', `bmkp-bmenu-read-filter-input',
+;;    `bmkp-bmenu-store-org-link' (Emacs 24.4+),
 ;;    `bmkp-bookmark-data-from-record',
 ;;    `bmkp-bookmark-name-from-record', `bmkp-face-prop',
 ;;    `bmkp-bmenu-marked-or-this-or-all', `bmkp-looking-at-p',
 ;;    `bmkp-maybe-unpropertize-bookmark-names',
 ;;    `bmkp-maybe-unpropertize-string',
 ;;    `bmkp-replace-regexp-in-string',
+;;    `bmkp-reset-bmkp-store-org-link-checking-p',
 ;;    `bmkp-reverse-multi-sort-order', `bmkp-reverse-sort-order',
 ;;    `bmkp-string-match-p', `bookmark-name-from-full-record',
 ;;    `bookmark-name-from-record',
@@ -282,9 +284,9 @@
 ;;    `bmkp-bmenu-omit-menu', `bmkp-bmenu-search-menu',
 ;;    `bmkp-bmenu-show-menu',
 ;;    `bmkp-bmenu-show-types-menu',`bmkp-bmenu-sort-menu',
-;;    `bmkp-bmenu-tags-menu', `bmkp-bmenu-title',
-;;    `bmkp-bmenu-toggle-menu', `bmkp-flagged-bookmarks',
-;;    `bmkp-last-bmenu-bookmark'.
+;;    `bmkp-store-org-link-checking-p', `bmkp-bmenu-tags-menu',
+;;    `bmkp-bmenu-title', `bmkp-bmenu-toggle-menu',
+;;    `bmkp-flagged-bookmarks', `bmkp-last-bmenu-bookmark'.
 ;;
 ;;
 ;;  ***** NOTE: The following commands defined in `bookmark.el'
@@ -854,6 +856,9 @@ The first time the list is displayed, it is set to nil.")
   "Names of the marked bookmarks.
 This includes possibly omitted bookmarks, that is, bookmarks listed in
 `bmkp-bmenu-omitted-bookmarks'.")
+
+(defvar bmkp-store-org-link-checking-p nil
+  "Whether `bmkp-(bmenu-)store-org-link(-1)' call is checking applicability.")
 
 (defvar bmkp-bmenu-title "" "Latest title for `*Bookmark List*' display.")
 
@@ -4864,6 +4869,41 @@ For each number indication:
           (set (make-local-variable 'mode-line-format)
                '(("" mode-name "\t" mode-line-buffer-identification mode-line-position))))
       (error nil))))
+
+;; Because of Emacs bug #19915, we need to use `advice-add' for `org-store-link', so this feature
+;; is available only for Emacs 24.4+.
+(when (fboundp 'advice-add)             
+
+  (defun bmkp-bmenu-store-org-link ()
+    "Store a link to this bookmark for insertion in an Org-mode buffer.
+If you use a numeric prefix arg with `\\[org-store-link]' then the
+bookmark will be jumped to in the same window.  Without a numeric
+prefix arg, the link will use another window.  The link type is
+`bookmark' or `bookmark-other-window', respectively."
+    (require 'org)
+    (setq bmkp-store-org-link-checking-p  (not bmkp-store-org-link-checking-p))
+    (if bmkp-store-org-link-checking-p
+        (derived-mode-p 'bookmark-bmenu-mode)
+      (let* ((other-win  (and current-prefix-arg  (not (consp current-prefix-arg))))
+             (bmk        (bookmark-bmenu-bookmark))
+             (link       (concat (format "bookmark%s:%s"
+                                         (if (and current-prefix-arg
+                                                  (not (consp current-prefix-arg)))
+                                             "-other-window"
+                                           "")
+                                         bmk)))
+             (bmk-desc   (format "Bookmark: %s" bmk)))
+        (org-store-link-props :type "bookmark" :link link :description bmk-desc))))
+
+  (add-hook 'org-store-link-functions 'bmkp-bmenu-store-org-link 'APPEND)
+  (org-add-link-type "bookmark"              'bookmark-jump)
+  (org-add-link-type "bookmark-other-window" 'bookmark-jump-other-window)
+
+  (advice-add 'org-store-link :before #'bmkp-reset-bmkp-store-org-link-checking-p)
+  (defun bmkp-reset-bmkp-store-org-link-checking-p (&rest _IGNORE)
+    "Reset `bmkp-store-org-link-checking-p' to nil."
+    (setq bmkp-store-org-link-checking-p  nil)))
+
 
 
 ;;(@* "Sorting - Commands")
