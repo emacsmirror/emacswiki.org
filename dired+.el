@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Feb 22 11:48:06 2015 (-0800)
+;; Last-Updated: Sun Feb 22 12:10:21 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 8643
+;;     Update #: 8648
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -596,6 +596,8 @@
 ;;
 ;; 2015/02/22 dadams
 ;;     diredp-bookmark: Corrected for use without Bookmark+ - bookmark-store signature.
+;;                      Pass correct value to bmkp-autofile-set for its MSG-P arg.
+;;     diredp-mouse-do-bookmark: Do not pass non-nil NO-MSG-P arg to diredp-bookmark.
 ;; 2015/02/03 dadams
 ;;     Added: diredp-add-to-this-dired-buffer.
 ;;     Removed: diredp-add-to-dired-buffer-other-window, diredp-dired-union-other-window.
@@ -6656,7 +6658,7 @@ A prefix argument ARG specifies files to use instead of those marked.
                                         (read-string "Prefix for bookmark name: "))))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
-    (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix nil 'NO-MSG-P)) nil 'bookmark t))
+    (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix nil)) nil 'bookmark t))
   (diredp-previous-line 1))
 
 (defun diredp-bookmark (&optional prefix file no-msg-p)
@@ -6675,7 +6677,7 @@ Non-nil optional arg NO-MSG-P means do not show progress messages."
         (failure  nil))
     (condition-case err
         (if (fboundp 'bmkp-autofile-set) ; Bookmark+ - just set an autofile bookmark.
-            (bmkp-autofile-set fil nil prefix)
+            (bmkp-autofile-set fil nil prefix nil (not no-msg-p))
           ;; Vanilla `bookmark.el' (or very old Bookmark+ version).
           (let ((bookmark-make-record-function
                  (cond ((and (require 'image nil t)  (require 'image-mode nil t)
@@ -6798,8 +6800,7 @@ Non-interactively:
                   (if files
                       (dolist (file  files)  (diredp-bookmark prefix file 'NO-MSG-P))
                     (dired-map-over-marks-check
-                     (lexical-let ((pref  prefix))
-                       #'(lambda () (diredp-bookmark pref nil 'NO-MSG-P)))
+                     (lexical-let ((pref  prefix)) #'(lambda () (diredp-bookmark pref nil 'NO-MSG-P)))
                      arg 'bookmark (diredp-fewer-than-2-files-p arg)))
                   (bookmark-save)
                   (unless bfile-exists-p (revert-buffer)))
