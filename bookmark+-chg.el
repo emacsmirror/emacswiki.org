@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Feb 21 19:04:22 2015 (-0800)
+;; Last-Updated: Sun Feb 22 08:36:25 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15864
+;;     Update #: 15873
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/01/22 dadams
+;;     Moved here from bookmark+-bmu.el:
+;;       bmkp-reset-bmkp-store-org-link-checking-p, bmkp-store-org-link-checking-p.
+;;       Advice of org-store-link (not needed for bmkp-bmenu-store-org-link).
+;;     bmkp-store-org-link(-1): Link type changed from bookmark-other-window to bookmark-other-win.
 ;; 2015/01/21 dadams
 ;;     Added: bmkp-store-org-link, bmkp-store-org-link-1.
 ;; 2015/02/15 dadams
@@ -1122,6 +1127,14 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2015/01/22 dadams
+;;     Moved to bookmark+-1.el from here:
+;;       bmkp-reset-bmkp-store-org-link-checking-p, bmkp-store-org-link-checking-p.
+;;       Advice of org-store-link (not needed for bmkp-bmenu-store-org-link).
+;;     Soft-require org.el when compile, for org-add-link-type.
+;;     bmkp-bmenu-store-org-link:
+;;       Removed bmkp-store-org-link-checking-p (needed only for bmkp-store-org-link).
+;;       Link type changed from bookmark-other-window to bookmark-other-win.
 ;; 2015/02/21 dadams
 ;;     Added: bmkp-bmenu-store-org-link, bmkp-reset-bmkp-store-org-link-checking-p,
 ;;            bmkp-store-org-link-checking-p.
