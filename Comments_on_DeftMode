@@ -41,3 +41,17 @@ To replicate:
 
 -- max 2013-05-24 15:20 UTC
 
+
+----
+
+Is this project dead?
+
+I have downloaded the latest deft.el (0.5.1) from this site: http://jblevins.org/projects/deft/ (also see git: http://jblevins.org/git/deft.git/)
+And have both the problems:
+- filtering based on input doesn't work as described by mattm
+- duplicate files as described by max
+
+Is this project dead?
+
+-- writingnotes 2015-02-22 20:01 UTC
+
