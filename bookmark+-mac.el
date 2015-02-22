@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Sun Feb  8 15:51:43 2015 (-0800)
+;; Last-Updated: Sun Feb 22 14:35:41 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 181
+;;     Update #: 182
 ;; URL: http://www.emacswiki.org/bookmark+-mac.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -453,8 +453,7 @@ SETTING-SEXP is a Lisp sexp that sets VARIABLE, or it is nil meaning
 KEYWORDS is a plist for `menu-item' for keywords other than `:help'."
   `(progn
     (defun ,command (&optional interactively)
-      ,(concat "Toggle whether to " (downcase (substring help 0 1))
-               (substring help 1) ".
+      ,(concat help ".
 In an interactive call, record this option as a candidate for saving
 by \"Save Options\" in Custom buffers.")
       (interactive "p")
