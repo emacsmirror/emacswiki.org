@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb  3 09:36:32 2015 (-0800)
+;; Last-Updated: Sun Feb 22 11:48:06 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 8627
+;;     Update #: 8643
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -594,6 +594,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/02/22 dadams
+;;     diredp-bookmark: Corrected for use without Bookmark+ - bookmark-store signature.
 ;; 2015/02/03 dadams
 ;;     Added: diredp-add-to-this-dired-buffer.
 ;;     Removed: diredp-add-to-dired-buffer-other-window, diredp-dired-union-other-window.
@@ -4356,7 +4358,8 @@ Non-nil DIRED-BUFFER is passed to `dired-read-dir-and-switches'.
       ;; Remove any killed buffers from `dired-buffers'.  Then use all but the target buffer as candidates.
       (dolist (db  dired-buffers)
         (if (buffer-live-p (cdr db))
-            (unless (equal dirname (buffer-name (cdr db))) (push (cons (buffer-name (cdr db)) (car db)) dirbufs))
+            (unless (equal dirname (buffer-name (cdr db)))
+              (push (cons (buffer-name (cdr db)) (car db)) dirbufs))
           (setq dired-buffers  (delq db dired-buffers))))
       (while (and dirbufs  (condition-case nil
                                (setq buf  (completing-read "Existing Dired buffer to include (C-g when done): "
@@ -6653,8 +6656,7 @@ A prefix argument ARG specifies files to use instead of those marked.
                                         (read-string "Prefix for bookmark name: "))))
     (select-window (posn-window mouse-pos))
     (goto-char (posn-point mouse-pos))
-    (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix nil 'NO-MSG-P))
-                                nil 'bookmark t))
+    (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix nil 'NO-MSG-P)) nil 'bookmark t))
   (diredp-previous-line 1))
 
 (defun diredp-bookmark (&optional prefix file no-msg-p)
@@ -6672,29 +6674,26 @@ Non-nil optional arg NO-MSG-P means do not show progress messages."
   (let ((fil      (or file  (dired-get-file-for-visit)))
         (failure  nil))
     (condition-case err
-        (if (fboundp 'bmkp-autofile-set)
+        (if (fboundp 'bmkp-autofile-set) ; Bookmark+ - just set an autofile bookmark.
             (bmkp-autofile-set fil nil prefix)
+          ;; Vanilla `bookmark.el' (or very old Bookmark+ version).
           (let ((bookmark-make-record-function
                  (cond ((and (require 'image nil t)  (require 'image-mode nil t)
                              (condition-case nil (image-type fil) (error nil)))
                         ;; Last two lines of function are from `image-bookmark-make-record'.
                         ;; But don't use that directly, because it uses
                         ;; `bookmark-make-record-default', which gets nil for `filename'.
-
-                        ;; NEED to keep this code sync'd with `bmkp-make-record-for-target-file'.
                         (lambda ()
                           `((filename   . ,fil)
                             (position   . 0)
+                            ;; NEED to keep this part of code sync'd with `bmkp-make-record-for-target-file'.
                             (image-type . ,(image-type fil))
-                            (handler    . image-bookmark-jump))))
+                            (handler    . image-bookmark-jump)))) ; In `image-mode.el'.
                        (t
                         (lambda ()
                           `((filename . ,fil)
                             (position . 0)))))))
-            (bookmark-store (concat prefix (file-name-nondirectory fil))
-                            (cdr (bookmark-make-record))
-                            nil
-                            no-msg-p)))
+            (bookmark-store (concat prefix (file-name-nondirectory fil)) (cdr (bookmark-make-record)) nil)))
       (error (setq failure  (error-message-string err))))
     (if (not failure)
         nil                             ; Return nil for success.
