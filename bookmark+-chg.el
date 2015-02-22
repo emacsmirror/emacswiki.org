@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Feb 22 08:36:25 2015 (-0800)
+;; Last-Updated: Sun Feb 22 15:29:25 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 15873
+;;     Update #: 15896
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -151,6 +151,10 @@
 ;;       bmkp-reset-bmkp-store-org-link-checking-p, bmkp-store-org-link-checking-p.
 ;;       Advice of org-store-link (not needed for bmkp-bmenu-store-org-link).
 ;;     bmkp-store-org-link(-1): Link type changed from bookmark-other-window to bookmark-other-win.
+;;     bookmark-prop-set: Added optional arg DONT-UPDATE-NAME.
+;;                        Update bmkp-full-record property on bookmark name, unless DONT-UPDATE-NAME.
+;;     bmkp-record-visit, bmkp-save-new-region-location, bmkp-goto-position:
+;;       Use arg DONT-UPDATE-NAME in sequence of calls to bookmark-prop-set.
 ;; 2015/01/21 dadams
 ;;     Added: bmkp-store-org-link, bmkp-store-org-link-1.
 ;; 2015/02/15 dadams
@@ -1135,6 +1139,20 @@
 ;;     bmkp-bmenu-store-org-link:
 ;;       Removed bmkp-store-org-link-checking-p (needed only for bmkp-store-org-link).
 ;;       Link type changed from bookmark-other-window to bookmark-other-win.
+;;     Fix for lost annotation etc. edit the first time after showing display list:
+;;       bookmark-bmenu-list, bmkp-bmenu-define-full-snapshot-command:
+;;         Bind bookmark-alist to result of bmkp-refresh-latest-bookmark-list - do not just bind it to
+;;           bmkp-latest-bookmark-alist if available.  (NOT SURE THIS IS RIGHT.)
+;;       bmkp-bmenu-list-1:
+;;         Removed update of bmkp-latest-bookmark-alist when not filteredp.  (NOT SURE THIS IS RIGHT.)
+;;     bmkp-bmenu-menubar-menu:
+;;       Toggle menu:
+;;         Moved Toggle menu higher.
+;;         Moved bmkp-toggle-save-desktop-before-switching with other autosaving menu items.
+;;         Added bmkp-toggle-auto-light-when-jump-menu.  
+;;         Moved temporary bookmark stuff lower, after display-list stuff.
+;;         bmkp-toggle-saving-menu-list-state: Corrected help text - affects also being able to save.
+;;       Moved bmkp-list-defuns-in-commands-file with other help stuff.
 ;; 2015/02/21 dadams
 ;;     Added: bmkp-bmenu-store-org-link, bmkp-reset-bmkp-store-org-link-checking-p,
 ;;            bmkp-store-org-link-checking-p.
@@ -1841,6 +1859,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2015/02/22 dadams
+;;     bmkp-menu-bar-make-toggle: Corrected doc string - just start with HELP.
 ;; 2015/02/08 dadams
 ;;     Added: bmkp-define-show-only-command.
 ;; 2014/07/11 dadams
@@ -1880,6 +1900,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2015/02/22 dadams
+;;     Version 2015.02.22.
 ;; 2015/02/08 dadams
 ;;     Version 2015.02.08
 ;; 2015/01/04 dadams
