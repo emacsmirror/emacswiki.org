@@ -119,6 +119,26 @@ hits (up to the search limit).
 [:isearchp-toggle-regexp-quote-yank]
 * [[option|Option]] ('''`isearchp-regexp-quote-yank-flag'''') and command (`isearchp-toggle-regexp-quote-yank', bound to '''`##C-`##'''') to toggle quoting (escaping) of [[regexp]] special characters.  With escaping turned off, you can yank text such as ##^\*.*## without it being transformed to ##\^\\\*\.\*##.
 
+
+
+
+[:isearchp-eval-sexp-and-insert]
+* '''`##M-:##'''' ('''`isearchp-eval-sexp-and-insert'''') prompts you for a Lisp
+[[sexp]], evaluates it, and appends the value to the search string.
+This is useful, for example, to use `rx' or another
+regexp-creation helper to create a [[regexp]] search pattern.
+For example: `##C-M-s M-: (rx (and line-start (1+ (in "("))))##'
+searches using the result of that `rx' sexp, which is ##"^(+"##.
+(The double-quote chars are removed.)
+Remember too that you can use '''`##C-u M-:##'''' after '''`M-e''''.  That
+inserts the sexp value into the [[minibuffer]], where you are
+editing the search string.  Use this when you do not want to
+simply append the sexp value to the search string, but instead you want
+to do some editing of it or the rest of the search string.
+
+
+
+
 [:isearchp-retrieve-last-quit-search]
 * '''`M-g'''' ('''`isearchp-retrieve-last-quit-search'''') yanks the last successful search string (regexp or plain) from when you last hit `C-g' in Isearch.  Sometimes you search for something but abandon the search --- you just want to check the locations of something, without staying at any of them.  Afterward, if you want to find them again, use `M-g'.  This yanks that search string, so you can append it to whatever you are already searching for.
 
