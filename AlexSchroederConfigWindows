@@ -9,6 +9,9 @@
 (require 'cl)
 
 (add-to-list 'load-path (expand-file-name "elisp" (getenv "HOME")))
+(add-to-list 'dynamic-library-alist '(png "libpng15-15.dll"))
+;; (add-to-list 'image-library-alist '( "libpng15-15.dll"))
+
 ;; Git shell provides some stuff?
 ;; (add-to-list 'exec-path "c:/Users/asc/AppData/Local/GitHub/PortableGit_015aa71ef18c047ce8509ffb2f9e4bb0e3e73f13/bin")
 ;; prefer Cygwin to Git shell
@@ -123,22 +126,14 @@
 ;;   (global-set-key (kbd "C-c o") 'helm-occur)
 ;;   (define-key isearch-mode-map (kbd "C-o") 'helm-swoop-from-isearch))
 
-;; iswitchb is obsolete!
-(iswitchb-mode 1)
-
-;; FIXME: This doesn't seem to work. Grr.
-
-;; (add-hook 'iswitchb-mode-hook 'iswitchb-my-keys)
-
-;; (defun iswitchb-my-keys ()
-;;   "Add my keybindings for iswitchb."
-;;   (define-key iswitchb-mode-map (kbd "C-m") 'my-bs-show))
-
-;; (defun my-bs-show ()
-;;   "Run `bs-show' for the buffers currently shown by `iswitchb'."
-;;   (interactive)
-;;   (exit-minibuffer)
-;;   (message iswitchb-common-match-string))
+;; (icomplete-mode 1)
+;; switch RET and C-j around
+;; (define-key icomplete-minibuffer-map (kbd "RET")
+;;   'minibuffer-force-complete-and-exit)
+;; (define-key icomplete-minibuffer-map (kbd "C-j")
+;;   'minibuffer-complete-and-exit)
+;; (setq read-buffer-completion-ignore-case t)
+(ido-mode 'buffers)
 
 ;;; bs instead of buffer-menu
 (global-set-key (kbd "C-x C-b") 'bs-show)
@@ -339,6 +334,23 @@ Indent by DEPTH, if required"
 	  (lambda ()
 	    (setq indent-tabs-mode nil)
 	    ;; (abbrev-mode 1)
+	    (setq outline-regexp
+		  (concat "\\s-*\\("
+			  (mapconcat 'identity
+				     '("create \\(or replace \\)?package\\( body\\)?"
+				       "function" "procedure"
+				       "for" "exception")
+				     "\\|")
+			  "\\)")
+		  outline-heading-alist
+		  '(("create or replace package" . 1)
+		    ("create package" . 1)
+		    ("create or replace package body" . 1)
+		    ("create package body" . 1)
+		    ("function" . 2)
+		    ("procedure" . 2)
+		    ("for" . 3)
+		    ("exception" . 4)))
 	    (local-set-key (kbd "C-z") 'sql-oracle)
 	    (local-set-key (kbd "C-c n") 'my-insert-next-key)
 	    (local-set-key (kbd "C-c C-c") 'sql-send-modified-paragraph)
@@ -586,21 +598,19 @@ Each line consists of a lastname, a tab, and a firstname."
 (setq sentence-end-double-space nil)
 
 ;;; sunrise
-(add-to-list 'load-path "~/elisp/sunrise-commander")
-(require 'sunrise-commander nil t)
-(require 'sunrise-x-w32-addons nil t)
-(global-set-key (kbd "C-c m") 'sunrise)
-(setq sr-cursor-follows-mouse nil)
-(define-key sr-mode-map [backtab]        'sr-change-window)
-(define-key sr-mode-map [mouse-1]        nil)
-(define-key sr-mode-map [mouse-movement] nil)
-
-(defadvice windmove-do-window-select (after sr-windmove-do-window-select (dir &optional arg window))
-  "Handle window selections from `windmove-left' and family"
-  (when (and sr-running (eq (selected-window) (sr-other 'window)))
-    (sr-change-window)))
-
-(ad-activate 'windmove-do-window-select)
+;; (add-to-list 'load-path "~/elisp/sunrise-commander")
+;; (require 'sunrise-commander nil t)
+;; (require 'sunrise-x-w32-addons nil t)
+;; (global-set-key (kbd "C-c m") 'sunrise)
+;; (setq sr-cursor-follows-mouse nil)
+;; (define-key sr-mode-map [backtab]        'sr-change-window)
+;; (define-key sr-mode-map [mouse-1]        nil)
+;; (define-key sr-mode-map [mouse-movement] nil)
+;; (defadvice windmove-do-window-select (after sr-windmove-do-window-select (dir &optional arg window))
+;;   "Handle window selections from `windmove-left' and family"
+;;   (when (and sr-running (eq (selected-window) (sr-other 'window)))
+;;     (sr-change-window)))
+;; (ad-activate 'windmove-do-window-select)
 
 ;; http://en.wikipedia.org/wiki/Sentence_spacing
 (dolist (hook '(emacs-lisp-mode-hook
@@ -698,6 +708,23 @@ Each line consists of a lastname, a tab, and a firstname."
 (defalias 'eshell/emacs 'find-file)
 (defun eshell/dired () (dired (eshell/pwd)))
 
+;;; web-mode
+(add-to-list 'auto-mode-alist '("\\.svg\\'" . web-mode))
+(setq web-mode-enable-comment-keywords '("FIXME" "TODO")
+      indent-tabs-mode nil
+      standard-indent 2)
+
+;;; js-mode
+(add-hook 'js-mode-hook
+	  (lambda ()
+	    (setq indent-tabs-mode nil
+		  js-indent-level 2)
+	    (when (string-match "\\.svg$" (buffer-file-name))
+	      (save-excursion
+		(goto-char (point-min))
+		(when (search-forward "<script type=\"application/javascript\"><![CDATA[\n" nil t)
+		  (narrow-to-region (point) (point-max)))))))
+
 ;;; perl
 (setq cperl-hairy t
       cperl-electric-parens 'null)
@@ -724,9 +751,8 @@ Each line consists of a lastname, a tab, and a firstname."
       rcirc-server-alist
       ;; irc.freenode.net
       '(("chat.freenode.net" :port 6697 :encryption tls
-	 :channels ("#rcirc" "#wiki" "#oddmuse" "#social"
-		    "#emacs" "#sql" "#eclipse-scout"
-		    "#indiewebcamp" "#microformats"
+	 :channels ("#rcirc" "#wiki" "#oddmuse"
+		    "#emacs" "#org-mode" "#sql" "#eclipse-scout"
 		    "#emacswiki" "#emacs-ops" "#perl"))
 	;; ("irc.oftc.net" :port 6697 :encryption tls :channels ("#emacs"))
 	("irc.perl.org" :channels ("#perlde" "#oddmuse" "#perl")))
@@ -807,6 +833,7 @@ Each line consists of a lastname, a tab, and a firstname."
 
 (global-set-key (kbd "C-c e") 'rcirc)
 
+(add-to-list 'load-path "C:/Users/asc/Documents/rcirc-notify")
 (eval-after-load 'rcirc '(require 'rcirc-color nil t))
 (eval-after-load 'rcirc '(require 'circe-color nil t))
 (eval-after-load 'rcirc '(require 'rcirc-controls nil t))
@@ -1058,7 +1085,7 @@ Example use: /all away food or /all quit zzzz."
 
 ;;; text
 
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
+;; (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
 ;;; Oddmuse
 
@@ -1176,18 +1203,37 @@ cells by columns first."
 	  (insert sep (mapconcat 'identity result (concat " " sep)) " |\n")))))
     (delete-region start end))
 
+(defun wikimedia-table ()
+  "Convert region into a table.
+The region must contain one cell content per line,
+cells by columns first."
+  (interactive)
+  (when (looking-at "\\(\\([^\t\n]+\t\\)+[^\t\n]+\n\\)+")
+    (let ((str (match-string 0)))
+      (replace-match "")
+      (insert "{| {{Prettytable}}\n|-\n"
+	      (mapconcat (lambda (line)
+			   (concat "| "
+				   (mapconcat 'identity
+					      (split-string line "\t")
+					      "\n| ")))
+			 (split-string str "\n" t)
+			 "\n|-\n")
+	      "\n|-\n|}\n"))))
+
 ;;; isearch & occur
 
-(defun isearch-occur ()
-  "Invoke `occur' from within isearch."
-  (interactive)
-  (let ((case-fold-search isearch-case-fold-search))
-    (occur (if isearch-regexp isearch-string (regexp-quote isearch-string)))))
-
-(define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
+;; No longer required. Use M-s o!
+;; (defun isearch-occur ()
+;;   "Invoke `occur' from within isearch."
+;;   (interactive)
+;;   (let ((case-fold-search isearch-case-fold-search))
+;;     (occur (if isearch-regexp isearch-string (regexp-quote isearch-string)))))
+;;
+;; (define-key isearch-mode-map (kbd "C-o") 'isearch-occur)
 
 (defun isearch-highlight-phrase ()
-  "Invoke `highligh-phrase' from within isearch."
+  "Invoke `highlight-phrase' from within isearch."
   (interactive)
   (let ((case-fold-search isearch-case-fold-search))
     (highlight-phrase (if isearch-regexp isearch-string (regexp-quote isearch-string))))
@@ -1245,9 +1291,11 @@ br.page {
 }
 </style>")
 
-;;; ediff
+;;; ediff, ztree
 
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(add-to-list 'load-path "~/elisp/ztree")
+(autoload 'ztree-diff "ztree-diff" nil t)
 
 ;; Calendar
 
@@ -1260,21 +1308,21 @@ br.page {
 
 ;;; Working with the edic and kanjidic files
 
-(defun find-region-translation (start end)
-  "Find the region in the EDICT file."
-  (interactive "r")
-  (let ((str (buffer-substring-no-properties start end))
-	(conf (current-window-configuration)))
-    (if (= (length str) 1)
-	(find-file  "/Users/alex/Documents/Japan/kanjidic")
-      (find-file "/Users/alex/Documents/apan/edict"))
-    (goto-char (point-min))
-    (when (occur str)
-      (set-window-configuration conf)
-      (switch-to-buffer "*Occur*")
-      (local-set-key (kbd "q") 'bury-buffer))))
-
-(global-set-key (kbd "C-c j") 'find-region-translation)
+;; (defun find-region-translation (start end)
+;;   "Find the region in the EDICT file."
+;;   (interactive "r")
+;;   (let ((str (buffer-substring-no-properties start end))
+;; 	(conf (current-window-configuration)))
+;;     (if (= (length str) 1)
+;; 	(find-file  "/Users/alex/Documents/Japan/kanjidic")
+;;       (find-file "/Users/alex/Documents/apan/edict"))
+;;     (goto-char (point-min))
+;;     (when (occur str)
+;;       (set-window-configuration conf)
+;;       (switch-to-buffer "*Occur*")
+;;       (local-set-key (kbd "q") 'bury-buffer))))
+;;
+;; (global-set-key (kbd "C-c j") 'find-region-translation)
 
 ;;; UCS/Unicode
 
