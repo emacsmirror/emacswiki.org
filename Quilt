@@ -1,7 +1,7 @@
 [http://en.wikipedia.org/wiki/Quilt_(software) Quilt] is a patch management system to maintain features in 
 [http://en.wikipedia.org/wiki/Patch_(Unix) patch(1)] format over original code.
 
-* 2011 by JariAalto https://github.com/jaalto/emacs-epkg--quilt
+* 2011 by JariAalto https://github.com/jaalto/emacs-epackage--quilt
 * 2005 by Matt Mackall <mpm(at)selenic.com> was at <http://www.selenic.com/quilt>.
   The code was abandoned because the author did no longer use quilt but
   Mercurial queues. Matt is the creator of [http://en.wikipedia.org/wiki/Mercurial Mercurial DVCS] project.
