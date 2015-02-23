@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:59:19 2015 (-0800)
+;; Last-Updated: Mon Feb 23 15:31:59 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 3436
+;;     Update #: 3457
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -78,6 +78,7 @@
 ;;    `isearchp-act-on-demand' (Emacs 22+),
 ;;    `isearchp-append-register', `isearch-char-by-name' (Emacs
 ;;    23-24.3), `isearchp-cycle-mismatch-removal',
+;;    `isearchp-eval-sexp-and-insert' (Emacs 22+),
 ;;    `isearchp-fontify-buffer-now', `isearchp-init-edit',
 ;;    `isearchp-open-recursive-edit' (Emacs 22+),
 ;;    `isearchp-retrieve-last-quit-search',
@@ -359,6 +360,22 @@
 ;;    quoting (escaping) of regexp special characters.  With escaping
 ;;    turned off, you can yank text such as `^\*.*' without it being
 ;;    transformed to `\^\\\*\.\*'.
+
+;;  * `M-:' (`isearchp-eval-sexp-and-insert') prompts you for a Lisp
+;;    sexp, evaluates it, and appends the value to the search string.
+;;    This is useful, for example, to use `rx' or another
+;;    regexp-creation helper to create a regexp search pattern.
+;;
+;;    For example: `C-M-s M-: (rx (and line-start (1+ (in "("))))'
+;;    searches using the result of that `rx' sexp, which is "^(+".
+;;    (The double-quote chars are removed.)
+;;
+;;    Remember too that you can use `C-u M-:' after `M-e'.  That
+;;    inserts the sexp value into the minibuffer, where you are
+;;    editing the search string.  Use this when you do not want to
+;;    simply append the sexp value to the search string, but instead
+;;    you want to do some editing of it or the rest of the search
+;;    string.
 ;;
 ;;  * `M-g' (`isearchp-retrieve-last-quit-search') yanks the last
 ;;    successful search string (regexp or plain) from when you last
@@ -534,6 +551,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/02/23 dadams
+;;     Added: isearchp-eval-sexp-and-insert.  Bound to M-:.
 ;; 2014/10/08 dadams
 ;;     Added: isearchp-append-register.  Bound to C-x r g.
 ;; 2014/09/03 dadams
@@ -858,6 +877,7 @@
 ;; Quiet the byte compiler.
 (defvar bidi-display-reordering)         ; Emacs 24+, built-in.
 (defvar disable-point-adjustment)        ; Built-in, Emacs 22+.
+(defvar eval-expression-debug-on-error)  ; In `simple.el', Emacs 22+.
 (defvar icicle-WYSIWYG-Completions-flag) ; In `icicles-opt.el'.
 (defvar isearch-error)                   ; In `isearch.el'.
 (defvar isearch-filter-predicate)        ; In `isearch.el' (Emacs 24+).
@@ -1307,7 +1327,7 @@ suspended."
                     (isearch-done)
                     ;; The search-done message is confusing when the string is empty, so erase it.
                     (when (equal isearch-string "") (message ""))))
-              ;; Handle `abort-recursive-edit' outside of let to restore outside global values.
+              ;; Handle `abort-recursive-edit' outside of `let' to restore outside global values.
               (quit (isearch-abort)))
             nil)))
     (when newpoint (setq isearch-success  newpoint))))
@@ -1317,6 +1337,27 @@ suspended."
 ;;; Commands ---------------------------------------------------------
 
 (when (> emacs-major-version 21)        ; Emacs 22+, for `with-isearch-suspended'.
+
+  (defun isearchp-eval-sexp-and-insert ()
+    "Prompt for Lisp sexp, eval it, and append value to the search string."
+    (interactive)
+    (with-isearch-suspended
+        (let ((sexp  (read-from-minibuffer "Eval: "
+                                           nil icicle-read-expression-map t 'read-expression-history)))
+          (message "Evaluating...")
+          (if (or (not (boundp 'eval-expression-debug-on-error))
+                  (null eval-expression-debug-on-error))
+              (setq values  (cons (eval sexp) values))
+            (let ((old-value  (make-symbol "t"))
+                  new-value)
+              ;; Bind `debug-on-error' to something unique so that we can detect when evaled code changes it.
+              (let ((debug-on-error  old-value))
+                (setq values     (cons (eval sexp) values)
+                      new-value  debug-on-error))
+              ;; If eval'd code changed value of `debug-on-error', propagate change to the global binding.
+              (unless (eq old-value new-value) (setq debug-on-error  new-value))))
+          (setq isearch-new-string  (concat isearch-string (prin1-to-string (car values) 'NOESCAPE))))))
+
   (defun isearchp-act-on-demand (arg)   ; Bound to `C-M-RET' in `isearch-mode-map'.
     "Invoke the value of `isearchp-on-demand-action-function'.
 This suspends Isearch, performs the action, then reinvokes Isearch.
@@ -2932,6 +2973,8 @@ Other Isearch+ Commands that Require Library `isearch-prop.el'
 ;; An alternative to binding `isearch-edit-string' (but less flexible):
 ;; (setq search-exit-option  'edit) ; M- = edit search string, not exit.
 
+(when (fboundp 'isearchp-eval-sexp-and-insert)
+  (define-key isearch-mode-map "\M-:"             'isearchp-eval-sexp-and-insert))
 (define-key isearch-mode-map (kbd "C-M-`")        'isearchp-toggle-literal-replacement)
 (define-key isearch-mode-map "\M-c"               'isearch-toggle-case-fold)
 ;; This one is needed only for Emacs 20.  It is automatic after release 20.
