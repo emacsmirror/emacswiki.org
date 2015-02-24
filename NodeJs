@@ -12,6 +12,8 @@ The simplest method is to just use Emacs's Comint mode:
 
 "The simplest way to have node.js (tested using node v0.8.1) as an inferior shell under Emacs is to use the [[http://js-comint-el.sourceforge.net/|js-comint package]]. Then, set <code>(setq inferior-js-program-command "node --interactive")</code> to force node to run in interactive mode. The command <code>M-x run-js</code> will then open the interpreter." -- http://stackoverflow.com/questions/8909836/how-to-run-node-js-interactively-in-emacs-on-windows
 
+If you start a repl using "js-run", you can then later send code to the repl using "js-send-region".
+
 NOTE: tab-completion doesn't work
 
 Also tested on Win7, Emacs 24 and node.js 0.10.5. Size: 7KB
