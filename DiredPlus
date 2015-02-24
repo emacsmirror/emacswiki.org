@@ -10,7 +10,7 @@ Here are some of the things '''Dired+''' does:
 * Changes some key bindings and enhances some menus.
 * Adds many new commands. Enhances some existing commands.
 
-* Lets you act not only on the marked files and subdirs in the current buffer but also on the marked files and subdirs within any Dired buffers for the marked subdirs, recursively.  (Separate commands are available for this.)
+* Lets you act not only on the marked files and subdirs in the current Dired buffer but also on the marked files and subdirs within any Dired buffers for the marked subdirs, ''recursively''.  (Separate commands are available for this.)
 
 * Lets you use commands that normally operate on the marked files to operate instead on '''''all''''' files in a Dired buffer, by using `C-u C-u'.  Especially useful in Dired buffers with files from multiple directories.  Use `C-u C-u M-g' to `grep' all files, `C-u C-u C' to copy all files, and so on. Use `C-u C-u C-u' to operate on all directories as well as all files.
 
