@@ -6,7 +6,7 @@
 例: (1 + 3) は 4 になります.
 
 簡易電卓はLISPスタイルもしくは逆ポーランド記法に不慣れな人々が使うにはとても簡単.
-EliBarzilayによって書かれそしてそれはEmacs 21の一部ですのであなたの.emacsへそのためのサポートを追加することは以下のように単純なはず:
+EliBarzilay<nowiki>によって書かれそしてそれはEmacs</nowiki> 21の一部ですのであなたの.emacsへそのためのサポートを追加することは以下のように単純なはず:
 
 <pre>
 (if (locate-library "calculator")
