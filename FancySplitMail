@@ -56,16 +56,15 @@ will be substituted with the text matched by the groupings 1 through 9.
 
 Here's an example that illustrates filtering out spam with nnmail-split-fancy:
 
-     (setq nnmail-split-methods 'nnmail-split-fancy
-           nnmail-split-fancy
-           '(|
-             ;; spam detected by spam-use-regex-headers goes to ‘regex-spam’             
-             (: spam-split "regex-spam" 'spam-use-regex-headers)
-             ;; all other spam detected by spam-split goes to spam-split-group           
-             (: spam-split)
-             ;; default mailbox                                                          
-             "mail"))
-
+ (setq nnmail-split-methods 'nnmail-split-fancy
+       nnmail-split-fancy
+       '(|
+         ;; spam detected by spam-use-regex-headers goes to ‘regex-spam’             
+         (: spam-split "regex-spam" 'spam-use-regex-headers)
+         ;; all other spam detected by spam-split goes to spam-split-group           
+         (: spam-split)
+         ;; default mailbox                                                          
+         "mail"))
 
 == More ==
 
