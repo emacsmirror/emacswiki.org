@@ -1,0 +1,20 @@
+[[en:AddCommasToNumbers]]
+
+12345のような数字を文字列"12,345"へどう変換するかがここにあります.
+    (defun add-number-grouping (number &optional separator)
+      "「数字」にカンマを追加しそれを文字として返す. オプションの「区切り文字」はグループを区切るために使うための文字です. それは既定ではカンマにされています."
+      (let ((num (number-to-string number))
+	    (op (or separator ",")))
+	(while (string-match "\\(.*[0-9]\\)\\([0-9][0-9][0-9].*\\)" num)
+	  (setq num (concat 
+		     (match-string 1 num) op
+		     (match-string 2 num))))
+	num))
+
+あなたは異なる区切り文字を同様に指定することができることに注意して:
+
+    (add-number-grouping 12345 "'")
+    => "12'345"
+
+----
+[[カテゴリ・電卓]]
