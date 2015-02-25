@@ -1,36 +1,23 @@
 [[en:CategoryCalculators]]
-This is Japanese translating page and this is stub. Dont write in english. --gonbei
 
-There are several calculators for Emacs out there.  Here is a selection of modes for you to use if you need some calculations.
+そこにはいくつかのEmacsのための計算機があります.
+ここはもしあなたがいくつかの計算を必要とする場合に使うあなた向けのモードのセレクションです.
 
-* PlainLispForMath describes how to write and evaluate simple
-  arithmetic lisp expressions.  This requires you to use lisp prefix
-  notation.  Example: (+ 1 3) ==> 4
-* The SimpleCalculator is a little pocket calculator featuring various
-  trigonometric functions, binary/octal/hexadecimal modes for input
-  &amp; display, etc.  Expressions are entered using normal infix
-  notation, parens are used as normal.  Example: (1 + 3) ==> 4
-* There is also a SimpleRpnCalculator available.
-* AdvancedDeskCalculator is a very powerful package featuring RPN,
-  arbitrary precision (floating point), complex numbers, error forms, vectors,
-  matrices, dates, times, an interface to gnuplot, and symbolic
-  calculus.  Also known as GNU Calc.
-* AbacusMode simulates a traditional Abacus for all your Math
-  requirements.
-* CalculationPad is a simple functional language that runs on Emacs
-  buffer.
+* [[PlainLispForMath]]はどう書いて簡易算術LISP式を評価するか述べています. これはあなたにLISP prefix表記法を使うことを要求します. 例えば: (+ 1 3) ==> 4
+* [[SimpleCalculator]]は様々な三角法関数, 入力と表示のためのbinary/octal/hexadecimalモード, などをフィーチャーしている小さいポケット電卓です.  式は通常の infix 表記法で入力され, 括弧はいつものように使われます.  例えば: (1 + 3) ==> 4
+* [[SimpleRpnCalculator]] も利用可能です.
+* [[AdvancedDeskCalculator]]は逆ポーランド記法, 任意精度(浮動小数点), 複素数, error forms, ベクトル, 行列, 日付, 時間, gnuplotへのインターフェース, そしてシンボリック計算をフィーチャーしているとてもパワフルなパッケージです.  GNU Calcとしても知られています.
+* [[そろばんモード]]はあなたの全ての数学の要求のために伝統的なアバカス(そろばん)をシミュレートします.
+* [[CalculationPad]]はEmacsバッファで走る簡易functional言語です.
 
+他の雑多な数学関連のもの:
 
-Other miscellaneous math related things:
+* [[SpreadSheet]] -- スプレッドシート計算機(Lotus/Excelのような)としてEmacsを使う
+* [[ElectricFormMode]] -- 数字の列を足すことのような, バッファで軽い計算をするためのマイナーモード
+* [[AddNumbers]]はあなたが数字の列を足すことを助けます.
+** [[RectangleAdd]]を参照されたし.
+* [[LoanPaymentCalculator]] その名の通りのことをします... ローン支払いを計算します.
+* [[ComputerAlgebraSystems]] -- Emacsインターフェース付きの外部プログラムのリスト
+* [[MatrixOperations]] -- あなたが多次元配列を使いそしてそれらの上で行列演算をすることを助けるための[[EmacsLisp]]コード 
+* [[AddCommasToNumbers]] -- 適切に置かれたカンマで10進数を書式を整形する
 
-* SpreadSheet -- using Emacs as a spreadsheet calculator (like
-  Lotus/Excel)
-* ElectricFormMode -- a minor mode for light computation in a buffer, like summing up columns of numbers
-* AddNumbers helps you sum a column of numbers.
-** See also RectangleAdd.
-* LoanPaymentCalculator does what it says... calculates loan payments.
-* ComputerAlgebraSystems -- a list of external programs with Emacs
-  interfaces
-* MatrixOperations -- EmacsLisp code to help you use multi-dimensional
-  arrays and do matrix ops on them
-* AddCommasToNumbers -- format decimal numbers with properly placed commas
