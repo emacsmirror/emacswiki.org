@@ -1,0 +1,24 @@
+[[en:SimpleCalculator]]
+
+簡易電卓はとてもxcalcもしくはcalc.exeに似ています - しかしEmacsインターフェースを使います.
+それは三角関数, 入力と表示のための2/8/16進数モード, など備えています.
+式は通常の中置記法を使って入力されます, 括弧は普段通りに使われています.
+例: (1 + 3) は 4 になります.
+
+簡易電卓はLISPスタイルもしくは逆ポーランド記法に不慣れな人々が使うにはとても簡単.
+EliBarzilayによって書かれそしてそれはEmacs 21の一部ですのであなたの.emacsへそのためのサポートを追加することは以下のように単純なはず:
+
+<pre>
+(if (locate-library "calculator")
+    (progn
+     (autoload 'calculator "calculator"
+      "Run the Emacs calculator." t)
+     (global-set-key [(control return)] 'calculator)))
+</pre>
+
+あなたは[http://www.barzilay.org/misc/calculator.el ここ]から最新版を手に入れられます.
+
+----
+代わりについてはEmacsCalculatorsを参照されたし 
+----
+[[カテゴリ・電卓]]
