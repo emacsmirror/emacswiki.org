@@ -1,3 +1,4 @@
+[[ja:簡易逆ポーランド電卓]]
 JoakimHove wrote a small calculator using reverse polish notation
 (RPN).  The SimpleCalculator uses normal algebraic notation, only the
 AdvancedDeskCalculator uses RPN.  Joakim's calculator fills this gap.
