@@ -1,7 +1,7 @@
 [[en:SimpleRpnCalculator]]
 
-JoakimHoveは逆ポーランド記法を使う小さな電卓を書きました.
-[[簡易電卓]]は通常の代数的記法を使い, AdvancedDeskCalculatorだけが逆ポーランド記法を使います.
+[[JoakimHove]]は逆ポーランド記法を使う小さな電卓を書きました.
+[[簡易電卓]]は通常の代数的記法を使い, [[AdvancedDeskCalculator]]だけが逆ポーランド記法を使います.
 Joakimの電卓はこの溝を埋めます.
 
 あなたの ~/.emacsで:
