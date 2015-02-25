@@ -1,0 +1,19 @@
+[[en:SimpleRpnCalculator]]
+
+JoakimHoveは逆ポーランド記法を使う小さな電卓を書きました.
+[[簡易電卓]]は通常の代数的記法を使い, AdvancedDeskCalculatorだけが逆ポーランド記法を使います.
+Joakimの電卓はこの溝を埋めます.
+
+あなたの ~/.emacsで:
+
+    (autoload 'mcalc "mcalc" "Small RPN calculator." t)
+
+電卓を起動するために 'M-x mcalc' を使え.
+その後逆ポーランド記法を使え:
+
+    5 RET 4 RET * ==> 20
+
+* http://www.ii.uib.no/~hove/lisp/mcalc.el
+
+----
+[[カテゴリ・電卓]]
