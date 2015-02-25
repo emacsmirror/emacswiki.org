@@ -1,3 +1,4 @@
+[[ja:簡易電卓]]
 The simple calculator is very similar to xcalc or calc.exe - but using an Emacs interface.  It features trigonometric functions, binary/octal/hexadecimal modes for input & display, etc.  Expressions are entered using normal infix notation, parens are used as normal.  Example: (1 + 3) yields 4.
 
 The simple calculator is very easy to use for people unfamiliar with lisp style or RPN notation.  It was written by EliBarzilay and it is part of Emacs 21 so adding support for it into your .emacs should be as simple as:
