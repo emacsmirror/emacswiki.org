@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Feb 22 15:14:50 2015 (-0800)
+;; Last-Updated: Tue Feb 24 21:10:12 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7683
+;;     Update #: 7687
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -7509,7 +7509,7 @@ same, except possibly for their directory parts (see previous)."
         (when (string= bname (bmkp-bookmark-name-from-record bmk))
           (let* ((bfil  (bookmark-get-filename bmk))
                  (bdir  (and bfil  (file-name-directory bfil))))
-            (when (and bfil  (bmkp-same-file-p bdir dir-to-use)  (bmkp-same-file-p bfil file))
+            (when (and bfil  bdir  (bmkp-same-file-p bdir  dir-to-use)  (bmkp-same-file-p bfil file))
               (throw 'bmkp-get-autofile-bookmark bmk))))) ; Return the bookmark.
       nil)))
 
