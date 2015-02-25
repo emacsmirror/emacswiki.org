@@ -1,3 +1,4 @@
+[[ja:数字へカンマを追加する]]
 Here is how to transform a number such as 12345 into the string "12,345".
 
     (defun add-number-grouping (number &optional separator)
