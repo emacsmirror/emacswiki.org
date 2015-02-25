@@ -3,13 +3,13 @@
 このページは主にreferencesとbibliographicalデータの管理用に設計されているEmacs用のモードをリストしています:
 
 === メジャーモード ===
-* [[BibTeX]] -- BibTeXファイルを編集と検証するためのメジャーモード.
-* [[EbibMode]] -- BibTeXデータベースを管理するためのメジャーモード.
+* [[BibTeX]] -- <nowiki>BibTeXファイルを編集と検証するためのメジャーモード</nowiki>.
+* [[EbibMode]] -- <nowiki>BibTeXデータベースを管理するためのメジャーモード</nowiki>.
 * [[Bibus]] -- reference keysを表示と管理するためのメジャーモード.
 
 === マイナーモード ===
 * [[RefdbMode]] -- [http://refdb.sourceforge.net/|RefDB]へのアクセスを提供するマイナーモード.
-* [[RefTeX]] -- LaTeXでのラベル作成, 参照と引用をサポートを提供するマイナーモード.
+* [[RefTeX]] -- LaTeX<nowiki>でのラベル作成</nowiki>, 参照と引用をサポートを提供するマイナーモード.
 
 === 議論 ===
 [new:MatthewBall:2013-03-19 08:59 UTC]
