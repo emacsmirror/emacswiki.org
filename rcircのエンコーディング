@@ -17,7 +17,7 @@
 
 AlexSchroederはどこでもUTF-8を好むようにするためにEmacsをセットアップし受信メッセージをデコードするために`undecided'を使うことを推奨する.
 EmacsはさらにUTF-8としてテキストをデコードすることを試みるでしょうそしてもしそれが働かなければ,
-それは地震の経験則を適切なコーディングシステムを選ぶために使うでしょう.
+それは自身の経験則を適切なコーディングシステムを選ぶために使うでしょう.
 
     (prefer-coding-system 'utf-8)
     (setq rcirc-decode-coding-system 'undecided)
