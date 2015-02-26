@@ -57,11 +57,8 @@ fix it:
 
 = Problems, questions and hopefully some answers too =
 
-== Missing buffers ==
-Some buffers which correspond to normal files that don't start with a * or # aren't shown in the default bs-show list.  They show up in the unfiltered list (sometimes) and they show up in the stock buffer-list.  The customization is unchanged from the defaults.
-
-[new]
-It turns out to be a problem with how the files names are passed mixed with temporary file filters in bs.  If you open a file from within emacs that's located in the home directory and therefore contains the tilde (~) as the first character, emacs silently replaces it with the real path like your shell.  If you are in a subdirectory of your home directory though and open files in emacs by passing the relative pathed file names from the command line, the pathed file name in emacs ends up starting with the tilde.  Since a file starting with a tilde is normally a temporary file, the default filters remove it from the bs-show list even though the buffer name itself doesn't contain the tilde.  To correct it, just add to the bs-must-always-show-regexp through the bs-customize command/menu to explicitly force files starting with a tilde to be shown.  More complex matching of this special case can be added here instead to still keep temporary files starting with a tilde from being shown.
+===Buffer List Empty/Truncated===
+No buffers are showing up in the buffer list, or buffers are missing even though they shouldn't be filtered out when the customization regexes are unchanged from the default.
 
 [new]
 There's apparently a problem in the bs script when the mode is XML or HTML.  There's a discussion about it over on the BufferMenu+ page, with the backtrace provided at http://gist.github.com/458598.  The analysis of the backtrace that leads to bs is:
@@ -79,8 +76,16 @@ Debugger entered--Lisp error: (wrong-type-argument characterp sgml-xml-mode)
 </code>
 Something is passing '(sgml-xml-mode "XHTML" "HTML") to ‘concat’. It tries to process that list as a list of chars, which it is not (it is a list of a symbol and two strings). – DrewAdams
 [/quote]
+--MikeAlexander'''
 
-== bs-dont-show-regexp ==
+[new]
+It turns out there's a bug in the bs.el script that shows up mostly with XML, HTML, and SGML files.  It was assumed that the <code>mode-name</code> variable, which indicates the major mode of the buffer, would always be a string, but reading the documentation it says it can be a string, a variable containing a string, or a list mixing both.  In the case of XML, SGML, and HTML files it is set to <code>(sgml-xml-mode "XML" "SGML")</code>.  The correct way to access the human-readable name of this is documented to be with the <code>format-mode-line</code> function that has a defined way of parsing these variables.  The fix is therefore to change the parsing to use <code>(format-mode-line mode-name)</code> instead of <code>(mode-name)</code> in the <code>bs--get-mode-name</code> defun.  I'm seeing that this is causing a different result to be returned from the <code>format-mode-line</code> call though when it's put into <code>bs--get-mode-name</code> than if it's just evaluated manually from the same buffer.  It does guarantee a valid string result regardless though, so this seems to at least fix the list showing up empty even if the buffers with multiple possible mode names don't get the same name listed as with the other standard buffer listing functions.
+
+[b]Solution:[/b]
+On line 1379 of bs.el, in the <code>bs--get-mode-name</code> function, change <code>mode-name</code> to <code>(format-mode-line mode-name)</code>.  
+
+--MikeAlexander'''
+===bs-dont-show-regexp===
 Setting the above variable to a regexp doesn't seem to do what I (mistakenly?)
 believe it should: viz. not showing the buffers matched by the regexp. Even
 though it is set from my .emacs, its value is nil when I `C-h v bs-dont-show-regexp RET'.
