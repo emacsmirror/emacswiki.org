@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:59:50 2015 (-0800)
+;; Last-Updated: Thu Feb 26 08:05:25 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 695
+;;     Update #: 699
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -560,7 +560,7 @@ the following:
 
 If you have previously used such an Isearch property command, then a
 prefix arg means reuse the property type, property, and value from the
-last Isearch property command.  This includes `isearch-char-prop-*'
+last Isearch property command.  This includes `isearchp-char-prop-*'
 commands and commands such as `isearchp-imenu*', `isearchp-thing',
 `isearchp-regexp-context-search', and `isearchp-put-prop-on-region'.
 
@@ -571,7 +571,7 @@ The particular prefix arg controls the behavior as follows:
 
  * Plain `C-u': Reuse the last property type (overlay, text, or both).
  * Positive prefix arg (e.g., `C-9'): Search only text properties.
- * Negative prefix arg (e.g., `C--'): Search only overlayproperties.
+ * Negative prefix arg (e.g., `C--'): Search only overlay properties.
  * Zero prefix arg (`C-0'): Search both text and overlay properties.
 
 By default, an actual value of the property matches the value
@@ -1058,7 +1058,7 @@ as the value.
 
 If you have already used any of the Isearch property commands, then a
 prefix arg means reuse the property and (the first of) its values that
-you last specified.  Such commands include the `isearch-char-prop-*'
+you last specified.  Such commands include the `isearchp-char-prop-*'
 commands and commands such as `isearchp-imenu*', `isearchp-thing',
 `isearchp-regexp-context-search', and `isearchp-put-prop-on-region'."
   (interactive
