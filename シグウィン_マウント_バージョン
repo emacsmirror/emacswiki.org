@@ -1,0 +1,6 @@
+働いているNTEmacs(Windowsネイティブ)でCygwinパスを得るためには, あなたはライブラリ[[cygwin-mount.el]]を必要とする.
+
+このライブラリは今現在メンテナがいないようです.
+異なるバージョンがウェブに漂っている.
+例えばすぐれた外部の記事[http://www.khngai.com/emacs/cygwin.php Cygwin Customizations]でリストされているバージョンは*古いです*.
+あなたが!EmacsWiki上のここで見つける1.4.8よりも新しいバージョンを使え: [[cygwin-mount.el]]
