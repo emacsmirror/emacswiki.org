@@ -1,3 +1,4 @@
+[[ja:シグウィン_マウント_バージョン]]
 In order to get Cygwin paths working on NTEmacs (Windows native) you need the library [[cygwin-mount.el]].
 
 This library does not seem to have a maintainer at the moment. There are different versions floating on the Web. For example the version listed in the excellent external article [http://www.khngai.com/emacs/cygwin.php Cygwin Customizations] *is old*. Use the newer version 1.4.8 you find here on !EmacsWiki: [[cygwin-mount.el]]
