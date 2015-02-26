@@ -15,7 +15,7 @@ How can we automate this for all the applications who need it ? -- CamilleBourgo
 [new]
 How do we get editing in the visual commands?  I get a terminal to work with when I use <code>eshell-visual-commands</code>, but then I can't edit my input to the program (e.g., I see <code>^E</code> instead of moving the cursor to the end of line). Is there a way to get a more capable terminal?  Should we use rlwrap for the sub-program?
 
-How to use eshell-visual-subcommands:
+How to use `eshell-visual-subcommands':
  
 An alist of the form
 <pre>
