@@ -58,7 +58,6 @@ fix it:
 = Problems, questions and hopefully some answers too =
 
 == Missing buffers ==
-[new]
 Some buffers which correspond to normal files that don't start with a * or # aren't shown in the default bs-show list.  They show up in the unfiltered list (sometimes) and they show up in the stock buffer-list.  The customization is unchanged from the defaults.
 
 [new]
