@@ -1,0 +1,221 @@
+[[en:GenericMode]]
+[[es:ModoGenérico]]
+
+= 無名の言語のためにジェネリックモードを使う =
+
+あなたの##~/.emacs##にある以下のものはとてもベーシックなシンタックスハイライティングを全ての種類のファイルのために追加する:
+
+    (require 'generic-x)
+
+それはバッチファイル, iniファイル, コマンドファイル, レジストリファイル, apacheファイル, sambaファイル, リソースファイル, fvwmファイル, などのためのシンタックスハイライティングを追加します.
+完全なリストについては, 以下を参照されたし.
+
+無名のプログラムの初期化ファイルを編集する場合, 私はファイルの最初の行に次を多くの場合追加する:
+
+    # -*- mode: default-generic -*-
+
+= 簡単な例 =
+
+fooと呼ばれる小さな言語を私達は持っていると仮定する;
+典型的なfoo-ファイルは次のようになります:
+
+    !! this is a comment
+    account=foo; !! another comment
+    user=jimmy;
+    password=$3cre7;
+
+define-generic-modeを使って, 私達はこのためのモードを簡単に定義できます:
+
+    (require 'generic-x) ;; we need this
+    
+    (define-generic-mode 
+      'foo-mode                         ;; name of the mode to create
+      '("!!")                           ;; comments start with '!!'
+      '("account" "user" 
+        "password")                     ;; some keywords
+      '(("=" . 'font-lock-operator)     ;; '=' is an operator
+        (";" . 'font-lock-builtin))     ;; ';' is a built-in 
+      '("\\.foo$")                      ;; files for which to activate this mode 
+       nil                              ;; other functions to call
+      "A mode for foo files"            ;; doc string for this mode
+    )
+
+(http://emacs-fu.blogspot.com/2010/04/creating-custom-modes-easy-way-with.html から取られた例)
+
+= 新しいジェネリックモードを定義する =
+
+とても簡単な言語のために, あなたはジェネリックモードをあなたのための新しいメジャーモードを"生成"するために使うことができる.
+次の例は##loadkeys(1)##プログラムによって使われているキーマップファイル用です.
+
+最初に, 言語の例:
+
+    # this only works for console!
+    # allow control tab
+    control keycode 15 = Macro
+    # shift capslock is compose key
+    shift keycode 58 = Compose
+    # cedilla on 4
+    altgr keycode 5 = ccedilla
+    shift altgr keycode 5 = Ccedilla
+    # control up down left right home end
+    control keycode 103 = Meta_p
+    control keycode 108 = Meta_n
+    control keycode 105 = Meta_Control_b
+    control keycode 106 = Meta_Control_f
+    control keycode 102 = Meta_less
+    control keycode 107 = Meta_greater
+
+And now for the major mode.
+
+ここには私たちの最初の試みあります.
+それは以下の機能を持ちます:
+
+* コメントは##"#"##によって導入されます.
+* いくつかの共通キーワードはハイライトされます.
+* それは拡張子##".map"##と##".keymap"##付きで全てのファイル向けにアクティベートされます.
+
+    (define-generic-mode 'keymap-mode
+      '("#") 
+      '("control" "meta" "shift" "alt" "altgr" "compose" "keycode")
+      nil
+      '(".keymap\\'" ".map\\'")
+      nil)
+
+ここには2回目の試みあります.
+追加の機能は:
+
+* ドキュメンテーション.  Always a good idea.
+* 数字は異なるfaceを使ってハイライトされます.
+
+    (define-generic-mode 'keymap-mode
+      '("#")
+      '("control" "meta" "shift" "alt" "altgr" "compose" "keycode")
+      '(("[0-9]+" . 'font-lock-variable-name-face))
+      '(".keymap\\'" ".map\\'")
+      nil
+      "Major mode for editing keymap files as used by loadkeys(1).")
+
+##FONT-LOCK-LIST## パラメータの使用はとてもパワフルです.
+それはあなたを許しますいかなる[[正規表現]]もいかなる[[Face]]を使ってハイライトすることを.
+
+ここにはとても簡易なPL/SQLモードをどう定義するかあります.
+Naturally you'd be better off customizing SqlMode, しかしこの例は is just here to illustrate how to make ##"--"## a comment starter.
+ものを正しくハイライトするために, 私達はfont-lock expressionを使います.
+`comment-start'を設定するために, 私達は無名関数を使います(ラムダ式, それはクォーティングを必要としない).
+
+    (define-generic-mode 'poor-man-plsql-mode
+      () 
+      '("if" "end" "else" "begin" "declare" "function" "procedure")
+      '(("\\(--.*\\)" 1 'font-lock-comment-face))
+      '("\\.pls\\'")
+      (list (lambda () (setq comment-start "--")))
+      "Major mode for very simple PL/SQL highlighting.")
+
+font lockingについての詳細は, FontLockKeywordsを参照されたし.
+
+Here's an even longer example:
+
+    (define-generic-mode 'htaccess-mode
+      '(?#)
+      '(;; core
+        "AcceptPathInfo" "AccessFileName" "AddDefaultCharset" "AddOutputFilterByType"
+        "AllowEncodedSlashes" "AllowOverride" "AuthName" "AuthType"
+        "CGIMapExtension" "ContentDigest" "DefaultType" "DocumentRoot"
+        "EnableMMAP" "EnableSendfile" "ErrorDocument" "ErrorLog"
+        "FileETag" "ForceType" "HostnameLookups" "IdentityCheck"
+        "Include" "KeepAlive" "KeepAliveTimeout" "LimitInternalRecursion"
+        "LimitRequestBody" "LimitRequestFields" "LimitRequestFieldSize" "LimitRequestLine"
+        "LimitXMLRequestBody" "LogLevel" "MaxKeepAliveRequests" "NameVirtualHost"
+        "Options" "Require" "RLimitCPU" "RLimitMEM"
+        "RLimitNPROC" "Satisfy" "ScriptInterpreterSource" "ServerAdmin"
+        "ServerAlias" "ServerName" "ServerPath" "ServerRoot"
+        "ServerSignature" "ServerTokens" "SetHandler" "SetInputFilter"
+        "SetOutputFilter" "TimeOut" "UseCanonicalName"
+        ;; .htaccess tutorial
+        "AddHandler" "AuthUserFile" "AuthGroupFile"
+        ;; mod_rewrite
+        "RewriteBase" "RewriteCond" "RewriteEngine" "RewriteLock" "RewriteLog"
+        "RewriteLogLevel" "RewriteMap" "RewriteOptions" "RewriteRule"
+        ;; mod_alias
+        "Alias" "AliasMatch" "Redirect" "RedirectMatch" "RedirectPermanent"
+        "RedirectTemp" "ScriptAlias" "ScriptAliasMatch")
+      '(("%{\\([A-Z_]+\\)}" 1 font-lock-variable-name-face)
+        ("\\b[0-9][0-9][0-9]\\b" . font-lock-constant-face)
+        ("\\[.*\\]" . font-lock-type-face))
+      '(".htaccess\\'")
+      nil
+      "Generic mode for Apache .htaccess files.")
+
+= アクティベーション =
+
+最初に, もしあなたが##foo-mode##と呼ばれる新しいジェネリックモードを定義したならば##M-x foo-mode##を呼ぶことによってそれが動作するかのテストをする.
+もしそれが働ければ, あなたはyou might want to enable ##foo-mode## for all files whoseその名前は特定のパータン(正規表現)にマッチする.
+
+伝統的に, you would add an entry to `auto-mode-alist' to do that.
+ここに例があります which enables a fictive ##scala-mode## for all files whose names end in ##".scala"##:
+
+    (add-to-list 'auto-mode-alist '(""\\.scala\\'" . scala-mode))
+
+
+Using `define-generic-mode' takes care of that for you, however.
+Note how the fourth argument, ##AUTO-MODE-LIST##, allows you to specify the patterns filenames should match.
+There is no need for adding patterns to `auto-mode-alist' as shown above, if you define new modes using `define-generic-mode'.
+
+= Predefined ジェネリックモード =
+
+Put this in your ##~/.emacs## file:
+
+    (require 'generic-x)
+
+Now you should have a lot more modes to choose from. 
+
+Note that the list depends on the operating system used.
+あなたは##generic-x##を読み込む前に変数`generic-define-mswindows-modes'と`generic-define-unix-modes'設定できる.
+それは will make sure you get the respective defaults.
+ここにリストがあります list so that a search of the wiki will find this page:
+
+: alias-generic-mode apache-conf-generic-mode apache-log-generic-mode
+astap-generic-mode bat-generic-mode default-generic-mode
+etc-fstab-generic-mode etc-passwd-generic-mode
+etc-services-generic-mode fvwm-generic-mode hosts-generic-mode
+ibis-generic-mode inetd-conf-generic-mode inf-generic-mode
+ini-generic-mode java-manifest-generic-mode
+java-properties-generic-mode javascript-generic-mode
+mailrc-generic-mode named-boot-generic-mode
+named-database-generic-mode rc-generic-mode reg-generic-mode
+resolve-conf-generic-mode rul-generic-mode samba-generic-mode
+show-tabs-generic-mode spice-generic-mode vrml-generic-mode
+x-resource-generic-mode
+
+= 問題 =
+
+== How does it work to use a face other than any of the font-lock-xxx faces? ==
+
+これは働きません: 
+
+    (define-generic-mode 'test-mode
+     (list "# ")                      ;; orange   comment-list
+     (list "test1")                   ;; blue     keyword-list
+     (list (list "\\(HIGHLIGHT-THIS\\)" '(1 'info-menu-star))) ;; font-lock-list
+     ()                        ;;  auto-mode-list
+     ()                        ;; function-list
+     "test-mode")
+
+== Does it interfere with packages that do more complex highlighting? ==
+
+はいそうです.
+ジェネリックモードはちょうどいかなる他のメジャーモードのようなものです.
+Simpler perhaps, but it certainly prevents any font-lock stuff by other (major) modes.
+
+== XEmacs互換性 ==
+
+これはThis doesn't appear to work with XEmacs 21.1.
+Does anyone know how to do this with XEmacs?
+
+= もっと力を? =
+
+The next step of complexity is DerivedMode.
+
+----
+CategoryDotEmacs
+CategoryCode
