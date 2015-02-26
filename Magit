@@ -19,10 +19,6 @@ Other handy keys:
 * ##F F## to do a git pull
 * try to press ##TAB##
 
-== Windows ==
-
-Why did Magit get so freaking slow on Windows??? It used to be fast until I updated, now it takes forever. I've done everything the Internet asked.
-
 == Extensions ==
 
 Various packages exist which extend Magit.
