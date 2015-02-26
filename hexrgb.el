@@ -8,9 +8,9 @@
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:50:56 2015 (-0800)
+;; Last-Updated: Thu Feb 26 10:37:59 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 963
+;;     Update #: 968
 ;; URL: http://www.emacswiki.org/hexrgb.el
 ;; Doc URL: http://www.emacswiki.org/SetColor
 ;; Doc URL: http://emacswiki.org/ColorPalette
@@ -89,6 +89,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/02/26 dadams
+;;     hexrgb-hex-to-rgb: Do not use 65535.0 - use 16 ** len instead.
 ;; 2014/08/17 dadams
 ;;     hexrgb-read-color: Bind icicle-color-completing.
 ;; 2013/01/18 dadams
@@ -582,10 +584,11 @@ COLOR is a color name or a hex RGB string that starts with \"#\" and
 is followed by an equal number of hex digits for red, green, and blue
 components."
   (unless (hexrgb-rgb-hex-string-p color) (setq color  (hexrgb-color-name-to-hex color)))
-  (let ((len  (/ (1- (length color)) 3)))
-    (list (/ (hexrgb-hex-to-int (substring color 1 (1+ len))) 65535.0)
-          (/ (hexrgb-hex-to-int (substring color (1+ len) (+ 1 len len))) 65535.0)
-          (/ (hexrgb-hex-to-int (substring color (+ 1 len len))) 65535.0))))
+  (let* ((len     (/ (1- (length color)) 3))
+         (max-nb  (float (expt 16 len))))
+    (list (/ (hexrgb-hex-to-int (substring color 1 (1+ len)))             max-nb)
+          (/ (hexrgb-hex-to-int (substring color (1+ len) (+ 1 len len))) max-nb)
+          (/ (hexrgb-hex-to-int (substring color (+ 1 len len)))          max-nb))))
 
 (defun hexrgb-color-name-to-hex (color &optional nb-digits)
   "Return the RGB hex string, starting with \"#\", for the COLOR name.
