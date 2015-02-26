@@ -57,6 +57,13 @@ fix it:
 
 = Problems, questions and hopefully some answers too =
 
+== Missing buffers ==
+[new]
+Some buffers which correspond to normal files that don't start with a * or # aren't shown in the default bs-show list.  They show up in the unfiltered list (sometimes) and they show up in the stock buffer-list.  The customization is unchanged from the defaults.
+
+[new]
+It turns out to be a problem with how the files names are passed mixed with temporary file filters in bs.  If you open a file from within emacs that's located in the home directory and therefore contains the tilde (~) as the first character, emacs silently replaces it with the real path like your shell.  If you are in a subdirectory of your home directory though and open files in emacs by passing the relative pathed file names from the command line, the pathed file name in emacs ends up starting with the tilde.  Since a file starting with a tilde is normally a temporary file, the default filters remove it from the bs-show list even though the buffer name itself doesn't contain the tilde.  To correct it, just add to the bs-must-always-show-regexp through the bs-customize command/menu to explicitly force files starting with a tilde to be shown.  More complex matching of this special case can be added here instead to still keep temporary files starting with a tilde from being shown.
+
 == bs-dont-show-regexp ==
 Setting the above variable to a regexp doesn't seem to do what I (mistakenly?)
 believe it should: viz. not showing the buffers matched by the regexp. Even
