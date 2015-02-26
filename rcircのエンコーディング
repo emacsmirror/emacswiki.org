@@ -1,0 +1,51 @@
+[[en:rcircEncoding]]
+
+###nihongo##ようなチャンネルにあなたが参加する時,
+あなたはここで述べられていることに注意するでしょう:"お願いです, ISO-2022-JPを使ってください".
+
+[[rcirc]]のためにこれをやるための正しい方法はあなたが参加したら`set-rcirc-decode-coding-system'と`set-rcirc-encode-coding-system'を呼ぶことである.
+
+もしあなたが#nihongoで`iso-2022-jp'を使ってメッセージを送り,
+これ以外の場所では`utf-8'に(毎回上のことを呼び出す必要が無いように)こだわりたいならば,
+次の設定を使って:
+
+    (setq rcirc-coding-system-alist '(("#nihongo" iso-2022-jp))
+
+(この設定の効力を発揮させるために, あなたはチャンネルに参加し直す必要があるでしょう!)
+
+== 全てをデコードする ==
+
+AlexSchroederはどこでもUTF-8を好むようにするためにEmacsをセットアップし受信メッセージをデコードするために`undecided'を使うことを推奨する.
+EmacsはさらにUTF-8としてテキストをデコードすることを試みるでしょうそしてもしそれが働かなければ,
+それは地震の経験則を適切なコーディングシステムを選ぶために使うでしょう.
+
+    (prefer-coding-system 'utf-8)
+    (setq rcirc-decode-coding-system 'undecided)
+
+== /encoding コマンド ==
+
+現在のバッファだけのために現在のエンコーディングを変更するための便利な##/encoding##コマンドがここにあります.
+
+<kensanata> /encoding iso-2022-jp
+<kensanata> 日本語 できません。
+
+もしあなたが混乱している場合は, あなたが現在使っているものを見るためにいかなる引数もなしでそれを使え.
+
+<kensanata> /encoding
+; -kensanata-: utf-8
+
+##/encoding##コマンド用のコードがここにあります:
+
+{{{
+(eval-after-load 'rcirc
+  '(defun-rcirc-command encoding (arg)
+     "現在のバッファだけのためにエンコードするコーディングシステム`rcirc-encode-coding-system'変更する."
+     (interactive)
+     (if (string= arg "")
+	 (rcirc-print process (rcirc-nick process) "NOTICE" target
+		      (symbol-name rcirc-encode-coding-system))
+       (setq rcirc-encode-coding-system (intern-soft arg)))))
+}}}
+
+もしあなたが上のAlexSchroederのアドバイスに従いデコーディングのために`undecided'を使うならば,
+a separate ##/decoding##コマンドは必要ありません.
