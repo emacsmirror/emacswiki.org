@@ -1,0 +1,7 @@
+To browse the web from within an Emacs window, using a fully-functional and long-established web browser, this is one solution:
+
+Open up a new ANSI terminal window: <code>M-x ansi-term</code> followed by RETURN
+
+At the prompt "Run program:", instead of the default <tt>/bin/sh</tt>, enter <code>lynx</code> instead. Of course, this presumes that Lynx runs correctly from the command line normally.
+
+Voila! You have the benefits of the Lynx web browser, running within an Emacs buffer.
