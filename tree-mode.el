@@ -1,4 +1,5 @@
 [[de:english]]
+[[de:english]]
 ;;; tree-mode.el --- A mode to manage tree widgets
 ;; Copyright 2007 Ye Wenbin
 ;;
