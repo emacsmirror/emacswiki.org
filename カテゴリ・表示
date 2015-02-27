@@ -1,59 +1,58 @@
 [[en:CategoryDisplay]]
-This is Japanese translating page and this is stub. Dont write in english. --gonbei
 
-Click the heading to find all pages related to display stuff.  Note
-that colors and [[face]]s belong in CategoryFaces.
+表示ものに関連する全てのページを見つけるために見出しをクリック.
+[[カラー]]と[[フェイス]]は[[カテゴリ・フェイス]]CategoryFacesに属することに注意.
 
-== Pages relating to display ==
+== ディスプレイ関連のページ ==
 
-* '''CategoryFrames'''
-* '''CategoryMouse'''
-* '''CategoryCustomize'''
+* '''[[カテゴリ・フレーム]]CategoryFrames'''
+* '''[[カテゴリ・マウス]]CategoryMouse'''
+* '''[[カテゴリ・カスタマイズ]]CategoryCustomize'''
 * DoReMi -- incremental changes or cycling
 ** Function `doremi': use it to define other commands that let you use the arrow keys and/or mouse wheel to ''make incremental changes'' to things or ''cycle through a ring'' of things.
-** Library <tt>[[doremi-frm.el]]</tt> -- use the arrow keys and/or mouse wheel to make incremental changes to frame properties and cycle through a ring of frame configurations (undo). See DoReMi.
+** Library <tt>[[doremi-frm.el]]</tt> -- use the arrow keys and/or mouse wheel to make incremental changes to frame properties and cycle through a ring of frame configurations (undo). [[DoReMi]]を参照されたし.
 * RemoteEmacs -- running Emacs from an another machine over X11
-* Highlighting
+* [[ハイライト]]Highlighting
 ** ShowWhiteSpace -- highlight whitespace characters
-** HighlightTemporarily -- highlight parts of a buffer
+** [[一時的にハイライトする]]HighlightTemporarily -- highlight parts of a buffer
 ** CrosshairHighlighting -- highline current line and column; track cursor or show cross hairs momentarily.
-** HighlightCurrentLine
-** HighlightCurrentColumn
-** HighlightIndentation -- highlight indentation using vertical guide lines
+** [[現在行のハイライト]]HighlightCurrentLine
+** [[現在列のハイライト]]HighlightCurrentColumn
+** [[インデントのハイライト]]HighlightIndentation -- highlight indentation using vertical guide lines
 * ChangingCursorDynamically -- automatically change the cursor, depending on the context
 * TruncateLines -- the display engine can do LineWrap
-* ModeLine -- the mode-line provides lots of information
+* [[モード行]]ModeLine -- the mode-line provides lots of information
 ** ModeLineMinorModeMenu -- pop up minor-mode menus from the mode-line.
 ** ModeLinePosition -- enhancements to standard minor modes ‘line-number-mode’, ‘column-number-mode’, and ‘size-indication-mode’
 ** ShowPointMode -- show the value of the point in the mode line
 ** DiminishedModes -- Abbreviate minor modes appearing in the ModeLine.
 ** DelightedModes -- Abbreviate/customise both major and minor mode names in the ModeLine.
-* TransparentEmacs -- how to make your wallpaper shine through the buffer
-* WorkSpaces - an implementation based on registers
-* FullScreen - how to switch to fullscreen (with F11 for example)
+* [[透過Emacs]]TransparentEmacs -- how to make your wallpaper shine through the buffer
+* [[ワークスペース]]WorkSpaces - an implementation based on registers
+* [[フルスクリーン]]FullScreen - how to switch to fullscreen (with F11 for example)
 * MiniMap - A sidebar showing a small version of your buffer with highlighted viewport, which can be dragged with the mouse.
 * [[Sublimity]] - Smooth-scrolling and minimap like sublime editor, similar to MiniMap.
 
-== Managing Frames within Emacs ==
+== Emacs内でフレームを管理する ==
 
 * '''CategoryFrames'''
 * OneOnOneEmacs -- making Emacs more [[Frame]]-oriented, less Emacs window-oriented
 * DoReMi -- incremental changes or cycling
 ** Function `doremi': use it to define other commands that let you use the arrow keys and/or mouse wheel to ''make incremental changes'' to things or ''cycle through a ring'' of things.
-** Library <tt>[[doremi-frm.el]]</tt> -- use the arrow keys and/or mouse wheel to make incremental changes to frame properties and cycle through a ring of frame configurations (undo). See DoReMi.
+** Library <tt>[[doremi-frm.el]]</tt> -- use the arrow keys and/or mouse wheel to make incremental changes to frame properties and cycle through a ring of frame configurations (undo). [[DoReMi]]を参照されたし.
 * FisheyeWithThumbs -- thumbnail frames give a fisheye view of your frames and provide an alternative to iconifying
 * [[FrameModes#FrameCommands|Frame Commands]] -- Maximize/restore (vertically, horizontally, both); tile; iconify; move or resize incrementally; manage frame configurations; copy/paste parameters (attributes); show/hide;...
 * [[Maximize]] -- Maximize frames vertically and or horizontally.
-* WindowsAndFrames -- do several tasks with one Emacs
-* FrameConfiguration -- save, restore and switch [[Frame]] configurations (see also SessionManagement)
+* [[ウィンドウとフレーム]]WindowsAndFrames -- do several tasks with one Emacs
+* FrameConfiguration -- save, restore and switch [[Frame]] configurations (SessionManagementも参照されたし)
 * BumpWindowUp -- control the position of XEmacs frames on NT Windows
 
-== Scrolling ==
+== スクロール関連 ==
 
 * [[Scrolling]] -- general stuff
-* BufferScrolling -- horizontal scrolling
+* [[バッファをスクロールする]]BufferScrolling -- 水平スクロール
 * SmoothScrolling -- no half-page jumps
-* NextLineBehavior -- scroll one line at a time
+* NextLineBehavior -- 1度に1行スクロール
 * ScrollMargs -- yet another smooth scroll mode
 * ScrollAllMode -- scroll several buffers together
 * FollowMode -- display a buffer in two windows as if it were two columns
@@ -63,26 +62,26 @@ that colors and [[face]]s belong in CategoryFaces.
 * GrabAndDrag -- scroll a window by mouse dragging
 * VerticalConsistency -- make opposite vertical movement go back its track
 
-== Changing the appearance of characters ==
+== 文字の外観を変更する ==
 
 * PageBreaks -- change page breaks from a ^L to a horizontal line
 * [http://user42.tuxfamily.org/unicode-disp/index.html unicode-disp.el] -- unicode chars as ascii fallbacks if not displayable
 * PrettySymbol -- display ascii strings as unicode/graphically
 * ShowWhiteSpace -- highlight whitespace characters
 
-== Saving screen real-estate ==
+== スクリーンの不動産を保存する ==
 
-* ScrollBar -- how to disable it, or how to put it on the other side
-* ToolBar -- how to disable it
-* MenuBar -- how to disable it
-* ActiveMenu -- let the MenuBar enable and disable itself
+* [[スクロールバー]] -- how to disable it, or how to put it on the other side
+* [[ツールバー]] -- how to disable it
+* [[メニューバー]] -- how to disable it
+* [[アクティブメニュー]]ActiveMenu -- let the MenuBar enable and disable itself
 * FisheyeWithThumbs -- thumbnail frames save space but still let you see your frames -- an alternative to iconifying
 * FrameModes -- shrink-wrap frames (resize to fit selected window/buffer); tile frames; iconify/hide frames
 * DiredDetails -- show/hide details in Dired
 * TheaterStyle -- how to disable everything except the buffer itself. 
 * GoodFonts -- what fonts for what screen resolutions
 * SetFonts -- how to set them
-* HideModeLine -- don't display the ModeLine
+* [[モード行を隠す]]HideModeLine -- don't display the ModeLine
 * DiminishedModes -- Abbreviate minor modes appearing in the ModeLine.
 * DelightedModes -- Abbreviate/customise both major and minor mode names in the ModeLine.
 * LineSpacing -- how to set it
@@ -90,16 +89,16 @@ that colors and [[face]]s belong in CategoryFaces.
 
 == (Add pages specific to certain displays such as MSDOS, tty, etc.) ==
 
-* InternationalConsoleFonts -- displaying international characters in a terminal
+* [[国際コンソールフォント]]InternationalConsoleFonts -- displaying international characters in a terminal
 * EmacsOnTerminal -- running Emacs with a ''real'' terminal
 * RemoteEmacs -- Emacs across machines with X11
 
-== Low-level drawing ==
+== 低レベル描画 ==
 
-* XlibInterface -- an xlib interface in Emacs Lisp
-* PixelDrawing -- a patch to the C source defining a function to draw pixels
+* [[Xlibインターフェース]]XlibInterface -- an xlib interface in Emacs Lisp
+* [[ピクセル描画]]PixelDrawing -- a patch to the C source defining a function to draw pixels
 
-== And for tons of screenshots ==
+== そして大量のスクリーンショットついて ==
 
 * http://images.google.com/images?q=emacs
 * (adding a non-link to appease the link spam filter)
