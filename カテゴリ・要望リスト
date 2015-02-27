@@ -1,19 +1,18 @@
+[[en:CategoryWishList]]
 [[es:Lista_de_deseos]]
-This is Japanese translating page and this is stub. Dont write in english. --gonbei
 
-Click the above title to find any topic categorized as CategoryWishList.
+[[カテゴリ・要望リスト]]としてカテゴライズされた1つのトピックを見つけるためにタイトルの上をクリックします.
 
-The EmacsTodo contains wishes that have been blessed by the Emacs developers.
+EmacsTodoはEmacs開発者によってありがたられた要望を含みます.
+他の人はwiki上のここに彼らの要望を述べた:
 
-Other people have stated their wishes here on the wiki:
+* [[要望リスト]] -- Emacs全てのことの包括的なページ...
+** GoogleSummerOfCode -- プロジェクトに参加するためのアイディア
+* EshellWishList -- EmacsShellもの
+* EmacsIDEWishList -- GTK2, 初心者のためになる素晴らしいIDE機能, 素晴らしい動的言語サポート...
 
-* WishList -- the catch-all page for all things Emacs...
-** GoogleSummerOfCode -- Ideas for participation in this project
-* EshellWishList -- EmacsShell stuff
-* EmacsIDEWishList -- gtk2, great IDE features that is good for newbies, great dynamic languages support ...
+== バグ ==
 
-== Bugs ==
-
-* ErcBugs -- wishlist for Emacs IRC Client (lower-down the page)
+* [ErcBugs]|[[ERCバグ]] -- Emacs IRC クライアントのための要望リスト (lower-down the page)
 * [[Emacsバグ]]
-* XEmacsBugs
+* [XEmacsBugs]|[[XEmacsバグ]]
