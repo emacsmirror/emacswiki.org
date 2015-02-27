@@ -1,0 +1,51 @@
+[[en:EmacsImplementations]]
+
+== ローカルに文書化されている ==
+主流GNU Emacsと派生物:
+* GnuEmacs
+* [[XEmacs]] -- formerly LucidEmacs
+* [[SXEmacs]] -- [[XEmacs]]のフォーク
+
+まだ生きている他の実装:
+* GNU [[Zile]] -- 小さいEmacsクローン.
+* [[Climacs]] -- CommonLispを基にした.
+* EdWin -- [[Scheme]]を基にした.
+* EfunsEditor -- ObjectiveCamlを基にした.
+* [[Mg]] -- 軽量パブリックドメインEmacsクローン
+* [[Ymacs]] -- ウェブ用Emacsライクエディタ
+
+他の多かれ少なかれ曖昧な実装:
+* [[EINE]]
+* ErlangEmacs
+* GuileEmacs
+* HemLock
+* JavaEmacs
+* [[Jove]]
+* MicroEmacs
+* MulticsEmacs
+* [[QEmacs]]
+* TecoEmacs
+* [[Zmacs]]
+* [[ZWEI]]
+
+ローカルに文書化されていない:
+* [http://www.eligis.com/emacs EmACT]にはWin32バイナリが付属しています.
+* [http://www.swi-prolog.org/emacs.html PceEmacs]
+
+
+== コンプリートリスト ==
+* http://www.finseth.com/emacs.html
+
+しかし, それはとても長いページです.
+
+(CraigFinsethによる)このドキュメントはEmacs型エディタの実装とそのようなエディタについての文献の部分的な-- そして包括的でない --リストを提供します.
+あなたは追加の情報と/もしくはアップデートを著者へ送ることによってそれをさらに包括的にさせることを手伝うことができます.
+
+このドキュメントは(少なくとも)Emacs関連の歴史のリポジトリの役割を同じく徐々に獲得しています.
+その題材がそれ自体に本を必要とする間, このドキュメントは恐らく誰かが(著者<i>ではない</i>!)それを書くまで役割を果たすでしょう.
+
+[[EditorsUsedByOthers]]も参照されたし
+
+----
+[[カテゴリ・歴史]]CategoryHistory
+[[カテゴリ・移植]]CategoryPorts
