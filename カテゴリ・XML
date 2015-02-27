@@ -1,40 +1,41 @@
 [[en:CategoryXML]]
-This is Japanese translating page and this is stub. Dont write in english. --gonbei
 
-These are some packages used for XML processing in Emacs or XEmacs:
+これらはEmacsもしくはXEmacsでXML処理をするために使われているいくつかのパッケージです:
 
-* [[Icicles - Search Commands, Overview|Icicles Search]] has commands to search the contents of selected XML elements (e.g. those in the [[region]]):
-** '''`icicle-search-xml-element'''' -- search elements whose names match a [[regexp]]
-** '''`icicle-search-thing'''' with thing-type `sexp' -- when in `nxml-mode'.  Option `nxml-sexp-element-flag' controls what [[sexp]] means -- set it to `t' if you want whole elements as sexps.
-* NxmlMode -- Major mode for emacs.  Probably the best available mode for XML.
-* PsgmlMode -- major mode for editing SGML and XML documents.  This is more complicated, and feature rich than XmlMode, but less flexible.  If you have a validating DTD for your XML, using PSGML will provide a variety of very useful features, most notably context sensitive help in inserting tags and attributes.
-* XmlMode -- editing XML, indentation, font-lock offered. simpler than PSGML, doesn't try to parse DTD.
-* XmlParser -- programming with XML, see also XmlParserExamples
-* XmlSoxMode -- edit XML in a [http://www.langdale.com.au/SOX/ SOX] view.
-* [http://www.menteith.com/wiki/xslide xslide] -- major mode for editing XSLT
-* [http://xslt-process.sourceforge.net/ XSLT-process] -- minor mode for doing XSLT processing and debugging
-* XmlRpc -- package for RPC calls using XML.
-* TeXmacs -- intends to support native editing of XML documents (not quite Emacs, but it has a similar spirit)
-* DtmlMode -- editing Zope's DTML
-* DocbookXmlMode -- Major mode for Emacs with specific knowledge of the DocBook catalog.
-* TextEncodingInitiativeEmacs -- Emacs distribution for authoring TEI XML documents.
-* [http://xae.sunsite.dk/ XAE] -- XML Authoring Environment for Emacs (link is broken).
-* XmlCoding -- coding system from ?xml tag (Emacs 21)
-* XmlGen -- sexp -> xml generation.
+* [[Icicles - Search Commands, Overview|Icicles Search]]は選択されたXML要素の内容を(例:[[リージョン]]にあるこれら)検索するためのコマンドを持ちます:
+** '''`icicle-search-xml-element'''' -- 名前が[[正規表現]]にマッチする要素を検索する
+** '''`icicle-search-thing'''' with thing-type `S式' -- when in `nxml-mode'. オプション`nxml-sexp-element-flag'は[[S式]]が意味するものをコントロールします -- もしあなたが全体の要素をS式として欲しいならばそれを`t'へセットします.
+* NxmlMode -- emacs向けのメジャーモード.  多分XML用の利用可能なモードとしてはベスト.
+* PsgmlMode -- SGMLとXMLドキュメントを編集するためのメジャーモード. これはより複雑で, XmlModeよりも機能が優れているが, しかし柔軟性に劣る.
+もしあなたがあなたのXMLためのvalidating DTDを持っているならば, using PSGML will provide a variety of very useful features, most notably context sensitive help in inserting tags and attributes.
+* XmlMode -- XML編集, indentation, font-lock offered. PSGMLよりも簡単, DTDをパースしようとしないこと.
+* XmlParser -- XMLでプログラミングをすること, XmlParserExamplesを参照されたし
+* XmlSoxMode -- [http://www.langdale.com.au/SOX/ SOX]ビューでXMLを.
+* [http://www.menteith.com/wiki/xslide xslide] -- XSLTを編集するためのメジャーモード
+* [http://xslt-process.sourceforge.net/ XSLT-process] -- XSLT処理とデバッギングをするためのマイナーモード 
+* XmlRpc -- XMLを使ってRPCコールをするためのパッケージ.
+* TeXmacs -- XMLドキュメントのネイティブ編集サポートを意図する(完全にはEmacsではないがしかし, それは同じような精神を持つ)
+* DtmlMode -- ZopeのDTMLを編集する
+* DocbookXmlMode -- メジャーモード for Emacs with specific knowledge of the DocBook catalog.
+* TextEncodingInitiativeEmacs -- TEI XML文書を編集するためのEmacs配布物.
+* [http://xae.sunsite.dk/ XAE] -- Emacs向けXMLオーサリング環境 (リンクは壊れています).
+* XmlCoding -- ?xmlタグからコーディングシステム(Emacs 21)
+* XmlGen -- S式 -> XML生成.
 
-Here is an article by BrianGillan (IBM) on Getting and installing
-Emacs, Adding PSGML for SGML and XML modes, Editing a document with
-PSGML, and Using SP or <nowiki>OpenSP</nowiki> for SGML and XML
-validation...
+ここにはBrianGillan (IBM)によるEmacsの入手とインストール,
+SGMLとXMLモードのためのPSGMLの追加, PSGMLでドキュメントの編集,
+そしてSGMLとXML validationのためにSPもしくは<nowiki>OpenSP</nowiki>の使用についての記事があります...
 
 * http://www-106.ibm.com/developerworks/xml/library/x-emacs/
 
-From the BobDuCharme book SGML CD, here is a longish (99 pages) chapter on using Emacs to edit SGML/XML files using PSGML. Also contains Polish and Russian translations.
+From the BobDuCharme book SGML CD,
+here is a longish (99ページ) chapter on using Emacs to edit SGML/XML files using PSGML.
+ポーランド語とロシア語の翻訳を同じく含みます.
 
 * http://www.snee.com/bob/sgmlfree/
 
-This category is equivalent to the [http://dmoz.org/Computers/Data_Formats/Markup_Languages/XML/Tools/Editors/ Open Directory] category.
+このカテゴリは[http://dmoz.org/Computers/Data_Formats/Markup_Languages/XML/Tools/Editors/ Open Directory]カテゴリと同等です.
 
 DTD
 
-* [http://www.menteith.com/wiki/tdtd/ tdtd] -- Emacs mode for editing DTDs
+* [http://www.menteith.com/wiki/tdtd/ tdtd] -- DTD等を編集するためのEmacsモード
