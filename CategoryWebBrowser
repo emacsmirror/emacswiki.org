@@ -12,6 +12,7 @@
 
 * [[emacs-w3m]] -- w3m.el, a mode for w3m, an external text browser
 * [http://code.google.com/p/nero-el/ nero.el] -- lynx based
+* [[TermAndLynx]] -- use standard Lynx in an Emacs ansi-term window
 * [[ezbl]] (very alpha) -- interface to webkit based uzbl (see also [[EmacsXembed]] (very alpha) for embed widgets in general)
 
 == HTTP backends ==
