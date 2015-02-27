@@ -8,9 +8,9 @@
 
 まだ生きている他の実装:
 * GNU [[Zile]] -- 小さいEmacsクローン.
-* [[Climacs]] -- CommonLispを基にした.
+* [[Climacs]] -- [[CommonLisp]]を基にした.
 * EdWin -- [[Scheme]]を基にした.
-* EfunsEditor -- ObjectiveCamlを基にした.
+* EfunsEditor -- [[ObjectiveCaml]]を基にした.
 * [[Mg]] -- 軽量パブリックドメインEmacsクローン
 * [[Ymacs]] -- ウェブ用Emacsライクエディタ
 
