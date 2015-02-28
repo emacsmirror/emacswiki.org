@@ -9,9 +9,9 @@
 ;; Created: Fri Feb 27 20:32:14 2009 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb 28 10:35:22 2015 (-0800)
+;; Last-Updated: Sat Feb 28 10:45:03 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 114
+;;     Update #: 115
 ;; URL: http://www.emacswiki.org/echo-bell.el
 ;; Keywords: echo area, bell, ding
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
@@ -34,9 +34,7 @@
 ;;  * `echo-bell-delay' is the number of seconds to show it.
 ;;  * `echo-bell-background' is the background color to use.
 ;; 
-;; Initial code is from http://www.emacswiki.org/emacs/MilesBader.
-;; There the feature was called `mode-line-bell', although it uses the
-;; echo area and not the mode-line.
+;; Initial code was from http://www.emacswiki.org/emacs/MilesBader.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
