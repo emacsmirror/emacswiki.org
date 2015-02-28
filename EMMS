@@ -935,3 +935,6 @@ The discnumber tag is supported by at least mp3 and ogg files, and most players 
 
 [new]
 I implemented support for discnumber, patch sent to emms-patches and viewable from here: http://article.gmane.org/gmane.emacs.emms.patches/691 .  No response yet.  -- ChristopheRhodes
+
+[new]
+discnumber patch has now been implemented in 4.0, but doesn't seem to work for me by default; any idea how to troubleshoot? Is there any documentation for how the patch  works? -- 2e0byo
