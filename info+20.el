@@ -8,9 +8,9 @@
 ;; Created: Sun May  4 09:18:30 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:58:54 2015 (-0800)
+;; Last-Updated: Sat Feb 28 08:39:15 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 5234
+;;     Update #: 5236
 ;; URL: http://www.emacswiki.org/info+20.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -177,6 +177,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/02/28 dadams
+;;     Added: redefinition of Info-read-node-name.
 ;; 2014/05/04 dadams
 ;;     Created from info+.el, since Emacs 20-22 cannot handle Unicode char literals, and these
 ;;       are needed if Info is built with a recent Texinfo, since it used curly single quotes.
@@ -1059,6 +1061,19 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
     "Display the Introduction to Emacs Lisp Programming in Info mode."
     (interactive) (info "eintr")))
 
+
+;; REPLACE ORIGINAL in `info.el':
+;;
+;; Added optional arg DEFAULT.
+;;
+(defun Info-read-node-name (prompt &optional default)
+  (let* ((completion-ignore-case           t)
+	 (Info-read-node-completion-table  (Info-build-node-completions))
+	 (nodename                         (completing-read
+                                            prompt 'Info-read-node-name-1 nil t nil 'Info-history default)))
+    (if (equal nodename "")
+	(or default  (Info-read-node-name prompt))
+      nodename)))
 
 
 ;; REPLACE ORIGINAL in `info.el':
