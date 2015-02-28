@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  4 16:03:24 2015 (-0800)
+;; Last-Updated: Sat Feb 28 08:47:36 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 5407
+;;     Update #: 5439
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -151,7 +151,7 @@
 ;;  `Info-insert-dir' -
 ;;     Added optional arg NOMSG to inhibit showing progress msgs.
 ;;  `Info-mode' - Doc string shows all bindings.
-;;  `Info-read-node-name-1' - Treat file name entries, e.g. "(emacs)".
+;;  `Info-read-node-name'   - Added optional arg DEFAULT.
 ;;  `Info-search' - 1. Fits frame.
 ;;                  2. Highlights found regexp if `search-highlight'.
 ;;  `Info-set-mode-line' - Handles breadcrumbs in the mode line.
@@ -226,6 +226,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/02/28 dadams
+;;     Added: redefinition of Info-read-node-name.
+;;     Info-goto-node-web, Info-url-for-node: Use Info-current-node as default.
 ;; 2014/12/21 dadams
 ;;     Added: Info-goto-node-web, Info-url-for-node.
 ;;     Reorganized.  Code cleanup.  Improved commentary.  Added index links.
@@ -237,9 +240,8 @@
 ;;     REMOVED SUPPORT for Emacs 20-22.  That support is offered by a new library now: info+20.el.
 ;;     Added coding:utf-8 declaration.  Replace \x2018, \x2019 with literal ‘ and ’, since now Emacs 23+.
 ;; 2014/05/03 dadams
-;;     info-quotation-regexp, info-quoted+<>-regexp:
-;;       Handle also curly single quotes (Emacs 24.4+).
-;;       Removed double * and moved openers outside \(...\) group.
+;;     info-quotation-regexp, info-quoted+<>-regexp: Handle also curly single quotes (Emacs 24.4+).
+;;                                                   Removed double * and moved openers outside \(...\) group.
 ;;     info-fontify-quotations: Handle also curly single quotes (Emacs 24.4+).
 ;; 2014/03/04 dadams
 ;;     Renamed Info-toggle-breadcrumbs-in-header-line to Info-toggle-breadcrumbs-in-header.
@@ -261,9 +263,8 @@
 ;; 2013/02/03 dadams
 ;;     Added: Info-fontify-angle-bracketed-flag, Info-toggle-fontify-angle-bracketed,
 ;;            Info-toggle-fontify-quotations, Info-toggle-fontify-single-quote, info-quoted+<>-regexp.
-;;     info-fontify-quotations:
-;;       Fixed case for Info-toggle-fontify-single-quote = nil.
-;;       Handle also Info-fontify-angle-bracketed-flag.
+;;     info-fontify-quotations: Fixed case for Info-toggle-fontify-single-quote = nil.
+;;                              Handle also Info-fontify-angle-bracketed-flag.
 ;;     Added  Info-fontify-*-flag to Info menu (so menu bar and C-mouse-3).
 ;; 2012/09/24 dadams
 ;;     Info-search. Info-mode: Applied latest Emacs 24 updates by Juri (from 2012-09-12).
@@ -374,8 +375,7 @@
 ;; 2008/06/10 dadams
 ;;     Info-fontify-node (Emacs 22+): Added breadcrumbs.
 ;; 2008/03/06 dadams
-;;     info-mode:
-;;       Use fboundp for Info-clone-buffer, not version test, for Emacs 22+. Thx to Sebastien Vauban.
+;;     info-mode: Use fboundp for Info-clone-buffer, not version test, for Emacs 22+. Thx to Sebastien Vauban.
 ;; 2008/02/01 dadams
 ;;     Info-mode: Renamed Info-clone-buffer-hook to Info-clone-buffer for Emacs 22.1.90.
 ;; 2008/01/08 dadams
@@ -393,8 +393,7 @@
 ;;     Bound Info-mouse-*-new-* to S-down-mouse-2, not S-mouse-2, because of mouse-scan-lines-or-M-:.
 ;;     Info-goto-emacs-command-node: Convert completion default value to string.
 ;; 2007/08/27 dadams
-;;     Info-fontify-node:
-;;       Ensure Info-fontify-node is a string when fontifiy quotations. Updated for released Emacs 22.
+;;     Info-fontify-node: Ensure Info-fontify-node is a string when fontifiy quotations. Updated for Emacs 22.
 ;; 2007/07/13 dadams
 ;;     Info-find-node: Redefine only for Emacs < 21.
 ;; 2006/09/15 dadams
@@ -418,9 +417,9 @@
 ;;     info-menu-header: Removed :underline, because links are underlined in Emacs 22.
 ;;     No longer use display-in-minibuffer.
 ;; 2006/01/08 dadams
-;;      Added: redefinition of Info-mouse-follow-nearest-node.
+;;     Added: redefinition of Info-mouse-follow-nearest-node.
 ;; 2006/01/07 dadams
-;;      Added :link for sending bug report.
+;;     Added :link for sending bug report.
 ;; 2006/01/06 dadams
 ;;     Added defgroup Info-Plus and used it. Added :link.
 ;; 2005/12/30 dadams
@@ -439,8 +438,8 @@
 ;;                              Wrap re-search-forward in condition-case for stack overflow.
 ;; 2005/07/02 dadams
 ;;     Info-search: fit-frame. Added Emacs 22 version too.
-;;     Info-goto-emacs-command-node, Info-goto-emacs-key-command-node,
-;;       Info-merge-subnodes: Use Info-history-back for Emacs 22.
+;;     Info-goto-emacs-command-node, Info-goto-emacs-key-command-node, Info-merge-subnodes:
+;;       Use Info-history-back for Emacs 22.
 ;;     Info-mode: Added Emacs 22 version.
 ;; 2005/06/23 dadams
 ;;     Info-fontify-node: Fontify reference items if in Emacs-Lisp manual.
@@ -454,8 +453,7 @@
 ;;     info-fontify-quotations:
 ;;       1) Allow all characters inside `...'.
 ;;       2) Treat case of "..." preceded by backslashes
-;;     Info-fontify-node (for Emacs 21): Moved info-fontify-quotations
-;;       before fontification of titles.
+;;     Info-fontify-node (for Emacs 21): Moved info-fontify-quotations before fontification of titles.
 ;; 2004/10/07 dadams
 ;;     Renamed Info-resize-frame-p to Info-fit-frame-flag.
 ;; 2004/10/05 dadams
@@ -466,38 +464,33 @@
 ;;       Renamed Info-fontify-quotations-p to Info-fontify-quotations-flag.
 ;; 2004/10/03/dadams
 ;;     Major update: updated to work with Emacs 21 also.
-;;     Made require of setup-info.el mandatory.
-;;     Removed all variables and keys to setup-info.el.
-;;     Renamed to Emacs 21 names and only define for Emacs < 21:
-;;       emacs-info -> info-emacs-manual
+;;       Made require of setup-info.el mandatory.
+;;       Removed all variables and keys to setup-info.el.
+;;       Renamed to Emacs 21 names and only define for Emacs < 21: emacs-info -> info-emacs-manual.
 ;; 2004/09/28 dadams
 ;;     Removed dir-info (same as Info-directory).
-;;     Renamed to Emacs 21 names and only define for Emacs < 21:
-;;       emacs-lisp-info -> menu-bar-read-lispref
+;;     Renamed to Emacs 21 names and only define for Emacs < 21: emacs-lisp-info -> menu-bar-read-lispref
 ;; 2004/06/01 dadams
-;;     Renamed:  Info-fit-frame-p to Info-resize-frame-p
-;;               and shrink-frame-to-fit to resize-frame.
+;;     Renamed: Info-fit-frame-p to Info-resize-frame-p, shrink-frame-to-fit to resize-frame.
 ;; 2000/09/27 dadams
 ;;     1. Added: Info-fit-frame-p.
 ;;     2. Info-find-node: added shrink-frame-to-fit.
 ;; 1999/04/14 dadams
 ;;     Info-fontify-node: Fontify indexes too.
 ;; 1999/04/14 dadams
-;;     1. Added vars: info-file-face, info-menu-face, info-node-face,
-;;        info-quoted-name-face, info-string-face, info-xref-face.
-;;     2. No longer use (or define) faces: info-node, info-file, info-xref,
-;;        info-menu-5, info-quoted-name, info-string.
+;;     1. Added vars: info-file-face, info-menu-face, info-node-face, info-quoted-name-face, info-string-face,
+;;                    info-xref-face.
+;;     2. No longer use (or define) faces: info-node, info-file, info-xref, info-menu-5, info-quoted-name,
+;;                                         info-string.
 ;;     3. Info-fontify-node: Use new face variables instead of faces in #2, above.
-;;        Corrected: node names in info-node-face (was xref). Use info-menu-face
-;;        for * and menu item.
+;;        Corrected: node names in info-node-face (was xref). Use info-menu-face for * and menu item.
 ;;     4. Info-mode: Redefined like original, but: no make-face's; use face vars.
-;;        Added user options description to doc string.
+;;                   Added user options description to doc string.
 ;; 1999/04/08 dadams
 ;;     Info-goto-emacs-key-command-node: regexp-quote pp-key for Info-search.
 ;; 1999/04/07 dadams
-;;     Info-goto-emacs-key-command-node: a) messages only if interactive,
-;;         b) return nil if not found, else non-nil, c) "is undefined" -> "doc not
-;;         found", d) use display-in-minibuffer more, e) corrected error handler.
+;;     Info-goto-emacs-key-command-node: a) msgs only if interactive, b) return nil if not found, else non-nil,
+;;       c) "is undefined" -> "doc not found", d) use display-in-minibuffer more, e) corrected error handler.
 ;; 1999/04/01 dadams
 ;;     1. Added: (remove-hook 'same-window-buffer-names "*info*").
 ;;     2. Info-find-node: switch-to-buffer-other-window -> pop-to-buffer.
@@ -524,9 +517,8 @@
 ;;     2. Info-goto-emacs-command-node: Only error if interactive-p.
 ;;     3. Info-goto-emacs-key-command-node:
 ;;        a. Print key in msgs
-;;        b. If Info-goto-emacs-command-node doesn't find it, then try
-;;           Info-search. If found & interactive-p, then msg ("repeat").
-;;           Else error.
+;;        b. If Info-goto-emacs-command-node doesn't find it, then try Info-search.
+;;           If found & interactive-p, then msg ("repeat").  Else error.
 ;;     4. Info-search: Msg ("repeat") if found & interactive-p.
 ;; 1999/03/17 dadams
 ;;     1. Updated to correspond with Emacs 34.1 version.
@@ -536,11 +528,10 @@
 ;; 1996/04/26 dadams
 ;;     Put escaped newlines on long-line strings.
 ;; 1996/04/16 dadams
-;;     Added: info-file, info-quoted-name, info-string, Info-fontify-quotations-flag,
-;;            info-fontify-strings-p.  Take into account in Info-fontify-node.
+;;     Added: info-file, info-quoted-name, info-string, Info-fontify-quotations-flag, info-fontify-strings-p.
+;;     Take into account in Info-fontify-node.
 ;; 1996/02/23 dadams
-;;     1. Changed binding of Info-merge-subnodes back to `r', but now
-;;        requires user confirmation when invoked.
+;;     1. Changed binding of Info-merge-subnodes back to `r', but now requires user confirmation when invoked.
 ;;     2. Info-subtree-separator: Incorporates "\n* ".  variable-interactive prop.
 ;; 1996/02/22 dadams
 ;;     display-Info-node-subtree:
@@ -555,8 +546,7 @@
 ;;     3. Added Info-subtree-separator.
 ;;     3. display-Info-node-subtree: Info-subtree-separator. Doc. Garbage-collect.
 ;; 1996/02/22 dadams
-;;     Info-merge-subnodes: Rewrote it, adding optional args.  Renamed (defaliased) it
-;;       to display-Info-node-subtree.
+;;     Info-merge-subnodes: Rewrote, adding optional args.  Renamed (defaliased) to display-Info-node-subtree.
 ;; 1996/02/22 dadams
 ;;     Added redefinition of Info-merge-subnodes (cleanup, corrections).
 ;; 1996/02/20 dadams
@@ -1334,7 +1324,7 @@ NODE is the name of a node in the GNU Emacs or Elisp manual.
 Alternatively, NODE can have the form (MANUAL)NODE, where MANUAL is
 \"emacs\" or \"elisp\" and NODE is the name of the node in that
 manual.  Empty NODE in (MANUAL) defaults to the `Top' node."
-  (interactive (list (Info-read-node-name "Go to node: ") current-prefix-arg))
+  (interactive (list (Info-read-node-name "Go to node: " Info-current-node) current-prefix-arg))
   (require 'browse-url)
   (unless Info-current-file (error "This command must be invoked from Info"))
   (browse-url (Info-url-for-node node) (list (if flip-new-win
@@ -1347,7 +1337,7 @@ manual.  Empty NODE in (MANUAL) defaults to the `Top' node."
 Alternatively, NODE can have the form (MANUAL)NODE, where MANUAL is
 \"emacs\" or \"elisp\" and NODE is the name of the node in that
 manual.  Empty NODE in (MANUAL) defaults to the `Top' node."
-  (interactive (list (Info-read-node-name "Node: ")))
+  (interactive (list (Info-read-node-name "Node: " Info-current-node)))
   (unless Info-current-file (error "This command must be invoked from Info"))
   (let (file url)
     (string-match "\\s *\\((\\s *\\([^\t)]*\\)\\s *)\\s *\\|\\)\\(.*\\)" node)
@@ -1479,6 +1469,20 @@ manual.  Empty NODE in (MANUAL) defaults to the `Top' node."
       ad-do-it
     (when (equal "*History*" Info-current-file) (Info-up))
     (call-interactively #'Info-history-clear)))
+
+
+;; REPLACE ORIGINAL in `info.el':
+;;
+;; Added optional arg DEFAULT.
+;;
+(defun Info-read-node-name (prompt &optional default)
+  (let* ((completion-ignore-case           t)
+	 (Info-read-node-completion-table  (Info-build-node-completions))
+	 (nodename                         (completing-read
+                                            prompt 'Info-read-node-name-1 nil t nil 'Info-history default)))
+    (if (equal nodename "")
+	(or default  (Info-read-node-name prompt))
+      nodename)))
 
 
 ;; REPLACE ORIGINAL in `info.el':
