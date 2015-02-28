@@ -4,6 +4,7 @@ ElDoc works for EmacsLisp and certain other language modes that implement suppor
 
 * CEldocMode -- for C, by grepping cpp
 * CPerlMode -- for Perl
+* css-eldoc -- for css-mode, available on melpa, see https://github.com/zenozeng/css-eldoc
 * EshellElDoc -- for Eshell
 * EukleidesMode -- for Eukleides plane geometry language
 * PythonMode (the <tt>python.el</tt> one) -- but only in Emacs 22, or using an
