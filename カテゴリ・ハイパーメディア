@@ -1,0 +1,62 @@
+[[en:CategoryHypermedia]]
+
+ハイパーメディアカテゴリでの全てのページのリストするタイトルをクリック.
+
+例:
+
+* CategoryWebBrowser -- 外部ウェブブラウザと相互作用する, Emacsでブラウジング.
+* [[Anything]] -- `M-x anything-find-files'を通してURLを開く
+* BrowseURN -- EmacsでURNsを解決する.
+* EevMode -- E-スクリプト環境, *究極の*ハイパーリンクとメモシステム.
+* LangHelp -- EmacsRubyで統合されたヘルプシステム.
+* BookMarks -- ファイルでの場所を覚えておく.
+* CascadingStyleSheetMode -- CSSスタイルシート編集のための簡易モード.
+* InfoMode -- `Info'(Emacsでのハイパーテキスト文書システム)は初期のオンラインヘルプシステムの1つです. 
+* [[Synonyms]] -- ハイパーリンクされたthesaurusをブラウズする. ハイパーリンクされた文書としていかなるカンマ区切り値(CSV)ファイルを, いかなるコードを書くことなく使う.
+* HtmlAccent -- それらのHTML表現によって特殊文字を置換する.
+* HtmlMode -- EmacsでHTMLを編集する.
+** HtmlHelperMode -- さらなる機能が付くHTML編集モード.
+* TexDrive -- HTMLページでTeX式を簡単に含める.
+* [NxhtmlMode nXhtml] -- XHTMLファイルを編集する. NxmlModeを基にしたnxhtml-mode含むが, XHTML用の拡張された補完と複数メジャーモード(MuMaMo)用のサポートが付く.
+* AtomBlogger -- Bloggerの投稿を作成/編集する.
+* BbCode -- Hacks for helping write in a Web forum markup 
+* EmacsMuse --  Emacs Muse is a project-based authoring and publishing environment for Emacs. It simplifies the process of writings documents and publishing them to various output formats.
+* EmacsAtomApi -- ブログ投稿の編集と, さらにEmacsMuseでそれらを書く.
+* WikiModes -- Comparing比較する emacs-wiki.el と 見るwiki.el (which see).
+** WikiMode -- wiki.elは, wikiシンタックスでファイルを編集とナビゲートし, これらを静的HTMLページに翻訳するためのオリジナルモード.
+** OddmuseMode -- OddMuse Wikiでページを編集するためのモード, EmacsWikiを含む.
+** [[Yaoddmuse]] -- EmacsWikiを含む, OddMuse Wikiページを *非同期的に*編集もしくは投稿する.
+** [[プランナーモード]]PlannerMode (a PIM) --  day pages, ダイアリ, アポイントメント, ToDo, などでEmacsMuseを拡張する .
+** ConfluenceMode -- Confluence Wikiでページを編集するためのモード.
+** WikiRel -- Emacsで現在のモードを基にEmacsWikiページを探す
+** [[trac_editor]] -- TracのWikiのためのシンプルなエディタ
+* Wikipedia/Mediawiki
+** MediaWikiMode -- mediawiki.el, mediawikiページを編集するためのemacsモード.
+** [http://prdownloads.sourceforge.net/zhdotemacs/mediawiki.el?download mediawiki.el] -- mediawikiサーバ上のwikiファイルをオンライン編集とセーブする.
+** WikipediaAlternative
+** WikipediaMode
+** WikipediaFs
+* MultiLingualHyperTextLibraries
+* SaveAsHtml, HtmlFontify -- HTML形式でファイルをセーブする.
+* HtmlLite -- S式でHTMLページを建てる.
+* HttpServer
+** EmacsHttpd -- Emacsに組み込まれたHTTPサーバ.
+** ElServ -- Emacsに組み込まれた別のHTTPサーバ.
+** Simple-Server -- [http://github.com/eschulte/simple-server/tree/master simple-server.el], Emacsに組み込まれたさらに別のHTTPサーバ.
+** Phase -- [http://synthcode.com/emacs/ phase.el], CGIとembedded Emacs Lispをサポートする開発サーバ .
+* WebBot -- 自動テキスト置換用フレームワークもしあなたがファイルをロードとセーブするならば.
+* LinkdMode -- A system for recognizing special s-expressions in all kinds of text files,and causing these "lisp hot spots" to become interactive
+* FreexMode -- 個人用wiki on steroids -  あなたのメタデータを格納するためにsqliteデータベース付きのインターフェース, 自動的にハイパーリンクを存在しているページヘ作成し洗練されたタギングメカニズムを提供する
+* FreeMind -- org-modeと/FreeMind/マインドマッピングファイル間で変換する.
+* SpartanWiki --- マジでスパルタンな個人用wiki
+* [[オルグモード]]OrgMode --- 1つのデカいファイルかもしくは複数の相互リンクファイルのどちらかで, 個人用wikiとして使用することができます. ページは個別にHTMLへエクスポートできるかもしくはウェブサイトとして集合的に公開できます.
+* [[N3Mode]] ---  Notation 3 RDF用Emacsメジャーモード
+* WikiNavMode --- &#91;&#91;wiki-style&#93;&#93; 2重括弧されたリンクを通してファイルをナビゲートする
+* ButtonLockMode --- 正規表現を基にしたクリッカブルテキストを定義する
+
+----
+[new]
+私達はこのページをまとめそれをすこしクリーンアップすることを必要とする.
+それは本当に汚くなっていくだろう.
+私達に何ができるか提案は?
+-- XavierMaillard
