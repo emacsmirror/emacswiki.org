@@ -181,8 +181,6 @@ See also http://comments.gmane.org/gmane.emacs.tramp/6996.
 
 == Tips and tricks ==
 
-TrampAndDocker
-
 [:AdHocMultiHops]
 === The NEW (Emacs 24.3+) ad-hoc multi-hop syntax -- the replacement for multi: ===
 
@@ -1093,6 +1091,10 @@ Hi. I had trouble getting the above to work with my emacs 24.3 with this new mul
 }}}
 
 --- Stefan Eichberger
+
+=== Tramp and Docker ===
+
+See TrampAndDocker
 
 ----
 CategoryExternalUtilities
