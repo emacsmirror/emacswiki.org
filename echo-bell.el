@@ -1,7 +1,7 @@
-;;; echo-bell.el ---     -*- coding:utf-8 -*-
+;;; echo-bell.el --- Show visual bell at right in mode line.    -*- coding:utf-8 -*-
 ;; 
 ;; Filename: echo-bell.el
-;; Description: Show visual bell at right in mode line
+;; Description: Show visual bell at right in mode line.
 ;; Author: Miles Bader <miles@gnu.org>
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2009, Miles Bader, all rights reserved.
@@ -9,9 +9,9 @@
 ;; Created: Fri Feb 27 20:32:14 2009 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar  1 22:42:07 2015 (-0800)
+;; Last-Updated: Mon Mar  2 06:35:36 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 117
+;;     Update #: 119
 ;; URL: http://www.emacswiki.org/echo-bell.el
 ;; Keywords: echo area, bell, ding
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
