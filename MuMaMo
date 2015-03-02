@@ -20,8 +20,8 @@ In Emacs you normally have only one major mode per buffer.
 However especially in web development it is common that a file consists of chunks that corresponds to
 different major modes in emacs.
 
-For example a valid XHTML file may have chunks that are javascript or css.
-And a php file often consists of parts that are XHTML and other parts that are php code.
+For example a valid HTML file may have chunks that are javascript or css.
+And a php file often consists of parts that are HTML and other parts that are php code.
 mumamo can find those chunks and help Emacs to handle different major modes for each chunk.
 
 mumamo defines what I call "multi major modes" which you call just as major modes to setup the buffer
