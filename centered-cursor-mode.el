@@ -390,6 +390,7 @@ centered-cursor-mode is called interactively."
     (ccm-position-cursor)))
 
 ;;(defalias 'ccm 'centered-cursor-mode)
+;;;###autoload
 (define-minor-mode centered-cursor-mode
   "Makes the cursor stay vertically in a defined
 position (usually centered)."
