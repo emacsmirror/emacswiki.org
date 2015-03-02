@@ -8,9 +8,9 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 11:14:36 2015 (-0800)
+;; Last-Updated: Mon Mar  2 11:20:11 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 788
+;;     Update #: 793
 ;; URL: http://www.emacswiki.org/setup.el
 ;; Keywords: internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -51,6 +51,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/03/02 dadams
+;;     Turn on echo-bell-mode, if defined.
 ;; 2014/11/28 dadams
 ;;     Set cursor-in-non-selected-windows to box, by default.
 ;; 2014/01/26 dadams
@@ -239,6 +241,8 @@
 (when (fboundp 'size-indication-mode) (size-indication-mode 1)) ; Emacs 21 and 22.
 
 (eval-after-load "icomplete+" '(icomplete-mode 99))
+
+(when (fboundp 'echo-bell-mode) (echo-bell-mode 1)) ; Turn on visual bell in echo area.
 
 ;; Hide passwords
 (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
