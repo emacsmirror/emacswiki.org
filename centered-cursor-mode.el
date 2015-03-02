@@ -10,7 +10,7 @@
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/centered-cursor-mode.el
 ;; Compatibility: tested with GNU Emacs 23.0, 24
 ;; Version: 0.5.3
-;; Last-Updated: 2015-01-03
+;; Last-Updated: 2015-03-01
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@
 ;; - more bugs?
 
 ;;; Change Log:
-;; 2015-01-03  andre-r
+;; 2015-03-01  andre-r
 ;;   * fixed bug where Emacs without X support (emacs-nox) didn't find mouse-wheel-mode
 ;; 2009-08-31  andre-r
 ;;   * replaced window-body-height with window-text-height
