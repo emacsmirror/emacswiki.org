@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  4 16:52:58 2015 (-0800)
+;; Last-Updated: Mon Mar  2 11:02:05 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 3035
+;;     Update #: 3038
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -84,6 +84,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2015/03/02 dadams
+;;     Autoload echo-bell.el.
 ;; 2014/05/27 dadams
 ;;     Soft-require subr+.el.
 ;; 2014/05/14 dadams
@@ -768,6 +770,9 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 
 (when (> emacs-major-version 20)
   (autoload 'column-marker-1 "column-marker" "Highlight a column." t))
+
+(when (> emacs-major-version 21)
+  (autoload 'echo-bell-mode "echo-bell" "Indicate bell visually in the echo area." t))
 
 (when (fboundp 'define-minor-mode) (require 'highlight-symbol nil t))
 
