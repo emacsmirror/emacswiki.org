@@ -55,3 +55,13 @@ Is this project dead?
 
 -- writingnotes 2015-02-22 20:01 UTC
 
+
+----
+
+I've just tried this now. I have deft.el in a folder called lisp below. Adding the folder to the load path and then adding the Add command below gets it working.
+
+(add-to-list 'load-path "~/.emacs.d/lisp")
+Add (load "deft.el")
+
+-- KSuresh 2015-03-02 15:20 UTC
+
