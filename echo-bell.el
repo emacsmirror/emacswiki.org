@@ -9,9 +9,9 @@
 ;; Created: Fri Feb 27 20:32:14 2009 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb 28 10:45:03 2015 (-0800)
+;; Last-Updated: Sun Mar  1 22:42:07 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 115
+;;     Update #: 117
 ;; URL: http://www.emacswiki.org/echo-bell.el
 ;; Keywords: echo area, bell, ding
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
@@ -40,6 +40,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2015/03/01 dadams
+;;     Added autoload cookie for echo-bell-mode.
 ;; 2015/02/28 dadams
 ;;     Added: echo-bell-mode, echo-bell-update.
 ;;     Added :type (using color widget) and :set to defcustoms (use echo-bell-update).
@@ -110,6 +112,7 @@ You can use this function as the value of `ring-bell-function'."
   (unless (equal echo-bell-string echo-bell-cached-string) (echo-bell-update))
   (message echo-bell-propertized-string) (sit-for echo-bell-delay) (message ""))
 
+;;;###autoload
 (define-minor-mode echo-bell-mode
     "Indicate bell visually in the echo area.
 Turning the mode off resets `ring-bell-function' to nil (not to its
