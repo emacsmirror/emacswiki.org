@@ -8,9 +8,9 @@
 ;; Keywords: convenience
 
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/centered-cursor-mode.el
-;; Compatibility: only tested with GNU Emacs 23.0
-;; Version: 0.5.2
-;; Last-Updated: 2009-08-31
+;; Compatibility: tested with GNU Emacs 23.0, 24
+;; Version: 0.5.3
+;; Last-Updated: 2015-01-03
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -56,6 +56,8 @@
 ;; - more bugs?
 
 ;;; Change Log:
+;; 2015-01-03  andre-r
+;;   * fixed bug where Emacs without X support (emacs-nox) didn't find mouse-wheel-mode
 ;; 2009-08-31  andre-r
 ;;   * replaced window-body-height with window-text-height
 ;;     (partially visible lines are not counted in window-text-height)
@@ -94,7 +96,10 @@
 ;; This file is *NOT* part of GNU Emacs.
 
 ;;; Code:
- 
+
+
+(require 'mouse-wheel-mode nil 'noerror)
+
 (defgroup centered-cursor nil
   "Makes the cursor stay vertically in a defined position (usually centered).
 Instead the cursor the text moves around the cursor."
@@ -176,9 +181,9 @@ to successively recenter to")
   (let ((ccm-map (make-sparse-keymap)))
     (define-key ccm-map [(control meta -)]  'ccm-vpos-up)
     (define-key ccm-map [(control meta +)]  'ccm-vpos-down)
-    (define-key ccm-map [(control meta =)]  'ccm-vpos-down)
+    (Define-key ccm-map [(control meta =)]  'ccm-vpos-down)
     (define-key ccm-map [(control meta ?0)] 'ccm-vpos-recenter)
-    (when mouse-wheel-mode
+    (when (and (boundp 'mouse-wheel-mode) mouse-wheel-mode)
       (mapc (lambda (key)
               (define-key ccm-map key 'ccm-mwheel-scroll))
             (list (vector mouse-wheel-up-event)
@@ -194,7 +199,7 @@ to successively recenter to")
    ccm-map)
   "Keymap used in centered-cursor-mode.")
 
- 
+
 (defun ccm-mwheel-scroll (event)
   "Very similar to `mwheel-scroll', but does not use `scroll-down'
 and `scroll-up' but `previous-line' and `next-line', that is, the
@@ -251,7 +256,7 @@ the movement appears as page up."
                         next-screen-context-lines))))
     (forward-line amt)))
 
- 
+
 (defun ccm-vpos-down (arg)
   "Adjust the value of the screen line (where the cursor stays) by arg.
 Negative values for arg are possible. Just the variable ccm-vpos
@@ -385,7 +390,6 @@ centered-cursor-mode is called interactively."
     (ccm-position-cursor)))
 
 ;;(defalias 'ccm 'centered-cursor-mode)
-;;;###autoload
 (define-minor-mode centered-cursor-mode
   "Makes the cursor stay vertically in a defined
 position (usually centered)."
@@ -414,9 +418,9 @@ position (usually centered)."
 ;; (info "(elisp)Hooks")
 ;; (info "(elisp)Customization")
 ;; (find-function 'mwheel-scroll)
- 
+
 ;; Local Variables:
 ;; coding: utf-8
 ;; End:
- 
+
 ;;; centered-cursor-mode.el ends here
