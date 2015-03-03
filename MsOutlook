@@ -10,7 +10,7 @@ Now enjoy the world of Freedom.
 
 BTW, you can use a mail classifying software Popfile (http://getpopfile.org/) to classify mails because Popfile support IMAP and POP3.
 
-== Use Emacs as the editor for Microsoft Outlook email ==
+== Use Emacs as the editor for Outlook==
 
 Basically you grab the text of an Outlook email/reply/forwarded message/etc., use Emacs to edit the reply or create a new message, and return the result to the Outlook editing window.
 
