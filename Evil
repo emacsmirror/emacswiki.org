@@ -2,7 +2,7 @@
 
 '''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to [[Vimpulse]] and [VimMode vim-mode]. Its [http://gitorious.org/evil/pages/Home home page].
 
-Current stable version: **1.0.8**
+Current stable version: **1.0.9**
 
 There's a [http://youtu.be/Uz_0i27wYbg four-minute Evil demo] on !YouTube, created by Bailey Ling. The captions in the corner of the frame show the keystrokes which Bailey is entering.
 
@@ -185,6 +185,15 @@ To continue the pattern of translating "c<char>" to "C-<char>":
                  (make-conditional-key-translation (kbd (format "c%c" ascii-code-i))
                                                    (kbd (format "C-%c" ascii-code-i))
                                                    'my-translate-keys-p)))
+
+== Create new text objects==
+See Gordon Gustafson's answer at http://stackoverflow.com/questions/18102004/emacs-evil-mode-how-to-create-a-new-text-object-to-select-words-with-any-non-sp 
+
+Please note there are two ways to define the text objects.
+
+The latest/updated way is for DEV version.
+
+The old/original way is for STABLE version 1.0.9-
 
 == Defining your own escape ==
 
