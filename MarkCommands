@@ -313,6 +313,11 @@ mark-tools.el provides a simple table for browsing the global and local mark-rin
 
 Helm has M-x helm-mark-ring
 
+== Reimplementation ==
+
+There is no (easy?) way to just keep history of all the places where you've been in Emacs, and navigate back and forward. 
+
+https://github.com/boyw165/history is an attempt to fix that.
 
 ----
 CategoryEditing
