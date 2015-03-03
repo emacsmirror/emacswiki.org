@@ -1,4 +1,4 @@
-== use Gnus or any mail client to fetch mail from Microsoft Exchange server ==
+== Fetch mail from Exchange server ==
 
 Just install Davmail (http://davmail.sourceforge.net/). It's a mail agent converting exchange server into pop3 or imap server.
 
