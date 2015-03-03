@@ -79,3 +79,10 @@ The simplest approach, IMO, is to just `require' a library.  But you can also ad
 
 -- DrewAdams 2014-11-05 19:14 UTC
 
+
+----
+
+There seems to be a bug that affects describe-package. The version check includes (> emacs-minor-version 24), but there is no emacs 24.24 yet. Because of this, the second describe-package gets evaluated for me (on emacs 24.4) but it doesn't work. Evaluating the first definition instead works fine.
+
+-- Anonymous 2015-03-03 16:31 UTC
+
