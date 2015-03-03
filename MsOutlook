@@ -1,4 +1,4 @@
-You can use Gnus or any mail client to fetch mail from Microsoft Exchange server.
+== use Gnus or any mail client to fetch mail from Microsoft Exchange server ==
 
 Just install Davmail (http://davmail.sourceforge.net/). It's a mail agent converting exchange server into pop3 or imap server.
 
@@ -10,9 +10,9 @@ Now enjoy the world of Freedom.
 
 BTW, you can use a mail classifying software Popfile (http://getpopfile.org/) to classify mails because Popfile support IMAP and POP3.
 
- -- Chen Bin
+== Use Emacs as the editor for Microsoft Outlook email ==
 
-Yes, you can use Emacs as the editor for Microsoft Outlook email. Basically you grab the text of an Outlook email/reply/forwarded message/etc., use Emacs to edit the reply or create a new message, and return the result to the Outlook editing window.
+Basically you grab the text of an Outlook email/reply/forwarded message/etc., use Emacs to edit the reply or create a new message, and return the result to the Outlook editing window.
 
 You might be interested in doing the reverse : use Outlook as the "mail server" for Emacs : MessageOutlook
 
