@@ -1,16 +1,14 @@
-In most cases, you can use Emacs Gnus or any mail client to get email from Microsoft Exchange server.
+You can use Gnus or any mail client to fetch mail from Microsoft Exchange server.
 
-All you need to do is to install davmail (http://davmail.sourceforge.net/) which is a mail agent turn to outlook web url into pop3 or imap server.
+Just install Davmail (http://davmail.sourceforge.net/). It's a mail agent converting exchange server into pop3 or imap server.
 
-It's really easy to setup. The only minor issue is that Gnus *MIGHT* be better to use POP3 server of davmail.  There was a minor issue, see http://blog.binchen.org/posts/how-to-get-email-from-exchange-server-without-outlook.html
+The only issue is that Davmail POP3 server *MIGHT* be better for Gnus.  See http://blog.binchen.org/posts/how-to-get-email-from-exchange-server-without-outlook.html for the details. But in other environments, Gnus+Imap+davmail were fine.
 
-But in latest cases, I use Gnus+Imap+davmail without any problem. 
-
-In rare cases, your company's exchange server might modify the default EWS url . Then you need a software called EWSEdtor (https://ewseditor.codeplex.com/) to find the url. Then manually set up davmail with that url.
+Sometimes the default EWS url of server is modified. Then you need EWSEdtor (https://ewseditor.codeplex.com/) to find the url and set it up in Davmail
 
 Now enjoy the world of Freedom. 
 
-BTW, you can use a mail classifying software Popfile (http://getpopfile.org/) to classify your emails.
+BTW, you can use a mail classifying software Popfile (http://getpopfile.org/) to classify mails because Popfile support IMAP and POP3.
 
  -- Chen Bin
 
