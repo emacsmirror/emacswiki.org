@@ -1,8 +1,8 @@
 == Fetch mail from Exchange server ==
 
-Just install Davmail (http://davmail.sourceforge.net/). It's a mail agent converting exchange server into pop3 or imap server.
+Just install Davmail (http://davmail.sourceforge.net/). It's a mail agent converting Exchange server into POP3 and IMAP server.
 
-The only issue is that Davmail POP3 server *MIGHT* be better for Gnus.  See http://blog.binchen.org/posts/how-to-get-email-from-exchange-server-without-outlook.html for the details. But in other environments, Gnus+Imap+davmail were fine.
+The only issue is that Davmail POP3 server *MIGHT* be better for Gnus.  See http://blog.binchen.org/posts/how-to-get-email-from-exchange-server-without-outlook.html for the details. I got the issue only in one company. I cannot reproduce it in other companies. Anyway, you can test IMAP/POP3 in one min at the beginning. So it's not a big deal.
 
 Sometimes the default EWS url of server is modified. Then you need EWSEdtor (https://ewseditor.codeplex.com/) to find the url and set it up in Davmail
 
