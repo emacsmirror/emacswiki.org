@@ -23,7 +23,7 @@ Enable it like so:
    (add-hook 'python-mode-hook 'guess-style-guess-tabs-mode)
    (add-hook 'python-mode-hook (lambda ()
                                   (when indent-tabs-mode
-                                    (guess-style-guess-tab-width)))
+                                    (guess-style-guess-tab-width))))
 
 If you add guess-style-guess-tab-width unconditionally, you will get an error if indent-tabs-mode is not set.
 
