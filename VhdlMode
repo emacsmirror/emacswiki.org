@@ -2,11 +2,11 @@ vhdl-mode is an emacs mode for editing VHDL code.
 
 vhdl-mode is part of GNU Emacs.
 
-[http://www.iis.ee.ethz.ch/~zimmi/emacs/vhdl-mode.html VHDL Mode Home Page]
+The maintenance of the Emacs VHDL Mode is at this website: [http://www.iis.ee.ethz.ch/~zimmi/emacs/vhdl-mode.html http://www.iis.ee.ethz.ch/~zimmi/emacs/vhdl-mode.html]
 
 ==Installation==
 
-GNU Emacs comes preinstalled with vhdl-mode. If you want to install vhdl-mode from the VHDL Mode Home Page see the file INSTALL in the vhdl-mode directory.
+GNU Emacs comes preinstalled with vhdl-mode. However, it might be not the latest version. If you want to install another version of vhdl-mode, download it from [http://www.iis.ee.ethz.ch/~zimmi/emacs/vhdl-mode.html Emacs VHDL Mode Maintenance Page] and see the file INSTALL in the vhdl-mode directory.
 
 ==Usage==
 
