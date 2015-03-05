@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Feb 22 12:10:21 2015 (-0800)
+;; Last-Updated: Wed Mar  4 20:37:58 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 8648
+;;     Update #: 8679
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -440,6 +440,7 @@
 ;;  User options defined here:
 ;;
 ;;    `diredp-auto-focus-frame-for-thumbnail-tooltip-flag',
+;;    `diredp-dwim-any-frame-flag' (Emacs 22+),
 ;;    `diredp-image-preview-in-tooltip', `diff-switches',
 ;;    `diredp-hide-details-initially-flag' (Emacs 24.4+),
 ;;    `diredp-highlight-autofiles-mode',
@@ -520,6 +521,7 @@
 ;;                              not flagged, files will be deleted.
 ;;  `dired-do-flagged-delete' - Display message to warn that flagged,
 ;;                              not marked, files will be deleted.
+;;  `dired-dwim-target-directory' - Uses `diredp-dwim-any-frame-flag'.
 ;;  `dired-find-file'         - Allow `.' and `..' (Emacs 20 only).
 ;;  `dired-get-filename'      - Test `./' and `../' (like `.', `..').
 ;;  `dired-goto-file'         - Fix Emacs bug #7126.
@@ -594,6 +596,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/03/04 dadams
+;;     Added: diredp-dwim-any-frame-flag, (redefinition of) dired-dwim-target-directory.
 ;; 2015/02/22 dadams
 ;;     diredp-bookmark: Corrected for use without Bookmark+ - bookmark-store signature.
 ;;                      Pass correct value to bmkp-autofile-set for its MSG-P arg.
@@ -1407,7 +1411,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar bmkp-copied-tags)                         ; In `bookmark+-1.el'
 (defvar bmkp-current-bookmark-file)               ; In `bookmark+-1.el'
 (defvar bookmark-default-file)                    ; In `bookmark.el'
-(defvar dired-details-state)		          ; In `dired-details+.el'
+(defvar dired-details-state)                      ; In `dired-details+.el'
 (defvar dired-keep-marker-hardlink)               ; In `dired-x.el'
 (defvar dired-switches-alist)                     ; In `dired.el'
 (defvar dired-subdir-switches)                    ; In `dired.el'
@@ -1421,7 +1425,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar filesets-data)                            ; In `filesets.el'
 (defvar grep-use-null-device)                     ; In `grep.el'
 (defvar icicle-file-sort)                         ; In `icicles-opt.el'
-(defvar icicle-ignored-directories)	          ; In `icicles-opt.el'
+(defvar icicle-ignored-directories)               ; In `icicles-opt.el'
 (defvar icicle-sort-comparer)                     ; In `icicles-opt.el'
 (defvar image-dired-line-up-method)               ; In `image-dired.el'
 (defvar image-dired-main-image-directory)         ; In `image-dired.el'
@@ -1454,6 +1458,14 @@ the input focus (e.g., by clicking its title bar).
 
 This option has no effect if `diredp-image-preview-in-tooltip' is nil.
 It also has no effect for Emacs versions prior to Emacs 22."
+  :type 'boolean :group 'Dired-Plus)
+
+;;;###autoload
+(defcustom diredp-dwim-any-frame-flag pop-up-frames
+  "*Non-nil means the target directory can be in a window in another frame.
+Only visible frames are considered.
+This is used by ``dired-dwim-target-directory'.
+This option has no effect for Emacs versions before Emacs 22."
   :type 'boolean :group 'Dired-Plus)
 
 ;;;###autoload
@@ -1915,6 +1927,27 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
                             arg)
       (dired-move-to-filename)
       (message "Redisplaying...done"))))
+
+
+;; REPLACE ORIGINAL in `dired.el'.
+;;
+(when (fboundp 'get-window-with-predicate) ; Emacs 22+
+  (defun dired-dwim-target-directory ()
+    "Guess a target directory to use for Dired.
+If there is a Dired buffer displayed in another window, use its
+current subdir, else use current subdir of this Dired buffer."
+    (let ((this-dir  (and (eq major-mode 'dired-mode)  (dired-current-directory))))
+      ;; Non-dired buffer may want to profit from this function, e.g. `vm-uudecode'.
+      (if dired-dwim-target
+          (let* ((other-win  (get-window-with-predicate (lambda (window)
+                                                          (with-current-buffer (window-buffer window)
+                                                            (eq major-mode 'dired-mode)))
+                                                        nil
+                                                        (and diredp-dwim-any-frame-flag  'visible)))
+                 (other-dir  (and other-win  (with-current-buffer (window-buffer other-win)
+                                               (and (eq major-mode 'dired-mode) (dired-current-directory))))))
+            (or other-dir  this-dir))
+        this-dir))))
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
