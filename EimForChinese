@@ -92,4 +92,13 @@ auto-complete包里面有个popup.el是用Overlay来实现popup菜单的，这�
 --Shaowei.Wang
 
 ----
+使用 emacs-eim 拼音输入法的用户，可以试一试： Chinese-pyim
+
+    https://github.com/tumashu/chinese-pyim
+
+chinese-pyim 是一个彻彻底底的拼音输入法，这个输入法的代码源自 chinese-eim， 但做了极大的简化，所有与拼音输入无关的代码都清除了。
+
+--Feng Shu
+
+----
 CategoryInternationalization WritingChinese
