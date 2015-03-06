@@ -1,0 +1,9 @@
+I converted excel file into .prn extension (delimited). 
+Now, I go to emacs using appropriate command (cd for directory, ls for list).
+I use:
+emacs readerall Filename.prn 
+to open the file
+Now, the file opens with all the data. I want to edit it but where to go and how to go.
+
+-- Anonymous 2015-03-06 06:29 UTC
+
