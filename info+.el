@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar  6 11:17:51 2015 (-0800)
+;; Last-Updated: Fri Mar  6 11:48:47 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 5451
+;;     Update #: 5458
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -60,7 +60,7 @@
 ;;
 ;;    `Info-breadcrumbs-in-mode-line-mode',
 ;;    `Info-follow-nearest-node-new-window', `Info-goto-node-web',
-;;    `Info-history-clear', `Info-merge-subnodes',
+;;    `Info-history-clear', `info-manual', `Info-merge-subnodes',
 ;;    `Info-mouse-follow-nearest-node-new-window',
 ;;    `Info-save-current-node', `Info-set-breadcrumbs-depth',
 ;;    `Info-toggle-fontify-angle-bracketed',
@@ -187,6 +187,12 @@
 ;;    `TAB'            `Info-next-reference'
 ;;    `ESC TAB'        `Info-prev-reference'
 ;;
+;;  The global binding `C-h r' is changed from `info-emacs-manual' to
+;;  `info-manual', which behaves the same except if you use a prefix
+;;  arg.  With a prefix arg you can open any manual, choosing eithe
+;;  from all installed manuals or from those that are already shown in
+;;  Info buffers.
+;;
 ;;  The following behavior defined in `info.el' has been changed:
 ;;   "*info" has been removed from `same-window-buffer-names', so that
 ;;   a separate window can be used if you so choose.
@@ -227,6 +233,7 @@
 ;;; Change Log:
 ;;
 ;; 2015/03/06 dadams
+;;     Added: info-manual.  Bound it globally to C-h r.
 ;;     Info-fontify-node (Emacs 24.1.N+): Updated per Emacs 24.4: allow Info-fontify-maximum-menu-size to be t.
 ;;     info-display-manual: Updated for Emacs 25: use info--manual-names with prefix arg.
 ;; 2015/02/28 dadams
@@ -1361,6 +1368,19 @@ manual.  Empty NODE in (MANUAL) defaults to the `Top' node."
     (message "URL: %s" url)
     url))
 
+;;;###autoload (autoload 'info-manual "info+")
+(defun info-manual (arg)                ; Bound to `C-h r' globally (replaces `info-emacs-manual').
+  "Display a manual in Info mode - by default, the Emacs manual.
+With a prefix arg, prompt for the manual name.
+With a numeric prefix arg, only currently visited manuals are
+candidates."
+  (interactive "P")
+  (if arg
+      (let ((current-prefix-arg  (numberp arg))) (call-interactively #'info-display-manual))
+    (info "emacs")))
+
+(global-set-key [remap info-emacs-manual] 'info-manual) ; `C-h r'
+    
 
 
 (easy-menu-define
