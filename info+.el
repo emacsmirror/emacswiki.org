@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb 28 08:47:36 2015 (-0800)
+;; Last-Updated: Fri Mar  6 10:42:53 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 5439
+;;     Update #: 5444
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -226,6 +226,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/03/06 dadams
+;;     Info-fontify-node (Emacs 24.1.N+): Updated per Emacs 24.4: allow Info-fontify-maximum-menu-size to be t.
 ;; 2015/02/28 dadams
 ;;     Added: redefinition of Info-read-node-name.
 ;;     Info-goto-node-web, Info-url-for-node: Use Info-current-node as default.
@@ -2875,7 +2877,8 @@ to search again for `%s'.")
               (and Info-fontify-visited-nodes
                    ;; Don't take time to refontify visited nodes in huge nodes
                    Info-fontify-maximum-menu-size
-                   (< (- (point-max) (point-min)) Info-fontify-maximum-menu-size)))
+                   (or (eq t Info-fontify-maximum-menu-size)
+                       (< (- (point-max) (point-min)) Info-fontify-maximum-menu-size))))
              rbeg rend)
 
         ;; Fontify header line
@@ -3097,7 +3100,8 @@ to search again for `%s'.")
         (when (and (or not-fontified-p  fontify-visited-p)
                    (search-forward "\n* Menu:" nil t)
                    Info-fontify-maximum-menu-size ; Don't take time to annotate huge menus
-                   (< (- (point-max) (point)) Info-fontify-maximum-menu-size))
+                   (or (eq t Info-fontify-maximum-menu-size)
+                       (< (- (point-max) (point)) Info-fontify-maximum-menu-size)))
           (let ((n  0)
                 cont)
             (while (re-search-forward (concat "^\\* Menu:\\|\\(?:^\\* +\\(" Info-menu-entry-name-re "\\)\\(:"
