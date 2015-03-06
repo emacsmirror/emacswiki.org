@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar  6 10:42:53 2015 (-0800)
+;; Last-Updated: Fri Mar  6 11:17:51 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 5444
+;;     Update #: 5451
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -228,6 +228,7 @@
 ;;
 ;; 2015/03/06 dadams
 ;;     Info-fontify-node (Emacs 24.1.N+): Updated per Emacs 24.4: allow Info-fontify-maximum-menu-size to be t.
+;;     info-display-manual: Updated for Emacs 25: use info--manual-names with prefix arg.
 ;; 2015/02/28 dadams
 ;;     Added: redefinition of Info-read-node-name.
 ;;     Info-goto-node-web, Info-url-for-node: Use Info-current-node as default.
@@ -3677,27 +3678,35 @@ These are all of the current Info Mode bindings:
 
 ;; REPLACES ORIGINAL in `info.el':
 ;;
-;; Use completion for inputting the manual name.
+;; Use completion for inputting the manual name, for all Emacs versions 23+.
 ;;
 (defun info-display-manual (manual)
-  "Go to Info buffer that displays MANUAL, creating it if none already exists."
-  ;;  (interactive "sManual name: ")
+  "Display an Info buffer displaying MANUAL.
+If there is an existing Info buffer for MANUAL, display it.
+Otherwise, visit the manual in a new Info buffer.
+
+With a prefix arg (Emacs 24.4+), completion candidates are limited to
+currently visited manuals."
   (interactive
-   (let ((manuals  ()))
-     (condition-case nil
-         (with-temp-buffer
-           (Info-mode)
-           (Info-directory)
-           (goto-char (point-min))
-           (re-search-forward "\\* Menu: *\n" nil t)
-           (let (manual)
-             (while (re-search-forward "\\*.*: *(\\([^)]+\\))" nil t)
-               ;; `add-to-list' ensures no dups in `manuals', so the `dolist' runs faster.
-               (setq manual  (match-string 1))
-               (set-text-properties 0 (length manual) nil manual)
-               (add-to-list 'manuals (list manual)))))
-       (error nil))
-     (list (completing-read "Display manual: " manuals))))
+   (let ((manuals  (and (fboundp 'info--manual-names)
+                        (condition-case nil
+                            (info--manual-names current-prefix-arg) ; Arg was added in Emacs 25.
+                          (error nil)))))
+     (unless manuals
+       (condition-case nil
+           (with-temp-buffer
+             (Info-mode)
+             (Info-directory)
+             (goto-char (point-min))
+             (re-search-forward "\\* Menu: *\n" nil t)
+             (let (manual)
+               (while (re-search-forward "\\*.*: *(\\([^)]+\\))" nil t)
+                 ;; `add-to-list' ensures no dups in `manuals', so the `dolist' runs faster.
+                 (setq manual  (match-string 1))
+                 (set-text-properties 0 (length manual) nil manual)
+                 (add-to-list 'manuals (list manual)))))
+         (error nil)))
+     (list (completing-read "Display manual: " manuals nil t))))
   (let ((blist             (buffer-list))
         (manual-re         (concat "\\(/\\|\\`\\)" manual "\\(\\.\\|\\'\\)"))
         (case-fold-search  t)
