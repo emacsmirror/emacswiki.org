@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Mar  4 20:37:58 2015 (-0800)
+;; Last-Updated: Fri Mar  6 14:15:29 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 8679
+;;     Update #: 8697
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -340,8 +340,8 @@
 ;;    `diredp-do-bookmark-recursive', `diredp-do-chmod-recursive',
 ;;    `diredp-do-chgrp-recursive', `diredp-do-chown-recursive',
 ;;    `diredp-do-copy-recursive', `diredp-do-decrypt-recursive',
-;;    `diredp-do-display-images' (Emacs 22+),
-;;    `diredp-do-encrypt-recursive',
+;;    `diredp-do-delete-recursive', `diredp-do-display-images' (Emacs
+;;    22+), `diredp-do-encrypt-recursive',
 ;;    `diredp-do-find-marked-files-recursive', `diredp-do-grep',
 ;;    `diredp-do-grep-recursive', `diredp-do-hardlink-recursive',
 ;;    `diredp-do-isearch-recursive',
@@ -596,6 +596,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/03/06 dadams
+;;     Added: diredp-do-delete-recursive.  Bound to M-+ D.  Added to diredp-menu-bar-recursive-marked-menu.
 ;; 2015/03/04 dadams
 ;;     Added: diredp-dwim-any-frame-flag, (redefinition of) dired-dwim-target-directory.
 ;; 2015/02/22 dadams
@@ -1411,8 +1413,10 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar bmkp-copied-tags)                         ; In `bookmark+-1.el'
 (defvar bmkp-current-bookmark-file)               ; In `bookmark+-1.el'
 (defvar bookmark-default-file)                    ; In `bookmark.el'
+(defvar delete-by-moving-to-trash)                ; Built-in, Emacs 23+
 (defvar dired-details-state)                      ; In `dired-details+.el'
 (defvar dired-keep-marker-hardlink)               ; In `dired-x.el'
+(defvar dired-recursive-deletes)                  ; In `dired.el', Emacs 22+
 (defvar dired-switches-alist)                     ; In `dired.el'
 (defvar dired-subdir-switches)                    ; In `dired.el'
 (defvar dired-touch-program)                      ; Emacs 22+
@@ -3139,6 +3143,11 @@ If no one is selected, symmetric encryption will be performed.  "
       :help "Print the marked files, including those in marked subdirs"))
 (define-key diredp-menu-bar-recursive-marked-menu [separator-misc] '("--")) ; ----------------
 
+(define-key diredp-menu-bar-recursive-marked-menu [diredp-do-delete-recursive]
+    '(menu-item "Delete Marked (not Flagged)" diredp-do-delete-recursive
+      :help "Delete marked (not flagged) files, including in marked subdirs"))
+(define-key diredp-menu-bar-recursive-marked-menu [separator-delete] '("--")) ; ----------------
+
 (define-key diredp-menu-bar-recursive-marked-menu [diredp-do-hardlink-recursive]
   '(menu-item "Hardlink to..." diredp-do-hardlink-recursive
     :help "Make hard links for marked files, including those in marked subdirs"))
@@ -3738,6 +3747,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-recursive-map [(control meta shift ?b)]                             ; `C-M-B' (aka `C-M-S-b')
   'diredp-do-bookmark-in-bookmark-file-recursive)
 (define-key diredp-recursive-map "C"           'diredp-do-copy-recursive)               ; `C'
+(define-key diredp-recursive-map "D"           'diredp-do-delete-recursive)             ; `D'
 (define-key diredp-recursive-map "F"           'diredp-do-find-marked-files-recursive)  ; `F'
 (when (fboundp 'diredp-do-chgrp-recursive)
   (define-key diredp-recursive-map "G"         'diredp-do-chgrp-recursive))             ; `G'
@@ -5638,6 +5648,60 @@ Dired buffer and all subdirs, recursively."
   (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
   (diredp-create-files-non-directory-recursive
    #'dired-rename-file #'downcase "Rename to lowercase:" ignore-marks-p))
+
+;;;###autoload
+(defun diredp-do-delete-recursive (arg) ; Bound to `M-+ D'
+  "Delete all marked (or next ARG) files.
+Like `dired-do-delete' but act recursively on subdirs.
+
+The files to be deleted are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way."
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (unless arg
+    (ding)
+    (message "NOTE: Deletion of files marked `%c' (not those flagged `%c')."
+             dired-marker-char dired-del-marker))
+  (let* ((files     (diredp-get-files nil nil nil nil 'ONLY-MARKED-P))
+         (count     (length files))
+         (trashing  (and (boundp 'delete-by-moving-to-trash)  delete-by-moving-to-trash))
+         (succ      0))
+
+    (if (dired-mark-pop-up
+         " *Deletions*" 'delete files dired-deletion-confirmer
+         (format "%s %s " (if trashing "Trash" "Delete") (dired-mark-prompt arg files)))
+        (let ((progress-reporter  (and (fboundp 'make-progress-reporter)
+                                       (make-progress-reporter (if trashing "Trashing..." "Deleting...")
+                                                               succ
+                                                               count)))
+              (failures           ()))
+          (unless progress-reporter (message "Deleting..."))
+          (dolist (file  files)
+            (condition-case err
+                (progn (if (fboundp 'dired-delete-file) ; Emacs 22+
+                           (dired-delete-file file dired-recursive-deletes trashing)
+                         ;; This test is equivalent to (and (file-directory-p file) (not (file-symlink-p file)))
+                         ;; but more efficient.
+                         (if (eq t (car (file-attributes file))) (delete-directory file) (delete-file file)))
+                       (setq succ  (1+ succ))
+                       (when (fboundp 'progress-reporter-update)
+                         (progress-reporter-update progress-reporter succ)))
+              (error (dired-log "%s\n" err) ; Catch errors from failed deletions.
+                     (setq failures  (cons file failures))))
+            (dired-clean-up-after-deletion file))
+          (if failures
+              (dired-log-summary (format "%d of %d deletion%s failed"
+                                         (length failures) count (dired-plural-s count))
+                                 failures)
+            (if (fboundp 'progress-reporter-done)
+                (progress-reporter-done progress-reporter)
+              (message "Deleting...done")))
+          (let ((sdirs  (diredp-get-subdirs)))
+            (dolist (dir  (cons default-directory sdirs))
+              (when (dired-buffers-for-dir (expand-file-name dir)) ; Dirs with Dired buffers only.
+                (with-current-buffer (car (dired-buffers-for-dir (expand-file-name dir)))
+                  (dired-revert))))))
+      (message "OK. No deletions performed"))))
 
 ;;;###autoload
 (defun diredp-do-move-recursive (&optional ignore-marks-p) ; Bound to `M-+ R'
