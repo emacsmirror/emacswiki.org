@@ -1513,7 +1513,9 @@ the interesting ones. For example, I use
 and this means that when a new followup arrives in a thread, I see the
 previous messages from that thread, too. Of course, from time to time, I
 want to look at old messages and use C-u <RET> or C-u M-g, as described
-above.
+above. (Be aware that putting fetch-old-headers to t will take an long time to download 
+[http://www.emacswiki.org/emacs/ColinBaxter ColinBaxter])
+
 
 
 === Archiving Mail ===
