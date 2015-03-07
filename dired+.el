@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar  6 19:33:20 2015 (-0800)
+;; Last-Updated: Fri Mar  6 20:16:50 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 8727
+;;     Update #: 8740
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -5621,22 +5621,34 @@ subdirectories are handled recursively in the same way."
     (message "%s" string)))
 
 ;;;###autoload
-(defun diredp-mark-files-regexp-recursive (regexp &optional marker-char) ; Bound to `M-+ % m'
+(defun diredp-mark-files-regexp-recursive (regexp &optional marker-char ignore-marks-p) ; Bound to `M-+ % m'
   "Mark all files matching REGEXP, including those in marked subdirs.
-Like `dired-mark-files-regexp' but act recursively on subdirs.
-A prefix argument means to unmark the files instead.
-`.' and `..' are never marked.
+Like `dired-mark-files-regexp' but act recursively on marked subdirs.
+Directories `.' and `..' are never marked.
+
+A non-negative prefix arg means to UNmark the files instead.
+
+A non-positive prefix arg means to ignore subdir markings and act
+instead on ALL subdirs.  That is, mark all matching files in this
+directory and all descendent directories.
 
 REGEXP is an Emacs regexp, not a shell wildcard.  Thus, use `\\.o$' for
 object files--just `.o' will mark more than you might think.
 
-REGEXP is added to `regexp-search-ring', for regexp search."
-  (interactive (list (dired-read-regexp (concat (if current-prefix-arg "UNmark" "Mark")
-                                                " files (regexp): "))
-                     (and current-prefix-arg  ?\040)))
+REGEXP is added to `regexp-search-ring', for regexp search.
+
+Note: If there is more than one Dired buffer for a given subdirectory
+then only the first such is used."
+  (interactive
+   (let* ((numarg   (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)))
+          (unmark   (and numarg  (>= numarg 0)))
+          (ignorep  (and numarg  (<= numarg 0))))
+     (list (dired-read-regexp (concat (if unmark "UNmark" "Mark") " files (regexp): "))
+           (and unmark  ?\040)
+           ignorep)))
   (add-to-list 'regexp-search-ring regexp) ; Add REGEXP to `regexp-search-ring'.
   (let ((dired-marker-char  (or marker-char  dired-marker-char))
-        (sdirs              (diredp-get-subdirs))
+        (sdirs              (diredp-get-subdirs ignore-marks-p))
         (total-count        0))
     (dolist (dir  (cons default-directory sdirs))
       (when (dired-buffers-for-dir (expand-file-name dir)) ; Dirs with Dired buffers only.
