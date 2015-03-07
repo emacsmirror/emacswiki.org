@@ -84,7 +84,13 @@ Lo ideal sería exportar con armadura, pero !EasyPG, lamentablemente, no posee u
         
 Ahora puede exportar usando `epa-export-keys-armored' o la tecla `O'.
 
+To avoid code duplication, try:
 
+    (define-key epa-key-list-mode-map (kbd "O")
+        (lambda () "Export selected keys armored"
+         (interactive)
+         (let ((epa-armor t))
+            (call-interactively 'epa-export-keys)))
 
 <b>Encriptar</b>
 
