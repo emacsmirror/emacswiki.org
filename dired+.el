@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar  6 20:16:50 2015 (-0800)
+;; Last-Updated: Fri Mar  6 20:36:54 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 8740
+;;     Update #: 8742
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -5056,7 +5056,7 @@ Like using \\<dired-mode-map>`\\[dired-maybe-insert-subdir]' at each marked dire
   "Insert the marked subdirs, including those in marked subdirs.
 Like `diredp-insert-subdirs', but act recursively on subdirs.
 The subdirs inserted are those that are marked in the current Dired
-buffer, or all subdirs in the directory if none are marked.  Marked
+buffer, or ALL subdirs in the directory if none are marked.  Marked
 subdirectories are handled recursively in the same way (their marked
 subdirs are inserted...).
 
@@ -5630,7 +5630,7 @@ A non-negative prefix arg means to UNmark the files instead.
 
 A non-positive prefix arg means to ignore subdir markings and act
 instead on ALL subdirs.  That is, mark all matching files in this
-directory and all descendent directories.
+directory and all descendant directories.
 
 REGEXP is an Emacs regexp, not a shell wildcard.  Thus, use `\\.o$' for
 object files--just `.o' will mark more than you might think.
