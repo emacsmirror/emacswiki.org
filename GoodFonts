@@ -173,8 +173,12 @@ The above code will display variable-width fonts as well as monospace fonts whic
 [new]
 The following code is for me a working version of the above one.  
 {{{
-(dolist (ff (cl-remove-duplicates (font-family-list) :test 'string=))
-  (let ((str "The quick brown fox jumps over the lazy dog 1lI|0Oo : "))
+(let ((str "The quick brown fox jumps over the lazy dog ´`''\"\"1lI|¦!Ø0Oo{[()]}.,:; ")
+      (font-families (cl-remove-duplicates 
+		      (sort (font-family-list) 
+			    (lambda(x y) (string< (upcase x) (upcase y))))
+		      :test 'string=)))
+  (dolist (ff font-families)
     (insert 
      (propertize str 'font-lock-face `(:family ,ff))               ff "\n"
      (propertize str 'font-lock-face `(:family ,ff :slant italic)) ff "\n")))
