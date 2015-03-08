@@ -1,6 +1,6 @@
 ;;;  start.el
 
-;; Seiji Zenitani's configuration for Emacs 22/23.
+;; Seiji Zenitani's configuration for Emacs 22/23/24.
 ;; I put this file in ~/lib/emacs/ and then byte-compile it.
 ;; The *.elc file is loaded from the following .emacs.el:
 ;;
@@ -88,35 +88,35 @@
         ))))
 
 ;; automatically run background TeX process
-(defun my-autotex ()
-  (when (string-match "\\.tex$" (buffer-file-name))
-    (let ((buf (get-buffer "*Background TeX proccess*")))
-      (if (bufferp buf) (kill-buffer buf)) ) ;; flush previous log
-    (require 'smart-compile) ;; for smart-compile-string
-    (start-process-shell-command
-     "Background TeX" "*Background TeX proccess*"
-     (if (and (boundp 'TeX-PDF-mode) TeX-PDF-mode)
-         (smart-compile-string "pdflatex -interaction=nonstopmode %f || say oops") ;; PDFTeX
-       (smart-compile-string "( platex -interaction=nonstopmode %f && dvipdfmx %n ) || say oops") ;; pTeX
-       )
-     )))
-;; wrapper
-(define-minor-mode my-autotex-mode
-  "My autotex mode."
-  :global nil
-  :lighter " Auto"
-  (if my-autotex-mode
-      (add-hook 'after-save-hook 'my-autotex t t) ;; set the local flag to t
-    (remove-hook 'after-save-hook 'my-autotex t)
-    ))
-;; PDF preview
-(defun my-preview ()
-  (interactive)
-  (start-process-shell-command
-   "Background TeX" "*Background TeX proccess*"
-   (smart-compile-string "open -a /Applications/Preview.app %n.pdf")
-   ))
-;; hook
+;; (defun my-autotex ()
+;;   (when (string-match "\\.tex$" (buffer-file-name))
+;;     (let ((buf (get-buffer "*Background TeX proccess*")))
+;;       (if (bufferp buf) (kill-buffer buf)) ) ;; flush previous log
+;;     (require 'smart-compile) ;; for smart-compile-string
+;;     (start-process-shell-command
+;;      "Background TeX" "*Background TeX proccess*"
+;;      (if (and (boundp 'TeX-PDF-mode) TeX-PDF-mode)
+;;          (smart-compile-string "pdflatex -interaction=nonstopmode %f || say oops") ;; PDFTeX
+;;        (smart-compile-string "( platex -interaction=nonstopmode %f && dvipdfmx %n ) || say oops") ;; pTeX
+;;        )
+;;      )))
+;; ;; wrapper
+;; (define-minor-mode my-autotex-mode
+;;   "My autotex mode."
+;;   :global nil
+;;   :lighter " Auto"
+;;   (if my-autotex-mode
+;;       (add-hook 'after-save-hook 'my-autotex t t) ;; set the local flag to t
+;;     (remove-hook 'after-save-hook 'my-autotex t)
+;;     ))
+;; ;; PDF preview
+;; (defun my-preview ()
+;;   (interactive)
+;;   (start-process-shell-command
+;;    "Background TeX" "*Background TeX proccess*"
+;;    (smart-compile-string "open -a /Applications/Preview.app %n.pdf")
+;;    ))
+;; ;; hook
 ;; (add-hook 'TeX-mode-hook
 ;;           (lambda ()
 ;;             (TeX-PDF-mode 1)
@@ -135,8 +135,8 @@
 (add-to-list 'default-frame-alist '(mouse-color . "SlateBlue2"))
 (add-to-list 'default-frame-alist '(foreground-color . "gray10"))
 (add-to-list 'default-frame-alist '(background-color . "white"))
-(set-face-foreground 'modeline "white")
-(set-face-background 'modeline "SlateBlue2")
+(set-face-foreground 'mode-line "white")
+(set-face-background 'mode-line "SlateBlue2")
 (set-face-background 'region  "LightSteelBlue1")
 
 ;; faces
@@ -152,11 +152,14 @@
 (set-face-foreground 'font-lock-warning-face "blue")
 (set-face-bold-p 'font-lock-warning-face nil)
 
+;; scroll-bar
+(set-scroll-bar-mode 'right)
+
 ;; pc-selection-mode/transient-mark-mode
-(when (>= emacs-major-version 22)
+(when (or (eq emacs-major-version 22)
+          (eq emacs-major-version 23))
   (setq pc-select-selection-keys-only t)
   (pc-selection-mode 1)
-  (set-scroll-bar-mode 'right)
   )
 
 ;; additional menu
