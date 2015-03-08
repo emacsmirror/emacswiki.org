@@ -5,9 +5,7 @@ Further a mechanism for random password generation from random user input is als
 
 It is recommended to byte-compile the library before usage.
 
-Outdated Version 0.4: Lisp:aes.el
-
-From now on updates will be published on Github https://github.com/Sauermann/emacs-aes
+Updates will be published on Github https://github.com/Sauermann/emacs-aes
 
 ----
 CategoryCryptography
