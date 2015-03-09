@@ -279,7 +279,7 @@ Use remapkey.exe from [http://www.microsoft.com/en-us/download/details.aspx?id=1
 === AutoHotkey ===
 On Windows you can use the [http://www.autohotkey.com/ AutoHotkey] program which uses "scripts" to remap the keyboard.
 
-This section describes ho to swap Control and CapsLock, but with !AutoHotKey it is also possible to use Space both as Space and Control. See [[#Using space bar as both space and control]] below.
+This section describes how to swap Control and CapsLock, but with !AutoHotKey it is also possible to use Space both as Space and Control. See [[#Using space bar as both space and control]] below.
 
 This method has a couple benefits.  One is scripts can be compiled to a stand alone <tt>.exe</tt> file which can be executed on a machine that doesn't have !AutoHotkey.  Another is, the key re-mapping can be set to only apply in emacs; the caps lock key will behave normaly in every other program. (If that's what you want.)
 
