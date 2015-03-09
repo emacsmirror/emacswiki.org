@@ -320,7 +320,7 @@ When using a Bluetooth hardware keyboard attached to a android tablet or phone y
 $ su
 </pre>
 
-Then remount /system and change the desired keys in /system/usr/keymapswith the editor of your choice, e.g. nano:
+Then remount /system and change the desired keys in <code>/system/usr/keymaps</code> with the editor of your choice, e.g. nano:
 
 <pre>
 # mount -o rw,remount /system
@@ -366,7 +366,6 @@ Another keyboard is the WASD keyboards. They have a switch that allows you to co
 
 -- Elias
 
-[new:nesiax:2013-03-04 00:00 UTC]
 You could also make your own keyboard and hardware mappings, there is a libre keyboard design at http://www.key64.org/ which have been designed for emacs users in mind, it's design is ergonomic so is very comfortable to type with. 
 
 -- Nesiax
