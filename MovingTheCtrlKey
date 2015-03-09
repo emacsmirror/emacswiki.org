@@ -1,12 +1,14 @@
 [[zh:MovingTheCtrlKey_zh_CN]]
 This page explains how to move the Control key. Some users find that this can help to avoid "Emacs pinky" (RepeatedStrainInjury).
 
-First several sections are devoted for Linux solutions. Note that the keyboard mappings are separate for X (graphical) and for virtual consoles. (Sidenote: This problem may be alleviated soon as Debian's <code>/etc/default/keyboard</code> file appears designed to work for both virtual consoles and X.)
-
 == Introduction ==
 For some, swapping Control and CapsLock is very important; the virtually useless CapsLock is far easier to press Control, crucial to Emacs yet really awkwardly located.
 
-== GNOME Desktop Environment ==
+== GNU/Linux ==
+
+Note that separate keyboard mappings are often used for X (graphical sessions) and for virtual consoles. (On Debian, you may be able to use <code>/etc/default/keyboard</code> file for both.)
+
+=== GNOME Desktop Environment ===
 
 This setting is in the GNOME Tweak Tool.
 
@@ -18,7 +20,7 @@ On the "Typing" tab, find the "Ctrl key position" setting and select "Swap Ctrl 
 
 [[image:Gnome_Tweek_Tool_Ctrl_Position.png|Gnome Tweak Tool Ctrl Position]]
 
-== KDE Desktop Environment ==
+=== KDE Desktop Environment ===
 
 In KDE 4.x there's a "Keyboard Layout" dialog in the Systems settings that allow you to modify the Caps Lock behavior. First be sure to allow KDE to control keyboard layouts. Do this by selecting "Enable keyboard layouts" here:
 
@@ -28,7 +30,7 @@ Then turn on the desired options and press the apply button:
 
 [[image:KDEKeyboardAdvancedOptions.png|KDE Keyboard Layout Advanced Options]]
 
-== X (using xmodmap) ==
+=== X (using xmodmap) ===
 In the X Windowing System you can use <code>xmodmap(1)</code> to change the keymaping.  Some desktop environments, like Gnome and KDE, which use X, have specialized preference menus to make this easier.  The advantage of using <code>xmodmap</code> is that it will work with any desktop or Window Manager.
 
 See the man page command [http://www.xfree86.org/4.2.0/xmodmap.1.html xmodmap(1x)] for more information.  I swap their functions throughout my environment, not just for Emacs.
@@ -51,8 +53,7 @@ which is sourced from my ~/.xsession with the line:
 xmodmap ~/.xmodmap
 </pre>
 
-
-== X (using xkb) ==
+=== X (using xkb) ===
 In the X Window System, you can also swap Control and Caps Lock with the xkb option <code>ctrl:swapcaps</code>.  If you don't ever need Caps Lock you can instead of swapping the two set Caps Lock to be another Control. This is done with <code>ctrl:nocaps</code>. Use one of these from command line:
 <pre>
   setxkbmap -option ctrl:swapcaps     # Swap Left Control and Caps Lock
@@ -96,11 +97,11 @@ In Fedora 15 you can also add a file <code>~/.Xkbmap</code> that contains comman
 
 The CapsKey page has an example of moving Ctrl to Caps.
 
-== Virtual consoles ==
+=== Virtual consoles ===
 
-A virtual console is NOT an <code>[agkux]term</code> inside of X.  It is the white-on-black text-only mode that scares some people who have been traumatized by Microsoft's COMMAND.COM shell.  If you do not use virtual consoles, there is no reason for you to read this section.
+This is not the same as a terminal running in a window under X! It is the text-only mode typically accessed by pressing Ctrl+Alt+F1-F6.
 
-=== Generic GNU/Linux Virtual Console (any distribution) ===
+==== Generic GNU/Linux Virtual Console (any distribution) ====
 
 ''Note: while these instructions should work under any distribution of GNU/Linux, you may wish to use a distribution-specific method which may be simpler.''
 
@@ -120,7 +121,7 @@ Then run loadkeys on that file:
 
  $ sudo loadkeys /usr/share/keymaps/Caps2Ctrl.map
 
-To revert run:
+To revert, run:
 
  $ sudo loadkeys -d #load default keymap file
 
@@ -144,9 +145,9 @@ For more extensive editing try:
   what each symbol does. It has to be guessed  from  the
   name or figured out from the kernel sources.
 
-=== On Debian GNU/Linux (console-setup method, newer) ===
+==== On Debian and derivatives (Ubuntu, Mint etc.) ====
 
-To make CAPS LOCK another control key, edit the file '''/etc/default/keyboard''' and change the line which reads
+To make Caps Lock another Ctrl key, edit the file '''/etc/default/keyboard''' and change the line which reads
 
  XKBOPTIONS=""
 
@@ -154,60 +155,11 @@ to
 
  XKBOPTIONS="ctrl:nocaps"		# Some people prefer "ctrl:swapcaps"
 
-To make the change effective:
+and then run:
 
  $ sudo dpkg-reconfigure -phigh console-setup
 
-=== On Debian GNU/Linux (console-tools method, older) ===
-
-To make Caps Lock another control, add/uncomment the following line in <code>/etc/console-tools/remap</code>
-
- s/keycode  58 = Caps_Lock/keycode  58 = Control/;
-
-To make the change effective:
-
- $ sudo invoke-rc.d console-screen.sh restart
-
-=== On Ubuntu GNU/Linux virtual console ===
-
-Ubuntu Maverick
-
-Click on System > Preferences > Keyboard
-
-This will open the Keyboard preferences. In "Layout" tab find "options..." then locate "Ctrl key position"
-
-select "Swap Ctrl and CapsLock"
-
-or also you can select "Make CapsLock an additional Ctrl"
-
-this also work for virtual consoles
-
-1. Edit /etc/default/console-setup and add an X11 style caps lock modification:
-
- $ diff -U0 /etc/default/{console-setup.orig,console-setup}
- --- /etc/default/console-setup.orig     2009-02-09 03:05:27.000000000 -0500
- +++ /etc/default/console-setup  2009-02-09 04:11:20.000000000 -0500
- @@ -40 +40 @@
- -XKBOPTIONS=""
- +XKBOPTIONS="ctrl:swapcaps"
-
-you can do "ctrl:nocaps" instead if you want to two control keys.
-
-2. Trick dpkg into integrating your changes:
-
- $ sudo dpkg-reconfigure console-setup
-
-and choose all the defaults.
-
-(The above is a brief version of a [https://bugs.launchpad.net/ubuntu/+source/console-tools/+bug/140786/comments/7 bug comment])
-
-On Ubuntu Raring Ringtail (13.04) (and possibly on other versions), it is posible to simply edit the file /etc/default/keyboard, modify the XKBOPTIONS setting (for example XKBOPTIONS="ctrl:nocaps") and do:
-
- $ sudo dpkg-reconfigure keyboard-configuration
-
-Which will apply the change to both virtual consoles and X.org.
-
-=== On Gentoo Linux ===
+==== On Gentoo Linux ====
 
 For i386 systems, to make Caps Lock another control: In /etc/conf.d/keymaps set
 
@@ -215,7 +167,7 @@ For i386 systems, to make Caps Lock another control: In /etc/conf.d/keymaps set
 
 Then run <code># /etc/init.d/keymaps restart</code> (or reboot).  See /usr/share/keymaps/i386/qwerty/emacs.map.gz for more information.
 
-=== On Slackware GNU/Linux ===
+==== On Slackware GNU/Linux ====
 
 Similar to Gentoo, you can add Caps Lock as another control key:
 
@@ -224,25 +176,7 @@ As super-user:
   $ loadkeys emacs
   $ echo "loadkeys emacs" >> /etc/rc.d/rc.local
 
-You can just issue the second command and re-run rc.local, however
-that will initiate any commands in rc.local.  This differs from my X
-setup where the menu key is used as Caps Lock.  Currently for the
-virtual console there is no Caps Lock (any suggestions on this?)
---JoelAdamson
-
-[new]
-I no longer have Caps Lock key too but I have never used it before so
-I do not see the need now it has been remapped to something else ;) -- XavierMaillard
-
-[new]
-The main thing I use the CapsLock for is environment variables; I have started getting out of using it by using AbbrevMode, however I still find some instances where it's useful.
-
-After seeing how a friend of mine types (with her wrists flat on the table, and not moving her hands but straining to reach keys, also while holding modifier keys and depressing letters with the same hand), I'm seriously investigating whether the quirks of heavy keyboard use (dislike of CapsLock, accidentally hitting keys, RSI) are due to poor hand position instead of heavy typing use.  I've been typing heavily for years, and other than moving the CtrlKey, I've not developed any problems or developed the strong preferences indicated on some webpages.  I'd like to get a HappyHacking or Sun-style keyboard, but I'm concerned that nobody thinks it's a problem to only have one control key: the rationalization I've seen some people make is that I should use one hand to accomplish certain keystrokes (e.g., "\C-x\C-f", which I do rather more swiftly with two hands).
-
-[new]
-If you don't have a CapsLock key, it's still easy to type environment variables.  Just use <code>M-b M-u</code> to uppercase the last word.  -- HackerB9
-
-=== NetBSD console ===
+==== NetBSD console ====
 
 To /etc/wscons.conf add:
 : mapfile /usr/share/wscons/keymaps/pckbd.c2c
@@ -263,12 +197,9 @@ Then select which of the four modifier keys should send Control:
 
 [[image:MacKeyboardKeys.png|Mac Keyboard Modifier Keys]]
 
-For Mac OS older than 10.4, [http://gnufoo.org/ucontrol/ uControl] allows switching keys.
-
 The variable `mac-command-modifier' can be used to interpret the Command key as an additional Control.  This can be useful for Linux-like behavior when Caps Lock has already been remapped to Command.
 
 In Emacs 22 (Carbon Port, CVS version) you can use the variable `mac-control-modifier' to remap the Control key.
-
 
 == Microsoft Windows ==
 
@@ -425,33 +356,15 @@ For experiences with Emacs and particular keyboards, see GoodKeyboards and Wiki:
 
 == Keyboard and no admin privileges in MS Windows ==
 
-[new]I was unable to find an answer to the question below.
-All the remap solutions above assume that the user has Admin privileges under Windows, which is not the case for company-issued laptops. I am looking for an additional USB keyboard I could use at work...
+Install AutoHotKey to a folder in your user account.
 
-Question: Where can I find a keyboard where CAPS LOCK can be programmed to be a CONTROL key "directly on the keyboard"?
-
-My configuration:
-company-issued Laptop with Windows 7
-no administration privileges (cannot change Windows Registry)
-normal QWERTY laptop with annoying CAPS LOCK key instead of the useful CONTROL key
-
-All the keyboards I have googled have programmable function keys (gamers' keyboards...), but usual keys such as CAPS LOCK cannot be changed.
-
--- IanSinkrad
-
-[new:tuffy:2012-03-11 14:54 UTC]
-One such keyboard is Topre's Realforce 87U, which is sold at elitekeyboards.com.  It features a DIP switch setting for swapping the control and caps lock keys, and includes a keypuller and replacement keys so that the labeling will also be correct.  Though made by the same company that produces the Happy Hacking keyboards recommended on the [http://www.emacswiki.org/emacs/GoodKeyboards GoodKeyboards] page, the Realforce is a much more traditional PC keyboard and the one I most prefer to use with Emacs.
+Or, get a programmable keyboard such as Topre's Realforce 87U, which is sold at elitekeyboards.com.  It features a DIP switch setting for swapping the control and caps lock keys, and includes a keypuller and replacement keys so that the labeling will also be correct.  Though made by the same company that produces the Happy Hacking keyboards recommended on the [http://www.emacswiki.org/emacs/GoodKeyboards GoodKeyboards] page, the Realforce is a much more traditional PC keyboard and the one I most prefer to use with Emacs.
 
 -- Tuffy
 
 Another keyboard is the WASD keyboards. They have a switch that allows you to control whether the Caps Lock key is a control or standard caps lock.
 
 -- Elias
-
-[new:aiguofer:2012-06-11 15:38 UTC]
-You could also install AutoHotKey to a folder in your user account and do it that way.  I just did that and it's working perfectly.
-
--- Aiguofer
 
 [new:nesiax:2013-03-04 00:00 UTC]
 You could also make your own keyboard and hardware mappings, there is a libre keyboard design at http://www.key64.org/ which have been designed for emacs users in mind, it's design is ergonomic so is very comfortable to type with. 
