@@ -6,11 +6,11 @@ Elpy documentation is available at http://elpy.readthedocs.org/en/latest/index.h
 
 =Tips=
 
-1. Solving company, yasnippet conflicts
+* 1. Solving company, yasnippet conflicts *
 
 When you type an abbrevation & hit tab, it won't expand as company takes over. You can add this snippet in Your .emacs to solve that problem
 
-{{{{
+{{{
 (defun company-yasnippet-or-completion ()
   "Solve company yasnippet conflicts."
   (interactive)
@@ -25,4 +25,4 @@ When you type an abbrevation & hit tab, it won't expand as company takes over. Y
              'company-yasnippet-or-completion
              company-active-map)))
 
-}}}}
+}}}
