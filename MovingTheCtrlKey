@@ -6,27 +6,17 @@ First several sections are devoted for Linux solutions. Note that the keyboard m
 == Introduction ==
 For some, swapping Control and CapsLock is very important; the virtually useless CapsLock is far easier to press Control, crucial to Emacs yet really awkwardly located.
 
-== Gnome Desktop Environment ==
+== GNOME Desktop Environment ==
 
-Recent versions of the Gnome desktop have a Keyboard Preferences dialog that allows you to configure the Ctrl key position.  On Ubuntu this is found under System -> Preferences -> Keyboard.  Under the "Layout Options" tab choose "Ctrl key position" and it gives you a number of choices.
+This setting is in the GNOME Tweak Tool.
 
-Under Gnome Shell, the same settings can be found under System Settings -> Keyboard Layout.  Choose the Layouts tab, then click on "Options...".  Expand the "Ctrl key position" section and you'll see a similar list of of options.
+[[image:Gnome_Tweek_Tool_Icon.png|Gnome Tweak Tool Icon]]
 
-[[image:GnomeKeyboardPreferences.png|Gnome Keyboard Preferences]]
-[[image:GnomeKeyboardLayoutOptions.png|Gnome Keyboard Layout Options]]
+On the "Typing" tab, find the "Ctrl key position" setting and select "Swap Ctrl and Caps Lock" or "Caps Lock as Ctrl"; the latter is also available under "Caps Lock key behavior" as "Make Caps Lock an additional Ctrl".
 
-Keyboard Preferences
+[[image:Gnome_Tweek_Typing_Area.png|Gnome Tweak Typing Area]]
 
-=== GNome Shell 3.8 ===
-In GNome Shell 3.8 this option is moved to Tweek Tool
-
-[[image:Gnome_Tweek_Tool_Icon.png|Gnome Tweek Tool Icon]]
-
-Then go to the "Typing" area an search for "Ctrl key position" and select "Swap Ctrl and Caps Lock"
-
-[[image:Gnome_Tweek_Typing_Area.png|Gnome Tweek Typing Area]]
-
-[[image:Gnome_Tweek_Tool_Ctrl_Position.png|Gnome Tweek Tool Ctrl Position]]
+[[image:Gnome_Tweek_Tool_Ctrl_Position.png|Gnome Tweak Tool Ctrl Position]]
 
 == KDE Desktop Environment ==
 
@@ -37,7 +27,6 @@ In KDE 4.x there's a "Keyboard Layout" dialog in the Systems settings that allow
 Then turn on the desired options and press the apply button:
 
 [[image:KDEKeyboardAdvancedOptions.png|KDE Keyboard Layout Advanced Options]]
-
 
 == X (using xmodmap) ==
 In the X Windowing System you can use <code>xmodmap(1)</code> to change the keymaping.  Some desktop environments, like Gnome and KDE, which use X, have specialized preference menus to make this easier.  The advantage of using <code>xmodmap</code> is that it will work with any desktop or Window Manager.
