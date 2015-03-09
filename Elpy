@@ -1,0 +1,28 @@
+=What is Elpy=
+*Elpy* is the Emacs Python Development Environment. It aims to provide an easy to install, fully-featured environment for Python development.
+
+Elpy documentation is available at http://elpy.readthedocs.org/en/latest/index.html
+
+
+=Tips=
+
+1. Solving company, yasnippet conflicts
+
+When you type an abbrevation & hit tab, it won't expand as company takes over. You can add this snippet in Your .emacs to solve that problem
+
+{{{{
+(defun company-yasnippet-or-completion ()
+  "Solve company yasnippet conflicts."
+  (interactive)
+  (let ((yas-fallback-behavior
+         (apply 'company-complete-common nil)))
+    (yas-expand)))
+
+(add-hook 'company-mode-hook
+          (lambda ()
+            (substitute-key-definition
+             'company-complete-common
+             'company-yasnippet-or-completion
+             company-active-map)))
+
+}}}}
