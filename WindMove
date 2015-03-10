@@ -33,8 +33,8 @@ See WindowNavigation for a similar piece of code, but written from scratch.
 For OSX, see [http://zurktech.blogspot.ch/2014/01/emacs-windmove-and-mavericks-terminalapp.html Emacs windmove and Mavericks Terminal.app].
 
 == Ignore Errors ==
-When you run for instance windmove-left and there is no window on the left, windmove will throw exception (and it you have debug-on-error enabled)
-you will see Debuger, to prevent that you can use ignore-errors macro before run windmove function, here is helper function:
+When you run for instance windmove-left and there is no window on the left, windmove will throw exception (and if you have debug-on-error enabled)
+you will see Debugger complaining. To prevent this situation you can use ignore-errors macro before running windmove function, here is helper function:
 {{{
 (defun ignore-error-wrapper (fn)
   "Funtion return new function that ignore errors.
