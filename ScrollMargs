@@ -2,11 +2,9 @@ Scroll margins minor mode. This behaviour is also known as SmoothScrolling.
 
 * Lisp:scrl-margs.el
 
-Other modules with similar functionality are: <tt>scroll-in-place.el</tt> by Eric Eide, and <tt>smooth-scrolling.el</tt> by Adam Spiers. In emacs-20 and later, scroll margins can be controlled by the variables <tt>scroll-margin</tt>, <tt>scroll-conservatively</tt>, and <tt>scroll-step</tt>.
+Other modules with similar functionality are: <tt>scroll-in-place.el</tt> by Eric Eide, and <tt>smooth-scrolling.el</tt> by Adam Spiers. 
 
--- DavidAndersson
-
-This is unrelated to the scroll margin in Emacs, which specifies how near the top or the bottom of the screen can come before Emacs scrolls to reveal more context. See [https://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Scrolling.html Auto-Scrolling in the Emacs manual].
+In emacs-20 and later, scroll margins can be controlled by the variables <tt>scroll-margin</tt>, <tt>scroll-conservatively</tt>, and <tt>scroll-step</tt>.See [https://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Scrolling.html Auto-Scrolling in the Emacs manual].
 
 ----
 CategoryDisplay
