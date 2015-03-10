@@ -3,10 +3,10 @@
 ;; Copyright (C) 2002  Alex Schroeder
 
 ;; Author: Alex Schroeder <alex@gnu.org>
-;; Maintainer: Alex Schroeder <alex@gnu.org>
+;; Maintainer: Steve Yegge <steve.yegge@gmail.com>
 ;; Modified by: Pierre Gaston <pierre@gaston-karlaouzou.com>
 ;;              Steve Yegge <steve.yegge@gmail.com>
-;; Version: 0.0.6
+;; Version: 0.0.7
 ;; Keywords: hypermedia
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki.pl?HtmlRendering
 
@@ -36,6 +36,8 @@
 ;; If you want to contribute see the HomePage and the TODOs in the code
 
 ;;History
+;; 0.0.7
+;;  - bug fix: wrap/fill even if there are no tags in the text
 ;; 0.0.6
 ;;  - support for pre, code tags
 ;;  - several fixes for the generation of newlines, including
@@ -53,19 +55,19 @@
 ;;  - more fixes
 ;; 0.0.3
 ;;  - change the behaviour of the parser. It now uses the content
-;;    of the stack for the transitions an not last-tag.
+;;    of the stack for the transitions and not last-tag.
 ;;  - as a result, all tags but empty tags (img, hr ...) and closing
-;; tags must be pushed.
-;; - transition definitions are more compact because we don't need
-;;   transition from closing tag anymore
-;; - stack now contains the position of the beginning of the tag
-;; - introduce `htmlr-last-wrap-pos' variable to keep track of what
-;;   has already been wrapped
-;; - bugs treat space around <img> <a> <b> etc.. a trick solution
-;;   but a \n if we need a space because \n are replace by space by
-;;   wrap while space are erased.
-;; - add the bullet list definition for sublist + * - etc...
-;; - other small fixes
+;;    tags must be pushed.
+;;  - transition definitions are more compact because we don't need
+;;    transition from closing tag anymore
+;;  - stack now contains the position of the beginning of the tag
+;;  - introduce `htmlr-last-wrap-pos' variable to keep track of what
+;;    has already been wrapped
+;;  - bugs treat space around <img> <a> <b> etc.. a trick solution
+;;    but a \n if we need a space because \n are replace by space by
+;;    wrap while space are erased.
+;;  - add the bullet list definition for sublist + * - etc...
+;;  - other small fixes
 ;;
 ;; 0.0.2
 ;;  - added whatever tag to limit the complexity of the definition
@@ -198,7 +200,8 @@ If nil, adjusts text to fill the bounds of the window."
          (h3 wrap paragraph push)
          (h4 wrap paragraph push)
          (h5 wrap paragraph push)
-         (h6 wrap paragraph push))
+         (h6 wrap paragraph push)
+         (nil wrap))
     (a (/a zap-ws close-link pop))
     (b (/b zap-ws bold pop))
     (i (/i zap-ws italic pop))
