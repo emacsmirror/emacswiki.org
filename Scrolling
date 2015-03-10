@@ -24,7 +24,7 @@ I like to align my window exactly to the relevant pieces of code.  Being able to
     (global-set-key [(control down)] 'gcm-scroll-down)
     (global-set-key [(control up)]   'gcm-scroll-up)
 
-[http://user42.tuxfamily.org/scroll-1/index.html scroll-1.el] can bind the j/k keys for view style modes (don't be put off by those keys being the same in the EvilOne).
+[http://user42.tuxfamily.org/scroll-1/index.html scroll-1.el] can bind the j/k keys for view style modes (don't be put off by those keys being the same in [[Evil]]).
 
 [new]
 
