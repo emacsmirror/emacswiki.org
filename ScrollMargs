@@ -6,5 +6,7 @@ Other modules with similar functionality are: <tt>scroll-in-place.el</tt> by Eri
 
 -- DavidAndersson
 
+This is unrelated to the scroll margin in Emacs, which specifies how near the top or the bottom of the screen can come before Emacs scrolls to reveal more context. See [https://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Scrolling.html Auto-Scrolling in the Emacs manual].
+
 ----
 CategoryDisplay
