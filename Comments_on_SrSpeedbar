@@ -20,3 +20,10 @@ Where should i report this ?
 
 -- pht 2014-07-02 10:32 UTC
 
+
+----
+
+I have files of extensions that are not *.c or *.h which are not getting listed in sr-speedbar. How to work around that ?
+
+-- h4nnibal 2015-03-10 09:57 UTC
+
