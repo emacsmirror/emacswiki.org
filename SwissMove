@@ -29,5 +29,11 @@ Wanna see the code? [http://www.skamphausen.de/cgi-bin/ska/swiss-move Get it fro
 
 ::: The above comments seem to be from 2004.  The linked page reveals that the code only worked in XEmacs and that the author has abandoned it circa 2006. -- EraEriksson
 
+[new:DrewAdams:2015-03-11 03:03 UTC]
+
+Nope, it ''works'' with GnuEmacs - in spite of what the linked page suggests (it is the comment that says that that is out-of-date). 
+
+And the version at that link, though it says it is from 2004, is different from a 2004 version that I had downloaded then. It is, however, the same as what I downloaded in 2008. You should try it before declaring it unusable. -- DrewAdams, who doesn't use it, but who finds the idea interesting, and worth checking out.
+
 ----
 CategoryDisplay
