@@ -72,6 +72,8 @@ A brief [https://bitbucket.org/lyro/evil/src/master/doc/evil.pdf PDF manual] is 
 
 * [https://github.com/redguardtoo/evil-nerd-commenter evil-nerd-commenter]: Port of Vim's [http://www.vim.org/scripts/script.php?script_id=1218 Nerd-Commenter]
 
+* [https://github.com/redguardtoo/evil-mark-replace evil-mark-replace]: Replace the thing in EVIL way. The thing is either the symbol under cursor or the selected text.]
+
 * [https://github.com/redguardtoo/evil-matchit evil-matchit]: Port of Vim's [http://www.vim.org/scripts/script.php?script_id=39 matchit], support html/python/latex/java/c/ruby/...., any language
 
 * [https://github.com/Dewdrops/evil-exchange evil-exchange]: Port of vim-exchange
