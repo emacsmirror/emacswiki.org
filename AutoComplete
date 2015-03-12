@@ -613,6 +613,11 @@ Any ideas? I have this plugins installed: evil, evil-nerd-commenter, undo-tree, 
 [new]
 Try... (setq ac-use-comphist nil). This option makes emacs to exit slowly... -- Kiwon
 
+
+[new]
+AutoComplete and Predictive mode. 
+I asked the author of Predictive mode. I was informed that although Predictive mode has a module called 'auto-complete-mode' it is not a reference to this AutoComplete. They are separate from one another.
+
 ----
 CategoryCompletion
 
