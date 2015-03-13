@@ -6,7 +6,7 @@ You can download it from the following site, BUT watch out, there are different 
 
 As far as I remember, this is how to get the latest version:
 
-* Get the Emacs distribution from http://www.rainer-keuchel.de/wince/emacs-wince.html (This looks like all files: http://www.rainer-keuchel.de/wince/dirlist.html)
+* Get the Emacs distribution from http://web.archive.org/web/20090123044735/http://www.rainer-keuchel.de/wince/emacs-wince.html (This looks like all files:  https://web.archive.org/web/20010801150018/http://www.rainer-keuchel.de/wince/dirlist.html)
 * Now you will need to update some files. Old version of these are already in that distribution.  
 ** You should also download from the site:
 *** "celib-3.13-dll-bin-all-platforms.tar.gz". This will give you menus and connection to the Windows CE-clipboard. ( I installed "wince-arm-
