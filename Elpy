@@ -1,8 +1,8 @@
 =What is Elpy=
 *Elpy* is the Emacs Python Development Environment. It aims to provide an easy to install, fully-featured environment for Python development.
 
-Elpy documentation is available at http://elpy.readthedocs.org/en/latest/index.html
-
+Elpy documentation: http://elpy.readthedocs.org/en/latest/index.html
+Elpy wiki: https://github.com/jorgenschaefer/elpy/wiki
 
 =Tips=
 
