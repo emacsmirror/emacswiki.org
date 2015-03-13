@@ -615,7 +615,7 @@ Try... (setq ac-use-comphist nil). This option makes emacs to exit slowly... -- 
 
 
 [new]
-AutoComplete and Predictive mode. 
+AutoComplete and PredictiveMode. 
 I asked the author of Predictive mode. I was informed that although Predictive mode has a module called 'auto-complete-mode' it is not a reference to this AutoComplete. They are separate from one another.
 
 ----
