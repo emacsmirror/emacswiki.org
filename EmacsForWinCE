@@ -2,10 +2,9 @@ Emacs 20.7 has been ported to WinCE, and therefore runs on many palmtops.
 Works on iPAQ.
 
 This port requires celib.dll and ports of grep and ftp -- all available from the same site.
+* https://web.archive.org/web/20010904215400/http://www.rainer-keuchel.de/wince/emacs-wince.html
 
-* h t t p : //www.rainer-keuchel.de/wince/emacs-wince.html
-
-(This link obviously doesnt work - at least since 2011, January - so it is now *deactivated*!)
+The link doesn’t work - at least since 2011, January - so it is replaced with historical snapshot
 
 ----
 CategoryPorts
