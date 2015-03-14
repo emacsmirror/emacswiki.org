@@ -265,13 +265,13 @@ returns the regexp string ##"\\(?:[[:blank:]]+$\\)"##. See [[rx]].
 
 [[Icicles]] provides these interactive ways to learn about regexps: 
 
-* '''`##C-`##'''' (`icicle-search') shows you regexp matches, as does `C-M-s', but it can also show you (that is, highlight) regexp ''subgroup'' matches.  Showing matched subgroups is very helpful for learning, and Icicles is unique in this.  There are two ways that you can use this feature:
+* '''`##C-`##'''' (`icicle-search') shows you regexp matches, as does `C-M-s', but it can also show you (that is, highlight) regexp ''subgroup'' matches.  Showing matched subgroups is very helpful for learning.  There are two ways that you can use this Icicles feature:
 
 ** You can seach for a regexp, but limit the search context, used for further searching, to a particular subgroup match. For example, you can search for and highlight Lisp argument lists, by using a regexp subgroup that matches lists, placing that subgroup after `defun':  '''##(defun [^(]*\(([^(]*)\)##''', that is, ##defun##, followed by non-`##(##' character(s), followed by '''`##(##'''', possibly followed by non-`##)##' character(s), followed by '''`##)##''''.
 
 ** You can search for a regexp without limiting the search context to a subgroup match. In this case, '''Icicles''' highlights each subgroup match in a different color. Here's an example, showing how each subgroup of the complex regexp ##(##'''##\(##'''##[-a-z*]+##'''##\)##'''## *##'''##\(##'''##(##'''##\(##'''##([-a-z]+ *##'''##\(##'''##[^)]*##'''##\)##'''##)##'''##\)##'''##)##'''##\)##'''##.*## is matched:
 
-::: [[image:IciclesSearchContextLevelsScreenshot]]
+: [[image:IciclesSearchContextLevelsScreenshot]]
 
 * `##C-`##' also helps you learn by letting you use two simple regexps (search within a search) as an alternative to coming up with a single, complex regexp to do the same job.  And, as with incremental search, you can change the second regexp on the fly to see immediately what difference the change makes. See [[Icicles - Search Commands, Overview]]
 
