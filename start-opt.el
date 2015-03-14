@@ -8,9 +8,9 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 11:15:39 2015 (-0800)
+;; Last-Updated: Sat Mar 14 07:37:43 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1965
+;;     Update #: 1984
 ;; URL: http://www.emacswiki.org/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -58,6 +58,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/03/14 dadams
+;;     Moved face settings to my custom-file (finally):
+;;       highlight, mode(-)line, region, secondary-selection, show-paren-match(-face),
+;;       font-lock-(string|constant|warning|function-name|keyword|builtin)-face, isearch.
 ;; 2014/05/14 dadams
 ;;     Added  fit-frame-if-one-window to temp-buffer-window-show-hook also (Emacs 24.4+).
 ;; 2013/12/17 dadams
@@ -245,27 +249,33 @@
 ;;; Some standard faces redefined, and two simple faces defined.
 (condition-case nil
     (progn
-      (set-face-background 'highlight "Cyan") ; Highlight face.
-      (set-face-foreground (if (facep 'modeline) 'modeline 'mode-line) ; Mode-line.
-                           "Black")
-      (set-face-background 'region "MediumAquamarine")
-      (set-face-background list-matching-lines-face "SkyBlue") ; Defined in `replace.el'
-      (set-face-background 'secondary-selection "White") ; Secondary sel.
-      (set-face-foreground 'secondary-selection "Black") ; (Netscape/X: 000000).
-      (set-face-background 'show-paren-match-face "Aquamarine")) ; in `paren.el'
+      ;; (set-face-background 'highlight "Cyan") ; Highlight face.
+      ;; (set-face-foreground (if (facep 'modeline) 'modeline 'mode-line) ; Mode-line.
+      ;;                      "Black")
+      ;; (set-face-background 'region "MediumAquamarine")
+      ;; (set-face-background list-matching-lines-face "SkyBlue") ; Defined in `replace.el'
+      ;; (set-face-background 'secondary-selection "White") ; Secondary sel.
+      ;; (set-face-foreground 'secondary-selection "Black") ; (Netscape/X: 000000).
+      ;; (set-face-background 'show-paren-match-face "Aquamarine") ; in `paren.el'
+      )
   (error nil))
 
-(unless (facep 'font-lock-string-face) (make-face 'font-lock-string-face))
-(set-face-foreground 'font-lock-string-face "Magenta4")
-(unless (facep 'font-lock-constant-face) (make-face 'font-lock-constant-face))
-(set-face-foreground 'font-lock-constant-face "#00006DE06DE0")
-(unless (facep 'font-lock-warning-face) (make-face 'font-lock-warning-face))
-(set-face-foreground 'font-lock-warning-face "Yellow")
-(unless (facep 'font-lock-function-name-face) (make-face 'font-lock-function-name-face))
-(set-face-foreground 'font-lock-function-name-face "Red")
-(unless (facep 'font-lock-keyword-face) (make-face 'font-lock-keyword-face))
-(set-face-foreground 'font-lock-keyword-face "Blue3")
-(set-face-foreground 'font-lock-builtin-face "Orchid") ; Restore default per before Emacs 23.2.
+(unless (facep 'font-lock-string-face)
+  (make-face 'font-lock-string-face)
+  (set-face-foreground 'font-lock-string-face "Magenta4"))
+(unless (facep 'font-lock-constant-face)
+  (make-face 'font-lock-constant-face)
+  (set-face-foreground 'font-lock-constant-face "#00006DE06DE0"))
+(unless (facep 'font-lock-warning-face)
+  (make-face 'font-lock-warning-face)
+  (set-face-foreground 'font-lock-warning-face "Yellow"))
+(unless (facep 'font-lock-function-name-face)
+  (make-face 'font-lock-function-name-face)
+  (set-face-foreground 'font-lock-function-name-face "Red"))
+(unless (facep 'font-lock-keyword-face)
+  (make-face 'font-lock-keyword-face)
+  (set-face-foreground 'font-lock-keyword-face "Blue3"))
+;; (set-face-foreground 'font-lock-builtin-face "Orchid") ; Restore default per before Emacs 23.2.
 
 
 ;;; EDIFF stuff.  These variables and functions are defined in `ediff.el'.
@@ -342,7 +352,7 @@
 ;;; Search and replace stuff:
 (copy-face 'secondary-selection 'query-replace) ; For replacement highlighting.
 (if (facep 'isearch)
-    (set-face-attribute 'isearch nil :foreground "Black" :background "Green" :inverse-video nil)
+    nil ;; (set-face-attribute 'isearch nil :foreground "Black" :background "Green" :inverse-video nil)
   (defface isearch '((t (:foreground "Black" :background "Green")))
     "Face for highlighting Isearch matches." :group 'isearch))
 (setq-default case-fold-search  nil)     ; Case sensitive by default.
