@@ -308,7 +308,7 @@ Command '''`icicle-search-thing'''' (`M-s M-s t') searches the text of
 ThingAtPoint things.  It prompts you for the thing type: [[sexp|`sexp']],
 `sentence', [[list|`list']], `string', `comment', etc.  It ignores comments
 according to option '''`<tt>[[Icicles - Customization and General Tips#icicle-ignore-comments-flag|icicle-ignore-comments-flag]]</tt>''''.  You can toggle
-this ignoring using '''`C-M-;'''' at any time.  When comments are
+this ignoring using '''`##C-M-;##'''' at any time.  When comments are
 ignored, the candidate things (e.g. sexps) to be searched are only
 those outside of comments.
 
