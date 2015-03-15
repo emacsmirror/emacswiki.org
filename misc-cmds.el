@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 11:03:39 2015 (-0800)
+;; Last-Updated: Sun Mar 15 14:20:05 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3150
+;;     Update #: 3169
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -43,11 +43,11 @@
 ;;    `list-colors-nearest-color-at', `mark-buffer-after-point',
 ;;    `mark-buffer-before-point', `next-buffer-repeat' (Emacs 22+),
 ;;    `old-rename-buffer', `previous-buffer-repeat' (Emacs 22+),
-;;    `recenter-top-bottom', `recenter-top-bottom-1',
-;;    `recenter-top-bottom-2', `region-length', `region-to-buffer',
-;;    `region-to-file', `resolve-file-name',
-;;    `revert-buffer-no-confirm', `selection-length',
-;;    `switch-to-alternate-buffer',
+;;    `quit-window-delete', `recenter-top-bottom',
+;;    `recenter-top-bottom-1', `recenter-top-bottom-2',
+;;    `region-length', `region-to-buffer', `region-to-file',
+;;    `resolve-file-name', `revert-buffer-no-confirm',
+;;    `selection-length', `switch-to-alternate-buffer',
 ;;    `switch-to-alternate-buffer-other-window', `undo-repeat' (Emacs
 ;;    24.3+), `view-X11-colors'.
 ;;
@@ -93,6 +93,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/03/15 dadams
+;;     Added: quit-window-delete.
 ;; 2014/11/28 dadams
 ;;     Added: compare-windows-repeat.
 ;;     (next|previous)-buffer-repeat: Use hard, not soft, require of repeat.el.
@@ -1214,8 +1216,10 @@ CMD is the command to execute (interactively, `chown')."
 ;      win)))                            ; Return the window.
 
 
-;; Candidate as replacement for `kill-buffer', at least when used interactively.
-;; Should not just redefine `kill-buffer', because some programs count on a
+;; Candidate as a replacement for `kill-buffer', at least when used interactively.
+;; For example: (define-key global-map [remap kill-buffer] 'kill-buffer-and-its-windows)
+;;
+;; We cannot just redefine `kill-buffer', because some programs count on a
 ;; specific other buffer taking the place of the killed buffer (in the window).
 ;;;###autoload
 (defun kill-buffer-and-its-windows (buffer)
@@ -1236,6 +1240,28 @@ BUFFER may be either a buffer or its name (a string)."
               (condition-case nil (delete-window win) (error nil))))))
     (when (interactive-p)
       (error "Cannot kill buffer.  Not a live buffer: `%s'" buffer))))
+
+;; Candidate as a replacement for `quit-window', at least when used interactively.
+;; For example: (define-key global-map [remap quit-window] 'quit-window-delete)
+;;
+;; Thanks to Martin Rudalics for suggestions.
+(when (fboundp 'quit-restore-window)
+  (defun quit-window-delete (&optional kill window)
+    "Quit WINDOW, deleting it, and bury its buffer.
+WINDOW must be a live window and defaults to the selected one.
+With prefix argument KILL non-nil, kill the buffer instead of
+burying it.
+
+This is similar to the version of `quit-window' that Emacs had before
+the introduction of `quit-restore-window'.  It ignores the information
+stored in WINDOW's `quit-restore' window parameter.
+
+It deletes the WINDOW more often, rather than switching to another
+buffer in it.  If WINDOW is alone in its frame then the frame is
+deleted or iconified, according to option `frame-auto-hide-function'."
+    (interactive "P")
+    (set-window-parameter window 'quit-restore `(frame frame nil ,(current-buffer)))
+    (quit-restore-window window (if kill 'kill 'bury))))
 
 ;;; Like `clone-indirect-buffer' of Emacs 21.
 ;;;###autoload
