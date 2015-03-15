@@ -8,6 +8,7 @@ Interfacing to weather services on the net:
 * [http://jasonfruit.com/page/weather_el weather.el (uses data from worldweatheronline.com)]
 * [https://github.com/ruediger/weather-metno-el weather-metno-el] (uses free (CC BY 3.0) data from [http://www.met.no met.no])
 * [https://github.com/aaron-em/weatherline-mode.el/tree/1.0 weatherline-mode.el] Highly customizable display of current weather in your mode line, using CC-BY-SA 2.0 data from openweathermap.org
+* [https://github.com/hillwithsmallfields/JCGS-emacs/blob/master/information-management/metoffice.el metoffice.el] Fetch and parse data from the UK Government's Meteorological Office, returning alists
 
 There is also a WThreeM w3m-search-engine-alist on WThreeMSearch for weather.com.
 
