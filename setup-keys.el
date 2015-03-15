@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 11:13:58 2015 (-0800)
+;; Last-Updated: Sun Mar 15 14:22:25 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1265
+;;     Update #: 1289
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -44,7 +44,9 @@
 ;;  once, when this file is loaded - it makes no sense to change their
 ;;  values after this file is loaded.  To change their behavior from
 ;;  the default, set them in your init file before loading this
-;;  library.  For example, if you do not want to substitute command
+;;  library.
+;;
+;;  For example, if you do not want to substitute command
 ;;  `kill-buffer-and-its-windows' for command `kill-buffer' in all
 ;;  interactive uses, then put this in your init file *before* loading
 ;;  library `setup-keys':
@@ -58,16 +60,24 @@
 ;;
 ;;    `sub-*-of-line', `sub-delete-windows-for',
 ;;    `sub-kill-buffer-and-its-windows', `sub-pp-evals',
-;;    `sub-query-replace-w-options', `sub-recenter-top-bottom'.
+;;    `sub-query-replace-w-options', `sub-quit-window-delete',
+;;    `sub-recenter-top-bottom'.
 ;;
 ;;  Other variables defined here:
 ;;
 ;;    `comparison-map', `doremi-map'.
 ;;
+;;  Functions defined here:
+;;
+;;    `remap-command'.
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2015/03/15 dadams
+;;     Added: remap-command, sub-quit-window-delete.
+;;     Remap quit-window to quit-window-delete, if sub-quit-window-delete.
 ;; 2014/11/28 dadams
 ;;     Bind compare-windows-repeat instead of compare-windows, if available.
 ;; 2014/10/29 dadams
@@ -374,6 +384,14 @@
 (defvar mouse-wheel-up-event)           ; Defined in `mwheel.el'.
 
 ;;;-----------------------------
+
+(defun remap-command (old new map &optional oldmap)
+  "Bind command NEW in MAP to all keys currently bound to OLD.
+If command remapping is available, use that.  Otherwise, bind NEW to
+whatever OLD is bound to in MAP, or in OLDMAP, if provided."
+  (if (fboundp 'command-remapping)
+      (define-key map (vector 'remap old) new) ; Ignore OLDMAP for Emacs 22.
+    (substitute-key-definition old new map oldmap)))
 
 (when (boundp 'help-mode-map) (define-key help-mode-map [mouse-4] 'help-go-back))
 (when (boundp 'grep-mode-map) (define-key grep-mode-map "g" 'grep)) ; Emacs 22
@@ -856,36 +874,36 @@
 ;;;-----------REPLACEMENT BINDINGS------------------------------------
 
 (defvar sub-*-of-line t
-  "*Non-nil means `substitute-key-definition' of `*-of-line' commands
-by `*-of-line+', everywhere.
+  "*Non-nil means remap `*-of-line' commands to `*-of-line+' globally.
 This applies to `move-to-(beginning|end)-of-line', if defined, or to
 `(beginning|end)-of-line', otherwise.
 This has no effect unless you use library `misc-cmds.el'.")
 
 (defvar sub-recenter-top-bottom t
-  "*Non-nil means `substitute-key-definition' of `recenter' command
-by `sub-recenter-top-bottom', everywhere.
+  "*Non-nil means remap `recenter' to `sub-recenter-top-bottom' globally.
 This has no effect unless you use library `misc-cmds.el'.")
 
 (defvar sub-kill-buffer-and-its-windows t
-  "*Non-nil means `substitute-key-definition' of `kill-buffer' command
-by `kill-buffer-and-its-windows', everywhere.
+  "*Non-nil means remap `kill-buffer' to `kill-buffer-and-its-windows' globally.
 This has no effect unless you use library `misc-cmds.el'.")
 
 (defvar sub-pp-evals t
-  "*Non-nil means `substitute-key-definition' of `eval-*' commands
-by `pp-eval-*', everywhere.  Thus, `pp-eval-expression' replaces
-`eval-expression' and `pp-eval-last-sexp' replaces `eval-last-sexp'.
+  "*Non-nil means remap `eval-*' commands to `pp-eval-*' globally.
+Thus, `pp-eval-expression' replaces `eval-expression' and
+`pp-eval-last-sexp' replaces `eval-last-sexp'.
 This has no effect unless you use library `pp+.el'.")
 
 (defvar sub-query-replace-w-options t
-  "*Non-nil means `substitute-key-definition' of `query-replace' command
-by `query-replace-w-options', everywhere.
+  "*Non-nil means remap `query-replace' to `query-replace-w-options' globally.
 This has no effect unless you use library `replace+.el'.")
 
+(defvar sub-quit-window-delete (fboundp 'quit-restore-window) ; Emacs 24.3+
+  "*Non-nil means remap `quit-window' to `quit-window-delete' globally.
+This has no effect unless you use library `misc-cmds.el' and Emacs
+24.4 or later.")
+
 (defvar sub-delete-windows-for t
-  "*Non-nil means `substitute-key-definition' of `delete-window' command
-by `delete-windows-for', everywhere.
+  "*Non-nil means remap `delete-window' to `delete-windows-for' globally.
 This has no effect unless you use library `frame-cmds.el'.")
 
 
@@ -893,28 +911,28 @@ This has no effect unless you use library `frame-cmds.el'.")
 
 (eval-after-load "frame-cmds"
   '(when sub-delete-windows-for
-    (substitute-key-definition 'delete-window 'delete-windows-for global-map)))
+    (remap-command 'delete-window 'delete-windows-for global-map)))
 (eval-after-load "replace+"
   '(when sub-query-replace-w-options
-    (substitute-key-definition 'query-replace 'query-replace-w-options global-map)))
+    (remap-command 'query-replace 'query-replace-w-options global-map)))
 (eval-after-load "misc-cmds"
   '(when sub-kill-buffer-and-its-windows
-    (substitute-key-definition 'kill-buffer 'kill-buffer-and-its-windows global-map)))
+    (remap-command 'kill-buffer 'kill-buffer-and-its-windows global-map)))
 (eval-after-load "pp+"
   '(when sub-pp-evals
-    (substitute-key-definition 'eval-last-sexp 'pp-eval-last-sexp global-map)
-    (substitute-key-definition 'eval-expression 'pp-eval-expression global-map)))
+    (remap-command 'eval-last-sexp 'pp-eval-last-sexp global-map)
+    (remap-command 'eval-expression 'pp-eval-expression global-map)))
 (when (fboundp 'buffer-menu)
-  (substitute-key-definition 'list-buffers 'buffer-menu global-map)) ; In `buff-menu+.el'.
+  (remap-command 'list-buffers 'buffer-menu global-map)) ; In `buff-menu+.el'.
 (eval-after-load "misc-cmds"
   '(progn
     (when sub-*-of-line
       (cond ((fboundp 'move-beginning-of-line)
-             (substitute-key-definition 'move-beginning-of-line 'beginning-of-line+ global-map)
-             (substitute-key-definition 'move-end-of-line 'end-of-line+ global-map))
+             (remap-command 'move-beginning-of-line 'beginning-of-line+ global-map)
+             (remap-command 'move-end-of-line 'end-of-line+ global-map))
             (t
-             (substitute-key-definition 'beginning-of-line 'beginning-of-line+ global-map)
-             (substitute-key-definition 'end-of-line 'end-of-line+ global-map)))
+             (remap-command 'beginning-of-line 'beginning-of-line+ global-map)
+             (remap-command 'end-of-line 'end-of-line+ global-map)))
       (when (boundp 'visual-line-mode-map)
         (define-key visual-line-mode-map [remap move-beginning-of-line] nil)
         (define-key visual-line-mode-map [remap move-end-of-line]       nil)
@@ -923,7 +941,10 @@ This has no effect unless you use library `frame-cmds.el'.")
         (define-key visual-line-mode-map "\C-a" 'beginning-of-visual-line+)
         (define-key visual-line-mode-map "\C-e" 'end-of-visual-line+)))
     (when sub-recenter-top-bottom
-      (substitute-key-definition 'recenter 'recenter-top-bottom global-map))))
+      (remap-command 'recenter 'recenter-top-bottom global-map))))
+(eval-after-load "misc-cmds"
+  '(when sub-quit-window-delete
+    (remap-command 'quit-window 'quit-window-delete global-map)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
