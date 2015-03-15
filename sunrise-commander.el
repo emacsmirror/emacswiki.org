@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 455 $
+;; RCS Version: $Rev: 458 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -84,8 +84,8 @@
 ;; fingertips.
 ;; The results of the following operations are displayed in VIRTUAL mode:
 ;;    - find-name-dired (press C-c C-n),
-;;    - find-grep-dired (press C-c C-g),
 ;;    - find-dired      (press C-c C-f),
+;;    - grep            (press C-c C-g),
 ;;    - locate          (press C-c C-l),
 ;;    - list all recently visited files (press C-c C-r -- requires recentf),
 ;;    - list all directories in active pane's history ring (press C-c C-d).
@@ -431,6 +431,19 @@ Emacs behavior instead, then set this flag to t."
   :type 'hook
   :options '(auto-insert))
 
+(defcustom sr-recursive-grep-supported t
+  "Whether the command specified by `sr-grep-command' supports
+the 'recursive' (-r) option."
+  :group 'sunrise
+  :type 'boolean)
+
+(defcustom sr-grep-command "grep"
+  "Full path to the grep command for Sunrise to use in grep
+  operations. In contrast to `grep-command' this one does *not*
+  support any options."
+  :group 'sunrise
+  :type 'string)
+
 (defvar sr-restore-buffer nil
   "Buffer to restore when Sunrise quits.")
 
@@ -677,8 +690,8 @@ The following keybindings are available:
 
         C-c C-f ....... execute Find-dired in Sunrise VIRTUAL mode
         C-c C-n ....... execute find-Name-dired in Sunrise VIRTUAL mode
-        C-c C-g ....... execute find-Grep-dired in Sunrise VIRTUAL mode
         C-u C-c C-g ... execute find-Grep-dired with additional grep options
+        C-c C-g ....... execute grep in Sunrise VIRTUAL mode
         C-c C-l ....... execute Locate in Sunrise VIRTUAL mode
         C-c C-r ....... browse list of Recently visited files (requires recentf)
         C-c C-c ....... [after find, locate or recent] dismiss virtual buffer
@@ -1117,7 +1130,7 @@ the Sunrise Commander."
 
 (define-key sr-mode-map "\C-c\C-f"    'sr-find)
 (define-key sr-mode-map "\C-c\C-n"    'sr-find-name)
-(define-key sr-mode-map "\C-c\C-g"    'sr-find-grep)
+(define-key sr-mode-map "\C-c\C-g"    'sr-grep)
 (define-key sr-mode-map "\C-cb"       'sr-flatten-branch)
 (define-key sr-mode-map "\C-cp"       'sr-prune-paths)
 (define-key sr-mode-map "\C-c\C-l"    'sr-locate)
@@ -3454,6 +3467,131 @@ items (as opposed to the current default directory). Removes itself from the
                       "find \." (format "find %s" sr-find-items) (car args)))))
     (apply operation args)))
 
+(defvar sr-as-pending nil
+  "Buffer-local variable used by async search operations to keep
+partial process output between consecutive batches of data.")
+
+(defun sr-as-filter (as-buffer &optional as-filter)
+  "Return a filter function for an async search process."
+  `(lambda (process output)
+     (let ((inhibit-read-only t)
+           (beg (point-max))
+           (as-filter (or (quote ,as-filter) #'identity))
+           (entries))
+
+       (setq output (concat sr-as-pending output)
+             entries (split-string output "[\r\n]" t))
+
+       (set (make-local-variable 'sr-as-pending) "")
+       (unless (string-match "[\r\n]$" output)
+         (setq sr-as-pending (car (last entries))))
+
+       (set-buffer ,as-buffer)
+       (save-excursion
+         (mapc (lambda (x)
+                 (when (and (apply as-filter (list x))
+                            (not (eq x sr-as-pending)))
+                   (setq x (replace-regexp-in-string "\\./" "" x))
+                   (goto-char (point-max))
+                   (insert-char 32 2)
+                   (insert-directory x sr-virtual-listing-switches nil nil)))
+               entries)
+         (sr-display-attributes beg (point-at-eol) sr-show-file-attributes)))))
+
+(defun sr-as-sentinel (as-buffer as-command)
+  "Return a sentinel function for an async search process.
+Used to notify about the termination status of the process."
+  `(lambda (process status)
+     (let ((inhibit-read-only t))
+       (set-buffer ,as-buffer)
+       (goto-char (point-max))
+       (insert "\n " ,as-command " " status)
+       (forward-char -1)
+       (insert " at " (substring (current-time-string) 0 19))
+       (forward-char 1))
+     (sr-beginning-of-buffer)
+     (sr-highlight)
+     (hl-line-mode 1)))
+
+(defun sr-as-prompt (as-command)
+  "Display the message that appears when an async search process is launched."
+  (message (propertize (format "Sunrise %s (C-c C-k to kill)" as-command)
+                       'face 'minibuffer-prompt)))
+
+(defun sr-as-search (as-label as-command as-filter &rest as-args)
+  "Launch an asyncronous search operation.
+
+AS-LABEL is a name to use for displaying in messages etc.
+
+AS-COMMAND is the path to the search command to invoke.
+
+AS-FILTER is an optional filter to test every entry returned by
+the search process - only those entries for which this filter
+returns non-nil will be included in the result.
+
+AS-ARGS are all additional arguments needed to execute the
+operation.
+
+Please note that this facility executes its processes directly,
+without the intermediation of a shell, so spaces as separators
+are not supported in any of the arguments."
+
+  (let ((as-buffer (create-file-buffer (format "*Sunrise %s*" as-command)))
+        (as-process-args
+         (append (list (format "Async %s" as-label) nil as-command) as-args))
+        (as-process nil))
+    (sr-save-aspect
+     (sr-alternate-buffer (switch-to-buffer as-buffer))
+     (insert "  " default-directory ":") (newline)
+     (insert (format " Results of: %s %s" as-command
+                     (substring (format "%s" as-args) 1 -1)))
+     (newline)
+     (sr-virtual-mode)
+     (set-process-filter
+      (setq as-process (apply 'start-process as-process-args))
+      (sr-as-filter as-buffer as-filter))
+     (set-process-sentinel as-process (sr-as-sentinel as-buffer as-command))
+     (set-process-buffer as-process as-buffer)
+     (use-local-map sr-process-map)
+     (run-with-idle-timer 0.01 nil 'sr-as-prompt as-label))))
+
+(defun sr-async-grep (as-input)
+  "Launch a grep asynchronous search operation. If any entries
+have been explicitly selected in the current pane ask the user
+whether to run the grep only for these entries, otherwise run it
+in the current directory. If called with prefix ask for
+additional grep options."
+  (interactive "sFind files containing: ")
+  (let* ((default-grep-options "-rl")
+         (opts (if current-prefix-arg
+                   (concat default-grep-options " "
+                           (read-string "Additional Grep Options: "))
+                 default-grep-options))
+         (options (split-string opts " " t))
+         (marked (sr-get-marked-files))
+         (target 
+          (if (and marked (y-or-n-p "Grep in marked items only? "))
+              marked
+            '("."))))
+    (cl-labels ((fl (&rest args) (sr-flatlist args)))
+      (apply 'sr-as-search
+             (fl "Grep" sr-grep-command nil options as-input target)))))
+
+(defun sr-grep ()
+  "Run grep asynchronously and display the results in Sunrise virtual mode."
+  (interactive)
+  (if sr-recursive-grep-supported
+      (call-interactively 'sr-async-grep)
+    (call-interactively 'sr-find-grep)))
+
+(defvar locate-command)
+(autoload 'locate-prompt-for-search-string "locate")
+(defun sr-locate (as-input &optional filter arg)
+  "Run locate asynchronously and display the results in Sunrise virtual mode."
+  (interactive
+   (list (locate-prompt-for-search-string) nil current-prefix-arg))
+  (sr-as-search "Locate" "locate" #'file-exists-p as-input))
+
 (defun sr-multi-occur (string)
   "Execute `multi-occur' on all marked files. Note this command needs to visit
 first all the selected files."
@@ -3488,66 +3626,6 @@ pane."
     (while (if (string-match regexp (dired-get-filename t))
                (dired-kill-line)
              (dired-next-line 1)))))
-
-(defun sr-locate-filter (locate-buffer search-string)
-  "Return a filter function for the background `locate' process."
-  `(lambda (process output)
-     (let ((inhibit-read-only t)
-           (search-regexp ,(regexp-quote search-string))
-           (beg (point-max)))
-       (set-buffer ,locate-buffer)
-       (save-excursion
-         (mapc (lambda (x)
-                 (when (and (string-match search-regexp x) (file-exists-p x))
-                   (goto-char (point-max))
-                   (insert-char 32 2)
-                   (insert-directory x sr-virtual-listing-switches nil nil)))
-               (split-string output "[\r\n]" t))
-         (sr-display-attributes beg (point-at-eol) sr-show-file-attributes)))))
-
-(defun sr-locate-sentinel (locate-buffer)
-  "Return a sentinel function for the background locate process.
-Used to notify about the termination status of the process."
-  `(lambda (process status)
-     (let ((inhibit-read-only t))
-       (set-buffer ,locate-buffer)
-       (goto-char (point-max))
-       (insert "\n " locate-command " " status)
-       (forward-char -1)
-       (insert " at " (substring (current-time-string) 0 19))
-       (forward-char 1))
-     (sr-beginning-of-buffer)
-     (sr-highlight)
-     (hl-line-mode 1)))
-
-(defun sr-locate-prompt ()
-  "Display the message that appears when a locate process is launched."
-  (message (propertize "Sunrise locate (C-c C-k to kill)"
-                       'face 'minibuffer-prompt)))
-
-(defvar locate-command)
-(autoload 'locate-prompt-for-search-string "locate")
-(defun sr-locate (search-string &optional _filter _arg)
-  "Run locate asynchronously and display the results in Sunrise virtual mode."
-  (interactive
-   (list (locate-prompt-for-search-string) nil current-prefix-arg))
-  (let ((locate-buffer (create-file-buffer "*Sunrise Locate*"))
-        (process-connection-type nil)
-        (locate-process nil))
-    (sr-save-aspect
-     (sr-alternate-buffer (switch-to-buffer locate-buffer))
-     (cd "/")
-     (insert "  " default-directory ":")(newline)
-     (insert " Results of: " locate-command " " search-string)(newline)
-     (sr-virtual-mode)
-     (set-process-filter
-      (setq locate-process
-            (start-process "Async Locate" nil locate-command search-string))
-      (sr-locate-filter locate-buffer search-string))
-     (set-process-sentinel locate-process (sr-locate-sentinel locate-buffer))
-     (set-process-buffer locate-process locate-buffer)
-     (use-local-map sr-process-map)
-     (run-with-idle-timer 0.01 nil 'sr-locate-prompt))))
 
 (defun sr-fuzzy-narrow ()
   "Interactively narrow contents of the current pane using fuzzy matching:
@@ -4338,15 +4416,24 @@ Jj-ump, q-uit, m-ark, u-nmark, h-elp"))
             tail (cdr tail)))
     found))
 
-(defun sr-quote-marked ()
-  "Return current pane's selected entries quoted and space-separated as a string."
-  (let (marked)
+(defun sr-get-marked-files ()
+  "Return current pane's *explicitly* selected entries, or nil if
+no entries have been explicitly selected."
+  (let ((marked))
     (condition-case err
         (setq marked (dired-get-marked-files t nil nil t))
       (error (unless (string= "No file on this line" (cadr err))
                (signal (car err) (cdr err)))))
     (unless (< (length marked) 2)
       (if (eq t (car marked)) (setq marked (cdr marked)))
+      marked)))
+
+(defun sr-quote-marked ()
+  "Return current pane's explicitly selected entries quoted and
+space-separated as a string, or nil if no entries have been
+explicitly selected."
+  (let ((marked (sr-get-marked-files)))
+    (when marked
       (format "\"%s\"" (mapconcat 'identity marked "\" \"")))))
 
 (defun sr-fix-listing-switches()
@@ -4367,6 +4454,17 @@ when any of the options -p or -F is used with ls."
               (eq (string-to-char (substring path -1)) char))
     (setq path (substring path 0 -1)))
   path)
+
+(defun sr-flatlist (in &optional out rev)
+  "Flatten the nesting in an arbitrary list of values."
+  (cond
+   ((and (null in) rev) out)
+   ((null in) (nreverse out))
+   (t
+    (let ((head (car in)) (tail (cdr in)))
+      (if (atom head)
+          (sr-flatlist tail (cons head out) rev)
+        (sr-flatlist tail (append (sr-flatlist head nil t) out) rev))))))
 
 ;;; ============================================================================
 ;;; Advice
