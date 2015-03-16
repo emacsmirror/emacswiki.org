@@ -279,5 +279,10 @@ If javascript is disabled, the captcha used on EmacsWiki, is virtually impossibl
 [new:AlexSchroeder:2014-07-15 21:20 UTC]
 I can offer two solutions: 1. if you are using a browser that stores cookies, you can provide a "secret" URL parameter that tells Emacs Wiki that you have already answered the CAPTCHA: ##uihnscuskc=1##. 2. Switch to one of the Oddmuse modes listed on CategoryOddmuse. I recommend OddmuseCurl because that's what I use. It also serves as an example of how to use the wiki using ##curl##.
 
+
+== Spam filter problems ==
+[new:PhilHudson:2015-03-16 16:04 UTC]
+Vexatious false positive: I've just been prevented from posting because of somebody else's pre-existing, unchanged content, in a different part of the page, that failed the two-bare-urls test. The filter needs to look only at changed/new text, if possible, I think. Either that or the error message should say "go ahead and delete the bad stuff". (The page was [[Nxhtml]].)
+
 ----
 CategoryEmacsWikiSite
