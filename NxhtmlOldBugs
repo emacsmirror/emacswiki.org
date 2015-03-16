@@ -1,14 +1,14 @@
 This page is a list of old solved or unconfirmed bugs for [NxhtmlMode nXhtml]. Please refer to the Launchpad bug tracker (see link from [NxhtmlMode]) for new bugs, and don't add any more to this page.
 
-=== Solved problems ===
+= Solved problems =
 
-==== .nosearch ====
+== .nosearch ==
 * When I put nxhtml folder into the site-lisp directory, a lot of non-lisp directories (such as doc/, img/ etc.) will be found in the load-path.  How about adding ".nosearch" files to these directories? -- SeijiZenitani
 
 [new]
 I have added .nosearch to all those subdirs in version 1.04 - thanks for telling me again!
 
-====  nxml-where ====
+==  nxml-where ==
 I find nxml-where mode very useful. However I have two suggestions
 * nxml-where-get-id-pattern should have the configurable attribute to look for. I'm currently editing WSDL files and I want to look for "name" attribute. I hacked this in. Perhaps a configurable variable?
 * Inside nxml-where-update-once the  (run-with-idle-timer 0 ...) make continuous movement very jerky. I use (run-with-idle-timer 0.6 for smoother operation. Perhaps another config variable? :)
@@ -18,7 +18,7 @@ I find nxml-where mode very useful. However I have two suggestions
 [new]
 I believe this as least partly is solved in version 1.04
 
-==== Turning on by magic-mode-alist ====
+== Turning on by magic-mode-alist ==
 
 * NxhtmlMode by default is triggered on non-XML HTML files also, and I don't like that fact very much. So I used magic-mode-alist to activate NxhtmlMode on files that feel like XHTML only:
 
@@ -31,7 +31,7 @@ I believe this as least partly is solved in version 1.04
 [new]
 Thanks, but this is not a problem with %%NxhtmlMode%%. This behaviour of Emacs has been discussed on the development list and there are some changes in the CVS version.
 
-====   Smarty Support? ====
+==   Smarty Support? ==
 
 It'd be nice if nxhtml had [[SmartyMode]] support! -- mjc
 
@@ -40,7 +40,7 @@ There is now Smarty support in the nXhtml 1.04 beta version.
 It does not cover the special {literal} ... {/literal}.
 Because of the problems this gives with <style ...> and <script ...> regions these are not supported when using Smarty.
 
-====   Php problems? ====
+==   Php problems? ==
 
 I've got some problems with php and mumamo mode and latest 1.04 beta:
 * It is common practice in php files that contain only php code (for example a single class) to omit the closing ?> tag at the endo of file, because it prevents the possibility for the interpreter to output eventual non required spaces. With mumamo mode enabled, leaving ?> out at the end of the file leaves the entire file covered with red lines, is there a solution?
@@ -89,7 +89,7 @@ Is this an acceptable solution?
 [new]
 I haven't been able to use tabs instead of spaces while using php-mode and pressing tab, How can I do this? Also, which c-style is default and how can I set a default one (ie. k&r)?
 
-==== Problem with quick customize buffer ====
+== Problem with quick customize buffer ==
 
 Using emacs gtk in ubuntu, while opening the quick customize buffer display stops at:
 
@@ -103,7 +103,7 @@ while Messages buffer says: format: Symbol's value as variable is void: mumamo-g
 I have no idea where this error comes from.
 However mumamo-global-mode is gone in nXhtml 1.10
 
-==== css-mode, javascript-mode and php-mode ====
+== css-mode, javascript-mode and php-mode ==
 Hello,
 
 First, thank you very much for Nxhtml-mode. It's the most perfect mode for web developping in emacs ( i was waiting for this since a long time, i'm so proud to prove to my friends that emacs is better than Aptana for Web Dev).
@@ -120,7 +120,7 @@ It also uses the latest js mode (ie the one that has been suggested to be added 
 The css-mode that comes with Emacs is used if available.
 
 
-==== Php extension .phtml missing ====
+== Php extension .phtml missing ==
 Could you please add .phtml as a default php extension? It's used in Zend Framework as a default extension for view templates.
 Also what's the status of color problems for php comments? I noticed that there's still a problem when '->' characters are inside a commented line.
 Thanks
@@ -128,12 +128,12 @@ Thanks
 [new]
 Done.
 
-==== Fixed some problems with find-recursive.el ====
+== Fixed some problems with find-recursive.el ==
 nXhtml comes with a find-recursive.el with some fixes.
 Unfortunately those introduced some bugs. Fixed in version nXhtml v 1.17
 
 
-==== Setting Highlight Background Colour? ====
+== Setting Highlight Background Colour? ==
 
 When I open a PHP file with nxhtml-mode, all texts are with highlighted background and this is quite annoying in some colour scheme (such as when started emacs with --reverse-video), is it possible to turn this highlighting off? Thanks! -- Yan
 
@@ -161,7 +161,7 @@ Use customize instead.
 If you do not want background colors then do
 
   M-x customize-option RET mumamo-chunk-coloring RET
-==== How to Save "Hide Validation Error" Setting? ====
+== How to Save "Hide Validation Error" Setting? ==
 
 It is somewhat annoying that every time I opened a PHP file I'd have to push C-c _ to turn off the validation errors.  How could I set it (I mean turn off all validation errors) in my ~/.emacs file?  Thanks! -- Yan
 
@@ -191,7 +191,7 @@ Thanks Lennart, I found the command (nxhtml-toggle-visible-warnings).  First I t
 (add-hook 'php-mode-hook 'my-php-hook)
 }}}
 
-And second I thought it is "toggle", but what I want is to "disable", I think there's difference between these two actions. Any help on this? Thanks again for your previous time!  -- Yan 
+And second I thought it is "toggle", but what I want is to "disable", I think there's difference between these two actions. Any help on this? Thanks again for your previous time!  -- Yan
 
 [new]
 If you want to turn off the warnings by default you can use
@@ -203,7 +203,7 @@ Unfortunately there is no simple way to do it per buffer since information is ca
 PS: I just noticed that the changes to nxml makes the error warnings disappear for ever if you use a newer version of Emacs. Fixed in next version of nXhtml.
 
 
-==== Problem with Ruby font-locking ====
+== Problem with Ruby font-locking ==
 
 I have (mumamo-global-mode t) and (add-to-list 'mumamo-filenames-list '(".erb\\'" "eRuby nXhtml Family")) in ~/.emacs but opening a *.html.erb file doesn't turn on mumamo-mode.  I'm using the latest beta version of nXhtml.  What am I missing?
 
@@ -230,7 +230,7 @@ I had this problem when I had a ruby-mode hook enable PrettyLambda when ruby-mod
 [new]
 Thanks for telling us Phil!
 
-==== Should require cc-defs ====
+== Should require cc-defs ==
 
 When loading nxhtml-mode using emacs -Q I notice that it fails because it needs some things that are defined in cc-defs, but it does not explicitly require cc-defs.
 
@@ -243,7 +243,7 @@ If you already are using that then please try the latest beta (which I do not ye
 [new]
 This seems to be fixed in the beta; thanks. (It was only happening with Emacs23.)
 
-==== void-variable c-emacs-features ===
+== void-variable c-emacs-features =
 [new]
 Hi,
 
@@ -257,7 +257,7 @@ Debugger entered--Lisp error: (void-variable c-emacs-features)
   eval-buffer(#<buffer  *load*<3>> nil "/home/tennis/elisp/emacswikicode/css-mode.el" nil t)  ; Reading at buffer position 8727
   load-with-code-conversion("/home/tennis/elisp/emacswikicode/css-mode.el" "/home/tennis/elisp/emacswikicode/css-mode.el" nil t)
 }}}
---Tennis 
+--Tennis
 
 [new]
 I think there is a bug in the css-mode you are using.
@@ -282,11 +282,11 @@ Thanks, that means you were using Alex Shinn's css-mode.el that has not been upd
 Now we know that one does not work with nXhtml.
 
 
-==== Doesn't recognize <?= ?> blocks ====
+== Doesn't recognize <?= ?> blocks ==
 
-I'm really impressed with nxhtml-mode in general, but it gets confused by the <?= ?> blocks used to show a php variable. Instead of treating the inside as php, it thinks it's still HTML and reports it as an invalid tag. It's especially bad when you have the block as the value of an attribute; <img src="<?=$img?>" alt="image" /> messes up all the highlighting after the <?=. 
+I'm really impressed with nxhtml-mode in general, but it gets confused by the <?= ?> blocks used to show a php variable. Instead of treating the inside as php, it thinks it's still HTML and reports it as an invalid tag. It's especially bad when you have the block as the value of an attribute; <img src="<?=$img?>" alt="image" /> messes up all the highlighting after the <?=.
 
-On a vaguely related note, accidentally typing <?> results in emacs freezing. 
+On a vaguely related note, accidentally typing <?> results in emacs freezing.
 
 [new]
 I have left out the optional syntax <?= ... > since you can use <?php echo ... ?> instead.
@@ -298,11 +298,11 @@ Currently there is nothing to do about this other than turn of the validation or
 
 Thanks for telling about the <?> problem, it is solved in version 1.29.
 
-==== Invalid read syntax:"] in a list ====
+== Invalid read syntax:"] in a list ==
 
 This problem is hopefully solved in latest released version 1.33
 
-==== Nxhtml 1.33 is broken on emacs 22. ====
+== Nxhtml 1.33 is broken on emacs 22. ==
 {{{
 Warning (mumamo-post-command): Symbol's value as variable is void: fill-forward-paragraph-function
 }}}
@@ -334,7 +334,7 @@ mumamo-fontify-region: Attempt to set a constant symbol: nil
   mumamo-fontify-region(1 102 nil)
   font-lock-fontify-region(1 102)
   run-hook-with-args(font-lock-fontify-region 1 102)
-  byte-code("\302\303 	#\207" [start next run-hook-with-args jit-lock-functions] 4)
+  byte-code("\302\303   #\207" [start next run-hook-with-args jit-lock-functions] 4)
   jit-lock-fontify-now(1 501)
   jit-lock-function(1)
   mumamo-jit-lock-function(1)
@@ -359,21 +359,21 @@ MuMaMo error, please look in the *Message* buffer
 Eh, sorry. I should have thought first.
 This is fixed in the released version (from the normal download page) that I just uploaded.
 
-==== nxhtml mode download site is down :((( ====
+== nxhtml mode download site is down :((( ==
 
 Please can someone bring this site back or could someone upload nxml*.zip to some other server?
 
 [new]
 The site is up again and in the future I plan to move this to a code repository.
 
-====   Genshi Support? ====
+==   Genshi Support? ==
 
 Is it possible to add support for [http://genshi.edgewall.org/wiki/Documentation/0.4.x/xml-templates.html Genshi]? -- jcc
 
 [new]
 Genshi support has been added.
 
-==== Sub-mode replacement =====
+== Sub-mode replacement ===
 Is there specials things ( variables customization ) to do with nxhtml parameters to replace the php-mode or javascript-mode with one of our choice ?
 
 [new]
@@ -383,7 +383,7 @@ Yes, there is the defcustom mumamo-major-modes:
 
 Note that if the major mode you want to use does not follow Emacs conventions there might be problems.
 
-==== Problem with Ruby indentation (actually any one line submode) ====
+== Problem with Ruby indentation (actually any one line submode) ==
 
 I'm having problems using nxhtml-mode to edit html.erb files, I get
 %%"Unclosed tab <=>"%% error when I press TAB. I'm using Emacs
@@ -410,7 +410,7 @@ recommended in rinari README, it is like:
       rng-nxml-auto-validate-flag nil
       nxml-degraded t)
 </pre>
-      
+
 Just open an rhtml or html.erb file, write something, press TAB and get nothing
 but an error in minibuffer saying %%Unclosed tag <=>%%
 
@@ -437,7 +437,7 @@ thanks for your time, Jorge
 Thanks, please try the 1.34 beta here http://ourcomments.org/Emacs/DL/elisp/nxhtml/beta/
 
 
-==== False-positive validation errors ====
+== False-positive validation errors ==
 
 Labels and inputs in forms are incorrectly flagged as invalid.  In this valid sample document, the label and input will be considered errors:
 
@@ -464,7 +464,7 @@ Or try to fix it of course.
 I believe that the wrong DTD is used (strict instead of transitional) and that this is just a simplification.
 
 [new]
-I have posted a report at http://www.emacswiki.org/cgi-bin/wiki/NxmlMode .  But no answer yet.  
+I have posted a report at http://www.emacswiki.org/cgi-bin/wiki/NxmlMode .  But no answer yet.
 
 Lucas
 
@@ -475,7 +475,7 @@ You can do that from the help menu in Emacs (but please use an unpatched Emacs t
 I just filed a bug report for this.
 
 
-==== Bug in sex-mode.el in nXhtml 1.34 ====
+== Bug in sex-mode.el in nXhtml 1.34 ==
 
 Unfortunately there was a bug in sex-mode.el in nXhtml 1.34.
 To fix it change line 117 to
@@ -485,7 +485,7 @@ To fix it change line 117 to
 
 It has been fixed in nXhtml 1.35 and it is the only change in that version of nXhtml.
 
-==== Ruby lost font-locking ====
+== Ruby lost font-locking ==
 [new]
 Hi Lennard, I still have lot of problems to run nxhtml, I lost ruby fontification and got many errors like
 
@@ -532,8 +532,8 @@ fixed the problem for me.
 
 1 - http://github.com/technomancy/dotfiles/tree/master/.emacs.d/ruby-mode.el
 
-==== Django template problems ====
-I've noticed that django templates seem to give mumamo problems 
+== Django template problems ==
+I've noticed that django templates seem to give mumamo problems
 (lots of warning and error messages, and is too slow to use). The
 workaround I'm using now is to use django-html-mode and then edit
 mumamo-fun.el and replace the 4
@@ -586,7 +586,7 @@ Thanks, this seems to be working well for me now. (And I was using emacs 23.0.60
 Thanks Bryan. But when you say that you are using a not yet released Emacs then please
 also tell the CVS checkout time.
 
-==== Issue with ido ====
+== Issue with ido ==
 
 Hi, i am using latest Emacs CVS, i use ido and nxhtml mode.
 Here is my problem: in my .emacs if i load nxhtml using (load-file "~/.emacs.d/lib/nxml/autostart.el") and later enable ido using (ido-mode t) ido is enabled which is what i want but if i enable ido first and then load nxhtml ido is disable which looks like a bug.
@@ -595,7 +595,7 @@ Here is my problem: in my .emacs if i load nxhtml using (load-file "~/.emacs.d/l
 Yes, thanks, it is. I will try to fix it when I get time.
 
 
-==== Shame it needs Emacs 22 ====
+== Shame it needs Emacs 22 ==
 
 I love nxml-mode and I'd love to use nxhtml-mode too, but for various silly reasons it's not possible for me to upgrade from Emacs21 at present.  nxml-mode works fine in Emacs21... it would be nice if backwards-compatibility was on the "to do" list for nxhtml-mode too, though I realise there may be very good reasons why it requires Emacs22!
 
@@ -607,7 +607,7 @@ changes I make to nXhtml too.
 
 And beside Emacs 23 may soon be out ... ;-)
 
-==== Nesting submodes within submodes ====
+== Nesting submodes within submodes ==
 
 Is it possible to nest submodes in submodes (jacobolus asked that [http://www.reddit.com/info/6rkac/comments/c04oke3 here])?
 
@@ -616,7 +616,7 @@ No, not yet. But I have taken some steps towards it.
 If anyone wants to finish that work please contact me.
 I am going to put nXhtml in a repository so we can cooperate.
 
-==== Problem with xhtml mode, ruby mode, and css mode ====
+== Problem with xhtml mode, ruby mode, and css mode ==
 I have a problem trying to embed ruby code into a style attribute. The goal is go from this:
   <div class="widget">
 To this:
@@ -654,10 +654,10 @@ The betas are very stable, but I do not want to annoy people with too frequent r
 Please contact me be mail if you want to test, my mail address is in the source files.
 
 
-===== similar problems in javascript mode =====
+=== similar problems in javascript mode ===
 
 Using latest carbon emacs...
-I am experiencing similar problems as sockmock when editing large javascript files, in my case the mootools framework (~7k lines).  Just load up the file, manually or automatically switch to javascript mode, scroll around a bit and fizzzzz.... time to force quit.  
+I am experiencing similar problems as sockmock when editing large javascript files, in my case the mootools framework (~7k lines).  Just load up the file, manually or automatically switch to javascript mode, scroll around a bit and fizzzzz.... time to force quit.
 
 -- jim-jam
 
@@ -672,7 +672,7 @@ I am using Carbon Emacs (22.1.50.1)
 Thanks, I have added that to the bug report.
 
 
-==== Strange syntax highlighting (Emacs 22) ====
+== Strange syntax highlighting (Emacs 22) ==
 
 Syntax highlighting is strange on nxhtml 1.32.  It works fine on nxhtml 1.26.
 After the second double quote sign ("), characters remain in the font-lock-string-face.
@@ -706,7 +706,7 @@ Unfortunately I can't do it now.
 I think this is solved in version 1.41.
 
 
-==== 100% CPU on php file (Emacs 22 only, workaround available) ====
+== 100% CPU on php file (Emacs 22 only, workaround available) ==
 
 I tried to open a php file with no ?> ending tag at the bottom (under ubuntu). The CPU usage goes 100% and stays there for long time, I have to kill the process, any idea? Will php files with no ending ?> tag be supported? Thanks
 
@@ -730,12 +730,12 @@ include_once(APP_AAA_INCLUDE."gg.php");
 
 class Test
 {
-	public $var1;
-	
-	function __construct()
-	{
-		$this->var1 = 5;
-	}
+    public $var1;
+
+    function __construct()
+    {
+        $this->var1 = 5;
+    }
 }
 }}}
 
@@ -799,7 +799,7 @@ I think this is solved in version 1.44 of nXhtml.
 Please test.
 
 
-==== css-mode ====
+== css-mode ==
 
 Emacs 22.2 or later contains css-mode.
 Probably nxhtml doesn't need it in (related/css-mode.el).
@@ -807,7 +807,7 @@ Probably nxhtml doesn't need it in (related/css-mode.el).
 [new]
 Thanks. Removed.
 
-==== tests directory? ====
+== tests directory? ==
 
 Does nxhtml work when the user removes the "tests" directory?
 
@@ -835,7 +835,7 @@ As you may know, Emacs 23 is not yet so stable on Macs.
 No. You can use much of nXhtml without nXml.
 nXml gives completion and validation, but the other parts can still be used.
 
-==== nXhtml and ruby-mode ====
+== nXhtml and ruby-mode ==
 I noticed that nxhtml comes with its own ruby-mode.
 How to use emacs' built-in ruby-mode?
 
@@ -868,7 +868,7 @@ Thanks Seiji, I have fixed this in the next version (1.61) of nXhtml.
 [new]
 I confirmed that the problem was fixed.  Thank you.
 
-==== nXhtml interferes with emacs-rails ====
+== nXhtml interferes with emacs-rails ==
 
 Since find-recursive.el in nxhtml is intentionally modified,
 emacs-rails (which requires find-recursive.el) cannot start if  the load-path contains the nxhtml directory.
@@ -882,7 +882,7 @@ Thanks Seiji. I was waiting for some comments about this and it is removed in ve
 I confirmed that this problem was fixed.  Thank you.
 
 
-==== Conditional Loading ====
+== Conditional Loading ==
 [new]
 If you use emacs for everything (say using emacs-client with emacs as an alternative) you'll sometimes want to load emacs for something quick like a mail and you'll have to start a new one as you don't have a server running.  In situations like this you'll not want to wait for big modes like nxhtml to load.  This elisp (with an imperfect regex) will load nxhtml only when required:
 
@@ -891,7 +891,7 @@ If you use emacs for everything (say using emacs-client with emacs as an alterna
   (defun load-nxhtml-if-required ()
     (if (and (string-match ".+\\.\\(php\\|html\\)$" (buffer-file-name))
              (not (featurep 'nxhtml-autostart)))
-        (progn 
+        (progn
           (load *nxhtml-autostart-file*)
           (nxhtml-mumamo-mode)))) ;; mumamo loads nxhtml-mode et al
   (add-hook 'find-file-hook 'load-nxhtml-if-required)
@@ -917,7 +917,7 @@ I use the following to autoload nXhtml, inspired by a snippet seen at NxmlMode:
 Oh, I never thought of adding autostart like that.
 Apart from that you can also use Major Mode Priorities in the nXhtml menu to choose when to use nXhtml multi major modes.
 
-==== Mumamo support for PHP heredoc? ====
+== Mumamo support for PHP heredoc? ==
 
 PHP [http://us2.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc heredoc] can be used, for example, to store html code in a variable. Of course, Mumamo cannot know what kind of text is within the heredoc. Would it be possible to add support for a special kind of comment which when given on the line before the variable initialization would hint at the mode within the heredoc, so Mumamo can handle it as HTML?
 
@@ -1077,7 +1077,7 @@ I tried 1.89 with emacs 23.1. Looks like it doesn't handle the case properly whe
 
 1.88 handled this case better, aside from the other problems.
 
-: Some more info: Looks like if the embedded Javascript is simple and short then it recognizes its end correctly, but if the JS is more complicated (several pages long) then it gets confused by something. 
+: Some more info: Looks like if the embedded Javascript is simple and short then it recognizes its end correctly, but if the JS is more complicated (several pages long) then it gets confused by something.
 
 
 Found the cause of the problem. If the embedded Javascript closing part is in the first column like the EOTHTML then it fails to notice the end of the js block:
@@ -1097,7 +1097,7 @@ EOTHTML;
 </pre>
 
 
-So I indented my JS block closings and now everything is OK. 
+So I indented my JS block closings and now everything is OK.
 
 [new]
 Thanks for telling us about the bug and how to work around it.
@@ -1117,7 +1117,7 @@ And please contribute what you write back to us all!
 
 
 
-==== Error if xhtml-loader.rnc is read-only ====
+== Error if xhtml-loader.rnc is read-only ==
 Nxhtml throws an error when xhtml-loader.rnc is read-only, however, please remember that elisp files are usually read-only when a root user installs them on multi-user systems (like Un*x).
 
 [new]
@@ -1126,7 +1126,7 @@ So I think all that is needed is that you from the root user loads nXhtml.
 
 
 
-==== Symbol's function definition is void: < ====
+== Symbol's function definition is void: < ==
 
 [new]
 I frequently experience this error and I suspect Nxhtml is responsible, because I didn't have a similar problem before I started using it.  It is very annoying, because I loose the definition of < (less-than) which breaks everything, so I can only restart emacs to fix it.
@@ -1189,11 +1189,11 @@ When I got the error, it was under the same circumstances you described: editing
 *  .emacs.d/muse/muse.el:        (fmakunbound 'find-buffer-file-type)))))
 *  .emacs.d/cedet-1.0pre4/common/cedet-edebug.el:  (fmakunbound 'cedet-edebug-prin1-to-string-inner))
 *  .emacs.d/emacs-w3m-cvs/w3m-util.el:    (fmakunbound 'select-frame-set-input-focus)))
-*  .emacs.d/emacs-w3m-cvs/w3m.el:		      (fmakunbound ',fn)))
+*  .emacs.d/emacs-w3m-cvs/w3m.el:             (fmakunbound ',fn)))
 *  .emacs.d/emacs-jabber-tla/fsm.el:  (fmakunbound (intern (format "start-%s" name)))
 *  .emacs.d/ecb-snap/ecb-layout.el:  (fmakunbound (intern (format "ecb-layout-function-%s" name)))
 *  .emacs.d/ecb-snap/ecb-layout.el:  (fmakunbound (intern (format "ecb-delete-window-ecb-windows-%s" name)))
-*  .emacs.d/ecb-snap/silentcomp.el:		    (fmakunbound fun)
+*  .emacs.d/ecb-snap/silentcomp.el:         (fmakunbound fun)
 * and Emacs 22
 
 I can't reproduce the problem any more.
@@ -1228,9 +1228,9 @@ I think it is gone ... ;-)
 
 
 [new]
-*=================== End of Solved Problems ==================*
+*================= End of Solved Problems ================*
 ----
-=== Unconfirmed problems ===
+= Unconfirmed problems =
 
 ====Conflict with flyspell in text-mode-hook====
 When I have 'turn-on-flyspell' included in my text-mode-hook, nxhtml spews out a rash of flyspell-related errors with every character typed.
@@ -1246,5 +1246,4 @@ I just tested in a XHTML file with just flyspell-mode and it works for me (using
 BTW, I just added flyspell support. It will be in nXhtml 1.17
 
 [new]
-*=================== End of Unconfirmed Problems ==================*
-
+*================= End of Unconfirmed Problems ================*
