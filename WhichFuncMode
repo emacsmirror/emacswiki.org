@@ -54,7 +54,9 @@ However, there is a gotcha.  Internally, when imenu isn't available, WhichFuncMo
 }}}
 == Alternatives ==
 
-An alternative mode that offers similar functionality for several programming languages is SemanticIdleBreadcrumbsMode.
+An alternative mode is semantic-stickyfunc-mode that displays out of screen context (i.e. current function) at the top line. Its enhanced version, [stickfyfunc-enhance https://github.com/tuhdo/semantic-stickyfunc-enhance) improves it further.
+
+Another alternative mode that offers similar functionality for several programming languages is SemanticIdleBreadcrumbsMode.
 
 Another alternative mode is [http://lists.gnu.org/archive/html/gnu-emacs-sources/2011-01/msg00006.html cfm]. Cfm (display current function or method) will display class-qualified member function names (A::foo), particularly useful for C++ and Java classes that embed member function definitions (that is, without the three-box model).
 
