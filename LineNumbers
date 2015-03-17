@@ -60,6 +60,8 @@ Also is there a way to turn on linum mode automatically for any opened file? - T
 
 : Append ##(global-linum-mode 1)## to your ##.emacs##.
 
+Note: adding ##(global-linum-mode 1)## to your ##.emacs## will cause Emacs to ask "Options have changed - save them?" when exiting.  Clearly this is not a good way to enable ##linum-mode## globally.
+
 [new:MichaelHoffman:2011-12-20]
 Another workaround that keeps the appearance of the dynamic linum-format is to use this function which replaces the spaces on the left with zeroes that have the same foreground and background color.
 
