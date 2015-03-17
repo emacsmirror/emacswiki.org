@@ -1,21 +1,45 @@
 I'm just another user. I use Emacs. I have been using it for a couple of years now (as of 2007 I think).
-Almost everywhere I am I'm (un)known as [::ryuslash], including IRC. I also have [http://ryuslash.org A website].
-
-I've just started two projects in emacs lisp, one a silly theme and the other a silly git thingy.
-
-* [https://gitorious.org/ryuslash/tron-theme tron-theme]
-* [https://github.com/ryuslash/git-auto-commit-mode git-auto-commit-mode]
+Almost everywhere I am I'm (un)known as [::ryuslash], including IRC. I also have [https://ryuslash.org A website].
 
 I thought I'd finally add myself here so that I could share this. Plus I've been wanting to do it for a while, never dared.
 
+== Projects ==
 
+; [https://github.com/ryuslash/git-auto-commit-mode git-auto-commit-mode]: A minor mode that tries to commit a file after it is saved.
+; [https://github.com/ryuslash/yoshi-theme yoshi-theme]: My personal Emacs theme.
+; [https://github.com/ryuslash/kaarvok kaarvok]: A simple project template sort of thing. Define a template and recreate it many times.
+; [https://github.com/ryuslash/flycheck-commit-check flycheck-commit-check]: A flycheck checker for my [https://github.com/ryuslash/commit-check commit-check] project.
+; [https://github.com/ryuslash/dispass.el dispass.el]: An Emacs interface for [http://dispass.babab.nl/all.html DisPass], a much more awesome password manager than all the others.
+; [https://github.com/ryuslash/eshell-fringe-status eshell-fringe-status]: Inspired by [http://finalterm.org/ Final Term] showing a failed indicator in its margin, I wanted to see the success/failed status of my commands in eshell as well.
+; [https://github.com/ryuslash/edocs edocs]: An attempt to make writing module documentation simpler by having to write it only once.
+; [https://github.com/ryuslash/upcase-mode upcase-mode]: An experiment with transient keymaps to lessen the use of the Shift key.
+; [https://github.com/ryuslash/mode-icons mode-icons]: An attempt to make my mode-line a bit more visual, less textual. And to save space.
+; [https://github.com/ryuslash/desktop-registry desktop-registry]: A module to turn Emacs' desktop files into a poor man's project file.
 
+=== Unfinished projects ===
 
+These projects are in very early stages of development and are hardly, or not at all, usable.
 
+; [https://github.com/ryuslash/ogi ogi]: An interface between org-mode and github issues. Can only pull in some issues.
+; [https://github.com/ryuslash/taiga-api-emacs taiga-api-emacs]: A client library for the [https://taiga.io/ Taiga] project management system. Unfinished and just a library, has no user interface.
+
+=== Defunkt projects ===
+
+I don't (really) work on these projects anymore as they're very unlikely to be of much use to me anymore.
+
+; [https://gitorious.org/ryuslash/tron-theme tron-theme]: An early attempt at writing a theme for Emacs. Inspired by the Tron: Legacy movie.
+; [https://github.com/ryuslash/transient-navigation transient-navigation]: Something I used before I started using [[Evil]], right after I discovered transient keymaps. Meant to help reduce the effects of Emacs pinky. I don't need it anymore now that I use [[Evil]].
+; [https://github.com/ryuslash/desktop-agendas desktop-agendas]: An experiment to integrate org-agenda better with my desktop-registry project.
+
+== Mailbox ==
 
 [new:DrewAdams:2012-01-10 01:36 UTC]
 
 Welcome to the wiki. -- DrewAdams
+
+[new:TomWillemse:2015-03-17 10:19 CET]
+
+A very belated but sincere: Thank you! -- TomWillemse
 
 
 ----
