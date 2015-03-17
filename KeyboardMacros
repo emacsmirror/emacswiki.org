@@ -48,7 +48,7 @@ Why do that? One reason is that it lets you have more than one macro defined at 
 Keyboard macros are only defined for your ''current Emacs session''. If you want to be able to reuse a macro in a future session, then save it in your initialization file (##.emacs## or ##_emacs##). Open the file, then insert the macro definition using this command:
 * `M-x insert-kbd-macro' -- Insert a named keyboard macro at point. 
 
-If you insert you macro into your init file, you can use `M-x' to execute the named keyboard macro in future
+If your insert you macro into your [[init file]], you can use `M-x' to execute the named keyboard macro in future
 sessions -- just as if it were a standard Emacs command of the same name.  If you want to bind it to a key, you can add code like the
 following to your initialization file:
 
