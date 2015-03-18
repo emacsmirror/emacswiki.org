@@ -1,31 +1,15 @@
-== Using prettify-symbols-mode Included in Emacs 24.4 ==
+This page is about displaying the word `lambda' using the Greek letter.
+See also PrettySymbol.
 
-Emacs 24.4 has introduced a minor mode called "prettify-symbols-mode".
 
-{{{
-(defun my-pretty-lambda ()
-  "make some word or string show as pretty Unicode symbols"
-  (setq prettify-symbols-alist
-        '(
-          ("lambda" . 955) ; λ
-          )))
-
-(add-hook 'scheme-mode-hook 'my-pretty-lambda)
-(global-prettify-symbols-mode 1)
-}}}
-
-Notice that the snippet above enables only when scheme-mode is on, add more hooks if you wish to get other major modes working.
-
-Reference: http://ergoemacs.org/emacs/emacs_pretty_lambda.html 
 
 == Using Character Composition == 
 
-This page is about displaying the word `lambda' using the Greek letter.
-See also PrettySymbol.
 
 ----
 
 Library <tt>[[pretty-lambdada.el]]</tt> defines commands, including minor modes (local and global), that let you do this, either for specific modes or generally. The core display code is similar to the following snippet:
+
 {{{
 (defun pretty-lambdas ()
   (font-lock-add-keywords
@@ -34,8 +18,14 @@ Library <tt>[[pretty-lambdada.el]]</tt> defines commands, including minor modes 
                                     ,(make-char 'greek-iso8859-7 107))
                     nil))))))
 }}}
+
+
+----
+
 There are several versions of such snippets floating around. The one above is from LawrenceMitchell, modified from StefanMonnier's rewrite of 
 OliverScholz's rewrite of LukeGorrie's original ##pretty-lambda.el## code (http://fresh.homeunix.net/~luke/misc/emacs/pretty-lambda.el).
+
+----
 
 And here is a variant by TrentBuck:
 {{{
@@ -48,7 +38,7 @@ And here is a variant by TrentBuck:
 ----
 
 [new]
-I stopped using this hack [http://fresh.homeunix.net/~luke/misc/emacs/pretty-lambda.el] because Emacs was actually saving weird escape characters in my files such that when I reloaded them I'd still get lambda-symbols, even with this turned off. But it makes the files unreadable to other programs. Does anyone else have this problem, and know the fix? Since it's all done in font-lock I didn't expect the saved files to be affected. -- LukeGorrie
+I stopped using [http://fresh.homeunix.net/~luke/misc/emacs/pretty-lambda.el pretty-lambda.el] because Emacs was actually saving weird escape characters in my files such that when I reloaded them I'd still get lambda-symbols, even with this turned off. But it makes the files unreadable to other programs. Does anyone else have this problem, and know the fix? Since it's all done in font-lock I didn't expect the saved files to be affected. -- LukeGorrie
 
 [new]
 : This should happen only if the file was saved in the coding system Emacs Mule, because emacs-mule preserves the composition property. (Composition is actually part of Emacs' m17n support.) Normally you should not use emacs-mule; however, auto-save files are saved in that coding system. So if you restore a file after a crash, for instance, you can get something like what you describe. A fix would be to use a hook to remove all composition properties before auto-saving. -- OliverScholz
@@ -129,5 +119,30 @@ InPBaZG4GXYO4Gc4/eMrWi61ua7s7QREWav/2Q==")
 
 (add-hook 'emacs-lisp-mode 'big-lambda-mode-turn-on)
 }}}
+
+
+
+== Using prettify-symbols-mode ==
+
+Emacs 24.4 introduced a minor mode called `prettify-symbols-mode'.
+
+{{{
+(defun my-pretty-lambda ()
+  "make some word or string show as pretty Unicode symbols"
+  (setq prettify-symbols-alist
+        '(
+          ("lambda" . 955) ; λ
+          )))
+
+(add-hook 'scheme-mode-hook 'my-pretty-lambda)
+(global-prettify-symbols-mode 1)
+}}}
+
+The snippet above works only when `scheme-mode' is on. Add more hooks if you wish to get other major modes working.
+
+See also: http://ergoemacs.org/emacs/emacs_pretty_lambda.html 
+
+
+
 ----
 CategoryDisplay
