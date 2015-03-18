@@ -31,6 +31,7 @@ Related:
 * UntabifyUponSave -- save all files with spaces instead of tabs
 * ShowWhiteSpace -- Visualize spaces and tabs with color highlighting.
 * HighlightIndentation -- Show vertical guide lines for each indentation level (spaces only).
+* DoubleSpaceDefuns -- Ensure there is one and only one blank line between function definitions.
 
 External:
 
