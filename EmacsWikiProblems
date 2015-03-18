@@ -283,6 +283,7 @@ I can offer two solutions: 1. if you are using a browser that stores cookies, yo
 == Spam filter problems ==
 [new:PhilHudson:2015-03-16 16:04 UTC]
 Vexatious false positive: I've just been prevented from posting because of somebody else's pre-existing, unchanged content, in a different part of the page, that failed the two-bare-urls test. The filter needs to look only at changed/new text, if possible, I think. Either that or the error message should say "go ahead and delete the bad stuff". (The page was [[Nxhtml]].)
-
+[new:AlexSchroeder:2015-03-18 07:36 UTC]
+This recommendation makes sense. I'll see whether there is a good place to add this. -- Alex
 ----
 CategoryEmacsWikiSite
