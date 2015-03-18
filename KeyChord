@@ -79,6 +79,11 @@ However, I have a real tough time when I'm not using my config (for example, if 
 
 --AlexDaniel
 
+[new]
+Sometimes I stumble over chords when they occur in normal typing. To avoid that, it would be great if key-chord-mode could only trigger chords when there was a short break between other characters and the chord. Or more generally: When the time difference between hitting the keys in the chord is much shorter than the difference between the first key of the chord and the key which came before it and the second key of the chord and the key which came after it.
+
+That should catch most of the false positives.
+
 ----
 CategoryKeys
 
