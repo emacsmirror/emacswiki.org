@@ -1,6 +1,22 @@
-== Emacs 24.4 ==
+== Using prettify-symbols-mode Included in Emacs 24.4 ==
 
-Emacs 24.4 has introduced a minor mode called "prettify-symbols-mode". See http://ergoemacs.org/emacs/emacs_pretty_lambda.html for more details.
+Emacs 24.4 has introduced a minor mode called "prettify-symbols-mode".
+
+{{{
+(defun my-pretty-lambda ()
+  "make some word or string show as pretty Unicode symbols"
+  (setq prettify-symbols-alist
+        '(
+          ("lambda" . 955) ; λ
+          )))
+
+(add-hook 'scheme-mode-hook 'my-pretty-lambda)
+(global-prettify-symbols-mode 1)
+}}}
+
+Notice that the snippet above enables only when scheme-mode is on, add more hooks if you wish to get other major modes working.
+
+Reference: http://ergoemacs.org/emacs/emacs_pretty_lambda.html 
 
 == Using Character Composition == 
 
