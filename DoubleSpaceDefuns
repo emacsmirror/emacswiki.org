@@ -1,0 +1,15 @@
+Here's my function to insert/remove lines between function definitions so that there is exactly 1 blank line separating them:
+
+    (defun double-space-defuns ()
+      (interactive "*")
+      (save-excursion
+        (beginning-of-buffer)
+      (while (search-forward "defun" nil t)
+        (end-of-defun)
+        (while (line-empty-p)
+          (delete-forward-char 1))
+          (insert-string "\n"))))
+    
+    (defun line-empty-p ()
+      (interactive)
+      (= (length (thing-at-point 'line)) 1))
