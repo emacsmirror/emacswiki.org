@@ -30,6 +30,8 @@ a back-end to EUDC that can query <nowiki>AddressBook.app</nowiki>.
        (setq dir dired-directory))
       ((stringp (buffer-file-name))
        (setq dir (file-name-directory (buffer-file-name))))
+      ((stringp default-directory)
+       (setq dir default-directory))
       )
      (do-applescript
       (format "
