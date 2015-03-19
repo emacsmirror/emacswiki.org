@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar  6 11:48:47 2015 (-0800)
+;; Last-Updated: Thu Mar 19 09:32:50 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 5458
+;;     Update #: 5462
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -232,6 +232,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/03/19 dadams
+;;     info-quoted+<>-regexp: Highlight <...> only if the first char is alphabetic.
 ;; 2015/03/06 dadams
 ;;     Added: info-manual.  Bound it globally to C-h r.
 ;;     Info-fontify-node (Emacs 24.1.N+): Updated per Emacs 24.4: allow Info-fontify-maximum-menu-size to be t.
@@ -947,17 +949,17 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
 ;;
 (defvar info-quotation-regexp
   (concat "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
-          "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|" ; `...'
-          "‘\\([^’]\\|\\\\\\(.\\|[\n]\\)\\)*’") ; ‘...’
+          "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"        ; `...'
+          "‘\\([^’]\\|\\\\\\(.\\|[\n]\\)\\)*’")          ; ‘...’
   "Regexp to match `...', ‘...’, \"...\", or just '.
 If ... contains \" or ' then that character must be backslashed.")
 
 
 (defvar info-quoted+<>-regexp
   (concat "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
-          "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|" ; `...'
-          "‘\\([^’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|" ; ‘...’
-          "<\\([^>]\\|\\\\\\(.\\|[\n]\\)\\)*>") ; <...>
+          "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"        ; `...'
+          "‘\\([^’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|"        ; ‘...’
+          "<\\([[:alpha:]][^>]*\\|\\(\\\\\\(.\\|[\n]\\)\\)*\\)>")   ; <...>
   "Same as `info-quotation-regexp', but matches also <...>.
 If ... contains > then that character must be backslashed.")
 
