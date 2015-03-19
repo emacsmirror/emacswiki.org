@@ -57,7 +57,7 @@ Insert a `*' at the beggining of the new line if inside of a comment."
           (newline-and-indent)
           (insert "*"))
       ;; else insert only new-line
-      (newline))))
+      (newline-and-indent))))
 
 (add-hook 'c++-mode-hook
           (lambda ()
@@ -69,7 +69,7 @@ You can use M-j (c-indent-new-comment-line) within comments to get the same effe
 --- Pradeep
 
 -------
-I extend the JakubHozak's solution to work with other one-line comment as well. However, it does not work for lisp-mode. I have no idea why.
+I extend the JakubHozak's solution to work with other one-line comment as well. However, it does not work for lisp-mode. I have no idea why. There is also one bug fix -- old code will not indent properly in the code after pressing Enter.
 
 --- Shuai Li
 
