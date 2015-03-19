@@ -90,7 +90,7 @@ at the beggining of the new line if inside of a comment."
             (if (search-backward "*/" nil t)
                 ;; there are some comment endings - search forward
                 (search-forward "/*" last t)
-              ;; (insert )t's the only comment - search backward
+              ;; it's the only comment - search backward
               (goto-char last)
               (search-backward "/*" nil t)
               )
