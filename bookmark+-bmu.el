@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Feb 22 15:07:20 2015 (-0800)
+;; Last-Updated: Fri Mar 20 11:18:04 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3640
+;;     Update #: 3650
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -123,6 +123,7 @@
 ;;    `bmkp-bmenu-jump-to-marked',
 ;;    `bmkp-bmenu-make-sequence-from-marked', `bmkp-bmenu-mark-all',
 ;;    `bmkp-bmenu-mark-autofile-bookmarks',
+;;    `bmkp-bmenu-backward-char',
 ;;    `bmkp-bmenu-mark-bookmark-file-bookmarks',
 ;;    `bmkp-bmenu-mark-bookmark-list-bookmarks',
 ;;    `bmkp-bmenu-mark-bookmarks-satisfying',
@@ -133,7 +134,7 @@
 ;;    `bmkp-bmenu-mark-bookmarks-tagged-some',
 ;;    `bmkp-bmenu-mark-desktop-bookmarks',
 ;;    `bmkp-bmenu-mark-dired-bookmarks',
-;;    `bmkp-bmenu-mark-file-bookmarks',
+;;    `bmkp-bmenu-mark-file-bookmarks', `bmkp-bmenu-forward-char',
 ;;    `bmkp-bmenu-mark-gnus-bookmarks',
 ;;    `bmkp-bmenu-mark-icicles-search-hits-bookmarks',
 ;;    `bmkp-bmenu-mark-image-bookmarks',
@@ -151,12 +152,13 @@
 ;;    `bmkp-bmenu-mark-w3m-bookmarks', `bmkp-bmenu-mouse-3-menu',
 ;;    `bmkp-bmenu-mode-status-help',
 ;;    `bmkp-bmenu-move-marked-to-bookmark-file',
-;;    `bmkp-bmenu-nb-marked-in-mode-name', `bmkp-bmenu-omit',
-;;    `bmkp-bmenu-omit-marked', `bmkp-bmenu-omit/unomit-marked',
-;;    `bmkp-bmenu-paste-add-tags',
+;;    `bmkp-bmenu-nb-marked-in-mode-name', `bmkp-bmenu-next-line',
+;;    `bmkp-bmenu-omit', `bmkp-bmenu-omit-marked',
+;;    `bmkp-bmenu-omit/unomit-marked', `bmkp-bmenu-paste-add-tags',
 ;;    `bmkp-bmenu-paste-add-tags-to-marked',
 ;;    `bmkp-bmenu-paste-replace-tags',
 ;;    `bmkp-bmenu-paste-replace-tags-for-marked',
+;;    `bmkp-bmenu-previous-line',
 ;;    `bmkp-bmenu-query-replace-marked-bookmarks-regexp',
 ;;    `bmkp-bmenu-quit', `bmkp-bmenu-refresh-menu-list',
 ;;    `bmkp-bmenu-regexp-mark', `bookmark-bmenu-relocate' (Emacs 20,
@@ -236,6 +238,7 @@
 ;;
 ;;  User options defined here:
 ;;
+;;    `bmkp-bmenu-annotation-follows-cursor-flag',
 ;;    `bmkp-bmenu-commands-file',
 ;;    `bmkp-bmenu-image-bookmark-icon-file',
 ;;    `bmkp-bmenu-omitted-bookmarks', `bmkp-bmenu-state-file',
@@ -251,7 +254,7 @@
 ;;    `bmkp-bmenu-filter-alist-by-file-name-regexp',
 ;;    `bmkp-bmenu-filter-alist-by-tags-regexp',
 ;;    `bmkp-bmenu-get-marked-files', `bmkp-bmenu-goto-bookmark-named',
-;;    `bmkp-bmenu-list-1',
+;;    `bmkp-bmenu-kill-annotation', `bmkp-bmenu-list-1',
 ;;    `bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none',
 ;;    `bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all',
 ;;    `bmkp-bmenu-mode-line', `bmkp-bmenu-mode-line-string',
@@ -261,7 +264,7 @@
 ;;    `bmkp-bookmark-name-from-record', `bmkp-face-prop',
 ;;    `bmkp-bmenu-marked-or-this-or-all', `bmkp-looking-at-p',
 ;;    `bmkp-maybe-unpropertize-bookmark-names',
-;;    `bmkp-maybe-unpropertize-string',
+;;    `bmkp-maybe-unpropertize-string', `bmkp-remap',
 ;;    `bmkp-replace-regexp-in-string',
 ;;    `bmkp-reverse-multi-sort-order', `bmkp-reverse-sort-order',
 ;;    `bmkp-string-match-p', `bookmark-name-from-full-record',
@@ -478,6 +481,15 @@ Elements of ALIST that are not conses are ignored."
 (defun bmkp-looking-at-p (regexp)
   "Like `looking-at', but this saves and restores the match data."
   (save-match-data (looking-at regexp)))
+
+;; Same as `icicle-remap' in `icicles-opt.el'.
+(defun bmkp-remap (old new map &optional oldmap)
+  "Bind command NEW in MAP to all keys currently bound to OLD.
+If command remapping is available, use that.  Otherwise, bind NEW to
+whatever OLD is bound to in MAP, or in OLDMAP, if provided."
+  (if (fboundp 'command-remapping)
+      (define-key map (vector 'remap old) new) ; Ignore OLDMAP for Emacs 22.
+    (substitute-key-definition old new map oldmap)))
  
 ;;(@* "Faces (Customizable)")
 ;;; Faces (Customizable) ---------------------------------------------
@@ -665,6 +677,14 @@ Don't forget to mention your Emacs and library versions."))
  
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
+
+;;;###autoload (autoload 'bmkp-bmenu-annotation-follows-cursor-flag "bookmark+")
+(defcustom bmkp-bmenu-annotation-follows-cursor-flag nil
+  "*Non-nil means show annotation for bookmark of current line.
+Moving the cursor using the usual cursor keys makes the annotation
+that is shown correspond to the cursor position.  This also means
+that only one annotation is shown at a time."
+  :type 'boolean :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-bmenu-omitted-bookmarks "bookmark+")
 (defcustom bmkp-bmenu-omitted-bookmarks ()
@@ -4884,6 +4904,63 @@ prefix arg, the link will use another window.  The link type is
                 (bmk-desc   (format "Bookmark: %s" bmk)))
            (org-store-link-props :type "bookmark" :link link :description bmk-desc)))))
 
+;;;###autoload (autoload 'bmkp-bmenu-next-line "bookmark+")
+(defun bmkp-bmenu-next-line (&optional n)
+  "Move down N lines in the bookmark-list display."
+  (interactive "p")
+  (if (not bmkp-bmenu-annotation-follows-cursor-flag)
+      (next-line n)
+    (let ((shownp  (bmkp-bmenu-kill-annotation)))
+      (next-line n)
+      (when shownp (bookmark-bmenu-show-annotation 'MSGP)))))
+
+;;;###autoload (autoload 'bmkp-bmenu-previous-line "bookmark+")
+(defun bmkp-bmenu-previous-line (&optional n)
+  "Move up N lines in the bookmark-list display."
+  (interactive "p")
+  (if (not bmkp-bmenu-annotation-follows-cursor-flag)
+      (next-line n)
+    (let ((shownp  (bmkp-bmenu-kill-annotation)))
+      (previous-line n)
+      (when shownp (bookmark-bmenu-show-annotation 'MSGP)))))
+
+;;;###autoload (autoload 'bmkp-bmenu-forward-char "bookmark+")
+(defun bmkp-bmenu-forward-char (&optional n)
+  "Move forward N characters in the bookmark-list display."
+  (interactive "p")
+  (if (not bmkp-bmenu-annotation-follows-cursor-flag)
+      (forward-char n)
+    (let* ((obol   (line-beginning-position))
+           (bname  (bookmark-bmenu-bookmark))
+           (ann-buf  (get-buffer (format "*`%s' Annotation*" bname))))
+      (forward-char n)
+      (unless (= obol (line-beginning-position))
+        (when (bmkp-bmenu-kill-annotation bname)
+          (bookmark-bmenu-show-annotation 'MSGP))))))
+
+;;;###autoload (autoload 'bmkp-bmenu-backward-char "bookmark+")
+(defun bmkp-bmenu-backward-char (&optional n)
+  "Move backward N characters in the bookmark-list display."
+  (interactive "p")
+  (if (not bmkp-bmenu-annotation-follows-cursor-flag)
+      (backward-char n)
+    (let* ((obol   (line-beginning-position))
+           (bname  (bookmark-bmenu-bookmark))
+           (ann-buf  (get-buffer (format "*`%s' Annotation*" bname))))
+      (backward-char n)
+      (unless (= obol (line-beginning-position))
+        (when (bmkp-bmenu-kill-annotation bname)
+          (bookmark-bmenu-show-annotation 'MSGP))))))
+
+(defun bmkp-bmenu-kill-annotation (&optional bookmark-name)
+  "Kill annotation buffer, if any, for BOOKMARK-NAME.
+If BOOKMARK-NAME is nil, use the bookmark of the current line.
+Return non-nil only if there was such an annotation buffer."
+  (let ((ann-buf  (get-buffer (format "*`%s' Annotation*"
+                                      (or bookmark-name  (bookmark-bmenu-bookmark))))))
+    (when ann-buf (kill-buffer ann-buf))
+    ann-buf))                           ; Return non-nil if there was an annotation buffer.
+
 
 ;;(@* "Sorting - Commands")
 ;;  *** Sorting - Commands ***
@@ -5234,6 +5311,13 @@ are marked or ALLP is non-nil."
 ;;; Keymaps ----------------------------------------------------------
 
 ;; `bookmark-bmenu-mode-map'
+
+(bmkp-remap 'next-line     'bmkp-bmenu-next-line     bookmark-bmenu-mode-map)
+(bmkp-remap 'previous-line 'bmkp-bmenu-previous-line bookmark-bmenu-mode-map)
+(bmkp-remap 'backward-char 'bmkp-bmenu-backward-char bookmark-bmenu-mode-map)
+(bmkp-remap 'left-char     'bmkp-bmenu-backward-char bookmark-bmenu-mode-map)
+(bmkp-remap 'forward-char  'bmkp-bmenu-forward-char  bookmark-bmenu-mode-map)
+(bmkp-remap 'right-char    'bmkp-bmenu-forward-char  bookmark-bmenu-mode-map)
 
 (when (< emacs-major-version 21)
   (define-key bookmark-bmenu-mode-map (kbd "RET")          'bookmark-bmenu-this-window))
