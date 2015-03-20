@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Feb 21 18:43:52 2015 (-0800)
+;; Last-Updated: Fri Mar 20 13:26:39 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15034
+;;     Update #: 15035
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -994,6 +994,13 @@
 ;;  edit the annotation (e.g., using `C-u a' in buffer `*Bookmark
 ;;  List*'), but it is ignored when the annotation is "shown" (e.g.,
 ;;  using `a').
+;;
+;;  In the `*Bookmark List*' display, if option
+;;  `bmkp-bmenu-annotation-follows-cursor-flag' is non-`nil', and if a
+;;  bookmark annotation is showing, then moving the cursor in the
+;;  usual ways from one bookmark line to another replaces the
+;;  annotation shown, so that it always reflects the bookmark for the
+;;  line of the cursor.  The default value of the option is `nil'.
  
 ;;(@* "Bookmark Tags")
 ;;  ** Bookmark Tags **
