@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Feb 24 21:12:21 2015 (-0800)
+;; Last-Updated: Fri Mar 20 11:18:27 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15899
+;;     Update #: 15905
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1133,6 +1133,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2015/03/20 dadams
+;;     Added: bmkp-remap, bmkp-bmenu-annotation-follows-cursor-flag, bmkp-bmenu-next-line,
+;;            bmkp-bmenu-previous-line, bmkp-bmenu-forward-char, bmkp-bmenu-backward-char,
+;;            bmkp-bmenu-kill-annotation.
 ;; 2015/02/22 dadams
 ;;     Moved to bookmark+-1.el from here:
 ;;       bmkp-reset-bmkp-store-org-link-checking-p, bmkp-store-org-link-checking-p.
