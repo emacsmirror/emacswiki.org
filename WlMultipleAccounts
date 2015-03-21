@@ -65,12 +65,6 @@ With the modified code below (non-header conses moved from wl-template-alist to 
 ;; You should set this variable if you use multiple e-mail addresses.
 (setq wl-user-mail-address-list (quote ("myname@gmail.com" "myname@company.com")))
 
-t correct email address when we _start_ writing a draft.
-(add-hook 'wl-mail-setup-hook 'wl-draft-config-exec)
-;; don't apply the templates when sending the draft otherwise 
-;; choosing another template with C-c C-j won't have any effect
-(remove-hook 'wl-draft-send-hook 'wl-draft-config-exec)
-
 ;;is run when wl-draft-send-and-exit or wl-draft-send is invoked:
 ;;(NOTE: "M-: wl-draft-parent-folder" => %INBOX:myname/clear@imap.gmail.com:993)
 (setq wl-draft-config-alist
@@ -165,8 +159,5 @@ This is an example where you have a single inbox, but want to select an identity
       '(("^%.*company\\.com" . "%INBOX.Trash:\"myname@company.com\"/clear@mail.company.com")
         ("^%.*gmail\\.com" . "%[Gmail]/Trash:myname/clear@imap.gmail.com:993!")
         ))
-
-;; selec
-
 ----
 Wanderlust
