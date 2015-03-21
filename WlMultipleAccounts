@@ -5,7 +5,6 @@ This page describes how to manage multiple email accounts with wanderlust, one o
 == Configuring folders (IMAP) ==
 The .folders file tells wanderlust how to represent the folders. The following is an example of using just IMAP folders, as opposed to download the emails (e.g. with offlineimap) for permanent storage. Note that even when you just use IMAP folders wl downloads the messages you read (and the one following) and cache them locally to ~/.elmo/cache. 
 
-
 On Gmail, the default system folders (sent, trash, etc) are locale specific, i.e. the name depends on your language settings in gmail, and these folders are placed in the folder "[Gmail]". Folders (called "filters" by Gmail) are delimited by "/".
 
 In the example of the other domain (company.com), the username is an email address itself and must be in quotation marks.
@@ -66,15 +65,7 @@ With the modified code below (non-header conses moved from wl-template-alist to 
 ;; You should set this variable if you use multiple e-mail addresses.
 (setq wl-user-mail-address-list (quote ("myname@gmail.com" "myname@company.com")))
 
-;; How messages with disposal mark ("d") are to be handled.
-;; remove = instant removal (same as "D"), thrash = move to wl-trash-folder
-;; string = move to string.
-(setq wl-dispose-folder-alist
-      '(("^%.*company\\.com" . "%INBOX.Trash:\"myname@company.com\"/clear@mail.company.com")
-        ("^%.*gmail\\.com" . "%[Gmail]/Trash:myname/clear@imap.gmail.com:993!")
-        ))
-
-;; select correct email address when we _start_ writing a draft.
+t correct email address when we _start_ writing a draft.
 (add-hook 'wl-mail-setup-hook 'wl-draft-config-exec)
 ;; don't apply the templates when sending the draft otherwise 
 ;; choosing another template with C-c C-j won't have any effect
@@ -165,6 +156,17 @@ This is an example where you have a single inbox, but want to select an identity
   "Run wl-template-select when writing a new email"
   (wl-template-select))
 }}}}
+
+== Dispose (delete) method list
+;; How messages with disposal mark ("d") are to be handled.
+;; remove = instant removal (same as "D"), thrash = move to wl-trash-folder
+;; string = move to string.
+(setq wl-dispose-folder-alist
+      '(("^%.*company\\.com" . "%INBOX.Trash:\"myname@company.com\"/clear@mail.company.com")
+        ("^%.*gmail\\.com" . "%[Gmail]/Trash:myname/clear@imap.gmail.com:993!")
+        ))
+
+;; selec
 
 ----
 Wanderlust
