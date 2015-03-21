@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Mar 20 11:18:04 2015 (-0700)
+;; Last-Updated: Fri Mar 20 19:18:21 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3650
+;;     Update #: 3653
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4906,7 +4906,10 @@ prefix arg, the link will use another window.  The link type is
 
 ;;;###autoload (autoload 'bmkp-bmenu-next-line "bookmark+")
 (defun bmkp-bmenu-next-line (&optional n)
-  "Move down N lines in the bookmark-list display."
+  "Move down N lines in the bookmark-list display.
+If `bmkp-bmenu-annotation-follows-cursor-flag' is non-nil and a
+bookmark annotation is shown then show the annotation of the bookmark
+that is on the destination line."
   (interactive "p")
   (if (not bmkp-bmenu-annotation-follows-cursor-flag)
       (next-line n)
@@ -4916,7 +4919,9 @@ prefix arg, the link will use another window.  The link type is
 
 ;;;###autoload (autoload 'bmkp-bmenu-previous-line "bookmark+")
 (defun bmkp-bmenu-previous-line (&optional n)
-  "Move up N lines in the bookmark-list display."
+  "Move up N lines in the bookmark-list display.
+See `bmkp-bmenu-next-line' for behavior regarding
+`bmkp-bmenu-annotation-follows-cursor-flag'."
   (interactive "p")
   (if (not bmkp-bmenu-annotation-follows-cursor-flag)
       (next-line n)
@@ -4926,7 +4931,9 @@ prefix arg, the link will use another window.  The link type is
 
 ;;;###autoload (autoload 'bmkp-bmenu-forward-char "bookmark+")
 (defun bmkp-bmenu-forward-char (&optional n)
-  "Move forward N characters in the bookmark-list display."
+  "Move forward N characters in the bookmark-list display.
+See `bmkp-bmenu-next-line' for behavior regarding
+`bmkp-bmenu-annotation-follows-cursor-flag'."
   (interactive "p")
   (if (not bmkp-bmenu-annotation-follows-cursor-flag)
       (forward-char n)
@@ -4940,7 +4947,9 @@ prefix arg, the link will use another window.  The link type is
 
 ;;;###autoload (autoload 'bmkp-bmenu-backward-char "bookmark+")
 (defun bmkp-bmenu-backward-char (&optional n)
-  "Move backward N characters in the bookmark-list display."
+  "Move backward N characters in the bookmark-list display.
+See `bmkp-bmenu-next-line' for behavior regarding
+`bmkp-bmenu-annotation-follows-cursor-flag'."
   (interactive "p")
   (if (not bmkp-bmenu-annotation-follows-cursor-flag)
       (backward-char n)
