@@ -149,15 +149,17 @@ This is an example where you have a single inbox, but want to select an identity
 (defadvice wl-draft (after wl-draft-select-template activate)
   "Run wl-template-select when writing a new email"
   (wl-template-select))
-}}}}
+}}}
 
-== Dispose (delete) method list
-;; How messages with disposal mark ("d") are to be handled.
+== Dispose (delete) method list ==
+
+{{{;; How messages with disposal mark ("d") are to be handled.
 ;; remove = instant removal (same as "D"), thrash = move to wl-trash-folder
 ;; string = move to string.
 (setq wl-dispose-folder-alist
       '(("^%.*company\\.com" . "%INBOX.Trash:\"myname@company.com\"/clear@mail.company.com")
         ("^%.*gmail\\.com" . "%[Gmail]/Trash:myname/clear@imap.gmail.com:993!")
         ))
+}}}
 ----
 Wanderlust
