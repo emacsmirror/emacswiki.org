@@ -5,6 +5,49 @@ diminish.el[http://www.eskimo.com/~seldon/diminish.el] lets you fight modeline c
 
 The `eval-after-load' form lets you diminish modes not loaded at Emacs startup.
 
+== Mode lines containing `:eval' forms ==
+
+`diminished-modes' doesn't work on mode lines that use `:eval' (for example, [[Projectile]] uses it to display the current project)
+
+Quick hack:
+
+{{{
+  (defun diminished-modes ()
+    "Echo all active diminished or minor modes as if they were minor.
+The display goes in the echo area; if it's too long even for that,
+you can see the whole thing in the *Messages* buffer.
+This doesn't change the status of any modes; it just lets you see
+what diminished modes would be on the mode-line if they were still minor."
+    (interactive)
+    (let ((minor-modes minor-mode-alist)
+          message)
+      (while minor-modes
+        (when (symbol-value (caar minor-modes))
+          ;; This minor mode is active in this buffer
+          (let* ((mode-pair (car minor-modes))
+                 (mode (car mode-pair))
+                 (minor-pair (or (assq mode diminished-mode-alist) mode-pair))
+                 (minor-name (cadr minor-pair)))
+            (when (symbolp minor-name)
+              ;; This minor mode uses symbol indirection in the cdr
+              (let ((symbols-seen (list minor-name)))
+                (while (and (symbolp (callf symbol-value minor-name))
+                            (not (memq minor-name symbols-seen)))
+                  (push minor-name symbols-seen))))
+            (push minor-name message)))
+        (callf cdr minor-modes))
+      ;; Handle :eval forms
+      (setq message (mapconcat
+                     (lambda (form)
+                       (if (and (listp form) (eq (car form) :eval))
+                           (apply 'eval (cdr form))
+                         form))
+                     (nreverse message) ""))
+      (when (= (string-to-char message) ?\ )
+        (callf substring message 1))
+      (message "%s" message)))
+}}}
+
 ----
 See also DelightedModes
 
