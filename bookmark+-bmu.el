@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Mar 20 19:18:21 2015 (-0700)
+;; Last-Updated: Fri Mar 20 19:33:28 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3653
+;;     Update #: 3654
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4924,7 +4924,7 @@ See `bmkp-bmenu-next-line' for behavior regarding
 `bmkp-bmenu-annotation-follows-cursor-flag'."
   (interactive "p")
   (if (not bmkp-bmenu-annotation-follows-cursor-flag)
-      (next-line n)
+      (previous-line n)
     (let ((shownp  (bmkp-bmenu-kill-annotation)))
       (previous-line n)
       (when shownp (bookmark-bmenu-show-annotation 'MSGP)))))
