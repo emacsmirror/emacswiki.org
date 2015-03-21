@@ -534,6 +534,11 @@ show the full (internal) bookmark information.
 '''`##C-h >##'''' shows the same information that `C-h RET' shows,
 but for all of the ''marked'' bookmarks, in the current sort
 order.  That is, it describes each of the marked bookmarks.
+'''`C-down'''' and '''`C-up'''' move the cursor down and up a line,
+respectively, but they also show the description of the
+bookmark corresponding to the new cursor location.  This is
+a quick way to cycle among bookmark descriptions, in the
+current sort order.
 
 
 
