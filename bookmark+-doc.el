@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Mar 20 13:26:39 2015 (-0700)
+;; Last-Updated: Fri Mar 20 19:28:16 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15035
+;;     Update #: 15037
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -563,6 +563,12 @@
 ;;         `C-h >' shows the same information that `C-h RET' shows,
 ;;         but for all of the marked bookmarks, in the current sort
 ;;         order.  That is, it describes each of the marked bookmarks.
+;;
+;;         `C-down' and `C-up' move the cursor down and up a line,
+;;         respectively, but they also show the description of the
+;;         bookmark corresponding to the new cursor location.  This is
+;;         a quick way to cycle among bookmark descriptions, in the
+;;         current sort order.
 ;;
 ;;     - General Bookmark+ documentation.
 ;;
