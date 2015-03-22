@@ -1,10 +1,11 @@
 ;;; popup-kill-ring.el --- interactively insert item from kill-ring
 
-;; Copyright (C) 2010  khiker
+;; Copyright (C) 2010-2015  HAMANO Kiyoto
 
-;; Author: khiker <khiker.mail+elisp@gmail.com>
+;; Author: HAMANO Kiyoto <khiker.mail+elisp@gmail.com>
 ;; Keywords: popup, kill-ring, pos-tip
 ;; Package-Requires: ((pos-tip "0.4.5") (popup "0.5"))
+;; Homepage: https://code.launchpad.net/~khiker/+junk/popup-kill-ring
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -49,17 +50,25 @@
 ;;; Tested:
 ;;
 ;; * Emacs
-;;   * 23.1
-;;   * 24.0.50
+;;   * 24.4
 ;; * popup.el
-;;   * 0.4
+;;   * 0.5.2
 ;; * pos-tip.el
-;;   * 0.4.0
+;;   * 0.4.6
 ;;
 
 ;;; ChangeLog:
 ;;
-;; (2013/08/10) fixed a bug when C-g sroked in popup-kill-ring, by lynnux
+;; * 0.2.11 (2015/03/22)
+;;   Minor fixes (apply diffs of EmacsWiki, use defcustom and so on ...)
+;;
+;; * 0.2.10 (2015/03/22)
+;;   To check whether the pos-tip can use, use `display-graphic-p'
+;;   instead of (eq window-system 'x). (This bug was reported by
+;;   id:ganaware. Thank you.)
+;;
+;; * 0.2.9 (2014/11/25)
+;;   Use cl-lib instead of cl.
 ;;
 ;; * 0.2.8 (2011/06/10)
 ;;   Added the new variable `popup-kill-ring-last-used-move-first'.  If
@@ -140,75 +149,105 @@
 
 (require 'popup)
 (require 'pos-tip)
-;; for `return' macro
+
 (eval-when-compile
-  (require 'cl))
+  (require 'cl-lib))
 
 
 ;;; Variables:
 
-(defconst popup-kill-ring-version "0.2.8"
+(defgroup popup-kill-ring nil
+  "interactively insert item from kill-ring"
+  :group  'convenience
+  :prefix "popup-kill-ring-")
+
+
+(defconst popup-kill-ring-version "0.2.11"
   "Version of `popup-kill-ring'")
 
 
-(defvar popup-kill-ring-popup-width 30
-  "*Width of popup item.")
+(defcustom popup-kill-ring-popup-width 30
+  "Width of popup item."
+  :type  'integer
+  :group 'popup-kill-ring)
 
-(defvar popup-kill-ring-popup-margin-left 2
-  "*Width of `popup-menu*' margin-left.")
+(defcustom popup-kill-ring-popup-margin-left 2
+  "Width of `popup-menu*' margin-left."
+  :type 'integer
+  :group 'popup-kill-ring)
 
-(defvar popup-kill-ring-popup-margin-right 2
-  "*Width of `popup-menu*' margin-right.")
+(defcustom popup-kill-ring-popup-margin-right 2
+  "Width of `popup-menu*' margin-right."
+  :type 'integer
+  :group 'popup-kill-ring)
 
-(defvar popup-kill-ring-timeout 1
-  "*Time of displaying `pos-tip-show' help tooltip.")
+(defcustom popup-kill-ring-timeout 1
+  "Time of displaying `pos-tip-show' help tooltip."
+  :type 'integer
+  :group 'popup-kill-ring)
 
-(defvar popup-kill-ring-kill-ring-show-func 'popup-kill-ring-pos-tip-show
-  "*Function of displaying the contents of `kill-ring'.
+(defcustom popup-kill-ring-kill-ring-show-func 'popup-kill-ring-pos-tip-show
+  "Function of displaying the contents of `kill-ring'.
 This function requires two arguments `str' and `pos'.
 `str' is string of displaying. `pos' is point of displaying.
-Default value is `popup-kill-ring-pos-tip-show'.")
+Default value is `popup-kill-ring-pos-tip-show'."
+  :type 'function
+  :group 'popup-kill-ring)
 
-(defvar popup-kill-ring-pos-tip-color nil
-  "*Face for `pos-tip-show'.
-See docstring of `pos-tip-show'.")
+(defcustom popup-kill-ring-pos-tip-color nil
+  "Face for `pos-tip-show'.
+See docstring of `pos-tip-show'."
+  :type 'face
+  :group 'popup-kill-ring)
 
-(defvar popup-kill-ring-interactive-insert nil
-  "*Non-nil means that insert selected item of `popup-menu*' interactively.")
+(defcustom popup-kill-ring-interactive-insert nil
+  "Non-nil means that insert selected item of `popup-menu*' interactively."
+  :type 'boolean
+  :group 'popup-kill-ring)
 
-(defvar popup-kill-ring-isearch t
-  "*Non-nil means that passes `t' to `isearch' option of `popup-menu*'")
+(defcustom popup-kill-ring-isearch t
+  "Non-nil means that passes `t' to `isearch' option of `popup-menu*'"
+  :type 'boolean
+  :group 'popup-kill-ring)
 
-(defvar popup-kill-ring-item-min-width 3
-  "*The number that shows minimum width of displaying `kill-ring' item
-of `popup-menu*'")
+(defcustom popup-kill-ring-item-min-width 3
+  "The number that shows minimum width of displaying `kill-ring' item
+of `popup-menu*'"
+  :type 'integer
+  :group 'popup-kill-ring)
 
-(defvar popup-kill-ring-item-size-max nil
-  "*The number that means max each item size of `popup-menu'.
+(defcustom popup-kill-ring-item-size-max nil
+  "The number that means max each item size of `popup-menu'.
 If item size is longer than this number, it's truncated.
-Nil means that item does not be truncate.")
+Nil means that item does not be truncate."
+  :type 'integer
+  :group 'popup-kill-ring)
 
-(defvar popup-kill-ring-interactive-insert-face 'highlight
-  "*The face for interactively inserted string when
-`popup-kill-ring-interactive-insert' is `t'.")
+(defcustom popup-kill-ring-interactive-insert-face 'highlight
+  "The face for interactively inserted string when
+`popup-kill-ring-interactive-insert' is `t'."
+  :type 'face
+  :group 'popup-kill-ring)
 
-(defvar popup-kill-ring-last-used-move-first t
-  "*Non-nil means that last selected `kill-ring' item comes first of
-`kill-ring'.")
+(defcustom popup-kill-ring-last-used-move-first t
+  "Non-nil means that last selected `kill-ring' item comes first of
+`kill-ring'."
+  :type 'boolean
+  :group 'popup-kill-ring)
 
 ;; key setting for `popup-menu*'.
 (defvar popup-kill-ring-keymap
   (let ((keymap (make-sparse-keymap)))
     (set-keymap-parent keymap popup-menu-keymap)
-    (define-key keymap "\r" 'popup-kill-ring-select)
-    (define-key keymap "\C-n" 'popup-kill-ring-next)
-    (define-key keymap "\C-p" 'popup-kill-ring-previous)
-    (define-key keymap [down] 'popup-kill-ring-next)
-    (define-key keymap [up] 'popup-kill-ring-previous)
-    (define-key keymap "\C-f" 'popup-kill-ring-current)
-    (define-key keymap "\C-b" 'popup-kill-ring-hide)
-    (define-key keymap [right] 'popup-kill-ring-current)
-    (define-key keymap [left] 'popup-kill-ring-hide)
+    (define-key keymap (kbd "RET")     'popup-kill-ring-select)
+    (define-key keymap (kbd "C-n")     'popup-kill-ring-next)
+    (define-key keymap (kbd "C-p")     'popup-kill-ring-previous)
+    (define-key keymap (kbd "<down>")  'popup-kill-ring-next)
+    (define-key keymap (kbd "<up>")    'popup-kill-ring-previous)
+    (define-key keymap (kbd "C-f")     'popup-kill-ring-current)
+    (define-key keymap (kbd "C-b")     'popup-kill-ring-hide)
+    (define-key keymap (kbd "<right>") 'popup-kill-ring-current)
+    (define-key keymap (kbd "<left>")  'popup-kill-ring-hide)
     keymap)
     "A keymap for `popup-menu*' of `popup-kill-ring'.")
 
@@ -293,14 +332,14 @@ and `pos-tip.el'"
                            (push kill-ring-item kill-ring))
                          (insert kill-ring-item)))))
           (pos-tip-hide)
-          ;; If `C-g' was typed, clear the inserted string. (7 is `C-g'.)
+          ;; If `C-g' was typed, clear the inserted string.
           (when (and popup-kill-ring-interactive-insert
                      (numberp last-input-event)
-                     (= last-input-event ?\C-g ))
+                     (= last-input-event (string-to-char (kbd "C-g"))))
             (popup-kill-ring-clear-inserted)))))))
 
 (defun popup-kill-ring-pos-tip-show (str pos)
-  (when (eq window-system 'x)
+  (when (display-graphic-p)
     (pos-tip-show str popup-kill-ring-pos-tip-color pos nil 0 nil nil nil 0)))
 
 (defun popup-kill-ring-select ()
@@ -318,9 +357,9 @@ and `pos-tip.el'"
         ;; item of `popup-menu*' from inserted string to `current-buffer'.
         (unless (string= (buffer-substring (car p) (cdr p)) item)
           (delete-region (car p) (cdr p))
-          (return item)))
-      (return))
-    (return item)))
+          (cl-return item)))
+      (cl-return))
+    (cl-return item)))
 
 (defun popup-kill-ring-next ()
   (interactive)
