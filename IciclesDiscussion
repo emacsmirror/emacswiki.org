@@ -2331,7 +2331,7 @@ https://code.google.com/p/codesearch/
 
 My own background: I've found codesearch to be very useful for its speed (particularly on a recent project where there is a fairly large amount of third-party code I need to work with).  The one thing I wish it did is multi-line set operations.  For example, I might want to find all files in the index that contain both the word "spam" and "ham".  csearch itself seems to have a bug that prevents regular expressions that match newlines from returning hits, but even if that worked, one would need to write complicated regexes to match both word orders.  Might icicles help with this problem by providing this set intersection functionality on top of csearch?
 
- ----
+----
 
 
 
