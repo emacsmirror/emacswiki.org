@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Feb 24 21:10:12 2015 (-0800)
+;; Last-Updated: Mon Mar 23 11:05:16 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7687
+;;     Update #: 7691
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3353,14 +3353,23 @@ read-only and edit mode using `C-x C-q'."
 ;;
 ;;;###autoload (autoload 'bookmark-show-all-annotations "bookmark+")
 (defun bookmark-show-all-annotations ()
-  "Display the annotations for all bookmarks."
+  "Display the annotations for all bookmarks.
+If called from buffer `*Bookmark List*' then the annotations are shown
+in the current sort order."
   (interactive)
-  (let ((oframe  (selected-frame)))
+  (let ((obuf    (current-buffer))
+        (oframe  (selected-frame)))
     (save-selected-window
       (pop-to-buffer (get-buffer-create "*Bookmark Annotations*"))
       (let ((buffer-read-only  nil))    ; Because buffer might already exist, in view mode.
         (delete-region (point-min) (point-max))
-        (dolist (full-record  bookmark-alist) ; (Could use `bmkp-annotated-alist-only' here instead.)
+        ;; (Could use `bmkp-annotated-alist-only' here instead.)
+        (dolist (full-record  (if (equal (buffer-name obuf) "*Bookmark List*")
+                                  (bmkp-sort-omit bookmark-alist
+                                                  (and (not (eq bmkp-bmenu-filter-function
+                                                                'bmkp-omitted-alist-only))
+                                                       bmkp-bmenu-omitted-bookmarks))
+                                bookmark-alist))
           (let ((ann  (bookmark-get-annotation full-record)))
             (when (and ann  (not (string-equal ann "")))
               (insert (concat (bmkp-bookmark-name-from-record full-record) ":\n"))
