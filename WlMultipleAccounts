@@ -65,54 +65,36 @@ With the modified code below (non-header conses moved from wl-template-alist to 
 ;; You should set this variable if you use multiple e-mail addresses.
 (setq wl-user-mail-address-list (quote ("myname@gmail.com" "myname@company.com")))
 
-;;is run when wl-draft-send-and-exit or wl-draft-send is invoked:
 ;;(NOTE: "M-: wl-draft-parent-folder" => %INBOX:myname/clear@imap.gmail.com:993)
 (setq wl-draft-config-alist
       '(((string-match "company.com" wl-draft-parent-folder)
-         (template . "work")
-         (wl-smtp-posting-user . "myname@company.com")
-         (wl-smtp-posting-server . "mail.company.com")
-         (wl-local-domain . "mail.company.com")
-         (wl-draft-folder . "%[Gmail]/Draft:myname/clear@imap.gmail.com:993!")
-         ("Fcc" . "%INBOX.Sent:\"myname@company.com\"/clear@mail.company.com")
-         (wl-draft-folder . "%INBOX.Drafts:\"myname@company.com\"/clear@mail.company.com"))
+         (template . "work"))
         ((string-match "gmail.com" wl-draft-parent-folder)
-         (template . "gmail")
+         (template . "gmail"))
+        ;; automatic for replies
+        (reply "\\(To\\|Cc\\|Delivered-To\\): .*company.com.*"
+         (template . "work"))
+        (reply "\\(To\\|Cc\\|Delivered-To\\): .*gmail.com.*"
+         (template . "gmail"))))
+
+;;choose template with C-c C-j
+(setq wl-template-alist
+      '(("gmail"
+         (wl-from . "My Name <myname@gmail.com>")
          (wl-smtp-posting-user . "myname")
          (wl-smtp-posting-server . "smtp.gmail.com")
          (wl-smtp-authenticate-type ."plain")
          (wl-smtp-connection-type . 'starttls)
          (wl-smtp-posting-port . 587)
          (wl-local-domain . "gmail.com")
-         (wl-message-id-domain . "smtp.gmail.com"))))
-
-;;choose template with C-c C-j
-(setq wl-template-alist
-      '(("gmail"
-         (wl-from . "My Name <myname@gmail.com>")
-         ("From" . wl-from))
+         (wl-message-id-domain . "smtp.gmail.com"))
         ("work"
+         ("Fcc" . "%INBOX.Sent:\"myname@company.com\"/clear@mail.company.com")
          (wl-from . "My Name <myname@company.com>")
+         (wl-smtp-posting-user . "myname@company.com")
+         (wl-smtp-posting-server . "mail.company.com")
+         (wl-local-domain . "mail.company.com"))
          ("From" . wl-from))))
-
-;; Use different signature files based on From: address
-(setq signature-file-alist
-      `((("From" . "myname@company.com") . ,(expand-file-name "~/.emacs.d/signature.d/myname@company.com"))
-	(("From" . "myname@gmail.com") . ,(expand-file-name "~/.emacs.d/signature.d/myname@gmail.com"))))
-
-;;Cycle through templates with arrow keys
-(define-key wl-template-mode-map (kbd "<right>") 'wl-template-next)
-(define-key wl-template-mode-map (kbd "<left>") 'wl-template-prev)
-
-;;default folder name auto completion:
-(setq wl-default-spec "%")
-
-;; mark sent messages (folder carbon copy) as read.
-(setq wl-fcc-force-as-read    t)
-
-;;Only save draft when I tell it to! (C-x C-s or C-c C-s):
-;;(arg: seconds of idle time untill auto-save).
-(setq wl-auto-save-drafts-interval nil)
 }}}
 ----
 
