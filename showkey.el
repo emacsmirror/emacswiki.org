@@ -8,9 +8,9 @@
 ;; Created: Sun Mar 22 16:24:39 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 22 17:23:59 2015 (-0700)
+;; Last-Updated: Sun Mar 22 20:06:21 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 59
+;;     Update #: 61
 ;; URL: http://www.emacswiki.org/showkey.el
 ;; Doc URL: http://www.emacswiki.org/ShowKey
 ;; Keywords: help keys mouse
@@ -38,7 +38,8 @@
 ;;    `showkey-log-mode'.
 ;;
 ;;  Quitting events (`C-g') and events that raise an error are not
-;;  shown.
+;;  shown.  Currently, key sequences that begin with a prefix key are
+;;  also not shown.
 ;;
 ;;  Several user options control the behavior:
 ;;
