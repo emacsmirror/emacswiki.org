@@ -73,6 +73,202 @@ just be careful not to use strings that conflict with anything else.
 Emacs can then be configured to treat these strings as a key or
 keybinding, such as M-Fn.
 
+==Getting ALL keys working in the Linux console==
+
+By the method described sketched out above, it should be possible to fix any key that's missing in the console..
+
+This is a complete guide to getting C, M and S to work in  in combination with arrow keys and RET and a few other keys. Almost all combinations of modifiers and arrows does something useful in org-mode and many of them (like C-<arrows> for navigation) are useful elsewhere.
+
+In org-mode [http://orgmode.org/manual/Speed-keys.html Speed keys] provide decent substitutions for some keys that don't work by default in the console but if you don't want to settle for that, read on.
+
+Load modifications for the keymap that binds various key combos to "free" function keys, that is F13 and above:
+
+<pre>
+loadkeys /path/to/xtrakeys.txt
+</pre>
+
+With this in xtrakeys.txt:
+
+<pre>
+# This turns CapsLK into Control. Include if you don't want that.
+keycode  58 = Control      
+
+# Binds S-<tab>, useful for global visibility cykling in org
+keycode  15 = Tab             
+ 	shift	keycode  15 = F36
+
+# Binds C-/S-/C-S-/M-/M-S-<return>
+keycode  28 = Return          
+	control	keycode  28 = F13  
+	shift	keycode  28 = F37           
+	shift	control	keycode  28 = F14       
+	alt	keycode  28 = Meta_Control_m  
+	shift	alt	keycode  28 = F15  
+
+# Binds C-/M-/S-C-S/M-S-<up>
+keycode 103 = Up
+	control	keycode 103 = F26
+	alt	keycode 103 = F22
+       	shift	keycode 103 = F30
+	control shift	keycode 103 = F34
+	alt	shift	keycode 103 = F18  
+
+# Binds C-/M-/S-C-S/M-S-<left>
+keycode 105 = Left
+	control	keycode 105 = F24
+	alt	keycode 105 = F20
+       	shift	keycode 105 = F28
+	control shift	keycode 105 = F32
+	alt	shift	keycode 105 = F16
+
+# Binds C-/M-/S-C-S/M-S-<right>
+keycode 106 = Right           
+	control	keycode 106 = F25
+	alt	keycode 106 = F21
+       	shift	keycode 106 = F29
+	control shift	keycode 106 = F33
+	alt	shift	keycode 106 = F17   
+
+
+# Binds C-/M-/S-C-S/M-S-<down>
+keycode 108 = Down            
+	control	keycode 108 = F27
+	alt	keycode 108 = F23
+       	shift	keycode 108 = F31
+	control shift	keycode 108 = F35
+	alt	shift	keycode 108 = F19  
+
+# We now need to define a string for all the F-keys we've used plus a few more, just in cause.
+# F13-20 should be defined like this in the default keymap. They are added here for a sense of completeness.
+string F13 = "\033[25~"
+string F14 = "\033[26~"
+string F15 = "\033[28~"
+string F16 = "\033[29~"
+string F17 = "\033[31~"
+string F18 = "\033[32~"
+string F19 = "\033[33~"
+string F20 = "\033[34~"
+string F21 = "\033[35~"
+string F22 = "\033[36~"
+string F23 = "\033[37~"
+string F24 = "\033[38~"
+string F25 = "\033[39~"
+string F26 = "\033[40~"
+string F27 = "\033[41~"
+string F28 = "\033[42~"
+string F29 = "\033[43~"
+string F30 = "\033[44~"
+string F31 = "\033[45~"
+string F32 = "\033[46~"
+string F33 = "\033[47~"
+string F34 = "\033[48~"
+string F35 = "\033[49~"
+string F36 = "\033[50~"
+string F37 = "\033[51~"
+string F38 = "\033[52~"
+string F39 = "\033[53~"
+string F40 = "\033[54~"
+
+</pre>
+
+To modify the keymap as above at each session:
+
+<pre>
+loadkeys /path/to/xtrakeys.txt 
+</pre>
+
+... can be added to /etc/rc.local.
+
+Alternatively, a complete table with the above modification can be generated after loading the modifications
+
+This can be done by running this command after loadkeys /path/to/xtrakeys.txt:
+
+<pre>
+# dumpkeys > /some/path/mycompletetbl.txt 
+</pre>
+
+That can be loaded at startup with this in /etc/rc.local:
+
+<pre>
+loadkeys -s /some/path/mycompletetbl.txt
+</pre>
+
+The -s flag clear the existing table and load the new one which is appropriate if when loading a complete tabel.
+
+The advantages of generating a complete table is that is makes it easier to hack away and fix whatever else there might be of missing keys and keyboard quirks (for example on my setup, combo with the Fn keys for adjusting screen brightness etc. inserted characters in the console. By using showkeys to find the codes for the keystrokes that produces unwanted characters, their behaviour can be nullified b adjusting the keytable.
+
+After adjusting the keytable to produced string at various keystrokes, these strings need to be interpreted by emacs.
+
+For the above adjustment, these settings in emacs's init file are appropriate:
+
+<pre>
+
+;;; TTY Key hacks
+;;; The translations with the settings below fit the adjustments to the key table.
+(define-key input-decode-map "\e[25~" [(f13)])
+(define-key input-decode-map "\e[26~" [(f14)])
+(define-key input-decode-map "\e[28~" [(f15)])
+(define-key input-decode-map "\e[29~" [(f16)])
+(define-key input-decode-map "\e[31~" [(f17)])
+(define-key input-decode-map "\e[32~" [(f18)])
+(define-key input-decode-map "\e[33~" [(f19)])
+(define-key input-decode-map "\e[34~" [(f20)])
+(define-key input-decode-map "\e[35~" [(f21)])
+(define-key input-decode-map "\e[36~" [(f22)])
+(define-key input-decode-map "\e[37~" [(f23)])
+(define-key input-decode-map "\e[38~" [(f24)])
+(define-key input-decode-map "\e[39~" [(f25)])
+(define-key input-decode-map "\e[40~" [(f26)])
+(define-key input-decode-map "\e[41~" [(f27)])
+(define-key input-decode-map "\e[42~" [(f28)])
+(define-key input-decode-map "\e[43~" [(f29)])
+(define-key input-decode-map "\e[44~" [(f30)])
+(define-key input-decode-map "\e[45~" [(f31)])
+(define-key input-decode-map "\e[46~" [(f32)])
+(define-key input-decode-map "\e[47~" [(f33)])
+(define-key input-decode-map "\e[48~" [(f34)])
+(define-key input-decode-map "\e[49~" [(f35)])
+(define-key input-decode-map "\e[50~" [(f36)])
+(define-key input-decode-map "\e[51~" [(f37)])
+(define-key input-decode-map "\e[52~" [(f38)])
+(define-key input-decode-map "\e[53~" [(f39)])
+(define-key input-decode-map "\e[54~" [(f40)])
+
+
+(define-key key-translation-map (kbd "<f13>") (kbd "<C-return>"))
+(define-key key-translation-map (kbd "<f14>") (kbd "<C-S-return>"))
+(define-key key-translation-map (kbd "<f15>") (kbd "<M-S-return>"))
+
+(define-key key-translation-map (kbd "<f16>") (kbd "M-S-<left>"))
+(define-key key-translation-map (kbd "<f17>") (kbd "M-S-<right>"))
+(define-key key-translation-map (kbd "<f18>") (kbd "M-S-<up>"))
+(define-key key-translation-map (kbd "<f19>") (kbd "M-S-<down>"))
+
+(define-key key-translation-map (kbd "<f20>") (kbd "M-<left>"))
+(define-key key-translation-map (kbd "<f21>") (kbd "M-<right>"))
+(define-key key-translation-map (kbd "<f22>") (kbd "M-<up>"))
+(define-key key-translation-map (kbd "<f23>") (kbd "M-<down>"))
+
+(define-key key-translation-map (kbd "<f24>") (kbd "C-<left>"))
+(define-key key-translation-map (kbd "<f25>") (kbd "C-<right>"))
+(define-key key-translation-map (kbd "<f26>") (kbd "C-<up>"))
+(define-key key-translation-map (kbd "<f27>") (kbd "C-<down>"))
+
+(define-key key-translation-map (kbd "<f28>") (kbd "S-<left>"))
+(define-key key-translation-map (kbd "<f29>") (kbd "S-<right>"))
+(define-key key-translation-map (kbd "<f30>") (kbd "S-<up>"))
+(define-key key-translation-map (kbd "<f31>") (kbd "S-<down>"))
+
+(define-key key-translation-map (kbd "<f32>") (kbd "C-S-<left>"))
+(define-key key-translation-map (kbd "<f33>") (kbd "C-S-<right>"))
+(define-key key-translation-map (kbd "<f34>") (kbd "C-S-<up>"))
+(define-key key-translation-map (kbd "<f35>") (kbd "C-S-<down>"))
+
+(define-key key-translation-map (kbd "<f36>") (kbd "S-<tab>"))
+
+(define-key key-translation-map (kbd "<f37>") (kbd "S-<return>"))
+
+</pre>
 
 ==Using Windows Keys As Hyper Key==
 
