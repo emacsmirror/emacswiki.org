@@ -119,10 +119,6 @@ This is an example where you have a single inbox, but want to select an identity
          ("From" . wl-from)
          ("Organization" . "Ratepayers Association"))))
 
-;; Cycle through templates with arrow keys
-(define-key wl-template-mode-map (kbd "<right>") 'wl-template-next)
-(define-key wl-template-mode-map (kbd "<left>") 'wl-template-prev)
-
 ;; Run (wl-template_select) when writing a new email
 (defadvice wl-summary-write (after wl-summary-write-select-template activate)
   "Run wl-template-select when writing a new email"
