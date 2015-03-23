@@ -106,6 +106,7 @@ This is an example where you have a single inbox, but want to select an identity
 ~/.wl
 {{{
 ;; List of identities
+;; choose template with C-c C-j
 (setq wl-template-alist
       '(("personal"
          (wl-from . "Me <me@example.org>")
@@ -118,15 +119,6 @@ This is an example where you have a single inbox, but want to select an identity
          (wl-from . "Me <chairman@example.org>")
          ("From" . wl-from)
          ("Organization" . "Ratepayers Association"))))
-
-;; Run (wl-template_select) when writing a new email
-(defadvice wl-summary-write (after wl-summary-write-select-template activate)
-  "Run wl-template-select when writing a new email"
-  (wl-template-select))
-
-(defadvice wl-draft (after wl-draft-select-template activate)
-  "Run wl-template-select when writing a new email"
-  (wl-template-select))
 }}}
 
 == Dispose (delete) method list ==
