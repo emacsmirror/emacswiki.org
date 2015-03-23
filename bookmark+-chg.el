@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Mar 20 20:05:39 2015 (-0700)
+;; Last-Updated: Mon Mar 23 11:13:40 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15909
+;;     Update #: 15911
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/03/23 dadams
+;;     bookmark-show-all-annotations: When in Bookmark List buffer, respect the sort order.
 ;; 2015/02/24 dadams
 ;;     bmkp-get-autofile-bookmark: Corrected 2015-02-15 fix - ensure BDIR is non-nil too, before test.
 ;; 2015/02/22 dadams
