@@ -75,9 +75,9 @@ keybinding, such as M-Fn.
 
 ==Getting ALL keys working in the Linux console==
 
-By the method described sketched out above, it should be possible to fix any key that's missing in the console..
+By the method sketched out above, it should be possible to fix any key that's missing in the console.
 
-This is a complete guide to getting C, M and S to work in  in combination with arrow keys and RET and a few other keys. Almost all combinations of modifiers and arrows does something useful in org-mode and many of them (like C-<arrows> for navigation) are useful elsewhere.
+This is a complete guide to getting C, M and S to work in in combination with arrow keys and RET, and a few other keys. Almost all combinations of modifiers and arrows does something useful in org-mode and many of them (like C-<arrows> for navigation) are useful elsewhere.
 
 In org-mode [http://orgmode.org/manual/Speed-keys.html Speed keys] provide decent substitutions for some keys that don't work by default in the console but if you don't want to settle for that, read on.
 
@@ -139,7 +139,7 @@ keycode 108 = Down
 	alt	shift	keycode 108 = F19  
 
 # We now need to define a string for all the F-keys we've used plus a few more, just in cause.
-# F13-20 should be defined like this in the default keymap. They are added here for a sense of completeness.
+# F13-20 should be defined like this in the default keymap. They are added here for completeness.
 string F13 = "\033[25~"
 string F14 = "\033[26~"
 string F15 = "\033[28~"
@@ -179,9 +179,9 @@ loadkeys /path/to/xtrakeys.txt
 
 ... can be added to /etc/rc.local.
 
-Alternatively, a complete table with the above modification can be generated after loading the modifications
+Alternatively, a complete table with the above modification can be generated after loading the modifications.
 
-This can be done by running this command after loadkeys /path/to/xtrakeys.txt:
+This can be done by running this command after <code>loadkeys /path/to/xtrakeys.txt</code>:
 
 <pre>
 # dumpkeys > /some/path/mycompletetbl.txt 
@@ -193,11 +193,11 @@ That can be loaded at startup with this in /etc/rc.local:
 loadkeys -s /some/path/mycompletetbl.txt
 </pre>
 
-The -s flag clear the existing table and load the new one which is appropriate if when loading a complete tabel.
+The -s flag clear the existing table and loads the new one which is appropriate when loading a complete tabel.
 
-The advantages of generating a complete table is that is makes it easier to hack away and fix whatever else there might be of missing keys and keyboard quirks (for example on my setup, combo with the Fn keys for adjusting screen brightness etc. inserted characters in the console. By using showkeys to find the codes for the keystrokes that produces unwanted characters, their behaviour can be nullified b adjusting the keytable.
+The advantages of generating a complete table is that is makes it easier to hack away and fix whatever else there might be of missing keys and keyboard quirks (for example on my setup, combos with the Fn keys for adjusting screen brightness etc. inserted characters in the console. By using <code>showkey</code> to find the keycodes for the keystrokes that produces unwanted characters, their behaviour can be nullified by adjusting the keytable.
 
-After adjusting the keytable to produced string at various keystrokes, these strings need to be interpreted by emacs.
+After adjusting the keymap to produced string at various keystrokes, these strings need to be interpreted by emacs.
 
 For the above adjustment, these settings in emacs's init file are appropriate:
 
