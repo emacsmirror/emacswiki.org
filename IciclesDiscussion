@@ -87,6 +87,40 @@ The ''latest'' discussion entry is '''[[#LatestEntry|here]]'''.
 
 
 
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
+Completely new to icicles, wondering if it might potentially help me with this:
+
+How difficult would it be to integrate csearch with icicles?  csearch is a tool written in go to provide fast indexed regular expression search (I believe it was written by one of the people behind the now defunct google code search site):
+
+https://code.google.com/p/codesearch/
+
+My own background: I've found codesearch to be very useful for its speed (particularly on a recent project where there is a fairly large amount of third-party code I need to work with).  The one thing I wish it did is multi-line set operations.  For example, I might want to find all files in the index that contain both the word "spam" and "ham".  csearch itself seems to have a bug that prevents regular expressions that match newlines from returning hits, but even if that worked, one would need to write complicated regexes to match both word orders.  Might icicles help with this problem by providing this set intersection functionality on top of csearch? -- LargeChicken
+
+
+[new:DrewAdams:2015-03-23 00:41 UTC]
+Sorry, but I know nothing about csearch or codesearch.  '''Icicles''' works only with Emacs buffers, including for its search.  However, '''Icicles''' search needs only to have a set of search contexts defined somehow.  If you can somehow use csearch or codesearch to define the limits (start, end) for each search context then you can use '''Icicles''' search to search them incrementally etc., using progressive completion etc.
+
+See `C-h f icicle-search' and read about parameter ##SCAN-FN-OR-REGEXP##.  If you can use csearch to come up with an Emacs function that you can pass as this argument to `icicle-search' then yes, you can use '''Icicles''' search.  The function just needs to return an alist of buffer zones to search.  It must accept as its arguments: the buffer to be searched by `icicle-search', the beginning and end of the entire search region in that buffer (so possibly the buffer limits).  It can also accept any additional arguments you like.
+
+Dunno whether that answers your question.  But if you can use csearch to give you a list of buffer zones to search then yes, '''Icicles''' should be able to help. -- DrewAdams
+
+
+
+
+
+
+
+
 <pre>
 
 </pre>
@@ -108,9 +142,13 @@ The reason this is better than the built-in completions of Emacs is:
 
 There aren't enough hours in the day to rewrite all that code as Emacs completion sources.
 
-Would it be possible to weld the Icicles front-end onto the readline-complete backend? I've looked at [[Icicles_-_Defining_Completion_for_Comint_Modes]] and `icicle-shell-dynamic-complete-command' but I don't understand how to convert that to something like the function `company-readline' provided at the bottom of readline-complete.
+Would it be possible to weld the Icicles front-end onto the readline-complete backend? I've looked at [[Icicles - Defining Completion for Comint Modes]] and `icicle-shell-dynamic-complete-command' but I don't understand how to convert that to something like the function `company-readline' provided at the bottom of readline-complete.
 
-Better yet would be an Icicles comint-completion mode which used the ideas from readline-complete and came built-in to Icicles.
+Better yet would be an Icicles comint-completion mode which used the ideas from readline-complete and came built-in to Icicles. -- JimmyBongos
+
+[new:DrewAdams:2015-03-23 00:46 UTC]
+Sorry, but I just noticed your post now, almost 3 months after you posted it!  I took a very quick look at ##readline-complete.el##. I guess you can use function `rlc-candidates' as a set of completion candidates.  If you have a command that calls `completing-read' to read such a completion, and then makes use of it, then you should be able to just use that command as is. 
+If not, perhaps you can write such a command. It sounds like you just need to pass ##(rlc-candidates)## as the ##COLLECTION## argument to `completing-read'. -- DrewAdams
 
 
 
@@ -2313,17 +2351,6 @@ If so, then ask the question (about Emacs) at ##help-gnu-emacs@gnu.org## or simi
 With '''Icicles''', BTW, it is not unusual at all to have 100 or more matching completion candidates.  But that's beside the point here.
 
 Let me know what you do find out.  Thx -- DrewAdams
-
-
-----
-
-Completely new to icicles, wondering if it might potentially help me with this:
-
-How difficult would it be to integrate csearch with icicles?  csearch is a tool written in go to provide fast indexed regular expression search (I believe it was written by one of the people behind the now defunct google code search site):
-
-https://code.google.com/p/codesearch/
-
-My own background: I've found codesearch to be very useful for its speed (particularly on a recent project where there is a fairly large amount of third-party code I need to work with).  The one thing I wish it did is multi-line set operations.  For example, I might want to find all files in the index that contain both the word "spam" and "ham".  csearch itself seems to have a bug that prevents regular expressions that match newlines from returning hits, but even if that worked, one would need to write complicated regexes to match both word orders.  Might icicles help with this problem by providing this set intersection functionality on top of csearch?
 
 
 ----
