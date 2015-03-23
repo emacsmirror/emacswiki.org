@@ -77,7 +77,7 @@ keybinding, such as M-Fn.
 
 By the method sketched out above, it should be possible to fix any key that's missing in the console.
 
-This is a complete guide to getting C, M and S to work in in combination with arrow keys and RET, and a few other keys. Almost all combinations of modifiers and arrows does something useful in org-mode and many of them (like C-<arrows> for navigation) are useful elsewhere.
+This is a complete guide to getting C, M and S to work in combination with arrow keys and RET, and a few other keys. Almost all combinations of modifiers and arrows does something useful in org-mode and many of them (like C-<arrows> for navigation) are useful elsewhere.
 
 In org-mode [http://orgmode.org/manual/Speed-keys.html Speed keys] provide decent substitutions for some keys that don't work by default in the console but if you don't want to settle for that, read on.
 
