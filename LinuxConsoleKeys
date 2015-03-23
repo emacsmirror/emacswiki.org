@@ -84,7 +84,7 @@ In org-mode [http://orgmode.org/manual/Speed-keys.html Speed keys] provide decen
 Load modifications for the keymap that binds various key combos to "free" function keys, that is F13 and above:
 
 <pre>
-loadkeys /path/to/xtrakeys.txt
+# loadkeys /path/to/xtrakeys.txt
 </pre>
 
 With this in xtrakeys.txt:
@@ -237,7 +237,7 @@ For the above adjustment, these settings in emacs's init file are appropriate:
 
 (define-key key-translation-map (kbd "<f13>") (kbd "<C-return>"))
 (define-key key-translation-map (kbd "<f14>") (kbd "<C-S-return>"))
-(define-key key-translation-map (kbd "<f15>") (kbd "<M-S-return>"))
+(define-key key-translation-map (kbd "<f15loadkeys /path/to/xtrakeys.txt >") (kbd "<M-S-return>"))
 
 (define-key key-translation-map (kbd "<f16>") (kbd "M-S-<left>"))
 (define-key key-translation-map (kbd "<f17>") (kbd "M-S-<right>"))
