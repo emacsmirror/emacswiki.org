@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  4 14:15:09 2015 (-0800)
+;; Last-Updated: Mon Mar 23 09:26:31 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1974
+;;     Update #: 2004
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,8 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `cl', `help-fns', `help-mode', `naked', `view',
-;;   `wid-edit', `wid-edit+'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,13 +116,14 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/03/223 dadams
+;;     describe-variable (Emacs 24+): Fix terpri's so appearance is better.  Fill region for global value.
 ;; 2014/11/29 dadams
 ;;     Info-make-manuals-xref: Control number of newlines before.
 ;;     describe-function-1: Use same def for Emacs 25.
 ;;     describe-variable-value: Changed the default colors.
 ;;     describe-variable: Use face describe-variable-value always.  Fill region for value always.
 ;;                        Control number of newlines before and after Value:, and after manuals xref.
-;;       
 ;; 2014/11/12 dadams
 ;;     describe-package:
 ;;       Added version for Emacs 24.4+ - Use package-alist, package--builtins, or package-archive-contents.
@@ -1305,7 +1305,7 @@ Return the description that was displayed, as a string."
               (insert (or doc  "Not documented.")))))))))
 
 (when (fboundp 'help-fns--autoloaded-p) ; Emacs 24.3+
-  
+
 
   ;; REPLACE ORIGINAL in `help-fns.el':
   ;;
@@ -2087,11 +2087,11 @@ it is displayed along with the global value."
                   (princ "value is ")
                   (let ((from       (point))
                         (line-beg   (line-beginning-position))
-                        (print-rep  (let ((print-quoted  t))
-                                      (prin1-to-string val))))
+                        (print-rep  (let ((print-quoted  t)) (prin1-to-string val))))
                     (if (< (+ (length print-rep) (point) (- line-beg)) 68)
                         (progn (insert print-rep)
-                               (put-text-property from (point) 'face 'describe-variable-value))
+                               (put-text-property from (point) 'face 'describe-variable-value)
+                               (terpri))
                       (terpri)
                       (unless (or (numberp val)  (symbolp val)  (characterp val)
                                   (and (stringp val)  (string-match-p "[\n]" val)))
@@ -2099,6 +2099,7 @@ it is displayed along with the global value."
                       (let ((opoint  (point)))
                         (pp val)
                         (save-excursion (fill-region-as-paragraph opoint (point) nil t t)))
+                      (when (stringp val) (terpri))
                       (put-text-property from (point) 'face 'describe-variable-value)
                       (if (< (point) (+ 68 (line-beginning-position 0)))
                           (delete-region from (1+ from))
@@ -2118,10 +2119,11 @@ it is displayed along with the global value."
                           (pp origval)
                           (save-excursion (fill-region-as-paragraph opoint (point) nil t t)))
                         (put-text-property from (point) 'face 'describe-variable-value)
-                        (when (< (point) (+ from 20)) (delete-region (1- from) from)))))))
+                        (when (< (point) (+ from 20)) (delete-region (1- from) from) (terpri)))))))
               (terpri)
               (when locus
                 (cond ((bufferp locus)
+                       (terpri)
                        (princ (format "%socal in buffer `%s'; "
                                       (if (get variable 'permanent-local)  "Permanently l"  "L")
                                       (buffer-name buffer))))
@@ -2131,21 +2133,22 @@ it is displayed along with the global value."
                        (princ (format "It is a terminal-local variable; ")))
                       (t (princ (format "It is local to %S" locus))))
                 (if (not (default-boundp variable))
-                    (princ "globally void")
+                    (progn (princ "globally void") (terpri))
                   (let ((global-val  (default-value variable)))
                     (with-current-buffer standard-output
-                      (princ "global value is ")
+                      (princ "global value is")
                       (if (eq val global-val)
-                          (princ "the same.")
-                        (terpri)
+                          (progn (princ " the same.") (terpri))
+                        (princ ":") (terpri) (terpri)
                         ;; Fixme: `pp' can take an age if you happen to ask for a very large expression.
                         ;; We should probably print it raw once and check whether it is a sensible size,
                         ;; before prettyprinting.  -- fx
-                        (let ((from  (point)))
+                        (let ((opoint  (point)))
                           (pp global-val)
-                          ;; See previous comment for this function.  (help-xref-on-pp from (point))
-                          (when (< (point) (+ from 20)) (delete-region (1- from) from)))))))
-                (terpri))
+                          (save-excursion (fill-region-as-paragraph opoint (point) nil t t))
+                          (put-text-property opoint (point) 'face 'describe-variable-value)
+                          ;; See previous comment for this function.  (help-xref-on-pp opoint (point))
+                          (when (< (point) (+ opoint 20)) (delete-region (1- opoint) opoint))))))))
               (with-current-buffer standard-output ; If the value is large, move it to the end.
                 (when (> (count-lines (point-min) (point-max)) 10)
                   ;; Note that setting the syntax table like below makes `forward-sexp' move over a
