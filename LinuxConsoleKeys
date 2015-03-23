@@ -171,7 +171,7 @@ string F40 = "\033[54~"
 
 </pre>
 
-To modify the keymap as above at each session:
+To modify the keymap as above at start of each session:
 
 <pre>
 loadkeys /path/to/xtrakeys.txt 
