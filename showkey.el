@@ -8,13 +8,13 @@
 ;; Created: Sun Mar 22 16:24:39 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 22 21:42:22 2015 (-0700)
+;; Last-Updated: Mon Mar 23 09:31:31 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 64
+;;     Update #: 69
 ;; URL: http://www.emacswiki.org/showkey.el
 ;; Doc URL: http://www.emacswiki.org/ShowKey
 ;; Keywords: help keys mouse
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 23.x, 24.x, 25.x
 ;; 
 ;; Features that might be required by this library:
 ;;
@@ -225,8 +225,8 @@ are not indicated."
                            ""))
              (cmd-desc   (format "%s%s runs the command `%S'"
                                  key-desc mouse-msg (key-binding key t))))
-        ;; Accumulate self-inserting chars, with no cmd description.
-        ;; Otherwise, show cmd description.
+        ;; Accumulate self-inserting chars, with no command descriptions.
+        ;; Otherwise, show command description.
         (cond ((member this-command showkey-insert-cmds)
                (when (equal key-desc "SPC") (setq key-desc  " "))
                (unless (member last-command showkey-insert-cmds)
