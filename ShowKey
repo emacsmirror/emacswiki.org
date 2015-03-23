@@ -10,7 +10,7 @@ There are two global minor modes defined in <tt>showkey.el</tt>, which give you 
 
 * '''`showkey-log-mode'''' -- Show a log of such events, in a separate frame.  It is refreshed with each new event, and it is kept on top of other frames without stealing the input focus.
 
-Quitting events (`C-g') and events that raise an error are not shown.
+Events that raise an error are not shown.
 
 A few user options control the behavior:
 
