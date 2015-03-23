@@ -8,9 +8,9 @@
 ;; Created: Sun Mar 22 16:24:39 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 22 20:06:21 2015 (-0700)
+;; Last-Updated: Sun Mar 22 21:42:22 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 61
+;;     Update #: 64
 ;; URL: http://www.emacswiki.org/showkey.el
 ;; Doc URL: http://www.emacswiki.org/ShowKey
 ;; Keywords: help keys mouse
@@ -37,9 +37,7 @@
 ;;    stealing the input focus.  For this you use global minor mode
 ;;    `showkey-log-mode'.
 ;;
-;;  Quitting events (`C-g') and events that raise an error are not
-;;  shown.  Currently, key sequences that begin with a prefix key are
-;;  also not shown.
+;;  Events that raise an error are not shown.
 ;;
 ;;  Several user options control the behavior:
 ;;
@@ -200,9 +198,9 @@ Note that keys such as `C-g' that quit, and keys that raise an error,
 are not logged."
   nil nil nil :global t
   (if showkey-tooltip-mode
-      (add-hook 'post-command-hook 'showkey-show-tooltip 'APPEND)
+      (add-hook 'pre-command-hook 'showkey-show-tooltip 'APPEND)
     (x-hide-tip)
-    (remove-hook 'post-command-hook 'showkey-show-tooltip)))
+    (remove-hook 'pre-command-hook 'showkey-show-tooltip)))
 
 (defun showkey-show-tooltip ()
   "Global minor mode that shows the keys you use in a tooltip.
@@ -273,10 +271,10 @@ are not logged."
                (setq showkey-log-frame  (selected-frame)))
              (select-frame-set-input-focus oframe)
              (raise-frame showkey-log-frame))
-           (add-hook 'post-command-hook 'showkey-log 'APPEND)))
+           (add-hook 'pre-command-hook 'showkey-log 'APPEND)))
         (t
          (when (get-buffer "*KEYS*")
-           (remove-hook 'post-command-hook 'showkey-log)
+           (remove-hook 'pre-command-hook 'showkey-log)
            (kill-buffer "*KEYS*")))))
 
 (defun showkey-log ()
