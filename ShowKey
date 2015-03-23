@@ -1,0 +1,31 @@
+This page is about library '''<tt>[[showkey.el]]</tt>''', which shows keys and other events as you use them.
+
+You can use this during video recording, so that viewers can easily see what key and mouse actions you use.  Or you can use it to analyze your own interactions.
+
+You can tailor the behavior, to ignore certain event types for display.
+
+There are two global minor modes defined in <tt>showkey.el</tt>, which give you two ways to show keys:
+
+* '''`showkey-tooltip-mode'''' -- Show only the last key used, in a tooltip.  This is refreshed with each such event.
+
+* '''`showkey-log-mode'''' -- Show a log of such events, in a separate frame.  It is refreshed with each new event, and it is kept on top of other frames without stealing the input focus.
+
+Quitting events (`C-g') and events that raise an error are not shown.
+
+A few user options control the behavior:
+
+* '''`showkey-tooltip-ignored-events'''' and
+'''`showkey-log-ignored-events'''' are each a list of [[regexp]]s to match
+against events that you do not want to show, for
+ `showkey-tooltip-mode' and `showkey-log-mode', respectively.
+
+* '''`showkey-log-frame-alist'''' is an a list of frame parameters for
+the logging frame.  (It is not used for `showkey-tooltip-mode'.)
+
+* '''`showkey-log-erase-keys'''' is a list of keys that will each
+restart logging, that is, erase the log and start it over.  For example, if you add the `RET' key to it (`?\r') then each time it is pressed the log is restarted from scratch.  By default, the list is empty.  (It
+is not used for `showkey-tooltip-mode'.)
+
+----
+
+CategoryHelp CategoryAccessibility CategoryKeys CategoryMouse CategoryEducation 
