@@ -1,3 +1,4 @@
+[[de:indonesia]]
 This page is about '''[::tags]''', a facility for recording names and their definitions and later looking up the definitions.
 
 See BuildTags for how to build or update a [[tags file]] with a command-line program which records where names of different kinds of entities are defined and where they are referenced.  Names that are indexed for quick lookup this way are called '''[[tag]]s'''.
