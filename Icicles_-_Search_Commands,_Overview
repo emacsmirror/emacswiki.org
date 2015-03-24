@@ -738,10 +738,10 @@ regexp matches.
 
 You can use '''Icicles''' search to find text entities of a certain
 kind -- sentences, paragraphs, file names, URLs, and so on.  A
-convenient way to do this is to use '''`C-='''' (`icicle-insert-string-from-variable') or `C-x r i' (`insert-register') to ''insert a predefined
+convenient way to do this is to use '''`##C-=##'''' (`icicle-insert-string-from-variable') or `C-x r i' (`insert-register') to ''insert a predefined
 regexp'' that matches a particular kind of text entity. Which of
 these you use depends on whether the regexp string is saved in a
-variable (`C-=') or a register (`C-x r i').
+variable (`##C-=##') or a register (`C-x r i').
 
 For example, suppose you are in a mail client and you want to move
 between mail headers.  If you use a regexp that matches the header
@@ -749,12 +749,12 @@ field you want (e.g. the sent date or sender) then '''Icicles''' search highligh
 -- ''instant mail browser!''  Or, suppose you are in a C++ or Perl file
 and you want to navigate among function definitions or other definitions.  If
 you have a canned regexp that matches the start of a definition,
-then you can use `C-=' to quickly turn `icicle-search' into a ''code
+then you can use `##C-=##' to quickly turn `icicle-search' into a ''code
 browser''.  In a log file, navigate among date or time entries or IP
 addresses...  Of course, most programming modes and mail clients
 already provide other ways to navigate, but you get the idea
 -- '''Icicles''' search provides a ''general'' way to navigate among things,
-as long as you can match them with regexps, and `C-=' lets you
+as long as you can match them with regexps, and `##C-=##' lets you
 quickly access a library of predefined regexps.
 
 You can find useful regexps to store in variables in the standard
@@ -782,16 +782,16 @@ is the variable-definition regexp:
 
 You certainly do not want to type a regexp like that into the minibuffer (and the
 function-definition regexp is twice as complex)!  Put it into a
-variable or register once and use `C-=' or `C-x r i' from then on to retrieve it -- simple.
+variable or register once and use `##C-=##' or `C-x r i' from then on to retrieve it -- simple.
 
 If it's so simple, then why not let a command do it?  This is exactly what command '''`icicle-imenu'''' (bound to '''`##C-c =##'''') does. You
 do not need to bother looking up Imenu regexps and assigning them
-to variables for use with `C-=' and `icicle-search' -- `icicle-imenu' does that for you automatically.  See [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]].
+to variables for use with `##C-=##' and `icicle-search' -- `icicle-imenu' does that for you automatically.  See [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]].
 
 
 '''In sum:''' For complete interactivity, type a regexp dynamically as
 input to `icicle-search'.  For isolated special regexps that you
-use, save them in variables and use `C-=' with `icicle-search'.
+use, save them in variables and use `##C-=##' with `icicle-search'.
 For well-defined sets of regexps, especially if used frequently,
 define a command that uses `icicle-search'.  There is a spectrum
 of use cases for `icicle-search'.
