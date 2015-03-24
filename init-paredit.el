@@ -78,8 +78,9 @@
 
 (dolist (hook (list
                'c-mode-hook
-               'c++-mode-hook
-               'java-mode-hook
+               ;; paredit-kill (C-k) behaves badly on // comment lines in c++-mode and java-mode (at least in Emacs 24.4, paredit 24)
+               ;;'c++-mode-hook
+               ;;'java-mode-hook
                'haskell-mode-hook
                'emacs-lisp-mode-hook
                'lisp-interaction-mode-hook
