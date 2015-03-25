@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar  6 20:36:54 2015 (-0800)
+;; Last-Updated: Tue Mar 24 20:16:56 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 8742
+;;     Update #: 8759
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -323,6 +323,7 @@
 ;;    `diredp-capitalize', `diredp-capitalize-recursive',
 ;;    `diredp-capitalize-this-file', `diredp-chgrp-this-file',
 ;;    `diredp-chmod-this-file', `diredp-chown-this-file',
+;;    `diredp-compilation-files-other-window' (Emacs 24+),
 ;;    `diredp-compress-this-file',
 ;;    `diredp-copy-filename-as-kill-recursive',
 ;;    `diredp-copy-tags-this-file', `diredp-copy-this-file',
@@ -463,8 +464,9 @@
 ;;    `diredp-do-create-files-recursive', `diredp-do-grep-1',
 ;;    `diredp-ensure-mode', `diredp-existing-dired-buffer-p',
 ;;    `diredp-fewer-than-2-files-p', `diredp-fileset-1',
-;;    `diredp-find-a-file-read-args', `diredp-files-within',
-;;    `diredp-files-within-1',
+;;    `diredp-find-a-file-read-args',
+;;    `diredp-file-for-compilation-hit-at-point' (Emacs 24+),
+;;    `diredp-files-within', `diredp-files-within-1',
 ;;    `diredp-fit-frame-unless-buffer-narrowed' (Emacs 24.4+),
 ;;    `diredp-get-confirmation-recursive', `diredp-get-files',
 ;;    `diredp-get-files-for-dir', `diredp-get-subdirs',
@@ -599,6 +601,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/03/24 dadams
+;;     Added: diredp-compilation-files-other-window, diredp-file-for-compilation-hit-at-point.
 ;; 2015/03/06 dadams
 ;;     Renamed: diredp-menu-bar-recursive-marked-menu to diredp-menu-bar-operate-recursive-menu.
 ;;     Added: diredp-do-delete-recursive: M-+ D.  Added to diredp-menu-bar-operate-recursive-menu.
@@ -1418,6 +1422,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar bmkp-copied-tags)                         ; In `bookmark+-1.el'
 (defvar bmkp-current-bookmark-file)               ; In `bookmark+-1.el'
 (defvar bookmark-default-file)                    ; In `bookmark.el'
+(defvar compilation-current-error)                ; In `compile.el'
 (defvar delete-by-moving-to-trash)                ; Built-in, Emacs 23+
 (defvar dired-details-state)                      ; In `dired-details+.el'
 (defvar dired-keep-marker-hardlink)               ; In `dired-x.el'
@@ -4432,6 +4437,34 @@ Non-nil DIRED-BUFFER is passed to `dired-read-dir-and-switches'.
                                dirbufs)))
       (setq bufs  (nreverse bufs)))
     (list dirname bufs switches extra-files)))
+
+(when (> emacs-major-version 23)        ; `compilation--loc->file-struct'
+  (defun diredp-compilation-files-other-window ()
+    "Open Dired on the files indicated by compilation (e.g., `grep') hits.
+Applies to any `compilation-mode'-derived buffer, such as `*grep*'.
+You are prompted for the name of the new Dired buffer."
+    (interactive)
+    (unless (compilation-buffer-p (current-buffer)) (error "Not in a buffer derived from `compilation-mode'"))
+    (let ((files  ()))
+      (save-excursion (goto-char (point-min))
+                      (while (condition-case nil (compilation-next-file 1) (error nil))
+                        (setq compilation-current-error  (point))
+                        (push (diredp-file-for-compilation-hit-at-point) files)))
+      (setq files  (nreverse files))
+      (dired-other-window
+       (cons (read-string "Dired buffer name: " nil nil (generate-new-buffer-name default-directory)) files))))
+
+  (defun diredp-file-for-compilation-hit-at-point ()
+    "Return the name of the file for the compilation hit at point.
+The name is expanded in the directory for the last directory change."
+    (let* ((msg         (compilation-next-error 0))
+           (loc         (compilation--message->loc msg))
+           (filestruct  (compilation--loc->file-struct loc))
+           (file        (caar filestruct))
+           (dir         (cadr (car filestruct))))
+      (when dir (setq file  (expand-file-name file dir)))
+      file))
+  )
 
 ;;;###autoload
 (defun diredp-fileset (flset-name)      ; Bound to `C-x F'
