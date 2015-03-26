@@ -20,7 +20,7 @@ Add this to your [[init file]]:
 {{{
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "https://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+                         ("melpa" . "http://melpa.org/packages/")))
 }}}
 
 Any combination of repositories is fine.  You should probably always include "gnu", which is for GNU ELPA, but it is not required.
@@ -31,7 +31,7 @@ You can also add repositories one at a time:
 
 {{{
 (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; Org-mode's repository
 }}}
 
@@ -216,17 +216,17 @@ You can make packages work in Emacs 23, you need to add something like this to y
 
 {{{
 (require 'package)
-;; Any add to list for package-archives (to add marmalade or melpa) goes here
+;; Any add to list for package-archives (to add marmalade or melpa) goes here, e.g.:
 (add-to-list 'package-archives 
     '("marmalade" .
       "https://marmalade-repo.org/packages/"))
 (package-initialize)
 }}}
 
-In order to use package.el in Emacs 23, the following package.el (link found on github) version is needed:
-http://bit.ly/pkg-el23 (source of info:https://github.com/technomancy/package.el)
+The following package.el version must be placed in one of the directories in your load path:
+http://git.savannah.gnu.org/gitweb/?p=emacs.git;a=blob_plain;hb=ba08b24186711eaeb3748f3d1f23e2c2d9ed0d09;f=lisp/emacs-lisp/package.el
 
-In case Emacs 23 shows this error at startup: //File error: Cannot load file, package//, a solution to this error message is to add the following code to the Emacs init file:
+In case Emacs 23 shows this error at startup: //File error: Cannot load file, package//, a solution to this error message is to add the following code to your Emacs init file, and of course to make sure the version of package.el noted above is :
 
 {{{
 (when
