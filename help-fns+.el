@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Mar 23 09:26:31 2015 (-0700)
+;; Last-Updated: Thu Mar 26 08:23:47 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 2004
+;;     Update #: 2007
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,7 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `button', `cl', `cl-lib', `gv', `help-fns', `help-mode', `info',
+;;   `macroexp', `naked', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -116,7 +117,9 @@
 ;;
 ;;; Change Log:
 ;;
-;; 2015/03/223 dadams
+;; 2015/03/26 dadams
+;;     describe-package: Fix guard to use emacs-minor-version 3, not 24.  Thx to Roshan Shariff.
+;; 2015/03/23 dadams
 ;;     describe-variable (Emacs 24+): Fix terpri's so appearance is better.  Fill region for global value.
 ;; 2014/11/29 dadams
 ;;     Info-make-manuals-xref: Control number of newlines before.
@@ -2743,7 +2746,7 @@ Completion is available for the keymap name."
 ;;
 (when (fboundp 'describe-package)       ; Emacs 24+
 
-  (when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 24)))
+  (when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
     (defun describe-package (package)
       "Display the full documentation of PACKAGE (a symbol)."
       (interactive
@@ -2783,7 +2786,7 @@ Completion is available for the keymap name."
               (Info-make-manuals-xref (concat (symbol-name package) " package")
                                       nil nil (not (called-interactively-p 'interactive))))))))) ; Link to manuals
 
-  (unless (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 24)))
+  (unless (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
     (defun describe-package (package)
       "Display the full documentation of PACKAGE (a symbol)."
       (interactive
