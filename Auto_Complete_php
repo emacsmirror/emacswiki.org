@@ -1,44 +1,43 @@
-# ac-php   [![MELPA](http://melpa.org/packages/ac-php-badge.svg)](http://melpa.org/#/ac-php)
+=ac-php   [http://melpa.org/#/ac-php,[img:http://melpa.org/packages/ac-php-badge.svg]]=
+
 emacs auto-complete for php
 
+use [https://github.com/xcwen/phpctags,phpctags] gen tags 
 
-use [phpctags](https://github.com/xcwen/phpctags) gen tags 
+and use <tt>ac-php</tt>  work with tags 
 
-and use `ac-php`  work with tags 
+==Table of Contents==
 
- 
-## Table of Contents
-
-
-* [Test](#test)
-* [Usage](#usage)
-* [php extern for complete](#php-extern-for-complete)
-* [rebuild tags](#rebuild-tags)
-* [FQA](#fqa)
+* [#test,Test]
+* [#usage,Usage]
+* [#php-extern-for-complete,php extern for complete]
+* [#rebuild-tags,rebuild tags]
+* [#fqa,FQA]
 
 
-##  Test
-* install `php5-cli` command  for phpctags
-```bash 
+==Test==
+
+* install <tt>php5-cli</tt> command  for phpctags
+<tt>bash 
 \#UBUNTU
 localhost:~/$ sudo apt-get install php5-cli 
-```
-* install `cscope` command  for `ac-php-cscope-find-egrep-pattern`
-```bash 
+</tt>
+* install <tt>cscope</tt> command  for <tt>ac-php-cscope-find-egrep-pattern</tt>
+<tt>bash 
 \#UBUNTU
 localhost:~/$ sudo apt-get install cscope
-```
-
+</tt>
 * example:
-![example.gif](https://raw.githubusercontent.com/xcwen/ac-php/master/images/ac-php.gif)
+[img:https://raw.githubusercontent.com/xcwen/ac-php/master/images/ac-php.gif]
 
-```bash
+
+<tt>bash
 \#backup old .emacs
 cp ~/.emacs ~/.emacs.bak
-```
+</tt>
 
-save it as `~/.emacs`
-```elisp
+save it as <tt>~/.emacs</tt>
+<tt>elisp
   (setq package-archives
         '(("melpa" . "http://melpa.milkbox.net/packages/")) )
   (package-initialize)
@@ -57,42 +56,41 @@ save it as `~/.emacs`
                (define-key php-mode-map  (kbd "C-]") 'ac-php-find-symbol-at-point)   ;goto define
                (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
                ))
-```
+</tt>
 
-```bash
+<tt>bash
 cd ~/
 git clone https://github.com/xcwen/ac-php/
 \#test php files in ~/ac-php/phptest
 \#open file for test
 emacs ~/ac-php/phptest/testb.php
-```
+</tt>
 
-# Usage
+=Usage=
 
-* install `php5-cli` command  for phpctags
-```bash 
+* install <tt>php5-cli</tt> command  for phpctags
+<tt>bash 
 \#UBUNTU
 localhost:~/$ sudo apt-get install php5-cli 
-```
-* install `cscope` command  for `ac-php-cscope-find-egrep-pattern`
-```bash 
+</tt>
+* install <tt>cscope</tt> command  for <tt>ac-php-cscope-find-egrep-pattern</tt>
+<tt>bash 
 \#UBUNTU
 localhost:~/$ sudo apt-get install cscope
-```
+</tt>
+* install <tt>ac-php</tt> from melpa
+<tt>elisp
+(setq package-archives
+    '(("melpa" . "http://melpa.milkbox.net/packages/")) )
+</tt>
 
 
-
-* install `ac-php` from melpa
-```elisp
-  (setq package-archives
-        '(("melpa" . "http://melpa.milkbox.net/packages/")) )
-```
-
-"M-x" :`package-list-packages`  find  `ac-php` install
+"M-x" :<tt>package-list-packages</tt>  find  <tt>ac-php</tt> install
 
 * emacs php-mode function  define
 
-```elisp
+
+<tt>elisp
   (add-hook 'php-mode-hook
             '(lambda ()
                (auto-complete-mode t)
@@ -102,86 +100,85 @@ localhost:~/$ sudo apt-get install cscope
                (define-key php-mode-map  (kbd "C-]") 'ac-php-find-symbol-at-point)   ;goto define
                (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
                ))
-```
+</tt>
 
-`ac-php-remake-tags` ;; **if source is changed ,re run this commond for update tags**
+<tt>ac-php-remake-tags</tt> ;; <strong>if source is changed ,re run this commond for update tags</strong>
 
-`ac-php-show-tip` ;; show define at point
+<tt>ac-php-show-tip</tt> ;; show define at point
 
-`ac-php-cscope-find-egrep-pattern` ;; find current-word in project 
-
-
+<tt>ac-php-cscope-find-egrep-pattern</tt> ;; find current-word in project 
 
 * mkdir ".tags"  in root of project
 
-``` bash
+
+<tt>bash
 cd /project/to/path #  root dir of project
 mkdir .tags
-```
-* DONE 
+</tt>
+\<strong> DONE 
 
+==Php Doc for complete==
 
-## Php Doc for complete  
 define class memeber type :
 
-`public  $v1;`  =>
-``` php
-/**
- * @var classtype
- */
+<tt>public  $v1;</tt>  =>
+<tt>php
+/</strong><strong>
+ </strong> @var classtype
+ <strong>/
 public $v1;
-```
+</tt>
 
 define class function   return type:
 
-`public  function get_v1()`  =>
-```php
-/**
- * @return classtype 
- */
+<tt>public  function get_v1()</tt>  =>
+<tt>php
+/</strong><strong>
+ </strong> @return classtype 
+ <strong>/
 public function get_v1()
-```
+</tt>
 
 define variable: 
 
-`$value=new Testa ();` => 
-```php
-/** @var $value  Testa */
+<tt>$value=new Testa ();</tt> => 
+<tt>php
+/</strong><strong> @var $value  Testa </strong>/
 $value=new Testa();
-```
+</tt>
 
 like this
-```php
+<tt>php
 class Testa {
-    /**
-     * @var Testb; 
-     */
-	public  $v1;
-    /**
-     * @var \Test\TestC; 
-     */
-	public  $v2;
+    /<strong></strong>
+     <strong> @var Testb; 
+     </strong>/
+    public  $v1;
+    /<strong></strong>
+     <strong> @var \Test\TestC; 
+     </strong>/
+    public  $v2;
     public function set_v1($v){
         $v=trim($v);
         //define value type
-        /** @var $v Testb*/
+        /<strong></strong> @var $v Testb<strong>/
         $v=new Testb();
         $this->v1=$v;
     }
-    /**
-     * 
-     * @return  \Test\TestC; 
-     */
+    /</strong><strong>
+     </strong> 
+     <strong> @return  \Test\TestC; 
+     </strong>/
     public function get_v1(){
         $this->get_v1("ss");
     }
 }
-```
+</tt>
 
+==Rebuild Tags==
 
-## Rebuild Tags
-tags file location dir is in  `.tags`   for example:  `/project/to/path/.tags`
-```bash
+tags file location dir is in  <tt>.tags</tt>   for example:  <tt>/project/to/path/.tags</tt>
+<tt>bash
 localhost:~/ac-php/phptest/.tags$ tree .
 .
 ├── tags-data.el
@@ -190,39 +187,35 @@ localhost:~/ac-php/phptest/.tags$ tree .
     ├── testa.tags
     └── testb.tags
 1 directory, 4 files
-```
+</tt>
 
+<strong>if source is changed ,re run this commond for update tags</strong>: <tt>ac-php-remake-tags</tt> 
 
+if php file cannot pass from <tt>phpctags</tt>.
 
-**if source is changed ,re run this commond for update tags**: `ac-php-remake-tags` 
-
-if php file cannot pass from `phpctags`.
-
-you can find any  error from `Messages` buffer  fix it and next
+you can find any  error from <tt>Messages</tt> buffer  fix it and next
 
 like this 
-```
+<tt>
 phpctags[/home/jim/phptest/testa.php] ERROR:PHPParser: Unexpected token '}' on line 11 - 
-```
-you need fix testa.php  error and re run `ac-php-remake-tags`
-
+</tt>
+you need fix testa.php  error and re run <tt>ac-php-remake-tags</tt>
 
 if show:
-```
+<tt>
 no find .tags dir in path list :/home/jim/phptest/ 
-```
+</tt>
 
 mk .tags dir  like this:
 
-`mkdir /home/jim/phptest/.tags`
+<tt>mkdir /home/jim/phptest/.tags</tt>
 
 or
 
-`mkdir /home/jim/.tags `
+<tt>mkdir /home/jim/.tags</tt>
 
 or
 
-`mkdir /home/.tags`
+<tt>mkdir /home/.tags</tt>
 
-
-## FQA
+==FQA==
