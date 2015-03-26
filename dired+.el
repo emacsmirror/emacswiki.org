@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar 24 20:16:56 2015 (-0700)
+;; Last-Updated: Thu Mar 26 09:10:39 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 8759
+;;     Update #: 8767
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -481,9 +481,10 @@
 ;;    `diredp-nonempty-region-p', `diredp-paste-add-tags',
 ;;    `diredp-paste-replace-tags', `diredp-read-bookmark-file-args',
 ;;    `diredp-read-include/exclude', `diredp-recent-dirs',
-;;    `diredp-remove-if', `diredp-remove-if-not',
-;;    `diredp-root-directory-p', `diredp-set-tag-value',
-;;    `diredp-set-union', `diredp-string-match-p', `diredp-tag',
+;;    `diredp-refontify-buffer', `diredp-remove-if',
+;;    `diredp-remove-if-not', `diredp-root-directory-p',
+;;    `diredp-set-tag-value', `diredp-set-union',
+;;    `diredp-string-match-p', `diredp-tag',
 ;;    `diredp-this-file-marked-p', `diredp-this-file-unmarked-p',
 ;;    `diredp-this-subdir', `diredp-untag', `diredp-y-or-n-files-p'.
 ;;
@@ -601,6 +602,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/03/26 dadams
+;;     Added: diredp-refontify-buffer.
+;;     dired-after-readin-hook: Add diredp-refontify-buffer.  In particular, this ensures that reverting Dired
+;;       for a listing of explicit file names gets refontified.  (Just turn-on-font-lock does not refontify.)
 ;; 2015/03/24 dadams
 ;;     Added: diredp-compilation-files-other-window, diredp-file-for-compilation-hit-at-point.
 ;; 2015/03/06 dadams
@@ -4070,6 +4075,13 @@ This means the `.' plus the file extension.  Example: `.zip'."
                    t nil nil beginning-of-line))
             ;; Refresh `font-lock-keywords' from `font-lock-defaults'
             (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))))
+
+;; Ensure that Dired buffers are refontified when you use `g' or otherwise read in the file list.
+(defun diredp-refontify-buffer ()
+  "Turn `font-lock-mode' off, then on."
+  (setq font-lock-mode  nil)
+  (font-lock-mode))
+(add-hook 'dired-after-readin-hook 'diredp-refontify-buffer)
  
 ;;; Function Definitions
 
