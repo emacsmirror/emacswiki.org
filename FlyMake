@@ -160,11 +160,11 @@ Nil's scripts didn't work for me out of the box, so I've modified them to genera
 
 -- SeanFisk
 
-SeanFisk's script has some problem because relative path issue. I re-wrote it in python at [https://github.com/redguardtoo/pycmake-flymake|HERE]. It should work out of the box now.
-
--- Chen Bin
-
-I re-write pycmake-flymake in elisp. It's called cpputils-cmake now and released at Marmalade as package which you can install through Emacs' own package manager. Here is [https://github.com/redguardtoo/cpputils-cmake|its github site] with documentation and sample configuration. CMake is powerful and Flymake is cool. Why not let this couple and my elisp code do everything automatically for you?! For lazy programmers only, minimum configuration (you just need copy my sample configuration code).
+Please use [https://github.com/redguardtoo/cpputils-cmake|cpputils-cmake]].
+- is actively maintained for more than since year 2012
+- a pure Emacs Lisp plugin
+- works out of the box
+- Support flymake/flycheck and many other plugins
 
 -- Chen Bin
 
