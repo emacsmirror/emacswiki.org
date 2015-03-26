@@ -160,7 +160,7 @@ Nil's scripts didn't work for me out of the box, so I've modified them to genera
 
 -- SeanFisk
 
-Please use [https://github.com/redguardtoo/cpputils-cmake|cpputils-cmake]].
+Please use [https://github.com/redguardtoo/cpputils-cmake|cpputils-cmake]:
 - is actively maintained for more than since year 2012
 - a pure Emacs Lisp plugin
 - works out of the box
