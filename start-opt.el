@@ -8,9 +8,9 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar 26 08:58:28 2015 (-0700)
+;; Last-Updated: Thu Mar 26 09:12:04 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1995
+;;     Update #: 2000
 ;; URL: http://www.emacswiki.org/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -644,14 +644,16 @@
 (add-hook 'fortran-mode-hook          'turn-on-font-lock)
 
 ;; This is not good enough, for `g' in Dired buffer with explicit list of files.
-;; Need to ensure that we REfontify the buffer.
+;; Need to ensure that we Refontify the buffer.
 ;; (add-hook 'dired-after-readin-hook 'turn-on-font-lock)
-
-(defun turn-font-lock-off-then-on ()
-  "Refontify."
-  (setq font-lock-mode  nil)
-  (turn-on-font-lock))
-(add-hook 'dired-after-readin-hook    'turn-font-lock-off-then-on)
+;;
+;; Library `dired+.el' takes care of this, so do nothing if `diredp-refontify-buffer' is defined.
+(unless (fboundp 'diredp-refontify-buffer)
+  (defun turn-font-lock-off-then-on ()
+    "Refontify."
+    (setq font-lock-mode  nil)
+    (turn-on-font-lock))
+  (add-hook 'dired-after-readin-hook  'turn-font-lock-off-then-on))
 
 (add-hook 'list-options-hook          'font-lock-fontify-buffer)
 (add-hook 'outline-mode-hook          'turn-on-font-lock)
