@@ -152,7 +152,7 @@ See [https://github.com/unhammer/calendar-norway.el calendar-norway.el]
 === Chinese ===
 
 Localized, national holidays, lunar/solar term based holidays, highlight holidays based on priority, show horoscope/zodiac info, etc.
-See [http://xwl.appspot.com/ref/cal-china-x.el cal-china-x.el].
+See [https://github.com/xwl/cal-china-x cal-china-x].
 
 Modified version of the above using traditional Chinese characters (plus some nit picks): [http://github.com/stepnem/emacs-libraries/blob/master/cal-china-x.el cal-china-x.el]
 
