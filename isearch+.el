@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb 23 15:31:59 2015 (-0800)
+;; Last-Updated: Fri Mar 27 14:48:14 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3457
+;;     Update #: 3469
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -81,6 +81,7 @@
 ;;    `isearchp-eval-sexp-and-insert' (Emacs 22+),
 ;;    `isearchp-fontify-buffer-now', `isearchp-init-edit',
 ;;    `isearchp-open-recursive-edit' (Emacs 22+),
+;;    `isearchp-remove-failed-part' (Emacs 22+),
 ;;    `isearchp-retrieve-last-quit-search',
 ;;    `isearchp-set-region-around-search-target',
 ;;    `isearchp-toggle-literal-replacement' (Emacs 22+),
@@ -208,6 +209,7 @@
 ;;    `M-s i'      `isearch-toggle-invisible'
 ;;    `M-s w'      `isearch-toggle-word'
 ;;    `M-w'        `isearchp-kill-ring-save'
+;;    `C-M-l'      `isearchp-remove-failed-part' (Emacs 22+)
 ;;    `C-M-y'      `isearch-yank-secondary'
 ;;    `C-M-RET'    `isearchp-act-on-demand' (Emacs 22+)
 ;;    `C-M-tab'    `isearch-complete' (on MS Windows)
@@ -395,6 +397,9 @@
 ;;    bind `isearchp-append-register' to a different key in
 ;;    `isearch-mode-map'.
 ;;
+;;  * `C-M-l' (`isearchp-remove-failed-part') removes the failed part
+;;     of the search string, if any.
+;;
 ;;  * `C-M-y' (`isearch-yank-secondary') yanks the secondary selection
 ;;    into the search string, if you also use library `second-sel.el'.
 ;;
@@ -551,6 +556,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/03/27 dadams
+;;     Added: isearchp-remove-failed-part.  Bound to C-M-l.
 ;; 2015/02/23 dadams
 ;;     Added: isearchp-eval-sexp-and-insert.  Bound to M-:.
 ;; 2014/10/08 dadams
@@ -1366,7 +1373,16 @@ Bound to `\\<isearch-mode-map>\\[isearchp-act-on-demand]' during Isearch."
     (interactive "P")
     (when (and isearch-success  (not isearch-error)  (not isearch-just-started))
       (with-isearch-suspended
-          (let ((isearchp-pref-arg  arg)) (funcall isearchp-on-demand-action-function))))))
+          (let ((isearchp-pref-arg  arg)) (funcall isearchp-on-demand-action-function)))))
+
+  (defun isearchp-remove-failed-part () ; Bound to `' in `isearch-mode-map'.
+    "Remove the failed part of the search string, if any."
+    (interactive)
+    (with-isearch-suspended
+        (setq isearch-new-string  (substring isearch-string 0 (or (isearch-fail-pos)
+                                                                  (length isearch-string)))
+              isearch-new-message (mapconcat 'isearch-text-char-description isearch-new-string ""))))
+  )
 
 ;;;###autoload
 (defun isearchp-cycle-mismatch-removal () ; Bound to `M-k' in `isearch-mode-map'.
@@ -3030,6 +3046,9 @@ Other Isearch+ Commands that Require Library `isearch-prop.el'
 
 (when (fboundp 'isearchp-act-on-demand) ; Emacs 22+
   (define-key isearch-mode-map (kbd "C-M-<return>") 'isearchp-act-on-demand))
+
+(when (fboundp 'isearchp-remove-failed-part) ; Emacs 22+
+  (define-key isearch-mode-map (kbd "C-M-l")      'isearchp-remove-failed-part))
 
 (when (and (eq system-type 'windows-nt) ; Windows uses M-TAB for something else.
            (not (lookup-key minibuffer-local-isearch-map [C-M-tab])))
