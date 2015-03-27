@@ -152,6 +152,9 @@ insert the register in the buffer, then define this key in
 `isearchp-append-register' to a different key in
 `isearch-mode-map'.
 
+[:isearchp-remove-failed-part]
+* '''`C-M-l'''' ('''`isearchp-remove-failed-part'''') removes the failed part of the search string, if any.
+
 [:isearch-yank-secondary]
 * '''`C-M-y'''' ('''`isearch-yank-secondary'''') yanks the [[secondary selection]] onto the search string, if you also use library <tt>[[second-sel.el]]</tt> (see [[SecondarySelection#secondary-sel.el|secondary selection enhancements]]).
 
