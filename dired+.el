@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar 26 09:10:39 2015 (-0700)
+;; Last-Updated: Thu Mar 26 20:28:35 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 8767
+;;     Update #: 8887
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -109,12 +109,21 @@
 ;;  This feature can be particularly useful when you have a Dired
 ;;  buffer with files chosen from multiple directories.
 ;;
-;;  Note that this behavior is described only in the doc string of
-;;  function `dired-get-marked-files'.  It is *not* described in the
-;;  doc strings of the various commands, because that would require
-;;  redefining each command separately here.  Instead, we redefine
-;;  only macro `dired-map-over-marks' and function
-;;  `dired-get-filename' in order to achieve this effect.
+;;  Note that in most cases this behavior is described only in the doc
+;;  string of function `dired-get-marked-files'.  It is generally
+;;  *not* described in the doc strings of the various commands,
+;;  because that would require redefining each command separately
+;;  here.  Instead, we redefine macro `dired-map-over-marks' and
+;;  function `dired-get-filename' in order to achieve this effect.
+;;
+;;  Commands such as `dired-do-load' for which it does not make sense
+;;  to act on directories generally treat more than two `C-u' the same
+;;  as two `C-u'.
+;;
+;;  Exceptions to the general behavior described here are called out
+;;  in the doc strings.  In particular, the behavior of a prefix arg
+;;  for `dired-do-query-replace-regexp' is different, so that you can
+;;  use it also to specify word-delimited replacement.
 ;;
 ;;
 ;;  Act on Marked (or All) Files Here and Below
@@ -575,6 +584,9 @@
 ;;
 ;;  `dired-do-byte-compile', `dired-do-compress', `dired-do-load' -
 ;;     Redisplay only if at most one file is being treated.
+;;  `dired-do-isearch', `dired-do-isearch-regexp',
+;;     `dired-do-query-replace-regexp', `dired-do-search' -
+;;        Use new `dired-get-marked-files'.
 ;;  `dired-insert-subdir-newpos' - If not a descendent, put at eob.
 ;;  `dired-insert-subdir-validate' - Do nothing: no restrictions.
 ;;  `dired-maybe-insert-subdir' - Go back to subdir line if in listing.
@@ -603,7 +615,10 @@
 ;;; Change Log:
 ;;
 ;; 2015/03/26 dadams
-;;     Added: diredp-refontify-buffer.
+;;     Added: redefinitions of dired-do-isearch, `dired-do-isearch-regexp, dired-do-query-replace-regexp,
+;;            dired-do-search, to handle multi-C-u.
+;;     Added: dired-nondirectory-p (Emacs 20), diredp-refontify-buffer.
+;;     dired-do-byte-compile, dired-do-load, : Corrected interactive spec, to treat more than two C-u as two.
 ;;     dired-after-readin-hook: Add diredp-refontify-buffer.  In particular, this ensures that reverting Dired
 ;;       for a listing of explicit file names gets refontified.  (Just turn-on-font-lock does not refontify.)
 ;; 2015/03/24 dadams
@@ -1809,6 +1824,13 @@ Uses the `derived-mode-parent' property of the symbol to trace backwards."
   (unless (derived-mode-p 'dired-mode)
     (error "You must be in Dired or a mode derived from it to use this command")))
  
+
+(unless (fboundp 'dired-nondirectory-p) ; Emacs 20, 21.
+  (defun dired-nondirectory-p (file)
+    "Return non-nil if FILE is not a directory."
+    (not (file-directory-p file))))
+
+
 ;;; Some of the redefinitions that follow are essentially unaltered vanilla Emacs code to be
 ;;; reloaded, to use the new definition of `dired-map-over-marks' here.
 
@@ -7290,14 +7312,16 @@ A prefix argument ARG specifies files to use instead of marked.
 ;;
 ;;;###autoload
 (defun dired-do-byte-compile (&optional arg) ; Bound to `B'
-  "Byte compile marked (or next prefix argument) Emacs Lisp files.
-A prefix argument ARG specifies files to use instead of marked.
- An integer means use the next ARG files (previous -ARG, if < 0).
- `C-u': Use the current file (whether or not any are marked).
- `C-u C-u': Use all files in Dired, except directories.
- `C-u C-u C-u': Use all files and directories, except `.' and `..'.
- `C-u C-u C-u C-u': Use all files and all directories."
-  (interactive "P")
+  "Byte compile marked Emacs Lisp files.
+A prefix argument ARG specifies files to use instead of those marked.
+ * An integer means use the next ARG files (previous -ARG, if < 0).
+ * Two or more `C-u' (e.g. `C-u C-u') means ignore any marks and use
+   all files in the Dired buffer.
+ * Any other prefix arg means use the current file."
+  (interactive (let* ((arg  current-prefix-arg)
+                      (C-u  (and (consp arg)  arg)))
+                 (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
+                 (list arg)))
   (dired-map-over-marks-check #'dired-byte-compile arg 'byte-compile
                               (diredp-fewer-than-2-files-p arg)))
 
@@ -7305,20 +7329,127 @@ A prefix argument ARG specifies files to use instead of marked.
 ;; REPLACE ORIGINAL in `dired-aux.el'.
 ;;
 ;; 1. Redisplay only if at most one file is being treated.
-;; 2. Doc string reflects `Dired+'s version of `dired-map-over-marks-check'.
+;; 2. Doc string reflects `Dired+' version of `dired-map-over-marks-check'.
 ;;
 ;;;###autoload
 (defun dired-do-load (&optional arg)    ; Bound to `L'
-  "Load the marked (or next prefix argument) Emacs Lisp files.
-A prefix argument ARG specifies files to use instead of marked.
- An integer means use the next ARG files (previous -ARG, if < 0).
- `C-u': Use the current file (whether or not any are marked).
- `C-u C-u': Use all files in Dired, except directories.
- `C-u C-u C-u': Use all files and directories, except `.' and `..'.
- `C-u C-u C-u C-u': Use all files and all directories."
-  (interactive "P")
+  "Load the marked Emacs Lisp files.
+A prefix argument ARG specifies files to use instead of those marked.
+ * An integer means use the next ARG files (previous -ARG, if < 0).
+ * Two or more `C-u' (e.g. `C-u C-u') means ignore any marks and use
+   all files in the Dired buffer.
+ * Any other prefix arg means use the current file."
+  (interactive (let* ((arg  current-prefix-arg)
+                      (C-u  (and (consp arg)  arg)))
+                 (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
+                 (list arg)))
   (dired-map-over-marks-check #'dired-load arg 'load (diredp-fewer-than-2-files-p arg)))
 
+
+(when (fboundp 'multi-isearch-files)
+
+  ;; REPLACE ORIGINAL in `dired.el':
+  ;;
+  ;; Added optional ARG, so you can act on next ARG files or on all files.
+  ;;
+  (defun dired-do-isearch (&optional arg)
+    "Search for a string through all marked files using Isearch.
+A prefix argument ARG specifies files to use instead of those marked.
+ * An integer means use the next ARG files (previous -ARG, if < 0).
+ * Two or more `C-u' (e.g. `C-u C-u') means ignore any marks and use
+   all files in the Dired buffer.
+ * Any other prefix arg means use the current file."
+    (interactive (let* ((arg  current-prefix-arg)
+                        (C-u  (and (consp arg)  arg)))
+                   (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
+                   (list arg)))
+    (multi-isearch-files (dired-get-marked-files nil arg 'dired-nondirectory-p)))
+
+
+  ;; REPLACE ORIGINAL in `dired.el':
+  ;;
+  ;; Added optional ARG, so you can act on next ARG files or on all files.
+  ;;
+  (defun dired-do-isearch-regexp (&optional arg)
+    "Search for a regexp through all marked files using Isearch.
+A prefix arg behaves as follows:
+ * An integer means use the next ARG files (previous -ARG, if < 0).
+ * Two or more `C-u' (e.g. `C-u C-u') means ignore any marks and use
+   all files in the Dired buffer.
+ * Any other prefix arg means use the current file."
+    (interactive (let* ((arg  current-prefix-arg)
+                        (C-u  (and (consp arg)  arg)))
+                   (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
+                   (list arg)))
+    (multi-isearch-files-regexp (dired-get-marked-files nil arg 'dired-nondirectory-p)))
+
+  )
+
+
+;; REPLACE ORIGINAL in `dired.el':
+;;
+;; Added optional ARG, so you can act on next ARG files or on all files.
+;;
+;;;###autoload
+(defun dired-do-search (regexp &optional arg)
+  "Search through all marked files for a match for REGEXP.
+Stops when a match is found.
+To continue searching for next match, use command \\[tags-loop-continue].
+
+A prefix arg behaves as follows:
+ * An integer means use the next ARG files (previous -ARG, if < 0).
+ * Two or more `C-u' (e.g. `C-u C-u') means ignore any marks and use
+   all files in the Dired buffer.
+ * Any other prefix arg means use the current file."
+  (interactive (let* ((arg  current-prefix-arg)
+                      (C-u  (and (consp arg)  arg)))
+                 (when (and C-u  (> (prefix-numeric-value arg) 16)) (setq arg  '(16)))
+                 (list (dired-read-regexp "Search marked files (regexp): ")
+                       arg)))
+  (tags-search regexp `(dired-get-marked-files nil ',arg 'dired-nondirectory-p)))
+
+
+;; REPLACE ORIGINAL in `dired.el':
+;;
+;; Added optional ARG, so you can act on next ARG files or on all files.
+;;
+;;;###autoload
+(defun dired-do-query-replace-regexp (from to &optional arg)
+  "Do `query-replace-regexp' of FROM with TO, on all marked files.
+NOTE: A prefix arg for this command acts differently than for other
+commands, so that you can use it to request word-delimited matches.
+
+With a prefix argument:
+ * An odd number of plain `C-u': act on the marked files, but replace
+   only word-delimited matches.
+ * More than one plain `C-u': act on all files, ignoring whether any
+   are marked.
+ * Any other prefix arg: Act on the next numeric-prefix files.
+
+So for example:
+ * `C-u C-u C-u': act on all files, replacing word-delimited matches.
+ * `C-u 4': act on the next 4 files.  `C-4' means the same thing.
+ * `C-u': act on the marked files, replacing word-delimited matches.
+
+If you exit (\\[keyboard-quit], RET or q), you can resume the query replace
+with the command \\[tags-loop-continue]."
+  (interactive
+   (let ((common  (query-replace-read-args "Query replace regexp in marked files" t t)))
+     (list (nth 0 common)
+           (nth 1 common)
+           current-prefix-arg))) 
+  (let* ((argnum     (and (consp arg)  (prefix-numeric-value arg)))
+         (delimited  (and argnum  (eq (logand (truncate (log argnum 4)) 1) 1))) ; Odd number of plain `C-u'.
+         (all        (and argnum  (> argnum 4))) ; At least 3 plain `C-u'.
+         (dgmf-arg   (dired-get-marked-files nil (if (atom arg) (abs arg) (and all  '(16)))
+                                             'dired-nondirectory-p)))
+    (dolist (file  dgmf-arg)
+      (let ((buffer  (get-file-buffer file)))
+        (when (and buffer  (with-current-buffer buffer buffer-read-only))
+          (error "File `%s' is visited read-only" file))))
+    (tags-query-replace from to delimited `',dgmf-arg)))
+
+;;;###autoload
 (defun diredp-do-grep (command-args)    ; Bound to `M-g'
   "Run `grep' on marked (or next prefix arg) files.
 A prefix argument behaves according to the ARG argument of
@@ -7682,33 +7813,10 @@ Non-interactively:
                      msg))))
 
 
-;;; VISIT ALL MARKED FILES SIMULTANEOUSLY.
-
-;;; Brief Description:
-;;;
-;;; `dired-do-find-marked-files' is bound to `F' by dired-x.el.
-;;;
-;;; * Use `dired-get-marked-files' to collect the marked files in the current
-;;;   Dired Buffer into a list of filenames `FILE-LIST'.
-;;;
-;;; * Pass FILE-LIST to `dired-simultaneous-find-file' all with
-;;;   `dired-do-find-marked-files''s prefix argument OPTION.
-;;;
-;;; * `dired-simultaneous-find-file' runs through FILE-LIST decrementing the
-;;;   list each time.
-;;;
-;;; * If OPTION and `pop-up-frames' are both nil, then calculate the
-;;; `size' of the window for each file by dividing the `window-height'
-;;; by length of FILE-LIST.  Thus, `size' is cognizant of the
-;;; window-configuration.
-;;;
-;;; * If `size' is too small abort, otherwise run `find-file' on each element
-;;;   of FILE-LIST giving each a window of height `size'.
-
-
 ;; REPLACE ORIGINAL in `dired-x.el'.
 ;;
-;; 1. Call `dired-get-marked-files' with original ARG, to get its multi-C-u behavior.
+;; 1. Call `dired-get-marked-files' with original ARG, to get its multi-`C-u' behavior.
+;;
 ;; 2. Doc string updated to reflect change to `dired-simultaneous-find-file'.
 ;;
 ;;;###autoload
@@ -7725,7 +7833,7 @@ lines go to the bottom-most window.  The number of files that can be
 displayed this way is restricted by the height of the current window
 and `window-min-height'.
 
-A prefix argument also behaves according to the ARG argument of
+Otherwise, a prefix arg behaves according to the ARG argument of
 `dired-get-marked-files'.  In particular, `C-u C-u' operates on all
 files in the Dired buffer.
 
