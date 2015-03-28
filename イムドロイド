@@ -1,11 +1,11 @@
 Lisp:emdroid.el
 
-AndroidはGoogleによって後援されているモバイルプラットフォームです.
+<nowiki>AndroidはGoogleによって後援されているモバイルプラットフォームです.</nowiki>
 それはLinux/dalvikスタック上で走ります.
 詳しくはhttp://code.google.com/android/を参照されたし. 
 
-EmdroidはEmacsのためのAndroidです.
-Eclipseプラグインのように, EmDroidはコマンドラインツール周りのラッパーになります.
+<nowiki>EmdroidはEmacsのためのAndroidです.</nowiki>
+Eclipseプラグインのように, <nowiki>EmDroidはコマンドラインツール周りのラッパーになります.</nowiki>
 それは現在[[JonathanArkell]]によって開発されています.
 
 それは現在機能します:
