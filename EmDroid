@@ -1,3 +1,4 @@
+[[ja:イムドロイド]]
 Lisp:emdroid.el
 
 Android is a mobile platform backed by Google.  It runs on a linux / dalvik stack.  See http://code.google.com/android/ for more details. 
