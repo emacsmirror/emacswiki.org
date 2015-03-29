@@ -91,7 +91,6 @@ That will spawn the iPython process correctly (Of course you need to modify the 
 * [http://www.enigmacurry.com/2008/05/09/emacs-as-a-powerful-python-ide/ Emacs as a powerful Python IDE]
 * [http://www.enigmacurry.com/2009/01/21/autocompleteel-python-code-completion-in-emacs/ AutoComplete.el: Python Code Completion in Emacs]
 ** See [http://www.enigmacurry.com/2009/01/19/my-emacs-config-on-github/ My Emacs config on Github] for dotfiles
-* [http://pedrokroger.net/2010/07/configuring-emacs-as-a-python-ide-2/ Pedro Kroger's python setup]
 * [http://wenshanren.org/?p=351/ Python Debugging, Send Code to an Arbitrary Buffer]
 
 == Various Configuration Tips ==
