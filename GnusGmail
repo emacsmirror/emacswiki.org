@@ -21,6 +21,12 @@ Put the following in your ##~/.gnus## file and replace "user@gmail.com" with you
       gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 }}}
 
+for emacs 24 you need to add:
+{{{
+starttls-use-gnutls t
+}}}
+after ##smtpmail-smtp-service 587##
+
 Put the following in your ##~/.authinfo## file and replace "user@gmail.com" with your email addres and replace "secret" with your password---or your [https://accounts.google.com/IssuedAuthSubTokens application-specific password]:
 
 {{{
