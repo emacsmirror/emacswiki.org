@@ -32,7 +32,8 @@ the editor to update the text area.
 
 To use Native Windows Emacs from Firefox to edit HTML input text areas
 (like Wikipedia and other Wiki pages), see a small
-[http://blogdev.ilearn.marist.edu/web/lissacoffey/blog project] by JariAalto. It contains source
+[https://github.com/jaalto/project--windows-emacs-client-for-firefox
+Github Cygwin project] by JariAalto. It contains source
 code to build a utility that can be used in /It's All Text/
 add-on to call running Emacs, provided that you start Emacs with <code>M-x
 server-start</code>.
