@@ -101,12 +101,6 @@ So packages are initialized //AFTER// the init.el is loaded.  This means you sho
 * key bindings can also be done in such a way to not cause init failure, even if the package is not loaded:
 
 {{{
-    (global-set-key
-     "\M-?"
-     (lambda ()
-       (interactive)
-       (call-interactively 'magit-status)))
-
     (global-set-key (kbd "C-'")     'shell-switcher-switch-buffer)
 }}}
 * some package specific initialization can be done with eval-after-load, see [[ELPA#eval-after-load|eval-after-load]]
