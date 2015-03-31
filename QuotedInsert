@@ -41,7 +41,7 @@ For Latin-1 (ISO 8859-1), this table shows all the characters inserted with a qu
 || ##C-q M-3## || ³ || ##C-q M-K## || Ë || ##C-q M-c## || ã || ##C-q M-}## || ý ||
 || ##C-q M-4## || ´ || ##C-q M-L## || Ì || ##C-q M-d## || ä || ##C-q M-|## || ü ||
 || ##C-q M-5## || µ || ##C-q M-M## || Í || ##C-q M-e## || å || ##C-q M-~## || þ ||
-|| ##C-q M-6## || ¶ || ##C-q M-N## || Î || ##C-q M-f## || æ ||             ||   ||
+|| ##C-q M-6## || ¶ || ##C-q M-N## || Î || ##C-q M-f## || æ || ##C-q M-{## || û ||
 || ##C-q M-7## || · || ##C-q M-O## || Ï || ##C-q M-g## || ç ||             ||   ||
 
 * '''NBSP''' is a NonbreakableSpace
