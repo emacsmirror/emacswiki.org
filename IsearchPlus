@@ -215,6 +215,14 @@ previous input has a mismatched portion.
 successful matches.
 
 
+[:isearchp-ring-bell-function]
+* You can use option '''`isearchp-ring-bell-function'''' to suppress or
+replace bell ringing (`ding') during Isearch (but not for
+quitting with `C-g').  Set it to `ignore', for example, to
+suppress any indication of an error.  Set it to a function such
+as `echo-bell' (from library <tt>[[echo-bell.el]]</tt>), to indicate errors
+only visually.
+
 [:isearchp-toggle-option-flag]
 * Non-`nil' option '''`isearchp-toggle-option-flag'''', which you can
 toggle using '''`M-s v'''' (`isearchp-toggle-option-toggle'),
