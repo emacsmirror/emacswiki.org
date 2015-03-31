@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Mar 30 20:17:16 2015 (-0700)
+;; Last-Updated: Mon Mar 30 20:23:03 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3472
+;;     Update #: 3473
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -451,15 +451,16 @@
 ;;    recursive editing session and resumes the search (from the
 ;;    current position where you hit `C-M-c').
 ;;
-;;  * Highlighting of the mismatched portion of your search string in
-;;    the minibuffer.  This is the portion that is removed if you do
-;;    `C-g', or removed/replaced automatically if you use `M-k' (see
-;;    next).  I added this feature to GNU Emacs 23.1.
-;;
 ;;  * `C-g' after successfully finding matches restores not only the
 ;;    original position but also its relative position in the window.
 ;;    IOW, you get back to what you saw before searching.  Fixes Emacs
 ;;    bug #12253 for Isearch.
+;;
+;;  * Highlighting of the mismatched portion of your search string in
+;;    the minibuffer.  This is the portion that is removed if you do
+;;    `C-g', or removed/replaced manually if you use `C-M-l' (see
+;;    next) or automatically if you use `M-k' (see below).  I added
+;;    this feature to GNU Emacs 23.1.
 ;;
 ;;  * `C-M-l' (`isearchp-remove-failed-part') removes the failed part
 ;;     of the search string, if any.
