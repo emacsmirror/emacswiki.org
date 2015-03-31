@@ -17,6 +17,9 @@ Here's the minimum I'd like to see support for:
 * convert i and em tags into the italics-face
 * just display alt tag for <img ...> or some default for <img ...> with no alt tag
 
+
+'''EDIT by ychaouche''' : I think HTML-mode handles this already, you can trigger it with '''C-c <tab>.'''
+
 == The "Nice to Haves" =
 
 Here are the things I think wouldn't be _that_ much extra work:
@@ -88,3 +91,8 @@ some basic features for it (follow link, perhaps back and forward). Please let m
 == See Also =
 
 CategoryHypermedia
+
+
+
+
+
