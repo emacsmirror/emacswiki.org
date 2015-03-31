@@ -1,6 +1,6 @@
 Wanderlust is a mail and news reader for Emacs with excellent IMAP support. It was originally developed by Yuuichi Teranishi.
 
-Wandlerlust is hosted on [https://github.com/wanderlust/wanderlust GitHub]. 
+Wandlerlust is hosted on [https://github.com/wanderlust/wanderlust GitHub].  [http://wanderlust.github.io/wl-docs/ Documentation] is also available there or as a local info file.
 
 == Features ==
 
@@ -15,7 +15,7 @@ Wandlerlust is hosted on [https://github.com/wanderlust/wanderlust GitHub].
 * Support of MIME (by SEMI or tm).
 * Draft editing of mail and news as a same interface.
 * Icon based interface for the list of Folder.
-* Message Drag & Drop (XEmacs 21.0 or above).
+* Message Drag & Drop (XEmacs 21.0 or above).with
 * Non-fetched operations for a big message part of MIME (IMAP4).
 * Server side search (IMAP4), also Japanese support.
 * Virtual Folder.
