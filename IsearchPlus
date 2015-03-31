@@ -152,9 +152,6 @@ insert the register in the buffer, then define this key in
 `isearchp-append-register' to a different key in
 `isearch-mode-map'.
 
-[:isearchp-remove-failed-part]
-* '''`C-M-l'''' ('''`isearchp-remove-failed-part'''') removes the failed part of the search string, if any.
-
 [:isearch-yank-secondary]
 * '''`C-M-y'''' ('''`isearch-yank-secondary'''') yanks the [[secondary selection]] onto the search string, if you also use library <tt>[[second-sel.el]]</tt> (see [[SecondarySelection#secondary-sel.el|secondary selection enhancements]]).
 
@@ -196,10 +193,12 @@ anything you like (including search for something different).
 Using '''`C-M-c'''' closes the recursive editing session and resumes
 the search (from the current position when you hit `C-M-c').
 
-* Highlighting of the mismatched portion of your search string. This is the portion that is removed if you do `C-g', or removed/replaced automatically if you use `M-k' (see next).  I added this feature to GnuEmacs 23.1.
-
 * `C-g' after successfully finding matches restores not only the original position but also its relative position in the window.  IOW, you get back to what you saw before searching.  Fixes GnuEmacs [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12253|bug #12253]] for Isearch.
 
+* Highlighting of the mismatched portion of your search string. This is the portion that is removed if you do `C-g', or removed/replaced manually if you use `C-M-l' (see next) or automatically if you use `M-k' (see below).  I added this feature to GnuEmacs 23.1.
+
+[:isearchp-remove-failed-part]
+* '''`C-M-l'''' ('''`isearchp-remove-failed-part'''') removes the failed part of the search string, if any.
 
 [:isearchp-cycle-mismatch-removal]
 [:isearchp-drop-mismatch]
