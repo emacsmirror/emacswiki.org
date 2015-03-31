@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar 27 14:48:14 2015 (-0700)
+;; Last-Updated: Mon Mar 30 20:17:16 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3469
+;;     Update #: 3472
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -397,9 +397,6 @@
 ;;    bind `isearchp-append-register' to a different key in
 ;;    `isearch-mode-map'.
 ;;
-;;  * `C-M-l' (`isearchp-remove-failed-part') removes the failed part
-;;     of the search string, if any.
-;;
 ;;  * `C-M-y' (`isearch-yank-secondary') yanks the secondary selection
 ;;    into the search string, if you also use library `second-sel.el'.
 ;;
@@ -463,6 +460,9 @@
 ;;    original position but also its relative position in the window.
 ;;    IOW, you get back to what you saw before searching.  Fixes Emacs
 ;;    bug #12253 for Isearch.
+;;
+;;  * `C-M-l' (`isearchp-remove-failed-part') removes the failed part
+;;     of the search string, if any.
 ;;
 ;;  * `M-k' (`isearchp-cycle-mismatch-removal') cycles automatic
 ;;    removal or replacement of the input portion that does not match,
@@ -556,6 +556,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/03/30 dadams
+;;     isearchp-drop-mismatch: Added :set to defcustom.
 ;; 2015/03/27 dadams
 ;;     Added: isearchp-remove-failed-part.  Bound to C-M-l.
 ;; 2015/02/23 dadams
@@ -1013,10 +1015,15 @@ anything else  - Always remove mismatched text from the search string.
 
 You can cycle among the three possible values using \
 `\\[isearchp-cycle-mismatch-removal]'."
-  :type '(choice
+  :type  '(choice
           (const :tag "Replace last mismatch"  replace-last)
           (const :tag "Never remove mismatch"  nil)
           (other :tag "Always remove mismatch" t))
+  :set   #'(lambda (sym defs)
+             (custom-set-default sym defs)
+             (if (and sym  (not (eq 'replace-last sym)))
+                 (add-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)
+               (remove-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)))
   :group 'isearch-plus)
 
 (when (fboundp 'isearch-unread-key-sequence) ; Emacs 22+
