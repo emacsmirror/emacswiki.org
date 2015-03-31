@@ -1,0 +1,10 @@
+I'll not make this change directly since I'd prefer not to trample others' work, but this version of visws.el:
+
+    http://pastebin.com/SCCLWDar
+
+Makes the font face work in emacs 22.1.1 and 24.3.1.
+
+It also hides newlines, which are usually implied by the lack of any characters, and changes the color of whitespace to make it clash less with the document.
+
+-- josh 2015-03-31 14:46 UTC
+
