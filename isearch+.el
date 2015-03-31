@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar 31 09:22:41 2015 (-0700)
+;; Last-Updated: Tue Mar 31 09:31:37 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3531
+;;     Update #: 3532
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -481,6 +481,13 @@
 ;;    anything else  - Your current input is ignored (removed) if it
 ;;                     causes a mismatch.  The search string always
 ;;                     has successful matches.
+;;
+;;  * You can use option `isearchp-ring-bell-function' to suppress or
+;;    replace bell ringing (`ding') during Isearch (but not of
+;;    quitting with `C-g').  Set it to `ignore', for example, to
+;;    suppress any indication of an error.  Set it to a function such
+;;    as `echo-bell' (from library `echo-bell.el'), to indicate errors
+;;    only visually.
 ;;
 ;;  * Non-`nil' option `isearchp-toggle-option-flag', which you can
 ;;    toggle using `M-s v' (`isearchp-toggle-option-toggle'),
