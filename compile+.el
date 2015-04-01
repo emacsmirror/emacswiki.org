@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 16 16:38:23 2004
 ;; Version: 0
 ;; Package-Requires: ((compile- "0"))
-;; Last-Updated: Thu Jan  1 10:28:49 2015 (-0800)
+;; Last-Updated: Wed Apr  1 08:21:48 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 930
+;;     Update #: 935
 ;; URL: http://www.emacswiki.org/compile+.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Doc URL: http://www.emacswiki.org/CompilationMode
@@ -65,6 +65,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/04/01 dadams
+;;     compilation-goto-locus: Fix for Emacs bug #20241.
 ;; 2011/10/03 dadams
 ;;     Added macros from compile.el: compilation--make-cdrloc, compilation--loc->marker,
 ;;                                   compilation--file-struct->loc-tree
@@ -347,7 +349,7 @@ and overlay is highlighted between MK and END-MK."
       (goto-char mk))
     (if end-mk
         (push-mark end-mk t)
-      (if mark-active (setq mark-active)))
+      (if mark-active (setq mark-active  nil))) ; See Emacs bug #20241.
     ;; If hideshow got in the way of
     ;; seeing the right place, open permanently.
     (dolist (ov (overlays-at (point)))
