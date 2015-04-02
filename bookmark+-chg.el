@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Mar 23 11:13:40 2015 (-0700)
+;; Last-Updated: Thu Apr  2 14:50:00 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15911
+;;     Update #: 15913
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1803,6 +1803,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2015/04/02 dadams
+;;     eval-when-compile require of bookmark+-mac, for bmkp-define-show-only-command.
 ;; 2015/02/08 dadams
 ;;     Renamed: bmkp-bmenu-show-only-lighted to bmkp-bmenu-show-only-lighted-bookmarks.
 ;;     bmkp-bmenu-show-only-lighted-bookmarks: Use macro bmkp-define-show-only-command to define it.
