@@ -38,7 +38,7 @@ the DOM interface functions.
 
 You can get the source from here:
 
-* Lisp:dom.el
+* dom.el [http://github.com/toroidal-code/dom.el]
 
 Related Links:
 
@@ -71,7 +71,7 @@ You can get the source from here:
 
 This requires partial (or full) installation of CEDET (see below), as well as:
 
-* Lisp:dom.el (same as above)
+* dom.el [http://github.com/toroidal-code/dom.el] (same as above)
 
 
 To use xpath.el you need Wisent, a Bison-like parser generator in Elisp. Wisent is part of the Semantic package (see: SemanticBovinator), but as far as I can see it is not in the released version of Semantic. You can get it along with the entire [[CEDET]] beta tar-ball: http://sourceforge.net/project/showfiles.php?group_id=17886&release_id=192965
