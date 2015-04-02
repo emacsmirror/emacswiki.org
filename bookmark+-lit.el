@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2015, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sun Feb 22 09:01:13 2015 (-0800)
+;; Last-Updated: Thu Apr  2 14:48:56 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 901
+;;     Update #: 904
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -201,6 +201,14 @@
 ;;
 (defalias 'bmkp-bookmark-data-from-record 'bookmark-get-bookmark-record)
 (defalias 'bmkp-bookmark-name-from-record 'bookmark-name-from-full-record)
+
+
+(eval-when-compile
+ (or (condition-case nil
+         (load-library "bookmark+-mac") ; Use load-library to ensure latest .elc.
+       (error nil))
+     (require 'bookmark+-mac)))         ; Require, so can load separately if not on `load-path'.
+;; bmkp-define-show-only-command
 
 
 ;; (eval-when-compile (require 'bookmark+-bmu))
