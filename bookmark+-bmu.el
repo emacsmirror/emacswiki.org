@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Mar 20 20:06:49 2015 (-0700)
+;; Last-Updated: Thu Apr  2 14:54:00 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3675
+;;     Update #: 3677
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -371,7 +371,8 @@
          (load-library "bookmark+-mac") ; Use load-library to ensure latest .elc.
        (error nil))
      (require 'bookmark+-mac)))         ; Require, so can load separately if not on `load-path'.
-;; bmkp-define-sort-command, bmkp-with-help-window, bmkp-with-output-to-plain-temp-buffer
+;; bmkp-define-show-only-command, bmkp-define-sort-command, bmkp-menu-bar-make-toggle,
+;; bmkp-with-help-window, bmkp-with-output-to-plain-temp-buffer
 
 (put 'bmkp-with-output-to-plain-temp-buffer 'common-lisp-indent-function '(4 &body))
 
