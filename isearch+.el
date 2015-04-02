@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar 31 09:31:37 2015 (-0700)
+;; Last-Updated: Thu Apr  2 16:23:17 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3532
+;;     Update #: 3540
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -483,7 +483,7 @@
 ;;                     has successful matches.
 ;;
 ;;  * You can use option `isearchp-ring-bell-function' to suppress or
-;;    replace bell ringing (`ding') during Isearch (but not of
+;;    replace bell ringing (`ding') during Isearch (but not for
 ;;    quitting with `C-g').  Set it to `ignore', for example, to
 ;;    suppress any indication of an error.  Set it to a function such
 ;;    as `echo-bell' (from library `echo-bell.el'), to indicate errors
@@ -566,6 +566,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/04/02 dadams
+;;     isearchp-drop-mismatch: in :set, test VAL, not SYM.
 ;; 2015/03/31 dadams
 ;;     Added: isearchp-ring-bell-function, isearchp-orig-ring-bell-fn.
 ;;     Added advice of isearch-done: Reset ring-bell-function to isearchp-orig-ring-bell-fn.
@@ -1041,9 +1043,9 @@ You can cycle among the three possible values using \
            (const :tag "Replace last mismatch"  replace-last)
            (const :tag "Never remove mismatch"  nil)
            (other :tag "Always remove mismatch" t))
-  :set   #'(lambda (sym defs)
-             (custom-set-default sym defs)
-             (if (and sym  (not (eq 'replace-last sym)))
+  :set   #'(lambda (sym val)
+             (custom-set-default sym val)
+             (if (and val  (not (eq 'replace-last val)))
                  (add-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)
                (remove-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)))
   :group 'isearch-plus)
