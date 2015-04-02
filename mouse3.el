@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  4 16:30:27 2015 (-0800)
+;; Last-Updated: Thu Apr  2 16:29:48 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1745
+;;     Update #: 1746
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -1877,8 +1877,8 @@ Provides commands to act on the selected files and directories."
           (function :tag "Use menu"     'mouse3-dired-use-menu)
           (function :tag "Toggle marks" 'mouse3-dired-use-toggle-marks)
           (const    :tag "No special behavior" :value nil))
-  :set #'(lambda (sym defs)
-           (custom-set-default sym defs)
+  :set #'(lambda (sym val)
+           (custom-set-default sym val)
            (if (functionp mouse3-dired-function)
                (funcall mouse3-dired-function)
              (remove-hook 'dired-after-readin-hook 'mouse3-dired-set-to-toggle-marks)
