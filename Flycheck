@@ -56,9 +56,39 @@ See URL `https://github.com/FND/jslint-reporter'."
 
 [[image:JslintFlycheckOnWindowsScreenshot]]
 
+==  ESLint Flycheck checker for Javascript and React.js JSX ==
+
+Full tutorial at: [http://codewinds.com/blog/2015-04-02-emacs-flycheck-eslint-jsx.html]
+
+1. Install flycheck, web-mode, js2-mode
+
+2. Add following config to your .emacs file
+
+<pre>
+;; use web-mode for .jsx files
+(add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+
+;; http://www.flycheck.org/manual/latest/index.html
+(require 'flycheck)
+
+;; turn on flychecking globally
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; disable jshint since we prefer eslint checking
+(setq-default flycheck-disabled-checkers
+  (append flycheck-disabled-checkers
+    '(javascript-jshint)))
+
+;; use eslint with web-mode for jsx files
+(flycheck-add-mode 'javascript-eslint 'web-mode)
+
+;; disable json-jsonlist checking for json files
+(setq-default flycheck-disabled-checkers
+  (append flycheck-disabled-checkers
+    '(json-jsonlist)))
+</pre>
 
 ==  Flycheck checker for C# ==
 
 As of June 2014, Flycheck has no built-in support for C#. Fortunately support is straight forward to add, see
  [http://dinochiesa.net/?p=1079 this post].
-
