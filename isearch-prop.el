@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 26 08:09:58 2015 (-0800)
+;; Last-Updated: Thu Apr  2 16:28:02 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 700
+;;     Update #: 702
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -371,9 +371,9 @@ text being searched does not have the property, and this then dims the
 text that does have the property."
   :type 'boolean :group 'isearch-plus
   :initialize 'custom-initialize-changed
-  :set (lambda (symb defs)
+  :set (lambda (symb new-val)
          (let ((old-val  (symbol-value symb)))
-           (custom-set-default symb defs)
+           (custom-set-default symb new-val)
            (unless (eq old-val (symbol-value symb)) (isearchp-toggle-dimming-non-prop-zones)))))
 
 ;; Same as `ignore-comments-flag' in `hide-comnt.el'.
