@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Mar 23 11:05:16 2015 (-0700)
+;; Last-Updated: Thu Apr  2 14:52:28 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7691
+;;     Update #: 7692
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -671,8 +671,8 @@
          (load-library "bookmark+-mac") ; Use load-library to ensure latest .elc.
        (error nil))
      (require 'bookmark+-mac)))         ; Require, so can load separately if not on `load-path'.
-;; bmkp-define-cycle-command, bmkp-define-file-sort-predicate, bmkp-with-help-window,
-;; bmkp-with-output-to-plain-temp-buffer
+;; bmkp-define-cycle-command, bmkp-define-file-sort-predicate, bmkp-define-next+prev-cycle-commands,
+;; bmkp-with-help-window, bmkp-with-output-to-plain-temp-buffer
 
 (eval-when-compile (require 'bookmark+-bmu))
 ;; bmkp-bmenu-before-hide-marked-alist, bmkp-bmenu-before-hide-unmarked-alist, bmkp-bmenu-commands-file,
