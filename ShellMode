@@ -186,6 +186,8 @@ Use this command to clear the shell buffer:
    (let ((comint-buffer-maximum-size 0))
      (comint-truncate-buffer)))
 
+You can also just use M-x erase-buffer.
+
 == Switch between Term-mode and Shell-mode ==
 
 Below is a function which allows you to switch between Term mode and Shell mode, in the same buffer. 
