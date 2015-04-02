@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 15 14:22:25 2015 (-0700)
+;; Last-Updated: Thu Apr  2 09:07:33 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1289
+;;     Update #: 1292
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -75,6 +75,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/04/02 dadams
+;;     Corrected command names for ni-narrow-to-*.
 ;; 2015/03/15 dadams
 ;;     Added: remap-command, sub-quit-window-delete.
 ;;     Remap quit-window to quit-window-delete, if sub-quit-window-delete.
@@ -448,9 +450,9 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 
 (eval-after-load "narrow-indirect"
   '(progn
-    (define-key ctl-x-4-map "nd" 'ni-narrow-to-defun-other-window)
-    (define-key ctl-x-4-map "nn" 'ni-narrow-to-region-other-window)
-    (define-key ctl-x-4-map "np" 'ni-narrow-to-page-other-window)))
+    (define-key ctl-x-4-map "nd" 'ni-narrow-to-defun-indirect-other-window)      ; `C-x 4 n d'
+    (define-key ctl-x-4-map "nn" 'ni-narrow-to-region-indirect-other-window)     ; `C-x 4 n n'
+    (define-key ctl-x-4-map "np" 'ni-narrow-to-page-indirect-other-window)))     ; `C-x 4 n p'
 
 ;; Because C-M- is being used for secondary.
 (eval-after-load "foldout" '(setq foldout-mouse-modifiers '(meta shift)))
