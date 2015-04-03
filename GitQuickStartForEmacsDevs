@@ -49,23 +49,19 @@ take 15 or even 30 minutes on slower connections.
 
 If you're using the command-line:
 
-* ##git pull --rebase##
+* ##git pull##
 * Edit files
+* ##git add new-file ...##
 * ##git commit -a##
 * ##git push##
 
+(The ##git add## command is needed only if you added new files that
+are not yet registered with Git.)
+
 Optionally, before doing a commit, you can do ##git status## and
-##git diff## to view the changed which will be committed by ##git commit -a##
-(with no filename arguments) and unknown files which will be
-ignored by ##git commit##.  "Unknown" means that the file neither
-matches a pattern in .gitignore nor is registered with Git.
-Typically, unknown files are those you added with the intent to commit
-them.  In order to register a file with Git and tell Git to track changes in
-them, use the ##git add## command:
+##git diff## to view the changes which will be committed by ##git commit -a##
+(with no filename arguments).
 
-##git add new-file ...##
-
-Then commit them as usual with the rest of the appropriate changeset.
 You can also commit using VC-dir:
 
 * ##M-x vc-dir RET##
@@ -74,51 +70,9 @@ You can also commit using VC-dir:
 * Type log (##C-c C-a## to pull in ChangeLog(s))
 * ##C-c C-c##
 
-If Git complains about conflicts after the update, fix them and use
-
-: ##git add <file>##
-
-(##git add## cannot fix any conflicts itself; it only marks a file
-as being ready to commit after *you* fix the conflicts.)
-Fixing conflicts in Emacs turns on the smerge-mode, which
-automatically invokes ##git add## for every file you save, so
-the manual ##git add## command is unnecessary.
-
-If you use VC as shown above, the ##git push## command
-must be typed manually, after you commit, as VC doesn't
-support that command yet.
-
-With Git you shouldn't commit the changed files one at a time if
-they belong to the same logical change. So please don't do:
-
-* ##git commit ChangeLog.txt##
-* ##git commit lisp/foo.el##
-
-but instead do
-
-* ##git commit lisp/foo.el ChangeLog.txt##
-
-or just
-
-* ##git commit -a##
-
-if those are the only changed files.
-(It is recommended to do a ##git status## before a commit without
-filename arguments to check for inadvertant changes that would be
-committed.)
-
-This is very important because
-every commit creates a *changeset*, which is a discrete step on the
-history of the code base. A changeset should correspond to one
-well-defined purpose which is completely achieved with the
-corresponding commit as, for instance, "Fix bug #342" or "Implement
-feature Foo".
-
-Before pushing, not just the files you are committing but _all_
-your local source files must be up to date with upstream. So if
-somebody else pushes to upstream between the ##git pull## 
-and the ##git push## commands, you'll need to ##git pull --rebase##
-again, resolve conflicts, if any, and repeat the ##git push## command.
+To push your commits to the upstream Emacs repository on Savannah,
+you will need to type the ##git push## command from the shell prompt,
+even if you use VC, as VC doesn't yet support a push command.
 
 === If you made a mistake ===
 
@@ -135,13 +89,72 @@ If you caught your mistake only after ##git push##, the only way to fix it is
 to push another commit.  Try to avoid that, as log messages cannot be
 fixed this way.
 
+=== If pushing fails ===
+
+Before pushing, not just the files you are committing but _all_
+your local source files must be up to date with upstream. So if
+somebody else pushes to upstream between your ##git pull## 
+and the ##git push## commands, your push will be rejected. If
+that happens, you'll need to resync with the upstream repository:
+
+* ##git pull##
+* Resolve conflicts, if any (see below)
+* ##git push##
+
+=== Dealing with conflicts ===
+
+The ##git pull## command performs a merge between any local
+changes you have and the changes pushed by others to the
+upstream repository since your last pull. This merge could fail
+due to conflicts between your changes and changes by others
+in the same portions of the same files. These conflicts are
+marked by conflict markers similar to other VCSes.
+
+To fix this, visit the files with conflicts in Emacs.  This turns on
+the smerge-mode which has special commands for handling
+conflicts.  In addition, saving any file whose conflicts were
+completely resolved (i.e., no conflict markers remain in it)
+invokes the ##git add## command on that file, which prepares
+the file for committing. Now review all the conflict markers and
+resolve the conflicts by editing the relevant portions of the file.
+
+When you are done with resolving all the conflicts in all the
+files, commit them, either from the vc-dir buffer or by typing
+##git commit## from the shell prompt.
+
+=== Commit the entire changeset ===
+
+With Git you shouldn't commit the changed files one at a time if
+they belong to the same logical change. So please don't do:
+
+* ##git commit ChangeLog.txt##
+* ##git commit lisp/foo.el##
+
+but instead do
+
+* ##git commit lisp/foo.el ChangeLog.txt##
+
+or just
+
+* ##git commit -a##
+
+if the only changed files are those you want to commit.
+(It is recommended to do a ##git status## before a commit without
+filename arguments to check for inadvertent changes that would be
+committed.)
+
+This is very important because every commit creates a *changeset*,
+which is a discrete step on the history of the code base.
+A changeset should correspond to one well-defined purpose
+which is completely achieved with the corresponding commit as,
+for instance, "Fix bug #342" or "Implement feature Foo".
+
 === More branches ===
 
 If you work on other branches besides /master/, just ##cd## into your
 repository and
 
 : ##git checkout branch_name##
-
 
 === Other commands ===
 
