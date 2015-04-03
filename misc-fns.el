@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Apr  3 08:58:00 2015 (-0700)
+;; Last-Updated: Fri Apr  3 09:22:15 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 624
+;;     Update #: 625
 ;; URL: http://www.emacswiki.org/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -541,7 +541,7 @@ Return nil if no color is named at point."
       (and word  (color-defined-p word)  word))))
 
 (defun chars-after (chars)
-  "Return non-nil if the string CHARS is right after point."
+  "Return non-nil if the literal string CHARS is right after point."
   (let* ((len  (length chars))
          (idx  (1- len))
          (pt   (point)))
@@ -555,7 +555,7 @@ Return nil if no color is named at point."
       t)))
 
 (defun chars-before (chars)
-  "Return non-nil if the string CHARS is right before point.
+  "Return non-nil if the literal string CHARS is right before point.
 This is more efficient that `looking-back' for this use case."
   (let* ((len  (length chars))
          (idx  (1- len))
