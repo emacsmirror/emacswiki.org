@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar 26 08:23:47 2015 (-0700)
+;; Last-Updated: Fri Apr  3 07:51:12 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 2007
+;;     Update #: 2014
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -117,6 +117,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/04/03 dadams
+;;     Use char-before in place of looking-back, for chars before.  See Emacs bug #17284.
 ;; 2015/03/26 dadams
 ;;     describe-package: Fix guard to use emacs-minor-version 3, not 24.  Thx to Roshan Shariff.
 ;; 2015/03/23 dadams
@@ -630,9 +632,10 @@ the manuals."
           (when (or (not search-now-p)
                     (save-current-buffer (Info-first-index-occurrence symb-name () books nomsg)))
             (let ((buffer-read-only  nil)
-                  (nl-before         (cond ((looking-back "[\n][\n]") "")
-                                           ((looking-back "[\n]")     "\n")
-                                           (t                         "\n\n"))))
+                  (nl-before         (cond ((and (eq ?\n (char-before)) ; Quicker than `looking-back', apparently.
+                                                 (eq ?\n (char-before (1- (point))))) "")
+                                           ((eq ?\n (char-before))                    "\n")
+                                           (t                                         "\n\n"))))
               (insert (format "%sFor more information %s the " nl-before (if (cdr manuals-spec) "see" "check")))
               (help-insert-xref-button "manuals" 'help-info-manual-lookup symb-name () books)
               (insert ".")
@@ -1241,7 +1244,9 @@ Return the description that was displayed, as a string."
                   (when (or remapped  keys  non-modified-keys)  (princ ".") (terpri)))))
             (with-current-buffer (help-buffer)
               (fill-region-as-paragraph pt2 (point))
-              (unless (looking-back "\n\n") (terpri)))))
+              (unless (and (eq ?\n (char-before)) ; Quicker than `looking-back', apparently.
+                           (eq ?\n (char-before (1- (point)))))
+                (terpri)))))
         ;; `list*' etc. do not get this property until `cl-hack-byte-compiler' runs,
         ;; which is after bytecomp is loaded.
         (when (and (symbolp function)  (eq (get function 'byte-compile) 'cl-byte-compile-compiler-macro))
@@ -1350,7 +1355,9 @@ Return the description that was displayed, as a string."
               (when (or remapped  keys  non-modified-keys) (princ ".") (terpri)))))
         (with-current-buffer standard-output
           (fill-region-as-paragraph pt2 (point))
-          (unless (looking-back "\n\n") (terpri))))))
+          (unless (and (eq ?\n (char-before)) ; Quicker than `looking-back', apparently.
+                       (eq ?\n (char-before (1- (point)))))
+            (terpri))))))
 
 
   ;; REPLACE ORIGINAL in `help-fns.el'
@@ -2161,9 +2168,10 @@ it is displayed along with the global value."
                   ;; The line below previously read as (delete-region (point) (progn (end-of-line) (point))),
                   ;; which suppressed display of the buffer local value for large values.
                   (when (looking-at "value is") (replace-match ""))
-                  (save-excursion (let ((nl-before  (cond ((looking-back "[\n][\n]") "")
-                                                          ((looking-back "[\n]")     "\n")
-                                                          (t                         "\n\n")))
+                  (save-excursion (let ((nl-before  (cond ((and (eq ?\n (char-before)) ; vs `looking-back'.
+                                                                (eq ?\n (char-before (1- (point))))) "")
+                                                          ((eq ?\n (char-before))                    "\n")
+                                                          (t                                         "\n\n")))
                                         (nl-after   (cond ((looking-at   "[\n]")     "")
                                                           (t                         "\n"))))
                                     (insert (format "%sValue:%s" nl-before nl-after)))
