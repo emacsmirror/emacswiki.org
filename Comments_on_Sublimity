@@ -1,9 +1,1 @@
-I had problems when I wanted to keep the minimap on. Doing sublimity-map-set-delay nil didn't do it because the constant disappearing and reappearing of the map whenever you type or mouseclick redoes the line wrapping all the time resulting in, say, a non-tranquil environment (and it really messes up mouse clicks).
-
-If you don't want the minimap do disappear at all you can set sublimity--pre-command-functions to nil
-(Or put  (setq sublimity--pre-command-functions nil) in your .emacs)
-
-This seems to me a better workaround.
-
--- mat 2015-04-03 10:11 UTC
 
