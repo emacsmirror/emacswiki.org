@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Apr  3 08:48:46 2015 (-0700)
+;; Last-Updated: Fri Apr  3 08:58:00 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 621
+;;     Update #: 624
 ;; URL: http://www.emacswiki.org/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -41,20 +41,20 @@
 ;;
 ;;  Functions defined here:
 ;;
-;;    `another-buffer', `chars-before', `color-named-at',
-;;    `current-line', `display-in-mode-line', `do-files', `flatten',
-;;    `fontify-buffer', `interesting-buffer-p', `live-buffer-name',
-;;    `make-transient-mark-mode-buffer-local', `mode-ancestors',
-;;    `mod-signed', `notify-user-of-mode', `region-or-buffer-limits',
-;;    `signum', `undefine-keys-bound-to', `undefine-killer-commands',
-;;    `unique-name'.
+;;    `another-buffer', `chars-after', `chars-before',
+;;    `color-named-at', `current-line', `display-in-mode-line',
+;;    `do-files', `flatten', `fontify-buffer', `interesting-buffer-p',
+;;    `live-buffer-name', `make-transient-mark-mode-buffer-local',
+;;    `mode-ancestors', `mod-signed', `notify-user-of-mode',
+;;    `region-or-buffer-limits', `signum', `undefine-keys-bound-to',
+;;    `undefine-killer-commands', `unique-name'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
 ;; 2015/04/03 dadams
-;;     Added: chars-before.
+;;     Added: chars-after, chars-before.
 ;; 2014/10/14 dadams
 ;;     Added :group for defcustom and defface.
 ;; 2013/09/30 dadams
@@ -539,6 +539,20 @@ Return nil if no color is named at point."
                    (modify-syntax-entry ?# "w") ; Make `#' a word constituent.
                    (word-at-point))))
       (and word  (color-defined-p word)  word))))
+
+(defun chars-after (chars)
+  "Return non-nil if the string CHARS is right after point."
+  (let* ((len  (length chars))
+         (idx  (1- len))
+         (pt   (point)))
+    (catch 'chars-after
+      (dolist (char  (nreverse (append chars ())))
+        (unless (condition-case nil
+                    (eq char (char-after (+ pt idx)))
+                  (error nil))          ; e.g. `eobp'
+          (throw 'chars-after nil))
+        (setq idx  (1- idx)))
+      t)))
 
 (defun chars-before (chars)
   "Return non-nil if the string CHARS is right before point.
