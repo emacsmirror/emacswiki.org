@@ -1,1 +1,16 @@
 
+If you want to always display the minimap, you might run into some trouble (at least I did).
+
+    (sublimity-map-set-delay nil)
+
+doesn't suffice. It displays the map right away, but it always deletes it when you press a button and rebuilds it when you release it. This messes up the tranquility of the display especially when you use line wrapping and particularly on mouse clicks. They really mess up.
+
+I added the folowing to my .emacs and that took care of it (well it worked around it):
+
+    (remove-hook sublimity--pre-command-functions 'sublimity-map--delete-window) ;; Do not delete minimap on "pre-command-hook"
+    (add-hook 'sublimity--post-command-functions 'sublimity-map--delete-window) ;; Add the deletion of the minimap to the "post-command-hook" (Important: this places it *before* the other command in there which should be sublimity-map-show)
+
+This reduces the glitches and the annoying behavior mentioned by having sublimity delete-rebuid directly one after the other. If you don't add the deletion to the later hook, the map won't update properly.
+
+-- mat 2015-04-03 12:59 UTC
+
