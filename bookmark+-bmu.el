@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Apr  2 14:54:00 2015 (-0700)
+;; Last-Updated: Fri Apr  3 09:50:54 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3677
+;;     Update #: 3680
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -377,7 +377,8 @@
 (put 'bmkp-with-output-to-plain-temp-buffer 'common-lisp-indent-function '(4 &body))
 
 
-;;; These functions are used in macro `bmkp-define-sort-command'.
+;;; These functions are used in macro `bmkp-define-sort-command'.  The first is used in the macro code
+;;; that produces the function code, so its definition is also in `bookmark+-mac.el'.
 ;;;
 (defun bmkp-replace-regexp-in-string (regexp rep string &optional fixedcase literal subexp start)
   "Replace all matches for REGEXP with REP in STRING and return STRING."
