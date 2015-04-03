@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Sun Feb 22 14:35:41 2015 (-0800)
+;; Last-Updated: Fri Apr  3 09:48:36 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 182
+;;     Update #: 196
 ;; URL: http://www.emacswiki.org/bookmark+-mac.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -109,6 +109,7 @@
 ;;
 ;;    `bmkp-bookmark-data-from-record',
 ;;    `bmkp-bookmark-name-from-record',
+;;    `bmkp-replace-regexp-in-string',
 ;;    `bookmark-name-from-full-record', `bookmark-name-from-record'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -139,6 +140,8 @@
 ;; bookmark-bmenu-surreptitiously-rebuild-list, bookmark-get-bookmark,
 ;; bookmark-get-filename
 
+ 
+;;(@* "Functions")
 
 ;; Some general Renamings.
 ;;
@@ -157,12 +160,22 @@
 
 
 ;; (eval-when-compile (require 'bookmark+-bmu))
-;; bmkp-bmenu-barf-if-not-in-menu-list,
+;; bmkp-assoc-delete-all, bmkp-bmenu-barf-if-not-in-menu-list,
 ;; bmkp-bmenu-goto-bookmark-named, bmkp-sort-orders-alist
 
 ;; (eval-when-compile (require 'bookmark+-1))
 ;; bmkp-file-bookmark-p, bmkp-float-time, bmkp-local-file-bookmark-p,
 ;; bmkp-msg-about-sort-order, bmkp-reverse-sort-p, bmkp-sort-comparer
+
+
+;;; This is also defined in `bookmark+-bmu.el'.  It is used here to produce the code for
+;;; `bmkp-define-show-only-command' and `bmkp-define-sort-command'.
+;;;
+(defun bmkp-replace-regexp-in-string (regexp rep string &optional fixedcase literal subexp start)
+  "Replace all matches for REGEXP with REP in STRING and return STRING."
+  (if (fboundp 'replace-regexp-in-string) ; Emacs > 20.
+      (replace-regexp-in-string regexp rep string fixedcase literal subexp start)
+    (if (string-match regexp string) (replace-match rep nil nil string) string))) ; Emacs 20
  
 ;;(@* "Macros")
 
