@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 11:03:49 2015 (-0800)
+;; Last-Updated: Fri Apr  3 08:48:46 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 612
+;;     Update #: 621
 ;; URL: http://www.emacswiki.org/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -25,15 +25,11 @@
 ;;
 ;;    Miscellaneous non-interactive functions.
 ;;
-;;  Code here is organized into sections by area affected.
-;;
-;;    Sections are separated by `;;;$ ... ---------------'.
-;;
-;;  You may want to put this in your `~/.emacs' file, to erase the
+;;  You might want to put this in your `~/.emacs' file, to erase the
 ;;  minibuffer when it is inactive and `minibuffer-empty-p':
 ;;
 ;;   (require 'misc-fns)
-;;   (add-hook '<mode>-hook 'notify-user-of-mode), for each <mode>.
+;;   (add-hook '<MODE>-hook 'notify-user-of-mode), for each <MODE>.
 ;;
 ;;
 ;;  Face defined here: `notifying-user-of-mode'.
@@ -45,9 +41,9 @@
 ;;
 ;;  Functions defined here:
 ;;
-;;    `another-buffer', `color-named-at', `current-line',
-;;    `display-in-mode-line', `do-files', `flatten', `fontify-buffer',
-;;    `interesting-buffer-p', `live-buffer-name',
+;;    `another-buffer', `chars-before', `color-named-at',
+;;    `current-line', `display-in-mode-line', `do-files', `flatten',
+;;    `fontify-buffer', `interesting-buffer-p', `live-buffer-name',
 ;;    `make-transient-mark-mode-buffer-local', `mode-ancestors',
 ;;    `mod-signed', `notify-user-of-mode', `region-or-buffer-limits',
 ;;    `signum', `undefine-keys-bound-to', `undefine-killer-commands',
@@ -57,6 +53,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/04/03 dadams
+;;     Added: chars-before.
 ;; 2014/10/14 dadams
 ;;     Added :group for defcustom and defface.
 ;; 2013/09/30 dadams
@@ -541,6 +539,21 @@ Return nil if no color is named at point."
                    (modify-syntax-entry ?# "w") ; Make `#' a word constituent.
                    (word-at-point))))
       (and word  (color-defined-p word)  word))))
+
+(defun chars-before (chars)
+  "Return non-nil if the string CHARS is right before point.
+This is more efficient that `looking-back' for this use case."
+  (let* ((len  (length chars))
+         (idx  (1- len))
+         (pt   (point)))
+    (catch 'chars-before
+      (dolist (char  (append chars ()))
+        (unless (condition-case nil
+                    (eq char (char-before (- pt idx)))
+                  (error nil))          ; e.g. `bobp'
+          (throw 'chars-before nil))
+        (setq idx  (1- idx)))
+      t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; misc-fns.el ends here
