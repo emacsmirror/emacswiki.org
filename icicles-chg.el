@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Feb 20 14:49:02 2015 (-0800)
+;; Last-Updated: Fri Apr  3 09:16:50 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11408
+;;     Update #: 11412
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4481,6 +4481,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2015/04/03 dadams
+;;     Renamed and rewrote: icicle-looking(-back)-at-literally-p to icicle-chars-(after|before).
 ;; 2015/02/20 dadams
 ;;     icicle-candidate-set-complement: If null icicle-completion-candidates, remove *Completions*.
 ;; 2015/02/19 dadams
