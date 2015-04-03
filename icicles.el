@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2015.01.04
+;; Version: 2015.04.03
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 17 06:30:27 2015 (-0800)
+;; Last-Updated: Fri Apr  3 09:12:40 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 23647
+;;     Update #: 23650
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -1015,8 +1015,8 @@
 ;;    `icicle-case-string-less-p', `icicle-cdr-lessp',
 ;;    `icicle-char-cands-from-charlist',
 ;;    `icicle-char-properties-in-buffer',
-;;    `icicle-char-properties-in-buffers',
-;;    `icicle-choose-anything-candidate',
+;;    `icicle-char-properties-in-buffers', `icicle-chars-after',
+;;    `icicle-chars-before', `icicle-choose-anything-candidate',
 ;;    `icicle-choose-candidate-of-type',
 ;;    `icicle-choose-completion-string', `icicle-clear-history-1',
 ;;    `icicle-clear-history-entry', `icicle-clear-lighter',
@@ -1205,8 +1205,6 @@
 ;;    `icicle-load-library', `icicle-local-keys-first-p',
 ;;    `icicle-locate-file-no-search-1',
 ;;    `icicle-locate-file-of-content-1', `icicle-looking-at-p',
-;;    `icicle-looking-at-literally-p',
-;;    `icicle-looking-back-at-literally-p',
 ;;    `icicle-looks-like-dir-name-p', `icicle-major-mode-name-less-p',
 ;;    `icicle-make-bookmark-candidate', `icicle-make-char-candidate',
 ;;    `icicle-make-color-candidate', `icicle-make-face-candidate',
