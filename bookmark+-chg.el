@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Apr  2 14:50:00 2015 (-0700)
+;; Last-Updated: Fri Apr  3 09:54:27 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15913
+;;     Update #: 15916
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1871,6 +1871,9 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2015/04/03 dadams
+;;     bmkp-replace-regexp-in-string: Copied defn here - used to produce the macro code for
+;;       bmkp-define-show-only-command and bmkp-define-sort-command.
 ;; 2015/02/22 dadams
 ;;     bmkp-menu-bar-make-toggle: Corrected doc string - just start with HELP.
 ;; 2015/02/08 dadams
