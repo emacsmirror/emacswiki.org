@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:52:31 2015 (-0800)
+;; Last-Updated: Fri Apr  3 14:13:02 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3706
+;;     Update #: 3728
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -47,7 +47,7 @@
 ;;  (@> "Things Defined Here")
 ;;  (@> "Documentation")
 ;;    (@> "Library `facemenu+.el' Puts Highlight on the Menu")
-;;    (@> "User Option `hlt-use-overlays-flag'")
+;;    (@> "User Options `hlt-use-overlays-flag' and `hlt-overlays-priority'")
 ;;    (@> "Temporary or Permanent Highlighting")
 ;;    (@> "Commands")
 ;;    (@> "User Option `hlt-act-on-any-face-flag'")
@@ -107,7 +107,7 @@
 ;;    `hlt-act-on-any-face-flag', `hlt-auto-face-backgrounds',
 ;;    `hlt-auto-face-foreground', `hlt-auto-faces-flag',
 ;;    `hlt-default-copy/yank-props', `hlt-max-region-no-warning',
-;;    `hlt-use-overlays-flag'.
+;;    `hlt-overlays-priority', `hlt-use-overlays-flag'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -159,8 +159,8 @@
 ;;      are available on the `Thing at Pointer' submenu of the `No
 ;;      Region' right-click popup menu.
 ;;
-;;(@* "User Option `hlt-use-overlays-flag'")
-;;  ** User Option `hlt-use-overlays-flag'
+;;(@* "User Options `hlt-use-overlays-flag' and `hlt-overlays-priority'")
+;;  ** User Options `hlt-use-overlays-flag' and `hlt-overlays-priority'
 ;;
 ;;  You can highlight text in two ways using this library, depending
 ;;  on the value of user option `hlt-use-overlays-flag':
@@ -193,6 +193,11 @@
 ;;  You can toggle the value of `hlt-use-overlays-flag' at any time
 ;;  between nil and its previous non-nil value, using command
 ;;  `hlt-toggle-use-overlays-flag'.
+;;
+;;  Option `hlt-overlays-priority' is the priority assigned to
+;;  overlays created by `hlt-* functions.  A higher priority makes an
+;;  overlay seem to be "on top of" lower priority overlays.  The
+;;  default value is a medium priority.
 ;;
 ;;(@* "Temporary or Permanent Highlighting")
 ;; ** "Temporary or Permanent Highlighting" **
@@ -667,6 +672,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/04/03 dadams
+;;     Added: hlt-overlays-priority.
+;;       Use it in hlt-highlighter, hlt-highlight-region, hlt-mouse-face-each-line.
 ;; 2014/09/21 dadams
 ;;     Added: hlt-replace-highlight-face-in-buffers, hlt-highlight-region-in-buffers,
 ;;            hlt-highlight-region-in-buffers, hlt-replace-highlight-face-in-buffers,
@@ -987,7 +995,8 @@
 
 (define-key-after menu-bar-edit-menu [hlt-copy-props]
   '(menu-item "Copy Text Properties" hlt-copy-props
-    :help "Copy text properties at point, for subsequent pasting") 'paste)
+    :help "Copy text properties at point, for subsequent pasting")
+  'paste)
 (define-key-after menu-bar-edit-menu [hlt-yank-props]
     '(menu-item "Paste Text Properties to Region" hlt-yank-props
       :help "Paste previously copied text properties to text in region"
@@ -1133,6 +1142,11 @@ a marker."))
 (defcustom hlt-max-region-no-warning 100000
   "*Maximum size (chars) of region to highlight without confirmation.
 This is used only for highlighting of a regexp, which can be slow."
+  :type 'integer :group 'highlight)
+
+;;;###autoload
+(defcustom hlt-overlays-priority 200    ; > ediff's 100+, < isearch-overlay's 1001.
+  "*Priority of the overlays created by `hlt-*' functions."
   :type 'integer :group 'highlight)
 
 ;;;###autoload
@@ -1344,7 +1358,8 @@ of `hlt-auto-face-backgrounds' (uses `hlt-next-face')."
               (cond (hlt-use-overlays-flag
                      (setq overlay  (move-overlay overlay start-point end-point))
                      (overlay-put overlay 'face          hlt-last-face)
-                     (overlay-put overlay 'hlt-highlight hlt-last-face))
+                     (overlay-put overlay 'hlt-highlight hlt-last-face)
+                     (overlay-put overlay 'priority      hlt-overlays-priority))
                     (t
                      (put-text-property start-point end-point 'face             hlt-last-face)
                      (put-text-property start-point end-point 'hlt-highlight    hlt-last-face)
@@ -1360,7 +1375,7 @@ of `hlt-auto-face-backgrounds' (uses `hlt-next-face')."
 If `hlt-use-overlays-flag' is non-nil, then remove overlay
 highlighting for the last face that was used for highlighting.  (You
 can use command `hlt-choose-default-face' first to choose a different
-face.)  
+face.)
 
 If `hlt-use-overlays-flag' is not `only', then remove text-property
 highlighting for *ALL* faces (not just highlighting faces).  This
@@ -1583,7 +1598,8 @@ Optional 6th arg BUFFERS is the list of buffers to highlight.
           (cond (hlt-use-overlays-flag
                  (setq overlay  (make-overlay start end))
                  (overlay-put overlay (if mousep 'mouse-face 'face) face)
-                 (overlay-put overlay 'hlt-highlight                face))
+                 (overlay-put overlay 'hlt-highlight                face)
+                 (overlay-put overlay 'priority                     hlt-overlays-priority))
                 (mousep (put-text-property start end 'mouse-face face))
                 ((interactive-p)
                  (message "Text you type now will have face `%s'." face)
@@ -2057,7 +2073,8 @@ This means, for example, commands and keys between `'s: `foobar'.
 If the region is not active or it is empty, then use the whole buffer.
 With a prefix argument, prompt for the highlighting face to use.
 Otherwise, use the last face used for highlighting.
- You can also use command `hlt-choose-default-face' to choose a different face."
+ You can also use command `hlt-choose-default-face' to choose a
+ different face."
   (interactive "P")
   (if face
       (setq face           (hlt-read-bg/face-name "Use highlighting face: ")
@@ -2073,7 +2090,8 @@ If the region is active and not empty, then limit mouse-face
 highlighting to the region.  Otherwise, use the whole buffer.
 With a prefix argument, prompt for the highlighting face to use.
 Otherwise, use the last face used for highlighting.
- You can also use command `hlt-choose-default-face' to choose a different face.
+ You can also use command `hlt-choose-default-face' to choose a
+ different face.
 Optional args START and END are the limits of the area to act on.
   They default to the region limits.
 Optional arg MSGP non-nil means display a progress message."
@@ -2097,7 +2115,8 @@ Optional arg MSGP non-nil means display a progress message."
           (cond (hlt-use-overlays-flag
                  (setq overlay  (make-overlay (point) (setq start  (progn (end-of-line) (point)))))
                  (overlay-put overlay 'mouse-face    face)
-                 (overlay-put overlay 'hlt-highlight face))
+                 (overlay-put overlay 'hlt-highlight face)
+                 (overlay-put overlay 'priority      hlt-overlays-priority))
                 (t
                  (put-text-property (point) (progn (end-of-line) (point)) 'mouse-face face)
                  (put-text-property start end 'hlt-highlight face)))
@@ -2410,7 +2429,7 @@ that can be added."
 Interactively:
 
  * If `hlt-auto-faces-flag' is non-nil then FACE is:
-      the `hlt-auto-face-backgrounds' face at point, if any, 
+      the `hlt-auto-face-backgrounds' face at point, if any,
    or the last  `hlt-auto-face-backgrounds' face used, if any,
    or the first `hlt-auto-face-backgrounds' face, if not.
 
@@ -2462,7 +2481,7 @@ When called non-interactively:
                                 (and hlt (car (member bg   hlt-auto-face-backgrounds)))
                                 (car hlt-auto-face-backgrounds))))
                 (if (facep bg/f)
-                    bg/f 
+                    bg/f
                   `((background-color . ,bg/f)
                     (foreground-color . ,hlt-auto-face-foreground))))))
        ,current-prefix-arg))
