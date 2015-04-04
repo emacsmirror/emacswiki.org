@@ -1,3 +1,4 @@
+[[ja:テキストカーソル]]
 The '''text cursor''', or '''[::cursor]''' is a graphic indication of the text insertion position, which is also known as the [[point]].
 
 Sometimes, people use the words "cursor" and "pointer" interchangeably, but that is not correct. The cursor is the text cursor; it does not refer to the mouse position. The '''[[pointer]]''' is the mouse pointer, which indicates the mouse position.
