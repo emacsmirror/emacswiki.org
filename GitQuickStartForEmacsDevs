@@ -114,16 +114,48 @@ The ##git pull## command performs a merge between any local
 changes you have and the changes pushed by others to the
 upstream repository since your last pull. This merge could fail
 due to conflicts between your changes and changes by others
-in the same portions of the same files. These conflicts are
-marked by conflict markers similar to other VCSes.
+in the same portions of the same files. The conflicts could be
+in changes you have already committed locally, or in
+uncommitted changes.
 
-To fix this, visit the files with conflicts in Emacs.  This turns on
-the smerge-mode which has special commands for handling
-conflicts.  In addition, saving any file whose conflicts were
-completely resolved (i.e., no conflict markers remain in it)
-invokes the ##git add## command on that file, which prepares
-the file for committing. Now review all the conflict markers and
-resolve the conflicts by editing the relevant portions of the file.
+==== Conflicts in uncommitted changes ====
+
+If the conflicts are in uncommitted changes, Git will say something
+like this:
+
+<pre>
+error: Your local changes to the following files would be overwritten by merge:
+        file1
+Please, commit your changes or stash them before you can merge.
+Aborting
+</pre>
+
+To fix this, commit the offending files with
+
+* ##git commit file1 -m "Commit to allow pull from upstream."##,
+
+and then issue ##git pull## again. Now you have conflicts due
+to local committed changes, described below.
+
+==== Conflicts in committed changes ====
+
+For conflicts in changes committed locally, Git will say something
+like this:
+
+<pre>
+CONFLICT (content): Merge conflict in file1
+Automatic merge failed; fix conflicts and then commit the result.
+</pre>
+
+The conflicts discovered by Git are marked by conflict markers
+similar to other VCSes. To fix this, visit the files with conflicts in
+Emacs.  This turns on the smerge-mode which has special
+commands for handling conflicts.  In addition, saving any file
+whose conflicts were completely resolved (i.e., no conflict
+markers remain in it) invokes the ##git add## command on
+that file, which prepares the file for merging and committing.
+Now review all the conflict markers and resolve the conflicts
+by editing the relevant portions of the file.
 
 When you are done with resolving all the conflicts in all the
 files, commit them, either from the vc-dir buffer or by typing
