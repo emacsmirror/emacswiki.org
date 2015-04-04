@@ -74,6 +74,13 @@ To push your commits to the upstream Emacs repository on Savannah,
 you will need to type the ##git push## command from the shell prompt,
 even if you use VC, as VC doesn't yet support a push command.
 
+It is a good idea to examine what you are about to push, before actually
+doing so, because fixing mistakes before pushing is much easier (see
+the next section). To do that, use the command ##git diff origin/master##.
+If you want to show your unpushed commits with their commit log
+messages, use ##git show origin/master..## instead. If you only have
+one local commit you want to push, just ##git show## is enough.
+
 === If you made a mistake ===
 
 If you commit something by mistake, or forgot to commit a file, or want to
