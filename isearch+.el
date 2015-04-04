@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Apr  3 20:00:43 2015 (-0700)
+;; Last-Updated: Fri Apr  3 20:27:02 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3556
+;;     Update #: 3558
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -475,7 +475,8 @@
 ;;    this feature to GNU Emacs 23.1.
 ;;
 ;;  * `C-M-l' (`isearchp-remove-failed-part') removes the failed part
-;;     of the search string, if any.
+;;     of the search string, if any.  `C-g' does this as well, but
+;;     `C-g' also has an effect when search is successful.
 ;;
 ;;  * `M-k' (`isearchp-cycle-mismatch-removal') cycles automatic
 ;;    removal or replacement of the input portion that does not match,
@@ -569,6 +570,11 @@
 ;;  region.  This gives you an easy way to set up contexts for
 ;;  text-property search.  For property `face', empty input to
 ;;  `isearchp-put-prop-on-region' removes all faces from the region.
+;;
+;;  If you use library `highlight.el' then you can highlight and
+;;  unhighlight Isearch matches in different faces, including for
+;;  multiple-buffer searches.  That library binds keys `M-s h h' and
+;;  `M-s h u' for this highlighting and unhighlighting.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
