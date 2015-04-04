@@ -270,7 +270,7 @@ Command '''`hlt-mouse-face-each-line'''' puts a `mouse-face' property on each li
 [:hlt-unhighlight-regexp-region-in-buffers]
 [:hlt-unhighlight-region-for-face-in-buffers]
 [:hlt-replace-highlight-face-in-buffers]
-Finally, you can highlight and unhighlight multiple buffers at the
+You can highlight and unhighlight multiple buffers at the
 same time.  Just as for a single buffer, there are commands for
 regexp (un)highlighting, and all of the multiple-buffer commands,
 whose names end in `-in-buffers', are sensitive to the region in
@@ -289,8 +289,14 @@ non-positive [[prefix argument|prefix arg]] means act on all visible or iconifie
 buffers.  (A non-negative prefix arg means use property
 `mouse-face', not `face'.)
 
+[:IsearchHighlighting]
+[:hlt-highlight-isearch-matches]
+[:hlt-unhighlight-isearch-matches]
+From [[Isearch]] you can highlight the search-pattern matches.  You
+can do this across multiple buffers being searched together.  These keys are bound on the Isearch keymap for this:
 
-
+* '''`M-s h h'''' - `hlt-highlight-isearch-matches'
+* '''`M-s h u'''' - `hlt-unhighlight-isearch-matches'
 
 
 
@@ -527,7 +533,7 @@ submenu of the '''Edit''' menu-bar menu, if you have a '''Region'''
 submenu.  To obtain this menu, load library <tt>[[menu-bar+.el]]</tt>.
 
 
-Library `highlight.el' makes no other key bindings.  Here are some additional, suggested
+Here are some additional, suggested key
 bindings (`C-x y', `C-x mouse-2', `C-x S-mouse-2', `S-C-p', and
 `S-C-n'):
 
