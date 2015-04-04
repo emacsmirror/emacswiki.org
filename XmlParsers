@@ -30,22 +30,14 @@ You can get the source from here:
 
 == dom.el ==
 
-The XML parsers will create a lisp data structure for you and they
-both provide access methods to the structure.  Neither of the two
-provides the DOM interface, however.  Here comes the DOM implementation
-in dom.el -- you feed it the result of xml.el and then you can use
-the DOM interface functions.
+The XML parsers create a lisp data structure for you and they
+provide access methods to this data structure.
+The following is a DOM implementation -- you feed it the result of xml.el and then you can use
+the [http://www.w3.org/TR/DOM-Level-3-Core standard DOM interface].
 
 You can get the source from here:
 
-* dom.el [http://github.com/toroidal-code/dom.el]
-
-Related Links:
-
-* http://www.w3.org/TR/DOM-Level-3-Core -- the standard
-* http://interaction.in-progress.com/developer/dom/ -- Common Lisp bindings for DOM, including an example page
-* http://www.cl-xml.org/ -- Common Lisp bindings for an XML parser as well as XPATH, DOM and XQuery implementations
-* http://www-106.ibm.com/developerworks/xml/library/x-domjava/?loc=dwmain -- DOM can lead to awkward and brittle code
+* [http://github.com/toroidal-code/dom.el dom.el]
 
 
 == xpath.el ==
