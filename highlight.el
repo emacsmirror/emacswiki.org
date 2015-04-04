@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Apr  3 14:13:02 2015 (-0700)
+;; Last-Updated: Fri Apr  3 20:18:06 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3728
+;;     Update #: 3766
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -66,6 +66,7 @@
 ;;  (@> "Misc Functions - Emacs 20+")
 ;;  (@> "Misc Functions - Emacs 21+")
 ;;  (@> "Functions for Highlighting Propertized Text - Emacs 21+")
+;;  (@> "Functions for Highlighting Isearch Matches - Emacs 23+")
 ;;  (@> "General and Utility Functions")
  
 ;;(@* "Things Defined Here")
@@ -79,6 +80,7 @@
 ;;    `hlt-eraser-mouse', `hlt-hide-default-face', `hlt-highlight',
 ;;    `hlt-highlight-all-prop', `hlt-highlight-enclosing-list',
 ;;    `hlt-highlighter', `hlt-highlighter-mouse',
+;;    `hlt-highlight-isearch-matches',
 ;;    `hlt-highlight-property-with-value',
 ;;    `hlt-highlight-regexp-region',
 ;;    `hlt-highlight-regexp-region-in-buffers',
@@ -94,6 +96,7 @@
 ;;    `hlt-toggle-link-highlighting',
 ;;    `hlt-toggle-property-highlighting',
 ;;    `hlt-toggle-use-overlays-flag', `hlt-unhighlight-all-prop',
+;;    `hlt-unhighlight-isearch-matches',
 ;;    `hlt-unhighlight-regexp-region',
 ;;    `hlt-unhighlight-regexp-region-in-buffers',
 ;;    `hlt-unhighlight-regexp-to-end', `hlt-unhighlight-region',
@@ -136,7 +139,7 @@
 ;;    `hlt-last-regexp', `hlt-map',
 ;;    `hlt-previous-use-overlays-flag-value',
 ;;    `hlt-prop-highlighting-state'.
- 
+  
 ;;(@* "Documentation")
 ;;
 ;;  Documentation
@@ -380,11 +383,11 @@
 ;;  Command `hlt-mouse-face-each-line' puts a `mouse-face' property on
 ;;  each line of the region.
 ;;
-;;  Finally, you can highlight and unhighlight multiple buffers at the
-;;  same time.  Just as for a single buffer, there are commands for
-;;  regexp (un)highlighting, and all of the multiple-buffer commands,
-;;  whose names end in `-in-buffers', are sensitive to the region in
-;;  each buffer, when active.  These are the multiple-buffer commands:
+;;  You can highlight and unhighlight multiple buffers at the same
+;;  time.  Just as for a single buffer, there are commands for regexp
+;;  (un)highlighting, and all of the multiple-buffer commands, whose
+;;  names end in `-in-buffers', are sensitive to the region in each
+;;  buffer, when active.  These are the multiple-buffer commands:
 ;;
 ;;  `hlt-highlight-region-in-buffers'
 ;;  `hlt-unhighlight-region-in-buffers'
@@ -398,6 +401,13 @@
 ;;  non-positive prefix arg means act on all visible or iconified
 ;;  buffers.  (A non-negative prefix arg means use property
 ;;  `mouse-face', not `face'.)
+;;
+;;  From Isearch you can highlight the search-pattern matches.  You
+;;  can do this across multiple buffers being searched together.
+;;  These keys are bound on the Isearch keymap for this:
+;;
+;;   `M-s h h' - `hlt-highlight-isearch-matches'
+;;   `M-s h u' - `hlt-unhighlight-isearch-matches'
 ;;
 ;;(@* "Copy and Yank (Paste) Text Properties")
 ;;  ** Copy and Yank (Paste) Text Properties **
@@ -610,9 +620,8 @@
 ;;  submenu of the `Edit' menu-bar menu, if you have a `Region'
 ;;  submenu.  To obtain this menu, load library `menu-bar+.el'.
 ;;
-;;  Library `highlight.el' makes no other key bindings.  Here are some
-;;  additional, suggested bindings (`C-x C-y', `C-x mouse-2', `C-x
-;;  S-mouse-2', `C-S-p', and `C-S-n', respectively):
+;;  Here are some additional, suggested key bindings (`C-x C-y', `C-x
+;;  mouse-2', `C-x S-mouse-2', `C-S-p', and `C-S-n', respectively):
 ;;
 ;;   (define-key ctl-x-map [(control ?y)]     'hlt-highlight)
 ;;   (define-key ctl-x-map [(down-mouse-2)]   'hlt-highlighter)
@@ -673,8 +682,10 @@
 ;;(@* "Change log")
 ;;
 ;; 2015/04/03 dadams
+;;     Added: hlt-highlight-isearch-matches, hlt-unhighlight-isearch-matches.
 ;;     Added: hlt-overlays-priority.
 ;;       Use it in hlt-highlighter, hlt-highlight-region, hlt-mouse-face-each-line.
+;;     Bind isearch-mode-map keys M-s h h, M-s h u to hlt-(un)highlight-isearch-matches.
 ;; 2014/09/21 dadams
 ;;     Added: hlt-replace-highlight-face-in-buffers, hlt-highlight-region-in-buffers,
 ;;            hlt-highlight-region-in-buffers, hlt-replace-highlight-face-in-buffers,
@@ -930,6 +941,8 @@
 ;; Quiet the byte-compiler for Emacs 20
 (defvar hi-lock-mode)
 (defvar hlt-act-on-any-face-flag)
+(defvar multi-isearch-buffer-list)      ; In `misearch.el'
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -2756,6 +2769,91 @@ Args are the same as for `hlt-highlight-property-with-value'."
     (let ((hlt-use-overlays-flag  'only)) (hlt-unhighlight-region-for-face face start end mousep)))
 
   )
+ 
+;;(@* "Functions for Highlighting Isearch Matches")
+
+;;; Functions for Highlighting Isearch Matches -----------------------
+
+;;;###autoload
+(defun hlt-highlight-isearch-matches (&optional face msgp mousep buffers string)
+  "Highlight matches of the current Isearch search pattern using FACE.
+If the region is active then it limits highlighting.  If inactive then
+highlight matches throughout the buffer, or the list of BUFFERS.  If
+this is accessed from a `multi-search' command then the BUFFERS are
+the buffers being searched.
+
+With no prefix arg:
+ * If `hlt-auto-faces-flag' is nil then use the last highlighting face
+   used or chosen with command `hlt-choose-default-face'.
+ * If non-nil then use the next highlighting face.
+
+With a non-negative prefix arg, prompt for the face to use.
+With a non-positive prefix arg, use `mouse-face' instead of `face'.
+
+To use a prefix argument you must set either `isearch-allow-scroll' or
+`isearch-allow-prefix' (if available) to non-nil.  Otherwise, a prefix
+arg during Isearch exits Isearch."
+  (interactive
+   (list (or isearch-string  (read-string "Highlight string: "))
+         (if (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
+             (let (fac)
+               ;; This is better than the vanilla Emacs approach used for `isearch-highlight-regexp'
+               ;; Because this lets you continue searching after highlighting.
+               (with-isearch-suspended (setq fac  (call-interactively #'hlt-choose-default-face)))
+               fac)
+           (if hlt-auto-faces-flag (hlt-next-face) hlt-last-face))
+         t
+         (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))))
+  (let ((bufs                   (or buffers  (and (boundp 'multi-isearch-buffer-list)
+                                                  multi-isearch-buffer-list)))
+        (regexp                 (cond ((functionp isearch-word) (funcall isearch-word string))
+                                      (isearch-word             (word-search-regexp string))
+                                      (isearch-regexp string)
+                                      ((if (and (eq isearch-case-fold-search t)  search-upper-case)
+                                           (isearch-no-upper-case-p string isearch-regexp)
+                                         isearch-case-fold-search)
+                                       ;; Turn STRING into a case-insensitive regexp.
+                                       (mapconcat (lambda (c)
+                                                    (let ((s  (string c)))
+                                                      (if (string-match "[[:alpha:]]" s)
+                                                          (format "[%s%s]" (upcase s) (downcase s))
+                                                        (regexp-quote s))))
+                                                  string ""))
+                                      (t (regexp-quote string))))
+        (hlt-overlays-priority  1002))  ; Higher than Isearch's 1000 priority.
+    (hlt-+/--highlight-regexp-region nil nil nil regexp face msgp mousep nil bufs)))
+
+;;;###autoload
+(defun hlt-unhighlight-isearch-matches (&optional face msgp mousep buffers string)
+  "Unhighlight matches of the current Isearch search pattern.
+With no prefix arg, unhighlight all faces.
+With a non-negative prefix arg, prompt for the face to unhighlight.
+With a non-positive prefix arg, use `mouse-face' instead of `face'.
+With any other prefix arg, unhighlight the last highlighting face used
+ or chosen with command `hlt-choose-default-face'.
+ (`hlt-auto-faces-flag' has no effect.)
+
+To use a prefix argument you must set either `isearch-allow-scroll' or
+`isearch-allow-prefix' (if available) to non-nil.  Otherwise, a prefix
+arg during Isearch exits Isearch.
+
+Non-interactively, FACE = nil means unhighlight all faces."
+  (interactive
+   (let ((bufs  (and (boundp 'multi-isearch-buffer-list)  multi-isearch-buffer-list)))
+     (list (or string  (read-string "Highlight string: "))
+           (and current-prefix-arg
+                (if (>= (prefix-numeric-value current-prefix-arg) 0)
+                    (let (fac)
+                      (with-isearch-suspended (setq fac  (call-interactively #'hlt-choose-default-face)))
+                      fac)
+                  hlt-last-face))
+           t
+           (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+           bufs)))
+  (hlt-+/--highlight-regexp-region t nil nil string face msgp mousep nil buffers))
+
+(define-key isearch-mode-map (kbd "M-s h h") 'hlt-highlight-isearch-matches)
+(define-key isearch-mode-map (kbd "M-s h u") 'hlt-unhighlight-isearch-matches)
  
 ;;(@* "General and Utility Functions")
 
