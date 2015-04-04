@@ -198,7 +198,8 @@ the search (from the current position when you hit `C-M-c').
 * Highlighting of the mismatched portion of your search string. This is the portion that is removed if you do `C-g', or removed/replaced manually if you use `C-M-l' (see next) or automatically if you use `M-k' (see below).  I added this feature to GnuEmacs 23.1.
 
 [:isearchp-remove-failed-part]
-* '''`C-M-l'''' ('''`isearchp-remove-failed-part'''') removes the failed part of the search string, if any.
+* '''`C-M-l'''' ('''`isearchp-remove-failed-part'''') removes the failed part of the search string, if any.  `C-g' does this as well, but
+`C-g' also has an effect when search is successful.
 
 [:isearchp-cycle-mismatch-removal]
 [:isearchp-drop-mismatch]
@@ -298,6 +299,15 @@ property and value whose zones you searched using `C-t', but a
 This gives you an interactive way to set up zones for
 text-property search (`C-t').  For property `face', empty input
 removes all faces from the region.
+
+[:hlt-highlight--isearch-matches]
+[:hlt-unhighlight--isearch-matches]
+* If you use library [[HighlightLibrary|Highlight]] (<tt>[[highlight.el]]</tt>) then you can highlight and
+unhighlight Isearch matches in different faces, including for
+multiple-buffer searches.  Library Highlight binds keys '''`M-s h h'''' and
+'''`M-s h u'''' for this highlighting and unhighlighting.
+
+
 
 
 [:isearchp-toggle-complementing-domain]
