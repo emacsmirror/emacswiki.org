@@ -1,3 +1,4 @@
+[[ja:ポイント]]
 The TextCursor (not the MousePointer) defines the position of '''[::point]''', which is the text insertion position. Point is one end of the [[region]]. The other end is the [[mark]]. The mark is invisible (you can MakeMarkVisible). 
 
 Though point is spoken of as being the cursor position, this is really only true when the cursor is shown before or after a character. This is the case, for instance, for a bar cursor. When a block cursor is used, it is positioned on top of the character that follows point.
