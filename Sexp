@@ -1,3 +1,4 @@
+[[ja:S式]]
 The definition of '''[::sexp]''' from the EmacsManual:
 
 : The word `sexp' is derived from "s-expression", the ancient
