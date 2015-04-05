@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Apr  3 20:18:06 2015 (-0700)
+;; Last-Updated: Sun Apr  5 10:40:48 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3766
+;;     Update #: 3774
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -1277,7 +1277,7 @@ the value of `hlt-auto-face-foreground'."
    (list (hlt-read-bg/face-name "Choose background color or face: "
                                 (and (symbolp hlt-last-face)  (symbol-name hlt-last-face)))))
   (setq hlt-last-face  face)
-  (when (interactive-p) (message "Highlighting will now use `%s'" face))
+  (when (interactive-p) (message "Highlighting will now use face `%s'" face))
   face)
 
 ;;;###autoload
@@ -1434,7 +1434,7 @@ erase the face represented by the Nth entry of
                 (remove-text-properties start end '(face nil hlt-highlight nil font-lock-ignore nil)))))
           (setq buffer-read-only  read-only)
           (set-buffer-modified-p modified-p)))))
-  (message "Unhighlighted `%s'" hlt-last-face))
+  (message "Removed highlighting for face `%s'" hlt-last-face))
 
 ;;; (defun hlt-unhighlight-for-overlay (overlay start end &optional face)
 ;;;   "Remove OVERLAY highlighting from START to END.
@@ -1500,7 +1500,7 @@ If FACE is nil then remove all `face' property highlighting (or all
 (defun hlt-eraser-mouse ()
   "Same as `hlt-eraser', but for binding to a menu item."
   (interactive)
-  (message "Drag mouse over to erase highlighting") (sleep-for 1)
+  (message "Drag mouse over text to remove its highlighting") (sleep-for 1)
   (hlt-eraser (if (> emacs-major-version 21)
                   (read-event)
                 (read-event)            ; Emacs 20-21: Skip event of choosing menu item.
