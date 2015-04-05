@@ -108,8 +108,7 @@ To save highlighting permanently, do the following:
 
 When you reopen your file later, it is automatically in
 enriched mode, and your highlighting shows.  However, be aware
-that [[FontLock|font-locking]] interferes with enriched mode, so you will
-probably want to use it on files where you don't use font-locking.
+that [[FontLock|font-locking]] can interfere with enriched mode, so you might want to use it on files where you don't use font-locking.  But see also [[#InteractionWithFont Lock|Interaction with Font Lock]].
 
 
 
@@ -503,22 +502,64 @@ If the region is not active or it is empty, then:
 
 
 [:PreservingHighlighting]
-== Interference by Font Lock ==
+[:FontLock]
+[:InteractionWithFontLock]
+== Interaction with Font Lock ==
 
-If you use Emacs 22 or later, then you can use library <tt>[[highlight.el]]</tt> in
-conjunction with library <tt>[[font-lock+.el]]</tt> (it is loaded
-automatically, if available).  That prevents
-font-locking from removing any highlighting face properties that
-you apply using the commands defined here.
+Any highlighting that uses [[text property]] `face' is overruled by
+[[FontLockMode|font-lock]] highlighting - font-lock wants to win.  (This does not
+apply to highlighting that uses [[overlay|overlays]] -- font-lock has no effect
+on overlays.)  In many cases you can still highlight text, but
+sooner or later font-lock erases that highlighting when it
+refontifies the buffer.
 
-[If you also load library <tt>[[facemenu+.el]]</tt>, then the same applies to highlighting that you apply using the face menu (see FaceMenuPlus): that highlighting is also protected from interference by font lock.]
+To prevent this interference of font-lock with other highlighting,
+the typical Emacs approach is to fool font-lock into thinking that
+it is font-lock highlighting, even when it does not involve
+`font-lock-keywords'.
 
-Otherwise, when `hlt-use-overlays-flag' is `nil', font-lock
-highlighting interferes with the highlighting of this library.
-In most cases, you can still highlight text, but sooner or
-later font-lock erases that highlighting when it refontifies
-the buffer.  If `hlt-use-overlays-flag' is non-`nil', there is no
-such problem : font-lock has no effect on overlays.
+But this has the effect that such highlighting is turned off when
+`font-lock-mode' is turned off.  Whether this is a good thing or
+bad depends on your use case.
+
+In vanilla Emacs you have no choice about this.  Either the
+highlighting is not recognized by font-lock, which overrules it,
+or it is recognized as "one of its own", in which case it is
+turned off when font-lock highlighting is turned off.
+With library <tt>[[highlight.el]]</tt> things are more flexible.
+
+First, there is option '''`hlt-face-prop'''', whose value determines the
+highlighting property: Value `font-lock-face' means that the
+highlighting is controlled by font-lock.  Value `face' means that
+`font-lock' does not recognize the highlighting.
+
+Second, for the case where the option value is `face', if you also
+use library '''<tt>[[font-lock+.el]]</tt>''' then there is no interference by
+font-lock -- the highlighting is independent of font-lock.  Library
+##font-lock+.el## is loaded automatically by ##highlight.el##, if it
+is in your `load-path'.  It prevents font-locking from removing
+any highlighting face properties that you apply using the commands
+defined here.
+
+Then font-lock does not override this highlighting with its own,
+and it does not turn this highlighting on and off.  Depending on
+your application, this can be quite important.
+
+The default value of option `hlt-face-prop' is `font-lock-face'.
+If you want text-property highlighting that you add to be able to persist and
+be independent of font-locking, then change the value to `face'
+and put library ##font-lock+.el## in your `load-path'.
+
+[If you also load library '''<tt>[[facemenu+.el]]</tt>''', then the same applies to
+highlighting that you apply using the face menu: <tt>[[font-lock+.el]]</tt>
+also protects that highlighting from interference by font-lock.]
+
+
+
+
+
+
+
 
 
 
