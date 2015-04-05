@@ -1,6 +1,6 @@
 ==OpenWith==
 
-[http://stud4.tuwien.ac.at/~e0225855/misc/openwith.el OpenWith] minor mode by Markus Triska.
+[http://www.logic.at/prolog/misc/openwith.el OpenWith] minor mode by Markus Triska.
 
 Open files with external applications. Works from everywhere (find-file, dired, etc.).
 
