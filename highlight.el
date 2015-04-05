@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr  5 10:40:48 2015 (-0700)
+;; Last-Updated: Sun Apr  5 12:05:56 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3774
+;;     Update #: 3778
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -200,7 +200,7 @@
 ;;  Option `hlt-overlays-priority' is the priority assigned to
 ;;  overlays created by `hlt-* functions.  A higher priority makes an
 ;;  overlay seem to be "on top of" lower priority overlays.  The
-;;  default value is a medium priority.
+;;  default value is a zero priority.
 ;;
 ;;(@* "Temporary or Permanent Highlighting")
 ;; ** "Temporary or Permanent Highlighting" **
@@ -681,6 +681,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/04/05 dadams
+;;     hlt-overlays-priority: Changed default priority to 0, from 200.
 ;; 2015/04/03 dadams
 ;;     Added: hlt-highlight-isearch-matches, hlt-unhighlight-isearch-matches.
 ;;     Added: hlt-overlays-priority.
@@ -1158,7 +1160,7 @@ This is used only for highlighting of a regexp, which can be slow."
   :type 'integer :group 'highlight)
 
 ;;;###autoload
-(defcustom hlt-overlays-priority 200    ; > ediff's 100+, < isearch-overlay's 1001.
+(defcustom hlt-overlays-priority 0
   "*Priority of the overlays created by `hlt-*' functions."
   :type 'integer :group 'highlight)
 
