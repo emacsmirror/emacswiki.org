@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr  5 12:05:56 2015 (-0700)
+;; Last-Updated: Sun Apr  5 14:45:27 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3778
+;;     Update #: 3850
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -54,7 +54,7 @@
 ;;    (@> "Hiding and Showing Text")
 ;;      (@> "Hiding and Showing Text - Icicles Multi-Commands")
 ;;    (@> "What Gets Highlighted: Region, Buffer, New Text You Type")
-;;    (@> "Interference by Font Lock")
+;;    (@> "Interaction with Font Lock")
 ;;    (@> "Suggested Bindings")
 ;;    (@> "See Also")
 ;;    (@> "Commands That Won't Work in Emacs 20")
@@ -109,8 +109,9 @@
 ;;
 ;;    `hlt-act-on-any-face-flag', `hlt-auto-face-backgrounds',
 ;;    `hlt-auto-face-foreground', `hlt-auto-faces-flag',
-;;    `hlt-default-copy/yank-props', `hlt-max-region-no-warning',
-;;    `hlt-overlays-priority', `hlt-use-overlays-flag'.
+;;    `hlt-default-copy/yank-props', `hlt-face-prop',
+;;    `hlt-max-region-no-warning', `hlt-overlays-priority',
+;;    `hlt-use-overlays-flag'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -239,8 +240,9 @@
 ;;
 ;;  When you reopen your file later, it is automatically in enriched
 ;;  mode, and your highlighting shows.  However, be aware that
-;;  font-locking interferes with enriched mode, so you will probably
-;;  want to use it on files where you don't use font-locking.
+;;  font-locking can interfere with enriched mode, so you might want
+;;  to use it on files where you don't use font-locking.  But see also
+;;  (@> "Interaction with Font Lock").
 ;;
 ;;(@* "Commands")
 ;;  ** Commands **
@@ -592,25 +594,56 @@
 ;;  - Otherwise, the face is applied to the entire buffer (or the
 ;;    current restriction, if the buffer is narrowed).
 ;;
-;;(@* "Interference by Font Lock")
-;;  ** Interference by Font Lock **
+;;(@* "Interaction with Font Lock")
+;;  ** Interaction with Font Lock **
 ;;
-;;  If you use Emacs 22 or later, then you can use this library in
-;;  conjunction with library `font-lock+.el' (it is loaded
-;;  automatically, if available).  That prevents font-locking from
-;;  removing any highlighting face properties that you apply using the
-;;  commands defined here.
+;;  Any highlighting that uses text property `face' is overruled by
+;;  font-lock highlighting - font-lock wants to win.  (This does not
+;;  apply to highlighting that uses overlays - font-lock has no effect
+;;  on overlays.)  In many cases you can still highlight text, but
+;;  sooner or later font-lock erases that highlighting when it
+;;  refontifies the buffer.
+;;
+;;  To prevent this interference of font-lock with other highlighting,
+;;  the typical Emacs approach is to fool font-lock into thinking that
+;;  it is font-lock highlighting, even when it does not involve
+;;  `font-lock-keywords'.
+;;
+;;  But this has the effect that such highlighting is turned off when
+;;  `font-lock-mode' is turned off.  Whether this is a good thing or
+;;  bad depends on your use case.
+;;
+;;  In vanilla Emacs you have no choice about this.  Either the
+;;  highlighting is not recognized by font-lock, which overrules it,
+;;  or it is recognized as "one of its own", in which case it is
+;;  turned off when font-lock highlighting is turned off.  With
+;;  library `highlight.el' things are more flexible.
+;;
+;;  First, there is option `hlt-face-prop', whose value determines the
+;;  highlighting property: Value `font-lock-face' means that the
+;;  highlighting is controlled by font-lock.  Value `face' means that
+;;  `font-lock' does not recognize the highlighting.
+;;
+;;  Second, for the case where the option value is `face', if you also
+;;  use library `font-lock+.el' then there is no interference by
+;;  font-lock - the highlighting is independent of font-lock.  Library
+;;  `font-lock+.el' is loaded automatically by `highlight.el', if it
+;;  is in your `load-path'.  It prevents font-locking from removing
+;;  any highlighting face properties that you apply using the commands
+;;  defined here.
+;;
+;;  Then font-lock does not override this highlighting with its own,
+;;  and it does not turn this highlighting on and off.  Depending on
+;;  your application, this can be quite important.
+;;
+;;  The default value of option `hlt-face-prop' is `font-lock-face'.
+;;  If you want text-property highlighting that you add to be able to
+;;  persist and be independent of font-locking, then change the value
+;;  to `face' and put library `font-lock+.el' in your `load-path'.
 ;;
 ;;  [If you also load library `facemenu+.el', then the same applies to
-;;  highlighting that you apply using the face menu: that highlighting
-;;  is also protected from interference by font lock.]
-;;
-;;  Otherwise, when `hlt-use-overlays-flag' is nil, font-lock
-;;  highlighting interferes with the highlighting of this library.  In
-;;  most cases, you can still highlight text, but sooner or later
-;;  font-lock erases that highlighting when it refontifies the buffer.
-;;  If `hlt-use-overlays-flag' is non-nil, there is no such problem :
-;;  font-lock has no effect on overlays.
+;;  highlighting that you apply using the face menu: `font-lock+.el'
+;;  also protects that highlighting from interference by font-lock.]
 ;;
 ;;(@* "Suggested Bindings")
 ;;  ** Suggested Bindings **
@@ -682,6 +715,12 @@
 ;;(@* "Change log")
 ;;
 ;; 2015/04/05 dadams
+;;     Added: hlt-face-prop.
+;;     hlt-highlighter, hlt-unhighlight-for-overlay, hlt-highlight-region, hlt-replace-highlight-face,
+;;       hlt-yank-props, hlt-hide-default-face, hlt-next-highlight, hlt-highlight-faces-in-buffer:
+;;         Use value of hlt-face-prop, not symbol face.
+;;     hlt-highlighter, hlt-eraser, hlt-(un)highlight-region, hlt-yank-props:
+;;       Add font-lock-ignore only when hlt-face-prop is the symbol face.
 ;;     hlt-overlays-priority: Changed default priority to 0, from 200.
 ;; 2015/04/03 dadams
 ;;     Added: hlt-highlight-isearch-matches, hlt-unhighlight-isearch-matches.
@@ -1092,6 +1131,25 @@ Don't forget to mention your Emacs and library versions."))
                        '("blue" "green" "cyan" "red" "magenta" "brown" "lightgray" "darkgray" "yellow"
                          "white" "lightblue" "lightgreen" "lightcyan" "lightred" "lightmagenta"))))
 
+(when (fboundp 'next-single-char-property-change) ; Don't bother, for Emacs 20.
+
+  (defface hlt-property-highlight '((((background dark)) (:background "Navy"))
+                                    (t (:background "Wheat")))
+    "*Face used to highlight all links."
+    :group 'highlight :group 'faces)
+  (defcustom hlt-act-on-any-face-flag nil
+    "*Non-nil means highlight actions apply to all text with a face.
+nil means that they apply only to text that has been highlighted.
+Consult the doc for particular actions, to see if they are affected by
+this option."
+    :type 'boolean :group 'highlight)
+
+  (defvar hlt-prop-highlighting-state '(nil . nil)
+    "Cons representing the state of property highlighting.
+The car indicates whether property highlighting is on (nil means off).
+The cdr is the position of the last mouse click that changed state, as
+a marker."))
+
 (defcustom hlt-auto-face-backgrounds
   (let ((tty-cols   (hlt-tty-colors))
         (tty-faces  (hlt-remove-if-not #'facep '(highlight isearch isearch-fail lazy-highlight
@@ -1115,6 +1173,7 @@ This option has no effect if option `hlt-auto-faces-flag' is nil."
                   (face  :tag "Face" :value "highlight")))
   :group 'highlight)
 
+;;;###autoload
 (defcustom hlt-auto-face-foreground nil
   "*Foreground color for pseudo faces created from a chosen background.
 The value is either a color (name or #RGB hex triplet) or nil.  A nil
@@ -1125,6 +1184,7 @@ color."
           (const :tag "Unspecified: respect current foreground" nil))
   :group 'highlight)
 
+;;;###autoload
 (defcustom hlt-auto-faces-flag nil
     "*Non-nil means highlighting can automatically choose faces.
 Highlighting action can use the next background color or face in
@@ -1135,23 +1195,29 @@ corresponding foreground.
 This option has no effect on unhighlighting."
     :type 'boolean :group 'highlight)
 
-(when (fboundp 'next-single-char-property-change) ; Don't bother, for Emacs 20.
-  (defface hlt-property-highlight '((((background dark)) (:background "Navy"))
-                                    (t (:background "Wheat")))
-    "*Face used to highlight all links."
-    :group 'highlight :group 'faces)
-  (defcustom hlt-act-on-any-face-flag nil
-    "*Non-nil means highlight actions apply to all text with a face.
-nil means that they apply only to text that has been highlighted.
-Consult the doc for particular actions, to see if they are affected by
-this option."
-    :type 'boolean :group 'highlight)
+;;;###autoload
+(defcustom hlt-default-copy/yank-props '(face)
+  "*Properties that `hlt-copy-props' and `hlt-yank-props' use by default.
+You can use a prefix argument with those commands to override the
+default behavior.
+Either a list of properties (symbols) or `t', meaning all properties."
+  :type '(choice
+          (const :tag "All properties" t)
+          (repeat (symbol :tag "Property")))
+  :group 'highlight)
 
-  (defvar hlt-prop-highlighting-state '(nil . nil)
-    "Cons representing the state of property highlighting.
-The car indicates whether property highlighting is on (nil means off).
-The cdr is the position of the last mouse click that changed state, as
-a marker."))
+;;;###autoload
+(defcustom hlt-face-prop 'font-lock-face
+  "*Face property used for highlighting: `face' or `font-lock-face'.
+If the value is `font-lock-face' then highlighting by library
+`highlight.el' disappears when `font-lock-mode' is turned off.
+
+If the value is `face', and if library`font-lock+.el' has been loaded,
+then highlighting persists - it is independent of font-locking."
+  :type '(choice
+          (const :tag "`face' - highlighting is independent of font-lock"        face)
+          (const :tag "`font-lock-face' - highlighting is governed by font-lock" font-lock-face))
+  :group 'highlight)
 
 ;;;###autoload
 (defcustom hlt-max-region-no-warning 100000
@@ -1176,17 +1242,6 @@ affect both kinds of highlighting."
           (const :tag "Highlight using overlays, not text properties" only)
           (sexp  :tag
            "Highlight using overlays, but act also on highlight text properties" t))
-  :group 'highlight)
-
-;;;###autoload
-(defcustom hlt-default-copy/yank-props '(face)
-  "*Properties that `hlt-copy-props' and `hlt-yank-props' use by default.
-You can use a prefix argument with those commands to override the
-default behavior.
-Either a list of properties (symbols) or `t', meaning all properties."
-  :type '(choice
-          (const :tag "All properties" t)
-          (repeat (symbol :tag "Property")))
   :group 'highlight)
 
 (defvar hlt-face-nb 0 
@@ -1372,14 +1427,14 @@ of `hlt-auto-face-backgrounds' (uses `hlt-next-face')."
                 (setq end-point  (posn-point (event-end event))))
               (cond (hlt-use-overlays-flag
                      (setq overlay  (move-overlay overlay start-point end-point))
-                     (overlay-put overlay 'face          hlt-last-face)
+                     (overlay-put overlay hlt-face-prop  hlt-last-face)
                      (overlay-put overlay 'hlt-highlight hlt-last-face)
                      (overlay-put overlay 'priority      hlt-overlays-priority))
                     (t
-                     (put-text-property start-point end-point 'face             hlt-last-face)
+                     (put-text-property start-point end-point hlt-face-prop     hlt-last-face)
                      (put-text-property start-point end-point 'hlt-highlight    hlt-last-face)
-                     (put-text-property start-point end-point 'font-lock-ignore t)
-                     ))))
+                     (when (eq 'face hlt-face-prop)
+                       (put-text-property start-point end-point 'font-lock-ignore t))))))
           (setq buffer-read-only  read-only)
           (set-buffer-modified-p modified-p)))))
   (message "Highlighted with face `%s'"hlt-last-face))
@@ -1471,7 +1526,7 @@ If FACE is nil then remove all `face' property highlighting (or all
   (let ((hlt-face   (overlay-get overlay 'hlt-highlight))
         (ostart     (overlay-start overlay))
         (oend       (overlay-end   overlay))
-        (oface      (overlay-get overlay 'face))
+        (oface      (overlay-get overlay hlt-face-prop))
         (omface     (and mousep  (overlay-get overlay 'mouse-face))))
     (when (and hlt-face  (if face
                              (and (equal face hlt-face)
@@ -1612,7 +1667,7 @@ Optional 6th arg BUFFERS is the list of buffers to highlight.
           (setq buffer-read-only  nil)
           (cond (hlt-use-overlays-flag
                  (setq overlay  (make-overlay start end))
-                 (overlay-put overlay (if mousep 'mouse-face 'face) face)
+                 (overlay-put overlay (if mousep 'mouse-face hlt-face-prop) face)
                  (overlay-put overlay 'hlt-highlight                face)
                  (overlay-put overlay 'priority                     hlt-overlays-priority))
                 (mousep (put-text-property start end 'mouse-face face))
@@ -1625,10 +1680,12 @@ Optional 6th arg BUFFERS is the list of buffers to highlight.
                                     (and (hlt-nonempty-region-p)  end))
                  (when (hlt-nonempty-region-p)
                    (put-text-property start end 'hlt-highlight    face)
-                   (put-text-property start end 'font-lock-ignore t)))
-                (t (put-text-property start end 'face             face)
+                   (when (eq 'face hlt-face-prop)
+                     (put-text-property start end 'font-lock-ignore t))))
+                (t (put-text-property start end hlt-face-prop     face)
                    (put-text-property start end 'hlt-highlight    face)
-                   (put-text-property start end 'font-lock-ignore t)))
+                   (when (eq 'face hlt-face-prop)
+                     (put-text-property start end 'font-lock-ignore t))))
           (setq buffer-read-only  read-only)
           (set-buffer-modified-p modified-p))
         (when (and msgp  (or (hlt-nonempty-region-p)  mousep))
@@ -1996,9 +2053,9 @@ Other arguments:
               (modified-p   (buffer-modified-p)))
           (setq buffer-read-only  nil)
           (dolist (ov  (overlays-in start end))
-            (when (equal old-face (overlay-get ov (if mousep 'mouse-face 'face)))
-              (overlay-put ov (if mousep 'mouse-face 'face) new-face)
-              (overlay-put ov 'hlt-highlight                new-face)))
+            (when (equal old-face (overlay-get ov (if mousep 'mouse-face hlt-face-prop)))
+              (overlay-put ov (if mousep 'mouse-face hlt-face-prop) new-face)
+              (overlay-put ov 'hlt-highlight                        new-face)))
           (setq buffer-read-only  read-only-p)
           (set-buffer-modified-p modified-p))
         (setq hlt-last-face  new-face)
@@ -2188,11 +2245,15 @@ NOTE: If the list of copied text properties is empty, then yanking
     ;; Set/reset props `hlt-highlight' and `font-lock-ignore', if `face' is one of the props.
     ;; (The Emacs 20 code here is fudged: it just uses `member' instead of `plist-member'.)
     (cond ((fboundp 'plist-member)
-           (put-text-property start end 'hlt-highlight    (and (plist-member props-to-yank 'face)  t))
-           (put-text-property start end 'font-lock-ignore (and (plist-member props-to-yank 'face)  t)))
-          (t                            ; Emacs 20 - no `plist-member'.
-           (put-text-property start end 'hlt-highlight    (and (member 'face props-to-yank)  t))
-           (put-text-property start end 'font-lock-ignore (and (member 'face props-to-yank)  t))))
+           (put-text-property start end 'hlt-highlight (and (plist-member props-to-yank hlt-face-prop)  t))
+           (when (eq 'face hlt-face-prop)
+             (put-text-property start end 'font-lock-ignore (and (plist-member props-to-yank hlt-face-prop)
+                                                                 t))))
+          ;; Emacs 20 - no `plist-member'.  (Though `font-lock-ignore' has no effect for Emacs 20.)
+          (t
+           (put-text-property start end 'hlt-highlight    (and (member hlt-face-prop props-to-yank)  t))
+           (when (eq 'face hlt-face-prop)
+             (put-text-property start end 'font-lock-ignore (and (member hlt-face-prop props-to-yank)  t)))))
     (setq buffer-read-only  read-only)
     (set-buffer-modified-p modified-p)
     (when msgp (if props-to-yank
@@ -2411,14 +2472,14 @@ START and END are the limits of the area to act on. They default to
                 (while overlays
                   (when (and (or hlt-act-on-any-face-flag
                                  (equal face (overlay-get (car overlays) 'hlt-highlight)))
-                             (equal face (overlay-get (car overlays) 'face)))
+                             (equal face (overlay-get (car overlays) hlt-face-prop)))
                     (overlay-put (car overlays) 'invisible
                                  (hlt-add-listifying (overlay-get (car overlays) 'invisible) face)))
                   (when overlays (setq overlays  (cdr overlays))))))
             (when (and (not (eq hlt-use-overlays-flag 'only))
                        (or hlt-act-on-any-face-flag  (equal face (get-text-property (point) 'hlt-highlight)))
-                       ;; $$$$$$ (equal face (get-text-property (point) 'face)))
-                       (let ((pt-faces  (get-text-property (point) 'face)))
+                       ;; $$$$$$ (equal face (get-text-property (point) hlt-face-prop)))
+                       (let ((pt-faces  (get-text-property (point) hlt-face-prop)))
                          (if (consp pt-faces) (memq face pt-faces) (equal face pt-faces))))
               (put-text-property zone-beg zone-end 'invisible
                                  (hlt-add-listifying (get-text-property zone-beg 'invisible) face)))
@@ -2486,7 +2547,7 @@ When called non-interactively:
             nil                         ; Use `hlt-last-face'.
             (save-excursion
               (when (listp last-nonmenu-event) (mouse-set-point last-nonmenu-event))
-              (let* ((face  (get-char-property (point) 'face))
+              (let* ((face  (get-char-property (point) hlt-face-prop))
                      (face  (if (and (consp face)  (facep (car face)))
                                 (car face)
                               face))    ; Use only 1st face at pt.
@@ -2515,23 +2576,23 @@ When called non-interactively:
           (narrow-to-region beg end)
           (setq beg  (if backward-p
                          (goto-char (previous-single-char-property-change
-                                     (point) (if mousep 'mouse-face 'face) nil (point-min)))
+                                     (point) (if mousep 'mouse-face hlt-face-prop) nil (point-min)))
                        (goto-char (next-single-char-property-change
-                                   (point) (if mousep 'mouse-face 'face) nil (point-max))))))
+                                   (point) (if mousep 'mouse-face hlt-face-prop) nil (point-max))))))
         (when hlt-use-overlays-flag
           (let ((overlays  (overlays-at (point))))
             (while overlays
               (when (and (or hlt-act-on-any-face-flag
                              (equal face (overlay-get (car overlays) 'hlt-highlight)))
-                         (equal face (overlay-get (car overlays) 'face)))
+                         (equal face (overlay-get (car overlays) hlt-face-prop)))
                 (setq face-found  face
                       overlays    ()))
               (when overlays (setq overlays  (cdr overlays))))))
         (when (and (not face-found)
                    (not (eq hlt-use-overlays-flag 'only))
                    (or hlt-act-on-any-face-flag  (equal face (get-char-property (point) 'hlt-highlight)))
-                   ;; $$$$$$ (equal face (get-char-property (point) 'face)))
-                   (let ((pt-faces  (get-char-property (point) 'face)))
+                   ;; $$$$$$ (equal face (get-char-property (point) hlt-face-prop)))
+                   (let ((pt-faces  (get-char-property (point) hlt-face-prop)))
                      (if (consp pt-faces) (memq face pt-faces) (equal face pt-faces))))
           (setq face-found  face))
         (when (and (= beg end)          ; Wrap around.
@@ -2542,7 +2603,7 @@ When called non-interactively:
         (error "No %s highlight with face `%s'" (if backward-p "previous" "next") face)))
     (unless (interactive-p)
       (cons (point)
-            (next-single-char-property-change (point) (if mousep 'mouse-face 'face)
+            (next-single-char-property-change (point) (if mousep 'mouse-face hlt-face-prop)
                                               nil (if backward-p start end)))))
 
   ;; Suggested binding: `C-S-p'.
@@ -2570,12 +2631,13 @@ Only highlighting faces are included, that is, faces associated with a
           (while (< beg end)
             (save-restriction
               (narrow-to-region beg end)
-              (setq beg  (goto-char (next-single-char-property-change (point) 'face nil (point-max)))))
+              (setq beg  (goto-char
+                          (next-single-char-property-change (point) hlt-face-prop nil (point-max)))))
             (when (setq face  (get-text-property (point) 'hlt-highlight)) (add-to-list 'faces face))
             (let ((overlays  (overlays-at (point))))
               (while overlays
                 (when (and (overlay-get (car overlays) 'hlt-highlight)
-                           (setq face  (overlay-get (car overlays) 'face)))
+                           (setq face  (overlay-get (car overlays) hlt-face-prop)))
                   (add-to-list 'faces face)
                   (setq overlays  ()))
                 (when overlays (setq overlays  (cdr overlays))))))
