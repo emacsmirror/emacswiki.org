@@ -151,12 +151,12 @@ Other options include:
 
 To install using the <tt>--cocoa</tt> switch, one simply uses:
 <pre>
-brew install --cocoa emacs
+brew install --with-cocoa emacs
 </pre>
 
 to get some "pretty" colours add the <tt>--srgb</tt> switch:
 <pre>
-brew install --cocoa --srgb emacs
+brew install --with-cocoa --srgb emacs
 </pre>
 
 and finally link it to your Applications folder:
