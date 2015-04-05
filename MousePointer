@@ -1,3 +1,4 @@
+[[ja:マウスポインタ]]
 The '''[::mouse pointer]''', or just '''[::pointer]''', is a graphic indication of the mouse position.
 
 Sometimes, people use the words "pointer" and "cursor" interchangeably.  Even the EmacsManual does as of 2009.  To avoid confusion, the pointer should be used to describe the mouse pointer and the cursor for mentions of the [[TextCursor]], which indicates the text insertion position.
