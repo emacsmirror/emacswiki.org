@@ -3938,7 +3938,7 @@ You can also easily define OrgMode links that jump to bookmarks.
 These links are persistent.  Again, the bookmark linked can be of
 any type.
 
-You can use the standard Org command `org-store-link' (`C-c s') in
+You can use the standard Org command `org-store-link' (`C-c l') in
 buffer `*Bookmark List*' to store a link to the bookmark at point.
 
 Outside buffer `*Bookmark List*' you can use command
