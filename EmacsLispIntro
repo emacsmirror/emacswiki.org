@@ -1,7 +1,7 @@
 [[es:EmacsLispIntroEs]]
 : ''The programmable editor is an outstanding opportunity to learn to program!'' -- TheEmacsPaper
 
-Learn [[Lisp]] the easy way: Read the ''Introduction to Programming in Emacs Lisp'', written by Robert J Chassel.  Highly
+Learn [[Lisp]] the easy way: Read the ''Introduction to Programming in Emacs Lisp'', written by Robert J. Chassell.  Highly
 recommended for those without prior Lisp programming experience.
 
 Until Emacs 21, the EmacsLisp introduction was distributed separately. The introduction comes in Texinfo format, which means that it can be converted to a variety of formats: info, html, and others.  So, for example, in Debian, apt-get install emacs-lisp-intro would do the trick.
