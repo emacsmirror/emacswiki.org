@@ -58,9 +58,8 @@ If you're using the command-line:
 (The ##git add## command is needed only if you added new files that
 are not yet registered with Git.)
 
-Optionally, before doing a commit, you can do ##git status## and
-##git diff## to view the changes which will be committed by ##git commit -a##
-(with no filename arguments).
+We recommend invoking ##git status## and ##git diff## to view the
+changes which will be committed, before invoking ##git commit -a##.
 
 You can also commit using VC-dir:
 
@@ -70,16 +69,21 @@ You can also commit using VC-dir:
 * Type log (##C-c C-a## to pull in ChangeLog(s))
 * ##C-c C-c##
 
+It is a good idea to review your commit after doing it, by means of the
+##git show## command.  In particularly, make sure you got the log
+message right and without mistakes.  This is because fixing a mistake
+in the last local commit is easy.  (If you spot mistakes, the next section
+explains how to fix them.)
+
 To push your commits to the upstream Emacs repository on Savannah,
 you will need to type the ##git push## command from the shell prompt,
 even if you use VC, as VC doesn't yet support a push command.
 
-It is a good idea to examine what you are about to push, before actually
-doing so, because fixing mistakes before pushing is much easier (see
-the next section). To do that, use the command ##git diff origin/master##.
-If you want to show your unpushed commits with their commit log
-messages, use ##git show origin/master..## instead. If you only have
-one local commit you want to push, just ##git show## is enough.
+Before pushing, we recommend examining what you are about to push,
+because fixing mistakes before pushing is much easier (see the next
+section). To do that, use the command ##git show origin/master..##
+(note the 2 dots: they are important). If you only have one local commit
+you want to push, just ##git show## is enough.
 
 === If you made a mistake ===
 
@@ -89,7 +93,8 @@ these problems before you ##git push##, then the error was not yet propagated
 upstream, and you can easily fix it.
 
 To fix the last commit log message, use ##git commit --amend##.
-To re-do the commit from scratch, use ##git reset HEAD^##, then fix whatever
+To re-do the commit from scratch, use ##git reset HEAD^## (which undoes
+the commit, but leaves your local changes intact), then fix whatever
 needs fixing, and commit again.
 
 If you caught your mistake only after ##git push##, the only way to fix it is
@@ -178,9 +183,6 @@ or just
 * ##git commit -a##
 
 if the only changed files are those you want to commit.
-(It is recommended to do a ##git status## before a commit without
-filename arguments to check for inadvertent changes that would be
-committed.)
 
 This is very important because every commit creates a *changeset*,
 which is a discrete step on the history of the code base.
