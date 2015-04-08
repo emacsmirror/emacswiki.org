@@ -143,7 +143,7 @@ To fix this, commit the offending files with
 
 * ##git commit file1 -m "Commit to allow pull from upstream."##,
 
-and then issue ##git pull## again. Now you have conflicts due
+and then issue ##git pull## again. Now you may have conflicts due
 to local committed changes, described below.
 
 Alternatively, you could use ##git stash save file1## to move
