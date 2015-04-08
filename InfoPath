@@ -1,6 +1,6 @@
 This page explains how InfoMode finds Info manuals. If you have manuals on your machine in different locations, you might need to read this.
 
-InfoMode uses the `INFOPATH' environment variable to initialize, so that the Info mode integrated in Emacs gives the same results as the standalone Info reader. `INFOPATH is an environment variable containing a list of paths to the Info files installed on a system and is used by standalone Info readers to locate Info files.  The Info reader built into Emacs also uses INFOPATH, which ensures that Emacs will display the same Info files as the other Info readers installed on the system.
+InfoMode uses the `INFOPATH' environment variable to initialize, so that the Info mode integrated in Emacs gives the same results as the standalone Info reader. `INFOPATH' is an environment variable containing a list of paths to the Info files installed on a system and is used by standalone Info readers to locate Info files.  The Info reader built into Emacs also uses INFOPATH, which ensures that Emacs will display the same Info files as the other Info readers installed on the system.
 
 When InfoMode is invoked by typing <code>C-h i</code>, Emacs parses
 INFOPATH and creates a list of Info directories in
