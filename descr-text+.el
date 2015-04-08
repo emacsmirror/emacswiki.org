@@ -8,16 +8,16 @@
 ;; Created: Thu Nov 24 11:57:04 2011 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:32:51 2015 (-0800)
+;; Last-Updated: Tue Apr  7 21:19:23 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 282
+;;     Update #: 291
 ;; URL: http://www.emacswiki.org/descr-text+.el
 ;; Keywords: help, characters, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `descr-text', `help-fns', `help-mode', `mule', `view'.
+;;   `button', `descr-text', `help-mode'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -46,6 +46,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/04/07 dadams
+;;     describe-text-properties, describe-char: Use called-interactively only if > Emacs 23.1.
 ;; 2014/04/24 dadams
 ;;     describe-text-sexp: Updated for Emacs 24.4: Use with-help-window if defined.  See bug #17109.
 ;; 2013/05/11 dadams
@@ -223,7 +225,10 @@ Optional arg MAX-WIDTH is the max width needed so far (defaults to 0)."
               (setq max-width  (max max-width (current-column)))
               (set-buffer src-buf)
               (help-setup-xref (list 'describe-text-properties pos nil buffer)
-                               (called-interactively-p 'interactive))
+                               (if (or (> emacs-major-version 23)
+                                       (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+                                   (called-interactively-p 'interactive)
+                                 (interactive-p)))
               (with-help-window (help-buffer)
                 (with-current-buffer standard-output
                   (buffer-swap-text output-buffer)
@@ -903,7 +908,10 @@ overlays, and text properties."
                                              item-list)))
         (set-buffer src-buf)
         (help-setup-xref (list 'describe-char pos buffer)
-                         (called-interactively-p 'interactive))
+                         (if (or (> emacs-major-version 23)
+                                 (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+                             (called-interactively-p 'interactive)
+                           (interactive-p)))
         (with-help-window (help-buffer)
           (with-current-buffer standard-output
             (set-buffer-multibyte multibyte-p)
