@@ -1,4 +1,3 @@
-[[en:Hello]]
 You can use M-x morse-region and M-x unmorse-region to convert text
 into Morse code (see WikiPedia:Morse_code) and back.
 
