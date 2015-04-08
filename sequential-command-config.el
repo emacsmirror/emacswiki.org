@@ -1,4 +1,4 @@
-;;; sequential-command-config.el --- Examples of sequential-command.el 
+;;; sequential-command-config.el --- Examples of sequential-command.el
 ;; $Id: sequential-command-config.el,v 1.3 2009/03/22 09:09:58 rubikitch Exp $
 
 ;; Copyright (C) 2009  rubikitch
@@ -72,11 +72,15 @@
   (downcase-word (- (1+ (seq-count)))))
 
 (when (require 'org nil t)
-  (define-sequential-command org-seq-home
-    org-beginning-of-line beginning-of-buffer seq-return)
+  (if org-special-ctrl-a/e
+      (define-sequential-command org-seq-home
+        org-beginning-of-line beginning-of-line beginning-of-buffer seq-return)
+    (define-sequential-command org-seq-home
+        org-beginning-of-line beginning-of-buffer seq-return))
   (define-sequential-command org-seq-end
     org-end-of-line end-of-buffer seq-return))
 
+;;;###autoload
 (defun sequential-command-setup-keys ()
   "Rebind C-a, C-e, M-u, M-c, and M-l to seq-* commands.
 If you use `org-mode', rebind C-a and C-e."
