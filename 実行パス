@@ -3,7 +3,7 @@
 この変数はEmacsにとって##PATH##環境変数に相当します.
 それはEmacsが実行のために検索するであろうディレクトリのリストを含みます.
 
-ここに/sw/binディレクトリを実行パスとPATH変数へ追加する例があります(LaTeXを実行するMac OS X ユーザにとって便利):
+ここに/sw/binディレクトリを実行パスとPATH変数へ追加する例があります([[LaTeX]]を実行するMac OS X ユーザにとって便利):
 
     (setenv "PATH" (concat (getenv "PATH") ":/sw/bin"))
     (setq exec-path (append exec-path '("/sw/bin")))
