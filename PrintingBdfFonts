@@ -65,22 +65,23 @@ First, convert the fonts:
 
 Then:
 
-    (eval-after-load 'ps-print
-    (require 'ps-mule)
-        (setq ps-multibyte-buffer 'bdf-font) ;; print everything with bdf
-        (setq ps-font-size 10) ;; change according your tastes
-        (setq bdf-directory-list '("/somedir"))
-        (setq ps-mule-font-info-database-bdf
-              '((unicode-bmp  ; everything in the world should be printed with this font
-                 (normal bdf "djvmono.bdf")
-                 (bold bdf "djvmono-b.bdf")
-                 (italic bdf "djvmono-o.bdf")
-                 (bold-italic bdf "djvmono-bo.bdf"))
-                (iso-8859-1   ; please, latin-1 TOO, I said everything!
-                 (normal bdf "djvmono.bdf")
-                 (bold bdf "djvmono-b.bdf")
-                 (italic bdf "djvmono-o.bdf")
-                 (bold-italic bdf "djvmono-bo.bdf")))))
+ (eval-after-load 'ps-print
+  '(progn
+     (require 'ps-mule)
+     (setq ps-multibyte-buffer 'bdf-font) ;; print everything with bdf
+     (setq ps-font-size 10) ;; change according your tastes
+     (setq bdf-directory-list '("/somedir"))
+     (setq ps-mule-font-info-database-bdf
+	   '((unicode-bmp  ; everything in the world should be printed with this font
+	      (normal bdf "djvmono.bdf")
+	      (bold bdf "djvmono-b.bdf")
+	      (italic bdf "djvmono-o.bdf")
+	      (bold-italic bdf "djvmono-bo.bdf"))
+	     (iso-8859-1   ; please, latin-1 TOO, I said everything!
+	      (normal bdf "djvmono.bdf")
+	      (bold bdf "djvmono-b.bdf")
+	      (italic bdf "djvmono-o.bdf")
+	      (bold-italic bdf "djvmono-bo.bdf"))))))
 
 Euro sign checked, it works!
 
