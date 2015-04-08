@@ -52,7 +52,7 @@ If you're using the command-line:
 * ##git pull##
 * Edit files
 * ##git add new-file ...##
-* ##git commit -a##
+* ##git commit -a##  (This commits all the changes you made to any of the files.)
 * ##git push##
 
 (The ##git add## command is needed only if you added new files that
@@ -86,6 +86,10 @@ section). To do that, use the command ##git show origin/master..##
 you want to push, just ##git show## is enough.
 
 === If you made a mistake ===
+
+If you want to discard your changes to a single file, the command
+##git checkout FILE## will overwrite the named FILE with its version
+as of the last pull from upstream.
 
 If you commit something by mistake, or forgot to commit a file, or want to
 fix a stupid typo in the commit log message, all is not lost.  Be sure to catch
@@ -142,6 +146,11 @@ To fix this, commit the offending files with
 and then issue ##git pull## again. Now you have conflicts due
 to local committed changes, described below.
 
+Alternatively, you could use ##git stash save file1## to move
+the uncommitted changes out of the tree, then ##git pull##
+again, and finally ##git stash pop## to restore your uncommitted
+changes. 
+
 ==== Conflicts in committed changes ====
 
 For conflicts in changes committed locally, Git will say something
@@ -169,20 +178,22 @@ files, commit them, either from the vc-dir buffer or by typing
 === Commit the entire changeset ===
 
 With Git you shouldn't commit the changed files one at a time if
-they belong to the same logical change. So please don't do:
+they belong to the same logical change. So, if you made a change
+in some Lisp code and also modified the documentation to be
+consistent with the change, please don't do:
 
-* ##git commit ChangeLog.txt##
 * ##git commit lisp/foo.el##
+* ##git commit doc/lispref/foo.texi##
 
 but instead do
 
-* ##git commit lisp/foo.el ChangeLog.txt##
+* ##git commit lisp/foo.el doc/lispref/foo.texi ##
 
 or just
 
 * ##git commit -a##
 
-if the only changed files are those you want to commit.
+if you want to commit all the changed files.
 
 This is very important because every commit creates a *changeset*,
 which is a discrete step on the history of the code base.
