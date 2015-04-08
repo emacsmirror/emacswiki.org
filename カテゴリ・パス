@@ -5,7 +5,7 @@
 * [[読み込みパス]] -- <nowiki>EmacsがLISPファイルのために検索するディレクトリのリスト</nowiki>(`load-library'と`require'向け)
 * [[実行パス]] -- オペレーティングシステムのPATH変数から継承された, Emacsが実行可能ファイルのために検索するディレクトリのリスト(grep, ftp, そして他向け).
 それはしかしながらサブプロセス開始時にPATHには影響を及ぼさないしない.
-このためには (setenv "PATH" your-desired-path)使え.
+このためには (setenv "パス" あなたのお望みのパス) を使え.
 * [[Infoパス]] -- Emacsがinfoファイルのために検索するディレクトリのリスト (もちろん, `info'向け)
 * [[Manパス]]|[[ManPath]] -- Emacsがmanとwomanファイルのために検索するディレクトリのリスト([[ManMode]]と[[WomanMode]]を参照されたし)
 * NTEmacsWithCygwin
