@@ -5,7 +5,7 @@
 == HTMLR ==
 
 There is some code to render HTML available at Lisp:htmlr.el in case you want to look at an alternative.
-See EmacsWebBrowser.
+It is used by the EmacsWebBrowser (EWB).
 
 ----
 CategoryHypermedia
