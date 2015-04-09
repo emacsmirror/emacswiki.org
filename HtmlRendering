@@ -1,6 +1,6 @@
 == Simple HTML Renderer (SHR) ==
 
-shr.el [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/lisp/net/shr.el] is an HTML renderer in Emacs as of version 24.4 (based on libxml2, it was originally a part of [[Gnus]]). It's the basis of the web browser [[eww]].
+[http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/lisp/net/shr.el shr.el] is an HTML renderer in Emacs as of version 24.4 (based on libxml2, it was originally a part of [[Gnus]]). It's the basis of the web browser [[eww]].
 
 == HTMLR ==
 
