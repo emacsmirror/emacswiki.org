@@ -4,11 +4,15 @@ It can be useful to insert parentheses, braces, quotes and the like in matching 
 
 === electric-pair-mode ===
 
-Emacs-24 comes with a new simple global minor mode electric-pair-mode which uses the new post-self-insert-hook.
+Emacs 24 comes with a global minor mode electric-pair-mode which uses the new post-self-insert-hook.
+
+Up to Emacs 24.3, this mode was quite simplistic and not very usable.
+
+As of Emacs 24.4, this mode is greatly improved and matches autopair.el in functionality.
 
 === autopair.el ===
 
-http://github.com/capitaomorte/autopair ([https://raw.github.com/capitaomorte/autopair/master/autopair.el download]) is a minor-mode that works with almost all major modes.  This is probably most likely the easiest (and best) way to achieve autopairs functionality in all your favorite modes.
+http://github.com/capitaomorte/autopair ([https://raw.github.com/capitaomorte/autopair/master/autopair.el download]) is a minor mode that works with almost all major modes.  This is probably the easiest (and best) way to achieve autopair functionality in all your favorite modes.  (Note that the autopair author is also recommending electric-pair-mode for Emacs 24.4 and up.)
 
 Key Points:
 
