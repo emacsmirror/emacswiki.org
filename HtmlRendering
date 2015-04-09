@@ -1,96 +1,13 @@
-== Simple HTML Renderer ==
+== Simple HTML Renderer (SHR) ==
 
 shr.el [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/lisp/net/shr.el] is an HTML renderer in Emacs as of version 24.4 (based on libxml2, it was originally a part of [[Gnus]]). It's the basis of the web browser [[eww]].
 
+== HTMLR ==
+
+There is some code to render HTML available at Lisp:htmlr.el in case you want to look at an alternative.
+See EmacsWebBrowser.
+
 ----
-
-== (Old) Wishlist for an HTML renderer ==
-
-One of my big wishes is for good HTML rendering in elisp.  I'm starting this page to brainstorm solutions.  This is not about creating a browser.  This page is just about rendering.  I think the other pieces of a browser could be talked about elsewhere.  What I want is something that will render a buffer of html once it's been downloaded or render a region.  Uses for this are for handling html MimeTypesWithGnus, possibly EmacsIrcClient, or an AimClient.  There may be others, such as HttpGet.  These are the places where I can think of legitimate uses of html.
-
-=== The Basics ===
-
-Here's the minimum I'd like to see support for:
-
-* Assume all docs are xhtml 1.0 transitional or html 4.01 transitional
-** can add other DTDs later.
-** severe handling of non-standards conforming pages
-* handle <p>, </p>, <br />, <br>
-* convert lists similar to the way WThreeM does ('*', '+', '-', etc.)
-* convert b and strong tags into the bold-face
-* convert i and em tags into the italics-face
-* just display alt tag for <img ...> or some default for <img ...> with no alt tag
-
-
-'''EDIT by ychaouche''' : I think HTML-mode handles this already, you can trigger it with '''C-c <tab>.'''
-
-=== The "Nice to Haves" ===
-
-Here are the things I think wouldn't be _that_ much extra work:
-
-* handle the font tag to some degree.
-** we can certainly handle the color attribute
-** i'd ignore the size attribute
-** maybe try to do some mapping of the family attribute
-** other attributes as possible
-* forms
-** WThreeM handles forms fairly well.  Has some bugs.
-
-=== The "Hard to do" ===
-
-* tables
-* frames
-* CSS positionning, an increasing number of sites uses CSS for their
-page layout.
-
-: i'm not suggesting a bunch of slapped together fixit crap.
-: -- Lathi on #emacs
-
-The EmacsWebBrowser has code fragments, and a starting point is
-available at Lisp:htmlr.el.
-
-Features of htmlr.el: (support is to be read as "some support")
-
-0.0.5 (07/04/2003) 
-* support for dl dd dt tags
-* fixes some newline problems
-* other fixes
-
-0.0.4 (04/04/2003) 
-* support for h1..h6, ol tags  (titles use variable font size, hence Emacs 21, but text properties are in variables so you can change this easily)
-* more style variables
-* highlight for link and img tags
-* more fixes
-
-0.0.3 (02/04/2003)
-* new parser attitude (it uses the stack for last tag)
-* added the "convert lists similar to the way WThreeM does" feature
-* lot of fixes
-
-0.0.2 (27/03/2003)
-* added whatever tag  to limit the complexity of the  definition 
-of htmlr-transitions (I am still wondering if it is really a good idea).  
-* support for links [src text]. better highlight needed.
-* support for images {src (alt | name)} better highlight needed.
-* support for i, em, hr, and br tags.
-* parsing of attributes
-
-0.0.1
-* support for p, ul, li tags.
-* html parser. (very nice)
-
-=== Plans for next release ===
-* look at what's going on when html code contains \r\n (dos encoding).
-* I'll try to add some rendering for table
-
-- not directly related to rendering
-* see how to integrate it with http-get to help testing on more pages
-
-I also plan to add htmrl.el to the cvs of http://savannah.nongnu.org/projects/http-emacs/ with another ewtb.el (emacs www text browser) as soon as i implement
-some basic features for it (follow link, perhaps back and forward). Please let me know if you want to have developer access. --PierreGaston
-
-== See Also =
-
 CategoryHypermedia
 
 
