@@ -3,3 +3,63 @@ The method works great for me except when I try to print Cyrillics ☹
 
 -- [http://chalaev.com Oleg Shalaev] 2015-04-08 23:46 UTC
 
+
+----
+
+I use Emacs 23.4.1 (x86_64-pc-linux-gnu, GTK+ Version 2.24.10) from the repositories of Debian 7.8 (wheezy).
+I noticed that Alex's method can be simplified. When you do not intend to print texts Cyrillic letters,
+the following block in your ~/.emacs file will print nice mixture of unicode (sin²α+cos²α=1 σ₁≠σ₂), Western languages (Grüße), and euro sign (€):
+
+ (setq ps-lpr-command "lpr")
+ (setq ps-printer-name "PDF")
+ (require 'ps-mule)
+ (setq ps-print-header 'nil); the header takes too much space
+ (setq ps-landscape-mode 1); I like landscape-printing
+ (setq ps-multibyte-buffer 'bdf-font) ;; print everything with bdf
+ (setq ps-font-size 10) ;; change according your tastes
+ (setq bdf-directory-list  (list "~/local/bdf"))
+ 
+ (setq ps-mule-font-info-database-bdf
+      '((unicode-bmp
+	 (normal bdf "djvmono.bdf")
+	 (bold bdf "djvmono-b.bdf")
+	 (italic bdf "djvmono-o.bdf")
+	 (bold-italic bdf "djvmono-bo.bdf"))
+	(iso-8859-1
+	 (normal bdf "djvmono.bdf")
+	 (bold bdf "djvmono-b.bdf")
+	 (italic bdf "djvmono-o.bdf")
+	 (bold-italic bdf "djvmono-bo.bdf"))))
+
+
+where I assumed that you used otf2bdf to create bdf-fonts in the directory ~/local/bdf\\
+If you do not care about Cyrillics, you are all set. Otherwise try to copy the following maxima code into a emacs buffer and print it with <code>M-x ps-print-buffer-with-faces</code>:
+
+ [↑:[1,0],↓:[0,1]]$
+ su:λ([xx],subst([k²=kx²+ky²+kz²,P=P0*Eg],xx))$
+ Hcc:(k²*ident(2)+2*k0*kz*σ₄)/(2*m);
+ Hvc:-%i*P*(kx*σ₃+%i*ky*σ₄);
+
+– works great for me. I can also beautifylly print another piece of maxima code:
+
+ /*  Russian: Мощно задвинул, внушаить! */
+ /*  German: Eine Besäufnis ohne Festrede verliert seine Erziehungswert. */
+ /*  Italian: È inutile chiamare, non risponderá nessuno ☹ */
+ /* People love € */
+ /* Apparently Asian languages are not covered: 在i加载模式  */
+ Hp:A⁻¹.C.A; is(herCo(Hp)=Hp); /* full k·p-Hamiltonian close to the X-point */
+ Ψ1:subst([k*k0*z+Eg*m=Eg*m,k*k0*z-Eg*m=-Eg*m],makelist(∑(dHa[m1,n]*iw(n,m1)*Ψ0[m1],m1,1,4),n,1,4))$
+
+– this also can be printed beautifully. However, if I copy these two pieces of text into one emacs buffer and try to print them <u>together</u>, gs is launched and works forever until I kill it. I overcome the problem (at the cost of quality ☹) by eliminating the iso-8859-1 section from the <code>ps-mule-font-info-database-bdf</code>variable:
+
+ (setq ps-mule-font-info-database-bdf
+      '((unicode-bmp
+	 (normal bdf "djvmono.bdf")
+	 (bold bdf "djvmono-b.bdf")
+	 (italic bdf "djvmono-o.bdf")
+	 (bold-italic bdf "djvmono-bo.bdf"))))
+
+– this setup allows printing of the both parts of the text, but different fonts are used so the output is not that beautiful as before.
+
+-- [http://chalaev.com Oleg Shalaev] 2015-04-10 22:24 UTC
+
