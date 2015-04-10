@@ -249,7 +249,7 @@ REGEDIT4
 </pre>
 
 
-This can also be done by manually editing the registry to accomplish the same thing, see [http://geekquanta.blogspot.com/2007/07/remapping-ctrl-and-caps-lock-in-windows.html] for an explanation. 
+This can also be done by manually editing the registry to accomplish the same thing, see [http://geekquanta.blogspot.com/2007/07/remapping-ctrl-and-caps-lock-in-windows.html] for an explanation.
 
 To undo the changes, you can just delete the Scancode Map value, or run a .reg script with the following:
 <pre>
@@ -265,7 +265,7 @@ You can instead make similar changes to
 <pre>
 [HKEY_CURRENT_USER\Keyboard Layout]
 </pre>
-which makes the change for just the current user only. 
+which makes the change for just the current user only.
 
 
 ===Keymap===
@@ -336,7 +336,7 @@ An alternative to moving the control key, to avoid Emacs pinky, is to use the sp
 
 If you press the space bar alone, it inserts a space. If you press it together with another key, it acts as a control key.
 
-You can achieve this by using [https://gitorious.org/at-home-modifier/pages/Home at-home-modifier] in X (Linux only). And for MS Windows, !AutoHotKey with [https://github.com/benhansenslc/BigCtrl BigCtrl] script. And for Mac, [http://pqrs.org/macosx/keyremap4macbook/index.html keyremap4macbook].
+You can achieve this by using [https://gitlab.com/at-home-modifier/at-home-modifier-evdev/wikis/home at-home-modifier] in X (Linux only). And for MS Windows, !AutoHotKey with [https://github.com/benhansenslc/BigCtrl BigCtrl] script. And for Mac, [http://pqrs.org/macosx/keyremap4macbook/index.html keyremap4macbook].
 
 This is not limited to ctrl -- shift, alt, or any other keys can be pressed with thumbs. See also the following [[#Japanese keyboard]] section.
 
@@ -366,7 +366,7 @@ Another keyboard is the WASD keyboards. They have a switch that allows you to co
 
 -- Elias
 
-You could also make your own keyboard and hardware mappings, there is a libre keyboard design at http://www.key64.org/ which have been designed for emacs users in mind, it's design is ergonomic so is very comfortable to type with. 
+You could also make your own keyboard and hardware mappings, there is a libre keyboard design at http://www.key64.org/ which have been designed for emacs users in mind, it's design is ergonomic so is very comfortable to type with.
 
 -- Nesiax
 ----
