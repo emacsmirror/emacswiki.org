@@ -34,7 +34,7 @@ and say M-x load-library RET gnus RET. If Emacs says something along the
 lines of, `cannot open load file', Gnus is not yet installed on your
 site. If loading Gnus actually worked, type M-x gnus-version RET and
 have a look at the minibuffer. It should say something like `Gnus
-v5.8.8', if it doesn't, you should consider upgrading to a more recent
+v5.13', if it doesn't, you should consider upgrading to a more recent
 version.
 
 XEmacs users might wish to use the package tool to install the current
@@ -42,62 +42,26 @@ version of Gnus. Choose the menu item Tools/Packages/List and
 Install. You can find information on using the package tool via the menu
 item Tools/Packages/Help.
 
-XEmacs 21.1 and XEmacs 21.2 both come with a Gnus package for Gnus
-5.8. (FIXME: correct XEmacs versions!)
-
-Emacs 21 comes with Gnus 5.9, so you don't have to install anything if
-you use that.
-
-
 === Getting the most recent Gnus version ===
 
-The main Gnus home page is http://www.gnus.org/. Follow the
-`Distribution' link, then click on the first link of that page. You can
-download the file gnus.tar.gz.
-
-Alternatively, you can use the FTP server, ftp://ftp.gnus.org/, which
-also contains older Gnus versions.
+The main Gnus home page is http://www.gnus.org/.  See http://www.gnus.org/distribution.html
 
 Speaking of older Gnus versions, it might be necessary to make it clear
 how the versions are numbered. Or named, as the case may be. Gnus
 versions which are ready for distribution have numbers. The first
-official Gnus version was 5.0, and now we're up to 5.9. Recently, it
+official Gnus version was 5.0, and now we're up to 5.13.  Recently, it
 appears that odd-numbered versions like 5.5, 5.7 and 5.9 are included in
 Emacs and the even-numbered versions have been distributed by Lars
 outside of Emacs. The versions included in Emacs generally have just one
-dot, but the ones put out by Lars have two dots, as in 5.8.8 (which is
-the most recent unbundled version as of this writing, mid-April
-2001). The odd-numbered versions are more or less equal to the last
-patch level of the preceding even version. For example, 5.4.66 is very
-similar to 5.5, 5.6.45 is very similar to 5.7, and 5.8.8 is very similar
-to 5.9.
+dot, but the ones put out by Lars have two dots, as in 5.8.8.
 
-Gnus 5.7 has been included in Emacs 20.5 through 20.7, and Emacs 21.1
-will contain Gnus 5.9.
-
-The XEmacs team maintains a whole range of elisp packages, Gnus being
-one of them. Providing your XEmacs is relatively recent (versions 21.0
-and beyond), you can easily get the latest stable version of Gnus using
-the XEmacs package tools. See XEmacs Packages (The XEmacs Editor).
-
-FIXME: contributed by Steve Youngs youngs@xemacs.org, the current XEmacs
-package maintainer.
-
-FIXME: should we add a list of contributors?
-
-The very adventurous might try named Gnus versions. Whenever a major
-Gnus version is finished, development starts on a named version. Right
-now, 5.8 (and 5.9) is finished, and development has started on Oort
-Gnus, which will become Gnus 5.10. Before 5.8 came out, it was called
+The very adventurous might try named Gnus versions.  Whenever a major
+Gnus version is finished, development starts on a named version.  Before 5.8 came out, it was called
 Pterodactyl Gnus, before 5.6 came out it was called Quassia Gnus, 5.4
 was called Red Gnus, and before that, we had September Gnus and (ding)
 Gnus. (ding) Gnus was when Lars started rewriting the whole
 thing. Before that, there was GNUS 4.x by Masanobu UMEDA. Note the
 capitalization.
-
-So, don't think that pgnus 0.99 is the most recent Gnus version, just
-because it's listed last on ftp://ftp.gnus.org/pub/gnus/!
-
 
 === Installing Gnus ===
 
