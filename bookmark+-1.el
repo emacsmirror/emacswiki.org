@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Apr 10 07:46:40 2015 (-0700)
+;; Last-Updated: Fri Apr 10 08:53:18 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7696
+;;     Update #: 7737
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2343,7 +2343,7 @@ refresh/rebuild the bookmark-list display."
                  (bookmark-prop-set record prop (bookmark-prop-get old-bmk prop)))))
            (bookmark-store bname (cdr record) (consp parg) no-update-p (not interactivep))
            (when (and interactivep  bmkp-prompt-for-tags-flag)
-             (bmkp-add-tags bname (bmkp-read-tags-completing) 'NO-UPDATE-P)) ; Do not refresh tags. (?)
+             (bmkp-add-tags bname (bmkp-read-tags-completing) 'NO-UPDATE-P)) ; Do not refresh tags here.
            (case (and (boundp 'bmkp-auto-light-when-set)  bmkp-auto-light-when-set)
              (autonamed-bookmark       (when (bmkp-autonamed-bookmark-p bname)
                                          (bmkp-light-bookmark bname)))
@@ -5060,9 +5060,9 @@ Non-interactively:
   (when (and msg-p  (null (bmkp-get-tags bookmark)))  (error "Bookmark has no tags to remove"))
   (let ((nb-removed  (and (interactive-p)  (length (bmkp-get-tags bookmark)))))
     (bookmark-prop-set bookmark 'tags ())
-    (unless no-update-p (bmkp-tags-list)) ; Update the tags cache.
-    (bmkp-maybe-save-bookmarks)
     (unless no-update-p
+      (bmkp-tags-list)                  ; Update the tags cache.
+      (bmkp-maybe-save-bookmarks)       ; Increments `bookmark-alist-modification-count'.
       (bmkp-refresh/rebuild-menu-list bookmark (not msg-p))) ; So remove `t' marker and add `*' marker.
     (when (and msg-p  nb-removed)  (message "%d tags removed" nb-removed)))) ; Do after msg from refreshing.
 
@@ -5096,9 +5096,9 @@ is negative."
          (olen     (length newtags)))
     (dolist (tag  tags)  (unless (or (assoc tag newtags) (member tag newtags))  (push tag newtags)))
     (bookmark-prop-set bookmark 'tags newtags)
-    (unless no-update-p (bmkp-tags-list)) ; Update the tags cache.
-    (bmkp-maybe-save-bookmarks)
     (unless no-update-p
+      (bmkp-tags-list) ; Update the tags cache.
+      (bmkp-maybe-save-bookmarks)  ; Increments `bookmark-alist-modification-count'.
       (bmkp-refresh/rebuild-menu-list bookmark (not msg-p))) ; So display `t' and `*' markers for BOOKMARK.
     (let ((nb-added  (- (length newtags) olen)))
       (when msg-p (message "%d tags added. Now: %S" nb-added ; Echo just the tag names.
@@ -5108,40 +5108,45 @@ is negative."
 
 ;; $$$$$$ Not yet used
 ;;;###autoload (autoload 'bmkp-set-tag-value-for-navlist "bookmark+")
-(defun bmkp-set-tag-value-for-navlist (tag value) ; Bound to `C-x p t V'
+(defun bmkp-set-tag-value-for-navlist (tag value &optional msg-p) ; Bound to `C-x p t V'
   "Set the value of TAG to VALUE, for each bookmark in the navlist.
 If any of the bookmarks has no tag named TAG, then add one with VALUE."
   (interactive (list (bmkp-read-tag-completing) (read (read-string "Value: ")) 'msg))
-  (bmkp-set-tag-value-for-bookmarks bmkp-nav-alist tag value))
+  (bmkp-set-tag-value-for-bookmarks bmkp-nav-alist tag value msg-p))
 
 ;; $$$$$$ Not yet used
-(defun bmkp-set-tag-value-for-bookmarks (bookmarks tag value) ; Not bound
+(defun bmkp-set-tag-value-for-bookmarks (bookmarks tag value &optional msg-p) ; Not bound
   "Set the value of TAG to VALUE, for each of the BOOKMARKS.
 If any of the BOOKMARKS has no tag named TAG, then add one with VALUE."
   (let ((bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
                                   bookmark-save-flag))) ; Save only after `dolist'.
     (dolist (bmk  bookmarks) (bmkp-set-tag-value bmk tag value 'NO-UPDATE-P))
-    (bmkp-maybe-save-bookmarks)))       ; Increments `bookmark-alist-modification-count'.
+    (bmkp-tags-list)                    ; Update the tags cache.
+    (bmkp-maybe-save-bookmarks)         ; Increments `bookmark-alist-modification-count'.
+    (bmkp-refresh/rebuild-menu-list nil (not msg-p))))
 
 ;;;###autoload (autoload 'bmkp-set-tag-value "bookmark+")
 (defun bmkp-set-tag-value (bookmark tag value &optional no-update-p msg-p) ; Bound to `C-x p t v'
   "For BOOKMARK's TAG, set the value to VALUE.
 If BOOKMARK has no tag named TAG, then add one with value VALUE.
 Non-interactively:
-* Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
-* do not refresh/rebuild the bookmark-list display.
+* Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist', save
+  bookmarks, or refresh/rebuild the bookmark-list display.
 * Non-nil MSG-P means display a message about the updated value."
   (interactive
    (let* ((bmk  (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)))
           (tag  (bmkp-read-tag-completing "Tag: " (mapcar 'bmkp-full-tag (bmkp-get-tags bmk)))))
      (list bmk tag (read (read-string "Value: ")) nil 'MSG)))
-  (unless (bmkp-has-tag-p bookmark tag) (bmkp-add-tags bookmark (list tag) no-update-p))
+  (unless (bmkp-has-tag-p bookmark tag) (bmkp-add-tags bookmark (list tag) 'NO-UPDATE-P)) ; No update yet.
   (let* ((newtags     (copy-alist (bmkp-get-tags bookmark)))
          (assoc-tag   (assoc tag newtags))
          (member-tag  (and (not assoc-tag)  (member tag newtags))))
     (if assoc-tag (setcdr assoc-tag value) (setcar member-tag (cons (car member-tag) value)))
     (bookmark-prop-set bookmark 'tags newtags))
-  (unless no-update-p (bmkp-maybe-save-bookmarks)) ; Increments `bookmark-alist-modification-count'.
+  (unless no-update-p
+    (bmkp-tags-list)                    ; Update the tags cache.
+    (bmkp-maybe-save-bookmarks)         ; Increments `bookmark-alist-modification-count'.
+    (bmkp-refresh/rebuild-menu-list bookmark (not msg-p))) ; So display `t' and `*' markers for BOOKMARK.
   (when msg-p "Tag value set"))
 
 ;;;###autoload (autoload 'bmkp-remove-tags "bookmark+")
@@ -5178,9 +5183,9 @@ is negative."
                                          (if (atom tag) (member tag tgs) (member (car tag) tgs))))
                                      remtags))
       (bookmark-prop-set bookmark 'tags remtags)
-      (unless no-update-p (bmkp-tags-list)) ; Update the tags cache.
-      (bmkp-maybe-save-bookmarks)
       (unless no-update-p
+        (bmkp-tags-list)                ; Update the tags cache.
+        (bmkp-maybe-save-bookmarks)     ; Increments `bookmark-alist-modification-count'.
         (bmkp-refresh/rebuild-menu-list bookmark (not msg-p))) ; So remove `t' marker if no tags.
       (let ((nb-removed  (- olen (length remtags))))
         (when msg-p (message "%d tags removed. Now: %S" nb-removed ; Echo just the tag names.
@@ -5210,6 +5215,8 @@ Non-interactively:
                                   bookmark-save-flag))) ; Save only after `dolist'.
     (dolist (bmk  (bookmark-all-names)) (bmkp-remove-tags bmk tags 'NO-UPDATE-P)))
   (bmkp-tags-list)                      ; Update the tags cache (only once, at end).
+  (bmkp-maybe-save-bookmarks)           ; Increments `bookmark-alist-modification-count'.
+  (bmkp-refresh/rebuild-menu-list nil (not msg-p)) ; So remove `t' markers when no tags anymore.
   (when msg-p (message "Tags removed from all bookmarks: %S" tags)))
 
 ;;;###autoload (autoload 'bmkp-rename-tag "bookmark+")
@@ -5235,6 +5242,8 @@ deletion."
               (bookmark-prop-set bmk 'tags newtags))))))
     (unless tag-exists-p (error "No such tag: `%s'" tag))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
+    (bmkp-maybe-save-bookmarks)         ; Increments `bookmark-alist-modification-count'.
+    ;; (bmkp-refresh/rebuild-menu-list nil (not msg-p)) ; $$$$$$ No need to redisplay
     (when msg-p (message "Renamed"))))
 
 ;;;###autoload (autoload 'bmkp-copy-tags "bookmark+")
@@ -7645,6 +7654,7 @@ Non-interactively, non-nil MSG-P means display a status message."
                  (or (not tags) (null (cdr tags))))
         (bookmark-delete bmk 'BATCHP)))) ; Do not refresh list here - do it after iterate.
   (bmkp-tags-list)                      ; Update the tags cache now, after iterate.
+  (bmkp-maybe-save-bookmarks)           ; Increments `bookmark-alist-modification-count'.
   (bmkp-refresh/rebuild-menu-list nil (not msg-p))) ; Refresh now, after iterate.
 
 
