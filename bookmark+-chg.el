@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr 10 08:11:56 2015 (-0700)
+;; Last-Updated: Fri Apr 10 09:10:01 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15920
+;;     Update #: 15943
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,8 +147,16 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2015/04/10 dadams
-;;     bmkp-set-tag-value-for-bookmarks, bmkp-set-tag-value:
-;;       Call bmkp-maybe-save-bookmarks, to increment bookmark-alist-modification-count.
+;;     bmkp-remove-all-tags, bmkp-add-tags, bmkp-remove-tags:
+;;       Do not call bmkp-maybe-save-bookmarks if NO-UPDATE-P.
+;;     bmkp-set-tag-value-for-(navlist|bookmarks): Added optional arg MSG-P.
+;;     bmkp-set-tag-value-for-bookmarks:
+;;       Call bmkp-tags-list, bmkp-maybe-save-bookmarks, and bmkp-refresh/rebuild-menu-list.
+;;     bmkp-set-tag-value:
+;;       Pass non-nil NO-UPDATE-P to bmkp-add-tags.  Unless NO-UPDATE-P, call bmkp-tags-list,
+;;       bmkp-maybe-save-bookmarks, and bmkp-refresh/rebuild-menu-list.
+;;     bmkp-remove-tags-from-all: Call bmkp-maybe-save-bookmarks and bmkp-refresh/rebuild-menu-list.
+;;     bmkp-rename-tag, bmkp-purge-notags-autofiles: Call bmkp-maybe-save-bookmarks.
 ;; 2015/03/23 dadams
 ;;     bookmark-show-all-annotations: When in Bookmark List buffer, respect the sort order.
 ;; 2015/02/24 dadams
