@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr  3 09:54:27 2015 (-0700)
+;; Last-Updated: Fri Apr 10 08:11:56 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15916
+;;     Update #: 15920
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/04/10 dadams
+;;     bmkp-set-tag-value-for-bookmarks, bmkp-set-tag-value:
+;;       Call bmkp-maybe-save-bookmarks, to increment bookmark-alist-modification-count.
 ;; 2015/03/23 dadams
 ;;     bookmark-show-all-annotations: When in Bookmark List buffer, respect the sort order.
 ;; 2015/02/24 dadams
