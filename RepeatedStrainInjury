@@ -14,8 +14,8 @@ may prevent you from collecting on your damage insurance.
 ** FootSwitches for Control key and other frequently used keys. For example I use two Usb pedals: one for Ctrl key, the other for Shift key, Shift+Space is bound to RET, and CapsLock for Backspace. This way I solved the problem with RSI. -- SewerynKokot
 * Hacking keyboards:
 ** Keyboard Layouts are discussed in MovingTheCtrlKey, SwapControlAltAndCapsLock, CapsKey, Wiki:DvorakKeyboard
-** Using space bar as both space and control. 
-*** If you press the space bar alone, it inserts a space. If you press it together with another key, it acts as a control key. You can achieve this by using [https://gitorious.org/at-home-modifier/pages/Home at-home-modifier] in X (Linux only), or using [https://github.com/alols/xcape xcape] + xmodmap. And for MS Windows, AutoHotKey with [https://github.com/benhansenslc/BigCtrl BigCtrl] script. And for Mac, [http://pqrs.org/macosx/keyremap4macbook/index.html keyremap4macbook].
+** Using space bar as both space and control.
+*** If you press the space bar alone, it inserts a space. If you press it together with another key, it acts as a control key. You can achieve this by using [https://gitlab.com/at-home-modifier/at-home-modifier-evdev/wikis/home at-home-modifier] in X (Linux only), or using [https://github.com/alols/xcape xcape] + xmodmap. And for MS Windows, AutoHotKey with [https://github.com/benhansenslc/BigCtrl BigCtrl] script. And for Mac, [http://pqrs.org/macosx/keyremap4macbook/index.html keyremap4macbook].
 ** Japanese keyboard ([https://en.wikipedia.org/wiki/Keyboard_layout#Japanese Wikipedia article]) has many keys that you can press with thumbs, to which you can bind modifiers. For example, the bottom row of Japanese keyboard can work as <nowiki>[alt][shift][ctrl][shift][alt]</nowiki> *and* <nowiki>[Esc][Bs][Space][Enter][Tab]</nowiki>, /all/ pressed by thumbs.
 ** [[Evil]] whips up [ViKeys Vim keys] in Emacs.
 ** StickyModifiers reduce chording, as do FootSwitches; a GamePad controller, accessible through the JoyStick interface, can use chording but not in such a painful way
