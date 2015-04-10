@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Apr  2 14:52:28 2015 (-0700)
+;; Last-Updated: Fri Apr 10 07:46:40 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7692
+;;     Update #: 7696
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -5120,7 +5120,8 @@ If any of the bookmarks has no tag named TAG, then add one with VALUE."
 If any of the BOOKMARKS has no tag named TAG, then add one with VALUE."
   (let ((bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
                                   bookmark-save-flag))) ; Save only after `dolist'.
-    (dolist (bmk  bookmarks) (bmkp-set-tag-value bmk tag value 'NO-UPDATE-P))))
+    (dolist (bmk  bookmarks) (bmkp-set-tag-value bmk tag value 'NO-UPDATE-P))
+    (bmkp-maybe-save-bookmarks)))       ; Increments `bookmark-alist-modification-count'.
 
 ;;;###autoload (autoload 'bmkp-set-tag-value "bookmark+")
 (defun bmkp-set-tag-value (bookmark tag value &optional no-update-p msg-p) ; Bound to `C-x p t v'
@@ -5140,6 +5141,7 @@ Non-interactively:
          (member-tag  (and (not assoc-tag)  (member tag newtags))))
     (if assoc-tag (setcdr assoc-tag value) (setcar member-tag (cons (car member-tag) value)))
     (bookmark-prop-set bookmark 'tags newtags))
+  (unless no-update-p (bmkp-maybe-save-bookmarks)) ; Increments `bookmark-alist-modification-count'.
   (when msg-p "Tag value set"))
 
 ;;;###autoload (autoload 'bmkp-remove-tags "bookmark+")
