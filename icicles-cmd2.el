@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Apr 11 11:21:21 2015 (-0700)
+;; Last-Updated: Sat Apr 11 14:23:12 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7130
+;;     Update #: 7134
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4963,7 +4963,7 @@ the initial regexp (context regexp)."
   (select-window (minibuffer-window))
   (select-frame-set-input-focus (selected-frame)))
 
-(defun icicle-search-action (string &optional replace-string) ; Bound to `C-return' (`icicle-search').
+(defun icicle-search-action (string &optional replacement) ; Bound to `C-return' (`icicle-search').
   "Default completion action function for `icicle-search'.
 STRING is a search-hit string.  It is matched by the initial regexp
 \(context regexp).
@@ -4971,26 +4971,28 @@ STRING is a search-hit string.  It is matched by the initial regexp
 1. Move to the STRING occurrence in original buffer.  Highlight it.
 2. If `icicle-search-highlight-threshold' is zero, highlight what the
    current input matches, inside the STRING occurrence.
-3. If REPLACE-STRING is non-nil, replace the current match with it.
+3. If REPLACEMENT is non-nil, use it to replace the current match.
    If `icicle-search-replace-whole-candidate-flag' is non-nil, replace
    the entire STRING occurrence.  Otherwise, replace only the part
    that matches the current input.
+   If REPLACEMENT is a function then invoke it on the match and use
+   the result as the replacement text.
 4. Highlight the current candidate in `*Completions*'.
 
-   Note: The replacement can be nearly anything allowed as a
-   replacement by `query-replace-regexp', including Lisp-evaluation
-   constructs (`\,...')."
+   Note: If REPLACEMENT is a string then it can be nearly anything
+   allowed as a replacement by `query-replace-regexp', including
+   Lisp-evaluation constructs (`\,...')."
   (prog1
       (let* ((icicle-whole-candidate-as-text-prop-p  t)
              ;; Alternative: If we used `icicle-search-replace-cand-in-alist', then we would bind that
              ;; to nil to force using the alist, because we would be performing side effects on it.
              (cand+mrker  (funcall icicle-get-alist-candidate-function string)))
-        (icicle-search-action-1 cand+mrker replace-string))
+        (icicle-search-action-1 cand+mrker replacement))
     (select-window (minibuffer-window))
     (select-frame-set-input-focus (selected-frame))))
 
 ;; Free vars here: `icicle-orig-win-explore' is bound in `icicle-explore'.
-(defun icicle-search-action-1 (cand+mrker &optional replace-string)
+(defun icicle-search-action-1 (cand+mrker &optional replacement)
   "Same as `icicle-search-action', but using full candidate, not string.
 CAND+MRKER is a full alist completion-candidate entry, not just a
 display string as in `icicle-search-action'."
@@ -5023,7 +5025,7 @@ display string as in `icicle-search-action'."
                                           'icicle-search-current-overlay
                                           'icicle-search-main-regexp-current
                                           202 buf)
-                    (funcall icicle-search-in-context-fn cand+mrker replace-string)
+                    (funcall icicle-search-in-context-fn cand+mrker replacement)
                     (icicle-highlight-candidate-in-Completions)
                     (run-hooks 'icicle-search-hook)))
               (error                    ; Ignore disappearance of `*Completions*'.
@@ -5034,7 +5036,7 @@ display string as in `icicle-search-action'."
       (error (message "%s" (error-message-string icicle-search-action-1))
              (error-message-string icicle-search-action-1))))) ; Return the error string.
 
-(defun icicle-search-in-context-default-fn (cand+mrker replace-string)
+(defun icicle-search-in-context-default-fn (cand+mrker replacement)
   "Default value of `icicle-search-in-context-fn'."
   (let ((candidate  (if (consp (car-safe cand+mrker))
                         (car-safe (car-safe cand+mrker))
@@ -5043,7 +5045,7 @@ display string as in `icicle-search-action'."
     ;; Highlight match and possibly replace.  If replacement tried, then update the dialog state.
     (when (save-excursion (save-restriction ; Search within the current search context.
                             (narrow-to-region (- marker (length candidate)) marker)
-                            (icicle-search-highlight-and-maybe-replace cand+mrker replace-string)))
+                            (icicle-search-highlight-and-maybe-replace cand+mrker replacement)))
       ;; Update, since replacement might have changed the current candidate:
       ;; Rehighlight current context, update last candidate, update candidate in minibuffer.
       (if icicle-search-highlight-all-current-flag
@@ -5083,15 +5085,15 @@ display string as in `icicle-search-action'."
     (icicle-complete-again-update)))
 
 ;; Free var here: `icicle-search-ecm' is bound in `icicle-search'.
-(defun icicle-search-highlight-and-maybe-replace (cand+mrker replace-string)
-  "Highlight within search context and replace using REPLACE-STRING.
-If REPLACE-STRING is nil, no replacement occurs.
-Arguments are the same as for `icicle-search-in-context-fn'.
+(defun icicle-search-highlight-and-maybe-replace (cand+mrker replacement)
+  "Highlight within search context and replace using REPLACEMENT.
+If REPLACEMENT is nil, no replacement occurs.
+Arguments are the same as for variable `icicle-search-in-context-fn'.
 Return non-nil if replacement occurred, nil otherwise."
   (icicle-search-highlight-context-levels)
   (icicle-search-highlight-input-matches-here)
   (let ((replacement-p  nil))
-    (when replace-string
+    (when replacement
       (setq replacement-p  t)
       (goto-char (point-min))
       (let ((candidate  (if (consp (car-safe cand+mrker))
@@ -5099,7 +5101,8 @@ Return non-nil if replacement occurred, nil otherwise."
                           (car-safe cand+mrker)))
             (ecm        (and icicle-search-replace-common-match-flag  icicle-search-ecm)))
         (cond (icicle-search-replace-whole-candidate-flag
-               (cond ((string= candidate replace-string) ; Sanity check only.
+               (cond ((and (stringp replacement) ; The functionp case is handled in the other `cond' clause.
+                           (string= candidate replacement)) ; Sanity check only.
                       (save-restriction (widen) (message "Replacement = candidate, and \
 current input matches candidate") (sit-for 2))
                       (setq replacement-p  nil))
@@ -5108,7 +5111,7 @@ current input matches candidate") (sit-for 2))
                       (if (and icicle-search-regexp  (> emacs-major-version 21))
                           (re-search-forward icicle-search-regexp nil 'move-to-end)
                         (set-match-data (list (point-min) (point-max))))
-                      (icicle-search-replace-match replace-string
+                      (icicle-search-replace-match replacement
                                                    (icicle-search-replace-fixed-case-p
                                                     icicle-search-context-regexp)))))
               ((not (save-excursion (re-search-forward (or ecm  icicle-current-input) nil t)))
@@ -5122,8 +5125,8 @@ current input matches candidate") (sit-for 2))
                    (while (and (or first-p  icicle-all-candidates-action)
                                (re-search-forward (or ecm  icicle-current-input) nil 'move-to-end))
                      (setq first-p  nil)
-                     (icicle-search-replace-match replace-string (icicle-search-replace-fixed-case-p
-                                                                  icicle-current-input)))))))
+                     (icicle-search-replace-match replacement (icicle-search-replace-fixed-case-p
+                                                               icicle-current-input)))))))
         (when replacement-p
           ;; Update the alist and `minibuffer-completion-table' with the new text.
 
