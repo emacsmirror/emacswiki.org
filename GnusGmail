@@ -2,36 +2,38 @@
 
 == Quickstart ==
 
-Put the following in your ##~/.gnus## file and replace "user@gmail.com" with your email address:
+Put the following in ##~/.profile## :
+{{{
+export EMAIL="<EMAIL_ADDRESS>"
+export NAME="<FULL NAME>"
+export SMTPSERVER="smtp.gmail.com"
+}}}
+
+For example, if your name is John Smith and your email address is johnsmith@gmail.com:
+{{{
+export EMAIL="johnsmith@gmail.com"
+export NAME="John Smith"
+export SMTPSERVER="smtp.gmail.com"
+}}}
+
+Now put the following in your ##~/.gnus## file:
 
 {{{
 (setq gnus-select-method
       '(nnimap "gmail"
 	       (nnimap-address "imap.gmail.com")
-	       (nnimap-server-port 993)
+	       (nnimap-server-port "imaps")
 	       (nnimap-stream ssl)))
 
-(setq message-send-mail-function 'smtpmail-send-it
-      smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-      smtpmail-auth-credentials '(("smtp.gmail.com" 587
-				   "user@gmail.com" nil))
-      smtpmail-default-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587
+(setq smtpmail-smtp-service 587
       gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 }}}
 
-for emacs 24 you need to add:
-{{{
-starttls-use-gnutls t
-}}}
-after ##smtpmail-smtp-service 587##
-
-Put the following in your ##~/.authinfo## file and replace "user@gmail.com" with your email addres and replace "secret" with your password---or your [https://accounts.google.com/IssuedAuthSubTokens application-specific password]:
+Put the following in your ##~/.authinfo## file, replacing <USER> with your email address and replacing <PASSWORD> with your password---or your [https://accounts.google.com/IssuedAuthSubTokens application-specific password]:
 
 {{{
-machine imap.gmail.com login user@gmail.com password secret port 993
-machine smtp.gmail.com login user@gmail.com password secret port 587
+machine imap.gmail.com login <USER> password <PASSWORD> port imaps
+machine smtp.gmail.com login <USER> password <PASSWORD> port 587
 }}}
 
 When sending your first email from gnus, you might get a ##STARTTLS## error. If you're using homebrew in Mac OS X, you can install the necessary package with ##brew install gnutls##.
@@ -55,60 +57,48 @@ Firstly, don't forget to enable IMAP in your Gmail account (settings->forwarding
 <pre>
 (add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
                                   (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
-                                  (nnimap-server-port 993)
+                                  (nnimap-server-port "imaps")
                                   (nnimap-stream ssl)))
 </pre>
 with a line like the following one in your ~/.authinfo
 <pre>
-machine imap.gmail.com login username@gmail.com password secret port 993
+machine imap.gmail.com login <USER> password <PASSWORD> port imaps
 </pre>
 
 If you prefer enable Gmail as primary select method (if you choose this, there is no need to put the previous section in ~/.gnus):
 <pre>
 (setq gnus-select-method '(nnimap "gmail"
 				  (nnimap-address "imap.gmail.com")   ; it could also be imap.googlemail.com if that's your server.
-				  (nnimap-server-port 993)
+				  (nnimap-server-port "imaps")
 				  (nnimap-stream ssl)))
 </pre>
 
 Also, if you want to take advantage of using gmail's SMTP server (so gmail keeps track of your sent mail), you can use the following settings:
 
 <pre>
-(setq message-send-mail-function 'smtpmail-send-it
-      smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-      smtpmail-auth-credentials '(("smtp.gmail.com" 587 "username@gmail.com" nil))
-      smtpmail-default-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587
-      smtpmail-local-domain "yourcompany.com")
+(setq smtpmail-smtp-service 587
+         smtpmail-local-domain "yourcompany.com")
 </pre>
  
 Alternatively, it could be googlemail on the port 465, notably if you have an email not @gmail.com:
 <pre>
-(setq message-send-mail-function 'smtpmail-send-it
-      smtpmail-starttls-credentials '(("smtp.googlemail.com" 465 nil nil))
-      smtpmail-auth-credentials '(("smtp.googlemail.com" 465 "username@yourcompany.com" nil))
-      smtpmail-default-smtp-server "smtp.googlemail.com"
-      smtpmail-smtp-server "smtp.googlemail.com"
-      smtpmail-smtp-service 465
-      smtpmail-local-domain "yourcompany.com")
+(setq smtpmail-smtp-service 465
+         smtpmail-local-domain "yourcompany.com")
 </pre>
 
 NOTE: You will need starttls, which is used to set up the SSL encrypted connection to the GMail server. This is contained in the "gnutls-bin" package on earlier versions of debian and ubuntu. With later versions (at least Ubuntu 9.10), starttls is in its own package, and the "gnutls-bin" package is not needed. If you don't have starttls installed, you'll get a (rather generic) "smtpmail-send-it: Sending failed; SMTP protocol error" error message.
 
-NOTE: (Pointed out by ChristofHarper) You can also store your password in the smtpmail-auth-credentials line, but this means that you've got to be more careful when sharing config files with other people.
-
 NOTE: It seems that the above settings (which are what Google recommends) don't work for some people. Another possibility is to use port 25, and then use ~/.authinfo to convert it back to 587, thus circumventing some code which was getting confused about SMTP through a non-25 port. To do this, replace all occurrences of 587 with 25 in the above snippet, and add the following line to your ~/.authinfo (see [[GnusAuthinfo]] and [[GnusEncryptedAuthInfo]]):
 
 <pre>
-machine smtp.gmail.com login username@gmail.com password secret port 587
+machine smtp.gmail.com login username@gmail.com password <PASSWORD> port 587
 </pre>
 or:
 <pre>
-machine smtp.googlemail.com login username@yourcompany.com password secret port 465
+machine smtp.googlemail.com login username@yourcompany.com password <PASSWORD> port 465
 </pre>
 
-If you don't wish to store your password there, just omit the "password secret" altogether and you'll be prompted when you send an email.
+If you don't wish to store your password there, just omit the "password <PASSWORD>" altogether and you'll be prompted when you send an email.
 
 NOTE for MS Windows users: Recent emacs or gnutls-cli may choke. Possible remedy is explained [[http://lists.gnu.org/archive/html/info-gnus-english/2011-04/msg00023.html here]]. This is confirmed to work on Emacs 24.0.93.1 from bazaar built with gcc 4.6.2 on Windows XP SP 3. The following is the exact command added
 
