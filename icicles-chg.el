@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Apr 11 11:27:15 2015 (-0700)
+;; Last-Updated: Sat Apr 11 14:23:51 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11425
+;;     Update #: 11434
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1147,6 +1147,10 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
 ;; 2015/04/11 dadams
+;;     icicle-search-action, icicle-search-action-1, icicle-search-in-context-default-fn,
+;;       icicle-search-highlight-and-maybe-replace:
+;;         Rename arg REPLACE-STRING to REPLACEMENT (it can now be a function).
+;;     icicle-search-highlight-and-maybe-replace: Test stringp before string= (can be a function now).
 ;;     icicle-search-replace-search-hit, icicle-search-replace-all-search-hits:
 ;;       Pass current-prefix-arg to icicle-search-define-replacement.
 ;;     icicle-search-replace-match: First arg can now be a function.  If it is, get replacement string
@@ -8474,6 +8478,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2015/04/11 dadams
+;;     icicle-search-in-context-fn: Update doc string to say the replacement arg can be a function. 
 ;; 2014/08/10 dadams
 ;;     Added: icicle-completion-map-vars.
 ;; 2014/08/04 dadams
