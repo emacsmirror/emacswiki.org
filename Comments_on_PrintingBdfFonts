@@ -1,5 +1,5 @@
 I use Emacs 23.4.1 (x86_64-pc-linux-gnu, GTK+ Version 2.24.10) from the repositories of Debian 7.8 (wheezy).
-I noticed that Alex's method can be simplified. When you do not intend to print texts Cyrillic letters,
+I noticed that Alex's method can be simplified. When you do not intend to print texts with Cyrillic letters,
 the following block in your ~/.emacs file will print nice mixture of unicode (sin²α+cos²α=1 σ₁≠σ₂), Western languages (Grüße), and euro sign (€):
 
  (setq ps-lpr-command "lpr")
