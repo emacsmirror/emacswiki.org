@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Feb 20 12:43:17 2015 (-0800)
+;; Last-Updated: Sat Apr 11 10:46:54 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7112
+;;     Update #: 7117
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4930,7 +4930,7 @@ If ACTION is non-nil then it is a function that accepts no arguments.
     (unless (or icicle-candidate-nb  icicle-all-candidates-action)
       (icicle-user-error "No current candidate.  Cycle or complete to get to a candidate"))
     (unless icicle-search-replacement
-      (icicle-search-define-replacement)
+      (call-interactively #'icicle-search-define-replacement)
       (when (and compl-win  icicle-completion-candidates)
         (with-output-to-temp-buffer "*Completions*"
           (display-completion-list icicle-completion-candidates)))))
@@ -4947,7 +4947,7 @@ the initial regexp (context regexp)."
 ;;;     (icicle-minibuffer-message-ok-p  nil) ; Avoid delays from `icicle-msg-maybe-in-minibuffer'.
 ;;;     (icicle-help-in-mode-line-delay  0)) ; Avoid delays for individual candidate help.
     (unless icicle-search-replacement
-      (icicle-search-define-replacement)
+      (call-interactively #'icicle-search-define-replacement)
       (when (and compl-win  icicle-completion-candidates)
         (with-output-to-temp-buffer "*Completions*"
           (display-completion-list icicle-completion-candidates))))
@@ -5170,43 +5170,52 @@ current input matches candidate") (sit-for 2))
           (icicle-search-highlight-context-levels))))
     replacement-p))                     ; Return indication of whether we tried to replace something.
 
-(defun icicle-search-replace-match (replace-string fixedcase)
-  "Replace current match with REPLACE-STRING, interpreting escapes.
-Treat REPLACE-STRING as it would be treated by `query-replace-regexp'.
+(defun icicle-search-replace-match (replacement fixedcase)
+  "Replace current match with REPLACEMENT, interpreting escapes.
+
+If REPLACEMENT is a function then call that function on the match
+ string and use the result as the replacement.
+Otherwise, REPLACEMENT is a string, and it is treated as it would be
+ treated by `query-replace-regexp'.
+
 FIXEDCASE is as for `replace-match'.  Non-nil means do not alter case."
-  (if (fboundp 'query-replace-compile-replacement) ; Emacs 22.
-      (let ((compiled
-             (save-match-data
-               (query-replace-compile-replacement replace-string
-                                                  (not icicle-search-replace-literally-flag)))))
-        (condition-case icicle-search-replace-match1
-            (let ((enable-recursive-minibuffers    t) ; So we can read input from \?.
-                  ;; Save and restore these, because we might read input from \?.
-                  (icicle-last-completion-command  icicle-last-completion-command)
-                  (icicle-last-input               icicle-last-input))
-              (replace-match-maybe-edit
-               (if (consp compiled)
-                   ;; `replace-count' is free here, bound in `icicle-search'.
-                   (funcall (car compiled) (cdr compiled) (setq replace-count  (1+ replace-count)))
-                 compiled)
-               fixedcase icicle-search-replace-literally-flag nil (match-data)))
-          ;; @@@@@@ Hopefully this is only a temporary hack, until Emacs bug #18388 is fixed.
-          (wrong-number-of-arguments
-           (condition-case icicle-search-replace-match3
-               (replace-match-maybe-edit
-                (if (consp compiled)
-                    ;; `replace-count' is free here, bound in `icicle-search'.
-                    (funcall (car compiled) (cdr compiled) (setq replace-count  (1+ replace-count)))
-                  compiled)
-                fixedcase icicle-search-replace-literally-flag nil (match-data)
-                nil)                    ; BACKWARD parameter for Emacs 24.4+ - see bug #18388
-             (buffer-read-only (ding) (icicle-user-error "Buffer is read-only"))
-             (error (icicle-remove-Completions-window) (icicle-user-error "No match for `%s'" replace-string))))
-          (buffer-read-only (ding) (icicle-user-error "Buffer is read-only"))
-          (error (icicle-remove-Completions-window) (icicle-user-error "No match for `%s'" replace-string))))
-    (condition-case icicle-search-replace-match2 ; Emacs < 22.  Try to interpret `\'.
-        (replace-match replace-string fixedcase icicle-search-replace-literally-flag)
-      (error (replace-match replace-string fixedcase t))))) ;   If error, replace literally.
+  (if (functionp replacement)
+      (condition-case icicle-search-replace-match0
+          (replace-match (funcall replacement (match-string 0)) fixedcase icicle-search-replace-literally-flag)
+        (error (replace-match (funcall replacement (match-string 0)) fixedcase t)))
+    (if (fboundp 'query-replace-compile-replacement) ; Emacs 22+.
+        (let ((compiled
+               (save-match-data
+                 (query-replace-compile-replacement replacement
+                                                    (not icicle-search-replace-literally-flag)))))
+          (condition-case icicle-search-replace-match1
+              (let ((enable-recursive-minibuffers    t) ; So we can read input from \?.
+                    ;; Save and restore these, because we might read input from \?.
+                    (icicle-last-completion-command  icicle-last-completion-command)
+                    (icicle-last-input               icicle-last-input))
+                (replace-match-maybe-edit
+                 (if (consp compiled)
+                     ;; `replace-count' is free here, bound in `icicle-search'.
+                     (funcall (car compiled) (cdr compiled) (setq replace-count  (1+ replace-count)))
+                   compiled)
+                 fixedcase icicle-search-replace-literally-flag nil (match-data)))
+            ;; @@@@@@ Hopefully this is only a temporary hack, until Emacs bug #18388 is fixed.
+            (wrong-number-of-arguments
+             (condition-case icicle-search-replace-match3
+                 (replace-match-maybe-edit
+                  (if (consp compiled)
+                      ;; `replace-count' is free here, bound in `icicle-search'.
+                      (funcall (car compiled) (cdr compiled) (setq replace-count  (1+ replace-count)))
+                    compiled)
+                  fixedcase icicle-search-replace-literally-flag nil (match-data)
+                  nil)                  ; BACKWARD parameter for Emacs 24.4+ - see bug #18388
+               (buffer-read-only (ding) (icicle-user-error "Buffer is read-only"))
+               (error (icicle-remove-Completions-window) (icicle-user-error "No match for `%s'" replacement))))
+            (buffer-read-only (ding) (icicle-user-error "Buffer is read-only"))
+            (error (icicle-remove-Completions-window) (icicle-user-error "No match for `%s'" replacement))))
+      (condition-case icicle-search-replace-match2 ; Emacs < 22.  Try to interpret `\'.
+          (replace-match replacement fixedcase icicle-search-replace-literally-flag)
+        (error (replace-match replacement fixedcase t)))))) ;   If error, replace literally.
 
 (defun icicle-search-highlight-context-levels ()
   "Highlight context levels differently (up to 8 levels).
