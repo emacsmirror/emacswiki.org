@@ -42,7 +42,7 @@ If you do not care about Cyrillics, you are all set. Otherwise try to copy the f
  Hp:A⁻¹.C.A; is(herCo(Hp)=Hp); /* full k·p-Hamiltonian close to the X-point */
  Ψ1:subst([k*k0*z+Eg*m=Eg*m,k*k0*z-Eg*m=-Eg*m],makelist(∑(dHa[m1,n]*iw(n,m1)*Ψ0[m1],m1,1,4),n,1,4))$
 
-– this also can be printed beautifully. However, if I copy these two pieces of text into one emacs buffer and try to print them <u>together</u>, gs is launched and works forever until I kill it. I overcome the problem (at the cost of quality ☹) by eliminating the iso-8859-1 section from the <code>ps-mule-font-info-database-bdf</code>variable:
+– this also can be printed beautifully. However, if I copy these two pieces of text into one emacs buffer and try to print them <u>together</u>, gs is launched and works forever until I kill it. I overcome this problem (at the cost of quality ☹) by eliminating the iso-8859-1 section from the <code>ps-mule-font-info-database-bdf</code>variable:
 
  (setq ps-mule-font-info-database-bdf
       '((unicode-bmp
