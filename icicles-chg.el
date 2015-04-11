@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Apr  3 09:16:50 2015 (-0700)
+;; Last-Updated: Sat Apr 11 11:27:15 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11412
+;;     Update #: 11425
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1146,6 +1146,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2015/04/11 dadams
+;;     icicle-search-replace-search-hit, icicle-search-replace-all-search-hits:
+;;       Pass current-prefix-arg to icicle-search-define-replacement.
+;;     icicle-search-replace-match: First arg can now be a function.  If it is, get replacement string
+;;       by applying it to the match string.
+;;     icicle-search: Updated doc string for possibility of using a function for replacement.
 ;; 2015/02/20 dadams
 ;;     icicle-Info-multi-read-node-name, icicle-search-highlight-all-input-matches:
 ;;       Do not initialize STRG/INPUT if it is non-nil.
@@ -4481,6 +4487,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2015/04/11 dadams
+;;     icicle-dispatch-M-comma: Added prefix arg - pass it to the function.
+;;     icicle-search-define-replacement: Added prefix arg, which means read a function name.
 ;; 2015/04/03 dadams
 ;;     Renamed and rewrote: icicle-looking(-back)-at-literally-p to icicle-chars-(after|before).
 ;; 2015/02/20 dadams
