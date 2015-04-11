@@ -55,7 +55,7 @@ There is also a guide for building Emacs yourself
 from the developers CVS for Emacs, using MinGW.  To make this
 really simple there is a cmd-script too to do that.
 
-Note that you can download both [http://ourcomments.org/Emacs/EmacsW32.html#unpatched patched and upatched]
+Note that you can download both [http://ourcomments.org/Emacs/EmacsW32.html#unpatched patched and unpatched]
  versions of Emacs together with <nowiki>EmacsW32</nowiki>. 
 From the download statistics for my web site I can see that nearly all who download prefer the patched versions.
 
