@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Thu Jan  1 10:56:31 2015 (-0800)
+;; Last-Updated: Sat Apr 11 14:15:56 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1822
+;;     Update #: 1823
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1265,7 +1265,9 @@ The default value is `icicle-search-in-context-default-fn'.
 The function must take two arguments:
  - A full search candidate object, which is a cons of the candidate
    name and its source-file marker.
- - A replacement string, or nil, if no replacement is to be made.
+ - A replacement string or function, or nil if no replacement is to be
+   made.  If a function then it must accept a string argument (the
+   match to replace) and return a string (the replacement text).
 
 When the function is called, the region has been narrowed to the
 current search context.")
