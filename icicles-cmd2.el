@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Apr 11 10:46:54 2015 (-0700)
+;; Last-Updated: Sat Apr 11 11:21:21 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7117
+;;     Update #: 7130
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4151,8 +4151,8 @@ By default, candidates are in order of buffer occurrence, but you can
 sort them in various ways using `\\[icicle-change-sort-order]'.
 
 You can replace individual matches with another string, as in
-`query-replace' or `query-replace-regexp'.  See the Icicles Search doc
-for more info.
+`query-replace' or `query-replace-regexp'.  See `Search and Replace'
+below and the full Icicles Search doc for more info.
 
 Non-interactively, search can be for regexp matches or any other kind
 of matches.  Argument SCAN-FN-OR-REGEXP is the regexp to match, or it
@@ -4321,9 +4321,16 @@ at once.  (And remember that you can activate the region to limit the
 search-and-replace space.)
 
 
-At the first use of any of these, you are prompted for the replacement
-string; it is used thereafter, or until you use `\\[icicle-dispatch-M-comma]'
-\(`icicle-search-define-replacement') to change it (anytime).
+At the first use of any of these, you are prompted for the
+replacement.  It is used thereafter, or until you use
+`\\[icicle-dispatch-M-comma]' \(`icicle-search-define-replacement') to
+change it (anytime).
+
+The replacement is a string or, if you use a prefix arg, a function.
+If a function then it is applied to each search match to define its
+replacment.  The function must thus accept a string argument and
+return a string result.  So for example, if you use `C-u `\\[icicle-dispatch-M-comma]' and you
+enter `upcase' then any search hit you act on will be made uppercase.
 
 Unlike `query-replace', you need not visit search matches successively
 or exhaustively.  You can visit and replace selected matches in any
@@ -4930,7 +4937,7 @@ If ACTION is non-nil then it is a function that accepts no arguments.
     (unless (or icicle-candidate-nb  icicle-all-candidates-action)
       (icicle-user-error "No current candidate.  Cycle or complete to get to a candidate"))
     (unless icicle-search-replacement
-      (call-interactively #'icicle-search-define-replacement)
+      (icicle-search-define-replacement current-prefix-arg)
       (when (and compl-win  icicle-completion-candidates)
         (with-output-to-temp-buffer "*Completions*"
           (display-completion-list icicle-completion-candidates)))))
@@ -4947,7 +4954,7 @@ the initial regexp (context regexp)."
 ;;;     (icicle-minibuffer-message-ok-p  nil) ; Avoid delays from `icicle-msg-maybe-in-minibuffer'.
 ;;;     (icicle-help-in-mode-line-delay  0)) ; Avoid delays for individual candidate help.
     (unless icicle-search-replacement
-      (call-interactively #'icicle-search-define-replacement)
+      (icicle-search-define-replacement current-prefix-arg)
       (when (and compl-win  icicle-completion-candidates)
         (with-output-to-temp-buffer "*Completions*"
           (display-completion-list icicle-completion-candidates))))
