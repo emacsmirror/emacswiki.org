@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Mon Jan 26 08:26:15 2015 (-0800)
+;; Last-Updated: Sat Apr 11 14:35:34 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3071
+;;     Update #: 3072
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -298,6 +298,9 @@
  
 ;;; Change Log:
 ;;
+;; 2015/04/11 dadams
+;;     1on1-display-*Completions*-frame: If minibuf is active, redirect to minibuf frame.
+;;       And if not, do not redirect if completion-reference-buffer is *Completions*.
 ;; 2015/01/26 dadams
 ;;     1on1-display-*Completions*-frame: Use completion-reference-buffer, if displayed.
 ;; 2014/12/01 dadams
@@ -1723,10 +1726,12 @@ If `zoom-frm.el' is used, then shrink the text according to
        (selected-frame)                 ; Hard-code 7 here - what does it depend on?
        `((left . ,(- (x-display-pixel-width) (+ (frame-pixel-width) 7))))))
     (raise-frame)
-    (let ((redirect  (or (and completion-reference-buffer
-                              (get-buffer-window completion-reference-buffer 'visible)
-                              (window-frame (get-buffer-window completion-reference-buffer t)))
-                         1on1-minibuffer-frame)))
+    (let ((redirect  (if (active-minibuffer-window)
+                         1on1-minibuffer-frame
+                       (and completion-reference-buffer
+                            (get-buffer-window completion-reference-buffer 'visible)
+                            (not (eq (get-buffer "*Completions*") completion-reference-buffer))
+                            (window-frame (get-buffer-window completion-reference-buffer t))))))
       (when redirect
         (redirect-frame-focus (selected-frame) redirect)))
     ;; $$$$$$$ (when 1on1-minibuffer-frame (redirect-frame-focus (selected-frame)
