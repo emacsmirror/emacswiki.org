@@ -21,7 +21,7 @@ Now put the following in your ##~/.gnus## file:
 {{{
 (setq gnus-select-method
       '(nnimap "gmail"
-	       (nnimap-address "imap.gmail.com")
+	       (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
 	       (nnimap-server-port "imaps")
 	       (nnimap-stream ssl)))
 
@@ -35,6 +35,7 @@ Put the following in your ##~/.authinfo## file, replacing <USER> with your email
 machine imap.gmail.com login <USER> password <PASSWORD> port imaps
 machine smtp.gmail.com login <USER> password <PASSWORD> port 587
 }}}
+If you don't wish to store your password there, just omit the "password <PASSWORD>" altogether and Gnus will prompt you when it needs your password.
 
 When sending your first email from gnus, you might get a ##STARTTLS## error. If you're using homebrew in Mac OS X, you can install the necessary package with ##brew install gnutls##.
 
@@ -46,45 +47,29 @@ Run `M-x gnus' and enjoy.
 
 [[Gnus]] can connect to the gmail server in two ways: by POP3, or by IMAP. Each protocol behaves in a different way, so you can select the one which better suits your needs. Furthermore, as a third solution you can download your mail with an external program like fetchmail and let Gnus handle it locally.
 
-This page describes how to configure Gnus to read and send mails from your gmail account, and should also explain how to do in Gnus what you're able to do through the web interface.
+This page describes how to configure Gnus to read and send mails from your gmail account, and should also explain how to do in Gnus what you can do through the web interface.
 
 ----
 
 ==Configuration==
 ===Accessing Gmail via Imap===
 
-Firstly, don't forget to enable IMAP in your Gmail account (settings->forwarding POP/IMAP). Settings to tell gnus to use Gmail's IMAP as a (secondary) select method are as follows:
+Firstly, don't forget to enable IMAP in your Gmail account (settings->forwarding POP/IMAP).  Then configure ##~/.profile##, ##~/.gnus## and ##~/.authinfo## as shown above.
+
+Alternatively, you can configure Gmail IMAP as a secondary select method for Gnus:
 <pre>
 (add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
                                   (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
                                   (nnimap-server-port "imaps")
                                   (nnimap-stream ssl)))
-</pre>
-with a line like the following one in your ~/.authinfo
-<pre>
-machine imap.gmail.com login <USER> password <PASSWORD> port imaps
-</pre>
 
-If you prefer enable Gmail as primary select method (if you choose this, there is no need to put the previous section in ~/.gnus):
-<pre>
-(setq gnus-select-method '(nnimap "gmail"
-				  (nnimap-address "imap.gmail.com")   ; it could also be imap.googlemail.com if that's your server.
-				  (nnimap-server-port "imaps")
-				  (nnimap-stream ssl)))
-</pre>
-
-Also, if you want to take advantage of using gmail's SMTP server (so gmail keeps track of your sent mail), you can use the following settings:
-
-<pre>
 (setq smtpmail-smtp-service 587
-         smtpmail-local-domain "yourcompany.com")
+      gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 </pre>
- 
-Alternatively, it could be googlemail on the port 465, notably if you have an email not @gmail.com:
-<pre>
-(setq smtpmail-smtp-service 465
-         smtpmail-local-domain "yourcompany.com")
-</pre>
+
+Alternatively, if your email is not @gmail.com, you can use smtp.googlemail.com, imap.googlemail.com, and use 465 instead of 587.
+
+FIXME: ARE THE THREE NOTES BELOW STILL RELEVANT?
 
 NOTE: You will need starttls, which is used to set up the SSL encrypted connection to the GMail server. This is contained in the "gnutls-bin" package on earlier versions of debian and ubuntu. With later versions (at least Ubuntu 9.10), starttls is in its own package, and the "gnutls-bin" package is not needed. If you don't have starttls installed, you'll get a (rather generic) "smtpmail-send-it: Sending failed; SMTP protocol error" error message.
 
@@ -97,8 +82,6 @@ or:
 <pre>
 machine smtp.googlemail.com login username@yourcompany.com password <PASSWORD> port 465
 </pre>
-
-If you don't wish to store your password there, just omit the "password <PASSWORD>" altogether and you'll be prompted when you send an email.
 
 NOTE for MS Windows users: Recent emacs or gnutls-cli may choke. Possible remedy is explained [[http://lists.gnu.org/archive/html/info-gnus-english/2011-04/msg00023.html here]]. This is confirmed to work on Emacs 24.0.93.1 from bazaar built with gcc 4.6.2 on Windows XP SP 3. The following is the exact command added
 
