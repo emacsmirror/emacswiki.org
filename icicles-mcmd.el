@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Apr  3 09:10:17 2015 (-0700)
+;; Last-Updated: Sat Apr 11 10:54:15 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 19660
+;;     Update #: 19666
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2030,38 +2030,47 @@ Note: If `minibuffer-completion-table' is a function, multi-completion
 is possible but not sure.  Return non-nil in that case."
   (or (functionp minibuffer-completion-table)  icicle-list-use-nth-parts))
 
-(defun icicle-dispatch-M-comma ()       ; Bound to `M-,' in minibuffer.
+(defun icicle-dispatch-M-comma (&optional arg) ; Bound to `M-,' in minibuffer.
   "Do the right thing for `M-,'.
 If sorting is possible, call `icicle-change-alternative-sort-order'.
 If using `icicle-search', call `icicle-search-define-replacement'.
 Otherwise, do nothing.
 
+The raw prefix argument is passed to the function.
+
 Bound to `M-,' in the minibuffer."
-  (interactive)
-  (cond (icicle-searching-p (icicle-search-define-replacement))
+  (interactive "P")
+  (cond (icicle-searching-p (icicle-search-define-replacement arg))
         (icicle-inhibit-sort-p (message "Cannot sort candidates now"))
-        (t (icicle-change-alternative-sort-order))))
+        (t (icicle-change-alternative-sort-order arg))))
 
 ;; Free vars here: `icicle-scan-fn-or-regexp' is bound in `icicle-search'.
 ;;
-(defun icicle-search-define-replacement () ; Bound to `M-,' in minibuffer during `icicle-search'.
+(defun icicle-search-define-replacement (&optional functionp) ; Bound to `M-,' in minibuffer during `icicle-search'.
   "Prompt user and set new value of `icicle-search-replacement'.
+With a prefix arg, a function name is read.
+Otherwise a replacement string is read.
+
+`icicle-search-replacement' is set to the value read, in either case.
+
+\(If the value is a function then `icicle-search-replace-match' will
+apply it to the match string to produce the replacement text.  So the
+function should accept a string argument and return a string result.)
+
 Bound to `M-,' in the minibuffer."
-  (interactive)
+  (interactive "P")
   (save-selected-window
     (icicle-remove-Completions-window)) ; Prevent incremental completion kicking in from the get-go.
-  (setq icicle-search-replacement
-        (let ((enable-recursive-minibuffers   t)
-              (icicle-incremental-completion  t) ; Override current upgrade to `always'.
-              (icicle-completion-candidates   icicle-completion-candidates)
-              (icicle-current-input           icicle-current-input)
-              (icicle-candidate-nb            icicle-candidate-nb)
-              (icicle-update-input-hook       nil))
-          (icicle-completing-read-history "Replacement string: " 'icicle-search-replacement-history)))
-  ;; Just a sanity check.  Cannot really test equivalence of two regexps.
-  (while (if icicle-search-replace-whole-candidate-flag
-             (equal icicle-search-replacement icicle-scan-fn-or-regexp)
-           (equal icicle-search-replacement icicle-current-input))
+  (if functionp
+      (setq icicle-search-replacement
+            (let ((enable-recursive-minibuffers            t)
+                  (icicle-incremental-completion           t) ; Override current upgrade to `always'.
+                  (icicle-completion-candidates            icicle-completion-candidates)
+                  (icicle-current-input                    icicle-current-input)
+                  (icicle-candidate-nb                     icicle-candidate-nb)
+                  (icicle-must-pass-after-match-predicate  (lambda (s) (functionp (intern s))))
+                  (icicle-update-input-hook                nil))
+              (read (completing-read "Transform match using function: " obarray))))
     (setq icicle-search-replacement
           (let ((enable-recursive-minibuffers   t)
                 (icicle-incremental-completion  t) ; Override current upgrade to `always'.
@@ -2069,8 +2078,20 @@ Bound to `M-,' in the minibuffer."
                 (icicle-current-input           icicle-current-input)
                 (icicle-candidate-nb            icicle-candidate-nb)
                 (icicle-update-input-hook       nil))
-            (icicle-completing-read-history "Replacement = replaced.  Replacement string: "
-                                            'icicle-search-replacement-history)))))
+            (icicle-completing-read-history "Replacement string: " 'icicle-search-replacement-history)))
+    ;; Just a sanity check.  Cannot really test equivalence of two regexps.
+    (while (if icicle-search-replace-whole-candidate-flag
+               (equal icicle-search-replacement icicle-scan-fn-or-regexp)
+             (equal icicle-search-replacement icicle-current-input))
+      (setq icicle-search-replacement
+            (let ((enable-recursive-minibuffers   t)
+                  (icicle-incremental-completion  t) ; Override current upgrade to `always'.
+                  (icicle-completion-candidates   icicle-completion-candidates)
+                  (icicle-current-input           icicle-current-input)
+                  (icicle-candidate-nb            icicle-candidate-nb)
+                  (icicle-update-input-hook       nil))
+              (icicle-completing-read-history "Replacement = replaced.  Replacement string: "
+                                              'icicle-search-replacement-history))))))
 
 (defun icicle-change-alternative-sort-order (&optional arg) ; Bound to `M-,' in minibuffer (not search).
   "Choose an alternative sort order.
