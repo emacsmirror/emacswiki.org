@@ -13,7 +13,7 @@ regexp that you want to use and assign it to an Emacs
 
 If you assign it to a register (using `C-x r s'), then you can use
 `C-x r i' (`insert-register') in the [[minibuffer]] to insert it.  If
-you assign it to a string, then you can use '''`C-='''' 
+you assign it to a string, then you can use '''`##C-=##'''' 
 (`icicle-insert-string-from-variable') to insert it.
 
 
@@ -48,7 +48,7 @@ command `icicle-search' -- you can use it to search text for
 sentences, paragraphs, file names, URLs, dates, times, function
 definitions, and any other text entities that
 you can specify by regexp.  Create a ''library'' of regexp-valued variables that are
-useful to you, and use `C-=' to quickly access them in
+useful to you, and use `##C-=##' to quickly access them in
 `icicle-search'.  See [[Icicles - Search Commands, Overview]] for
 more information.
 
