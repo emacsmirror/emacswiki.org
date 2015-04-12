@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jan  4 15:22:41 2015 (-0800)
+;; Last-Updated: Sat Apr 11 20:30:36 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 29739
+;;     Update #: 29741
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1197,12 +1197,21 @@
 ;;  of your current input at once, throughout the search space.
 ;;
 ;;  At the first use of any of these, you are prompted for the
-;;  replacement pattern; it is used thereafter, or until you use `M-,'
+;;  replacement; it is used thereafter, or until you use `M-,'
 ;;  (`icicle-search-define-replacement').  You can use `M-,' at any
-;;  time during searching to change the pattern for subsequent
-;;  replacements.  The replacement pattern can be anything that is
-;;  allowed as a replacement by `query-replace-regexp'.  In Emacs 22
-;;  or later, this includes Lisp sexp evaluation via `\,'.
+;;  time during searching to change the replacement for subsequent
+;;  replacing.
+;;
+;;  Normatlly the replacement is a pattern (a string), which can be
+;;  anything that is allowed as a replacement by
+;;  `query-replace-regexp'.  In Emacs 22 and later, this includes Lisp
+;;  sexp evaluation via `\,'.
+;;
+;;  Alternatively, the replacement you define can be a Lisp function,
+;;  which is applied to the match that is to be replaced, to produce
+;;  the actual text replacement.  To define a function for
+;;  replacement, use a prefix argument with `M-,` (or with `C-S-RET'
+;;  etc.).
 ;;
 ;;  Unlike `query-replace', you need not visit each search match - you
 ;;  can visit and replace selected matches in any order.  Some other
@@ -1230,6 +1239,9 @@
 ;;   * You can also replace matches within text-property search
 ;;     contexts - just use `icicle-search-text-property' (`C-c "') ["]
 ;;     as the search command.
+;;
+;;   * As mentioned above, you can replace matches with the result of
+;;     applying a function to them.
 ;;
 ;;  Search matches are replaced - but just what is meant by a "search
 ;;  match"?  It can be either an entire search context or each match
