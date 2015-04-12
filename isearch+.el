@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Apr  3 20:27:02 2015 (-0700)
+;; Last-Updated: Sun Apr 12 11:14:15 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3558
+;;     Update #: 3566
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -582,6 +582,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/04/12 dadams
+;;     isearchp-act-on-demand:
+;;       Bind isearch-mode-end-hook, remove isearchp-property-finish from it temporarily.
 ;; 2015/04/02 dadams
 ;;     isearchp-drop-mismatch: in :set, test VAL, not SYM.
 ;; 2015/03/31 dadams
@@ -1406,7 +1409,7 @@ suspended."
 
 ;;; Commands ---------------------------------------------------------
 
-(when (> emacs-major-version 21)        ; Emacs 22+, for `with-isearch-suspended'.
+(when (> emacs-major-version 21) ; Emacs 22+, for `with-isearch-suspended'.
 
   (defun isearchp-eval-sexp-and-insert ()
     "Prompt for Lisp sexp, eval it, and append value to the search string."
@@ -1428,17 +1431,20 @@ suspended."
               (unless (eq old-value new-value) (setq debug-on-error  new-value))))
           (setq isearch-new-string  (concat isearch-string (prin1-to-string (car values) 'NOESCAPE))))))
 
-  (defun isearchp-act-on-demand (arg)   ; Bound to `C-M-RET' in `isearch-mode-map'.
+  (defun isearchp-act-on-demand (arg) ; Bound to `C-M-RET' in `isearch-mode-map'.
     "Invoke the value of `isearchp-on-demand-action-function'.
 This suspends Isearch, performs the action, then reinvokes Isearch.
 By default, replace the search hit - see `isearchp-replace-on-demand'.
 Bound to `\\<isearch-mode-map>\\[isearchp-act-on-demand]' during Isearch."
     (interactive "P")
-    (when (and isearch-success  (not isearch-error)  (not isearch-just-started))
-      (with-isearch-suspended
-          (let ((isearchp-pref-arg  arg)) (funcall isearchp-on-demand-action-function)))))
+    (let ((isearch-mode-end-hook  isearch-mode-end-hook))
+      (remove-hook 'isearch-mode-end-hook 'isearchp-property-finish)
+      (when (and isearch-success  (not isearch-error)  (not isearch-just-started))
+        (with-isearch-suspended
+            (let ((isearchp-pref-arg  arg))
+              (funcall isearchp-on-demand-action-function))))))
 
-  (defun isearchp-remove-failed-part () ; Bound to `' in `isearch-mode-map'.
+  (defun isearchp-remove-failed-part () ; Bound to `C-M-l' in `isearch-mode-map'.
     "Remove the failed part of the search string, if any."
     (interactive)
     (with-isearch-suspended
