@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr 12 09:10:12 2015 (-0700)
+;; Last-Updated: Sun Apr 12 09:43:07 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 723
+;;     Update #: 747
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -74,7 +74,9 @@
 ;;    `isearchp-previous-visible-thing', `isearchp-property-backward',
 ;;    `isearchp-property-backward-regexp',
 ;;    `isearchp-property-forward', `isearchp-property-forward-regexp',
-;;    `isearchp-put-prop-on-region', `isearchp-regexp-context-search',
+;;    `isearchp-put-prop-on-region',
+;;    `isearchp-regexp-context-regexp-search',
+;;    `isearchp-regexp-context-search',
 ;;    `isearchp-regexp-define-contexts',
 ;;    `isearchp-remove-all-properties', `isearchp-remove-dimming',
 ;;    `isearchp-remove-property', `isearchp-thing',
@@ -176,10 +178,13 @@
 ;;    be dimmed a given amount.
 ;;
 ;;  * You can search the zones of text that match a given regexp,
-;;    using command `isearchp-regexp-context-search'.  This is
-;;    equivalent to using command `isearchp-regexp-define-contexts',
-;;    which marks such zones with a text property, and then using
-;;    command `isearchp-property-forward' (`C-t' during Isearch).
+;;    using command `isearchp-regexp-context-search' or
+;;    `isearchp-regexp-context-regexp-search'.  This is equivalent to
+;;    using command `isearchp-regexp-define-contexts', which marks
+;;    such zones with a text property, and then using command
+;;    `isearchp-property-forward' or
+;;    `isearchp-property-forward-regexp' (`C-t' or `C-M-t' during
+;;    Isearch, respectively).
 ;;
 ;;  * You can search the text of THINGS of various kind (sexps, lists,
 ;;    defuns, lines, pages, sentences, filenames, strings, comments,
@@ -220,10 +225,11 @@
 ;;; Change Log:
 ;;
 ;; 2015/04/12 dadams
-;;     Added: isearchp-remove-dimming (from code in isearchp-property-finish:).
-;;     isearchp-property-finish: Use isearchp-remove-dimming.
+;;     Added: isearchp-remove-dimming, isearchp-regexp-context-regexp-search.
+;;     isearchp-property-finish: Use isearchp-remove-dimming (its code was factored out).
 ;;     isearchp-regexp-read-args: Return also nil for ACTION arg.
 ;;     isearchp-regexp-context-search: Test isearchp-property-prop vs _IGNORED, not vs interned REGEXP.
+;;     isearchp-imenu*: Added optional arg REGEXP-P.
 ;; 2013/12/26 dadams
 ;;     isearchp-hide/show-comments: Updated from hide/show-comments in hide-comnts.el.
 ;; 2013/10/09 dadams
@@ -773,7 +779,7 @@ Non-interactively, non-nil BEG and END are used as the region limits."
         (message "No property added - no match for %s" regexp)))))
 
 (defun isearchp-regexp-context-search (reuse beg end _ignored regexp &optional predicate action)
-  "Search within contexts defined by a regexp.
+  "Search within search contexts that are defined by a regexp.
 If `isearchp-complement-domain-p' is non-nil then search *outside* the
 contexts defined by the regexp.  (Use `C-M-~' during Isearch to toggle
 this variable.
@@ -821,7 +827,21 @@ in `isearchp-add-regexp-as-property'."
             (not (eq isearchp-property-prop _ignored))
             (not (isearchp-text-prop-present-p beg end (intern regexp) (cons regexp predicate))))
     (isearchp-regexp-define-contexts beg end _ignored regexp predicate action))
-  (isearchp-property-forward '(4)))
+  (isearchp-property-1 'isearch-forward '(4)))
+
+(defun isearchp-regexp-context-regexp-search (reuse beg end _ignored regexp &optional predicate action)
+  "Regexp search within search contexts that are defined by a regexp.
+Same as `isearchp-regexp-context-search', but with regexp searching."
+  (interactive (cons current-prefix-arg (isearchp-regexp-read-args)))
+  (setq _ignored  (intern (concat isearchp-property-prop-prefix regexp)))
+  (when (or (not reuse)
+            (not (consp (car isearchp-property-values)))
+            (not (equal (caar isearchp-property-values) regexp))
+            (not (eq isearchp-property-prop _ignored))
+            (not (isearchp-text-prop-present-p beg end (intern regexp) (cons regexp predicate))))
+    (isearchp-regexp-define-contexts beg end _ignored regexp predicate action))
+  (isearchp-property-1 'isearch-forward-regexp '(4)))
+
 
 (defun isearchp-regexp-define-contexts (beg end property regexp &optional predicate action msgp)
   "Define search contexts for a future text- or overlay-property search.
@@ -872,7 +892,9 @@ See `isearchp-regexp-context-search' for a description of the prompting."
     (list beg end prop regxp pred nil))) ; ACTION is always nil.
 
 (defun isearchp-property-1 (search-fn arg)
-  "Helper for `isearchp-property-(forward|backward)(-regexp)'."
+  "Helper for `isearchp-property-(forward|backward)(-regexp)'.
+SEARCH-FN is the search function.
+ARG is normally from the prefix arg - see `isearchp-property-forward'."
   (isearch-done)
   (when isearch-mode
     (let ((message-log-max  nil))
@@ -1312,21 +1334,23 @@ See `make-hash-table' for possible values of TEST."
 
 ;;; Imenu Commands and Functions -------------------------------------
 
-(defun isearchp-imenu ()
+(defun isearchp-imenu (&optional regexp-p)
   "Search Imenu entries.
 Search is limited to the region if it is active.
 A search context is the text between the beginning of the Imenu regexp
-match and `forward-sexp' from there."
-  (interactive)
-  (isearchp-imenu-1))
+match and `forward-sexp' from there.
 
-(defun isearchp-imenu-command ()
+With a prefix arg use regexp search.  Otherwise, use literal search."
+  (interactive "P")
+  (isearchp-imenu-1 nil nil regexp-p))
+
+(defun isearchp-imenu-command (&optional regexp-p)
   "Search Emacs command definitions.
 This uses `commandp', so it finds only currently defined commands.
 That is, if the buffer has not been evaluated, then its function
 definitions are NOT considered commands by `isearchp-imenu-command'.
 See `isearchp-imenu' for more information."
-  (interactive)
+  (interactive "P")
   (unless (eq major-mode 'emacs-lisp-mode)
     (error "This command is only for Emacs-Lisp mode")) ; No `user-error' in Emacs 23.
   (isearchp-imenu-1 (lambda (_hit _mrkr)
@@ -1335,14 +1359,15 @@ See `isearchp-imenu' for more information."
                     (lambda (menus)
                       (or (car (assoc "Functions" menus))
                           (car (assoc "Other" menus))
-                          (error "No command definitions in buffer"))))) ; No `user-error' in Emacs 23.
+                          (error "No command definitions in buffer"))) ; No `user-error' in Emacs 23.
+                    regexp-p))
 
-(defun isearchp-imenu-non-interactive-function ()
+(defun isearchp-imenu-non-interactive-function (&optional regexp-p)
   "Search Emacs non-command function definitions.
 This uses `commandp', so it finds only currently defined functions
 that are not interactive.
 See `isearchp-imenu' for more information."
-  (interactive)
+  (interactive "P")
   (unless (eq major-mode 'emacs-lisp-mode)
     (error "This command is only for Emacs-Lisp mode")) ; No `user-error' in Emacs 23.
   (isearchp-imenu-1 (lambda (_hit _mrkr)
@@ -1352,12 +1377,13 @@ See `isearchp-imenu' for more information."
                     (lambda (menus)
                       (or (car (assoc "Functions" menus))
                           (car (assoc "Other" menus))
-                          (error "No non-command function definitions in buffer"))))) ; No `user-error'
+                          (error "No non-command function definitions in buffer"))) ; No `user-error'
+                    regexp-p))
 
-(defun isearchp-imenu-macro ()
+(defun isearchp-imenu-macro (&optional regexp-p)
   "Search Lisp macro definitions.
 See `isearchp-imenu' for more information."
-  (interactive)
+  (interactive "P")
   (unless (memq major-mode '(emacs-lisp-mode lisp-mode))
     (error "This command is only for Emacs-Lisp mode or Lisp mode")) ; No `user-error' in Emacs 23.
   (isearchp-imenu-1 (lambda (_hit _mrkr)
@@ -1371,16 +1397,18 @@ See `isearchp-imenu' for more information."
                     (lambda (menus)
                       (or (car (assoc "Macro" menus))
                           (car (assoc "Other" menus))
-                          (error "No macro definitions in buffer"))))) ; No `user-error' in Emacs 23.
+                          (error "No macro definitions in buffer"))) ; No `user-error' in Emacs 23.
+                    regexp-p))
 
-(defun isearchp-imenu-1 (&optional predicate submenu-fn)
+(defun isearchp-imenu-1 (&optional predicate submenu-fn regexp-p)
   "Helper for `isearchp-imenu*' commands.
 Non-nil PREDICATE means act on only the hits for it holds.  It is a
 Boolean function that takes these args:
   - the search-context string
   - a marker at the end of the search-context
 SUBMENU-FN is a function to apply to the list of Imenu submenus to
- choose one.  If nil then the user chooses one using completion."
+ choose one.  If nil then the user chooses one using completion.
+Non-nil REGEXP-P means use regexp search (otherwise, literal search)."
   (unless imenu-generic-expression
     (error "No Imenu pattern for this buffer")) ; No `user-error' in Emacs 23.
   (let ((case-fold-search  (if (or (local-variable-p 'imenu-case-fold-search)
@@ -1391,7 +1419,10 @@ SUBMENU-FN is a function to apply to the list of Imenu submenus to
         (table             (copy-syntax-table (syntax-table)))
         (slist             imenu-syntax-alist)
         (beg               (if (and transient-mark-mode  mark-active) (region-beginning) (point-min)))
-        (end               (if (and transient-mark-mode  mark-active) (region-end) (point-max))))
+        (end               (if (and transient-mark-mode  mark-active) (region-end) (point-max)))
+        (search-fn         (if regexp-p
+                               #'isearchp-regexp-context-regexp-search
+                             #'isearchp-regexp-context-search)))
     (dolist (syn  slist) ; Modify the syntax table used while matching regexps.
       (if (numberp (car syn))
           (modify-syntax-entry (car syn) (cdr syn) table) ; Single character.
@@ -1421,15 +1452,14 @@ SUBMENU-FN is a function to apply to the list of Imenu submenus to
                                 (caar menus)))) ; Only one submenu, so use it.
                   (regexp   (cadr (assoc submenu menus))))
              (unless (stringp regexp) (error "No match")) ; No `user-error' in Emacs 23.
-             (isearchp-regexp-context-search nil beg end 'IGNORED regexp predicate
-                                             ;; We rely on the match data having been preserved.
-                                             ;; $$$$$$ An alternative fn for Lisp only:
-                                             ;; (lambda () (up-list -1) (forward-sexp))))))
-                                             (lambda ()
-                                               (goto-char (match-beginning 0))
-                                               (condition-case isearchp-imenu-1
-                                                   (forward-sexp)
-                                                 (error (goto-char (match-end 0))))))))
+             (funcall search-fn nil beg end 'IGNORED regexp predicate
+                      ;; We rely on the match data having been preserved.
+                      ;; $$$$$$ An alternative fn for Lisp only: (lambda () (up-list -1) (forward-sexp))))))
+                      (lambda ()
+                        (goto-char (match-beginning 0))
+                        (condition-case isearchp-imenu-1
+                            (forward-sexp)
+                          (error (goto-char (match-end 0))))))))
       (set-syntax-table old-table))))
 
 (defun isearchp-imenu-in-buffer-p (menu)
