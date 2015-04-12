@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr 12 08:49:02 2015 (-0700)
+;; Last-Updated: Sun Apr 12 09:10:12 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 719
+;;     Update #: 723
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -223,6 +223,7 @@
 ;;     Added: isearchp-remove-dimming (from code in isearchp-property-finish:).
 ;;     isearchp-property-finish: Use isearchp-remove-dimming.
 ;;     isearchp-regexp-read-args: Return also nil for ACTION arg.
+;;     isearchp-regexp-context-search: Test isearchp-property-prop vs _IGNORED, not vs interned REGEXP.
 ;; 2013/12/26 dadams
 ;;     isearchp-hide/show-comments: Updated from hide/show-comments in hide-comnts.el.
 ;; 2013/10/09 dadams
@@ -788,7 +789,8 @@ commands, then you are prompted for the following:
   - the search-hit string (what matches the regexp or chosen subgroup)
   - a marker at the end of the search-context
 
-Only the search hits for which the predicate holds are retained.
+Only the search hits for which the predicate is satisfied are
+retained.
 
 If the regexp has subgroups then you are prompted for the subgroup to
 use to define the contexts.  Subgroup 0 means use the entire regexp
@@ -816,7 +818,7 @@ in `isearchp-add-regexp-as-property'."
   (when (or (not reuse)
             (not (consp (car isearchp-property-values)))
             (not (equal (caar isearchp-property-values) regexp))
-            (not (eq isearchp-property-prop (intern regexp)))
+            (not (eq isearchp-property-prop _ignored))
             (not (isearchp-text-prop-present-p beg end (intern regexp) (cons regexp predicate))))
     (isearchp-regexp-define-contexts beg end _ignored regexp predicate action))
   (isearchp-property-forward '(4)))
