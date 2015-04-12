@@ -252,6 +252,11 @@ Perhaps the download button should carry a warning? Then again, perhaps every pa
 [new:DrewAdams:2014-04-09 13:59 UTC]
 A parenthetical remark concerning my libraries: As an Emacs-Wiki administrator, I lock the wiki pages for the code I upload, so you can be pretty sure that it has not been tampered with. -- DrewAdams
 
+== Spaces and Tabs: Emacs shoots me to leg with whitespace ==
+
+I take Emacs from the box and realise it mixes tabs and spaces. On its worst, it does two space indent but adds a tab at column 8.
+
+While I do realise this saves a few bytes if you could trust your printer and software reproduce the tab this way, it introduces much more trouble with compatibility than is bearable. Can we change this? I remember only one occasion someone thinking this is a good feature, and that was 20 years ago, and the someone was a young student. This is the #2 Emacs Horrible Feature, the #1 being dialog prompted when you edit a file touched by an external process. --~~~~
 
 ----
 CategoryEmacsWikiSite
