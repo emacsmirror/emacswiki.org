@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr 12 07:40:01 2015 (-0700)
+;; Last-Updated: Sun Apr 12 08:28:01 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 704
+;;     Update #: 707
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -218,6 +218,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/04/12 dadams
+;;     isearchp-regexp-read-args: Return also nil for ACTION arg.
 ;; 2013/12/26 dadams
 ;;     isearchp-hide/show-comments: Updated from hide/show-comments in hide-comnts.el.
 ;; 2013/10/09 dadams
@@ -627,7 +629,7 @@ See `isearchp-property-backward'."
 (defun isearchp-toggle-complementing-domain (&optional msgp) ; Bound to `C-M-~' during Isearch.
   "Toggle searching the complements of the normal search contexts.
 This toggles internal variable `isearchp-complement-domain-p'.
-Bound to \\<isearch-mode-map>`isearchp-toggle-complementing-domain' during Isearch."
+Bound to `\\<isearch-mode-map>\\[isearchp-toggle-complementing-domain]' during Isearch."
   (interactive "p")
   (setq isearchp-complement-domain-p  (not isearchp-complement-domain-p))
   (when isearchp-dim-non-prop-zones-flag (isearchp-complement-dimming))
@@ -681,7 +683,7 @@ region that was active before Isearch started, or the whole buffer if
 the region was not active.
 
 Dimming is per option `isearchp-dimming-color'.
-Bound to \\<isearch-mode-map>`isearchp-toggle-dimming-non-prop-zones' during Isearch."
+Bound to `\\<isearch-mode-map>\\[isearchp-toggle-dimming-non-prop-zones]' during Isearch."
   (interactive "p")
   (setq isearchp-dim-non-prop-zones-flag  (not isearchp-dim-non-prop-zones-flag))
   (let ((face-spec  (isearchp-dim-face-spec)))                         
@@ -851,7 +853,7 @@ See `isearchp-regexp-context-search' for a description of the prompting."
                                               (and (boundp 'function-name-history)
                                                    'function-name-history)
                                               "nil"))))
-    (list beg end prop regxp pred)))
+    (list beg end prop regxp pred nil))) ; ACTION is always nil.
 
 (defun isearchp-property-1 (search-fn arg)
   "Helper for `isearchp-property-(forward|backward)(-regexp)'."
