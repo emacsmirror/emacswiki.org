@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Apr  2 16:28:02 2015 (-0700)
+;; Last-Updated: Sun Apr 12 07:40:01 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 702
+;;     Update #: 704
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -1268,7 +1268,7 @@ is non-nil."
   (cond (addp
          (let ((ov  (make-overlay beg end)))
            (push ov isearchp-dimmed-overlays)
-           (overlay-put ov 'priority 200) ; > ediff's 100+, < isearch-overlay's 1001.
+           (overlay-put ov 'priority 200) ; < isearch-overlay's 1001.
            (overlay-put ov 'face (isearchp-dim-face-spec))))
         (t
          (let ((pos  beg))
