@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr 12 09:43:07 2015 (-0700)
+;; Last-Updated: Sun Apr 12 09:50:42 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 747
+;;     Update #: 757
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -80,7 +80,7 @@
 ;;    `isearchp-regexp-define-contexts',
 ;;    `isearchp-remove-all-properties', `isearchp-remove-dimming',
 ;;    `isearchp-remove-property', `isearchp-thing',
-;;    `isearchp-thing-define-contexts',
+;;    `isearchp-thing-define-contexts', `isearchp-thing-regexp',
 ;;    `isearchp-toggle-complementing-domain',
 ;;    `isearchp-toggle-dimming-non-prop-zones',
 ;;    `isearchp-toggle-ignoring-comments',
@@ -188,10 +188,12 @@
 ;;
 ;;  * You can search the text of THINGS of various kind (sexps, lists,
 ;;    defuns, lines, pages, sentences, filenames, strings, comments,
-;;    xml/html elements, symbols,...), using command `isearchp-thing'.
-;;    This is equivalent to using command
+;;    xml/html elements, symbols,...), using command `isearchp-thing'
+;;    or `isearchp-thing-regexp'.  This is equivalent to using command
 ;;    `isearchp-thing-define-contexts', which marks such zones with a
-;;    text property, and then using `isearchp-property-forward'.
+;;    text property, and then using `isearchp-property-forward' or
+;;    `isearchp-property-forward-regexp' (`C-t' or `C-M-t' during
+;;    Isearch, respectively).
 ;;
 ;;  * Not related to searching, but you can also move forward and
 ;;    backward among things of a given kind, using the repeatable
@@ -225,7 +227,7 @@
 ;;; Change Log:
 ;;
 ;; 2015/04/12 dadams
-;;     Added: isearchp-remove-dimming, isearchp-regexp-context-regexp-search.
+;;     Added: isearchp-remove-dimming, isearchp-regexp-context-regexp-search, isearchp-thing-regexp.
 ;;     isearchp-property-finish: Use isearchp-remove-dimming (its code was factored out).
 ;;     isearchp-regexp-read-args: Return also nil for ACTION arg.
 ;;     isearchp-regexp-context-search: Test isearchp-property-prop vs _IGNORED, not vs interned REGEXP.
@@ -580,8 +582,9 @@ the following:
 If you have previously used such an Isearch property command, then a
 prefix arg means reuse the property type, property, and value from the
 last Isearch property command.  This includes `isearchp-property-*'
-commands and commands such as `isearchp-imenu*', `isearchp-thing',
-`isearchp-regexp-context-search', and `isearchp-put-prop-on-region'.
+commands and commands such as `isearchp-imenu*',
+`isearchp-thing(-regexp)', `isearchp-regexp-context-search', and
+`isearchp-put-prop-on-region'.
 
 Note that this means that you can simply use `C-u C-t' during ordinary
 Isearch in order to repeat the last property search.
@@ -1097,8 +1100,9 @@ as the value.
 If you have already used any of the Isearch property commands, then a
 prefix arg means reuse the property and (the first of) its values that
 you last specified.  Such commands include the `isearchp-property-*'
-commands and commands such as `isearchp-imenu*', `isearchp-thing',
-`isearchp-regexp-context-search', and `isearchp-put-prop-on-region'."
+commands and commands such as `isearchp-imenu*',
+`isearchp-thing(-regexp)', `isearchp-regexp-context-search', and
+`isearchp-put-prop-on-region'."
   (interactive
    (if (and current-prefix-arg  isearchp-property-prop  (car isearchp-property-values))
        (list isearchp-property-prop isearchp-property-values (region-beginning) (region-end))
@@ -1664,10 +1668,22 @@ NOTE:
     (isearchp-thing-define-contexts thing beg end property predicate))
   (isearchp-property-forward '(4)))
 
+(defun isearchp-thing-regexp (new thing beg end property &optional predicate transform-fn)
+  "Regexp search within THING search contexts.
+Same as `isearchp-thing', but with regexp searching."
+  (interactive (cons (not current-prefix-arg) (isearchp-thing-read-args)))
+  (when (or new
+            (not (consp (car isearchp-property-values)))
+            (not (equal (caar isearchp-property-values) thing))
+            (not (eq isearchp-property-prop property))
+            (not (isearchp-text-prop-present-p beg end property (cons thing predicate))))
+    (isearchp-thing-define-contexts thing beg end property predicate))
+  (isearchp-property-forward-regexp '(4)))
+
 (defun isearchp-thing-define-contexts (thing beg end property &optional predicate transform-fn msgp)
   "Define search contexts for future thing searches.
 This command does not actually search the contexts.  For that, use
-`isearchp-thing' or `isearchp-property-forward'."
+`isearchp-thing(-regexp)' or `isearchp-property-forward'."
   (interactive (append (isearchp-thing-read-args) (list t)))
   (when msgp (message "Scanning for thing: `%s'..." thing))
   (isearchp-thing-scan beg end thing property predicate transform-fn)
