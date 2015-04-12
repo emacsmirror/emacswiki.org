@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr 12 08:28:01 2015 (-0700)
+;; Last-Updated: Sun Apr 12 08:49:02 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 707
+;;     Update #: 719
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -76,8 +76,9 @@
 ;;    `isearchp-property-forward', `isearchp-property-forward-regexp',
 ;;    `isearchp-put-prop-on-region', `isearchp-regexp-context-search',
 ;;    `isearchp-regexp-define-contexts',
-;;    `isearchp-remove-all-properties', `isearchp-remove-property',
-;;    `isearchp-thing', `isearchp-thing-define-contexts',
+;;    `isearchp-remove-all-properties', `isearchp-remove-dimming',
+;;    `isearchp-remove-property', `isearchp-thing',
+;;    `isearchp-thing-define-contexts',
 ;;    `isearchp-toggle-complementing-domain',
 ;;    `isearchp-toggle-dimming-non-prop-zones',
 ;;    `isearchp-toggle-ignoring-comments',
@@ -219,6 +220,8 @@
 ;;; Change Log:
 ;;
 ;; 2015/04/12 dadams
+;;     Added: isearchp-remove-dimming (from code in isearchp-property-finish:).
+;;     isearchp-property-finish: Use isearchp-remove-dimming.
 ;;     isearchp-regexp-read-args: Return also nil for ACTION arg.
 ;; 2013/12/26 dadams
 ;;     isearchp-hide/show-comments: Updated from hide/show-comments in hide-comnts.el.
@@ -541,6 +544,13 @@ Non-interactively:
     (set-buffer-modified-p bufmodp)
     (when msgp (message (if removedp "Properties removed" "Properties NOT removed")))))
 
+(defun isearchp-remove-dimming ()
+  "Remove any text dimming that was applied by `isearchp-*' functions."
+  (interactive)
+  (while isearchp-dimmed-overlays
+    (delete-overlay (car isearchp-dimmed-overlays))
+    (setq isearchp-dimmed-overlays  (cdr isearchp-dimmed-overlays))))
+
 (defun isearchp-property-forward (arg) ; Bound to `C-t' in `isearch-mode-map'.
   "Isearch forward in text with a text property or overlay property.
 That is, move to the next such property and search within it for text
@@ -816,7 +826,11 @@ in `isearchp-add-regexp-as-property'."
 This command does not actually search the contexts.  For that, use
 `isearchp-regexp-context-search' or `isearchp-property-forward'.
 See `isearchp-regexp-context-search' for a description of the
-arguments and prefix-argument behavior in terms of prompting for them."
+arguments and prefix-argument behavior in terms of prompting for them.
+
+If `isearchp-dim-non-prop-zones-flag' is non-nil then dim the
+non-contexts.  (You can use command `isearchp-remove-dimming' to
+remove the dimming.)"
   (interactive (append (isearchp-regexp-read-args) (list t)))
   (when msgp (message "Scanning for regexp matches..."))
   (let ((matches-p  (isearchp-regexp-scan beg end property regexp predicate action)))
@@ -1032,9 +1046,7 @@ For other properties the values are matched using `equal'."
 (defun isearchp-property-finish ()
   "End Isearch for a text or overlay property."
   (setq isearch-filter-predicate  isearchp-filter-predicate-orig)
-  (while isearchp-dimmed-overlays
-    (delete-overlay (car isearchp-dimmed-overlays))
-    (setq isearchp-dimmed-overlays  (cdr isearchp-dimmed-overlays)))
+  (isearchp-remove-dimming)
   (remove-hook 'isearch-mode-end-hook 'isearchp-property-finish))
 
 (defun isearchp-put-prop-on-region (property value beg end)
