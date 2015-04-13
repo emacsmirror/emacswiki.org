@@ -10,7 +10,7 @@ Those variables are located at the end of your file and look like this:
 
 That is there is a special keyword "Local Variables:" which starts the section and is surrounded by a prefix ("# " in the above example) and a postfix (empty here). The keyword "End:" (with the same post- and prefixes) finishes that section. Obviously the prefix and postfixes are important to comment those lines according to the file-type.
 
-For detailed documentation, see node "File Variables" in the Emacs Info file.
+For detailed documentation, see [[Manual:File Variables]].
 
 [new]
 As of Emacs 24:
