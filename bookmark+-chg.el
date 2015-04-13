@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr 10 09:10:01 2015 (-0700)
+;; Last-Updated: Mon Apr 13 15:15:53 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15943
+;;     Update #: 15944
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/04/13 dadams
+;;     bmkp-temporary-bookmarking-mode:
+;;       Have to do bookmark-insert-file-format-version-stamp here, because make-temp-file creates the
+;;       file, so it satisfies file-exists-p for bookmark-write-file.
 ;; 2015/04/10 dadams
 ;;     bmkp-remove-all-tags, bmkp-add-tags, bmkp-remove-tags:
 ;;       Do not call bmkp-maybe-save-bookmarks if NO-UPDATE-P.
