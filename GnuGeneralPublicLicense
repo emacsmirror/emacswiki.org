@@ -1,6 +1,6 @@
 [[es:LicenciaPúblicaGeneralGNU]]
-: ''The licenses for most software are designed to take away your freedom to share and change it.  By contrast, the GNU General Public License is intended to guarantee your freedom to share and change free software--to make sure the software is free for all its users.''
-:: -- Preamble to version 2 of the [[GPL]].
+: ''The licenses for most software and other practical works are designed to take away your freedom to share and change the works.  By contrast, the GNU General Public License is intended to guarantee your freedom to share and change all versions of a program--to make sure it remains free software for all its users.''
+:: -- Preamble to version 3 of the [[GPL]].
 
 Both GnuEmacs and [[XEmacs]] are released as FreeSoftware under the GNU General Public License.
 
