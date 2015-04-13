@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Apr 10 08:53:18 2015 (-0700)
+;; Last-Updated: Mon Apr 13 15:13:41 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7737
+;;     Update #: 7746
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -11652,6 +11652,11 @@ Don't forget to mention your Emacs and library versions."))
                    (when (and (> bookmark-alist-modification-count 0)  bookmark-save-flag)
                      (bookmark-save))
                    (let ((new-file  (make-temp-file "bmkp-temp-")))
+                     (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect new-file))
+                       (goto-char (point-min))
+                       (delete-region (point-min) (point-max)) ; In case a find-file hook inserted a header.
+                       (bookmark-insert-file-format-version-stamp)
+                       (insert "(\n)"))
                      (bmkp-empty-file new-file)
                      (bookmark-load new-file t 'nosave) ; Saving was done just above.
                      (when bookmark-save-flag (bmkp-toggle-saving-bookmark-file (interactive-p))))
@@ -11696,6 +11701,11 @@ positive.  Non-interactively there is no prompt for confirmation."
            (when (and (> bookmark-alist-modification-count 0)  bookmark-save-flag)
              (bookmark-save))
            (let ((new-file  (make-temp-file "bmkp-temp-")))
+             (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect new-file))
+               (goto-char (point-min))
+               (delete-region (point-min) (point-max)) ; In case a find-file hook inserted a header, etc.
+               (bookmark-insert-file-format-version-stamp)
+               (insert "(\n)"))
              (bmkp-empty-file new-file)
              (bookmark-load new-file t 'nosave) ; Saving was done just above.
              (when bookmark-save-flag (bmkp-toggle-saving-bookmark-file (interactive-p))))
