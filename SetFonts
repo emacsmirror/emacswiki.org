@@ -63,9 +63,19 @@ I found that the only way to set fonts so that they remain consistent across ema
 in my ~/.Xresources and ~/.emacs, respectively.
 
 
+[:ChangingGtkFonts]
+== Changing the (buffer) menu fonts for GTK emacs ==
 
+According to http://stackoverflow.com/questions/3454466/emacs23-buffer-menu-font-gtk say in ##~/.emacs.d/gtkrc##:
+{{{
+style "menufont"
+{
+  font_name = "monospace 10"  # Pango font name
+}
+widget "*emacs-menuitem*" style "menufont"
+}}}
 
-
+Using ##widget "*" ...## will change all "toolkit" fonts (menus, dialogs).
 
 [:ChangingFontSize]
 == Changing Font Size ==
@@ -182,6 +192,11 @@ Note that arrived here after a search on "font" which, I think, seems quite a re
 
 [new]
 For downloading fonts and installing them, there's nothing Emacs-specific. Emacs uses your system's fonts. If you're using Emacs with X11, then use the X11 font installation technique (xset fp etc.). If you're using Emacs with X11/Xft, then use the Xft font installation technique (.fonts.conf). If you're using Emacs with MS Windows, then use the MS Windows font installation technique (Control Panel / Fonts). If you're using Emacs with Mac, then use the Mac font installation technique (Font Book / Add Fonts).
+
+=== Good Pixel Fonts ===
+
+* http://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html has a few good pixel fonts that won't anti-alias and work very well in Emacs in Linux.
+
 
 == Testing if fonts are available? ==
 
