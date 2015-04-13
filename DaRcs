@@ -1,4 +1,4 @@
-[http://www.darcs.net/ Darcs] (David's Advanced Revision Control
+[http://darcs.net/ Darcs] (David's Advanced Revision Control
 System) is yet another DVC (Distributed Version Control) system featuring
 both decentralization and ease of learning and use.
 
@@ -7,22 +7,20 @@ GPLed and is known to work on GNU/linux, !MacOS X, !FreeBSD, and
 Microsoft Windows (both natively or through Cygwin) platforms.  It is
 patch-based, using an interesting theory of patches which contributes
 to some of its still unique (but influential)
-[http://darcs.net/manual/node2.html features], although these don't
+[http://darcs.net/Features features], although these don't
 all map well onto support in Emacs.  It is often considered the
 easiest DVCS to use, even for non-experts.
 
 ==Project information==
 
-Home page: http://www.darcs.net
+Home page and wiki: http://darcs.net/
 
 Manual: http://darcs.net/manual/darcs.html
 
-Wiki: http://wiki.darcs.net/DarcsWiki
-
-Emacs modes for DARCS (largely a circular reference which should be
+Emacs modes for Darcs (largely a circular reference which should be
 rationalized):  http://darcs.net/RelatedSoftware/Emacs
 
-[http://wiki.darcs.net/DarcsWiki/Binaries Downloads]
+Downloads: http://darcs.net/Binaries
 
 You can contact Darcs people on #darcs at irc://irc.freenode.net (if the
 channel is too quiet, try at #emacs at irc://irc.freenode.net).
@@ -36,7 +34,7 @@ There are two VC implementations for Darcs available at
 * http://www.loveshack.ukfsn.org/emacs/vc-darcs.el.
 
 They seem to differ particularly in how they treat "revisions" for VC.
-The first one available from MELPA, while the raison d'être of the latter is copyright assignment to the FSF, so
+The first one is available from MELPA, while the raison d'être of the latter is copyright assignment to the FSF, so
 it is the one to contribute to if you want to try to get support into
 Emacs.
 
@@ -45,7 +43,7 @@ properly (and changes to generalize it have been rejected).
 
 === Not VC-based ===
 
-* [http://joyful.com/repos/darcsum darcsum] ([http://joyful.com/darcsweb/darcsweb.cgi?r=darcsum browse repo]) is a vaguely
+* [http://hub.darcs.net/simon/darcsum darcsum] is a vaguely
   PCL-CVS-like interface which allows you to select individual hunks
   to record, for instance.  See
   [http://xtalk.msk.su/~ott/en/writings/emacs-vcs/EmacsDarcs.html],
@@ -57,7 +55,7 @@ properly (and changes to generalize it have been rejected).
 * There is some support for Darcs in [DistributedVersionControl
   DVC], but Darcs doesn't seem to be supported properly yet.
 
-* [http://fresh.homeunix.net/~luke/repos/darcs-mode/ darcs.el] is old
+* [http://fresh.homeunix.net/~luke/repos/darcs-mode/ darcs.el] (BAD LINK) is old
   code that doesn't seem to add anything significant over darcsum
   and/or VC.
 
