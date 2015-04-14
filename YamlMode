@@ -2,10 +2,6 @@
 
 Get it on http://github.com/yoshiki/yaml-mode
 
-The subversion trunk is:
-
- http://svn.clouder.jp/repos/public/yaml-mode/trunk/
-
 And also available as DebianPackage:yaml-mode.
 
 It features font locking for data forms and comments, and some electric keys to help with block literals.
