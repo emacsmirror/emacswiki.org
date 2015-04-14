@@ -6,7 +6,7 @@ Disclaimer: Please note that ErBot does not come in a nice packaged form for ins
 
 ----
 
-IF YOU ARE UPGRADING YOUR BOT FROM A PREVIOUS, DON'T FORGET TO MAKE BACKUPS OF YOUR botbbdb, userfunctions.el, ETC. BEFORE RUNNING THE NEW VERSIONS. [[fledermaus]] has ensured proper encoding going forward, but you should probably check that your old botbbdb works well with the upgraded version.
+IF YOU ARE UPGRADING YOUR BOT FROM A PREVIOUS, DON'T FORGET TO MAKE BACKUPS OF YOUR botbbdb, userfunctions.el, ETC. BEFORE RUNNING THE NEW VERSIONS. Encoding should work properly in new botbbdb entries, but you should probably check that your old botbbdb works well with the upgraded version.
  
 Please let me know if there are any steps missing from here or anything is incomplete, and also feel free to edit anything in this page. -- DeepakGoel
 
