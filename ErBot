@@ -610,7 +610,7 @@ functions,
 == Authors etc. == 
 
 The people responsible for Erbot's code are DeepakGoel,
-SebastianFreundt, DavidEdmondson, MichaelOlson, VivekDasmohapatra, Pete Kazmier, YannHodique
+SebastianFreundt, DavidEdmondson, MichaelOlson, Pete Kazmier, YannHodique
 (erbot->lispy extention), JorgenSchaefer (RSS feed), Dheeraj Buduru
 (erbkarma.el),Alejandro Benitez (natural language translation), J. Michael Dupont at #fsedu
 (perl scripts), authors of packages used by Erbot: google.el (hober
