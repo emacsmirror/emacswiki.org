@@ -298,15 +298,15 @@ You will also most likely need something like:
 <pre>
 
 Also,
-<fledermaus> you're going to need to set LC_ALL in [erbot's commandline invocation script].
-<fledermaus> it defaults to POSIX and libtranslate won't do utf-8 right under
+<some-guy> you're going to need to set LC_ALL in [erbot's commandline invocation script].
+<some-guy> it defaults to POSIX and libtranslate won't do utf-8 right under
 	     that.
-<fledermaus> bit of duff design on libtranslate's part.
-<fledermaus> it always tries to encode the return value based on your locale,
+<some-guy> bit of duff design on libtranslate's part.
+<some-guy> it always tries to encode the return value based on your locale,
 	     even though it inststs on being fed utf-8			
-<fledermaus> regardless of whether such encoding is possible.
+<some-guy> regardless of whether such encoding is possible.
 
-<fledermaus> I set it to en_GB.UTF-8, but any UTF-8 setting should suffice.
+<some-guy> I set it to en_GB.UTF-8, but any UTF-8 setting should suffice.
 </pre>	
 fsbot uses: export LANG=en_GB.UTF-8
 
