@@ -1,7 +1,7 @@
 Here are some bots (alphabetically) that use ErBot | who runs them | the wikis they usu. keep track of | and the channels they hang out on:
 
 || <b>name</b>|| <b>maintainer</b> || <b>purpose or corresponding wiki</b> || <b>IRC channels they hang out on</b> ||
-|| fsbot || [[fledermaus]], [[deego]], #emacsers  || Emacs Wiki, Community wiki || #emacs, #fsedu, #dunnet, #gnu, etc. ||
+|| fsbot || [[deego]], #emacsers  || Emacs Wiki, Community wiki || #emacs, #fsedu, #dunnet, #gnu, etc. ||
 || plugbot || MichaelOlson || Knowledge tracking, [http://plug.student-orgs.purdue.edu/plugwiki/ Purdue Linux Users Group Wiki] || #muse, #pulug  on freenode ||
 || plugb0t || MichaelOlson || AIM interface for plugbot || Add '''plugb0t''' (name contains a zero) to your AIM buddy list and chat with it ||
 || singbot || DeepakGoel || "singularity bot", sl4, singularity wiki, AI wiki, futures wiki  || #singularity
