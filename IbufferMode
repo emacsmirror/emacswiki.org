@@ -1,4 +1,3 @@
-[[pt:1]]
 [[zh:ibufferæ¨¡å¼]]
 Ibuffer is an advanced replacement for BufferMenu, which lets you operate on buffers much in the same manner as [[DiredMode|Dired]].  The most important Ibuffer features are highlighting and various alternate layouts. Ibuffer is part of Emacs 22.
 
