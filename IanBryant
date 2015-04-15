@@ -5,7 +5,6 @@ GNU Emacs is free software.
 I Org-mode - do you?
 I also hack on GNU/Linux-libre systems.
 
-<<<<<<< you
 Yo uso de GNU Emacs. 
 GNU Emacs es software libre. 
 Yo Org-mode - ¿verdad? 
@@ -13,11 +12,6 @@ También me hackeo en sistemas GNU/Linux-libre.
 
 *  GPG key: [http://pgp.mit.edu/pks/lookup?op=get&search=0x3E865F6CE7126903 E7126903]
 *  SSH fingerprint: da:eb:f7:9c:0d:ef:ea:4c:2a:ce:b0:58:c6:1a:28:58
-||||||| ancestor
-*  GPG key: [http://pgp.mit.edu/pks/lookup?op=get&search=0xA338FCB87D2629B5 7D2629B5]
-=======
-*  GPG key: [http://pgp.mit.edu/pks/lookup?op=get&search=0x39F84F401A6C3C5E 1A6C3C5E]
->>>>>>> other
 *  Email:  ian@gnulinuxlibre.org
 *  Web:  http://gnulinuxlibre.org
 *  IRC:  gnuian | #gnulinuxlibre @freenode
