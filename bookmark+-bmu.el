@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Apr  3 09:50:54 2015 (-0700)
+;; Last-Updated: Wed Apr 15 13:12:00 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3680
+;;     Update #: 3682
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -5222,10 +5222,9 @@ With a prefix argument, show the internal definition of the bookmark."
 With a prefix argument, show the internal definition of the bookmark."
   (interactive "P")
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (save-selected-frame 
-   (if defn
-       (bmkp-describe-bookmark-internals (bookmark-bmenu-bookmark))
-     (bmkp-describe-bookmark (bookmark-bmenu-bookmark)))))
+  (save-selected-window (if defn
+                            (bmkp-describe-bookmark-internals (bookmark-bmenu-bookmark))
+                          (bmkp-describe-bookmark (bookmark-bmenu-bookmark)))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-describe-marked "bookmark+")
 (defun bmkp-bmenu-describe-marked (&optional defn include-omitted-p) ; Bound to `C-h >' in bookmark list
