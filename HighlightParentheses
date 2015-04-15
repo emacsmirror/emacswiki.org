@@ -1,7 +1,4 @@
-highlight-parentheses is a minor mode to highlight parentheses surrounding point.  It is unrelated to ShowParenMode, which matches parentheses.  Instead it highlights all the parentheses that enclose the cursor.  It is available [http://nschum.de/src/emacs/highlight-parentheses/ here] and via [[ELPA]].  -- [[nschum]]
-
-* http://nschum.de/src/emacs/highlight-parentheses/
-* http://nschum.de/src/emacs/highlight-parentheses/highlight-parentheses.el
+highlight-parentheses is a minor mode to highlight parentheses surrounding point.  It is unrelated to ShowParenMode, which matches parentheses.  Instead it highlights all the parentheses that enclose the cursor.  It is available [https://github.com/tsdh/highlight-parentheses.el here] and via [[ELPA]].  -- [[nschum]], [[TassiloHorn]]
 
 http://nschum.de/src/emacs/highlight-parentheses/highlight-parentheses.png
 
