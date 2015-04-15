@@ -1,7 +1,7 @@
 Hi all,
 
 I use Emacs for all major editing tasks and Gnus for email and usenet.  Have a look at my
-[http://www.tsdh.de homepage].
+[http://www.tsdh.org homepage].
 
 I work on the following emacs projects:
 
@@ -10,6 +10,8 @@ I work on the following emacs projects:
 * [[OrgMode]]
 * [[EMMS]]
 * [[Circe]]
+* [[HighlightParentheses]]
+* [[AUCTeX]]
 
 My own extensions are:
 
