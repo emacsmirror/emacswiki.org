@@ -34,7 +34,7 @@ Completion is available."))
         (error "You must enter a bookmark name")))
      (t
        ;; Check whether an existing bookmark has been specified
-       (if (setq filename (cdr (car (bookmark-get-bookmark-record bookmark))))
+       (if (setq filename (bookmark-get-filename bookmark))
            ;; If it points to a directory, change to it.
            (if (file-directory-p filename)
                (eshell/cd filename)
