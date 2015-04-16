@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar 26 20:28:35 2015 (-0700)
+;; Last-Updated: Thu Apr 16 13:59:11 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 8887
+;;     Update #: 8906
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -327,6 +327,8 @@
 ;;  Commands defined here:
 ;;
 ;;    `diredp-add-to-dired-buffer', `diredp-add-to-this-dired-buffer',
+;;    `diredp-do-apply-function',
+;;    `diredp-do-apply-function-recursive',
 ;;    `diredp-async-shell-command-this-file',
 ;;    `diredp-bookmark-this-file', `diredp-byte-compile-this-file',
 ;;    `diredp-capitalize', `diredp-capitalize-recursive',
@@ -614,6 +616,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/04/16 dadams
+;;     Added: diredp-do-apply-function, diredp-do-apply-function-recursive.  Added to menus.  Bind to @, M-+ @.
 ;; 2015/03/26 dadams
 ;;     Added: redefinitions of dired-do-isearch, `dired-do-isearch-regexp, dired-do-query-replace-regexp,
 ;;            dired-do-search, to handle multi-C-u.
@@ -2924,6 +2928,9 @@ If no one is selected, symmetric encryption will be performed.  "
     :help "Run a shell command on each marked file"))
 (define-key diredp-menu-bar-operate-menu [compress]
   '(menu-item "Compress/Uncompress" dired-do-compress :help "Compress/uncompress marked files"))
+(define-key diredp-menu-bar-operate-menu [diredp-do-apply-function]
+    '(menu-item "Apply Lisp Function..." diredp-do-apply-function
+      :help "Apply a Lisp function to each marked file name (`C-u': file contents, not name)"))
 (define-key diredp-menu-bar-operate-menu [print]
   '(menu-item "Print..." dired-do-print :help "Print marked files, supplying print command"))
 
@@ -3175,6 +3182,9 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-operate-recursive-menu [diredp-do-shell-command-recursive]
     '(menu-item "Shell Command..." diredp-do-shell-command-recursive
       :help "Run shell command on the marked files, including those in marked subdirs"))
+(define-key diredp-menu-bar-operate-recursive-menu [diredp-do-apply-function-recursive]
+    '(menu-item "Apply Lisp Function..." diredp-do-apply-function-recursive
+      :help "Apply a Lisp function to the marked files, including those in marked subdirs"))
 (define-key diredp-menu-bar-operate-recursive-menu [diredp-do-print-recursive]
     '(menu-item "Print..." diredp-do-print-recursive
       :help "Print the marked files, including those in marked subdirs"))
@@ -3676,6 +3686,7 @@ If no one is selected, symmetric encryption will be performed.  "
     (define-key dired-mode-map [(meta return)] 'dired-w32-browser)                  ; `M-RET'
     (define-key dired-mode-map [mouse-2] 'dired-mouse-w32-browser)))                ; `mouse-2'
 
+(define-key dired-mode-map "@"       'diredp-do-apply-function)                     ; `@'
 (define-key dired-mode-map "\$"      'diredp-hide-subdir-nomove)                    ; `$'
 (define-key dired-mode-map "\M-$"    'dired-hide-subdir)                            ; `M-$'
 (define-key dired-mode-map "="       'diredp-ediff)                                 ; `='
@@ -3773,6 +3784,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-prefix-command 'diredp-recursive-map)
 (define-key dired-mode-map "\M-+"  diredp-recursive-map) ; `M-+'
 
+(define-key diredp-recursive-map "@"           'diredp-do-apply-function-recursive)     ; `@'
 (when (> emacs-major-version 22)
   (define-key diredp-recursive-map ":d"        'diredp-do-decrypt-recursive)            ; `: d'
   (define-key diredp-recursive-map ":e"        'diredp-do-encrypt-recursive)            ; `: e'
@@ -5774,6 +5786,33 @@ Dired buffer and all subdirs, recursively."
    #'dired-rename-file #'downcase "Rename to lowercase:" ignore-marks-p))
 
 ;;;###autoload
+(defun diredp-do-apply-function-recursive (function &optional arg) ; Bound to `M-+ @'
+  "Apply FUNCTION to the marked files.
+Like `diredp-do-apply-function' bit act recursively on subdirs.
+
+The files acted on are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With a plain prefix ARG (`C-u'), visit each file and invoke FUNCTION
+ with no arguments.
+Otherwise, apply FUNCTION to each file name.
+
+Any other prefix arg behaves according to the ARG argument of
+`dired-get-marked-files'.  In particular, `C-u C-u' operates on all
+files in the Dired buffer."
+  (interactive
+   (progn (diredp-get-confirmation-recursive) 
+          (list (read (completing-read "Function: " obarray 'functionp nil nil
+                                       (and (boundp 'function-name-history)
+                                            'function-name-history)))
+                current-prefix-arg)))
+  (if (and (consp arg) (< (car arg) 16))
+      (dolist (file  (diredp-get-files))
+        (with-current-buffer (find-file-noselect file) (funcall function)))
+    (dolist (file  (diredp-get-files arg)) (funcall function file))))
+
+;;;###autoload
 (defun diredp-do-delete-recursive (arg) ; Bound to `M-+ D'
   "Delete marked (not flagged) files, including in marked subdirs.
 Like `dired-do-delete' but act recursively on subdirs.
@@ -7285,6 +7324,26 @@ files are marked, or ARG is -1, 0 or 1."
     (not (save-excursion                ; Fewer than two marked files.
            (goto-char (point-min))
            (re-search-forward (dired-marker-regexp) nil t 2)))))
+
+;;;###autoload
+(defun diredp-do-apply-function (function &optional arg) ; Bound to `@'
+  "Apply FUNCTION to the marked files.
+With a plain prefix ARG (`C-u'), visit each file and invoke FUNCTION
+ with no arguments.
+Otherwise, apply FUNCTION to each file name.
+
+Any other prefix arg behaves according to the ARG argument of
+`dired-get-marked-files'.  In particular, `C-u C-u' operates on all
+files in the Dired buffer."
+  (interactive
+   (list (read (completing-read "Function: " obarray 'functionp nil nil
+                                (and (boundp 'function-name-history)
+                                     'function-name-history)))
+         current-prefix-arg))
+  (if (and (consp arg) (< (car arg) 16))
+      (dolist (file  (dired-get-marked-files))
+        (with-current-buffer (find-file-noselect file) (funcall function)))
+    (dolist (file  (dired-get-marked-files nil arg)) (funcall function file))))
 
 
 ;; REPLACE ORIGINAL in `dired-aux.el'.
@@ -9979,6 +10038,7 @@ Marked (or next prefix arg) files & subdirs here
 
     "* \\[dired-do-shell-command]\t\t- Run shell command
 * \\[diredp-marked-other-window]\t\t- Dired
+* \\[diredp-do-apply-function]\t\t- Apply Lisp function
 * \\[dired-do-compress]\t\t- Compress
 * \\[dired-do-byte-compile]\t\t- Byte-compile
 * \\[dired-do-load]\t\t- Load (Emacs Lisp)
@@ -10046,6 +10106,7 @@ Marked files here and below (in marked subdirs)
     "* \\[diredp-do-shell-command-recursive]\t\t\t- Run shell command
 * \\[diredp-marked-recursive-other-window]\t\t- Dired
 * \\[diredp-list-marked-recursive]\t\t- List
+* \\[diredp-do-apply-function-recursive]\t\t\t- Apply Lisp function
 
 * \\[diredp-do-bookmark-recursive]\t\t- Bookmark
 "
