@@ -23,127 +23,119 @@ should say something like `Gnus v5.13'.  If Gnus reports that it is older than
 
 == Fundamental Configuration ==
 
-Before you can actually use Gnus, you'll have to tell it some things
-about you and your environment. This section tells you what Gnus needs
-to know and how to tell it.
+Before you can actually use Gnus, you must tell it about you and your
+environment.
 
-The first thing you've got to do is creating a gnus configuration
-file. To do so, start Emacs and say C-x C-f. (This means hold Control,
-hit x, and then f while still holding Control. If you don't know about
-this stuff, work through the Emacs tutorial!) Emacs will prompt for a
-filename, your answer must be ~/.gnus.el.
+The first thing you must do is creating a gnus configuration file. Open
+~/.gnus.el.  Tell Gnus who you are.  Do so with the lines
 
-Now, that we have the famous ~/.gnus.el, we'll only have to fill it.
+    (setq user-mail-address	"you@domain.com"
+	  user-full-name	"Your Full Name")
 
-Now you need to tell Gnus who you are. Do so with the lines
+If you prefer, you can give the same information through the environment
+variables EMAIL and NAME.  Just append the following lines to ~/.profile:
 
-     (setq user-mail-address "you@somewhere.com")
-     (setq user-full-name "Your Name")
+    export EMAIL="you@domain.com"
+    export NAME="Your Full Name"
 
-Now Gnus needs to know where to fetch its messages from. Let's say your
-primary newsserver is foo.bar.com, your second one is your local
-newsserver and the third one is news.gnus.org. Furthermore, you want to
-read Mails from the POP3 server pop.provider.com and use the nnml
-backend for this. (See section mail for further information.)
+Gnus must also know where to fetch its messages from.  Suppose your primary
+newsserver is foo.bar.com, your second one is your local newsserver and the
+third one is news.gnus.org.  Furthermore, you want to read Mails from the POP3
+server pop.provider.com and use the nnml backend for this (see section mail
+for further information).
 
 We tell Gnus all this with
 
-     (setq gnus-select-method '(nntp "foo.bar.com"))
-     (add-to-list 'gnus-secondary-select-methods '(nntp "localhost"))
-     (add-to-list 'gnus-secondary-select-methods '(nntp "news.gnus.org"))
+    (setq gnus-select-method '(nntp "foo.bar.com"))
+    (add-to-list 'gnus-secondary-select-methods '(nntp "localhost"))
+    (add-to-list 'gnus-secondary-select-methods '(nntp "news.gnus.org"))
+    (add-to-list 'gnus-secondary-select-methods '(nnml ""))
+    
+    (setq mail-sources '((pop :server "pop.provider.org"
+                              :user "you"
+                              :password "secret")))
 
-     (add-to-list 'gnus-secondary-select-methods '(nnml ""))
+If a newsserver requires authentification, Gnus will prompt you for username
+and password when it needs them (which is not every single time, because Gnus
+records them in memory for a time).  To avoid repeatedly entering username and
+password, put the following lines in ~/.authinfo:
 
-     (setq mail-sources '((pop :server "pop.provider.org"
-                               :user "you"
-                               :password "secret")))
+    machine foo.bar.com login your_username1 password your_pass1
+    machine localhost   login your_username2 password your_pass2
 
-If a newsserver requires authentification, Gnus will prompt you for
-username and password. If you are too lazy for this create a file
-~/.authinfo which should look like this:
+If your server offers access to anonymous users Gnus will connect as anonymous
+as well as you specified username and password in .authinfo. You will probably
+then wonder why there are so few groups and have no idea what to do now.  To
+avoid it, substitute
 
-     machine foo.bar.com login your_username password your_pass
-     machine localhost login foo password bar
+    machine foo.bar.com login your_username password your_pass force yes
 
-If your server offers access to anonymous users Gnus will connect as
-anonymous as well as you specified username and password in
-.authinfo. You will probably then wonder why there are so few groups and
-have no idea what to do now. Don't fear, it's simple. Just say
+for
 
-     machine foo.bar.com login your_username password your_pass force yes
+    machine foo.bar.com login your_username password your_pass
 
-instead of
+Finally you must tell Gnus where and how to send outgoing mails.  For this I
+suggest the smtpmail package which comes with Emacs.  Enter the following lines
+into your Emacs init file or ~/.gnus.el:
 
-     machine foo.bar.com login your_username password your_pass
+    (setq send-mail-function		'smtpmail-send-it
+	  message-send-mail-function	'smtpmail-send-it
+	  smtpmail-smtp-server		"your.smtp-server.com")
 
-The last thing we must tell Gnus before we can actually use it is where
-and how to send outgoing mails. I suggest to use the smtpmail package
-for this which comes with Emacs.
+If your SMTP server uses another port in place of the default 25, specify it
+through variable smtpmail-smtp-service.
 
-     (setq send-mail-function 'smtpmail-send-it)
-     (setq message-send-mail-function 'smtpmail-send-it)
-     (setq smtpmail-default-smtp-server "your.smtp-server.de")
+Instead of setting the variable smtpmail-smtp-server, you can also specify your
+SMTP server through the environment variable SMTPSERVER.  Just append the
+following lines to ~/.profile:
 
-should do the trick unless it requires authentification.
+    export SMTPSERVER="your.smtp-server.com"
 
-If you are using authentication, you will need to use the following two variables as defined on this reference page: http://www.gnu.org/software/emacs/manual/html_node/smtpmail/index.html (Look in the 'Authentication' node).
-
-  (setq smtpmail-auth-credentials '(("hostname" "port" "username" "password")))
-  (setq smtpmail-starttls-credentials '(("hostname" "port" nil nil)))
-
+If your SMTP server requires authentication, please read
+http://www.gnu.org/software/emacs/manual/html_node/smtpmail/Authentication.html#Authentication
 
 == Using Gnus ==
 
-Well, you should have set up your basic configuration now, so it's time
-to fire up Gnus. There are several ways to do so, for example you could
-use the menu or the toolbar or just say M-x gnus.
+You can open Gnus through the Emacs menu or the toolbar or by saying
+M-x&nbsp;gnus.
 
-Gnus will now open the servers specified in gnus-select-method and
-gnus-secondary-select-methods, read the group lists and check for new
-mail. When this is done you'll find yourself in the group buffer, where
-surprisingly the groups are listed and all action belonging to groups
-take place.
-
+Gnus will open the servers specified in gnus-select-method and
+gnus-secondary-select-methods, read the group lists and check for new mail.
+When this is done you'll be in the group buffer, where the groups are listed
+and all action belonging to groups take place.
 
 === The group buffer ===
 
-
 ==== Subscribing to groups ====
 
-Gnus may subscribe you to some groups it thinks you should have a look
-at, but most certainly that's not all you want. To subscribe to a group
-you know the name of, say U and enter the name of the group (use the
-tab-completion!). If you want the complete group list say A A or M-d if
-you want the taglines too. To search in the list use C-s (this is the
-command to search in the active buffer, learn it!), u subscribes you to
-the group which is under the cursor. There are more options, see the
-info for this.
-
+Gnus may subscribe you to some groups it thinks you should have a look at, but
+most certainly that's not all you want.  To subscribe to a group you know the
+name of, say U and enter the name of the group (with tab-completion). If you
+want the complete group list say A A or M-d if you want the taglines too.  To
+search in the list use C-s.  u subscribes you to the group which is under the
+cursor.  There are more options, see the info for this.
 
 ==== The Topic-Mode ====
 
 If you are subscribed to many groups, you may want to group them into
-categories (For me it's for example misc, Emacs, Mail, Admin,
-Tech). Gnus calls this categories topics and offers a minor-mode for
-this. To enter topic mode hit t. There is a top topic called gnus and
-one more topic called misc under it. To make a new topic under Topic X,
-place the cursor behind the Topic X and say T n.
+categories (For me it's for example misc, Emacs, Mail, Admin, Tech).  Gnus
+calls this categories topics and offers a minor-mode for this.  To enter topic
+mode hit t.  There is a top topic called gnus and one more topic called misc
+under it.  To make a new topic under Topic X, place the cursor behind the Topic
+X and say T n.
 
-Now you've only got to place the groups in the proper topics. Say L to
-see all subscribed groups, place the cursor over the group you want to
-move and say T m. Easy, isn't it?
+Now you've only got to place the groups in the proper topics. Say L to see your
+groups, place the cursor over the group you want to move and say T m.
 
-If you want that the topic mode is always active, place the following in
-your ~/.gnus.el:
+If you want the topic mode to be always active, place the following in your
+~/.gnus.el:
 
-     (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
-
+    (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 
 ==== More commands in the group buffer ====
 
-You should now know the most important things one can do in the summary
-buffer, so I now only give a rough overview about commands and what they
-do.
+You should now know the most important things one can do in the summary buffer,
+so I now only give a rough overview about commands and what they do.
 
 `RET'
 : enters the group under the cursor
