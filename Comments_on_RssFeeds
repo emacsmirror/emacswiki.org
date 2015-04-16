@@ -1,0 +1,7 @@
+[new]
+RSS feeds don't work anymore. From the example SachaChua's Blog section:
+
+*XML::RSS is not available on this system.* Can't locate XML/RSS.pm in @INC (you may need to install the XML::RSS module) (@INC contains: /etc/perl /usr/local/lib/perl/5.18.2 /usr/local/share/perl/5.18.2 /usr/lib/perl5 /usr/share/perl5 /usr/lib/perl/5.18 /usr/share/perl/5.18 /usr/local/lib/site_perl .) at /home/nicferrier/emacswiki.org/current.pl line 899.
+
+-- Anonymous 2015-04-16 14:33 UTC
+
