@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Apr 16 13:59:11 2015 (-0700)
+;; Last-Updated: Thu Apr 16 16:20:27 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 8906
+;;     Update #: 8909
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -618,8 +618,9 @@
 ;;
 ;; 2015/04/16 dadams
 ;;     Added: diredp-do-apply-function, diredp-do-apply-function-recursive.  Added to menus.  Bind to @, M-+ @.
+;;     dired-do-query-replace-regexp: Handle nil ARG properly.
 ;; 2015/03/26 dadams
-;;     Added: redefinitions of dired-do-isearch, `dired-do-isearch-regexp, dired-do-query-replace-regexp,
+;;     Added: redefinitions of dired-do-isearch, dired-do-isearch-regexp, dired-do-query-replace-regexp,
 ;;            dired-do-search, to handle multi-C-u.
 ;;     Added: dired-nondirectory-p (Emacs 20), diredp-refontify-buffer.
 ;;     dired-do-byte-compile, dired-do-load, : Corrected interactive spec, to treat more than two C-u as two.
@@ -7500,7 +7501,7 @@ with the command \\[tags-loop-continue]."
   (let* ((argnum     (and (consp arg)  (prefix-numeric-value arg)))
          (delimited  (and argnum  (eq (logand (truncate (log argnum 4)) 1) 1))) ; Odd number of plain `C-u'.
          (all        (and argnum  (> argnum 4))) ; At least 3 plain `C-u'.
-         (dgmf-arg   (dired-get-marked-files nil (if (atom arg) (abs arg) (and all  '(16)))
+         (dgmf-arg   (dired-get-marked-files nil (if (and arg  (atom arg)) (abs arg) (and all  '(16)))
                                              'dired-nondirectory-p)))
     (dolist (file  dgmf-arg)
       (let ((buffer  (get-file-buffer file)))
