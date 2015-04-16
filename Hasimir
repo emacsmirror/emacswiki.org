@@ -15,3 +15,7 @@ From the IRC demographics page my areas of interest are:
 * IETF OpenPGP Working Group member (revising RFC 4880)
 * Qualified trainer.
 * Also running a little bot called [[::TheAdversary]] on a few channels (bot name refers to domain name).
+
+I use the [https://github.com/docwhat/itsalltext It's All Text!] add-on for FireFox and the [https://github.com/adversary-org/misc-scripts/tree/master/emacs External Editor] add-on for Thunderbird in order to use Emacs with these things as much as possible.
+
+I've also whipped up a little shell script masquerading as OS X app trickery for those interested in replicating the shell environment settings in an Emacs instance, providing both a terminal-less [https://github.com/adversary-org/emacs-launcher-osx Emacs Launcher and an Emacs Server Launcher]
