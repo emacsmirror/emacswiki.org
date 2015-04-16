@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Apr 11 10:54:15 2015 (-0700)
+;; Last-Updated: Thu Apr 16 10:20:06 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 19666
+;;     Update #: 19668
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2070,7 +2070,10 @@ Bound to `M-,' in the minibuffer."
                   (icicle-candidate-nb                     icicle-candidate-nb)
                   (icicle-must-pass-after-match-predicate  (lambda (s) (functionp (intern s))))
                   (icicle-update-input-hook                nil))
-              (read (completing-read "Transform match using function: " obarray))))
+              (read (completing-read "Transform match using function: " obarray 'functionp
+                                     (if (boundp 'function-name-history)
+                                         'function-name-history
+                                       'icicle-function-name-history)))))
     (setq icicle-search-replacement
           (let ((enable-recursive-minibuffers   t)
                 (icicle-incremental-completion  t) ; Override current upgrade to `always'.
