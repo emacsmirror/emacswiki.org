@@ -10,7 +10,7 @@ It is defined in the built-in [[Dired X]] package, so need to load that:
     (add-hook 'dired-load-hook '(lambda () (require 'dired-x))) ; Load Dired X when Dired is loaded.
     (setq dired-omit-mode t) ; Turn on Omit mode.
 
-`M-o' in Dired buffers toggles hiding of files. Variables `dired-omit-files' and `dired-omit-extensions' together define the uninteresting files. (Versions of Emacs before 22.1 used `dired-omit-files-p').
+`C-x M-o' (`M-o' in older versions of Emacs) in Dired buffers toggles hiding of files. Variables `dired-omit-files' and `dired-omit-extensions' together define the uninteresting files. (Versions of Emacs before 22.1 used `dired-omit-files-p').
 
 With most recent Emacs versions no hooks are needed and the following lines in your [[init file]] enable omit mode (in this example dot files are omitted):
 
