@@ -6,7 +6,7 @@ Emacs has some major Javascript modes:
 
 * JavaScriptMode -- js-mode is a bare-bones mode built upon cc-mode.  It used to be called espresso-mode at one time, but got folded into the Emacs core
 * [[Js2Mode]] -- js2-mode is a full blown IDE style mode, with its own parser.
-* ECMAScriptMode -- another javascript mode, but it's last update was 2005.  You're likely better off using js-mode
+* ECMAScriptMode -- another javascript mode, but its last update was 2005.  You're likely better off using js-mode
 * [[https://github.com/thomblake/js3-mode|js3-mode]] is "[a] chimeric fork of js-mode (included with emacs 24) and js2-mode that supports comma-first style and other quirks."
 * [[http://web-mode.org|web-mode.el]] for editing JavaScripts embedded in html document.
 
