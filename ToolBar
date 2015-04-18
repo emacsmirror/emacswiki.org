@@ -110,16 +110,6 @@ It sounds as if the tool bar is being displayed partially (well, something seems
 Sorry I can't help more with this directly. -- DrewAdams
 
 
-== Pop-Up Tool Bar Solution 2 tabbar-ruler ==
-
-This allows a popup tabbar AND menu bar based on cursor location.  It also switches between tab-bar and ruler mode.  It is included in EmacsPortable.  It requries xpm images [[close-tab.xpm]] [[down.xpm]] [[left.xpm]] [[left-disabled.xpm]] [[right.xpm]] [[right-disabled.xpm]] [[up.xpm]] as well as Lisp:tabbar.el.  It is located in Lisp:tabbar-ruler.el.  See also MenuBar, ScrollBar.
-
-[new:DrewAdams:2010-11-04 14:52 UTC]
-
-First, you stuck this section in the middle of the previous section, before the discussion about [[#Tool-Bar Plus]]. I've moved it out.
-
-Second, what does this have to do with the ''tool'' bar?  You mention the ''tab'' bar and the ''menu'' bar, but I see no connection with this page's topic.  Anyway, I see that you also added this same section to TabBarMode and RulerMode.  Thx -- DrewAdams
-
 
 ----
 CategoryDisplay
