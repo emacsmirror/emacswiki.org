@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Feb 20 12:39:38 2015 (-0800)
+;; Last-Updated: Sat Apr 18 08:14:22 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 27391
+;;     Update #: 27401
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -363,8 +363,8 @@
 ;;    `icicle-bookmark-propertize-candidate',
 ;;    `icicle-pp-display-expression',
 ;;    `icicle-read-args-w-val-satisfying',
-;;    `icicle-read-choose-window-args',
-;;    (+)`icicle-recent-file-of-content-1',
+;;    `icicle-read-choose-window-args', `icicle-read--expression'
+;;    (Emacs 24.4+), (+)`icicle-recent-file-of-content-1',
 ;;    `icicle-recent-files-without-buffers.',
 ;;    `icicle-remove-buffer-candidate-action',
 ;;    `icicle-remove-buffer-config-action',
@@ -622,6 +622,7 @@
 (defvar dabbrev--last-abbreviation)     ; In `dabbrev.el'
 (defvar dabbrev--last-abbrev-location)  ; In `dabbrev.el'
 (defvar dabbrev-upcase-means-case-search) ; In `dabbrev.el'
+(defvar eldoc-documentation-function)   ; In `eldoc.el' (Emacs 23+)
 (defvar ess-current-process-name)       ; In `ess-inf.el'
 (defvar ess-mode-syntax-table)          ; In `ess-cust.el'
 (defvar ess-use-R-completion)           ; In `ess-cust.el'
@@ -637,6 +638,7 @@
 (defvar icicle-custom-themes-update-flag) ; In `icicles-opt.el' (Emacs 24+)
 (defvar icicle--last-toggle-transforming-msg) ; Here
 (defvar icicle-window-alist)            ; In `icicle-select-window'
+(defvar lexical-binding)                ; Emacs 24+
 (defvar locate-make-command-line)       ; In `locate.el'
 (defvar proced-signal-list)             ; In `proced.el' (Emacs 23+)
 (defvar recentf-list)                   ; In `recentf.el'
@@ -795,6 +797,19 @@ Non-nil READ-ONLY-P means visit file in read-only mode."
 ;;; Icicles Top-Level Commands, Part 1 -------------------------------
 
 
+;; Only difference is `icicle-read-expression-map' instead of `read-expression-map'.
+(when (fboundp 'read--expression)
+  (defun icicle-read--expression (prompt &optional initial-contents)
+    (let ((minibuffer-completing-symbol t))
+      (minibuffer-with-setup-hook
+       (lambda ()
+         ;; Vanilla Emacs FIXME: call `emacs-lisp-mode'?
+         (setq-local eldoc-documentation-function #'elisp-eldoc-documentation-function)
+         (add-hook 'completion-at-point-functions #'elisp-completion-at-point nil t)
+         (run-hooks 'eval-expression-minibuffer-setup-hook))
+       (read-from-minibuffer prompt initial-contents icicle-read-expression-map t 'read-expression-history)))))
+
+
 ;; REPLACE ORIGINAL `pp-eval-expression' defined in `pp.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
@@ -830,12 +845,17 @@ bound to `eval-expression' or `pp-eval-expression' to
 `icicle-pp-eval-expression'.  If you do not want this remapping, then
 customize option `icicle-top-level-key-bindings'."
   (interactive
-   (list (read-from-minibuffer "Eval: " nil icicle-read-expression-map t 'read-expression-history)
+   (list (if (fboundp 'read--expression)
+             (read--expression "Eval: ")
+           (read-from-minibuffer "Eval: " nil icicle-read-expression-map t 'read-expression-history))
          current-prefix-arg))
   (message "Evaluating...")
   (if (or (not (boundp 'eval-expression-debug-on-error))
           (null eval-expression-debug-on-error))
-      (setq values  (cons (eval expression) values))
+      (setq values  (cons (if (boundp 'lexical-binding) ; Emacs 24+
+                              (eval expression lexical-binding)
+                            (eval expression))
+                          values))
     (let ((old-value  (make-symbol "t"))
           new-value)
       ;; Bind `debug-on-error' to something unique so that we can detect when evaled code changes it.
