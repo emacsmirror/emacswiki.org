@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 11:09:23 2015 (-0800)
+;; Last-Updated: Sat Apr 18 08:28:19 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 224
+;;     Update #: 235
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -50,6 +50,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/04/18 dadms
+;;     Added: pp-read--expression.
+;;     pp-eval-expression: Updated for Emacs 24.4+: use pp-read--expression.
 ;; 2013/12/03 dadams
 ;;     pp-read-expression-map: Swap TAB and M-TAB, so 1st completes Lisp symbols.
 ;; 2013/02/15 dadams
@@ -109,8 +112,10 @@
 
 (require 'pp)
 
-;;; Quiet the byte compiler for Emacs 20.
+;;; Quiet the byte compiler.
+(defvar eldoc-documentation-function)   ; In `eldoc.el' (Emacs 23+)
 (defvar eval-expression-debug-on-error)
+(defvar lexical-binding)                ; Emacs 24+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -141,6 +146,21 @@ A value of nil means no limit."
 A value of nil means no limit."
   :group 'pp :group 'lisp :type '(choice (const :tag "No Limit" nil) integer))
 
+;; Only difference is `pp-read-expression-map' instead of `read-expression-map'.
+(when (fboundp 'read--expression)
+  (defun pp-read--expression (prompt &optional initial-contents)
+    (let ((minibuffer-completing-symbol t))
+      (minibuffer-with-setup-hook
+       (lambda ()
+         ;; Vanilla Emacs FIXME: call `emacs-lisp-mode'?
+         (setq-local eldoc-documentation-function
+                     #'elisp-eldoc-documentation-function)
+         (add-hook 'completion-at-point-functions
+                   #'elisp-completion-at-point nil t)
+         (run-hooks 'eval-expression-minibuffer-setup-hook))
+       (read-from-minibuffer prompt initial-contents
+                             pp-read-expression-map t 'read-expression-history)))))
+
 
 ;; REPLACES ORIGINAL in `pp.el':
 ;; 1. Read with completion, using `pp-read-expression-map'.
@@ -167,21 +187,26 @@ This command respects user options `pp-eval-expression-print-length',
 
 Emacs-Lisp mode completion and indentation bindings are in effect."
   (interactive
-   (list (read-from-minibuffer "Eval: " nil pp-read-expression-map t
-                               'read-expression-history)
+   (list (if (fboundp 'read--expression)
+             (read--expression "Eval: ")
+           (read-from-minibuffer
+            "Eval: " nil pp-read-expression-map t 'read-expression-history))
          current-prefix-arg))
   (message "Evaluating...")
   (if (or (not (boundp 'eval-expression-debug-on-error))
           (null eval-expression-debug-on-error))
-      (setq values  (cons (eval expression) values))
+      (setq values  (cons (if (boundp 'lexical-binding) ; Emacs 24+
+                              (eval expression lexical-binding)
+                            (eval expression))
+                          values))
     (let ((old-value  (make-symbol "t"))
           new-value)
-      ;; Bind debug-on-error to something unique so that we can
+      ;; Bind `debug-on-error' to something unique so that we can
       ;; detect when evaled code changes it.
       (let ((debug-on-error  old-value))
 	(setq values     (cons (eval expression) values)
               new-value  debug-on-error))
-      ;; If evaled code has changed the value of debug-on-error,
+      ;; If evaled code has changed the value of `debug-on-error',
       ;; propagate that change to the global binding.
       (unless (eq old-value new-value)
 	(setq debug-on-error  new-value))))
