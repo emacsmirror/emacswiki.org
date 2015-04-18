@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Apr 16 10:28:54 2015 (-0700)
+;; Last-Updated: Sat Apr 18 08:00:36 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11435
+;;     Update #: 11437
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2015/04/18 dadms
+;;     Added: icicle-read--expression.
+;;     icicle-pp-eval-expression: Updated for Emacs 24.4+: use icicle-read--expression.
 ;; 2015/02/20 dadams
 ;;     icicle-buffer-multi-complete, icicle-describe-opt-of-type-complete:
 ;;       Do not initialize STRG if it is non-nil.
