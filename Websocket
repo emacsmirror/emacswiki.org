@@ -1,6 +1,6 @@
 A websocket client library exists as [https://github.com/ahyatt/emacs-websocket a github repository].   It started out as part of the Google Wave client, and was recently split off into a new repository.
 
-The library does not yet support wss (secure websockets).
+The library requires Emacs 24 to support wss (secure websockets).
 
 ----
 CategoryExtensions
