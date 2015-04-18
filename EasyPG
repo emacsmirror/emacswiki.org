@@ -367,7 +367,7 @@ The patch at http://git.savannah.gnu.org/cgit/emacs.git/commit/?h=emacs-24&id=db
 Opening output file: [pub u 2048 1 912606D3301A36CC 2317511021 nil nil u nil ...], 15
 though the backtrace does end up with epg--list-keys-1)
 
-== Caching Password for Symmetric Encription==
+== Caching Password for Symmetric Encryption==
 Warning! This is risky if other people than you can access your own session. Despite you should always have to lock the screen when you leave your computer turned on, it is recommended you use this with caution.
 
 For some reason, using Emacs 24 and enabling <code>epa-file-cache-passphrase-for-symmetric-encryption</code> doesn't work and this is so because there's no elisp code for handling passphrase at the epg library (that have the base functions to interact with GPG tool).
