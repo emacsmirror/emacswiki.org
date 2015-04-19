@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-base_url=http://www.emacswiki.org/cgi-bin/wiki/download
+base_url=http://www.emacswiki.org/emacs/download
 required_libraries="icicles.el \
  icicles-cmd1.el icicles-cmd2.el \
  icicles-face.el icicles-fn.el icicles-mac.el \
