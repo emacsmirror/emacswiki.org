@@ -106,7 +106,7 @@
 ;;    default = "auto-install"
 ;;  `auto-install-emacswiki-base-url'
 ;;    The base emacswiki.org url from which to download elisp files.
-;;    default = "http://www.emacswiki.org/cgi-bin/wiki/download/"
+;;    default = "http://www.emacswiki.org/emacs/download/"
 ;;  `auto-install-gist-base-url'
 ;;    The base gist.github.com url from which to download elisp files.
 ;;    default = "http://gist.github.com/"
