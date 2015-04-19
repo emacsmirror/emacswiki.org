@@ -9,7 +9,7 @@
 ;; Version: 1.0
 ;; Last-Updated: Fri May 22 12:57:40 2009 (-0700)
 ;;           By: dradams
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-install.el
+;; URL: http://www.emacswiki.org/emacs/icicles-install.el
 ;; Keywords: package, download
 ;; Compatibility: GNU Emacs 20.x, GNU Emacs 21.x, GNU Emacs 22.x
 ;;
@@ -51,7 +51,7 @@
 ;;
 ;;  Code based largely on `package.el' by Tom Tromey.
 ;;  See: http://tromey.com/elpa/package-install.el
-;;  See: http://www.emacswiki.org/cgi-bin/wiki/TomTromey
+;;  See: http://www.emacswiki.org/emacs/TomTromey
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -112,7 +112,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;###autoload
-(defcustom icicle-archive-base "http://www.emacswiki.org/cgi-bin/wiki/download/"
+(defcustom icicle-archive-base "http://www.emacswiki.org/emacs/download/"
   "*Base URL from which the Icicles files should be downloaded.
 Default value is the Emacs Wiki site."
   :type 'string :group 'Icicles-Miscellaneous)
