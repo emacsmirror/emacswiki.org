@@ -7,10 +7,10 @@
 ;; Created: 2007-09-14
 ;; Keywords: convenience
 
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/centered-cursor-mode.el
+;; URL: http://www.emacswiki.org/emacs/centered-cursor-mode.el
 ;; Compatibility: tested with GNU Emacs 23.0, 24
-;; Version: 0.5.3
-;; Last-Updated: 2015-03-01
+;; Version: 0.5.4
+;; Last-Updated: 2015-04-20
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -56,6 +56,8 @@
 ;; - more bugs?
 
 ;;; Change Log:
+;; 2015-04-20  andre-r
+;;   * corrected URL in header
 ;; 2015-03-01  andre-r
 ;;   * fixed bug where Emacs without X support (emacs-nox) didn't find mouse-wheel-mode
 ;; 2009-08-31  andre-r
