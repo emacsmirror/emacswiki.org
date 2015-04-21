@@ -160,7 +160,9 @@ and it is positioned prior to other commands which alter the menu bar, e.g., "(r
 
 : Maybe this could be added to the "readme" file.
   
+----
 
+I found that when menu-bar+ is active, the RET key (package-menu-describe-package) in *Packages* buffer (result of M-x list-packages) does not work. Does menu-bar+ do something magic to shadow the RET key?  
 
 
 ----
