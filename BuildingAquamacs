@@ -19,7 +19,8 @@ Then:
 
 To build Aquamacs, ensure you have
 
-- Apple's free Developer Tools (for make, gcc, etc.)
+- Apple's free Developer Tools (for make, gcc etc.)
+- Autoconf and automake are not installed by default developer tools installation, but required for this build
 - The Aquamacs git repository (or a source code snapshot) as above.
 
 Change to the source directory and just do
