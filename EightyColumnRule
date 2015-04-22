@@ -49,7 +49,7 @@ ColumnEnforceMode mimics the behavior of the lines-tail style in WhitespaceMode,
 === WhitespaceMode ===
 whitespace mode (part of Emacs 23+) has two interesting options you can set in variable whitespace-style:
 
-`lines', will highlight lines that go beyond thw columnus limit defined in `whitespace-line-column'
+`lines', will highlight lines that go beyond the columnus limit defined in `whitespace-line-column'
 
 `lines-tail', same as above but only the part that goes beyond the limit of 
 `whitespace-line-column' gets highlighted.
