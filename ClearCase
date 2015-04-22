@@ -4,7 +4,11 @@
 Kevin Esler (esler(at)rational.com) maintains clearcase.el, a frontend to Rational's <nowiki>ClearCase</nowiki>,
 available at: http://members.verizon.net/kevin.a.esler/EmacsClearCase/.
 
-That link is broken. Anyone know where it went?
+That link is broken. Anyone know where it went the versions below are very old.  I used the above link in Sept 2014 with these lines:
+(defconst clearcase-version-stamp "ClearCase-version: </main/laptop/166>")
+(defconst clearcase-version (substring clearcase-version-stamp 19))
+
+Is there anything more recent?  The stuff below is much older.
 
 It looks like as if (at least) January 2005, Kevin Esler's clearcase.el has been merged into the XEmacs main branch: http://www.xemacs.org/Releases/2005-01-18.html
 
