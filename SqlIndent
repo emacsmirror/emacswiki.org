@@ -4,6 +4,10 @@ This is a very quick hack that allows me to indent SQL statements.  You can use 
 
 You can get it here:
 
+* https://github.com/bsvingen/sql-indent
+
+An older version lives here:
+
 * Lisp:sql-indent.el
 
 As the indentation of SQL statements depends not only on the previous line but also on the current line, empty lines cannot always be indented correctly.  Hitting TAB on a line containing only whitespace will remove all whitespace and make the line empty; hitting TAB on an empty line will indent the line to the same column as the previous line; hitting TAB again will indent or outdent the line one step.  Hitting TAB after certain keywords will insert a tab character as well as indent the line.
