@@ -1,5 +1,7 @@
 ;;; sql-indent.el --- indentation of SQL statements
 
+;; A more recent version of this file lives on https://github.com/bsvingen/sql-indent
+
 ;; Copyright (C) 2000  Alex Schroeder
 
 ;; Authors: Alex Schroeder <alex@gnu.org>
