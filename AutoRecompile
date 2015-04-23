@@ -23,15 +23,15 @@
 == Auto-Compile Package ==
 
 [http://github.com/tarsius/auto-compile auto-compile] provides two
-minor modes ##auto-compile-global-mode## and ##auto-compile-on-load-mode##
+minor modes ##auto-compile-on-save-mode## and ##auto-compile-on-load-mode##
 which keep byte code files up-to-date with their Emacs Lisp source files.
 
-##auto-compile-global-mode## automatically compiles Emacs Lisp code
+##auto-compile-on-save-mode## automatically compiles Emacs Lisp code
 when the visiting buffers are saved to their source files, provided
 that the respective byte code files already exists. If the byte code
 file does not already exist nothing is done.
 
-Even when using ##auto-compile-global-mode## it can sometimes happen
+Even when using ##auto-compile-on-save-mode## it can sometimes happen
 that the source file is newer than the byte compile destination. This
 can for example happen when performing version control operations. To
 ensure that byte code files are always up-to-date when being loaded
@@ -48,6 +48,7 @@ otherwise it is not), no cache (this seems fragile and also quite
 useless) and compilation does not happen asynchronously (speed never
 was a problem for me and I *want* authors to be bothered by warnings,
 so that they actually fix them). -- JonasBernoulli
+
 
 
 == Byte Compile on Buffer Save ==
