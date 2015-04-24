@@ -297,6 +297,48 @@ It's a bit more versatile than ascope because it copes with multiple cscope data
 
 It was developped by Robert Jarzmik and is in [https://github.com/rjarzmik/rscope rscope's github repository]. The page explains the usage, which is globally very close to xscope in terms of key bindings.
 
+== cscope -q ==
+
+-q enables fast symbol lookup via an inverted index. The following used xcscope.el to search a Linux source tree. Without -q the search took 1.39 seconds. With -q it took 0.08 seconds.
+
+The database without -q:
+<pre>
+[bwong@bwong-ds linux-g1]$ ls -l cscope.*
+-rw-rw-r--. 1 bwong bwong   1054231 Apr 14 11:23 cscope.files
+-rw-rw-r--. 1 bwong bwong 335946981 Apr 14 11:23 cscope.out
+[bwong@bwong-ds linux-g1]$
+</pre>
+
+Search with -d:
+<pre>
+Finding symbol: memparse
+
+Database directory: /home/bwong/dev/linux-g1/
+...
+Search complete.  Search time = 1.39 seconds.
+</pre>
+
+Build the database with -q:
+<pre>
+[bwong@bwong-ds linux-g1]$ rm cscope.out
+[bwong@bwong-ds linux-g1]$ cscope -bq
+[bwong@bwong-ds linux-g1]$ ls -l cscope.*
+-rw-rw-r--. 1 bwong bwong   1054231 Apr 14 11:23 cscope.files
+-rw-rw-r--. 1 bwong bwong  70328320 Apr 24 10:54 cscope.in.out
+-rw-rw-r--. 1 bwong bwong 335946981 Apr 24 10:54 cscope.out
+-rw-rw-r--. 1 bwong bwong 471233016 Apr 24 10:54 cscope.po.out
+[bwong@bwong-ds linux-g1]$ 
+</pre>
+
+Search with -d:
+<pre>
+Finding symbol: memparse
+
+Database directory: /home/bwong/dev/linux-g1/
+...
+Search complete.  Search time = 0.08 seconds.
+</pre>
+
 ----
 CategoryProgrammerUtils
 CategoryNavigation
