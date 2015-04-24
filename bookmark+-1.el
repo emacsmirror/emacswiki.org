@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Apr 13 15:13:41 2015 (-0700)
+;; Last-Updated: Fri Apr 24 13:11:56 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7746
+;;     Update #: 7747
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2282,9 +2282,14 @@ A prefix argument changes the behavior as follows:
    same name as NAME, if such a bookmark already exists.  Instead,
    push the new bookmark onto the bookmark alist.
 
-   The most recently set bookmark named NAME is thus the one in effect
-   at any given time, but any others named NAME are still available,
-   should you decide to delete the most recent one.
+   For use by vanilla Emacs, only the most recently set bookmark named
+   NAME is in effect at any given time, but any others named NAME can
+   become available, should you decide to delete the most recent one.
+
+   For Bookmark+, if option `bmkp-propertize-bookmark-names-flag' is
+   non-`nil' then you can use any number of bookmarks that have the
+   same name.  If that option is `nil' then the behavior is the same
+   as for vanilla Emacs.
 
 Bookmark properties listed in option `bmkp-properties-to-keep' are not
 overwritten when you set an existing bookmark.  Their existing values
