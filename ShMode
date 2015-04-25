@@ -19,15 +19,20 @@ Icicle mode remaps `comint-dynamic-complete' (hence the same keys) in Shell Scri
 
 * ShAutoconf -- An autoconf flavour for ##sh-mode## as an alternative to AutoconfMode
 
-[new]
-WishList item: There should be a manner to send commands to an inferior ShellMode buffer.
+== Q&A ==
+Q: There should be a manner to send commands to an inferior ShellMode buffer.
 
-[new]
-It's X-mas. Your wish has become true! Try
+A: Try
 
   (process-send-string (current-buffer) "echo Merry X-mas!\n")
+
 [new]
-Thanks.  And happy Christmas to you!
+Q: Generally, how does one customize sh-mode?
+Specifically, when I type ##if [ ... ]## and hit return, it indents.
+I want to disable this behavior, and only auto-indent to the indentation of the previous line (which in this case is zero).
+I'm using GNU Emacs 24.4.1.
+
+
 
 ----
 CategoryShell
