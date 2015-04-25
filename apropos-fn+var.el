@@ -8,9 +8,9 @@
 ;; Created: Mon Nov 28 15:41:09 2005
 ;; Version:
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:22:23 2015 (-0800)
+;; Last-Updated: Sat Apr 25 10:58:31 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 319
+;;     Update #: 403
 ;; URL: http://www.emacswiki.org/apropos-fn+var.el
 ;; Keywords: apropos
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -36,11 +36,11 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `apropos-option'.
+;;    `apropos-option-button' (Emacs 22-24.3).
 ;;
-;;  Non-interactive functions defined here:
+;;  Button types defined here:
 ;;
-;;    `apropos-print-1'.
+;;    `apropos-user-option' (Emacs 22-24.3).
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `apropos.el' have
@@ -49,6 +49,7 @@
 ;;  `apropos-variable' - See above (the standard command does what
 ;;                       `apropos-option' does here).
 ;;  `apropos-print'    - Identify user options with label `Option'.
+;;                       Use `naked-key-description', if available.
 ;;
 ;;
 ;;  Acknowledgment: Slightly different versions of `apropos-function'
@@ -56,12 +57,19 @@
 ;;  bug-gnu-emacs, Tue, 06 Sep 2005 14:34:54 -0600.  Kevin didn't
 ;;  actually redefine `apropos-variable' (he would never do that ;-)),
 ;;  but he provided the new definition.  I redefined `apropos-print'
-;;  and added button type `apropos-option'.
+;;  (and added button type `apropos-user-option' for Emacs < 24.4).
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2015/04/25 dadams
+;;     Removed: apropos-print--1 (Emacs 24.4+ does not use with-help-window after all.)
+;;     Renamed per Emacs 24.4+: face apropos-option to apropos-option-button,
+;;                              button type apropos-option to apropos-user-option.
+;;       Define them only for Emacs 22-24.3.
+;;     apropos-print: Cleanup for Emacs 22-23.  Redid Emacs 24+ version to not use apropos-print--1.
+;;     Removed commented-out button-type definitions.
 ;; 2014/05/04 dadams
 ;;     Added: apropos-print--1 - factored out from apropos-print after next update:
 ;;     apropos-print: Updated for Emacs 24.4: Use with-help-window if defined.  See bug #17109.
@@ -160,8 +168,7 @@ while a list of strings is used as a word list."
 This includes variables that are not user options."
       (interactive "i")                 ; Ignored when interactive
       (if (interactive-p)
-          (let ((apropos-do-all t))
-            (call-interactively 'apropos-option))
+          (let ((apropos-do-all t)) (call-interactively 'apropos-option))
         (apropos-option pattern t)))
   (defun apropos-variable (pattern &optional ignore)
     "Show variables that match PATTERN.
@@ -172,13 +179,14 @@ search for matches for that word as a substring.  If it is a list of
 words, search for matches for any two (or more) of those words."
     (interactive "i")                   ; Ignored when interactive
     (if (interactive-p)
-        (let ((apropos-do-all t))
-          (call-interactively 'apropos-option))
+        (let ((apropos-do-all t)) (call-interactively 'apropos-option))
       (apropos-option pattern t))))
 
 
 ;;; REPLACE ORIGINAL defined in `apropos.el'.
-;;; Use label "Option" for user options.
+;;;
+;;; 1. Use label "Option" for user options.
+;;; 2. Use `naked-key-description' if available.
 ;;;
 (cond ((< emacs-major-version 22)       ; Emacs 20 and 21.
        (defun apropos-print (do-keys spacing)
@@ -280,8 +288,7 @@ alphabetically by symbol name; but this function also sets
                  (apropos-print-doc 'widget-browse-other-window 4 "Widget" t)
                  (apropos-print-doc 'apropos-describe-plist 3 "Plist" nil))
                (setq buffer-read-only  t))))
-         (prog1 apropos-accumulator
-           (setq apropos-accumulator ()))))
+         (prog1 apropos-accumulator (setq apropos-accumulator  ()))))
 
       ((< emacs-major-version 24)       ; Emacs 22 and 23.
        (defun apropos-print (do-keys spacing &optional text nosubst)
@@ -301,8 +308,7 @@ If non-nil TEXT is a string that will be printed as a heading."
                                             (lambda (a b)
                                               ;; Don't sort by score if user can't see the score.
                                               ;; It would be confusing.  -- rms.
-                                              (if (and (boundp 'apropos-sort-by-scores)
-                                                       apropos-sort-by-scores)
+                                              (if apropos-sort-by-scores
                                                   (or (> (cadr a) (cadr b))
                                                       (and (= (cadr a) (cadr b))
                                                            (string-lessp (car a) (car b))))
@@ -316,68 +322,69 @@ If non-nil TEXT is a string that will be printed as a heading."
                (when (display-mouse-p)
                  (insert "If moving the mouse over text changes the text's color, "
                          "you can click\n"
-                         "mouse-2 (second button from right) on that text to "
-                         "get more information.\n"))
+                         "mouse-2 or use `RET' on that text to get more information.\n"))
                (insert "In this buffer, go to the name of the command, function, or variable,\n"
                        (substitute-command-keys
                         "and type \\[apropos-follow] to get full documentation.\n\n"))
                (when text (insert text "\n\n"))
-               (while (consp p)
+               (dolist (apropos-item p)
                  (when (and spacing  (not (bobp))) (princ spacing))
-                 (setq apropos-item  (car p)
-                       symbol        (car apropos-item)
-                       p             (cdr p))
+                 (setq symbol  (car apropos-item))
                  ;; Insert dummy score element for backwards compatibility with 21.x
                  ;; `apropos-item' format.
                  (unless (numberp (cadr apropos-item))
                    (setq apropos-item  (cons (car apropos-item) (cons nil (cdr apropos-item)))))
                  (insert-text-button (symbol-name symbol) 'type 'apropos-symbol
+                                     'skip (and (boundp 'apropos-multi-type)  apropos-multi-type)
                                      ;; Cannot use default, since user may have changed the var.
                                      'face apropos-symbol-face)
                  (when (and (eq apropos-sort-by-scores 'verbose)  (cadr apropos-item))
-                     (insert " (" (number-to-string (cadr apropos-item)) ") "))
+                   (insert " (" (number-to-string (cadr apropos-item)) ") "))
                  ;; Calculate key-bindings if we want them.
-                 (and do-keys
-                      (commandp symbol)
-                      (indent-to 30 1)
-                      (if (let ((keys  (save-excursion (set-buffer old-buffer)
-                                                       (where-is-internal symbol)))
-                                filtered)
-                            ;; Copy over the list of key sequences,
-                            ;; omitting any that contain a buffer or a frame.
-                            (while keys
-                              (let ((key  (car keys))
-                                    (i    0)
-                                    loser)
-                                (while (< i (length key))
-                                  (when (or (framep (aref key i))  (bufferp (aref key i)))
-                                    (setq loser  t))
-                                  (setq i  (1+ i)))
-                                (unless loser  (setq filtered  (cons key filtered))))
-                              (setq keys  (cdr keys)))
-                            (setq item  filtered))
-                          ;; Convert the remaining keys to a string and insert.
-                          (insert (mapconcat
-                                   (lambda (key)
-                                     (setq key  (condition-case ()
-                                                    (if (fboundp 'naked-key-description)
-                                                        (naked-key-description key)
-                                                      (key-description key))
-                                                  (error)))
-                                     (when apropos-keybinding-face
-                                       (put-text-property 0 (length key)
-                                                          'face apropos-keybinding-face
-                                                          key))
-                                     key)
-                                   item
-                                   ", "))
-                        (insert "M-x ... RET")
-                        (when apropos-keybinding-face
-                          (put-text-property (- (point) 11) (- (point) 8)
-                                             'face apropos-keybinding-face)
-                          (put-text-property (- (point) 3) (point)
-                                             'face apropos-keybinding-face))))
-                 (terpri)
+                 (unless (and (boundp 'apropos-compact-layout)  apropos-compact-layout)
+                   (and do-keys
+                        (commandp symbol)
+                        (not (eq symbol 'self-insert-command))
+                        (indent-to 30 1)
+                        (if (let ((keys  (with-current-buffer old-buffer (where-is-internal symbol)))
+                                  filtered)
+                              ;; Copy over the list of key sequences,
+                              ;; omitting any that contain a buffer or a frame.
+                              ;; FIXME: Why omit keys that contain buffers and
+                              ;; frames?  This looks like a bad workaround rather
+                              ;; than a proper fix.  Does anybod know what problem
+                              ;; this is trying to address?  --Stef
+                              (dolist (key keys)
+                                (let ((i  0)
+                                      loser)
+                                  (while (< i (length key))
+                                    (when (or (framep (aref key i))  (bufferp (aref key i)))
+                                      (setq loser  t))
+                                    (setq i  (1+ i)))
+                                  (unless loser (push key filtered))))
+                              (setq item  filtered))
+                            ;; Convert the remaining keys to a string and insert.
+                            (insert (mapconcat
+                                     (lambda (key)
+                                       (setq key  (condition-case ()
+                                                      (if (fboundp 'naked-key-description)
+                                                          (naked-key-description key)
+                                                        (key-description key))
+                                                    (error)))
+                                       (when apropos-keybinding-face
+                                         (put-text-property 0 (length key)
+                                                            'face apropos-keybinding-face
+                                                            key))
+                                       key)
+                                     item
+                                     ", "))
+                          (insert "M-x ... RET")
+                          (when apropos-keybinding-face
+                            (put-text-property (- (point) 11) (- (point) 8)
+                                               'face apropos-keybinding-face)
+                            (put-text-property (- (point) 3) (point)
+                                               'face apropos-keybinding-face))))
+                   (terpri))
                  (apropos-print-doc 2 (if (commandp symbol)
                                           'apropos-command
                                         (if (apropos-macrop symbol)
@@ -385,16 +392,17 @@ If non-nil TEXT is a string that will be printed as a heading."
                                           'apropos-function))
                                     (not nosubst))
                  (apropos-print-doc 3 (if (user-variable-p symbol)
-                                          'apropos-option
+                                          'apropos-user-option
                                         'apropos-variable)
                                     (not nosubst))
                  (apropos-print-doc 7 'apropos-group t)
                  (apropos-print-doc 6 'apropos-face t)
                  (apropos-print-doc 5 'apropos-widget t)
                  (apropos-print-doc 4 'apropos-plist nil))
+               (set (make-local-variable 'truncate-partial-width-windows) t)
+               (set (make-local-variable 'truncate-lines) t)
                (setq buffer-read-only  t))))
-         (prog1 apropos-accumulator
-           (setq apropos-accumulator  ())))) ; Permit gc.
+         (prog1 apropos-accumulator (setq apropos-accumulator  ())))) ; Permit gc.
 
       (t                                ; Emacs 24+.
        (defun apropos-print (do-keys spacing &optional text nosubst)
@@ -417,192 +425,109 @@ If non-nil, TEXT is a string that will be printed as a heading."
                                                       (and (= (cadr a) (cadr b))
                                                            (string-lessp (car a) (car b))))
                                                 (string-lessp (car a) (car b))))))
-           (if (fboundp 'with-help-window)
-               (with-help-window "*Apropos*"
-                 (apropos-print--1 do-keys spacing text nosubst))
-             (with-output-to-temp-buffer "*Apropos*"
-               (apropos-print--1 do-keys spacing text nosubst))))
-         (prog1 apropos-accumulator
-           (setq apropos-accumulator  ()))))) ; Permit gc.
+           (with-output-to-temp-buffer "*Apropos*"
+             (let ((p                  apropos-accumulator)
+                   (old-buffer         (current-buffer))
+                   (inhibit-read-only  t)
+                   (button-end         0)
+                   symbol item)
+               (set-buffer standard-output)
+               (apropos-mode)
+               (insert (substitute-command-keys "Type \\[apropos-follow] on ")
+                       (if apropos-multi-type "a type label" "an entry")
+                       " to view its full documentation.\n\n")
+               (when text (insert text "\n\n"))
+               (dolist (apropos-item p)
+                 (when (and spacing  (not (bobp))) (princ spacing))
+                 (setq symbol  (car apropos-item))
+                 ;; Insert dummy score element for backwards compatibility with 21.x
+                 ;; `apropos-item' format.
+                 (unless (numberp (cadr apropos-item))
+                   (setq apropos-item  (cons (car apropos-item) (cons nil (cdr apropos-item)))))
+                 (when (= (point) button-end) (terpri))
+                 (insert-text-button (symbol-name symbol)     'type 'apropos-symbol
+                                     'skip apropos-multi-type 'face 'apropos-symbol)
+                 (setq button-end  (point))
+                 (when (and (eq apropos-sort-by-scores 'verbose)  (cadr apropos-item))
+                   (insert " (" (number-to-string (cadr apropos-item)) ") "))
+                 ;; Calculate key-bindings if we want them.
+                 (unless apropos-compact-layout
+                   (and do-keys
+                        (commandp symbol)
+                        (not (eq symbol 'self-insert-command))
+                        (indent-to 30 1)
+                        (if (let ((keys  (with-current-buffer old-buffer (where-is-internal symbol)))
+                                  filtered)
+                              ;; Copy over the list of key sequences,
+                              ;; omitting any that contain a buffer or a frame.
+                              ;; FIXME: Why omit keys that contain buffers and
+                              ;; frames?  This looks like a bad workaround rather
+                              ;; than a proper fix.  Does anybody know what problem
+                              ;; this is trying to address?  --Stef
+                              (dolist (key keys)
+                                (let ((i  0)
+                                      loser)
+                                  (while (< i (length key))
+                                    (when (or (framep (aref key i))  (bufferp (aref key i)))
+                                      (setq loser  t))
+                                    (setq i  (1+ i)))
+                                  (unless loser (push key filtered))))
+                              (setq item  filtered))
+                            ;; Convert the remaining keys to a string and insert.
+                            (insert (mapconcat
+                                     (lambda (key)
+                                       (setq key  (condition-case ()
+                                                      (if (fboundp 'naked-key-description)
+                                                          (naked-key-description key)
+                                                        (key-description key))
+                                                    (error)))
+                                       (put-text-property 0 (length key) 'face 'apropos-keybinding
+                                                          key)
+                                       key)
+                                     item
+                                     ", "))
+                          (insert "M-x ... RET")
+                          (put-text-property (- (point) 11) (- (point) 8) 'face 'apropos-keybinding)
+                          (put-text-property (- (point) 3) (point) 'face 'apropos-keybinding)))
+                   (terpri))
+                 (apropos-print-doc 2
+                                    (if (commandp symbol)
+                                        'apropos-command
+                                      ;; Emacs 24.4 moved `apropos-macrop' to `macrop'.
+                                      (if (if (fboundp 'macrop) (macrop symbol) (apropos-macrop symbol))
+                                          'apropos-macro
+                                        'apropos-function))
+                                    (not nosubst))
+                 (apropos-print-doc 3
+                                    (if (custom-variable-p symbol)
+                                        'apropos-user-option
+                                      'apropos-variable)
+                                    (not nosubst))
+                 (apropos-print-doc 7 'apropos-group t)
+                 (apropos-print-doc 6 'apropos-face t)
+                 (apropos-print-doc 5 'apropos-widget t)
+                 (apropos-print-doc 4 'apropos-plist nil))
+               (set (make-local-variable 'truncate-partial-width-windows) t)
+               (set (make-local-variable 'truncate-lines) t))))
+         (prog1 apropos-accumulator (setq apropos-accumulator  ()))))
 
-(when (> emacs-major-version 23)
-  ;; This just makes the `apropos-print' code a bit simpler.
-  ;; Needed because of the Emacs 24.4 change to using `with-help-window'.
-  (defun apropos-print--1 (do-keys spacing text nosubst)
-    "Helper for `apropos-print', for Emacs 24+."
-    (let ((p                  apropos-accumulator)
-          (old-buffer         (current-buffer))
-          (inhibit-read-only  t)
-          (button-end         0)
-          symbol  item)
-      (set-buffer standard-output)
-      (apropos-mode)
-      (insert (substitute-command-keys "Type \\[apropos-follow] on ")
-              (if apropos-multi-type "a type label" "an entry")
-              " to view its full documentation.\n\n")
-      (when text (insert text "\n\n"))
-      (dolist (apropos-item  p)
-        (when (and spacing  (not (bobp))) (princ spacing))
-        (setq symbol  (car apropos-item))
-        ;; Insert dummy score element for backwards compatibility with 21.x `apropos-item' format.
-        (unless (numberp (cadr apropos-item))
-          (setq apropos-item  (cons (car apropos-item) (cons nil (cdr apropos-item)))))
-        (when (= (point) button-end) (terpri))
-        (insert-text-button (symbol-name symbol) 'type 'apropos-symbol 'skip apropos-multi-type
-                            'face 'apropos-symbol)
-        (setq button-end  (point))
-        (when (and (eq apropos-sort-by-scores 'verbose)  (cadr apropos-item))
-          (insert " (" (number-to-string (cadr apropos-item)) ") "))
-        ;; Calculate key-bindings if we want them.
-        (unless apropos-compact-layout
-          (and do-keys
-               (commandp symbol)
-               (not (eq symbol 'self-insert-command))
-               (indent-to 30 1)
-               (if (let ((keys      (with-current-buffer old-buffer (where-is-internal symbol)))
-                         (filtered  ()))
-                     ;; Copy over the list of key sequences, omitting any that contain a
-                     ;; buffer or a frame.  FIXME: Why omit keys that contain buffers and
-                     ;; frames?  This looks like a bad workaround rather than a proper fix.
-                     ;; Does anybody know what problem this is trying to address?  --Stef
-                     (dolist (key  keys)
-                       (let ((ii  0)
-                             loser)
-                         (while (< ii (length key))
-                           (when (or (framep (aref key ii))  (bufferp (aref key ii)))
-                             (setq loser  t))
-                           (setq ii  (1+ ii)))
-                         (unless loser (push key filtered))))
-                     (setq item  filtered))
-                   ;; Convert the remaining keys to a string and insert.
-                   (insert (mapconcat (lambda (key)
-                                        (setq key  (condition-case ()
-                                                       (if (fboundp 'naked-key-description)
-                                                           (naked-key-description key)
-                                                         (key-description key))
-                                                     (error)))
-                                        (put-text-property 0 (length key)
-                                                           'face 'apropos-keybinding key)
-                                        key)
-                                      item
-                                      ", "))
-                 (insert "M-x ... RET")
-                 (put-text-property (- (point) 11) (- (point) 8) 'face 'apropos-keybinding)
-                 (put-text-property (- (point)  3) (point)       'face 'apropos-keybinding)))
-          (terpri))
-        (apropos-print-doc 2 (if (commandp symbol)
-                                 'apropos-command
-                               ;; Emacs 24.4 moved `apropos-macrop' to `macrop'.
-                               (if (if (fboundp 'macrop) (macrop symbol) (apropos-macrop symbol))
-                                   'apropos-macro
-                                 'apropos-function))
-                           (not nosubst))
-        (apropos-print-doc 3 (if (custom-variable-p symbol) 'apropos-option 'apropos-variable)
-                           (not nosubst))
-        (apropos-print-doc 7 'apropos-group t)
-        (apropos-print-doc 6 'apropos-face t)
-        (apropos-print-doc 5 'apropos-widget t)
-        (apropos-print-doc 4 'apropos-plist nil))
-      (set (make-local-variable 'truncate-partial-width-windows) t)
-      (set (make-local-variable 'truncate-lines) t))))
+      )
 
-(when (>= emacs-major-version 22)
-  (defface apropos-option '((t (:inherit font-lock-variable-name-face)))
+(when (and (> emacs-major-version 21)  (or (< emacs-major-version 24)
+                                           (and (= emacs-major-version 24)
+                                                (< emacs-minor-version 4))))
+  (defface apropos-user-option-button '((t (:inherit font-lock-variable-name-face)))
     "Face used for option names in Apropos buffers."
     :group 'apropos)
 
-  (define-button-type 'apropos-option
+  (define-button-type 'apropos-user-option
       'apropos-label "Option"
       'apropos-short-label "o"
-      'face '(apropos-option button)
+      'face 'apropos-user-option-button
       'help-echo "mouse-2, RET: Display more help on this user option (variable)"
       'follow-link t
-      'action (lambda (button)
-                (describe-variable (button-get button 'apropos-symbol))))
+      'action (lambda (button) (describe-variable (button-get button 'apropos-symbol))))
 
-;;;   (define-button-type 'apropos-function
-;;;       'apropos-label "Function"
-;;;       'apropos-short-label "f"
-;;;       'face '(font-lock-function-name-face button)
-;;;       'help-echo "mouse-2, RET: Display more help on this function"
-;;;       'follow-link t
-;;;       'action (lambda (button)
-;;;                 (describe-function (button-get button 'apropos-symbol))))
-
-;;;   (define-button-type 'apropos-macro
-;;;       'apropos-label "Macro"
-;;;       'apropos-short-label "m"
-;;;       'face '(font-lock-function-name-face button)
-;;;       'help-echo "mouse-2, RET: Display more help on this macro"
-;;;       'follow-link t
-;;;       'action (lambda (button)
-;;;                 (describe-function (button-get button 'apropos-symbol))))
-
-;;;   (define-button-type 'apropos-command
-;;;       'apropos-label "Command"
-;;;       'apropos-short-label "c"
-;;;       'face '(font-lock-function-name-face button)
-;;;       'help-echo "mouse-2, RET: Display more help on this command"
-;;;       'follow-link t
-;;;       'action (lambda (button)
-;;;                 (describe-function (button-get button 'apropos-symbol))))
-
-;;;   ;; We used to use `customize-variable-other-window' instead for a
-;;;   ;; customizable variable, but that is slow.  It is better to show an
-;;;   ;; ordinary help buffer and let the user click on the customization
-;;;   ;; button in that buffer, if he wants to.
-;;;   ;; Likewise for `customize-face-other-window'.
-;;;   (define-button-type 'apropos-variable
-;;;       'apropos-label "Variable"
-;;;       'apropos-short-label "v"
-;;;       'face '(font-lock-variable-name-face button)
-;;;       'help-echo "mouse-2, RET: Display more help on this variable"
-;;;       'follow-link t
-;;;       'action (lambda (button)
-;;;                 (describe-variable (button-get button 'apropos-symbol))))
-
-;;;   (define-button-type 'apropos-face
-;;;       'apropos-label "Face"
-;;;       'apropos-short-label "F"
-;;;       'face '(font-lock-variable-name-face button)
-;;;       'help-echo "mouse-2, RET: Display more help on this face"
-;;;       'follow-link t
-;;;       'action (lambda (button)
-;;;                 (describe-face (button-get button 'apropos-symbol))))
-
-;;;   (define-button-type 'apropos-group
-;;;       'apropos-label "Group"
-;;;       'apropos-short-label "g"
-;;;       'face '(font-lock-builtin-face button)
-;;;       'help-echo "mouse-2, RET: Display more help on this group"
-;;;       'follow-link t
-;;;       'action (lambda (button)
-;;;                 (customize-group-other-window
-;;;                  (button-get button 'apropos-symbol))))
-
-;;;   (define-button-type 'apropos-widget
-;;;       'apropos-label "Widget"
-;;;       'apropos-short-label "w"
-;;;       'face '(font-lock-builtin-face button)
-;;;       'help-echo "mouse-2, RET: Display more help on this widget"
-;;;       'follow-link t
-;;;       'action (lambda (button)
-;;;                 (widget-browse-other-window (button-get button 'apropos-symbol))))
-
-;;;   (define-button-type 'apropos-plist
-;;;       'apropos-label "Properties"
-;;;       'apropos-short-label "p"
-;;;       'face '(font-lock-keyword-face button)
-;;;       'help-echo "mouse-2, RET: Display more help on this plist"
-;;;       'follow-link t
-;;;       'action (lambda (button)
-;;;                 (apropos-describe-plist (button-get button 'apropos-symbol))))
-
-;;;   (define-button-type 'apropos-library
-;;;       'help-echo "mouse-2, RET: Display more help on this library"
-;;;       'follow-link t
-;;;       'action (lambda (button)
-;;;                 (apropos-library (button-get button 'apropos-symbol))))
   )
 
 ;;;;;;;;;;;;;;;;;;;;
