@@ -4,6 +4,10 @@ the "bidi" machinery in the works for Emacs and XEmacs.
 == Current Status ==
 
 Emacs supports bidirectional display out of the box since version 24.1.  Just type in text in a R2L script such as hebrew or arabic.
+Emacs 24.4 and later supports visual-order cursor motion, as an optional feature; the default is still to use logical-order cursor
+movement.
+Starting with Emacs 25.1 (yet unreleased as of this writing, but available from the Emacs source repository), the new isolate
+controls introduced by Unicode 6.3 are fully supported.
 
 == Older Bidi Support ==
 
