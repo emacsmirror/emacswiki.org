@@ -1,7 +1,7 @@
 "Session Management" is the act of saving some of what you are doing  and restoring it later. Often your current state is saved when you quit
 Emacs and restored when you start a new session.
 
-
+*[https://github.com/m0smith/annals Annals] -- Associate [[DeskTops]]s with tasks including Jira and Github.  Think Mylyn.
 * [[BookmarkPlus|Bookmark+]] -- [[DeskTop]]s as bookmarks: just hit a
   key to create them or jump among them.
 * DeskTop -- Save and restore open [[buffer]]s, [[point]], [[mark]],
