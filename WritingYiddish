@@ -1,3 +1,3 @@
-Quail input method for Yiddish text (logically, so wait for SupportBiDi or use Lisp:poor-mans-bidi.el in the mean time).
+Quail input method for Yiddish text.
 
 Lisp:yiddish.el
