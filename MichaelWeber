@@ -9,7 +9,7 @@ EmacsLisp code which I released so far:
 
 When possible, I program in CommonLisp these days.  I use SlimeMode as Lisp IDE, and I have made some minor contributions as well.
 
-I am interested in having Emacs SupportBiDi.  Actually I am running the emacs-bidi branch for some time now.  I do not use it too often, though.
+I am interested in having Emacs support bidi.  Actually I am running the emacs-bidi branch for some time now.  I do not use it too often, though.
 
 I try to automate recurring tasks during editing, here are some macros which I bound to convenient keys:
 
