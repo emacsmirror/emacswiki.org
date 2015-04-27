@@ -76,7 +76,6 @@ Utökningar av Emacs: programmering i EmacsLisp, modifiera Emacs-källkoden
 * CategoryBuilding -- hur man kompilerar Emacs från källkoden
 * CategoryPatches -- patchar till Emacs, huvudsakligen på C-nivån
 * CategoryExtensionLanguage -- andra programspråk än EmacsLisp: Guile, Erlang, Python, ...
-* SupportBiDi -- stöd för skriftsystem som skrivs från höger till vänster
 
 Hur man laddar hem och installerar Emacs
 * CategoryPorts -- anpassningar för olika operativsystem: NT, Mac, GNU/Linux medräknat Debian, BSD
