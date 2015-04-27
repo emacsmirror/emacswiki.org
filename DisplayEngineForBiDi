@@ -1,18 +1,1 @@
-Eli Zaretskii wrote the code for the redisplay which takes into account
-having Emacs SupportBiDi.  Buffers are kept in logical order.
-The display engine thus has to implement a BiDiAlgorithm.
-
-It is based on UAX#9 but uses a character-by-character-approach just
-like current Emacs redisplay: Based on the current position in the
-buffer, the "next" character is fetched.  Instead of just incrementing
-the position, Eli does some scanning, caching, jumping and direction
-reversing such that the "next" character for redisplay is indeed the
-next character in visual order (in the window), but not necessarily
-the next character in logical order (in the buffer).
-
-UAX#9 is the Unicode Standard Annex #9 Technical Report and is
-available at http://www.unicode.org/unicode/reports/tr9/.
-
-
-----
-CategoryInternationalization
+DeletedPage
