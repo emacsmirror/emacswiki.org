@@ -14,7 +14,7 @@ about 5k.
 
 * Lisp:bidi-table-test.el
 
-The classification of characters in Emacs relies on CategoryTables.
+The classification of characters in Emacs relies on Category tables.
 In Emacs, these categories can be modified on the Lisp level.  Since I
 didn't want to reserve any categories, I'm getting some unused
 categories when bidi.el is loaded.  This seems not to work in XEmacs.
