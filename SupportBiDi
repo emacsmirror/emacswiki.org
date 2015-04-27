@@ -4,13 +4,6 @@ movement.
 Starting with Emacs 25.1 (yet unreleased as of this writing, but available from the Emacs source repository), the new isolate
 controls introduced by Unicode 6.3 are fully supported.
 
-== Emacs Related Features ==
-
-* DisplayEngineForBiDi
-* DisplayEngineForArabic
-* BiDiAlgorithm for Emacs
-* BiDiTables for Emacs
-
 == References ==
 
 You can find more information on the Unicode homepage.
@@ -27,3 +20,9 @@ following location for the bidi types, see the
 <nowiki>BidiMirroring.txt</nowiki> file for the mirroring of glyphs.
 
 * ftp://ftp.unicode.org/Public/UNIDATA/
+
+If you want to play around with Elisp implementations of the algorithm, take a look at
+the following pages:
+
+* BiDiAlgorithm for Emacs
+* BiDiTables for Emacs
