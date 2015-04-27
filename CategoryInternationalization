@@ -21,7 +21,7 @@ Getting started:
 * TypingNonAsciiCharacters -- debugging your setup when the keyboard fails
 * ScimBridge -- Write in various languages with [http://www.scim-im.org/ SCIM]
 * IBusMode -- Write in various languages with [http://code.google.com/p/ibus/ IBus]
-* WritingArabic -- see also: DisplayEngineForArabic
+* WritingArabic
 * WritingChinese -- details for Chinese readers and writers
 ** [[ScimBridge Chinese]] use SCIM in Emacs.
 ** WritingChineseWithWuBi
