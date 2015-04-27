@@ -20,7 +20,5 @@ applications put text in visual order into the clipboard.
 The bidi code needs BiDiTables that classify characters according to
 the bidi types used in the Unicode Tech Report.
 
-See also SupportBiDi.
-
 ----
 CategoryInternationalization
