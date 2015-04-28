@@ -63,6 +63,20 @@ See PrintCommandQuotes for a work-around.
 === Printing with Word on MS Windows. ===
 See PrintUsingWord.
 
+=== Printing with preview ===
+Create <code>/usr/local/bin/print_preview</code>:
+
+  #!/bin/sh
+  PREVIEW_FILE=$(mktemp --suffix=.ps)
+  cat >"$PREVIEW_FILE" && evince "$PREVIEW_FILE" || \
+      notify-send 'Print preview failed' --urgency=critical \
+      --expire-time=2000
+  rm "$PREVIEW_FILE"
+
+Configure Emacs:
+
+  (setq ps-lpr-command "print_preview")
+
 ----
 CategoryPrinting
 CategoryExternalUtilities
