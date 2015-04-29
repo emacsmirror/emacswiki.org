@@ -15,11 +15,18 @@ database.  Here is an example for how I do it:
 
 You also need to tell the BBDB to define the mail abbreviations for
 you.  This depends on the mail package you use -- here is the code for
-your ~/.emacs for both plain mail-mode, or the message-mode that comes
+your ##~/.emacs## for both plain mail-mode, or the message-mode that comes
 with Gnus.
+
+In BBDBv2:
 
     (add-hook 'mail-setup-hook 'bbdb-define-all-aliases)
     (add-hook 'message-setup-hook 'bbdb-define-all-aliases)
+
+In BBDBv3:
+
+    (add-hook 'mail-setup-hook 'bbdb-mail-aliases)
+    (add-hook 'message-setup-hook 'bbdb-mail-aliases)
 
 Now you can create a new mail and type `schroeder SPC' at the To:
 header.  Since "schroeder" is a mail-abbrev, this will get expanded to
