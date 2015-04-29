@@ -784,6 +784,13 @@ about it, I'll check what can be done.
 
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
+[new]
+Hi,
+thanks a million for SC! I have a question though. When rescanning a virtual buffer, the details of the files don't get refreshed (e.g. size, modification time etc.) Is this by design, or am I missing something?
+
+Thanks.
+hajovonta
+
 ----
 CategoryDirectories
 CategoryEmulation
