@@ -30,11 +30,6 @@ Starting with version 21.4-a, sql.el is included in the regular sources of Emacs
 that haven't made it out of CVS, so don't use the latest version if you're not running a bleeding edge Emacs from CVS.
 
 If those with pre-22.1 versions of Emacs can identify changes needed to run on older releases, send them to MichaelMauger for consideration.  However, the emphasis is on improving future versions of Emacs.
-
-==  Prompt for "as sysdba" or "as sysoper" ==
-
-TomPopovich modified sql-mode.el so users are able to specify as-sysdba prompt so you can log in as "as sysdba"  or "as sysoper".  Code changes
-were [http://lists.gnu.org/archive/html/help-gnu-emacs/2008-04/msg00094.html posted] to [[help-gnu-emacs]] on 4/3/08.
  
 == Related Pages ==
 
