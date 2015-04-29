@@ -288,9 +288,11 @@ variables and short descriptions. Here is a function which searches the current 
                  (insert wholestr))))))
 </pre>        -- JoeBloggs
 
+== Examples of customizing header2.el headers ==
+
+* [https://github.com/kaushalmodi/.emacs.d/blob/master/setup-files/setup-header2.el kaushalmodi's header2 setup]
 
 ----
 CategoryTemplates
 CategoryCode
 CategoryComments
-
