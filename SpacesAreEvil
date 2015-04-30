@@ -1,0 +1,6 @@
+The internet makes it seem hard to indent things with tabs in emacs.
+This is not the case, you just need to make sure the variable indent-tabs-mode is set to t, and then you can change the tab width by setting the variable tab-width to whatever you like.
+Example:
+
+<code>M-x set-variable indent-tabs-mode t
+M-x set-variable tab-width 4</code>
