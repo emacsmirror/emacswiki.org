@@ -4,3 +4,29 @@ elpa or melpa?
 
 -- yashi 2014-11-11 12:00 UTC
 
+
+----
+
+Thanks for all the fixes! Elpa would be nice. One other suggestion:
+
+@@ -494,10 +494,15 @@
+ 
+ (defconst hif-valid-token-list (mapcar 'cdr hif-token-alist))
+ 
++(defconst hif-int-suffix-regexp
++  "\\(?:[uU]?[lL]\\{,2\\}\\|[lL]\\{,2\\}[uU]?\\)"
++  "Matches optional suffix in integer literals, per
++  http://en.cppreference.com/w/cpp/language/integer_literal")
++
+ (defconst hif-token-regexp
+   (concat (regexp-opt (mapcar 'car hif-token-alist))
+-          "\\|0x[0-9a-fA-F]+\\.?[0-9a-fA-F]*"
+-          "\\|[0-9]+\\.?[0-9]*"  ;; decimal/octal
++          "\\|0x[0-9a-fA-F]+\\.?[0-9a-fA-F]*" hif-int-suffix-regexp
++          "\\|[0-9]+\\.?[0-9]*" hif-int-suffix-regexp  ;; decimal/octal
+           "\\|\\w+"))
+ 
+ (defconst hif-string-literal-regexp  "\\(\"\\(?:[^\"\\]\\|\\\\.\\)*\"\\)")
+
+-- msw1520 2015-04-30 00:56 UTC
+
