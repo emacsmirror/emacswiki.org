@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr 12 11:14:15 2015 (-0700)
+;; Last-Updated: Wed Apr 29 22:22:58 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3566
+;;     Update #: 3577
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -132,6 +132,7 @@
 ;;
 ;;  Internal variables defined here:
 ;;
+;;    `isearchp-if-empty-prefer-resuming-with-last',
 ;;    `isearchp-last-non-nil-invisible',
 ;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
 ;;    `isearchp-nomodify-action-hook' (Emacs 22+),
@@ -582,6 +583,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/04/29 dadams
+;;     Added: isearchp-if-empty-prefer-resuming-with-last.
+;;     with-isearch-suspended: If isearchp-if-empty-prefer-resuming-with-last is nil then empty means empty.
 ;; 2015/04/12 dadams
 ;;     isearchp-act-on-demand:
 ;;       Bind isearch-mode-end-hook, remove isearchp-property-finish from it temporarily.
@@ -1265,6 +1269,12 @@ You can use `M-`' to toggle this anytime during Isearch.")
   (defvar isearchp-replacement ""
     "Replacement string used by `isearchp-replace-on-demand'."))
 
+(defvar isearchp-if-empty-prefer-resuming-with-last t
+  "If non-nil, `isearch-new-string' = \"\" resumes with last string.
+If nil, or if there is no search string, search resumes with the empty
+ search string.
+This applies to resumption of search after `with-isearch-suspended'.")
+
 (defvar isearchp-win-pt-line nil
   "Line number of point before searching, relative to `window-start'.")
 
@@ -1381,7 +1391,10 @@ suspended."
                             isearch-case-fold-search  isearch-new-case-fold))
                     ;; Empty `isearch-string' means use default.
                     (when (= 0 (length isearch-string))
-                      (setq isearch-string   (or (car (if isearch-regexp regexp-search-ring search-ring))
+                      (setq isearch-string   (or (and isearchp-if-empty-prefer-resuming-with-last
+                                                      (car (if isearch-regexp
+                                                               regexp-search-ring
+                                                             search-ring)))
                                                  "")
                             isearch-message  (mapconcat 'isearch-text-char-description
                                                         isearch-string ""))
