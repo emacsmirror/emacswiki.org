@@ -341,7 +341,7 @@ The last number should be bigger than the fonts you use. Now restart Aquamacs.
 To launch Aquamacs from a terminal, use the installer function in the Tools menu.  You can then launch Aquamacs using the "aquamacs" command.  Note that this pertains to starting Aquamacs from a "terminal", and not from arbitrary scripts, specifically in batch mode: unlike the "emacs" command, "aquamacs" currently does not process other arguments than filenames.  
 To compile Elisp sources, call ##/Applications/Aquamacs.app/Contents/MacOS/Aquamacs##  (from version 2.0 on)
 
-To interact with a running Aquamacs instance, you can use the built-in Emacs server. Invoke <code>M-x server-start</code> to start the server, or add the line <code>(server-start)</code> to your Preferences.el or .emacs file. Then, from the terminal, use the "emacsclient" command to open a file in your running Aquamacs instance. Use <code>C-x #</code> to close an emacsclient buffer.
+To interact with a running Aquamacs instance, you can use the built-in Emacs server. Invoke <code>M-x server-start</code> to start the server, or add the line <code>(server-start)</code> to your Preferences.el or .emacs file. Then, from the terminal, use the "emacsclient" command (you need to "Install Command Line Tools", see next section) to open a file in your running Aquamacs instance. Use <code>C-x #</code> to close an emacsclient buffer.
 
 === Installing or Upgrading the Command-line Tools ===
 
