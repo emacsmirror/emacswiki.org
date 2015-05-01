@@ -28,3 +28,10 @@ PhilHudson: Share whenever you find yourself going through pages of search resul
 
 -- SachaChua 2013-11-26 03:26 UTC
 
+
+----
+
+Since the current Emacs includes eww, the list of required packages should also  include libxml2-dev.
+
+-- KnutJackowski 2015-05-01 11:18 UTC
+
