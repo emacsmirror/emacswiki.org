@@ -49,5 +49,7 @@ DrewAdams suggestion of `transpose-lines' works like a charm. It makes the imple
   (forward-line -1))
 }}}
 
+This moves the courser to the beginning of the line, though.
+
 ----
 CategoryEditing
