@@ -81,7 +81,7 @@ Additional:
 
 
 
-
+[:SearchAcrossFiles]
 == Search Across Files ==
 
 You can also, of course, visit files to be searched in buffers, and then use the techniques above for [[#SearchInBuffers]].
@@ -101,6 +101,7 @@ Additional:
 
 
 
+[:ReplaceAcrossFiles]
 == Replace Across Files ==
 
 Vanilla:
@@ -138,6 +139,5 @@ Additional:
 
 ----
 CategoryExternalUtilities CategoryRegexp
-
 
 
