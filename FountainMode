@@ -1,82 +1,94 @@
-Fountain Mode is a full-featured screenwriting environment using the Fountain markup format. For more information on
-the Fountain markup format, visit http://fountain.io/. Fountain Mode is created and maintained by PaulRankin.
+https://github.com/rnkn/fountain-mode
+
+Fountain Mode aims to be a full-featured screenwriting environment for GNU Emacs using the Fountain markup format. For more information on the Fountain markup format, visit http://fountain.io.
 
 == Features ==
 
-* support for the Fountain 1.1 specification (scene numbers and dual dialog are forthcoming)
+* Support for most of the Fountain 1.1 specification (scene numbers and dual dialog are forthcoming)
 * Auto-align elements for a kind of WYSIWYG (display only, does not modify file contents)
-* Integration with ##outline## to toggle visibility of sections and scenes (not yet available in stable release, see below)
-* exporting to HTML and PDF (requires [http://www.princexml.com/ Prince])
-* include or omit a title page
-* multiple levels of syntax highlighting for all elements (see below)
-* add/remove continued dialog to successively speaking characters
-* ##occur## navigator for section headings, synopses, notes and scene
-  headings
-* templates for inserting synopses, notes and metadata
-* navigate by scene heading and character
-* support for emphasis (bold, italic, underlined text)
-* toggle visibility of emphasis delimiters and escaping characters
-* standard commenting (boneyard) behaviour
+* Integration with <code>outline</code> to toggle visibility of sections and scenes
+* Export to HTML and PDF (PDF export requires [http://www.princexml.com Prince])
+* Include or omit a title page
+* Navigate by scene heading
+* Emphasis (bold, italic, underlined text)
+* Toggle visibility of emphasis delimiters and syntax characters
+* Multiple levels of syntax highlighting for all elements
+* Add/remove automatic “(CONT’D)” to successively speaking characters
+* Automatic “(MORE)” and “(CONT’D)” when breaking dialog across pages in PDF output
+* Templates for inserting synopses, notes and metadata
+* Support for both official and legacy commenting (boneyard) syntax
+* Navigator (using <code>occur</code>) for section headings, synopses, notes and scene headings
 * everything is customizable, of course
 
-The following features are not yet supported:
+The following features are not ''yet'' supported:
 
-* dual dialogue
 * scene numbers
+* dual dialog
 
-Most common features are accessible from the menu. For a full list of
-functions and key-bindings, type ##C-h m##. Bugs and feature requests
-are encouraged on the [mailto:emacs.fountain@librelist.com mailing list (emacs.fountain@librelist.com)]
-or the [https://github.com/rnkn/fountain-mode/issues/ GitHub Issues] page.
+Most common features are accessible from the menu. For a full list of functions and key-bindings, type <code>C-h m</code>.
+
+See the [https://github.com/rnkn/fountain-mode/wiki Wiki] on GitHub for ways to extend Fountain Mode.
 
 == Requirements ==
 
-* Emacs 24 (not tested on earlier versions, only tested on Mac OS X
-  and Linux, not tested on Windows).
+* Emacs 24.4
 * [https://github.com/magnars/s.el s.el], the long lost Emacs string manipulation library.
-* Exporting to PDF requires [http://www.princexml.com/ Prince], which is free for personal
-  use. Prince adds a removable PDF annotation on the first page; if
-  you don't like it, delete the annotation in a PDF application that
-  supports editing annotations, or open the PDF and print to PDF,
-  which will remove all annotations.
-* to insert UUIDs (useful for using notes as linked bookmarks) you'll
-  need either ##uuidgen## CLT (usually pre-installed on OS X and Linux)
-  or [https://github.com/nicferrier/emacs-uuid uuid.el] Emacs package.
+* Exporting to PDF requires [http://www.princexml.com Prince], which is free for personal use. Prince adds a removable PDF annotation on the first page; if you don’t like it, delete the annotation in a PDF application that supports editing annotations, or open the PDF and print to PDF, which will remove all annotations.
+* If you want to use UUIDs (useful for using notes as linked bookmarks) you’ll need either <code>uuidgen</code> CLT (usually preinstalled on OS X and Linux) or [https://github.com/nicferrier/emacs-uuid uuid.el] Emacs package.
 
 == Installation ==
 
-Fountain Mode is available through [http://melpa.milkbox.net MELPA]
+''For users on OS X with no experience with Emacs, see the [https://github.com/rnkn/fountain-mode/wiki/Absolute-Beginner's-Guide-(OS-X) Absolute Beginner’s Guide (OS X)].''
 
-Alternately, download from [https://github.com/rnkn/fountain-mode GitHub] and put ##fountain-mode.el## and ##s.el## in your ##load-path## and
-add the following line to your ##.emacs## or ##init.el## file:
+Fountain Mode is available through [http://melpa.org MELPA] and [http://stable.melpa.org MELPA-stable]. I encourage installing the stable version.
 
-    (require 'fountain-mode)
-
-To load Fountain Mode whenever you open a ##.fountain## file, also add the
-following:
-
-    (add-to-list 'auto-mode-alist '("\\.fountain$" . fountain-mode))
-
+Alternately, download the [https://github.com/rnkn/fountain-mode/releases/latest latest release], move the files into your <code>load-path</code> and add the following line to your <code>.emacs</code> or <code>init.el</code> file:
+<pre>
+(require 'fountain-mode)
+</pre>
+If you want to use the <code>develop</code> branch (not recommended) to stay on the bleeding-edge, clone the repository in your <code>load-path</code> and require as above:
+<pre>
+git clone https://github.com/rnkn/fountain-mode.git
+</pre>
+To load Fountain Mode whenever you open a <code>.fountain</code> file, also add the following:
+<pre>
+(add-to-list 'auto-mode-alist '("\\.fountain$" . fountain-mode))
+</pre>
 == Outlining ==
 
 There are six possible levels of outline subtrees. Section headings count as the first five levels and scene headings count as the sixth level, e.g.:
 
-    # section level 1
-    ## section level 2
-    ### section level 3
-    #### section level 4
-    ##### section level 5
-    ###### invalid section level
-    INT. LEVEL 6 - DAY
-    
-    An obese man (40s) with a large mustard stain on his shirt exits the
-    elevator. He holds a hotdog.
+<pre>
+# section level 1
+## section level 2
+### section level 3
+#### section level 4
+##### section level 5
+###### invalid section level
+INT. LEVEL 6 - DAY
 
-Cycle subtree visibility with TAB. Cycle global outline visibility with <backtab> (shift-TAB) or C-u TAB.
+An obese man (40s) with a large mustard stain on his shirt exits the
+elevator. He holds a hotdog.
+</pre>
+Cycle subtree visibility with <code>TAB</code>. Cycle global outline visibility with <code><backtab></code> (shift-TAB) or <code>C-u TAB</code>. More navigation and structure editing commands are:
 
-== Syntax Highlighting ==
+* <code>C-c C-f fountain-outline-forward</code>
+* <code>C-c C-b fountain-outline-backward</code>
+* <code>C-c C-n fountain-outline-next</code>
+* <code>C-c C-p fountain-outline-previous</code>
+* <code>C-c C-u fountain-outline-up</code>
+* <code>C-c C-v fountain-outline-shift-down</code>
+* <code>C-c C-^ fountain-outline-shift-up</code>
+* <code>C-c C-SPC fountain-outline-mark</code>
 
-To change the level of syntax highlighting, customize the value of
-##font-lock-maximum-decoration##. This can be set indirectly with the
-menu, or with ##M-x fountain-set-font-lock-decoration## and saved with
-##M-x fountain-save-font-lock-decoration##.
+== Bugs and Feature Requests ==
+
+Raise an issue on the [https://github.com/rnkn/fountain-mode/issues Issues] page on GitHub, or simply send an email to the mailing list: [mailto:emacs.fountain@librelist.com emacs.fountain@librelist.com].
+
+== Roadmap ==
+
+See [https://github.com/rnkn/fountain-mode/milestones Milestones] on GitHub.
+
+== History ==
+
+See [https://github.com/rnkn/fountain-mode/releases Releases] on GitHub.
