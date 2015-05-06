@@ -1,0 +1,4 @@
+Is there a way to make directory locals apply to files matching a pattern? I want to apply a mode to all files in a certain directory based on a file extension that emacs doesn’t (and shouldn’t) recognize by default. How do I do this without using `(eval)` or editing my `.emacs`? This should be doable in a project-specific way…
+
+-- [https://ohnopub.net/~ohnobinki/ binki] 2015-05-06 15:42 UTC
+
