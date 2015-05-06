@@ -791,6 +791,12 @@ thanks a million for SC! I have a question though. When rescanning a virtual buf
 Thanks.
 hajovonta
 
+[new]
+Hi hajovonta,
+
+This is by design, because the only way to refresh the buffer would be to re-insert all the entries in it, but a virtual buffer may contain entries that don't exist anymore (e.g. you could have saved the buffer as a file months or years ago) but you may want to keep the entries anyway - refreshing the buffer would sweep them away.
+
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 ----
 CategoryDirectories
 CategoryEmulation
