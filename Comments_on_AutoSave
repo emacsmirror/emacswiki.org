@@ -6,3 +6,10 @@ Reading the Auto-Saving section of the emacs manual I tried this method and it a
 
 -- [http://joseghast.org joseghast] 2014-07-13 09:12 UTC
 
+
+----
+
+In the section "Running save-buffer automatically", user BryanMurdock describes a problem with auto-save-visited-file-name in which the buffer is considered out of date and displays a warning.  Like joseghast above I just turned on auto-save-visited-file-name and it seems to work as I expect it to, with no warnings about the buffer being out of date.
+
+-- jbyler 2015-05-06 19:18 UTC
+
