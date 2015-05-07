@@ -18,7 +18,7 @@ Comparing Different Strategies for Adding Scripting to an Application], especial
 * EmacsCommonLisp -- an EmacsLisp library that makes GNU Emacs and XEmacs understand CommonLisp
 * EdWin -- uses scheme and is written in MitSlashGnuScheme
 * EmacsObjectOrientedProgrammingSystem -- implements a Smalltalk-80-like language in GNU EmacsLisp
-* [[Zile]] -- uses Zile Lisp
+* [[Zile]] -- uses Lua, in previous versions used Zile Lisp
 
 Not Emacs but what can we say:
 
