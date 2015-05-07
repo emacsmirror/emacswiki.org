@@ -19,6 +19,7 @@ Comparing Different Strategies for Adding Scripting to an Application], especial
 * EdWin -- uses scheme and is written in MitSlashGnuScheme
 * EmacsObjectOrientedProgrammingSystem -- implements a Smalltalk-80-like language in GNU EmacsLisp
 * [[Zile]] -- uses Lua, in previous versions used Zile Lisp
+* ZileOnGuile - Proof of concept hack of C based Zile with Guile support
 
 Not Emacs but what can we say:
 
