@@ -4,7 +4,7 @@ This small code provides a `M-x smart-compile' command, an alternative to the `M
 
 The latest version is available at:
 
-* Lisp:smart-compile.el
+* https://github.com/zenitani/elisp/blob/master/smart-compile.el
 
 ----
 
