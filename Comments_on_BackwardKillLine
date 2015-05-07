@@ -1,0 +1,6 @@
+At the very top when talking about kill / yanking backwards, I think it is supposed to say 'M-0 C-k', not 'C-0 C-k'. Feeding numeric arguments without using C-u usually involves typing M-<d>, where <d> is the numeric argument.
+
+Am I wrong here?
+
+-- Anonymous 2015-05-07 21:21 UTC
+
