@@ -1,0 +1,32 @@
+This page is about library '''<tt>[[apu.el]]</tt>''', which provides apropos help for Unicode characters.
+
+Command `apropos-unicode' shows you the Unicode characters that
+match an apropos pattern you specify: a regexp or a
+space-separated list of words.  The characters whose names match
+are shown in a help buffer, along with the names and code points
+(decimal and hex).
+
+In the help buffer, you can use these keys to act on the character
+described on the current line:
+
+* `RET' or `mouse-2' - see detailed information about it.
+* `i' - google for more information about it.
+* `^' - insert it in the buffer where you invoked `apropos-unicode'.
+* `c' - define a command to insert the character, having the same name.   (You need library <tt>[[ucs-cmds.el]]</tt> for this.)
+* `k' - globally bind a key to insert it.
+* `l' - locally bind a key to insert it
+* `M-w' - copy it to the `kill-ring'.
+* `M-y' - copy it to the secondary selection.
+
+Some simple tips for matching some common Unicode character names:
+
+* You can match chars that have a given base char, such as `e', by
+  using a regexp `## \(BASE-CHAR \|$\)##'.  That matches ##BASE-CHAR## after a
+  `SPC' char and before a `SPC' char or at the end of the line.
+* You can use `small letter' to match lowercase letters, and `capital letter' to match capital letters.  Just `small' matches lots of
+  chars that are not letters.  Just `capital' matches chars that
+  include capital letters that serve as math symbols and such.
+
+----
+
+CategoryHelp CategoryEditing CategoryWriting
