@@ -9,6 +9,7 @@ Getting started:
 ** InternationalFonts -- where to get the fonts to show your characters
 ** FontSetsForNTEmacs -- how to install the fonts for Emacs on Windows
 ** PrintingBdfFonts -- when you use the intlfonts package with the BDF fonts, here is how to print them using PsPrint
+* AproposUnicode -- help with Unicode characters
 * DisplayingNonAsciiCharacters -- debugging your setup when the display fails
 * FindingNonAsciiCharacters
 * BufferCharset -- list charsets used in a buffer
@@ -18,7 +19,6 @@ Getting started:
 ** Lisp:fliptext.el -- unicode upside-down characters
 
 * AltGrKey -- Emacs keys seems hidden because /AltGr/ + /Control/ + /key/ is (almost) just /AltGr/ + /key/  -- Solution: use /AltGr/ + /RControl/ (in that order!)
-* TypingNonAsciiCharacters -- debugging your setup when the keyboard fails
 * ScimBridge -- Write in various languages with [http://www.scim-im.org/ SCIM]
 * IBusMode -- Write in various languages with [http://code.google.com/p/ibus/ IBus]
 * WritingChinese -- details for Chinese readers and writers
