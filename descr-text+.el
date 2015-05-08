@@ -8,9 +8,9 @@
 ;; Created: Thu Nov 24 11:57:04 2011 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May  8 08:03:06 2015 (-0700)
+;; Last-Updated: Fri May  8 08:14:24 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 306
+;;     Update #: 307
 ;; URL: http://www.emacswiki.org/descr-text+.el
 ;; Keywords: help, characters, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
@@ -193,7 +193,7 @@ Optional arg MAX-WIDTH is the max width needed so far (defaults to 0)."
             ((memq key '(face font-lock-face mouse-face))
 	     (insert-text-button (format "%S" value) 'type 'help-face 'help-args (list value))
              (setq max-width  (max max-width (current-column))))
-            ((memq key '(keymap local))
+            ((memq key '(keymap local-map))
              (insert-text-button (format "%S" value) 'type 'help-keymap 'help-args (list value)))
             ((widgetp value)
 	     (describe-text-widget value)
