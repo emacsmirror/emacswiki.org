@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May  8 16:52:27 2015 (-0700)
+;; Last-Updated: Fri May  8 16:54:34 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 232
+;;     Update #: 233
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
@@ -270,7 +270,7 @@ Simple tips for matching some common Unicode character names:
                (or (split-string pat "[ \t]+" t)  (user-error "No word list given")) ; Split into words
              pat))))
   (require 'apropos)  ; For `apropos-parse-pattern', `apropos-regexp'.
-  (apropos-parse-pattern pattern)
+  (let ((apropos-synonyms  ())) (apropos-parse-pattern pattern))
   (message "Matching `%s'..." pattern)
   (ucs-names)
   (message "Matching `%s'...done" pattern)
