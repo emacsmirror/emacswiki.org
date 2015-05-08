@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May  8 15:05:42 2015 (-0700)
+;; Last-Updated: Fri May  8 15:37:46 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 212
+;;     Update #: 228
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
@@ -42,16 +42,17 @@
 ;;   * `^' - insert it in the buffer where you invoked
 ;;           `apropos-unicode'.
 ;;   * `c' - define a command to insert the character, having the same
-;;           name.
-;;   * `k' - globally bind a key to insert it
-;;   * `l' - locally bind a key to insert it
+;;           name.  (You need library `ucs-cmds.el' for this.)
+;;   * `k' - globally bind a key to insert it.
+;;   * `l' - locally bind a key to insert it.
 ;;   * `M-w' - copy it to the `kill-ring'.
 ;;   * `M-y' - copy it to the secondary selection.
 ;;
 ;;
 ;;  Commands defined here:
 ;;
-;;    `apropos-unicode', `apu-chars',
+;;    `apropos-unicode', `apu-char-codepoint-at-point',
+;;    `apu-char-name-at-point', `apu-chars',
 ;;    `apu-copy-char-at-point-as-kill', `apu-copy-char-here-as-kill',
 ;;    `apu-copy-char-at-point-to-second-sel',
 ;;    `apu-copy-char-here-to-second-sel', `apu-define-insert-command',
@@ -61,8 +62,9 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `apu-char-here', `apu-char-name-here', `apu-char-string-here',
-;;    `apu-copy-char-to-second-sel', `apu-remove-if-not'.
+;;    `apu-char-at-point', `apu-char-here', `apu-char-name-here',
+;;    `apu-char-string-here', `apu-copy-char-to-second-sel',
+;;    `apu-remove-if-not'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -113,6 +115,27 @@
 (defun apu-char-here ()
   "Return the Unicode character described on this line."
   (string-to-char (apu-char-string-here)))
+
+(defun apu-char-name-at-point (&optional position msgp) ; Not bound.
+  "Return the name of the Unicode character at point, or nil if none.
+Non-nil POSITION means use the character at POSITION."
+  (interactive "d\np")
+  (apu-char-at-point 'name position msgp))
+
+(defun apu-char-codepoint-at-point (&optional position msgp) ; Not bound.
+  "Return the codepoint of the Unicode char at point, or nil if none.
+Non-nil POSITION means use the character at POSITION."
+  (interactive "d\np")
+  (apu-char-at-point 'code position msgp))
+  
+(defun apu-char-at-point (return-type position msgp)
+  "Return the name or codepoint of the Unicode char at point."
+  (let* ((name+code  (rassq (char-after position) (or ucs-names  (ucs-names))))
+         (name       (car name+code))
+         (code       (cdr name+code)))
+    (unless name (error "No Unicode char here"))
+    (prog1 (if (eq return-type 'name) name code)
+      (when msgp (message "Char: `%s', Codepoint: `%d' (`%#x')" name code code)))))
 
 (defun apu-char-name-here ()
   "Return the name of the Unicode char described on this line, as a string."
@@ -229,7 +252,7 @@ The output is in `apu-mode'.
 Simple tips for matching some common Unicode character names:
 * You can match chars that have a given base char, such as `e', by
   using a regexp ` \(BASE-CHAR \|$\)'.  That matches BASE-CHAR after a
-  SPC char and before a SPC char or at the end of the line.
+  `SPC' char and before a `SPC' char or at the end of the line.
 * You can use `small letter' to match lowercase letters, and `capital
   letter' to match capital letters.  Just `small' matches lots of
   chars that are not letters.  Just `capital' matches chars that
