@@ -9,6 +9,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** MoViMentMode -- A minor mode for easier cursor movement
 
 * [[kill|Killing]], [[yank|yanking]], copying and deleting:
+** AproposUnicode -- Copy Unicode characters to the [[kill ring]] or the SecondarySelection
 ** CopyFromAbove -- Copy line or characters from previous line
 ** CopyWithoutSelection -- simply copy current [[line]], current word and current paragraph to the [[kill ring]] without selecting each line, word or paragraph
 ** CopyingWholeLines -- Copying whole lines
