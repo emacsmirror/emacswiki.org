@@ -4,3 +4,10 @@ Am I wrong here?
 
 -- Anonymous 2015-05-07 21:21 UTC
 
+
+----
+
+If you use GUI Emacs (not terminal Emacs) then you can use either `M-0' or `C-0'. But it is better for the page to say `M-0', because that works more generally. I've edited it accordingly. Thx.
+
+-- DrewAdams 2015-05-08 15:07 UTC
+
