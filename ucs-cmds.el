@@ -8,11 +8,11 @@
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan 11 15:12:34 2015 (-0800)
+;; Last-Updated: Fri May  8 15:44:48 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 263
+;;     Update #: 264
 ;; URL: http://www.emacswiki.org/ucs-cmds.el
-;; Doc URL: http://emacswiki.org/UnicodeEncoding
+;; Doc URL: http://www.emacswiki.org/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
 ;; Compatibility: GNU Emacs: 23.x, 24.x, 25.x
 ;;
