@@ -1,5 +1,7 @@
 You might prefer to use electric help instead of help, via:
 
+    M-x load-library ehelp
+
     (global-set-key "\C-h" 'ehelp-command)
 
 Electric help mode does the following.
