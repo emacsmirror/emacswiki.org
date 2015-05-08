@@ -1,4 +1,4 @@
-KillingAndYanking a line backwards can be done with `C-0 C-k' or `C-u 0 C-k'.
+KillingAndYanking a line backwards can be done with `M-0 C-k' or `C-u 0 C-k'.
 
 Deleting words backwards with `C-DEL' or `M-DEL' (`backward-kill-word') is useful since each kill appends to the kill ring and is available as a single yank.  If the point is anywhere in the first sentence, `C-x DEL' (`backward-kill-sentence') can also delete to the beginning of the line.
 
