@@ -1,6 +1,6 @@
 GNU *Zile* ("Zile Implements Lua Editors") "is a text editor development kit, so that you can (relatively) quickly develop your own ideal text editor without reinventing the wheel for many of the common algorithms and data-structures needed to do so."
 
-Prior to version 3 it was GNU *Zile* ("Zile Is Lossy Emacs") is a lightweight ErsatzEmacs from the Free Software Foundation. It attempts to emulate the behavior of its "big brother" in a small package, so that Emacs users can feel at home in limited environments.
+Prior to version 3 its name expanded to  "Zile Is Lossy Emacs". Its goal was to be a lightweight ErsatzEmacs from the Free Software Foundation emulating the behavior of its "big brother" in a small package, so that Emacs users can feel at home in limited environments.
 
 For customization, Zile uses its own limited configuration language known as *Zile Lisp*.
 Zile Lisp is a tiny subset of Emacs Lisp that consists of the Zile commands plus `setq'.
