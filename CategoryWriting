@@ -14,7 +14,8 @@ Clicking the title heading to search for pages about writing in natural language
 === Text Manipulation ===
 * [[Paragraphs]] -- Editing paragraphs. 
 * [[Sentences]] -- Editing sentences. 
-* TypographicalPunctuationMarks -- insert ‘smart’ quotes
+* TypographicalPunctuationMarks -- Insert ‘smart’ quotes
+* AproposUnicode -- Copy, insert and get help on Unicode characters
 
 === Notes and Authoring ===
 * DeftMode -- Quickly browse, filer, and edit directories of plain text notes.
