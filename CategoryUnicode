@@ -12,10 +12,11 @@ Anything having to do with editing, encoding, or displaying Unicode characters i
 
 These libraries are intended to help users who edit Unicode files.
 
-* [[ucs-cmds.el]]
+* AproposUnicode (<tt>[[apu.el]]</tt>)
+* <tt>[[ucs-cmds.el]]</tt>
 * UnicodeHelperMode
 * UnicodeFonts
-* [http://user42.tuxfamily.org/unicode-disp/index.html unicode-disp.el]
+* <tt>[http://user42.tuxfamily.org/unicode-disp/index.html unicode-disp.el]</tt>
 
 == Unicode Interface ==
 
