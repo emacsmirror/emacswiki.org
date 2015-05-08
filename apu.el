@@ -8,11 +8,11 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May  8 15:02:52 2015 (-0700)
+;; Last-Updated: Fri May  8 15:05:42 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 208
+;;     Update #: 212
 ;; URL: http://www.emacswiki.org/apu.el
-;; Doc URL: http://emacswiki.org/AproposUnicode
+;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
 ;; Compatibility: GNU Emacs: 23.x, 24.x, 25.x
 ;;
@@ -28,11 +28,11 @@
 ;;
 ;;    Apropos Unicode characters.
 ;;
-;;  Use command `apropos-unicode' to show Unicode characters that
+;;  Command `apropos-unicode' shows you the Unicode characters that
 ;;  match an apropos pattern you specify: a regexp or a
 ;;  space-separated list of words.  The characters whose names match
-;;  the pattern are shown in a help buffer, along with their names and
-;;  code points (decimal and hex).
+;;  are shown in a help buffer, along with the names and code points
+;;  (decimal and hex).
 ;;
 ;;  In the help buffer, you can use these keys to act on the character
 ;;  described on the current line:
