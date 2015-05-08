@@ -1,7 +1,6 @@
 You can have Gnus check for new mail every 2 minutes:
 
     (gnus-demon-add-handler 'gnus-demon-scan-news 2 t) ; this does a call to gnus-group-get-new-news
-    (gnus-demon-init)  ; this is redundant in No Gnus (e.g. Emacs23) since gnus-demon-add-handler does it for you
 
 You don't need to set any other variables nor load more files.
 
