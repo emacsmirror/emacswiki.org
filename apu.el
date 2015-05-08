@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May  8 15:37:46 2015 (-0700)
+;; Last-Updated: Fri May  8 16:32:35 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 228
+;;     Update #: 229
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
@@ -130,7 +130,7 @@ Non-nil POSITION means use the character at POSITION."
   
 (defun apu-char-at-point (return-type position msgp)
   "Return the name or codepoint of the Unicode char at point."
-  (let* ((name+code  (rassq (char-after position) (or ucs-names  (ucs-names))))
+  (let* ((name+code  (rassq (char-after position) (ucs-names)))
          (name       (car name+code))
          (code       (cdr name+code)))
     (unless name (error "No Unicode char here"))
@@ -139,7 +139,7 @@ Non-nil POSITION means use the character at POSITION."
 
 (defun apu-char-name-here ()
   "Return the name of the Unicode char described on this line, as a string."
-  (car (rassq (apu-char-here) ucs-names)))
+  (car (rassq (apu-char-here) (ucs-names))))
 
 (defun apu-char-string-here ()
   "Return the Unicode character described on this line, as a string."
