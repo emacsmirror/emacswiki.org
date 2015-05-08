@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May  8 16:32:35 2015 (-0700)
+;; Last-Updated: Fri May  8 16:52:27 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 229
+;;     Update #: 232
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
@@ -247,7 +247,14 @@ PATTERN is as for command `apropos': a word, a list of words
  characters).  If it is a word, search for matches for that word as a
  substring.  If it is a list of words, search for matches for any two
  \(or more) of those words.
+
 The output is in `apu-mode'.
+
+Note: Because PATTERN is as for command `apropos', matching of a word
+list is looser than you might think: Instead of matching all of the
+words `greek', `small', and `letter' in any order, it actually matches
+each pair of these words.  So you will get results that match only two
+of the three words.
 
 Simple tips for matching some common Unicode character names:
 * You can match chars that have a given base char, such as `e', by
