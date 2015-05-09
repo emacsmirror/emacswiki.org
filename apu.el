@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May  9 11:46:47 2015 (-0700)
+;; Last-Updated: Sat May  9 15:08:21 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 262
+;;     Update #: 281
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -61,11 +61,15 @@
 ;;    `apu-local-set-insertion-key', `apu-mode',
 ;;    `apu-show-char-details'.
 ;;
+;;  User options defined here:
+;;
+;;    `apu-match-word-pairs-only-flag'.
+;;
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `apu-char-at-point', `apu-char-here', `apu-char-name-here',
 ;;    `apu-char-string-here', `apu-copy-char-to-second-sel',
-;;    `apu-remove-if-not'.
+;;    `apu-match' `apu-remove-if-not'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -76,7 +80,7 @@
 ;;; Change Log:
 ;;
 ;; 2015/05/09 dadams
-;;     Added: apu-match-word-pairs-only-flag, defgroup, and apu-delete-if-not.
+;;     Added: apu-match, apu-match-word-pairs-only-flag, defgroup, and apu-delete-if-not.
 ;;     apu-chars: Respect apu-match-word-pairs-only-flag: Match all words by default.
 ;; 2015/05/08 dadams
 ;;     Created.
@@ -151,6 +155,11 @@ This operation is destructive, reusing conses of XS whenever possible."
     (while (cdr cl-p)
       (if (not (funcall predicate (cadr cl-p))) (setcdr cl-p (cddr cl-p)) (setq cl-p  (cdr cl-p)))))
   xs)
+
+(defun apu-match (pattern char+code)
+  "Return non-nil if regexp PATTERN matches the car of cons CHAR+CODE."
+  (let ((case-fold-search  t))
+    (ignore-errors (string-match-p pattern (car char+code)))))
 
 (defun apu-char-here ()
   "Return the Unicode character described on this line."
