@@ -1,4 +1,4 @@
 == PSGML-Superedit ==
 
-[http://www.linguistik.hu-berlin.de/staff/h2157dr8/software/psgml-superedit.el PSGML-Superedit] by Andreas Nolda provides additional editing functions for PsgmlMode. For the most part, they generalise more basic editing functions in dwim ('do what I mean') style.
+[http://andreas.nolda.org/software/psgml-superedit-1.5.zip PSGML-Superedit] by Andreas Nolda provides additional editing functions for PsgmlMode. For the most part, they generalise more basic editing functions in dwim ('do what I mean') style.
 
