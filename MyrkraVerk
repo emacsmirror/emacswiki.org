@@ -5,13 +5,14 @@ myself [::myrkraverk] on the EmacsChannel and other places.  I am the author of 
 pages on this wiki, though some of them have been rewritten since by
 more capable authors ;-)
 
-I am no longer one of the core developers of [http://www.sxemacs.org/ SXEmacs], a fork of [http://www.xemacs.org/ XEmacs] that was made public during the last hours of 2004.  Where I'm going to fit myself into the Emacs world remains to be seen (at the time of this writing).
+My blog: http://www.myrkraverk.com/blog/
 
 I do not want to sign my work, so that other people won't have any
 scrouples for changing them, but I like to have a list of them here.
 I do not want a link from them to this page.
 
 These pages are (this may not be a complete list):
+* CurlEmodule -- XEmacs bindings for libcurl
 * TinyFugueMode
 * InternationalConsoleFonts -- using international fonts in the terminal
 * QtMode -- using emacs to write Qt applications and halde the Qt
@@ -26,20 +27,7 @@ specific keywords
 * SubdirsToList -- a nifty trick to add lotsa subdirs to list, notably load-path
 * BbdbImporters -- importing stuff into BBDB
 
-I also added a nifty trick to switch W3M tabs to WThreeMTabs.
-
-There are web pages of mine at http://www.myrkraverk.com/
-and http://www.myrkraverk.net/ though nothing very important on them.
-
-I'm also the maintainer of masp,
-https://savannah.nongnu.org/projects/masp/
-
-And I also maintain a port of Colossal Cave or Adventure, sometimes
-called advent at http://playstation2-linux.com/projects/advent
-
-* MyrkraVerkDiscussion -- a discussion that took place between
-AlexSchroeder and PierreGaston when I was new here and I didn't find
-out until much later ;-)
+I also added a nifty trick to switch W3M tabs to WThreeMTabs.  But now I don't remember what it was.
 
 ----
 CategoryHomepage
