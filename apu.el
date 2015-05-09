@@ -8,11 +8,12 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May  8 16:54:34 2015 (-0700)
+;; Last-Updated: Fri May  8 17:02:20 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 233
+;;     Update #: 235
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
+;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
 ;; Compatibility: GNU Emacs: 23.x, 24.x, 25.x
 ;;
