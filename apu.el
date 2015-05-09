@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May  8 17:02:20 2015 (-0700)
+;; Last-Updated: Sat May  9 11:46:47 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 235
+;;     Update #: 262
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -75,6 +75,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/05/09 dadams
+;;     Added: apu-match-word-pairs-only-flag, defgroup, and apu-delete-if-not.
+;;     apu-chars: Respect apu-match-word-pairs-only-flag: Match all words by default.
 ;; 2015/05/08 dadams
 ;;     Created.
 ;;
@@ -97,9 +100,35 @@
 ;;
 ;;; Code:
 
-(require 'descr-text+ nil t) ; Soft-requires `help-fns+.el'. Together they provide help for the keymap.
+(require 'descr-text+ nil t) ; Soft-requires `help-fns+.el'. Help on `keymap' prop for `C-u C-x ='.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defgroup apu nil
+  "Apropos Unicode characters."
+  :prefix "apu-"
+  :group 'i18n :group 'help :group 'matching :group 'editing :group 'convenience
+  :link `(url-link :tag "Send Bug Report"
+                   ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+apu.el bug: \
+&body=Describe bug here, starting with `emacs -Q'.  \
+Don't forget to mention your Emacs and library versions."))
+  :link '(url-link :tag "Download" "http://www.emacswiki.org/apu.el")
+  :link '(url-link :tag "Description" "http://www.emacswiki.org/AproposUnicode")
+  :link '(emacs-commentary-link :tag "Commentary" "apu"))
+
+(defcustom apu-match-word-pairs-only-flag nil
+  "Non-nil means match a word-list pattern like ordinary `apropos' commands.
+A nil value requires each word in the list to be matched.  A non-nil
+value does not require each word to be matched.  It requires only each
+pair of words in the list to be matched.
+
+For example, if non-nil then instead of matching each of the words
+`greek', `small', and `letter' in any order, it actually matches each
+pair of these words (in both pair orders), so you get some results
+that match only two of the three words.  This is probably not what you
+want in most cases, so nil is the default value."
+  :type 'boolean :group 'apu)
 
 (defvar apu-orig-buffer nil
   "Buffer current when `apu-chars' was last invoked.")
@@ -112,6 +141,16 @@
 (defun apu-remove-if-not (pred xs)
   "A copy of list XS with only elements that satisfy predicate PRED."
   (let ((result  ())) (dolist (x xs) (when (funcall pred x) (push x result))) (nreverse result)))
+
+(defun apu-delete-if-not (predicate xs)
+  "Remove all elements of list XS that satisfy PREDICATE.
+This operation is destructive, reusing conses of XS whenever possible."
+  (while (and xs  (not (funcall predicate (car xs))))
+    (setq xs  (cdr xs)))
+  (let ((cl-p  xs))
+    (while (cdr cl-p)
+      (if (not (funcall predicate (cadr cl-p))) (setcdr cl-p (cddr cl-p)) (setq cl-p  (cdr cl-p)))))
+  xs)
 
 (defun apu-char-here ()
   "Return the Unicode character described on this line."
@@ -251,11 +290,17 @@ PATTERN is as for command `apropos': a word, a list of words
 
 The output is in `apu-mode'.
 
-Note: Because PATTERN is as for command `apropos', matching of a word
-list is looser than you might think: Instead of matching all of the
-words `greek', `small', and `letter' in any order, it actually matches
-each pair of these words.  So you will get results that match only two
-of the three words.
+Option `apu-match-word-pairs-only-flag' determines whether each word
+in a word-list pattern is required to be matched or only each possible
+pairs of words are required to be matched.  A nil value means the
+former and is the default.  A non-nil value gives the same behavior as
+the ordinary `apropos' commands.
+
+For example, if non-nil then instead of matching each of the words
+`greek', `small', and `letter' in any order, it actually matches each
+pair of these words (in both pair orders), so you get some results
+that match only two of the three words.  This is probably not what you
+want in most cases.
 
 Simple tips for matching some common Unicode character names:
 * You can match chars that have a given base char, such as `e', by
@@ -268,21 +313,29 @@ Simple tips for matching some common Unicode character names:
   (interactive
    (list (let ((pat  (read-string "Search for Unicode char (word list or regexp): ")))
            (if (string-equal (regexp-quote pat) pat)
-               (or (split-string pat "[ \t]+" t)  (user-error "No word list given")) ; Split into words
+               (or (split-string pat "[ \t]+" t)  (user-error "No word list given"))
              pat))))
-  (require 'apropos)  ; For `apropos-parse-pattern', `apropos-regexp'.
-  (let ((apropos-synonyms  ())) (apropos-parse-pattern pattern))
   (message "Matching `%s'..." pattern)
   (ucs-names)
-  (message "Matching `%s'...done" pattern)
   (setq apu-orig-buffer  (current-buffer))
   (let* ((case-fold-search  t)
-         (chars+codes       (apu-remove-if-not
-                             (lambda (c.c) (ignore-errors (string-match-p apropos-regexp (car c.c))))
-                             ucs-names))
+         ;; Use `apropos-parse-pattern' if a regexp or `apu-match-word-pairs-only-flag' is non-nil.
+         (chars+codes       (cond ((or (atom pattern)  apu-match-word-pairs-only-flag)
+                                   (require 'apropos) ; `apropos-parse-pattern', `apropos-regexp'.
+                                   (apropos-parse-pattern pattern)
+                                   (apu-remove-if-not (apply-partially #'apu-match apropos-regexp)
+                                                      ucs-names))
+                                  (t
+                                   (let ((chs+cds  ucs-names))
+                                     (dolist (word  pattern)
+                                       (setq chs+cds
+                                             (apu-delete-if-not (apply-partially #'apu-match word)
+                                                                chs+cds)))
+                                     chs+cds))))
          (max-char          0)
          (bufname           (format "*`%s' Matching Unicode Chars*" pattern)))
     (unless chars+codes (error "No matching characters"))
+    (message "Matching `%s'...done" pattern)
     (dolist (char+code  chars+codes) (setq max-char  (max max-char (string-width (car char+code)))))
     (with-help-window bufname
       (with-current-buffer bufname
