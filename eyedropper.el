@@ -8,9 +8,9 @@
 ;; Created: Fri Jun 23 08:07:15 2006
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Thu Jan  1 10:37:39 2015 (-0800)
+;; Last-Updated: Sat May  9 13:42:23 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 191
+;;     Update #: 194
 ;; URL: http://www.emacswiki.org/eyedropper.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
@@ -58,7 +58,7 @@
 ;;
 ;;    You will also need my library `hexrgb.el'; it is loaded
 ;;    automatically by `eyedropper.el'.  Get it here:
-;;    http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el.
+;;    http://www.emacswiki.org/hexrgb.el.
 ;;
 ;;  Commands defined here:
 ;;
@@ -84,6 +84,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/05/09 dadams
+;;     eyedrop-(background|foreground)-at-point: Reverse params to and in last let clause.
 ;; 2013/11/15 dadams
 ;;     eyedrop-(fore|back)ground-at-point: Return nil if unspecified-(fg|bg).
 ;; 2012/08/12 dadams
@@ -230,7 +232,7 @@ Non-nil optional arg MSG-P means display an informative message."
                              ((memq ':background face)
                               (cadr (memq ':background face)))))
                       (t nil)))         ; Invalid face value.
-         (bg    (and bg  (not (member bg '("unspecified-fg" "unspecified-bg"))))))
+         (bg    (and (not (member bg '("unspecified-fg" "unspecified-bg")))  bg)))
     (when msg-p
       (if bg (eyedrop-color-message bg) (message "No background color here")))
     bg))
@@ -259,7 +261,7 @@ Non-nil optional arg MSG-P means display an informative message."
                              ((memq ':foreground face)
                               (cadr (memq ':foreground face)))))
                       (t nil)))         ; Invalid face value.
-         (fg    (and fg  (not (member fg '("unspecified-fg" "unspecified-bg"))))))
+         (fg    (and (not (member fg '("unspecified-fg" "unspecified-bg")))  fg)))
     (when msg-p
       (if fg (eyedrop-color-message fg) (message "No foreground color here")))
     fg))
