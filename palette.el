@@ -8,9 +8,9 @@
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Sun Jan  4 16:37:28 2015 (-0800)
+;; Last-Updated: Sat May  9 14:07:54 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 784
+;;     Update #: 795
 ;; URL: http://www.emacswiki.org/palette.el
 ;; Doc URL: http://emacswiki.org/ColorPalette
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
@@ -313,6 +313,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/05/09 dadams
+;;     palette-(foreground|background)-at-point: Add let clause for unspecified-(fg|bg).
+;;     palette-list-colors-nearest: Require misc-cmds.el and raise error if not Emacs 24+.
 ;; 2014/10/19 dadams
 ;;     palette-where-is-color: Hack to handle hue=0.0.
 ;;     palette-where-is-color, palette-brightness-scale:
@@ -693,7 +696,7 @@ user updates `blink-cursor-mode'.")
     (define-key popup-map [bg-at-point]
       '(menu-item "Color at Cursor" palette-background-at-point
         :help "Return the background color under the text cursor"))
-    (when (fboundp 'list-colors-Library) ; nearest `misc-cmds.el', Emacs 24+.
+    (when (fboundp 'list-colors-nearest) ; Library `misc-cmds.el', Emacs 24+.
       (define-key popup-map [list-colors-nearest]
         '(menu-item "List Nearest Colors" palette-list-colors-nearest
           :help "List the colors nearest the color under the text cursor")))
@@ -1213,7 +1216,8 @@ NOTE: The cursor is positioned in each of the windows so that it
                              ((and (consp (cdr face)) (memq ':background face))
                               (cadr (memq ':background face)))
                              (t (cdr (assq 'background-color (frame-parameters)))))) ; No bg.
-                      (t nil))))        ; Invalid face value.
+                      (t nil)))         ; Invalid face value.
+         (bg    (and (not (member bg '("unspecified-fg" "unspecified-bg")))  bg)))
     (when msg-p (if bg (palette-color-message bg t) (message "No background color here")))
     bg))
 
@@ -1223,8 +1227,10 @@ NOTE: The cursor is positioned in each of the windows so that it
 With a prefix arg, you are prompted for COLOR."
   (interactive
    (list (if current-prefix-arg (palette-read-color nil t) (palette-background-at-point))))
-  (let ((pop-up-frames  t))
-    (list-colors-nearest color)))
+  (unless (and (require 'misc-cmds nil t)
+               (fboundp 'list-colors-nearest))
+    (error "This command requires library `misc-cmds.el' and Emacs 24 or later"))
+  (let ((pop-up-frames  t)) (list-colors-nearest color)))
 
 ;;;###autoload
 (defalias 'foreground-color 'palette-foreground-at-point)
@@ -1261,7 +1267,8 @@ informative message."
                              ((and (consp (cdr face)) (memq ':foreground face))
                               (cadr (memq ':foreground face)))
                              (t (cdr (assq 'foreground-color (frame-parameters)))))) ; No fg.
-                      (t nil))))        ; Invalid face value.
+                      (t nil)))         ; Invalid face value.
+         (fg    (and (not (member fg '("unspecified-fg" "unspecified-bg")))  fg)))
     (when msg-p (if fg (palette-color-message fg t) (message "No foreground color here")))
     fg))
 
