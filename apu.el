@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 10 14:53:36 2015 (-0700)
+;; Last-Updated: Sun May 10 15:13:26 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 288
+;;     Update #: 290
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -82,6 +82,7 @@
 ;;
 ;; 2015/05/10 dadams
 ;;     Added: apu-zoom-char-here, apu-zoom-char-at-point.  Bound apu-zoom-char-here to z.
+;;     apu-chars: Use delete-if-not correctly.
 ;; 2015/05/09 dadams
 ;;     Added: apu-match, apu-match-word-pairs-only-flag, defgroup, and apu-delete-if-not.
 ;;     apu-chars: Respect apu-match-word-pairs-only-flag: Match all words by default.
@@ -360,8 +361,11 @@ Simple tips for matching some common Unicode character names:
                                    (apu-remove-if-not (apply-partially #'apu-match apropos-regexp)
                                                       ucs-names))
                                   (t
-                                   (let ((chs+cds  ucs-names))
-                                     (dolist (word  pattern)
+                                   (let ((chs+cds  ())
+                                         (first    (car pattern)))
+                                     (dolist (c.c  ucs-names)
+                                       (when (apu-match first c.c) (push c.c chs+cds)))
+                                     (dolist (word  (cdr pattern))
                                        (setq chs+cds
                                              (apu-delete-if-not (apply-partially #'apu-match word)
                                                                 chs+cds)))
