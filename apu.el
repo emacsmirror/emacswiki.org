@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May  9 15:08:21 2015 (-0700)
+;; Last-Updated: Sun May 10 14:53:36 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 281
+;;     Update #: 288
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -59,7 +59,8 @@
 ;;    `apu-copy-char-here-to-second-sel', `apu-define-insert-command',
 ;;    `apu-global-set-insertion-key', `apu-google-char',
 ;;    `apu-local-set-insertion-key', `apu-mode',
-;;    `apu-show-char-details'.
+;;    `apu-show-char-details', `apu-zoom-char-here',
+;;    `apu-zoom-char-at-point'.
 ;;
 ;;  User options defined here:
 ;;
@@ -79,6 +80,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/05/10 dadams
+;;     Added: apu-zoom-char-here, apu-zoom-char-at-point.  Bound apu-zoom-char-here to z.
 ;; 2015/05/09 dadams
 ;;     Added: apu-match, apu-match-word-pairs-only-flag, defgroup, and apu-delete-if-not.
 ;;     apu-chars: Respect apu-match-word-pairs-only-flag: Match all words by default.
@@ -165,12 +168,14 @@ This operation is destructive, reusing conses of XS whenever possible."
   "Return the Unicode character described on this line."
   (string-to-char (apu-char-string-here)))
 
+;;;###autoload
 (defun apu-char-name-at-point (&optional position msgp) ; Not bound.
   "Return the name of the Unicode character at point, or nil if none.
 Non-nil POSITION means use the character at POSITION."
   (interactive "d\np")
   (apu-char-at-point 'name position msgp))
 
+;;;###autoload
 (defun apu-char-codepoint-at-point (&optional position msgp) ; Not bound.
   "Return the codepoint of the Unicode char at point, or nil if none.
 Non-nil POSITION means use the character at POSITION."
@@ -194,6 +199,7 @@ Non-nil POSITION means use the character at POSITION."
   "Return the Unicode character described on this line, as a string."
   (buffer-substring (line-beginning-position) (1+ (line-beginning-position))))
 
+;;;###autoload
 (defun apu-copy-char-at-point-as-kill (&optional msgp) ; Not bound.
   "Copy the character at point to the `kill-ring'."
   (interactive "p")
@@ -208,6 +214,7 @@ Non-nil POSITION means use the character at POSITION."
     (kill-new strg)
     (when msgp (message "Copied char `%s' to kill ring" strg))))
 
+;;;###autoload
 (defun apu-copy-char-at-point-to-second-sel (&optional msgp) ; Not bound.
   "Copy the character at point to the secondary selection.
 If you have library `second-sel.el' then also copy it to the
@@ -285,6 +292,24 @@ the buffer to use instead."
   (with-current-buffer (window-buffer (posn-window (event-start event)))
     (goto-char (posn-point (event-start event)))
     (save-excursion (goto-char (line-beginning-position)) (what-cursor-position t))))
+
+(defun apu-zoom-char-here (&optional height)
+  "Show the char described on the current line in a zoomed tooltip.
+With a numerical prefix arg, show it that many times larger."
+  (interactive (list (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))))
+  (unless height (setq height  1))
+  (x-show-tip (propertize (apu-char-string-here)
+                          'face `(:foreground "red" :height ,(* 200 height)))))
+
+;;;###autoload
+(defun apu-zoom-char-at-point (&optional height position)
+  "Show the Unicode char at point in a zoomed tooltip.
+With a numerical prefix arg, show it that many times larger.
+Non-nil POSITION means use the character at POSITION."
+  (interactive (list (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))))
+  (unless height (setq height  1))
+  (x-show-tip (propertize (char-to-string (char-after position))
+                          'face `(:foreground "red" :height ,(* 200 height)))))
 
 ;;;###autoload
 (defalias 'apropos-unicode 'apu-chars)
@@ -365,10 +390,11 @@ Simple tips for matching some common Unicode character names:
 
 (when (featurep 'ucs-cmds)
   (define-key apu-mode-map "c"         'apu-define-insert-command))
-(define-key apu-mode-map (kbd "i")     'apu-google-char)
-(define-key apu-mode-map (kbd "k")     'apu-global-set-insertion-key)
-(define-key apu-mode-map (kbd "l")     'apu-local-set-insertion-key)
-(define-key apu-mode-map (kbd "^")     'apu-insert-char)
+(define-key apu-mode-map   "i"         'apu-google-char)
+(define-key apu-mode-map   "k"         'apu-global-set-insertion-key)
+(define-key apu-mode-map   "l"         'apu-local-set-insertion-key)
+(define-key apu-mode-map   "z"         'apu-zoom-char-here)
+(define-key apu-mode-map   "^"         'apu-insert-char)
 (define-key apu-mode-map (kbd "RET")   'apu-show-char-details)
 (define-key apu-mode-map [mouse-2]     'apu-show-char-details)
 (define-key apu-mode-map (kbd "M-w")   'apu-copy-char-here-as-kill)
