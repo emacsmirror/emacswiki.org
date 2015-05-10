@@ -2,7 +2,7 @@
 
 '''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to [[Vimpulse]] and [VimMode vim-mode]. Its [http://gitorious.org/evil/pages/Home home page].
 
-Current stable version: **1.1.4**
+Current stable version: **1.1.5**
 
 There's a [http://youtu.be/Uz_0i27wYbg four-minute Evil demo] on !YouTube, created by Bailey Ling. The captions in the corner of the frame show the keystrokes which Bailey is entering.
 
