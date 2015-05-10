@@ -161,6 +161,11 @@ Example:
   (mapconcat 'identity '("" "home" "alex " "elisp" "erc") "/")
     ==> "/home/alex /elisp/erc"
 
+If the separator will be empty, use `apply':
+
+  (apply #'concat '("hello, " "world"))
+    ==> "hello, world"
+
 === Serialization ===
 
 Convert forms to strings using `prin1-to-string', then convert back from a string using `read'.
