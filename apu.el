@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 10 15:13:26 2015 (-0700)
+;; Last-Updated: Sun May 10 18:26:10 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 290
+;;     Update #: 293
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -83,6 +83,7 @@
 ;; 2015/05/10 dadams
 ;;     Added: apu-zoom-char-here, apu-zoom-char-at-point.  Bound apu-zoom-char-here to z.
 ;;     apu-chars: Use delete-if-not correctly.
+;;     apu-show-char-details: Use describe-char, not what-cursor-position.
 ;; 2015/05/09 dadams
 ;;     Added: apu-match, apu-match-word-pairs-only-flag, defgroup, and apu-delete-if-not.
 ;;     apu-chars: Respect apu-match-word-pairs-only-flag: Match all words by default.
@@ -291,8 +292,7 @@ the buffer to use instead."
   (interactive (list last-nonmenu-event))
   (run-hooks 'mouse-leave-buffer-hook)
   (with-current-buffer (window-buffer (posn-window (event-start event)))
-    (goto-char (posn-point (event-start event)))
-    (save-excursion (goto-char (line-beginning-position)) (what-cursor-position t))))
+    (describe-char (posn-point (event-start event)))))
 
 (defun apu-zoom-char-here (&optional height)
   "Show the char described on the current line in a zoomed tooltip.
@@ -373,7 +373,7 @@ Simple tips for matching some common Unicode character names:
          (max-char          0)
          (bufname           (format "*`%s' Matching Unicode Chars*" pattern)))
     (unless chars+codes (error "No matching characters"))
-    (message "Matching `%s'...done" pattern)
+    (message "Formatting matches...")
     (dolist (char+code  chars+codes) (setq max-char  (max max-char (string-width (car char+code)))))
     (with-help-window bufname
       (with-current-buffer bufname
@@ -384,6 +384,7 @@ Simple tips for matching some common Unicode character names:
           (insert (format "%6d\t%#8x\n" (cdr char+code) (cdr char+code)))
           (add-text-properties (line-beginning-position -1) (line-end-position -1)
                                '(mouse-face underline keymap apu-mode-map)))))
+    (message "Formatting matches...done")
     (apu-mode)))
 
 (define-derived-mode apu-mode special-mode "Apropos Unicode"
