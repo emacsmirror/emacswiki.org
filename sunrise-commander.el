@@ -1,13 +1,13 @@
 ;;; sunrise-commander.el --- two-pane file manager for Emacs based on Dired and inspired by MC  -*- lexical-binding: t -*-
 
-;; Copyright (C) 2007-2014 José Alfredo Romero Latouche.
+;; Copyright (C) 2007-2015 José Alfredo Romero Latouche.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
 ;;	Štěpán Němec <stepnem@gmail.com>
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 458 $
+;; RCS Version: $Rev: 459 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -29,7 +29,7 @@
 
 ;;; Commentary:
 
-;; The Sunrise Commmander is an double-pane file manager for Emacs. It's built
+;; The Sunrise Commmander is a double-pane file manager for Emacs. It's built
 ;; atop of Dired and takes advantage of all its power, but also provides many
 ;; handy features of its own:
 
@@ -79,10 +79,11 @@
 ;; directories currently selected/marked in the active pane.
 
 ;; * Sunrise VIRTUAL mode integrates dired-virtual mode to Sunrise, allowing to
-;; capture find and locate results in regular files and to use them later as if
-;; they were directories with all Dired and Sunrise operations at your
+;; capture grep, find and locate results in regular files and to use them later
+;; as if they were directories with all the Dired and Sunrise operations at your
 ;; fingertips.
-;; The results of the following operations are displayed in VIRTUAL mode:
+;;
+;; * The results of the following operations are displayed in VIRTUAL mode:
 ;;    - find-name-dired (press C-c C-n),
 ;;    - find-dired      (press C-c C-f),
 ;;    - grep            (press C-c C-g),
@@ -161,8 +162,8 @@
 ;; renaming) derives originally from the Dired extensions written by Kurt
 ;; Nørmark for LAML (http://www.cs.aau.dk/~normark/scheme/distribution/laml/).
 
-;; It was written on GNU Emacs 24 on Linux and tested on GNU Emacs 22, 23 and 24
-;; for Linux and on EmacsW32 (version 23) for Windows. I have also received
+;; It's written on GNU Emacs 25 on Linux and tested on GNU Emacs 22, 23, 24 and
+;; 25 for Linux and on EmacsW32 (version 23) for Windows. I have also received
 ;; feedback from users reporting it works OK on the Mac. It does not work either
 ;; on GNU Emacs 21 or XEmacs -- please drop me a line if you would like to help
 ;; porting it. All contributions and/or bug reports will be very welcome.
@@ -209,9 +210,9 @@
 (require 'hl-line)
 (require 'sort)
 (require 'term)
+(require 'tramp)
 (eval-when-compile (require 'cl)
-                   (require 'recentf)
-                   (require 'tramp))
+                   (require 'recentf))
 
 (eval-and-compile
   (unless (fboundp 'cl-labels)
@@ -922,8 +923,7 @@ Helper macro for passive & synchronized navigation."
            (not (eq major-mode 'sr-mode)))
       (let ((dired-listing-switches dired-listing-switches)
             (sorting-options (or (get sr-selected-window 'sorting-options) "")))
-        (unless (and (featurep 'tramp)
-                     (string-match tramp-file-name-regexp default-directory))
+        (unless (string-match tramp-file-name-regexp default-directory)
           (setq dired-listing-switches
                 (concat sr-listing-switches sorting-options)))
         (sr-mode)
@@ -1900,19 +1900,19 @@ visited in order, from longest path to shortest."
 
 (defun sr-history-push (element)
   "Push a new path into the history stack of the current pane."
-  (unless (or (null element)
-              (and (featurep 'tramp)
-                   (string-match tramp-file-name-regexp element)))
-    (let* ((pane (assoc sr-selected-window sr-history-registry))
-           (hist (cdr pane))
-           (len (length hist)))
-      (if (>= len sr-history-length)
-          (nbutlast hist (- len sr-history-length)))
-      (setq element (abbreviate-file-name (sr-chop ?/ element))
-            hist (delete element hist))
-      (push element hist)
-      (setcdr pane hist))
-    (sr-history-stack-reset)))
+  (let ((type (sr-history-entry-type element)))
+    (when type
+      (let* ((pane (assoc sr-selected-window sr-history-registry))
+             (hist (cdr pane))
+             (len (length hist)))
+        (if (>= len sr-history-length)
+            (nbutlast hist (- len sr-history-length)))
+        (when (eq 'local type)
+          (setq element (abbreviate-file-name (sr-chop ?/ element))))
+        (setq hist (delete element hist))
+        (push element hist)
+        (setcdr pane hist))
+      (sr-history-stack-reset))))
 
 (defun sr-history-next ()
   "Navigate forward in the history of the active pane."
@@ -1960,10 +1960,33 @@ from the history list and check among the previous ones until an accessible
 directory is found, or the list runs out of entries."
   (let* ((history (cdr (assoc sr-selected-window sr-history-registry)))
          (target (nth position history)))
-    (while (and target (not (file-accessible-directory-p target)))
+    (while (not (sr-history-entry-type target))
       (delete target history)
       (setq target (nth position history)))
     target))
+
+(defun sr-history-entry-type (entry)
+  "Determine the type of the given history ENTRY.
+Evaluate to: 'tramp if the entry is a valid remote entry, 'local
+if the entry represents a directory in the local file system, or
+nil if the argument is not a valid history entry."
+  (when entry
+    (let ((isTramp (string-match tramp-file-name-regexp entry)))
+      (if isTramp
+          'tramp
+        (if (file-accessible-directory-p entry) 'local)))))
+
+(defun sr-history-purge-remote()
+  "Remove all remote entries from the history of directories."
+  (interactive)
+  (mapc
+   (lambda (side)
+     (let ((pane (assoc side sr-history-registry))
+           (regex tramp-file-name-regexp))
+       (setcdr pane (delq nil (mapcar (lambda (x)
+                                        (and (not (string-match regex x)) x))
+                                      (cdr pane))))))
+   '(left right)))
 
 (defun sr-require-checkpoints-extension (&optional noerror)
   "Bootstrap code for checkpoint support.
@@ -3586,7 +3609,7 @@ additional grep options."
 
 (defvar locate-command)
 (autoload 'locate-prompt-for-search-string "locate")
-(defun sr-locate (as-input &optional filter arg)
+(defun sr-locate (as-input &optional _filter _arg)
   "Run locate asynchronously and display the results in Sunrise virtual mode."
   (interactive
    (list (locate-prompt-for-search-string) nil current-prefix-arg))
@@ -3696,14 +3719,20 @@ pane."
    (let ((hist (cdr (assoc sr-selected-window sr-history-registry)))
          (dired-actual-switches dired-listing-switches)
          (pane-name (capitalize (symbol-name sr-selected-window)))
-         (switches (concat sr-virtual-listing-switches " -d")))
+         (switches))
      (sr-switch-to-clean-buffer (format "*%s Pane History*" pane-name))
      (insert (concat "Recent Directories in " pane-name " Pane: \n"))
      (dolist (dir hist)
        (condition-case nil
-           (when dir
-             (setq dir (sr-chop ?/ (expand-file-name dir)))
-             (insert-directory dir switches nil nil))
+           (case (sr-history-entry-type dir)
+             (tramp
+              (insert (concat "d......... 0 0000-00-00 " dir))
+              (newline))
+             (local
+              (setq switches (concat sr-virtual-listing-switches " -d")
+                    dir (sr-chop ?/ (expand-file-name dir)))
+              (insert-directory dir switches nil nil))
+             (t (ignore)))
          (error (ignore))))
      (sr-virtual-mode))))
 
