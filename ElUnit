@@ -39,7 +39,7 @@ Here's a first shot at some example syntax. I like the idea of working backwards
    (search-forward-regexp "4 failures")))
 </pre>
 
-To see tests for !ElUnit itself, see http://github.com/technomancy/dotfiles/tree/master/.emacs.old/test/elunit-test.el
+To see tests for !ElUnit itself, see https://github.com/technomancy/dotfiles/blob/68873ca76922f73bdc51f954236459c0ba653dd0/.emacs.d/old/test/elunit-test.el
 
 == Issues ==
 
