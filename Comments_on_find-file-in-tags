@@ -1,0 +1,8 @@
+If you want to use this function on a windows computer the code needs to be edited:
+<code>
+- (file-re (concat "/" file "[^/]*$"))
++ (file-re (concat "\\\\" file "[^\\\\]*$"))
+</code>
+
+-- Jonas 2015-05-12 06:03 UTC
+
