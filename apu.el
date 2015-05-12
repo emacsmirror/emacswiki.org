@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 10 18:26:10 2015 (-0700)
+;; Last-Updated: Tue May 12 11:17:26 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 293
+;;     Update #: 296
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -80,6 +80,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/05/12 dadams
+;;     apu-show-char-details: Corrected position to bol.
 ;; 2015/05/10 dadams
 ;;     Added: apu-zoom-char-here, apu-zoom-char-at-point.  Bound apu-zoom-char-here to z.
 ;;     apu-chars: Use delete-if-not correctly.
@@ -292,7 +294,8 @@ the buffer to use instead."
   (interactive (list last-nonmenu-event))
   (run-hooks 'mouse-leave-buffer-hook)
   (with-current-buffer (window-buffer (posn-window (event-start event)))
-    (describe-char (posn-point (event-start event)))))
+    (save-excursion (goto-char (posn-point (event-start event)))
+                    (describe-char (line-beginning-position)))))
 
 (defun apu-zoom-char-here (&optional height)
   "Show the char described on the current line in a zoomed tooltip.
