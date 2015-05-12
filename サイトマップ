@@ -66,7 +66,7 @@ Emacs をテキストエディタとして使うには？
 
 Emacs をカスタマイズするには
 * [[カテゴリ・キーバインド|キーバインド]] -- キーバインドのカスタマイズ
-* [[カテゴリ・設定ファイル|設定ファイル]] -- 設定ファイルのもと（初心者向け）
+* [[カテゴリ・設定ファイル|設定ファイル]] -- 設定ファイルの基本（初心者向け）
 * [[カテゴリ・プログラミング|プログラミング]] -- プログラマ向けのカスタマイズ
 * [[カテゴリ・フェイス|フェイス]] -- syntax highlighting, colors, font-lock
 ** [[カテゴリ・表示|表示]] -- ディスプレイに関連するもの (X-Window pointer shapes, [[Frame]]s, ...)
@@ -81,7 +81,7 @@ Emacs をカスタマイズするには
 * [[カテゴリ・Tex|Tex]] / CategoryTex -- TeXとLaTeXもの
 * [[カテゴリ・モード|モード]] / CategoryModes -- ポインタ, ドキュメント, その他のモードへの拡張
 * [[カテゴリ・語彙|語彙]] / CategoryVocab -- 新しい単語を学ぶ
-* [[ディレクトリ]] / CategoryDirectories -- ディレクトリの操作, そうでなければのdiredとして知られている.
+* [[ディレクトリ]] / CategoryDirectories -- ディレクトリの操作（dired）
 
 その他の機能
 * [[カテゴリ・電卓|電卓]] -- 対話式計算機
@@ -113,7 +113,7 @@ Emacs ユーザーたちのコミュニティ
 * [[カテゴリ・ユーモア|ユーモア]] / CategoryHumor -- 私達がEmacsをカスタマイズしない時私達がすること
 
 Emacs Wiki Meta
-* [[EmacsIRCチャンネル]] / EmacsChannel -- 私達がたむろするIRCチャンネル
+* [[EmacsIRCチャンネル]] / EmacsChannel -- みんなのIRCチャンネル
 * [[サイトマップについての議論]] / SiteMapDiscussion -- the categories on this wiki and other stuff to put on the main page
 * MeatBall:EmacsWiki -- wiki技術, 組織, セキュリティ, など.
 
