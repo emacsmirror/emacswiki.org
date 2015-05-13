@@ -1,10 +1,9 @@
 http://duenenhof-wilhelm.de/dieter/ansys-mode_tutorial/ansys+emacs.png
 
-The code is hosted on [https://github.com/dieter-wilhelm/ansys-mode Github] ANSYS-Mode supports your
-workflows with the FEA (Finite Element Analysis) suite
-[http://www.ansys.com ANSYS] (ANalysis SYStem, registered TM).
+The project supports your workflows with the FEA (Finite Element Analysis) suite
+[http://www.ansys.com ANSYS] (ANalysis SYStem, registered TM). The code is hosted on [https://github.com/dieter-wilhelm/ansys-mode Github].
 
-It provides `ANSYS-Mode', an add-on to the [http://www.gnu.org/software/emacs GNU Emacs editor] for
+ANSYS-Mode is an add-on to the [http://www.gnu.org/software/emacs GNU Emacs editor] for
 investigating and coding APDL (Ansys Parametric Design Language).  The
 mode offers also managing and communication capabilities for various
 ANSYS processes, like interactive code debugging with the solver or
