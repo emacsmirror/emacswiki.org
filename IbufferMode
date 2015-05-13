@@ -16,7 +16,7 @@ See also: BufferMenuPlus, which also provides highlighting and other enhancement
 * '''`U'''' - Replace by regexp in each of the marked buffers.
 * '''`Q'''' - Query replace in each of the marked buffers.
 * '''`I'''' - As above, with a regular expression.
-
+* '''`0'''' - Run occur on the marked buffers.
 
 == Search All Marked Buffers with Icicles ==
 
