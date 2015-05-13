@@ -88,6 +88,9 @@ It has more configuration possibilities than other spell-checkers and
 the on-the-fly checker performs very well. It's a true real-time
 checker.
 
+In contrast to Flyspell mode, Wcheck mode does not seem to offer a simple way
+to set up a buffer-local word list.
+
 
 == Install ==
 
