@@ -9,10 +9,9 @@ terminal library and Erlang/ OTP R7B or later.
 
 Ermacs is now a part of the [http://jungerl.sourceforge.net/ Jungerl], a "dense and chaotic Jungle of Erlang code" on Sourceforge. 
 
-The screenshot of the editor, which is all done in Erlang, should say
-it all.
+The [http://fresh.homeunix.net/~luke/ermacs/ermacs.jpg screenshot]  of the editor, which is all done in Erlang, should say it all.
 
-[http://fresh.homeunix.net/~luke/ermacs/ermacs.jpg]
+
 
 Lisp:erlang-dired-mode.el     --  binding some key in dired mode  if Emakefile is in current dired or parent dired . -- by [[Joseph]]
 ----
