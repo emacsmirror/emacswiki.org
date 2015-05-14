@@ -210,6 +210,24 @@ By setting the `twittering-initial-timeline-spec-string', you can specify timeli
         "user_name/list_name"))
 }}}
 
+== Commands corresponding to operations on Twitter ==
+
+You can use the following commands.
+
+`M-x twittering-follow', `M-x twittering-unfollow' to follow or
+unfollow a user.
+
+`M-x twittering-favorite', `M-x twittering-unfavorite' to fav a tweet.
+
+`M-x twittering-mute', `M-x twittering-unmute' to mute or unmute a
+user.
+
+`M-x twittering-block' to block the user who posted the tweet at the
+current cursor position.
+
+`M-x twittering-block-and-report-as-spammer' to block and report the
+user who posted the tweet at the current cursor position.
+
 == Customizing your key bindings ==
 
 You can use `twittering-mode-hook' to customize your configuration. This example shows how to define a few key bindings:
