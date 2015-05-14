@@ -1,5 +1,5 @@
 You edit HTML files? You want to avoid the annoying Save/Switch-to-Browser/Refresh-Browser keystrokes? Then better use ImpatientMode!
-To create a live connection to your browser just download ImpatientMode (e.g. from Melpa) and enter ##M-x impatient-mode##. Then you will have to get the simple-httpd.el package and run ##M-x start-httpd##. Now you should switch to your browser and go to the ImpatientMode site of your running httpd-webserver. By default it is ##http://localhost:8080/imp##. You will see the files running ImpatientMode, so just click it and... be happy with your live connection! 
+To create a live connection to your browser just download ImpatientMode (e.g. from Melpa) and enter ##M-x impatient-mode##. Then you will have to get the simple-httpd.el package and run ##M-x httpd-start##. Now you should switch to your browser and go to the ImpatientMode site of your running httpd-webserver. By default it is ##http://localhost:8080/imp##. You will see the files running ImpatientMode, so just click it and... be happy with your live connection! 
 
 ----------
 CategoryModes
