@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Apr 15 13:12:00 2015 (-0700)
+;; Last-Updated: Thu May 14 08:31:48 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3682
+;;     Update #: 3685
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1644,7 +1644,7 @@ Anywhere:
 Bookmark Highlighting
 ---------------------
 
-\\[bmkp-bmenu-show-only-lighted]\t- Show only the highlighted bookmarks
+\\[bmkp-bmenu-show-only-lighted-bookmarks]\t- Show only the highlighted bookmarks
 \\[bmkp-bmenu-set-lighting]\t- Set highlighting for bookmark
 \\[bmkp-bmenu-set-lighting-for-marked]\t- Set highlighting for marked bookmarks
 \\[bmkp-bmenu-light]\t- Highlight bookmark
@@ -1856,7 +1856,8 @@ Non-nil optional arg NO-MSG-P means do not show progress messages."
                             (and (display-color-p)  (display-mouse-p))
                           window-system)
                     (let ((help  (get-text-property (+ bmkp-bmenu-marks-width
-                                                       (line-beginning-position)) 'help-echo)))
+                                                       (line-beginning-position))
+                                                    'help-echo)))
                       (put-text-property (+ bmkp-bmenu-marks-width (line-beginning-position))
                                          (point) 'mouse-face 'highlight)
                       (when help  (put-text-property (+ bmkp-bmenu-marks-width (line-beginning-position))
@@ -5350,7 +5351,7 @@ are marked or ALLP is non-nil."
   (define-key bookmark-bmenu-mode-map "H>H"                'bmkp-bmenu-light-marked)
   (define-key bookmark-bmenu-mode-map "HH"                 'bmkp-bmenu-light)
   (define-key bookmark-bmenu-mode-map "HM"                 'bmkp-bmenu-mark-lighted-bookmarks)
-  (define-key bookmark-bmenu-mode-map "HS"                 'bmkp-bmenu-show-only-lighted)
+  (define-key bookmark-bmenu-mode-map "HS"                 'bmkp-bmenu-show-only-lighted-bookmarks)
   (define-key bookmark-bmenu-mode-map "H>U"                'bmkp-bmenu-unlight-marked)
   (define-key bookmark-bmenu-mode-map "HU"                 'bmkp-bmenu-unlight))
 (define-key bookmark-bmenu-mode-map "i"                    nil) ; For Emacs 20
@@ -5828,8 +5829,8 @@ are marked or ALLP is non-nil."
                                :visible (and (fboundp 'diredp-highlight-autofiles-mode)
                                              (featurep 'highlight))))
   (when (featurep 'bookmark+-lit)
-    (define-key bmkp-bmenu-highlight-menu [bmkp-bmenu-show-only-lighted]
-      '(menu-item "Show Only Highlighted" bmkp-bmenu-show-only-lighted
+    (define-key bmkp-bmenu-highlight-menu [bmkp-bmenu-show-only-lighted-bookmarks]
+      '(menu-item "Show Only Highlighted" bmkp-bmenu-show-only-lighted-bookmarks
         :help "Display (only) highlighted bookmarks"))
     (define-key bmkp-bmenu-highlight-menu [bmkp-bmenu-set-lighting-for-marked]
       '(menu-item "Set Highlighting for Marked" bmkp-bmenu-set-lighting-for-marked
@@ -5988,8 +5989,8 @@ are marked or ALLP is non-nil."
 
 (define-key bmkp-bmenu-show-menu [show-sep2] '("--")) ; --------------
 (when (featurep 'bookmark+-lit)
-  (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-lighted]
-    '(menu-item "Show Only Highlighted" bmkp-bmenu-show-only-lighted
+  (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-lighted-bookmarks]
+    '(menu-item "Show Only Highlighted" bmkp-bmenu-show-only-lighted-bookmarks
       :help "Display (only) highlighted bookmarks")))
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-temporary-bookmarks]
   '(menu-item "Show Only Temporaries" bmkp-bmenu-show-only-temporary-bookmarks
