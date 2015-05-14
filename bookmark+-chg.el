@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr 24 13:13:23 2015 (-0700)
+;; Last-Updated: Thu May 14 08:37:31 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15946
+;;     Update #: 15947
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1152,6 +1152,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2015/05/15 dadams
+;;     Fixed typo: bmkp-bmenu-show-only-lighted -> bmkp-bmenu-show-only-lighted-bookmarks everywhere.
 ;; 2015/04/15 dadams
 ;;     bmkp-bmenu-describe-this-bookmark: save-selected-frame -> save-selected-window.
 ;; 2015/03/20 dadams
