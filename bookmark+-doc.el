@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Mar 20 19:39:17 2015 (-0700)
+;; Last-Updated: Fri May 15 13:58:33 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15038
+;;     Update #: 15051
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -2542,33 +2542,49 @@
 ;;(@* "Filtering Bookmarks (Hiding and Showing)")
 ;;  *** Filtering Bookmarks (Hiding and Showing) ***
 ;;
-;;  You can hide and show different sets of bookmarks in the bookmark
-;;  list.  There are commands to show only bookmarks of a particular
-;;  type - e.g. `I S' to show only Info bookmarks, `X S' to show only
-;;  the temporary bookmarks.
+;;  There are three ways to show only certain bookmarks.
 ;;
-;;  These are, in effect, shortcuts for first marking those bookmarks
-;;  and then showing only the marked bookmarks (and then unmarking).
-;;  For example, `F S' is a shortcut for `F M >' (and then `U RET').
+;;  1. Filter by bookmark type.
 ;;
-;;  You can also filter to show only the bookmarks that match a given
-;;  regexp.  There are two ways to do this:
+;;  2. Filter bookmarks incrementally and temporarily, using pattern
+;;     matching.
 ;;
-;;  * Use `P B' (for "pattern", "bookmark") and type a regexp.  The
-;;    bookmarks are filtered incrementally, as you type.  Only the
-;;    bookmark name is matched (not the file name).  Hit any
-;;    non-inserting key, such as `RET', to finish defining the
-;;    pattern.
+;;  3. Filter out the marked or unmarked bookmarks.
 ;;
-;;    Similarly, hit `P F' for bookmarks whose file names match a
-;;    regexp, `P A' for bookmarks whose annotations match a regexp,
-;;    and `P T' for bookmarks with one or more tags that match a
-;;    regexp.  See (@> "Bookmark Tags"), above, for information about
-;;    tags.
+;;  * Filtering by bookmark type
 ;;
-;;  * Just as in Dired, use `% m' to mark the bookmarks that match a
-;;    regexp.  Then use `>' to show only the marked bookmarks.  See
-;;    (@> "Marking and Unmarking Bookmarks"), above.
+;;    The commands that show only bookmarks of a particular type are
+;;    bound to keys that end in `S' (for "show").  For example, `I S'
+;;    shows only Info bookmarks, and `X S' shows only temporary
+;;    bookmarks.
+;;
+;;    The type filter is reflected in the bookmark-list display title.
+;;    It says `All Bookmarks' if no type filter is used.  Otherwise it
+;;    tells you what kind of bookmarks are listed: `Autonamed
+;;    Bookmarks', `File and Directory Bookmarks', and so on.
+;;
+;;    Note: It is only filtering by bookmark type that is remembered
+;;    when you save a bookmark-list display state or you create a
+;;    bookmark-list bookmark.  See (@> "State-Restoring Commands and Bookmarks").
+;;
+;;  * Filtering incrementally by pattern matching
+;;
+;;    These commands show only bookmarks that in some way match a
+;;    pattern (regexp) that you type.  The bookmarks are filtered
+;;    incrementally as you type the pattern.  Hit any non-inserting
+;;    key, such as `RET', to finish defining the pattern.
+;;
+;;    The commands for this are bound to keys that start with `P' (for
+;;    "pattern").  For example, `P B' shows only bookmarks whose names
+;;    match the regexp, `P F' shows those whose file names match, and
+;;    `P T' shows those that have one or more tags that match.
+;;    (See (@> "Bookmark Tags"), above, for information about tags.)
+;;
+;;  * Filtering based on marking
+;;
+;;    Just as in Dired, you can use `% m' to mark the bookmarks that
+;;    match a regexp.  Then use `>' to show only the marked bookmarks.
+;;    See (@> "Marking and Unmarking Bookmarks"), above.
 ;;
 ;;    This method has the advantage that you can show the complement,
 ;;    the bookmarks that do *not* match the regexp, by using `<'
