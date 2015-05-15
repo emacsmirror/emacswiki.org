@@ -2749,31 +2749,52 @@ relocate or delete the bookmarks, as appropriate.
 [:FilteringBookmarks]
 === Filtering Bookmarks (Hiding and Showing) ===
 
-You can hide and show different sets of bookmarks in the bookmark 
-list.  There are commands to show only the bookmarks of a particular
-type  -- e.g. `##I S##' to show only the Info bookmarks, `##X S##' to show only the temporary bookmarks.  These are, in
-effect, shortcuts for first marking those bookmarks and then
-showing only the marked bookmarks (and then unmarking).  For
-example, `##F S##' is a shortcut for `##F M >##' (and then `##U RET##').
+There are three ways to show only certain bookmarks.
 
-You can also filter to show only the bookmarks that match a
-[[regexp]].  There are two ways to do this:
+1. Filter by bookmark type.
 
-* Use '''`##P B##'''' (for "__p__attern", "__b__ookmark") and type a regexp.  The
-  bookmarks are filtered incrementally, as you type.  Only the
-  bookmark name is matched (not the file name).  Hit any non-inserting key, such as
-  `RET', to finish defining the pattern. Similarly, hit '''`##P F##'''' for bookmarks whose __f__ile names match a
-  regexp, '''`##P A##'''' for bookmarks whose __a__nnotations match a regexp, and '''`##P T##'''' for bookmarks with one or more __t__ags that match
-  a regexp.  See [[#BookmarkTags]], above, for information about
-  tags.
+2. Filter bookmarks incrementally and temporarily, using pattern matching.
 
-* Just as in [[DiredMode|Dired]], use '''`##% m##'''' to mark the bookmarks that match a
-  regexp. Then use '''`##>##'''' to show only the marked bookmarks. See [[#MarkingAndUnmarkingBookmarks]], above.  This method has
-  the advantage that you can show the complement: the bookmarks
-  that do ''not'' match the regexp, by using '''`##<##'''' instead of `##>##'.  It
-  also has the advantage that matching checks the
-  combination of bookmark name and file name (use `M-t' to
- toggle showing file names).
+3. Filter out the marked or unmarked bookmarks.
+
+==== Filtering by bookmark type ====
+
+The commands that show only bookmarks of a particular type are
+bound to keys that end in '''`S'''' (for "show").  For example, `##I S##'
+shows only [[Info]] bookmarks, and `##X S##' shows only [[#TemporaryBookmarks|temporary bookmarks]].
+
+The type filter is reflected in the bookmark-list display title.
+It says `All Bookmarks' if no type filter is used.  Otherwise it
+tells you what kind of bookmarks are listed: `Autonamed Bookmarks', `File and Directory Bookmarks', and so on.
+
+Note: It is only filtering by bookmark type that is remembered
+when you save a bookmark-list display state or you create a
+bookmark-list bookmark.  See [[#StateRestoration|State-Restoring Commands and Bookmarks]].
+
+==== Filtering incrementally by pattern matching ====
+
+These commands show only bookmarks that in some way match a
+pattern ([[regexp]]) that you type.  The bookmarks are filtered
+''incrementally'' as you type the pattern.  Hit any non-inserting
+key, such as `RET', to finish defining the pattern.
+
+The commands for this are bound to keys that start with '''`P'''' (for
+"pattern").  For example, `##P B##' shows only bookmarks whose names
+match the regexp, `##P F##' shows those whose file names match, `##P A##' shows those whose annotations match, and
+`##P T##' shows those that have one or more tags that match.
+(See [[#BookmarkTags]], above, for information about tags.)
+
+==== Filtering based on marking ====
+
+Just as in [[DiredMode|Dired]], you can use '''`##% m##'''' to mark the bookmarks that
+match a regexp.  Then use '''`##>##'''' to show only the marked bookmarks.
+See [[#MarkingAndUnmarkingBookmarks]], above.
+
+This method has
+the advantage that you can show the complement: the bookmarks
+that do ''not'' match the regexp, by using '''`##<##'''' instead of `##>##'.  It
+also has the advantage that matching checks the
+combination of bookmark name and file name (use `M-t' to toggle showing file names).
 
 These are the keys for hiding or showing bookmarks:
 
@@ -2799,9 +2820,13 @@ These are the keys for hiding or showing bookmarks:
 
 * '''`##W S##'''' -- Show only __W__3M bookmarks.
 
+* '''`##X S##'''' -- Show only [[#TemporaryBookmarks|temporary bookmarks]].
+
 * '''`##>##'''' -- Toggle showing only marked bookmarks
 
 * '''`##<##'''' -- Toggle showing only unmarked bookmarks
+
+
 
 
 
