@@ -224,5 +224,18 @@ For ncurses / CLI title setting, xterm-title doesn't seem to work for me in Term
         (xterm-set-window-title (buffer-name)))
   (add-hook 'post-command-hook  'my-xterm-title-hook)
 
+[new]
+By Jens Bo
+
+In order to mark that there are unsaved changes in the current buffer one could use:
+
+  (setq frame-title-format
+    '((:eval (if (buffer-file-name)
+                  (abbreviate-file-name (buffer-file-name))
+                    "%b"))
+      (:eval (if (buffer-modified-p) 
+                 " •"))
+      " - Emacs")
+  )
 ----
 CategoryFrames CategoryDisplay FrameModes
