@@ -869,6 +869,7 @@ If you do not remember the different type-specfic bindings,
 you can use commands '''`bmkp-jump-to-type'''' and
 '''`bmkp-jump-to-type-other-window'''' ('''`##C-x j :##'''' and '''`##C-x 4 j :##'''').  They work for any type, prompting you first for the type, then for a bookmark of that type (only).
 
+[:JumpToTagged]
 There are several commands for jumping to a bookmark with ''tags''.
 The completion candidates can be those bookmarks that have ''all''
 tags in a given ''set'', ''some'' tags in a given ''set'', ''all'' tags matching a
