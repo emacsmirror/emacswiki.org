@@ -1,3 +1,11 @@
+=Update on EUDC LDAP configuration=
+
+EUDC LDAP configuration is simpler in Emacs 25.  There shouldn't be a need to call <tt>eudc-set-server</tt> anymore.  All configuration should be declarative like other packages.
+
+Many of the below setq's are for bad defaults and outright bugs in EUDC.  I tried to fix those for Emacs 25.  I also updated the EUDC manual with an "LDAP Configuration" section.  If you go through that section, rewrite your configuration, and something doesn't work, please file a bug at bug-gnu-emacs.
+
+-- fitzsim
+
 =Get email adress expansion with EUDC and LDAP=
 
 Adapt and add the following to your .emacs file:
@@ -46,8 +54,13 @@ Adapt and add the following to your .emacs file:
 </pre>
 ----
 eudc-inline-query doesn't seem to work for me.  With multiple results I always get the message "Multiple matches found; choose one: " and possible completions are "  <>" (an empty result string).  Any ideas?  I don't see any error messages.  Queries with single results work fine.
+
+   This may work now in Emacs 25 (i.e., master branch as of 2015-05-16).  If you can, retry and file a bug if it doesn't work.  Re-read the EUDC manual's "LDAP Configuration" section, which has seen a bunch of updates, including an ldapsearch troubleshooting subsection.
 ----
 Is there a way to perform multiple queries on the *same* server? --Mitch
+
+   Not yet.  If you still want this feature, please file a bug so that we can discuss how this should work.
+
 ----
 CategoryMailAddons
 
