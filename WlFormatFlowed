@@ -10,7 +10,7 @@ To read flowed formated messages in Wanderlust put the following in your .wl fil
  					(mime-entity-content-type entity)))))
  	      (fill-flowed))))
 
-If you want to write flowed formated messages:
+If you want to manually write format=flowed messages, just add "--[[text/plain; format=flowed]] at the beginning of your message:
 
  (defun my-mail-setup ()
    (save-excursion
@@ -18,5 +18,9 @@ If you want to write flowed formated messages:
      (mime-edit-insert-tag "text" "plain" "; format=flowed")))
 
  (add-hook 'wl-mail-setup-hook 'my-mail-setup)
+
+In order to automatically format messages as format=flowed, download <a href="http://www.pps.univ-paris-diderot.fr/~jch/software/files/format-flowed.el">format-flowed.el</a> and say:
+
+  (add-hook 'mime-edit-translate-hook 'format-flowed-translate-message)
 ----
 WanderLust | CategoryMail
