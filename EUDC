@@ -4,7 +4,7 @@ EUDC LDAP configuration is simpler in Emacs 25.  There shouldn't be a need to ca
 
 Many of the below setq's are for bad defaults and outright bugs in EUDC.  I tried to fix those for Emacs 25.  I also updated the EUDC manual with an "LDAP Configuration" section.  If you go through that section, rewrite your configuration, and something doesn't work, please file a bug at bug-gnu-emacs.
 
--- fitzsim
+-- [fitzsim]
 
 =Get email adress expansion with EUDC and LDAP=
 
