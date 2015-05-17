@@ -19,7 +19,7 @@ If you want to manually write format=flowed messages, just add "--[[text/plain; 
 
  (add-hook 'wl-mail-setup-hook 'my-mail-setup)
 
-In order to automatically format messages as format=flowed, download <a href="http://www.pps.univ-paris-diderot.fr/~jch/software/files/format-flowed.el">format-flowed.el</a> and say:
+In order to automatically format messages as format=flowed, download [[http://www.pps.univ-paris-diderot.fr/~jch/software/files/format-flowed.el format-flowed.el]] and say:
 
   (add-hook 'mime-edit-translate-hook 'format-flowed-translate-message)
 ----
