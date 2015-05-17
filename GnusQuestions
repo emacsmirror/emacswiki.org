@@ -63,6 +63,9 @@ so that mortals could define a simple table of measurements and let the code man
 
 
 == LDAP support? ==
+   
+   Please see the updated [[EUDC]] Wiki page.  Many of the below bug fixes have been committed to Emacs 25.
+
 [new]
 I'm pondering the benefits of using Gnus for my mailer (and newsreader) over my current MUA. Is it possible to read and write to an existing addressbook using LDAP? I have read a little about EUCD, but I cant seem to find any good documentation about this. What I need is to have my mail and addressbook accessable via IMAP and LDAP, and BBDB seems to use its own format. Perhaps its even possible to use LDAP as a backend to BBDB? --HenrikHolmboe
 
