@@ -2,7 +2,7 @@
 
 EUDC LDAP configuration is simpler in Emacs 25.  There shouldn't be a need to call <tt>eudc-set-server</tt> anymore.  All configuration should be declarative like other packages.
 
-Many of the below setq's are for bad defaults and outright bugs in EUDC.  I tried to fix those for Emacs 25.  I also updated the EUDC manual with an "LDAP Configuration" section.  If you go through that section, rewrite your configuration, and something doesn't work, please file a bug at bug-gnu-emacs.
+Many of the below setq's are for bad defaults and outright bugs in EUDC.  I tried to fix those for Emacs 25.  I also updated the EUDC manual with an "LDAP Configuration" section.  If you go through that section, rewrite your configuration, and something doesn't work, please file a bug at bug-gnu-emacs.  Likewise, if you have to hack something to make it work for you, please file a bug about it and I'll look at it and try to fix it properly in Emacs itself.
 
 -- [[fitzsim]]
 
