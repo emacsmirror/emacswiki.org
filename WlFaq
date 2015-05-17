@@ -211,12 +211,23 @@ When marking a message in the summary buffer for deletion the default behavior i
 == Writing/reading html mails ==
 
 ===How can I read html-mails with a proper pager? ===
-Add this to your .wl (or .emacs):
+
+With recent Wanderlust and Emacs versions, this will happen automatically (and use either shr or w3m, whichever is available).
+
+If this doesn't happen automatically, add this to your .wl (or .emacs):
 {{{
 (require 'w3m)
 (require 'mime-w3m)
 }}}
 You should also have w3m installed and the mime-w3m.el in your load path. 
+
+===How can I read html-mails with emacs internal html pager Eww ===
+If using emacs-version is >= 24.4, one can use the internal Eww browser in Emacs, which doesn't require any w3m to be installed:
+{{{
+;; Note: don't (require 'w3m), just set:
+(setq mime-view-text/html-previewer 'shr)
+}}}
+
 
 === Keys in w3m are not very intuitive ===
 Say
