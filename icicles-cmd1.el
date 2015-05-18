@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Apr 18 08:14:22 2015 (-0700)
+;; Last-Updated: Sun May 17 21:06:41 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 27401
+;;     Update #: 27408
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1329,7 +1329,7 @@ Otherwise, replace only the filename-matching text before point."
            ;;   :completions #'completion-file-name-table
            ;; But we need the equivalent using `:complete-function', not `:completions'.
            ;; This is it - this is in fact the Emacs 23 `widget-file-complete'.
-           ;; See `widget-default-completions' for the relations between keywords
+           ;; See the code of `widget-default-completions' for the relations between keywords
            ;; `:completions' and `:complete-function'.
            (let* ((field  (widget-field-find (point)))
                   (start  (widget-field-start field))
@@ -4432,15 +4432,15 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
                (not (or (icicle-get-safe this-command 'icicle-action-command)
                         ;; This one is used for `*-per-mode-action', which sets `this-command' to the cycler.
                         (icicle-get-safe this-command 'icicle-cycling-command))))
-      (let* ((binding   (if (> emacs-major-version 21)
-                            (where-is-internal cmd overriding-local-map t 'NOINDIRECT)
-                          (where-is-internal cmd overriding-local-map t)))
+      (let* ((binding    (if (> emacs-major-version 21)
+                             (where-is-internal cmd overriding-local-map t 'NOINDIRECT)
+                           (where-is-internal cmd overriding-local-map t)))
              (curr-msg   (current-message))
              (wait-time  (or (and (numberp suggest-key-bindings)  suggest-key-bindings)  2)))
         (when (and binding  (not (and (vectorp binding)  (eq (aref binding 0) 'mouse-movement))))
-          (let ((message-log-max  nil)  ; Do not log this message.
+          (let (;; (message-log-max  nil)  ; Do not log this message.
                 ;; If CMD showed a msg in echo area, wait a bit, before showing the key-reminder msg.
-                (waited           (sit-for (if (current-message) wait-time 0))))
+                (waited           (sit-for (if (> (length curr-msg) 0) wait-time 0))))
             (when (and waited  (atom unread-command-events))
               (unwind-protect
                    (progn (message "You can invoke command `%s' using `%s'"
