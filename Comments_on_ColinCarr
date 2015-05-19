@@ -6,3 +6,14 @@ Uses Common Lisp
 
 -- Anonymous 2015-05-19 23:20 UTC
 
+
+----
+
+using STOW and MR for packaging.
+
+breaking up ".emacs" into files.
+
+Just Debian and OS X for now.
+
+-- Anonymous 2015-05-19 23:21 UTC
+
