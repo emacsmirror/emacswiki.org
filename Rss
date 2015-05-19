@@ -1,0 +1,19 @@
+How to read RSS or Atom feeds in Emacs.
+
+== Reading RSS in Gnus ==
+
+Gnus is able to read RSS feeds natively.  See [[GnusRss]].
+
+== Reading RSS in Wanderlust ==
+
+[[Wanderlust]] is able to read RSS feeds natively (since 2015-05-19).  In the Folder buffer, say something like
+
+    m a rss:https://github.com/wanderlust/wanderlust/commits/master.atom
+
+== Reading RSS using elfeed ==
+
+[https://github.com/skeeto/elfeed Elfeed] is a traditional feed reader for Emacs.  It is available in MELPA.
+
+== Gatewaying RSS to e-mail ==
+
+If your inbox is not full enough, you can gateway RSS to e-mail using rss2email.  See [[HOWTOReadFeedsInEmacsViaEmail]].
