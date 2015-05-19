@@ -1,8 +1,9 @@
 ;;; smart-compile.el --- an interface to `compile'
 
-;; Copyright (C) 1998-2014  by Seiji Zenitani
+;; Copyright (C) 1998-2015  by Seiji Zenitani
 
 ;; Author: Seiji Zenitani <zenitani@mac.com>
+;; Version: 20150520
 ;; Keywords: tools, unix
 ;; Created: 1998-12-27
 ;; Compatibility: Emacs 21 or later
@@ -62,8 +63,10 @@
   ("\\.tex\\'"        . (tex-file))
   ("\\.texi\\'"       . "makeinfo %f")
   ("\\.mp\\'"         . "mptopdf %f")
-  ("\\.pl\\'"         . "perl -cw %f")
-  ("\\.rb\\'"         . "ruby -cw %f")
+  ("\\.pl\\'"         . "perl %f")
+  ("\\.rb\\'"         . "ruby %f")
+;;  ("\\.pl\\'"         . "perl -cw %f") ; syntax check
+;;  ("\\.rb\\'"         . "ruby -cw %f") ; syntax check
 )  "Alist of filename patterns vs corresponding format control strings.
 Each element looks like (REGEXP . STRING) or (MAJOR-MODE . STRING).
 Visiting a file whose name matches REGEXP specifies STRING as the
