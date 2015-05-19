@@ -11,12 +11,12 @@ http://git.or.cz and download the latest source.
 == Shared project repo ==
 
 If you are a developer that is registered with the
-[https://savannah.gnu.org/projects/erc/ ERC project on Savannah], you
+[https://savannah.gnu.org/projects/emacs/ Emacs project on Savannah], you
 will want to do the following, replacing <code>loginname</code> with
 your Savannah login name.
 
 <pre>
-git clone ssh://loginname@git.sv.gnu.org/srv/git/erc.git
+git clone ssh://loginname@git.sv.gnu.org/srv/git/emacs.git
 </pre>
 
 Note that this will not work until you have added your SSH key to
@@ -30,19 +30,19 @@ the first method.
 First:
 
 <pre>
-git clone git://git.sv.gnu.org/erc.git
+git clone git://git.sv.gnu.org/emacs.git
 </pre>
 
 Second:
 
 <pre>
-git clone http://git.sv.gnu.org/r/erc.git
+git clone http://git.sv.gnu.org/r/emacs.git
 </pre>
 
 === Picking a branch ===
 
 To see a list of the available branches, run the following command in
-the checked out copy of ERC.
+the checked out copy of Emacs
 
 <pre>
 git branch -r
@@ -52,11 +52,11 @@ Here is a description of the available branches.
 
 || <code>HEAD</code> || The branch you are currently on ||
 || <code>master</code> || Main development branch ||
-|| <code>emacs23</code> || Emacs 23 integration branch ||
-|| <code>erc-status</code> || Experimental branch containing erc-status.el, which can show a status icon in the notification area.  Requires Emacs from CVS, plus the systray support patch. ||
+|| <code>emacs24</code> || Emacs 24 branch ||
+
 
 If you want to browse the available branches via the web, visit
-http://git.sv.gnu.org/gitweb/?p=erc.git;a=summary.
+http://git.sv.gnu.org/gitweb/?p=emacs.git;a=summary.
 
 The default branch that you get when cloning the ERC project is
 <code>master</code>.
@@ -93,7 +93,7 @@ of ERC.
 git pull origin
 </pre>
 
-This will update ERC, taking care to preserve any changes that you
+This will update Emacs, taking care to preserve any changes that you
 have checked in to your local copy.
 
 === Telling git your name ===
@@ -186,7 +186,7 @@ You may send your changes via email by doing:
 git format-patch -M origin
 </pre>
 
-and then sending the generated patch files to the erc-discuss
+and then sending the generated patch files to the emacs-devel
 mailing list.  Be sure to describe your changes and include a sample
 ChangeLog entry for them.  Be sure that the patch is the body of the
 message, and not an attachment.  Any comments that you wish to make,
@@ -198,21 +198,21 @@ than opening up an email client, you can do the following, where
 PATCH-FILE is the file that <code>git format-patch</code> made:
 
 <pre>
-git send-email --to erc-discuss@gnu.org PATCH-FILE
+git send-email --to emacs-devel@gnu.org PATCH-FILE
 </pre>
 
-== Becoming an ERC Developer ==
+== Becoming an Emacs Developer ==
 
-If you want commit access to the shared ERC repository on Savannah,
+If you want commit access to the shared Emacs repository on Savannah,
 then register an account at http://sv.gnu.org/ (be sure to add an SSH
-key), browse to the ERC project at http://sv.gnu.org/p/erc, and
-request to be add to the group.  It would be best to send some patches
-to the erc-discuss AT gnu.org mailing list first, so that we know
+key), browse to the Emacs project at http://sv.gnu.org/p/emacs, and
+request to be added to the group.  It would be best to send some patches
+to the emacs-devel AT gnu.org mailing list first, so that we know
 that you know what you are doing.
 
 You must also be willing to sign a copyright assignment for your
-changes to ERC, since ERC is a GNU project.  The current maintainer
-(mwolson AT gnu.org) will assist you in this process if you contact
+changes to Emacs, since ERC is a part of the GNU/Emacs project.  The current maintainer
+(kwhite@gnu.org or l3thal on #erc@freenode ) will assist you in this process if you contact
 him.
 
 == Emacs modes, Tutorials, and Documentation ==
