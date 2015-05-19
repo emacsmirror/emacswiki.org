@@ -45,6 +45,21 @@ I suggest using below code,
                                            "setTimeout(function(){content.document.location.reload(true);}, '500');")
 </pre>
 instead of BrowserReload. The difference is this solution won't cache the user input after web page refreshed. 
+
+I got irritated by having the currently focused tab being reloaded so to just reload all tabs that start with the url http://localhost:3000/:
+<pre>
+ (comint-send-string (inferior-moz-process) "
+var num = gBrowser.browsers.length;
+for (var i = 0; i < num; ++i) {
+  var browser = gBrowser.getBrowserAtIndex(i);
+  if (browser.currentURI.spec.substr(0, 21)  == 'http://localhost:3000')
+  {
+    browser.reload();
+  }
+}")
+</pre>
+Change the substr(0, 21) to the length of the new string when changing the url.
+
 [new]
 Nice, but if you are going to experiment with this it might be good to use a named function in the hook instead of a lambda.
 That way you can change it and you can also delete it from the hook if you want to.
