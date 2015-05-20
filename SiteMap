@@ -38,7 +38,7 @@ The '''EmacsWiki''' is dedicated to documenting and discussing EmacsAndXEmacs an
 
 * [[CategoryPorts|Ports]] -- binaries for MS Windows, Mac, GNU/Linux and the free BSDs
 * [[CategoryWThirtyTwo|W32]] -- obtaining and using Emacs for MS Windows
-* [[CategoryBuilding|Building]] -- building Emacs from ''source code''.
+* [[CategoryBuilding|Building]] -- building Emacs from source
 
 [:GeneralUse]
 ==General Emacs Use==
@@ -53,13 +53,13 @@ The '''EmacsWiki''' is dedicated to documenting and discussing EmacsAndXEmacs an
 ** [[CategoryDotEmacs|DotEmacs]] -- EmacsLisp code to put in your [[init file]]
 ** [[CategoryDisplay|Display]] -- display/screen/terminal information ([[pointer]] shapes, [[frame]]s...)
 ** [[CategoryFaces|Faces]] -- text highlighting, colors, font-lock, syntax-driven highlighting
-** [[CategoryFrames|Frames]] -- [[frame]]s (window-manager windows).
+** [[CategoryFrames|Frames]] -- [EmacsWiki:frame frames] (window-manager windows).
 ** [[CategoryInternationalization|Internationalization]] -- natural language support, character sets
 ** [[CategoryKeys|Keys]] -- customizing [[key]] bindings ("keyboard shortcuts")
 *** [[CategoryMouse|Mouse]] -- mouse bindings and different uses of the mouse
 ** [[CategoryPaths|Paths]] -- how to specify OS paths in Emacs
 ** [[CategoryPersistence|Persistence]] -- saving state between Emacs sessions
-** [[CategoryWindows|Windows]] -- Emacs [[window]]s (panes within a [[frame]])
+** [[CategoryWindows|Windows]] -- Emacs [EmacsWiki:window windows] (panes within a [[frame]])
 * [[CategoryEditing|Editing]] -- miscellaneous information about text editing
 ** [[CategoryAlignment|Alignment]] -- align text, columns, comments or other programming-language constructs
 ** [[CategoryComments|Comments]] -- manipulating and using code comments
