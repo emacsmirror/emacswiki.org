@@ -204,16 +204,16 @@ git send-email --to emacs-devel@gnu.org PATCH-FILE
 == Becoming an Emacs Developer ==
 
 If you want commit access to the shared Emacs repository on Savannah,
-then register an account at http://sv.gnu.org/ (be sure to add an SSH
-key), browse to the Emacs project at http://sv.gnu.org/p/emacs, and
-request to be added to the group.  It would be best to send some patches
-to the emacs-devel AT gnu.org mailing list first, so that we know
-that you know what you are doing.
+It would be best to send some patches to the emacs-devel AT gnu.org 
+mailing list first, so that we know that you know what you are doing. 
+Register an account at http://sv.gnu.org/ (be sure to add an SSH key), 
+browse to the Emacs project at http://sv.gnu.org/p/emacs, and request 
+to be added to the group. 
 
 You must also be willing to sign a copyright assignment for your
-changes to Emacs, since ERC is a part of the GNU/Emacs project.  The current maintainer
-(kwhite@gnu.org or l3thal on #erc@freenode ) will assist you in this process if you contact
-him.
+changes to Emacs, since ERC is a part of the GNU/Emacs project.  
+The current maintainer ( kwhite@gnu.org or l3thal on #erc@freenode ) 
+will assist you in this process if you contact him.
 
 == Emacs modes, Tutorials, and Documentation ==
 
