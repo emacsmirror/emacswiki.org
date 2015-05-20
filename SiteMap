@@ -49,7 +49,7 @@ General Use:
 * [[CategoryCommands|Commands]] -- invoking and defining Emacs [[command]]s, `M-x'
 * [[CategoryComparing|Comparing]] -- Comparing, diffing and merging
 * [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other [[buffer]]s
-* [[CategoryCustomize|Customize]] -- customizing Emacs generally and with the "easy customizing" feature, '''Customize'''
+* [[CategoryCustomize|Customize]] -- customizing Emacs generally and with the "easy customizing" feature, `Customize'
 ** [[CategoryDotEmacs|DotEmacs]] -- EmacsLisp code to put in your [[init file]]
 ** [[CategoryDisplay|Display]] -- display/screen/terminal information ([[pointer]] shapes, [[frame]]s...)
 ** [[CategoryFaces|Faces]] -- text highlighting, colors, font-lock, syntax-driven highlighting
@@ -71,7 +71,7 @@ General Use:
 ** [[CategoryTemplates|Templates]] -- using canned text (file headers, templates, forms)
 ** [[CategoryUndo|Undo]] -- undoing, redoing and finding changes
 * [[CategoryFiles|Files]] -- files and directories: local, remote, backup
-** [[CategoryDirectories|Directories]] -- '''Dired''' and operating on files and directories (folders)
+** [[CategoryDirectories|Directories]] -- `Dired' and operating on files and directories (folders)
 * [[CategoryHideStuff|HideStuff]] -- hiding parts of a [[buffer]]
 ** [[CategoryOutline|Outline]] -- hiding structural parts of text: outlining and folding
 * [[CategoryModes|Modes]] -- references, tips, documentation, and extensions for all modes
@@ -142,7 +142,7 @@ Emacs Community:
 
 * EmacsImplementations -- a list of Emacsen and their impersonators
 * [[CategoryHistory|History]] -- history of Emacs
-* [[CategoryHomepage|Homepage]] -- home pages of Emacs friends, including '''you'''
+* [[CategoryHomepage|Homepage]] -- home pages of Emacs friends, including '''you!'''
 * [[CategoryHumor|Humor]] -- when some Emacs users are not customizing Emacs, they make funnies
 
 ----
