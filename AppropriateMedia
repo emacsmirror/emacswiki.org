@@ -1,20 +1,23 @@
-See MeatBall:AppropriateMedia for some discussion.  As far as this
-wiki goes, I think the following holds true:
+The following are general guidelines for what should and should not go in the wiki. See MeatBall:AppropriateMedia for some discussion.  
 
-* Documentation which is not part of the EmacsManual should
-go to the wiki.
-* Bugs in the Emacs/XEmacs manuals should be reported to the
+Appropriate for the wiki: 
+
+* Documentation which is not part of the official Emacs manual. 
+* Examples, typical usage, customizations, and code snippets. 
+* Questions about the stuff posted on the wiki can remain in the wiki until they have satisfactory answers.  
+* Cross-posts from other media and discussions, [[CrossPosting with caveats]].
+
+Inappropriate for the wiki: 
+* Bugs in Emacs should be reported using ##report-emacs-bug##.  
+* Bugs in the Emacs manuals should be reported to the
 maintainers.
-* Examples, typical usage, customizations, and code snipplets should
-go to the wiki.
-* Bug reports and bug fixes to packages should be reported to the
+* Bugs in packages should be reported to the
 appropriate maintainers.
-* Discussions, questions, etc. usually go to the EmacsNewsgroups.  I'd
-like to see more know-how collected on the wiki, but at the moment I
-think that a lot of the good content comes from USENET postings which
-get copied and summarized on the wiki.
-* Often new content will prompt us to share more of our know-how, or
-prompt us to ask questions about the stuff posted on the wiki.  This
-should stay on the wiki.
+* Discussions, questions, etc. usually go to the following places: 
+** [http://savannah.gnu.org/mail/?group_id=40 Emacs mailing lists]
+** [[http://emacs.stackexchange.com/ Emacs Stackexchange]]
+** [[www.reddit.com/r/emacs Reddit]]
+** [[EmacsNewsgroups]]
 
-I hope that doesn't discourage people from adding new content.  Remember that the most important rule of creating a good wiki is to be bold. 
+
+I hope that doesn't discourage people from adding new content.  The most constructive wiki citizen is a bold editor.
