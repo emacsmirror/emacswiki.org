@@ -1,10 +1,10 @@
-The following are general guidelines for what should and should not go in the wiki. See MeatBall:AppropriateMedia for some discussion.  
+The following are general guidelines for what should and should not go in the wiki. See MeatBall:AppropriateMedia for the theory behind these choices.  
 
 Appropriate for the wiki: 
-
 * Documentation which is not part of the official Emacs manual. 
 * Examples, typical usage, customizations, and code snippets. 
-* Questions about the stuff posted on the wiki can remain in the wiki until they have satisfactory answers.  
+* If you notice that a particular piece of code on Emacswiki does not work you may indicate this on the wiki page.
+* Questions about the stuff posted on the wiki can remain in the wiki until they have been given satisfactory answers.  
 * Cross-posts from other media and discussions, [[CrossPosting with caveats]].
 
 Inappropriate for the wiki: 
