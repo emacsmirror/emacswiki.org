@@ -3,7 +3,7 @@ The following are general guidelines for what should and should not go in the wi
 Appropriate for the wiki: 
 * Documentation which is not part of the official Emacs manual. 
 * Examples, typical usage, customizations, and code snippets. 
-* If you notice that a particular piece of code on Emacswiki does not work you may indicate this on the wiki page.
+* If you notice that a particular piece of code on Emacswiki does not work you may indicate this on the wiki page along with the version of Emacs you are using. 
 * Questions about the stuff posted on the wiki can remain in the wiki until they have been given satisfactory answers.  
 * Cross-posts from other media and discussions, [[CrossPosting with caveats]].
 
