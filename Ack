@@ -15,7 +15,7 @@ A minimalistic interface to Ack is:
 
 (defun ack (command-args)
   (interactive
-   (let ((ack-command "ack --nogroup --with-filename --all "))
+   (let ((ack-command "ack --nofilter --nogroup --with-filename "))
      (list (read-shell-command "Run ack (like this): "
                                ack-command
                                'ack-history))))
@@ -26,7 +26,7 @@ A minimalistic interface to Ack is:
 
 Alternatively, one can use <code>M-x rgrep</code> with ack thusly:
 {{{
-(grep-apply-setting 'grep-command "ack --with-filename --nogroup --all")
+(grep-apply-setting 'grep-command "ack --with-filename --nofilter --nogroup ")
 }}}
 
 Beware of problems with ack's automatic detection of filter mode!  You might need to set <code>compilation-disable-input</code> to <code>t</code> and/or redirect the standard input of the <code>ack</code> command to <code>/dev/null</code>.
