@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 17 23:04:51 2015 (-0700)
+;; Last-Updated: Tue May 19 21:48:40 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 485
+;;     Update #: 497
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -39,15 +39,26 @@
 ;;  described on the current line:
 ;;
 ;;   * `RET' or `mouse-2' - see detailed information about it.
-;;   * `i' - google for more information about it.
 ;;   * `^' - insert it in the buffer where you invoked
 ;;           `apropos-unicode'.
 ;;   * `c' - define a command to insert the character, having the same
 ;;           name.  (You need library `ucs-cmds.el' for this.)
+;;   * `i' - google for more information about it.
 ;;   * `k' - globally bind a key to insert it.
 ;;   * `l' - locally bind a key to insert it.
+;;   * `z' - show it in a zoomed tooltip.
 ;;   * `C-y' - copy it to the `kill-ring'.
 ;;   * `M-y' - copy it to the secondary selection.
+;;
+;;  You can use options `apu-match-words-exactly-flag' and
+;;  `apu-match-two-or-more-words-flag' to specify your preference for
+;;  the kind of word matching to use by default.  You can match each
+;;  word or only any two or more words.  If matching each word, you
+;;  can match them as substrings or as full words.  You can use `C-c
+;;  n' to refresh the matches, cycling among these word-match methods.
+;;
+;;  You can sort the list of matches by any of the columns, up or
+;;  down, by clicking its heading.
 ;;
 ;;
 ;;  Commands defined here:
