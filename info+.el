@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar 19 09:32:50 2015 (-0700)
+;; Last-Updated: Wed May 20 11:07:36 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 5462
+;;     Update #: 5468
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -171,6 +171,7 @@
 ;;    `+'              `Info-merge-subnodes'
 ;;    `.'              `Info-save-current-node'
 ;;    `a'              `info-apropos'
+;;    `G'              `Info-goto-node-web'
 ;;    `v'              `Info-virtual-book'
 ;;    `mouse-4'        `Info-history-back'
 ;;    `mouse-5'        `Info-history-forward'
@@ -662,10 +663,11 @@
 
 ;;; KEYS & MENUS ;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define-key Info-mode-map "?" 'describe-mode) ; Don't use `Info-summary'.
-(define-key Info-mode-map "+" 'Info-merge-subnodes)
+(define-key Info-mode-map "?"               'describe-mode) ; Don't use `Info-summary'.
+(define-key Info-mode-map "+"               'Info-merge-subnodes)
 (define-key Info-mode-map "."               'Info-save-current-node)
 (define-key Info-mode-map "a"               'info-apropos)
+(define-key Info-mode-map "G"               'Info-goto-node-web)
 (define-key Info-mode-map "v"               'Info-virtual-book)
 ;; Mouse back and forward buttons
 (define-key Info-mode-map [S-down-mouse-2]  'Info-mouse-follow-nearest-node-new-window)
@@ -1430,7 +1432,9 @@ candidates."
     :help "Go to the previous node"]
    ("Menu Item" ["You should never see this" report-emacs-bug t])
    ("Reference" ["You should never see this" report-emacs-bug t])
+   ["Go to Node on Web..." Info-goto-node-web :help "Go to a named node on the Web (HTML doc)"]
    ["Go to Node..." Info-goto-node :help "Go to a named node"]
+   
    "--"
    ["Forward" Info-forward-node
     :help "Go forward one node, considering all as a sequence"]
