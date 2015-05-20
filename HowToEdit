@@ -6,7 +6,7 @@ A '''wiki''' is a collaborative web site.  '''''You can contribute'''''. Before 
 * To ''edit'' an existing wiki page, click the "'''Edit this page'''" link at the bottom of the page.
 [:accesskeys]
 ** '''Shortcut:''' In common browsers, to edit a page, just use `'''<code>Alt e</code>'''', on Mac OS X + Firefox, it's `'''<code>Ctrl Alt e</code>''''. On Windows/Linux + Firefox it's `'''<code>Alt Shift e</code>''''. See AccessKey for more information and a complete list.
-* [[Yaoddmuse]] -- a major mode for editing Oddmuse wikis such as EmacsWiki in Emacs. It is a rewrite of [[OddmuseMode]].
+* YaOddmuse -- a major mode for editing Oddmuse wikis such as EmacsWiki in Emacs. It is a rewrite of [[OddmuseMode]].
 * MinorEdit --  About the "This change is a minor edit." checkbox found on edit pages.
 * UserName -- How to sign your wiki contributions with your user name.
 * '''TextFormattingRules''' -- How to ''format'' a wiki page, ''create links'', and so on. The Emacs Wiki uses the [http://www.oddmuse.org/ Oddmuse] wiki engine, which defines the formatting rules.
