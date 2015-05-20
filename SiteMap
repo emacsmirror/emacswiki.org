@@ -10,15 +10,14 @@
 [[de:Übersicht]]
 <include "WikiLanguageMenu">
 
-The '''EmacsWiki''' is dedicated to documenting and discussing EmacsAndXEmacs and EmacsLisp. See the MissionStatement for more  information.
+The '''EmacsWiki''' is dedicated to documenting and discussing EmacsAndXEmacs and EmacsLisp. Please check [[SiteMap Discussion]] before editing this SiteMap page. See the MissionStatement for more information.
 
-You can edit this website.  There's a link, '''Edit this page''', at the bottom of this and other pages.  Please check [[SiteMap Discussion]] before editing this SiteMap page, however.
+How to use this site: 
 
-* HowToNavigate -- help using the site
+* HowToEdit -- every page can be edited with the '''Edit this page''' button
+* HowToNavigate -- how to find what you want on the site
 
 * ElispArea -- upload and download EmacsLisp source code
-
-* HowToEdit -- how you can contribute to the site
 
 * EmacsWikiAdministrators -- handling vandalism and spam on this site
 
