@@ -12,19 +12,20 @@ You may turn bootstrap back on with [EmacsWiki:action=browse;id=CSS;bootstrap=1 
 
 
 == Recommended Style Sheets ==
-* [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=;css= Classic CSS] following the old theme before May 2013. You can use the same theme with: [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=typo;css= more whitespace and small-caps theme]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=big;css= big fonts]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=medium;css= medium fonts]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=small;css= small fonts]; or [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=tiny;css= tiny fonts]
-* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/pedia.css Wikipedia]. For that comfortable look.
-* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/ruby.css Ruby] Bold and easy to read.
-* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/cali.css Lucida Grande]: Similar to the default site but with a crisp, clean Lucida Grande font.
-* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/grey.css Grey]: Modern, black-on-grey skin.
+
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/pedia.css Wikipedia] -- for that air of authority
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/ruby.css Ruby] -- bold and easy to read
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/cali.css Designed in California] -- inspired by a certain strain of modern web design
 * [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/blueheadings.css Lots More Text]: Like More Text but uses a much smaller font, maximizing text on a page. Excellent for looking at code.
 * [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/basic.css Basic CSS] for people that have tweaked their user CSS and only want the most basic style sheet
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=;css= Classic CSS] following the old theme before May 2013. 
+** The classic theme with: [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=typo;css= more whitespace and small-caps theme]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=big;css= big fonts]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=medium;css= medium fonts]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=small;css= small fonts]; or [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=tiny;css= tiny fonts]
 
 
 == User Submitted Style Sheets ==
 Warning: the links below may be broken. 
 
-
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/grey.css Grey]: Modern, black-on-grey skin.
 * [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/alex.css Vanilla]: A skin with very little visual distraction.
 * [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/community.css Community Wiki with sidebar Minus The Sidebar]: This is a nice compact skin but doesn't use the entire page width.
 * [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/green.css Green]: Similar to the default skin but text is green on a green background.
