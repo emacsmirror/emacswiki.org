@@ -1,4 +1,4 @@
-;;; yaoddmuse.el --- Yet another oddmuse for Emacs
+;;; yaoddmuse.el --- Major mode for EmacsWiki and other Oddmuse wikis
 
 ;; Filename: yaoddmuse.el
 ;; Description: Yet another oddmuse for Emacs
@@ -8,8 +8,8 @@
 ;; Copyright (C) 2009, 2010 rubikitch, all rights reserved.
 ;; Created: 2009-01-06 12:41:17
 ;; Version: 0.1.2
-;; Last-Updated: 2014/03/06 22:28
-;;           By: Andy Stewart
+;; Last-Updated: 2015/21/05 2:40
+;;           By: Michael Abrahams
 ;; URL: http://www.emacswiki.org/emacs/download/yaoddmuse.el
 ;; Keywords: yaoddmuse, oddmuse
 ;; Compatibility: GNU Emacs 22 ~ 23
