@@ -12,7 +12,7 @@ You may turn bootstrap back on with [EmacsWiki:action=browse;id=CSS;bootstrap=1 
 
 
 == Recommended Style Sheets ==
-* [http://www.emacswiki.org/css/emacs.css Classic CSS] following the old theme before May 2013 ([EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=;css= use it]). You can use the same theme with: [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=typo;css= more whitespace and small-caps theme]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=big;css= big fonts]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=medium;css= medium fonts]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=small;css= small fonts]; or [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=tiny;css= tiny fonts]
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=;css= Classic CSS] following the old theme before May 2013. You can use the same theme with: [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=typo;css= more whitespace and small-caps theme]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=big;css= big fonts]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=medium;css= medium fonts]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=small;css= small fonts]; or [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=tiny;css= tiny fonts]
 * [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/pedia.css Wikipedia]. For that comfortable look.
 * [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/ruby.css Ruby] Bold and easy to read.
 * [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/cali.css Lucida Grande]: Similar to the default site but with a crisp, clean Lucida Grande font.
@@ -22,6 +22,7 @@ You may turn bootstrap back on with [EmacsWiki:action=browse;id=CSS;bootstrap=1 
 
 
 == User Submitted Style Sheets ==
+Warning: the links below may be broken. 
 
 
 * [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/alex.css Vanilla]: A skin with very little visual distraction.
