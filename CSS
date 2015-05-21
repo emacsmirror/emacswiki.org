@@ -1,3 +1,6 @@
+"\* \[.*.css \\(.*\\)\]\\(.*\\)(\\[\\(.*\\) .*use it\\])"
+* [\3 \1]\2
+
 You can use different style sheets for this wiki.  If you would
 like to add more colors or use fancy fonts, pick another style
 sheet and use it.  We're also interested in finding more style
@@ -13,87 +16,55 @@ You may turn bootstrap back on with [EmacsWiki:action=browse;id=CSS;bootstrap=1 
 
 == Recommended Style Sheets ==
 * [http://www.emacswiki.org/css/emacs.css Classic CSS] following the old theme before May 2013 ([EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=;css= use it]). You can use the same theme with: [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=typo;css= more whitespace and small-caps theme]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=big;css= big fonts]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=medium;css= medium fonts]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=small;css= small fonts]; or [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=tiny;css= tiny fonts]
-* [http://www.emacswiki.org/css/pedia.css Wikipedia]. For that comfortable look. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/pedia.css use it])
-* [http://www.emacswiki.org/css/ruby.css Ruby] Bold and easy to read. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/ruby.css use it])
-* [http://www.emacswiki.org/css/cali.css Lucida Grande]: Similar to the default site but with a crisp, clean Lucida Grande font. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/cali.css use it])
-* [http://www.emacswiki.org/css/grey.css Grey]: Modern, black-on-grey skin. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/grey.css use it])
-* [http://www.emacswiki.org/css/blueheadings.css Lots More Text]: Like More Text but uses a much smaller font, maximizing text on a page. Excellent for looking at code. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/blueheadings.css use it])
-* [http://www.emacswiki.org/css/basic.css Basic CSS] for people that have tweaked their user CSS and only want the most basic style sheet ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/basic.css use it])
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/pedia.css Wikipedia]. For that comfortable look.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/ruby.css Ruby] Bold and easy to read.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/cali.css Lucida Grande]: Similar to the default site but with a crisp, clean Lucida Grande font.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/grey.css Grey]: Modern, black-on-grey skin.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/blueheadings.css Lots More Text]: Like More Text but uses a much smaller font, maximizing text on a page. Excellent for looking at code.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/basic.css Basic CSS] for people that have tweaked their user CSS and only want the most basic style sheet
 
 
 == User Submitted Style Sheets ==
 
 
-* [http://www.emacswiki.org/css/alex.css Vanilla]: A skin with very little visual distraction. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/alex.css use it])
-* [http://www.emacswiki.org/css/community.css Community Wiki with sidebar Minus The Sidebar]: This is a nice compact skin but doesn't use the entire page width. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/community.css use it])
-* [http://www.emacswiki.org/css/green.css Green]: Similar to the default skin but text is green on a green background. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/green.css use it])
-* [http://www.emacswiki.org/css/hug.css Hug] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/hug.css use it])
-* [http://www.emacswiki.org/css/orange.css Orange] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/orange.css use it])
-* [http://www.emacswiki.org/css/paper.css Paper] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/paper.css use it])
-* [http://www.emacswiki.org/css/presentation.css Presentation] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/presentation.css use it])
-* [http://www.emacswiki.org/css/space.css Space] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/space.css use it])
-* [http://www.emacswiki.org/css/useit.css Useit] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/useit.css use it])
-* [[http://www.emacswiki.org/emacs/NicFerrierCss|Default CSS]] from NicFerrier, with sans-serif font and no line or letter spacing ([EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=small;css=http://www.emacswiki.org/emacs/download/NicFerrierCss use it])
-
-
-* [http://www.emacswiki.org/css/planet.css Planet CSS] using Bitstream Vera Sans Mono ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/planet.css use it])
-
-* [http://www.emacswiki.org/oddmuse/wiki.css Oddmuse CSS] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/oddmuse/wiki.css use it])
-
-* [http://www.emacswiki.org/oddmuse/blue.css Oddmuse blue headings CSS] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/oddmuse/blue.css use it])
-
-
-* [http://rincevent.net/~lucas/sites/lukhas/style/blueheadings.css Blue Heading + Small Font] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/blueheadings.css use it])
--- I changed the address, it's now hosted on my own server instead of my ISP, should be more reliable, apologies for the incovenience. -- LucasBonnet.
- The address changed again, now hosted on the wiki, my DSL doesn't like Summer. -- LucasBonnet
-
-* [http://www.emacswiki.org/alex/beige-red.css Beige Red CSS] Beige background, large text, looks like (to me) an old newspaper. Not recommended for viewing code. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/alex/beige-red.css use it])
-* [http://www.emacswiki.org/css/beige-red-test.css Compact Antique Beige[: Like Antique Beige but less whitespace. Not recommended for viewing code. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/beige-red-test.css use it])
-
-* [http://rincevent.net/~lucas/sites/lukhas/style/wiki.css Beige + Small Font CSS] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/lukhas.css;theme=beige use it])
-
-* [http://www.emacswiki.org/css/blue.css Blue more text]: Similar to the default skin but with less whitespace so more fits on one page. [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/blue.css
-
-* [http://rincevent.net/~lucas/sites/lukhas/style/wiki_blue.css Blue + Small Font CSS]
-([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/wiki_blue.css;theme=blue use it]) Another color. I can't live without Blue :)
-
-* [http://www.physik.fu-berlin.de/~dhansen/css/wiki.css Grey and Red] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=http://www.physik.fu-berlin.de/~dhansen/css/wiki.css use it])
-
-* [http://www.emacswiki.org/community/green.css Green CSS] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/community/green.css use it])
-
-* [http://www.emacswiki.org/css/astrid.css Beige CSS] Larger font with earth tones. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/astrid.css use it])
-
-* [http://www.emacswiki.org/oddmuse/grey.css Grey CSS] by "mad" of the [http://czlug.madbrains.net/wiki/wiki.pl czlug] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/oddmuse/grey.css use it])
-
-* [http://www.emacswiki.org/paper/wiki.css Paper CSS] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/paper/wiki.css use it])
--- This is a CSS that might be useful when using a wiki to prepare papers.
-It is useless for day-to-day browsing, in my not-so-humble opinion.
-
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/alex.css Vanilla]: A skin with very little visual distraction.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/community.css Community Wiki with sidebar Minus The Sidebar]: This is a nice compact skin but doesn't use the entire page width.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/green.css Green]: Similar to the default skin but text is green on a green background.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/hug.css Hug]
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/orange.css Orange]
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/paper.css Paper]
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/presentation.css Presentation]
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/space.css Space]
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/useit.css Useit]
+* [[http://www.emacswiki.org/emacs/download/NicFerrierCss CSS from NicFerrier]] with sans-serif font and no line or letter spacing.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/planet.css Planet CSS] using Bitstream Vera Sans Mono
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/oddmuse/wiki.css Oddmuse CSS]
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/oddmuse/blue.css Oddmuse blue headings CSS]
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/blueheadings.css Blue Heading + Small Font]
+** I changed the address, it's now hosted on my own server instead of my ISP, should be more reliable, apologies for the incovenience. -- LucasBonnet.
+** The address changed again, now hosted on the wiki, my DSL doesn't like Summer. -- LucasBonnet
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/alex/beige-red.css Beige Red CSS] Beige background, large text, looks like (to me) an old newspaper. Not recommended for viewing code.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/beige-red-test.css Compact Antique Beige]: Like Antique Beige but less whitespace. Not recommended for viewing code.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/lukhas.css;theme=beige Beige + Small Font CSS]
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/blue.css Blue more text]: Similar to the default skin but with less whitespace so more fits on one page.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/wiki_blue.css;theme=blue Blue + Small Font CSS] Another color. I can't live without Blue :)
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=http://www.physik.fu-berlin.de/~dhansen/css/wiki.css Grey and Red]
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/community/green.css Green CSS]
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/astrid.css Beige CSS] Larger font with earth tones.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/oddmuse/grey.css Grey CSS] by "mad" of the [http://czlug.madbrains.net/wiki/wiki.pl czlug]
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/paper/wiki.css Paper CSS] -- This is a CSS that might be useful when using a wiki to prepare papers. It is useless for day-to-day browsing, in my not-so-humble opinion.
 * [http://iki.fi/juhtolv/css-download/ Stylesheets] of JuhapekkaTolvanen combined with the [http://www.emacswiki.org/css/emacs.css Default CSS] ('''If you really adopt some of these stylesheets, it would be nice to hear about it! Other comment are welcome, too!'''):
-
-** [http://iki.fi/juhtolv/index.css index] : Green text on black ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/emacs.css%20http://iki.fi/juhtolv/index.css;theme=juhtolv-index Use it])
-
-** [http://iki.fi/juhtolv/indexbw.css indexbw] : Black text on white ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/emacs.css%20http://iki.fi/juhtolv/indexbw.css;theme=juhtolv-indexbw Use it])
-
-** [http://iki.fi/juhtolv/indexbwserif.css indexbwserif] : Black serif font text on white ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/emacs.css%20http://iki.fi/juhtolv/indexbwserif.css;theme=juhtolv-indexbwserif Use it])
-
-** [http://iki.fi/juhtolv/latex.css latex] : Black LaTeX font on white ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/emacs.css%20http://iki.fi/juhtolv/latex;theme=juhtolv-latex Use it]) (Download cm-super from CTAN, for example)
-
-* [http://www.emacswiki.org/oddmuse/orange.css Orange] of http://de.veganwiki.org
-([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/oddmuse/orange.css use it])
-
-* [http://purl.org/NET/wence/emacswiki.css A white and blue] stylesheet that tries to keep page widths to around 70 to 80 characters, and flags up external links with a small image. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=http://purl.org/NET/wence/emacswiki.css use it])
-
-* [http://www.emacswiki.org/alex/wikio.css white on blue and cyan links]-- discovered on EarleMartin's site after reading about his [http://downlode.org/log/2005-01-14/Mu_License Mu License] and adapted for Oddmuse by AlexSchroeder.  ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=http://www.emacswiki.org/alex/wikio.css;theme= use it])
-
-** Same thing, but 100ex wide ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=http://www.emacswiki.org/alex/wikio.css;theme=bigger use it])
-
-* [http://www.emacswiki.org/alex/cali.css Designed in California] -- It was inspired by all these sites featuring software for Mac OSX.  Strange how so many of these sites seem to be inspired by the Apple website.  I basically looked at the [http://www.ethomaz.com/onlife/ Onlife] site style sheet for font family and size, some basic whitespace distribution, and added the rest to make it all work for Oddmuse. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/cali.css;theme= use it])
-
-* [http://www.emacswiki.org/css/pink-bliss.css Pink Bliss] -- Inspired by the ColorTheme PinkBliss ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/pink-bliss.css;theme= use it])
-
-* [http://www.emacswiki.org/css/twb.css twb's favorite CSS] -- ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/basic.css%20/css/twb.css;theme= use it])
-
+** [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/emacs.css%20http://iki.fi/juhtolv/index.css;theme=juhtolv-index index] : Green text on black
+** [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/emacs.css%20http://iki.fi/juhtolv/indexbw.css;theme=juhtolv-indexbw indexbw] : Black text on white
+** [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/emacs.css%20http://iki.fi/juhtolv/indexbwserif.css;theme=juhtolv-indexbwserif indexbwserif] : Black serif font text on white
+** [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/emacs.css%20http://iki.fi/juhtolv/latex;theme=juhtolv-latex latex] : Black LaTeX font on white (Download cm-super from CTAN, for example)
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/oddmuse/orange.css  Orange] of http://de.veganwiki.org
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=http://purl.org/NET/wence/emacswiki.css A white and blue] stylesheet that tries to keep page widths to around 70 to 80 characters, and flags up external links with a small image.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=http://www.emacswiki.org/alex/wikio.css;theme= white on blue and cyan links]-- discovered on EarleMartin's site after reading about his [http://downlode.org/log/2005-01-14/Mu_License Mu License] and adapted for Oddmuse by AlexSchroeder.
+** ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=http://www.emacswiki.org/alex/wikio.css;theme=bigger Same thing, but 100ex wide])
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/cali.css;theme= Designed in California] -- It was inspired by all these sites featuring software for Mac OSX.  Strange how so many of these sites seem to be inspired by the Apple website.  I basically looked at the [http://www.ethomaz.com/onlife/ Onlife] site style sheet for font family and size, some basic whitespace distribution, and added the rest to make it all work for Oddmuse.
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/pink-bliss.css;theme= Pink Bliss] -- Inspired by the ColorTheme PinkBliss
+* [EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/basic.css%20/css/twb.css;theme= twb's favorite CSS]
 
 '''Additions to the list welcome!'''
 
