@@ -1,11 +1,8 @@
-"\* \[.*.css \\(.*\\)\]\\(.*\\)(\\[\\(.*\\) .*use it\\])"
-* [\3 \1]\2
-
 You can use different style sheets for this wiki.  If you would
 like to add more colors or use fancy fonts, pick another style
 sheet and use it.  We're also interested in finding more style
 sheets, so there are links to CSS sources as well for you to
-study and adapt -- and share.  :)
+study and adapt -- and share!
 
 By default, we're using a bootstrap theme.  In order to use a
 different style sheet, you just need to switch off bootstrap and
