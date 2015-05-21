@@ -14,8 +14,11 @@ The '''EmacsWiki''' is dedicated to documenting and discussing [http://www.gnu.o
 
 ==How to use this site==
 
-* HowToEdit -- every page can be edited with the `Edit this page' link at the bottom
+* HowToEdit -- every page can be edited with the `Edit this page' link at the bottom or by keyboard shortcut
+
 * HowToNavigate -- how to find what you're looking for 
+
+* [EmacsWiki:CSS Appearance] -- change the way the site looks
 
 * ElispArea -- upload and download EmacsLisp source code
 
