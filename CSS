@@ -6,44 +6,35 @@ study and adapt -- and share.  :)
 
 By default, we're using a bootstrap theme.  In order to use a
 different style sheet, you just need to switch off bootstrap and
-provide a new CSS file.
+provide a new CSS file. You can change the theme used for this wiki using the links below.
 
-Turn bootstrap back on with [EmacsWiki:action=browse;id=CSS;bootstrap=1 this link] or append <code>?bootstrap=1</code> to most URLs
+You may turn bootstrap back on with [EmacsWiki:action=browse;id=CSS;bootstrap=1 this link] or append <code>?bootstrap=1</code> to most URLs. 
 
 
-== Style Sheets ==
-
-You can change the theme used for this wiki using one of the following links:
-
-* [http://www.emacswiki.org/css/emacs.css Classic CSS] with the old theme before May 2013 ([EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=;css= use it])
-
-** Same CSS with more whitespace around headers and small-caps theme ([EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=typo;css= use it])
-
-** Same CSS with big fonts theme: 14/16 Lucida Bright ([EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=big;css= use it])
-
-** Same CSS with medium fonts theme: 12/14 Lucida Bright ([EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=medium;css= use it])
-
-** Same CSS with small fonts theme: 10/11 and your default font ([EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=small;css= use it])
-
-** Same CSS with tiny fonts theme: 8/9 and your default font
-([EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=tiny;css= use it])
-* [http://www.emacswiki.org/css/alex.css Vanilla]: A skin with very little visual distraction. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/alex.css use it])
-* [http://www.emacswiki.org/css/blueheadings.css Lots More Text]: Like More Text but uses a much smaller font, maximizing text on a page. Excellent for looking at code. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/blueheadings.css use it])
+== Recommended Style Sheets ==
+* [http://www.emacswiki.org/css/emacs.css Classic CSS] following the old theme before May 2013 ([EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=;css= use it]). You can use the same theme with: [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=typo;css= more whitespace and small-caps theme]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=big;css= big fonts]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=medium;css= medium fonts]; [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=small;css= small fonts]; or [EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=tiny;css= tiny fonts]
+* [http://www.emacswiki.org/css/pedia.css Wikipedia]. For that comfortable look. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/pedia.css use it])
+* [http://www.emacswiki.org/css/ruby.css Ruby] Bold and easy to read. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/ruby.css use it])
 * [http://www.emacswiki.org/css/cali.css Lucida Grande]: Similar to the default site but with a crisp, clean Lucida Grande font. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/cali.css use it])
+* [http://www.emacswiki.org/css/grey.css Grey]: Modern, black-on-grey skin. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/grey.css use it])
+* [http://www.emacswiki.org/css/blueheadings.css Lots More Text]: Like More Text but uses a much smaller font, maximizing text on a page. Excellent for looking at code. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/blueheadings.css use it])
+* [http://www.emacswiki.org/css/basic.css Basic CSS] for people that have tweaked their user CSS and only want the most basic style sheet ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/basic.css use it])
+
+
+== User Submitted Style Sheets ==
+
+
+* [http://www.emacswiki.org/css/alex.css Vanilla]: A skin with very little visual distraction. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/alex.css use it])
 * [http://www.emacswiki.org/css/community.css Community Wiki with sidebar Minus The Sidebar]: This is a nice compact skin but doesn't use the entire page width. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/community.css use it])
 * [http://www.emacswiki.org/css/green.css Green]: Similar to the default skin but text is green on a green background. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/green.css use it])
-* [http://www.emacswiki.org/css/grey.css Grey]: Modern, black-on-grey skin. ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/grey.css use it])
 * [http://www.emacswiki.org/css/hug.css Hug] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/hug.css use it])
 * [http://www.emacswiki.org/css/orange.css Orange] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/orange.css use it])
 * [http://www.emacswiki.org/css/paper.css Paper] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/paper.css use it])
 * [http://www.emacswiki.org/css/presentation.css Presentation] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/presentation.css use it])
-* [http://www.emacswiki.org/css/ruby.css Ruby] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/ruby.css use it])
 * [http://www.emacswiki.org/css/space.css Space] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/space.css use it])
 * [http://www.emacswiki.org/css/useit.css Useit] ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/useit.css use it])
-
 * [[http://www.emacswiki.org/emacs/NicFerrierCss|Default CSS]] from NicFerrier, with sans-serif font and no line or letter spacing ([EmacsWiki:action=browse;bootstrap=0;id=CSS;theme=small;css=http://www.emacswiki.org/emacs/download/NicFerrierCss use it])
 
-* [http://www.emacswiki.org/css/basic.css Basic CSS] for people that have tweaked their user CSS and only want the most basic style sheet ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/basic.css use it])
 
 * [http://www.emacswiki.org/css/planet.css Planet CSS] using Bitstream Vera Sans Mono ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/planet.css use it])
 
@@ -103,7 +94,6 @@ It is useless for day-to-day browsing, in my not-so-humble opinion.
 
 * [http://www.emacswiki.org/css/twb.css twb's favorite CSS] -- ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/basic.css%20/css/twb.css;theme= use it])
 
-* [http://www.emacswiki.org/css/pedia.css Wikipedia] -- inspired by all those that want the Emacs Wiki to look like Wikipedia because they think that somehow transfers their moderators and thousands of volunteer editors to this site -- ([EmacsWiki:action=browse;bootstrap=0;id=CSS;css=/css/pedia.css use it])
 
 '''Additions to the list welcome!'''
 
