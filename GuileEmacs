@@ -121,9 +121,6 @@ For the Scheme fans who dislike Elisp:
 
 http://i.imgur.com/5DYQbhu.png
 
-(Note: I do NOT endorse using Apple products. The above screenshot being from Mac OS X is an unfortunate coincidence.)
-
-
 == Long-term issues ==
 
 There seem no long-term issues for pure Elisp users, but the following challenges will face those who want to mix Elisp with Scheme:
