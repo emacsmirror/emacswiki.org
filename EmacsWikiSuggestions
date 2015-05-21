@@ -14,6 +14,38 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 '''Add your suggestions below this line.'''
 
+== Provide alternate stylesheets ==
+
+I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets---see  [http://orgmode.org/worg/ Worg]---then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
+
+[new:DrewAdams:2012-08-05 16:41 UTC]
+Does [[CSS]] correspond to your request?  I don't use alternative stylesheets myself, but last time I tried this (years ago) it seemed to do what you are suggesting. 
+
+(I've updated HowTo to mention page [[CSS]].) -- DrewAdams
+
+[new]
+
+This is how the directives on [http://Orgmode.org/worg Worg] looks like:
+
+    <link rel="stylesheet" title="Standard" href="/worg/style/worg.css" type="text/css" />
+    <link rel="alternate stylesheet" title="Zenburn" href="/worg/style/worg-zenburn.css" type="text/css" />
+    <link rel="alternate stylesheet" title="Classic" href="/worg/style/worg-classic.css" type="text/css" />
+    <link rel="stylesheet" href="http://orgmode.org/css/lightbox.css" type="text/css" media="screen" />
+
+This is how it looks like on EmacsWiki pages
+
+    <link type="text/css" rel="stylesheet" href="/emacs/wiki.css" />
+
+Note the absence of "alternate stylesheet" attributes.  I am wondering whether such directives could be added to the site.
+
+[new]
+Given the selection we have on the [[CSS]] page, which are the themes you'd like to hard-code as alternatives? -- Alex
+
+[new]
+I went through the available stylesheets and moved my favorites to the top.  None of them are perfect but several could potentially be fixed into something decent with a bit of tweaking. In my opinion this is a very serious issue.  Applying a new CSS theme made the wiki spring to life for me.  --MikeAbrahams
+
+
+
 == Talk link indicates whether page already exists ==
 Could there be some sort of styling or tooltip to indicate if the talk page exists/has talk on it?
 I like to browse the talk pages to see some meta-discussion.
@@ -95,33 +127,6 @@ As for where to document them, I don't know. Probably a new page to link from Ho
 
 [new:MichaelPaulukonis:2013-05-10 18:31 UTC]
 Say "hello!" to AccessKey --MichaelPaulukonis
-
-== Provide alternate stylesheets ==
-
-I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets---see  [http://orgmode.org/worg/ Worg]---then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
-
-[new:DrewAdams:2012-08-05 16:41 UTC]
-Does [[CSS]] correspond to your request?  I don't use alternative stylesheets myself, but last time I tried this (years ago) it seemed to do what you are suggesting. 
-
-(I've updated HowTo to mention page [[CSS]].) -- DrewAdams
-
-[new]
-
-This is how the directives on [http://Orgmode.org/worg Worg] looks like:
-
-    <link rel="stylesheet" title="Standard" href="/worg/style/worg.css" type="text/css" />
-    <link rel="alternate stylesheet" title="Zenburn" href="/worg/style/worg-zenburn.css" type="text/css" />
-    <link rel="alternate stylesheet" title="Classic" href="/worg/style/worg-classic.css" type="text/css" />
-    <link rel="stylesheet" href="http://orgmode.org/css/lightbox.css" type="text/css" media="screen" />
-
-This is how it looks like on EmacsWiki pages
-
-    <link type="text/css" rel="stylesheet" href="/emacs/wiki.css" />
-
-Note the absence of "alternate stylesheet" attributes.  I am wondering whether such directives could be added to the site.
-
-[new]
-Given the selection we have on the [[CSS]] page, which are the themes you'd like to hard-code as alternatives? -- Alex
 
 == User Names on RecentChanges Page ==
 
