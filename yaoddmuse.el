@@ -243,7 +243,7 @@
 ;;    default = t
 ;;  `yaoddmuse-wikis'
 ;;    Alist mapping wiki names to URLs.
-;;    default = (quote (("TestWiki" "http://www.emacswiki.org/cgi-bin/test" utf-8 "uihnscuskc=1;") ("EmacsWiki" "http://www.emacswiki.org/emacs" utf-8 "uihnscuskc=1;") ("CommunityWiki" "http://www.communitywiki.org/cw" utf-8 "uihnscuskc=1;") ("RatpoisonWiki" "http://ratpoison.antidesktop.net/cgi-bin/wiki" utf-8 "uihnscuskc=1;") ("StumpwmWiki" "http://stumpwm.antidesktop.net/cgi-bin/wiki" utf-8 "uihnscuskc=1;") ...))
+;;    default = (quote (("TestWiki" "http://www.emacswiki.org/test" utf-8 "uihnscuskc=1;") ("EmacsWiki" "http://www.emacswiki.org/emacs" utf-8 "uihnscuskc=1;") ("CommunityWiki" "http://www.communitywiki.org/cw" utf-8 "uihnscuskc=1;") ("RatpoisonWiki" "http://ratpoison.antidesktop.net/cgi-bin/wiki" utf-8 "uihnscuskc=1;") ("StumpwmWiki" "http://stumpwm.antidesktop.net/cgi-bin/wiki" utf-8 "uihnscuskc=1;") ...))
 ;;  `yaoddmuse-default-wiki'
 ;;    The default wiki name for edit.
 ;;    default = "EmacsWiki"
@@ -605,7 +605,7 @@ Default is t."
   :group 'yaoddmuse)
 
 (defcustom yaoddmuse-wikis
-  '(("EmacsWiki" "http://www.emacswiki.org/cgi-bin/emacs" utf-8 "uihnscuskc=1;")
+  '(("EmacsWiki" "http://www.emacswiki.org/emacs" utf-8 "uihnscuskc=1;")
     ("CommunityWiki" "http://www.communitywiki.org/cw" utf-8 "uihnscuskc=1;")
     ("RatpoisonWiki" "http://ratpoison.wxcvbn.org/cgi-bin/wiki.pl" utf-8 "uihnscuskc=1;")
     ("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse" utf-8 "uihnscuskc=1;"))
