@@ -9,7 +9,7 @@ A '''wiki''' is a collaborative web site.  '''''You can contribute'''''. Before 
 ** Firefox in Mac OS X: `'''<code>Ctrl Alt e</code>''''. 
 ** Firefox in Windows/Linux: `'''<code>Alt Shift e</code>''''. 
 ** See AccessKey for a complete list of shortcuts and more information.
-* YaOddmuse -- edit EmacsWiki in Emacs. It is a rewrite of [[OddmuseMode]] and should work in other Oddmuse wikis as well.
+* [EmacsWiki:Yaoddmuse Yaoddmuse mode]-- edit EmacsWiki in Emacs. It is a rewrite of [[OddmuseMode]] and should work in other Oddmuse wikis as well.
 * TextFormattingRules -- How to ''format'' a wiki page, ''create links'', and so on. The Emacs Wiki uses the [http://www.oddmuse.org/ Oddmuse] wiki engine, which defines the formatting rules.
 * CreateNewPages -- How to ''create new wiki pages''. A good way to start your first page is by adding your UserName to CategoryHomepage.
 * DeletedPage -- Deleting pages.
