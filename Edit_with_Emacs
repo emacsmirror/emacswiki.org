@@ -57,6 +57,19 @@ To use, simply ensure that ##edit-server-htmlize.el## is on your ##load-path## a
 (add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer)
 </pre>
 
+=== Changing Default Mode ===
+
+To have edit-server work in some other mode (other than text-mode), edit edit-server.el and
+change this line:
+
+<pre>
+   (define-derived-mode edit-server-text-mode text-mode "Edit Server Text Mode"
+</pre>
+to something like:
+<pre>
+   (define-derived-mode edit-server-text-mode markdown-mode "Edit Server Text Mode"
+</pre>
+
 === Integrating with other modes ===
 
 TODO: Look at integrating as-external...
