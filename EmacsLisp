@@ -1,43 +1,48 @@
 [[ru:ЕмаксЛисп]]
-: no time to learn lisp is false economy ;o)
+: No time to learn lisp is false economy ;o)
 : -- resolve
 
-Emacs Lisp, or Elisp (see EmacsLispLegalName), is a variant of MacLisp that much of Emacs is written in, as
-well as being the extension language that customizations and extensions are written in.
+== Introduction == 
+Emacs Lisp, or [EmacsWiki:EmacsLispLegalName Elisp], is the language that much of Emacs' functionality is implemented in, and is the default language for writing user customizations and extensions.
 
 Emacs Lisp is what makes Emacs ExtensibleSoftware. Customizations and
-extensions can be made quickly and portably. Some of the ways that
+extensions can be made quickly and are portable. Some of the ways that
 Emacs Lisp is used to extend Emacs include hooking custom Emacs Lisp
 functions into events, binding functions to key combinations, 
 creating new editing modes and even writing whole applications for the WorldWideWeb or other Internet clients.
 
-Lisp, originally specified in 1958, derives its name from '''LIS'''t '''P'''rocessing.  Those turned off by the language's syntax have said it should stand for Lots of Insignificant Silly Parentheses. 
-
-To read about other kinds of Lisp and how to use them in conjunction
+Lisp, originally specified in 1958, derives its name from '''LIS'''t '''P'''rocessing.  (Those turned off by the language's syntax have said it should stand for Lots of Insignificant Silly Parentheses.) Elisp is a variant of an influential Lisp dialect MacLisp developed in 1966. To read about other kinds of Lisp and how to use them in conjunction
 with Emacs, see CommonLisp and [[Scheme]].
 
-EmacsLispReference is the official documentation. It is built into Emacs Info pages and is the go-to for most Elisp programmers. It is shipped with Emacs and can be accessed by the menu bar, or with `M-x menu-bar-read-lispref'. 
+EmacsLispReference is the official Emacs Lisp documentation. It is built into the Emacs Info pages and is the go-to for most Elisp programmers. It is shipped with Emacs and can be accessed by the menu bar, with `M-x menu-bar-read-lispref', or from the top page of InfoMode.
 
-EmacsLispIntro is a book for non-programmers available from the FreeSoftwareFoundation and is shipped with Emacs. Its command is `M-x menu
+EmacsLispIntro is a book for non-programmers available from the FreeSoftwareFoundation and is shipped with Emacs. Its command is `M-x menu-bar-read-lispinfo'. 
 
-For help on using other people's Emacs Lisp, see InstallingPackages.
+== Getting Started == 
+The links below will help you get started creating your own ideal text editor. 
 
-* LearnEmacsLisp as a way of LearningEmacs.
+* LearnEmacsLisp is the main portal page.  Learning Elisp is one of the best ways of LearningEmacs.
 * [[http://bzg.fr/learn-emacs-lisp-in-15-minutes.html Learn Emacs Lisp in 15 minutes]]
 * ElispCookbook has useful short examples.
-* An unfinished [[http://www.gnuvola.org/software/elisp-tutorial/index.html Elisp tutorial]]
-* CodingStyle -- For suggestions on Emacs Lisp SelfDocumentation
-* EmacsLispComparisons -- Compare Emacs Lisp with other popular languages
-* [[DynamicBindingVsLexicalBinding|Dynamic and Lexical Binding]]: it's common to mix both
 * PlainLispForMath for an explanation of simple arithmetic expressions in Lisp
+* An unfinished [[http://www.gnuvola.org/software/elisp-tutorial/index.html Elisp tutorial]]
+* For help on using other people's Emacs Lisp, see InstallingPackages.
+* EmacsLispComparisons -- Compare Emacs Lisp with other popular languages
+
+== Technical Information == 
+The official Emacs Lisp Info pages can be dense or incomplete.  These pages offer additional exposition and clarification. 
+
+* CodingStyle -- For suggestions on Emacs Lisp SelfDocumentation
 * ListStructure: like ##((1 . 2) . (3 . 4))##
+* EmacsSymbolNotation If you are wondering about all the quoting syntaxes like ##?a 'b #c `(,d e) :f (g . h)##
 * BackquoteSyntax: what does it mean ##`(foo ,bar baz)##
 * ListModification: operations which inspect and modify lists
 * [[EmacsLispIntrospection|Introspection]]: finding out about functions
 * [[ConcurrentEmacs|Concurrency]] through asynchronous processes
+* [[DynamicBindingVsLexicalBinding|Dynamic and Lexical Binding]]: it's common to mix both
 
 
-If you are wondering about all the quoting syntaxes like ##?a 'b #c `(,d e) :f (g . h)## etc., then see EmacsSymbolNotation.
+
 
 ----
 CategoryCode
