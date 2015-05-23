@@ -1,11 +1,8 @@
-Original article by KaiGrossjohann:
+The syntax and ideas behind Emacs lists trace back to its roots over 50 years ago. This often leaves Elisp newbies confused, especially if they are not familiar with memory pointers.  This article is a basic introduction to these concepts. These ideas are common to all Lisp dialects, and much of this information has been [http://en.wikipedia.org/wiki/Cons repeated on Wikipedia]. 
 
-The basic data structure is a cons cell.  It is a pair consisting of a
-car and a cdr.  The car and the cdr can be numbers or strings etc, or
-pointers to other cons cells.
+The basic data structure is called a cons cell, called that because is the basic unit of list ''cons''truction.  A cons cell is simply a pair of data items.  The first item is called the `car', meaning content of the address register, and the second item is called the `cdr', or content of the data register. (These names derive from the original implementations of Lisp in machine code, but do not correspond directly to memory structures anymore.) The car and the cdr can be any sort of data, like numbers or strings, but importantly they may hold pointers to other cons cells.
 
-For example, (1 . 2) is a cons cell where the car is 1 and the cdr is
-2.
+The Lisp notation for creating a cons cell is two items between parentheses separated by a period.  For example, (1 . 2) is a cons cell where the car is 1 and the cdr is 2.
 
 You can build binary trees from cons cells:
 
@@ -19,14 +16,8 @@ This corresponds to the following tree:
      / \ / \
      1 2 3 4
 
-There is a special value nil which means "empty", other languages use
-the term "null".
 
-A list is a degenerated binary tree, where the cars contain the list
-elements, and the cdr points to the rest of the list.  And nil means
-the empty list.  So (1 . nil) is a one-element list, and (1 . (2 .
-nil)) is a two-element list, and (1 . (2 . (3 . nil))) is a
-three-element list.  The three-element list as a tree:
+A list in Lisp is represented as a linked list of cons cells, where the `car's contain the list elements, and the `cdr's points to the rest of the list.  There is a special list value () which represents an empty list.  This is called `nil' which means "empty," like "null" in c-like languages. An empty list is always the terminal element of a list.  So (1 . nil) is a one-element list, and (1 . (2 . nil)) is a two-element list, and (1 . (2 . (3 . nil))) is a three-element list.  The three-element list can be represented as a tree:
 
         *
        / \
@@ -58,5 +49,6 @@ equivalent expression:
 
 For ways to modify lists, see ListModification.
 
+Original article by KaiGrossjohann. 
 ----
 CategoryCode
