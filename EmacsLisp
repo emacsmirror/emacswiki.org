@@ -22,26 +22,16 @@ EmacsLispIntro is a book for non-programmers available from the FreeSoftwareFoun
 The links below will help you get started creating your own ideal text editor. 
 
 * LearnEmacsLisp is the main portal page.  Learning Elisp is one of the best ways of LearningEmacs.
-* [[http://bzg.fr/learn-emacs-lisp-in-15-minutes.html Learn Emacs Lisp in 15 minutes]]
+* [[http://bzg.fr/learn-emacs-lisp-in-15-minutes.html Learn Emacs Lisp in 15 minutes]].
 * ElispCookbook has useful short examples.
-* PlainLispForMath for an explanation of simple arithmetic expressions in Lisp
-* An unfinished [[http://www.gnuvola.org/software/elisp-tutorial/index.html Elisp tutorial]]
+* PlainLispForMath for an explanation of simple arithmetic expressions in Lisp.
+* An unfinished [[http://www.gnuvola.org/software/elisp-tutorial/index.html Elisp tutorial]].
 * For help on using other people's Emacs Lisp, see InstallingPackages.
-* EmacsLispComparisons -- Compare Emacs Lisp with other popular languages
+* EmacsLispComparisons -- Compare Emacs Lisp with other popular languages.
 
-== Technical Information == 
-The official Emacs Lisp Info pages can be dense or incomplete.  These pages offer additional exposition and clarification. 
+== Writing Emacs Lisp == 
 
-* CodingStyle -- For suggestions on Emacs Lisp SelfDocumentation
-* ListStructure: like ##((1 . 2) . (3 . 4))##
-* EmacsSymbolNotation If you are wondering about all the quoting syntaxes like ##?a 'b #c `(,d e) :f (g . h)##
-* BackquoteSyntax: what does it mean ##`(foo ,bar baz)##
-* ListModification: operations which inspect and modify lists
-* [[EmacsLispIntrospection|Introspection]]: finding out about functions
-* [[ConcurrentEmacs|Concurrency]] through asynchronous processes
-* [[DynamicBindingVsLexicalBinding|Dynamic and Lexical Binding]]: it's common to mix both
-
-
+Detailed information can be found at CategoryCode.  
 
 
 ----
