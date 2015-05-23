@@ -22,82 +22,83 @@ Ordered for pedagogy:
 * EmacsLispIntro -- Free tutorial to EmacsLisp.
 * OnlineResources -- Some external sites have Emacs Lisp learning materials.
 * ElispCookbook -- A collection of various code snippets for getting things done.
-* EvaluatingExpressions -- basic stuff you need to check variables
-* EmacsLispMode -- The mode for writing Emacs Lisp
-* InteractiveFunction -- how to write a function that you can call via M-x or bind to keys
-** UniversalArgument -- how to write a function that knows whether the C-u prefix was provided
-** RegionArgument -- how to write a function that uses the region
-* LambdaExpression -- anonymous functions
-* VariableDefinition, BufferLocalVariable -- how to define variables
-* ComparisonFunctions -- does this variable contain that string, do these numbers match, does this equal that
-* ListStructure -- a list is made of cons cells
-** CircularLists -- an endless loop in the lisp structure
-* ListModification -- for Lisp newbies: nconc, append, cons, and friends
-** DestructiveOperations -- for Lisp newbies: some examples using sort and explaining the use of copy-sequence
-** ListModificationCl -- for Lisp authors: using functions from the CL library to modify lists
-** ListModificationLibrary -- for Lisp authors: more functions to modify lists
-** IntList -- basic examples showing how to recursively create lists of integers
-* StringModification -- You cannot modify an Emacs string; you return a modified copy instead.
-* AlistVsPlist -- difference between association lists and property lists.
-* HashMap -- hash map stuff
-* VectorUsage -- searching vectors
-* NotANumber -- not-a-number is a number! How to test for it.
-* BackquoteSyntax -- using backquotes
-* MacroBasics -- write code that generates code and save yourself some typing
+* EmacsSymbolNotation -- A quick reference for various symbols like `'a'  `?b' `:c'. 
+** BackquoteSyntax -- Using backquotes.
+* EvaluatingExpressions -- basic stuff you need to check variables. 
+* EmacsLispMode -- The major mode for writing Emacs Lisp in Emacs. 
+* InteractiveFunction -- How to write a function that you can call via M-x or bind to keys.
+** UniversalArgument -- How to write a function that knows whether the C-u prefix was provided.
+** RegionArgument -- How to interact with the the region. 
+* LambdaExpression -- Anonymous functions. Not just for computer science theorists anymore! 
+* VariableDefinition, BufferLocalVariable -- How to define variables.
+** [[DynamicBindingVsLexicalBinding| Dynamic and Lexical Binding]]: Differences and using both simultaneously. 
+* ComparisonFunctions -- Testing predicates like: does this variable contain that string? Are these numbers equal?
+** NotANumber -- Not-a-number is a number! How to test for this case.
+* ListStructure -- Basic ideas introduction to lists in Lisp. 
+** AlistVsPlist -- Difference between association lists and property lists.
+** CircularLists -- Endless loops in lisp structures.
+* ListModification -- For Lisp newbies: nconc, append, cons, and friends.
+** DestructiveOperations -- For Lisp newbies: some examples using sort and explaining the use of copy-sequence.
+** ListModificationCl -- Using functions from the broader Common Lisp library to modify lists.
+** ListModificationLibrary -- More functions to modify lists.
+** IntList -- Basic examples showing how to recursively create lists of integers.
+* Data Types:
+** StringModification -- You cannot modify an Emacs string; you return a modified copy instead.
+** HashMap -- Hash maps.
+** VectorUsage -- Searching vectors.
+* MacroBasics -- Write code that generates more code. Save yourself some typing. 
+* EmacsLispIntrospection -- Learning more about functions programatically.
+* [[ConcurrentEmacs|Concurrency]] through asynchronous processes. 
+
+
+
 
 == Writing a Major Mode ==
 
-Tips and tricks to writing a MajorMode.
+Tips and tricks for writing a MajorMode.
 
-* GenericMode -- for very simple modes including font-locking and comments
-* DerivedMode -- for new modes very similar to existing modes
-* SampleMode -- complete Emacs Lisp example for a real major mode
-* ModeTutorial -- a tutorial for mode writers
-* ImenuMode -- provide an index menu to the interesting parts in the buffer
-* Font-lock programming
-** AddKeywords -- just add new keywords and highlighting to an existing mode
-** EasyFontLock -- How to color only one line at once 
+* GenericMode -- For very simple modes including font-locking and comments.
+* DerivedMode -- For new modes very similar to existing modes.
+* SampleMode -- Complete Emacs Lisp example for a real major mode.
+* ModeTutorial -- A tutorial for mode writers.
+* ImenuMode -- Provide an index menu to the interesting parts in the buffer.
+* Font-lock programming:
+** AddKeywords -- Just add new keywords and highlighting to an existing mode.
+** EasyFontLock -- How to color only one line at once .
 ** MultilineFontLock -- How more lines get their color.
-* Other tools and solutions
-** AddToListWidget -- code to use if a user is supposed to add items to a list which you provide (see CustomDiffList for the result)
-** AdvisingFunctions -- instead of copying them
-** BitConversion -- numbers to bits and back
-** CoRoutines -- defining functions which can pick up where they left off
-** CyclingOfValues -- how to choose the next symbol from a list
-** DebuggerMode -- how to debug your lisp
-** LocalFunctions -- evil hackery when implementing local functions
+* Other tools and solutions:
+** AddToListWidget -- Code to use if a user is supposed to add items to a list which you provide (see CustomDiffList for the result)
+** AdvisingFunctions -- Tweak an existing function without rewriting it.
+** BitConversion -- Numbers to bits and back.
+** CoRoutines -- Defining functions which can pick up where they left off.
+** CyclingOfValues -- How to choose the next symbol from a list.
+** DebuggerMode -- How to debug your lisp.
+** LocalFunctions -- Evil hackery when implementing local functions.
 ** MultiLineWidget
 ** ProgrammableCompletion
-** ReplaceInString -- for Emacs 20 and its ilk
-** StateMachine -- example source making heavy use of macros
-** StringPermutations -- code example that shows how to write permutations
-** SymbolicRegexp -- writing readable regular expressions in your code
-** UniqueSubstrings -- generating abbreviations
-** UnsafeP -- detecting unsafe Lisp expressions
-** UseIswitchBuffer -- for things it was not intended
-** MajorComint -- associates a particular major mode with a comint subprocess.
+** ReplaceInString -- For Emacs 20 and its ilk.
+** StateMachine -- Example source making heavy use of macros.
+** StringPermutations -- Code example that shows how to write permutations.
+** SymbolicRegexp -- Writing readable regular expressions in your code.
+** UniqueSubstrings -- Generating abbreviations.
+** UnsafeP -- Detecting unsafe Lisp expressions.
+** UseIswitchBuffer -- ...in ways it was not intended to be used.
+** MajorComint -- Associates a particular major mode with a comint subprocess.
 
 == Style and suggestions ==
 
 * AdviceVsHooks -- Sometimes a package cannot be customized using variables and hooks; in these situations defadvice must be used.
-* CheckDoc -- A tool to check your documentation strings.
 * CodingStyle -- Write well formatted code.
+* CheckDoc -- A tool to check your documentation strings.
 * ElispPackageChecklist -- A document with suggestions for package authors.
-* InitFileByPurpose -- Utilities (and a bit of ranting) as to how you should take back control of the organization of your InitFile. 
-* MeaningfulNames -- choosing identifiers (symbols) for code
+* InitFileByPurpose -- Take back control of your InitFile, don't let it take control of you. 
+* MeaningfulNames -- Choosing identifiers (symbols) for code.
 * NonLocalExit -- Examples of error handling and `throw'...`catch'.
 * NonNilValues -- Which non-`nil' value should I use? `t'? `42'? Does it matter?
 * QuotedLambda -- There is no need to quote lambda expressions.
 * UnitTesting -- How to write unit-test code.
 * WhenToUseIf -- When to use which conditional control structure (`cond', `if', `when', `unless', `and', `or', `case').
-
-Writing code that works on different versions of Emacs and XEmacs is ComparativeEmacsology.
-* EasyMenu -- Write Emacs/XEmacs compatible menu definitions
-* ElispCompatibility -- General recommendations for writing compatible code.
-* InvisibleText -- using TextProperties, EmacsOverlays or XEmacsExtents
-* LineInformation -- eolp vs. line-end-position
-* MouseEvent -- where was the mouse clicked
-* WindowHeight -- how big is a window
+* InvisibleText -- Using TextProperties and EmacsOverlays
 * CommonlyUsedKeybindings -- Try to use keys that correlate with other packages.
 
 == Emacs Lisp Tools and Tricks ==
@@ -110,20 +111,19 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * ElispFormat -- Format elisp code automatically.
 * ElispDepend -- Generate depend information of elisp code.
 * EmacsLispObjects -- An implementation of Common Lisp Object System for Emacs
-* EmacsLispProfiler -- elp.el comes with Emacs.
+* EmacsLispProfiler -- Elp.el comes with Emacs.
 * EmacsLispBenchmark -- Programmatic profiling with benchmark.el
 * EmacsScripts -- Run scripts from the shell that use Emacs
 * HttpServer -- Emacs as a web-server
 * LibraryDependencies -- Keep track automatically of Emacs Lisp libraries `require'd by another library
-* LiterateEmacsLisp -- documenting and writing lisp, simultaneously.
-* [http://user42.tuxfamily.org/elisp-docstring-preview/index.html elisp-docstring-preview.el] -- preview <code>defun</code> etc docstrings
+* LiterateEmacsLisp -- Documenting and writing lisp, simultaneously.
+* [http://user42.tuxfamily.org/elisp-docstring-preview/index.html elisp-docstring-preview.el] -- Preview <code>defun</code> etc docstrings
 * Lisp:simple-call-tree+.el -- Explore call tree of code and perform query-replace on individual functions
 
 [:Installers]
 == Emacs Lisp Installers ==
 
 * [[el-get]] - apt-get user experience for Emacs Lisp, with full support for emacswiki
-* [http://www.xemacs.org/Documentation/packageGuide.html XEmacs package manager] -- (Could an XEmacs please describe her experience with this)
 * InstallElisp - Retrieve and install elisp from Internet
 * [[elinstall]] - An installer for elisp code. It sets up autoloads, load-path, etc. by Tom Breton (Tehom)
 * [[ELPA]] - Emacs Lisp Package Archive by TomTromey
@@ -147,7 +147,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * ParserCompiler -- A macro that compiles Recursive Descent parsers in elisp.
 * [[Heaps]] -- Heap data structures (a.k.a. priority queues)
 * [[Icicles]] -- New possibilities for using completion and cycling of completion candidates.
-* IncrementalRead -- support building libraries that act incrementally on input.
+* IncrementalRead -- Support building libraries that act incrementally on input.
 * [[Iterate]] -- A macro for iterating in different fashions over various data structures, similar in spirit to Common Lisp iterate library
 * LaterDo -- Calling functions later, thus do some sort of fake threading
 * LuiMode -- A Linewise User Interface
@@ -161,7 +161,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * SubdirsToList -- Adding subdirectories to a list recursively
 * TaggedNFA -- Tagged non-deterministic finite state automata (generally used for regular expression matching algorithms)
 * TcpClient -- Network interface to ease the creation of network related script
-* TernarySearchTrees -- ternary search tree data structures (obsolete - use [[Tries]] instead)
+* TernarySearchTrees -- Ternary search tree data structures (obsolete - use [[Tries]] instead)
 * ThingAtPoint -- Functions to return various kinds of Emacs Lisp entity at or near point. For example, return the Lisp symbol name nearest point.
 * [[Tries]] -- General trie data structures (including ternary search trees)
 * UseCustomizeForKeyBindings -- Widget and `defcustom' code to let users use Customize for key bindings.
@@ -172,7 +172,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 == Proof of Concept ==
 
 * DefiningErrors -- How to easily define errors types.
-* [http://user42.tuxfamily.org/bytecomp-simplify/index.html bytecomp-simplify.el] -- warnings for possible code simplifications
+* [http://user42.tuxfamily.org/bytecomp-simplify/index.html bytecomp-simplify.el] -- Warnings for possible code simplifications
 * ThreadMacroFromClojure -- Threading expressions and how to do this in EmacsLisp
 
 == Discussion About Emacs Lisp ==
@@ -184,7 +184,20 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * WhyDoesElispSuck -- Why people say that EmacsLisp is a bad language, deprecated, not the ideal choice for the future, or <your remark here>...
 * RationalElispPackaging -- Design of a packaging system for Emacs Lisp software.
 * Emacs Internals -- I've been reading the source for a while. Trying to start annotate how to read the source for others. Here's a [http://members.cox.net/nish4111/modules.gif diagram] of how I see it presently. (Not sure if this is correct place to put this?)
-* [[Namespaces]] -- various implementations and thoughts regarding namespaces
+* [[Namespaces]] -- Various implementations and thoughts regarding namespaces
+
+== Xemacs ==
+
+Xemacs is not used very much these days.  This section is kept for legacy.
+* ComparativeEmacsology - Writing code that works on different versions of Emacs and XEmacs. 
+** LineInformation -- Eolp vs. line-end-position
+** MouseEvent -- Where was the mouse clicked
+** WindowHeight -- How big is a window
+** XEmacsExtents -- InvisibleText in XEmacs. 
+* EasyMenu -- Write Emacs/XEmacs compatible menu definitions
+* ElispCompatibility -- General recommendations for writing compatible code.
+* [http://www.xemacs.org/Documentation/packageGuide.html XEmacs package manager] -- (Any XEmacs users want to describe their experience with this?)
+
 
 == Curiosities ==
 
