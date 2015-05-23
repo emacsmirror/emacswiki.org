@@ -11,15 +11,14 @@ Emacs Lisp is used to extend Emacs include hooking custom Emacs Lisp
 functions into events, binding functions to key combinations, 
 creating new editing modes and even writing whole applications for the WorldWideWeb or other Internet clients.
 
-Lisp has been rumored to stand for Lots of Insignificant Silly
-Parentheses, but it really means '''LIS'''t '''P'''rocessor.
+Lisp, originally specified in 1958, derives from'''LIS'''t '''P'''rocessing.  Those turned off by the language's syntax have said it should stand for Lots of Insignificant Silly Parentheses. 
 
 To read about other kinds of Lisp and how to use them in conjunction
 with Emacs, see CommonLisp and [[Scheme]].
 
-EmacsLispReference is the official documentation.
+EmacsLispReference is the official documentation. It is built into Emacs Info pages and is the go-to for most Elisp programmers. It is shipped with Emacs and can be accessed by the menu bar, or with `M-x menu-bar-read-lispref'. 
 
-EmacsLispIntro is a book for non-programmers available from the FreeSoftwareFoundation and is shipped with Emacs.
+EmacsLispIntro is a book for non-programmers available from the FreeSoftwareFoundation and is shipped with Emacs. Its command is `M-x menu
 
 For help on using other people's Emacs Lisp, see InstallingPackages.
 
