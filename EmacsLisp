@@ -11,7 +11,7 @@ Emacs Lisp is used to extend Emacs include hooking custom Emacs Lisp
 functions into events, binding functions to key combinations, 
 creating new editing modes and even writing whole applications for the WorldWideWeb or other Internet clients.
 
-Lisp, originally specified in 1958, derives from'''LIS'''t '''P'''rocessing.  Those turned off by the language's syntax have said it should stand for Lots of Insignificant Silly Parentheses. 
+Lisp, originally specified in 1958, derives from '''LIS'''t '''P'''rocessing.  Those turned off by the language's syntax have said it should stand for Lots of Insignificant Silly Parentheses. 
 
 To read about other kinds of Lisp and how to use them in conjunction
 with Emacs, see CommonLisp and [[Scheme]].
