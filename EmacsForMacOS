@@ -1,19 +1,21 @@
 == Binaries for OS X ==
+The official Emacs fully supports Mac OS X (along with GNU/Linux, Windows, DOS, and then some).  You can find precompiled versions of this at http://emacsformacosx.com/.
+
 A copy of GNU Emacs 22 without GUI support compiled in is available on all recent versions of Mac OS X via the shell. However, there are other Emacs distributions geared towards Mac OS X that include GUI support as well as other distinctions that may make it a more appropriate choice for some.
 
-Cocoa is the Objective-C API (originally developed by !NeXT) that is used for native OS X applications (included in Emacs 23.2).  Aquamacs and Emacs.app (GNU Emacs/Cocoa) both run under Cocoa.  Note that Emacs.app, GNU Emacs/Cocoa, and GNU Emacs/nextstep refer to the same thing.
+Cocoa is the Objective-C API (originally developed by !NeXT) that is used for native OS X applications (included in Emacs 23.2).  Aquamacs and Emacs.app (which was merged into the official Emacs as of Emacs-23) both run under Cocoa.  Note that Emacs.app, GNU Emacs/Cocoa, and GNU Emacs/nextstep refer to the same thing.
 
 Carbon is the C language API (developed by Apple) that lets applications written under OS 9 (or earlier) run under OS X.  Carbon Emacs runs under Carbon.  As of Emacs 23, Carbon Emacs has been deprecated in favor of Emacs.app.
 
 X11 Emacs is the "original" emacs running under X11 (installed by default in recent versions of Mac OS X)
 
 If you are a Mac user new to Emacs, many people find Aquamacs to be a good choice.  Many find it to be more Mac-like than Emacs.app.
-If you've used Emacs before and already have your own emacs initialization file, then Emacs.app is likely a better choice.  As compared to Aquamacs, Emacs.app is more traditional in its approach, prefers a single frame, and is more likely to work with existing emacs initialization files.
+If you've used Emacs before and already have your own Emacs initialization file, then Emacs.app is likely a better choice.  As compared to Aquamacs, Emacs.app is more traditional in its approach, prefers a single frame, and is more likely to work with existing emacs initialization files.
 
 A similar page on a German blog: [https://web.archive.org/web/20120630005123/http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS-X.html Die Emacssituation unter OS X] (in German).
 
 === OS X Binary Vanilla builds ===
-These builds are based on the BZR version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available though (e.g. Command-O for opening a file); these are mapped to the Super modifier (i.e., the Apple/Command key functions as Super). 
+These builds are based on the development version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available though (e.g. Command-O for opening a file); these are mapped to the Super modifier (i.e., the Apple/Command key functions as Super). 
 
 * http://emacsformacosx.com/ -- "Pure Emacs! No Extras! No Nonsense!"
 
@@ -37,15 +39,6 @@ Custom distributions contain startup routines and tweaks to make Emacs' UI behav
 
 === Getting the Source ===
 
-==== BZR ====
-
-Directions for accessing the emacs BZR repository are found at [http://savannah.gnu.org/projects/emacs http://savannah.gnu.org/projects/emacs]. 
-To download emacs, use the command:
-
-    bzr branch http://bzr.savannah.gnu.org/r/emacs/trunk
-
-    (or `bzr revert; bzr pull', if you already had checked it out)
-
 ==== GIT ====
 
 To download emacs using git, use this command:
@@ -56,9 +49,24 @@ To download emacs using git, use this command:
 
 Available from the [http://savannah.gnu.org/projects/emacs/ GNU Savannah emacs] page.  Click on "Download Area" under "Quick Overview".
 
-=== Building Emacs for OS X ===
+=== Building Emacs for OS X, using the normal GUI ===
 
-There are many options for building emacs (such as whether to build the X11 version), which are discussed in the INSTALL file. There is also a script (emacs/mac/make-package) to create a Mac OS X package for use by the installer.
+There are many options for building emacs (such as whether to build for the X11 GUI or the Cocoa GUI), which are discussed in the INSTALL file. There is also a script (emacs/mac/make-package) to create a Mac OS X package for use by the installer.
+
+The "normal" way to build Emacs under Mac OS X is:
+
+<pre>
+  ./configure --with-ns 
+  make install
+</pre>
+
+When the build is complete, you should see Emacs.app in ./nextstep/Emacs.app.  Simply copy it to your applications folder and open it to run.
+
+For more detailed instructions, see the <tt>nextstep/INSTALL</tt> file.  Additionally, you may benefit from reading the build script here: http://github.com/ieure/emacs-nightly.  
+As of 2010-05-08 Cocoa Emacs 23.2 builds correctly on Snow Leopard (Mac OS X 10.6.x). 
+
+[new:CarlGroner:2011-10-20 18:26 UTC] 
+As of October 2011, the version of autoconf on OS X Lion is not recent enough to configure/compile Emacs from source. There is a workaround provided by using the autogen/copy_autogen script which will build emacs using pre-generated versions of the required build files. See the comments in `autogen/copy_autogen` for more information.
 
 ==== Aquamacs ====
 
@@ -76,26 +84,9 @@ Note: changes to any source files in src/ require a simple "make".  The binary w
 
 Detailed build instructions are available on BuildingAquamacs.
 
-==== Cocoa Emacs ====
-
-Emacs 23.2 ships with Cocoa support.  You can build it by running something like the following:
-
-<pre>
-  ./configure --with-ns 
-  make install
-</pre>
-
-When the build is complete, you should see Emacs.app in ./nextstep/Emacs.app.  Simply copy it to your applications folder and open it to run.
-
-For more detailed instructions, see the <tt>nextstep/INSTALL</tt> file.  Additionally, you may benefit from reading the build script here: http://github.com/ieure/emacs-nightly.  
-As of 2010-05-08 Cocoa Emacs 23.2 builds correctly on Snow Leopard (Mac OS X 10.6.x). 
-
-[new:CarlGroner:2011-10-20 18:26 UTC] 
-As of October 2011, the version of autoconf on OS X Lion is not recent enough to configure/compile Emacs from source. There is a workaround provided by using the autogen/copy_autogen script which will build emacs using pre-generated versions of the required build files. See the comments in [http://bzr.savannah.gnu.org/lh/emacs/trunk/annotate/head:/autogen/copy_autogen autogen/copy_autogen] for more information.
-
 ==== X11 Emacs ====
 
-Directions to build and install may be found in the INSTALL or INSTALL.BZR files. The basic build and installation of the X11 Emacs application uses the commands:
+Directions to build and install may be found in the INSTALL or INSTALL.REPO files. The basic build and installation of the X11 Emacs application uses the commands:
 
 <pre>
     ./configure --with-x
@@ -103,9 +94,7 @@ Directions to build and install may be found in the INSTALL or INSTALL.BZR files
     sudo make install
 </pre>
 
-As of 2010-05-08 X11 Emacs 23.2 builds correctly on Snow Leopard (Mac OS X 10.6.x). 
-
-==== Carbon Emacs (deprecated) ====
+==== Carbon Emacs (for Emacs<23) ====
 
 Directions to build and install may be found in the file newly downloaded to emacs/mac/INSTALL. The basic build and installation of the carbon Emacs application uses the commands:
 
@@ -124,17 +113,7 @@ Package managers provide a convenient way to install and maintain/upgrade softwa
 
 === Fink ===
 
-As of May 8th, 2010 Fink [http://fink.sourceforge.net/ http://fink.sourceforge.net/] includes the following packages:
-
-* Emacs  -- 23.1   (no X11)
-* Emacs  -- 23.1   (X11 Xaw3d)
-* Emacs  -- 9.0rc3 (Cocoa,  quite old)
-* Emacs  -- 22.3   (Carbon, quite old)
-* color-theme, ecb, edb, eieio, emacs-w3, emacs-w3m, jdee, mew, nxml-mode, planner-el, speedbar, ...
-and even AucTeX!
-* XEmacs 21.4.20
-
---- I just installed fink 0.31.0 on 10.6 using a source tarball because I wanted jdee, but unfortunately there seems to be no such package.  (kosta 19/08/2011)
+Fink [http://fink.sourceforge.net/ http://fink.sourceforge.net/] includes various versions of Emacs in packages such as `emacs23`, `emacs24`, emacs24-nox`.  It also includes packages for various Emacs extensions such as AUCTeX.
 
 === Homebrew ===
 
