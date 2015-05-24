@@ -1,14 +1,19 @@
-using Emacs with (or within) Cygwin (http://www.cygwin.com/)
+[[http://www.cygwin.com/ Cygwin]] is a collection of tools providing Linux functionality on Windows.  These days its most powerful it is used to run Unix style shells. There are two senses in which Emacs and can be combined. 
+
+== Running Cygwin as an inferior shell ==
 
 * HomeConfusion -- setting $HOME when you have Cygwin installed as well
-* CygwinizedEmacsHOWTO -- how to get started with a Cygwinized (GNU) emacs
-* CygwinizedEmacsEvaluated -- performance and size compared to NTEmacs
-* CygwinizedEmacsWithWindowsPath -- make Cygwinized Emacs understand Windows style path
 * SetTty -- why you should set CYGWIN="tty" (at least)
-* CustomizingBoth -- making your InitFile work with both non- and cygwinized emacsen
 * NTEmacsWithCygwin -- how to do it, and why you might want to
 * [[cygwin-mount.el]] -- lets you use cygwin-style filenames like ##//D/any/path/to/file## or ##/cygdrive/D/any/path/to/file## in exactly the same manner as the normal Windows-style filenames
 * [[windows-path.el]] -- lets you use windows-style filenames like ##c:/path/file## or ##c:\path\file## in cygwin emacs
+
+== Running Emacs from within Cygwin ==
+This is mostly a holdover from the days when GNU Emacs on Windows was less reliable than it currently is.  
+* CustomizingBoth -- making your InitFile work with both non- and cygwinized emacsen
+* CygwinizedEmacsHOWTO -- how to get started with a Cygwinized (GNU) emacs
+* CygwinizedEmacsEvaluated -- performance and size compared to NTEmacs
+* CygwinizedEmacsWithWindowsPath -- make Cygwinized Emacs understand Windows style path
 
 ----
 
