@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu May 14 08:37:31 2015 (-0700)
+;; Last-Updated: Sat May 23 20:19:43 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15947
+;;     Update #: 15949
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/05/23 dadams
+;;     bookmark-load: Reset bmenu stuff: bmkp-bmenu-marked-bookmarks, bmkp-modified-bookmarks,
+;;       bmkp-flagged-bookmarks, bmkp-bmenu-omitted-bookmarks, bmkp-bmenu-filter-function.
 ;; 2015/04/24 dadams
 ;;     bookmark-set: Clarified doc string wrt bookmarks that have the same name.
 ;; 2015/04/13 dadams
