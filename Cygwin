@@ -1,25 +1,27 @@
-[[http://www.cygwin.com/ Cygwin]] is a collection of tools providing Linux functionality on Windows.  These days its most powerful it is used to run Unix style shells. There are two senses in which Emacs and can be combined. 
+This page is about using [[http://www.cygwin.com/ Cygwin]] with Emacs. Cygwin is a collection of tools that provide UNIX functionality on Microsoft Windows.  There are two different ways Emacs and Cygwin can be combined: (1) run Cygwin shells within Emacs or (2) run Emacs within Cygwin. 
 
-== Running Cygwin as an inferior shell ==
 
-* HomeConfusion -- setting $HOME when you have Cygwin installed as well
-* SetTty -- why you should set CYGWIN="tty" (at least)
-* NTEmacsWithCygwin -- how to do it, and why you might want to
-* [[cygwin-mount.el]] -- lets you use cygwin-style filenames like ##//D/any/path/to/file## or ##/cygdrive/D/any/path/to/file## in exactly the same manner as the normal Windows-style filenames
-* [[windows-path.el]] -- lets you use windows-style filenames like ##c:/path/file## or ##c:\path\file## in cygwin emacs
+== Running Cygwin as an inferior shell in Emacs ==
+
+* NTEmacsWithCygwin -- how to use Cygwin shells with Emacs, and why you might want to
+* <tt>[[setup-cygwin.el]]</tt> -- set up Emacs for using Cygwin.  From Markus Hoenika's paper "SGML for Windows NT" <hoenika_markus@compuserve.com>
+* <tt>[[cygwin-mount.el]]</tt> -- use Cygwin-style filenames such as  ##//D/any/path/to/file## or ##/cygdrive/D/any/path/to/file## the same way you use MS Windows-style filenames
+* HomeConfusion -- setting ##$HOME## when you have Cygwin installed as well as Emacs
+* SetTty -- why you should set ##CYGWIN="tty"##
+
+
 
 == Running Emacs from within Cygwin ==
-This is mostly a holdover from the days when GNU Emacs on Windows was less reliable than it currently is.  
+
 * CustomizingBoth -- making your InitFile work with both non- and cygwinized emacsen
 * CygwinizedEmacsHOWTO -- how to get started with a Cygwinized (GNU) emacs
 * CygwinizedEmacsEvaluated -- performance and size compared to NTEmacs
 * CygwinizedEmacsWithWindowsPath -- make Cygwinized Emacs understand Windows style path
+* <tt>[[windows-path.el]]</tt> -- use windows-style filenames like ##c:/path/file## or ##c:\path\file## in Cygwin Emacs
 
 ----
 
-A series of web pages talking about Emacs and Cygwin:
-
-: http://www.khngai.com/emacs/ 
+Other info about Emacs and Cygwin: http://www.khngai.com/emacs/ 
 
 ----
 CategoryWThirtyTwo
