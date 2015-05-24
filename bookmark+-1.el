@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Apr 24 13:11:56 2015 (-0700)
+;; Last-Updated: Sat May 23 20:19:04 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7747
+;;     Update #: 7755
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3175,7 +3175,9 @@ Return non-nil if the bookmark was renamed, nil otherwise."
 ;; 2. Use `bmkp-read-bookmark-file-name', not `read-file-name', and use different default.
 ;; 3. If OVERWRITE is non-nil:
 ;;    * Update `bmkp-last-bookmark-file' to `bmkp-current-bookmark-file'.
-;;    * Update `bmkp-current-bookmark-file' to FILE .
+;;    * Update `bmkp-current-bookmark-file' to FILE.
+;;    * Reset bmenu stuff: `bmkp-bmenu-marked-bookmarks', `bmkp-modified-bookmarks',
+;;      `bmkp-flagged-bookmarks', `bmkp-bmenu-omitted-bookmarks', `bmkp-bmenu-filter-function'.
 ;;    * If `bmkp-last-as-first-bookmark-file', then update it to FILE and save it to disk.
 ;; 4. If the bookmark-file buffer already existed, do not kill it after loading.
 ;; 5. Set `bookmarks-already-loaded' regardless of FILE (not just `bookmark-default-file').
@@ -3271,6 +3273,14 @@ bookmark files that were created using the bookmark functions."
                      bmkp-current-bookmark-file         file
                      bookmark-alist                     blist
                      bookmark-alist-modification-count  0)
+               (setq bmkp-bmenu-marked-bookmarks        () ; Start from scratch.
+                     bmkp-modified-bookmarks            ()
+                     bmkp-flagged-bookmarks             ()
+                     bmkp-bmenu-omitted-bookmarks       (condition-case nil
+                                                            (eval (car (get 'bmkp-bmenu-omitted-bookmarks
+                                                                            'saved-value)))
+                                                          (error nil))
+                     bmkp-bmenu-filter-function         nil)
                (when (and bmkp-last-as-first-bookmark-file
                           (not (bmkp-same-file-p bmkp-last-as-first-bookmark-file file)))
                  (customize-save-variable 'bmkp-last-as-first-bookmark-file file)))
