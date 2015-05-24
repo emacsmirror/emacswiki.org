@@ -10,21 +10,19 @@
 [[de:Übersicht]]
 <include "WikiLanguageMenu">
 
-The '''EmacsWiki''' is dedicated to documenting and discussing [http://www.gnu.org/software/emacs/ Emacs] and EmacsLisp. Please check [[SiteMap Discussion]] before editing this SiteMap page. See the MissionStatement for more information.
+The '''EmacsWiki''' is dedicated to documenting and discussing EmacsAndXEmacs and EmacsLisp. Please check [[SiteMap Discussion]] before editing this SiteMap page. See the MissionStatement for more information.
+
+You can edit this website.  There's a link, '''Edit this page''', at the bottom of this and other pages.  ''Please check [[SiteMap Discussion]] before editing this SiteMap page, however.''
 
 ==How to use this site==
 
-* HowToEdit -- every page can be edited with the `Edit this page' link at the bottom or by keyboard shortcut
-
 * HowToNavigate -- how to find what you're looking for 
-
-* [EmacsWiki:CSS Appearance] -- change the way the site looks
-
+* HowToEdit -- how you can contribute to the site
 * ElispArea -- upload and download EmacsLisp source code
-
+* [EmacsWiki:CSS Appearance] -- how to change the way the site appears to you
+* WikiDownload -- how to get copies of the site
 * EmacsWikiAdministrators -- handling vandalism and spam on this site
 
-* WikiDownload -- how to get copies of the site
 
 [:LearningEmacs]
 ==Learning About Emacs==
@@ -33,15 +31,17 @@ The '''EmacsWiki''' is dedicated to documenting and discussing [http://www.gnu.o
 * [[CategoryDocumentation|Documentation]] -- Emacs is self-documenting and helpful
 * [[CategoryHelp|Help]] -- online help from Emacs itself and its users
 * [[CategoryGlossary|Glossary]] -- Emacs terminology
-* EmacsNiftyTricks -- tips you might not have found otherwise.
+* EmacsNiftyTricks -- some extra tips
 * RandomPage -- for serendipitous visitors
+
 
 [:DownloadAndInstallEmacs]
 ==Downloading and Installing Emacs==
 
 * [[CategoryPorts|Ports]] -- binaries for MS Windows, Mac, GNU/Linux and the free BSDs
 * [[CategoryWThirtyTwo|W32]] -- obtaining and using Emacs for MS Windows
-* [[CategoryBuilding|Building]] -- building Emacs from source
+* [[CategoryBuilding|Building]] -- building Emacs from source code
+
 
 [:GeneralUse]
 ==General Emacs Use==
@@ -50,40 +50,49 @@ The '''EmacsWiki''' is dedicated to documenting and discussing [http://www.gnu.o
 * [[CategoryBookmarking|Bookmarking]] -- setting persistent locations and returning to them
 * [[CategoryBufferSwitching|BufferSwitching]] -- switching among different [[buffer]]s
 * [[CategoryCommands|Commands]] -- invoking and defining Emacs [[command]]s, `M-x'
-* [[CategoryComparing|Comparing]] -- Comparing, diffing and merging
+* [[CategoryComparing|Comparing]] -- Comparing, diffing and merging text, including code
 * [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other [[buffer]]s
-* [[CategoryCustomize|Customize]] -- customizing Emacs generally and with the "easy customizing" feature, `Customize'
-** [[CategoryDotEmacs|DotEmacs]] -- EmacsLisp code to put in your [[init file]]
-** [[CategoryDisplay|Display]] -- display/screen/terminal information ([[pointer]] shapes, [[frame]]s...)
+
+* [[CategoryCustomize|Customize]] -- customizing Emacs generally and with the "easy customizing" feature, '''Customize'''
+** [[CategoryDotEmacs|DotEmacs]] -- [[init file]] EmacsLisp code from other users
+** [[CategoryDisplay|Display]] -- display/screen/terminal information ([[pointer]] shapes, [[frame]]s, [[face]]s, fonts...)
 ** [[CategoryFaces|Faces]] -- text highlighting, colors, font-lock, syntax-driven highlighting
 ** [[CategoryFrames|Frames]] -- [EmacsWiki:frame frames] (window-manager windows).
+** [[CategoryWindows|Windows]] -- Emacs [EmacsWiki:window windows] (panes within a [[frame]])
 ** [[CategoryInternationalization|Internationalization]] -- natural language support, character sets
+
 ** [[CategoryKeys|Keys]] -- customizing [[key]] bindings ("keyboard shortcuts")
 *** [[CategoryMouse|Mouse]] -- mouse bindings and different uses of the mouse
+
 ** [[CategoryPaths|Paths]] -- how to specify OS paths in Emacs
 ** [[CategoryPersistence|Persistence]] -- saving state between Emacs sessions
-** [[CategoryWindows|Windows]] -- Emacs [EmacsWiki:window windows] (panes within a [[frame]])
+
 * [[CategoryEditing|Editing]] -- miscellaneous information about text editing
 ** [[CategoryAlignment|Alignment]] -- align text, columns, comments or other programming-language constructs
+** [[CategoryIndentation|Indentation]] -- indenting text, including source code
 ** [[CategoryComments|Comments]] -- manipulating and using code comments
 ** [[CategoryFilling|Filling]] -- paragraph filling, justification, and line wrapping text
-** [[CategoryIndentation|Indentation]] -- indenting text, including source code
 ** [[CategoryParentheses|Parentheses]] -- showing parenthesis matches and mismatches
 ** [[CategoryRegion|Region]] -- selecting a [[region]] of text and acting on it (copy, cut, paste, ...)
 ** [[CategorySpelling|Spelling]] -- spell-checking
-** [[CategoryTemplates|Templates]] -- using canned text (file headers, templates, forms)
+** [[CategoryTemplates|Templates]] -- using boilerplate text (file headers, templates, forms)
 ** [[CategoryUndo|Undo]] -- undoing, redoing and finding changes
+
 * [[CategoryFiles|Files]] -- files and directories: local, remote, backup
-** [[CategoryDirectories|Directories]] -- `Dired' and operating on files and directories (folders)
+** [[CategoryDirectories|Directories]] -- '''Dired''' and operating on files and directories (folders)
+
 * [[CategoryHideStuff|HideStuff]] -- hiding parts of a [[buffer]]
 ** [[CategoryOutline|Outline]] -- hiding structural parts of text: outlining and folding
+
 * [[CategoryModes|Modes]] -- references, tips, documentation, and extensions for all modes
 ** [[CategoryHypermedia|Hypermedia]] -- creating and using hypertext: Emacs [[Info]], HTML, wikis
 *** [[CategoryXML|XML]] -- XML technologies
+
 ** [[CategorySql|Sql]] -- SQL and databases
 ** [[CategoryTables|Tables]] -- working with tabular data
 ** [[CategoryTex|Tex]] -- !TeX and !LaTeX stuff
 ** [[CategoryESS|ESS]] -- Emacs Speaks Statistics
+
 * [[CategoryMenus|Menus]] -- Emacs menus, ([[menu bar]] and popup)
 * [[CategoryPrinting|Printing]] -- printing files, [[buffer]]s, the [[region]] ...
 * [[CategoryProject|Project Organization]] -- navigating, visualizing, managing software projects
@@ -103,21 +112,26 @@ The '''EmacsWiki''' is dedicated to documenting and discussing [http://www.gnu.o
 ** [[CategoryTimeTracking|TimeTracking]] -- tracking your time spent
 * [[CategoryEducation|Education]] -- learn something new, use a dictionary, or grade students
 * [[CategoryEmulation|Emulation]] -- emulating environments of other systems and software in Emacs
+
 * [[CategoryExternalUtilities|ExternalUtilities]] -- using external utilities for other than programming
 ** [[CategoryCryptography|Cryptography]] -- encrypt and decrypt files you edit
 ** [[CategoryShell|Shell]] -- interact with a shell inside Emacs
 ** [[CategoryEshell|Eshell]] -- a shell implemented in EmacsLisp
-** [[CategoryVersionControl|VersionControl]] -- using configuration-control (source-control) systems in Emacs (CVS, RCS, SCCS,...)
+** [[CategoryVersionControl|VersionControl]] -- using configuration-control (source-control) systems in Emacs (GIT, CVS, RCS, SCCS,...)
+
 * [[CategoryDatabase|Databases]] -- databases in Emacs
 * [[CategoryGames|Games]] -- play in Emacs
+
 * [[CategoryInterface|Interface]] -- accessing online utilities
 ** [[CategoryChatClient|ChatClient]] -- using Emacs for chatting
 ** [[CategoryJournaling|Journaling]] -- Emacs interfaces to blogs
+
 * [[CategoryMail|Mail]] -- reading email in Emacs
 ** [[CategoryGnus|Gnus]] -- an Emacs reader of news and mail
 ** [[CategoryMailAddons|MailAddons]] -- mail-handling add-ons (not Gnus-related).
 ** [[CategoryViewMail|View Mail]] -- VM is an mail package that is an alternative to [[Rmail]]
 ** [[WanderLust|WanderLust]] -- another Emacs reader of news and mail.
+
 * [[CategoryPersonalInformationManager|PersonalInformationManager]] -- PIM functionalities
 ** [[CategoryBbdb|Bbdb]] -- "Big Brother <nowiki>DataBase</nowiki>": maintaining phone numbers, mail addresses
 * [[CategoryProgrammerUtils|ProgrammerUtils]] -- tools for programmers (e.g. code browsers)
@@ -125,8 +139,10 @@ The '''EmacsWiki''' is dedicated to documenting and discussing [http://www.gnu.o
 * [[CategoryRemoteEmacs|RemoteEmacs]] -- running Emacs on a remote host
 * [[CategoryWebBrowser|WebBrowser]] -- browsing Web files and sites
 
+
+
 [:ProgrammingEmacs]
-==Programming Emacs==
+== Programming Emacs in Lisp and C ==
 
 * [[CategoryCode|Code]] -- EmacsLisp coding tips
 * [[CategoryDebug|Debug]] -- debugging Emacs, debugging with Emacs, debugging EmacsLisp
@@ -134,19 +150,21 @@ The '''EmacsWiki''' is dedicated to documenting and discussing [http://www.gnu.o
 extensions
 * [[CategoryExtensionLanguage|ExtensionLanguage]] -- extending Emacs using other languages besides EmacsLisp: Guile, Erlang, Python
 
+
 [:Bugs]
 ==Emacs Bugs==
 
-* EmacsBugs -- how to report bugs and where to find a list of already reported bugs
+* EmacsBugs -- how to report bugs and where to find a list of those already reported
 * [[CategoryWishList|WishList]] -- "Emacs isn't perfect already?"
 
+
 [:EmacsCommunity]
-==Emacs Community Links==
+==Emacs Community==
 
 * EmacsImplementations -- a list of Emacsen and their impersonators
 * [[CategoryHistory|History]] -- history of Emacs
 * [[CategoryHomepage|Homepage]] -- home pages of Emacs friends, including '''you!'''
-* [[CategoryHumor|Humor]] -- when some Emacs users are not customizing Emacs, they make funnies
+* [[CategoryHumor|Humor]] -- what's funny about Emacs and Emacs users?
 
 ----
 CategoryEmacsWikiSite
