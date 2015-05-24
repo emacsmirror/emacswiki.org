@@ -8,6 +8,7 @@
 ;; Copyright (C) 2009, 2010 rubikitch, all rights reserved.
 ;; Created: 2009-01-06 12:41:17
 ;; Version: 0.1.2
+;; Package-Version: 20150521.1841
 ;; Last-Updated: 2015/21/05 2:40
 ;;           By: Michael Abrahams
 ;; URL: http://www.emacswiki.org/emacs/download/yaoddmuse.el
@@ -968,8 +969,10 @@ It must print the page to stdout.
      ("^=\\{2,\\}\\([^=]+\\)=\\{2,\\}" 1 'yaoddmuse-heading)
      ("\\[\\[\\(image:\\)\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]\\]" 1 'yaoddmuse-image-link)
      ("\\[\\[\\(image:\\)\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]\\]" 2 'yaoddmuse-image-link-name)
-     ("\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 1 'yaoddmuse-url)
-     ("\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 3 'yaoddmuse-url-name)
+     ("\\[\\(\\([^\\[[:blank:]]\\|[^\\][:blank:]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 1 'yaoddmuse-url)
+     ("\\[\\(\\([^\\[[:blank:]]\\|[^\\][:blank:]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 3 'yaoddmuse-url-name)
+     ;; ("\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 1 'yaoddmuse-url)
+     ;; ("\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 3 'yaoddmuse-url-name)     
      ("\\<[A-Z\xc0-\xdeÀÈÌÒÙÁÉÍÓÚÖÜ]+[àèìòùáéíóúüöa-z\xdf-\xff]+\\([ÀÈÌÒÙÁÉÍÓÚÖÜA-Z\xc0-\xde]+[àèìòùáéíóúüöa-z\xdf-\xff]*\\)+\\>" . 'yaoddmuse-link)
      ("\\[\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]\\]" 1 'yaoddmuse-link)
      ("\\b\\(Lisp:\\)\\([^ ]+\\.el\\)\\b" 1 'yaoddmuse-lisp-keyword)
