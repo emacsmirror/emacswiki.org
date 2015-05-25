@@ -64,7 +64,7 @@ I have posted code for integration of Notmuch with Planner Mode on the PlannerMo
 
 When you are initially starting to use org-contacts it can be tedious to add all of your existing contacts into the contacts database. Using notmuch's [python bindings](https://notmuch-python.readthedocs.org/en/latest/database.html) you can quickly get an exhaustive list of contacts from an e-mail account that can be winnowed down to those you care about. Using some simple scripting with org-map-entries after the face can make adding tags, etc much easier. 
 
-<code>
+{{{
 #!/usr/bin/env python
 
 # imports
@@ -151,7 +151,7 @@ def main():
 
 if __name__ == '__main__':
     main()
-</code>
+}}}
 
 ----
 CategoryMail
