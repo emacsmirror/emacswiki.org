@@ -72,6 +72,8 @@ If you want to edit the macro in future sessions, you need to let the ##kmacro##
 
 [[Isearch]] is a critical component to recording macros:  Search to the a location in the buffer and perform a command, and the macro can be accurately repeated.  Unfortunately, macros that use Isearch to bring you to a location exhibit the behavior of skipping to the next occurrence and then halting rather than staying in `isearch-mode'.  This was reported as a bug [http://lists.gnu.org/archive/html/bug-gnu-emacs/2005-10/msg00534.html], but is unfortunately not a bug [http://lists.gnu.org/archive/html/bug-gnu-emacs/2005-11/msg00021.html].
 
+You can get around this problem easily enough: Don't use Isearch. C-s RET takes you immediately to regular Search.  I just tried it and no problem with creating a KMacro. -- parolang
+
 == Calling a Keyboard Macro from Emacs Lisp ==
 
 When you use `name-last-kbd-macro', the string that defines the keyboard macro becomes the function definition of the macro name you provide. You cannot call such a macro by name in Emacs Lisp as if it were a function. For example, if you named the keyboard macro "foo", then you cannot simply write ##(foo)## in Lisp to execute the macro. Instead, you must use the function `execute-kbd-macro' as follows:
