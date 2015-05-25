@@ -59,5 +59,99 @@ in a shell script.
 == NotMuch and Planner Mode ==
 
 I have posted code for integration of Notmuch with Planner Mode on the PlannerMode page.
+
+== NotMuch and Org-Contacts==
+
+When you are initially starting to use org-contacts it can be tedious to add all of your existing contacts into the contacts database. Using notmuch's [python bindings](https://notmuch-python.readthedocs.org/en/latest/database.html) you can quickly get an exhaustive list of contacts from an e-mail account that can be winnowed down to those you care about. Using some simple scripting with org-map-entries after the face can make adding tags, etc much easier. 
+
+<code>
+#!/usr/bin/env python
+
+# imports
+
+from notmuch import Database, Query
+from email.Utils import parseaddr
+import re
+
+# Functions
+# Uses notmuch to gather all contacts.
+
+def get_contacts():
+    db = Database(mode=Database.MODE.READ_WRITE)
+    msgs = Query(db, '*').search_messages()
+    _all_msg_addrs = []
+
+    for msg in msgs:
+        _addr_list = []
+        addr_hdr = ["to", "from", "cc", "bcc"]
+        for hdr in addr_hdr:
+            _addr = msg.get_header(hdr)
+            _addr_list = _addr.split(",")
+            for a in _addr_list:
+                # normalize
+                normalized = a.lower().strip().encode('ascii', 'ignore')
+                # get address tuple from email and remove spaces
+                tabled = [e.strip() for e in parseaddr(normalized)]
+                # Remove any of that repeated address cruft people always put in
+                tabled[0] = re.sub("\<.*\>", "", re.sub("\(.*\)", "", tabled[0]))
+                # Strip out any quotes for when we convert to org later
+                tabled = [re.sub("\"", " ", x).strip() for x in tabled]
+                tabled = [re.sub("\'", " ", x).strip() for x in tabled]
+                # I don't want no empty strings
+                tabled = [x for x in tabled if x != "" and x != " "]
+                # Check to make sure all single line items are address'
+                _address = False
+                if len(tabled) == 1:
+                    if "@" in tabled[0]:
+                        _address = True
+                else:
+                    _address = True
+                if _address and tabled != [] and tabled not in _all_msg_addrs:
+                    _all_msg_addrs.append(tabled)
+    return _all_msg_addrs
+
+def indexed(x, cons):
+    for i in cons:
+        if len(i) == 2:
+            if x == i[1]:
+                return True
+    return False
+
+def deduplicate(raw_contacts):
+  items = [x for x in raw_contacts if not indexed(x[0], raw_contacts)]
+  return items
+
+def make_org(contacts, my_org_contacts):
+      pheader = ":PROPERTIES:\n"
+      pbackend = """:PHONE:
+:ALIAS:
+:NICKNAME:
+:IGNORE:
+:ICON:
+:NOTE:
+:ADDRESS:
+:BIRTHDAY:
+:END:\n"""
+      with open(my_org_contacts, "w+") as cfile:
+          for i in contacts:
+              cfile.write("* {0}\n".format(i[0]))
+              cfile.write(pheader)
+              if len(i) == 1:
+                  cfile.write(":EMAIL: {0}\n".format(i[0]))
+              else:
+                  cfile.write(":EMAIL: {0}\n".format(i[1]))
+              cfile.write(pbackend)
+
+# Main
+
+def main():
+    raw_contacts = get_contacts()
+    deduped = deduplicate(raw_contacts)
+    make_org(deduped, "./contacts.org")
+
+if __name__ == '__main__':
+    main()
+</code>
+
 ----
 CategoryMail
