@@ -2,7 +2,7 @@ There are good Debian and Ubuntu packages that provide emacs versions newer than
 
 == Debian packages ==
 
-Bleeding-edge snapshots are built regularly week for amd64 Debian/unstable. Packages available here: [[http://emacs.secretsauce.net/|http://emacs.secretsauce.net/]]
+Bleeding-edge snapshots are generated weekly for amd64 Debian/unstable. Packages available here: [[http://emacs.secretsauce.net/|http://emacs.secretsauce.net/]]
 
 For Debian unstable, testing, stable and oldstable you can find packages built directly from Emacs git here:
 [[http://londo.ganneff.de/|http://londo.ganneff.de/]]
