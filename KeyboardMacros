@@ -72,7 +72,8 @@ If you want to edit the macro in future sessions, you need to let the ##kmacro##
 
 [[Isearch]] is a critical component to recording macros:  Search to the a location in the buffer and perform a command, and the macro can be accurately repeated.  Unfortunately, macros that use Isearch to bring you to a location exhibit the behavior of skipping to the next occurrence and then halting rather than staying in `isearch-mode'.  This was reported as a bug [http://lists.gnu.org/archive/html/bug-gnu-emacs/2005-10/msg00534.html], but is unfortunately not a bug [http://lists.gnu.org/archive/html/bug-gnu-emacs/2005-11/msg00021.html].
 
-You can get around this problem easily enough: Don't use Isearch. C-s RET takes you immediately to regular Search.  I just tried it and no problem with creating a KMacro. -- parolang
+[new]
+You can get around this problem easily enough: Don't use Isearch. C-s RET takes you immediately to regular Search.  I just tried it and no problem with creating a KMacro. -- [[parolang]]
 
 == Calling a Keyboard Macro from Emacs Lisp ==
 
