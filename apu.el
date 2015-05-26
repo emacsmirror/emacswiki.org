@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 19 21:48:40 2015 (-0700)
+;; Last-Updated: Tue May 26 10:47:46 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 497
+;;     Update #: 506
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -101,12 +101,15 @@
 ;;
 ;;    `apu--buffer-invoked-from', `apu-latest-pattern-set',
 ;;    `apu--matches', `apu--match-two-or-more', `apu--match-type',
-;;    `apu--match-words-exactly', `apu--orig-buffer', `apu--patterns'.
+;;    `apu--match-words-exactly', `apu--orig-buffer',
+;;    `apu--pats+bufs', `apu--patterns', `apu--refresh-p'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2015/05/26 dadams
+;;     Added (forgot): defvars for apu--pats+bufs, apu--refresh-p.
 ;; 2015/05/17 dadams
 ;;     Added: apu-latest-pattern-set, apu--match-type, apu--patterns, apu-chars-next-match-method,
 ;;            apu-chars-matching-full-words, apu-chars-matching-two-or-more-words,
@@ -265,10 +268,20 @@ Default value is from `apu-match-words-exactly-flag'.")
 (make-variable-buffer-local 'apu--match-words-exactly)
 (put 'apu--match-words-exactly 'permanent-local t)
 
+;; A buffer where `apu-chars*' is invoked can have multiple list buffers, which show matches for
+;; different sets of patterns.  `apu--pattern' is local to the list buffer that shows the matches.
+(defvar apu--pats+bufs ()
+  "Alist of patterns and their list buffers.
+Each entry has form (PATTERN . BUFFER), where
+the buffer-local value of `apu--patterns' in BUFFER is PATTERN.")
+
 (defvar apu--patterns ()
   "Patterns currently used by `apropos-unicode' to match Unicode chars.")
 (make-variable-buffer-local 'apu--patterns)
 (put 'apu--patterns 'permanent-local t)
+
+(defvar apu--refresh-p nil
+  "Non-nil means that `apu-tablist-entries' recomputes matches.")
 
 ;;; Commands ---------------------------------------------------------
 
