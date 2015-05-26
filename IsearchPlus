@@ -73,12 +73,12 @@ to non-`nil'.]
 value '''1''' (e.g. `C-1'), `isearchp-replace-on-demand' replaces
 only the current search hit.
 
-** With a ''negative'' prefix arg (e.g. '''`M--''''),
-`isearchp-replace-on-demand' changes searching so that it also
-replaces.  That is, the search key (e.g., `C-s') then acts the
-same as `C-M-RET'.  (You can cancel this by using a
-non-negative prefix arg or by quitting and restarting
-Isearch.)
+** With a ''negative'' prefix arg (e.g. '''`M--'''' or '''`C--''''),
+`isearchp-replace-on-demand' toggles automatic replacement by just searching.  Automatic replacement means that each time
+you use a search key (e.g. `C-s') to visit a search hit, the
+hit is automatically replaced, without your needing to hit
+`C-M-RET'.  Using a prefix arg again with `C-M-RET' cancels
+this (as does quitting and restarting Isearch).
 
 ** With a ''positive'' prefix arg ''N'' (e.g. `C-8' or `C-u 200'),
 `isearchp-replace-on-demand' replaces ''N'' search hits (but it
