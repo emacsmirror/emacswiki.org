@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Apr 29 22:22:58 2015 (-0700)
+;; Last-Updated: Tue May 26 15:10:06 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3577
+;;     Update #: 3594
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -140,8 +140,9 @@
 ;;    `isearchp-orig-ring-bell-fn', `isearchp-pref-arg',
 ;;    `isearchp-reg-beg', `isearchp-reg-end',
 ;;    `isearchp-replace-literally' (Emacs 22+), `isearchp-replacement'
-;;    (Emacs 22+), `isearchp-win-pt-line', `isearch-update-post-hook'
-;;    (Emacs 20-21).
+;;    (Emacs 22+), `isearchp--replacing-on-demand' (Emacs 22+),
+;;    `isearchp-win-pt-line', `isearch-update-post-hook' (Emacs
+;;    20-21).
 ;;
 ;;
 ;;  ***** NOTE: The following macros and functions defined in
@@ -306,12 +307,13 @@
 ;;      value 1 (e.g. `C-1'), `isearchp-replace-on-demand' replaces
 ;;      only the current search hit.
 ;;
-;;    . With a negative prefix arg (e.g. `M--'),
-;;      `isearchp-replace-on-demand' changes searching so that it also
-;;      replaces.  That is, the search key (e.g., `C-s') then acts the
-;;      same as `C-M-RET'.  (You can cancel this by using a
-;;      non-negative prefix arg or by quitting and restarting
-;;      Isearch.)
+;;    . With a negative prefix arg (e.g. `M--' or `C--'),
+;;      `isearchp-replace-on-demand' toggles automatic replacement by
+;;      just searching.  Automatic replacement means that each time
+;;      you use a search key (e.g. `C-s') to visit a search hit, the
+;;      hit is automatically replaced, without your needing to hit
+;;      `C-M-RET'.  Using a prefix arg again with `C-M-RET' cancels
+;;      this (as does quitting and restarting Isearch).
 ;;
 ;;    . With a positive prefix arg N (e.g. `C-8' or `C-u 200'),
 ;;      `isearchp-replace-on-demand' replaces N search hits (but it
@@ -583,6 +585,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/05/26 dadams
+;;     Added: isearchp--replacing-on-demand.
+;;     isearchp-replace-on-demand: Negative prefix arg now toggles auto-replacing, instead of turning it on.
+;;                                 And replace current hit, to start with (was skipped before).
 ;; 2015/04/29 dadams
 ;;     Added: isearchp-if-empty-prefer-resuming-with-last.
 ;;     with-isearch-suspended: If isearchp-if-empty-prefer-resuming-with-last is nil then empty means empty.
@@ -2761,6 +2767,11 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
 ;;; Replacement on demand.  Emacs 22+
 (when (> emacs-major-version 21)
 
+  (defvar isearchp--replacing-on-demand nil
+    "Non-nil means search keys are automatically replacing search hits.
+That is, keys such as `C-s' replace hits as you visit them, without
+your needing to hit `C-M-RET'.")
+
   (defun isearchp-replace-on-demand ()
     "Replace current search hit by the value of `isearchp-replacement'.
 This is the default value of `isearchp-on-demand-action-function'.
@@ -2776,8 +2787,9 @@ updates `isearchp-replacement'.  (If you clear the minibuffer and hit
 * A plain prefix arg (`C-u'), or `C-1', means replace only the current
   search hit.
 
-* A negative prefix arg (e.g. `C--') makes search keys (e.g. `C-s')
-  replace search hits you visit.  They thus act the same as `C-M-RET'.
+* A negative prefix arg (e.g. `C--') toggles making search keys (e.g.
+  `C-s') replace search hits you visit, that is, without your needing
+  to hit `C-M-RET'.
 
 * A positive prefix arg N means replace N search hits (but stop at the
   search limit).
@@ -2795,6 +2807,9 @@ special regexp replacement constructs.  These are the same as in
     (let ((numarg  (and isearchp-pref-arg  (prefix-numeric-value isearchp-pref-arg))))
       (when isearchp-pref-arg
         (when (consp isearchp-pref-arg) (setq numarg 1)) ; Treat plain `C-u' like `C-1'.
+        (when (and isearchp--replacing-on-demand  isearchp-pref-arg  (< numarg 0))
+          (setq isearchp--replacing-on-demand  nil
+                numarg                         1))
         (setq isearchp-replacement
               (read-string (format "%sReplacement: "
                                    (cond ((> numarg 0) "")
@@ -2809,8 +2824,10 @@ special regexp replacement constructs.  These are the same as in
             ((natnump numarg)
              (isearchp-replace-multiple numarg))
             (t
-             (setq replace-count  0)
-             (setq isearchp-noprompt-action-function 'isearchp-replace-match))))
+             (isearchp-replace-match)
+             (setq isearchp--replacing-on-demand      t
+                   replace-count                      0
+                   isearchp-noprompt-action-function  'isearchp-replace-match))))
     (setq this-command  'isearchp-act-on-demand))
 
   ;; $$$$$$ TO DO: The cursor is left at the right place, but when resume search it resumes from the end
