@@ -1,4 +1,4 @@
-There are at least 3 independently written major modes that handle COBOL source files.
+There are at least 4 independently written major modes that handle COBOL source files.
 
 -------
 Both the [http://www.emacswiki.org/elisp/cobol-mode.el cobol-mode here] and 
@@ -67,6 +67,14 @@ It includes syntax highlighting.  It is based on a cobol.el dated June
 Unfortunately this link seems to be broken (2006-12-26) and I'm unable to
 locate any archive copies.  Perhaps such things should be dumped into the
 gnu.emacs.sources newsgroup so Google will archive them for all eternity.
+
+----
+A *more up-to-date cobol-mode* is available [https://gist.github.com/Edward-H/6768e7dc53ea3dd2adca here]. This COBOL mode has
+* *syntax highlighting* for most modern COBOL dialects (in particular, COBOL 2014 and dialects supported by Micro Focus),
+* (rudimentary) *code indentation*,
+* code skeletons,
+* rulers and basic formatting functions,
+* and the ability to handle both free- and fixed-format code (using the M-x customize menu).
 
 ----
 ProgrammingModes
