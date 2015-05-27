@@ -8,9 +8,9 @@
 ;; Created: Sun Mar 22 16:24:39 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Mar 23 09:31:31 2015 (-0700)
+;; Last-Updated: Wed May 27 08:48:44 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 69
+;;     Update #: 112
 ;; URL: http://www.emacswiki.org/showkey.el
 ;; Doc URL: http://www.emacswiki.org/ShowKey
 ;; Keywords: help keys mouse
@@ -41,24 +41,32 @@
 ;;
 ;;  Several user options control the behavior:
 ;;
-;;  * `showkey-tooltip-ignored-events' and
-;;    `showkey-log-ignored-events' are each a list of regexps to match
-;;    against events that you do not want to show, for
-;;    `showkey-tooltip-mode' and `showkey-log-mode', respectively.
-;;
-;;  * `showkey-log-frame-alist' is an a list of frame parameters for
+;;  * `showkey-log-frame-alist' is an alist of frame parameters for
 ;;    the logging frame.  (It is not used for `showkey-tooltip-mode'.)
 ;;
 ;;  * `showkey-log-erase-keys' is a list of keys that will each
 ;;    restart logging, that is, erase the log and start it over.  (It
 ;;    is not used for `showkey-tooltip-mode'.)
 ;;
+;;  * `showkey-tooltip-height' is the height of the tooltip text, in
+;;    units of 1/10 point.  The default value is 100, meaning 10pts.
+;;
+;;  * `showkey-tooltip-ignored-events' and
+;;    `showkey-log-ignored-events' are each a list of regexps to match
+;;    against events that you do not want to show, for
+;;    `showkey-tooltip-mode' and `showkey-log-mode', respectively.
+;;
+;;  * `showkey-tooltip-key-only-flag' non-nil means show only the key
+;;    used, not also its description.  The default value is nil.
+;;
 ;;
 ;;
 ;;  User options defined here:
 ;;
 ;;    `showkey-log-erase-keys', `showkey-log-frame-alist',
-;;    `showkey-log-ignored-events', `showkey-tooltip-ignored-events'.
+;;    `showkey-tooltip-height', `showkey-log-ignored-events',
+;;    `showkey-tooltip-ignored-events',
+;;    `showkey-tooltip-key-only-flag'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -81,7 +89,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
-;; 
+;;
+;; 2015/05/27 dadams
+;;     Added: showkey-tooltip-height, showkey-tooltip-key-only-flag.
+;;     showkey-show-tooltip: Respect those new options.
 ;; 2015/03/22 dadams
 ;;     Created.
 ;; 
@@ -123,8 +134,7 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "http://www.emacswiki.org/ShowKey")
   :link '(emacs-commentary-link :tag "Commentary" "showkey"))
 
-(defface showkey-log-latest
-    '((t (:foreground "Red")))
+(defface showkey-log-latest '((t (:foreground "Red")))
   "*Face for latest event logged in buffer `*KEYS*'."
   :group 'Show-Key)
 
@@ -154,6 +164,13 @@ This is used by `showkey-log-mode'."
   "Alist of frame parameters for the `*KEYS*' frame of `showkey-log-mode'."
   :type 'alist :group 'Show-Key)
 
+(defcustom showkey-tooltip-height 100
+  "The height of the tooltip text, in units of 1/10 point."
+  :type '(restricted-sexp
+          :match-alternatives ((lambda (x) (and (integerp x)  (> x 0))))
+          :value 100)
+  :group 'Show-Key)
+
 (defcustom showkey-log-ignored-events '("^<mouse-movement>")
   "List of strings naming events to ignore for `showkey-log-mode'.
 These events are not logged in buffer `*KEYS*'.
@@ -173,6 +190,10 @@ Each string is used as a regexp to match the user-friendly description
 of an event.  It should be `^' followed by the event name enclosed in
 angle brackets.  Example: \"^<mouse-movement>\"."
   :type '(repeat string) :group 'Show-Key)
+
+(defcustom showkey-tooltip-key-only-flag nil
+  "Non-nil means show only the key used, not also its description."
+  :type 'boolean :group 'Show-Key)
 
 (defvar showkey-nb-consecutives 1
   "Counter of how many times the current key has been pressed.")
@@ -223,8 +244,10 @@ are not indicated."
                                  (memq 'drag modifiers))
                              " at that spot"
                            ""))
-             (cmd-desc   (format "%s%s runs the command `%S'"
-                                 key-desc mouse-msg (key-binding key t))))
+             (cmd-desc   (format "%s" key-desc)))
+        (unless showkey-tooltip-key-only-flag
+          (setq cmd-desc  (format "%s%s runs the command `%S'"
+                                  cmd-desc mouse-msg (key-binding key t))))
         ;; Accumulate self-inserting chars, with no command descriptions.
         ;; Otherwise, show command description.
         (cond ((member this-command showkey-insert-cmds)
@@ -246,8 +269,8 @@ are not indicated."
                (y    (cdr x.y)))
           (when (string= "" mouse-msg)
             (set-mouse-position (selected-frame) (+ 3 x) (+ 2 y))))
-        (x-show-tip (propertize cmd-desc 'face '(:foreground "red")))))))
-
+        (x-show-tip
+         (propertize cmd-desc 'face `(:foreground "red" :height ,showkey-tooltip-height)))))))
 ;;;###autoload
 (define-minor-mode showkey-log-mode
     "Global minor mode that logs the keys you use.
