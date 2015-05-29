@@ -1,3 +1,4 @@
+[[de:Easy_PG]]
 !EasyPG is an all-in-one !GnuPG interface for Emacs. It has two aspects: convenient tools which allow to use !GnuPG from Emacs (!EasyPG Assistant), and a fully functional interface library to !GnuPG (!EasyPG Library).
 
 Homepage:
