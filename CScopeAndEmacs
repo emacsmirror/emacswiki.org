@@ -339,6 +339,48 @@ Database directory: /home/bwong/dev/linux-g1/
 Search complete.  Search time = 0.08 seconds.
 </pre>
 
+If you are changing only a subtree and want the database updated automatically with your changes, while still getting fast searches for the rest of the tree, define the directory-to-cscope-database mappings like this:
+
+ (setq cscope-database-regexps
+       '( ( "^/home/bwong/dev/linux-g1/kernel"
+	    (t)
+	    ( "/home/bwong/dev/linux-g1/" ("-d") ) ) )
+
+In this example you are making changes only in the kernel directory so it has a default database that is updated when files change:
+
+<pre>
+[bwong@bwong-ds linux-g1]$ ls kernel/cscope.*
+kernel/cscope.files
+kernel/cscope.out
+[bwong@bwong-ds linux-g1]$ 
+</pre>
+
+The cscope-database-regexps value causes any searches originating under linux-g1/kernel to use linux-g1/kernel/cscope.*, updating the database as files change, and then finish searching using linux-g1/cscope.*, while not updating that database.
+
+A search originating under linux-g1/kernel:
+<pre>
+Finding symbol: memparse
+
+Database directory: /home/bwong/dev/linux-g1/kernel/
+-------------------------------------------------------------------------------
+*** crash_dump.c:
+setup_elfcorehdr[38]           elfcorehdr_addr = memparse(arg, &end);
+setup_elfcorehdr[41]           elfcorehdr_addr = memparse(end + 1, &end);
+...
+-------------------------------------------------------------------------------
+
+Database directory: /home/bwong/dev/linux-g1/
+-------------------------------------------------------------------------------
+*** lib/cmdline.c:
+<global>[157]                  EXPORT_SYMBOL(memparse);
+...
+*** sound/core/memalloc.c:
+snd_mem_proc_write[438]        (size = memparse(token, &endp)) < 64*1024 ||
+-------------------------------------------------------------------------------
+
+Search complete.  Search time = 0.46 seconds.
+</pre>
+
 ----
 CategoryProgrammerUtils
 CategoryNavigation
