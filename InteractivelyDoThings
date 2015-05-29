@@ -461,7 +461,9 @@ This can be achieved by installing package [http://marmalade-repo.org/packages/i
 
 === Sort files by mtime ===
 
-Why would anyone want an alphabetically sorted list? You can save keystrokes if the most recently modified files are at the front:
+Why would anyone want an alphabetically sorted list? You can save keystrokes if the most recently modified files are at the front.
+
+Do achieve this use the package ido-sort-mtime (available in MELPA), which is more reliable than the scripts below, which breaks on TRAMP files or if you enter //, etc.
 
   ; sort ido filelist by mtime instead of alphabetically
   (add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
