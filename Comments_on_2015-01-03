@@ -666,7 +666,77 @@ Note this line:
 proxy_cache_bypass $cookie_Wiki $arg_bypass $action_bypass $http_post;
 }}}
 
-The [http://www.emacswiki.org/config Oddmuse config file] is also available.
+The [http://www.emacswiki.org/config Oddmuse config file] is also available. Note this line:
+
+{{{
+  $header =~ s/Cache-control:.*\n/Vary: Accept-Language\n/;
+}}}
+
+A request from my browser using the Web Developer extension:
+
+{{{
+Host: www.emacswiki.org
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:38.0) Gecko/20100101 Firefox/38.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: de,en-US;q=0.7,en;q=0.3
+Accept-Encoding: gzip, deflate
+DNT: 1
+Cookie: Wiki=pwd%251e*secret*%251eusername%251eAlexSchroeder
+Connection: keep-alive
+If-None-Match: 1433023829%1e5nz75g467a5b67%1eAlexSchroeder
+Cache-Control: max-age=0
+}}}
+
+The response:
+
+{{{
+Connection: keep-alive
+Content-Type: text/html; charset=utf-8
+Date: Sat, 30 May 2015 22:13:25 GMT
+Etag: 1433023829%1e5nz75g467a5b67%1eAlexSchroeder
+Server: nginx/1.4.6 (Ubuntu)
+Transfer-Encoding: chunked
+Vary: Accept-Language
+X-EmacsWiki-Source: Apache/CGI
+X-Proxy-Cache: BYPASS
+}}}
+
+Notice that we got through to Apache:
+
+{{{
+X-Proxy-Cache: BYPASS
+}}}
+
+Using curl and no cookie:
+
+{{{
+$ curl -I http://www.emacswiki.org/
+HTTP/1.1 200 OK
+Server: nginx/1.4.6 (Ubuntu)
+Date: Sat, 30 May 2015 22:18:59 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+Vary: Accept-Language
+Etag: 1433023829%1eAlexSchroeder
+X-EmacsWiki-Source: Apache/CGI
+X-Proxy-Cache: HIT
+
+}}}
+
+No cookie was provided and the proxy cache got a hit:
+
+{{{
+X-Proxy-Cache: HIT
+}}}
+
+Furthermore, notice how this anonymous request also leaks my cookie!
+
+{{{
+Etag: 1433023829%1eAlexSchroeder
+}}}
+
+I had to clear the password from my browser session and reload the page in order to get my password out of the cookie and thus out of the Etag.
+Having the cookie be part of the Etag ought to ensure that changing the cookie invalidates the cached page. This works for your local browser cache but apparently it doesn't work for nginx. What am I missing? Should Etags be listed as part of the Varies header?
 
 -- AlexSchroeder 2015-05-30 21:59 UTC
 
