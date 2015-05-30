@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 15 14:20:05 2015 (-0700)
+;; Last-Updated: Sat May 30 09:36:47 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3169
+;;     Update #: 3238
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -46,8 +46,9 @@
 ;;    `quit-window-delete', `recenter-top-bottom',
 ;;    `recenter-top-bottom-1', `recenter-top-bottom-2',
 ;;    `region-length', `region-to-buffer', `region-to-file',
-;;    `resolve-file-name', `revert-buffer-no-confirm',
-;;    `selection-length', `switch-to-alternate-buffer',
+;;    `resolve-file-name', `reversible-transpose-sexps',
+;;    `revert-buffer-no-confirm', `selection-length',
+;;    `switch-to-alternate-buffer',
 ;;    `switch-to-alternate-buffer-other-window', `undo-repeat' (Emacs
 ;;    24.3+), `view-X11-colors'.
 ;;
@@ -73,9 +74,10 @@
 ;;   (global-set-key [f5]             'revert-buffer-no-confirm) ; A la MS Windows
 ;;   (substitute-key-definition       'kill-buffer
 ;;                                    'kill-buffer-and-its-windows global-map)
-;;   (substitute-key-definition       'recenter 'recenter-top-bottom global-map)
-;;   (substitute-key-definition       'beginning-of-line 'beginning-of-line+ global-map)
-;;   (substitute-key-definition       'end-of-line 'end-of-line+ global-map)
+;;   (substitute-key-definition 'recenter 'recenter-top-bottom global-map)
+;;   (substitute-key-definition 'beginning-of-line 'beginning-of-line+ global-map)
+;;   (substitute-key-definition 'end-of-line 'end-of-line+ global-map)
+;;   (substitute-key-definition 'transpose-sexps 'reversible-transpose-sexps global-map)
 ;;
 ;;   The first two of these are needed to remove the default remappings.
 ;;   (define-key visual-line-mode-map [remap move-beginning-of-line] nil)
@@ -93,6 +95,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/05/30 dadams
+;;     Added: reversible-transpose-sexps.
 ;; 2015/03/15 dadams
 ;;     Added: quit-window-delete.
 ;; 2014/11/28 dadams
@@ -471,6 +475,22 @@ This is the similar to `beginning-of-visual-line', but:
       (goto-char (constrain-to-field (point) opoint (/= n 1))))))
 
 ;;;###autoload
+(defun reversible-transpose-sexps (arg)
+  "Reversible and repeatable `transpose-sexp'.
+Like `transpose-sexps', but:
+ 1. Leaves point after the moved sexp.
+ 2. When repeated, a negative prefix arg flips the direction."
+  (interactive "p")
+  (when (eq last-command 'my-transpose-sexps-backward) (setq arg  (- arg)))
+  (transpose-sexps arg)
+  (unless (natnump arg)
+    (when (or (> emacs-major-version 24)
+              (and (= emacs-major-version 24)  (> emacs-minor-version 3))) ; Emacs 24.4+
+      (backward-sexp (abs arg))
+      (skip-syntax-backward " ."))
+    (setq this-command 'my-transpose-sexps-backward)))
+
+;;;###autoload
 (defun beginning-or-indentation (&optional n)
   "Move cursor to beginning of this line or to its indentation.
 If at indentation position of this line, move to beginning of line.
@@ -775,9 +795,9 @@ With negative prefix arg, deletion is backward."
 
 ;;;###autoload
 (defun comment-region-lines (beg end &optional arg)
-  "Like `comment-region' (which see), but comment/uncomment whole lines."
+  "Like `comment-region' (which see), but comment or uncomment whole lines."
   (interactive "*r\nP")
-  (if (> beg end) (let (mid) (setq mid beg beg end end mid)))
+  (when (> beg end) (setq beg  (prog1 end (setq end  beg))))
   (let ((bol  (save-excursion (goto-char beg) (line-beginning-position)))
         (eol  (save-excursion (goto-char end) (if (bolp) (point) (line-end-position)))))
     (comment-region bol eol arg)))
