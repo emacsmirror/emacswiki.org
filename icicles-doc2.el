@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Apr 11 20:30:36 2015 (-0700)
+;; Last-Updated: Fri May 29 20:29:23 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 29741
+;;     Update #: 29743
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6259,8 +6259,12 @@
 ;;    `icicle-key-complete-keys') to `icicle-complete-keys' in each
 ;;    keymap of option `icicle-keymaps-for-key-completion', regardless
 ;;    of whether `S-TAB' already has a binding in that keymap.  A
-;;    value of `nil' means bind `S-TAB' only if there is not already a
-;;    binding.
+;;    value of `nil' (the default value) means bind `S-TAB' only if
+;;    there is not already a binding for it.  For example, by default
+;;    `icicle-keymaps-for-key-completion' includes `help-mode-map'.
+;;    If you customize `icicle-complete-key-anyway-flag' to `t' then
+;;    `S-TAB' in `*Help*' buffers completes keys, instead of moving
+;;    backward to the previous button.
 ;;
 ;;  * Non-`nil' option `icicle-complete-keys-self-insert-ranges' means
 ;;    that `icicle-complete-keys' includes some self-inserting keys as
