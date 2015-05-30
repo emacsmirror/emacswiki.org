@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Apr 18 08:00:36 2015 (-0700)
+;; Last-Updated: Fri May 29 20:31:32 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11437
+;;     Update #: 11441
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2015/05/17 dadams
+;;     icicle-execute-extended-command-1:
+;;       Do not bind message-log-max to nil.  Treat an empty-string current-message like nil.
 ;; 2015/04/18 dadms
 ;;     Added: icicle-read--expression.
 ;;     icicle-pp-eval-expression: Updated for Emacs 24.4+: use icicle-read--expression.
@@ -7550,6 +7553,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2015/05/29 dadams
+;;     icicle-keymaps-for-key-completion: Added apropos-mode-map and help-mode-map.
 ;; 2014/12/15 dadams
 ;;     icicle-cand-preds-for-bookmark: Added icicle-bookmark-non-dir-file-p.
 ;; 2014/10/27 dadams
