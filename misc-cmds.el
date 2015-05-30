@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 30 09:36:47 2015 (-0700)
+;; Last-Updated: Sat May 30 09:40:16 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3238
+;;     Update #: 3239
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -481,14 +481,14 @@ Like `transpose-sexps', but:
  1. Leaves point after the moved sexp.
  2. When repeated, a negative prefix arg flips the direction."
   (interactive "p")
-  (when (eq last-command 'my-transpose-sexps-backward) (setq arg  (- arg)))
+  (when (eq last-command 'rev-transp-sexps-back) (setq arg  (- arg)))
   (transpose-sexps arg)
   (unless (natnump arg)
     (when (or (> emacs-major-version 24)
               (and (= emacs-major-version 24)  (> emacs-minor-version 3))) ; Emacs 24.4+
       (backward-sexp (abs arg))
       (skip-syntax-backward " ."))
-    (setq this-command 'my-transpose-sexps-backward)))
+    (setq this-command 'rev-transp-sexps-back)))
 
 ;;;###autoload
 (defun beginning-or-indentation (&optional n)
