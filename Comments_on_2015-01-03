@@ -661,5 +661,12 @@ server {
 }
 }}}
 
+Note this line:
+{{{
+proxy_cache_bypass $cookie_Wiki $arg_bypass $action_bypass $http_post;
+}}}
+
+The [http://www.emacswiki.org/config Oddmuse config file] is also available.
+
 -- AlexSchroeder 2015-05-30 21:59 UTC
 
