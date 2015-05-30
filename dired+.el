@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Apr 16 16:20:27 2015 (-0700)
+;; Last-Updated: Sat May 30 13:13:25 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 8909
+;;     Update #: 8914
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -187,7 +187,7 @@
 ;;  `Dired+' provides several enhancements regarding image files.
 ;;  Most of these require standard library `image-dired.el'.  One of
 ;;  them, command `diredp-do-display-images', which displays all of
-;;  the marked image files, requires library `image-file.el'.
+;;  the marked image files, requires standard library `image-file.el'.
 ;;
 ;;  `Dired+' loads these libraries automatically, if available, which
 ;;  means an Emacs version that supports image display (Emacs 22 or
@@ -2472,14 +2472,14 @@ files (previous -N files, if N < 0)."
 
 ;; Corresponds to `image-dired-tag-files'.
 (defun diredp-image-dired-tag-file ()
-  "Tag this image file."
+  "Tag this image file with an `image-dired' tag."
   (interactive (progn (diredp-image-dired-required-msg) ()))
   (image-dired-write-tags (cons (dired-get-filename)
                                 (read-string "Tags to add (use `;' to separate): "))))
 
 ;; Corresponds to `image-dired-delete-tag'.
 (defun diredp-image-dired-delete-tag ()
-  "Remove tag from  this image file."
+  "Remove an `image-dired' tag from  this image file."
   (interactive (progn (diredp-image-dired-required-msg) ()))
   (image-dired-remove-tag (list (dired-get-filename)) (read-string "Tag to remove: ")))
 
@@ -2799,8 +2799,8 @@ A prefix argument ARG specifies files to use instead of those marked.
   '(menu-item "Edit Comment and Tags..." diredp-image-dired-edit-comment-and-tags
     :help "Edit comment and tags for this image file"))
 (define-key diredp-menu-bar-immediate-image-menu [diredp-image-dired-delete-tag]
-  '(menu-item "Delete Tag..." diredp-image-dired-delete-tag
-    :help "Remove a tag from this image file"))
+  '(menu-item "Delete Image Tag..." diredp-image-dired-delete-tag
+    :help "Remove an `image-dired' tag from this image file"))
 (define-key diredp-menu-bar-immediate-image-menu [diredp-image-dired-tag-file]
   '(menu-item "Add Tags..." diredp-image-dired-tag-file
     :help "Add tags to this image file"))
@@ -3268,10 +3268,10 @@ If no one is selected, symmetric encryption will be performed.  "
     :enable (fboundp 'image-dired-delete-tag)))
 (define-key diredp-menu-bar-images-recursive-menu [diredp-image-dired-delete-tag-recursive]
   '(menu-item "Delete Image Tag..." diredp-image-dired-delete-tag-recursive
-    :help "Delete image tag from marked files, including those in marked subdirs"))
+    :help "Remove an `image-dired' tag from marked files, including those in marked subdirs"))
 (define-key diredp-menu-bar-images-recursive-menu [diredp-image-dired-tag-files-recursive]
   '(menu-item "Add Image Tags..." diredp-image-dired-tag-files-recursive
-    :help "Add image tags to marked files, including those in marked subdirs"))
+    :help "Add `image-dired' tags to marked files, including those in marked subdirs"))
 (define-key diredp-menu-bar-images-recursive-menu [diredp-image-dired-comment-files-recursive]
   '(menu-item "Add Image Comment..." diredp-image-dired-comment-files-recursive
     :help "Add image comment to marked files, including those in marked subdirs"))
@@ -5311,7 +5311,7 @@ Dired buffer and all subdirs, recursively."
 
 ;;;###autoload
 (defun diredp-image-dired-tag-files-recursive (&optional ignore-marks-p) ; Bound to `M-+ C-t t'
-  "Tag marked file(s) in dired, including those in marked subdirs
+  "Tag marked files with an `image-dired' tag, including in marked subdirs.
 Like `image-dired-tag-files', but act recursively on subdirs.
 The files included are those that are marked in the current Dired
 buffer, or all files in the directory if none are marked.  Marked
@@ -5328,7 +5328,7 @@ Dired buffer and all subdirs, recursively."
 
 ;;;###autoload
 (defun diredp-image-dired-delete-tag-recursive (&optional ignore-marks-p) ; Bound to `M-+ C-t r'
-  "Remove tag for selected file(s), including those in marked subdirs.
+  "Remove `image-dired' tag for marked files, including in marked subdirs.
 Like `image-dired-delete-tag', but act recursively on subdirs.
 The files included are those that are marked in the current Dired
 buffer, or all files in the directory if none are marked.  Marked
