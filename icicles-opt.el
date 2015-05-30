@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Wed Jan 14 21:42:00 2015 (-0800)
+;; Last-Updated: Fri May 29 20:19:15 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 6096
+;;     Update #: 6098
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3434,8 +3434,8 @@ to toggle the option value."
   :type 'boolean :group 'Icicles-Key-Completion :group 'Icicles-Minibuffer-Display)
 
 (defcustom icicle-keymaps-for-key-completion
-  '(bookmark-bmenu-mode-map bmkp-jump-map bmkp-jump-other-window-map
-    calendar-mode-map dired-mode-map facemenu-keymap jde-mode-map jde-jdb-mode-map
+  '(apropos-mode-map bookmark-bmenu-mode-map bmkp-jump-map bmkp-jump-other-window-map
+    calendar-mode-map dired-mode-map facemenu-keymap help-mode-map jde-mode-map jde-jdb-mode-map
     senator-mode-map srecode-mode-map synonyms-mode-map vc-dired-mode-map)
   "*List of keymaps in which to bind `S-TAB' to `icicle-complete-keys'.
 List elements are symbols that are bound to keymaps.
