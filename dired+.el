@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 31 09:09:22 2015 (-0700)
+;; Last-Updated: Sun May 31 09:17:53 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 8922
+;;     Update #: 8924
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1816,13 +1816,13 @@ one is kept."
   "Return the image-file name on this line, or nil if no image file.
 Optional args are the same as for `dired-get-filename'.
 \(Prior to Emacs 22, this just returns nil.)"
-  (and (fboundp 'image-file-name-regexp) ; Emacs 22+, `image-file.el'.
-       (diredp-string-match-p
-        (image-file-name-regexp)
-        (if (derived-mode-p 'dired-mode)
-            (dired-get-filename localp no-error-if-not-filep)
-          ;; Make it work also for `diredp-list-files' listings.
-          (buffer-substring-no-properties (line-beginning-position) (line-end-position))))))
+  (let ((file  (if (derived-mode-p 'dired-mode)
+                   (dired-get-filename localp no-error-if-not-filep)
+                 ;; Make it work also for `diredp-list-files' listings.
+                 (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))
+    (and file
+         (fboundp 'image-file-name-regexp) ; Emacs 22+, `image-file.el'.
+         (diredp-string-match-p (image-file-name-regexp) file))))
 
 (defun diredp-root-directory-p (file)
   "Return non-nil if FILE is a root directory."
