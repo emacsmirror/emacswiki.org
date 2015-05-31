@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 31 09:28:46 2015 (-0700)
+;; Last-Updated: Sun May 31 09:35:17 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 8927
+;;     Update #: 8928
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1827,7 +1827,8 @@ ignored if not in a Dired mode.
                  (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))
     (and file
          (fboundp 'image-file-name-regexp) ; Emacs 22+, `image-file.el'.
-         (diredp-string-match-p (image-file-name-regexp) file))))
+         (diredp-string-match-p (image-file-name-regexp) file)
+         file)))
 
 (defun diredp-root-directory-p (file)
   "Return non-nil if FILE is a root directory."
