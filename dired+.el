@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 31 09:21:17 2015 (-0700)
+;; Last-Updated: Sun May 31 09:28:46 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 8925
+;;     Update #: 8927
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1814,10 +1814,11 @@ one is kept."
 
 (defun diredp-get-image-filename (&optional localp no-error-if-not-filep)
   "Return the image-file name on this line, or nil if no image file.
-Optional args are the same as for `dired-get-filename'.
+If not in Dired (or a mode derived from Dired), then test the entire
+text of the current line as the file name.
 
-If not in a mode derived from Dired mode, then test the text of the
-current line as the file name.
+The optional args are the same as for `dired-get-filename'.  They are
+ignored if not in a Dired mode.
 
 \(Prior to Emacs 22, this function just returns nil.)"
   (let ((file  (if (derived-mode-p 'dired-mode)
