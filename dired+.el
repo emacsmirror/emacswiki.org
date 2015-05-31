@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 30 13:13:25 2015 (-0700)
+;; Last-Updated: Sun May 31 09:09:22 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 8914
+;;     Update #: 8922
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -484,8 +484,9 @@
 ;;    `diredp-hide-details-if-dired' (Emacs 24.4+),
 ;;    `diredp-hide/show-details' (Emacs 24.4+),
 ;;    `diredp-highlight-autofiles', `diredp-image-dired-required-msg',
-;;    `diredp-internal-do-deletions', `diredp-list-files',
-;;    `diredp-looking-at-p', `diredp-make-find-file-keys-reuse-dirs',
+;;    `diredp-get-image-filename', `diredp-internal-do-deletions',
+;;    `diredp-list-files', `diredp-looking-at-p',
+;;    `diredp-make-find-file-keys-reuse-dirs',
 ;;    `diredp-make-find-file-keys-not-reuse-dirs', `diredp-maplist',
 ;;    `diredp-marked-here', `diredp-mark-files-tagged-all/none',
 ;;    `diredp-mark-files-tagged-some/not-all',
@@ -616,6 +617,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/05/31 dadams
+;;     Added: diredp-get-image-filename.
+;;     image-dired-dired-toggle-marked-thumbs, diredp-menu-bar-immediate-menu [image]:
+;;       Use diredp-get-image-filename.
 ;; 2015/04/16 dadams
 ;;     Added: diredp-do-apply-function, diredp-do-apply-function-recursive.  Added to menus.  Bind to @, M-+ @.
 ;;     dired-do-query-replace-regexp: Handle nil ARG properly.
@@ -1807,6 +1812,18 @@ one is kept."
   "Return non-nil if region is active and non-empty."
   (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))))
 
+(defun diredp-get-image-filename (&optional localp no-error-if-not-filep)
+  "Return the image-file name on this line, or nil if no image file.
+Optional args are the same as for `dired-get-filename'.
+\(Prior to Emacs 22, this just returns nil.)"
+  (and (fboundp 'image-file-name-regexp) ; Emacs 22+, `image-file.el'.
+       (diredp-string-match-p
+        (image-file-name-regexp)
+        (if (derived-mode-p 'dired-mode)
+            (dired-get-filename localp no-error-if-not-filep)
+          ;; Make it work also for `diredp-list-files' listings.
+          (buffer-substring-no-properties (line-beginning-position) (line-end-position))))))
+
 (defun diredp-root-directory-p (file)
   "Return non-nil if FILE is a root directory."
   (if (fboundp 'ange-ftp-root-dir-p)
@@ -2445,9 +2462,9 @@ files (previous -N files, if N < 0)."
   (interactive (progn (diredp-image-dired-required-msg) (list current-prefix-arg)))
   (dired-map-over-marks
    (let* ((image-pos   (dired-move-to-filename))
-          (image-file  (dired-get-filename nil t))
+          (image-file  (diredp-get-image-filename nil 'NO-ERROR))
           thumb-file  overlay)
-     (when (and image-file  (diredp-string-match-p (image-file-name-regexp) image-file))
+     (when image-file
        (setq thumb-file  (image-dired-get-thumbnail-image image-file))
        ;; If image is not already added, then add it.
        (let* ((cur-ovs   (overlays-in (point) (1+ (point))))
@@ -2784,10 +2801,8 @@ A prefix argument ARG specifies files to use instead of those marked.
 (defalias 'diredp-menu-bar-immediate-image-menu diredp-menu-bar-immediate-image-menu)
 (define-key diredp-menu-bar-immediate-menu [image]
   '(menu-item "Image" diredp-menu-bar-immediate-image-menu
-    :enable (let ((file  (dired-get-filename 'LOCALP 'NO-ERROR)))
-              (and (fboundp 'image-dired-dired-display-image)
-                   file  (diredp-string-match-p
-                          (image-file-name-regexp) (dired-get-filename 'LOCALP 'NO-ERROR))))))
+    :enable (let ((img-file  (diredp-get-image-filename 'LOCALP 'NO-ERROR)))
+              (and (fboundp 'image-dired-dired-display-image)  img-file))))
 
 (define-key diredp-menu-bar-immediate-image-menu [diredp-image-dired-display-thumb]
   '(menu-item "Go To Thumbnail" diredp-image-dired-display-thumb
