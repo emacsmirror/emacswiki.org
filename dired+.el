@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 31 09:35:17 2015 (-0700)
+;; Last-Updated: Sun May 31 11:30:57 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 8928
+;;     Update #: 8980
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -390,11 +390,11 @@
 ;;    `diredp-image-dired-edit-comment-and-tags',
 ;;    `diredp-image-dired-tag-file',
 ;;    `diredp-image-dired-tag-files-recursive',
-;;    `diredp-insert-as-subdir', `diredp-insert-subdirs',
-;;    `diredp-insert-subdirs-recursive', `diredp-kill-this-tree',
-;;    `diredp-list-marked-recursive', `diredp-load-this-file',
-;;    `diredp-marked', `diredp-marked-other-window',
-;;    `diredp-marked-recursive',
+;;    `diredp-image-show-this-file', `diredp-insert-as-subdir',
+;;    `diredp-insert-subdirs', `diredp-insert-subdirs-recursive',
+;;    `diredp-kill-this-tree', `diredp-list-marked-recursive',
+;;    `diredp-load-this-file', `diredp-marked',
+;;    `diredp-marked-other-window', `diredp-marked-recursive',
 ;;    `diredp-marked-recursive-other-window',
 ;;    `diredp-mark-files-regexp-recursive',
 ;;    `diredp-mark-files-tagged-all', `diredp-mark-files-tagged-none',
@@ -618,9 +618,12 @@
 ;;; Change Log:
 ;;
 ;; 2015/05/31 dadams
-;;     Added: diredp-get-image-filename.
+;;     Added: diredp-image-show-this-file, diredp-get-image-filename.
 ;;     image-dired-dired-toggle-marked-thumbs, diredp-menu-bar-immediate-menu [image]:
 ;;       Use diredp-get-image-filename.
+;;     Bound diredp-image-show-this-file to C-t I.
+;;     diredp-menu-bar-immediate-image-menu: Added diredp-image-show-this-file and dired-find-file.
+;;     Added autoload cookies for image commands.
 ;; 2015/04/16 dadams
 ;;     Added: diredp-do-apply-function, diredp-do-apply-function-recursive.  Added to menus.  Bind to @, M-+ @.
 ;;     dired-do-query-replace-regexp: Handle nil ARG properly.
@@ -1471,6 +1474,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar icicle-file-sort)                         ; In `icicles-opt.el'
 (defvar icicle-ignored-directories)               ; In `icicles-opt.el'
 (defvar icicle-sort-comparer)                     ; In `icicles-opt.el'
+(defvar image-dired-display-image-buffer)         ; In `image-dired.el'
 (defvar image-dired-line-up-method)               ; In `image-dired.el'
 (defvar image-dired-main-image-directory)         ; In `image-dired.el'
 (defvar image-dired-thumbnail-buffer)             ; In `image-dired.el'
@@ -2406,6 +2410,7 @@ If HDR is non-nil, insert a header line with the directory name."
 ;; See `image-dired-create-thumb'.
 ;; Define this even if `image-dired.el' is not loaded.
 ;; Do NOT raise an error if not loaded, because this is used in `diredp-mouseover-help'.
+;;;###autoload
 (defun diredp-image-dired-create-thumb (file &optional arg)
   "Create thumbnail image file for FILE (default: file on current line).
 With a prefix arg, replace any existing thumbnail for FILE.
@@ -2488,12 +2493,14 @@ files (previous -N files, if N < 0)."
   (add-hook 'dired-after-readin-hook 'image-dired-dired-after-readin-hook nil t))
 
 ;; Corresponds to `image-dired-dired-comment-files'.
+;;;###autoload
 (defun diredp-image-dired-comment-file ()
   "Add comment to this image file."
   (interactive (progn (diredp-image-dired-required-msg) ()))
   (image-dired-write-comments (cons (dired-get-filename) (image-dired-read-comment))))
 
 ;; Corresponds to `image-dired-tag-files'.
+;;;###autoload
 (defun diredp-image-dired-tag-file ()
   "Tag this image file with an `image-dired' tag."
   (interactive (progn (diredp-image-dired-required-msg) ()))
@@ -2501,12 +2508,14 @@ files (previous -N files, if N < 0)."
                                 (read-string "Tags to add (use `;' to separate): "))))
 
 ;; Corresponds to `image-dired-delete-tag'.
+;;;###autoload
 (defun diredp-image-dired-delete-tag ()
   "Remove an `image-dired' tag from  this image file."
   (interactive (progn (diredp-image-dired-required-msg) ()))
   (image-dired-remove-tag (list (dired-get-filename)) (read-string "Tag to remove: ")))
 
 ;; Corresponds to `image-dired-display-thumbs'.
+;;;###autoload
 (defun diredp-image-dired-display-thumb (&optional append)
   "Pop to thumbnail of this image file, in `image-dired-thumbnail-buffer'.
 If a thumbnail image does not yet exist for this file, create it.
@@ -2531,6 +2540,7 @@ instead of clearing the buffer first."
     (pop-to-buffer image-dired-thumbnail-buffer)))
 
 ;; Corresponds to `image-dired-copy-with-exif-file-name'.
+;;;###autoload
 (defun diredp-image-dired-copy-with-exif-name ()
   "Copy this image file to your main image directory.
 Uses `image-dired-get-exif-file-name' to name the new file."
@@ -2544,6 +2554,7 @@ Uses `image-dired-get-exif-file-name' to name the new file."
     (message "Copying `%s' to `%s'...done" curr-file new-name)))
 
 ;; Corresponds to `image-dired-dired-edit-comment-and-tags'.
+;;;###autoload
 (defun diredp-image-dired-edit-comment-and-tags ()
   "Edit comment and tags for this image file."
   (interactive (progn (diredp-image-dired-required-msg) ()))
@@ -2593,7 +2604,7 @@ Move backward using `S-TAB'.  Click `Save' to save your edits or
     (widget-setup)
     (widget-forward 1)))                ; Jump to the first widget.
 
-
+;;;###autoload
 (defun diredp-do-display-images (&optional arg)
   "Display the marked image files.
 A prefix argument ARG specifies files to use instead of those marked.
@@ -2623,6 +2634,29 @@ A prefix argument ARG specifies files to use instead of those marked.
          (prog1 file                ; Return file name for failure.
            (unless (eq t failure)
              (dired-log "Cannot display image file `%s':\n%s\n" file failure)  t)))))
+
+;;;###autoload
+(defun diredp-image-show-this-file (&optional arg)
+  "Show the image file named on this line, possibly shrinking it.
+With a prefix arg, show the image at least that many lines high.
+Otherwise, show it full size.
+Note:
+ * To show the file full size, you can also use `\\<dired-mode-map>\\[dired-find-file]'.
+ * To show the file in another window, at whatever scale fits there,
+   you can use `\\[image-dired-dired-display-image]'."
+  (interactive (progn (diredp-image-dired-required-msg) (list current-prefix-arg)))
+  (image-dired-create-display-image-buffer)
+  (let ((fit-frame-inhibit-fitting-flag  t) ; In `fit-frame.el'.
+        (img-file                        (diredp-get-image-filename)))
+    (if img-file
+        (with-current-buffer image-dired-display-image-buffer
+          (let ((window-min-height  (if arg
+                                        (prefix-numeric-value arg)
+                                      (ceiling (cdr (image-size (create-image img-file)))))))
+            (display-buffer image-dired-display-image-buffer)
+            (image-dired-display-image img-file (not arg))))
+      (message "No image file here")))) ; An error is handled by `diredp-get-image-filename'.
+
  
 ;;; Key Bindings.
 
@@ -2833,10 +2867,16 @@ A prefix argument ARG specifies files to use instead of those marked.
     :help "Copy this image file to main image dir using EXIF name"))
 (define-key diredp-menu-bar-immediate-image-menu [image-dired-dired-display-external]
   '(menu-item "Display Externally" image-dired-dired-display-external
-    :help "Display image in external viewer"))
+    :help "Display image using external viewer"))
 (define-key diredp-menu-bar-immediate-image-menu [image-dired-dired-display-image]
-  '(menu-item "Display" image-dired-dired-display-image
-    :help "Display sized image in a separate window"))
+  '(menu-item "Display to Fit in Other Window" image-dired-dired-display-image
+    :help "Display scaled image to fit a separate window"))
+(define-key diredp-menu-bar-immediate-image-menu [diredp-image-show-this-file]
+  '(menu-item "Display Full Size Or Smaller" diredp-image-show-this-file
+    :help "Display image full size or at least prefix-arg lines high"))
+(define-key diredp-menu-bar-immediate-image-menu [dired-find-file]
+  '(menu-item "Display Full Size" dired-find-file
+    :help "Display image full size"))
 
 
 ;; `Single' > `Encryption' menu.
@@ -3789,6 +3829,8 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "\C-\M-o" 'dired-display-file)                   ; `C-M-o' (not `C-o')
 (define-key dired-mode-map "\M-p"    'diredp-print-this-file)               ; `M-p'
 (define-key dired-mode-map "r"       'diredp-rename-this-file)              ; `r'
+(when (fboundp 'image-dired-dired-display-image)
+  (define-key dired-mode-map "\C-tI"   'diredp-image-show-this-file))       ; `C-t I'
 (define-key dired-mode-map [(meta shift ?t)] 'diredp-touch-this-file)       ; `M-T'
 (define-key dired-mode-map [(control meta shift ?t)] 'dired-do-touch)       ; `C-M-T'
 (define-key dired-mode-map "\M-u"    'diredp-upcase-this-file)              ; `M-u'
