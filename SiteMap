@@ -31,6 +31,8 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryDocumentation|Documentation]] -- Emacs is self-documenting and helpful
 * [[CategoryHelp|Help]] -- online help from Emacs itself and its users
 * [[CategoryGlossary|Glossary]] -- Emacs terminology
+* LearningEmacs -- there are lots of ways to learn Emacs, and lots of aids to learning
+* LearnEmacsLisp -- EmacsLisp is not just the language that most of Emacs is implemented in. It '''''is''''' Emacs. 
 * EmacsNiftyTricks -- some extra tips
 * RandomPage -- for serendipitous visitors
 
