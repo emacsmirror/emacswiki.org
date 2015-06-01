@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 31 11:30:57 2015 (-0700)
+;; Last-Updated: Sun May 31 22:15:45 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 8980
+;;     Update #: 8988
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -458,6 +458,7 @@
 ;;    `diredp-hide-details-initially-flag' (Emacs 24.4+),
 ;;    `diredp-highlight-autofiles-mode',
 ;;    `diredp-hide-details-propagate-flag' (Emacs 24.4+),
+;;    `diredp-image-show-this-file-use-frame-flag' (Emacs 22+),
 ;;    `diredp-prompt-for-bookmark-prefix-flag',
 ;;    `diredp-w32-local-drives', `diredp-wrap-around-flag'.
 ;;
@@ -618,7 +619,7 @@
 ;;; Change Log:
 ;;
 ;; 2015/05/31 dadams
-;;     Added: diredp-image-show-this-file, diredp-get-image-filename.
+;;     Added: diredp-image-show-this-file,diredp-image-show-this-file-use-frame-flag, diredp-get-image-filename.
 ;;     image-dired-dired-toggle-marked-thumbs, diredp-menu-bar-immediate-menu [image]:
 ;;       Use diredp-get-image-filename.
 ;;     Bound diredp-image-show-this-file to C-t I.
@@ -1538,6 +1539,20 @@ This option has no effect for Emacs versions prior to Emacs 22."
           (const :tag "Show a full-size image preview"      full)
           (const :tag "OFF: Do not show an image preview"   nil))
   :group 'Dired-Plus)
+
+;;;###autoload
+(defcustom diredp-image-show-this-file-use-frame-flag t
+  "Non-nil means `diredp-image-show-this-file' uses another frame.
+If nil then it uses another window.  Using another frame means you
+have more control over the image size when you use a prefix arg.
+
+If it uses another window then the prefix arg controls only the
+minimum window height, not necessarily the image scale (height).
+
+\(If the buffer displaying the image is already considered a
+special-display buffer by your Emacs setup, then a nil value of this
+option has no effect.)"
+  :type 'boolean :group 'Dired-Plus)
 
 ;;; This is duplicated in `diff.el' and `vc.el'.
 ;;;###autoload
@@ -2637,12 +2652,15 @@ A prefix argument ARG specifies files to use instead of those marked.
 
 ;;;###autoload
 (defun diredp-image-show-this-file (&optional arg)
-  "Show the image file named on this line, possibly shrinking it.
-With a prefix arg, show the image at least that many lines high.
-Otherwise, show it full size.
+  "Show the image file named on this line in another frame or window.
+Option `diredp-image-show-this-file-use-frame-flag' which is used.
+
+With a prefix arg, shrink the image to fit a frame that many lines
+high or a window at least that many lines high.
+Otherwise, show the image full size.
 Note:
- * To show the file full size, you can also use `\\<dired-mode-map>\\[dired-find-file]'.
- * To show the file in another window, at whatever scale fits there,
+ * To show the image full size, you can also use `\\<dired-mode-map>\\[dired-find-file]'.
+ * To show the image in another window, at whatever scale fits there,
    you can use `\\[image-dired-dired-display-image]'."
   (interactive (progn (diredp-image-dired-required-msg) (list current-prefix-arg)))
   (image-dired-create-display-image-buffer)
@@ -2650,9 +2668,17 @@ Note:
         (img-file                        (diredp-get-image-filename)))
     (if img-file
         (with-current-buffer image-dired-display-image-buffer
-          (let ((window-min-height  (if arg
-                                        (prefix-numeric-value arg)
-                                      (ceiling (cdr (image-size (create-image img-file)))))))
+          (let* ((window-min-height  (if arg
+                                         (prefix-numeric-value arg)
+                                       (ceiling (cdr (image-size (create-image img-file))))))
+                 (special-display-frame-alist   (if diredp-image-show-this-file-use-frame-flag
+                                                    (cons `(height . ,window-min-height)
+                                                          special-display-frame-alist)
+                                                  special-display-frame-alist))
+                 (special-display-buffer-names  (if diredp-image-show-this-file-use-frame-flag
+                                                    (cons image-dired-display-image-buffer
+                                                          special-display-buffer-names)
+                                                  special-display-buffer-names)))
             (display-buffer image-dired-display-image-buffer)
             (image-dired-display-image img-file (not arg))))
       (message "No image file here")))) ; An error is handled by `diredp-get-image-filename'.
@@ -2869,7 +2895,7 @@ Note:
   '(menu-item "Display Externally" image-dired-dired-display-external
     :help "Display image using external viewer"))
 (define-key diredp-menu-bar-immediate-image-menu [image-dired-dired-display-image]
-  '(menu-item "Display to Fit in Other Window" image-dired-dired-display-image
+  '(menu-item "Display to Fit Other Window" image-dired-dired-display-image
     :help "Display scaled image to fit a separate window"))
 (define-key diredp-menu-bar-immediate-image-menu [diredp-image-show-this-file]
   '(menu-item "Display Full Size Or Smaller" diredp-image-show-this-file
