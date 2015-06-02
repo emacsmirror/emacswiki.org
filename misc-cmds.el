@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 30 09:40:16 2015 (-0700)
+;; Last-Updated: Tue Jun  2 12:27:02 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3239
+;;     Update #: 3245
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -41,14 +41,14 @@
 ;;    `indent-rigidly-tab-stops', `indirect-buffer',
 ;;    `kill-buffer-and-its-windows', `list-colors-nearest',
 ;;    `list-colors-nearest-color-at', `mark-buffer-after-point',
-;;    `mark-buffer-before-point', `next-buffer-repeat' (Emacs 22+),
-;;    `old-rename-buffer', `previous-buffer-repeat' (Emacs 22+),
-;;    `quit-window-delete', `recenter-top-bottom',
-;;    `recenter-top-bottom-1', `recenter-top-bottom-2',
-;;    `region-length', `region-to-buffer', `region-to-file',
-;;    `resolve-file-name', `reversible-transpose-sexps',
-;;    `revert-buffer-no-confirm', `selection-length',
-;;    `switch-to-alternate-buffer',
+;;    `mark-buffer-before-point', `mark-line', `narrow-to-line',
+;;    `next-buffer-repeat' (Emacs 22+), `old-rename-buffer',
+;;    `previous-buffer-repeat' (Emacs 22+), `quit-window-delete',
+;;    `recenter-top-bottom', `recenter-top-bottom-1',
+;;    `recenter-top-bottom-2', `region-length', `region-to-buffer',
+;;    `region-to-file', `resolve-file-name',
+;;    `reversible-transpose-sexps', `revert-buffer-no-confirm',
+;;    `selection-length', `switch-to-alternate-buffer',
 ;;    `switch-to-alternate-buffer-other-window', `undo-repeat' (Emacs
 ;;    24.3+), `view-X11-colors'.
 ;;
@@ -66,6 +66,7 @@
 ;;
 ;;   (define-key ctl-x-map [home]     'mark-buffer-before-point)
 ;;   (define-key ctl-x-map [end]      'mark-buffer-after-point)
+;;   (define-key ctl-x-map "nl"       'narrow-to-line)
 ;;   (define-key ctl-x-map "\M-f"     'region-to-file)
 ;;   (define-key ctl-x-map [(control ?\;)] 'comment-region-lines)
 ;;   (global-set-key [C-S-f1]         'region-to-buffer)
@@ -95,6 +96,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/06/02 dadams
+;;     Added: mark-line, narrow-to-line.
 ;; 2015/05/30 dadams
 ;;     Added: reversible-transpose-sexps.
 ;; 2015/03/15 dadams
@@ -643,6 +646,33 @@ With a prefix argument, select the part before point."
 With a prefix argument, select the part after point."
   (interactive "P")
   (mark-buffer-after-point t))
+
+;; Probably not very useful.
+;;;###autoload
+(defun mark-line (&optional arg)
+  "Put mark at end of line, point at beginning.
+A numeric prefix arg means move forward (backward if negative) that
+many lines, thus marking a line other than the one point was
+originally in."
+  (interactive "P")
+  (setq arg  (if arg (prefix-numeric-value arg) 0))
+  (let ((inhibit-field-motion  t))
+    (forward-line arg)
+    (push-mark nil t t)
+    (goto-char (line-end-position))))
+
+;;;###autoload
+(defun narrow-to-line (&optional arg)
+  "Narrow to the text of the current line.
+A numeric prefix arg means move forward (backward if negative) that
+many lines, thus narrowing to a line other than the one point was
+originally in."
+  (interactive "P")
+  (setq arg  (if arg (prefix-numeric-value arg) 0))
+  (let ((inhibit-field-motion  t))
+    (save-excursion
+      (forward-line arg)
+      (narrow-to-region (line-beginning-position) (line-end-position)))))
 
 ;;;###autoload
 (defalias 'selection-length 'region-length)
