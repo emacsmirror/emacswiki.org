@@ -8,6 +8,43 @@ Emacs supports three spelling checkers by default: Hunspell, which is now widely
 
 [http://hunspell.sourceforge.net/ Hunspell] is a widely-used free software spelling checker, and supports a wider range of languages than others. It has many [http://wiki.services.openoffice.org/wiki/Dictionaries dictionaries].
 
+=== Emacs 24.4+ ===
+
+ispell.el in Emacs 24.4 has built-in support for detecting Hunspell's default dictionary, so it should now work out of the box with no Emacs configuration.
+
+==== Windows ====
+
+Using the [http://sourceforge.net/projects/ezwinports/files/ ezwinports] version of Hunspell should work out of the box, but sometimes it results in the error:
+
+<pre>
+ispell-phaf: No matching entry for nil.
+</pre>
+
+This is due to Hunspell's auto-configuration failing, usually because Hunspell, when run within emacs, can't find a default dictionary. There are two potential work-arounds for this. you can set the <code>DICTIONARY</code> environment variable to your dictionary name (eg, en_GB) or you can create a dictionary file that matches Emacs's <code>LANG</code> variable. In my case this was "ENG", but you can check it with:
+
+{{{
+(getenv "LANG")
+}}}
+
+Then just copy (or softlink) your preferred dictionary to that name, eg.:
+
+<pre>
+en_GB.dic -> ENG.dic
+en_GB.aff -> ENG.aff
+</pre>
+
+==== OS X ====
+
+Emacs on OS X can run into the same problem as on Windows. I got installed Hunspell from Homebrew, and while it worked in the terminal, and if I ran Emacs from the terminal, it didn't work if I ran emacs from spotlight. Setting the environment variable <code>DICTIONARY</code> did the trick. The easiest way I found was to set it within my .emacs:
+
+{{{
+(setenv "DICTIONARY" "en_GB")
+}}}
+
+However it can also be set using [http://stackoverflow.com/questions/25385934/setting-environment-variables-via-launchd-conf-no-longer-works-in-os-x-yosemite launchctl].
+
+=== rw-hunspell ===
+
 The ELPA package [http://marmalade-repo.org/packages/rw-hunspell rw-hunspell] provides some useful extensions to ispell.el for Hunspell.
 
 On my linux setup I use the following:
