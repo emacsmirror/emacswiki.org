@@ -9,11 +9,13 @@ the recorded operations.
 
 == Usage ==
 
-Load benchmark-init.el as early as possible in the Emacs initialization file by adding:
+See github, or the repository readme
 
-[code]
-(load "/path/to/benchmark-init.el")
-[/code]
+github.com/dholm/benchmark-init-el
+
+github.com/dholm/benchmark-init-el.git
+
+== Example output ==
 
 The results are displayed by calling either of the functions:
 
@@ -42,8 +44,3 @@ The results are displayed by calling either of the functions:
     ╰─[flyspell require 9ms]
       ╰─[ispell require 24ms]
 [/code]
-
-== Download ==
-
-The module is available on github:
-https://github.com/dholm/benchmark-init-el
