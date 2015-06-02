@@ -14,3 +14,29 @@ simple solution...
 
 -- Vasco Lopes Paulo 2012-05-03 18:23 UTC
 
+
+----
+
+Hi 
+
+Thanks for your great info about ange-ftp windows hosts
+
+One small correction to the code that worked for me:
+
+It should be either (1) or (2):
+
+(1)
+
+(msdos (string-match "200 .+off" line))
++
+(if (not msdos)
+
+
+(2)
+
+(msdos (string-match "200 .+on" line))
++
+(if msdos
+
+-- Anonymous 2015-06-02 09:29 UTC
+
