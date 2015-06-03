@@ -83,7 +83,7 @@ For example, the following InitFile code would be suitable for setting up C/C++ 
 (setq-default ff-other-file-alist 'my-cpp-other-file-alist)
 
 (add-hook 'c-initialization-hook (lambda ()
-    (define-key c-mode-base-map [(meta o)] 'ft-get-other-file))
+    (define-key c-mode-base-map [(meta o)] 'ff-get-other-file))
 )
 }}}
 
