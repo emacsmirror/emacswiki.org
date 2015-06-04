@@ -37,6 +37,7 @@ External:
 
 * KaiGrossjohann's indentation tutorial: http://www.xemacs.org/Links/tutorials_toc.html or http://cvs.sourceforge.net/viewcvs.py/xemacs/xemacsweb/Links/Attic/tutorials_toc.html
 * EricPement has a document that explains TABs in Emacs: http://www.pement.org/emacs_tabs.htm
+* Python-like indentation for all modes: https://github.com/vitalya-dev/project-i
 
 Aligning columns of text:
 
