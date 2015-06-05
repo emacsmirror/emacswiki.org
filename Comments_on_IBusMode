@@ -2,3 +2,21 @@ I can use Super+Space to switch the input method. But what I typed is always Eng
 
 -- Zli 2013-11-16 22:30 UTC
 
+
+----
+
+When using IBUS 1.5+ you don't need to use an asian locale as stated on the page.  For instance I have LANG="en_GB.UTF-8" and it works perfectly.  You do, of course need the appropriate fonts installed.  There seem to be various advantages and disadvantages of the "new" method:
+
+Advantages:  IBUS input works "the same" in emacs as in other applications.  I.e. you do not need to remember any emacs-only keys to swithch it on/off.
+
+Disadvantages:
+1) In ibus-mode, a separate connection to IBUS was made for each window in that mode.  This meant you could have different input method attached to different windows.  This is more than just a convenience, since you don't want, for instance, to be using a chinese input method in dired mode.  This means you have to remember to switch IBUS input methods when you are doing something other than inputting text using the latest IBUS.
+
+2) There seems to be no easy way to change the cursor colour when swithching between IBUS input methods as you could in the old ibus-mode.
+
+3) A lot of customization could be done to ibus-mode that is not now possible.
+
+On the whole I prefer the "old" method.  However I now have various applications that require IBUS 1.5+ so it looks like I am stuck with the "new" method.
+
+-- BernardHurley 2015-06-05 17:57 UTC
+
