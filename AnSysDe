@@ -16,6 +16,6 @@ Installation:
 Das war's. Wichtig ist zu beachten, daß die entsprechenden Ansys-Dateien mit .ans enden
 ----
 [new]
-Ich habe einen erweiterten Ansys Modus für GNU Emacs 23 geschrieben, er basiert auf einer aktuelleren Ansys Version (12.0) und bietet weitaus mehr Möglichkeiten.  Allerdings ist die Dokumentation nur auf Englisch, siehe AnsysMode. -- [[dida]]
+Ich habe einen erweiterten Ansys Modus für GNU Emacs 23-24 geschrieben, er basiert auf aktuelleren Ansys Versionen (14-16.1) und bietet weitaus mehr Möglichkeiten.  Allerdings ist die Dokumentation nur auf Englisch, siehe AnsysMode. -- [[dida]]
 ----
 CategoryModes
