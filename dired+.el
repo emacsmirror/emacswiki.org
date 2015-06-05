@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun  5 01:43:37 2015 (-0700)
+;; Last-Updated: Fri Jun  5 08:03:01 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9013
+;;     Update #: 9017
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -4592,7 +4592,7 @@ Applies to any `compilation-mode'-derived buffer, such as `*grep*'.
 You are prompted for the name of the new Dired buffer.
 With a prefix arg you are first prompted for the `ls' switches.
 
-(However, Emacs bug #20739 means that the switches are ignored.)"
+\(However, Emacs bug #20739 means that the switches are ignored.)"
     (interactive (list (and current-prefix-arg  (read-string "Dired listing switches: "
                                                              dired-listing-switches))))
     (unless (compilation-buffer-p (current-buffer)) (error "Not in a buffer derived from `compilation-mode'"))
