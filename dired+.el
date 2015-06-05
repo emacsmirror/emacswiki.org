@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jun  4 22:01:59 2015 (-0700)
+;; Last-Updated: Fri Jun  5 01:43:37 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 8996
+;;     Update #: 9013
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -377,8 +377,8 @@
 ;;    `diredp-find-file-reuse-dir-buffer',
 ;;    `diredp-find-line-file-other-window',
 ;;    `diredp-flag-region-files-for-deletion',
-;;    `diredp-grep-this-file', `diredp-hardlink-this-file',
-;;    `diredp-highlight-autofiles-mode',
+;;    `diredp-grepped-files-other-window', `diredp-grep-this-file',
+;;    `diredp-hardlink-this-file', `diredp-highlight-autofiles-mode',
 ;;    `diredp-image-dired-comment-file',
 ;;    `diredp-image-dired-comment-files-recursive',
 ;;    `diredp-image-dired-copy-with-exif-name',
@@ -618,6 +618,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/06/05 dadams
+;;     Added: diredp-grepped-files-other-window as alias for diredp-compilation-files-other-window.
+;;     diredp-compilation-files-other-window: Added SWITCHES optional arg (prefix arg).
 ;; 2015/06/04 dadams
 ;;     diredp-dired-for-files(-other-window):
 ;;       Updated to fit change to dired-read-dir-and-switches made 2015/02/02: addition of READ-EXTRA-FILES-P.
@@ -4581,11 +4584,17 @@ Non-nil DIRED-BUFFER is passed to `dired-read-dir-and-switches'.
     (list dirname bufs switches extra-files)))
 
 (when (> emacs-major-version 23)        ; `compilation--loc->file-struct'
-  (defun diredp-compilation-files-other-window ()
+
+  (defalias 'diredp-grepped-files-other-window 'diredp-compilation-files-other-window)
+  (defun diredp-compilation-files-other-window (&optional switches)
     "Open Dired on the files indicated by compilation (e.g., `grep') hits.
 Applies to any `compilation-mode'-derived buffer, such as `*grep*'.
-You are prompted for the name of the new Dired buffer."
-    (interactive)
+You are prompted for the name of the new Dired buffer.
+With a prefix arg you are first prompted for the `ls' switches.
+
+(However, Emacs bug #20739 means that the switches are ignored.)"
+    (interactive (list (and current-prefix-arg  (read-string "Dired listing switches: "
+                                                             dired-listing-switches))))
     (unless (compilation-buffer-p (current-buffer)) (error "Not in a buffer derived from `compilation-mode'"))
     (let ((files  ()))
       (save-excursion (goto-char (point-min))
@@ -4594,7 +4603,8 @@ You are prompted for the name of the new Dired buffer."
                         (push (diredp-file-for-compilation-hit-at-point) files)))
       (setq files  (nreverse files))
       (dired-other-window
-       (cons (read-string "Dired buffer name: " nil nil (generate-new-buffer-name default-directory)) files))))
+       (cons (read-string "Dired buffer name: " nil nil (generate-new-buffer-name default-directory)) files)
+       switches)))
 
   (defun diredp-file-for-compilation-hit-at-point ()
     "Return the name of the file for the compilation hit at point.
