@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 31 22:15:45 2015 (-0700)
+;; Last-Updated: Thu Jun  4 22:01:59 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 8988
+;;     Update #: 8996
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -618,6 +618,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/06/04 dadams
+;;     diredp-dired-for-files(-other-window):
+;;       Updated to fit change to dired-read-dir-and-switches made 2015/02/02: addition of READ-EXTRA-FILES-P.
+;;       Use prefix arg to prompt for switches.
 ;; 2015/05/31 dadams
 ;;     Added: diredp-image-show-this-file,diredp-image-show-this-file-use-frame-flag, diredp-get-image-filename.
 ;;     image-dired-dired-toggle-marked-thumbs, diredp-menu-bar-immediate-menu [image]:
@@ -4245,21 +4249,23 @@ This means the `.' plus the file extension.  Example: `.zip'."
 
 ;;;###autoload
 (defun diredp-dired-for-files (arg &optional switches) ; Not bound
-  "Same as `dired' with a non-positive prefix arg.
-You are prompted for names of files and directories to list, and then
-you are prompted for the name of the Dired buffer that lists them.
-Use `C-g' when you are done.  See `dired'."
-  (interactive
-   (let ((current-prefix-arg  -1))
-     (dired-read-dir-and-switches "in other window ")))
+  "Dired file names that you enter, in a Dired buffer that you name.
+You are prompted for the name of the Dired buffer to use.
+You are then prompted for names of files and directories to list.
+Use `C-g' when you are done.
+
+With a prefix arg you are first prompted for the `ls' switches to use.
+
+See also `dired' (including the advice)."
+  (interactive (let ((current-prefix-arg  (if current-prefix-arg 0 -1)))
+                 (dired-read-dir-and-switches "in other window " 'READ-EXTRA-FILES-P)))
   (dired arg switches))
 
 ;;;###autoload
 (defun diredp-dired-for-files-other-window (arg &optional switches) ; Not bound
   "Same as `diredp-dired-for-files' except uses another window."
-  (interactive
-   (let ((current-prefix-arg  -1))
-     (dired-read-dir-and-switches "in other window ")))
+  (interactive (let ((current-prefix-arg  (if current-prefix-arg 0 -1)))
+                 (dired-read-dir-and-switches "in other window " 'READ-EXTRA-FILES-P)))
   (dired-other-window arg switches))
 
 ;;;###autoload
