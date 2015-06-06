@@ -59,6 +59,9 @@ Original author: ThienThiNguyen, 28-Jan-1996, modified for multiple lines: EricL
       (move-to-column col)))
   (define-key global-map (kbd "M-o") 'another-line)
 
+
+[new]
+
 Basically the same function as above, but with the following extra functionality: it increments every number by the amount of numbers in the line.
 This is quite useful for some cases, for example when editing latex-documents.
 
@@ -86,6 +89,8 @@ This is quite useful for some cases, for example when editing latex-documents.
     (insert line "\n")
     (move-to-column col)))
   (define-key global-map (kbd "M-o") 'another-line)
+
+-- [[94.218.213.34]]
 
 ----
 CategoryEditing
