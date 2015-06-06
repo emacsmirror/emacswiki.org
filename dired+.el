@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun  5 08:03:01 2015 (-0700)
+;; Last-Updated: Sat Jun  6 10:33:09 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9017
+;;     Update #: 9026
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -535,7 +535,7 @@
 ;;  ***** NOTE: The following functions defined in `dired.el' have
 ;;              been REDEFINED or ADVISED HERE:
 ;;
-;;  `dired'                   - Doc string: non-positive prefix arg.
+;;  `dired'                   - Handle non-positive prefix arg.
 ;;  `dired-do-delete'         - Display message to warn that marked,
 ;;                              not flagged, files will be deleted.
 ;;  `dired-do-flagged-delete' - Display message to warn that flagged,
@@ -559,6 +559,8 @@
 ;;  `dired-mark-pop-up'       - Delete the window or frame popped up,
 ;;                              afterward, and bury its buffer. Do not
 ;;                              show a menu bar for pop-up frame.
+;;  `dired-other-frame'       - Handle non-positive prefix arg.
+;;  `dired-other-window'      - Handle non-positive prefix arg.
 ;;  `dired-pop-to-buffer'     - Put window point at bob (bug #12281).
 ;;                              (Emacs 22-24.1)
 ;;  `dired-read-dir-and-switches' - Non-positive prefix arg behavior.
@@ -618,6 +620,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/06/06 dadams
+;;     Added dired-other-(frame|window).
+;;     dired(-other-(frame|window)) advice:
+;;       Add interactive spec, to handle arg <= 0 (broken by change to dired-read-dir-and-switches 2015/02/02).
+;;     diredp-dired-for-files: Typo: pass empy string.
 ;; 2015/06/05 dadams
 ;;     Added: diredp-grepped-files-other-window as alias for diredp-compilation-files-other-window.
 ;;     diredp-compilation-files-other-window: Added SWITCHES optional arg (prefix arg).
@@ -2290,7 +2297,30 @@ means the key requires library `Bookmark+'):
  * C-x C-t % + - Narrow to files with some tags  matching a regexp
  * C-x a +     - Add tags to the current-candidate file
  * C-x a -     - Remove tags from the current-candidate file
- * C-x m       - Access file bookmarks (not just autofiles)")
+ * C-x m       - Access file bookmarks (not just autofiles)"
+  (interactive (dired-read-dir-and-switches "" 'READ-EXTRA-FILES-P)))
+
+
+;; ADVISE ORIGINAL in `dired.el'.
+;;
+;; Add to doc string, to document non-positive prefix arg.
+;;
+(defadvice dired-other-window (before diredp-doc-cons-arg activate)
+  "Interactively, a prefix argument changes the behavior.
+A non-positive prefix arg lets you choose an explicit set of files and
+directories to list.  See the advice for `dired' for more information."
+  (interactive (dired-read-dir-and-switches "" 'READ-EXTRA-FILES-P)))
+
+
+;; ADVISE ORIGINAL in `dired.el'.
+;;
+;; Add to doc string, to document non-positive prefix arg.
+;;
+(defadvice dired-other-frame (before diredp-doc-cons-arg activate)
+  "Interactively, a prefix argument changes the behavior.
+A non-positive prefix arg lets you choose an explicit set of files and
+directories to list.  See the advice for `dired' for more information."
+  (interactive (dired-read-dir-and-switches "" 'READ-EXTRA-FILES-P)))
 
 
 ;; REPLACE ORIGINAL in `dired.el'.
@@ -4261,7 +4291,7 @@ With a prefix arg you are first prompted for the `ls' switches to use.
 
 See also `dired' (including the advice)."
   (interactive (let ((current-prefix-arg  (if current-prefix-arg 0 -1)))
-                 (dired-read-dir-and-switches "in other window " 'READ-EXTRA-FILES-P)))
+                 (dired-read-dir-and-switches "" 'READ-EXTRA-FILES-P)))
   (dired arg switches))
 
 ;;;###autoload
