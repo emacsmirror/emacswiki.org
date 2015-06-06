@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun  6 10:33:09 2015 (-0700)
+;; Last-Updated: Sat Jun  6 16:33:40 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9026
+;;     Update #: 9031
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -622,6 +622,7 @@
 ;;
 ;; 2015/06/06 dadams
 ;;     Added dired-other-(frame|window).
+;;     diredp-font-lock-keywords-1: Use dired-re-maybe-mark and dired-re-inode-size for permission matchings.
 ;;     dired(-other-(frame|window)) advice:
 ;;       Add interactive spec, to handle arg <= 0 (broken by change to dired-read-dir-and-switches 2015/02/02).
 ;;     diredp-dired-for-files: Typo: pass empy string.
@@ -4185,7 +4186,7 @@ This means the `.' plus the file extension.  Example: `.zip'."
                                                            dired-omit-extensions)
                                                       completion-ignored-extensions)
                                                   "[*]?\\|")
-                                       "[*]?")        ; Allow for executable flag (*).
+                                       "[*]?") ; Allow for executable flag (*).
                  "\\|\\.\\(g?z\\|Z\\)[*]?\\)\\)$") ; Compressed.
          1 diredp-ignored-file-name t)
    '("[^ .]\\(\\.[bg]?[zZ]2?\\)[*]?$" 1 diredp-compressed-file-suffix t) ; Compressed (*.z)
@@ -4198,21 +4199,56 @@ This means the `.' plus the file extension.  Example: `.zip'."
    (list "^..\\([0-9]* \\)*d[^:]"       ; Exclude d:/..., Windows drive letter in a dir heading.
          (list dired-move-to-filename-regexp nil nil)
          (list "\\(.+\\)" nil nil '(0 diredp-dir-priv t t)))
-   '("^..\\([0-9]* \\)*.........\\(x\\)" 2 diredp-exec-priv) ;o x
-   '("^..\\([0-9]* \\)*.........\\([lsStT]\\)" 2 diredp-other-priv) ; o misc
-   '("^..\\([0-9]* \\)*........\\(w\\)" 2 diredp-write-priv) ; o w
-   '("^..\\([0-9]* \\)*.......\\(r\\)" 2 diredp-read-priv) ; o r
-   '("^..\\([0-9]* \\)*......\\(x\\)" 2 diredp-exec-priv) ; g x
-   '("^..\\([0-9]* \\)*....[^0-9].\\([lsStT]\\)" 2 diredp-other-priv) ; g misc
-   '("^..\\([0-9]* \\)*.....\\(w\\)" 2 diredp-write-priv) ; g w
-   '("^..\\([0-9]* \\)*....\\(r\\)" 2 diredp-read-priv) ; g r
-   '("^..\\([0-9]* \\)*...\\(x\\)" 2 diredp-exec-priv) ; u x
-   '("^..\\([0-9]* \\)*...\\([lsStT]\\)" 2 diredp-other-priv) ; u misc
-   '("^..\\([0-9]* \\)*..\\(w\\)" 2 diredp-write-priv) ; u w
-   '("^..\\([0-9]* \\)*.\\(r\\)" 2 diredp-read-priv) ; u r
-   '("^..\\([0-9]* \\)*.\\([-rwxlsStT]+\\)" 2 diredp-no-priv keep) ;-
-   '("^..\\([0-9]* \\)*\\([bcsmpS]\\)[-rwxlsStT]" 2 diredp-rare-priv) ; (rare)
-   '("^..\\([0-9]* \\)*\\(l\\)[-rwxlsStT]" 2 diredp-link-priv) ; l
+
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]........\\(x\\)") ; o x
+	 '(1 diredp-exec-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]........\\([lsStT]\\)") ; o misc
+	 '(1 diredp-other-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d].......\\(w\\).") ; o w
+	 '(1 diredp-write-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]......\\(r\\)..") ; o r
+	 '(1 diredp-read-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d].....\\(x\\)...") ; g x
+	 '(1 diredp-exec-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d].....\\([lsStT]\\)...") ; g misc
+	 '(1 diredp-other-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]....\\(w\\)....") ; g w
+	 '(1 diredp-write-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]...\\(r\\).....") ; g r
+	 '(1 diredp-read-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]..\\(x\\)...") ; u x
+	 '(1 diredp-exec-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]..\\([lsStT]\\)...") ; u misc
+	 '(1 diredp-other-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d].\\(w\\)....") ; u w
+	 '(1 diredp-write-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]\\(r\\).....") ; u r
+	 '(1 diredp-read-priv))
+
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]........\\([-rwxlsStT]\\)") ; o -
+	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d].......\\([-rwxlsStT]\\).") ; g -
+	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]......\\([-rwxlsStT]\\)..") ; u -
+	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d].....\\([-rwxlsStT]\\)...") ; o -
+	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]....\\([-rwxlsStT]\\)....") ; g -
+	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]...\\([-rwxlsStT]\\).....") ; u -
+	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]..\\([-rwxlsStT]\\)......") ; o -
+	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d].\\([-rwxlsStT]\\).......") ; g -
+	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]\\([-rwxlsStT]\\)........") ; u -
+	 '(1 diredp-no-priv keep))
+
+   (list (concat dired-re-maybe-mark dired-re-inode-size "\\([bcsmpS]\\)") ; (rare)
+	 '(1 diredp-rare-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "\\(l\\)[-rwxlsStT]") ; l
+	 '(1 diredp-rare-priv keep))
+
    (list (concat "^\\([^\n " (char-to-string dired-del-marker) "].*$\\)")
          1 diredp-flag-mark-line t)     ; Flag/mark lines
    (list (concat "^\\([" (char-to-string dired-del-marker) "]\\)") ; Deletion flags (D)
@@ -10323,7 +10359,8 @@ marked/flagged.
 
 Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
     (let ((mname  (format-mode-line mode-name)))
-      (unless (get-text-property 0 'dired+-mode-name mname) ; Do it only once.
+       ; Property `dired+-mode-name' indicates whether `mode-name' has been changed.
+      (unless (get-text-property 0 'dired+-mode-name mname)
         (save-match-data
           (setq mode-name
                 `(,(propertize (if (string-match "^[dD]ired \\(by \\)?\\(.*\\)" mname)
