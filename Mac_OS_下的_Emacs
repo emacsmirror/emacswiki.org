@@ -1,0 +1,506 @@
+== OS X 可用的源代码 ==
+Emacs 官方完全支持 Mac OS X (同时还支持 GNU/Linux, Windows, DOS 等操作系统). 你可以在以下网址下载到已编译好的 Emacs 程序: http://emacsformacosx.com/.
+
+较新的 Mac OS X 版本均自带了一个不含有 GUI 支持的 GNU Emacs 22. 你可以通过终端使用它. 当然, Emacs 还有很多其他为 Mac OS X 设计的支持 GUI 的版本, 你可以从中选择适合你的版本.
+
+Cocoa is the Objective-C API (originally developed by !NeXT) that is used for native OS X applications (included in Emacs 23.2).  Aquamacs and Emacs.app (which was merged into the official Emacs as of Emacs-23) both run under Cocoa.  Note that Emacs.app, GNU Emacs/Cocoa, and GNU Emacs/nextstep refer to the same thing.
+
+Carbon is the C language API (developed by Apple) that lets applications written under OS 9 (or earlier) run under OS X.  Carbon Emacs runs under Carbon.  As of Emacs 23, Carbon Emacs has been deprecated in favor of Emacs.app.
+
+X11 Emacs is the "original" emacs running under X11 (installed by default in recent versions of Mac OS X)
+
+If you are a Mac user new to Emacs, many people find Aquamacs to be a good choice.  Many find it to be more Mac-like than Emacs.app.
+If you've used Emacs before and already have your own Emacs initialization file, then Emacs.app is likely a better choice.  As compared to Aquamacs, Emacs.app is more traditional in its approach, prefers a single frame, and is more likely to work with existing emacs initialization files.
+
+A similar page on a German blog: [https://web.archive.org/web/20120630005123/http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS-X.html Die Emacssituation unter OS X] (in German).
+
+=== OS X Binary Vanilla builds ===
+These builds are based on the development version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available though (e.g. Command-O for opening a file); these are mapped to the Super modifier (i.e., the Apple/Command key functions as Super). 
+
+* http://emacsformacosx.com/ -- "Pure Emacs! No Extras! No Nonsense!"
+
+The site makes available [http://emacsformacosx.com/builds Releases, Pretests & Nightlies].
+
+=== OS X Distributions with extras ===
+
+Custom distributions contain startup routines and tweaks to make Emacs' UI behavior more "Mac-like". In addition to that, they typically include recent versions of popular packages.
+
+* [http://aquamacs.org AquamacsEmac]s is a convenient distribution based on GNU Emacs 23.2.  Aquamacs comes preconfigured with a large number for packages and differs from other Emacsen in that it feels more like a Mac OS X application. OS X standard keyboard shortcuts are supported, files open in separate windows or tabs, nice fonts are available, and it has a convenient drag&drop installer. Hundreds of file types are supported (C, Java, HTML, Python, Ruby, AppleScript, XML, R (Splus), LaTeX (AUCTeX) etc.). All these extra modes come included and readily configured -- no InitFile hacking. Spell checking is easy to install (e.g., CocoAspell) and asian input methods are also supplied, and options to deal with the missing Meta key on Mac keyboards. Aquamacs is based on Cocoa, the modern user interface framework in OS X. It is a ready-to-use Universal App for PPC and Intel Macs that works well on all recent Mac OS X versions.  Recommended for Mac users who want an Emacs that is tailored to the Mac.   [http://aquamacs.org/nightlies.shtml Experimental versions] based on GNU Emacs 24 (in development) are also available.
+
+* [http://vgoulet.act.ulaval.ca/en/emacs/mac Emacs for OS X Modified] is a distribution based on the latest stable release of GNU Emacs with a few additions, most notably [CategoryESS ESS] and AUCTeX. Otherwise, this is a stock distribution of Emacs. Users of Emacs on other platforms will appreciate the similar look and feel of the application.
+
+* [http://homepage.mac.com/zenitani/emacs-e.html CarbonEmacsPackage] provides authentic look and feel of original Emacs, and is a Mac-friendly distribution based on an older version of Emacs, GNU Emacs 22.3. ([http://groups.google.com/group/carbon-emacs/browse_thread/thread/8d87f6babc1f3e29 Newer versions are not planned].) It uses the ".emacs" file under an user's home directory, making the migration from/to a UNIX/Linux environment easy and straightforward. It comes with tons of extra packages (including AUCTeX, ColorTheme, EmacsMuse, EmacsSession, EmacsSpeaksStatistics, HaskellMode, HowmMode, [[Mew]], [NxhtmlMode nXhtml], PhpMode, PoMode, PsgmlMode, PythonMode, RubyMode etc.)  Several Mac-friendly features are added; window-opacity, OSX keyboard shortcuts (MacKeyMode), cocoa-style print dialog (MacPrintMode) and support for filenames with accent signs.  A Universal Binary application is available.
+
+* [http://members.shaw.ca/akochoi-xemacs/ XEmacs 21.5.18 *beta*], AndrewChoi.  Also available via !DarwinPorts.  Via patches from his home page, you can fix a number of issues, and the patches apply to XEmacs 21.5.22 (See AkochoiXEmacsGplCompliance).
+
+* [http://www.math.s.chiba-u.ac.jp/~mituharu/emacs-mac.git/] by Yamamoto Mitsuharu is based on the latest stable release of GNU Emacs (24.5 as of 4/11/15) and claims to incorporate most of the features of Carbon Emacs and the Carbon+AppKit port for Emacs 22.3. As such, it has improved C-g support, an emulation of `select' that doesn't require periodic polling, full screen support, and smooth (pixel) scrolling. See the [https://github.com/railwaycat/emacs-mac-port/blob/master/README-mac readme] for more details. Available via Homebrew, as discussed below.
+
+== Building Emacs From Source ==
+
+=== Getting the Source ===
+
+==== GIT ====
+
+To download emacs using git, use this command:
+
+    git clone git://git.savannah.gnu.org/emacs.git
+
+==== Tarball ====
+
+Available from the [http://savannah.gnu.org/projects/emacs/ GNU Savannah emacs] page.  Click on "Download Area" under "Quick Overview".
+
+=== Building Emacs for OS X, using the normal GUI ===
+
+There are many options for building emacs (such as whether to build for the X11 GUI or the Cocoa GUI), which are discussed in the INSTALL file. There is also a script (emacs/mac/make-package) to create a Mac OS X package for use by the installer.
+
+The "normal" way to build Emacs under Mac OS X is:
+
+<pre>
+  ./configure --with-ns 
+  make install
+</pre>
+
+When the build is complete, you should see Emacs.app in ./nextstep/Emacs.app.  Simply copy it to your applications folder and open it to run.
+
+For more detailed instructions, see the <tt>nextstep/INSTALL</tt> file.  Additionally, you may benefit from reading the build script here: http://github.com/ieure/emacs-nightly.  
+As of 2010-05-08 Cocoa Emacs 23.2 builds correctly on Snow Leopard (Mac OS X 10.6.x). 
+
+[new:CarlGroner:2011-10-20 18:26 UTC] 
+As of October 2011, the version of autoconf on OS X Lion is not recent enough to configure/compile Emacs from source. There is a workaround provided by using the autogen/copy_autogen script which will build emacs using pre-generated versions of the required build files. See the comments in `autogen/copy_autogen` for more information.
+
+==== Aquamacs ====
+
+AquamacsEmacs can be built via build script or manually (step by step)[http://ermaechtigteruebersetzer.blogmonster.de/ .]  The source is available from a Git repository.  Then, do:
+
+<pre>
+  ./configure
+  make
+  make install
+</pre>
+
+When the build is complete, find Aquamacs.app in ./nextstep/.
+
+Note: changes to any source files in src/ require a simple "make".  The binary will directly be installed into nextstep/Aquamacs.app.  Changes to source files in lisp/ require a "make install".  Changes to any lisp files directly in the .app bundle may or may not take effect (upon restarting Aquamacs): for many such files (list lisp/site-load.el), you must call "make".
+
+Detailed build instructions are available on BuildingAquamacs.
+
+==== X11 Emacs ====
+
+Directions to build and install may be found in the INSTALL or INSTALL.REPO files. The basic build and installation of the X11 Emacs application uses the commands:
+
+<pre>
+    ./configure --with-x
+    make
+    sudo make install
+</pre>
+
+==== Carbon Emacs (for Emacs<23) ====
+
+Directions to build and install may be found in the file newly downloaded to emacs/mac/INSTALL. The basic build and installation of the carbon Emacs application uses the commands:
+
+<pre>
+    ./configure --enable-carbon-app
+    make
+    sudo make install
+</pre>
+
+Note: Carbon emacs has been replaced with Cocoa Emacs in Emacs 23.x. This is why the option --enable-carbon-app is no longer recognised by configure.
+
+
+== Installing Emacs with a Package Manager ==
+
+Package managers provide a convenient way to install and maintain/upgrade software.
+
+=== Fink ===
+
+Fink [http://fink.sourceforge.net/ http://fink.sourceforge.net/] includes various versions of Emacs in packages such as `emacs23`, `emacs24`, emacs24-nox`.  It also includes packages for various Emacs extensions such as AUCTeX.
+
+=== Homebrew ===
+
+[http://mxcl.github.com/homebrew/ Homebrew] has Emacs 24.4 (as of 2014-12-09). 
+
+* A Cocoa-specific Emacs.app can be built using the <tt>--cocoa</tt> switch.
+* A version supporting X11 can be built using the <tt>--with-x</tt> switch. Note that this version will not have all of the features of the Cocoa version; use only if necessary.
+
+Other options include:
+* <tt>--keep-ctags</tt>
+	Don't remove the ctags executable that emacs provides. **Use of this flag is not recommended** Instead, use <tt>brew install ctags</tt> after installation. 
+* <tt>--srgb</tt>
+	This option will enable sRGB colors when using Cocoa.
+
+To install using the <tt>--cocoa</tt> switch, one simply uses:
+<pre>
+brew install --with-cocoa emacs
+</pre>
+
+to get some "pretty" colours add the <tt>--srgb</tt> switch:
+<pre>
+brew install --with-cocoa --srgb emacs
+</pre>
+
+and finally link it to your Applications folder:
+<pre>
+ln -s /usr/local/Cellar/emacs/24.4/Emacs.app /Applications
+</pre>
+
+After installation, using the <tt>emacs</tt> command in the terminal or shell will run the <tt>-nw</tt> version of Emacs. If you want
+to run the Cocoa version using this command, you simply add a line to your <tt>.bash_profile</tt>.
+
+To instead use the Yamamoto Mitsuharu version of Emacs 24.5 (with more [https://github.com/railwaycat/emacs-mac-port/blob/master/README-mac mac-specific features]):
+
+<pre>
+brew tap railwaycat/emacsmacport
+brew install emacs-mac
+</pre>
+
+=== MacPorts ===
+
+!MacPorts [http://www.macports.org/ http://www.macports.org/] is another means of installing Emacs on OS X 
+(and other unix-alikes for that matter).
+
+As of January 27, 2015 it provides the following packages:
+* emacs 24.4 (Cocoa version)
+* emacs23 23.4.5
+* emacs22 22.3.7
+* emacs-app-devel 20091101
+* emacs-snapshot 20140101
+* xemacs 21.4.22
+
+See [http://www.macports.org/ports.php?by=name&substr=emacs Available Ports] for the current list.
+
+The emacs executable installs to:
+<code>/opt/local/bin/emacs</code>
+
+The emacs-app executable installs to:
+<code>/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs</code>
+
+The various emacs packages <nowiki>MacPorts</nowiki> offers (e.g., org-mode) will install to:
+<code>/opt/local/share/emacs/site-lisp/</code>
+
+Note that Mac OS X Lion comes with GNU Emacs 22.1.1, located at:
+<code>/usr/bin/emacs</code>
+
+Linux users, add these lines to your //.profile// (or //.bashrc//, etc.) to feel at home:
+
+<code>alias emacs='/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs'</code>
+
+<code>alias emacsclient='/Applications/MacPorts/Emacs.app/Contents/MacOS/bin/emacsclient'</code>
+
+For the OS X native (Cocoa) versions, once you've got !MacPorts installed, run
+
+   sudo port install emacs-app
+
+or (if you prefer a -- usually more recent-- development version)
+
+   sudo port install emacs-app-devel
+
+It's also possible to build the development version of GNU Emacs with ATSUI -- Apple Type Services for Unicode Imaging. 
+
+== Tips ==
+
+=== Visit Mac files with native Mac app in dired ===
+
+Use the shell mode. Make sure cursor is at the file, then type:
+! open <RET>
+
+=== Using the GUI Emacs.app from the command line. ===
+
+To debug-init:
+
+<pre>
+open /Applications/Emacs.app --args --debug-init
+</pre>
+
+To --debug-init if you installed the Emacs.app from Macports:
+
+<pre>
+open -a /Applications/MacPorts/Emacs.app --args --debug init
+</pre>
+
+To open a file from a terminal. This can be used in combination with the sudo command.
+
+<pre>
+open -a /Applications/Emacs.app <file-name> 
+</pre>
+
+As above but for when Emacs.app has been installed via MacPorts.
+<pre>
+open -a /Applications/MacPorts?Emacs.app <file-name> 
+</pre>
+
+=== Call Emacs from other programs ===
+
+Insert this into the .bash_profile file in your home directory:
+<pre>
+export EDITOR="/Applications/Emacs.app/Contents/MacOS/Emacs"
+</pre>
+Unlike "open -a", this command will open a new window, and won't terminate until you close the window (C-x C-c). So, the calling program will wait until you've finished editing, before it reads the file. For example, change control programs like git and svn will call emacs to edit your description of a change.
+
+=== Using Emacs.app from the Dock ===
+
+Create an app that runs a shell script that runs Emacs.app, like this: use Finder to navigate to /Applications and double-click [http://support.apple.com/kb/HT2488 Automator.app]. Select the document type "Application" and click "Choose". In the list on the left, select "Library". In the next list, find "Run Shell Script" and drag it into the workflow area on the right. In the new shell script, delete the text and replace it with:
+<pre>
+cd # Start in my home directory.
+# Use my environment:
+echo '/Applications/Emacs.app/Contents/MacOS/Emacs "$@"' | bash --login -s "$@"
+</pre>
+Select "Shell: /bin/bash" and "Pass input: as arguments". Click "File > Save..." and choose a name and location for your new app. For example, you might choose the /Applications directory and name the app "Emacs for Dock." Don't replace Emacs.app.
+
+If you like, you can change your new app's icon to match Emacs.app, like this: select Emacs.app and right-click "Get Info" or press cmd+i. In the info window, select the small icon in the top left corner and copy it (cmd+c). Next, select your new application, get its info, select the small icon and paste (cmd+v).
+
+Drag your new app into [http://support.apple.com/kb/HT2474 the Dock] as usual, and you're good to go.
+
+Your new app does two things that the Dock doesn't (on Mac OS 10.9).  The "cd" command causes emacs to start in your home directory, instead of the root directory "/".  The --login option gives emacs the same environment as an interactive [http://en.wikipedia.org/wiki/Terminal_(OS_X) Terminal]. In particular, it gives emacs your usual PATH environment variable, so you can run commands in emacs the same as commands in Terminal. An alternative to --login is -i, which sets the environment differently, as described in the [http://www.gnu.org/software/bash/manual/bashref.html#Bash-Startup-Files Bash reference manual].
+
+=== Use Alt/Option as Meta Key under terminal emulators ===
+
+For Terminal.app, starting from Snow Leopard: Go to  Preferences > Settings > Keyboard > Use option as meta key.
+
+For iTerm: Go to Manage Profiles > Keyboard profiles > (your profile) > Option Key as...
+
+If you want to use Option key for both international characters and [MetaKeyProblems Meta key] in Emacs, see [http://swissarmyhammer.wordpress.com/2010/06/07/osx-terminal-meta-key-national-characters/ this page] for iTerm 0.10.x patch and/or binary.
+
+Alt-b and Alt-f for navigating by word also works for your shell now.
+
+=== Call AppleScript from Emacs ===
+
+I use Andrew Choi's build of GNU Emacs at work every day on OS X. I keep some notes and some Lisp functions for calling AppleScript from Emacs in my advogato.org diary:
+
+http://advogato.org/person/wainstead/
+
+=== Encoding for Terminal.app on OS X  ===
+
+* UTF-8
+
+The OS X Terminal.app uses UTF-8 by default.  To get the correct behaviour from the Emacs that comes with OS X,
+I use the following settings in my InitFile file:
+
+    (set-terminal-coding-system 'utf-8)
+    (set-keyboard-coding-system 'utf-8)
+    (prefer-coding-system 'utf-8)
+
+you also can write accents like this C-x 8 ' character
+see C-x 8 C-h
+
+See UnicodeEncoding.
+
+This also works with XEmacs 21.5.9 and above, at least.
+
+* Ctrl-Up and Ctrl-Down in shell-mode
+
+In shell-mode, the [C-up] and [C-down] key-bindings do not work as expected to browse the history ring. The problem
+is that Terminal.app does not properly send these control sequences. To fix this behavior, open Terminal.app
+Preferences>>Settings>>Keyboard. Select the "+" button and you will see that you can add bindings to the "cursor down" 
+key with the "control" modifier. Select "send string to shell", and enter "ESCp", i.e., emacs M-p. Similarly,
+define control cursor up to send "ESCn" to the shell.
+
+=== Binding modifier keys ===
+
+The variables available for binding the modifier keys: 
+<pre>
+mac-function-modifier
+mac-control-modifier
+mac-command-modifier
+mac-option-modifier
+mac-right-command-modifier
+mac-right-control-modifier
+mac-right-option-modifier
+</pre>
+
+values can be <code>'control, 'alt, 'meta, 'super, 'hyper, nil</code> (setting to nil allows the OS to assign values)
+
+Also see http://lists.gnu.org/archive/html/help-gnu-emacs/2011-02/msg00019.html
+
+example usage:
+<pre>
+;; key bindings
+(when (eq system-type 'darwin) ;; mac specific settings
+  (setq mac-option-modifier 'alt)
+  (setq mac-command-modifier 'meta)
+  (global-set-key [kp-delete] 'delete-char) ;; sets fn-delete to be right-delete
+  )
+</pre>
+
+=== Emacs keybindings in Cocoa Apps ===
+
+This information does not regard the actual use of emacs, but I think many people will be happy to find out that some cursor movement / text editing keybindings can be used in Cocoa Apps. If you ever happen to use any other application on your Mac ... You can also set up additional keybindings as described in [http://developer.apple.com/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html this document].
+
+http://www.lorax.com/FreeStuff/TextExtras.html provides additional Emacs like features to every Cocoa application like alt-/ completion
+
+=== Emacs keybindings in Terminal ===
+
+[new]
+So control-s is just beeping at me in emacs in the Mac OS X Terminal (10.4) on my home machine but works fine on 10.2 on my work machine -- what gives?  I've looked into the flow control tty issue and tried to disable it -- still emacs just sits there beeping.  M-x save-buffers and M-x isearch gets to be a pain.  Any hints for the Mac OS X Terminal?
+[new]
+: I don't know the answer to this, but the fact that it is beeping means that Emacs is probably getting it and just not understanding it. If it had anything to do with flow control, you wouldn't get even beeping. -- JonathanArnold
+: this can be caused by checking the "speak selected text when the key is pressed" in the "Speech" control panel/sysprefs. The default key is ctrl-s. -- JeremyLeipzig
+
+[new]
+Say I want to run the function "forward-sexp" bound to C-M-f. I *should* be able to get at it with "hold ctrl, hold alt, hit f". However, if I actually do that I get the
+result of the command forward-word (M-f). To actually get forward-sexp I must "hit esc, hold ctrl, hit f". However the alt key works fine as meta for things like M-x and basically anything that doesn't also require ctrl. Anyone know how to fix this? (This is using Terminal.app on 10.4.9 btw).
+
+[new]
+: iTerm sends C-M-keys and mouse events.  Remote emacsen run for months via iTerm + ssh + [[screen]].
+Any volunteers to hack C-M- and mouse input into Terminal.app with GDB and Objective-C?
+
+See the following [http://andrewmcdermott.blogspot.com/2009/11/cmd-key-happy-swap-cmdalt-keys-in.html
+ blog post] for swapping the cmd and meta key. Also, if you want to retain one of the Option key functions as modifier for national characters, see [http://swissarmyhammer.wordpress.com/2010/06/07/osx-terminal-meta-key-national-characters/ this] page for iTerm patch and/or binary.
+
+[new]
+: Terminals on most operating systems (including Terminal.app) have a very limited set of keys that they send to applications. Rarely will they send C-M-keys to the app.  For this and several other reasons I recommend running Emacs as a full app, not inside a terminal, except for quick changes.  You can use Esc C-f in a pinch but it's not as efficient as M-C-f.
+
+[new]
+: C-M-f binding is processed properly in Leopard's Terminal.app. I filed a bug-report with Apple when running Tiger and actually received an email reply telling me this would be fixed in Leopard (which it was).
+
+=== Emacs Keybindings under X11 ===
+
+See the following blog post for using alt as your meta key:
+
+http://tylerkieft.com/archives/2006/10/05/redefine-the-x11-meta-key-in-mac-os-x/
+
+=== Maximize Emacs 23.3 and 24+ in Mac OS X Lion ===
+
+Fullscreen mode is not offered in either 23.3 or 24+.  In trying to adapt the "maximize-frame" function below I inadvertently discovered that if one uses the maximize control button once the frame is maximized vertically, twice the frame is maximized both vertically and horizontally and three times results in the frame restored to its original size.  Good enough for me!
+
+-pmr
+
+You can also use Right Zoom ( http://www.macupdate.com/app/mac/30591/right-zoom ) with 
+
+-dwd
+
+=== Enable / Disable Anti-Aliasing ===
+To turn on/off anti-aliasing, use the following commands. By default, anti-aliasing is on.
+
+ (setq mac-allow-anti-aliasing t)    ;; turn on anti-aliasing (default)
+ (setq mac-allow-anti-aliasing nil)  ;; turn off anti-aliasing
+
+For Emacs >= 24.4 and OS X >= 10.5, the default font backend has changed,
+and no longer supports these commands. The old backend can be used instead
+by running the following command in Terminal.app.
+
+ $ defaults write org.gnu.Emacs FontBackend ns
+
+The commands will then work normally.
+
+Another option is to use the following defaults command, which has some effect,
+but not as much as using the previous method.
+
+ defaults write org.gnu.Emacs AppleAntiAliasingThreshold 100
+
+To reverse the changes, use
+
+ defaults delete org.gnu.Emacs AppleAntiAliasingThreshold
+
+
+== Hacking on the Sources ==
+
+The section is meant to collect useful hacks to the C sources (or to Lisp sources that are executed before any init files are read, such as ##startup.el##).
+
+=== True fullscreen for the Cocoa build in Emacs 23 ===
+
+This fork has patches for true fullscreen and it works wonderfully.
+
+<pre>
+$ git clone git://github.com/typester/emacs.git
+$ cd emacs
+$ ./configure --with-ns
+$ make bootstrap
+$ make install
+$ mv nextstep/Emacs.app /Applications
+</pre>
+
+<pre>
+(global-set-key (kbd "M-RET") 'ns-toggle-fullscreen)
+</pre>
+
+[http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html Source]
+
+ 
+=== Changing the Scrollbar Appearance ===
+
+The size of the "knob" in a given window's scrollbar is proportional to how much of the buffer is displayed in the window.  When the whole buffer is displayed in the window, the knob takes up the entire scrollbar.  I find this distracting (not too mention aesthetically objectionable), and much prefer the behavior of applications like iTerm that show an empty scrollbar slot in such cases.  
+
+You can get that effect in Emacs by making a small change to src/nsterm.m.   Look for this bit of code:
+
+<pre>
+- setPosition: (int)position portion: (int)portion whole: (int)whole
+{
+  NSTRACE (setPosition);
+
+  em_position = position;
+  em_portion = portion;
+  em_whole = whole;
+
+  if (portion >= whole)
+    [self setFloatValue: 0.0 knobProportion: 1.0];
+  else
+    {
+      float pos, por;
+      portion = max ((float)whole*min_portion/pixel_height, portion);
+      pos = (float)position / (whole - portion);
+      por = (float)portion/whole;
+      [self setFloatValue: pos knobProportion: por];
+    }
+  return self;
+}
+</pre>
+
+and replace it with:
+
+<pre>
+- setPosition: (int)position portion: (int)portion whole: (int)whole
+{
+  NSTRACE (setPosition);
+
+  em_position = position;
+  em_portion = portion;
+  em_whole = whole;
+
+  if (portion >= whole)
+    [self setEnabled:NO];
+  else
+    {
+      if (![self isEnabled])
+        {
+          [self setEnabled:YES];
+        }
+      float pos, por;
+      portion = max ((float)whole*min_portion/pixel_height, portion);
+      pos = (float)position / (whole - portion);
+      por = (float)portion/whole;
+      [self setFloatValue: pos knobProportion: por];
+    }
+  return self;
+}
+</pre>
+
+A further change is to have the knob be of constant, minimal size, so that it only indicates position in the buffer, instead of changing size according to the portion of the buffer displayed in the window (I find the variable sizes distracting).  To do this, use the replacement code:
+
+<pre>
+- setPosition: (int)position portion: (int)portion whole: (int)whole
+{
+  NSTRACE (setPosition);
+
+  em_position = position;
+  em_portion = portion;
+  em_whole = whole;
+
+  if (portion >= whole)
+    [self setEnabled:NO];
+  else
+    {
+      if (![self isEnabled])
+        {
+          [self setEnabled:YES];
+        }
+      float pos;
+      portion = max ((float)whole*min_portion/pixel_height, portion);
+      pos = (float)position / (whole - portion);
+      [self setFloatValue: pos knobProportion: 0];
+    }
+  return self;
+}
+</pre>
+
+------
+CategoryPorts CategoryBuilding 
