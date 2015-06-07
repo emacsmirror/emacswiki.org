@@ -51,10 +51,10 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 
 * [[CategoryAccessibility|Accessibility]] -- how Emacs can make a computer more accessible; health issues
 * [[CategoryBookmarking|Bookmarking]] -- setting persistent locations and returning to them
-* [[CategoryBufferSwitching|BufferSwitching]] -- switching among different [[buffer]]s
+* [[CategoryBufferSwitching|BufferSwitching]] -- switching among different [[buffer|buffers]]
 * [[CategoryCommands|Commands]] -- invoking and defining Emacs [[command|commands]], `M-x'
 * [[CategoryComparing|Comparing]] -- Comparing, diffing and merging text, including code
-* [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other [[buffer]]s
+* [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other[[buffer|buffers]]
 * [[CategoryDisplay|Display]] -- how emacs displays information ([[frame|frames]], [[face|faces]], fonts...)
 ** [[CategoryFaces|Faces]] -- text appearance: highlighting, colors, font-lock, syntax-driven highlighting
 ** [[CategoryFrames|Frames]] -- [EmacsWiki:frame frames] (what the OS would usually call "windows")
@@ -74,7 +74,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryKeys|Keys]] -- understanding and customizing [[key]] bindings ("keyboard shortcuts")
 * [[CategoryMouse|Mouse]] -- mouse bindings and different uses of the mouse
 * [[CategoryModes|Modes]] -- various [[MajorMode|editing modes]] provided in Emacs
-** [[CategoryESS|ESS]] -- Emacs Speaks Statistics
+** [[CategoryESS|ESS]] -- Emacs Speaks Statistics: R, Julia, Stata, S, SAS
 ** [[CategoryHypermedia|Hypermedia]] -- creating and using hypertext: HTML, [[MarkdownMode|Markdown]], Emacs [[Info]], wikis
 ** [[CategoryTables|Tables]] -- working with tabular data
 ** [[CategoryTex|Tex]] -- !TeX and !LaTeX editing
@@ -87,10 +87,10 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryPrinting|Printing]] -- printing files, [[buffer|buffers]], the [[region]] ...
 * [[CategoryProject|Project Organization]] -- navigating, visualizing, managing software projects
 * [[CategoryProgramming|Programming]] -- using Emacs as a development environment
-* [[CategoryRegexp|Regexp]] -- defining and using [[regular expression]]s
+* [[CategoryRegexp|Regexp]] -- defining and using [[regular expression|regular expressions]]
 * [[CategorySearchAndReplace|SearchAndReplace]] - searching and replacing text, including [[regexp]] search
 * [[CategoryWriting|Writing]] -- using Emacs as a prose text editor
-* [[CategoryCustomize|Customize]] -- customizing Emacs with the "easy customizing" feature, '''Customize'''
+* [[CategoryCustomize|Customize]] -- customizing Emacs with the "easy customizing" feature `Customize'
 
 
 
@@ -99,7 +99,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 
 * [[CategoryCalculators|Calculators]] -- math operations
 ** [[CategoryFinancial|Financial]] -- money management and accounting
-* [[CategoryCalendar|Calendar]] -- calendar, diary, task (appointment) reminders
+* [[CategoryCalendar|Calendar]] -- calendar, diary, task and appointment reminders
 ** [[CategoryTodo|Todo]] -- maintaining to-do lists
 ** [[CategoryTimeTracking|TimeTracking]] -- tracking your time spent
 * [[CategoryEducation|Education]] -- learn something new, use a dictionary, or grade students
@@ -109,7 +109,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 ** [[CategoryCryptography|Cryptography]] -- encrypt and decrypt files you edit
 ** [[CategoryShell|Shell]] -- interact with a shell inside Emacs
 * [[CategoryEshell|Eshell]] -- a cross-platform shell implemented entirely in EmacsLisp
-* [[CategoryVersionControl|VersionControl]] -- using configuration-control (source-control) systems in Emacs (GIT, CVS, RCS, SCCS,...)
+* [[CategoryVersionControl|VersionControl]] -- using version-control systems in Emacs (Git, Mercurial, SVN...)
 * [[CategoryDatabase|Databases]] -- databases in Emacs
 * [[CategoryGames|Games]] -- play in Emacs
 * [[CategoryInterface|Interface]] -- accessing web services
