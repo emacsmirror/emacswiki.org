@@ -16,6 +16,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * BisonMode
 * BooMode
 * CamlMode -- ObjectiveCaml
+* CobolMode -- I'm so sorry
 * CPerlMode -- improved PerlMode
 * CcMode -- C, C++ (cpp), Objective C, Java, etc.
 * CEldocMode -- display the arguments of C functions while programming
