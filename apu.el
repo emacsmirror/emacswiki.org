@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun  7 01:07:09 2015 (-0700)
+;; Last-Updated: Sun Jun  7 02:08:49 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 514
+;;     Update #: 516
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -229,7 +229,7 @@ performance is impacted."
 (defvar apu-latest-pattern-set ()
   "Latest set of patterns used for matching by `apu-chars'.")
 
-(defvar apu--match-type 'MATCH-WORDS-AS-SUBSTRINGS ; @@@ GLOBAL
+(defvar apu--match-type 'MATCH-WORDS-AS-SUBSTRINGS
   "How the current `apu-char*' command matches a word-list pattern.
 This has no effect when the current input pattern is a regexp.
 
@@ -242,6 +242,16 @@ Any other value acts like `MATCH-WORDS-AS-SUBSTRINGS'")
 
 (defvar apu--orig-buffer nil
   "Buffer current when `apu-chars' was last invoked.")
+
+;; A buffer where `apu-chars*' is invoked can have multiple list buffers, which show matches for
+;; different sets of patterns.  `apu--pattern' is local to the list buffer that shows the matches.
+(defvar apu--pats+bufs ()
+  "Alist of patterns and their list buffers.
+Each entry has form (PATTERN . BUFFER), where
+the buffer-local value of `apu--patterns' in BUFFER is PATTERN.")
+
+(defvar apu--refresh-p nil
+  "Non-nil means that `apu-tablist-entries' recomputes matches.")
 
 ;;; Buffer-local variables -------------------------------------------
 
@@ -270,20 +280,10 @@ Default value is from `apu-match-words-exactly-flag'.")
 (make-variable-buffer-local 'apu--match-words-exactly)
 (put 'apu--match-words-exactly 'permanent-local t)
 
-;; A buffer where `apu-chars*' is invoked can have multiple list buffers, which show matches for
-;; different sets of patterns.  `apu--pattern' is local to the list buffer that shows the matches.
-(defvar apu--pats+bufs ()
-  "Alist of patterns and their list buffers.
-Each entry has form (PATTERN . BUFFER), where
-the buffer-local value of `apu--patterns' in BUFFER is PATTERN.")
-
 (defvar apu--patterns ()
   "Patterns currently used by `apropos-unicode' to match Unicode chars.")
 (make-variable-buffer-local 'apu--patterns)
 (put 'apu--patterns 'permanent-local t)
-
-(defvar apu--refresh-p nil
-  "Non-nil means that `apu-tablist-entries' recomputes matches.")
 
 ;;; Commands ---------------------------------------------------------
 
