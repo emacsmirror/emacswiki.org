@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun  6 16:33:40 2015 (-0700)
+;; Last-Updated: Sat Jun  6 18:45:04 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9031
+;;     Update #: 9035
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -622,7 +622,8 @@
 ;;
 ;; 2015/06/06 dadams
 ;;     Added dired-other-(frame|window).
-;;     diredp-font-lock-keywords-1: Use dired-re-maybe-mark and dired-re-inode-size for permission matchings.
+;;     diredp-font-lock-keywords-1:
+;;       Use dired-re-maybe-mark and dired-re-inode-size for permission matchings and directory names.
 ;;     dired(-other-(frame|window)) advice:
 ;;       Add interactive spec, to handle arg <= 0 (broken by change to dired-read-dir-and-switches 2015/02/02).
 ;;     diredp-dired-for-files: Typo: pass empy string.
@@ -4195,10 +4196,9 @@ This means the `.' plus the file extension.  Example: `.zip'."
    ;; See comment for `directory-listing-before-filename-regexp' in `files.el' or `files+.el'.
    '("\\(\\([0-9]+\\([.,][0-9]+\\)?\\)[BkKMGTPEZY]? \\)" 1 diredp-number)
 
-   ;; Directory names
-   (list "^..\\([0-9]* \\)*d[^:]"       ; Exclude d:/..., Windows drive letter in a dir heading.
-         (list dired-move-to-filename-regexp nil nil)
-         (list "\\(.+\\)" nil nil '(0 diredp-dir-priv t t)))
+   ;; Directory names - exclude d:/..., Windows drive letter in a dir heading.
+   (list (concat dired-re-maybe-mark dired-re-inode-size "d[^:]")
+         (list dired-move-to-filename-regexp nil nil) (list "\\(.+\\)" nil nil '(0 diredp-dir-priv t t)))
 
    (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]........\\(x\\)") ; o x
 	 '(1 diredp-exec-priv))
