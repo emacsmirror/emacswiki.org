@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 26 10:47:46 2015 (-0700)
+;; Last-Updated: Sun Jun  7 01:07:09 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 506
+;;     Update #: 514
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -63,9 +63,9 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `apropos-unicode', `apu-char-codepoint-at-point',
-;;    `apu-char-name-at-point', `apu-chars',
-;;    `apu-chars-matching-full-words',
+;;    `apropos-char', `apropos-unicode',
+;;    `apu-char-codepoint-at-point', `apu-char-name-at-point',
+;;    `apu-chars', `apu-chars-matching-full-words',
 ;;    `apu-chars-matching-two-or-more-words',
 ;;    `apu-chars-matching-words-as-substrings', `apu-chars-narrow',
 ;;    `apu-chars-next-match-method', `apu-copy-char-at-point-as-kill',
@@ -108,6 +108,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/06/07 dadams
+;;     Added apropos-char (another alias for apu-chars).
 ;; 2015/05/26 dadams
 ;;     Added (forgot): defvars for apu--pats+bufs, apu--refresh-p.
 ;; 2015/05/17 dadams
@@ -545,6 +547,8 @@ Non-nil POSITION means use the character at POSITION."
 ;;;###autoload
 (defalias 'apropos-unicode 'apu-chars)
 ;;;###autoload
+(defalias 'apropos-char 'apu-chars)
+;;;###autoload
 (defun apu-chars ()
   "Show all Unicode chars whose names match PATTERN.
 PATTERN is as for command `apropos': a word, a list of words
@@ -691,7 +695,7 @@ CHAR, NAME, DEC, and HEX are strings."
       (setq apu--matches  (cons max-char chars+codes)))))
 
 (defun apu-filter (pattern chars+codes)
-  "Try to match PATTERN agains each element of alist CHARS+CODES.
+  "Try to match PATTERN against each element of alist CHARS+CODES.
 PATTERN is as for `apu-chars'.
 CHARS+CODES has the same form as `ucs-names'.
 If CHARS+CODES is nil then match against `ucs-names'."
@@ -754,8 +758,9 @@ PATTERN is assumed not to contain any regexp special characters."
     (ignore-errors (string-match-p pattern (car char+code)))))
 
 (defun apu-sort-char (entry1 entry2)
-  "Return non-nil if ENTRY1 > ENTRY2.
-Each is a string representation of a number."
+  "Return t if the char code of ENTRY1 is greater than that of ENTRY2.
+Each arg has the form of the elements of `tabulated-list-entries'.
+The car of each arg is the character codepoint, which is compared."
   (> (car entry1) (car entry2)))
 
 ;; Same as `icicle-remove-if-not' etc.
