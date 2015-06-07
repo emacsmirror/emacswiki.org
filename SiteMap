@@ -69,21 +69,19 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 ** [[CategorySpelling|Spelling]] -- spell-checking
 ** [[CategoryTemplates|Templates]] -- using boilerplate text and snippets (file headers, templates, forms)
 ** [[CategoryUndo|Undo]] -- undoing, redoing and finding changes
-* [[CategoryFiles|Files]] -- files and directories: local, remote, backup
-** [[CategoryDirectories|Directories]] -- '''Dired''' and operating on files and directories (folders)
-* [[CategoryHideStuff|HideStuff]] -- hiding parts of a [[buffer]]
-** [[CategoryOutline|Outline]] -- hiding structural parts of text: outlining and folding
+* [[CategoryFiles|Files]] -- files and directories: local, remote, backup. (see also [[CategoryDirectories|Directories]] and DiredMode)
 * [[CategoryInternationalization|Internationalization]] -- natural language support, character sets
 * [[CategoryKeys|Keys]] -- understanding and customizing [[key]] bindings ("keyboard shortcuts")
-** [[CategoryMouse|Mouse]] -- mouse bindings and different uses of the mouse
+* [[CategoryMouse|Mouse]] -- mouse bindings and different uses of the mouse
 * [[CategoryModes|Modes]] -- various [[MajorMode|editing modes]] provided in Emacs
 ** [[CategoryESS|ESS]] -- Emacs Speaks Statistics
 ** [[CategoryHypermedia|Hypermedia]] -- creating and using hypertext: HTML, [[MarkdownMode|Markdown]], Emacs [[Info]], wikis
 ** [[CategoryTables|Tables]] -- working with tabular data
 ** [[CategoryTex|Tex]] -- !TeX and !LaTeX editing
-** [[ProgrammingModes|Programming Modes]] many programming modes (C-family, Python, Haskell, COBOL, you name it...)
+** [[ProgrammingModes|Programming Modes]] programming modes (C-family, Python, Haskell, COBOL, [[BrainFuck]], you name it)
 ** [[CategoryXML|XML]] -- XML technologies
 * [[CategoryMenus|Menus]] -- Emacs menus, ([[menu bar]] and popup)
+* [[CategoryOutline|Outline]] -- hiding structural parts of text: outlining and folding (see also [[CategoryHideStuff|HideStuff]])
 * [[CategoryPaths|Paths]] -- how to specify OS paths in Emacs
 * [[CategoryPersistence|Persistence]] -- saving state between Emacs sessions
 * [[CategoryPrinting|Printing]] -- printing files, [[buffer|buffers]], the [[region]] ...
