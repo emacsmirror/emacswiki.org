@@ -29,11 +29,11 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 
 * EmacsNewbie -- basic concepts, vocabulary, notation used in documentation
 * [[CategoryDocumentation|Documentation]] -- Emacs is self-documenting and helpful
-* [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to execute EmacsLisp code snippets you'll find here
 * [[CategoryHelp|Help]] -- online help from Emacs itself and its users
 * [[CategoryGlossary|Glossary]] -- Emacs terminology
 * LearningEmacs -- there are lots of ways to learn Emacs, and lots of aids to learning
 * LearnEmacsLisp -- EmacsLisp is not just the language that most of Emacs is implemented in. It '''''is''''' Emacs. 
+* [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to execute EmacsLisp code snippets you'll find here
 * EmacsNiftyTricks -- some extra tips
 * RandomPage -- for serendipitous visitors
 
@@ -55,6 +55,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryCommands|Commands]] -- invoking and defining Emacs [[command|commands]], `M-x'
 * [[CategoryComparing|Comparing]] -- Comparing, diffing and merging text, including code
 * [[CategoryCompletion|Completion]] -- completing text in the [[minibuffer]] or other[[buffer|buffers]]
+* [[CategoryCustomize|Customize]] -- customizing Emacs with the "easy customizing" feature `Customize'
 * [[CategoryDisplay|Display]] -- how emacs displays information ([[frame|frames]], [[face|faces]], fonts...)
 ** [[CategoryFaces|Faces]] -- text appearance: highlighting, colors, font-lock, syntax-driven highlighting
 ** [[CategoryFrames|Frames]] -- [EmacsWiki:frame frames] (what the OS would usually call "windows")
@@ -70,6 +71,9 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 ** [[CategoryTemplates|Templates]] -- using boilerplate text and snippets (file headers, templates, forms)
 ** [[CategoryUndo|Undo]] -- undoing, redoing and finding changes
 * [[CategoryFiles|Files]] -- files and directories: local, remote, backup. (see also [[CategoryDirectories|Directories]] and DiredMode)
+* [[CategoryHideStuff|HideStuff]] -- hiding parts of a [[buffer]], including 
+[[CategoryOutline|outlining]] and folding
+
 * [[CategoryInternationalization|Internationalization]] -- natural language support, character sets
 * [[CategoryKeys|Keys]] -- understanding and customizing [[key]] bindings ("keyboard shortcuts")
 * [[CategoryMouse|Mouse]] -- mouse bindings and different uses of the mouse
@@ -81,7 +85,6 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 ** [[ProgrammingModes|Programming Modes]] programming modes (C-family, Python, Haskell, COBOL, [[BrainFuck|you name it!]])
 ** [[CategoryXML|XML]] -- XML technologies
 * [[CategoryMenus|Menus]] -- Emacs menus, ([[menu bar]] and popup)
-* [[CategoryOutline|Outline]] -- hiding structural parts of text: outlining and folding (see also [[CategoryHideStuff|HideStuff]])
 * [[CategoryPaths|Paths]] -- how to specify OS paths in Emacs
 * [[CategoryPersistence|Persistence]] -- saving state between Emacs sessions
 * [[CategoryPrinting|Printing]] -- printing files, [[buffer|buffers]], the [[region]] ...
@@ -90,27 +93,24 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryRegexp|Regexp]] -- defining and using [[regular expression|regular expressions]]
 * [[CategorySearchAndReplace|SearchAndReplace]] - searching and replacing text, including [[regexp]] search
 * [[CategoryWriting|Writing]] -- using Emacs as a prose text editor
-* [[CategoryCustomize|Customize]] -- customizing Emacs with the "easy customizing" feature `Customize'
+
 
 
 
 [:ExternalPrograms]
 ==Applications within Emacs==
 
+* [[CategoryArtificialIntelligence|ArtificialIntelligence]] -- Emacs-based AI and expert systems.
 * [[CategoryCalculators|Calculators]] -- math operations
 ** [[CategoryFinancial|Financial]] -- money management and accounting
 * [[CategoryCalendar|Calendar]] -- calendar, diary, task and appointment reminders
 ** [[CategoryTodo|Todo]] -- maintaining to-do lists
 ** [[CategoryTimeTracking|TimeTracking]] -- tracking your time spent
+* [[CategoryCryptography|Cryptography]] -- encrypt and decrypt files you edit
+* [[CategoryDatabase|Databases]] -- databases in Emacs
 * [[CategoryEducation|Education]] -- learn something new, use a dictionary, or grade students
 * [[CategoryEmulation|Emulation]] -- emulating environments of other systems and software in Emacs
 * [[CategoryExternalUtilities|ExternalUtilities]] -- using external utilities other than programming
-** [[CategoryArtificialIntelligence|ArtificialIntelligence]] -- Emacs-based AI and expert systems.
-** [[CategoryCryptography|Cryptography]] -- encrypt and decrypt files you edit
-** [[CategoryShell|Shell]] -- interact with a shell inside Emacs
-* [[CategoryEshell|Eshell]] -- a cross-platform shell implemented entirely in EmacsLisp
-* [[CategoryVersionControl|VersionControl]] -- using version-control systems in Emacs (Git, Mercurial, SVN...)
-* [[CategoryDatabase|Databases]] -- databases in Emacs
 * [[CategoryGames|Games]] -- play in Emacs
 * [[CategoryInterface|Interface]] -- accessing web services
 ** [[CategoryChatClient|ChatClient]] -- using Emacs for chatting
@@ -125,6 +125,8 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryProgrammerUtils|ProgrammerUtils]] -- tools for programmers (e.g. code browsers)
 * [[CategoryRelated|Related]] -- Emacs environments run in other programs (browsers, terminal emulators,...)
 * [[CategoryRemoteEmacs|RemoteEmacs]] -- running Emacs on a remote host
+* [[CategoryShell|Shell]] -- interact with a shell inside Emacs, including  [[CategoryEshell|eshell]], a cross-platform shell implemented in EmacsLisp
+* [[CategoryVersionControl|VersionControl]] -- using version-control systems in Emacs (Git, Mercurial, SVN...)
 * [[CategoryWebBrowser|WebBrowser]] -- browsing Web files and sites
 
 
