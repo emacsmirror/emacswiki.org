@@ -1228,6 +1228,29 @@ the many other methods provided by Gnus.
 [2] See the chapter on key bindings; maybe you need a `require'
 statement.
 
+== Multiple Mailboxes (using multiple From: headers) ==
+[code]
+(setq my-email-addresses '("user@gmail.com"
+			   "user@domain.net"
+                           "user@work.com"
+                           "user@isp.com"
+			   "user@communitygroup.org"))
+
+;; Gnus from manipulation
+(setq gnus-from-selected-index 0)
+(defun gnus-loop-from ()
+  (interactive)
+  (setq gnus-article-current-point (point))
+  (goto-char (point-min))
+  (if (eq gnus-from-selected-index (length my-email-addresses))
+      (setq gnus-from-selected-index 0) nil)
+  (while (re-search-forward "^From:.*$" nil t)
+    (replace-match (concat "From: " user-full-name " <" (nth gnus-from-selected-index my-email-addresses) ">")))
+  (goto-char gnus-article-current-point)
+  (setq gnus-from-selected-index (+ gnus-from-selected-index 1)))
+
+(global-set-key (kbd "C-c f") 'gnus-loop-from)
+[/code]
 
 == Reading articles ==
 
