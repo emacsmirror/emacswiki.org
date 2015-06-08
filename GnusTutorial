@@ -1235,6 +1235,8 @@ statement.
                            "user@work.com"
                            "user@isp.com"
 			   "user@communitygroup.org"))
+(setq message-alternative-emails
+      (regexp-opt my-email-addresses))
 
 ;; Gnus from manipulation
 (setq gnus-from-selected-index 0)
