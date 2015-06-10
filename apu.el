@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jun  9 18:34:14 2015 (-0700)
+;; Last-Updated: Wed Jun 10 15:49:22 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 603
+;;     Update #: 612
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -98,7 +98,7 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `apu-char-at-point', `apu-char-displayable-p', `apu-char-here',
-;;    `apu-char-name-here', `apu-char-string-here',
+;;    `apu-char-name', `apu-char-name-here', `apu-char-string-here',
 ;;    `apu-chars-read-pattern-arg', `apu-compute-matches',
 ;;    `apu-copy-char-to-second-sel', `apu-filter',
 ;;    `apu-full-word-match', `apu-make-tablist-entry',
@@ -118,6 +118,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/06/10 dadams
+;;     Added: apu-char-name.
+;;     apu-tablist-match-entries:
+;        Fixed regression from yesterday: use only cdrs - apu-make-tablist-entry takes only a CHAR.
 ;; 2015/06/09 dadams
 ;;     Added: apu-chars-in-region (aka describe-chars-in-region), apu-print-chars, apu--unnamed-chars.
 ;;     Renamed: apu-print to apu-print-apropos-matches,
@@ -736,7 +740,7 @@ Simple tips for matching some common Unicode character names:
   "Function value for `tabulated-list-entries'.
 See `apu-make-tablist-entry'."
   (when apu--refresh-p (apu-compute-matches))
-  (mapcar #'apu-make-tablist-entry (cdr apu--matches)))
+  (mapcar #'apu-make-tablist-entry (mapcar #'cdr (cdr apu--matches))))
 
 (defun apu-make-tablist-entry (char)
   "Return a tablist entry for CHAR, a Unicode code point.
@@ -751,11 +755,17 @@ GLYPH, NAME, DEC, and HEX are strings.
 
 If CHAR is not recognized then it is added to the buffer-local list
 `apu--unnamed-chars'.  This list of chars is then displayed."
-  (let ((name  (or (get-char-code-property char 'name)  (get-char-code-property char 'old-name))))
+  (let ((name  (apu-char-name char)))
     (if name
         (list char (vector (char-to-string char) name (format "%6d" char) (format "%#8x" char)))
       (push char apu--unnamed-chars)
       nil)))
+
+(defun apu-char-name (character)
+  "Return the name of CHARACTER, or nil if it has no name.
+This is Unicode property `name' if there is one, or property
+`old-name' if not, or nil if neither."
+  (or (get-char-code-property character 'name)  (get-char-code-property character 'old-name)))
 
 (defun apu-compute-matches ()     ; Invoked in the list-output buffer.
   "Compute matches for apropos Unicode commands."
@@ -765,21 +775,21 @@ If CHAR is not recognized then it is added to the buffer-local list
     (ucs-names)
     (let* ((case-fold-search  t)
            (max-char          0)
-           (chars+codes       ()))
+           (names+codes       ()))
       (dolist (pat  patterns)
-        (setq chars+codes  (apu-filter pat chars+codes))
+        (setq names+codes  (apu-filter pat names+codes))
         (when apu-match-only-displayable-chars-flag
-          (setq chars+codes  (apu-delete-if-not #'apu-char-displayable-p chars+codes)))
-        (unless chars+codes (error "No characters match `%S'" patterns)))
-      (dolist (char+code  chars+codes) (setq max-char  (max max-char (string-width (car char+code)))))
+          (setq names+codes  (apu-delete-if-not #'apu-char-displayable-p names+codes)))
+        (unless names+codes (error "No characters match `%S'" patterns)))
+      (dolist (char+code  names+codes) (setq max-char  (max max-char (string-width (car char+code)))))
       (message "Matching `%s'...done" patterns)
-      (setq apu--matches  (cons max-char chars+codes)))))
+      (setq apu--matches  (cons max-char names+codes)))))
 
-(defun apu-filter (pattern chars+codes)
-  "Try to match PATTERN against each element of alist CHARS+CODES.
+(defun apu-filter (pattern names+codes)
+  "Try to match PATTERN against each element of alist NAMES+CODES.
 PATTERN is as for `apropos-char'.
-CHARS+CODES has the same form as `ucs-names'.
-If CHARS+CODES is nil then match against `ucs-names'."
+NAMES+CODES has the same form as `ucs-names'.
+If NAMES+CODES is nil then match against `ucs-names'."
   (let ((match-fn  (if (eq apu--match-type 'MATCH-WORDS-EXACTLY)
                        #'apu-full-word-match
                      #'apu-substring-match)))
@@ -787,11 +797,11 @@ If CHARS+CODES is nil then match against `ucs-names'."
          (require 'apropos) ; `apropos-parse-pattern', `apropos-regexp'.
          (let ((apropos-synonyms  apu-synonyms)) (apropos-parse-pattern pattern))
          (apu-remove-if-not (apply-partially #'apu-substring-match apropos-regexp)
-                            (or chars+codes  ucs-names)))
+                            (or names+codes  ucs-names)))
         (t ; List of words, to be matched as full words or substrings.
          (let ((chs+cds  ())
                (first    (car pattern)))
-           (dolist (c.c  (or chars+codes  ucs-names))
+           (dolist (c.c  (or names+codes  ucs-names))
              (when (funcall match-fn first c.c) (push c.c chs+cds)))
            (dolist (word  (cdr pattern))
              (setq chs+cds  (apu-delete-if-not (apply-partially match-fn word) chs+cds)))
@@ -813,7 +823,7 @@ You are prompted for the PATTERN, which is as for `apropos-char'."
         (kill-buffer (format "*`%S' Matches*" apu--patterns)))))
   (rename-buffer (format "*`%S' Matches*" apu--patterns))
   (let ((case-fold-search  t)
-        (orig-chars+codes  (cdr apu--matches))
+        (orig-names+codes  (cdr apu--matches))
         (max-char          0)
         (match-fn          (if (eq apu--match-type 'MATCH-WORDS-EXACTLY)
                                #'apu-full-word-match
