@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun  7 02:08:49 2015 (-0700)
+;; Last-Updated: Tue Jun  9 18:34:14 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 516
+;;     Update #: 603
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -29,13 +29,20 @@
 ;;
 ;;    Apropos Unicode characters.
 ;;
-;;  Command `apropos-unicode' shows you the Unicode characters that
-;;  match an apropos pattern you specify: a regexp or a
-;;  space-separated list of words.  The characters whose names match
-;;  are shown in a help buffer, along with the names and code points
-;;  (decimal and hex).
+;;  Command `apropos-char' (aka `apropos-unicode', aka `apu-chars')
+;;  describes the Unicode characters that match an apropos pattern you
+;;  specify: a regexp or a space-separated list of words.  The
+;;  characters whose names match are shown in a help buffer, along
+;;  with the names and code points (decimal and hex).
 ;;
-;;  In the help buffer, you can use these keys to act on the character
+;;  Command `describe-chars-in-region' (aka `apu-chars-in-region')
+;;  shows describes the Unicode characters that are in the region.  By
+;;  default, it shows each distinct character only once.  With a
+;;  prefix argument it has a line describing each occurrence of each
+;;  character.
+;;
+;;  For each of these commmands, in the help buffer describing the
+;;  characters you can use these keys to act on the character
 ;;  described on the current line:
 ;;
 ;;   * `RET' or `mouse-2' - see detailed information about it.
@@ -50,20 +57,21 @@
 ;;   * `C-y' - copy it to the `kill-ring'.
 ;;   * `M-y' - copy it to the secondary selection.
 ;;
-;;  You can use options `apu-match-words-exactly-flag' and
+;;  You can sort the list of matches by any of the columns, up or
+;;  down, by clicking its heading.
+;;
+;;  For command `apropos-unicode', you can use options
+;;  `apu-match-words-exactly-flag' and
 ;;  `apu-match-two-or-more-words-flag' to specify your preference for
 ;;  the kind of word matching to use by default.  You can match each
 ;;  word or only any two or more words.  If matching each word, you
 ;;  can match them as substrings or as full words.  You can use `C-c
 ;;  n' to refresh the matches, cycling among these word-match methods.
 ;;
-;;  You can sort the list of matches by any of the columns, up or
-;;  down, by clicking its heading.
-;;
 ;;
 ;;  Commands defined here:
 ;;
-;;    `apropos-char', `apropos-unicode',
+;;    `apropos-char', `apu-chars-in-region', `apropos-unicode',
 ;;    `apu-char-codepoint-at-point', `apu-char-name-at-point',
 ;;    `apu-chars', `apu-chars-matching-full-words',
 ;;    `apu-chars-matching-two-or-more-words',
@@ -79,7 +87,7 @@
 ;;    `apu-chars-refresh-matching-two-or-more-words',
 ;;    `apu-chars-refresh-with-next-match-method',
 ;;    `apu-show-char-details', `apu-zoom-char-here',
-;;    `apu-zoom-char-at-point'.
+;;    `apu-zoom-char-at-point', `describe-chars-in-region'.
 ;;
 ;;  User options defined here:
 ;;
@@ -94,20 +102,32 @@
 ;;    `apu-chars-read-pattern-arg', `apu-compute-matches',
 ;;    `apu-copy-char-to-second-sel', `apu-filter',
 ;;    `apu-full-word-match', `apu-make-tablist-entry',
-;;    `apu-match-type-msg', `apu-print', `apu-remove-if-not',
-;;    `apu-sort-char', `apu-substring-match', `apu-tablist-entries'.
+;;    `apu-match-type-msg', `apu-print-apropos-matches',
+;;    `apu-print-chars', `apu-remove-if-not', `apu-sort-char',
+;;    `apu-substring-match', `apu-tablist-match-entries'.
 ;;
 ;;  Internal variables defined here:
 ;;
 ;;    `apu--buffer-invoked-from', `apu-latest-pattern-set',
 ;;    `apu--matches', `apu--match-two-or-more', `apu--match-type',
 ;;    `apu--match-words-exactly', `apu--orig-buffer',
-;;    `apu--pats+bufs', `apu--patterns', `apu--refresh-p'.
+;;    `apu--pats+bufs', `apu--patterns', `apu--refresh-p',
+;;    `apu--unnamed-chars'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2015/06/09 dadams
+;;     Added: apu-chars-in-region (aka describe-chars-in-region), apu-print-chars, apu--unnamed-chars.
+;;     Renamed: apu-print to apu-print-apropos-matches,
+;;              apu-tablist-entries to apu-tablist-match-entries.
+;;     Made apu-chars an alias of apropos-char, instead of the reverse.
+;;     apu-make-tablist-entry: Change parameter from CHAR+CODE to just the code (called CHAR).
+;;     apu-chars-next-match-method, apu-chars-matching-*, apu-chars-refresh-*, apu-chars-narrow:
+;;       Raise error if not in an apropos-char buffer.
+;;     apu-char-string-here: Handle eob case.
+;;     Require cl-lib.el, for cl-delete-duplicates.
 ;; 2015/06/07 dadams
 ;;     Added apropos-char (another alias for apu-chars).
 ;; 2015/05/26 dadams
@@ -168,6 +188,7 @@
 ;;
 ;;; Code:
 
+(require 'cl-lib) ;; cl-delete-duplicates
 (require 'descr-text+ nil t) ; Soft-requires `help-fns+.el'. Help on `keymap' prop for `C-u C-x ='.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -227,7 +248,7 @@ performance is impacted."
 ;;; Global variables -------------------------------------------------
 
 (defvar apu-latest-pattern-set ()
-  "Latest set of patterns used for matching by `apu-chars'.")
+  "Latest set of patterns used for matching by `apropos-char'.")
 
 (defvar apu--match-type 'MATCH-WORDS-AS-SUBSTRINGS
   "How the current `apu-char*' command matches a word-list pattern.
@@ -241,7 +262,7 @@ Possible values and their behaviors:
 Any other value acts like `MATCH-WORDS-AS-SUBSTRINGS'")
 
 (defvar apu--orig-buffer nil
-  "Buffer current when `apu-chars' was last invoked.")
+  "Buffer current when `apropos-char' was last invoked.")
 
 ;; A buffer where `apu-chars*' is invoked can have multiple list buffers, which show matches for
 ;; different sets of patterns.  `apu--pattern' is local to the list buffer that shows the matches.
@@ -251,12 +272,12 @@ Each entry has form (PATTERN . BUFFER), where
 the buffer-local value of `apu--patterns' in BUFFER is PATTERN.")
 
 (defvar apu--refresh-p nil
-  "Non-nil means that `apu-tablist-entries' recomputes matches.")
+  "Non-nil means that `apu-tablist-match-entries' recomputes matches.")
 
 ;;; Buffer-local variables -------------------------------------------
 
 (defvar apu--buffer-invoked-from nil
-  "Buffer current when `apu-chars' was invoked to produce this output.
+  "Buffer current when `apropos-char' was invoked to produce this output.
 Used in a list buffer to point to where it was invoked.")
 (make-variable-buffer-local 'apu--buffer-invoked-from)
 (put 'apu--buffer-invoked-from 'permanent-local t)
@@ -285,12 +306,19 @@ Default value is from `apu-match-words-exactly-flag'.")
 (make-variable-buffer-local 'apu--patterns)
 (put 'apu--patterns 'permanent-local t)
 
+(defvar apu--unnamed-chars ()
+  "Chars not recognized as Unicode.
+They are for the last apu command associated with this output buffer.")
+(make-variable-buffer-local 'apu--unnamed-chars)
+(put 'apu--unnamed-chars 'permanent-local t)
+
 ;;; Commands ---------------------------------------------------------
 
 ;;;###autoload
-(defun apu-chars-next-match-method ()
+(defun apu-chars-next-match-method ()   ; Not bound by default.
   "Cycle among the methods of matching character names."
   (interactive)
+  (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (call-interactively
    (case apu--match-type
      (MATCH-WORDS-AS-SUBSTRINGS #'apu-chars-matching-two-or-more-words)
@@ -298,12 +326,13 @@ Default value is from `apu-match-words-exactly-flag'.")
      (t                         #'apu-chars-matching-words-as-substrings))))
 
 ;;;###autoload
-(defun apu-chars-matching-full-words ()
+(defun apu-chars-matching-full-words () ; Not bound by default.
   "Show all Unicode chars whose names match a pattern you type.
-Same as `apropos-unicode' with a non-nil value of
+Same as `apropos-char' with a non-nil value of
 `apu-match-words-exactly-flag': match each entry of a word-list
 pattern as a full word."
   (interactive)
+  (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (setq apu-latest-pattern-set  (list (apu-chars-read-pattern-arg)))
   (let ((list-buf  (get-buffer-create (format "*`%S' Matches*" apu-latest-pattern-set))))
     (add-to-list 'apu--pats+bufs (cons apu-latest-pattern-set list-buf))
@@ -312,12 +341,13 @@ pattern as a full word."
   (apu-chars))
 
 ;;;###autoload
-(defun apu-chars-matching-two-or-more-words ()
+(defun apu-chars-matching-two-or-more-words () ; Not bound by default.
   "Show all Unicode chars whose names match a pattern you type.
-Same as `apropos-unicode' with a nil value of
+Same as `apropos-char' with a nil value of
 `apu-match-two-or-more-words-flag': match two or more entries of a
 word-list pattern, as a full word."
   (interactive)
+  (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (setq apu-latest-pattern-set  (list (apu-chars-read-pattern-arg)))
   (let ((list-buf  (get-buffer-create (format "*`%S' Matches*" apu-latest-pattern-set))))
     (add-to-list 'apu--pats+bufs (cons apu-latest-pattern-set list-buf))
@@ -326,12 +356,13 @@ word-list pattern, as a full word."
   (apu-chars))
 
 ;;;###autoload
-(defun apu-chars-matching-words-as-substrings ()
+(defun apu-chars-matching-words-as-substrings () ; Not bound by default.
   "Show all Unicode chars whose names match a pattern you type.
-Same as `apropos-unicode' with a nil value of
+Same as `apropos-char' with a nil value of
 `apu-match-words-exactly-flag': match each entry of a word-list
 pattern as a substring."
   (interactive)
+  (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (setq apu-latest-pattern-set  (list (apu-chars-read-pattern-arg)))
   (let ((list-buf  (get-buffer-create (format "*`%S' Matches*" apu-latest-pattern-set))))
     (add-to-list 'apu--pats+bufs (cons apu-latest-pattern-set list-buf))
@@ -339,44 +370,48 @@ pattern as a substring."
   (setq apu--match-type  'MATCH-WORDS-AS-SUBSTRINGS)
   (apu-chars))
 
-(defun apu-chars-refresh-with-next-match-method ()
+(defun apu-chars-refresh-with-next-match-method () ; Bound to `C-c n'.
   "Refresh matches for the same pattern, but using the next matching method."
   (interactive)
+  (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (call-interactively
    (case apu--match-type
      (MATCH-WORDS-AS-SUBSTRINGS #'apu-chars-refresh-matching-two-or-more-words)
      (MATCH-TWO-OR-MORE         #'apu-chars-refresh-matching-full-words)
      (t                         #'apu-chars-refresh-matching-as-substrings))))
 
-(defun apu-chars-refresh-matching-full-words ()
+(defun apu-chars-refresh-matching-full-words () ; Bound to `C-c w'.
   "Refresh matches for the same pattern, but match full words.
 I.e., match again, as if `apu-match-words-exactly-flag' were non-nil.
 Does nothing if current pattern is a regexp instead of a word list."
   (interactive)
+  (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (setq apu--match-type  'MATCH-WORDS-EXACTLY)
-  (with-current-buffer apu--buffer-invoked-from (apu-print))
+  (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches))
   (apu-match-type-msg))
 
-(defun apu-chars-refresh-matching-as-substrings ()
+(defun apu-chars-refresh-matching-as-substrings () ; Bound to `C-c s'.
   "Refresh matches for the same pattern, but match as substrings.
 I.e., match again, as if `apu-match-words-exactly-flag' were nil.
 Does nothing if current pattern is a regexp instead of a word list."
   (interactive)
+  (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (setq apu--match-type  'MATCH-WORDS-AS-SUBSTRINGS)
-  (with-current-buffer apu--buffer-invoked-from (apu-print))
+  (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches))
   (apu-match-type-msg))
 
-(defun apu-chars-refresh-matching-two-or-more-words ()
+(defun apu-chars-refresh-matching-two-or-more-words () ; Bound to `C-c 2'.
   "Refresh matches for the same pattern, but match two or more words.
 I.e., match again, as if `apu-match-two-or-more-words-flag' were t.
 Does nothing if current pattern is a regexp instead of a word list."
   (interactive)
+  (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (setq apu--match-type  'MATCH-TWO-OR-MORE)
-  (with-current-buffer apu--buffer-invoked-from (apu-print))
+  (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches))
   (apu-match-type-msg))
 
 (define-derived-mode apu-mode tabulated-list-mode "Apropos Unicode"
-  "Major mode for `apropos-unicode' output.
+  "Major mode for `apropos-char' output.
 \\{apu-mode-map}"
   (update-glyphless-char-display 'glyphless-char-display-control glyphless-char-display-control))
 
@@ -398,14 +433,14 @@ Does nothing if current pattern is a regexp instead of a word list."
   (define-key apu-mode-map (kbd "M-y") 'apu-copy-char-here-to-second-sel))
 
 ;;;###autoload
-(defun apu-char-name-at-point (&optional position msgp) ; Not bound.
+(defun apu-char-name-at-point (&optional position msgp) ; Not bound by default.
   "Return the name of the Unicode character at point, or nil if none.
 Non-nil POSITION means use the character at POSITION."
   (interactive "d\np")
   (apu-char-at-point 'name position msgp))
 
 ;;;###autoload
-(defun apu-char-codepoint-at-point (&optional position msgp) ; Not bound.
+(defun apu-char-codepoint-at-point (&optional position msgp) ; Not bound by default.
   "Return the codepoint of the Unicode char at point, or nil if none.
 Non-nil POSITION means use the character at POSITION."
   (interactive "d\np")
@@ -425,18 +460,22 @@ Non-nil POSITION means use the character at POSITION."
   (string-to-char (apu-char-string-here)))
 
 (defun apu-char-string-here ()
-  "Return the Unicode character described on this line, as a string."
+  "Return the Unicode character described on this line, as a string.
+If at end of buffer and beginning of line, return the character
+described on the previous line."
+  (when (= (point-min) (point-max)) (error "No characters in this buffer"))
+  (when (eobp) (backward-char))
   (buffer-substring (line-beginning-position) (1+ (line-beginning-position))))
 
 ;;;###autoload
-(defun apu-copy-char-at-point-as-kill (&optional msgp) ; Not bound.
+(defun apu-copy-char-at-point-as-kill (&optional msgp) ; Not bound by default.
   "Copy the character at point to the `kill-ring'."
   (interactive "p")
   (let ((strg  (string (char-after))))
     (kill-new strg)
     (when msgp (message "Copied char `%s' to kill ring" strg))))
 
-(defun apu-copy-char-here-as-kill (&optional msgp)
+(defun apu-copy-char-here-as-kill (&optional msgp) ; Bound to `C-y'.
   "Copy the Unicode character described on this line to the `kill-ring'."
   (interactive "p")
   (let ((strg  (string (apu-char-here))))
@@ -444,14 +483,14 @@ Non-nil POSITION means use the character at POSITION."
     (when msgp (message "Copied char `%s' to kill ring" strg))))
 
 ;;;###autoload
-(defun apu-copy-char-at-point-to-second-sel (&optional msgp) ; Not bound.
+(defun apu-copy-char-at-point-to-second-sel (&optional msgp) ; Not bound by default.
   "Copy the character at point to the secondary selection.
 If you have library `second-sel.el' then also copy it to the
 `secondary-selection-ring'."
   (interactive "p")
   (apu-copy-char-to-second-sel (point) msgp))
 
-(defun apu-copy-char-here-to-second-sel (&optional msgp)
+(defun apu-copy-char-here-to-second-sel (&optional msgp) ; Bound to `M-y'.
   "Copy Unicode char described on this line to the secondary selection.
 If you have library `second-sel.el' then also copy it to the
 `secondary-selection-ring'."
@@ -472,7 +511,7 @@ If you have library `second-sel.el' then this also copies it to the
     (when (require 'second-sel nil t) (add-secondary-to-ring strg))
     (when msgp (message "Copied char `%s' to secondary selection ring" strg))))
 
-(defun apu-define-insert-command ()
+(defun apu-define-insert-command () ; Bound to `c'.
   "Define a command that inserts the character described on this line.
 The command name is the lowercase Unicode character name, with spaces
  replaced by hyphens.
@@ -481,14 +520,14 @@ This command requires library `ucs-cmds.el'."
   (unless (require 'ucs-cmds nil t) (error "This command requires library `ucs-cmds.el'"))
   (ucsc-define-char-insert-cmd (apu-char-here) 'MSG))
 
-(defun apu-global-set-insertion-key (key &optional msgp)
+(defun apu-global-set-insertion-key (key &optional msgp) ; Bound to `k'.
   "Globally bind a key to insert the character described on this line."
   (interactive "KKey to bind globally: \np")
   (let ((char  (apu-char-string-here)))
     (global-set-key key char)
     (when msgp (message "`%s' will now insert `%s' globally" (key-description key) char))))
 
-(defun apu-google-char (&optional msgp)
+(defun apu-google-char (&optional msgp) ; Bound to `i'.
   "Google the Unicode character described on this line."
   (interactive "p")
   (browse-url (format "https://www.google.com/search?ion=1&q=%s"
@@ -498,10 +537,10 @@ This command requires library `ucs-cmds.el'."
   "Return the name of the Unicode char described on this line, as a string."
   (car (rassq (apu-char-here) (ucs-names))))
 
-(defun apu-insert-char (buffer &optional msgp)
+(defun apu-insert-char (buffer &optional msgp) ; Bound to `^'.
   "Insert the Unicode character described on this line at point in BUFFER.
 By default, BUFFER is the buffer that was current when
-`apropos-unicode' was invoked.  With a prefix arg you are prompted for
+`apropos-char' was invoked.  With a prefix arg you are prompted for
 the buffer to use instead."
   (interactive (list (if current-prefix-arg
                          (read-buffer "Insert in buffer: " apu--buffer-invoked-from 'REQUIRE-MATCH)
@@ -511,14 +550,14 @@ the buffer to use instead."
     (with-current-buffer buffer (insert char))
     (when msgp (message "Inserted `%s' in buffer `%s'" char (buffer-name buffer)))))
 
-(defun apu-local-set-insertion-key (key &optional msgp)
+(defun apu-local-set-insertion-key (key &optional msgp) ; Bound to `l'.
   "Locally bind a key to insert the character described on this line."
   (interactive "KKey to bind locally: \np")
   (let ((char  (apu-char-string-here)))
     (local-set-key key char)
     (when msgp (message "`%s' will now insert `%s' locally" (key-description key) char))))
 
-(defun apu-show-char-details (&optional event)
+(defun apu-show-char-details (&optional event) ; Bound to `RET', `mouse-2'.
   "Show details about Unicode character described on this line."
   (interactive (list last-nonmenu-event))
   (run-hooks 'mouse-leave-buffer-hook)
@@ -526,7 +565,7 @@ the buffer to use instead."
     (save-excursion (goto-char (posn-point (event-start event)))
                     (describe-char (line-beginning-position)))))
 
-(defun apu-zoom-char-here (&optional height)
+(defun apu-zoom-char-here (&optional height) ; Bound to `z'.
   "Show the char described on the current line in a zoomed tooltip.
 With a numerical prefix arg, show it that many times larger."
   (interactive (list (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))))
@@ -535,7 +574,7 @@ With a numerical prefix arg, show it that many times larger."
                           'face `(:foreground "red" :height ,(* 200 height)))))
 
 ;;;###autoload
-(defun apu-zoom-char-at-point (&optional height position)
+(defun apu-zoom-char-at-point (&optional height position) ; Not bound by default.
   "Show the Unicode char at point in a zoomed tooltip.
 With a numerical prefix arg, show it that many times larger.
 Non-nil POSITION means use the character at POSITION."
@@ -545,11 +584,47 @@ Non-nil POSITION means use the character at POSITION."
                           'face `(:foreground "red" :height ,(* 200 height)))))
 
 ;;;###autoload
-(defalias 'apropos-unicode 'apu-chars)
+(defalias 'describe-chars-in-region 'apu-chars-in-region)
 ;;;###autoload
-(defalias 'apropos-char 'apu-chars)
+(defun apu-chars-in-region (start end &optional include-dups) ; Not bound by default.
+  "Describe the Unicode characters in the region.
+By default, list each distinct char only once.  With a prefix arg,
+list a given char once for each of its occurrences in the region.
+The character descriptions are presented in `apu-mode'."
+  (interactive "r\nP")
+  (setq apu--orig-buffer  (current-buffer)
+        apu--refresh-p    t)
+  (let ((chars  (buffer-substring start end)))
+    (unless include-dups (setq chars  (cl-delete-duplicates chars :from-end t)))
+    (apu-print-chars chars (generate-new-buffer-name "*Unicode Text in Region*"))
+    (when apu--unnamed-chars
+      (display-message-or-buffer
+       (format "The following chars are not recognized as Unicode:\n%s"
+               (mapconcat #'char-to-string (nreverse apu--unnamed-chars) "\n"))))))
+
+(defun apu-print-chars (characters buffer-name)
+  "Show information about Unicode CHARACTERS, in buffer BUFFER-NAME."
+  (with-help-window buffer-name
+    (with-current-buffer buffer-name
+      (apu-mode)
+      (goto-char (point-min))
+      (setq case-fold-search          t
+            tabulated-list-format     (vector '("Ch"       2 apu-sort-char)
+                                              ;; Use 30 as a default name width.
+                                              `("Name"     ,(or (car apu--matches)  30) t)
+                                              '("Decimal"  7 apu-sort-char :right-align t)
+                                              '("Hex"      8 apu-sort-char :right-align t))
+            tabulated-list-sort-key   nil
+            tabulated-list-entries    (delq nil (mapcar #'apu-make-tablist-entry characters)))
+      (tabulated-list-print t)
+      (tabulated-list-init-header))))
+
 ;;;###autoload
-(defun apu-chars ()
+(defalias 'apropos-unicode 'apropos-char)
+;;;###autoload
+(defalias 'apu-chars 'apropos-char)
+;;;###autoload
+(defun apropos-char ()                  ; Not bound by default.
   "Show all Unicode chars whose names match PATTERN.
 PATTERN is as for command `apropos': a word, a list of words
  \(separated by spaces), or a regexp (using some regexp special
@@ -557,12 +632,12 @@ PATTERN is as for command `apropos': a word, a list of words
  substring.  If it is a list of words, search for matches for any two
  \(or more) of those words.
 
-The output is in `apu-mode'.
+The character descriptions are presented in `apu-mode'.
 
 Non-nil option `apu-match-only-displayable-chars-flag' means match
 only characters that are `char-displayable-p' in the buffer where
-`apu-chars' is invoked.  This is the default.  A nil value means match
-all Unicode characters.
+`apropos-char' is invoked.  This is the default.  A nil value means
+match all Unicode characters.
 
 Non-nil option `apu-match-words-exactly-flag' means each word in a
 word-list pattern must match exactly, as a full word.  A nil
@@ -615,7 +690,7 @@ Simple tips for matching some common Unicode character names:
                              (if apu-match-words-exactly-flag
                                  'MATCH-WORDS-EXACTLY
                                'MATCH-WORDS-AS-SUBSTRINGS))))
-  (apu-print)
+  (apu-print-apropos-matches)
   (apu-match-type-msg))
 
 (defun apu-chars-read-pattern-arg ()
@@ -632,7 +707,7 @@ Simple tips for matching some common Unicode character names:
              (MATCH-WORDS-EXACTLY  "Matching EACH entry as a FULL WORD now")
              (t                    "Matching EACH entry as a SUBSTRING now"))))
 
-(defun apu-print ()
+(defun apu-print-apropos-matches ()
   "Show matches in current buffer for the apropos Unicode commands."
   (let* ((bufs  apu--pats+bufs)
          buf)
@@ -653,28 +728,34 @@ Simple tips for matching some common Unicode character names:
                                                 '("Decimal"  7 apu-sort-char :right-align t)
                                                 '("Hex"      8 apu-sort-char :right-align t))
               tabulated-list-sort-key   '("Decimal")
-              tabulated-list-entries    #'apu-tablist-entries)
+              tabulated-list-entries    #'apu-tablist-match-entries)
         (tabulated-list-print t)
         (tabulated-list-init-header)))))
 
-(defun apu-tablist-entries ()     ; Invoked in the list-output buffer.
+(defun apu-tablist-match-entries ()     ; Invoked in the list-output buffer.
   "Function value for `tabulated-list-entries'.
 See `apu-make-tablist-entry'."
   (when apu--refresh-p (apu-compute-matches))
   (mapcar #'apu-make-tablist-entry (cdr apu--matches)))
 
-(defun apu-make-tablist-entry (char+code)
-  "Return a tablist entry for CHAR+CODE.
-This is a list (CODE [CHAR NAME DEC HEX]), where:
-CODE is the character (an integer),
-CHAR is its string representation,
-NAME is its name,
-DEC is its decimal representation,
-HEX is its hexadecimal representation.
+(defun apu-make-tablist-entry (char)
+  "Return a tablist entry for CHAR, a Unicode code point.
+This  is a list (CHAR [GLYPH NAME DEC HEX]), where:
+CODE  is the character (an integer),
+GLYPH is its string representation,
+NAME  is its name,
+DEC   is its decimal representation,
+HEX   is its hexadecimal representation.
 
-CHAR, NAME, DEC, and HEX are strings."
-  (list (cdr char+code) (vector (char-to-string (cdr char+code)) (car char+code)
-                                (format "%6d" (cdr char+code)) (format "%#8x" (cdr char+code)))))
+GLYPH, NAME, DEC, and HEX are strings.
+
+If CHAR is not recognized then it is added to the buffer-local list
+`apu--unnamed-chars'.  This list of chars is then displayed."
+  (let ((name  (or (get-char-code-property char 'name)  (get-char-code-property char 'old-name))))
+    (if name
+        (list char (vector (char-to-string char) name (format "%6d" char) (format "%#8x" char)))
+      (push char apu--unnamed-chars)
+      nil)))
 
 (defun apu-compute-matches ()     ; Invoked in the list-output buffer.
   "Compute matches for apropos Unicode commands."
@@ -696,7 +777,7 @@ CHAR, NAME, DEC, and HEX are strings."
 
 (defun apu-filter (pattern chars+codes)
   "Try to match PATTERN against each element of alist CHARS+CODES.
-PATTERN is as for `apu-chars'.
+PATTERN is as for `apropos-char'.
 CHARS+CODES has the same form as `ucs-names'.
 If CHARS+CODES is nil then match against `ucs-names'."
   (let ((match-fn  (if (eq apu--match-type 'MATCH-WORDS-EXACTLY)
@@ -716,10 +797,11 @@ If CHARS+CODES is nil then match against `ucs-names'."
              (setq chs+cds  (apu-delete-if-not (apply-partially match-fn word) chs+cds)))
            chs+cds)))))
 
-(defun apu-chars-narrow (pattern)
+(defun apu-chars-narrow (pattern)       ; Not bound by default.
   "Narrow matches in current buffer to those also matching another PATTERN.
-You are prompted for the PATTERN, which is as for `apu-chars'."
+You are prompted for the PATTERN, which is as for `apropos-char'."
   (interactive (list (apu-chars-read-pattern-arg)))
+  (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
   (let* ((orig-pats   apu--patterns)
          (bufs-entry  (rassoc (current-buffer) (with-current-buffer apu--buffer-invoked-from
                                                  apu--pats+bufs))))
@@ -742,8 +824,9 @@ You are prompted for the PATTERN, which is as for `apu-chars'."
       (setq max-char  (max max-char (string-width (car char+code)))))
     (message "Matching `%s'...done" pattern)
     (setcar apu--matches max-char))
-  (setq apu-latest-pattern-set  apu--patterns) ; For `apu-print'.
-  (let ((apu--refresh-p  nil)) (with-current-buffer apu--buffer-invoked-from (apu-print)))
+  (setq apu-latest-pattern-set  apu--patterns) ; For `apu-print-apropos-matches'.
+  (let ((apu--refresh-p  nil))
+    (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches)))
   (apu-match-type-msg))
 
 (defun apu-full-word-match (pattern char+code)
