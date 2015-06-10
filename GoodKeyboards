@@ -2,6 +2,9 @@ This is a place to recommend and discuss keyboards that work well for Emacs user
 
 [new]
 
+Bernhard: The [http://www.x7.cn/en/product.asp?id=53 X7 G800V] has 15 freely configurable keys, two located to the left and right of the space bar, and five located directly beneath the space bar. Those keys can be configured to be other keys (also modifier keys) or key combinations. The key actions are stored on an in-keyboard memory and do not need any driver to run. Unfortunately, the program to set those key actions is windows-only, but once set, they also work on Linux. The keyboard stores up to five configurations, which can be cycled with another key. The only downside to this keyboard is that (as this tries to be a gamer keyboard) the w,a,s,d keys are coated with red rubber.
+[new]
+
 FelixKlee: Thinking about it, the worst thing I probably do to my hand is when I reach for the cursor keys in the lower right hand corner of my laptop's keyboard. I don't like moving my palms, and so I tend to use the thumb for that. Remapping the cursor keys to "Caps Lock"-{i,j,k,l} appears to be quite comfortable. Anyone here having experience with remapping the cursor keys on a laptop keyboard? What's your preferred position?
 
 [new]
@@ -113,7 +116,7 @@ Even better, saw the track into sections (or get one without the track) and atta
 
 [new]
 I use a cherry G80-2100. http://fsinfo.noone.org/~abe/cherry-g80-2100.html
-
+-
 http://sandy55.fc2web.com/keyboard/g80-2100/front_s.jpg
 
 <i>"The Cherry G80-2100 is a (no more produced, but tough) PC keyboard with 24 programmable keys, which can permanently store key combinations as macros directly in the keyboards hardware, so there is no need for special drivers and it does work with all operatings systems or applications steerable by keyboard."<i>
