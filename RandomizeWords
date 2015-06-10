@@ -83,6 +83,22 @@ Output:
 Gabriel Byrne, Nigel Terry, Nicol Williamson, Helen Mirren, Robert Addie, Paul Geoffrey, Nicholas Clay, Cherie Lunghi
 </pre>
 
+== Randomizing a string ==
+<pre>
+(defun randomize-string (string)
+  "Randomize a string. Equivalent to glibc's strfry()."
+  (interactive)
+  (let ((i 0)
+	(char " ")
+	(size (string-width string)))
+    (while (< i size)
+      (let ((j (random size)))
+	(store-substring char 0 (substring string i (+ 1 i)))
+	(store-substring string i (substring string j (+ 1 j)))
+	(store-substring string j char)
+	(setq i (+ 1 i))))
+    string))
+</pre>
 == Alternatives ==
 
 
