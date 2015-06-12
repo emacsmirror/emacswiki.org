@@ -620,12 +620,15 @@ Right you are! Thanks, I've corrected the doc. The reason `C-u C-x p j' does not
 
 ----
 
-Hi all
+[new]
 i was wondering if anyway knew if its possible to chain a command after i launch a bookmark in BK+. for example i would love to narrow the section in org (using org-narrow-to-subtre) after the bookmark is launched. any clue how to do that?
+best  -- [[Zeltak]] 2015-06-12 11:08 UTC
 
-best
+[new:DrewAdams:2015-06-12 19:25 UTC]
+There are a few ways to do that.
 
-Z
+* Use the predefined tag '''`bmkp-jump'''', as described [[BookmarkPlus#TagsAsAttributes|here]].
 
--- zeltak 2015-06-12 11:08 UTC
+* Use a '''sequence''' bookmark composed of (1) your ordinary bookmark followed by (2) a '''function''' bookmark, as described [[BookmarkPlus#FunctionSequenceVarlistBookmarks|here]].
 
+-- DrewAdams
