@@ -1,8 +1,10 @@
 == Prolog Modes ==
 
-The default Prolog mode that comes with Emacs provides basic features such as syntax highlighting.  You can switch to Prolog mode with `M-x prolog-mode`.
+You can switch to Prolog mode with `M-x prolog-mode`.
 
-Another option, which provides an expanded feature set, is available at http://bruda.ca/emacs/prolog_mode_for_emacs.  This version has all the features one would expect, including syntax highlighting, auto indent, and full interaction with an inferior Prolog process.  The mode supports in principle any Prolog system, though it is primarily maintained with SWI Prolog in mind. It also has some special tweaks for GNU Prolog (starting from version 1.4) and SICStus Prolog, and explicitly supports Prolog's close relatives Eclipse and Mercury. (According to http://bruda.ca/emacs/prolog_mode_for_emacs the version of prolog-mode bundled with GNU Emacs 23 and newer is more recent than the prolog.el available on that site, and should be preferred. The site is maintained only for Xemacs and older GNU Emacs compatibility.)
+The default Prolog mode that comes with GNU Emacs (23 and newer) is derived from http://bruda.ca/emacs/prolog_mode_for_emacs and provides all the features one would expect, including syntax highlighting, auto indent, and full interaction with an inferior Prolog process.  The mode supports in principle any Prolog system, though it is primarily maintained with SWI Prolog in mind. It also has some special tweaks for GNU Prolog (starting from version 1.4) and SICStus Prolog, and explicitly supports Prolog's close relatives Eclipse and Mercury.
+
+Version of prolog-mode for GNU Emacs prior to 23 provides basic features such as syntax highlighting.  The website http://bruda.ca/emacs/prolog_mode_for_emacs is maintained to provide Xemacs and GNU Emacs (<23) with advanced Prolog support.
 
 == Issues ==
 
