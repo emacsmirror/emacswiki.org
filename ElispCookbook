@@ -161,14 +161,14 @@ Example:
   (mapconcat 'identity '("" "home" "alex " "elisp" "erc") "/")
     ==> "/home/alex /elisp/erc"
 
-If the separator will be empty, use `apply':
+If the separator is empty, use `apply':
 
   (apply #'concat '("hello, " "world"))
     ==> "hello, world"
 
 
 [new:DrewAdams:2015-05-10 20:20 UTC]
-: If the separator is empty then `concat' (or `format') is sufficient - no need for `apply': ##(concat "hello, " "world")## ==> ##"hello, world"## -- DrewAdams
+: If the separator is empty then `concat' (or `format') is sufficient - no need for `apply' to join the strings: ##(concat "hello, " "world")## ==> ##"hello, world"##  (If the strings are available only as an explicit list, then of course you will want to use `apply' or an equivalent.) -- DrewAdams
 
 === Serialization ===
 
