@@ -1,0 +1,2 @@
+Buffer names ---
+Could you make it so that the buffers set up by palette follow the naming scheme «*Foo*»? At least for the main palette buffer this is not currently the case; it would make it easier to exclude it from hooks that would break the palette (e.g. highlighting trailing whitespace). Most packages that set-up such hooks proceed based on exclusions for «*Foo*». -- [[78.49.163.59]]
