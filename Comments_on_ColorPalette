@@ -1,2 +1,9 @@
 Buffer names ---
 Could you make it so that the buffers set up by palette follow the naming scheme «*Foo*»? At least for the main palette buffer this is not currently the case; it would make it easier to exclude it from hooks that would break the palette (e.g. highlighting trailing whitespace). Most packages that set-up such hooks proceed based on exclusions for «*Foo*». -- [[78.49.163.59]]
+
+----
+
+Can you be more specific, perhaps with some code or a scenario? Buffers named `*...*' are often declared by user to be special-display buffers, meaning that their frames etc. can have different properties. So a priori I'm not in favor of using such names here. But please describe the problem you see in detail, so I can understand it better and think about it. Thx -- DrewAdams
+
+-- DrewAdams 2015-06-13 16:40 UTC
+
