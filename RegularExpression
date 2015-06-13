@@ -284,6 +284,9 @@ Does Emacs support lookahead/lookbehind?
 :   [i]No, Emacs does not support Perl-style lookahead/lookbehind expressions.[/i]
 
 [new]
+Does Emacs support possessive quantifiers such as <code>?+</code>, <code>*+</code>, <code>++</code> ?
+
+[new]
 The escape sequence \c[i]C[/i] represents any character of category "[i]C[/i]", and according to Emacs documentation invoked by "M-x describe-categories", \c6 ought to match any digit. Yet the ASCII digits 0-9 are not matched by \c6. Is this an error, or just something on the to-do list?
 ----
 CategoryRegexp
