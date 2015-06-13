@@ -8,9 +8,9 @@
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 0
 ;; Package-Requires: ((strings "0"))
-;;; Last-Updated: Thu Jan  1 11:15:06 2015 (-0800)
+;;; Last-Updated: Sat Jun 13 14:26:48 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 462
+;;     Update #: 464
 ;; URL: http://www.emacswiki.org/simple%2b.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -68,6 +68,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/06/13 dadams
+;;     next-error: next-error-recenter is not defined for Emacs 22, so use boundp.
 ;; 2012/02/03 dadams
 ;;     read-var-and-value:
 ;;       Added optional arg BUFFER.  Use default-value if var is not local.
@@ -249,7 +251,8 @@ See variables `compilation-parse-errors-function' and
         ;; we know here that next-error-function is a valid symbol we can funcall
         (with-current-buffer next-error-last-buffer
           (funcall next-error-function (prefix-numeric-value arg) reset)
-          (when next-error-recenter (recenter next-error-recenter))
+          (when (and (boundp 'next-error-recenter)  next-error-recenter)
+            (recenter next-error-recenter))
           (run-hooks 'next-error-hook))))))
 
 
