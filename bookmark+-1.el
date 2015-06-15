@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat May 23 20:19:04 2015 (-0700)
+;; Last-Updated: Mon Jun 15 13:17:54 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7755
+;;     Update #: 7782
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2685,8 +2685,10 @@ Otherwise, call `bmkp-goto-position' to go to the recorded position."
           ((and (bookmark-prop-get bookmark 'file-handler)  file)
            (funcall (bookmark-prop-get bookmark 'file-handler) file))
           (old-info-node                ; Emacs 20-21 Info bookmarks - no handler entry.
-           (progn (require 'info) (Info-find-node file old-info-node) (goto-char pos)))
-          ((not (and bmkp-use-region end-pos  (/= pos end-pos)))
+           (progn (require 'info)
+                  (Info-find-node file old-info-node)
+                  (when pos (goto-char pos))))
+          ((not (and bmkp-use-region  pos  end-pos  (/= pos end-pos)))
            ;; Single-position bookmark (no region).  Go to it.
            (bmkp-goto-position bmk file buf bufname pos
                                (bookmark-get-front-context-string bmk)
@@ -2704,8 +2706,8 @@ Otherwise, call `bmkp-goto-position' to go to the recorded position."
            (when bmkp-jump-display-function
              (save-current-buffer (funcall bmkp-jump-display-function (current-buffer)))
              (raise-frame))
-           (goto-char (min pos (point-max)))
-           (when (> pos (point-max)) (error "Bookmark position is beyond buffer end"))
+           (goto-char (if pos (min pos (point-max)) (point-max)))
+           (when (and pos  (> pos (point-max))) (error "Bookmark position is beyond buffer end"))
            ;; Activate region.  Relocate it if it moved.  Save relocated bookmark if confirm.
            (funcall bmkp-handle-region-function bmk)))
     ;; $$$$$$ The vanilla code returns nil, but there is no explanation of why and no code seems
@@ -5578,6 +5580,7 @@ If it is a record then it need not belong to `bookmark-alist'."
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (and (bmkp-get-end-position bookmark)
+       (bookmark-get-position bookmark)
        (/= (bookmark-get-position bookmark) (bmkp-get-end-position bookmark))))
 
 (defun bmkp-remote-file-bookmark-p (bookmark)
@@ -7780,7 +7783,7 @@ of the hit, followed by the line number of the hit."
     "Return the file and position indicated by this compilation message.
 These are returned as a cons: (FILE . POSITION).
 POSITION is the beginning of the line indicated by the message."
-    (unless pos (setq pos (point)))
+    (unless pos (setq pos  (point)))
     (let* ((loc        (car (get-text-property pos 'message)))
            (line       (cadr loc))
            (filename   (caar (nth 2 loc)))
@@ -8278,8 +8281,7 @@ This is text that precedes the bookmark's `end-position'."
   "Return the text following the region end, EREG.
 Return at most `bmkp-region-search-size' chars.
 This is text that follows the bookmark's `end-position'."
-  (buffer-substring-no-properties ereg
-                                  (+ ereg (min bmkp-region-search-size (- (point-max) (point))))))
+  (buffer-substring-no-properties ereg (+ ereg (min bmkp-region-search-size (- (point-max) (point))))))
 
 (defun bmkp-position-after-whitespace (position)
   "Move forward from POSITION, skipping over whitespace.  Return point."
@@ -8325,7 +8327,8 @@ If region was relocated, save it if user confirms saving."
          (end-pos          (bmkp-get-end-position bmk))
          (reg-retrieved-p  t)
          (reg-relocated-p  nil))
-    (unless (and (string= bor-str (buffer-substring-no-properties
+    (unless (and end-pos
+                 (string= bor-str (buffer-substring-no-properties
                                    (point) (min (point-max) (+ (point) (length bor-str)))))
                  (string= eor-str (buffer-substring-no-properties
                                    end-pos (max (point-min) (- end-pos (length bor-str))))))
@@ -8350,28 +8353,30 @@ If region was relocated, save it if user confirms saving."
             (when (search-backward br-str (point-min) t) ; Find BEG, using `br-str'.
               (setq beg  (match-end 0)
                     beg  (and beg  (bmkp-position-after-whitespace beg))))))
-        (setq reg-retrieved-p  (or beg end)
+        (setq reg-retrieved-p  (or beg  end)
               reg-relocated-p  reg-retrieved-p
               ;; If only one of BEG or END was found, the relocated region is only
               ;; approximate (keep the same length).  If both were found, it is exact.
-              pos              (or beg  (and end  (- end (- end-pos pos)))  pos)
-              end-pos          (or end  (and beg  (+ pos (- end-pos pos)))  end-pos))))
+              pos              (or beg  (and end  pos  end-pos  (- end (- end-pos pos)))  pos)
+              end-pos          (or end  (and beg  pos  end-pos  (+ pos (- end-pos pos)))  end-pos))))
     ;; Region is available. Activate it and maybe save it.
     (cond (reg-retrieved-p
-           (goto-char pos)
-           (push-mark end-pos 'nomsg 'activate)
+           (when pos (goto-char pos))
+           (when end-pos (push-mark end-pos 'nomsg 'activate))
            (setq deactivate-mark  nil)
            (when bmkp-show-end-of-region-flag
              (let ((end-win  (save-excursion (forward-line (window-height)) (line-end-position))))
                ;; Bounce point and mark.
                (save-excursion (sit-for 0.6) (exchange-point-and-mark) (sit-for 1))
                ;; Recenter if region end is not visible.
-               (when (> end-pos end-win) (recenter 1))))
+               (when (and end-pos  (> end-pos end-win)) (recenter 1))))
            ;; Maybe save region.
            (if (and reg-relocated-p  (bmkp-save-new-region-location bmk pos end-pos))
-               (message "Saved relocated region (from %d to %d)" pos end-pos)
-             (message "Region is from %d to %d" pos end-pos)))
-          (t                            ; No region.  Go to old start.  Don't push-mark.
+               (message "Saved relocated region%s" (if (and pos  end-pos)
+                                                       (format " (from %d to %d)" pos end-pos)
+                                                     ""))
+             (when (and pos  end-pos) (message "Region is from %d to %d" pos end-pos))))
+          ((and pos  end-pos)           ; No region.  Go to old start.  Don't push-mark.
            (goto-char pos) (forward-line 0)
            (message "No region from %d to %d" pos end-pos)))))
 
@@ -8383,7 +8388,9 @@ Counting starts at (point-min), so any narrowing restriction applies."
 
 (defun bmkp-goto-position (bookmark file buf bufname pos forward-str behind-str)
   "Go to a bookmark that has no region.
-Update the recorded position if `bmkp-save-new-location-flag'.
+Update the recorded position if POS and `bmkp-save-new-location-flag'
+are non-nil.
+
 Arguments are respectively the bookmark, its file, buffer, buffer
 name, recorded position, and the context strings for the position."
   (if (and file  (file-readable-p file)  (not (buffer-live-p buf)))
@@ -8398,7 +8405,7 @@ name, recorded position, and the context strings for the position."
     (save-current-buffer (funcall bmkp-jump-display-function (current-buffer))))
   (setq deactivate-mark  t)
   (raise-frame)
-  (goto-char pos)
+  (when pos (goto-char pos))
   ;; Try to relocate position.
   ;; Search forward first.  Then, if FORWARD-STR exists and was found in the file, search
   ;; backward for BEHIND-STR.  The rationale is that if text was inserted between the two
@@ -8407,7 +8414,7 @@ name, recorded position, and the context strings for the position."
   (when (and forward-str  (search-forward forward-str (point-max) t))
     (goto-char (match-beginning 0)))
   (when (and behind-str  (search-backward behind-str (point-min) t))  (goto-char (match-end 0)))
-  (when (and (/= pos (point))  bmkp-save-new-location-flag)
+  (when (and (not (equal pos (point)))  bmkp-save-new-location-flag)
     (bookmark-prop-set bookmark 'position     (point))
     (bookmark-prop-set bookmark 'end-position (point))
     ;; Perhaps we should treat the case of a bookmark that had position 0 changing to position 1 specially,
@@ -8416,7 +8423,7 @@ name, recorded position, and the context strings for the position."
     ;; Leave it this way, at least for now.  The consequence is that the user will see that bookmarks have
     ;; modified (e.g. `Save' is enabled in the menu), even though nothing much has changed.
     (bmkp-maybe-save-bookmarks))
-  (/= pos (point)))                     ; Return value indicates whether POS was accurate.
+  (not (equal pos (point))))            ; Return value indicates whether POS was accurate.
 
 (defun bmkp-jump-sequence (bookmark)
   "Handle a sequence bookmark BOOKMARK.
@@ -9473,7 +9480,7 @@ BOOKMARK is a bookmark name or a bookmark record."
                                        (lambda (mf) (cons (expand-file-name mf dd) 42)))
                                      mfiles))
       (save-excursion (dolist (dir  hidden-dirs) (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))
-    (goto-char (bookmark-get-position bookmark))))
+    (let ((pos  (bookmark-get-position bookmark))) (when pos (goto-char pos)))))
 
 (defun bmkp-read-bookmark-for-type (type alist &optional other-win pred hist action prompt)
   "Read the name of a bookmark of type TYPE, with completion.
@@ -11620,7 +11627,7 @@ all other automatic bookmarks in the same buffer.  Else return nil."
           (dolist (bmk  bmkp-auto-idle-bookmarks)
             (when (and (bmkp-this-buffer-p bmk)
                        (setq pos  (bookmark-get-position bmk))
-                       (< (abs (- (point) pos)) bmkp-auto-idle-bookmark-min-distance))
+                       (or (not pos)  (< (abs (- (point) pos)) bmkp-auto-idle-bookmark-min-distance)))
               (throw 'bmkp-not-near-other-auto-idle-bmks nil)))
           t))))
 
