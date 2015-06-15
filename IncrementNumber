@@ -3,7 +3,7 @@ Sometimes, when generating lots of data using CopyAndPaste (KillingAndYanking),
 you might have the need to increment numbers.
 
 If you are careful, you can use NumbersInRegisters.  But some might find
-the following defun interesting enough:
+the following defun interesting enough -- *more advanced* versions found below!
 
     (defun increment-number-at-point ()
       (interactive)
