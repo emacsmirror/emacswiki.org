@@ -16,6 +16,7 @@
 * [[MPRIS]] -- interface to media player via dbus, http://wiki.xmms2.xmms.se/wiki/MPRIS
 * [http://moc.daper.net/ MOC] -- Music On Console, powerful and easy to use. ncurses interface is based on Midnight Commander's. Works quite well if launched from term.
 * MpthreePlayer -- Interface to mpg123 by JeanPhilippeTheberge
+* [https://github.com/jorenvo/simple-mpc simple-mpc-mode] -- provides an interface to [http://musicpd.org/ MPD], focuses on simplicity, UI inspired by [[Mingus]] and [[mu4e]]
 * tiny-xmms -- http://dishevelled.net/elisp/tiny-xmms.el
 * <nowiki>XmmsMode</nowiki> -- http://membres.lycos.fr/jbn/software/xmms-mode.el
 
