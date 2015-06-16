@@ -8,9 +8,9 @@
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 0
 ;; Package-Requires: ((strings "0"))
-;;; Last-Updated: Sat Jun 13 14:26:48 2015 (-0700)
+;;; Last-Updated: Tue Jun 16 13:22:54 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 464
+;;     Update #: 495
 ;; URL: http://www.emacswiki.org/simple%2b.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -30,14 +30,29 @@
 ;;  to be in this library, but they are used by `icicles.el', so they
 ;;  have been moved there.
 ;;
+;;  Things you might want to do:
 ;;
-;;  Variables defined here:
+;;  * Turn on `hl-line-mode' in compilation and grep buffers:
 ;;
-;;    `set-any-variable-value-history'.
+;;    (add-hook 'next-error-hook 'next-error-buffer-hl-line)
 ;;
-;;  Functions defined here:
+;;  * Change the fringe indicator for `next-error':
 ;;
-;;    `read-var-and-value', `set-any-variable'.
+;;    (add-hook 'next-error-hook 'next-error-fringe-setup)
+;;
+;;
+;;  Commands defined here:
+;;
+;;    `set-any-variable'.
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `next-error-buffer-hl-line', `next-error-fringe-setup',
+;;    `read-var-and-value'.
+;;
+;;  Internal variables defined here:
+;;
+;;    `next-error-fringe-indicator', `set-any-variable-value-history'.
 ;;
 ;;
 ;;  ***** NOTE: The following user options defined in `simple.el' have
@@ -68,6 +83,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/06/16 dadams
+;;     Added: next-error-buffer-hl-line, next-error-fringe-setup,
+;;            next-error-fringe-indicator.
 ;; 2015/06/13 dadams
 ;;     next-error: next-error-recenter is not defined for Emacs 22, so use boundp.
 ;; 2012/02/03 dadams
@@ -144,6 +162,7 @@
 
 (when (< emacs-major-version 22)        ; Quiet the byte-compiler.
   (defvar compilation-highlight-overlay)
+  (defvar fringe-indicator-alist)
   (defvar next-error-function)
   (defvar next-error-last-buffer)
   (defvar next-error-recenter))
@@ -152,7 +171,8 @@
 
 
 
-;; REPLACES ORIGINAL in `simple.el':
+;; REPLACE ORIGINAL in `simple.el'.
+;;
 ;; Added new value `until-move'.  It is used in `compile+.el'.
 ;;
 (when (> emacs-major-version 21)
@@ -179,7 +199,8 @@ Value:
 
 
 
-;; REPLACES ORIGINAL in `simple.el':
+;; REPLACE ORIGINAL in `simple.el'.
+;;
 ;; Added new value `until-move'.  It is used in `compile+.el'.
 ;;
 (when (> emacs-major-version 21)
@@ -206,7 +227,8 @@ Value:
 
 
 
-;; REPLACES ORIGINAL in `simple.el':
+;; REPLACE ORIGINAL in `simple.el'.
+;;
 ;; `C-u C-u' means delete the highlight overlay.
 ;;
 (when (> emacs-major-version 21)
@@ -255,12 +277,48 @@ See variables `compilation-parse-errors-function' and
             (recenter next-error-recenter))
           (run-hooks 'next-error-hook))))))
 
+;; Indicating the current error in the compilation/grep buffer.
+
+(when (fboundp 'hl-line-mode)
+
+  (defun next-error-buffer-hl-line ()
+    "Turn on `hl-line-mode' in buffer `next-error-last-buffer'.
+To turn it off: `M-x hl-line-mode' in the compilation/grep buffer."
+    (when (and next-error-last-buffer  (buffer-live-p next-error-last-buffer))
+      (with-current-buffer next-error-last-buffer
+        (hl-line-mode 1))))
+
+  ;; (add-hook 'next-error-hook 'next-error-buffer-hl-line)
+
+  )
+
+(when (> emacs-major-version 21)
+
+  (defvar next-error-fringe-indicator 'filled-rectangle
+    "Fringe indicator to use for `next-error' in compilation/grep buffer.
+The indicator is set to the value of `next-error-fringe-indicator'.")
+
+  (defun next-error-fringe-setup ()
+    "Set the fringe indicator for `next-error' in compilation/grep buffer."
+    (with-current-buffer next-error-last-buffer
+      (unless (eq next-error-fringe-indicator
+                  (cdr (assq 'overlay-arrow fringe-indicator-alist)))
+        (setq fringe-indicator-alist
+              (cons `(overlay-arrow . ,next-error-fringe-indicator)
+                    fringe-indicator-alist)))))
+
+  ;; (add-hook 'next-error-hook 'next-error-fringe-setup)
+
+  )
 
 
-;; REPLACES ORIGINAL in `simple.el':
+
+;; REPLACE ORIGINAL in `simple.el'.
+;;
 ;; Original was bugged: it added COMMAND as a string to
 ;; `command-history'.  This version adds it as a command.
 ;; This was fixed in Emacs 21.
+;;
 (when (< emacs-major-version 21)
   (defun edit-and-eval-command (prompt command)
     "Prompting with PROMPT, let user edit COMMAND and eval result.
@@ -323,7 +381,8 @@ of the variable, which is used as the default value when reading the new value."
 
 
 
-;; REPLACES ORIGINAL (built-in):
+;; REPLACE ORIGINAL (built-in).
+;;
 ;; Uses `read-var-and-value' to get args interactively.
 ;;
 ;;;###autoload
@@ -402,8 +461,11 @@ With a prefix argument, set VARIABLE to VALUE buffer-locally."
   (force-mode-line-update))
 
 
-;; REPLACES ORIGINAL in `simple.el':
+
+;; REPLACE ORIGINAL in `simple.el'.
+;;
 ;; Just updates 20.3 with version from 20.6.1: corrects deletion of multiple.
+;;
 (when (string< emacs-version "20.6.1")
   (defun comment-region (beg end &optional arg)
     "Comment or uncomment each line in the region.
@@ -495,7 +557,8 @@ not end the comment.  Blank lines do not get comments."
               (search-forward "\n" nil 'move))))))))
 
 
-;; REPLACES ORIGINAL in `simple.el':
+
+;; REPLACE ORIGINAL in `simple.el'.
 ;;
 ;; Fixes bug when REPLACE is non-nil but `kill-ring' is nil.
 ;;
