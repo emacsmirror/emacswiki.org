@@ -1,0 +1,7 @@
+[https://github.com/overtone/emacs-live Emacs Live] is a setup to help you run [http://overtone.github.io/ Overtone], "an open source audio environment designed to explore new musical ideas from synthesis and sampling to instrument building, live-coding and collaborative jamming" based on [http://clojure.org/ Clojure] and using [http://supercollider.github.io/ SuperCollider].
+It's an "opinionated set of defaults". Essentially, the installation instructions recommend you move your init file (##~/.emacs##) and and Emacs user directory (##~/.emacs.d/##) away and start over with the user directory provided by Emacs Live.
+
+* [https://vimeo.com/22798433 Quick Intro to Live Programming with Overtone] as linked from the Overtone homepage
+
+----
+CategoryMusic
