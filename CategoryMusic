@@ -1,0 +1,3 @@
+Modes and setups to help you write and perform music.
+
+* EmacsLive is a setup to help you run [http://overtone.github.io/ Overtone], "an open source audio environment designed to explore new musical ideas from synthesis and sampling to instrument building, live-coding and collaborative jamming" based on [http://clojure.org/ Clojure] and using [http://supercollider.github.io/ SuperCollider]
