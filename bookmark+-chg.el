@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jun 15 13:20:01 2015 (-0700)
+;; Last-Updated: Wed Jun 17 07:17:58 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15956
+;;     Update #: 15957
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/06/17 dadams
+;;     bmkp-bookmark-description: Added another \t for URL:.
 ;; 2015/06/15 dadams
 ;;     Allow for POSITION in bookmarks to be nil or absent - updated bookmark-default-handler,
 ;;       bmkp-region-bookmark-p, bmkp-handle-region-default, bmkp-goto-position, bmkp-jump-dired,
