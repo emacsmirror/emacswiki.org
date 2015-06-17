@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun May 17 21:06:41 2015 (-0700)
+;; Last-Updated: Wed Jun 17 07:25:36 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 27408
+;;     Update #: 27420
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5261,16 +5261,19 @@ If the option value is nil then DISPLAY is just the bookmark name."
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (icicle-condition-case-no-debug nil   ; Ignore errors, e.g. from bad or stale bookmark records.
       (if icicle-show-multi-completion-flag
-          (let* ((bname     (bookmark-name-from-full-record bookmark))
-                 (guts      (bookmark-get-bookmark-record bookmark))
-                 (file      (bookmark-get-filename bookmark))
-                 (buf       (bmkp-get-buffer-name bookmark))
-                 (file/buf  (if (and buf  (equal file bmkp-non-file-filename)) buf file))
-                 (tags      (bmkp-get-tags bookmark)))
+          (let* ((bname         (bookmark-name-from-full-record bookmark))
+                 (guts          (bookmark-get-bookmark-record bookmark))
+                 (file          (bookmark-get-filename bookmark))
+                 (buf           (bmkp-get-buffer-name bookmark))
+                 (loc           (bookmark-prop-get bookmark 'location))
+                 (file/buf/loc  (or (and (equal file bmkp-non-file-filename)
+                                         (or buf  loc))
+                                    file))
+                 (tags          (bmkp-get-tags bookmark)))
             (cons `(,(icicle-candidate-short-help
                       (icicle-bookmark-help-string bname)
                       (icicle-bookmark-propertize-candidate bname))
-                    ,file/buf
+                    ,file/buf/loc
                     ,@(and tags  (list (format "%S" tags))))
                   guts))
         (let ((bname  (bookmark-name-from-full-record bookmark))
@@ -5287,6 +5290,7 @@ If the option value is nil then DISPLAY is just the bookmark name."
   (let* ((bmk            (bookmark-get-bookmark bookmark-name))
          (buf            (and (fboundp 'bmkp-get-buffer-name)  (bmkp-get-buffer-name bmk)))
          (file           (bookmark-get-filename bookmark-name))
+         (location       (bookmark-prop-get bmk 'location))
          (start          (bookmark-get-position bookmark-name))
          (no-position-p  (not start))
          (end            (and (fboundp 'bmkp-get-end-position)  (bmkp-get-end-position bmk)))
@@ -5319,8 +5323,9 @@ If the option value is nil then DISPLAY is just the bookmark name."
                                           (format "`man %s', " man-args)
                                         ;; WoMan has no variable for the cmd name.
                                         (format "%s, " (bookmark-prop-get bmk 'buffer-name)))))
-                        (url-p      "URL, ")
+                        (url-p      "URL ")
                         (t nil)))
+            (and location  (format "%s, " location))
             (and (not dired-p)
                  (or (and file  (or (not (boundp 'bmkp-non-file-filename))
                                     (not (equal file bmkp-non-file-filename)))
