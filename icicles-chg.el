@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri May 29 20:31:32 2015 (-0700)
+;; Last-Updated: Wed Jun 17 07:25:18 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11441
+;;     Update #: 11443
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2015/06/17 dadams
+;;     icicle-make-bookmark-candidate, icicle-bookmark-help-string:
+;;       Updated to handle location field in bookmarks.  Thx to Martin Oppegaard.
 ;; 2015/05/17 dadams
 ;;     icicle-execute-extended-command-1:
 ;;       Do not bind message-log-max to nil.  Treat an empty-string current-message like nil.
