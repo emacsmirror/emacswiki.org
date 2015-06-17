@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr  5 14:45:27 2015 (-0700)
+;; Last-Updated: Wed Jun 17 14:46:59 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3850
+;;     Update #: 3865
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -81,6 +81,7 @@
 ;;    `hlt-highlight-all-prop', `hlt-highlight-enclosing-list',
 ;;    `hlt-highlighter', `hlt-highlighter-mouse',
 ;;    `hlt-highlight-isearch-matches',
+;;    `hlt-highlight-line-dups-region',
 ;;    `hlt-highlight-property-with-value',
 ;;    `hlt-highlight-regexp-region',
 ;;    `hlt-highlight-regexp-region-in-buffers',
@@ -110,8 +111,8 @@
 ;;    `hlt-act-on-any-face-flag', `hlt-auto-face-backgrounds',
 ;;    `hlt-auto-face-foreground', `hlt-auto-faces-flag',
 ;;    `hlt-default-copy/yank-props', `hlt-face-prop',
-;;    `hlt-max-region-no-warning', `hlt-overlays-priority',
-;;    `hlt-use-overlays-flag'.
+;;    `hlt-line-dups-ignore-regexp', `hlt-max-region-no-warning',
+;;    `hlt-overlays-priority', `hlt-use-overlays-flag'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -327,6 +328,15 @@
 ;;  has no effect for `hlt-eraser' unless `hlt-use-overlays-flag' is
 ;;  `only', in which case it erases the Nth face in
 ;;  `hlt-auto-face-backgrounds', where N is the prefix arg.
+;;
+;;  Command `hlt-highlight-line-dups-region' highlights the sets of
+;;  duplicate lines in the region (or the buffer, if the region is not
+;;  active).  By default, leading and trailing whitespace are ignored
+;;  when checking for duplicates, but this is controlled by option
+;;  `hlt-line-dups-ignore-regexp'.  And with a prefix arg the behavior
+;;  effectively acts opposite to the value of that option.  So if the
+;;  option says not to ignore whitespace and you use a prefix arg then
+;;  whitespace is ignored, and vice versa.
 ;;
 ;;  If you use Emacs 21 or later, you can use various commands that
 ;;  highlight and unhighlight text that has certain text properties
@@ -685,6 +695,7 @@
 ;;  more recent than Emacs 20:
 ;;
 ;;  `hlt-act-on-any-face-flag', `hlt-hide-default-face',
+;;  `hlt-highlight-line-dups-region',
 ;;  `hlt-highlight-property-with-value', `hlt-next-highlight',
 ;;  `hlt-previous-highlight', `hlt-show-default-face',
 ;;  `hlt-toggle-act-on-any-face-flag'.
@@ -714,6 +725,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/06/17 dadams
+;;     Added: hlt-highlight-line-dups-region, hlt-line-dups-ignore-regexp.
 ;; 2015/04/05 dadams
 ;;     Added: hlt-face-prop.
 ;;     hlt-highlighter, hlt-unhighlight-for-overlay, hlt-highlight-region, hlt-replace-highlight-face,
@@ -1220,6 +1233,17 @@ then highlighting persists - it is independent of font-locking."
   :group 'highlight)
 
 ;;;###autoload
+(defcustom hlt-line-dups-ignore-regexp "[ \t]*"
+  "Regexp to ignore leading and trailing text for duplicate lines.
+Or nil if no such text is to be ignored.
+Used by `hlt-highlight-line-dups-region' to determine whether two
+lines are duplicates."
+  :type '(choice
+          (string :tag "Regexp")
+          (const  :tag "Do not ignore leading or trailing text" nil))
+  :group 'highlight)
+
+;;;###autoload
 (defcustom hlt-max-region-no-warning 100000
   "*Maximum size (chars) of region to highlight without confirmation.
 This is used only for highlighting of a regexp, which can be slow."
@@ -1431,8 +1455,8 @@ of `hlt-auto-face-backgrounds' (uses `hlt-next-face')."
                      (overlay-put overlay 'hlt-highlight hlt-last-face)
                      (overlay-put overlay 'priority      hlt-overlays-priority))
                     (t
-                     (put-text-property start-point end-point hlt-face-prop     hlt-last-face)
-                     (put-text-property start-point end-point 'hlt-highlight    hlt-last-face)
+                     (put-text-property start-point end-point hlt-face-prop  hlt-last-face)
+                     (put-text-property start-point end-point 'hlt-highlight hlt-last-face)
                      (when (eq 'face hlt-face-prop)
                        (put-text-property start-point end-point 'font-lock-ignore t))))))
           (setq buffer-read-only  read-only)
@@ -2154,6 +2178,41 @@ Otherwise, use the last face used for highlighting.
     (setq face  hlt-last-face))
   (apply #'hlt-highlight-regexp-region
          (append (hlt-region-or-buffer-limits) (list "`\\([^']+\\)'" face (and (interactive-p)  t) nil 1))))
+
+;;;###autoload
+(defun hlt-highlight-line-dups-region (&optional start end msgp flip)
+  "Highlight sets of duplicate lines in the region.
+Each set is given a different background, according to user option
+`hlt-auto-face-backgrounds'.
+
+Whether leading and trailing whitespace is ignored is controlled by
+option `hlt-line-dups-ignore-regexp'.  But a prefix argument reverses
+this: if the option value is \"\" then whitespace defined by
+\"[ \t]*\" is ignored, and otherwise whitespace is not ignored."
+  (interactive `(,@(hlt-region-or-buffer-limits) t ,current-prefix-arg))
+  (let ((hlt-auto-faces-flag  t)
+        count line line-re)
+    (save-excursion
+      (goto-char start)
+      (while (< (point) end)
+        (setq count    0
+              line     (buffer-substring-no-properties (line-beginning-position)
+                                                       (line-end-position))
+              ignore   (and (not (string= "" line))
+                            (if hlt-line-dups-ignore-regexp
+                                (if flip "" hlt-line-dups-ignore-regexp)
+                              (if flip "[ \t]*" "")))
+              line-re  (concat "^" ignore (regexp-quote line) ignore "$"))
+        (save-excursion
+          (goto-char start)
+          (while (< (point) end)
+            (if (not (re-search-forward line-re end t))
+                (goto-char end)
+              (setq count  (1+ count))
+              (unless (< count 2)
+                (hlt-highlight-region (line-beginning-position) (line-end-position))
+                (forward-line 1)))))
+        (forward-line 1)))))
 
 ;;;###autoload
 (defun hlt-mouse-face-each-line (&optional start end face msgp)
