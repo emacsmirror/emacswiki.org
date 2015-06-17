@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jun 15 13:17:54 2015 (-0700)
+;; Last-Updated: Wed Jun 17 07:17:09 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7782
+;;     Update #: 7783
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8109,7 +8109,7 @@ the file is an image file then the description includes the following:
                                                         (file-name-nondirectory file)
                                                         (bookmark-prop-get bookmark 'info-node))))
                    (w3m-p            (and file  (format "W3m URL:\t\t%s\n" file)))
-                   (url-p            (format "URL:\t\t%s\n" location))
+                   (url-p            (format "URL:\t\t\t%s\n" location))
                    (desktop-p        (format "Desktop file:\t\t%s\n"
                                              (bookmark-prop-get bookmark 'desktop-file)))
                    (bookmark-file-p  (format "Bookmark file:\t\t%s\n"
