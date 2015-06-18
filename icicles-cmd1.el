@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Jun 17 07:25:36 2015 (-0700)
+;; Last-Updated: Thu Jun 18 09:01:20 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 27420
+;;     Update #: 27427
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5267,7 +5267,7 @@ If the option value is nil then DISPLAY is just the bookmark name."
                  (buf           (bmkp-get-buffer-name bookmark))
                  (loc           (bookmark-prop-get bookmark 'location))
                  (file/buf/loc  (or (and (equal file bmkp-non-file-filename)
-                                         (or buf  loc))
+                                         (or loc  buf))
                                     file))
                  (tags          (bmkp-get-tags bookmark)))
             (cons `(,(icicle-candidate-short-help
@@ -5288,7 +5288,7 @@ If the option value is nil then DISPLAY is just the bookmark name."
   "Return a help string for BOOKMARK-NAME." ; `bmkp-*' functions are defined in `Bookmark+'.
   ;; Use BOOKMARK-NAME, not full bookmark BMK, as arg to vanilla bookmark functions, for Emacs < 23.
   (let* ((bmk            (bookmark-get-bookmark bookmark-name))
-         (buf            (and (fboundp 'bmkp-get-buffer-name)  (bmkp-get-buffer-name bmk)))
+         (buf            (bookmark-prop-get bmk 'buffer-name))
          (file           (bookmark-get-filename bookmark-name))
          (location       (bookmark-prop-get bmk 'location))
          (start          (bookmark-get-position bookmark-name))
@@ -5319,10 +5319,8 @@ If the option value is nil then DISPLAY is just the bookmark name."
                         (gnus-p     "Gnus, ")
                         (info-p     "Info, ")
                         (man-p      (let ((man-args  (bookmark-prop-get bmk 'man-args)))
-                                      (if man-args
-                                          (format "`man %s', " man-args)
-                                        ;; WoMan has no variable for the cmd name.
-                                        (format "%s, " (bookmark-prop-get bmk 'buffer-name)))))
+                                      ;; WoMan has no variable for the cmd name.
+                                      (if man-args (format "`man %s', " man-args) (format "%s, " buf))))
                         (url-p      "URL ")
                         (t nil)))
             (and location  (format "%s, " location))
