@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Jun 17 07:17:09 2015 (-0700)
+;; Last-Updated: Thu Jun 18 08:28:09 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7783
+;;     Update #: 7792
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2818,9 +2818,9 @@ for property `buffer-name'.  Return the first such property found, or
   (bookmark-maybe-load-default-file)
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (or (bookmark-prop-get bookmark 'location)
-      (bookmark-get-filename bookmark)
       (bmkp-get-buffer-name bookmark)
       (bookmark-prop-get bookmark 'buffer)
+      (bookmark-get-filename bookmark)
       "-- Unknown location --"))
 
 
@@ -4138,7 +4138,8 @@ If it is a record then it need not belong to `bookmark-alist'."
                 (filep                                           'local-file)
                 ((and (bmkp-get-buffer-name bookmark)
                       (or (not filep)
-                          (equal filep bmkp-non-file-filename))) 'buffer)
+                          (equal filep bmkp-non-file-filename)))
+                 'buffer)
                 (t                                               nil))))
     (error nil)))
 
@@ -8066,8 +8067,9 @@ the file is an image file then the description includes the following:
         (w3m-p            (bmkp-w3m-bookmark-p bookmark))
         (temp-p           (bmkp-temporary-bookmark-p bookmark))
         (annot            (bookmark-get-annotation bookmark))
-        no-position-p)
-    (setq no-position-p  (not start))
+        non-file-p no-position-p)
+    (setq non-file-p     (equal file bmkp-non-file-filename)
+          no-position-p  (not start))
     (when (or sequence-p  function-p  variable-list-p  search-hits-p) (setq no-position-p  t))
     (let* ((temp-text  (if temp-p "TEMPORARY " ""))
            (help-text
@@ -8129,8 +8131,8 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
                                                     (if switches "" (format "\t"))
                                                     (expand-file-name file)
                                                     marked inserted hidden))))
-                   ((equal file bmkp-non-file-filename)
-                    (format "Buffer:\t\t\t%s\n" (bmkp-get-buffer-name bookmark)))
+                   (non-file-p       (or (and location  (format "Location:\t\t%s\n" location))
+                                         (and buf  (format "Buffer:\t\t\t%s\n" buf))))
                    (file             (concat (format "File:\t\t\t%s\n" (file-name-nondirectory file))
                                              (let ((dir  (file-name-directory (expand-file-name file))))
                                                (and dir  (format "Directory:\t\t%s\n" dir)))))
