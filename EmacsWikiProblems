@@ -8,10 +8,18 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
-==RandomPage== Not working
+==RandomPage==
+
+This is not working.
 
 The http://www.emacswiki.org/emacs?action=random link always takes me to PaulKinnucan
 
+[new]
+I guess that's because you're getting the cached random page. :)
+
+Perhaps it's time to retire the Random Page. Do you regularly click the Random Page link?
+
+-- Alex Schroeder
 
 --------
 == Revisioning Problems ==
