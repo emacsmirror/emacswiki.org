@@ -1,4 +1,7 @@
 [[ja:ミュージックプレイヤー]]
+
+See CategoryMusic for ways to /make/ music using Emacs.
+
 == MP3/Ogg-Vorbis/Other music players (in alphabetical order) ==
 
 * [[Amarok]] -- remote control the giant wolf
@@ -46,11 +49,6 @@
 == Transcribing and synchronizing ==
 
 * LyricMode starts an ogg123 process and parses the timing information that comes back from it, letting you insert and edit synchronization tags
-
-
-== Music and Sound Composition/Design/Performance ==
-
-SuperCollider
 
 ----
 CategoryModes | MultimediaModes
