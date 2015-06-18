@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jun 17 07:17:58 2015 (-0700)
+;; Last-Updated: Thu Jun 18 08:58:02 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15957
+;;     Update #: 15964
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/06/18 dadams
+;;     bmkp-bookmark-description: Print location, if present, for non-file bmk.  Thx Martin Oppegaard.
+;;     bookmark-location: Reordered - prefer buffer name to file name.
 ;; 2015/06/17 dadams
 ;;     bmkp-bookmark-description: Added another \t for URL:.
 ;; 2015/06/15 dadams
