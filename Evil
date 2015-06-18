@@ -1,6 +1,6 @@
 [[image/right:EvilLogo]]
 
-'''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to [[Vimpulse]] and [VimMode vim-mode]. Its [http://gitorious.org/evil/pages/Home home page].
+'''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to [[Vimpulse]] and [VimMode vim-mode]. Its [https://bitbucket.org/lyro/evil/wiki/Home home page].
 
 Current stable version: **1.1.6**
 
@@ -41,11 +41,11 @@ Evil can be alternatively downloaded and installed with:
 
 ==Install from source==
 
-Evil lives in a Git repository. To download Evil, do:
+Evil lives in a Mercurial repository. To download Evil, do:
 
-    git clone git://gitorious.org/evil/evil.git
+    hg clone https://bitbucket.org/lyro/evil
 
-If you don't have Git, just head over to [https://gitorious.org/evil/evil/commits/master Gitorious] and click the ''"Download master as tar.gz"'' link (extract with ##tar -xzf master.tar.gz##).
+If you don't have Mercurial, just head over to [https://bitbucket.org/lyro/evil/downloads Bitbucket] and click the ''"Download master as tar.gz"'' link (extract with ##tar -xzf master.tar.gz##).
 
 Move Evil to ##~/.emacs.d/evil## (or somewhere else in your ##load-path##). Then add the following lines to ##~/.emacs##:
 
