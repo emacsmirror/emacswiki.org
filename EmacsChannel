@@ -57,7 +57,7 @@ If you need the help of a friendly *operator* (usually for kicking and banning o
 
 : ops?
 
-In the background the Freenode server maitains an *access list* for the channel.  Try it for yourself:
+In the background the Freenode server maintains an *access list* for the channel.  Try it for yourself:
 
     /msg chanserv access #emacs list
 
