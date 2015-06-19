@@ -59,13 +59,13 @@ the keywords to all the modes in the list.
   '((t (:background "pale green")))
   "Used in text-mode and friends for exactly one space after a period.")
 
-(mapcar (lambda (mode)
-	  (font-lock-add-keywords
-	   mode
-	   '(("FIXME" 0 'show-paren-mismatch-face)
-	     ("\\.\\( \\)\\b" 1 'extra-whitespace-face))))
-	'(text-mode latex-mode html-mode emacs-lisp-mode
-	  texinfo-mode))
+(mapc (lambda (mode)
+        (font-lock-add-keywords
+         mode
+         '(("FIXME" 0 'show-paren-mismatch-face)
+           ("\\.\\( \\)\\b" 1 'extra-whitespace-face))))
+      '(text-mode latex-mode html-mode emacs-lisp-mode
+        texinfo-mode))
 </pre>
 
 The second REGEXP highlights all single spaces after a point.  (I want
