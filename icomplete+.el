@@ -8,9 +8,9 @@
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  4 15:45:46 2015 (-0800)
+;; Last-Updated: Thu Jun 18 16:25:12 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1693
+;;     Update #: 1695
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -125,6 +125,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/06/18 dadams
+;;     icomplete-completions: Use boundp for icicle-mode, not fboundp.
 ;; 2014/04/15 dadams
 ;;     icomplete-exhibit: Update version tests, for Emacs 24.4 pretest (23.90.1).
 ;; 2014/04/13 dadams
@@ -992,7 +994,7 @@ In Icicle mode:
    M-x forward-line   [Matched]  (13 more)."
     ;; `concat'/`mapconcat' is the slow part.
     (let* ((non-essential  t)
-           (icyp           (and (fboundp 'icicle-mode)  icicle-mode))
+           (icyp           (and (boundp 'icicle-mode)  icicle-mode))
            (open-bracket   (if require-match "("   " ["))
            (close-bracket  (if require-match ") "  "] "))
            (md             (completion--field-metadata (field-beginning)))
@@ -1212,7 +1214,7 @@ In Icicle mode:
     (let* ((non-essential                    t)
 	   (minibuffer-completion-table      candidates)
 	   (minibuffer-completion-predicate  predicate)
-	   (icyp                             (and (fboundp 'icicle-mode)  icicle-mode))
+	   (icyp                             (and (boundp 'icicle-mode)  icicle-mode))
            (open-bracket                     (if require-match "("   " ["))
            (close-bracket                    (if require-match ") "  "] "))
            (md                               (completion--field-metadata (icomplete--field-beg)))
