@@ -1,0 +1,8 @@
+I'd like to see some attention paid to backward compatibility.
+
+For example, 24.5 has changed (newline), requiring me to discover its use of electric-indent-mode, so that I could get (newline) to behave as it did in 24.3.
+
+I'm tired of chasing changes every time I move to a new version.
+
+-- bobd444 2015-06-20 04:14 UTC
+
