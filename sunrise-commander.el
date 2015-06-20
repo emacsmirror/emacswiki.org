@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 459 $
+;; RCS Version: $Rev: 460 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -639,6 +639,7 @@ The following keybindings are available:
         Y ............. do relative soft-link of selected file in passive pane
         H ............. hard-link selected file to passive pane
         K ............. clone selected files and directories into passive pane
+        N ............. in place copy/rename/link marked (or current) entries
         M-C ........... copy (using traditional dired-do-copy)
         M-R ........... rename (using traditional dired-do-rename)
         M-D ........... delete (using traditional dired-do-delete)
@@ -1114,6 +1115,7 @@ the Sunrise Commander."
 (define-key sr-mode-map "S"           'sr-do-symlink)
 (define-key sr-mode-map "Y"           'sr-do-relsymlink)
 (define-key sr-mode-map "H"           'sr-do-hardlink)
+(define-key sr-mode-map "N"           'sr-inplace)
 (define-key sr-mode-map "\M-C"        'dired-do-copy)
 (define-key sr-mode-map "\M-R"        'dired-do-rename)
 (define-key sr-mode-map "\M-D"        'dired-do-delete)
@@ -1266,7 +1268,7 @@ these values uses the default, ie. $HOME."
       (unless (eq my-frame (window-frame (selected-window)))
         (select-frame my-frame)
         (sunrise left-directory right-directory filename)))))
- 
+
 ;;;###autoload
 (defun sr-dired (&optional target switches)
   "Visit the given target (file or directory) in `sr-mode'."
@@ -1278,7 +1280,7 @@ these values uses the default, ie. $HOME."
          (directory (if file (file-name-directory target) target))
          (dired-omit-mode (if sr-show-hidden-files -1 1))
          (sr-listing-switches (or switches sr-listing-switches)))
-    (unless (file-readable-p directory) 
+    (unless (file-readable-p directory)
       (error "%s is not readable!" (sr-directory-name-proper directory)))
     (unless (and sr-running (eq (selected-frame) sr-current-frame)) (sunrise))
     (sr-select-window sr-selected-window)
@@ -2331,13 +2333,13 @@ Selective hiding of specific attributes can be controlled by customizing the
                   ((null display-function-or-flag) '(invisible t))
                   (t nil))))
       (if sr-attributes-display-mask
-          (block block 
+          (block block
             (mapc (lambda (do-display)
                     (search-forward-regexp "\\w")
                     (search-forward-regexp "\\s-")
                     (forward-char -1)
                     (setq props (sr-make-display-props do-display))
-                    (when props 
+                    (when props
                       (add-text-properties cursor (point) props))
                     (setq cursor (point))
                     (if (>= (point) end) (return-from block)))
@@ -3109,13 +3111,59 @@ IN-DIR/D => TO-DIR/D using CLONE-OP to clone the files."
                           (expand-file-name from sr-other-directory))
                         marker)))
 
+(defun sr-inplace ()
+  "Allow to select an in-place operation and execute it.
+In-place operations are file operations that are executed in the
+context of the current pane, totally ignoring the other one."
+  (interactive)
+  (let ((mode (read-char "In-place: (C)opy, (R)ename, (H)ardlink, (S)ymlink")))
+    (if (and mode (>= mode 97)) (setq mode (- mode 32)))
+    (case mode
+      (?C (sr-inplace-do #'copy-file "Copy in place to"))
+      (?R (sr-inplace-do #'rename-file "Rename in place to"))
+      (?H (sr-inplace-do #'add-name-to-file "Add name in place"))
+      (?S (sr-inplace-do #'make-symbolic-link "Link in place to"))
+      (t (sr-inplace)))))
+
+(defun sr-inplace-do (action prompt)
+  "Perform the given ACTION in the context of the current pane.
+The given PROMPT will be displayed to the user interactively."
+  (let* ((marked (dired-get-marked-files))
+         (prompt (concat prompt ": "))
+         (target
+          (if (cdr marked)
+              (read-directory-name prompt)
+            (read-file-name
+             prompt nil nil nil (file-name-nondirectory (car marked)) #'ignore)))
+         (progress (sr-make-progress-reporter "working" (length marked)))
+         (inhibit-read-only t))
+
+    (when (< 1 (length marked))
+      (if (file-exists-p target)
+          (unless (file-directory-p target)
+            (error "Sunrise: Multiple selection, but target is not a directory"))
+        (if (y-or-n-p (format "Directory %s does not exit. Create? " target))
+            (make-directory target t)
+          (error "Sunrise: Unable to proceed - aborting"))))
+
+    (mapc (lambda (x)
+            (if (and (not (equal (expand-file-name x) (expand-file-name target)))
+                     (or (not (file-exists-p target))
+                         (file-directory-p target)
+                         (y-or-n-p (format "File %s exists. OK to overwrite? "
+                                           target))))
+                (funcall action x target t)))
+          marked)
+    (revert-buffer)
+    (sr-progress-reporter-done progress)))
+
 (defun sr-virtual-source ()
   "if the active pane is in VIRTUAL mode, return its name as a string.
 Otherwise return nil."
   (if (eq major-mode 'sr-virtual-mode)
       (or (buffer-file-name) "Sunrise VIRTUAL buffer")
     nil))
- 
+
 (defun sr-virtual-target ()
   "If the passive pane is in VIRTUAL mode, return its name as a string.
 Otherwise return nil."
@@ -3592,7 +3640,7 @@ additional grep options."
                  default-grep-options))
          (options (split-string opts " " t))
          (marked (sr-get-marked-files))
-         (target 
+         (target
           (if (and marked (y-or-n-p "Grep in marked items only? "))
               marked
             '("."))))
