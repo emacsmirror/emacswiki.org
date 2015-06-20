@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 460 $
+;; RCS Version: $Rev: 461 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -2406,7 +2406,7 @@ Appends additional options to `dired-listing-switches' and
 reverts the buffer."
   (if (eq major-mode 'sr-virtual-mode)
       (sr-sort-virtual option)
-    (progn
+    (let ((option (if (= 0 (length option)) option (concat " -" option))))
       (put sr-selected-window 'sorting-order label)
       (put sr-selected-window 'sorting-options option)
       (let ((dired-listing-switches dired-listing-switches))
