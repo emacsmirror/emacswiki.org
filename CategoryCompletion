@@ -89,7 +89,7 @@ Some completions are available in modes that provide command interaction.
 * [[Anything]] -- Lisp:anything-complete.el replaces Emacs Completion.
 * [[CSense]] -- Completion extension.
 * [[irony-mode]] -- Completion based on clang
-* [[http://kristianrumberg.wordpress.com/2010/04/22/smart-autocompletion-for-c-in-emacs/ CLang]] -- Completion extension based on CLang.
+* [[http://kristianrumberg.wordpress.com/2010/04/22/smart-autocompletion-for-c-in-emacs/ Clang]] -- Completion extension based on Clang.
 * [[https://github.com/abo-abo/function-args/ function-args]] -- C++ completion extension for CEDET.
 
 
