@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun 10 15:49:22 2015 (-0700)
+;; Last-Updated: Sun Jun 21 09:23:03 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 612
+;;     Update #: 618
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -32,14 +32,15 @@
 ;;  Command `apropos-char' (aka `apropos-unicode', aka `apu-chars')
 ;;  describes the Unicode characters that match an apropos pattern you
 ;;  specify: a regexp or a space-separated list of words.  The
-;;  characters whose names match are shown in a help buffer, along
-;;  with the names and code points (decimal and hex).
+;;  characters whose names or old names match are shown in a help
+;;  buffer, along with the names (or old names) and code points
+;;  (decimal and hex).
 ;;
 ;;  Command `describe-chars-in-region' (aka `apu-chars-in-region')
-;;  shows describes the Unicode characters that are in the region.  By
+;;  describes the Unicode characters that are in the region.  By
 ;;  default, it shows each distinct character only once.  With a
 ;;  prefix argument it has a line describing each occurrence of each
-;;  character.
+;;  character in the region.
 ;;
 ;;  For each of these commmands, in the help buffer describing the
 ;;  characters you can use these keys to act on the character
@@ -118,6 +119,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/06/21 dadams
+;;     apu-tablist-match-entries: Restored 6/09 definition, so keep old names too.
+;;     apu-make-tablist-entry: Let CHAR be a cons (CHAR-NAME . CHAR-CODE) too, to handle old names.
 ;; 2015/06/10 dadams
 ;;     Added: apu-char-name.
 ;;     apu-tablist-match-entries:
@@ -740,14 +744,19 @@ Simple tips for matching some common Unicode character names:
   "Function value for `tabulated-list-entries'.
 See `apu-make-tablist-entry'."
   (when apu--refresh-p (apu-compute-matches))
-  (mapcar #'apu-make-tablist-entry (mapcar #'cdr (cdr apu--matches))))
+  (mapcar #'apu-make-tablist-entry (cdr apu--matches)))
 
 (defun apu-make-tablist-entry (char)
-  "Return a tablist entry for CHAR, a Unicode code point.
+  "Return a tablist entry for CHAR.
+CHAR is either a Unicode code point or a cons similar to an element of
+`ucs-names': (CHAR-NAME . CHAR-CODE).  CHAR-NAME is the `name' or
+`old-name' property of the character, and CHAR-CODE is its code point.
+\(For `ucs-names', property `old-name' is not used.)
+
 This  is a list (CHAR [GLYPH NAME DEC HEX]), where:
 CODE  is the character (an integer),
 GLYPH is its string representation,
-NAME  is its name,
+NAME  is its name or old name,
 DEC   is its decimal representation,
 HEX   is its hexadecimal representation.
 
@@ -755,10 +764,11 @@ GLYPH, NAME, DEC, and HEX are strings.
 
 If CHAR is not recognized then it is added to the buffer-local list
 `apu--unnamed-chars'.  This list of chars is then displayed."
-  (let ((name  (apu-char-name char)))
+  (let ((name  (if (consp char) (car char) (apu-char-name char)))
+        (code  (if (consp char) (cdr char) char)))
     (if name
-        (list char (vector (char-to-string char) name (format "%6d" char) (format "%#8x" char)))
-      (push char apu--unnamed-chars)
+        (list code (vector (char-to-string code) name (format "%6d" code) (format "%#8x" code)))
+      (push code apu--unnamed-chars)
       nil)))
 
 (defun apu-char-name (character)
