@@ -247,6 +247,13 @@ REGEDIT4
 [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]
 "Scancode Map"=hex:00,00,00,00,00,00,00,00,03,00,00,00,1d,00,3a,00,3a,00,1d,00,00,00,00,00
 </pre>
+or this powershell code:
+<pre>
+Push-Location
+Set-Location HKLM:\SYSTEM\CurrentControlSet\Control\Keyboard Layout
+New-ItemProperty . -Name 'Scancode Map' -PropertyType Binary -Value (0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x03,0x00,0x00,0x00,0x1d,0x00,0x3a,0x00,0x3a,0x00,0x1d,0x00,0x00,0x00,0x00,0x00)
+Pop-Location
+</pre>
 
 
 This can also be done by manually editing the registry to accomplish the same thing, see [http://geekquanta.blogspot.com/2007/07/remapping-ctrl-and-caps-lock-in-windows.html] for an explanation.
