@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 461 $
+;; RCS Version: $Rev: 462 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1251,8 +1251,7 @@ these values uses the default, ie. $HOME."
         (sr-switch-to-nonpane-buffer)
         (setq sr-restore-buffer (current-buffer)
               sr-current-frame (window-frame (selected-window))
-              sr-prior-window-configuration (current-window-configuration)
-              sr-running t)
+              sr-prior-window-configuration (current-window-configuration))
         (sr-setup-windows)
         (if filename
             (condition-case description
@@ -1261,7 +1260,8 @@ these values uses the default, ie. $HOME."
         (setq sr-this-directory default-directory)
         (message "%s" welcome)
         (sr-highlight) ;;<-- W32Emacs needs this
-        (hl-line-mode 1))
+        (hl-line-mode 1)
+        (setq sr-running t))
     (let ((my-frame (window-frame (selected-window))))
       (sr-quit)
       (message "All life leaps out to greet the light...")
@@ -1340,7 +1340,8 @@ buffer or window."
          (progn
            (switch-to-buffer ,(sr-symbol side 'buffer))
            (setq ,(sr-symbol side 'directory) default-directory))
-       (sr-dired ,(sr-symbol side 'directory)))))
+       (let ((sr-running t))
+         (sr-dired ,(sr-symbol side 'directory))))))
 
 (defun sr-setup-visible-panes ()
   "Set up sunrise on all visible panes."
@@ -2040,14 +2041,17 @@ and add it to your `load-path'" name name))))
              (eq (selected-window) (sr-other 'window)))
     (let ((there sr-this-directory))
       (setq sr-selected-window (sr-other)
+            sr-selected-window-width nil
             sr-this-directory default-directory
             sr-other-directory there)
+      (sr-save-panes-width)
       (sr-highlight))))
 
 (defun sr-change-window()
   "Change to the other Sunrise pane."
   (interactive)
-  (sr-select-window (sr-other)))
+  (sr-select-window (sr-other))
+  (setq sr-selected-window-width nil))
 
 (defun sr-mouse-change-window (e)
   "Change to the Sunrise pane clicked in by the mouse."
