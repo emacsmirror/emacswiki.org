@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 21 09:23:03 2015 (-0700)
+;; Last-Updated: Sun Jun 21 15:56:22 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 618
+;;     Update #: 668
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -98,11 +98,12 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
+;;    `apu-add-to-pats+bufs', `apu-buf-name-for-matching',
 ;;    `apu-char-at-point', `apu-char-displayable-p', `apu-char-here',
 ;;    `apu-char-name', `apu-char-name-here', `apu-char-string-here',
-;;    `apu-chars-read-pattern-arg', `apu-compute-matches',
-;;    `apu-copy-char-to-second-sel', `apu-filter',
-;;    `apu-full-word-match', `apu-make-tablist-entry',
+;;    `apu-chars-narrow-1', `apu-chars-read-pattern-arg',
+;;    `apu-compute-matches', `apu-copy-char-to-second-sel',
+;;    `apu-filter', `apu-full-word-match', `apu-make-tablist-entry',
 ;;    `apu-match-type-msg', `apu-print-apropos-matches',
 ;;    `apu-print-chars', `apu-remove-if-not', `apu-sort-char',
 ;;    `apu-substring-match', `apu-tablist-match-entries'.
@@ -112,14 +113,25 @@
 ;;    `apu--buffer-invoked-from', `apu-latest-pattern-set',
 ;;    `apu--matches', `apu--match-two-or-more', `apu--match-type',
 ;;    `apu--match-words-exactly', `apu--orig-buffer',
-;;    `apu--pats+bufs', `apu--patterns', `apu--refresh-p',
-;;    `apu--unnamed-chars'.
+;;    `apu--pats+bufs', `apu--patterns', `apu--patterns-not',
+;;    `apu--refresh-p', `apu--unnamed-chars'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
 ;; 2015/06/21 dadams
+;;     Added: apu--patterns-not, apu-add-to-pats+bufs, apu-buf-name-for-matching, apu-chars-narrow-1,
+;;            apu-delete-if, apu-remove-if.
+;;     apu--pats+bufs, apu-latest-pattern-set: Added exclusion patterns.
+;;     apu-chars-matching-*, apropos-char:
+;;       apu--patterns is now just the car of apu-latest-pattern-set.  apu-latest-pattern-set includes
+;;       place for exclusions.  Use apu-buf-name-for-matching and apu-add-to-pats+bufs.
+;;     apu-compute-matches: Handle apu--patterns-not also.
+;;     apu-filter: Added optional arg NOTP.
+;;     apu-chars-read-pattern-arg: Added optional arg PREFIX.
+;;     apu-print-chars: Increased default width of name field to 40.
+;;     Bind * and - to apu-chars-narrow and apu-chars-narrow-not.
 ;;     apu-tablist-match-entries: Restored 6/09 definition, so keep old names too.
 ;;     apu-make-tablist-entry: Let CHAR be a cons (CHAR-NAME . CHAR-CODE) too, to handle old names.
 ;; 2015/06/10 dadams
@@ -256,7 +268,10 @@ performance is impacted."
 ;;; Global variables -------------------------------------------------
 
 (defvar apu-latest-pattern-set ()
-  "Latest set of patterns used for matching by `apropos-char'.")
+  "Latest set of patterns used for matching by `apropos-char'.
+It is a list of two pattern lists: (INCLUDES EXCLUDES).
+INCLUDES are patterns that must be matched.
+EXCLUDES are patterns that must not be matched.")
 
 (defvar apu--match-type 'MATCH-WORDS-AS-SUBSTRINGS
   "How the current `apu-char*' command matches a word-list pattern.
@@ -276,8 +291,9 @@ Any other value acts like `MATCH-WORDS-AS-SUBSTRINGS'")
 ;; different sets of patterns.  `apu--pattern' is local to the list buffer that shows the matches.
 (defvar apu--pats+bufs ()
   "Alist of patterns and their list buffers.
-Each entry has form (PATTERN . BUFFER), where
-the buffer-local value of `apu--patterns' in BUFFER is PATTERN.")
+Each entry has form (PATTERN PATTERN-NOT . BUFFER), where
+the buffer-local values of `apu--patterns' and `apu--patterns-not' in
+BUFFER are PATTERN and PATTERN-NOT, respectively.")
 
 (defvar apu--refresh-p nil
   "Non-nil means that `apu-tablist-match-entries' recomputes matches.")
@@ -314,6 +330,11 @@ Default value is from `apu-match-words-exactly-flag'.")
 (make-variable-buffer-local 'apu--patterns)
 (put 'apu--patterns 'permanent-local t)
 
+(defvar apu--patterns-not ()
+  "Patterns currently used by `apropos-unicode' to exclude Unicode chars.")
+(make-variable-buffer-local 'apu--patterns-not)
+(put 'apu--patterns-not 'permanent-local t)
+
 (defvar apu--unnamed-chars ()
   "Chars not recognized as Unicode.
 They are for the last apu command associated with this output buffer.")
@@ -341,10 +362,11 @@ Same as `apropos-char' with a non-nil value of
 pattern as a full word."
   (interactive)
   (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
-  (setq apu-latest-pattern-set  (list (apu-chars-read-pattern-arg)))
-  (let ((list-buf  (get-buffer-create (format "*`%S' Matches*" apu-latest-pattern-set))))
-    (add-to-list 'apu--pats+bufs (cons apu-latest-pattern-set list-buf))
-    (with-current-buffer list-buf (setq apu--patterns apu-latest-pattern-set)))
+  (setq apu-latest-pattern-set  (list (list (apu-chars-read-pattern-arg)) nil))
+  (let ((list-buf  (get-buffer-create (apu-buf-name-for-matching (car apu-latest-pattern-set)
+                                                                 (cdr apu-latest-pattern-set)))))
+    (apu-add-to-pats+bufs (cons apu-latest-pattern-set list-buf))
+    (with-current-buffer list-buf (setq apu--patterns  (car apu-latest-pattern-set))))
   (setq apu--match-type  'MATCH-WORDS-EXACTLY)
   (apu-chars))
 
@@ -356,10 +378,11 @@ Same as `apropos-char' with a nil value of
 word-list pattern, as a full word."
   (interactive)
   (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
-  (setq apu-latest-pattern-set  (list (apu-chars-read-pattern-arg)))
-  (let ((list-buf  (get-buffer-create (format "*`%S' Matches*" apu-latest-pattern-set))))
-    (add-to-list 'apu--pats+bufs (cons apu-latest-pattern-set list-buf))
-    (with-current-buffer list-buf (setq apu--patterns apu-latest-pattern-set)))
+  (setq apu-latest-pattern-set  (list (list (apu-chars-read-pattern-arg)) nil))
+  (let ((list-buf  (get-buffer-create (apu-buf-name-for-matching (car apu-latest-pattern-set)
+                                                                 (cdr apu-latest-pattern-set)))))
+    (apu-add-to-pats+bufs (cons apu-latest-pattern-set list-buf))
+    (with-current-buffer list-buf (setq apu--patterns (car apu-latest-pattern-set))))
   (setq apu--match-type  'MATCH-TWO-OR-MORE)
   (apu-chars))
 
@@ -371,10 +394,11 @@ Same as `apropos-char' with a nil value of
 pattern as a substring."
   (interactive)
   (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
-  (setq apu-latest-pattern-set  (list (apu-chars-read-pattern-arg)))
-  (let ((list-buf  (get-buffer-create (format "*`%S' Matches*" apu-latest-pattern-set))))
-    (add-to-list 'apu--pats+bufs (cons apu-latest-pattern-set list-buf))
-    (with-current-buffer list-buf (setq apu--patterns apu-latest-pattern-set)))
+  (setq apu-latest-pattern-set  (list (list (apu-chars-read-pattern-arg)) nil))
+  (let ((list-buf  (get-buffer-create (apu-buf-name-for-matching (car apu-latest-pattern-set)
+                                                                 (cdr apu-latest-pattern-set)))))
+    (apu-add-to-pats+bufs (cons apu-latest-pattern-set list-buf))
+    (with-current-buffer list-buf (setq apu--patterns (car apu-latest-pattern-set))))
   (setq apu--match-type  'MATCH-WORDS-AS-SUBSTRINGS)
   (apu-chars))
 
@@ -430,6 +454,8 @@ Does nothing if current pattern is a regexp instead of a word list."
 (define-key apu-mode-map   "l"         'apu-local-set-insertion-key)
 (define-key apu-mode-map   "z"         'apu-zoom-char-here)
 (define-key apu-mode-map   "^"         'apu-insert-char)
+(define-key apu-mode-map   "*"         'apu-chars-narrow)
+(define-key apu-mode-map   "-"         'apu-chars-narrow-not)
 (define-key apu-mode-map (kbd "C-c n") 'apu-chars-refresh-with-next-match-method)
 (define-key apu-mode-map (kbd "C-c s") 'apu-chars-refresh-matching-as-substrings)
 (define-key apu-mode-map (kbd "C-c w") 'apu-chars-refresh-matching-full-words)
@@ -619,7 +645,7 @@ The character descriptions are presented in `apu-mode'."
       (setq case-fold-search          t
             tabulated-list-format     (vector '("Ch"       2 apu-sort-char)
                                               ;; Use 30 as a default name width.
-                                              `("Name"     ,(or (car apu--matches)  30) t)
+                                              `("Name"     ,(or (car apu--matches)  40) t)
                                               '("Decimal"  7 apu-sort-char :right-align t)
                                               '("Hex"      8 apu-sort-char :right-align t))
             tabulated-list-sort-key   nil
@@ -633,14 +659,18 @@ The character descriptions are presented in `apu-mode'."
 (defalias 'apu-chars 'apropos-char)
 ;;;###autoload
 (defun apropos-char ()                  ; Not bound by default.
-  "Show all Unicode chars whose names match PATTERN.
-PATTERN is as for command `apropos': a word, a list of words
+  "Show all Unicode chars whose names match a pattern.
+The pattern is as for command `apropos': a word, a list of words
  \(separated by spaces), or a regexp (using some regexp special
  characters).  If it is a word, search for matches for that word as a
  substring.  If it is a list of words, search for matches for any two
  \(or more) of those words.
 
 The character descriptions are presented in `apu-mode'.
+
+You can provide additional patterns, to narrow the set of displayed
+characters to those that also match the additional patterns or to
+those that do not match them.  `*' and `-' do this, respectively.
 
 Non-nil option `apu-match-only-displayable-chars-flag' means match
 only characters that are `char-displayable-p' in the buffer where
@@ -683,13 +713,16 @@ Simple tips for matching some common Unicode character names:
 * You can use `small letter' to match lowercase letters, and `capital
   letter' to match capital letters.  Just `small' matches lots of
   chars that are not letters.  Just `capital' matches chars that
-  include capital letters that serve as math symbols and such."
+  include capital letters that serve as math symbols and such.
+
+\\{apu-mode-map}"
   (interactive (prog1 ()
-                 (setq apu-latest-pattern-set  (list (apu-chars-read-pattern-arg)))
-                 (let ((list-buf  (get-buffer-create (format "*`%S' Matches*"
-                                                             apu-latest-pattern-set))))
-                   (add-to-list 'apu--pats+bufs (cons apu-latest-pattern-set list-buf))
-                   (with-current-buffer list-buf (setq apu--patterns apu-latest-pattern-set)))))
+                 (setq apu-latest-pattern-set  (list (list (apu-chars-read-pattern-arg)) nil))
+                 (let ((list-buf  (get-buffer-create
+                                   (apu-buf-name-for-matching (car apu-latest-pattern-set)
+                                                              (cdr apu-latest-pattern-set)))))
+                   (apu-add-to-pats+bufs (cons apu-latest-pattern-set list-buf))
+                   (with-current-buffer list-buf (setq apu--patterns (car apu-latest-pattern-set))))))
   (setq apu--orig-buffer  (current-buffer)
         apu--refresh-p    t)
   (when (called-interactively-p 'interactive)
@@ -701,9 +734,18 @@ Simple tips for matching some common Unicode character names:
   (apu-print-apropos-matches)
   (apu-match-type-msg))
 
-(defun apu-chars-read-pattern-arg ()
+(defun apu-add-to-pats+bufs (entry)
+  "Add ENTRY to `apu--pats+bufs'.  Remove entries for killed buffers."
+  (add-to-list 'apu--pats+bufs entry)
+  (setq apu--pats+bufs  (apu-delete-if-not (lambda (p.b) (buffer-live-p (cdr p.b))) apu--pats+bufs)))
+
+(defun apu-buf-name-for-matching (include exclude)
+  "Return a buffer name reflecting patterns INCLUDE and EXCLUDE."
+  (format "*`%S' but NOT `%S'*" include exclude))
+
+(defun apu-chars-read-pattern-arg (&optional prefix)
   "Read a pattern arg for `apu-chars*' commands."
-  (let ((pat  (read-string "Search for Unicode char (word list or regexp): ")))
+  (let ((pat  (read-string (format "%sUnicode name pattern (word list or regexp): " (or prefix "")))))
     (if (string-equal (regexp-quote pat) pat)
         (or (split-string pat "[ \t]+" t)  (user-error "No word list given"))
       pat)))
@@ -779,9 +821,9 @@ This is Unicode property `name' if there is one, or property
 
 (defun apu-compute-matches ()     ; Invoked in the list-output buffer.
   "Compute matches for apropos Unicode commands."
-  (let ((patterns  apu--patterns))
-
-    (message "Matching `%s'..." patterns)
+  (let ((patterns      apu--patterns)
+        (patterns-not  apu--patterns-not))
+    (message "Matching `%s' and not `%s'..." patterns patterns-not)
     (ucs-names)
     (let* ((case-fold-search  t)
            (max-char          0)
@@ -790,61 +832,85 @@ This is Unicode property `name' if there is one, or property
         (setq names+codes  (apu-filter pat names+codes))
         (when apu-match-only-displayable-chars-flag
           (setq names+codes  (apu-delete-if-not #'apu-char-displayable-p names+codes)))
-        (unless names+codes (error "No characters match `%S'" patterns)))
+        (unless names+codes (error "No characters match patterns specified")))
+      (dolist (pat  patterns-not)
+        (setq names+codes  (apu-filter pat names+codes 'NOT))
+        (when apu-match-only-displayable-chars-flag
+          (setq names+codes  (apu-delete-if-not #'apu-char-displayable-p names+codes)))
+        (unless names+codes (error "No characters match patterns specified")))
       (dolist (char+code  names+codes) (setq max-char  (max max-char (string-width (car char+code)))))
       (message "Matching `%s'...done" patterns)
       (setq apu--matches  (cons max-char names+codes)))))
 
-(defun apu-filter (pattern names+codes)
+(defun apu-filter (pattern names+codes &optional notp)
   "Try to match PATTERN against each element of alist NAMES+CODES.
+Return filtered list.
 PATTERN is as for `apropos-char'.
 NAMES+CODES has the same form as `ucs-names'.
-If NAMES+CODES is nil then match against `ucs-names'."
-  (let ((match-fn  (if (eq apu--match-type 'MATCH-WORDS-EXACTLY)
-                       #'apu-full-word-match
-                     #'apu-substring-match)))
-  (cond ((or (atom pattern)  (eq apu--match-type 'MATCH-TWO-OR-MORE))
-         (require 'apropos) ; `apropos-parse-pattern', `apropos-regexp'.
-         (let ((apropos-synonyms  apu-synonyms)) (apropos-parse-pattern pattern))
-         (apu-remove-if-not (apply-partially #'apu-substring-match apropos-regexp)
-                            (or names+codes  ucs-names)))
-        (t ; List of words, to be matched as full words or substrings.
-         (let ((chs+cds  ())
-               (first    (car pattern)))
-           (dolist (c.c  (or names+codes  ucs-names))
-             (when (funcall match-fn first c.c) (push c.c chs+cds)))
-           (dolist (word  (cdr pattern))
-             (setq chs+cds  (apu-delete-if-not (apply-partially match-fn word) chs+cds)))
-           chs+cds)))))
+If NAMES+CODES is nil then match against `ucs-names'.
 
-(defun apu-chars-narrow (pattern)       ; Not bound by default.
+Non-nil optional arg NOTP means exclude, instead of include, matches
+for PATTERN."
+  (let ((match-fn     (if (eq apu--match-type 'MATCH-WORDS-EXACTLY)
+                          #'apu-full-word-match
+                        #'apu-substring-match))
+        (rem-filt-fn  (if notp #'apu-remove-if #'apu-remove-if-not))
+        (del-filt-fn  (if notp #'apu-delete-if #'apu-delete-if-not)))
+    (cond ((or (atom pattern)  (eq apu--match-type 'MATCH-TWO-OR-MORE))
+           (require 'apropos) ; `apropos-parse-pattern', `apropos-regexp'.
+           (let ((apropos-synonyms  apu-synonyms)) (apropos-parse-pattern pattern))
+           (funcall rem-filt-fn (apply-partially #'apu-substring-match apropos-regexp)
+                    (or names+codes  ucs-names)))
+          (t ; List of words, to be matched as full words or substrings.
+           (let ((chs+cds  ())
+                 (first    (car pattern)))
+             (dolist (c.c  (or names+codes  ucs-names))
+               (if notp
+                   (unless (funcall match-fn first c.c) (push c.c chs+cds))
+                 (when (funcall match-fn first c.c) (push c.c chs+cds))))
+             (dolist (word  (cdr pattern))
+               (setq chs+cds  (funcall del-filt-fn (apply-partially match-fn word) chs+cds)))
+             chs+cds)))))
+
+(defun apu-chars-narrow (pattern)       ; Bound to `*'.
   "Narrow matches in current buffer to those also matching another PATTERN.
 You are prompted for the PATTERN, which is as for `apropos-char'."
-  (interactive (list (apu-chars-read-pattern-arg)))
+  (interactive (list (apu-chars-read-pattern-arg "Include only ")))
+  (apu-chars-narrow-1 pattern))
+
+(defun apu-chars-narrow-not (pattern)   ; Bound to `-'.
+  "Narrow matches in current buffer to those not matching another PATTERN.
+You are prompted for the PATTERN, which is as for `apropos-char'."
+  (interactive (list (apu-chars-read-pattern-arg "Exclude ")))
+  (apu-chars-narrow-1 pattern 'NOT))
+
+(defun apu-chars-narrow-1 (pattern &optional notp)
+  "Helper for `apu-chars-narrow' and `apu-chars-narrow-not'."
   (unless apu--buffer-invoked-from (error "Not an `apropos-char' buffer"))
-  (let* ((orig-pats   apu--patterns)
-         (bufs-entry  (rassoc (current-buffer) (with-current-buffer apu--buffer-invoked-from
-                                                 apu--pats+bufs))))
-    (add-to-list 'apu--patterns pattern 'APPEND)
-    (when bufs-entry (setcar bufs-entry apu--patterns))) ; Update the entry in `apu--pats+bufs'.
-  (let ((newbufname  (format "*`%S' Matches*" apu--patterns)))
+  (let ((orig-pats   (if notp 'apu--patterns-not 'apu--patterns))
+        (bufs-entry  (rassoc (current-buffer)
+                             (with-current-buffer apu--buffer-invoked-from apu--pats+bufs))))
+    (add-to-list orig-pats pattern 'APPEND)
+    (when bufs-entry (if notp
+                         (setcdr (car bufs-entry) (list apu--patterns-not))
+                       (setcar (car bufs-entry) apu--patterns)))) ; Update entry in `apu--pats+bufs'.
+  (let ((newbufname  (apu-buf-name-for-matching apu--patterns apu--patterns-not)))
     (when (get-buffer newbufname)
-      (let ((kill-buffer-query-functions  ()))
-        (kill-buffer (format "*`%S' Matches*" apu--patterns)))))
-  (rename-buffer (format "*`%S' Matches*" apu--patterns))
+      (let ((kill-buffer-query-functions  ())) (kill-buffer newbufname)))
+    (rename-buffer newbufname))
   (let ((case-fold-search  t)
         (orig-names+codes  (cdr apu--matches))
         (max-char          0)
         (match-fn          (if (eq apu--match-type 'MATCH-WORDS-EXACTLY)
                                #'apu-full-word-match
                              #'apu-substring-match)))
-    (setcdr apu--matches (apu-filter pattern (cdr apu--matches)))
-    (unless (cdr apu--matches) (error "No characters match `%s'" pattern))
+    (setcdr apu--matches (apu-filter pattern (cdr apu--matches) notp))
+    (unless (cdr apu--matches) (error "No characters match patterns specified"))
     (dolist (char+code  (cdr apu--matches))
       (setq max-char  (max max-char (string-width (car char+code)))))
     (message "Matching `%s'...done" pattern)
     (setcar apu--matches max-char))
-  (setq apu-latest-pattern-set  apu--patterns) ; For `apu-print-apropos-matches'.
+  (setq apu-latest-pattern-set  (list apu--patterns apu--patterns-not)) ; For `apu-print-apropos-matches'.
   (let ((apu--refresh-p  nil))
     (with-current-buffer apu--buffer-invoked-from (apu-print-apropos-matches)))
   (apu-match-type-msg))
@@ -866,13 +932,27 @@ Each arg has the form of the elements of `tabulated-list-entries'.
 The car of each arg is the character codepoint, which is compared."
   (> (car entry1) (car entry2)))
 
-;; Same as `icicle-remove-if-not' etc.
+;; Same as `icicle-remove-if' etc.
+(defun apu-remove-if (pred xs)
+  "A copy of list XS with only elements that do not satisfy predicate PRED."
+  (let ((result  ())) (dolist (x xs) (unless (funcall pred x) (push x result))) (nreverse result)))
+
 (defun apu-remove-if-not (pred xs)
   "A copy of list XS with only elements that satisfy predicate PRED."
   (let ((result  ())) (dolist (x xs) (when (funcall pred x) (push x result))) (nreverse result)))
 
-(defun apu-delete-if-not (predicate xs)
+(defun apu-delete-if (predicate xs)
   "Remove all elements of list XS that satisfy PREDICATE.
+This operation is destructive, reusing conses of XS whenever possible."
+  (while (and xs  (funcall predicate (car xs)))
+    (setq xs  (cdr xs)))
+  (let ((cl-p  xs))
+    (while (cdr cl-p)
+      (if (funcall predicate (cadr cl-p)) (setcdr cl-p (cddr cl-p)) (setq cl-p  (cdr cl-p)))))
+  xs)
+
+(defun apu-delete-if-not (predicate xs)
+  "Remove all elements of list XS that do not satisfy PREDICATE.
 This operation is destructive, reusing conses of XS whenever possible."
   (while (and xs  (not (funcall predicate (car xs))))
     (setq xs  (cdr xs)))
