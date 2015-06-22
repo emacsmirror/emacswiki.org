@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 6
-;; RCS Version: $Rev: 462 $
+;; RCS Version: $Rev: 463 $
 ;; Keywords: files, dired, midnight commander, norton, orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -1258,9 +1258,9 @@ these values uses the default, ie. $HOME."
                 (sr-focus-filename (file-name-nondirectory filename))
               (error (setq welcome (cadr description)))))
         (setq sr-this-directory default-directory)
-        (message "%s" welcome)
         (sr-highlight) ;;<-- W32Emacs needs this
         (hl-line-mode 1)
+        (message "%s" welcome)
         (setq sr-running t))
     (let ((my-frame (window-frame (selected-window))))
       (sr-quit)
@@ -1271,7 +1271,8 @@ these values uses the default, ie. $HOME."
 
 ;;;###autoload
 (defun sr-dired (&optional target switches)
-  "Visit the given target (file or directory) in `sr-mode'."
+  "Visit the given TARGET (file or directory) in `sr-mode'.
+If provided, use SWITCHES instead of `sr-listing-switches'."
   (interactive
    (list
     (read-file-name "Visit (file or directory): " nil nil nil)))
@@ -1526,16 +1527,16 @@ With optional argument REVERT, executes `revert-buffer' on the passive buffer."
   (interactive)
   (if (not sr-running)
       (bury-buffer)
-    (setq sr-running nil
-          sr-current-frame nil
-          buffer-read-only nil)
-    (sr-save-directories)
-    (sr-save-panes-width)
-    (when (or norestore (not (sr-restore-prior-configuration)))
-      (sr-select-viewer-window)
-      (delete-other-windows))
-    (sr-bury-panes)
-    (run-hooks 'sr-quit-hook)))
+    (let ((buffer-read-only nil))
+      (setq sr-running nil
+            sr-current-frame nil)
+      (sr-save-directories)
+      (sr-save-panes-width)
+      (when (or norestore (not (sr-restore-prior-configuration)))
+        (sr-select-viewer-window)
+        (delete-other-windows))
+      (sr-bury-panes)
+      (run-hooks 'sr-quit-hook))))
 
 (add-hook 'delete-frame-functions
           (lambda (frame)
@@ -3386,7 +3387,8 @@ as its first argument."
               (if (buffer-live-p sr-restore-buffer)
                   (switch-to-buffer sr-restore-buffer))
               (delete-other-windows)
-              (sr-setup-windows))))
+              (sr-setup-windows)
+              (sr-graphical-highlight))))
 
 (defun sr-diff-form (fun)
   "Return the appropriate form to evaluate for comparing files using FUN."
