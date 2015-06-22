@@ -10,7 +10,7 @@ Perl script to generate a html file.  You can also use it as a cgi script with s
 
 == Writing an LDIF file ==
 
-Perl script to export BBDB to LDFI:
+Perl script to export BBDB to LDIF:
 
 * http://www.geekfarm.org/twiki/bin/view/Main/BbdbToLdap
 
@@ -35,6 +35,9 @@ Norman Walsh published [http://www.mail-archive.com/bbdb-info@lists.sourceforge.
 
 Toby Speight and others have written http://www.cs.utah.edu/~karra/ps94/bbdb-xml-print.el (last update May 24 2005) .
 
+== Writing exporters with Python ==
+
+The !PyBBDB module (https://pypi.python.org/pypi/pybbdb) can be used to write your own BBDB exporter.
 
 == vCard Export == [:VcardExport]
 
