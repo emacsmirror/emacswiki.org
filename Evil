@@ -303,5 +303,12 @@ You may find that the ESC key does not work as expected when running "emacs -nw"
     maptimeout 5
 
 See details on this [http://vim.wikia.com/wiki/GNU_Screen_integration|link]
+
+=== ESC key under tmux ===
+Like GNU Screen above, the ESC key may not work as expected when running emacs within tmux. This can be alleviated by setting the option 'escape-time' to 0. You can perform the following in runtime, or add it to your tmux configuration file:
+
+    set -s escape-time 0
+
+This fix was found on [https://stackoverflow.com/questions/23259366/emacs-evil-mode-ctrl-irritating-delay-switching-to-normal-mode|this page]
 ----
 CategoryKeys CategoryEmulation
