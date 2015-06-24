@@ -197,7 +197,7 @@ RichardStallman wrote a paper describing the design of the original
 Emacs and the lessons to be learned from it.  It also contains a [http://www.gnu.org/software/emacs/emacs-paper.html#SEC17 section
 on dynamic binding].
 
-See the node `Scope' in the EmacsLispReference.
+See the [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Dynamic-Binding.html|node Dynamic Binding]] in the EmacsLispReference.
 
 
 == Moving towards lexical binding ==
