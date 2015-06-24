@@ -392,6 +392,33 @@ To reverse the changes, use
  defaults delete org.gnu.Emacs AppleAntiAliasingThreshold
 
 
+===  Open emacsclient in a new iTerm tab from Mac's Finder ===
+<pre>
+-- -*- coding:utf-8 mode:applescript-*-
+-- http://superuser.com/questions/457484/how-to-open-emacs-from-macs-finder
+-- https://gist.github.com/ambethia/304964#comment-799519
+--  use automator.app save this as an app
+on run {input, parameters}
+	tell application "iTerm"
+		activate
+		if (count of terminals) = 0 then
+			set t to (make new terminal)
+		else
+			set t to current terminal
+		end if
+		tell t
+			set s to (make new session at the end of sessions)
+			tell s
+				exec command (("/usr/local/bin/emacsclient -t -nw \"" & POSIX path of first item of input as text) & "\"")
+			end tell
+		end tell
+	end tell
+end run
+</pre>
+
+
+
+
 == Hacking on the Sources ==
 
 The section is meant to collect useful hacks to the C sources (or to Lisp sources that are executed before any init files are read, such as ##startup.el##).
@@ -503,4 +530,4 @@ A further change is to have the knob be of constant, minimal size, so that it on
 </pre>
 
 ------
-CategoryPorts CategoryBuilding 
+CategoryPorts CategoryBuilding
