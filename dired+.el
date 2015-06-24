@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun 24 14:04:12 2015 (-0700)
+;; Last-Updated: Wed Jun 24 15:14:00 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9050
+;;     Update #: 9052
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -331,7 +331,7 @@
 ;;    `diredp-do-apply-function-recursive',
 ;;    `diredp-async-shell-command-this-file',
 ;;    `diredp-bookmark-this-file',
-;;    `diredp-breadcrumbs-in-header-line-mode' (Emacs 23+),
+;;    `diredp-breadcrumbs-in-header-line-mode' (Emacs 22+),
 ;;    `diredp-byte-compile-this-file', `diredp-capitalize',
 ;;    `diredp-capitalize-recursive', `diredp-capitalize-this-file',
 ;;    `diredp-chgrp-this-file', `diredp-chmod-this-file',
@@ -499,7 +499,7 @@
 ;;    `diredp-recent-dirs', `diredp-refontify-buffer',
 ;;    `diredp-remove-if', `diredp-remove-if-not',
 ;;    `diredp-root-directory-p', `diredp-set-header-line-breadcrumbs'
-;;    (Emacs 23+), `diredp-set-tag-value', `diredp-set-union',
+;;    (Emacs 22+), `diredp-set-tag-value', `diredp-set-union',
 ;;    `diredp-string-match-p', `diredp-tag',
 ;;    `diredp-this-file-marked-p', `diredp-this-file-unmarked-p',
 ;;    `diredp-this-subdir', `diredp-untag', `diredp-y-or-n-files-p'.
@@ -9987,7 +9987,7 @@ This calls chmod, so symbolic modes like `g+w' are allowed."
 
 ;;; Breadcrumbs
 
-(when (> emacs-major-version 22)
+(when (fboundp 'define-minor-mode)
 
   ;; Macro `define-minor-mode' is not defined in Emacs 20, so in order to be able to byte-compile
   ;; this file in Emacs 20, prohibit byte-compiling of the `define-minor-mode' call.
