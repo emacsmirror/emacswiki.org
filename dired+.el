@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jun  6 18:45:04 2015 (-0700)
+;; Last-Updated: Wed Jun 24 13:47:18 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9035
+;;     Update #: 9049
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -330,10 +330,12 @@
 ;;    `diredp-do-apply-function',
 ;;    `diredp-do-apply-function-recursive',
 ;;    `diredp-async-shell-command-this-file',
-;;    `diredp-bookmark-this-file', `diredp-byte-compile-this-file',
-;;    `diredp-capitalize', `diredp-capitalize-recursive',
-;;    `diredp-capitalize-this-file', `diredp-chgrp-this-file',
-;;    `diredp-chmod-this-file', `diredp-chown-this-file',
+;;    `diredp-bookmark-this-file',
+;;    `diredp-breadcrumbs-in-header-line-mode' (Emacs 23+),
+;;    `diredp-byte-compile-this-file', `diredp-capitalize',
+;;    `diredp-capitalize-recursive', `diredp-capitalize-this-file',
+;;    `diredp-chgrp-this-file', `diredp-chmod-this-file',
+;;    `diredp-chown-this-file',
 ;;    `diredp-compilation-files-other-window' (Emacs 24+),
 ;;    `diredp-compress-this-file',
 ;;    `diredp-copy-filename-as-kill-recursive',
@@ -491,12 +493,13 @@
 ;;    `diredp-make-find-file-keys-not-reuse-dirs', `diredp-maplist',
 ;;    `diredp-marked-here', `diredp-mark-files-tagged-all/none',
 ;;    `diredp-mark-files-tagged-some/not-all',
-;;    `diredp-nonempty-region-p', `diredp-paste-add-tags',
-;;    `diredp-paste-replace-tags', `diredp-read-bookmark-file-args',
-;;    `diredp-read-include/exclude', `diredp-recent-dirs',
-;;    `diredp-refontify-buffer', `diredp-remove-if',
-;;    `diredp-remove-if-not', `diredp-root-directory-p',
-;;    `diredp-set-tag-value', `diredp-set-union',
+;;    `diredp-nonempty-region-p', `diredp-parent-dir',
+;;    `diredp-paste-add-tags', `diredp-paste-replace-tags',
+;;    `diredp-read-bookmark-file-args', `diredp-read-include/exclude',
+;;    `diredp-recent-dirs', `diredp-refontify-buffer',
+;;    `diredp-remove-if', `diredp-remove-if-not',
+;;    `diredp-root-directory-p', `diredp-set-header-line-breadcrumbs'
+;;    (Emacs 23+), `diredp-set-tag-value', `diredp-set-union',
 ;;    `diredp-string-match-p', `diredp-tag',
 ;;    `diredp-this-file-marked-p', `diredp-this-file-unmarked-p',
 ;;    `diredp-this-subdir', `diredp-untag', `diredp-y-or-n-files-p'.
@@ -620,6 +623,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/06/24 dadams
+;;     Added: diredp-parent-dir, diredp-breadcrumbs-in-header-line-mode, diredp-set-header-line-breadcrumbs.
 ;; 2015/06/06 dadams
 ;;     Added dired-other-(frame|window).
 ;;     diredp-font-lock-keywords-1:
@@ -1488,6 +1493,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar diredp-menu-bar-immediate-bookmarks-menu) ; Here, if Bookmark+ is available
 (defvar filesets-data)                            ; In `filesets.el'
 (defvar grep-use-null-device)                     ; In `grep.el'
+(defvar header-line-format)                       ; Emacs 22+
 (defvar icicle-file-sort)                         ; In `icicles-opt.el'
 (defvar icicle-ignored-directories)               ; In `icicles-opt.el'
 (defvar icicle-sort-comparer)                     ; In `icicles-opt.el'
@@ -1874,6 +1880,14 @@ ignored if not in a Dired mode.
     (or (and (eq system-type 'windows-nt)
              (diredp-string-match-p "\\`[a-zA-Z]:[/\\]\\'" (file-name-as-directory file)))
         (string= "/" file))))
+
+(defun diredp-parent-dir (file &optional absolutep)
+  "Return the parent directory of FILE, or nil if none.
+Optional arg ABSOLUTEP non-nil means return an absolute name by
+invoking `expand-file-name'."
+  (let ((parent  (file-name-directory (directory-file-name (expand-file-name file)))))
+    (when (and parent absolutep) (setq parent  (expand-file-name parent)))
+    (and (not (equal parent file))  parent)))
 
 (unless (fboundp 'derived-mode-p)       ; Emacs 20, 21.
   (defun derived-mode-p (&rest modes)
@@ -9969,6 +9983,56 @@ This calls chmod, so symbolic modes like `g+w' are allowed."
       (goto-char (posn-point mouse-pos)))
     (dired-do-chxxx "Owner" dired-chown-program 'chown 1)
     (diredp-previous-line 1)))
+
+
+;;; Breadcrumbs
+
+(when (> emacs-major-version 22)
+
+  ;; Macro `define-minor-mode' is not defined in Emacs 20, so in order to be able to byte-compile
+  ;; this file in Emacs 20, prohibit byte-compiling of the `define-minor-mode' call.
+  ;;
+  (eval '(define-minor-mode diredp-breadcrumbs-in-header-line-mode
+          "Toggle the use of breadcrumbs in Dired header line.
+With arg, show breadcrumbs iff arg is positive.
+Change the default behavior by customizing option
+`diredp-breadcrumbs-in-header-line-mode'."
+          :init-value nil :group 'header-line :group 'Dired-Plus
+          (unless (derived-mode-p 'dired-mode)
+            (error "You must be in Dired or a mode derived from it to use this command"))
+          (if diredp-breadcrumbs-in-header-line-mode
+              (diredp-set-header-line-breadcrumbs)
+            (setq header-line-format  (default-value 'header-line-format)))))
+
+  (defun diredp-set-header-line-breadcrumbs ()
+    "Show a header line with breadcrumbs to parent directories."
+    (let ((parent  (diredp-parent-dir default-directory))
+          (crumbs  ())
+          (text    ""))
+      (while parent
+        (push parent crumbs)
+        (setq parent  (diredp-parent-dir parent)))
+      (dolist (dir  crumbs)
+        (let ((crumbs-map  (make-sparse-keymap))
+              (menu-map    (make-sparse-keymap "Breadcrumbs in Header Line")))
+          ;; (define-key crumbs-map [header-line mouse-3] menu-map)
+          (when dir
+            (setq dir  (propertize dir
+                                   'local-map (progn (define-key crumbs-map [header-line mouse-1]
+                                                       `(lambda () (interactive)
+                                                         (dired ,dir dired-actual-switches)))
+                                                     (define-key crumbs-map [header-line mouse-2]
+                                                       `(lambda () (interactive)
+                                                         (dired-other-window ,dir dired-actual-switches)))
+                                                     crumbs-map)
+                                   'mouse-face 'mode-line-highlight
+                                   ;; 'help-echo "mouse-1: Dired; mouse-2: Dired in other window; mouse-3: Menu"))
+                                   'help-echo "mouse-1: Dired; mouse-2: Dired in other window"))
+            (setq text  (concat text (if (diredp-root-directory-p dir) "" "  ") dir)))
+          (make-local-variable 'header-line-format)
+          (setq header-line-format  text)))))
+
+  )
 
 
 ;;; `Dired+' Help
