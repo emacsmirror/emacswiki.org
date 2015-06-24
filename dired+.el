@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun 24 13:47:18 2015 (-0700)
+;; Last-Updated: Wed Jun 24 14:04:12 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9049
+;;     Update #: 9050
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -9994,9 +9994,7 @@ This calls chmod, so symbolic modes like `g+w' are allowed."
   ;;
   (eval '(define-minor-mode diredp-breadcrumbs-in-header-line-mode
           "Toggle the use of breadcrumbs in Dired header line.
-With arg, show breadcrumbs iff arg is positive.
-Change the default behavior by customizing option
-`diredp-breadcrumbs-in-header-line-mode'."
+With arg, show breadcrumbs iff arg is positive."
           :init-value nil :group 'header-line :group 'Dired-Plus
           (unless (derived-mode-p 'dired-mode)
             (error "You must be in Dired or a mode derived from it to use this command"))
