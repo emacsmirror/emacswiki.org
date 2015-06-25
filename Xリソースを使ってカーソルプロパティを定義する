@@ -1,0 +1,20 @@
+[[en:DefiningCursorUsingXresources]]
+
+== Xリソースを使ってカーソルプロパティを定義する ==
+
+Xウィンドウシステムを使っている時, あなたはカーソル色を[[Xresource]]の`Emacs.cursorColor'でセットできる,
+例えばこのコマンドで:
+
+<pre>
+echo 'Emacs.cursorColor: #a00000' | xrdb -override
+</pre>
+
+もしくは永久にあなたの<code>~/.Xresources</code>に<code>Emacs.cursorColor: #a00000</code>1行を追加することによって.
+もしあなたが[[ViperMode]]を使っているならば,
+この設定は実際には任意のEmacs内部のカスタマイズ設定に優先します;
+''私が思うに'' Viperはvi-modeへ切り替える時にはいつもXリソースをリストアする.
+
+[[WikiPedia:Cursor (computing)]]も参照されたし
+
+----
+[[カテゴリ・ディスプレイ]]
