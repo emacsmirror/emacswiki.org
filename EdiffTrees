@@ -47,7 +47,7 @@ A control window, like ediff's own, that provides the ability to navigate among 
 [[RobStewart]]
 
 [new]
-===Comparing directories in Emacs===
+===Comparing directories recursively in Emacs, even with a filter===
 Comes from http://unix.stackexchange.com/questions/27128/comparing-directories-in-emacs/152645#152645
 
 
