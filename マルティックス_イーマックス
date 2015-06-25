@@ -1,0 +1,14 @@
+[[en:MulticsEmacs]]
+
+Multics Emacsは最初に拡張言語にLispを持つものでした.
+それはMacLispで書かれました.
+
+ソースは[http://web.mit.edu/afs/net/dev/reference/multics/ldd/unb/source/ ここ]です
+
+BarryMargolinはMultics Emacsへのたくさんの変更をしているようです.
+
+詳しくは, Greenbergのペーパー, [http://www.multicians.org/mepap.html "Multics Emacs: 歴史, 設計そして実装"]を参照されたし.
+
+----
+[[カテゴリ・歴史]]CategoryHistory
+[[実装]]EmacsImplementations
