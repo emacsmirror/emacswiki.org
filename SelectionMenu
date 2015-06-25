@@ -12,11 +12,13 @@ Lisp:selection-menu.el is an emacs lisp module/function providing:
 
 === example use ===
 
-{{{ 
+{{{
 (let ((font (selection-menu "Choose font:" '("DeJaVu Sans Mono-10"
 					     "Monospace-12"))))
   (if font (set-face-font 'default font)))
 }}}
+
+[[Image:SelectionMenuImage]]
 
 
 ----
