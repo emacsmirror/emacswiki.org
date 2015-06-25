@@ -1,0 +1,23 @@
+== selection menu ==
+Lisp:selection-menu.el is an emacs lisp module/function providing:
+
+{{{
+(defun selection-menu (ident items &optional unread)
+  "Pops up a buffer listing lines given ITEMS one per line.
+   Use arrow keys (or C-p/C-n) to select and SPC/RET to select.
+   Return to parent buffer when any other key is pressed.
+   In this case if optional UNREAD is non-nil return the
+   read key back to input queue for parent to consume." ...)
+}}}
+
+=== example use ===
+
+{{{ 
+(let ((font (selection-menu "Choose font:" '("DeJaVu Sans Mono-10"
+					     "Monospace-12"))))
+  (if font (set-face-font 'default font)))
+}}}
+
+
+----
+CategoryMenus
