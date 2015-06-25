@@ -1,5 +1,5 @@
 [[ja:Xリソースを使ってカーソルプロパティを定義する]]
-[[ja:Xリソースを使ってカーソルプロパティを定義する]]
+
 == Defining Cursor Properties Using Xresources ==
 
 When using the X Window System, you can set the cursor color in the [[Xresource]] `Emacs.cursorColor', for example with this command:
