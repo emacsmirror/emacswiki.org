@@ -1,0 +1,12 @@
+[[en:PopularWords]]
+
+このモードはもしあなたがもっともポピュラーな1000もしくは2000単語の1つではない任意の単語を使っているならばあなたに警告する.
+`デフォルト'のフェイスを使って最もポピュラーな単語をマークすること以外は何もしない`text-mode'を基にした2つの別のモードがある.
+それ以外の全ては`エラー'フェイスとしてハイライトされる.
+
+単語のリストは[WikiPedia:Brown_Corpus Brown Corpus]から最頻出な2000単語からのものです.
+あなたはそれらを全てインターネット上から探すことができる.
+
+[https://github.com/kensanata/elisp/blob/master/1000-words.el 1000-words.el]
+----
+CategoryWriting
