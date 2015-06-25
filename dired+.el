@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun 24 21:18:20 2015 (-0700)
+;; Last-Updated: Wed Jun 24 21:53:44 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9053
+;;     Update #: 9055
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1890,13 +1890,14 @@ ignored if not in a Dired mode.
              (diredp-string-match-p "\\`[a-zA-Z]:[/\\]\\'" (file-name-as-directory file)))
         (string= "/" file))))
 
-(defun diredp-parent-dir (file &optional absolutep)
+(defun diredp-parent-dir (file &optional relativep)
   "Return the parent directory of FILE, or nil if none.
-Optional arg ABSOLUTEP non-nil means return an absolute name by
-invoking `expand-file-name'."
-  (let ((parent  (file-name-directory (directory-file-name (expand-file-name file)))))
-    (when (and parent absolutep) (setq parent  (expand-file-name parent)))
-    (and (not (equal parent file))  parent)))
+Optional arg RELATIVEP non-nil means return a relative name, that is,
+just the parent component."
+  (let ((parent  (file-name-directory (directory-file-name (expand-file-name file))))
+        relparent)
+    (when relativep (setq relparent  (file-name-nondirectory (directory-file-name parent))))
+    (and (not (equal parent file))  (or relparent  parent))))
 
 (unless (fboundp 'derived-mode-p)       ; Emacs 20, 21.
   (defun derived-mode-p (&rest modes)
