@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun 24 15:14:00 2015 (-0700)
+;; Last-Updated: Wed Jun 24 21:18:20 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9052
+;;     Update #: 9053
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -272,6 +272,15 @@
 ;;     Dired listing to an explicit list of absolute file names.  With
 ;;     a non-positive prefix arg, you can add extra file and directory
 ;;     names, just as for `diredp-add-to-dired-buffer'.
+;;
+;;  You can optionally add a header line to a Dired buffer using
+;;  toggle command `diredp-breadcrumbs-in-header-line-mode'.  (A
+;;  header line remains at the top of the window - no need to scroll
+;;  to see it.)  If you want to show the header line automatically in
+;;  all Dired buffers, you can do this:
+;;
+;;    (add-hook 'dired-before-readin-hook
+;;              'diredp-breadcrumbs-in-header-line-mode)
 ;;
 ;;  Some other libraries, such as `Bookmark+' and `Icicles', make it
 ;;  easy to create or re-create Dired buffers that list specific files
