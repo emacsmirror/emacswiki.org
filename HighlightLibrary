@@ -108,7 +108,7 @@ To save highlighting permanently, do the following:
 
 When you reopen your file later, it is automatically in
 enriched mode, and your highlighting shows.  However, be aware
-that [[FontLock|font-locking]] can interfere with enriched mode, so you might want to use it on files where you don't use font-locking.  But see also [[#InteractionWithFont Lock|Interaction with Font Lock]].
+that [[FontLock|font-locking]] can interfere with enriched mode, so you might want to use it on files where you don't use font-locking.  But see also [[#InteractionWithFontLock|Interaction with Font Lock]].
 
 
 
