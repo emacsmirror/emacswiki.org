@@ -18,8 +18,9 @@ Lisp:selection-menu.el is an emacs lisp module/function providing:
   (if font (set-face-font 'default font)))
 }}}
 
-[[Image:SelectionMenuImage]]
+and in action
 
+[[image:SelectionMenuImage]]
 
 ----
 CategoryMenus
