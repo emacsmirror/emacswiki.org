@@ -22,5 +22,7 @@ and in action
 
 [[image:SelectionMenuImage]]
 
+Is it possible to use pre-filled (temporary) buffer provided that first character in each line is "## ##" and then call
+##selection-menu--select## for it, should there be use case for such a thing (I have).
 ----
 CategoryMenus
