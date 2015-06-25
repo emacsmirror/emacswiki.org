@@ -12,6 +12,7 @@ This category is about Emacs menus of any kind, including menubar menus and popu
 ** [[Icicles - Key Completion]] -- Navigate the menu hierarchy using key completion. `##[menu-bar]##' is a prefix key, just like `C-x'. Submenus are also prefix keys, and leaf menu items are command bindings. 
 ** LaCarte -- Use [[completion]] and [[Icicles - Cycling Completions|cycling]] to access [[menu bar]] menu items.
 ** IswitchMenu -- [[IswitchBuffers|Iswitchb]]-like access to menu items.
+** SelectionMenu -- Choose a menu item from lines of a pop-up buffer.
 ** TextMenu
 ** TextModeMenu (`tmm-menubar') -- Menu navigation that comes with Emacs.
 * ModeLineMinorModeMenu –- Pop up MinorMode menus from the ModeLine.
