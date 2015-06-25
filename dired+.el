@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun 24 21:53:44 2015 (-0700)
+;; Last-Updated: Wed Jun 24 22:48:42 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9055
+;;     Update #: 9059
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -10015,30 +10015,39 @@ With arg, show breadcrumbs iff arg is positive."
   (defun diredp-set-header-line-breadcrumbs ()
     "Show a header line with breadcrumbs to parent directories."
     (let ((parent  (diredp-parent-dir default-directory))
-          (crumbs  ())
+          (dirs    ())
           (text    ""))
       (while parent
-        (push parent crumbs)
+        (push parent dirs)
         (setq parent  (diredp-parent-dir parent)))
-      (dolist (dir  crumbs)
-        (let ((crumbs-map  (make-sparse-keymap))
-              (menu-map    (make-sparse-keymap "Breadcrumbs in Header Line")))
+      (dolist (dir  dirs)
+        (let* ((crumbs-map    (make-sparse-keymap))
+               (menu-map      (make-sparse-keymap "Breadcrumbs in Header Line"))
+               ;; The next three are for showing the root as absolute and the rest as relative.
+               (rootp         (diredp-root-directory-p dir))
+               (parent-rootp  (and (not rootp)  (diredp-root-directory-p (diredp-parent-dir dir))))
+               (rdir          dir))
           ;; (define-key crumbs-map [header-line mouse-3] menu-map)
+          (unless rootp (setq rdir  (file-name-nondirectory (directory-file-name dir))))
           (when dir
-            (setq dir  (propertize dir
-                                   'local-map (progn (define-key crumbs-map [header-line mouse-1]
-                                                       `(lambda () (interactive)
-                                                         (dired ,dir dired-actual-switches)))
-                                                     (define-key crumbs-map [header-line mouse-2]
-                                                       `(lambda () (interactive)
-                                                         (dired-other-window ,dir dired-actual-switches)))
-                                                     crumbs-map)
-                                   'mouse-face 'mode-line-highlight
-                                   ;; 'help-echo "mouse-1: Dired; mouse-2: Dired in other window; mouse-3: Menu"))
-                                   'help-echo "mouse-1: Dired; mouse-2: Dired in other window"))
-            (setq text  (concat text (if (diredp-root-directory-p dir) "" "  ") dir)))
-          (make-local-variable 'header-line-format)
-          (setq header-line-format  text)))))
+            (setq rdir  (propertize rdir
+                                    'local-map (progn (define-key crumbs-map [header-line mouse-1]
+                                                        `(lambda () (interactive)
+                                                          (dired ,dir dired-actual-switches)))
+                                                      (define-key crumbs-map [header-line mouse-2]
+                                                        `(lambda () (interactive)
+                                                          (dired-other-window ,dir dired-actual-switches)))
+                                                      crumbs-map)
+                                    'mouse-face 'mode-line-highlight
+                                    ;; 'help-echo "mouse-1: Dired; mouse-2: Dired in other window; mouse-3: Menu"))
+                                    'help-echo "mouse-1: Dired; mouse-2: Dired in other window"))
+            (setq text  (concat text (if (or rootp  parent-rootp) " "  " / ") rdir)))))
+      (make-local-variable 'header-line-format)
+      (setq header-line-format  text)))
+
+  ;; Users can do this.
+  ;;
+  ;; (add-hook 'dired-before-readin-hook 'diredp-breadcrumbs-in-header-line-mode)
 
   )
 
