@@ -1,5 +1,11 @@
 == Using tramp with Docker ==
 
+=== Package ===
+
+Install the package at https://github.com/emacs-pe/docker-tramp.el
+
+=== Manual install ===
+
 In order to open files inside [https://www.docker.com/ Docker] containers with [TrampMode tramp], add the following to your <code>.emacs</code>:
 
 {{{
