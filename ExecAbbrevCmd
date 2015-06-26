@@ -1,3 +1,4 @@
+[[ja:省略コマンドの実行]]
 == Overview ==
 
 [[exec-abbrev-cmd.el]] is an emacs extension by TassiloHorn that allows executing emacs commands by giving an abbreviation.
