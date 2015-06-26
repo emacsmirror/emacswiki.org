@@ -1,0 +1,23 @@
+[[en:SurroundRegion]]
+
+引用符, begin/endのような文字列でリージョンを囲む:
+
+{{{
+(defun surround (begin end open close)
+  "リージョンのSTARTにOPENをENDにCLOSEを置く.
+もしあなたがCLOSEを省略するならば, それはOPENを再利用するだろう."
+  (interactive  "r\nsStart: \nsEnd: ")
+  (when (string= close "")
+    (setq close open))
+  (save-excursion
+    (goto-char end)
+    (insert close)
+    (goto-char begin)
+    (insert open)))
+}}}
+
+
+
+
+----
+[[カテゴリ・編集]]CategoryEditing
