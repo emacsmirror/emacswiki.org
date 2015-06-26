@@ -1,3 +1,4 @@
+[[ja:日差し]]
 This function makes Emacs readable in sunlight on a non-transflective LCD, by making the text very large and black-on-white.  Originally by KragenJavierSitaker.  There's probably a better way to do this.
 
     (defun sunlight ()
