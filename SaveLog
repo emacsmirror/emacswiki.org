@@ -1,3 +1,4 @@
+[[ja:ログを保存する]]
 The following is a simple example of using Emacs hooks.  It logs /all/ buffer saves to a log file.
 The log file is currently written to ##saves## in [[.emacs.d]]--a location where the `auto-save-list' data
 is also stored.
