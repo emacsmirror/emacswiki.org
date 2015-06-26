@@ -1,0 +1,13 @@
+[[en:FrameConfiguration]]
+
+このページは[[フレーム]]設定に関わるページヘのリンクを集めています.
+フレームの使用と操作についての情報は, FrameModesを参照されたし.
+
+* DoReMi -- 方向キーを使いフレーム設定(undo)を循環するもしくはフレームプロパティを変える 
+* FrameRestorePackage -- セッションをまたいでフレーム設定を保存と復元
+* FramesAndRegisters -- フレーム設定の保存と復元のためにレジスタを使う
+* FrameSize
+
+----
+[[カテゴリ・表示]]CategoryDisplay
+[[カテゴリ・フレーム]]CategoryFrames
