@@ -1,0 +1,48 @@
+[[en:SaveLog]]
+
+以下はEmacsのフックを使用しての簡単な例です.
+それはログファイルへ保存する/全ての/バッファをログします.
+ログファイルは現在は`auto-save-list'データが同様に格納されている--[[.emacs.d]]の中の##saves##に書かれています.
+
+セーブログはEmacs終了時に生成されます.
+その振る舞いは当然修正することができます.
+
+  (defvar save-log-log-file "~/.emacs.d/saves")
+  (defvar save-log-alist nil)
+  (defvar save-log-date-format "%Y-%m-%d %H:%M:%S")
+
+  (defun save-log-add-file (file)
+    "ファイルFILEをログへ追加する."
+    (let ((date-time (format-time-string save-log-date-format)))
+      (setq save-log-alist (append save-log-alist
+				   (list (list file date-time))))))
+
+  (defun save-log-write-log-file (file) 
+    "FILEへセーブログファイルを書く."
+    (with-temp-file file
+      (if (file-exists-p file)
+	  (insert-file-contents file))
+      ;; Assumed: (goto-char (point-max))  
+      (mapcar (lambda (file-and-date)
+		(insert (cadr file-and-date) " "
+			(car file-and-date) "\n"))
+	      save-log-alist))
+    (message (format "Save log saved: %s" file)))
+
+  (defun save-log-after-save-hook ()
+    (save-log-add-file buffer-file-truename))
+
+  (add-hook 'after-save-hook 'save-log-after-save-hook)
+
+  (defun save-log-kill-emacs-hook ()
+    (save-log-write-log-file save-log-log-file))
+
+  (add-hook 'kill-emacs-hook 'save-log-kill-emacs-hook)
+
+ここに##~/.emacs.d/saves##ファイルの例があります :
+
+ [ここに~/.emacs.d/savesのファイル内容を挿入する]
+
+----
+[[カテゴリ・]]CategoryDotEmacs
+[[カテゴリ・ファイル]]CategoryFiles
