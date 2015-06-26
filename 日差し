@@ -1,0 +1,17 @@
+[[en:SunLight]]
+
+この関数は日差しの中で非半透過型液晶を, Emacsにテキストをとても大きく白地に黒することによって読みやすくさせます.
+もともとは[[KragenJavierSitaker]]による.
+これを行うよりも良い方法は恐らくあります.
+
+    (defun sunlight ()
+      (interactive)
+      (custom-set-faces
+       '(default ((t (:stipple nil :background "#ffffff" 
+                               :foreground "#000000" 
+                               :inverse-video nil :box nil
+                               :strike-through nil :overline nil
+                               :underline nil :slant normal
+                               :weight bold :height 180
+                               :width normal
+                               :family "adobe-courier"))))))
