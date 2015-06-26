@@ -1,0 +1,13 @@
+== Docker ==
+
+=== Manage images & containers from emacs ===
+
+See https://github.com/Silex/docker.el
+
+=== Edit Dockerfile ===
+
+See https://github.com/spotify/dockerfile-mode or https://github.com/emacs-pe/dockerfile.el
+
+=== Tramp integration ===
+
+See [[TrampAndDocker]]
