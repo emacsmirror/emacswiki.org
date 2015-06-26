@@ -1,0 +1,15 @@
+[[en:ExecAbbrevCmd]]
+
+== 概要 ==
+
+[[exec-abbrev-cmd.el]]は[[TassiloHorn]]による省略形を与えることによって, emacsコマンドを実行することを可能にするemacsエクステンションです.
+古いやり方では, あなたは似たようなことがpartial-completion-modeでできる, がしかしこのモードはmcompleteのような他のモードと競合するでしょう.
+[[Anything]]のやり方では, あなたは似たようなことがanything-c-source-emacs-functions-with-abbrevsでできる.
+
+さらに詳しい情報は, 彼のホームページへ: http://www.tsdh.de/cgi-bin/wiki.pl/exec-abbrev-cmd.el
+
+省略形とコマンドの両方をあなたに補完する, 似たようなエクステンションは[[Icicles - Multi M-x#icicle-command-abbrev|Icicles Multi M-x]]も参照されたし.
+
+----
+[[カテゴリ・コマンド]]
+[[カテゴリ・補完]]
