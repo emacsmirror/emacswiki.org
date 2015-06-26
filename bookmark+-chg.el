@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jun 18 08:58:02 2015 (-0700)
+;; Last-Updated: Fri Jun 26 14:55:17 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15964
+;;     Update #: 15978
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/06/26 dadams
+;;     Added: bmkp-function-alist-only.
 ;; 2015/06/18 dadams
 ;;     bmkp-bookmark-description: Print location, if present, for non-file bmk.  Thx Martin Oppegaard.
 ;;     bookmark-location: Reordered - prefer buffer name to file name.
@@ -1164,6 +1166,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2015/06/26 dadams
+;;     Added: bmkp-bmenu-mark-function-bookmarks, bmkp-bmenu-show-only-function-bookmarks.
+;;            Bound the to Q M and Q S.  Added to bmkp-bmenu-show-types-menu.
+;;     bookmark-bmenu-mode: Updated the doc string for them.
+;;     bmkp-bmenu-show-only(-orphaned-local)-file-bookmarks: Made ARG optional.
 ;; 2015/05/15 dadams
 ;;     Fixed typo: bmkp-bmenu-show-only-lighted -> bmkp-bmenu-show-only-lighted-bookmarks everywhere.
 ;; 2015/04/15 dadams
