@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Jun 18 08:28:09 2015 (-0700)
+;; Last-Updated: Fri Jun 26 14:29:57 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7792
+;;     Update #: 7794
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -400,13 +400,13 @@
 ;;    `bmkp-file-this-dir-some-tags-regexp-alist-only',
 ;;    `bmkp-find-tag-default-as-regexp' (Emacs 22-24.2),
 ;;    `bmkp-flagged-bookmark-p', `bmkp-flagged-cp', `bmkp-float-time',
-;;    `bmkp-full-tag', `bmkp-function-bookmark-p',
-;;    `bmkp-get-autofile-bookmark', `bmkp-get-bookmark-in-alist',
-;;    `bmkp-get-buffer-name', `bmkp-get-end-position',
-;;    `bmkp-get-tag-value', `bmkp-get-tags', `bmkp-get-visit-time',
-;;    `bmkp-get-visits-count', `bmkp-gnus-alist-only',
-;;    `bmkp-gnus-bookmark-p', `bmkp-gnus-cp', `bmkp-goto-position',
-;;    `bmkp-handle-region-default',
+;;    `bmkp-full-tag', `bmkp-function-alist-only',
+;;    `bmkp-function-bookmark-p', `bmkp-get-autofile-bookmark',
+;;    `bmkp-get-bookmark-in-alist', `bmkp-get-buffer-name',
+;;    `bmkp-get-end-position', `bmkp-get-tag-value', `bmkp-get-tags',
+;;    `bmkp-get-visit-time', `bmkp-get-visits-count',
+;;    `bmkp-gnus-alist-only', `bmkp-gnus-bookmark-p', `bmkp-gnus-cp',
+;;    `bmkp-goto-position', `bmkp-handle-region-default',
 ;;    `bmkp-handle-region+narrow-indirect', `bmkp-handler-cp',
 ;;    `bmkp-handler-pred', `bmkp-has-tag-p',
 ;;    `bmkp-icicles-search-hits-alist-only',
@@ -5954,6 +5954,12 @@ A new list is returned (no side effects)."
                         (bmkp-some (lambda (tag) (bmkp-string-match-p rg (bmkp-tag-name tag)))
                                    (bmkp-get-tags bmk)))))
    bookmark-alist))
+
+(defun bmkp-function-alist-only ()
+  "`bookmark-alist', filtered to retain only function bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-function-bookmark-p bookmark-alist))
 
 (defun bmkp-gnus-alist-only ()
   "`bookmark-alist', filtered to retain only Gnus bookmarks.
