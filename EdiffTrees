@@ -104,4 +104,8 @@ The magic behind that is temporarily replacing the built-in directory-files by a
 </pre>
 [[xor3]]
 ----
+Pasted the above code into the *scratch* buffer in emacs 24.3.
+Got this error:
+cons: Wrong type argument: symbolp, (autoload "ediff" 1158820 t nil)
+MikeF
 CategoryProgrammerUtils
