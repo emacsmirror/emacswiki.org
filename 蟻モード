@@ -1,0 +1,9 @@
+Antモードは Ant Wars の Ant brain ファイルを編集するためのメジャーモードです
+ゲームは http://www.ant-wars.net/ にあり, JorgenSchaeferよって書かれました.
+
+Lisp:ant.el でそれをダウンロード
+
+これはPsgmlAntもしくは[[Java開発環境]]JavaDevelopmentEnvironmentで見かけられるApacheのAntと区別が付けられません
+
+----
+[[カテゴリ・ゲーム]]
