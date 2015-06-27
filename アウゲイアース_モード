@@ -1,0 +1,15 @@
+== Augeasコードを編集するためのサポート ==
+
+[http://augeas.net Augeas]はUnix設定ファイルを外科的に編集するためのツールです.
+それは他の部分を偶然に上書きすることなしにコンフィギュレーション・ファイルにある1つのエントリを変えることに使うことができます.
+Augeasを使う有名なアプリケーションはコンフィギュレーション管理システムPuppetです.
+
+AugeasモードはAugeasコードを書くことのサポートを提供するためメジャーモードです.
+それはまだ初期段階にあり, 今のところbasic keyword fontificationを提供します.
+
+最新版は https://github.com/smoeding/emacs-augeas-mode から利用可能です
+-- StefanMoeding
+
+----
+[[カテゴリ・モード]]
+[[プログラミング・モード]]ProgrammingModes
