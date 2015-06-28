@@ -4,29 +4,45 @@ I've been using Emacs since it was black-and-white -- back in the late eighties.
 
 Packages written or co-written by me:
 
+=== Major modes ===
+
+* ErlangMode -- Major mode for Erlang (co-authored with Robert Virding and many others)
+* IniMode -- Major mode for editing ini files (there are many packages that does this)
+* [[RexxMode]] -- Major mode for REXX
+
+=== Minor modes ===
+
 * FollowMode -- Make side-by-side windows behave like a tall virtual window (bundled with Emacs)
-* CWarnMode -- Highlight suspicious C construct like assignment inside expressions (bundled with Emacs)
 * AutoRevertMode -- Automatically reloads buffer when file has been changed (bundled with Emacs)
+* FoldingMode -- Minor mode for folding sections of text using special markers (Co-authored with JamieLokier and JariAalto)
+
+=== Highlight-related ===
+
+* CWarnMode -- Highlight suspicious C construct like assignment inside expressions (bundled with Emacs)
 * FontLockStudio -- Interactive debugger for FontLockMode keywords
-* [[Multicolumn]] -- Support for multiple side-by-side windows
 * [[e2ansi]] -- Syntax highlighting in "less" and other command line tools, powered by Emacs font-lock
 * CMakeFontLock -- Advanced highlight rules for [[CMake]]
 * LispExtraFontLock -- Highlight bound variables and quoted expressions in lisp
 * ObjcFontLock -- Highlight Objective-C method calls
-* [[Prepaint]] -- Highlight C-style preprocessor directives, with multiline support
-* CAlignOperands -- Indentation and electric commands for indenting C operators first on line
-* ErlangMode -- Major mode for Erlang (co-authored with Robert Virding and many others)
-* FoldingMode -- Minor mode for folding sections of text using special markers (Co-authored with JamieLokier and JariAalto)
-* IniMode -- Major mode for editing ini files (there are many packages that does this)
+* [[PreprocessorFontLock]] -- Highlight C-style preprocessor directives, with multiline support
 * [[Faceup]] -- Regression test system for font-lock packages
+* [[Highlight2Clipboard]] -- Copy highlighted text to the clipboard, for pasting into word processors or mail editors.
+
+=== Other ===
+
 * [[El2Markdown]] -- Generates MarkDown text files from Commentary section in emacs-lisp source files
-* [[IsoOem]] -- Use a Windows OEM font to display Latin-1
-* [[RexxMode]] -- Major mode for REXX
+* [[Multicolumn]] -- Support for multiple side-by-side windows
+* CAlignOperands -- Indentation and electric commands for indenting C operators first on line
 
-== Obsolete packages ==
+=== Obsolete packages ===
 
+* [[IsoOem]] -- Use a Windows OEM font to display Latin-1 (only works with older Emacs versions)
 * [[CTypes]] -- Collected C and C++ type information back when FontLockMode required an explicit list
 * [[AndersLJavaFontLock]] -- An, at the time, wide-spread set of highlight rules for Java
+
+== Presentations ==
+
+* [http://nicolas-petton.fr/ressources/presentation-stripped6.html Font-lock basics and tools] presented at an [http://www.meetup.com/Stockholm-Emacs-Meetup Stockholm Emacs Meetup].
 
 == Other Emacs-related activities ==
 
