@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 28 09:32:24 2015 (-0700)
+;; Last-Updated: Sun Jun 28 09:36:26 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3611
+;;     Update #: 3612
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -1026,7 +1026,7 @@ Don't forget to mention your Emacs and library versions."))
               '(:overline "DeepPink" :underline (:color "DeepPink" :style wave))
               '(:overline "DeepPink" :underline "DeepPink")))
         (t :overline t))
-    "*Face for highlighting wrapped-search indicator in Isearch echo-area message."
+    "*Face for highlighting overwrapped search."
     :group 'isearch-plus)
   (defface isearchp-regexp
       '((((class color) (min-colors 8)) (:foreground "Firebrick"))
@@ -1041,7 +1041,7 @@ Don't forget to mention your Emacs and library versions."))
   (defface isearchp-wrapped
       '((((class color) (min-colors 88)) (:overline "Blue"))
         (t :overline t))
-    "*Face for highlighting wrapped-search indicator in Isearch echo-area message."
+    "*Face for highlighting wrapped search."
     :group 'isearch-plus)
   )
 
