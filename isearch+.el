@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 26 15:10:06 2015 (-0700)
+;; Last-Updated: Sun Jun 28 09:32:24 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3594
+;;     Update #: 3611
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -109,7 +109,8 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `isearch-fail'.
+;;    `isearch-fail', `isearchp-multi', `isearchp-overwrapped',
+;;    `isearchp-regexp', `isearchp-word', `isearchp-wrapped'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -585,6 +586,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/06/28 dadams
+;;     Added: face isearchp-overwrapped.
+;;     Face isearchp-wrapped: Default uses just a blue overline, not a deep-pink foreground.
+;;     isearchp-highlight-lighter: Show overwrapping too, using face isearchp-overwrapped.
 ;; 2015/05/26 dadams
 ;;     Added: isearchp--replacing-on-demand.
 ;;     isearchp-replace-on-demand: Negative prefix arg now toggles auto-replacing, instead of turning it on.
@@ -1010,9 +1015,17 @@ Don't forget to mention your Emacs and library versions."))
         (t :background "gray"))
     "*Face for highlighting failed part in Isearch echo-area message."
     :group 'isearch-plus)
-  (defface isearchp-wrapped
-      '((((class color) (min-colors 88)) (:foreground "DeepPink"))
+  (defface isearchp-multi
+      '((((class color) (min-colors 8)) (:foreground "DarkViolet"))
         (t :underline t))
+    "*Face for highlighting multi-buffer indicator in Isearch echo-area message."
+    :group 'isearch-plus)
+  (defface isearchp-overwrapped
+      `((((class color) (min-colors 88))
+         ,(if (> emacs-major-version 23)
+              '(:overline "DeepPink" :underline (:color "DeepPink" :style wave))
+              '(:overline "DeepPink" :underline "DeepPink")))
+        (t :overline t))
     "*Face for highlighting wrapped-search indicator in Isearch echo-area message."
     :group 'isearch-plus)
   (defface isearchp-regexp
@@ -1025,11 +1038,12 @@ Don't forget to mention your Emacs and library versions."))
         (t :underline t))
     "*Face for highlighting word-search indicator in Isearch echo-area message."
     :group 'isearch-plus)
-  (defface isearchp-multi
-      '((((class color) (min-colors 8)) (:foreground "DarkViolet"))
-        (t :underline t))
-    "*Face for highlighting multi-buffer indicator in Isearch echo-area message."
-    :group 'isearch-plus))
+  (defface isearchp-wrapped
+      '((((class color) (min-colors 88)) (:overline "Blue"))
+        (t :overline t))
+    "*Face for highlighting wrapped-search indicator in Isearch echo-area message."
+    :group 'isearch-plus)
+  )
 
 (defcustom isearchp-case-fold nil
   "*Whether incremental search is case sensitive.
@@ -3399,7 +3413,7 @@ This is used only for Transient Mark mode."
 (add-hook 'isearch-mode-end-hook 'isearchp-set-region)
 
 (defun isearchp-highlight-lighter ()
-  "Update minor-mode mode-line lighter to reflect case sensitivity."
+  "Update Isearch mode-line lighter to reflect search state."
   (let ((case-fold-search  isearch-case-fold-search))
     (when (and (eq case-fold-search t)  search-upper-case)
       (setq case-fold-search  (isearch-no-upper-case-p isearch-string isearch-regexp)))
@@ -3410,9 +3424,15 @@ This is used only for Transient Mark mode."
     (let ((lighter  (if case-fold-search " ISEARCH" " Isearch")))
       (add-to-list
        'minor-mode-alist
-       `(isearch-mode ,(if (and isearch-wrapped  (facep 'isearchp-wrapped)) ;Emacs 22+
-                           (propertize lighter 'face 'isearchp-wrapped)
-                           lighter)))))
+       `(isearch-mode ,(cond ((and isearch-wrapped  (facep 'isearchp-overwrapped)
+                                   (not isearch-wrap-function)
+                                   (if isearch-forward
+                                       (> (point) isearch-opoint)
+                                     (< (point) isearch-opoint)))
+                              (propertize lighter 'face 'isearchp-overwrapped))
+                             ((and isearch-wrapped  (facep 'isearchp-wrapped))
+                              (propertize lighter 'face 'isearchp-wrapped))
+                             (t lighter))))))
   (condition-case nil
       (if (fboundp 'redisplay) (redisplay t) (force-mode-line-update t))
     (error nil)))
