@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 28 09:36:26 2015 (-0700)
+;; Last-Updated: Sun Jun 28 09:37:43 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3612
+;;     Update #: 3613
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -252,7 +252,7 @@
 ;;    case-sensitive.
 ;;
 ;;  * Highlighting of the mode-line minor-mode lighter when search has
-;;    wrapped around (Emacs 24+ only).
+;;    wrapped around or overwrapped.
 ;;
 ;;  * Highlighting of parts of the prompt, to indicate the type of
 ;;    search: regexp, word, multiple-buffer, and whether searching has
