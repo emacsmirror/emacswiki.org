@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 28 09:37:43 2015 (-0700)
+;; Last-Updated: Sun Jun 28 10:07:23 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3613
+;;     Update #: 3616
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -589,6 +589,7 @@
 ;; 2015/06/28 dadams
 ;;     Added: face isearchp-overwrapped.
 ;;     Face isearchp-wrapped: Default uses just a blue overline, not a deep-pink foreground.
+;;     isearch-message-prefix: Use face isearchp-overwrapped.
 ;;     isearchp-highlight-lighter: Show overwrapping too, using face isearchp-overwrapped.
 ;; 2015/05/26 dadams
 ;;     Added: isearchp--replacing-on-demand.
@@ -2697,7 +2698,7 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
                      (and isearch-wrapped
                           (not isearch-wrap-function)
                           (if isearch-forward (> (point) isearch-opoint) (< (point) isearch-opoint))
-                          (propertize "over" 'face 'isearchp-wrapped))
+                          (propertize "over" 'face 'isearchp-overwrapped))
                      (and isearch-wrapped  (propertize "wrapped " 'face 'isearchp-wrapped))
                      (and isearch-word  (propertize "word " 'face 'isearchp-word))
                      (and isearch-regexp  (propertize "regexp " 'face 'isearchp-regexp))
@@ -2741,7 +2742,7 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
                      (and isearch-wrapped
                           (not isearch-wrap-function)
                           (if isearch-forward (> (point) isearch-opoint) (< (point) isearch-opoint))
-                          (propertize "over" 'face 'isearchp-wrapped))
+                          (propertize "over" 'face 'isearchp-overwrapped))
                      (and isearch-wrapped  (propertize "wrapped " 'face 'isearchp-wrapped))
                      (and isearch-word
                           (propertize (or (and (symbolp isearch-word)
