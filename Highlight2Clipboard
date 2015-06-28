@@ -1,0 +1,9 @@
+The [https://github.com/Lindydancer/highlight2clipboard Highlight2Clipboard], written by [[AndersLindgren|Anders Lindgren]], includes syntax highlighting information in text copied or cut from Emacs so that it can be pasted into other applications, like word processors and email editors.
+
+Technically, this package use [[Htmlize]] to create a version of the text with syntax highlighting, which is added along the normal plain text string to the clipboard.
+
+Currently, this package work only in Mac OS X and MS-Windows.
+
+== Getting the package ==
+
+The *Highlight2Clipboard* package is located on [https://github.com/Lindydancer/highlight2clipboard Github].
