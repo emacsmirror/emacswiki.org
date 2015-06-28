@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 28 10:07:23 2015 (-0700)
+;; Last-Updated: Sun Jun 28 10:22:18 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3616
+;;     Update #: 3620
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -250,6 +250,9 @@
 ;;  * Case-sensitivity is indicated in the mode line minor-mode
 ;;    lighter: `ISEARCH' for case-insensitive; `Isearch' for
 ;;    case-sensitive.
+;;
+;;  * Whether search is literal or regexp is indicated in the mode
+;;    line minor-mode lighter: `R*SEARCH' or `R*search', for regexp.
 ;;
 ;;  * Highlighting of the mode-line minor-mode lighter when search has
 ;;    wrapped around or overwrapped.
@@ -591,6 +594,7 @@
 ;;     Face isearchp-wrapped: Default uses just a blue overline, not a deep-pink foreground.
 ;;     isearch-message-prefix: Use face isearchp-overwrapped.
 ;;     isearchp-highlight-lighter: Show overwrapping too, using face isearchp-overwrapped.
+;;                                 Show regexp vs literal too, using R*search instead of Isearch
 ;; 2015/05/26 dadams
 ;;     Added: isearchp--replacing-on-demand.
 ;;     isearchp-replace-on-demand: Negative prefix arg now toggles auto-replacing, instead of turning it on.
@@ -3421,8 +3425,12 @@ This is used only for Transient Mark mode."
     ;; Vanilla Isearch uses the symbol `isearch-mode', hence the first of these.
     (setq minor-mode-alist  (delete '(isearch-mode isearch-mode) minor-mode-alist)
           minor-mode-alist  (delete '(isearch-mode " ISEARCH")   minor-mode-alist)
-          minor-mode-alist  (delete '(isearch-mode " Isearch")   minor-mode-alist))
-    (let ((lighter  (if case-fold-search " ISEARCH" " Isearch")))
+          minor-mode-alist  (delete '(isearch-mode " Isearch")   minor-mode-alist)
+          minor-mode-alist  (delete '(isearch-mode " R*SEARCH")   minor-mode-alist)
+          minor-mode-alist  (delete '(isearch-mode " R*search")   minor-mode-alist))
+    (let ((lighter  (if case-fold-search
+                        (if isearch-regexp " R*SEARCH" " ISEARCH")
+                      (if isearch-regexp " R*search" " Isearch"))))
       (add-to-list
        'minor-mode-alist
        `(isearch-mode ,(cond ((and isearch-wrapped  (facep 'isearchp-overwrapped)
