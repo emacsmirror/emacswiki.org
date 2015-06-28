@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 21 15:56:22 2015 (-0700)
+;; Last-Updated: Fri Jun 26 12:11:21 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 668
+;;     Update #: 709
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -208,6 +208,7 @@
 ;;
 ;;; Code:
 
+(eval-when-compile (require 'cl)) ;; case
 (require 'cl-lib) ;; cl-delete-duplicates
 (require 'descr-text+ nil t) ; Soft-requires `help-fns+.el'. Help on `keymap' prop for `C-u C-x ='.
 
@@ -265,6 +266,7 @@ performance is impacted."
   :type '(alist :key-type string :value-type (cons string sexp))
   :group 'apu)
 
+
 ;;; Global variables -------------------------------------------------
 
 (defvar apu-latest-pattern-set ()
@@ -297,6 +299,7 @@ BUFFER are PATTERN and PATTERN-NOT, respectively.")
 
 (defvar apu--refresh-p nil
   "Non-nil means that `apu-tablist-match-entries' recomputes matches.")
+
 
 ;;; Buffer-local variables -------------------------------------------
 
@@ -340,6 +343,7 @@ Default value is from `apu-match-words-exactly-flag'.")
 They are for the last apu command associated with this output buffer.")
 (make-variable-buffer-local 'apu--unnamed-chars)
 (put 'apu--unnamed-chars 'permanent-local t)
+
 
 ;;; Commands ---------------------------------------------------------
 
