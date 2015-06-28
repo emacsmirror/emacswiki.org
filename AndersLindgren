@@ -24,7 +24,7 @@ Packages written or co-written by me:
 * CMakeFontLock -- Advanced highlight rules for [[CMake]]
 * LispExtraFontLock -- Highlight bound variables and quoted expressions in lisp
 * ObjcFontLock -- Highlight Objective-C method calls
-* [[PreprocessorFontLock]] -- Highlight C-style preprocessor directives, with multiline support
+* [[PreprocFontLock]] -- Highlight C-style preprocessor directives, with multiline support
 * [[Faceup]] -- Regression test system for font-lock packages
 * [[Highlight2Clipboard]] -- Copy highlighted text to the clipboard, for pasting into word processors or mail editors.
 
