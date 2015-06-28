@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 28 10:22:18 2015 (-0700)
+;; Last-Updated: Sun Jun 28 12:46:05 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3620
+;;     Update #: 3633
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -595,6 +595,8 @@
 ;;     isearch-message-prefix: Use face isearchp-overwrapped.
 ;;     isearchp-highlight-lighter: Show overwrapping too, using face isearchp-overwrapped.
 ;;                                 Show regexp vs literal too, using R*search instead of Isearch
+;;     isearch-update:
+;;       Updated for Emacs 25 2015-06-29 snapshot: handle cursor-sensor-inhibit, isearch--current-buffer.
 ;; 2015/05/26 dadams
 ;;     Added: isearchp--replacing-on-demand.
 ;;     isearchp-replace-on-demand: Negative prefix arg now toggles auto-replacing, instead of turning it on.
@@ -943,12 +945,13 @@
 
 ;; Quiet the byte compiler.
 (defvar bidi-display-reordering)         ; Emacs 24+, built-in.
+(defvar cursor-sensor-inhibit)           ; Emacs 25+
 (defvar disable-point-adjustment)        ; Built-in, Emacs 22+.
 (defvar eval-expression-debug-on-error)  ; In `simple.el', Emacs 22+.
 (defvar icicle-WYSIWYG-Completions-flag) ; In `icicles-opt.el'.
+(defvar isearch--current-buffer)         ; Emacs 25+
 (defvar isearch-error)                   ; In `isearch.el'.
 (defvar isearch-filter-predicate)        ; In `isearch.el' (Emacs 24+).
-(defvar isearchp-initiate-edit-commands) ; Here (Emacs 22+).
 (defvar isearch-invalid-regexp)          ; In `isearch.el' (Emacs 20-21).
 (defvar isearch-last-case-fold-search)   ; In `isearch.el'.
 (defvar isearch-lax-whitespace)          ; In `isearch.el' (Emacs 24.3+).
@@ -979,6 +982,7 @@
 (defvar isearch-within-brackets)         ; In `isearch.el'.
 (defvar isearch-wrap-function)           ; In `isearch.el'.
 (defvar isearchp-deactivate-region-flag) ; Here (Emacs 24.3+).
+(defvar isearchp-initiate-edit-commands) ; Here (Emacs 22+).
 (defvar isearchp-nomodify-action-hook)   ; Here (Emacs 22+).
 (defvar isearchp-on-demand-action-function) ; Here (Emacs 22+).
 (defvar isearchp-replacement)            ; Here (Emacs 22+).
@@ -2064,6 +2068,16 @@ not necessarily fontify the whole buffer."
 After visiting a search hit, run `isearchp-nomodify-action-hook'
  (Emacs 22+) and invoke `isearchp-noprompt-action-function'.
 At the end, run `isearch-update-post-hook'."
+    (unless (or (not (boundp 'isearch--current-buffer)) ; Emacs < 25+
+                (eq (current-buffer) isearch--current-buffer))
+      (when isearch--current-buffer
+        (with-current-buffer isearch--current-buffer
+          (setq cursor-sensor-inhibit  (delq 'isearch cursor-sensor-inhibit))))
+      (setq isearch--current-buffer  (current-buffer))
+      (make-local-variable 'cursor-sensor-inhibit)
+      (unless (boundp 'cursor-sensor-inhibit) (setq cursor-sensor-inhibit nil))
+      ;; Suspend things like cursor-intangible during Isearch so we can search even within intangible text.
+      (push 'isearch cursor-sensor-inhibit))
     (unless (or unread-command-events  executing-kbd-macro)
       (unless (input-pending-p)
         (if (and (boundp 'isearch-message-function)  isearch-message-function)
