@@ -9,9 +9,9 @@ The output is not correctly separated by line, all output all in a single line. 
 ----
 === Another interface to OpenGrok ===
 If you have a large project, It will be useful.
-https://github.com/youngker/eopengrok.el
+https://github.com/youngker/xcscope.el
 
--- [[youngker]] 
+-- [[youngker]]
 
 ----
 CategoryProgrammerUtils
