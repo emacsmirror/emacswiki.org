@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Apr  2 09:07:33 2015 (-0700)
+;; Last-Updated: Tue Jun 30 14:29:45 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1292
+;;     Update #: 1299
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -75,6 +75,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/06/30 dadams
+;;     Changed highlight-symbol-* bindings to f9 from f11.
+;;     Replaced f12 by f8.
 ;; 2015/04/02 dadams
 ;;     Corrected command names for ni-narrow-to-*.
 ;; 2015/03/15 dadams
@@ -726,10 +729,10 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 
 (eval-after-load "highlight-symbol"
   '(progn
-    (global-set-key [(control f11)] 'highlight-symbol-at-point)                ; `C-f11'
-    (global-set-key [f11]           'highlight-symbol-next)                    ; `f11'
-    (global-set-key [(shift f11)]   'highlight-symbol-prev)                    ; `S-f11'
-    (global-set-key [(meta f3)]     'highlight-symbol-query-replace)))         ; `M-f11'
+    (global-set-key [(control f9)] 'highlight-symbol-at-point)                 ; `C-f9'
+    (global-set-key [f9]           'highlight-symbol-next)                     ; `f9'
+    (global-set-key [(shift f9)]   'highlight-symbol-prev)                     ; `S-f9'
+    (global-set-key [(meta f3)]    'highlight-symbol-query-replace)))          ; `M-f9'
 
 (eval-after-load "dired-x"
   '(progn
@@ -809,25 +812,25 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 ;; Better than the standard bindings `C-x <right>' and `C-x <right>',
 ;; because you can hold these down to repeat: cycle through buffers.
 (when (fboundp 'next-buffer)            ; Emacs 21+.
-  (global-set-key [C-pause] 'previous-buffer)                                  ; `C-pause'
-  (global-set-key [M-pause] 'next-buffer))                                     ; `M-pause'
+  (global-set-key [C-pause] 'previous-buffer)                                   ; `C-pause'
+  (global-set-key [M-pause] 'next-buffer))                                      ; `M-pause'
 
-;; `iso-transl.el' is needed to use an ISO prefix key (e.g. `C-x 8'. [f12]).
+;; `iso-transl.el' is needed to use an ISO prefix key (e.g. `C-x 8'. [f8]).
 ;; It defines `key-translation-map'.
 (require 'iso-transl)
-;;;@@@Emacs20 ;; This lets users do `[f12] C-h]' for help on ISO chars.
+;;;@@@Emacs20 ;; This lets users do `[f8] C-h]' for help on ISO chars.
 ;;;@@@Emacs20 (autoload 'help-iso-prefix "help+"
 ;;;@@@Emacs20   "Show commands bound to ISO (pseudo-)prefix key sequences." t)
 
-  ;; Make [f12] key be a synonym for `C-x 8'. (Use [f12] as a compose key.)
-(define-key key-translation-map [f12]   ; See `iso-transl.el'.                   ; `f12'
+  ;; Make [f8] key be a synonym for `C-x 8'. (Use [f8] as a compose key.)
+(define-key key-translation-map [f8]   ; See `iso-transl.el'.                   ; `f8'
   (lookup-key key-translation-map "\C-x8"))
 
-;; Make [f12] key be a synonym for `C-x 8' for isearch too.
-;; This lets you search for accented chars using [f12].
-(define-key isearch-mode-map [f12] nil)
-;;;@@@Emacs20 ;; [f12] C-h and C-x 8 C-h  :=  Help for [f12] and C-x 8 prefixes:
-;;;@@@Emacs20 (global-set-key (vector 'f12 help-char) 'help-iso-prefix) ; In `help.el'.
+;; Make [f8] key be a synonym for `C-x 8' for isearch too.
+;; This lets you search for accented chars using [f8].
+(define-key isearch-mode-map [f8] nil)
+;;;@@@Emacs20 ;; [f8] C-h and C-x 8 C-h  :=  Help for [f8] and C-x 8 prefixes:
+;;;@@@Emacs20 (global-set-key (vector 'f8 help-char) 'help-iso-prefix) ; In `help.el'.
 ;;;@@@Emacs20 (define-key ctl-x-map "8\C-h" 'help-iso-prefix) ; Defined in `help.el'.
 
 ;; These *declp* commands are defined in `misc-cmds.el'.
