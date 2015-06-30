@@ -23,14 +23,13 @@ RepeatedStrainInjury -- ErgoemacsKeybindings helps me a lot!
 * Implement a search engine in EmacsLisp.
 * Make a keyboard layout for Emacs.
 * Implement a DHCP client in EmacsLisp.
-* Implement an FTP server in EmacsLisp.
 * Implement a spell checker in EmacsLisp.
 * Add a command line argument named ##--slim##. It can invoke Emacs with only the bare-minimum EmacsLisp libraries needed for quick editing.
 * Implement multiple cursors in Emacs.
 * Make all operating systems come with Emacs built-in.
 * Implement a multi-protocol download utility in Emacs Lisp.
 * Make EmacsLisp simpler and cleaner.
-* Implement a DOM binding for EmacsLisp.
+* Implement an FTP server in EmacsLisp.
 * Make Emacs support more image formats.
 * Make the face code to be simpler, clearer and faster.
 * Write an OpenPGP implementation in EmacsLisp.
