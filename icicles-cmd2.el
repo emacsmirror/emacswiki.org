@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Apr 11 14:23:12 2015 (-0700)
+;; Last-Updated: Tue Jun 30 14:19:26 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7134
+;;     Update #: 7135
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5965,7 +5965,7 @@ the current command again.
 If you use this command or `icicle-previous-visible-thing'
 successively, even mixing the two, you are prompted for the type of
 THING only the first time.  You can thus bind these two commands to
-simple, repeatable keys (e.g. `f11', `f12'), to navigate among things
+simple, repeatable keys (e.g. `f8', `f9'), to navigate among things
 quickly.
 
 Non-interactively, THING is a symbol, and optional arg BACKWARD means
