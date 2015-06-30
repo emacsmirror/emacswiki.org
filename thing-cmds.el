@@ -8,9 +8,9 @@
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 0
 ;; Package-Requires: ((hide-comnt "0"))
-;; Last-Updated: Thu Jan  1 11:17:37 2015 (-0800)
+;; Last-Updated: Tue Jun 30 14:33:12 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 754
+;;     Update #: 757
 ;; URL: http://www.emacswiki.org/thing-cmds.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointCommands
 ;; Keywords: thingatpt, thing, region, selection
@@ -443,8 +443,8 @@ need to invoke the current command again.
 
 If you use this command or `previous-visible-thing' successively, even
 mixing the two, you are prompted for the type of THING only the first
-time.  You can thus bind these two commands to simple repeatable
-keys (e.g. `f11', `f12'), to navigate among things quickly.
+time.  You can thus bind these two commands to simple repeatable keys
+\(e.g. `f8', `f9'), to navigate among things quickly.
 
 If you do not want to sacrifice two simple repeatable keys for this,
 then you can instead use commands `next-visible-thing-repeat' and
@@ -583,7 +583,7 @@ To change direction without getting prompted for the thing type, you
 need to bind, not commands `next-visible-thing-repeat' and
 `previous-visible-thing-repeat', but commands `next-visible-thing' and
 `previous-visible-thing' (no `-repeat' suffix).  Bind these to simple,
-repeatable keys, such as `f11' and `f12'.  Because such keys are rare
+repeatable keys, such as `f8' and `f9'.  Because such keys are rare
 \(mostly taken already), the only bindings made here for thing
 navigation are `C-x down' and `C-x up'."
   (interactive "p")
