@@ -926,6 +926,8 @@ example, in Info mode, `j' is bound to `bmkp-info-jump'.
 is already taken for `dired-goto-file'.)  These commands are also
 added to the mode's menu-bar menu.
 
+
+[:bmkp-dired-this-dir-jump]
 In Dired mode, '''`C-j'''' is bound to a special Dired-specific jump
 command, `bmkp-dired-this-dir-jump', whose destinations all
 use the current directory (`default-directory').  The aim of `C-j' is not to
