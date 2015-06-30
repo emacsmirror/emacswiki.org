@@ -8,9 +8,9 @@
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:51:32 2015 (-0800)
+;; Last-Updated: Tue Jun 30 14:35:38 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 224
+;;     Update #: 227
 ;; URL: http://www.emacswiki.org/highlight-chars.el
 ;; Doc URL: http://www.emacswiki.org/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
@@ -82,12 +82,12 @@
 ;; mode.  For example, you can bind a key to toggle highlighting of
 ;; trailing whitespace:
 ;;
-;;      (global-set-key (kbd "<f11>")
+;;      (global-set-key (kbd "<f8>")
 ;;                      'hc-toggle-highlight-trailing-whitespace)
 ;;
 ;; Because variable `font-lock-keywords' is buffer-local, that key
-;; binding lets you use `f11' to toggle highlighting separately in
-;; each buffer.
+;; binding lets you use `f8' to toggle highlighting separately in each
+;; buffer.
 ;;
 ;; But if you want to use a particular kind of highlighting by default
 ;; globally, then just add the corresponding `hc-highlight-*' function
@@ -189,8 +189,8 @@
 ;;
 ;; * Library `highlight.el' for ways to highlight text more generally,
 ;;   not just specific characters.  It is available here:
-;;   http://www.emacswiki.org/cgi-bin/wiki/highlight.el     (code)
-;;   http://www.emacswiki.org/cgi-bin/wiki/HighlightLibrary (doc)
+;;   http://www.emacswiki.org/highlight.el     (code)
+;;   http://www.emacswiki.org/HighlightLibrary (doc)
 ;;
 ;; * Standard library `whitespace.el' for other ways to highlight
 ;;   whitespace characters.
