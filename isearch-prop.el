@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr 12 09:50:42 2015 (-0700)
+;; Last-Updated: Tue Jun 30 14:24:05 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 757
+;;     Update #: 762
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -228,7 +228,7 @@
 ;;
 ;; 2015/04/12 dadams
 ;;     Added: isearchp-remove-dimming, isearchp-regexp-context-regexp-search, isearchp-thing-regexp.
-;;     isearchp-property-finish: Use isearchp-remove-dimming (its code was factored out).
+;;     isearchp-property-finish: Use isearchp-remove-dimming (its code was factored out from here).
 ;;     isearchp-regexp-read-args: Return also nil for ACTION arg.
 ;;     isearchp-regexp-context-search: Test isearchp-property-prop vs _IGNORED, not vs interned REGEXP.
 ;;     isearchp-imenu*: Added optional arg REGEXP-P.
@@ -1915,7 +1915,7 @@ invoke the current command again.
 If you use this command or `isearchp-previous-visible-thing'
 successively, even mixing the two, you are prompted for the type of
 THING only the first time.  You can thus bind these two commands to
-simple, repeatable keys (e.g. `f11', `f12'), to navigate among things
+simple, repeatable keys (e.g. `f8', `f9'), to navigate among things
 quickly.
 
 Non-interactively, THING is a symbol, and optional arg BACKWARD means
