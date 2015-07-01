@@ -16,7 +16,7 @@ All this small "one-liner" package does is set the `mode-line-position' variable
 				(abs (- (line-number-at-pos (point))
 					(line-number-at-pos (mark)))))
 		      (format " %d,%d,%d"
-			      (point-max)
+			      (- (point-max) (point-min))
 			      (count-words-region (point-min) (point-max))
 			      (line-number-at-pos (point-max))))))
 	  nil))))
