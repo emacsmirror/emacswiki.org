@@ -4,7 +4,8 @@
 [[forcer]], [[KingNato]], [[Khmar]], and others reply:
 
 EmacsLisp has DynamicScoping by default, [[Scheme]] and CommonLisp
-don't. That's probably the biggest difference.
+use lexical scoping. That's probably the biggest difference. Note that starting from Emacs 24, Elisp
+also also added support for optional lexical scoping.
 
 Emacs Lisp and Common Lisp think that (eq nil ()), Scheme has separate
 values for boolean-false and empty-list.
@@ -31,8 +32,12 @@ non-standard ones (some portable). Emacs Lisp has a single non-standard one
 btw)
 
 Scheme favors FunctionalProgramming over imperative programming, but
-doesn't make the latter impossible. CL doesn't really favor one. Emacs Lisp
-makes functional programming difficult to impossible.
+doesn't make the latter impossible. CL doesn't really favor one. Prior Emacs Lisp
+makes functional programming difficult to impossible, due to the lack of lexical scoping,
+and thus the impossibility to create closures, which are essential part of first-order functions.
+Emacs 24 introduced the `lexical-let` form, which allows lexical scoping and thus the creation
+of closures.
+
 
 Other than that, the differences are mostly syntactic.
 
