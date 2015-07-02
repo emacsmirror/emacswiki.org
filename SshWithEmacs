@@ -38,7 +38,16 @@ If you’ll be connecting to a remote shell over a slow internet connection, the
 
 == ssh.el ==
 
-Here is [[image:OutputZz]]
+To ssh to a system to run commands and also edit remote files use https://github.com/ieure/ssh-el and ~/.emacs:
+
+    (require 'ssh)
+    (add-hook 'ssh-mode-hook
+              (lambda ()
+                (setq ssh-directory-tracking-mode t)
+                (shell-dirtrack-mode t)
+                (setq dirtrackp nil)))
+
+[[image:OutputZz]]
 
 ----
 CategoryExternalUtilities
