@@ -21,6 +21,9 @@
 ;; later.
 
 ;; Version:
+;;   00.6 - 2012-02-01
+;;        removed unused defcustom yang-font-lock-extra-types
+;;          made emacs24 to give a warning
 ;;   00.5 - 2010-10-07
 ;;        rfc6020 compliant
 ;;        classify all keywords as decl-start gives better indentation
@@ -231,11 +234,6 @@
 ;; YANG does not have labels
 (c-lang-defconst c-recognize-colon-labels
   yang nil)
-
-
-(defcustom yang-font-lock-extra-types nil
-  "*List of extra types (aside from the type keywords) to recognize in YANG mode.
-Each list item should be a regexp matching a single identifier.")
 
 (defconst yang-font-lock-keywords-1 (c-lang-const c-matchers-1 yang)
   "Minimal highlighting for YANG mode.")
