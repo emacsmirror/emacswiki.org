@@ -92,7 +92,7 @@ contexts are the lines in the files (similar to `grep').
 [`M-s M-s m' is the key sequence for ''mode-specific'' '''Icicles''' search.  You can similarly use it in [[IbufferMode|Ibuffer]] or [[BufferMenu|Buffer Menu]] to
 search all marked buffers using '''Icicles''' search, and in your
 bookmark list (buffer `##*Bookmark List*##') to search all
-marked bookmark targets (you need library '''[[Bookmark+]]''' for this).  Also, '''`M-0 M-s M-s M-s'''' and '''`##C-0 C-c `##'''' are bound to the same command.  (But you cannot pass a separate prefix arg in those cases, since `C-0' is already used.)
+marked bookmark targets (you need library '''[[Bookmark+]]''' for this).  Also, '''`M-0 M-s M-s M-s'''' and '''`##C-0 C-c `##'''' are bound to the same command.  (But you cannot pass a separate prefix argument in those cases, since `C-0' is already used.)
 
 
 
@@ -173,7 +173,7 @@ The file names are checked to be sure they reference existing files. If any of t
 
 Just as `##C-}##' in the minibuffer is a shortcut for `##C-u C-M->##',
 which saves the current set of completion candidates persistently, so '''`##C-}##'''' in Dired saves the marked file names in
-a cache file or, with a prefix arg, an Emacs [[fileset]].  Similarly, just as `##C-{##' in the minibuffer is a
+a cache file or, with a prefix argument, an Emacs [[fileset]].  Similarly, just as `##C-{##' in the minibuffer is a
 shortcut for `##C-u C-M-<##', which retrieves candidates from a persistent set, so '''`##C-{##'''' in Dired retrieves a persistent set of file names and opens
 them in a separate Dired buffer.
 
@@ -333,7 +333,6 @@ CategoryProgrammerUtils
 CategoryCode
 CategorySearchAndReplace
 CategoryShell
-
 
 
 
