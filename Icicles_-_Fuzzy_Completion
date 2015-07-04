@@ -42,7 +42,7 @@ at most a given number of character operations, the so-called
 ''My opinion'' about the relative usefulness of the various methods:
 Basic (prefix) completion and apropos completion are by
 far the most useful.  They are followed, in order of decreasing
-usefulness, by scatter, fuzzy, Levenshtein, vanilla, Jaro-Winkler, and swank
+usefulness, by scatter, fuzzy, Levenshtein, (non-basic) vanilla, Jaro-Winkler, and swank
 completion. ''YMMV''.
 
 Besides these methods, remember that you can get ordinary
@@ -56,6 +56,11 @@ and `TAB' is controlled by [[user option]]s
 methods for `TAB' are predefined, but you can add additional
 methods for `S-TAB' by customizing
 `icicle-S-TAB-completion-methods-alist'.
+
+
+
+
+
 
 
 
@@ -169,6 +174,9 @@ for instance.
 
 
 
+
+
+
 [:ScatterMatchCompletion]
 === Scatter-Match Completion ===
 
@@ -184,6 +192,9 @@ the regexp `##a.*b.*c##'.  That's all.
 You can use '''Icicles''' scatter matching at any time in place of
 apropos (regexp) matching.  Unlike the cases of swank and fuzzy completion
 (see below), you can use it to complete file names also.
+
+
+
 
 
 
@@ -229,6 +240,11 @@ the minibuffer to sort candidates differently has no effect.
 
 
 
+
+
+
+
+
 [:FuzzyMatchCompletion]
 === Fuzzy-Match Completion ===
 
@@ -261,7 +277,7 @@ Here are some examples:
 
 The last example shows that although fuzzy matching is a kind of
 prefix matching, your input is not necessarily a prefix of each
-matching candidate.  It is ''prefix'' matching because it tries to match your input starting at its beginning.  This input prefix is matched against candidate substrings, not necessarily candidate prefixes, but the non-matching part (if any) preceding the matched substring must not be longer than the matching part.  That is, non-matching substrings can be skipped over, but they must be no longer than the matching substrings that follow them.  If an input prefix does not match under these conditions, it is skipped over.
+matching candidate.  It tries to match your input starting at its beginning.  This input prefix is matched against candidate substrings, not necessarily candidate prefixes, but the non-matching part (if any) preceding the matched substring must not be longer than the matching part.  That is, non-matching substrings can be skipped over, but they must be no longer than the matching substrings that follow them.  If an input prefix does not match under these conditions, it is skipped over.
 
 After matching an input prefix this way, the same process is repeated, recursively, for input text following that prefix and for match
 positions following the matches found.  That is, after each such prefix match, the process starts again where it left off in both the input and the candidates.  The resulting matches contain one or more substrings of your input that are each at least as long as the non-matching parts that immediately precede them.  Only matches with the highest number of matching characters are retained.  They are sorted by two criteria: (1) nearness of matches to the start of the candidate and (2) candidate length.
