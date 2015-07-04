@@ -68,8 +68,9 @@ separator when inputting, however, it is possible that you could
 run into some trouble on MS Windows -- you might (knowingly or
 not) use `##\##' as a directory separator in the ''values of environment
 variables'' that you use as part of file-name input.  If you are
-regexp completing, then those backslashes will be treated as regexp escapes.  So you
-should use only non-regexp completion with input that includes
+regexp completing then those backslashes will be treated as regexp escapes.
+
+So you should use only non-regexp completion with input that includes
 environment variables whose expansions might include backslashes.
 
 The interpretation conflict for '''`##$##'''' is also not a real problem.
