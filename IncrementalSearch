@@ -150,6 +150,10 @@ Now you can use C-s to search normally (point at end) and C-v to make point jump
 
 -- Fuco
 
+Another approach is hit C-r Enter to end the incremental search forward instead of just Enter
+
+-- Jimmity
+ 
 See also: IsearchOtherEnd.
 
 
