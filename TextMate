@@ -1,4 +1,4 @@
-If you want !TextMate-style "fuzzy" file (and other) completion, see [[Icicles - Fuzzy Completion]] or [InteractivelyDoThings IDO-mode].
+If you want !TextMate-style "fuzzy" file (and other) completion, see [[Icicles - Completion Methods and Styles]] or [InteractivelyDoThings IDO-mode].
 
 If you want automatic indentation of pasted text like in !TextMate, see [[AutoIndentation#SmartPaste|AutoIndentation]].  This is also accomplished by [[auto-indent-mode.el]]
 
@@ -23,7 +23,7 @@ AquamacsEmacs has a lot of !TextMate's key bindings by default.
 *Question:* How can I get the equivalent of !TextMate's "Go To File" (Navigation > Go To File, or Command-T) functionality in Emacs? None of the buffer switching techniques I've found really do what %%TextMate%% does -- namely, apply fuzzy completion to all files found in a project. For Emacs, applying fuzzy completion to all files recursively found in a given directory would be awesome.
 
 [new]
-*Answer 1*: Use [InteractivelyDoThings Ido] or [[Icicles]] to get %%TextMate%%'s kind of "fuzzy" matching (called "flex" matching in Ido and "scatter" matching in Icicles). Just turn on this kind of matching in Ido or Icicles (##M-(## toggles it in Icicles), and from then on file-name matching will automatically use it. With Icicles you can have fuzzy matching for every kind of input, not just files and buffers. See [[Icicles - Fuzzy Completion#ScatterMatchCompletion|Icicles - Fuzzy Completion]].
+*Answer 1*: Use [InteractivelyDoThings Ido] or [[Icicles]] to get %%TextMate%%'s kind of "fuzzy" matching (called "flex" matching in Ido and "scatter" matching in Icicles). Just turn on this kind of matching in Ido or Icicles (##M-(## toggles it in Icicles), and from then on file-name matching will automatically use it. With Icicles you can have fuzzy matching for every kind of input, not just files and buffers. See [[Icicles - Fuzzy Completion#ScatterMatchCompletion|Icicles - Completion Methods and Styles]].
 
 *Answer 2:* Use `find-file-in-project' with [InteractivelyDoThings Ido] or [[Icicles]], to get !TextMate's behavior with regard to projects of files. You can get `find-file-in-project' here: http://github.com/eschulte/rinari/tree/0c3db2ffbdb1f7002c63c510b99d54ad97635776/find-file-in-project.el
 
