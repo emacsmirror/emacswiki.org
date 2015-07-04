@@ -91,7 +91,7 @@ then the result of applying the function is pretty-printed (in the
 `##icicles-doc1.el##', and you choose the function candidate
 `file-attributes' at the completion prompt `##How (action): ##', then
 the properties of the candidate file (`##icicles-doc1.el##') are
-displayed.  With just `C-S-RET' (no prefix arg), the list of
+displayed.  With just `C-S-RET' (no prefix argument), the list of
 properties is computed, but not displayed.
 
 ''Be aware of this gotcha:'' The alternative action for commands that
@@ -333,7 +333,6 @@ CategoryDocumentation
 CategoryHelp
 CategoryProgrammerUtils
 CategoryCode
-
 
 
 
