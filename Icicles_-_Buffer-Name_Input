@@ -12,7 +12,7 @@ buffer during a given command invocation.
 
 These commands all let you use a [[prefix argument]] to control which
 buffers are completion candidates.  It is the numeric value of the
-prefix arg that matters  Candidates are only the buffers that
+prefix argument that matters  Candidates are only the buffers that
 satisfy these conditions:
 
 * '''Plain `C-u'''': whose ''[[major mode|mode]]'' is ''derived'' from the current buffer mode
@@ -57,7 +57,7 @@ is, toggle [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-
 [:icicle-buffer-include-recent-files-nflag]
 * '''`C-x R'''' ('''`icicle-toggle-include-recent-files'''') Toggle whether
 `icicle-buffer' includes the names of recently accessed files as candidates.  That
-is, toggle option '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-recent-files-nflag|icicle-buffer-include-recent-files-nflag]]</tt>''''.  A prefix arg sets the option value to the numeric prefix value.
+is, toggle option '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-recent-files-nflag|icicle-buffer-include-recent-files-nflag]]</tt>''''.  A prefix argument sets the option value to the numeric prefix value.
 
 [:icicle-bookmark-non-file-other-window]
 * '''`C-x m'''' ('''`icicle-bookmark-non-file-other-window'''') to visit a
