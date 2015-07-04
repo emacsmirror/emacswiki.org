@@ -224,9 +224,9 @@ commands also have an alternative key binding (in parentheses in
 the list below).
 
 Remember too that you can also invoke some of these same commands
-using a prefix arg with the generic `icicle-search' keys.  For
+using a prefix argument with the generic `icicle-search' keys.  For
 example, you can invoke the commands bound to `M-s M-s m' using a
-zero prefix arg with `icicle-search' -- e.g., `C-0 M-s M-s M-s'  or `##C-0 C-c `##'.
+zero prefix argument with `icicle-search' -- e.g., `C-0 M-s M-s M-s'  or `##C-0 C-c `##'.
 
 Here are the suffix keys on the `M-s M-s' prefix key:
 
@@ -569,7 +569,7 @@ As a convenience, some specialized '''Icicles''' commands are defined that
 correspond to `icicle-search' with the various prefix-argument
 cases: '''`icicle-search-bookmarks-together'''', '''`icicle-search-buffer'''', and
 '''`icicle-search-file''''.  If you often use `##C-c `##' with one of the
-prefix argument options, then you might want to bind one or more
+prefix-argument options, then you might want to bind one or more
 of these commands.  These commands are also available in the
 '''Icicles''' [[menu bar]] menu (or the '''Search''' menu, if it exists).
 
@@ -876,7 +876,6 @@ CategoryProgrammerUtils
 CategoryCode
 CategorySearchAndReplace
 CategoryXML
-
 
 
 
