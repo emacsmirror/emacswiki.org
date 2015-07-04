@@ -908,7 +908,7 @@ options `icicle-prefix-complete-keys' and
 ==== Option icicle-TAB-shows-candidates-flag ====
 
 Non-`nil' user option '''`icicle-TAB-shows-candidates-flag'''' means
-that hitting `TAB' for prefix completion immediately shows the
+that hitting `TAB' for completion immediately shows the
 completion candidates in buffer `*Completions*'.  If `nil', then
 candidates are shown only after `TAB' is hit a second time,
 which is the standard Emacs behavior.  The default value is `t'. (Actually, the concerned keys are those defined by option
@@ -1601,7 +1601,7 @@ current match is highlighted.  See [[Icicles - Search Commands, Overview]].
 Non-`nil' user option '''`icicle-search-highlight-all-current-flag''''
 means highlight what your current input matches inside ''all'' main search hits at
 the ''same time''.  If `<tt>[[#icicle-expand-input-to-common-match]]</tt>'
-is '''##3##''' or '''##4##''' (which means your input can be automatically prefix- or apropos-expanded, respectively),
+is '''##3##''' or '''##4##''' (which means your input can be automatically prefix-expanded or apropos-expanded, respectively),
 then what is highlighted for each input match is 
 the [[Icicles - Expanded-Common-Match Completion|expanded common match]] among all input matches throughout the search area.  Otherwise, only the exact input match is highlighted.
 
@@ -2463,7 +2463,7 @@ A list of [[symbol]]s that control prefix arguments for command `icicle-describe
 * `direct-or-regexp'
 
 Choose the order you like.  The list members map, in order from left to
-right, to these prefix argument keys:
+right, to these prefix-argument keys:
 
 # `C-u C-u'           
 # `C-0'            
