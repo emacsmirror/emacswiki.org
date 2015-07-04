@@ -424,7 +424,7 @@ You can complete input in a fuzzy way.
 
 [[image:drew-emacs-fuzzy-fol]]
 
-See [[Icicles - Fuzzy Completion]]
+See [[Icicles - Completion Methods and Styles]]
 
 
 
@@ -530,4 +530,3 @@ DrewsElispLibraries referenced here: Lisp:lacarte.el, Lisp:icicles.el
 CategoryCommands 
 CategoryCompletion
 CategoryRegexp
-
