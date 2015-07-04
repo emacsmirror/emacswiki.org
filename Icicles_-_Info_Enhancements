@@ -266,6 +266,9 @@ content-search pattern.
 
 
 
+
+
+
 [:UsingIcicleSearchWithInfo]
 === Using Icicle-Search With Info ===
 
@@ -307,7 +310,7 @@ binds it to `##+##' in InfoMode.
 You can control how you want the flattening to occur, by using
 different values of prefix argument.  For searching, you probably
 want complete flattening of the chosen subtree, in a single
-buffer, so you use a prefix arg of zero: `##C-u 0 +##'.
+buffer, so you use a prefix argument of zero: `##C-u 0 +##'.
 
 This does not replace the `*Info*' buffer that you started with; it
 creates a new buffer, named after the root node of the subtree you
@@ -362,5 +365,4 @@ CategoryProgrammerUtils
 CategoryCode
 CategorySearchAndReplace
 CategoryShell
-
 
