@@ -19,7 +19,7 @@ Suppose you use `C-x b' (command `switch-to-buffer').
 You can then use `end' until the right [[buffer]] name appears in the
 minibuffer, then hit `RET'.  Or you can type some text
 that begins one or more of the buffer names, and then use `end' to
-cycle among those names that match that prefix.  If there are many candidates, typing part of the name to narrow the field can
+cycle among those names that match that input.  If there are many candidates, typing part of the name to narrow the field can
 save time.  
 
 Another example: Suppose you use `C-h v' (`describe-variable') and type `cal'.
@@ -67,7 +67,10 @@ backward.
 Do not become a cycling drone! '''''Input some text to narrow the set of candidates, before cycling''''' among them to choose one. This is a good habit to adopt, generally, in '''Icicles'''.  Most of the power of '''Icicles''' comes in your ability to filter a set of candidates. This is especially true when it comes to [[regexp]] filtering (see [[Icicles - Apropos Completions]]). 
 
 ''Cycling'' and ''filtering'' work hand in hand. If 
-the set of candidates is small to begin with, then just cycling might be quick enough -- that is the case if you move among a small set of [[buffer]]s, for instance. But with '''Icicles''' you can profitably use cycling on even a very large set of candidates -- by filtering the set first. The reason this is often not very practical with vanilla Emacs is that filtering by a ''prefix'' only is not that potent -- '''Icicles''' regexp filtering changes this game.
+the set of candidates is small to begin with, then just cycling might be quick enough -- that is the case if you move among a small set of [[buffer]]s, for instance. But with '''Icicles''' you can profitably use cycling on even a very large set of candidates -- by filtering the set first.
+
+
+
 
 [:C-l]
 '''''Tip:''''' Whenever you type or delete text in the minibuffer, your partial input is remembered. When you cycle completion candidates, your input is replaced by each candidate, but you can at any time ''refresh the minibuffer'' to retrieve what you last typed. You do this with '''`C-l'''', which is bound in the minibuffer to command `icicle-retrieve-previous-input'. Editing a completion candidate that you have cycled into the minibuffer counts as input. Editing tells '''Icicles''' to remember what is in the minibuffer as your last real input. If you want to replace the candidate and go back to editing the input you had already typed before cycling, then use `C-l' -- do not just delete characters from the candidate.  See [[Icicles - History Enhancements]].
