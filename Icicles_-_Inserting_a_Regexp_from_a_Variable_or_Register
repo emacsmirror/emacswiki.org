@@ -35,7 +35,7 @@ prefix argument the regexp is saved to variable
 `icicle-input-string'.
 
 Another way of inserting a string into the minibuffer is to use a
-negative prefix arg with `##M-:##'
+negative prefix argument with `##M-:##'
 (e.g. `##M-- M-:##') during minibuffer
 input.  With this method, you can type not only a string-valued
 variable name but any EmacsLisp expression. The expression need
