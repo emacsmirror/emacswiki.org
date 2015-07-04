@@ -231,7 +231,7 @@ that those used most frequently are available first.
 information about the kind of matching that `M-x'
 (`icicle-execute-extended-command') does.
 
-* [[Icicles - Fuzzy Completion]] for
+* [[Icicles - Completion Methods and Styles]] for
 information about fuzzy completion, which is somewhat similar to completing abbreviations , but is not limited to inputting commands.
 
 ----
@@ -253,7 +253,6 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
 
 
