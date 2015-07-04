@@ -29,7 +29,7 @@ This is a general conceptual index for '''[[Icicles]]'''.  For user options, see
 * `##C-*##' -- [[Icicles - Candidate Sets]]
 * `##C-^##' -- [[Icicles - Customization and General Tips]]
 * `<tt>C-#</tt>' -- [[Icicles - Customization and General Tips]]
-* `##C-(##" -- [[Icicles - Fuzzy Completion]], [[Icicles - Customization and General Tips]]
+* `##C-(##" -- [[Icicles - Completion Methods and Styles]], [[Icicles - Customization and General Tips]]
 * `##C-,##' -- [[Icicles - Customization and General Tips]]
 * `##C-.##' -- [[Icicles - File-Name Completion Tips]]
 * `##C-M-/##' -- [[Icicles - Completion in Other Buffers]]
@@ -92,7 +92,7 @@ This is a general conceptual index for '''[[Icicles]]'''.  For user options, see
 * `##C-*##' -- [[Icicles - Candidate Sets]]
 * `##C-^##' -- [[Icicles - Customization and General Tips]]
 * `<tt>C-#</tt>' -- [[Icicles - Customization and General Tips]]
-* `##C-(##" -- [[Icicles - Fuzzy Completion]], [[Icicles - Customization and General Tips]]
+* `##C-(##" -- [[Icicles - Completion Methods and Styles]], [[Icicles - Customization and General Tips]]
 * `##C-,##' -- [[Icicles - Customization and General Tips]]
 * `##C-c `##' -- [[Icicles - Other Search Commands]], [[Icicles - Key Bindings#IcicleModeBindings]]
 * `##C-c TAB##' -- [[Icicles - Other Search Commands]], [[Icicles - Key Bindings#IcicleModeBindings]]
@@ -197,7 +197,7 @@ This is a general conceptual index for '''[[Icicles]]'''.  For user options, see
 * ##ffap.el## library -- [[Icicles - Inserting Text from Cursor]], [[Icicles - File-Name Completion Tips]]
 * functions, applying to completion candidates -- [[Icicles - Complex Completions]]
 * future of '''Icicles''' - IciclesDiscussion
-* fuzzy completion -- [[Icicles - Fuzzy Completion]]
+* fuzzy completion -- [[Icicles - Completion Methods and Styles]]
 
 
 
@@ -442,5 +442,4 @@ This is a general conceptual index for '''[[Icicles]]'''.  For user options, see
 ----
 
 || '''[[Icicles]]''' || [[Icicles - Command Index]] || [[Icicles - Options Index]] ||
-
 
