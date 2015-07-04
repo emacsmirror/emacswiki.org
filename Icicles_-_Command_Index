@@ -285,7 +285,7 @@ These are the '''Icicles''' commands that are intended to be used mainly at the 
 [:O]
 ==== N, O ====
 
-* `icicle-next-apropos-match-function' -- [[Icicles - Fuzzy Completion]], ''[[Icicles - Key Bindings#icicle-next-apropos-match-function|key binding]]''
+* `icicle-next-apropos-match-function' -- [[Icicles - Completion Methods and Styles]], ''[[Icicles - Key Bindings#icicle-next-apropos-match-function|key binding]]''
 
 * (+) '''`icicle-object-action'''' -- [[Icicles - Object-Action Interaction]]
 
@@ -420,7 +420,7 @@ These are the '''Icicles''' commands that are intended to be used mainly at the 
 
 * `icicle-toggle-expand-to-common-match' -- [[Icicles - Expanded-Common-Match Completion]], [[Icicles - Search Commands, Overview]], [[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]], ''[[Icicles - Key Bindings#icicle-toggle-expand-to-common-match|key binding]]''
 
-* `icicle-toggle-fuzzy-completion' -- [[Icicles - Fuzzy Completion]], ''[[Icicles - Key Bindings#icicle-toggle-fuzzy-completion|key binding]]''
+* `icicle-toggle-fuzzy-completion' -- [[Icicles - Completion Methods and Styles]], ''[[Icicles - Key Bindings#icicle-toggle-fuzzy-completion|key binding]]''
 
 * `icicle-toggle-hiding-common-match' -- [[Icicles - Completions Display]], [[Icicles - File-Name Completion Tips]], [[Icicles - Customization and General Tips#icicle-hide-common-match-in-Completions-flag|icicle-hide-common-match-in-Completions-flag]], ''[[Icicles - Key Bindings#icicle-toggle-hiding-common-match|key binding]]''
 
@@ -750,7 +750,7 @@ These are the '''Icicles''' commands intended to be run mainly from the minibuff
 * `icicle-next-apropos-candidate-alt-action' (`C-S-next') -- 
 [[Icicles - More About Multi-Commands]], [[Icicles - Search-And-Replace]], ''[[Icicles - Key Bindings#icicle-next-apropos-candidate-alt-action|key binding]]''
 
-* `icicle-next-apropos-match-function' (`##M-(##') -- [[Icicles - Fuzzy Completion]], ''[[Icicles - Key Bindings#icicle-next-apropos-match-function|key binding]]''
+* `icicle-next-apropos-match-function' (`##M-(##') -- [[Icicles - Completion Methods and Styles]], ''[[Icicles - Key Bindings#icicle-next-apropos-match-function|key binding]]''
 
 * `icicle-next-candidate-per-mode' (`down') -- Cycle to next candidate, using current completion mode: `icicle-modal-cycle-down-key' in [[Icicles - Traversing Minibuffer Histories]], [[Icicles - Customization and General Tips]], ''[[Icicles - Key Bindings#icicle-next-candidate-per-mode|key binding]]''
 
@@ -866,7 +866,7 @@ These are the '''Icicles''' commands intended to be run mainly from the minibuff
 
 * `icicle-toggle-expand-to-common-match' (`##C-|##') -- [[Icicles - Expanded-Common-Match Completion]], [[Icicles - Search Commands, Overview]], [[Icicles - Customization and General Tips#icicle-expand-input-to-common-match|icicle-expand-input-to-common-match]], ''[[Icicles - Key Bindings#icicle-toggle-expand-to-common-match|key binding]]''
 
-* `icicle-toggle-fuzzy-completion' (`##C-(##') -- [[Icicles - Fuzzy Completion]], ''[[Icicles - Key Bindings#icicle-toggle-fuzzy-completion|key binding]]''
+* `icicle-toggle-fuzzy-completion' (`##C-(##') -- [[Icicles - Completion Methods and Styles]], ''[[Icicles - Key Bindings#icicle-toggle-fuzzy-completion|key binding]]''
 
 * `icicle-toggle-hiding-common-match' (`##C-M-.##') -- [[Icicles - Completions Display]], [[Icicles - File-Name Completion Tips]], [[Icicles - Customization and General Tips#icicle-hide-common-match-in-Completions-flag|icicle-hide-common-match-in-Completions-flag]], ''[[Icicles - Key Bindings#icicle-toggle-hiding-common-match|key binding]]''
 
@@ -937,5 +937,4 @@ Minibuffer:
 ----
 
 || '''[[Icicles]]''' || [[IciclesIndex]] || [[Icicles - Options Index]] ||
-
 
