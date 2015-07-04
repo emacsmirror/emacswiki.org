@@ -245,6 +245,14 @@ defined in option '''`<tt>[[Icicles - Customization and General Tips#icicle-key-
 
 
 
+
+
+
+
+
+
+
+
 [:IcicleModeBindings]
 === Customizing Icicle Mode Bindings ===
 
@@ -252,6 +260,13 @@ In the ''Icicle'' mode keymap, several top-level commands are bound by
 default.  You can use option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>'''' to
 customize the keys that are used for these commands, or to remove
 any such bindings.
+
+
+
+
+
+
+
 
 
 
@@ -268,7 +283,7 @@ the best advice is to consult the EmacsLisp code in library
 '''<tt>[[icicles-mode.el]]</tt>'''. Even if you are not very familiar with Emacs-Lisp, however, you
 should be able to do what you want by adapting the example shown here.
 
-Suppose that you want to bind `f11' and `f12' to traverse the input history up and down whenever you are in ''Icicle'' mode.  There are no user options for this, but you can do it by inserting this code into your
+Suppose that you want to bind `f8' and `f9' to traverse the input history up and down whenever you are in ''Icicle'' mode.  There are no user options for this, but you can do it by inserting this code into your
 init file (##~/.emacs##), before the code that requires (loads)
 library '''<tt>[[icicles.el]]</tt>''':
 
@@ -280,8 +295,8 @@ library '''<tt>[[icicles.el]]</tt>''':
                            (and (fboundp 'minibuffer-local-filename-completion-map)
                                 (list minibuffer-local-filename-completion-map))))
         (when icicle-mode
-          (define-key map (icicle-kbd "f11") 'previous-history-element)
-          (define-key map (icicle-kbd "f12") 'next-history-element))))
+          (define-key map (icicle-kbd "f8") 'previous-history-element)
+          (define-key map (icicle-kbd "f9") 'next-history-element))))
 
 
 
