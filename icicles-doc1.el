@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Jul  4 14:16:49 2015 (-0700)
+;; Last-Updated: Sat Jul  4 15:23:29 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 28419
+;;     Update #: 28423
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -419,7 +419,7 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "`icicle-object-action' and `icicle-anything'")
 ;;    (@file :file-name "icicles-doc2.el" :to "Icicles with Anything")
 ;;
-;;  (@file :file-name "icicles-doc2.el" :to "Fuzzy Completion")
+;;  (@file :file-name "icicles-doc2.el" :to "Completion Methods and Styles")
 ;;    (@file :file-name "icicles-doc2.el" :to "Partial Completion")
 ;;    (@file :file-name "icicles-doc2.el" :to "Scatter-Match Completion")
 ;;    (@file :file-name "icicles-doc2.el" :to "Swank (Fuzzy Symbol) Completion")
@@ -3876,7 +3876,7 @@
 ;;     `icicle-regexp-quote-flag',
 ;;     `icicle-top-level-when-sole-completion-flag',
 ;;     `icicle-top-level-when-sole-completion-delay',
-;;  * (@file :file-name "icicles-doc2.el" :to "Fuzzy Completion")
+;;  * (@file :file-name "icicles-doc2.el" :to "Completion Methods and Styles")
 ;;  * (@> "Special Characters in Input Patterns")
 ;;  * (@> "Prefix Completion and Apropos Completion")
 ;;  * http://www.emacswiki.org/emacs/IciclesDiscussion#IdoAndIcicles
@@ -3924,7 +3924,7 @@
 ;;    . The current completion method: (basic) prefix, vanilla, fuzzy,
 ;;      swank (fuzzy symbol), apropos, scatter, Levenshtein,
 ;;      Levenshtein strict.  See
-;;      (@file :file-name "icicles-doc2.el" :to "Fuzzy Completion")
+;;      (@file :file-name "icicles-doc2.el" :to "Completion Methods and Styles")
 ;;      and user options `icicle-TAB-completion-methods' and
 ;;      `icicle-S-TAB-completion-methods-alist'.
 ;;
@@ -7532,10 +7532,10 @@
 ;;    information about the kind of matching that `M-x'
 ;;    (`icicle-execute-extended-command') does.
 ;;
-;;  * (@file :file-name "icicles-doc2.el" :to "Fuzzy Completion") for
-;;    information about fuzzy completion, which is somewhat similar to
-;;    completing abbreviations but is not limited to inputting
-;;    commands.
+;;  * (@file :file-name "icicles-doc2.el" :to "Completion Methods and Styles")
+;;    for information about fuzzy completion, which is somewhat
+;;    similar to completing abbreviations but is not limited to
+;;    inputting commands.
  
 ;;(@* "Choose All Completion Candidates")
 ;;
