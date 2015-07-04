@@ -7,7 +7,7 @@
 == Expanded-Common-Match Completion ==
 
 Apropos (regexp) matching and [[prefix completion]] each match a
-pattern against a [[completion]] candidate.  This operation concerns
+pattern against a [[completion]] candidate.  This matching operation concerns
 only a single candidate; it does not take into account the fact
 that there are others.  Since the matching operation is repeated
 anyway for each candidate, however, we can also find an expanded
@@ -15,19 +15,19 @@ string that ''includes the same match'' (apropos or prefix) for ''all''
 candidates.  For prefix completion, Emacs completes your input to the
 longest common prefix match.  '''Icicles''' uses a similar notion for [[apropos completion]].
 
-For example, if you enter `M-x minib' and hit `TAB', Emacs
+For example, if you enter `M-x minib' and hit `TAB', vanilla Emacs
 completes your input to `minibuffer', which is the longest prefix
 match for `minib' among all command names.  The actual string that
 matches prefix `minib' among all candidates is, itself, `minib'.
 
-If you hit `S-TAB', then each matching candidate contains a
+In '''Icicles''', if you hit `S-TAB', then each matching candidate contains a
 substring that matches your [[regexp]] input `minib'.  In this case,
-that substring is `minib', just as in the prefix-matching case.
-And, as in the prefix case, each matching candidate also includes
+that substring is `minib', just as in the vanilla, prefix-matching case.
+And just as in the prefix case, each matching candidate also includes
 a longer substring, `minibuffer', which includes what your input
 matches for each candidate.
 
-'''Icicles''' replaces your regexp input in the [[minibuffer]] by a common substring.  '''Icicles''' highlights this expanded common match
+'''Icicles''' replaces your regexp input in the [[minibuffer]] by a common substring.  It highlights this expanded common match
 in buffer `*Completions*' using face
 `icicle-common-match-highlight-Completions' (magenta foreground, by default).
 What your input matches directly is highlighted in `*Completions*'
