@@ -48,9 +48,8 @@ completion, with all of its features: [[Icicles - Cycling Completions|cycling]] 
 Library '''##dabbrev.el##''' lets you type a few characters
 in a buffer and then prefix-complete them (in the same buffer) to a full word or symbol name.
 The completion candidates come from words or symbol names in
-buffers that you are editing.  This functionality is called
-"dynamic abbreviation", though "'''dynamic completion'''" would be a better term for it (words are ''completed'', not abbreviated,
-dynamically).
+buffers that you are editing.  Emacs calls this functionality
+"dynamic abbreviation", though "'''dynamic completion'''" would be a better term for it (words are ''completed'' dynamically, not abbreviated).
 
 Library ##dabbrev.el## provides two ways to dynamically complete text:
 
@@ -152,7 +151,7 @@ is true:
 '''`<tt>[[Icicles - Customization and General Tips#icicle-cmpl-max-candidates-to-cycle|icicle-cmpl-max-candidates-to-cycle]]</tt>''''.
 
 * There are at least two candidates and you explicitly request
-  '''Icicles''' completion by using two or more plain [[prefix argument|prefix args]] (`C-u C-u').
+  '''Icicles''' completion by using two or more plain [[prefix argument]]s (`C-u C-u').
 
 What about that fallback completion method, `cdabbrev'?  Vanilla
 `complete' uses it only if no matching completions are found in
