@@ -78,7 +78,7 @@ normally be used then `##C-u C-,##' initiates completion to choose a sort order.
 For example, suppose you use the default option value of 7 and there are fewer than 7 sort orders for the completion operation provided by the current command.  In this case, `##C-,##' cycles to the next order.  But if you
 would like to see what the available orders are, just use `##C-u C-,##' and pick one using completion.
 
-A ''[[numeric prefix argument|numeric]]'' prefix arg (e.g. `C-9') reverses the direction of the current sort order.  It invokes command '''`icicle-reverse-sort-order''''.
+A ''[[numeric prefix argument|numeric]]'' prefix argument (e.g. `C-9') reverses the direction of the current sort order.  It invokes command '''`icicle-reverse-sort-order''''.
 
 For example, if
 candidates are currently sorted alphabetically from A to Z, then `##C-9 C-,##'
@@ -275,14 +275,14 @@ interactively, melding them together.
 You do this as follows:
 
 # Start with a given sort order (use `##C-,##' to choose one,
-possibly with a prefix arg).
+possibly with a prefix argument).
 
 # Save the set of candidates you are interested in, using `##C-M->##'
 (see [[Icicles - Candidate Sets#SavingAndRetrieving|Saving and Retrieving Completion Candidates]]).  This
 saves the candidates in their current order at the time of the
 save: the ''saved order''.
 
-# Choose a different sort order (again, `##C-,##', possibly with a prefix arg).
+# Choose a different sort order (again, `##C-,##', possibly with a prefix argument).
 
 # Use '''`##C-M-+##'''' ('''`icicle-plus-saved-sort'''') to combine the two sort orders, that is, the (new) current order and the saved order.
 
@@ -332,13 +332,13 @@ brightest colors followed by dimmer and dimmer colors, down to the
 dimmest (black).
 
 Try `M-x icicle-read-color-WYSIWYG', sorting (`##C-,##', possibly with
-a prefix arg) first by hue.  Here is a screenshot:
+a prefix argument) first by hue.  Here is a screenshot:
 
 [[image:by-hue]]
 
 Save the completion candidates (`##C-M->##').  Now sort by brightness
 (`##C-,##' again, possibly with
-a prefix arg).  A screenshot:
+a prefix argument).  A screenshot:
 
 [[image:by-brightness]]
 
@@ -398,5 +398,4 @@ CategoryCompletion
 CategoryDocumentation
 CategoryHelp
 CategoryProgrammerUtils
-
 
