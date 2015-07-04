@@ -304,14 +304,14 @@ An additional feature of these commands is that candidates that
 are directory names are highlighted in buffer `*Completions*'
 using face `icicle-special-candidate'.
 
-Another feature is that if you use a prefix arg when acting on
+Another feature is that if you use a prefix argument when acting on
 an individual file-name candidate then the file is visited in
 read-only mode.  The same invocation of `C-x C-f' can thus open
 multiple files, some in read-only mode, some not.
 
 (There are also multi-commands '''`icicle-find-file-read-only'''' and
 '''`icicle-find-file-abs-read-only'''', unbound
-by default, which are the same as `icicle-find-file' and `icicle-find-file-absolute', except that they visit files in ''read-only'' mode.  For `icicle-find-file-read-only', the prefix arg is flipped: with a prefix arg when you act on a
+by default, which are the same as `icicle-find-file' and `icicle-find-file-absolute', except that they visit files in ''read-only'' mode.  For `icicle-find-file-read-only', the prefix-argument behavior is flipped: with a prefix argument when you act on a
 candidate file it is ''not'' visited read-only.)
 
 
@@ -537,7 +537,7 @@ By default, the target directory for `icicle-locate-file' is the
 current directory, but if you supply a non-negative [[numeric prefix argument]] (non-positive means include the date), then you are
 prompted for the directory to search.  
 
-If you use a plain prefix arg (`C-u') or a double plain prefix arg (`C-u C-u') then you are prompted to choose a set of directories to use.
+If you use a plain prefix argument (`C-u') or a double plain prefix argument (`C-u C-u') then you are prompted to choose a set of directories to use.
 This choosing uses [[multi-command]] `icicle-directory-list'.  '''Icicles'''
 searches for file-name matches under each of the directories you
 choose.  For `C-u C-u', the candidate [[multi-completion]]s 
@@ -743,6 +743,5 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
 
