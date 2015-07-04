@@ -242,12 +242,12 @@ Because `M-o' lets you insert more than one previous input, there
 are different ways to separate these insertions, depending on the
 prefix argument.
 
-* With ''no'' prefix arg, each inserted candidate you choose is
+* With ''no'' prefix argument, each inserted candidate you choose is
 ''followed by a space'' character.
 
-* With a ''non-positive'' prefix arg, ''no'' such space char is appended.
+* With a ''non-positive'' prefix argument, ''no'' such space char is appended.
 
-* With a ''non-negative'' prefix arg, each chosen candidate is ''wrapped'' with ##"..."## before being inserted.
+* With a ''non-negative'' prefix argument, each chosen candidate is ''wrapped'' with ##"..."## before being inserted.
 
 These possibilities provide for different uses of such insertion:
 
@@ -261,12 +261,12 @@ separation when a candidate contains whitespace.  For example,
 multiple file name, some of which contain whitespace.
 
 A prefix argument to `M-o' applies to ''each'' of the candidates you
-choose, by default.  If you use a prefix arg then you will
-typically want to exit using `C-g' (not `RET'), so the prefix arg
+choose, by default.  If you use a prefix argument then you will
+typically want to exit using `C-g' (not `RET'), so the prefix argument
 applies also to the last candidate chosen.
 
-You can override the prefix arg for `M-o' or lack thereof, by
-using a prefix arg for an ''individual'' candidate action
+You can override the prefix argument for `M-o' or lack thereof, by
+using a prefix argument for an ''individual'' candidate action
 (e.g. `C-u C-RET').
 
 
@@ -544,7 +544,6 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
 
 
