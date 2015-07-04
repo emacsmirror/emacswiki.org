@@ -1500,7 +1500,7 @@ User options '''`icicle-S-TAB-completion-methods-alist'''' and
 '''`icicle-TAB-completion-methods'''' control which completion method
 is used by `S-TAB' and `TAB', respectively, to complete your input.  By default,
 the first method in each list is used for matching. You can use '''`##M-(##'''' and '''`##C-(##''''  (commands `icicle-next-S-TAB-completion-method' and `icicle-next-TAB-completion-method') in the minibuffer to cycle
-among the `S-TAB' and `TAB' methods. See [[Icicles - Fuzzy Completion#icicle-S-TAB-completion-methods-alist|Icicles - Fuzzy Completion]].
+among the `S-TAB' and `TAB' methods. See [[Icicles - Completion Methods and Styles#icicle-S-TAB-completion-methods-alist|Icicles - Completion Methods and Styles]].
 
 For fuzzy completion (choice `fuzzy' when cycling with `##C-(##'),
 `TAB' completes non-filename input using fuzzy prefix matching
@@ -1540,7 +1540,7 @@ distance allowed for strings to be considered as matching during
 N-off completion.  This means that two strings match if they
 differ by at most this many character operations (insertion,
 deletion, replacement).  This option is used only if you have
-library <tt>[[levenshtein.el]]</tt>.  See [[Icicles - Fuzzy Completion#NOffCompletion|Icicles - Fuzzy Completion]].
+library <tt>[[levenshtein.el]]</tt>.  See [[Icicles - Completion Methods and Styles#NOffCompletion|Icicles - Completion Methods and Styles]].
 
 
 
