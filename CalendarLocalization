@@ -79,6 +79,15 @@ names.
                                      "Juni" "Juli" "August" "September"
                                      "Oktober" "November" "Dezember"])
 
+=== Greek ===
+    (setq calendar-week-start-day 1
+          calendar-day-name-array ["Κυριακή" "Δευτέρα" "Τρίτη" "Τετάρτη"
+                                   "Πέμπτη" "Παρασκευή" "Σάββατο"]
+          calendar-month-name-array ["Ιανουάριος" "Φεβρουάριος" "Μάρτιος"
+                                     "Απρίλιος" "Μάιος" "Ιούνιος"
+                                     "Ιούλιος" "Αύγουστος" "Σεπτέμβριος"
+                                     "Οκτώβρης" "Νοέμβρης" "Δεκέμβρης"])
+
 === Hungarian ===
    (setq calendar-week-start-day 1
       calendar-day-name-array
