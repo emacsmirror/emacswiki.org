@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jan  4 15:10:07 2015 (-0800)
+;; Last-Updated: Sat Jul  4 14:16:49 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 28346
+;;     Update #: 28419
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -28,10 +28,10 @@
 ;;  Files `icicles-doc1.el' and `icicles-doc2.el' contain the doc for
 ;;  Icicles, including how to install and use Icicles.  You can also
 ;;  read the Icicles doc, in formatted form, on the Emacs-Wiki Web
-;;  site: http://www.emacswiki.org/cgi-bin/wiki/Icicles.  Emacs Wiki
-;;  also has a few addtional pages about Icicles.  In particular, if
-;;  you are new to Emacs, as well as Icicles, see this page:
-;;  http://www.emacswiki.org/cgi-bin/wiki/EmacsNewbieWithIcicles.
+;;  site: http://www.emacswiki.org/Icicles.  Emacs Wiki also has a few
+;;  addtional pages about Icicles.  In particular, if you are new to
+;;  Emacs, as well as Icicles, see this page:
+;;  http://www.emacswiki.org/EmacsNewbieWithIcicles.
  
 ;;(@* "Installing Icicles")
 ;;
@@ -65,8 +65,7 @@
 ;;    The following libraries are recommended but optional (loaded by
 ;;    `icicles.el' if in your `load-path').  They are enhanced by
 ;;    Icicles, or Icicles is enhanced by them, or both.  They are all
-;;    available at Emacs Wiki,
-;;    http://www.emacswiki.org/cgi-bin/wiki/ElispArea.
+;;    available at Emacs Wiki, http://www.emacswiki.org/ElispArea.
 ;;
 ;;     `apropos-fn+var.el' - Apropos enhancements for fns and vars.
 ;;     `bookmark+.el' etc. - Many bookmark enhancements.  Includes:
@@ -167,7 +166,7 @@
 ;;  highlight this Index and render it more readable.  Likewise, for
 ;;  the cross-references and section headings throughout this file.
 ;;  You can get `linkd.el' here:
-;;  http://www.emacswiki.org/cgi-bin/wiki/linkd.el.
+;;  http://www.emacswiki.org/linkd.el.
 ;;
 ;;  (@* "Documentation in File `icicles-doc1.el'")
 ;;  ----------------------------------------------
@@ -2423,20 +2422,26 @@
 ;;  complete the value this way in the minibuffer, and then enter
 ;;  (commit) it, using `RET'.
 ;;
-;;  But if your partial input matches the prefix of more than one
-;;  default value, then completion pops up the list of all matching
-;;  completions for you to choose from (in buffer `*Completions*').
-;;  You choose a candidate by clicking it with `mouse-2' or placing
-;;  the cursor on it and hitting `RET'.
+;;  (Starting with Emacs 23, what Icicles calls "prefix completion" is
+;;  controlled by vanilla Emacs option `completion-styles', and the
+;;  matching it uses need not be strictly limited the `basic' style,
+;;  that is, to expanding a literal prefix of one of the completion
+;;  candidates.  If you prefer, you can think of "prefix completion"
+;;  as `TAB' completion (but you can change which key effects it).
+;;
+;;  But if your partial input matches more than one default value,
+;;  then completion pops up the list of all matching completions for
+;;  you to choose from (in buffer `*Completions*').  You choose a
+;;  candidate by clicking it with `mouse-2' or placing the cursor on
+;;  it and hitting `RET'.
 ;;
 ;;  Because this is the way you access the default values supplied to
 ;;  an input-completing function, I call those values
 ;;  "prefix-completion candidates".  If there is no partial input yet
-;;  (empty minibuffer), then the entire list of default values
+;;  (the minibuffer is empty), then the entire list of default values
 ;;  supplied to the input-completing function appears in the pop-up
-;;  `*Completions*' buffer.  See the Emacs manual (`C-h i') for more
-;;  on this general mechanism of prefix completion (called simply
-;;  "completion" there).
+;;  `*Completions*' buffer.  See the Emacs manual (`C-h r') for more
+;;  on this general completion mechanism.
 ;;
 ;;  Calls to `completing-read' and `read-file-name' are not the only
 ;;  places where input completion is used.  When you use `M-x'
@@ -2463,7 +2468,7 @@
 ;;  then use `end' until the right buffer name appears in the
 ;;  minibuffer, then hit `RET'.  Or you can type some text that begins
 ;;  one or more of the buffer names, and then use `end' to cycle among
-;;  those names that match that prefix.  If there are many candidates,
+;;  those names that match that input.  If there are many candidates,
 ;;  typing part of the name to narrow the field can save time.
 ;;
 ;;  Another example: Suppose you use `C-h v' (`describe-variable') and
@@ -2511,9 +2516,7 @@
 ;;  is small to begin with, then just cycling might be quick enough -
 ;;  that is the case if you move among a small set of buffers, for
 ;;  instance.  But with Icicles you can profitably use cycling on even
-;;  a very large set of candidates - by filtering the set first.  The
-;;  reason this is not very practical with vanilla Emacs is that
-;;  filtering by a prefix only is not very potent.
+;;  a very large set of candidates - by filtering the set first.
 ;;
 ;;  Tip: Whenever you type or delete text in the minibuffer, your
 ;;  partial input is remembered.  When you cycle completion
@@ -2602,19 +2605,14 @@
 ;;  Apropos Completions
 ;;  -------------------
 ;;
-;;  Icicles offers a new way to complete your partial input in the
-;;  minibuffer.  Instead of considering the string of input characters
-;;  to be the prefix of various complete names, you can look for names
-;;  that match that string anywhere.
+;;  Besides the prefix completion that is carried out by `TAB', and
+;;  which is similar to vanilla Emacs completion, Icicles offers
+;;  another way to complete your partial input in the minibuffer.
 ;;
-;;  This is the single most important feature that Icicles offers.
-;;
-;;  This is similar in effect to using command `apropos' to find
+;;  This is similar in effect to using command `apropos' to find the
 ;;  "apropos completions" of a string (except it works also for file
-;;  and buffer names), so that's the term I use for this: apropos
-;;  completion.  The more correct characterization of this is that of
-;;  the previous paragraph, however: names that match the given
-;;  string.
+;;  and buffer names), so that's the term I use for this: "apropos
+;;  completion".
 ;;
 ;;  Just as with prefix completion, Icicles lets you cycle among the
 ;;  apropos candidates.  To do this, you use keys `next' and `prior'.
@@ -2625,8 +2623,8 @@
 ;;  remember the exact command name, but it has something to do with
 ;;  lines, so you type `M-x line', then hit `next' repeatedly, until
 ;;  you see the right "line" command - `transpose-lines', perhaps.
-;;  Prefix completion cannot find this command, because "line" is not
-;;  a prefix of "transpose-lines".
+;;  Basic prefix completion does not find this command, because "line"
+;;  is not a prefix of "transpose-lines".
 ;;
 ;;  Because `M-x' expects a command name, only command names are
 ;;  inserted into the minibuffer as the apropos-completion candidates
@@ -2641,8 +2639,10 @@
 ;;
 ;;  As an alternative to using `next' to cycle forward, you can hit
 ;;  `S-TAB' (`S-tab') repeatedly.  Similarly, for prefix completion
-;;  you can repeat `TAB' to cycle forward.  See
-;;  (@> "Prefix Completion and Apropos Completion").
+;;  you can repeat `TAB' to cycle forward.  If you prefer, you can
+;;  think of "apropos completion" as `S-TAB' completion (but you can
+;;  change which key effects it).
+;;  See (@> "Prefix Completion and Apropos Completion").
 ;;
 ;;  Apropos completion uses a regular expression (regexp) as its input
 ;;  string.  You can type `M-x \bes', for instance, to find commands
@@ -2651,10 +2651,6 @@
 ;;  `color-theme-blue-eshell', but not `count-lines' - "es" does not
 ;;  start a word in `count-lines'.  Similarly, for file names, buffer
 ;;  names, and so on.
-;;
-;;  Prefix completion is actually a special case of apropos
-;;  completion, where the regexp starts with "^".  (That is not how it
-;;  is implemented, however.)
 ;;
 ;;  What if you want to see the list of all completion candidates that
 ;;  match the minibuffer input?  Instead of cycling candidates
@@ -2691,32 +2687,32 @@
 ;;  --------------------------------
 ;;
 ;;  Apropos (regexp) matching and prefix completion each match a
-;;  pattern against a completion candidate.  This operation concerns
-;;  only a single candidate; it does not take into account the fact
-;;  that there are others.  Since the matching operation is repeated
-;;  anyway for each candidate, however, we can also find an expanded
-;;  string that includes the same match (apropos or prefix) for all
-;;  candidates.
+;;  pattern against a completion candidate.  This matching operation
+;;  concerns only a single candidate; it does not take into account
+;;  the fact that there are others.  Since the matching operation is
+;;  repeated anyway for each candidate, however, we can also find an
+;;  expanded string that includes the same match (apropos or prefix)
+;;  for all candidates.
 ;;
 ;;  For prefix completion, Emacs completes your input to the longest
 ;;  common prefix match.  Icicles uses a similar notion for apropos
 ;;  completion.
 ;;
-;;  For example, if you enter `M-x minib' and hit `TAB', Emacs
+;;  For example, if you enter `M-x minib' and hit `TAB', vanilla Emacs
 ;;  completes your input to `minibuffer', which is the longest prefix
 ;;  match for `minib' among all command names.  The actual string that
 ;;  matches prefix `minib' among all candidates is, itself, `minib'.
 ;;
-;;  If you hit `S-TAB', then each matching candidate contains a
-;;  substring that matches your regexp input `minib'.  In this case,
-;;  that substring is `minib', just as in the prefix-matching case.
-;;  And, as in the prefix case, each matching candidate also includes
-;;  a longer substring, `minibuffer', which includes what your input
-;;  matches for each candidate.
+;;  In Icicles, if you hit `S-TAB' then each matching candidate
+;;  contains a substring that matches your regexp input `minib'.  In
+;;  this case, that substring is `minib', just as in the vanilla,
+;;  prefix-matching case.  And just as in the prefix case, each
+;;  matching candidate also includes a longer substring, `minibuffer',
+;;  which includes what your input matches for each candidate.
 ;;
 ;;  Icicles replaces your regexp input in the minibuffer by a common
-;;  substring.  Icicles highlights this expanded common match in
-;;  buffer `*Completions*' using face
+;;  substring.  It highlights this expanded common match in buffer
+;;  `*Completions*' using face
 ;;  `icicle-common-match-highlight-Completions' (magenta foreground,
 ;;  by default).  What your input matches directly is highlighted in
 ;;  `*Completions*' using face `icicle-match-highlight-Completions'
@@ -3374,12 +3370,12 @@
 ;;  regexp is saved to variable `icicle-input-string'.
 ;;
 ;;  Another way of inserting a string into the minibuffer is to use a
-;;  negative prefix arg with `M-:' (e.g. `M-- M-:') during minibuffer
-;;  input.  With this method, you can type not only a string-valued
-;;  variable name but any Emacs-Lisp expression.  The expression need
-;;  not evaluate to a string - whatever the result of evaluation is,
-;;  it is pretty-printed in the minibuffer, to be used as part of your
-;;  input text.
+;;  negative prefix argument with `M-:' (e.g. `M-- M-:') during
+;;  minibuffer input.  With this method, you can type not only a
+;;  string-valued variable name but any Emacs-Lisp expression.  The
+;;  expression need not evaluate to a string - whatever the result of
+;;  evaluation is, it is pretty-printed in the minibuffer, to be used
+;;  as part of your input text.
 ;;
 ;;  These shortcut features are especially convenient for use with
 ;;  command `icicle-search' - you can use it to search text for
@@ -3477,10 +3473,12 @@
 ;;  run into some trouble on MS Windows.  You might (knowingly or not)
 ;;  use `\' as a directory separator in the values of environment
 ;;  variables that you use as part of file-name input.  If you are
-;;  regexp completing, then those backslashes will be treated as
-;;  regexp escapes.  So you should use only non-regexp completion with
-;;  input that includes environment variables whose expansions might
-;;  include backslashes.
+;;  regexp completing then those backslashes will be treated as regexp
+;;  escapes.
+;;
+;;  So you should use only non-regexp completion with input that
+;;  includes environment variables whose expansions might include
+;;  backslashes.
 ;;
 ;;  The interpretation conflict for `$' is also not a real problem.
 ;;  You can get the effect of both interpretations of `$' at the same
@@ -4295,7 +4293,8 @@
 ;;    (`TAB' or `S-TAB') or automatically.  But it is not the case for
 ;;    Icicles completion that does not display candidates (`C-M-TAB',
 ;;    `C-M-S-TAB').  (See also
-;;    (@* "Icompletion in *Completions*: Apropos and Prefix Completion"), below).
+;;    (@* "Icompletion in *Completions*: Apropos and Prefix Completion"),
+;;    below).
 ;;
 ;;  * In addition to this automatic toggling, Icicles multi-commands
 ;;    that typically display a large number of completion candidates
@@ -4674,8 +4673,8 @@
 ;;  the next order.  But if you would like to see what the available
 ;;  orders are, just use `C-u C-,' and pick one using completion.
 ;;
-;;  A numeric prefix arg (e.g. `C-9') reverses the direction of the
-;;  current sort order.  It invokes command
+;;  A numeric prefix argument (e.g. `C-9') reverses the direction of
+;;  the current sort order.  It invokes command
 ;;  `icicle-reverse-sort-order'.
 ;;
 ;;  For example, if candidates are currently sorted alphabetically
@@ -4927,7 +4926,7 @@
 ;;  You do this as follows:
 ;;
 ;;  1. Start with a given sort order (use `C-,' to choose one,
-;;     possibly with a prefix arg).
+;;     possibly with a prefix argument).
 ;;
 ;;  2. Save the set of candidates you are interested in, using `C-M->'
 ;;     (see (@> "Saving and Retrieving Completion Candidates")).  This
@@ -4935,7 +4934,7 @@
 ;;     save: the saved order.
 ;;
 ;;  3. Choose a different sort order (again, `C-,', possibly with a
-;;     prefix arg).
+;;     prefix argument).
 ;;
 ;;  4. Use `C-M-+' (`icicle-plus-saved-sort') to combine the two sort
 ;;     orders, that is, the (new) current order and the saved order.
@@ -4985,11 +4984,11 @@
 ;;  dimmest (black).
 ;;
 ;;  Try `M-x icicle-read-color-WYSIWYG', sorting (`C-,', possibly with
-;;  a prefix arg) first by hue.  Save the completion candidates
+;;  a prefix argument) first by hue.  Save the completion candidates
 ;;  (`C-M->').  Now sort by brightness (`C-,' again, possibly with a
-;;  prefix arg).  Now use `C-M-+' to add/merge the two sort orders.
-;;  You now see essentially a series of rainbows, from brighter to
-;;  dimmer and dimmer.
+;;  prefix argument).  Now use `C-M-+' to add/merge the two sort
+;;  orders.  You now see essentially a series of rainbows, from
+;;  brighter to dimmer and dimmer.
 ;;
 ;;  Use `C-M-+' again, to give hue more prominence in the merged sort
 ;;  order.  And again.  Keep hitting `C-M-+' until there is no more
@@ -5501,16 +5500,16 @@
 ;;
 ;;  Note that you can supply a prefix argument for both the
 ;;  multi-command and any of its individual actions.  The command is
-;;  free to interpret these differently.  For example, a prefix arg
-;;  for `icicle-kmacro' provides a default repeat factor, which can
-;;  then be overridden for any individual action by providing a
-;;  different prefix arg.
+;;  free to interpret these differently.  For example, a prefix
+;;  argument for `icicle-kmacro' provides a default repeat factor,
+;;  which can then be overridden for any individual action by
+;;  providing a different prefix argument.
 ;;
-;;  As another example, a prefix arg used with any completion
+;;  As another example, a prefix argument used with any completion
 ;;  candidate for command `icicle-find-file-no-search' visits the file
-;;  in read-only mode.  But a prefix arg for the command itself
+;;  in read-only mode.  But a prefix argument for the command itself
 ;;  reverses this effect: read-only becomes the default so that a
-;;  prefix arg for a given candidate means that the visited file
+;;  prefix argument for a given candidate means that the visited file
 ;;  buffer is writable.
 ;;
 ;;  If user option `icicle-use-candidates-only-once-flag' is
@@ -5608,7 +5607,7 @@
 ;;  or that name functions, variables, or faces changes little, you
 ;;  can optionally bypass this gathering and reuse the last initial
 ;;  set of candidates for that command.  You do this by invoking the
-;;  command using a prefix argument (non-negative prefix arg, for
+;;  command using a prefix argument (non-negative prefix argument, for
 ;;  `icicle-vardoc' and `icicle-plist').
 ;;
 ;;  Each of these particular commands also uses Icicles
@@ -6181,7 +6180,7 @@
 ;;  `icicles-doc1.el', and you choose the function candidate
 ;;  `file-attributes' at the completion prompt `How (action): ', then
 ;;  the properties of the candidate file (`icicles-doc1.el') are
-;;  displayed.  With just `C-S-RET' (no prefix arg), the list of
+;;  displayed.  With just `C-S-RET' (no prefix argument), the list of
 ;;  properties is computed, but not displayed.
 ;;
 ;;  Be aware of this gotcha: The alternative action for commands that
@@ -6488,7 +6487,7 @@
 ;;    minibuffer with multiple previous inputs using `M-o'.
 ;;
 ;;  * (@> "Multi-Input Insertion with a Prefix Arg") information about
-;;    using a prefix arg with `M-o' or `M-r'.
+;;    using a prefix argument with `M-o' or `M-r'.
 ;;
 ;;  * (@> "Saving or Retrieving Additional Candidates") for
 ;;    information about using `M-S' to save multi-inputs as a set of
@@ -7355,7 +7354,7 @@
 ;;  already (and better) - this is just an illustration.  `M-x
 ;;  forward-ch TAB' completes to `forward-char'.  Then, use `C-RET' to
 ;;  execute that command.  Repeat as many times as you want.  Use a
-;;  prefix arg if you like.
+;;  prefix argument if you like.
 ;;
 ;;  To switch to another command in the same `M-x' invocation: Erase
 ;;  the minibuffer (`M-k'), complete the second command, then use
@@ -7859,11 +7858,11 @@
 ;;  whether or not a given type of saved candidate is appropriate.
 ;;  For example, you can save search hits when you use
 ;;  `icicle-search-file' (same as `icicle-search' with a negative
-;;  prefix arg), and those saved search-hit candidates effectively
-;;  reference files and positions in those files.  And you can later
-;;  retrieve and reuse such saved candidates to visit the search
-;;  positions.  But those candidates are not merely file names, so
-;;  they cannot be used with a command such as `find-file' or
+;;  prefix argument), and those saved search-hit candidates
+;;  effectively reference files and positions in those files.  And you
+;;  can later retrieve and reuse such saved candidates to visit the
+;;  search positions.  But those candidates are not merely file names,
+;;  so they cannot be used with a command such as `find-file' or
 ;;  `icicle-file' that expects a file name.  Conversely, you cannot
 ;;  use a saved set of file names with a command such as
 ;;  `icicle-search-file' that expects `icicle-search' candidates.
@@ -8148,8 +8147,8 @@
 ;;
 ;;  These commands all let you use a prefix argument to control which
 ;;  buffers are completion candidates.  It is the numeric value of the
-;;  prefix arg that matters.  Candidates are only the buffers that
-;;  satisfy these conditions:
+;;  prefix argument that matters.  Candidates are only the buffers
+;;  that satisfy these conditions:
 ;;
 ;;  * Plain `C-u': whose mode is derived from the current buffer mode
 ;;  * `C-u C-u':   visible (possibly in an iconified frame)
@@ -8181,14 +8180,15 @@
 ;;
 ;;  * `C-x F' (`icicle-toggle-include-cached-files') Toggle whether
 ;;    `icicle-buffer' includes cached file names as candidates.  That
-;;    is, toggle option `icicle-buffer-include-cached-files-nflag'.
-;;    A prefix arg sets the option value to the numeric prefix value.
+;;    is, toggle option `icicle-buffer-include-cached-files-nflag'.  A
+;;    prefix argument sets the option value to the numeric prefix
+;;    value.
 ;;
 ;;  * `C-x R' (`icicle-toggle-include-recent-files') Toggle whether
 ;;    `icicle-buffer' includes the names of recently accessed files as
 ;;    candidates.  That is, toggle option
-;;    `icicle-buffer-include-recent-files-nflag'.  A prefix arg sets
-;;    the option value to the numeric prefix value.
+;;    `icicle-buffer-include-recent-files-nflag'.  A prefix argument
+;;    sets the option value to the numeric prefix value.
 ;;
 ;;  * `C-x m' (`icicle-bookmark-non-file-other-window') to visit a
 ;;    bookmarked buffer.  This is available only if you use library
@@ -8535,8 +8535,8 @@
 ;;  are directory names are highlighted in buffer `*Completions*'
 ;;  using face `icicle-special-candidate'.
 ;;
-;;  Another feature is that if you use a prefix arg when acting on an
-;;  individual file-name candidate then the file is visited in
+;;  Another feature is that if you use a prefix argument when acting
+;;  on an individual file-name candidate then the file is visited in
 ;;  read-only mode.  The same invocation of `C-x C-f' can thus open
 ;;  multiple files, some in read-only mode, some not.
 ;;
@@ -8544,9 +8544,9 @@
 ;;  `icicle-find-file-abs-read-only', unbound by default, which are
 ;;  the same as `icicle-find-file' and `icicle-find-file-absolute',
 ;;  except that they visit files in read-only mode.  For
-;;  `icicle-find-file-read-only', the prefix arg behavior is flipped:
-;;  with a prefix arg when you act on a candidate file it is not
-;;  visited read-only.)
+;;  `icicle-find-file-read-only', the prefix-argument behavior is
+;;  flipped: with a prefix argument when you act on a candidate file
+;;  it is not visited read-only.)
 ;;
 ;;(@* "Match File Names and File Content Too")
 ;;  *** Match File Names and File Content Too ***
@@ -8740,12 +8740,13 @@
 ;;  argument (non-positive means include the date), then you are
 ;;  prompted for the directory to search.
 ;;
-;;  If you use a plain prefix arg (`C-u') or a double plain prefix arg
-;;  (`C-u C-u') then you are prompted to choose a set of directories
-;;  to use.  This choosing uses multi-command `icicle-directory-list'.
-;;  Icicles searches for file-name matches under each of the
-;;  directories you choose.  For `C-u C-u', the candidate
-;;  multi-completions include the last file-modification date.
+;;  If you use a plain prefix argument (`C-u') or a double plain
+;;  prefix argument (`C-u C-u') then you are prompted to choose a set
+;;  of directories to use.  This choosing uses multi-command
+;;  `icicle-directory-list'.  Icicles searches for file-name matches
+;;  under each of the directories you choose.  For `C-u C-u', the
+;;  candidate multi-completions include the last file-modification
+;;  date.
 ;;
 ;;  In addition, if you turn on the use of proxy candidates (`C-M-_'),
 ;;  `icicle-directory-list' also offers proxy candidates that are
@@ -9052,9 +9053,9 @@
 ;;  a fileset.  Provided
 ;;  `icicle-filesets-as-saved-completion-sets-flag' is non-`nil', you
 ;;  can always choose a fileset as the set to retrieve.  To save to a
-;;  fileset, use a prefix arg with `C-}' or a zero prefix arg with
-;;  `C-M->'.  Saving candidates to a fileset gives you an alternative
-;;  to customizing option `filesets-data'.
+;;  fileset, use a prefix argument with `C-}' or a zero prefix
+;;  argument with `C-M->'.  Saving candidates to a fileset gives you
+;;  an alternative to customizing option `filesets-data'.
 ;;
 ;;  Being able to use an Emacs fileset in place of an Icicles saved
 ;;  set lets you use filesets in additional ways.  For example, it
@@ -9093,7 +9094,7 @@
 ;;  `icicle-remove-entry-from-saved-completion-set' and
 ;;  `icicle-add-entry-to-saved-completion-set' to remove a fileset
 ;;  from an Icicles saved set or add a fileset to a saved set.  To
-;;  add, use a prefix arg to tell
+;;  add, use a prefix argument to tell
 ;;  `icicle-add-entry-to-saved-completion-set' that you are adding a
 ;;  fileset and not a single completion candidate.  To add a single
 ;;  file (default: the current buffer's file) to a fileset, use
@@ -9232,8 +9233,7 @@
 ;;
 ;;  Icicles apropos matching lets you work with a large initial set of
 ;;  candidates by filtering them, quickly reducing the number
-;;  candidates to cycle through.  Filtering by a prefix only (vanilla
-;;  Emacs) is not very potent.  Until you get used to Icicles, you
+;;  candidates to cycle through.  Until you get used to Icicles, you
 ;;  will be surprised at your ability to manipulate even humongous
 ;;  sets of choices.
 ;;
@@ -9521,13 +9521,14 @@
 ;;  are different ways to separate these insertions, depending on the
 ;;  prefix argument.
 ;;
-;;  * With no prefix arg, each inserted candidate you choose is
+;;  * With no prefix argument, each inserted candidate you choose is
 ;;    followed by a space character.
 ;;
-;;  * With a non-positive prefix arg, no such space char is appended.
+;;  * With a non-positive prefix argument, no such space char is
+;;    appended.
 ;;
-;;  * With a non-negative prefix arg, each chosen candidate is wrapped
-;;    with "..." before being inserted.
+;;  * With a non-negative prefix argument, each chosen candidate is
+;;    wrapped with "..." before being inserted.
 ;;
 ;;  These possibilities provide for different uses of such insertion:
 ;;
@@ -9541,12 +9542,12 @@
 ;;    multiple file name, some of which contain whitespace.
 ;;
 ;;  A prefix argument to `M-o' applies to each of the candidates you
-;;  choose, by default.  If you use a prefix arg then you will
-;;  typically want to exit using `C-g' (not `RET'), so the prefix arg
-;;  applies also to the last candidate chosen.
+;;  choose, by default.  If you use a prefix argument then you will
+;;  typically want to exit using `C-g' (not `RET'), so the prefix
+;;  argument applies also to the last candidate chosen.
 ;;
-;;  You can override the prefix arg for `M-o' or lack thereof, by
-;;  using a prefix arg for an individual candidate action
+;;  You can override the prefix argument for `M-o' or lack thereof, by
+;;  using a prefix argument for an individual candidate action
 ;;  (e.g. `C-u C-RET').
 ;;
 ;;(@* "Putting Previous Candidates First: `C-M-,'")
