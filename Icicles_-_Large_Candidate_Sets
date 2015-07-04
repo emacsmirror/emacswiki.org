@@ -10,10 +10,11 @@ One of the advantages '''Icicles''' provides is the ability to deal with
 large sets of [[completion]] candidates with ease.  There are other
 libraries that also let you [[Icicles - Cycling Completions|cycle]] among various choices of
 different kinds ([[buffer]]s, files, and so on), but cycling quickly
-loses its effectiveness as the number of candidates increases.  '''Icicles''' [[apropos completion|apropos]] matching lets you work with a large initial set of
+loses its effectiveness as the number of candidates increases. 
+
+'''Icicles''' [[apropos completion|apropos]] matching lets you work with a large initial set of
 candidates by filtering them, quickly reducing the number
-candidates to cycle through.  Filtering by a [[prefix completion|prefix]] only (vanilla
-Emacs) is not very potent.  Until you get used to '''Icicles''', you will be surprised at your
+candidates to cycle through.  Until you get used to '''Icicles''', you will be surprised at your
 ability to manipulate even humongous sets of choices.
 
 Nevertheless, there can be times when a candidate set is so large
