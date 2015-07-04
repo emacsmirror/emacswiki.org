@@ -235,7 +235,7 @@ Starting with release 22, GnuEmacs includes a FileSets feature that lets you cre
 
 '''Icicles''' lets you use an Emacs fileset any time you can use an '''Icicles''' saved completion set, provided that option '''`<tt>[[Icicles - Customization and General Tips#icicle-filesets-as-saved-completion-sets-flag|icicle-filesets-as-saved-completion-sets-flag]]</tt>'''' is non-`nil'. 
 
-That is, you can retrieve fileset file names as the current set of completion candidates or save the current completion candidates to a fileset. Provided `icicle-filesets-as-saved-completion-sets-flag' is non-`nil', you can always choose a fileset as the set to retrieve. To save to a fileset, use a prefix arg with `##C-}##' or a zero prefix arg with `##C-M->##'. Saving candidates to a fileset gives you an alternative to customizing option `filesets-data'.
+That is, you can retrieve fileset file names as the current set of completion candidates or save the current completion candidates to a fileset. Provided `icicle-filesets-as-saved-completion-sets-flag' is non-`nil', you can always choose a fileset as the set to retrieve. To save to a fileset, use a prefix argument with `##C-}##' or a zero prefix argument with `##C-M->##'. Saving candidates to a fileset gives you an alternative to customizing option `filesets-data'.
 
 Being able to use an Emacs fileset in place of an '''Icicles''' saved set lets you use filesets in additional ways. For example, it lets you open [[DiredMode|Dired]] on only the files in a fileset, for easy manipulation of the member files. Conversely, you can save all of the marked files in a Dired buffer as a fileset. See [[Icicles - Dired Enhancements]].
 
@@ -254,7 +254,7 @@ For example, this could be a saved '''Icicles''' set that combines a `##:tree##'
 This is a great way to put together a project of files from different directory trees.  And even aside from the use of such a saved set for completion, this combining of filesets is something that you cannot do with Emacs filesets alone, as far as I know -- you cannot combine different filesets into super filesets, and a given fileset can specify files in only one way (`##:files##', `##:tree##', etc.). '''Icicles''' gives you a way to associate related filesets and use them together as a single set.
 
 [:icicle-add-file-to-fileset]
-You can use commands '''`icicle-remove-entry-from-saved-completion-set'''' and '''`icicle-add-entry-to-saved-completion-set'''' to remove a fileset from an '''Icicles''' saved set or add a fileset to a saved set. To add, use a prefix arg to tell `icicle-add-entry-to-saved-completion-set' that you are adding a fileset and not a single completion candidate.  To add a single
+You can use commands '''`icicle-remove-entry-from-saved-completion-set'''' and '''`icicle-add-entry-to-saved-completion-set'''' to remove a fileset from an '''Icicles''' saved set or add a fileset to a saved set. To add, use a prefix argument to tell `icicle-add-entry-to-saved-completion-set' that you are adding a fileset and not a single completion candidate.  To add a single
 file (default: the current buffer's file) to a fileset, use
 command '''`icicle-add-file-to-fileset''''.
 
@@ -332,6 +332,5 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
 
