@@ -22,7 +22,7 @@ Library '''<tt>[[icicles.el]]</tt>''' started out life as library `<code>elect-m
 
 I hacked and enhanced the library in various relatively minor ways
 over the years, maintaining it as `##elect-mbuf.el##'. I did not change the main functionality of the library during this
-period: it always cycled the ''complete'' list of (prefix) [[completion]]
+period: it always cycled the ''complete'' list of (basic prefix) [[completion]]
 candidates passed to `completing-read'; it did not update the
 candidate list based on the current [[minibuffer]] contents.
 
@@ -35,7 +35,7 @@ thinking much about this behavior or the code behind it.
 
 In July 2005, LennartBorgman gave `##elect-mbuf.el##' a quick try,
 and intuitively expected to see behavior along the lines that you
-see now for '''Icicles''' [[prefix completion]]:
+see now for '''Icicles''' basic [[prefix completion]]:
 
 * `down' should cycle completions '''''relative to the current input''''',
 not ''all'' completions supplied to `completing-read'.
@@ -51,8 +51,8 @@ I suppose, "'''<u>i</u>'''nput '''_cycles_'''" or some such -- or because it's '
 
 The code changes I made to implement '''#3''' (completion cycling
 relative to current input) made me realize that other completion
-matchings could be implemented in a similar way.  Prefix
-completion (the completion provided by Emacs) is handy, but it is
+matchings could be implemented in a similar way.  Basic prefix
+completion (the only completion provided by Emacs at the time) is handy, but it is
 also sometimes a bit limited.  The idea of '''''[[apropos completion]]'''''
 occurred to me, and I implemented that as well.
 
