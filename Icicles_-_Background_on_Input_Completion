@@ -40,6 +40,13 @@ Keys `TAB',
 values, you can complete the value this way in the minibuffer, and then enter (commit) it,
 using `RET'.
 
+(Starting with Emacs 23, what '''Icicles''' calls "prefix completion" is
+controlled by vanilla Emacs option `completion-styles', and the
+matching it uses need not be strictly limited the `basic' style,
+that is, to expanding a literal prefix of one of the completion
+candidates.  If you prefer, you can think of "prefix completion"
+as `TAB' completion (but you can change which key effects it).
+
 But if your partial input matches the prefix of more than one
 default value, completion pops up the list of ''all matching
 completions'' for you to choose from (in buffer `*Completions*').  You
@@ -49,9 +56,9 @@ choose a candidate by clicking it with `mouse-2' or placing the
 Because this is the way you
 access the default values supplied to an input-completing function, I call
 those values "'''prefix-completion candidates'''".  If there is no
-partial input yet (empty minibuffer), then the entire list of default values supplied to
+partial input yet (the minibuffer is empty), then the entire list of default values supplied to
 the input-completing function appears in the pop-up `*Completions*' buffer.  See
-the EmacsManual (`C-h i') for more on this general mechanism of prefix completion (called simply "completion" there).
+the EmacsManual (`C-h r') for more on this general completion mechanism.
 
 Calls to `completing-read' and `read-file-name' are not the only places where
 input completion is used.  When you use `M-x' (command
