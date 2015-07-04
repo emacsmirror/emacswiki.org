@@ -14,7 +14,7 @@ It is posted to [http://en.wikibooks.org/wiki/Algorithm_implementation/Strings/L
 
 == Levenshtein Distance for Completion ==
 
-In [[Icicles]], you can use the Levenshtein distance to decide whether your input matches [[minibuffer]] [[completion]] candidates.  This provides a kind of fuzzy completion that can compensate for input errors (typos).  See [[Icicles - Fuzzy Completion]].
+In [[Icicles]], you can use the Levenshtein distance to decide whether your input matches [[minibuffer]] [[completion]] candidates.  This provides a kind of fuzzy completion that can compensate for input errors (typos).  See [[Icicles - Completion Methods and Styles]].
 
 ----
 CategoryCode
