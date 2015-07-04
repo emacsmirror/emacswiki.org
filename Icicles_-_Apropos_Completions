@@ -6,20 +6,13 @@
 
 == Apropos Completions ==
 
-'''Icicles''' offers a new way to complete your
-partial input in the [[minibuffer]].  Instead of considering the
-string of input characters to be the ''prefix'' of various complete
-names, you can look for names that ''match'' that string ''anywhere''.
+Besides the prefix completion that is carried out by `TAB', and
+which is similar to vanilla Emacs completion, '''Icicles''' offers
+another way to complete your partial input in the [[minibuffer]].
 
-[new:DrewAdams:2009-09-26 16:55 UTC]
-This is the single most important feature that '''Icicles''' offers.
-[new]
-
-This is similar in effect to using command `apropos' to find
+This is similar in effect to using command `apropos' to find the
 "apropos completions" of a string (except it  works also for file and
-[[buffer]] names), so that's the term I use for this: '''[::apropos completion]'''.  The more correct
-characterization of this is that of the previous paragraph,
-however: ''names that match the given string''.
+[[buffer]] names), so that's the term I use for this: '''[::apropos completion]'''.  
 
 Just as with prefix [[completion]], '''Icicles''' lets you cycle among the
 apropos candidates.  To do this, you use keys `next' and `prior' (labeled ##PageDown## and ##PageUp## on many keyboards). The root that was completed is
@@ -28,8 +21,8 @@ apropos candidates.  To do this, you use keys `next' and `prior' (labeled ##Page
 For example, suppose you use `M-x' to enter a [[command]].  You do not
 remember the exact command name, but it has something to do with
 [[line]]s, so you type `M-x line', then hit `next' repeatedly until you
-see the right "<code>line</code>" command -- `transpose-lines', perhaps.  Prefix
-completion cannot find this command, because "<code>line</code>" is not a
+see the right "<code>line</code>" command -- `transpose-lines', perhaps.  Basic prefix
+completion does not find this command, because "<code>line</code>" is not a
 prefix of "<code>transpose-lines</code>".
 
 Because `M-x' expects a command name, only command names are
@@ -45,18 +38,15 @@ their name -- only [[buffer]] names appear as candidates.
 
 As an alternative to using `next' to cycle forward, you can hit
 '''`S-TAB'''' (`S-tab') repeatedly.  Similarly, for prefix completion you can
-repeat `TAB' to cycle forward.  See [[Icicles - Nutshell View#PrefixAndAproposCompletion|Prefix And Apropos Completion]].
+repeat `TAB' to cycle forward.  If you prefer, you can
+think of "apropos completion" as `S-TAB' completion (but you can
+change which key effects it.  See [[Icicles - Nutshell View#PrefixAndAproposCompletion|Prefix And Apropos Completion]].
 
 Apropos completion uses a '''''regular expression''''' ([[regexp]]) as its input string.
 You can type `##M-x \bes##', for instance, to find commands with "<code>es</code>"
 at the start of a word within the command name (`##\b##' matches the start of a word). It will find
-`'''''<tt>es</tt>'''''##hell-test##' and `##color-theme-blue-##'''''<tt>es</tt>'''''##hell##', but not
+`'''''<tt>es</tt>'''''##hell-test##' and `##color-theme-blue##-'''''<tt>es</tt>'''''##hell##', but not
 `count-lines' --  "<code>es</code>" does not start a word in `count-lines'. Similarly, for file names, buffer names, and so on.
-
-
-Prefix completion is actually a special case of apropos
-completion, where the regexp starts with "<code>^</code>".  (That is not how it
-is implemented, however.)
 
 What if you want to see the list of all completion candidates that match the minibuffer input? Instead of cycling candidates blindly, just hit `S-TAB' (Shift TAB) at any time to display the matching candidates in pop-up buffer `*Completions*'. This is analogous to `TAB' for prefix completion.
 
