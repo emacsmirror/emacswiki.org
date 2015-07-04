@@ -245,7 +245,7 @@ soon as you narrow matching to a single candidate.  For (a), you bind '''`<tt>[[
 ** `<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|icicle-top-level-when-sole-completion-flag]]</tt>'
 ** `<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-delay|icicle-top-level-when-sole-completion-delay]]</tt>'
 
-* [[Icicles - Fuzzy Completion]]
+* [[Icicles - Completion Methods and Styles]]
 * [[Icicles - Special Characters in Input Patterns]]
 * [[Icicles - Nutshell View#PrefixAndAproposCompletion|Prefix Completion and Apropos Completion]]
 * [[IciclesDiscussion#IdoAndIcicles|IciclesDiscussion]]
@@ -271,6 +271,5 @@ CategoryDirectories
 CategoryFiles
 CategoryProgrammerUtils
 CategoryCode
-
 
 
