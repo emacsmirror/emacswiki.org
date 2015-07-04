@@ -112,7 +112,7 @@ Most of these options are defined in library `<tt>[[icicles-opt.el]]</tt>'.
 
 * '''`icicle-apropos-cycle-previous-keys'''' -- Key sequences to cycle to the previous apropos-completion candidate -- [[Icicles - Key Bindings]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-keys|main]]''
 
-* '''`icicle-apropos-match-fns-alist'''' -- Alist of string-matching functions used by `S-TAB' -- [[Icicles - Fuzzy Completion#icicle-apropos-match-fns-alist|Icicles - Fuzzy Completion]], ''[[Icicles - Customization and General Tips#icicle-apropos-match-fns-alist|main]]''
+* '''`icicle-apropos-match-fns-alist'''' -- Alist of string-matching functions used by `S-TAB' -- [[Icicles - Completion Methods and Styles#icicle-apropos-match-fns-alist|Icicles - Completion Methods and Styles]], ''[[Icicles - Customization and General Tips#icicle-apropos-match-fns-alist|main]]''
 
 * '''`icicle-bookmark-name-length-max'''' -- Maximum number of buffer characters used to name a bookmark -- ''[[Icicles - Customization and General Tips#icicle-bookmark-name-length-max|main]]''
 
@@ -200,7 +200,7 @@ columns of candidates are displayed in `*Completions*' -- [[Icicles - Completion
 
 * '''`icicle-filesets-as-saved-completion-sets-flag'''' -- Whether you can use emacs [[fileset]]s to save candidates persistently -- [[Icicles - Persistent Completions#Filesets|Save Candidates in a Fileset]], ''[[Icicles - Customization and General Tips#icicle-filesets-as-saved-completion-sets-flag|main]]''
 
-* '''`icicle-fuzzy-completion-flag'''' -- Whether `TAB' uses fuzzy matching for prefix completion -- [[Icicles - Fuzzy Completion]], ''[[Icicles - Customization and General Tips#icicle-fuzzy-completion-flag|main]]''
+* '''`icicle-fuzzy-completion-flag'''' -- Whether `TAB' uses fuzzy matching for prefix completion -- [[Icicles - Completion Methods and Styles]], ''[[Icicles - Customization and General Tips#icicle-fuzzy-completion-flag|main]]''
 
 * '''`icicle-guess-commands-in-path'''' -- Whether to include all commands from search path as completion candidates -- [[Icicles - Shell-Command Enhancements]], [[Icicles - Dired Enhancements#CompleteShellCommands|Shell Commands In Dired]], [[Icicles - Global Filters]], ''[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|main]]''
 
@@ -421,5 +421,4 @@ Options: [[#A]] | [[#B]] | [[#C]] | [[#D]] | [[#E]] | [[#F]] | [[#G]] | [[#H]] |
 ----
 
 || '''[[Icicles]]''' || [[IciclesIndex]] || [[Icicles - Command Index]] ||
-
 
