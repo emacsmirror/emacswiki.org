@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Apr 16 10:20:06 2015 (-0700)
+;; Last-Updated: Sun Jul  5 08:15:09 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 19668
+;;     Update #: 19699
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -42,6 +42,7 @@
 ;;
 ;;  Commands defined here - (+) means a multi-command:
 ;;
+;;    `cycle-icicle-completion-style-set',
 ;;    `cycle-icicle-expand-to-common-match',
 ;;    `cycle-icicle-image-file-thumbnail',
 ;;    `cycle-icicle-incremental-completion',
@@ -83,6 +84,7 @@
 ;;    `icicle-change-alternative-sort-order',
 ;;    `icicle-change-history-variable', `icicle-change-sort-order',
 ;;    `icicle-choose-completion',
+;;    `icicle-choose-completion-style-set',
 ;;    `icicle-complete-current-candidate-as-input',
 ;;    `icicle-completing-read+insert',
 ;;    `icicle-Completions-mouse-3-menu',
@@ -154,6 +156,8 @@
 ;;    `icicle-next-candidate-per-mode',
 ;;    `icicle-next-candidate-per-mode-action',
 ;;    `icicle-next-candidate-per-mode-alt-action',
+;;    `icicle-next-candidate-per-mode-help',
+;;    `icicle-next-completion-style-set',
 ;;    `icicle-next-history-element', `icicle-next-line',
 ;;    `icicle-next-prefix-candidate',
 ;;    `icicle-next-prefix-candidate-action',
@@ -406,23 +410,23 @@
   ;; icicle-assoc-delete-all, icicle-define-sort-command
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-act-before-cycle-flag, icicle-add-proxy-candidates-flag, icicle-alternative-sort-comparer,
-  ;; icicle-anychar-regexp, icicle-buffer-ignore-space-prefix-flag, icicle-dot-string-internal,
-  ;; icicle-move-Completions-frame, icicle-Completions-mouse-3-menu-entries, icicle-current-TAB-method,
-  ;; icicle-default-cycling-mode, icicle-default-thing-insertion, icicle-delete-candidate-object,
-  ;; icicle-expand-input-to-common-match, icicle-hide-common-match-in-Completions-flag,
-  ;; icicle-hide-non-matching-lines-flag, icicle-incremental-completion, icicle-input-string, icicle-kbd,
-  ;; icicle-key-descriptions-use-<>-flag, icicle-regexp-quote-flag, icicle-saved-completion-sets,
-  ;; icicle-search-cleanup-flag, icicle-search-highlight-all-current-flag, icicle-sort-comparer,
-  ;; icicle-sort-orders-alist, icicle-TAB-shows-candidates-flag, icicle-thing-at-point-functions,
-  ;; icicle-transform-function
+  ;; icicle-anychar-regexp, icicle-buffer-ignore-space-prefix-flag, icicle-completion-style-sets,
+  ;; icicle-dot-string-internal, icicle-move-Completions-frame, icicle-Completions-mouse-3-menu-entries,
+  ;; icicle-current-TAB-method, icicle-default-cycling-mode, icicle-default-thing-insertion,
+  ;; icicle-delete-candidate-object, icicle-expand-input-to-common-match,
+  ;; icicle-hide-common-match-in-Completions-flag, icicle-hide-non-matching-lines-flag,
+  ;; icicle-incremental-completion, icicle-input-string, icicle-kbd, icicle-key-descriptions-use-<>-flag,
+  ;; icicle-regexp-quote-flag, icicle-saved-completion-sets, icicle-search-cleanup-flag,
+  ;; icicle-search-highlight-all-current-flag, icicle-sort-comparer, icicle-sort-orders-alist,
+  ;; icicle-TAB-shows-candidates-flag, icicle-thing-at-point-functions, icicle-transform-function
 (eval-and-compile (require 'icicles-var)) ; (This is required anyway by `icicles-fn.el'.)
   ;; lacarte-menu-items-alist, icicle-abs-file-candidates, icicle-acting-on-next/prev,
   ;; icicle-all-candidates-list-action-fn, icicle-all-candidates-list-alt-action-fn,
   ;; icicle-allowed-sort-predicate, icicle-apropos-complete-match-fn, icicle-buffer-name-input-p,
   ;; icicle-bufflist, icicle-candidate-action-fn, icicle-candidate-alt-action-fn, icicle-candidate-help-fn,
   ;; icicle-candidate-nb, icicle-candidates-alist, icicle-cands-to-narrow, icicle-cmd-reading-input,
-  ;; icicle-command-abbrev-history, icicle-complete-keys-alist, icicle-completing-keys-p,
-  ;; icicle-completing-p, icicle-completing-read+insert-candidates, icicle-completion-candidates,
+  ;; icicle-command-abbrev-history, icicle-complete-keys-alist, icicle-completing-keys-p, icicle-completing-p,
+  ;; icicle-completing-read+insert-candidates, icicle-completion-candidates, icicle-completion-style-set,
   ;; icicle-compute-narrowing-regexp-p, icicle-confirm-exit-commands,
   ;; icicle-current-completion-candidate-overlay, icicle-current-completion-mode, icicle-current-input,
   ;; icicle-current-raw-input, icicle-cycling-p, icicle-default-thing-insertion-flipped-p,
@@ -474,8 +478,10 @@
   (defvar tooltip-mode))
 
 (when (< emacs-major-version 23)
-  (defvar read-buffer-completion-ignore-case)
-  (defvar mouse-drag-copy-region))
+  (defvar completion-styles)            ; In `minibuffer.el'
+  (defvar icicle-completion-style-sets) ; In `icicles-opt.el'
+  (defvar mouse-drag-copy-region)
+  (defvar read-buffer-completion-ignore-case))
 
 (defvar completion-base-position)       ; Emacs 23.2+.
 (defvar count)                          ; Here.
@@ -1864,6 +1870,66 @@ restored as soon as you return to the top level."
 
 ;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
 ;;
+(when (boundp 'completion-styles)       ; Emacs 23+
+
+  (defun icicle-choose-completion-style-set (new &optional savep)
+    "Set value of option `completion-styles' to the value you choose.
+The value must be a list of symbols, such as `(basic substring)'.
+Completion is available against `icicle-completion-style-sets', but
+you can enter any list of completion styles.
+With a prefix argument, save the new value.
+
+Note: Unlike \\<minibuffer-local-completion-map>`\\[icicle-next-completion-style-set]', this does not act \
+only for the current command.
+      It changes the value of option `completion-styles', which
+      affects also subsequent commands."
+    (interactive (list (read (completing-read "Set `completion-styles' to: "
+                                              (mapcar #'list (mapcar (lambda (ss) (format "%s" ss))
+                                                                     icicle-completion-style-sets))))
+                       current-prefix-arg))
+    (if savep
+        (customize-save-variable 'completion-styles new)
+      (customize-set-variable 'completion-styles new))
+    (message "`completion-styles' %s `%s'" (if savep "has been saved as" "is now") new))
+
+  (defalias 'cycle-icicle-completion-style-set 'icicle-next-completion-style-set)
+  (defun icicle-next-completion-style-set () ; Bound to `C-M-(' in minibuffer.
+    "Cycle to the next set (list) of completion styles, for this command only.
+Has no effect if the current TAB completion method is not `vanilla'.
+Bound to \\<minibuffer-local-completion-map>`\\[icicle-next-completion-style-set]' in the minibuffer.
+Option `icicle-completion-style-sets' defines the available sets.
+The newly chosen style set is used only for the current command.
+
+To change the value of option `completion-styles' (and optionally save
+the new value), use `\\[icicle-choose-completion-style-set]'.  Unlike
+`customize-option', this lets you use completion against the
+`icicle-completion-style-sets' you have defined."
+    (interactive)
+    (if (not (boundp 'completion-styles))
+        (icicle-msg-maybe-in-minibuffer "`completion-styles' not available for this Emacs version")
+      (if (not (eq 'vanilla icicle-current-TAB-method))
+          (icicle-msg-maybe-in-minibuffer
+           (substitute-command-keys "You must first set TAB completion to `vanilla' using \
+\\<minibuffer-local-completion-map>`\\[icicle-next-TAB-completion-method]'"))
+        (unless icicle-completion-style-set ; nil means the same as the default (first).
+          (setq icicle-completion-style-set  (car icicle-completion-style-sets)))
+        (unless (get 'icicle-last-top-level-command 'icicle-completion-style-set)
+          (put 'icicle-last-top-level-command 'icicle-completion-style-set icicle-completion-style-set))
+        (let ((now  (memq icicle-completion-style-set icicle-completion-style-sets))
+              following)
+          (setq icicle-completion-style-set  (or (cadr now)  (car icicle-completion-style-sets))
+                following                    (or (cadr (memq icicle-completion-style-set
+                                                             icicle-completion-style-sets))
+                                                 (car icicle-completion-style-sets)))
+          (icicle-msg-maybe-in-minibuffer
+           "Completion style is %s %s  Next: %s"
+           (icicle-propertize (format "%s" icicle-completion-style-set) 'face 'icicle-msg-emphasis)
+           (concat "for " (icicle-propertize "this command" 'face 'icicle-msg-emphasis))
+           (format "%s" following))))))
+  )
+
+;; Top-level commands.  Could instead be in `icicles-cmd2.el'.
+;;
 (defalias 'cycle-icicle-S-TAB-completion-method 'icicle-next-S-TAB-completion-method)
 (defun icicle-next-S-TAB-completion-method (temporary-p) ; Bound to `M-(' in minibuffer.
   "Cycle to the next `S-TAB' completion method.
@@ -2046,7 +2112,7 @@ Bound to `M-,' in the minibuffer."
 
 ;; Free vars here: `icicle-scan-fn-or-regexp' is bound in `icicle-search'.
 ;;
-(defun icicle-search-define-replacement (&optional functionp) ; Bound to `M-,' in minibuffer during `icicle-search'.
+(defun icicle-search-define-replacement (&optional functionp) ; `M-,' in minibuffer during `icicle-search'.
   "Prompt user and set new value of `icicle-search-replacement'.
 With a prefix arg, a function name is read.
 Otherwise a replacement string is read.
@@ -2197,7 +2263,9 @@ By default, this is bound to `C-x C-M-l' during completion."
               (case (icicle-current-TAB-method)
                 (fuzzy        "No fuzzy completions")
                 (swank        "No swank (fuzzy symbol) completions")
-                (vanilla      "No vanilla completions")
+                (vanilla      (if (and (boundp 'completion-styles)  completion-styles)
+                                  (format "No vanilla completions %s" completion-styles)
+                                "No vanilla completions"))
                 (t            "No prefix completions")))))
           (t
            (when (> nb-cands icicle-incremental-completion-threshold)
@@ -2762,6 +2830,7 @@ These are the main Icicles actions and their minibuffer key bindings:
      Horizontal/vertical candidate layout    \\[icicle-toggle-completions-format]\t%s
      S-TAB completion method                 \\[icicle-next-S-TAB-completion-method]\t%s
      TAB completion method                   \\[icicle-next-TAB-completion-method]\t%s
+     Vanilla completion style set (E23+)     C-M-(\t%s
      Showing image-file thumbnails (E22+)    C-x t\t%s
      Showing candidate annotations           \\[icicle-toggle-annotation]\t%S
      Inclusion of proxy candidates           \\[icicle-toggle-proxy-candidates]\t%S
@@ -2800,6 +2869,9 @@ These are the main Icicles actions and their minibuffer key bindings:
              icicle-completions-format
              (car (rassq icicle-apropos-complete-match-fn icicle-S-TAB-completion-methods-alist))
              (icicle-current-TAB-method)
+             (if (and (boundp 'icicle-completion-style-sets)  (eq (icicle-current-TAB-method) 'vanilla))
+                 icicle-completion-style-set
+               "(not applicable)")
              (case icicle-image-files-in-Completions
                ((nil) "no")
                (image "image only")
@@ -4358,7 +4430,8 @@ Optional argument WORD-P non-nil means complete only a word at a time."
     (icicle-msg-maybe-in-minibuffer
      (substitute-command-keys
       "Use APROPOS completion (`S-TAB') to match multi-completions past first part")))
-  (let ((ipc1-was-cycling-p  icicle-cycling-p))
+  (let ((ipc1-was-cycling-p  icicle-cycling-p)
+        (completion-styles   (and (boundp 'icicle-completion-style-sets)  icicle-completion-style-set)))
     (setq icicle-mode-line-help  nil)
     (setq icicle-current-input                   (if (and icicle-last-input
                                                           icicle-cycling-p
@@ -4437,10 +4510,12 @@ Optional argument WORD-P non-nil means complete only a word at a time."
              (run-hooks 'icicle-no-match-hook)
              (unless (eq no-display-p 'no-msg)
                (minibuffer-message (case (icicle-current-TAB-method)
-                                     (fuzzy        "  [No fuzzy completions]")
-                                     (vanilla      "  [No vanilla completions]")
-                                     (swank        "  [No swank (fuzzy symbol) completions]")
-                                     (t            "  [No prefix completions]")))))
+                                     (fuzzy    "  [No fuzzy completions]")
+                                     (vanilla  (if completion-styles
+                                                   (format "  [No vanilla completions %s]" completion-styles)
+                                                 "  [No vanilla completions]"))
+                                     (swank    "  [No swank (fuzzy symbol) completions]")
+                                     (t        "  [No prefix completions]")))))
 
             ;; Single matching candidate.
             ((null (cdr icicle-completion-candidates))
