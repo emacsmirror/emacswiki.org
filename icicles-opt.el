@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sat Jul  4 10:27:50 2015 (-0700)
+;; Last-Updated: Sun Jul  5 13:16:52 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 6103
+;;     Update #: 6111
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4619,8 +4619,8 @@ value incrementally."
     ;; Comment this first line out if you do not want that.
     (when (require 'el-swank-fuzzy nil t) (push 'swank        methods))
     (when (require 'fuzzy-match nil t)    (push 'fuzzy        methods))
-    (when (boundp 'completion-styles)     (push 'vanilla      methods))
     (push 'basic methods)
+    (when (boundp 'completion-styles)     (push 'vanilla      methods))
     methods)
   "*List of completion methods to use for \
 `\\<minibuffer-local-completion-map>\\[icicle-prefix-complete]'.
@@ -4628,40 +4628,40 @@ The first method in the list is the default method.
 
 The available methods can include these:
 
-1. `basic'
-2. `vanilla' (provided you have Emacs 23 or later)
+1. `vanilla' (provided you have Emacs 23 or later)
+2. `basic'
 3. `fuzzy'   (provided you have library `fuzzy-match.el')
 4. `swank'   (provided you have library `el-swank-fuzzy.el')
 
-1. Basic completion means ordinary prefix completion. It is the
-`basic' completion style of Emacs 23 or later, and it is essentially
-the completion style prior to Emacs 23 (Emacs 22 completion was
-slightly different - see Emacs 23 option `custom-styles' for more
-info).
-
-2. Vanilla completion respects option `completion-styles' (new in
+1. Vanilla completion respects option `completion-styles' (new in
 Emacs 23), so that `TAB' behaves similarly in Icicles to what it does
 in vanilla Emacs.  The vanilla method also completes environment
 variables during file-name completion and in shell commands.  The
 non-vanilla methods do not complete environment variables, but the
 variables are expanded to their values when you hit `RET'.
 
-3. Fuzzy completion is a form of prefix completion in which matching
-finds the candidates that have the most characters in common with your
-input, in the same order, and with a minimum of non-matching
+2. Basic completion means ordinary prefix completion. It is the
+`basic' completion style of Emacs 23 or later, and it is essentially
+the completion style prior to Emacs 23 (Emacs 22 completion was
+slightly different - see Emacs 23 option `custom-styles' for more
+info).
+
+3. Fuzzy-match completion is a form of prefix completion in which
+matching finds the candidates that have the most characters in common
+with your input, in the same order, and with a minimum of non-matching
 characters.  It can skip over non-matching characters, as long as the
 number of characters skipped in the candidate is less that those
 following them that match.  After the matching candidates are found,
 they are sorted by skip length and then candidate length.
 
-Fuzzy completion is described in detail in the commentary of library
-`fuzzy-match.el'.  There is no fuzzy completion of file names - fuzzy
-completion is the same as basic for file names.  Fuzzy completion is
-always case-sensitive.
+Fuzzy-match completion is described in detail in the commentary of
+library `fuzzy-match.el'.  There is no fuzzy-match completion of file
+names - fuzzy-match completion is the same as basic for file names.
+Fuzzy-match completion is always case-sensitive.
 
-4. Swank completion in Icicles is the same as fuzzy completion, except
-regarding symbols.  That is, swank completion per se applies only to
-symbols.  Symbols are completed using the algorithm of library
+4. Swank completion in Icicles is the same as fuzzy-match completion,
+except regarding symbols.  That is, swank completion per se applies
+only to symbols.  Symbols are completed using the algorithm of library
 `el-swank-fuzzy.el'.
 
 Icicles options `icicle-swank-timeout' and
@@ -4675,7 +4675,7 @@ increment these options on the fly using the arrow keys `up' and
 Swank symbol completion uses heuristics that relate to supposedly
 typical patterns found in symbol names.  It also uses a timeout that
 can limit the number of matches.  It is generally quite a bit slower
-than fuzzy completion, and it sometimes does not provide all
+than fuzzy-match completion, and it sometimes does not provide all
 candidates that you might think should match, even when all of your
 input is a prefix (or even when it is already complete!).  If swank
 completion produces no match when you think it should, remember that
