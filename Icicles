@@ -149,7 +149,7 @@ The most important links are '''bold''' here.
 * '''[[Icicles - Complex Completions]]''' -- ''applying a function'' to complex candidates (e.g. Lisp structures -- more than just strings) that you choose interactively
 * [[Icicles - Object-Action Interaction]] -- choose an object first and then the function to act on it
 * [[Icicles - Anything]] -- object-action interaction on objects of [[Anything]] types
-* [[Icicles - Completion Methods and Styles]] -- using different completion methods and styles, including fuzzy matching
+* '''[[Icicles - Completion Methods and Styles]]''' -- using different completion methods and styles, including fuzzy matching
 * [[Icicles - Completion in Other Buffers]] -- non-minibuffer completion of words and other text
 * '''[[Icicles - Customization and General Tips]]''' -- how to ''customize'' '''Icicles''' to your preferences
 * '''[[Icicles - File-Name Completion Tips]]''' -- tips on completing file and directory names
