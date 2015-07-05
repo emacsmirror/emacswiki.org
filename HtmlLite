@@ -70,5 +70,8 @@ Fails to compile with Gnu Emacs 24.5.1:
 In toplevel form:
 html-lite.el:218:1:Error: Symbol's function definition is void: html-lite-make-name
 </pre>
+
+[new:PhilHudson:2015-07-05 14:10 UTC]
+Fixed: https://github.com/PhilHudson/html-lite.el
 ----
 Ported by: MarioDomgoergen
