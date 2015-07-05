@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Jun 18 09:00:35 2015 (-0700)
+;; Last-Updated: Sun Jul  5 08:16:57 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11447
+;;     Update #: 11479
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2183,6 +2183,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2015/07/05 dadams
+;;     icicle-levenshtein-strict-match: Raise error if cannot load levenshtein.el.
 ;; 2015/02/20 dadams
 ;;     icicle-insert-Completions-help-string:
 ;;       Hard-code mouse-[12]. since mouse-choose-completion is no longer an alias (bound).
@@ -4503,6 +4505,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2015/07/05 dadams
+;;     Added: icicle-next-completion-style-set, alias cycle-icicle-completion-style-set,
+;;            icicle-choose-completion-style-set.
+;;     icicle-display-candidates-in-Completions: Show completion-styles in msgs for method vanilla.
+;;     icicle-help-string-completion: Show icicle-completion-style-set.
+;;     icicle-prefix-complete-1: Bind completion-styles.  Show completion-styles in msg for vanilla.
 ;; 2015/04/16 dadams
 ;;     icicle-search-define-replacement: Added 3rd & 4th args to completing-read for reading function.
 ;; 2015/04/11 dadams
@@ -6256,6 +6264,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2015/07/05 dadams
+;;     icicle-top-level-prep: Reset icicle-completion-style-set (new) also.
 ;; 2014/11/28 dadams
 ;;     icicle-define-icicle-maps:
 ;;       Added entry for icicle-goto-any-marker.
@@ -7559,6 +7569,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2015/07/05 dadams
+;;     Added: icicle-completion-style-sets (Emacs 23+).
+;;     icicle-completion-key-bindings: Bind C-M-( to icicle-next-completion-style-set (Emacs 23+).
 ;; 2015/05/29 dadams
 ;;     icicle-keymaps-for-key-completion: Added apropos-mode-map and help-mode-map.
 ;; 2014/12/15 dadams
@@ -8494,6 +8507,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2015/07/05 dadams
+;;     Added: icicle-completion-style-set.
 ;; 2015/04/11 dadams
 ;;     icicle-search-in-context-fn: Update doc string to say the replacement arg can be a function. 
 ;; 2014/08/10 dadams
@@ -8950,6 +8965,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2015/07/05 dadams
+;;     Version 2015.07.05.
 ;; 2015/01/04 dadams
 ;;     Version 2015.01.04.
 ;; 2014/08/10 dadams
