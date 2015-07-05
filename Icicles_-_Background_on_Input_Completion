@@ -42,7 +42,7 @@ using `RET'.
 
 (Starting with Emacs 23, what '''Icicles''' calls "prefix completion" is
 controlled by vanilla Emacs option `completion-styles', and the
-matching it uses need not be strictly limited the `basic' style,
+matching it uses is not limited to the `basic' style,
 that is, to expanding a literal prefix of one of the completion
 candidates.  If you prefer, you can think of "prefix completion"
 as `TAB' completion (but you can change which key effects it).
