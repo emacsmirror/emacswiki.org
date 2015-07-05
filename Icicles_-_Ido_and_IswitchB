@@ -200,7 +200,7 @@ soon as you narrow matching to a single candidate.  For (a), you bind '''`<tt>[[
 1. In the first case, prefix completion is the default (as usual),
    but `icicle-buffer' uses vanilla Emacs completion as the
    Icicles `TAB' completion method.  This reflects %%IswitchB%%'s
-   substring matching.  To do this, you bind '''`<tt>[[Icicles - Customization and General Tips#icicle-current-TAB-method|icicle-current-TAB-method]]</tt>'''' to `vanilla'.
+   substring matching.  To do this, bind '''`<tt>[[Icicles - Customization and General Tips#icicle-current-TAB-method|icicle-current-TAB-method]]</tt>'''' to `vanilla'.
 
 2. In the second case, `icicle-buffer' starts out with apropos
    completion, not prefix completion.  This too reflects
