@@ -64,4 +64,11 @@ title    tr         tt         ul          var
 
 You can get it from: Lisp:html-lite.el
 
+[new:PhilHudson:2015-07-05 12:40 UTC]
+Fails to compile with Gnu Emacs 24.5.1:
+<pre>
+In toplevel form:
+html-lite.el:218:1:Error: Symbol's function definition is void: html-lite-make-name
+</pre>
+----
 Ported by: MarioDomgoergen
