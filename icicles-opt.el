@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri May 29 20:19:15 2015 (-0700)
+;; Last-Updated: Sat Jul  4 10:27:50 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 6098
+;;     Update #: 6103
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -105,6 +105,7 @@
 ;;    `icicle-completion-history-max-length',
 ;;    `icicle-completion-key-bindings',
 ;;    `icicle-completion-list-key-bindings',
+;;    `icicle-completion-style-sets',
 ;;    `icicle-Completions-display-min-input-chars',
 ;;    `icicle-completions-format', `icicle-Completions-max-columns',
 ;;    `icicle-Completions-mouse-3-menu-entries',
@@ -2046,6 +2047,8 @@ the full candidate object.")
     (,(icicle-kbd "C->")       icicle-candidate-set-save-more t)                      ; `C->'
     (,(icicle-kbd "C-M->")     icicle-candidate-set-save t)                           ; `C-M->'
     (,(icicle-kbd "C-(")       icicle-next-TAB-completion-method t)                   ; `C-('
+    (,(icicle-kbd "C-M-(")     icicle-next-completion-style-set
+     (fboundp 'icicle-next-completion-style-set))                                     ; `C-M-('
     (,(icicle-kbd "M-(")       icicle-next-S-TAB-completion-method t)                 ; `M-('
     (,(icicle-kbd "C-)")       icicle-candidate-set-save-more-selected t)             ; `C-)'
     (,(icicle-kbd "C-M-)")     icicle-candidate-set-save-selected t)                  ; `C-M-)'
@@ -2249,6 +2252,13 @@ before you enter Icicle mode."
               :match-alternatives (symbolp) :value ignore)
              (sexp :tag "Condition"))))
   :group 'Icicles-Key-Bindings)
+
+(when (boundp 'completion-styles)       ; Emacs 23+
+  (defcustom icicle-completion-style-sets (cons (copy-sequence completion-styles)
+                                                (mapcar #'list (mapcar #'car completion-styles-alist)))
+    "Possible `completion-styles' values for when `TAB' completion method is `vanilla'."
+    :type '(repeat (repeat (symbol :tag "Completion style")))
+    :group 'Icicles))
 
 (defcustom icicle-Completions-display-min-input-chars 0
   "*`*Completions*' window is removed if fewer chars than this are input.
