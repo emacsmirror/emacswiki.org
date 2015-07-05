@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2015.04.03
+;; Version: 2015.07.05
 ;; Package-Requires: ()
-;; Last-Updated: Fri Apr  3 09:12:40 2015 (-0700)
+;; Last-Updated: Sun Jul  5 08:16:52 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 23650
+;;     Update #: 23658
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -214,7 +214,8 @@
 ;;    `icicle-buffer-no-search',
 ;;    `icicle-buffer-no-search-other-window',
 ;;    `icicle-buffer-other-window',
-;;    `icicle-change-alternative-sort-order', `icicle-choose-faces',
+;;    `icicle-change-alternative-sort-order',
+;;    `icicle-choose-completion-style-set', `icicle-choose-faces',
 ;;    `icicle-choose-invisible-faces', `icicle-choose-visible-faces',
 ;;    `icicle-choose-window-for-buffer-display',
 ;;    `icicle-clear-history', `icicle-clear-current-history',
@@ -487,6 +488,7 @@
 ;;
 ;;   Commands to be used mainly in the minibuffer or `*Completions*':
 ;;
+;;    `cycle-icicle-completion-style-set',
 ;;    `cycle-icicle-expand-to-common-match',
 ;;    `cycle-icicle-image-file-thumbnail',
 ;;    `icicle-abort-recursive-edit', `icicle-all-candidates-action',
@@ -614,7 +616,9 @@
 ;;    `icicle-next-candidate-per-mode',
 ;;    `icicle-next-candidate-per-mode-action',
 ;;    `icicle-next-candidate-per-mode-alt-action',
-;;    `icicle-next-candidate-per-mode-help', `icicle-next-line',
+;;    `icicle-next-candidate-per-mode-help',
+;;    `icicle-next-completion-style-set',
+;;    `icicle-next-history-element', `icicle-next-line',
 ;;    `icicle-next-prefix-candidate',
 ;;    `icicle-next-prefix-candidate-action',
 ;;    `icicle-next-prefix-candidate-alt-action',
@@ -813,6 +817,7 @@
 ;;    `icicle-completion-history-max-length',
 ;;    `icicle-completion-key-bindings',
 ;;    `icicle-completion-list-key-bindings',
+;;    `icicle-completion-style-sets',
 ;;    `icicle-Completions-display-min-input-chars',
 ;;    `icicle-completions-format',
 ;;    `icicle-Completions-mouse-3-menu-entries',
@@ -1420,6 +1425,7 @@
 ;;    `icicle-Completions-save/retrieve-submenu',
 ;;    `icicle-Completions-sets-submenu',
 ;;    `icicle-Completions-sorting-submenu',
+;;    `icicle-completion-style-set',
 ;;    `icicle-Completions-this-candidate-submenu',
 ;;    `icicle-Completions-toggle-submenu',
 ;;    `icicle-compute-narrowing-regexp-p',
