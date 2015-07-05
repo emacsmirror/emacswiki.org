@@ -171,10 +171,8 @@ If you have your own method of matching then you can use that too,
 by adding it to option `icicle-S-TAB-completion-methods-alist' for
 use by `S-TAB'.
 
-My own opinion about the relative usefulness of the various
-methods: `basic' and `apropos' are by far the most useful.  They
-are followed, in order of decreasing usefulness, by `scatter',
-(non-basic) `vanilla', `fuzzy', `Levenshtein', `Jaro-Winkler', and
+My own opinion about the relative usefulness of the various completion
+methods, in order from the most useful: `apropos', `basic', `vanilla', `scatter', `fuzzy', `Levenshtein', `Jaro-Winkler', and
 `swank'.  YMMV.
 
 Besides all of these completion methods, remember that you can get
@@ -201,8 +199,8 @@ characters escaped, `S-TAB' does literal substring completion.
 You can change completion methods easily at any time,
 by hitting a key in the [[minibuffer]]:
 
-* '''`##C-(##'''' (command '''`icicle-next-TAB-completion-method'''') to cycle among `TAB' completion methods: `basic',
-`vanilla', `fuzzy', and `swank' (`vanilla' only for Emacs 23 and later;
+* '''`##C-(##'''' (command '''`icicle-next-TAB-completion-method'''') to cycle among `TAB' completion methods: `vanilla', `basic',
+`fuzzy', and `swank' (`vanilla' only for Emacs 23 and later;
 `fuzzy' only if you have library <tt>[[fuzzy-match.el]]</tt>; `swank' only if you have library <tt>[[el-swank-fuzzy.el]]</tt>).
 
 * '''`##M-(##'''' (command '''`icicle-next-S-TAB-completion-method'''') to cycle `S-TAB' completion methods: `apropos', `scatter',
