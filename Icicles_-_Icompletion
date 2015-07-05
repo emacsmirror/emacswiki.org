@@ -132,7 +132,7 @@ And together with option
 If option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion|icicle-incremental-completion]]</tt>'''' is non-`nil', then
 `*Completions*' is ''automatically updated'' whenever you change your input
 in the minibuffer -- that is, with each character that you type or
-delete. This '''[::incremental completion]''' is another form of icompletion, unique to '''Icicles'''.  Unlike vanilla icompletion, it uses buffer `*Completions*', not the minibuffer, to show the completion help.
+delete. This '''[::incremental completion]''' is another form of icompletion.  Unlike vanilla icompletion, it uses buffer `*Completions*', not the minibuffer, to show the completion help.
 
 The particular non-`nil' value of `icicle-incremental-completion' determines when `*Completions*' is
 displayed and updated.  The default value, `t', means that
