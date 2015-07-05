@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jul  5 10:07:09 2015 (-0700)
+;; Last-Updated: Sun Jul  5 10:18:04 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 29910
+;;     Update #: 29913
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5826,6 +5826,15 @@
 ;;    `C-(' and `M-('.  Use them if you want to specify which methods
 ;;    are available for particular commands that read input with
 ;;    completion.
+;;
+;;  * User option `icicle-completion-style-sets' (for Emacs 23 or
+;;    later) is the set of `completion-styles' values that can be used
+;;    when `TAB' completion method is `vanilla'.  During completion
+;;    you can use `C-M-(' to cycle to the next the style set.  You can
+;;    use command `icicle-choose-completion-style-set' anytime to
+;;    choose the default style set and set option `completing-styles'
+;;    to it.  With a prefix argument, the command also saves the new
+;;    `completing-styles' value.
 ;;
 ;;  * User option `icicle-levenshtein-distance' is the Levenshtein
 ;;    distance allowed for strings to be considered as matching during
