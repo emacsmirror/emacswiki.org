@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Jul  4 15:23:29 2015 (-0700)
+;; Last-Updated: Sun Jul  5 08:27:05 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 28423
+;;     Update #: 28430
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -420,12 +420,17 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "Icicles with Anything")
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Completion Methods and Styles")
-;;    (@file :file-name "icicles-doc2.el" :to "Partial Completion")
-;;    (@file :file-name "icicles-doc2.el" :to "Scatter-Match Completion")
-;;    (@file :file-name "icicles-doc2.el" :to "Swank (Fuzzy Symbol) Completion")
-;;    (@file :file-name "icicles-doc2.el" :to "Fuzzy-Match Completion")
-;;    (@file :file-name "icicles-doc2.el" :to "Levenshtein Completion")
-;;    (@file :file-name "icicles-doc2.el" :to "Jaro-Winkler Completion")
+;;    (@file :file-name "icicles-doc2.el" :to "Vanilla Emacs Styles and Option `completing-styles'")
+;;    (@file :file-name "icicles-doc2.el" :to "Prefix Completion Method `vanilla'")
+;;    (@file :file-name "icicles-doc2.el" :to "Icicles Completion Methods")
+;;    (@file :file-name "icicles-doc2.el" :to "Changing Completion Method")
+;;    (@file :file-name "icicles-doc2.el" :to "Command-Specific Completion Methods")
+;;    (@file :file-name "icicles-doc2.el" :to "Fuzzy Completion")
+;;      (@file :file-name "icicles-doc2.el" :to "Scatter-Match (Flex) Completion")
+;;      (@file :file-name "icicles-doc2.el" :to "Swank (Fuzzy Symbol) Completion")
+;;      (@file :file-name "icicles-doc2.el" :to "Fuzzy-Match Completion")
+;;      (@file :file-name "icicles-doc2.el" :to "Levenshtein Completion")
+;;      (@file :file-name "icicles-doc2.el" :to "Jaro-Winkler Completion")
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Completion in Other Buffers")
 ;;    (@file :file-name "icicles-doc2.el" :to "Dynamic Completion Using `dabbrev.el'")
@@ -3921,9 +3926,9 @@
 ;;      then the total number of candidates before truncation is also
 ;;      shown - e.g. `149/567 candidates shown'.
 ;;
-;;    . The current completion method: (basic) prefix, vanilla, fuzzy,
-;;      swank (fuzzy symbol), apropos, scatter, Levenshtein,
-;;      Levenshtein strict.  See
+;;    . The current completion method: basic, vanilla, fuzzy, swank
+;;      (fuzzy symbol), apropos, scatter, Levenshtein, Levenshtein
+;;      strict, or Jaro-Winkler.  See
 ;;      (@file :file-name "icicles-doc2.el" :to "Completion Methods and Styles")
 ;;      and user options `icicle-TAB-completion-methods' and
 ;;      `icicle-S-TAB-completion-methods-alist'.
