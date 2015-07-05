@@ -8,7 +8,7 @@
 
 This section is for EmacsLisp programmers.
 
-By default, '''Icicles''' lets users use basic [[prefix completion]] (with `TAB') or [[apropos completion]] (with `S-TAB').  They can alternatively use other completion methods with `TAB' and `S-TAB':
+By default, '''Icicles''' lets users use vanilla [[prefix completion]] (with `TAB') or [[apropos completion]] (with `S-TAB').  They can alternatively use other completion methods with `TAB' and `S-TAB':
 
 * They can use '''`##C-(##'''' during completion to cycle among `TAB'
 completion methods.
