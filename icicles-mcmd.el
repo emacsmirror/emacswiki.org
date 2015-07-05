@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Jul  5 08:15:09 2015 (-0700)
+;; Last-Updated: Sun Jul  5 13:33:09 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 19699
+;;     Update #: 19703
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4430,6 +4430,9 @@ Optional argument WORD-P non-nil means complete only a word at a time."
     (icicle-msg-maybe-in-minibuffer
      (substitute-command-keys
       "Use APROPOS completion (`S-TAB') to match multi-completions past first part")))
+  (when (and (boundp 'icicle-completion-style-sets) ; Emacs 23+
+             (not icicle-completion-style-set)) ; nil means the same as the default (first).
+    (setq icicle-completion-style-set  (car icicle-completion-style-sets)))
   (let ((ipc1-was-cycling-p  icicle-cycling-p)
         (completion-styles   (and (boundp 'icicle-completion-style-sets)  icicle-completion-style-set)))
     (setq icicle-mode-line-help  nil)
