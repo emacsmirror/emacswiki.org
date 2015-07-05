@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Feb 20 14:29:10 2015 (-0800)
+;; Last-Updated: Sat Jul  4 16:49:27 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15085
+;;     Update #: 15086
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4273,7 +4273,8 @@ lengths too must differ by at most `icicle-levenshtein-distance'.
 You probably want to turn off incremental completion (`C-#') if you
 use this match method; it is quite slow.
 To use this match method, you must also have library `levenshtein.el'."
-  (and (require 'levenshtein nil t)  (<= (levenshtein-distance s1 s2) icicle-levenshtein-distance)))
+  (unless (require 'levenshtein nil t)  (icicle-user-error "You need library `levenshtein.el' for this"))
+  (<= (levenshtein-distance s1 s2) icicle-levenshtein-distance))
 
 (defun icicle-levenshtein-match (s1 s2)
   "String S1 is within `icicle-levenshtein-distance' of a substring of S2.
