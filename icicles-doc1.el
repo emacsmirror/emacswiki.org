@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jul  5 08:27:05 2015 (-0700)
+;; Last-Updated: Sun Jul  5 14:23:46 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 28430
+;;     Update #: 28445
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2429,10 +2429,10 @@
 ;;
 ;;  (Starting with Emacs 23, what Icicles calls "prefix completion" is
 ;;  controlled by vanilla Emacs option `completion-styles', and the
-;;  matching it uses need not be strictly limited the `basic' style,
-;;  that is, to expanding a literal prefix of one of the completion
-;;  candidates.  If you prefer, you can think of "prefix completion"
-;;  as `TAB' completion (but you can change which key effects it).
+;;  matching it uses is not limited to the `basic' style, that is, to
+;;  expanding a literal prefix of one of the completion candidates.
+;;  If you prefer, you can think of "prefix completion" as `TAB'
+;;  completion (but you can change which key effects it).
 ;;
 ;;  But if your partial input matches more than one default value,
 ;;  then completion pops up the list of all matching completions for
@@ -2628,8 +2628,8 @@
 ;;  remember the exact command name, but it has something to do with
 ;;  lines, so you type `M-x line', then hit `next' repeatedly, until
 ;;  you see the right "line" command - `transpose-lines', perhaps.
-;;  Basic prefix completion does not find this command, because "line"
-;;  is not a prefix of "transpose-lines".
+;;  Vanilla prefix completion does not find this command, because
+;;  "line" is not a prefix of "transpose-lines".
 ;;
 ;;  Because `M-x' expects a command name, only command names are
 ;;  inserted into the minibuffer as the apropos-completion candidates
@@ -3442,12 +3442,7 @@
 ;;  the input.  So, for example, to get the wildcard interpretation of
 ;;  `*', just forego regexp completion and cycling.  And vice versa:
 ;;  forego the wildcard interpretation to use regexp completion and
-;;  cycling.
-;;
-;;  This is in any case the behavior of vanilla Emacs as well.  If, in
-;;  vanilla Emacs, you use `ici*' or `ici*.el' as input to `find-file'
-;;  and hit `TAB', there is no completion available.  File-name
-;;  globbing and completion are independent.
+;;  cycling.  File-name globbing and completion are independent.
 ;;
 ;;  Note: Because `?' is useful in regexp syntax, the standard Emacs
 ;;        minibuffer binding of `?', which just displays the
@@ -3500,9 +3495,9 @@
 ;;  `${HOME}', for example.
 ;;
 ;;  Note: Starting with Emacs 23, if option
-;;  `icicle-TAB-completion-methods' includes `vanilla', and you choose
-;;  `vanilla' completion for `TAB' (by cycling using `C-(' or by
-;;  customizing `icicle-TAB-completion-methods' to use `vanilla' as
+;;  `icicle-TAB-completion-methods' includes `vanilla', and if you
+;;  choose `vanilla' completion for `TAB' (by cycling using `C-(' or
+;;  by customizing `icicle-TAB-completion-methods' to use `vanilla' as
 ;;  the default), then Icicles `TAB' completion will complete an
 ;;  environment variable during file-name completion.  This is in
 ;;  addition to the traditional shell expansion of a variable when you
@@ -3839,7 +3834,7 @@
 ;;  1. In the first case, prefix completion is the default (as usual),
 ;;     but `icicle-buffer' uses vanilla Emacs completion as the
 ;;     Icicles `TAB' completion method.  This reflects IswitchB's
-;;     substring matching.  To do this, you bind
+;;     substring matching.  To do this, bind
 ;;     `icicle-current-TAB-method' to `vanilla'.
 ;;
 ;;  2. In the second case, `icicle-buffer' starts out with apropos
@@ -3926,7 +3921,7 @@
 ;;      then the total number of candidates before truncation is also
 ;;      shown - e.g. `149/567 candidates shown'.
 ;;
-;;    . The current completion method: basic, vanilla, fuzzy, swank
+;;    . The current completion method: vanilla, basic, fuzzy, swank
 ;;      (fuzzy symbol), apropos, scatter, Levenshtein, Levenshtein
 ;;      strict, or Jaro-Winkler.  See
 ;;      (@file :file-name "icicles-doc2.el" :to "Completion Methods and Styles")
@@ -4340,9 +4335,9 @@
 ;;  If option `icicle-incremental-completion' is non-`nil', then
 ;;  `*Completions*' is automatically updated whenever you change your
 ;;  input in the minibuffer - that is, with each character that you
-;;  type or delete.  This is another form of icompletion, unique to
-;;  Icicles.  Unlike vanilla icompletion, it uses buffer
-;;  `*Completions*', not the minibuffer, to show the completion help.
+;;  type or delete.  This is another form of icompletion.  Unlike
+;;  vanilla icompletion, it uses buffer `*Completions*', not the
+;;  minibuffer, to show the completion help.
 ;;
 ;;  The particular non-`nil' value of `icicle-incremental-completion'
 ;;  determines when `*Completions*' is displayed and updated.  The
