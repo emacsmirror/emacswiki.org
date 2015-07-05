@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Thu Jan  1 10:56:08 2015 (-0800)
+;; Last-Updated: Sat Jul  4 10:32:53 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 10251
+;;     Update #: 10254
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -172,8 +172,8 @@
   ;; icicle-auto-no-icomplete-mode-p, icicle-auto-no-sort-p, icicle-candidate-action-fn,
   ;; icicle-candidate-alt-action-fn, icicle-candidate-nb, icicle-candidates-alist,
   ;; icicle-cmd-calling-for-completion, icicle-cmd-reading-input, icicle-completing-p,
-  ;; icicle-completing-read+insert-candidates, icicle-completion-candidates,
-  ;; icicle-completion-prompt-overlay, icicle-current-completion-mode, icicle-ess-use-ido,
+  ;; icicle-completing-read+insert-candidates, icicle-completion-candidates, icicle-completion-prompt-overlay,
+  ;; icicle-completion-style-set, icicle-current-completion-mode, icicle-ess-use-ido,
   ;; icicle-ignored-extensions, icicle-ignored-extensions-regexp, icicle-incremental-completion-p,
   ;; icicle-inhibit-advice-functions, icicle-inhibit-sort-p, icicle-initial-value,
   ;; icicle-input-completion-fail-overlay, icicle-input-fail-pos, icicle-last-completion-candidate,
@@ -243,6 +243,7 @@
 (defvar crm-local-completion-map)       ; In `crm.el'.
 (defvar crm-local-must-match-map)       ; In `crm.el'.
 (defvar dired-mode-map)                 ; In `dired.el'.
+(defvar diredp-menu-bar-recursive-marked-menu) ; In `dired+.el'
 (defvar gud-minibuffer-local-map)       ; In `gud.el'.
 (defvar ibuffer-mode-map)               ; In `ibuffer.el'.
 (defvar ibuffer-mode-operate-map)       ; In `ibuffer.el'.
@@ -857,13 +858,16 @@ Used on `pre-command-hook'."
 
 (defun icicle-top-level-prep ()
   "Do top-level stuff.  Used in `pre-command-hook'."
-  ;; Reset `icicle-current-TAB-method' and `icicle-apropos-complete-match-fn' if temporary.
+  ;; Reset `icicle-current-TAB-method', `icicle-completion-style-set' and `icicle-apropos-complete-match-fn'
+  ;;  if temporary.
   ;; Save this top-level command as `icicle-last-top-level-command'.
   ;; Reset `icicle-candidates-alist' to ().
   (unless (> (minibuffer-depth) 0)
     (let ((TAB-method  (get 'icicle-last-top-level-command 'icicle-current-TAB-method))
+          (style-set   (get 'icicle-last-top-level-command 'icicle-completion-style-set))
           (apropos-fn  (get 'icicle-last-top-level-command 'icicle-apropos-complete-match-fn)))
       (when TAB-method (setq icicle-current-TAB-method  TAB-method))
+      (when style-set (setq icicle-completion-style-set  style-set))
       (when apropos-fn (setq icicle-apropos-complete-match-fn  apropos-fn)))
     (unless (memq this-command '(minibuffer-complete-and-exit icicle-minibuffer-complete-and-exit
                                  exit-minibuffer              icicle-exit-minibuffer))
