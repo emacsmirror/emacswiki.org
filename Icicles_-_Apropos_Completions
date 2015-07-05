@@ -21,7 +21,7 @@ apropos candidates.  To do this, you use keys `next' and `prior' (labeled ##Page
 For example, suppose you use `M-x' to enter a [[command]].  You do not
 remember the exact command name, but it has something to do with
 [[line]]s, so you type `M-x line', then hit `next' repeatedly until you
-see the right "<code>line</code>" command -- `transpose-lines', perhaps.  Basic prefix
+see the right "<code>line</code>" command -- `transpose-lines', perhaps.  Vanilla prefix
 completion does not find this command, because "<code>line</code>" is not a
 prefix of "<code>transpose-lines</code>".
 
