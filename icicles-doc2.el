@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jul  5 10:18:04 2015 (-0700)
+;; Last-Updated: Sun Jul  5 10:30:59 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 29913
+;;     Update #: 29915
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5843,6 +5843,19 @@
 ;;    deletion, replacement).  This option is used only if you have
 ;;    library `levenshtein.el'.
 ;;    See (@> "Completion Methods and Styles").
+;;
+;;  * User option `icicle-swank-timeout' is the maximumum number of
+;;    milliseconds that can elapse before swank (fuzzy symbol)
+;;    completion gives up.  If you use Do Re Mi (library `doremi.el')
+;;    then you can use multi-command `icicle-increment-option' anytime
+;;    to change the option value incrementally.
+;;    See (@> "Swank (Fuzzy Symbol) Completion").
+;;
+;;  * User option `icicle-swank-prefix-length' is the minimum number
+;;    of characters that must match, for swank completion.  If you use
+;;    Do Re Mi (library `doremi.el') then you can use multi-command
+;;    `icicle-increment-option' anytime to change the option value
+;;    incrementally.  See (@> "Swank (Fuzzy Symbol) Completion").
 ;;
 ;;  * Top-level command `icicle-search' uses several faces to
 ;;    highlight found text that matches your input.  Faces
