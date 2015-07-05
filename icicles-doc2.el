@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jul  5 10:30:59 2015 (-0700)
+;; Last-Updated: Sun Jul  5 14:08:23 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 29915
+;;     Update #: 29924
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2912,8 +2912,8 @@
 ;;  start with it.  This is an obvious and standard Icicles feature.
 ;;
 ;;  Although vanilla Emacs also accepts a substring as input for `i',
-;;  it does not provide substring or regexp completion, and it will
-;;  not accept a regexp as final input.
+;;  it does not provide regexp completion, and it will not accept a
+;;  regexp as final input.
 ;;
 ;;  Icicle mode binds `g', `i', and `m' to multi-commands
 ;;  `icicle-Info-goto-node', `icicle-Info-index', and
@@ -4131,10 +4131,9 @@
 ;;  use by `S-TAB'.
 ;;
 ;;  My own opinion about the relative usefulness of the various
-;;  methods: `basic' and `apropos' are by far the most useful.  They
-;;  are followed, in order of decreasing usefulness, by `scatter',
-;;  (non-basic) `vanilla', `fuzzy', `Levenshtein', `Jaro-Winkler', and
-;;  `swank'.  YMMV.
+;;  completion methods, in order from the most useful: `apropos',
+;;  `basic', `vanilla', `scatter', `fuzzy', `Levenshtein',
+;;  `Jaro-Winkler', and `swank'.  YMMV.
 ;;
 ;;  Besides all of these completion methods, remember that you can get
 ;;  ordinary substring matching with `S-TAB' by using `C-`' to turn
@@ -4150,7 +4149,7 @@
 ;;  key in the minibuffer:
 ;;
 ;;  * `C-(' (command `icicle-next-TAB-completion-method') to cycle
-;;    among `TAB' completion methods: `basic', `vanilla', `fuzzy', and
+;;    among `TAB' completion methods: `vanilla', `basic', `fuzzy', and
 ;;    `swank' (`vanilla' only for Emacs 23 and later; `fuzzy' only if
 ;;    you have library `fuzzy-match.el'; `swank' only if you have
 ;;    library `el-swank-fuzzy.el').
@@ -9917,7 +9916,7 @@
 ;;
 ;;  This section is for Emacs-Lisp programmers.
 ;;
-;;  By default, Icicles lets users use basic prefix completion (with
+;;  By default, Icicles lets users use vanilla prefix completion (with
 ;;  `TAB') or apropos completion (with `S-TAB'). They can
 ;;  alternatively use other completion methods with `TAB' and `S-TAB':
 ;;
