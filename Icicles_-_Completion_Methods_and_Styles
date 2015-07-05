@@ -145,7 +145,7 @@ called "fuzzy" matching:
 By default, the apropos completion methods (`S-TAB') include
 `apropos' ([[regexp]] matching) and the following methods, which also
 provide different kinds of what might be called "fuzzy" matching.
-See [[#Fuzzy Completion|Fuzzy Completion]] for further descriptions of each.
+See [[#FuzzyCompletion|Fuzzy Completion]] for further descriptions of each.
 
 * '''<tt>[[#ScatterMatchCompletion|`scatter']]</tt>''' -- This is a simple, poor man's fuzzy matching method
   that I call "'''[::scatter matching]'''".  [[Ido]] calls it "flex" matching.
