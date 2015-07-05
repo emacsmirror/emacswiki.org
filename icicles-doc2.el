@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sat Jul  4 15:20:20 2015 (-0700)
+;; Last-Updated: Sun Jul  5 10:07:09 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 29786
+;;     Update #: 29910
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -298,12 +298,17 @@
 ;;    (@> "Icicles with Anything")
 ;;
 ;;  (@> "Completion Methods and Styles")
-;;    (@> "Partial Completion")
-;;    (@> "Scatter-Match Completion")
-;;    (@> "Swank (Fuzzy Symbol) Completion")
-;;    (@> "Fuzzy-Match Completion")
-;;    (@> "Levenshtein Completion")
-;;    (@> "Jaro-Winkler Completion")
+;;    (@> "Vanilla Emacs Styles and Option `completing-styles'")
+;;    (@> "Prefix Completion Method `vanilla'")
+;;    (@> "Icicles Completion Methods")
+;;    (@> "Changing Completion Method")
+;;    (@> "Command-Specific Completion Methods")
+;;    (@> "Fuzzy Completion")
+;;      (@> "Scatter-Match (Flex) Completion")
+;;      (@> "Swank (Fuzzy Symbol) Completion")
+;;      (@> "Fuzzy-Match Completion")
+;;      (@> "Levenshtein Completion")
+;;      (@> "Jaro-Winkler Completion")
 ;;
 ;;  (@> "Completion in Other Buffers")
 ;;    (@> "Dynamic Completion Using `dabbrev.el'")
@@ -3988,63 +3993,159 @@
 ;;  Completion Methods and Styles
 ;;  -----------------------------
 ;;
-;;  There are a few different kinds of what might be called "fuzzy"
-;;  matching used in Icicles completion, in addition to apropos
-;;  (regexp) matching and prefix matching.  And if you have your own
-;;  method of matching then you can use that as well, by adding it to
-;;  option `icicle-S-TAB-completion-methods-alist'.
+;;  Icicles provides different methods to complete your minibuffer
+;;  input, dividing these between keys `TAB' and `S-TAB' (these are
+;;  the keys by default, but you can use any keys).  Icicles calls the
+;;  methods provided by `TAB' "prefix" completion methods, and it
+;;  calls the methods provided by `S-TAB' "apropos" completion
+;;  methods.
 ;;
-;;  The following methods are predefined:
+;;(@* "Vanilla Emacs Styles and Option `completing-styles'")
+;;  ** Vanilla Emacs Styles and Option `completing-styles' **
 ;;
-;;  * Fuzzy - This method uses a fairly sophisticated matching
+;;  Starting with Emacs 23, Emacs provides "completion styles", which,
+;;  like Icicles completion methods, are different ways to complete
+;;  your minibuffer input.  The available styles are defined by
+;;  non-option variable `completion-styles-alist'.  They include
+;;  `basic', which was the original vanilla completion behavior;
+;;  `partial-completion'; `initials'; and (for Emacs 24 and later)
+;;  `substring'.  They also include `emacs21' and `emacs22', for the
+;;  vanilla completion behavior from those Emacs releases.  See the
+;;  Emacs doc for an explanation of completion styles.
+;;
+;;  In vanilla Emacs there is only one set of completion styles that
+;;  is ever in effect, defined by option `completion-styles'.  It is a
+;;  list of different ways to match your input.  Each style in the
+;;  list is tried, in turn, until one of them successfully completes
+;;  your input.
+;;
+;;  All completion candidates you see come from the same style.  You
+;;  have no control over which style will actually be used for any
+;;  given input, other than ordering the list ahead of time.  And you
+;;  have no way of knowing which style was actually used to produce a
+;;  given set of candidates.  The relation between your input pattern
+;;  and the matches is thus sometimes not so clear.  There is no way
+;;  to know, for example, that initial matching failed and partial
+;;  matching succeeded.
+;;
+;;  In vanilla Emacs the styles of `completion-styles' can only be
+;;  used together - all or none; they are never alternatives that you
+;;  can choose at runtime.
+;;
+;;  Icicles completion methods are instead alternatives - only one is
+;;  used at a time to complete your input, and you can switch from one
+;;  method to another easily.  For prefix completion (`TAB') you
+;;  switch methods using `C-('.  For apropos completion you switch
+;;  using `M-('.
+;;
+;;(@* "Prefix Completion Method `vanilla'")
+;;  ** Prefix Completion Method `vanilla' **
+;;
+;;  When you choose Icicles prefix completion method `vanilla' you get
+;;  essentially the behavior of vanilla Emacs completion, that is,
+;;  completion according to a list of styles, which are tried one
+;;  after the other.
+;;
+;;  But rather than limiting you to a single styles list (option
+;;  `completion-styles'), you can choose anytime from any of several
+;;  lists that you define using option `icicle-completion-style-sets'.
+;;  Command `icicle-choose-completion-style-set' does this - it sets
+;;  the current style set and the value of option `completion-styles'
+;;  to whichever set you choose (using completion).  With a prefix
+;;  argument, it also saves the new value of `completion-styles' for
+;;  future Emacs sessions.
+;;
+;;  And just as it is quick and easy to flip, during completion, from
+;;  one Icicles completion method to another (using `C-(' or `M-('),
+;;  so it is with the completion style sets of method `vanilla'.  For
+;;  the duration of the current command, you can change to the next
+;;  style set using `C-M-(' (command
+;;  `icicle-next-completion-style-set').
+;;
+;;  Among other things, this means that you can try completing using
+;;  one style set and, if that does not succeed, switch to another.
+;;  Any of the sets in `icicle-completion-style-sets' can contain any
+;;  number of styles, in any order.  In particular, a set can be a
+;;  singleton, which means that you can selectively try to complete
+;;  using different individual styles.
+;;
+;;  Completion method `vanilla' is the only method that is subdivided
+;;  into styles.
+;;
+;;  Note too this difference between the use of `vanilla' completion
+;;  in Icicles and completion in vanilla Emacs: In Icicles your entire
+;;  minibuffer input is matched - the position of the cursor is
+;;  irrelevant.  In vanilla Emacs you can get different matches
+;;  depending on where the cursor is.
+;;
+;;(@* "Icicles Completion Methods")
+;;  ** Icicles Completion Methods **
+;;
+;;  The completion methods available for cycling via `C-(' or `M-('
+;;  are defined by options `icicle-TAB-completion-methods' and
+;;  `icicle-S-TAB-completion-methods-alist', respectively.  The first
+;;  method in each list is the default (initial) method.
+;;
+;;  By default, the prefix completion methods (`TAB') include
+;;  `vanilla' (see (@> "Prefix Completion Method `vanilla'")), `basic'
+;;  (which is the same as vanilla completion style `basic'), and the
+;;  following methods, which provide different kinds of what might be
+;;  called "fuzzy" matching:
+;;
+;;  * `fuzzy' - This method uses a fairly sophisticated matching
 ;;    algorithm that seems to account for various typing mistakes.
 ;;    This algorithm is provided by library `fuzzy-match.el', so I
 ;;    call its use in Icicles `fuzzy' completion.  You must have
 ;;    library `fuzzy-match.el' to use this.
 ;;
-;;  * Swank - Symbols are completed using the algorithm of
-;;    `el-swank-fuzzy.el' - see that library for details.
+;;  * `swank' - This method completes (only) symbols, using the
+;;    algorithm of `el-swank-fuzzy.el' - see that library for details.
 ;;
-;;  * Scatter - This is a simple, poor man's fuzzy matching method
-;;    that I call `scatter' matching.  Ido calls it `flex' matching.
+;;  By default, the apropos completion methods (`S-TAB') include
+;;  `apropos' (regexp matching) and the following methods, which also
+;;  provide different kinds of what might be called "fuzzy" matching.
+;;  See (@> "Fuzzy Completion") for further descriptions of each.
+;;
+;;  * `scatter' - This is a simple, poor man's fuzzy matching method
+;;    that I call "scatter matching".  Ido calls it "flex" matching.
 ;;    The TextMate editor has the same thing for file-name matching
 ;;    (only), without naming it.
 ;;
-;;  * Levenshtein - This method checks whether two strings differ by
+;;  * `Levenshtein' - This method checks whether two strings differ by
 ;;    at most a given number of character operations, the so-called
 ;;    "Levenshtein distance".  You must have library `levenshtein.el'
 ;;    to use this.
 ;;
-;;  * Jaro-Winkler - This method gives matching weight to having both
-;;    (a) more characters that match in the right positions (Jaro) and
-;;    (b) a longer exact prefix within the first four characters
-;;    (Winkler).
+;;  * `Levenshtein strict' - Like `Levenshtein', but instead of
+;;    checking whether a given string is within a given distance of a
+;;    substring of the other, it checks whether it is within a given
+;;    distance of the other.  Library `levenshtein.el' is required.
 ;;
-;;  My opinion about the relative usefulness of the various methods:
-;;  Basic (prefix) completion and apropos completion are by far the
-;;  most useful.  They are followed, in order of decreasing
-;;  usefulness, by scatter, fuzzy, Levenshtein, (non-basic) vanilla,
-;;  Jaro-Winkler, and swank completion. YMMV.
+;;  * `Jaro-Winkler' - This method gives matching weight to having
+;;    both (a) more characters that match in the right positions
+;;    (Jaro) and (b) a longer exact prefix within the first four
+;;    characters (Winkler).
 ;;
-;;  Besides these methods, remember that you can get ordinary
-;;  substring matching with `S-TAB' by using `C-`' to turn off
-;;  (toggle) escaping of regexp special characters.  With special
+;;  If you have your own method of matching then you can use that too,
+;;  by adding it to option `icicle-S-TAB-completion-methods-alist' for
+;;  use by `S-TAB'.
+;;
+;;  My own opinion about the relative usefulness of the various
+;;  methods: `basic' and `apropos' are by far the most useful.  They
+;;  are followed, in order of decreasing usefulness, by `scatter',
+;;  (non-basic) `vanilla', `fuzzy', `Levenshtein', `Jaro-Winkler', and
+;;  `swank'.  YMMV.
+;;
+;;  Besides all of these completion methods, remember that you can get
+;;  ordinary substring matching with `S-TAB' by using `C-`' to turn
+;;  off (toggle) escaping of regexp special characters.  With special
 ;;  characters escaped, `S-TAB' does literal substring completion.
-;;
-;;  The type of completion matching that is used when you hit `S-TAB'
-;;  and `TAB' is controlled by user options
-;;  `icicle-S-TAB-completion-methods-alist' and
-;;  `icicle-TAB-completion-methods', respectively.  The possible
-;;  methods for `TAB' are predefined, but you can add additional
-;;  methods for `S-TAB' by customizing
-;;  `icicle-S-TAB-completion-methods-alist'.
+;;  (You can also get substring completion via completion style
+;;  `substring'.)
 ;;
 ;;(@* "Changing Completion Method")
 ;;  ** Changing Completion Method **
 ;;
-;;  You can use fuzzy or swank completion in place of prefix
-;;  completion (`TAB').  You can use scatter, Levenshtein, or
-;;  Jaro-Winkler completion in place of apropos completion (`S-TAB').
 ;;  You can change completion methods easily at any time, by hitting a
 ;;  key in the minibuffer:
 ;;
@@ -4068,17 +4169,21 @@
 ;;  precisely, the previously active method is restored as soon as you
 ;;  return to the top level.
 ;;
-;;  The completion methods available for cycling via `C-(' or `M-('
-;;  are defined by options `icicle-TAB-completion-methods' and
-;;  `icicle-S-TAB-completion-methods-alist', respectively.  By
-;;  default, the first method in each list is used for matching.
+;;  Note this difference when cycling completion style sets using
+;;  `C-M-(': the effect is only for the current command.  For method
+;;  cycling you need to use a prefix argument to affect only the
+;;  current command.  With no prefix argument, `C-(' and `M-(' affect
+;;  both the current command and subsequent behavior.
+;;
+;;(@* "Command-Specific Completion Methods")
+;;  ** Command-Specific Completion Methods **
 ;;
 ;;  Sometimes you might want to make a different set of completion
 ;;  methods available during input.  You can use options
 ;;  `icicle-TAB-completion-methods-per-command' and
 ;;  `icicle-S-TAB-completion-methods-per-command' to do this.  These
 ;;  define the methods to be made available during specific commands
-;;  (that read input with completion).  That is, they give you
+;;  that read input with completion.  That is, they give you
 ;;  command-specific control over `C-(' and `M-('.
 ;;
 ;;  The per-command control is provided by advising (`defadvice') the
@@ -4109,65 +4214,46 @@
 ;;    C-- M-x icicle-set-TAB-methods-for-command RET
 ;;    Command: icicle-read-color-WYSIWYG RET
 ;;
-;;(@* "Partial Completion")
-;;  ** Partial Completion **
+;;(@* "Fuzzy Completion")
+;;  ** Fuzzy Completion **
 ;;
-;;  This section pertains to Emacs releases starting with Emacs 23.
+;;  This section presents details about the Icicles completion methods
+;;  that might be called "fuzzy".
 ;;
-;;  If option `icicle-TAB-completion-methods' includes `vanilla'
-;;  (which it does, by default), and you choose `vanilla' completion
-;;  for `TAB' (by cycling using `C-(' or by customizing
-;;  `icicle-TAB-completion-methods' to use `vanilla' as the default),
-;;  then Icicles `TAB' completion respects the standard Emacs option
-;;  `completion-styles', so the behavior of `TAB' is similar to what
-;;  it is in vanilla Emacs.
+;;  "Fuzzy" is itself a fuzzy term.  The effect of `apropos' (regexp)
+;;  matching or matching using completion style `partial-completion'
+;;  can sometimes be thought of as fuzzy.  In fact, the same could be
+;;  said of any matching that ignores some of your input.  For
+;;  example, `partial-completion' can be similar to `scatter'
+;;  completion, but it requires you to explicitly mark where to skip
+;;  ahead (using `*', ` ' (space), or `-').
 ;;
-;;  Emacs includes `partial-completion' in the default value of
-;;  `completion-styles'.  This means that Icicles too will make use of
-;;  partial completion when you use `TAB' (with `vanilla').  Icicles
-;;  makes no use of `completion-styles' when you use `S-TAB'.
+;;(@* "Scatter-Match (Flex) Completion")
+;;  *** Scatter-Match (Flex) Completion ***
 ;;
-;;  Partial completion is not really a kind of fuzzy completion, but
-;;  its effect can sometimes be similar.  In some ways, it is similar
-;;  to scatter-match completion (see next), but it requires you to
-;;  explicitly mark where to skip ahead (using `*', ` ' (space), or
-;;  `-').
+;;  What Icicles calls "scatter-match" completion (`TAB' completion
+;;  method `scatter') is sometimes "flex" completion (for Ido, for
+;;  example) called.
 ;;
-;;  Icicles does not support using the mode `partial-completion-mode',
-;;  and Emacs itself is in the process of deprecating it, now that the
-;;  partial-completion style is active by default.
-;;
-;;  I do not necessarily recommend using `vanilla' for `TAB'
-;;  completion, or, if you do, including `partial-completion' as an
-;;  entry in `completion-styles', because its effect is often
-;;  counter-intuitive or confusing.  But it is included by default in
-;;  Emacs, and Icicles supports it.  You might find it useful in
-;;  file-name completion, to be able to complete directory components,
-;;  for instance.
-;;
-;;(@* "Scatter-Match Completion")
-;;  ** Scatter-Match Completion **
-;;
-;;  The idea behind scatter-match completion is very simple: input
-;;  characters are matched in order against completion candidates, but
-;;  possibly with intervening characters.  That is, your input
-;;  scatter-matches a completion candidate if each character is also
-;;  in the candidate, and the character order is respected.
+;;  The idea is very simple: input characters are matched in order
+;;  against completion candidates, but possibly with intervening
+;;  characters.  That is, your input scatter-matches a completion
+;;  candidate if each character is also in the candidate, and the
+;;  character order is respected.
 ;;
 ;;  What this really amounts to is matching input `abc' as if it were
 ;;  the regexp `a.*b.*c'.  That's all.
 ;;
-;;  You can use Icicles scatter matching at any time in place of
-;;  apropos (regexp) matching.  Unlike the cases of swank and fuzzy
+;;  You can use Icicles scatter matching anytime in place of apropos
+;;  (regexp) matching.  Unlike the cases of swank and fuzzy-match
 ;;  completion (see below), you can use it to complete file names
 ;;  also.
 ;;
 ;;(@* "Swank (Fuzzy Symbol) Completion")
-;;  ** Swank (Fuzzy Symbol) Completion **
+;;  *** Swank (Fuzzy Symbol) Completion ***
 ;;
-;;  If you choose `swank' completion, what you get in Icicles is fuzzy
-;;  completion (see next), except regarding symbols.  That is, swank
-;;  completion per se applies only to symbols.  Symbols are completed
+;;  If you choose `swank' `TAB' completion, what you get in Icicles is
+;;  fuzzy completion, but only for symbols.  Symbols are completed
 ;;  using the algorithm of `el-swank-fuzzy.el' - see that library for
 ;;  details.
 ;;
@@ -4193,32 +4279,34 @@
 ;;  I do not necessarily recommend swank symbol completion, but it is
 ;;  available for those who appreciate it.
 ;;
-;;  Like fuzzy completion (see next), swank completion always sorts
-;;  candidate symbols according to its own scoring, putting what it
-;;  thinks are the best matches first.  This means that using `C-,' in
-;;  the minibuffer to sort candidates differently has no effect.
+;;  Like fuzzy-match completion (see next), swank completion always
+;;  sorts candidate symbols according to its own scoring, putting what
+;;  it thinks are the best matches first.  This means that using `C-,'
+;;  in the minibuffer to sort candidates differently has no effect.
 ;;
 ;;(@* "Fuzzy-Match Completion")
-;;  ** Fuzzy-Match Completion **
+;;  *** Fuzzy-Match Completion ***
 ;;
-;;  Fuzzy completion takes more explaining.  It is described in detail
-;;  in the commentary of library `fuzzy-match.el'; please refer to
-;;  that documentation.  Here are some things to keep in mind when you
-;;  use Icicles fuzzy completion:
+;;  Fuzzy-match completion (`S-TAB' completion method `fuzzy') takes
+;;  more explaining.  It is described in detail in the commentary of
+;;  library `fuzzy-match.el'; please refer to that documentation.
+;;  Here are some things to keep in mind when you use Icicles
+;;  fuzzy-match completion, which goes by the name `fuzzy':
 ;;
-;;  * File-name completion is never fuzzy.  Basic prefix completion is
-;;    used for file names.
-;;  * Fuzzy completion is always case-sensitive.  This means that
-;;    `C-A' in the minibuffer has no effect on fuzzy completion.
-;;  * Fuzzy completion always takes a space prefix in your input into
-;;    account.  This means that `M-_' in the minibuffer has no effect
-;;    on fuzzy completion.
-;;  * Fuzzy completion candidates are always sorted by decreasing
-;;    match strength.  This means that using `C-,' in the minibuffer
-;;    to sort candidates differently has no effect.
+;;  * It reverts to basic prefix completion for file names.  That is,
+;;    file-name completion is never fuzzy.
+;;  * It is always case-sensitive.  This means that `C-A' in the
+;;    minibuffer (to toggle case sensitivity) has no effect on `fuzzy'
+;;    completion.
+;;  * It always takes a space prefix in your input into account.  This
+;;    means that `M-_' in the minibuffer has no effect on `fuzzy'
+;;    completion.
+;;  * Completion candidates are always sorted by decreasing match
+;;    strength.  This means that using `C-,' in the minibuffer to sort
+;;    candidates differently has no effect.
 ;;
-;;  Fuzzy completion is a form of prefix completion in which some
-;;  input characters might not be present in a matched candidate.
+;;  Fuzzy-match completion is a form of prefix completion in which
+;;  some input characters might not be present in a matched candidate.
 ;;  Matching finds the candidates that have the most characters in
 ;;  common with your input, in the same order and with a minimum of
 ;;  non-matching characters.  It can skip over non-matching
@@ -4242,10 +4330,10 @@
 ;;                                    move-beginning-of-line,
 ;;                                    widget-beginning-of-line}
 ;;
-;;  The last example shows that although fuzzy matching is a kind of
-;;  prefix matching, your input is not necessarily a prefix of each
-;;  matching candidate.  It tries to match your input starting at its
-;;  beginning.  This input prefix is matched against candidate
+;;  The last example shows that although `fuzzy' completion is a kind
+;;  of prefix completion, your input is not necessarily a prefix of
+;;  each matching candidate.  It tries to match your input starting at
+;;  its beginning.  This input prefix is matched against candidate
 ;;  substrings, not necessarily candidate prefixes, but the
 ;;  non-matching part (if any) preceding the matched substring must
 ;;  not be longer than the matching part.  That is, non-matching
@@ -4332,31 +4420,31 @@
 ;;  portions that match different parts of your input.  Because
 ;;  fuzzy-match input does not function as a literal string for
 ;;  matching purposes, it is more akin to substring matching than to
-;;  plain prefix matching.  For this reason, regexp-match highlighting
+;;  basic prefix matching.  For this reason, regexp-match highlighting
 ;;  is used for fuzzy matching.  That is why you see the input `fo'
 ;;  highlighted in `*Completions*' candidates in other than just the
 ;;  prefix position.  It is also why the matching `f' and `o' in
 ;;  candidate `ifconfig' are not highlighted: for highlighting
 ;;  purposes, your input is treated as a regexp.
 ;;
-;;  One takeaway here is that fuzzy completion is complicated.  Rather
-;;  than try to understand how it works and think ahead in those
-;;  terms, you just need to get a feel for it - learn by doing.  Have
-;;  fun!
+;;  One takeaway here is that fuzzy-match completion is complicated.
+;;  Rather than try to understand how it works and think ahead in
+;;  those terms, you just need to get a feel for it - learn by doing.
+;;  Have fun!
 ;;
 ;;(@* "Levenshtein Completion")
-;;  ** Levenshtein Completion **
+;;  *** Levenshtein Completion ***
 ;;
 ;;  The "Levenshtein distance" is the maximum number of character
 ;;  insertions, deletions, or replacements that are needed to
 ;;  transform one string to another.  The more similar two strings
 ;;  are, the smaller their Levenshtein distance.
 ;;
-;;  When this kind of completion is used, Icicles considers your input
-;;  to match a completion candidate if their Levenshtein distance is
-;;  no greater than the value of option `icicle-levenshtein-distance'.
-;;  The default value of the option is 1, meaning that the difference
-;;  is at most one character operation.
+;;  When this kind of `S-TAB' completion is used, Icicles considers
+;;  your input to match a completion candidate if their Levenshtein
+;;  distance is no greater than the value of option
+;;  `icicle-levenshtein-distance'.  The default value of the option is
+;;  1, meaning that the difference is at most one character operation.
 ;;
 ;;  Using a strict definition of the distance, this also requires the
 ;;  length of your input to be within the Levenshtein distance of the
@@ -4386,11 +4474,12 @@
 ;;  no doubt want to turn off incremental completion (`C-#').
 ;;
 ;;(@* "Jaro-Winkler Completion")
-;;  **  Jaro-Winkler Completion **
+;;  ***  Jaro-Winkler Completion ***
 ;;
-;;  The Jaro-Winkler method was developed for comparing names for the
-;;  U.S. census.  It tends to take into account some typical spelling
-;;  mistakes, and it is best suited for use with short candidates.
+;;  The Jaro-Winkler `S-TAB' completion method was originally
+;;  developed for comparing names for the U.S. census.  It tends to
+;;  take into account some typical spelling mistakes, and it is best
+;;  suited for use with short candidates.
 ;;
 ;;  When checking whether two strings match, higher matching weight
 ;;  results when there are more characters in each string that are
