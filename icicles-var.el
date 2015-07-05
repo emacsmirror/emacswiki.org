@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Sat Apr 11 14:15:56 2015 (-0700)
+;; Last-Updated: Sun Jul  5 08:06:36 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1823
+;;     Update #: 1827
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -65,7 +65,7 @@
 ;;    `icicle-completing-read+insert-candidates',
 ;;    `icicle-completion-candidates', `icicle-completion-map-vars',
 ;;    `icicle-completion-prompt-overlay',
-;;    `icicle-completion-set-history',
+;;    `icicle-completion-set-history', `icicle-completion-style-set',
 ;;    `icicle-compute-narrowing-regexp-p',
 ;;    `icicle-confirm-exit-commands',
 ;;    `icicle-current-completion-candidate-overlay',
@@ -465,6 +465,13 @@ Used only for Emacs 22 and later.")
   "`completing-read' COLLECTION arg to use for `icicle-completing-read+insert'.")
 
 (defvar icicle-completion-set-history nil "History for completion-set names.")
+
+(defvar icicle-completion-style-set nil ; Used only for Emacs 23+
+  "Current set of `vanilla' completion styles for `\\<minibuffer-local-completion-map>\
+\\[icicle-prefix-complete]'.
+The available completion style sets are defined by option
+`icicle-completion-style-sets'.
+Not used for Emacs prior to Emacs 23 (no `completion-styles').")
 
 (defvar icicle-compute-narrowing-regexp-p nil
   "Non-nil means that narrowing computes `icicle-narrow-regexp'.")
