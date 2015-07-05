@@ -1565,6 +1565,41 @@ library <tt>[[levenshtein.el]]</tt>.  See [[Icicles - Completion Methods and Sty
 
 
 
+
+
+
+----
+[:icicle-swank-timeout]
+==== Option icicle-swank-timeout ====
+
+User option '''`icicle-swank-timeout'''' is the maximumum number of
+milliseconds that can elapse before swank (fuzzy symbol)
+completion gives up.  If you use '''DoReMi''' (library <tt>[[doremi.el]]</tt>)
+then you can use [[multi-command]] `icicle-increment-option' anytime
+to change the option value incrementally.
+See [[Icicles - Completion Methods and Styles#SwankCompletion|Swank (Fuzzy Symbol) Completion]].
+
+
+
+
+
+
+
+----
+[:icicle-swank-prefix-length]
+==== Option icicle-swank-prefix-length====
+
+User option '''`icicle-swank-prefix-length'''' is the minimum number
+of characters that must match, for swank completion.  If you use
+'''DoReMi''' (library <tt>[[doremi.el]]</tt>) then you can use [[multi-command]]
+`icicle-increment-option' anytime to change the option value
+incrementally.  See [[Icicles - Completion Methods and Styles#SwankCompletion|Swank (Fuzzy Symbol) Completion]].
+
+
+
+
+
+
 ----
 [:icicle-search-main-regexp-current]
 [:icicle-search-main-regexp-others]
