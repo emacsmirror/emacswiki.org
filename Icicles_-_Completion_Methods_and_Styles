@@ -298,8 +298,7 @@ explicitly mark where to skip ahead (using `*', ` ' (space), or
 === Scatter-Match (Flex) Completion ===
 
 What '''Icicles''' calls '''"scatter-match"''' completion (`TAB' completion
-method `scatter') is sometimes (for [[Ido]], for example) called
-"flex" completion.
+method `scatter') is sometimes called "flex" completion (for [[Ido]], for example).
 
 The idea is very simple: input characters are matched in order
 against completion candidates, but possibly with intervening
