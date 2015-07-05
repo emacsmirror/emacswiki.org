@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jul  5 08:16:57 2015 (-0700)
+;; Last-Updated: Sun Jul  5 13:35:48 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11479
+;;     Update #: 11480
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4510,7 +4510,9 @@
 ;;            icicle-choose-completion-style-set.
 ;;     icicle-display-candidates-in-Completions: Show completion-styles in msgs for method vanilla.
 ;;     icicle-help-string-completion: Show icicle-completion-style-set.
-;;     icicle-prefix-complete-1: Bind completion-styles.  Show completion-styles in msg for vanilla.
+;;     icicle-prefix-complete-1:
+;;       Initialize icicle-completion-style-set if necessary.  Bind completion-styles.
+;;       Show completion-styles in msg for vanilla.
 ;; 2015/04/16 dadams
 ;;     icicle-search-define-replacement: Added 3rd & 4th args to completing-read for reading function.
 ;; 2015/04/11 dadams
