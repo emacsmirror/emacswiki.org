@@ -20,10 +20,37 @@ unfortunately do not seem to be as easily accessible (or at least, not as well d
 * [http://search.cpan.org/dist/Sepia/ Sepia on CPAN]
 * [http://cpansearch.perl.org/src/SEANO/Sepia-0.97/Sepia.html Sepia documentation]
 
+==Installation==
+
+If you're installing from CPAN, you'll probably run into a problem if you don't have Emacs 22:
+
+{{{
+alex@Megabombus:~/Desktop$ cpanm Sepia
+--> Working on Sepia
+Fetching http://www.cpan.org/authors/id/S/SE/SEANO/Sepia-0.992.tar.gz ... OK
+Configuring Sepia-0.992 ... OK
+Building and testing Sepia-0.992 ... FAIL
+! Installing Sepia failed. See /Users/alex/.cpanm/work/1436341248.24776/build.log for details. Retry with --force to force install it.
+}}}
+
+The reason is this snippet in the Makefile:
+
+{{{
+install ::
+	install -d -m755 $(DESTDIR)/usr/local/share/info
+	install -m644 sepia.info $(DESTDIR)/usr/local/share/info
+	install-info $(DESTDIR)/usr/local/share/info/sepia.info $(DESTDIR)/usr/local/share/info/dir
+	
+	install -d -m755 $(DESTDIR)/usr/share/emacs/22.1/site-lisp
+	install -m644 *.el $(DESTDIR)/usr/share/emacs/22.1/site-lisp
+	install -m644 *.elc $(DESTDIR)/usr/share/emacs/22.1/site-lisp
+}}}
+
+You will need to fix that path -- or simply copy the elisp files into a directory on your `load-path'.
+
 ==Problems==
 
-(1) 
-
+[new]
 Myself, I can't quite see how one is intended to use Sepia to examine code under development. 
 How do you point it at your files?  
 
@@ -34,20 +61,17 @@ Sepia is only good for examining the core perl modules (warning: slides implemen
 
 -- Doom
 
---
-
+[new]
 I don't understand the "core perl modules" complaint, either.  As for pointing it at your files, you need to evaluate the code you want to look at, either by typing "use Module" at the REPL prompt, or by running `sepia-load-file' ("C-c C-l") from your Perl file.
 
 -- SeanO
 
-(2)
-
+[new]
 Some features are known to be flaky (e.g. next line in the debugger), and are works in progress.
 
 -- SeanO
 
-(3)
-
+[new]
 Some rarely used or unused features may be broken.  If you find one, please submit a bug report, and I will try to fix it.
 
 -- SeanO
@@ -60,4 +84,3 @@ Further discussion:
 
 Some hints:
   [http://www.perlmonks.org/?node_id=603831]
-
