@@ -46,7 +46,7 @@ install ::
 	install -m644 *.elc $(DESTDIR)/usr/share/emacs/22.1/site-lisp
 }}}
 
-You will need to fix that path -- or simply copy the elisp files into a directory on your `load-path'.
+You will need to fix the the version in the path if you don't use 22.1! Or simply copy the elisp files into a directory on your `load-path'.
 
 ==Problems==
 
