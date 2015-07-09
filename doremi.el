@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:36:14 2015 (-0800)
+;; Last-Updated: Wed Jul  8 16:42:36 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1619
+;;     Update #: 1623
 ;; URL: http://www.emacswiki.org/doremi.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat, higher-order
@@ -107,6 +107,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/08 dadams
+;;     doremi: Use %S, not %s in error messages for unknown values.
 ;; 2013/06/06 dadams
 ;;     Do not require ring+.el unless prior to Emacs 23.
 ;; 2011/09/07 dadams
@@ -227,11 +229,11 @@ doremi.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+          "http://www.emacswiki.org/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cgi-bin/wiki/doremi.el")
+          "http://www.emacswiki.org/doremi.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/Doremi")
+          "http://www.emacswiki.org/Doremi")
   :link '(emacs-commentary-link :tag "Commentary" "doremi"))
 
 ;;;###autoload
@@ -453,7 +455,7 @@ For examples of using `doremi', see the source code of libraries
                              (ring-insert+extend enum init-val
                                                  (eq 'extend allow-new-p)))
                            (when (< (ring-length enum) 2)
-                             (error "`doremi' - Need at least two alternatives: %s" enum))
+                             (error "`doremi' - Need at least two alternatives: %S" enum))
                            (let* ((vec     (cdr (cdr enum)))
                                   (veclen  (length vec)))
                              (if (and (numberp new-incr) (>= new-incr 0))
@@ -476,7 +478,7 @@ For examples of using `doremi', see the source code of libraries
                           ;; 4) Otherwise.  Increment value.  Call setter function on new value.
                           ((and (numberp new-incr) (numberp init-val))
                            (doremi-set-new-value setter-fn (+ init-val new-incr)))
-                          (t (error "`doremi' - Bad argument.  INIT-VAL: %s, INCR: %s"
+                          (t (error "`doremi' - Bad argument.  INIT-VAL: %S, INCR: %S"
                                     init-val new-incr))))
             (error (error "%s" (error-message-string failure))))))
       (message nil)
