@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0") (faces+ "0") (frame-fns "0") (hexrgb "0"))
-;; Last-Updated: Thu Jan  1 10:35:48 2015 (-0800)
+;; Last-Updated: Wed Jul  8 18:10:42 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3008
+;;     Update #: 3017
 ;; URL: http://www.emacswiki.org/doremi-frm.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
@@ -277,6 +277,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/08 dadams
+;;     Everywhere: Use %S, not %s in error messages for unknown values.
 ;; 2013/06/06 dadams
 ;;     Do not require ring+.el unless prior to Emacs 23.
 ;; 2012/03/02 dadams
@@ -605,11 +607,11 @@ doremi-frm.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+          "http://www.emacswiki.org/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cgi-bin/wiki/doremi-frm.el")
+          "http://www.emacswiki.org/doremi-frm.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/Doremi")
+          "http://www.emacswiki.org/Doremi")
   :link '(emacs-commentary-link :tag "Commentary" "doremi-frm")
   )
 
@@ -702,9 +704,8 @@ because the red component is already at its maximum."
 That is, changed by `doremi-face-*' or `doremi-undo-last-face-change',
 but not by `doremi-all-faces-*'.
 
-A `consp' with the face name as `car' and the face value as `cdr'.
-The face named `doremi-last-face' is a copy of the face before the
-change.
+A cons with the face name as `car' and the face value as `cdr'.  The
+face named `doremi-last-face' is a copy of the face before the change.
 
 Command `doremi-undo-last-face-change' swaps the `cdr' with the
 current value of the face named by the `car', so it toggles between
@@ -717,8 +718,8 @@ That is, changed by `doremi-fg+' or `doremi-bg+' (or
 `doremi-increment-*ground-color' when used interactively), but not by
 `doremi-all-frames-fg+' or `doremi-all-frames-bg+'.
 
-A `consp' with `foreground-color' or `background-color' as `car' and
-the color as `cdr'.
+A cons with `foreground-color' or `background-color' as `car' and the
+color as `cdr'.
 
 Command `doremi-undo-last-frame-color-change' swaps this with the
 current color, so it toggles between the last two values.")
@@ -1483,7 +1484,7 @@ background color from somewhere, using `eyedrop-pick-background-at-*',
 and then use that as the initial value for `doremi-face-bg+'."
   (interactive `(,@(doremi-increment-face-color-read-args) nil 'interactive-p))
   (unless (facep face)
-    (error "Command `doremi-face-bg+': FACE arg is not a face name: %s" face))
+    (error "Command `doremi-face-bg+': FACE arg is not a face name: %S" face))
   (when interactive-p
     (copy-face face 'doremi-last-face)
     (setq doremi-last-face-value  (cons face 'doremi-last-face)))
@@ -1513,7 +1514,7 @@ See `doremi-face-bg+' for more info (e.g. other args)."
                      t))
   (unless (facep face)
     (error "Command `doremi-face-bg-hue-stepping-saturation+': \
-FACE arg is not a face name: %s" face))
+FACE arg is not a face name: %S" face))
   (when interactive-p
     (copy-face face 'doremi-last-face)
     (setq doremi-last-face-value  (cons face 'doremi-last-face)))
@@ -1574,7 +1575,7 @@ You are prompted for the FACE and the color COMPONENT to increment.
 COMPONENT and INCREMENT are as for `doremi-increment-color'."
   (interactive (doremi-increment-face-color-read-args))
   (unless (facep face)
-    (error "Command `doremi-increment-face-bg-color': FACE arg is not a face: %s" face))
+    (error "Command `doremi-increment-face-bg-color': FACE arg is not a face: %S" face))
   (when (interactive-p)
     (copy-face face 'doremi-last-face)
     (setq doremi-last-face-value  (cons face 'doremi-last-face)))
@@ -1591,7 +1592,7 @@ See `doremi-face-bg+'; `doremi-face-fg+' is the same, with
 \"foreground\" substituted for \"background\"."
   (interactive `(,@(doremi-increment-face-color-read-args) nil 'interactive-p))
   (unless (facep face)
-    (error "Command `doremi-face-fg+': FACE arg is not a face name: %s" face))
+    (error "Command `doremi-face-fg+': FACE arg is not a face name: %S" face))
   (when interactive-p
     (copy-face face 'doremi-last-face)
     (setq doremi-last-face-value  (cons face 'doremi-last-face)))
@@ -1617,7 +1618,7 @@ See `doremi-face-bg+' for info about the other args."
                      t))
   (unless (facep face)
     (error "Command `doremi-face-fg-hue-stepping-saturation+': \
-FACE arg is not a face name: %s" face))
+FACE arg is not a face name: %S" face))
   (when interactive-p
     (copy-face face 'doremi-last-face)
     (setq doremi-last-face-value  (cons face 'doremi-last-face)))
@@ -1678,7 +1679,7 @@ You are prompted for the FACE and the color COMPONENT to increment.
 COMPONENT and INCREMENT are as for `doremi-increment-color'."
   (interactive (doremi-increment-face-color-read-args))
   (unless (facep face)
-    (error "Command `doremi-increment-face-fg-color': FACE arg is not a face: %s" face))
+    (error "Command `doremi-increment-face-fg-color': FACE arg is not a face: %S" face))
   (when (interactive-p)
     (copy-face face 'doremi-last-face)
     (setq doremi-last-face-value  (cons face 'doremi-last-face)))
@@ -2234,7 +2235,7 @@ Wrap around if `doremi-wrap-color-flag'."
 (defun doremi-face-bg/fg-color-name-1 (frame-parameter face)
   "Helper for `doremi-face-bg-color-name+', `doremi-face-fg-color-name+'."
   (unless (facep face)
-    (error "Command `doremi-face-bg-color-name+': FACE arg is not a face name: %s" face))
+    (error "Command `doremi-face-bg-color-name+': FACE arg is not a face name: %S" face))
   (let ((set-fn     (if (eq frame-parameter 'background-color)
                         #'set-face-background
                       #'set-face-foreground))
