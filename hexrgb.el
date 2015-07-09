@@ -8,9 +8,9 @@
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 26 14:46:16 2015 (-0800)
+;; Last-Updated: Wed Jul  8 18:22:44 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 970
+;;     Update #: 983
 ;; URL: http://www.emacswiki.org/hexrgb.el
 ;; Doc URL: http://www.emacswiki.org/SetColor
 ;; Doc URL: http://emacswiki.org/ColorPalette
@@ -89,6 +89,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/08 dadams
+;;     hexrgb-color-name-to-hex, hexrgb-increment-(hue|saturation|value):
+;;       Raise an error if x-color-values returns nil (probably from "unspecified-[bf]g").
 ;; 2015/02/26 dadams
 ;;     hexrgb-hex-to-rgb: Do not use 65535.0 - use (16 ** len) -1 instead.
 ;; 2014/08/17 dadams
@@ -602,15 +605,14 @@ The output string is `#' followed by `nb-digits' hex digits for each
 color component.  So for the default `nb-digits' value of 4, the form
 is \"#RRRRGGGGBBBB\"."
   (setq nb-digits  (or nb-digits  4))
-  (let ((components  (x-color-values color)))
-    (unless components (error "No such color: %S" color))
+  (let ((components  (or (x-color-values color)  (error "No such color: %S" color))))
     (unless (hexrgb-rgb-hex-string-p color)
       (setq color  (hexrgb-color-values-to-hex components nb-digits))))
   color)
 
 ;; Color "components" would be better in the name than color "value"
 ;; but this name follows the Emacs tradition (e.g. `x-color-values',
-;; 'ps-color-values', `ps-e-x-color-values').
+;; `ps-color-values', `ps-e-x-color-values').
 (defun hexrgb-color-values-to-hex (components &optional nb-digits)
   "Convert list of rgb color COMPONENTS to a hex RBG color string.
 Each X in the string is a hexadecimal digit.
@@ -652,9 +654,10 @@ The output list is as for `x-color-values'."
   "Increase hue component of COLOR by INCREMENT.
 INCREMENT ranges from -100 to 100."
   (unless (string-match "#" color)      ; Convert color name to #hhh...
-    (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
+    (setq color  (hexrgb-color-values-to-hex (or (x-color-values color)
+                                                 (error "No such color: %S" color)))))
   ;; Convert RGB to HSV
-  (let* ((rgb         (x-color-values color))
+  (let* ((rgb         (or (x-color-values color)  (error "No such color: %S" color)))
          (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
          (green       (/ (float (nth 1 rgb)) 65535.0))
          (blue        (/ (float (nth 2 rgb)) 65535.0))
@@ -672,9 +675,10 @@ INCREMENT ranges from -100 to 100."
 (defun hexrgb-increment-saturation (color increment &optional nb-digits)
   "Increase saturation component of COLOR by INCREMENT."
   (unless (string-match "#" color)      ; Convert color name to #hhh...
-    (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
+    (setq color  (hexrgb-color-values-to-hex (or (x-color-values color)
+                                                 (error "No such color: %S" color)))))
   ;; Convert RGB to HSV
-  (let* ((rgb         (x-color-values color))
+  (let* ((rgb         (or (x-color-values color)  (error "No such color: %S" color)))
          (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
          (green       (/ (float (nth 1 rgb)) 65535.0))
          (blue        (/ (float (nth 2 rgb)) 65535.0))
@@ -692,9 +696,10 @@ INCREMENT ranges from -100 to 100."
 (defun hexrgb-increment-value (color increment &optional nb-digits)
   "Increase value component (brightness) of COLOR by INCREMENT."
   (unless (string-match "#" color)      ; Convert color name to #hhh...
-    (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
+    (setq color  (hexrgb-color-values-to-hex (or (x-color-values color)
+                                                 (error "No such color: %S" color)))))
   ;; Convert RGB to HSV
-  (let* ((rgb         (x-color-values color))
+  (let* ((rgb         (or (x-color-values color)  (error "No such color: %S" color)))
          (red         (/ (float (nth 0 rgb)) 65535.0)) ; Convert from 0-65535 to 0.0-1.0
          (green       (/ (float (nth 1 rgb)) 65535.0))
          (blue        (/ (float (nth 2 rgb)) 65535.0))
