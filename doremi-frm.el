@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0") (faces+ "0") (frame-fns "0") (hexrgb "0"))
-;; Last-Updated: Wed Jul  8 18:10:42 2015 (-0700)
+;; Last-Updated: Wed Jul  8 18:35:20 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3017
+;;     Update #: 3019
 ;; URL: http://www.emacswiki.org/doremi-frm.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
@@ -278,6 +278,8 @@
 ;;; Change Log:
 ;;
 ;; 2015/07/08 dadams
+;;     doremi-increment-color:
+;;       Raise error if x-color-values returns nil (probably from "unspecified-[bf]g").
 ;;     Everywhere: Use %S, not %s in error messages for unknown values.
 ;; 2013/06/06 dadams
 ;;     Do not require ring+.el unless prior to Emacs 23.
@@ -2129,7 +2131,8 @@ ARGS are additional arguments for SET-FN, which appear before the
   `set-face-foreground', ARGS can be a list containing the face whose
   foreground is to be set."
   (unless (string-match "#" color)      ; Convert color name to #hhh...
-    (setq color  (hexrgb-color-values-to-hex (x-color-values color))))
+    (setq color  (hexrgb-color-values-to-hex (or (x-color-values color)
+                                                 (error "No such color: %S" color)))))
   (setq increment  (case component
                      ((?R ?H) (if (consp increment)
                                   increment
