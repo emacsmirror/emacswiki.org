@@ -8,9 +8,9 @@
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul  8 18:22:44 2015 (-0700)
+;; Last-Updated: Wed Jul  8 18:32:29 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 983
+;;     Update #: 985
 ;; URL: http://www.emacswiki.org/hexrgb.el
 ;; Doc URL: http://www.emacswiki.org/SetColor
 ;; Doc URL: http://emacswiki.org/ColorPalette
@@ -91,7 +91,8 @@
 ;;
 ;; 2015/07/08 dadams
 ;;     hexrgb-color-name-to-hex, hexrgb-increment-(hue|saturation|value):
-;;       Raise an error if x-color-values returns nil (probably from "unspecified-[bf]g").
+;;       Raise error if x-color-values returns nil (probably from "unspecified-[bf]g").
+;;     hexrgb-color-values-to-hex: Raise error if COMPONENTS is nil.
 ;; 2015/02/26 dadams
 ;;     hexrgb-hex-to-rgb: Do not use 65535.0 - use (16 ** len) -1 instead.
 ;; 2014/08/17 dadams
@@ -623,6 +624,7 @@ The output string is `#' followed by `nb-digits' hex digits for each
 color component.  So for the default `nb-digits' value of 4, the form
 is \"#RRRRGGGGBBBB\"."
   ;; 4 is the default because `x-color-values' produces appropriate integer values for 4.
+  (unless components (error "`hexrgb-color-values-to-hex': null COMPONENTS argument"))
   (setq nb-digits  (or nb-digits  4))
   (concat "#"
           (hexrgb-int-to-hex (nth 0 components) nb-digits) ; red
