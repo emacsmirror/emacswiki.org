@@ -8,10 +8,10 @@
 ;; Created: Fri Jul 10 09:37:03 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 10 09:44:56 2015 (-0700)
+;; Last-Updated: Fri Jul 10 14:40:14 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7
-;; URL: http://www.emacswiki.org/modeline-char.el
+;;     Update #: 30
+;; URL: http://www.emacswiki.org/modeline-win.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLineSelectedWindow
 ;; Keywords: mode-line, buffer, window
 ;; Compatibility: GNU Emacs 24.4 and later
@@ -26,10 +26,30 @@
 ;;
 ;;  Highlight buffer name in mode line for selected window.
 ;;
-;;  Highlights using face `mode-line-buffer-id-selected-window'.
+;;  Minor mode `mlw-mode-line-buf-id-selected-window' uses face
+;;  `mlw-mode-line-buffer-id-selected-window' to highlight the buffer
+;;  name of the selected window.
 ;;
 ;;  This library requires Emacs 24.4 or later.  It has no effect for
 ;;  earlier Emacs versions.
+;;
+;;
+;;  Commands defined here:
+;;
+;;    `mlw-mode-line-buf-id-selected-window'.
+;;
+;;  Faces defined here:
+;;
+;;    `mlw-mode-line-buffer-id-selected-window'.
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `mlw-pre-redisplay-selected-window'.
+;;
+;;  Internal variables defined here:
+;;
+;;    `mlw-orig-mode-line-buf-id',
+;;    `mlw-pre-redisplay-selected-window'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -60,28 +80,41 @@
 
 (when (boundp 'pre-redisplay-function)  ; Emacs 24.4+
 
-  (defface mode-line-buffer-id-selected-window
-      '((t (:box (:line-width 1 :color "green") :background "#EF47FFFFC847")))
+  (defface mlw-mode-line-buffer-id-selected-window
+    '((t (:box (:line-width 1 :color "green") :background "#EF47FFFFC847")))
     "Face for `mode-line-buffer-identification' of selected window."
     :group 'mode-line-faces :group 'basic-faces)
 
-  (defvar pre-redisplay-selected-window nil)
+  (defvar mlw-pre-redisplay-selected-window nil
+    "Window selected before redisplay.")
 
-  (defun pre-redisplay-selected-window (_windows)
-    "Set `pre-redisplay-selected-window' to window selected before redisplay."
-    (with-demoted-errors "`pre-redisplay-selected-window': %S"
+  (defvar mlw-orig-mode-line-buf-id (default-value 'mode-line-buffer-identification)
+    "Original default value of `mode-line-buffer-identification'.")
+
+  (defun mlw-pre-redisplay-selected-window (_windows)
+    "Set `mlw-pre-redisplay-selected-window' to window selected before redisplay."
+    (with-demoted-errors "`mlw-pre-redisplay-selected-window': %S"
       (unless (eq (selected-window) (active-minibuffer-window))
-        (setq pre-redisplay-selected-window  (selected-window)))))
+        (setq mlw-pre-redisplay-selected-window  (selected-window)))))
 
-  (add-function :before pre-redisplay-function #'pre-redisplay-selected-window)
+  (define-minor-mode mlw-mode-line-buf-id-selected-window
+    "Highlight `mode-line-buffer-identification' for selected window."
+    nil nil nil :global t
+    (cond (mlw-mode-line-buf-id-selected-window
+           (add-function :before pre-redisplay-function #'mlw-pre-redisplay-selected-window)
+           (setq-default mode-line-buffer-identification
+                         (let ((mlbi  (default-value 'mode-line-buffer-identification)))
+                           `((:eval (list (propertize
+                                           (format-mode-line ',mlbi)
+                                           'face (if (eq mlw-pre-redisplay-selected-window
+                                                         (get-buffer-window))
+                                                     'mlw-mode-line-buffer-id-selected-window
+                                                   'mode-line-buffer-id))))))))
+          (t
+           (remove-function pre-redisplay-function #'mlw-pre-redisplay-selected-window)
+           (setq mlw-pre-redisplay-selected-window  nil)
+           (setq-default mode-line-buffer-identification mlw-orig-mode-line-buf-id))))
 
-  (setq-default mode-line-buffer-identification
-                (let ((mlbi  (default-value 'mode-line-buffer-identification)))
-                  `((:eval (list (propertize (format-mode-line ',mlbi)
-                                             'face (if (eq pre-redisplay-selected-window
-                                                           (get-buffer-window))
-                                                       'mode-line-buffer-id-selected-window
-                                                     'mode-line-buffer-id)))))))
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
