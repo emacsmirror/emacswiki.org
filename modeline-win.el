@@ -8,9 +8,9 @@
 ;; Created: Fri Jul 10 09:37:03 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 10 14:40:14 2015 (-0700)
+;; Last-Updated: Fri Jul 10 14:57:29 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 30
+;;     Update #: 32
 ;; URL: http://www.emacswiki.org/modeline-win.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLineSelectedWindow
 ;; Keywords: mode-line, buffer, window
@@ -24,9 +24,9 @@
 ;;
 ;;; Commentary:
 ;;
-;;  Highlight buffer name in mode line for selected window.
+;;  Highlight buffer name in mode-line for selected window.
 ;;
-;;  Minor mode `mlw-mode-line-buf-id-selected-window' uses face
+;;  Minor mode `mlw-mode-line-buf-id-sel-win-mode' uses face
 ;;  `mlw-mode-line-buffer-id-selected-window' to highlight the buffer
 ;;  name of the selected window.
 ;;
@@ -36,7 +36,7 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `mlw-mode-line-buf-id-selected-window'.
+;;    `mlw-mode-line-buf-id-sel-win-mode'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -97,10 +97,10 @@
       (unless (eq (selected-window) (active-minibuffer-window))
         (setq mlw-pre-redisplay-selected-window  (selected-window)))))
 
-  (define-minor-mode mlw-mode-line-buf-id-selected-window
+  (define-minor-mode mlw-mode-line-buf-id-sel-win-mode
     "Highlight `mode-line-buffer-identification' for selected window."
     nil nil nil :global t
-    (cond (mlw-mode-line-buf-id-selected-window
+    (cond (mlw-mode-line-buf-id-sel-win-mode
            (add-function :before pre-redisplay-function #'mlw-pre-redisplay-selected-window)
            (setq-default mode-line-buffer-identification
                          (let ((mlbi  (default-value 'mode-line-buffer-identification)))
