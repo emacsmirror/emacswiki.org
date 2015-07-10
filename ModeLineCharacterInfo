@@ -1,0 +1,11 @@
+This page is about library <tt>[[modeline-char.el]]</tt>, which shows, in the [[mode-line]],  the the character after [[point]] and its Unicode code point.
+
+[[minor mode|Minor mode]] `mlc-char-in-mode-line-mode' toggles this on/off for the current buffer, and global minor mode `mlc-char-in-mode-line-mode-global' does the same globally, i.e., for all buffers.
+
+You can [[Customize|customize]] [[faces]] `mlc-mode-line-char-format' and `mlc-mode-line-char-format-code', which are used for the character and its code point, respectively.
+
+
+
+----
+
+CategoryFaces CategoryDisplay CategoryInternationalization
