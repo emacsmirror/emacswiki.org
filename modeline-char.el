@@ -10,7 +10,7 @@
 ;; Package-Requires: ()
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 137
+;;     Update #: 140
 ;; URL: http://www.emacswiki.org/modeline-char.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLineCharacterInfo
 ;; Keywords: mode-line, character
@@ -90,13 +90,13 @@
            (let* ((ch   (following-char))
                   (str  (format (if (= ?% ch) "[%%%c=%06x] " "[%c=%06x] ") ch ch))
                   (map  (make-sparse-keymap)))
-             (define-key map [down-mouse-2] nil)
-             (define-key map [mouse-2] (lambda (ev) (interactive "e") (describe-char (point))))
+             (define-key map [mode-line down-mouse-2] nil)
+             (define-key map [mode-line mouse-2] (lambda (ev) (interactive "e") (describe-char (point))))
              (add-text-properties 1 2                  '(face mlc-mode-line-char-format) str)
              (add-text-properties 3 (- (length str) 2) '(face mlc-mode-line-char-format-code) str)
              (add-text-properties 1 (- (length str) 2) `(mouse-face mode-line-highlight
                                                                     help-echo "mouse-2: more info about char"
-                                                                    local-map ,map) ; See Emacs bug #21033.
+                                                                    local-map ,map)
                                   str)
              str)))
   "Mode-line format spec to display a character.")
