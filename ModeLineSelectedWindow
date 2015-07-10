@@ -1,0 +1,13 @@
+This page is about library <tt>[[modeline-win.el]]</tt>, which highlights the [[buffer]] name in the [[mode-line]] for the selected [[window]].  You need Emacs 24.4 or later to use this library.
+
+[[minor mode|Minor mode]] `mlw-mode-line-buf-id-sel-win-mode' turns on this highlighting.
+
+You can [[Customize|customize]] [[face]] `mlw-mode-line-buffer-id-selected-window' for the highlighting.
+
+
+
+
+
+----
+
+CategoryFaces CategoryDisplay CategoryWindows
