@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 11:44:08 2015 (-0700)
+;; Last-Updated: Sat Jul 11 12:20:23 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3929
+;;     Update #: 3932
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -1753,7 +1753,7 @@ Optional 6th arg BUFFERS is the list of buffers to highlight.
 Non-interactively, REGIONS is a list of (START . END) region limits.
 The other args are passed to `hlt-highlight-region'.
 You need library `wide-n.el' for this command."
-    (interactive (list (wide-n-limits-in-bufs buffers) nil t current-prefix-arg))
+    (interactive (list (wide-n-limits) nil t current-prefix-arg))
     (dolist (start.end  regions)
       (hlt-highlight-region (car start.end) (cdr start.end) face msgp mousep buffers)))
 
@@ -1780,7 +1780,7 @@ Non-nil optional arg MSGP means show status messages."
 Non-interactively, REGIONS is a list of (START . END) region limits.
 The other args are passed to `hlt-unhighlight-region'.
 You need library `wide-n.el' for this command."
-    (interactive (list (wide-n-limits-in-bufs buffers) nil t current-prefix-arg))
+    (interactive (list (wide-n-limits) nil t current-prefix-arg))
     (dolist (start.end  regions)
       (hlt-unhighlight-region (car start.end) (cdr start.end) face msgp mousep buffers)))
 
