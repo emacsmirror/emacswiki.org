@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 28 12:46:05 2015 (-0700)
+;; Last-Updated: Sat Jul 11 12:03:16 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3633
+;;     Update #: 3638
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -589,6 +589,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/07/11 dadams
+;;     isearchp-eval-sexp-and-insert: Use pp-read-expression-map if available.
 ;; 2015/06/28 dadams
 ;;     Added: face isearchp-overwrapped.
 ;;     Face isearchp-wrapped: Default uses just a blue overline, not a deep-pink foreground.
@@ -1451,14 +1453,16 @@ suspended."
 
 ;;; Commands ---------------------------------------------------------
 
-(when (> emacs-major-version 21) ; Emacs 22+, for `with-isearch-suspended'.
+(when (> emacs-major-version 21)        ; Emacs 22+, for `with-isearch-suspended'.
 
   (defun isearchp-eval-sexp-and-insert ()
     "Prompt for Lisp sexp, eval it, and append value to the search string."
     (interactive)
     (with-isearch-suspended
-        (let ((sexp  (read-from-minibuffer "Eval: "
-                                           nil icicle-read-expression-map t 'read-expression-history)))
+        (let ((sexp  (read-from-minibuffer "Eval: " nil (if (boundp 'pp-read-expression-map) ; In `pp+.el'.
+                                                            pp-read-expression-map
+                                                          read-expression-map)
+                                           t 'read-expression-history)))
           (message "Evaluating...")
           (if (or (not (boundp 'eval-expression-debug-on-error))
                   (null eval-expression-debug-on-error))
@@ -1473,7 +1477,7 @@ suspended."
               (unless (eq old-value new-value) (setq debug-on-error  new-value))))
           (setq isearch-new-string  (concat isearch-string (prin1-to-string (car values) 'NOESCAPE))))))
 
-  (defun isearchp-act-on-demand (arg) ; Bound to `C-M-RET' in `isearch-mode-map'.
+  (defun isearchp-act-on-demand (arg)   ; Bound to `C-M-RET' in `isearch-mode-map'.
     "Invoke the value of `isearchp-on-demand-action-function'.
 This suspends Isearch, performs the action, then reinvokes Isearch.
 By default, replace the search hit - see `isearchp-replace-on-demand'.
