@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jun 30 14:24:05 2015 (-0700)
+;; Last-Updated: Sat Jul 11 13:53:20 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 762
+;;     Update #: 766
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -1658,7 +1658,14 @@ NOTE:
    particular, if either PREDICATE or TRANSFORM-FN disqualifies the
    thing being scanned currently, then scanning skips forward to the
    next thing.  The scan does not dig inside the current thing to look
-   for a qualified THING."
+   for a qualified THING.
+
+Non-interactively, these are the arguments:
+ NEW:         Whether to define new search contexts or reuse contexts.
+ THING:       The type of things to search.
+ BEG and END: The search limits.
+ PROPERTY:    Symbol `isearchp-thing-THING', where THING is the type.
+ PREDICATE:   A predicate to filter search contexts."
   (interactive (cons (not current-prefix-arg) (isearchp-thing-read-args)))
   (when (or new
             (not (consp (car isearchp-property-values)))
