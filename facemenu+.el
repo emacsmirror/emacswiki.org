@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 14:37:34 2015 (-0700)
+;; Last-Updated: Sat Jul 11 14:42:55 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1923
+;;     Update #: 1925
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -158,7 +158,8 @@
 ;;
 ;;    `facemenup-copy-tree' (Emacs 20-21), `facemenup-face-bg',
 ;;    `facemenup-face-fg', `facemenup-nonempty-region-p',
-;;    `facemenup-read-bufs', `facemenup-set-face-attribute-at--1',
+;;    `facemenup-read-bufs', `facemenup-remove-if-not',
+;;    `facemenup-set-face-attribute-at--1',
 ;;    `facemenup-set-face-from-list'.
 ;;
 ;;  Internal variables defined here:
@@ -425,6 +426,13 @@
              (quit nil))
       (push buf bufs))
     (delq nil (mapcar #'get-buffer (nreverse bufs)))))
+
+;; Same as `icicle-remove-if-not' etc.
+(defun facemenup-remove-if-not (pred xs)
+  "A copy of list XS with only elements that satisfy predicate PRED."
+  (let ((result  ()))
+    (dolist (x xs) (when (funcall pred x) (push x result)))
+    (nreverse result)))
 
 (defun facemenup-nonempty-region-p ()
   "Return non-nil if region is active and non-empty."
@@ -1349,6 +1357,7 @@ For Emacs 22+, this is `face-foreground' inheriting from `default'."
       (face-foreground face nil 'default) ; Emacs 22+.  Raises error for previous versions.
     (error (or (face-foreground face)  (cdr (assq 'foreground-color (frame-parameters)))))))
 
+
 (when (fboundp 'wide-n-limits)
 
   (defun facemenup-add-face-to-regions (face &optional regions msgp)
@@ -1384,15 +1393,16 @@ Use `C-g' to end prompting.  If you specify no BUFFERS then the
 current buffer is used.
 
 You need library `wide-n.el' for this command."
-    (interactive (list (read-from-minibuffer "Face: " nil (if (boundp 'pp-read-expression-map)
-                                                              pp-read-expression-map
-                                                            read-expression-map)
-                                             'READ 'read-expression-history)
-                       (if current-prefix-arg
-                           (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
-                         (facemenup-read-bufs))
-                       nil
-                       'MSGP))
+    (interactive
+     (list (read-from-minibuffer "Face: " nil (if (boundp 'pp-read-expression-map)
+                                                  pp-read-expression-map
+                                                read-expression-map)
+                                 'READ 'read-expression-history)
+           (if current-prefix-arg
+               (facemenup-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+             (facemenup-read-bufs))
+           nil
+           'MSGP))
     (facemenup-add-face-to-regions face (wide-n-limits-in-bufs buffers) msgp))
 
   )
