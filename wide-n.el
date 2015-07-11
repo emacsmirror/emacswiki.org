@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 14:52:33 2015 (-0700)
+;; Last-Updated: Sat Jul 11 14:59:35 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 461
+;;     Update #: 462
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -392,7 +392,7 @@ Otherwise RESTRICTION is `all', so return nil."
 
 ;; Useful for commands that want to act on regions in multiple buffers.
 (defun wide-n-read-bufs ()
-  "Read names of buffers to highlight, one at a time.  `C-g' ends reading."
+  "Read names of buffers, one at a time.  `C-g' ends reading."
   (let ((bufs  ())
         buf)
     (while (condition-case nil
