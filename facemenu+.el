@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 14:42:55 2015 (-0700)
+;; Last-Updated: Sat Jul 11 14:55:47 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1925
+;;     Update #: 1928
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -158,7 +158,6 @@
 ;;
 ;;    `facemenup-copy-tree' (Emacs 20-21), `facemenup-face-bg',
 ;;    `facemenup-face-fg', `facemenup-nonempty-region-p',
-;;    `facemenup-read-bufs', `facemenup-remove-if-not',
 ;;    `facemenup-set-face-attribute-at--1',
 ;;    `facemenup-set-face-from-list'.
 ;;
@@ -212,8 +211,7 @@
 ;;; Change Log:
 ;;
 ;; 2015/07/11 dadams
-;;     Added: facemenup-add-face-to-regions, facemenup-add-face-to-regions-in-buffers,
-;;            facemenup-read-bufs.
+;;     Added: facemenup-add-face-to-regions, facemenup-add-face-to-regions-in-buffers.
 ;; 2014/08/30 dadams
 ;;     Added facemenu-post-self-insert-function (fixes Emacs 24+ via font-lock-ignore).
 ;;     facemenu-add-face: Do not show message if font-lock+.el loaded (no font-lock override).
@@ -414,25 +412,6 @@
 
 (put 'facemenu+-with-help-window 'common-lisp-indent-function '(4 &body))
 
-(defun facemenup-read-bufs ()
-  "Read names of buffers to highlight, one at a time.  `C-g' ends reading."
-  (let ((bufs  ())
-        buf)
-    (while (condition-case nil
-               (setq buf  (read-buffer "Buffer (C-g to end): "
-                                       (and (not (member (buffer-name (current-buffer)) bufs))
-                                            (current-buffer))
-                                       t))
-             (quit nil))
-      (push buf bufs))
-    (delq nil (mapcar #'get-buffer (nreverse bufs)))))
-
-;; Same as `icicle-remove-if-not' etc.
-(defun facemenup-remove-if-not (pred xs)
-  "A copy of list XS with only elements that satisfy predicate PRED."
-  (let ((result  ()))
-    (dolist (x xs) (when (funcall pred x) (push x result)))
-    (nreverse result)))
 
 (defun facemenup-nonempty-region-p ()
   "Return non-nil if region is active and non-empty."
@@ -1399,8 +1378,8 @@ You need library `wide-n.el' for this command."
                                                 read-expression-map)
                                  'READ 'read-expression-history)
            (if current-prefix-arg
-               (facemenup-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
-             (facemenup-read-bufs))
+               (wide-n-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+             (wide-n-read-bufs))
            nil
            'MSGP))
     (facemenup-add-face-to-regions face (wide-n-limits-in-bufs buffers) msgp))
