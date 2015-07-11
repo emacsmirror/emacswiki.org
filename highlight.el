@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 12:20:23 2015 (-0700)
+;; Last-Updated: Sat Jul 11 12:30:44 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3932
+;;     Update #: 3933
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -1770,7 +1770,9 @@ You need library `wide-n.el' for this command.
 Non-nil optional arg MSGP means show status messages."
     (interactive (list (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
                            (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
-                         (hlt-+/--read-bufs))))
+                         (hlt-+/--read-bufs))
+                       nil
+                       'MSGP))
     (hlt-highlight-regions (wide-n-limits-in-bufs buffers) nil msgp
                            (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                            buffers))
