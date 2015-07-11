@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun 17 14:46:59 2015 (-0700)
+;; Last-Updated: Sat Jul 11 11:31:27 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3865
+;;     Update #: 3928
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -86,7 +86,8 @@
 ;;    `hlt-highlight-regexp-region',
 ;;    `hlt-highlight-regexp-region-in-buffers',
 ;;    `hlt-highlight-regexp-to-end', `hlt-highlight-region',
-;;    `hlt-highlight-region-in-buffers',
+;;    `hlt-highlight-region-in-buffers', `hlt-highlight-regions',
+;;    `hlt-highlight-regions-in-buffers',
 ;;    `hlt-highlight-single-quotations', `hlt-highlight-symbol',
 ;;    `hlt-mouse-copy-props', `hlt-mouse-face-each-line',
 ;;    `hlt-next-face', `hlt-next-highlight', `hlt-paste-props',
@@ -103,7 +104,8 @@
 ;;    `hlt-unhighlight-regexp-to-end', `hlt-unhighlight-region',
 ;;    `hlt-unhighlight-region-for-face',
 ;;    `hlt-unhighlight-region-for-face-in-buffers',
-;;    `hlt-unhighlight-region-in-buffers', `hlt-unhighlight-symbol',
+;;    `hlt-unhighlight-region-in-buffers', `hlt-unhighlight-regions',
+;;    `hlt-unhighlight-regions-in-buffers',`hlt-unhighlight-symbol',
 ;;    `hlt-yank-props'.
 ;;
 ;;  User options (variables) defined here:
@@ -133,7 +135,8 @@
 ;;    `hlt-read-bg/face-name', `hlt-read-props-completing',
 ;;    `hlt-region-or-buffer-limits', `hlt-remove-if-not',
 ;;    `hlt-set-intersection', `hlt-set-union', `hlt-subplist',
-;;    `hlt-tty-colors', `hlt-unhighlight-for-overlay'.
+;;    `hlt-tty-colors', `hlt-unhighlight-for-overlay',
+;;    `hlt-wide-n-limits-in-bufs'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -413,6 +416,15 @@
 ;;  non-positive prefix arg means act on all visible or iconified
 ;;  buffers.  (A non-negative prefix arg means use property
 ;;  `mouse-face', not `face'.)
+;;
+;;  If you also use library `wide-n.el' then narrowing records the
+;;  various buffer restrictions (aka narrowings) in buffer-local
+;;  variable `wide-n-restrictions'.  You can use command
+;;  `hlt-highlight-regions' to highlight these, and you can use
+;;  command `hlt-highlight-regions-in-buffers' to highlight all
+;;  regions recorded for a given set of buffers.  You can use commands
+;;  `hlt-unhighlight-regions' and `hlt-unhighlight-regions-in-buffers'
+;;  to unhighlight them.
 ;;
 ;;  From Isearch you can highlight the search-pattern matches.  You
 ;;  can do this across multiple buffers being searched together.
@@ -725,6 +737,15 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/07/11 dadams
+;;     Added: hlt-highlight-regions, hlt-highlight-regions-in-buffers, hlt-wide-n-limits-in-bufs,
+;;            hlt-unhighlight-regions, hlt-highlight-regions-in-buffers.
+;;     hlt-highlight-region-in-buffers: Added missing t for MSGP in interactive spec.
+;;     hlt-(un)highlight-region, hlt-+/--highlight-regexp-region, hlt-replace-highlight-face:
+;;       Do not ignore explicit START and END if not interactive.
+;;       Do nothing if START or END is a marker for a different buffer.
+;;     hlt-highlight-line-dups-region: Added missing local binding of IGNORE.
+;;     hlt-+/--read-bufs: Mention C-g in prompt, to end inputting.
 ;; 2015/06/17 dadams
 ;;     Added: hlt-highlight-line-dups-region, hlt-line-dups-ignore-regexp.
 ;; 2015/04/05 dadams
@@ -1629,7 +1650,8 @@ If you specify no BUFFERS then the current buffer is highlighted.
 Non-nil optional arg MSGP means show status messages."
   (interactive (list (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
                          (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
-                       (hlt-+/--read-bufs))))
+                       (hlt-+/--read-bufs))
+                     t))
   (hlt-highlight-region
    nil nil nil msgp (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0)) buffers))
 
@@ -1666,59 +1688,132 @@ Optional 5th arg MOUSEP non-nil means use `mouse-face', not `face'.
   Interactively, MOUSEP is provided by the prefix arg.
 
 Optional 6th arg BUFFERS is the list of buffers to highlight.
-  If non-nil then explicit START and END values are ignored, and the
-  actual values are determined automatically for each buffer, based on
-  whether the region is active there."
+  If non-nil and this command is called interactively then explicit
+  START and END values are ignored, and the actual values are
+  determined automatically for each buffer, based on whether the
+  region is active there."
   (interactive `(,@(hlt-region-or-buffer-limits) nil t ,current-prefix-arg))
   (when hlt-auto-faces-flag (hlt-next-face))
   (let ((mbufs  buffers))
     (unless buffers (setq buffers  (list (current-buffer))))
     (dolist (buf  buffers)
       (with-current-buffer buf
-        (unless (and start  end  (not (cadr buffers)))
+        ;; Use START and END if provided non-interactively, but not otherwise.
+        (unless (and start  end  (or (not (cadr buffers))  (not (interactive-p))))
           (let ((start-end  (hlt-region-or-buffer-limits buf)))
             (setq start  (car start-end)
                   end    (cadr start-end))))
-        (if face (setq hlt-last-face  face) (setq face  hlt-last-face))
-        (when (and msgp  (or (hlt-nonempty-region-p)  mousep))
-          (message "Highlighting%s..." (if mbufs (format " in `%s'"  buf) "")))
-        (let ((read-only                           buffer-read-only)
-              (modified-p                          (buffer-modified-p))
-              (inhibit-modification-hooks          t)
-              ;; Otherwise, `put-text-property' calls this, which removes highlight.
-              (font-lock-fontify-region-function  'ignore)
-              overlay)
-          (setq buffer-read-only  nil)
-          (cond (hlt-use-overlays-flag
-                 (setq overlay  (make-overlay start end))
-                 (overlay-put overlay (if mousep 'mouse-face hlt-face-prop) face)
-                 (overlay-put overlay 'hlt-highlight                face)
-                 (overlay-put overlay 'priority                     hlt-overlays-priority))
-                (mousep (put-text-property start end 'mouse-face face))
-                ((interactive-p)
-                 (message "Text you type now will have face `%s'." face)
-                 (facemenu-add-new-face face)
-                 ;; It is `facemenu-add-face' that either uses region or next insert.
-                 (facemenu-add-face face
-                                    (and (hlt-nonempty-region-p)  start)
-                                    (and (hlt-nonempty-region-p)  end))
-                 (when (hlt-nonempty-region-p)
-                   (put-text-property start end 'hlt-highlight    face)
-                   (when (eq 'face hlt-face-prop)
-                     (put-text-property start end 'font-lock-ignore t))))
-                (t (put-text-property start end hlt-face-prop     face)
-                   (put-text-property start end 'hlt-highlight    face)
-                   (when (eq 'face hlt-face-prop)
-                     (put-text-property start end 'font-lock-ignore t))))
-          (setq buffer-read-only  read-only)
-          (set-buffer-modified-p modified-p))
-        (when (and msgp  (or (hlt-nonempty-region-p)  mousep))
-          (let ((remove-msg  "\\[hlt-unhighlight-region]' to remove highlighting"))
-            (when mousep (setq remove-msg  (concat "\\[universal-argument] " remove-msg)))
-            (setq remove-msg  (substitute-command-keys (concat "`" remove-msg)))
-            (message "Highlighting%s... done %s"
-                     (if mbufs (format " in `%s'"  (buffer-name buf)) "")
-                     remove-msg)))))))
+        ;; Do nothing if START or END is a marker for a different buffer.
+        (when (and (or (not (markerp start))  (eq buf (marker-buffer start)))
+                   (or (not (markerp end))    (eq buf (marker-buffer end))))
+          (if face (setq hlt-last-face  face) (setq face  hlt-last-face))
+          (when (and msgp  (or (hlt-nonempty-region-p)  mousep))
+            (message "Highlighting%s..." (if mbufs (format " in `%s'"  buf) "")))
+          (let ((read-only                           buffer-read-only)
+                (modified-p                          (buffer-modified-p))
+                (inhibit-modification-hooks          t)
+                ;; Otherwise, `put-text-property' calls this, which removes highlight.
+                (font-lock-fontify-region-function  'ignore)
+                overlay)
+            (setq buffer-read-only  nil)
+            (cond (hlt-use-overlays-flag
+                   (setq overlay  (make-overlay start end))
+                   (overlay-put overlay (if mousep 'mouse-face hlt-face-prop) face)
+                   (overlay-put overlay 'hlt-highlight                face)
+                   (overlay-put overlay 'priority                     hlt-overlays-priority))
+                  (mousep (put-text-property start end 'mouse-face face))
+                  ((interactive-p)
+                   (message "Text you type now will have face `%s'." face)
+                   (facemenu-add-new-face face)
+                   ;; It is `facemenu-add-face' that either uses region or next insert.
+                   (facemenu-add-face face
+                                      (and (hlt-nonempty-region-p)  start)
+                                      (and (hlt-nonempty-region-p)  end))
+                   (when (hlt-nonempty-region-p)
+                     (put-text-property start end 'hlt-highlight    face)
+                     (when (eq 'face hlt-face-prop)
+                       (put-text-property start end 'font-lock-ignore t))))
+                  (t (put-text-property start end hlt-face-prop     face)
+                     (put-text-property start end 'hlt-highlight    face)
+                     (when (eq 'face hlt-face-prop)
+                       (put-text-property start end 'font-lock-ignore t))))
+            (setq buffer-read-only  read-only)
+            (set-buffer-modified-p modified-p))
+          (when (and msgp  (or (hlt-nonempty-region-p)  mousep))
+            (let ((remove-msg  "\\[hlt-unhighlight-region]' to remove highlighting"))
+              (when mousep (setq remove-msg  (concat "\\[universal-argument] " remove-msg)))
+              (setq remove-msg  (substitute-command-keys (concat "`" remove-msg)))
+              (message "Highlighting%s... done %s"
+                       (if mbufs (format " in `%s'"  (buffer-name buf)) "")
+                       remove-msg))))))))
+
+(when (fboundp 'wide-n-limits)
+
+  (defun hlt-wide-n-limits-in-bufs (buffers)
+    "Return a list of all `wide-n-limits' for each buffer in BUFFERS.
+That is, return a list of all recorded buffer narrowings for BUFFERS."
+    (let ((limits  ()))
+      (if buffers
+          (dolist (buf  buffers)
+            (with-current-buffer buf (setq limits  (nconc limits (wide-n-limits)))))
+        (wide-n-limits))
+      limits))
+
+  (defun hlt-highlight-regions (&optional regions face msgp mousep buffers)
+    "Apply `hlt-highlight-region' to each region in `wide-n-restrictions'.
+Non-interactively, REGIONS is a list of (START . END) region limits.
+The other args are passed to `hlt-highlight-region'.
+You need library `wide-n.el' for this command."
+    (interactive (list (hlt-wide-n-limits-in-bufs buffers) nil t current-prefix-arg))
+    (dolist (start.end  regions)
+      (hlt-highlight-region (car start.end) (cdr start.end) face msgp mousep buffers)))
+
+  (defun hlt-highlight-regions-in-buffers (buffers &optional regions msgp)
+    "Use `hlt-highlight-regions' in each buffer of list BUFFERS.
+A prefix arg >= 0 means highlight with `mouse-face', not `face'.
+A prefix arg <= 0 means highlight all visible or iconified buffers.
+Otherwise, you are prompted for the BUFFERS to highlight, one at a
+ time.  Use `C-g' to end prompting.
+If you specify no BUFFERS then the current buffer is highlighted.
+
+You need library `wide-n.el' for this command.
+
+Non-nil optional arg MSGP means show status messages."
+    (interactive (list (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                           (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+                         (hlt-+/--read-bufs))))
+    (hlt-highlight-regions (hlt-wide-n-limits-in-bufs buffers) nil msgp
+                           (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
+                           buffers))
+
+  (defun hlt-unhighlight-regions (&optional regions face msgp mousep buffers)
+    "Apply `hlt-unhighlight-region' to each region in `wide-n-restrictions'.
+Non-interactively, REGIONS is a list of (START . END) region limits.
+The other args are passed to `hlt-unhighlight-region'.
+You need library `wide-n.el' for this command."
+    (interactive (list (hlt-wide-n-limits-in-bufs buffers) nil t current-prefix-arg))
+    (dolist (start.end  regions)
+      (hlt-unhighlight-region (car start.end) (cdr start.end) face msgp mousep buffers)))
+
+  (defun hlt-unhighlight-regions-in-buffers (buffers &optional regions msgp)
+    "Use `hlt-unhighlight-regions' in each buffer of list BUFFERS.
+A prefix arg >= 0 means highlight with `mouse-face', not `face'.
+A prefix arg <= 0 means highlight all visible or iconified buffers.
+Otherwise, you are prompted for the BUFFERS to highlight, one at a
+ time.  Use `C-g' to end prompting.
+If you specify no BUFFERS then the current buffer is highlighted.
+
+You need library `wide-n.el' for this command.
+
+Non-nil optional arg MSGP means show status messages."
+    (interactive (list (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                           (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+                         (hlt-+/--read-bufs))))
+    (hlt-unhighlight-regions (hlt-wide-n-limits-in-bufs buffers) nil msgp
+                             (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
+                             buffers))
+
+  )
 
 ;;;###autoload
 (defun hlt-unhighlight-region-in-buffers (buffers &optional msgp)
@@ -1750,33 +1845,37 @@ both overlays and text properties."
     (unless buffers (setq buffers  (list (current-buffer))))
     (dolist (buf  buffers)
       (with-current-buffer buf
-        (unless (and start  end  (not (cadr buffers)))
-          (let ((start-end  (hlt-region-or-buffer-limits)))
+        ;; Use START and END if provided non-interactively, but not otherwise.
+        (unless (and start  end  (or (not (cadr buffers))  (not (interactive-p))))
+          (let ((start-end  (hlt-region-or-buffer-limits buf)))
             (setq start  (car start-end)
                   end    (cadr start-end))))
-        (when msgp (message "Removing highlighting%s..." (if mbufs (format " in `%s'"  buf) "")))
-        (let ((read-only-p  buffer-read-only)
-              (modified-p   (buffer-modified-p)))
-          (setq buffer-read-only  nil)
-          (when hlt-use-overlays-flag   ; Unhighlight overlay properties.
-            (dolist (ov  (overlays-in start end)) (hlt-unhighlight-for-overlay ov start end face mousep)))
-          (unless (eq 'only hlt-use-overlays-flag) ; Unhighlight text properties.
-            (let ((beg  start)
-                  hi-face)
-              (while (< beg end)
-                (when (setq hi-face  (get-text-property beg 'hlt-highlight))
-                  (when (or (null face)  (equal hi-face face))
-                    ;; $$$ Really, we should remove only the part of the `face'
-                    ;;     property that belongs to Highlight, and set the value to be
-                    ;;     the same as it is, but without `hlt-last-face'.
-                    (remove-text-properties
-                     beg (1+ beg) (if mousep
-                                      '(mouse-face nil hlt-highlight nil font-lock-ignore nil)
-                                    '(face nil hlt-highlight nil font-lock-ignore nil)))))
-                (setq beg  (1+ beg)))))
-          (setq buffer-read-only  read-only-p)
-          (set-buffer-modified-p modified-p))
-        (when msgp (message "Removing highlighting%s... done" (if mbufs (format " in `%s'"  buf) "")))))))
+        ;; Do nothing if START or END is a marker for a different buffer.
+        (when (and (or (not (markerp start))  (eq buf (marker-buffer start)))
+                   (or (not (markerp end))    (eq buf (marker-buffer end))))
+          (when msgp (message "Removing highlighting%s..." (if mbufs (format " in `%s'"  buf) "")))
+          (let ((read-only-p  buffer-read-only)
+                (modified-p   (buffer-modified-p)))
+            (setq buffer-read-only  nil)
+            (when hlt-use-overlays-flag ; Unhighlight overlay properties.
+              (dolist (ov  (overlays-in start end)) (hlt-unhighlight-for-overlay ov start end face mousep)))
+            (unless (eq 'only hlt-use-overlays-flag) ; Unhighlight text properties.
+              (let ((beg  start)
+                    hi-face)
+                (while (< beg end)
+                  (when (setq hi-face  (get-text-property beg 'hlt-highlight))
+                    (when (or (null face)  (equal hi-face face))
+                      ;; $$$ Really, we should remove only the part of the `face'
+                      ;;     property that belongs to Highlight, and set the value to be
+                      ;;     the same as it is, but without `hlt-last-face'.
+                      (remove-text-properties
+                       beg (1+ beg) (if mousep
+                                        '(mouse-face nil hlt-highlight nil font-lock-ignore nil)
+                                      '(face nil hlt-highlight nil font-lock-ignore nil)))))
+                  (setq beg  (1+ beg)))))
+            (setq buffer-read-only  read-only-p)
+            (set-buffer-modified-p modified-p))
+          (when msgp (message "Removing highlighting%s... done" (if mbufs (format " in `%s'"  buf) ""))))))))
 
 ;;;###autoload
 (defun hlt-highlight-regexp-region-in-buffers (regexp buffers &optional face msgp mousep nth)
@@ -1903,53 +2002,57 @@ If UNHIGHLIGHTP:
     (if face (setq hlt-last-face  face) (unless unhighlightp (setq face  hlt-last-face)))
     (dolist (buf  buffers)
       (with-current-buffer buf
-        (unless (and start  end  (not (cadr buffers)))
+        ;; Use START and END if provided non-interactively, but not otherwise.
+        (unless (and start  end  (or (not (cadr buffers))  (not (interactive-p))))
           (let ((start-end  (hlt-region-or-buffer-limits buf)))
             (setq start  (car start-end)
                   end    (cadr start-end))))
-        (when (and msgp  (not unhighlightp))
-          (let ((reg-size  (abs (- end start))))
-            (when (and (> reg-size hlt-max-region-no-warning)
-                       (not (progn (and (fboundp 'flash-ding) ; In `frame-fns.el'
-                                        (flash-ding 'no-terminate-macros (selected-frame)))
-                                   (y-or-n-p (substitute-command-keys
-                                              (format "Lots of highlighting slows things down.  Do you \
+        ;; Do nothing if START or END is a marker for a different buffer.
+        (when (and (or (not (markerp start))  (eq buf (marker-buffer start)))
+                   (or (not (markerp end))    (eq buf (marker-buffer end))))
+          (when (and msgp  (not unhighlightp))
+            (let ((reg-size  (abs (- end start))))
+              (when (and (> reg-size hlt-max-region-no-warning)
+                         (not (progn (and (fboundp 'flash-ding) ; In `frame-fns.el'
+                                          (flash-ding 'no-terminate-macros (selected-frame)))
+                                     (y-or-n-p (substitute-command-keys
+                                                (format "Lots of highlighting slows things down.  Do you \
 really want to highlight up to %d chars?  "
-                                                      reg-size))))))
-              (error "OK, highlighting cancelled"))))
-        (when (eq t msgp)
-          (message "%sighlighting occurrences of `%s'%s..."
-                   (if unhighlightp "UNh" "H")
-                   regexp
-                   (if mbufs (format " in `%s'"  buf) "")))
-        (let ((hits-p               nil)
-              (hlt-auto-faces-flag  nil)) ; Prevent advancing - we already advanced.
-          (save-excursion
-            (goto-char start)
-            (while (and (< start end)  (not (eobp))  (re-search-forward regexp end t)  (setq hits-p  t))
-              (condition-case nil
-                  (progn (forward-char 1) (setq start  (1+ (point))))
-                (end-of-buffer (setq start  end)))
-              (funcall (if unhighlightp #'hlt-unhighlight-region #'hlt-highlight-region)
-                       (match-beginning (or nth  0))
-                       (match-end (or nth  0))
-                       face
-                       nil
-                       mousep)))
+                                                        reg-size))))))
+                (error "OK, highlighting cancelled"))))
           (when (eq t msgp)
-            (if hits-p
-                (message "%sighlighting occurrences of `%s'%s done  %s"
-                         (if unhighlightp "UNh" "H")
-                         regexp
-                         (if mbufs (format " in `%s'"  buf) "")
-                         (if unhighlightp
-                             ""
-                           (let ((remove-msg  "\\[hlt-unhighlight-regexp-region]' to remove highlighting"))
-                             (when mousep (setq remove-msg  (concat "\\[universal-argument] " remove-msg)))
-                             (setq remove-msg  (substitute-command-keys (concat "`" remove-msg)))
-                             remove-msg)))
-              (message "No occurrences of `%s' in `%s'" regexp buf))))
-        (setq hlt-last-regexp  regexp)))))
+            (message "%sighlighting occurrences of `%s'%s..."
+                     (if unhighlightp "UNh" "H")
+                     regexp
+                     (if mbufs (format " in `%s'"  buf) "")))
+          (let ((hits-p               nil)
+                (hlt-auto-faces-flag  nil)) ; Prevent advancing - we already advanced.
+            (save-excursion
+              (goto-char start)
+              (while (and (< start end)  (not (eobp))  (re-search-forward regexp end t)  (setq hits-p  t))
+                (condition-case nil
+                    (progn (forward-char 1) (setq start  (1+ (point))))
+                  (end-of-buffer (setq start  end)))
+                (funcall (if unhighlightp #'hlt-unhighlight-region #'hlt-highlight-region)
+                         (match-beginning (or nth  0))
+                         (match-end (or nth  0))
+                         face
+                         nil
+                         mousep)))
+            (when (eq t msgp)
+              (if hits-p
+                  (message "%sighlighting occurrences of `%s'%s done  %s"
+                           (if unhighlightp "UNh" "H")
+                           regexp
+                           (if mbufs (format " in `%s'"  buf) "")
+                           (if unhighlightp
+                               ""
+                             (let ((remove-msg  "\\[hlt-unhighlight-regexp-region]' to remove highlighting"))
+                               (when mousep (setq remove-msg  (concat "\\[universal-argument] " remove-msg)))
+                               (setq remove-msg  (substitute-command-keys (concat "`" remove-msg)))
+                               remove-msg)))
+                (message "No occurrences of `%s' in `%s'" regexp buf))))
+          (setq hlt-last-regexp  regexp))))))
 
 ;;;###autoload
 (defun hlt-unhighlight-region-for-face-in-buffers (face buffers &optional msgp)
@@ -2066,26 +2169,31 @@ Other arguments:
     (unless buffers (setq buffers  (list (current-buffer))))
     (dolist (buf  buffers)
       (with-current-buffer buf
-        (unless (and start  end) (let ((start-end  (hlt-region-or-buffer-limits)))
-                                   (setq start  (car start-end)
-                                         end    (cadr start-end))))
-        (when msgp
-          (message "Replacing overlay highlighting face `%s'%s..."
-                   old-face
-                   (if mbufs (format " in `%s'"  buf) "")))
-        (let ((read-only-p  buffer-read-only)
-              (modified-p   (buffer-modified-p)))
-          (setq buffer-read-only  nil)
-          (dolist (ov  (overlays-in start end))
-            (when (equal old-face (overlay-get ov (if mousep 'mouse-face hlt-face-prop)))
-              (overlay-put ov (if mousep 'mouse-face hlt-face-prop) new-face)
-              (overlay-put ov 'hlt-highlight                        new-face)))
-          (setq buffer-read-only  read-only-p)
-          (set-buffer-modified-p modified-p))
-        (setq hlt-last-face  new-face)
-        (when msgp (message "Replacing overlay highlighting face `%s'%s... done"
-                            old-face
-                            (if mbufs (format " in `%s'"  buf) "")))))))
+        ;; Use START and END if provided non-interactively, but not otherwise.
+        (unless (and start  end  (or (not (cadr buffers))  (not (interactive-p))))
+          (let ((start-end  (hlt-region-or-buffer-limits buf)))
+            (setq start  (car start-end)
+                  end    (cadr start-end))))
+        ;; Do nothing if START or END is a marker for a different buffer.
+        (when (and (or (not (markerp start))  (eq buf (marker-buffer start)))
+                   (or (not (markerp end))    (eq buf (marker-buffer end))))
+          (when msgp
+            (message "Replacing overlay highlighting face `%s'%s..."
+                     old-face
+                     (if mbufs (format " in `%s'"  buf) "")))
+          (let ((read-only-p  buffer-read-only)
+                (modified-p   (buffer-modified-p)))
+            (setq buffer-read-only  nil)
+            (dolist (ov  (overlays-in start end))
+              (when (equal old-face (overlay-get ov (if mousep 'mouse-face hlt-face-prop)))
+                (overlay-put ov (if mousep 'mouse-face hlt-face-prop) new-face)
+                (overlay-put ov 'hlt-highlight                        new-face)))
+            (setq buffer-read-only  read-only-p)
+            (set-buffer-modified-p modified-p))
+          (setq hlt-last-face  new-face)
+          (when msgp (message "Replacing overlay highlighting face `%s'%s... done"
+                              old-face
+                              (if mbufs (format " in `%s'"  buf) ""))))))))
 
 ;;;###autoload
 (defun hlt-highlight-symbol (symbol &optional start end all-buffers-p)
@@ -2191,7 +2299,7 @@ this: if the option value is \"\" then whitespace defined by
 \"[ \t]*\" is ignored, and otherwise whitespace is not ignored."
   (interactive `(,@(hlt-region-or-buffer-limits) t ,current-prefix-arg))
   (let ((hlt-auto-faces-flag  t)
-        count line line-re)
+        count line ignore line-re)
     (save-excursion
       (goto-char start)
       (while (< (point) end)
@@ -3025,7 +3133,7 @@ Non-nil optional arg UN means prompt to unhighlight; else highlight."
   (let ((bufs  ())
         buf)
     (while (condition-case nil
-               (setq buf  (read-buffer (format "%sighlight in buffer: " (if un "UNh" "H"))
+               (setq buf  (read-buffer (format "%sighlight in buffer (C-g to end): " (if un "UNh" "H"))
                                        (and (not (member (buffer-name (current-buffer)) bufs))
                                             (current-buffer))
                                        t))
