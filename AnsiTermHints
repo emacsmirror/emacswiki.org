@@ -137,6 +137,7 @@ frequently visit with it's own buffer name and connection parameters:
 
 ...which results in a new buffers named ##*cmdev2*##, ##*cmdev2<2>*##, etc...
 
+[:RemoteDirectoryTracking]
 == Remote Directory Tracking ==
 
 One of the best features of AnsiTerm mode is its remote directory tracking. Whatever remote directory your terminal is in, that will be the default directory that tramp uses if you choose to edit a file with C-x C-f. But you have to set up the following in your ##.bash_profile## on each remote host first:
