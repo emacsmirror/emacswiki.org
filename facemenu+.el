@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 13:04:42 2015 (-0700)
+;; Last-Updated: Sat Jul 11 14:16:41 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1919
+;;     Update #: 1920
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -1372,7 +1372,7 @@ You need library `wide-n.el' for this command."
                          (marker-buffer start)
                        (current-buffer)))
         (with-current-buffer buf
-          (facemenu-add-face face (car start.end) (cdr start.end))
+          (facemenu-add-face face start end)
           (unless (or (not msgp)  (featurep 'font-lock+)  (facemenu-enable-faces-p))
             (message "Font-lock will override faces you set in buffer `%s'" (buffer-name)))))))
 
