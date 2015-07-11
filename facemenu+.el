@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:40:18 2015 (-0800)
+;; Last-Updated: Sat Jul 11 13:04:42 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1908
+;;     Update #: 1919
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -108,9 +108,18 @@
 ;;  then the commands in that library are also added to the Text
 ;;  Properties menu, as a Highlight submenu.
 ;;
+;;  If you also use library `wide-n.el' then narrowing records the
+;;  various buffer restrictions (aka narrowings) in buffer-local
+;;  variable `wide-n-restrictions'.  You can use command
+;;  `facemenup-add-face-to-regions' to add a face to these, and you
+;;  can use command `facemenup-add-face-to-regions-in-buffers' to add
+;;  a face to all regions recorded for a given set of buffers.
+;;
 ;;  Commands defined here:
 ;;
-;;    `facemenu-mouse-menu', `facemenup-change-bg-of-face-at-mouse+',
+;;    `facemenu-mouse-menu', `facemenup-add-face-to-regions',
+;;    `facemenup-add-face-to-regions-in-buffers',
+;;    `facemenup-change-bg-of-face-at-mouse+',
 ;;    `facemenup-change-bg-of-face-at-point+',
 ;;    `facemenup-change-fg-of-face-at-mouse+',
 ;;    `facemenup-change-fg-of-face-at-point+',
@@ -149,7 +158,7 @@
 ;;
 ;;    `facemenup-copy-tree' (Emacs 20-21), `facemenup-face-bg',
 ;;    `facemenup-face-fg', `facemenup-nonempty-region-p',
-;;    `facemenup-set-face-attribute-at--1',
+;;    `facemenup-read-bufs', `facemenup-set-face-attribute-at--1',
 ;;    `facemenup-set-face-from-list'.
 ;;
 ;;  Internal variables defined here:
@@ -201,6 +210,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/11 dadams
+;;     Added: facemenup-add-face-to-regions, facemenup-add-face-to-regions-in-buffers,
+;;            facemenup-read-bufs.
 ;; 2014/08/30 dadams
 ;;     Added facemenu-post-self-insert-function (fixes Emacs 24+ via font-lock-ignore).
 ;;     facemenu-add-face: Do not show message if font-lock+.el loaded (no font-lock override).
@@ -372,6 +384,9 @@
     (or (require 'palette nil t)  (require 'eyedropper))
   (require 'eyedropper))
 
+(when (> emacs-major-version 20) (require 'wide-n nil t));; (no error if not found)
+                                                         ;; wide-n-limits, wide-n-limits-in-bufs
+
 ;; (require 'icicles nil t) ;; (no error if not found):
                             ;; icicle-read-color-WYSIWYG, icicle-read-string-completing
 
@@ -397,6 +412,19 @@
     `(with-output-to-temp-buffer ,buffer ,@body)))
 
 (put 'facemenu+-with-help-window 'common-lisp-indent-function '(4 &body))
+
+(defun facemenup-read-bufs ()
+  "Read names of buffers to highlight, one at a time.  `C-g' ends reading."
+  (let ((bufs  ())
+        buf)
+    (while (condition-case nil
+               (setq buf  (read-buffer "Buffer (C-g to end): "
+                                       (and (not (member (buffer-name (current-buffer)) bufs))
+                                            (current-buffer))
+                                       t))
+             (quit nil))
+      (push buf bufs))
+    (delq nil (mapcar #'get-buffer (nreverse bufs)))))
 
 (defun facemenup-nonempty-region-p ()
   "Return non-nil if region is active and non-empty."
@@ -1320,6 +1348,56 @@ For Emacs 22+, this is `face-foreground' inheriting from `default'."
   (condition-case nil
       (face-foreground face nil 'default) ; Emacs 22+.  Raises error for previous versions.
     (error (or (face-foreground face)  (cdr (assq 'foreground-color (frame-parameters)))))))
+
+(when (fboundp 'wide-n-limits)
+
+  (defun facemenup-add-face-to-regions (face &optional regions msgp)
+    "Use `facemenu-add-face' to add FACE to each region in `wide-n-restrictions'.
+Non-interactively, REGIONS is a list of (START . END) region limits.
+You need library `wide-n.el' for this command."
+    (interactive
+     (progn (barf-if-buffer-read-only)
+            (list (read-from-minibuffer "Face: " nil (if (boundp 'pp-read-expression-map)
+                                                         pp-read-expression-map
+                                                       read-expression-map)
+                                        'READ 'read-expression-history)
+                  (wide-n-limits)
+                  'MSGP)))
+    (let (buf start end)
+      (dolist (start.end  regions)
+        (setq start  (car start.end)
+              end    (cdr start.end)
+              buf    (if (and (markerp start)  (markerp end)
+                              (eq (marker-buffer start)  (marker-buffer end)))
+                         (marker-buffer start)
+                       (current-buffer)))
+        (with-current-buffer buf
+          (facemenu-add-face face (car start.end) (cdr start.end))
+          (unless (or (not msgp)  (featurep 'font-lock+)  (facemenu-enable-faces-p))
+            (message "Font-lock will override faces you set in buffer `%s'" (buffer-name)))))))
+
+  (defun facemenup-add-face-to-regions-in-buffers (face buffers &optional regions msgp)
+    "Use `facemenup-add-face-to-regions' in each buffer of list BUFFERS.
+A prefix means highlight all visible or iconified buffers.
+Otherwise, you are prompted for the BUFFERS to highlight, one at a
+ time.  Use `C-g' to end prompting.
+If you specify no BUFFERS then the current buffer is highlighted.
+
+You need library `wide-n.el' for this command."
+    (interactive
+     (progn (barf-if-buffer-read-only)
+            (list (read-from-minibuffer "Face: " nil (if (boundp 'pp-read-expression-map)
+                                                         pp-read-expression-map
+                                                       read-expression-map)
+                                        'READ 'read-expression-history)
+                  (if current-prefix-arg
+                      (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+                    (facemenup-read-bufs))
+                  nil
+                  'MSGP)))
+    (facemenup-add-face-to-regions face (wide-n-limits-in-bufs buffers) msgp))
+
+  )
 
 
 ;; REPLACES ORIGINAL in `facemenu.el':
