@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 11:23:17 2015 (-0800)
+;; Last-Updated: Sat Jul 11 09:14:13 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 429
+;;     Update #: 448
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -90,13 +90,13 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `wide-n', `wide-n-delete', `wide-n-repeat',
+;;    `wide-n', `wide-n-delete', `wide-n-repeat'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `wide-n-highlight-lighter', `wide-n-markerize',
+;;    `wide-n-highlight-lighter', `wide-n-limits', `wide-n-markerize',
 ;;    `wide-n-mem-regexp', `wide-n-push', `wide-n-rassoc-delete-all',
-;;    `wide-n-renumber', `wide-n-repeat-command',
+;;    `wide-n-renumber', `wide-n-repeat-command', `wide-n-start.end',
 ;;    `wide-n-string-match-p'.
 ;;
 ;;  Internal variables defined here:
@@ -119,6 +119,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/11 dadams
+;;     Added: wide-n-limits, wide-n-start.end.
 ;; 2014/08/12 dadams
 ;;     Added: wide-n-delete, wide-n-renumber.
 ;;     wide-n: Added optional arg MSGP.
@@ -312,7 +314,7 @@ new cons."
 
 (defun wide-n-push (start end &optional nomsg)
   "Push the region limits to `wide-n-restrictions'.
-START and END are as for `narrrow-to-region'.
+START and END are as for `narrow-to-region'.
 Non-nil optional arg NOMSG means do not echo the region size."
   (let ((mrk1  (make-marker))
         (mrk2  (make-marker))
@@ -362,6 +364,19 @@ Non-nil optional arg NOMSG means do not display status message."
   (let ((orig  wide-n-restrictions))
     (setq wide-n-restrictions  (list 'all))
     (dolist (nn  orig) (wide-n-push (cadr nn) (cddr nn) 'NOMSG))))
+
+(defun wide-n-limits ()
+  "Return a list like `wide-n-restrictions', but with no identifiers or `all'.
+That is, each entry has the form (START . END).  The conses are new -
+they do not share with any conses in `wide-n-restrictions'"
+  (delq nil (mapcar #'wide-n-start.end wide-n-restrictions)))
+
+(defun wide-n-start.end (restriction)
+  "Return a new cons (START . END) corresponding to RESTRICTION, or nil.
+If RESTRICTION is a cons then it has the form (NUM START . END), so
+ return a new cons (START . END).
+Otherwise RESTRICTION is `all', so return nil."
+  (and (consp restriction)  (cons (cadr restriction) (cddr restriction))))
 
 (defun wide-n-repeat-command (command)
   "Repeat COMMAND."
