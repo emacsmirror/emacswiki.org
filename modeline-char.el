@@ -10,7 +10,7 @@
 ;; Package-Requires: ()
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 140
+;;     Update #: 155
 ;; URL: http://www.emacswiki.org/modeline-char.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLineCharacterInfo
 ;; Keywords: mode-line, character
@@ -41,6 +41,7 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
+;;    `mlc-copy-char-to-second-sel',
 ;;    `mlc-turn-on-char-in-mode-line-mode'.
 ;;
 ;;  Internal variables defined here:
@@ -90,12 +91,23 @@
            (let* ((ch   (following-char))
                   (str  (format (if (= ?% ch) "[%%%c=%06x] " "[%c=%06x] ") ch ch))
                   (map  (make-sparse-keymap)))
+             (define-key map [mode-line down-mouse-1] nil)
+             (define-key map [mode-line mouse-1] (lambda (ev) (interactive "e") (describe-char (point))))
              (define-key map [mode-line down-mouse-2] nil)
-             (define-key map [mode-line mouse-2] (lambda (ev) (interactive "e") (describe-char (point))))
+             (define-key map [mode-line mouse-2] (lambda (ev)
+                                                   (interactive "e")
+                                                   (mlc-copy-char-to-second-sel (point) t)))
+             (define-key map [mode-line down-mouse-3] nil)
+             (define-key map [mode-line mouse-3] (lambda (ev)
+                                                   (interactive "e")
+                                                   (x-show-tip
+                                                    (propertize (string (char-after))
+                                                                'face `(:foreground "red" :height 400)))))
              (add-text-properties 1 2                  '(face mlc-mode-line-char-format) str)
              (add-text-properties 3 (- (length str) 2) '(face mlc-mode-line-char-format-code) str)
              (add-text-properties 1 (- (length str) 2) `(mouse-face mode-line-highlight
-                                                                    help-echo "mouse-2: more info about char"
+                                                                    help-echo "mouse-1: info; mouse-2: \
+copy to second sel; mouse-3: large tooltip"
                                                                     local-map ,map)
                                   str)
              str)))
@@ -117,13 +129,29 @@
                                     ((stringp global-mode-string)
                                      (list mlc-mode-line-char-format global-mode-string))))))
 
+;;;###autoload
+(define-globalized-minor-mode mlc-char-in-mode-line-mode-global
+    mlc-char-in-mode-line-mode mlc-turn-on-char-in-mode-line-mode)
+
 (defun mlc-turn-on-char-in-mode-line-mode ()
   "Turn on `mlc-char-in-mode-line-mode'."
   (mlc-char-in-mode-line-mode 1))
 
-;;;###autoload
-(define-globalized-minor-mode mlc-char-in-mode-line-mode-global
-    mlc-char-in-mode-line-mode mlc-turn-on-char-in-mode-line-mode)
+;; Same as `apu-copy-char-to-second-sel' in `apu.el'.
+(defun mlc-copy-char-to-second-sel (position msgp)
+  "Copy char at POSITION in current buffer to secondary selection.
+If you have library `second-sel.el' then this also copies it to the
+`secondary-selection-ring'."
+  (let* ((char  (char-after position))
+         (strg  (string char)))
+    (x-set-selection 'SECONDARY strg)
+    (if mouse-secondary-overlay
+        (move-overlay mouse-secondary-overlay position (1+ position) (current-buffer))
+      (setq mouse-secondary-overlay  (make-overlay position (1+ position) (current-buffer)))
+      (overlay-put mouse-secondary-overlay 'face 'secondary-selection))
+    (when (require 'second-sel nil t) (add-secondary-to-ring strg))
+    (when msgp (message "Copied char `%s' to secondary selection%s"
+                        strg (if (require 'second-sel nil t) " ring" "")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
