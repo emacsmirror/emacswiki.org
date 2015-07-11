@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 09:38:47 2015 (-0700)
+;; Last-Updated: Sat Jul 11 11:42:50 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 449
+;;     Update #: 453
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -94,7 +94,8 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `wide-n-highlight-lighter', `wide-n-limits', `wide-n-markerize',
+;;    `wide-n-highlight-lighter', `wide-n-limits',
+;;    `wide-n-limits-in-bufs', `wide-n-markerize',
 ;;    `wide-n-mem-regexp', `wide-n-push', `wide-n-rassoc-delete-all',
 ;;    `wide-n-renumber', `wide-n-repeat-command', `wide-n-start.end',
 ;;    `wide-n-string-match-p'.
@@ -120,7 +121,7 @@
 ;;; Change Log:
 ;;
 ;; 2015/07/11 dadams
-;;     Added: wide-n-limits, wide-n-start.end.
+;;     Added: wide-n-limits, wide-n-limits-in-bufs, wide-n-start.end.
 ;; 2014/08/12 dadams
 ;;     Added: wide-n-delete, wide-n-renumber.
 ;;     wide-n: Added optional arg MSGP.
@@ -364,6 +365,16 @@ Non-nil optional arg NOMSG means do not display status message."
   (let ((orig  wide-n-restrictions))
     (setq wide-n-restrictions  (list 'all))
     (dolist (nn  orig) (wide-n-push (cadr nn) (cddr nn) 'NOMSG))))
+
+(defun wide-n-limits-in-bufs (buffers)
+  "Return a list of all `wide-n-limits' for each buffer in BUFFERS.
+That is, return a list of all recorded buffer narrowings for BUFFERS."
+  (let ((limits  ()))
+    (if buffers
+        (dolist (buf  buffers)
+          (with-current-buffer buf (setq limits  (nconc limits (wide-n-limits)))))
+      (wide-n-limits))
+    limits))
 
 (defun wide-n-limits ()
   "Return a list like `wide-n-restrictions', but with no identifiers or `all'.
