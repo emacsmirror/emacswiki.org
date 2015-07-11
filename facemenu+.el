@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 14:34:13 2015 (-0700)
+;; Last-Updated: Sat Jul 11 14:37:34 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1921
+;;     Update #: 1923
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -1384,17 +1384,15 @@ Use `C-g' to end prompting.  If you specify no BUFFERS then the
 current buffer is used.
 
 You need library `wide-n.el' for this command."
-    (interactive
-     (progn (barf-if-buffer-read-only)
-            (list (read-from-minibuffer "Face: " nil (if (boundp 'pp-read-expression-map)
-                                                         pp-read-expression-map
-                                                       read-expression-map)
-                                        'READ 'read-expression-history)
-                  (if current-prefix-arg
-                      (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
-                    (facemenup-read-bufs))
-                  nil
-                  'MSGP)))
+    (interactive (list (read-from-minibuffer "Face: " nil (if (boundp 'pp-read-expression-map)
+                                                              pp-read-expression-map
+                                                            read-expression-map)
+                                             'READ 'read-expression-history)
+                       (if current-prefix-arg
+                           (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+                         (facemenup-read-bufs))
+                       nil
+                       'MSGP))
     (facemenup-add-face-to-regions face (wide-n-limits-in-bufs buffers) msgp))
 
   )
