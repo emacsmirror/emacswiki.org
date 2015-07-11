@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 14:55:47 2015 (-0700)
+;; Last-Updated: Sat Jul 11 15:11:37 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1928
+;;     Update #: 1930
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -1373,16 +1373,16 @@ current buffer is used.
 
 You need library `wide-n.el' for this command."
     (interactive
-     (list (read-from-minibuffer "Face: " nil (if (boundp 'pp-read-expression-map)
-                                                  pp-read-expression-map
-                                                read-expression-map)
-                                 'READ 'read-expression-history)
-           (if current-prefix-arg
-               (wide-n-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
-             (wide-n-read-bufs))
-           nil
-           'MSGP))
-    (facemenup-add-face-to-regions face (wide-n-limits-in-bufs buffers) msgp))
+     (let* ((fac   (read-from-minibuffer "Face: " nil (if (boundp 'pp-read-expression-map)
+                                                          pp-read-expression-map
+                                                        read-expression-map)
+                                         'READ 'read-expression-history))
+            (bufs  (if current-prefix-arg
+                       (wide-n-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+                     (wide-n-read-bufs)))
+            (regs  (wide-n-limits-in-bufs bufs)))
+       (list fac bufs regs 'MSGP)))
+    (facemenup-add-face-to-regions face regions msgp))
 
   )
 
