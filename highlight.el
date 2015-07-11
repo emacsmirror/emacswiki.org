@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 11:31:27 2015 (-0700)
+;; Last-Updated: Sat Jul 11 11:44:08 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3928
+;;     Update #: 3929
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -135,8 +135,7 @@
 ;;    `hlt-read-bg/face-name', `hlt-read-props-completing',
 ;;    `hlt-region-or-buffer-limits', `hlt-remove-if-not',
 ;;    `hlt-set-intersection', `hlt-set-union', `hlt-subplist',
-;;    `hlt-tty-colors', `hlt-unhighlight-for-overlay',
-;;    `hlt-wide-n-limits-in-bufs'.
+;;    `hlt-tty-colors', `hlt-unhighlight-for-overlay'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -738,7 +737,7 @@
 ;;(@* "Change log")
 ;;
 ;; 2015/07/11 dadams
-;;     Added: hlt-highlight-regions, hlt-highlight-regions-in-buffers, hlt-wide-n-limits-in-bufs,
+;;     Added: hlt-highlight-regions, hlt-highlight-regions-in-buffers,
 ;;            hlt-unhighlight-regions, hlt-highlight-regions-in-buffers.
 ;;     hlt-highlight-region-in-buffers: Added missing t for MSGP in interactive spec.
 ;;     hlt-(un)highlight-region, hlt-+/--highlight-regexp-region, hlt-replace-highlight-face:
@@ -1749,22 +1748,12 @@ Optional 6th arg BUFFERS is the list of buffers to highlight.
 
 (when (fboundp 'wide-n-limits)
 
-  (defun hlt-wide-n-limits-in-bufs (buffers)
-    "Return a list of all `wide-n-limits' for each buffer in BUFFERS.
-That is, return a list of all recorded buffer narrowings for BUFFERS."
-    (let ((limits  ()))
-      (if buffers
-          (dolist (buf  buffers)
-            (with-current-buffer buf (setq limits  (nconc limits (wide-n-limits)))))
-        (wide-n-limits))
-      limits))
-
   (defun hlt-highlight-regions (&optional regions face msgp mousep buffers)
     "Apply `hlt-highlight-region' to each region in `wide-n-restrictions'.
 Non-interactively, REGIONS is a list of (START . END) region limits.
 The other args are passed to `hlt-highlight-region'.
 You need library `wide-n.el' for this command."
-    (interactive (list (hlt-wide-n-limits-in-bufs buffers) nil t current-prefix-arg))
+    (interactive (list (wide-n-limits-in-bufs buffers) nil t current-prefix-arg))
     (dolist (start.end  regions)
       (hlt-highlight-region (car start.end) (cdr start.end) face msgp mousep buffers)))
 
@@ -1782,7 +1771,7 @@ Non-nil optional arg MSGP means show status messages."
     (interactive (list (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
                            (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
                          (hlt-+/--read-bufs))))
-    (hlt-highlight-regions (hlt-wide-n-limits-in-bufs buffers) nil msgp
+    (hlt-highlight-regions (wide-n-limits-in-bufs buffers) nil msgp
                            (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                            buffers))
 
@@ -1791,7 +1780,7 @@ Non-nil optional arg MSGP means show status messages."
 Non-interactively, REGIONS is a list of (START . END) region limits.
 The other args are passed to `hlt-unhighlight-region'.
 You need library `wide-n.el' for this command."
-    (interactive (list (hlt-wide-n-limits-in-bufs buffers) nil t current-prefix-arg))
+    (interactive (list (wide-n-limits-in-bufs buffers) nil t current-prefix-arg))
     (dolist (start.end  regions)
       (hlt-unhighlight-region (car start.end) (cdr start.end) face msgp mousep buffers)))
 
@@ -1809,7 +1798,7 @@ Non-nil optional arg MSGP means show status messages."
     (interactive (list (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
                            (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
                          (hlt-+/--read-bufs))))
-    (hlt-unhighlight-regions (hlt-wide-n-limits-in-bufs buffers) nil msgp
+    (hlt-unhighlight-regions (wide-n-limits-in-bufs buffers) nil msgp
                              (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                              buffers))
 
