@@ -105,6 +105,9 @@ If you use 3 g in the Group buffer, the groups on level 4 should not be fetched.
 [new]
 There is also the possibility to use an external download script for retrieving the feeds, which you can call e.g. via cron. See the variable nnrss-use-local and the function nnrss-generate-download-script. -- DavidEngster
 
+[new]
+You could also read them through gwene.org (see above). --JimKalb
+
 ----
 [new]
 I run Gnus 5.10.6 and nnrss forgets the rss feed URLs between gnus sessions. I can see that they are available in ~/News/rss/nnrss.el. What is wrong with my setup? -- Dirk
