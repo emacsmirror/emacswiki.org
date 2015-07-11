@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 12:30:44 2015 (-0700)
+;; Last-Updated: Sat Jul 11 15:00:10 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3933
+;;     Update #: 3934
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
