@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun 26 12:11:21 2015 (-0700)
+;; Last-Updated: Fri Jul 10 19:51:10 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 709
+;;     Update #: 720
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -547,7 +547,8 @@ If you have library `second-sel.el' then this also copies it to the
       (setq mouse-secondary-overlay  (make-overlay position (1+ position) (current-buffer)))
       (overlay-put mouse-secondary-overlay 'face 'secondary-selection))
     (when (require 'second-sel nil t) (add-secondary-to-ring strg))
-    (when msgp (message "Copied char `%s' to secondary selection ring" strg))))
+    (when msgp (message "Copied char `%s' to secondary selection%s"
+                        strg (if (require 'second-sel nil t) " ring" "")))))
 
 (defun apu-define-insert-command () ; Bound to `c'.
   "Define a command that inserts the character described on this line.
@@ -649,7 +650,7 @@ The character descriptions are presented in `apu-mode'."
       (setq case-fold-search          t
             tabulated-list-format     (vector '("Ch"       2 apu-sort-char)
                                               ;; Use 30 as a default name width.
-                                              `("Name"     ,(or (car apu--matches)  40) t)
+                                              `("Name"     ,(or (car apu--matches)  30) t)
                                               '("Decimal"  7 apu-sort-char :right-align t)
                                               '("Hex"      8 apu-sort-char :right-align t))
             tabulated-list-sort-key   nil
