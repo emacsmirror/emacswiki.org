@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 11:42:50 2015 (-0700)
+;; Last-Updated: Sat Jul 11 14:52:33 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 453
+;;     Update #: 461
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -97,7 +97,8 @@
 ;;    `wide-n-highlight-lighter', `wide-n-limits',
 ;;    `wide-n-limits-in-bufs', `wide-n-markerize',
 ;;    `wide-n-mem-regexp', `wide-n-push', `wide-n-rassoc-delete-all',
-;;    `wide-n-renumber', `wide-n-repeat-command', `wide-n-start.end',
+;;    `wide-n-read-bufs', `wide-n-remove-if-not', `wide-n-renumber',
+;;    `wide-n-repeat-command', `wide-n-start.end',
 ;;    `wide-n-string-match-p'.
 ;;
 ;;  Internal variables defined here:
@@ -121,7 +122,7 @@
 ;;; Change Log:
 ;;
 ;; 2015/07/11 dadams
-;;     Added: wide-n-limits, wide-n-limits-in-bufs, wide-n-start.end.
+;;     Added: wide-n-limits, wide-n-limits-in-bufs, wide-n-start.end, wide-n-read-bufs, wide-n-remove-if-not.
 ;; 2014/08/12 dadams
 ;;     Added: wide-n-delete, wide-n-renumber.
 ;;     wide-n: Added optional arg MSGP.
@@ -388,6 +389,31 @@ If RESTRICTION is a cons then it has the form (NUM START . END), so
  return a new cons (START . END).
 Otherwise RESTRICTION is `all', so return nil."
   (and (consp restriction)  (cons (cadr restriction) (cddr restriction))))
+
+;; Useful for commands that want to act on regions in multiple buffers.
+(defun wide-n-read-bufs ()
+  "Read names of buffers to highlight, one at a time.  `C-g' ends reading."
+  (let ((bufs  ())
+        buf)
+    (while (condition-case nil
+               (setq buf  (read-buffer "Buffer (C-g to end): "
+                                       (and (not (member (buffer-name (current-buffer)) bufs))
+                                            (current-buffer))
+                                       t))
+             (quit nil))
+      (push buf bufs))
+    (delq nil (mapcar #'get-buffer (nreverse bufs)))))
+
+;; Useful for commands that want to act on  regions in multiple buffers (e.g., visible buffers only).
+;;
+;; Same as `icicle-remove-if-not' etc.
+(defun wide-n-remove-if-not (pred xs)
+  "A copy of list XS with only elements that satisfy predicate PRED."
+  (let ((result  ()))
+    (dolist (x xs) (when (funcall pred x) (push x result)))
+    (nreverse result)))
+
+
 
 (defun wide-n-repeat-command (command)
   "Repeat COMMAND."
