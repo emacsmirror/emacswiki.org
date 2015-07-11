@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 09:14:13 2015 (-0700)
+;; Last-Updated: Sat Jul 11 09:38:47 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 448
+;;     Update #: 449
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
