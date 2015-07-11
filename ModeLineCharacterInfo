@@ -4,6 +4,12 @@ This page is about library <tt>[[modeline-char.el]]</tt>, which shows, in the [[
 
 You can [[Customize|customize]] [[faces]] `mlc-mode-line-char-format' and `mlc-mode-line-char-format-code', which are used for the character and its code point, respectively.
 
+Click the mouse on the mode-line character info:
+
+* `mouse-1': Show more info about the character (same as `##C-u C-x =##' info).
+* `mouse-2': Copy the character as the [[SecondarySelection|secondary selection]], so you can yank it anytime, until you redefine the secondary selection again.
+* `mouse-3': Show the character enlarged, as a tooltip.
+
 
 
 ----
