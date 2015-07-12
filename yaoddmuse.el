@@ -724,17 +724,20 @@ Default is t."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Faces ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defface yaoddmuse-tag
-  '((t (:foreground "Gold")))
+  '((t (:inherit 'font-lock-preprocessor-face))
+    (((background dark)) (:foreground "Gold")))
   "Highlight tag."
   :group 'yaoddmuse)
 
 (defface yaoddmuse-link
-  '((t (:foreground "Khaki")))
+  '((((background dark)) (:foreground "Khaki"))
+    (t (:inherit 'link)))
   "Highlight link."
   :group 'yaoddmuse)
 
 (defface yaoddmuse-url
-  '((t (:foreground "Grey20")))
+  '((((background dark)) (:foreground "Grey20"))
+    (t (:inherit 'link :foreground unspecified :underline nil)))
   "Highlight link."
   :group 'yaoddmuse)
 
@@ -759,7 +762,8 @@ Default is t."
   :group 'yaoddmuse)
 
 (defface yaoddmuse-source-code
-  '((t (:foreground "Yellow")))
+  '((t (:inherit 'fixed-pitch))
+    (((background dark)) (:foreground "Yellow")))
   "Highlight source-code."
   :group 'yaoddmuse)
 
