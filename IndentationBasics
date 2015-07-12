@@ -83,7 +83,7 @@ And here for the other poor bastards:
 In summary:
 
 * Only change these variables when you know what you are doing.
-* Rely on the indentation suggested by the Emacs major modes (but see also Project-specific Indentation Configure, below).
+* Rely on the indentation suggested by the Emacs major modes (but see also Project-specific Indentation Configuration, below).
 
 == Project-specific Indentation Configuration ==
 
