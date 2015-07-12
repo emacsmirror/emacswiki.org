@@ -52,7 +52,7 @@ converting all markers to positions, save the value
 persistently, and restore it later.  Library '''[[Bookmark+]]'''' (<tt>[[bookmark+.el]]</tt>) does
 this in order to let you bookmark and restore a list of restrictions.
 
-In normal use, only the ''interactive'' use of commands
+In normal use, only the ''interactive'' use of standard commands
 `narrow-to-region', `narrow-to-defun', and `narrow-to-page' is
 affected by this library.  When these functions are called
 non-interactively there is normally no change to the value of
@@ -60,6 +60,65 @@ variable `wide-n-restrictions'.  However, if for some reason you
 want to add entries to the restrictions ring when narrowing with
 some EmacsLisp code (i.e. non-interactively), you can do so by
 binding variable '''`wide-n-push-anyway-p'''' around the narrowing call.
+
+You can use '''`C-x n C-d'''' (command `wide-n-delete') to delete a
+restriction, giving its number.
+
+You can also add the current region to `wide-n-restrictions'
+without first narrowing to it, using '''`C-x n s'''' (command
+`wide-n-push').  You need not activate the region to do this.
+
+Moving among different buffer restrictions is the main use of
+this library, but another use case is ''performing actions on a
+set of buffer restrictions'', including restrictions from
+''different buffers''.
+
+For that, you just need to write your action command in such a
+way that it iterates over the buffers and then over the entries
+in `wide-n-restrictions' (or some subset of them) for each
+buffer.  Utility functions `wide-n-limits',
+`wide-n-limits-in-bufs', and `wide-n-read-bufs' can help with this.
+
+As examples, if you use library <tt>[[highlight.el]]</tt> then you can use
+command '''`hlt-highlight-regions'''' to highlight the restrictions
+recorded for the current buffer.  And you can use command
+'''`hlt-highlight-regions-in-buffers'''' to do this across a set of
+buffers that you specify (or across all visible buffers).
+Complementary commands `hlt-unhighlight-regions' and
+`hlt-unhighlight-regions-in-buffers' unhighlight.
+
+Another way to look at this possibility of acting on multiple
+restrictions is to think of it as widening the notion of a
+"region" of text that you can operate on.  In effect, it can
+remove the requirement of target text being a contiguous
+sequence of characters.  A set of buffer restrictions is, in
+effect, a (typically) noncontiguous "region" of text.
+
+Pretty much ''anything you can do with the Emacs [[region]] you can do
+with a set of buffer restrictions'' (a non-contiguous "region",
+`wide-n-restrictions').  But existing Emacs commands that act on
+the region do not know about non-contiguous regions.  What you
+will need to do is define new commands that take these into
+account.
+
+This can be simple or somewhat complex, depending on how the
+region is used in the code for the corresponding region-action
+Emacs command.  The definition of `hlt-highlight-regions' just
+calls existing function `hlt-highlight-region' once for each
+recorded region:
+
+    (defun hlt-highlight-regions (&optional regions face msgp mousep buffers)
+      "Apply `hlt-highlight-region' to each region in `wide-n-restrictions'."
+      (interactive (list (wide-n-limits) nil t current-prefix-arg))
+      (dolist (start.end  regions)
+        (hlt-highlight-region (car start.end) (cdr start.end)
+                              face msgp mousep buffers)))
+
+
+That's it - just iterate over `wide-n-restrictions' with a
+function that takes the region as an argument.  What ##wide-n.el##
+offers in this regard is a way to easily define a set of buffer
+restrictions.
 
 Enjoy! -- DrewAdams
 
