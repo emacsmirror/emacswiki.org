@@ -1,6 +1,16 @@
-AsmMode is a simple AssemblyProgramming mode that is based on TextMode.  It is superseded by GasMode and by assembly-specific modes.
+AsmMode is a simple assembly programming mode that comes with Emacs. It is based on TextMode.  See AssemblyProgramming for alternatives.
 
-As the code's comments say, "Code is indented to the first tab stop level."  As with most Emacs [[MajorMode]]s, setting your tab width won't influence it.  To change your tab stops, see TabStopList.  See also IndentationBasics.
+AsmMode has some strange (relative to other Emacs modes) defaults for indentation (as of Emacs 24.5): It sets `tab-always-indent' to `nil' so that hitting `TAB' will each time insert a tab stop, pushing the code farther to the right. Therefore I suggest using the following config which resets `tab-always-indent' back to the default:
+
+{{{
+(defun my-asm-mode-hook ()
+  ;; you can use `comment-dwim' (M-;) for this kind of behaviour anyway
+  (local-unset-key (vector asm-comment-char))
+  ;; asm-mode sets it locally to nil, to "stay closer to the old TAB behaviour".
+  (setq tab-always-indent (default-value 'tab-always-indent)))
+
+(add-hook 'asm-mode-hook #'my-asm-mode-hook)
+}}}
 
 ----
 CategoryProgramming
