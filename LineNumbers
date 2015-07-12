@@ -488,5 +488,10 @@ I tried [tt]linum[/tt], [tt]nlinim[/tt] and [tt]lineno[/tt] on the sqlite-amalga
 [tt]lineno[/tt] is the only one to be usable on my machine (3.5 GHz Intel Core 7).
 
 --  [http://www.emacswiki.org/emacs/priyadarshan priyadarshan] 2014-08-07 13:56 UTC
+
+
+=== Problems with nlinum ===
+
+* Each time I enabled ##nlinum## and try to ##make-frame## I got a error ##font-info: Invalid face: linum##, even start Emacs via ##emacs -q##. Disable ##nlinum## can workaround. This problem was met in ##nlinum-1.6.el##. I did not tried other version. -- David Young
 ----
 CategoryDisplay
