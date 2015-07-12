@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 14:59:35 2015 (-0700)
+;; Last-Updated: Sat Jul 11 17:22:55 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 462
+;;     Update #: 501
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -75,7 +75,7 @@
 ;;    this in order to let you bookmark and restore a list of
 ;;    restrictions.
 ;;
-;;    In normal use, only the interactive use of commands
+;;    In normal use, only the interactive use of standard commands
 ;;    `narrow-to-region', `narrow-to-defun', and `narrow-to-page' is
 ;;    affected by this library.  When these functions are called
 ;;    non-interactively there is normally no change to the value of
@@ -85,12 +85,68 @@
 ;;    binding variable `wide-n-push-anyway-p' around the narrowing
 ;;    call.
 ;;
-;;    You can use command `wide-n-delete' to delete a restriction.
+;;    You can use `C-x n C-d' (command `wide-n-delete') to delete a
+;;    restriction, giving its number.
+;;
+;;    You can also add the current region to `wide-n-restrictions'
+;;    without first narrowing to it, using `C-x n s' (command
+;;    `wide-n-push').  You need not activate the region to do this.
+;;
+;;    Moving among different buffer restrictions is the main use of
+;;    this library, but another use case is performing actions on a
+;;    set of buffer restrictions, including restrictions from
+;;    different buffers.
+;;
+;;    For that, you just need to write your action command in such a
+;;    way that it iterates over the buffers and then over the entries
+;;    in `wide-n-restrictions' (or some subset of them) for each
+;;    buffer.  Utility functions `wide-n-read-bufs' and
+;;    `wide-n-remove-if-not' can help with this.
+;;
+;;    As examples, if you use library `highlight.el' then you can use
+;;    command `hlt-highlight-regions' to highlight the restrictions
+;;    recorded for the current buffer.  And you can use command
+;;    `hlt-highlight-regions-in-buffers' to do this across a set of
+;;    buffers that you specify (or across all visible buffers).
+;;    Complementary commands `hlt-unhighlight-regions' and
+;;    `hlt-unhighlight-regions-in-buffers' unhighlight.
+;;
+;;    Another way to look at this possibility of acting on multiple
+;;    restrictions is to think of it as widening the notion of a
+;;    "region" of text that you can operate on.  In effect, it can
+;;    remove the requirement of target text being a contiguous
+;;    sequence of characters.  A set of buffer restrictions is, in
+;;    effect, a (typically) noncontiguous "region" of text.
+;;
+;;    Pretty much anything you can do with the Emacs region you can do
+;;    with a set of buffer restrictions (a non-contiguous "region",
+;;    `wide-n-restrictions').  But existing Emacs commands that act on
+;;    the region do not know about non-contiguous regions.  What you
+;;    will need to do is define new commands that take these into
+;;    account.
+;;
+;;    This can be simple or somewhat complex, depending on how the
+;;    region is used in the code for the corresponding region-action
+;;    Emacs command.  The definition of `hlt-highlight-regions' just
+;;    calls existing function `hlt-highlight-region' once for each
+;;    recorded region:
+;;
+;; (defun hlt-highlight-regions (&optional regions face msgp mousep buffers)
+;;   "Apply `hlt-highlight-region' to regions in `wide-n-restrictions'."
+;;   (interactive (list (wide-n-limits) nil t current-prefix-arg))
+;;   (dolist (start.end  regions)
+;;     (hlt-highlight-region (car start.end) (cdr start.end)
+;;                           face msgp mousep buffers)))
+;;    
+;;    That's it - just iterate over `wide-n-restrictions' with a
+;;    function that takes the region as an argument.  What `wide-n.el'
+;;    offers in this regard is a way to easily define a set of buffer
+;;    restrictions.
 ;;
 ;;
 ;;  Commands defined here:
 ;;
-;;    `wide-n', `wide-n-delete', `wide-n-repeat'.
+;;    `wide-n', `wide-n-delete', `wide-n-push', `wide-n-repeat'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -123,6 +179,8 @@
 ;;
 ;; 2015/07/11 dadams
 ;;     Added: wide-n-limits, wide-n-limits-in-bufs, wide-n-start.end, wide-n-read-bufs, wide-n-remove-if-not.
+;;     Made wide-n-push interative.
+;;     Bind wide-n-delete to C-x n C-d and wide-n-push to C-x n s.
 ;; 2014/08/12 dadams
 ;;     Added: wide-n-delete, wide-n-renumber.
 ;;     wide-n: Added optional arg MSGP.
@@ -314,10 +372,12 @@ new cons."
       (setcdr (cdr restriction) mrk2)))
   restriction)
 
+;;;###autoload
 (defun wide-n-push (start end &optional nomsg)
   "Push the region limits to `wide-n-restrictions'.
 START and END are as for `narrow-to-region'.
 Non-nil optional arg NOMSG means do not echo the region size."
+  (interactive "r")
   (let ((mrk1  (make-marker))
         (mrk2  (make-marker))
         sans-id  id-cons  id)
@@ -329,7 +389,9 @@ Non-nil optional arg NOMSG means do not echo the region size."
           wide-n-restrictions  (wide-n-rassoc-delete-all sans-id wide-n-restrictions))
     (unless (and (= mrk1 1)  (= mrk2 (1+ (buffer-size))))
       (setq wide-n-restrictions  `((,id ,mrk1 . ,mrk2) ,@wide-n-restrictions)))
-    (unless nomsg (message "Narrowed: %d to %d" (marker-position mrk1) (marker-position mrk2)))))
+    (unless nomsg
+      (message "%s region: %d to %d" (if (interactive-p) "Recorded" "Narrowed")
+               (marker-position mrk1) (marker-position mrk2)))))
 
 (defun wide-n-rassoc-delete-all (value alist)
   "Delete from ALIST all elements whose cdr is `equal' to VALUE.
@@ -344,6 +406,7 @@ Elements of ALIST that are not conses are ignored."
 	(setq tail  tail-cdr))))
   alist)
 
+;;;###autoload
 (defun wide-n-delete (n &optional msgp)
   "Delete the restriction(s) numbered N from `wide-n-restrictions'.
 This renumbers the remaining restrictions.
@@ -431,9 +494,14 @@ This is a repeatable version of `wide-n'."
   (wide-n-repeat-command 'wide-n))
 
 
-(if (boundp 'narrow-map)
-    (define-key narrow-map "x" 'wide-n-repeat)
-  (define-key ctl-x-map "nx" (if (> emacs-major-version 21) 'wide-n-repeat 'wide-n)))
+(cond ((boundp 'narrow-map)
+       (define-key narrow-map "\C-d" 'wide-n-delete)
+       (define-key narrow-map "x"    'wide-n-repeat)
+       (define-key narrow-map "s"    'wide-n-push))
+      (t
+       (define-key ctl-x-map "n\C-d" 'wide-n-delete)
+       (define-key ctl-x-map "nx"    (if (> emacs-major-version 21) 'wide-n-repeat 'wide-n))
+       (define-key ctl-x-map "ns"    'wide-n-push)))
 
 
 ;; Call `wide-n-push' if interactive or `wide-n-push-anyway-p'.
