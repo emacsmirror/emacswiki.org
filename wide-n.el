@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 17:22:55 2015 (-0700)
+;; Last-Updated: Sat Jul 11 17:27:43 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 501
+;;     Update #: 505
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -100,8 +100,9 @@
 ;;    For that, you just need to write your action command in such a
 ;;    way that it iterates over the buffers and then over the entries
 ;;    in `wide-n-restrictions' (or some subset of them) for each
-;;    buffer.  Utility functions `wide-n-read-bufs' and
-;;    `wide-n-remove-if-not' can help with this.
+;;    buffer.  Utility functions `wide-n-limits',
+;;    `wide-n-limits-in-bufs', and `wide-n-read-bufs' can help with
+;;    this.
 ;;
 ;;    As examples, if you use library `highlight.el' then you can use
 ;;    command `hlt-highlight-regions' to highlight the restrictions
