@@ -8,6 +8,10 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+==RSS feed shows diff of major change, but summary line from last minor change==
+
+I made 2 changes to IndentationBasics, http://www.emacswiki.org/emacs?action=history;id=IndentationBasics, revisions 36 (major) and 37 (minor). In the [Self:action=rss;full=1;diff=1;page=0 Recent changes RSS with diffs] I see the diff for revision 36 (which is good, because it's the major change), but the summary line for 37 (which is bad, because it's just "fix typo").
+
 ==RandomPage==
 
 This is not working.
