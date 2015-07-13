@@ -1,0 +1,36 @@
+[[en:ELIM_Configuration]]
+
+[[ELIM]]をどう設定するか.
+
+== ディレクトリ ==
+
+既定の状況ではそのアイコンはsiblingディレクトリに格納されておりそして，elim-clientはソースファイルの親ディレクトリに格納されている.
+
+それをするための1つの方法は:
+
+{{{
+(add-to-list 'load-path "~/elisp/elim")
+(autoload 'garak "garak" nil t)
+}}}
+
+Elispファイル(elim.el, garak.el, lui.el, incomplete.el)を~/elisp/elimに置け.
+elim-clientファイルを~/elispに置け.
+アイコンを~/elisp内に置け; away.pngなどのような全てのイメージはそれ故に~/elisp/iconsである.
+
+スペルチェックとチャットバッファトランケーションのためのいくつかのlui設定を設定することを考慮しろ.
+
+{{{
+;; 長いチャットバッファの切り捨てをし, 全てのluiバッファでスペルチェックを有効化しアメリカの辞書をそれらの中で使う
+(setq lui-max-buffer-size 30000
+      lui-flyspell-p t
+      lui-flyspell-alist '(("." "american")))
+}}}
+
+もしあなたがGarak account treeにあるイメージを見ないならば, あなたはこのコードを追加する必要がある:
+
+{{{
+(setq tree-widget-image-enable t)
+}}}
+
+----
+[[カテゴリ・チャットクライアント]]CategoryChatClient
