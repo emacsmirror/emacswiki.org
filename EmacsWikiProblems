@@ -48,7 +48,7 @@ Weird. I tried clicking that RandomPage link a few times and got a different pag
 I tried yet again to get emacs-w3m to work as described above.  I edited.  It didn't work.  I edited the page with Safari.  It worked.  Then I followed the instructions again in emacs-w3m.  The Safari edit did not show up in the compose edit box, even though the page did show it.  Therefore, the text that the user edits is not the same as the text that is shown.  Is this a cache issue?  Thanks.
 
 [new]
-There's some technical information available here, if you want to take a look at it: Oddmuse:Caching. As I'm currently in Costa Rica, I can't help you. All I know is that it worked for me -- and I went through all the trouble of downloading and compiling w3m and dependencies. -- AlexSchroeder
+I don't think I've ever run into this. Anybody else? -- AlexSchroeder
 
 === RecentChanges doesn't reflect recent changes ===
 
