@@ -29,7 +29,6 @@ Perhaps it's time to retire the Random Page. Do you regularly click the Random P
 -- Alex Schroeder
 
 [new]
-
 It is not a cached page, as I get the same thing from different computers on different networks.
 
 I do use the random page from time to time to help me discover things I didn't know about emacs. It has come in use quite a few times. I really like having it.
@@ -37,7 +36,10 @@ I do use the random page from time to time to help me discover things I didn't k
 BTW: I had a hard time adding this comments because a few times the edit showed the previous version of the page, and I had to go into a Linux VM and for some reason that worked.
 
 -- John Quillan
---------
+
+[new]
+Weird. I tried clicking that RandomPage link a few times and got a different page every time. Then I figured, perhaps that's because of my cookie or something and I ran ##http://www.emacswiki.org/emacs?action=random## a few times. Same thing, however. I'm getting different pages every time. Is the issue fixed? -- Alex Schroeder
+
 == Revisioning Problems ==
 
 [:EditingGetsOldPageText]
