@@ -1,30 +1,3 @@
 Sometimes I want to edit LaTeX files without the power of AUCTeX. Vanilla <code>`latex-mode'</code> only uses english quotes. Here is a small piece of code that changes the way <code>`tex-insert-quote'</code> (bound to <code>"</code>) works. When the buffer seems to be a german LaTeX file (<code>ngerman</code> or <code>german</code> is found in the options for <code>\documentclass</code> or <code>\usepackage</code>) the function will switch to german quotes.
 
 <include gist "https://gist.github.com/1f3e06757f80b1057324">
-
-I paste the code here until the gist shows up correctly:
-
-{{{
-(defadvice tex-insert-quote (around tex-switch-quotes activate compile)
-  "Insert german or english quotes by looking at the LaTeX context.
- 
-English quotes are the default. German quotes are used when the
-german language is selected in the documentclass or a usepackage
-option."
-  (let ((tex-german-regexp
-         "\\(documentclass\\|usepackage\\)\\[[^]]*\\<n?german\\>")
-        ;; english LaTeX quotes as default
-        (tex-open-quote  "``")
-        (tex-close-quote "''"))
-    (save-excursion
-      (save-restriction
-        (widen)
-        (goto-char (point-min))
-        (if (re-search-forward tex-german-regexp nil t)
-            ;; switch to german LaTeX quotes
-            (setq tex-open-quote  "\"`"
-                  tex-close-quote "\"'"))))
-    ad-do-it))
-}}}
-
--- StefanMoeding
