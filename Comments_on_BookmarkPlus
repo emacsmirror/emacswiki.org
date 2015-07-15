@@ -632,3 +632,19 @@ There are a few ways to do that.
 * Use a '''sequence''' bookmark composed of (1) your ordinary bookmark followed by (2) a '''function''' bookmark, as described [[BookmarkPlus#FunctionSequenceVarlistBookmarks|here]].
 
 -- DrewAdams
+
+----
+
+Hi again
+
+i would really like to use bookmark+ to bookmark not by position in a orgmode file but by orgid
+http://orgmode.org/w/?p=org-mode.git;a=blob_plain;f=lisp/org-id.el;hb=HEAD
+
+is this possible? right now the headers tend to move when editing/adding headers in an orgmode so that the bookmark isnt kept in the right position. is there anyway to do that?
+
+kind regards
+
+Z
+
+-- zeltak 2015-07-15 14:31 UTC
+
