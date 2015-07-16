@@ -14,6 +14,8 @@ http://taiyaki.org/elisp/word-count/src/word-count.el (down on Nov. 1, 2012)
 
 Wayback Machine link working Nov. 1, 2012: http://web.archive.org/web/20100924082154/http://taiyaki.org/elisp/word-count/src/word-count.el
 
+Version updated to Emacs 24 (as of Jul. 16, 2015): https://github.com/tomaszskutnik/word-count-mode
+
 As you type, it shows the number of characters in the buffer, the number of words, and the number of lines: "WC:148/40/4".  You can set a marker to the point where you want to begin counting (when you enable `word-count-mode' in a buffer, the marker is at the position of point), and you can set a region to count.
 
 For emacs24 compatibility, comment out the line that reads "(make-local-hook hook)".
