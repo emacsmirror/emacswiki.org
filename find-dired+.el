@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: (("find-dired-" "0"))
-;; Last-Updated: Thu Jan  1 10:42:19 2015 (-0800)
+;; Last-Updated: Fri Jul 17 07:02:05 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 623
+;;     Update #: 633
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -81,6 +81,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/17 dadams
+;;     find-name-dired: Use find-name-arg and read-directory-name, if available.
+;;                      Use shell-quote-argument.
 ;; 2012/08/21 dadams
 ;;     Call tap-put-thing-at-point-props after load thingatpt+.el.
 ;; 2012/08/18 dadams
@@ -170,6 +173,9 @@
   (tap-define-aliases-wo-prefix)
   (tap-put-thing-at-point-props))
  ;; region-or-non-nil-symbol-name-nearest-point
+
+;; Quiet the byte-compiler.
+(defvar find-name-arg)                  ; Emacs 22+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -275,20 +281,28 @@ The `find' command run (after changing into DIR) is:
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
-;; Interactive spec uses `read-from-minibuffer', `read-file-name',
+;; Interactive spec uses `read-from-minibuffer', `read-directory-name',
 ;; `dired-regexp-history' and `find-dired-default-fn'.
 ;;;###autoload
 (defun find-name-dired (dir pattern)
   "Search directory DIR recursively for files matching globbing PATTERN,
 and run `dired' on those files.  PATTERN may use shell wildcards, and
 it need not be quoted.  It is not an Emacs regexp.
-The command run (after changing into DIR) is: find . -name 'PATTERN' -ls"
+By default, the command run (after changing into DIR) is this:
+
+  find . -name 'PATTERN' -ls
+
+See `find-name-arg' to customize the `find' file-name pattern arg."
   (interactive
    (let ((default  (and (functionp find-dired-default-fn) (funcall find-dired-default-fn))))
-     (list (read-file-name "Find-name (directory): " nil "" t)
+     (list (if (fboundp 'read-directory-name) ; Emacs 22+
+               (read-directory-name "Find-name (directory): " nil nil t)
+             (read-file-name "Find-name (directory): " nil "" t))
            (read-from-minibuffer "Find-name (filename wildcard): " nil
                                  nil nil 'dired-regexp-history default t))))
-  (find-dired dir (concat "-name '" pattern "'")))
+  (find-dired dir (concat (if (boundp 'find-name-arg) find-name-arg "-name")
+                          " "
+                          (shell-quote-argument pattern))))
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
