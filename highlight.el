@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 18 09:03:41 2015 (-0700)
+;; Last-Updated: Sat Jul 18 09:18:12 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3935
+;;     Update #: 3937
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -418,10 +418,14 @@
 ;;
 ;;  If you also use library `wide-n.el' then narrowing records the
 ;;  various buffer restrictions (aka narrowings) in buffer-local
-;;  variable `wide-n-restrictions'.  You can use command
-;;  `hlt-highlight-regions' to highlight these, and you can use
-;;  command `hlt-highlight-regions-in-buffers' to highlight all
-;;  regions recorded for a given set of buffers.  You can use commands
+;;  variable `wide-n-restrictions'.  Besides narrowing, `C-x n s'
+;;  (command `wide-n-push') adds the current region to the same
+;;  variable.
+;;
+;;  You can use command `hlt-highlight-regions' to highlight the
+;;  `wide-n-restrictions' narrowings, and you can use command
+;;  `hlt-highlight-regions-in-buffers' to highlight all regions
+;;  recorded for a given set of buffers.  You can use commands
 ;;  `hlt-unhighlight-regions' and `hlt-unhighlight-regions-in-buffers'
 ;;  to unhighlight them.  If option `hlt-auto-faces-flag' is non-nil
 ;;  then each region gets a different face.  Otherwise, all of the
