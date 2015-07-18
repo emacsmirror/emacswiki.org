@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 13:53:20 2015 (-0700)
+;; Last-Updated: Sat Jul 18 14:59:14 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 766
+;;     Update #: 770
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -226,6 +226,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/18 dadams
+;;     isearchp-remove-property: Ensure TYP is non-nil before passing it to intern.
 ;; 2015/04/12 dadams
 ;;     Added: isearchp-remove-dimming, isearchp-regexp-context-regexp-search, isearchp-thing-regexp.
 ;;     isearchp-property-finish: Use isearchp-remove-dimming (its code was factored out from here).
@@ -470,7 +472,7 @@ Non-interactively:
          (typ   (and current-prefix-arg
                      (completing-read  "Type: " '(("text") ("overlay") ("text and overlay"))
                                        nil t nil nil "text and overlay"))))
-     (setq typ  (and (not (equal typ "text and overlay"))  (intern typ)))
+     (setq typ  (and typ  (not (equal typ "text and overlay"))  (intern typ)))
      (list beg1
            end1
            (let ((prop  (completing-read
@@ -519,9 +521,9 @@ Non-interactively:
   (interactive
    (let ((beg1  (if (and transient-mark-mode  mark-active) (region-beginning) (point-min)))
          (end1  (if (and transient-mark-mode  mark-active) (region-end) (point-max)))
-         (typ  (and current-prefix-arg  (wholenump (prefix-numeric-value current-prefix-arg))
-                    (completing-read  "Type: " '(("text") ("overlay") ("text and overlay"))
-                                      nil t nil nil "text and overlay"))))
+         (typ   (and current-prefix-arg  (wholenump (prefix-numeric-value current-prefix-arg))
+                     (completing-read  "Type: " '(("text") ("overlay") ("text and overlay"))
+                                       nil t nil nil "text and overlay"))))
      (setq typ  (and typ  (not (equal typ "text and overlay"))  (intern typ)))
      (list beg1 end1 (if (not typ) '(text overlay) (list typ))
            (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
