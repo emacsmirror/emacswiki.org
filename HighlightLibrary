@@ -288,6 +288,31 @@ non-positive [[prefix argument|prefix arg]] means act on all visible or iconifie
 buffers.  (A non-negative prefix arg means use property
 `mouse-face', not `face'.)
 
+
+
+
+
+
+[:wide-n-restrictions]
+[:hlt-highlight-regions]
+[:hlt-highlight-regions-in-buffers]
+[:hlt-unhighlight-regions]
+[:hlt-unhighlight-regions-in-buffers]
+
+If you also use library <tt>[[wide-n.el]]</tt> then narrowing records the
+various buffer restrictions (aka MultipleNarrowings) in buffer-local
+variable '''`wide-n-restrictions''''.  You can use command
+'''`hlt-highlight-regions'''' to highlight these, and you can use
+command '''`hlt-highlight-regions-in-buffers'''' to highlight all
+regions recorded for a given set of buffers.  You can use commands
+'''`hlt-unhighlight-regions'''' and '''`hlt-unhighlight-regions-in-buffers''''
+to unhighlight them.  If [[option]] '''`hlt-auto-faces-flag'''' is non-`nil'
+then each region gets a different face.  Otherwise, all of the
+regions are highlighted with the same face.
+
+
+
+
 [:IsearchHighlighting]
 [:hlt-highlight-isearch-matches]
 [:hlt-unhighlight-isearch-matches]
