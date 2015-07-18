@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 15:00:10 2015 (-0700)
+;; Last-Updated: Sat Jul 18 09:03:41 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3934
+;;     Update #: 3935
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -423,7 +423,9 @@
 ;;  command `hlt-highlight-regions-in-buffers' to highlight all
 ;;  regions recorded for a given set of buffers.  You can use commands
 ;;  `hlt-unhighlight-regions' and `hlt-unhighlight-regions-in-buffers'
-;;  to unhighlight them.
+;;  to unhighlight them.  If option `hlt-auto-faces-flag' is non-nil
+;;  then each region gets a different face.  Otherwise, all of the
+;;  regions are highlighted with the same face.
 ;;
 ;;  From Isearch you can highlight the search-pattern matches.  You
 ;;  can do this across multiple buffers being searched together.
