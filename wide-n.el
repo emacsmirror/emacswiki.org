@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 17:27:43 2015 (-0700)
+;; Last-Updated: Sat Jul 18 09:13:24 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 505
+;;     Update #: 506
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -110,7 +110,10 @@
 ;;    `hlt-highlight-regions-in-buffers' to do this across a set of
 ;;    buffers that you specify (or across all visible buffers).
 ;;    Complementary commands `hlt-unhighlight-regions' and
-;;    `hlt-unhighlight-regions-in-buffers' unhighlight.
+;;    `hlt-unhighlight-regions-in-buffers' unhighlight.  (If option
+;;    `hlt-auto-faces-flag' is non-nil then each region gets a
+;;    different face.  Otherwise, all of the regions are highlighted
+;;    with the same face.)
 ;;
 ;;    Another way to look at this possibility of acting on multiple
 ;;    restrictions is to think of it as widening the notion of a
