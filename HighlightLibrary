@@ -301,8 +301,13 @@ buffers.  (A non-negative prefix arg means use property
 
 If you also use library <tt>[[wide-n.el]]</tt> then narrowing records the
 various buffer restrictions (aka MultipleNarrowings) in buffer-local
-variable '''`wide-n-restrictions''''.  You can use command
-'''`hlt-highlight-regions'''' to highlight these, and you can use
+variable '''`wide-n-restrictions''''.  Besides narrowing, you can use '''`C-x n s''''
+(command `wide-n-push') to add the current region to the same
+variable.
+
+
+You can use command
+'''`hlt-highlight-regions'''' to highlight these `wide-n-restrictions' narrowings, and you can use
 command '''`hlt-highlight-regions-in-buffers'''' to highlight all
 regions recorded for a given set of buffers.  You can use commands
 '''`hlt-unhighlight-regions'''' and '''`hlt-unhighlight-regions-in-buffers''''
