@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 18 22:16:48 2015 (-0700)
+;; Last-Updated: Sun Jul 19 10:36:27 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 807
+;;     Update #: 831
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -67,10 +67,13 @@
 ;;
 ;;  Commands defined here:
 ;;
+;;    `isearchp-add-prop-to-lazy-highlights',
+;;    `isearchp-add-prop-to-other-prop-zones', `isearchp-cleanup',
 ;;    `isearchp-hide/show-comments', `isearchp-imenu',
 ;;    `isearchp-imenu-command', `isearchp-imenu-macro',
 ;;    `isearchp-imenu-non-interactive-function',
-;;    `isearchp-next-visible-thing',
+;;    `isearchp-lazy-highlights-forward',
+;;    `isearchp-mark-lazy-highlights', `isearchp-next-visible-thing',
 ;;    `isearchp-previous-visible-thing', `isearchp-property-backward',
 ;;    `isearchp-property-backward-regexp',
 ;;    `isearchp-property-forward', `isearchp-property-forward-regexp',
@@ -162,20 +165,31 @@
 ;;    text-property search (`C-t').  For property `face', empty input
 ;;    removes all faces from the region.
 ;;
+;;  * You can use command `isearchp-mark-lazy-highlights' to put
+;;    property `isearchp-lazy-highlight' on the text that has lazy
+;;    highlighting (an overlay with face `lazy-highlight'.
+;;
+;;  * You can use command `isearchp-lazy-highlights-forward' to search
+;;    the zones of text that have text property
+;;    `isearchp-lazy-highlight', that is, the text that you have
+;;    marked using `isearchp-mark-lazy-highlights'.  This lets you
+;;    search within the hits from a previous search.
+;;
 ;;  * You can search zones of text/overlays that have a given
-;;    property, as described above, or you can search the complement:
-;;    the zones that do *NOT* have a given property.  You can toggle
-;;    this search-domain complementing at any time during Isearch,
-;;    using `C-M-~' (command `isearchp-toggle-complementing-domain').
+;;    property, as described above, or you can search the
+;;    *COMPLEMENT*: the zones that do *NOT* have a given property.
+;;    You can toggle this search-domain complementing at any time
+;;    during Isearch, using `C-M-~' (command
+;;    `isearchp-toggle-complementing-domain').
 ;;
 ;;  * When you search propertied zones, the non-searchable zones are
-;;    dimmed, to make the searchable areas stand out.  Option
-;;    `isearchp-dim-non-prop-zones-flag' controls whether such dimming
-;;    occurs.  You can toggle it anytime during Isearch, using `C-M-D'
-;;    (aka `C-M-S-d').  Option `isearchp-dimming-color' defines the
-;;    dimming behavior.  It specifies a given background color to use
-;;    always, or it specifies that the current background color is to
-;;    be dimmed a given amount.
+;;    sometimes dimmed, to make the searchable areas stand out.
+;;    Option `isearchp-dim-non-prop-zones-flag' controls whether such
+;;    dimming occurs.  You can toggle it anytime during Isearch, using
+;;    `C-M-D' (aka `C-M-S-d').  Option `isearchp-dimming-color'
+;;    defines the dimming behavior.  It specifies a given background
+;;    color to use always, or it specifies that the current background
+;;    color is to be dimmed a given amount.
 ;;
 ;;  * You can search the zones of text that match a given regexp,
 ;;    using command `isearchp-regexp-context-search' or
@@ -226,6 +240,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/19 dadams
+;;     Added: isearchp-cleanup, isearchp-lazy-highlights-forward, isearchp-add-prop-to-lazy-highlights,
+;;            isearchp-add-prop-to-other-prop-zones, isearchp-mark-lazy-highlights.
 ;; 2015/07/18 dadams
 ;;     isearchp-property-(forward|backward)(-regexp), isearchp-regexp-context-regexp-search:
 ;;       Initialize isearch-forward, isearch-regexp, so initial message is accurate.
@@ -568,6 +585,14 @@ Non-interactively:
     (delete-overlay (car isearchp-dimmed-overlays))
     (setq isearchp-dimmed-overlays  (cdr isearchp-dimmed-overlays))))
 
+(defun isearchp-cleanup ()
+  "Remove lazy highlighting and artifacts from property searching.
+This includes dimming and all `isearchp-' properties."
+  (interactive)
+  (isearchp-remove-all-properties (point-min) (point-max))
+  (isearchp-remove-dimming)
+  (lazy-highlight-cleanup 'FORCE))
+  
 (defun isearchp-property-forward (arg) ; Bound to `C-t' in `isearch-mode-map'.
   "Isearch forward in text with a text property or overlay property.
 That is, move to the next such property and search within it for text
@@ -1152,6 +1177,136 @@ commands and commands such as `isearchp-imenu*',
 ;;;             (setq isearchp-last-prop+value (cons property value)))
     (set-buffer-modified-p bufmodp)))
 
+;; FIXME: If repeat `isearchp-lazy-highlights-forward' then no more dimming.
+(defun isearchp-lazy-highlights-forward ()
+  "Search lazy-highlight zones of text.
+You must first use command `isearchp-mark-lazy-highlights', to mark
+the zones with property `isearchp-lazy-highlight'."
+  (interactive)
+  (setq isearchp-property-prop    'isearchp-lazy-highlight
+        isearchp-property-type    'text
+        isearchp-property-values  '(t))
+  (isearchp-property-1 'isearch-forward '(4)))
+
+(defun isearchp-mark-lazy-highlights (&optional start end msgp)
+  "Add text property `isearchp-lazy-highlight' to lazy-highlighted text.
+Do this over the buffer text or over the region text, if active.
+
+Note:
+
+ 1. To make Isearch keep lazy highlighting when done searching, set
+    option `lazy-highlight-cleanup' to nil.
+
+ 2. Only search matches that have actually been lazy-highlighted are
+    marked.  If you want to be sure to match all search matches then
+    set option `lazy-highlight-max-at-a-time' to nil before
+    searching.  (But see Emacs bug #21092.)"
+  (interactive (if (or (not mark-active)  (null (mark))  (= (point) (mark)))
+                   (list (point-min) (point-max) t)
+                 (if (< (point) (mark)) (list (point) (mark) t) (list (mark) (point) t))))
+  (let ((addedp  (isearchp-add-prop-to-lazy-highlights 'isearchp-lazy-highlight t start end)))
+    (when msgp
+      (message (if addedp
+                   "Lazy highlights now marked with property `isearchp-lazy-highlight'"
+                 "No changes made - lazy highlighting not marked")))
+    addedp))
+
+(defun isearchp-add-prop-to-lazy-highlights (prop-to-add value-to-add &optional start end msgp)
+  "Add a text property to lazy-highlighted text, from START to END.
+START and END are the buffer limits, or the region limits if active.
+Interactively, you are prompted for the property to add and its value.
+
+Note: To make Isearch keep lazy highlighting when done searching, set
+option `lazy-highlight-cleanup' to nil."
+  (interactive
+   (let* ((p-add  (intern (read-string "Property to add: " nil 'isearchp-property-history)))
+          (v-add  (if (memq p-add '(face font-lock-face))
+                      (isearchp-read-face-names nil 'ONLY-ONE)
+                    (isearchp-read-sexps 'ONLY-ONE))))
+     (append (list p-add v-add)
+             (if (or (not mark-active)  (null (mark))  (= (point) (mark)))
+                 (list (point-min) (point-max))
+               (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point))))
+             (list t))))
+  (isearchp-add-prop-to-other-prop-zones
+   prop-to-add value-to-add 'face 'lazy-highlight 'overlay start end msgp))
+
+(defun isearchp-add-prop-to-other-prop-zones (prop-to-add value-to-add
+                                              prop-to-find value-to-find type-to-find
+                                              &optional start end msgp)
+  "Add text property to text that has another property, from START to END.
+PROP-TO-ADD and VALUE-TO-ADD are the property to add and its value.
+PROP-TO-FIND, VALUE-TO-FIND, and TYPE-TO-FIND are the existing
+ property, its value, and its type (symbol `text' or `overlay').
+START and END are the buffer limits, or the region limits if active.
+Interactively, you are prompted for the required arguments.
+
+Returns non-nil if the property was added, nil if not.
+
+Note: To make Isearch keep lazy highlighting when done searching, set
+option `lazy-highlight-cleanup' to nil."
+  (interactive
+   (let* ((p-add   (intern (read-string "Property to add: " nil 'isearchp-property-history)))
+          (v-add   (if (memq p-add '(face font-lock-face))
+                       (isearchp-read-face-names nil 'ONLY-ONE)
+                     (isearchp-read-sexps 'ONLY-ONE)))
+          (p-find  (intern (read-string "Property to find: " nil 'isearchp-property-history)))
+          (v-find  (if (memq p-find '(face font-lock-face))
+                       (intern (isearchp-read-face-names nil 'ONLY-ONE))
+                     (isearchp-read-sexps 'ONLY-ONE)))
+          (typ     (let ((typname (completing-read
+                                   "Type: " '(("text") ("overlay") ("text and overlay"))
+                                   nil t nil nil "text and overlay")))
+                     (and (not (string= "text and overlay" typname))  (intern typname)))))
+     (append (list p-add v-add p-find v-find typ)
+             (if (or (not mark-active)  (null (mark))  (= (point) (mark)))
+                 (list (point-min) (point-max))
+               (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point))))
+             (list t))))
+  (let ((bufmodp           (buffer-modified-p))
+        (buffer-read-only  nil)
+        (last-beg          nil)
+        (prop-value        nil)
+        (added-prop-p      nil)
+        (zbeg              nil)
+        (zend              nil)
+        (match             nil))
+    (isearchp-with-comments-hidden
+     start end
+     (condition-case-no-debug add-prop-to-zones-with-other-prop
+         (save-excursion
+           (goto-char (setq last-beg  start))
+           (while (and last-beg  (< last-beg end))
+             (setq zbeg   nil
+                   zend   nil
+                   match  nil)
+             (while (and (not match)  (< (point) end))
+               (goto-char (next-single-char-property-change (point) prop-to-find nil end))
+               (when (isearchp-property-matches-p type-to-find prop-to-find (list value-to-find)
+                                                  (isearchp-property-default-match-fn prop-to-find)
+                                                  (point))
+                 (setq zbeg   (point)
+                       match  t)
+                 (isearchp-add/remove-dim-overlay last-beg zbeg 'ADD)))
+             (goto-char (next-single-char-property-change (point) prop-to-find nil end))
+             (unless (isearchp-property-matches-p type-to-find prop-to-find (list value-to-find)
+                                                  (isearchp-property-default-match-fn prop-to-find)
+                                                  (point))
+               (setq zend  (point)))
+             (when (and zbeg  zend  (/= zbeg zend))
+               ;; `isearchp-put-prop-on-region' also removes dimming from ZBEG to ZEND.
+               (isearchp-put-prop-on-region prop-to-add value-to-add zbeg zend)
+               (isearchp-add/remove-dim-overlay zend end 'ADD)
+               (setq added-prop-p  value-to-add))
+             (goto-char (setq last-beg  (or zend  zbeg  last-beg))))))
+     (unless added-prop-p (isearchp-add/remove-dim-overlay start end nil))
+     (set-buffer-modified-p bufmodp))
+    (when msgp
+      (message (if added-prop-p
+                   (format "Added property `%s' with value `%s'" prop-to-add value-to-add)
+                 "No property added")))
+    added-prop-p))
+
 (defun isearchp-message-prefix (&optional arg1 arg2 arg3)
   "Version of `isearch-message-prefix' that works for all Emacs releases."
   (if (or (< emacs-major-version 24)
@@ -1347,7 +1502,7 @@ is non-nil."
                     (d-ov  (car (isearchp-some ovs nil (lambda (ov _)
                                                          (member ov isearchp-dimmed-overlays))))))
                (when d-ov (delete-overlay d-ov)))
-             (setq pos (1+ pos)))))))
+             (setq pos  (1+ pos)))))))
   
 ;; Same as `icicle-remove-duplicates'.
 (defun isearchp-remove-duplicates (sequence &optional test)
