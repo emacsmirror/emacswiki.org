@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 18 21:04:32 2015 (-0700)
+;; Last-Updated: Sat Jul 18 22:16:48 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 773
+;;     Update #: 807
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -227,7 +227,12 @@
 ;;; Change Log:
 ;;
 ;; 2015/07/18 dadams
-;;     isearchp-property-1: Wrap call to isearch-done in ignore-errors (Emacs bug #21091 workaround).
+;;     isearchp-property-(forward|backward)(-regexp), isearchp-regexp-context-regexp-search:
+;;       Initialize isearch-forward, isearch-regexp, so initial message is accurate.
+;;     isearchp-property-1:
+;;       Wrap call to isearch-done in ignore-errors (Emacs bug #21091 workaround).
+;;       Simplify initial msg, and reinitialize some vars for it:
+;;         isearch-word, isearch-success, isearch-wrapped, isearch-adjusted. 
 ;;     isearchp-remove-property: Ensure TYP is non-nil before passing it to intern.
 ;; 2015/04/12 dadams
 ;;     Added: isearchp-remove-dimming, isearchp-regexp-context-regexp-search, isearchp-thing-regexp.
@@ -624,12 +629,14 @@ NOTE: This command is available during normal Isearch, on key `C-t'.
       (if available) to non-nil.  Otherwise, a prefix arg exits
       Isearch."
   (interactive "P")
+  (setq isearch-forward  t)
   (isearchp-property-1 'isearch-forward arg))
 
 (defun isearchp-property-backward (arg)
   "Isearch backward in text with a text or overlay property.
 See `isearchp-property-forward'."
   (interactive "P")
+  (setq isearch-forward  nil)
   (isearchp-property-1 'isearch-backward arg))
 
 (defun isearchp-property-forward-regexp (arg) ; Bound to `C-M-t' in `isearch-mode-map'.
@@ -641,12 +648,16 @@ NOTE: This command is available during normal Isearch, on key `C-M-t'.
       Isearch.
 See `isearchp-property-forward'."
   (interactive "P")
+  (setq isearch-regexp   t
+        isearch-forward  t)
   (isearchp-property-1 'isearch-forward-regexp arg))
 
 (defun isearchp-property-backward-regexp (arg)
   "Regexp Isearch backward in text with a text or overlay property.
 See `isearchp-property-backward'."
   (interactive "P")
+  (setq isearch-regexp   t
+        isearch-forward  nil)
   (isearchp-property-1 'isearch-backward-regexp arg))
 
 (defun isearchp-toggle-complementing-domain (&optional msgp) ; Bound to `C-M-~' during Isearch.
@@ -833,6 +844,7 @@ in `isearchp-add-regexp-as-property'."
             (not (eq isearchp-property-prop _ignored))
             (not (isearchp-text-prop-present-p beg end (intern regexp) (cons regexp predicate))))
     (isearchp-regexp-define-contexts beg end _ignored regexp predicate action))
+  (setq isearch-forward  t)
   (isearchp-property-1 'isearch-forward '(4)))
 
 (defun isearchp-regexp-context-regexp-search (reuse beg end _ignored regexp &optional predicate action)
@@ -846,6 +858,8 @@ Same as `isearchp-regexp-context-search', but with regexp searching."
             (not (eq isearchp-property-prop _ignored))
             (not (isearchp-text-prop-present-p beg end (intern regexp) (cons regexp predicate))))
     (isearchp-regexp-define-contexts beg end _ignored regexp predicate action))
+  (setq isearch-regexp   t
+        isearch-forward  t)
   (isearchp-property-1 'isearch-forward-regexp '(4)))
 
 
@@ -903,13 +917,23 @@ SEARCH-FN is the search function.
 ARG is normally from the prefix arg - see `isearchp-property-forward'."
   ;; Emacs bug #21091: must wrap with `ignore-errors' now - if fixed before Emacs 25 then I can remove it.
   (ignore-errors (isearch-done))
-  (when isearch-mode
-    (let ((message-log-max  nil))
-      (message "CHAR PROP %s%s"
-               (isearchp-message-prefix nil nil isearch-nonincremental) isearch-message))
+
+  ;; At least for the initial message, assume we are starting over, with a new kind of searching.
+  ;; Maybe we should reset more vars here, unless we are starting from within `isearch-mode'?
+  ;; Do nothing about that, for now.  Just reset those that might make the message wrong.
+  (setq isearch-word                     nil
+        isearch-success                  t
+        isearch-wrapped                  nil
+        isearch-adjusted                 nil
+        ;; isearch-barrier                  (point)
+	;; isearch-yank-flag                nil
+        ;; isearch-error                    nil
+        ;; isearch-just-started             t
+        )
+  (let ((message-log-max  nil))
+    (message "CHAR PROP %s" (isearchp-message-prefix nil nil isearch-nonincremental))
     (sit-for 1))
-  (setq isearch-success   t
-        isearch-adjusted  t)
+
   (let* ((enable-recursive-minibuffers    t)
          ;; Prevent invoking `isearch-edit-string', from `isearch-exit'.
          (search-nonincremental-instead   nil)
