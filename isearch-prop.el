@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 10:36:27 2015 (-0700)
+;; Last-Updated: Sun Jul 19 11:05:11 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 831
+;;     Update #: 838
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -167,7 +167,11 @@
 ;;
 ;;  * You can use command `isearchp-mark-lazy-highlights' to put
 ;;    property `isearchp-lazy-highlight' on the text that has lazy
-;;    highlighting (an overlay with face `lazy-highlight'.
+;;    highlighting (an overlay with face `lazy-highlight').  To use
+;;    this, you will likely want to first set option
+;;    `lazy-highlight-cleanup' to nil, so this highlighting is not
+;;    removed when you exit Isearch.  (You can remove it manually
+;;    anytime using `M-x lazy-highlight-cleanup'.)
 ;;
 ;;  * You can use command `isearchp-lazy-highlights-forward' to search
 ;;    the zones of text that have text property
@@ -1241,10 +1245,7 @@ PROP-TO-FIND, VALUE-TO-FIND, and TYPE-TO-FIND are the existing
 START and END are the buffer limits, or the region limits if active.
 Interactively, you are prompted for the required arguments.
 
-Returns non-nil if the property was added, nil if not.
-
-Note: To make Isearch keep lazy highlighting when done searching, set
-option `lazy-highlight-cleanup' to nil."
+Returns non-nil if the property was added, nil if not."
   (interactive
    (let* ((p-add   (intern (read-string "Property to add: " nil 'isearchp-property-history)))
           (v-add   (if (memq p-add '(face font-lock-face))
