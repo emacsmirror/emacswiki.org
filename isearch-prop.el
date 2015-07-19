@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 18 14:59:14 2015 (-0700)
+;; Last-Updated: Sat Jul 18 21:04:32 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 770
+;;     Update #: 773
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -227,6 +227,7 @@
 ;;; Change Log:
 ;;
 ;; 2015/07/18 dadams
+;;     isearchp-property-1: Wrap call to isearch-done in ignore-errors (Emacs bug #21091 workaround).
 ;;     isearchp-remove-property: Ensure TYP is non-nil before passing it to intern.
 ;; 2015/04/12 dadams
 ;;     Added: isearchp-remove-dimming, isearchp-regexp-context-regexp-search, isearchp-thing-regexp.
@@ -900,7 +901,8 @@ See `isearchp-regexp-context-search' for a description of the prompting."
   "Helper for `isearchp-property-(forward|backward)(-regexp)'.
 SEARCH-FN is the search function.
 ARG is normally from the prefix arg - see `isearchp-property-forward'."
-  (isearch-done)
+  ;; Emacs bug #21091: must wrap with `ignore-errors' now - if fixed before Emacs 25 then I can remove it.
+  (ignore-errors (isearch-done))
   (when isearch-mode
     (let ((message-log-max  nil))
       (message "CHAR PROP %s%s"
