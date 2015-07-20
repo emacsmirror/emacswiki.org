@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 19 11:05:11 2015 (-0700)
+;; Last-Updated: Mon Jul 20 08:03:52 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 838
+;;     Update #: 844
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -244,6 +244,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/20 dadams
+;;     isearchp-add-prop-to-other-prop-zones: Added missing error clause to condition-case-no-debug.
 ;; 2015/07/19 dadams
 ;;     Added: isearchp-cleanup, isearchp-lazy-highlights-forward, isearchp-add-prop-to-lazy-highlights,
 ;;            isearchp-add-prop-to-other-prop-zones, isearchp-mark-lazy-highlights.
@@ -1299,7 +1301,8 @@ Returns non-nil if the property was added, nil if not."
                (isearchp-put-prop-on-region prop-to-add value-to-add zbeg zend)
                (isearchp-add/remove-dim-overlay zend end 'ADD)
                (setq added-prop-p  value-to-add))
-             (goto-char (setq last-beg  (or zend  zbeg  last-beg))))))
+             (goto-char (setq last-beg  (or zend  zbeg  last-beg)))))
+       (error (error "%s" (error-message-string add-prop-to-zones-with-other-prop))))
      (unless added-prop-p (isearchp-add/remove-dim-overlay start end nil))
      (set-buffer-modified-p bufmodp))
     (when msgp
