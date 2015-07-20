@@ -7,4 +7,4 @@ The compilation database is used as a reference what rules are used concerning c
 
 ==Installation==
 
-To get it simply visit the [https://github.com/Sarcasm/irony-mode/ github] page and clone the repository. All further steps are explained in the readme.
+Irony is part is part of GNU ELPA (M-x list-packages).
