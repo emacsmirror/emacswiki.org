@@ -9,8 +9,11 @@ Since a [http://www.emacswiki.org/emacs/senny friend] introduced me to Emacs, I 
 
 
 
+
+
 == Projects ==
 * [[alchemist.el]] -- https://github.com/tonini/alchemist.el
+* [[overseer.el]] -- https://github.com/tonini/overseer.el
 * [[karma.el]] -- https://github.com/tonini/karma.el
 * [[gitconfig.el]] -- https://github.com/tonini/gitconfig.el
 * emacsrookie blog -- http://emacsrookie.com
@@ -18,11 +21,9 @@ Since a [http://www.emacswiki.org/emacs/senny friend] introduced me to Emacs, I 
 * [[cabbage]] -- https://github.com/senny/cabbage (Contributor)
 
 == My Emacs configuration ==
-My Emacs setup is based on [[cabbage]]
+After using a prefabricated emacs setup for a long time, I came to the point where I wanted to build together my own custom emacs stack.
 
-[[cabbage]] fundamental organization are bundles. You can enable and disable the configuration on a per bundle basis.
-
-Have a look at my [https://github.com/tonini/emacs.d config] and see how you could setup everything properly through bundles.
+Have a look at my [https://github.com/tonini/emacs.d config].
 
 == Where you can find me ==
 
