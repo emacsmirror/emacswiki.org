@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 12:03:16 2015 (-0700)
+;; Last-Updated: Wed Jul 22 15:26:39 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3638
+;;     Update #: 3694
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -100,6 +100,7 @@
 ;;
 ;;    `isearchp-case-fold', `isearchp-deactivate-region-flag' (Emacs
 ;;    24.3+), `isearchp-drop-mismatch',
+;;    `isearchp-drop-mismatch-regexp-flag',
 ;;    `isearchp-initiate-edit-commands' (Emacs 22+),
 ;;    `isearchp-mouse-2-flag', `isearchp-on-demand-action-function'
 ;;    (Emacs 22+), `isearchp-regexp-quote-yank-flag',
@@ -486,8 +487,8 @@
 ;;     `C-g' also has an effect when search is successful.
 ;;
 ;;  * `M-k' (`isearchp-cycle-mismatch-removal') cycles automatic
-;;    removal or replacement of the input portion that does not match,
-;;    bound to .  The behavior is controlled by the value of option
+;;    removal or replacement of the input portion that does not match.
+;;    The behavior is controlled by the value of option
 ;;    `isearchp-drop-mismatch':
 ;;
 ;;    `replace-last' - Your current input replaces the last mismatched
@@ -499,6 +500,16 @@
 ;;    anything else  - Your current input is ignored (removed) if it
 ;;                     causes a mismatch.  The search string always
 ;;                     has successful matches.
+;;
+;;  * Option `isearchp-drop-mismatch-regexp-flag' controls whether
+;;    regexp search respects option `isearchp-drop-mismatch'.  If
+;;    `nil' (the default value) then regexp search acts as if
+;;    `isearchp-drop-mismatch' were `nil'.  This is because typing a
+;;    regexp such as `[a-w]' can be problematic when mismatches are
+;;    automatically replaced.  There is no problem for many regexp
+;;    patterns however, so you might prefer customizing this to
+;;    non-`nil' and using `M-k' to turn `isearchp-drop-mismatch' off
+;;    only temporarily, when needed.
 ;;
 ;;  * You can use option `isearchp-ring-bell-function' to suppress or
 ;;    replace bell ringing (`ding') during Isearch (but not for
@@ -589,6 +600,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/07/22 dadams
+;;     Added: isearchp-drop-mismatch-regexp-flag.
+;;     isearchp-drop-mismatch, isearch-forward: Mention isearchp-drop-mismatch-regexp-flag in doc string.
+;;     isearchp-remove-mismatch, isearch-printing-char:
+;;       Now a no-op when regexp and not isearchp-drop-mismatch-regexp-flag.
 ;; 2015/07/11 dadams
 ;;     isearchp-eval-sexp-and-insert: Use pp-read-expression-map if available.
 ;; 2015/06/28 dadams
@@ -1092,7 +1108,14 @@ anything else  - Always remove mismatched text from the search string.
   it is available for editing, using \\<isearch-mode-map>`\\[isearch-edit-string]'.
 
 You can cycle among the three possible values using \
-`\\[isearchp-cycle-mismatch-removal]'."
+`\\[isearchp-cycle-mismatch-removal]'.
+
+See also option `isearchp-drop-mismatch-regexp-flag'.  It controls
+whether regexp search respects or ignores `isearchp-drop-mismatch'.
+If `nil' (the default value) then regexp search acts as if
+`isearchp-drop-mismatch' were nil.  This is because typing a regexp
+such as `[a-w]' can be problematic when mismatches are automatically
+replaced."
   :type  '(choice
            (const :tag "Replace last mismatch"  replace-last)
            (const :tag "Never remove mismatch"  nil)
@@ -1103,6 +1126,23 @@ You can cycle among the three possible values using \
                  (add-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)
                (remove-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)))
   :group 'isearch-plus)
+
+;;;###autoload
+(defcustom isearchp-drop-mismatch-regexp-flag nil
+  "*Non-nil means respect `isearchp-drop-mismatch' for regexp search too.
+Otherwise (nil), regexp search ignores `isearchp-drop-mismatch',
+acting as if it were nil.
+
+Turning off automatic mismatch replacement can help during regexp
+search when you type a pattern such as `[a-z]', because there likely
+is no match when you type `[' and if not turned off then your typing
+is automatically replaced by `a'.
+
+There is no problem for many regexp patterns however, so you might
+prefer customizing `isearchp-drop-mismatch-regexp-flag' to non-`nil'
+and just using `M-k' to turn `isearchp-drop-mismatch' off temporarily
+when needed."
+  :type 'boolean :group 'isearch-plus)
 
 (when (fboundp 'isearch-unread-key-sequence) ; Emacs 22+
 
@@ -1501,7 +1541,8 @@ Bound to `\\<isearch-mode-map>\\[isearchp-act-on-demand]' during Isearch."
 
 ;;;###autoload
 (defun isearchp-cycle-mismatch-removal () ; Bound to `M-k' in `isearch-mode-map'.
-  "Cycle option `isearchp-drop-mismatch'."
+  "Cycle option `isearchp-drop-mismatch'.
+See also option `isearchp-drop-mismatch-regexp-flag'."
   (interactive)
   (setq isearchp-drop-mismatch  (case isearchp-drop-mismatch
                                   (replace-last  nil)
@@ -1518,12 +1559,15 @@ Bound to `\\<isearch-mode-map>\\[isearchp-act-on-demand]' during Isearch."
   (isearch-update))
 
 (defun isearchp-remove-mismatch ()
-  "Remove the mismatched portion of the search string."
-  (while (or (not isearch-success)  (if (boundp 'isearch-error) isearch-error isearch-invalid-regexp))
-    (isearch-pop-state))
-  (remove-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)
-  (isearch-update)
-  (add-hook 'isearch-update-post-hook 'isearchp-remove-mismatch))
+  "Remove the mismatched portion of the search string.
+Do nothing when regexp searching and option
+`isearchp-drop-mismatch-regexp-flag' is nil."
+  (when (or isearchp-drop-mismatch-regexp-flag  (not isearch-regexp))
+    (while (or (not isearch-success)  (if (boundp 'isearch-error) isearch-error isearch-invalid-regexp))
+      (isearch-pop-state))
+    (remove-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)
+    (isearch-update)
+    (add-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)))
 
 
 ;; REPLACE ORIGINAL in `isearch.el'.
@@ -2165,15 +2209,16 @@ The following non-printing keys are bound in `isearch-mode-map'.
 
 Options
 -------
-`isearchp-case-fold'\t- search is case sensitive?
-`isearchp-set-region-flag'\t- select last search target?
+`isearchp-case-fold'\t\t\t- search is case sensitive?
+`isearchp-set-region-flag'\t\t- select last search target?
 `isearchp-restrict-to-region-flag'\t- restrict search to region?
 `isearchp-deactivate-region-flag'\t- search deactivates region?
-`isearchp-ignore-comments-flag'\t- ignore THINGs in comments? [*]
-`isearchp-mouse-2-flag'\t- `mouse-2' anywhere yanks the selection?
+`isearchp-ignore-comments-flag' [*]\t- ignore THINGs in comments?
+`isearchp-mouse-2-flag'\t\t- `mouse-2' anywhere yanks selection?
 `isearchp-regexp-quote-yank-flag'\t- regexp-quote yanked text?
-`isearchp-toggle-option-flag'\t- toggling toggles options too?
+`isearchp-toggle-option-flag'\t\t- toggle options too?
 `isearchp-drop-mismatch'\t- handling input after search mismatch
+`isearchp-drop-mismatch-regexp-flag'\t- regexp search drop mismatch?
 `isearchp-initiate-edit-commands'\t- keys that edit, not exit
 
  [*] Requires library `isearch-prop.el'.
@@ -2610,7 +2655,8 @@ outside of Isearch."
 CHAR defaults to the last printing character typed.
 With a numeric prefix arg, append that many copies of CHAR."
       (interactive (list last-command-event (prefix-numeric-value current-prefix-arg)))
-      (when (eq isearchp-drop-mismatch 'replace-last)
+      (when (and (eq isearchp-drop-mismatch 'replace-last)
+                 (or isearchp-drop-mismatch-regexp-flag  (not isearch-regexp)))
         (while (or (not isearch-success)  (if (boundp 'isearch-error) isearch-error isearch-invalid-regexp))
           (isearch-pop-state)))
       (let ((char  (or char  last-command-event)))
@@ -2622,7 +2668,8 @@ With a numeric prefix arg, append that many copies of CHAR."
   (defun isearch-printing-char ()       ; Emacs < 24.4
     "Add ordinary printing character to the search string, then search."
     (interactive)
-    (when (eq isearchp-drop-mismatch 'replace-last)
+    (when (and (eq isearchp-drop-mismatch 'replace-last)
+               (or isearchp-drop-mismatch-regexp-flag  (not isearch-regexp)))
       (while (or (not isearch-success)  (if (boundp 'isearch-error) isearch-error isearch-invalid-regexp))
         (isearch-pop-state)))
     (let ((char  last-command-event))
