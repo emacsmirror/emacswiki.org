@@ -4,6 +4,19 @@ This page is about adding line numbers to the beginnings of lines in a buffer.
 
 ----
 
+As of Emacs 24.1, there's a new command `C-x r N' (`rectangle-number-lines'), that can be used to number the lines.  Just mark a vertical strip of 1 char wide rectangle and hit `C-x r N'and you're good.  `C-u' prefix works to start from any number you choose.
+
+----
+
+If you have the cat utility (standard in Unix and Linux and which can be installed for other OSes like Windows),
+
+1.  Mark the region
+
+2.  "C-u M-|" to run command on region
+
+3.  enter "cat -n" in the minibuffer
+----
+
 Here are a few basic functions I use to number lines of code that I'm using in another document.  For example, this works great for putting line numbers in a verbatim environment.  This makes referencing the code in the text of the document easier.
 <pre>
 (defun number-line (n padding)
@@ -161,16 +174,6 @@ Print sequences with format string. -- [[rubikitch]]
                            (make-list (count-string-matches "%[^%]" format-string) i))
                     "\n")))
     (end-of-line))
-----
-
-As of Emacs 24.1, there's a new command `C-x r N' (`rectangle-number-lines'), that can be used to number the lines.  Just mark a vertical strip of 1 char wide rectangle and hit `C-x r N'and you're good.  `C-u' prefix works to start from any number you choose.
-
-----
-[new]
-Still yet another way, if you are on a linux box:
-1. Mark the region
-2. "C-u M-|" to run command on region
-3. enter "cat -n" in the minibuffer
 
 ----
 CategoryEditing
