@@ -4,7 +4,7 @@ This page is about adding line numbers to the beginnings of lines in a buffer.
 
 ----
 
-As of Emacs 24.1, there's a new command `C-x r N' (`rectangle-number-lines'), that can be used to number the lines.  Just mark a vertical strip of 1 char wide rectangle and hit `C-x r N'and you're good.  `C-u' prefix works to start from any number you choose.
+As of Emacs 24.1, there's a new command `C-x r N' (`rectangle-number-lines'), that can be used to number the lines.  Just mark a region which you want numbered and hit `C-x r N'.  `C-u' prefix works to start from any number you choose.
 
 ----
 
