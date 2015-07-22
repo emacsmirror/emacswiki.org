@@ -216,6 +216,21 @@ previous input has a mismatched portion.
 successful matches.
 
 
+
+
+[:isearchp-drop-mismatch-regexp-flag]
+* Option '''`isearchp-drop-mismatch-regexp-flag'''' controls whether
+[[regexp]] search respects option `isearchp-drop-mismatch'.  If
+`nil' (the default value) then regexp search acts as if
+`isearchp-drop-mismatch' were `nil'.  This is because typing a
+regexp such as `##[a-w]##' can be problematic when mismatches are
+automatically replaced.  There is no problem for many regexp
+patterns however, so you might prefer customizing this to
+non-`nil' and using `M-k' to turn `isearchp-drop-mismatch' off
+only temporarily, when needed.
+
+
+
 [:isearchp-ring-bell-function]
 * You can use option '''`isearchp-ring-bell-function'''' to suppress or
 replace bell ringing (`ding') during Isearch (but not for
