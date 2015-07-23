@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 11:10:45 2015 (-0800)
+;; Last-Updated: Thu Jul 23 06:33:21 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1815
+;;     Update #: 1817
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -137,6 +137,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/23 dadams
+;;     replace-regexp: Typo: FROM -> REGEXP.  Thx to Tino Calancha. 
 ;; 2014/04/16 dadams
 ;;     query-replace-regexp, replace-string, replace-regexp: Got the emacs24.4+ version test backwards.
 ;; 2014/04/15 dadams
@@ -1002,8 +1004,8 @@ replacement."
             (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
                               (region-end))))
        (if emacs24.4+
-           (list from to delimited start end (nth 3 common))
-         (list from to delimited start end))))))
+           (list regexp to delimited start end (nth 3 common))
+         (list regexp to delimited start end))))))
 
 
 
