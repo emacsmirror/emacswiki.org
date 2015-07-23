@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Jul  5 13:33:09 2015 (-0700)
+;; Last-Updated: Wed Jul 22 19:36:21 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 19703
+;;     Update #: 19707
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -8325,7 +8325,7 @@ See also `\\[icicle-keep-only-past-inputs]' (`icicle-keep-only-past-inputs')."
 
 ;; This is not shadowed by any `icicle-mode-map' binding, since `isearch-mode-map' is also a minor mode map.
 ;;
-(defun icicle-isearch-complete ()       ; Bound to `M-TAB', `C-M-TAB' in `isearch-mode-map'.
+(defun icicle-isearch-complete ()       ; `M-TAB' (`ESC TAB'), `C-M-i', `C-M-TAB' in `isearch-mode-map'.
   "Complete the search string using candidates from the search ring."
   (interactive)
   (cond ((icicle-completing-p)          ; Cannot use the var here, since not sure to be in minibuf.
@@ -8343,19 +8343,16 @@ See also `\\[icicle-keep-only-past-inputs]' (`icicle-keep-only-past-inputs')."
   (isearch-done 'nopush)
   (let ((icicle-whole-candidate-as-text-prop-p  nil)
         (completion-ignore-case                 case-fold-search)
-        (enable-recursive-minibuffers           t))
-    (setq isearch-string
-          (completing-read
-           "Search string (completing): "
-           (mapcar #'list (icicle-remove-duplicates (symbol-value (if isearch-regexp
-                                                                      'regexp-search-ring
-                                                                    'search-ring))))
-           nil nil isearch-string (if isearch-regexp 'regexp-search-ring 'search-ring)))))
+        (enable-recursive-minibuffers           t)
+        (ring-var                               (if isearch-regexp 'regexp-search-ring 'search-ring)))
+    (setq isearch-string  (completing-read "Search string (completing): "
+                                           (mapcar #'list (icicle-remove-duplicates (symbol-value ring-var)))
+                                           nil nil isearch-string ring-var))))
 
 (defun icicle-isearch-history-insert () ; Bound to `M-o' in `isearch-mode-map'.
   "Append previous isearch strings, using completion to choose them.
-This is similar to `icicle-insert-history-element' (\\<minibuffer-local-map>\
-\\[icicle-insert-history-element] in the
+This is similar to `icicle-insert-history-element' (`\\<minibuffer-local-map>\
+\\[icicle-insert-history-element]' in the
 minibuffer), except that a prefix argument has no effect here:
 no candidate is wrapped with \"...\", and no space char is appended."
   (interactive)
