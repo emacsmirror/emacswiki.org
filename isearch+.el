@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 22 15:26:39 2015 (-0700)
+;; Last-Updated: Wed Jul 22 18:35:48 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3694
+;;     Update #: 3700
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -84,6 +84,7 @@
 ;;    `isearchp-remove-failed-part' (Emacs 22+),
 ;;    `isearchp-retrieve-last-quit-search',
 ;;    `isearchp-set-region-around-search-target',
+;;    `isearchp-toggle-lazy-highlight-cleanup' (Emacs 22+),
 ;;    `isearchp-toggle-literal-replacement' (Emacs 22+),
 ;;    `isearchp-toggle-option-toggle',
 ;;    `isearchp-toggle-regexp-quote-yank',
@@ -543,6 +544,13 @@
 ;;    with no prefix argument and with non-`nil'
 ;;    `isearchp-toggle-option-flag'.
 ;;
+;;  * `M-s h l' (`isearchp-toggle-lazy-highlight-cleanup') toggles the
+;;     value of option `lazy-highlight-cleanup'.  When the option
+;;     value is nil you can continue to see the search hits
+;;     highlighted from the last search.  Toggle the option off, or
+;;     use command `isearch-lazy-highlight-cleanup', to remove the
+;;     highlighting.  See also option `lazy-highlight-max-at-a-time'.
+;;
 ;;  * Other bindings during Isearch:
 ;;
 ;;    - `next', `prior' repeat the last Isearch forward and backward
@@ -601,7 +609,8 @@
 ;;(@* "Change log")
 ;;
 ;; 2015/07/22 dadams
-;;     Added: isearchp-drop-mismatch-regexp-flag.
+;;     Added: isearchp-drop-mismatch-regexp-flag, isearchp-toggle-lazy-highlight-cleanup.
+;;     Bind isearchp-toggle-lazy-highlight-cleanup to M-s h l.
 ;;     isearchp-drop-mismatch, isearch-forward: Mention isearchp-drop-mismatch-regexp-flag in doc string.
 ;;     isearchp-remove-mismatch, isearch-printing-char:
 ;;       Now a no-op when regexp and not isearchp-drop-mismatch-regexp-flag.
@@ -2969,7 +2978,24 @@ This toggles variable `isearchp-replace-literally'.
 Bound to `C-M-`' during Isearch."
     (interactive)
     (setq isearchp-replace-literally  (not isearchp-replace-literally))
-    (message "Replacement of text literally is now %s" (if isearchp-replace-literally "ON" "OFF"))))
+    (message "Replacement of text literally is now %s" (if isearchp-replace-literally "ON" "OFF")))
+
+  )
+
+
+(when (boundp 'isearch-lazy-highlight)  ; Emacs 22+
+
+  (defun isearchp-toggle-lazy-highlight-cleanup () ; Bound to `M-s h l' in `isearch-mode-map'.
+    "Toggle `lazy-highlight-cleanup'."
+    (interactive)
+    (setq lazy-highlight-cleanup  (not lazy-highlight-cleanup))
+    (message "Automatic removal of lazy highlights is now %s" (if lazy-highlight-cleanup 'ON 'OFF))
+    (sit-for 1)
+    (isearch-update))
+
+  (define-key isearch-mode-map (kbd "M-s h l") 'isearchp-toggle-lazy-highlight-cleanup)
+
+  )
 
 
 (when (or (> emacs-major-version 24)    ; Emacs 24.3+
