@@ -157,6 +157,7 @@ Use rectangle and format string, like `rectangle-number-lines' in Emacs24. -- [[
 --
 [new]
 Print sequences with format string. -- [[rubikitch]]
+
   (defun count-string-matches (regexp string)
     (with-temp-buffer
       (insert string)
