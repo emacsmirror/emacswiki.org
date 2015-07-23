@@ -85,7 +85,9 @@ Sometimes I stumble over chords when they occur in normal typing. To avoid that,
 That should catch most of the false positives.
 
 --ArneBab
-
+: To consider events /after/ a chord would be a bit complicated. Currently it holds the 1st key of a chord for a short while, waiting for the 2nd key. With this suggestion it would have to hold the 1st and 2nd key, waiting for a 3rd key, before deciding what to do with the 1st and 2nd key. This would increase the time lag when typing chars that are part of a chord. It would be much more noticable since the timeout for the 3rd key would be larger than the timout currently used for the 2nd key. (The percieved lag of the 1st key would be both timeouts added togehter). It would also make the program much more complicated.
+: To consider events /before/ a chord should not have any adverse effects on the lag. It would make the program a bit more complicated, but probably not by much. I still hesitate about it. I imagine someone typing fast before a chord would be quite irritated if a chord is not recognized because they typed /too/ fast. False negatives are at least as important to consider as false positives, since they may cause edits in a file you did not intend to edit (if you have chords for movement, buffer switching, etc.).
+: I would recommend you avoid combinations that are even slightly common in your writing (prose or programming). -- DavidAndersson
 
 [new]
 There is a key-pair frequency table here:
