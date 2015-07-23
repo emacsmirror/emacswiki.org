@@ -264,14 +264,24 @@ sensitivity ''from now on''.  Otherwise, the option value is not
 changed, so the effect is for the current search only.
 
 
-
-[:isearchp-toggle-invisible']
-* '''`##C-+##'''' ('''`isearchp-toggle-invisible'''') toggles the value of
+[:isearchp-toggle-search-invisible']
+* '''`##C-+##'''' ('''`isearchp-toggle-search-invisible'''') toggles the value of
 ''option'' '''`search-invisible''''.  The effect is like that of `M-s i'
 with no prefix argument and with non-`nil'
 `isearchp-toggle-option-flag'.
 
-[:isearchp-toggle-set-region]
+
+[:isearchp-toggle-lazy-highlight-cleanup]
+* '''`M-s h l'''' ('''`isearchp-toggle-lazy-highlight-cleanup'''') toggles the
+value of ''option'' '''`lazy-highlight-cleanup''''.  When the option
+value is `nil' you can continue to see the search hits
+highlighted from the last search.  Toggle the option off, or
+use command `isearch-lazy-highlight-cleanup', to remove the
+highlighting.  See also option '''`lazy-highlight-max-at-a-time''''.
+
+
+
+
 [:goto-longest-line]
 * Other bindings during Isearch:
 ** '''`next'''', '''`prior'''' repeat the last Isearch forward and backward (easier than using the [[chord]]s `C-s', `C-r').
