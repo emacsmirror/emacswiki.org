@@ -47,6 +47,14 @@ In eshell, this won't work:
 The function `file-name-sans-extension' gets the symbol $f instead the
 value.
 
+That's because you're using lisp for the file-name-sans-extension part.  Lisp doesn't use $name for variables.  It uses name.  While we're at it, let's use the proper $() and ${} formats since () and {} will sometimes fail (For instance, when you add text to the end as we are doing here.):
+
+    for f in *.xpm {convert $f $(file-name-sans-extension f).png}
+
+Another option provided either there is no executable in your path named file-name-sans-extension (which is probably a reasonable bet) or you have enabled eshell-prefer-lisp-functions:
+
+    for f in *.xpm {convert $f ${file-name-sans-extension $f}.png}
+
 You have to write it out in Lisp:
 
     (mapc (lambda (f)
@@ -83,6 +91,14 @@ This can be done with some other modifiers too, e.g:
 I could not get this to work though
 
    for f in *.xpm *.jpg {convert $f $f(:r).png}
+
+A bit uglier because you need to separate the modifier from the new extension, but this works:
+
+    for f in *.xpm *.jpg {convert $f ${echo $f(:r)}.png}
+
+Alternatively, just keep using modifiers because they're awesome.  A substitute that matches the end of the line ($) is an append:
+
+    for f in *.xpm *.jpg {convert $f $f(:r:s/$/.png/)}
 
 [new]
 Tried this little example out and it seems that it works if you do not use the dollar-sign. I don't know why it works, I solved it by trial and error :) Maybe someone else can explain and clean up my mess below:
