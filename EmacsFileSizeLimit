@@ -5,12 +5,12 @@ If you compile GNU Emacs on a supported architecture with more than 32 bits, you
 For example:
 
     most-positive-fixnum
-    => 268435455
+    => 536870911
 
-Thus, the limit is 256MB on this particular system:
+Thus, the limit is 512MB on this particular system:
 
-    (/ 268435456.0 1024 1024)
-    => 256.0
+    (/ 536870911.0 1024 1024)
+    => 512.0
 
 Note how we used floating point arithmetic to compute the result!
 
@@ -18,8 +18,7 @@ Anyway, what follows is some technical background, based on the EmacsFaq and som
 
 == GNU Emacs ==
 
-Old versions (i.e., anything before 19.29) of GNU Emacs had problems editing files larger than 8 megabytes.  As of version 19.29, the maximum buffer size is at least 2^27-1, or 134,217,727 bytes.  On a 64bit system, the limit is pushed to 2^59-1 which is almost
-a million Terabytes.
+Old versions (i.e., anything before 19.29) of GNU Emacs had problems editing files larger than 8 megabytes.  This limit was pushed further, first to 128MB (since 19.29), then 256MB, and 512MB (since 23.2).  On a 64bit system, the limit is much higher then anything you might reasonably be able to open for the foreseeable future.
 
 David Gillespie explains how this problem crops up; while his numbers are true only for pre-19.29 versions of GNU Emacs, the theory remains the same with current versions.
 
