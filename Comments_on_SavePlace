@@ -1,0 +1,6 @@
+Enabling save-place slowed down my emacs exiting by a huge amount - 9 seconds.  I tracked it down to save-place-forget-unreadable-files, which removes any file that can't be read from the list to save.  I have many files loaded over NFS.  When exiting, save-place-forget-unreadable-files checks if each file is readable, which for hundreds of files seems to be slow when they're on NFS.
+
+(setq save-place-forget-unreadable-files nil) restores my emacs exit to nearly instantaneous.
+
+-- jlquinn 2015-07-24 20:17 UTC
+
