@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: (("find-dired-" "0"))
-;; Last-Updated: Fri Jul 24 06:34:02 2015 (-0700)
+;; Last-Updated: Fri Jul 24 06:45:02 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 648
+;;     Update #: 655
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -82,7 +82,10 @@
 ;;; Change Log:
 ;;
 ;; 2015/07/24 dadams
-;;     find-ls-option: Updated wrt vanilla Emacs.  Thx to Tino Calancha.
+;;     find-ls-option: Updated wrt vanilla Emacs.
+;;     find-dired: Set buffer read-only.
+;;     find-dired-filter, find-dired-sentinel: Bind inhibit-read-only to t.
+;;     Thx to Tino Calancha.
 ;; 2015/07/17 dadams
 ;;     find-name-dired: Use find-name-arg and read-directory-name, if available.
 ;;                      Use shell-quote-argument.
@@ -283,6 +286,7 @@ The `find' command run (after changing into DIR) is:
     ;; "wildcard" line.
     (insert "  " args "\n")
     ;; Start the `find' process.
+    (setq buffer-read-only t)
     (let ((proc  (start-process-shell-command "find" (current-buffer) args)))
       (set-process-filter proc (function find-dired-filter))
       (set-process-sentinel proc (function find-dired-sentinel))
@@ -348,7 +352,8 @@ Thus REGEXP can also contain additional grep options."
   "Filter for \\[find-dired] processes.
 PROC is the process.
 STRING is the string to insert."
-  (let ((buf  (process-buffer proc)))
+  (let ((buf                (process-buffer proc))
+        (inhibit-read-only  t))
     (if (buffer-name buf)               ; not killed?
         (save-excursion
           (set-buffer buf)
@@ -390,7 +395,8 @@ STRING is the string to insert."
   "Sentinel for \\[find-dired] processes.
 PROC is the process.
 STATE is the state of process PROC."
-  (let ((buf  (process-buffer proc)))
+  (let ((buf                (process-buffer proc))
+        (inhibit-read-only  t))
     (if (buffer-name buf)
         (save-excursion
           (set-buffer buf)
