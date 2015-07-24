@@ -46,6 +46,10 @@ Note, that $* will work with the following advice (put it into .emacs):
     ad-do-it))
 </pre>
 
+Or the all-eshell version:
+
+    alias emacs 'for i in ${eshell-flatten-list $*} {find-file $i}'
+
 == Alias 'w3m' to 'w3m-find-file' ==
 
 The same idea is for checking html files. I generate a lot of html 
