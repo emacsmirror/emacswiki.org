@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: (("find-dired-" "0"))
-;; Last-Updated: Fri Jul 17 07:02:05 2015 (-0700)
+;; Last-Updated: Fri Jul 24 06:34:02 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 633
+;;     Update #: 648
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -75,12 +75,14 @@
 ;;  ***** NOTE: The following variable defined in `find-dired.el'
 ;;              has been REDEFINED HERE:
 ;;
-;;  `find-ls-options'   - Uses `dired-listing-switches' for Windows.
+;;  `find-ls-option'   - Uses `dired-listing-switches' for Windows.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/24 dadams
+;;     find-ls-option: Updated wrt vanilla Emacs.  Thx to Tino Calancha.
 ;; 2015/07/17 dadams
 ;;     find-name-dired: Use find-name-arg and read-directory-name, if available.
 ;;                      Use shell-quote-argument.
@@ -108,7 +110,7 @@
 ;;     1. find-dired: a) Use dired-simple-subdir-alist & find-ls-option anew
 ;;                       (instead of dired's default switches).
 ;;                    b) Updated to Emacs20 version: define-key added.
-;;     2. Added: find-ls-options - redefined to treat Windows too.
+;;     2. Added: find-ls-option - redefined to treat Windows too.
 ;; 1999/04/06 dadams
 ;;     1. Protected symbol-name-nearest-point with fboundp.
 ;;     2. find-dired, find-name-dired, find-grep-dired: No default regexp
@@ -176,6 +178,8 @@
 
 ;; Quiet the byte-compiler.
 (defvar find-name-arg)                  ; Emacs 22+
+(defvar find-program)                   ; Emacs 22+
+(defvar find-exec-terminator)           ; Emacs 22+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -200,21 +204,29 @@ If this is nil, then no default input is provided."
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
-;; Uses `dired-listing-switches' for Windows.
-;; Note: `defconst' is necessary here because this is preloaded by basic emacs:
-;; it is not sufficient to do a defvar before loading `find-dired.el'.  Too bad.
-;; Otherwise, this could be just a `defvar' in `find-dired-.el'.
+;;
+;; Use `dired-listing-switches' for Windows.
+;;
+;; Note: `defconst' is necessary here because this is preloaded by Emacs.
+;;       It is not sufficient to do a defvar before loading `find-dired.el'.
+;;       Otherwise, this could be just a `defvar' in `find-dired-.el'.
 (defconst find-ls-option
-  (cond ((eq system-type 'berkeley-unix)
-         '("-ls" . "-gilsb"))
-        ((eq system-type 'windows-nt)
-         (cons "-ls" dired-listing-switches))
-        (t
-         '("-exec ls -ld {} \\;" . "-ld")))
+    (cond ((eq system-type 'windows-nt) (cons "-ls" dired-listing-switches))
+          ((and (fboundp 'process-file)  (boundp 'find-program)  (boundp 'null-device) ;Emacs22+
+                (eq 0 (condition-case nil
+                          (process-file find-program nil nil nil null-device "-ls")
+                        (error nil))))
+           (cons "-ls" (if (eq system-type 'berkeley-unix) "-gilsb" "-dilsb")))
+          (t (cons (format "-exec ls -ld {} %s" (if (boundp 'find-exec-terminator)
+                                                    find-exec-terminator
+                                                  "\\;"))
+                   "-ld")))
   "*Description of the option to `find' to produce an `ls -l'-type listing.
-This is a cons of two strings (FIND-OPTION . LS-SWITCHES).  FIND-OPTION
-gives the option (or options) to `find' that produce the desired output.
-LS-SWITCHES is a list of `ls' switches to tell dired how to parse the output.")
+This is a cons of two strings (FIND-OPTION . LS-SWITCHES).
+FIND-OPTION is the option (or options) for `find' needed to produce
+ the desired output.
+LS-SWITCHES is a list of `ls' switches that tell Dired how to parse
+ the output.")
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
