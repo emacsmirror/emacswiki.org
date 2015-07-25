@@ -203,6 +203,10 @@ In Emacs 22 (Carbon Port, CVS version) you can use the variable `mac-control-mod
 
 == Microsoft Windows ==
 
+=== Ctrl2cap ===
+
+The easiest way to achieve this in Microsoft Windows is to install the Sysinternals program [https://technet.microsoft.com/en-us/sysinternals/bb897578.aspx?f=255&MSPPError=-2147217396 Ctrl2cap].
+
 === Windows Server 2003 Resource Kit Tools===
 
 Use remapkey.exe from [http://www.microsoft.com/en-us/download/details.aspx?id=17657 Windows Server 2003 Resource Kit Tools] to remap windows keyboard layout.
@@ -228,9 +232,16 @@ If you want the caps lock to be the control key everywhere remove the lines that
 If you want this AHK script to remain in effect across windows restarts place the script in your startup folder.
 See the [http://www.autohotkey.com/docs/FAQ.htm#Startup startup section of the AHK FAQ] for more specific directions.
 
+Here is a exe of the AutoHotKey script, so you don't have to download autohotkey itself. (Note these programs map right control to caps lock.)
+
+The script: http://www.cs.umb.edu/~wimiller/stuff/caps2ctrl.exe
+
+The source: http://www.cs.umb.edu/~wimiller/stuff/caps2ctrl.ahk
+
 === Registry ===
 * Applies across all user accounts.
 * Requires Administrator access to write to the registry.
+* More info here: http://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Swap-CapsLock-and-Control.html#Swap-CapsLock-and-Control
 
 ====NoCaps====
 <pre>
@@ -290,27 +301,6 @@ I know this is fairly simple to do for emacs only, but I've never looked into ho
 
 :: %%EmacsW32%% , with w32-enable-caps-lock set to nil , reads that key as <capslock>.  It should be possible to tell Emacs to treat it as a control.  (define-key function-key-map [(capslock)] 'event-apply-control-modifier) gets close.
 
-=== Drivers ===
-There are also these drivers: [http://www.sysinternals.com/ntw2k/source/ctrl2cap.shtml ctrl2cap.sys] or [http://www.sysinternals.com/win9x/utilities/ctrl2cap95.shtml ctrl2cap.vxd].
-
-http://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Swap-CapsLock-and-Control.html#Swap-CapsLock-and-Control has more info about this.
-
-Microsoft also provides an utility [http://www.microsoft.com/technet/sysinternals/Miscellaneous/Ctrl2Cap.mspx Ctrl2Cap] to replace the caps lock with the ctrl key.  (Note that you will lose the caps lock.)
-It allows you to reverse it as well.
-
-If you use the AutoHotKey (www.autohotkey.com) Win32 macro program, the following line in autohotkey.ini will effectively remap Caps to Ctrl:
-
-<pre>
-Capslock::Ctrl
-</pre>
-
-Here is a exe of the AutoHotKey script, so you don't have to download autohotkey itself.
-
-The script: http://www.cs.umb.edu/~wimiller/stuff/caps2ctrl.exe
-
-The source: http://www.cs.umb.edu/~wimiller/stuff/caps2ctrl.ahk
-
-Notice that it also maps right control to caps lock, maybe someone cap upload one that does not do that.
 
 [:Android]
 == Android ==
