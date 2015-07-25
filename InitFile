@@ -1,4 +1,3 @@
-[[de:loginFormBottom.png]]
 Your '''[::init file]''' contains personal EmacsLisp code that you want to execute when you start Emacs.
 
 * For GnuEmacs, it is ##~/.emacs## or ##_emacs## or ##~/.emacs.d/init.el##.
