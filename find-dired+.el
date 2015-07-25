@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: (("find-dired-" "0"))
-;; Last-Updated: Fri Jul 24 06:45:02 2015 (-0700)
+;; Last-Updated: Sat Jul 25 06:48:10 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 655
+;;     Update #: 672
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -81,6 +81,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/25 dadams
+;;     find-dired-filter:
+;;       Update wrt recent Emacs:
+;;         Use with-current-buffer, not set-buffer. Removed extra save-excursion after widen.
+;;         Added the code to pad number of links and file size.
+;;       Use delete-region, not kill-line, to protect kill-ring.
+;;       Escape the . in the regexp.
 ;; 2015/07/24 dadams
 ;;     find-ls-option: Updated wrt vanilla Emacs.
 ;;     find-dired: Set buffer read-only.
@@ -354,37 +361,46 @@ PROC is the process.
 STRING is the string to insert."
   (let ((buf                (process-buffer proc))
         (inhibit-read-only  t))
-    (if (buffer-name buf)               ; not killed?
-        (save-excursion
-          (set-buffer buf)
-          (save-restriction
-            (widen)
-            (save-excursion
+    (if (buffer-name buf)
+        (with-current-buffer buf
+          (save-excursion
+            (save-restriction
+              (widen)
               (let ((buffer-read-only  nil)
-                    (end               (point-max)))
-                (goto-char end)
+                    (beg               (point-max))
+                    (l-opt             (and (consp find-ls-option)
+                                            (string-match "l" (cdr find-ls-option))))
+                    (ls-regexp         (concat "^ +[^ \t\r\n]+\\( +[^ \t\r\n]+\\) +"
+                                               "[^ \t\r\n]+ +[^ \t\r\n]+\\( +[0-9]+\\)")))
+                (goto-char beg)
                 (insert string)
-                (goto-char end)
+                (goto-char beg)
                 (unless (looking-at "^") (forward-line 1))
                 (while (looking-at "^")
                   (insert "  ")
                   (forward-line 1))
-                (goto-char (- end 3))   ; no error if < 0
+                (goto-char (- beg 3))   ; No error if < 0.
                 (save-excursion         ; Remove lines just listing the file.
-                  (let ((kill-whole-line  t))
-                    (while (re-search-forward "^  ./" nil t)
-                      (beginning-of-line) (kill-line))))
-                ;; Convert ` ./FILE' to ` FILE'
-                ;; This would lose if the current chunk of output
-                ;; starts or ends within the ` ./', so back up a bit:
-                (while (search-forward " ./" nil t)
-                  (delete-region (point) (- (point) 2)))
-                ;; Find all the complete lines in the unprocessed
-                ;; output and process it to add text properties.
-                (goto-char end)
-                (if (search-backward "\n" (process-mark proc) t)
-                    (progn (dired-insert-set-properties (process-mark proc) (1+ (point)))
-                           (move-marker (process-mark proc) (1+ (point)))))))))
+                  (while (re-search-forward "^  \\./" nil t)
+                    (delete-region (line-beginning-position) (line-end-position))
+                    (when (eq (following-char) ?\n) (delete-char 1))))
+                ;; Convert ` ./FILE' to ` FILE'.  This would lose if current chunk of output
+                ;; starts or ends within the ` ./', so back up a bit.
+                (while (search-forward " ./" nil t) (delete-region (point) (- (point) 2)))
+		;; Pad the number of links and file size.  This is a quick and dirty way of
+                ;; getting the columns to line up of the time, but it's not foolproof.
+		(when l-opt
+		  (goto-char beg)
+		  (goto-char (line-beginning-position))
+		  (while (re-search-forward ls-regexp nil t)
+		    (replace-match (format "%4s" (match-string 1)) nil nil nil 1)
+		    (replace-match (format "%9s" (match-string 2)) nil nil nil 2)
+		    (forward-line 1)))
+                ;; Find the complete lines in the unprocessed output, and add text props to it.
+                (goto-char (point-max))
+                (when (search-backward "\n" (process-mark proc) t)
+                  (dired-insert-set-properties (process-mark proc) (1+ (point)))
+                  (move-marker (process-mark proc) (1+ (point))))))))
       (delete-process proc))))          ; The buffer was killed.
 
 
