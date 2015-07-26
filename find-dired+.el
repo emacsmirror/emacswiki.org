@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: (("find-dired-" "0"))
-;; Last-Updated: Sun Jul 26 08:50:58 2015 (-0700)
+;; Last-Updated: Sun Jul 26 09:50:06 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 676
+;;     Update #: 731
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -82,7 +82,11 @@
 ;;; Change Log:
 ;;
 ;; 2015/07/26 dadams
-;;     find-dired: Include more recent vanilla code, to offer to kill running old proc.
+;;     find-dired: Update to more recent vanilla code.
+;;      Added: find-args (for older Emacs versions).  Use read-string with INITIAL-INPUT.
+;;      Offer to kill running old proc.  Save find-args.  Use shell-quote-argument.
+;;      Use find-program, find-exec-terminator, if defined.  Use shell-command and
+;;      dired-insert-set-properties instead of start-process-shell-command.
 ;; 2015/07/25 dadams
 ;;     find-dired-filter:
 ;;       Update wrt recent Emacs:
@@ -189,11 +193,15 @@
  ;; region-or-non-nil-symbol-name-nearest-point
 
 ;; Quiet the byte-compiler.
+(defvar find-ls-subdir-switches)        ; Emacs 22+
 (defvar find-name-arg)                  ; Emacs 22+
 (defvar find-program)                   ; Emacs 22+
 (defvar find-exec-terminator)           ; Emacs 22+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar find-args nil                   ; Define it for older Emacs versions.
+  "Last arguments given to `find' by `\\[find-dired]'.")
 
 (defvar find-dired-hook nil
   "*Hook to be run at the end of each `find-dired' execution.")
@@ -242,28 +250,26 @@ LS-SWITCHES is a list of `ls' switches that tell Dired how to parse
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
-;; 1. Interactive spec uses `read-from-minibuffer', `read-file-name',
-;;    `dired-regexp-history' and `find-dired-default-fn'.
+;; 1. Interactive spec uses `find-dired-default-fn'.
 ;; 2. Runs `find-dired-hook' at end.
 ;; 3. Buffer used has same root name as the dir (not "*Find*").
 ;;;###autoload
 (defun find-dired (dir args)
   "Run `find' and put its output in a buffer in Dired Mode.
 Then run `find-dired-hook' and `dired-after-readin-hook'.
-The `find' command run (after changing into DIR) is:
+The `find' command run (after changing into DIR) is essentially:
 
     find . \\( ARGS \\) -ls"
   (interactive
    (let ((default  (and (functionp find-dired-default-fn) (funcall find-dired-default-fn))))
-     (list (read-file-name "Run `find' in directory: " nil "" t)
-           (read-from-minibuffer "Run `find' (with args): " nil
-                                 nil nil 'find-args-history default t))))
+     (list (funcall (if (fboundp 'read-directory-name) 'read-directory-name 'read-file-name)
+                    "Run `find' in directory: " nil "" t)
+           (read-string "Run `find' (with args): " find-args '(find-args-history . 1) default))))
   (let ((dired-buffers  dired-buffers))
     ;; Expand DIR ("" means default-directory), and make sure it has a
     ;; trailing slash.
     (setq dir  (abbreviate-file-name (file-name-as-directory (expand-file-name dir))))
-    (unless (file-directory-p dir)      ; Ensure that it's really a directory.
-      (error "Command `find-dired' needs a directory: `%s'" dir))
+    (unless (file-directory-p dir) (error "Command `find-dired' needs a directory: `%s'" dir))
     (switch-to-buffer (create-file-buffer (directory-file-name dir)))
     ;; See if there is still a `find' running, and offer to kill it first, if so.
     (let ((find-proc  (get-buffer-process (current-buffer))))
@@ -279,40 +285,56 @@ The `find' command run (after changing into DIR) is:
     (kill-all-local-variables)
     (setq buffer-read-only  nil)
     (erase-buffer)
-    (setq default-directory  dir)
-    (setq args  (concat "find . " (if (string= "" args) "" (concat "\\( " args " \\) "))
-                        (car find-ls-option)))
-    ;; The next statement will bomb in classic dired (no optional arg allowed)
+    (setq default-directory  dir
+          find-args          args       ; Save for next interactive call.
+          args               (concat (if (boundp 'find-program) find-program "find") " . "
+                                     (if (string= args "")
+                                         ""
+                                       (concat (shell-quote-argument "(") " " args
+                                               (shell-quote-argument ")") " "))
+                                     (if (string-match "\\`\\(.*\\) {} \\(\\\\;\\|+\\)\\'"
+                                                       (car find-ls-option))
+                                         (format "%s %s %s"
+                                                 (match-string 1 (car find-ls-option))
+                                                 (shell-quote-argument "{}")
+                                                 (if (boundp 'find-exec-terminator)
+                                                     find-exec-terminator
+                                                   "\\;"))
+                                       (car find-ls-option))))
+    (shell-command (concat args "&") (current-buffer)) ; Start `find' process.
+    ;; The next statement will bomb in classic Dired (no optional arg allowed)
     (dired-mode dir (cdr find-ls-option))
-    ;; This really should rerun the find command, but I don't
-    ;; have time for that.
-    (use-local-map (append (make-sparse-keymap) (current-local-map)))
-    (define-key (current-local-map) "g" 'undefined)
+    (let ((map  (make-sparse-keymap)))
+      (set-keymap-parent map (current-local-map))
+      (define-key map "\C-c\C-k" 'kill-find)
+      (use-local-map map))
+    (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
+    (set (make-local-variable 'revert-buffer-function)
+	 `(lambda (ignore-auto noconfirm) (find-dired ,dir ,find-args)))
     ;; Set subdir-alist so that Tree Dired will work:
     (if (fboundp 'dired-simple-subdir-alist)
-        ;; will work even with nested dired format (dired-nstd.el,v 1.15
-        ;; and later)
+        ;; Works even with nested Dired format (dired-nstd.el,v 1.15 and later)
         (dired-simple-subdir-alist)
-      ;; else we have an ancient tree dired (or classic dired, where
-      ;; this does no harm)
+      ;; We have an ancient tree Dired (or classic Dired, where this does no harm)
       (set (make-local-variable 'dired-subdir-alist)
            (list (cons default-directory (point-min-marker)))))
+    (when (boundp 'find-ls-subdir-switches)
+      (set (make-local-variable 'dired-subdir-switches) find-ls-subdir-switches))
     (setq buffer-read-only  nil)
-    ;; Subdir headerline must come first because the first marker in
-    ;; `subdir-alist' points there.
+    ;; Subdir headerline must come first because first marker in `subdir-alist' points there.
     (insert "  " dir ":\n")
-    ;; Make second line a "find" line in analogy to the "total" or
-    ;; "wildcard" line.
-    (insert "  " args "\n")
-    ;; Start the `find' process.
+    ;; Make second line a "find" line by analogy to the "total" or "wildcard" line.
+    (let ((opoint  (point)))
+      (insert "  " args "\n")
+      (dired-insert-set-properties opoint (point)))
     (setq buffer-read-only t)
-    (let ((proc  (start-process-shell-command "find" (current-buffer) args)))
+    (let ((proc  (get-buffer-process (current-buffer))))
       (set-process-filter proc (function find-dired-filter))
       (set-process-sentinel proc (function find-dired-sentinel))
       ;; Initialize the process marker; it is used by the filter.
-      (move-marker (process-mark proc) 1 (current-buffer))
-      (setq mode-line-process  '(": %s `find'"))
-      (run-hooks 'find-dired-hook 'dired-after-readin-hook))))
+      (move-marker (process-mark proc) (point) (current-buffer)))
+    (setq mode-line-process  '(": %s `find'"))
+    (run-hooks 'find-dired-hook 'dired-after-readin-hook)))
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
