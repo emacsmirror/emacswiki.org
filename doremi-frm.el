@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0") (faces+ "0") (frame-fns "0") (hexrgb "0"))
-;; Last-Updated: Wed Jul  8 18:35:20 2015 (-0700)
+;; Last-Updated: Sun Jul 26 15:16:24 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3019
+;;     Update #: 3052
 ;; URL: http://www.emacswiki.org/doremi-frm.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
@@ -40,12 +40,42 @@
 ;;        that iterate in Do Re Mi fashion from other functions in the
 ;;        library, the iterative commands are suffixed with `+'.
 ;;
-;;  Note on saving changes made with the commands defined here:
+;;  Note about saving changes made with the commands defined here:
 ;;
 ;;    Some of the commands defined here change face and frame
-;;    parameters.  You can save any changes you have made, by using
-;;    Customize.  To visit a Customize buffer of all unsaved changes
-;;    you have made, use command `customize-customized'.
+;;    parameters.  User option `doremi-customization-status' controls
+;;    whether, and if so how, Customize is to be informed about these
+;;    changes.  In any case, the commands do not save any changes they
+;;    make.  If you want to save the changes then you will need to
+;;    tell Customize to do that.
+;;
+;;    The default value of option `doremi-customization-status' is
+;;    `customized', which means to tell Customize that the changes
+;;    were made by Customize itself, that is, just as if you had set
+;;    the new values using the Customize UI.  In this case, you can
+;;    use command `customize-unsaved' (aka `customize-customized') to
+;;    open Customize for all of the changes.  You can then save any of
+;;    them individualy (using its `State' menu, item `Save for Future
+;;    Sessions') or click the button (`Apply and Save') to save all of
+;;    them at once.
+;;
+;;    If the value of option `doremi-customization-status' is
+;;    `outside' then changes made by the commands here are considered
+;;    by Customize to have been made outside Customize, that is, as
+;;    "rogue" changes.  This is how Customize considers changes made
+;;    by command `set-face-foreground', for example.  In this case, if
+;;    you want to save the changes then you can use command
+;;    `customize-rogue' to open Customize for them.
+;;
+;;    If the value of option `doremi-customization-status' is anything
+;;    else then Customize is not informed of the changes made by
+;;    commands defined here.  You see the changes, but Customize does
+;;    not recognize them.  In this case there is no way to know what
+;;    the changes were, and hence no way to save them except by noting
+;;    the current color values (e.g., using `C-u C-x ='), and then
+;;    explicitly setting them in an way that Customize will recognize,
+;;    such as using the Customize UI or a command such as
+;;    `set-face-foreground'.
 ;;
 ;;    Frame parameter changes, such as background color, can be saved
 ;;    for future use by all frames or all frames of a certain kind.
@@ -87,7 +117,7 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `doremi-frame-config-ring-size',
+;;    `doremi-customization-status', `doremi-frame-config-ring-size',
 ;;    `doremi-move-frame-wrap-within-display-flag',
 ;;    `doremi-push-frame-config-for-cmds-flag',
 ;;    `doremi-RGB-increment-factor', `doremi-wrap-color-flag'.
@@ -147,6 +177,7 @@
 ;;    `doremi-increment-red', `doremi-push-current-frame-config',
 ;;    `doremi-push-frame-config-for-command', `doremi-read-component',
 ;;    `doremi-read-increment-arg', `doremi-set-frame-color',
+;;    `doremi-update-face-customization-status',
 ;;    `doremi-wrap-or-limit-color-component'.
 ;;
 ;;
@@ -277,6 +308,13 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/26 dadams
+;;     Added: doremi-customization-status, doremi-update-face-customization-status.
+;;     doremi-increment-color, doremi-face-(bg|fg)-hue-stepping-saturation+,
+;;       doremi-face-(bg|fg)+:
+;;         Use doremi-update-face-customization-status.
+;;     doremi-face-bg/fg-1:
+;;       Removed put of properties customized-face and face-modified onto FACE.
 ;; 2015/07/08 dadams
 ;;     doremi-increment-color:
 ;;       Raise error if x-color-values returns nil (probably from "unspecified-[bf]g").
@@ -616,6 +654,29 @@ Don't forget to mention your Emacs and library versions."))
           "http://www.emacswiki.org/Doremi")
   :link '(emacs-commentary-link :tag "Commentary" "doremi-frm")
   )
+
+;;;###autoload
+(defcustom doremi-customization-status 'customized
+  "How Customize is to treat Do Re Mi face changes.
+Value determines whether Customize is aware of the changes and, if so,
+how it views them.  If the value is `customized' or `outside' then you
+can check what has changed by using command `customize-unsaved' or
+`customize-rogue', respectively.  If the value is anything else then
+there is no way to know what has changed, because you have effectively
+told Customize that nothing has changed.  The default value is
+`customize', which means that you can use `customize-unsaved' to show
+all changes and optionally save some or all of them.
+
+Value             What Customize Thinks            Command to Check
+---------------   ------------------------------   ----------------
+`customized'      Changes made using Customize     `customize-unsaved'
+`outside'         Changes made outside Customize   `customize-rogue'
+anything else     No changes made                  (no command)"
+  :type '(choice
+          (const :tag "Changes were made by Customize (set, not saved)" 'customized)
+          (const :tag "Changes were made outside Customize"             'outside)
+          (const :tag "No changes were made"                            'ignore))
+  :group 'Doremi-Frame-Commands)
 
 ;;;###autoload
 (defcustom doremi-frame-config-ring-size 20
@@ -1493,6 +1554,8 @@ and then use that as the initial value for `doremi-face-bg+'."
   (when (and (or pickup-p (and interactive-p (or (consp current-prefix-arg))))
              (boundp 'eyedrop-picked-background) eyedrop-picked-background)
     (set-face-background face eyedrop-picked-background))
+  ;; Tell Customize how to view the change.
+  (doremi-update-face-customization-status face)
   (let ((curr-bg  (face-background-20+ face nil 'default)))
     (condition-case nil
         (doremi-face-bg/fg-1 'background-color face component increment)
@@ -1523,6 +1586,8 @@ FACE arg is not a face name: %S" face))
   (when (and (or pickup-p (and interactive-p (or (consp current-prefix-arg))))
              (boundp 'eyedrop-picked-background) eyedrop-picked-background)
     (set-face-background face eyedrop-picked-background))
+  ;; Tell Customize how to view the change.
+  (doremi-update-face-customization-status face)
   (let ((curr-bg  (face-background-20+ face nil 'default)))
     (condition-case nil
         (doremi-face-hue-stepping-saturation 'background-color face increment)
@@ -1601,6 +1666,8 @@ See `doremi-face-bg+'; `doremi-face-fg+' is the same, with
   (when (and (or pickup-p (and interactive-p (or (consp current-prefix-arg))))
              (boundp 'eyedrop-picked-foreground) eyedrop-picked-foreground)
     (set-face-foreground face eyedrop-picked-foreground))
+  ;; Tell Customize how to view the change.
+  (doremi-update-face-customization-status face)
   (let ((curr-fg  (face-foreground-20+ face nil 'default)))
     (condition-case nil
         (doremi-face-bg/fg-1 'foreground-color face component increment)
@@ -1627,6 +1694,8 @@ FACE arg is not a face name: %S" face))
   (when (and (or pickup-p (and interactive-p (or (consp current-prefix-arg))))
              (boundp 'eyedrop-picked-foreground) eyedrop-picked-foreground)
     (set-face-foreground face eyedrop-picked-foreground))
+  ;; Tell Customize how to view the change.
+  (doremi-update-face-customization-status face)
   (let ((curr-fg  (face-foreground-20+ face nil 'default)))
     (condition-case nil
         (doremi-face-hue-stepping-saturation 'foreground-color face increment)
@@ -2067,12 +2136,9 @@ COMPONENT and INCREMENT are as for `doremi-increment-color'."
          (when (get-buffer "*Face Sample*") (kill-buffer "*Face Sample*"))
          (if (eq frame-parameter 'foreground-color)
              (let ((new-fg  (face-foreground-20+ face nil 'default)))
-               (set-face-foreground face new-fg)
-               (put face 'customized-face (list (list 't (list :foreground new-fg)))))
+               (set-face-foreground face new-fg))
            (let ((new-bg  (face-background-20+ face nil 'default)))
-             (set-face-background face new-bg)
-             (put face 'customized-face (list (list 't (list :background new-bg))))))
-         (put face 'face-modified nil)
+             (set-face-background face new-bg)))
          (message (substitute-command-keys
                    "Use `\\[doremi-undo-last-face-change]' to return to previous face \
 value. Use `\\[customize-face]' to revisit changes.")))
@@ -2196,7 +2262,11 @@ ARGS are additional arguments for SET-FN, which appear before the
                                (list (hexrgb-color-values-to-hex
                                       (mapcar (lambda (x) (floor (* x 65535.0)))
                                               (hexrgb-hsv-to-rgb hue saturation value))))
-                               (list frame))))))))
+                               (list frame)))
+
+         ;; Tell Customize how to view the change.
+         (when (memq set-fn '(set-face-foreground set-face-background))
+           (doremi-update-face-customization-status (car args))))))))
 
 (defun doremi-increment-red (hlen increment color set-fn frame args)
   "Increment the red component of COLOR using SET-FN, for FRAME.
@@ -2322,6 +2392,18 @@ FRAME-PARAMETER can be `background-color' or `foreground-color'."
       (frame-set-background-mode (or frame (selected-frame)))
     (frame-update-face-colors (or frame (selected-frame)))))
 
+(defun doremi-update-face-customization-status (face)
+  "Tell Customize how to view updates to FACE by Do Re Mi.
+The behavior is controlled by option `doremi-customization-status'.
+FACE is a face symbol."
+  (case doremi-customization-status
+    (customized
+     (put face 'customized-face (list (list 't (face-attr-construct face))))
+     (put face 'face-modified nil))
+    (outside
+     (put face 'customized-face nil)
+     (put face 'face-modified t))
+    (ignore)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
