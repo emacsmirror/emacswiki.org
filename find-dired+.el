@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: (("find-dired-" "0"))
-;; Last-Updated: Sat Jul 25 06:48:10 2015 (-0700)
+;; Last-Updated: Sun Jul 26 08:50:58 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 672
+;;     Update #: 676
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -81,6 +81,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/26 dadams
+;;     find-dired: Include more recent vanilla code, to offer to kill running old proc.
 ;; 2015/07/25 dadams
 ;;     find-dired-filter:
 ;;       Update wrt recent Emacs:
@@ -263,6 +265,16 @@ The `find' command run (after changing into DIR) is:
     (unless (file-directory-p dir)      ; Ensure that it's really a directory.
       (error "Command `find-dired' needs a directory: `%s'" dir))
     (switch-to-buffer (create-file-buffer (directory-file-name dir)))
+    ;; See if there is still a `find' running, and offer to kill it first, if so.
+    (let ((find-proc  (get-buffer-process (current-buffer))))
+      (when find-proc
+	(if (or (not (eq (process-status find-proc) 'run))
+		(yes-or-no-p "A `find' process is running; kill it? "))
+	    (condition-case nil
+		(progn (interrupt-process find-proc) (sit-for 1)
+                       (delete-process find-proc))
+	      (error nil))
+	  (error "Cannot have two processes in `%s' at once" (buffer-name)))))
     (widen)
     (kill-all-local-variables)
     (setq buffer-read-only  nil)
