@@ -64,10 +64,10 @@ would have to add your stuff.
 <code>xterm-color.el</code> is an alternative to ansi-color.el for both comint
 and eshell. It can also be used standalone in your own modes.
 
-Core and documentation here: https://github.com/atomontage/xterm-color
+Code and documentation here: https://github.com/atomontage/xterm-color
 
 It supports the standard ANSI color protocol plus XTERM 256 colors.
-It implements a state machine to handle ANSI SGR sequences rather than regular
+It implements a state machine to handle ANSI SGR sequences rather than using regular
 expressions like ansi-color.el. This means that xterm-color.el can correctly handle
 sequences that span input batches while also being faster than ansi-color.el.
 
