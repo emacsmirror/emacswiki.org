@@ -68,6 +68,7 @@ Suggestions:
 
 == Gnus and Security ==
 
+* [[Gmail, Gnus and GPG]] -- a simple setup that allows you to send and receive encrypted email
 * EasyPG -- GnuPG (gpg and gpgsm) interface for Emacs
 * EncryptingMail -- general page
 * GnusSMIME -- using openssl for signing/encrypting mails
