@@ -1,5 +1,6 @@
-AlexSchroeder wrote a short tutorial on how to setup [[Gnus]] to send and receive encryped mail via Gmail and hosted it on !GitHub. It's called [https://github.com/kensanata/ggg Gmail Gnus GPG (GGG)]. Here's a copy!
+AlexSchroeder wrote [https://github.com/kensanata/ggg a short tutorial on how to setup Gnus to send and receive encryped mail via Gmail] and hosted it on !GitHub. Here's a copy! :)
 
+----
 CategoryGnus
 
 = Gmail Gnus GPG (GGG) =
