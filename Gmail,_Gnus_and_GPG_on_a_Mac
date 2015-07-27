@@ -1,0 +1,77 @@
+This page contains some information for Mac users wanting to setup [[Gmail, Gnus and GPG]].
+
+I tried this using my Mac and a Guest account. A Guest account has all its files deleted when you log out.
+It's as "clean" as I could get.
+
+You can install Emacs in various ways. You could use [http://emacsformacosx.com/ Emacs For Mac OS X]. "Pure Emacs! No Extras! No Nonsense!" This is what I used to run. I've also built Emacs from source many times. Just remember to ##./configure --with-ns## before you start. You can install it from [http://brew.sh/ Homebrew]: You could ##brew install emacs## or you could install Yamamoto Mitsuharu's [https://github.com/railwaycat/emacs-mac-port/blob/master/README-mac Emacs Mac Port]. This last variant is what I'm using right now.
+
+{{{
+brew tap railwaycat/emacsmacport
+brew install emacs-mac --with-gnutls --with-imagemagick --with-official-icon --with-xml2
+brew linkapps emacs-mac
+}}}
+
+As for GPG, you have two options. You can install GPG via [https://gpgtools.org/ GPG Suite]. This is what I used at first.  ##gpg --version## said ##gpg (GnuPG/MacGPG2) 2.0.27## (the current, stable version is 2.0.28). But I wanted to install GPG via [http://brew.sh/ Homebrew]. If you want to try it as well, make sure you [http://support.gpgtools.org/kb/faq/uninstall-gpg-suite uninstall the GPG Suite] if you had it installed.
+
+If you just install ##gpg2##, you won't be able to enter your passphrase from within Emacs with a GUI.
+You'll see a simple, cut off message saying ##epa-file--find-file-not-found-function: Opening input file: Decryption failed,##.
+If you only use Emacs within terminal windows, no problem. No need to do anything.
+But if you like to use Emacs with fonts and colors, menus and scrollbars, then
+you need to install a special variant of pinentry in order to get a separate Pinentry window:
+
+{{{
+brew install gpg2
+brew install pinentry-mac
+}}}
+
+Once you have done that, change your ##~/.gnupg/gpg-agent.conf## file so that it has only this one line:
+
+{{{
+pinentry-program /usr/local/bin/pinentry-mac
+}}}
+
+When you install ##gpg2##, it tells you to put ##use-standard-socket## in your ##~/.gnupg/gpg-agent.conf## file. Don't do that unless you only want to use Emacs from a terminal. Here's a sample session in a terminal, showing you what you'll get, if you don't use ##pinentry-mac##:
+
+{{{
+alex@Megabombus:~$ echo "This is a test." > test
+alex@Megabombus:~$ gpg --recipient kensanata --encrypt test
+alex@Megabombus:~$ ls test*
+test     test.gpg
+alex@Megabombus:~$ gpg --output test2 test.gpg 
+
+You need a passphrase to unlock the secret key for
+user: "Alex Schroeder <kensanata@keybase.io>"
+8192-bit RSA key, ID 4529A45C, created 2015-03-01 (main key ID ACECFEAE)
+
+gpg: encrypted with 8192-bit RSA key, ID 4529A45C, created 2015-03-01
+      "Alex Schroeder <kensanata@keybase.io>"
+alex@Megabombus:~$ ls test*
+test     test.gpg test2
+alex@Megabombus:~$ diff test test2
+}}}
+
+When asked for your passphrase, you'll see something like the following:
+
+{{{
+               ┌────────────────────────────────────────────────────────────────────────────────────┐
+               │ Please enter the passphrase to unlock the secret key for the OpenPGP certificate:  │
+               │ "Alex Schroeder <kensanata@keybase.io>"                                            │
+               │ 8192-bit RSA key, ID 4529A45C,                                                     │
+               │ created 2015-03-01 (main key ID ACECFEAE).                                         │
+               │                                                                                    │
+               │                                                                                    │
+               │ Passphrase *****************************************************************______ │
+               │                                                                                    │
+               │            <OK>                                                  <Cancel>          │
+               └────────────────────────────────────────────────────────────────────────────────────┘
+}}}
+
+This pinentry works in a terminal, but it won't show up when GPG is called by GUI Emacs!
+Install ##pinentry-mac## and you'll be able to provide your passphrase when using Emacs.
+
+If you already tinkered with gpg before changing ##~/.gnupg/gpg-agent.conf##, you'll have to reload ##gpg-agent##.
+
+{{{
+alex@Megabombus:~$ echo RELOADAGENT | gpg-connect-agent
+OK
+}}}
