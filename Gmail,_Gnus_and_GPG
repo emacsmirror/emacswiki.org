@@ -1,5 +1,6 @@
 AlexSchroeder wrote [https://github.com/kensanata/ggg a short tutorial on how to setup Gnus to send and receive encryped mail via Gmail] and hosted it on !GitHub. Here's a copy! :)
 
+If you're on a Mac, see [[Gmail, Gnus and GPG on a Mac]] for what to install.
 ----
 CategoryGnus
 
