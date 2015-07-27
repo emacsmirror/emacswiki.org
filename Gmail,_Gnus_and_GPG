@@ -116,13 +116,13 @@ The first hex number is your Key ID. In this case that would be
 
 I like to expire my keys. This simplifies things because I don't have to
 worry about revocation certificates and all that. If you do, you could
-learn by reading
+learn more by reading
 [https://alexcabal.com/creating-the-perfect-gpg-keypair/ Creating the perfect GPG keypair]
 by Alex Cabal.
 
 == Exchanging public keys with partners ==
 
-This is what we would send out partners:
+This is what we would send our partners:
 
 {{{
 Guest@Megabombus:~$ gpg --export --armor kensanata@gmail.com
