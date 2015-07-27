@@ -428,7 +428,7 @@ The file ##~/.MacOSX/environment.plist## also solves similar problems in X11, be
 
 == Misc ==
 
-On the Apple [http://www.apple.com/downloads/macosx/unix_open_source/carbonemacspackage.html page] (dead link; see [https://web.archive.org/web/20110330131443/http://www.apple.com/downloads/macosx/unix_open_source/carbonemacspackage.html archive]) it says that the license is "Freeware" which is wrong, I think.
+On the Apple [http://www.apple.com/downloads/macosx/unix_open_source/carbonemacspackage.html page] (dead link; see [https://web.archive.org/web/20110507083241/http://www.apple.com/downloads/macosx/unix_open_source/carbonemacspackage.html archive]) it says that the license is "Freeware" which is wrong, I think.
 -- AlexSchroeder
 
 The developer chooses "freeware" or "shareware" in that entry item so that freeware would be a right choice. Other GPL'ed softwares are also categorized as freeware. -- SeijiZenitani
