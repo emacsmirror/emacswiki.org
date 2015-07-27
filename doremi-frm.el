@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0") (faces+ "0") (frame-fns "0") (hexrgb "0"))
-;; Last-Updated: Sun Jul 26 15:16:24 2015 (-0700)
+;; Last-Updated: Mon Jul 27 13:55:56 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3052
+;;     Update #: 3068
 ;; URL: http://www.emacswiki.org/doremi-frm.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
@@ -32,8 +32,8 @@
 ;;  When you invoke the Do Re Mi iterative commands defined here, you
 ;;  can press and hold an up/down arrow key, or rotate the mouse
 ;;  wheel, to change face attributes or frame parameters.  For more
-;;  information, see file `doremi.el' and the doc-string for function
-;;  `doremi' in particular.
+;;  information, see file `doremi.el', in particular the doc-string
+;;  for function `doremi'.
 ;;
 ;;  NOTE: Functions and variables in this library have the prefix
 ;;        `doremi-'.  In order to more easily distinguish commands
@@ -42,66 +42,80 @@
 ;;
 ;;  Note about saving changes made with the commands defined here:
 ;;
-;;    Some of the commands defined here change face and frame
-;;    parameters.  User option `doremi-customization-status' controls
-;;    whether, and if so how, Customize is to be informed about these
-;;    changes.  In any case, the commands do not save any changes they
-;;    make.  If you want to save the changes then you will need to
-;;    tell Customize to do that.
+;;    Some of the commands defined here change face parameters.  User
+;;    option `doremi-customization-status' controls whether, and if so
+;;    how, Customize is to be informed about these changes.  In any
+;;    case, the commands do not save any changes they make.  If you
+;;    want to save the changes then you will need to tell Customize to
+;;    do that.
 ;;
 ;;    The default value of option `doremi-customization-status' is
 ;;    `customized', which means to tell Customize that the changes
 ;;    were made by Customize itself, that is, just as if you had set
 ;;    the new values using the Customize UI.  In this case, you can
 ;;    use command `customize-unsaved' (aka `customize-customized') to
-;;    open Customize for all of the changes.  You can then save any of
-;;    them individualy (using its `State' menu, item `Save for Future
-;;    Sessions') or click the button (`Apply and Save') to save all of
-;;    them at once.
+;;    open Customize for all of the changed faces.  You can then save
+;;    any of them individualy (using its `State' menu, item `Save for
+;;    Future Sessions') or click the button (`Apply and Save') to save
+;;    all of them at once.
 ;;
 ;;    If the value of option `doremi-customization-status' is
 ;;    `outside' then changes made by the commands here are considered
 ;;    by Customize to have been made outside Customize, that is, as
-;;    "rogue" changes.  This is how Customize considers changes made
-;;    by command `set-face-foreground', for example.  In this case, if
-;;    you want to save the changes then you can use command
-;;    `customize-rogue' to open Customize for them.
+;;    so-called "rogue" changes.  This is how Customize considers
+;;    changes made by command `set-face-foreground', for example.  In
+;;    this case, if you want to save the changes then you can use
+;;    command `customize-rogue' to open Customize for them.
 ;;
 ;;    If the value of option `doremi-customization-status' is anything
 ;;    else then Customize is not informed of the changes made by
-;;    commands defined here.  You see the changes, but Customize does
-;;    not recognize them.  In this case there is no way to know what
-;;    the changes were, and hence no way to save them except by noting
-;;    the current color values (e.g., using `C-u C-x ='), and then
-;;    explicitly setting them in an way that Customize will recognize,
-;;    such as using the Customize UI or a command such as
-;;    `set-face-foreground'.
+;;    commands defined here.  You see the changes in the current Emacs
+;;    session, but Customize does not recognize them.  In this case
+;;    there is no way to know what the changes were, and hence no way
+;;    to save them except by noting the current color values (e.g.,
+;;    using `C-u C-x =') and then explicitly setting them in a way
+;;    that Customize will recognize, such as using the Customize UI or
+;;    a command such as `set-face-foreground'.
 ;;
-;;    Frame parameter changes, such as background color, can be saved
-;;    for future use by all frames or all frames of a certain kind.
-;;    For that, you must change the frame parameters of the
-;;    correponding frame-alist variable.
+;;    Frame parameter changes, such as background color, are different
+;;    from face changes (though the background color of face `default'
+;;    is used as the default value for frame parameter
+;;    `background-color').  When you change the background or
+;;    foreground color of a given frame, this change is not associated
+;;    with any particular persistent setting in the same way that a
+;;    face change is associated with a face, whose customization can
+;;    be saved.  That is, there is no single variable for saving
+;;    changes to parameters of the current frame.
 ;;
-;;    There is no single variable for saving changes to parameters of
-;;    the current frame.  Instead, there are several different
-;;    frame-alist variables, which you can use to define different
-;;    kinds of frames.  These include: `default-frame-alist',
-;;    `initial-frame-alist', and `special-display-frame-alist'.  The
-;;    complete list of such frame alist variables is available using
-;;    function `frame-alist-var-names', defined in library
-;;    `frame-cmds.el'.
+;;    Instead, the frame settings that are persistent are the alist
+;;    options that determine the default characteristics of certain
+;;    *kinds* of frame, not individual frames.  These include:
+;;    `default-frame-alist', `initial-frame-alist',
+;;    `special-display-frame-alist', and `minibuffer-frame-alist' (if
+;;    you use a standalone minibuffer frame).  The complete list of
+;;    such frame alist variables is available using function
+;;    `frame-alist-var-names', defined in library `frame-cmds.el'.
 ;;
-;;    Example: Suppose you change the background color of a frame and
-;;    want to make that the default background color for new frames in
-;;    the future.  You will need to update the value of variable
-;;    `default-frame-alist' to use the `background-color' parameter
-;;    setting of the changed frame.
+;;    After you use Do Re Mi commands that change a frame background
+;;    or foreground color, if you want to save that new appearance in
+;;    one of the frame alist variables then you need to obtain the
+;;    current color and use it to customize the alist variable.
+;;
+;;    Example: Suppose you change the background color of a frame, and
+;;    you want to make it the default background color for new frames
+;;    in the future.  You will need to update the value of variable
+;;    `default-frame-alist', so that it uses the `background-color'
+;;    parameter setting of the changed frame.
 ;;
 ;;    You can easily copy one or all parameter values from any given
-;;    frame to any frame alist (such as `default-frame-alist'), by
-;;    using the commands `set-frame-alist-parameter-from-frame' and
+;;    frame to any frame alist variable (such as
+;;    `default-frame-alist'), by using the commands
+;;    `set-frame-alist-parameter-from-frame' and
 ;;    `set-all-frame-alist-parameters-from-frame'.  Those commands are
-;;    defined in library `frame-cmds.el'.
+;;    defined in library `frame-cmds.el'.  Alternatively, you can use
+;;    `M-: (frame-parameters)' to show all of the current parameter
+;;    values for the selected frame, and then customize the alist
+;;    variable to use any of them you like.
 ;;
 ;;  Note on available color names:
 ;;
