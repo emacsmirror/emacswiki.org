@@ -1,5 +1,9 @@
 AlexSchroeder wrote a short tutorial on how to setup [[Gnus]] to send and receive encryped mail via Gmail and hosted it on !GitHub. It's called [https://github.com/kensanata/ggg Gmail Gnus GPG (GGG)]. Here's a copy!
 
+CategoryGnus
+
+= Gmail Gnus GPG (GGG) =
+
 Sending and receiving encrypted mail using
 [https://mail.google.com/ Gmail], [http://www.gnus.org/ Gnus] and
 [https://www.gnupg.org/ GPG]. I'm assuming you know a bit about all the
@@ -23,7 +27,7 @@ screen loggers). But,
 is important. Every little thing help. And it definitely makes mass
 surveillance much harder and more expensive to do.
 
-== Getting a secret key for GPG
+== Getting a secret key for GPG ==
 
 We'll generate a new secret key using GPG. A secret key is like your
 identity. You need to keep it safe. Every secret key comes with a public
@@ -114,7 +118,7 @@ learn by reading
 [https://alexcabal.com/creating-the-perfect-gpg-keypair/ Creating the perfect GPG keypair]
 by Alex Cabal.
 
-== Exchanging public keys with partners
+== Exchanging public keys with partners ==
 
 This is what we would send out partners:
 
@@ -206,7 +210,7 @@ and so on. Consider using [https://keybase.io/ Keybase]. It allows you
 to "Get a public key, safely, starting just with someone's social media
 username(s)."
 
-== Getting a password for Gmail
+== Getting a password for Gmail ==
 
 This setup assumes that you have
 [https://www.google.com/landing/2step/ enabled 2-step authentication]
@@ -225,7 +229,7 @@ that somebody may have stolen it.
 
 Let's assume that the password generated is "thisismysecretpw".
 
-== Storing your Gmail password for Gnus, using GPG to encrypt it
+== Storing your Gmail password for Gnus, using GPG to encrypt it ==
 
 We want Gnus to know about this password. Gnus uses a file called
 ##~./authinfo.gpg## for all your passwords. This file will be protected by
@@ -264,7 +268,7 @@ Move the line marked with the ##u##. This is the key with "ultimate trust"
 If you exit Emacs and try to open the file again, you'll be asked for
 your passphrase. Excellent!
 
-== Setting up Gnus for Gmail
+== Setting up Gnus for Gmail ==
 
 Gnus is a powerful tool. Originally, it was intended to read news on
 USENET. Then backends were added and now it can read RSS files, mail in
@@ -332,7 +336,7 @@ This moves them into the Spam folder."
   (gnus-summary-move-article nil "nnimap+imap.gmail.com:[Gmail]/Spam"))
 }}}
 
-== Run Gnus
+== Run Gnus ==
 
 Do it now! Start Emacs and run ##M-x gnus##. You will be prompted for your
 passphrase to unlock the Gmail password, and then Gnus will start
@@ -348,7 +352,7 @@ running. You should see something like the following:
 *      0: [Gmail]/Starred
 }}}
 
-== Send encrypted mail
+== Send encrypted mail ==
 
 Let's test sending some encrypted mail. Hit ##m## to create a message
 buffer. The tag ##<#secure method=pgpmime mode=encrypt>## makes sure that
@@ -411,7 +415,7 @@ Cheers
 Alex
 }}}
 
-== Further Reading
+== Further Reading ==
 
 * [https://gist.github.com/grugq/03167bed45e774551155 Operational PGP]
 * [http://keyring.debian.org/creating-key.html Creating a new GPG key]
