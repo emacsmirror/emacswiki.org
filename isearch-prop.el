@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 28 08:06:49 2015 (-0700)
+;; Last-Updated: Tue Jul 28 08:16:17 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 848
+;;     Update #: 854
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -397,8 +397,8 @@ You can toggle `isearchp-ignore-comments-flag' using `C-M-;' in the
 minibuffer, but depending on when you do so you might need to invoke
 the current command again.
 
-See `isearchp-hide/show-comments', which is used to hide and
-show the comments."
+See `isearchp-hide/show-comments', which is used to hide and show the
+comments."
   (let ((result  (make-symbol "result"))
         (ostart  (make-symbol "ostart"))
         (oend    (make-symbol "oend")))
@@ -1705,6 +1705,8 @@ Non-nil REGEXP-P means use regexp search (otherwise, literal search)."
 If the region is active then toggle in the region.  Otherwise, in the
 whole buffer.
 
+During Isearch this is bound to `M-;'.
+
 Interactively, START and END default to the region limits, if active.
 Otherwise, including non-interactively, they default to `point-min'
 and `point-max'.
@@ -1735,10 +1737,10 @@ Interactively, START and END default to the region limits, if active.
 Otherwise, including non-interactively, they default to `point-min'
 and `point-max'.
 
-During Isearch this is bound to `M-;'.  However, in order to use a
-prefix arg within Isearch you must set `isearch-allow-scroll' or
-`isearch-allow-prefix' (if available) to non-nil.  Otherwise, a prefix
-arg exits Isearch.
+During Isearch this is invoked when you use `M-;'.  However, in order
+to use a prefix arg within Isearch you must set `isearch-allow-scroll'
+or `isearch-allow-prefix' (if available) to non-nil.  Otherwise, a
+prefix arg exits Isearch.
 
 Uses `save-excursion', restoring point.
 
