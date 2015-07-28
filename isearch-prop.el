@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 28 14:33:35 2015 (-0700)
+;; Last-Updated: Tue Jul 28 14:40:25 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 863
+;;     Update #: 865
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -1537,10 +1537,9 @@ is non-nil."
         (t
          (let ((pos  beg))
            (while (< pos end)
-             (let* ((ovs   (overlays-at pos))
-                    (d-ov  (car (isearchp-some ovs nil (lambda (ov _)
-                                                         (member ov isearchp-dimmed-overlays))))))
-               (when d-ov (delete-overlay d-ov)))
+             (let* ((ovs     (overlays-at pos))
+                    (dim-ov  (car (isearchp-some ovs nil (lambda (ov _) (member ov isearchp-dimmed-overlays))))))
+               (when dim-ov (delete-overlay dim-ov)))
              (setq pos  (1+ pos)))))))
   
 ;; Same as `icicle-remove-duplicates'.
