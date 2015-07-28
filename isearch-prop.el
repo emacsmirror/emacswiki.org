@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 28 08:16:17 2015 (-0700)
+;; Last-Updated: Tue Jul 28 08:28:12 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 854
+;;     Update #: 856
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -1809,9 +1809,11 @@ THING that is defined as a thing-at-point type.
 
 If user option `isearchp-ignore-comments-flag' is nil then include
 THINGs located within comments.  Non-nil (the default value) means to
-ignore things inside comments for searching.  You can toggle this
-option using `C-M-;' during Isearch, but to see the effect you will
-need to invoke this command again.
+ignore things inside comments for searching.  In particular, this
+means that for `comment' as THING search contexts, be sure to turn off
+ignoring of comments.  You can toggle whether comments are ignored
+using `C-M-;' during Isearch, but to see the effect you will need to
+invoke this command again.
 
 You are prompted for the type of THING to search.
 
