@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 20 08:03:52 2015 (-0700)
+;; Last-Updated: Tue Jul 28 08:06:49 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 844
+;;     Update #: 848
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -51,7 +51,7 @@
 ;;  http://dto.freeshell.org/notebook/Linkd.html.
 ;;
 ;;  (@> "Overview of Features")
-;;  (@> "Change Log")
+;;  (@> "Macros")
 ;;  (@> "Variables")
 ;;  (@> "Keys")
 ;;  (@> "General Commands")
@@ -244,6 +244,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/28 dadams
+;;     Moved defmacro forward in file.
 ;; 2015/07/20 dadams
 ;;     isearchp-add-prop-to-other-prop-zones: Added missing error clause to condition-case-no-debug.
 ;; 2015/07/19 dadams
@@ -381,6 +383,34 @@
 (defvar isearchp-reg-beg) ;; In `isearch+.el'.
 (defvar isearchp-reg-end) ;; In `isearch+.el'.
 (defvar comment-end-skip) ;; In `newcomment.el' (Emacs 24+).
+ 
+;;(@* "Macros")
+
+;;; Macros ----------------------------------------------
+
+;;; Same as `with-comments-hidden' in `hide-comnt.el', except doc here mentions `C-M-;'.
+(defmacro isearchp-with-comments-hidden (start end &rest body)
+  "Evaluate the forms in BODY while comments are hidden from START to END.
+But if `isearchp-ignore-comments-flag' is nil, just evaluate BODY,
+without hiding comments.  Show comments again when BODY is finished.
+You can toggle `isearchp-ignore-comments-flag' using `C-M-;' in the
+minibuffer, but depending on when you do so you might need to invoke
+the current command again.
+
+See `isearchp-hide/show-comments', which is used to hide and
+show the comments."
+  (let ((result  (make-symbol "result"))
+        (ostart  (make-symbol "ostart"))
+        (oend    (make-symbol "oend")))
+    `(let ((,ostart  ,start)
+           (,oend    ,end)
+           ,result)
+       (unwind-protect
+            (setq ,result  (progn (when isearchp-ignore-comments-flag
+                                    (isearchp-hide/show-comments 'hide ,ostart ,oend))
+                                  ,@body))
+         (when isearchp-ignore-comments-flag (isearchp-hide/show-comments 'show ,ostart ,oend))
+         ,result))))
  
 ;;(@* "Variables")
 
@@ -1746,30 +1776,6 @@ show them."
                    (put-text-property cbeg cend 'invisible nil)))
                (goto-char (setq start  (or cend  end)))))
         (set-buffer-modified-p bufmodp)))))
-
-;;; Same as `with-comments-hidden' in `hide-comnt.el', except doc here mentions `C-M-;'.
-(defmacro isearchp-with-comments-hidden (start end &rest body)
-  "Evaluate the forms in BODY while comments are hidden from START to END.
-But if `isearchp-ignore-comments-flag' is nil, just evaluate BODY,
-without hiding comments.  Show comments again when BODY is finished.
-You can toggle `isearchp-ignore-comments-flag' using `C-M-;' in the
-minibuffer, but depending on when you do so you might need to invoke
-the current command again.
-
-See `isearchp-hide/show-comments', which is used to hide and
-show the comments."
-  (let ((result  (make-symbol "result"))
-        (ostart  (make-symbol "ostart"))
-        (oend    (make-symbol "oend")))
-    `(let ((,ostart  ,start)
-           (,oend    ,end)
-           ,result)
-       (unwind-protect
-            (setq ,result  (progn (when isearchp-ignore-comments-flag
-                                    (isearchp-hide/show-comments 'hide ,ostart ,oend))
-                                  ,@body))
-         (when isearchp-ignore-comments-flag (isearchp-hide/show-comments 'show ,ostart ,oend))
-         ,result))))
 
 (defun isearchp-toggle-ignoring-comments (&optional msgp) ; Bound to `C-M-;' during Isearch.
   "Toggle the value of option `isearchp-ignore-comments-flag'.
