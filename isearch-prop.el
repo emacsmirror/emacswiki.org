@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 28 08:28:12 2015 (-0700)
+;; Last-Updated: Tue Jul 28 08:33:40 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 856
+;;     Update #: 857
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -1813,7 +1813,7 @@ ignore things inside comments for searching.  In particular, this
 means that for `comment' as THING search contexts, be sure to turn off
 ignoring of comments.  You can toggle whether comments are ignored
 using `C-M-;' during Isearch, but to see the effect you will need to
-invoke this command again.
+invoke Isearch again.
 
 You are prompted for the type of THING to search.
 
