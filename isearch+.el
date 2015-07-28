@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 22 19:47:50 2015 (-0700)
+;; Last-Updated: Tue Jul 28 08:16:42 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3721
+;;     Update #: 3722
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -2328,7 +2328,7 @@ Commands that Require Library `isearch-prop.el'
 \\[isearchp-property-forward-regexp]\t- regexp-search for a character (overlay or text) property
 \\[isearchp-toggle-complementing-domain]\t- toggle searching complements of normal search contexts
 \\[isearchp-toggle-ignoring-comments]\t- toggle ignoring comments for `isearchp-thing'
-\\[isearchp-hide/show-comments]\t- hide or (`C-u') show comments
+\\[isearchp-toggle-hiding-comments]\t- hide or (`C-u') show comments
 
 \\[isearchp-put-prop-on-region]\t- add a text property to region
 \\[isearchp-add-regexp-as-property]\t- add prop to regexp matches
