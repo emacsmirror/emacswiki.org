@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 28 08:33:40 2015 (-0700)
+;; Last-Updated: Tue Jul 28 14:33:35 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 857
+;;     Update #: 863
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -245,6 +245,8 @@
 ;;; Change Log:
 ;;
 ;; 2015/07/28 dadams
+;;     isearchp-add-prop-to-other-prop-zones:
+;;       Moved final call to isearchp-add/remove-dim-overlay to ADD outside of condition-case-no-debug.
 ;;     Moved defmacro forward in file.
 ;; 2015/07/20 dadams
 ;;     isearchp-add-prop-to-other-prop-zones: Added missing error clause to condition-case-no-debug.
@@ -1303,6 +1305,7 @@ Returns non-nil if the property was added, nil if not."
         (added-prop-p      nil)
         (zbeg              nil)
         (zend              nil)
+        (zend-last         nil)
         (match             nil))
     (isearchp-with-comments-hidden
      start end
@@ -1329,11 +1332,13 @@ Returns non-nil if the property was added, nil if not."
              (when (and zbeg  zend  (/= zbeg zend))
                ;; `isearchp-put-prop-on-region' also removes dimming from ZBEG to ZEND.
                (isearchp-put-prop-on-region prop-to-add value-to-add zbeg zend)
-               (isearchp-add/remove-dim-overlay zend end 'ADD)
-               (setq added-prop-p  value-to-add))
+               (setq added-prop-p  value-to-add
+                     zend-last     zend))
              (goto-char (setq last-beg  (or zend  zbeg  last-beg)))))
        (error (error "%s" (error-message-string add-prop-to-zones-with-other-prop))))
-     (unless added-prop-p (isearchp-add/remove-dim-overlay start end nil))
+     (if added-prop-p
+         (isearchp-add/remove-dim-overlay zend-last end 'ADD)
+       (isearchp-add/remove-dim-overlay start end nil))
      (set-buffer-modified-p bufmodp))
     (when msgp
       (message (if added-prop-p
