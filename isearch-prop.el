@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 29 07:56:44 2015 (-0700)
+;; Last-Updated: Wed Jul 29 12:09:03 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 888
+;;     Update #: 900
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -101,7 +101,8 @@
 ;;    `isearchp-bounds-of-thing-at-point',
 ;;    `isearchp-complement-dimming', `isearchp-defined-thing-p',
 ;;    `isearchp-dim-color', `isearchp-dim-face-spec',
-;;    `isearchp-message-prefix', `isearchp-next-visible-thing-1',
+;;    `isearchp-lazy-highlights-present-p', `isearchp-message-prefix',
+;;    `isearchp-next-visible-thing-1',
 ;;    `isearchp-next-visible-thing-2',
 ;;    `isearchp-next-visible-thing-and-bounds',
 ;;    `isearchp-properties-in-buffer', `isearchp-property-1',
@@ -245,6 +246,12 @@
 ;;; Change Log:
 ;;
 ;; 2015/07/29 dadams
+;;     Added: isearchp-lazy-highlights-present-p.
+;;     isearchp-lazy-highlights-forward:
+;;       Added args BEG, END, RESTARTP.
+;;       Raise error if not isearchp-lazy-highlights-present-p.
+;;       With prefix arg or if no marked lazy-highlights, call isearchp-mark-lazy-highlights to mark them.
+;;     isearchp-property-matches-p: Corrected to loop over all overlays at point, not just use the first.
 ;;     isearchp-thing-read-args: Turn off *-ignore-comments-flag if THING = comment and not complementing.
 ;;     isearchp-thing: Updated doc string to mention this.
 ;; 2015/07/28 dadams
@@ -1122,33 +1129,41 @@ The predicate is suitable as a value of `isearch-filter-predicate'."
 ;; Same as `icicle-search-char-prop-matches-p', defined in `icicles-cmd2.el'.
 (defun isearchp-property-matches-p (type property values match-fn position)
   "Return non-nil if POSITION has PROPERTY with a value matching VALUES.
-TYPE is `overlay', `text', or nil, and specifies the type of property
-- nil means look for both overlay and text properties.
+TYPE is `overlay', `text', or nil, and specifies the type of property.
+TYPE nil means look for both overlay and text properties.  Return
+ non-nil if either matches.
 
-Find text with a PROPERTY value that overlaps with VALUES: If the
-value of PROPERTY is an atom, then it must be a member of VALUES.  If
-it is a list, then at least one list element must be a member of
-VALUES.
+Matching means finding text with a PROPERTY value that overlaps with
+VALUES: If the value of PROPERTY is an atom, then it must be a member
+of VALUES.  If it is a list, then at least one list element must be a
+member of VALUES.
 
 MATCH-FN is a binary predicate that is applied to each item of VALUES
 and a zone of text with property PROP.  If it returns non-nil then the
 zone is a search hit."
-  (let* ((ovlyval  (and (or (not type)  (eq type 'overlay))
-                        (let ((ovs  (overlays-at position)))
-                          (and ovs  (isearchp-some ovs property #'overlay-get)))))
-         (textval  (and (or (not type)  (eq type 'text))
-                        (get-text-property position property))))
-    (or (and ovlyval  (isearchp-some values ovlyval match-fn))
-        (and textval  (isearchp-some values textval match-fn)))))
+  (let* ((ov-matches-p   nil)
+         (txt-matches-p  nil)
+         (ovchk-p        (and (or (not type)  (eq type 'overlay))))
+         (ovs            (and ovchk-p  (overlays-at position))))
+    (when ovchk-p
+      (setq ov-matches-p
+            (catch 'isearchp-property-matches-p
+              (dolist (ov  ovs)
+                (when (isearchp-some values (overlay-get ov property) match-fn)
+                  (throw 'isearchp-property-matches-p t)))
+              nil)))
+    (when (and (or (not type)  (eq type 'text)))
+      (setq txt-matches-p  (isearchp-some values (get-text-property position property) match-fn)))
+    (or ov-matches-p  txt-matches-p)))
 
 ;; Same as `icicle-some', defined in `icicles-fn.el'.
-(defun isearchp-some (list arg2 predicate)
-  "Apply binary PREDICATE successively to an item of LIST and ARG2.
+(defun isearchp-some (lst arg2 predicate)
+  "Apply binary PREDICATE successively to an item of list LST and ARG2.
 Return the first non-nil value returned by PREDICATE, or nil if none.
 PREDICATE must be a function with two required arguments."
   (let ((result  nil))
     (catch 'isearchp-some
-      (dolist (arg1  list)
+      (dolist (arg1  lst)
         (when (setq result  (funcall predicate arg1 arg2))  (throw 'isearchp-some result))))
     result))
 
@@ -1222,15 +1237,55 @@ commands and commands such as `isearchp-imenu*',
     (set-buffer-modified-p bufmodp)))
 
 ;; FIXME: If repeat `isearchp-lazy-highlights-forward' then no more dimming.
-(defun isearchp-lazy-highlights-forward ()
-  "Search lazy-highlight zones of text.
-You must first use command `isearchp-mark-lazy-highlights', to mark
-the zones with property `isearchp-lazy-highlight'."
-  (interactive)
-  (setq isearchp-property-prop    'isearchp-lazy-highlight
-        isearchp-property-type    'text
-        isearchp-property-values  '(t))
-  (isearchp-property-1 'isearch-forward '(4)))
+(defun isearchp-lazy-highlights-forward (beg end &optional restartp)
+  "Search lazy-highlight zones of text in the active region or the buffer.
+If lazy-highlight zones are already marked, and if you did not use a
+prefix arg, those previously marked zones are searched.
+
+Otherwise (either a prefix arg or the lazy-highlight zones have not
+been marked), the current lazy-highlight zones are marked and then
+searched.
+
+You can mark the lazy-highlight zones anytime using command
+`isearchp-mark-lazy-highlights'.  See that command for info about
+options `lazy-highlight-cleanup' and `lazy-highlight-max-at-a-time'."
+  (interactive 
+   (list (if (and transient-mark-mode  mark-active) (region-beginning) (point-min))
+         (if (and transient-mark-mode  mark-active) (region-end) (point-max))
+         current-prefix-arg))
+  (unless (isearchp-lazy-highlights-present-p beg end) (error "No lazy-highlight zones"))
+  (let ((markedp  nil))
+    (if restartp
+        (setq markedp  (prog1 (call-interactively #'isearchp-mark-lazy-highlights)
+                         (sit-for 1)))  ; For msg display
+      (let ((chg  (next-single-property-change beg 'isearchp-lazy-highlight)))
+        (when (or (not chg)  (= end chg))
+          (setq markedp  (prog1 (call-interactively #'isearchp-mark-lazy-highlights)
+                           (sit-for 1))))) ; For msg display
+      (if (not markedp)
+          (error "No lazy-highlight zones marked") ; Should not happen (?).
+        (setq isearchp-property-prop    'isearchp-lazy-highlight
+              isearchp-property-type    'text
+              isearchp-property-values  '(t))
+        (isearchp-property-1 'isearch-forward '(4))))))
+
+(defun isearchp-lazy-highlights-present-p (start end)
+  "Return non-nil if any text from START to END has face `lazy-highlight'."
+  (unless start (setq start  (point-min)))
+  (unless end   (setq end    (point-max)))
+  (catch 'isearchp-lazy-highlights-present-p
+    (save-excursion
+      (goto-char start)
+      (while (< (point) end)
+        (let ((face  (get-char-property-and-overlay (point) 'face))
+              next)
+          (setq face  (and (cdr face) (car face)))
+          (when (or (eq face 'lazy-highlight)  (and (listp face)  (memq 'lazy-highlight face)))
+            (throw 'isearchp-lazy-highlights-present-p t))
+          (goto-char (if (setq next  (next-overlay-change (point)))
+                         next
+                       end)))))
+    nil))
 
 (defun isearchp-mark-lazy-highlights (&optional start end msgp)
   "Add text property `isearchp-lazy-highlight' to lazy-highlighted text.
