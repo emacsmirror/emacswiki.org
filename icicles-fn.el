@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sat Jul  4 16:49:27 2015 (-0700)
+;; Last-Updated: Wed Jul 29 11:49:55 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15086
+;;     Update #: 15089
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5258,13 +5258,14 @@ avoid corrupting the original LIST1 and LIST2."
         (setq list1  (cdr list1)))
       result)))
 
-(defun icicle-some (list arg2 predicate)
-  "Apply binary PREDICATE successively to an item of LIST and ARG2.
+;; Same as `isearchp-some' in `isearch-prop.el'.
+(defun icicle-some (lst arg2 predicate)
+  "Apply binary PREDICATE successively to an item of list LST and ARG2.
 Return the first non-nil value returned by PREDICATE, or nil if none.
 PREDICATE must be a function with two required arguments."
   (let ((result  nil))
     (catch 'icicle-some
-      (dolist (arg1  list)
+      (dolist (arg1  lst)
         (when (setq result  (funcall predicate arg1 arg2))  (throw 'icicle-some result))))
     result))
 
