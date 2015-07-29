@@ -15,7 +15,7 @@ Some bookmarking commands to get you started:
 * `C-x r l' -- list your bookmarks
 * `M-x bookmark-delete' -- delete a bookmark by name
 
-Your personal bookmark file is defined by [[option]] `bookmark-default-file', which defaults to `##~/.emacs.bmk##'.  The file is maintained automatically by Emacs as you create, change, and delete bookmarks.
+Your personal bookmark file is defined by [[option]] `bookmark-default-file', which defaults to `##~/.emacs.d/bookmarks##` (`##~/.emacs.bmk##' in previous versions of emacs).  The file is maintained automatically by Emacs as you create, change, and delete bookmarks.
 
 ([[Bookmark+]] makes it easy to have multiple bookmark files -- different sets of bookmarks for different uses.)
 
