@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 29 12:09:03 2015 (-0700)
+;; Last-Updated: Wed Jul 29 13:31:42 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 900
+;;     Update #: 904
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -254,6 +254,8 @@
 ;;     isearchp-property-matches-p: Corrected to loop over all overlays at point, not just use the first.
 ;;     isearchp-thing-read-args: Turn off *-ignore-comments-flag if THING = comment and not complementing.
 ;;     isearchp-thing: Updated doc string to mention this.
+;;     isearchp-hide/show-comments:
+;;       No-op if no comment-start.  Pass NOERROR arg to comment-normalize-vars.
 ;; 2015/07/28 dadams
 ;;     isearchp-thing-scan: Revert hopeful code that expected bug #9300 to be fixed in Emacs 24.
 ;;                          You really need library thingatpt+.el if you want reasonable behavior.
@@ -1820,7 +1822,8 @@ show them."
                      (if (or (not mark-active) (null (mark)) (= (point) (mark)))
                          (list (point-min) (point-max))
                        (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point))))))
-  (when (require 'newcomment nil t)     ; `comment-search-forward'
+  (when (and comment-start       ; No-op if no comment syntax defined.
+             (require 'newcomment nil t)) ; `comment-search-forward'
     (comment-normalize-vars)     ; Per Stefan, should call this first.
     (unless start (setq start  (point-min)))
     (unless end   (setq end    (point-max)))
