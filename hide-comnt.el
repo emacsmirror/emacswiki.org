@@ -8,9 +8,9 @@
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:51:15 2015 (-0800)
+;; Last-Updated: Wed Jul 29 13:26:39 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 168
+;;     Update #: 174
 ;; URL: http://www.emacswiki.org/hide-comnt.el
 ;; Doc URL: http://www.emacswiki.org/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
@@ -64,13 +64,17 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/29 dadams
+;;     hide/show-comments:
+;;       No-op if no comment-start.  Pass NOERROR arg to comment-normalize-vars.
 ;; 2014/11/05 dadams
-;;     hide/show-comments: Thx to Hinrik Sigurosson.
+;;     hide/show-comments:
 ;;       Use comment-forward even for "", so handle setting CEND correctly, e.g., for C++,
 ;;       where comment-end is "" but multi-line comments are also OK.
 ;;       Do not hide newline after single-line comments.
 ;;       hide-whitespace-before-comment-flag non-nil no longer hides empty lines.
 ;;       Prevent infloop for comment at bol.
+;;       Thx to Hinrik Sigurosson.
 ;; 2014/02/06 dadams
 ;;     Added: hide-whitespace-before-comment-flag.
 ;;     hide/show-comments:
@@ -111,6 +115,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
+
+
+(defvar comment-start)                  ; In `newcomment.el'.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -174,8 +181,9 @@ it needs `comment-search-forward'."
          (if (or (not mark-active)  (null (mark))  (= (point) (mark)))
              (list (point-min) (point-max))
            (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point))))))
-  (when (require 'newcomment nil t)     ; `comment-search-forward', Emacs 21+.
-    (comment-normalize-vars)            ; Must call this first.
+  (when (and comment-start              ; No-op if no comment syntax defined.
+             (require 'newcomment nil t)) ; `comment-search-forward', Emacs 21+.
+    (comment-normalize-vars 'NO-ERROR)  ; Must call this first.
     (unless start (setq start  (point-min)))
     (unless end   (setq end    (point-max)))
     (unless (<= start end) (setq start  (prog1 end (setq end  start)))) ; Swap.
