@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Jun 30 14:19:26 2015 (-0700)
+;; Last-Updated: Wed Jul 29 11:51:26 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7135
+;;     Update #: 7138
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6400,15 +6400,35 @@ is a search hit."
           (error (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
                  (error "%s" (error-message-string icicle-search-char-property-scan))))))))
 
+;; Same as `isearchp-property-matches-p' in `isearch-prop.el'.
 (defun icicle-search-char-prop-matches-p (type property values match-fn position)
   "Return non-nil if POSITION has PROPERTY with a value matching VALUES.
-TYPE, VALUES, MATCH-FN are as in `icicle-search-char-property-scan'."
-  (let* ((ovlyval  (and (or (not type)  (eq type 'overlay))
-                        (let ((ovs  (overlays-at position)))
-                          (and ovs  (icicle-some ovs property #'overlay-get)))))
-         (textval  (and (or (not type)  (eq type 'text))     (get-text-property position property))))
-    (or (and ovlyval  (icicle-some values ovlyval match-fn))
-        (and textval  (icicle-some values textval match-fn)))))
+TYPE is `overlay', `text', or nil, and specifies the type of property.
+TYPE nil means look for both overlay and text properties.  Return
+ non-nil if either matches.
+
+Matching means finding text with a PROPERTY value that overlaps with
+VALUES: If the value of PROPERTY is an atom, then it must be a member
+of VALUES.  If it is a list, then at least one list element must be a
+member of VALUES.
+
+MATCH-FN is a binary predicate that is applied to each item of VALUES
+and a zone of text with property PROP.  If it returns non-nil then the
+zone is a search hit."
+  (let* ((ov-matches-p   nil)
+         (txt-matches-p  nil)
+         (ovchk-p        (and (or (not type)  (eq type 'overlay))))
+         (ovs            (and ovchk-p  (overlays-at position))))
+    (when ovchk-p
+      (setq ov-matches-p
+            (catch 'icicle-search-char-prop-matches-p
+              (dolist (ov  ovs)
+                (when (icicle-some values (overlay-get ov property) match-fn)
+                  (throw 'icicle-search-char-prop-matches-p t)))
+              nil)))
+    (when (and (or (not type)  (eq type 'text)))
+      (setq txt-matches-p  (isearchp-some values (get-text-property (position) property) match-fn)))
+    (or ov-matches-p  txt-matches-p)))
 
 (if (fboundp 'next-single-char-property-change)
     (defalias 'icicle-next-single-char-property-change 'next-single-char-property-change)
