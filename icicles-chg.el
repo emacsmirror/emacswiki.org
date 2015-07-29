@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jul  5 13:40:43 2015 (-0700)
+;; Last-Updated: Wed Jul 29 11:53:19 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11481
+;;     Update #: 11482
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1158,6 +1158,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2015/07/29 dadams
+;;     icicle-search-char-prop-matches-p: Loop over all overlays at point, do not just use the first.
 ;; 2015/04/11 dadams
 ;;     icicle-search-action, icicle-search-action-1, icicle-search-in-context-default-fn,
 ;;       icicle-search-highlight-and-maybe-replace:
