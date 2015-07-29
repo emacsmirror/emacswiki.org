@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 28 14:40:25 2015 (-0700)
+;; Last-Updated: Tue Jul 28 18:52:59 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 865
+;;     Update #: 872
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -245,6 +245,8 @@
 ;;; Change Log:
 ;;
 ;; 2015/07/28 dadams
+;;     isearchp-thing-scan: Revert hopeful code that expected bug #9300 to be fixed in Emacs 24.
+;;                          You really need library thingatpt+.el if you want reasonable behavior.
 ;;     isearchp-add-prop-to-other-prop-zones:
 ;;       Moved final call to isearchp-add/remove-dim-overlay to ADD outside of condition-case-no-debug.
 ;;     Moved defmacro forward in file.
@@ -2011,13 +2013,12 @@ This function respects both `isearchp-search-complement-domain-p' and
                    (if thg-end
                        ;; $$$$$$
                        ;; The correct code here is (setq beg thg-end).  However, unless you use my
-                       ;; library `thingatpt+.el' or unless Emacs bug #9300 is fixed (hopefully
-                       ;; in Emacs 24), that will loop forever.  In that case we move forward a
-                       ;; char to prevent looping, but that means that the position just after
-                       ;; a THING is considered to be covered by the THING (which is incorrect).
-                       (setq beg  (if (or (featurep 'thingatpt+)  (> emacs-major-version 23))
-                                      thg-end
-                                    (1+ thg-end)))
+                       ;; library `thingatpt+.el' or unless Emacs bug #9300 gets fixed (and there
+                       ;; is so far no sign that will happen), the correct code will loop forever.
+                       ;; In this case, we move forward one char to prevent looping, but that means
+                       ;; that the position just after a THING is considered to be covered by the
+                       ;; THING (which is incorrect).
+                       (setq beg  (if (featurep 'thingatpt+) thg-end (1+ thg-end)))
                      ;; If visible then no more things - skip to END.
                      (unless (invisible-p beg) (setq beg  end)))))
                (setq last-beg  beg))))
