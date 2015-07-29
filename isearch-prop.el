@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 28 18:52:59 2015 (-0700)
+;; Last-Updated: Wed Jul 29 07:56:44 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 872
+;;     Update #: 888
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -244,6 +244,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/29 dadams
+;;     isearchp-thing-read-args: Turn off *-ignore-comments-flag if THING = comment and not complementing.
+;;     isearchp-thing: Updated doc string to mention this.
 ;; 2015/07/28 dadams
 ;;     isearchp-thing-scan: Revert hopeful code that expected bug #9300 to be fixed in Emacs 24.
 ;;                          You really need library thingatpt+.el if you want reasonable behavior.
@@ -458,7 +461,8 @@ text that does have the property."
 ;; Same as `ignore-comments-flag' in `hide-comnt.el'.
 ;;
 (defcustom isearchp-ignore-comments-flag t
-  "*Non-nil means `isearchp-with-comments-hidden' hides comments."
+  "*Non-nil means `isearchp-with-comments-hidden' hides comments.
+This has the effect that comments are ignored for searching."
   :type 'boolean :group 'isearch-plus)
 
 (defvar isearchp-dimmed-overlays () "Dimmed-text overlays for text not being searched.")
@@ -1540,7 +1544,8 @@ is non-nil."
          (let ((pos  beg))
            (while (< pos end)
              (let* ((ovs     (overlays-at pos))
-                    (dim-ov  (car (isearchp-some ovs nil (lambda (ov _) (member ov isearchp-dimmed-overlays))))))
+                    (dim-ov  (car (isearchp-some ovs nil (lambda (ov _)
+                                                           (member ov isearchp-dimmed-overlays))))))
                (when dim-ov (delete-overlay dim-ov)))
              (setq pos  (1+ pos)))))))
   
@@ -1813,15 +1818,19 @@ Possible THINGs are those for which
 bounds are not equal: an empty thing).  This does not include every
 THING that is defined as a thing-at-point type.
 
+You are prompted for the type of THING to search.
+
 If user option `isearchp-ignore-comments-flag' is nil then include
 THINGs located within comments.  Non-nil (the default value) means to
-ignore things inside comments for searching.  In particular, this
-means that for `comment' as THING search contexts, be sure to turn off
-ignoring of comments.  You can toggle whether comments are ignored
-using `C-M-;' during Isearch, but to see the effect you will need to
-invoke Isearch again.
+ignore things inside comments for searching.
 
-You are prompted for the type of THING to search.
+This means also that you cannot search comments as THING search
+contexts if `isearchp-ignore-comments-flag' is non-nil.  (You can,
+however, search non-comments even if it is non-nil.)  If THING is
+`comment' (and you are not searching the complement zones) then this
+command automatically turns option `isearchp-ignore-comments-flag'
+OFF.  You can use `C-M-;' toggle this option anytime during Isearch,
+but to see the effect you will need to invoke Isearch again.
 
 If you do not use a prefix argument then you are prompted also for a
 PREDICATE (Boolean function) that acceptable things must satisfy.  It
@@ -1914,6 +1923,11 @@ See `isearchp-thing' for a description of the prompting."
                     (completing-read
                      (format "%shing (type): " (if isearchp-complement-domain-p "*NOT* t" "T"))
                      (isearchp-things-alist) nil nil nil nil (symbol-name isearchp-last-thing-type))))
+         (IGNORE   (when (and (eq thng 'comment)  isearchp-ignore-comments-flag
+                              (not isearchp-complement-domain-p))
+                     (setq isearchp-ignore-comments-flag  nil)
+                     (message "Turned OFF ignoring comments.  Use `C-M-;' to turn it on again")
+                     (sit-for 3)))
          (beg      (if (and transient-mark-mode  mark-active) (region-beginning) (point-min)))
          (end      (if (and transient-mark-mode  mark-active) (region-end) (point-max)))
          (valuesp  (and (consp (car isearchp-property-values))
