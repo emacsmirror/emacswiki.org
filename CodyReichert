@@ -22,7 +22,7 @@ You can install shakespeare-mode from the MELPA package repository. Alternativel
 * http://github.com/CodyReichert/shakespeare-mode
 
 
-=== wp-readme ===
+=== wp-readme-mode ===
 A package that provides syntax highlighting (and other things) for WordPress flavored markdown, commonly used in Wordpress plugins and themes.
 
 * http://github.com/CodyReichert/wp-readme-mode
