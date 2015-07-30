@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun 24 22:48:42 2015 (-0700)
+;; Last-Updated: Thu Jul 30 07:06:57 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9059
+;;     Update #: 9074
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -632,6 +632,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/30 dadams
+;;     diredp-fileset(-other-window): Changed key binding from C-x F to C-x C-M-f (conflicted with find-function).
 ;; 2015/06/24 dadams
 ;;     Added: diredp-parent-dir, diredp-breadcrumbs-in-header-line-mode, diredp-set-header-line-breadcrumbs.
 ;; 2015/06/06 dadams
@@ -3798,18 +3800,16 @@ If no one is selected, symmetric encryption will be performed.  "
 ;;; Non-menu Dired bindings.
 
 ;; Move `dired-omit-mode' to `C-x M-o', so prefix key `M-o' is free for face/font-lock stuff.
-(define-key dired-mode-map "\C-x\M-o" (if (fboundp 'dired-omit-mode)
-                                          'dired-omit-mode
-                                        'dired-omit-toggle))
+(define-key dired-mode-map "\C-x\M-o" (if (fboundp 'dired-omit-mode) 'dired-omit-mode 'dired-omit-toggle))
 (when (memq (lookup-key dired-mode-map "\M-o") '(dired-omit-mode dired-omit-toggle))
   (define-key dired-mode-map "\M-o" nil))
 
-(global-set-key "\C-xD"  'diredp-dired-union)                               ; `C-x D'
-(global-set-key "\C-xE"  'diredp-add-to-dired-buffer)                       ; `C-x E'
-(global-set-key "\C-xF"  'diredp-fileset)                                   ; `C-x F'
-(global-set-key "\C-x4F" 'diredp-fileset-other-window)                      ; `C-x 4 F'
-(global-set-key "\C-xR"  'diredp-dired-recent-dirs)                         ; `C-x R'
-(global-set-key "\C-x4R" 'diredp-dired-recent-dirs-other-window)            ; `C-x 4 R'
+(define-key ctl-x-map   "D" 'diredp-dired-union)                           ; `C-x   D'
+(define-key ctl-x-map   "E" 'diredp-add-to-dired-buffer)                   ; `C-x   E'
+(define-key ctl-x-map   "\C-\M-f" 'diredp-fileset)                         ; `C-x   C-M-f'
+(define-key ctl-x-4-map "\C-\M-f" 'diredp-fileset-other-window)            ; `C-x 4 C-M-f'
+(define-key ctl-x-map   "R" 'diredp-dired-recent-dirs)                     ; `C-x   R'
+(define-key ctl-x-4-map "R" 'diredp-dired-recent-dirs-other-window)        ; `C-x 4 R'
 
 ;; Navigation
 (substitute-key-definition 'dired-up-directory 'diredp-up-directory dired-mode-map)
