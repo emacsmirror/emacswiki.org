@@ -14,7 +14,9 @@ If you have the cat utility (standard in Unix and Linux and which can be install
 
 2.  "C-u M-|" to run command on region
 
-3.  enter "cat -n" in the minibuffer
+3a.  Enter "cat -n" in the minibuffer (to number all lines, including blank ones); or \\
+3b.  Enter "nl" in the minibuffer (to number all non-blank lines); or \\
+3c.  Enter "nl --options" in the minibuffer (many options available to set the first number, formatting, width, and style)
 ----
 
 Here are a few basic functions I use to number lines of code that I'm using in another document.  For example, this works great for putting line numbers in a verbatim environment.  This makes referencing the code in the text of the document easier.
