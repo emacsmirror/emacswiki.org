@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 18 09:13:24 2015 (-0700)
+;; Last-Updated: Fri Jul 31 07:31:59 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 506
+;;     Update #: 523
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -158,8 +158,8 @@
 ;;    `wide-n-limits-in-bufs', `wide-n-markerize',
 ;;    `wide-n-mem-regexp', `wide-n-push', `wide-n-rassoc-delete-all',
 ;;    `wide-n-read-bufs', `wide-n-remove-if-not', `wide-n-renumber',
-;;    `wide-n-repeat-command', `wide-n-start.end',
-;;    `wide-n-string-match-p'.
+;;    `wide-n-repeat-command', `wide-n-restrictions',
+;;    `wide-n-start+end', `wide-n-string-match-p'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -181,6 +181,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/31 dadams
+;;     Renamed: wide-n-start.end to wide-n-start+end.  Added: function wide-n-restrictions.
+;;     wide-n-restrictions: INCOMPATIBLE CHANGE: The format is now (NUM START END), not (NUM START . END).
 ;; 2015/07/11 dadams
 ;;     Added: wide-n-limits, wide-n-limits-in-bufs, wide-n-start.end, wide-n-read-bufs, wide-n-remove-if-not.
 ;;     Made wide-n-push interative.
@@ -192,7 +195,7 @@
 ;; 2014/05/30 dadams
 ;;     Added: wide-n-lighter-narrow-part, wide-n-highlight-lighter, wide-n-string-match-p, wide-n-mem-regexp,
 ;;            wide-n-rassoc-delete-all.
-;;     wide-n-restrictions: The format is now (NUM START . END), not (START . END).
+;;     wide-n-restrictions: INCOMPATIBLE CHANGE: The format is now (NUM START . END), not (START . END).
 ;;     wide-n: Set wide-n-lighter-narrow-part.  Use wide-n-highlight-lighter.  Bind wide-n-push-anyway-p
 ;;             around narrow-to-region.
 ;;     wide-n-markerize, wide-n-push: Use new wide-n-restrictions format.
@@ -259,10 +262,24 @@
 
 (defvar wide-n-restrictions '(all)
   "List of buffer restrictions.
-Each entry is either `all' or a cons (NUM START . END), where NUM is a
+Each entry is either `all' or a cons (NUM START END), where NUM is a
 counter identifying this buffer restriction, and START and END are its
 limits.  `all' means no restriction (completely widened).")
 (make-variable-buffer-local 'wide-n-restrictions)
+
+;; Not used.  Could use this if really needed.
+(defun wide-n-restrictions ()
+  "Value of variable `wide-n-restrictions' in latest format.
+If the variable value has elements of old format, (NUM START . END),
+it is converted to use the new format, with elements (NUM START END).
+This is a destructive operation.  The value of the variable is updated
+to use the new format, and that value is returned."
+  (let ((oldval  wide-n-restrictions)
+        (newval  ()))
+    (dolist (elt  oldval)
+      (unless (or (eq elt 'all)  (consp (cddr elt)))
+        (setcdr (cdr elt) (list (cddr elt)))))
+    wide-n-restrictions))
 
 (defvar wide-n-push-anyway-p nil
   "Non-nil means push to `wide-n-restrictions' even if non-interactive.
@@ -387,18 +404,19 @@ Non-nil optional arg NOMSG means do not echo the region size."
         sans-id  id-cons  id)
     (move-marker mrk1 start)
     (move-marker mrk2 end)
-    (setq sans-id              `(,mrk1 . ,mrk2)
+    (setq sans-id              (list mrk1 mrk2)
           id-cons              (rassoc sans-id wide-n-restrictions)
           id                   (if id-cons (car id-cons) (length wide-n-restrictions))
           wide-n-restrictions  (wide-n-rassoc-delete-all sans-id wide-n-restrictions))
     (unless (and (= mrk1 1)  (= mrk2 (1+ (buffer-size))))
-      (setq wide-n-restrictions  `((,id ,mrk1 . ,mrk2) ,@wide-n-restrictions)))
+      (setq wide-n-restrictions  `((,id ,mrk1 ,mrk2) ,@wide-n-restrictions)))
     (unless nomsg
       (message "%s region: %d to %d" (if (interactive-p) "Recorded" "Narrowed")
                (marker-position mrk1) (marker-position mrk2)))))
 
 (defun wide-n-rassoc-delete-all (value alist)
   "Delete from ALIST all elements whose cdr is `equal' to VALUE.
+This is a destructive operation.
 Return the modified alist.
 Elements of ALIST that are not conses are ignored."
   (while (and (consp (car alist))  (equal (cdar alist) value)) (setq alist  (cdr alist)))
@@ -446,16 +464,16 @@ That is, return a list of all recorded buffer narrowings for BUFFERS."
 
 (defun wide-n-limits ()
   "Return a list like `wide-n-restrictions', but with no identifiers or `all'.
-That is, each entry has the form (START . END).  The conses are new -
+That is, each entry has the form (START END).  The conses are new -
 they do not share with any conses in `wide-n-restrictions'"
-  (delq nil (mapcar #'wide-n-start.end wide-n-restrictions)))
+  (delq nil (mapcar #'wide-n-start+end wide-n-restrictions)))
 
-(defun wide-n-start.end (restriction)
-  "Return a new cons (START . END) corresponding to RESTRICTION, or nil.
-If RESTRICTION is a cons then it has the form (NUM START . END), so
- return a new cons (START . END).
+(defun wide-n-start+end (restriction)
+  "Return a new cons (START END) corresponding to RESTRICTION, or nil.
+If RESTRICTION is a cons then it has the form (NUM START END), so
+ return a new cons (START END).
 Otherwise RESTRICTION is `all', so return nil."
-  (and (consp restriction)  (cons (cadr restriction) (cddr restriction))))
+  (and (consp restriction)  (cons (cadr restriction) (car (cddr restriction)))))
 
 ;; Useful for commands that want to act on regions in multiple buffers.
 (defun wide-n-read-bufs ()
