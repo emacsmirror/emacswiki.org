@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 29 13:31:42 2015 (-0700)
+;; Last-Updated: Fri Jul 31 08:35:43 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 904
+;;     Update #: 947
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -73,6 +73,7 @@
 ;;    `isearchp-imenu-command', `isearchp-imenu-macro',
 ;;    `isearchp-imenu-non-interactive-function',
 ;;    `isearchp-lazy-highlights-forward',
+;;    `isearchp-lazy-highlights-forward-regexp',
 ;;    `isearchp-mark-lazy-highlights', `isearchp-next-visible-thing',
 ;;    `isearchp-previous-visible-thing', `isearchp-property-backward',
 ;;    `isearchp-property-backward-regexp',
@@ -101,6 +102,7 @@
 ;;    `isearchp-bounds-of-thing-at-point',
 ;;    `isearchp-complement-dimming', `isearchp-defined-thing-p',
 ;;    `isearchp-dim-color', `isearchp-dim-face-spec',
+;;    `isearchp-lazy-highlights-forward-1',
 ;;    `isearchp-lazy-highlights-present-p', `isearchp-message-prefix',
 ;;    `isearchp-next-visible-thing-1',
 ;;    `isearchp-next-visible-thing-2',
@@ -174,11 +176,12 @@
 ;;    removed when you exit Isearch.  (You can remove it manually
 ;;    anytime using `M-x lazy-highlight-cleanup'.)
 ;;
-;;  * You can use command `isearchp-lazy-highlights-forward' to search
-;;    the zones of text that have text property
-;;    `isearchp-lazy-highlight', that is, the text that you have
-;;    marked using `isearchp-mark-lazy-highlights'.  This lets you
-;;    search within the hits from a previous search.
+;;  * You can use command `isearchp-lazy-highlights-forward' `(or
+;;    `isearchp-lazy-highlights-forward-regexp') to search the zones
+;;    of text that have text property `isearchp-lazy-highlight', that
+;;    is, the text that you have marked using
+;;    `isearchp-mark-lazy-highlights'.  This lets you search within
+;;    the hits from a previous search.
 ;;
 ;;  * You can search zones of text/overlays that have a given
 ;;    property, as described above, or you can search the
@@ -195,6 +198,10 @@
 ;;    defines the dimming behavior.  It specifies a given background
 ;;    color to use always, or it specifies that the current background
 ;;    color is to be dimmed a given amount.
+;;
+;;  * You can use `M-S-delete' to clean up any property-searching
+;;    artifacts (properties, dimming), as well as remove any
+;;    lazy-highlighting.
 ;;
 ;;  * You can search the zones of text that match a given regexp,
 ;;    using command `isearchp-regexp-context-search' or
@@ -245,6 +252,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/31 dadams
+;;     Added: isearchp-lazy-highlights-forward-regexp, isearchp-lazy-highlights-forward-1.
+;;     isearchp-lazy-highlights-forward: Use isearchp-lazy-highlights-forward-1.
+;;                                       (Fixes, restore read-only & mod etc.)
+;;     Bind isearchp-cleanup to M-S-delete.
 ;; 2015/07/29 dadams
 ;;     Added: isearchp-lazy-highlights-present-p.
 ;;     isearchp-lazy-highlights-forward:
@@ -519,12 +531,13 @@ regexp as the search context, and so on.")
 
 ;;; Keys -------------------------------------------------------------
 
-(define-key isearch-mode-map (kbd "C-t")     'isearchp-property-forward)
-(define-key isearch-mode-map (kbd "M-;")     'isearchp-toggle-hiding-comments)
-(define-key isearch-mode-map (kbd "C-M-t")   'isearchp-property-forward-regexp)
-(define-key isearch-mode-map (kbd "C-M-;")   'isearchp-toggle-ignoring-comments)
-(define-key isearch-mode-map (kbd "C-M-~")   'isearchp-toggle-complementing-domain)
-(define-key isearch-mode-map (kbd "C-M-S-d") 'isearchp-toggle-dimming-non-prop-zones)
+(define-key isearch-mode-map (kbd "C-t")          'isearchp-property-forward)
+(define-key isearch-mode-map (kbd "M-;")          'isearchp-toggle-hiding-comments)
+(define-key isearch-mode-map (kbd "C-M-t")        'isearchp-property-forward-regexp)
+(define-key isearch-mode-map (kbd "C-M-;")        'isearchp-toggle-ignoring-comments)
+(define-key isearch-mode-map (kbd "C-M-~")        'isearchp-toggle-complementing-domain)
+(define-key isearch-mode-map (kbd "C-M-S-d")      'isearchp-toggle-dimming-non-prop-zones)
+(define-key isearch-mode-map (kbd "M-S-<delete>") 'isearchp-cleanup)
  
 ;;(@* "General Commands")
 
@@ -640,7 +653,8 @@ Non-interactively:
 
 (defun isearchp-cleanup ()
   "Remove lazy highlighting and artifacts from property searching.
-This includes dimming and all `isearchp-' properties."
+This includes dimming and all `isearchp-' properties.
+Bound to `\\<isearch-mode-map>\\[isearchp-cleanup]' during Isearch."
   (interactive)
   (isearchp-remove-all-properties (point-min) (point-max))
   (isearchp-remove-dimming)
@@ -1250,26 +1264,43 @@ searched.
 
 You can mark the lazy-highlight zones anytime using command
 `isearchp-mark-lazy-highlights'.  See that command for info about
-options `lazy-highlight-cleanup' and `lazy-highlight-max-at-a-time'."
+options `lazy-highlight-cleanup' and `lazy-highlight-max-at-a-time'.
+
+Remember that you can use `\\<isearch-mode-map>\\[isearchp-cleanup]' to remove lazy highlighting and
+artifacts from property searching.  This includes dimming and all
+`isearchp-' properties."
   (interactive 
    (list (if (and transient-mark-mode  mark-active) (region-beginning) (point-min))
          (if (and transient-mark-mode  mark-active) (region-end) (point-max))
          current-prefix-arg))
-  (unless (isearchp-lazy-highlights-present-p beg end) (error "No lazy-highlight zones"))
-  (let ((markedp  nil))
-    (if restartp
-        (setq markedp  (prog1 (call-interactively #'isearchp-mark-lazy-highlights)
-                         (sit-for 1)))  ; For msg display
-      (let ((chg  (next-single-property-change beg 'isearchp-lazy-highlight)))
-        (when (or (not chg)  (= end chg))
-          (setq markedp  (prog1 (call-interactively #'isearchp-mark-lazy-highlights)
-                           (sit-for 1))))) ; For msg display
-      (if (not markedp)
-          (error "No lazy-highlight zones marked") ; Should not happen (?).
-        (setq isearchp-property-prop    'isearchp-lazy-highlight
-              isearchp-property-type    'text
-              isearchp-property-values  '(t))
-        (isearchp-property-1 'isearch-forward '(4))))))
+  (isearchp-lazy-highlights-forward-1 'isearch-forward beg end restartp))
+
+(defun isearchp-lazy-highlights-forward-regexp (beg end &optional restartp)
+  "Same as `isearchp-lazy-highlights-forward', but regexp search."
+  (interactive 
+   (list (if (and transient-mark-mode  mark-active) (region-beginning) (point-min))
+         (if (and transient-mark-mode  mark-active) (region-end) (point-max))
+         current-prefix-arg))
+  (isearchp-lazy-highlights-forward-1 'isearch-forward-regexp beg end restartp))
+
+(defun isearchp-lazy-highlights-forward-1 (fun beg end restartp)
+  "Helper for `isearchp-lazy-highlights-forward(-regexp)'."
+  (let ((markedp           (next-single-property-change beg 'isearchp-lazy-highlight))
+        (bufmodp           (buffer-modified-p))
+        (buffer-read-only  nil))
+    (unless (or markedp  (isearchp-lazy-highlights-present-p beg end)) (error "No lazy-highlight zones"))
+    (setq markedp  (if (not restartp)
+                       (let ((chg  (next-single-property-change beg 'isearchp-lazy-highlight)))
+                         (or (and chg  (/= end chg))
+                             (prog1 (isearchp-mark-lazy-highlights beg end 'MSG) (sit-for 1)))) ; For MSG.
+                     (put-text-property beg end 'isearchp-lazy-highlight nil) ; Start over.
+                     (prog1 (isearchp-mark-lazy-highlights beg end 'MSG) (sit-for 1))))
+    (set-buffer-modified-p bufmodp)
+    (unless markedp (error "No lazy-highlight zones marked")) ; Should not happen.
+    (setq isearchp-property-prop    'isearchp-lazy-highlight
+          isearchp-property-type    'text
+          isearchp-property-values  '(t))
+    (isearchp-property-1 fun '(4))))
 
 (defun isearchp-lazy-highlights-present-p (start end)
   "Return non-nil if any text from START to END has face `lazy-highlight'."
