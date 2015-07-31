@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 31 08:44:40 2015 (-0700)
+;; Last-Updated: Fri Jul 31 13:06:04 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 949
+;;     Update #: 1009
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -74,6 +74,7 @@
 ;;    `isearchp-imenu-non-interactive-function',
 ;;    `isearchp-lazy-highlights-forward',
 ;;    `isearchp-lazy-highlights-forward-regexp',
+;;    `isearchp-lazy-highlights-narrow',
 ;;    `isearchp-mark-lazy-highlights', `isearchp-next-visible-thing',
 ;;    `isearchp-previous-visible-thing', `isearchp-property-backward',
 ;;    `isearchp-property-backward-regexp',
@@ -183,6 +184,15 @@
 ;;    `isearchp-mark-lazy-highlights'.  This lets you search within
 ;;    the hits from a previous search.
 ;;
+;;  * You can use `S-SPC' (command `isearchp-lazy-highlights-narrow')
+;;    to narrow a lazy-highlight search.  What this means is that
+;;    while you are searching the marked lazy-highlight zones, if you
+;;    hit `S-SPC' then the current lazy-highlight areas (from the
+;;    current search of the marked zones) are marked and replace the
+;;    previously marked zones.  The effect is that you are now
+;;    searching only the areas that were lazy-highlighted before you
+;;    hit `S-SPC'.  This is a kind of progressive search.
+;;
 ;;  * You can search zones of text/overlays that have a given
 ;;    property, as described above, or you can search the
 ;;    *COMPLEMENT*: the zones that do *NOT* have a given property.
@@ -253,11 +263,18 @@
 ;;; Change Log:
 ;;
 ;; 2015/07/31 dadams
-;;     Added: isearchp-lazy-highlights-forward-regexp, isearchp-lazy-highlights-forward-1.
+;;     Added: isearchp-lazy-highlights-forward-regexp, isearchp-lazy-highlights-forward-1,
+;;            isearchp-lazy-highlights-narrow.
 ;;     isearchp-lazy-highlights-forward: Use isearchp-lazy-highlights-forward-1.
 ;;                                       (Fixes, restore read-only & mod etc.)
 ;;     isearchp-cleanup: Added optional arg MSGP.
-;;     Bind isearchp-cleanup to M-S-delete.
+;;     Bind isearchp-cleanup to M-S-delete.  Bind isearchp-lazy-highlights-narrow to S-SPC.
+;;     isearchp-remove-property, isearchp-remove-all-properties, isearchp-cleanup,
+;;       isearchp-put-prop-on-region, isearchp-lazy-highlights-forward-1,
+;;       isearchp-add-prop-to-other-prop-zones, isearchp-regexp-scan, isearchp-hide/show-comments,
+;;       isearchp-thing-scan:
+;;         Allow mods to text props without raising errors:
+;;           Bind buffer-file-name to nil.  Use unwind-protect around restore-buffer-modified-p.
 ;; 2015/07/29 dadams
 ;;     Added: isearchp-lazy-highlights-present-p.
 ;;     isearchp-lazy-highlights-forward:
@@ -539,6 +556,7 @@ regexp as the search context, and so on.")
 (define-key isearch-mode-map (kbd "C-M-~")        'isearchp-toggle-complementing-domain)
 (define-key isearch-mode-map (kbd "C-M-S-d")      'isearchp-toggle-dimming-non-prop-zones)
 (define-key isearch-mode-map (kbd "M-S-<delete>") 'isearchp-cleanup)
+(define-key isearch-mode-map (kbd "S-SPC")        'isearchp-lazy-highlights-narrow)
  
 ;;(@* "General Commands")
 
@@ -579,15 +597,19 @@ Non-interactively:
   (unless type (setq type  '(text overlay)))
   (let ((bufmodp           (buffer-modified-p))
         (buffer-read-only  nil)
-        (removedp          nil))
-    (when (memq 'text type) (setq removedp  (remove-text-properties beg end (list property))))
-    (when (memq 'overlay type) (while (< beg end)
-                                 (dolist (ov  (overlays-at beg))
-                                   (when (overlay-get ov property)
-                                     (delete-overlay ov)
-                                     (setq removedp  t)))
-                                 (setq beg  (1+ beg))))
-    (set-buffer-modified-p bufmodp)
+        (removedp          nil)
+        (buffer-file-name  nil))        ; Inhibit `ask-user-about-supersession-threat'.
+    (unwind-protect
+         (progn
+           (restore-buffer-modified-p nil)
+           (when (memq 'text type) (setq removedp  (remove-text-properties beg end (list property))))
+           (when (memq 'overlay type) (while (< beg end)
+                                        (dolist (ov  (overlays-at beg))
+                                          (when (overlay-get ov property)
+                                            (delete-overlay ov)
+                                            (setq removedp  t)))
+                                        (setq beg  (1+ beg)))))
+      (restore-buffer-modified-p bufmodp))
     (when msgp (message (if removedp "Property removed" "Property NOT removed"))))
   (when (eq isearchp-property-prop property) (setq isearchp-property-prop    nil
                                                    isearchp-property-values  nil)))
@@ -626,23 +648,27 @@ Non-interactively:
   (unless type (setq type  '(text overlay)))
   (let ((bufmodp           (buffer-modified-p))
         (buffer-read-only  nil)
+        (buffer-file-name  nil)        ; Inhibit `ask-user-about-supersession-threat'.
         (removedp          nil)
         beg2)
-    (dolist (prop  (isearchp-properties-in-buffer (current-buffer) beg end
-                                                  (if (cadr type) nil type)
-                                                  predicate))
-      (when (memq 'text type)  (let ((removd  (remove-text-properties beg end (list prop 'IGNORE))))
-                                 (setq removedp  (or removedp  removd))))
-      (setq beg2  beg)
-      (when (memq 'overlay type) (while (< beg2 end)
-                                   (dolist (ov  (overlays-at beg2))
-                                     (when (overlay-get ov prop)
-                                       (delete-overlay ov)
-                                       (setq removedp  t)))
-                                   (setq beg2  (1+ beg2))))
-      (when (eq isearchp-property-prop prop) (setq isearchp-property-prop    nil
-                                                   isearchp-property-values  nil)))
-    (set-buffer-modified-p bufmodp)
+    (unwind-protect
+         (progn
+           (restore-buffer-modified-p nil)
+           (dolist (prop  (isearchp-properties-in-buffer (current-buffer) beg end
+                                                         (if (cadr type) nil type)
+                                                         predicate))
+             (when (memq 'text type)  (let ((removd  (remove-text-properties beg end (list prop 'IGNORE))))
+                                        (setq removedp  (or removedp  removd))))
+             (setq beg2  beg)
+             (when (memq 'overlay type) (while (< beg2 end)
+                                          (dolist (ov  (overlays-at beg2))
+                                            (when (overlay-get ov prop)
+                                              (delete-overlay ov)
+                                              (setq removedp  t)))
+                                          (setq beg2  (1+ beg2))))
+             (when (eq isearchp-property-prop prop) (setq isearchp-property-prop    nil
+                                                          isearchp-property-values  nil))))
+      (restore-buffer-modified-p bufmodp))
     (when msgp (message (if removedp "Properties removed" "Properties NOT removed")))))
 
 (defun isearchp-remove-dimming ()
@@ -653,14 +679,21 @@ Non-interactively:
     (setq isearchp-dimmed-overlays  (cdr isearchp-dimmed-overlays))))
 
 (defun isearchp-cleanup (&optional msgp)
-  "Remove lazy highlighting and artifacts from property searching.
+  "Remove lazy-highlighting and artifacts from property searching.
 This includes dimming and all `isearchp-' properties.
 Bound to `\\<isearch-mode-map>\\[isearchp-cleanup]' during Isearch."
   (interactive "p")
-  (isearchp-remove-all-properties (point-min) (point-max))
-  (isearchp-remove-dimming)
-  (lazy-highlight-cleanup 'FORCE)
-  (when msgp (message "Removed lazy highlighting and prop-search artifacts")))
+  (let ((bufmodp           (buffer-modified-p))
+        (buffer-read-only  nil)
+        (buffer-file-name  nil)) ; Inhibit `ask-user-about-supersession-threat'.
+    (unwind-protect
+         (progn
+           (restore-buffer-modified-p nil)
+           (isearchp-remove-all-properties (point-min) (point-max))
+           (isearchp-remove-dimming)
+           (lazy-highlight-cleanup 'FORCE))
+      (restore-buffer-modified-p bufmodp)))
+  (when msgp (message "Removed lazy-highlighting and property-search artifacts")))
   
 (defun isearchp-property-forward (arg) ; Bound to `C-t' in `isearch-mode-map'.
   "Isearch forward in text with a text property or overlay property.
@@ -1247,12 +1280,17 @@ commands and commands such as `isearchp-imenu*',
                       (isearchp-read-sexps 'ONLY-ONE-P))))
        (list prop vals (region-beginning) (region-end)))))
   (let ((bufmodp           (buffer-modified-p))
-        (buffer-read-only  nil))
-    (add-text-properties beg end (list property value))
-    (isearchp-add/remove-dim-overlay beg end nil)
+        (buffer-read-only  nil)
+        (buffer-file-name  nil)) ; Inhibit `ask-user-about-supersession-threat'.)
+    (unwind-protect
+         (progn
+           (restore-buffer-modified-p nil)
+           (add-text-properties beg end (list property value))
+           (isearchp-add/remove-dim-overlay beg end nil)
 ;;; $$$$$$    (when (string-match-p "\\`isearchp-" (symbol-name property))
 ;;;             (setq isearchp-last-prop+value (cons property value)))
-    (set-buffer-modified-p bufmodp)))
+           )
+      (restore-buffer-modified-p bufmodp))))
 
 ;; FIXME: If repeat `isearchp-lazy-highlights-forward' then no more dimming.
 (defun isearchp-lazy-highlights-forward (beg end &optional restartp)
@@ -1268,7 +1306,7 @@ You can mark the lazy-highlight zones anytime using command
 `isearchp-mark-lazy-highlights'.  See that command for info about
 options `lazy-highlight-cleanup' and `lazy-highlight-max-at-a-time'.
 
-Remember that you can use `\\<isearch-mode-map>\\[isearchp-cleanup]' to remove lazy highlighting and
+Remember that you can use `\\<isearch-mode-map>\\[isearchp-cleanup]' to remove lazy-highlighting and
 artifacts from property searching.  This includes dimming and all
 `isearchp-' properties."
   (interactive 
@@ -1289,20 +1327,45 @@ artifacts from property searching.  This includes dimming and all
   "Helper for `isearchp-lazy-highlights-forward(-regexp)'."
   (let ((markedp           (next-single-property-change beg 'isearchp-lazy-highlight))
         (bufmodp           (buffer-modified-p))
-        (buffer-read-only  nil))
-    (unless (or markedp  (isearchp-lazy-highlights-present-p beg end)) (error "No lazy-highlight zones"))
-    (setq markedp  (if (not restartp)
-                       (let ((chg  (next-single-property-change beg 'isearchp-lazy-highlight)))
-                         (or (and chg  (/= end chg))
-                             (prog1 (isearchp-mark-lazy-highlights beg end 'MSG) (sit-for 1)))) ; For MSG.
-                     (put-text-property beg end 'isearchp-lazy-highlight nil) ; Start over.
-                     (prog1 (isearchp-mark-lazy-highlights beg end 'MSG) (sit-for 1))))
-    (set-buffer-modified-p bufmodp)
+        (buffer-read-only  nil)
+        (buffer-file-name  nil)) ; Inhibit `ask-user-about-supersession-threat'.
+    (unwind-protect
+         (progn
+           (restore-buffer-modified-p nil)
+           (unless (or markedp  (isearchp-lazy-highlights-present-p beg end))
+             (error "No lazy-highlight zones"))
+           (setq markedp  (if (not restartp)
+                              (let ((chg  (next-single-property-change beg 'isearchp-lazy-highlight)))
+                                (or (and chg  (/= end chg))
+                                    (prog1 (isearchp-mark-lazy-highlights beg end 'MSG) (sit-for 0.5))))
+                            (put-text-property beg end 'isearchp-lazy-highlight nil) ; Start over.
+                            (prog1 (isearchp-mark-lazy-highlights beg end 'MSG) (sit-for 0.5)))))
+      (restore-buffer-modified-p bufmodp))
     (unless markedp (error "No lazy-highlight zones marked")) ; Should not happen.
     (setq isearchp-property-prop    'isearchp-lazy-highlight
           isearchp-property-type    'text
-          isearchp-property-values  '(t))
-    (isearchp-property-1 fun '(4))))
+          isearchp-property-values  '(t)))
+  (isearchp-property-1 fun '(4)))
+
+(defun isearchp-lazy-highlights-narrow (beg end &optional msgp)
+  "Search lazy-highlight zones, but update lazy-highlighting from search.
+Removes any lazy-highlight marks, then marks lazy-highlights anew,
+from the new search."
+  (interactive (if (or (not mark-active)  (null (mark))  (= (point) (mark)))
+                   (list (point-min) (point-max) t)
+                 (if (< (point) (mark)) (list (point) (mark) t) (list (mark) (point) t))))
+  (let ((bufmodp           (buffer-modified-p))
+        (buffer-read-only  nil)
+        (buffer-file-name  nil) ; Inhibit `ask-user-about-supersession-threat'.
+        (fun               (if isearch-regexp
+                               'isearchp-lazy-highlights-forward-regexp
+                             'isearchp-lazy-highlights-forward)))
+    (put-text-property beg end 'isearchp-lazy-highlight nil)
+    (isearchp-mark-lazy-highlights beg end)
+    (when msgp (message "Updated lazy-highlighting"))
+    (set-buffer-modified-p bufmodp))
+  (setq isearch-string   ""
+        isearch-message  ""))
 
 (defun isearchp-lazy-highlights-present-p (start end)
   "Return non-nil if any text from START to END has face `lazy-highlight'."
@@ -1328,7 +1391,7 @@ Do this over the buffer text or over the region text, if active.
 
 Note:
 
- 1. To make Isearch keep lazy highlighting when done searching, set
+ 1. To make Isearch keep lazy-highlighting when done searching, set
     option `lazy-highlight-cleanup' to nil.
 
  2. Only search matches that have actually been lazy-highlighted are
@@ -1342,7 +1405,7 @@ Note:
     (when msgp
       (message (if addedp
                    "Lazy highlights now marked with property `isearchp-lazy-highlight'"
-                 "No changes made - lazy highlighting not marked")))
+                 "No changes made - lazy-highlighting not marked")))
     addedp))
 
 (defun isearchp-add-prop-to-lazy-highlights (prop-to-add value-to-add &optional start end msgp)
@@ -1350,7 +1413,7 @@ Note:
 START and END are the buffer limits, or the region limits if active.
 Interactively, you are prompted for the property to add and its value.
 
-Note: To make Isearch keep lazy highlighting when done searching, set
+Note: To make Isearch keep lazy-highlighting when done searching, set
 option `lazy-highlight-cleanup' to nil."
   (interactive
    (let* ((p-add  (intern (read-string "Property to add: " nil 'isearchp-property-history)))
@@ -1396,6 +1459,7 @@ Returns non-nil if the property was added, nil if not."
              (list t))))
   (let ((bufmodp           (buffer-modified-p))
         (buffer-read-only  nil)
+        (buffer-file-name  nil) ; Inhibit `ask-user-about-supersession-threat'.
         (last-beg          nil)
         (prop-value        nil)
         (added-prop-p      nil)
@@ -1403,43 +1467,44 @@ Returns non-nil if the property was added, nil if not."
         (zend              nil)
         (zend-last         nil)
         (match             nil))
-    (isearchp-with-comments-hidden
-     start end
-     (condition-case-no-debug add-prop-to-zones-with-other-prop
-         (save-excursion
-           (goto-char (setq last-beg  start))
-           (while (and last-beg  (< last-beg end))
-             (setq zbeg   nil
-                   zend   nil
-                   match  nil)
-             (while (and (not match)  (< (point) end))
-               (goto-char (next-single-char-property-change (point) prop-to-find nil end))
-               (when (isearchp-property-matches-p type-to-find prop-to-find (list value-to-find)
-                                                  (isearchp-property-default-match-fn prop-to-find)
-                                                  (point))
-                 (setq zbeg   (point)
-                       match  t)
-                 (isearchp-add/remove-dim-overlay last-beg zbeg 'ADD)))
-             (goto-char (next-single-char-property-change (point) prop-to-find nil end))
-             (unless (isearchp-property-matches-p type-to-find prop-to-find (list value-to-find)
-                                                  (isearchp-property-default-match-fn prop-to-find)
-                                                  (point))
-               (setq zend  (point)))
-             (when (and zbeg  zend  (/= zbeg zend))
-               ;; `isearchp-put-prop-on-region' also removes dimming from ZBEG to ZEND.
-               (isearchp-put-prop-on-region prop-to-add value-to-add zbeg zend)
-               (setq added-prop-p  value-to-add
-                     zend-last     zend))
-             (goto-char (setq last-beg  (or zend  zbeg  last-beg)))))
-       (error (error "%s" (error-message-string add-prop-to-zones-with-other-prop))))
-     (if added-prop-p
-         (isearchp-add/remove-dim-overlay zend-last end 'ADD)
-       (isearchp-add/remove-dim-overlay start end nil))
-     (set-buffer-modified-p bufmodp))
-    (when msgp
-      (message (if added-prop-p
-                   (format "Added property `%s' with value `%s'" prop-to-add value-to-add)
-                 "No property added")))
+    (unwind-protect
+         (isearchp-with-comments-hidden
+          start end
+          (restore-buffer-modified-p nil)
+          (condition-case-no-debug add-prop-to-zones-with-other-prop
+              (save-excursion
+                (goto-char (setq last-beg  start))
+                (while (and last-beg  (< last-beg end))
+                  (setq zbeg   nil
+                        zend   nil
+                        match  nil)
+                  (while (and (not match)  (< (point) end))
+                    (goto-char (next-single-char-property-change (point) prop-to-find nil end))
+                    (when (isearchp-property-matches-p type-to-find prop-to-find (list value-to-find)
+                                                       (isearchp-property-default-match-fn prop-to-find)
+                                                       (point))
+                      (setq zbeg   (point)
+                            match  t)
+                      (isearchp-add/remove-dim-overlay last-beg zbeg 'ADD)))
+                  (goto-char (next-single-char-property-change (point) prop-to-find nil end))
+                  (unless (isearchp-property-matches-p type-to-find prop-to-find (list value-to-find)
+                                                       (isearchp-property-default-match-fn prop-to-find)
+                                                       (point))
+                    (setq zend  (point)))
+                  (when (and zbeg  zend  (/= zbeg zend))
+                    ;; `isearchp-put-prop-on-region' also removes dimming from ZBEG to ZEND.
+                    (isearchp-put-prop-on-region prop-to-add value-to-add zbeg zend)
+                    (setq added-prop-p  value-to-add
+                          zend-last     zend))
+                  (goto-char (setq last-beg  (or zend  zbeg  last-beg)))))
+            (error (error "%s" (error-message-string add-prop-to-zones-with-other-prop))))
+          (if added-prop-p
+              (isearchp-add/remove-dim-overlay zend-last end 'ADD)
+            (isearchp-add/remove-dim-overlay start end nil)))
+      (restore-buffer-modified-p bufmodp))
+    (when msgp (message (if added-prop-p
+                            (format "Added property `%s' with value `%s'" prop-to-add value-to-add)
+                          "No property added")))
     added-prop-p))
 
 (defun isearchp-message-prefix (&optional arg1 arg2 arg3)
@@ -1571,51 +1636,54 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
   (unless (< beg end) (setq beg  (prog1 end (setq end  beg)))) ; Ensure BEG is before END.
   (let ((bufmodp           (buffer-modified-p))
         (buffer-read-only  nil)
+        (buffer-file-name  nil) ; Inhibit `ask-user-about-supersession-threat'.
         (prop-value        (cons regexp predicate))
         (last-beg          nil)
         (added-prop-p      nil))
-    (condition-case-no-debug isearchp-regexp-scan
-        (save-excursion
-          (goto-char (setq last-beg  beg))
-          (while (and beg  (< beg end)  (not (eobp))
-                      (progn (while (and (setq beg  (re-search-forward regexp end t))
-                                         (eq last-beg beg)
-                                         (not (eobp)))
-                               ;; Matched again, same place.  Advance 1 char.
-                               (forward-char) (setq beg  (1+ beg)))
-                             beg))      ; Stop if no more matches.
-            (unless (or (not beg)  (match-beginning isearchp-context-level)) ; No `user-error': Emacs 23
-              (error "Search context has no subgroup of level %d - try a lower number"
-                     isearchp-context-level))
-            (let* ((hit-beg     (match-beginning isearchp-context-level))
-                   (hit-end     (match-end isearchp-context-level))
-                   (IGNORED     (when (and hit-beg  action)
-                                  (save-excursion (funcall action)
-                                                  (setq hit-end  (min end (point))
-                                                        beg      hit-end))))
-                   (hit-string  (buffer-substring-no-properties hit-beg hit-end))
-                   (c-beg       last-beg)
-                   (c-end       (if beg
-                                    (match-beginning isearchp-context-level)
-                                  (min end (point-max)))) ; Truncate.
-                   (pred-ok-p   t)
-                   end-marker)
-              (remove-text-properties c-beg c-end (list property 'IGNORED))
-              (isearchp-add/remove-dim-overlay c-beg c-end 'ADD)
-              (when (and predicate
-                         (not (string= "" hit-string))
-                         (setq end-marker  (copy-marker hit-end)))
-                (setq pred-ok-p  (save-match-data (funcall predicate hit-string end-marker))))
-              (cond ((and pred-ok-p  (not (string= "" hit-string)))
-                     (put-text-property hit-beg hit-end property prop-value)
-                     (setq added-prop-p  prop-value)
-                     (isearchp-add/remove-dim-overlay hit-beg hit-end nil))
-                    (t
-                     (remove-text-properties hit-beg hit-end (list property 'IGNORED))
-                     (isearchp-add/remove-dim-overlay hit-beg hit-end 'ADD))))
-            (goto-char (setq last-beg  beg))))
-      (error (error "%s" (error-message-string isearchp-regexp-scan))))
-    (set-buffer-modified-p bufmodp)
+    (unwind-protect
+         (condition-case-no-debug isearchp-regexp-scan
+             (save-excursion
+               (restore-buffer-modified-p nil)
+               (goto-char (setq last-beg  beg))
+               (while (and beg  (< beg end)  (not (eobp))
+                           (progn (while (and (setq beg  (re-search-forward regexp end t))
+                                              (eq last-beg beg)
+                                              (not (eobp)))
+                                    ;; Matched again, same place.  Advance 1 char.
+                                    (forward-char) (setq beg  (1+ beg)))
+                                  beg)) ; Stop if no more matches.
+                 (unless (or (not beg)  (match-beginning isearchp-context-level)) ; No `user-error': Emacs 23
+                   (error "Search context has no subgroup of level %d - try a lower number"
+                          isearchp-context-level))
+                 (let* ((hit-beg     (match-beginning isearchp-context-level))
+                        (hit-end     (match-end isearchp-context-level))
+                        (IGNORED     (when (and hit-beg  action)
+                                       (save-excursion (funcall action)
+                                                       (setq hit-end  (min end (point))
+                                                             beg      hit-end))))
+                        (hit-string  (buffer-substring-no-properties hit-beg hit-end))
+                        (c-beg       last-beg)
+                        (c-end       (if beg
+                                         (match-beginning isearchp-context-level)
+                                       (min end (point-max)))) ; Truncate.
+                        (pred-ok-p   t)
+                        end-marker)
+                   (remove-text-properties c-beg c-end (list property 'IGNORED))
+                   (isearchp-add/remove-dim-overlay c-beg c-end 'ADD)
+                   (when (and predicate
+                              (not (string= "" hit-string))
+                              (setq end-marker  (copy-marker hit-end)))
+                     (setq pred-ok-p  (save-match-data (funcall predicate hit-string end-marker))))
+                   (cond ((and pred-ok-p  (not (string= "" hit-string)))
+                          (put-text-property hit-beg hit-end property prop-value)
+                          (setq added-prop-p  prop-value)
+                          (isearchp-add/remove-dim-overlay hit-beg hit-end nil))
+                         (t
+                          (remove-text-properties hit-beg hit-end (list property 'IGNORED))
+                          (isearchp-add/remove-dim-overlay hit-beg hit-end 'ADD))))
+                 (goto-char (setq last-beg  beg))))
+           (error (error "%s" (error-message-string isearchp-regexp-scan))))
+      (restore-buffer-modified-p bufmodp))
     ;; $$$$$$ (when added-prop-p (setq isearchp-last-prop+value (cons property prop-value)))
     added-prop-p)) ; Return property value if added, or nil otherwise.
 
@@ -1650,7 +1718,6 @@ See `make-hash-table' for possible values of TEST."
        unless (gethash elt htable)
        do     (puthash elt elt htable)
        finally return (loop for i being the hash-values in htable collect i))))
-
  
 ;;(@* "Imenu Commands and Functions")
 
@@ -1793,7 +1860,6 @@ Non-nil REGEXP-P means use regexp search (otherwise, literal search)."
   (let ((result  ()))
     (dolist (x xs) (when (funcall pred x) (push x result)))
     (nreverse result)))
-
  
 ;;(@* "THING Commands and Functions")
 
@@ -1863,13 +1929,13 @@ show them."
     (unless (<= start end) (setq start  (prog1 end (setq end  start))))
     (let ((bufmodp           (buffer-modified-p))
           (buffer-read-only  nil)
+          (buffer-file-name  nil) ; Inhibit `ask-user-about-supersession-threat'.
           cbeg cend)
       (unwind-protect
            (save-excursion
+             (restore-buffer-modified-p nil)
              (goto-char start)
-             (while (and (< start end)
-                         (save-excursion
-                           (setq cbeg  (comment-search-forward end 'NOERROR))))
+             (while (and (< start end)  (save-excursion (setq cbeg  (comment-search-forward end 'NOERROR))))
                (when (string= "" comment-end) (goto-char cbeg))
                (setq cend  (if (string= "" comment-end)
                                (min (1+ (line-end-position)) (point-max))
@@ -1879,7 +1945,7 @@ show them."
                      (put-text-property cbeg cend 'invisible t)
                    (put-text-property cbeg cend 'invisible nil)))
                (goto-char (setq start  (or cend  end)))))
-        (set-buffer-modified-p bufmodp)))))
+        (restore-buffer-modified-p bufmodp)))))
 
 (defun isearchp-toggle-ignoring-comments (&optional msgp) ; Bound to `C-M-;' during Isearch.
   "Toggle the value of option `isearchp-ignore-comments-flag'.
@@ -2066,69 +2132,72 @@ This function respects both `isearchp-search-complement-domain-p' and
   (when (stringp property) (setq property  (intern property)))
   (let ((bufmodp           (buffer-modified-p))
         (buffer-read-only  nil)
+        (buffer-file-name  nil) ; Inhibit `ask-user-about-supersession-threat'.
         (last-beg          nil)
         (prop-value        nil)
         (added-prop-p      nil))
-    (isearchp-with-comments-hidden
-     beg end
-     (condition-case-no-debug isearchp-thing-scan
-         (save-excursion
-           (goto-char (setq last-beg  beg)) ; `isearchp-next-visible-thing-and-bounds' uses point.
-           (while (and last-beg  (< last-beg end))
-             (while (and (< beg end)  (invisible-p beg)) ; Skip invisible, overlay or text.
-               (when (get-char-property beg 'invisible)
-                 (setq beg  (next-single-char-property-change beg 'invisible nil end))))
-             (let ((thg+bnds  (isearchp-next-visible-thing-and-bounds thing beg end)))
-               (if (not thg+bnds)
-                   (setq beg  end)
-                 (let* ((thg-beg       (cadr thg+bnds))
-                        (thg-end       (cddr thg+bnds))
-                        (tr-thg-beg    thg-beg)
-                        (tr-thg-end    thg-end)
-                        (hit-beg       tr-thg-beg)
-                        (hit-end       tr-thg-end)
-                        (hit-string    (buffer-substring-no-properties hit-beg hit-end))
-                        (end-marker    (copy-marker hit-end))
-                        (filteredp     (or (not predicate)
-                                           (not thg+bnds)
-                                           (funcall predicate thg+bnds)))
-                        (new-thg+bnds  (and filteredp
-                                            thg+bnds
-                                            (if transform-fn
-                                                (funcall transform-fn thg+bnds)
-                                              thg+bnds))))
-                   (cond ((and (not (string= "" hit-string)) ; No-op if empty hit.
-                               new-thg+bnds)
-                          (when transform-fn
-                            (setq hit-string  (car  new-thg+bnds)
-                                  tr-thg-beg  (cadr new-thg+bnds)
-                                  tr-thg-end  (cddr new-thg+bnds)
-                                  end-marker  (copy-marker tr-thg-end)))
-                          (when isearchp-ignore-comments-flag
-                            (put-text-property 0 (length hit-string) 'invisible nil hit-string))
-                          (unless (equal hit-beg hit-end)
-                            (let ((buffer-mod  (buffer-modified-p)))
-                              (setq prop-value  (cons thing predicate))
-                              (put-text-property hit-beg hit-end property prop-value)
-                              (setq added-prop-p  prop-value)
-                              (isearchp-add/remove-dim-overlay hit-beg hit-end nil))))
-                         (t
-                          (remove-text-properties hit-beg hit-end (list property 'IGNORED))
-                          (isearchp-add/remove-dim-overlay hit-beg hit-end 'ADD)))
-                   (if thg-end
-                       ;; $$$$$$
-                       ;; The correct code here is (setq beg thg-end).  However, unless you use my
-                       ;; library `thingatpt+.el' or unless Emacs bug #9300 gets fixed (and there
-                       ;; is so far no sign that will happen), the correct code will loop forever.
-                       ;; In this case, we move forward one char to prevent looping, but that means
-                       ;; that the position just after a THING is considered to be covered by the
-                       ;; THING (which is incorrect).
-                       (setq beg  (if (featurep 'thingatpt+) thg-end (1+ thg-end)))
-                     ;; If visible then no more things - skip to END.
-                     (unless (invisible-p beg) (setq beg  end)))))
-               (setq last-beg  beg))))
-         (error (error "%s" (error-message-string isearchp-thing-scan)))))
-    (set-buffer-modified-p bufmodp)
+    (unwind-protect
+         (isearchp-with-comments-hidden
+          beg end
+          (restore-buffer-modified-p nil)
+          (condition-case-no-debug isearchp-thing-scan
+              (save-excursion
+                (goto-char (setq last-beg  beg)) ; `isearchp-next-visible-thing-and-bounds' uses point.
+                (while (and last-beg  (< last-beg end))
+                  (while (and (< beg end)  (invisible-p beg)) ; Skip invisible, overlay or text.
+                    (when (get-char-property beg 'invisible)
+                      (setq beg  (next-single-char-property-change beg 'invisible nil end))))
+                  (let ((thg+bnds  (isearchp-next-visible-thing-and-bounds thing beg end)))
+                    (if (not thg+bnds)
+                        (setq beg  end)
+                      (let* ((thg-beg       (cadr thg+bnds))
+                             (thg-end       (cddr thg+bnds))
+                             (tr-thg-beg    thg-beg)
+                             (tr-thg-end    thg-end)
+                             (hit-beg       tr-thg-beg)
+                             (hit-end       tr-thg-end)
+                             (hit-string    (buffer-substring-no-properties hit-beg hit-end))
+                             (end-marker    (copy-marker hit-end))
+                             (filteredp     (or (not predicate)
+                                                (not thg+bnds)
+                                                (funcall predicate thg+bnds)))
+                             (new-thg+bnds  (and filteredp
+                                                 thg+bnds
+                                                 (if transform-fn
+                                                     (funcall transform-fn thg+bnds)
+                                                   thg+bnds))))
+                        (cond ((and (not (string= "" hit-string)) ; No-op if empty hit.
+                                    new-thg+bnds)
+                               (when transform-fn
+                                 (setq hit-string  (car  new-thg+bnds)
+                                       tr-thg-beg  (cadr new-thg+bnds)
+                                       tr-thg-end  (cddr new-thg+bnds)
+                                       end-marker  (copy-marker tr-thg-end)))
+                               (when isearchp-ignore-comments-flag
+                                 (put-text-property 0 (length hit-string) 'invisible nil hit-string))
+                               (unless (equal hit-beg hit-end)
+                                 (let ((buffer-mod  (buffer-modified-p)))
+                                   (setq prop-value  (cons thing predicate))
+                                   (put-text-property hit-beg hit-end property prop-value)
+                                   (setq added-prop-p  prop-value)
+                                   (isearchp-add/remove-dim-overlay hit-beg hit-end nil))))
+                              (t
+                               (remove-text-properties hit-beg hit-end (list property 'IGNORED))
+                               (isearchp-add/remove-dim-overlay hit-beg hit-end 'ADD)))
+                        (if thg-end
+                            ;; $$$$$$
+                            ;; The correct code here is (setq beg thg-end).  However, unless you use my
+                            ;; library `thingatpt+.el' or unless Emacs bug #9300 gets fixed (and there
+                            ;; is so far no sign that will happen), the correct code will loop forever.
+                            ;; In this case, we move forward one char to prevent looping, but that means
+                            ;; that the position just after a THING is considered to be covered by the
+                            ;; THING (which is incorrect).
+                            (setq beg  (if (featurep 'thingatpt+) thg-end (1+ thg-end)))
+                          ;; If visible then no more things - skip to END.
+                          (unless (invisible-p beg) (setq beg  end)))))
+                    (setq last-beg  beg))))
+            (error (error "%s" (error-message-string isearchp-thing-scan)))))
+      (restore-buffer-modified-p bufmodp))
     ;; $$$$$$ (when added-prop-p (setq isearchp-last-prop+value (cons property prop-value)))
     added-prop-p))  ; Return indication of whether property was added.
 
