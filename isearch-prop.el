@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 31 08:35:43 2015 (-0700)
+;; Last-Updated: Fri Jul 31 08:44:40 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 947
+;;     Update #: 949
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -256,6 +256,7 @@
 ;;     Added: isearchp-lazy-highlights-forward-regexp, isearchp-lazy-highlights-forward-1.
 ;;     isearchp-lazy-highlights-forward: Use isearchp-lazy-highlights-forward-1.
 ;;                                       (Fixes, restore read-only & mod etc.)
+;;     isearchp-cleanup: Added optional arg MSGP.
 ;;     Bind isearchp-cleanup to M-S-delete.
 ;; 2015/07/29 dadams
 ;;     Added: isearchp-lazy-highlights-present-p.
@@ -651,14 +652,15 @@ Non-interactively:
     (delete-overlay (car isearchp-dimmed-overlays))
     (setq isearchp-dimmed-overlays  (cdr isearchp-dimmed-overlays))))
 
-(defun isearchp-cleanup ()
+(defun isearchp-cleanup (&optional msgp)
   "Remove lazy highlighting and artifacts from property searching.
 This includes dimming and all `isearchp-' properties.
 Bound to `\\<isearch-mode-map>\\[isearchp-cleanup]' during Isearch."
-  (interactive)
+  (interactive "p")
   (isearchp-remove-all-properties (point-min) (point-max))
   (isearchp-remove-dimming)
-  (lazy-highlight-cleanup 'FORCE))
+  (lazy-highlight-cleanup 'FORCE)
+  (when msgp (message "Removed lazy highlighting and prop-search artifacts")))
   
 (defun isearchp-property-forward (arg) ; Bound to `C-t' in `isearch-mode-map'.
   "Isearch forward in text with a text property or overlay property.
