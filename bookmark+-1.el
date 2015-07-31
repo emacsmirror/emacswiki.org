@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jun 26 14:29:57 2015 (-0700)
+;; Last-Updated: Fri Jul 31 07:28:27 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7794
+;;     Update #: 7795
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8910,12 +8910,12 @@ searched correspond to the recorded search hits."
   (defun bmkp-set-restrictions-bookmark ()
     "Save the ring of restrictions for the current buffer as a bookmark.
 You need library `wide-n.el' to use the bookmark created."
-    ;; If you use a version of `wide-n.el' older than 2014-05-30, then you will need to delete any
-    ;; restrictions bookmarks created with that older version.  The restrictions format changed on that date.
+    ;; If you use a version of `wide-n.el' older than 2015-07-31, then you will need to delete any
+    ;; restrictions bookmarks created with that older version.  The restrictions format changed then.
     (interactive)
     (let ((bookmark-make-record-function
            (lambda () (bmkp-make-variable-list-record
-                       `((wide-n-restrictions ; Format is (NUM BEG . END).
+                       `((wide-n-restrictions ; Format is (NUM BEG END).
                           . ,(mapcar (lambda (x)
                                        (if (eq x 'all)
                                            'all
@@ -8924,7 +8924,6 @@ You need library `wide-n.el' to use the bookmark created."
                                                (end  (cddr x)))
                                            `(,num
                                              ,(if (markerp beg) (marker-position beg) beg)
-                                             .
                                              (if (markerp end) (marker-position end) end)))))
                                      wide-n-restrictions)))))))
       (call-interactively #'bookmark-set)
