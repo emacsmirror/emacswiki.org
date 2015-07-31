@@ -7,6 +7,7 @@ Summary:
 ||    5||    5||     t||      t||      t||        error||        t||         t||
 ||    5||  5.0||   nil||      t||      t||        error||      nil||         t||
 ||  "a"||  "a"||   nil||    nil||  error||            t||        t||         t||
+||  "a"||  'a||   nil||    nil||  error||            t||        nil||         nil||
 ||   a ||    a||     t||      t||  error||        error||        t||         t||
 || "a" ||  "A"||   nil||    nil|| error ||          nil||      nil||         t||
 || (1 2)|| (1 2)|| nil||    nil||  error||        error||        t||         t||
