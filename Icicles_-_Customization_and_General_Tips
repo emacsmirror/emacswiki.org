@@ -1745,7 +1745,7 @@ literally.  The default value is `nil'.  You can use '''`##M-`##'''' to
 [:icicle-ignore-comments-flag]
 ==== Option icicle-ignore-comments-flag ====
 
-* Non-`nil' option '''`icicle-ignore-comments-flag'''' means that
+Non-`nil' option '''`icicle-ignore-comments-flag'''' means that
 `icicle-search-thing' and related commands
 (e.g. `icicle-search-xml-element') ignore comments.  That is,
 they hide comments temporarily while they scan the [[region]] or
@@ -1754,7 +1754,20 @@ buffer for things of the given type to serve as search contexts
 presenting as a candidate a [[sexp]] or a [[list]] that is commented
 out.  You can toggle this option anytime using '''`##C-M-;##'''' in the
 minibuffer, but to see the effect you might need to invoke the
-current command again.
+current command again.  See also option
+[[#icicle-hide-whitespace-before-comment-flag|`icicle-hide-whitespace-before-comment-flag']] (next).
+
+
+
+
+----
+[:icicle-hide-whitespace-before-comment-flag]
+==== Option icicle-hide-whitespace-before-comment-flag ====
+
+Non-`nil' option '''`icicle-hide-whitespace-before-comment-flag''''
+means that hiding comments (see option
+[[#icicle-ignore-comments-flag|`icicle-ignore-comments-flag']]) also hides whitespace preceding a
+comment.  Empty lines (newline chars) are not hidden, however.
 
 
 
