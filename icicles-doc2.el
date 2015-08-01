@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jul  5 14:08:23 2015 (-0700)
+;; Last-Updated: Sat Aug  1 09:51:18 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 29924
+;;     Update #: 29930
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -592,10 +592,11 @@
 ;;  Command `icicle-search-thing' (`M-s M-s t') searches the text of
 ;;  thing-at-point things.  It prompts you for the thing type: `sexp',
 ;;  `sentence', `list', `string', `comment', etc.  It ignores comments
-;;  according to option `icicle-ignore-comments-flag'.  You can toggle
-;;  this ignoring using `C-M-;' at any time.  When comments are
-;;  ignored, the candidate things (e.g. sexps) to be searched are only
-;;  those outside of comments.
+;;  according to options `icicle-ignore-comments-flag' and
+;;  `icicle-hide-whitespace-before-comment-flag'.  You can toggle this
+;;  ignoring using `C-M-;' at any time.  When comments are ignored,
+;;  the candidate things (e.g. sexps) to be searched are only those
+;;  outside of comments.
 ;;
 ;;(@* "How Icicles Search Works")
 ;;  ** How Icicles Search Works **
@@ -1015,7 +1016,8 @@
 ;;    presenting as a candidate a sexp or a list that is commented
 ;;    out.  You can toggle this option anytime using `C-M-;' in the
 ;;    minibuffer, but to see the effect you might need to invoke the
-;;    current command again.
+;;    current command again.  See also option
+;;    `icicle-hide-whitespace-before-comment-flag'.
 ;;
 ;;  * `icicle-search-hook': Functions run after searching and moving
 ;;    to a match, whether by `RET' or `C-RET' (or `C-next' or
@@ -5976,7 +5978,13 @@
 ;;    presenting as a candidate a sexp or a list that is commented
 ;;    out.  You can toggle this option anytime using `C-M-;' in the
 ;;    minibuffer, but to see the effect you might need to invoke the
-;;    current command again.
+;;    current command again.  See also option
+;;    `icicle-hide-whitespace-before-comment-flag' (next).
+;;
+;;  * Non-`nil' option `icicle-hide-whitespace-before-comment-flag'
+;;    means that hiding comments (see option
+;;    `icicle-ignore-comments-flag') also hides whitespace preceding a
+;;    comment.  Empty lines (newline chars) are not hidden, however.
 ;;
 ;;  * User option `icicle-search-hook' is a list of functions to be
 ;;    run after searching and moving to an `icicle-search' match,
