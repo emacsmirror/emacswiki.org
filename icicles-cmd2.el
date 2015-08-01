@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Aug  1 09:30:53 2015 (-0700)
+;; Last-Updated: Sat Aug  1 09:38:07 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7158
+;;     Update #: 7160
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5702,7 +5702,7 @@ list includes the names of the symbols that satisfy
     (mapcar #'list types)))
 
 ;; Same as `hide/show-comments' in `hide-comnt.el'.
-;; Same as `isearchp-hide-whitespace-before-comment-flag' in `isearch-prop.el' (except that is only Emacs 23+).
+;; Same as `isearchp-hide/show-comments' in `isearch-prop.el' (except that is only Emacs 23+).
 ;;
 (defun icicle-hide/show-comments (&optional hide/show start end)
   "Hide or show comments from START to END.
@@ -5759,7 +5759,7 @@ because it needs `comment-search-forward'."
                              (if (comment-forward 1)  (if (= (char-before) ?\n) (1- (point)) (point))  end))
                             ((string= "" comment-end) (min (line-end-position) end))
                             (t (search-forward comment-end end 'NOERROR)))))
-        (when hide-whitespace-before-comment-flag ; Hide preceding whitespace.
+        (when icicle-hide-whitespace-before-comment-flag ; Hide preceding whitespace.
           (if (fboundp 'looking-back)   ; Emacs 22+
               (when (looking-back "\n?\\s-*" nil 'GREEDY) (setq cbeg  (match-beginning 0)))
             (while (memq (char-before cbeg) '(?\   ?\t ?\f)) (setq cbeg  (1- cbeg)))
