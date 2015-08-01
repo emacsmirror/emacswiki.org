@@ -6,7 +6,7 @@ You can customize the color scheme [[RainbowDelimiters]] uses. The color scheme 
 
 
 = Download: =
-* [http://github.com/jlr/rainbow-delimiters/raw/master/rainbow-delimiters.el rainbow-delimiters.el] 
+* [https://github.com/Fanael/rainbow-delimiters Fanael/rainbow-delimiters]
 
 * Current: <b>1.3.4</b> (2012-04-27)
 ** Further improve highlighting speed. Benchmarks show 2x improvement.
@@ -91,11 +91,11 @@ Rainbow-delimiters comes with two *default color schemes*, for light and dark ba
 There is a fork of this package to [https://github.com/istib/rainbow-blocks highlight whole lisp blocks]
 
 == Development Version/Contributing ==
-The current development version is always at github, under [http://github.com/jlr/rainbow-delimiters jlr/rainbow-delimiters].
+
+Historically, development was being done by JeremyRayman at [https://github.com/jlr/rainbow-delimiters jlr/rainbow-delimiters], but sadly, to our great loss, JeremyRayman passed away last year, and active development has moved to [https://github.com/Fanael/rainbow-delimiters Fanael/rainbow-delimiters]. jlr was an inspiration and teacher to many people in the emacs community, and he will be dearly missed.
 
 == Reporting Issues ==
-Please send any bug reports or requests to the [http://github.com/jlr/rainbow-delimiters github] page.
-
+Please send any bug reports or requests to the [https://github.com/Fanael/rainbow-delimiters Fanael/rainbow-delimiters] page.
 
 ----
 CategoryFaces CategoryModes ParenthesesAppearance
