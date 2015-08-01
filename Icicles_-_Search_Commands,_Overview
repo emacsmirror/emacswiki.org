@@ -307,7 +307,8 @@ information.
 Command '''`icicle-search-thing'''' (`M-s M-s t') searches the text of
 ThingAtPoint things.  It prompts you for the thing type: [[sexp|`sexp']],
 `sentence', [[list|`list']], `string', `comment', etc.  It ignores comments
-according to option '''`<tt>[[Icicles - Customization and General Tips#icicle-ignore-comments-flag|icicle-ignore-comments-flag]]</tt>''''.  You can toggle
+according to options '''`<tt>[[Icicles - Customization and General Tips#icicle-ignore-comments-flag|icicle-ignore-comments-flag]]</tt>'''' and 
+'''`<tt>[[Icicles - Customization and General Tips#icicle-hide-whitespace-before-comment-flag|icicle-hide-whitespace-before-comment-flag]]</tt>''''.  You can toggle
 this ignoring using '''`##C-M-;##'''' at any time.  When comments are
 ignored, the candidate things (e.g. sexps) to be searched are only
 those outside of comments.
@@ -327,7 +328,6 @@ those outside of comments.
 
 [:HowIciclesSearchWorks]
 == How Icicles Search Works ==
-
 
 All '''Icicles''' search commands operate in the same general way:
 
@@ -707,7 +707,8 @@ buffer for things of the given type to serve as search contexts
 presenting as a candidate a [[sexp]] or a [[list]] that is commented
 out.  You can toggle this option anytime using '''`##C-M-;##'''' in the
 minibuffer, but to see the effect you might need to invoke the
-current command again.
+current command again.  See also option
+'''`<tt>[[Icicles - Customization and General Tips#icicle-hide-whitespace-before-comment-flag|icicle-hide-whitespace-before-comment-flag]]</tt>''''.
 
 * '''`icicle-search-hook'''': Functions run after searching and moving
   to a match, whether by `RET' or `C-RET' (or `C-next' or
@@ -876,6 +877,4 @@ CategoryProgrammerUtils
 CategoryCode
 CategorySearchAndReplace
 CategoryXML
-
-
 
