@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Jul 29 11:53:19 2015 (-0700)
+;; Last-Updated: Sat Aug  1 09:32:56 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11482
+;;     Update #: 11488
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1158,6 +1158,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2015/08/01 dadams
+;;     Added: icicle-hide/show-comments-1.
+;;     icicle-hide/show-comments: 
+;;       Use with-silent-modifications if available.  Use icicle-hide/show-comments-1, which was
+;;       updated per hide-comnt.el, including respect icicle-hide-whitespace-before-comment-flag.
 ;; 2015/07/29 dadams
 ;;     icicle-search-char-prop-matches-p: Loop over all overlays at point, do not just use the first.
 ;; 2015/04/11 dadams
@@ -7573,6 +7578,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2015/08/01 dadams
+;;     Added: icicle-hide-whitespace-before-comment-flag.
 ;; 2015/07/05 dadams
 ;;     Added: icicle-completion-style-sets (Emacs 23+).
 ;;     icicle-completion-key-bindings: Bind C-M-( to icicle-next-completion-style-set (Emacs 23+).
