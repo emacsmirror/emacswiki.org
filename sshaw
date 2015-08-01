@@ -1,2 +1,8 @@
+I uses Emacs on Linux, Windows, and OS X; I don't use Aquamacs.
+
+== My Emacs Lisp Code  ==
+
 * [https://github.com/sshaw/git-link git-link] - Create URLs for files and commits in GitHub/Bitbucket/GitLab/... repositories
 * [https://github.com/sshaw/emacs.d emacs.d] - My emacs config
+
+CategoryHomepage
