@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Aug  1 09:38:07 2015 (-0700)
+;; Last-Updated: Sat Aug  1 09:43:20 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7160
+;;     Update #: 7164
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -5614,7 +5614,8 @@ If user option `icicle-ignore-comments-flag' is nil then include
 THINGs located within comments.  Non-nil means to ignore comments for
 searching.  You can toggle this option using `C-M-;' in the
 minibuffer, but depending on when you do so you might need to invoke
-this command again.
+this command again.  See also option
+`icicle-hide-whitespace-before-comment-flag'.
 
 Non-interactively, if optional arg PREDICATE is non-nil then it is a
 predicate that acceptable things must satisfy.  It is passed the thing
@@ -5779,7 +5780,9 @@ minibuffer, but depending on when you do so you might need to invoke
 the current command again.
 
 See `icicle-hide/show-comments', which is used to hide and show the
-comments.  Note that prior to Emacs 21, this never hides comments."
+comments.  Note that prior to Emacs 21, this never hides comments.
+
+See also option `icicle-hide-whitespace-before-comment-flag'."
   (let ((result  (make-symbol "result"))
         (ostart  (make-symbol "ostart"))
         (oend    (make-symbol "oend")))
@@ -5818,8 +5821,9 @@ either PREDICATE or TRANSFORM-FN disqualifies the thing being scanned
 currently, then scanning skips forward to the next thing.  The scan
 does not dig inside the current thing to look for a qualified THING.
 
-This function respects both `icicle-search-complement-domain-p' and
-`icicle-ignore-comments-flag'."
+This function respects `icicle-search-complement-domain-p',
+`icicle-ignore-comments-flag', and
+`icicle-hide-whitespace-before-comment-flag'."
   (let ((add-bufname-p  (and buffer  icicle-show-multi-completion-flag))
         (temp-list      ())
         (last-beg       nil))
@@ -5976,7 +5980,8 @@ Interactively:
 Ignores (skips) comments if `icicle-ignore-comments-flag' is non-nil.
 You can toggle this ignoring of comments using `C-M-;' in the
 minibuffer, but depending on when you do so you might need to invoke
-the current command again.
+the current command again.  See also option
+`icicle-hide-whitespace-before-comment-flag'.
 
 If you use this command or `icicle-previous-visible-thing'
 successively, even mixing the two, you are prompted for the type of
