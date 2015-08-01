@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Jul 22 19:36:21 2015 (-0700)
+;; Last-Updated: Sat Aug  1 09:46:14 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 19707
+;;     Update #: 19708
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1635,7 +1635,9 @@ Bound to `M-_' in the minibuffer."
 (defun icicle-toggle-ignoring-comments () ; Bound to `C-M-;' in minibuffer.
   "Toggle the value of option `icicle-ignore-comments-flag'.
 If option `ignore-comments-flag' is defined (in library
-`hide-comnt.el') then it too is toggled.
+`hide-comnt.el') then it too is toggled.  See also option
+`icicle-hide-whitespace-before-comment-flag'.
+
 Bound to `C-M-;' in the minibuffer."
   (interactive)
   (setq icicle-ignore-comments-flag  (not icicle-ignore-comments-flag))
