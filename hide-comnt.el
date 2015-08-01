@@ -8,9 +8,9 @@
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 29 13:26:39 2015 (-0700)
+;; Last-Updated: Fri Jul 31 12:15:15 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 174
+;;     Update #: 177
 ;; URL: http://www.emacswiki.org/hide-comnt.el
 ;; Doc URL: http://www.emacswiki.org/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
@@ -64,6 +64,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/07/31 dadams
+;;     hide/show-comments:
+;;       Bind buffer-file-name to nil to inhibit ask-user-about-supersession-threat.
 ;; 2015/07/29 dadams
 ;;     hide/show-comments:
 ;;       No-op if no comment-start.  Pass NOERROR arg to comment-normalize-vars.
@@ -189,9 +192,11 @@ it needs `comment-search-forward'."
     (unless (<= start end) (setq start  (prog1 end (setq end  start)))) ; Swap.
     (let ((bufmodp           (buffer-modified-p))
           (buffer-read-only  nil)
+          (buffer-file-name  nil) ; Inhibit `ask-user-about-supersession-threat'.
           cbeg cend)
       (unwind-protect
            (save-excursion
+             (set-buffer-modified-p nil)
              (goto-char start)
              (while (and (< start end)
                          (save-excursion
