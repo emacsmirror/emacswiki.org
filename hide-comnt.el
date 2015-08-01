@@ -8,9 +8,9 @@
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 31 12:15:15 2015 (-0700)
+;; Last-Updated: Sat Aug  1 09:21:12 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 177
+;;     Update #: 205
 ;; URL: http://www.emacswiki.org/hide-comnt.el
 ;; Doc URL: http://www.emacswiki.org/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
@@ -39,6 +39,10 @@
 ;;
 ;;    `hide-whitespace-before-comment-flag', `ignore-comments-flag'.
 ;;
+;;  Non-interactive functions defined here:
+;;
+;;    `hide/show-comments-1'.
+;;
 ;;
 ;;  Put this in your init file (`~/.emacs'):
 ;;
@@ -64,6 +68,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/01 dadams
+;;     Added hide/show-comments-1.  (And removed save-excursion around looking-back etc.)
+;;     hide/show-comments:
+;;       Use with-silent-modifications if available.  Use hide/show-comments-1.
 ;; 2015/07/31 dadams
 ;;     hide/show-comments:
 ;;       Bind buffer-file-name to nil to inhibit ask-user-about-supersession-threat.
@@ -190,40 +198,46 @@ it needs `comment-search-forward'."
     (unless start (setq start  (point-min)))
     (unless end   (setq end    (point-max)))
     (unless (<= start end) (setq start  (prog1 end (setq end  start)))) ; Swap.
-    (let ((bufmodp           (buffer-modified-p))
-          (buffer-read-only  nil)
-          (buffer-file-name  nil) ; Inhibit `ask-user-about-supersession-threat'.
-          cbeg cend)
-      (unwind-protect
-           (save-excursion
-             (set-buffer-modified-p nil)
-             (goto-char start)
-             (while (and (< start end)
-                         (save-excursion
-                           (setq cbeg  (comment-search-forward end 'NOERROR))))
-               (goto-char cbeg)
-               (save-excursion
-                 (setq cend  (cond ((fboundp 'comment-forward) ; Emacs 22+
-                                    (if (comment-forward 1)
-                                        (if (= (char-before) ?\n) (1- (point)) (point))
-                                      end))
-                                   ((string= "" comment-end) (min (line-end-position) end))
-                                   (t (search-forward comment-end end 'NOERROR)))))
-               (when hide-whitespace-before-comment-flag ; Hide preceding whitespace.
-                 (save-excursion
-                   (if (fboundp 'looking-back) ; Emacs 22+
-                       (when (looking-back "\n?\\s-*" nil 'GREEDY)
-                         (setq cbeg  (match-beginning 0)))
-                     (while (memq (char-before cbeg) '(?\   ?\t ?\f))
-                       (setq cbeg  (1- cbeg)))
-                     (when (eq (char-before cbeg) ?\n) (setq cbeg  (1- cbeg)))))
-                 ;; First line: Hide newline after comment.
-                 (when (and (= cbeg (point-min))  (= (char-after cend) ?\n))
-                   (setq cend  (min (1+ cend) end))))
-               (when (and cbeg  cend)
-                 (put-text-property cbeg cend 'invisible (eq 'hide hide/show)))
-               (goto-char (setq start  (or cend  end)))))
-        (set-buffer-modified-p bufmodp)))))
+    (if (fboundp 'with-silent-modifications)
+        (with-silent-modifications      ; Emacs 23+.
+            (restore-buffer-modified-p nil) (hide/show-comments-1 hide/show start end))
+      (let ((bufmodp           (buffer-modified-p)) ; Emacs < 23.
+            (buffer-read-only  nil)
+            (buffer-file-name  nil))    ; Inhibit `ask-user-about-supersession-threat'.
+        (set-buffer-modified-p nil)
+        (unwind-protect (hide/show-comments-1 hide/show start end)
+          (set-buffer-modified-p bufmodp))))))
+
+;; Used only so that we can use `hide/show-comments' with older Emacs releases that do not
+;; have macro `with-silent-modifications' and built-in `restore-buffer-modified-p', which
+;; it uses.
+(defun hide/show-comments-1 (hide/show start end)
+  "Helper for `hide/show-comments'."
+  (let (cbeg cend)
+    (save-excursion
+      (goto-char start)
+      (while (and (< start end)  (save-excursion
+                                   (setq cbeg  (comment-search-forward end 'NOERROR))))
+        (goto-char cbeg)
+        (save-excursion
+          (setq cend  (cond ((fboundp 'comment-forward) ; Emacs 22+
+                             (if (comment-forward 1)
+                                 (if (= (char-before) ?\n) (1- (point)) (point))
+                               end))
+                            ((string= "" comment-end) (min (line-end-position) end))
+                            (t (search-forward comment-end end 'NOERROR)))))
+        (when hide-whitespace-before-comment-flag ; Hide preceding whitespace.
+          (if (fboundp 'looking-back)   ; Emacs 22+
+              (when (looking-back "\n?\\s-*" nil 'GREEDY)
+                (setq cbeg  (match-beginning 0)))
+            (while (memq (char-before cbeg) '(?\   ?\t ?\f)) (setq cbeg  (1- cbeg)))
+            (when (eq (char-before cbeg) ?\n) (setq cbeg  (1- cbeg))))
+          ;; First line: Hide newline after comment.
+          (when (and (= cbeg (point-min))  (= (char-after cend) ?\n))
+            (setq cend  (min (1+ cend) end))))
+        (when (and cbeg  cend)
+          (put-text-property cbeg cend 'invisible (eq 'hide hide/show)))
+        (goto-char (setq start  (or cend  end)))))))
 
 (defun hide/show-comments-toggle (&optional start end)
   "Toggle hiding/showing of comments in the active region or whole buffer.
