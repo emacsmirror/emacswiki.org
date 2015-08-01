@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 31 14:33:44 2015 (-0700)
+;; Last-Updated: Sat Aug  1 09:27:18 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1032
+;;     Update #: 1066
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -94,6 +94,7 @@
 ;;  User options defined here:
 ;;
 ;;    `isearchp-dimming-color', `isearchp-dim-non-prop-zones-flag',
+;;    `isearchp-hide-whitespace-before-comment-flag',
 ;;    `isearchp-ignore-comments-flag'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -262,6 +263,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/01 dadams
+;;     Added: isearchp-hide-whitespace-before-comment-flag.
+;;     isearchp-hide/show-comments:
+;;       Updated per hide-comnt.el, including respect isearchp-hide-whitespace-before-comment-flag.
 ;; 2015/07/31 dadams
 ;;     Added: isearchp-lazy-highlights-forward-regexp, isearchp-lazy-highlights-forward-1,
 ;;            isearchp-lazy-highlights-narrow.
@@ -282,8 +287,7 @@
 ;;     isearchp-property-matches-p: Corrected to loop over all overlays at point, not just use the first.
 ;;     isearchp-thing-read-args: Turn off *-ignore-comments-flag if THING = comment and not complementing.
 ;;     isearchp-thing: Updated doc string to mention this.
-;;     isearchp-hide/show-comments:
-;;       No-op if no comment-start.  Pass NOERROR arg to comment-normalize-vars.
+;;     isearchp-hide/show-comments: No-op if no comment-start.  Pass NOERROR arg to comment-normalize-vars.
 ;; 2015/07/28 dadams
 ;;     isearchp-thing-scan: Revert hopeful code that expected bug #9300 to be fixed in Emacs 24.
 ;;                          You really need library thingatpt+.el if you want reasonable behavior.
@@ -432,7 +436,8 @@
 
 ;;; Macros ----------------------------------------------
 
-;;; Same as `with-comments-hidden' in `hide-comnt.el', except doc here mentions `C-M-;'.
+;; Same as `with-comments-hidden' in `hide-comnt.el', except doc here mentions `C-M-;'.
+;;
 (defmacro isearchp-with-comments-hidden (start end &rest body)
   "Evaluate the forms in BODY while comments are hidden from START to END.
 But if `isearchp-ignore-comments-flag' is nil, just evaluate BODY,
@@ -494,6 +499,16 @@ text that does have the property."
          (let ((old-val  (symbol-value symb)))
            (custom-set-default symb new-val)
            (unless (eq old-val (symbol-value symb)) (isearchp-toggle-dimming-non-prop-zones)))))
+
+;; Same as `hide-whitespace-before-comment-flag' in `hide-comnt.el'.
+;; Same as `icicle-hide-whitespace-before-comment-flag' in `icicles-opt.el'.
+;; Except that those libraries need to also handle Emacs < 23.
+;;
+(defcustom isearchp-hide-whitespace-before-comment-flag t
+  "*Non-nil means hide whitespace preceding a comment.
+Empty lines (newline chars) are not hidden, however.
+Used by `isearchp-hide/show-comments'."
+  :type 'boolean :group 'isearch-plus)
 
 ;; Same as `ignore-comments-flag' in `hide-comnt.el'.
 ;;
@@ -1018,7 +1033,7 @@ See `isearchp-regexp-context-search' for a description of the prompting."
     (list beg end prop regxp pred nil))) ; ACTION is always nil.
 
 (defun isearchp-property-1 (search-fn arg)
-  "Helper for `isearchp-property-(forward|backward)(-regexp)'.
+  "Helper for text and overlay property Isearch commands.
 SEARCH-FN is the search function.
 ARG is normally from the prefix arg - see `isearchp-property-forward'."
   ;; Emacs bug #21091: must wrap with `ignore-errors' now - if fixed before Emacs 25 then I can remove it.
@@ -1849,12 +1864,17 @@ show invisible text that you previously hid using this command."
         (isearchp-hide/show-comments 'show start end)
       (isearchp-hide/show-comments 'hide start end))))
 
-;; Same as `hide/show-comments' in `hide-comnt.el', except no need to handle Emacs < 23.
+;; Same as `hide/show-comments' in `hide-comnt.el'.
+;; Same as `icicle-hide/show-comments' in `icicles-cmd2.el'.
+;; Except that those libraries need to also handle Emacs < 23.
 ;;
 (defun isearchp-hide/show-comments (&optional hide/show start end)
   "Hide or show comments from START to END.
 Interactively, hide comments, or show them if you use a prefix arg.
 \(This is thus *NOT* a toggle command.)
+
+If option `hide-whitespace-before-comment-flag' is non-nil, then hide
+also any whitespace preceding a comment.
 
 Interactively, START and END default to the region limits, if active.
 Otherwise, including non-interactively, they default to `point-min'
@@ -1883,20 +1903,23 @@ show them."
     (unless start (setq start  (point-min)))
     (unless end   (setq end    (point-max)))
     (unless (<= start end) (setq start  (prog1 end (setq end  start))))
-    (let (cbeg cend)
-      (with-silent-modifications
+    (with-silent-modifications
+      (restore-buffer-modified-p nil)
+      (let (cbeg cend)
         (save-excursion
-          (restore-buffer-modified-p nil)
           (goto-char start)
           (while (and (< start end)  (save-excursion (setq cbeg  (comment-search-forward end 'NOERROR))))
-            (when (string= "" comment-end) (goto-char cbeg))
-            (setq cend  (if (string= "" comment-end)
-                            (min (1+ (line-end-position)) (point-max))
-                          (and (comment-forward 1) (point))))
+            (goto-char cbeg)
+            (save-excursion (setq cend  (if (comment-forward 1)
+                                            (if (= (char-before) ?\n) (1- (point)) (point))
+                                          end)))
+            (when isearchp-hide-whitespace-before-comment-flag ; Hide preceding whitespace.
+              (when (looking-back "\n?\\s-*" nil 'GREEDY) (setq cbeg  (match-beginning 0)))
+              ;; First line: Hide newline after comment.
+              (when (and (= cbeg (point-min))  (= (char-after cend) ?\n))
+                (setq cend  (min (1+ cend) end))))
             (when (and cbeg cend)
-              (if (eq 'hide hide/show)
-                  (put-text-property cbeg cend 'invisible t)
-                (put-text-property cbeg cend 'invisible nil)))
+              (put-text-property cbeg cend 'invisible (eq 'hide hide/show)))
             (goto-char (setq start  (or cend  end)))))))))
 
 (defun isearchp-toggle-ignoring-comments (&optional msgp) ; Bound to `C-M-;' during Isearch.
