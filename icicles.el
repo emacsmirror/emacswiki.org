@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2015.07.05
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul  5 08:16:52 2015 (-0700)
+;; Last-Updated: Sat Aug  1 09:17:26 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 23658
+;;     Update #: 23660
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -845,6 +845,7 @@
 ;;    `icicle-help-in-mode-line-delay',
 ;;    `icicle-hide-common-match-in-Completions-flag',
 ;;    `icicle-hide-non-matching-lines-flag',
+;;    `icicle-hide-whitespace-before-comment-flag',
 ;;    `icicle-highlight-historical-candidates-flag',
 ;;    `icicle-highlight-input-completion-failure',
 ;;    `icicle-highlight-input-completion-failure-delay',
@@ -1166,6 +1167,7 @@
 ;;    `icicle-handle-default-for-prompt',
 ;;    `icicle-help-on-candidate-symbol', `icicle-help-line-buffer',
 ;;    `icicle-help-line-file', `icicle-help-string-completion',
+;;    `icicle-hide/show-comments-1',
 ;;    `icicle-highlight-candidate-in-Completions',
 ;;    `icicle-highlight-complete-input',
 ;;    `icicle-highlight-initial-whitespace',
