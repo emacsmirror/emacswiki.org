@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Jul  5 13:16:52 2015 (-0700)
+;; Last-Updated: Sat Aug  1 09:02:41 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 6111
+;;     Update #: 6115
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -131,6 +131,7 @@
 ;;    `icicle-help-in-mode-line-delay',
 ;;    `icicle-hide-common-match-in-Completions-flag',
 ;;    `icicle-hide-non-matching-lines-flag',
+;;    `icicle-hide-whitespace-before-comment-flag',
 ;;    `icicle-highlight-historical-candidates-flag',
 ;;    `icicle-highlight-input-completion-failure',
 ;;    `icicle-highlight-input-completion-failure-delay',
@@ -3049,6 +3050,15 @@ the option value.
 
 See also option `icicle-hide-common-match-in-Completions-flag'."
   :type 'boolean :group 'Icicles-Completions-Display)
+
+;; Same as `hide-whitespace-before-comment-flag' in `hide-comnt.el'.
+;; Same as `isearchp-whitespace-before-comment-flag' in `isearch-prop.el'.
+;;
+(defcustom icicle-hide-whitespace-before-comment-flag t
+  "*Non-nil means hide whitespace preceding a comment.
+Empty lines (newline chars) are not hidden, however.
+Used by `icicle-hide/show-comments'."
+  :type 'boolean :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-highlight-historical-candidates-flag t ; Toggle with `C-pause'.
   "*Non-nil means highlight `*Completions*' candidates that have been used.
