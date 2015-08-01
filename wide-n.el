@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 31 07:31:59 2015 (-0700)
+;; Last-Updated: Sat Aug  1 12:02:27 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 523
+;;     Update #: 525
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -181,6 +181,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/01 dadams
+;;     wide-n-start+end: Fix: use list, not cons.
 ;; 2015/07/31 dadams
 ;;     Renamed: wide-n-start.end to wide-n-start+end.  Added: function wide-n-restrictions.
 ;;     wide-n-restrictions: INCOMPATIBLE CHANGE: The format is now (NUM START END), not (NUM START . END).
@@ -473,7 +475,7 @@ they do not share with any conses in `wide-n-restrictions'"
 If RESTRICTION is a cons then it has the form (NUM START END), so
  return a new cons (START END).
 Otherwise RESTRICTION is `all', so return nil."
-  (and (consp restriction)  (cons (cadr restriction) (car (cddr restriction)))))
+  (and (consp restriction)  (list (cadr restriction) (car (cddr restriction)))))
 
 ;; Useful for commands that want to act on regions in multiple buffers.
 (defun wide-n-read-bufs ()
