@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Apr  3 07:51:12 2015 (-0700)
+;; Last-Updated: Sun Aug  2 11:39:43 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 2014
+;;     Update #: 2081
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,8 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `cl', `cl-lib', `gv', `help-fns', `help-mode', `info',
-;;   `macroexp', `naked', `wid-edit', `wid-edit+'.
+;;   `button', `cl', `help-fns', `help-mode', `naked', `view',
+;;   `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,6 +117,15 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/02 dadams
+;;     Updated for Emacs 25
+;;      help-fns--signature:
+;;        Added arg RAW.  Return DOC if FUNCTION is a keymap.  Use help--make-usage-docstring.
+;;        Use help--docstring-quote.  Insert "`X", not "(\` X)", when documenting `X.  Use substitute-command-keys
+;;        on args to help-highlight-arguments.
+;;      describe-function-1:
+;;        Use indirect-function if subr (SIG-KEY).  Moved autoloads forward).  Use help-fns-short-filename.
+;;        Use auto-do-load.  But do NOT use curly quotes - e.g., no extra substitute-command-name calls.
 ;; 2015/04/03 dadams
 ;;     Use char-before in place of looking-back, for chars before.  See Emacs bug #17284.
 ;; 2015/03/26 dadams
@@ -950,8 +959,7 @@ the innermost function call surrounding point
 \(`function-called-at-point').
 Return the description that was displayed, as a string."
   (interactive
-   (let* ((fn                            (or (and (fboundp 'symbol-nearest-point)
-                                                  (symbol-nearest-point))
+   (let* ((fn                            (or (and (fboundp 'symbol-nearest-point)  (symbol-nearest-point))
                                              (function-called-at-point)))
           (enable-recursive-minibuffers  t)
           (completion-annotate-function  (lambda (fn) (and (commandp (intern-soft fn))  "  (command)")))
@@ -1362,16 +1370,21 @@ Return the description that was displayed, as a string."
 
   ;; REPLACE ORIGINAL in `help-fns.el'
   ;;
-  ;; Add key-description buttons to command help: Use `help-documentation', not `documentation'.
+  ;; 1. Add key-description buttons to command help: Use `help-documentation', not `documentation'.
+  ;; 2. Arg RAW is optional, so we can use this with older Emacs versions.
   ;;
-  (defun help-fns--signature (function doc real-def real-function)
-    (unless (keymapp function) ; If definition is a keymap, skip arglist note.
+  (defun help-fns--signature (function doc real-def real-function &optional raw) ; Keep RAW optional for old Emacs.
+    (if (keymapp function)
+        doc            ; If definition is a keymap, skip arglist note.
       (let* ((advertised  (gethash real-def advertised-signature-table t))
              (arglist     (if (listp advertised) advertised (help-function-arglist real-def)))
              (usage       (help-split-fundoc doc function)))
         (when usage (setq doc  (cdr usage)))
         (let* ((use   (cond ((and usage  (not (listp advertised))) (car usage))
-                            ((listp arglist) (format "%S" (help-make-usage function arglist)))
+                            ((listp arglist)
+                             (if (fboundp 'help--make-usage-docstring)
+                                 (help--make-usage-docstring function arglist) ; Emacs 25+.
+                               (format "%S" (help-make-usage function arglist))))
                             ((stringp arglist) arglist)
                             ;; Maybe the arglist is in the docstring of a symbol this one is aliased to.
                             ((let ((fun  real-function))
@@ -1383,13 +1396,23 @@ Return the description that was displayed, as a string."
                                usage)
                              (car usage))
                             ((or (stringp real-def)  (vectorp real-def))
-                             (format "\nMacro: %s" (format-kbd-macro real-def)))
+                             (format "\nMacro: %s"
+                                     (if (fboundp 'help--docstring-quote)
+                                         (help--docstring-quote (format-kbd-macro real-def)) ; Emacs 25+.
+                                       (format-kbd-macro real-def))))
                             (t "[Missing arglist.  Please submit a bug report.]")))
-               (high  (help-highlight-arguments use doc)))
-          (let ((fill-begin  (point)))
-            (insert (car high) "\n")
-            (fill-region fill-begin (point)))
-          (cdr high))))))
+               ;; Insert "`X", not "(\` X)", when documenting `X.
+               (use1   (replace-regexp-in-string  "\\`(\\\\=\\\\\\\\=` \\([^\n ]*\\))\\'"  "\\\\=`\\1" use t))
+               (high   (if raw
+                           (cons use1 doc)
+                         (help-highlight-arguments (substitute-command-keys use1) (substitute-command-keys doc)))))
+          (let ((fill-begin  (point))
+                (high-usage  (car high))
+                (high-doc    (cdr high)))
+            (insert high-usage "\n")
+            (fill-region fill-begin (point))
+            high-doc)))))
+  )
 
 (when (and (= emacs-major-version 24)  (= emacs-minor-version 3))
   (defun describe-function-1 (function)
@@ -1498,11 +1521,12 @@ Return the description that was displayed, as a string."
                                                 f))
                                  ((subrp def) (intern (subr-name def)))
                                  (t           def)))
+           (sig-key        (if (subrp def) (indirect-function real-def) real-def))
            (file-name      (find-lisp-object-file-name function def))
            (pt1            (with-current-buffer (help-buffer) (point)))
            (beg            (if (and (or (byte-code-function-p def)  (keymapp def)
                                         (memq (car-safe def) '(macro lambda closure)))
-                                    file-name
+                                    (stringp file-name)
                                     (help-fns--autoloaded-p function file-name))
                                (if (commandp def) "an interactive autoloaded " "an autoloaded ")
                              (if (commandp def) "an interactive " "a "))))
@@ -1511,8 +1535,14 @@ Return the description that was displayed, as a string."
                    ((subrp def)  (if (eq 'unevalled (cdr (subr-arity def)))
                                      (concat beg "special form")
                                    (concat beg "built-in function")))
-                   ;; Aliases are Lisp functions, check aliases before functions.
+                   ;; Aliases are Lisp functions, so we need to check aliases before functions.
+                   ;; Do NOT use curly quotes, so do not need to wrap format string in `substitute-command-keys'.
                    (aliased (format "an alias for `%s'" real-def))
+                   ((autoloadp def) (format "%s autoloaded %s"
+                                            (if (commandp def) "an interactive" "an")
+                                            (if (eq (nth 4 def) 'keymap)
+                                                "keymap"
+                                              (if (nth 4 def) "Lisp macro" "Lisp function"))))
                    ((or (eq (car-safe def) 'macro)
                         ;; For advised macros, DEF is a lambda expression or is `byte-code-function-p',
                         ;; so check macros before functions.
@@ -1521,11 +1551,6 @@ Return the description that was displayed, as a string."
                    ((byte-code-function-p def) (concat beg "compiled Lisp function"))
                    ((eq (car-safe def) 'lambda) (concat beg "Lisp function"))
                    ((eq (car-safe def) 'closure)  (concat beg "Lisp closure"))
-                   ((autoloadp def)
-                    (format "%s autoloaded %s" (if (commandp def) "an interactive"  "an")
-                            (if (eq (nth 4 def) 'keymap)
-                                "keymap"
-                              (if (nth 4 def) "Lisp macro" "Lisp function"))))
                    ((keymapp def)  (let ((is-full  nil)
                                          (elts     (cdr-safe def)))
                                      (while elts
@@ -1543,7 +1568,11 @@ Return the description that was displayed, as a string."
         (when file-name
           (princ " in `")
           ;; We used to add `.el' to the file name, but that's wrong when the user used `load-file'.
-          (princ (if (eq file-name 'C-source) "C source code" (file-name-nondirectory file-name)))
+          (princ (if (eq file-name 'C-source)
+                     "C source code"
+                   (if (fboundp 'help-fns-short-filename)
+                       (help-fns-short-filename file-name) ; Emacs 25+
+                     (file-name-nondirectory file-name))))
           (princ "'")
           ;; Make a hyperlink to the library.
           (with-current-buffer standard-output
@@ -1560,14 +1589,16 @@ Return the description that was displayed, as a string."
                                   doc-raw
                                   help-enable-auto-load
                                   (string-match "\\([^\\]=\\|[^=]\\|\\`\\)\\\\[[{<]" doc-raw)
-                                  (load (cadr real-def) t))
+                                  (auto-do-load real-def))
                              (help-substitute-command-keys doc-raw 'ADD-HELP-BUTTONS)
                            (condition-case err
                                (help-documentation function nil 'ADD-HELP-BUTTONS)
                              (error (format "No Doc! %S" err))))))
           (help-fns--key-bindings function)
           (with-current-buffer standard-output
-            (setq doc  (help-fns--signature function doc real-def real-function))
+            (setq doc  (if (> emacs-major-version 24)
+                           (help-fns--signature function doc-raw sig-key real-function nil)
+                         (help-fns--signature function doc real-def real-function)))
             (run-hook-with-args 'help-fns-describe-function-functions function)
             (insert "\n")
             (when (and doc  (boundp 'Info-virtual-files)) ; Emacs 23.2+
