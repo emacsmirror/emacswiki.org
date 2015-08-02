@@ -21,4 +21,4 @@
 \b(viagra|valium|xanax|tramadol|vardenafil|cialis|levitra)\b # 2013-08-24 common drugs
 \bcanada\s+goose\b # 2013-12-06 regular spam using a lot of tinyurl URLs
 \[https?:\S+\s+[^]\n]*\binsurance\b[^]\n]*\] # 2014-02-05 links to something about an insurance such as [http://example.com home insurance quotes]
-\bjspaypal\b # 2015-08-01 hacking offers
+\b(jspaypal|bode_jones)\b # 2015-08-01 hacking offers
