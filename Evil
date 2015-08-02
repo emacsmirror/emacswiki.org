@@ -282,7 +282,7 @@ It would be nice with a brief overview over the objectives and difference to [Vi
 The first thing I missed of Vim were the tabs. With elscreen.el and its dependencies installed, the following code emulates part of the Vim behaviour:
 
     (load "elscreen" "ElScreen" t)
-
+    (elscreen-start)
     (define-key evil-normal-state-map (kbd "C-w t") 'elscreen-create) ;creat tab
     (define-key evil-normal-state-map (kbd "C-w x") 'elscreen-kill) ;kill tab
 
