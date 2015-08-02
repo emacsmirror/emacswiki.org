@@ -106,6 +106,8 @@ That line takes only 0m0.007s so I don't mind running it each time I open bash.
 
 
 ==Reading directly from ~/.bash_aliases==
+
+
 (defun re-n-matches ()
   (1- (/ (length (match-data)) 2)))
   
@@ -159,6 +161,7 @@ That line takes only 0m0.007s so I don't mind running it each time I open bash.
 	(setq eshell-command-aliases-list
 	      (cons alias-def eshell-command-aliases-list))))
   )
+
 
 
 ----
