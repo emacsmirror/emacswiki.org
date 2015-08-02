@@ -108,6 +108,7 @@ That line takes only 0m0.007s so I don't mind running it each time I open bash.
 ==Reading directly from ~/.bash_aliases==
 
 
+    (add-hook 'eshell-mode-hook 'eshell-load-bashrc-aliases)
     (defun re-n-matches ()
       (1- (/ (length (match-data)) 2)))
       
@@ -125,7 +126,7 @@ That line takes only 0m0.007s so I don't mind running it each time I open bash.
     	(start 0)
     	(matches nil )
     	)
-        (while (setq start (progn (string-match regexp string start) (match-end 0)))
+        (while (setq start (and (string-match regexp string start) (match-end 0)))
     	(setq matches (cons (cdr (match-strings-all string)) matches))
     	)
         (setq matches (reverse matches))
@@ -135,14 +136,7 @@ That line takes only 0m0.007s so I don't mind running it each time I open bash.
           )
         )
       )
-    (defun eshell-load-bashrc-aliases ()
-      (interactive)
-      (mapc (lambda (alias-def) (apply 'eshell/alias alias-def))
-    	(re-find-all "^alias \\([^=]+\\)='?\\(.+?\\)'?$"
-    		     (get-string-from-file  (concat (getenv "HOME") ".bash_aliases"))
-    		     )
-    	)
-      )
+    
     
     (defun apply-eshell-alias (alias &rest definition)
       "basically taken from eshell/alias function"
@@ -161,8 +155,15 @@ That line takes only 0m0.007s so I don't mind running it each time I open bash.
     	(setq eshell-command-aliases-list
     	      (cons alias-def eshell-command-aliases-list))))
       )
+    (defun eshell-load-bashrc-aliases ()
+      (interactive)
+      (mapc (lambda (alias-def) (apply 'eshell/alias alias-def))
+    	(re-find-all "^alias \\([^=]+\\)='?\\(.+?\\)'?$"
+    		     (get-string-from-file  (concat (getenv "HOME") "/" ".bash_aliases"))
+    		     )
+    	)
+      )
     
-
 
 ----
 CategoryEshell
