@@ -7,6 +7,8 @@
 ;; Copyright (C) 2010 Vegard Øye
 ;; Copyright (C) 2010 Štěpán Němec
 ;;
+;; Superseded-By: evil-mode
+;;
 ;; Author: Brad Beveridge et al.
 ;; Maintainer: Vegard Øye <vegard_oye at hotmail.com>
 ;;      Please send bug reports to the mailing list (see below).
@@ -41,10 +43,9 @@
 ;; as soon as it is loaded, Viper will start working in a more
 ;; Vim-like way.
 ;;
-;; Vimpulse is under active development. It works quite well with
-;; GNU Emacs 22.3 and 23.2, as well as XEmacs 21.4.22. Patches and
-;; feature requests are welcome (see also the file CONTRIBUTE in the
-;; repository).
+;; Vimpulse is no longer under active development. It still works quite
+;; well with GNU Emacs 22.3 and 23.2, as well as XEmacs 21.4.22.
+;; But please use evil-mode instead.
 
 ;;; Installation:
 
