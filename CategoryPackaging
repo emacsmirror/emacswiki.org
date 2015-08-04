@@ -23,6 +23,9 @@ These repositories are connected to old Emacs packaging systems.
 * [[DELPS]] -- Distributed Emacs Lisp Package System used by the alternate package manager [[Epackage]].  Install [[Git]] packaged repositories.
 * [[Emacsmirror]] -- Collects packages and distributes them as [[Git]] repositories.
 
+== Writing Packages ==
+Detailed information about what is necessary to prepare a package for upload to ELPA can be found in the GNU Emacs Manual.  See MakingPackages and [[ELPA]].
+
 == El-Get  ==
 
 Users on the EmacsChannel report the following alternatives still being used:
