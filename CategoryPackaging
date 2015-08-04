@@ -1,38 +1,33 @@
-This category is about packaging Emacs extension, or about utilities that can automate searching, downloading and installing extensions.
+Emacs lends itself well to packages of customized Elisp.  Starting with Emacs 24, package support is built in, and most users take great advantage of this.  Packages are available in online repositories from GNU and other sources.  Some packages can drastically alter the behavior of Emacs.  It can be fun to keep an eye out for experiment. This category is about discovering, using, and writing Emacs packages.
+
+== Installing packages ==
+
+Emacs 24 comes with a *built-in package manager* using [[ELPA]]: `M-x list-packages'
+
+You can download a broader list of packages by adding this to your init.el: 
+{{{
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+}}}
+
+For more information, see InstallingPackages.
 
 == Repositories ==
 
-* [[ELPA]] -- Emacs Lisp Package Archive. This is the GNU the standard repository.
-** [[MELPA]] -- an ELPA-compatible repository, built automatically on their server from upstream sources using recipes
-** [[Marmalade]] -- an ELPA-compatible repository, where users upload their own packages
-* [[DELPS]] -- Distributed Emacs Lisp Package System used by [[Epackage]].  Install [[Git]] packaged repositories.
+These are the three main sources for Emacs packages:
+* [[ELPA]] -- Emacs Lisp Package Archive. This is the GNU standard repository.
+* [[MELPA]] -- an ELPA-compatible repository, built automatically on their server from upstream sources using recipes
+* [[Marmalade]] -- an ELPA-compatible repository, where users upload their own packages
+
+These repositories are connected to old Emacs packaging systems.
+* [[DELPS]] -- Distributed Emacs Lisp Package System used by the alternate package manager [[Epackage]].  Install [[Git]] packaged repositories.
 * [[Emacsmirror]] -- Collects packages and distributes them as [[Git]] repositories.
 
-There seem to be earlier efforts that have basically been obsoleted by the inclusion of [[ELPA]] into Emacs:
-
-* EmacsLispList -- A long list of packages with summaries and links.  List packages using [http://www.damtp.cam.ac.uk/user/sje30/emacs/ell.el ell.el]
-
-== Package Managers ==
-
-Emacs 24 comes with a *built-in package manager* using [[ELPA]]: `M-x package-install'
+== El-Get  ==
 
 Users on the EmacsChannel report the following alternatives still being used:
 
-* [[el-get]] -- one regularly sees packages that claim to be available via el-get, but not via any ELPA-compatible repository
-
-These seem to be earlier efforts that have basically been obsoleted by the inclusion of [[ELPA]] into Emacs:
-
-* AutoInstall
-* [http://repo.or.cz/w/elinstall.git elinstall]
-* [[Epackage]]
-* [http://www.iro.umontreal.ca/~monnier/elisp/install.el install]
-* [http://www.emacswiki.org/emacs/install-elisp.el install-elisp]
-* [http://www.jemarch.net/jempkg.html jem-pkg]
-* [https://launchpad.net/pases pases]
-* [http://github.com/eggcaker/pelm pelm]
-* [http://gmarceau.qc.ca/plugin.el plugin]
-* UsePackage
-* [http://www.xemacs.org/Documentation/packageGuide.html XEmacs package manager]
+* [[el-get]] -- one regularly sees packages that claim to be available via el-get, but not via any ELPA-compatible repository.
 
 == Discussions ==
 
