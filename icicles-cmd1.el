@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Jun 18 09:01:20 2015 (-0700)
+;; Last-Updated: Tue Aug  4 06:59:48 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 27427
+;;     Update #: 27435
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1986,8 +1986,9 @@ part of your MUA setup."
 ;;
 ;; Avoid a byte-compile error if user has already loaded BBDB version 3+.
 ;; The error has to do with `bbdb-records' being a defsubst that takes no args.
-(unless (eval-when-compile (and (featurep 'bbdb)  (or (not (zerop (string-to-number bbdb-version)))
-                                                      (not (string-lessp bbdb-version "3")))))
+(unless (eval-when-compile (and (featurep 'bbdb)
+                                (or (zerop (string-to-number bbdb-version)) ; String does not name a number.
+                                    (not (string-lessp bbdb-version "3"))))) ; >= 3.0
   (defun icicle-bbdb-complete-name (&optional start-pos)
     "Complete the user full-name or net-address before point.
 Completes only up to the preceding newline, colon, or comma, or the
