@@ -25,6 +25,7 @@ Check https://github.com/redguardtoo/js-comint for latest version. old version 0
 ** NOTE: I locked up Emacs 24 on Win 7 attempting tab-completion on an array. YMMV. --MichaelPaulukonis
 * file name completion in string 
 * incremental history search
+* File to get C-x C-e to work: [https://gist.github.com/emallson/0eae865bc99fc9639fac]  * requires js2-mode
 
 http://marmalade-repo.org/packages/nodejs-repl
 
@@ -52,7 +53,8 @@ There is a [[https://github.com/abicky/nodejs-mode.el|node.js mode]]. As of 2013
 * Stackoverflow: [[http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs|Using Node.js with JS-comint in Emacs]]
 * [[https://coderwall.com/p/qvqhkg|Live-code Node.js apps]] - mostly about configuring js-comint
 * http://grokbase.com/t/gg/nodejs/127cs8cewg/emacs - some discussion of what tools used in emacs with node.js
-
+* Use C-x C-e with the repl:  [https://atlanis.net/blog/posts/nodejs-repl-eval.html]
+* More information on a better repl setup:  [https://theholyjava.wordpress.com/2015/03/11/a-usable-node-repl-for-emacs/]
 
 == See Also ==
 
