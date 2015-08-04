@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Aug  1 09:32:56 2015 (-0700)
+;; Last-Updated: Tue Aug  4 06:58:42 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11488
+;;     Update #: 11490
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2015/08/04 dadams
+;;     icicle-bbdb-complete-name:
+;;       Corrected fix of 2014-01-25: Removed NOT for zerop string-to-number.  Thx to Nick Alcock.
 ;; 2015/06/18 dadams
 ;;     icicle-make-bookmark-candidate: Favor property location over property buffer name for non-file.
 ;;     icicle-bookmark-help-string: Use bookmark-prop-get, not bmkp-get-buffer-name, for buffer name.
