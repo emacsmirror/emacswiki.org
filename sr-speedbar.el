@@ -79,6 +79,10 @@
 
 ;;; Change log:
 ;;
+;; * 04 Aug 2015:
+;;   * Tamas Levai <levait@tmit.bme.hu>:
+;;      * fix compilation warnings
+;;
 ;; * 15 Sep 2014:
 ;;   * Tu, Do Hoang <tuhdo1710@gmail.com>
 ;;      * define `sr-speedbar-handle-other-window-advice' and `ad-advised-definition-p'
@@ -256,7 +260,9 @@
 ;;; Require
 (require 'speedbar)
 (require 'advice)
-(require 'cl)
+(require 'cl-lib)
+(eval-when-compile
+  (require 'cl))
 
 ;;; Code:
 
@@ -358,6 +364,11 @@ Default is nil."
 
 (defvar sr-speedbar-last-refresh-dictionary nil
   "The last refresh dictionary record of 'sr-speedbar-refresh'.")
+
+(eval-when-compile
+  (defvar ecb-activated-window-configuration nil)
+  (defun ecb-activate ())
+  (defun ecb-deactivate ()))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;###autoload
