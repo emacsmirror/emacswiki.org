@@ -12,7 +12,7 @@ You can download a broader list of packages by adding this to your init.el:
 
 For more information, see InstallingPackages.
 
-== Repositories ==
+== Package Repositories ==
 
 These are the three main sources for Emacs packages:
 * [[ELPA]] -- Emacs Lisp Package Archive. This is the GNU standard repository.
@@ -22,17 +22,8 @@ These are the three main sources for Emacs packages:
 These repositories are connected to old Emacs packaging systems.
 * [[DELPS]] -- Distributed Emacs Lisp Package System used by the alternate package manager [[Epackage]].  Install [[Git]] packaged repositories.
 * [[Emacsmirror]] -- Collects packages and distributes them as [[Git]] repositories.
+* [[el-get]] -- one regularly sees packages that claim to be available via el-get, but not via any ELPA-compatible repository.
+
 
 == Writing Packages ==
 Detailed information about what is necessary to prepare a package for upload to ELPA can be found in the GNU Emacs Manual.  See MakingPackages and [[ELPA]].
-
-== El-Get  ==
-
-Users on the EmacsChannel report the following alternatives still being used:
-
-* [[el-get]] -- one regularly sees packages that claim to be available via el-get, but not via any ELPA-compatible repository.
-
-== Discussions ==
-
-* RationalElispPackaging -- Discussion and presentations of existing implementation.
-* [http://stackoverflow.com/questions/454259 What do you expect from a package manager for Emacs] -- Opinions of various users.
