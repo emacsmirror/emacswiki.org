@@ -53,14 +53,15 @@ There is a [[https://github.com/abicky/nodejs-mode.el|node.js mode]]. As of 2013
 * Stackoverflow: [[http://stackoverflow.com/questions/13862471/using-node-js-with-js-comint-in-emacs|Using Node.js with JS-comint in Emacs]]
 * [[https://coderwall.com/p/qvqhkg|Live-code Node.js apps]] - mostly about configuring js-comint
 * http://grokbase.com/t/gg/nodejs/127cs8cewg/emacs - some discussion of what tools used in emacs with node.js
-* Use C-x C-e with the repl:  [https://atlanis.net/blog/posts/nodejs-repl-eval.html]
-* More information on a better repl setup:  [https://theholyjava.wordpress.com/2015/03/11/a-usable-node-repl-for-emacs/]
+
 
 == See Also ==
 
 * FlymakeJavaScript - jslint in Emacs via Node and FlyMake
 * [[Elnode]] - a non-blocking IO webserver written entirely in EmacsLisp. It’s like an EmacsLisp version of node.js.
 * WikiPedia:Nodejs
+* Use C-x C-e with the repl:  [https://atlanis.net/blog/posts/nodejs-repl-eval.html]
+* More information on a better repl setup:  [https://theholyjava.wordpress.com/2015/03/11/a-usable-node-repl-for-emacs/]
 
 ----
 CategoryJavaScript CategoryProgramming CategoryNeedsAttention
