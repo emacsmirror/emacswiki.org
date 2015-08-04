@@ -6,43 +6,27 @@ The most common method of installing packages of Emacs Lisp since Emacs 24 has b
 Additional package archives such as  [[MELPA]] or [[MarmaladeRepo]] exist to supplement what is in [[ELPA]].
 
 
-== Installing a new file ==
+= Basic package installation =
 
-Make sure you have a local directory where you put elisp files.  I use ~/elisp, for example.
+Type <code>M-x list-packages</code> to open the package list.  Press i to mark for installation, u to unmark, and x to perform the installation.  Press enter to read more about installing and using each package.  I recommend you start with the package <code>paradox</code>.  This will install the improved <code>paradox-list-packages</code>, which among other things gives the ability to sort package list by GitHub popularity.  Many of the most useful packages are very popular, so this will help you get started.
 
-Make sure this directory is listed in your `load-path' variable.  I use the following statement in my ~/.emacs file to make sure it is:
+= Using and configuring packages = 
 
-    (add-to-list 'load-path "~/elisp")
 
-XEmacs documentation (21.4 (patch 14)) for load-path says: "Note that the elements of this list *may not* begin with '~', so you must call <code>expand-file-name</code> on them before adding them to this list." So, for [[XEmacs]], the above should be:
 
-    (add-to-list 'load-path (expand-file-name "~/elisp"))
+== Installing individual elisp files ==
 
-You can read more about the `load-path' at LoadPath. You can also add the needed paths to the <code>EMACSLOADPATH</code>
-environment variable, if you prefer.
+Some emacs lisp configuration is offered in the form of elisp snippets, or individual .el files.  You can begin by collecting these files together in a directory  ~/.emacs.d/private/
 
-== Installing Modes ==
+Make sure this directory is listed in your `load-path' variable. This is achieved by:
 
-If the code in the elisp file is supposed to be a mode for files whose names match a pattern, see AutoModeAlist.
-If the code in the elisp file is supposed to be a mode for files who are run by certain interpreters, see InterpreterModeAlist.
+    (add-to-list 'load-path "~/.emacs.d/private")
 
-== Installing bigger packages ==
+You can read more about the `load-path' at LoadPath. 
 
-For bigger packages such as [[Gnus]] or [[BBDB]], you usually install them somewhere, run ''./configure; make; make install'' and then figure out where the package got installed.
-Then add that directory to your ''load-path''.
+If you have put a file called /custom.el/ in a directory contained in your load path, simply add: 
 
-Some packages can be run uncompiled.  In that case, just unpack them, and add the corresponding directory to your ''load-path''.
-
-Example:
-
-    (add-to-list 'load-path "/home/alex/src/erc")
-    (require 'erc-auto)
-    (autoload 'erc "erc")
-
-This requires some knowledge about the package, of course.  In the above case, for example, I
-knew that erc-auto defines lots of autoloads, but does not autoload ''erc'' itself (use ''erc-select''
-to connect to network)...
-
+    (load-file "custom.el")
 
 ----
-CategoryDotEmacs.
+CategoryPackaging.
