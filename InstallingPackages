@@ -6,13 +6,19 @@ The most common method of installing packages of Emacs Lisp since Emacs 24 has b
 Additional package archives such as  [[MELPA]] or [[MarmaladeRepo]] exist to supplement what is in [[ELPA]].
 
 
-= Basic package installation =
+=== Basic package installation ===
 
-Type <code>M-x list-packages</code> to open the package list.  Press i to mark for installation, u to unmark, and x to perform the installation.  Press enter to read more about installing and using each package.  I recommend you start with the package <code>paradox</code>.  This will install the improved <code>paradox-list-packages</code>, which among other things gives the ability to sort package list by GitHub popularity.  Many of the most useful packages are very popular, so this will help you get started.
+Type <code>M-x list-packages</code> to open the package list.  Press i to mark for installation, u to unmark, and x to perform the installation.  Press enter to read more about installing and using each package.  
 
-= Using and configuring packages = 
+I recommend you start with the package <code>paradox</code>.  This will install the improved <code>paradox-list-packages</code>, which among other things gives the ability to sort package list by GitHub popularity.  Starting with the most popular packages is a good way to find the most useful and effective ones.  
 
+=== Using and configuring packages ===
 
+Many packages come with instructions on installation and use.  These can be viewed in the package manager.
+
+A useful tool for organizing your package collection is the /use-package/ package. Its homepage is here and it can be found on MELPA.  https://github.com/jwiegley/use-package
+
+For more inspiration and examples, you should look into the source of the emacs starter configurations such as the ones found [[http://ergoemacs.org/misc/list_of_emacs_starter_kits.html here]].  
 
 == Installing individual elisp files ==
 
