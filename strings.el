@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Thu Jan  1 11:16:08 2015 (-0800)
+;;; Last-Updated: Wed Aug  5 15:52:52 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 553
+;;     Update #: 562
 ;; URL: http://www.emacswiki.org/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -65,6 +65,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2105/08/05 dadams
+;;     read-any-variable:
+;;       Ensure SYMB is not just the symbol nil for default value to completing-read.
 ;; 2012/09/07 dadams
 ;;     read-buffer: Use nil for INHERIT-INPUT-METHOD arg to completing-read.
 ;; 2012/08/21 dadams
@@ -584,16 +587,18 @@ Prompt with string PROMPT.  By default, return DEFAULT-VALUE if
 non-nil.  If DEFAULT-VALUE is nil and the nearest symbol to the cursor
 is a variable, then return that by default.
 A user variable is one for which `user-variable-p' returns non-nil."
-  (let ((symb (cond ((fboundp 'symbol-nearest-point) (symbol-nearest-point))
-                    ((fboundp 'symbol-at-point) (symbol-at-point))
-                    (t nil)))
-        (enable-recursive-minibuffers t))
-    (when (and default-value (symbolp default-value))
-      (setq default-value (symbol-name default-value)))
+  (let ((symb                          (cond ((fboundp 'symbol-nearest-point)
+                                              (symbol-nearest-point))
+                                             ((fboundp 'symbol-at-point)
+                                              (symbol-at-point))
+                                             (t nil)))
+        (enable-recursive-minibuffers  t))
+    (when (and default-value  (symbolp default-value))
+      (setq default-value  (symbol-name default-value)))
     (intern (completing-read prompt obarray 'user-variable-p t
                              nil 'minibuffer-history
-                             (or default-value (and (user-variable-p symb)
-                                                    (symbol-name symb)))
+                             (or default-value
+                                 (and (user-variable-p symb)  (symbol-name symb)))
                              t))))
 
 (defun read-any-variable (prompt &optional default-value)
@@ -604,16 +609,17 @@ name of any variable.
 Prompts with arg string PROMPT.  By default, return DEFAULT-VALUE if
 non-nil.  If DEFAULT-VALUE is nil and the nearest symbol to the cursor
 is a variable, then return that by default."
-  (let ((symb (cond ((fboundp 'symbol-nearest-point) (symbol-nearest-point))
-                    ((fboundp 'symbol-at-point) (symbol-at-point))
-                    (t nil)))
-        (enable-recursive-minibuffers t))
-    (when (and default-value (symbolp default-value))
-      (setq default-value (symbol-name default-value)))
-    (intern (completing-read prompt obarray 'boundp t
-                             nil 'minibuffer-history
-                             (or default-value (and (boundp symb)
-                                                    (symbol-name symb)))
+  (let ((symb                          (cond ((fboundp 'symbol-nearest-point)
+                                              (symbol-nearest-point))
+                                             ((fboundp 'symbol-at-point)
+                                              (symbol-at-point))
+                                             (t nil)))
+        (enable-recursive-minibuffers  t))
+    (when (and default-value  (symbolp default-value))
+      (setq default-value  (symbol-name default-value)))
+    (intern (completing-read prompt obarray 'boundp t nil 'minibuffer-history
+                             (or default-value
+                                 (and symb  (boundp symb)  (symbol-name symb)))
                              t))))
 
 ;;; See also `make-frame-names-alist', defined in `frame.el'.
