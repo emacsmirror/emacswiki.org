@@ -1,8 +1,6 @@
-{{{ 
-Jayson Williams 
-2011-10-26
+Jayson Williams \\
+2011-10-26 \\
 Epub-mode for emacs
-}}}
 
 <b>Epub-mode</b> for Emacs is a mode that allows reading epub documents in Emacs. Emacs can do everything you ever wanted to do with text. It seems to me like not being able to reading epub documents with Emacs is a gaping hole that epub-mode fills.
 
