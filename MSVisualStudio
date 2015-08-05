@@ -224,7 +224,7 @@ WorkingDirectory: $(ItemDirectory)
 </pre>
 
 
-Then bind whatever keys you prefer to the external tools (Will be called something like ExternalToolsn, with n depending on your tool order) in your keyboard preferences (I use Ctl-Alt-E).
+Then bind whatever keys you prefer to the external tools (Will be called something like Tools.ExternalCommandn, with n depending on your tool order) in your keyboard preferences (I use Ctl-Alt-E).
 == See Also ==
 
 Opening a visual studio solution in emacs:
