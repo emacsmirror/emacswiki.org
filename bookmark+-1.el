@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Jul 31 07:28:27 2015 (-0700)
+;; Last-Updated: Wed Aug  5 10:04:11 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7795
+;;     Update #: 7796
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -6363,7 +6363,7 @@ for the first character are `equal'."
   "Return non-nil if PREDICATE is true for some element of LIST; else nil.
 Return the first non-nil value returned by PREDICATE."
   (let ((res  nil))
-    (while (and list  (not (setq res  (funcall predicate (pop list))))))
+    (while (and list  (not (funcall predicate (setq res  (pop list))))))
     res))
 
 ;; From `cl-seq.el', function `union', without keyword treatment.
