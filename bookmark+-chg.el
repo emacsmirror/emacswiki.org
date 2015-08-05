@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jun 26 14:55:17 2015 (-0700)
+;; Last-Updated: Wed Aug  5 10:07:21 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15978
+;;     Update #: 15980
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/08/05 dadams
+;;     bmkp-some: Fixed so it returns the first list element for which the predicate is true.
+;; 2015/07/31 dadams
+;;     bmkp-set-restrictions-bookmark: Use new wide-n-restrictions format: (NUM BEG END).
 ;; 2015/06/26 dadams
 ;;     Added: bmkp-function-alist-only.
 ;; 2015/06/18 dadams
