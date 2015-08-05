@@ -71,12 +71,12 @@
           (message inner_folder_path)
           (sleep-for 2)
           (shell-command (concat "cp " inner_folder_path "/*.htm* " working_fol)
-      (message "not a folder")))
+			 (message "not a folder")))))
+  
   (shell-command (concat "touch " working_folder "/book.txt"))
-
   ;;;Get listing of htm-files , convert to txt, place in book.txt
   (setq index 0)
-  (setq htm_files (directory-files (concat working_folder "/htm_files") nil "[^.]")
+  (setq htm_files (directory-files (concat working_folder "/htm_files") nil "[^.]"))
   (setq htm_files_count (length htm_files))
   ;;;(message "%d files in htm_folder" htm_files_count)
 
@@ -86,7 +86,6 @@
     (setq index (1+ index))
     (setq source (concat working_folder "/htm_files/" htm_file))
     (setq convert_to_txt (concat "html2text -ascii -nobs " source ">>" working_)
-    (shell-command convert_to_txt))
+    (shell-command convert_to_txt)))
   (find-file (concat working_folder "/book.txt"))
-
-  )
+)
