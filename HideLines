@@ -26,7 +26,15 @@ I suggest the addition of the following two lines in the definition of "hide-mat
       (show-all-invisible)
     ;; else, the rest of the function definition follows
 
+You can use advice if you'd like to use an empty regexp to 'show-all':
+
+  (defadvice hide-lines-matching (around hide-line-clear activate)
+    (if (equal search-text "")
+       (hide-lines-show-all)
+     ad-do-it))
+
 Another suggestion: it would be good to have some indicator in the mode line about having lines currently hidden.
+
 
 [new]
 HideLines works perfectly well in conjunction with [http://www.emacswiki.org/emacs/LineNumbers#toc6 Linum] (Emacs function to display line numbers in the left margin), now a standard feature of the Emacs distribution. Hidden lines may be easily detected by the non-sequential line numbers in the left margin.
