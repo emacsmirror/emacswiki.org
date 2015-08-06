@@ -1,0 +1,9 @@
+These solutions are ordered by "IDE-ness" with the first being the most basic, only containing a few lines of elisp that indents code according to Drupal's coding style, and the last being the most complete with auto-completion and function argument listing, code navigation, real-time syntax and coding style checking, hook templates and more.
+
+
+* [http://drupal.org/node/59868 Simple ~/.emacs snippet]. Simplest solution that can be pasted directly your <code>~/.emacs</code>. All it does in addition to <em>php-mode</em> is indent your code according to Drupal's coding standard.
+* [http://drupal.org/node/2327457 Simpe drupal-mode.el]. The same solution as above, only extracted  to a separate file.
+* [http://drupal.org/node/2327707 Emacs IDE for Drupal]. Drupal mode with some nice features. It provides its own version of php-mode.
+* [http://drupal.org/node/2327741 Drupal mode maintained by arnested]. Non-intrusive Drupal mode with support for a wide range of helpful utilities related to Drupal development.
+* [https://savannah.nongnu.org/projects/drupal-el Drupal mode maintained by davidam]. Skeleton templates to rutinary tasks in drupal and enable php in drupal files. It has support to full drupal api.
+
