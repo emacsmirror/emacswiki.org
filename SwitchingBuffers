@@ -150,6 +150,8 @@ If you have a window split showing two buffers, you can transpose the two buffer
       (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
 </pre>
 
+See also [http://www.emacswiki.org/emacs/TransposeFrame]
+
 See also [http://www.emacswiki.org/cgi-bin/wiki/buffer-move.el buffer-move.el] written by Lukhas
 (also [https://github.com/lukhas/buffer-move on GitHub]).
 
