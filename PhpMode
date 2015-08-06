@@ -49,6 +49,7 @@ Beside those php-mode there are the following possibilities to mix them with bet
 * MuMaMo
 * MmmMode
 * Lisp:two-mode-mode.el
+* ac-php
 
 For example; I don't use any multiple major mode for php; I put all yasnipet html snippets to inside php snippets; and I use with new php-mode for complex php-html code pages.
 
@@ -131,6 +132,17 @@ Alternatively to the method above, I use the following snippet for switching bet
 These will use the 'f5' key to switch between php and html mode. The difference to Jonathan's above is that these keys are only used if php-mode or html-mode is the current major mode in the buffer you're in, rather than defining a global key.
 
 - CodyReichert
+
+
+== Easy Toggling between PHP & HTML modes ==
+
+I use the following lisp in my JonathanArnoldDotEmacs files:
+
+{{{
+;;  auto-complete for php 
+https://github.com/xcwen/ac-php  
+
+- xcwenn
 
 == Debugging ==
 
