@@ -49,7 +49,7 @@ Beside those php-mode there are the following possibilities to mix them with bet
 * MuMaMo
 * MmmMode
 * Lisp:two-mode-mode.el
-* ac-php
+
 
 For example; I don't use any multiple major mode for php; I put all yasnipet html snippets to inside php snippets; and I use with new php-mode for complex php-html code pages.
 
@@ -133,11 +133,12 @@ These will use the 'f5' key to switch between php and html mode. The difference 
 
 - CodyReichert
 
-== ac-php ==
+== ac-php : great auto-complete for php  ==
 ;;  auto-complete for php 
 https://github.com/xcwen/ac-php  
 
-- xcwenn
+for system class  ,system function ,and user define.
+
 
 == Easy Toggling between PHP & HTML modes ==
 
