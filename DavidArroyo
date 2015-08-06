@@ -9,10 +9,16 @@ I’m a free software user. I love emacs and lisp, and the emacs modes which I u
 * OrgMode
 * PoMode
 
+I've done contributions to emacs
+
+* http://orgmode.org/cgit.cgi/org-mode.git/tree/contrib/lisp/org-effectiveness.el
+* http://orgmode.org/cgit.cgi/org-mode.git/tree/contrib/lisp/org-license.el
+* https://savannah.nongnu.org/bzr/?group=drupal-el
+* https://savannah.nongnu.org/projects/php-ext-el
+
 You can find more about me in:
 
 * http://www.davidam.com
-* http://davidam9.wordpress.com
 
 I've written some entries in my blog about emacs: http://davidam9.wordpress.com/category/emacs/
 
