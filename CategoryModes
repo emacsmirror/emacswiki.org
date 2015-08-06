@@ -87,6 +87,7 @@ Other pages (could this please be split in major and minor modes?):
 * LicenseCopyright -- Insert a license header into the active buffer
 * ExtraLicense -- Insert a license header into the active buffer with keywords substitution.
 * LineNumbers
+* [[Logview]]
 * LojbanMode -- support for lojban language.
 * LongLinesJpMode -- longlines mode for Japanese.
 * MailboxMode -- berkeley style aka standard mailbox browsing minor mode
