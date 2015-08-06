@@ -5,5 +5,5 @@ These solutions are ordered by "IDE-ness" with the first being the most basic, o
 * [http://drupal.org/node/2327457 Simpe drupal-mode.el]. The same solution as above, only extracted  to a separate file.
 * [http://drupal.org/node/2327707 Emacs IDE for Drupal]. Drupal mode with some nice features. It provides its own version of php-mode.
 * [http://drupal.org/node/2327741 Drupal mode maintained by arnested]. Non-intrusive Drupal mode with support for a wide range of helpful utilities related to Drupal development.
-* [https://savannah.nongnu.org/projects/drupal-el Drupal mode maintained by davidam]. Skeleton templates to rutinary tasks in drupal and enable php in drupal files. It has support to full drupal api.
+* [https://savannah.nongnu.org/projects/drupal-el drupal-el maintained by davidam]. Skeleton templates to rutinary tasks in drupal and enable php in drupal files. It has support to full drupal api.
 
