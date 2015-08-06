@@ -91,7 +91,7 @@ and the list of functions it calls in the cdr."
   (dolist (entry simple-call-tree-alist)
     (goto-char start)
     (catch 'done
-      (while (search-forward (car entry) end t)
+      (while (re-search-forward (format "\\_<%s\\_>" (regexp-quote (car entry))) end t)
 	(let ((faces (get-text-property (point) 'face)))
 	  (unless (listp faces)
 	    (setq faces (list faces)))
