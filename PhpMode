@@ -133,16 +133,17 @@ These will use the 'f5' key to switch between php and html mode. The difference 
 
 - CodyReichert
 
+== ac-php ==
+;;  auto-complete for php 
+https://github.com/xcwen/ac-php  
+
+- xcwenn
 
 == Easy Toggling between PHP & HTML modes ==
 
 I use the following lisp in my JonathanArnoldDotEmacs files:
 
 {{{
-;;  auto-complete for php 
-https://github.com/xcwen/ac-php  
-
-- xcwenn
 
 == Debugging ==
 
