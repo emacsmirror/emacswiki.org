@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 31 07:44:34 2015 (-0700)
+;; Last-Updated: Thu Aug  6 07:18:05 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3944
+;;     Update #: 3952
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -742,6 +742,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/08/06 dadams
+;;     hlt-read-bg/face-name: Bind icicle-unpropertize-completion-result-flag to t.
+;;     hlt-choose-default-face: Use %S, not %s, in message, so color names in a cons are shown as strings.
 ;; 2015/07/31 dadams
 ;;     hlt-(un)highlight-regions: Use new wide-n-restrictions format: (NUM BEG END), not (NUM BEG . END).
 ;; 2015/07/11 dadams
@@ -1340,28 +1343,29 @@ and the value of `hlt-auto-face-foreground' as `foreground-color'."
                                    (and (consp hlt-last-face)
                                         (cdr (assq 'background-color hlt-last-face))))))
   (unless (stringp default) (setq default  (format "%s" default)))
-  (let* ((icicle-multi-completing-p          t)
-         (icicle-list-nth-parts-join-string  ": ")
-         (icicle-list-join-string            ": ")
-         (icicle-list-use-nth-parts          '(1))
-         (prompt                             (if default
-                                                 (format "%s (default `%s'): " prompt default)
-                                               (format "%s: " prompt)))
-         (faces                              (if (and (boundp 'icicle-mode)  icicle-mode)
-                                                 (mapcar #'icicle-make-face-candidate (face-list))
-                                               ()))
-         (completion-annotate-function       (lambda (fc)
-                                               (when (and (boundp 'icicle-mode)  icicle-mode)
-                                                 (setq fc  (icicle-transform-multi-completion fc)))
-                                               (if (facep (intern fc)) "  Face" "  Color")))
-         (colors                             (if window-system
-                                                 (if (fboundp 'hexrgb-defined-colors)
-                                                     (hexrgb-defined-colors)
-                                                   (x-defined-colors))
-                                               (hlt-tty-colors)))
-         (colors                             (if (and (boundp 'icicle-mode)  icicle-mode)
-                                                 (mapcar #'icicle-make-color-candidate colors)
-                                               (mapcar #'list colors))))
+  (let* ((icicle-unpropertize-completion-result-flag  t)
+         (icicle-multi-completing-p                   t)
+         (icicle-list-nth-parts-join-string           ": ")
+         (icicle-list-join-string                     ": ")
+         (icicle-list-use-nth-parts                   '(1))
+         (prompt                                      (if default
+                                                          (format "%s (default `%s'): " prompt default)
+                                                        (format "%s: " prompt)))
+         (faces                                       (if (and (boundp 'icicle-mode)  icicle-mode)
+                                                          (mapcar #'icicle-make-face-candidate (face-list))
+                                                        ()))
+         (completion-annotate-function                (lambda (fc)
+                                                        (when (and (boundp 'icicle-mode)  icicle-mode)
+                                                          (setq fc  (icicle-transform-multi-completion fc)))
+                                                        (if (facep (intern fc)) "  Face" "  Color")))
+         (colors                                      (if window-system
+                                                          (if (fboundp 'hexrgb-defined-colors)
+                                                              (hexrgb-defined-colors)
+                                                            (x-defined-colors))
+                                                        (hlt-tty-colors)))
+         (colors                                      (if (and (boundp 'icicle-mode)  icicle-mode)
+                                                          (mapcar #'icicle-make-color-candidate colors)
+                                                        (mapcar #'list colors))))
     (if (not (and (boundp 'icicle-mode)  icicle-mode))
         (mapatoms (lambda (sy) (when (facep sy) (push (list (symbol-name sy)) faces))))
       (setq prompt  (copy-sequence prompt)) ; So we can modify it by adding property.
@@ -1385,8 +1389,8 @@ the value of `hlt-auto-face-foreground'."
   (interactive
    (list (hlt-read-bg/face-name "Choose background color or face: "
                                 (and (symbolp hlt-last-face)  (symbol-name hlt-last-face)))))
-  (setq hlt-last-face  face)
-  (when (interactive-p) (message "Highlighting will now use face `%s'" face))
+  (setq hlt-last-face face)
+  (when (interactive-p) (message "Highlighting will now use face `%S'" face))
   face)
 
 ;;;###autoload
