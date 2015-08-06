@@ -334,6 +334,9 @@ Please ignore that."
 		     key-chord-two-keys-delay)))
 	(if (if executing-kbd-macro
 		(not (memq first-char key-chord-in-last-kbd-macro))
+              (when eldoc-mode
+                (eldoc-pre-command-refresh-echo-area))
+
 	      (sit-for delay 0 'no-redisplay))
 	    (progn
 	      (setq key-chord-last-unmatched nil)
