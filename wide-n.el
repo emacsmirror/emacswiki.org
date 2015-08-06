@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug  1 12:02:27 2015 (-0700)
+;; Last-Updated: Wed Aug  5 17:09:43 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 525
+;;     Update #: 682
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -157,14 +157,16 @@
 ;;    `wide-n-highlight-lighter', `wide-n-limits',
 ;;    `wide-n-limits-in-bufs', `wide-n-markerize',
 ;;    `wide-n-mem-regexp', `wide-n-push', `wide-n-rassoc-delete-all',
-;;    `wide-n-read-bufs', `wide-n-remove-if-not', `wide-n-renumber',
+;;    `wide-n-read-any-variable', `wide-n-read-bufs',
+;;    `wide-n-remove-if-not', `wide-n-renumber',
 ;;    `wide-n-repeat-command', `wide-n-restrictions',
-;;    `wide-n-start+end', `wide-n-string-match-p'.
+;;    `wide-n-restrictions-p', `wide-n-start+end',
+;;    `wide-n-string-match-p'.
 ;;
 ;;  Internal variables defined here:
 ;;
 ;;    `wide-n-lighter-narrow-part', `wide-n-push-anyway-p',
-;;    `wide-n-restrictions'.
+;;    `wide-n-restrictions', `wide-n-restrictions-var'.
 ;;
 ;;
 ;;  ***** NOTE: This EMACS PRIMITIVE has been ADVISED HERE:
@@ -181,6 +183,16 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/05 dadams
+;;     Added: wide-n-restrictions-p, wide-n-restrictions-var, wide-n-read-any-variable.
+;;     wide-n-restrictions (function): Now returns the value of the current wide-n-restrictions-var variable.
+;;     wide-n: Use wide-n-restrictions-var, not wide-n-restrictions.
+;;     wide-n-push, wide-n-delete:
+;;       Added optional arg VARIABLE.  Prefix arg reads it.  Use it and maybe set wide-n-restrictions-var to it.
+;;       Raise error if var is not wide-n-restrictions-p.
+;;     wide-n-renumber: Added optional arg VARIABLE.
+;;     wide-n-limits(-in-bufs): Added optional arg RESTRICTIONS.
+;;     wide-n, wide-n-renumber, wide-n-markerize: FIX: (car (cddr...)), not cddr.
 ;; 2015/08/01 dadams
 ;;     wide-n-start+end: Fix: use list, not cons.
 ;; 2015/07/31 dadams
@@ -262,6 +274,9 @@
   "String to append to \" Narrow\" in mode-line lighter.")
 (make-variable-buffer-local 'wide-n-lighter-narrow-part)
 
+(defvar wide-n-restrictions-var 'wide-n-restrictions
+  "Buffer-restrictions variable currently used by `wide-n' commands.")
+
 (defvar wide-n-restrictions '(all)
   "List of buffer restrictions.
 Each entry is either `all' or a cons (NUM START END), where NUM is a
@@ -271,25 +286,25 @@ limits.  `all' means no restriction (completely widened).")
 
 ;; Not used.  Could use this if really needed.
 (defun wide-n-restrictions ()
-  "Value of variable `wide-n-restrictions' in latest format.
-If the variable value has elements of old format, (NUM START . END),
-it is converted to use the new format, with elements (NUM START END).
-This is a destructive operation.  The value of the variable is updated
-to use the new format, and that value is returned."
-  (let ((oldval  wide-n-restrictions)
+  "Value of current `wide-n-restrictions-var' variable, in latest format.
+If the value has elements of old format, (NUM START . END), it is
+converted to use the new format, with elements (NUM START END).  This
+is a destructive operation.  The value of the variable is updated to
+use the new format, and that value is returned."
+  (let ((oldval  (symbol-value wide-n-restrictions-var))
         (newval  ()))
     (dolist (elt  oldval)
       (unless (or (eq elt 'all)  (consp (cddr elt)))
         (setcdr (cdr elt) (list (cddr elt)))))
-    wide-n-restrictions))
+    (symbol-value wide-n-restrictions-var)))
 
 (defvar wide-n-push-anyway-p nil
-  "Non-nil means push to `wide-n-restrictions' even if non-interactive.
-Normally, if a narrowing command is called non-interactively the
-region limits are not pushed to `wide-n-restrictions'.  A non-nil
-value here overrides the push inhibition.  You can bind this to
-non-nil in Lisp code to populate `wide-n-restrictions' during
-narrowing.")
+  "Non-nil means narrowing always updates current `wide-n-restrictions-var'.
+Normally, if a narrowing command is called non-interactively then the
+region limits are not pushed to the variable that is the current value
+of `wide-n-restrictions-var'.  A non-nil value here overrides the push
+inhibition.  You can bind this to non-nil in Lisp code to populate the
+current `wide-n-restrictions-var' during narrowing.")
 
 ;;;###autoload
 (defun wide-n (arg &optional msgp)
@@ -305,46 +320,46 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
  (It never pops off the `all' pseudo-entry that represents complete
  widening, however.)"
   (interactive "P\np")
-  (unless (cadr wide-n-restrictions) (error "Cannot widen; no previous narrowing"))
-  (cond ((or (null (cdr wide-n-restrictions))  (consp arg))
-         (widen)
-         (setq wide-n-lighter-narrow-part  "")
-         (wide-n-highlight-lighter)
-         (when msgp (message "No longer narrowed")))
-        ((= (prefix-numeric-value arg) 0)
-         (setq wide-n-restrictions  (list 'all))
-         (widen)
-         (setq wide-n-lighter-narrow-part  "")
-         (wide-n-highlight-lighter)
-         (when msgp (message "No longer narrowed; no more restrictions")))
-        (t
-         (setq arg  (prefix-numeric-value arg))
-         (let ((latest  ())
-               (cntr    (abs arg)))
-           (while (> cntr 0)
-             (push (nth (1- cntr) wide-n-restrictions) latest)
-             (setq cntr  (1- cntr)))
-           (setq latest  (nreverse latest))
-           (when (< arg 0)
-             (setq arg     (abs arg)
-                   latest  (if (member 'all latest) (list 'all) ())))
-           (setq wide-n-restrictions         (append (nthcdr arg wide-n-restrictions) latest)
-                 wide-n-restrictions         (mapcar #'wide-n-markerize wide-n-restrictions)
-                 wide-n-lighter-narrow-part  (if (eq 'all (car wide-n-restrictions))
-                                                 ""
-                                               (format "-%d" (caar wide-n-restrictions))))
-           (if (not (eq 'all (car wide-n-restrictions)))
-               (condition-case err
-                   (let ((wide-n-push-anyway-p  t))
-                     (narrow-to-region (cadr (car wide-n-restrictions)) (cddr (car wide-n-restrictions)))
-                     (wide-n-highlight-lighter))
-                 (args-out-of-range
-                  (setq wide-n-restrictions  (cdr wide-n-restrictions))
-                  (error "Restriction removed because of invalid limits"))
-                 (error (error "%s" (error-message-string err))))
-             (widen)
-             (wide-n-highlight-lighter)
-             (when msgp (message "No longer narrowed")))))))
+  (let* ((var  wide-n-restrictions-var)
+         (val  (symbol-value var)))
+    (unless (cadr val) (error "Cannot widen; no previous narrowing"))
+    (cond ((or (null (cdr val))  (consp arg))
+           (widen)
+           (setq wide-n-lighter-narrow-part  "")
+           (wide-n-highlight-lighter)
+           (when msgp (message "No longer narrowed")))
+          ((= (prefix-numeric-value arg) 0)
+           (set var (list 'all))
+           (widen)
+           (setq wide-n-lighter-narrow-part  "")
+           (wide-n-highlight-lighter)
+           (when msgp (message "No longer narrowed; no more restrictions")))
+          (t
+           (setq arg  (prefix-numeric-value arg))
+           (let ((latest  ())
+                 (cntr    (abs arg)))
+             (while (> cntr 0)
+               (push (nth (1- cntr) val) latest)
+               (setq cntr  (1- cntr)))
+             (setq latest  (nreverse latest))
+             (when (< arg 0)
+               (setq arg     (abs arg)
+                     latest  (if (member 'all latest) (list 'all) ())))
+             (setq val                         (set var (append (nthcdr arg val) latest))
+                   val                         (set var (mapcar #'wide-n-markerize val))
+                   wide-n-lighter-narrow-part  (if (eq 'all (car val)) "" (format "-%d" (caar val))))
+             (if (not (eq 'all (car val)))
+                 (condition-case err
+                     (let ((wide-n-push-anyway-p  t))
+                       (narrow-to-region (cadr (car val)) (car (cddr (car val))))
+                       (wide-n-highlight-lighter))
+                   (args-out-of-range
+                    (set var  (cdr val))
+                    (error "Restriction removed because of invalid limits"))
+                   (error (error "%s" (error-message-string err))))
+               (widen)
+               (wide-n-highlight-lighter)
+               (when msgp (message "No longer narrowed"))))))))
 
 (defun wide-n-highlight-lighter ()
   "Update minor-mode mode-line lighter to reflect narrowing/widening.
@@ -386,35 +401,70 @@ Put `wide-n' on `mouse-2' for the lighter suffix."
 RESTRICTION is `all' or a dotted list of an identifier and two buffer
 positions or markers.  This is a nondestructive operation: returns a
 new cons."
-  (unless (or (atom restriction)  (and (markerp (cadr restriction))  (markerp (cddr restriction))))
+  (unless (or (atom restriction)  (and (markerp (cadr restriction))  (markerp (car (cddr restriction)))))
     (let ((mrk1     (make-marker))
           (mrk2     (make-marker)))
       (move-marker mrk1 (cadr restriction))
-      (move-marker mrk2 (cddr restriction))
+      (move-marker mrk2 (car (cddr restriction)))
       (setcar (cdr restriction) mrk1)
       (setcdr (cdr restriction) mrk2)))
   restriction)
 
 ;;;###autoload
-(defun wide-n-push (start end &optional nomsg)
-  "Push the region limits to `wide-n-restrictions'.
+(defun wide-n-push (start end &optional variable nomsg)
+  "Push the region limits to current `wide-n-restrictions-var'.
 START and END are as for `narrow-to-region'.
-Non-nil optional arg NOMSG means do not echo the region size."
-  (interactive "r")
-  (let ((mrk1  (make-marker))
-        (mrk2  (make-marker))
-        sans-id  id-cons  id)
+
+With a prefix arg you are prompted for a different variable to use, in
+place of the current value of `wide-n-restrictions-var'.  If the
+prefix arg is non-negative then also set `wide-n-restrictions-var' to
+that variable.
+
+Non-interactively:
+* VARIABLE is the optional variable to use.
+* Non-nil NOMSG means do not echo the region size."
+  (interactive (let ((beg  (region-beginning))
+                     (end  (region-end))
+                     (var  (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))))
+                 (when (and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg)))
+                   (setq wide-n-restrictions-var var))
+                 (list beg end var)))
+  (let* ((mrk1    (make-marker))
+         (mrk2    (make-marker))
+         (var     (or variable  wide-n-restrictions-var)) 
+         (IGNORE  (unless (boundp var) (set var  (list 'all))))
+         (val     (symbol-value var))
+         sans-id  id-cons  id)
+    (unless (wide-n-restrictions-p val) (error "Not a buffer-restrictions variable: `%s', value: `%S'" var val))
     (move-marker mrk1 start)
     (move-marker mrk2 end)
-    (setq sans-id              (list mrk1 mrk2)
-          id-cons              (rassoc sans-id wide-n-restrictions)
-          id                   (if id-cons (car id-cons) (length wide-n-restrictions))
-          wide-n-restrictions  (wide-n-rassoc-delete-all sans-id wide-n-restrictions))
+    (setq sans-id  (list mrk1 mrk2)
+          id-cons  (rassoc sans-id val)
+          id       (if id-cons (car id-cons) (length val))
+          val      (set var (wide-n-rassoc-delete-all sans-id val)))
     (unless (and (= mrk1 1)  (= mrk2 (1+ (buffer-size))))
-      (setq wide-n-restrictions  `((,id ,mrk1 ,mrk2) ,@wide-n-restrictions)))
+      (set var `((,id ,mrk1 ,mrk2) ,@val)))
     (unless nomsg
       (message "%s region: %d to %d" (if (interactive-p) "Recorded" "Narrowed")
                (marker-position mrk1) (marker-position mrk2)))))
+
+(defun wide-n-restrictions-p (value)
+  "Return non-nil if VALUE is a list of buffer restrictions.
+That is, non-nil means that VALUE has the form of `wide-n-restrictions'."
+  (and (listp value)  (listp (cdr (last value))) ; Proper list.
+       (let ((res   t)
+             (allp  nil))
+         (catch 'wide-n-restrictions-p
+           (dolist (nn  value)
+             (unless (setq res  (if (eq 'all nn)
+                                    (setq allp  t)
+                                  (and (consp nn)  (condition-case nil
+                                                       (and (number-or-marker-p (car nn))
+                                                            (number-or-marker-p (cadr nn))
+                                                            (number-or-marker-p (car (cddr nn))))
+                                                     (error nil)))))
+               (throw 'wide-n-restrictions-p nil))))
+         (and allp  res))))
 
 (defun wide-n-rassoc-delete-all (value alist)
   "Delete from ALIST all elements whose cdr is `equal' to VALUE.
@@ -431,44 +481,68 @@ Elements of ALIST that are not conses are ignored."
   alist)
 
 ;;;###autoload
-(defun wide-n-delete (n &optional msgp)
-  "Delete the restriction(s) numbered N from `wide-n-restrictions'.
+(defun wide-n-delete (n &optional variable msgp)
+  "Delete the restriction(s) numbered N from current `wide-n-restrictions-var'.
 This renumbers the remaining restrictions.
-Non-nil optional arg NOMSG means do not display status message."
+You are prompted for the number N.
+
+With a prefix arg you are prompted for a different variable to use, in
+place of the current value of `wide-n-restrictions-var'.  If the
+prefix arg is non-negative then also set `wide-n-restrictions-var' to
+that variable.
+
+Non-nil optional arg NOMSG means do not display a status message."
   (interactive
-   (let* ((IGNORE  (unless (cadr wide-n-restrictions)
-                     (error "No restrictions - you have not narrowed this buffer")))
-          (len     (1- (length wide-n-restrictions)))
-          (num     (read-number (format "Delete restriction number (1 to %d): " len))))
+   (let* ((var     (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
+                       wide-n-restrictions-var))
+          (IGNORE  (when (and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg)))
+                     (setq wide-n-restrictions-var var)))
+          (IGNORE  (unless (boundp var) (set var  (list 'all))))
+          (val     (symbol-value var))
+          (IGNORE  (unless (cadr val)
+                     (error "No restrictions - you have not narrowed this buffer (`%s')" (buffer-name))))
+          (len     (1- (length val)))
+          (num     (if (= len 1) 1 (read-number (format "Delete restriction number (1 to %d): " len)))))
      (while (or (< num 1)  (> num len))
        (setq num  (read-number (format "Number must be between 1 and %d: " len))))
-     (list num t)))
-  (setq wide-n-restrictions  (delete 'all wide-n-restrictions)
-        wide-n-restrictions  (assq-delete-all n wide-n-restrictions))
-  (wide-n-renumber)
+     (list num var t)))
+  (unless variable (setq variable  wide-n-restrictions-var))
+  (let ((val  (symbol-value variable)))
+    (unless (wide-n-restrictions-p val) (error "Not a buffer-restrictions variable: `%s', value: `%S'" var val))
+    (setq val  (set variable (delete 'all val)))
+    (set variable (assq-delete-all n val)))
+  (wide-n-renumber variable)
   (when msgp (message "Deleted restriction number %d" n)))
 
-(defun wide-n-renumber ()
-  "Renumber the restrictions in `wide-n-restrictions' for this buffer."
-  (let ((orig  wide-n-restrictions))
-    (setq wide-n-restrictions  (list 'all))
-    (dolist (nn  orig) (wide-n-push (cadr nn) (cddr nn) 'NOMSG))))
+(defun wide-n-renumber (&optional variable)
+  "Renumber restrictions of this buffer in current `wide-n-restrictions-var'."
+  (let* ((var   (or variable  wide-n-restrictions-var))
+         (orig  (symbol-value var)))
+    (set var (list 'all))
+    (dolist (nn  orig) (wide-n-push (cadr nn) (car (cddr nn)) var 'NOMSG))))
 
-(defun wide-n-limits-in-bufs (buffers)
+(defun wide-n-limits-in-bufs (buffers &optional restrictions)
   "Return a list of all `wide-n-limits' for each buffer in BUFFERS.
-That is, return a list of all recorded buffer narrowings for BUFFERS."
+That is, return a list of all recorded buffer narrowings for BUFFERS.
+Optional arg RESTRICTIONS is the list of narrowings to use (default:
+value of current `wide-n-restrictions-var')."
   (let ((limits  ()))
     (if buffers
         (dolist (buf  buffers)
-          (with-current-buffer buf (setq limits  (nconc limits (wide-n-limits)))))
-      (wide-n-limits))
+          (with-current-buffer buf (setq limits  (nconc limits (wide-n-limits restrictions)))))
+      (wide-n-limits restrictions))
     limits))
 
-(defun wide-n-limits ()
-  "Return a list like `wide-n-restrictions', but with no identifiers or `all'.
-That is, each entry has the form (START END).  The conses are new -
-they do not share with any conses in `wide-n-restrictions'"
-  (delq nil (mapcar #'wide-n-start+end wide-n-restrictions)))
+(defun wide-n-limits (&optional restrictions)
+  "Return a list like RESTRICTIONS, but with no identifiers or `all'.
+Optional input list RESTRICTIONS has the same structure as
+`wide-n-restrictions'.  That is, each entry in the return value has
+the form (START END).  The conses are new - they do not share with any
+conses in RESTRICTIONS.
+
+If RESTRICTIONS is nil then the value of the current
+`wide-n-restrictions-var' (normally `wide-n-restrictions') is used."
+  (delq nil (mapcar #'wide-n-start+end (or restrictions  (symbol-value wide-n-restrictions-var)))))
 
 (defun wide-n-start+end (restriction)
   "Return a new cons (START END) corresponding to RESTRICTION, or nil.
@@ -500,7 +574,25 @@ Otherwise RESTRICTION is `all', so return nil."
     (dolist (x xs) (when (funcall pred x) (push x result)))
     (nreverse result)))
 
+;; Like `read-any-variable' in `strings.el', but uses lax completion.
+(defun wide-n-read-any-variable (prompt &optional default-value)
+  "Read name of a variable and return it as a symbol.
+Unlike `read-variable', which reads only user options, this reads the
+name of any variable.  In fact, it reads any symbol, but with
+completion against variable names.
 
+Prompts with arg string PROMPT.  By default, return DEFAULT-VALUE if
+non-nil.  If DEFAULT-VALUE is nil and the nearest symbol to the cursor
+is a variable, then return that by default."
+  (let ((symb  (cond ((fboundp 'symbol-nearest-point) (symbol-nearest-point))
+                     ((fboundp 'symbol-at-point) (symbol-at-point))
+                     (t nil)))
+        (enable-recursive-minibuffers t))
+    (when (and default-value  (symbolp default-value))
+      (setq default-value  (symbol-name default-value)))
+    (intern (completing-read prompt obarray 'boundp nil nil 'minibuffer-history
+                             (or default-value  (and symb  (boundp symb)  (symbol-name symb)))
+                             t))))
 
 (defun wide-n-repeat-command (command)
   "Repeat COMMAND."
@@ -528,10 +620,10 @@ This is a repeatable version of `wide-n'."
        (define-key ctl-x-map "ns"    'wide-n-push)))
 
 
-;; Call `wide-n-push' if interactive or `wide-n-push-anyway-p'.
+;; Call `wide-n-push' if interactive or if `wide-n-push-anyway-p'.
 ;;
 (defadvice narrow-to-region (before push-wide-n-restrictions activate)
-  "Push the region limits to `wide-n-restrictions'.
+  "Push the region limits to the current `wide-n-restrictions-var'.
 You can use `C-x n x' to widen to a previous buffer restriction."
   (when (or (interactive-p) wide-n-push-anyway-p)
     (wide-n-push (ad-get-arg 0) (ad-get-arg 1)))) ; Args START and END.
@@ -544,7 +636,7 @@ You can use `C-x n x' to widen to a previous buffer restriction."
 ;;;###autoload
 (defun narrow-to-defun (&optional arg)
   "Make text outside current defun invisible.
-The defun visible is the one that contains point or follows point.
+The visible defun is the one that contains point or follows point.
 Optional ARG is ignored."
   (interactive)
   (save-excursion
