@@ -11,10 +11,11 @@ I’m a free software user. I love emacs and lisp, and the emacs modes which I u
 
 I've done contributions to emacs
 
-* http://orgmode.org/cgit.cgi/org-mode.git/tree/contrib/lisp/org-effectiveness.el
-* http://orgmode.org/cgit.cgi/org-mode.git/tree/contrib/lisp/org-license.el
-* https://savannah.nongnu.org/bzr/?group=drupal-el
-* https://savannah.nongnu.org/projects/php-ext-el
+* [http://orgmode.org/cgit.cgi/org-mode.git/tree/contrib/lisp/org-effectiveness.el Org effectiveness]
+* [http://orgmode.org/cgit.cgi/org-mode.git/tree/contrib/lisp/org-license.el Org license]
+* [https://savannah.nongnu.org/bzr/?group=drupal-el drupal-el]
+* [https://savannah.nongnu.org/projects/php-ext-el php-ext] added to [https://github.com/ejmr/php-mode php-mode]
+* [https://savannah.nongnu.org/projects/elisp-es emacs lisp book translation to spanish]
 
 You can find more about me in:
 
