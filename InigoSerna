@@ -12,6 +12,8 @@ Welcome to the wiki. -- DrewAdams
 
 
 == elisp code I've written ==
+* [[https://bitbucket.org/inigoserna/per-buffer-theme.el|per-buffer-theme]]: Change theme according to active buffer name or major mode. Can be found in MELPA.
+* [[https://bitbucket.org/inigoserna/pmdm.el|pmdm]]: pmdm, poor man's desktop-mode, is a simple alternative to desktop-mode for writing and opening loaded files.
 * [[DevelNotes]]: add annotations to sources and track them in an org file.
 
 
