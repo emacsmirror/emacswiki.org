@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Wed Aug  5 17:09:43 2015 (-0700)
+;; Last-Updated: Fri Aug  7 11:37:34 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 682
+;;     Update #: 721
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -150,7 +150,8 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `wide-n', `wide-n-delete', `wide-n-push', `wide-n-repeat'.
+;;    `wide-n', `wide-n-delete', `wide-n-push', `wide-n-repeat',
+;;    `wide-n-select-region', `wide-n-select-region-repeat'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -183,6 +184,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/07 dadams
+;;     Added: wide-n-select-region, wide-n-select-region-repeat.
+;;     Bind wide-n-select-region-repeat to C-x n r.
+;;     wide-n-push, wide-n-delete: Prefix arg >= 0: make var buffer-local; <= 0: set wide-n-restrictions-var.
 ;; 2015/08/05 dadams
 ;;     Added: wide-n-restrictions-p, wide-n-restrictions-var, wide-n-read-any-variable.
 ;;     wide-n-restrictions (function): Now returns the value of the current wide-n-restrictions-var variable.
@@ -275,7 +280,9 @@
 (make-variable-buffer-local 'wide-n-lighter-narrow-part)
 
 (defvar wide-n-restrictions-var 'wide-n-restrictions
-  "Buffer-restrictions variable currently used by `wide-n' commands.")
+  "Buffer-restrictions variable currently used by `wide-n' commands.
+The variable can be buffer-local or not.  If not, then its value can
+include markers from multiple buffers.")
 
 (defvar wide-n-restrictions '(all)
   "List of buffer restrictions.
@@ -307,8 +314,37 @@ inhibition.  You can bind this to non-nil in Lisp code to populate the
 current `wide-n-restrictions-var' during narrowing.")
 
 ;;;###autoload
+(defun wide-n-select-region (arg &optional msgp)
+  "Select a region.
+The restrictions are those in the current `wide-n-restrictions-var'.
+With no prefix arg, select the previous recorded region.
+With a numeric prefix arg N, select the Nth previous region."
+  (interactive "p\np")
+  (let* ((var   wide-n-restrictions-var)
+         (val   (symbol-value var))
+         (cntr  (abs arg)))
+    (unless (cadr val) (error "No region to select"))
+    (let ((latest  ()))
+      (while (> cntr 0)
+        (push (nth (1- cntr) val) latest)
+        (setq cntr  (1- cntr)))
+      (setq latest  (nreverse latest))
+      (setq val  (set var (append (nthcdr arg val) latest))
+            val  (set var (mapcar #'wide-n-markerize val)))
+      (when (eq 'all (car val))
+        (setq val  (set var (append (nthcdr 1 val) '(all)))))
+      (let* ((wide-n-push-anyway-p  t)
+             (restriction           (car val))
+             (beg                   (cadr restriction))
+             (end                   (car (cddr restriction))))
+        (goto-char beg)
+        (push-mark end nil t))
+      (when msgp (message "Region #%d restored" (caar val))))))
+
+;;;###autoload
 (defun wide-n (arg &optional msgp)
-  "Widen to a previous buffer restriction.
+  "Widen to a previous buffer restriction (narrowing).
+The restrictions are those in the current `wide-n-restrictions-var'.
 With no prefix arg, widen to the previous restriction.
 With a plain prefix arg (`C-u'), widen completely.
 With a zero  prefix arg (`C-0'), widen completely and reset (empty)
@@ -411,23 +447,25 @@ new cons."
   restriction)
 
 ;;;###autoload
-(defun wide-n-push (start end &optional variable nomsg)
+(defun wide-n-push (start end &optional variable nomsg) ; Bound to `C-x n s'.
   "Push the region limits to current `wide-n-restrictions-var'.
 START and END are as for `narrow-to-region'.
 
 With a prefix arg you are prompted for a different variable to use, in
 place of the current value of `wide-n-restrictions-var'.  If the
-prefix arg is non-negative then also set `wide-n-restrictions-var' to
-that variable.
+prefix arg is non-negative (>= 0) then make the variable buffer-local.
+If the prefix arg is non-positive (<= 0) then set
+`wide-n-restrictions-var' to that variable symbol.  (Zero: do both.)
 
 Non-interactively:
 * VARIABLE is the optional variable to use.
 * Non-nil NOMSG means do not echo the region size."
-  (interactive (let ((beg  (region-beginning))
-                     (end  (region-end))
-                     (var  (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))))
-                 (when (and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg)))
-                   (setq wide-n-restrictions-var var))
+  (interactive (let ((beg    (region-beginning))
+                     (end    (region-end))
+                     (var    (and current-prefix-arg  (wide-n-read-any-variable "Variable: ")))
+                     (npref  (prefix-numeric-value current-prefix-arg)))
+                 (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
+                 (when (and current-prefix-arg  (<= npref 0)) (setq wide-n-restrictions-var var))
                  (list beg end var)))
   (let* ((mrk1    (make-marker))
          (mrk2    (make-marker))
@@ -481,22 +519,24 @@ Elements of ALIST that are not conses are ignored."
   alist)
 
 ;;;###autoload
-(defun wide-n-delete (n &optional variable msgp)
+(defun wide-n-delete (n &optional variable msgp) ; Bound to `C-x n C-d'.
   "Delete the restriction(s) numbered N from current `wide-n-restrictions-var'.
 This renumbers the remaining restrictions.
 You are prompted for the number N.
 
 With a prefix arg you are prompted for a different variable to use, in
 place of the current value of `wide-n-restrictions-var'.  If the
-prefix arg is non-negative then also set `wide-n-restrictions-var' to
-that variable.
+prefix arg is non-negative (>= 0) then make the variable buffer-local.
+If the prefix arg is non-positive (<= 0) then set
+`wide-n-restrictions-var' to that variable symbol.  (Zero: do both.)
 
 Non-nil optional arg NOMSG means do not display a status message."
   (interactive
    (let* ((var     (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
                        wide-n-restrictions-var))
-          (IGNORE  (when (and current-prefix-arg  (natnump (prefix-numeric-value current-prefix-arg)))
-                     (setq wide-n-restrictions-var var)))
+          (npref   (prefix-numeric-value current-prefix-arg))
+          (IGNORE  (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var)))
+          (IGNORE  (when (and current-prefix-arg  (<= npref 0)) (setq wide-n-restrictions-var var)))
           (IGNORE  (unless (boundp var) (set var  (list 'all))))
           (val     (symbol-value var))
           (IGNORE  (unless (cadr val)
@@ -602,22 +642,32 @@ is a variable, then return that by default."
    (repeat nil)))
 
 ;;;###autoload
-(defun wide-n-repeat (arg)
-  "Cycle to the next buffer restriction.
+(defun wide-n-repeat (arg)              ; Bound to `C-x n x'.
+  "Cycle to the next buffer restriction (narrowing).
 This is a repeatable version of `wide-n'."
   (interactive "P")
   (require 'repeat)
   (wide-n-repeat-command 'wide-n))
 
+;;;###autoload
+(defun wide-n-select-region-repeat (arg) ; Bound to `C-x n r'.
+  "Cycle to the next region.
+This is a repeatable version of `wide-n-select-region'."
+  (interactive "P")
+  (require 'repeat)
+  (wide-n-repeat-command 'wide-n-select-region))
+
 
 (cond ((boundp 'narrow-map)
        (define-key narrow-map "\C-d" 'wide-n-delete)
-       (define-key narrow-map "x"    'wide-n-repeat)
-       (define-key narrow-map "s"    'wide-n-push))
+       (define-key narrow-map "r"    'wide-n-select-region-repeat)
+       (define-key narrow-map "s"    'wide-n-push)
+       (define-key narrow-map "x"    'wide-n-repeat))
       (t
        (define-key ctl-x-map "n\C-d" 'wide-n-delete)
-       (define-key ctl-x-map "nx"    (if (> emacs-major-version 21) 'wide-n-repeat 'wide-n))
-       (define-key ctl-x-map "ns"    'wide-n-push)))
+       (define-key ctl-x-map "nr"    'wide-n-select-region-repeat)
+       (define-key ctl-x-map "ns"    'wide-n-push)
+       (define-key ctl-x-map "nx"    (if (> emacs-major-version 21) 'wide-n-repeat 'wide-n))))
 
 
 ;; Call `wide-n-push' if interactive or if `wide-n-push-anyway-p'.
