@@ -1,0 +1,21 @@
+This page is about library '''<tt>[[zones.el]]</tt>''', which lets you manipulate multiple buffer zones --- in effect, multiple [[region]]s.
+
+A zone records two buffer positions and an optional list of additional information (whatever you like).  Each buffer position can be a marker, which means that a list of zones can specify zones in different buffers.
+
+You can do the following with a list of zones:
+
+* Sort them.
+* Coalesce adjacent or overlapping zones, to give their union.
+* Intersect them.
+
+
+Library ##zones.el## is used by commands `wide-n-unite' and `wide-n-add-to-union' of library '''<tt>[[wide-n.el]]</tt>'''.
+
+
+
+
+
+----
+CategoryRegion
+MultipleModes
+MultipleNarrowings
