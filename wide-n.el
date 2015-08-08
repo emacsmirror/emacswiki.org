@@ -8,12 +8,12 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug  8 10:35:59 2015 (-0700)
+;; Last-Updated: Sat Aug  8 10:38:36 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 817
+;;     Update #: 818
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
-;; Keywords: narrow restriction widen
+;; Keywords: narrow restriction widen region zone
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
