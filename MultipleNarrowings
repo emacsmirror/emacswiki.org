@@ -1,7 +1,9 @@
-This page is about library '''[::Wide-N]''', <tt>[[wide-n.el]]</tt>, which lets you browse among multiple buffer restrictions (narrowings).
+This page is about library '''[::Wide-N]''', <tt>[[wide-n.el]]</tt>, which lets you perform various operations on a set of buffer zones. In particular, it lets you browse among multiple buffer restrictions (narrowings).
+
+
+
 
 == Problem: Narrowing Is Fine-Grained, But Widening Is Not ==
-
 
 Did you ever narrow a [[buffer]] to some restriction (region), and then later narrow it some more? Ever want to then widen back to the first (larger) restriction, rather than just widening to the whole buffer? You cannot.
 
@@ -40,8 +42,6 @@ identifying number: `Narrow-1', `Narrow-2', and so on.
 `mouse-2' on the `-NUM' part uses `wide-n-repeat' to cycle to
 the next restriction.
 
-
-
 Emacs [[marker]]s are used to record restriction limits, so the same
 restriction is available even if you modify its context.  If for any reason `wide-n-restrictions' ever has any entries
 that use buffer positions (numbers) instead of markers, invoking
@@ -68,34 +68,79 @@ You can also add the current region to `wide-n-restrictions'
 without first narrowing to it, using '''`C-x n s'''' (command
 `wide-n-push').  You need not activate the region to do this.
 
-Moving among different buffer restrictions is the main use of
-this library, but another use case is ''performing actions on a
-set of buffer restrictions'', including restrictions from
-''different buffers''.
 
-For that, you just need to write your action command in such a
-way that it iterates over the buffers and then over the entries
-in `wide-n-restrictions' (or some subset of them) for each
-buffer.  Utility functions `wide-n-limits',
-`wide-n-limits-in-bufs', and `wide-n-read-bufs' can help with this.
 
-As examples, if you use library <tt>[[highlight.el]]</tt> then you can use
-command '''`hlt-highlight-regions'''' to highlight the restrictions
-recorded for the current buffer.  And you can use command
-'''`hlt-highlight-regions-in-buffers'''' to do this across a set of
-buffers that you specify (or across all visible buffers).
-Complementary commands `hlt-unhighlight-regions' and
+
+
+
+== Restrictions Variables ==
+
+Buffer-local variable `wide-n-restrictions' holds the
+restrictions for the current buffer, by default.  But the
+functions provided by ##wide-n.el## can use any variable that
+holds restrictions.  And you can choose whether any such
+variable is buffer-local or not.  If it is not then it can hold
+restrictions from multiple buffers.
+
+Several commands defined in ##wide-n.el## let you specify the restrictions
+variable to use, by prompting you if you use a [[prefix argument]].
+For example, '''`##C-u C-x n s##'''' (`wide-n-push') prompts you for a
+restrictions variable, and `##C-- C-x n s##' does the same but it
+does not make the variable buffer-local.  You can specify any
+variable name, even if the variable does not yet exist (in which
+case it is given an empty value, which contains only `all').
+
+
+
+
+
+
+
+
+
+== Other Uses of Buffer Zones, Besides Narrowing ==
+
+Moving among different buffer restrictions, i.e., narrowing the
+buffer to different zones, is one use of library ##wide-n.el##, but
+another important use case is performing actions on a set of
+buffer zones, including perhaps zones from ''different'' buffers.
+
+'''`##C-x n r##'''' (command `wide-n-select-region-repeat') does this,
+performing the action of selecting a zone in
+`wide-n-restrictions' as the region.  Repeat to cycle among the
+zones: `##C-x n r r r...##'.
+
+You can define your own commands that iterate over the buffers
+and then over the entries in `wide-n-restrictions' (or some
+subset of them) for each buffer.  Utility functions
+`wide-n-limits', `wide-n-limits-in-bufs', and `wide-n-read-bufs'
+can help with this.
+
+As examples of such commands, if you use library <tt>[[highlight.el]]</tt> then you can use '''`##C-x n h##''''
+(command `hlt-highlight-regions') to highlight the restrictions
+recorded for the current buffer.  And you can use '''`##C-x n H##'''' (command
+`hlt-highlight-regions-in-buffers') to do the same across a set of
+buffers that you specify (or across all visible buffers).  If option `hlt-auto-faces-flag' is
+non-nil then each region gets a different face.  Otherwise, all
+of the regions are highlighted with the same face.
+Complementary (unbound) commands `hlt-unhighlight-regions' and
 `hlt-unhighlight-regions-in-buffers' unhighlight.
 
-Another way to look at this possibility of acting on multiple
-restrictions is to think of it as widening the notion of a
-"region" of text that you can operate on.  In effect, it can
+Another way to look at the possibility of acting on multiple
+buffer zones is to think of it as enlarging the notion of a
+"[[region]]" of text that you can operate on.  In effect, it can
 remove the requirement of target text being a contiguous
 sequence of characters.  A set of buffer restrictions is, in
 effect, a (typically) noncontiguous "region" of text.
 
-Pretty much ''anything you can do with the Emacs [[region]] you can do
-with a set of buffer restrictions'' (a non-contiguous "region",
+Companion library '''<tt>[[zones.el]]</tt>''' provides utility functions for
+buffer zones.  It is not strictly required by ##wide-n.el##, but
+you need it if you want to use commands `wide-n-unite' and
+`wide-n-add-to-union'.  These commands coalesce overlapping and
+contiguous zones, uniting them as a single zone.
+
+Pretty much ''anything you can do with the Emacs [[region]]'' you can do
+with a set of buffer restrictions (a non-contiguous "region",
 `wide-n-restrictions').  But existing Emacs commands that act on
 the region do not know about non-contiguous regions.  What you
 will need to do is define new commands that take these into
@@ -115,7 +160,7 @@ recorded region:
                               face msgp mousep buffers)))
 
 
-That's it - just iterate over `wide-n-restrictions' with a
+That's it --- just iterate over `wide-n-restrictions' with a
 function that takes the region as an argument.  What ##wide-n.el##
 offers in this regard is a way to easily define a set of buffer
 restrictions.
