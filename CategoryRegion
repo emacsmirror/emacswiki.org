@@ -53,5 +53,6 @@ The text between [[point]] and [[mark]] is the [[region]].  The [[active region]
 * <tt>[[trans-regions.el]]</tt> -- Transpose regions.
 * VisibleMark -- Make the mark position visible
 * <tt>[[wimpy-del.el]]</tt> -- Require confirmation when deleting a large region.
+* [[Zones]] -- Use multiple buffer zones (in effect, multiple [[region]]s). 
 
 See also CategoryEditing.
