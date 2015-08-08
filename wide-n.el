@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug  7 11:37:34 2015 (-0700)
+;; Last-Updated: Sat Aug  8 08:52:20 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 721
+;;     Update #: 731
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -184,6 +184,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/08 dadams
+;;     wide-n-push: Change optional arg NOMSG to MSGP (invert sense).
 ;; 2015/08/07 dadams
 ;;     Added: wide-n-select-region, wide-n-select-region-repeat.
 ;;     Bind wide-n-select-region-repeat to C-x n r.
@@ -205,7 +207,7 @@
 ;;     wide-n-restrictions: INCOMPATIBLE CHANGE: The format is now (NUM START END), not (NUM START . END).
 ;; 2015/07/11 dadams
 ;;     Added: wide-n-limits, wide-n-limits-in-bufs, wide-n-start.end, wide-n-read-bufs, wide-n-remove-if-not.
-;;     Made wide-n-push interative.
+;;     Made wide-n-push interactive.
 ;;     Bind wide-n-delete to C-x n C-d and wide-n-push to C-x n s.
 ;; 2014/08/12 dadams
 ;;     Added: wide-n-delete, wide-n-renumber.
@@ -447,7 +449,7 @@ new cons."
   restriction)
 
 ;;;###autoload
-(defun wide-n-push (start end &optional variable nomsg) ; Bound to `C-x n s'.
+(defun wide-n-push (start end &optional variable msgp) ; Bound to `C-x n s'.
   "Push the region limits to current `wide-n-restrictions-var'.
 START and END are as for `narrow-to-region'.
 
@@ -459,7 +461,7 @@ If the prefix arg is non-positive (<= 0) then set
 
 Non-interactively:
 * VARIABLE is the optional variable to use.
-* Non-nil NOMSG means do not echo the region size."
+* Non-nil MSGP means echo the region size."
   (interactive (let ((beg    (region-beginning))
                      (end    (region-end))
                      (var    (and current-prefix-arg  (wide-n-read-any-variable "Variable: ")))
@@ -482,9 +484,8 @@ Non-interactively:
           val      (set var (wide-n-rassoc-delete-all sans-id val)))
     (unless (and (= mrk1 1)  (= mrk2 (1+ (buffer-size))))
       (set var `((,id ,mrk1 ,mrk2) ,@val)))
-    (unless nomsg
-      (message "%s region: %d to %d" (if (interactive-p) "Recorded" "Narrowed")
-               (marker-position mrk1) (marker-position mrk2)))))
+    (when msgp (message "%s region: %d to %d" (if (interactive-p) "Recorded" "Narrowed")
+                        (marker-position mrk1) (marker-position mrk2)))))
 
 (defun wide-n-restrictions-p (value)
   "Return non-nil if VALUE is a list of buffer restrictions.
@@ -559,7 +560,7 @@ Non-nil optional arg NOMSG means do not display a status message."
   (let* ((var   (or variable  wide-n-restrictions-var))
          (orig  (symbol-value var)))
     (set var (list 'all))
-    (dolist (nn  orig) (wide-n-push (cadr nn) (car (cddr nn)) var 'NOMSG))))
+    (dolist (nn  orig) (wide-n-push (cadr nn) (car (cddr nn)) var nil))))
 
 (defun wide-n-limits-in-bufs (buffers &optional restrictions)
   "Return a list of all `wide-n-limits' for each buffer in BUFFERS.
@@ -676,7 +677,7 @@ This is a repeatable version of `wide-n-select-region'."
   "Push the region limits to the current `wide-n-restrictions-var'.
 You can use `C-x n x' to widen to a previous buffer restriction."
   (when (or (interactive-p) wide-n-push-anyway-p)
-    (wide-n-push (ad-get-arg 0) (ad-get-arg 1)))) ; Args START and END.
+    (wide-n-push (ad-get-arg 0) (ad-get-arg 1) nil 'MSG))) ; Args START and END.
 
 
 ;; REPLACE ORIGINAL in `lisp.el'.
@@ -710,7 +711,7 @@ Optional ARG is ignored."
 	(setq beg  (point)))
       (goto-char end)
       (re-search-backward "^\n" (- (point) 1) t)
-      (when (or (interactive-p)  wide-n-push-anyway-p) (wide-n-push beg end))
+      (when (or (interactive-p)  wide-n-push-anyway-p) (wide-n-push beg end nil 'MSG))
       (narrow-to-region beg end))))
 
 
@@ -756,7 +757,7 @@ thus showing a page other than the one point was originally in."
                   ;; Otherwise, show text starting with following line.
                   (when (and (eolp)  (not (bobp))) (forward-line 1))
                   (point))))
-      (when (or (interactive-p)  wide-n-push-anyway-p) (wide-n-push beg end))
+      (when (or (interactive-p)  wide-n-push-anyway-p) (wide-n-push beg end nil 'MSG))
       (narrow-to-region beg end))))
 
 ;;;;;;;;;;;;;;;;;;;;
