@@ -45,7 +45,7 @@ The text between [[point]] and [[mark]] is the [[region]].  The [[active region]
 * ModeLinePosition -- Show the size of the region in the mode-line, whenever the region is active (TransientMarkMode).
 * [[Mouse+]] -- Highlight the [[yank]] position while you press `mouse-2', so you hit the right spot.
 * MoveLine, MoveRegion, MoveText -- Move lines or region.
-* MultipleNarrowings -- Use `##C-x n x x x...##' to cycle a ring of narrowings (buffer restrictions).
+* MultipleNarrowings -- Use `##C-x n r r r...##' to cycle rings of [[region]]s, in the same or different buffers. Use `##C-x n x x x...##' to cycle rings of narrowings (buffer restrictions). Highlight a set of buffer zones. Coalesce adjacent and overlapping buffer zones.
 * SelectiveUndo -- Undo changes within the region.
 * [[Subedit]] -- Edit part of a buffer in a new buffer.
 * SwapRegions -- Swap two regions.
