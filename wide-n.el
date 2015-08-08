@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug  8 08:52:20 2015 (-0700)
+;; Last-Updated: Sat Aug  8 08:56:16 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 731
+;;     Update #: 732
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -468,7 +468,7 @@ Non-interactively:
                      (npref  (prefix-numeric-value current-prefix-arg)))
                  (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
                  (when (and current-prefix-arg  (<= npref 0)) (setq wide-n-restrictions-var var))
-                 (list beg end var)))
+                 (list beg end var t)))
   (let* ((mrk1    (make-marker))
          (mrk2    (make-marker))
          (var     (or variable  wide-n-restrictions-var)) 
