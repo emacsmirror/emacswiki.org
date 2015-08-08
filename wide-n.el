@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug  8 08:56:16 2015 (-0700)
+;; Last-Updated: Sat Aug  8 10:35:59 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 732
+;;     Update #: 817
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -92,35 +92,60 @@
 ;;    without first narrowing to it, using `C-x n s' (command
 ;;    `wide-n-push').  You need not activate the region to do this.
 ;;
-;;    Moving among different buffer restrictions is the main use of
-;;    this library, but another use case is performing actions on a
-;;    set of buffer restrictions, including restrictions from
-;;    different buffers.
+;;    Buffer-local variable `wide-n-restrictions' holds the
+;;    restrictions for the current buffer, by default.  But the
+;;    functions provided by `wide-n.el' can use any variable that
+;;    holds restrictions.  And you can choose whether any such
+;;    variable is buffer-local or not.  If it is not then it can hold
+;;    restrictions from multiple buffers.
 ;;
-;;    For that, you just need to write your action command in such a
-;;    way that it iterates over the buffers and then over the entries
-;;    in `wide-n-restrictions' (or some subset of them) for each
-;;    buffer.  Utility functions `wide-n-limits',
-;;    `wide-n-limits-in-bufs', and `wide-n-read-bufs' can help with
-;;    this.
+;;    Several commands defined here let you specify the restrictions
+;;    variable to use, by prompting you if you use a prefix argument.
+;;    For example, `C-u C-x n s' (`wide-n-push') prompts you for a
+;;    restrictions variable, and `C-- C-x n s' does the same but it
+;;    does not make the variable buffer-local.  You can specify any
+;;    variable name, even if the variable does not yet exist (in which
+;;    case it is given an empty value, which contains only `all').
 ;;
-;;    As examples, if you use library `highlight.el' then you can use
-;;    command `hlt-highlight-regions' to highlight the restrictions
-;;    recorded for the current buffer.  And you can use command
-;;    `hlt-highlight-regions-in-buffers' to do this across a set of
-;;    buffers that you specify (or across all visible buffers).
-;;    Complementary commands `hlt-unhighlight-regions' and
-;;    `hlt-unhighlight-regions-in-buffers' unhighlight.  (If option
-;;    `hlt-auto-faces-flag' is non-nil then each region gets a
-;;    different face.  Otherwise, all of the regions are highlighted
-;;    with the same face.)
+;;    Moving among different buffer restrictions, i.e., narrowing the
+;;    buffer to different zones, is one use of this library, but
+;;    another important use case is performing actions on a set of
+;;    buffer zones, including perhaps zones from different buffers.
 ;;
-;;    Another way to look at this possibility of acting on multiple
-;;    restrictions is to think of it as widening the notion of a
-;;    "region" of text that you can operate on.  In effect, it can
-;;    remove the requirement of target text being a contiguous
-;;    sequence of characters.  A set of buffer restrictions is, in
-;;    effect, a (typically) noncontiguous "region" of text.
+;;    `C-x n r' (command `wide-n-select-region-repeat') does this,
+;;    performing the action of selecting a zone in
+;;    `wide-n-restrictions' as the region.  Repeat to cycle among the
+;;    zones: `C-x n r r r...'.
+;;
+;;    You can define your own commands that iterate over the buffers
+;;    and then over the entries in `wide-n-restrictions' (or some
+;;    subset of them) for each buffer.  Utility functions
+;;    `wide-n-limits', `wide-n-limits-in-bufs', and `wide-n-read-bufs'
+;;    can help with this.
+;;
+;;    As examples of such commands, if you use library `highlight.el'
+;;    then you can use `C-x n h' (command `hlt-highlight-regions') to
+;;    highlight the restrictions recorded for the current buffer.  You
+;;    can use `C-x n H' (command `hlt-highlight-regions-in-buffers')
+;;    to do the same across a set of buffers that you specify (or
+;;    across all visible buffers).  If option `hlt-auto-faces-flag' is
+;;    non-nil then each region gets a different face.  Otherwise, all
+;;    of the regions are highlighted with the same face.
+;;    Complementary (unbound) commands `hlt-unhighlight-regions' and
+;;    `hlt-unhighlight-regions-in-buffers' unhighlight.
+;;
+;;    Another way to look at the possibility of acting on multiple
+;;    buffer zones is to think of it as enlarging the notion of
+;;    "region".  In effect, it can remove the requirement of target
+;;    text being a contiguous sequence of characters.  A set of buffer
+;;    zones is, in effect, a (typically) noncontiguous "region" of
+;;    text.
+;;
+;;    Companion library `zones.el' provides utility functions for
+;;    buffer zones.  It is not strictly required by `wide-n.el', but
+;;    you need it if you want to use commands `wide-n-unite' and
+;;    `wide-n-add-to-union'.  These commands coalesce overlapping and
+;;    contiguous zones, uniting them as a single zone.
 ;;
 ;;    Pretty much anything you can do with the Emacs region you can do
 ;;    with a set of buffer restrictions (a non-contiguous "region",
@@ -150,8 +175,9 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `wide-n', `wide-n-delete', `wide-n-push', `wide-n-repeat',
-;;    `wide-n-select-region', `wide-n-select-region-repeat'.
+;;    `wide-n', `wide-n-add-to-union', `wide-n-delete', `wide-n-push',
+;;    `wide-n-repeat', `wide-n-select-region',
+;;    `wide-n-select-region-repeat', `wide-n-unite'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -161,8 +187,8 @@
 ;;    `wide-n-read-any-variable', `wide-n-read-bufs',
 ;;    `wide-n-remove-if-not', `wide-n-renumber',
 ;;    `wide-n-repeat-command', `wide-n-restrictions',
-;;    `wide-n-restrictions-p', `wide-n-start+end',
-;;    `wide-n-string-match-p'.
+;;    `wide-n-restrictions-from-zones', `wide-n-restrictions-p',
+;;    `wide-n-start+end', `wide-n-string-match-p'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -185,7 +211,13 @@
 ;;; Change Log:
 ;;
 ;; 2015/08/08 dadams
-;;     wide-n-push: Change optional arg NOMSG to MSGP (invert sense).
+;;     Added: wide-n-unite, wide-n-add-to-union, wide-n-restrictions-from-zones.
+;;     Bind wide-n-unite to C-x n u and wide-n-add-to-union to C-x n S.
+;;     wide-n-push, wide-n-delete:
+;;       Return new value of VARIABLE.
+;;     wide-n-push: Change optional arg NOMSG to MSGP (invert the sense).
+;;     Soft-require zones.el.
+;;     Bind hlt-highlight-regions to C-x n h and hlt-highlight-regions-in-buffers to C-x n H.
 ;; 2015/08/07 dadams
 ;;     Added: wide-n-select-region, wide-n-select-region-repeat.
 ;;     Bind wide-n-select-region-repeat to C-x n r.
@@ -271,8 +303,10 @@
 ;;
 ;;; Code:
 
+(require 'zones nil t) ;; (no error if not found) zzz-zone-union
 
-;; Quiet byte-compiler
+
+;; Quiet the byte-compiler.
 (defvar narrow-map)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -450,7 +484,10 @@ new cons."
 
 ;;;###autoload
 (defun wide-n-push (start end &optional variable msgp) ; Bound to `C-x n s'.
-  "Push the region limits to current `wide-n-restrictions-var'.
+  "Push the region limits to current VARIABLE.
+Return the new value of VARIABLE.
+
+VARIABLE defaults to the value of `wide-n-restrictions-var'.
 START and END are as for `narrow-to-region'.
 
 With a prefix arg you are prompted for a different variable to use, in
@@ -485,7 +522,8 @@ Non-interactively:
     (unless (and (= mrk1 1)  (= mrk2 (1+ (buffer-size))))
       (set var `((,id ,mrk1 ,mrk2) ,@val)))
     (when msgp (message "%s region: %d to %d" (if (interactive-p) "Recorded" "Narrowed")
-                        (marker-position mrk1) (marker-position mrk2)))))
+                        (marker-position mrk1) (marker-position mrk2)))
+    (symbol-value var)))
 
 (defun wide-n-restrictions-p (value)
   "Return non-nil if VALUE is a list of buffer restrictions.
@@ -521,9 +559,12 @@ Elements of ALIST that are not conses are ignored."
 
 ;;;###autoload
 (defun wide-n-delete (n &optional variable msgp) ; Bound to `C-x n C-d'.
-  "Delete the restriction(s) numbered N from current `wide-n-restrictions-var'.
+  "Delete the restriction(s) numbered N from VARIABLE.
 This renumbers the remaining restrictions.
+Return the new value of VARIABLE.
+
 You are prompted for the number N.
+VARIABLE defaults to the value of `wide-n-restrictions-var'.
 
 With a prefix arg you are prompted for a different variable to use, in
 place of the current value of `wide-n-restrictions-var'.  If the
@@ -553,7 +594,8 @@ Non-nil optional arg NOMSG means do not display a status message."
     (setq val  (set variable (delete 'all val)))
     (set variable (assq-delete-all n val)))
   (wide-n-renumber variable)
-  (when msgp (message "Deleted restriction number %d" n)))
+  (when msgp (message "Deleted restriction number %d" n))
+  (symbol-value variable))
 
 (defun wide-n-renumber (&optional variable)
   "Renumber restrictions of this buffer in current `wide-n-restrictions-var'."
@@ -658,16 +700,108 @@ This is a repeatable version of `wide-n-select-region'."
   (require 'repeat)
   (wide-n-repeat-command 'wide-n-select-region))
 
+(defun wide-n-restrictions-from-zones (zones)
+  "Return a list of regions like `wide-n-restrictions', based on ZONES.
+ZONES is a list of zones as in `zones.el': Each zone has the form
+\(LIMIT1 LIMIT2 . EXTRA), where each of the limits is a buffer
+position (a number or marker) and EXTRA is a list.
+
+\(wide-n-restrictions-from-zones (wide-n-limits)) = wide-n-restrictions
+and
+\(wide-n-limits (wide-n-restrictions-from-zones ZONES)) = ZONES
+except possibly for the position of element `all'."
+  (let* ((ii    0)
+         (regs  (mapcar (lambda (zz) (cons (setq ii  (1+ ii)) zz)) zones)))
+    (nreverse (cons 'all regs))))
+
+;;;###autoload
+(defun wide-n-unite (&optional variable msgp)
+  "Merge the restrictions of VARIABLE to their union.
+Return the new value of VARIABLE.
+
+VARIABLE defaults to the value of `wide-n-restrictions-var'.
+With a prefix arg you are prompted for a different variable to use, in
+place of the current value of `wide-n-restrictions-var'.  If the
+prefix arg is non-negative (>= 0) then make the variable buffer-local.
+If the prefix arg is non-positive (<= 0) then set
+`wide-n-restrictions-var' to that variable symbol.  (Zero: do both.)
+
+Non-interactively:
+* VARIABLE is the optional variable to use.
+* Non-nil MSGP show status message.
+
+You need library `zones.el' for this command."
+  (interactive (let* ((var    (and current-prefix-arg  (wide-n-read-any-variable "Variable: ")))
+                      (npref  (prefix-numeric-value current-prefix-arg)))
+                 (unless (require 'zones nil t) (error "You need library `zones.el' for this command"))
+                 (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
+                 (when (and current-prefix-arg  (<= npref 0)) (setq wide-n-restrictions-var var))
+                 (list var t)))
+  (let* ((IGNORE      (unless (require 'zones nil t)
+                        (error "You need library `zones.el' for this command")))
+         (var         (or variable  wide-n-restrictions-var))
+         (IGNORE      (unless (boundp var) (set var  (list 'all))))
+         (val         (symbol-value var))
+         (IGNORE      (unless (wide-n-restrictions-p val)
+                        (error "Not a buffer-restrictions variable: `%s', value: `%S'" var val)))
+         (zone-union  (zzz-zone-union (wide-n-limits val))))
+    (set var  (wide-n-restrictions-from-zones zone-union))
+    (when msgp (message "Restrictions united for `%s'" var))
+    (symbol-value var)))
+
+;;;###autoload
+(defun wide-n-add-to-union (start end &optional variable msgp)
+  "Unite the region with (united) VARIABLE.
+Uses `wide-n-push' to add the region, then applies `wide-n-unite'.
+Return the new value of VARIABLE.
+
+VARIABLE defaults to the value of `wide-n-restrictions-var'.
+START and END are as for `narrow-to-region'.
+
+With a prefix arg you are prompted for a different variable to use, in
+place of the current value of `wide-n-restrictions-var'.  If the
+prefix arg is non-negative (>= 0) then make the variable buffer-local.
+If the prefix arg is non-positive (<= 0) then set
+`wide-n-restrictions-var' to that variable symbol.  (Zero: do both.)
+
+Non-interactively:
+* VARIABLE is the optional variable to use.
+* Non-nil MSGP means echo the region size."
+  (interactive (let ((beg    (region-beginning))
+                     (end    (region-end))
+                     (var    (and current-prefix-arg  (wide-n-read-any-variable "Variable: ")))
+                     (npref  (prefix-numeric-value current-prefix-arg)))
+                 (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
+                 (when (and current-prefix-arg  (<= npref 0)) (setq wide-n-restrictions-var var))
+                 (list beg end var t)))
+  (wide-n-push start end variable msgp)
+  (wide-n-unite variable msgp)
+  (symbol-value variable))
+
+
+;;---------------------
 
 (cond ((boundp 'narrow-map)
        (define-key narrow-map "\C-d" 'wide-n-delete)
+       (when (fboundp 'hlt-highlight-regions)
+         (define-key narrow-map "h"  'hlt-highlight-regions))
+       (when (fboundp 'hlt-highlight-regions)
+         (define-key narrow-map "H"  'hlt-highlight-regions-in-buffers))
        (define-key narrow-map "r"    'wide-n-select-region-repeat)
        (define-key narrow-map "s"    'wide-n-push)
+       (define-key narrow-map "S"    'wide-n-add-to-union)
+       (define-key narrow-map "u"    'wide-n-unite)
        (define-key narrow-map "x"    'wide-n-repeat))
       (t
        (define-key ctl-x-map "n\C-d" 'wide-n-delete)
+       (when (fboundp 'hlt-highlight-regions)
+         (define-key ctl-x-map "nh"  'hlt-highlight-regions))
+       (when (fboundp 'hlt-highlight-regions)
+         (define-key ctl-x-map "nH"  'hlt-highlight-regions-in-buffers))
        (define-key ctl-x-map "nr"    'wide-n-select-region-repeat)
        (define-key ctl-x-map "ns"    'wide-n-push)
+       (define-key ctl-x-map "nS"    'wide-n-add-to-union)
+       (define-key ctl-x-map "nu"    'wide-n-unite)
        (define-key ctl-x-map "nx"    (if (> emacs-major-version 21) 'wide-n-repeat 'wide-n))))
 
 
