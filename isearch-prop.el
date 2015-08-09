@@ -8,13 +8,13 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug  1 09:27:18 2015 (-0700)
+;; Last-Updated: Sun Aug  9 10:43:47 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1066
+;;     Update #: 1095
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
-;; Compatibility: GNU Emacs: 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 23.2+, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -87,13 +87,14 @@
 ;;    `isearchp-remove-property', `isearchp-thing',
 ;;    `isearchp-thing-define-contexts', `isearchp-thing-regexp',
 ;;    `isearchp-toggle-complementing-domain',
-;;    `isearchp-toggle-dimming-non-prop-zones',
+;;    `isearchp-toggle-dimming-outside-search-area',
 ;;    `isearchp-toggle-ignoring-comments',
 ;;    `isearchp-toggle-hiding-comments'.
 ;;
 ;;  User options defined here:
 ;;
-;;    `isearchp-dimming-color', `isearchp-dim-non-prop-zones-flag',
+;;    `isearchp-dimming-color',
+;;    `isearchp-dim-outside-search-area-flag',
 ;;    `isearchp-hide-whitespace-before-comment-flag',
 ;;    `isearchp-ignore-comments-flag'.
 ;;
@@ -203,9 +204,9 @@
 ;;
 ;;  * When you search propertied zones, the non-searchable zones are
 ;;    sometimes dimmed, to make the searchable areas stand out.
-;;    Option `isearchp-dim-non-prop-zones-flag' controls whether such
-;;    dimming occurs.  You can toggle it anytime during Isearch, using
-;;    `C-M-D' (aka `C-M-S-d').  Option `isearchp-dimming-color'
+;;    Option `isearchp-dim-outside-search-area-flag' controls whether
+;;    such dimming occurs.  You can toggle it anytime during Isearch,
+;;    using `C-M-D' (aka `C-M-S-d').  Option `isearchp-dimming-color'
 ;;    defines the dimming behavior.  It specifies a given background
 ;;    color to use always, or it specifies that the current background
 ;;    color is to be dimmed a given amount.
@@ -263,6 +264,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/09 dadams
+;;     Renamed: isearchp-toggle-dimming-non-prop-zones to isearchp-toggle-dimming-outside-search-area,
+;;              isearchp-dim-non-prop-zones-flag       to isearchp-dim-outside-search-area-flag.
+;;     Changed compatibility in file header from 23.x to 23.2+, for with-silent-modifications.
 ;; 2015/08/01 dadams
 ;;     Added: isearchp-hide-whitespace-before-comment-flag.
 ;;     isearchp-hide/show-comments:
@@ -305,7 +310,7 @@
 ;;     isearchp-property-1:
 ;;       Wrap call to isearch-done in ignore-errors (Emacs bug #21091 workaround).
 ;;       Simplify initial msg, and reinitialize some vars for it:
-;;         isearch-word, isearch-success, isearch-wrapped, isearch-adjusted. 
+;;         isearch-word, isearch-success, isearch-wrapped, isearch-adjusted.
 ;;     isearchp-remove-property: Ensure TYP is non-nil before passing it to intern.
 ;; 2015/04/12 dadams
 ;;     Added: isearchp-remove-dimming, isearchp-regexp-context-regexp-search, isearchp-thing-regexp.
@@ -488,7 +493,9 @@ the absolute value, the greater the difference from the current color.
                                (color  :tag "Shading color"  :value "#9A6BC0CDCD4C")
                                (number :tag "Dimming factor" :value -0.10)))
 
-(defcustom isearchp-dim-non-prop-zones-flag t
+(define-obsolete-variable-alias 'isearchp-dim-non-prop-zones-flag ; $$$$$$ Remove alias later.
+ 'isearchp-dim-outside-search-area-flag "2015-08-10")
+(defcustom isearchp-dim-outside-search-area-flag t
   "*Non-nil means dim text that does not have the property being searched.
 More precisely, if `isearchp-complement-domain-p' is non-nil then the
 text being searched does not have the property, and this then dims the
@@ -498,7 +505,7 @@ text that does have the property."
   :set (lambda (symb new-val)
          (let ((old-val  (symbol-value symb)))
            (custom-set-default symb new-val)
-           (unless (eq old-val (symbol-value symb)) (isearchp-toggle-dimming-non-prop-zones)))))
+           (unless (eq old-val (symbol-value symb)) (isearchp-toggle-dimming-outside-search-area)))))
 
 ;; Same as `hide-whitespace-before-comment-flag' in `hide-comnt.el'.
 ;; Same as `icicle-hide-whitespace-before-comment-flag' in `icicles-opt.el'.
@@ -567,7 +574,7 @@ regexp as the search context, and so on.")
 (define-key isearch-mode-map (kbd "C-M-t")        'isearchp-property-forward-regexp)
 (define-key isearch-mode-map (kbd "C-M-;")        'isearchp-toggle-ignoring-comments)
 (define-key isearch-mode-map (kbd "C-M-~")        'isearchp-toggle-complementing-domain)
-(define-key isearch-mode-map (kbd "C-M-S-d")      'isearchp-toggle-dimming-non-prop-zones)
+(define-key isearch-mode-map (kbd "C-M-S-d")      'isearchp-toggle-dimming-outside-search-area)
 (define-key isearch-mode-map (kbd "M-S-<delete>") 'isearchp-cleanup)
 (define-key isearch-mode-map (kbd "S-SPC")        'isearchp-lazy-highlights-narrow)
  
@@ -688,7 +695,7 @@ Bound to `\\<isearch-mode-map>\\[isearchp-cleanup]' during Isearch."
     (isearchp-remove-dimming)
     (lazy-highlight-cleanup 'FORCE))
   (when msgp (message "Removed lazy-highlighting and property-search artifacts")))
-  
+
 (defun isearchp-property-forward (arg) ; Bound to `C-t' in `isearch-mode-map'.
   "Isearch forward in text with a text property or overlay property.
 That is, move to the next such property and search within it for text
@@ -787,7 +794,7 @@ This toggles internal variable `isearchp-complement-domain-p'.
 Bound to `\\<isearch-mode-map>\\[isearchp-toggle-complementing-domain]' during Isearch."
   (interactive "p")
   (setq isearchp-complement-domain-p  (not isearchp-complement-domain-p))
-  (when isearchp-dim-non-prop-zones-flag (isearchp-complement-dimming))
+  (when isearchp-dim-outside-search-area-flag (isearchp-complement-dimming))
   (when msgp (message "%s the search domain now" (if isearchp-complement-domain-p
                                                      "*COMPLEMENTING*"
                                                    "*NOT* complementing"))))
@@ -829,21 +836,23 @@ Bound to `\\<isearch-mode-map>\\[isearchp-toggle-complementing-domain]' during I
       (setq ov-lims  (cdr ov-lims)))
     (setq isearchp-dimmed-overlays  new-ovs)
     (isearch-lazy-highlight-update)))
-      
-(defun isearchp-toggle-dimming-non-prop-zones (&optional msgp) ; Bound to `C-M-D' during Isearch.
-  "Toggle dimming text that does not have the property being searched.
-More precisely, toggle option `isearchp-dim-non-prop-zones-flag', then
-update dimming.  This updating applies to the searchable area: the
-region that was active before Isearch started, or the whole buffer if
-the region was not active.
+
+(define-obsolete-function-alias 'isearchp-toggle-dimming-non-prop-zones ; $$$$$$ Remove alias later.
+    'isearchp-dim-outside-search-area-flag "2015-08-10")
+(defun isearchp-toggle-dimming-outside-search-area (&optional msgp) ; Bound to `C-M-D' during Isearch.
+  "Toggle dimming text that is outside the search area.
+More precisely, toggle option `isearchp-dim-outside-search-area-flag',
+then update dimming.  This updating applies to the searchable area:
+the region that was active before Isearch started, or the whole buffer
+if the region was not active.
 
 Dimming is per option `isearchp-dimming-color'.
-Bound to `\\<isearch-mode-map>\\[isearchp-toggle-dimming-non-prop-zones]' during Isearch."
+Bound to `\\<isearch-mode-map>\\[isearchp-toggle-dimming-outside-search-area]' during Isearch."
   (interactive "p")
-  (setq isearchp-dim-non-prop-zones-flag  (not isearchp-dim-non-prop-zones-flag))
-  (let ((face-spec  (isearchp-dim-face-spec)))                         
+  (setq isearchp-dim-outside-search-area-flag  (not isearchp-dim-outside-search-area-flag))
+  (let ((face-spec  (isearchp-dim-face-spec)))
     (dolist (ov  isearchp-dimmed-overlays) (overlay-put ov 'face face-spec)))
-  (when msgp (message "%s the zones not being searched now" (if isearchp-dim-non-prop-zones-flag
+  (when msgp (message "%s the zones not being searched now" (if isearchp-dim-outside-search-area-flag
                                                                 "*DIMMING*"
                                                               "*NOT* dimming"))))
 
@@ -852,7 +861,7 @@ Bound to `\\<isearch-mode-map>\\[isearchp-toggle-dimming-non-prop-zones]' during
   (let ((dim-color  (if (stringp isearchp-dimming-color)
                         isearchp-dimming-color
                       (isearchp-dim-color (face-background 'default) isearchp-dimming-color))))
-    (and isearchp-dim-non-prop-zones-flag  (list :background dim-color))))
+    (and isearchp-dim-outside-search-area-flag  (list :background dim-color))))
 
 (declare-function color-saturate-name "color.el" '(name percent))
 
@@ -991,7 +1000,7 @@ This command does not actually search the contexts.  For that, use
 See `isearchp-regexp-context-search' for a description of the
 arguments and prefix-argument behavior in terms of prompting for them.
 
-If `isearchp-dim-non-prop-zones-flag' is non-nil then dim the
+If `isearchp-dim-outside-search-area-flag' is non-nil then dim the
 non-contexts.  (You can use command `isearchp-remove-dimming' to
 remove the dimming.)"
   (interactive (append (isearchp-regexp-read-args) (list t)))
@@ -1658,6 +1667,7 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
     ;; $$$$$$ (when added-prop-p (setq isearchp-last-prop+value (cons property prop-value)))
     added-prop-p)) ; Return property value if added, or nil otherwise.
 
+;; This does not, itself, use `with-silent-modifications', so code that calls this needs to use it.
 (defun isearchp-add/remove-dim-overlay (beg end addp)
   "Add or remove dim overlays from BEG to END, depending on ADDP.
 Non-nil ADDP means add an overlay; nil means remove any present.
@@ -1677,7 +1687,7 @@ is non-nil."
                                                            (member ov isearchp-dimmed-overlays))))))
                (when dim-ov (delete-overlay dim-ov)))
              (setq pos  (1+ pos)))))))
-  
+
 ;; Same as `icicle-remove-duplicates'.
 (defun isearchp-remove-duplicates (sequence &optional test)
   "Copy of SEQUENCE with duplicate elements removed.
@@ -2305,7 +2315,7 @@ the bounds of THING.  Return nil if no such THING is found."
         ;;        Seems that < is better than <=, at least for `icicle-search-thing':
         ;;        for XML elements and lists, <= misses the first one.
         ;; $$$$$$ No, I do not think that is the case (anymore).
-        ;;        <= is OK and is needed for interactive use of `isearchp-next-visible-thing'.  
+        ;;        <= is OK and is needed for interactive use of `isearchp-next-visible-thing'.
         (while (and thg+bds  (if backward (> (cddr thg+bds) (point)) (<= (cadr thg+bds) (point))))
           (if backward
               (setq start  (max end (1- (cadr thg+bds))))
