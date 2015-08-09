@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug  8 10:38:36 2015 (-0700)
+;; Last-Updated: Sun Aug  9 12:09:19 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 818
+;;     Update #: 829
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -213,8 +213,7 @@
 ;; 2015/08/08 dadams
 ;;     Added: wide-n-unite, wide-n-add-to-union, wide-n-restrictions-from-zones.
 ;;     Bind wide-n-unite to C-x n u and wide-n-add-to-union to C-x n S.
-;;     wide-n-push, wide-n-delete:
-;;       Return new value of VARIABLE.
+;;     wide-n-push, wide-n-delete: Return new value of VARIABLE.
 ;;     wide-n-push: Change optional arg NOMSG to MSGP (invert the sense).
 ;;     Soft-require zones.el.
 ;;     Bind hlt-highlight-regions to C-x n h and hlt-highlight-regions-in-buffers to C-x n H.
@@ -484,7 +483,7 @@ new cons."
 
 ;;;###autoload
 (defun wide-n-push (start end &optional variable msgp) ; Bound to `C-x n s'.
-  "Push the region limits to current VARIABLE.
+  "Push the region limits to current restrictions variable VARIABLE.
 Return the new value of VARIABLE.
 
 VARIABLE defaults to the value of `wide-n-restrictions-var'.
@@ -497,7 +496,7 @@ If the prefix arg is non-positive (<= 0) then set
 `wide-n-restrictions-var' to that variable symbol.  (Zero: do both.)
 
 Non-interactively:
-* VARIABLE is the optional variable to use.
+* VARIABLE is the optional restrictions variable to use.
 * Non-nil MSGP means echo the region size."
   (interactive (let ((beg    (region-beginning))
                      (end    (region-end))
@@ -727,7 +726,7 @@ If the prefix arg is non-positive (<= 0) then set
 `wide-n-restrictions-var' to that variable symbol.  (Zero: do both.)
 
 Non-interactively:
-* VARIABLE is the optional variable to use.
+* VARIABLE is the optional restrictions variable to use.
 * Non-nil MSGP show status message.
 
 You need library `zones.el' for this command."
@@ -751,7 +750,7 @@ You need library `zones.el' for this command."
 
 ;;;###autoload
 (defun wide-n-add-to-union (start end &optional variable msgp)
-  "Unite the region with (united) VARIABLE.
+  "Add a restriction from START to END to those of VARIABLE, and unite.
 Uses `wide-n-push' to add the region, then applies `wide-n-unite'.
 Return the new value of VARIABLE.
 
@@ -765,7 +764,7 @@ If the prefix arg is non-positive (<= 0) then set
 `wide-n-restrictions-var' to that variable symbol.  (Zero: do both.)
 
 Non-interactively:
-* VARIABLE is the optional variable to use.
+* VARIABLE is the optional restrictions variable to use.
 * Non-nil MSGP means echo the region size."
   (interactive (let ((beg    (region-beginning))
                      (end    (region-end))
