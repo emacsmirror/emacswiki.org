@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug  9 12:09:19 2015 (-0700)
+;; Last-Updated: Sun Aug  9 12:12:28 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 829
+;;     Update #: 831
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -483,7 +483,7 @@ new cons."
 
 ;;;###autoload
 (defun wide-n-push (start end &optional variable msgp) ; Bound to `C-x n s'.
-  "Push the region limits to current restrictions variable VARIABLE.
+  "Add a restriction from START to END to those of VARIABLE.
 Return the new value of VARIABLE.
 
 VARIABLE defaults to the value of `wide-n-restrictions-var'.
@@ -715,7 +715,7 @@ except possibly for the position of element `all'."
 
 ;;;###autoload
 (defun wide-n-unite (&optional variable msgp)
-  "Merge the restrictions of VARIABLE to their union.
+  "Merge the restrictions of VARIABLE to form their union.
 Return the new value of VARIABLE.
 
 VARIABLE defaults to the value of `wide-n-restrictions-var'.
