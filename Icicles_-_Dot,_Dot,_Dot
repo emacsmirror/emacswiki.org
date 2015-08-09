@@ -93,7 +93,7 @@ usual meaning in Emacs regexps -- it does ''not'' match newlines.
 
 If you want a regexp that you input (using `RET') to match any character including a newline, then you
 can use '''`##C-u C-= icicle-anychar-regexp##'''' to insert the proper
-string explicitly.  You can shorten this to just `C-=' if you use
+string explicitly.  You can shorten this to just `##C-=##' if you use
 command `icicle-save-string-to-variable':
 
   M-x icicle-save-string-to-variable C-u C-= icicle-anychar-regexp
