@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  4 08:54:06 2015 (-0700)
 ;; Version: 2015.08.08
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug  8 10:54:22 2015 (-0700)
+;; Last-Updated: Sun Aug  9 13:29:11 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 171
+;;     Update #: 178
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Keywords: region zone
@@ -50,17 +50,20 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `zzz-buffer-of-markers', `zzz-car-<', `zzz-every', `zzz-max',
-;;    `zzz-min', `zzz-ordered-zone', `zzz-set-union',
-;;    `zzz-set-intersection', `zzz-some', `zzz-two-zone-intersection',
-;;    `zzz-two-zone-union', `zzz-zone-intersection',
-;;    `zzz-zone-intersection-1', `zzz-zones-overlap-p',
-;;    `zzz-zones-same-buffer-p', `zzz-zone-union', `zzz-zone-union-1'.
+;;    `zzz-buffer-of-markers', `zzz-car-<', `zzz-zone-complement',
+;;    `zzz-every', `zzz-max', `zzz-min', `zzz-ordered-zone',
+;;    `zzz-set-union', `zzz-set-intersection', `zzz-some',
+;;    `zzz-two-zone-intersection', `zzz-two-zone-union',
+;;    `zzz-zone-intersection', `zzz-zone-intersection-1',
+;;    `zzz-zones-overlap-p', `zzz-zones-same-buffer-p',
+;;    `zzz-zone-union', `zzz-zone-union-1'.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
 ;;
+;; 2015/08/09 dadams
+;;     Added: zzz-zone-complement.
 ;; 2015/08/05 dadams
 ;;     Created.
 ;;
@@ -132,6 +135,18 @@ from the same buffer."
                      (and (markerp cadr2)  cadr2))))
     (or (not (and mkr1  mkr2))
         (eq (marker-buffer mkr1) (marker-buffer mkr2)))))
+
+(defun zzz-zone-complement (zones &optional beg end)
+  "Return a list of zones that is the complement of ZONES, from BEG to END.
+ZONES is assumed to be a union, i.e., sorted by car, with no overlaps.
+Any extra info in a zone of ZONES, i.e., after the cadr, is ignored."
+  (setq beg  (or beg  (point-min))
+        end  (or end  (point-max)))
+  (let ((res  ()))
+    (dolist (zone  zones)
+      (push (list beg (car zone)) res)
+      (setq beg  (cadr zone)))
+    (setq res  (nconc res `((,beg ,end))))))
 
 (defun zzz-two-zone-union (zone1 zone2)
   "Return the union of ZONE1 and ZONE2, or nil if they do not overlap.
