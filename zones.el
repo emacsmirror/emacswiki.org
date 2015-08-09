@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  4 08:54:06 2015 (-0700)
 ;; Version: 2015.08.08
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug  9 13:29:11 2015 (-0700)
+;; Last-Updated: Sun Aug  9 15:42:17 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 178
+;;     Update #: 179
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Keywords: region zone
@@ -146,7 +146,7 @@ Any extra info in a zone of ZONES, i.e., after the cadr, is ignored."
     (dolist (zone  zones)
       (push (list beg (car zone)) res)
       (setq beg  (cadr zone)))
-    (setq res  (nconc res `((,beg ,end))))))
+    (setq res  (nreverse (push (list beg end) res)))))
 
 (defun zzz-two-zone-union (zone1 zone2)
   "Return the union of ZONE1 and ZONE2, or nil if they do not overlap.
