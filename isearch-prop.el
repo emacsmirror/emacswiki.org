@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug  9 10:43:47 2015 (-0700)
+;; Last-Updated: Sun Aug  9 15:58:28 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1095
+;;     Update #: 1166
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -54,8 +54,9 @@
 ;;  (@> "Macros")
 ;;  (@> "Variables")
 ;;  (@> "Keys")
-;;  (@> "General Commands")
+;;  (@> "General Search-Property Commands")
 ;;  (@> "General Non-Interactive Functions")
+;;  (@> "Search-Zones Commands and Functions")
 ;;  (@> "Imenu Commands and Functions")
 ;;  (@> "THING Commands and Functions")
 ;;  (@> "Character-Property Search")
@@ -89,7 +90,9 @@
 ;;    `isearchp-toggle-complementing-domain',
 ;;    `isearchp-toggle-dimming-outside-search-area',
 ;;    `isearchp-toggle-ignoring-comments',
-;;    `isearchp-toggle-hiding-comments'.
+;;    `isearchp-toggle-hiding-comments', `isearchp-zones-backward',
+;;    `isearchp-zones-backward-regexp', `isearchp-zones-forward',
+;;    `isearchp-zones-forward-regexp'.
 ;;
 ;;  User options defined here:
 ;;
@@ -119,7 +122,8 @@
 ;;    `isearchp-regexp-scan', `isearchp-remove-duplicates',
 ;;    `isearchp-some', `isearchp-thing-read-args',
 ;;    `isearchp-text-prop-present-p', `isearchp-thing-scan',
-;;    `isearchp-things-alist'.
+;;    `isearchp-things-alist', `isearchp-zones-1',
+;;    `isearchp-zones-filter-pred', `isearchp-zones-read-args'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -259,12 +263,25 @@
 ;;    (command `isearchp-toggle-hiding-comments').  You can toggle
 ;;    ignoring comments during Isearch, using `C-M-;' (command
 ;;    `isearchp-toggle-ignoring-comments').
+;;
+;;  * If you use libraries `wide-n.el' and `zones.el' then you can
+;;    search a set of buffer zones that are defined just by their
+;;    limits (markers or numbers) -- like multiple regions, using
+;;    commands `isearchp-zones-forward' and
+;;    `isearchp-zones-forward-regexp'.  You can use different such
+;;    zone sets.  Library `wide-n.el' gives you an easy, interactive
+;;    way to define them.  A prefix arg to the commands that search a
+;;    set of zones prompts you for a variable whose value is such a
+;;    set.  By default the variable is `wide-n-restrictions'.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
 ;; 2015/08/09 dadams
+;;     Added Search-zones functions:
+;;       isearchp-zones-forward, isearchp-zones-forward-regexp, isearchp-zones-backward, isearchp-zones-1,
+;;       isearchp-zones-backward-regexp, isearchp-zones-read-args, isearchp-zones-filter-pred.
 ;;     Renamed: isearchp-toggle-dimming-non-prop-zones to isearchp-toggle-dimming-outside-search-area,
 ;;              isearchp-dim-non-prop-zones-flag       to isearchp-dim-outside-search-area-flag.
 ;;     Changed compatibility in file header from 23.x to 23.2+, for with-silent-modifications.
@@ -543,9 +560,9 @@ Possible values are `text', `overlay', and nil, meaning both.")
 
 (defvar isearchp-complement-domain-p nil
   "Non-nil means complement the initial search candidates wrt the buffer.
-This has an effect only on (some) Icicles search commands.
-The scan function or regexp for the search command defines a set of
-matches in the buffer.
+This has an effect only on (some) Isearch+ commands.  The scan
+function or regexp for the search command defines a set of matches in
+the buffer.
 
 If this option is non-nil then the actual candidates used are the
 sections of region or buffer text that are separated by the initial
@@ -578,9 +595,9 @@ regexp as the search context, and so on.")
 (define-key isearch-mode-map (kbd "M-S-<delete>") 'isearchp-cleanup)
 (define-key isearch-mode-map (kbd "S-SPC")        'isearchp-lazy-highlights-narrow)
  
-;;(@* "General Commands")
+;;(@* "General Search-Property Commands")
 
-;;; General Commands -------------------------------------------------
+;;; General Search-Property Commands ---------------------------------
 
 (defun isearchp-remove-property (beg end property &optional type predicate msgp)
   "Remove PROPERTY from the active region or buffer.
@@ -1013,7 +1030,7 @@ remove the dimming.)"
    
 ;;(@* "General Non-Interactive Functions")
 
-;;; General Non-Interactive Functions --------------------------------
+;;; General Non-Interactive Search-Property Functions ----------------
 
 (defun isearchp-regexp-read-args ()
   "Read args for `isearchp-regexp*'.
@@ -1061,8 +1078,7 @@ ARG is normally from the prefix arg - see `isearchp-property-forward'."
         ;; isearch-just-started             t
         )
   (let ((message-log-max  nil))
-    (message "CHAR PROP %s" (isearchp-message-prefix nil nil isearch-nonincremental))
-    (sit-for 1))
+    (message "CHAR PROP %s" (isearchp-message-prefix nil nil isearch-nonincremental)) (sit-for 1))
 
   (let* ((enable-recursive-minibuffers    t)
          ;; Prevent invoking `isearch-edit-string', from `isearch-exit'.
@@ -1156,9 +1172,7 @@ The predicate is suitable as a value of `isearch-filter-predicate'."
                                                                (isearchp-property-default-match-fn
                                                                 ',property)
                                                                beg)))
-                  (unless (if matches-p
-                              (not isearchp-complement-domain-p)
-                            isearchp-complement-domain-p)
+                  (unless (if matches-p (not isearchp-complement-domain-p) isearchp-complement-domain-p)
                     (throw ',tag nil)))
                 (setq beg  (1+ beg)))
               t)))))
@@ -1699,6 +1713,116 @@ See `make-hash-table' for possible values of TEST."
        unless (gethash elt htable)
        do     (puthash elt elt htable)
        finally return (loop for i being the hash-values in htable collect i))))
+ 
+;;(@* "Search-Zones Commands and Functions")
+
+;;; Search-Zones Commands and Functions ------------------------------
+
+(when (and (require 'zones nil t)  (require 'wide-n nil t))
+  (defun isearchp-zones-forward (&optional variable)
+    "Search forward within the zones of restrictions variable VARIABLE.
+VARIABLE defaults to the value of `wide-n-restrictions-var'.
+
+With a prefix arg you are prompted for a different variable to use, in
+place of the current value of `wide-n-restrictions-var'.  If the
+prefix arg is non-negative (>= 0) then make the variable buffer-local.
+If the prefix arg is non-positive (<= 0) then set
+`wide-n-restrictions-var' to that variable symbol.  (Zero: do both.)
+
+Non-interactively, VARIABLE is the restrictions variable to use.
+
+If `isearchp-complement-domain-p' is non-nil then move to the next
+non-zone; that is, the areas to search are those outside the given
+zones.  (Use `C-M-~' during Isearch to toggle this variable.)"
+    (interactive (isearchp-zones-read-args))
+    (setq isearch-forward  t)
+    (isearchp-zones-1 'isearch-forward variable))
+
+  (defun isearchp-zones-backward (&optional variable)
+    "Search backward within the zones of restrictions variable VARIABLE.
+See `isearchp-zones-forward'."
+    (interactive (isearchp-zones-read-args))
+    (setq isearch-forward  nil)
+    (isearchp-zones-1 'isearch-backward variable))
+
+  (defun isearchp-zones-forward-regexp (&optional variable)
+    "Regexp search forward within the zones of restrictions variable VARIABLE.
+See `isearchp-zones-forward'."
+    (interactive (isearchp-zones-read-args))
+    (setq isearch-regexp   t
+          isearch-forward  t)
+    (isearchp-zones-1 'isearch-forward-regexp variable))
+
+  (defun isearchp-zones-backward-regexp (&optional variable)
+    "Regexp search backward within the zones of restrictions variable VARIABLE.
+See `isearchp-zones-forward'."
+    (interactive (isearchp-zones-read-args))
+    (setq isearch-regexp   t
+          isearch-forward  nil)
+    (isearchp-zones-1 'isearch-backward-regexp variable))
+
+  (defun isearchp-zones-read-args ()
+    "Read args for `isearchp-zones*'."
+    (let ((var    (and current-prefix-arg  (wide-n-read-any-variable "Variable: ")))
+          (npref  (prefix-numeric-value current-prefix-arg)))
+      (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
+      (when (and current-prefix-arg  (<= npref 0)) (setq wide-n-restrictions-var var))
+      (list var)))
+
+  (defun isearchp-zones-1 (search-fn &optional variable)
+    "Helper for Isearch zone commands.
+SEARCH-FN is the search function."
+    (unless variable (setq variable  wide-n-restrictions-var))
+    (when isearchp-dim-outside-search-area-flag
+      (with-silent-modifications
+        (let* ((zones       (zzz-zone-union (wide-n-limits (symbol-value variable))))
+               (comp-zones  (zzz-zone-complement zones)))
+          (dolist (zone  (if isearchp-complement-domain-p comp-zones zones))
+            (let ((isearchp-complement-domain-p  nil))
+              (isearchp-add/remove-dim-overlay (car zone) (cadr zone) nil)))
+          (dolist (zone  (if isearchp-complement-domain-p zones comp-zones))
+            (let ((isearchp-complement-domain-p  nil))
+              (isearchp-add/remove-dim-overlay (car zone) (cadr zone) 'ADD))))))
+    ;; Emacs bug #21091: must wrap with `ignore-errors' now - if fixed before Emacs 25 then I can remove it.
+    (ignore-errors (isearch-done))
+    ;; At least for the initial message, assume we are starting over, with a new kind of searching.
+    ;; Maybe we should reset more vars here, unless we are starting from within `isearch-mode'?
+    ;; Do nothing about that, for now.  Just reset those that might make the message wrong.
+    (setq isearch-word                     nil
+          isearch-success                  t
+          isearch-wrapped                  nil
+          isearch-adjusted                 nil
+          ;; isearch-barrier                  (point)
+          ;; isearch-yank-flag                nil
+          ;; isearch-error                    nil
+          ;; isearch-just-started             t
+          )
+    (let ((message-log-max  nil))
+      (message "%sZONE SEARCH %s" (if isearchp-complement-domain-p "*OUTSIDE* " "")
+               (isearchp-message-prefix nil nil isearch-nonincremental))
+      (sit-for 1))
+    (let* ((enable-recursive-minibuffers   t)
+           ;; Prevent invoking `isearch-edit-string', from `isearch-exit'.
+           (search-nonincremental-instead  nil))
+      (setq isearchp-filter-predicate-orig  isearch-filter-predicate
+            isearch-filter-predicate        (isearchp-zones-filter-pred variable)))
+    (add-hook 'isearch-mode-end-hook 'isearchp-property-finish)
+    (funcall search-fn))
+
+  (defun isearchp-zones-filter-pred (&optional restrictions)
+    "Return a predicate that tests if its args are in RESTRICTIONS.
+The predicate is suitable as a value of `isearch-filter-predicate'."
+    `(lambda (beg end)
+       (and (or (not (boundp 'isearchp-reg-beg))  (not isearchp-reg-beg)  (>= beg isearchp-reg-beg))
+            (or (not (boundp 'isearchp-reg-end))  (not isearchp-reg-end)  (< end isearchp-reg-end))
+            (or (and (fboundp 'isearch-filter-visible) (isearch-filter-visible beg end))
+                (and (boundp 'isearch-invisible) ; Emacs 24.4+
+                     (not (or (eq search-invisible t)  (not (isearch-range-invisible beg end))))))
+            (let ((in-zone-p  (zzz-some `(lambda (zone) (and (<= (car zone) ,beg)  (>= (cadr zone) ,end)))
+                                        (zzz-zone-union (wide-n-limits ,restrictions)))))
+              (if isearchp-complement-domain-p (not in-zone-p) in-zone-p)))))
+
+  )
  
 ;;(@* "Imenu Commands and Functions")
 
