@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug  9 12:12:28 2015 (-0700)
+;; Last-Updated: Mon Aug 10 08:22:18 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 831
+;;     Update #: 838
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -210,6 +210,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/10 dadams
+;;     wide-n-markerize: Corrected for format change - second marker is caddr, not cddr.
 ;; 2015/08/08 dadams
 ;;     Added: wide-n-unite, wide-n-add-to-union, wide-n-restrictions-from-zones.
 ;;     Bind wide-n-unite to C-x n u and wide-n-add-to-union to C-x n S.
@@ -469,16 +471,16 @@ Put `wide-n' on `mouse-2' for the lighter suffix."
 
 (defun wide-n-markerize (restriction)
   "Convert RESTRICTION to use markers if it uses only positions.
-RESTRICTION is `all' or a dotted list of an identifier and two buffer
-positions or markers.  This is a nondestructive operation: returns a
-new cons."
+RESTRICTION is `all' or a list of an identifier and two buffer
+positions (numbers or markers).  This is a nondestructive operation:
+it returns a new cons."
   (unless (or (atom restriction)  (and (markerp (cadr restriction))  (markerp (car (cddr restriction)))))
     (let ((mrk1     (make-marker))
           (mrk2     (make-marker)))
       (move-marker mrk1 (cadr restriction))
       (move-marker mrk2 (car (cddr restriction)))
-      (setcar (cdr restriction) mrk1)
-      (setcdr (cdr restriction) mrk2)))
+      (setcar (cdr  restriction) mrk1)
+      (setcar (cddr restriction) mrk2)))
   restriction)
 
 ;;;###autoload
