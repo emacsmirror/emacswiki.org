@@ -46,6 +46,6 @@
         (holiday-easter-etc 60 "Fronleichnam")
 	;;
 	(holiday-fixed 5 0 2 "Muttertag")
-	(holiday-fixed 6 0 2 "Vatertag")
+	(holiday-fixed 6 0 2 "Vatertag")))
 (provide 'austrian-holidays)
 }}}
