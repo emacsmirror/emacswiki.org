@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.05.30
 ;; Package-Requires: ()
-;; Last-Updated: Mon Aug 10 08:22:18 2015 (-0700)
+;; Last-Updated: Mon Aug 10 08:24:54 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 838
+;;     Update #: 840
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -475,8 +475,8 @@ RESTRICTION is `all' or a list of an identifier and two buffer
 positions (numbers or markers).  This is a nondestructive operation:
 it returns a new cons."
   (unless (or (atom restriction)  (and (markerp (cadr restriction))  (markerp (car (cddr restriction)))))
-    (let ((mrk1     (make-marker))
-          (mrk2     (make-marker)))
+    (let ((mrk1  (make-marker))
+          (mrk2  (make-marker)))
       (move-marker mrk1 (cadr restriction))
       (move-marker mrk2 (car (cddr restriction)))
       (setcar (cdr  restriction) mrk1)
