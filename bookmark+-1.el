@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Aug 10 07:47:44 2015 (-0700)
+;; Last-Updated: Mon Aug 10 08:09:16 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7801
+;;     Update #: 7802
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8923,7 +8923,7 @@ You need library `wide-n.el' to use the bookmark created."
                                            'all
                                          (let ((num  (car x))
                                                (beg  (cadr x)) ; Convert markers to number positions.
-                                               (end  (cddr x)))
+                                               (end  (car (cddr x))))
                                            `(,num
                                              ,(if (markerp beg) (marker-position beg) beg)
                                              ,(if (markerp end) (marker-position end) end)))))
