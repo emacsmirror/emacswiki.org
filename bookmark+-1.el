@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Aug  6 08:43:38 2015 (-0700)
+;; Last-Updated: Mon Aug 10 07:47:44 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7800
+;;     Update #: 7801
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8926,7 +8926,7 @@ You need library `wide-n.el' to use the bookmark created."
                                                (end  (cddr x)))
                                            `(,num
                                              ,(if (markerp beg) (marker-position beg) beg)
-                                             (if (markerp end) (marker-position end) end)))))
+                                             ,(if (markerp end) (marker-position end) end)))))
                                      wide-n-restrictions)))))))
       (call-interactively #'bookmark-set)
       (unless (featurep 'wide-n) (message "Bookmark created, but you need `wide-n.el' to use it")))))
