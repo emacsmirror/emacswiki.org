@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Aug  6 08:41:59 2015 (-0700)
+;; Last-Updated: Mon Aug 10 07:48:38 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15981
+;;     Update #: 15982
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/08/10 dadams
+;;     bmkp-set-restrictions-bookmark: Added missing comma, to eval end marker.
 ;; 2015/08/06 dadams
 ;;     bmkp-some: Fixed yesterday's fix. ;-)
 ;; 2015/08/05 dadams
