@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Aug 10 08:09:52 2015 (-0700)
+;; Last-Updated: Wed Aug 12 13:42:17 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15983
+;;     Update #: 15985
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/08/12 dadams
+;;     bmkp-set-restrictions-bookmark: Update for new wide-n format.
 ;; 2015/08/10 dadams
 ;;     bmkp-set-restrictions-bookmark:
 ;;       Added missing comma, to eval end marker.  Corrected END: caddr now, not cddr.
