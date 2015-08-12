@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 11 15:11:37 2015 (-0700)
+;; Last-Updated: Wed Aug 12 13:06:58 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1930
+;;     Update #: 1933
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -210,6 +210,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/12 dadams
+;;     facemenup-add-face-to-regions: Updated for wide-n.el format change.
 ;; 2015/07/11 dadams
 ;;     Added: facemenup-add-face-to-regions, facemenup-add-face-to-regions-in-buffers.
 ;; 2014/08/30 dadams
@@ -1341,7 +1343,7 @@ For Emacs 22+, this is `face-foreground' inheriting from `default'."
 
   (defun facemenup-add-face-to-regions (face &optional regions msgp)
     "Use `facemenu-add-face' to add FACE to each region in `wide-n-restrictions'.
-Non-interactively, REGIONS is a list of (START . END) region limits.
+Non-interactively, REGIONS is a list of (START END) region limits.
 You need library `wide-n.el' for this command."
     (interactive
      (progn (barf-if-buffer-read-only)
@@ -1352,9 +1354,9 @@ You need library `wide-n.el' for this command."
                   (wide-n-limits)
                   'MSGP)))
     (let (buf start end)
-      (dolist (start.end  regions)
-        (setq start  (car start.end)
-              end    (cdr start.end)
+      (dolist (start+end  regions)
+        (setq start  (car start+end)
+              end    (cadr start+end)
               buf    (if (and (markerp start)  (markerp end)
                               (eq (marker-buffer start)  (marker-buffer end)))
                          (marker-buffer start)
