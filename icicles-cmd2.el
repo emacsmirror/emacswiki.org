@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Aug  1 09:43:20 2015 (-0700)
+;; Last-Updated: Wed Aug 12 13:33:43 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7164
+;;     Update #: 7179
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -8449,30 +8449,25 @@ command `icicle-mode'."
   (unless (cadr wide-n-restrictions) (error "No restrictions - you have not narrowed this buffer"))
   (if (< (length wide-n-restrictions) 3) ; Only one restriction.  If narrowed widen, else apply the restriction.
       (wide-n 1 'MSG)
-    (let ((icicle-sort-comparer  'icicle-special-candidates-first-p)
-          (icicle-delete-candidate-object
-           (lambda (cand)
-             (let ((nn  (icicle-get-alist-candidate cand)))
-               (if (eq 'all (cadr nn)) (error "Cannot delete `No restriction'")
-                 (with-current-buffer icicle-pre-minibuffer-buffer
-                   (setq wide-n-restrictions  (delete 'all wide-n-restrictions)
-                         wide-n-restrictions  (delete (cdr nn) wide-n-restrictions))
-                   (wide-n-renumber)))))))
+    (let ((icicle-sort-comparer            'icicle-special-candidates-first-p)
+          (icicle-delete-candidate-object  (lambda (cand)
+                                             (let ((name.res  (icicle-get-alist-candidate cand)))
+                                               (with-current-buffer icicle-pre-minibuffer-buffer
+                                                 (setq wide-n-restrictions  (delete (cdr name.res)
+                                                                                    wide-n-restrictions))
+                                                 (wide-n-renumber))))))
       (icicle-apply (let ((ns  ())
                           beg end name)
                       (save-restriction
                         (widen)
-                        (dolist (nn  wide-n-restrictions)
-                          (if (eq 'all nn)
-                              (push `(,(icicle-propertize "No restriction" 'face 'icicle-special-candidate) all)
-                                    ns)
-                            (setq beg   (marker-position (cadr nn))
-                                  end   (marker-position (cddr nn))
-                                  name  (format "%d-%d, %s" beg end (buffer-substring beg end))
-                                  name  (replace-regexp-in-string "\n" " "
-                                                                  (substring name 0 (min 30 (length name))))
-                                  name  (format "%s\n" name))
-                            (push `(,name ,(car nn) ,@(cdr nn)) ns))))
+                        (dolist (res  wide-n-restrictions)
+                          (setq beg   (marker-position (cadr res))
+                                end   (marker-position (car (cddr res)))
+                                name  (format "%d-%d, %s" beg end (buffer-substring beg end))
+                                name  (replace-regexp-in-string "\n" " "
+                                                                (substring name 0 (min 30 (length name))))
+                                name  (format "%s\n" name))
+                          (push `(,name ,@res) ns)))
                       ns)
                     #'icicle-wide-n-action
                     'NOMSG))))
@@ -8481,19 +8476,15 @@ command `icicle-mode'."
   "Action function for `icicle-wide-n': Narrow region to candidate CAND.
 If CAND has car \"No restriction\" then widen it instead."
   (with-current-buffer icicle-pre-minibuffer-buffer
-    (if (not (eq 'all (cadr cand)))     ; "No restriction"
-        (condition-case err
-            (let ((wide-n-push-anyway-p  t))
-              (narrow-to-region (car (cddr cand)) (cdr (cddr cand)))
-              (wide-n-highlight-lighter)
-              (message wide-n-lighter-narrow-part))
-          (args-out-of-range
-           (setq wide-n-restrictions  (cdr wide-n-restrictions))
-           (error "Restriction removed because of invalid limits"))
-          (error (error "%s" (error-message-string err))))
-      (widen)
-      (wide-n-highlight-lighter)
-      (message "No longer narrowed"))))
+    (condition-case err
+        (let ((wide-n-push-anyway-p  t))
+          (narrow-to-region (cadr cand) (car (cddr cand)))
+          (wide-n-highlight-lighter)
+          (message wide-n-lighter-narrow-part))
+      (args-out-of-range
+       (setq wide-n-restrictions  (cdr wide-n-restrictions))
+       (error "Restriction removed because of invalid limits"))
+      (error (error "%s" (error-message-string err))))))
 
 (defvar icicle-key-prefix nil
   "A prefix key.")
