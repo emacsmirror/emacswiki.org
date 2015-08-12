@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Aug 10 08:09:16 2015 (-0700)
+;; Last-Updated: Wed Aug 12 13:01:05 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7802
+;;     Update #: 7804
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8912,21 +8912,19 @@ searched correspond to the recorded search hits."
   (defun bmkp-set-restrictions-bookmark ()
     "Save the ring of restrictions for the current buffer as a bookmark.
 You need library `wide-n.el' to use the bookmark created."
-    ;; If you use a version of `wide-n.el' older than 2015-07-31, then you will need to delete any
+    ;; If you use a version of `wide-n.el' older than 2015-08-12, then you will need to delete any
     ;; restrictions bookmarks created with that older version.  The restrictions format changed then.
     (interactive)
     (let ((bookmark-make-record-function
            (lambda () (bmkp-make-variable-list-record
                        `((wide-n-restrictions ; Format is (NUM BEG END).
                           . ,(mapcar (lambda (x)
-                                       (if (eq x 'all)
-                                           'all
-                                         (let ((num  (car x))
-                                               (beg  (cadr x)) ; Convert markers to number positions.
-                                               (end  (car (cddr x))))
-                                           `(,num
-                                             ,(if (markerp beg) (marker-position beg) beg)
-                                             ,(if (markerp end) (marker-position end) end)))))
+                                       (let ((num  (car x))
+                                             (beg  (cadr x)) ; Convert markers to number positions.
+                                             (end  (car (cddr x))))
+                                         `(,num
+                                           ,(if (markerp beg) (marker-position beg) beg)
+                                           ,(if (markerp end) (marker-position end) end))))
                                      wide-n-restrictions)))))))
       (call-interactively #'bookmark-set)
       (unless (featurep 'wide-n) (message "Bookmark created, but you need `wide-n.el' to use it")))))
