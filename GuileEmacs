@@ -121,6 +121,8 @@ For the Scheme fans who dislike Elisp:
 
 http://i.imgur.com/5DYQbhu.png
 
+Note: To reproduce this, you'll need to use <code>C-j</code> for evaluation, not <code>C-x C-e</code> or <code>C-M-x</code>
+
 == Long-term issues ==
 
 There seem no long-term issues for pure Elisp users, but the following challenges will face those who want to mix Elisp with Scheme:
