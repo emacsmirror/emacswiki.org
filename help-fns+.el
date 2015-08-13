@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 13 08:48:16 2015 (-0700)
+;; Last-Updated: Thu Aug 13 08:50:37 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 2092
+;;     Update #: 2093
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -2082,6 +2082,7 @@ it is displayed along with the global value."
                                               (variable-at-point)))
            (enable-recursive-minibuffers  t)
            (completion-annotate-function  (lambda (vv) (and (custom-variable-p (intern-soft vv))  "  (option)")))
+           (curbuf                        (current-buffer))
            val)
        (when (numberp symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
        (setq val (completing-read
