@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2015, Drew Adams, all rights reserved.
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 2014.08.12
+;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 13 08:00:45 2015 (-0700)
+;; Last-Updated: Thu Aug 13 13:42:55 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 884
+;;     Update #: 910
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -182,8 +182,10 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `wide-n-highlight-lighter', `wide-n-limits',
-;;    `wide-n-limits-in-bufs', `wide-n-markerize',
-;;    `wide-n-mem-regexp', `wide-n-push', `wide-n-rassoc-delete-all',
+;;    `wide-n-limits-in-bufs', `wide-n-marker-from-object',
+;;    `wide-n-markerize', `wide-n-mem-regexp', `wide-n-push',
+;;    `wide-n-number-or-marker-p', `wide-n-rassoc-delete-all',
+;;    `wide-n-readable-marker', `wide-n-readable-marker-p',
 ;;    `wide-n-read-any-variable', `wide-n-read-bufs',
 ;;    `wide-n-remove-if-not', `wide-n-renumber',
 ;;    `wide-n-repeat-command', `wide-n-restrictions',
@@ -211,7 +213,10 @@
 ;;; Change Log:
 ;;
 ;; 2015/08/13 dadams
-;;     Version 2014.08.12.
+;;     Version 2014.08.13.
+;;     Added: wide-n-marker-from-object.
+;;     wide-n-markerize: Convert also readable-marker objects.
+;;     wide-n-restrictions-p: Us wide-n-number-or-marker-p, not number-or-marker-p (support readable markers).
 ;;     wide-n-push, wide-n-add-to-union, interactive spec: VARIABLE defaults to wide-n-restrictions-var value.
 ;;     wide-n-add-to-union: VARIABLE defaults to wide-n-restrictions-var value non-interactively too.
 ;; 2015/08/12 dadams
@@ -461,27 +466,6 @@ Put `wide-n' on `mouse-2' for the lighter suffix."
                        xs
                      (wide-n-mem-regexp regexp (cdr xs)))))
 
-;; Same as `tap-string-match-p' in `thingatpt+.el' and `icicle-string-match-p' in `icicles-fn.el'.
-(if (fboundp 'string-match-p)
-    (defalias 'wide-n-string-match-p 'string-match-p) ; Emacs 23+
-  (defun wide-n-string-match-p (regexp string &optional start)
-    "Like `string-match', but this saves and restores the match data."
-    (save-match-data (string-match regexp string start))))
-
-(defun wide-n-markerize (restriction)
-  "Convert RESTRICTION to use markers if it uses only positions.
-RESTRICTION is list of an identifier and two buffer positions (numbers
-or markers).  This is a nondestructive operation: it returns a new
-cons."
-  (unless (and (markerp (cadr restriction))  (markerp (car (cddr restriction))))
-    (let ((mrk1  (make-marker))
-          (mrk2  (make-marker)))
-      (move-marker mrk1 (cadr restriction))
-      (move-marker mrk2 (car (cddr restriction)))
-      (setcar (cdr  restriction) mrk1)
-      (setcar (cddr restriction) mrk2)))
-  restriction)
-
 ;;;###autoload
 (defun wide-n-push (start end &optional variable msgp) ; Bound to `C-x n s'.
   "Add a restriction from START to END to those of VARIABLE.
@@ -526,35 +510,6 @@ Non-interactively:
                         (marker-position mrk1) (marker-position mrk2)))
     (symbol-value var)))
 
-(defun wide-n-restrictions-p (value)
-  "Return non-nil if VALUE is a list of buffer restrictions.
-That is, non-nil means that VALUE has the form of `wide-n-restrictions'."
-  (and (listp value)  (listp (cdr (last value))) ; Proper list.
-       (let ((res  t))
-         (catch 'wide-n-restrictions-p
-           (dolist (nn  value)
-             (unless (setq res  (and (consp nn)  (condition-case nil
-                                                     (and (number-or-marker-p (car nn))
-                                                          (number-or-marker-p (cadr nn))
-                                                          (number-or-marker-p (car (cddr nn))))
-                                                   (error nil))))
-               (throw 'wide-n-restrictions-p nil))))
-         res)))
-
-(defun wide-n-rassoc-delete-all (value alist)
-  "Delete from ALIST all elements whose cdr is `equal' to VALUE.
-This is a destructive operation.
-Return the modified alist.
-Elements of ALIST that are not conses are ignored."
-  (while (and (consp (car alist))  (equal (cdar alist) value)) (setq alist  (cdr alist)))
-  (let ((tail  alist)
-        tail-cdr)
-    (while (setq tail-cdr  (cdr tail))
-      (if (and (consp (car tail-cdr))  (equal (cdar tail-cdr) value))
-	  (setcdr tail (cdr tail-cdr))
-	(setq tail  tail-cdr))))
-  alist)
-
 ;;;###autoload
 (defun wide-n-delete (n &optional variable msgp) ; Bound to `C-x n C-d'.
   "Delete the restriction(s) numbered N from VARIABLE.
@@ -593,6 +548,100 @@ Non-nil optional arg NOMSG means do not display a status message."
   (wide-n-renumber variable)
   (when msgp (message "Deleted restriction number %d" n))
   (symbol-value variable))
+
+(defun wide-n-markerize (restriction)
+  "Convert RESTRICTION to use markers.
+RESTRICTION is a list of an identifier (a number) and two buffer
+positions (numbers, markers, or readable-marker objects).  Positions
+that are numbers or readable-marker objects are converted to markers.
+
+This is a nondestructive operation: it returns a new cons."
+  (let ((ii   1)
+        buf posn)
+    (while (<  ii 3)
+      (setq posn  (nth ii restriction))
+      (when (and (not (markerp posn))  (or (numberp posn)  (wide-n-readable-marker-p posn)))
+        (setcar (nthcdr ii  restriction) (wide-n-marker-from-object posn)))
+      (setq ii  (1+ ii))))
+  restriction)
+
+(defun wide-n-marker-from-object (object &optional buffer)
+  "Return equivalent marker for OBJECT.
+If OBJECT is a marker then return it.
+If it is a number then return (copy-marker OBJECT).
+If it is a readable-marker sexp then return an equivalent real marker.
+Otherwise, return nil.
+
+A readable marker is a sexp of form (marker BUFFER POSITION), where
+BUFFER is a buffer name (string) and POSITION is buffer
+position (number)."
+  (cond ((markerp object) object)
+        ((numberp object) (copy-marker object))
+        ((wide-n-readable-marker-p object)
+         (with-current-buffer (get-buffer-create (nth 1 object)) (copy-marker (nth 2 object))))
+        (t nil)))
+
+(defun wide-n-number-or-marker-p (position)
+  "Return non-nil if POSITION is a number, marker, or readable-marker object."
+  (or (number-or-marker-p position)  (wide-n-readable-marker-p position)))
+
+(defun wide-n-readable-marker-p (object)
+  "Return non-nil if OBJECT is a readable marker.
+That is, it has form (marker BUFFER POSITION), where BUFFER is a
+buffer name (string) and POSITION is a buffer position (number).
+OBJECT is returned."
+  (and (consp object)  (consp (cdr object))  (consp (cddr object))
+       (eq 'marker (nth 0 object))  (stringp (nth 1 object))  (numberp (nth 2 object))
+       object))
+
+(defun wide-n-readable-marker (number-or-marker &optional buffer)
+  "Return a readable-marker object equivalent to NUMBER-OR-MARKER, or nil.
+Return nil if NUMBER-OR-MARKER is not `number-or-marker-p'.
+
+Optional arg BUFFER is a buffer or a buffer name (default: name of
+current buffer).  It is used as the marker buffer when
+`number-or-marker-p' is a number.
+
+A readable-marker object is a sexp of form (marker BUFFER POSITION),
+where BUFFER is a buffer name (string) and POSITION is buffer
+position (number)."
+  (let* ((buf   (get-buffer (or buffer  (current-buffer))))
+         (buf   (and buf (buffer-name buf)))
+         (mrkr  (and (number-or-marker-p number-or-marker)
+                     (if (markerp number-or-marker)
+                         number-or-marker
+                       (with-current-buffer buf (copy-marker number-or-marker))))))
+    (and mrkr  `(marker ,buf ,(marker-position mrkr)))))
+
+(defun wide-n-restrictions-p (value)
+  "Return non-nil if VALUE is a list of buffer restrictions.
+That is, non-nil means that VALUE has the form of `wide-n-restrictions'."
+  (and (listp value)  (listp (cdr (last value))) ; Proper list.
+       (let ((res  t))
+         (catch 'wide-n-restrictions-p
+           (dolist (nn  value)
+             (unless (setq res  (and (consp nn)  (condition-case nil
+                                                     (and (wide-n-number-or-marker-p (nth 0 nn))
+                                                          (wide-n-number-or-marker-p (nth 1 nn))
+                                                          (wide-n-number-or-marker-p (nth 2 nn)))
+                                                   (error nil))))
+               (throw 'wide-n-restrictions-p nil))))
+         res)))
+
+(defun wide-n-rassoc-delete-all (value alist)
+  "Delete from ALIST all elements whose cdr is `equal' to VALUE.
+This is a destructive operation.
+Return the modified alist.
+Elements of ALIST that are not conses are ignored."
+  (while (and (consp (car alist))  (equal (cdar alist) value)) (setq alist  (cdr alist)))
+  (let ((tail  alist)
+        tail-cdr)
+    (while (setq tail-cdr  (cdr tail))
+      (if (and (consp (car tail-cdr))  (equal (cdar tail-cdr) value))
+	  (setcdr tail (cdr tail-cdr))
+	(setq tail  tail-cdr))))
+  alist)
+
 
 (defun wide-n-renumber (&optional variable)
   "Renumber restrictions of this buffer in current `wide-n-restrictions-var'."
@@ -666,6 +715,13 @@ is a variable, then return that by default."
     (intern (completing-read prompt obarray 'boundp nil nil 'minibuffer-history
                              (or default-value  (and symb  (boundp symb)  (symbol-name symb)))
                              t))))
+
+;; Same as `tap-string-match-p' in `thingatpt+.el' and `icicle-string-match-p' in `icicles-fn.el'.
+(if (fboundp 'string-match-p)
+    (defalias 'wide-n-string-match-p 'string-match-p) ; Emacs 23+
+  (defun wide-n-string-match-p (regexp string &optional start)
+    "Like `string-match', but this saves and restores the match data."
+    (save-match-data (string-match regexp string start))))
 
 (defun wide-n-repeat-command (command)
   "Repeat COMMAND."
