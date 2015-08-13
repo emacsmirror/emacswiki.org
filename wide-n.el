@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2015, Drew Adams, all rights reserved.
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
-;; Version: 2014.05.30
+;; Version: 2014.08.12
 ;; Package-Requires: ()
-;; Last-Updated: Wed Aug 12 13:56:06 2015 (-0700)
+;; Last-Updated: Thu Aug 13 07:36:17 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 875
+;;     Update #: 877
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
