@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Aug 13 13:52:53 2015 (-0700)
+;; Last-Updated: Thu Aug 13 13:55:58 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7825
+;;     Update #: 7826
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -462,8 +462,8 @@
 ;;    `bmkp-position-post-context',
 ;;    `bmkp-position-post-context-region',
 ;;    `bmkp-position-pre-context', `bmkp-position-pre-context-region',
-;;    `bmkp-printable-vars+vals', `bmkp-readable-marker',
-;;    `bmkp-readable-p', `bmkp-read-bookmark-file-default',
+;;    `bmkp-printable-vars+vals', `bmkp-readable-p',
+;;    `bmkp-read-bookmark-file-default',
 ;;    `bmkp-read-bookmark-file-name', `bmkp-read-regexp',
 ;;    `bmkp-read-tag-completing', `bmkp-read-tags',
 ;;    `bmkp-read-tags-completing', `bmkp-read-variable',
@@ -8972,14 +8972,6 @@ sequence bookmark:
                                              (list kbd-macro-vec)
                                            (list bookmark kbd-macro-vec))
                                 arg msgp)))
-
-;; Not used yet.
-(defun bmkp-readable-marker (marker)
-  "Return a Lisp-readable representation of MARKER.
-The form returned is (marker MARKER-BUFFER MARKER-POSITION)."
-  (let ((buf  (marker-buffer marker)))
-    (when buf (setq buf  (buffer-name buf)))
-    `(marker ,buf ,(marker-position marker))))
 
 ;; Not used yet.
 (defun bmkp-pop-to-readable-marker (readable-marker)
