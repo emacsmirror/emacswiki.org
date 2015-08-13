@@ -121,7 +121,27 @@ For the Scheme fans who dislike Elisp:
 
 http://i.imgur.com/5DYQbhu.png
 
-Note: To reproduce this, you'll need to use <code>C-j</code> for evaluation, not <code>C-x C-e</code> or <code>C-M-x</code>
+Reproduced below for convenience:
+
+{{{
+;; This buffer is for notes you don't want to save, and for Lisp evaluation.
+;; If you want to create a file, visit that file with C-x C-f,
+;; then enter the text in that file's own buffer.
+
+(load-library "scheme")
+(scheme-interaction-mode)
+;; that was Elisp; now we're in Scheme:
+
+(use-modules ((elisp-symbols) #:prefix ev-) ;variables
+             ((elisp-functions) #:prefix ef-)
+             ((elisp-plists) #:prefix ep-)
+             )
+
+(ef-message (ef-symbol-name 'cool!))
+"cool!"
+}}}
+
+Note: You'll need to use <code>C-j</code> for evaluation, not <code>C-x C-e</code> or <code>C-M-x</code>.
 
 == Long-term issues ==
 
