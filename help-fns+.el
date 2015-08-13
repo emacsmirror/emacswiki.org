@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug  2 11:39:43 2015 (-0700)
+;; Last-Updated: Thu Aug 13 08:31:39 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 2081
+;;     Update #: 2090
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,8 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `cl', `help-fns', `help-mode', `naked', `view',
-;;   `wid-edit', `wid-edit+'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,6 +116,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/13 dadams
+;;     describe-variable:
+;;       PREDICATE arg to completing-read needs to use original buffer, not minibuffer, when test boundp.
+;;       Fixes Emacs bug #.
 ;; 2015/08/02 dadams
 ;;     Updated for Emacs 25
 ;;      help-fns--signature:
@@ -1637,9 +1640,10 @@ display on/off using `C-x C-a'."
 ;; 1. With a prefix argument, candidates are user variables (options) only.
 ;; 2. Preferred default candidate is `symbol-nearest-point'.
 ;; 3. Remove initial `*' from doc string (indicates it is a user variable).
-;; 4. Use `substitute-command-keys' on doc string.
-;; 5. Preserve text properties.
-;; 6. No message if not called interactively.
+;; 4. PREDICATE to `completing-read' uses original buffer (not minibuffer), when testing `boundp'.  (BUG #)
+;; 5. Use `substitute-command-keys' on doc string.
+;; 6. Preserve text properties.
+;; 7. No message if not called interactively.
 ;;
 (when (< emacs-major-version 23)
   (defun describe-variable (variable &optional buffer optionp)
@@ -1655,14 +1659,16 @@ it is displayed along with the global value."
                                               (variable-at-point)))
            (enable-recursive-minibuffers  t)
            (completion-annotate-function  (lambda (var) (and (custom-variable-p (intern-soft var))  "  (option)")))
+           (curbuf                        (current-buffer))
            val)
        (when (numberp symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
        (setq val  (completing-read
                    (format "Describe variable%s: "
                            (if (and symb  (boundp symb)) (format " (default %s)" symb) ""))
                    obarray (if current-prefix-arg
-                               (lambda (vv) (user-variable-p vv))
-                             (lambda (vv) (or (boundp vv)  (get vv 'variable-documentation))))
+                               `(lambda (vv) (with-current-buffer ',curbuf (user-variable-p vv)))
+                             `(lambda (vv) (with-current-buffer ',curbuf
+                                        (or (boundp vv)  (get vv 'variable-documentation)))))
                    t nil nil (and (symbolp symb)  (boundp symb)  (symbol-name symb))))
        (list (if (equal val "") symb (intern val))
              nil
@@ -1828,11 +1834,12 @@ nor the buffers in the buffer list.  See also `with-temp-buffer'."
 ;;
 ;; 1. With a prefix argument, candidates are user variables (options) only.
 ;; 2. Preferred default candidate is `symbol-nearest-point'.
-;; 3. Preserve text properties.
-;; 4. Remove initial `*' from doc string (indicates it is a user variable).
-;; 5. Call `Info-make-manuals-xref' to create a cross-ref link to manuals (Emacs 23.3).
-;; 6. Add key-description buttons to command help.  Use `insert', not `princ'.
-;; 7. No no-function message if not called interactively.
+;; 3. PREDICATE to `completing-read' uses original buffer (not minibuffer), when testing `boundp'.  (BUG #)
+;; 4. Preserve text properties.
+;; 5. Remove initial `*' from doc string (indicates it is a user variable).
+;; 6. Call `Info-make-manuals-xref' to create a cross-ref link to manuals (Emacs 23.3).
+;; 7. Add key-description buttons to command help.  Use `insert', not `princ'.
+;; 8. No no-function message if not called interactively.
 ;;
 (when (= emacs-major-version 23)
   (defun describe-variable (variable &optional buffer frame optionp)
@@ -1849,6 +1856,7 @@ it is displayed along with the global value."
                                               (variable-at-point)))
            (enable-recursive-minibuffers  t)
            (completion-annotate-function  (lambda (var) (and (custom-variable-p (intern-soft var))  "  (option)")))
+           (curbuf                        (current-buffer))
            val)
        (when (numberp symb) (setq symb  nil)) ; `variable-at-point' returns 0 when there is no var.
        (setq val  (completing-read
@@ -1856,9 +1864,9 @@ it is displayed along with the global value."
                            (if (and symb  (boundp symb)) (format " (default %s)" symb) ""))
                    obarray
                    (if current-prefix-arg
-                       (lambda (vv) (user-variable-p vv))
-                     (lambda (vv)
-                       (or (get vv 'variable-documentation)  (and (boundp vv)  (not (keywordp vv))))))
+                       `(lambda (vv) (with-current-buffer ',curbuf (user-variable-p vv)))
+                     `(lambda (vv) (with-current-buffer ',curbuf
+                                (or (get vv 'variable-documentation)  (and (boundp vv)  (not (keywordp vv)))))))
                    t nil nil (and (symbolp symb)  (boundp symb)  (symbol-name symb))))
        (list (if (equal val "") symb (intern val))
              nil
@@ -2046,11 +2054,12 @@ file local variable.\n")
 ;;
 ;; 1. With a prefix argument, candidates are user variables (options) only.
 ;; 2. Preferred default candidate is `symbol-nearest-point'.
-;; 3. Preserve text properties.
-;; 4. Remove initial `*' from doc string (indicates it is a user variable).
-;; 5. Call `Info-make-manuals-xref' to create a cross-ref link to manuals (Emacs 23.3).
-;; 6. Add key-description buttons to command help.  Use `insert', not `princ'.
-;; 7. No no-function message if not called interactively.
+;; 3. PREDICATE to `completing-read' uses original buffer (not minibuffer), when testing `boundp'.  (BUG #)
+;; 4. Preserve text properties.
+;; 5. Remove initial `*' from doc string (indicates it is a user variable).
+;; 6. Call `Info-make-manuals-xref' to create a cross-ref link to manuals (Emacs 23.3).
+;; 7. Add key-description buttons to command help.  Use `insert', not `princ'.
+;; 8. No no-function message if not called interactively.
 ;;
 (when (> emacs-major-version 23)
 
@@ -2078,10 +2087,11 @@ it is displayed along with the global value."
        (setq val (completing-read
                   (format "Describe variable%s: "
                           (if (and symb  (boundp symb)) (format " (default %s)" symb) ""))
-                  obarray (if current-prefix-arg
-                              (lambda (vv) (user-variable-p vv))
-                            (lambda (vv) (or (get vv 'variable-documentation)
-                                        (and (boundp vv)  (not (keywordp vv))))))
+                  obarray
+                  (if current-prefix-arg
+                      `(lambda (vv) (with-current-buffer ',curbuf (user-variable-p vv)))
+                    `(lambda (vv) (with-current-buffer ',curbuf
+                               (or (get vv 'variable-documentation)  (and (boundp vv)  (not (keywordp vv)))))))
                   t nil nil (and (symbolp symb)  (boundp symb)  (symbol-name symb))))
        (list (if (equal val "") symb (intern val))
              nil
