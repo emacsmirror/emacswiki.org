@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Aug 13 09:17:22 2015 (-0700)
+;; Last-Updated: Thu Aug 13 13:52:53 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7816
+;;     Update #: 7825
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8912,7 +8912,8 @@ searched correspond to the recorded search hits."
 (when (boundp 'wide-n-restrictions)
   (defun bmkp-set-restrictions-bookmark (&optional variable msgp)
     "Save a ring of buffer restrictions as a bookmark.
-You need library `wide-n.el' to use the bookmark created.
+The restrictions can use markers or readable-marker objects for any
+buffers.  You need library `wide-n.el' to use the bookmark created.
 
 By default, the restrictions are those defined by the variable that is
 the current value of `wide-n-restrictions-var', which defaults to
@@ -8927,16 +8928,15 @@ Non-interactively, VARIABLE is the restrictions variable to use."
                    (list var t)))
     (unless variable (setq variable  wide-n-restrictions-var))
     (let ((bookmark-make-record-function
-           (lambda () (bmkp-make-variable-list-record
-                       `((,variable     ; Format is (NUM BEG END).
-                          . ,(mapcar (lambda (x)
-                                       (let ((num  (car x))
-                                             (beg  (cadr x)) ; Convert markers to number positions.
-                                             (end  (car (cddr x))))
-                                         `(,num
-                                           ,(if (markerp beg) (marker-position beg) beg)
-                                           ,(if (markerp end) (marker-position end) end))))
-                                     (symbol-value variable))))))))
+           (lambda ()
+             (bmkp-make-variable-list-record
+              `((,variable              ; Format: (NUM BEGM ENDM), BEGM and ENDM are readable-marker objects.
+                 . ,(mapcar (lambda (xx)
+                              (let ((num  (nth 0 xx))
+                                    (beg  (nth 1 xx))
+                                    (end  (nth 2 xx)))
+                                `(,num ,(wide-n-readable-marker beg) ,(wide-n-readable-marker end))))
+                            (symbol-value variable))))))))
       (call-interactively #'bookmark-set)
       (when (and msgp  (not (featurep 'wide-n))
                  (message "Bookmark created, but you need `wide-n.el' to use it")))))
