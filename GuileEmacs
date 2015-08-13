@@ -178,6 +178,11 @@ The latter might just work. Scheme's hygienic macros don't output Scheme code (r
 It should also be possible to implement a hygienic macro definition form for Elisp, though `defmacro' itself can probably not be made hygienic so using all the currently existing Elisp macros from Scheme remains problematic. They will probably need to be slowly reimplemented as hygienic macros defined in Elisp or Scheme.
 
 
+=== Concurrency ===
+
+Guile supports concurrency essentially via POSIX threads. In Guile-Emacs it is possible to launch any number of threads executing Scheme, but this doesn't solve the problem that Emacs is full of thread-unsafe data structures and global resources, so programming an Emacs extension using concurrent Scheme code might prove to be full of unexpected roadblocks and pitholes. Some Elisp functions even abuse the single-threaded nature of Emacs, mutating global resources then mutating them back to give the illusion of referential transparency, so nonchalant usage of Elisp APIs from concurrent code remains problematic.
+
+
 == See Also ==
 GuileEmacsTodo
 GuileEmacsHistory
