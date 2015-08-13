@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Aug 13 07:53:19 2015 (-0700)
+;; Last-Updated: Thu Aug 13 09:17:22 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7815
+;;     Update #: 7816
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8976,7 +8976,7 @@ sequence bookmark:
 ;; Not used yet.
 (defun bmkp-readable-marker (marker)
   "Return a Lisp-readable representation of MARKER.
-The form returned is (marker MARKER-BUFFER MARKER-POSITION."
+The form returned is (marker MARKER-BUFFER MARKER-POSITION)."
   (let ((buf  (marker-buffer marker)))
     (when buf (setq buf  (buffer-name buf)))
     `(marker ,buf ,(marker-position marker))))
