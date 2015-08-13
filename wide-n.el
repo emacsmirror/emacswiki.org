@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.12
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 13 07:36:17 2015 (-0700)
+;; Last-Updated: Thu Aug 13 08:00:45 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 877
+;;     Update #: 884
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -210,6 +210,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/13 dadams
+;;     Version 2014.08.12.
+;;     wide-n-push, wide-n-add-to-union, interactive spec: VARIABLE defaults to wide-n-restrictions-var value.
+;;     wide-n-add-to-union: VARIABLE defaults to wide-n-restrictions-var value non-interactively too.
 ;; 2015/08/12 dadams
 ;;     wide-n-restrictions, wide-n-select-region, wide-n, wide-n-markerize, wide-n-push, wide-n-restrictions-p,
 ;;       wide-n-delete, wide-n-renumber, wide-n-limits, wide-n-restrictions-from-zones, wide-n-unite:
@@ -497,7 +501,8 @@ Non-interactively:
 * Non-nil MSGP means echo the region size."
   (interactive (let ((beg    (region-beginning))
                      (end    (region-end))
-                     (var    (and current-prefix-arg  (wide-n-read-any-variable "Variable: ")))
+                     (var    (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
+                                 wide-n-restrictions-var))
                      (npref  (prefix-numeric-value current-prefix-arg)))
                  (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
                  (when (and current-prefix-arg  (<= npref 0)) (setq wide-n-restrictions-var var))
@@ -752,11 +757,13 @@ Non-interactively:
 * Non-nil MSGP means echo the region size."
   (interactive (let ((beg    (region-beginning))
                      (end    (region-end))
-                     (var    (and current-prefix-arg  (wide-n-read-any-variable "Variable: ")))
+                     (var    (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
+                                 wide-n-restrictions-var))
                      (npref  (prefix-numeric-value current-prefix-arg)))
                  (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
                  (when (and current-prefix-arg  (<= npref 0)) (setq wide-n-restrictions-var var))
                  (list beg end var t)))
+  (unless variable (setq variable  wide-n-restrictions-var))
   (wide-n-push start end variable msgp)
   (wide-n-unite variable msgp)
   (symbol-value variable))
