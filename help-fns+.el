@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 13 08:31:39 2015 (-0700)
+;; Last-Updated: Thu Aug 13 08:48:16 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 2090
+;;     Update #: 2092
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -119,7 +119,7 @@
 ;; 2015/08/13 dadams
 ;;     describe-variable:
 ;;       PREDICATE arg to completing-read needs to use original buffer, not minibuffer, when test boundp.
-;;       Fixes Emacs bug #.
+;;       Fixes Emacs BUG #21252.
 ;; 2015/08/02 dadams
 ;;     Updated for Emacs 25
 ;;      help-fns--signature:
@@ -1640,7 +1640,7 @@ display on/off using `C-x C-a'."
 ;; 1. With a prefix argument, candidates are user variables (options) only.
 ;; 2. Preferred default candidate is `symbol-nearest-point'.
 ;; 3. Remove initial `*' from doc string (indicates it is a user variable).
-;; 4. PREDICATE to `completing-read' uses original buffer (not minibuffer), when testing `boundp'.  (BUG #)
+;; 4. PREDICATE to `completing-read' uses original buffer (not minibuffer), when testing `boundp'.  (BUG #21252)
 ;; 5. Use `substitute-command-keys' on doc string.
 ;; 6. Preserve text properties.
 ;; 7. No message if not called interactively.
@@ -1834,7 +1834,7 @@ nor the buffers in the buffer list.  See also `with-temp-buffer'."
 ;;
 ;; 1. With a prefix argument, candidates are user variables (options) only.
 ;; 2. Preferred default candidate is `symbol-nearest-point'.
-;; 3. PREDICATE to `completing-read' uses original buffer (not minibuffer), when testing `boundp'.  (BUG #)
+;; 3. PREDICATE to `completing-read' uses original buffer (not minibuffer), when testing `boundp'.  (BUG #21252)
 ;; 4. Preserve text properties.
 ;; 5. Remove initial `*' from doc string (indicates it is a user variable).
 ;; 6. Call `Info-make-manuals-xref' to create a cross-ref link to manuals (Emacs 23.3).
@@ -2054,7 +2054,7 @@ file local variable.\n")
 ;;
 ;; 1. With a prefix argument, candidates are user variables (options) only.
 ;; 2. Preferred default candidate is `symbol-nearest-point'.
-;; 3. PREDICATE to `completing-read' uses original buffer (not minibuffer), when testing `boundp'.  (BUG #)
+;; 3. PREDICATE to `completing-read' uses original buffer (not minibuffer), when testing `boundp'.  (BUG #21252)
 ;; 4. Preserve text properties.
 ;; 5. Remove initial `*' from doc string (indicates it is a user variable).
 ;; 6. Call `Info-make-manuals-xref' to create a cross-ref link to manuals (Emacs 23.3).
