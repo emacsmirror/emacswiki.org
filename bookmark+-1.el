@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Aug 12 13:01:05 2015 (-0700)
+;; Last-Updated: Thu Aug 13 07:53:19 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7804
+;;     Update #: 7815
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -739,6 +739,7 @@
 (defvar w3m-current-url)                ; In `w3m.el'
 (defvar w3m-mode-map)                   ; In `w3m.el'
 (defvar wide-n-restrictions)            ; In `wide-n.el'
+(defvar wide-n-restrictions-var)        ; In `wide-n.el'
 (defvar woman-last-file-name)           ; In `woman.el'
  
 ;;(@* "User Options (Customizable)")
@@ -8909,15 +8910,25 @@ searched correspond to the recorded search hits."
 
 ;; Variable-list bookmarks
 (when (boundp 'wide-n-restrictions)
-  (defun bmkp-set-restrictions-bookmark ()
-    "Save the ring of restrictions for the current buffer as a bookmark.
-You need library `wide-n.el' to use the bookmark created."
+  (defun bmkp-set-restrictions-bookmark (&optional variable msgp)
+    "Save a ring of buffer restrictions as a bookmark.
+You need library `wide-n.el' to use the bookmark created.
+
+By default, the restrictions are those defined by the variable that is
+the current value of `wide-n-restrictions-var', which defaults to
+`wide-n-restrictions'.  With a prefix arg you are prompted for a
+different variable to use.
+
+Non-interactively, VARIABLE is the restrictions variable to use."
     ;; If you use a version of `wide-n.el' older than 2015-08-12, then you will need to delete any
     ;; restrictions bookmarks created with that older version.  The restrictions format changed then.
-    (interactive)
+    (interactive (let ((var  (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
+                                 wide-n-restrictions-var)))
+                   (list var t)))
+    (unless variable (setq variable  wide-n-restrictions-var))
     (let ((bookmark-make-record-function
            (lambda () (bmkp-make-variable-list-record
-                       `((wide-n-restrictions ; Format is (NUM BEG END).
+                       `((,variable     ; Format is (NUM BEG END).
                           . ,(mapcar (lambda (x)
                                        (let ((num  (car x))
                                              (beg  (cadr x)) ; Convert markers to number positions.
@@ -8925,9 +8936,12 @@ You need library `wide-n.el' to use the bookmark created."
                                          `(,num
                                            ,(if (markerp beg) (marker-position beg) beg)
                                            ,(if (markerp end) (marker-position end) end))))
-                                     wide-n-restrictions)))))))
+                                     (symbol-value variable))))))))
       (call-interactively #'bookmark-set)
-      (unless (featurep 'wide-n) (message "Bookmark created, but you need `wide-n.el' to use it")))))
+      (when (and msgp  (not (featurep 'wide-n))
+                 (message "Bookmark created, but you need `wide-n.el' to use it")))))
+
+  )
 
 ;;;###autoload (autoload 'bmkp-wrap-bookmark-with-last-kbd-macro "bookmark+")
 (defun bmkp-wrap-bookmark-with-last-kbd-macro (sequence bookmark &optional arg msgp)
