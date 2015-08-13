@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Aug 13 09:14:00 2015 (-0700)
+;; Last-Updated: Thu Aug 13 13:49:33 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15987
+;;     Update #: 15989
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,7 +147,8 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2015/08/13 dadams
-;;     bmkp-set-restrictions-bookmark: Added optional args.  A prefix arg prompts for VARIABLE.
+;;     bmkp-set-restrictions-bookmark:
+;;       Added optional args.  A prefix arg prompts for VARIABLE.  Use wide-n-readable-marker.
 ;; 2015/08/12 dadams
 ;;     bmkp-set-restrictions-bookmark: Update for new wide-n format.
 ;; 2015/08/10 dadams
