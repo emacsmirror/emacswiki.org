@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 09:57:29 2015 (-0700)
+;; Last-Updated: Fri Aug 14 12:17:39 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 952
+;;     Update #: 981
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -215,6 +215,10 @@
 ;;
 ;; 2015/08/14 dadams
 ;;     Added: wide-n-remove-if-other-buffer-markers, wide-n-remove-if.
+;;     wide-n-push, wide-n-delete: Added args NOT-BUF-LOCAL-P, SET-VAR-P.
+;;     wide-n-add-to-union, narrow-to-(region|defun|page):
+;;       Add nil args for NOT-BUF-LOCAL-P, SET-VAR-P in call to wide-n-push.
+;;     wide-n-restrictions-p: Test identifier with numberp, not wide-n-number-or-marker-p.
 ;;     wide-n-limits: Added optional args BUFFER, ONLY-ONE-BUFFER-P. Use wide-n-remove-if-other-buffer-markers.
 ;;     wide-n-limits-in-bufs:
 ;;       Changed optional arg from RESTRICTIONS to VARIABLE (default: wide-n-restrictions-var).
@@ -475,7 +479,7 @@ Put `wide-n' on `mouse-2' for the lighter suffix."
                      (wide-n-mem-regexp regexp (cdr xs)))))
 
 ;;;###autoload
-(defun wide-n-push (start end &optional variable msgp) ; Bound to `C-x n s'.
+(defun wide-n-push (start end &optional variable not-buf-local-p set-var-p msgp) ; Bound to `C-x n s'.
   "Add a restriction from START to END to those of VARIABLE.
 Return the new value of VARIABLE.
 
@@ -490,18 +494,22 @@ If the prefix arg is non-positive (<= 0) then set
 
 Non-interactively:
 * VARIABLE is the optional restrictions variable to use.
+* Non-nil NOT-BUF-LOCAL-P means do not make VARIABLE buffer-local.
+* Non-nil SET-VAR-P means set `wide-n-restrictions-var' to VARIABLE.
 * Non-nil MSGP means echo the region size."
-  (interactive (let ((beg    (region-beginning))
-                     (end    (region-end))
-                     (var    (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
-                                 wide-n-restrictions-var))
-                     (npref  (prefix-numeric-value current-prefix-arg)))
-                 (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
-                 (when (and current-prefix-arg  (<= npref 0)) (setq wide-n-restrictions-var var))
-                 (list beg end var t)))
+  (interactive (let* ((beg    (region-beginning))
+                      (end    (region-end))
+                      (var    (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
+                                  wide-n-restrictions-var))
+                      (npref  (prefix-numeric-value current-prefix-arg))
+                      (nloc   (and current-prefix-arg  (>= npref 0)))
+                      (setv   (and current-prefix-arg  (<= npref 0))))
+                 (list beg end var nloc setv t)))
   (let* ((mrk1    (make-marker))
          (mrk2    (make-marker))
-         (var     (or variable  wide-n-restrictions-var)) 
+         (var     (or variable  wide-n-restrictions-var))
+         (IGNORE  (unless not-buf-local-p (make-local-variable var)))
+         (IGNORE  (when set-var-p (setq wide-n-restrictions-var  var)))
          (IGNORE  (unless (boundp var) (set var ())))
          (val     (symbol-value var))
          sans-id  id-cons  id)
@@ -519,7 +527,7 @@ Non-interactively:
     (symbol-value var)))
 
 ;;;###autoload
-(defun wide-n-delete (n &optional variable msgp) ; Bound to `C-x n C-d'.
+(defun wide-n-delete (n &optional variable not-buf-local-p set-var-p msgp) ; Bound to `C-x n C-d'.
   "Delete the restriction(s) numbered N from VARIABLE.
 This renumbers the remaining restrictions.
 Return the new value of VARIABLE.
@@ -538,20 +546,27 @@ Non-nil optional arg NOMSG means do not display a status message."
    (let* ((var     (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
                        wide-n-restrictions-var))
           (npref   (prefix-numeric-value current-prefix-arg))
-          (IGNORE  (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var)))
-          (IGNORE  (when (and current-prefix-arg  (<= npref 0)) (setq wide-n-restrictions-var var)))
+          (nloc    (and current-prefix-arg  (>= npref 0)))
+          (setv    (and current-prefix-arg  (<= npref 0)))
+          ;; Repeat all of the variable tests and actions, since we need to have the value, for its length.
+          (IGNORE  (unless nloc (make-local-variable var)))
+          (IGNORE  (when setv (setq wide-n-restrictions-var var)))
           (IGNORE  (unless (boundp var) (set var ())))
           (val     (symbol-value var))
-          (IGNORE  (unless (cadr val)
-                     (error "No restrictions - you have not narrowed this buffer (`%s')" (buffer-name))))
+          (IGNORE  (unless (wide-n-restrictions-p val)
+                     (error "Not a buffer-restrictions variable: `%s', value: `%S'" var val)))
+          (IGNORE  (unless val (error "No restrictions - variable `%s' is empty" var)))
           (len     (1- (length val)))
           (num     (if (= len 1) 1 (read-number (format "Delete restriction number (1 to %d): " len)))))
      (while (or (< num 1)  (> num len))
        (setq num  (read-number (format "Number must be between 1 and %d: " len))))
-     (list num var t)))
+     (list num var nloc setv t)))
   (unless variable (setq variable  wide-n-restrictions-var))
+  (unless not-buf-local-p (make-local-variable var))
+  (when set-var-p (setq wide-n-restrictions-var var))
   (let ((val  (symbol-value variable)))
     (unless (wide-n-restrictions-p val) (error "Not a buffer-restrictions variable: `%s', value: `%S'" var val))
+    (unless val (error "No restrictions - variable `%s' is empty" var))
     (set variable (assq-delete-all n val)))
   (wide-n-renumber variable)
   (when msgp (message "Deleted restriction number %d" n))
@@ -629,7 +644,7 @@ That is, non-nil means that VALUE has the form of `wide-n-restrictions'."
          (catch 'wide-n-restrictions-p
            (dolist (nn  value)
              (unless (setq res  (and (consp nn)  (condition-case nil
-                                                     (and (wide-n-number-or-marker-p (nth 0 nn))
+                                                     (and (numberp (nth 0 nn))
                                                           (wide-n-number-or-marker-p (nth 1 nn))
                                                           (wide-n-number-or-marker-p (nth 2 nn)))
                                                    (error nil))))
@@ -656,7 +671,7 @@ Elements of ALIST that are not conses are ignored."
   (let* ((var   (or variable  wide-n-restrictions-var))
          (orig  (symbol-value var)))
     (set var ())
-    (dolist (nn  orig) (wide-n-push (cadr nn) (car (cddr nn)) var nil))))
+    (dolist (nn  orig) (wide-n-push (cadr nn) (car (cddr nn)) var))))
 
 (defun wide-n-limits-in-bufs (buffers &optional variable)
   "Return a list of all `wide-n-limits' for each buffer in BUFFERS.
@@ -860,7 +875,7 @@ Non-interactively:
                  (when (and current-prefix-arg  (<= npref 0)) (setq wide-n-restrictions-var var))
                  (list beg end var t)))
   (unless variable (setq variable  wide-n-restrictions-var))
-  (wide-n-push start end variable msgp)
+  (wide-n-push start end variable nil nil msgp)
   (wide-n-unite variable msgp)
   (symbol-value variable))
 
@@ -896,8 +911,8 @@ Non-interactively:
 (defadvice narrow-to-region (before push-wide-n-restrictions activate)
   "Push the region limits to the current `wide-n-restrictions-var'.
 You can use `C-x n x' to widen to a previous buffer restriction."
-  (when (or (interactive-p) wide-n-push-anyway-p)
-    (wide-n-push (ad-get-arg 0) (ad-get-arg 1) nil 'MSG))) ; Args START and END.
+  (when (or (interactive-p)  wide-n-push-anyway-p)
+    (wide-n-push (ad-get-arg 0) (ad-get-arg 1) nil nil nil 'MSG))) ; Args START and END.
 
 
 ;; REPLACE ORIGINAL in `lisp.el'.
@@ -931,7 +946,7 @@ Optional ARG is ignored."
 	(setq beg  (point)))
       (goto-char end)
       (re-search-backward "^\n" (- (point) 1) t)
-      (when (or (interactive-p)  wide-n-push-anyway-p) (wide-n-push beg end nil 'MSG))
+      (when (or (interactive-p)  wide-n-push-anyway-p) (wide-n-push beg end nil nil nil 'MSG))
       (narrow-to-region beg end))))
 
 
@@ -977,7 +992,7 @@ thus showing a page other than the one point was originally in."
                   ;; Otherwise, show text starting with following line.
                   (when (and (eolp)  (not (bobp))) (forward-line 1))
                   (point))))
-      (when (or (interactive-p)  wide-n-push-anyway-p) (wide-n-push beg end nil 'MSG))
+      (when (or (interactive-p)  wide-n-push-anyway-p) (wide-n-push beg end nil nil nil 'MSG))
       (narrow-to-region beg end))))
 
 ;;;;;;;;;;;;;;;;;;;;
