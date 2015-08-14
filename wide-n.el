@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 08:56:10 2015 (-0700)
+;; Last-Updated: Fri Aug 14 09:07:26 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 924
+;;     Update #: 930
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -671,9 +671,11 @@ in each buffer (or in the current buffer, if BUFFERS is nil)."
 (defun wide-n-limits (&optional restrictions)
   "Return a list like RESTRICTIONS, but with no identifiers.
 Optional input list RESTRICTIONS has the same structure as
-`wide-n-restrictions'.  If RESTRICTIONS is nil then the value of the
-current `wide-n-restrictions-var' (normally `wide-n-restrictions') is
-used.
+`wide-n-restrictions'.
+
+If RESTRICTIONS is nil then the variable that is the value of
+`wide-n-restrictions-var' (normally `wide-n-restrictions') is used.
+It is evaluated in the current buffer to obtain the restrictions.
 
 Each entry in the return value has the form (START END).  The conses
 are new - they do not share with any conses in RESTRICTIONS."
