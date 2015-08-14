@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 13 13:42:55 2015 (-0700)
+;; Last-Updated: Fri Aug 14 08:56:10 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 910
+;;     Update #: 924
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -212,6 +212,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/14 dadams
+;;     wide-n-limits-in-bufs:
+;;       Changed optional arg from RESTRICTIONS to VARIABLE (default: wide-n-restrictions-var).
+;;       Corrected case when BUFFERS is nil.
 ;; 2015/08/13 dadams
 ;;     Version 2014.08.13.
 ;;     Added: wide-n-marker-from-object.
@@ -650,16 +654,18 @@ Elements of ALIST that are not conses are ignored."
     (set var ())
     (dolist (nn  orig) (wide-n-push (cadr nn) (car (cddr nn)) var nil))))
 
-(defun wide-n-limits-in-bufs (buffers &optional restrictions)
+(defun wide-n-limits-in-bufs (buffers &optional variable)
   "Return a list of all `wide-n-limits' for each buffer in BUFFERS.
 That is, return a list of all recorded buffer narrowings for BUFFERS.
-Optional arg RESTRICTIONS is the list of narrowings to use (default:
-value of current `wide-n-restrictions-var')."
+If BUFFERS is nil then return the narrowings for the current buffer.
+
+Optional arg VARIABLE is the restrictions variable to use.  If nil,
+use the value of `wide-n-restrictions-var'.  The variable is evaluated
+in each buffer (or in the current buffer, if BUFFERS is nil)."
   (let ((limits  ()))
-    (if buffers
-        (dolist (buf  buffers)
-          (with-current-buffer buf (setq limits  (nconc limits (wide-n-limits restrictions)))))
-      (wide-n-limits restrictions))
+    (dolist (buf  (or buffers  (list (current-buffer))))
+      (with-current-buffer buf
+        (setq limits  (nconc limits (wide-n-limits (symbol-value (or variable  wide-n-restrictions-var)))))))
     limits))
 
 (defun wide-n-limits (&optional restrictions)
