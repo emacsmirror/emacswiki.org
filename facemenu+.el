@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Aug 12 13:06:58 2015 (-0700)
+;; Last-Updated: Fri Aug 14 10:54:41 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1933
+;;     Update #: 1938
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -210,6 +210,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/14 dadams
+;;     facemenup-add-face-to-regions: Call wide-n-limits with ONLY-THIS-BUFFER arg.
 ;; 2015/08/12 dadams
 ;;     facemenup-add-face-to-regions: Updated for wide-n.el format change.
 ;; 2015/07/11 dadams
@@ -1342,8 +1344,10 @@ For Emacs 22+, this is `face-foreground' inheriting from `default'."
 (when (fboundp 'wide-n-limits)
 
   (defun facemenup-add-face-to-regions (face &optional regions msgp)
-    "Use `facemenu-add-face' to add FACE to each region in `wide-n-restrictions'.
-Non-interactively, REGIONS is a list of (START END) region limits.
+    "Use `facemenu-add-face' to add FACE to each region in REGIONS.
+Optional arg REGIONS is a list of (START END) region limits.  If nil,
+the regions are taken from the variable that is the value of
+`wide-n-restrictions-var'.
 You need library `wide-n.el' for this command."
     (interactive
      (progn (barf-if-buffer-read-only)
@@ -1351,7 +1355,7 @@ You need library `wide-n.el' for this command."
                                                          pp-read-expression-map
                                                        read-expression-map)
                                         'READ 'read-expression-history)
-                  (wide-n-limits)
+                  (wide-n-limits nil nil 'ONLY-THIS-BUFFER)
                   'MSGP)))
     (let (buf start end)
       (dolist (start+end  regions)
@@ -1372,6 +1376,9 @@ A prefix arg means use all visible or iconified buffers.
 Otherwise, you are prompted for the BUFFERS to use, one at a time.
 Use `C-g' to end prompting.  If you specify no BUFFERS then the
 current buffer is used.
+
+The regions are taken from the value, in each buffer, of the variable
+that is the value of `wide-n-restrictions-var'.
 
 You need library `wide-n.el' for this command."
     (interactive
