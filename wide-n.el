@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 12:17:39 2015 (-0700)
+;; Last-Updated: Fri Aug 14 12:39:44 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 981
+;;     Update #: 990
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -183,7 +183,7 @@
 ;;
 ;;    `wide-n-highlight-lighter', `wide-n-limits',
 ;;    `wide-n-limits-in-bufs', `wide-n-marker-from-object',
-;;    `wide-n-markerize', `wide-n-mem-regexp', `wide-n-push',
+;;    `wide-n-markerize', `wide-n-mem-regexp',
 ;;    `wide-n-number-or-marker-p', `wide-n-rassoc-delete-all',
 ;;    `wide-n-readable-marker', `wide-n-readable-marker-p',
 ;;    `wide-n-read-any-variable', `wide-n-read-bufs',
@@ -502,7 +502,7 @@ Non-interactively:
                       (var    (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
                                   wide-n-restrictions-var))
                       (npref  (prefix-numeric-value current-prefix-arg))
-                      (nloc   (and current-prefix-arg  (>= npref 0)))
+                      (nloc   (and current-prefix-arg  (< npref 0)))
                       (setv   (and current-prefix-arg  (<= npref 0))))
                  (list beg end var nloc setv t)))
   (let* ((mrk1    (make-marker))
@@ -546,7 +546,7 @@ Non-nil optional arg NOMSG means do not display a status message."
    (let* ((var     (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
                        wide-n-restrictions-var))
           (npref   (prefix-numeric-value current-prefix-arg))
-          (nloc    (and current-prefix-arg  (>= npref 0)))
+          (nloc    (and current-prefix-arg  (< npref 0)))
           (setv    (and current-prefix-arg  (<= npref 0)))
           ;; Repeat all of the variable tests and actions, since we need to have the value, for its length.
           (IGNORE  (unless nloc (make-local-variable var)))
