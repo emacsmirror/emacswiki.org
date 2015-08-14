@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Thu Jan  1 10:44:52 2015 (-0800)
+;; Last-Updated: Fri Aug 14 07:13:47 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3036
+;;     Update #: 3039
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -277,6 +277,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/14 dadams
+;;     tell-customize-var-has-changed: Use symbol-value, not eval.
 ;; 2014/12/09 dadams
 ;;     Added: frcmds-frame-pixel-height.
 ;;     frcmds-split-frame-1: Use frame-pixel-width and frcmds-frame-pixel-height, instead of working
@@ -584,21 +586,21 @@ frame-cmds.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+          "http://www.emacswiki.org/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cgi-bin/wiki/frame-cmds.el")
+          "http://www.emacswiki.org/frame-cmds.el")
   :link '(url-link :tag "Description - `delete-window'"
-          "http://www.emacswiki.org/cgi-bin/wiki/FrameModes")
+          "http://www.emacswiki.org/FrameModes")
   :link '(url-link :tag "Description - Frame Renaming"
-          "http://www.emacswiki.org/cgi-bin/wiki/FrameTitle")
+          "http://www.emacswiki.org/FrameTitle")
   :link '(url-link :tag "Description - Frame Resizing"
-          "http://www.emacswiki.org/cgi-bin/wiki/Shrink-Wrapping_Frames")
+          "http://www.emacswiki.org/Shrink-Wrapping_Frames")
   :link '(url-link :tag "Description - Frame Customization"
-          "http://www.emacswiki.org/cgi-bin/wiki/CustomizingAndSaving")
+          "http://www.emacswiki.org/CustomizingAndSaving")
   :link '(url-link :tag "Description - Frame Tiling"
-          "http://www.emacswiki.org/cgi-bin/wiki/Frame_Tiling_Commands")
+          "http://www.emacswiki.org/Frame_Tiling_Commands")
   :link '(url-link :tag "Description - General"
-          "http://www.emacswiki.org/cgi-bin/wiki/FrameModes")
+          "http://www.emacswiki.org/FrameModes")
   :link '(emacs-commentary-link :tag "Commentary" "frame-cmds"))
 
 (defcustom rename-frame-when-iconify-flag t
@@ -1945,7 +1947,7 @@ The CDR is nil."
   "Tell Customize to recognize that VARIABLE has been set (changed).
 VARIABLE is a symbol that names a user option."
   (interactive "vVariable: ")
-  (put variable 'customized-value (list (custom-quote (eval variable)))))
+  (put variable 'customized-value (list (custom-quote (symbol-value variable)))))
 
 ;;;###autoload
 (defun other-window-or-frame (arg)
