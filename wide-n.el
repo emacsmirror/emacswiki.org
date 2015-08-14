@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 09:42:02 2015 (-0700)
+;; Last-Updated: Fri Aug 14 09:57:29 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 950
+;;     Update #: 952
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -219,6 +219,7 @@
 ;;     wide-n-limits-in-bufs:
 ;;       Changed optional arg from RESTRICTIONS to VARIABLE (default: wide-n-restrictions-var).
 ;;       Corrected case when BUFFERS is nil.
+;;       Pass buffer and non-nil ONLY-ONE-BUFFER-P to wide-n-limits.
 ;; 2015/08/13 dadams
 ;;     Version 2014.08.13.
 ;;     Added: wide-n-marker-from-object.
@@ -668,7 +669,9 @@ in each buffer (or in the current buffer, if BUFFERS is nil)."
   (let ((limits  ()))
     (dolist (buf  (or buffers  (list (current-buffer))))
       (with-current-buffer buf
-        (setq limits  (nconc limits (wide-n-limits (symbol-value (or variable  wide-n-restrictions-var)))))))
+        (setq limits  (nconc limits (wide-n-limits (symbol-value (or variable  wide-n-restrictions-var))
+                                                   buf
+                                                   'ONLY-THIS-BUFFER)))))
     limits))
 
 (defun wide-n-limits (&optional restrictions buffer only-one-buffer-p)
