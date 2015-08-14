@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 13:59:06 2015 (-0700)
+;; Last-Updated: Fri Aug 14 15:12:53 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1017
+;;     Update #: 1040
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -209,10 +209,10 @@
 ;;    `wide-n-highlight-lighter', `wide-n-limits',
 ;;    `wide-n-limits-in-bufs', `wide-n-marker-from-object',
 ;;    `wide-n-markerize', `wide-n-mem-regexp',
-;;    `wide-n-number-or-marker-p', `wide-n-rassoc-delete-all',
-;;    `wide-n-readable-marker', `wide-n-readable-marker-p',
-;;    `wide-n-read-any-variable', `wide-n-read-bufs',
-;;    `wide-n-remove-if', `wide-n-remove-if-not',
+;;    `wide-n-number-or-marker-p', `wide-n-other-buffer-marker-p',
+;;    `wide-n-rassoc-delete-all', `wide-n-readable-marker',
+;;    `wide-n-readable-marker-p', `wide-n-read-any-variable',
+;;    `wide-n-read-bufs', `wide-n-remove-if', `wide-n-remove-if-not',
 ;;    `wide-n-remove-if-other-buffer-markers', `wide-n-renumber',
 ;;    `wide-n-repeat-command', `wide-n-restrictions',
 ;;    `wide-n-restrictions-from-zones', `wide-n-restrictions-p',
@@ -239,7 +239,8 @@
 ;;; Change Log:
 ;;
 ;; 2015/08/14 dadams
-;;     Added: wide-n-remove-if-other-buffer-markers, wide-n-remove-if.
+;;     Added: wide-n-remove-if-other-buffer-markers, wide-n-remove-if, wide-n-other-buffer-marker-p.
+;;     wide-n-select-region, wide-n: pop-to-buffer of restriction when appropriate.
 ;;     wide-n-push, wide-n-delete: Added args NOT-BUF-LOCAL-P, SET-VAR-P.  Changed prefix arg behavior.
 ;;     wide-n-add-to-union, narrow-to-(region|defun|page):
 ;;       Add nil args for NOT-BUF-LOCAL-P, SET-VAR-P in call to wide-n-push.
@@ -404,7 +405,11 @@ current `wide-n-restrictions-var' during narrowing.")
   "Select a region.
 The restrictions are those in the current `wide-n-restrictions-var'.
 With no prefix arg, select the previous recorded region.
-With a numeric prefix arg N, select the Nth previous region."
+With a numeric prefix arg N, select the Nth previous region.
+
+Note that if the value of `wide-n-restrictions-var' is not
+buffer-local then you can use this command to cycle among regions in
+multiple buffers."
   (interactive "p\np")
   (let* ((var   wide-n-restrictions-var)
          (val   (symbol-value var))
@@ -419,11 +424,18 @@ With a numeric prefix arg N, select the Nth previous region."
             val  (set var (mapcar #'wide-n-markerize val)))
       (let* ((wide-n-push-anyway-p  t)
              (restriction           (car val))
-             (beg                   (cadr restriction))
-             (end                   (car (cddr restriction))))
+             (beg                   (nth 1 restriction))
+             (end                   (nth 2 restriction))
+             (other-buf             nil))
+        (when (and (not (local-variable-p var))
+                   (setq other-buf  (wide-n-other-buffer-marker-p restriction)) ; Returns marker or nil.
+                   (or (not (markerp beg))  (not (markerp end))  (eq (marker-buffer beg) (marker-buffer end)))
+                   (setq other-buf  (marker-buffer other-buf)))
+          (pop-to-buffer other-buf))
         (goto-char beg)
-        (push-mark end nil t))
-      (when msgp (message "Region #%d restored" (caar val))))))
+        (push-mark end nil t)
+        (when msgp
+          (message "Region #%d restored%s" (caar val) (if other-buf (format " in `%s'" other-buf) "")))))))
 
 ;;;###autoload
 (defun wide-n (arg &optional msgp)
@@ -467,8 +479,18 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
                    val                         (set var (mapcar #'wide-n-markerize val))
                    wide-n-lighter-narrow-part  (format "-%d" (caar val)))
              (condition-case err
-                 (let ((wide-n-push-anyway-p  t))
-                   (narrow-to-region (cadr (car val)) (car (cddr (car val))))
+                 (let* ((wide-n-push-anyway-p  t)
+                        (restriction           (car val))
+                        (beg                   (nth 1 restriction))
+                        (end                   (nth 2 restriction))
+                        (other-buf             nil))
+                   (when (and (not (local-variable-p var))
+                              (setq other-buf  (wide-n-other-buffer-marker-p restriction)) ; Marker or nil.
+                              (or (not (markerp beg))  (not (markerp end))
+                                  (eq (marker-buffer beg) (marker-buffer end))) ; Same other buffer.
+                              (setq other-buf  (marker-buffer other-buf)))
+                     (pop-to-buffer other-buf))
+                   (narrow-to-region beg end)
                    (wide-n-highlight-lighter))
                (args-out-of-range
                 (set var  (cdr val))
@@ -767,13 +789,18 @@ BUFFER is the buffer to compare with (default: current buffer).
 This is a non-destructive operation: a (shallow) copy is returned."
   (unless buffer (setq buffer  (current-buffer)))
   (let (m1 m2)
-    (wide-n-remove-if
-     `(lambda (restr)
-        (setq m1  (nth 1 restr)
-              m2  (nth 2 restr))
-        (or (and (markerp m1)  (not (eq ',buffer (marker-buffer m1))))
-            (and (markerp m2)  (not (eq ',buffer (marker-buffer m2))))))
-     restrictions)))
+    (wide-n-remove-if `(lambda (restr) (wide-n-other-buffer-marker-p restr ',buffer))
+                      restrictions)))
+
+(defun wide-n-other-buffer-marker-p (restriction &optional buffer)
+  "Return non-nil if RESTRICTION has a marker for another buffer.
+The first marker in the restriction is returned.
+BUFFER is the buffer to compare with (default: current buffer)."
+  (unless buffer (setq buffer  (current-buffer)))
+  (let ((m1  (nth 1 restriction))
+        (m2  (nth 2 restriction)))
+    (or (and (markerp m1)  (not (eq buffer (marker-buffer m1)))  m1)
+        (and (markerp m2)  (not (eq buffer (marker-buffer m2)))  m2))))
 
 (defun wide-n-remove-if (pred xs)
   "A copy of list XS with no elements that satisfy predicate PRED."
@@ -827,7 +854,11 @@ is a variable, then return that by default."
 ;;;###autoload
 (defun wide-n-repeat (arg)              ; Bound to `C-x n x'.
   "Cycle to the next buffer restriction (narrowing).
-This is a repeatable version of `wide-n'."
+This is a repeatable version of `wide-n'.
+
+Note that if the value of `wide-n-restrictions-var' is not
+buffer-local then you can use this command to cycle among regions in
+multiple buffers."
   (interactive "P")
   (require 'repeat)
   (wide-n-repeat-command 'wide-n))
