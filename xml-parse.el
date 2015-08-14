@@ -271,9 +271,9 @@ Note that this only works if the opening tag starts at column 0."
     (if (eq (char-before) ?\[)
 	(let ((depth 1))
 	  (while (and (> depth 0)
-		      (if (re-search-forward "[][]")
+		      (if (re-search-forward "[][]" nil t)
 			  t
-			(error "Pos %d: Unclosed open bracket in <! tag")))
+			(error "Pos %d: Unclosed open bracket in <! tag" (point))))
 	    (if (eq (char-before) ?\[)
 		(setq depth (1+ depth))
 	      (setq depth (1- depth))))
