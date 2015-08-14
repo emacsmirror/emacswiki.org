@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 09:07:26 2015 (-0700)
+;; Last-Updated: Fri Aug 14 09:42:02 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 930
+;;     Update #: 950
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -187,7 +187,8 @@
 ;;    `wide-n-number-or-marker-p', `wide-n-rassoc-delete-all',
 ;;    `wide-n-readable-marker', `wide-n-readable-marker-p',
 ;;    `wide-n-read-any-variable', `wide-n-read-bufs',
-;;    `wide-n-remove-if-not', `wide-n-renumber',
+;;    `wide-n-remove-if', `wide-n-remove-if-not',
+;;    `wide-n-remove-if-other-buffer-markers', `wide-n-renumber',
 ;;    `wide-n-repeat-command', `wide-n-restrictions',
 ;;    `wide-n-restrictions-from-zones', `wide-n-restrictions-p',
 ;;    `wide-n-start+end', `wide-n-string-match-p'.
@@ -213,6 +214,8 @@
 ;;; Change Log:
 ;;
 ;; 2015/08/14 dadams
+;;     Added: wide-n-remove-if-other-buffer-markers, wide-n-remove-if.
+;;     wide-n-limits: Added optional args BUFFER, ONLY-ONE-BUFFER-P. Use wide-n-remove-if-other-buffer-markers.
 ;;     wide-n-limits-in-bufs:
 ;;       Changed optional arg from RESTRICTIONS to VARIABLE (default: wide-n-restrictions-var).
 ;;       Corrected case when BUFFERS is nil.
@@ -668,18 +671,24 @@ in each buffer (or in the current buffer, if BUFFERS is nil)."
         (setq limits  (nconc limits (wide-n-limits (symbol-value (or variable  wide-n-restrictions-var)))))))
     limits))
 
-(defun wide-n-limits (&optional restrictions)
+(defun wide-n-limits (&optional restrictions buffer only-one-buffer-p)
   "Return a list like RESTRICTIONS, but with no identifiers.
+That is, return a list of zones, (LIMIT1 LIMIT2).  Each limit can be a
+number or a marker (but see ONLY-ONE-BUFFER-P).  The conses are new -
+they do not share with any conses with RESTRICTIONS.
+
 Optional input list RESTRICTIONS has the same structure as
-`wide-n-restrictions'.
+`wide-n-restrictions'.  If RESTRICTIONS is nil then the variable that
+is the value of `wide-n-restrictions-var' is used.  It is evaluated in
+BUFFER (default: current buffer) to obtain the restrictions.
 
-If RESTRICTIONS is nil then the variable that is the value of
-`wide-n-restrictions-var' (normally `wide-n-restrictions') is used.
-It is evaluated in the current buffer to obtain the restrictions.
-
-Each entry in the return value has the form (START END).  The conses
-are new - they do not share with any conses in RESTRICTIONS."
-  (delq nil (mapcar #'cdr (or restrictions  (symbol-value wide-n-restrictions-var)))))
+Non-nil optional arg ONLY-ONE-BUFFER-P means remove any restrictions
+that contain markers for a buffer other than BUFFER."
+  (unless buffer (setq buffer  (current-buffer)))
+  (let ((restrs  (or restrictions  (with-current-buffer buffer
+                                     (symbol-value wide-n-restrictions-var)))))
+    (when only-one-buffer-p (setq restrs  (wide-n-remove-if-other-buffer-markers restrs)))
+    (delq nil (mapcar #'cdr restrs))))
 
 ;; Useful for commands that want to act on regions in multiple buffers.
 (defun wide-n-read-bufs ()
@@ -694,6 +703,26 @@ are new - they do not share with any conses in RESTRICTIONS."
              (quit nil))
       (push buf bufs))
     (delq nil (mapcar #'get-buffer (nreverse bufs)))))
+
+(defun wide-n-remove-if-other-buffer-markers (restrictions &optional buffer)
+  "Return RESTRICTIONS, but remove any that use markers for another buffer.
+BUFFER is the buffer to compare with (default: current buffer).
+This is a non-destructive operation: a (shallow) copy is returned."
+  (unless buffer (setq buffer  (current-buffer)))
+  (let (m1 m2)
+    (wide-n-remove-if
+     `(lambda (restr)
+        (setq m1  (nth 1 restr)
+              m2  (nth 2 restr))
+        (or (and (markerp m1)  (not (eq ',buffer (marker-buffer m1))))
+            (and (markerp m2)  (not (eq ',buffer (marker-buffer m2))))))
+     restrictions)))
+
+(defun wide-n-remove-if (pred xs)
+  "A copy of list XS with no elements that satisfy predicate PRED."
+  (let ((result  ()))
+    (dolist (x xs) (unless (funcall pred x) (push x result)))
+    (nreverse result)))
 
 ;; Useful for commands that want to act on  regions in multiple buffers (e.g., visible buffers only).
 ;;
