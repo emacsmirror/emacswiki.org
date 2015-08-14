@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 13:00:08 2015 (-0700)
+;; Last-Updated: Fri Aug 14 13:59:06 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1000
+;;     Update #: 1017
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -101,13 +101,36 @@
 ;;
 ;;    Some commands defined here let you specify the restrictions
 ;;    variable to use, by prompting you if you use a prefix argument.
+;;    When prompted, you can specify any variable name, even if the
+;;    variable does not yet exist (in which case it is given an empty
+;;    value).
+;;
+;;    The particular prefix arg determines whether the variable, if
+;;    not yet bound, is made buffer-local, and whether
+;;    `wide-n-restrictions-var' is set to the variable symbol:
+;;
+;;     prefix arg         buffer-local   set `wide-n-restrictions-var'
+;;     ----------         ------------   -----------------------------
+;;      Plain `C-u'        yes            yes
+;;      > 0 (e.g. `C-1')   yes            no
+;;      = 0 (e.g. `C-0')   no             yes
+;;      < 0 (e.g. `C--')   no             no
 ;;
 ;;    For example, `C-u C-x n s' (`wide-n-push') prompts you for a
-;;    restrictions variable.  If it has not yet been bound then the
-;;    variable is made buffer-local.  `C-- C-x n s' does the same, but
-;;    it does not make the variable buffer-local.  You can specify any
-;;    variable name, even if the variable does not yet exist (in which
-;;    case it is given an empty value).
+;;    different variable to use, in place of the current value of
+;;    `wide-n-restrictions-var'.  The variable you enter is made
+;;    buffer-local and it becomes the new default restrictions
+;;    variable for the buffer; that is, `wide-n-restrictions-var' is
+;;    set to the variable symbol.
+
+;;    As another example, suppose that `wide-n-restrictions-var' is
+;;    `wide-n-restrictions', the default value and buffer-local by
+;;    design.  If you then use `C-- C-x n s' and enter a variable name
+;;    at the prompt, that variable is not made buffer-local, and
+;;    `wide-n-restrictions-var' is not set to that variable.  The
+;;    active region is pushed to the variable, but because
+;;    `wide-n-restrictions-var' is unchanged, a subsequent `C-x n s'
+;;    (no prefix arg) pushes to `wide-n-restrictions'.
 ;;
 ;;    Moving among different buffer restrictions, i.e., narrowing the
 ;;    buffer to different zones, is one use of this library, but
@@ -217,7 +240,7 @@
 ;;
 ;; 2015/08/14 dadams
 ;;     Added: wide-n-remove-if-other-buffer-markers, wide-n-remove-if.
-;;     wide-n-push, wide-n-delete: Added args NOT-BUF-LOCAL-P, SET-VAR-P.
+;;     wide-n-push, wide-n-delete: Added args NOT-BUF-LOCAL-P, SET-VAR-P.  Changed prefix arg behavior.
 ;;     wide-n-add-to-union, narrow-to-(region|defun|page):
 ;;       Add nil args for NOT-BUF-LOCAL-P, SET-VAR-P in call to wide-n-push.
 ;;     wide-n-restrictions-p: Test identifier with numberp, not wide-n-number-or-marker-p.
@@ -489,11 +512,17 @@ VARIABLE defaults to the value of `wide-n-restrictions-var'.
 START and END are as for `narrow-to-region'.
 
 With a prefix arg you are prompted for a different variable to use, in
-place of the current value of `wide-n-restrictions-var'.  If the
-prefix arg is non-negative (>= 0), and the variable is not yet bound,
-then make it buffer-local.  If the prefix arg is non-positive (<= 0)
-then set `wide-n-restrictions-var' to the variable symbol.  (Zero: do
-both.)
+place of the current value of `wide-n-restrictions-var'.  The
+particular prefix arg determines whether the variable, if unbound, is
+made buffer-local, and whether `wide-n-restrictions-var' is set to the
+variable symbol:
+
+prefix arg          buffer-local   set `wide-n-restrictions-var'
+----------          ------------   -----------------------------
+ Plain `C-u'         yes            yes
+ > 0 (e.g. `C-1')    yes            no
+ = 0 (e.g. `C-0')    no             yes
+ < 0 (e.g. `C--')    no             no
 
 Non-interactively:
 * VARIABLE is the optional restrictions variable to use.
@@ -505,8 +534,8 @@ Non-interactively:
                       (var    (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
                                   wide-n-restrictions-var))
                       (npref  (prefix-numeric-value current-prefix-arg))
-                      (nloc   (and current-prefix-arg  (< npref 0)  (not (boundp var))))
-                      (setv   (and current-prefix-arg  (<= npref 0))))
+                      (nloc   (and current-prefix-arg  (<= npref 0)  (not (boundp var))))
+                      (setv   (and current-prefix-arg  (or (consp current-prefix-arg)  (= npref 0)))))
                  (list beg end var nloc setv t)))
   (let* ((mrk1    (make-marker))
          (mrk2    (make-marker))
@@ -539,19 +568,25 @@ You are prompted for the number N.
 VARIABLE defaults to the value of `wide-n-restrictions-var'.
 
 With a prefix arg you are prompted for a different variable to use, in
-place of the current value of `wide-n-restrictions-var'.  If the
-prefix arg is non-negative (>= 0), and the variable is not yet bound,
-then make it buffer-local.  If the prefix arg is non-positive (<= 0)
-then set `wide-n-restrictions-var' to the variable symbol.  (Zero: do
-both.)
+place of the current value of `wide-n-restrictions-var'.  The
+particular prefix arg determines whether the variable, if unbound, is
+made buffer-local, and whether `wide-n-restrictions-var' is set to the
+variable symbol:
+
+prefix arg          buffer-local   set `wide-n-restrictions-var'
+----------          ------------   -----------------------------
+ Plain `C-u'         yes            yes
+ > 0 (e.g. `C-1')    yes            no
+ = 0 (e.g. `C-0')    no             yes
+ < 0 (e.g. `C--')    no             no
 
 Non-nil optional arg NOMSG means do not display a status message."
   (interactive
    (let* ((var     (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
                        wide-n-restrictions-var))
           (npref   (prefix-numeric-value current-prefix-arg))
-          (nloc    (and current-prefix-arg  (< npref 0)  (not (boundp var))))
-          (setv    (and current-prefix-arg  (<= npref 0)))
+          (nloc   (and current-prefix-arg  (<= npref 0)  (not (boundp var))))
+          (setv   (and current-prefix-arg  (or (consp current-prefix-arg)  (= npref 0))))
           ;; Repeat all of the variable tests and actions, since we need to have the value, for its length.
           (IGNORE  (unless nloc (make-local-variable var)))
           (IGNORE  (when setv (setq wide-n-restrictions-var var)))
