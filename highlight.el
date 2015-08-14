@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug  6 07:18:05 2015 (-0700)
+;; Last-Updated: Fri Aug 14 09:51:59 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3952
+;;     Update #: 3957
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -1760,6 +1760,7 @@ Optional 6th arg BUFFERS is the list of buffers to highlight.
 
 (when (fboundp 'wide-n-limits)
 
+  ;; No need to use (wide-n-limits nil nil 'ONLY-THIS-BUFFER), since `hlt-highlight-region' DTRT.
   (defun hlt-highlight-regions (&optional regions face msgp mousep buffers)
     "Apply `hlt-highlight-region' to each region in `wide-n-restrictions'.
 Non-interactively, REGIONS is a list of (START END) region limits.
@@ -1767,7 +1768,7 @@ The other args are passed to `hlt-highlight-region'.
 You need library `wide-n.el' for this command."
     (interactive (list (wide-n-limits) nil t current-prefix-arg))
     (dolist (start+end  regions)
-      (hlt-highlight-region (car start+end) (cadr start+end) face msgp mousep buffers)))
+      (hlt-highlight-region (nth 0 start+end) (nth 1 start+end) face msgp mousep buffers)))
 
   (defun hlt-highlight-regions-in-buffers (buffers &optional regions msgp)
     "Use `hlt-highlight-regions' in each buffer of list BUFFERS.
