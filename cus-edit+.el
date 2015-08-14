@@ -8,9 +8,9 @@
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:31:41 2015 (-0800)
+;; Last-Updated: Fri Aug 14 07:21:56 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1529
+;;     Update #: 1533
 ;; URL: http://www.emacswiki.org/cus-edit+.el
 ;; Doc URL: http://emacswiki.org/CustomizingAndSaving
 ;; Keywords: help, customize, help, faces
@@ -346,6 +346,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/14 dadams
+;;     custom-update-variable: Use symbol-value, not eval.
 ;; 2014/01/01 dadams
 ;;     Insert newline after button Set from external changes.
 ;; 2013/05/04 dadams
@@ -511,10 +513,10 @@ cus-edit+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/cgi-bin/wiki/cus-edit+.el")
+          "http://www.emacswiki.org/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "http://www.emacswiki.org/cus-edit+.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/CustomizingAndSaving#CustomizePlus")
+          "http://www.emacswiki.org/CustomizingAndSaving#CustomizePlus")
   :link '(emacs-commentary-link :tag "Commentary" "cus-edit+")
   )
 
@@ -526,11 +528,11 @@ Don't forget to mention your Emacs and library versions."))
 Items in this list are symbols naming faces or variables."
   :type '(repeat symbol) :group 'Custom-Plus
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+          "http://www.emacswiki.org/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cgi-bin/wiki/cus-edit+.el")
+          "http://www.emacswiki.org/cus-edit+.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/CustomizingAndSaving#CustomizePlus")
+          "http://www.emacswiki.org/CustomizingAndSaving#CustomizePlus")
   :link '(emacs-commentary-link :tag "Commentary" "cus-edit+")
   )
 
@@ -1196,9 +1198,11 @@ to keep Customize synched with Emacs changes."
     (message "Updating Customize to recognize external face settings...done")))
 
 (defun custom-update-variable (widget)
-  "Tell Customize that this variable, changed outside Customize, is now set."
+  "Tell Customize that this variable, changed outside Customize, is now set.
+That is, make Customize think that you set the variable in Customize
+\(without saving it)."
   (let ((symbol  (widget-get-tag-or-value widget)))
-    (put symbol 'customized-value (list (custom-quote (eval symbol))))
+    (put symbol 'customized-value (list (custom-quote (symbol-value symbol))))
     (custom-redraw widget)
     (message "Variable `%s' is now set (but not saved)." symbol)))
 
