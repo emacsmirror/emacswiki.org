@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 15:12:53 2015 (-0700)
+;; Last-Updated: Fri Aug 14 15:31:11 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1040
+;;     Update #: 1043
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -185,11 +185,12 @@
 ;;    calls existing function `hlt-highlight-region' once for each
 ;;    recorded region:
 ;;
-;; (defun hlt-highlight-regions (&optional regions face msgp mousep buffers)
+;; (defun hlt-highlight-regions (&optional regions face msgp mousep
+;;                                         buffers)
 ;;   "Apply `hlt-highlight-region' to regions in `wide-n-restrictions'."
 ;;   (interactive (list (wide-n-limits) nil t current-prefix-arg))
-;;   (dolist (start.end  regions)
-;;     (hlt-highlight-region (car start.end) (cdr start.end)
+;;   (dolist (start+end  regions)
+;;     (hlt-highlight-region (nth 0 start+end) (nth 1 start+end)
 ;;                           face msgp mousep buffers)))
 ;;    
 ;;    That's it - just iterate over `wide-n-restrictions' with a
