@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  4 08:54:06 2015 (-0700)
 ;; Version: 2015.08.08
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug  9 15:42:17 2015 (-0700)
+;; Last-Updated: Fri Aug 14 09:17:21 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 179
+;;     Update #: 207
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Keywords: region zone
@@ -52,6 +52,7 @@
 ;;
 ;;    `zzz-buffer-of-markers', `zzz-car-<', `zzz-zone-complement',
 ;;    `zzz-every', `zzz-max', `zzz-min', `zzz-ordered-zone',
+;;    `zzz-remove-if', `zzz-remove-if-other-buffer-markers',
 ;;    `zzz-set-union', `zzz-set-intersection', `zzz-some',
 ;;    `zzz-two-zone-intersection', `zzz-two-zone-union',
 ;;    `zzz-zone-intersection', `zzz-zone-intersection-1',
@@ -62,6 +63,10 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2015/08/14 dadams
+;;     Added: zzz-remove-if, zzz-remove-if-other-buffer-markers.
+;;     zzz-zone-union:
+;;       Added optional arg BUFFER.  Filter with zzz-remove-if-other-buffer-markers.
 ;; 2015/08/09 dadams
 ;;     Added: zzz-zone-complement.
 ;; 2015/08/05 dadams
@@ -161,12 +166,15 @@ list) is the union of the EXTRA information of each zone:
          ,(zzz-max (cadr zone1) (cadr zone2))
          ,@(zzz-set-union (cddr zone1) (cddr zone2)))))
 
-(defun zzz-zone-union (zones)
+(defun zzz-zone-union (zones &optional buffer)
   "Return the union of the zones in list ZONES.
 Each element of ZONES is a list of two zone limits, possibly followed
 by entra info: (LIMIT1 LIMIT2 . EXTRA), where EXTRA is a list.
 
 The limits do not need to be in numerical order.
+
+Each limit can be a number or a marker, but zones with markers for
+buffers other than BUFFER (default: current buffer) are ignored.
 
 The list value returned is sorted by the lower limit of each zone,
 which is its car.
@@ -177,8 +185,9 @@ The resulting zones are then sorted by their cars.
 `zzz-two-zone-union' is then applied recursively to combine
 overlapping zones.  This means also that any EXTRA info is combined
 when zones are merged together."
-  (let* ((flipped-zones  (mapcar #'zzz-ordered-zone zones))
-         (sorted-zones   (sort flipped-zones #'zzz-car-<)))
+  (let* ((filtered-zones  (zzz-remove-if-other-buffer-markers zones))
+         (flipped-zones   (mapcar #'zzz-ordered-zone filtered-zones))
+         (sorted-zones    (sort flipped-zones #'zzz-car-<)))
     (zzz-zone-union-1 sorted-zones)))
 
 (defun zzz-zone-union-1 (zones)
@@ -340,6 +349,26 @@ Return the first non-nil value returned by PREDICATE."
         (when (funcall predicate (setq res  (pop list))) (throw 'zzz-some res)))
       (setq res  nil))
     res))
+
+(defun zzz-remove-if-other-buffer-markers (zones &optional buffer)
+  "Return ZONES, but remove any that use markers for another buffer.
+BUFFER is the buffer to compare with (default: current buffer).
+This is a non-destructive operation: a (shallow) copy is returned."
+  (unless buffer (setq buffer  (current-buffer)))
+  (let (m1 m2)
+    (zzz-remove-if
+     `(lambda (zone)
+        (setq m1  (car zone)
+              m2  (cadr zone))
+        (or (and (markerp m1)  (not (eq ',buffer (marker-buffer m1))))
+            (and (markerp m2)  (not (eq ',buffer (marker-buffer m2))))))
+     zones)))
+
+(defun zzz-remove-if (pred xs)
+  "A copy of list XS with no elements that satisfy predicate PRED."
+  (let ((result  ()))
+    (dolist (x xs) (unless (funcall pred x) (push x result)))
+    (nreverse result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
