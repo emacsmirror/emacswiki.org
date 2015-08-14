@@ -23,6 +23,11 @@ You can always save any preferences (options or faces) by inserting appropriate 
 
 
 
+
+
+
+
+[:RevisitChangedPreferencesAndSaveThem]
 == How Can I Revisit Changed Preferences and Save Them? ==
 
 A very useful command, which is not bound to any key sequence, by default, is `customize-unsaved'.  This command opens a Customize buffer with all of the preferences that you have changed in the current session but not yet saved. You can then look over the changes and save individual preferences.
@@ -32,6 +37,12 @@ Another useful command (also not bound, by default) is `customize-save-customize
 However, it is important to realize that both of these commands work only with the set of changes that Customize recognizes, and '''''not every preference change is recognized by Customize'''''. This is an important ''gotcha!!'' -- see next.
 
 
+
+
+
+
+
+[:CustomizeAndEmacsDoNotPlayWellTogether]
 == Customize and Emacs Don't Always Play Well Together ==
 
 Changes you make outside Customize (e.g., using `setq' for an option) are not always taken into account by Customize.  Usually Customize will recognize that a change has been made, but it normally does not consider such an outside change as equivalent to the corresponding change within Customize.  This is unfortunate: Emacs behaves correctly according to changes that you have made, but Customize does not recognize the change.
@@ -43,18 +54,28 @@ So, why is this important?  Not only because it can help you understand why Cust
 
 
 
+
+
+
+
+
 [:GetCustomizeToRecognizeChangedPreference]
 == How Can I Get Customize to Recognize a Changed Preference? ==
 
 This is the key question for this page. And finding the answer is not as simple as you might expect. The Lisp code that implements Customize is, well, not the easiest code to understand.  So, without further suspense, and at no expense to you, here are the secrets discovered from untold diggings among the ruins of Customize code:
 
-    (put variable 'customized-value (list (custom-quote (eval variable))))
+    (put variable 'customized-value (list (custom-quote (symbol-value variable))))
 
-where `variable' is a symbol that names a variable.
+where `variable' is a symbol that names a variable (user [[option]]).
 
 That's it! That's all you have to add to your Lisp code that sets user option `variable', in order to tell Customize that it has been set to its current value, ##(eval variable)##.  You can do this interactively using command `tell-customize-var-has-changed', which is defined in library <tt>[[frame-cmds.el]]</tt> using the one-liner shown here.
 
 
+
+
+
+
+[:TellCustomizeThatAFaceChanged]
 === How To Tell Customize that a Face Has Changed ===
 
 To tell Customize that the definition of a face has changed (e.g. different foreground color), just add this to your Lisp code that changes a face:
@@ -63,6 +84,11 @@ To tell Customize that the definition of a face has changed (e.g. different fore
     (face-spec-set face spec)
 
 where `face' is a face and `spec' is its new definition (face specification). This code is available as function `doremi-face-set' in library <tt>[[doremi-frm.el]]</tt>.
+
+
+
+
+
 
 
 
@@ -90,6 +116,11 @@ That is useful. Thanks.  Why Customize doesn't ship with ready-made functions fo
       (or (get symbol 'customized-value)
           (get symbol 'customized-face)
           (get symbol 'saved-value)))
+
+
+
+
+
 
 
 
@@ -132,6 +163,9 @@ For that reason, there is a user option, '''`frame-parameters-to-exclude'''', wh
 
 
 
+
+
+[:WhyIsCustomizeSoBlind]
 == So, Why Is Customize So Blind? ==
 
 You might be wondering, "Why doesn't Customize get along better with the rest of Emacs?"  "Why doesn't it pay attention to changes made outside it?"  Don't ask.  But that might become a topic for discussion for a future Emacs release.
