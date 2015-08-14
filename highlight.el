@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 09:51:59 2015 (-0700)
+;; Last-Updated: Fri Aug 14 10:58:17 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3957
+;;     Update #: 3959
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -1790,6 +1790,7 @@ Non-nil optional arg MSGP means show status messages."
                            (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                            buffers))
 
+  ;; No need to use (wide-n-limits nil nil 'ONLY-THIS-BUFFER), since `hlt-unhighlight-region' DTRT.
   (defun hlt-unhighlight-regions (&optional regions face msgp mousep buffers)
     "Apply `hlt-unhighlight-region' to each region in `wide-n-restrictions'.
 Non-interactively, REGIONS is a list of (START END) region limits.
