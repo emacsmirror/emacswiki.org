@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 15 09:35:38 2015 (-0700)
+;; Last-Updated: Sat Aug 15 14:02:53 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3730
+;;     Update #: 3735
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -614,6 +614,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/08/15 dadams
+;;     isearchp-ring-bell-function: Use function ignore as the default - see inline comment.
 ;; 2015/07/22 dadams
 ;;     Added: isearchp-drop-mismatch-regexp-flag, isearchp-toggle-lazy-highlight-cleanup, isearchp-complete,
 ;;            isearchp-complete-past-string.
@@ -1264,10 +1266,12 @@ You can toggle this with `isearchp-toggle-regexp-quote-yank', bound to
   :type 'boolean :group 'isearch-plus)
 
 ;;;###autoload
-(defcustom isearchp-ring-bell-function (if (and (> emacs-major-version 21)
-                                                (require 'echo-bell nil t))
-                                           #'echo-bell
-                                         ring-bell-function)  
+(defcustom isearchp-ring-bell-function #'ignore
+  ;; (if (and (> emacs-major-version 21)  (require 'echo-bell nil t)) #'echo-bell ring-bell-function)
+  ;; `echo-bell' is nice, but if you search in zones (e.g. the region or `isearchp-zones-*') then the
+  ;; cursor can be seen to bounce briefly to a hit outside the search zones, when there are no more
+  ;; hits inside the zones.  This is because of the slight delay to show you the echo-bell message.
+  ;; So for Isearch in general, `ignore' probably makes a better default value.
   "*Function that Isearch+ uses to ring the bell during search, or nil.
 This does not affect the use of `C-g'.
 If nil then use the value of `ring-bell-function'.
