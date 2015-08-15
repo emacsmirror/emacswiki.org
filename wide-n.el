@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 15 15:22:52 2015 (-0700)
+;; Last-Updated: Sat Aug 15 16:58:17 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1089
+;;     Update #: 1108
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -241,7 +241,9 @@
 ;;
 ;; 2015/08/15 dadams
 ;;     wide-n-delete: VAR -> VARIABLE (typo, free var).
-;;     wide-n-push, wide-n-delete: Fixed for 1-based, not 0-based, since removed "all" entry on 8/12.
+;;     wide-n-(delete|push): Fixed for 1-based, not 0-based, since removed "all" entry on 8/12.
+;;     wide-n-read-any-variable: Added REQUIRE-MATCH arg.  Provide both DEFAULT-VALUE and SYMB as defaults.
+;;     wide-n-(delete|push|unite|add-to-union): Provide wide-n-restrictions-var as default when reading var.
 ;; 2015/08/14 dadams
 ;;     Added: wide-n-remove-if-other-buffer-markers, wide-n-remove-if, wide-n-other-buffer-marker-p.
 ;;     wide-n-select-region, wide-n: pop-to-buffer of restriction when appropriate.
@@ -564,7 +566,8 @@ Non-interactively:
 * Non-nil MSGP means echo the region size."
   (interactive (let* ((beg    (region-beginning))
                       (end    (region-end))
-                      (var    (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
+                      (var    (or (and current-prefix-arg
+                                       (wide-n-read-any-variable "Variable: " wide-n-restrictions-var))
                                   wide-n-restrictions-var))
                       (npref  (prefix-numeric-value current-prefix-arg))
                       (nloc   (and current-prefix-arg  (<= npref 0)  (not (boundp var))))
@@ -618,7 +621,7 @@ prefix arg          buffer-local   set `wide-n-restrictions-var'
 
 Non-nil optional arg NOMSG means do not display a status message."
   (interactive
-   (let* ((var     (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
+   (let* ((var     (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: " wide-n-restrictions-var))
                        wide-n-restrictions-var))
           (npref   (prefix-numeric-value current-prefix-arg))
           (nloc    (and current-prefix-arg  (<= npref 0)  (not (boundp var))))
@@ -867,24 +870,27 @@ BUFFER is the buffer to compare with (default: current buffer)."
     (dolist (x xs) (when (funcall pred x) (push x result)))
     (nreverse result)))
 
-;; Like `read-any-variable' in `strings.el', but uses lax completion.
-(defun wide-n-read-any-variable (prompt &optional default-value)
-  "Read name of a variable and return it as a symbol.
-Unlike `read-variable', which reads only user options, this reads the
-name of any variable.  In fact, it reads any symbol, but with
-completion against variable names.
-
-Prompts with arg string PROMPT.  By default, return DEFAULT-VALUE if
+;; Like `read-any-variable' in `strings.el', but passes REQUIRE-MATCH arg to `completing-read'.
+(defun wide-n-read-any-variable (prompt &optional default-value require-match)
+  "Read the name of a variable and return it as a symbol.
+Prompts with string PROMPT.  By default, returns DEFAULT-VALUE if
 non-nil.  If DEFAULT-VALUE is nil and the nearest symbol to the cursor
-is a variable, then return that by default."
-  (let ((symb  (cond ((fboundp 'symbol-nearest-point) (symbol-nearest-point))
-                     ((fboundp 'symbol-at-point) (symbol-at-point))
-                     (t nil)))
-        (enable-recursive-minibuffers t))
+is a variable, then return that by default.
+
+Unlike `read-variable', which reads only user options, this reads the
+name of any variable.  If optional arg REQUIRE-MATCH is nil then it
+reads any symbol, but it provides completion against variable names."
+  (let ((symb                          (cond ((fboundp 'symbol-nearest-point) (symbol-nearest-point))
+                                             ((fboundp 'symbol-at-point) (symbol-at-point))
+                                             (t nil)))
+        (enable-recursive-minibuffers  t))
     (when (and default-value  (symbolp default-value))
       (setq default-value  (symbol-name default-value)))
-    (intern (completing-read prompt obarray 'boundp nil nil 'minibuffer-history
-                             (or default-value  (and symb  (boundp symb)  (symbol-name symb)))
+    (intern (completing-read prompt obarray 'boundp require-match nil 'minibuffer-history
+                             (let ((var-at-pt  (and symb  (boundp symb)  (symbol-name symb))))
+                               (if (and default-value  var-at-pt  (> emacs-major-version 22))
+                                   (list default-value var-at-pt)
+                                 (or default-value  var-at-pt)))
                              t))))
 
 ;; Same as `tap-string-match-p' in `thingatpt+.el' and `icicle-string-match-p' in `icicles-fn.el'.
@@ -953,7 +959,8 @@ Non-interactively:
 * Non-nil MSGP show status message.
 
 You need library `zones.el' for this command."
-  (interactive (let* ((var    (and current-prefix-arg  (wide-n-read-any-variable "Variable: ")))
+  (interactive (let* ((var    (and current-prefix-arg
+                                   (wide-n-read-any-variable "Variable: " wide-n-restrictions-var)))
                       (npref  (prefix-numeric-value current-prefix-arg)))
                  (unless (require 'zones nil t) (error "You need library `zones.el' for this command"))
                  (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
@@ -994,7 +1001,8 @@ Non-interactively:
 * Non-nil MSGP means echo the region size."
   (interactive (let ((beg    (region-beginning))
                      (end    (region-end))
-                     (var    (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
+                     (var    (or (and current-prefix-arg
+                                      (wide-n-read-any-variable "Variable: " wide-n-restrictions-var))
                                  wide-n-restrictions-var))
                      (npref  (prefix-numeric-value current-prefix-arg)))
                  (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
