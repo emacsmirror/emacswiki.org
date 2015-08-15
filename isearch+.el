@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 28 08:16:42 2015 (-0700)
+;; Last-Updated: Sat Aug 15 09:35:38 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3722
+;;     Update #: 3730
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -2551,7 +2551,7 @@ Argument WORD, if t, means search for a sequence of words, ignoring
   (add-hook 'kbd-macro-termination-hook 'isearch-done)
   ;; `isearch-mode' can be made modal (in the sense of not returning to the calling function until
   ;; searching is completed) by entering a recursive-edit and exiting it when done isearching.
-  (when recursive-edit (let ((isearch-recursive-edit t)) (recursive-edit)))
+  (when recursive-edit (let ((isearch-recursive-edit  t)) (recursive-edit)))
   isearch-success)
 
 
@@ -2731,8 +2731,8 @@ With a numeric prefix arg, append that many copies of CHAR."
 ;; (when (> emacs-major-version 21)        ; Emacs 22+
 ;;   (defun isearch-message (&optional c-q-hack ellipsis)
 ;;     ;; Generate and print the message string.
-;;     (let ((cursor-in-echo-area ellipsis)
-;;           (cmds isearch-cmds)
+;;     (let ((cursor-in-echo-area  ellipsis)
+;;           (cmds                 isearch-cmds)
 ;;           succ-msg m)
 ;;       (while (not (isearch-success-state (car cmds))) (pop cmds))
 ;;       (setq succ-msg  (if (equal (isearch-message-state (car isearch-cmds)) isearch-message)
@@ -2749,7 +2749,7 @@ With a numeric prefix arg, append that many copies of CHAR."
 ;;       (when (and (not isearch-success)  (string-match " +$" m))
 ;;         (put-text-property (match-beginning 0) (length m) 'face 'trailing-whitespace m))
 ;;       (setq m  (concat m (isearchp-message-suffix c-q-hack ellipsis)))
-;;       (if c-q-hack m (let ((message-log-max nil)) (message "%s" m))))))
+;;       (if c-q-hack m (let ((message-log-max  nil)) (message "%s" m))))))
 
 
 
@@ -2809,32 +2809,32 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
                                     (error nil)))
     ;; If currently failing, display no ellipsis.
     (unless isearch-success (setq ellipsis  nil))
-    (let ((m (concat (and (not isearch-success)  (propertize "failing " 'face 'minibuffer-prompt))
-                     (and isearch-adjusted  (propertize "pending " 'face 'minibuffer-prompt))
-                     (and isearch-wrapped
-                          (not isearch-wrap-function)
-                          (if isearch-forward (> (point) isearch-opoint) (< (point) isearch-opoint))
-                          (propertize "over" 'face 'isearchp-overwrapped))
-                     (and isearch-wrapped  (propertize "wrapped " 'face 'isearchp-wrapped))
-                     (and isearch-word  (propertize "word " 'face 'isearchp-word))
-                     (and isearch-regexp  (propertize "regexp " 'face 'isearchp-regexp))
-                     (and (boundp 'multi-isearch-next-buffer-current-function) ; Emacs 23+
-                          multi-isearch-next-buffer-current-function
-                          (propertize "multi " 'face 'isearchp-multi))
-                     (and (boundp 'isearch-message-prefix-add) ; Emacs 23+
-                          isearch-message-prefix-add
-                          (propertize isearch-message-prefix-add 'face 'minibuffer-prompt))
-                     (propertize (if nonincremental "search" "I-search") 'face 'minibuffer-prompt)
-                     (and (not isearch-forward)  (propertize " backward" 'face 'minibuffer-prompt))
-                     (propertize (if (and (boundp 'bidi-display-reordering) ; Emacs 24+
-                                          current-input-method)
-                                     ;; Input methods for RTL languages use RTL chars for their
-                                     ;; title.  That messes up display of search text after prompt.
-                                     (bidi-string-mark-left-to-right
-                                      (concat " [" current-input-method-title "]: "))
-                                   ": ")
-                                 'face 'minibuffer-prompt))))
-      (concat (upcase (substring m 0 1)) (substring m 1)))))
+    (let ((mm  (concat (and (not isearch-success)  (propertize "failing " 'face 'minibuffer-prompt))
+                       (and isearch-adjusted  (propertize "pending " 'face 'minibuffer-prompt))
+                       (and isearch-wrapped
+                            (not isearch-wrap-function)
+                            (if isearch-forward (> (point) isearch-opoint) (< (point) isearch-opoint))
+                            (propertize "over" 'face 'isearchp-overwrapped))
+                       (and isearch-wrapped  (propertize "wrapped " 'face 'isearchp-wrapped))
+                       (and isearch-word  (propertize "word " 'face 'isearchp-word))
+                       (and isearch-regexp  (propertize "regexp " 'face 'isearchp-regexp))
+                       (and (boundp 'multi-isearch-next-buffer-current-function) ; Emacs 23+
+                            multi-isearch-next-buffer-current-function
+                            (propertize "multi " 'face 'isearchp-multi))
+                       (and (boundp 'isearch-message-prefix-add) ; Emacs 23+
+                            isearch-message-prefix-add
+                            (propertize isearch-message-prefix-add 'face 'minibuffer-prompt))
+                       (propertize (if nonincremental "search" "I-search") 'face 'minibuffer-prompt)
+                       (and (not isearch-forward)  (propertize " backward" 'face 'minibuffer-prompt))
+                       (propertize (if (and (boundp 'bidi-display-reordering) ; Emacs 24+
+                                            current-input-method)
+                                       ;; Input methods for RTL languages use RTL chars for their
+                                       ;; title.  That messes up display of search text after prompt.
+                                       (bidi-string-mark-left-to-right
+                                        (concat " [" current-input-method-title "]: "))
+                                     ": ")
+                                   'face 'minibuffer-prompt))))
+      (concat (upcase (substring mm 0 1)) (substring mm 1)))))
 
 
 ;; REPLACE ORIGINAL in `isearch.el'.
@@ -2853,33 +2853,33 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
                                     (error nil)))
     ;; If currently failing, display no ellipsis.
     (unless isearch-success (setq ellipsis  nil))
-    (let ((m (concat (and (not isearch-success)  (propertize "failing " 'face 'minibuffer-prompt))
-                     (and isearch-adjusted  (propertize "pending " 'face 'minibuffer-prompt))
-                     (and isearch-wrapped
-                          (not isearch-wrap-function)
-                          (if isearch-forward (> (point) isearch-opoint) (< (point) isearch-opoint))
-                          (propertize "over" 'face 'isearchp-overwrapped))
-                     (and isearch-wrapped  (propertize "wrapped " 'face 'isearchp-wrapped))
-                     (and isearch-word
-                          (propertize (or (and (symbolp isearch-word)
-                                               (get isearch-word 'isearch-message-prefix))
-                                          "word ")
-                                      'face 'isearchp-word))
-                     (and isearch-regexp  (propertize "regexp " 'face 'isearchp-regexp))
-                     (and multi-isearch-next-buffer-current-function
-                          (propertize "multi " 'face 'isearchp-multi))
-                     (and isearch-message-prefix-add
-                          (propertize isearch-message-prefix-add 'face 'minibuffer-prompt))
-                     (propertize (if nonincremental "search" "I-search") 'face 'minibuffer-prompt)
-                     (and (not isearch-forward)  (propertize " backward" 'face 'minibuffer-prompt))
-                     (propertize (if current-input-method
-                                     ;; Input methods for RTL languages use RTL chars for their
-                                     ;; title.  That messes up display of search text after prompt.
-                                     (bidi-string-mark-left-to-right
-                                      (concat " [" current-input-method-title "]: "))
-                                   ": ")
-                                 'face 'minibuffer-prompt))))
-      (concat (upcase (substring m 0 1)) (substring m 1)))))
+    (let ((mm  (concat (and (not isearch-success)  (propertize "failing " 'face 'minibuffer-prompt))
+                       (and isearch-adjusted  (propertize "pending " 'face 'minibuffer-prompt))
+                       (and isearch-wrapped
+                            (not isearch-wrap-function)
+                            (if isearch-forward (> (point) isearch-opoint) (< (point) isearch-opoint))
+                            (propertize "over" 'face 'isearchp-overwrapped))
+                       (and isearch-wrapped  (propertize "wrapped " 'face 'isearchp-wrapped))
+                       (and isearch-word
+                            (propertize (or (and (symbolp isearch-word)
+                                                 (get isearch-word 'isearch-message-prefix))
+                                            "word ")
+                                        'face 'isearchp-word))
+                       (and isearch-regexp  (propertize "regexp " 'face 'isearchp-regexp))
+                       (and multi-isearch-next-buffer-current-function
+                            (propertize "multi " 'face 'isearchp-multi))
+                       (and isearch-message-prefix-add
+                            (propertize isearch-message-prefix-add 'face 'minibuffer-prompt))
+                       (propertize (if nonincremental "search" "I-search") 'face 'minibuffer-prompt)
+                       (and (not isearch-forward)  (propertize " backward" 'face 'minibuffer-prompt))
+                       (propertize (if current-input-method
+                                       ;; Input methods for RTL languages use RTL chars for their
+                                       ;; title.  That messes up display of search text after prompt.
+                                       (bidi-string-mark-left-to-right
+                                        (concat " [" current-input-method-title "]: "))
+                                     ": ")
+                                   'face 'minibuffer-prompt))))
+      (concat (upcase (substring mm 0 1)) (substring mm 1)))))
 
 
 ;;; @@@@@@ Fix for Emacs bug #20234.
