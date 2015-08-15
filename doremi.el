@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul  8 16:42:36 2015 (-0700)
+;; Last-Updated: Sat Aug 15 07:37:57 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1623
+;;     Update #: 1627
 ;; URL: http://www.emacswiki.org/doremi.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat, higher-order
@@ -65,6 +65,10 @@
 ;; of using function `doremi', see files `doremi-frm.el' and
 ;; `doremi-cmd.el'.
 ;;
+;; If you use this library in terminal Emacs (no graphic display) then
+;; some of the features, such as mouse-wheel actions, will not be
+;; available to you.  But the basic features should work.
+;;
 ;; For Emacs prior to release 23, this library requires library
 ;; `ring+.el', which provides extensions to the standard library
 ;; `ring.el' to let you manipulate circular structures.  (Library
@@ -107,6 +111,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/15 dadams
+;;     doremi: If not display-graphic-p, use read-key instead of read-event.  Thx to Felix Esch.
 ;; 2015/07/08 dadams
 ;;     doremi: Use %S, not %s in error messages for unknown values.
 ;; 2013/06/06 dadams
@@ -383,7 +389,11 @@ For examples of using `doremi', see the source code of libraries
       (unless enum (setq prompt  (concat prompt " (modifier key: faster)")))
       (setq prompt       (format (concat prompt ".  Value now: %s") init-val)
             save-prompt  prompt)
-      (while (progn (setq evnt    (read-event prompt)
+      (while (progn (setq evnt    (if (if (fboundp 'display-graphic-p)
+                                          (display-graphic-p)
+                                        window-system)
+                                      (read-event prompt)
+                                    (read-key prompt))
                           prompt  nil)
                     (or (member evnt keys)
                         (and (consp evnt)
