@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  4 08:54:06 2015 (-0700)
 ;; Version: 2015.08.08
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 09:17:21 2015 (-0700)
+;; Last-Updated: Sat Aug 15 14:34:39 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 207
+;;     Update #: 215
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Keywords: region zone
@@ -160,7 +160,9 @@ Assumes that each zone is ordered (its car <= its cadr).
 The cddr of a non-nil result (its EXTRA information, which must be a
 list) is the union of the EXTRA information of each zone:
 
- (zzz-set-union (cddr zone1) (cddr zone2))"
+ (zzz-set-union (cddr zone1) (cddr zone2))
+
+This is a non-destructive operation: The result is a new list."
   (and (zzz-zones-overlap-p zone1 zone2)
        `(,(zzz-min (car zone1)  (car zone2))
          ,(zzz-max (cadr zone1) (cadr zone2))
@@ -176,8 +178,8 @@ The limits do not need to be in numerical order.
 Each limit can be a number or a marker, but zones with markers for
 buffers other than BUFFER (default: current buffer) are ignored.
 
-The list value returned is sorted by the lower limit of each zone,
-which is its car.
+Returns a new list, which is sorted by the lower limit of each zone,
+which is its car.  (This is a non-destructive operation.)
 
 Each zone in ZONES is first ordered, so that its car <= its cadr.
 The resulting zones are then sorted by their cars.
@@ -230,7 +232,9 @@ Assumes that each zone is ordered (its car <= its cadr).
 The cddr of a non-nil result (its EXTRA information) is
 the intersection of the EXTRA information of each zone:
 
- (zzz-set-intersection (cddr zone1) (cddr zone2))"
+ (zzz-set-intersection (cddr zone1) (cddr zone2))
+
+This is a non-destructive operation: The result is a new list."
   (and (zzz-zones-overlap-p zone1 zone2)
        `(,(zzz-max (car zone1)  (car zone2))
          ,(zzz-min (cadr zone1) (cadr zone2))
@@ -243,8 +247,8 @@ by entra info: (LIMIT1 LIMIT2 . EXTRA), where EXTRA is a list.
 
 The limits do not need to be in numerical order.
 
-The list value returned is sorted by the lower limit of each zone,
-which is its car.
+Returns a new list, which is sorted by the lower limit of each zone,
+which is its car.  (This is a non-destructive operation.)
 
 Each zone in ZONES is first ordered, so that its car <= its cadr.
 The resulting zones are then sorted by their cars.
@@ -267,7 +271,7 @@ when zones are merged together."
 (defun zzz-set-union (list1 list2)
   "Combine LIST1 and LIST2 using a set-union operation.
 The result list contains all items that appear in either LIST1 or
-LIST2.  This is a non-destructive function; it copies the data if
+LIST2.  This is a non-destructive function: it copies the data if
 necessary."
   (cond ((null list1)         list2)
         ((null list2)         list1)
