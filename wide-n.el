@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 15 09:21:16 2015 (-0700)
+;; Last-Updated: Sat Aug 15 15:22:52 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1049
+;;     Update #: 1089
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -387,9 +387,10 @@ limits.")
 (defun wide-n-restrictions ()
   "Value of current `wide-n-restrictions-var' variable, in latest format.
 If the value has elements of old format, (NUM START . END), it is
-converted to use the new format, with elements (NUM START END).  This
-is a destructive operation.  The value of the variable is updated to
-use the new format, and that value is returned."
+converted to use the new format, with elements (NUM START END).
+
+This is a destructive operation.  The value of the variable is updated
+to use the new format, and that value is returned."
   (let ((oldval  (symbol-value wide-n-restrictions-var))
         (newval  ()))
     (dolist (elt  oldval)
@@ -441,10 +442,13 @@ multiple buffers."
         (when msgp
           (message "Region #%d restored%s" (caar val) (if other-buf (format " in `%s'" other-buf) "")))))))
 
+;; This is a non-destructive operation.
+;;
 ;;;###autoload
 (defun wide-n (arg &optional msgp)
   "Widen to a previous buffer restriction (narrowing).
 The restrictions are those in the current `wide-n-restrictions-var'.
+
 With no prefix arg, widen to the previous restriction.
 With a plain prefix arg (`C-u'), widen completely.
 With a zero  prefix arg (`C-0'), widen completely and reset (empty)
@@ -534,6 +538,9 @@ Put `wide-n' on `mouse-2' for the lighter suffix."
   "Add a restriction from START to END to those of VARIABLE.
 Return the new value of VARIABLE.
 
+This is a destructive operation: The list structure of the variable
+value can be modified.
+
 VARIABLE defaults to the value of `wide-n-restrictions-var'.
 START and END are as for `narrow-to-region'.
 
@@ -577,7 +584,7 @@ Non-interactively:
     (setq sans-id  (list mrk1 mrk2)
           id-cons  (rassoc sans-id val)
           id       (if id-cons (car id-cons) (1+ (length val))) ; 1-based, not 0-based.
-          val      (set var (wide-n-rassoc-delete-all sans-id val)))
+          val      (set var (wide-n-rassoc-delete-all sans-id val))) ; Destructive operation.
     (unless (and (= mrk1 1)  (= mrk2 (1+ (buffer-size))))
       (set var `((,id ,mrk1 ,mrk2) ,@val)))
     (when msgp (message "%s region: %d to %d" (if (interactive-p) "Recorded" "Narrowed")
@@ -589,6 +596,9 @@ Non-interactively:
   "Delete the restriction(s) numbered N from VARIABLE.
 This renumbers the remaining restrictions.
 Return the new value of VARIABLE.
+
+This is a destructive operation: The list structure of the variable
+value can be modified.
 
 You are prompted for the number N.
 VARIABLE defaults to the value of `wide-n-restrictions-var'.
@@ -643,7 +653,7 @@ RESTRICTION is a list of an identifier (a number) and two buffer
 positions (numbers, markers, or readable-marker objects).  Positions
 that are numbers or readable-marker objects are converted to markers.
 
-This is a nondestructive operation: it returns a new cons."
+This is a non-destructive operation: it returns a new list."
   (let ((ii   1)
         buf posn)
     (while (<  ii 3)
@@ -655,6 +665,8 @@ This is a nondestructive operation: it returns a new cons."
 
 (defun wide-n-marker-from-object (object &optional buffer)
   "Return equivalent marker for OBJECT.
+This is a non-destructive operation: OBJECT is not modified.
+
 If OBJECT is a marker then return it.
 If it is a number then return (copy-marker OBJECT).
 If it is a readable-marker sexp then return an equivalent real marker.
@@ -686,6 +698,8 @@ OBJECT is returned."
   "Return a readable-marker object equivalent to NUMBER-OR-MARKER, or nil.
 Return nil if NUMBER-OR-MARKER is not `number-or-marker-p'.
 
+This is a non-destructive operation.
+
 Optional arg BUFFER is a buffer or a buffer name (default: name of
 current buffer).  It is used as the marker buffer when
 `number-or-marker-p' is a number.
@@ -694,7 +708,7 @@ A readable-marker object is a sexp of form (marker BUFFER POSITION),
 where BUFFER is a buffer name (string) and POSITION is buffer
 position (number)."
   (let* ((buf   (get-buffer (or buffer  (current-buffer))))
-         (buf   (and buf (buffer-name buf)))
+         (buf   (and buf  (buffer-name buf)))
          (mrkr  (and (number-or-marker-p number-or-marker)
                      (if (markerp number-or-marker)
                          number-or-marker
@@ -718,9 +732,9 @@ That is, non-nil means that VALUE has the form of `wide-n-restrictions'."
 
 (defun wide-n-rassoc-delete-all (value alist)
   "Delete from ALIST all elements whose cdr is `equal' to VALUE.
-This is a destructive operation.
+Elements of ALIST that are not conses are ignored.
 Return the modified alist.
-Elements of ALIST that are not conses are ignored."
+This is a destructive operation."
   (while (and (consp (car alist))  (equal (cdar alist) value)) (setq alist  (cdr alist)))
   (let ((tail  alist)
         tail-cdr)
@@ -732,16 +746,44 @@ Elements of ALIST that are not conses are ignored."
 
 
 (defun wide-n-renumber (&optional variable)
-  "Renumber restrictions of this buffer in current `wide-n-restrictions-var'."
+  "Renumber restrictions of this buffer in current `wide-n-restrictions-var'.
+This is a destructive operation: The list structure of the variable
+value can be modified."
   (let* ((var   (or variable  wide-n-restrictions-var))
          (orig  (symbol-value var)))
     (set var ())
     (dolist (nn  orig) (wide-n-push (cadr nn) (car (cddr nn)) var))))
 
+;;; Non-destructive version.
+;;;
+;;; (defun wide-n-limits-in-bufs (buffers &optional variable)
+;;;   "Return a list of all `wide-n-limits' for each buffer in BUFFERS.
+;;; That is, return a list of all currently recorded buffer narrowings for
+;;; BUFFERS.  If BUFFERS is nil then return the narrowings for the current
+;;; buffer.
+
+;;; This is a non-destructive operation: The list returned is independent
+;;; of the `wide-n-limits' list in each of the buffers.
+
+;;; Optional arg VARIABLE is the restrictions variable to use.  If nil,
+;;; use the value of `wide-n-restrictions-var'.  The variable is evaluated
+;;; in each buffer (or in the current buffer, if BUFFERS is nil)."
+;;;   (let ((limits  ()))
+;;;     (dolist (buf  (or (reverse buffers)  (list (current-buffer)))) ; Reverse so we keep the order.
+;;;       (with-current-buffer buf
+;;;         (setq limits  (append (wide-n-limits (symbol-value (or variable  wide-n-restrictions-var))
+;;;                                              buf
+;;;                                              'ONLY-THIS-BUFFER)
+;;;                               limits))))
+;;;     limits))
+
 (defun wide-n-limits-in-bufs (buffers &optional variable)
   "Return a list of all `wide-n-limits' for each buffer in BUFFERS.
 That is, return a list of all recorded buffer narrowings for BUFFERS.
 If BUFFERS is nil then return the narrowings for the current buffer.
+
+This is a destructive operation: The list returned can have as
+sublists the `wide-n-limits' lists of BUFFERS.
 
 Optional arg VARIABLE is the restrictions variable to use.  If nil,
 use the value of `wide-n-restrictions-var'.  The variable is evaluated
@@ -756,9 +798,13 @@ in each buffer (or in the current buffer, if BUFFERS is nil)."
 
 (defun wide-n-limits (&optional restrictions buffer only-one-buffer-p)
   "Return a list like RESTRICTIONS, but with no identifiers.
-That is, return a list of zones, (LIMIT1 LIMIT2).  Each limit can be a
-number or a marker (but see ONLY-ONE-BUFFER-P).  The conses are new -
-they do not share with any conses with RESTRICTIONS.
+That is, return a list of zones, (LIMIT1 LIMIT2).
+
+This is a non-destructive operation: A new list is returned.
+
+Each limit can be a number or a marker (but see ONLY-ONE-BUFFER-P).
+The conses are new - they do not share with any conses with
+RESTRICTIONS.
 
 Optional input list RESTRICTIONS has the same structure as
 `wide-n-restrictions'.  If RESTRICTIONS is nil then the variable that
@@ -881,6 +927,8 @@ ZONES is a list of zones as in `zones.el': Each zone has the form
 \(LIMIT1 LIMIT2 . EXTRA), where each of the limits is a buffer
 position (a number or marker) and EXTRA is a list.
 
+This is a non-destructive operation.  A new list is returned.
+
 \(wide-n-restrictions-from-zones (wide-n-limits)) = wide-n-restrictions
 and
 \(wide-n-limits (wide-n-restrictions-from-zones ZONES)) = ZONES"
@@ -890,6 +938,7 @@ and
 ;;;###autoload
 (defun wide-n-unite (&optional variable msgp)
   "Merge the restrictions of VARIABLE to form their union.
+A non-destructive operation: The new value of VARIABLE is a new list.
 Return the new value of VARIABLE.
 
 VARIABLE defaults to the value of `wide-n-restrictions-var'.
@@ -927,6 +976,9 @@ You need library `zones.el' for this command."
   "Add a restriction from START to END to those of VARIABLE, and unite.
 Uses `wide-n-push' to add the region, then applies `wide-n-unite'.
 Return the new value of VARIABLE.
+
+This is a destructive operation: The list structure of the variable
+value can be modified.
 
 VARIABLE defaults to the value of `wide-n-restrictions-var'.
 START and END are as for `narrow-to-region'.
@@ -984,7 +1036,10 @@ Non-interactively:
 ;;
 (defadvice narrow-to-region (before push-wide-n-restrictions activate)
   "Push the region limits to the current `wide-n-restrictions-var'.
-You can use `C-x n x' to widen to a previous buffer restriction."
+You can use `C-x n x' to widen to a previous buffer restriction.
+
+This is a destructive operation. The list structure of the variable
+value can be modified."
   (when (or (interactive-p)  wide-n-push-anyway-p)
     (wide-n-push (ad-get-arg 0) (ad-get-arg 1) nil nil nil 'MSG))) ; Args START and END.
 
@@ -997,7 +1052,10 @@ You can use `C-x n x' to widen to a previous buffer restriction."
 (defun narrow-to-defun (&optional arg)
   "Make text outside current defun invisible.
 The visible defun is the one that contains point or follows point.
-Optional ARG is ignored."
+Optional ARG is ignored.
+
+This is a destructive operation. The list structure of the variable
+that is the value of `wide-n-restrictions-var' can be modified."
   (interactive)
   (save-excursion
     (widen)
@@ -1032,7 +1090,10 @@ Optional ARG is ignored."
 (defun narrow-to-page (&optional arg)
   "Make text outside current page invisible.
 A numeric arg specifies to move forward or backward by that many pages,
-thus showing a page other than the one point was originally in."
+thus showing a page other than the one point was originally in.
+
+This is a destructive operation. The list structure of the variable
+that is the value of `wide-n-restrictions-var' can be modified."
   (interactive "P")
   (setq arg  (if arg (prefix-numeric-value arg) 0))
   (save-excursion
