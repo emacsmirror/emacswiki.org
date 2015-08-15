@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 15:31:11 2015 (-0700)
+;; Last-Updated: Sat Aug 15 09:21:16 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1043
+;;     Update #: 1049
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -239,6 +239,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/15 dadams
+;;     wide-n-delete: VAR -> VARIABLE (typo, free var).
+;;     wide-n-push, wide-n-delete: Fixed for 1-based, not 0-based, since removed "all" entry on 8/12.
 ;; 2015/08/14 dadams
 ;;     Added: wide-n-remove-if-other-buffer-markers, wide-n-remove-if, wide-n-other-buffer-marker-p.
 ;;     wide-n-select-region, wide-n: pop-to-buffer of restriction when appropriate.
@@ -573,7 +576,7 @@ Non-interactively:
     (move-marker mrk2 end)
     (setq sans-id  (list mrk1 mrk2)
           id-cons  (rassoc sans-id val)
-          id       (if id-cons (car id-cons) (length val))
+          id       (if id-cons (car id-cons) (1+ (length val))) ; 1-based, not 0-based.
           val      (set var (wide-n-rassoc-delete-all sans-id val)))
     (unless (and (= mrk1 1)  (= mrk2 (1+ (buffer-size))))
       (set var `((,id ,mrk1 ,mrk2) ,@val)))
@@ -608,8 +611,8 @@ Non-nil optional arg NOMSG means do not display a status message."
    (let* ((var     (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
                        wide-n-restrictions-var))
           (npref   (prefix-numeric-value current-prefix-arg))
-          (nloc   (and current-prefix-arg  (<= npref 0)  (not (boundp var))))
-          (setv   (and current-prefix-arg  (or (consp current-prefix-arg)  (= npref 0))))
+          (nloc    (and current-prefix-arg  (<= npref 0)  (not (boundp var))))
+          (setv    (and current-prefix-arg  (or (consp current-prefix-arg)  (= npref 0))))
           ;; Repeat all of the variable tests and actions, since we need to have the value, for its length.
           (IGNORE  (unless nloc (make-local-variable var)))
           (IGNORE  (when setv (setq wide-n-restrictions-var var)))
@@ -618,17 +621,17 @@ Non-nil optional arg NOMSG means do not display a status message."
           (IGNORE  (unless (wide-n-restrictions-p val)
                      (error "Not a buffer-restrictions variable: `%s', value: `%S'" var val)))
           (IGNORE  (unless val (error "No restrictions - variable `%s' is empty" var)))
-          (len     (1- (length val)))
+          (len     (length val))
           (num     (if (= len 1) 1 (read-number (format "Delete restriction number (1 to %d): " len)))))
      (while (or (< num 1)  (> num len))
        (setq num  (read-number (format "Number must be between 1 and %d: " len))))
      (list num var nloc setv t)))
   (unless variable (setq variable  wide-n-restrictions-var))
-  (unless (or not-buf-local-p  (boundp var)) (make-local-variable var))
-  (when set-var-p (setq wide-n-restrictions-var var))
+  (unless (or not-buf-local-p  (boundp variable)) (make-local-variable variable))
+  (when set-var-p (setq wide-n-restrictions-var variable))
   (let ((val  (symbol-value variable)))
     (unless (wide-n-restrictions-p val) (error "Not a buffer-restrictions variable: `%s', value: `%S'" var val))
-    (unless val (error "No restrictions - variable `%s' is empty" var))
+    (unless val (error "No restrictions - variable `%s' is empty" variable))
     (set variable (assq-delete-all n val)))
   (wide-n-renumber variable)
   (when msgp (message "Deleted restriction number %d" n))
