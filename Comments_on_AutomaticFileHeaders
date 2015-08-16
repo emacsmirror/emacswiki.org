@@ -9,3 +9,28 @@ In python-mode, when doing make-revision I get "Symbol's value as a variable is 
 
 -- DrewAdams 2014-01-13 16:19 UTC
 
+
+----
+
+Hello,
+
+Is it possible to add sections like in http://www.emacswiki.org/emacs/header2.el, that are self-updating at each save?
+
+<code>
+;; Commands (interactive functions) defined here:
+;;
+;;
+;; Other functions defined here:
+;;
+;;
+;; User options (variables) defined here:
+;;
+;;
+;; Other variables defined here:
+;;
+</code>
+
+Thank you so much for header2.
+
+-- priyadarshan 2015-08-16 19:00 UTC
+
