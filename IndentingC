@@ -5,7 +5,7 @@ See also: TurnAllIndentingOff
 
 == CC mode for C, C++, Java ==
 
-The CC modes (C, C++, Java, etc.) have their own manual, the [http://cc-mode.sourceforge.net/html-manual/index.html CC mode manual]. Read it. It's good for you.
+The CC modes (C, C++, Java, etc.) have their own manual, the [http://www.gnu.org/software/emacs/manual/html_node/ccmode/ CC mode manual]. Read it. It's good for you.
 
 If you just want to '''change the indentation level''', set `c-basic-offset':
 
