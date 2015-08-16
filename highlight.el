@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 10:58:17 2015 (-0700)
+;; Last-Updated: Sun Aug 16 13:11:01 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3959
+;;     Update #: 3961
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -46,10 +46,11 @@
 ;;
 ;;  (@> "Things Defined Here")
 ;;  (@> "Documentation")
-;;    (@> "Library `facemenu+.el' Puts Highlight on the Menu")
+;;    (@> "Libraries `facemenu+.el' and `mouse3.el' put Highlight on the Menu")
 ;;    (@> "User Options `hlt-use-overlays-flag' and `hlt-overlays-priority'")
 ;;    (@> "Temporary or Permanent Highlighting")
 ;;    (@> "Commands")
+;;    (@> "Copy and Yank (Paste) Text Properties")
 ;;    (@> "User Option `hlt-act-on-any-face-flag'")
 ;;    (@> "Hiding and Showing Text")
 ;;      (@> "Hiding and Showing Text - Icicles Multi-Commands")
