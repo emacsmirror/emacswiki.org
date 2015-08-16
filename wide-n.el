@@ -8,13 +8,13 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 15 16:58:17 2015 (-0700)
+;; Last-Updated: Sun Aug 16 11:11:08 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1108
+;;     Update #: 1134
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
-;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -239,6 +239,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/16 dadams
+;;     Emacs 20 compatibility too.
+;;     wide-n: If only one narrowing and buffer is narrowed, widen.  (Do not widen if already widened.)
+;;             Protect Emacs 20 from wide-n-highlight-lighter call with (boundp 'mode-line-modes).
+;;     narrow-to-region: Explicitly provide START and END for Emacs 20, because they are nil.
 ;; 2015/08/15 dadams
 ;;     wide-n-delete: VAR -> VARIABLE (typo, free var).
 ;;     wide-n-(delete|push): Fixed for 1-based, not 0-based, since removed "all" entry on 8/12.
@@ -365,7 +370,8 @@
 
 
 ;; Quiet the byte-compiler.
-(defvar narrow-map)
+(defvar mode-line-modes)                ; Emacs 22+
+(defvar narrow-map)                     ; Emacs 23+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -462,17 +468,20 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
   (interactive "P\np")
   (let* ((var  wide-n-restrictions-var)
          (val  (symbol-value var)))
-    (unless (cadr val) (error "No previous narrowing"))
-    (cond ((or (null (cdr val))  (consp arg))
+    (unless val (error "No previous narrowing"))
+    (cond ((or (consp arg)  (and (null (cdr val))
+                                 (/= (- (point-max) (point-min)) (buffer-size)))) ; = `buffer-narrowed-p'.
            (widen)
-           (setq wide-n-lighter-narrow-part  "")
-           (wide-n-highlight-lighter)
+           (when (boundp 'mode-line-modes)
+             (setq wide-n-lighter-narrow-part  "")
+             (wide-n-highlight-lighter))
            (when msgp (message "No longer narrowed")))
           ((= (prefix-numeric-value arg) 0)
            (set var ())
            (widen)
-           (setq wide-n-lighter-narrow-part  "")
-           (wide-n-highlight-lighter)
+           (when (boundp 'mode-line-modes)
+             (setq wide-n-lighter-narrow-part  "")
+             (wide-n-highlight-lighter))
            (when msgp (message "No longer narrowed; no more restrictions")))
           (t
            (setq arg  (prefix-numeric-value arg))
@@ -501,7 +510,7 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
                               (setq other-buf  (marker-buffer other-buf)))
                      (pop-to-buffer other-buf))
                    (narrow-to-region beg end)
-                   (wide-n-highlight-lighter))
+                   (when (boundp 'mode-line-modes) (wide-n-highlight-lighter)))
                (args-out-of-range
                 (set var  (cdr val))
                 (error "Restriction removed because of invalid limits"))
@@ -966,8 +975,7 @@ You need library `zones.el' for this command."
                  (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
                  (when (and current-prefix-arg  (<= npref 0)) (setq wide-n-restrictions-var var))
                  (list var t)))
-  (let* ((IGNORE      (unless (require 'zones nil t)
-                        (error "You need library `zones.el' for this command")))
+  (let* ((IGNORE      (unless (require 'zones nil t) (error "You need library `zones.el' for this command")))
          (var         (or variable  wide-n-restrictions-var))
          (IGNORE      (unless (boundp var) (set var ())))
          (val         (symbol-value var))
@@ -1049,7 +1057,11 @@ You can use `C-x n x' to widen to a previous buffer restriction.
 This is a destructive operation. The list structure of the variable
 value can be modified."
   (when (or (interactive-p)  wide-n-push-anyway-p)
-    (wide-n-push (ad-get-arg 0) (ad-get-arg 1) nil nil nil 'MSG))) ; Args START and END.
+    (let ((start  (ad-get-arg 0))
+          (end    (ad-get-arg 1)))
+      (unless start (setq start  (region-beginning))) ; Needed for Emacs 20.
+      (unless end   (setq end    (region-end)))
+      (wide-n-push start end nil nil nil 'MSG))))
 
 
 ;; REPLACE ORIGINAL in `lisp.el'.
