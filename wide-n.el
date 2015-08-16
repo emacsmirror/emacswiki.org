@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2014.08.13
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 16 11:11:08 2015 (-0700)
+;; Last-Updated: Sun Aug 16 11:18:01 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1134
+;;     Update #: 1140
 ;; URL: http://www.emacswiki.org/wide-n.el
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
 ;; Keywords: narrow restriction widen region zone
@@ -137,10 +137,11 @@
 ;;    another important use case is performing actions on a set of
 ;;    buffer zones, including perhaps zones from different buffers.
 ;;
-;;    `C-x n r' (command `wide-n-select-region-repeat') does this,
-;;    performing the action of selecting a zone in
-;;    `wide-n-restrictions' as the region.  Repeat to cycle among the
-;;    zones: `C-x n r r r...'.
+;;    `C-x n r' does this (command `wide-n-select-region-repeat', or
+;;    `wide-n-select-region' if Emacs < 22), performing the action of
+;;    selecting a zone in `wide-n-restrictions' as the region.  For
+;;    Emacs 22+, you can repeat to cycle among the zones: `C-x n r r
+;;    r...'.
 ;;
 ;;    You can define your own commands that iterate over the buffers
 ;;    and then over the entries in `wide-n-restrictions' (or some
@@ -244,6 +245,7 @@
 ;;     wide-n: If only one narrowing and buffer is narrowed, widen.  (Do not widen if already widened.)
 ;;             Protect Emacs 20 from wide-n-highlight-lighter call with (boundp 'mode-line-modes).
 ;;     narrow-to-region: Explicitly provide START and END for Emacs 20, because they are nil.
+;;     Bind C-x n r to wide-n-select-region, not wide-n-select-region-repeat, if < Emacs 22.
 ;; 2015/08/15 dadams
 ;;     wide-n-delete: VAR -> VARIABLE (typo, free var).
 ;;     wide-n-(delete|push): Fixed for 1-based, not 0-based, since removed "all" entry on 8/12.
@@ -1030,7 +1032,9 @@ Non-interactively:
          (define-key narrow-map "h"  'hlt-highlight-regions))
        (when (fboundp 'hlt-highlight-regions)
          (define-key narrow-map "H"  'hlt-highlight-regions-in-buffers))
-       (define-key narrow-map "r"    'wide-n-select-region-repeat)
+       (define-key narrow-map "r"    (if (> emacs-major-version 21)
+                                         'wide-n-select-region-repeat
+                                       'wide-n-select-region))
        (define-key narrow-map "s"    'wide-n-push)
        (define-key narrow-map "S"    'wide-n-add-to-union)
        (define-key narrow-map "u"    'wide-n-unite)
@@ -1041,7 +1045,9 @@ Non-interactively:
          (define-key ctl-x-map "nh"  'hlt-highlight-regions))
        (when (fboundp 'hlt-highlight-regions)
          (define-key ctl-x-map "nH"  'hlt-highlight-regions-in-buffers))
-       (define-key ctl-x-map "nr"    'wide-n-select-region-repeat)
+       (define-key ctl-x-map "nr"    (if (> emacs-major-version 21)
+                                         'wide-n-select-region-repeat
+                                       'wide-n-select-region))
        (define-key ctl-x-map "ns"    'wide-n-push)
        (define-key ctl-x-map "nS"    'wide-n-add-to-union)
        (define-key ctl-x-map "nu"    'wide-n-unite)
