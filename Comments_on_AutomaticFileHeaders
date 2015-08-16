@@ -13,9 +13,7 @@ In python-mode, when doing make-revision I get "Symbol's value as a variable is 
 ----
 
 Hello,
-
 Is it possible to add sections like in http://www.emacswiki.org/emacs/header2.el, that are self-updating at each save?
-
 <code>
 ;; Commands (interactive functions) defined here:
 ;;
