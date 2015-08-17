@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Wed Aug 12 13:33:43 2015 (-0700)
+;; Last-Updated: Sun Aug 16 17:10:46 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7179
+;;     Update #: 7199
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -111,7 +111,8 @@
 ;;    (+)`icicle-Info-index-20', (+)`icicle-Info-menu',
 ;;    (+)`icicle-Info-menu-cmd', `icicle-Info-virtual-book',
 ;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-load-library',
-;;    (+)`icicle-map', `icicle-next-font-lock-keywords',
+;;    (+)`icicle-map', (+)`icicle-narrow',
+;;    `icicle-next-font-lock-keywords',
 ;;    `icicle-next-font-lock-keywords-repeat',
 ;;    `icicle-next-visible-thing', `icicle-non-whitespace-string-p',
 ;;    (+)`icicle-object-action', (+)`icicle-occur',
@@ -166,8 +167,7 @@
 ;;    (+)`icicle-show-only-faces', (+)`icicle-synonyms',
 ;;    (+)`icicle-tag-a-file', (+)`icicle-tags-search',
 ;;    (+)`icicle-untag-a-file', (+)`icicle-vardoc',
-;;    (+)`icicle-where-is', (+)`icicle-wide-n', (+)`synonyms',
-;;    (+)`what-which-how'.
+;;    (+)`icicle-where-is', (+)`synonyms', (+)`what-which-how'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -221,7 +221,7 @@
 ;;    `icicle-insert-thesaurus-entry-cand-fn',
 ;;    `icicle-invisible-face-p', `icicle-invisible-p',
 ;;    `icicle-keys+cmds-w-prefix', `icicle-make-color-candidate',
-;;    `icicle-marker+text', `icicle-markers',
+;;    `icicle-marker+text', `icicle-markers', `icicle-narrow-action',
 ;;    `icicle-next-single-char-property-change',
 ;;    `icicle-next-visible-thing-1', `icicle-next-visible-thing-2',
 ;;    `icicle-next-visible-thing-and-bounds',
@@ -260,8 +260,8 @@
 ;;    `icicle-search-thing-scan', `icicle-search-where-arg',
 ;;    `icicle-set-completion-methods-for-command',
 ;;    `icicle-things-alist', `icicle-this-command-keys-prefix',
-;;    `icicle-update-f-l-keywords', `icicle-wide-n-action',
-;;    `icicle-widget-color-complete', `icicle-WYSIWYG-font'.
+;;    `icicle-update-f-l-keywords', `icicle-widget-color-complete',
+;;    `icicle-WYSIWYG-font'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -445,8 +445,8 @@
 (defvar icicle-track-pt)                ; In `icicle-insert-thesaurus-entry'
 (defvar imenu-after-jump-hook)          ; In `imenu.el' (Emacs 22+)
 (defvar replace-count)                  ; In `replace.el'
-(defvar wide-n-lighter-narrow-part)     ; In `wide-n.el'
-(defvar wide-n-restrictions)            ; In `wide-n.el'
+(defvar zz-izones)                      ; In `zones.el'
+(defvar zz-lighter-narrowing-part)      ; In `zones.el'
 
 ;; (< emacs-major-version 21)
 (defvar tooltip-mode)                   ; In `tooltip.el'
@@ -8425,8 +8425,8 @@ candidates to packages of different kinds."
             (Info-make-manuals-xref (concat (symbol-name package) " package")
                                     nil nil (not (called-interactively-p 'interactive)))))))))
 
-(defun icicle-wide-n ()
-  "Choose a restriction and apply it.  Or choose `No restriction' to widen.
+(defun icicle-narrow ()
+  "Choose a restriction and apply it.
 During completion you can use these keys\\<minibuffer-local-completion-map>:
 
 `C-RET'   - Goto marker named by current completion candidate
@@ -8445,22 +8445,21 @@ Use `mouse-2', `RET', or `S-RET' to choose a candidate as the final
 destination, or `C-g' to quit.  This is an Icicles command - see
 command `icicle-mode'."
   (interactive)
-  (unless (featurep 'wide-n) (error "You need library `wide-n.el' for this command"))
-  (unless (cadr wide-n-restrictions) (error "No restrictions - you have not narrowed this buffer"))
-  (if (< (length wide-n-restrictions) 3) ; Only one restriction.  If narrowed widen, else apply the restriction.
-      (wide-n 1 'MSG)
+  (unless (featurep 'zones) (error "You need library `zones.el' for this command"))
+  (unless zz-izones (error "No previous narrowing"))
+  (if (< (length zz-izones) 2) ; Only one restriction.  If narrowed widen, else apply the restriction.
+      (zz-narrow 1 'MSG)
     (let ((icicle-sort-comparer            'icicle-special-candidates-first-p)
           (icicle-delete-candidate-object  (lambda (cand)
                                              (let ((name.res  (icicle-get-alist-candidate cand)))
                                                (with-current-buffer icicle-pre-minibuffer-buffer
-                                                 (setq wide-n-restrictions  (delete (cdr name.res)
-                                                                                    wide-n-restrictions))
-                                                 (wide-n-renumber))))))
+                                                 (setq zz-izones  (delete (cdr name.res) zz-izones))
+                                                 (zz-izones-renumber))))))
       (icicle-apply (let ((ns  ())
                           beg end name)
                       (save-restriction
                         (widen)
-                        (dolist (res  wide-n-restrictions)
+                        (dolist (res  zz-izones)
                           (setq beg   (marker-position (cadr res))
                                 end   (marker-position (car (cddr res)))
                                 name  (format "%d-%d, %s" beg end (buffer-substring beg end))
@@ -8469,20 +8468,19 @@ command `icicle-mode'."
                                 name  (format "%s\n" name))
                           (push `(,name ,@res) ns)))
                       ns)
-                    #'icicle-wide-n-action
+                    #'icicle-narrow-action
                     'NOMSG))))
 
-(defun icicle-wide-n-action (cand)
-  "Action function for `icicle-wide-n': Narrow region to candidate CAND.
-If CAND has car \"No restriction\" then widen it instead."
+(defun icicle-narrow-action (cand)
+  "Action function for `icicle-narrow': Narrow region to candidate CAND."
   (with-current-buffer icicle-pre-minibuffer-buffer
     (condition-case err
-        (let ((wide-n-push-anyway-p  t))
+        (let ((zz-izone-add-anyway-p  t))
           (narrow-to-region (cadr cand) (car (cddr cand)))
-          (wide-n-highlight-lighter)
-          (message wide-n-lighter-narrow-part))
+          (zz-narrowing-lighter)
+          (message zz-lighter-narrowing-part))
       (args-out-of-range
-       (setq wide-n-restrictions  (cdr wide-n-restrictions))
+       (setq zz-izones  (cdr zz-izones))
        (error "Restriction removed because of invalid limits"))
       (error (error "%s" (error-message-string err))))))
 
