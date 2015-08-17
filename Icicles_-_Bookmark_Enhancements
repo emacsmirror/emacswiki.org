@@ -244,7 +244,7 @@ the region is activated (provided option
 
 * With a ''multiple plain'' prefix argument ('''`C-u C-u''''), `C-x C-x' jumps to a region
   bookmark that you choose using completion, and activates it.  (See also '''Icicles''' tripping command
-'''`icicle-wide-n'''', which lets you trip among your [[buffer]]
+'''`icicle-narrow'''', which lets you trip among your [[buffer]]
 [[narrowing]]s (restrictions).
 
 * With a ''numeric'' prefix argument, `C-x C-x' saves the region.  If the
