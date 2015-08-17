@@ -1,4 +1,4 @@
-This page is about library '''[::Wide-N]''', <tt>[[wide-n.el]]</tt>, which lets you perform various operations on a set of buffer zones. In particular, it lets you browse among multiple buffer restrictions (narrowings).
+This page is about the use of library '''[[Zones]]''', <tt>[[zones.el]]</tt>, to browse among multiple buffer restrictions (narrowings).
 
 
 
@@ -9,7 +9,7 @@ Did you ever narrow a [[buffer]] to some restriction (region), and then later na
 
 Narrowing always narrows to the current [[region]], which can be anywhere and have any size up to the buffer size. But command `widen' (`C-x n w') always restores the full buffer. There can be many different narrowings (one at a time), but there is only one widening: the whole buffer.
 
-Library '''Wide-N''' solves this problem. It gives you the same fine-grained behavior for widening as for narrowing. In fact, the possible widening targets are the same restrictions that you created by previous narrowings (plus the whole buffer). Instead of only a single widening, you have '''''N''''' of them.
+Library '''[[Zones]]''' gives you the same fine-grained behavior for widening as for narrowing. In fact, the possible widening targets are the same restrictions that you created by previous narrowings (plus the whole buffer). Instead of only a single widening, you have '''''N''''' of them.
 
 
 
@@ -18,55 +18,50 @@ Library '''Wide-N''' solves this problem. It gives you the same fine-grained beh
 [:RingOfNarrowings]
 == A Ring of Narrowings ==
 
-Library '''Wide-N''' advises `narrow-to-region', the basic narrowing command, so that each time you narrow a buffer interactively the buffer restriction is recorded in a buffer-local ring. You can return to any of these narrowings selectively at any time.
+Library '''Zones''' advises `narrow-to-region', the basic narrowing command, so that each time you narrow a buffer interactively the buffer restriction is recorded in a ring (which is stored in buffer-local variable `zz-izones', by default). You can return to any of these narrowings selectively at any time.
 
-'''`C-x n x'''' is bound to command `wide-n-repeat', which restores the last recorded narrowing for the current buffer.
+'''`C-x n x'''' is bound to command `zz-narrow-repeat', which restores the last recorded narrowing for the current buffer.
 
 The narrowings can be nested, but they need not be. They can be any regions at all.
 
-* You can repeat the `x' to cycle quickly among narrowings: `C-x n x x x'...
+* You can repeat the `x' to cycle quickly among narrowings: `##C-x n x x x##'...
 
-* You can go directly to the Nth previous narrowing by using a [[numeric prefix argument]]. (This is the '''''N''''' in '''Wide-''''''''N'''''.) If you use a negative prefix arg, then (its absolute value is used and) the latest entries through the abs(N)th one are popped off the ring. Thus, if you use only negative args then the ring acts like a stack.
+* You can go directly to the Nth previous narrowing by using a [[numeric prefix argument]].  If you use a negative prefix arg, then (its absolute value is used and) the latest entries through the abs(N)th one are popped off the ring. Thus, if you use only negative args then the ring acts like a stack.
 
-* You can widen the buffer completely by using a plain prefix arg (`C-u') or a zero prefix arg (`C-0').  A zero prefix arg also resets (empties) the ring completely for the current buffer.
-
-* The whole buffer (widened completely) is also at the end of the ring, so you can cycle to it.
-
-* You can also use `C-x n w' (standard command `widen') to widen the buffer completely, as usual.
+* You can widen the buffer completely by using a plain prefix arg (`C-u') or a zero prefix arg (`C-0').  A zero prefix arg also resets (empties) the ring completely for the current buffer. (You can also use `C-x n w' (standard command `widen') to widen the buffer completely, as usual.)
 
 The [[mode line|mode-line]] lighter `Narrow' is still used for the ordinary
-Emacs narrowing commands.  But for `wide-n-repeat' (`C-x n x')
+Emacs narrowing commands.  But for `zz-narrow-repeat' (`C-x n x')
 the current restriction is indicated in the lighter by a
 identifying number: `Narrow-1', `Narrow-2', and so on.
 `mouse-2' on the `Narrow' part still widens completely, but
 `mouse-2' on the `-NUM' part uses `wide-n-repeat' to cycle to
 the next restriction.
 
-Emacs [[marker]]s are used to record restriction limits, so the same
-restriction is available even if you modify its context.  If for any reason `wide-n-restrictions' ever has any entries
+Emacs [[marker]]s are used to record narrowing limits, so the same buffer
+restriction is available even if you modify its context.  If for any reason `zz-izones' ever has any entries
 that use buffer positions (numbers) instead of markers, invoking
-`wide-n' corrects this by changing the positions to markers.
+a zone command corrects this by changing the positions to markers.
 
-This means that you can serialize `wide-n-restrictions',
-converting all markers to positions, save the value
+You can serialize `zz-izones' to use ''readable markers'', save the value
 persistently, and restore it later.  Library '''[[Bookmark+]]'''' (<tt>[[bookmark+.el]]</tt>) does
-this in order to let you bookmark and restore a list of restrictions.
+this in order to let you bookmark and restore a list of narrowings.
 
 In normal use, only the ''interactive'' use of standard commands
 `narrow-to-region', `narrow-to-defun', and `narrow-to-page' is
-affected by this library.  When these functions are called
+affected by library <tt>[[zones.el]]</tt>.  When these functions are called
 non-interactively there is normally no change to the value of
-variable `wide-n-restrictions'.  However, if for some reason you
+variable `zz-izones'.  However, if for some reason you
 want to add entries to the restrictions ring when narrowing with
 some EmacsLisp code (i.e. non-interactively), you can do so by
-binding variable '''`wide-n-push-anyway-p'''' around the narrowing call.
+binding variable '''`zz-izone-add-anyway-p'''' around the narrowing call.
 
-You can use '''`C-x n C-d'''' (command `wide-n-delete') to delete a
-restriction, giving its number.
+You can use '''`C-x n C-d'''' (command `zz-izone-delete') to delete a
+narrowing, giving its numeric identifier.
 
-You can also add the current region to `wide-n-restrictions'
+You can also add the current region to `zz-izones'
 without first narrowing to it, using '''`C-x n s'''' (command
-`wide-n-push').  You need not activate the region to do this.
+`zz-izone-add').  You need not activate the region to do this.
 
 
 
@@ -75,20 +70,20 @@ without first narrowing to it, using '''`C-x n s'''' (command
 
 == Restrictions Variables ==
 
-Buffer-local variable `wide-n-restrictions' holds the
-restrictions for the current buffer, by default.  But the
-functions provided by ##wide-n.el## can use any variable that
-holds restrictions.  And you can choose whether any such
+By default, buffer-local variable `zz-izones' holds the
+restrictions for the current buffer.  But the
+functions provided by ##zones.el## can use any variable that
+holds zones.  And you can choose whether any such
 variable is buffer-local or not.  If it is not then it can hold
-restrictions from multiple buffers.
+zones from multiple buffers.
 
-Several commands defined in ##wide-n.el## let you specify the restrictions
+Several commands defined in ##zones.el## let you specify the zones
 variable to use, by prompting you if you use a [[prefix argument]].
-For example, '''`##C-u C-x n s##'''' (`wide-n-push') prompts you for a
-restrictions variable, and `##C-- C-x n s##' does the same but it
+For example, '''`##C-u C-x n s##'''' (`zz-izone-add') prompts you for a
+zones variable, and `##C-- C-x n s##' does the same but it
 does not make the variable buffer-local.  You can specify any
 variable name, even if the variable does not yet exist (in which
-case it is given an empty value, which contains only `all').
+case it is given an empty value).
 
 
 
@@ -101,27 +96,27 @@ case it is given an empty value, which contains only `all').
 == Other Uses of Buffer Zones, Besides Narrowing ==
 
 Moving among different buffer restrictions, i.e., narrowing the
-buffer to different zones, is one use of library ##wide-n.el##, but
+buffer to different zones, is one use of library ##zones.el##, but
 another important use case is performing actions on a set of
 buffer zones, including perhaps zones from ''different'' buffers.
 
-'''`##C-x n r##'''' (command `wide-n-select-region-repeat') does this,
+'''`##C-x n r##'''' (command `zz-select-region-repeat') does this,
 performing the action of selecting a zone in
-`wide-n-restrictions' as the region.  Repeat to cycle among the
+`zz-izones' as the region.  Repeat to cycle among the
 zones: `##C-x n r r r...##'.
 
 You can define your own commands that iterate over the buffers
-and then over the entries in `wide-n-restrictions' (or some
+and then over the entries in `zz-izones' (or some
 subset of them) for each buffer.  Utility functions
-`wide-n-limits', `wide-n-limits-in-bufs', and `wide-n-read-bufs'
+`zz-izone-limits', `zz-izone-limits-in-bufs', and `zz-read-bufs'
 can help with this.
 
-As examples of such commands, if you use library <tt>[[highlight.el]]</tt> then you can use '''`##C-x n h##''''
-(command `hlt-highlight-regions') to highlight the restrictions
+As examples of such commands, if you use the [[HighlightLibrary|Highlight]] library (<tt>[[highlight.el]]</tt>) then you can use '''`##C-x n h##''''
+(command `hlt-highlight-regions') to highlight the zones
 recorded for the current buffer.  And you can use '''`##C-x n H##'''' (command
 `hlt-highlight-regions-in-buffers') to do the same across a set of
-buffers that you specify (or across all visible buffers).  If option `hlt-auto-faces-flag' is
-non-nil then each region gets a different face.  Otherwise, all
+buffers that you specify (or across all visible buffers).  If [[option]] `hlt-auto-faces-flag' is
+non-nil then each region gets a different [[face]].  Otherwise, all
 of the regions are highlighted with the same face.
 Complementary (unbound) commands `hlt-unhighlight-regions' and
 `hlt-unhighlight-regions-in-buffers' unhighlight.
@@ -130,18 +125,15 @@ Another way to look at the possibility of acting on multiple
 buffer zones is to think of it as enlarging the notion of a
 "[[region]]" of text that you can operate on.  In effect, it can
 remove the requirement of target text being a contiguous
-sequence of characters.  A set of buffer restrictions is, in
+sequence of characters.  A set of buffer zones is, in
 effect, a (typically) noncontiguous "region" of text.
 
-Companion library '''<tt>[[zones.el]]</tt>''' provides utility functions for
-buffer zones.  It is not strictly required by ##wide-n.el##, but
-you need it if you want to use commands `wide-n-unite' and
-`wide-n-add-to-union'.  These commands coalesce overlapping and
-contiguous zones, uniting them as a single zone.
+You can use commands `zz-izones-coalesce' and
+`zz-izone-add-and-coalesce' to coalesce overlapping and
+contiguous zones, uniting them.
 
 Pretty much ''anything you can do with the Emacs [[region]]'' you can do
-with a set of buffer restrictions (a non-contiguous "region",
-`wide-n-restrictions').  But existing Emacs commands that act on
+with a set of buffer zones (a non-contiguous "region").  But existing Emacs commands that act on
 the region do not know about non-contiguous regions.  What you
 will need to do is define new commands that take these into
 account.
@@ -153,15 +145,15 @@ calls existing function `hlt-highlight-region' once for each
 recorded region:
 
     (defun hlt-highlight-regions (&optional regions face msgp mousep buffers)
-      "Apply `hlt-highlight-region' to each region in `wide-n-restrictions'."
-      (interactive (list (wide-n-limits) nil t current-prefix-arg))
-      (dolist (start.end  regions)
-        (hlt-highlight-region (car start.end) (cdr start.end)
+      "Apply `hlt-highlight-region' to each region in `zz-izones'."
+      (interactive (list (zz-izone-limits) nil t current-prefix-arg))
+      (dolist (start+end  regions)
+        (hlt-highlight-region (nth 0 start+end) (nth 1 start+end)
                               face msgp mousep buffers)))
 
 
-That's it --- just iterate over `wide-n-restrictions' with a
-function that takes the region as an argument.  What ##wide-n.el##
+That's it --- just iterate over `zz-izones' with a
+function that takes the region as an argument.  What ##zones.el##
 offers in this regard is a way to easily define a set of buffer
 restrictions.
 
