@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 15:36:58 2015 (-0700)
+;; Last-Updated: Sun Aug 16 20:15:55 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1171
+;;     Update #: 1185
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -264,20 +264,21 @@
 ;;    ignoring comments during Isearch, using `C-M-;' (command
 ;;    `isearchp-toggle-ignoring-comments').
 ;;
-;;  * If you use libraries `wide-n.el' and `zones.el' then you can
-;;    search a set of buffer zones that are defined just by their
-;;    limits (markers or numbers) -- like multiple regions, using
-;;    commands `isearchp-zones-forward' and
-;;    `isearchp-zones-forward-regexp'.  You can use different such
-;;    zone sets.  Library `wide-n.el' gives you an easy, interactive
+;;  * If you use library`zones.el' then you can search a set of buffer
+;;    zones that are defined by their limits (markers or numbers) --
+;;    like multiple regions, using commands `isearchp-zones-forward'
+;;    and `isearchp-zones-forward-regexp'.  You can use different such
+;;    zone sets.  Library `zones.el' gives you an easy, interactive
 ;;    way to define them.  A prefix arg to the commands that search a
 ;;    set of zones prompts you for a variable whose value is such a
-;;    set.  By default the variable is `wide-n-restrictions'.
+;;    set.  By default the variable is `zz-izones'.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/16 dadams
+;;     Renamed wide-n.el stuff to zones.el stuff.  Require only (the new) zones.el.
 ;; 2015/08/14 dadams
 ;;     isearchp-zones-1, isearchp-zones-filter-pred: pass non-nil ONLY-ONE-BUFFER-P arg to wide-n-limits.
 ;; 2015/08/09 dadams
@@ -1720,16 +1721,16 @@ See `make-hash-table' for possible values of TEST."
 
 ;;; Search-Zones Commands and Functions ------------------------------
 
-(when (and (require 'zones nil t)  (require 'wide-n nil t))
+(when (require 'zones nil t)
   (defun isearchp-zones-forward (&optional variable)
-    "Search forward within the zones of restrictions variable VARIABLE.
-VARIABLE defaults to the value of `wide-n-restrictions-var'.
+    "Search forward within the zones of izones variable VARIABLE.
+VARIABLE defaults to the value of `zz-izones-var'.
 
 With a prefix arg you are prompted for a different variable to use, in
-place of the current value of `wide-n-restrictions-var'.  If the
-prefix arg is non-negative (>= 0) then make the variable buffer-local.
-If the prefix arg is non-positive (<= 0) then set
-`wide-n-restrictions-var' to that variable symbol.  (Zero: do both.)
+place of the current value of `zz-izones-var'.  If the prefix arg is
+non-negative (>= 0) then make the variable buffer-local.  If the
+prefix arg is non-positive (<= 0) then set `zz-izones-var' to that
+variable symbol.  (Zero: do both.)
 
 Non-interactively, VARIABLE is the restrictions variable to use.
 
@@ -1765,20 +1766,20 @@ See `isearchp-zones-forward'."
 
   (defun isearchp-zones-read-args ()
     "Read args for `isearchp-zones*'."
-    (let ((var    (and current-prefix-arg  (wide-n-read-any-variable "Variable: ")))
+    (let ((var    (and current-prefix-arg  (zz-read-any-variable "Variable: ")))
           (npref  (prefix-numeric-value current-prefix-arg)))
       (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
-      (when (and current-prefix-arg  (<= npref 0)) (setq wide-n-restrictions-var  var))
+      (when (and current-prefix-arg  (<= npref 0)) (setq zz-izones-var  var))
       (list var)))
 
   (defun isearchp-zones-1 (search-fn &optional variable)
     "Helper for Isearch zone commands.
 SEARCH-FN is the search function."
-    (unless variable (setq variable  wide-n-restrictions-var))
+    (unless variable (setq variable  zz-izones-var))
     (when isearchp-dim-outside-search-area-flag
       (with-silent-modifications
-        (let* ((zones       (zzz-zone-union (wide-n-limits (symbol-value variable) nil 'ONLY-THIS-BUFFER)))
-               (comp-zones  (zzz-zone-complement zones)))
+        (let* ((zones       (zz-zone-union (zz-izone-limits (symbol-value variable) nil 'ONLY-THIS-BUFFER)))
+               (comp-zones  (zz-zones-complement zones)))
           (dolist (zone  (if isearchp-complement-domain-p comp-zones zones))
             (let ((isearchp-complement-domain-p  nil))
               (isearchp-add/remove-dim-overlay (car zone) (cadr zone) nil)))
@@ -1820,8 +1821,8 @@ The predicate is suitable as a value of `isearch-filter-predicate'."
             (or (and (fboundp 'isearch-filter-visible) (isearch-filter-visible beg end))
                 (and (boundp 'isearch-invisible) ; Emacs 24.4+
                      (not (or (eq search-invisible t)  (not (isearch-range-invisible beg end))))))
-            (let ((in-zone-p  (zzz-some `(lambda (zone) (and (<= (car zone) ,beg)  (>= (cadr zone) ,end)))
-                                        (zzz-zone-union (wide-n-limits ,restrictions nil 'THIS-BUFFER)))))
+            (let ((in-zone-p  (zz-some `(lambda (zone) (and (<= (car zone) ,beg)  (>= (cadr zone) ,end)))
+                                       (zz-zone-union (zz-izone-limits ,restrictions nil 'THIS-BUFFER)))))
               (if isearchp-complement-domain-p (not in-zone-p) in-zone-p)))))
 
   )
