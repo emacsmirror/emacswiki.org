@@ -150,7 +150,7 @@ navigate.
 [:icicle-search-xml-element-text-node]
 [:icicle-select-frame]
 [:icicle-select-window]
-[:icicle-wide-n]
+[:icicle-narrow]
 
 Here are some of the '''Icicles''' tripping commands:
 
@@ -284,10 +284,10 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 * '''`icicle-search-xml-element-text-node''''  -- Search text() nodes of XML elements
 * '''`icicle-select-frame'''' ('''`C-x 5 o'''') -- Trip among [[frame]]s, by name
 * '''`icicle-select-window'''' ('''`C-0 C-x o'''') -- Trip among [[window]]s, by buffer name
-* '''`icicle-wide-n''''                  -- Trip among [[narrowing]]s ([[buffer]] restrictions)
+* '''`icicle-narrow''''                  -- Trip among [[narrowing]]s ([[buffer]] restrictions)
 
 (You need library '''[[Bookmark+]]''' for `icicle-search-bookmark-list-marked'.  You need library '''[[Dired+]]''' for `icicle-occur-dired-marked-recursive' and `icicle-search-dired-marked-recursive'.  You need library
-<tt>[[wide-n.el]]</tt> for `icicle-wide-n'.)
+<tt>[[zones.el]]</tt> for `icicle-narrow'.)
 
 Note: '''Icicles''' search commands and commands `icicle-find-tag',
 `icicle-goto-marker', `icicle-goto-any-marker', and `icicle-goto-global-marker' effectively
