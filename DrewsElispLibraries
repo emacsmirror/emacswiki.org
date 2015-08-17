@@ -59,6 +59,7 @@ You can try to juggle the branches of such tests yourself -- that is, try differ
 
 The newest of my libraries are these (in alphabetical order):
 
+* <tt>[[apu.el]]</tt> -- apropos Unicode characters - see AproposUnicode
 * <tt>[[bindings+.el]]</tt> -- [[minor mode|Minor mode]] menus from the [[mode line]] -- see ModeLineMinorModeMenu
 * <tt>[[bookmark+.el]]</tt> and associated libraries-- extensions to standard library `bookmark' -- see '''[[Bookmark+]]'''
 * <tt>[[cmds-menu.el]]</tt> -- add a '''Recent Commands''' submenu to menu-bar '''Tools''' menu -- see RecentCommandsMenu
@@ -78,11 +79,15 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[finder+.el]]</tt> -- extensions to standard library `finder'
 * <tt>[[find-func+.el]]</tt> -- extensions to standard library `find-func'
 * <tt>[[font-lock+.el]]</tt> -- extensions to standard library `font-lock' (see HighLight and FaceMenuPlus)
+* <tt>[[font-lock-menus.el]]</tt> -- font-lock menus: enhanced `font-menus.el'
 * <tt>[[grep+.el]]</tt> -- extensions to standard library `grep'; see also '''GrepPlus'''
 * <tt>[[help-fns+.el]]</tt> -- extensions to standard library `help-fns'; see also '''HelpPlus'''
 * <tt>[[help-mode+.el]]</tt> -- extensions to standard library `help-mode'; see also '''HelpPlus''' and '''HelpModePlus'''
 * <tt>[[hexrgb.el]]</tt> -- functions for manipulating ''color'': hex RGB (red, blue, green) and HSV (hue, saturation, value) color components
+* <tt>[[hide-comnt.el]]</tt> -- hide/show comments in code -- see HideOrIgnoreComments
 * <tt>[[highlight.el]]</tt> -- highlight text in various ways; hide/show sets of [[face]]s -- see HighLight
+* <tt>[[highlight-chars.el]]</tt> -- highlight specified sets of characters, including whitespace -- see [[ShowWhiteSpace#HighlightChars|HighlightChars]]
+* <tt>[[hl-defined.el]]</tt> -- highlight defined or undefined [[symbol]]s in EmacsLisp
 * <tt>[[hl-line+.el]]</tt> -- extensions to standard library `hl-line' -- see HighlightCurrentLine
 * <tt>[[hl-spotlight.el]]</tt> -- spotlight the lines around the [[cursor]]; see [[Highlight#HlSpotlight|HL Spotlight]]
 * <tt>[[icicles.el]]</tt> and associated libraries -- extensions to `completing-read': [[minibuffer]] input [[completion]] and cycling -- see '''[[Icicles]]'''
@@ -90,18 +95,25 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[lacarte.el]]</tt> -- use the keyboard, with [[completion]] and cycling, to access [[menu bar]] menus -- see '''LaCarte'''
 * <tt>[[lib-requires.el]]</tt> -- list Emacs Lisp library dependencies (extends standard library `loadhist') -- see '''LibraryDependencies'''
 * <tt>[[ls-lisp+.el]]</tt> -- extensions to standard library `ls-lisp'
+* <tt>[[modeline-char.el]]</tt> -- in [[mode line]], show the value of the char after point - see ModeLineCharacterInfo
 * <tt>[[modeline-posn.el]]</tt> -- enhanced [[mode line]] information -- see '''ModeLinePosition'''
+* <tt>[[modeline-win.el]]</tt> -- highlight [[buffer]] name in [[mode line]] for selected window
+* <tt>[[mouse3.el]]</tt> -- customizable behavior for `mouse-3' -- see [[Mouse3]]
+* <tt>[[naked.el]]</tt> -- provide for naked key descriptions: no angle brackets -- see NaKeD
 * <tt>[[narrow-indirect.el]]</tt> -- narrow using an indirect buffer that is a clone of the current buffer
 * <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette''' (see also <tt>[[eyedropper.el]]</tt>)
 * <tt>[[pp-c-l.el]]</tt> -- display Control-l characters in a pretty way -- see '''PrettyControlL'''
+* <tt>[[reveal-next.el]]</tt> -- progressively reveal text after the cursor -- see RevealNextTextMode
 * <tt>[[savehist-20+.el]]</tt> -- a version of `##savehist.el##' that works with Emacs 20, in addition to the later versions -- see SaveHist.
 * <tt>[[second-sel.el]]</tt> -- secondary-selection enhancements -- see '''[[SecondarySelection]]'''
+* <tt>[[showkey.el]]</tt> -- show keys as you use them -- see ShowKey
+* <tt>[[subr+.el]]</tt> -- extensions to standard library `subr.el' -- see SplittingStrings
 * <tt>[[synonyms.el]]</tt> -- search and browse a hyperlinked thesaurus -- see '''[[Synonyms]]'''
 * <tt>[[thing-cmds.el]]</tt> -- commands to select things near the [[cursor]] -- see '''ThingAtPointCommands'''
 * <tt>[[thumb-frm.el]]</tt> -- thumbnail frames: a fisheye view of your frames and an alternative to iconifying; see also '''FisheyeWithThumbs'''
 * <tt>[[tool-bar+.el]]</tt> -- extensions to standard library `toolbar'; see also '''ToolBar'''
 * <tt>[[ucs-cmds.el]]</tt> -- macro to define commands that insert Unicode characters
-* <tt>[[wide-n.el]]</tt> -- cycle among MultipleNarrowings
+* <tt>[[zones.el]]</tt> -- zones of text -- like multiple [[region]]s -- see [[Zones]] and MultipleNarrowings
 * <tt>[[zoom-frm.el]]</tt> -- commands to zoom a frame or buffer (change its font size) -- see also <tt>[[doremi-frm.el]]</tt> for alternatives
 
 I make minor changes to some libraries often, so check for the latest versions.
@@ -244,7 +256,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[diff+.el]]</tt> -- extensions to standard library `diff'  -- see '''DiffEnhancements'''
 * <tt>[[diff-mode-.el]]</tt> -- extensions to standard library `diff-mode'  -- see '''DiffEnhancements'''
 * <tt>[[tool-bar+.el]]</tt> -- extensions to standard library `tool-bar'; see also '''ToolBar'''
-* <tt>[[wide-n.el]]</tt> -- cycle among MultipleNarrowings
+* <tt>[[zones.el]]</tt> --  -- zones of text -- like multiple [[region]]s -- see [[Zones]] and MultipleNarrowings
 
 
 
