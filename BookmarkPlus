@@ -1345,9 +1345,9 @@ the recorded variable values for the bookmark's buffer.  You can
 also create variable-list bookmarks non-interactively, using function
 `bmkp-create-variable-list-bookmark'.
 
-If you use library <tt>[[wide-n.el]]</tt> (see MultipleNarrowings), then you can move among multiple
+If you use library <tt>[[zones.el]]</tt> (see [[Zones]] and MultipleNarrowings), then you can move among multiple
 restrictions (narrowings) in a buffer.  The restrictions are
-stored in buffer-local variable `wide-n-restrictions'.  Command '''`bmkp-set-restrictions-bookmark'''' bookmarks this value
+stored in buffer-local variable `zz-izones'.  Command '''`bmkp-set-izones-bookmark'''' bookmarks this value
 for the current buffer.  Jumping to such a bookmark restores the
 saved ring/stack of restrictions.
 
