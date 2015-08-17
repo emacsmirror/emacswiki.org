@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Mar  2 11:17:02 2015 (-0800)
+;; Last-Updated: Sun Aug 16 17:23:50 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3046
+;;     Update #: 3052
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -45,10 +45,10 @@
 ;;   `ring+', `savehist-20+', `second-sel', `sendmail', `setup',
 ;;   `setup-keys', `simple+', `speedbar', `start', `strings',
 ;;   `subr+', `subr-21', `swiss-move', `synonyms', `thing-cmds',
-;;   `thingatpt', `thingatpt+', `thumb-frm', `timer', `timer+',
-;;   `unaccent', `vc', `vc+', `vc-', `vc-hooks', `vc-hooks+',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget', `window+', `zoom-frm'.
+;;   `thingatpt', `thingatpt+', `thumb-frm', `time-date', `timer',
+;;   `timer+', `unaccent', `vc', `vc+', `vc-', `vc-hooks',
+;;   `vc-hooks+', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget', `window+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -84,6 +84,9 @@
 ;;
 ;; Change Log:
 ;;
+;; 2015/08/16 dadams
+;;     Soft-require zones.el.
+;;     No longer soft-require wide-n.el (obsolete - merged into zones.el).
 ;; 2015/03/02 dadams
 ;;     Soft-require echo-bell.el.
 ;; 2014/05/27 dadams
@@ -433,8 +436,7 @@
   (require 'face-remap+ nil t))         ; Resize window/frame when scale text.
 (when (> emacs-major-version 22)        ; Need Emacs 23+ version of `ucs-insert' (`C-x 8 RET').
   (require 'ucs-cmds nil t))            ; Enhanced `C-x 8 RET'.
-(when (> emacs-major-version 20)        ; Ring/stack of narrowings.
-  (require 'wide-n nil t))
+(require 'zones nil t)                  ; Ring/stack of buffer zones (including narrowings).
 ;;; ;; Use my update to Francis Wright's version of `ls-lisp.el', if available.
 ;;; (when (and (< emacs-major-version 21) (memq system-type '(windows-nt ms-dos macos)))
 ;;;   ;; If you don't have my version, from http://www.emacswiki.org/emacs/ls-lisp.el, and you use
