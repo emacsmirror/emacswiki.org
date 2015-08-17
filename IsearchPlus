@@ -408,15 +408,15 @@ ignoring comments during Isearch, using '''`##C-M-;##'''' (command
 [:isearchp-zones-forward-regexp]
 [:isearchp-zones-backward]
 [:isearchp-zones-backward-regexp]
-* If you use libraries '''<tt>[[wide-n.el]]</tt>''' and '''<tt>[[zones.el]]</tt>''' then you can
-search a set of [[buffer]] zones that are defined just by their
+* If you use library '''<tt>[[zones.el]]</tt>''' then you can
+search a set of [[buffer]] zones that are defined by their
 limits ([[marker]]s or numbers) -- like multiple [[region]]s, using
 commands '''`isearchp-zones-forward'''' and
 '''`isearchp-zones-forward-regexp''''.  You can use different such
-zone sets.  Library ##wide-n.el## gives you an easy, interactive
+zone sets.  Library ##zones.el## gives you an easy, interactive
 way to define them.  A [[prefix argument]] to the commands that search a
 set of zones prompts you for a [[variable]] whose value is such a
-set.  By default the variable is `wide-n-restrictions'.
+set.  By default the variable is `zz-izones'.
 
 
 ----
