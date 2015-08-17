@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jul  5 14:23:46 2015 (-0700)
+;; Last-Updated: Sun Aug 16 20:01:43 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 28445
+;;     Update #: 28451
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6667,14 +6667,14 @@
 ;;  * `icicle-select-frame' (`C-x 5 o') - Trip among frames, by name
 ;;  * `icicle-select-window' (`C-0 C-x o') - Trip among windows, by
 ;;                                       buffer name
-;;  * `icicle-wide-n'                  - Trip among narrowings
+;;  * `icicle-narrow'                   - Trip among narrowings
 ;;                                       (buffer restrictions)
 ;;
 ;;  (You need library library `Bookmark+' for
 ;;  `icicle-search-bookmark-list-marked'.  You need library `Dired+'
 ;;  for `icicle-occur-dired-marked-recursive' and
 ;;  `icicle-search-dired-marked-recursive'.  You need library
-;;  `wide-n.el' for `icicle-wide-n'.)
+;;  `zones.el' for `icicle-narrow'.)
 ;;
 ;;  Note: Icicles search commands and commands `icicle-find-tag',
 ;;  `icicle-goto-marker', `icicle-goto-any-marker', and
