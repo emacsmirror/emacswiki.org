@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2015.07.05
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug  1 09:17:26 2015 (-0700)
+;; Last-Updated: Sun Aug 16 17:02:25 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 23660
+;;     Update #: 23661
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -337,7 +337,7 @@
 ;;    `icicle-locate-other-window',
 ;;    `icicle-minibuffer-default-add-dired-shell-commands',
 ;;    `icicle-minibuffer-help', `icicle-mode', `icy-mode',
-;;    `icicle-next-font-lock-keywords',
+;;    `icicle-narrow', `icicle-next-font-lock-keywords',
 ;;    `icicle-next-font-lock-keywords-repeat',
 ;;    `icicle-next-visible-thing', `icicle-object-action',
 ;;    `icicle-occur', `icicle-occur-dired-marked',
@@ -452,10 +452,10 @@
 ;;    `icicle-visit-marked-file-of-content-other-window',
 ;;    `icicle-visit-marked-file-of-content-recursive',
 ;;    `icicle-visit-marked-file-of-content-recursive-other-window',
-;;    `icicle-where-is', `icicle-wide-n',
-;;    `icicle-widget-file-complete', `icicle-yank-maybe-completing',
-;;    `icicle-yank-pop-commands', `icicle-zap-to-char', `toggle',
-;;    `synonyms', `toggle-icicle-~-for-home-dir',
+;;    `icicle-where-is', `icicle-widget-file-complete',
+;;    `icicle-yank-maybe-completing', `icicle-yank-pop-commands',
+;;    `icicle-zap-to-char', `toggle', `synonyms',
+;;    `toggle-icicle-~-for-home-dir',
 ;;    `toggle-icicle-alternative-sorting',
 ;;    `toggle-icicle-angle-brackets', `toggle-icicle-annotation',
 ;;    `toggle-icicle-case-sensitivity', `toggle-icicle-C-for-actions',
@@ -1231,7 +1231,7 @@
 ;;    `icicle-mouse-candidate-action-1', `icicle-mouseover-help',
 ;;    `icicle-msg-maybe-in-minibuffer', `icicle-ms-windows-NET-USE',
 ;;    `icicle-multi-comp-apropos-complete-match', `icicle-multi-sort',
-;;    `icicle-nb-Completions-cols',
+;;    `icicle-narrow-action', `icicle-nb-Completions-cols',
 ;;    `icicle-nb-of-cand-at-Completions-pos',
 ;;    `icicle-nb-of-cand-in-Completions-horiz',
 ;;    `icicle-next-candidate', `icicle-next-error-buffer-p',
@@ -1386,7 +1386,7 @@
 ;;    `icicle-value-satisfies-type-p', `icicle-var-inherits-type-p',
 ;;    `icicle-var-is-of-type-p', `icicle-var-matches-type-p',
 ;;    `icicle-var-val-satisfies-type-p',
-;;    `icicle-visit-marked-file-of-content-1', `icicle-wide-n-action',
+;;    `icicle-visit-marked-file-of-content-1',
 ;;    `icicle-widget-color-complete', `icicle-widgetp',
 ;;    `icicle-window-at-bottom-p', `icicle-window-at-left-p',
 ;;    `icicle-window-at-right-p', `icicle-window-at-top-p',
