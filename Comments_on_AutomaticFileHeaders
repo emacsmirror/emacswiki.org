@@ -14,7 +14,7 @@ In python-mode, when doing make-revision I get "Symbol's value as a variable is 
 
 Hello,
 Is it possible to add defined functions and variables sections, like in http://www.emacswiki.org/emacs/header2.el, that are automatically updated at each save?
-<code>
+<pre>
 ;; Commands (interactive functions) defined here:
 ;; 
 ;; 
@@ -26,7 +26,7 @@ Is it possible to add defined functions and variables sections, like in http://w
 ;; 
 ;; Other variables defined here:
 ;; 
-</code>
+</pre>
 
 Thank you so much for header2.
 
