@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 16 13:11:01 2015 (-0700)
+;; Last-Updated: Sun Aug 16 17:28:30 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3961
+;;     Update #: 3981
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -417,20 +417,20 @@
 ;;  buffers.  (A non-negative prefix arg means use property
 ;;  `mouse-face', not `face'.)
 ;;
-;;  If you also use library `wide-n.el' then narrowing records the
-;;  various buffer restrictions (aka narrowings) in buffer-local
-;;  variable `wide-n-restrictions'.  Besides narrowing, you can use
-;;  `C-x n s' (command `wide-n-push') to add the current region to the
-;;  same variable.
+;;  If you also use library `zones.el' then narrowing and other
+;;  operations record buffer zones (including narrowings) in (by
+;;  default) buffer-local variable `zz-izones'.  Besides narrowing,
+;;  you can use `C-x n s' (command `zz-izone-add') to add the current
+;;  region to the same variable.
 ;;
 ;;  You can use command `hlt-highlight-regions' to highlight the
-;;  `wide-n-restrictions' narrowings, and you can use command
-;;  `hlt-highlight-regions-in-buffers' to highlight all regions
-;;  recorded for a given set of buffers.  You can use commands
+;;  `zz-izones' zones, and you can use command
+;;  `hlt-highlight-regions-in-buffers' to highlight all zones recorded
+;;  for a given set of buffers.  You can use commands
 ;;  `hlt-unhighlight-regions' and `hlt-unhighlight-regions-in-buffers'
 ;;  to unhighlight them.  If option `hlt-auto-faces-flag' is non-nil
-;;  then each region gets a different face.  Otherwise, all of the
-;;  regions are highlighted with the same face.
+;;  then each zone gets a different face.  Otherwise, all of them are
+;;  highlighted with the same face.
 ;;
 ;;  From Isearch you can highlight the search-pattern matches.  You
 ;;  can do this across multiple buffers being searched together.
@@ -743,6 +743,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/08/16 dadams
+;;     Renamed wide-n.el stuff to zones.el stuff.
 ;; 2015/08/06 dadams
 ;;     hlt-read-bg/face-name: Bind icicle-unpropertize-completion-result-flag to t.
 ;;     hlt-choose-default-face: Use %S, not %s, in message, so color names in a cons are shown as strings.
@@ -1759,15 +1761,15 @@ Optional 6th arg BUFFERS is the list of buffers to highlight.
                        (if mbufs (format " in `%s'"  (buffer-name buf)) "")
                        remove-msg))))))))
 
-(when (fboundp 'wide-n-limits)
+(when (fboundp 'zz-izone-limits)
 
-  ;; No need to use (wide-n-limits nil nil 'ONLY-THIS-BUFFER), since `hlt-highlight-region' DTRT.
+  ;; No need to use (zz-izone-limits nil nil 'ONLY-THIS-BUFFER), since `hlt-highlight-region' DTRT.
   (defun hlt-highlight-regions (&optional regions face msgp mousep buffers)
-    "Apply `hlt-highlight-region' to each region in `wide-n-restrictions'.
+    "Apply `hlt-highlight-region' to each zone in `zz-izones'.
 Non-interactively, REGIONS is a list of (START END) region limits.
 The other args are passed to `hlt-highlight-region'.
-You need library `wide-n.el' for this command."
-    (interactive (list (wide-n-limits) nil t current-prefix-arg))
+You need library `zones.el' for this command."
+    (interactive (list (zz-izone-limits) nil t current-prefix-arg))
     (dolist (start+end  regions)
       (hlt-highlight-region (nth 0 start+end) (nth 1 start+end) face msgp mousep buffers)))
 
@@ -1779,7 +1781,7 @@ Otherwise, you are prompted for the BUFFERS to highlight, one at a
  time.  Use `C-g' to end prompting.
 If you specify no BUFFERS then the current buffer is highlighted.
 
-You need library `wide-n.el' for this command.
+You need library `zones.el' for this command.
 
 Non-nil optional arg MSGP means show status messages."
     (interactive (list (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
@@ -1787,17 +1789,17 @@ Non-nil optional arg MSGP means show status messages."
                          (hlt-+/--read-bufs))
                        nil
                        'MSGP))
-    (hlt-highlight-regions (wide-n-limits-in-bufs buffers) nil msgp
+    (hlt-highlight-regions (zz-izone-limits-in-bufs buffers) nil msgp
                            (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                            buffers))
 
-  ;; No need to use (wide-n-limits nil nil 'ONLY-THIS-BUFFER), since `hlt-unhighlight-region' DTRT.
+  ;; No need to use (zz-izone-limits nil nil 'ONLY-THIS-BUFFER), since `hlt-unhighlight-region' DTRT.
   (defun hlt-unhighlight-regions (&optional regions face msgp mousep buffers)
-    "Apply `hlt-unhighlight-region' to each region in `wide-n-restrictions'.
+    "Apply `hlt-unhighlight-region' to each zone in `zz-izones'.
 Non-interactively, REGIONS is a list of (START END) region limits.
 The other args are passed to `hlt-unhighlight-region'.
-You need library `wide-n.el' for this command."
-    (interactive (list (wide-n-limits) nil t current-prefix-arg))
+You need library `zones.el' for this command."
+    (interactive (list (zz-izone-limits) nil t current-prefix-arg))
     (dolist (start+end  regions)
       (hlt-unhighlight-region (car start+end) (cadr start+end) face msgp mousep buffers)))
 
@@ -1809,13 +1811,13 @@ Otherwise, you are prompted for the BUFFERS to highlight, one at a
  time.  Use `C-g' to end prompting.
 If you specify no BUFFERS then the current buffer is highlighted.
 
-You need library `wide-n.el' for this command.
+You need library `zones.el' for this command.
 
 Non-nil optional arg MSGP means show status messages."
     (interactive (list (if (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
                            (hlt-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
                          (hlt-+/--read-bufs))))
-    (hlt-unhighlight-regions (wide-n-limits-in-bufs buffers) nil msgp
+    (hlt-unhighlight-regions (zz-izone-limits-in-bufs buffers) nil msgp
                              (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                              buffers))
 
