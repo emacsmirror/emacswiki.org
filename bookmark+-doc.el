@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri May 15 13:58:33 2015 (-0700)
+;; Last-Updated: Sun Aug 16 17:34:02 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15051
+;;     Update #: 15053
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1269,12 +1269,12 @@
 ;;  also create variable-list bookmarks non-interactively, using
 ;;  function `bmkp-create-variable-list-bookmark'.
 ;;
-;;  If you use library `wide-n.el', then you can move among multiple
+;;  If you use library `zones.el', then you can move among multiple
 ;;  restrictions (narrowings) in a buffer.  The restrictions are
-;;  stored in buffer-local variable `wide-n-restrictions'.  Command
-;;  `bmkp-set-restrictions-bookmark' bookmarks this value for the
-;;  current buffer.  Jumping to such a bookmark restores the saved
-;;  ring/stack of restrictions.
+;;  stored in buffer-local variable `zz-izones'.  Command
+;;  `bmkp-set-izones-bookmark' bookmarks this value for the current
+;;  buffer.  Jumping to such a bookmark restores the saved ring/stack
+;;  of restrictions.
  
 ;;(@* "Editing Bookmarks")
 ;;  ** Editing Bookmarks **
