@@ -8,9 +8,9 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 14 10:54:41 2015 (-0700)
+;; Last-Updated: Sun Aug 16 17:25:44 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1938
+;;     Update #: 1950
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -108,12 +108,13 @@
 ;;  then the commands in that library are also added to the Text
 ;;  Properties menu, as a Highlight submenu.
 ;;
-;;  If you also use library `wide-n.el' then narrowing records the
-;;  various buffer restrictions (aka narrowings) in buffer-local
-;;  variable `wide-n-restrictions'.  You can use command
-;;  `facemenup-add-face-to-regions' to add a face to these, and you
-;;  can use command `facemenup-add-face-to-regions-in-buffers' to add
-;;  a face to all regions recorded for a given set of buffers.
+;;  If you also use library `zones.el' then narrowing and other
+;;  commands record buffer zones (including narrowings) in
+;;  buffer-local variable `zz-izones' (by default).  You can use
+;;  command `facemenup-add-face-to-regions' to add a face to these
+;;  zones, and you can use command
+;;  `facemenup-add-face-to-regions-in-buffers' to add a face to all
+;;  zones recorded for a given set of buffers.
 ;;
 ;;  Commands defined here:
 ;;
@@ -210,6 +211,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/16 dadams
+;;     Renamed wide-n.el stuff to zones.el stuff.
 ;; 2015/08/14 dadams
 ;;     facemenup-add-face-to-regions: Call wide-n-limits with ONLY-THIS-BUFFER arg.
 ;; 2015/08/12 dadams
@@ -387,8 +390,8 @@
     (or (require 'palette nil t)  (require 'eyedropper))
   (require 'eyedropper))
 
-(when (> emacs-major-version 20) (require 'wide-n nil t));; (no error if not found)
-                                                         ;; wide-n-limits, wide-n-limits-in-bufs
+(require 'zones nil t) ;; (no error if not found
+                       ;; zz-izone-limits, zz-izone-limits-in-bufs
 
 ;; (require 'icicles nil t) ;; (no error if not found):
                             ;; icicle-read-color-WYSIWYG, icicle-read-string-completing
@@ -1341,21 +1344,20 @@ For Emacs 22+, this is `face-foreground' inheriting from `default'."
     (error (or (face-foreground face)  (cdr (assq 'foreground-color (frame-parameters)))))))
 
 
-(when (fboundp 'wide-n-limits)
+(when (fboundp 'zz-izone-limits)
 
   (defun facemenup-add-face-to-regions (face &optional regions msgp)
     "Use `facemenu-add-face' to add FACE to each region in REGIONS.
 Optional arg REGIONS is a list of (START END) region limits.  If nil,
-the regions are taken from the variable that is the value of
-`wide-n-restrictions-var'.
-You need library `wide-n.el' for this command."
+the regions are taken from the izones in thevariable that is the value
+of `zz-izones-var'.  You need library `zones.el' for this command."
     (interactive
      (progn (barf-if-buffer-read-only)
             (list (read-from-minibuffer "Face: " nil (if (boundp 'pp-read-expression-map)
                                                          pp-read-expression-map
                                                        read-expression-map)
                                         'READ 'read-expression-history)
-                  (wide-n-limits nil nil 'ONLY-THIS-BUFFER)
+                  (zz-izone-limits nil nil 'ONLY-THIS-BUFFER)
                   'MSGP)))
     (let (buf start end)
       (dolist (start+end  regions)
@@ -1377,19 +1379,19 @@ Otherwise, you are prompted for the BUFFERS to use, one at a time.
 Use `C-g' to end prompting.  If you specify no BUFFERS then the
 current buffer is used.
 
-The regions are taken from the value, in each buffer, of the variable
-that is the value of `wide-n-restrictions-var'.
+The regions are taken from the izones in the value, in each buffer, of
+the variable that is the value of `zz-izones-var'.
 
-You need library `wide-n.el' for this command."
+You need library `zones.el' for this command."
     (interactive
      (let* ((fac   (read-from-minibuffer "Face: " nil (if (boundp 'pp-read-expression-map)
                                                           pp-read-expression-map
                                                         read-expression-map)
                                          'READ 'read-expression-history))
             (bufs  (if current-prefix-arg
-                       (wide-n-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
-                     (wide-n-read-bufs)))
-            (regs  (wide-n-limits-in-bufs bufs)))
+                       (zz-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list))
+                     (zz-read-bufs)))
+            (regs  (zz-izone-limits-in-bufs bufs)))
        (list fac bufs regs 'MSGP)))
     (facemenup-add-face-to-regions face regions msgp))
 
