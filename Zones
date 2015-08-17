@@ -1,15 +1,45 @@
-This page is about library '''<tt>[[zones.el]]</tt>''', which lets you manipulate multiple buffer zones --- in effect, multiple [[region]]s.
+This page is about library '''<tt>[[zones.el]]</tt>''', which lets you easily define and subsequently act on multiple zones of buffer text --- in effect, multiple [[region]]s.
+
+(Library <tt>[[zones.el]]</tt> supersedes library <tt>[[wide-n.el]]</tt>, which is now obsolete (as of 2015-08-16).
+
 
 A zone records two buffer positions and an optional list of additional information (whatever you like).  Each buffer position can be a marker, which means that a list of zones can specify zones in different buffers.
+
+A position can also be a ''readable marker'', which is a Lisp sexp that can be written to disk (e.g., as part of a bookmark or saved variable), and restored in a later Emacs session by reading the file where it is saved.
+
+(Commands that use zones typically act on ''izones'', which are just zones that are labeled with a numeric identifier.)
 
 You can do the following with a list of zones:
 
 * Sort them.
-* Coalesce adjacent or overlapping zones, to give their union.
+* Coalesce adjacent or overlapping zones (which includes sorting them).
 * Intersect them.
+* Narrow the buffer to zones in the list.
+* Select zones in the list as the active [region].  Cycle among regions.
+* Search them (they are automatically coalesced first).  For this
+you need library <tt>[[isearch-prop.el]]</tt> (see [[Isearch+]]).
+* Highlight and unhighlight them.  (For this you need the [[HighlightLibrary|Highlight]] library (<tt>[[highlight.el]]</tt>) or library <tt>[[facemenu+.el]]</tt>.
+* Push the active [[region]] to a list of zones.
+* Delete a zone from a list of zones.
+* Make a list-of-zones variable persistent, in a bookmark.  Use the
+bookmark to restore it in a subsequent Emacs session.  For this
+you need library [[Bookmark+]].
 
+Zone commands are bound to keys on keymap `narrow-map' (prefix key `C-x n'):
 
-Library ##zones.el## is used by commands `wide-n-unite' and `wide-n-add-to-union' of library '''<tt>[[wide-n.el]]</tt>'''.
+* '''`C-x n C-d'''' (`zz-izone-delete') -- Delete a zone from the current list of zones.
+* '''`C-x n d''''   (`narrow-to-defun') -- Standard, except that it is advised to update the current list of zones with the narrowing.
+* '''`C-x n h''''   (`hlt-highlight-regions') -- Highlight zones in the current buffer.
+* '''`C-x n H''''   (`hlt-highlight-regions-in-buffers') -- Highlight zones in multiple buffers.
+* '''`C-x n n''''   (`narrow-to-region') -- Standard, except that it is advised to update the current list of zones with the narrowing.
+* '''`C-x n p''''   (`narrow-to-page') (standard, except that it is advised to update the current list of zones with the narrowing)
+* '''`C-x n r''''   (`zz-select-region-repeat') -- Cycle zones as the active [[region]]: '''`##C-x n r r r ...##''''
+* '''`C-x n s''''   (`zz-izone-add') -- Add the active [[region]] to the current list of zones.
+* '''`C-x n S''''   (`zz-izone-add-and-coalesce') -- Add the the region to the current list of zones, and then coalesce the zones.
+* '''`C-x n u''''   (`zz-izones-coalesce') -- Coalesce the zones in the current list.
+* '''`C-x n w''''   (`widen') -- Standard.
+* '''`C-x n x''''   (`zz-narrow-repeat') -- Cycle as zones as buffer narrowings: '''`##C-x n x x x ...##''''
+
 
 
 
