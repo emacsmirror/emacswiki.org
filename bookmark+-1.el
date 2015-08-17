@@ -1,4 +1,4 @@
-;;; bookmark+-1.el - First part of package Bookmark+.
+n;;; bookmark+-1.el - First part of package Bookmark+.
 ;;
 ;; Filename: bookmark+-1.el
 ;; Description: First part of package Bookmark+.
@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Aug 13 13:55:58 2015 (-0700)
+;; Last-Updated: Sun Aug 16 17:33:10 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7826
+;;     Update #: 7840
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -264,7 +264,7 @@
 ;;    `bmkp-set-autonamed-regexp-region',
 ;;    `bmkp-set-bookmark-file-bookmark', `bmkp-set-desktop-bookmark',
 ;;    `bmkp-set-icicle-search-hits-bookmark',
-;;    `bmkp-set-restrictions-bookmark', `bmkp-set-sequence-bookmark',
+;;    `bmkp-set-izones-bookmark', `bmkp-set-sequence-bookmark',
 ;;    `bmkp-set-snippet-bookmark', `bmkp-set-tag-value',
 ;;    `bmkp-set-tag-value-for-navlist',
 ;;    `bmkp-set-variable-list-bookmark',
@@ -738,8 +738,8 @@
 (defvar w3m-current-title)              ; In `w3m.el'
 (defvar w3m-current-url)                ; In `w3m.el'
 (defvar w3m-mode-map)                   ; In `w3m.el'
-(defvar wide-n-restrictions)            ; In `wide-n.el'
-(defvar wide-n-restrictions-var)        ; In `wide-n.el'
+(defvar zz-izones)                      ; In `zones.el'
+(defvar zz-izones-var)                  ; In `zones.el'
 (defvar woman-last-file-name)           ; In `woman.el'
  
 ;;(@* "User Options (Customizable)")
@@ -8909,24 +8909,21 @@ searched correspond to the recorded search hits."
       (handler     . bmkp-jump-icicle-search-hits)))
 
 ;; Variable-list bookmarks
-(when (boundp 'wide-n-restrictions)
-  (defun bmkp-set-restrictions-bookmark (&optional variable msgp)
-    "Save a ring of buffer restrictions as a bookmark.
-The restrictions can use markers or readable-marker objects for any
-buffers.  You need library `wide-n.el' to use the bookmark created.
+(when (boundp 'zz-izones-var)           ; In `zones.el'.
+  (defun bmkp-set-izones-bookmark (&optional variable msgp)
+    "Save a ring of buffer zones as a bookmark.
+The zones can use markers or readable-marker objects for any
+buffers.  You need library `zones.el' to use the bookmark created.
 
-By default, the restrictions are those defined by the variable that is
-the current value of `wide-n-restrictions-var', which defaults to
-`wide-n-restrictions'.  With a prefix arg you are prompted for a
-different variable to use.
+By default, the zones are those defined by the variable that is the
+current value of `zz-izones-var', which defaults to `zz-izones'.  With
+a prefix arg you are prompted for a different variable to use.
 
 Non-interactively, VARIABLE is the restrictions variable to use."
-    ;; If you use a version of `wide-n.el' older than 2015-08-12, then you will need to delete any
-    ;; restrictions bookmarks created with that older version.  The restrictions format changed then.
-    (interactive (let ((var  (or (and current-prefix-arg  (wide-n-read-any-variable "Variable: "))
-                                 wide-n-restrictions-var)))
+    (interactive (let ((var  (or (and current-prefix-arg  (zz-read-any-variable "Variable: " zz-izones-var))
+                                 zz-izones-var)))
                    (list var t)))
-    (unless variable (setq variable  wide-n-restrictions-var))
+    (unless variable (setq variable  zz-izones-var))
     (let ((bookmark-make-record-function
            (lambda ()
              (bmkp-make-variable-list-record
@@ -8935,11 +8932,11 @@ Non-interactively, VARIABLE is the restrictions variable to use."
                               (let ((num  (nth 0 xx))
                                     (beg  (nth 1 xx))
                                     (end  (nth 2 xx)))
-                                `(,num ,(wide-n-readable-marker beg) ,(wide-n-readable-marker end))))
+                                `(,num ,(zz-readable-marker beg) ,(zz-readable-marker end))))
                             (symbol-value variable))))))))
       (call-interactively #'bookmark-set)
-      (when (and msgp  (not (featurep 'wide-n))
-                 (message "Bookmark created, but you need `wide-n.el' to use it")))))
+      (when (and msgp  (not (featurep 'zones))
+                 (message "Bookmark created, but you need `zones.el' to use it")))))
 
   )
 
