@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Aug 12 13:35:14 2015 (-0700)
+;; Last-Updated: Sun Aug 16 19:56:48 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11493
+;;     Update #: 11497
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1161,6 +1161,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2015/08/16 dadams
+;;     Renamed: icicle-wide-n(-action) to icicle-narrow(-action).  Renamed wide-n.el stuff to zones.el.
+;;     icicle-narrow (was icicle-wide-n): Update for new zone format and lack of entry "all".
 ;; 2015/08/12 dadams
 ;;     icicle-wide-n, icicle-wide-n-action: Updated for wide-n.el restrictions format change.
 ;; 2015/08/01 dadams
