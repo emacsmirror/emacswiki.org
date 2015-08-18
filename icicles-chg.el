@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Aug 18 09:57:49 2015 (-0700)
+;; Last-Updated: Tue Aug 18 11:18:32 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11500
+;;     Update #: 11501
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1168,6 +1168,7 @@
 ;;       Corrected indexes into candidate - was off by one because of izone num index.
 ;;       Bind zz-izone-add-anyway-p to nil, not t.  (Do not add new narrowings.)
 ;;       Protect zz-narrowing-lighter with boundp mode-line-modes.
+;;       Applied renaming of zz-izone-add-anyway-p to zz-add-zone-anyway-p.
 ;; 2015/08/16 dadams
 ;;     Renamed: icicle-wide-n(-action) to icicle-narrow(-action).  Renamed wide-n.el stuff to zones.el.
 ;;     icicle-narrow (was icicle-wide-n): Update for new zone format and lack of entry "all".
