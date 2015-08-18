@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Aug 18 08:33:24 2015 (-0700)
+;; Last-Updated: Tue Aug 18 09:56:59 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7205
+;;     Update #: 7237
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -8428,6 +8428,9 @@ candidates to packages of different kinds."
 
 (defun icicle-buffer-narrowing ()
   "Choose a narrowing (buffer restriction) and apply it.
+The candidates are taken from the variable that is the value of
+`zz-izones-var'.
+
 During completion you can use these keys\\<minibuffer-local-completion-map>:
 
 `C-RET'   - Goto marker named by current completion candidate
@@ -8447,42 +8450,43 @@ destination, or `C-g' to quit.  This is an Icicles command - see
 command `icicle-mode'."
   (interactive)
   (unless (featurep 'zones) (error "You need library `zones.el' for this command"))
-  (unless zz-izones (error "No previous narrowing"))
-  (if (< (length zz-izones) 2) ; Only one restriction.  If narrowed widen, else apply the restriction.
-      (zz-narrow 1 'MSG)
-    (let ((icicle-sort-comparer            'icicle-special-candidates-first-p)
-          (icicle-delete-candidate-object  (lambda (cand)
-                                             (let ((name.res  (icicle-get-alist-candidate cand)))
-                                               (with-current-buffer icicle-pre-minibuffer-buffer
-                                                 (setq zz-izones  (delete (cdr name.res) zz-izones))
-                                                 (zz-izones-renumber))))))
-      (icicle-apply (let ((ns  ())
-                          beg end name)
-                      (save-restriction
-                        (widen)
-                        (dolist (res  zz-izones)
-                          (setq beg   (marker-position (cadr res))
-                                end   (marker-position (car (cddr res)))
-                                name  (format "%d-%d, %s" beg end (buffer-substring beg end))
-                                name  (replace-regexp-in-string "\n" " "
-                                                                (substring name 0 (min 30 (length name))))
-                                name  (format "%s\n" name))
-                          (push `(,name ,@res) ns)))
-                      ns)
-                    #'icicle-buffer-narrowing-action
-                    'NOMSG))))
+  (let ((var  zz-izones-var)
+        (val  (symbol-value zz-izones-var)))
+    (unless val (error "No previous narrowing"))
+    (if (< (length val) 2)              ; Only one narrowing.  If narrowed, widen, else narrow to it.
+        (zz-narrow 1 'MSG)
+      (let ((icicle-sort-comparer            'icicle-special-candidates-first-p)
+            (icicle-delete-candidate-object  (lambda (cand)
+                                               (let ((name.res  (icicle-get-alist-candidate cand)))
+                                                 (with-current-buffer icicle-pre-minibuffer-buffer
+                                                   (set zz-izones-var  (delete (cdr name.res) val))
+                                                   (zz-izones-renumber))))))
+        (icicle-apply (let ((ns  ())
+                            beg end name)
+                        (save-restriction
+                          (widen)
+                          (dolist (res  val)
+                            (setq beg   (marker-position (nth 1 res))
+                                  end   (marker-position (nth 2 res))
+                                  name  (format "%d-%d, %s" beg end (buffer-substring beg end))
+                                  name  (replace-regexp-in-string "\n" " " (substring name
+                                                                                      0 (min 30 (length name))))
+                                  name  (format "%s\n" name))
+                            (push `(,name ,@res) ns))) ; Go ahead and include the numerical index: (car RES).
+                        ns)
+                      #'icicle-buffer-narrowing-action
+                      'NOMSG)))))
 
 (defun icicle-buffer-narrowing-action (candidate)
   "Action function for `icicle-buffer-narrowing': Narrow to CANDIDATE region."
   (with-current-buffer icicle-pre-minibuffer-buffer
     (condition-case err
-        (let ((zz-izone-add-anyway-p  t))
-          (narrow-to-region (cadr candidate) (car (cddr candidate)))
+        (let ((zz-izone-add-anyway-p  nil))
+          (narrow-to-region (nth 2 candidate) (nth 3 candidate)) ; Skip the numerical index: (nth 1 CANDIDATE).
           (zz-narrowing-lighter)
           (message zz-lighter-narrowing-part))
-      (args-out-of-range
-       (setq zz-izones  (cdr zz-izones))
-       (error "Restriction removed because of invalid limits"))
+      (args-out-of-range (set zz-izones-var  (cdr (symbol-value zz-izones-var)))
+                         (error "Restriction removed because of invalid limits"))
       (error (error "%s" (error-message-string err))))))
 
 (defvar icicle-key-prefix nil
