@@ -80,6 +80,7 @@ navigate.
 [:icicle-bookmark-specific-buffers]
 [:icicle-bookmark-specific-files]
 [:icicle-buffer]
+[:icicle-buffer-narrowing]
 [:icicle-compilation-search]
 [:icicle-dired]
 [:icicle-find-file]
@@ -150,7 +151,8 @@ navigate.
 [:icicle-search-xml-element-text-node]
 [:icicle-select-frame]
 [:icicle-select-window]
-[:icicle-buffer-narrowing]
+[:icicle-select-zone]
+
 
 Here are some of the '''Icicles''' tripping commands:
 
@@ -214,6 +216,7 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 ** '''`icicle-bookmark-specific-buffers'''' ('''`##C-x j = b##'''') -- Bookmarks for specific buffers
 ** '''`icicle-bookmark-specific-files'''' ('''`##C-x j = f##'''') -- Bookmarks for specific files
 * '''`icicle-buffer'''' ('''`C-x b'''') -- Trip among [[buffer]]s
+* '''`icicle-buffer-narrowing''''     -- Trip among [[narrowing]]s ([[buffer]] restrictions)
 * '''`icicle-compilation-search'''' ('''`##C-c `##'''') -- Trip among `grep' hits
 * '''`icicle-dired'''' -- Trip among directories in [[Dired]] mode
 * '''`icicle-file'''' ('''`C-x C-f'''') -- Trip among files
@@ -284,10 +287,12 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 * '''`icicle-search-xml-element-text-node''''  -- Search text() nodes of XML elements
 * '''`icicle-select-frame'''' ('''`C-x 5 o'''') -- Trip among [[frame]]s, by name
 * '''`icicle-select-window'''' ('''`C-0 C-x o'''') -- Trip among [[window]]s, by buffer name
-* '''`icicle-buffer-narrowing''''     -- Trip among [[narrowing]]s ([[buffer]] restrictions)
+* '''`icicle-select-zone'''' -- Select buffer zones as [[region]]
+
 
 (You need library '''[[Bookmark+]]''' for `icicle-search-bookmark-list-marked'.  You need library '''[[Dired+]]''' for `icicle-occur-dired-marked-recursive' and `icicle-search-dired-marked-recursive'.  You need library
-<tt>[[zones.el]]</tt> for `icicle-buffer-narrowing'.)
+<tt>[[zones.el]]</tt> for `icicle-buffer-narrowing' and
+`icicle-select-zone'.)
 
 Note: '''Icicles''' search commands and commands `icicle-find-tag',
 `icicle-goto-marker', `icicle-goto-any-marker', and `icicle-goto-global-marker' effectively
@@ -367,5 +372,4 @@ CategoryDocumentation
 CategoryHelp
 CategoryProgrammerUtils
 CategoryCode
-
 
