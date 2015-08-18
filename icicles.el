@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2015.07.05
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 18 08:29:42 2015 (-0700)
+;; Last-Updated: Tue Aug 18 16:28:58 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 23663
+;;     Update #: 23665
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -405,8 +405,8 @@
 ;;    `icicle-select-bookmarked-region', `icicle-select-frame',
 ;;    `icicle-select-frame-by-name', `icicle-select-text-at-point',
 ;;    `icicle-select-window', `icicle-select-window-by-name',
-;;    `icicle-send-bug-report', `icicle-send-signal-to-process',
-;;    `icicle-set-option-to-t',
+;;    `icicle-select-zone', `icicle-send-bug-report',
+;;    `icicle-send-signal-to-process', `icicle-set-option-to-t',
 ;;    `icicle-set-S-TAB-methods-for-command',
 ;;    `icicle-set-TAB-methods-for-command', `icicle-sexp-list',
 ;;    `icicle-shell-command', `icicle-shell-command-on-region',
@@ -1343,7 +1343,8 @@
 ;;    `icicle-search-replace-fixed-case-p',
 ;;    `icicle-search-replace-match', `icicle-search-thing-args',
 ;;    `icicle-search-thing-scan', `icicle-search-where-arg',
-;;    `icicle-select-minibuffer-contents' `icicle-set-calling-cmd',
+;;    `icicle-select-minibuffer-contents' `icicle-select-zone-action',
+;;    `icicle-set-calling-cmd',
 ;;    `icicle-set-completion-methods-for-command',
 ;;    `icicle-set-difference', `icicle-set-intersection',
 ;;    `icicle-set-union', `icicle-shell-command-on-file',
