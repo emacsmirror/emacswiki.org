@@ -243,9 +243,9 @@ the region is activated (provided option
 `C-u' and whether you are in TransientMarkMode.
 
 * With a ''multiple plain'' prefix argument ('''`C-u C-u''''), `C-x C-x' jumps to a region
-  bookmark that you choose using completion, and activates it.  (See also '''Icicles''' tripping command
-'''`icicle-buffer-narrowing'''', which lets you trip among 
-[[narrowing]]s ([[buffer]] restrictions).
+  bookmark that you choose using completion, and activates it.  (See also '''Icicles''' tripping commands '''`icicle-select-zones'''' and
+'''`icicle-buffer-narrowing'''', which let you trip among [[buffer]] zones, selecting them as the [[region]] and
+[[narrowing]] to them, respectively.
 
 * With a ''numeric'' prefix argument, `C-x C-x' saves the region.  If the
   prefix argument is ''negative'', then you are prompted for the name to
