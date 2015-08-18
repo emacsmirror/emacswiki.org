@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Aug 18 08:42:30 2015 (-0700)
+;; Last-Updated: Tue Aug 18 16:44:39 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 29933
+;;     Update #: 29935
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1970,9 +1970,10 @@
 ;;
 ;;  * With a multiple plain prefix argument (`C-u C-u'), `C-x C-x'
 ;;    jumps to a region bookmark that you choose using completion, and
-;;    activates it.  (See also Icicles tripping command
-;;    `icicle-buffer-narrowing', which lets you trip among narrowings
-;;    (buffer restrictions).
+;;    activates it.  (See also Icicles tripping commands
+;;    `icicle-select-zones' and `icicle-buffer-narrowing', which let
+;;    you trip among buffer zones, selecting them as the region and
+;;    narrowing to them, respectively.)
 ;;
 ;;  * With a numeric prefix argument, `C-x C-x' saves the region.  If
 ;;    the prefix argument is negative, then you are prompted for the
