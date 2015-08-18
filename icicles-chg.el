@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Aug 18 11:18:32 2015 (-0700)
+;; Last-Updated: Tue Aug 18 16:48:22 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11501
+;;     Update #: 11502
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1162,6 +1162,7 @@
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
 ;; 2015/08/18 dadams
+;;     Added: icicle-select-zone, icicle-select-zone-action.
 ;;     Renamed: icicle-narrow(-action) to icicle-buffer-narrowing(-action).
 ;;     icicle-buffer-narrowing(-action): Use zz-izones-var, not zz-izones.
 ;;     icicle-buffer-narrowing-action:
