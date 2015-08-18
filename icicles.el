@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2015.07.05
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 16 17:02:25 2015 (-0700)
+;; Last-Updated: Tue Aug 18 08:29:42 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 23661
+;;     Update #: 23663
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -211,7 +211,7 @@
 ;;    `icicle-bookmark-url', `icicle-bookmark-url-other-window'
 ;;    `icicle-bookmark-w3m-other-window', `icicle-buffer',
 ;;    `icicle-buffer-config', `icicle-buffer-list',
-;;    `icicle-buffer-no-search',
+;;    `icicle-buffer-narrowing', `icicle-buffer-no-search',
 ;;    `icicle-buffer-no-search-other-window',
 ;;    `icicle-buffer-other-window',
 ;;    `icicle-change-alternative-sort-order',
@@ -337,7 +337,7 @@
 ;;    `icicle-locate-other-window',
 ;;    `icicle-minibuffer-default-add-dired-shell-commands',
 ;;    `icicle-minibuffer-help', `icicle-mode', `icy-mode',
-;;    `icicle-narrow', `icicle-next-font-lock-keywords',
+;;    `icicle-next-font-lock-keywords',
 ;;    `icicle-next-font-lock-keywords-repeat',
 ;;    `icicle-next-visible-thing', `icicle-object-action',
 ;;    `icicle-occur', `icicle-occur-dired-marked',
@@ -1231,7 +1231,7 @@
 ;;    `icicle-mouse-candidate-action-1', `icicle-mouseover-help',
 ;;    `icicle-msg-maybe-in-minibuffer', `icicle-ms-windows-NET-USE',
 ;;    `icicle-multi-comp-apropos-complete-match', `icicle-multi-sort',
-;;    `icicle-narrow-action', `icicle-nb-Completions-cols',
+;;    `icicle-buffer-narrowing-action', `icicle-nb-Completions-cols',
 ;;    `icicle-nb-of-cand-at-Completions-pos',
 ;;    `icicle-nb-of-cand-in-Completions-horiz',
 ;;    `icicle-next-candidate', `icicle-next-error-buffer-p',
