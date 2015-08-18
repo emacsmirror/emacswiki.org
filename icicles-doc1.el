@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Aug 18 08:37:26 2015 (-0700)
+;; Last-Updated: Tue Aug 18 16:39:19 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 28455
+;;     Update #: 28463
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6593,6 +6593,8 @@
 ;;    `icicle-bookmark-specific-files'            (`C-x j = f')
 ;;
 ;;  * `icicle-buffer' (`C-x b')        - Trip among buffers
+;;  * `icicle-buffer-narrowing'        - Trip among narrowings
+;;                                       (buffer restrictions)
 ;;  * `icicle-compilation-search' (`C-c `') - Trip among `grep' hits
 ;;  * `icicle-dired'                   - Trip among directories
 ;;  * `icicle-file' (`C-x C-f')        - Trip among files
@@ -6667,14 +6669,14 @@
 ;;  * `icicle-select-frame' (`C-x 5 o') - Trip among frames, by name
 ;;  * `icicle-select-window' (`C-0 C-x o') - Trip among windows, by
 ;;                                       buffer name
-;;  * `icicle-buffer-narrowing'         - Trip among narrowings
-;;                                       (buffer restrictions)
+;;  * `icicle-select-zone'             - Select buffer zones as region
 ;;
 ;;  (You need library library `Bookmark+' for
 ;;  `icicle-search-bookmark-list-marked'.  You need library `Dired+'
 ;;  for `icicle-occur-dired-marked-recursive' and
 ;;  `icicle-search-dired-marked-recursive'.  You need library
-;;  `zones.el' for `icicle-buffer-narrowing'.)
+;;  `zones.el' for `icicle-buffer-narrowing' and
+;;  `icicle-select-zone'.)
 ;;
 ;;  Note: Icicles search commands and commands `icicle-find-tag',
 ;;  `icicle-goto-marker', `icicle-goto-any-marker', and
