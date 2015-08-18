@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Aug 18 10:54:25 2015 (-0700)
+;; Last-Updated: Tue Aug 18 15:19:53 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7239
+;;     Update #: 7240
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -8450,8 +8450,7 @@ destination, or `C-g' to quit.  This is an Icicles command - see
 command `icicle-mode'."
   (interactive)
   (unless (featurep 'zones) (error "You need library `zones.el' for this command"))
-  (let ((var  zz-izones-var)
-        (val  (symbol-value zz-izones-var)))
+  (let ((val  (symbol-value zz-izones-var)))
     (unless val (error "No previous narrowing"))
     (if (< (length val) 2)              ; Only one narrowing.  If narrowed, widen, else narrow to it.
         (zz-narrow 1 'MSG)
