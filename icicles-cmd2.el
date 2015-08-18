@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Aug 18 15:19:53 2015 (-0700)
+;; Last-Updated: Tue Aug 18 16:27:55 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7240
+;;     Update #: 7244
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -161,7 +161,7 @@
 ;;    (+)`icicle-search-xml-element',
 ;;    (+)`icicle-search-xml-element-text-node',
 ;;    (+)`icicle-select-frame', `icicle-select-frame-by-name',
-;;    (+)`icicle-select-text-at-point',
+;;    (+)`icicle-select-text-at-point', `icicle-select-zone',
 ;;    `icicle-set-S-TAB-methods-for-command',
 ;;    `icicle-set-TAB-methods-for-command', (+)`icicle-show-faces',
 ;;    (+)`icicle-show-only-faces', (+)`icicle-synonyms',
@@ -259,6 +259,7 @@
 ;;    `icicle-search-replace-match',
 ;;    `icicle-search-replace-search-hit', `icicle-search-thing-args',
 ;;    `icicle-search-thing-scan', `icicle-search-where-arg',
+;;    `icicle-select-zone-action',
 ;;    `icicle-set-completion-methods-for-command',
 ;;    `icicle-things-alist', `icicle-this-command-keys-prefix',
 ;;    `icicle-update-f-l-keywords', `icicle-widget-color-complete',
@@ -8469,7 +8470,7 @@ command `icicle-mode'."
                                   end   (marker-position (nth 2 res))
                                   name  (format "%d-%d, %s" beg end (buffer-substring beg end))
                                   name  (replace-regexp-in-string "\n" " " (substring name
-                                                                                      0 (min 30 (length name))))
+                                                                                      0 (min 50 (length name))))
                                   name  (format "%s\n" name))
                             (push `(,name ,@res) ns))) ; Go ahead and include the numerical index: (car RES).
                         ns)
@@ -8487,6 +8488,77 @@ command `icicle-mode'."
       (args-out-of-range (set zz-izones-var  (cdr (symbol-value zz-izones-var)))
                          (error "Restriction removed because of invalid limits"))
       (error (error "%s" (error-message-string err))))))
+
+(defun icicle-select-zone ()
+  "Choose a buffer zone and select it as the active region.
+The candidates are taken from the variable that is the value of
+`zz-izones-var'.
+
+During completion you can use these keys\\<minibuffer-local-completion-map>:
+
+`C-RET'   - Goto marker named by current completion candidate
+`C-down'  - Goto marker named by next completion candidate
+`C-up'    - Goto marker named by previous completion candidate
+`C-next'  - Goto marker named by next apropos-completion candidate
+`C-prior' - Goto marker named by previous apropos-completion candidate
+`C-end'   - Goto marker named by next prefix-completion candidate
+`C-home'  - Goto marker named by previous prefix-completion candidate
+`\\[icicle-delete-candidate-object]' - Delete zone named by current completion candidate
+
+When candidate action and cycling are combined (e.g. `C-next'), option
+`icicle-act-before-cycle-flag' determines which occurs first.
+
+Use `mouse-2', `RET', or `S-RET' to choose a candidate as the final
+destination, or `C-g' to quit.  This is an Icicles command - see
+command `icicle-mode'."
+  (interactive)
+  (unless (featurep 'zones) (error "You need library `zones.el' for this command"))
+  (let ((var  zz-izones-var)
+        (val  (symbol-value zz-izones-var)))
+    (unless val (error "No zone to select"))
+    (if (< (length val) 2)              ; Only one zone - select it.
+        (zz-select-region 1 'MSG)
+      (let ((icicle-sort-comparer            'icicle-special-candidates-first-p)
+            (icicle-delete-candidate-object  (lambda (cand)
+                                               (let ((name.res  (icicle-get-alist-candidate cand)))
+                                                 (with-current-buffer icicle-pre-minibuffer-buffer
+                                                   (set zz-izones-var  (delete (cdr name.res) val))
+                                                   (zz-izones-renumber))))))
+        (icicle-apply (let ((ns  ())
+                            beg end name)
+                        (dolist (res  zz-izones)
+                          (setq beg   (marker-position (nth 1 res))
+                                end   (marker-position (nth 2 res))
+                                name  (format "%d-%d, %s" beg end (buffer-substring beg end))
+                                name  (replace-regexp-in-string "\n" " " (substring name
+                                                                                    0 (min 50 (length name))))
+                                name  (format "%s\n" name))
+                          (push `(,name ,@res) ns)) ; Go ahead and include the numerical index: (car RES).
+                        ns)
+                      #'icicle-select-zone-action
+                      'NOMSG)))))
+
+(defun icicle-select-zone-action (candidate)
+  "Action function for `icicle-select-zone': Select CANDIDATE as region."
+  (condition-case err
+      (save-selected-window
+        (pop-to-buffer icicle-pre-minibuffer-buffer)
+        (let* ((name       (car candidate))
+               (izone      (cdr candidate))
+               (izone      (zz-markerize izone))
+               (beg        (nth 1 izone))
+               (end        (nth 2 izone))
+               (other-buf  nil))
+          (when (and (not (local-variable-p zz-izones-var))
+                     (setq other-buf  (zz-izone-has-other-buffer-marker-p izone)) ; Returns marker or nil.
+                     (or (not (markerp beg))  (not (markerp end))  (eq (marker-buffer beg) (marker-buffer end)))
+                     (setq other-buf  (marker-buffer other-buf)))
+            (pop-to-buffer other-buf))
+          (goto-char beg)
+          (push-mark end nil t)
+          (setq deactivate-mark  nil)
+          (message "Region %s restored%s" name (if other-buf (format " in `%s'" other-buf) ""))))
+    (error (error "%s" (error-message-string err)))))
 
 (defvar icicle-key-prefix nil
   "A prefix key.")
