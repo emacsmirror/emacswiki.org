@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Aug 18 09:56:59 2015 (-0700)
+;; Last-Updated: Tue Aug 18 10:54:25 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7237
+;;     Update #: 7239
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -8481,7 +8481,7 @@ command `icicle-mode'."
   "Action function for `icicle-buffer-narrowing': Narrow to CANDIDATE region."
   (with-current-buffer icicle-pre-minibuffer-buffer
     (condition-case err
-        (let ((zz-izone-add-anyway-p  nil))
+        (let ((zz-add-zone-anyway-p  nil))
           (narrow-to-region (nth 2 candidate) (nth 3 candidate)) ; Skip the numerical index: (nth 1 CANDIDATE).
           (zz-narrowing-lighter)
           (message zz-lighter-narrowing-part))
