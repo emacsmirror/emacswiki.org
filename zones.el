@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 18 09:16:42 2015 (-0700)
+;; Last-Updated: Tue Aug 18 09:50:16 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1544
+;;     Update #: 1550
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -374,7 +374,8 @@
 ;;(@* "Change log")
 ;;
 ;; 2015/08/18 dadams
-;;     zz-narrow: Set zz-lighter-narrowing-part anyway, even if mode-line-modes is not bound.  (Can use in msgs.)
+;;     zz-narrowing-lighter: Moved mode-line-modes boundp guard here.
+;;     zz-narrow: Removed mode-line-modes boundp guard.  OK to set zz-lighter-narrowing-part here.
 ;; 2015/08/16 dadams
 ;;     Merged content of wide-n.el here (wide-n.el is obsolete now - this replaces it).
 ;;     Added: zz-zone-has-other-buffer-marker-p.
@@ -912,13 +913,13 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
                                  (/= (- (point-max) (point-min)) (buffer-size)))) ; = `buffer-narrowed-p'.
            (widen)
            (setq zz-lighter-narrowing-part  "")
-           (when (boundp 'mode-line-modes) (zz-narrowing-lighter))
+           (zz-narrowing-lighter)
            (when msgp (message "No longer narrowed")))
           ((= (prefix-numeric-value arg) 0)
            (set var ())
            (widen)
            (setq zz-lighter-narrowing-part  "")
-           (when (boundp 'mode-line-modes) (zz-narrowing-lighter))
+           (zz-narrowing-lighter)
            (when msgp (message "No longer narrowed; no more narrowings")))
           (t
            (setq arg  (prefix-numeric-value arg))
@@ -946,34 +947,36 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
                               (setq other-buf  (marker-buffer other-buf)))
                      (pop-to-buffer other-buf))
                    (narrow-to-region beg end)
-                   (when (boundp 'mode-line-modes) (zz-narrowing-lighter)))
+                   (zz-narrowing-lighter))
                (args-out-of-range (set var  (cdr val))
                                   (error "Restriction removed because of invalid limits"))
                (error (error "%s" (error-message-string err)))))))))
 
 (defun zz-narrowing-lighter ()
   "Update minor-mode mode-line lighter to reflect narrowing/widening.
-Put `zz-narrow' on `mouse-2' for the lighter suffix."
-  (let* ((%n-cons  (zz-regexp-car-member "%n\\(.*\\)\\'" mode-line-modes)))
-    (when %n-cons
-      (setcar %n-cons (replace-regexp-in-string
-                       "%n\\(.*\\)"
-                       (if (/= (- (point-max) (point-min)) (buffer-size)) ; `buffer-narrowed-p', for older Emacs
-                           zz-lighter-narrowing-part
-                         "")
-                       (car %n-cons) nil nil 1))
-      (when (> (length (car %n-cons)) 2)
-        (set-text-properties 2
-                             (length (car %n-cons))
-                             '(local-map (keymap (mode-line keymap (mouse-2 . zz-narrow)))
-                               mouse-face mode-line-highlight
-                               help-echo "mouse-2: Next Restriction")
-                             (car %n-cons)))
-      ;; Dunno why we need to do this.  Tried adjusting `rear-sticky' and `front-sticky',
-      ;; but without this the whole field (not just the suffix) gets changed, in effect, to the above spec.
-      (set-text-properties 0 2 '(local-map (keymap (mode-line keymap (mouse-2 . mode-line-widen)))
-                                 mouse-face mode-line-highlight help-echo "mouse-2: Widen")
-                           (car %n-cons)))))
+Put `zz-narrow' on `mouse-2' for the lighter suffix.
+\(Do nothing unless `mode-line-modes' is bound (Emacs 22+).)"
+  (when (boundp 'mode-line-modes)
+    (let* ((%n-cons  (zz-regexp-car-member "%n\\(.*\\)\\'" mode-line-modes)))
+      (when %n-cons
+        (setcar %n-cons (replace-regexp-in-string
+                         "%n\\(.*\\)"
+                         (if (/= (- (point-max) (point-min)) (buffer-size)) ; `buffer-narrowed-p', for older Emacs
+                             zz-lighter-narrowing-part
+                           "")
+                         (car %n-cons) nil nil 1))
+        (when (> (length (car %n-cons)) 2)
+          (set-text-properties 2
+                               (length (car %n-cons))
+                               '(local-map (keymap (mode-line keymap (mouse-2 . zz-narrow)))
+                                 mouse-face mode-line-highlight
+                                 help-echo "mouse-2: Next Restriction")
+                               (car %n-cons)))
+        ;; Dunno why we need to do this.  Tried adjusting `rear-sticky' and `front-sticky',
+        ;; but without this the whole field (not just the suffix) gets changed, in effect, to the above spec.
+        (set-text-properties 0 2 '(local-map (keymap (mode-line keymap (mouse-2 . mode-line-widen)))
+                                   mouse-face mode-line-highlight help-echo "mouse-2: Widen")
+                             (car %n-cons))))))
 
 (defun zz-regexp-car-member (regexp xs)
   "Like `member', but tests by matching REGEXP against cars."
