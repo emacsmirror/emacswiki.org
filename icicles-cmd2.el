@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Aug 16 17:10:46 2015 (-0700)
+;; Last-Updated: Tue Aug 18 08:33:24 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7199
+;;     Update #: 7205
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -66,7 +66,8 @@
 ;;    (+)`icicle-apply', (+)`icicle-bookmark-a-file',
 ;;    (+)`icicle-bookmark-tagged',
 ;;    (+)`icicle-bookmark-tagged-other-window',
-;;    (+)`icicle-choose-faces', (+)`icicle-choose-invisible-faces',
+;;    (+)`icicle-buffer-narrowing', (+)`icicle-choose-faces',
+;;    (+)`icicle-choose-invisible-faces',
 ;;    (+)`icicle-choose-visible-faces', (+)`icicle-comint-command',
 ;;    (+)`icicle-comint-search', (+)`icicle-compilation-search',
 ;;    `icicle-complete', (+)`icicle-complete-keys',
@@ -111,8 +112,7 @@
 ;;    (+)`icicle-Info-index-20', (+)`icicle-Info-menu',
 ;;    (+)`icicle-Info-menu-cmd', `icicle-Info-virtual-book',
 ;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-load-library',
-;;    (+)`icicle-map', (+)`icicle-narrow',
-;;    `icicle-next-font-lock-keywords',
+;;    (+)`icicle-map', `icicle-next-font-lock-keywords',
 ;;    `icicle-next-font-lock-keywords-repeat',
 ;;    `icicle-next-visible-thing', `icicle-non-whitespace-string-p',
 ;;    (+)`icicle-object-action', (+)`icicle-occur',
@@ -221,7 +221,8 @@
 ;;    `icicle-insert-thesaurus-entry-cand-fn',
 ;;    `icicle-invisible-face-p', `icicle-invisible-p',
 ;;    `icicle-keys+cmds-w-prefix', `icicle-make-color-candidate',
-;;    `icicle-marker+text', `icicle-markers', `icicle-narrow-action',
+;;    `icicle-marker+text', `icicle-markers',
+;;    `icicle-buffer-narrowing-action',
 ;;    `icicle-next-single-char-property-change',
 ;;    `icicle-next-visible-thing-1', `icicle-next-visible-thing-2',
 ;;    `icicle-next-visible-thing-and-bounds',
@@ -8425,8 +8426,8 @@ candidates to packages of different kinds."
             (Info-make-manuals-xref (concat (symbol-name package) " package")
                                     nil nil (not (called-interactively-p 'interactive)))))))))
 
-(defun icicle-narrow ()
-  "Choose a restriction and apply it.
+(defun icicle-buffer-narrowing ()
+  "Choose a narrowing (buffer restriction) and apply it.
 During completion you can use these keys\\<minibuffer-local-completion-map>:
 
 `C-RET'   - Goto marker named by current completion candidate
@@ -8468,15 +8469,15 @@ command `icicle-mode'."
                                 name  (format "%s\n" name))
                           (push `(,name ,@res) ns)))
                       ns)
-                    #'icicle-narrow-action
+                    #'icicle-buffer-narrowing-action
                     'NOMSG))))
 
-(defun icicle-narrow-action (cand)
-  "Action function for `icicle-narrow': Narrow region to candidate CAND."
+(defun icicle-buffer-narrowing-action (candidate)
+  "Action function for `icicle-buffer-narrowing': Narrow to CANDIDATE region."
   (with-current-buffer icicle-pre-minibuffer-buffer
     (condition-case err
         (let ((zz-izone-add-anyway-p  t))
-          (narrow-to-region (cadr cand) (car (cddr cand)))
+          (narrow-to-region (cadr candidate) (car (cddr candidate)))
           (zz-narrowing-lighter)
           (message zz-lighter-narrowing-part))
       (args-out-of-range
