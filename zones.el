@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 18 09:50:16 2015 (-0700)
+;; Last-Updated: Tue Aug 18 11:10:23 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1550
+;;     Update #: 1602
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -59,8 +59,8 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `zz-izone-add', `zz-izone-add-and-coalesce', `zz-izone-delete',
-;;    `zz-izones-coalesce', `zz-narrow', `zz-narrow-repeat',
+;;    `zz-add-zone', `zz-add-zone-and-coalesce', `zz-coalesce-zones',
+;;    `zz-delete-zone', `zz-narrow', `zz-narrow-repeat',
 ;;    `zz-select-region', `zz-select-region-repeat'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -87,7 +87,7 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `zz-izones', `zz-izones-var', `zz-lighter-narrowing-part',
-;;    `zz-izone-add-anyway-p'.
+;;    `zz-add-zone-anyway-p'.
 ;;
 ;;
 ;;  ***** NOTE: This EMACS PRIMITIVE has been ADVISED HERE:
@@ -187,7 +187,7 @@
 ;;  Commands that manipulate lists of zones generally use izones,
 ;;  because they make use of the zone identifiers.
 ;;
-;;  Things you can do with izones:
+;;  Things you can do with zones:
 ;;
 ;;  * Narrow the buffer to any of them.  Cycle among narrowings.  If
 ;;    you use library `icicles.el' then you can also navigate among
@@ -203,9 +203,9 @@
 ;;    `highlight.el' or library `facemenu+.el' (different kinds of
 ;;    highlighting).
 ;;
-;;  * Push the active region to a list of izones.
+;;  * Push the active region to a list of zones.
 ;;
-;;  * Delete an izone from a list of izones.
+;;  * Delete an izone from a list of zones.
 ;;
 ;;  * Make an izone variable persistent, in a bookmark.  Use the
 ;;    bookmark to restore it in a subsequent Emacs session.  For this
@@ -241,7 +241,7 @@
 ;;    = 0 (e.g. `C-0')   no             yes
 ;;    < 0 (e.g. `C--')   no             no
 ;;
-;;  For example, `C-u C-x n s' (`zz-izone-add') prompts you for a
+;;  For example, `C-u C-x n a' (`zz-add-zone') prompts you for a
 ;;  different variable to use, in place of the current value of
 ;;  `zz-izones-var'.  The variable you enter is made buffer-local and
 ;;  it becomes the new default izones variable for the buffer; that
@@ -264,16 +264,16 @@
 ;;  with the narrowing/widening keys `C-x n d', `C-x n n', `C-x n p',
 ;;  and `C-x n w':
 ;;
-;;  C-x n C-d `zz-izone-delete' - Delete an izone from current var
+;;  C-x n a   `zz-add-zone' - Add to current izones variable
+;;  C-x n A   `zz-add-zone-and-coalesce' - Add izone; coalesce izones
+;;  C-x n c   `zz-coalesce-zones' - Coalesce izones
 ;;  C-x n d   `narrow-to-defun'
+;;  C-x n C-d `zz-delete-zone' - Delete an izone from current var
 ;;  C-x n h   `hlt-highlight-regions' - Highlight izones
 ;;  C-x n H   `hlt-highlight-regions-in-buffers' - in multiple buffers
 ;;  C-x n n   `narrow-to-region'
 ;;  C-x n p   `narrow-to-page'
 ;;  C-x n r   `zz-select-region-repeat' - Cycle as active regions
-;;  C-x n s   `zz-izone-add' - Add to current izones variable
-;;  C-x n S   `zz-izone-add-and-coalesce' - Add izone; coalesce izones
-;;  C-x n u   `zz-izones-coalesce' - Coalesce izones
 ;;  C-x n w   `widen'
 ;;  C-x n x   `zz-narrow-repeat' - Cycle as buffer narrowings
 ;;
@@ -374,6 +374,16 @@
 ;;(@* "Change log")
 ;;
 ;; 2015/08/18 dadams
+;;     Renamed: zz-izone-add              to zz-add-zone,
+;;              zz-izone-add-and-coalesce to zz-add-zone-and-coalesce,
+;;              zz-izone-delete           to zz-delete-zone,
+;;              zz-izones-coalesce        to zz-coalesce-zones,
+;;              zz-izone-add-anyway-p     to zz-add-zone-anyway-p.
+;;     Command doc strings: Mention "zone" instead of "izone" (simpler).
+;;     Changed binding of zz-coalesce-zones        to C-x n c from C-x n u.
+;;     Changed binding of zz-add-zone              to C-x n a from C-x n s.
+;;     Changed binding of zz-add-zone-and-coalesce to C-x n A from C-x n S.
+;;     zz-izones-from-zones: Renamed arg ZONES to BASIC-ZONES.
 ;;     zz-narrowing-lighter: Moved mode-line-modes boundp guard here.
 ;;     zz-narrow: Removed mode-line-modes boundp guard.  OK to set zz-lighter-narrowing-part here.
 ;; 2015/08/16 dadams
@@ -588,12 +598,14 @@ Don't forget to mention your Emacs and library versions."))
 (defvar zz-izones-var 'zz-izones
   "The izones variable currently being used.
 The variable can be buffer-local or not.  If not, then its value can
-include markers from multiple buffers.")
+include markers from multiple buffers.
+See also `zz-izones'.")
 
 (defvar zz-izones ()
   "List of izones.
 Each entry is a list (NUM START END), where NUM is a counter
-identifying this izone, and START and END are its limits.")
+identifying this izone, and START and END are its limits.
+This is the default value of variable `zz-izones-var'.")
 (make-variable-buffer-local 'zz-izones)
 
 ;; Not used.  Could use this if really needed.
@@ -609,7 +621,7 @@ to use the new format, and that value is returned."
     (dolist (elt  oldval) (unless (consp (cddr elt)) (setcdr (cdr elt) (list (cddr elt)))))
     (symbol-value zz-izones-var)))
 
-(defvar zz-izone-add-anyway-p nil
+(defvar zz-add-zone-anyway-p nil
   "Non-nil means narrowing always updates current `zz-izones-var'.
 Normally, if a narrowing command is called non-interactively then the
 region limits are not pushed to the variable that is the current value
@@ -855,11 +867,11 @@ Return the first non-nil value returned by PREDICATE."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;###autoload
-(defun zz-select-region (arg &optional msgp)
-  "Select a region from among the current set of izones.
-The izones are those in the current `zz-izones-var'.
-With no prefix arg, select the previous recorded izone.
-With a numeric prefix arg N, select the Nth previous izone.
+(defun zz-select-region (arg &optional msgp) ; Bound to `C-x n r', for Emacs < 22.
+  "Select a region from among the current set of zones.
+The zones are those in the current `zz-izones-var'.
+With no prefix arg, select the previous recorded zone.
+With a numeric prefix arg N, select the Nth previous zone.
 
 Note that if the value of `zz-izones-var' is not buffer-local then you
 can use this command to cycle among regions in multiple buffers."
@@ -867,7 +879,7 @@ can use this command to cycle among regions in multiple buffers."
   (let* ((var   zz-izones-var)
          (val   (symbol-value var))
          (cntr  (abs arg)))
-    (unless (cadr val) (error "No region to select"))
+    (unless (cadr val) (error "No zone to select"))
     (let ((latest  ()))
       (while (> cntr 0)
         (push (nth (1- cntr) val) latest)
@@ -875,7 +887,7 @@ can use this command to cycle among regions in multiple buffers."
       (setq latest  (nreverse latest))
       (setq val  (set var (append (nthcdr arg val) latest))
             val  (set var (mapcar #'zz-markerize val)))
-      (let* ((zz-izone-add-anyway-p  t)
+      (let* ((zz-add-zone-anyway-p  t)
              (izone                  (car val))
              (beg                    (nth 1 izone))
              (end                    (nth 2 izone))
@@ -893,14 +905,14 @@ can use this command to cycle among regions in multiple buffers."
 ;; This is a non-destructive operation.
 ;;
 ;;;###autoload
-(defun zz-narrow (arg &optional msgp)
+(defun zz-narrow (arg &optional msgp) ; Bound to `C-x n x', for Emacs < 22.
   "Widen to a previous buffer restriction (narrowing).
-The candidates are the izones in the current `zz-izones-var'.
+The candidates are the zones in the current `zz-izones-var'.
 
 With no prefix arg, widen to the previous narrowing.
 With a plain prefix arg (`C-u'), widen completely.
 With a zero  prefix arg (`C-0'), widen completely and reset (empty)
- the list of izones for this buffer.
+ the list of zones for this buffer.
 With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
  previous narrowing).  Positive and negative args work the same,
  except that a negative arg also pops entries off the ring: it removes
@@ -935,7 +947,7 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
                    val                         (set var (mapcar #'zz-markerize val))
                    zz-lighter-narrowing-part  (format "-%d" (caar val)))
              (condition-case err
-                 (let* ((zz-izone-add-anyway-p  t)
+                 (let* ((zz-add-zone-anyway-p  t)
                         (izone                  (car val))
                         (beg                    (nth 1 izone))
                         (end                    (nth 2 izone))
@@ -985,8 +997,8 @@ Put `zz-narrow' on `mouse-2' for the lighter suffix.
                      (zz-regexp-car-member regexp (cdr xs)))))
 
 ;;;###autoload
-(defun zz-izone-add (start end &optional variable not-buf-local-p set-var-p msgp) ; Bound to `C-x n s'.
-  "Add an izone for the text from START to END to the izones of VARIABLE.
+(defun zz-add-zone (start end &optional variable not-buf-local-p set-var-p msgp) ; Bound to `C-x n a'.
+  "Add a zone for the text from START to END to the zones of VARIABLE.
 Return the new value of VARIABLE.
 
 This is a destructive operation: The list structure of the variable
@@ -1041,8 +1053,8 @@ Non-interactively:
     (symbol-value var)))
 
 ;;;###autoload
-(defun zz-izone-delete (n &optional variable not-buf-local-p set-var-p msgp) ; Bound to `C-x n C-d'.
-  "Delete the izone numbered N from VARIABLE, and renumber those remaining.
+(defun zz-delete-zone (n &optional variable not-buf-local-p set-var-p msgp) ; Bound to `C-x n C-d'.
+  "Delete the zone numbered N from VARIABLE, and renumber those remaining.
 Return the new value of VARIABLE.
 
 This is a destructive operation: The list structure of the variable
@@ -1078,9 +1090,9 @@ Non-nil optional arg NOMSG means do not display a status message."
           (val     (symbol-value var))
           (IGNORE  (unless (zz-izones-p val)
                      (error "Not an izones variable: `%s', value: `%S'" var val)))
-          (IGNORE  (unless val (error "No izones - variable `%s' is empty" var)))
+          (IGNORE  (unless val (error "No zones - variable `%s' is empty" var)))
           (len     (length val))
-          (num     (if (= len 1) 1 (read-number (format "Delete izone number (1 to %d): " len)))))
+          (num     (if (= len 1) 1 (read-number (format "Delete zone numbered (1 to %d): " len)))))
      (while (or (< num 1)  (> num len))
        (setq num  (read-number (format "Number must be between 1 and %d: " len))))
      (list num var nloc setv t)))
@@ -1089,10 +1101,10 @@ Non-nil optional arg NOMSG means do not display a status message."
   (when set-var-p (setq zz-izones-var variable))
   (let ((val  (symbol-value variable)))
     (unless (zz-izones-p val) (error "Not an izones variable: `%s', value: `%S'" variable val))
-    (unless val (error "No izones - variable `%s' is empty" variable))
+    (unless val (error "No zones - variable `%s' is empty" variable))
     (set variable (assq-delete-all n val)))
   (zz-izones-renumber variable)
-  (when msgp (message "Deleted izone number %d" n))
+  (when msgp (message "Deleted zone numbered %d" n))
   (symbol-value variable))
 
 (defun zz-markerize (izone)
@@ -1200,7 +1212,7 @@ value can be modified."
   (let* ((var   (or variable  zz-izones-var))
          (orig  (symbol-value var)))
     (set var ())
-    (dolist (nn  orig) (zz-izone-add (cadr nn) (car (cddr nn)) var))))
+    (dolist (nn  orig) (zz-add-zone (cadr nn) (car (cddr nn)) var))))
 
 ;;; Non-destructive version.
 ;;;
@@ -1384,9 +1396,9 @@ This is a repeatable version of `zz-select-region'."
   (require 'repeat)
   (zz-repeat-command 'zz-select-region))
 
-(defun zz-izones-from-zones (zones)
-  "Return a list of regions like `zz-izones', based on ZONES.
-Each zone in the list ZONES has the form (LIMIT1 LIMIT2 . EXTRA),
+(defun zz-izones-from-zones (basic-zones)
+  "Return a list of regions like `zz-izones', based on BASIC-ZONES.
+Each zone in the list BASIC-ZONES has form (LIMIT1 LIMIT2 . EXTRA),
 where each of the limits is a buffer position (a number or marker) and
 EXTRA is a list.
 
@@ -1394,12 +1406,12 @@ This is a non-destructive operation.  A new list is returned.
 
 \(zz-izones-from-zones (zz-izone-limits)) = zz-izones
 and
-\(zz-izone-limits (zz-izones-from-zones ZONES)) = ZONES"
+\(zz-izone-limits (zz-izones-from-zones BASIC-ZONES)) = BASIC-ZONES"
   (let ((ii  0))
-    (nreverse (mapcar (lambda (zz) (cons (setq ii  (1+ ii)) zz)) zones))))
+    (nreverse (mapcar (lambda (zz) (cons (setq ii  (1+ ii)) zz)) basic-zones))))
 
 ;;;###autoload
-(defun zz-izones-coalesce (&optional variable msgp)
+(defun zz-coalesce-zones (&optional variable msgp) ; Bound to `C-x n c'
   "Coalesce the izones of VARIABLE.
 A non-destructive operation: The new value of VARIABLE is a new list.
 Return the new value of VARIABLE.
@@ -1430,9 +1442,9 @@ Non-interactively:
     (symbol-value var)))
 
 ;;;###autoload
-(defun zz-izone-add-and-coalesce (start end &optional variable msgp)
+(defun zz-add-zone-and-coalesce (start end &optional variable msgp) ; Bound to `C-x n A'.
   "Add an izone from START to END to those of VARIABLE, and coalesce.
-Use `zz-izone-add', then apply `zz-izones-coalesce'.
+Use `zz-add-zone', then apply `zz-coalesce-zones'.
 Return the new value of VARIABLE.
 
 This is a destructive operation: The list structure of the variable
@@ -1459,56 +1471,56 @@ Non-interactively:
                  (when (and current-prefix-arg  (<= npref 0)) (setq zz-izones-var var))
                  (list beg end var t)))
   (unless variable (setq variable  zz-izones-var))
-  (zz-izone-add start end variable nil nil msgp)
-  (zz-izones-coalesce variable msgp)
+  (zz-add-zone start end variable nil nil msgp)
+  (zz-coalesce-zones variable msgp)
   (symbol-value variable))
 
 
 ;;---------------------
 
 (cond ((boundp 'narrow-map)
-       (define-key narrow-map "\C-d" 'zz-izone-delete)
+       (define-key narrow-map "a"    'zz-add-zone)
+       (define-key narrow-map "A"    'zz-add-zone-and-coalesce)
+       (define-key narrow-map "c"    'zz-coalesce-zones)
+       (define-key narrow-map "\C-d" 'zz-delete-zone)
        (when (fboundp 'hlt-highlight-regions)
          (define-key narrow-map "h"  'hlt-highlight-regions))
        (when (fboundp 'hlt-highlight-regions)
          (define-key narrow-map "H"  'hlt-highlight-regions-in-buffers))
        (define-key narrow-map "r"    (if (> emacs-major-version 21) 'zz-select-region-repeat 'zz-select-region))
-       (define-key narrow-map "s"    'zz-izone-add)
-       (define-key narrow-map "S"    'zz-izone-add-and-coalesce)
-       (define-key narrow-map "u"    'zz-izones-coalesce)
        (define-key narrow-map "x"    'zz-narrow-repeat))
       (t
-       (define-key ctl-x-map "n\C-d" 'zz-izone-delete)
+       (define-key ctl-x-map "na"    'zz-add-zone)
+       (define-key ctl-x-map "nA"    'zz-add-zone-and-coalesce)
+       (define-key ctl-x-map "nc"    'zz-coalesce-zones)
+       (define-key ctl-x-map "n\C-d" 'zz-delete-zone)
        (when (fboundp 'hlt-highlight-regions)
          (define-key ctl-x-map "nh"  'hlt-highlight-regions))
        (when (fboundp 'hlt-highlight-regions)
          (define-key ctl-x-map "nH"  'hlt-highlight-regions-in-buffers))
        (define-key ctl-x-map "nr"    (if (> emacs-major-version 21) 'zz-select-region-repeat 'zz-select-region))
-       (define-key ctl-x-map "ns"    'zz-izone-add)
-       (define-key ctl-x-map "nS"    'zz-izone-add-and-coalesce)
-       (define-key ctl-x-map "nu"    'zz-izones-coalesce)
        (define-key ctl-x-map "nx"    (if (> emacs-major-version 21) 'zz-narrow-repeat 'zz-narrow))))
 
 
-;; Call `zz-izone-add' if interactive or if `zz-izone-add-anyway-p'.
+;; Call `zz-add-zone' if interactive or if `zz-add-zone-anyway-p'.
 ;;
-(defadvice narrow-to-region (before zz-izone-add activate)
+(defadvice narrow-to-region (before zz-add-zone activate)
   "Push the region limits to the current `zz-izones-var'.
 You can use `C-x n x' to widen to a previous buffer restriction.
 
 This is a destructive operation. The list structure of the variable
 value can be modified."
-  (when (or (interactive-p)  zz-izone-add-anyway-p)
+  (when (or (interactive-p)  zz-add-zone-anyway-p)
     (let ((start  (ad-get-arg 0))
           (end    (ad-get-arg 1)))
       (unless start (setq start  (region-beginning))) ; Needed for Emacs 20.
       (unless end   (setq end    (region-end)))
-      (zz-izone-add start end nil nil nil 'MSG))))
+      (zz-add-zone start end nil nil nil 'MSG))))
 
 
 ;; REPLACE ORIGINAL in `lisp.el'.
 ;;
-;; Call `zz-izone-add' if interactive or `zz-izone-add-anyway-p'.
+;; Call `zz-add-zone' if interactive or `zz-add-zone-anyway-p'.
 ;;
 ;;;###autoload
 (defun narrow-to-defun (&optional arg)
@@ -1540,13 +1552,13 @@ that is the value of `zz-izones-var' can be modified."
 	(setq beg  (point)))
       (goto-char end)
       (re-search-backward "^\n" (- (point) 1) t)
-      (when (or (interactive-p)  zz-izone-add-anyway-p) (zz-izone-add beg end nil nil nil 'MSG))
+      (when (or (interactive-p)  zz-add-zone-anyway-p) (zz-add-zone beg end nil nil nil 'MSG))
       (narrow-to-region beg end))))
 
 
 ;; REPLACE ORIGINAL in `page.el'.
 ;;
-;; Call `zz-izone-add' if interactive or `zz-izone-add-anyway-p'.
+;; Call `zz-add-zone' if interactive or `zz-add-zone-anyway-p'.
 ;;
 ;;;###autoload
 (defun narrow-to-page (&optional arg)
@@ -1589,7 +1601,7 @@ that is the value of `zz-izones-var' can be modified."
                   ;; Otherwise, show text starting with following line.
                   (when (and (eolp)  (not (bobp))) (forward-line 1))
                   (point))))
-      (when (or (interactive-p)  zz-izone-add-anyway-p) (zz-izone-add beg end nil nil nil 'MSG))
+      (when (or (interactive-p)  zz-add-zone-anyway-p) (zz-add-zone beg end nil nil nil 'MSG))
       (narrow-to-region beg end))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
