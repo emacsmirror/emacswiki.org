@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 16 17:28:30 2015 (-0700)
+;; Last-Updated: Tue Aug 18 11:12:31 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3981
+;;     Update #: 3984
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -420,7 +420,7 @@
 ;;  If you also use library `zones.el' then narrowing and other
 ;;  operations record buffer zones (including narrowings) in (by
 ;;  default) buffer-local variable `zz-izones'.  Besides narrowing,
-;;  you can use `C-x n s' (command `zz-izone-add') to add the current
+;;  you can use `C-x n a' (command `zz-add-zone') to add the current
 ;;  region to the same variable.
 ;;
 ;;  You can use command `hlt-highlight-regions' to highlight the
