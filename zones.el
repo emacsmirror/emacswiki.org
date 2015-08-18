@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 18 11:10:23 2015 (-0700)
+;; Last-Updated: Tue Aug 18 15:34:36 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1602
+;;     Update #: 1604
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -386,6 +386,7 @@
 ;;     zz-izones-from-zones: Renamed arg ZONES to BASIC-ZONES.
 ;;     zz-narrowing-lighter: Moved mode-line-modes boundp guard here.
 ;;     zz-narrow: Removed mode-line-modes boundp guard.  OK to set zz-lighter-narrowing-part here.
+;;     zz-select-region: Removed unneeded binding of zz-add-zone-anyway-p.
 ;; 2015/08/16 dadams
 ;;     Merged content of wide-n.el here (wide-n.el is obsolete now - this replaces it).
 ;;     Added: zz-zone-has-other-buffer-marker-p.
@@ -599,7 +600,7 @@ Don't forget to mention your Emacs and library versions."))
   "The izones variable currently being used.
 The variable can be buffer-local or not.  If not, then its value can
 include markers from multiple buffers.
-See also `zz-izones'.")
+See also variable `zz-izones'.")
 
 (defvar zz-izones ()
   "List of izones.
@@ -887,8 +888,7 @@ can use this command to cycle among regions in multiple buffers."
       (setq latest  (nreverse latest))
       (setq val  (set var (append (nthcdr arg val) latest))
             val  (set var (mapcar #'zz-markerize val)))
-      (let* ((zz-add-zone-anyway-p  t)
-             (izone                  (car val))
+      (let* ((izone                  (car val))
              (beg                    (nth 1 izone))
              (end                    (nth 2 izone))
              (other-buf              nil))
