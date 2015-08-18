@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 16 19:49:10 2015 (-0700)
+;; Last-Updated: Tue Aug 18 09:16:42 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1539
+;;     Update #: 1544
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -373,6 +373,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/08/18 dadams
+;;     zz-narrow: Set zz-lighter-narrowing-part anyway, even if mode-line-modes is not bound.  (Can use in msgs.)
 ;; 2015/08/16 dadams
 ;;     Merged content of wide-n.el here (wide-n.el is obsolete now - this replaces it).
 ;;     Added: zz-zone-has-other-buffer-marker-p.
@@ -579,7 +581,7 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "zones"))
 
 (defvar zz-lighter-narrowing-part ""
-  "String to append to \" Narrow\" in mode-line lighter.")
+  "String to append to \" Narrow\" in mode-line lighter or messages.")
 (make-variable-buffer-local 'zz-lighter-narrowing-part)
 
 (defvar zz-izones-var 'zz-izones
@@ -909,16 +911,14 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
     (cond ((or (consp arg)  (and (null (cdr val))
                                  (/= (- (point-max) (point-min)) (buffer-size)))) ; = `buffer-narrowed-p'.
            (widen)
-           (when (boundp 'mode-line-modes)
-             (setq zz-lighter-narrowing-part  "")
-             (zz-narrowing-lighter))
+           (setq zz-lighter-narrowing-part  "")
+           (when (boundp 'mode-line-modes) (zz-narrowing-lighter))
            (when msgp (message "No longer narrowed")))
           ((= (prefix-numeric-value arg) 0)
            (set var ())
            (widen)
-           (when (boundp 'mode-line-modes)
-             (setq zz-lighter-narrowing-part  "")
-             (zz-narrowing-lighter))
+           (setq zz-lighter-narrowing-part  "")
+           (when (boundp 'mode-line-modes) (zz-narrowing-lighter))
            (when msgp (message "No longer narrowed; no more narrowings")))
           (t
            (setq arg  (prefix-numeric-value arg))
