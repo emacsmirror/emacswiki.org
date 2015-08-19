@@ -30,10 +30,19 @@ variables on a sql-interactive-mode-hook:
 Similar settings make sense for other ComintMode based code such as
 ShellMode.
 
-== Multiline History ==
+== Compilation inside an existing Comint buffer == 
+Sometimes you'd like to run a compilation within an existing comint buffer instead of starting a new buffer like `M-x compile`.  To send the default compile command to a comint buffer called <code>*PowerShell*</code> running a process called <code>shell</code>, you can use the following command: 
 
-If you are using Emacs 20, take a look at ComintPatched if you are
-interested in recovering multiline statements from the history.
+<pre>
+(defun my-compile (&optional arg)
+  "Switch to correct buffer, then compile."
+  (interactive)
+  (let ((b (get-buffer "*PowerShell*"))
+        (p (get-process "shell")))
+    (if b
+        (with-current-buffer b
+          (apply comint-input-sender (list p compile-command))))))
+</pre>
 
 == Clearing the buffer ==
 
