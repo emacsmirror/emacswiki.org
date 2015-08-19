@@ -313,6 +313,12 @@ It is possible to change the linum's face so that the background has a custom co
 As far as i know that space under the numbers is the "default" face and there is no difference between this color and the background of other buffers.  So all you can do is to have the same background color for the "default" and "linum" faces.  (You can customize a face with "M-x customize-face")  -- AlexKost
 
 
+== Linum: highlight the current line number ==
+[[https://gist.github.com/targzeta/b3e463753b4f1fb8a7f5 linum-highligth-current-line-number.el]] implements a little function to highlight the current line number with a customizable face (linum group).
+
+[[image:linum-highlight-current-line]]
+
+
 == Setnu ==
 
 If you want to display line numbers for every line you are editing,
