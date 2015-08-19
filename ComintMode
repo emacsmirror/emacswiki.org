@@ -86,3 +86,7 @@ You can bind them to keys by adding them to the comint-mode-hook like this:
 
 -- JoeBloggs
                       
+== Multiline History (Emacs 20) ==
+
+If you are using Emacs 20, take a look at ComintPatched if you are
+interested in recovering multiline statements from the history.
