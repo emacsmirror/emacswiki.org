@@ -10,13 +10,13 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: (("find-dired-" "0"))
-;; Last-Updated: Sun Jul 26 09:50:06 2015 (-0700)
+;; Last-Updated: Wed Aug 19 07:13:52 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 731
+;;     Update #: 1189
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
-;; Compatibility: GNU Emacs 20.x
+;; Compatibility: GNU Emacs 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -27,9 +27,9 @@
 ;;   `fit-frame', `frame-fns', `help+20', `highlight', `image-dired',
 ;;   `image-file', `info', `info+20', `menu-bar', `menu-bar+',
 ;;   `misc-cmds', `misc-fns', `naked', `pp', `pp+', `second-sel',
-;;   `strings', `subr-21', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `strings', `subr-21', `thingatpt', `thingatpt+', `time-date',
+;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -45,11 +45,24 @@
 ;;  the Emacs `find-*' commands have undergone slight improvements.
 ;;
 ;;
-;;  New user options (variables) defined here:
+;;  User options defined here:
 ;;
-;;    `find-dired-default-fn', `find-dired-hook'.
+;;    `find-diredp-default-fn', `find-diredp-max-cmd-line',
+;;    `find-diredp-repeat-reuses-buffer-flag',
+;;    `find-diredp-time-prefix'.
 ;;
-;;  Other new variable defined here: `menu-bar-run-find-menu'.
+;;  Commands defined here:
+;;
+;;    `find-time-dired'.
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `find-diredp--parse-time'.
+;;
+;;  Internal variables defined here:
+;;
+;;    `find-dired-hook', `find-diredp-repeating-search',
+;;    `menu-bar-run-find-menu'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `find-dired.el'
@@ -57,19 +70,19 @@
 ;;
 ;;  `find-dired' - 1. Interactive spec uses `read-from-minibuffer',
 ;;                    `read-file-name', `dired-regexp-history' and
-;;                    `find-dired-default-fn'.
+;;                    `find-diredp-default-fn'.
 ;;                 2. Runs `find-dired-hook' at end.
-;;                 3. Uses `find-dired-default-fn' for default input.
+;;                 3. Uses `find-diredp-default-fn' for default input.
 ;;                 4. Buffer named after dir (not named "*Find*").
 ;;  `find-dired-filter' - Removes lines that just list a file.
 ;;  `find-dired-sentinel' - 1. Highlights file lines.
 ;;                          2. Puts `find' in mode-line.
 ;;  `find-grep-dired' - Interactive spec uses `read-from-minibuffer',
 ;;                      `read-file-name', `dired-regexp-history' and
-;;                      `find-dired-default-fn'.
+;;                      `find-diredp-default-fn'.
 ;;  `find-name-dired' - Interactive spec uses `read-from-minibuffer',
 ;;                      `read-file-name', `dired-regexp-history' and
-;;                      `find-dired-default-fn'.
+;;                      `find-diredp-default-fn'.
 ;;
 ;;
 ;;  ***** NOTE: The following variable defined in `find-dired.el'
@@ -81,6 +94,31 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/19 dadams
+;;     find-grep-dired: Use shell-quote-argument.  Use grep-program.  Thx to Tino Calancha.
+;; 2015/08/18 dadams
+;;     find-dired: Move abbreviate-file-name to where we insert subdir heading.  Thx to Tino Calancha.
+;; 2015/08/17 dadams
+;;     Added: find-diredp-time-format.
+;; 2015/08/10 dadams
+;;     Added: find-diredp--parse-time.
+;;     find-time-dired: Made MAX-TIME arg mandatory.  Use find-diredp--parse-time.
+;;     Thx to Tino Calancha.
+;;     Removed compile-time require of cl.el.
+;; 2015/08/03 dadams
+;;     Added: find-diredp-repeating-search, find-diredp-time-history, find-diredp-time-prefix, find-diredp-max-cmd-line,
+;;            find-diredp-repeat-reuses-buffer-flag, find-time-dired.
+;;     Renamed find-dired-default-fn to find-diredp-default-fn.
+;;     Use custom-reevaluate-setting on find-ls-option.
+;;     find(-name|-grep)-dired: Added optional args.  Pass them to find-dired.
+;;     find-dired:
+;;       Added missing " " after ARGS.
+;;       If find-diredp-repeat-reuses-buffer-flag is non-nil then do not call switch-to-buffer.
+;;       Handle optional args.
+;;     Moved running of find-dired-hook from find-dired to find-dired-sentinel, to ensure all output was received
+;;       and Dired settings (e.g. dired-omit-mode) are respected.
+;;     find-ls-option: Use custom-reevaluate-setting to make defconst override custom value.
+;;     Thx to Tino Calancha.
 ;; 2015/07/26 dadams
 ;;     find-dired: Update to more recent vanilla code.
 ;;      Added: find-args (for older Emacs versions).  Use read-string with INITIAL-INPUT.
@@ -177,7 +215,6 @@
 ;;
 ;;; Code:
 
-(and (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; when, unless
 (require 'find-dired-) ;; for new defvars from `find-dired.el'
 (require 'find-dired)
 
@@ -197,6 +234,7 @@
 (defvar find-name-arg)                  ; Emacs 22+
 (defvar find-program)                   ; Emacs 22+
 (defvar find-exec-terminator)           ; Emacs 22+
+(defvar grep-program)                   ; Emacs 22+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -206,9 +244,16 @@
 (defvar find-dired-hook nil
   "*Hook to be run at the end of each `find-dired' execution.")
 
-(defcustom find-dired-default-fn (if (fboundp 'region-or-non-nil-symbol-name-nearest-point)
-                                     (lambda () (region-or-non-nil-symbol-name-nearest-point t))
-                                   'word-at-point)
+(defvar find-diredp-repeating-search nil
+  "Non-nil means `find-dired' was called using `revert-buffer-function'.")
+
+(defvar find-diredp-time-history nil
+  "History of formatted time strings used by `find-time-dired'.")
+
+
+(defcustom find-diredp-default-fn (if (fboundp 'region-or-non-nil-symbol-name-nearest-point)
+                                      (lambda () (region-or-non-nil-symbol-name-nearest-point t))
+                                    'word-at-point)
   "*Function of 0 args called to provide default input for \\[find-dired],
 \\[find-name-dired], and  \\[find-grep-dired].
 
@@ -221,6 +266,30 @@ If this is nil, then no default input is provided."
           (const :tag "No default for `find-dired'" nil)
           (function :tag "Function of zero args to provide default for `find-dired'"))
   :group 'find-dired)
+
+(defcustom find-diredp-time-prefix "m"
+  "String prepended to \"min\" and \"max\" for time switches.
+Used by `find-time-dired'."
+  :type '(choice
+          (const :tag "Use last file modification time"  "m")
+          (const :tag "Use last file-status change"      "c"))
+  :group 'find-dired)
+
+(defcustom find-diredp-time-format (or (and (boundp 'display-time-format)  display-time-format)
+                                       "%F %T")
+  "String specifying format for displaying the time in `find-time-dired'.
+See function `format-time-string'."
+  :type 'string :group 'find-dired)
+
+(defcustom find-diredp-max-cmd-line 512
+  "Maximum number of chars in a command-line command.
+If a command uses more chars than this then it is shown only in buffer
+`*Messages*', not in the Dired buffer."
+  :type 'integer :group 'find-dired)
+
+(defcustom find-diredp-repeat-reuses-buffer-flag t
+  "Non-nil means repeating `find' via `revert-buffer-function' reuses buffer."
+  :type 'boolean :group 'find-dired)
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
@@ -237,9 +306,7 @@ If this is nil, then no default input is provided."
                           (process-file find-program nil nil nil null-device "-ls")
                         (error nil))))
            (cons "-ls" (if (eq system-type 'berkeley-unix) "-gilsb" "-dilsb")))
-          (t (cons (format "-exec ls -ld {} %s" (if (boundp 'find-exec-terminator)
-                                                    find-exec-terminator
-                                                  "\\;"))
+          (t (cons (format "-exec ls -ld {} %s" (if (boundp 'find-exec-terminator) find-exec-terminator "\\;"))
                    "-ld")))
   "*Description of the option to `find' to produce an `ls -l'-type listing.
 This is a cons of two strings (FIND-OPTION . LS-SWITCHES).
@@ -248,29 +315,50 @@ FIND-OPTION is the option (or options) for `find' needed to produce
 LS-SWITCHES is a list of `ls' switches that tell Dired how to parse
  the output.")
 
+;; Make `defconst' override custom value.
+(when (fboundp 'custom-reevaluate-setting) (custom-reevaluate-setting 'find-ls-option))
+
 
 ;; REPLACES ORIGINAL in `find-dired.el':
-;; 1. Interactive spec uses `find-dired-default-fn'.
-;; 2. Runs `find-dired-hook' at end.
-;; 3. Buffer used has same root name as the dir (not "*Find*").
+;;
+;; 1. Added optional args.
+;; 2. Interactive spec uses `find-diredp-default-fn'.
+;; 3. Runs `find-dired-hook' at end.
+;; 4. Buffer used has same root name as the dir (not "*Find*").
 ;;;###autoload
-(defun find-dired (dir args)
+(defun find-dired (dir args &optional depth-limits excluded-paths)
   "Run `find' and put its output in a buffer in Dired Mode.
 Then run `find-dired-hook' and `dired-after-readin-hook'.
-The `find' command run (after changing into DIR) is essentially:
+The `find' command run (after changing into DIR) is essentially this,
+where LS-SWITCHES is `(car find-ls-option)':
 
-    find . \\( ARGS \\) -ls"
+  find . \\( ARGS \\) LS-SWITCHES
+
+Optional args:
+
+* DEPTH-LIMITS:   Minimum and maximum depths: (MIN-DEPTH MAX-DEPTH).
+* EXCLUDED-PATHS: Strings matching paths to be excluded.
+                  Uses `find' switch `-path'.
+
+When both optional args are non-nil, the `find' command run is this:
+
+  find . -mindepth MIN-DEPTH -maxdepth MAX-DEPTH
+         \\( -path \*edir1\* -o -path \*edir2\* ... \\)
+         -prune -o \\( ARGS \\) LS-SWITCHES"
   (interactive
-   (let ((default  (and (functionp find-dired-default-fn) (funcall find-dired-default-fn))))
+   (let ((default  (and (functionp find-diredp-default-fn) (funcall find-diredp-default-fn))))
      (list (funcall (if (fboundp 'read-directory-name) 'read-directory-name 'read-file-name)
                     "Run `find' in directory: " nil "" t)
            (read-string "Run `find' (with args): " find-args '(find-args-history . 1) default))))
   (let ((dired-buffers  dired-buffers))
-    ;; Expand DIR ("" means default-directory), and make sure it has a
-    ;; trailing slash.
-    (setq dir  (abbreviate-file-name (file-name-as-directory (expand-file-name dir))))
+    ;; Expand DIR ("" means default-directory), and make sure it has a trailing slash.
+    (setq dir  (file-name-as-directory (expand-file-name dir)))
     (unless (file-directory-p dir) (error "Command `find-dired' needs a directory: `%s'" dir))
-    (switch-to-buffer (create-file-buffer (directory-file-name dir)))
+    (if (not find-diredp-repeating-search)
+        (switch-to-buffer (create-file-buffer (directory-file-name dir)))
+      (setq find-diredp-repeating-search  nil)
+      (unless find-diredp-repeat-reuses-buffer-flag
+        (switch-to-buffer (create-file-buffer (directory-file-name dir)))))
     ;; See if there is still a `find' running, and offer to kill it first, if so.
     (let ((find-proc  (get-buffer-process (current-buffer))))
       (when find-proc
@@ -285,22 +373,31 @@ The `find' command run (after changing into DIR) is essentially:
     (kill-all-local-variables)
     (setq buffer-read-only  nil)
     (erase-buffer)
-    (setq default-directory  dir
-          find-args          args       ; Save for next interactive call.
-          args               (concat (if (boundp 'find-program) find-program "find") " . "
-                                     (if (string= args "")
-                                         ""
-                                       (concat (shell-quote-argument "(") " " args
-                                               (shell-quote-argument ")") " "))
-                                     (if (string-match "\\`\\(.*\\) {} \\(\\\\;\\|+\\)\\'"
-                                                       (car find-ls-option))
-                                         (format "%s %s %s"
-                                                 (match-string 1 (car find-ls-option))
-                                                 (shell-quote-argument "{}")
-                                                 (if (boundp 'find-exec-terminator)
-                                                     find-exec-terminator
-                                                   "\\;"))
-                                       (car find-ls-option))))
+    (let ((dlim0  (elt depth-limits 0))
+          (dlim1  (elt depth-limits 1))
+          (quot*  (shell-quote-argument "*")))
+      (setq default-directory  dir
+            find-args          args     ; Save for next interactive call.
+            args               (concat (if (boundp 'find-program) find-program "find") " . "
+                                       (if (and (>= (length depth-limits) 2)
+                                                (integerp dlim0)  (>= dlim0 0)
+                                                (integerp dlim1)  (>= dlim1 0))
+                                           (format "-mindepth %d -maxdepth %d " (min dlim0 dlim1) (max dlim0 dlim1)))
+                                       (if excluded-paths
+                                           (let* ((ex-paths  excluded-paths)
+                                                  (excluded  (concat "\\( -path " quot* (pop ex-paths) quot* " ")))
+                                             (while ex-paths
+                                               (setq excluded  (concat excluded " -o -path " quot* (pop ex-paths) quot*)))
+                                             (setq excluded  (concat excluded " \\) -prune -o "))))
+                                       (if (string= args "")
+                                           ""
+                                         (format "%s %s %s " (shell-quote-argument "(") args (shell-quote-argument ")")))
+                                       (if (string-match "\\`\\(.*\\) {} \\(\\\\;\\|+\\)\\'" (car find-ls-option))
+                                           (format "%s %s %s"
+                                                   (match-string 1 (car find-ls-option))
+                                                   (shell-quote-argument "{}")
+                                                   (if (boundp 'find-exec-terminator) find-exec-terminator "\\;"))
+                                         (car find-ls-option)))))
     (shell-command (concat args "&") (current-buffer)) ; Start `find' process.
     ;; The next statement will bomb in classic Dired (no optional arg allowed)
     (dired-mode dir (cdr find-ls-option))
@@ -310,7 +407,9 @@ The `find' command run (after changing into DIR) is essentially:
       (use-local-map map))
     (when (boundp 'dired-sort-inhibit) (set (make-local-variable 'dired-sort-inhibit) t))
     (set (make-local-variable 'revert-buffer-function)
-	 `(lambda (ignore-auto noconfirm) (find-dired ,dir ,find-args)))
+	 `(lambda (ignore-auto noconfirm)
+           (setq find-diredp-repeating-search  t)
+           (find-dired ,dir ,find-args ',depth-limits ',excluded-paths)))
     ;; Set subdir-alist so that Tree Dired will work:
     (if (fboundp 'dired-simple-subdir-alist)
         ;; Works even with nested Dired format (dired-nstd.el,v 1.15 and later)
@@ -318,14 +417,16 @@ The `find' command run (after changing into DIR) is essentially:
       ;; We have an ancient tree Dired (or classic Dired, where this does no harm)
       (set (make-local-variable 'dired-subdir-alist)
            (list (cons default-directory (point-min-marker)))))
-    (when (boundp 'find-ls-subdir-switches)
-      (set (make-local-variable 'dired-subdir-switches) find-ls-subdir-switches))
+    (when (boundp 'find-ls-subdir-switches) (set (make-local-variable 'dired-subdir-switches) find-ls-subdir-switches))
     (setq buffer-read-only  nil)
     ;; Subdir headerline must come first because first marker in `subdir-alist' points there.
-    (insert "  " dir ":\n")
+    (insert "  " (abbreviate-file-name dir) ":\n")
     ;; Make second line a "find" line by analogy to the "total" or "wildcard" line.
     (let ((opoint  (point)))
-      (insert "  " args "\n")
+      (if (<= (length args) find-diredp-max-cmd-line)
+          (insert "  " args "\n")
+        (insert "  Command longer than `find-diredp-max-cmd-line'.  See buffer `*Messages*'\n")
+        (message args))
       (dired-insert-set-properties opoint (point)))
     (setq buffer-read-only t)
     (let ((proc  (get-buffer-process (current-buffer))))
@@ -333,58 +434,92 @@ The `find' command run (after changing into DIR) is essentially:
       (set-process-sentinel proc (function find-dired-sentinel))
       ;; Initialize the process marker; it is used by the filter.
       (move-marker (process-mark proc) (point) (current-buffer)))
-    (setq mode-line-process  '(": %s `find'"))
-    (run-hooks 'find-dired-hook 'dired-after-readin-hook)))
+    (setq mode-line-process  '(": %s `find'"))))
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
-;; Interactive spec uses `read-from-minibuffer', `read-directory-name',
-;; `dired-regexp-history' and `find-dired-default-fn'.
+;;
+;; 1. Added optional args.
+;; 2. Interactive spec uses `read-from-minibuffer', `read-directory-name',
+;;    `dired-regexp-history' and `find-diredp-default-fn'.
+;;
 ;;;###autoload
-(defun find-name-dired (dir pattern)
+(defun find-name-dired (dir pattern &optional depth-limits excluded-paths)
   "Search directory DIR recursively for files matching globbing PATTERN,
 and run `dired' on those files.  PATTERN may use shell wildcards, and
 it need not be quoted.  It is not an Emacs regexp.
-By default, the command run (after changing into DIR) is this:
 
-  find . -name 'PATTERN' -ls
+By default, the command run (after changing into DIR) is essentially
+this, where LS-SWITCHES is `(car find-ls-option)':
 
-See `find-name-arg' to customize the `find' file-name pattern arg."
+  find . -name 'PATTERN' LS-SWITCHES
+
+See `find-name-arg' to customize the `find' file-name pattern arg.
+
+Optional arg DEPTH-LIMITS is a list (MIN-DEPTH MAX-DEPTH) of the
+ minimum and maximum depths.  If nil, search directory tree under DIR.
+
+Optional arg EXCLUDED-PATHS is a list of strings that match paths to
+ exclude from the search.  If nil, search all directories.
+
+When both optional args are non-nil, the `find' command run is this:
+
+  find . -mindepth MIN-DEPTH -maxdepth MAX-DEPTH
+         \\( -path \*edir1\* -o -path \*edir2\* ... \\)
+         -prune -o name 'PATTERN' \\( ARGS \\) LS-SWITCHES"
   (interactive
-   (let ((default  (and (functionp find-dired-default-fn) (funcall find-dired-default-fn))))
+   (let ((default  (and (functionp find-diredp-default-fn) (funcall find-diredp-default-fn))))
      (list (if (fboundp 'read-directory-name) ; Emacs 22+
                (read-directory-name "Find-name (directory): " nil nil t)
              (read-file-name "Find-name (directory): " nil "" t))
            (read-from-minibuffer "Find-name (filename wildcard): " nil
                                  nil nil 'dired-regexp-history default t))))
-  (find-dired dir (concat (if (boundp 'find-name-arg) find-name-arg "-name")
-                          " "
-                          (shell-quote-argument pattern))))
+  (find-dired dir (concat (if (boundp 'find-name-arg) find-name-arg "-name") " " (shell-quote-argument pattern))
+              depth-limits excluded-paths))
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
-;; Interactive spec uses `read-from-minibuffer', `read-file-name',
-;; `dired-regexp-history' and `find-dired-default-fn'.
+;;
+;; 1. Added optional args.
+;; 2. Interactive spec uses `read-from-minibuffer', `read-file-name',
+;;    `dired-regexp-history' and `find-diredp-default-fn'.
+;;
 ;;;###autoload
-(defun find-grep-dired (dir regexp)
+(defun find-grep-dired (dir regexp &optional depth-limits excluded-paths)
   "Find files in DIR containing a regexp REGEXP.
 The output is in a Dired buffer.
-The `find' command run (after changing into DIR) is:
+The `find' command run (after changing into DIR) is essentially this,
+where LS-SWITCHES is `(car find-ls-option)':
 
-    find . -exec grep -s REGEXP {} \\\; -ls
+  find . -exec grep find-grep-options REGEXP {} \\\; LS-SWITCHES
 
-Thus REGEXP can also contain additional grep options."
+Thus REGEXP can also contain additional grep options.
+
+Optional arg DEPTH-LIMITS is a list (MIN-DEPTH MAX-DEPTH) of the
+ minimum and maximum depths.  If nil, search directory tree under DIR.
+
+Optional arg EXCLUDED-PATHS is a list of strings that match paths to
+ exclude from the search.  If nil, search all directories.
+
+When both optional args are non-nil, the `find' command run is this:
+
+  find . -mindepth MIN-DEPTH -maxdepth MAX-DEPTH
+         \\( -path \*edir1\* -o -path \*edir2\* ... \\)
+         -prune -o -exec grep find-grep-options REGEXP {} \\\;
+         LS-SWITCHES"
   (interactive
-   (let ((default  (and (functionp find-dired-default-fn) (funcall find-dired-default-fn))))
+   (let ((default  (and (functionp find-diredp-default-fn) (funcall find-diredp-default-fn))))
      (list (read-file-name "Find-grep (directory): " nil "" t)
-           (read-from-minibuffer "Find-grep (grep regexp): " nil
-                                 nil nil 'dired-regexp-history default t))))
-  ;; find -exec doesn't allow shell i/o redirections in the command,
-  ;; or we could use `grep -l >/dev/null'
-  ;; We use -type f, not ! -type d, to avoid getting screwed
-  ;; by FIFOs and devices.  I'm not sure what's best to do
-  ;; about symlinks, so as far as I know this is not wrong.
-  (find-dired dir (concat "-type f -exec grep " find-grep-options " " regexp " {} \\\; ")))
+           (read-from-minibuffer "Find-grep (grep regexp): " nil nil nil 'dired-regexp-history default t))))
+  ;; find -exec does not allow shell i/o redirections in the command.  If it did, we could use `grep -l >/dev/null'.
+  ;; Use -type f, not ! -type d, to avoid getting screwed by FIFOs & devices.  Not sure what is best to do about symlinks.
+  (find-dired dir (format "-type f -exec %s %s -e %s %s %s"
+                          (if (boundp 'grep-program) grep-program "grep")
+                          find-grep-options
+                          (shell-quote-argument regexp)
+                          (shell-quote-argument "{}")
+                          (shell-quote-argument ";"))
+              depth-limits excluded-paths))
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
@@ -402,10 +537,8 @@ STRING is the string to insert."
               (widen)
               (let ((buffer-read-only  nil)
                     (beg               (point-max))
-                    (l-opt             (and (consp find-ls-option)
-                                            (string-match "l" (cdr find-ls-option))))
-                    (ls-regexp         (concat "^ +[^ \t\r\n]+\\( +[^ \t\r\n]+\\) +"
-                                               "[^ \t\r\n]+ +[^ \t\r\n]+\\( +[0-9]+\\)")))
+                    (l-opt             (and (consp find-ls-option)  (string-match "l" (cdr find-ls-option))))
+                    (ls-regexp         "^ +[^ \t\r\n]+\\( +[^ \t\r\n]+\\) +[^ \t\r\n]+ +[^ \t\r\n]+\\( +[0-9]+\\)"))
                 (goto-char beg)
                 (insert string)
                 (goto-char beg)
@@ -418,11 +551,10 @@ STRING is the string to insert."
                   (while (re-search-forward "^  \\./" nil t)
                     (delete-region (line-beginning-position) (line-end-position))
                     (when (eq (following-char) ?\n) (delete-char 1))))
-                ;; Convert ` ./FILE' to ` FILE'.  This would lose if current chunk of output
-                ;; starts or ends within the ` ./', so back up a bit.
+                ;; Convert ` ./FILE' to ` FILE'.
+                ;; This will lose if current chunk of output starts or ends within the ` ./', so back up a bit.
                 (while (search-forward " ./" nil t) (delete-region (point) (- (point) 2)))
-		;; Pad the number of links and file size.  This is a quick and dirty way of
-                ;; getting the columns to line up of the time, but it's not foolproof.
+		;; Pad number of links and file size.  Quick & dirty way to get columns to line up, but's not foolproof.
 		(when l-opt
 		  (goto-char beg)
 		  (goto-char (line-beginning-position))
@@ -430,7 +562,7 @@ STRING is the string to insert."
 		    (replace-match (format "%4s" (match-string 1)) nil nil nil 1)
 		    (replace-match (format "%9s" (match-string 2)) nil nil nil 2)
 		    (forward-line 1)))
-                ;; Find the complete lines in the unprocessed output, and add text props to it.
+                ;; Find the complete lines in the unprocessed output, and add text props to them.
                 (goto-char (point-max))
                 (when (search-backward "\n" (process-mark proc) t)
                   (dired-insert-set-properties (process-mark proc) (1+ (point)))
@@ -439,6 +571,7 @@ STRING is the string to insert."
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
+;;
 ;; 1. Highlights file lines.
 ;; 2. Puts `find' in mode-line.
 (defun find-dired-sentinel (proc state)
@@ -447,26 +580,169 @@ PROC is the process.
 STATE is the state of process PROC."
   (let ((buf                (process-buffer proc))
         (inhibit-read-only  t))
-    (if (buffer-name buf)
-        (save-excursion
-          (set-buffer buf)
-          (let ((buffer-read-only  nil))
-            (save-excursion
-              (goto-char (point-max))
-              (insert "\nfind " state)  ; STATE is, e.g., "finished".
-              (forward-char -1)         ; Back up before \n at end of STATE.
-              (insert " at " (substring (current-time-string) 0 19))
-              (forward-char 1)
-              (setq mode-line-process  (concat ": " (symbol-name (process-status proc))
-                                               " `find'"))
-              ;; Since the buffer and mode line will show that the
-              ;; process is dead, we can delete it now.  Otherwise it
-              ;; will stay around until M-x list-processes.
-              (delete-process proc)
-              ;; Highlight lines of file names for mouse selection.
-              (dired-insert-set-properties (point-min) (point-max))
-              (force-mode-line-update)))
-          (message "find-dired `%s' done." (buffer-name))))))
+    (when (buffer-name buf)
+      (save-excursion
+        (set-buffer buf)
+        (let ((buffer-read-only  nil))
+          (save-excursion
+            (goto-char (point-max))
+            (insert "\nfind " state)    ; STATE is, e.g., "finished".
+            (forward-char -1)           ; Back up before \n at end of STATE.
+            (insert " at " (substring (current-time-string) 0 19))
+            (forward-char 1)
+            (setq mode-line-process  (concat ": " (symbol-name (process-status proc)) " `find'"))
+            ;; Since the buffer and mode line will show that the process is dead, we can
+            ;; delete it now.  Otherwise it will stay around until M-x list-processes.
+            (delete-process proc)
+            ;; Highlight lines of file names for mouse selection.
+            (dired-insert-set-properties (point-min) (point-max))
+            (force-mode-line-update)))
+        (run-hooks 'find-dired-hook 'dired-after-readin-hook)
+        (message "find-dired `%s' done." (buffer-name))))))
+
+(when (require 'time-date nil t)        ; Emacs 22+
+  (require 'parse-time)                 ; parse-time-string
+
+  (defun find-time-dired (dir min-time max-time &optional depth-limits excluded-paths)
+    "Find files in directory DIR newer or older than a timestamp.
+The output is shown in a Dired buffer.
+
+MIN-TIME is a format-time string parsable by `parse-time-string', such
+ as \"2014-12-25 23:59:00\".  Only files newer than this are shown.
+ If MIN-TIME is nil or a string matching regexp \"^\\s-*$\", there is
+ no lower time limit.
+
+MAX-TIME is also a format-time string parsable by `parse-time-string'.
+ Only files older than this time are shown.
+ If MAX-TIME is nil or a string matching regexp \"^\\s-*$\", the upper
+ time limit is the current system time.
+
+Optional arg DEPTH-LIMITS is a list (MIN-DEPTH MAX-DEPTH) of the
+ minimum and maximum depths.  If nil, search directory tree under DIR.
+
+Optional arg EXCLUDED-PATHS is a list of strings that match paths to
+ exclude from the search.  If nil, search all directories.
+
+If args DEPTH-LIMITS and EXCLUDED-PATHS are both non-nil then the
+command run is essentially the following:
+
+    find . -mindepth MIN-DEPTH -maxdepth MAX-DEPTH
+           \\( -path \*edir1\* -o -path \*edir2\* ... \\)
+           -prune -o \\( -TIME-SWITCH -SINCE-MIN -TIME-SWITCH +SINCE-MAX \\)
+           LS-SWITCHES
+
+where:
+
+* TIME-SWITCH is `find-diredp-time-prefix' concatenated with \"min\".
+* SINCE-MIN is the elapsed time since MIN-TIME in minutes.
+* SINCE-MAX is the elapsed time since MAX-TIME in minutes.
+* LS-SWITCHES is `(car find-ls-option)'."
+    ;; `parse-time-string' ignores AM/PM:
+    ;; (let ((time  "Mon 10 Aug 2015 01:53:58 PM JST"))
+    ;;   (format-time-string "%c" (apply 'encode-time (parse-time-string time))))
+    ;; => "Mon 10 Aug 2015 01:53:58 AM JST"
+    ;;
+    ;; Avoid including %p (AM/PM) on find-diredp-time-format.
+    (interactive
+     (let* ((mod/status-time  (if (string= "m" find-diredp-time-prefix) 5 6))
+            (default-min      (or (and (eq major-mode 'dired-mode)  (dired-get-filename t t)
+                                       (format-time-string find-diredp-time-format
+                                                           (elt (file-attributes (dired-get-filename)) mod/status-time)))
+                                  ""))
+            (default-max      (format-time-string find-diredp-time-format (current-time))))
+       (list (read-file-name "Find-time (directory): " nil "" t)
+             (read-from-minibuffer "Find-time AFTER (format string): "
+                                   default-min nil nil '(find-diredp-time-history . 1) default-min t)
+             (read-from-minibuffer "Find-time BEFORE (format string): " default-max
+                                   nil nil nil default-max t))))
+    (when (and (stringp min-time)  (string-match "^\\s-*$" min-time)) (setq min-time  nil))
+    (when (and (stringp max-time)  (string-match "^\\s-*$" max-time))
+      (setq max-time  (format-time-string find-diredp-time-format (current-time))))
+    (let* ((now       (current-time))
+           (now-strg  (format-time-string find-diredp-time-format now))
+           (t1        (and min-time  (find-diredp--parse-time min-time)))
+           (t2        (find-diredp--parse-time (or max-time
+                                                   (format-time-string find-diredp-time-format (current-time))))))
+      (setq min-time  (and t1  (format-time-string find-diredp-time-format t1))
+            max-time  (format-time-string find-diredp-time-format t2))
+      (when (and t1  (not (time-less-p t1 now)))
+        (error "Min time/date (%s) is in the future (now= %s)" min-time now-strg))
+      (unless (time-less-p t2 now)
+        (error "Max time/date (%s) is in the future (now= %s)" max-time now-strg))
+      (when (and t1  (not (time-less-p t1 t2)))
+        (error "Max time/date (%s) is earlier than min time/date (%s)" max-time min-time))
+      (let* ((t1-period  (or (and t1  (format "%.0f" (/ (time-to-seconds (time-since t1)) 60)))
+                             "-inf"))
+             (t2-period  (or (and t2  (format "%.0f" (/ (time-to-seconds (time-since t2)) 60)))
+                             "0"))
+             (arg-time   (concat "-type f")))
+        (unless (string= t1-period "-inf")
+          (setq arg-time  (concat arg-time " -" find-diredp-time-prefix "min -" t1-period)))
+        (unless (string= t2-period "0")
+          (setq arg-time  (concat arg-time " -" find-diredp-time-prefix "min +" t2-period)))
+        (find-dired dir arg-time depth-limits excluded-paths))))
+
+
+  ;; Try to support as many sensible date string formats as possible.  Example supported strings:
+  ;; 2000
+  ;; feb
+  ;; feb 15
+  ;; feb 15 2000
+  ;; 19:20:56
+  ;; 19:20:56 15
+  ;; 19:20:56 feb 15
+  ;; 19:20:56 feb 15 2000
+  ;; 19:20:56 feb 15 2000
+  ;;
+  ;; Formats such as these are likely mistakes, and are not supported:
+  ;; 19:20:56 2000
+  ;; 19:20:56 Jul
+  ;; 28 2000
+  (defun find-diredp--parse-time (time)
+    "Parse date/time string TIME, returning the corresponding internal time.
+Any parts of TIME that are incomplete are taken from `current-time',
+and `encode-time' is applied to the result and returned.
+If `encode-time' returns nil then the current time is returned."
+    (let* ((parsed-time  (and time  (stringp time)  (parse-time-string time)))
+           (has-pm       (member "pm" (parse-time-tokenize time)))
+           (basic        (butlast parsed-time 3))
+           (rest         (nthcdr 6 parsed-time))
+           (components   (mapcar #'integerp basic))
+           (curtime      (current-time)))
+      (let ((res  (vconcat
+                   (cond ((equal components '(nil nil nil nil nil t)) ; YEAR
+                          (vector 0 0 0 1 1 (elt basic 5)))
+                         ((equal components '(nil nil nil nil t nil)) ; MONTH
+                          (vector 0 0 0 1 (elt basic 4)
+                                  (string-to-number (format-time-string "%Y" curtime))))
+                         ((equal components '(nil nil nil t t nil)) ; DAY, MONTH
+                          (vector 0 0 0 (elt basic 3) (elt basic 4)
+                                  (string-to-number (format-time-string "%Y" curtime))))
+                         ((equal components '(nil nil nil nil t t)) ; MONTH, YEAR
+                          (vector 0 0 0 1 (elt basic 4) (elt basic 5)))
+                         ((equal components '(nil nil nil t t t)) ; DAY, MONTH, YEAR
+                          (vector 0 0 0 (elt basic 3) (elt basic 4) (elt basic 5)))
+                         ((equal components '(t t t nil nil nil)) ; SEC, MIN, HOUR
+                          (vector (elt basic 0) (elt basic 1) (elt basic 2)
+                                  (string-to-number (format-time-string "%d" curtime))
+                                  (string-to-number (format-time-string "%m" curtime))
+                                  (string-to-number (format-time-string "%Y" curtime))))
+                         ((equal components '(t t t t nil nil)) ; SEC, MIN, HOUR, DAY
+                          (vector (elt basic 0) (elt basic 1) (elt basic 2) (elt basic 3) 
+                                  (string-to-number (format-time-string "%m" curtime))
+                                  (string-to-number (format-time-string "%Y" curtime))))
+                         ((equal components '(t t t t t nil)) ; SEC, MIN, HOUR, DAY, MONTH
+                          (vector
+                           (elt basic 0) (elt basic 1) (elt basic 2) (elt basic 3) (elt basic 4)
+                           (string-to-number (format-time-string "%Y" curtime))))
+                         ((equal components '(t t t t t t)) ; SEC, MIN, HOUR, DAY, MONTH, YEAR
+                          basic) 
+                         (t (error "Cannot parse date/time string: `%S'" time)))
+                   rest)))
+        (let ((hour  (elt res 2))) (when (and has-pm  (< hour 12))  (aset res 2 (+ hour 12))))
+        (setq res  (apply 'encode-time (append res ()))))))
+
+  )
 
 
 ;; Menu bar, `find' menu.
@@ -474,20 +750,16 @@ STATE is the state of process PROC."
 (defalias 'menu-bar-run-find-menu (symbol-value 'menu-bar-run-find-menu))
 (define-key menu-bar-run-find-menu [find-dired]
   '("`find' <anything>..." . find-dired))
-(define-key menu-bar-run-find-menu [find-name-dired]
-  '("Find Files Named..." . find-name-dired))
-(define-key menu-bar-run-find-menu [find-grep-dired]
-  '("Find Files Containing..." . find-grep-dired))
-;; Add it to Dired's "Search" menu.
+(define-key menu-bar-run-find-menu [find-time-dired] '("Find Files By Time..." . find-time-dired))
+(define-key menu-bar-run-find-menu [find-grep-dired] '("Find Files Containing..." . find-grep-dired))
+(define-key menu-bar-run-find-menu [find-name-dired] '("Find Files Named..." . find-name-dired))
+;; Add it to Dired's `Search' menu.
 (when (boundp 'menu-bar-search-menu)
-  (define-key dired-mode-map [menu-bar search separator-find]
-    '("--"))
-  (define-key dired-mode-map [menu-bar search find]
-    '("Run `find' Command" . menu-bar-run-find-menu)))
-;; Add it to Dired's "Dir" menu (called "Subdir" in `dired.el').
+  (define-key dired-mode-map [menu-bar search separator-find] '("--"))
+  (define-key dired-mode-map [menu-bar search find] '("Run `find' Command" . menu-bar-run-find-menu)))
+;; Add it to Dired's `Dir' menu (called `Subdir' in `dired.el').
 (when (boundp 'diredp-menu-bar-subdir-menu) ; Defined in `dired+.el'.
-  (define-key-after diredp-menu-bar-subdir-menu [find]
-    '("Run `find' Command" . menu-bar-run-find-menu) 'up))
+  (define-key-after diredp-menu-bar-subdir-menu [find] '("Run `find' Command" . menu-bar-run-find-menu) 'up))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
