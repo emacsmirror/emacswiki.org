@@ -39,7 +39,7 @@ Sometimes you'd like to run a compilation within an existing comint buffer inste
   (interactive)
   (let ((b (get-buffer "*PowerShell*"))
         (p (get-process "shell")))
-    (if b
+    (if (and b p)
         (with-current-buffer b
           (apply comint-input-sender (list p compile-command))))))
 </pre>
