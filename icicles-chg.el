@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Aug 19 22:05:57 2015 (-0700)
+;; Last-Updated: Wed Aug 19 22:52:41 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11514
+;;     Update #: 11520
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1161,7 +1161,7 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
-;; 2015/08/20 dadams
+;; 2015/08/19 dadams
 ;;     icicle-occur, icicle-search-(sentences|paragraphs|pages), icicle-compilation-search:
 ;;       Use face remapping (face-remap-(re)set-base) instead of set-face-* for Emacs 23+.
 ;;       Thx to Jonathan H (PythonNut).
@@ -6292,6 +6292,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2015/08/19 dadams
+;;     icicle-minibuffer-setup, icicle-restore-region-face:
+;;       Use face remapping (face-remap-(add|remove)-relative) instead of set-face-* for Emacs 23+.
+;;       Thx to Jonathan H (PythonNut).
 ;; 2015/07/05 dadams
 ;;     icicle-top-level-prep: Reset icicle-completion-style-set (new) also.
 ;; 2014/11/28 dadams
@@ -8538,6 +8542,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2015/08/19 dadams
+;;     Added: icicle-region-face-remapping.
 ;; 2015/07/05 dadams
 ;;     Added: icicle-completion-style-set.
 ;; 2015/04/11 dadams
