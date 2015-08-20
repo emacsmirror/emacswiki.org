@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2015.07.05
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 18 16:28:58 2015 (-0700)
+;; Last-Updated: Wed Aug 19 22:22:33 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 23665
+;;     Update #: 23666
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -1529,9 +1529,10 @@
 ;;    `icicle-progressive-completing-p', `icicle-prompt',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
 ;;    `icicle-read-expression-map', `icicle-read-char-history',
-;;    `icicle-remove-icicles-props-p', `icicle-re-no-dot',
-;;    `icicle-require-match-p', `icicle-reverse-multi-sort-p',
-;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
+;;    `icicle-region-face-remapping', `icicle-remove-icicles-props-p',
+;;    `icicle-re-no-dot', `icicle-require-match-p',
+;;    `icicle-reverse-multi-sort-p', `icicle-reverse-sort-p',
+;;    `icicle-saved-candidate-overlays',
 ;;    `icicle-saved-candidates-variables-obarray',
 ;;    `icicle-saved-completion-candidate',
 ;;    `icicle-saved-completion-candidates',
