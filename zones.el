@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 18 15:34:36 2015 (-0700)
+;; Last-Updated: Thu Aug 20 14:21:36 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1604
+;;     Update #: 1620
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -1425,7 +1425,7 @@ variable symbol.  (Zero: do both.)
 
 Non-interactively:
 * VARIABLE is the optional izones variable to use.
-* Non-nil MSGP show status message."
+* Non-nil MSGP means show a status message."
   (interactive (let* ((var    (and current-prefix-arg  (zz-read-any-variable "Variable: " zz-izones-var)))
                       (npref  (prefix-numeric-value current-prefix-arg)))
                  (when (and current-prefix-arg  (>= npref 0)) (make-local-variable var))
@@ -1434,8 +1434,7 @@ Non-interactively:
   (let* ((var         (or variable  zz-izones-var))
          (IGNORE      (unless (boundp var) (set var ())))
          (val         (symbol-value var))
-         (IGNORE      (unless (zz-izones-p val)
-                        (error "Not an izones variable: `%s', value: `%S'" var val)))
+         (IGNORE      (unless (zz-izones-p val) (error "Not an izones variable: `%s', value: `%S'" var val)))
          (zone-union  (zz-zone-union (zz-izone-limits val))))
     (set var  (zz-izones-from-zones zone-union))
     (when msgp (message "Restrictions united for `%s'" var))
