@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat Aug  1 09:46:14 2015 (-0700)
+;; Last-Updated: Thu Aug 20 11:11:42 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 19708
+;;     Update #: 19728
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2686,12 +2686,16 @@ By default, this is bound to `C-x C-M-l' during completion."
                       (> emacs-major-version 22))
              (save-window-excursion
                (select-window (get-buffer-window "*Completions*" 'visible))
-               (when (one-window-p t)   ; $$$$$ Also this? (window-dedicated-p (selected-window))
+               (when (one-window-p t) ; $$$$$ Also this? (window-dedicated-p (selected-window))
+                 ;; $$$$$ FIXME: Find a way to get the last-used window showing `icicle-pre-minibuffer-buffer'
+                 ;;              This only gets some window showing it, which is not TRT.
                  (let* ((orig-win       (get-buffer-window icicle-pre-minibuffer-buffer 'visible))
                         (orig-font-fam  (and (window-live-p orig-win)
                                              (save-window-excursion (select-window orig-win)
                                                                     (face-attribute 'default :family)))))
-                   (when orig-font-fam (set-face-attribute 'default (selected-frame) :family orig-font-fam))))))
+                   (when orig-font-fam
+                     (setq icicle-face-remapping-Completions  (face-remap-add-relative
+                                                               'default :family orig-font-fam)))))))
            (message nil)))))            ; Clear out any "Looking for..."
 
 
@@ -9172,6 +9176,8 @@ window, then do not remove it unless optional arg FORCE is non-nil."
     ;; Emacs 20-21 has no `minibuffer-selected-window' function, but we just ignore that.
     (when (and (window-minibuffer-p swin)  (fboundp 'minibuffer-selected-window))
       (setq swin  (minibuffer-selected-window)))
+    (when (fboundp 'face-remap-remove-relative) ; Emacs 23+
+      (face-remap-remove-relative icicle-face-remapping-Completions))
     (cond (;; `*Completions*' is shown in the selected frame.
            (and (get-buffer-window "*Completions*")
                 (or force               ; Let user use `C-g' to get rid of it even if selected.
