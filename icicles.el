@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2015.07.05
 ;; Package-Requires: ()
-;; Last-Updated: Wed Aug 19 22:22:33 2015 (-0700)
+;; Last-Updated: Thu Aug 20 11:11:31 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 23666
+;;     Update #: 23668
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -1450,7 +1450,8 @@
 ;;    `icicle-explore-final-choice',
 ;;    `icicle-explore-final-choice-full', `icicle-extra-candidates',
 ;;    `icicle-extra-candidates-dir-insert-p',
-;;    `icicle-face-name-history', `icicle-fancy-candidates-p',
+;;    `icicle-face-name-history', `icicle-face-remapping-Completions',
+;;    `icicle-face-remapping-region', `icicle-fancy-candidates-p',
 ;;    `icicle-fancy-cands-internal-p', `icicle-file-menu-map',
 ;;    `icicle-file-name-completion-table', `icicle-files',
 ;;    `icicle-file-sort-first-time-p',
@@ -1529,10 +1530,9 @@
 ;;    `icicle-progressive-completing-p', `icicle-prompt',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
 ;;    `icicle-read-expression-map', `icicle-read-char-history',
-;;    `icicle-region-face-remapping', `icicle-remove-icicles-props-p',
-;;    `icicle-re-no-dot', `icicle-require-match-p',
-;;    `icicle-reverse-multi-sort-p', `icicle-reverse-sort-p',
-;;    `icicle-saved-candidate-overlays',
+;;    `icicle-remove-icicles-props-p', `icicle-re-no-dot',
+;;    `icicle-require-match-p', `icicle-reverse-multi-sort-p',
+;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
 ;;    `icicle-saved-candidates-variables-obarray',
 ;;    `icicle-saved-completion-candidate',
 ;;    `icicle-saved-completion-candidates',
