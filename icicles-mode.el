@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Wed Aug 19 22:35:59 2015 (-0700)
+;; Last-Updated: Thu Aug 20 08:11:05 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 10258
+;;     Update #: 10259
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3339,8 +3339,7 @@ Usually run by inclusion in `minibuffer-setup-hook'."
     (add-hook 'pre-command-hook  'icicle-run-icicle-pre-command-hook nil t)
     (unless (fboundp 'define-minor-mode) (make-local-hook 'post-command-hook))
     (add-hook 'post-command-hook 'icicle-run-icicle-post-command-hook nil t)
-    ;; Change the region background here dynamically.  It would be better to
-    ;; just use a buffer-local face, but those don't yet exist.
+    ;; Change the region background here dynamically.  For Emacs 23+ we can do it for just the minibuffer.
     (when (= 1 (recursion-depth))
       (setq icicle-saved-region-background  (face-background 'region))
       (when (and icicle-change-region-background-flag  (not (fboundp 'face-remap-add-relative))) ; Emacs < 23.
