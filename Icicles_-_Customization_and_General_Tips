@@ -206,14 +206,15 @@ The second shows point at the start of the input and mark at the end of the inpu
 Because the region background color is often quite different from the
 [[frame]] background color (in order to have it stand out), it can be a bit
 hard to read the completion candidates when the region is
-highlighted during input [[Icicles - Cycling Completions|cycling]].  If user option
+highlighted in the minibuffer during input [[Icicles - Cycling Completions|cycling]].  If user option
 '''`icicle-change-region-background-flag'''' is non-`nil', however, then
-the ''region background'' is changed to a color that differs only
+the ''region background'' is changed in the
+active minibuffer  to a color that differs only
 slightly from the frame background, making it easier to read the
 completion candidates (see screenshots, above).  The actual background color used is the value of 
-'''`icicle-region-background'''', which you can customize.  If you make
+'''`icicle-region-background'''', which you can customize.  (If you make
 this color the same as the frame background, then the region
-background is, in effect, invisible.
+background is, in effect, invisible.)
 
 The default value of `icicle-change-region-background-flag' is
 determined by the current value of `delete-selection-mode', that
