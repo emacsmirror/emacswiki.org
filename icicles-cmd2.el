@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Aug 18 16:27:55 2015 (-0700)
+;; Last-Updated: Wed Aug 19 22:00:14 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7244
+;;     Update #: 7253
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6886,19 +6886,23 @@ This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, see the doc for command
 `icicle-search'."
   (interactive `(,@(icicle-region-or-buffer-limits) ,(icicle-search-where-arg)))
-  (let ((icicle-multi-completing-p  (and current-prefix-arg
-                                         (not (zerop (prefix-numeric-value current-prefix-arg)))
-                                         icicle-show-multi-completion-flag))
-        (fg                         (face-foreground 'icicle-search-main-regexp-others))
-        (bg                         (face-background 'icicle-search-main-regexp-others))
-        (icicle-transform-function  (and (not (interactive-p))  icicle-transform-function)))
-    (unwind-protect
-         (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
-                (set-face-background 'icicle-search-main-regexp-others nil)
-                (icicle-search beg end ".*" (not icicle-show-multi-completion-flag) where))
+  (let* ((icicle-multi-completing-p  (and current-prefix-arg
+                                          (not (zerop (prefix-numeric-value current-prefix-arg)))
+                                          icicle-show-multi-completion-flag))
+         (icicle-transform-function  (and (not (interactive-p))  icicle-transform-function))
+         (remap                      (fboundp 'face-remap-set-base)) ; Emacs 23+
+         (fg                         (and (not remap)  (face-foreground 'icicle-search-main-regexp-others)))
+         (bg                         (and (not remap)  (face-background 'icicle-search-main-regexp-others))))
+    (unwind-protect (progn (if remap
+                               (face-remap-set-base 'icicle-search-main-regexp-others nil)
+                             (set-face-foreground 'icicle-search-main-regexp-others nil)
+                             (set-face-background 'icicle-search-main-regexp-others nil))
+                           (icicle-search beg end ".*" (not icicle-show-multi-completion-flag) where))
       (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
-      (set-face-foreground 'icicle-search-main-regexp-others fg)
-      (set-face-background 'icicle-search-main-regexp-others bg))))
+      (if remap
+          (face-remap-reset-base 'icicle-search-main-regexp-others)
+        (set-face-foreground 'icicle-search-main-regexp-others fg)
+        (set-face-background 'icicle-search-main-regexp-others bg)))))
 
 (defun icicle-search-sentences (beg end &optional where) ; Bound to `M-s M-s s'.
   "`icicle-search' with sentences as contexts.
@@ -6927,20 +6931,24 @@ This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, see the doc for command
 `icicle-search'."
   (interactive `(,@(icicle-region-or-buffer-limits) ,(icicle-search-where-arg)))
-  (let ((icicle-multi-completing-p  (and current-prefix-arg
-                                         (not (zerop (prefix-numeric-value current-prefix-arg)))
-                                         icicle-show-multi-completion-flag))
-        (fg (face-foreground        'icicle-search-main-regexp-others))
-        (bg (face-background        'icicle-search-main-regexp-others))
-        (icicle-transform-function  (and (not (interactive-p))  icicle-transform-function)))
-    (unwind-protect
-         (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
-                (set-face-background 'icicle-search-main-regexp-others nil)
-                (icicle-search beg end (concat "[A-Z][^.?!]+[.?!]")
-                               (not icicle-show-multi-completion-flag) where))
+  (let* ((icicle-multi-completing-p  (and current-prefix-arg
+                                          (not (zerop (prefix-numeric-value current-prefix-arg)))
+                                          icicle-show-multi-completion-flag))
+         (icicle-transform-function  (and (not (interactive-p))  icicle-transform-function))
+         (remap                      (fboundp 'face-remap-set-base)) ; Emacs 23+
+         (fg                         (and (not remap)  (face-foreground 'icicle-search-main-regexp-others)))
+         (bg                         (and (not remap)  (face-background 'icicle-search-main-regexp-others))))
+    (unwind-protect (progn (if (fboundp 'face-remap-set-base)
+                               (face-remap-set-base 'icicle-search-main-regexp-others nil)
+                             (set-face-foreground 'icicle-search-main-regexp-others nil)
+                             (set-face-background 'icicle-search-main-regexp-others nil))
+                           (icicle-search beg end (concat "[A-Z][^.?!]+[.?!]")
+                                          (not icicle-show-multi-completion-flag) where))
       (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
-      (set-face-foreground 'icicle-search-main-regexp-others fg)
-      (set-face-background 'icicle-search-main-regexp-others bg))))
+      (if remap
+          (face-remap-reset-base 'icicle-search-main-regexp-others)
+        (set-face-foreground 'icicle-search-main-regexp-others fg)
+        (set-face-background 'icicle-search-main-regexp-others bg)))))
 
 (defun icicle-search-paragraphs (beg end &optional where) ; Bound to `M-s M-s p'.
   "`icicle-search' with paragraphs as contexts.
@@ -6963,19 +6971,23 @@ This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, see the doc for command
 `icicle-search'."
   (interactive `(,@(icicle-region-or-buffer-limits) ,(icicle-search-where-arg)))
-  (let ((icicle-multi-completing-p  (and current-prefix-arg
-                                         (not (zerop (prefix-numeric-value current-prefix-arg)))
-                                         icicle-show-multi-completion-flag))
-        (fg (face-foreground        'icicle-search-main-regexp-others))
-        (bg (face-background        'icicle-search-main-regexp-others))
-        (icicle-transform-function  (and (not (interactive-p))  icicle-transform-function)))
-    (unwind-protect
-         (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
-                (set-face-background 'icicle-search-main-regexp-others nil)
-                (icicle-search beg end "\\(.+\n\\)+" (not icicle-show-multi-completion-flag) where))
+  (let* ((icicle-multi-completing-p  (and current-prefix-arg
+                                          (not (zerop (prefix-numeric-value current-prefix-arg)))
+                                          icicle-show-multi-completion-flag))
+         (icicle-transform-function  (and (not (interactive-p))  icicle-transform-function))
+         (remap                      (fboundp 'face-remap-set-base)) ; Emacs 23+
+         (fg                         (and (not remap)  (face-foreground 'icicle-search-main-regexp-others)))
+         (bg                         (and (not remap)  (face-background 'icicle-search-main-regexp-others))))
+    (unwind-protect (progn (if (fboundp 'face-remap-set-base)
+                               (face-remap-set-base 'icicle-search-main-regexp-others nil)
+                             (set-face-foreground 'icicle-search-main-regexp-others nil)
+                             (set-face-background 'icicle-search-main-regexp-others nil))
+                           (icicle-search beg end "\\(.+\n\\)+" (not icicle-show-multi-completion-flag) where))
       (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
-      (set-face-foreground 'icicle-search-main-regexp-others fg)
-      (set-face-background 'icicle-search-main-regexp-others bg))))
+      (if (fboundp 'face-remap-reset-base)
+          (face-remap-reset-base 'icicle-search-main-regexp-others)
+        (set-face-foreground 'icicle-search-main-regexp-others fg)
+        (set-face-background 'icicle-search-main-regexp-others bg)))))
 
 (defun icicle-search-pages (beg end &optional where) ; Bound to `M-s M-s C-l'.
   "`icicle-search' with pages as contexts.
@@ -6997,20 +7009,24 @@ This command is intended only for use in Icicle mode.  It is defined
 using `icicle-search'.  For more information, see the doc for command
 `icicle-search'."
   (interactive `(,@(icicle-region-or-buffer-limits) ,(icicle-search-where-arg)))
-  (let ((icicle-multi-completing-p  (and current-prefix-arg
-                                         (not (zerop (prefix-numeric-value current-prefix-arg)))
-                                         icicle-show-multi-completion-flag))
-        (fg (face-foreground        'icicle-search-main-regexp-others))
-        (bg (face-background        'icicle-search-main-regexp-others))
-        (icicle-transform-function  (and (not (interactive-p))  icicle-transform-function)))
-    (unwind-protect
-         (progn (set-face-foreground 'icicle-search-main-regexp-others nil)
-                (set-face-background 'icicle-search-main-regexp-others nil)
-                (icicle-search beg end "\\([^\f]*[\f]\\|[^\f]+$\\)"
-                               (not icicle-show-multi-completion-flag) where))
+  (let* ((icicle-multi-completing-p  (and current-prefix-arg
+                                          (not (zerop (prefix-numeric-value current-prefix-arg)))
+                                          icicle-show-multi-completion-flag))
+         (icicle-transform-function  (and (not (interactive-p))  icicle-transform-function))
+         (remap                      (fboundp 'face-remap-set-base)) ; Emacs 23+
+         (fg                         (and (not remap)  (face-foreground 'icicle-search-main-regexp-others)))
+         (bg                         (and (not remap)  (face-background 'icicle-search-main-regexp-others))))
+    (unwind-protect (progn (if (fboundp 'face-remap-set-base)
+                               (face-remap-set-base 'icicle-search-main-regexp-others nil)
+                             (set-face-foreground 'icicle-search-main-regexp-others nil)
+                             (set-face-background 'icicle-search-main-regexp-others nil))
+                           (icicle-search beg end "\\([^\f]*[\f]\\|[^\f]+$\\)"
+                                          (not icicle-show-multi-completion-flag) where))
       (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
-      (set-face-foreground 'icicle-search-main-regexp-others fg)
-      (set-face-background 'icicle-search-main-regexp-others bg))))
+      (if (fboundp 'face-remap-reset-base)
+          (face-remap-reset-base 'icicle-search-main-regexp-others)
+        (set-face-foreground 'icicle-search-main-regexp-others fg)
+        (set-face-background 'icicle-search-main-regexp-others bg)))))
 
 (defun icicle-comint-search (beg end)   ; Bound to `M-s M-s M-s', `C-c `' in `comint-mode'.
   "Use `icicle-search' to pick up a previous input for reuse.
@@ -7146,25 +7162,30 @@ information about the arguments, see the doc for command
   (save-excursion (goto-char (point-min))
                   (compilation-next-error 1)
                   (setq beg  (if beg (max beg (point)) (point))))
-  (let ((icicle-transform-function    (and (not (interactive-p))  icicle-transform-function))
-        (icicle-candidate-alt-action-fn
-         (if (boundp 'compilation-highlight-overlay) ; Emacs 22 test.
-             icicle-candidate-alt-action-fn
-           (lambda (cand)
-             (message "Cannot replace matching text in Emacs before version 22"))))
-        (next-error-highlight
-         ;; Highlight indefinitely.  `until-move' should be part of Emacs (patch sent), but it's not.
-         (if (and (featurep 'compile+)  (featurep 'simple+)) 'until-move 1000000))
-        (icicle-search-in-context-fn  'icicle-compilation-search-in-context-fn)
-        (fg (face-foreground          'icicle-search-main-regexp-others))
-        (bg (face-background          'icicle-search-main-regexp-others)))
+  (let* ((icicle-transform-function    (and (not (interactive-p))  icicle-transform-function))
+         (icicle-candidate-alt-action-fn
+          (if (boundp 'compilation-highlight-overlay) ; Emacs 22 test.
+              icicle-candidate-alt-action-fn
+            (lambda (cand)
+              (message "Cannot replace matching text in Emacs before version 22"))))
+         (next-error-highlight
+          ;; Highlight indefinitely.  `until-move' should be part of Emacs (patch sent), but it's not.
+          (if (and (featurep 'compile+)  (featurep 'simple+)) 'until-move 1000000))
+         (icicle-search-in-context-fn  'icicle-compilation-search-in-context-fn)
+         (remap                      (fboundp 'face-remap-set-base)) ; Emacs 23+
+         (fg                         (and (not remap)  (face-foreground 'icicle-search-main-regexp-others)))
+         (bg                         (and (not remap)  (face-background 'icicle-search-main-regexp-others))))
     (unwind-protect
          (progn
-           (set-face-foreground 'icicle-search-main-regexp-others nil)
-           (set-face-background 'icicle-search-main-regexp-others nil)
+           (if (fboundp 'face-remap-set-base)
+               (face-remap-set-base 'icicle-search-main-regexp-others nil)
+             (set-face-foreground 'icicle-search-main-regexp-others nil)
+             (set-face-background 'icicle-search-main-regexp-others nil))
            (icicle-search beg end ".*" t))
-      (set-face-foreground 'icicle-search-main-regexp-others fg)
-      (set-face-background 'icicle-search-main-regexp-others bg))))
+      (if (fboundp 'face-remap-reset-base)
+          (face-remap-reset-base 'icicle-search-main-regexp-others)
+        (set-face-foreground 'icicle-search-main-regexp-others fg)
+        (set-face-background 'icicle-search-main-regexp-others bg)))))
 
 (defun icicle-compilation-search-in-context-fn (cand+mrker replace-string)
   "`icicle-search-in-context-fn' used for `icicle-compilation-search'.
