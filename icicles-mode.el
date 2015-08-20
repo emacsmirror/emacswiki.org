@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Thu Aug 20 08:11:05 2015 (-0700)
+;; Last-Updated: Thu Aug 20 11:07:30 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 10259
+;;     Update #: 10260
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3562,7 +3562,7 @@ Used in `completion-setup-hook'."
 if `icicle-change-region-background-flag' is non-nil."
   (when (and icicle-change-region-background-flag  (= 1 (recursion-depth)))
     (if (fboundp 'face-remap-remove-relative) ; Emacs 23+
-        (face-remap-remove-relative icicle-region-face-remapping)
+        (face-remap-remove-relative icicle-face-remapping-region)
       (set-face-background 'region icicle-saved-region-background))))
 
 (defun icicle-activate-mark ()
