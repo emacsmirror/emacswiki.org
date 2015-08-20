@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Sat Apr 11 14:35:34 2015 (-0700)
+;; Last-Updated: Thu Aug 20 11:18:12 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3072
+;;     Update #: 3080
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -298,6 +298,8 @@
  
 ;;; Change Log:
 ;;
+;; 2015/08/20 dadams
+;;     1on1-display-*Completions*-frame: Use face-remap-add-relative instead of set-face-*.
 ;; 2015/04/11 dadams
 ;;     1on1-display-*Completions*-frame: If minibuf is active, redirect to minibuf frame.
 ;;       And if not, do not redirect if completion-reference-buffer is *Completions*.
@@ -1709,8 +1711,9 @@ If `zoom-frm.el' is used, then shrink the text according to
                                   (save-window-excursion (select-window orig-win)
                                                          (face-attribute 'default :family)))))
         ;; $$$$$$$$?? (when (and orig-font-fam  (not (eq orig-win return-window)))
-        (when orig-font-fam
-          (set-face-attribute 'default (selected-frame) :family orig-font-fam))))
+        ;;
+        ;; We do not save the cookie from this, as we do not have a function that removes it.
+        (when orig-font-fam (face-remap-add-relative 'default :family orig-font-fam))))
 
     ;; Zoom text by `1on1-completions-frame-zoom-font-difference'.
     (when (and (fboundp 'zoom-frm-out) 1on1-completions-frame-zoom-font-difference)
