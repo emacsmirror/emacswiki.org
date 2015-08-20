@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sat Jul  4 10:32:53 2015 (-0700)
+;; Last-Updated: Wed Aug 19 22:35:59 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 10254
+;;     Update #: 10258
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3343,8 +3343,10 @@ Usually run by inclusion in `minibuffer-setup-hook'."
     ;; just use a buffer-local face, but those don't yet exist.
     (when (= 1 (recursion-depth))
       (setq icicle-saved-region-background  (face-background 'region))
-      (when icicle-change-region-background-flag
+      (when (and icicle-change-region-background-flag  (not (fboundp 'face-remap-add-relative))) ; Emacs < 23.
         (set-face-background 'region icicle-region-background)))
+    (when (and icicle-change-region-background-flag  (fboundp 'face-remap-add-relative))
+      (face-remap-add-relative 'region :background icicle-region-background)) ; Emacs 23+
     ;; Reset prompt, because some commands (e.g. `find-file') don't use `read-file-name'
     ;; or `completing-read'.  Reset other stuff too.
     (setq icicle-candidate-nb                    nil
@@ -3560,7 +3562,9 @@ Used in `completion-setup-hook'."
   "Restore region face.  It was changed during minibuffer activity
 if `icicle-change-region-background-flag' is non-nil."
   (when (and icicle-change-region-background-flag  (= 1 (recursion-depth)))
-    (set-face-background 'region icicle-saved-region-background)))
+    (if (fboundp 'face-remap-remove-relative) ; Emacs 23+
+        (face-remap-remove-relative icicle-region-face-remapping)
+      (set-face-background 'region icicle-saved-region-background))))
 
 (defun icicle-activate-mark ()
   "Prevent region from being deactivated.  Used in `icicle-post-command-hook'."
