@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Aug 18 16:44:39 2015 (-0700)
+;; Last-Updated: Wed Aug 19 22:43:28 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 29935
+;;     Update #: 29941
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4923,14 +4923,15 @@
 ;;  * Because the region background color is often quite different
 ;;    from the frame background color (in order to have it stand out),
 ;;    it can be a bit hard to read the completion candidates when the
-;;    region is highlighted during input cycling.  If user option
-;;    `icicle-change-region-background-flag' is non-`nil', however,
-;;    then the region background is changed to a color that differs
-;;    only slightly from the frame background, making it easier to
-;;    read the completion candidates.  The actual background color
-;;    used is the value of `icicle-region-background', which you can
-;;    customize.  If you make this color the same as the frame
-;;    background, then the region background is, in effect, invisible.
+;;    region is highlighted in the minibuffer during input cycling.
+;;    If user option `icicle-change-region-background-flag' is
+;;    non-`nil', however, then the region background is changed in the
+;;    active minibuffer to a color that differs only slightly from the
+;;    frame background, making it easier to read the completion
+;;    candidates.  The actual background color used is the value of
+;;    `icicle-region-background', which you can customize.  (If you
+;;    make this color the same as the frame background, then the
+;;    region background is, in effect, invisible.)
 ;;
 ;;  * The default value of `icicle-change-region-background-flag' is
 ;;    determined by the current value of `delete-selection-mode', that
@@ -8540,8 +8541,8 @@
 ;;  The proxy candidates for colors include the single-quoted names of
 ;;  user options (variables) whose custom type is `color'.  So, for
 ;;  example, option `icicle-region-background' appears as proxy color
-;;  candidate `'icicle-region-background''. Color proxies also include
-;;  the following:
+;;  candidate `'icicle-region-background''.  Color proxies also
+;;  include the following:
 ;;
 ;;  * `*copied foreground*'  - last copied foreground, if available
 ;;  * `*copied background*'  - last copied background, if available
