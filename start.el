@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 16 17:23:50 2015 (-0700)
+;; Last-Updated: Thu Aug 20 13:12:48 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3052
+;;     Update #: 3054
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -48,7 +48,7 @@
 ;;   `thingatpt', `thingatpt+', `thumb-frm', `time-date', `timer',
 ;;   `timer+', `unaccent', `vc', `vc+', `vc-', `vc-hooks',
 ;;   `vc-hooks+', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget', `window+', `zoom-frm'.
+;;   `wid-edit+', `widget', `window+', `zones', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -84,6 +84,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2015/08/20 dadams
+;;     Soft-require find-dired+.el (again) - moved require just before dired+.el.
 ;; 2015/08/16 dadams
 ;;     Soft-require zones.el.
 ;;     No longer soft-require wide-n.el (obsolete - merged into zones.el).
@@ -496,9 +498,6 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 ;;;                        ;; (setq dired-omit-files-p t))))
   )
 
-;; Note: `find-dired+.el' loads `dired+.el'.
-(when (< emacs-major-version 21)
-  (require 'find-dired+ nil t))         ; Improvements.
 (require 'frame-fns nil t)              ; Non-interactive frame and window functions.
 (require 'buff-menu+ nil t)             ; My replacements.
 (require 'misc-cmds nil t)              ; Miscellaneous commands.
@@ -691,6 +690,8 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
       (t
        (eval-after-load "diff" '(require 'diff+20 nil t)))) ; Extensions to `diff.el'.
 (require 'ediff+ nil t)                 ; Extensions to Ediff - toggle case sensitivity.
+;; Note: `find-dired+.el' loads `dired+.el'.
+(require 'find-dired+ nil t)            ; Improvements.
 (require 'dired+ nil t)                 ; Extensions to Dired.
 (when (eq system-type 'windows-nt) (require 'w32-browser nil t)) ; Even if `dired+.el' not loaded.
 (when (require 'dired-sort-menu nil t)
