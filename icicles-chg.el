@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Aug 18 16:48:22 2015 (-0700)
+;; Last-Updated: Wed Aug 19 22:05:57 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11502
+;;     Update #: 11514
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1161,6 +1161,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2015/08/20 dadams
+;;     icicle-occur, icicle-search-(sentences|paragraphs|pages), icicle-compilation-search:
+;;       Use face remapping (face-remap-(re)set-base) instead of set-face-* for Emacs 23+.
+;;       Thx to Jonathan H (PythonNut).
 ;; 2015/08/18 dadams
 ;;     Added: icicle-select-zone, icicle-select-zone-action.
 ;;     Renamed: icicle-narrow(-action) to icicle-buffer-narrowing(-action).
@@ -4008,8 +4012,7 @@
 ;;     icicle-save-or-restore-input: If icicle-last-completion-candidate is nil, don't try to restore.
 ;; 2006/08/18 dadams
 ;;     icicle-minibuffer-setup: Reset icicle-last-completion-candidate to nil.
-;;     icicle-rebind-completion-maps:
-;;       Added icicle-Info-goto-node to icicle-completion-help-string.
+;;     icicle-rebind-completion-maps: Added icicle-Info-goto-node to icicle-completion-help-string.
 ;; 2006/08/15 dadams
 ;;     icicle-(bind|restore)-completion-keys:
 ;;       Bind icicle-help-on-(previous|next)-(apropos|prefix)-candidate.
@@ -4065,8 +4068,7 @@
 ;;              icicle-*-context-candidate to icicle-(next|previous)-candidate-per-mode,
 ;;              icicle-scroll-completions to icicle-scroll-Completions.
 ;;     icicle-minibuffer-setup:
-;;       Replaced icicle-display-Completions with icicle-prefix-complete, to get initial
-;;         highlight.
+;;       Replaced icicle-display-Completions with icicle-prefix-complete, to get initial highlight.
 ;; 2006/07/18 dadams
 ;;     icicle-call-then-update-Completions:
 ;;       Delete *Completions* window, depending on icicle-Completions-display-min-input-chars.
@@ -6679,7 +6681,7 @@
 ;;       Hard-code down/up in completion-list-mode-map - do not reuse prefix completion keys.
 ;;     Applied renaming of icicle-cycling-respects-completion-mode to icicle-default-cycling-mode.
 ;; 2010/10/08 dadams
-;;     icicle-minibuffer-setup: Don't set icicle-current-completion-mode in recursive minibuffer.
+;;     icicle-minibuffer-setup: Do not set icicle-current-completion-mode in recursive minibuffer.
 ;;     icicle-define-cycling-keys: Unconditionally define mouse wheel for modal cycling.
 ;; 2010/10/07 dadams
 ;;     Use icicle-current-TAB-method function, not variable, everywhere.
@@ -6758,7 +6760,7 @@
 ;;     icicle-mode, icicle-define-icicle-maps, icicle-bind-completion-keys:
 ;;       Updated doc string, menus, keys for completion-method command renamings.
 ;; 2009/09/26 dadams
-;;     icicle-minibuffer-setup: Don't complete if icicle-progressive-completing-p.
+;;     icicle-minibuffer-setup: Do not complete if icicle-progressive-completing-p.
 ;; 2009/09/16 dadams
 ;;     icy-mode: Add icicle-insert-buffer to doc string.
 ;;     icicle-define-icicle-maps: Added icicle-insert-buffer to icicle-menu-map.
@@ -6771,7 +6773,7 @@
 ;;       Ensure this-command-keys-vector is not empty.  Thx to Kai Tetzlaff and Lennart Borgman.
 ;; 2009/08/09 dadams
 ;;     icicle-minibuffer-setup: Set region background for recursive minibuffers too.
-;;     icicle-restore-region-face: Don't restore unless going back to top level.
+;;     icicle-restore-region-face: Do not restore unless going back to top level.
 ;; 2009/08/01 dadams
 ;;     Added: icicle-add-menu-item-to-cmd-history.  Thx to Lennart Borgman.
 ;;     icy-mode: add/remove pre-command-hook, respecting icicle-menu-items-to-history-flag.
