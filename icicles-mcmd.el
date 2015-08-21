@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Aug 20 11:11:42 2015 (-0700)
+;; Last-Updated: Fri Aug 21 10:33:43 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 19728
+;;     Update #: 19738
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -452,8 +452,8 @@
   ;; icicle-thing-at-pt-fns-pointer, icicle-universal-argument-map, icicle-use-candidates-only-once-alt-p,
   ;; icicle-whole-candidate-as-text-prop-p
 (require 'icicles-fn)
-  ;; icicle-minibuf-input-sans-dir, icicle-read-regexp, icicle-scan-fn-or-regexp, icicle-string-match-p,
-  ;; icicle-toggle-icicle-mode-twice, icicle-unlist
+  ;; icicle-minibuf-input-sans-dir, icicle-mru-window-for-buffer, icicle-read-regexp, icicle-scan-fn-or-regexp,
+  ;; icicle-string-match-p, icicle-toggle-icicle-mode-twice, icicle-unlist
 
 (require 'doremi nil t) ;; (no error if not found):
                         ;; doremi, doremi(-boost)-(up|down)-keys, doremi-limit, doremi-wrap
@@ -2355,7 +2355,7 @@ By default, this is bound to `C-x C-M-l' during completion."
                                                       (mapcar #'expand-file-name (symbol-value histvar)))
                                                   (symbol-value histvar))))
                         (case-fold-search
-                         ;; Don't bother with buffer completion, `read-buffer-completion-ignore-case'.
+                         ;; Do not bother with buffer completion, `read-buffer-completion-ignore-case'.
                          (if (and filep  (boundp 'read-file-name-completion-ignore-case))
                              read-file-name-completion-ignore-case
                            completion-ignore-case)))
@@ -2483,8 +2483,8 @@ By default, this is bound to `C-x C-M-l' during completion."
                                    (setq faces  (cons 'icicle-match-highlight-Completions faces))
                                    (put-text-property (match-beginning 0) (point) 'face faces)))
 
-                               ;; If `icicle-hide-non-matching-lines-flag' then hide all lines
-                               ;; of candidate that do not match current input.
+                               ;; If `icicle-hide-non-matching-lines-flag' then hide all lines of candidate
+                               ;; that do not match current input.
                                (let ((candidate  (icicle-current-completion-in-Completions))
                                      (input      (icicle-minibuf-input-sans-dir
                                                   icicle-current-raw-input))
@@ -2686,10 +2686,12 @@ By default, this is bound to `C-x C-M-l' during completion."
                       (> emacs-major-version 22))
              (save-window-excursion
                (select-window (get-buffer-window "*Completions*" 'visible))
-               (when (one-window-p t) ; $$$$$ Also this? (window-dedicated-p (selected-window))
-                 ;; $$$$$ FIXME: Find a way to get the last-used window showing `icicle-pre-minibuffer-buffer'
-                 ;;              This only gets some window showing it, which is not TRT.
-                 (let* ((orig-win       (get-buffer-window icicle-pre-minibuffer-buffer 'visible))
+               (when (one-window-p t)   ; $$$$$ Also this? (window-dedicated-p (selected-window))
+                 ;; Prior to Emacs 24, dunno how to get last-used window showing `icicle-pre-minibuffer-buffer',
+                 ;; This only gets some window showing it, which is not TRT.
+                 (let* ((orig-win       (if (not (fboundp 'icicle-mru-window-for-buffer))
+                                            (get-buffer-window icicle-pre-minibuffer-buffer 'visible)
+                                          (icicle-mru-window-for-buffer icicle-pre-minibuffer-buffer 'noMNI 0)))
                         (orig-font-fam  (and (window-live-p orig-win)
                                              (save-window-excursion (select-window orig-win)
                                                                     (face-attribute 'default :family)))))
