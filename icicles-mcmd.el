@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Aug 21 10:33:43 2015 (-0700)
+;; Last-Updated: Fri Aug 21 13:14:23 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 19738
+;;     Update #: 19740
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2680,14 +2680,14 @@ By default, this is bound to `C-x C-M-l' during completion."
            ;; Use the same font family as the starting buffer.  This is particularly for picking up
            ;; the proper font for Unicode chars in `*Completions*'.  Emacs 23+ only.
            ;; But skip this if using `oneonone.el', since `1on1-display-*Completions*-frame' does it.
-           (when (and (not (fboundp '1on1-display-*Completions*-frame))
+           (when (and ;; $$$$$$ (not (fboundp '1on1-display-*Completions*-frame))
                       (get-buffer-window "*Completions*" 'visible)
                       icicle-pre-minibuffer-buffer
                       (> emacs-major-version 22))
              (save-window-excursion
                (select-window (get-buffer-window "*Completions*" 'visible))
                (when (one-window-p t)   ; $$$$$ Also this? (window-dedicated-p (selected-window))
-                 ;; Prior to Emacs 24, dunno how to get last-used window showing `icicle-pre-minibuffer-buffer',
+                 ;; Prior to Emacs 24, dunno how to get last-used window showing `icicle-pre-minibuffer-buffer'.
                  ;; This only gets some window showing it, which is not TRT.
                  (let* ((orig-win       (if (not (fboundp 'icicle-mru-window-for-buffer))
                                             (get-buffer-window icicle-pre-minibuffer-buffer 'visible)
