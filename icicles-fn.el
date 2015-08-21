@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Aug 21 09:54:34 2015 (-0700)
+;; Last-Updated: Fri Aug 21 10:44:05 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15098
+;;     Update #: 15105
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5098,19 +5098,27 @@ occurrences."
   (defun icicle-lru-window-for-buffer (buffer &optional minibuf all-frames)
     "Return the least recently used window for BUFFER.
 Optional args MINIBUF and ALL-FRAMES are as for `get-buffer-window-list'."
-    (let* ((wins     (get-buffer-window-list buffer minibuf all-frames))
-           (lru-win  (car wins)))
+    (let* ((wins      (get-buffer-window-list buffer minibuf all-frames))
+           (lru-win   (car wins))
+           (lru-time  (window-use-time lru-win))
+           wtime)
       (dolist (win  (cdr wins))
-        (when  (time-less-p win lru-win) (setq lru-win  win)))
+        (when (time-less-p (setq wtime  (window-use-time win)) lru-time)
+          (setq lru-time  wtime
+                lru-win   win)))
       lru-win))
 
   (defun icicle-mru-window-for-buffer (buffer &optional minibuf all-frames)
     "Return the most recently used window for BUFFER.
 Optional args MINIBUF and ALL-FRAMES are as for `get-buffer-window-list'."
-    (let* ((wins     (get-buffer-window-list buffer minibuf all-frames))
-           (mru-win  (car wins)))
+    (let* ((wins      (get-buffer-window-list buffer minibuf all-frames))
+           (mru-win   (car wins))
+           (mru-time  (window-use-time mru-win))
+           wtime)
       (dolist (win  (cdr wins))
-        (unless  (time-less-p win mru-win) (setq mru-win  win)))
+        (unless (time-less-p (setq wtime  (window-use-time win)) mru-time)
+          (setq mru-time  wtime
+                mru-win   win)))
       mru-win))
 
   )
