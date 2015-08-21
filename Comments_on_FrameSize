@@ -1,0 +1,4 @@
+adding `Emacs*geometry: <w>x<h>` to ~/.Xresources then calling `xrdb` doesn't work for me with 24.3.1 on Ubuntu 14.04 .
+
+-- Anonymous 2015-08-21 02:59 UTC
+
