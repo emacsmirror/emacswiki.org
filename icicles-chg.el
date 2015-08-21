@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Aug 21 10:50:31 2015 (-0700)
+;; Last-Updated: Fri Aug 21 13:27:48 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11532
+;;     Update #: 11537
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4536,7 +4536,12 @@
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
 ;; 2015/08/21 dadams
-;;     icicle-display-candidates-in-Completions: Use icicle-mru-window-for-buffer (Emacs 24+).
+;;     icicle-display-candidates-in-Completions:
+;;       Use icicle-mru-window-for-buffer (Emacs 24+).
+;;       Do the font-family remapping even if 1on1-display-*Completions*-frame, because Icicles calls
+;;        i-d-c-i-C repeatedly, and it does with-output-to-help-buffer, which kills local vars,
+;;        including the face-remapping var.  IOW, cannot depend on 1on1-display-*Completions*-frame,
+;;        since that is called only once, when the frame is created.
 ;; 2015/08/20 dadams
 ;;     icicle-display-candidates-in-Completions, icicle-remove-Completions-window:
 ;;       Use face remapping (face-remap-(add|remove)-relative) instead of set-face-* for Emacs 23+.
