@@ -2,7 +2,7 @@ In order to load a file from EmacsLisp, use `load-file'.  Example:
 
  (load-file "~/elisp/foo.el")
 
-Do not forget the ".el" extension.  Not that if a CompiledFile  exists (having the ".elc" extension), then it will not be loaded.  `load-file' wants the exact file-name.
+Do not forget the ".el" extension.  Note that if a CompiledFile  exists (having the ".elc" extension), then it will not be loaded:  `load-file' wants the exact file-name.
 
 Usually it is better to install files in your LoadPath, though.  Then, you can use either of the following:
 
