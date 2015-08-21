@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2015.07.05
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 20 11:11:31 2015 (-0700)
+;; Last-Updated: Fri Aug 21 09:38:54 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 23668
+;;     Update #: 23669
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -1212,7 +1212,8 @@
 ;;    `icicle-load-library', `icicle-local-keys-first-p',
 ;;    `icicle-locate-file-no-search-1',
 ;;    `icicle-locate-file-of-content-1', `icicle-looking-at-p',
-;;    `icicle-looks-like-dir-name-p', `icicle-major-mode-name-less-p',
+;;    `icicle-looks-like-dir-name-p', `icicle-lru-window-for-buffer',
+;;    `icicle-major-mode-name-less-p',
 ;;    `icicle-make-bookmark-candidate', `icicle-make-char-candidate',
 ;;    `icicle-make-color-candidate', `icicle-make-face-candidate',
 ;;    `icicle-make-frame-alist', `icicle-make-plain-predicate',
@@ -1229,6 +1230,7 @@
 ;;    `icicle-minibuffer-prompt-end', `icicle-minibuffer-setup',
 ;;    `icicle-mode-line-name-less-p',
 ;;    `icicle-mouse-candidate-action-1', `icicle-mouseover-help',
+;;    `icicle-mru-window-for-buffer',
 ;;    `icicle-msg-maybe-in-minibuffer', `icicle-ms-windows-NET-USE',
 ;;    `icicle-multi-comp-apropos-complete-match', `icicle-multi-sort',
 ;;    `icicle-buffer-narrowing-action', `icicle-nb-Completions-cols',
