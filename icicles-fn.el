@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Aug 21 10:44:05 2015 (-0700)
+;; Last-Updated: Fri Aug 21 10:47:52 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15105
+;;     Update #: 15107
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5093,7 +5093,7 @@ occurrences."
   "If OBJECT is a cons, return its car; else return OBJECT."
   (if (consp object) (car object) object))
 
-(when (fboundp 'get-buffer-window-list) ; Emacs 24+
+(when (fboundp 'window-use-time) ; Emacs 24+
 
   (defun icicle-lru-window-for-buffer (buffer &optional minibuf all-frames)
     "Return the least recently used window for BUFFER.
