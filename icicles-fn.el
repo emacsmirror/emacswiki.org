@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Thu Aug 20 23:47:34 2015 (-0700)
+;; Last-Updated: Fri Aug 21 09:54:34 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15091
+;;     Update #: 15098
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -173,6 +173,7 @@
 ;;    `icicle-levenshtein-one-match', `icicle-levenshtein-one-regexp',
 ;;    `icicle-levenshtein-strict-match', `icicle-list-position',
 ;;    `icicle-looks-like-dir-name-p', `icicle-local-keys-first-p',
+;;    `icicle-lru-window-for-buffer' (Emacs 24+),
 ;;    `icicle-make-char-candidate', `icicle-make-face-candidate',
 ;;    `icicle-make-plain-predicate', `icicle-major-mode-name-less-p',
 ;;    `icicle-maybe-sort-and-strip-candidates',
@@ -183,7 +184,8 @@
 ;;    `icicle-minibuffer-default-add-completions',
 ;;    `icicle-minibuf-input', `icicle-minibuf-input-sans-dir',
 ;;    `icicle-minibuffer-prompt-end', `icicle-mode-line-name-less-p',
-;;    `icicle-mouseover-help', `icicle-msg-maybe-in-minibuffer',
+;;    `icicle-mouseover-help', `icicle-mru-window-for-buffer' (Emacs
+;;    24+), `icicle-msg-maybe-in-minibuffer',
 ;;    `icicle-ms-windows-NET-USE',
 ;;    `icicle-multi-comp-apropos-complete-match', `icicle-multi-sort',
 ;;    `icicle-next-candidate', `icicle-next-error-buffer-p',
@@ -5090,6 +5092,28 @@ occurrences."
 (defun icicle-unlist (object)
   "If OBJECT is a cons, return its car; else return OBJECT."
   (if (consp object) (car object) object))
+
+(when (fboundp 'get-buffer-window-list) ; Emacs 24+
+
+  (defun icicle-lru-window-for-buffer (buffer &optional minibuf all-frames)
+    "Return the least recently used window for BUFFER.
+Optional args MINIBUF and ALL-FRAMES are as for `get-buffer-window-list'."
+    (let* ((wins     (get-buffer-window-list buffer minibuf all-frames))
+           (lru-win  (car wins)))
+      (dolist (win  (cdr wins))
+        (when  (time-less-p win lru-win) (setq lru-win  win)))
+      lru-win))
+
+  (defun icicle-mru-window-for-buffer (buffer &optional minibuf all-frames)
+    "Return the most recently used window for BUFFER.
+Optional args MINIBUF and ALL-FRAMES are as for `get-buffer-window-list'."
+    (let* ((wins     (get-buffer-window-list buffer minibuf all-frames))
+           (mru-win  (car wins)))
+      (dolist (win  (cdr wins))
+        (unless  (time-less-p win mru-win) (setq mru-win  win)))
+      mru-win))
+
+  )
 
 (defun icicle-position (item list)
   "Zero-based position of first occurrence of ITEM in LIST, else nil."
