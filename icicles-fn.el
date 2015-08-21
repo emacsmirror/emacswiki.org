@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Wed Jul 29 11:49:55 2015 (-0700)
+;; Last-Updated: Thu Aug 20 23:47:34 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15089
+;;     Update #: 15091
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2410,8 +2410,7 @@ such a return value: (CHAR-NAME . CHAR-CODE)."
 (unless (fboundp 'icicle-ORIG-read-string)
   (defalias 'icicle-ORIG-read-string (symbol-function 'read-string)))
 
-(defun icicle-read-string (prompt &optional initial-input hist-m@%=!$+&^*z
-                           default-value inherit-input-method)
+(defun icicle-read-string (prompt &optional initial-input hist-m@%=!$+&^*z default-value inherit-input-method)
   "Read a string from the minibuffer, prompting with string PROMPT.
 If non-nil, second arg INITIAL-INPUT is a string to insert before reading.
   Vanilla Emacs considers it to be obsolete, but Icicles does not.  It
@@ -2426,7 +2425,7 @@ Fourth arg DEFAULT-VALUE is the default value.  If non-nil, it is used
 Fifth arg INHERIT-INPUT-METHOD, if non-nil, means the minibuffer inherits
  the current input method and the setting of enable-multibyte-characters."
   (when default-value
-    (setq prompt  (icicle-handle-default-for-prompt prompt default-value 'INCLUDE)))
+    (setq prompt  (icicle-handle-default-for-prompt prompt default-value (eq icicle-default-value t))))
   (let ((value  (read-from-minibuffer prompt initial-input nil nil hist-m@%=!$+&^*z
                                       default-value inherit-input-method)))
     (when (and default-value  (equal value ""))
