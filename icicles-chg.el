@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Aug 20 11:23:41 2015 (-0700)
+;; Last-Updated: Thu Aug 20 23:44:13 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11528
+;;     Update #: 11529
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2211,6 +2211,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2015/08/20
+;;     icicle-read-string: Replaced hard-coded non-nil INCLUDE arg by (eq icicle-default-value t).
 ;; 2015/07/05 dadams
 ;;     icicle-levenshtein-strict-match: Raise error if cannot load levenshtein.el.
 ;; 2015/02/20 dadams
