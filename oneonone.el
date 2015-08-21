@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Thu Aug 20 11:18:12 2015 (-0700)
+;; Last-Updated: Fri Aug 21 12:29:55 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3080
+;;     Update #: 3086
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -298,6 +298,8 @@
  
 ;;; Change Log:
 ;;
+;; 2015/08/21 dadams
+;;     1on1-display-*Completions*-frame: Use icicle-mru-window-for-buffer (Emacs 24+).
 ;; 2015/08/20 dadams
 ;;     1on1-display-*Completions*-frame: Use face-remap-add-relative instead of set-face-*.
 ;; 2015/04/11 dadams
@@ -1706,7 +1708,13 @@ If `zoom-frm.el' is used, then shrink the text according to
     (when (and (boundp 'icicle-mode) icicle-mode
                icicle-pre-minibuffer-buffer
                (> emacs-major-version 22))
-      (let* ((orig-win       (get-buffer-window icicle-pre-minibuffer-buffer 'visible))
+      ;; Prior to Emacs 24, dunno how to get last-used window showing
+      ;; `icicle-pre-minibuffer-buffer'.  This only gets some window showing it - not TRT.
+      ;; (This code is similar to what is in `icicle-display-candidates-in-Completions'.)
+      (let* ((orig-win       (if (not (fboundp 'icicle-mru-window-for-buffer))
+                                 (get-buffer-window icicle-pre-minibuffer-buffer 'visible)
+                               (icicle-mru-window-for-buffer icicle-pre-minibuffer-buffer
+                                                             'NOMINI 0)))
              (orig-font-fam  (and (window-live-p orig-win)
                                   (save-window-excursion (select-window orig-win)
                                                          (face-attribute 'default :family)))))
