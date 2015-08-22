@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Wed Aug 19 22:00:14 2015 (-0700)
+;; Last-Updated: Sat Aug 22 15:09:39 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7253
+;;     Update #: 7267
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -8510,10 +8510,22 @@ command `icicle-mode'."
                          (error "Restriction removed because of invalid limits"))
       (error (error "%s" (error-message-string err))))))
 
-(defun icicle-select-zone ()
+(defun icicle-select-zone (&optional variable not-buf-local-p set-var-p)
   "Choose a buffer zone and select it as the active region.
-The candidates are taken from the variable that is the value of
-`zz-izones-var'.
+By default, the candidates are taken from the variable that is the
+value of `zz-izones-var'.
+
+With a prefix arg you are prompted for a different variable to use, in
+place of the current value of `zz-izones-var'.  The particular prefix
+arg determines whether the variable, if unbound, is made buffer-local,
+and whether `zz-izones-var' is set to the variable symbol:
+
+  prefix arg          buffer-local   set `zz-izones-var'
+  ----------          ------------   -------------------
+   Plain `C-u'         yes            yes
+   > 0 (e.g. `C-1')    yes            no
+   = 0 (e.g. `C-0')    no             yes
+   < 0 (e.g. `C--')    no             no
 
 During completion you can use these keys\\<minibuffer-local-completion-map>:
 
@@ -8531,30 +8543,64 @@ When candidate action and cycling are combined (e.g. `C-next'), option
 
 Use `mouse-2', `RET', or `S-RET' to choose a candidate as the final
 destination, or `C-g' to quit.  This is an Icicles command - see
-command `icicle-mode'."
-  (interactive)
-  (unless (featurep 'zones) (error "You need library `zones.el' for this command"))
-  (let ((var  zz-izones-var)
-        (val  (symbol-value zz-izones-var)))
+command `icicle-mode'.
+
+Non-interactively:
+* VARIABLE is the optional izones variable to use.
+* Non-nil NOT-BUF-LOCAL-P means do not make VARIABLE buffer-local.
+* Non-nil SET-VAR-P means set `zz-izones-var' to VARIABLE.
+* Non-nil MSGP means echo the region size."
+  (interactive (let* ((IGNORE  (unless (require 'zones nil t)
+                                 (error "You need library `zones.el' for this command")))
+                      (var     (or (and current-prefix-arg  (zz-read-any-variable "Variable: " zz-izones-var))
+                                   zz-izones-var))
+                      (npref  (prefix-numeric-value current-prefix-arg))
+                      (nloc   (and current-prefix-arg  (<= npref 0)  (not (boundp var))))
+                      (setv   (and current-prefix-arg  (or (consp current-prefix-arg)  (= npref 0)))))
+                 (list var nloc setv)))
+  (unless (require 'zones nil t) (error "You need library `zones.el' for this command"))
+  (setq icicle-izones-var  (or variable  zz-izones-var)) ; Needed for `icicle-select-zone-action'.
+  (unless (or not-buf-local-p  (boundp icicle-izones-var)) (make-local-variable icicle-izones-var))
+  (when set-var-p (setq zz-izones-var  icicle-izones-var))
+  (unless (boundp icicle-izones-var) (set icicle-izones-var ()))
+  (let ((val  (symbol-value icicle-izones-var)))
     (unless val (error "No zone to select"))
     (if (< (length val) 2)              ; Only one zone - select it.
         (zz-select-region 1 'MSG)
       (let ((icicle-sort-comparer            'icicle-special-candidates-first-p)
             (icicle-delete-candidate-object  (lambda (cand)
-                                               (let ((name.res  (icicle-get-alist-candidate cand)))
+                                               (let ((name.zone  (icicle-get-alist-candidate cand)))
                                                  (with-current-buffer icicle-pre-minibuffer-buffer
-                                                   (set zz-izones-var  (delete (cdr name.res) val))
-                                                   (zz-izones-renumber))))))
-        (icicle-apply (let ((ns  ())
+                                                   (set icicle-izones-var (delete (cdr name.zone)
+                                                                                  (symbol-value
+                                                                                   icicle-izones-var)))
+                                                   (zz-izones-renumber icicle-izones-var))))))
+        (icicle-apply (let ((ns         ())
+                            (other-buf  nil)
                             beg end name)
-                        (dolist (res  zz-izones)
-                          (setq beg   (marker-position (nth 1 res))
-                                end   (marker-position (nth 2 res))
-                                name  (format "%d-%d, %s" beg end (buffer-substring beg end))
+                        (dolist (izone  (symbol-value icicle-izones-var))
+                          (when (and (not (local-variable-p icicle-izones-var))
+                                     (setq other-buf  (zz-izone-has-other-buffer-marker-p izone))
+                                     (or (not (markerp beg))  (not (markerp end))
+                                         (eq (marker-buffer beg) (marker-buffer end))))
+                            (setq other-buf  (marker-buffer other-buf)))
+                          (setq beg   (marker-position (nth 1 izone))
+                                end   (marker-position (nth 2 izone))
+                                name  (format "%d-%d, %s"
+                                              beg end
+                                              (if (and (not (local-variable-p icicle-izones-var))
+                                                       (setq other-buf  (zz-izone-has-other-buffer-marker-p
+                                                                         izone))
+                                                       (or (not (markerp beg))  (not (markerp end))
+                                                           (eq (marker-buffer beg) (marker-buffer end)))
+                                                       (setq other-buf  (marker-buffer other-buf)))
+                                                  (with-current-buffer other-buf
+                                                    (buffer-substring beg end))
+                                                (buffer-substring beg end)))
                                 name  (replace-regexp-in-string "\n" " " (substring name
                                                                                     0 (min 50 (length name))))
                                 name  (format "%s\n" name))
-                          (push `(,name ,@res) ns)) ; Go ahead and include the numerical index: (car RES).
+                          (push `(,name ,@izone) ns)) ; Go ahead and include the numerical index: (car RES).
                         ns)
                       #'icicle-select-zone-action
                       'NOMSG)))))
@@ -8570,7 +8616,7 @@ command `icicle-mode'."
                (beg        (nth 1 izone))
                (end        (nth 2 izone))
                (other-buf  nil))
-          (when (and (not (local-variable-p zz-izones-var))
+          (when (and (not (local-variable-p icicle-izones-var))
                      (setq other-buf  (zz-izone-has-other-buffer-marker-p izone)) ; Returns marker or nil.
                      (or (not (markerp beg))  (not (markerp end))  (eq (marker-buffer beg) (marker-buffer end)))
                      (setq other-buf  (marker-buffer other-buf)))
