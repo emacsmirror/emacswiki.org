@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 20 14:21:36 2015 (-0700)
+;; Last-Updated: Sat Aug 22 09:41:32 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1620
+;;     Update #: 1641
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -61,7 +61,8 @@
 ;;
 ;;    `zz-add-zone', `zz-add-zone-and-coalesce', `zz-coalesce-zones',
 ;;    `zz-delete-zone', `zz-narrow', `zz-narrow-repeat',
-;;    `zz-select-region', `zz-select-region-repeat'.
+;;    `zz-select-region', `zz-select-region-repeat',
+;;    `zz-set-izones-var'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -225,14 +226,20 @@
 ;;  being used by default for izone commands.  The default value is
 ;;  `zz-izones'.
 ;;
-;;  Sometimes a command prompts you for the izones variable to use, if
-;;  you use a prefix argument.  You can have any number of izones
-;;  variables, and their values can be buffer-local or global
-;;  variables.
+;;  You can have any number of izones variables, and they can be
+;;  buffer-local or global variables.
 ;;
-;;  The particular prefix arg determines whether the variable, if not
-;;  yet bound, is made buffer-local, and whether `zz-izones-var' is
-;;  set to the variable symbol:
+;;  You can use `C-x n v' (command `zz-set-izones-var') anytime to set
+;;  `zz-izones-var' to a variable whose name you enter.  With a prefix
+;;  argument, the variable is made automatically buffer-local.  Use
+;;  `C-x n v' to switch among various zone variables for the current
+;;  buffer (if buffer-local) or globally.
+;;
+;;  Sometimes another zone command prompts you for the izones variable
+;;  to use, if you give it a prefix argument.  The particular prefix
+;;  arg determines whether the variable, if not yet bound, is made
+;;  buffer-local, and whether `zz-izones-var' is set to the variable
+;;  symbol:
 ;;
 ;;   prefix arg         buffer-local   set `zz-izones-var'
 ;;   ----------         ------------   -------------------
@@ -274,6 +281,7 @@
 ;;  C-x n n   `narrow-to-region'
 ;;  C-x n p   `narrow-to-page'
 ;;  C-x n r   `zz-select-region-repeat' - Cycle as active regions
+;;  C-x n v   `zz-set-izones-var' - Set `zz-izones-var' to a variable
 ;;  C-x n w   `widen'
 ;;  C-x n x   `zz-narrow-repeat' - Cycle as buffer narrowings
 ;;
@@ -373,6 +381,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/08/22 dadams
+;;     Added: zz-set-izones-var.  Bind it to C-x n v.
 ;; 2015/08/18 dadams
 ;;     Renamed: zz-izone-add              to zz-add-zone,
 ;;              zz-izone-add-and-coalesce to zz-add-zone-and-coalesce,
@@ -997,6 +1007,14 @@ Put `zz-narrow' on `mouse-2' for the lighter suffix.
                      (zz-regexp-car-member regexp (cdr xs)))))
 
 ;;;###autoload
+(defun zz-set-izones-var (variable &optional localp)
+  "Set `zz-izones-var' to VARIABLE, for which you are prompted.
+With a prefix arg, make VARIABLE automatically be buffer-local."
+  (interactive (list (zz-read-any-variable "Variable: " zz-izones-var) local current-prefix-arg))
+  (setq zz-izones-var  variable)
+  (when localp (make-variable-buffer-local variable)))
+
+;;;###autoload
 (defun zz-add-zone (start end &optional variable not-buf-local-p set-var-p msgp) ; Bound to `C-x n a'.
   "Add a zone for the text from START to END to the zones of VARIABLE.
 Return the new value of VARIABLE.
@@ -1487,6 +1505,7 @@ Non-interactively:
        (when (fboundp 'hlt-highlight-regions)
          (define-key narrow-map "H"  'hlt-highlight-regions-in-buffers))
        (define-key narrow-map "r"    (if (> emacs-major-version 21) 'zz-select-region-repeat 'zz-select-region))
+       (define-key narrow-map "v"    'zz-set-izones-var)
        (define-key narrow-map "x"    'zz-narrow-repeat))
       (t
        (define-key ctl-x-map "na"    'zz-add-zone)
@@ -1498,6 +1517,7 @@ Non-interactively:
        (when (fboundp 'hlt-highlight-regions)
          (define-key ctl-x-map "nH"  'hlt-highlight-regions-in-buffers))
        (define-key ctl-x-map "nr"    (if (> emacs-major-version 21) 'zz-select-region-repeat 'zz-select-region))
+       (define-key ctl-x-map "nv"    'zz-set-izones-var)
        (define-key ctl-x-map "nx"    (if (> emacs-major-version 21) 'zz-narrow-repeat 'zz-narrow))))
 
 
