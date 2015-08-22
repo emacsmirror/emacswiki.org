@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Thu Aug 20 11:11:16 2015 (-0700)
+;; Last-Updated: Sat Aug 22 15:11:31 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1834
+;;     Update #: 1838
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -99,9 +99,9 @@
 ;;    `icicle-initial-value', `icicle-input-completion-fail-overlay',
 ;;    `icicle-input-fail-pos', `icicle-insert-string-at-pt-end',
 ;;    `icicle-insert-string-at-pt-start',
-;;    `icicle-interactive-history', `icicle-key-prefix-description',
-;;    `icicle-kill-history', `icicle-kmacro-alist',
-;;    `icicle-kmacro-history',
+;;    `icicle-interactive-history', `icicle-izones-var',
+;;    `icicle-key-prefix-description', `icicle-kill-history',
+;;    `icicle-kmacro-alist', `icicle-kmacro-history',
 ;;    `icicle-last-apropos-complete-match-fn',
 ;;    `icicle-last-completion-candidate',
 ;;    `icicle-last-completion-command',
@@ -876,6 +876,10 @@ Nil means no match failure is known.")
 (defvar icicle-interactive-history ()
   "History of commands called using `call-interactively'.")
 
+(defvar icicle-izones-var 'zz-izones
+  "Current izones variable used by Icicles zone commands.
+\(See library`zones.el'.)")
+
 (defvar icicle-key-prefix-description ""
   "Description of a prefix key at some point during key completion.")
 
@@ -1528,14 +1532,14 @@ used only for alternative actions (e.g. `C-S-RET').")
 (defvar icicle-vardoc-last-initial-cand-set ()
   "Cache for initial set of completion candidates for `icicle-vardoc'.")
 
+(defvar icicle-variable-name-history nil "History for variable names.")
+
 (defvar icicle-whole-candidate-as-text-prop-p nil
   "Non-nil means string candidate has candidate data as text property.
 If non-nil, then the value of text property `icicle-whole-candidate'
 for a string completion candidate (e.g. what is displayed) is the cdr
 of the full completion-candidate alist element.  The car of that
 element is the string.")
-
-(defvar icicle-variable-name-history nil "History for variable names.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
