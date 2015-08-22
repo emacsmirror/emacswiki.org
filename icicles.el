@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2015.07.05
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 21 09:38:54 2015 (-0700)
+;; Last-Updated: Sat Aug 22 14:57:06 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 23669
+;;     Update #: 23670
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -1476,10 +1476,10 @@
 ;;    `icicle-input-completion-fail-overlay', `icicle-input-fail-pos',
 ;;    `icicle-insert-string-at-pt-end',
 ;;    `icicle-insert-string-at-pt-start',
-;;    `icicle-interactive-history', `icicle-key-prefix',
-;;    `icicle-key-prefix-2', `icicle-key-prefix-description',
-;;    `icicle-kill-history', `icicle-kmacro-alist',
-;;    `icicle-kmacro-history',
+;;    `icicle-interactive-history', `icicle-izones-var',
+;;    `icicle-key-prefix', `icicle-key-prefix-2',
+;;    `icicle-key-prefix-description', `icicle-kill-history',
+;;    `icicle-kmacro-alist', `icicle-kmacro-history',
 ;;    `icicle-last-apropos-complete-match-fn',
 ;;    `icicle-last-completion-candidate',
 ;;    `icicle-last-completion-command',
