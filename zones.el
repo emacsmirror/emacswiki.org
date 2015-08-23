@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 23 09:50:28 2015 (-0700)
+;; Last-Updated: Sun Aug 23 10:18:01 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1673
+;;     Update #: 1677
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -386,6 +386,7 @@
 ;;     Added: zz-clone-zones.  Bind to C-x n c.
 ;;     Added: zz-add-zone-and-unite, zz-unite-zones.  Alias zz-add-zone-and-coalesce, zz-coalesce-zones to them.
 ;;     Bind zz-unite-zones to C-x n u, not C-x n c.
+;;     zz-set-izones-var: Corrected interactive spec.
 ;; 2015/08/22 dadams
 ;;     Added: zz-set-izones-var.  Bind it to C-x n v.
 ;; 2015/08/18 dadams
@@ -1429,7 +1430,7 @@ and
 (defun zz-set-izones-var (variable &optional localp) ; Bound to `C-x n v'
   "Set `zz-izones-var' to VARIABLE, for which you are prompted.
 With a prefix arg, make VARIABLE automatically be buffer-local."
-  (interactive (list (zz-read-any-variable "Variable: " zz-izones-var) local current-prefix-arg))
+  (interactive (list (zz-read-any-variable "Variable: " zz-izones-var) current-prefix-arg))
   (setq zz-izones-var  variable)
   (when localp (make-variable-buffer-local variable)))
 
@@ -1458,7 +1459,7 @@ Non-interactively: Non-nil MSGP means show a status message."
      (when (and npref  (<= npref 0)) (setq zz-izones-var to-var))
      (list from-var to-var t)))
   (set to-variable (copy-sequence (symbol-value from-variable)))
-  (when msgp (message "Copied `%s' to `%s'" from-variable to-variable)))
+  (when msgp (message "Cloned `%s' to `%s'" from-variable to-variable)))
 
 ;;;###autoload
 (defalias 'zz-coalesce-zones 'zz-unite-zones)
