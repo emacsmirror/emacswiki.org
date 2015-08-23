@@ -3,50 +3,50 @@ My steps in installing Emacs on windoze PC, using gcc and
 
 The instructions that come with Emacs are very educational and good,
 this document just adds some more details (and some of these will soon
-be added to nt/INSTALL itself).  Hopefully this will be useful to a
+be added to ##nt/INSTALL## itself).  Hopefully this will be useful to a
 newbie like me.  If this does not work for you, ask questions at the
 bottom of this page, in the Problems section.
 
-This worked for me on windows 2000, but should be fine for any version
+This worked for me on MS Windows 2000, but should be fine for any version
 after 95.
 
 == ssh ==
 You need a ssh to access the cvs repository. 
 
-Either the cygwin package or putty (http://www.chiark.greenend.org.uk/~sgtatham/putty/). Then set the environment variable CVS_RSH to either ssh (if you use cygwin) or plink (if you use putty) before you access the cvs repository.
+Either the cygwin package or putty (http://www.chiark.greenend.org.uk/~sgtatham/putty/). Then set the environment variable ##CVS_RSH## to either ##ssh## (if you use cygwin) or ##plink## (if you use ##putty##) before you access the cvs repository.
 
 == tar ==
 
-Get djtarnt.exe from
+Get ##djtarnt.exe## from
 ftp://ftp.gnu.org/gnu/windows/emacs/utilities/i386/, and place it in,
-say %%C:\bin\%%
+say ##C:\bin\##
 
 == source ==
 
-Download emacs-<version>.tar.gz and place it in %%C:\src\emacs%%.  DO NOT
-unpack it via winzip.  Go to a DOS prompt and type:
+Download ##emacs-<version>.tar.gz## and place it in ##C:\src\emacs##.  DO NOT
+unpack it via %%WinZip%%.  Go to a DOS prompt and type:
 
     cd \src\emacs
     \bin\djtarnt -x ./emacs-<version>.tar.gz
 
-Now you see the emacs/ directory in there.  Read the docs
+Now you see the ##emacs/## directory in there.  Read the docs
 there:
 
-* read emacs/INSTALL has the steps for windows (do not confuse with msdos!)
-* read emacs/nt/INSTALL which is what you really need
+* read ##emacs/INSTALL## has the steps for Windows (do not confuse with msdos!)
+* read ##emacs/nt/INSTALL## which is what you really need
 
 == cygwin without gcc ==
 
 Install Cygwin, say, by clicking the "install now" link from
 http://sources.redhat.com/cygwin/.  Do not forget to click on nano
-among the editors -- nano will be a good and exremely friendly editor
+among the editors -- nano will be a good and extremely friendly editor
 till Emacs has been successfully installed.  Unless you need it, do
-not choose the gcc option in cygwin, since we shall install gcc
-separately below through migw.
+not choose the ##gcc## option in cygwin, since we shall install ##gcc##
+separately below through mingw.
 
 == mingw ==
 
-Go to http://www.mingw.org/ and download mingw into %%c:\src\mingw\%%.  Go
+Go to http://www.mingw.org/ and download ##mingw## into ##c:\src\mingw\##.  Go
 to a cygwin prompt.
 
     cd cygdrive/c/src/mingw
@@ -61,30 +61,30 @@ You could also do all this from a dos-prompt, perhaps like this:
     cd c:\src
     mv mingw C:\mingw
 
-The next step is to make %%c:\mingw/bin%% the VERY FIRST path for cygwin.
-(Before attempting your edit, DO NOT forget to "cp profile
-profile.old" in case you screw up.)
+The next step is to make ##c:\mingw/bin## the VERY FIRST path for cygwin.
+(Before attempting your edit, DO NOT forget to ##cp profile
+profile.old## in case you screw up.)
 
 You need a decent editor for this (not NOTEPAD or MSWORD). Did you
-install nano earlier?  Then, in a cygwin prompt, do a 'nano
-/etc/profile' and change the first line to:
+install nano earlier?  Then, in a cygwin prompt, do a ##nano
+/etc/profile## and change the first line to:
 
     PATH='/cygdrive/c/mingw/bin:/usr/local/bin:/usr/bin:/bin:$PATH'
 
-This adds the mingw path.  Type C-x to save your change.
+This adds the mingw path.  Type `C-x' to save your change.
 
-Just to check, start a fresh cygwin session and type: 'which make'.
-You should see: /cygdrive/c/mingw/bin/make.  If you see something else
-as the path for make, esp. if you see cygwin's gcc, something is
-wrong.  You cannot use Cygwin's gcc to install Emacs!
+Just to check, start a fresh cygwin session and type: ##which make##.
+You should see: ##/cygdrive/c/mingw/bin/make##.  If you see something else
+as the path for ##make##, esp. if you see cygwin's ##gcc##, something is
+wrong.  You cannot use Cygwin's ##gcc## to install Emacs!
 
-In my MinGW installation, it's not called make, so if you're having trouble, also try 'which mingw32-make' -- DominicCronin
+In my MinGW installation, it's not called ##make##, so if you're having trouble, also try ##which mingw32-make## -- DominicCronin
 
 == gmake or make ==
 
-I like to call my GNU make as gmake (to distinguish it from imposters)
--- if you want this as well, go to c:/mingw/bin and copy make.exe to
-gmake.exe.  The rest of these instructions assume a gmake.
+I like to call my GNU make as ##gmake## (to distinguish it from imposters)
+-- if you want this as well, go to ##c:/mingw/bin## and copy make.exe to
+##gmake.exe##.  The rest of these instructions assume a ##gmake##.
 
 == installing ==  
 
@@ -96,9 +96,9 @@ Start a cygwin prompt and:
   $ gmake install INSTALL_DIR=C:/emacs
 
 IMPORTANT: Note that if you have tried installing Emacs once, and are
-trying to install it again, do not forget to run 'gmake distclean'!
-That will ensure that configure.bat detects any new changes you may
-have made to the system, such as installing gcc etc.
+trying to install it again, do not forget to run ##gmake distclean'##.
+That will ensure that ##configure.bat## detects any new changes you may
+have made to the system, such as installing ##gcc## etc.
 
 == desktop ==
 
@@ -106,14 +106,14 @@ Finally, you may wish to place some Emacs-icons on desktop.  Note that
 it seems there are at least 3 different executables (minor differences
 in the way Emacs starts).  The one that worked best for me: Go to
 start->programs->GNU Emacs->Emacs -- right click on that, copy, and
-then 'paste shortcut' on the desktop.
+then paste shortcut on the desktop.
 
 == source from cvs ==
 
 If you have gotten your Emacs source file checked out from a CVS,
-these instructions will most likely fail when doing make -- they will
-complain that cl.elc could not be found.  For CVS, you have to do
-an extra 'make bootstrap' step:
+these instructions will most likely fail when doing ##make## -- they will
+complain that ##cl.elc## could not be found.  For CVS, you have to do
+an extra ##make bootstrap## step:
 
   $ cd /cygdrive/c/src/emacs/emacs-<version>/nt
   $ ./configure.bat
@@ -123,7 +123,7 @@ an extra 'make bootstrap' step:
 
 == Problems ==
 
-EricHanchrow ran into this -- the build of 21.3 appeared to go fine (using MingW 3.1.0-1), but while loading my .emacs it died like unto this:
+EricHanchrow ran into this -- the build of 21.3 appeared to go fine (using MingW 3.1.0-1), but while loading my ##.emacs## it died like unto this:
 <pre>
 C:\cygwin\usr\local\src\emacs-21.3\bin>gdb emacs
 GNU gdb 5.2.1
@@ -190,6 +190,6 @@ Program received signal SIGTRAP, Trace/breakpoint trap.
 </pre>
 
 == recent (6 Jan 2004) CVS Emacs ==
-Hooray!  It worked, once I realized that I need to use <tt>mingw32-make</tt>.  (Earlier I'd used Cygwin `make', which caused the build to fail with `Cannot open load file: encoded-kb').
+Hooray!  It worked, once I realized that I need to use ##mingw32-make##.  (Earlier I'd used Cygwin ##make##, which caused the build to fail with `Cannot open load file: encoded-kb').
 ----
 CategoryBuilding
