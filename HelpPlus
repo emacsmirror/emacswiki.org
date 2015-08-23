@@ -73,7 +73,7 @@ The following new commands are provided:
 
 * '''`describe-option-of-type'''' ('''`C-h C-o'''') -- Same as `describe-option', but you first specify the ''custom type'' of the option. Completion is available for both the custom type and the option of the chosen type. With a prefix arg, candidate options are not only those whose custom-type definition matches the chosen type, but also those whose current value satisfies the chosen type. So, for example, with a prefix argument, a variable whose value is a string satisfies a type such as ##(choice (const :tag "None" nil) string)##, (as does a variable whose value is `nil'). This command is particularly useful if you also use '''[[Icicles]]''', because you can use substring and regexp matching, and you can use progressive completion to match multiple patterns.
 
-* '''`describe-keymap'''' ('''`C-h M-k'''') -- Describe the bindings in a keymap. Enter the keymap variable using completion.
+* '''`describe-keymap'''' ('''`C-h M-k'''') -- Describe the bindings in a keymap. Enter the keymap [[variable]] (e.g., `ctl-x-map`) using completion. (Non-interactively, the argument can be a [[keymap]] itself or a keymap variable.)
 
 * '''`describe-file'''' ('''`C-h M-f'''') -- Display information about a file or directory: its type, permissions, size, time of last access/modification/status change, number of links, UID, GID, inode, and device number.  Starting with Emacs 22, if the file is an image file and you have command-line tool `exiftool' installed and in your `##$PATH##' or `exec-path', then some EXIF data (metadata) about the image is included.  See standard Emacs library ##image-dired.el## for more information about `exiftool'.
 
@@ -151,4 +151,3 @@ DrewsElispLibraries referenced here: Lisp:help-macro+.el, Lisp:help+.el, Lisp:he
 
 
 CategoryHelp
-
