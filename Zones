@@ -19,7 +19,7 @@ You can do the following with a list of zones:
 * Unite (coalesce) adjacent or overlapping zones (which includes sorting them).
 * Intersect them.
 * [[Narrowing|Narrow]] the buffer to zones in the list.
-* Select zones in the list as the active [region].  Cycle among regions.
+* Select zones in the list as the active [[region]].  Cycle among regions.
 * Search them (they are automatically united first).  For this
 you need library <tt>[[isearch-prop.el]]</tt> (see [[Isearch+]]).
 * Highlight and unhighlight them.  (For this you need the [[HighlightLibrary|Highlight]] library (<tt>[[highlight.el]]</tt>) or library <tt>[[facemenu+.el]]</tt>.
