@@ -56,10 +56,10 @@ to a cygwin prompt.
 
 You could also do all this from a dos-prompt, perhaps like this:
 
-    cd %%c:\src\mingw%%
-    %%c:\bin\djtarnt%%  -x MinGW-1.1.tar.gz.
-    cd %%c:\src%%
-    mv mingw %%C:\mingw%%
+    cd c:\src\mingw
+    c:\bin\djtarnt  -x MinGW-1.1.tar.gz.
+    cd c:\src
+    mv mingw C:\mingw
 
 The next step is to make %%c:\mingw/bin%% the VERY FIRST path for cygwin.
 (Before attempting your edit, DO NOT forget to "cp profile
