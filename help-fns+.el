@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 22 22:19:43 2015 (-0700)
+;; Last-Updated: Sat Aug 22 23:15:06 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 2107
+;;     Update #: 2108
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -382,7 +382,7 @@
 (when (or (> emacs-major-version 23)  (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
   (require 'info)) ;; Info-virtual-files
 
-(eval-when-compile (require 'cl)) ;; case
+(eval-when-compile (require 'cl)) ;; case, gentemp
 
 
 ;; Quiet the byte-compiler.
