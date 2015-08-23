@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 23 09:35:20 2015 (-0700)
+;; Last-Updated: Sun Aug 23 09:50:28 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1672
+;;     Update #: 1673
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -1435,7 +1435,8 @@ With a prefix arg, make VARIABLE automatically be buffer-local."
 
 ;;;###autoload
 (defun zz-clone-zones (from-variable to-variable &optional msgp) ; Bound to `C-x n c'
-  "Copy the zones of FROM-VARIABLE to emptied TO-VARIABLE.
+  "Clone FROM-VARIABLE to TO-VARIABLE.
+That is, copy the zones of FROM-VARIABLE to (emptied) TO-VARIABLE.
 A non-destructive operation: The value of TO-VARIABLE is a new list,
  with only the zones from FROM-VARIABLE.
 Return the value of TO-VARIABLE.
