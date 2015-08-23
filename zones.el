@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 23 10:18:01 2015 (-0700)
+;; Last-Updated: Sun Aug 23 10:24:50 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1677
+;;     Update #: 1679
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -387,6 +387,7 @@
 ;;     Added: zz-add-zone-and-unite, zz-unite-zones.  Alias zz-add-zone-and-coalesce, zz-coalesce-zones to them.
 ;;     Bind zz-unite-zones to C-x n u, not C-x n c.
 ;;     zz-set-izones-var: Corrected interactive spec.
+;;     zz-remove-zones-w-other-buffer-markers: Typo: RESTR -> ZONE.
 ;; 2015/08/22 dadams
 ;;     Added: zz-set-izones-var.  Bind it to C-x n v.
 ;; 2015/08/18 dadams
@@ -1312,14 +1313,14 @@ contain markers for a buffer other than BUFFER."
 BUFFER is the buffer to compare with (default: current buffer).
 This is a non-destructive operation: a (shallow) copy is returned."
   (unless buffer (setq buffer  (current-buffer)))
-  (zz-remove-if `(lambda (zone) (zz-zone-has-other-buffer-marker-p restr ',buffer)) zones))
+  (zz-remove-if `(lambda (zone) (zz-zone-has-other-buffer-marker-p zone ',buffer)) zones))
 
 (defun zz-remove-izones-w-other-buffer-markers (izones &optional buffer)
   "Return IZONES, but remove any that use markers for another buffer.
 BUFFER is the buffer to compare with (default: current buffer).
 This is a non-destructive operation: a (shallow) copy is returned."
   (unless buffer (setq buffer  (current-buffer)))
-  (zz-remove-if `(lambda (restr) (zz-izone-has-other-buffer-marker-p restr ',buffer)) izones))
+  (zz-remove-if `(lambda (izone) (zz-izone-has-other-buffer-marker-p izone ',buffer)) izones))
 
 (defun zz-zone-has-other-buffer-marker-p (zone &optional buffer)
   "Return non-nil if basic ZONE has a marker for another buffer.
