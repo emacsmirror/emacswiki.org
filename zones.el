@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 22 09:41:32 2015 (-0700)
+;; Last-Updated: Sun Aug 23 09:35:20 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1641
+;;     Update #: 1672
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -44,7 +44,7 @@
 ;;  (@> "Things Defined Here")
 ;;  (@> "Documentation")
 ;;    (@> "Compatibility")
-;;    (@> "Coalesced Zones")
+;;    (@> "Coalesced (United) Zones")
 ;;    (@> "Izone Commands")
 ;;    (@> "Izone List Variables")
 ;;    (@> "Keys")
@@ -59,10 +59,11 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `zz-add-zone', `zz-add-zone-and-coalesce', `zz-coalesce-zones',
+;;    `zz-add-zone', `zz-add-zone-and-coalesce',
+;;    `zz-add-zone-and-unite', `zz-clone-zones', `zz-coalesce-zones',
 ;;    `zz-delete-zone', `zz-narrow', `zz-narrow-repeat',
 ;;    `zz-select-region', `zz-select-region-repeat',
-;;    `zz-set-izones-var'.
+;;    `zz-set-izones-var', `zz-unite-zones'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -151,8 +152,8 @@
 ;;  called the zone "beginning"; the upper limit is called its "end".
 ;;
 ;;
-;;(@* "Coalesced Zones")
-;;  ** Coalesced Zones **
+;;(@* "Coalesced (United) Zones")
+;;  ** Coalesced (United) Zones **
 ;;
 ;;  A list of zones can contain zones that overlap or are adjacent
 ;;  (the end of one is one less than the beginning of the other).
@@ -162,7 +163,7 @@
 ;;  another such list, but which has POS1 <= POS2 in each of its
 ;;  zones, and which lists its zones in ascending order of their cars.
 ;;  For basic-zone union, the resulting zones are said to be
-;;  "coalesced".
+;;  "coalesced", or "united".
 ;;
 ;;  The extra info in the zones that result from zone union or
 ;;  intersection is just the set union or set intersection of the
@@ -272,8 +273,7 @@
 ;;  and `C-x n w':
 ;;
 ;;  C-x n a   `zz-add-zone' - Add to current izones variable
-;;  C-x n A   `zz-add-zone-and-coalesce' - Add izone; coalesce izones
-;;  C-x n c   `zz-coalesce-zones' - Coalesce izones
+;;  C-x n A   `zz-add-zone-and-unite' - Add izone, then unite izones
 ;;  C-x n d   `narrow-to-defun'
 ;;  C-x n C-d `zz-delete-zone' - Delete an izone from current var
 ;;  C-x n h   `hlt-highlight-regions' - Highlight izones
@@ -281,6 +281,7 @@
 ;;  C-x n n   `narrow-to-region'
 ;;  C-x n p   `narrow-to-page'
 ;;  C-x n r   `zz-select-region-repeat' - Cycle as active regions
+;;  C-x n u   `zz-unite-zones' - Unite (coalesce) izones
 ;;  C-x n v   `zz-set-izones-var' - Set `zz-izones-var' to a variable
 ;;  C-x n w   `widen'
 ;;  C-x n x   `zz-narrow-repeat' - Cycle as buffer narrowings
@@ -381,6 +382,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/08/23 dadams
+;;     Added: zz-clone-zones.  Bind to C-x n c.
+;;     Added: zz-add-zone-and-unite, zz-unite-zones.  Alias zz-add-zone-and-coalesce, zz-coalesce-zones to them.
+;;     Bind zz-unite-zones to C-x n u, not C-x n c.
 ;; 2015/08/22 dadams
 ;;     Added: zz-set-izones-var.  Bind it to C-x n v.
 ;; 2015/08/18 dadams
@@ -1007,14 +1012,6 @@ Put `zz-narrow' on `mouse-2' for the lighter suffix.
                      (zz-regexp-car-member regexp (cdr xs)))))
 
 ;;;###autoload
-(defun zz-set-izones-var (variable &optional localp)
-  "Set `zz-izones-var' to VARIABLE, for which you are prompted.
-With a prefix arg, make VARIABLE automatically be buffer-local."
-  (interactive (list (zz-read-any-variable "Variable: " zz-izones-var) local current-prefix-arg))
-  (setq zz-izones-var  variable)
-  (when localp (make-variable-buffer-local variable)))
-
-;;;###autoload
 (defun zz-add-zone (start end &optional variable not-buf-local-p set-var-p msgp) ; Bound to `C-x n a'.
   "Add a zone for the text from START to END to the zones of VARIABLE.
 Return the new value of VARIABLE.
@@ -1429,8 +1426,44 @@ and
     (nreverse (mapcar (lambda (zz) (cons (setq ii  (1+ ii)) zz)) basic-zones))))
 
 ;;;###autoload
-(defun zz-coalesce-zones (&optional variable msgp) ; Bound to `C-x n c'
-  "Coalesce the izones of VARIABLE.
+(defun zz-set-izones-var (variable &optional localp) ; Bound to `C-x n v'
+  "Set `zz-izones-var' to VARIABLE, for which you are prompted.
+With a prefix arg, make VARIABLE automatically be buffer-local."
+  (interactive (list (zz-read-any-variable "Variable: " zz-izones-var) local current-prefix-arg))
+  (setq zz-izones-var  variable)
+  (when localp (make-variable-buffer-local variable)))
+
+;;;###autoload
+(defun zz-clone-zones (from-variable to-variable &optional msgp) ; Bound to `C-x n c'
+  "Copy the zones of FROM-VARIABLE to emptied TO-VARIABLE.
+A non-destructive operation: The value of TO-VARIABLE is a new list,
+ with only the zones from FROM-VARIABLE.
+Return the value of TO-VARIABLE.
+
+You are prompted for FROM-VARIABLE and TO-VARIABLE.
+
+With a non-negative (>= 0) prefix arg, make TO-VARIABLE buffer-local.
+With a non-positive (<= 0) prefix arg, set `zz-izones-var' to the
+TO-VARIABLE symbol.  (Zero: do both.)
+
+FROM-VARIABLE defaults to the value of `zz-izones-var'.
+
+Non-interactively: Non-nil MSGP means show a status message."
+  (interactive
+   (let ((from-var  (zz-read-any-variable "Copy variable: " zz-izones-var))
+         (to-var    (zz-read-any-variable "To variable: "))
+         (npref     (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))))
+     (when (and npref  (>= npref 0)) (make-local-variable to-var))
+     (when (and npref  (<= npref 0)) (setq zz-izones-var to-var))
+     (list from-var to-var t)))
+  (set to-variable (copy-sequence (symbol-value from-variable)))
+  (when msgp (message "Copied `%s' to `%s'" from-variable to-variable)))
+
+;;;###autoload
+(defalias 'zz-coalesce-zones 'zz-unite-zones)
+;;;###autoload
+(defun zz-unite-zones (&optional variable msgp) ; Bound to `C-x n u'
+  "Coalesce (unite) the izones of VARIABLE.
 A non-destructive operation: The new value of VARIABLE is a new list.
 Return the new value of VARIABLE.
 
@@ -1459,9 +1492,11 @@ Non-interactively:
     (symbol-value var)))
 
 ;;;###autoload
-(defun zz-add-zone-and-coalesce (start end &optional variable msgp) ; Bound to `C-x n A'.
+(defalias 'zz-add-zone-and-coalesce 'zz-add-zone-and-unite)
+;;;###autoload
+(defun zz-add-zone-and-unite (start end &optional variable msgp) ; Bound to `C-x n A'.
   "Add an izone from START to END to those of VARIABLE, and coalesce.
-Use `zz-add-zone', then apply `zz-coalesce-zones'.
+Use `zz-add-zone', then apply `zz-unite-zones'.
 Return the new value of VARIABLE.
 
 This is a destructive operation: The list structure of the variable
@@ -1489,7 +1524,7 @@ Non-interactively:
                  (list beg end var t)))
   (unless variable (setq variable  zz-izones-var))
   (zz-add-zone start end variable nil nil msgp)
-  (zz-coalesce-zones variable msgp)
+  (zz-unite-zones variable msgp)
   (symbol-value variable))
 
 
@@ -1497,26 +1532,28 @@ Non-interactively:
 
 (cond ((boundp 'narrow-map)
        (define-key narrow-map "a"    'zz-add-zone)
-       (define-key narrow-map "A"    'zz-add-zone-and-coalesce)
-       (define-key narrow-map "c"    'zz-coalesce-zones)
+       (define-key narrow-map "A"    'zz-add-zone-and-unite)
+       (define-key narrow-map "c"    'zz-clone-zones)
        (define-key narrow-map "\C-d" 'zz-delete-zone)
        (when (fboundp 'hlt-highlight-regions)
          (define-key narrow-map "h"  'hlt-highlight-regions))
        (when (fboundp 'hlt-highlight-regions)
          (define-key narrow-map "H"  'hlt-highlight-regions-in-buffers))
        (define-key narrow-map "r"    (if (> emacs-major-version 21) 'zz-select-region-repeat 'zz-select-region))
+       (define-key narrow-map "u"    'zz-unite-zones)
        (define-key narrow-map "v"    'zz-set-izones-var)
        (define-key narrow-map "x"    'zz-narrow-repeat))
       (t
        (define-key ctl-x-map "na"    'zz-add-zone)
-       (define-key ctl-x-map "nA"    'zz-add-zone-and-coalesce)
-       (define-key ctl-x-map "nc"    'zz-coalesce-zones)
+       (define-key ctl-x-map "nA"    'zz-add-zone-and-unite)
+       (define-key ctl-x-map "nc"    'zz-clone-zones)
        (define-key ctl-x-map "n\C-d" 'zz-delete-zone)
        (when (fboundp 'hlt-highlight-regions)
          (define-key ctl-x-map "nh"  'hlt-highlight-regions))
        (when (fboundp 'hlt-highlight-regions)
          (define-key ctl-x-map "nH"  'hlt-highlight-regions-in-buffers))
        (define-key ctl-x-map "nr"    (if (> emacs-major-version 21) 'zz-select-region-repeat 'zz-select-region))
+       (define-key ctl-x-map "nu"    'zz-unite-zones)
        (define-key ctl-x-map "nv"    'zz-set-izones-var)
        (define-key ctl-x-map "nx"    (if (> emacs-major-version 21) 'zz-narrow-repeat 'zz-narrow))))
 
