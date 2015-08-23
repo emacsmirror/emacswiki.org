@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 16 20:15:55 2015 (-0700)
+;; Last-Updated: Sun Aug 23 13:18:35 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1185
+;;     Update #: 1189
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `hexrgb', `thingatpt', `thingatpt+', `wide-n', `zones'.
+;;   `hexrgb', `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -277,6 +277,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/23 dadams
+;;     isearchp-add/remove-dim-overlay: Do not call isearchp-some if no overlays (trivial).
 ;; 2015/08/16 dadams
 ;;     Renamed wide-n.el stuff to zones.el stuff.  Require only (the new) zones.el.
 ;; 2015/08/14 dadams
@@ -1700,8 +1702,8 @@ is non-nil."
          (let ((pos  beg))
            (while (< pos end)
              (let* ((ovs     (overlays-at pos))
-                    (dim-ov  (car (isearchp-some ovs nil (lambda (ov _)
-                                                           (member ov isearchp-dimmed-overlays))))))
+                    (dim-ov  (and ovs  (car (isearchp-some
+                                             ovs nil (lambda (ov _) (member ov isearchp-dimmed-overlays)))))))
                (when dim-ov (delete-overlay dim-ov)))
              (setq pos  (1+ pos)))))))
 
