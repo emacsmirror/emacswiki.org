@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 22 18:51:20 2015 (-0700)
+;; Last-Updated: Sat Aug 22 22:19:43 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 2094
+;;     Update #: 2107
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -117,6 +117,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/22 dadams
+;;     describe-keymap:
+;;       Allow arg to be a keymap (not a keymap variable), when not interactive.  Suggestion by erjoalgo.
 ;; 2015/08/13 dadams
 ;;     describe-variable:
 ;;       PREDICATE arg to completing-read needs to use original buffer, not minibuffer, when test boundp.
@@ -2744,14 +2747,23 @@ Non-nil optional arg NO-ERROR-P prints an error message but does not
     (buffer-substring (point-min) (point-max))))
 
 (defun describe-keymap (keymap)         ; Bound to `C-h M-k'
-  "Describe bindings in KEYMAP, a variable whose value is a keymap.
-Completion is available for the keymap name."
-  (interactive
-   (list (intern (completing-read "Keymap: " obarray
-                                  (lambda (m) (and (boundp m)  (keymapp (symbol-value m))))
-                                  t nil 'variable-name-history))))
+  "Describe key bindings in KEYMAP.
+Interactively, prompt for a variable that has a keymap value.
+Completion is available for the variable name.
+
+Non-interactively, KEYMAP can be such a keymap variable or a keymap."
+  (interactive (list (intern (completing-read "Keymap: " obarray
+                                              (lambda (m) (and (boundp m)  (keymapp (symbol-value m))))
+                                              t nil 'variable-name-history))))
+
   (unless (and (symbolp keymap)  (boundp keymap)  (keymapp (symbol-value keymap)))
-    (error "`%S' is not a `keymapp' symbol" keymap))
+    (if (not (keymapp keymap))
+        (error "%sot a keymap%s"
+               (if (symbolp keymap) (format "`%S' is n" keymap) "N")
+               (if (symbolp keymap) " variable" ""))
+      (let ((sym  (gentemp "KEYMAP OBJECT (no variable) ")))
+        (set sym keymap)
+        (setq keymap  sym))))
   (let ((name  (symbol-name keymap))
         (doc   (if (fboundp 'help-documentation-property) ; Emacs 23+
                    (help-documentation-property keymap 'variable-documentation
