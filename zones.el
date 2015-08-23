@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 23 10:32:06 2015 (-0700)
+;; Last-Updated: Sun Aug 23 10:49:31 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1688
+;;     Update #: 1697
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -193,6 +193,13 @@
 ;;
 ;;  Things you can do with zones:
 ;;
+;;  * Sort them.
+;;
+;;  * Unite (coalesce) adjacent or overlapping zones (which includes
+;;    sorting them).
+;;
+;;  * Intersect them.
+;;
 ;;  * Narrow the buffer to any of them.  Cycle among narrowings.  If
 ;;    you use library `icicles.el' then you can also navigate among
 ;;    them in any order, and using completion against BEG-END range
@@ -207,9 +214,17 @@
 ;;    `highlight.el' or library `facemenu+.el' (different kinds of
 ;;    highlighting).
 ;;
-;;  * Push the active region to a list of zones.
+;;  * Add the active region to a list of zones.
+;;
+;;  * Add the region to a list of zones, and then unite (coalesce) the
+;;    zones.
 ;;
 ;;  * Delete an izone from a list of zones.
+;;
+;;  * Clone a zones variable to another one, so the clone has the same
+;;    zones.
+;;
+;;  * Clone a zones variable and then unite the zones of the clone.
 ;;
 ;;  * Make an izone variable persistent, in a bookmark.  Use the
 ;;    bookmark to restore it in a subsequent Emacs session.  For this
@@ -276,6 +291,8 @@
 ;;
 ;;  C-x n a   `zz-add-zone' - Add to current izones variable
 ;;  C-x n A   `zz-add-zone-and-unite' - Add izone, then unite izones
+;;  C-x n c   `zz-clone-zones' - Clone zones from one var to another
+;;  C-x n C   `zz-clone-and-unite-zones' - Clone then unite zones
 ;;  C-x n d   `narrow-to-defun'
 ;;  C-x n C-d `zz-delete-zone' - Delete an izone from current var
 ;;  C-x n h   `hlt-highlight-regions' - Highlight izones
