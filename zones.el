@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 23 10:24:50 2015 (-0700)
+;; Last-Updated: Sun Aug 23 10:32:06 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1679
+;;     Update #: 1688
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -60,10 +60,12 @@
 ;;  Commands defined here:
 ;;
 ;;    `zz-add-zone', `zz-add-zone-and-coalesce',
-;;    `zz-add-zone-and-unite', `zz-clone-zones', `zz-coalesce-zones',
-;;    `zz-delete-zone', `zz-narrow', `zz-narrow-repeat',
-;;    `zz-select-region', `zz-select-region-repeat',
-;;    `zz-set-izones-var', `zz-unite-zones'.
+;;    `zz-add-zone-and-unite', `zz-clone-and-coalesce-zones',
+;;    `zz-clone-and-unite-zones', `zz-clone-zones',
+;;    `zz-coalesce-zones', `zz-delete-zone', `zz-narrow',
+;;    `zz-narrow-repeat', `zz-select-region',
+;;    `zz-select-region-repeat', `zz-set-izones-var',
+;;    `zz-unite-zones'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -383,7 +385,8 @@
 ;;(@* "Change log")
 ;;
 ;; 2015/08/23 dadams
-;;     Added: zz-clone-zones.  Bind to C-x n c.
+;;     Added: zz-clone-zones, zz-clone-and-unite-zones, zz-clone-and-coalesce-zones (alias).
+;;     Bind zz-clone-zones to C-x n c, zz-clone-and-unite-zones to C-x n C.
 ;;     Added: zz-add-zone-and-unite, zz-unite-zones.  Alias zz-add-zone-and-coalesce, zz-coalesce-zones to them.
 ;;     Bind zz-unite-zones to C-x n u, not C-x n c.
 ;;     zz-set-izones-var: Corrected interactive spec.
@@ -1463,6 +1466,33 @@ Non-interactively: Non-nil MSGP means show a status message."
   (when msgp (message "Cloned `%s' to `%s'" from-variable to-variable)))
 
 ;;;###autoload
+(defalias 'zz-clone-and-coalesce-zones 'zz-clone-and-unite-zones)
+;;;###autoload
+(defun zz-clone-and-unite-zones (from-variable to-variable &optional msgp) ; Bound to `C-x n C'
+  "Clone FROM-VARIABLE to TO-VARIABLE, then unite (coalesce) TO-VARIABLE.
+That is, use`zz-clone-zones' to fill TO-VARIABLE, then use
+`zz-unite-zones' on TO-VARIABLE.
+
+Use this when you do not want to unite the zones of FROM-VARIABLE (for
+example, you want to use them as possibly overlapping buffer
+narrowings), but you also want to act on the united zones (for
+example, to search them).
+
+FROM-VARIABLE defaults to the value of `zz-izones-var'.
+
+Non-interactively: Non-nil MSGP means show a status message."
+  (interactive
+   (let ((from-var  (zz-read-any-variable "Copy variable: " zz-izones-var))
+         (to-var    (zz-read-any-variable "To variable: "))
+         (npref     (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))))
+     (when (and npref  (>= npref 0)) (make-local-variable to-var))
+     (when (and npref  (<= npref 0)) (setq zz-izones-var to-var))
+     (list from-var to-var t)))
+  (set to-variable (copy-sequence (symbol-value from-variable)))
+  (zz-unite-zones to-variable)
+  (when msgp (message "Cloned `%s' to `%s' and united `%s'" from-variable to-variable to-variable)))
+
+;;;###autoload
 (defalias 'zz-coalesce-zones 'zz-unite-zones)
 ;;;###autoload
 (defun zz-unite-zones (&optional variable msgp) ; Bound to `C-x n u'
@@ -1537,6 +1567,7 @@ Non-interactively:
        (define-key narrow-map "a"    'zz-add-zone)
        (define-key narrow-map "A"    'zz-add-zone-and-unite)
        (define-key narrow-map "c"    'zz-clone-zones)
+       (define-key narrow-map "C"    'zz-clone-and-unite-zones)
        (define-key narrow-map "\C-d" 'zz-delete-zone)
        (when (fboundp 'hlt-highlight-regions)
          (define-key narrow-map "h"  'hlt-highlight-regions))
@@ -1550,6 +1581,7 @@ Non-interactively:
        (define-key ctl-x-map "na"    'zz-add-zone)
        (define-key ctl-x-map "nA"    'zz-add-zone-and-unite)
        (define-key ctl-x-map "nc"    'zz-clone-zones)
+       (define-key ctl-x-map "nC"    'zz-clone-and-unite-zones)
        (define-key ctl-x-map "n\C-d" 'zz-delete-zone)
        (when (fboundp 'hlt-highlight-regions)
          (define-key ctl-x-map "nh"  'hlt-highlight-regions))
