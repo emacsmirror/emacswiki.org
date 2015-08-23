@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 23 13:38:03 2015 (-0700)
+;; Last-Updated: Sun Aug 23 13:53:49 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1193
+;;     Update #: 1196
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -278,9 +278,7 @@
 ;;; Change Log:
 ;;
 ;; 2015/08/23 dadams
-;;     isearchp-add/remove-dim-overlay:
-;;       When removing overlay, advance POS past it before deleting.
-;;       Do not call isearchp-some if no overlays (trivial).
+;;     isearchp-add/remove-dim-overlay: Iterate over isearchp-dimmed-overlays instead of from BEG to END.
 ;; 2015/08/16 dadams
 ;;     Renamed wide-n.el stuff to zones.el stuff.  Require only (the new) zones.el.
 ;; 2015/08/14 dadams
@@ -1701,16 +1699,11 @@ is non-nil."
            (overlay-put ov 'priority 200) ; < isearch-overlay's 1001.
            (overlay-put ov 'face (isearchp-dim-face-spec))))
         (t
-         (let ((pos   beg)
-               (oend  1))
-           (while (< pos end)
-             (let* ((ovs     (overlays-at pos))
-                    (dim-ov  (and ovs  (car (isearchp-some
-                                             ovs nil (lambda (ov _) (member ov isearchp-dimmed-overlays)))))))
-               (when dim-ov
-                 (setq pos  (max (overlay-end dim-ov) oend pos))
-                 (delete-overlay dim-ov)))
-             (setq pos  (1+ pos)))))))
+         (let (obeg oend)
+           (dolist (dim-ov  isearchp-dimmed-overlays)
+             (setq obeg  (overlay-start dim-ov)
+                   oend  (overlay-end   dim-ov))
+             (when (and (<= beg oend)  (<= obeg end)) (delete-overlay dim-ov)))))))
 
 ;; Same as `icicle-remove-duplicates'.
 (defun isearchp-remove-duplicates (sequence &optional test)
