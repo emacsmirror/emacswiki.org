@@ -33,7 +33,7 @@ Zone commands are bound to keys on keymap `narrow-map' (prefix key `C-x n'):
 
 * '''`C-x n a''''   (`zz-izone-add') -- Add the active [[region]] to the current list of zones.
 * '''`C-x n A''''   (`zz-izone-add-and-unite') -- Add the region to the current list of zones, and then unite (coalesce) them.
-* '''`C-x n c''''   (`zz-clone-zones')  -- Clone a zones variable from another one, so it has the same zones.
+* '''`C-x n c''''   (`zz-clone-zones')  -- Clone a zones variable to another one, so the clone has the same zones.
 * '''`C-x n d''''   (`narrow-to-defun') -- Standard, except that it is advised to update the current list of zones with the narrowing.
 * '''`C-x n C-d'''' (`zz-izone-delete') -- Delete a zone from the current list of zones.
 * '''`C-x n h''''   (`hlt-highlight-regions') -- Highlight zones in the current buffer.
