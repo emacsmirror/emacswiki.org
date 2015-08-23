@@ -125,7 +125,7 @@ an extra 'make bootstrap' step:
 
 EricHanchrow ran into this -- the build of 21.3 appeared to go fine (using MingW 3.1.0-1), but while loading my .emacs it died like unto this:
 <pre>
-%%C:\cygwin\usr\local\src\emacs-21.3\bin>gdb%% emacs
+C:\cygwin\usr\local\src\emacs-21.3\bin>gdb emacs
 GNU gdb 5.2.1
 Copyright 2002 Free Software Foundation, Inc.
 GDB is free software, covered by the GNU General Public License, and you are
@@ -134,7 +134,7 @@ Type "show copying" to see the conditions.
 There is absolutely no warranty for GDB.  Type "show warranty" for details.
 This GDB was configured as "i686-pc-mingw32"...
 (gdb) run
-Starting program: %%C:\cygwin\usr\local\src\emacs-21.3\bin/emacs.exe%%
+Starting program: C:\cygwin\usr\local\src\emacs-21.3\bin/emacs.exe
 
 Program received signal SIGTRAP, Trace/breakpoint trap.
 0x77fa144c in ?? ()
