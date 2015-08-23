@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 13 08:50:37 2015 (-0700)
+;; Last-Updated: Sat Aug 22 18:51:20 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 2093
+;;     Update #: 2094
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -18,7 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `button', `cl', `cl-lib', `gv', `help-fns', `help-mode', `info',
+;;   `macroexp', `naked', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2750,7 +2751,7 @@ Completion is available for the keymap name."
                                   (lambda (m) (and (boundp m)  (keymapp (symbol-value m))))
                                   t nil 'variable-name-history))))
   (unless (and (symbolp keymap)  (boundp keymap)  (keymapp (symbol-value keymap)))
-    (error "`%S' is not a keymapp" keymap))
+    (error "`%S' is not a `keymapp' symbol" keymap))
   (let ((name  (symbol-name keymap))
         (doc   (if (fboundp 'help-documentation-property) ; Emacs 23+
                    (help-documentation-property keymap 'variable-documentation
