@@ -2,3 +2,13 @@ adding `Emacs*geometry: <w>x<h>` to ~/.Xresources then calling `xrdb` doesn't wo
 
 -- Anonymous 2015-08-21 02:59 UTC
 
+
+----
+
+You have to specify the input file to xrdb:
+<code>
+xrdb ~/.Xresources
+</code>
+
+-- rlk 2015-08-24 15:18 UTC
+
