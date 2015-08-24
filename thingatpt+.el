@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Sun Jan  4 16:58:08 2015 (-0800)
+;; Last-Updated: Sun Aug 23 17:06:00 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 2200
+;;     Update #: 2205
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -239,6 +239,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/23 dadams
+;;     tap-list-at/nearest-point-with-bounds:
+;;       Use (nth 3 (syntax-ppss)) - in-string-p is deprecated in Emacs 25.
 ;; 2014/08/22 dadams
 ;;     tap-looking-at-p: Do not defalias to Emacs looking-at-p because that is a defsubst.
 ;; 2014/06/07 dadams
@@ -1034,7 +1037,9 @@ Return nil if no non-empty list is found."
       (cond ((tap-looking-at-p   "\\(\\s-*\\|[\n]*\\)\\s(") (skip-syntax-forward "->"))
             ((tap-looking-back-p "\\s)\\(\\s-*\\|[\n]*\\)") (skip-syntax-backward "->"))))
     (let (strg-end)
-      (while (setq strg-end  (in-string-p))
+      (while (setq strg-end  (if (fboundp 'syntax-ppss)
+                                 (nth 3 (syntax-ppss)) ; Emacs 22+
+                               (in-string-p)))
         (skip-syntax-forward "^\"")     ; Skip past string element of list.
         (skip-syntax-forward "\"")))    ; Skip past new string opening, `"', into next string.
     (let ((sexp+bnds  (funcall at/near)))
