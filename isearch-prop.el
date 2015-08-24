@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 23 13:53:49 2015 (-0700)
+;; Last-Updated: Mon Aug 24 08:07:59 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1196
+;;     Update #: 1203
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -277,6 +277,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/24 dadams
+;;     isearchp-complement-dimming, isearchp-add/remove-dim-overlay:
+;;       When delete overlay, remove it from isearchp-dimmed-overlays.
 ;; 2015/08/23 dadams
 ;;     isearchp-add/remove-dim-overlay: Iterate over isearchp-dimmed-overlays instead of from BEG to END.
 ;; 2015/08/16 dadams
@@ -838,6 +841,7 @@ Bound to `\\<isearch-mode-map>\\[isearchp-toggle-complementing-domain]' during I
             ove     (overlay-end ov)
             oprops  (overlay-properties ov))
       (delete-overlay ov)
+      (setq isearchp-dimmed-overlays  (delete ov isearchp-dimmed-overlays))
       (when ovb (push ovb ov-lims))
       (when ove (push ove ov-lims)))
     (setq ov-lims  (nreverse ov-lims))
@@ -1703,7 +1707,9 @@ is non-nil."
            (dolist (dim-ov  isearchp-dimmed-overlays)
              (setq obeg  (overlay-start dim-ov)
                    oend  (overlay-end   dim-ov))
-             (when (and (<= beg oend)  (<= obeg end)) (delete-overlay dim-ov)))))))
+             (when (and (<= beg oend)  (<= obeg end))
+               (delete-overlay dim-ov)
+               (setq isearchp-dimmed-overlays  (delete dim-ov isearchp-dimmed-overlays))))))))
 
 ;; Same as `icicle-remove-duplicates'.
 (defun isearchp-remove-duplicates (sequence &optional test)
