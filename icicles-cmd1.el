@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Tue Aug  4 06:59:48 2015 (-0700)
+;; Last-Updated: Tue Aug 25 09:48:54 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 27435
+;;     Update #: 27438
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -9491,9 +9491,7 @@ that command for more information."
       (icicle-apropos-complete-match-fn       'icicle-file-of-content-apropos-complete-match)
       (icicle-last-apropos-complete-match-fn  'icicle-file-of-content-apropos-complete-match)
       (icicle-full-cand-fn                    `(lambda (file)
-                                                (setq file  (if (file-directory-p file)
-                                                                (file-name-as-directory file)
-                                                              file))
+                                                (setq file  (file-relative-name file))
                                                 ,(if icicle-pref-arg
                                                      '(icicle-make-file+date-candidate file)
                                                      '(list file))))
@@ -10171,9 +10169,7 @@ command for more information."
    ((prompt                                 "File (in tags table): ")
     (icicle-pref-arg                        current-prefix-arg)
     (icicle-full-cand-fn                    `(lambda (file)
-                                              (setq file  (if (file-directory-p file)
-                                                              (file-name-as-directory file)
-                                                            file))
+                                              (setq file  (file-relative-name file))
                                               ,(if icicle-pref-arg
                                                    '(icicle-make-file+date-candidate file)
                                                    '(list file))))
