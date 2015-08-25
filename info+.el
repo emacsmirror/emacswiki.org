@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed May 20 11:07:36 2015 (-0700)
+;; Last-Updated: Tue Aug 25 09:38:02 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 5468
+;;     Update #: 5496
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -129,8 +129,9 @@
 ;;     4. Menu items in face `info-menu'.
 ;;     5. Only 5th and 9th menu items have their `*' colored.
 ;;     6. Notes in face `info-xref'.
-;;     7. If `Info-fontify-quotations-flag', then fontify `...' in
-;;        face `info-quoted-name' and "..." in face `info-string'.
+;;     7. If `Info-fontify-quotations-flag', then fontify ‘...’ or
+;;        `...' in face `info-quoted-name' and "..." in face
+;;        `info-string'.
 ;;     8. If `Info-fontify-angle-bracketed-flag' and
 ;;        `Info-fontify-quotations-flag' then fontify <...> in face
 ;;        `info-quoted-name'.
@@ -708,11 +709,11 @@ Don't forget to mention your Emacs and library versions."))
 
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `yellow' for this face.
 ;;;###autoload
-(defface info-quoted-name               ; For `...'
+(defface info-quoted-name               ; For ‘...’ and `...'
     '((((background dark)) (:inherit font-lock-string-face :foreground "#6B6BFFFF2C2C")) ; ~ green
       (((background light)) (:inherit font-lock-string-face :foreground "DarkViolet"))
       (t (:foreground "yellow")))
-  "*Face for quoted names (`...') in `info'."
+  "*Face for quoted names (‘...’ or `...') in `info'."
   :group 'Info-Plus :group 'faces)
 
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `red3' for this face.
@@ -838,7 +839,7 @@ Don't forget to mention your Emacs and library versions."))
 (defcustom Info-fontify-quotations-flag t
   "*Non-nil means `info' fontifies text between quotes.
 This applies to double-quote strings (\"...\") and text between
-single-quotes (`...').
+single-quotes (‘...’ or `...').
 
 Note: This fontification can never be 100% reliable.  It aims to be
 useful in most Info texts, but it can occasionally result in
@@ -939,14 +940,14 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
 (defvar Info-breadcrumbs-depth-internal Info-breadcrumbs-depth
   "Current breadcrumbs depth for Info.")
 
-;; Match has, inside "...", `...', or ‘...’, zero or more of these characters:
-;;   - any character except ", ', or ’, respectively
+;; Match has, inside "...", ‘...’, or `...', zero or more of these characters:
+;;   - any character except ", ’, or ', respectively
 ;;   - \ followed by any character
 ;;
 ;; The `... in `...' is optional, so the regexp can also match just '.
 ;;
-;; The regexp matches also `...', ‘...’, and "..." where at least one of the
-;; `, ', ‘, ’, or " is escaped by a backslash.
+;; The regexp matches also ‘...’, `...', and "..." where at least one of the
+;; ‘, ’, `, ', or " is escaped by a backslash.
 ;; So we check those cases explicitly and do not highlight them.
 ;;
 (defvar info-quotation-regexp
@@ -1455,32 +1456,37 @@ candidates."
 
 (easy-menu-add-item
  Info-mode-menu nil
- ["Toggle Highlighting `...', \"...\"" Info-toggle-fontify-quotations
-                                       :help "Toggle option `Info-fontify-quotations-flag'"]
+ ["Toggle Highlighting ‘...’ or `...', and \"...\""
+  Info-toggle-fontify-quotations
+  :help "Toggle option `Info-fontify-quotations-flag'"]
  "Quit Info")
 
 (easy-menu-add-item
  Info-mode-menu nil
- ["Toggle Highlighting <...>" Info-toggle-fontify-angle-bracketed
-                              :help "Toggle option `Info-fontify-angle-bracketed-flag'"]
+ ["Toggle Highlighting <...>"
+  Info-toggle-fontify-angle-bracketed
+  :help "Toggle option `Info-fontify-angle-bracketed-flag'"]
  "Quit Info")
 
 (easy-menu-add-item
  Info-mode-menu nil
- ["Toggle Highlighting Single '" Info-toggle-fontify-single-quote
-                                 :help "Toggle option `Info-fontify-single-quote-flag'"]
+ ["Toggle Highlighting Single '"
+  Info-toggle-fontify-single-quote
+  :help "Toggle option `Info-fontify-single-quote-flag'"]
  "Quit Info")
 
 (easy-menu-add-item
  Info-mode-menu nil
- ["Toggle Breadcrumbs in Mode Line" Info-breadcrumbs-in-mode-line-mode
-                                    :help "Toggle showing breadcrumbs in the mode line"]
+ ["Toggle Breadcrumbs in Mode Line"
+  Info-breadcrumbs-in-mode-line-mode
+  :help "Toggle showing breadcrumbs in the mode line"]
  "Quit Info")
 
 (easy-menu-add-item
  Info-mode-menu nil
- ["Toggle Breadcrumbs in Node Header" Info-toggle-breadcrumbs-in-header
-                                      :help "Toggle showing breadcrumbs in the node header"]
+ ["Toggle Breadcrumbs in Node Header"
+  Info-toggle-breadcrumbs-in-header
+  :help "Toggle showing breadcrumbs in the node header"]
  "Quit Info")
  
 ;;(@* "Replacements for Existing Functions")
@@ -2182,8 +2188,7 @@ If key's command cannot be found by looking in indexes, then
                           (Info-search (regexp-quote pp-key))
                           (when msgp
                             (message (substitute-command-keys
-                                      "Use \\<Info-mode-map>`\\[Info-search] RET' \
-to search again for `%s'.")
+                                      "Use \\<Info-mode-map>`\\[Info-search] RET' to search again for `%s'.")
                                      pp-key))
                           t)            ; RETURN t: found.
                       (search-failed (when msgp (message "No documentation found for key `%s'." pp-key))
@@ -2192,7 +2197,7 @@ to search again for `%s'.")
 
 ;; REPLACES ORIGINAL in `info.el':
 ;; 1. File name in face `info-file'.
-;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name'
+;; 2. If `Info-fontify-quotations-flag', fontify ‘...’ or `...' in face `info-quoted-name'
 ;;    and "..." in face `info-string'.
 ;; 3. If `Info-fontify-quotations-flag' and `Info-fontify-single-quote-flag' then
 ;;    fontify ' in face `info-single-quote'.
@@ -2276,7 +2281,7 @@ to search again for `%s'.")
                      (skip-chars-backward " \t,")
                      (put-text-property (point) header-end 'invisible t))))))
 
-        ;; Fontify `...' and "..."
+        ;; Fontify ‘...’, `...', and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations-flag (info-fontify-quotations))
 
@@ -2546,7 +2551,7 @@ to search again for `%s'.")
 
 ;; REPLACES ORIGINAL in `info.el':
 ;; 1. File name in face `info-file'.
-;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name'
+;; 2. If `Info-fontify-quotations-flag', fontify ‘...’ or `...' in face `info-quoted-name'
 ;;    and "..." in face `info-string'.
 ;; 3. If `Info-fontify-quotations-flag' and `Info-fontify-single-quote-flag' then
 ;;    fontify ' in face `info-single-quote'.
@@ -2632,7 +2637,7 @@ to search again for `%s'.")
                      (skip-chars-backward " \t,")
                      (put-text-property (point) header-end 'invisible t))))))
 
-        ;; Fontify `...' and "..."
+        ;; Fontify ‘...’, `...', and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations-flag (info-fontify-quotations))
 
@@ -2882,7 +2887,7 @@ to search again for `%s'.")
 
 ;; REPLACES ORIGINAL in `info.el':
 ;; 1. File name in face `info-file'.
-;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name'
+;; 2. If `Info-fontify-quotations-flag', fontify ‘...’ or `...' in face `info-quoted-name'
 ;;    and "..." in face `info-string'.
 ;; 3. If `Info-fontify-quotations-flag' and `Info-fontify-single-quote-flag' then
 ;;    fontify ' in face `info-single-quote'.
@@ -2974,7 +2979,7 @@ to search again for `%s'.")
                                             header-end t)
                          (put-text-property (match-beginning 1) (match-end 1) 'invisible t)))))))
 
-        ;; Fontify `...' and "..."
+        ;; Fontify ‘...’, `...', and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations-flag (info-fontify-quotations))
 
@@ -3229,11 +3234,11 @@ You are prompted for the depth value."
   (when Info-breadcrumbs-in-mode-line-mode (Info-insert-breadcrumbs-in-mode-line)))
 
 (defun info-fontify-quotations ()
-  "Fontify `...', ‘...’, \"...\", and possibly <...> and single '.
+  "Fontify ‘...’, `...', \"...\", and possibly <...> and single '.
 If `Info-fontify-angle-bracketed-flag' then fontify <...> also.
 If `Info-fontify-single-quote-flag' then fontify singleton ' also.
 
- `...',  ‘...’, and <...>\t- use face `info-quoted-name'
+ ‘...’, `...', and <...>\t- use face `info-quoted-name'
  \"...\"\t- use face `info-string'
  '\t- use face `info-single-quote'"
   (let ((regexp    (if Info-fontify-angle-bracketed-flag info-quoted+<>-regexp info-quotation-regexp))
@@ -3249,7 +3254,7 @@ If `Info-fontify-single-quote-flag' then fontify singleton ' also.
                   (save-match-data (looking-at "\\(‘\\\\+’\\)")))
              (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
              (goto-char (match-end 0)))
-            ((and (memq (aref (match-string 0) 0) '(?` ?‘)) ; `...', ‘...’
+            ((and (memq (aref (match-string 0) 0) '(?` ?‘)) ; ‘...’, `...'
                   (goto-char (match-beginning 0)) ; If ` or ‘ is preceded by \, then skip it
                   (< (save-excursion (skip-chars-backward "\\\\")) 0))
              (goto-char (1+ (match-beginning 0))))
@@ -3258,7 +3263,7 @@ If `Info-fontify-single-quote-flag' then fontify singleton ' also.
                   (goto-char (match-beginning 0))
                   (< (save-excursion (skip-chars-backward "\\\\")) 0))
              (goto-char (1+ (match-beginning 0))))
-            ((memq (aref (match-string 0) 0) '(?` ?‘)) ; `...', ‘...’
+            ((memq (aref (match-string 0) 0) '(?` ?‘)) ; ‘...’, `...'
              (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
              (goto-char (match-end 0)) (forward-char 1))
             ((and Info-fontify-angle-bracketed-flag
@@ -3635,7 +3640,7 @@ in its Menu.
 User options you can customize
 ------------------------------
 `Info-fontify-quotations-flag' -
-  Fontify quoted names (`...') and strings (\"...\").
+  Fontify quoted names (‘...’ or `...') and strings (\"...\").
   Toggle with \\[Info-toggle-fontify-quotations].
 `Info-fontify-angle-bracketed-flag' -
   Fontify angle-bracketd names (<...>).
@@ -3649,7 +3654,7 @@ Faces you can customize
 -----------------------
 `info-file'   - Face used for file heading labels
 `info-string'       - Face used for strings (e.g. \"toto\").
-`info-quoted-name'  - Face used for quoted names (e.g. `toto').
+`info-quoted-name'  - Face used for quoted names (e.g. ‘toto’ or `toto').
 `info-single-quote' - Face used for isolated single-quote (e.g. 'foo).
 
 These are all of the current Info Mode bindings:
