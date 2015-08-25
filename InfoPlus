@@ -1,8 +1,8 @@
 Library <tt>[[info+.el]]</tt> extends the standard Emacs library ##info.el## in several ways.  '''[::Info+]''' provides:
 
 * Additional, finer-grained highlighting.  This makes a '''''big''''' difference in readability.
-** Quoted names, like this: `name-stands-out', and strings, like this: "<code>string-stands-out</code>" are highlighted if '''`Info-fontify-quotations-flag'''' is non-`nil'.
-** Angle-bracketed names, like this: `TAB', are highlighted if '''`Info-fontify-angle-bracketed-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
+** Quoted names, like this: ##‘name-stands-out’## or ##`name-stands-out'##, and strings, like this: ##"string-stands-out"## are highlighted if '''`Info-fontify-quotations-flag'''' is non-`nil'.
+** Angle-bracketed names, like this: ##<tab>##, are highlighted if '''`Info-fontify-angle-bracketed-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
 ** Isolated single quotes, like this: ##'foobar##, are highlighted if '''`Info-fontify-single-quote-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
 ** In the Emacs Lisp manual, reference items are highlighted, so they stand out.  This means: constants, [[command]]s, functions, [[macro]]s, special forms, syntax classes, [[user option]]s, and other [[variable]]s.
 
@@ -69,7 +69,7 @@ info-quoted-name highlight it. -- [[ahei]]
 [new:DrewAdams:2009-11-06 18:40 UTC]
 Only if it is followed (somewhere) by a normal single-quote: ##'##. But yes, otherwise, you are correct.
 
-Highlighting ##`...'## and ##"..."## strings is problematic. In general, the results are good, but there are several things that can throw it off. Fortunately, these things do not occur that commonly in manuals -- but they do occur. The more typical problem is an isolated ##"## character referred to as such in the manual (e.g. ##?"##). You'll just have to live with it or, if you think it's not worth it, customize `Info-fontify-quotations-flag' to nil. -- DrewAdams
+Highlighting ##‘...’## or ##`...'##, and ##"..."## strings is problematic. In general, the results are good, but there are several things that can throw it off. Fortunately, these things do not occur that commonly in manuals -- but they do occur. The more typical problem is an isolated ##"## character referred to as such in the manual (e.g. ##?"##). You'll just have to live with it or, if you think it's not worth it, customize `Info-fontify-quotations-flag' to nil. -- DrewAdams
 
 [new]
 OK, I see -- [[ahei]]
