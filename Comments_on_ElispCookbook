@@ -326,3 +326,10 @@ What could be done, I guess, is adding detail pages for each section in the styl
 
 -- [http://nic.ferrier.me.uk NicFerrier] 2013-02-23 15:27 UTC
 
+
+----
+
+(string/ends-with) is redundant as there's a standard function for that since Emacs 24.4: (string-suffix-p).
+
+-- yordan.miladinov 2015-08-26 17:21 UTC
+
