@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Aug 24 08:07:59 2015 (-0700)
+;; Last-Updated: Thu Aug 27 14:25:58 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1203
+;;     Update #: 1207
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -1818,8 +1818,9 @@ SEARCH-FN is the search function."
     (add-hook 'isearch-mode-end-hook 'isearchp-property-finish)
     (funcall search-fn))
 
-  (defun isearchp-zones-filter-pred (&optional restrictions)
-    "Return a predicate that tests if its args are in RESTRICTIONS.
+  (defun isearchp-zones-filter-pred (&optional izones)
+    "Return a predicate that tests if its args are in IZONES.
+Optional input list IZONES has the same structure as `zz-izones'.
 The predicate is suitable as a value of `isearch-filter-predicate'."
     `(lambda (beg end)
        (and (or (not (boundp 'isearchp-reg-beg))  (not isearchp-reg-beg)  (>= beg isearchp-reg-beg))
@@ -1828,7 +1829,7 @@ The predicate is suitable as a value of `isearch-filter-predicate'."
                 (and (boundp 'isearch-invisible) ; Emacs 24.4+
                      (not (or (eq search-invisible t)  (not (isearch-range-invisible beg end))))))
             (let ((in-zone-p  (zz-some `(lambda (zone) (and (<= (car zone) ,beg)  (>= (cadr zone) ,end)))
-                                       (zz-zone-union (zz-izone-limits ,restrictions nil 'THIS-BUFFER)))))
+                                       (zz-zone-union (zz-izone-limits ,izones nil 'THIS-BUFFER)))))
               (if isearchp-complement-domain-p (not in-zone-p) in-zone-p)))))
 
   )
