@@ -287,7 +287,7 @@ entry points:
   (defun skeleton-make-markers ()
     (while *skeleton-markers*
       (set-marker (pop *skeleton-markers*) nil))
-    (setq *skeleton-markers *
+    (setq *skeleton-markers*
           (mapcar 'copy-marker (reverse skeleton-positions))))
 
   (defun skeleton-next-position (&optional reverse)
