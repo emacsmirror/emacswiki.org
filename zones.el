@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 23 10:49:31 2015 (-0700)
+;; Last-Updated: Thu Aug 27 13:37:22 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1697
+;;     Update #: 1699
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -1255,9 +1255,8 @@ value can be modified."
 ;;;
 ;;; (defun zz-izone-limits-in-bufs (buffers &optional variable)
 ;;;   "Return a list of all `zz-izone-limits' for each buffer in BUFFERS.
-;;; That is, return a list of all currently recorded buffer narrowings for
-;;; BUFFERS.  If BUFFERS is nil then return the narrowings for the current
-;;; buffer.
+;;; That is, return a list of all recorded buffer zones for BUFFERS.
+;;; If BUFFERS is nil, return the zones recorded for the current buffer.
 ;;;
 ;;; This is a non-destructive operation: The list returned is independent
 ;;; of the `zz-izone-limits' list in each of the buffers.
@@ -1277,8 +1276,8 @@ value can be modified."
 
 (defun zz-izone-limits-in-bufs (buffers &optional variable)
   "Return a list of all `zz-izone-limits' for each buffer in BUFFERS.
-That is, return a list of all recorded buffer narrowings for BUFFERS.
-If BUFFERS is nil then return the narrowings for the current buffer.
+That is, return a list of all recorded buffer zones for BUFFERS.
+If BUFFERS is nil, return the zones recorded for the current buffer.
 
 This is a destructive operation: The list returned can have as
 sublists the `zz-izone-limits' lists of BUFFERS.
