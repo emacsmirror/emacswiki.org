@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 27 21:52:52 2015 (-0700)
+;; Last-Updated: Thu Aug 27 22:32:49 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1210
+;;     Update #: 1213
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -278,6 +278,7 @@
 ;;; Change Log:
 ;;
 ;; 2015/08/27 dadams
+;;     isearchp-zones-filter-pred: Bind limits of IZONES using lexical-let, for use in fn passed to zz-some.
 ;;     isearchp-zones-1: Pass value of var, not var, to isearchp-zones-filter-pred.
 ;; 2015/08/24 dadams
 ;;     isearchp-complement-dimming, isearchp-add/remove-dim-overlay:
@@ -1824,15 +1825,16 @@ SEARCH-FN is the search function."
     "Return a predicate that tests if its args are in IZONES.
 Optional input list IZONES has the same structure as `zz-izones'.
 The predicate is suitable as a value of `isearch-filter-predicate'."
-    `(lambda (beg end)
-       (and (or (not (boundp 'isearchp-reg-beg))  (not isearchp-reg-beg)  (>= beg isearchp-reg-beg))
-            (or (not (boundp 'isearchp-reg-end))  (not isearchp-reg-end)  (< end isearchp-reg-end))
-            (or (and (fboundp 'isearch-filter-visible) (isearch-filter-visible beg end))
-                (and (boundp 'isearch-invisible) ; Emacs 24.4+
-                     (not (or (eq search-invisible t)  (not (isearch-range-invisible beg end))))))
-            (let ((in-zone-p  (zz-some `(lambda (zone) (and (<= (car zone) ,beg)  (>= (cadr zone) ,end)))
-                                       (zz-zone-union (zz-izone-limits ,izones nil 'THIS-BUFFER)))))
-              (if isearchp-complement-domain-p (not in-zone-p) in-zone-p)))))
+    (lexical-let ((limits  (zz-izone-limits izones nil 'THIS-BUFFER)))
+      (lambda (beg end)
+        (and (or (not (boundp 'isearchp-reg-beg))  (not isearchp-reg-beg)  (>= beg isearchp-reg-beg))
+             (or (not (boundp 'isearchp-reg-end))  (not isearchp-reg-end)  (< end isearchp-reg-end))
+             (or (and (fboundp 'isearch-filter-visible) (isearch-filter-visible beg end))
+                 (and (boundp 'isearch-invisible) ; Emacs 24.4+
+                      (not (or (eq search-invisible t)  (not (isearch-range-invisible beg end))))))
+             (let ((in-zone-p  (zz-some (lambda (zone) (and (<= (car zone) beg)  (>= (cadr zone) end)))
+                                        (zz-zone-union limits))))
+               (if isearchp-complement-domain-p (not in-zone-p) in-zone-p))))))
 
   )
  
