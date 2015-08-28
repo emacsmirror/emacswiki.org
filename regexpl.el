@@ -1,11 +1,11 @@
 ;;; regexpl.el --- Search and replace list of patterns and replacements.
 
-;; Copyright (C) 2007, 2008  Aaron S. Hawley
+;; Copyright (C) 2007, 2008, 2015  Aaron S. Hawley
 
 ;; Author: Aaron S. Hawley
 ;; Keywords: lisp
-;; Version: %Id: 4%
-;; RCS Version: $Id: regexpl.el,v 1.5 2008/12/27 02:33:22 aaronh Exp $
+;; Version: %Id%
+;; RCS Version: $Id: regexpl.el,v 1.6 2015/08/28 15:46:08 ashawley Exp $
 ;; URL: http://www.emacswiki.org/elisp/regexpl.el
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -54,19 +54,28 @@ This procedure does not work when CONDP is the `null' function."
   (delq nil
         (mapcar (lambda (l) (and (funcall condp l) l)) lst)))
 
-(defun regexpl-transpose-lists (lst)
-  "Transpose 2-dimensional list LST.
+(defun regexpl-reduce (fn lst)
+  "Apply FN to elements of LST in pairs.
+
+Example:
+    (regexpl-reduce '* '(1 2 3))
+         => 6"
+  (cond ((null lst) lst)
+	((null (cdr lst)) (car lst))
+	(t (let ((res (car lst)))
+	     (dolist (x (cdr lst) res)
+	       (setq res (funcall fn res x)))))))
+
+(defun regexpl-transpose-lists (lsts)
+  "Transpose 2-dimensional list LSTS.
 
 Example:
     (regexpl-transpose-lists '((1 2 3) (one two three)))
          => ((1 one) (2 two) (3 three))"
-  (if (null lst)
-      nil
-    (if (null (cdr lst))
-        lst
-      (cons (mapcar 'car lst)
-            (regexpl-transpose-lists (delq nil (mapcar 'cdr
-                                                       lst)))))))
+  (let ((max (apply 'max (mapcar 'length lsts))))
+    (mapcar (lambda (n)
+              (mapcar (lambda (lst) (nth n lst)) lsts))
+            (number-sequence 0 (1- max)))))
 
 (defun regexpl-combine-lists (&rest args)
   "Combine lists of ARGS by transposing the respective elements.
@@ -94,19 +103,17 @@ Return index of matching regular expression in list, else nil."
 (defun regexpl-car-minimum+non-nil (p1 p2)
   "Return P1 if `car' value is greater than or equal to P2's, else P2.
 Value of `car' must be integer, or else other value is returned."
-  (if (null (car p2))
-      p1
-    (if (null (car p1))
-        p2
-      (if (<= (car p1) (car p2))
-          p1
-        p2))))
+  (cond
+   ((null (car p2)) p1)
+   ((null (car p1)) p2)
+   ((<= (car p1) (car p2)) p1)
+   (t p2)))
 
 (defun regexpl-re-closest-search-forward (regexp-list)
   "Search forward for first regular expression match in REGEXP-LIST.
 Return index of matching regular expression in list, else nil."
   (cadr
-   (reduce
+   (regexpl-reduce
     'regexpl-car-minimum+non-nil
     (regexpl-combine-lists
      (mapcar
@@ -154,7 +161,7 @@ other occurrences of \"watch\" will be replaced with \"wristwatch\"."
                               n regexp-replace-list)))
                       (replace-match r)
                       (setq count (1+ count)))))))
-    (when (called-interactively-p)
+    (when (called-interactively-p 'any)
       (message "Made %d replacements" count))))
 
 (defun regexpl-search-replace-list-in-string (regexp-replace-list str)
