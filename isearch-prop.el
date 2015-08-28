@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 27 22:32:49 2015 (-0700)
+;; Last-Updated: Fri Aug 28 14:18:34 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1213
+;;     Update #: 1297
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -33,8 +33,11 @@
 ;;  `isearch+.el'.  You can use either of the files without the other,
 ;;  if you like, but I recommend that you use them together.
 ;;
+;;  Some of the features of library `isearch+.el' need library
+;;  `zones.el'.  There is no error if you do not have that library,
+;;  but those features will be unavailable without it.
 ;;
-;;  The features provided by this library are based on similar
+;;  Some of the features provided by this library are based on similar
 ;;  features introduced by Icicles (http://www.emacswiki.org/Icicles).
 ;;
 ;;  More description below - see Overview of Features.
@@ -75,8 +78,10 @@
 ;;    `isearchp-imenu-non-interactive-function',
 ;;    `isearchp-lazy-highlights-forward',
 ;;    `isearchp-lazy-highlights-forward-regexp',
-;;    `isearchp-lazy-highlights-narrow',
-;;    `isearchp-mark-lazy-highlights', `isearchp-next-visible-thing',
+;;    `isearchp-mark-lazy-highlights',
+;;    `isearchp-narrow-to-lazy-highlights',
+;;    `isearchp-narrow-to-matching-zones',
+;;    `isearchp-next-visible-thing',
 ;;    `isearchp-previous-visible-thing', `isearchp-property-backward',
 ;;    `isearchp-property-backward-regexp',
 ;;    `isearchp-property-forward', `isearchp-property-forward-regexp',
@@ -108,6 +113,7 @@
 ;;    `isearchp-bounds-of-thing-at-point',
 ;;    `isearchp-complement-dimming', `isearchp-defined-thing-p',
 ;;    `isearchp-dim-color', `isearchp-dim-face-spec',
+;;    `isearchp-exclude-zones-w-no-lazy-highlight',
 ;;    `isearchp-lazy-highlights-forward-1',
 ;;    `isearchp-lazy-highlights-present-p', `isearchp-message-prefix',
 ;;    `isearchp-next-visible-thing-1',
@@ -123,15 +129,17 @@
 ;;    `isearchp-some', `isearchp-thing-read-args',
 ;;    `isearchp-text-prop-present-p', `isearchp-thing-scan',
 ;;    `isearchp-things-alist', `isearchp-zones-1',
-;;    `isearchp-zones-filter-pred', `isearchp-zones-read-args'.
+;;    `isearchp-zones-filter-pred', 
+;;    `isearchp-zone-limits-izones', `isearchp-zones-read-args'.
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `isearchp-dimmed-overlays', `isearchp-property-prop',
-;;    `isearchp-property-prop-prefix', `isearchp-property-type',
-;;    `isearchp-property-values', `isearchp-complement-domain-p',
-;;    `isearchp-context-level', `isearchp-filter-predicate-orig',
-;;    `isearchp-last-thing-type'.
+;;    `isearchp-dimmed-overlays', `isearchp-excluded-zones',
+;;    `isearchp-property-prop', `isearchp-property-prop-prefix',
+;;    `isearchp-property-type', `isearchp-property-values',
+;;    `isearchp-complement-domain-p', `isearchp-context-level',
+;;    `isearchp-filter-predicate-orig', `isearchp-last-thing-type',
+;;    `isearchp-zone-limits-function'.
 ;;
 ;;
 ;;  Keys bound in `isearch-mode-map' here:
@@ -150,6 +158,51 @@
 ;;(@* "Overview of Features")
 ;;
 ;;; Overview of Features ---------------------------------------------
+;;
+;;  Library `isearch-prop.el' lets you search within contexts.  You
+;;  can limit incremental search to a set of zones of buffer text -
+;;  search contexts that in effect constitute a multi-region.  These
+;;  zones can be defined in various ways, including some ways provided
+;;  specially by this library.  You can search zones defined by either
+;;  their limits (positions) or text or overlay properties on their
+;;  text.  (For the former, you also need library `zones.el'.)
+;;
+;;  You can put text or overlay properties on zones of text that are
+;;  defined by matching a regexp or by corresponding to a type of
+;;  THING (e.g. comment, sexp, paragraph).
+;;
+;;  As one example of searching zones that have a given overlay
+;;  property, you can search the matches of a previous Isearch, the
+;;  lazy-highlight text.  If you also use library `isearch+.el' then
+;;  you can use `M-s h l' during isearch to toggle the automatic
+;;  removal of lazy-highlighting.  Toggle it off, to keep the
+;;  highlighting from the last search.
+;;
+;;  While you are searching lazy-highlight zones from a previous
+;;  search, if you hit `C-S-SPC' then you start searching the current
+;;  search hits.  You can repeat this.  This is a kind of progressive
+;;  searching: narrowing of search results.
+;;
+;;  Another kind of progressive searching of zones of text is
+;;  available with `S-SPC'.  It removes zones from among the areas
+;;  being searched if the zones do not currently contain a search hit
+;;  (lazy highlight).  This means you can search using multiple search
+;;  patterns, effectively AND'ing them.  For example, you can search
+;;  zones for both `fox' and `hen' by searching for one and then the
+;;  other, using `S-SPC' in between.  You need library `zones.el' for
+;;  this, and this feature is currently limited to removing zones
+;;  defined by their limits, not text or overlay properties.
+;;
+;;  Features:
+;;
+;;  * If you use library `zones.el' then you can search a set of buffer
+;;    zones that are defined by their limits (markers or numbers) --
+;;    like multiple regions, using commands `isearchp-zones-forward'
+;;    and `isearchp-zones-forward-regexp'.  You can use different such
+;;    zone sets.  Library `zones.el' gives you an easy, interactive
+;;    way to define them.  A prefix arg to the commands that search a
+;;    set of zones prompts you for a variable whose value is such a
+;;    set.  By default the variable is `zz-izones'.
 ;;
 ;;  * You can search within text-property or overlay-property zones of
 ;;    the buffer or active region.  Example: search within zones
@@ -180,8 +233,11 @@
 ;;    highlighting (an overlay with face `lazy-highlight').  To use
 ;;    this, you will likely want to first set option
 ;;    `lazy-highlight-cleanup' to nil, so this highlighting is not
-;;    removed when you exit Isearch.  (You can remove it manually
-;;    anytime using `M-x lazy-highlight-cleanup'.)
+;;    removed when you exit Isearch.  If you use library `isearch+.el'
+;;    then you can use `M-s h l' during Isearch to toggle option
+;;    `lazy-highlight-cleanup'.  (You can also remove lazy-highlight
+;;    highlighting manually anytime using `M-x
+;;    lazy-highlight-cleanup'.)
 ;;
 ;;  * You can use command `isearchp-lazy-highlights-forward' `(or
 ;;    `isearchp-lazy-highlights-forward-regexp') to search the zones
@@ -190,14 +246,14 @@
 ;;    `isearchp-mark-lazy-highlights'.  This lets you search within
 ;;    the hits from a previous search.
 ;;
-;;  * You can use `S-SPC' (command `isearchp-lazy-highlights-narrow')
-;;    to narrow a lazy-highlight search.  What this means is that
-;;    while you are searching the marked lazy-highlight zones, if you
-;;    hit `S-SPC' then the current lazy-highlight areas (from the
-;;    current search of the marked zones) are marked and replace the
-;;    previously marked zones.  The effect is that you are now
-;;    searching only the areas that were lazy-highlighted before you
-;;    hit `S-SPC'.  This is a kind of progressive search.
+;;  * You can use `C-S-SPC' (command
+;;    `isearchp-narrow-to-lazy-highlights') to narrow a lazy-highlight
+;;    search.  What this means is that while you are searching the
+;;    marked lazy-highlight zones, if you hit `C-S-SPC' then the
+;;    current lazy-highlight areas (from the current search of the
+;;    marked zones) are marked and replace the previously marked
+;;    zones.  The effect is that you are now searching only the areas
+;;    that were lazy-highlighted before you hit `C-S-SPC'.
 ;;
 ;;  * You can search zones of text/overlays that have a given
 ;;    property, as described above, or you can search the
@@ -263,20 +319,19 @@
 ;;    (command `isearchp-toggle-hiding-comments').  You can toggle
 ;;    ignoring comments during Isearch, using `C-M-;' (command
 ;;    `isearchp-toggle-ignoring-comments').
-;;
-;;  * If you use library`zones.el' then you can search a set of buffer
-;;    zones that are defined by their limits (markers or numbers) --
-;;    like multiple regions, using commands `isearchp-zones-forward'
-;;    and `isearchp-zones-forward-regexp'.  You can use different such
-;;    zone sets.  Library `zones.el' gives you an easy, interactive
-;;    way to define them.  A prefix arg to the commands that search a
-;;    set of zones prompts you for a variable whose value is such a
-;;    set.  By default the variable is `zz-izones'.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/28 dadams
+;;     Added: isearchp-excluded-zones, isearchp-zone-limits-function, isearchp-narrow-to-matching-zones,
+;;            isearchp-exclude-zones-w-no-lazy-highlight.
+;;     Renamed isearchp-lazy-highlights-narrow to isearchp-narrow-to-lazy-highlights.
+;;     Bind S-SPC to isearchp-narrow-to-matching-zones and C-S-SPC to isearchp-lazy-highlights-narrow.
+;;     isearchp-remove-dimming: Reset isearchp-excluded-zones to nil.
+;;     isearchp-zones-1: Apply zz-izone-limits to izones (isearchp-zones-filter-pred now takes basic zones).
+;;     isearchp-zones-filter-pred: The arg is now a list of basic zones, not izones.
 ;; 2015/08/27 dadams
 ;;     isearchp-zones-filter-pred: Bind limits of IZONES using lexical-let, for use in fn passed to zz-some.
 ;;     isearchp-zones-1: Pass value of var, not var, to isearchp-zones-filter-pred.
@@ -554,6 +609,10 @@ This has the effect that comments are ignored for searching."
 
 (defvar isearchp-dimmed-overlays () "Dimmed-text overlays for text not being searched.")
 
+(defvar isearchp-excluded-zones ()
+  "Buffer zones currently excluded from Isearch.")
+(make-variable-buffer-local 'isearchp-excluded-zones)
+
 ;;; $$$$$$ (defvar isearchp-last-prop+value nil "Last Isearch+ property added.")
 
 (defvar isearchp-property-type nil
@@ -592,6 +651,10 @@ regexp as the search context, and so on.")
 ;;; Same as `thgcmd-last-thing-type' in `thing-cmds.el'.
 (defvar isearchp-last-thing-type (if (boundp 'thgcmd-last-thing-type) thgcmd-last-thing-type 'sexp)
   "Type of thing last used by `isearchp-next-visible-thing' (or previous).")
+
+(defvar isearchp-zone-limits-function 'isearchp-zone-limits-izones
+  "Function used to return limits of current search zones.")
+
  
 ;;(@* "Keys")
 
@@ -604,7 +667,9 @@ regexp as the search context, and so on.")
 (define-key isearch-mode-map (kbd "C-M-~")        'isearchp-toggle-complementing-domain)
 (define-key isearch-mode-map (kbd "C-M-S-d")      'isearchp-toggle-dimming-outside-search-area)
 (define-key isearch-mode-map (kbd "M-S-<delete>") 'isearchp-cleanup)
-(define-key isearch-mode-map (kbd "S-SPC")        'isearchp-lazy-highlights-narrow)
+(when (fboundp 'isearchp-narrow-to-matching-zones)
+  (define-key isearch-mode-map (kbd "S-SPC")      'isearchp-narrow-to-matching-zones))
+(define-key isearch-mode-map (kbd "C-S-SPC")      'isearchp-narrow-to-lazy-highlights)
  
 ;;(@* "General Search-Property Commands")
 
@@ -711,7 +776,8 @@ Non-interactively:
   (interactive)
   (while isearchp-dimmed-overlays
     (delete-overlay (car isearchp-dimmed-overlays))
-    (setq isearchp-dimmed-overlays  (cdr isearchp-dimmed-overlays))))
+    (setq isearchp-dimmed-overlays  (cdr isearchp-dimmed-overlays)))
+  (setq isearchp-excluded-zones  ()))
 
 (defun isearchp-cleanup (&optional msgp)
   "Remove lazy-highlighting and artifacts from property searching.
@@ -1364,8 +1430,9 @@ artifacts from property searching.  This includes dimming and all
           isearchp-property-values  '(t)))
   (isearchp-property-1 fun '(4)))
 
-(defun isearchp-lazy-highlights-narrow (beg end &optional msgp)
-  "Search lazy-highlight zones, but update lazy-highlighting from search.
+(defun isearchp-narrow-to-lazy-highlights (beg end &optional msgp) ; Bound to `C-S-SPC'.
+  "Narrow the zones to search, to the current lazy-highlighted text.
+Search these zones, but update lazy-highlighting from the new search.
 Removes any lazy-highlight marks, then marks lazy-highlights anew,
 from the new search."
   (interactive (if (or (not mark-active)  (null (mark))  (= (point) (mark)))
@@ -1741,7 +1808,7 @@ non-negative (>= 0) then make the variable buffer-local.  If the
 prefix arg is non-positive (<= 0) then set `zz-izones-var' to that
 variable symbol.  (Zero: do both.)
 
-Non-interactively, VARIABLE is the restrictions variable to use.
+Non-interactively, VARIABLE is the izones variable to use.
 
 If `isearchp-complement-domain-p' is non-nil then move to the next
 non-zone; that is, the areas to search are those outside the given
@@ -1783,7 +1850,8 @@ See `isearchp-zones-forward'."
 
   (defun isearchp-zones-1 (search-fn &optional variable)
     "Helper for Isearch zone commands.
-SEARCH-FN is the search function."
+Search with function SEARCH-FN within the zones of izones VARIABLE.
+VARIABLE defaults to the value of `zz-izones-var'."
     (unless variable (setq variable  zz-izones-var))
     (when isearchp-dim-outside-search-area-flag
       (with-silent-modifications
@@ -1817,24 +1885,59 @@ SEARCH-FN is the search function."
            ;; Prevent invoking `isearch-edit-string', from `isearch-exit'.
            (search-nonincremental-instead  nil))
       (setq isearchp-filter-predicate-orig  isearch-filter-predicate
-            isearch-filter-predicate        (isearchp-zones-filter-pred (symbol-value variable))))
+            isearch-filter-predicate        (isearchp-zones-filter-pred (zz-izone-limits
+                                                                         (symbol-value variable)))))
     (add-hook 'isearch-mode-end-hook 'isearchp-property-finish)
     (funcall search-fn))
 
-  (defun isearchp-zones-filter-pred (&optional izones)
-    "Return a predicate that tests if its args are in IZONES.
-Optional input list IZONES has the same structure as `zz-izones'.
+  (defun isearchp-zones-filter-pred (&optional zones)
+    "Return a predicate that tests if its args are in ZONES.
+Optional arg ZONES is a list of basic zones.
 The predicate is suitable as a value of `isearch-filter-predicate'."
-    (lexical-let ((limits  (zz-izone-limits izones nil 'THIS-BUFFER)))
+    (lexical-let ((limits  zones))
       (lambda (beg end)
         (and (or (not (boundp 'isearchp-reg-beg))  (not isearchp-reg-beg)  (>= beg isearchp-reg-beg))
              (or (not (boundp 'isearchp-reg-end))  (not isearchp-reg-end)  (< end isearchp-reg-end))
              (or (and (fboundp 'isearch-filter-visible) (isearch-filter-visible beg end))
                  (and (boundp 'isearch-invisible) ; Emacs 24.4+
                       (not (or (eq search-invisible t)  (not (isearch-range-invisible beg end))))))
-             (let ((in-zone-p  (zz-some (lambda (zone) (and (<= (car zone) beg)  (>= (cadr zone) end)))
+             (let ((in-zone-p  (zz-some (lambda (zone) (and (<= (nth 0 zone) beg)  (>= (nth 1 zone) end)))
                                         (zz-zone-union limits))))
                (if isearchp-complement-domain-p (not in-zone-p) in-zone-p))))))
+
+  (defun isearchp-narrow-to-matching-zones (&optional all-zones msgp) ; Bound to `S-SPC'.
+    "Narrow the zones to search, to those containing lazy-highlighting.
+The other search zones are excluded for the continued searching.
+Optional arg ALL-ZONES is the list of zones to check for exclusion.
+Non-interactively, arg MSGP means show a status message."
+    (interactive (list (funcall isearchp-zone-limits-function) t))
+    (let ((zones  (or all-zones  (zz-izone-limits (symbol-value zz-izones-var)))))
+      (isearchp-exclude-zones-w-no-lazy-highlight zones))
+    (let ((opred  isearch-filter-predicate))
+      (setq isearch-filter-predicate
+            `(lambda (beg end)
+               (and (not (funcall (isearchp-zones-filter-pred isearchp-excluded-zones) beg end))
+                    (funcall ,opred beg end))))
+      (when msgp (message "Narrowed to zones that have a search hit"))))
+
+  (defun isearchp-zone-limits-izones ()
+    "Return the limits of the current value of `zz-izones-var'.
+That is, return the basic zones."
+    (zz-izone-limits (symbol-value zz-izones-var)))
+
+  (defun isearchp-exclude-zones-w-no-lazy-highlight (zones)
+    "Add zones that contain no lazy highlight to `isearchp-excluded-zones'.
+ZONES is the list of zones to check for exclusion."
+    (let (beg end)
+      (dolist (zone  zones)
+        (setq beg  (nth 0 zone)
+              end  (nth 1 zone))
+        (when (> beg end) (setq beg  (prog1 end (setq end  beg))))
+        (unless (isearchp-lazy-highlights-present-p beg end) (add-to-list 'isearchp-excluded-zones zone))))
+    (dolist (zone  isearchp-excluded-zones)
+      (isearchp-add/remove-dim-overlay (nth 0 zone) (nth 1 zone) 'ADDP))
+    (isearch-lazy-highlight-update)
+    isearchp-excluded-zones)
 
   )
  
