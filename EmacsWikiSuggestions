@@ -14,6 +14,9 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 '''Add your suggestions below this line.'''
 
+== Alt key problem when using Compiz in Ubuntu ==
+
+In Ubuntu (at least when using Compiz), the left Alt key brings up a HUD by default. This causes problems when you use left Alt as the meta key. Hence, this problem should go under the GNU/Linux section in the [[MetaKeyProblems|Meta Key Problems]] article. One solution to this problem is to disable a keyboard shortcut to display the HUD, described [http://askubuntu.com/a/122232 here].
 
 == Camel Case Auto-split Syntax ==
 [new]
