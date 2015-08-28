@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 15 14:02:53 2015 (-0700)
+;; Last-Updated: Fri Aug 28 10:32:24 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3735
+;;     Update #: 3744
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -614,6 +614,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/08/28 dadams
+;;     isearch-lazy-highlight-search, isearch-lazy-highlight-update:
+;;       Fix Emacs bug #21092, at least for a nil value of lazy-highlight-max-at-a-time.
+;;     isearch-lazy-highlight-search: Update wrt Emacs 25 code: Extend bound to match whole string at point.
 ;; 2015/08/15 dadams
 ;;     isearchp-ring-bell-function: Use function ignore as the default - see inline comment.
 ;; 2015/07/22 dadams
@@ -3221,32 +3225,39 @@ Bound to `C-M-`' during Isearch."
 
   ;; REPLACE ORIGINAL in `isearch.el'.
   ;;
-  ;; Use `isearchp-reg-(beg|end)', not point-min|max.
+  ;; 1. Use `isearchp-reg-(beg|end)', not point-min|max.
+  ;; 2. Fixes Emacs bug #21092, at least for a nil value of `lazy-highlight-max-at-a-time'.
   ;;
   (defun isearch-lazy-highlight-search ()
     "Search ahead for the next or previous match, for lazy highlighting.
 Attempt to do the search exactly the way the pending Isearch would."
-    (condition-case nil
-        (let ((case-fold-search               isearch-lazy-highlight-case-fold-search)
-              (isearch-regexp                 isearch-lazy-highlight-regexp)
-              (isearch-word                   isearch-lazy-highlight-word)
-              (isearch-lax-whitespace         isearch-lazy-highlight-lax-whitespace)
-              (isearch-regexp-lax-whitespace  isearch-lazy-highlight-regexp-lax-whitespace)
-              (isearch-forward                isearch-lazy-highlight-forward)
-              (search-invisible               nil) ; Do not match invisible text.
-              (retry                          t)
-              (success                        nil)
-              (bound
-               (if isearch-lazy-highlight-forward
-                   (min (or isearch-lazy-highlight-end-limit  isearchp-reg-end  (point-max))
-                        (if isearch-lazy-highlight-wrapped isearch-lazy-highlight-start (window-end)))
-                 (max (or isearch-lazy-highlight-start-limit  isearchp-reg-beg  (point-min))
-                      (if isearch-lazy-highlight-wrapped isearch-lazy-highlight-end (window-start))))))
-          (while retry                  ; Use a loop, like in `isearch-search'.
-            (setq success  (isearch-search-string isearch-lazy-highlight-last-string bound t))
-            ;; Clear RETRY unless the search predicate says to skip this search hit.
-            (if (or (not success)
-                    (= (point) bound)   ; like (bobp) (eobp) in `isearch-search'.
+  (condition-case nil
+      (let ((case-fold-search               isearch-lazy-highlight-case-fold-search)
+            (isearch-regexp                 isearch-lazy-highlight-regexp)
+            (isearch-word                   isearch-lazy-highlight-word)
+            (isearch-lax-whitespace         isearch-lazy-highlight-lax-whitespace)
+            (isearch-regexp-lax-whitespace  isearch-lazy-highlight-regexp-lax-whitespace)
+            (isearch-forward                isearch-lazy-highlight-forward)
+            (search-invisible               nil) ; Do not match invisible text.
+            (retry                          t)
+            (success                        nil)
+            (bound
+             (if isearch-lazy-highlight-forward
+                 (min (or isearch-lazy-highlight-end-limit  isearchp-reg-end  (point-max))
+                      (if isearch-lazy-highlight-wrapped
+                          ;; Extend bound to match whole string at point
+                          (+ isearch-lazy-highlight-start (1- (length isearch-lazy-highlight-last-string)))
+                        (if lazy-highlight-max-at-a-time (window-end) (point-max))))
+               (max (or isearch-lazy-highlight-start-limit  isearchp-reg-beg  (point-min))
+                    (if isearch-lazy-highlight-wrapped
+                        ;; Extend bound to match whole string at point
+                        (- isearch-lazy-highlight-end (1- (length isearch-lazy-highlight-last-string)))
+                      (if lazy-highlight-max-at-a-time (window-start) (point-max)))))))
+        (while retry           ; Use a loop, like in `isearch-search'.
+          (setq success  (isearch-search-string isearch-lazy-highlight-last-string bound t))
+          ;; Clear RETRY unless the search predicate says to skip this search hit.
+          (when (or (not success)
+                    (= (point) bound) ; like (bobp) (eobp) in `isearch-search'.
                     (= (match-beginning 0) (match-end 0))
                     (funcall isearch-filter-predicate (match-beginning 0) (match-end 0)))
                 (setq retry  nil)))
@@ -3256,7 +3267,8 @@ Attempt to do the search exactly the way the pending Isearch would."
 
   ;; REPLACE ORIGINAL in `isearch.el'.
   ;;
-  ;; Use `isearchp-reg-(beg|end)', not point-min|max.
+  ;; 1. Use `isearchp-reg-(beg|end)', not point-min|max.
+  ;; 2. Fixes Emacs bug #21092, at least for nil `lazy-highlight-max-at-a-time'.
   ;;
   (defun isearch-lazy-highlight-update ()
     "Update highlighting of other matches for current search."
@@ -3285,12 +3297,12 @@ Attempt to do the search exactly the way the pending Isearch would."
                           (if isearch-lazy-highlight-forward
                               (if (= mb (if isearch-lazy-highlight-wrapped
                                             isearch-lazy-highlight-start
-                                          (window-end)))
+                                          (if max (window-end) (point-max))))
                                   (setq found  nil)
                                 (forward-char 1))
                             (if (= mb (if isearch-lazy-highlight-wrapped
                                           isearch-lazy-highlight-end
-                                        (window-start)))
+                                        (if max (window-start) (point-min))))
                                 (setq found  nil)
                               (forward-char -1)))
                         (let ((ov  (make-overlay mb me))) ; Non-zero-length match
