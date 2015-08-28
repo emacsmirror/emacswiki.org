@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: (("find-dired-" "0"))
-;; Last-Updated: Wed Aug 19 07:13:52 2015 (-0700)
+;; Last-Updated: Thu Aug 27 21:21:00 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1189
+;;     Update #: 1191
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -94,6 +94,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/27 dadams
+;;     Removed require of find-dired-.el.
 ;; 2015/08/19 dadams
 ;;     find-grep-dired: Use shell-quote-argument.  Use grep-program.  Thx to Tino Calancha.
 ;; 2015/08/18 dadams
@@ -215,7 +217,7 @@
 ;;
 ;;; Code:
 
-(require 'find-dired-) ;; for new defvars from `find-dired.el'
+;; (require 'find-dired-) ;; for new defvars from `find-dired.el'
 (require 'find-dired)
 
 (require 'dired+ nil t) ;; (no error if not found):
