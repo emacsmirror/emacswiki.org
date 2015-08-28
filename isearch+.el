@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 28 10:32:24 2015 (-0700)
+;; Last-Updated: Fri Aug 28 12:35:55 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3744
+;;     Update #: 3763
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -2265,10 +2265,13 @@ The following non-printing keys are bound in `isearch-mode-map'.
 Options
 -------
 `isearchp-case-fold'\t\t\t- search is case sensitive?
+`isearchp-dim-outside-search-area-flag' [*] - dim non-search zones?
+`isearchp-dimming-color' [*]\t\t- color for non-search zones
 `isearchp-set-region-flag'\t\t- select last search target?
 `isearchp-restrict-to-region-flag'\t- restrict search to region?
 `isearchp-deactivate-region-flag'\t- search deactivates region?
 `isearchp-ignore-comments-flag' [*]\t- ignore THINGs in comments?
+`isearchp-hide-whitespace-before-comment-flag' [*] - precomment space?
 `isearchp-mouse-2-flag'\t\t- `mouse-2' anywhere yanks selection?
 `isearchp-regexp-quote-yank-flag'\t- regexp-quote yanked text?
 `isearchp-toggle-option-flag'\t\t- toggle options too?
@@ -2296,7 +2299,7 @@ Commands
 \\[isearch-quote-char]\t- quote a control character, to search for it
 \\[isearch-char-by-name]\t- add a Unicode char to search string by Unicode name
 \\[isearchp-remove-failed-part]\t- remove failed part of search string, if any
-\\[isearch-abort]\t- remove failed part of search string, or cancel searching if none
+\\[isearch-abort]\t- remove failed part of search string, or cancel if none
 \\[isearchp-open-recursive-edit]\t- invoke Emacs command loop recursively, during Isearch
 \\[isearchp-retrieve-last-quit-search]\t- insert successful search string from when you hit `C-g'
 \\[isearch-edit-string]\t- edit the search string in the minibuffer
@@ -2315,6 +2318,7 @@ Commands
 
 \\[isearchp-cycle-mismatch-removal]\t- cycle option `isearchp-drop-mismatch'
 \\[isearch-toggle-case-fold]\t- toggle case-sensitivity (for current search or more: `C-u')
+\\[isearchp-toggle-lazy-highlight-cleanup]\t- option `lazy-highlight-cleanup' (removal of highlighting)
 \\[isearchp-toggle-search-invisible]\t- toggle searching invisible text
 \\[isearch-toggle-invisible]\t- toggle searching invisible text, for current search or more
 \\[isearchp-toggle-option-toggle]\t- toggle option `isearchp-toggle-option-flag'
@@ -2335,6 +2339,7 @@ Commands that Require Library `isearch-prop.el'
 \\[isearchp-property-forward]\t- search for a character (overlay or text) property
 \\[isearchp-property-forward-regexp]\t- regexp-search for a character (overlay or text) property
 \\[isearchp-toggle-complementing-domain]\t- toggle searching complements of normal search contexts
+\\[isearchp-toggle-dimming-outside-search-area]\t- toggle dimming non-search zones
 \\[isearchp-toggle-ignoring-comments]\t- toggle ignoring comments for `isearchp-thing'
 \\[isearchp-toggle-hiding-comments]\t- hide or (`C-u') show comments
 
