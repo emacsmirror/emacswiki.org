@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 27 14:25:58 2015 (-0700)
+;; Last-Updated: Thu Aug 27 21:52:52 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1207
+;;     Update #: 1210
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -277,6 +277,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/27 dadams
+;;     isearchp-zones-1: Pass value of var, not var, to isearchp-zones-filter-pred.
 ;; 2015/08/24 dadams
 ;;     isearchp-complement-dimming, isearchp-add/remove-dim-overlay:
 ;;       When delete overlay, remove it from isearchp-dimmed-overlays.
@@ -1814,7 +1816,7 @@ SEARCH-FN is the search function."
            ;; Prevent invoking `isearch-edit-string', from `isearch-exit'.
            (search-nonincremental-instead  nil))
       (setq isearchp-filter-predicate-orig  isearch-filter-predicate
-            isearch-filter-predicate        (isearchp-zones-filter-pred variable)))
+            isearch-filter-predicate        (isearchp-zones-filter-pred (symbol-value variable))))
     (add-hook 'isearch-mode-end-hook 'isearchp-property-finish)
     (funcall search-fn))
 
