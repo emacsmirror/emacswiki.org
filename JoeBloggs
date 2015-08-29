@@ -25,7 +25,8 @@ Here are some libraries I wrote:
 * '''Lisp:gnus-summary-ext.el''' -- Extra limit and process mark commands for the gnus summary buffer.
 * '''Lisp:smptmail-multi.el''' -- Use different SMTP accounts for different emails.
 * '''Lisp:helm-helm-commands.el''' -- List all helm commands with [https://github.com/emacs-helm/helm Helm]
-
+* '''Lisp:ido-jb-misc-extras.el''' -- Miscellaneous extra ido related commands
+* '''Lisp:dired-jb-misc-extras.el''' -- Miscellaneous extra ido related commands
 
 ===Libraries I maintain===
 Here are some libraries written by others but maintained by me:
