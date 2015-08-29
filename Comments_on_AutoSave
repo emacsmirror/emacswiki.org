@@ -13,3 +13,14 @@ In the section "Running save-buffer automatically", user BryanMurdock describes 
 
 -- jbyler 2015-05-06 19:18 UTC
 
+
+----
+
+Do not use
+find -name "#*#" | xargs rm
+or any other variation.
+Use:
+find -name "#*#" -delete
+
+-- Stevko 2015-08-29 09:00 UTC
+
