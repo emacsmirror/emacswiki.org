@@ -117,9 +117,9 @@ Fink [http://fink.sourceforge.net/ http://fink.sourceforge.net/] includes variou
 
 === Homebrew ===
 
-[http://mxcl.github.com/homebrew/ Homebrew] has Emacs 24.4 (as of 2014-12-09). 
+[http://mxcl.github.com/homebrew/ Homebrew] has Emacs 24.5 (as of 2015-08-30). 
 
-* A Cocoa-specific Emacs.app can be built using the <tt>--cocoa</tt> switch.
+* A Cocoa-specific Emacs.app can be built using the <tt>--with-cocoa</tt> switch.
 * A version supporting X11 can be built using the <tt>--with-x</tt> switch. Note that this version will not have all of the features of the Cocoa version; use only if necessary.
 
 Other options include:
@@ -128,7 +128,7 @@ Other options include:
 * <tt>--srgb</tt>
 	This option will enable sRGB colors when using Cocoa.
 
-To install using the <tt>--cocoa</tt> switch, one simply uses:
+To install using the <tt>--with-cocoa</tt> switch, one simply uses:
 <pre>
 brew install --with-cocoa emacs
 </pre>
