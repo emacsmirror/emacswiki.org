@@ -1,7 +1,7 @@
 ;;; ido-jb-misc-extras.el --- Miscellaneous extra ido related commands
 
 ;; Filename: ido-jb-misc-extras.el
-;; Description: miscellaneous functions for `dired' and `image-dired'
+;; Description: miscellaneous functions for `ido'
 ;; Author: Joe Bloggs <vapniks@yahoo.com>
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2015, Joe Bloggs, all rites reversed.
@@ -41,7 +41,7 @@
 ;;
 ;; Bitcoin donations gratefully accepted: 12k9zUo9Dgqk8Rary2cuzyvAQWD5EAuZ4q
 ;;
-;; This library provides various miscellaneous `dired' related commands & functions
+;; This library provides various miscellaneous `ido' related commands & functions
 ;; that I use occasionally. 
 ;;
 
