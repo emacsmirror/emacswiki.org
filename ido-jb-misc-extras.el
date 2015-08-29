@@ -1,4 +1,4 @@
-;;; ido-jb-misc-extras.el --- Find duplicate files and display them in a dired buffer
+;;; ido-jb-misc-extras.el --- Miscellaneous extra ido related commands
 
 ;; Filename: ido-jb-misc-extras.el
 ;; Description: miscellaneous functions for `dired' and `image-dired'
