@@ -79,12 +79,14 @@
 
 ;;; Code:
 
+;;;###autoload
 (defun yas-ido-root-directory nil
   "Return the users root snippets directory."
   (if (stringp yas-snippet-dirs) yas-snippet-dirs
     (if (listp yas-snippet-dirs) (car yas-snippet-dirs)
       (error "Invalid `yas-snippet-dirs'"))))
 
+;;;###autoload
 (defun yas-ido-get-mode-dir (mode)
   "Given major-mode symbol MODE, return the directory containing snippets for that mode.
 If there is no snippets directory associated with that mode return `(yas-ido-root-directory)'."
@@ -96,6 +98,7 @@ If there is no snippets directory associated with that mode return `(yas-ido-roo
             (return (substring file-name 0 (match-end 0)))))
         (yas-ido-root-directory))))
 
+;;;###autoload
 (defun yas-ido-expand-snippet (location)
   "Select yasnippet using ido and expand it.
 When called non-interactively expand snippet in file at LOCATION."
@@ -116,6 +119,7 @@ This header will be inserted at the beginning of any snippets created
 with `yas-ido-edit-snippet'."
   :type 'file)
 
+;;;###autoload
 (defun yas-ido-edit-snippet (location content)
   "Select snippet using ido and edit it.
 When called non-interactively make/edit a snippet in file at LOCATION placing CONTENT at the end"
