@@ -1,4 +1,4 @@
-;;; dired-jb-misc-extras.el --- Find duplicate files and display them in a dired buffer
+;;; dired-jb-misc-extras.el --- Miscellaneous extra dired related commands
 
 ;; Filename: dired-jb-misc-extras.el
 ;; Description: miscellaneous functions for `dired' and `image-dired'
