@@ -140,7 +140,7 @@ brew install --with-cocoa --srgb emacs
 
 and finally link it to your Applications folder:
 <pre>
-ln -s /usr/local/Cellar/emacs/24.4/Emacs.app /Applications
+ln -s /usr/local/Cellar/emacs/24.5/Emacs.app /Applications
 </pre>
 
 After installation, using the <tt>emacs</tt> command in the terminal or shell will run the <tt>-nw</tt> version of Emacs. If you want
