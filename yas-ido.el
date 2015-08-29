@@ -119,6 +119,7 @@ When called non-interactively expand snippet in file at LOCATION."
   "File containing header for snippet files.
 This header will be inserted at the beginning of any snippets created 
 with `yas-ido-edit-snippet'."
+  :group 'yasnippet
   :type 'file)
 
 ;;;###autoload
