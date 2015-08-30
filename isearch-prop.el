@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 28 14:18:34 2015 (-0700)
+;; Last-Updated: Sun Aug 30 09:12:18 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1297
+;;     Update #: 1303
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -324,6 +324,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/30 dadams
+;;     isearchp-add/remove-dim-overlay: Changed test for removal from <= to <.
 ;; 2015/08/28 dadams
 ;;     Added: isearchp-excluded-zones, isearchp-zone-limits-function, isearchp-narrow-to-matching-zones,
 ;;            isearchp-exclude-zones-w-no-lazy-highlight.
@@ -1762,10 +1764,13 @@ See `isearchp-add-regexp-as-property' for the parameter descriptions."
 
 ;; This does not, itself, use `with-silent-modifications', so code that calls this needs to use it.
 (defun isearchp-add/remove-dim-overlay (beg end addp)
-  "Add or remove dim overlays from BEG to END, depending on ADDP.
+  "Add dim overlay from BEG to END, or remove overlays between BEG and END.
 Non-nil ADDP means add an overlay; nil means remove any present.
 But reverse the effect of ADDP if `isearchp-complement-domain-p'
-is non-nil."
+is non-nil.
+
+For removal, an overlay is considered present between BEG and END if
+it begins before END and it ends after BEG."
   (when isearchp-complement-domain-p (setq addp  (not addp)))
   (cond (addp
          (let ((ov  (make-overlay beg end)))
@@ -1777,7 +1782,7 @@ is non-nil."
            (dolist (dim-ov  isearchp-dimmed-overlays)
              (setq obeg  (overlay-start dim-ov)
                    oend  (overlay-end   dim-ov))
-             (when (and (<= beg oend)  (<= obeg end))
+             (when (and (< beg oend)  (< obeg end))
                (delete-overlay dim-ov)
                (setq isearchp-dimmed-overlays  (delete dim-ov isearchp-dimmed-overlays))))))))
 
