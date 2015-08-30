@@ -9,10 +9,10 @@
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
-;; Package-Requires: (("find-dired-" "0"))
-;; Last-Updated: Thu Aug 27 21:21:00 2015 (-0700)
+;; Package-Requires: ()
+;; Last-Updated: Sat Aug 29 21:56:15 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1191
+;;     Update #: 1194
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -37,12 +37,8 @@
 ;;
 ;;    Extensions to `find-dired.el'.
 ;;
-;;  See also the companion file `find-dired-.el'.
-;;        `find-dired-.el' should be loaded before `find-dired.el'.
-;;        `find-dired+.el' should be loaded after `find-dired.el'.
-;;
-;;  A `find' submenu has been added to Dired's menu bar, and most of
-;;  the Emacs `find-*' commands have undergone slight improvements.
+;;  A `find' submenu is added to Dired's menu bar, and most of the
+;;  Emacs `find-*' commands have undergone slight improvements.
 ;;
 ;;
 ;;  User options defined here:
