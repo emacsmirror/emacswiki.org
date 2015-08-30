@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 30 14:43:20 2015 (-0700)
+;; Last-Updated: Sun Aug 30 14:57:10 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9111
+;;     Update #: 9112
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -9275,7 +9275,7 @@ refer at all to the underlying file system.  Contrast this with
   ;; Using `sym' = "", instead of nil, for non-linked files avoids the trap of
   ;; (string-match "foo" sym) into which a user would soon fall.
   ;; Use `equal' instead of `=' in the example, as it works on integers and strings.
-  (interactive "xMark if (vars: inode,blks,mode,nlink,uid,gid,size,time,name,sym) \nP")
+  (interactive "xMark if (vars: inode,blks,mode,nlink,uid,gid,size,time,name,sym): \nP")
   (message "%s" predicate)
   (let ((dired-marker-char  (if unmark-p ?\040 dired-marker-char))
         (inode              nil)
