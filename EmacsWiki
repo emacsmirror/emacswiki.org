@@ -30,7 +30,7 @@ Help make distributed backups.
 This will help us get the wiki back up and running if it goes down.
 See WikiDownload for more.
 
-An cron job backs the site up on a regular basis.
+A cron job backs the site up on a regular basis.
 Use the [[Rsync repository]] to access our online backup.
 Contact JonathanGonzalez if you ever need access to the backup and the rsync server is down.
 
