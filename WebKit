@@ -17,14 +17,14 @@ Following picture shows the design of emacs-webkit:
 ==How to install it?==
 Emacs-webkit is based on [http://www.riverbankcomputing.co.uk/software/pyqt/intro PyQt5]/[https://pypi.python.org/pypi/python-xlib PythonXlib]/[https://github.com/tkf/python-epc PythonEPC] , so you need to install all these libraries to run emacs-webkit.
 
-Then download emacs-webkit source code from [https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/webkit github] and put webkit.el in your load-path.
+Then download the emacs-webkit source code from [https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/webkit github] and put webkit.el in your load-path.
 
-Load it and enjoiy your browsing with M-x webkit-open-url !!!
+After loading it, enjoy your browsing with M-x webkit-open-url.
 
 ==Hacking the powerful browser!==
 I spend almost all my time on [http://www.linuxdeepin.com LinuxDeepin] operating system, which leave me not so much time in the elisp world.
 
-It's a my pleasure to hava you [https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/webkit JoinUs] to build the most powerful browser for Emacs hackers!
+It's a my pleasure to have you [https://github.com/linuxdeepin/deepin-emacs/tree/master/site-lisp/extensions/webkit JoinUs] to build the most powerful browser for Emacs hackers!
 
 ==WebKit with other extension==
 Below is screenshot of WebKit with my extension [http://www.emacswiki.org/emacs/ChmView ChmView] that browse CHM file in WebKit browser:
