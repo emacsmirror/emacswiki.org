@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 30 09:12:18 2015 (-0700)
+;; Last-Updated: Mon Aug 31 14:08:14 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1303
+;;     Update #: 1307
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -324,6 +324,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/31 dadams
+;;     isearchp-thing-define-contexts: Typo when supplying args: need nil for TRANSFORM and t for MSGP.
 ;; 2015/08/30 dadams
 ;;     isearchp-add/remove-dim-overlay: Changed test for removal from <= to <.
 ;; 2015/08/28 dadams
@@ -2291,7 +2293,7 @@ Same as `isearchp-thing', but with regexp searching."
   "Define search contexts for future thing searches.
 This command does not actually search the contexts.  For that, use
 `isearchp-thing(-regexp)' or `isearchp-property-forward'."
-  (interactive (append (isearchp-thing-read-args) (list t)))
+  (interactive (append (isearchp-thing-read-args) (list nil t))) ; nil TRANSFORM, but t MSGP
   (when msgp (message "Scanning for thing: `%s'..." thing))
   (isearchp-thing-scan beg end thing property predicate transform-fn)
   (setq isearchp-property-prop    property
@@ -2300,7 +2302,7 @@ This command does not actually search the contexts.  For that, use
   (when msgp (message "Scanning for thing: `%s'...done" thing)))
 
 (defun isearchp-thing-read-args ()
-  "Read args for `isearchp-thing*'.
+  "Read first five args for `isearchp-thing*'.
 The list of args returned is:
  THING, the type of things to search
  BEG and END, the active region limits or the buffer limits
