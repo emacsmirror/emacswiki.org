@@ -93,3 +93,10 @@ The most recent change switches to auto-do-load, for which I get a void function
 
 -- Anonymous 2015-08-31 04:11 UTC
 
+
+----
+
+@Anonymous: Typo fixed to `autoload-do-load'.  Thanks!
+
+-- DrewAdams 2015-08-31 05:05 UTC
+
