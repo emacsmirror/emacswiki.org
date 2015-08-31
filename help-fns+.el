@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 22 23:15:06 2015 (-0700)
+;; Last-Updated: Sun Aug 30 22:04:42 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 2108
+;;     Update #: 2111
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -117,6 +117,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/08/30 dadams
+;;     describe-function-1: Typo: auto-do-load -> autoload-do-load.
 ;; 2015/08/22 dadams
 ;;     describe-keymap:
 ;;       Allow arg to be a keymap (not a keymap variable), when not interactive.  Suggestion by erjoalgo.
@@ -1596,7 +1598,7 @@ Return the description that was displayed, as a string."
                                   doc-raw
                                   help-enable-auto-load
                                   (string-match "\\([^\\]=\\|[^=]\\|\\`\\)\\\\[[{<]" doc-raw)
-                                  (auto-do-load real-def))
+                                  (autoload-do-load real-def))
                              (help-substitute-command-keys doc-raw 'ADD-HELP-BUTTONS)
                            (condition-case err
                                (help-documentation function nil 'ADD-HELP-BUTTONS)
