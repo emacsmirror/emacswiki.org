@@ -86,3 +86,10 @@ There seems to be a bug that affects describe-package. The version check include
 
 -- Anonymous 2015-03-03 16:31 UTC
 
+
+----
+
+The most recent change switches to auto-do-load, for which I get a void function error in Emacs 24.4 (Aquamacs 3.2). I suspect it should be "autoload-do-load", but I'm not sure (and if I should check on a straight Emacs 24.4 build, I can do that).
+
+-- Anonymous 2015-08-31 04:11 UTC
+
