@@ -29,6 +29,7 @@ Here are some libraries I wrote:
 * '''Lisp:dired-jb-misc-extras.el''' -- Miscellaneous extra ido related commands.
 * '''Lisp:sort-group-lines.el''' -- Group lines in region matching regexps.
 * '''Lisp:symbol-tools.el''' -- Helper functions for handling symbols.
+* '''Lisp:webjump-ido.el''' -- Webjump using ido for website selection
 
 ===Libraries I maintain===
 Here are some libraries written by others but maintained by me:
