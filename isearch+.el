@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 28 12:35:55 2015 (-0700)
+;; Last-Updated: Tue Sep  1 07:42:15 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3763
+;;     Update #: 3791
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -158,6 +158,7 @@
 ;;                          Prefix arg can  `multi-isearch-buffers'.
 ;;  `isearch-cancel'      - Restore cursor position relative to window.
 ;;  `isearch-dehighlight' - Remove unused arg, for Emacs 20.
+;;  `isearch--describe-word-mode' - Face `isearchp-word' on string.
 ;;  `isearch-edit-string' - Put point at mismatch position.
 ;;  `isearch-forward', `isearch-forward-regexp' -
 ;;                          Prefix arg can  `multi-isearch-buffers'.
@@ -614,6 +615,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/09/01 dadams
+;;     Added: redefinition of isearch--describe-word-mode.
+;;     isearch-toggle-word, isearch-mode: Updated for Emacs 25 (char folding).
+;;     isearch-message-prefix: Use isearch--describe-word-mode.
+;;     multi-isearch-end: Updated guard - advice not needed for Emacs 24.5+ (Emacs bug #20234).
 ;; 2015/08/28 dadams
 ;;     isearch-lazy-highlight-search, isearch-lazy-highlight-update:
 ;;       Fix Emacs bug #21092, at least for a nil value of lazy-highlight-max-at-a-time.
@@ -985,7 +991,8 @@
 
 ;; Quiet the byte compiler.
 (defvar bidi-display-reordering)         ; Emacs 24+, built-in.
-(defvar cursor-sensor-inhibit)           ; Emacs 25+
+(defvar character-fold-search)           ; In `character-fold.el' (Emacs 25+).
+(defvar cursor-sensor-inhibit)           ; In `isearch.el' (Emacs 25+).
 (defvar disable-point-adjustment)        ; Built-in, Emacs 22+.
 (defvar eval-expression-debug-on-error)  ; In `simple.el', Emacs 22+.
 (defvar icicle-WYSIWYG-Completions-flag) ; In `icicles-opt.el'.
@@ -1701,7 +1708,7 @@ Toggles between nil and the last non-nil value."
   "Toggle word searching on or off."
   ;; The status stack is left unchanged.
   (interactive)
-  (setq isearch-word  (not isearch-word))
+  (setq isearch-word  (if (eq isearch-word t) nil t))
   (when isearch-word (setq isearch-regexp  nil)) ; Added to Juri's code by Stefan.
   (setq isearch-success   t
         isearch-adjusted  t)
@@ -2481,7 +2488,10 @@ Argument WORD, if t, means search for a sequence of words, ignoring
  search string to a regexp that is used for regexp searching."
   (setq isearch-forward                  forward ; Initialize global vars.
         isearch-regexp                   regexp
-        isearch-word                     word
+        isearch-word                     (or word  (and (boundp 'character-fold-search)
+                                                        character-fold-search
+                                                        (not regexp)
+                                                        'character-fold-to-regexp))
         isearch-op-fun                   op-fun
         isearch-last-case-fold-search    isearch-case-fold-search
         isearch-case-fold-search         case-fold-search
@@ -2809,6 +2819,23 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
 
 ;; REPLACE ORIGINAL in `isearch.el'.
 ;;
+;; Put face `isearchp-word' on returned string.
+;;
+(defun isearch--describe-word-mode (word-mode &optional space-before)
+  "Return a string describing WORD-MODE.
+If SPACE-BEFORE is non-nil,  put a space before, instead of after it."
+  (let ((description  (propertize (cond ((and (symbolp word-mode)  (get word-mode 'isearch-message-prefix))
+                                         (get word-mode 'isearch-message-prefix))
+                                        (word-mode "word ")
+                                        (t ""))
+                                  'face 'isearchp-word)))
+    (if space-before
+        (replace-regexp-in-string "\\(.*\\) \\'" " \\1" description) ; Move space from end to beginning.
+      description)))
+
+
+;; REPLACE ORIGINAL in `isearch.el'.
+;;
 ;; Highlight message according to search characteristics.
 ;;
 (when (and (> emacs-major-version 21)   ; Emacs 22 through Emacs 24.2
@@ -2829,7 +2856,7 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
                             (if isearch-forward (> (point) isearch-opoint) (< (point) isearch-opoint))
                             (propertize "over" 'face 'isearchp-overwrapped))
                        (and isearch-wrapped  (propertize "wrapped " 'face 'isearchp-wrapped))
-                       (and isearch-word  (propertize "word " 'face 'isearchp-word))
+                       (isearch--describe-word-mode isearch-word)
                        (and isearch-regexp  (propertize "regexp " 'face 'isearchp-regexp))
                        (and (boundp 'multi-isearch-next-buffer-current-function) ; Emacs 23+
                             multi-isearch-next-buffer-current-function
@@ -2873,11 +2900,7 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
                             (if isearch-forward (> (point) isearch-opoint) (< (point) isearch-opoint))
                             (propertize "over" 'face 'isearchp-overwrapped))
                        (and isearch-wrapped  (propertize "wrapped " 'face 'isearchp-wrapped))
-                       (and isearch-word
-                            (propertize (or (and (symbolp isearch-word)
-                                                 (get isearch-word 'isearch-message-prefix))
-                                            "word ")
-                                        'face 'isearchp-word))
+                       (isearch--describe-word-mode isearch-word)
                        (and isearch-regexp  (propertize "regexp " 'face 'isearchp-regexp))
                        (and multi-isearch-next-buffer-current-function
                             (propertize "multi " 'face 'isearchp-multi))
@@ -2895,14 +2918,10 @@ If MSG is non-nil, use `isearch-message', otherwise `isearch-string'."
       (concat (upcase (substring mm 0 1)) (substring mm 1)))))
 
 
-;;; @@@@@@ Fix for Emacs bug #20234.
-;;;
-;;; This is what the test will become when Emacs 24.5 is released.  This was fixed in a late 24.4 build.
-;;;
-;;; (when (and (featurep 'misearch)  (or (< emacs-major-version 24) ; Emacs 23 through 24.4.
-;;;                                      (and (= emacs-major-version 24)
-;;;                                           (< emacs-minor-version 5))))
-(when (featurep 'misearch)
+;; Fix for Emacs bug #20234.  (Fixed in Emacs 24.5.)
+
+(when (and (featurep 'misearch)  (or (< emacs-major-version 24) ; Emacs 23 through 24.4.
+                                     (and (= emacs-major-version 24)  (< emacs-minor-version 5))))
   (defadvice multi-isearch-end (after reset-buff-list activate)
     "Reset `multi-isearch-buffer-list' to nil."
     (setq multi-isearch-buffer-list  ())))
