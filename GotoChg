@@ -23,5 +23,9 @@ Another package I have not tested is UndoBrowse by DeepakGoel
 
 -- DavidAndersson
 
+Please tag a release of this so it may appear on MELPA stable.
+
+-- PaulRankin
+
 ----
 CategoryUndo
