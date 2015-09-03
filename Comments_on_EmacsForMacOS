@@ -1,0 +1,9 @@
+Hi,
+
+very good conclusion on Emacs For Mac OS, but some Packages on Mac OS Snow Leopard  hang by trying to compile. I have had several Problems with Org-Mode in one Modul - the Rest of Org-Mode compiles fine. I testet it with Homebrew, Ports and Aquamacs, ( GNU Emacs 24.5.1) and Org-Mode 8.2.10. Maybe it would a idea to include a Test of Package-Installation in this Site and give a short Feedback, which package does compile without problems. I would try now older package-versions for Org-Mode.
+
+Sincerly
+Thorsten
+
+-- [http://www.kreutz-edv-consulting.de tkreutz] 2015-09-03 17:38 UTC
+
