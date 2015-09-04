@@ -60,6 +60,29 @@ Then use grep-find as normal. -- JeffSeifert
 
 Maybe it works to use Glimpse?  Does that work on NT?  Also, I'm not sure about the speed; since I don't know Codewright, I can't compare.
 
+'''Use powershell for recursive searching'''
+
+MS Windows Powershell can be used to recursively search for a regular expression because I had
+problems with the UNIX like approach with /find/, /xargs/ and /grep/ when my directory tree
+had spaces in the directory or file names.
+Powershell comes pre-installed since Windows 7. The problem with it is that it assumes
+a console width of 80 characters and may cause a break in the middle of the word or even
+worse (because it breaks the hyperlinking in the grep buffer) a break in the file's
+path name. With Powershell 3 (comes with Windows 8 and can be installed on Windows 7)
+this can be fixed with a *Width* parameter for /Out-String/:
+
+  powershell -c "dir -Include *.*  -Recurse | Select-String 'end-of-line-pattern$' | Out-String -Width 250"
+
+There is a caveat with //Out-String -Width//: for its formatting it buffers the input
+with the effect that you don't see the matches as they are found while scanning the
+directory tree, but you see nothing during the search and then suddenly all the
+matching files in the last 10 milliseconds.
+And another problem is that the return code is always 0 which affects the color
+in the modeline.But the final line in the grep buffer itself shows correctly if
+matches were found or uses the expected colors for highliting the result.
+-- RolfUnger
+
+
 '''Just use normal grep'''
 
 Recent versions of GNU grep have a -r option that does what rgrep did.
