@@ -6,7 +6,9 @@ You can get it here:
 
 * [http://admb-project.org/tools/editors/emacs/admb.el/view admb.el]
 
-[http://admb-project.org AD Model Builder] is an environment for nonlinear statistical modeling, built around the AUTODIF Library, a C++ language extension which transparently implements reverse-mode automatic differentiation.
+[http://admb-project.org AD Model Builder] is an environment for nonlinear statistical modeling. The user writes the model in C++ mixed with special keywords that ADMB translates to pure C++. This mode is used as a component in a full-featured [http://admb-project.org/tools/admb-ide ADMB-IDE].
+
+See also TmbMode.
 
 ----
 ProgrammingModes
