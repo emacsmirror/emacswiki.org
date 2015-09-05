@@ -1,0 +1,14 @@
+== Major mode for creating statistical model with Template Model Builder (TMB) ==
+
+Provides syntax highlighting, IDE compilation and file manipulation, outline code navigation, templates, and smaller tools.
+
+You can get it here:
+
+* [https://raw.githubusercontent.com/arnima-github/adcomp/master/tmb_syntax/tmb.el]
+
+[https://github.com/kaskr/adcomp/wiki Template Model Builder] is an environment for nonlinear statistical modeling. The user writes the model in C++ and then fits the model in R. The Emacs major mode `tmb-mode' is derived from `c++-mode'.
+
+See also AdmbMode.
+
+----
+ProgrammingModes
