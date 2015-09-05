@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 30 14:57:10 2015 (-0700)
+;; Last-Updated: Sat Sep  5 10:42:32 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9112
+;;     Update #: 9187
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -63,32 +63,26 @@
 ;;    `diredp-prev-subdir'   - `C-M-p'
 ;;
 ;;
-;;  Hide/Show Details
-;;  -----------------
-;;
-;;  Starting with Emacs 24.4, listing details are hidden by default.
-;;  Use `(' anytime to toggle this hiding.  You can use option
-;;  `diredp-hide-details-initially-flag' to change the default/initial
-;;  state.  See also option `diredp-hide-details-propagate-flag'.
-;;
-;;  NOTE: If you do not want to hide details initially then you must
-;;        either (1) change `diredp-hide-details-initially-flag' using
-;;        Customize (recommended) or (2) set it to `nil' (e.g., using
-;;        `setq') *BEFORE* loading `dired+.el'.
-;;
-;;  If you have an Emacs version older than 24.4, you can use library
-;;  `dired-details+.el' (plus `dired-details.el') to get similar
-;;  behavior.
-;;
-;;
-;;  Fontification Level
-;;  -------------------
+;;  Fontification
+;;  -------------
 ;;
 ;;  If you want a maximum or minimum fontification for Dired mode,
 ;;  then customize option `font-lock-maximum-decoration'.  If you want
 ;;  a different fontification level for Dired than for other modes,
 ;;  you can do this too by customizing
 ;;  `font-lock-maximize-decoration'.
+;;
+;;  A few of the user options defined here have an effect on
+;;  font-locking, and this effect is established only when Dired+ is
+;;  loaded, which defines the font-lock keywords for Dired.  These
+;;  options include `diredp-compressed-extensions',
+;;  `diredp-ignore-compressed-flag', and `dired-omit-extensions'.
+;;  This means that if you change the value of such an option then you
+;;  will see the change only in a new Emacs session.
+;;
+;;  (You can see the effect in the same session if you use `C-M-x' on
+;;  the `defvar' sexp for `diredp-font-lock-keywords-1', and then you
+;;  toggle font-lock off and back on.)
 ;;
 ;;
 ;;  Act on All Files
@@ -319,6 +313,24 @@
 ;;  ancestor Dired buffer.
 ;;
 ;;
+;;  Hide/Show Details
+;;  -----------------
+;;
+;;  Starting with Emacs 24.4, listing details are hidden by default.
+;;  Use `(' anytime to toggle this hiding.  You can use option
+;;  `diredp-hide-details-initially-flag' to change the default/initial
+;;  state.  See also option `diredp-hide-details-propagate-flag'.
+;;
+;;  NOTE: If you do not want to hide details initially then you must
+;;        either (1) change `diredp-hide-details-initially-flag' using
+;;        Customize (recommended) or (2) set it to `nil' (e.g., using
+;;        `setq') *BEFORE* loading `dired+.el'.
+;;
+;;  If you have an Emacs version older than 24.4, you can use library
+;;  `dired-details+.el' (plus `dired-details.el') to get similar
+;;  behavior.
+;;
+;;
 ;;  Faces defined here:
 ;;
 ;;    `diredp-autofile-name', `diredp-compressed-file-suffix',
@@ -464,11 +476,12 @@
 ;;  User options defined here:
 ;;
 ;;    `diredp-auto-focus-frame-for-thumbnail-tooltip-flag',
-;;    `diredp-dwim-any-frame-flag' (Emacs 22+),
-;;    `diredp-image-preview-in-tooltip', `diff-switches',
+;;    `diredp-compressed-extensions', `diredp-dwim-any-frame-flag'
+;;    (Emacs 22+), `diredp-image-preview-in-tooltip', `diff-switches',
 ;;    `diredp-hide-details-initially-flag' (Emacs 24.4+),
 ;;    `diredp-highlight-autofiles-mode',
 ;;    `diredp-hide-details-propagate-flag' (Emacs 24.4+),
+;;    `diredp-ignore-compressed-flag',
 ;;    `diredp-image-show-this-file-use-frame-flag' (Emacs 22+),
 ;;    `diredp-prompt-for-bookmark-prefix-flag',
 ;;    `diredp-w32-local-drives', `diredp-wrap-around-flag'.
@@ -632,6 +645,16 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/09/05 dadams
+;;     Added: diredp-compressed-extensions, diredp-ignore-compressed-flag, diredp-compressed-file-name,
+;;            diredp-dir-name.
+;;     diredp-font-lock-keywords-1:
+;;       Allow spaces in symlink names.  Highlight compressed-file names, if diredp-ignore-compressed-flag.
+;;       Use diredp-compressed-extensions instead of hardcoding extensions.
+;;     Highlight d with diredp-dir-priv (fix).
+;;     Treat l in third column the same as - and d there.
+;;     Highlight whole line for D-flagged files, with face diredp-deletion-file-name.
+;;     Thx to Nick Helm.
 ;; 2015/08/30 dadams
 ;;     dired-mark-sexp: Updated per Emacs 25 code.
 ;; 2015/07/30 dadams
@@ -1533,6 +1556,13 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 ;; `dired-do-toggle' was renamed to `dired-toggle-marks' after Emacs 20.
 (unless (fboundp 'dired-toggle-marks) (defalias 'dired-toggle-marks 'dired-do-toggle))
 
+;;; This is duplicated in `diff.el' and `vc.el'.
+;;;###autoload
+(defcustom diff-switches "-c"
+  "*A string or list of strings specifying switches to be passed to diff."
+  :type '(choice string (repeat string))
+  :group 'dired :group 'diff)
+
 ;;;###autoload
 (defcustom diredp-auto-focus-frame-for-thumbnail-tooltip-flag nil
   "*Non-nil means automatically focus the frame for a thumbnail tooltip.
@@ -1545,11 +1575,68 @@ It also has no effect for Emacs versions prior to Emacs 22."
   :type 'boolean :group 'Dired-Plus)
 
 ;;;###autoload
+(defcustom diredp-compressed-extensions '(".tar" ".taz" ".gz" ".arj" ".lzh" ".zip" ".z" ".Z" ".gz" ".bz2")
+  "*List of compressed-file extensions, for highlighting."
+  :type '(repeat string) :group 'Dired-Plus)
+
+;;;###autoload
 (defcustom diredp-dwim-any-frame-flag pop-up-frames
   "*Non-nil means the target directory can be in a window in another frame.
 Only visible frames are considered.
 This is used by ``dired-dwim-target-directory'.
 This option has no effect for Emacs versions before Emacs 22."
+  :type 'boolean :group 'Dired-Plus)
+
+(when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
+  (defcustom diredp-hide-details-initially-flag t
+    "*Non-nil means hide details in Dired from the outset."
+    :type 'boolean :group 'Dired-Plus
+    :set (lambda (sym defs)
+           (custom-set-default sym defs)
+           (setq diredp-hide-details-last-state  diredp-hide-details-initially-flag)))
+
+  (defcustom diredp-hide-details-propagate-flag t
+    "*Non-nil means display the next Dired buffer the same way as the last.
+The last `dired-hide-details-mode' value set is used by the next Dired
+buffer created."
+    :type 'boolean :group 'Dired-Plus))
+
+;; Emacs 20 only.
+;;;###autoload
+(unless (fboundp 'define-minor-mode)
+  (defcustom diredp-highlight-autofiles-mode t
+    "*Non-nil means highlight names of files that are autofile bookmarks.
+Autofiles that have tags are highlighted using face
+`diredp-tagged-autofile-name'.  Those with no tags are highlighted
+using face `diredp-autofile-name'.
+
+Setting this option directly does not take effect; use either
+\\[customize] or command `diredp-highlight-autofiles-mode'.
+
+NOTE: When `dired+.el' is loaded (for the first time per Emacs
+session), the highlighting is turned ON, regardless of the option
+value.  To prevent this and have the highlighting OFF by default, you
+must do one of the following:
+
+ * Put (diredp-highlight-autofiles-mode -1) in your init file, AFTER
+   it loads `dired+.el'.
+
+ * Customize the option to `nil', AND ensure that your `custom-file'
+   (or the `custom-saved-variables' part of your init file) is
+   evaluated before `dired+.el' is loaded.
+
+This option has no effect unless you use libraries `Bookmark and
+`highlight.el'."
+    :set        (lambda (symbol value) (diredp-highlight-autofiles-mode (if value 1 -1)))
+    :initialize 'custom-initialize-default
+    :type 'boolean :group 'Dired-Plus :require 'dired+))
+
+;;;###autoload
+(defcustom diredp-ignore-compressed-flag t
+  "*Non-nil means to font-lock names of compressed files as ignored files.
+This applies to filenames whose extensions are in
+`diredp-compressed-extensions'.  If nil they are highlighted using
+face `diredp-compressed-file-name'."
   :type 'boolean :group 'Dired-Plus)
 
 ;;;###autoload
@@ -1589,27 +1676,6 @@ special-display buffer by your Emacs setup, then a nil value of this
 option has no effect.)"
   :type 'boolean :group 'Dired-Plus)
 
-;;; This is duplicated in `diff.el' and `vc.el'.
-;;;###autoload
-(defcustom diff-switches "-c"
-  "*A string or list of strings specifying switches to be passed to diff."
-  :type '(choice string (repeat string))
-  :group 'dired :group 'diff)
-
-(when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
-  (defcustom diredp-hide-details-initially-flag t
-    "*Non-nil means hide details in Dired from the outset."
-    :type 'boolean :group 'Dired-Plus
-    :set (lambda (sym defs)
-           (custom-set-default sym defs)
-           (setq diredp-hide-details-last-state  diredp-hide-details-initially-flag)))
-
-  (defcustom diredp-hide-details-propagate-flag t
-    "*Non-nil means display the next Dired buffer the same way as the last.
-The last `dired-hide-details-mode' value set is used by the next Dired
-buffer created."
-    :type 'boolean :group 'Dired-Plus))
-
 ;;;###autoload
 (defcustom diredp-prompt-for-bookmark-prefix-flag nil
   "*Non-nil means prompt for a prefix string for bookmark names."
@@ -1629,36 +1695,6 @@ name and DESCRIPTION describes DRIVE."
 (defcustom diredp-wrap-around-flag t
   "*Non-nil means Dired \"next\" commands wrap around to buffer beginning."
   :type 'boolean :group 'Dired-Plus)
-
-;; Emacs 20 only.
-;;;###autoload
-(unless (fboundp 'define-minor-mode)
-  (defcustom diredp-highlight-autofiles-mode t
-    "*Non-nil means highlight names of files that are autofile bookmarks.
-Autofiles that have tags are highlighted using face
-`diredp-tagged-autofile-name'.  Those with no tags are highlighted
-using face `diredp-autofile-name'.
-
-Setting this option directly does not take effect; use either
-\\[customize] or command `diredp-highlight-autofiles-mode'.
-
-NOTE: When `dired+.el' is loaded (for the first time per Emacs
-session), the highlighting is turned ON, regardless of the option
-value.  To prevent this and have the highlighting OFF by default, you
-must do one of the following:
-
- * Put (diredp-highlight-autofiles-mode -1) in your init file, AFTER
-   it loads `dired+.el'.
-
- * Customize the option to `nil', AND ensure that your `custom-file'
-   (or the `custom-saved-variables' part of your init file) is
-   evaluated before `dired+.el' is loaded.
-
-This option has no effect unless you use libraries `Bookmark and
-`highlight.el'."
-    :set        (lambda (symbol value) (diredp-highlight-autofiles-mode (if value 1 -1)))
-    :initialize 'custom-initialize-default
-    :type 'boolean :group 'Dired-Plus :require 'dired+))
 
 (when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
   (defvar diredp-hide-details-last-state diredp-hide-details-initially-flag
@@ -4013,12 +4049,34 @@ Don't forget to mention your Emacs and library versions."))
  
 ;;; Face Definitions
 
-(defface diredp-dir-heading
-    '((((background dark)) (:foreground "Yellow" :background "#00003F3F3434")) ; ~ dark green
-      (t                   (:foreground "Blue" :background "Pink")))
-  "*Face used for directory headings in Dired buffers."
+(defface diredp-autofile-name
+    '((((background dark)) (:background "#111313F03181")) ; Very dark blue
+      (t                   (:background "#EEECEC0FCE7E"))) ; Very pale goldenrod
+  "*Face used in Dired for names of files that are autofile bookmarks."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-dir-heading 'diredp-dir-heading)
+(defvar diredp-autofile-name 'diredp-autofile-name)
+
+(defface diredp-compressed-file-name
+    '((((background dark)) (:foreground "Blue"))
+      (t                   (:foreground "Brown")))
+  "*Face used for compressed file names."
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-compressed-file-name 'diredp-compressed-file-name)
+
+(defface diredp-compressed-file-suffix
+    '((((background dark)) (:foreground "Blue"))
+      (t                   (:foreground "Yellow")))
+  "*Face used for compressed file suffixes in Dired buffers.
+This means the `.' plus the file extension.  Example: `.zip'."
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-compressed-file-suffix 'diredp-compressed-file-suffix)
+
+(defface diredp-date-time
+    '((((background dark)) (:foreground "#74749A9AF7F7")) ; ~ med blue
+      (t                   (:foreground "DarkGoldenrod4")))
+  "*Face used for date and time in Dired buffers."
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-date-time 'diredp-date-time)
 
 (defface diredp-deletion
     '((t (:foreground "Yellow" :background "Red")))
@@ -4032,82 +4090,20 @@ Don't forget to mention your Emacs and library versions."))
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-deletion-file-name 'diredp-deletion-file-name)
 
-(defface diredp-flag-mark
-    '((((background dark)) (:foreground "Blue" :background "#7575D4D41D1D")) ; ~ olive green
-      (t                   (:foreground "Yellow" :background "Blueviolet")))
-  "*Face used for flags and marks (except D) in Dired buffers."
+(defface diredp-dir-heading
+    '((((background dark)) (:foreground "Yellow" :background "#00003F3F3434")) ; ~ dark green
+      (t                   (:foreground "Blue" :background "Pink")))
+  "*Face used for directory headings in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-flag-mark 'diredp-flag-mark)
+(defvar diredp-dir-heading 'diredp-dir-heading)
 
-(defface diredp-flag-mark-line
-    '((((background dark)) (:background "#787831311414")) ; ~ dark red brown
-      (t                   (:background "Skyblue")))
-  "*Face used for flagged and marked lines in Dired buffers."
+(defface diredp-dir-name
+    '((((background dark))
+       (:foreground "#7474FFFFFFFF" :background "#2C2C2C2C2C2C")) ; ~ cyan, dark gray
+      (t (:foreground "DarkRed" :background "LightGray")))
+  "*Face used for directory names."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-flag-mark-line 'diredp-flag-mark-line)
-
-(defface diredp-file-suffix
-    '((((background dark)) (:foreground "#7474FFFF7474")) ; ~ light green
-      (t                   (:foreground "DarkMagenta")))
-  "*Face used for file suffixes in Dired buffers.
-This means the `.' plus the file extension.  Example: `.elc'."
-  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-file-suffix 'diredp-file-suffix)
-
-(defface diredp-number
-    '((((background dark)) (:foreground "#FFFFFFFF7474")) ; ~ light yellow
-      (t                   (:foreground "DarkBlue")))
-  "*Face used for numerical fields in Dired buffers.
-In particular, inode number, number of hard links, and file size."
-  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-number 'diredp-number)
-
-(defface diredp-symlink
-    '((((background dark)) (:foreground "#00007373FFFF")) ; ~ blue
-      (t                   (:foreground "DarkOrange")))
-  "*Face used for symbolic links in Dired buffers."
-  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-symlink 'diredp-symlink)
-
-(defface diredp-date-time
-    '((((background dark)) (:foreground "#74749A9AF7F7")) ; ~ med blue
-      (t                   (:foreground "DarkGoldenrod4")))
-  "*Face used for date and time in Dired buffers."
-  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-date-time 'diredp-date-time)
-
-(defface diredp-file-name
-    '((((background dark)) (:foreground "Yellow"))
-      (t                   (:foreground "Blue")))
-  "*Face used for file names (without suffixes) in Dired buffers.
-This means the base name.  It does not include the `.'."
-  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-file-name 'diredp-file-name)
-
-(defface diredp-ignored-file-name
-    '(;; (((background dark)) (:foreground "#FFFF921F921F")) ; ~ salmon
-      ;; (((background dark)) (:foreground "#A71F5F645F64")) ; ~ dark salmon
-      (((background dark)) (:foreground "#C29D6F156F15")) ; ~ salmon
-      (t                   (:foreground "#00006DE06DE0")))                  ; ~ dark cyan
-  "*Face used for ignored file names  in Dired buffers."
-  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-ignored-file-name 'diredp-ignored-file-name)
-
-(defface diredp-compressed-file-suffix
-    '((((background dark)) (:foreground "Blue"))
-      (t                   (:foreground "Yellow")))
-  "*Face used for compressed file suffixes in Dired buffers.
-This means the `.' plus the file extension.  Example: `.zip'."
-  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-compressed-file-suffix 'diredp-compressed-file-suffix)
-
-;; For this to show up, you need `F' among the options in `dired-listing-switches'.
-;; For example, I use "-alF" for `dired-listing-switches'.
-(defface diredp-executable-tag
-    '((t (:foreground "Red")))
-  "*Face used for executable tag (*) on file names in Dired buffers."
-  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-executable-tag 'diredp-executable-tag)
+(defvar diredp-dir-name 'diredp-dir-name)
 
 (defface diredp-dir-priv
     '((((background dark))
@@ -4124,40 +4120,52 @@ This means the `.' plus the file extension.  Example: `.zip'."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-exec-priv 'diredp-exec-priv)
 
-(defface diredp-other-priv
-    '((((background dark)) (:background "#111117175555")) ; ~ dark blue
-      (t                   (:background "PaleGoldenrod")))
-  "*Face used for l,s,S,t,T privilege indicators in Dired buffers."
+;; For this to show up, you need `F' among the options in `dired-listing-switches'.
+;; For example, I use "-alF" for `dired-listing-switches'.
+(defface diredp-executable-tag
+    '((t (:foreground "Red")))
+  "*Face used for executable tag (*) on file names in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-other-priv 'diredp-other-priv)
+(defvar diredp-executable-tag 'diredp-executable-tag)
 
-(defface diredp-write-priv
-    '((((background dark)) (:background "#25258F8F2929")) ; ~ dark green
-      (t                   (:background "Orchid")))
-  "*Face used for write privilege indicator (w) in Dired buffers."
+(defface diredp-file-name
+    '((((background dark)) (:foreground "Yellow"))
+      (t                   (:foreground "Blue")))
+  "*Face used for file names (without suffixes) in Dired buffers.
+This means the base name.  It does not include the `.'."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-write-priv 'diredp-write-priv)
+(defvar diredp-file-name 'diredp-file-name)
 
-(defface diredp-read-priv
-    '((((background dark)) (:background "#999932325555")) ; ~ burgundy / dark magenta
-      (t                   (:background "MediumAquamarine")))
-  "*Face used for read privilege indicator (w) in Dired buffers."
+(defface diredp-file-suffix
+    '((((background dark)) (:foreground "#7474FFFF7474")) ; ~ light green
+      (t                   (:foreground "DarkMagenta")))
+  "*Face used for file suffixes in Dired buffers.
+This means the `.' plus the file extension.  Example: `.elc'."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-read-priv 'diredp-read-priv)
+(defvar diredp-file-suffix 'diredp-file-suffix)
 
-(defface diredp-no-priv
-    '((((background dark)) (:background "#2C2C2C2C2C2C")) ; ~ dark gray
-      (t                   (:background "LightGray")))
-  "*Face used for no privilege indicator (-) in Dired buffers."
+(defface diredp-flag-mark
+    '((((background dark)) (:foreground "Blue" :background "#7575D4D41D1D")) ; ~ olive green
+      (t                   (:foreground "Yellow" :background "Blueviolet")))
+  "*Face used for flags and marks (except D) in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-no-priv 'diredp-no-priv)
+(defvar diredp-flag-mark 'diredp-flag-mark)
 
-(defface diredp-rare-priv
-    '((((background dark)) (:foreground "Green" :background "#FFFF00008080")) ; ~ hot pink
-      (t                   (:foreground "Magenta" :background "SpringGreen")))
-  "*Face used for rare privilege indicators (b,c,s,m,p,S) in Dired buffers."
+(defface diredp-flag-mark-line
+    '((((background dark)) (:background "#787831311414")) ; ~ dark red brown
+      (t                   (:background "Skyblue")))
+  "*Face used for flagged and marked lines in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-rare-priv 'diredp-rare-priv)
+(defvar diredp-flag-mark-line 'diredp-flag-mark-line)
+
+(defface diredp-ignored-file-name
+    '(;; (((background dark)) (:foreground "#FFFF921F921F")) ; ~ salmon
+      ;; (((background dark)) (:foreground "#A71F5F645F64")) ; ~ dark salmon
+      (((background dark)) (:foreground "#C29D6F156F15")) ; ~ salmon
+      (t                   (:foreground "#00006DE06DE0")))                  ; ~ dark cyan
+  "*Face used for ignored file names  in Dired buffers."
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-ignored-file-name 'diredp-ignored-file-name)
 
 (defface diredp-link-priv
     '((((background dark)) (:foreground "#00007373FFFF")) ; ~ blue
@@ -4166,12 +4174,59 @@ This means the `.' plus the file extension.  Example: `.zip'."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-link-priv 'diredp-link-priv)
 
-(defface diredp-autofile-name
-    '((((background dark)) (:background "#111313F03181")) ; Very dark blue
-      (t                   (:background "#EEECEC0FCE7E"))) ; Very pale goldenrod
-  "*Face used in Dired for names of files that are autofile bookmarks."
+(when (> emacs-major-version 21)
+  (defface diredp-mode-line-marked
+      '((t (:foreground "DarkViolet")))
+    "*Face for marked number in mode line `mode-name' for Dired buffers."
+    :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+
+  (defface diredp-mode-line-flagged
+      '((t (:foreground "Red")))
+    "*Face for flagged number in mode line `mode-name' for Dired buffers."
+    :group 'Dired-Plus :group 'font-lock-highlighting-faces))
+
+(defface diredp-no-priv
+    '((((background dark)) (:background "#2C2C2C2C2C2C")) ; ~ dark gray
+      (t                   (:background "LightGray")))
+  "*Face used for no privilege indicator (-) in Dired buffers."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-autofile-name 'diredp-autofile-name)
+(defvar diredp-no-priv 'diredp-no-priv)
+
+(defface diredp-number
+    '((((background dark)) (:foreground "#FFFFFFFF7474")) ; ~ light yellow
+      (t                   (:foreground "DarkBlue")))
+  "*Face used for numerical fields in Dired buffers.
+In particular, inode number, number of hard links, and file size."
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-number 'diredp-number)
+
+(defface diredp-other-priv
+    '((((background dark)) (:background "#111117175555")) ; ~ dark blue
+      (t                   (:background "PaleGoldenrod")))
+  "*Face used for l,s,S,t,T privilege indicators in Dired buffers."
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-other-priv 'diredp-other-priv)
+
+(defface diredp-rare-priv
+    '((((background dark)) (:foreground "Green" :background "#FFFF00008080")) ; ~ hot pink
+      (t                   (:foreground "Magenta" :background "SpringGreen")))
+  "*Face used for rare privilege indicators (b,c,s,m,p,S) in Dired buffers."
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-rare-priv 'diredp-rare-priv)
+
+(defface diredp-read-priv
+    '((((background dark)) (:background "#999932325555")) ; ~ burgundy / dark magenta
+      (t                   (:background "MediumAquamarine")))
+  "*Face used for read privilege indicator (w) in Dired buffers."
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-read-priv 'diredp-read-priv)
+
+(defface diredp-symlink
+    '((((background dark)) (:foreground "#00007373FFFF")) ; ~ blue
+      (t                   (:foreground "DarkOrange")))
+  "*Face used for symbolic links in Dired buffers."
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-symlink 'diredp-symlink)
 
 (defface diredp-tagged-autofile-name
     '((((background dark)) (:background "#328C0411328C")) ; Very dark magenta
@@ -4179,6 +4234,13 @@ This means the `.' plus the file extension.  Example: `.zip'."
   "*Face used in Dired for names of files that are autofile bookmarks."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-tagged-autofile-name 'diredp-tagged-autofile-name)
+
+(defface diredp-write-priv
+    '((((background dark)) (:background "#25258F8F2929")) ; ~ dark green
+      (t                   (:background "Orchid")))
+  "*Face used for write privilege indicator (w) in Dired buffers."
+  :group 'Dired-Plus :group 'font-lock-highlighting-faces)
+(defvar diredp-write-priv 'diredp-write-priv)
 
 ;; Fix Emacs 20 recognition of fields up through file name when size is expressed using `k' etc.
 (when (and (< emacs-major-version 21)  (not (boundp 'diredp-loaded-p))
@@ -4194,81 +4256,96 @@ This means the `.' plus the file extension.  Example: `.zip'."
    '("^  wildcard.*$" 0 'default)       ; Override others, e.g. `l' for `diredp-other-priv'.
    '("^  (No match).*$" 0 'default)     ; Override others, e.g. `t' for `diredp-other-priv'.
    '("[^ .]\\(\\.[^. /]+\\)$" 1 diredp-file-suffix) ; Suffix, including `.'.
-   '("\\([^ ]+\\) -> [^ ]+$" 1 diredp-symlink) ; Symbolic links
+   '("\\([^ ]+\\) -> .+$" 1 diredp-symlink) ; Symbolic links
 
    ;; 1) Date/time and 2) filename w/o suffix.
    ;;    This is a bear, and it is fragile - Emacs can change `dired-move-to-filename-regexp'.
    (if (or (not (fboundp 'version<))  (version< emacs-version "23.2"))
        (list dired-move-to-filename-regexp
              (list 1 'diredp-date-time t t) ; Date/time
-             (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t))) ; Filename
+             (if diredp-ignore-compressed-flag
+                 (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t)) ; Filename
+               (list (concat "\\(.+\\)\\(" (concat ; Compressed-file name
+                                            (mapconcat 'regexp-quote diredp-compressed-extensions
+                                                       "\\|") "\\)[*]?$"))
+                     nil nil (list 0 diredp-compressed-file-name 'keep t))))
      (list dired-move-to-filename-regexp
            (list 7 'diredp-date-time t t) ; Date/time, locale (western or eastern)
            (list 2 'diredp-date-time t t) ; Date/time, ISO
-           (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t)))) ; Filename
+           (if diredp-ignore-compressed-flag
+               (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t)) ; Filename
+             (list (concat "\\(.+\\)\\(" (concat ; Compressed-file suffix
+                                          (mapconcat 'regexp-quote diredp-compressed-extensions
+                                                     "\\|") "\\)[*]?$"))
+                   nil nil (list 0 diredp-compressed-file-name 'keep t)))))
 
    ;; Files to ignore
-   (list (concat "^  \\(.*\\(" (concat (mapconcat 'regexp-quote
+   (list (concat "^  \\(.*\\(" (concat (mapconcat #'regexp-quote
                                                   (or (and (boundp 'dired-omit-extensions)
                                                            dired-omit-extensions)
                                                       completion-ignored-extensions)
                                                   "[*]?\\|")
-                                       "[*]?") ; Allow for executable flag (*).
-                 "\\|\\.\\(g?z\\|Z\\)[*]?\\)\\)$") ; Compressed.
+                                       (and diredp-ignore-compressed-flag
+                                            (mapconcat #'regexp-quote diredp-compressed-extensions "[*]?\\|"))
+                                       "[*]?\\)\\)$")) ; Allow for executable flag (*).
          1 diredp-ignored-file-name t)
-   '("[^ .]\\(\\.[bg]?[zZ]2?\\)[*]?$" 1 diredp-compressed-file-suffix t) ; Compressed (*.z)
+
+   ;; Compressed-file (suffix)
+   (list (concat "\\(" (concat (mapconcat #'regexp-quote diredp-compressed-extensions "\\|") "\\)[*]?$"))
+         1 diredp-compressed-file-suffix t)
    '("\\([*]\\)$" 1 diredp-executable-tag t) ; Executable (*)
+
    ;; Inode, hard-links, & file size (. and , are for the decimal point, depending on locale)
    ;; See comment for `directory-listing-before-filename-regexp' in `files.el' or `files+.el'.
    '("\\(\\([0-9]+\\([.,][0-9]+\\)?\\)[BkKMGTPEZY]? \\)" 1 diredp-number)
 
    ;; Directory names - exclude d:/..., Windows drive letter in a dir heading.
-   (list (concat dired-re-maybe-mark dired-re-inode-size "d[^:]")
-         (list dired-move-to-filename-regexp nil nil) (list "\\(.+\\)" nil nil '(0 diredp-dir-priv t t)))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "\\(d\\)[^:]")
+         '(1 diredp-dir-priv t) '(".+" (dired-move-to-filename) nil (0 diredp-dir-name t)))
 
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]........\\(x\\)") ; o x
-         '(1 diredp-exec-priv))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]........\\([lsStT]\\)") ; o misc
-         '(1 diredp-other-priv))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d].......\\(w\\).") ; o w
-         '(1 diredp-write-priv))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]......\\(r\\)..") ; o r
-         '(1 diredp-read-priv))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d].....\\(x\\)...") ; g x
-         '(1 diredp-exec-priv))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d].....\\([lsStT]\\)...") ; g misc
-         '(1 diredp-other-priv))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]....\\(w\\)....") ; g w
-         '(1 diredp-write-priv))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]...\\(r\\).....") ; g r
-         '(1 diredp-read-priv))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]..\\(x\\)...") ; u x
-         '(1 diredp-exec-priv))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]..\\([lsStT]\\)...") ; u misc
-         '(1 diredp-other-priv))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d].\\(w\\)....") ; u w
-         '(1 diredp-write-priv))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]\\(r\\).....") ; u r
-         '(1 diredp-read-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl]........\\(x\\)") ; o x
+ 	 '(1 diredp-exec-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl]........\\([lsStT]\\)") ; o misc
+ 	 '(1 diredp-other-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl].......\\(w\\).") ; o w
+ 	 '(1 diredp-write-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl]......\\(r\\)..") ; o r
+ 	 '(1 diredp-read-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl].....\\(x\\)...") ; g x
+ 	 '(1 diredp-exec-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl].....\\([lsStT]\\)...") ; g misc
+ 	 '(1 diredp-other-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl]....\\(w\\)....") ; g w
+ 	 '(1 diredp-write-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl]...\\(r\\).....") ; g r
+ 	 '(1 diredp-read-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl]..\\(x\\)...") ; u x
+ 	 '(1 diredp-exec-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl]..\\([lsStT]\\)...") ; u misc
+ 	 '(1 diredp-other-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl].\\(w\\)....") ; u w
+ 	 '(1 diredp-write-priv))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl]\\(r\\).....") ; u r
+ 	 '(1 diredp-read-priv))
 
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]........\\([-rwxlsStT]\\)") ; o -
-         '(1 diredp-no-priv keep))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d].......\\([-rwxlsStT]\\).") ; g -
-         '(1 diredp-no-priv keep))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]......\\([-rwxlsStT]\\)..") ; u -
-         '(1 diredp-no-priv keep))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d].....\\([-rwxlsStT]\\)...") ; o -
-         '(1 diredp-no-priv keep))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]....\\([-rwxlsStT]\\)....") ; g -
-         '(1 diredp-no-priv keep))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]...\\([-rwxlsStT]\\).....") ; u -
-         '(1 diredp-no-priv keep))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]..\\([-rwxlsStT]\\)......") ; o -
-         '(1 diredp-no-priv keep))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d].\\([-rwxlsStT]\\).......") ; g -
-         '(1 diredp-no-priv keep))
-   (list (concat dired-re-maybe-mark dired-re-inode-size "[-d]\\([-rwxlsStT]\\)........") ; u -
-         '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl]........\\([-rwxlsStT]\\)") ; o -
+ 	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl].......\\([-rwxlsStT]\\).") ; g -
+ 	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl]......\\([-rwxlsStT]\\)..") ; u -
+ 	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl].....\\([-rwxlsStT]\\)...") ; o -
+ 	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl]....\\([-rwxlsStT]\\)....") ; g -
+ 	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl]...\\([-rwxlsStT]\\).....") ; u -
+ 	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl]..\\([-rwxlsStT]\\)......") ; o -
+ 	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl].\\([-rwxlsStT]\\).......") ; g -
+ 	 '(1 diredp-no-priv keep))
+   (list (concat dired-re-maybe-mark dired-re-inode-size "[-dl]\\([-rwxlsStT]\\)........") ; u -
+ 	 '(1 diredp-no-priv keep))
 
    (list (concat dired-re-maybe-mark dired-re-inode-size "\\([bcsmpS]\\)") ; (rare)
          '(1 diredp-rare-priv keep))
@@ -4277,11 +4354,14 @@ This means the `.' plus the file extension.  Example: `.zip'."
 
    (list (concat "^\\([^\n " (char-to-string dired-del-marker) "].*$\\)")
          1 diredp-flag-mark-line t)     ; Flag/mark lines
-   (list (concat "^\\([" (char-to-string dired-del-marker) "]\\)") ; Deletion flags (D)
-         '(1 diredp-deletion t)
-         '(".+" (dired-move-to-filename) nil (0 diredp-deletion-file-name t)))
    (list (concat "^\\([^\n " (char-to-string dired-del-marker) "]\\)") ; Flags, marks (except D)
          1 diredp-flag-mark t)
+
+   (list (concat "^\\([" (char-to-string dired-del-marker) "].*$\\)") ; Deletion-flagged lines
+         1 diredp-deletion-file-name t)
+   (list (concat "^\\([" (char-to-string dired-del-marker) "]\\)") ; Deletion flags (D)
+         1 diredp-deletion t)
+
    ) "2nd level of Dired highlighting.  See `font-lock-maximum-decoration'.")
 
 
@@ -6383,7 +6463,7 @@ Non-nil prefix argument UNMARK-P means unmark instead of mark."
   (or (listp extension)  (setq extension  (list extension)))
   (dired-mark-files-regexp (concat ".";; Do not match names with nothing but an extension
                                    "\\("
-                                   (mapconcat 'regexp-quote extension "\\|")
+                                   (mapconcat #'regexp-quote extension "\\|")
                                    "\\)$")
                            (and current-prefix-arg  ?\040)))
 
@@ -9742,12 +9822,12 @@ which are options for `diff'."
                                 "Options for diff: "
                                 (if (stringp diff-switches)
                                     diff-switches
-                                  (mapconcat 'identity diff-switches " "))
+                                  (mapconcat #'identity diff-switches " "))
                                 (lambda (c) (diredp-string-match-p "switches" (symbol-name c))))
                              (read-string "Options for diff: "
                                           (if (stringp diff-switches)
                                               diff-switches
-                                            (mapconcat 'identity diff-switches " "))))))
+                                            (mapconcat #'identity diff-switches " "))))))
       (diff file2 (dired-get-filename t) switches))))
 
 ;;;###autoload
@@ -9764,7 +9844,7 @@ With prefix arg, prompt for SWITCHES which are the options for `diff'."
                               "Options for diff: "
                               (if (stringp diff-switches)
                                   diff-switches
-                                (mapconcat 'identity diff-switches " "))
+                                (mapconcat #'identity diff-switches " "))
                               (lambda (c) (diredp-string-match-p "switches" (symbol-name c))))
                            (read-string "Options for diff: "
                                         (if (stringp diff-switches)
@@ -10094,7 +10174,7 @@ With arg, show breadcrumbs iff arg is positive."
                                                           (dired-other-window ,dir dired-actual-switches)))
                                                       crumbs-map)
                                     'mouse-face 'mode-line-highlight
-                                    ;; 'help-echo "mouse-1: Dired; mouse-2: Dired in other window; mouse-3: Menu"))
+                                    ;;'help-echo "mouse-1: Dired; mouse-2: Dired in other window; mouse-3: Menu"))
                                     'help-echo "mouse-1: Dired; mouse-2: Dired in other window"))
             (setq text  (concat text (if (or rootp  parent-rootp) " "  " / ") rdir)))))
       (make-local-variable 'header-line-format)
@@ -10495,7 +10575,7 @@ marked/flagged.
 
 Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
     (let ((mname  (format-mode-line mode-name)))
-       ; Property `dired+-mode-name' indicates whether `mode-name' has been changed.
+      ;; Property `dired+-mode-name' indicates whether `mode-name' has been changed.
       (unless (get-text-property 0 'dired+-mode-name mname)
         (save-match-data
           (setq mode-name
@@ -10539,17 +10619,6 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
                                           ""))
                                       nb-flagged)
                               'face 'diredp-mode-line-flagged))))))))))
-
-  (defface diredp-mode-line-marked
-      '((t (:foreground "DarkViolet")))
-    "*Face for marked number in mode line `mode-name' for Dired buffers."
-    :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-
-  (defface diredp-mode-line-flagged
-      '((t (:foreground "Red")))
-    "*Face for flagged number in mode line `mode-name' for Dired buffers."
-    :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-
 
   (add-hook 'dired-after-readin-hook 'diredp-nb-marked-in-mode-name)
   ;; This one is needed for `find-dired', because it does not call `dired-readin'.
