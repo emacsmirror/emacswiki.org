@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Aug 16 17:33:10 2015 (-0700)
+;; Last-Updated: Mon Sep  7 11:20:04 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7840
+;;     Update #: 7845
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -6359,15 +6359,22 @@ for the first character are `equal'."
   (while (and list  (funcall predicate (car list)))  (setq list  (cdr list)))
   (null list))
 
-;; Similar to `some' in `cl-extra.el', without non-list sequences and multiple sequences.
+;; Same as `zz-some' in `zones.el'.
+;; This is NOT the same as `some' in `cl-extra.el', even without non-list sequences and multiple sequences.
+;;
+;; If PREDICATE is satisfied by a list element ELEMENT, so that it returns a non-nil value VALUE for ELEMENT,
+;; then this returns the cons (ELEMENT . VALUE).  It does not return just VALUE.
 (defun bmkp-some (predicate list)
-  "Return non-nil if PREDICATE is true for some element of LIST; else nil.
-Return the first non-nil value returned by PREDICATE."
-  (let (res)
+  "Return non-nil if PREDICATE applied to some element of LIST is true.
+The value returned is a cons, (ELEMENT . VALUE), where is the first
+list element that satisfies PREDICATE and VALUE is the value of
+PREDICATE applied to ELEMENT."
+  (let (elt val)
     (catch 'bmkp-some
-      (while list (when (funcall predicate (setq res  (pop list))) (throw 'bmkp-some res)))
-      (setq res  nil))
-    res))
+      (while list
+        (when (setq val  (funcall predicate (setq elt  (pop list))))
+          (throw 'bmkp-some (cons elt val))))
+      nil)))
 
 ;; From `cl-seq.el', function `union', without keyword treatment.
 ;; (Same as `icicle-set-union' in `icicles-fn.el'.)
