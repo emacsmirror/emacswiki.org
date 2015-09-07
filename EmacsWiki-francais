@@ -16,24 +16,19 @@ Cette page contient des informations générales sur le Wiki Emacs.
 
 == Hébergement ==
 
-Le Wiki est situé a l'adresse http://www.emacswiki.org/, ou
-http://purl.org/wiki/emacs/, ou http://emacswiki.wikiwikiweb.de/, si
-emacswiki.org ne répond pas.  Il s'agit d'un environnement
+Le Wiki est situé a l'adresse http://www.emacswiki.org/.
+Il s'agit d'un environnement
 d'hébergement virtuel; vous devez impérativement utiliser HTTP/1.1
 pour y accéder.
 
-Vous pouvez rejoindre le fournisseur d'accès aux adresses
-http://www.wikiwikiweb.de/ et http://www.thinkmo.de/.  Cependant, si
+Si
 vous découvrez des pages corrompues ou autres problèmes, il est
-préférable de contacter AlexSchroeder a mailto:alex@emacswiki.org ou
-mailto:alex@gnu.org.  Le webmestre de emacswiki.org l'est aussi de
-tout les autres sites virtuels.  
+préférable de contacter AlexSchroeder a mailto:alex@gnu.org.
 
 
 == Argent ==
 
-Pour le moment, AlexSchroeder est supposé payer pour le serveur.
-Les braves gens de thinkmo.de ne lui ont cependant pas encore rien demandé.
+Pour le moment, NicFerrier est supposé payer pour le serveur.
 
 Il n'y aura jamais de publicité sur emacswiki.org. Alex les déteste de
 toute façon!  Si vous aimez ce site et désirez contribuer du temps ou
@@ -48,27 +43,12 @@ dites combien d'argent vous avez donné à un organisme de charité grâce
 
 == Le Logiciel Wiki ==
 
-Ce wiki utilise Oddmuse [http://www.emacswiki.org/cgi-bin/wiki.pl?action=version].
+Ce wiki utilise Oddmuse [http://www.emacswiki.org/emacs?action=version].
 
 Avoir utilise un logiciel en Lisp ou en schéma aurait été plus dans l'esprit d'emacs et d'Xemacs.
 Mais oddmuse est un excellent logiciel, en un seul script, et facile à installer.
 
 Si vous avez une opinion sur le wiki ou voulez proposer de nouvelles
-fonctionnalités, allez sur MeatBall:EmacsWiki et expliquez en quoi
-cette nouvelle fonctionnalité améliorera le Wiki.
-
-Rapportez les bugs et les problèmes sur
-[http://www.emacswiki.org/cgi-bin/oddmuse.pl?Known_Problems].
-
-== Scripts Utilisés ==
-
-L'accès au wiki se fait via wiki.pl, qui fait partie de l'archive initiale.
-
-Les scripts suivant ont été ajoutés.  La grande simplicité de ces
-scripts est intentionnelle.
-
-* http://www.emacswiki.org/scripts/list-archive -- liste les tars.
-* http://www.emacswiki.org/scripts/archive -- crée une archive du site.
-* http://www.emacswiki.org/scripts/elisp-archive -- crée une archive de la section elisp
-* http://www.emacswiki.org/scripts/upload -- télécharge un fichier elisp et met a jour l'index et le changelog
-* http://www.emacswiki.org/scripts/link-scripts -- fait un lien entre les scripts et les fichier texte, et installe une nouvelle copie du script.
+fonctionnalités, allez sur le [https://savannah.nongnu.org/bugs/?group=oddmuse Oddmuse bug tracker],
+écrivez quelque chose sur la page Oddmuse [[Quick Bug Reports]], ou bien créez
+un enjeu sur [https://github.com/kensanata/oddmuse/issues GitHub].
