@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 27 13:37:22 2015 (-0700)
+;; Last-Updated: Mon Sep  7 11:17:02 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1699
+;;     Update #: 1711
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -401,6 +401,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/09/07 dadams
+;;     zz-some: Return cons (ELEMENT . VALUE).
+;;     zz-buffer-of-markers: Adjust for new zz-some behavior.
 ;; 2015/08/23 dadams
 ;;     Added: zz-clone-zones, zz-clone-and-unite-zones, zz-clone-and-coalesce-zones (alias).
 ;;     Bind zz-clone-zones to C-x n c, zz-clone-and-unite-zones to C-x n C.
@@ -875,7 +878,7 @@ Raise an error if the args include markers from different buffers."
 (defun zz-buffer-of-markers (ns)
   "Return the buffer of the markers in list NS, or nil if no markers.
 Raise an error if NS contains markers from different buffers."
-  (let ((mkr  (zz-some #'markerp ns)))
+  (let ((mkr  (car (zz-some #'markerp ns))))
     (and mkr
          (progn
            (unless (zz-every (lambda (nn) (or (not (markerp nn)) (eq (marker-buffer nn) (marker-buffer mkr)))) ns)
@@ -891,16 +894,21 @@ Raise an error if NS contains markers from different buffers."
   (null list))
 
 ;; Same as `bmkp-some' in `bookmark+-1.el'.
-;; Similar to `some' in `cl-extra.el', without non-list sequences and multiple
-;; sequences.
+;; This is NOT the same as `some' in `cl-extra.el', even without non-list sequences and multiple sequences.
+;;
+;; If PREDICATE is satisfied by a list element ELEMENT, so that it returns a non-nil value VALUE for ELEMENT,
+;; then this returns the cons (ELEMENT . VALUE).  It does not return just VALUE.
 (defun zz-some (predicate list)
-  "Return non-nil if PREDICATE is true for some element of LIST; else nil.
-Return the first non-nil value returned by PREDICATE."
-  (let (res)
+  "Return non-nil if PREDICATE applied to some element of LIST is true.
+The value returned is a cons, (ELEMENT . VALUE), where is the first
+list element that satisfies PREDICATE and VALUE is the value of
+PREDICATE applied to ELEMENT."
+  (let (elt val)
     (catch 'zz-some
-      (while list (when (funcall predicate (setq res  (pop list))) (throw 'zz-some res)))
-      (setq res  nil))
-    res))
+      (while list
+        (when (setq val  (funcall predicate (setq elt  (pop list))))
+          (throw 'zz-some (cons elt val))))
+      nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
