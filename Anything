@@ -6,7 +6,7 @@ Anything.el has been renamed to Helm (helm will help you steer in the right dire
 
 ##anything.el## is a great application framework written by TamasPatrovics. It provides a totally new Emacs experience. While normal Emacs way is specifying action then selecting candidates, the ##anything## way is narrowing and selecting candidates then executing action for selected candidates. It is something like "über-extensible spotlight for emacs" or "!QuickSilver for emacs". The current maintainer of ##anything.el## is [[rubikitch]].
 
-Started with ##M-x anything## all things matching a given pattern will be shown in a special buffer named ##*anything*##.
+Starting with the command ##M-x anything##, all things matching a given pattern will be shown in a special buffer named ##*anything*##.
 
 Initially all candidates are displayed. Then they are narrowed by a given query. A candidate can be selected with C-p/C-n/C-v/M-v (or up/down/pgup/pgdown). Hitting RET invokes the default action for that type, hitting TAB lists all possible actions.
 
