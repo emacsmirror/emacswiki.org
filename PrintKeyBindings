@@ -1,6 +1,6 @@
 PKB (Print Key-Bindings) is a package for printing keybindings in a pretty fashion, i.e. so that bindings are listed as in a computer keyboard and grouped by base-keys. Currently the output is in html format.
 
-As an example, here is the output for the global map of a default emacs installation:  [http://www.ph.utexas.edu/~jonganc/emacs/example.html example.html].
+As an example, here is the output for the global map of a default emacs installation:  [http://www.jonganc.net/emacs/example.html example.html].
 
 The macro itself is two files:
 Lisp:pkb-0.2.el
