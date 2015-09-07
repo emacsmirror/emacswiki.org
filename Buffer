@@ -13,7 +13,7 @@ list is itself in a buffer, called
 <tt>##*Buffer List*##</tt>, and that buffer is not associated with any file.  
 
 By convention, buffers whose names start with an asterisk ('''`*'''')
-are not associated with files (but that doesn't mean you can't save them in files).  If they have unsaved changes when you exit Emacs, these buffers are killed without your being asking for confirmation.
+are not associated with files (but that doesn't mean you can't save them in files).  If they have unsaved changes when you exit Emacs, these buffers are killed without your being asked for confirmation.
 
 Buffers whose names start with a space are [[InvisibleBuffers|invisible]] to many operations. These are generally internal buffers that you don't want to see. Their names normally don't appear in the buffer list or as
 [[Completion]] candidates when you switch buffers using `C-x b'.  
