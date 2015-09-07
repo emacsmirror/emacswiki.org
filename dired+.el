@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep  6 21:40:27 2015 (-0700)
+;; Last-Updated: Mon Sep  7 13:11:19 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9196
+;;     Update #: 9211
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -645,6 +645,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/09/07 dadams
+;;     diredp-font-lock-keywords-1: Do not test diredp-ignore-compressed-flag when highlighting file names.
+;;                                  Use separate entries for compressed and non-compressed file names.
 ;; 2015/09/06 dadams
 ;;     diredp-compressed-extensions: Added .tgz.  Removed duplicate .gz.
 ;;     diredp-font-lock-keywords-1: Use regexp-opt where possible, instead of mapcar regexp-quote.
@@ -4266,21 +4269,23 @@ In particular, inode number, number of hard links, and file size."
    (if (or (not (fboundp 'version<))  (version< emacs-version "23.2"))
        (list dired-move-to-filename-regexp
              (list 1 'diredp-date-time t t) ; Date/time
-             (if diredp-ignore-compressed-flag
-                 (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t)) ; Filename
-               (list (concat "\\(.+\\)\\(" (concat ; Compressed-file name
-                                            (funcall #'regexp-opt diredp-compressed-extensions)
-                                            "\\)[*]?$"))
-                     nil nil (list 0 diredp-compressed-file-name 'keep t))))
-     (list dired-move-to-filename-regexp
-           (list 7 'diredp-date-time t t) ; Date/time, locale (western or eastern)
-           (list 2 'diredp-date-time t t) ; Date/time, ISO
-           (if diredp-ignore-compressed-flag
-               (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t)) ; Filename
-             (list (concat "\\(.+\\)\\(" (concat ; Compressed-file suffix
-                                          (funcall #'regexp-opt diredp-compressed-extensions)
-                                          "\\)[*]?$"))
-                   nil nil (list 0 diredp-compressed-file-name 'keep t)))))
+             (list (concat "\\(.+\\)\\(" (concat (funcall #'regexp-opt diredp-compressed-extensions)
+                                                 "\\)[*]?$")) ; Compressed-file name
+                   nil nil (list 0 diredp-compressed-file-name 'keep t)))
+     `(,dired-move-to-filename-regexp
+       (7 diredp-date-time t t)         ; Date/time, locale (western or eastern)
+       (2 diredp-date-time t t)         ; Date/time, ISO
+       (,(concat "\\(.+\\)\\(" (concat (funcall #'regexp-opt diredp-compressed-extensions)
+                                       "\\)[*]?$"))
+        nil nil (0 diredp-compressed-file-name keep t)))) ; Compressed-file suffix
+   (if (or (not (fboundp 'version<))  (version< emacs-version "23.2"))
+       (list dired-move-to-filename-regexp
+             (list 1 'diredp-date-time t t) ; Date/time
+             (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t))) ; Filename
+     `(,dired-move-to-filename-regexp
+       (7 diredp-date-time t t)         ; Date/time, locale (western or eastern)
+       (2 diredp-date-time t t)         ; Date/time, ISO
+       ("\\(.+\\)$" nil nil (0 diredp-file-name keep t)))) ; Filename (not a compressed file)
 
    ;; Files to ignore
    (list (concat "^  \\(.*\\(" (concat (mapconcat #'regexp-quote
@@ -6611,12 +6616,11 @@ You need library `bookmark+.el' to use this command."
                                      (bmk    (and fname
                                                   (bmkp-get-autofile-bookmark fname nil prefix)))
                                      (btgs   (and bmk  (bmkp-get-tags bmk)))
-                                     (anyp   (and btgs  (bmkp-some
-                                                         #'(lambda (tag)
-                                                             (diredp-string-match-p
-                                                              regexp
-                                                              (bmkp-tag-name tag)))
-                                                         btgs))))
+                                     (anyp   (and btgs  (bmkp-some #'(lambda (tag)
+                                                                       (diredp-string-match-p
+                                                                        regexp
+                                                                        (bmkp-tag-name tag)))
+                                                                   btgs))))
                         (and btgs  (if notp (not anyp) anyp))))
                  "some-tag-matching-regexp file"))
 
@@ -6639,12 +6643,11 @@ You need library `bookmark+.el' to use this command."
                                                     (bmkp-get-autofile-bookmark
                                                      fname nil prefix)))
                                        (btgs   (and bmk  (bmkp-get-tags bmk)))
-                                       (anyp   (and btgs (bmkp-some
-                                                          #'(lambda (tag)
-                                                              (diredp-string-match-p
-                                                               regexp
-                                                               (bmkp-tag-name tag)))
-                                                          btgs))))
+                                       (anyp   (and btgs (bmkp-some #'(lambda (tag)
+                                                                        (diredp-string-match-p
+                                                                         regexp
+                                                                         (bmkp-tag-name tag)))
+                                                                    btgs))))
                           (and btgs  (if notp (not anyp) anyp))))
                    "some-tag-matching-regexp file")))
 
