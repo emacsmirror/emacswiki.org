@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Sep  5 10:42:32 2015 (-0700)
+;; Last-Updated: Sun Sep  6 21:40:27 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9187
+;;     Update #: 9196
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -645,6 +645,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/09/06 dadams
+;;     diredp-compressed-extensions: Added .tgz.  Removed duplicate .gz.
+;;     diredp-font-lock-keywords-1: Use regexp-opt where possible, instead of mapcar regexp-quote.
 ;; 2015/09/05 dadams
 ;;     Added: diredp-compressed-extensions, diredp-ignore-compressed-flag, diredp-compressed-file-name,
 ;;            diredp-dir-name.
@@ -1575,7 +1578,7 @@ It also has no effect for Emacs versions prior to Emacs 22."
   :type 'boolean :group 'Dired-Plus)
 
 ;;;###autoload
-(defcustom diredp-compressed-extensions '(".tar" ".taz" ".gz" ".arj" ".lzh" ".zip" ".z" ".Z" ".gz" ".bz2")
+(defcustom diredp-compressed-extensions '(".tar" ".taz" ".tgz" ".arj" ".lzh" ".zip" ".z" ".Z" ".gz" ".bz2")
   "*List of compressed-file extensions, for highlighting."
   :type '(repeat string) :group 'Dired-Plus)
 
@@ -4266,8 +4269,8 @@ In particular, inode number, number of hard links, and file size."
              (if diredp-ignore-compressed-flag
                  (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t)) ; Filename
                (list (concat "\\(.+\\)\\(" (concat ; Compressed-file name
-                                            (mapconcat 'regexp-quote diredp-compressed-extensions
-                                                       "\\|") "\\)[*]?$"))
+                                            (funcall #'regexp-opt diredp-compressed-extensions)
+                                            "\\)[*]?$"))
                      nil nil (list 0 diredp-compressed-file-name 'keep t))))
      (list dired-move-to-filename-regexp
            (list 7 'diredp-date-time t t) ; Date/time, locale (western or eastern)
@@ -4275,8 +4278,8 @@ In particular, inode number, number of hard links, and file size."
            (if diredp-ignore-compressed-flag
                (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t)) ; Filename
              (list (concat "\\(.+\\)\\(" (concat ; Compressed-file suffix
-                                          (mapconcat 'regexp-quote diredp-compressed-extensions
-                                                     "\\|") "\\)[*]?$"))
+                                          (funcall #'regexp-opt diredp-compressed-extensions)
+                                          "\\)[*]?$"))
                    nil nil (list 0 diredp-compressed-file-name 'keep t)))))
 
    ;; Files to ignore
@@ -4291,7 +4294,7 @@ In particular, inode number, number of hard links, and file size."
          1 diredp-ignored-file-name t)
 
    ;; Compressed-file (suffix)
-   (list (concat "\\(" (concat (mapconcat #'regexp-quote diredp-compressed-extensions "\\|") "\\)[*]?$"))
+   (list (concat "\\(" (concat (funcall #'regexp-opt diredp-compressed-extensions) "\\)[*]?$"))
          1 diredp-compressed-file-suffix t)
    '("\\([*]\\)$" 1 diredp-executable-tag t) ; Executable (*)
 
