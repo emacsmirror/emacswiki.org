@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Aug 16 17:32:38 2015 (-0700)
+;; Last-Updated: Mon Sep  7 11:27:48 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15993
+;;     Update #: 15995
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,11 +146,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/09/07 dadams
+;;     bmkp-some: Return cons (ELEMENT . VALUE).
 ;; 2015/08/16 dadams
 ;;     Renamed bmkp-set-restrictions-bookmark to bmkp-set-izones-bookmark.
 ;;     Renamed wide-n.el stuff to zones.el stuff.
 ;; 2015/08/13 dadams
-;;     Removed: bmkp-readable-marker
+;;     Removed: bmkp-readable-marker.
 ;;     bmkp-set-restrictions-bookmark:
 ;;       Added optional args.  A prefix arg prompts for VARIABLE.  Use wide-n-readable-marker.
 ;; 2015/08/12 dadams
