@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 30 22:04:42 2015 (-0700)
+;; Last-Updated: Tue Sep  8 15:31:14 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 2111
+;;     Update #: 2163
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -62,7 +62,7 @@
 ;;
 ;;    `describe-mode-1', `help-all-exif-data',
 ;;    `help-commands-to-key-buttons', `help-custom-type',
-;;    `help-documentation', `help-documentation-property',
+;;    `help-documentation', `help-documentation-property' (Emacs 23+),
 ;;    `help-key-button-string', `help-remove-duplicates',
 ;;    `help-substitute-command-keys', `help-value-satisfies-type-p',
 ;;    `help-var-inherits-type-p', `help-var-is-of-type-p',
@@ -117,6 +117,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/09/08 dadams
+;;     describe-keymap: Added optional arg SEARCH-SYMBOLS-P.  Follow alias chain of symbol, and describe last one.
+;;     describe-variable: Pick up doc from alias, if help-documentation-property returns "".
 ;; 2015/08/30 dadams
 ;;     describe-function-1: Typo: auto-do-load -> autoload-do-load.
 ;; 2015/08/22 dadams
@@ -1969,14 +1972,15 @@ it is displayed along with the global value."
                                  'help-echo "mouse-2, RET: show value")
                   (insert ".\n")))
               (terpri)
-              (let* ((alias       (condition-case nil (indirect-variable variable) (error variable)))
-                     (obsolete    (get variable 'byte-obsolete-variable))
-                     (use         (car obsolete))
-                     (safe-var    (get variable 'safe-local-variable))
-                     (doc         (or (help-documentation-property variable 'variable-documentation
-                                                                   nil 'ADD-HELP-BUTTONS)
-                                      (help-documentation-property alias 'variable-documentation
-                                                                   nil 'ADD-HELP-BUTTONS)))
+              (let* ((alias     (condition-case nil (indirect-variable variable) (error variable)))
+                     (obsolete  (get variable 'byte-obsolete-variable))
+                     (use       (car obsolete))
+                     (safe-var  (get variable 'safe-local-variable))
+                     (vardoc    (help-documentation-property variable 'variable-documentation
+                                                             nil 'ADD-HELP-BUTTONS))
+                     (vardoc    (and vardoc  (not (string= "" vardoc))))
+                     (doc       (or vardoc  (help-documentation-property alias 'variable-documentation
+                                                                         nil 'ADD-HELP-BUTTONS)))
                      (extra-line  nil))
                 (when (and (> (length doc) 1)  (eq ?* (elt doc 0)))
                   (setq doc  (substring doc 1))) ; Remove any user-variable prefix `*'.
@@ -2071,8 +2075,8 @@ file local variable.\n")
 
   (defface describe-variable-value '((((background dark)) (:foreground "#58DFFA4FFFFF")) ; a dark cyan
                                      (t (:foreground "Firebrick")))
-    "*Face used to highlight the variable value, for `describe-variable'."
-    :group 'help :group 'faces)
+           "*Face used to highlight the variable value, for `describe-variable'."
+           :group 'help :group 'faces)
 
   (defun describe-variable (variable &optional buffer frame optionp)
     "Display the full documentation of VARIABLE (a symbol).
@@ -2229,14 +2233,15 @@ it is displayed along with the global value."
                                  'help-echo "mouse-2, RET: show value")
                   (insert ".\n")))
               (terpri)
-              (let* ((alias       (condition-case nil (indirect-variable variable) (error variable)))
-                     (obsolete    (get variable 'byte-obsolete-variable))
-                     (use         (car obsolete))
-                     (safe-var    (get variable 'safe-local-variable))
-                     (doc         (or (help-documentation-property variable 'variable-documentation
-                                                                   nil 'ADD-HELP-BUTTONS)
-                                      (help-documentation-property alias 'variable-documentation
-                                                                   nil 'ADD-HELP-BUTTONS)))
+              (let* ((alias     (condition-case nil (indirect-variable variable) (error variable)))
+                     (obsolete  (get variable 'byte-obsolete-variable))
+                     (use       (car obsolete))
+                     (safe-var  (get variable 'safe-local-variable))
+                     (vardoc    (help-documentation-property variable 'variable-documentation
+                                                             nil 'ADD-HELP-BUTTONS))
+                     (vardoc    (and vardoc  (not (string= "" vardoc))))
+                     (doc       (or vardoc  (help-documentation-property alias 'variable-documentation
+                                                                         nil 'ADD-HELP-BUTTONS)))
                      (extra-line  nil))
                 (when (and (> (length doc) 1)  (eq ?* (elt doc 0)))
                   (setq doc  (substring doc 1))) ; Remove any user-variable prefix `*'.
@@ -2748,29 +2753,41 @@ Non-nil optional arg NO-ERROR-P prints an error message but does not
       (error "Could not get EXIF data"))
     (buffer-substring (point-min) (point-max))))
 
-(defun describe-keymap (keymap)         ; Bound to `C-h M-k'
+(defun describe-keymap (keymap &optional search-symbols-p) ; Bound to `C-h M-k'
   "Describe key bindings in KEYMAP.
 Interactively, prompt for a variable that has a keymap value.
 Completion is available for the variable name.
 
-Non-interactively, KEYMAP can be such a keymap variable or a keymap."
+Non-interactively:
+* KEYMAP can be such a keymap variable or a keymap.
+* Non-nil optional arg SEARCH-SYMBOLS-P means that if KEYMAP is not a
+  symbol then search all variables for one whose value is KEYMAP."
   (interactive (list (intern (completing-read "Keymap: " obarray
                                               (lambda (m) (and (boundp m)  (keymapp (symbol-value m))))
                                               t nil 'variable-name-history))))
-
   (unless (and (symbolp keymap)  (boundp keymap)  (keymapp (symbol-value keymap)))
     (if (not (keymapp keymap))
         (error "%sot a keymap%s"
                (if (symbolp keymap) (format "`%S' is n" keymap) "N")
                (if (symbolp keymap) " variable" ""))
-      (let ((sym  (gentemp "KEYMAP OBJECT (no variable) ")))
-        (set sym keymap)
+      (let ((sym  nil))
+        (when search-symbols-p
+          (setq sym  (catch 'describe-keymap
+                       (mapatoms (lambda (symb) (when (and (boundp symb)
+                                                      (eq (symbol-value symb) keymap)
+                                                      (not (eq symb 'keymap))
+                                                      (throw 'describe-keymap symb)))))
+                       nil)))
+        (unless sym
+          (setq sym  (gentemp "KEYMAP OBJECT (no variable) "))
+          (set sym keymap))
         (setq keymap  sym))))
-  (let ((name  (symbol-name keymap))
-        (doc   (if (fboundp 'help-documentation-property) ; Emacs 23+
-                   (help-documentation-property keymap 'variable-documentation
-                                                nil 'ADD-HELP-BUTTONS)
-                 (documentation-property keymap 'variable-documentation))))
+  (setq keymap  (or (condition-case nil (indirect-variable keymap) (error nil))  keymap)) ; Follow aliasing.
+  (let* ((name  (symbol-name keymap))
+         (doc   (if (fboundp 'help-documentation-property) ; Emacs 23+
+                    (help-documentation-property keymap 'variable-documentation nil 'ADD-HELP-BUTTONS)
+                  (documentation-property keymap 'variable-documentation)))
+         (doc   (and (not (equal "" doc))  doc)))
     (help-setup-xref (list #'describe-keymap keymap)
                      (if (or (> emacs-major-version 23) ; Emacs 23.1 `called-interactively' accepts no arg.
                              (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
