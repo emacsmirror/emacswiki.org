@@ -31,6 +31,13 @@ smaller font.  One can also add a header for the week numbers:
                   'font-lock-face 'calendar-iso-week-header-face))
 }}}
 
+The smaller height property, though, throws the alignment of the calendar off, so I prefer using a different color
+for the week number:
+{{{
+(set-face-attribute 'calendar-iso-week-face nil
+                      :height 1.0 :foreground "salmon")
+}}}
+
 = Navigating to a given ISO week =
 
 To display a given ISO week in Calendar use the command
