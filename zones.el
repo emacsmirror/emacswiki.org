@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Mon Sep  7 11:17:02 2015 (-0700)
+;; Last-Updated: Tue Sep  8 12:38:12 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1711
+;;     Update #: 1712
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -900,8 +900,8 @@ Raise an error if NS contains markers from different buffers."
 ;; then this returns the cons (ELEMENT . VALUE).  It does not return just VALUE.
 (defun zz-some (predicate list)
   "Return non-nil if PREDICATE applied to some element of LIST is true.
-The value returned is a cons, (ELEMENT . VALUE), where is the first
-list element that satisfies PREDICATE and VALUE is the value of
+The value returned is a cons, (ELEMENT . VALUE), where ELEMENT is the
+first list element that satisfies PREDICATE and VALUE is the value of
 PREDICATE applied to ELEMENT."
   (let (elt val)
     (catch 'zz-some
