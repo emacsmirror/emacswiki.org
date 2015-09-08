@@ -5,4 +5,4 @@ The mode is meant to be operated in read-only buffer, so all the command binding
 Out-of-the-box the mode should be able to parse standard SLF4J (Log4j, Logback) files as long as they use ISO 8601 timestamps and certain UNIX files in /var/log.
 
 == Download ==
-Currently, the mode is only available [https://github.com/doublep/logview from GitHub].
+The mode is available [http://melpa.org/#/logview from MELPA] and as the source code [https://github.com/doublep/logview from GitHub].
