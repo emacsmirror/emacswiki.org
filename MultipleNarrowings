@@ -1,5 +1,6 @@
-This page is about the use of library '''[[Zones]]''', <tt>[[zones.el]]</tt>, to browse among multiple buffer restrictions (narrowings).
+This page is about the use of library '''[[Zones]]''', <tt>[[zones.el]]</tt>, to browse among multiple buffer restrictions (narrowings). 
 
+(Library <tt>[[zones.el]]</tt> supersedes library <tt>[[wide-n.el]]</tt>, which is obsolete as of 2015-08-16.
 
 
 
@@ -35,7 +36,7 @@ Emacs narrowing commands.  But for `zz-narrow-repeat' (`C-x n x')
 the current restriction is indicated in the lighter by a
 identifying number: `Narrow-1', `Narrow-2', and so on.
 `mouse-2' on the `Narrow' part still widens completely, but
-`mouse-2' on the `-NUM' part uses `wide-n-repeat' to cycle to
+`mouse-2' on the `-NUM' part uses `zz-narrow-repeat' to cycle to
 the next restriction.
 
 Emacs [[marker]]s are used to record narrowing limits, so the same buffer
