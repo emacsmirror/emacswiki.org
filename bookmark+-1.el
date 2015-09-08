@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Sep  7 11:20:04 2015 (-0700)
+;; Last-Updated: Tue Sep  8 12:39:04 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7845
+;;     Update #: 7846
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -6366,8 +6366,8 @@ for the first character are `equal'."
 ;; then this returns the cons (ELEMENT . VALUE).  It does not return just VALUE.
 (defun bmkp-some (predicate list)
   "Return non-nil if PREDICATE applied to some element of LIST is true.
-The value returned is a cons, (ELEMENT . VALUE), where is the first
-list element that satisfies PREDICATE and VALUE is the value of
+The value returned is a cons, (ELEMENT . VALUE), where ELEMENT is the
+first list element that satisfies PREDICATE and VALUE is the value of
 PREDICATE applied to ELEMENT."
   (let (elt val)
     (catch 'bmkp-some
