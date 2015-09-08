@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Sep  7 13:11:19 2015 (-0700)
+;; Last-Updated: Mon Sep  7 21:12:54 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9211
+;;     Update #: 9215
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -648,6 +648,7 @@
 ;; 2015/09/07 dadams
 ;;     diredp-font-lock-keywords-1: Do not test diredp-ignore-compressed-flag when highlighting file names.
 ;;                                  Use separate entries for compressed and non-compressed file names.
+;;                                  Added missing \\| before ignored compressed extensions.
 ;; 2015/09/06 dadams
 ;;     diredp-compressed-extensions: Added .tgz.  Removed duplicate .gz.
 ;;     diredp-font-lock-keywords-1: Use regexp-opt where possible, instead of mapcar regexp-quote.
@@ -4288,14 +4289,13 @@ In particular, inode number, number of hard links, and file size."
        ("\\(.+\\)$" nil nil (0 diredp-file-name keep t)))) ; Filename (not a compressed file)
 
    ;; Files to ignore
-   (list (concat "^  \\(.*\\(" (concat (mapconcat #'regexp-quote
-                                                  (or (and (boundp 'dired-omit-extensions)
-                                                           dired-omit-extensions)
-                                                      completion-ignored-extensions)
-                                                  "[*]?\\|")
-                                       (and diredp-ignore-compressed-flag
-                                            (mapconcat #'regexp-quote diredp-compressed-extensions "[*]?\\|"))
-                                       "[*]?\\)\\)$")) ; Allow for executable flag (*).
+   (list (concat "^  \\(.*\\("
+                 (mapconcat #'regexp-quote (or (and (boundp 'dired-omit-extensions)  dired-omit-extensions)
+                                               completion-ignored-extensions)
+                            "[*]?\\|")
+                 (and diredp-ignore-compressed-flag
+                      (concat "\\|" (mapconcat #'regexp-quote diredp-compressed-extensions "[*]?\\|")))
+                 "[*]?\\)\\)$") ; Allow for executable flag (*).
          1 diredp-ignored-file-name t)
 
    ;; Compressed-file (suffix)
