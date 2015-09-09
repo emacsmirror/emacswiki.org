@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep  8 15:31:14 2015 (-0700)
+;; Last-Updated: Wed Sep  9 08:39:25 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 2163
+;;     Update #: 2165
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -117,6 +117,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/09/09 dadams
+;;     describe-variable: Fixed test order for non-"" VARDOC, so it does not become t.
 ;; 2015/09/08 dadams
 ;;     describe-keymap: Added optional arg SEARCH-SYMBOLS-P.  Follow alias chain of symbol, and describe last one.
 ;;     describe-variable: Pick up doc from alias, if help-documentation-property returns "".
@@ -1978,7 +1980,7 @@ it is displayed along with the global value."
                      (safe-var  (get variable 'safe-local-variable))
                      (vardoc    (help-documentation-property variable 'variable-documentation
                                                              nil 'ADD-HELP-BUTTONS))
-                     (vardoc    (and vardoc  (not (string= "" vardoc))))
+                     (vardoc    (and (not (equal "" vardoc))  vardoc))
                      (doc       (or vardoc  (help-documentation-property alias 'variable-documentation
                                                                          nil 'ADD-HELP-BUTTONS)))
                      (extra-line  nil))
@@ -2239,7 +2241,7 @@ it is displayed along with the global value."
                      (safe-var  (get variable 'safe-local-variable))
                      (vardoc    (help-documentation-property variable 'variable-documentation
                                                              nil 'ADD-HELP-BUTTONS))
-                     (vardoc    (and vardoc  (not (string= "" vardoc))))
+                     (vardoc    (and (not (equal "" vardoc))  vardoc))
                      (doc       (or vardoc  (help-documentation-property alias 'variable-documentation
                                                                          nil 'ADD-HELP-BUTTONS)))
                      (extra-line  nil))
