@@ -100,3 +100,39 @@ The most recent change switches to auto-do-load, for which I get a void function
 
 -- DrewAdams 2015-08-31 05:05 UTC
 
+
+----
+
+I found a bug with the latest version of this file that causes the following error:
+
+{{{
+Lisp error: (wrong-type-argument sequencep t)
+}}}
+
+This patch should fix it:
+
+{{{
+--- help-fns+.el.orig	2015-09-09 13:56:17.000000000 -0600
++++ help-fns+.el	2015-09-09 14:00:27.000000000 -0600
+@@ -1979,7 +1979,7 @@
+                      (safe-var  (get variable 'safe-local-variable))
+                      (vardoc    (help-documentation-property variable 'variable-documentation
+                                                              nil 'ADD-HELP-BUTTONS))
+-                     (vardoc    (and vardoc  (not (string= "" vardoc))))
++                     (vardoc    (and (not (string= "" vardoc)) vardoc))
+                      (doc       (or vardoc  (help-documentation-property alias 'variable-documentation
+                                                                          nil 'ADD-HELP-BUTTONS)))
+                      (extra-line  nil))
+@@ -2240,7 +2240,7 @@
+                      (safe-var  (get variable 'safe-local-variable))
+                      (vardoc    (help-documentation-property variable 'variable-documentation
+                                                              nil 'ADD-HELP-BUTTONS))
+-                     (vardoc    (and vardoc  (not (string= "" vardoc))))
++                     (vardoc    (and (not (string= "" vardoc)) vardoc))
+                      (doc       (or vardoc  (help-documentation-property alias 'variable-documentation
+                                                                          nil 'ADD-HELP-BUTTONS)))
+                      (extra-line  nil))
+}}}
+
+-- jguenther 2015-09-09 20:02 UTC
+
