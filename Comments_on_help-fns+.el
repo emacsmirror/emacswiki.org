@@ -136,3 +136,10 @@ This patch should fix it:
 
 -- jguenther 2015-09-09 20:02 UTC
 
+
+----
+
+@jguenther: Right; thanks.  I had already noticed the same thing and fixed it this morning.  Try the latest version here on the wiki.  (That should be mirrored to MELPA within a day.)  [P.S. It needs to be `equal', not `string=' in the fix, since VARDOC might not be a string.]
+
+-- DrewAdams 2015-09-09 22:57 UTC
+
