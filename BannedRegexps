@@ -22,3 +22,5 @@
 \bcanada\s+goose\b # 2013-12-06 regular spam using a lot of tinyurl URLs
 \[https?:\S+\s+[^]\n]*\binsurance\b[^]\n]*\] # 2014-02-05 links to something about an insurance such as [http://example.com home insurance quotes]
 \b(jspaypal|bode_jones)\b # 2015-08-01 hacking offers
+wholesaler # 2015-09-08 Comments on pastebin.el
+redit.card # 2015-09-08 Comments on pastebin.el
