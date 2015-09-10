@@ -15,3 +15,12 @@ Error in post-command-hook (col-highlight-highlight): (wrong-type-argument chara
 
 -- 匿名者 2015-09-10 07:43 UTC
 
+
+----
+
+Sorry, but you will need to provide more info than that. A reproducible recipe, for example.  And whether option `col-highlight-vline-face-flag' is nil or non-nil.
+
+The bug, if there is one, is presumably in `vline-show' of library [[vline.el]], since `col-highlight-highlight' just calls that function. Consider contacting the maintainer of ##vline.el## -- but be prepared to provide more info.
+
+-- DrewAdams 2015-09-10 13:49 UTC
+
