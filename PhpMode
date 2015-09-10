@@ -138,7 +138,8 @@ These will use the 'f5' key to switch between php and html mode. The difference 
 https://github.com/xcwen/ac-php  
 
 for system class  ,system function ,and user define.
-
+* example:
+https://raw.githubusercontent.com/xcwen/ac-php/master/images/ac-php.gif
 
 == Easy Toggling between PHP & HTML modes ==
 
