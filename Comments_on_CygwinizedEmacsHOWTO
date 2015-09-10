@@ -6,3 +6,12 @@ to your .profile  file
 
 -- manojjoshi 2013-05-07 01:12 UTC
 
+
+----
+
+If, like me, you have installed both emacs-w32 and emacs-x11, you may have the wrong one installed into /etc/alternatives. I could not find how to change this as the alternative command is not provided by default (probably in some package I have not loaded). However, if, like me, you have a spare Cygwin installation around that does use the correct(emacs-w32 for me) version, you can simply overwrite the link files in /etc/alternatives with the ones you'd like.
+
+- Mike
+
+-- [http://www.linkedin.com/in/michaelwardpdx michaelward] 2015-09-10 23:06 UTC
+
