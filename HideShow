@@ -64,7 +64,8 @@ The variable hs-special-modes-alist stores the settings for some major modes:
 HideShow works with:
 
 * Lisp / Emacs Lisp / Scheme (ParenthesesRule)
-* Java / C / C++ / Perl (expressions delimited by curly braces)
+* Java / C / C++ (expressions delimited by curly braces)
+* Perl (except for files containing subroutines with prototypes)
 * C# (like the above but also includes #region/#endregion collapse, see [http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/making-hideshow-el-work-with-csharp-mode-el-and-region-endregion.aspx notes on that])
 * PHP (use php-mode from http://php-mode.sf.net --GirishB)
 * Tcl
