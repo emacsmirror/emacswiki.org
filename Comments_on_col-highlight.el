@@ -8,7 +8,8 @@ hello,there is a bug:
                 <externalSettings/>                                                                       
                 <extensions>                                                                              
                     <extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>  
-                    <extension id="org.eclipse.cdt.core.VCErrorParser" point="org.eclipse.cdt.core.ErrorP-UUU(DOS)----F1  .cproject      Top (1,0)      (nXML Valid Fill) 四  9 10 15:43 3.52 ---------------------
+                    <extension id="org.eclipse.cdt.core.VCErrorParser" point="org.eclipse.cdt.core.ErrorP
+-UUU(DOS)----F1  .cproject      Top (1,0)      (nXML Valid Fill) 四  9 10 15:43 3.52 ---------------------
 Error in post-command-hook (col-highlight-highlight): (wrong-type-argument characterp -1)
 }}}
 
