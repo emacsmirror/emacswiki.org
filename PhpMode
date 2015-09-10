@@ -139,6 +139,7 @@ https://github.com/xcwen/ac-php
 
 for system class  ,system function ,and user define.
 * example:
+
 https://raw.githubusercontent.com/xcwen/ac-php/master/images/ac-php.gif
 
 == Easy Toggling between PHP & HTML modes ==
@@ -146,6 +147,11 @@ https://raw.githubusercontent.com/xcwen/ac-php/master/images/ac-php.gif
 I use the following lisp in my JonathanArnoldDotEmacs files:
 
 {{{
+
+}}}
+
+It seems like the "following lisp" from JonathanArnoldDotEmacs for easy toggling of modes has got lost, The history of this page doesn't give any hint, what it could have been. So maybe someone else can reconstruct it again.
+-- RolfUnger
 
 == Debugging ==
 
