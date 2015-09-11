@@ -23,8 +23,6 @@ If the current file doesn't exist yet the buffer is saved to create it."
 
 If you want "a+r" etc as accepted by the actual <code>chmod</code> program then you're probably best to just run that.  Lisp:misc-cmds.el has such a command.
 
-But "a+r" and stuff is for whimps.  A real man, or a real woman, or a real furry creature from Alpha Centauri should always use octal!
-
 == Executables ==
 
 You can set the execute bit on a script with <code>M-x executable-set-magic</code>.  It adds or sets the <code>#!</code> interpreter line at the start and sets up to make the file executable when you save it.  You can customize which bits are set using the <code>executable-chmod</code> variable.  The default is 73 (0111 octal) adding executablility for everyone, you could change it to 64 (0100 octal) to do that only for yourself.
