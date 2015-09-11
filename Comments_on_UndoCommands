@@ -1,0 +1,63 @@
+[new]
+`repeat' undo works with GnuEmacs, yet it does not work with [[XEmacs]]. Is there any similar trick in it?
+
+----
+
+[new]
+Some people have trouble with the lack of redo or a way to browse the undo
+tree.  There is no built-in way to do these things (aside from mentally trying
+to keep track of a long string of changes including undos, which some people
+find very difficult).
+
+Since this is Emacs, it ought to be possible to fix this using a library.  Yet
+every library intended to address the problem so far (e.g. redo.el,
+undo-browse.el) corrupts the buffer, fails to work on both emacs and xemacs,
+is out of date and might not even run, is hosted on an obsolete web site, etc.
+Does anybody know of a good solution here?  Thanks!
+
+I think the lack of a natural-feeling undo/redo solution is a big stumbling
+block for people who would otherwise use emacs -- whatever the merits of the
+built in way.
+
+(I conclude from the lack of response to the above that there is no
+solution at present, that nobody cares, or that nobody uses this
+wiki.  :( :( :(.  Is this true?  I find it strange, either way.)
+
+[new]
+I use the emacswiki, but have no solution for you.
+
+[new]
+I use the wiki, and to prove that someone cares, I've written the UndoTree package to address this :)
+
+----
+
+[new]
+Is there an undo at the point level ? I would like to undo [[point]] movement too. Right now it's very hard to tell what is about to be undone. 
+[new]
+Does `C-u C-SPC' do what you want? It's not clear what you're looking for. 
+[new]
+To me it sounds like GotoLastChange is the answer being sought.
+[new]
+Try Lisp:point-undo.el
+
+----
+
+[new]
+This add-hook eliminates the undo trail that update-file-header
+creates and M-x undo tracks back through, as well as the
+narrow-to-buffer, edit, save, undo sequence error: "Changes to be
+undone are outside visible portion of buffer" message from
+undo-more. Comments?
+
+{{{
+(add-hook
+ 'write-file-hooks
+ '(lambda nil
+    (when (buffer-modified-p)
+      (let ((my-buffer-undo buffer-undo-list))
+      	(buffer-disable-undo) ;; flushes buffer-undo-list
+      	(update-file-header)
+      	(time-stamp)
+      	(setq buffer-undo-list my-buffer-undo)
+      	(buffer-enable-undo)))))
+}}}
