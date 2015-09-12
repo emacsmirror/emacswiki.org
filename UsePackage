@@ -1,4 +1,16 @@
-Lisp:use-package.el is a combined installer and configurer, which defines an
+There are 2 distinct packages called `use-package'.
+
+== use-package: a package configuration macro ==
+https://github.com/jwiegley/use-package - A use-package declaration for simplifying your .emacs 
+
+This use-package macro provides more concise ways to setup package autoloads, keybindings, and various mode configuration. The focus is on decreasing startup time by autoloading packages instead loading them on startup.
+
+: The use-package macro allows you to isolate package configuration in your .emacs file in a way that is both performance-oriented and, well, tidy. I created it because I have over 80 packages that I use in Emacs, and things were getting difficult to manage. Yet with this utility my total load time is around 2 seconds, with no loss of functionality!
+
+== use-package: autofetcher + configuration macro ==
+
+There is another older (last edited 2007) use-package: Lisp:use-package.el. 
+It is a combined installer and configurer, which defines an
 "autofetch" (like autoload, but downloading from the network -- or
 other media) and also conveniently sets up various things it's useful
 to have on eval-after-load forms.
@@ -45,12 +57,6 @@ particular pattern -- intended for giving it a downloads page such as
 on SourceForge, and picking the URL from that. I'll probably add SHA1/
 MD5 verirfication, too. 
 
-[new]
-I've created something similar to this package, also called
-[https://github.com/jwiegley/use-package use-package.el], except that it
-focuses only on configuration, not installation or updating.  It optionally
-links to el-get for that behavior.  Further, my version emphasizes startup
-performance. -- JohnWiegley
 
 [new]
 See also [[el-get]] -- dim
