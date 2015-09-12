@@ -179,33 +179,6 @@ Get smileys automatically in jabber chat windows:
 
 (Needs Lisp:autosmiley.el (AutoSmiley)
 
-=== Switching accounts ===
-
-(this hack is obsoleted by multiple account support in jabber-el cvs version)
-
-My main Jabber server and its transport goes down from time to time so I also have a secondary server that I can switch to. I got tired setting the server and usernames manually so I wrote this:
-
-<pre>
-(defun my-jabber-switch-account ()
-  (interactive)
-  (require 'jabber)
-  (let* ((accounts
-          '(("jabbernet" ("jabbernet.dk" nil "USERNAME"))
-            ("chalmers" ("jabber.cd.chalmers.se" nil "USERNAME"))
-            ("80" ("jabber80.com" 80 "USERNAME"))))
-         (acc (cadr (assoc (completing-read "Account: " accounts nil t) accounts)))
-         (server (nth 0 acc))
-         (user (nth 2 acc))
-         (port (nth 1 acc)))
-    (when server
-      (message "Switching to %s..." server)
-      (jabber-disconnect)
-      (setq jabber-server server
-            jabber-port port
-            jabber-username user)
-      (jabber-connect))))
-</pre>
-
 === Announcing about new message ===
 
 ==== Using Xmessage ====
