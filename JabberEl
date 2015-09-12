@@ -144,12 +144,6 @@ Change prompt format:
   )
 </pre>
 
-=== Automatically highlight URLs ===
-
-Here's a hook which will highlight URLs, and bind C-c RET to open the URL using browse-url:
-
-    (add-hook 'jabber-chat-mode-hook 'goto-address)
-
 === Show your status in the header ===
 
 This snippet will show your buddy's resource in the HeaderLine, and also show your status if you're not &quot;online&quot;:
