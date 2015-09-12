@@ -6,7 +6,11 @@ In Lisp there are functions <code>file-modes</code> to get the modes and <code>s
 
 == chmod ==
 
-If you're an old-school Unix user and just want to go "chmod 660" etc while editing a file, then you might like the following <code>M-x chmod</code>.
+As of Emacs 23.1, <code>set-file-modes</code> is also an interactive function that accepts both octal permissions (for old-school Unix users) and symbolic notation similar to the <code>chmod</code> command from GNU coreutils (eg <code>a+r</code>). It can also be called via `M-x chmod', thanks to an alias.
+
+=== chmod on Emacs 22.3 and earlier ===
+
+Here is a <code>chmod</code> command that works on older Emacs (it accepts only octal)
 
 <pre>
 (defun chmod (mode)
@@ -21,7 +25,7 @@ If the current file doesn't exist yet the buffer is saved to create it."
   (set-file-modes (buffer-file-name) (string-to-number mode 8)))
 </pre>
 
-If you want "a+r" etc as accepted by the actual <code>chmod</code> program then you're probably best to just run that.  Lisp:misc-cmds.el has such a command.
+Lisp:misc-cmds.el has a command that simply calls the <code>chmod</code> program (so it can support symbolic notation).
 
 == Executables ==
 
