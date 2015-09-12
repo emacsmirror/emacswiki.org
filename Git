@@ -43,6 +43,8 @@ These packages are *not* "complete" front ends but "only" to certain Git feature
 
 * [https://github.com/sshaw/git-link git-link] creates a URL representing the current buffer's location in its [[GitHub]], Bitbucket, Gitorious etc. repository at the current line number or active region.
 
+* [[GitShow]] -- Quick git way to see a particular revision of a file.
+
 == Also see ==
 
 * EmacsFromGit -- A Git mirror of the Emacs bazaar repository is available.
