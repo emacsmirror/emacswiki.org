@@ -48,13 +48,13 @@ These packages are *not* "complete" front ends but "only" to certain Git feature
 * EmacsFromGit -- A Git mirror of the Emacs bazaar repository is available.
 * GitForEmacsDevs and GitQuickStartForEmacsDevs
 
-Hosting
+=== Hosting ===
 
 * [http://github.com github] is a popular website to host and browse git repositories.  See GitHub.
 * [http://bitbucket.org bitbucket] is another popular website to host and browse git repositories.  See BitBucket.
 * [http://gitlab.com gitlab] is the commercial version of the self-hosted opensource platform to host and browse git repositories.  See GitLab
 
-Blog posts
+=== Blog posts ===
 
 * [http://alexott.net/en/writings/emacs-vcs/EmacsGit.html Work with Git from Emacs] is an article by AlexOtt that provides more information some of the mentioned packages.
 * [http://snarfed.org/emacs-vc-git-tweaks This] blob post adds direct ##git add## and ##git reset## support to VC.
