@@ -1,5 +1,7 @@
 [[zh:版本控制]]
-These are version control systems that interact with Emacs in a generic way.
+== Generic VCS Interfaces ==
+
+Emacs packages that provide a consistent interface to many different version control systems.
 
 * VersionControl, or VC, is the generic version control interface that comes with Emacs. It provides a consistent interface to interact with many different version control systems, including CVS, Subversion, Git, Mercurial, Bazaar, SCCS, CSSC and RCS.  This is a good choice if you use more than one system for revision control because of the *consistency* of its user interface.
 ** VcIcon displays an icon indicating the vc status of a file (up-to-date or modified with respect to the repository).
@@ -10,7 +12,8 @@ These are version control systems that interact with Emacs in a generic way.
 
 * DistributedVersionControl is an interface to various *distributed* version control systems.  It doesn't come with Emacs.  Currently DVC supports Git, Mercurial, Bazaar and GNU Arch. Monotone is only partially supported and Darcs support is not usable yet.
 
-This is information on specific centralized version control systems.
+== Specific VCS Interfaces ==
+=== Centralized VCS ===
 
 * ConcurrentVersionsSystem -- CVS is supported by default in VC
 ** PclCvs (##cvs-mode##) -- Provides aggregate operations of files under CVS.
@@ -22,7 +25,7 @@ This is information on specific centralized version control systems.
 * [[SVK]] -- Two preliminary modes, vc-svk.el and a psvk.el are available.
 ** [[TortoiseSVN]] -- !TorotoiseSVN's front end.
 
-This is information on specific distributed version control systems.
+=== Distributed VCS (DVCS) ===
 
 * AegisConfigurationManagement 
 ** AegisMode -- aegis-mode is available from Tim Potter.
@@ -33,9 +36,8 @@ This is information on specific distributed version control systems.
 * [[Git]] -- Supported by VC, but git.el comes with the package and there are many other Git-specific modes.
 * [[Mercurial]] (##hg##)
 * MonoTone -- Partially supported by DVC, but a mode is distributed with Monotone.
-* [[GitShow]] -- Quick git way to see an revision version of a file.
 
-This is information on Emacs interacting with proprietary version control systems.
+=== Proprietary VCS ===
 
 * ClearCase -- Someone from Rational produced a mode, but a third-party VC backend is maintained.
 * CmSynergy -- A minor mode exists
@@ -45,7 +47,7 @@ This is information on Emacs interacting with proprietary version control system
 * VisualSourceSafe
 * [[MSTFS]] --  Microsoft Team Foundation System
 
-External resources:
+== External resources ==
 
 * [http://www.daveeaton.com/scm/ Software Configuration Management FAQ] for [news:comp.software.config-mgmt news:comp.software.config-mgmt]
 * [http://dmoz.org/Computers/Software/Configuration_Management/Tools/ dmoz configuration management tools]
