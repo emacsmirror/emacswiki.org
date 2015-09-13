@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Sun Sep 13 10:19:30 2015 (-0700)
+;; Last-Updated: Sun Sep 13 11:46:08 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1783
+;;     Update #: 1784
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -536,7 +536,7 @@ Needed because Emacs 20 does not have `dolist' without `cl.el'."
     (tool-bar-lines . 0)
     (scroll-bar-width . 6)
     (scroll-bar-height . 6)
-    (alpha . (70 . 100)))               ; Ignored for Emacs < 23.
+    (alpha . (100 . 70)))               ; Ignored for Emacs < 23.
   "*Frame parameters for thumbnail frames.
 Use this to show or hide things like the menu bar, tool bar, tab bar,
 and scroll bars for thumbnail frames.  An `alpha' parameter controls
