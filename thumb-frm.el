@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Sun Jan  4 16:59:31 2015 (-0800)
+;; Last-Updated: Sun Sep 13 08:23:37 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1768
+;;     Update #: 1779
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -31,6 +31,13 @@
 ;;  the thumbnail frames.  If you change it and set the new definition
 ;;  for the current session you can immediately see the effect in all
 ;;  of your thumbnail frames.
+;;
+;;  By default, `thumfr-frame-parameters' gives you thumbnail frames
+;;  that:
+;;
+;;   * have no menu bar or tool bar
+;;   * have a 6x6-pixel scroll bar
+;;   * are 30% transparent when not selected (opaque when selected)
 ;;
 ;;  Commands `thumfr-toggle-thumbnail-frame', `thumfr-thumbify-frame',
 ;;  and `thumfr-dethumbify-frame' thumbify and dethumbify an
@@ -273,6 +280,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/09/13 dadams
+;;     thumfr-frame-parameters: Added alpha parameter to default value.
 ;; 2014/11/17 dadams
 ;;     Added: thumfr--frame-parameters-:set-function.
 ;;     thumfr-frame-parameters: Use thumfr--frame-parameters-:set-function.  Need for Emacs 20.
@@ -522,10 +531,16 @@ Needed because Emacs 20 does not have `dolist' without `cl.el'."
 
 ;;;###autoload
 (defcustom thumfr-frame-parameters
-  '((menu-bar-lines . 0) (tool-bar-lines . 0) (scroll-bar-width . 6) (scroll-bar-height . 6))
+  '((menu-bar-lines . 0)
+    (tool-bar-lines . 0)
+    (scroll-bar-width . 6)
+    (scroll-bar-height . 6)
+    (alpha . (70 . 100)))               ; Ignored for Emacs < 23.
   "*Frame parameters for thumbnail frames.
 Use this to show or hide things like the menu bar, tool bar, tab bar,
-and scroll bars for thumbnail frames."
+and scroll bars for thumbnail frames.  An `alpha' parameter controls
+the frame transparency (Emacs 23+) - see (elisp) `Font and Color
+Parameters'."
   :type '(repeat (cons symbol sexp))
   :group 'Thumbnail-Frames
   :set 'thumfr--frame-parameters-:set-function)
