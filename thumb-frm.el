@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Sun Sep 13 08:23:37 2015 (-0700)
+;; Last-Updated: Sun Sep 13 10:19:30 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1779
+;;     Update #: 1783
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -282,6 +282,7 @@
 ;;
 ;; 2015/09/13 dadams
 ;;     thumfr-frame-parameters: Added alpha parameter to default value.
+;;     thumfr-thumbify-frame: Added (alpha . 100) to NON-TF-PARAMS, if absent from FRAME.
 ;; 2014/11/17 dadams
 ;;     Added: thumfr--frame-parameters-:set-function.
 ;;     thumfr-frame-parameters: Use thumfr--frame-parameters-:set-function.  Need for Emacs 20.
@@ -662,9 +663,11 @@ Variable `thumfr-frame-parameters' is used to determine
 which frame parameters (such as `menu-bar-lines') to remove."
   (interactive)
   (setq frame  (or frame  (selected-frame)))
-  (let* ((tf-params      (frame-parameter frame 'thumfr-non-thumbnail-frame))
-         (non-tf-params  (thumfr-remove-if #'thumfr-thumfr-parameter-p
-                                           (frame-parameters frame))))
+  (let* ((fr-params      (frame-parameters frame))
+         (tf-params      (frame-parameter frame 'thumfr-non-thumbnail-frame))
+         (non-tf-params  (thumfr-remove-if #'thumfr-thumfr-parameter-p fr-params)))
+    (unless (frame-parameter frame 'alpha) ; Ensure that opacity will be restored.
+      (setq non-tf-params  (cons '(alpha . 100) non-tf-params)))
     (when thumfr-rename-when-thumbify-flag (rename-non-minibuffer-frame))
     (unless (frame-parameter frame 'thumfr-thumbnail-frame) ; No-op if already a thumbnail.
       (set-frame-parameter frame 'thumfr-thumbnail-frame     non-tf-params)
