@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 25 09:38:02 2015 (-0700)
+;; Last-Updated: Sun Sep 13 11:38:05 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 5496
+;;     Update #: 5532
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -71,7 +71,8 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `info-command-ref-item', `info-constant-ref-item', `info-file',
+;;    `info-command-ref-item', `info-constant-ref-item',
+;;    `info-double-quoted-name', `info-file',
 ;;    `info-function-ref-item',`info-macro-ref-item', `info-menu',
 ;;    `info-node', `info-quoted-name', `info-reference-item',
 ;;    `info-single-quote', `info-special-form-ref-item',
@@ -130,8 +131,8 @@
 ;;     5. Only 5th and 9th menu items have their `*' colored.
 ;;     6. Notes in face `info-xref'.
 ;;     7. If `Info-fontify-quotations-flag', then fontify ‘...’ or
-;;        `...' in face `info-quoted-name' and "..." in face
-;;        `info-string'.
+;;        `...' in face `info-quoted-name', “...” in face
+;;        `info-double-quoted-name',  and "..." in face `info-string'.
 ;;     8. If `Info-fontify-angle-bracketed-flag' and
 ;;        `Info-fontify-quotations-flag' then fontify <...> in face
 ;;        `info-quoted-name'.
@@ -234,6 +235,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/09/13 dadams
+;;     Added face info-double-quoted-name.
+;;     info-quotation-regexp, info-quoted+<>-regexp: Added pattern for curly double-quotes (“...”).
+;;                                                   Use shy groups for all parts.
+;;     info-fontify-quotations: Fontify text between curly double-quotes (“...”).
 ;; 2015/03/19 dadams
 ;;     info-quoted+<>-regexp: Highlight <...> only if the first char is alphabetic.
 ;; 2015/03/06 dadams
@@ -695,47 +701,55 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "info+")
   )
 
+;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `red3' for this face.
+;;;###autoload
+(defface info-double-quoted-name        ; For “...”
+  '((((background dark)) (:inherit font-lock-string-face :foreground "Orange"))
+    (t (:inherit font-lock-string-face :foreground "red3")))
+  "*Face for names enclosed in curly double-quoets (“...”) in `info'."
+  :group 'Info-Plus :group 'faces)
+
 ;;;###autoload
 (defface info-file
-    '((((background dark)) (:foreground "Yellow" :background "DimGray"))
-      (t (:foreground "Blue" :background "LightGray")))
+  '((((background dark)) (:foreground "Yellow" :background "DimGray"))
+    (t (:foreground "Blue" :background "LightGray")))
   "*Face for file heading labels in `info'." :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
 (defface info-menu
-    '((((background dark)) (:foreground "Yellow"))
-      (t (:foreground "Blue")))
+  '((((background dark)) (:foreground "Yellow"))
+    (t (:foreground "Blue")))
   "*Face used for menu items in `info'." :group 'Info-Plus :group 'faces)
 
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `yellow' for this face.
 ;;;###autoload
 (defface info-quoted-name               ; For ‘...’ and `...'
-    '((((background dark)) (:inherit font-lock-string-face :foreground "#6B6BFFFF2C2C")) ; ~ green
-      (((background light)) (:inherit font-lock-string-face :foreground "DarkViolet"))
-      (t (:foreground "yellow")))
+  '((((background dark)) (:inherit font-lock-string-face :foreground "#6B6BFFFF2C2C")) ; ~ green
+    (((background light)) (:inherit font-lock-string-face :foreground "DarkViolet"))
+    (t (:foreground "yellow")))
   "*Face for quoted names (‘...’ or `...') in `info'."
   :group 'Info-Plus :group 'faces)
 
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `red3' for this face.
 ;;;###autoload
 (defface info-string                    ; For "..."
-    '((((background dark)) (:inherit font-lock-string-face :foreground "Orange"))
-      (t (:inherit font-lock-string-face :foreground "red3")))
+  '((((background dark)) (:inherit font-lock-string-face :foreground "Orange"))
+    (t (:inherit font-lock-string-face :foreground "red3")))
   "*Face for strings (\"...\") in `info'."
   :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
 (defface info-single-quote              ; For '
-    '((((background dark)) (:inherit font-lock-keyword-face :foreground "Green"))
-      (t (:inherit font-lock-keyword-face :foreground "Magenta")))
+  '((((background dark)) (:inherit font-lock-keyword-face :foreground "Green"))
+    (t (:inherit font-lock-keyword-face :foreground "Magenta")))
   "*Face for isolated single-quote marks (') in `info'."
   :group 'Info-Plus :group 'faces)
 
 ;; Standard faces from vanilla Emacs `info.el', but without `:weight', `:height' and `:inherit'.
 ;;;###autoload
 (defface info-title-1
-    '((((type tty pc) (class color) (background dark))  :foreground "yellow" :weight bold)
-      (((type tty pc) (class color) (background light)) :foreground "brown"  :weight bold))
+  '((((type tty pc) (class color) (background dark))  :foreground "yellow" :weight bold)
+    (((type tty pc) (class color) (background light)) :foreground "brown"  :weight bold))
   "*Face for info titles at level 1."
   :group (if (facep 'info-title-1) 'info 'Info-Plus))
 ;; backward-compatibility alias
@@ -743,7 +757,7 @@ Don't forget to mention your Emacs and library versions."))
 
 ;;;###autoload
 (defface info-title-2
-    '((((type tty pc) (class color)) :foreground "lightblue" :weight bold))
+  '((((type tty pc) (class color)) :foreground "lightblue" :weight bold))
   "*Face for info titles at level 2."
   :group (if (facep 'info-title-1) 'info 'Info-Plus))
 ;; backward-compatibility alias
@@ -751,7 +765,7 @@ Don't forget to mention your Emacs and library versions."))
 
 ;;;###autoload
 (defface info-title-3
-    '((((type tty pc) (class color)) :weight bold))
+  '((((type tty pc) (class color)) :weight bold))
   "*Face for info titles at level 3."
   :group (if (facep 'info-title-1) 'info 'Info-Plus))
 ;; backward-compatibility alias
@@ -759,7 +773,7 @@ Don't forget to mention your Emacs and library versions."))
 
 ;;;###autoload
 (defface info-title-4
-    '((((type tty pc) (class color)) :weight bold))
+  '((((type tty pc) (class color)) :weight bold))
   "*Face for info titles at level 4."
   :group (if (facep 'info-title-1) 'info 'Info-Plus))
 ;; backward-compatibility alias
@@ -768,8 +782,8 @@ Don't forget to mention your Emacs and library versions."))
 ;;; Faces for highlighting reference items
 ;;;###autoload
 (defface info-command-ref-item
-    '((((background dark)) (:foreground "#7474FFFF7474" :background "DimGray")) ; ~ light green
-      (t (:foreground "Blue" :background "LightGray")))
+  '((((background dark)) (:foreground "#7474FFFF7474" :background "DimGray")) ; ~ light green
+    (t (:foreground "Blue" :background "LightGray")))
   "*Face used for \"Command:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
@@ -781,16 +795,16 @@ Don't forget to mention your Emacs and library versions."))
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-function-ref-item
-    '((((background dark))
-       (:foreground "#4D4DDDDDDDDD" :background "DimGray")) ; ~ cyan
-      (t (:foreground "DarkBlue" :background "LightGray")))
+  '((((background dark))
+     (:foreground "#4D4DDDDDDDDD" :background "DimGray")) ; ~ cyan
+    (t (:foreground "DarkBlue" :background "LightGray")))
   "*Face used for \"Function:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-macro-ref-item
-    '((((background dark))
-       (:foreground "Yellow" :background "DimGray")) ; ~ light green
-      (t (:foreground "DarkMagenta" :background "LightGray")))
+  '((((background dark))
+     (:foreground "Yellow" :background "DimGray")) ; ~ light green
+    (t (:foreground "DarkMagenta" :background "LightGray")))
   "*Face used for \"Macro:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
@@ -801,16 +815,16 @@ Don't forget to mention your Emacs and library versions."))
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-special-form-ref-item
-    '((((background dark))
-       (:foreground "Yellow" :background "DimGray")) ; ~ light green
-      (t (:foreground "DarkMagenta" :background "LightGray")))
+  '((((background dark))
+     (:foreground "Yellow" :background "DimGray")) ; ~ light green
+    (t (:foreground "DarkMagenta" :background "LightGray")))
   "*Face used for \"Special Form:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-syntax-class-item
-    '((((background dark))
-       (:foreground "#FFFF9B9BFFFF" :background "DimGray")) ; ~ pink
-      (t (:foreground "DarkGreen" :background "LightGray")))
+  '((((background dark))
+     (:foreground "#FFFF9B9BFFFF" :background "DimGray")) ; ~ pink
+    (t (:foreground "DarkGreen" :background "LightGray")))
   "*Face used for \"Syntax Class:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
@@ -821,9 +835,9 @@ Don't forget to mention your Emacs and library versions."))
   :group 'Info-Plus :group 'faces)
 ;;;###autoload
 (defface info-variable-ref-item
-    '((((background dark))
-       (:foreground "Orange" :background "DimGray"))
-      (t (:foreground "FireBrick" :background "LightGray")))
+  '((((background dark))
+     (:foreground "Orange" :background "DimGray"))
+    (t (:foreground "FireBrick" :background "LightGray")))
   "*Face used for \"Variable:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
  
@@ -838,8 +852,8 @@ Don't forget to mention your Emacs and library versions."))
 ;;;###autoload
 (defcustom Info-fontify-quotations-flag t
   "*Non-nil means `info' fontifies text between quotes.
-This applies to double-quote strings (\"...\") and text between
-single-quotes (‘...’ or `...').
+This applies to double-quoted text (“...” or \"...\") and text
+between single-quotes (‘...’ or `...').
 
 Note: This fontification can never be 100% reliable.  It aims to be
 useful in most Info texts, but it can occasionally result in
@@ -940,29 +954,35 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
 (defvar Info-breadcrumbs-depth-internal Info-breadcrumbs-depth
   "Current breadcrumbs depth for Info.")
 
-;; Match has, inside "...", ‘...’, or `...', zero or more of these characters:
-;;   - any character except ", ’, or ', respectively
+;; Match has, inside “...”, "...", ‘...’, or `...', zero or more of these characters:
+;;   - any character except ”, ", ’, or ', respectively
 ;;   - \ followed by any character
 ;;
 ;; The `... in `...' is optional, so the regexp can also match just '.
 ;;
-;; The regexp matches also ‘...’, `...', and "..." where at least one of the
-;; ‘, ’, `, ', or " is escaped by a backslash.
+;; The regexp matches also ‘...’, `...', “...”, and "..." where at least one of the
+;; ‘, ’, `, ', “, ”, or " is escaped by a backslash.
 ;; So we check those cases explicitly and do not highlight them.
 ;;
 (defvar info-quotation-regexp
-  (concat "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
-          "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"        ; `...'
-          "‘\\([^’]\\|\\\\\\(.\\|[\n]\\)\\)*’")          ; ‘...’
-  "Regexp to match `...', ‘...’, \"...\", or just '.
+  (concat
+   "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
+   "`\\(?:[^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"      ; `...'
+   "‘\\(?:[^’]\\|\\\\\\(.\\|[\n]\\)\\)*’”\\|"     ; ‘...’
+   "\“\\(?:[^”]\\|\\\\\\(.\\|[\n]\\)\\)*"         ; “...”
+   )
+  "Regexp to match `...', ‘...’, “...”, \"...\", or just '.
 If ... contains \" or ' then that character must be backslashed.")
 
 
 (defvar info-quoted+<>-regexp
-  (concat "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
-          "`\\([^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"        ; `...'
-          "‘\\([^’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|"        ; ‘...’
-          "<\\([[:alpha:]][^>]*\\|\\(\\\\\\(.\\|[\n]\\)\\)*\\)>")   ; <...>
+  (concat
+   "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|"           ; "..."
+   "`\\(?:[^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"                ; `...'
+   "‘\\(?:[^’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|"                ; ‘...’
+   "\“\\(?:[^”]\\|\\\\\\(.\\|[\n]\\)\\)*”\\|"               ; “...”
+   "<\\(?:[[:alpha:]][^>]*\\|\\(\\\\\\(.\\|[\n]\\)\\)*\\)>" ; <...>
+   )
   "Same as `info-quotation-regexp', but matches also <...>.
 If ... contains > then that character must be backslashed.")
 
@@ -2197,8 +2217,8 @@ If key's command cannot be found by looking in indexes, then
 
 ;; REPLACES ORIGINAL in `info.el':
 ;; 1. File name in face `info-file'.
-;; 2. If `Info-fontify-quotations-flag', fontify ‘...’ or `...' in face `info-quoted-name'
-;;    and "..." in face `info-string'.
+;; 2. If `Info-fontify-quotations-flag', fontify ‘...’ or `...' in face `info-quoted-name',
+;;    “...” in face `info-double-quoted-name', and "..." in face `info-string'.
 ;; 3. If `Info-fontify-quotations-flag' and `Info-fontify-single-quote-flag' then
 ;;    fontify ' in face `info-single-quote'.
 ;; 4. If `Info-fontify-quotations-flag' and `Info-fontify-angle-bracketed-flag' then
@@ -2281,7 +2301,7 @@ If key's command cannot be found by looking in indexes, then
                      (skip-chars-backward " \t,")
                      (put-text-property (point) header-end 'invisible t))))))
 
-        ;; Fontify ‘...’, `...', and "..."
+        ;; Fontify ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations-flag (info-fontify-quotations))
 
@@ -2551,8 +2571,8 @@ If key's command cannot be found by looking in indexes, then
 
 ;; REPLACES ORIGINAL in `info.el':
 ;; 1. File name in face `info-file'.
-;; 2. If `Info-fontify-quotations-flag', fontify ‘...’ or `...' in face `info-quoted-name'
-;;    and "..." in face `info-string'.
+;; 2. If `Info-fontify-quotations-flag', fontify ‘...’ or `...' in face `info-quoted-name',
+;;    “...” in face `info-double-quoted-name', and "..." in face `info-string'.
 ;; 3. If `Info-fontify-quotations-flag' and `Info-fontify-single-quote-flag' then
 ;;    fontify ' in face `info-single-quote'.
 ;; 4. If `Info-fontify-quotations-flag' and `Info-fontify-angle-bracketed-flag' then
@@ -2637,7 +2657,7 @@ If key's command cannot be found by looking in indexes, then
                      (skip-chars-backward " \t,")
                      (put-text-property (point) header-end 'invisible t))))))
 
-        ;; Fontify ‘...’, `...', and "..."
+        ;; Fontify ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations-flag (info-fontify-quotations))
 
@@ -2887,8 +2907,8 @@ If key's command cannot be found by looking in indexes, then
 
 ;; REPLACES ORIGINAL in `info.el':
 ;; 1. File name in face `info-file'.
-;; 2. If `Info-fontify-quotations-flag', fontify ‘...’ or `...' in face `info-quoted-name'
-;;    and "..." in face `info-string'.
+;; 2. If `Info-fontify-quotations-flag', fontify ‘...’ or `...' in face `info-quoted-name',
+;;    “...” in face `info-double-quoted-name', and "..." in face `info-string'.
 ;; 3. If `Info-fontify-quotations-flag' and `Info-fontify-single-quote-flag' then
 ;;    fontify ' in face `info-single-quote'.
 ;; 4. If `Info-fontify-quotations-flag' and `Info-fontify-angle-bracketed-flag' then
@@ -2979,7 +2999,7 @@ If key's command cannot be found by looking in indexes, then
                                             header-end t)
                          (put-text-property (match-beginning 1) (match-end 1) 'invisible t)))))))
 
-        ;; Fontify ‘...’, `...', and "..."
+        ;; Fontify ‘...’, `...', “...”, and "..."
         (goto-char (point-min))
         (when Info-fontify-quotations-flag (info-fontify-quotations))
 
@@ -3234,13 +3254,14 @@ You are prompted for the depth value."
   (when Info-breadcrumbs-in-mode-line-mode (Info-insert-breadcrumbs-in-mode-line)))
 
 (defun info-fontify-quotations ()
-  "Fontify ‘...’, `...', \"...\", and possibly <...> and single '.
+  "Fontify ‘...’, `...', “...”, \"...\", and possibly <...> and single '.
 If `Info-fontify-angle-bracketed-flag' then fontify <...> also.
 If `Info-fontify-single-quote-flag' then fontify singleton ' also.
 
- ‘...’, `...', and <...>\t- use face `info-quoted-name'
- \"...\"\t- use face `info-string'
- '\t- use face `info-single-quote'"
+ ‘...’, `...', and <...>\t- use face `info-quoted-name'.
+ “...” uses face `info-double-quoted-name'.
+ \"...\"\t- uses face `info-string'.
+ '\t- uses face `info-single-quote'."
   (let ((regexp    (if Info-fontify-angle-bracketed-flag info-quoted+<>-regexp info-quotation-regexp))
         (property  'font-lock-face))
     (while (condition-case nil (re-search-forward regexp nil t) (error nil))
@@ -3269,6 +3290,9 @@ If `Info-fontify-single-quote-flag' then fontify singleton ' also.
             ((and Info-fontify-angle-bracketed-flag
                   (eq ?< (aref (match-string 0) 0))) ; <...>
              (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-quoted-name)
+             (goto-char (match-end 0)) (forward-char 1))
+            ((eq (aref (match-string 0) 0) ?“) ; “...”
+             (put-text-property (1+ (match-beginning 0)) (1- (match-end 0)) property 'info-double-quoted-name)
              (goto-char (match-end 0)) (forward-char 1))
             ;; Don't try to handle strings correctly.  Check only the first " for being escaped.
             ;; The second " ends the match, even if it is escaped (odd number of \s before it).
@@ -3653,9 +3677,11 @@ User options you can customize
 Faces you can customize
 -----------------------
 `info-file'   - Face used for file heading labels
-`info-string'       - Face used for strings (e.g. \"toto\").
-`info-quoted-name'  - Face used for quoted names (e.g. ‘toto’ or `toto').
-`info-single-quote' - Face used for isolated single-quote (e.g. 'foo).
+`info-string' - Face used for strings (e.g. \"toto\")
+`info-double-quoted-name'
+              - Face used for curly double-quoted names (e.g. “toto”)
+`info-quoted-name'  - Face used for quoted names (e.g. ‘toto’ or `toto')
+`info-single-quote' - Face used for isolated single-quote (e.g. 'foo)
 
 These are all of the current Info Mode bindings:
 
