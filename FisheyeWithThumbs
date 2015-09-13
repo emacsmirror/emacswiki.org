@@ -23,6 +23,11 @@ A picture is worth a thousand words. Well, maybe a thumbnail is worth only 50 wo
 [[image:DrewEmacsFisheye]]
 
 
+Well, actually, that's an old screenshot. Here's one more recent, showing the default behavior of making thumbnail frames semi-transparent when they are not selected (you control this using option `thumfr-frame-parameters' with frame parameter `alpha').
+
+[[image:DrewEmacsFisheyeTransparent]]
+
+
 
 == Thumbnail Frame FAQ ==
 
@@ -125,7 +130,11 @@ These [[option]]s control the behavior and appearance of thumbnail frames:
 
 * '''`thumfr-font-difference'''' -- Change the value of this parameter to change the thumbnail size.
 
-* '''`thumfr-frame-parameters'''' -- Frame parameters of thumbnail frames. This is what removes (or adds) things like the [[menu bar]] from thumbnail frames.
+* '''`thumfr-frame-parameters'''' -- Frame parameters of thumbnail frames. This is what removes (or adds) things like the [[menu bar]] from thumbnail frames. By default, `thumfr-frame-parameters' gives you thumbnail frames that:
+
+** have no menu bar or tool bar
+** have a 6x6-pixel scroll bar
+** are 30% transparent when not selected (opaque when selected)
 
 * '''`thumfr-thumbify-dont-iconify-flag'''' -- Set this to `nil' if you do ''not'' want thumbifying to ''replace'' iconifying generally. With this non-`nil' (default value), commands `iconify-frame' and `iconify-or-deiconify-frame' thumbify/dethumbify.
 
@@ -210,4 +219,3 @@ Thanks for bringing this to my attention. I should have removed that hard depend
 ----
 
 OneOnOneEmacs CategoryFrames CategoryDisplay
-
