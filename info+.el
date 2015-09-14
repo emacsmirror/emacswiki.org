@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 13 11:38:05 2015 (-0700)
+;; Last-Updated: Mon Sep 14 14:38:06 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 5532
+;;     Update #: 5547
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -235,6 +235,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/09/14 dadams
+;;     info-double-quoted-name: Changed default colors.
 ;; 2015/09/13 dadams
 ;;     Added face info-double-quoted-name.
 ;;     info-quotation-regexp, info-quoted+<>-regexp: Added pattern for curly double-quotes (“...”).
@@ -704,9 +706,9 @@ Don't forget to mention your Emacs and library versions."))
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `red3' for this face.
 ;;;###autoload
 (defface info-double-quoted-name        ; For “...”
-  '((((background dark)) (:inherit font-lock-string-face :foreground "Orange"))
-    (t (:inherit font-lock-string-face :foreground "red3")))
-  "*Face for names enclosed in curly double-quoets (“...”) in `info'."
+  '((((background dark)) (:inherit font-lock-string-face :foreground "Cyan"))
+    (t (:inherit font-lock-string-face :foreground "DarkOrange")))
+  "*Face for names enclosed in curly double-quotes (“...”) in `info'."
   :group 'Info-Plus :group 'faces)
 
 ;;;###autoload
@@ -724,7 +726,7 @@ Don't forget to mention your Emacs and library versions."))
 ;; FWIW, I use a `LightSteelBlue' background for `*info*', and I use `yellow' for this face.
 ;;;###autoload
 (defface info-quoted-name               ; For ‘...’ and `...'
-  '((((background dark)) (:inherit font-lock-string-face :foreground "#6B6BFFFF2C2C")) ; ~ green
+  '((((background dark)) (:inherit font-lock-string-face :foreground "#6B6BFFFF2C2C")) ; ~ bright green
     (((background light)) (:inherit font-lock-string-face :foreground "DarkViolet"))
     (t (:foreground "yellow")))
   "*Face for quoted names (‘...’ or `...') in `info'."
@@ -803,7 +805,7 @@ Don't forget to mention your Emacs and library versions."))
 ;;;###autoload
 (defface info-macro-ref-item
   '((((background dark))
-     (:foreground "Yellow" :background "DimGray")) ; ~ light green
+     (:foreground "Yellow" :background "DimGray"))
     (t (:foreground "DarkMagenta" :background "LightGray")))
   "*Face used for \"Macro:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
@@ -816,7 +818,7 @@ Don't forget to mention your Emacs and library versions."))
 ;;;###autoload
 (defface info-special-form-ref-item
   '((((background dark))
-     (:foreground "Yellow" :background "DimGray")) ; ~ light green
+     (:foreground "Yellow" :background "DimGray"))
     (t (:foreground "DarkMagenta" :background "LightGray")))
   "*Face used for \"Special Form:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
