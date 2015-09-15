@@ -1,6 +1,6 @@
 == Major mode for creating statistical model with Template Model Builder (TMB) ==
 
-Provides syntax highlighting, IDE compilation and file manipulation, outline code navigation, templates, and smaller tools.
+Provides syntax highlighting, IDE compilation, file manipulation, basic templates, and smaller tools.
 
 You can get it here:
 
