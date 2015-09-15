@@ -38,37 +38,6 @@ code to build a utility that can be used in /It's All Text/
 add-on to call running Emacs, provided that you start Emacs with <code>M-x
 server-start</code>.
 
-=== Firefox add-on: mozex ===
-
-The mozex extension will call GnuClient or EmacsClient for you:
-
-* http://mozex.mozdev.org/
-
-Install it, restart your browser, choose -> Tools -> Extensions, and
-double-click on the mozex extension.  This opens the preferences
-dialog.  Use "/tmp" as the temporary directory, and use one of the
-following as the command for textareas:
-
- /usr/bin/gnuclient %t
- /usr/local/bin/gnuclient %t
- /usr/bin/emacsclient %t
- /usr/local/bin/emacsclient %t
-
-Now start to edit a wiki page, hit mouse-3 and choose -> mozex -> Edit
-Textarea.
-
-Unfortunately this seems to corrupt /some/ non-ascii characters (but
-not all).  Oh well.
-
-If you are using SimpleWikiMode, make sure you add something like
-this to your ~/.emacs file:
-
-     (add-to-list 'auto-mode-alist '("mozex.textarea" . simple-wiki-mode))
-
-For a more recent package, look at
-[https://addons.mozilla.org/extensions/moreinfo.php?id=394
-ViewSourceWith] which is still maintained.
-
 === Firefox add-on: Firemacs ===
 
 [https://addons.mozilla.org/en-US/firefox/addon/4141 Firemacs]
