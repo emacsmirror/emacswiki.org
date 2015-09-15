@@ -1,1 +1,1 @@
-[[DeletedPage]]
+DeletedPage
