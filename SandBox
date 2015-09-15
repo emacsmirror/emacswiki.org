@@ -77,3 +77,19 @@ _underline_
 *bold*
 
 /italic/
+
+
+----
+
+The horizontal line is represented by %%----%% 4 dashes.
+
+Escaped monospaced
+
+##*escaped monospace*##
+
+----
+Another ssss
+
+//italic//  and ''italic''
+**bold**  and '''bold'''
+__underline__
