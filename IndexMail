@@ -36,7 +36,6 @@ Then nnir will open a new buffer with the possible mails matching your request.
 
 You can there choose to go to the thread by typing 'G-T' (Mx gnus-summary-nnir-goto-thread RET) onto an item. You will then be teleported into the group this article came from. Note that gnus-summary-nnir-goto-thread is replaced by gnus-summary-refer-thread in newer Gnus. 
 
-
 == Downloading ==
 
 You should find the latest nnir.el file available at :
@@ -100,6 +99,18 @@ I just tried swish-e -i . -f /$HOME/Mail/index.swish -e -v 2, as suggested above
 I don't know if these are serious problems or not.
 
 ----
+
+[ A swish-e bug ]
+
+There seems to be exist  a long-standing (googleable) bug in swish-e program
+
+     $ swish-e -f ./index.swish-e -w Count
+     => 1000 err: Failed to seek to properties located at 7816 for file number -1743650816 : Invalid argument
+
+I am not sure if it relates to an issue with mbox-format folder indexing, but that was
+the index target indeed.
+After hitting this bug I switched to Mairix (which passed my tests outstandingly!).
+
 == Indexing Mail with gnus-namazu.el ==
 
 If you don't want to use swish-e and nnir.el I recommend you to try namazu [1] and gnus-namazu.el, which is in gnus/contrib like nnir.el. These are the settings I have in my .gnus.
@@ -122,7 +133,9 @@ Now you can create the index of your mails with `M-x gnus-namazu-create-index' a
 ----
 == Indexing mail using Mairix ==
 
-Mairix is a tool for searching words in locally stored mail. It is very fast and easy to set up. For more information on how to use Mairix with Gnus visit GnusMairix.
+Mairix is a tool for searching words in locally stored mail.
+Along swish-e and unlike others it supports indexing of mail folders (the mbox format mails).
+It is very fast and easy to set up. For more information on how to use Mairix with Gnus visit GnusMairix.
 
 ----
 == Indexing mail using mailindex ==
