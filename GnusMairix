@@ -9,6 +9,7 @@ the [[GPL]]. For more information visit
 
 http://www.rpcurnow.force9.co.uk/mairix/index.html
 
+Unlike many existing tools it does support mail folders (mbox format) indexing!
 Though mairix might not be as flexible as other search tools like
 swish++ or namazu (see also: IndexMail), it has the prime advantage
 of being incredibly fast. From my experience, it can easily search
