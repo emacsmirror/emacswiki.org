@@ -1058,7 +1058,7 @@ An example script for starting emacsclient (for different instances of emacs ser
 <pre>
 #!/bin/bash
 
-emacsclient -s edit -c $@
+emacsclient -s edit -c "$@"
 </pre>
 
 This allows you to pass any parameters to emacsclient, e.g., filenames, or even the '-t' (or '-nw') option (it will override the '-c')
