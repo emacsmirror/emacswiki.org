@@ -6,7 +6,7 @@ You can get it here:
 
 * [http://admb-project.org/tools/editors/emacs/admb.el/view admb.el]
 
-[http://admb-project.org AD Model Builder] is an environment for nonlinear statistical modeling. The user writes the model in C++ mixed with special keywords that ADMB translates to plain C++. This mode is used as a component in a full-featured [http://admb-project.org/tools/admb-ide ADMB-IDE].
+[http://admb-project.org AD Model Builder] is an environment for nonlinear statistical modeling. The user writes the model in C++ mixed with special keywords that ADMB translates to plain C++. This mode is also used as a component in a full-featured [http://admb-project.org/tools/admb-ide ADMB-IDE].
 
 See also TmbMode.
 
