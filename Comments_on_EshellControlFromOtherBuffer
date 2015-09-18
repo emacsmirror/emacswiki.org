@@ -2,3 +2,35 @@ Is there a way to do this in the background without showing eshell buffer?
 
 -- Аноним 2015-09-18 07:07 UTC
 
+
+----
+
+Sure. Remove the `display-buffer' and `switch-to-buffer-other-window' stuff.
+
+Untested:
+
+{{{
+(defun my-eshell-execute-current-line ()
+  "Insert text of current line in eshell and execute."
+  (interactive)
+  (require 'eshell)
+  (let ((command (buffer-substring
+                  (save-excursion
+                    (beginning-of-line)
+                    (point))
+                  (save-excursion
+                    (end-of-line)
+                    (point)))))
+    (let ((buf (current-buffer)))
+      (unless (get-buffer eshell-buffer-name)
+        (eshell))
+      (with-current-buffer eshell-buffer-name
+	(end-of-buffer)
+	(eshell-kill-input)
+	(insert command)
+	(eshell-send-input)
+	(end-of-buffer)))))
+}}}
+
+-- AlexSchroeder 2015-09-18 07:21 UTC
+
