@@ -31,7 +31,7 @@ that colors and [[face]]s belong in CategoryFaces.
 * FullScreen - how to switch to fullscreen (with F11 for example)
 * MiniMap - A sidebar showing a small version of your buffer with highlighted viewport, which can be dragged with the mouse.
 * [[Sublimity]] - Smooth-scrolling and minimap like sublime editor, similar to MiniMap.
-* [[Aerial]] - An alternative layout for emacs (cleaner and less cluttered)
+* [https://github.com/rougier/aerial-emacs Aerial] - An alternative layout for emacs (cleaner and less cluttered)
 
 == Managing Frames within Emacs ==
 
