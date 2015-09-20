@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2015.07.05
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 22 14:57:06 2015 (-0700)
+;; Last-Updated: Sun Sep 20 10:52:29 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 23670
+;;     Update #: 23672
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -662,6 +662,7 @@
 ;;    `icicle-sort-by-abbrev-frequency',
 ;;    `icicle-sort-by-directories-first',
 ;;    `icicle-sort-by-directories-last', `icicle-sort-by-file-type.',
+;;    `icicle-sort-by-flx-score',
 ;;    `icicle-sort-by-last-file-access-time',
 ;;    `icicle-sort-by-last-file-modification-time',
 ;;    `icicle-sort-by-last-use', `icicle-sort-by-last-use-as-input',
@@ -1147,12 +1148,13 @@
 ;;    `icicle-find-tag-quit-or-error',
 ;;    `icicle-first-matching-candidate', `icicle-first-N',
 ;;    `icicle-fit-completions-window', `icicle-fix-default-directory',
-;;    `icicle-flat-list', `icicle-fn-doc-minus-sig',
-;;    `icicle-frame-iconified-p', `icicle-frame-invisible-p',
-;;    `icicle-frame-name-history', `icicle-frames-on',
-;;    `icicle-frame-splittable-p', `icicle-frame-thumbnail-p',
-;;    `icicle-frame-unsplittable-p', `icicle-function-name-history',
-;;    `icicle-fuzzy-candidates', `icicle-get-alist-candidate',
+;;    `icicle-flat-list', `icicle-flx-score-greater-p',
+;;    `icicle-fn-doc-minus-sig', `icicle-frame-iconified-p',
+;;    `icicle-frame-invisible-p', `icicle-frame-name-history',
+;;    `icicle-frames-on', `icicle-frame-splittable-p',
+;;    `icicle-frame-thumbnail-p', `icicle-frame-unsplittable-p',
+;;    `icicle-function-name-history', `icicle-fuzzy-candidates',
+;;    `icicle-get-alist-candidate',
 ;;    `icicle-get-anything-actions-for-type',
 ;;    `icicle-get-anything-cached-candidates',
 ;;    `icicle-get-anything-candidates',
