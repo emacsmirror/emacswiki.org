@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 20 13:12:48 2015 (-0700)
+;; Last-Updated: Sun Sep 20 11:51:36 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3054
+;;     Update #: 3060
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -31,13 +31,13 @@
 ;;   `ediff-mult', `ediff-util', `ediff-wind', `em-joc', `emacsbug',
 ;;   `eshell-auto', `eyedropper', `facemenu', `facemenu+', `faces',
 ;;   `faces+', `ffap', `files+', `find-dired', `find-dired+',
-;;   `find-dired-', `finder', `finder+', `finder-inf', `fit-frame',
-;;   `font-lock', `font-lock-menus', `frame-cmds', `frame-fns',
-;;   `fuzzy-match', `header2', `help+20', `hexrgb', `highlight',
-;;   `highlight-chars', `icomplete', `icomplete+', `image-dired',
-;;   `image-file', `imenu', `imenu+', `info', `info+20', `isearch+',
-;;   `iso-transl', `lacarte', `lib-requires', `lisp-mnt', `loadhist',
-;;   `local-lpr', `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
+;;   `finder', `finder+', `finder-inf', `fit-frame', `font-lock',
+;;   `font-lock-menus', `frame-cmds', `frame-fns', `fuzzy-match',
+;;   `header2', `help+20', `hexrgb', `highlight', `highlight-chars',
+;;   `icomplete', `icomplete+', `image-dired', `image-file', `imenu',
+;;   `imenu+', `info', `info+20', `isearch+', `iso-transl',
+;;   `lacarte', `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
+;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `moccur-edit', `mouse', `mouse+', `mwheel', `naked',
 ;;   `occur-schroeder', `oneonone', `paren', `pcmpl-auto', `pp',
@@ -84,6 +84,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2015/09/20 dadams
+;;     Soft-require flx.el.
 ;; 2015/08/20 dadams
 ;;     Soft-require find-dired+.el (again) - moved require just before dired+.el.
 ;; 2015/08/16 dadams
@@ -755,6 +757,9 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 ;;;   "Toggle highlighting of trailing whitespace." t)
 ;;; (autoload 'hc-toggle-highlight-trailing-whitespace "highlight-chars"
 ;;;   "Toggle highlighting of trailing whitespace." t)
+
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+  (require 'flx nil t));; Emacs 24.3+ - requires `cl-lib.el' for `cl-loop', `cl-incf', `cl-cddar'.
 
 (autoload 'joc-cursor-type-set-hook "cursors" "Make cursor reflect insert/overwrite mode." t)
 
