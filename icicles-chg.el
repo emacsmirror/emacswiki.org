@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Sep 19 23:34:20 2015 (-0700)
+;; Last-Updated: Sun Sep 20 11:43:23 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11553
+;;     Update #: 11557
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2223,6 +2223,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2015/09/20 dadams
+;;     Added: icicle-flx-score-greater-p, if can soft-require flx.el (Emacs 24.3+).
+;;            http://emacs.stackexchange.com/a/16522/105.
 ;; 2015/08/21 dadams
 ;;     Added: icicle-lru-window-for-buffer, icicle-mru-window-for-buffer.
 ;; 2015/08/20
@@ -4547,6 +4550,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2015/09/20 dadams
+;;     Added: icicle-sort-by-flx-score, if can soft-require flx.el (Emacs 24.3+).
+;;            http://emacs.stackexchange.com/a/16522/105.
 ;; 2015/08/21 dadams
 ;;     icicle-display-candidates-in-Completions:
 ;;       Use icicle-mru-window-for-buffer (Emacs 24+).
