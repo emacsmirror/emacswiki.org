@@ -1,0 +1,8 @@
+change the command in "participate" text:
+- ,lang-poll is also <nick>: <answer>
++ ,langpollresults is also <nick>: <answer>
+
+thanks to nullie from the #emacs channel
+
+-- zatormozilo 2015-09-20 11:46 UTC
+
