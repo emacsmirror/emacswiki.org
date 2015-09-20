@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Aug 21 13:14:23 2015 (-0700)
+;; Last-Updated: Sun Sep 20 11:44:35 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 19740
+;;     Update #: 19748
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -200,6 +200,7 @@
 ;;    `icicle-sort-alphabetical', `icicle-sort-by-abbrev-frequency',
 ;;    `icicle-sort-by-directories-first',
 ;;    `icicle-sort-by-directories-last', `icicle-sort-by-file-type',
+;;    `icicle-sort-by-flx-score' (Emacs 24.3+),
 ;;    `icicle-sort-by-last-file-access-time',
 ;;    `icicle-sort-by-last-file-modification-time',
 ;;    `icicle-sort-by-last-use', `icicle-sort-by-last-use-as-input',
@@ -1508,8 +1509,8 @@ but the `display' string is unique for each call."
 ;; We don't bother to define a command for the sort functions `icicle-prefix-keys-first-p' and
 ;; `icicle-command-names-alphabetic-p'.  They are bound in `icicle-complete-keys'.
 
-;; The order here defines the reverse order of `icicle-sort-orders-alist'.
-;; The first here is also the default sort order.  Entries are traversed by `C-,' in
+;; The ORDER HERE DEFINES THE REVERSE ORDER OF `icicle-sort-orders-alist'.
+;; The first here is also the DEFAULT SORT ORDER.  Entries are traversed by `C-,' in
 ;; `icicle-sort-orders-alist' order.
 
 (icicle-define-sort-command "alphabetical" ; `icicle-sort-alphabetical'
@@ -1517,6 +1518,15 @@ but the `display' string is unique for each call."
   "Sort completion candidates alphabetically.
 Ignore letter case if `completion-ignore-case' or `case-fold-search'
 is non-nil.")
+
+;; Emacs 24.3+.  `flx.el' unconditionally requires `cl-lib.el', for `cl-loop', `cl-incf', `cl-cddar'.
+(when (condition-case nil (require 'flx nil t) (error nil))
+
+  (icicle-define-sort-command "by flx score" ; `icicle-sort-by-flx-score'
+      icicle-flx-score-greater-p
+    "Sort completions by `flx-score', greater score first.")
+
+  )
 
 (icicle-define-sort-command "special candidates first" ; `icicle-sort-special-candidates-first'
     icicle-special-candidates-first-p
