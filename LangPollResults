@@ -8,7 +8,7 @@ Regardless of whether you prefer Scheme or CL, would you agree that either of th
 
 Go to the EmacsChannel and type:
 
-<nowiki>,lang-poll is also <your nick>: <your answer></nowiki>
+<nowiki>,langpollresults is also <nick>: <your answer></nowiki>
 
 fsbot will add your entry to the list.
 
