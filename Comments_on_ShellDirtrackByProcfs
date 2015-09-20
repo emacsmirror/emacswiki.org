@@ -1,0 +1,15 @@
+On systems without procfs you maybe able to use lsof to rework this approach; for example
+
+{{{
+(defun get-cwd-of-process-via-lsof (process)
+  "Use lsof to obtain the cwd of PROCESS."
+  (let* ((pid (process-id process))
+	 (lsof-cmd (format "lsof -p %s -a -d cwd" pid))
+	 (lsof-result (shell-command-to-string lsof-cmd)))
+    (cl-subseq lsof-result
+	       (1+ (cl-search " " lsof-result :from-end t))
+	       (1- (length lsof-result)))))
+}}}
+
+-- [http://enthusiasm.cozy.org/ bhyde] 2015-09-20 14:32 UTC
+
