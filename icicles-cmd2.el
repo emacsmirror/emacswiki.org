@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Aug 23 08:58:05 2015 (-0700)
+;; Last-Updated: Sat Sep 19 23:17:59 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7273
+;;     Update #: 7281
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2110,13 +2110,14 @@ duration of the command:
 
 When called from Lisp, optional second argument REGEXP is the regexp
 to match (no prompting)."               ; Doc string
-    synonyms-action                     ; Action function,  defined in `synonyms.el'.
+    ;; APPENDP and MOREP are free in the action function, bound in the bindings section.
+    (lambda (term) (synonyms-action term appendp morep)) ; Action function,  defined in `synonyms.el'.
     "Show synonyms for word or phrase (regexp): " ; `completing-read' arguments
     synonyms-obarray nil nil nil 'synonyms-history (synonyms-default-regexp) nil
-    ((num-arg (prefix-numeric-value current-prefix-arg)) ; Bindings
-     (morep (eq synonyms-match-more-flag (atom current-prefix-arg)))
-     (appendp (eq synonyms-append-result-flag (and (wholenump num-arg)  (/= 16 num-arg))))
-     (icicle-sort-comparer 'icicle-case-insensitive-string-less-p))
+    ((num-arg               (prefix-numeric-value current-prefix-arg)) ; Bindings
+     (morep                 (eq synonyms-match-more-flag (atom current-prefix-arg)))
+     (appendp               (eq synonyms-append-result-flag (and (wholenump num-arg)  (/= 16 num-arg))))
+     (icicle-sort-comparer  'icicle-case-insensitive-string-less-p))
     (synonyms-ensure-synonyms-read-from-cache)) ; First code: initialize `synonyms-obarray', for completion.
 
   (icicle-define-command icicle-insert-thesaurus-entry ; Command name
