@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Aug 21 10:47:52 2015 (-0700)
+;; Last-Updated: Sun Sep 20 11:43:56 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15107
+;;     Update #: 15122
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -146,11 +146,11 @@
 ;;    `icicle-find-tag-default-as-regexp',
 ;;    `icicle-first-matching-candidate', `icicle-first-N',
 ;;    `icicle-fit-completions-window', `icicle-fix-default-directory',
-;;    `icicle-flat-list', `icicle-frame-iconified-p',
-;;    `icicle-frame-invisible-p', `icicle-frames-on',
-;;    `icicle-frame-splittable-p', `icicle-frame-thumbnail-p',
-;;    `icicle-frame-unsplittable-p', `icicle-fuzzy-candidates',
-;;    `icicle-get-alist-candidate',
+;;    `icicle-flat-list', `icicle-flx-score-greater-p' (Emacs 24.3+),
+;;    `icicle-frame-iconified-p', `icicle-frame-invisible-p',
+;;    `icicle-frames-on', `icicle-frame-splittable-p',
+;;    `icicle-frame-thumbnail-p', `icicle-frame-unsplittable-p',
+;;    `icicle-fuzzy-candidates', `icicle-get-alist-candidate',
 ;;    `icicle-get-candidates-from-saved-set', `icicle-get-safe',
 ;;    `icicle-dired-guess-shell-command',
 ;;    `icicle-handle-default-for-prompt',
@@ -6917,6 +6917,26 @@ Also:
   "Non-nil means buffer named B1 is smaller than buffer named B2."
   (< (with-current-buffer b1 (buffer-size)) (with-current-buffer b2 (buffer-size))))
 
+;; Emacs 24.3+.  `flx.el' requires `cl-lib.el', for `cl-loop', `cl-incf', `cl-cddar'.
+(when (condition-case nil (require 'flx nil t) (error nil))
+
+  (defun icicle-flx-score-greater-p (s1 s2)
+    "Non-nil means the `flx-score' of S1 is greater than that of S2.
+That is, the cars of the `flx-score' values are compared.
+
+If `flx-score' returns nil for either argument, then they are compared
+using `icicle-case-string-less-p'.
+
+This function requires library `flx.el'."
+    (let* ((input   (if (and (icicle-file-name-input-p)  insert-default-directory)
+                        (file-name-nondirectory icicle-current-input)
+                      icicle-current-input))
+           (score1  (flx-score s1 input))
+           (score2  (flx-score s2 input)))
+      (if (and score1  score2)
+          (> (car score1) (car score2))
+        (icicle-case-string-less-p s1 s2))))
+  )
 
 (put 'icicle-major-mode-name-less-p 'icicle-buffer-sort-predicate t)
 ;; This predicate is used for buffer-name completion.
