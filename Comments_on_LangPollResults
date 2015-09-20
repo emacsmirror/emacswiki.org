@@ -1,4 +1,4 @@
-change the command in "participate" text:
+changed the command in "participate" text:
 - ,lang-poll is also <nick>: <answer>
 + ,langpollresults is also <nick>: <answer>
 
