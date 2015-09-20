@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Aug 25 09:50:46 2015 (-0700)
+;; Last-Updated: Sat Sep 19 23:34:20 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11549
+;;     Update #: 11553
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1164,6 +1164,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2015/09/19 dadams
+;;     icicle-synonyms: Action fn passes APPENDP and MOREP to synonyms-action (are free in action fn).
 ;; 2015/08/23 dadams
 ;;     icicle-buffer-narrowing, icicle-select-zone-action: Same as for icicle-select-zone yesterday.
 ;; 2015/08/22 dadams
