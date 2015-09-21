@@ -3553,8 +3553,7 @@ indicated in the mode line by '''`##TEMPORARY Bookmarking##'''' in place of
 [:MakingBookmarksTemporary]
 === Making Bookmarks Temporary ===
 
-Instead of simply switching to a temporary bookmark list, so that
-'''''all''''' bookmarking is only temporary, you more often want to have
+Instead of simply switching to a temporary bookmark list, so that '''all''' bookmarking is only temporary, you more often want to have
 some bookmarks be temporary while still ensuring that others get
 saved.  Or you temporarily want all new bookmarks that you ''create''
 and all bookmarks that you ''update'' to be temporary, without
