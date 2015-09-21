@@ -9,6 +9,8 @@ Both Emacs and Git come with Emacs front ends for Git.  These front ends support
 
 * Git comes with an Emacs front end for Git: ##git.el##.  For more information about this package as well as ##git-blame.el## another library distributed with Git see the [http://git.kernel.org/cgit/git/git.git/tree/contrib/emacs/README?id=HEAD README] file accompanying these libraries.
 
+If you are running an older Ubuntu version, you might get those Git Emacs contrib files from ##git-core##, but for newer versions you will need to install ##git-el## package with ##sudo apt-get install git-el##.
+
 
 == Third-party Front Ends ==
 
