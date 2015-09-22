@@ -28,6 +28,10 @@ Calling Emacs+ free software is a terrible lie! - There is no source code availa
 According to the author whom I contacted about this issue this is not by accident, but by design.
 -- Anonymous
 
+https://github.com/MulgaSoft/e4macs
+has the sources available now.
+-- another Anonymous
+
 [new:AlexSchroeder:2011-05-03 07:31 UTC]
 The plugin uses the Eclipse Public License (EPL). According to the [http://www.gnu.org/licenses/license-list.html GNU license list], it "is similar to the Common Public License, and our comments on the CPL apply equally to the EPL. The only change is that the EPL removes the broader patent retaliation language regarding patent infringement suits specifically against Contributors to the EPL'd program." The Common Public License "is a free software license. Unfortunately, its weak copyleft and choice of law clause make it incompatible with the GNU GPL."
 
