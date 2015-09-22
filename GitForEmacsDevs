@@ -4,7 +4,9 @@
 Some features described on EmacsWiki are available only in the latest
 '''[::EmacsDevelopmentVersion]'''. To obtain those features, you will
 need to build Emacs using the development source code. This page is
-about that source code and how to use it.
+about that source code and how to use it. Every contributor should also
+be acquainted with and follow the guidelines in the source code repository
+[http://git.savannah.gnu.org/cgit/emacs.git/plain/CONTRIBUTE CONTRIBUTE file].
 
 This is a quick-start guide to using [http://git-scm.com Git] for
 Emacs development.  It presents a simple Git workflow oriented toward
@@ -273,7 +275,12 @@ upstream yourself (see [[#MergeToUpstream]]).
 [:GoodCommentingPractice]
 === Good Commenting Practice ===
 
-Commit log messagess should have a standalone first line not over 72
+See the
+[http://git.savannah.gnu.org/cgit/emacs.git/plain/CONTRIBUTE CONTRIBUTE file] 
+in the Emacs source code repository for more up-to-date commit-log
+and other instructions.
+
+Commit log messages should have a standalone first line not over 72
 characters long.  Do this so the summary listings displayed by
 ##git log --oneline## and similar tools are intelligible.
 
