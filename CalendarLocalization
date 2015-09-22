@@ -132,6 +132,8 @@ names.
                                      "Июнь" "Июль" "Август" "Сентябрь"
                                      "Октябрь" "Ноябрь" "Декабрь"])
 
+
+
 === Spanish ===
 Week starts with Monday, use also spanish weekday and month names. Editor specially dislikes Jueves. :)
 
@@ -295,6 +297,23 @@ Here is my calendar configuration. -- [[rubikitch]]
 	(holiday-fixed 6 12 "День России")
 	(holiday-fixed 10 4 "День Народного единства")
       ))
+</pre>
+
+=== Belarussian ===
+<pre>
+(setq calendar-holidays
+      `(
+       ;; State holidays
+       (holiday-fixed 1 1 "New Year")
+       (holiday-fixed 1 7 "Orthodox Christmas")
+       (holiday-fixed 2 23 "Defender of the Fatherland and Armed Forces day")
+       (holiday-fixed 3 8 "International Women's Day")
+       (holiday-fixed 5 1 "International Labor Day")
+       (holiday-fixed 5 9 "Victory Day")
+       (holiday-fixed 7 3 "Independence Day")
+       (holiday-fixed 11 7 "October Revolution Day")
+       (holiday-fixed 12 25 "Catholic Christmas")
+       ))
 </pre>
 
 === Ukrainian ===
