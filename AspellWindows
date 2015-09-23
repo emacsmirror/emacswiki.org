@@ -1,6 +1,6 @@
 Once you've set up GNU [[EmacsW32]] you will probably want to add spell checking ability.  &nbsp;[http://aspell.net/win32/ aspell] is not an especially good choice; but alternatives at this point are unclear.  True, it integrates seamlessly with Emacs; but the last version of it for Windows was compiled in 2002 and is hopelessly out of date.
 
-[new] Although it might be out of date it seems to work well. I installed Aspell according to the instructions below, yesterday, and it works fine, in a quite recent Emacs 25. -- MaDa
+[new] Although it might be out of date it seems to work well. I installed Aspell according to the instructions below, yesterday (today is 2015-09-23), and it works fine, in a quite recent Emacs 25. -- MaDa
 
 == Setup for 64-bit Windows 7 ==
 
