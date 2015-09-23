@@ -10,3 +10,10 @@ Doesn't work on buffers like *scratch*, i.e., with `emacs-lisp-mode', because it
 
 -- Miguel Frasson 2015-01-20 13:50 UTC
 
+
+----
+
+Setting the variable fill-column to nil and then hitting M-q on a paragraph do the trick for me.
+
+-- Anonymous Coward 2015-09-23 14:06 UTC
+
