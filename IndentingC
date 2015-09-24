@@ -401,6 +401,21 @@ Not what I want! Does any have the magic code to do the right thing with C++ as 
 Google's C/C++ style: http://google-styleguide.googlecode.com/svn/trunk/google-c-style.el
 
 ----
+Another solution is to use clang-format:
+
+(defun reformat-region (&optional b e)
+  (interactive "r")
+  (when (not (buffer-file-name))
+    (error "A buffer must be associated with a file in order to use REFORMAT-REGION."))
+  (when (not (executable-find "clang-format"))
+    (error "clang-format not found."))
+  (shell-command-on-region b e
+                                              "clang-format -style=LLVM"
+                                              (current-buffer) t)
+  (indent-region b e)
+  )
+
+----
 CategoryIndentation
 CategoryProgramming
 CategoryDotEmacs
