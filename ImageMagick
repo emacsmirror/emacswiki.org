@@ -8,13 +8,14 @@ For more information, go to: http://www.imagemagick.org
 
 Here's some Emacs things to let you harness ImageMagick,
 
+* ImageMode -- view files as images
 * EmacsImageManipulation -- manipulate images
 * ThumbsMode -- browse and manipulate images
 * [[Tumme]] -- creates its thumbnails with imagemagick
 
 == Using with Windows ==
 
-Emacs needs to be compiled with ImageMagick support in order to take advantage of certain features, eg resizing images in image-mode. 
+Emacs needs to be compiled with ImageMagick support in order to take advantage of certain features, eg resizing images in ImageMode. 
 
 == GraphicsMagick ==
 
