@@ -47,6 +47,8 @@ These packages are *not* "complete" front ends but "only" to certain Git feature
 
 * [[GitShow]] -- Quick git way to see a particular revision of a file.
 
+* [https://github.com/pidu/git-timemachine git-timemachine] Step through historic versions of git controlled file using everyone's favourite editor
+
 == Also see ==
 
 * EmacsFromGit -- A Git mirror of the Emacs bazaar repository is available.
