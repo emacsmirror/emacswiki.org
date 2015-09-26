@@ -2,7 +2,7 @@ Download Lisp:vbnet-mode.el
 
 = Intro =
 
-vbnet-mode.el is a mode for editing VB.NET.  It is based off of the venerable visual-basic-mode.el, originally created by Fred White in the mid 90's to handle "classic" VB code.  VB.NET is sufficiently different from "classic" VB that a distinct major mode is appropriate.
+vbnet-mode.el is a mode for editing VB.NET.  It is based off of the venerable visual-basic-mode.el, originally created by Fred White in the mid 90s to handle "classic" VB code.  VB.NET is sufficiently different from "classic" VB that a distinct major mode is appropriate.
 
 
 = Installation instructions = 
