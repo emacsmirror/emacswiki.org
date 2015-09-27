@@ -48,6 +48,8 @@ Works with [[ProgrammingWithPythonDotEl|python.el]], [[ProgrammingWithPythonMode
 
 -- [[ChrisPoole]]
 
+[https://github.com/thorrr/ac-python-async Asynchronous completion for python] - async version of Chris Poole's excellent project.  Works best with builtin python.el in Emacs 24.2+.  Solves problem with slow autocompletions when using an inferior Python process.
+
 Completion for python using [[http://code.google.com/p/pysmell/|PySmell]].
 
 <pre>
