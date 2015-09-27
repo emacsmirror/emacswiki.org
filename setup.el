@@ -8,9 +8,9 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Mar  2 11:20:11 2015 (-0800)
+;; Last-Updated: Sun Sep 27 13:03:04 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 793
+;;     Update #: 795
 ;; URL: http://www.emacswiki.org/setup.el
 ;; Keywords: internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -51,6 +51,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/09/27 dadams
+;;     lisp-indentation-hack:
+;;       Use common-lisp-indent-function from flet & labels for cl-flet & cl-labels.
 ;; 2015/03/02 dadams
 ;;     Turn on echo-bell-mode, if defined.
 ;; 2014/11/28 dadams
@@ -284,7 +287,12 @@ such as `lisp-mode-hook', `emacs-lisp-mode-hook', and
   (put 'icicle-define-sort-command         'common-lisp-indent-function '(4 4 &body))
   (put 'icicle-define-add-to-alist-command 'common-lisp-indent-function '(4 &body))
   (put 'icicle-with-selected-window        'common-lisp-indent-function '(4 &body))
-  (put 'icicle-condition-case-no-debug     'common-lisp-indent-function '(4 4 &body)))
+  (put 'icicle-condition-case-no-debug     'common-lisp-indent-function '(4 4 &body))
+  (when (featurep 'cl-indent)
+    (put 'cl-flet 'common-lisp-indent-function
+         (get 'flet 'common-lisp-indent-function))
+    (put 'cl-labels 'common-lisp-indent-function
+         (get 'labels 'common-lisp-indent-function))))
 
 (add-hook 'emacs-lisp-mode-hook 'lisp-indentation-hack)
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode) ; Feedback on current function.
