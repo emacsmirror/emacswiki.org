@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 29 13:58:41 2015 (-0700)
+;; Last-Updated: Tue Sep 29 14:11:09 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9320
+;;     Update #: 9326
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -8963,9 +8963,13 @@ For Emacs 24 and later, a prefix arg means that if
 deleting it."
   (interactive "P")
   (let ((file  (dired-get-filename)))
-    (if (> emacs-major-version 23)
-        (delete-file file use-trash-can)
-      (delete-file file))))
+    (if (not (yes-or-no-p (format "%s file `%s'? " (if (and use-trash-can  delete-by-moving-to-trash)
+                                                       "Trash"
+                                                     "Permanently delete")
+                                  file)))
+        (message "OK - canceled")
+      (if (> emacs-major-version 23) (delete-file file use-trash-can) (delete-file file))
+      (revert-buffer))))
 
 ;;; Versions of `dired-do-*' commands for just this line's file.
 ;;;###autoload
