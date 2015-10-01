@@ -2,3 +2,10 @@ The highlighting is a nuisance ALWAYS.  I do NOT need the editor to tell me wher
 
 -- martinthurn 2015-09-30 19:36 UTC
 
+
+----
+
+No need to rant and rave. To disable it, put the following in your [[init file]]: ##(transient-mark-mode -1)##
+
+-- AlexSchroeder 2015-10-01 12:10 UTC
+
