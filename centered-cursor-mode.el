@@ -6,11 +6,12 @@
 ;; Maintainer: André Riemann <andre.riemann@web.de>
 ;; Created: 2007-09-14
 ;; Keywords: convenience
+;; Package-Version: 20150302.831
 
-;; URL: http://www.emacswiki.org/emacs/centered-cursor-mode.el
+;; URL: http://www.emacswiki.org/cgi-bin/wiki/centered-cursor-mode.el
 ;; Compatibility: tested with GNU Emacs 23.0, 24
 ;; Version: 0.5.4
-;; Last-Updated: 2015-04-20
+;; Last-Updated: 2015-10-01
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -56,8 +57,9 @@
 ;; - more bugs?
 
 ;;; Change Log:
-;; 2015-04-20  andre-r
-;;   * corrected URL in header
+;; 2015-10-01 Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>
+;;   * Avoided calling count-lines when unnecessary, which
+;;     fixes slow scrolling in large files
 ;; 2015-03-01  andre-r
 ;;   * fixed bug where Emacs without X support (emacs-nox) didn't find mouse-wheel-mode
 ;; 2009-08-31  andre-r
@@ -335,9 +337,11 @@ the center. Just the variable ccm-vpos is set."
                                            (goto-char (point-max))
                                            (zerop (current-column))))
                                      1 0)))
+                   (window-is-at-bottom (= (window-end) (point-max)))
                    ;; lines from point to end of buffer
-                   (bottom-lines (+ (count-lines (point) (point-max))
-                                    correction)))
+                   (bottom-lines (if window-is-at-bottom
+                                     (+ (count-lines (point) (point-max))
+                                        correction))))
 
               ;; only animate if the point was moved rather far away
               ;; before by a mouseclick (see ccm-ignored-commands)
@@ -346,7 +350,8 @@ the center. Just the variable ccm-vpos is set."
                             (or (member last-command ccm-ignored-commands)
                                 animate-first-start-p)))
 
-                  (recenter (if (and (< bottom-lines bottom-vpos)
+                  (recenter (if (and window-is-at-bottom
+                                     (< bottom-lines bottom-vpos)
                                      (not recenter-at-end-of-file))
                                 ;; if near the bottom, recenter in the
                                 ;; negative screen line that equals the
@@ -365,7 +370,8 @@ the center. Just the variable ccm-vpos is set."
                       ;; bigger than one, TO might not included, that means the
                       ;; ccm-vpos would not be reached
                       ;; cdr: don't recenter the current-line
-                      (if (and (< bottom-lines bottom-vpos)
+                      (if (and window-is-at-bottom
+                               (< bottom-lines bottom-vpos)
                                (not recenter-at-end-of-file))
                           ;; this one is for animation near the bottom
                           (cdr (reverse (number-sequence
