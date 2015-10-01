@@ -8,7 +8,14 @@ The basic mechanism for spellchecking in Emacs involves the external program isp
 
 * AutoCorrection corrects misspellings automatically as you type.
 
-See also CategoryWriting.
+See also:
+
+- CategoryWriting.
+
+- [http://www.emacswiki.org/emacs/CategoryEditing#Grammar_Checking Grammar checking]
+
+
+-----------
 
 There are a number of packages that will help you if you use several different languages, either in different buffers, or mixed together in the same buffer.
 
@@ -40,3 +47,4 @@ Babel commands.
 * GnusSpelling -- Switching dictionaries depending on group parameters in Gnus.
 
 * AspellWindows -- Setting up Aspell under Windows7.
+
