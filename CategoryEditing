@@ -90,6 +90,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** FastNav -- Multiple commands to support quick jump to, replace at, kill at, etc. the next/previous occurences of characters.
 * Text checking
 ** TextLint -- check your scientific writing for common style errors.
-** [http://www.emacswiki.org/emacs/BaoqiuCui#toc2 Grammar Checker] -- Use [http://www.link.cs.cmu.edu/link Link Grammar] as the grammar checker back-end.
 ** [[CategorySpelling|Spelling]] -- spell-checking
-** [http://www.emacswiki.org/emacs/langtool.el] -- Use [https://languagetool.org Language Tools] as grammar checker back-end
+* Grammar Checker
+** [http://www.emacswiki.org/emacs/BaoqiuCui#toc2 Grammar Checker] -- Use [http://www.link.cs.cmu.edu/link Link Grammar] as the grammar checker back-end.
+** [http://www.emacswiki.org/emacs/langtool.el langtool.el] -- Use [https://languagetool.org Language Tools] as grammar checker back-end
