@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 29 14:11:09 2015 (-0700)
+;; Last-Updated: Fri Oct  2 10:16:54 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 9326
+;;     Update #: 9333
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -645,6 +645,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/10/02 dadams
+;;     dired-mark-sexp: Like vanilla, skip extended attributes marker before setting NLINK.  Thx to Tino Calancha.
 ;; 2015/09/29 dadams
 ;;     diredp-delete-this-file: Redefined to use delete-file instead of dired-do-delete.
 ;; 2015/09/07 dadams
@@ -9272,9 +9274,10 @@ prefix arg shows the internal form of the bookmark."
 ;;;###autoload
 (defun dired-mark-sexp (predicate &optional unmark-p) ; Bound to `M-(', `* ('
   "Mark files for which PREDICATE returns non-nil.
-With non-nil prefix arg UNMARK-P, unmark those files instead.
+With a prefix arg, unmark or unflag those files instead.
 
-PREDICATE is a lisp sexp that can refer to the following variables:
+PREDICATE is a lisp sexp that can refer to the following symbols as
+variables:
 
     `mode'   [string]  file permission bits, e.g. \"-rw-r--r--\"
     `nlink'  [integer] number of links to file
@@ -9347,8 +9350,8 @@ refer at all to the underlying file system.  Contrast this with
                                                 (string-to-number (match-string 2)))))
           (setq mode  (buffer-substring (point) (+ mode-len (point))))
           (forward-char mode-len)
-          (setq nlink  (read (current-buffer)))
           (unless (looking-at " ") (forward-char 1)) ; Skip any extended attributes marker ("." or "+").
+          (setq nlink  (read (current-buffer)))
           ;; Karsten Wenger <kw@cis.uni-muenchen.de> fixed uid.
 
           ;; Another issue is that GNU `ls -n' right-justifies numerical UIDs and GIDs, while FreeBSD
