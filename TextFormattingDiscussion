@@ -53,7 +53,7 @@ I'm no CSS expert -- I'll leave it up to you. -- DrewAdams
 
 == Comments ==
 
-May we have comments?  It might be useful to make notes as to why something was done a certian way in a page.
+May we have comments?  It might be useful to make notes as to why something was done a certain way in a page.
 
    <!-- has no effect -->
 
@@ -111,6 +111,9 @@ I think it would be very difficult to support lots of different movie formats. E
 The trouble is the movie plugins vary so much. Some are js, some (like youtubes) are iframes and some are just EMBEDs or HTML5 movie objects.
 
 But I guess supporting movies directly is really the only way to go right now. It would be cool if EmacsWiki could support them coz they're obviously a great way to teach newbies. 
+
+[new:sshaw:2015-10-03 21:42 UTC]
+<code>kbd</code> tags should be allowed. I'm surprised that this is not supported. Why not add them? This wiki is full of keystrokes. 
 
 == Slightly richer source code ==
 
