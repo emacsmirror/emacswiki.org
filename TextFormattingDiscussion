@@ -113,7 +113,7 @@ The trouble is the movie plugins vary so much. Some are js, some (like youtubes)
 But I guess supporting movies directly is really the only way to go right now. It would be cool if EmacsWiki could support them coz they're obviously a great way to teach newbies. 
 
 [new:sshaw:2015-10-03 21:42 UTC]
-<code>kbd</code> tags should be allowed. I'm surprised that this is not supported. Why not add them? This wiki is full of keystrokes. 
+<code>kbd</code> tags should be allowed. I'm surprised that this is not supported. Why not add them? This wiki is full of keystrokes. -- sshaw
 
 == Slightly richer source code ==
 
