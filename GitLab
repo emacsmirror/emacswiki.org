@@ -1,0 +1,5 @@
+[http://gitlab.com GitLab] is a git repository management and collaboration platform. Similar to GitHub and Bitbucket. 
+
+[https://github.com/nlamirault/emacs-gitlab emacs-gitlab] is a GitLab client for Emacs.
+
+[https://github.com/sshaw/git-link git-link] Get the GitHub/Bitbucket/GitLab/… URL for a buffer location
