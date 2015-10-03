@@ -4,8 +4,8 @@ http://company-mode.github.io/
 
 [img]http://company-mode.github.io/images/company-elisp.png[/img]
 
-== Back-ends ==
-Back-ends are single functions, they look like this:
+== Backends ==
+Backends are single functions, they look like this:
 
   (defun company-my-backend (command &optional arg &rest ignored)
     (interactive (list 'interactive))
@@ -20,10 +20,10 @@ Back-ends are single functions, they look like this:
 They can be installed simply by adding them to ''company-backends''.
 If it is in a file named like the function (e.g. company-my-backend.el), it will be required automatically.
 
-A list of user-written back-ends: CompanyModeBackends
+A list of user-written backends: CompanyModeBackends
 
-== Front-ends ==
-A visualization (front-end) is also a single function.  It looks like this:
+== Frontends ==
+A visualization (frontend) is also a single function.  It looks like this:
 
   (defun company-my-frontend (command)
     (case command
@@ -37,9 +37,9 @@ It can be installed by adding it to ''company-frontends''.
 
 ==== Why is `company-backends' initialized with `company-css', `company-elisp', etc? Shouldn't we add those symbols to `company-backends' when their respective libraries are required? ===
 
-No need to: iterating through back-ends that don't apply to the current buffer is pretty fast.
+No need to: iterating through backends that don't apply to the current buffer is pretty fast.
 
-But the user can have different `'company-backends' values in different major modes. It would make it a tiny bit more efficient, and also allow to use certain back-ends only in certain modes, like `company-dabbrev' and `company-ispell', which would generally apply to almost any buffer and thus block all back-ends after them.
+But the user can have different `'company-backends' values in different major modes. It would make it a tiny bit more efficient, and also allow to use certain backends only in certain modes, like `company-dabbrev' and `company-ispell', which would generally apply to almost any buffer and thus block all backends after them.
 
   (add-hook 'css-mode-hook
             (lambda ()
@@ -77,9 +77,9 @@ And if you're using a theme with a dark background, here's another quick option:
 
 ==== How do I get substring completion? ====
 
-Non-prefix completion is supported since version 0.6.13, but returning appropriate candidates is the responsibility of each back-end. If `company-capf' is in `company-backends' (which is by default when using Emacs 24.4), it obeys `completion-styles' when fetching candidates from `completion-at-point-functions'.
+Non-prefix completion is supported since version 0.6.13, but returning appropriate candidates is the responsibility of each backend. If `company-capf' is in `company-backends' (which is by default when using Emacs 24.4), it obeys `completion-styles' when fetching candidates from `completion-at-point-functions'.
 
-Any other back-end would need to support non-prefix matching explicitly.
+Any other backend would need to support non-prefix matching explicitly.
 
 When non-prefix matching is used, `company-preview-if-just-one-frontend' isn't displayed instead of `company-pseudo-tooltip-unless-just-one-frontend', as would be usual. Even if there's just one candidate, as long as it doesn't start with the input, you get a popup menu.
 
@@ -99,7 +99,7 @@ The search feature was actually inspired by the way I use iswitchb.  You can sta
 [new]
 I've written another command named `company-filter-candidates' that will probably be (edit: is) in version 0.2.  It works like automatically pressing C-o after every search char.  The search still has to be started manually (i.e. one key stroke). --  [[nschum]]
 
-==== How do I disable the down-case feature of the dabbrev back-end? ====
+==== How do I disable the down-case feature of the dabbrev backend? ====
 
 Customize `company-dabbrev-downcase'.
 
@@ -163,7 +163,7 @@ How does this compare to CompletionUI and AutoComplete? -- TobyCubitt
 : See also the discussion at AutoComplete. -- AndyStewart
 
 [new]
-It predates AutoComplete.  The focus for CompanyMode is to have self-contained front and back-ends that can be easily swapped and loaded.
+It predates AutoComplete.  The focus for CompanyMode is to have self-contained front and backends that can be easily swapped and loaded.
 
 ----
 
