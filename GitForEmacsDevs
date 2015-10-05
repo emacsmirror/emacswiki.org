@@ -151,7 +151,7 @@ directly to the master branch if you want:
       git pull                    # get in sync with the upstream master
       <<<make your edit>>>
       git status                  # (optional) sanity check -- lists changed and unknown files
-      git commit -a -m "Fix silly typo in README."
+      git commit -a -m "Fix silly typo in README"
       git show                    # double-check what you will be pushing
       git push
 
@@ -261,7 +261,7 @@ for that file, so manual ##git add## commands are no longer necessary.
 Once you have achieved a clean merge, commit it:
 
       git status                  # (recommended) sanity check -- lists changed and unknown files
-      git commit -m "Merge from mainline."
+      git commit -m "Merge from mainline"
 
 Note that you will need this ##commit## command only if conflicts were
 detected during the merge.
@@ -311,7 +311,7 @@ reviewers ask for further tweaks, repeat the cycle.  Edit the files,
 build and test as necessary, and
 
       git status                  # (optional) sanity check -- lists changed and unknown files
-      git commit -m "Address reviewer comments."
+      git commit -m "Address reviewer comments"
 
 
 [:PushToUpstream]
