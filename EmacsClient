@@ -389,7 +389,7 @@ Emacsclient can be used (with -n -a arguments as above) but needs "%1" in shortc
 
 And there's another possible method here: http://robert-adesam.blogspot.com/2011/01/emacsclient-setup-on-windows-7-starter.html.  He uses a bat-to-exe converter to create an executable to run a batch file that executes emacsclient as needed, but the exe can be put onto the taskbar (and the converter he mentions can have it run invisibly and with custom icon).  Might also be worth a look. --RobDavenport
 
-
+After upgrading to Windows 10 and installing a fresh installation of Emacs, pinning emacs.exe to the taskbar had same old problems (multiple icons), and the 'fix' above to change emacs.exe target to 'runemacs.exe' didn't help.  However, using MichaelHoffman's tip over in [http://www.emacswiki.org/emacs/EmacsW32#toc51] to use a nice tool to set the AppID for the shortcut. Running the app at http://code.google.com/p/win7appid/  on the emacs.lnk shortcut in \users\<name>\ApplicationData\Microsoft\Internet Explorer\QuickLaunch\User Pinned\Taskbar and setting it's AppID to "Gnu.Emacs" did the trick.  --RobDavenport
 
 ==== Editing with Emacs from Web Browsers ====
 
