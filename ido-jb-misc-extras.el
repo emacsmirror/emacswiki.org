@@ -61,7 +61,8 @@
 ;;  Choose recently used file with ido, and jump to it.
 ;;  `ido-goto-recent-dir'
 ;;  Choose recently used dired buffer with ido, and jump to it.
-;;
+;;  `ido-cdargs'
+;;  Choose cdargs bookmark and jump to corresponding directory
 ;;
 ;;; Functions:
 ;;
@@ -76,7 +77,8 @@
 ;;
 ;; `ido-favourites-list'
 ;; List of choice-action pairs for use with the `ido-goto-favourite' command.
-;;
+;; `ido-cdargs-config'
+;; Location of cdargs config file.
 
 ;;; Installation:
 ;;
@@ -130,6 +132,7 @@
 			     (cons (format "%S" s) ido-execute-command-cache))))))
        ido-execute-command-cache)))))
 
+;;;###autoload
 (defun ido-sort-mtime nil
   "Sort ido filelist by modification time instead of alphabetically."
   (if (not (or (equal "/" ido-current-directory)
@@ -211,6 +214,43 @@
 				items))))
   (dired place))
 
+(unless (not (require 'extract-text nil t))
+  (defcustom ido-cdargs-config "~/.cdargs"
+    "Location of cdargs config file.
+Each line of the file must be a bookmark name followed by a space,
+and then a filepath, e.g:  emacs ~/.emacs.d"
+    :type 'file)  
+  (defun ido-cdargs (bkmk &optional findfile)
+    "Choose subdir of cdargs bookmark directory.
+BKMK is the name of the cdargs bookmark to use.
+If called with prefix arg, or if FINDFILE is non-nil, then prompt 
+for a file within the bookmarked directory, and open it.
+Location of cdargs config file is stored in `ido-cdargs-config'."
+    (interactive
+     (list (ido-completing-read
+	    "Directory bookmark: "
+	    (let ((items))
+	      (if (file-readable-p ido-cdargs-config)
+		  (with-temp-buffer
+		    (insert-file-contents ido-cdargs-config)
+		    (extract-text (regex "^\\w+") :REPS 1000 :ERROR 'skip :FLATTEN 1))
+		(error "Can't read cdargs config file: %s" ido-cdargs-config))))
+	   current-prefix-arg))
+    (if findfile
+	(find-file
+	 (ido-read-file-name
+	  "File: "
+	  (with-temp-buffer
+	    (insert-file-contents ido-cdargs-config)
+	    (re-search-forward (concat "^" (regexp-opt (list bkmk)) " *\\(\\S-.*\\S-\\)\\s-*"))
+	    (match-string 1)) nil t))
+      (ido-file-internal 'dired 'dired
+			 (with-temp-buffer
+			   (insert-file-contents ido-cdargs-config)
+			   (re-search-forward (concat "^" (regexp-opt (list bkmk)) " *\\(\\S-.*\\S-\\)\\s-*"))
+			   (match-string 1)) "Subdirectory: " 'dir nil nil))))
+
+;;;###autoload
 (defun ido-completing-read-multiple (prompt choices &optional predicate require-match initial-input hist def sentinel)
   "Read multiple items with ido-completing-read. 
    Reading stops when the user enters SENTINEL. By default, SENTINEL is
