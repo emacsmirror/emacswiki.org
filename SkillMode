@@ -1,7 +1,7 @@
 Skill is an extension language to [http://www.cadence.com Cadence]'s CAD framework.
 See http://foldoc.org?Skill.
 
-There is a skill-mode to be found at ftp://ftp.informatik.uni-stuttgart.de/pub/skill/. The author is Jonas Järneström.
+There is a skill-mode to be found at ftp://ftp.informatik.uni-stuttgart.de/pub/old/skill/. The author is Jonas Järneström.
 Unfortunately, that tarfile consists mainly of byte-compiled files for xemacs19.13 and gnuemacs19.28 - the sources seem to be lost.
 Someone at Cadence is said to have patched the byte-compiled files to work with newer emacsen.
 
