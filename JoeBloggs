@@ -30,6 +30,8 @@ Here are some libraries I wrote:
 * '''Lisp:sort-group-lines.el''' -- Group lines in region matching regexps.
 * '''Lisp:symbol-tools.el''' -- Helper functions for handling symbols.
 * '''Lisp:webjump-ido.el''' -- Webjump using ido for website selection
+* '''Lisp:keyword-arg-macros.el''' -- Some macros for extracting keyword args
+* '''Lisp:extract-text.el''' -- Functions for extracting/scraping text from buffers
 
 ===Libraries I maintain===
 Here are some libraries written by others but maintained by me:
