@@ -1,0 +1,12 @@
+= Alignment example =
+
+Not sure that:
+
+<code>  C-u M-x align-regexp RET SPC RET RET RET y </code>
+
+Gives the indicated result - in my emacs it does nothing. Should the regex be: 
+
+<code> \(\s-*\)[0-9] </code>?
+
+-- [http://415 tarasdi] 2015-10-06 04:55 UTC
+
