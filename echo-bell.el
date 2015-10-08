@@ -1,7 +1,7 @@
-;;; echo-bell.el --- Show visual bell at right in mode line.    -*- coding:utf-8 -*-
+;;; echo-bell.el --- Show visual bell at right in the echo area.    -*- coding:utf-8 -*-
 ;; 
 ;; Filename: echo-bell.el
-;; Description: Show visual bell at right in mode line.
+;; Description: Show visual bell at right in the echo area.
 ;; Author: Miles Bader <miles@gnu.org>
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2009, Miles Bader, all rights reserved.
@@ -9,9 +9,9 @@
 ;; Created: Fri Feb 27 20:32:14 2009 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Mar  2 06:35:36 2015 (-0800)
+;; Last-Updated: Wed Oct  7 18:26:54 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 119
+;;     Update #: 122
 ;; URL: http://www.emacswiki.org/echo-bell.el
 ;; Keywords: echo area, bell, ding
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
@@ -40,6 +40,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2015/10/07 dadams
+;;     echo-bell-delay: Changed default value from 0.4 to 0.2.
 ;; 2015/03/01 dadams
 ;;     Added autoload cookie for echo-bell-mode.
 ;; 2015/02/28 dadams
@@ -101,7 +103,7 @@
   :set   (lambda (sym defs) (custom-set-default sym defs) (echo-bell-update))
   :group 'user)
 
-(defcustom echo-bell-delay 0.4
+(defcustom echo-bell-delay 0.2
   "Number of seconds that `echo-bell' displays its message."
   :type 'number :group 'user)
 
