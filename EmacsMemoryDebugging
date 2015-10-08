@@ -46,7 +46,8 @@ You can examine the following variables:
 Run also ##(garbage-collect)## and inspect the results. If it returns ##nil##, it means *no garbage collection is being done* and therefore Emacs will only increase in size. This is due to a miscompilation; see below.
 
 ===Run into a special program to detect memory leaks===
-TODO: explain and recommend some
+
+I've done some leak hunting recently, and wrote some scripts to assist. These are still pretty rough, but have been very helpful, and are effective in finding the culprit if a leak can be triggered. Some (early) documentation: http://notes.secretsauce.net/notes/2015/10/05_memory-leak-debugging-tools.html
 
 ===If you can reliably reproduce the memory leak===
 You can go through the previous revisions in the version control system until you find the most recent version which didn't show this behaviour. An easy way to do this is via the bisect operation offered by version control programs.
