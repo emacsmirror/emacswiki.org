@@ -60,10 +60,3 @@ If you login via console and start X with startx, then the file
 personal customizations file is called ~/.xinitrc.
 
 NB: you should never run X stuff in your .(bash|csh|z)rc file.
-
-----
-
-Editorial note: maybe loads of this stuff should be put to
-EmacsAndXResources, and this page would be kept on-topic,
-ResourceFiles.  Well, wikis sure got a tendency to start branching,
-which is just nice (:)
