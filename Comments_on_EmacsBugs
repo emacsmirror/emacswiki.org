@@ -2,3 +2,16 @@ Aquatics not working with Apple El Capitan.
 
 -- michaelmenke 2015-10-05 12:21 UTC
 
+
+----
+
+Please report bugs using ##M-x report-emacs-bug##.
+The wiki is not suited for bug reporting.
+Not enough info about your system. 
+No bug tracking functionality.
+No maintainer alerts.
+
+If sending emails does not work from your Emacs, use ##M-x report-emacs-bug## anyway and copy and paste the result into your regular mail program and send it.
+
+-- [http://alexschroeder.ch/alex/Emacs AlexSchroeder] 2015-10-08 05:57 UTC
+
