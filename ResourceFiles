@@ -1,6 +1,10 @@
 Some Emacs settings, such as colors, fonts and faces can be set via
 ''X resources'', which reside in a hierarchial database (X Resource
-Database, or ''XRDB'') handled by the X11 server.  The usual way to
+Database, or ''XRDB'') handled by the X11 server.
+
+== Example ==
+
+The usual way to
 set it up is via the ##.Xdefaults## file.  Here is a sample entry:
 
 {{{
@@ -11,6 +15,8 @@ Emacs*Foreground: wheat
 There are many more resource names, see the EmacsLispReference for details.
 The resource class ''Emacs'' is common for both GnuEmacs and XEmacs.
 See HowtoChangeFrameColors for other ways to change the frame colors.
+
+== Console ==
 
 If you're using Emacs in a terminal, then you might find that blue on black
 is hard to read. In which case you can change the colors used by the
