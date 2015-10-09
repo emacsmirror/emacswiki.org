@@ -11,7 +11,7 @@ My personal file-manager.
 
 A minor mode for latex beamer documents which works best with folding-mode and implements some convenience functions:
 
-Lisp:latex-frame-mode.el
+https://github.com/tagteam/emacs-genome/blob/master/snps/latex-frame-mode.el
 
 
 ===EssEdit===
