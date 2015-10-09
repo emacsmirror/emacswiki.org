@@ -93,6 +93,19 @@ This mode of operation turned out to be both less popular than the rule-style in
 
 This package is amazing and I hope it is eventually incorporated in default emacs. However, it would be good if, once loaded, fci-mode was enabled by default for most text and programming modes and disabled for special buffers (like ##*Messages*##, ##*Buffer List*##, ##*Completions*##, etc). It doesn't make sense either in Dired mode. Enabling fci-mode as a global minor mode is too brute-force. --Manu
 
+[new:edam:2015-10-09 23:51 UTC]
+This can be fixed by being more picky about when you turn on ##fci-mode## in ##global-fci-mode##:
+
+  (define-globalized-minor-mode global-fci-mode fci-mode
+    (lambda ()
+      (if (and
+           (not (string-match "^\*.*\*$" (buffer-name)))
+           (not (string-equal major-mode "dired-mode")))
+          (fci-mode 1))))
+  (global-fci-mode 1)
+
+-- [http://ed.am/ edam]
+
 ===Problems when Using Emacs as a Daemon===
 
 [new]
