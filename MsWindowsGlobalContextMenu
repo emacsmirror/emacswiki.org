@@ -48,7 +48,7 @@ REGEDIT4
 # (The '&' makes the next character a shortcut.)
 
 [HKEY_CLASSES_ROOT\*\shell\openwemacs\command]
-@="C:\\Program Files\\Emacs\\emacs\\bin\\emacsclientw -n \"%1\""
+@="C:\\Program Files\\Emacs\\bin\\emacsclientw -n \"%1\""
 # The above has to point to where you install Emacs
 </pre>
 
