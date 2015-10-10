@@ -9,7 +9,7 @@ Web frontend to that repository: http://svn.ruby-lang.org/cgi-bin/viewvc.cgi/tru
 To enable ruby-mode for most all ruby files, add this to your initialization file
 
   (add-to-list 'auto-mode-alist
-               '("\\.\\(?:gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
+               '("\\.\\(?:cap\\|gemspec\\|irbrc\\|gemrc\\|rake\\|rb\\|ru\\|thor\\)\\'" . ruby-mode))
   (add-to-list 'auto-mode-alist
                '("\\(Capfile\\|Gemfile\\(?:\\.[a-zA-Z0-9._-]+\\)?\\|[rR]akefile\\)\\'" . ruby-mode))
 
