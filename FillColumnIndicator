@@ -100,11 +100,14 @@ This can be fixed by being more picky about when you turn on ##fci-mode## in ##g
     (lambda ()
       (if (and
            (not (string-match "^\*.*\*$" (buffer-name)))
-           (not (string-equal major-mode "dired-mode")))
+           (not (eq major-mode 'dired-mode)))
           (fci-mode 1))))
   (global-fci-mode 1)
 
 -- [http://ed.am/ edam]
+
+[new:npostavs:2015-10-10 16:27 UTC]
+I think it should suffice to say <code>(if buffer-file-name (fci-mode 1))</code>, i.e. only use ##fci-mode## on buffers that are visiting files. And this section should probably be merged into "Further Customization Examples", above.
 
 ===Problems when Using Emacs as a Daemon===
 
