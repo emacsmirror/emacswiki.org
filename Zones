@@ -18,7 +18,7 @@ You can do the following with a list of zones:
 * Sort them.
 * Unite (coalesce) adjacent or overlapping zones (which includes sorting them).
 * Intersect them.
-* [[Narrowing|Narrow]] the buffer to zones in the list.
+* [[Narrowing|Narrow]] the buffer to zones in the list - see '''MultipleNarrowings'''.
 * Select zones in the list as the active [[region]].  Cycle among regions.
 * Search them (they are automatically united first).  For this
 you need library <tt>[[isearch-prop.el]]</tt> (see [[Isearch+]]).
