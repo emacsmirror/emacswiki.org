@@ -213,6 +213,7 @@ as `C-M-RET' etc.  Actually, these are only the keys by default.
 You can customize them, using [[option]]
 '''`<tt>[[Icicles - Customization and General Tips#icicle-candidate-help-keys|icicle-candidate-help-keys]]</tt>''''.)
 
+[:CompFrameMovedLeft]
 If you use one-[[buffer]]-per-[[frame]] (`pop-up-frames' non-`nil'), then displaying `*Help*' in one
 frame might interfere with viewing `*Completions*' in another.  For
 that reason, the `*Completions*' frame is raised to the front.
@@ -221,7 +222,6 @@ non-`nil' then the `*Completions*' frame is moved to the edge of the display, ou
 of the way, whenever you access help on a candidate.  (Default value:
 `right', meaning move it to the right). Here is a screenshot showing `*Completions*' on the left, `*Help*' on the right.
 
-[:CompFrameMovedLeft]
 [[image:drew-emacs-Comp-moved-left]]
 
 
