@@ -219,9 +219,10 @@ that reason, the `*Completions*' frame is raised to the front.
 Also, if user option '''`<tt>[[Icicles - Customization and General Tips#icicle-move-Completions-frame|icicle-move-Completions-frame]]</tt>'''' is
 non-`nil' then the `*Completions*' frame is moved to the edge of the display, out
 of the way, whenever you access help on a candidate.  (Default value:
-`right', meaning move it to the right).
+`right', meaning move it to the right). Here is a screenshot showing `*Completions*' on the left, `*Help*' on the right.
 
 
+[[image:drew-emacs-Comp-moved-left]]
 
 
 
