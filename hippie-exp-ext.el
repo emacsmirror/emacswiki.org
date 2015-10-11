@@ -5,7 +5,7 @@
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Maintainer: rubikitch <rubikitch@ruby-lang.org>
 ;; Copyright (C) 2012, rubikitch, all rights reserved.
-;; Time-stamp: <2012-09-08 17:42:17 rubikitch>
+;; Time-stamp: <2015-10-11 17:47:08 rubikitch>
 ;; Created: 2012-09-08 12:56:37
 ;; Version: 0.1
 ;;           By: rubikitch
@@ -37,8 +37,8 @@
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
 
-;;; Commentary: 
-;; 
+;;; Commentary:
+;;
 ;; Extension of hippie-expand.
 ;;
 ;; I created this program to let `hippie-expand' expand only unibyte
@@ -75,31 +75,31 @@
 
 ;;; Customize:
 ;;
-;; 
+;;
 ;;
 ;; All of the above can customize by:
 ;;      M-x customize-group RET hippie-exp RET
 ;;
 
 ;;; Change log:
-;;	
+;;
 ;; 2012/09/08
 ;;      * First released.
-;; 
+;;
 
 ;;; Acknowledgements:
 ;;
-;; 
+;;
 ;;
 
 ;;; TODO
 ;;
-;; 
+;;
 ;;
 
 ;;; Require
 (require 'hippie-exp)
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 
 ;;; Code:
 (defcustom he-dabbrev-chars "0-9a-zA-Z\\?!_-"
@@ -165,7 +165,8 @@
 (defun try-expand-dabbrev-substring (old)
   (try-expand-dabbrev-0 old 'he-dabbrev-substring-search nil nil))
 (defun try-expand-dabbrev-substring-visible (old)
-  (flet ((he-dabbrev-search (&rest args) (apply 'he-dabbrev-substring-search args)))
+  (cl-letf (((symbol-function 'he-dabbrev-search)
+             (symbol-function 'he-dabbrev-substring-search)))
     (try-expand-dabbrev-visible old)))
 (defun try-expand-dabbrev-substring-visible-in-current-buffer (old)
   (try-expand-dabbrev-0 old 'he-dabbrev-substring-search (window-start) (window-end)))
