@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Sep 20 11:44:35 2015 (-0700)
+;; Last-Updated: Sun Oct 11 09:38:21 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 19748
+;;     Update #: 19751
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -20,14 +20,14 @@
 ;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `cl', `cmds-menu', `cus-theme', `doremi',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-fn',
-;;   `icicles-opt', `icicles-var', `image-dired', `info', `info+20',
-;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mouse3', `mwheel', `naked', `package', `pp', `pp+',
-;;   `regexp-opt', `ring', `second-sel', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `flx',
+;;   `frame-fns', `fuzzy', `fuzzy-match', `help+20', `hexrgb',
+;;   `icicles-fn', `icicles-opt', `icicles-var', `image-dired',
+;;   `info', `info+20', `kmacro', `levenshtein', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse3', `mwheel',
+;;   `naked', `package', `pp', `pp+', `regexp-opt', `ring',
+;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -6265,10 +6265,15 @@ and `C-M-home', to display help on the candidate and then move to the
 next or previous candidate.  See, for example,
 `icicle-help-on-next-apropos-candidate'.
 
+If option `icicle-move-Completions-frame' is non-nil and buffer
+`*Completions*' is displayed and is alone in its frame , then move
+that frame to the display edge, out of the way.
+
 You can use this command only from the minibuffer or `*Completions*'
 \(`\\[icicle-help-on-candidate]')."
   (interactive)                         ; Interactively, just describes itself.
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
+  (icicle-raise-Completions-frame)
   (let ((frame-with-focus  (selected-frame))
         (cand-symb         nil)
         transformed-cand)
