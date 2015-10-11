@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Sep 20 11:43:23 2015 (-0700)
+;; Last-Updated: Sun Oct 11 09:41:45 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11557
+;;     Update #: 11559
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4550,6 +4550,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2015/10/11 dadams
+;;     icicle-help-on-candidate:
+;;       Call icicle-raise-Completions-frame, so respect icicle-move-Completions-frame.
 ;; 2015/09/20 dadams
 ;;     Added: icicle-sort-by-flx-score, if can soft-require flx.el (Emacs 24.3+).
 ;;            http://emacs.stackexchange.com/a/16522/105.
