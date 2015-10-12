@@ -61,6 +61,6 @@ I might steal it later, but there is already a rather similar entry in [[EmacsW3
 [new]
 Might I suggest using the following command with 22.3:
 
- C:\emacs-22.3\bin\emacsclientw -n --a C:\emacs-22.3\bin\runemacs.exe "%1" 
+ C:\emacs-22.3\bin\emacsclientw -a C:\emacs-22.3\bin\runemacs.exe -n "%1" 
 
 Also there is no pop up cmd window any longer.
