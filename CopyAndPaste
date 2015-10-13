@@ -43,7 +43,16 @@ Finally, in other applications, pasting usually replaces the selected text with 
  (setq interprogram-cut-function 'own-clipboard)
  (setq interprogram-paste-function 'get-clipboard)
 
-----
+=== Third party plugins ===
+You can https://github.com/rolandwalker/simpleclip which ALWAYS works.
+
+More specifically, for copy&paste, there are only two commands:
+
+  simpleclip-get-contents
+  simpleclip-set-contents
+
+
+---- 
 CategoryEmulation
 CategoryKeys
 CategoryModes
