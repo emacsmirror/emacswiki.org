@@ -44,7 +44,7 @@ Finally, in other applications, pasting usually replaces the selected text with 
  (setq interprogram-paste-function 'get-clipboard)
 
 === Third party plugins ===
-You can https://github.com/rolandwalker/simpleclip which ALWAYS works.
+You can use https://github.com/rolandwalker/simpleclip which ALWAYS works.
 
 More specifically, for copy&paste, there are only two commands:
 
