@@ -157,9 +157,101 @@ Iterating on a list:
 
 <pre>
 Lisp_Object tail;
- 
+
 for (tail = list; CONSP (tail); tail = XCDR (tail))
   {
     /* ... */
   }
+</pre>
+
+=== Configure script and build flags ===
+
+If you know how to write basic shell scripts you're good to go. This
+is a crash course in autoconf for Emacs. Have a look at autoconf doc
+for more.
+
+==== Adding a enable/disable configure flag ====
+
+Open <code>configure.ac</code>, it's a big shell script template
+that is processed by autoconf to generate the actual configure.sh
+script.
+
+Look for <code>OPTION_DEFAULT_ON</code> or <code>OPTION_DEFAULT_OFF</code>
+depending on if you want your option to be turn on or off by default.
+
+The syntax is <code>OPTION_DEFAULT_ON([thing],[description])</code> where:
+* <code>thing</code> is the thing you want to turn on or off (<code>--with-thing</code>, <code>--without-thing</code>)
+* <code>description</code> is a description of the thing.
+
+This macro will define a <code>with_thing</code> shell variable
+available in the rest of the script. Its value will be either "yes" or
+"no".
+
+The convention is later in the script:
+
+* To first to check if <code>$with_thing</code> is <code>yes</code>
+* In which case you check if you can actually enable it for emacs on the current system
+* If that's the case, set a <code>HAVE_THING</code> variable to yes. If you can't enable it, set it to no.
+* Add the corresponding <code>echo</code> close the the end of the script. Look for "Does Emacs use" in <code>configure.ac</code>.
+
+If you need to export something to make it available in the C sources
+(as a define macro written in <code>src/config.h</code>), use:
+
+<pre>
+AC_DEFINE(YOUR_MACRO, value, [Purpose of the macro])
+</pre>
+
+This will define <code>YOUR_MACRO</code> to the verbatim
+<code>value</code>. In case you want to export the content of a shell
+variable (expand it), simply putting <code>$value</code> <b>will not
+work</b>, you have to use:
+
+<pre>
+AC_DEFINE_UNQUOTED(YOUR_MACRO, "$your_variable", [ description ])
+</pre>
+
+If you need to export a shell variable to <code>src/Makefile.in</code>
+(the file that is processed by autoconf to generate the actual
+Makefile) you need to use
+
+<pre>
+AC_SUBST(YOUR_SHELL_VAR)
+</pre>
+
+This will replace any occurence of <code>@YOUR_SHELL_VAR@</code> in
+files processed by autoconf with the content of the shell var. If you
+look at src/Makefile.in for example, you can see:
+
+<pre>
+LIBZ = @LIBZ@
+</pre>
+
+This define a Makefile variable to the value of the shell variable
+defined earlier in <code>configure.ac</code>.
+
+=== Summary ===
+
+<pre>
+# first define the configure option
+OPTION_DEFAULT_ON([thing],[description])
+
+# ...
+
+# Thing support
+HAVE_THING=no
+# (declare here other variable you need)
+
+if test "${with_thing}" != "no"; then
+ # do your check to see if you can actually enable it
+ HAVE_THING=yes # (lets assume you can)
+fi
+
+if test "${HAVE_MODULES}" = yes; then
+  AC_DEFINE(HAVE_THING, 1, [Define to 1 if Thing enabled])
+fi
+
+# ...
+
+# add a "summary line" printed at the end of configuration
+echo "  Does Emacs has Thing?                 ${HAVE_THING}"
 </pre>
