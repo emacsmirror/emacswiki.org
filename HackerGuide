@@ -160,6 +160,7 @@ Lisp_Object tail;
 
 for (tail = list; CONSP (tail); tail = XCDR (tail))
   {
+    List_Object e = XCAR (tail); /* current element */
     /* ... */
   }
 </pre>
