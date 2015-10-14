@@ -60,8 +60,8 @@ The core of Emacs is written in C.
 
 Let's look at <code>src/lisp.h</code> for fundamental definitions.
 
-A Lisp object (<code>Lisp_Object</code>) is basically a number. This number is
-split in 2 parts :
+A Lisp object (<code>Lisp_Object</code>) is basically a number (an integer). This number is
+split in 2 parts in terms of bits:
 * a value
 * a tag
 
@@ -153,7 +153,7 @@ it's pretty well written. [[Writing Emacs Primitives]]
 
 === Idioms ===
 
-Iterating on a list:
+==== Iterating on a list ====
 
 <pre>
 Lisp_Object tail;
@@ -243,14 +243,22 @@ OPTION_DEFAULT_ON([thing],[description])
 
 # Thing support
 HAVE_THING=no
-# (declare here other variable you need)
+## declare here other variable you need
+## like additional build flags, etc.
+##
+## the convention is to use
+##  - THING_OBJ for additional object files (use AC_SUBST to export!)
+##  - LIBTHING for additional librares to add to the linker flags (use AC_SUBST to export!)
 
 if test "${with_thing}" != "no"; then
  # do your check to see if you can actually enable it
  HAVE_THING=yes # (lets assume you can)
+ # define
 fi
 
 if test "${HAVE_MODULES}" = yes; then
+  # now you *have* to enable Thing!
+  # AC_SUBST, AC_DEFINE, etc usually go here
   AC_DEFINE(HAVE_THING, 1, [Define to 1 if Thing enabled])
 fi
 
