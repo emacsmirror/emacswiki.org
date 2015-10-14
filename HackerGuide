@@ -194,6 +194,8 @@ The convention is later in the script:
 * If that's the case, set a <code>HAVE_THING</code> variable to yes. If you can't enable it, set it to no.
 * Add the corresponding <code>echo</code> close the the end of the script. Look for "Does Emacs use" in <code>configure.ac</code>.
 
+==== Exporting a C macro ====
+
 If you need to export something to make it available in the C sources
 (as a define macro written in <code>src/config.h</code>), use:
 
@@ -209,6 +211,8 @@ work</b>, you have to use:
 <pre>
 AC_DEFINE_UNQUOTED(YOUR_MACRO, "$your_variable", [ description ])
 </pre>
+
+==== Exporting a shell variable to rest of autoconf machinery ====
 
 If you need to export a shell variable to <code>src/Makefile.in</code>
 (the file that is processed by autoconf to generate the actual
@@ -229,7 +233,7 @@ LIBZ = @LIBZ@
 This define a Makefile variable to the value of the shell variable
 defined earlier in <code>configure.ac</code>.
 
-=== Summary ===
+==== Summary ====
 
 <pre>
 # first define the configure option
