@@ -10,6 +10,14 @@ control files are kept, if you want them all in one place (as I
 would). -- (wayestuncool@yahoo).
 
 [new]
+Since this page was last edited Eric Raymond (ers) has written
+[http://esr.ibiblio.org/?p=6502 SRC: Simple Revision Control].
+Here are the
+[http://www.catb.org/~esr/src/FAQ.html FAQ],
+[http://www.catb.org/~esr/src/ resources] and
+[http://www.catb.org/~esr/src/src.html man] pages.
+
+[new]
 This seems rather pointless to me.  You can have numbered backups
 and use diff to create the diff between any revision you want. That
 seems much better.
