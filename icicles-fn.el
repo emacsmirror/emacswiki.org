@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Sep 20 11:43:56 2015 (-0700)
+;; Last-Updated: Thu Oct 15 15:53:38 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15122
+;;     Update #: 15126
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -20,13 +20,13 @@
 ;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `cl', `cmds-menu', `cus-theme',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-opt',
-;;   `icicles-var', `info', `info+20', `kmacro', `levenshtein',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
-;;   `package', `pp', `pp+', `regexp-opt', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `flx',
+;;   `frame-fns', `fuzzy', `fuzzy-match', `help+20', `hexrgb',
+;;   `icicles-opt', `icicles-var', `info', `info+20', `kmacro',
+;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `naked', `package', `pp', `pp+', `regexp-opt', `second-sel',
+;;   `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -5093,7 +5093,9 @@ occurrences."
   "If OBJECT is a cons, return its car; else return OBJECT."
   (if (consp object) (car object) object))
 
-(when (fboundp 'window-use-time) ; Emacs 24+
+(when (fboundp 'window-use-time)        ; Emacs 24+
+
+  ;; Emacs 24 `time-less-p' does not work for integer time values, so need to convert to list time values.
 
   (defun icicle-lru-window-for-buffer (buffer &optional minibuf all-frames)
     "Return the least recently used window for BUFFER.
@@ -5102,8 +5104,11 @@ Optional args MINIBUF and ALL-FRAMES are as for `get-buffer-window-list'."
            (lru-win   (car wins))
            (lru-time  (window-use-time lru-win))
            wtime)
+      (unless (listp lru-time) (setq lru-time  (seconds-to-time lru-time)))
       (dolist (win  (cdr wins))
-        (when (time-less-p (setq wtime  (window-use-time win)) lru-time)
+        (setq wtime  (window-use-time win))
+        (unless (listp wtime) (setq wtime  (seconds-to-time wtime)))
+        (when (time-less-p wtime lru-time)
           (setq lru-time  wtime
                 lru-win   win)))
       lru-win))
@@ -5115,8 +5120,11 @@ Optional args MINIBUF and ALL-FRAMES are as for `get-buffer-window-list'."
            (mru-win   (car wins))
            (mru-time  (window-use-time mru-win))
            wtime)
+      (unless (listp mru-time) (setq mru-time  (seconds-to-time mru-time)))
       (dolist (win  (cdr wins))
-        (unless (time-less-p (setq wtime  (window-use-time win)) mru-time)
+        (setq wtime  (window-use-time win))
+        (unless (listp wtime) (setq wtime  (seconds-to-time wtime)))
+        (unless (time-less-p wtime mru-time)
           (setq mru-time  wtime
                 mru-win   win)))
       mru-win))
