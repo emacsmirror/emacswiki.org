@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Oct 11 09:41:45 2015 (-0700)
+;; Last-Updated: Thu Oct 15 15:55:03 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 11559
+;;     Update #: 11561
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2223,6 +2223,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2015/10/15 dadams
+;;     icicle-(lru|mru)-window-for-buffer: Convert times to lists (needed for Emacs 24, not for 25+).
 ;; 2015/09/20 dadams
 ;;     Added: icicle-flx-score-greater-p, if can soft-require flx.el (Emacs 24.3+).
 ;;            http://emacs.stackexchange.com/a/16522/105.
