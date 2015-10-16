@@ -1,0 +1,15 @@
+
+== Installation ==
+
+To use without using a package manager:
+
+* Put the library in a directory in the emacs load path, like ~/.emacs.d
+* Add (require 'readme) in your ~/.emacs file
+* If you have [http://www.marmalade-repo.org/ marmalade-repo.org], this readme is part of the emacs packges you can install.  Just type M-x package-install readme marmalade 
+
+This is in emacswiki, so this package can also be installed using el-get.
+
+After installing el-get, Type M-x el-get-install readme.
+
+
+This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
