@@ -62,7 +62,26 @@ On my linux setup I use the following:
 )
 </pre>
 
-
+I have found that to use rw-hunspell for emacs 24.4 you need the following code:
+<pre>
+(require 'rw-language-and-country-codes)
+(require 'rw-ispell)
+(require 'rw-hunspell)
+;; The following is set via custom
+(setq ispell-program-name "hunspell")
+(setq ;; rw-hunspell-default-dictionary ""
+ rw-hunspell-make-dictionary-menu t
+ rw-hunspell-use-rw-ispell t)
+(rw-hunspell-setup)
+;; For Emacs 24.4+, need to add to `ispell-hunspell-dict-paths-alist'.
+(let (file lst)
+  (dolist (elt rw-hunspell-dictionary-alist)
+    (when (ignore-errors (file-exists-p (setq file (concat (nth 1 (nth 5 elt)) ".aff"))))
+      (unless (member (setq lst (list (nth 0 elt) file)) ispell-hunspell-dict-paths-alist)
+     (push lst ispell-hunspell-dict-paths-alist)))))
+(ispell-find-hunspell-dictionaries)
+(setq ispell-hunspell-dictionary-alist rw-hunspell-dictionary-alist)
+</pre>
 [:Hunspell]
 === Hunspell, no external package ===
 
