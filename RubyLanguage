@@ -14,7 +14,7 @@ Stuff for [http://www.ruby-lang.org/ Object Oriented Scripting Language Ruby].
 Utilities for consulting the documentation using Ri or other tools.
 
 * RiEl
-* [http://www.emacswiki.org/cgi-bin/emacs/YARI YARI] (Yet Another Ri Interface)
+* [http://www.emacswiki.org/emacs/YARI YARI] (Yet Another Ri Interface)
 
 == Ruby on Rails ==
 Tools specifically used for helping you with developing in [http://rubyonrails.org/ Ruby on Rails].
