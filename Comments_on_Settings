@@ -6,3 +6,10 @@ Please make this page clear, specific, and useful, or it is likely to be deleted
 
 -- DrewAdams 2015-10-16 17:59 UTC
 
+
+----
+
+There's no `readme' package in el-get, so the install instructions are wrong too. https://github.com/dimitri/el-get/tree/master/recipes/readme.rcp --> 404
+
+-- npostavs 2015-10-17 13:13 UTC
+
