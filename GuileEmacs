@@ -2,7 +2,7 @@ For the former contents of this page which were for a large part concerned with 
 
 == Overview ==
 
-Guile-based Emacs (possibly called "guilemacs" or Guile-Emacs) is a branch of GNU Emacs that replaces Emacs's own EmacsLisp engine with that of [[Guile]].
+Guile-based Emacs is a branch of GNU Emacs that replaces Emacs's own EmacsLisp engine with the Elisp compiler of [[Guile]]. It does **not** attempt to remove Elisp, and instead aims to become the canonical GNU Emacs of the future by being fully backwards compatible. It's best to call it "GuileEmacs" or "Guile/Emacs" or such to make it clear that it's still GNU Emacs.
 
 The first immediate advantage is that Elisp will execute faster, because Guile uses a compiler tower with many optimization passes and ultimately compiles to Guile VM bytecode, which is more efficient than current Elisp bytecode. In the future, Guile is likely to implement some forms of native JIT as well as AOT compilation as well.
 
