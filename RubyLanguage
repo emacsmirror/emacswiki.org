@@ -9,7 +9,7 @@ Stuff for [http://www.ruby-lang.org/ Object Oriented Scripting Language Ruby].
 * RubyBlockMode
 * RubyTestMode
 * [[ruby-debug]] For a more easy way for debugging in ruby.
-
+* [[ruby-compilation.el]] Run a ruby process in a compilation buffer
 == Documentation ==
 Utilities for consulting the documentation using Ri or other tools.
 
