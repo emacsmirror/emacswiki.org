@@ -10,6 +10,8 @@ Stuff for [http://www.ruby-lang.org/ Object Oriented Scripting Language Ruby].
 * RubyTestMode
 * [[ruby-debug]] For a more easy way for debugging in ruby.
 * [[ruby-compilation.el]] Run a ruby process in a compilation buffer
+* RubyEvalRegion
+
 == Documentation ==
 Utilities for consulting the documentation using Ri or other tools.
 
@@ -19,10 +21,8 @@ Utilities for consulting the documentation using Ri or other tools.
 == Ruby on Rails ==
 Tools specifically used for helping you with developing in [http://rubyonrails.org/ Ruby on Rails].
 
-
 * RubyOnRails
 * [NxhtmlMode nXhtml]
-
 
 ----
 CategoryProgramming
