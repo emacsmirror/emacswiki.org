@@ -335,6 +335,13 @@ I think I can fix that problem with the following code:
 It seems to work, at least with 24.5.
 
 --PabloMachon
+
+[new:sshaw:2015-10-18 22:54 UTC]
+
+Scaling the frame instead of the buffer using [http://www.emacswiki.org/emacs/zoom-frm.el zoom-frm.el] will preserve linum's column.
+
+--[[sshaw]]
+
 == Setnu ==
 
 If you want to display line numbers for every line you are editing,
