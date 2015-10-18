@@ -318,7 +318,23 @@ As far as i know that space under the numbers is the "default" face and there is
 
 [[image:linum-highlight-current-line]]
 
+== Linum: fix margins when font is scaled ==
+[new:PabloMachon:2015-10-18 19:50 CEST]
+When font size is increased in text-scale mode (maybe just invoking `text-scale-increase'), linum mode's line numbers are not properly displayed. The number's font increases but the area containing them stays the same size. As a consequence the numbers don't fit.
 
+I think I can fix that problem with the following code:
+<pre>
+(defun linum-update-window-scale-fix (win)
+  "fix linum for scaled text"
+  (set-window-margins win (ceiling (* (expt text-scale-mode-step text-scale-mode-amount) (car (window-margins)))))
+  )
+
+(advice-add #'linum-update-window :after #'linum-update-window-scale-fix) 
+</pre>
+
+It seems to work, at least with 24.5.
+
+--PabloMachon
 == Setnu ==
 
 If you want to display line numbers for every line you are editing,
