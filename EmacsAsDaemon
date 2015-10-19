@@ -372,6 +372,10 @@ systemctl enable --user emacs
 systemctl start --user emacs
 }}}
 
+
+[new]
+I get weird some weird gui-related errors with the above script.  Using Spacemacs modeline, the non-unicode decorative characters get distorted. I also get a message that it cannot find my Source Code Pro font.
+
 == Stopping the Emacs Daemon ==
 
 The simplest way to stop the emacs daemon from within emacs is to use the <code>kill-emacs</code> or <code>save-buffers-kill-emacs</code> commands.
