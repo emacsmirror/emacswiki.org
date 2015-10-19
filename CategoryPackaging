@@ -9,7 +9,7 @@ You can download a broader list of packages by adding this to your init.el:
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 }}}
-http://www.irstaxreliefsettlement.com/wage-garnishment/
+
 For more information, see InstallingPackages.
 
 == Package Repositories ==
