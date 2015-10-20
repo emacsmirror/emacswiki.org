@@ -59,6 +59,8 @@
 ;;
 ;; 2009/02/07
 ;;      * First released.
+;; 2015/10/20
+;;      * Added autoloads (Reuben Thomas <rrt@sc3d.org>)
 ;;
 
 ;;; Acknowledgements:
@@ -77,17 +79,20 @@
 
 ;;; Code:
 
+;;;###autoload
 (defun kill-current-mode-buffers ()
   "Kill all buffers that major mode same with current mode."
   (interactive)
   (kill-special-mode-buffers-internal major-mode))
 
+;;;###autoload
 (defun kill-current-mode-buffers-except-current ()
   "Kill all buffers that major mode same with current mode.
 And don't kill current buffer."
   (interactive)
   (kill-special-mode-buffers-internal major-mode t))
 
+;;;###autoload
 (defun kill-special-mode-buffers ()
   "Kill all buffers that major mode that user given."
   (interactive)
@@ -98,6 +103,7 @@ And don't kill current buffer."
         (add-to-ordered-list 'mode-list (symbol-name major-mode))))
     (kill-special-mode-buffers-internal (intern-soft (completing-read "Mode: " mode-list)))))
 
+;;;###autoload
 (defun kill-special-mode-buffers-internal (mode &optional except-current-buffer)
   "Kill all buffers that major MODE same with special.
 If option EXCEPT-CURRENT-BUFFER is `non-nil',
@@ -114,6 +120,7 @@ kill all buffers with MODE except current buffer."
         (kill-buffer buffer)))
     (message "Killed %s buffer%s" count (if (> count 1) "s" ""))))
 
+;;;###autoload
 (defun kill-all-buffers-except-current ()
   "Kill all buffers except current buffer."
   (interactive)
@@ -123,6 +130,7 @@ kill all buffers with MODE except current buffer."
       (unless (eq current-buf buffer)
         (kill-buffer buffer)))))
 
+;;;###autoload
 (defun kill-other-window-buffer ()
   "Kill the buffer in other window."
   (interactive)
@@ -130,6 +138,7 @@ kill all buffers with MODE except current buffer."
   (kill-this-buffer)
   (other-window -1))
 
+;;;###autoload
 (defun rename-file-and-buffer (new-name)
   "Renames both current buffer and file it's visiting to NEW-NAME."
   (interactive "sNew name: ")
@@ -144,6 +153,7 @@ kill all buffers with MODE except current buffer."
         (set-visited-file-name new-name)
         (set-buffer-modified-p nil)))))
 
+;;;###autoload
 (defun move-buffer-file (dir)
   "Move both current buffer and file it's visiting to DIR."
   (interactive "DNew directory: ")
@@ -161,6 +171,7 @@ kill all buffers with MODE except current buffer."
       (set-buffer-modified-p nil)
       t)))
 
+;;;###autoload
 (defun buffer-order-next-mark (arg)
   "Jump to next mark."
   (interactive "p")
@@ -193,12 +204,14 @@ kill all buffers with MODE except current buffer."
       (when (number-or-marker-p (cdar cur))
         (goto-char (cdar cur))))))
 
+;;;###autoload
 (defun buffer-order-prev-mark (arg)
   "Jump to previous mark."
   (interactive "p")
   (buffer-order-next-mark
    (or (- arg) -1)))
 
+;;;###autoload
 (defun copy-buffer-file-name-as-kill(choice)
   "Copy the buffer-file-name to the kill-ring"
   (interactive "cCopy Buffer Name (F) Full, (D) Directory, (N) Name")
