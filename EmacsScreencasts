@@ -6,6 +6,10 @@ There are a number of ways of learning, but screencasts have proven unmatched fo
 
 == Screencasts about Emacs ==
 
+=== Initialization ===
+
+* how to set up an emacs init configuration that's organized with org-mode and use-package: [https://www.youtube.com/watch?v=VIuOwIBL-ZU youtube video], [https://github.com/danielmai/.emacs.d GitHub repository]
+
 === Lisp ===
 
 * MarcoBaringer [http://common-lisp.net/project/movies/movies/slime.mov shows SlimeMode] (150MB Quicktime movie, also available [http://common-lisp.net/movies/slime.torrent via Bittorrent]) (see also [http://www.pchristensen.com/blog/articles/reference-for-the-slimelispemacs-screencast/ reference guide] here)
