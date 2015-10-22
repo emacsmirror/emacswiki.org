@@ -1,6 +1,6 @@
 == Using TRAMP with Docker ==
 
-This page is about a TRAMP integration that allows naviguating docker's container.
+This page is about a TRAMP integration that allows navigating docker's container.
 To see other packages related to docker, see [[Docker]].
 
 === Package ===
