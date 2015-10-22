@@ -1,13 +1,13 @@
-==Homegrown lisp==
+My EmacsGenome
 
-===EmacsGenome===
-
-This is a collection of useful emacs lisp libraries (genes: orgmode,
-auctex, ess, iedit-mode, superman, amm), code snsp (latex-frame-mode,
-ess-edit, amm) and emacs options which makes emacs a tool that let
-biostatisticians forget about R-studio:
+get it here: 
 
 https://github.com/tagteam/emacs-genome/
+
+This is a collection of emacs lisp packages (genes: orgmode, auctex,
+ess, iedit-mode, superman, amm), code snsp (latex-frame-mode,
+ess-edit, amm) and emacs options which makes emacs a tool that let
+biostatisticians forget about R-studio:
 
 ----
 
