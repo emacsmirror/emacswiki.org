@@ -8,7 +8,7 @@ There are a number of ways of learning, but screencasts have proven unmatched fo
 
 === Initialization ===
 
-* how to set up an emacs init configuration that's organized with org-mode and use-package: [https://www.youtube.com/watch?v=VIuOwIBL-ZU youtube video], [https://github.com/danielmai/.emacs.d GitHub repository]
+* Daniel Mai discusses how to set up an emacs init configuration that's organized with org-mode and use-package: [https://www.youtube.com/watch?v=VIuOwIBL-ZU youtube video], [https://github.com/danielmai/.emacs.d GitHub repository]
 
 === Lisp ===
 
