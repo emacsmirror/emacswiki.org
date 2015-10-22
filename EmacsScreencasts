@@ -49,12 +49,6 @@ http://www.foldr.org/~michaelw/emacs/redshank/
 
 * Seongkook(CinSK) has very interesting screencasts in his website. see them all in [http://www.cinsk.org/emacs/ here]
 
-
-
-
-
-
-
 * DavidEsposito manages web sites using EmacsMuse : [http://greens.org/~ringo0 Here's a demo of how he uses it]
 
 * MsfAbbrev mode is very good abbreviation package. You can see it in action at [http://www.bloomington.in.us/~brutt/msf-abbrev-demo.gif here]
@@ -62,8 +56,6 @@ http://www.foldr.org/~michaelw/emacs/redshank/
 * [http://nschum.de/src/emacs/company-mode/screencast/ A demo (dead link!)] of experimental CompanyMode, which offers a completion list (like intellisense) in the buffer
 
 * [http://nschum.de/src/emacs/tempo-templates/screencast/ A demo] of TempoSnippets, a snippet.el-like front-end for TempoMode.
-
-
 
 * Editing !JavaDoc via DocMode:  http://nschum.de/src/emacs/doc-mode/screencast/
 
@@ -89,7 +81,7 @@ http://www.foldr.org/~michaelw/emacs/redshank/
 
 * Various Emacs screencasts -- ScreencastSources and ScreencastRecordings have links to screencasts made with ScreencastMode and ScreencastRecord respectively.
 
-* [http://www.microsoft.com/downloads/details.aspx?FamilyId=ADF1B9E7-74A8-401D-9B0E-8326749F9419&displaylang=en Video] showing Emacs in action by Don Box. Funny. You can see how he changes slash into backslash in shell mode running ##cmdproxy.exe##. :-)
+* [http://www.microsoft.com/downloads/details.aspx?FamilyId=ADF1B9E7-74A8-401D-9B0E-8326749F9419&displaylang=en Video (broken link)] showing Emacs in action by Don Box. Funny. You can see how he changes slash into backslash in shell mode running ##cmdproxy.exe##. :-)
 
 * Emacsmovies.org: http://emacsmovies.org/
 ** This has a really nice beginners introduction to Emacs in an X-Windows session.
