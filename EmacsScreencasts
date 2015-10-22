@@ -53,7 +53,7 @@ http://www.foldr.org/~michaelw/emacs/redshank/
 
 * [http://nschum.de/src/emacs/company-mode/screencast/ A demo (dead link!)] of experimental CompanyMode, which offers a completion list (like intellisense) in the buffer
 
-* [http://nschum.de/src/emacs/tempo-templates/screencast/ A demo] of TempoSnippets, a snippet.el-like front-end for TempoMode.
+* [http://nschum.de/src/emacs/tempo-templates/screencast/ A demo (broken link)] of TempoSnippets, a snippet.el-like front-end for TempoMode.
 
 * Editing !JavaDoc via DocMode:  http://nschum.de/src/emacs/doc-mode/screencast/
 
