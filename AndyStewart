@@ -456,7 +456,7 @@ Many people are curious, what i doing after leaving Emacs?
 
 :: [http://hackage.haskell.org/package/manatee Homepage]
 :: [http://www.youtube.com/watch?v=weS6zys3U8k Video] (Select 720p HD version)
-:: [http://goo.gl/MkVw Screenshot]
+:: [https://www.flickr.com/photos/48809572@N02/ Screenshot]
 :: [http://haskell.org/haskellwiki/Manatee Manual]
 :: IRC channel : irc.freenode.net 6667 ##manatee
 :: Mailing-List : manatee-user@googlegroups.com manatee-develop@googlegroups.com
@@ -478,13 +478,21 @@ Looks great. -- XueFuqiao
 
 ----
 
-==What I'm doing now?==
+==My work==
 
 Now i spend all my time on [http://www.linuxdeepin.com LinuxDeepin] and my baby girl. :)
 
-I build deepin-ui, deepin-screenshot, deepin-software-center, deepin-translator, deepin-movie, deepin-window-manager, deepin-gnome-shell, deepin-desktop-enviroment, deepin-system-setting, deepin-terminal in recently two years.
-
 Of course, now i share my fastest [https://gitcafe.com/Deepin/deepin-emacs deepin-emacs], enjoy emacsers! ;) 
+
+----
+
+==Next Emacs==
+
+Top hacker like live in emacs, keyboard control everything... Unfortunately, emacs can't do everything, such as web browser, GUI multimedia application, power tool in real world.
+
+Why not build everything with keyboard? Like emacs style, but this time, we rebuild everything scratch from [https://github.com/manateelazycat/mrkeyboard MrKeyboard].
+
+This is OS for top hacker, enjoy it. ;)
 
 ----
 
