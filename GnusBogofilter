@@ -1,6 +1,6 @@
 Bogofilter implements a fast Bayesian spam filter along the lines suggested by Paul Graham in his article "A Plan For Spam". Its home page is at http://bogofilter.sourceforge.net
 
-Gnus has its own spam package that can use Bogofilter. Another (and simpler) approach is here: [[https://github.com/tlikonen/gnus-bogofilter]]
+Gnus has its own spam package that can use Bogofilter. Another (and simpler) approach is here: [https://github.com/tlikonen/gnus-bogofilter gnus-bogofilter].
 
 ----
 Another nice feature is to sort the mails in the spam group with the spamicity, i.e. the spam probability, so that articles with the lowest spam probability are right at the top. This way it is easier to spot false positives, i.e. mails which were wrongly identified as spam (those will usually have a relatively low spam probability).
