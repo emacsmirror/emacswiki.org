@@ -1,4 +1,4 @@
-;;; dot-mode.el - minor mode to repeat typing or commands
+;;; dot-mode.el --- minor mode to repeat typing or commands
 ;;; Copyright (C) 1995 James Gillespie
 ;;; Copyright (C) 2000 Robert Wyrick (rob@wyrick.org)
 ;;
