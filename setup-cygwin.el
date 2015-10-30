@@ -8,9 +8,9 @@
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 0
 ;; Package-Requires: ((cygwin-mount "0"))
-;; Last-Updated: Thu Jan  1 11:13:26 2015 (-0800)
+;; Last-Updated: Fri Oct 30 14:26:11 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 158
+;;     Update #: 164
 ;; URL: http://www.emacswiki.org/setup-cygwin.el
 ;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
@@ -31,6 +31,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/10/30 dadams
+;;     Use Eli Z. suggestion for setting buffer-file-coding-system.
 ;; 2014/01/30 dadams
 ;;     Added: setcyg-dir-p.
 ;;     cygwin-root-directory: Look for "C:/cygwin64/" first, then "C:/cygwin/".
@@ -146,7 +148,11 @@ loaded as such.)"
 (add-hook 'find-file-hooks 'follow-cygwin-symlink)
 
 ;;; Use Unix-style line endings.
-(setq-default buffer-file-coding-system 'undecided-unix)
+;; Per Eli Z. http://debbugs.gnu.org/cgi/bugreport.cgi?bug=21780#40:
+;;
+;; $$$$$$ (setq-default buffer-file-coding-system 'undecided-unix)
+(setq-default buffer-file-coding-system (coding-system-change-eol-conversion
+                                         default-buffer-file-coding-system 'unix))
 
 ;;; Use /dev/null, not NUL.
 (setq null-device  "/dev/null")
