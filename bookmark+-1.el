@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Sep  8 12:39:04 2015 (-0700)
+;; Last-Updated: Sat Oct 31 16:47:05 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 7846
+;;     Update #: 7848
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3129,29 +3129,36 @@ contain a `%s' construct, so that it can be passed along with FILE to
 ;; 2. Unless DUPLICATES-OK is non-nil, if a bookmark in NEW-LIST is `equal' to a bookmark in `bookmark-alist'
 ;;    then do not rename it and do not add it - just ignore it.
 ;;
-;; 3. Return value indicates how many bookmarks were added and renamed.
+;; 3. Return value includes how many bookmarks were added and renamed.
+;;    If RETURN-BMKS is non-nil then it also includes which bookmarks were added.
 ;;
-(defun bookmark-import-new-list (new-list &optional duplicates-ok)
+(defun bookmark-import-new-list (new-list &optional duplicates-ok return-bmks)
   "Add NEW-LIST of bookmarks to `bookmark-alist'.
 Unless optional arg DUPLICATES-OK is non-nil, ignore bookmarks that
-are `equal' to bookmarks in `bookmark-alist'.
+are `equal' to bookmarks in `bookmark-alist'.  (This means that all of
+their information is `equal', not just their names.  This includes
+their tags and annotations.)
 
 Rename new bookmarks that are not ignored, as needed, using suffix
 \"<N>\" (N=2,3...) when they conflict with existing bookmark names.
 
-Return a cons of the number renamed and the number added."
-  (let ((names    (bookmark-all-names))
-        (added    0)
-        (renamed  0))
+Return a list (NB-RENAMED NB-ADDED BMKS-ADDED) of the number renamed,
+the number added, and the full bookmarks that were added.  If
+RETURN-BMKS is nil then BMKS-ADDED is just nil (the bookmarks are not
+returned)."
+  (let ((names       (bookmark-all-names))
+        (nb-added    0)
+        (nb-renamed  0)
+        (bmks-added  ()))
     (dolist (full-bmk  new-list)
       (when (or (and (not (member full-bmk bookmark-alist)) ; Check even if DUPLICATES-OK, to update ADDEDP.
-                     (setq added  (1+ added)))
+                     (setq nb-added  (1+ nb-added)))
                 duplicates-ok)
-        (when (bookmark-maybe-rename full-bmk names) (setq renamed  (1+ renamed)))
+        (when (bookmark-maybe-rename full-bmk names) (setq nb-renamed  (1+ nb-renamed)))
         (setq bookmark-alist  (nconc bookmark-alist (list full-bmk)))
-        (push (bookmark-name-from-full-record full-bmk) names)))
-    (cons renamed added)))
-
+        (push (bookmark-name-from-full-record full-bmk) names)
+        (when return-bmks (push full-bmk bmks-added))))
+    (list nb-renamed nb-added bmks-added)))
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
