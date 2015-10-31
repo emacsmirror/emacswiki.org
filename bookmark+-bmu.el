@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Jun 26 14:53:06 2015 (-0700)
+;; Last-Updated: Sat Oct 31 16:49:37 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3700
+;;     Update #: 3740
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1177,8 +1177,8 @@ Non-interactively:
                      bmkp-bmenu-omitted-bookmarks      (cdr (assq 'last-bmenu-omitted-bookmarks state))
                      bmkp-bmenu-marked-bookmarks       (cdr (assq 'last-bmenu-marked-bookmarks  state))
                      bmkp-bmenu-filter-function        (cdr (assq 'last-bmenu-filter-function   state))
-                     bmkp-bmenu-filter-pattern
-                     (or (cdr (assq 'last-bmenu-filter-pattern state))  "")
+                     bmkp-bmenu-filter-pattern         (or (cdr (assq 'last-bmenu-filter-pattern state))
+                                                           "")
                      bmkp-bmenu-title                  (cdr (assq 'last-bmenu-title             state))
                      bmkp-last-bmenu-bookmark          (cdr (assq 'last-bmenu-bookmark          state))
                      bmkp-last-specific-buffer         (cdr (assq 'last-specific-buffer         state))
@@ -1273,11 +1273,9 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
               tags        (bmkp-get-tags bmk)
               annotation  (bookmark-get-annotation bmk)
               start       (+ bmkp-bmenu-marks-width (point)))
-        (cond (flaggedp
-               (insert "D") (put-text-property (1- (point)) (point) 'face 'bmkp-D-mark))
-              (markedp
-               (insert ">") (put-text-property (1- (point)) (point) 'face 'bmkp->-mark))
-              (t (insert " ")))
+        (cond (flaggedp (insert "D") (put-text-property (1- (point)) (point) 'face 'bmkp-D-mark))
+              (markedp  (insert ">") (put-text-property (1- (point)) (point) 'face 'bmkp->-mark))
+              (t        (insert " ")))
         (if (null tags)
             (insert " ")
           (insert "t") (put-text-property (1- (point)) (point) 'face 'bmkp-t-mark))
@@ -1307,8 +1305,7 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
                (eq (selected-window) (get-buffer-window (get-buffer-create "*Bookmark List*") 0)))
       (fit-frame-if-one-window)))
   (when (fboundp 'bmkp-bmenu-mode-line) (bmkp-bmenu-mode-line))
-  (when (and interactivep  bmkp-sort-comparer)
-    (bmkp-msg-about-sort-order (bmkp-current-sort-order))))
+  (when (and interactivep  bmkp-sort-comparer) (bmkp-msg-about-sort-order (bmkp-current-sort-order))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1860,8 +1857,7 @@ Non-nil optional arg NO-MSG-P means do not show progress messages."
                   (when (if (fboundp 'display-color-p) ; Emacs 21+.
                             (and (display-color-p)  (display-mouse-p))
                           window-system)
-                    (let ((help  (get-text-property (+ bmkp-bmenu-marks-width
-                                                       (line-beginning-position))
+                    (let ((help  (get-text-property (+ bmkp-bmenu-marks-width (line-beginning-position))
                                                     'help-echo)))
                       (put-text-property (+ bmkp-bmenu-marks-width (line-beginning-position))
                                          (point) 'mouse-face 'highlight)
@@ -2044,8 +2040,7 @@ Non-interactively, non-nil MSG-P means display messages."
   (interactive "p")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
-  (let ((bookmark  (bookmark-bmenu-bookmark)))
-    (bookmark-show-annotation bookmark msg-p)))
+  (let ((bookmark  (bookmark-bmenu-bookmark))) (bookmark-show-annotation bookmark msg-p)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -2082,7 +2077,7 @@ for confirmation."
         (while (re-search-forward mark-type (point-max) t)
           (let* ((bmk-name  (bookmark-bmenu-bookmark))
                  (bmk       (bookmark-get-bookmark bmk-name)))
-            ;; Inhibit saving until all are deleted, then do in once.  Otherwise, some might not be
+            ;; Inhibit saving until all are deleted, then do it once.  Otherwise, some might not be
             ;; deleted, because `bookmark-save' refreshes the list, which removes `D' flags.
             (let ((bookmark-save-flag  nil))  (bookmark-delete bmk-name 'BATCHP))
             ;; Count is misleading if the bookmark is not really in `bookmark-alist'.
@@ -2112,8 +2107,7 @@ for confirmation."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
-  (let ((newname  (bookmark-rename (bookmark-bmenu-bookmark))))
-    (bmkp-bmenu-goto-bookmark-named newname)))
+  (let ((newname  (bookmark-rename (bookmark-bmenu-bookmark)))) (bmkp-bmenu-goto-bookmark-named newname)))
  
 ;;(@* "Bookmark+ Functions (`bmkp-*')")
 ;;; Bookmark+ Functions (`bmkp-*') -----------------------------------
@@ -2223,8 +2217,7 @@ To revert the list and display from the bookmark file, use `C-u \\[bmkp-bmenu-re
         bmkp-bmenu-title            "All Bookmarks"
         bmkp-latest-bookmark-alist  bookmark-alist)
   (bookmark-bmenu-list)
-  (when (interactive-p)
-    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "All bookmarks are shown")))
+  (when (interactive-p) (bmkp-msg-about-sort-order (bmkp-current-sort-order) "All bookmarks are shown")))
 
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-autofile-bookmarks "bookmark+")
 (defun bmkp-bmenu-show-only-autofile-bookmarks (&optional arg) ; Bound to `A S' in bookmark list
@@ -2331,7 +2324,7 @@ If FILE is non-nil, set `bmkp-last-specific-file' to it."
 
 
 ;;;###autoload (autoload 'bmkp-bmenu-refresh-menu-list "bookmark+")
-(defun bmkp-bmenu-refresh-menu-list (&optional arg msg-p) ; Bound to `g' in bookmark list
+(defun bmkp-bmenu-refresh-menu-list (&optional parg msg-p) ; Bound to `g' in bookmark list
   "Refresh (revert) the bookmark list display (aka \"menu list\").
 This brings the displayed list up to date with respect to the current
 bookmark list.  It does not change the filtering or sorting of the
@@ -2350,10 +2343,10 @@ From Lisp, non-nil optional arg MSG-P means show progress messages."
   (interactive "P\np")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((msg  "Refreshing from bookmark "))
-    (cond ((and arg  (yes-or-no-p (format "Refresh list to bookmarks saved in file `%s'? "
-                                          bmkp-current-bookmark-file)))
+    (cond ((and parg  (yes-or-no-p (format "Refresh list to bookmarks saved in file `%s'? "
+                                           bmkp-current-bookmark-file)))
            (when msg-p (message (setq msg  (concat msg "file..."))))
-           (bookmark-load bmkp-current-bookmark-file 'OVERWRITE 'NO-MSG-P)
+           (bookmark-load bmkp-current-bookmark-file 'OVERWRITE 'BATCH-NO-SAVE)
            (setq bmkp-bmenu-marked-bookmarks   () ; Start from scratch.
                  bmkp-modified-bookmarks       ()
                  bmkp-flagged-bookmarks        ()
@@ -2976,14 +2969,14 @@ that are marked are included."
 Optional arg NO-CONFIRM-P non-nil means do not ask for confirmation."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (bookmark-bmenu-execute-deletions 'marked 'NO-CONFIRM))
+  (bookmark-bmenu-execute-deletions 'MARKED 'NO-CONFIRM))
 
 ;;;###autoload (autoload 'bmkp-bmenu-move-marked-to-bookmark-file "bookmark+")
 (defun bmkp-bmenu-move-marked-to-bookmark-file (file &optional duplicates-ok include-omitted-p batchp)
                                         ; Bound to `Y > -' in bookmark list
   "Move the marked bookmarks to bookmark file FILE.
 You are prompted for FILE.
-The marked bookmarks are removed from the current bookmark file and
+The marked bookmarks are removed from the current bookmark list and
 appended to those in FILE.  If any of them has the same name as a
 bookmark already in FILE then it is renamed by appending a numeric
 suffix \"<N>\" (N=2,3...).
@@ -2997,6 +2990,10 @@ If no bookmark is marked then move the bookmark of the current line.
 
 Omitted bookmarks are excluded, by default.  With a non-positive
 prefix arg, any that are marked are included.
+
+The bookmarks are removed from the currently displayed bookmark list,
+but the bookmark file associated with it is not saved automatically.
+To save it, reply \"yes\" to the prompt.
 
 Non-interactively, non-nil optional arg BATCHP means do not prompt to
 confirm moving to new, empty file if no existing file."
@@ -3020,15 +3017,10 @@ confirm moving to new, empty file if no existing file."
              (not batchp)
              (not (y-or-n-p (format "Move to NEW, EMPTY bookmark file `%s'? " file))))
     (error "OK - canceled"))
-  (bmkp-bmenu-copy-marked-to-bookmark-file file duplicates-ok include-omitted-p batchp)
-  (if bmkp-bmenu-marked-bookmarks
-      (bmkp-bmenu-delete-marked 'NO-CONFIRM)
-    (when (bookmark-bmenu-bookmark)
-      (bookmark-delete (bookmark-bmenu-bookmark) 'BATCHP))) ; Delete current one.
-  (bmkp-bmenu-refresh-menu-list nil 'MSGP)) ; Do not save file or refresh from file.
+  (bmkp-bmenu-copy-marked-to-bookmark-file file duplicates-ok include-omitted-p 'MOVE 'BATCH))
 
 ;;;###autoload (autoload 'bmkp-bmenu-copy-marked-to-bookmark-file "bookmark+")
-(defun bmkp-bmenu-copy-marked-to-bookmark-file (file &optional duplicates-ok include-omitted-p batchp)
+(defun bmkp-bmenu-copy-marked-to-bookmark-file (file &optional duplicates-ok include-omitted-p movep batchp)
                                         ; Bound to `Y > +' in bookmark list
   "Copy the marked bookmarks to bookmark file FILE.
 You are prompted for FILE.
@@ -3047,8 +3039,10 @@ If no bookmark is marked then copy the bookmark of the current line.
 Omitted bookmarks are excluded, by default.  With a non-positive
 prefix arg, any that are marked are included.
 
-Non-interactively, non-nil optional arg BATCHP means do not prompt to
-confirm moving to new, empty file if no existing file."
+Non-interactively:
+* Non-nil MOVEP means delete the bookmarks copied.
+* Non-nil BATCHP means do not prompt to confirm moving to a new, empty
+  file if there is no existing file."
   (interactive
    (list (let* ((_IGNORE      (bmkp-bmenu-barf-if-not-in-menu-list))
                 (std-default  (bmkp-default-bookmark-file))
@@ -3069,28 +3063,36 @@ confirm moving to new, empty file if no existing file."
              (not batchp)
              (not (y-or-n-p (format "Copy to NEW, EMPTY bookmark file `%s'? " file))))
     (error "OK - canceled"))
-  (let* ((marked-bmks                        (bmkp-sort-omit
-                                              (bmkp-bmenu-marked-or-this-or-all nil include-omitted-p)))
-         (bookmark-alist                     bookmark-alist)
-         (bookmark-alist-modification-count  bookmark-alist-modification-count)
-         imported)
-    (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
-      (goto-char (point-min))
-      (if (file-exists-p file)
-          (bookmark-maybe-upgrade-file-format)
-        (delete-region (point-min) (point-max)) ; In case a find-file hook inserted a header etc.
-        (bookmark-insert-file-format-version-stamp) ; Insert timestamp and an empty bookmark list.
-        (insert "(\n)"))
-      (let ((blist  (bookmark-alist-from-buffer)))
-        (unless (listp blist) (error "Invalid bookmark list in file `%s'" file))
-        (setq bookmark-alist  blist)    ; Bookmarks in FILE
-        (setq imported  (bookmark-import-new-list marked-bmks duplicates-ok))
-        (if (and (zerop (car imported))  (zerop (cdr imported)))
-            (unless batchp (message "No changes"))
-          (unless batchp (message "%d added, %d renamed" (cdr imported) (car imported)))
-          (bookmark-write-file file))))
-    (unless (zerop (car imported))      ; Some that were copied were renamed, so refresh from file.
-      (bmkp-bmenu-refresh-menu-list 'FROM-FILE 'MSGP))))
+  (let ((bookmark-save-flag  nil) ; Inhibit auto-saving for the duration.
+        imported)
+    (let ((marked-bmks                        (bmkp-sort-omit
+                                               (bmkp-bmenu-marked-or-this-or-all nil include-omitted-p)))
+          (bookmark-alist                     bookmark-alist)
+          (bookmark-alist-modification-count  bookmark-alist-modification-count))
+      (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
+        (goto-char (point-min))
+        (if (file-exists-p file)
+            (bookmark-maybe-upgrade-file-format)
+          (delete-region (point-min) (point-max)) ; In case a find-file hook inserted a header etc.
+          (bookmark-insert-file-format-version-stamp) ; Insert timestamp and an empty bookmark list.
+          (insert "(\n)"))
+        (let ((blist  (bookmark-alist-from-buffer)))
+          (unless (listp blist) (error "Invalid bookmark list in file `%s'" file))
+          (setq bookmark-alist  blist)  ; Bookmarks in FILE
+          (setq imported  (bookmark-import-new-list marked-bmks duplicates-ok 'RETURN-BMKS))
+          (if (and (zerop (nth 0 imported))  (nth 1 imported))
+              (unless batchp (message "No changes"))
+            (unless batchp (message "%d added, %d renamed" (nth 1 imported) (nth 0 imported)))
+            (bookmark-write-file file)))))
+    ;; Delete bookmarks if moved.
+    ;; Refresh display of list copied from, if needed.
+    ;; (Exit `let', to restore `bookmark-alist'.)
+    (cond (movep
+           (dolist (bmk  (nth 2 imported)) (bookmark-delete bmk 'BATCHP))
+           (bmkp-bmenu-refresh-menu-list nil 'MSGP)) ; Refresh without saving.
+          ((not (zerop (nth 0 imported)))
+           ;; Some that were copied were renamed.  Ask use whether to refresh from file.
+           (bmkp-bmenu-refresh-menu-list 'FROM-FILE 'MSGP)))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-create-bookmark-file-from-marked "bookmark+")
 (defun bmkp-bmenu-create-bookmark-file-from-marked (file create-b-f-bookmark-p
@@ -3202,13 +3204,10 @@ to turn saving back on."
         (when bookmark-save-flag  (setq bookmark-save-flag  nil)) ; Be sure it's off.
         (when msg-p (message "Autosaving of current bookmark file is now OFF")))
       (when msg-p (message "Loading marked bookmark files..."))
-
       (dolist (bmk  bmks)               ; Load.
         ;; USE BATCHP: Do not refresh list or display messages here - do that after iterate.
         (bookmark-load (bookmark-get-filename bmk) nil 'BATCHP))
-
       ;; $$$$$$ Should we do (bmkp-tags-list) here to update the tags cache?
-
       (bmkp-refresh-menu-list bmk (not msg-p)) ; Refresh after iterate.
       (when msg-p (message "Autosaving is now OFF.  Loaded: %s"
                            (mapconcat (lambda (bmk) (format "`%s'" (bmkp-bookmark-name-from-record bmk)))
@@ -3241,14 +3240,13 @@ Returns the bookmark (internal record) created or updated."
   (let ((marked-bmks  ())
         (count        0))
     (message "Making sequence from marked bookmarks...")
-    (save-excursion
-      (with-current-buffer "*Bookmark List*"
-        (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
-        (while (re-search-forward "^>" (point-max) t)
-          (push (bookmark-bmenu-bookmark) marked-bmks)
-          (setq count  (1+ count)))))
+    (save-excursion (with-current-buffer "*Bookmark List*"
+                      (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
+                      (while (re-search-forward "^>" (point-max) t)
+                        (push (bookmark-bmenu-bookmark) marked-bmks)
+                        (setq count  (1+ count)))))
     (when (zerop count) (error "No marked bookmarks"))
-      (bmkp-set-sequence-bookmark seqname (nreverse marked-bmks)))
+    (bmkp-set-sequence-bookmark seqname (nreverse marked-bmks)))
   (let ((new  (bookmark-get-bookmark seqname 'NOERROR)))
     (unless (memq new bmkp-latest-bookmark-alist)
       (setq bmkp-latest-bookmark-alist  (cons new bmkp-latest-bookmark-alist)))
@@ -3300,7 +3298,7 @@ You can then mark some of them and use `\\[bmkp-bmenu-omit/unomit-marked]' to ma
     (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
     (while (re-search-forward "^>" (point-max) t)
       (setq bmkp-bmenu-omitted-bookmarks  (cons (bookmark-bmenu-bookmark) bmkp-bmenu-omitted-bookmarks)
-            count                    (1+ count)))
+            count                         (1+ count)))
     (if (<= count 0)
         (message "No marked bookmarks")
       (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
@@ -4270,8 +4268,7 @@ Save the command definition in `bmkp-bmenu-commands-file'."
   (let* ((cands  (mapcar #'list
                          (bmkp-maybe-unpropertize-bookmark-names
                           (bmkp-remove-if #'(lambda (bmk)
-                                              (bmkp-bookmark-name-member bmk
-                                                                         bmkp-bmenu-omitted-bookmarks))
+                                              (bmkp-bookmark-name-member bmk bmkp-bmenu-omitted-bookmarks))
                                           bmkp-bmenu-marked-bookmarks))))
          (fn     (intern (read-string "Define command to jump to a bookmark now marked: " nil
                                       bmkp-bmenu-define-command-history)))
@@ -4406,8 +4403,7 @@ the omit list and the sort & filter information."
                    (with-current-buffer (get-buffer "*Bookmark List*")
                      (bmkp-bmenu-goto-bookmark-named bmkp-last-bmenu-bookmark)))
                  (when (interactive-p)
-                   (bmkp-msg-about-sort-order
-                    (car (rassoc bmkp-sort-comparer bmkp-sort-orders-alist)))))))
+                   (bmkp-msg-about-sort-order (car (rassoc bmkp-sort-comparer bmkp-sort-orders-alist)))))))
     (eval def)
     (with-current-buffer (find-file-noselect bmkp-bmenu-commands-file)
       (goto-char (point-max))
@@ -4878,7 +4874,8 @@ For each number indication:
                                   (if (bmkp-looking-at-p (concat regexp ".*"))
                                       (format "%d/" (1+ (count-matches regexp (point-min) (point))))
                                     ""))
-                                nb  mk)  'face (intern (format "bmkp-%c-mark" mk))))
+                                nb  mk)
+                               'face (intern (format "bmkp-%c-mark" mk))))
                          (and (> nb 0)  " "))))
         (format "%s%s" desc text-sort))))
 
@@ -5259,8 +5256,8 @@ prefix arg, any that are marked are included."
     (dolist (bmk  (bmkp-sort-omit (bmkp-bmenu-marked-or-this-or-all nil include-omitted-p)))
       (if defn
           (let* ((bname      (bmkp-bookmark-name-from-record bmk))
-                 (help-text  (format "%s\n%s\n\n%s" bname (make-string (length bname) ?-)
-                                     (pp-to-string bmk))))
+                 (help-text  (format "%s\n%s\n\n%s"
+                                     bname (make-string (length bname) ?-) (pp-to-string bmk))))
             (princ help-text) (terpri))
         (princ (bmkp-bookmark-description bmk)) (terpri)))))
 
@@ -5305,7 +5302,7 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "="                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "=bM"                  'bmkp-bmenu-mark-specific-buffer-bookmarks)
 (define-key bookmark-bmenu-mode-map "=fM"                  'bmkp-bmenu-mark-specific-file-bookmarks)
-(define-key bookmark-bmenu-mode-map "=bS"                'bmkp-bmenu-show-only-specific-buffer-bookmarks)
+(define-key bookmark-bmenu-mode-map "=bS"                  'bmkp-bmenu-show-only-specific-buffer-bookmarks)
 (define-key bookmark-bmenu-mode-map "=fS"                  'bmkp-bmenu-show-only-specific-file-bookmarks)
 (define-key bookmark-bmenu-mode-map "%"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "%m"                   'bmkp-bmenu-regexp-mark)
@@ -5355,8 +5352,8 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map (kbd "C-h C-<return>") 'bmkp-bmenu-describe-this-bookmark)
 (define-key bookmark-bmenu-mode-map (kbd "C-<down>")       'bmkp-bmenu-describe-this+move-down)
 (define-key bookmark-bmenu-mode-map (kbd "C-<up>")         'bmkp-bmenu-describe-this+move-up)
-(define-key bookmark-bmenu-mode-map (kbd "M-<down>") 'bmkp-bmenu-show-this-annotation+move-down)
-(define-key bookmark-bmenu-mode-map (kbd "M-<up>")   'bmkp-bmenu-show-this-annotation+move-up)
+(define-key bookmark-bmenu-mode-map (kbd "M-<down>")       'bmkp-bmenu-show-this-annotation+move-down)
+(define-key bookmark-bmenu-mode-map (kbd "M-<up>")         'bmkp-bmenu-show-this-annotation+move-up)
 (define-key bookmark-bmenu-mode-map (kbd "M-<return>")     'bmkp-bmenu-w32-open)
 (define-key bookmark-bmenu-mode-map [M-mouse-2]            'bmkp-bmenu-w32-open-with-mouse)
 (when (featurep 'bookmark+-lit)
@@ -5371,7 +5368,7 @@ are marked or ALLP is non-nil."
   (define-key bookmark-bmenu-mode-map "HU"                 'bmkp-bmenu-unlight))
 (define-key bookmark-bmenu-mode-map "i"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "iM"                  'bmkp-bmenu-mark-icicles-search-hits-bookmarks)
-(define-key bookmark-bmenu-mode-map "iS"             'bmkp-bmenu-show-only-icicles-search-hits-bookmarks)
+(define-key bookmark-bmenu-mode-map "iS"                'bmkp-bmenu-show-only-icicles-search-hits-bookmarks)
 (define-key bookmark-bmenu-mode-map "I"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "IM"                   'bmkp-bmenu-mark-info-bookmarks)
 (define-key bookmark-bmenu-mode-map "IS"                   'bmkp-bmenu-show-only-info-bookmarks)
@@ -5396,14 +5393,14 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "\M-m"                 'bmkp-bmenu-mark-all)
 (define-key bookmark-bmenu-mode-map "O"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "OM"                 'bmkp-bmenu-mark-orphaned-local-file-bookmarks)
-(define-key bookmark-bmenu-mode-map "OS"             'bmkp-bmenu-show-only-orphaned-local-file-bookmarks)
+(define-key bookmark-bmenu-mode-map "OS"                'bmkp-bmenu-show-only-orphaned-local-file-bookmarks)
 (define-key bookmark-bmenu-mode-map "P"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "PA"                  'bmkp-bmenu-filter-annotation-incrementally)
 (define-key bookmark-bmenu-mode-map "PB"                 'bmkp-bmenu-filter-bookmark-name-incrementally)
 (define-key bookmark-bmenu-mode-map "PF"                   'bmkp-bmenu-filter-file-name-incrementally)
 (define-key bookmark-bmenu-mode-map "PT"                   'bmkp-bmenu-filter-tags-incrementally)
 (define-key bookmark-bmenu-mode-map "q"                    'bmkp-bmenu-quit)
-(define-key bookmark-bmenu-mode-map "\M-q"            'bmkp-bmenu-query-replace-marked-bookmarks-regexp)
+(define-key bookmark-bmenu-mode-map "\M-q"                'bmkp-bmenu-query-replace-marked-bookmarks-regexp)
 (define-key bookmark-bmenu-mode-map "Q"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "QM"                   'bmkp-bmenu-mark-function-bookmarks)
 (define-key bookmark-bmenu-mode-map "QS"                   'bmkp-bmenu-show-only-function-bookmarks)
@@ -5418,7 +5415,7 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "s>"                   'bmkp-bmenu-sort-marked-before-unmarked)
 (define-key bookmark-bmenu-mode-map "s*"                   'bmkp-bmenu-sort-modified-before-unmodified)
 (define-key bookmark-bmenu-mode-map "s0"                   'bmkp-bmenu-sort-by-creation-time)
-(define-key bookmark-bmenu-mode-map "sb"                 'bmkp-bmenu-sort-by-last-buffer-or-file-access)
+(define-key bookmark-bmenu-mode-map "sb"                   'bmkp-bmenu-sort-by-last-buffer-or-file-access)
 (define-key bookmark-bmenu-mode-map "sd"                   'bmkp-bmenu-sort-by-last-bookmark-access)
 (define-key bookmark-bmenu-mode-map "sD"                   'bmkp-bmenu-sort-flagged-before-unflagged)
 (define-key bookmark-bmenu-mode-map "sfd"                  'bmkp-bmenu-sort-by-last-local-file-access)
@@ -5475,7 +5472,7 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "Tv"                   'bmkp-bmenu-set-tag-value)
 (define-key bookmark-bmenu-mode-map "T\M-w"                'bmkp-bmenu-copy-tags)
 (define-key bookmark-bmenu-mode-map "T\C-y"                'bmkp-bmenu-paste-add-tags)
-(define-key bookmark-bmenu-mode-map "\M-t"             'bookmark-bmenu-toggle-filenames) ; `t' in Emacs
+(define-key bookmark-bmenu-mode-map "\M-t"                 'bookmark-bmenu-toggle-filenames) ; `t' in Emacs
 (define-key bookmark-bmenu-mode-map "t"                    'bmkp-bmenu-toggle-marks)
 (define-key bookmark-bmenu-mode-map "U"                    'bmkp-bmenu-unmark-all)
 (define-key bookmark-bmenu-mode-map "\M-u"                 nil) ; For Emacs 20
@@ -5797,10 +5794,10 @@ are marked or ALLP is non-nil."
                              "Toggle the value of option `bookmark-bmenu-toggle-filenames'"
                              (progn
                                (custom-load-symbol 'bookmark-bmenu-toggle-filenames)
-                               (let ((set (or (get 'bookmark-bmenu-toggle-filenames 'custom-set)
-                                              'set-default))
-                                     (get (or (get 'bookmark-bmenu-toggle-filenames 'custom-get)
-                                              'default-value)))
+                               (let ((set  (or (get 'bookmark-bmenu-toggle-filenames 'custom-set)
+                                               'set-default))
+                                     (get  (or (get 'bookmark-bmenu-toggle-filenames 'custom-get)
+                                               'default-value)))
                                  (funcall set 'bookmark-bmenu-toggle-filenames
                                           (not (funcall get 'bookmark-bmenu-toggle-filenames))))
                                (if bookmark-bmenu-toggle-filenames
