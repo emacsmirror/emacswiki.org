@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Sep  7 11:27:48 2015 (-0700)
+;; Last-Updated: Sat Oct 31 17:02:36 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 15995
+;;     Update #: 16004
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2015/10/31 dadams
+;;     bookmark-import-new-list: Added arg RETURN-BMKS: Return bookmarks added, if non-nil.
 ;; 2015/09/07 dadams
 ;;     bmkp-some: Return cons (ELEMENT . VALUE).
 ;; 2015/08/16 dadams
@@ -1186,6 +1188,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2015/10/31 dadams
+;;     bmkp-bmenu-move-marked-to-bookmark-file:
+;;       Just call bmkp-bmenu-copy-marked-to-bookmark-file.  It now deletes moved and refreshes list.
+;;     bmkp-bmenu-copy-marked-to-bookmark-file:
+;;       Added arg MOVEP.  If move, delete before refresh list (deletes bmks returned in IMPORTED). 
 ;; 2015/06/26 dadams
 ;;     Added: bmkp-bmenu-mark-function-bookmarks, bmkp-bmenu-show-only-function-bookmarks.
 ;;            Bound the to Q M and Q S.  Added to bmkp-bmenu-show-types-menu.
