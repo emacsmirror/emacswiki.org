@@ -8,9 +8,9 @@
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 0
 ;; Package-Requires: ((cygwin-mount "0"))
-;; Last-Updated: Sat Oct 31 08:45:12 2015 (-0700)
+;; Last-Updated: Sat Oct 31 09:07:15 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 168
+;;     Update #: 169
 ;; URL: http://www.emacswiki.org/setup-cygwin.el
 ;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
@@ -152,7 +152,7 @@ loaded as such.)"
 ;;
 ;; $$$$$$ (setq-default buffer-file-coding-system 'undecided-unix)
 (setq-default buffer-file-coding-system (coding-system-change-eol-conversion
-                                         (default-value buffer-file-coding-system)
+                                         (default-value 'buffer-file-coding-system)
                                          'unix))
 
 ;;; Use /dev/null, not NUL.
