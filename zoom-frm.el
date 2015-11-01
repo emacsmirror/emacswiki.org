@@ -8,9 +8,9 @@
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Sun Nov  1 11:03:08 2015 (-0700)
+;; Last-Updated: Sun Nov  1 11:29:03 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 335
+;;     Update #: 337
 ;; URL: http://www.emacswiki.org/zoom-frm.el
 ;; Doc URL: http://emacswiki.org/SetFonts
 ;; Keywords: frames, extensions, convenience
@@ -125,6 +125,16 @@
 ;;    (global-set-key [C-S-mouse-1]  'zoom-out)
 ;;    ;; Get rid of `mouse-set-font' or `mouse-appearance-menu':
 ;;    (global-set-key [S-down-mouse-1] nil)
+;;
+;;  Some of the commands are not autoloaded by default, because this
+;;  library works with old as well as recent Emacs releases.  The
+;;  commands that are not autoloaded are not usable in older releases.
+;;  You can autoload such commands yourself.  For example, if you use
+;;  Emacs 23 or later, you can add this to your init file, to autoload
+;;  `zoom-in/out':
+;;
+;;  (autoload 'zoom-in/out "zoom-frm"
+;;            "Zoom current frame or buffer in or out" t)
 ;;
 ;;  The first two of the mouse bindings mean that in Emacs 22 or later
 ;;  you can hold the Control key and rotate the mouse wheel to zoom in
