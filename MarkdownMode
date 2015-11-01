@@ -6,6 +6,8 @@ markdown-mode version 2.0 was released on March 24, 2013.  Release notes can be 
 
 http://jblevins.org/projects/markdown-mode/rev-2-0
 
+Debian have `elpa-markdown-mode' package.
+
 == Customization ==
 
 It can be useful to enforce certain static constraints on Markdown files; for example, the heavy use of brackets and parentheses in link syntax mean it is easy to omit a closing parentheses, especially if one is linking something inside a natural language digression (where one will have 2 or more closing parentheses). Balance can be checked with [[DebuggingParentheses|'check-parens']], and it can be automatically invoked after file saves with the usual hooks, eg.
@@ -21,7 +23,7 @@ A similar logic applies to double-quotes, especially if one is frequently adding
 
     ; warning, may yield wrong results in edge-cases like single double-quotes in code block.
     ; Use only if your files usually are balanced w/r/t double-quotes
-    ; <http://stackoverflow.com/questions/9527593/customizing-check-parens-to-check-double-quotes>
+    ; <http://stackoverflow.com/questions/9527593/>
     (add-hook 'markdown-mode-hook (lambda () (modify-syntax-entry ?\" "\"" markdown-mode-syntax-table)))
 
 == Usage notes ==
