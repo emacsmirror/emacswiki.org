@@ -8,9 +8,9 @@
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Sat Jan 10 12:47:43 2015 (-0800)
+;; Last-Updated: Sun Nov  1 11:03:08 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 333
+;;     Update #: 335
 ;; URL: http://www.emacswiki.org/zoom-frm.el
 ;; Doc URL: http://emacswiki.org/SetFonts
 ;; Keywords: frames, extensions, convenience
@@ -157,6 +157,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/11/01 dadams
+;;     Require cl.el at compile time, for macro case.
 ;; 2015/01/10 dadams
 ;;     zoom-in, zoom-out: Added message about new zoom type.
 ;;     zoom-in/out: Corrected msg: C- modifier was missing.  Reminder at end of doc string.
@@ -203,6 +205,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
+
+(eval-when-compile (require 'cl)) ;; case
 
 (require 'frame-cmds) ;; enlarge-font
 
