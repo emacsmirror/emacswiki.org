@@ -60,3 +60,10 @@ or " 'p " (CtrlP)
 
 -- [http://yxsongbo.farbox.com yxsongbo] 2014-03-01 02:52 UTC
 
+
+----
+
+Is there a way to open all files in a directory with ido?
+
+-- [https://github.com/mathiasciarlo MathiasCiarlo] 2015-11-01 17:16 UTC
+
