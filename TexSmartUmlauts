@@ -4,7 +4,7 @@
 
 == Download ==
 
-1. Release Lisp:tex-smart-umlauts.el
+1. Release [http://hub.darcs.net/lyro/tex-smart-umlauts/raw-file/tex-smart-umlauts.el tex-smart-umlauts.el]
 
 2. From Marmalade
 
@@ -12,13 +12,13 @@
 
 3. The [http://hub.darcs.net/lyro/tex-smart-umlauts Darcs repository]. To get the latest development version, clone the repository
 
-    darcs get http://hub.darcs.net/lyro/tex-smart-umlauts
+    darcs clone http://hub.darcs.net/lyro/tex-smart-umlauts
 
 == Installation ==
 
 Put Lisp:tex-smart-umlauts.el in your `load-path' and add the following line to your initialization file (##~/.emacs##)
 
-    (add-hook 'LaTeX-mode-hook #'tex-smart-umlauts-decode)
+    (add-hook 'LaTeX-mode-hook #'tex-smart-umlauts-mode)
 
 ----
 CategoryTex
