@@ -16,7 +16,7 @@
 
 == Installation ==
 
-Put Lisp:tex-smart-umlauts.el in your `load-path' and add the following line to your initialization file (##~/.emacs##)
+Put [http://hub.darcs.net/lyro/tex-smart-umlauts/raw-file/tex-smart-umlauts.el tex-smart-umlauts.el] in your `load-path' and add the following line to your initialization file (##~/.emacs##)
 
     (add-hook 'LaTeX-mode-hook #'tex-smart-umlauts-mode)
 
