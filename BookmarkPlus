@@ -1585,6 +1585,7 @@ You can turn off this automatic [[#BookmarkListDisplay|bookmark-list display]] s
 
 
 [:StateRestoration]
+[:bookmark-listBookmarks]
 === State-Restoring Commands and Bookmarks ===
 
 In addition to automatically saving/restoring the final
