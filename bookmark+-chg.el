@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Oct 31 17:02:36 2015 (-0700)
+;; Last-Updated: Mon Nov  2 09:41:14 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 16004
+;;     Update #: 16007
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1188,6 +1188,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2015/11/02 dadams
+;;     bmkp-bmenu-copy-marked-to-bookmark-file:
+;;       If modified, prompt to save bookmark file copied from, before copying.
+;;       For copy (not move): reload the original bookmark file, then refresh display from it.
 ;; 2015/10/31 dadams
 ;;     bmkp-bmenu-move-marked-to-bookmark-file:
 ;;       Just call bmkp-bmenu-copy-marked-to-bookmark-file.  It now deletes moved and refreshes list.
