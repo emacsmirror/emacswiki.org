@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Oct 31 16:49:37 2015 (-0700)
+;; Last-Updated: Mon Nov  2 09:43:02 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3740
+;;     Update #: 3742
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3069,6 +3069,9 @@ Non-interactively:
                                                (bmkp-bmenu-marked-or-this-or-all nil include-omitted-p)))
           (bookmark-alist                     bookmark-alist)
           (bookmark-alist-modification-count  bookmark-alist-modification-count))
+      (when (and (not (zerop bookmark-alist-modification-count)) ; Unsaved changes.
+                 (yes-or-no-p "Unsaved changes.  Save bookmarks before copying? "))
+        (bookmark-save))      
       (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
         (goto-char (point-min))
         (if (file-exists-p file)
@@ -3084,15 +3087,15 @@ Non-interactively:
               (unless batchp (message "No changes"))
             (unless batchp (message "%d added, %d renamed" (nth 1 imported) (nth 0 imported)))
             (bookmark-write-file file)))))
-    ;; Delete bookmarks if moved.
-    ;; Refresh display of list copied from, if needed.
     ;; (Exit `let', to restore `bookmark-alist'.)
     (cond (movep
+           ;; Moved.  Delete moved bookmarks.  Refresh from memory w/o asking.
            (dolist (bmk  (nth 2 imported)) (bookmark-delete bmk 'BATCHP))
-           (bmkp-bmenu-refresh-menu-list nil 'MSGP)) ; Refresh without saving.
+           (bmkp-bmenu-refresh-menu-list nil 'MSGP))
           ((not (zerop (nth 0 imported)))
-           ;; Some that were copied were renamed.  Ask use whether to refresh from file.
-           (bmkp-bmenu-refresh-menu-list 'FROM-FILE 'MSGP)))))
+           ;; Copied, and some were renamed.  Refresh from file w/o asking.
+           (bookmark-load bmkp-current-bookmark-file 'OVERWRITE 'BATCH-NO-SAVE)
+           (bmkp-refresh-menu-list (bookmark-bmenu-bookmark))))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-create-bookmark-file-from-marked "bookmark+")
 (defun bmkp-bmenu-create-bookmark-file-from-marked (file create-b-f-bookmark-p
