@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Nov  2 09:43:02 2015 (-0700)
+;; Last-Updated: Tue Nov  3 08:22:19 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3742
+;;     Update #: 3744
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -2993,7 +2993,7 @@ prefix arg, any that are marked are included.
 
 The bookmarks are removed from the currently displayed bookmark list,
 but the bookmark file associated with it is not saved automatically.
-To save it, reply \"yes\" to the prompt.
+To save it, use \\<bookmark-bmenu-mode-map>`\\[bookmark-bmenu-save]' (as usual).
 
 Non-interactively, non-nil optional arg BATCHP means do not prompt to
 confirm moving to new, empty file if no existing file."
