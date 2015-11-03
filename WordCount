@@ -214,17 +214,8 @@ The following sexps are examples of how to use this enhanced version of word-cou
                   '(lambda (a b) (string< (symbol-name (car a))
                                           (symbol-name (car b))))))
 
-== References ==
-<<<<<<< you
-* [http://wordcounttools.com Word Count Tool]
-* [http://charactercounttool.com Character Count Tool]
-
 ----
 CategoryDotEmacs
-||||||| ancestor
-* [http://wordcounttools.com Word Count Tool]
-* [http://charactercounttool.com Character Count Tool]
-=======
+== References ==
 * [http://wordcounttools.com Word Counter]
 * [http://charactercounttool.com Character Counter]
->>>>>>> other
