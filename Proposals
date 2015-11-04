@@ -1,3 +1,4 @@
 This page contains links to semi-formal proposals concerning improvements to the Emacs editor or its packages in ELPA.  This is intended for public comment and discussion, and ease of author revision.
 
-* [[Sample|Sample]] -- This is a sample proposal.
+* [[Isearch-prompt-proposal|Discoverability of isearch options]]
+* [[Sample|Some sample text]] -- This is a sample proposal.
