@@ -595,8 +595,7 @@ Unfortunately, we have not been able to configure nginx correctly. It should, fo
 {{{
 /etc/nginx/sites-enabled/emacswiki:
 
-proxy_cache_path /var/cache/nginx-emacswiki levels=1:2 keys_zone=emacswiki-cache:8m max_size=1000m inactive=60\
-0m;
+proxy_cache_path /var/cache/nginx-emacswiki levels=1:2 keys_zone=emacswiki-cache:8m max_size=1000m inactive=600m;
 
 upstream emacswiki_apache {
        server 127.0.0.1:8080 ;
