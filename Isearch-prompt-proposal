@@ -3,7 +3,7 @@ This proposal starts by just adding a help reminder at the right-edge of the ech
 * The reminder is: ##[F1 m] Help##. 
 * It is only added if there's plenty of space (enough so that there's a lot of empty space after the “Isearch:” prompt for the user to type).
   
-[[IsearchReminder.png]]
+[[image:IsearchReminder]]
 
 ----------
 
