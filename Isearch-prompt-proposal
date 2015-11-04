@@ -1,3 +1,10 @@
+The goal of this proposal is to help new users discover some (or all) of the options and keys available in isearch. Most editors nowadays have some of the options supported by isearch (regexp seaching and full-match, for instance), so many users have come to expect this.
+As such, it is important we show people that this (and much more) functionality exists, so they don't come out thinking isearch is featureless.
+
+This proposal tries to expose these options without being intrusive.
+
+---------
+
 This proposal starts by just adding a help reminder at the right-edge of the echo area. 
 
 * The reminder is: ##[F1 m] Help##. 
@@ -11,5 +18,5 @@ The next part of the proposal is to change the reminder to just ##[F1] Help##, a
 
 ----------
 
-The final part (which is unlikely to be done before the 25.1 feature freeze) is to implement an “Isearch Options Buffer”, and to display that instead of the isearch help.
+The final part (which is unlikely to be done before the 25.1 feature freeze) is to implement an “Isearch Options Buffer”, and to display that instead of the isearch help. (The reminder would then be changed to say "Options" instead of "Help").
 This buffer would be more concise than the isearch-mode Help, and would offer checkboxes the user can click to change search options.
