@@ -1,0 +1,15 @@
+This proposal starts by just adding a help reminder at the right-edge of the echo area. 
+
+* The reminder is: ##[F1 m] Help##. 
+* It is only added if there's plenty of space (enough so that there's a lot of empty space after the “Isearch:” prompt for the user to type).
+  
+[[IsearchReminder.png]]
+
+----------
+
+The next part of the proposal is to change the reminder to just ##[F1] Help##, and thus rebind ##F1## to the isearch help (users can still access the usual help keymap with ##C-h##).
+
+----------
+
+The final part (which is unlikely to be done before the 25.1 feature freeze) is to implement an “Isearch Options Buffer”, and to display that instead of the isearch help.
+This buffer would be more concise than the isearch-mode Help, and would offer checkboxes the user can click to change search options.
