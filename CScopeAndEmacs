@@ -263,7 +263,7 @@ I think the cscope-do-not-update-database variable does not exist anymore in rec
 === cscope-filter.el ===
 
 When working on large projects, it is desirable that only entries of concern are shown, say only show results in header files etc.. This code snippet works atop xcscope.el and provides the capability of hide/show results according to regexp:
-https://github.com/lgfang/emacs/blob/master/cscope-filter.el
+https://github.com/lgfang/elisp/blob/master/cscope-filter.el
 
 
 == ascope.el ==
