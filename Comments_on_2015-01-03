@@ -759,3 +759,27 @@ References: [http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4 Acce
 
 -- AlexSchroeder 2015-11-06 15:11 UTC
 
+
+----
+
+While we're on topic, let me say what I *want* to happen:
+
+# You should see the
+  page *content* based on the URL and the *links* at the top and bottom of the
+  page in your preferred
+  language based on the *Accept-Language* header of your request. By default,
+  this depends on your locale, or on the browser version you installed.
+
+# If a user or a bot does not provide a preferred language,
+  the wiki should provide the links at the top and bottom of the page in English.
+
+# If a search engine caches pages for language X because it
+  serves customers of language X, then it should use the correct header in
+  its requests.
+
+# If a search engine caches pages for *all* languages, then
+  it's up to the search engine to display the correct summary based on the
+  Accept-Language header of its visitors.
+
+-- AlexSchroeder 2015-11-06 15:21 UTC
+
