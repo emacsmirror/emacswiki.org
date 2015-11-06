@@ -3,20 +3,59 @@ As such, it is important we show people that this (and much more) functionality 
 
 This proposal tries to expose these options without being intrusive.
 
----------
+[h3]The proposal[/h3]
 
-This proposal starts by just adding a help reminder at the right-edge of the echo area. 
+The idea is just to add a help reminder at the right-edge of the echo area. 
 
 * The reminder is: ##[F1 m] Help##. 
 * It is only added if there's plenty of space (enough so that there's a lot of empty space after the “Isearch:” prompt for the user to type).
   
 [[image:IsearchReminder]]
 
-----------
+To use this is in your session, evaluate the following code:
 
-The next part of the proposal is to change the reminder to just ##[F1] Help##, and thus rebind ##F1## to the isearch help (users can still access the usual help keymap with ##C-h##).
+<pre>
+(defcustom isearch-help-reminder "          [F1 m] Help"
+  "Reminder shown at the right edge of the search prompt.
+Pad it with spaces to the left to ensure it is only displayed if
+there is plenty of empty room in the prompt."
+  :type 'string
+  :version "25.1")
 
-----------
+(defun isearch-message (&optional c-q-hack ellipsis)
+  ;; Generate and print the message string.
+  (let ((cursor-in-echo-area ellipsis)
+	(m isearch-message)
+	(fail-pos (isearch-fail-pos t)))
+    ;; Highlight failed part
+    (when fail-pos
+      (setq m (copy-sequence m))
+      (add-text-properties fail-pos (length m) '(face isearch-fail) m)
+      ;; Highlight failed trailing whitespace
+      (when (string-match " +$" m)
+	(add-text-properties (match-beginning 0) (match-end 0)
+			     '(face trailing-whitespace) m)))
+    (setq m (concat
+	     (isearch-message-prefix ellipsis isearch-nonincremental)
+	     m
+	     (isearch-message-suffix c-q-hack)))
+    (let ((padding-needed (when (and isearch-help-reminder
+                                     (not c-q-hack))
+                            (- (window-width (minibuffer-window))
+                               1
+                               (string-width (replace-regexp-in-string "\n" ".." m))
+                               (string-width isearch-help-reminder)))))
+      (when (and padding-needed (>= padding-needed 0))
+        (setq m (concat m (make-string padding-needed ?\s)
+                        (propertize isearch-help-reminder 'face 'minibuffer-prompt)))))
+    (if c-q-hack m (let ((message-log-max nil)) (message "%s" m)))))
+</pre>
 
-The final part (which is unlikely to be done before the 25.1 feature freeze) is to implement an “Isearch Options Buffer”, and to display that instead of the isearch help. (The reminder would then be changed to say "Options" instead of "Help").
+[h3]Further considerations[/h3]
+
+There are a couple more future improvements under consideration (not part of the actual proposal for now).
+
+* Change the reminder to just ##[F1] Help##, and thus rebind ##F1## to the isearch help (users can still access the usual help keymap with ##C-h##).
+
+* Implement an “Isearch Options Buffer”, and display that instead of the isearch help. (The reminder would then be changed to say "Options" instead of "Help").
 This buffer would be more concise than the isearch-mode Help, and would offer checkboxes the user can click to change search options.
