@@ -748,3 +748,14 @@ Just a friendly complaint. I can't take it anymore… :)
 
 -- AlexDaniel 2015-11-03 01:32 UTC
 
+
+----
+
+We had a conversation on IRC and it turns out that you can have a bookmark going to emacswiki.org (with no cookie), and follow links to www.emacswiki.org (with cookie) and what you used to see was that the language of the first page was random. I'm now redirecting all requests from emacswiki.org to www.emacswiki.org; that should fix cookie issues. If you have a cookie, you should be fine. Random visitors (and bots) without cookies will still suffer from the caching problem. That problem remains unsolved.
+
+If anybody has more insight, feel free to contact me!
+
+References: [http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4 Accept-Language HTTP header], [http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.44 Vary HTTP header].
+
+-- AlexSchroeder 2015-11-06 15:11 UTC
+
