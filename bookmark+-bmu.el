@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Nov  3 08:22:19 2015 (-0700)
+;; Last-Updated: Sat Nov  7 09:39:32 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 3744
+;;     Update #: 3746
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3083,7 +3083,7 @@ Non-interactively:
           (unless (listp blist) (error "Invalid bookmark list in file `%s'" file))
           (setq bookmark-alist  blist)  ; Bookmarks in FILE
           (setq imported  (bookmark-import-new-list marked-bmks duplicates-ok 'RETURN-BMKS))
-          (if (and (zerop (nth 0 imported))  (nth 1 imported))
+          (if (and (zerop (nth 0 imported))  (zerop (nth 1 imported)))
               (unless batchp (message "No changes"))
             (unless batchp (message "%d added, %d renamed" (nth 1 imported) (nth 0 imported)))
             (bookmark-write-file file)))))
@@ -3137,7 +3137,7 @@ confirm moving to new, empty file if no existing file."
              (not (y-or-n-p (format "File `%s' already exists.  Overwrite? " file))))
     (error "OK - canceled"))
   (bmkp-empty-file file)
-  (bmkp-bmenu-copy-marked-to-bookmark-file file nil include-omitted-p 'BATCH)
+  (bmkp-bmenu-copy-marked-to-bookmark-file file nil include-omitted-p nil 'BATCH)
   (when create-b-f-bookmark-p (bmkp-set-bookmark-file-bookmark file)))
 
 ;;;###autoload (autoload 'bmkp-bmenu-set-bookmark-file-bookmark-from-marked "bookmark+")
