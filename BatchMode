@@ -110,6 +110,8 @@ example-emacs-script.
 * http://www.gnufans.net/~deego/emacspub/lisp-mine/shs/dev/shs-example
 * http://www.gnufans.net/~deego/emacspub/lisp-mine/shs/dev/shs-example-fn.el
 
+(Note: Unfortunately these links are all dead. Wouldn't be possible to put the code on EmacsWiki itself?)
+
 If active Emacs developers are reading this, we'd like to point out that
 (princ) in batch-mode prints to stdout, as opposed to stderr, which is
 not what the EmacsLispReference says.  On the other hand, that is the only
