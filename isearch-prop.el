@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Aug 31 14:08:14 2015 (-0700)
+;; Last-Updated: Sun Nov  8 09:27:08 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1307
+;;     Update #: 1317
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -121,15 +121,15 @@
 ;;    `isearchp-next-visible-thing-and-bounds',
 ;;    `isearchp-properties-in-buffer', `isearchp-property-1',
 ;;    `isearchp-property-default-match-fn',
-;;    `isearchp-property-filter-pred', `isearchp-property-finish',
-;;    `isearchp-property-matches-p', `isearchp-read-context-regexp',
-;;    `isearchp-read-face-names', `isearchp-read-face-names--read',
-;;    `isearchp-read-sexps', `isearchp-regexp-read-args',
-;;    `isearchp-regexp-scan', `isearchp-remove-duplicates',
-;;    `isearchp-some', `isearchp-thing-read-args',
-;;    `isearchp-text-prop-present-p', `isearchp-thing-scan',
-;;    `isearchp-things-alist', `isearchp-zones-1',
-;;    `isearchp-zones-filter-pred', 
+;;    `isearchp-property-filter-pred', `isearchp-property-matches-p',
+;;    `isearchp-read-context-regexp', `isearchp-read-face-names',
+;;    `isearchp-read-face-names--read', `isearchp-read-sexps',
+;;    `isearchp-regexp-read-args', `isearchp-regexp-scan',
+;;    `isearchp-remove-duplicates',
+;;    `isearchp-restore-pred-and-remove-dimming', `isearchp-some',
+;;    `isearchp-thing-read-args', `isearchp-text-prop-present-p',
+;;    `isearchp-thing-scan', `isearchp-things-alist',
+;;    `isearchp-zones-1', `isearchp-zones-filter-pred',
 ;;    `isearchp-zone-limits-izones', `isearchp-zones-read-args'.
 ;;
 ;;  Internal variables defined here:
@@ -324,6 +324,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/09/01 dadams
+;;     Renamed isearchp-property-finish to isearchp-restore-pred-and-remove-dimming.
 ;; 2015/08/31 dadams
 ;;     isearchp-thing-define-contexts: Typo when supplying args: need nil for TRANSFORM and t for MSGP.
 ;; 2015/08/30 dadams
@@ -638,10 +640,10 @@ This has an effect only on (some) Isearch+ commands.  The scan
 function or regexp for the search command defines a set of matches in
 the buffer.
 
-If this option is non-nil then the actual candidates used are the
-sections of region or buffer text that are separated by the initial
-candidates, that is, the non-candidates as defined by the scan or
-regexp.")
+If the variable value is non-nil then the actual candidates used are
+the sections of region or buffer text that are separated by the
+initial candidates, that is, the non-candidates as defined by the scan
+or regexp.")
 
 (defvar isearchp-context-level 0
   "Match level for Isearch context regexp.
@@ -1199,7 +1201,7 @@ ARG is normally from the prefix arg - see `isearchp-property-forward'."
           isearchp-property-type          type
           isearchp-property-prop          prop
           isearchp-property-values        values))
-  (add-hook 'isearch-mode-end-hook 'isearchp-property-finish)
+  (add-hook 'isearch-mode-end-hook 'isearchp-restore-pred-and-remove-dimming)
   (funcall search-fn))
 
 ;; Similar to `icicle-properties-in-buffer', defined in `icicles-cmd2.el', but this has PREDICATE.
@@ -1332,11 +1334,11 @@ For other properties the values are matched using `equal'."
     ((mumamo-major-mode)   (lambda (val rprop) (equal val (car rprop))))
     (t                     #'equal)))
 
-(defun isearchp-property-finish ()
+(defun isearchp-restore-pred-and-remove-dimming ()
   "End Isearch for a text or overlay property."
   (setq isearch-filter-predicate  isearchp-filter-predicate-orig)
   (isearchp-remove-dimming)
-  (remove-hook 'isearch-mode-end-hook 'isearchp-property-finish))
+  (remove-hook 'isearch-mode-end-hook 'isearchp-restore-pred-and-remove-dimming))
 
 (defun isearchp-put-prop-on-region (property value beg end)
   "Add text PROPERTY with VALUE to the region from BEG to END.
@@ -1894,7 +1896,7 @@ VARIABLE defaults to the value of `zz-izones-var'."
       (setq isearchp-filter-predicate-orig  isearch-filter-predicate
             isearch-filter-predicate        (isearchp-zones-filter-pred (zz-izone-limits
                                                                          (symbol-value variable)))))
-    (add-hook 'isearch-mode-end-hook 'isearchp-property-finish)
+    (add-hook 'isearch-mode-end-hook 'isearchp-restore-pred-and-remove-dimming)
     (funcall search-fn))
 
   (defun isearchp-zones-filter-pred (&optional zones)
