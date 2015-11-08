@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov  8 09:27:08 2015 (-0800)
+;; Last-Updated: Sun Nov  8 11:10:19 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1317
+;;     Update #: 1327
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -104,7 +104,8 @@
 ;;    `isearchp-dimming-color',
 ;;    `isearchp-dim-outside-search-area-flag',
 ;;    `isearchp-hide-whitespace-before-comment-flag',
-;;    `isearchp-ignore-comments-flag'.
+;;    `isearchp-ignore-comments-flag',
+;;    `isearchp-query-replace-zones-flag'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -195,14 +196,21 @@
 ;;
 ;;  Features:
 ;;
-;;  * If you use library `zones.el' then you can search a set of buffer
-;;    zones that are defined by their limits (markers or numbers) --
-;;    like multiple regions, using commands `isearchp-zones-forward'
-;;    and `isearchp-zones-forward-regexp'.  You can use different such
-;;    zone sets.  Library `zones.el' gives you an easy, interactive
-;;    way to define them.  A prefix arg to the commands that search a
-;;    set of zones prompts you for a variable whose value is such a
-;;    set.  By default the variable is `zz-izones'.
+;;  * If you use library `zones.el' then you can search a set of
+;;    buffer zones that are defined by their limits (markers or
+;;    numbers) -- like multiple regions, using commands
+;;    `isearchp-zones-forward' and `isearchp-zones-forward-regexp'.
+;;    You can use different such zone sets.
+;;
+;;    Library `zones.el' gives you an easy, interactive way to define
+;;    them.  A prefix arg to the commands that search a set of zones
+;;    prompts you for a variable whose value is such a set.  By
+;;    default the variable is `zz-izones'.
+;;
+;;    If option `isearchp-query-replace-zones-flag' is non-nil then
+;;    replacement commands, such as `query-replace', limit replacement
+;;    to the current set of zones (value of the current value of
+;;    `zz-izones-var').
 ;;
 ;;  * You can search within text-property or overlay-property zones of
 ;;    the buffer or active region.  Example: search within zones
@@ -324,6 +332,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/11/08 dadams
+;;     Added: isearchp-query-replace-zones-flag.
+;;     Advise perform-replace so that it respects isearchp-query-replace-zones-flag.
 ;; 2015/09/01 dadams
 ;;     Renamed isearchp-property-finish to isearchp-restore-pred-and-remove-dimming.
 ;; 2015/08/31 dadams
@@ -661,6 +672,10 @@ regexp as the search context, and so on.")
 (defvar isearchp-zone-limits-function 'isearchp-zone-limits-izones
   "Function used to return limits of current search zones.")
 
+(defcustom isearchp-query-replace-zones-flag nil
+  "Non-nil means limit query-replacing to the zones of `zz-izones-var'.
+This option has no effect if you do not use library `zones.el'."
+  :type 'boolean :group 'isearch-plus)
  
 ;;(@* "Keys")
 
@@ -1948,6 +1963,19 @@ ZONES is the list of zones to check for exclusion."
     (isearch-lazy-highlight-update)
     isearchp-excluded-zones)
 
+  (defadvice perform-replace (around respect-isearchp-query-replace-zones-flag activate)
+    "Respect option `isearchp-query-replace-zones-flag'."
+    (let* ((orig-pred                 isearch-filter-predicate)
+           (zone-pred                 (and isearchp-query-replace-zones-flag
+                                           (isearchp-zones-filter-pred
+                                            (zz-izone-limits (symbol-value zz-izones-var)))))
+           (isearch-filter-predicate  (cond ((and orig-pred  zone-pred)
+                                             (lambda (beg end)
+                                               (and (funcall orig-pred beg end)
+                                                    (funcall zone-pred beg end))))
+                                            (zone-pred)
+                                            (orig-pred))))
+      ad-do-it))
   )
  
 ;;(@* "Imenu Commands and Functions")
