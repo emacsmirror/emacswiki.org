@@ -526,5 +526,11 @@ Are you connecting to Google Talk by any chance?  Those symptoms sounds very muc
 [new]
 Yes, it is Google Talk. And I have checked out the git version for namespace prefixes after I saw the information in the mail list. It works now. --Cesc
 
+[new]
+Hi, I just write a simple extension to upload image or other files using HTTP file upload extension(XEP-0363).
+
+https://github.com/yuchangyuan/jabber-http-file-upload
+
+
 ----
 CategoryChatClient
