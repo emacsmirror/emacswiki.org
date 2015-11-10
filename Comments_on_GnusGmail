@@ -1,0 +1,5 @@
+In Debian-like linux you can install GNU TLS with
+sudo apt-get install gnutls-bin
+
+-- Anonymous 2015-11-10 16:09 UTC
+
