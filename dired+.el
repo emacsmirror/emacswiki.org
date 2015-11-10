@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Oct  2 10:16:54 2015 (-0700)
+;; Last-Updated: Tue Nov 10 09:24:07 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 9333
+;;     Update #: 9336
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -645,6 +645,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/11/10 dadams
+;;     diredp-fileset(-other-window): Separate error msgs for unloaded filesets.el and empty filesets-data.
 ;; 2015/10/02 dadams
 ;;     dired-mark-sexp: Like vanilla, skip extended attributes marker before setting NLINK.  Thx to Tino Calancha.
 ;; 2015/09/29 dadams
@@ -4793,18 +4795,18 @@ The name is expanded in the directory for the last directory change."
 (defun diredp-fileset (flset-name)      ; Bound to `C-x F'
   "Open Dired on the files in fileset FLSET-NAME."
   (interactive
-   (list (let ((fd  (or (and (require 'filesets nil t)  filesets-data)
-                        (error "Feature `filesets' not provided"))))
-           (completing-read "Open Dired on fileset: " filesets-data))))
+   (progn (unless (require 'filesets nil t) (error "Feature `filesets' not provided"))
+          (unless filesets-data (error "`filesets-data' is empty"))
+          (list (completing-read "Open Dired on fileset: " filesets-data))))
   (diredp-fileset-1 flset-name))
 
 ;;;###autoload
 (defun diredp-fileset-other-window (flset-name) ; Bound to `C-x 4 F'
   "Open Dired in another window on the files in fileset FLSET-NAME."
   (interactive
-   (list (let ((fd  (or (and (require 'filesets nil t)  filesets-data)
-                        (error "Feature `filesets' not provided"))))
-           (completing-read "Open Dired on fileset: " filesets-data))))
+   (progn (unless (require 'filesets nil t) (error "Feature `filesets' not provided"))
+          (unless filesets-data (error "`filesets-data' is empty"))
+          (list (completing-read "Open Dired on fileset, in other window: " filesets-data))))
   (diredp-fileset-1 flset-name 'OTHER-WINDOW))
 
 (defun diredp-fileset-1 (flset-name &optional other-window-p)
