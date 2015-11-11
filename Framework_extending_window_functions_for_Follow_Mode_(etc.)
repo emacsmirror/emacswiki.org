@@ -1,6 +1,9 @@
-The goal of this proposal is to make it possible and easy for Emacs Lisp code to be compatible with Follow Mode.  For this, a new framework will be developed.
+The goal of this proposal is to make it possible and easy for Emacs Lisp code
+to be compatible with Follow Mode. For this, a new framework will be
+developed.
 
 [h3]Requirements[/h3]
+
 * The framework will be non-intrusive: it will neither affect working code, nor force it to be amended.
 * The framework will not be tightly coupled with Follow Mode:  Any future replacement for Follow Mode will slot into the framework readily.
 * Code will work in a uniform manner regardless of whether or not Follow Mode is active.
