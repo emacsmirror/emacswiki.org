@@ -1,49 +1,27 @@
-*mu4e* is a new emacs-based e-mail client. It's based on the [http://www.djcbsoftware.nl/code/mu mu] e-mail indexer/searcher. It focuses on being a super-efficient tool to withstand the daily e-mail tsunami. 
+*mu4e* is an emacs-based e-mail client. It's based on the [http://www.djcbsoftware.nl/code/mu mu] e-mail indexer/searcher. It attempts to be a super-efficient tool to withstand the daily e-mail tsunami. 
+
+To quote Prof. Shirky: /It's not information overload. It's filter failure/. mu4e's mission is to be a better filter. 
 
 ==Features==
-* Fully search-based: there are no folders, only queries
+* Fully search-based: there are no folders, only queries 
 * Fully documented, with example configurations
 * User-interface optimized for speed, with quick key strokes for common actions
 * Asynchronous; heavy actions don’t block emacs
 * Support for non-English languages ("angstrom" will match "Ångström")
-* Support for crypto
-* Writing rich-text e-mails using org-mode
-* Address auto-completion based on your messages
+* Support for signing and encryption
+* Address auto-completion based on your existihng messages
 * Extensible with your own code
  
 ==Links==
-* simple setup with gmail: http://wenshanren.org/?p=111
-* source code (part of mu): https://github.com/djcb/mu
-* homepage, screenshots: http://www.djcbsoftware.nl/code/mu/mu4e.html
-* documentation: http://www.djcbsoftware.nl/code/mu/mu4e/index.html
-* introduction: http://emacs-fu.blogspot.com/2012/08/introducing-mu4e-for-email.html 
-* Advanced configurations: http://zmalltalker.com/linux/mu.html
+* Source code (part of mu): https://github.com/djcb/mu
+* Releases: https://github.com/djcb/mu-releases
+* Homepage, screenshots: http://www.djcbsoftware.nl/code/mu/mu4e.html
+* Introduction: http://emacs-fu.blogspot.com/2012/08/introducing-mu4e-for-email.html 
+* Full documentation: http://www.djcbsoftware.nl/code/mu/mu4e/index.html (includes examples of setups) 
+* Another simple setup with gmail: http://wenshanren.org/?p=111
+* Some more advanced configurations: http://zmalltalker.com/linux/mu.html
 
-It's pretty new - it's first release is as part of mu 0.9.8, end of January 2012. I've been happily using it for a few months; hopefully it works well for others as well.
-
-==Tips==
-
--------
-Message view action: Open message at point in the default external browser
-
-    ;;; message view action
-    (defun mu4e-msgv-action-view-in-browser (msg)
-      "View the body of the message in a web browser."
-      (interactive)
-      (let ((html (mu4e-msg-field (mu4e-message-at-point t) :body-html))
-            (tmpfile (format "%s/%d.html" temporary-file-directory (random))))
-        (unless html (error "No html part for this message"))
-        (with-temp-file tmpfile
-        (insert
-            "<html>"
-            "<head><meta http-equiv=\"content-type\""
-            "content=\"text/html;charset=UTF-8\">"
-           html))
-        (browse-url (concat "file://" tmpfile))))
-    (add-to-list 'mu4e-view-actions
-      '("View in browser" . mu4e-msgv-action-view-in-browser) t)
-
--- SylvainBenner (adapted from https://groups.google.com/d/topic/mu-discuss/ZXB72TR5GL0/discussion)
+mu4e's first release is as part of mu 0.9.8, end of January 2012, and the most recent one has been in September 2015 - see https://github.com/djcb/mu-releases
 
 ----
 CategoryMail
