@@ -1,5 +1,5 @@
 [[es:EmacsHabla(Emacspeak)]]
-EmacSpeak is a complete audio desktop environment for Emacs.
+Emacspeak is a complete audio desktop environment for Emacs.
 
 What does this mean? Basically, Emacspeak implements many modern techniques
 to read the content of Emacs buffer via a speech synthesizer to
