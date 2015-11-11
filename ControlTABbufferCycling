@@ -352,6 +352,8 @@ Yet another way to do it. It cycles only through the normal text buffers (i.e., 
 = buffcycle =
 [https://github.com/troydm/emacs-stuff/blob/master/buffcycle.el buffcycle.el] is a simple Control-Tab way to switch only between file buffers
 
+= buffer-flip =
+[https://github.com/killdash9/buffer-flip.el] Flip through emacs buffers Alt-Tab style
+
 ---- 
 CategoryBufferSwitching
-
