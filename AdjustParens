@@ -12,3 +12,37 @@ In your emacs init file:
 </pre>
 
 For more information, see [http://elpa.gnu.org/packages/adjust-parens.html the ELPA page].
+
+=== Useful functions ===
+These functions make this package even more useful.  This uses [https://github.com/X4lldux/emacs-prelude-personal/blob/master/x4-funs.el#L2 x4-smarter-beginning-of-line] to move the point to the first non-whitespace character.
+
+{{{
+(defun my/lisp-dedent-adjust-parens ()
+  (interactive)
+  (save-excursion
+    (x4-smarter-beginning-of-line)
+    (call-interactively 'lisp-dedent-adjust-parens)))
+(defun my/lisp-indent-adjust-parens ()
+  (interactive)
+  (save-excursion
+    (x4-smarter-beginning-of-line)
+    (call-interactively 'lisp-indent-adjust-parens)))
+(local-set-key (kbd "<M-left>") 'my/lisp-dedent-adjust-parens)
+(local-set-key (kbd "<M-right>") 'my/lisp-indent-adjust-parens)
+
+(defun x4-smarter-beginning-of-line ()
+  "Move point to first beginning-of-line or non-whitespace character or first non-whitespace after comment."
+  (interactive "^")
+  (let ((oldpos (point))
+        (indentpos (progn
+                     (back-to-indentation)
+                     (point)))
+        (textpos (progn
+                   (beginning-of-line-text)
+                   (point))))
+    (cond
+     ((> oldpos textpos) (beginning-of-line-text))
+     ((and (<= oldpos textpos) (> oldpos indentpos))  (back-to-indentation))
+     ((and (<= oldpos indentpos) (> oldpos (line-beginning-position))) (beginning-of-line))
+     (t (beginning-of-line-text)))))
+  }}}
