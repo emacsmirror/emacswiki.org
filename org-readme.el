@@ -7,8 +7,8 @@
 ;; Created: Fri Aug  3 22:33:41 2012 (-0500)
 ;; Version: 20151112.2115
 ;; Package-Requires: ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-;; Last-Updated: Wed Aug 22 13:11:26 2012 (-0500)
-;;           By: Matthew L. Fidler
+;; Last-Updated: Thu Nov 12 23:37:26 2012 (-0500)
+;;           By: Joe Bloggs
 ;;     Update #: 794
 ;; URL: https://github.com/mlf176f2/org-readme
 ;; Keywords: Header2, Readme.org, Emacswiki, Git
@@ -79,12 +79,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
-;; 12-Nov-2015      
-;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
+;; 12-Nov-2015   Joe Bloggs   
+;;    Last-Updated: Thu Nov 12 23:37:26 2012 (-0500) #795 (Joe Bloggs)
 ;;    Refactor and tidy up code
 ;; 8-May-2013    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
-;;    Add bugfix from vapniks for org-readme-to-commentray
+;;    Add bugfix from vapniks for org-readme-to-commentary
 ;; 3-May-2013    Matthew L. Fidler  
 ;;    Last-Updated: Wed Aug 22 13:11:26 2012 (-0500) #794 (Matthew L. Fidler)
 ;;    Uploading using org-readme.
@@ -1590,24 +1590,24 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
 
 ;;;###autoload
 (defun org-readme-changelog-to-readme ()
-  "This puts the emacs lisp change-log into the Readme.org file."
+  "This puts the Emacs Lisp change-log into the Readme.org file."
   (interactive)
   (when (buffer-file-name)
     (let ((readme (org-readme-find-readme))
           pt1 pt2 txt)
       (save-excursion
-        (goto-char (point-min))         
+        (goto-char (point-min))
         (when (re-search-forward "^[ \t]*;;; Change Log:[ \t]*$" nil t)
           (setq pt1 (point))
           (when (re-search-forward "^[ \t]*;;;;+[ \t]*$" nil t)
             (setq pt2 (match-beginning 0))
-            (setq txt (buffer-substring pt1 pt2))
+            (setq txt (buffer-substring-no-properties pt1 pt2))
             (with-temp-buffer
               (insert txt)
               ;; Take out comments
 	      (org-readme-regexp-pairs [["^[ \t]*;+ ?" ""]])
               (goto-char (point-min))
-              (while (re-search-forward "^[ \t]*\\([0-9][0-9]-[A-Za-z][A-Za-z][A-Za-z]-[0-9][0-9][0-9][0-9]\\)[ \t]*.*\n.*(\\([^)]*\\))[ \t]*\n\\(\\(?:\n\\|.\\)*?\\)\n[ \t]*\\([0-9][0-9]\\)" nil t)
+              (while (re-search-forward "^[ \t]*\\([0-9][0-9]?-[A-Za-z][A-Za-z][A-Za-z]-[0-9][0-9][0-9][0-9]\\)[ \t]*.*\n.*(\\([^)]*\\))[ \t]*\n\\(\\(?:\n\\|.\\)*?\\)\n[ \t]*\\([0-9][0-9]?\\)" nil t)
                 (replace-match
                  (format " - %s :: %s (%s)\n %s"
                          (match-string 1)
@@ -1625,9 +1625,9 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
                             "[ \t]*$" ""
                             (match-string 2))) (match-string 4)) t t)
                 (beginning-of-line))
-              (when (re-search-forward "\\([0-9][0-9]-[A-Za-z][A-Za-z][A-Za-z]-[0-9][0-9][0-9][0-9]\\)[ \t]+\\(.*\\)\n.*\n\\(\\(?:\n\\|.\\)*\\)" nil t)
+              (when (re-search-forward "\\([0-9][0-9]?-[A-Za-z][A-Za-z][A-Za-z]-[0-9][0-9][0-9][0-9]\\)[ \t]+\\(.*\\)\n.*\n\\(\\(?:\n\\|.\\)*\\)" nil t)
                 (replace-match
-                 (format " - %s :: %s (%s)" 
+                 (format " - %s :: %s (%s)"
                          (match-string 1)
                          (save-match-data
                            (replace-regexp-in-string
@@ -1646,11 +1646,11 @@ When AT-BEGINNING is non-nil, if the section is not found, insert it at the begi
 					["^[ \t][ \t]+[-]" " -"]])
               (goto-char (point-min))
               (insert "* History\n")
-              (setq txt (buffer-substring (point-min) (point-max))))
-            (with-temp-buffer
-              (insert-file-contents readme)
-              (org-readme-remove-section "History" txt)
-              (write-file readme))))))))
+              (setq txt (buffer-substring-no-properties (point-min) (point-max))))
+	    (with-temp-buffer
+	      (insert-file-contents readme)
+	      (org-readme-remove-section "History" txt)
+	      (write-file readme))))))))
 
 (provide 'org-readme)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
