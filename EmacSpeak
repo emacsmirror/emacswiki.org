@@ -1,5 +1,5 @@
 [[es:EmacsHabla(Emacspeak)]]
-Emacspeak is a complete audio desktop environment for Emacs.
+EmacSpeak is a complete audio desktop environment for Emacs.
 
 What does this mean? Basically, Emacspeak implements many modern techniques
 to read the content of Emacs buffer via a speech synthesizer to
@@ -10,9 +10,9 @@ very handy here- Emacspeak can (and does) implement special voice enabling featu
 for nearly every widespread major and minor mode. Look at the
 homepage for more information (especially the application list).
 
-The homepage of Emacspeak can be found at http://code.google.com/p/emacspeak/
-
-For Spanish-speaking users, this package has support at http://gnu.manticore.es
+The homepage of Emacspeak can be found at
+https://github.com/tvraman/emacspeak and http://emacspeak.sf.net
+for Spanish-speaking users, this package has support at http://gnu.manticore.es
 
 But this one is not limited to the blind. At least I think it
 could be useful for ordinary hardcore emacs users too. You can 
