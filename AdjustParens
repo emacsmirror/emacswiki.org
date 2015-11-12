@@ -14,7 +14,7 @@ In your emacs init file:
 For more information, see [http://elpa.gnu.org/packages/adjust-parens.html the ELPA page].
 
 === Useful functions ===
-These functions make this package even more useful.  It allows you to use <code>M-left/M-right</code> to indent code regardless of where the point is.  This uses [https://github.com/X4lldux/emacs-prelude-personal/blob/master/x4-funs.el#L2 x4-smarter-beginning-of-line] to move the point to the first non-whitespace character.
+These functions make this package even more useful.  It allows you to use <code>M-left/right</code> to indent code regardless of where the point is.  This uses [https://github.com/X4lldux/emacs-prelude-personal/blob/master/x4-funs.el#L2 x4-smarter-beginning-of-line] to move the point to the first non-whitespace character.
 
 {{{
 (defun my/lisp-dedent-adjust-parens ()
