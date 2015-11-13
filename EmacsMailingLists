@@ -1,53 +1,40 @@
-Obviously a lot of mailing lists have been founded to discuss Emacsen.
-The official GnuEmacs lists are hosted at the GNU nurtury Savannah.
-See the [http://savannah.gnu.org/mail/?group=emacs Emacs project page
-there] for a complete list.  The primary [[XEmacs]] lists are hosted
-by http://xemacs.org, as listed on http://xemacs.org/Lists/index.html.
-
-The various Emacs programs might have their own lists too.  Check the
-homepages of these programs, and if EmacsWiki has an entry.  Many of
-them live on Savannah or SourceForge.  Don't worry too much about
-posting to a generic list though, the ever-helpful people there will
-redirect you to a more specific list if they considered necessary.
-
 = Mailing list tips and etiquette =
 
+* Please keep conversations constructive and civil.
 * Change the subject of the message if the topic has changed.
 * Keep messages on-topic for the list. For example, if you want to follow up on something on emacs-devel but it's not related to Emacs development, reply to the emacs-tangents mailing list instead.
 * If possible, edit quoted text to include only the relevant segment, and reply beneath the quoted text.
-* Please keep conversations constructive and civil.
 * To make it easier for people to search and reply to your message, use a descriptive subject, and try to keep to one topic per message.
 * Search the mailing list archives before posting questions. You can usually use your favorite search engine to search for your keywords along with the mailing list name. Alternatively, you can use the search engine on the list archive pages (see below)
 * If the mailing list has a code of conduct, please observe it. This page or the list information pages (see below) will contain links to the codes of conduct for mailing lists once they're published.
+* Many projects have their own mailing lists. You can generally find out where that mailing list is by checking the project's page or README. If you're not sure where to post, pick the most specific list you can find. If you can't find anything that's a good match, post your message to help-gnu-emacs (for general Emacs help) or emacs-tangents (for off-topic conversations). People will probably redirect you to a more specific list if they know of one.
 
-= A directory of the lists =
+= Lists for general Emacs help =
 
-== Lists to seek help from ==
+; [::help-gnu-emacs], mailto:help-gnu-emacs@gnu.org: Emacs help (also one of the EmacsNewsgroups) [https://lists.gnu.org/mailman/listinfo/help-gnu-emacs List information], [https://lists.gnu.org/mailman/listinfo/help-gnu-emacs Archive]
+; [::help-emacs-windows], mailto:help-emacs-windows@gnu.org: Emacs on Windows help [https://lists.gnu.org/mailman/listinfo/help-emacs-windows List information], [http://lists.gnu.org/archive/html/help-emacs-windows/ Archive]
 
-; [::help-emacs-windows], mailto:help-emacs-windows@gnu.org: Emacs on Windows help
-; [::help-gnu-emacs], mailto:help-gnu-emacs@gnu.org: Emacs help (also one of the EmacsNewsgroups)
+= Lists for development =
 
-== Lists for development ==
-
-; [::emacs-devel], mailto:emacs-devel@gnu.org: Emacs development [http://lists.gnu.org/archive/html/emacs-devel/ Archive]
+; [::emacs-devel], mailto:emacs-devel@gnu.org: Emacs development [https://lists.gnu.org/mailman/listinfo/emacs-devel List information], [http://lists.gnu.org/archive/html/emacs-devel/ Archive]
+; [::bug-gnu-emacs], mailto:bug-gnu-emacs@gnu.org: Emacs bugs and feature requests, use M-x report-emacs-bug on Emacs to send stuff to the list [https://lists.gnu.org/mailman/listinfo/bug-gnu-emacs List information], [http://lists.gnu.org/archive/html/bug-gnu-emacs/ Archive]
+; [::emacs-pretest-bug], mailto:emacs-pretest-bug@gnu.org: Emacs bugs for a pretest release.  As of 2008-08, merged with [[emacs-devel]].  [http://lists.gnu.org/archive/html/emacs-pretest-bug/ Archive] still exists.
 ; [::xemacs-beta], mailto:xemacs-beta@xemacs.org: XEmacs development
 ; [::xemacs-patches], mailto:xemacs-patches@xemacs.org: XEmacs patches
-; [::bug-gnu-emacs], mailto:bug-gnu-emacs@gnu.org: Emacs bugs and feature requests, use M-x report-emacs-bug on Emacs to send stuff to the list (also one of the EmacsNewsgroups)
-; [::emacs-pretest-bug], mailto:emacs-pretest-bug@gnu.org: Emacs bugs for a pretest release.  As of 2008-08, merged with [[emacs-devel]].  [http://lists.gnu.org/archive/html/emacs-pretest-bug/ Archive] still exists.
 
-== National and regional lists ==
+= National and regional lists =
 
-; mailto:emacs-br@yahoogroups.com: The Brazilian Emacs users mailing list [http://groups.yahoo.com/group/emacs-br/ Subscribe or Archive]
-; mailto:emacs-es@es.gnu.org: The Spanish Emacs users mailing list [http://es.gnu.org/cgi-bin/mailman/listinfo/emacs-es Subscribe or Archive]
-; mailto:emacs-au-discuss@lists.softwarefreedom.com.au: The Australian Emacs users mailing list [http://lists.softwarefreedom.com.au/cgi-bin/mailman/listinfo/emacs-au-discuss Subscribe or Archive]
+; mailto:emacs-br@yahoogroups.com: The Brazilian Emacs users mailing list [http://groups.yahoo.com/group/emacs-br/ Subscribe or View archive]
+; mailto:emacs-es@es.gnu.org: The Spanish Emacs users mailing list [http://es.gnu.org/cgi-bin/mailman/listinfo/emacs-es Subscribe or View archive]
+; mailto:emacs-au-discuss@lists.softwarefreedom.com.au: The Australian Emacs users mailing list [http://lists.softwarefreedom.com.au/cgi-bin/mailman/listinfo/emacs-au-discuss Subscribe or View archive]
 
-== Other Lists ==
+= Other lists =
 
-; [::emacs-tangents], mailto:emacs-tangents@gnu.org: General discussions [https://lists.gnu.org/mailman/listinfo/emacs-tangents List information], [http://lists.gnu.org/archive/html/emacs-tangents/ Archives]
+; [::emacs-tangents], mailto:emacs-tangents@gnu.org: General discussions [https://lists.gnu.org/mailman/listinfo/emacs-tangents List information], [http://lists.gnu.org/archive/html/emacs-tangents/ Archive]
 ; [::info-gnu-emacs]: Emacs announcements. [http://lists.gnu.org/mailman/listinfo/info-gnu-emacs List information], [http://lists.gnu.org/archive/html/emacs-devel/ Archive]
-; [::gnu-emacs-sources], mailto:gnu-emacs-source@gnu.org: Emacs source code posts only. [http://lists.gnu.org/mailman/listinfo/gnu-emacs-sources List information]
+; [::gnu-emacs-sources], mailto:gnu-emacs-source@gnu.org: Emacs source code posts only. [http://lists.gnu.org/mailman/listinfo/gnu-emacs-sources List information] [http://lists.gnu.org/archive/html/gnu-emacs-sources Archive]
 (also one of the EmacsNewsgroups).
-; [::debian-emacsen], mailto:debian-emacsen@lists.debian.org: Support and developer discussion on Emacs related packages for Debian GNU/Linux. [http://lists.debian.org/debian-emacsen/ List information]
+; [::debian-emacsen], mailto:debian-emacsen@lists.debian.org: Support and developer discussion on Emacs related packages for Debian GNU/Linux. [http://lists.debian.org/debian-emacsen/ List information, archive]
 ; [::macosx-emacs], mailto:macosx-emacs@email.esm.psu.edu: Support for Emacs on Mac OS X, in particular AquamacsEmacs. [http://www.esm.psu.edu/mac-tex/main.shtml List information], [http://news.gmane.org/gmane.emacs.macintosh.osx Archive]
 
 = Mailing lists via news =
