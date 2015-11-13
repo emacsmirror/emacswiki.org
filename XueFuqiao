@@ -24,7 +24,6 @@ RepeatedStrainInjury -- ErgoemacsKeybindings helps me a lot!
 * Make a keyboard layout for Emacs.
 * Implement a DHCP client in EmacsLisp.
 * Implement a spell checker in EmacsLisp.
-* Add a command line argument named ##--slim##. It can invoke Emacs with only the bare-minimum EmacsLisp libraries needed for quick editing.
 * Implement multiple cursors in Emacs.
 * Make all operating systems come with Emacs built-in.
 * Implement a multi-protocol download utility in Emacs Lisp.
