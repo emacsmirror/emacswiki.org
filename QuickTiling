@@ -1,5 +1,3 @@
-Lisp:tiling.el
-
 It micmics xmonad/tmux. I really enjoy this package, hope you too. You can download it from https://github.com/lgfang/elisp/blob/master/tiling.el
 
 '''See Also:''' [[Frame Tiling Commands]] for commands to tile frames on the desktop, instead of windows within a frame.
