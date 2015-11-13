@@ -8,6 +8,14 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+==Default Language==
+
+If I clear all emacswiki.org cookies from my browser and visit www.emacswiki.org, the language defaults to Chinese. I checked with nc, and my browser sends:
+
+<code>Accept-Language: en-US,en;q=0.5</code>
+
+which ideally should get me the page in English if available.  Manually selecting the language by clicking English works, but it seems like it could be more automatic.
+
 ==RandomPage==
 
 This is not working.
