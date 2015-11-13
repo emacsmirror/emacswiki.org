@@ -40,7 +40,7 @@ redirect you to a more specific list if they considered necessary.
 
 == Other Lists ==
 
-; [::emacs-tangents]: General discussions [https://lists.gnu.org/mailman/listinfo/emacs-tangents List information], [http://lists.gnu.org/archive/html/emacs-tangents/ Archives]
+; [::emacs-tangents], mailto:emacs-tangents@gnu.org: General discussions [https://lists.gnu.org/mailman/listinfo/emacs-tangents List information], [http://lists.gnu.org/archive/html/emacs-tangents/ Archives]
 ; [::info-gnu-emacs]: Emacs announcements. [http://lists.gnu.org/mailman/listinfo/info-gnu-emacs List information], [http://lists.gnu.org/archive/html/emacs-devel/ Archive]
 ; [::gnu-emacs-sources], mailto:gnu-emacs-source@gnu.org: Emacs source code posts only. [http://lists.gnu.org/mailman/listinfo/gnu-emacs-sources List information]
 (also one of the EmacsNewsgroups).
