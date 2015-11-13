@@ -5,10 +5,17 @@ there] for a complete list.  The primary [[XEmacs]] lists are hosted
 by http://xemacs.org, as listed on http://xemacs.org/Lists/index.html.
 
 The various Emacs programs might have their own lists too.  Check the
-homepages of these proggies, and if EmacsWiki has an entry.  Many of
+homepages of these programs, and if EmacsWiki has an entry.  Many of
 them live on Savannah or SourceForge.  Don't worry too much about
 posting to a generic list though, the ever-helpful people there will
 redirect you to a more specific list if they considered necessary.
+
+= Mailing list etiquette =
+
+* Change the subject of the message if the topic has changed.
+* Keep messages on-topic for the list. For example, if you want to follow up on something on emacs-devel but it's not related to Emacs development, reply to the emacs-tangents mailing list instead.
+* If possible, edit quoted text to include only the relevant segment, and reply beneath the quoted text.
+* Please keep conversations constructive and civil.
 
 = A directory of the lists =
 
@@ -33,6 +40,7 @@ redirect you to a more specific list if they considered necessary.
 
 == Other Lists ==
 
+; [::emacs-tangents]: General discussions [https://lists.gnu.org/mailman/listinfo/emacs-tangents List information], [http://lists.gnu.org/archive/html/emacs-tangents/ Archives]
 ; [::info-gnu-emacs]: Emacs announcements. [http://lists.gnu.org/mailman/listinfo/info-gnu-emacs List information], [http://lists.gnu.org/archive/html/emacs-devel/ Archive]
 ; [::gnu-emacs-sources], mailto:gnu-emacs-source@gnu.org: Emacs source code posts only. [http://lists.gnu.org/mailman/listinfo/gnu-emacs-sources List information]
 (also one of the EmacsNewsgroups).
