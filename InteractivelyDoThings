@@ -614,6 +614,15 @@ https://gist.github.com/1329188
 
 -- [[mgalgs]]
 
+=== filtering out items and other hacks ===
+
+I've collected some of the above mentioned hacks, and a few other handy ido functions here:
+
+https://github.com/vapniks/ido-jb-misc-extras
+
+Included is a redefinition of ##ido-restrict-to-matches## so that when called with a prefix arg it removes matching
+items from the current list instead of restricting to them.
+
 == ido-preview ==
 Two functions, that allow to view current item contents in a temporary buffer and window(clearing surrounding windows, but it's safe). Content is either file contents, buffer contents or function description. 
 
