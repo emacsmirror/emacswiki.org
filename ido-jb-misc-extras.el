@@ -16,7 +16,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; run-assoc
+;; run-assoc ido-choose-function
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -101,6 +101,7 @@
 
 ;;; Require
 (eval-when-compile (require 'cl))
+(require 'ido-choose-function)
 
 ;;;###autoload
 (defun ido-run-associated-program nil
@@ -111,13 +112,15 @@
 
 ;;;###autoload
 (defun ido-bookmark-jump (bname)
-  "Switch to bookmark interactively using `ido'."
-  (interactive (list (ido-completing-read "Bookmark: " (bookmark-all-names) nil t)))
+  "Switch to bookmark BNAME interactively using `ido'."
+  (interactive (list (ido-completing-read
+		      "Bookmark: "
+		      (bookmark-all-names) nil t)))
   (bookmark-jump bname))
 
 (defvar ido-execute-command-cache nil)
 ;;;###autoload
-(defun ido-execute-extended-command ()
+(defun ido-execute-extended-command nil
   "Use `ido' to select a command to execute."
   (interactive)
   (call-interactively
@@ -141,8 +144,10 @@
       (progn (setq ido-temp-list
 		   (sort ido-temp-list
 			 (lambda (a b)
-			   (let* ((ta (nth 5 (file-attributes (concat ido-current-directory a))))
-				  (tb (nth 5 (file-attributes (concat ido-current-directory b))))
+			   (let* ((ta (nth 5 (file-attributes
+					      (concat ido-current-directory a))))
+				  (tb (nth 5 (file-attributes
+					      (concat ido-current-directory b))))
 				  (ta0 (nth 0 ta))
 				  (tb0 (nth 0 tb))
 				  (ta1 (nth 1 ta))
@@ -167,19 +172,14 @@
   :group 'ido)
 
 ;;;###autoload
-(defun ido-goto-favourite (place)
+(defun ido-goto-favourite nil
   "Choose commonly used file/dired buffer with ido, and jump to it."
-  (interactive
-   (list (ido-completing-read "Favourite: "
-			      (let ((items))
-				(dolist (item ido-favourites-list)
-				  (setq items (append (list (car item)) items)))
-				items) nil t)))
-  (funcall (cdr (assoc place ido-favourites-list))))
+  (interactive)
+  (funcall (ido-choose-function ido-favourites-list "Favourite: ")))
 
 ;;;###autoload
 (defun ido-goto-recent-file (file)
-  "Choose recently used file with ido, and jump to it."
+  "Choose recently used FILE with ido, and jump to it."
   (interactive
    (list (let* ((filepaths (let ((items))
 			     (dolist (item file-name-history)
@@ -200,7 +200,7 @@
 
 ;;;###autoload
 (defun ido-goto-recent-dir (place)
-  "Choose recently used dired buffer with ido, and jump to it."
+  "Choose recently used directory (PLACE) with ido, and jump to it with dired."
   (interactive
    (list (ido-completing-read "Recent dir: "
 			      (let ((items))
@@ -209,7 +209,9 @@
 					   (not (string-match ":" item))
 					   (> (length item) 0))
 				      (let ((itemd (file-name-directory item)))
-					(if (and (stringp itemd) (file-directory-p itemd) (not (member itemd items)))
+					(if (and (stringp itemd)
+						 (file-directory-p itemd)
+						 (not (member itemd items)))
 					    (add-to-list 'items itemd t)))))
 				items))))
   (dired place))
@@ -251,15 +253,17 @@ Location of cdargs config file is stored in `ido-cdargs-config'."
 			   (match-string 1)) "Subdirectory: " 'dir nil nil))))
 
 ;;;###autoload
-(defun ido-completing-read-multiple (prompt choices &optional predicate require-match initial-input hist def sentinel)
-  "Read multiple items with ido-completing-read. 
-   Reading stops when the user enters SENTINEL. By default, SENTINEL is
-   \"*done*\". SENTINEL is disambiguated with clashing completions
-   by appending _ to SENTINEL until it becomes unique. So if there
-   are multiple values that look like SENTINEL, the one with the
-   most _ at the end is the actual sentinel value. See
-   documentation for `ido-completing-read' for details on the
-   other parameters."
+(defun ido-completing-read-multiple (prompt choices
+					    &optional predicate require-match
+					    initial-input hist def sentinel)
+  "Read multiple items with ido-completing-read.
+Reading stops when the user enters SENTINEL. By default, SENTINEL is
+\"*done*\". SENTINEL is disambiguated with clashing completions
+by appending _ to SENTINEL until it becomes unique. So if there
+are multiple values that look like SENTINEL, the one with the
+most _ at the end is the actual sentinel value. See
+documentation for `ido-completing-read' for details on the
+other parameters."
   (let ((sentinel (if sentinel sentinel "*done*"))
 	(done-reading nil)
 	(res ()))
@@ -275,6 +279,24 @@ Location of cdargs config file is stored in `ido-cdargs-config'."
 	(setq res (cons this-choice res))))
     ;; return the result
     res))
+
+;; Redefine `ido-restrict-to-matches' so that application with a prefix arg
+;; will remove matches from the current list.
+(eval-after-load "ido.elc"
+  '(defun ido-restrict-to-matches (&optional arg)
+     "Set current item list to the currently matched items.
+If a prefix ARG is used then remove matched items from list."
+     (interactive "P")
+     (when ido-matches
+       (setq ido-cur-list
+	     (if arg (cl-set-difference
+		      ido-cur-list ido-matches :test 'equal)
+	       ido-matches)
+	     ido-text-init ""
+	     ido-rescan (if arg t)
+	     ido-exit 'keep)
+       (if arg (setq ido-matches ido-cur-list))
+       (exit-minibuffer))))
 
 (provide 'ido-jb-misc-extras)
 
