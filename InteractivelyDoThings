@@ -395,7 +395,11 @@ To use this, if you've already ##(require 'ibuffer)##'d, ##(define-key ibuffer-m
 -- new definition of ##ibuffer-ido-find-file## by TreyHarris to suppress wrong type argument errors that could happen in some circumstances.
 
 
+=== choosing functions with ido ===
 
+Use ##ido-choose-function## in your code to select a function and partially apply arguments interactively:
+
+https://github.com/vapniks/ido-choose-function
 
 
 
