@@ -10,12 +10,15 @@ them live on Savannah or SourceForge.  Don't worry too much about
 posting to a generic list though, the ever-helpful people there will
 redirect you to a more specific list if they considered necessary.
 
-= Mailing list etiquette =
+= Mailing list tips and etiquette =
 
 * Change the subject of the message if the topic has changed.
 * Keep messages on-topic for the list. For example, if you want to follow up on something on emacs-devel but it's not related to Emacs development, reply to the emacs-tangents mailing list instead.
 * If possible, edit quoted text to include only the relevant segment, and reply beneath the quoted text.
 * Please keep conversations constructive and civil.
+* To make it easier for people to search and reply to your message, use a descriptive subject, and try to keep to one topic per message.
+* Search the mailing list archives before posting questions. You can usually use your favorite search engine to search for your keywords along with the mailing list name. Alternatively, you can use the search engine on the list archive pages (see below)
+* If the mailing list has a code of conduct, please observe it. This page or the list information pages (see below) will contain links to the codes of conduct for mailing lists once they're published.
 
 = A directory of the lists =
 
@@ -49,16 +52,9 @@ redirect you to a more specific list if they considered necessary.
 
 = Mailing lists via news =
 
-Some of the EmacsNewsgroups are bidirectionally gatewayed as
-mailinglists, and vice versa.  Generally it is better if you subscribe
-to newsgroups instead of mailing lists, because then the load is
-spread amongst many newsservers instead of one mailing list host.
+Some of the EmacsNewsgroups are also available as mailing lists. This is bi-directional, so anything you post to the mailing list will appear in the newsgroup and vice versa. It is generally better if you subscribe to newsgroups instead of mailing lists, because then the load is spread among many newsservers instead of one mailing list host.
 
-Quite a lot of EmacsMailingLists are available as EmacsNewsgroups too,
-throught one gateway or an another.  One such gateway is
-[http://gmane.org Gmane], where their hierarchy
-<code>gmane.emacs</code> contains most of the Emacs-related lists
-available there.
+Many EmacsMailingLists are available as EmacsNewsgroups. For example, you can use the [http://gmane.org Gmane] service to read many Emacs mailing lists in a news reader such as [[Gnus]]. On Gmane, the <code>gmane.emacs</code> hierarchy contains most of the Emacs-related lists available there.
 
 ----
 
