@@ -23,7 +23,6 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * WikiDownload -- how to get copies of the site
 * EmacsWikiAdministrators -- handling vandalism and spam on this site
 
-
 [:LearningEmacs]
 ==Learning About Emacs==
 
@@ -36,7 +35,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to execute EmacsLisp code snippets you'll find here
 * EmacsNiftyTricks -- some extra tips
 * RandomPage -- for serendipitous visitors
-
+* EmacsCommunity -- learning from other people who use Emacs
 
 [:DownloadAndInstallEmacs]
 ==Downloading and Installing Emacs==
@@ -140,27 +139,12 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 extensions
 * [[CategoryExtensionLanguage|ExtensionLanguage]] -- extending Emacs using other languages besides EmacsLisp: Guile, Erlang, Python
 
-
 [:Bugs]
 ==Emacs Bugs==
 
 * EmacsBugs -- how to report bugs and where to find a list of those already reported
 * [[CategoryWishList|WishList]] -- "Emacs isn't perfect already?"
 * [[Proposals|Proposals]] -- Formal proposals for improvements to Emacs.
-
-[:EmacsCommunity]
-==Emacs Community==
-
-One of the best ways to learn more about Emacs is to get to know other people who use and customize Emacs. Here are a few resources for doing so.
-
-* [[CategoryHomepage|Homepage]] -- home pages of Emacs friends, including '''you!'''
-* EmacsForums -- web forums about Emacs all over the world
-* EmacsMailingLists -- often also available as newsgroups
-* EmacsNewsgroups -- beginner-focused, general, and technical discussions
-* EmacsStackExchange -- post your technical questions
-* InternetRelayChat -- often a good way to get real-time help
-* PlanetEmacsen -- an aggregator of Emacs-related blogs
-* [[Usergroups|Usergroups]] -- Emacs usergroups and meetups all over the world.
 
 [:EmacsInfo]
 ==Other Emacs-related information==
