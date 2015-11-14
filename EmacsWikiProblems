@@ -16,6 +16,9 @@ If I clear all emacswiki.org cookies from my browser and visit www.emacswiki.org
 
 which ideally should get me the page in English if available.  Manually selecting the language by clicking English works, but it seems like it could be more automatic.
 
+[new:AlexSchroeder:2015-11-14 16:29 UTC]
+This is definitely a problem and it has been annoying me for a year, now. If you know anything about using nginx as a caching proxy, perhaps you can help me figure out what's wrong in our setup? There's more information at the end of this page: [[Comments on 2015-01-03]].
+
 ==RandomPage==
 
 This is not working.
