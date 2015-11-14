@@ -1,3 +1,5 @@
+== Elisp Files ==
+
 ''Great news!'' Thanks for all the work, Alex & Nic.
 
 I still cannot get to the Elisp files, however. I go to ElispArea, click the `Downloading' link in the TOC, then the link `Alphabetical list of all Elisp libraries on this Wiki' (URL: http://www.emacswiki.org/emacs?action=elisp-area;context=0), and I just get (eventually): 
@@ -253,7 +255,7 @@ Thx - Drew
 -- DrewAdams 2015-01-05 22:14 UTC
 
 
-----
+== Redirects for certain URLs ==
 
 I'm sure we'll be able to add a redirect for those “/cgi-bin/wiki” links as well, eventually. It's a matter of principle! :)
 [http://www.w3.org/Provider/Style/URI.html Cool URIs don't change], after all.
@@ -352,7 +354,7 @@ I don't plan to swap Oddmuse out quickly. I just don't have the time... but I ca
 -- [http://emacswiki.org/wiki/NicFerrier NicFerrier] 2015-01-10 19:21 UTC
 
 
-----
+== Captcha Problems ==
 
 Hum… I got an email 3 hours ago by a person that got an Internal Server Error when attempting to save a page. I wonder what that was all about.
 
@@ -366,7 +368,7 @@ Problem fixed. Captcha should work again (instead of crashing).
 -- AlexSchroeder 2015-01-11 13:38 UTC
 
 
-----
+== Language Issues ==
 
 A strange thing is that a new visitor, without a cookie set, seems to get a French copy of the pages. I'm assuming that's because a French copy got cached and the cache doesn't keep separate copies of each URL based on language preferences?
 
