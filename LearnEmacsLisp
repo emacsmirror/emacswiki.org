@@ -16,8 +16,8 @@ Learning a little Emacs Lisp is not that hard. Emacs does its best to help you l
 * Use `C-x ESC ESC' to repeat [[command]]s you execute, and look at the Emacs-Lisp code that executes them, before hitting `RET' (Return) -- see RepeatLastCommand.
 * Use `C-h f' (`describe-function') and `C-h v' (`describe-variable') to understand commands and [[variable]]s you use. In the help description, click the function or variable name (link) to go directly to the source code that defines it. Try to read the source code. When you want to know what some function you see used does, use `C-h f' on it... Got it?
 * Use `C-h k' to see which commands you are executing when you use [[key]]s. Then follow the previous bullet: click the name (link) of the command to see its source code...
-* Read the ''Emacs Lisp Introduction'': EmacsLispIntro. Use `C-h i', then choose `Emacs Lisp Intro'.  You can also read this manual [[http://www.gnu.org/software/emacs/emacs-lisp-intro/ on the Web]].
-* Read the ''Emacs Lisp Reference'' manual: EmacsLispReference. Use `C-h i', then choose `Elisp' (Emacs Lisp is sometimes called "Elisp"). You can also read this manual [[http://www.gnu.org/software/emacs/elisp-manual/ on the Web]].
+* Read the ''Emacs Lisp Introduction'': EmacsLispIntro. Use `C-h i', then choose `Emacs Lisp Intro'.  You can also read this manual [[https://www.gnu.org/software/emacs/manual/html_node/eintr/index.html on the Web]].
+* Read the ''Emacs Lisp Reference'' manual: EmacsLispReference. Use `C-h i', then choose `Elisp' (Emacs Lisp is sometimes called "Elisp"). You can also read this manual [[https://www.gnu.org/software/emacs/manual/html_node/elisp/index.html on the Web]].
 * SteveYegge's intro to the language: [http://steve-yegge.blogspot.com/2008/01/emergency-elisp.html]
 * Mitch Fincher's 50-point summary of the language: [http://www.fincher.org/tips/Languages/Emacs.shtml]
 * Pascal Costanza'a intro to Lisp (in general, not Emacs Lisp):
