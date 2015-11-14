@@ -35,7 +35,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to execute EmacsLisp code snippets you'll find here
 * EmacsNiftyTricks -- some extra tips
 * RandomPage -- for serendipitous visitors
-* EmacsCommunity -- learning from other people who use Emacs
+* [[CategoryCommunity|Community]] -- learning from other people who use Emacs
 
 [:DownloadAndInstallEmacs]
 ==Downloading and Installing Emacs==
