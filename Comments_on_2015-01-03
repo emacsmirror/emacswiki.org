@@ -367,8 +367,13 @@ Problem fixed. Captcha should work again (instead of crashing).
 
 -- AlexSchroeder 2015-01-11 13:38 UTC
 
+== Git ==
 
-== Language Issues ==
+We're back pushing page edits to the [https://github.com/emacsmirror/emacswiki.org/commits/master git repository]. Yay!
+
+-- AlexSchroeder 2015-01-15 08:29 UTC
+
+== Caching Issues Leading to Wrong CSS and Wrong Language ==
 
 A strange thing is that a new visitor, without a cookie set, seems to get a French copy of the pages. I'm assuming that's because a French copy got cached and the cache doesn't keep separate copies of each URL based on language preferences?
 
@@ -387,13 +392,6 @@ Site loads in Spanish for me, it should be English. I haven't seen this happen b
 Does this continue after clicking the appropriate language link at the top of SiteMap? If it does, then more is borked. If that fixed it (maybe a Control Shift R to reload is required), then the caching proxy is at fault. Or at least the interaction between caching proxy and wiki. I need to read up on caches and language http headers.
 
 -- [http://alexschroeder.ch/alex/Emacs AlexSchroeder] 2015-01-13 21:22 UTC
-
-
-----
-
-We're back pushing page edits to the [https://github.com/emacsmirror/emacswiki.org/commits/master git repository]. Yay!
-
--- AlexSchroeder 2015-01-15 08:29 UTC
 
 
 ----
