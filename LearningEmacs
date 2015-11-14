@@ -26,6 +26,8 @@ Try the EmacsTutorial, or read one of the BooksAboutEmacs.
 
 * [http://tuhdo.github.io/emacs-tutor.html Emacs Mini Manual] - An Emacs mini manual for starters to learn Emacs before reading the real (and big) Emacs manual.
 
+* Get in touch with other people who use Emacs -- see CategoryCommunity.
+
 Most people learn best by doing and not just by reading over a list of
 [[command]]s and trying to memorize them.  Get yourself a text file
 to play around with. Make a backup copy if you're nervous about
@@ -56,9 +58,9 @@ then you might not be using it enough to matter.  Don't worry about it.
 
 # If you're convinced after a fair amount of practice that a given key binding is really bad, then consider binding its command to a different, unused key.  But not before.
 
-Some [[EmacsNewbie]]s rush too quickly to add or change key bindings.  This can mean avoiding to learn Emacs and spending more time configuring. Competency with `M-x' and help are core Emacs skills for life.  `M-x' should become your command line in Emacs. Using `M-x' is easier if you set up some kind of suggestion system such as [[Smex]].
+Some [[EmacsNewbie]]s rush too quickly to add or change key bindings.  This can mean avoiding to learn Emacs and spending more time configuring. Competency with `M-x' and help are core Emacs skills for life.  `M-x' should become your command line in Emacs. 
 
-You can also learn more about Emacs from other people who use Emacs - see CategoryCommunity.
+
 
 == Emacs-Lisp Libraries and Snippets that Can Help You Learn Emacs ==
 
@@ -73,6 +75,8 @@ You can also learn more about Emacs from other people who use Emacs - see Catego
 * Enable a random TipOfTheDay.
 
 * Play the game KeyWiz to learn Emacs key bindings. (This works for ViperMode key bindings too.)
+
+* Use a suggestion system for `M-x', such as [[Smex]].
 
 
 ----
