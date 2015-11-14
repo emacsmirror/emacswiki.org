@@ -15,7 +15,7 @@ I think goto-line is much more used than facemenu-* and M-g should be bound to M
 
 ::: Well, it's already there. :-) :-) I meant 'natural' in the sense that it is _currently_ the place where such stuff should go. If you want M-g, because it is mnemonic for `goto-line', then another keybinding for the facemenu stuff would be o.k. by me, provided that it is a top level one. It only occurred to me that you were about to discard a keybinding for `facemenu-.*' entirely. -- OliverScholz
 
-See also PopularOptions, LineCommands.
+See also PopularOptions, LineCommands, and RandomFluje.
 
 ----
 CategoryDotEmacs
