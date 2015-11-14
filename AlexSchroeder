@@ -46,9 +46,12 @@ Later, I also used it on ICQ. And now I'm using it on IRC.
 13:03 <Blkt> kensanata: may I ask you another thing?
 13:03 <kensanata> This is IRC!!! ##*boot*##
 
-== Init Files ==
+== Code ==
 
-* AlexSchroederConfigMegabombus -- my wife's Powerbook @ home running Mac OS X
+* https://github.com/kensanata/emacs-setup -- my new setup, inspired by EmacsLife
+* https://github.com/kensanata/elisp/ -- various elisp files I'm no longer using (if I were to use them, they'd be in the ##emacs-setup## repository)
+* https://github.com/kensanata/ggg -- my Gmail Gnus GPG Guide (GGGG)
+* AlexSchroederConfigMegabombus -- the old setup on my wife's Powerbook @ home running Mac OS X
 * AlexSchroederConfigOrientalibombus -- the very old iBook 4G using Xubuntu
 * AlexSchroederConfigPyrobombus -- the old Mac Mini @ home running Mac OS X, no longer in use
 * AlexSchroederConfigWindows -- the workstation @ work running Windows 7; get grep and friends from [http://gnuwin32.sourceforge.net/packages.html GnuWin32]
