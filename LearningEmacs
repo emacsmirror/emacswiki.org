@@ -1,6 +1,6 @@
 This page provides tips for learning to use Emacs and learning more about Emacs. See also '''EmacsNewbie'''.
 
-Try the EmacsTutorial, or read one of the BooksAboutEmacs.
+Try the EmacsTutorial, or read one of the BooksAboutEmacs. 
 
 * Learn WhyUseEmacs
 
@@ -56,12 +56,9 @@ then you might not be using it enough to matter.  Don't worry about it.
 
 # If you're convinced after a fair amount of practice that a given key binding is really bad, then consider binding its command to a different, unused key.  But not before.
 
-Some [[EmacsNewbie]]s rush too quickly to add or change key bindings.  This can mean
-avoiding to learn Emacs and spending more time configuring.
-Competency with `M-x' and help are core Emacs skills for
-life.  `M-x' should become your command line in Emacs.
+Some [[EmacsNewbie]]s rush too quickly to add or change key bindings.  This can mean avoiding to learn Emacs and spending more time configuring. Competency with `M-x' and help are core Emacs skills for life.  `M-x' should become your command line in Emacs. Using `M-x' is easier if you set up some kind of suggestion system such as [[Smex]].
 
-
+You can also learn more about Emacs from other people who use Emacs - see CategoryCommunity.
 
 == Emacs-Lisp Libraries and Snippets that Can Help You Learn Emacs ==
 
