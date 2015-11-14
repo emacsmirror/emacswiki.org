@@ -6,8 +6,9 @@ There are two %%StackExchange%% places for Emacs.  Each has about the same amoun
 
 * [[http://stackoverflow.com/questions/tagged/emacs StackOverflow, tag `emacs']] (just add tag '''##emacs##''' when you post a question)
 
+----
 
-
+See also [[https://github.com/vermiculus/sx.el sx.el]], a %%StackExchange%% interface for Emacs.
 
 ----
 
