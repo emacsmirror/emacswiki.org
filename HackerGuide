@@ -33,15 +33,12 @@ Emacs --like a lot of GNU projects-- use the GNU autotools.
 
 * <b>Makefile.in</b> --- The makefile not yet processed by autotools.
 
-I recommand reading the INSTALL.BZR if you want to build the bazaar
-trunk. Basically, if you have all dependancies to build the default
+I recommand reading the INSTALL.REPO if you want to build the git
+`master' branch. Basically, if you have all dependancies to build the default
 Emacs, run:
 
 <pre>
-$ ./autogen.sh
-$ ./configure
-$ make bootstrap
-$ make
+$ make # does the needed autogen, configure, make with default settings
 $ ./src/emacs -Q # run it!
 </pre>
 
