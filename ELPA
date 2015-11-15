@@ -18,9 +18,9 @@ You can use other repositories. The following examples show how to access [[Marm
 Add this to your [[init file]]:
 
 {{{
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("marmalade" . "https://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.org/packages/")))
+                         ("melpa" . "https://melpa.org/packages/")))
 }}}
 
 Any combination of repositories is fine.  You should probably always include "gnu", which is for GNU ELPA, but it is not required.
@@ -31,7 +31,7 @@ You can also add repositories one at a time:
 
 {{{
 (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; Org-mode's repository
 }}}
 
@@ -46,7 +46,7 @@ You get a UI and then you can add the archives directly:
 {{{
 Hide Package Archives:
 INS DEL Archive name: gnu
-            URL or directory name: http://elpa.gnu.org/packages/
+            URL or directory name: https://elpa.gnu.org/packages/
 INS DEL Archive name: marmalade
             URL or directory name: https://marmalade-repo.org/packages/
 INS
@@ -198,7 +198,7 @@ Another hint, if the installed package doesn't seem to work, is to confirm that 
 ELPA policy for Emacs 24 was discussed here: http://thread.gmane.org/gmane.emacs.devel/132634/focus=132640
 
 === Downgrading to an earlier version of a package ===
-Suppose that Auctex 11.88 complains about TeX-auto-add-type . One lazy solution is to downgrade to an earlier version. If auctex 11.88 came from elpa, go to http://elpa.gnu.org/packages/ and then to auctex and download the tar file of the latest version of auctex 11.87 and save  it under your elpa archives (~/.emacs.d/elpa/auctex-11.87.7.tar). Then suppress the 11.88 with list-package, marking d on auctex and x to execute the deletion. 
+Suppose that Auctex 11.88 complains about TeX-auto-add-type . One lazy solution is to downgrade to an earlier version. If auctex 11.88 came from elpa, go to https://elpa.gnu.org/packages/ and then to auctex and download the tar file of the latest version of auctex 11.87 and save  it under your elpa archives (~/.emacs.d/elpa/auctex-11.87.7.tar). Then suppress the 11.88 with list-package, marking d on auctex and x to execute the deletion. 
 
 Now, type the command 'package-install-file' and load file ~/.emacs.d/elpa/auctex-11.87.7.tar . The tar file must contain a -pkg.el file which is the cas from the elpa.gnu.org site.
 
@@ -234,7 +234,7 @@ In case Emacs 23 shows this error at startup: //File error: Cannot load file, pa
 AndrewHyatt has written an [http://code.google.com/p/elpa-on-appengine/ implementation of ELPA for AppEngine], written in Go.  It is not yet running publicly yet, as of April 2013.
 
 The source code for [[Marmalade]] is available on
-[[http://github.com/nicferrier/elmarmalade GitHub]]. It is a complete
+[[https://github.com/nicferrier/elmarmalade GitHub]]. It is a complete
 EmacsLisp project, an [[Elnode]] webapp.
 
 ----
