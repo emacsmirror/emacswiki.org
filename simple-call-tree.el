@@ -2391,7 +2391,7 @@ If UNMARK is non-nil unmark the items instead."
             (lambda nil
               (hl-line-mode 1))))
 
-(provide 'simple-call-tree+)
+(provide 'simple-call-tree)
 
 ;;; simple-call-tree.el ends here
 
