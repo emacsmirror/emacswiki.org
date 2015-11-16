@@ -1,4 +1,3 @@
-== Library Information ==
 == Sweetgreen.el ==
 
 [https://github.com/syl20bnr/spacemacs file:https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg]
@@ -8,6 +7,150 @@ editor? Now you can!
 
 
 file:sweetgreen.png
+== Functions & macros ==
+=== Interactive Functions ===
+
+==== sweetgreen ====
+<tt>(sweetgreen ARGS)</tt>
+
+asdfasfasdf
+
+==== sweetgreen/helm-restaurants ====
+<tt>(sweetgreen/helm-restaurants ZIP_CODE)</tt>
+
+asfasfsfadf
+
+=== Internal Functions ===
+
+==== => ====
+<tt>(</tt>> ALIST &rest KEYS)=
+
+Accessor that makes it easy to traverse nested alists
+
+==== sweetgreen//add-to-cart ====
+<tt>(sweetgreen//add-to-cart PRODUCT)</tt>
+
+asdfasdfd
+
+==== sweetgreen//cancel-item ====
+sweetgreen//cancel-item is an alias for <tt>sweetgreen//cancel-item</tt>,
+which is not defined.  Please make a bug report.
+
+==== sweetgreen//cancel-orders ====
+sweetgreen//cancel-orders is an alias for <tt>sweetgreen//cancel-orders</tt>,
+which is not defined.  Please make a bug report.
+
+==== sweetgreen//checkout ====
+sweetgreen//checkout is an alias for <tt>sweetgreen//checkout</tt>,
+which is not defined.  Please make a bug report.
+
+==== sweetgreen//fetch-auth-cookie ====
+<tt>(sweetgreen//fetch-auth-cookie USERNAME PASSWORD)</tt>
+
+Login to get a session cookie
+
+==== sweetgreen//fetch-basket ====
+<tt>(sweetgreen//fetch-basket ORDER-ID)</tt>
+
+asfasfsfasf
+
+==== sweetgreen//fetch-csrf-token ====
+<tt>(sweetgreen//fetch-csrf-token)</tt>
+
+Parse CSRF-Token out of Sweetgreen's Homepage
+
+==== sweetgreen//get-menu ====
+<tt>(sweetgreen//get-menu RESTAURANT_ID)</tt>
+
+asdf
+
+==== sweetgreen//get-restaurants ====
+<tt>(sweetgreen//get-restaurants ZIP_CODE)</tt>
+
+asdfsd
+
+==== sweetgreen//helm-select-time ====
+sweetgreen//helm-select-time is an alias for <tt>sweetgreen//helm-select-time</tt>,
+which is not defined.  Please make a bug report.
+
+==== sweetgreen//logout ====
+<tt>(sweetgreen//logout CURR-USER)</tt>
+
+Logout CURR-USER and reset Session Cookie to <tt>nil</tt>.
+
+==== sweetgreen//make-helm-menu-sources ====
+<tt>(sweetgreen//make-helm-menu-sources RESTAURANT_ID)</tt>
+
+asdfs
+
+==== sweetgreen//order-product ====
+<tt>(sweetgreen//order-product PRODUCT)</tt>
+
+asdfasdfasd
+
+==== sweetgreen/confirm-product ====
+<tt>(sweetgreen/confirm-product PRODUCT)</tt>
+
+asdfasfsdf
+
+==== sweetgreen/helm-menu ====
+<tt>(sweetgreen/helm-menu RESTAURANT_ID)</tt>
+
+asdfasd
+
+=== Macros ===
+== Variables ==
+=== Customizable Variables ===
+
+==== sweetgreen--password ====
+Sweetgreen Account Password
+
+==== sweetgreen--username ====
+Sweetgreen Accounr Username
+
+=== Internal Variables ===
+
+==== sweetgreen--available-times ====
+Lis of times for current order
+
+==== sweetgreen--cookie-regexp ====
+Regular expression to get the Session ID from the response's headers
+
+==== sweetgreen--cookie-string ====
+Cookies for http://orders.sweetgreen.com
+
+==== sweetgreen--csrf-token ====
+CSRF Token for http://orders.sweetgreen.com
+
+==== sweetgreen--csrf-token-regexp ====
+Regular Expression used to grab the CSRF Token from the index page.
+
+==== sweetgreen--curr-basket ====
+Current Basket or Shopping Cart
+
+==== sweetgreen--curr-basket-id ====
+Current Basket or Shopping Cart ID
+
+==== sweetgreen--curr-order-id ====
+Last order (product added to cart) we've done
+
+==== sweetgreen--curr-restaurant ====
+Current Restaurant
+
+==== sweetgreen--curr-user ====
+Current logged in USER
+
+==== sweetgreen--items-alist ====
+Items available in the menu for the current RESTAURANT
+
+==== sweetgreen--menu-alist ====
+Menu for Current restaurant
+
+==== sweetgreen--products-alist ====
+Menu for Current restaurant
+
+==== sweetgreen--restaurants-alist ====
+Nearby Restaurants alist
 
 
 This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
