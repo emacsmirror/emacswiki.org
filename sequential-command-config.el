@@ -63,13 +63,13 @@
 
 (defun seq-upcase-backward-word ()
   (interactive)
-  (upcase-word (- (1+ (seq-count)))))
+  (upcase-word (- (1+ (seq-count*)))))
 (defun seq-capitalize-backward-word ()
   (interactive)
-  (capitalize-word (- (1+ (seq-count)))))
+  (capitalize-word (- (1+ (seq-count*)))))
 (defun seq-downcase-backward-word ()
   (interactive)
-  (downcase-word (- (1+ (seq-count)))))
+  (downcase-word (- (1+ (seq-count*)))))
 
 (when (require 'org nil t)
   (if org-special-ctrl-a/e
