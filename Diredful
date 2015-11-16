@@ -9,6 +9,7 @@ Github: https://github.com/thamer/diredful
 Put the above file in your Emacs-Lisp load path, and add the following to your startup file (i.e., $HOME/.emacs):
 
  (require 'diredful)
+ (diredful-mode 1)
 
 Then Do:
 
