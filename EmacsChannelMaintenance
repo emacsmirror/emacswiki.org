@@ -6,9 +6,9 @@ Typical /topic pattern:
 /topic See http://emacswiki.org/emacs/EmacsChannel for tips, code of conduct | Go ahead and ask your Emacs question | Treat people with respect. No sexism, racism, homophobia, etc. | No public logging | <whatever people want to add, such as a quote>
 </pre>
 
-= IRC commands =
+== IRC commands ==
 
-== See access list ==
+=== See access list ===
 
 <pre>
 /msg ChanServ access #emacs list
@@ -34,7 +34,7 @@ Please give some warning first. See [[#ERCCommands|ERC Commands]] for functions 
 
 Here are some options:
 
-== Quiet the user ==
+=== Quiet the user ===
 
 They can stay in channel, but they can't say anything.
 
@@ -42,21 +42,22 @@ They can stay in channel, but they can't say anything.
 /mode #emacs +q nick
 </pre>
 
-== Kick the user ==
+=== Kick the user ===
 
 <pre>
 /kick nick
 </pre>
 
-== Ban returning rude people by hostname ==
+=== Ban returning rude people by hostname ===
 
 <pre>
 /mode #emacs +b *!user@hostname
 </pre>
 
 [:ERCCommands]
-= ERC Commands =
+== ERC Commands ==
 
+=== Ban, kickban ===
 <pre>
 (defun erc-cmd-BAN (nick)
   (let* ((chan (erc-default-target))
@@ -78,7 +79,9 @@ They can stay in channel, but they can't say anything.
 </pre>
 
 [:ERCQuiet]
-Make people quiet - they can stay in channel, but they can't say anything. [https://gist.github.com/jwiegley/1af912d0833206125afa Source]
+=== Make people quiet ===
+
+They can stay in channel, but they can't say anything. [https://gist.github.com/jwiegley/1af912d0833206125afa Source]
 <pre>
 (defun erc-cmd-QUIET (nick)
   (erc-cmd-OPME)
@@ -90,7 +93,9 @@ Make people quiet - they can stay in channel, but they can't say anything. [http
   (erc-cmd-DEOPME))
 </pre>
 
-Kick/ban based on IP address [https://gist.github.com/jwiegley/e1b92259c3335124d3fc Source]
+=== Kick/ban based on IP address  ===
+
+[https://gist.github.com/jwiegley/e1b92259c3335124d3fc Source]
 <pre>
 (defun erc-cmd-KICKBANIP (nick &rest reason)
   (setq reason (mapconcat #'identity reason " "))
