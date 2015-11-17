@@ -1,5 +1,10 @@
-Page http://freenode.net/using_the_network.html lists the available
-modes on the FreeNode network.
+Page http://freenode.net/using_the_network.html lists the available modes on the FreeNode network.
+
+Typical /topic pattern:
+
+<pre>
+/topic See http://emacswiki.org/emacs/EmacsChannel for tips, code of conduct | Go ahead and ask your Emacs question | Treat people with respect. No sexism, racism, homophobia, etc. | No public logging | <whatever people want to add, such as a quote>
+</pre>
 
 See access list:
 
