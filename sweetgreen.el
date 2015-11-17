@@ -10,10 +10,11 @@
 
 ;; Copyright (C) 2015 Diego Berrocal
 
-;; Created: 3 November 2015
 ;; Author: Diego Berrocal <cestdiego@gmail.com>
 ;; Homepage: https://www.github.com/CestDiego/sweetgreen.el
+;; Created: Tue Nov  3 22:33:41 2012 (-0500)
 ;; Version: 0.4
+;; URL: https://github.com/cestdiego/sweetgreen.el
 ;; Package-Requires: ((dash "2.12.1") (helm "1.5.6") (request "0.2.0") (cl-lib "0.5"))
 ;; Keywords: salad, food, sweetgreen, request
 
@@ -34,16 +35,6 @@
 ;; GNU General Public License for more details.
 ;;
 
-;;; Commentary:
-
-;; Give your Emacs the power to order salads and leave a healthier lifestyle,
-;; don't forget to also exercise!
-
-;;; Usage:
-
-;;     (require 'sweetgreen) ;; Not necessary if using ELPA package
-;;     M-x sweetgreen
-
 ;;; Code:
 (require 'request)
 (require 'dash)
@@ -52,8 +43,7 @@
 (require 'json)
 
 (defgroup sweetgreen nil
-  "Order a variety of products from Sweetgreen without leaving your editor."
-  :group 'sweetgreen)
+  "Order a variety of products from Sweetgreen without leaving your editor.")
 
 (defcustom sweetgreen--username nil
   "Sweetgreen Accounr Username"
@@ -77,12 +67,12 @@
 (defvar sweetgreen--cookie-string ""
   "Cookies for http://orders.sweetgreen.com")
 
-(defvar sweetgreen--restaurants-alist '()
+(defvar sweetgreen--restaurants-alist ()
   "Nearby Restaurants alist")
 
-(defvar sweetgreen--menu-alist '()
+(defvar sweetgreen--menu-alist ()
   "Menu for Current restaurant")
-(defvar sweetgreen--products-alist '()
+(defvar sweetgreen--products-alist ()
   "Menu for Current restaurant")
 (defvar sweetgreen--curr-restaurant nil
   "Current Restaurant")
@@ -90,9 +80,9 @@
 (defvar sweetgreen--available-times nil
   "Lis of times for current order")
 
-(defvar sweetgreen--items-alist '()
+(defvar sweetgreen--items-alist ()
   "Items available in the menu for the current RESTAURANT")
-(defvar sweetgreen--curr-basket '()
+(defvar sweetgreen--curr-basket ()
   "Current Basket or Shopping Cart")
 (defvar sweetgreen--curr-user      nil
   "Current logged in USER")
@@ -103,15 +93,15 @@
 
 (defun => (alist &rest keys)
   "Accessor that makes it easy to traverse nested alists"
-  (-reduce-from (lambda (acc item) (assoc-default item acc) ) alist keys))
+  (-reduce-from (lambda (acc item) (assoc-default item acc)) alist keys))
 
 (defun sweetgreen//auth (&optional username password)
   "Authenticate USERNAME with PASSWORD to sweetgreen and get all cookies"
   (interactive)
-  (unless sweetgreen--username (setq sweetgreen--username
-                                     (read-from-minibuffer "Username: ")))
-  (unless sweetgreen--password (setq sweetgreen--password
-                                     (read-passwd "Super Secret Password: ")))
+  (unless sweetgreen--username
+    (setq sweetgreen--username (read-from-minibuffer "Username: ")))
+  (unless sweetgreen--password
+    (setq sweetgreen--password (read-passwd "Super Secret Password: ")))
   (sweetgreen//fetch-csrf-token)
   (sweetgreen//fetch-auth-cookie username password))
 
@@ -153,8 +143,7 @@
                           (string-match sweetgreen--cookie-regexp header)
                           (concat "_session_id=" (match-string 1 header)))))
     (setq sweetgreen--curr-user     (=> data 'customer) )
-    (setq sweetgreen--cookie-string cookie-string))
-  )
+    (setq sweetgreen--cookie-string cookie-string)))
 
 (defun sweetgreen//logout (curr-user)
   "Logout CURR-USER and reset Session Cookie to `nil'. "
@@ -172,8 +161,7 @@
          (header (request-response-header response "set-cookie"))
          (cookie-string (progn
                           (string-match sweetgreen--cookie-regexp header)
-                          (concat "_session_id=" (match-string 1 header))))
-         )
+                          (concat "_session_id=" (match-string 1 header)))))
     (setq sweetgreen--curr-user nil)
     (setq sweetgreen--cookie-string cookie-string)))
 
@@ -204,8 +192,7 @@
                        (=> selected_restaurant 'restaurant_slug))))
             :action
             (lambda (candidate)
-              (setq sweetgreen--curr-restaurant candidate))
-            )
+              (setq sweetgreen--curr-restaurant candidate)))
           :buffer "*Sweetgreen ❤ Restaurants*")))
 
 (defun sweetgreen/helm-menu (restaurant_id)
@@ -327,16 +314,16 @@
 (defun sweetgreen/confirm-product (product)
   "Build prompt with random pun and interactively confirm order"
   (let* ((name     (upcase-initials (=> product 'name)))
-        (restaurant (=> sweetgreen--restaurants-alist (=> product 'restaurant_id)))
-        (location (=> restaurant 'name))
-        (address (concat (=> restaurant 'address) ", " (=> restaurant 'state)))
-        (instructions (=> restaurant 'pickup_instructions))
-        (random-pun (nth (random 4) '("Orange you glad you use Emacs?"
-                                      "Do you like to party?? Lettuce turnip the beet!"
-                                      "Don't forget to lettuce know if you came from RC"
-                                      "Romaine calm! You haven't order your salad yet")) )
-        (cost     (/ (=> product 'cost) 100))
-        (calories (=> product 'calories)))
+         (restaurant (=> sweetgreen--restaurants-alist (=> product 'restaurant_id)))
+         (location (=> restaurant 'name))
+         (address (concat (=> restaurant 'address) ", " (=> restaurant 'state)))
+         (instructions (=> restaurant 'pickup_instructions))
+         (random-pun (nth (random 4) '("Orange you glad you use Emacs?"
+                                       "Do you like to party?? Lettuce turnip the beet!"
+                                       "Don't forget to lettuce know if you came from RC"
+                                       "Romaine calm! You haven't order your salad yet")) )
+         (cost     (/ (=> product 'cost) 100))
+         (calories (=> product 'calories)))
     (y-or-n-p
      (format
       "%s
@@ -438,8 +425,7 @@ Confirm your order? "
                   (let* ((basket     (aref (=> data 'orders) 0))
                          (basket_id (=> basket 'basket_id)))
                     (print data)
-                    (message "Yeah salad is ordered")
-                    ))))))
+                    (message "Yeah salad is ordered")))))))
 
 ;;;###autoload
 (defun sweetgreen (args)
@@ -458,7 +444,8 @@ Confirm your order? "
 
          (curr-product         (sweetgreen/helm-menu curr-restaurant-id))
          (confirmed-product    (sweetgreen/confirm-product curr-product)))
-    (when confirmed-product    (sweetgreen//order-product curr-product))))
+    (when confirmed-product
+      (sweetgreen//order-product curr-product))))
 
 (provide 'sweetgreen)
 
