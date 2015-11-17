@@ -4,13 +4,6 @@ The official Emacs IRC channel is '''#emacs''' on freenode, since [https://www.g
 
 If you just want the channel rules, skip to the [[#Conduct]] and [[#LawAndOrder|Law and Order]] sections. 
 
-= Tips for getting help =
-
-* Don't ask to ask - just ask your question. It's the best way to know if anyone can help. So, instead of saying something like "Can I ask a question about Org?" or "Does anyone use linum-mode?", jump straight into your question.
-* People often hang out in #emacs and have off-topic conversations. Don't worry - if you want to ask Emacs-related questions, you're in the right place. Just go ahead and ask your question. If people think they can help you, they'll reply in the channel.
-* If you need to share code that's more than one or two lines long, use a service such as paste.lisp.org or gist.github.com instead of pasting the code directly into the channel.
-* You may want to check the [[CommunityEmacsFAQ|Community FAQ]] and other resources for [[GetHelp|getting help]] before asking questions on the channel.
-
 = About #emacs and related channels =
 
 The freenode [[IRC]] channel '''#emacs''' is a place for a merry get-together of all the Emacs folks out there.  People from all the corners of the world do populate the channel. (see EmacsChannelDemographics).
@@ -37,6 +30,13 @@ Channel list:
 
 We prefer no public logs of the Emacs channel. See EmacsChannelLogging.
 
+= Tips for getting help =
+
+* Don't ask to ask - just ask your question. It's the best way to know if anyone can help. So, instead of saying something like "Can I ask a question about Org?" or "Does anyone use linum-mode?", jump straight into your question.
+* People often hang out in #emacs and have off-topic conversations. Don't worry - if you want to ask Emacs-related questions, you're in the right place. Just go ahead and ask your question. If people think they can help you, they'll reply in the channel.
+* If you need to share code that's more than one or two lines long, use a service such as paste.lisp.org or gist.github.com instead of pasting the code directly into the channel.
+* You may want to check the [[CommunityEmacsFAQ|Community FAQ]] and other resources for [[GetHelp|getting help]] before asking questions on the channel.
+
 [:Conduct]
 = Conduct =
 
@@ -45,9 +45,9 @@ In addition to [http://freenode.net/policy.shtml freenode's network-wide policie
 * Don't be a jerk. Treat people with respect. No sexism, racism, homophobia, or other offensive behaviours.
 * Be patient. You might not get an answer right away. People are not actively watching the channel all the time. If no one knows the answer to your question, you might not get a response at all. You don't need to repeat the question or ask if people have seen it. While waiting for someone to reply to your question, you might want to participate in other questions, investigate other ways of [[GetHelp|getting help]], or focus on other things. Check back occasionally to see if someone has responded to you.
 * Be friendly to newbies. They might not know what things are called or where to look for help, so you may want to suggest links or keywords to help them learn more.
-* Don't start or participate in flame wars. If a discussion gets out of hand, feel free to use /ignore. If an off-topic discussion gets heated or starts to drown out on-topic discussion, please take it elsewhere.If a discussion disrupts Emacs-related help, bring it to the attention of a channel operator. 
+* Don't start or participate in flame wars. If a discussion gets out of hand, feel free to use /ignore. If an off-topic discussion gets heated or starts to drown out on-topic discussion, please take it elsewhere.If a discussion disrupts Emacs-related help, bring it to the attention of a channel operator. See the [[#LawAndOrder|Law and Order]] section below. 
 * You don't need to change your IRC nick to indicate that you are away. A simple /away message will be enough.
-* And, for the love of GNU, don't use 1337-5p34k.
+* Don't use 1337-5p34k. Make
 
 If you violate these rules, we will beat you with a [[https://en.wiktionary.org/wiki/cluebat cluebat]].
 
@@ -56,9 +56,11 @@ Oh, and don't encourage the punners (not really); offenders are not listed here 
 [:LawAndOrder]
 = Law and Order =
 
-If you need the help of a friendly *operator* (usually for kicking and banning obnoxious fellow channel members), you can get a list of these from fsbot. Just say:
+If you need the help of a channel *operator* (usually for kicking and banning obnoxious fellow channel members), you can get a list of these from fsbot. Just say:
 
 : ops?
+
+To call the ops, use ##ops <nick-to-complain-about> [reason]##. Make sure you have a clear reason for getting in touch with the ops, such as code of conduct violations.
 
 In the background the Freenode server maintains an *access list* for the channel.  Try it for yourself:
 
@@ -77,6 +79,7 @@ If you're in trouble:
 * To appeal decisions made by an operator, find another operator.
 * If nothing else works, you'll have to contact Freenode staff on #freenode.
 
+ops can add themselves using ##,ops-list is also <nick>##
 = Bots =
 
 The channel is probably logged by a gazillion bots (and human users).  Some of the bots one might encounter are described below.
