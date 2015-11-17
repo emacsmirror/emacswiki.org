@@ -49,7 +49,7 @@ Violators of this code of conduct may be temporarily or permanently banned from 
 
 If you need the help of a channel *operator* (usually for kicking and banning obnoxious fellow channel members), you can get a list of these from fsbot. Just say:
 
-: ops?
+    ops?
 
 To call the ops, use ##ops <nick-to-complain-about> [reason]##. Make sure you have a clear reason for getting in touch with the ops, such as code of conduct violations.
 
