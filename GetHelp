@@ -1,11 +1,11 @@
 Getting stuck? Trying to figure something out?
 
-* If starting emacs with `emacs -q' fixes the problem, the problem is probably due to something in your configuration. Check your InitFile. If `emacs -q' has problems but `emacs -Q' doesn't, it might be related to your Emacs distribution or your local setup.
+* If starting emacs with ##emacs -q## fixes the problem, the problem is probably due to something in your configuration. Check your InitFile. If ##emacs -q## has problems but ##emacs -Q## doesn't, it might be related to your Emacs distribution or your local setup.
 * Emacs has so many options, and the defaults might not be what you expect. You might get better help if you describe what you want and politely ask for suggestions instead of saying that Emacs is broken.
+* Search this wiki and other Emacs sites for tips, links, and recommendations.
 
 = Where to get help =
 
-* Search this wiki and other Emacs sites for tips, links, and recommendations.
 * You can post a message in the appropriate EmacsMailingLists or EmacsNewsgroups.
 * The EmacsChannel can be good for real-time help if you can explain your problem concisely. If you need to share your config, use a service such as Gist or Pastebin.
 * You can post technical questions on EmacsStackExchange (http://emacs.stackexchange.com). Remember to accept correct answers in order to recognize people's help and make it easy for other people to find the answers.
