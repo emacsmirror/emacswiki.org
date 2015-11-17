@@ -3,34 +3,15 @@ Page http://freenode.net/using_the_network.html lists the available modes on the
 Typical /topic pattern:
 
 <pre>
-/topic See http://emacswiki.org/emacs/EmacsChannel for tips, code of conduct | Go ahead and ask your Emacs question | Treat people with respect. No sexism, racism, homophobia, etc. | No public logging | <whatever people want to add, such as a quote>
+/topic See http://emacswiki.org/emacs/EmacsChannel for tips, code of conduct | Go ahead and ask your Emacs question | Treat people with respect. No sexism, racism, homophobia, or discrimination of any kind. | No public logging | <whatever people want to add, such as a quote>
 </pre>
 
-== IRC commands ==
+== Dealing with violations of the code of conduct ==
 
-=== See access list ===
-
-<pre>
-/msg ChanServ access #emacs list
-</pre>
-
-Check what the levels mean:
-
-<pre>
-/msg chanserv level #emacs list
-</pre>
-
-== Modify access list ==
-
-Add only the nicks of identified users.
-
-<pre>
-/msg ChanServ access #emacs add noob 10
-</pre>
-
-= Dealing with violations =
-
-Please give some warning first. See [[#ERCCommands|ERC Commands]] for functions to make managing users easier.
+* Please give some warning first. 
+* Try to focus on correcting behaviour rather than judging people, and redirect people to better alternative behaviours. Distinguish between "That's not welcome here. Do this instead." and "You're not welcome here."
+* Give people the benefit of the doubt. Don't assume that they're pretending to be offended or that they're trolling; they may have a valid concern.
+* See [[#ERCCommands|ERC Commands]] for functions to make managing users easier.
 
 Here are some options:
 
@@ -52,6 +33,29 @@ They can stay in channel, but they can't say anything.
 
 <pre>
 /mode #emacs +b *!user@hostname
+</pre>
+
+
+== IRC commands ==
+
+=== See access list ===
+
+<pre>
+/msg ChanServ access #emacs list
+</pre>
+
+Check what the levels mean:
+
+<pre>
+/msg chanserv level #emacs list
+</pre>
+
+== Modify access list ==
+
+Add only the nicks of identified users.
+
+<pre>
+/msg ChanServ access #emacs add noob 10
 </pre>
 
 [:ERCCommands]
