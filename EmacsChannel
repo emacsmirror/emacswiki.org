@@ -2,11 +2,18 @@
 
 The official Emacs IRC channel is '''#emacs''' on freenode, since [https://www.gnu.org/press/2002-08-26-freenode.html the GNU Project made freenode its official IRC network in 2002]. You can join using the [http://webchat.freenode.net?channels=%23emacs&uio=d4 Freenode web interface], or use your favorite IRC client. There are several IRC clients available for Emacs - see the client section of [[InternetRelayChat]] for options. 
 
-If you just want the channel rules, skip to the [[#Conduct]] and [[#LawAndOrder|Law and Order]] sections.  Also check the [[CommunityEmacsFAQ|Community FAQ]] before asking questions on the channel.
+If you just want the channel rules, skip to the [[#Conduct]] and [[#LawAndOrder|Law and Order]] sections. 
+
+= Tips for getting help =
+
+* Don't ask to ask - just ask your question. It's the best way to know if anyone can help. So, instead of saying something like "Can I ask a question about Org?" or "Does anyone use linum-mode?", jump straight into your question.
+* People often hang out in #emacs and have off-topic conversations. Don't worry - if you want to ask Emacs-related questions, you're in the right place. Just go ahead and ask your question. If people think they can help you, they'll reply in the channel.
+* If you need to share code that's more than one or two lines long, use a service such as paste.lisp.org or gist.github.com instead of pasting the code directly into the channel.
+* You may want to check the [[CommunityEmacsFAQ|Community FAQ]] and other resources for [[GetHelp|getting help]] before asking questions on the channel.
 
 = About #emacs and related channels =
 
-The freenode [[IRC]] channel '''#emacs''' is a place for a merry get-together of all the Emacsfolks out there.  People from all the corners of the world do populate the channel, largely from the "West", though (see EmacsChannelDemographics).
+The freenode [[IRC]] channel '''#emacs''' is a place for a merry get-together of all the Emacsfolks out there.  People from all the corners of the world do populate the channel. (see EmacsChannelDemographics).
 
 The chatter is in English and EmacsLisp, but other flavours of Lisp and French, Finnish, German, Hindi, Portuguese, Swedish, Icelandic, Tagalog, Persian, and who knows what else are heard from time to time.  Pour les francophones, allez voir aussi SalleEmacsFr. Para la gente hispanoparlante, también vea CanalEmacsEs.
 
