@@ -43,6 +43,10 @@ Some of the EmacsNewsgroups are also available as mailing lists. This is bi-dire
 
 Many EmacsMailingLists are available as EmacsNewsgroups. For example, you can use the [http://gmane.org Gmane] service to read many Emacs mailing lists in a news reader such as [[Gnus]]. On Gmane, the <code>gmane.emacs</code> hierarchy contains most of the Emacs-related lists available there.
 
+= Other notes =
+
+If there are technical issues with the mailing lists hosted by the FSF, you'll find status updates at https://pumprock.net/fsfstatus .
+
 ----
 
 CategoryHelp CategoryCommunity
