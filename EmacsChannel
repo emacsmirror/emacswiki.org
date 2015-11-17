@@ -40,7 +40,7 @@ In addition to [http://freenode.net/policy.shtml freenode's network-wide policie
 * Be patient. You might not get an answer right away. People are not actively watching the channel all the time. If no one knows the answer to your question, you might not get a response at all. You don't need to repeat the question or ask if people have seen it. While waiting for someone to reply to your question, you might want to participate in other questions, investigate other ways of [[GetHelp|getting help]], or focus on other things. Check back occasionally to see if someone has responded to you.
 * Be friendly to newbies. They might not know what things are called or where to look for help, so you may want to suggest links or keywords to help them learn more.
 * Don't start or participate in flame wars. If a discussion gets out of hand, feel free to use ##/ignore##. If an off-topic discussion gets heated or starts to drown out on-topic discussion, please take it elsewhere. If a discussion disrupts Emacs-related help, bring it to the attention of a channel operator. See the [[#LawAndOrder|Law and Order]] section below. 
-* You don't need to change your IRC nick to indicate that you are away. A simple /away message will be enough.
+* You don't need to change your IRC nick to indicate that you are away. A simple ##/away## message will be enough.
 
 Violators of this code of conduct may be temporarily or permanently banned from the channel.
 
