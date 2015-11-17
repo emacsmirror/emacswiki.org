@@ -2,3 +2,11 @@ This blog post describes a very simple way to run native Emacs on an Android dev
 
 -- [http://www.snee.com/bobdc.blog bobdc] 2014-04-26 14:00 UTC
 
+
+----
+
+Termux can be used to run Emacs on android without root, but it requires at least lollipop.
+http://termux.com/
+
+-- Anonimowy 2015-11-17 18:50 UTC
+
