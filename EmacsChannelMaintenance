@@ -57,6 +57,8 @@ They can stay in channel, but they can't say anything.
 [:ERCCommands]
 == ERC Commands ==
 
+You may also want to check out https://github.com/jwiegley/dot-emacs/blob/master/lisp/erc-macros.el for ideas.
+
 === Ban, kickban ===
 <pre>
 (defun erc-cmd-BAN (nick)
@@ -111,6 +113,41 @@ They can stay in channel, but they can't say anything. [https://gist.github.com/
                                 "Kicked (kickbanip)")))
   (sleep-for 0 250)
   (erc-cmd-DEOPME))
+</pre>
+== Circe commands ==
+
+https://github.com/jorgenschaefer/Config/blob/master/emacs.el#L886-L914
+
+<pre>
+  (defun circe-command-AKICK (args)
+    "Kick a user from the current channel using ChanServ.
+
+Example uses:
+
+/akick someidiot Get lost
+- Kick someidiot with the message 'Get lost' for 30 minutes
+/akick someidiot !T 15 Try again later
+- Kick someidiot with the message 'Try again later' for 15 minutes"
+    (cond
+     ((string-match "!T" args)
+      (circe-command-MSG "ChanServ"
+                         (format "AKICK %s ADD %s"
+                                 circe-chat-target
+                                 args)))
+     ((string-match "^ *\\([^ ]+\\) \\([0-9]+\\) \\(.*\\)" args)
+      (circe-command-MSG "ChanServ"
+                         (format "AKICK %s ADD %s !T %s %s"
+                                 circe-chat-target
+                                 (match-string 1 args)
+                                 (match-string 2 args)
+                                 (match-string 3 args))))
+     ((string-match "^ *\\([^ ]+\\) \\(.*\\)" args)
+      (circe-command-MSG "ChanServ"
+                         (format "AKICK %s ADD %s !T %s %s"
+                                 circe-chat-target
+                                 (match-string 1 args)
+                                 "30"
+                                 (match-string 2 args))))))
 </pre>
 ----
 
