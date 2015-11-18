@@ -21,6 +21,7 @@ Channel list:
 * '''#org-mode''' for OrgMode
 * '''#ideologies''' is the IdeologiesChannel
 * '''#emacswiki''' for EmacsWiki
+* '''#erc''' for [[ERC]]
 
 We prefer no public logs of the Emacs channel. See EmacsChannelLogging.
 
