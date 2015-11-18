@@ -2,7 +2,7 @@ This library provides a couple methods for quickly finding any file
 in a given project. It depends on GNU find.
 
 A project is found by searching up the directory tree until a file
-is found that matches `ffip-project-file'. (".git" by default.)
+is found that matches `ffip-project-file'. (".git/.svn/.hg" by default.)
 By default, it looks only for files whose names match
 `ffip-patterns',
 
