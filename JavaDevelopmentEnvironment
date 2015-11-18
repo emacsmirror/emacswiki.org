@@ -56,7 +56,7 @@ From the webpage:
 * Information providers
 ** JdeeUsages: finds callers of a method, subclasses, overrides, and other information about your Java classes
 * Programming helpers
-** [http://code.google.com/p/jdibug/ JDIBUG], a new debugger for Java written in Elisp
+** [https://github.com/udalrich/jdibug JDIBUG], a new debugger for Java written in Elisp
 
 
 And more.
