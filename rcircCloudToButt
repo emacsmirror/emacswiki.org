@@ -1,0 +1,7 @@
+Some people on IRC #emacs wanted rcirc to be able to change Cloud to Butt, so here it is:
+
+<include gist "https://gist.github.com/nealey/2c9e948a79b64f30315c">
+
+Hopefully it is obvious how to add new substitutions, such as "business" to "beeswax".
+
+Enjoy, weirdos.
