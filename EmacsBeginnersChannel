@@ -25,6 +25,15 @@ In addition to [http://freenode.net/policy.shtml freenode's network-wide policie
 
 Violators of this code of conduct may be temporarily or permanently banned from the channel.
 
+Channel operators: offby1, aminb, johnsu01, gopar (##/msg chanserv access #emacs-beginners list## to see an up-to-date list)
+
+== Info for ops ==
+
+Typical /topic pattern:
+
+<pre>
+/topic See http://emacswiki.org/emacs/EmacsBeginnersChannel for tips, code of conduct | Go ahead and ask your Emacs question. People will reply if they can. It might take a while, so please be patient. | Treat people with respect. No sexism, racism, homophobia, or discrimination of any kind. | http://emacswiki.org/emacs/EmacsNewbie
+</pre>
 ----
 
 InternetRelayChat
