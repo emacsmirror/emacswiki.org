@@ -1,6 +1,6 @@
 This page provides tips for learning to use Emacs and learning more about Emacs. See also '''EmacsNewbie'''.
 
-Try the EmacsTutorial, or read one of the BooksAboutEmacs. 
+* Try the EmacsTutorial, or read one of the BooksAboutEmacs. 
 
 * Learn WhyUseEmacs
 
@@ -10,11 +10,11 @@ Try the EmacsTutorial, or read one of the BooksAboutEmacs.
 
 * Read the EmacsManual in InfoMode (hypertext form).
 
-* Learn Emacs while you LearnEmacsLisp.
-
-* Watch EmacsScreencasts of how experienced users use Emacs.
+* Watch EmacsScreencasts
 
 * Take the EmacsCrashCourse.
+
+* LearnEmacsLisp so that you can customize Emacs.
 
 * EnjoyWrestlingWithEmacs -- What you're in for, learning Emacs!
 
