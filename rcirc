@@ -142,6 +142,7 @@ There's [http://permalink.gmane.org/gmane.emacs.gnus.general/83425 an explanatio
 ; [[rcircOthmar]]: replace the text of /dim user's speech with nonsense
 ; [[rcircDisplayChannels]]: Display all open channel buffers (or query buffers) at once
 ; [[rcircRandomNames]]: change all the nicks to random names
+; [[rcircCloudToButt]]: Replace "cloud" with "butt" and other idiocy
 
 /For developers:/
 
