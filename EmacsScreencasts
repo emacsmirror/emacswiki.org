@@ -6,6 +6,22 @@ There are a number of ways of learning, but screencasts have proven unmatched fo
 
 == Screencasts about Emacs ==
 
+=== Installation ===
+
+* [https://www.youtube.com/watch?v=g6kgF5ZAf44 How to install Emacs editor in Windows] (6:17, Learn Some Thing)
+* [https://www.youtube.com/watch?v=XTuzbY1YyzM How to install Emacs (Text editor) on Ubuntu Linux] (4:05, Programming Knowledge)
+* [https://www.youtube.com/watch?v=y_u48xZPSbU CleanNeedles--Download Emacs Part 1] (7:14, Evan Misshula)
+* [https://www.youtube.com/watch?v=ECg6fO5-Myc CentOS 6.4 How to install Emacs] (3:26, MrLinuxInfo)
+
+=== Beginner information ===
+
+* [https://www.youtube.com/playlist?list=PL3kg5TcOuFlrtDZoA4PmvRqvsRLo8bbI7 Daniel Gopar's tutorials]:
+** [https://www.youtube.com/watch?v=FxcYxdnnQqw&index=1&list=PL3kg5TcOuFlrtDZoA4PmvRqvsRLo8bbI7 Intro] (11:58, Daniel Gopar)
+** [https://www.youtube.com/watch?v=qM05oAe2mr0&index=2&list=PL3kg5TcOuFlrtDZoA4PmvRqvsRLo8bbI7 Installing packages] (12:16, Daniel Gopar)
+** [https://www.youtube.com/watch?v=h9Mw6mxPO-Y&index=3&list=PL3kg5TcOuFlrtDZoA4PmvRqvsRLo8bbI7 Custom mode keybindings] (7:10, Daniel Gopar)
+** [https://www.youtube.com/watch?v=WyPPVFdraoQ&index=4&list=PL3kg5TcOuFlrtDZoA4PmvRqvsRLo8bbI7 Global keybindings and major/minor modes] (6:51, Daniel Gopar)
+* [https://www.youtube.com/watch?v=B6jfrrwR10k Emacs introduction and demonstration] (36:34, Howard Abrams)
+
 === Initialization ===
 
 * Daniel Mai discusses how to set up an emacs init configuration that's organized with org-mode and use-package: [https://www.youtube.com/watch?v=VIuOwIBL-ZU YouTube video], [https://github.com/danielmai/.emacs.d GitHub repository]
@@ -94,6 +110,10 @@ http://www.foldr.org/~michaelw/emacs/redshank/
 
 * Programothesis has a [http://www.youtube.com/user/emailataskcom/videos?query=emacs series of screencasts].
 
+== Other presentations and talks ==
+
+* [https://www.youtube.com/watch?v=QaTlXpZ03kc&list=PLomc4HLgvuCUoPVpUJSkpsje4333Guxeo Emacs Conference 2015]
+* [http://emacsnyc.org/videos.html EmacsNYC videos]
 
 == Tips about Creating Screencasts ==
 
