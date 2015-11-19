@@ -69,14 +69,15 @@
 ;; There are a few required libraries.  This is a list of the require
 ;; libraries and why they are needed.
 ;; 
-;; |------------------+--------------------------------------|
-;; | Library          | Why it is needed                     |
-;; |------------------+--------------------------------------|
-;; | yaoddmuse        | Publish to emacswiki                 |
-;; | http-post-simple | Publish to marmalade-repo.org        |
-;; | header2          | To create header and changelog       |
-;; | lib-requires     | To generate the library dependencies |
-;; |------------------+--------------------------------------|
+;; |------------------+---------------------------------------------------------------------|
+;; | Library          | Why it is needed                                                    |
+;; |------------------+---------------------------------------------------------------------|
+;; | yaoddmuse        | Publish to emacswiki                                                |
+;; | http-post-simple | Publish to marmalade-repo.org                                       |
+;; | header2          | To create header and changelog                                      |
+;; | lib-requires     | To generate the library dependencies                                |
+;; | auto-document    | To generate list of commands & options within elisp file (optional) |
+;; |------------------+---------------------------------------------------------------------|
 ;; ** Notes
 ;; If you use `auto-insert' you may need to change your elisp 
 ;; entry of `auto-insert-alist' so that the end of the header section 
@@ -874,7 +875,7 @@ the ;;;###autoload magic comment to all functions/macros/options."
 (defun org-readme-insert-autodoc (&optional copy)
   "Use `auto-document' to document functions and options in current elisp file.
 If COPY is non-nil copy the output to Readme.org."
-  (require 'auto-document)
+  (interactive)
   (auto-document)
   (if copy
       (let* ((readme (org-readme-find-readme))
@@ -1889,6 +1890,7 @@ match to `org-readme-end-section-regexp'."
 ;;;###autoload
 (defun org-readme-update-required-features-section nil
   "Update the required features section of the elisp file."
+  (interactive)
   (org-readme-regexp-pairs (list (list
 				  (replace-regexp-in-string
 				   "\\$" "\n;;[ \t]*\n;;[ \t]*\\\\(.*\\\\)$"
