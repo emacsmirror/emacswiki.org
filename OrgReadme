@@ -8,18 +8,18 @@
 * <b>Author </b> --  Matthew L. Fidler
 * <b>Maintainer </b> --  Matthew L. Fidler
 * <b>Created </b> --  Fri Aug  3 22:33:41 2012 (-0500)
-* <b>Version </b> --  20151114.2306
+* <b>Version </b> --  20151119.1039
 * <b>Package-Requires </b> --  ((http-post-simple "1.0") (yaoddmuse "0.1.1")(header2 "21.0") (lib-requires "21.0"))
-* <b>Last-Updated </b> --  Sat Nov 14 23:08:20 2015
+* <b>Last-Updated </b> --  Thu Nov 19 10:39:47 2015
 * <b>By </b> --  Joe Bloggs
-* <b>Update # </b> --  801
+* <b>Update # </b> --  803
 * <B>URL </B> --  https://github.com/mlf176f2/org-readme
 * <b>Keywords </b> --  Header2, Readme.org, Emacswiki, Git
 * <b>Compatibility </b> --  Tested with Emacs 24.1 on Windows.
 
 == Possible Dependencies ==
 
-yaoddmuse http-post-simple org-html header2
+yaoddmuse http-post-simple org-html auto-document
 
 == Using org-readme ==
 Org readme is used to:
@@ -73,6 +73,10 @@ libraries and why they are needed.
 || http-post-simple || Publish to marmalade-repo.org        ||
 || header2          || To create header and changelog       ||
 || lib-requires     || To generate the library dependencies ||
+=== Notes ===
+If you use <tt>auto-insert</tt> you may need to change your elisp 
+entry of <tt>auto-insert-alist</tt> so that the end of the header section 
+matches <tt>org-readme-end-section-regexp</tt>
 == Commands & keybindings ==
 
 Below is a complete list of commands:
@@ -216,12 +220,13 @@ Add Top Header information to Readme.org.\\
 default value: <tt>(quote prompt)</tt>
 * *org-readme-remove-sections* :
 List of sections to remove when changing the Readme.org to Commentary.\\
-default value: <tt>(quote ("History" "Possible Dependencies" "Library Information" "Functions & macros" "Variables"))</tt>
+default value: <tt>(quote ("History" "Possible Dependencies" "Library Information" "Functions & macros" "Variables" ...))</tt>
 * *org-readme-remove-sections-from-markdown* :
 List of sections to remove when changing the Readme.org to \\
 default value: <tt>(quote ("Functions & macros" "Variables"))</tt>
 == History ==
 
+* <b>19-Nov-2015 </b> --   Automatically update required features section in elisp comments (Joe Bloggs)
 * <b>14-Nov-2015 </b> --   Add auto-document integration (Joe Bloggs)
 * <b>14-Nov-2015 </b> --   Update "Last-Updated:", "By:" & "Update #:" fields (Joe Bloggs)
 * <b>12-Nov-2015 </b> --   Refactor and tidy up code (Joe Bloggs)
@@ -321,7 +326,6 @@ default value: <tt>(quote ("Functions & macros" "Variables"))</tt>
 * <b>05-Aug-2012 </b> --   Added git support as well as a comment mode. The only thing that should need to be called is <tt>org-readme-sync</tt> (Matthew L. Fidler)
 * <b>04-Aug-2012 </b> --   Added syncing with emacswiki.  (Matthew L. Fidler)
 * <b>04-Aug-2012 </b> --   Initial Release  (Matthew L. Fidler)
-
 
 
 This was generated with OrgReadme.  On updating the library, this page is likely to be replaced with updated content.
