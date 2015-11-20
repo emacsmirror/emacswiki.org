@@ -1,0 +1,20 @@
+DwimCompile provides an alternative to the /compile/ command.
+
+You can get the latest version here:
+
+* https://github.com/cinsk/emacs-scripts/blob/master/src/dwim-compile.el
+
+Some of its features are:
+
+* Ability to detect build tools such as *maven*, *sbt*, *gradle*, then run them in the package root directory, not in the /default-directory/ of the current buffer.
+* Ability to provide alternative functions or command-line depending on the /major-mode/.
+
+Put something like this in your .emacs:
+
+    (require 'dwim-compile)
+    (global-set-key "\C-cc" 'dwim-c/compile)
+
+Hope it will be useful -- CinSK.
+
+See Also : ModeCompile, SmartCompile, CompileCommand
+
