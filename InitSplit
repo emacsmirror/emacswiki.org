@@ -17,36 +17,8 @@ DaveAbrahams.
 Get it from here:
 
 * https://github.com/dabrahams/initsplit
-----
 
-From the DotEmacsChallenge page:
-
-Fed up of bunging all of your config into one file? Try something like this.
-
-  ;; default xemacs configuration directory
-  (defconst toc:xemacs-config-dir "~/.xemacs/xemacs_configs/" "")
-
-  ;; utility finction to auto-load my package configurations
-  (defun toc:load-config-file (filelist)
-    (dolist (file filelist)
-      (load (expand-file-name 
-             (concat toc:xemacs-config-dir file)))
-       (message "Loaded config file:%s" file)
-       ))
-
-  ;; load my configuration files
-  (toc:load-config-file '("mswindows_config"
-                          "frames_config"
-                          "info_config"
-                          "desktop_config"
-                          "efs_config"
-                          "backup_config"
-                          "modemaps_config"
-                         ))
-
-This loads the files mswindows_config.el, frames_config.el… etc from the directory toc:xemacs-config-dir. I find it helps me to split my (X)Emacs config into managble chunks. The toc: symbol prefix (my initials) is just to make sure it does not clash with anything else.
-
-See DotEmacsModular for a similar approach.
+See DotEmacsModular and DotEmacsStructuring for more information.
 
 ----
 
