@@ -1,15 +1,14 @@
 == About ==
 
-Emacs's undo system allows you to recover ''any'' past state of a buffer (the standard undo/redo system loses any "redoable" states whenever you make an edit). However, Emacs's solution, to treat "undo" itself as just another editing action that can be undone, can be confusing and difficult to use: if you make an edit whilst in the middle of undoing multiple changes, you "break the undo chain", and to get back to where you were, you have to undo all the undos you just did, then undo all the changes you'd already undone before, and only /then/ can you continue undoing from where you left off. If this sounds confusing, it's because it is! Hence, a number of packages exist that replace it with the undo/redo system (see CategoryUndo).
+Emacs's undo system allows you to recover ''any'' past state of a buffer. To do this, Emacs treats "undo" itself as just another editing action that can be undone. This can be confusing and difficult to use. If you make an edit while undoing multiple changes, you "break the undo chain". To get back to where you were, you have to undo all the undos you just did, then undo all the changes you'd already undone before. Oly /then/ can you continue undoing from where you left off. If this sounds confusing, it's because it is! Hence, a number of packages exist that replace it with the undo/redo system (see CategoryUndo).
 
-Both the loss of data with standard undo/redo and the confusion of Emacs' undo stem from trying to treat undo history as a linear sequence of changes. ##undo-tree-mode## instead treats undo history as what it is: a branching tree of changes (the same system that Vim has had for some time now). This makes it substantially easier to undo and redo any change, while preserving the entire history of past states. The undo-tree visualizer helps, particularly in complex cases. An added side bonus is that undo history can in some cases be stored more efficiently, allowing more changes to accumulate before Emacs starts discarding history. Undo history can be saved persistently across sessions with Emacs 24.3 and later. It also sports various other nifty features: storing and restoring past buffer states in registers, a diff view of the changes that will be made by undoing, and probably more besides.
+Instead of treating undo/redo as a linear sequence of changes, ##undo-tree-mode## treats undo history as a branching tree of changes, similar to the way Vim handles it. This makes it substantially easier to undo and redo any change, while preserving the entire history of past states. The undo-tree visualizer is particularly helpful in complex cases. An added side bonus is that undo history can in some cases be stored more efficiently, allowing more changes to accumulate before Emacs starts discarding history. Undo history can be saved persistently across sessions with Emacs 24.3 and later. It also sports various other nifty features: storing and restoring past buffer states in registers, a diff view of the changes that will be made by undoing, and probably more besides.
 
 For more information, see the Commentary at the top of the ##undo-tree.el## file.
 
-
 == Downloading ==
 
-The undo-tree package is available from GNU [[ELPA]] in recent Emacsen, and in [[el-get]]. The latest "stable" version (version 0.6.4, released August 2013) can also be downloaded from:
+The undo-tree package is available from GNU [[ELPA]] in recent Emacsen, and in [[el-get]]. You can install it with `M-x install-package undo-tree'. The latest "stable" version (version 0.6.4, released August 2013) can also be downloaded from:
 
 * Undo-tree package download: http://www.dr-qubit.org/download.php?file=undo-tree/undo-tree.el
 * Web-site: http://www.dr-qubit.org/emacs.php#undo-tree
@@ -22,6 +21,19 @@ This is a git repository, ''*not*'' a web page. You cannot view it in a web brow
 
     git clone http://www.dr-qubit.org/git/undo-tree.git
 
+To enable it, add it to your LoadPath (if necessary), then add the following to your InitFile:
+
+   (global-undo-tree-mode)
+
+== Customizing undo-tree ==
+
+Here are a few options you may want to investigate:
+
+* ##undo-tree-visualizer-diff## - Show diffs when browsing through the undo tree
+* ##undo-tree-visualizer-timestamps## - Show relative times in the undo tree visualizer
+* ##undo-tree-auto-save-history## - Save history to a file
+
+See `M-x customize-group undo-tree' for more options.
 
 == Contributing ==
 
