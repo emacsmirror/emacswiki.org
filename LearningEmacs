@@ -1,34 +1,19 @@
 This page provides tips for learning to use Emacs and learning more about Emacs. See also '''EmacsNewbie'''.
 
 * Try the EmacsTutorial, or read one of the BooksAboutEmacs. 
-
 * Learn WhyUseEmacs
-
 * Learn using Emacs's SelfDocumentation.
-
-* Learn with Emacs's AproposMode.
-
-* Read the EmacsManual in InfoMode (hypertext form).
-
-* LearnEmacsLisp to learn Emacs (Emacs '''is''' Emacs Lisp).
-
+* Read the EmacsManual in InfoMode (hypertext form)
 * Watch EmacsScreencasts
-
-* Take the EmacsCrashCourse.
-
-* EnjoyWrestlingWithEmacs -- What you're in for, learning Emacs!
-
-* [http://david.rothlis.net/emacs/howtolearn.html How to learn Emacs] -- a tutorial leveraging Emacs's self-documentation and source code.
-
-* OnePageGuideToLearningEmacs -- A one-image guide to learning key Emacs concepts (GnuEmacs 24 and later).
-
-* [http://www.youtube.com/watch?v=MRYzPWnk2mE&list=PLxj9UAX4Em-IiOfvF2Qs742LxEK4owSkr&index=1 .Emacs] -- A series of video tutorials for modern Emacs (version 24+)
-
-* [http://tuhdo.github.io/emacs-tutor.html Emacs Mini Manual] - An Emacs mini manual for starters to learn Emacs before reading the real (and big) Emacs manual.
-
-* Get in touch with other people who use Emacs -- see CategoryCommunity.
-
-* GetHelp
+* Check out beginner-oriented tutorials, such as:
+** EmacsCrashCourse.
+** [http://david.rothlis.net/emacs/howtolearn.html How to learn Emacs] -- a tutorial leveraging Emacs's self-documentation and source code.
+** OnePageGuideToLearningEmacs -- A one-image guide to learning key Emacs concepts (GnuEmacs 24 and later).
+** [http://tuhdo.github.io/emacs-tutor.html Emacs Mini Manual] - An Emacs mini manual for starters to learn Emacs before reading the real (and big) Emacs manual.
+* [[CategoryCommunity|Explore the Emacs community]] and learn from other people who use Emacs
+* Use AproposMode to find functions based on their documentation
+* LearnEmacsLisp to make even better use of Emacs
+* Stuck? GetHelp
 
 Most people learn best by doing and not just by reading over a list of
 [[command]]s and trying to memorize them.  Get yourself a text file
@@ -62,9 +47,7 @@ then you might not be using it enough to matter.  Don't worry about it.
 
 Some [[EmacsNewbie]]s rush too quickly to add or change key bindings.  This can mean avoiding to learn Emacs and spending more time configuring. Competency with `M-x' and help are core Emacs skills for life.  `M-x' should become your command line in Emacs. 
 
-
-
-== Emacs-Lisp Libraries and Snippets that Can Help You Learn Emacs ==
+== Emacs Lisp libraries and snippets that can help you learn Emacs ==
 
 * Use [[EmacsNewbieWithIcicles|Icicles]] to explore [[key]]s, commands, variables, [[face]]s, [[buffer]]s, files, [[property list]]s,... that match a given pattern (name or [[regexp]]). Far more than AproposMode.
 
