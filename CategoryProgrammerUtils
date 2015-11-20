@@ -27,6 +27,7 @@ See also CategoryVersionControl.
 * `compile' command enhancements
 ** ModeCompile
 ** SmartCompile
+** DwimCompile -- major-mode aware compilation, support for build tools such as maven, sbt, or gradle 
 ** [http://marmalade-repo.org/packages/smarter-compile Smarter Compile]
 * CompileInsideScratchbox - Run Emacs outside scratchbox, but compile inside scratchbox.
 * CreatingYourOwnCompileErrorRegexp
