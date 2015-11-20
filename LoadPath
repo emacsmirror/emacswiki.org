@@ -1,3 +1,10 @@
+If you install an Emacs package with ##install-package## (see
+InstallingPackages), it will automatically set up the ##load-path##
+for you and you will probably not need the instructions in this
+document. However, if you download Emacs Lisp files yourself, you may
+need to add the directory containing the Emacs Lisp files to your
+`load-path' so that Emacs knows where to find the files.
+
 The [[variable]] `load-path' lists all the directories where Emacs
 should look for Elisp files. The first file found is used, therefore
 the order of the directories is relevant.
@@ -15,7 +22,8 @@ To add a single directory to the front of your `load-path':
 {{{
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 }}}
-People with a CommonLisp background like to make sure that the entry ends with a trailing slash, but this is not required by EmacsLisp.
+
+The directory does not have to end with a trailing slash (##/##).
 
 [:AddSubDirectories]
 == Adding subdirectories ==
