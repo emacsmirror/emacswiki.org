@@ -23,7 +23,7 @@ Then you could tie everything together like this in your init file:
     (load-library "keys")
     (load-library "modes")
 
-See [[DotEmacsModular#LoadDirectory]] for a quick way to load files in a specified directory.
+See DotEmacsModular for more about splitting up your configuration into multiple files.
 
 == Using variables to turn sections on and off ==
 
