@@ -1,18 +1,20 @@
 Your '''[::init file]''' contains personal EmacsLisp code that you want to execute when you start Emacs.
 
-* For GnuEmacs, it is ##~/.emacs.d/init.el## or ##~/.emacs## or ##_emacs##.
-** Note: ##~/.emacs.d/init.el## is recommended, but if ##~/.emacs## exists, Emacs will read ##~/.emacs## *and skip* ##~/.emacs.d/init.el##. See DebugFileLoading for more troubleshooting tips.
+See the Emacs manual (`C-x r'), node 
+[[http://www.gnu.org/software/emacs/manual/html_node/emacs/Init-File.html Init File]].
+
+* For GnuEmacs, your init file is '''##~/.emacs##''', '''##~/.emacs.el##''', or '''##~/.emacs.d/init.el##'''.  You can choose to use any of these names.  ‘~/’ stands for your home directory.  
 * For [[XEmacs]], it is ##~/.xemacs## or ##~/.xemacs/init.el##.
 * For AquamacsEmacs, it is ##~/.emacs## or ##~/Library/Preferences/Aquamacs Emacs/Preferences.el##
 
-In [[Emacs]], if you do not know where your init file is located or you do not have one and want to create it, then
+If you do not know where your init file is located or you do not have one and want to create it, then
 just open it for editing in Emacs:
 
    C-x C-f ~/.emacs.d/init.el RET
 
-When you add Emacs Lisp code to your init file, it is not evaluated until you restart Emacs.  Rather than restarting Emacs, you can use `M-x eval-buffer' to evaluate everything, or `M-x eval-region' to evaluate a highlighted part, or just `C-x C-e' (##eval-last-sexp##) to evaluate the Emacs Lisp expression immediately before your cursor.  See EvaluatingExpressions.
+When you add Emacs Lisp code to your init file, it is not evaluated until you restart Emacs.  Rather than restarting Emacs, you can use `M-x eval-buffer' to evaluate everything, or `M-x eval-region' to evaluate a part you select, or just `C-x C-e' (command `eval-last-sexp') to evaluate the Emacs Lisp expression immediately before your [[cursor]].  See EvaluatingExpressions.
 
-If it seems your init file is not being read, type `C-h e' to see if there is a chance there was a problem with it loading.  See also DebugFileLoading.
+If it seems like your init file is not being read, type `C-h e' to see if there is a chance there was a problem with it loading.  See DebugFileLoading for more troubleshooting tips.
 
 It's often better to break up a lengthy init file into a number of EmacsLisp libraries and a small, top-level init file that loads those libraries, especially if you define commands and other functions. Some of the init files posted on %%EmacsWiki%% are organized in this way, as a set of library files.
 
