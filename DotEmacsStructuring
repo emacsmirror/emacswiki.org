@@ -77,6 +77,10 @@ it to HTML or other formats. This allows you to use headings, add
 links or screenshots, share a nicely-formatted version of your config,
 or even include TODOs and =org-drill= reminders.
 
+See OrgDotemacs for tips on how to keep your InitFile organized in an
+OrgMode file, choose which bits to load, and handle errors and
+dependencies gracefully.
+
 Here are some examples:
 
 * http://doc.norang.ca/org-mode.html
