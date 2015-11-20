@@ -1,6 +1,35 @@
-To help structure the tangled mess that the DotEmacs file can become, the following technique can be used. This technique is based around keeping a list of variable which corresponds to particular features, additional modes or customisations, with a corresponding ##when## clause to wrap the code related to that specific feature.
+Here are some techniques to help you organize your InitFile.
 
-for example, something like the following at the beginning of the file.
+== System-specific configuration ==
+
+See CustomizingBoth for tips on organizing platform-specific
+configuration (ex: Linux / Windows / Mac OS X).
+
+== Splitting your configuration up into separate files ==
+
+[https://sites.google.com/site/steveyegge2/my-dot-emacs-file Steve
+Yegge's init file] is a good example of an intricate init file that
+still has some order to it. Different parts of initialization are
+separated out into different files, and everything is loaded in the
+init file.
+
+For example, you could have <code>style.el</code>,
+<code>keys.el</code>, and <code>modes.el</code> all in
+<code>~/.emacs.d/elisp</code> making the appropriate customizations.
+Then you could tie everything together like this in your init file:
+
+    (add-to-list 'load-path "~/.emacs.d/elisp/")
+    (load-library "style")
+    (load-library "keys")
+    (load-library "modes")
+
+See [[DotEmacsModular#LoadDirectory]] for a quick way to load files in a specified directory.
+
+== Using variables to turn sections on and off ==
+
+This technique is based around keeping a list of variables which corresponds to particular features, additional modes or customisations, with a corresponding ##when## clause to wrap the code related to that specific feature.
+
+For example, something like the following at the beginning of the file.
 
 <pre>
 (defvar *slime-enabled* t)      ;; superior lisp interaction mode
@@ -22,4 +51,34 @@ then somewhere further down...
 
 so setting ##*paredit-enabled*## to either ##t## or ##nil## would enable or disable the feature completely. This can be especially useful when testing several modes for interoperability, or moving to a new setup. 
 
-See also DotEmacsRestructuring and DotEmacsModular
+== Organizing package-related configuration with use-package ==
+
+You can install UsePackage and use it to group together commands and
+keybindings related to a package. If you would like to optimize your
+Emacs startup, you can use UsePackage to time how long packages take
+to load and define your own autoloads so that Emacs doesn't load
+packages until you call those commands.
+
+Here's a sample configuration snippet:
+
+    (use-package color-moccur
+      :commands (isearch-moccur isearch-all)
+      :bind ("M-s O" . moccur)
+      :init
+      (bind-key "M-o" 'isearch-moccur isearch-mode-map)
+      (bind-key "M-O" 'isearch-moccur-all isearch-mode-map)
+      :config
+      (use-package moccur-edit))
+  
+== Org Mode and literate configuration ==
+
+You can use OrgMode to organize your InitFile and optionally publish
+it to HTML or other formats. This allows you to use headings, add
+links or screenshots, share a nicely-formatted version of your config,
+or even include TODOs and =org-drill= reminders.
+
+Here are some examples:
+
+* http://doc.norang.ca/org-mode.html
+* http://sachachua.com/dotemacs
+* http://mescal.imag.fr/membres/arnaud.legrand/misc/init.php
