@@ -97,6 +97,8 @@ When setting variables that only exist in some version of Emacs,
 don't be afraid to always set them: they will just be ignored in the
 versions where they don't exist.
 
+You can also use LocateLibrary to check if a package or library has been installed.
+
 == Other things you can test ==
 
 ; ##(emacs-version)##, `emacs-major-version', `emacs-minor-version': the version of Emacs (string / numbers).  This is generally to be avoided.
