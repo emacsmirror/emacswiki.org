@@ -1,25 +1,62 @@
-Customizing both emacsen is a pain.  If you take care when writing
-your InitFile, then it will work in both of them.  Naturally,
-compiling the file will produce incompatible byte code, so don't do
-that.
+You can set up your InitFile to work on multiple platforms by checking
+the values of different variables to see what platform you're on. Here
+are some tips.
+
+If you're working with multiple Emacs versions or differences between
+Emacs and XEmacs, compiling your init file may produce incompatible
+byte code, so don't do that.
+
+== Operating system: Microsoft Windows, GNU/Linux, Mac OS X, etc. ==
+
+Sample code:
+
+    (when (eq system-type 'windows-nt)
+      ;; Windows-specific code goes here. For example:
+      (add-hook 'comint-output-filter-functions 'shell-strip-ctrl-m nil t)
+      )
+    (when (eq system-type 'gnu/linux)
+      ;; Linux-specific code goes here. 
+      )
+
+You can use `C-h v system-type' (##describe-variable##) to see the
+current value of ##system-type##.
+
+== Graphical vs console Emacs ==
+
+Sample code:
+
+    (when (display-graphic-p)
+      ;; Graphical code goes here.
+      )
+    (when (not (display-graphic-p))
+      ;; Console-specific code
+      )
+
+`M-x apropos ^display.*-p$' displays other functions you can use to
+test the graphical capabilities of your Emacs. You can also check the
+value of the ##window-system## variable.
 
 == Emacs vs. XEmacs ==
 
-Recently, [[XEmacs]] offers to migrate your ##.emacs## file to a ##.xemacs##
-file.  If you do that, however, a lot of code will be duplicated,
-unless you load the common stuff from both ##.emacs## and ##.xemacs## again.
-Thus it depends on what you find easier to maintain.
+[[XEmacs]] may offer to migrate your ##.emacs## file to a ##.xemacs##
+file. If you do that, however, a lot of code will be duplicated,
+unless you load the common stuff from both ##.emacs## and ##.xemacs##
+again. Thus it depends on what you find easier to maintain.
 
-Many people suggest you take care writing one .emacs.  Here is how it
-might work:
+Many people suggest you write a single InitFile carefully. Here is how
+it might work:
 
 Use ##(featurep 'xemacs)## to conditionalize code when the
 ''interface'' or the notation has changed.  This is rarely
 needed.
 
   (if (featurep 'xemacs)
-      (blabla for xemacs)
-    (blibli for emacs))
+      (progn
+       ;; Code for XEmacs
+       )
+    (progn
+      ;; Code for Emacs
+    ))
 
 You can also use the `window-system' variable, but that was
 never intended as a user level variable, so try to avoid it:
@@ -31,14 +68,6 @@ This is better written using `display-color-cells':
 
     (when (> (display-color-cells) 16)
        (color-theme-robin-hood))
-
-== Other things to test ==
-
-; ##(emacs-version)##, `emacs-major-version', `emacs-minor-version': the version of Emacs (string / numbers).  This is generally to be avoided.
-; ##(system-name)##: hostname of the current machine
-; ##system-type##: symbol for the type of operating system you are using
-; ##system-configuration##; a string giving the OS and other info
-; ##(getenv "TERM")##: the terminal used when Emacs was started
 
 == Feature-specific ==
 
@@ -68,12 +97,20 @@ When setting variables that only exist in some version of Emacs,
 don't be afraid to always set them: they will just be ignored in the
 versions where they don't exist.
 
+== Other things you can test ==
+
+; ##(emacs-version)##, `emacs-major-version', `emacs-minor-version': the version of Emacs (string / numbers).  This is generally to be avoided.
+; ##(system-name)##: hostname of the current machine
+; ##system-type##: symbol for the type of operating system you are using
+; ##system-configuration##; a string giving the OS and other info
+; ##(getenv "TERM")##: the terminal used when Emacs was started
+
 == The custom command ==
 
-Using ##custom## in both emacsen is confusing.  I suggest you
-only use custom in one of them, eg. Emacs, and disable the saving of
-customizations in the other (to prevent it from mangling your
-hand-crafted InitFile).  Here is how:
+Using ##custom## for multiple platforms/setups can be confusing.
+Consider only using custom in one of them, eg. Emacs, and disable the
+saving of customizations in the other (to prevent it from mangling
+your hand-crafted InitFile). Here is how:
 
  ;; When using XEmacs, disable all customizations
  (when (featurep 'xemacs)
@@ -110,7 +147,7 @@ from a script (or "batch file" on windows): have the script set some
 environment variable, and then have your InitFile test that variable
 using the function `getvar'.
 
-Example: On windows you could have one shortcut called "Cygwinized
+Example: On Windows, you could have one shortcut called "Cygwinized
 Emacs" call a batch file similar to this one:
 
     @echo off
@@ -144,29 +181,7 @@ Then, in your InitFile, do a test like
       ...
     )
 
-== Discussion ==
-
-There was a bug in XEmacs 21.4.6 which ignored my custom-file setting
-and erased my custom-set-variables statement in my InitFile.  The bug
-only manifests itself when this is the first time you start XEmacs,
-have not migrated your InitFile, and have an error in your InitFile.
-I had an error in my InitFile because it had changed so much and I use
-XEmacs only seldomly.  Thus did the bug strike: Because of the error
-in my InitFile, my customizations where not loaded, `custom-file' was not
-set, and then XEmacs saved the "does not want to migrate .emacs"
-setting as a customization and thus replaced the customizations that
-where in place.
-
-: Hmm. I guess I would respond by asking, why use
-`custom-set-variables' in your InitFile if ##custom-file## /= ##.emacs##? Not
-that there's any excuse for the bug, but still. I don't get it.
-
-That was just a trick to prevent me from ever saving customizations in
-XEmacs.  If I ever did that, the settings should be saved into another
-file.  When running Emacs, `custom-file' was not changed and thus
-defaulted to ##.emacs##.
-
-== Three init.el files ==
+== Multiple init.el files ==
 
 I swiped this idea from somewhere - sorry for not keeping track of who
 gave it to me.  I have three subdirectories: ##~/.gemacs##, ##~/.xemacs##, and
@@ -192,6 +207,29 @@ like:
 
 -- JodyKlymak
 
+== Discussion ==
+
+There was a bug in XEmacs 21.4.6 which ignored my custom-file setting
+and erased my custom-set-variables statement in my InitFile.  The bug
+only manifests itself when this is the first time you start XEmacs,
+have not migrated your InitFile, and have an error in your InitFile.
+I had an error in my InitFile because it had changed so much and I use
+XEmacs only seldomly.  Thus did the bug strike: Because of the error
+in my InitFile, my customizations where not loaded, `custom-file' was not
+set, and then XEmacs saved the "does not want to migrate .emacs"
+setting as a customization and thus replaced the customizations that
+where in place.
+
+: Hmm. I guess I would respond by asking, why use
+`custom-set-variables' in your InitFile if ##custom-file## /= ##.emacs##? Not
+that there's any excuse for the bug, but still. I don't get it.
+
+That was just a trick to prevent me from ever saving customizations in
+XEmacs.  If I ever did that, the settings should be saved into another
+file.  When running Emacs, `custom-file' was not changed and thus
+defaulted to ##.emacs##.
+
 ----
 CategoryCustomize
+CategoryDotEmacs
 ComparativeEmacsology
