@@ -2,10 +2,6 @@ You can set up your InitFile to work on multiple platforms by checking
 the values of different variables to see what platform you're on. Here
 are some tips.
 
-If you're working with multiple Emacs versions or differences between
-Emacs and XEmacs, compiling your init file may produce incompatible
-byte code, so don't do that.
-
 == Operating system: Microsoft Windows, GNU/Linux, Mac OS X, etc. ==
 
 Sample code:
@@ -42,12 +38,15 @@ file. If you do that, however, a lot of code will be duplicated,
 unless you load the common stuff from both ##.emacs## and ##.xemacs##
 again. Thus it depends on what you find easier to maintain.
 
-Many people suggest you write a single InitFile carefully. Here is how
-it might work:
+If you're working with multiple Emacs versions or differences between
+Emacs and XEmacs, compiling your init file may produce incompatible
+byte code, so don't do that.
 
-Use ##(featurep 'xemacs)## to conditionalize code when the
-''interface'' or the notation has changed.  This is rarely
-needed.
+Many people suggest you write a single InitFile carefully instead of
+maintaining duplicate configuration. Here is how it might work:
+
+Use ##(featurep 'xemacs)## to conditionally evaluate code when the
+''interface'' or the notation has changed. This is rarely needed.
 
   (cond ((featurep 'xemacs)
          ;; Code for XEmacs
