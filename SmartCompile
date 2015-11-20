@@ -36,6 +36,7 @@ For example, "%n" for "foo.java" is replaced by "foo".
 === Related topics ===
 * CompileCommand
 * ModeCompile
+* DwimCompile
 
 ----
 CategoryProgrammerUtils
