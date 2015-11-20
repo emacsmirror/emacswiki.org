@@ -1,7 +1,9 @@
 Library '''MenuBarPlus''', <tt>[[menu-bar+.el]]</tt>, provides better [[menu bar]] access to Emacs help, including some new help commands. This page describes these enhancements to the '''Help''' menu-bar menu. 
 
-[:Whoops]
+
 The `'''Help'''' menu has been enhanced as follows:
+
+[:Whoops]
 * Added submenu `'''Whoops!?'''', with these items:
 ** _Cancel Current Action_  (`keyboard-quit')
 ** _Back to Top Level_ (`top-level')
