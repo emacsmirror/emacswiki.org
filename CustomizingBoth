@@ -1,6 +1,6 @@
 You can set up your InitFile to work on multiple platforms by checking
 the values of different variables to see what platform you're on. Here
-are some tips.
+are a few tips.
 
 == Operating system: Microsoft Windows, GNU/Linux, Mac OS X, etc. ==
 
