@@ -31,7 +31,7 @@ Various packages exist which extend Magit.
 * [https://github.com/magit/magit-tramp magit-tramp] Git method for Emacs Tramp
 * [https://github.com/magit/orgit orgit] support for Org links to Magit buffers
 * [https://github.com/magit/org-magit org-magit] link to magit from org documents
-* [https://github.com/magit/magit-svn] use Magit with git svn repositories
+* [https://github.com/magit/magit-svn magit-svn] use Magit with git svn repositories
 
 ----
 [[Git]] CategoryVersionControl
