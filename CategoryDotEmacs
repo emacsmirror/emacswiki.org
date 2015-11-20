@@ -37,13 +37,15 @@ of selected resources.
 * ProjectSettings -- making customizations local to a project
 * RemoteDotEmacs -- eval the InitFile you have on a web server
 
-== Init-related packages ==
+== Init-related packages and starter kits ==
 
-* EmacsMacro -- An InitFile to end all init files.
-* TinyTools -- A collection of add-on utilities.
-* DrewsElispLibraries -- Another extensively customized Emacs. See [[DrewsElispLibraries#HowToUseDrewsLibraries|How to Use Drew's Libraries]] for how to use <tt>[[emacs-init.el]]</tt> and the libraries it loads.
+* [https://github.com/technomancy/better-defaults better-defaults]
+* [[Prelude]] -- aims to enhance the default Emacs experience
+* [[Spacemacs]] -- particularly for Vim converts
+* EmacsMacro -- An InitFile to end all init files
+* TinyTools -- A collection of add-on utilities
+* DrewsElispLibraries -- Another extensively customized Emacs. See [[DrewsElispLibraries#HowToUseDrewsLibraries|How to Use Drew's Libraries]] for how to use <tt>[[emacs-init.el]]</tt> and the libraries it loads
 * [[Grail]] -- Grand unified .emacs loader - robust and flexible load-path hack. 
-* DotEmacsModular -- a simple package for loading everything under <tt>.emacs.d%%/site-start.d/%%</tt>
 * [http://user42.tuxfamily.org/startup-file-name-history/index.html startup-file-name-history.el] -- put command line files into the ##find-file## history
 
 == Example configurations ==
