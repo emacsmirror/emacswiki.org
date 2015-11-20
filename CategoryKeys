@@ -12,40 +12,53 @@ For information on using the menu for actions instead of keys, see CategoryMenus
 
 == Introduction ==
 
-* EmacsKeyNotation -- How [[KeySequence]]s are represented in the Emacs doc.
-* [[Icicles - Key Completion]] -- Complete a key sequence, and obtain on-the-fly help about available key sequences
-* KeyBindingDiscussion -- How to decide upon new key bindings
-* KeyBindingNotation -- How to write a key binding
-* BufferLocalKeys -- Defining keys local to a buffer
-* PrefixKey -- Defining a new prefix key
-* KeybindingGuide
-* EmacsKeyBindingCriticisms -- Criticisms of Emacs default key bindings
-* MenuAccessFromKeyboard -- Libraries that let you access menus from the keyboard (without the mouse)
+* EmacsKeyNotation -- How to make sense of the [[KeySequence]]s in Emacs documentation.
+* KeybindingGuide -- Make your own keyboard shortcuts
+** KeyBindingNotation -- How to write a key binding
+** BufferLocalKeys -- Defining keys local to a buffer
+* Organizing your keybindings
+** KeyBindingDiscussion -- How to decide upon new key bindings
+** PrefixKey -- Defining a new prefix key in order to group related commands
+** [[Hydra]] - Group related commands into a keymap and easily repeat common commands
+** KeyChord -- Map pairs of simultaneously pressed keys to commands
 * ModifierKeys -- Shift, Alt, Meta, Control, Super, Hyper
 * CommonlyUsedKeybindings -- Refer to this when deciding which keybindings to use for your new elisp library
+* EmacsKeyBindingCriticisms -- Criticisms of Emacs default key bindings
 
-== Key Problems Solved ==
+== Getting help ==
 
-* FootSwitches -- assign Ctrl and other keys to pedal type switches
+* To find out what command is run by a keyboard shortcut, use `C-h k' (##describe-key##) followed by the keyboard shortcut.
+* Use `M-x describe-bindings' to see the currently-bound keys.
+* To find out what keyboard shortcuts are associated with a command, use `M-x where-is' followed by the command name. You can also find this information in the output of `M-x describe-function'.
+* SearchKeybind - occur search the full list of keybinds & their commands. Very helpful for learning and remembering forgotten binds.
+* [[Icicles - Key Completion]] -- Complete a key sequence, and obtain on-the-fly help about available key sequences
+* ##guide-key## or ##which-key## -- Show help for a set of keybindings if you pause
+* [[PrintKeyBindings|PKB (Print Key-Bindings)]] -- A package for printing keybindings in a pretty fashion, i.e. so that bindings are listed as in a computer keyboard and grouped by base-keys.
+* [[ShowBindings|Show Bindings]] -- A mode for nice display of keybindings within emacs.
+
+== Solutions to common problems ==
+
+* Modifier keys
+** SettingMetaWithXKB -- Setting the meta keys with the XKB extension
+** MetaKeyProblems -- Meta and Alt key confusion
+** MovingTheMetaKey -- How to move your meta-key if it's not in the right position
+** MovingTheCtrlKey -- How to move your ctrl-key if it's not in the right position
+** SwapControlAltAndCapsLock -- Move all your keys around for ergonomic ease of use.
+** StickyModifiers -- How to do without [[chord]]ing
+** ControlLock -- Like caps-lock, but for your control key
+** AltGrKey -- Emacs keys may be hidden because on Windows /AltGr/ + /Control/ + /key/ is just /AltGr/ + /key/
+** FootSwitches -- assign Ctrl and other keys to pedal type switches
+* MenuAccessFromKeyboard -- Libraries that let you access menus from the keyboard (without the mouse)
 * UseCustomizeForKeyBindings -- EmacsLisp code to let users do all key customization in Customize.
 * ShiftedKeys -- Shifted function keys are unavailable if they have no explicit definition.
-* MetaKeyProblems -- Meta and Alt key confusion
-* SettingMetaWithXKB -- Setting the meta keys with the XKB extension
 * BackspaceKey -- How to make it right
 * KeyboardRate -- Change keyboard rate from emacs.
 * MissingKeys -- How to make undefined keys accessible
-* AltGrKey -- Emacs keys may be hidden because on Windows /AltGr/ + /Control/ + /key/ is just /AltGr/ + /key/
 * ConsoleKeys -- Emacs keys on the Linux console, even C-M-H-internet
 * ScreenKeys -- Similar to the above, for screen(1)
-* MovingTheMetaKey -- How to move your meta-key if it's not in the right position
-* MovingTheCtrlKey -- How to move your ctrl-key if it's not in the right position
-* SwapControlAltAndCapsLock -- Move all your keys around for ergonomic ease of use.
 * BindingControlReturn -- How to bind Control-Return in a local mode
 * OpeningQuote -- How to type `this' easily on keyboards where only ' is easily accessed
 * TabKey -- How to change the behaviour of the TAB key
-* ControlLock -- Like caps-lock, but for your control key
-* StickyModifiers -- How to do without [[chord]]ing
-* KeyChord -- Map pairs of simultaneously pressed keys to commands
 * [[Accelerate]] -- Change the behaviour of a command when its key is auto-repeated
 * Lisp:speedkey.el -- Create a set of keybindings easily, with a help text
 * Binding <code><return></code> to `RET' -- If your version of Emacs does not bind <code><return></code> to anything, do this:  -- AlexSchroeder
@@ -57,14 +70,9 @@ For information on using the menu for actions instead of keys, see CategoryMenus
 * XModMap -- Keys to work outside of Emacs as well; the X Windowing System uses xmodmap and xev, or xkeycaps
 * LoadKeys -- Same thing, but for the Linux console using loadkeys, dumpkeys, and showkey
 * XKeyCaps -- Graphical tool by JamieZawinski
-* [[PrintKeyBindings|PKB (Print Key-Bindings)]] -- A package for printing keybindings in a pretty fashion, i.e. so that bindings are listed as in a computer keyboard and grouped by base-keys.
-* [[ShowBindings|Show Bindings]] -- A mode for nice display of keybindings within emacs.
-
-
 
 [:CoolBindings]
-== Cool Bindings ==
-* SearchKeybind occur search the full list of keybinds & their commands. Very helpful for learning and remembering forgotten binds.
+== Keybinding suggestions ==
 * DefineKeyLazy      a macro for define-key ,without writing (eval-after-load)
 * [[next-line-2.0]] A keybinding that makes C-n and C-p work well with large buffers and long, wrapped, lines.
 * Lisp:setup-keys.el -- Various key bindings, some for custom commands. See DrewsElispLibraries for associated command libraries.
