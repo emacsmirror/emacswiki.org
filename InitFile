@@ -1,15 +1,16 @@
 Your '''[::init file]''' contains personal EmacsLisp code that you want to execute when you start Emacs.
 
-* For GnuEmacs, it is ##~/.emacs## or ##_emacs## or ##~/.emacs.d/init.el##.
+* For GnuEmacs, it is ##~/.emacs.d/init.el## or ##~/.emacs## or ##_emacs##.
+** Note: ##~/.emacs.d/init.el## is recommended, but if ##~/.emacs## exists, Emacs will read ##~/.emacs## *and skip* ##~/.emacs.d/init.el##. See DebugFileLoading for more troubleshooting tips.
 * For [[XEmacs]], it is ##~/.xemacs## or ##~/.xemacs/init.el##.
 * For AquamacsEmacs, it is ##~/.emacs## or ##~/Library/Preferences/Aquamacs Emacs/Preferences.el##
 
 In [[Emacs]], if you do not know where your init file is located or you do not have one and want to create it, then
 just open it for editing in Emacs:
 
-   C-x C-f ~/.emacs RET
+   C-x C-f ~/.emacs.d/init.el RET
 
-When you add Lisp to your init file, it is not evaluated until you restart Emacs.  Rather than restarting Emacs, you can use `M-x eval-buffer', or `M-x eval-region' or just `C-x C-e'.  See EvaluatingExpressions.
+When you add Emacs Lisp code to your init file, it is not evaluated until you restart Emacs.  Rather than restarting Emacs, you can use `M-x eval-buffer' to evaluate everything, or `M-x eval-region' to evaluate a highlighted part, or just `C-x C-e' (##eval-last-sexp##) to evaluate the Emacs Lisp expression immediately before your cursor.  See EvaluatingExpressions.
 
 If it seems your init file is not being read, type `C-h e' to see if there is a chance there was a problem with it loading.  See also DebugFileLoading.
 
@@ -29,18 +30,8 @@ For more information about init files and custom files (Emacs 22 or later):
 : ##M-: (info "(emacs) Saving Customizations")##
 : ##M-: (info "(elisp) Init File")##
 
-== Organizing your init file ==
-[https://sites.google.com/site/steveyegge2/my-dot-emacs-file Steve Yegge's init file] is a good example of an intricate init file that still has some order to it. Different parts of initialization are separated out into different files, and everything is loaded in the init file.
+See the pages in CategoryDotEmacs for configuration suggestions and tips.
 
-To simplify this, you could have <code>style.el</code>, <code>keys.el</code>, and <code>modes.el</code> all in <code>~/.emacs.d/elisp</code> making the appropriate customizations. Then you could tie everything together like this in your init file:
-
-    (add-to-list 'load-path "~/.emacs.d/elisp/")
-    (load-library "style")
-    (load-library "keys")
-    (load-library "modes")
-
-[new:targzeta:2014-02-14 19:28 UTC]
-See also [[DotEmacsModular#LoadDirectory]]
 ----
 CategoryHelp
 CategoryDotEmacs
