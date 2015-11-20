@@ -1,43 +1,52 @@
 [[ja:カテゴリ・設定ファイル]]
 [[fr:CatégoriePointEmacs]]
 
-Click the heading to list all pages related to writing your own .emacs file, see InitFile.
+If you're not quite keen on getting into EmacsLisp yet, check out
+CategoryCustomize for ways you can configure Emacs without writing
+code.
 
-Specific Init issues:
+If you're open to [[LearnEmacsLisp|learning a little Emacs Lisp]],
+there's a lot you can do! Click on the page title above to list all
+pages related to writing your own InitFile. Here is a categorized list
+of selected resources.
 
-* AlarmBell -- if you can not stand the beeping anymore
+== Popular options ==
+
+* AlarmBell -- Turn off the beeping or change it to a visual thing
+* AutoModeAlist -- Set the MajorMode based on the filename
+* AutoSave -- Organize the autosave files or change the autosave interval
+* BackupDirectory -- Organize the automatic backup files named ##filename~##
+* CustomizingBoth -- Use the same InitFile for multiple operating systems or features
+* KeybindingGuide -- Define your own keyboard shortcuts 
+* LoadingLispFiles -- How to load Emacs Lisp in separate files
+* MenuBar -- Hide the menu bar or customize it
+* ModeHooks -- Add code that will run after a function executes or a mode is initialized
+* ModeLineConfiguration -- Customize the status information displayed at the bottom of the buffer
+* ToolBar -- Hide the tool bar or customize it
+* EmacsCrashCode and DotEmacsChallenge -- miscellaneous tips
+
+== Other options and tips ==
+
+* AutoCodingAlist -- Determine encoding by file name; use this if the encoding (ex: utf-8) is not correctly detected
 * AutoCompileInit -- Automatically compile your InitFile
-* AutoCodingAlist -- Determine encoding by file name.
-* AutoModeAlist -- Determine mode by file name.
-* CustomizingBoth -- writing an InitFile for multiple platforms
 * DotEmacsDistributions -- Running multiple independent configurations (or "distributions") of Emacs.
 * DotEmacsBankruptcy -- Declare bankruptcy when things get so bad you have to start over.
-* InitSplit -- split various variable customizations into their own files
-* InterpreterModeAlist-- Determine mode by interpreter listed in file's first line.
-* LoadPath -- How to install and make an Emacs mode or package available in your Emacs sessions.
-* LoadingLispFiles -- How to load Elisp stored in separate files.
-* LocateLibrary -- Examples of how to use `locate-library' to determine the existence of a package in your LoadPath
-* ManagingHookVariables -- Easy method of manipulating hook values
-* ModeHooks -- basics of using mode hooks
+* DotEmacsStructuring -- Organize your Emacs config
+* InterpreterModeAlist -- Set the MajorMode based on a shell script's first line
+* ProfileDotEmacs -- Profile the InitFile to see which commands take the most time
 * ProjectSettings -- making customizations local to a project
 * RemoteDotEmacs -- eval the InitFile you have on a web server
-* ProfileDotEmacs -- Profile the InitFile to see which commands take the most time
 
-Dedicated Init File Pages:
+== Init-related packages ==
 
-There are also pages dedicated to some simple EmacsLisp / Emacs commands
-which allow you to do astonishing things, without requiring you to load
-other packages or write your InitFile.
+* EmacsMacro -- An InitFile to end all init files.
+* TinyTools -- A collection of add-on utilities.
+* DrewsElispLibraries -- Another extensively customized Emacs. See [[DrewsElispLibraries#HowToUseDrewsLibraries|How to Use Drew's Libraries]] for how to use <tt>[[emacs-init.el]]</tt> and the libraries it loads.
+* [[Grail]] -- Grand unified .emacs loader - robust and flexible load-path hack. 
+* DotEmacsModular -- a simple package for loading everything under <tt>.emacs.d%%/site-start.d/%%</tt>
+* [http://user42.tuxfamily.org/startup-file-name-history/index.html startup-file-name-history.el] -- put command line files into the ##find-file## history
 
-* EmacsNiftyTricks
-* GnusNiftyTricks
-* EmacsCrashCode
-* DotEmacsChallenge
-* DotEmacsStructuring 
-* DotEmacsRestructuring
-* PopularOptions
-
-Some complete [[InitFile]]s:
+== Example configurations ==
 
 * DrewAdams has posted an Emacs InitFile as <tt>[[emacs-init.el]]</tt>. It has lots of intro Emacs info for newbies, and code to comment or uncomment that loads and configures various Emacs packages. For descriptions of the packages, see DrewsElispLibraries.
 * EnterpriseEmacs -- a page about /minimal/ amount of settings for a behavior more common to the bulk of most other editors and IDEs.
@@ -65,14 +74,15 @@ There's lots more at:
 * http://dotfiles.org/.emacs 
 * [https://github.com/search?type=Repositories&q=Emacs GitHub Search: Emacs]
 
-Some Complete Init packages:
+== General Emacs tricks ==
 
-* EmacsMacro -- An InitFile to end all init files.
-* TinyTools -- A collection of add-on utilities.
-* DrewsElispLibraries -- Another extensively customized Emacs. See [[DrewsElispLibraries#HowToUseDrewsLibraries|How to Use Drew's Libraries]] for how to use <tt>[[emacs-init.el]]</tt> and the libraries it loads.
-* [[Grail]] -- Grand unified .emacs loader - robust and flexible load-path hack. 
-* DotEmacsModular -- a simple package for loading everything under <tt>.emacs.d%%/site-start.d/%%</tt>
-* [http://user42.tuxfamily.org/startup-file-name-history/index.html startup-file-name-history.el] -- put command line files into the ##find-file## history
-* OrgDotemacs - Keep your InitFile organized in an OrgMode file, choose which bits to load, and handle errors & dependencies gracefully.
+There are also pages dedicated to some simple EmacsLisp / Emacs commands
+which allow you to do astonishing things without necessarily loading
+other packages or modifying your InitFile.
 
-See also DotEmacsDotD, DumpingEmacs, CategoryPersistence, SessionManagement.
+* EmacsNiftyTricks
+* GnusNiftyTricks
+* DotEmacsRestructuring
+* PopularOptions
+
+See also DotEmacsDotD, DumpingEmacs, CategoryPersistence, SessionManagement, LearnEmacsLisp
