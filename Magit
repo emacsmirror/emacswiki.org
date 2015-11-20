@@ -3,7 +3,7 @@ Magit is a front end, or "porcelain" for the [[Git]] version control system.
 * Homepage: http://magit.vc
 * Development: http://github.com/magit/magit
 
-== Crash Course ==
+== Crash course ==
 
 Getting started with Magit is really easy:
  
@@ -17,6 +17,16 @@ Other handy keys:
 * ##P P## to do a git push
 * ##F F## to do a git pull
 * try to press ##TAB##
+
+[:Screencasts]
+== Screencasts ==
+
+* [https://www.youtube.com/watch?v=vQO7F2Q9DwA Magit introduction and demonstration] (14:10)
+* [https://www.youtube.com/watch?v=zobx3T7hGNA Magit basics] (6:10)
+* [https://www.youtube.com/watch?v=1bePDkWnL9E Utiliser git sous emacs : Magit] (29:18)
+* [https://www.youtube.com/watch?v=VO7xj2ArpZw EmacsATX: Magit] (38:15)
+* [https://www.youtube.com/watch?v=4ccCNQaTJ10 EmacsConf 2015 Lightning talk - Magit] (14:28)
+* [https://www.youtube.com/watch?v=14ffNKijEz4 magitのインストール] (1:06)
 
 == Extensions ==
 
