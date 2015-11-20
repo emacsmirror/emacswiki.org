@@ -15,6 +15,11 @@ There are a number of ways of learning, but screencasts have proven unmatched fo
 
 === Beginner information ===
 
+* [https://www.youtube.com/watch?v=K3_SFerNIeI Emacs in 10 minutes!] (9:33)
+* [https://www.youtube.com/watch?v=B6jfrrwR10k Emacs introduction and demonstration] (36:34)
+* [https://www.youtube.com/watch?v=hbmV1bnQ-i0 Basic Emacs tutorial] (37:14)
+* [Emacs Tutorial (Beginners) - Part 1 - File commands, cut/copy-paste, cursor commands] (5:59)
+* [https://www.youtube.com/watch?v=6I438IEjT1A Tutoriel Emacs francais (Débutant)]
 * [http://www.youtube.com/watch?v=MRYzPWnk2mE&list=PLxj9UAX4Em-IiOfvF2Qs742LxEK4owSkr&index=1 Minimalist programming with Jekor]:
 ** [https://www.youtube.com/watch?v=MRYzPWnk2mE&index=1&list=PLxj9UAX4Em-IiOfvF2Qs742LxEK4owSkr Getting started and playing games]
 ** [https://www.youtube.com/watch?v=mMcc0IF1hV0&index=2&list=PLxj9UAX4Em-IiOfvF2Qs742LxEK4owSkr Customizations and themes]
@@ -31,124 +36,97 @@ There are a number of ways of learning, but screencasts have proven unmatched fo
 ** [https://www.youtube.com/watch?v=h9Mw6mxPO-Y&index=3&list=PL3kg5TcOuFlrtDZoA4PmvRqvsRLo8bbI7 Custom mode keybindings] (7:10, Daniel Gopar)
 ** [https://www.youtube.com/watch?v=WyPPVFdraoQ&index=4&list=PL3kg5TcOuFlrtDZoA4PmvRqvsRLo8bbI7 Global keybindings and major/minor modes] (6:51, Daniel Gopar)
 * [https://www.youtube.com/watch?v=B6jfrrwR10k Emacs introduction and demonstration] (36:34, Howard Abrams)
+* [http://www.pluralsight.com/courses/meet-emacs PeepCode's Meet Emacs] is an hour-long professionally-recorded video (available in Ogg and other formats) that teaches Emacs. It is sold for $12.
+* General getting started screencasts for Emacs on OS X: http://railsnewbie.com (6 large quicktime movies)
 
+=== Video channels and screencast series ===
 
-=== Initialization ===
-
-* Daniel Mai discusses how to set up an emacs init configuration that's organized with org-mode and use-package: [https://www.youtube.com/watch?v=VIuOwIBL-ZU YouTube video], [https://github.com/danielmai/.emacs.d GitHub repository]
-
-=== Lisp ===
-
-* MarcoBaringer [http://common-lisp.net/project/movies/movies/slime.mov shows SlimeMode] (150MB Quicktime movie, also available [http://common-lisp.net/movies/slime.torrent via Bittorrent]) (see also [http://www.pchristensen.com/blog/articles/reference-for-the-slimelispemacs-screencast/ reference guide] here)
-
-* another SlimeMode demo from the [http://www.unixuser.org/~euske/vnc2swf/ vnc2swf-site]: http://www.unixuser.org/~euske/vnc2swf/slime.html
-
-* Redshank by MichaelWeber is a helper for all CommonLisp hackers. You can see a demo at
-http://www.foldr.org/~michaelw/emacs/redshank/
-
-* [http://www.youtube.com/user/rpdillon/videos?query=hack+emacs Hack Emacs] - Richard Dillon's series of screencasts.
-
-* [http://www.emacstapas.com/ Emacs tapas (broken link)] - [[NicFerrier]]'s series of screencasts that will teach you how to program in Emacs Lisp.
-
-=== Ruby ===
-
-* [http://www.vimeo.com/2854412 Rinari Screencast] is a short demonstration of the [http://rinari.rubyforge.org/ Rinari] minor-mode for RubyOnRails development
-
-* Marshall Vandegrift uses EmacsCodeBrowser and show [http://platypope.org/yada/emacs-demo how to move ruby on rails with it]
-
-* [http://www.rubyist.net/~rubikitch/images/icicles-rcodetools.gif Icicles with rcodetools (broken link)], by [[rubikitch]]
-
-* RubyOnRails and EmacsCodeBrowser [[http://emacsonrails.drozdov.net demo (broken link)]] (no audio, Flash required):   [1.8MB]
-
-* Short [http://eigenclass.org/hiki.rb?rcodetools RCodeTools]  [http://www.rubyist.net/~rubikitch/images/icicles-rcodetools.gif animation (broken link)] showing use of [[Icicles]] completion with Ruby 
-
-=== Misc ===
-
+* [http://www.youtube.com/user/rpdillon/videos?query=hack+emacs Hack Emacs] - Richard Dillon's series of screencasts
 * [https://www.youtube.com/channel/UCwuyodzTl_KdEKNuJmeo99A Youtube: Emacs conferences and hangouts]
-
-* [http://www.youtube.com/watch?v=53YeTdVtDkU rebox2] screencast by LeWang.
-
-* [http://vimeo.com/2871241 Meet Magit] introduces [http://zagadka.vm.bytemark.co.uk/magit/ Magit], a git mode, by demonstrating a variety of features designed to keep you productive with git without ever leaving the comfort of Emacs.
-
-* [http://www.pluralsight.com/courses/meet-emacs PeepCode's Meet Emacs] is an hour-long professionally-recorded video (available in Ogg and other formats) that teaches Emacs. It is sold for $12. For a preview, see [http://peepcode.com/system/uploads/2008/peepcode-emacs-in-5-demo.mov 5 minutes of Emacs (broken link)].
-
-* Tim Visher has a [http://vimeo.com/timvisher/videos/page:1/sort:newest series of screencasts] where he does [http://vimgolf.com/ vimgolf challenges] in emacs.
-
-* [http://emacsrocks.com Emacs Rocks!] is a series of short videos showing why emacs does indeed rock.
-
-* Derek Slager shows how he use emacs in [http://derekslager.com/blog/posts/2007/02/screencast-formatting-a-css-file-with-emacs.ashx Formatting a CSS File.]
-
-* Seongkook(CinSK) has very interesting screencasts in his website. see them all in [http://www.cinsk.org/emacs/ here]
-
-* DavidEsposito manages web sites using EmacsMuse : [http://greens.org/~ringo0 Here's a demo of how he uses it]
-
-* MsfAbbrev mode is very good abbreviation package. You can see it in action at [http://www.bloomington.in.us/~brutt/msf-abbrev-demo.gif here (broken link)]
-
-* [http://nschum.de/src/emacs/company-mode/screencast/ A demo (dead link!)] of experimental CompanyMode, which offers a completion list (like intellisense) in the buffer
-
-* [http://nschum.de/src/emacs/tempo-templates/screencast/ A demo (broken link)] of TempoSnippets, a snippet.el-like front-end for TempoMode.
-
-* Editing !JavaDoc via DocMode:  http://nschum.de/src/emacs/doc-mode/screencast/
-
-* OrgMode:
-** http://jaderholm.com/screencasts.html
-** Carsten Dominik about OrgMode on /Google TechTalks/: http://www.youtube.com/watch?v=oJTwQvgfgMM
-
-* yasnippet – Yet Another Snippet extension for emacs: http://www.youtube.com/watch?v=vOj7btx3ATg
-
-* artist-mode: http://www.cinsk.org/emacs/emacs-artist.html
-
-* ido-mode: http://www.vimeo.com/1013263
-
-* General getting started screencasts for emacs on OS X: http://railsnewbie.com (6 large quicktime movies)
-
-
-
-* [NxhtmlMode nXhtml], some [[http://ourcomments.org/Emacs/nXhtml/tut/tutorials.html tutorials (broken link)]]
-
-* Emacs Column Editing (with cua-mode): http://www.vimeo.com/1168225?pg=embed&sec=1168225
-
-* [[http://www.viddler.com/explore/felix_q/videos/1/ Screencast (broken link)]] covering basic Emacs setup on Mac OS X: windows/frames, key mapping
-
-* Various Emacs screencasts -- ScreencastSources and ScreencastRecordings have links to screencasts made with ScreencastMode and ScreencastRecord respectively.
-
-* [http://www.microsoft.com/downloads/details.aspx?FamilyId=ADF1B9E7-74A8-401D-9B0E-8326749F9419&displaylang=en Video (broken link)] showing Emacs in action by Don Box. Funny. You can see how he changes slash into backslash in shell mode running ##cmdproxy.exe##. :-)
-
-* Emacsmovies.org: http://emacsmovies.org/
-** This has a really nice beginners introduction to Emacs in an X-Windows session.
-
-* [http://www.youtube.com/watch?v=0vumR5Hcz7s GNEVE / GNU Emacs Video Editing ] demonstration video on Youtube, edited by GNEVE.
-
-* Programothesis has a [http://www.youtube.com/user/emailataskcom/videos?query=emacs series of screencasts].
-
-== Other presentations and talks ==
-
-* [https://www.youtube.com/watch?v=QaTlXpZ03kc&list=PLomc4HLgvuCUoPVpUJSkpsje4333Guxeo Emacs Conference 2015]
 * [http://emacsnyc.org/videos.html EmacsNYC videos]
+* [http://emacsrocks.com Emacs Rocks!] is a series of short videos showing why Emacs does indeed rock
+* [http://vimeo.com/timvisher/videos/page:1/sort:newest VimGolf in Emacs] - where Tim Visher does [http://vimgolf.com/ vimgolf challenges] in Emacs
+* [http://www.youtube.com/user/emailataskcom/videos?query=emacs Screencasts by Programothesis].
+* http://emacsmovies.org/
+* Various Emacs screencasts -- ScreencastSources and ScreencastRecordings have links to screencasts made with ScreencastMode and ScreencastRecord respectively.
+* [http://www.cinsk.org/emacs/ Seongkook's screencasts] (CinSK)
 
-== Tips about Creating Screencasts ==
+=== Configuration ===
+
+* [https://www.youtube.com/watch?v=FRu8SRWuUko Emacs configuration in 24 minutes] (23:29)
+* How to set up an Emacs init configuration that's organized with org-mode and use-package: [https://www.youtube.com/watch?v=VIuOwIBL-ZU YouTube video], [https://github.com/danielmai/.emacs.d GitHub repository] - by Daniel Mai
+
+
+=== Text ===
+
+* OrgMode: http://orgmode.org/talks.html
+* EmacsMuse: [http://greens.org/~ringo0 Managing websites] - DavidEsposito
+* [https://www.youtube.com/watch?v=FtieBc3KptU Emacs for writers] (1:01:06)
+
+=== Programming-related ===
+
+* [[Magit]]: See [[Magit#Screencasts]]
+* [http://derekslager.com/blog/posts/2007/02/screencast-formatting-a-css-file-with-emacs.ashx Formatting a CSS File] - Derek Slager
+* DocMode: [http://nschum.de/src/emacs/doc-mode/screencast/ Editing Javadoc]
+* Python
+** [https://www.youtube.com/watch?v=eH-epEqLVAs Aaron Schumacher: Emacs for Python]
+** [https://www.youtube.com/watch?v=6BlTGPsjGJk Emacs as a Python IDE] (47:36)
+* [https://www.youtube.com/watch?v=5FQwQ0QWBTU Emacs as a C++ IDE] (16:19)
+* [https://www.youtube.com/watch?v=dljNabciEGg Literate Devops with Emacs] (28:36)
+* [https://www.youtube.com/watch?v=GLdkYyGlSBg How to turn Emacs into a PHP development environment] (11:55)
+* [https://www.youtube.com/watch?v=HTUE03LnaXA Emacs as a C/C++ Editor/IDE (Part 1): auto-complete, yasnippet, and auto-complete-c-headers]
+* SkewerMode: https://www.youtube.com/watch?v=VEcobuYr5wg (12:19) - interactive web development
+
+==== Lisp ====
+
+* SlimeMode
+** http://common-lisp.net/project/movies/movies/slime.mov (150MB Quicktime movie, also available [http://common-lisp.net/movies/slime.torrent via Bittorrent]) see also [http://www.pchristensen.com/blog/articles/reference-for-the-slimelispemacs-screencast/ reference guide] here - MarcoBaringer 
+** http://www.unixuser.org/~euske/vnc2swf/slime.html
+* Redshank: http://www.foldr.org/~michaelw/emacs/redshank/ - a helper for all CommonLisp hackers, written by MichaelWeber
+* [https://www.youtube.com/watch?v=4X-1fJm25Ww The evolution of the Emacs tooling for Clojure] (35:11) Bozhidar Batsov
+
+==== Ruby ====
+
+* [[RubyOnRails#Rinari|Rinari]]: [http://www.vimeo.com/2854412 Rinari Screencast
+* EmacsCodeBrowser: [http://platypope.org/yada/emacs-demo how to navigate Ruby on Rails projects]
+
+=== Other packages ===
+
+* [[Yasnippet]]: http://www.youtube.com/watch?v=vOj7btx3ATg
+* ArtistMode: http://www.cinsk.org/emacs/emacs-artist.html
+* IdoMode: http://www.vimeo.com/1013263
+* CuaMode: http://www.vimeo.com/1168225?pg=embed&sec=1168225 - column editing
+* [http://www.youtube.com/watch?v=53YeTdVtDkU rebox2] screencast by LeWang.
+* [http://www.youtube.com/watch?v=0vumR5Hcz7s GNEVE / GNU Emacs Video Editing ] demonstration video on Youtube, edited by GNEVE.
+* EvilMode: https://www.youtube.com/watch?v=JWD1Fpdd4Pc (40:02)
+
+== Other talks ==
+
+* [https://www.youtube.com/watch?v=VADudzQGvU8 The editor of a lifetime] (1:08:45)
+
+== Tips for creating screencasts ==
 
 * ScreencastMode (everywhere, but only inside Emacs) and ScreencastRecord (GNU/Linux, FreeBSD - ogg, ie only open formats) are modes for creating screencasts from within Emacs easily.
-
 * Derek Slager used CommandLogMode (everywhere, but only inside Emacs) to create a screencast.
-
 * See also [http://www.debugmode.com/wink/ wink] (freeware w32, creates flash video, is it ok to link to it here? An open source version is on its [http://groups.google.com/group/wink-discuss/browse_thread/thread/42812132e43573a0 way].)
-
 * A post describing how the screencasts on the emacsmovies.org website are done. - http://emacsmovies.org/blog/2012/01/21/welcome_to_emacsmovies.org/
-
 * NicFerrier records ogg files with RecordMyDesktop on Ubuntu and tries to do it in a single take
 ** then he uploads the ogg to youtube
 *** Youtube generate a whole bunch of alternative sizes without having to edit at all
-** some other tips
-*** use a hi res screen and then make a smallish window that you record - then you can have your script in a bigger window to one side
-*** use a scratch emacs instance to do recordings, so you can prove that something will work for someone else
-***  try and start the screencast with your voice being enthusiastic! people listen to the first 30seconds
+* Use a hi-res screen and then make a smallish window that you record - then you can have your script in a bigger window to one side.
+* Use a clean Emacs instance to do recordings, so you can prove that something will work for someone else.
+* Try and start the screencast with your voice being enthusiastic! people listen to the first 30seconds.
 
-== Ideas for Screencasts ==
+== Ideas for screencasts ==
 
-* [InternetRelayChat IRC]ing in Emacs - demoing the popular clients and introducing [EmacsChannel #emacs].
+You don't have to be an expert in order to share what you've learned. Please consider contributing a screencast! You could save people time and introduce people to neat workflows. Here are some ideas for things to talk about:
 
-* See also: [SachaChua Sacha]'s [http://sachachua.com/blog/2013/04/brainstorming-ways-to-help-build-the-emacs-community/ community building ideas].
+* Lists of ideas
+** [https://emacsconf.github.io/emacsconf2015/ Notes from EmacsConf 2015 brainstorming]
+** [http://emacsnyc.org/giving-a-talk.html EmacsNYC talk suggestions]
+** See also: [SachaChua Sacha]'s [http://sachachua.com/blog/2013/04/brainstorming-ways-to-help-build-the-emacs-community/ community building ideas].
+* Specific requests
+** [InternetRelayChat IRC]ing in Emacs - demoing the popular clients and introducing [EmacsChannel #emacs].
 
 ----
 CategoryHelp
