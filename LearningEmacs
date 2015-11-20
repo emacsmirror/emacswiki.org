@@ -1,51 +1,48 @@
 This page provides tips for learning to use Emacs and learning more about Emacs. See also '''EmacsNewbie'''.
 
+* A short list of basic Emacs features: WhyUseEmacs.
 * Try the EmacsTutorial, or read one of the BooksAboutEmacs. 
-* Learn WhyUseEmacs
-* Learn using Emacs's SelfDocumentation.
-* Read the EmacsManual in InfoMode (hypertext form)
+* Learn Emacs using its SelfDocumentation. '''Asking Emacs''' directly is the best way to get to know it. (Start by asking it how to ask it...)
+* Stuck? GetHelp
+* Use AproposMode to find functions and variables based on words in their documentation or parts of their name.
+* Read the EmacsManual in Emacs, in InfoMode (hypertext form): '''`C-h r''''. You can also read it [[http://www.gnu.org/software/emacs/manual/html_node/emacs/ on the web]].
+* LearnEmacsLisp to learn Emacs -- Emacs '''is''' a Lisp environment. You don't have to become a Lisp expert to take advantage of this connection. Knowing a little Lisp helps you '''ask Emacs'''.
 * Watch EmacsScreencasts
-* Check out beginner-oriented tutorials, such as:
+* Some beginner-oriented tutorials written by users:
 ** EmacsCrashCourse.
 ** [http://david.rothlis.net/emacs/howtolearn.html How to learn Emacs] -- a tutorial leveraging Emacs's self-documentation and source code.
 ** OnePageGuideToLearningEmacs -- A one-image guide to learning key Emacs concepts (GnuEmacs 24 and later).
 ** [http://tuhdo.github.io/emacs-tutor.html Emacs Mini Manual] - An Emacs mini manual for starters to learn Emacs before reading the real (and big) Emacs manual.
-* [[CategoryCommunity|Explore the Emacs community]] and learn from other people who use Emacs
-* Use AproposMode to find functions based on their documentation
-* LearnEmacsLisp to make even better use of Emacs
-* Stuck? GetHelp
+* [[CategoryCommunity|Explore the Emacs community]] and learn from other people who use Emacs.
 
-Most people learn best by doing and not just by reading over a list of
-[[command]]s and trying to memorize them.  Get yourself a text file
+Some people learn best by doing, not reading.  To learn by doing, get yourself a text file
 to play around with. Make a backup copy if you're nervous about
 losing it. But don't worry -- Emacs makes it
-hard to lose your work, and it has a great undo command: `##C-/##' or `##C-_##'.
+hard to lose your work, and it has a great '''[[http://www.gnu.org/software/emacs/manual/html_node/emacs/Undo.html undo]]''' command: '''`##C-/##'''' or `##C-_##'.
 
 Emacs [[key binding]]s can be intimidating at first since they are quite
 distinct from those used in other applications and platforms.  Keep
 the following advice in mind.
 
-# Try to memorize the most commonly used commands in the tutorial.
+# Try to memorize only the most commonly used keys presented in the EmacsTutorial. You will learn other keys as you go.
 
-# Use [[AproposMode|apropos]] or [[SelfDocumentation|help]] to find commands to accomplish a task.
+# Use [[AproposMode|apropos]] and [[SelfDocumentation|help]] to find commands to accomplish a task.
 
-# Run the command for a task with `M-x' and typing it in.
+# You can run a command using `M-x' and typing its name at the prompt.
 
-# Run the command again by using `M-x M-p' or by typing it in again.
+# You can run a command again by using `M-x M-p' to recall it.
 
-# On the third time, see if the command is bound to a key binding with
-`C-h w'.
+# Use `C-h w' to see if what keys a given command is bound to, if any.
 
-# If you forget a key binding (sometimes you forget even the basic
-keys introduced in the tutorial), try `C-h w M-p' to peek at it
+# If you forget a key binding, try `C-h w M-p' to peek at it
 again or use `C-h b' to browse the bindings available in the current [[buffer]].
 
 # If you can't burn a key binding into your brain with this approach,
 then you might not be using it enough to matter.  Don't worry about it.
 
-# If you're convinced after a fair amount of practice that a given key binding is really bad, then consider binding its command to a different, unused key.  But not before.
+# If you're convinced after a fair amount of practice that a given key binding is really bad, then consider binding its command to a different key.  But not before.
 
-Some [[EmacsNewbie]]s rush too quickly to add or change key bindings.  This can mean avoiding to learn Emacs and spending more time configuring. Competency with `M-x' and help are core Emacs skills for life.  `M-x' should become your command line in Emacs. 
+''Some [[EmacsNewbie]]s rush too quickly to add or change key bindings.''  This can mean avoiding to learn Emacs and spending more time configuring. Competency with `M-x' and help are core Emacs skills for life.  `M-x' should become your command line in Emacs. 
 
 == Emacs Lisp libraries and snippets that can help you learn Emacs ==
 
