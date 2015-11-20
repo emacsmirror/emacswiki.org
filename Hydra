@@ -1,14 +1,32 @@
+Hydra may refer to:
+
+* a package for creating temporary or repeatable keybindings 
+* a build system
+
+See the sections below for more information.
+
+== Hydra, the keybinding package ==
+
+Project page: https://github.com/abo-abo/hydra
+
+Hydra allows you to create keymaps for related commands, with the ability to easily repeat commands by using a single keystroke. Here is a small example:
+
+    (defhydra hydra-zoom (global-map "<f2>")
+      "zoom"
+      ("g" text-scale-increase "in")
+      ("l" text-scale-decrease "out"))
+
+With this code, typing `<f2> g g g' would increase the text size by three steps.
+
+CategoryKeys
+
+== Hydra, the Nix-based continuous build system ==
+
 View the Continuous Integration status of Emacs at http://hydra.nixos.org/jobset/gnu/emacs-trunk
 
+You can find other Emacs branches at http://hydra.nixos.org/project/gnu .
+
 See Glenn Morris's description of the Hydra interface at http://lists.gnu.org/archive/html/emacs-devel/2013-09/msg00205.html
-
-
-
-
-
-
-
-
 
 ----
 GnuEmacs
