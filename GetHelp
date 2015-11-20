@@ -1,16 +1,21 @@
 Getting stuck? Trying to figure something out?
 
+* **Ask Emacs!** - Use the Emacs help commands to find out more about what's going on.  If you are not familiar with them, use '''`##C-h C-h##`''' now, to learn.  And learn '''`C-g'''' and `##C-]##' (`abort-recursive-edit' - like a super-`C-g') and command '''`top-level''''. Know too that in many uneditable buffers, such as help buffers, '''`q'''' often quits that buffer/window.
+
+* HelpMenuBarPlus can help. It has a '''[[HelpMenuBarPlus#Whoops|Whoops!?]]''' submenu just for when you're stuck.
+
+
 * If starting emacs with ##emacs -q## fixes the problem, the problem is probably due to something in your configuration. Check your InitFile. If ##emacs -q## has problems but ##emacs -Q## doesn't, it might be related to your Emacs distribution or your local setup.
 * Emacs has so many options, and the defaults might not be what you expect. You might get better help if you describe what you want and politely ask for suggestions instead of saying that Emacs is broken.
 * Search this wiki and other Emacs sites for tips, links, and recommendations.
 
-= Where to get help =
+= Where to get help from people =
 
 * You can post a message in the appropriate EmacsMailingLists or EmacsNewsgroups.
 * The EmacsChannel can be good for real-time help if you can explain your problem concisely. If you need to share your config, use a service such as Gist or Pastebin.
 * You can post technical questions on EmacsStackExchange (http://emacs.stackexchange.com). Remember to accept correct answers in order to recognize people's help and make it easy for other people to find the answers.
 * You can pay for real-time help through services like https://www.codementor.io/emacs-experts
 
-Feeling frustrated? Here's something to keep in mind as you learn to EnjoyWrestlingWithEmacs.
+Feeling frustrated? Relax, and EnjoyWrestlingWithEmacs, knowing that others have gone through it and survived. ;-)
 
 See CategoryCommunity to find more community resources.
