@@ -70,7 +70,7 @@ signed integer which is called (typedef'ed to) <code>EMACS_INT</code>.
 
 Everytime an object is allocated its address is aligned to 8
 bytes. That way the 3 least significant bits are always 0 and thus
-can be used for the tag. The allocation code is in <code>src/alloca.c</code>.
+can be used for the tag. The allocation code is in <code>src/alloc.c</code>.
 
 The tag is 3 bit long and thus can have 8 different values. The value
 uses the remaining bits. Integers use another 1 bit of the 3 tag bits.
