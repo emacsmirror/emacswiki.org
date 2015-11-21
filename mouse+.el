@@ -1,4 +1,4 @@
-;;; mouse+.el --- Extensions to `mouse.el'.
+;;; mouse+.el --- Extensions to `mouse.el'.   -*- lexical-binding: t -*-
 ;;
 ;; Filename: mouse+.el
 ;; Description: Extensions to `mouse.el'.
@@ -8,9 +8,9 @@
 ;; Created: Fri Jun 28 14:47:12 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 11:04:55 2015 (-0800)
+;; Last-Updated: Sat Nov 21 13:31:34 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 584
+;;     Update #: 592
 ;; URL: http://www.emacswiki.org/mouse+.el
 ;; Doc URL: http://emacswiki.org/MousePlus
 ;; Keywords: mouse
@@ -109,6 +109,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/11/21 dadams
+;;     Added lexical-binding declaration to file.  Otherwise, mouse-drag-region no longer
+;;       set the region (when mouse-drag-copy-region = t).
 ;; 2014/07/13 dadams
 ;;     mouse-drag-region:
 ;;      Use save-window-excursion instead of trying to restore buffer.
