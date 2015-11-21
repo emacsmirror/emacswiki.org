@@ -1,0 +1,136 @@
+This page is about choosing keys to bind and keymaps to bind them in. It discusses 
+
+See also CommonlyUsedKeybindings.
+
+== Choosing a Key ==
+
+The EmacsManual says that the combination of C-c followed by a plain
+letter, and the function keys f5 through f9 are reserved for users.
+That means that you can expect that no other mode ever uses these --
+it does not mean that you are limited to these, however.  You can of
+course rebind any key you want.  See, for instance, Lisp:unbound.el,
+which finds keys not already in use.
+
+If you are deciding which keybindings to use for a new elisp library you're creating, have a look at CommonlyUsedKeybindings -- JoeBloggs
+
+You can use describe-key or C-h k to have emacs show how emacs would represent a particular keystroke and if that key is already bound to anything.
+
+== Finding the Key Map ==
+
+The simplest thing is probably to use the global keymap:
+
+    (global-set-key (kbd "C-c b") 'bbdb)
+
+If you take care when choosing what keys to rebind, these will never
+conflict with keybindings of modes.  When there is such a conflict,
+however, the more specific mode keymap will take precedence, and your
+global keybinding will be temporarily shadowed.  If you do not care
+about the mode's keybinding, or want a keybinding for a specific mode
+only, you need to guess the mode's keymap name and add the binding to
+that map:
+
+    (define-key text-mode-map (kbd "'") 'maybe-open-apostrophe)
+
+[new:memnon:2009-03-09 10:46 UTC]
+No need to guess. If you want to find out the current active keymap
+in a given situation, like in the gnus group buffer, use this command:
+
+: M-: (mapcar (lambda(x)(car(rassq x minor-mode-map-alist)))(current-minor-mode-maps))
+
+Thanks to David Kastrup for giving it to me. --memnon
+
+you might need to wait for the correct mode to be loaded before seting the key
+
+    (eval-after-load 'text-mode
+                     '(define-key text-mode-map (kbd "'") 'maybe-open-apostrophe))
+
+
+
+== Usability ==
+
+DefaultOrCustomKeyBindings -- Discussion on using Emacs vanilla or to roll your own.
+
+=== Repetition ===
+
+Keys that you often will want to press ''several'' times
+consecutively should be easy to repeat (doh). '''Chords''' are ideal for repeating commands -- see ChordDefined.
+
+: For example, `ESC-f11' [two keystrokes] is harder
+to repeat than `S-f11' [one-and-a-half keystrokes]. (Unless you are
+eating a donut with your left hand at the moment. A hint for those who '''are''' eating donuts, consider temporarily using the right shift-key instead... :-))
+
+'''See also:'''
+
+* DoReMi for ways to use different repetitive commands with the same arrow-key and mouse-wheel key bindings.
+* [[RepeatLastCommand]]
+
+
+=== Destructive Actions ===
+
+Commands that are ''somewhat'' destructive (such as `kill-buffer') should
+have more difficult key bindings to avoid hitting them by
+mistake. (Thus binding C-z to iconify-frame probably should be
+considered a user-interface mistake --- though to be sure it originated
+not with Emacs, but with Unix.).
+
+[new:DrewAdams:2004-12-25 17:35 UTC]
+Not a good example. There's nothing destructive about `iconify-frame'. -- DrewAdams
+
+[new]
+C-z is also used in CUA as undo. MS Windows users (maybe Mac users too?) expect this.
+
+Commands that are ''very'' destructive (such as `delete-file') should
+prompt for confirmation.  Some people actually think that a user
+interface should not provide such things (see
+MeatBall:HumaneInterface, for example).
+
+== Replacing Keybindings Portably ==
+
+If you want to rebind all the bindings for a certain command to another command, use `substitute-key-definition.'
+
+Example:
+{{{
+(substitute-key-definition 'kill-buffer 'kill-buffer-and-its-windows global-map)
+}}}
+
+This works whether or not you have customized the keybindings for the command in question, and so is more portable. It also frees you from hunting every one of the potential multiple keybindings assigned toa given command.
+
+[new:DrewAdams:2009-07-04 03:02 UTC]
+Starting with Emacs 22, consider using command remapping instead of `substitute-key-definition'. See the Elisp manual, node `Remapping Commands'. -- DrewAdams
+
+
+== Multiple commands on a single key stroke ==
+
+
+== Funny Keys ==
+
+I wanted to bind M-� to � for swedish typing. Binding ü posed to be
+difficult, though, due to funny encoding problems in the file and
+stuff. The solution was:
+
+ (defun fc-kbd (str)
+   "Private kbd, the original one breaks for M-ü."
+   (read-kbd-macro (encode-coding-string str locale-coding-system)))
+
+ (global-set-key (fc-kbd "M-ü") (lambda () (interactive) (insert "å")))
+ (global-set-key (fc-kbd "M-Ü") (lambda () (interactive) (insert "Å")))
+
+HTH :)
+
+: This is great, but how can I do the same thing in [[XEmacs]]?
+
+== ESC ESC prefix ==
+
+There is 'C-c' keybinding prefix was left for users. However, I found there are many external modes use that so not so many free keys are available for user actually. Instead of 'C-c' I use 'MM-' key prefix for my own commands. I mean something like 'ESC ESC' prefix or 'ESC M-' prefix. It is really easy to "doubleclick" on ESC by left hand and then type a key by right one. Just try and probably you will like this too.
+
+There are some keybinding I use.
+
+ (global-set-key (kbd "\e\el") 'goto-line)        ;
+ (global-set-key (kbd "\e\eu") 'user-cvs-update)  ;PCL-CVS update start
+ (global-set-key (kbd "\e\ec") 'calendar)         ;calendar
+
+and really many others. Sure, keybinding can depend on mode-hooks. My .emacs is available at http://kulchitsky.org/rus/linux/.emacs. -- AntonKulchitsky
+
+
+----
+CategoryKeys
