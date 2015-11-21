@@ -1,0 +1,40 @@
+Some commands are handy but not used frequently. By overloading multiple commands on a single key stroke, you can bind those commands without consuming too many key sequences. This mimics a TextMate feature.
+
+  (require 'cl)
+  (defun define-key* (keymap key def)
+    (define-key keymap key (combine-command def (lookup-key keymap key))))
+
+  (defun combine-command (def defs)
+    (cond ((null defs) def)
+  	((and (listp defs)
+  	      (eq 'lambda (car defs))
+  	      (= (length defs) 4)
+  	      (listp (fourth defs))
+  	      (eq 'command-selector (car (fourth defs))))
+  	 (setf (cdr (fourth defs)) (cons def (cdr (fourth defs))))
+  	 defs)
+  	(t
+  	 `(lambda () (interactive) (command-selector ,def ,defs)))))
+
+  (defun command-selector (&rest candidates)
+    (let ((s (loop
+  	      for c in candidates
+  	      for i = ?1 then (1+ i)
+  	      concat (format "(%c) %s\n" i (if (symbolp c) c "<anon...>"))))
+  	(b (get-buffer-create " *Command Selection*"))
+  	c)
+      (pop-to-buffer b)
+      (erase-buffer)
+      (insert s)
+      (shrink-window-if-larger-than-buffer)
+      (loop
+         for c = (- (read-char "choice: ") ?1)
+         until (and (>= c 0) (< c (length candidates)))
+         finally do (progn (kill-buffer-and-window)
+  			 (call-interactively (nth c candidates))))))
+
+-- JaeyounChung
+
+
+----
+CategoryKeys
