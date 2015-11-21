@@ -1,17 +1,27 @@
-This package provides a simple way to customize [[DiredMode]] to display files in different faces and colors. Colors are chosen based on file extension, file name, or a regexp that matches the whole file line.
+This package provides a simple way to customize [[DiredMode]] to display files in different faces and colors. Faces are chosen based on file extension,
+file name, or a regexp matching the file line.
 
-==Download==
+==Install==
 
-Github: https://github.com/thamer/diredful
+Using Melpa:
 
-==Usage==
+ M-x package-install RET diredful RET
 
-Put the above file in your Emacs-Lisp load path, and add the following to your startup file (i.e., $HOME/.emacs):
+Then to activate add the following into your init file:
+
+ (diredful-mode 1)
+
+For manual installation, put diredful.el in your Emacs-Lisp load
+path, and add this to your init file:
 
  (require 'diredful)
  (diredful-mode 1)
 
-Then Do:
+Diredful.el is available at github: https://github.com/thamer/diredful
+
+==Usage==
+
+Do:
 
  M-x diredful-add
 
