@@ -222,7 +222,7 @@ buffer.
 
     (dolist (func '(tabbar-mode tabbar-forward-tab tabbar-forward-group tabbar-backward-tab tabbar-backward-group))
       (autoload func "tabbar" "Tabs at the top of buffers and easy control-tab navigation"))
-
+    
     (defmacro defun-prefix-alt (name on-no-prefix on-prefix &optional do-always)
       `(defun ,name (arg)
          (interactive "P")
@@ -230,10 +230,10 @@ buffer.
          (if (equal nil arg)
              ,on-no-prefix
            ,on-prefix)))
-
+    
     (defun-prefix-alt shk-tabbar-next (tabbar-forward-tab) (tabbar-forward-group) (tabbar-mode 1))
     (defun-prefix-alt shk-tabbar-prev (tabbar-backward-tab) (tabbar-backward-group) (tabbar-mode 1))
-
+    
     (global-set-key [(control tab)] 'shk-tabbar-next)
     (global-set-key [(control shift tab)] 'shk-tabbar-prev)
 
@@ -271,7 +271,7 @@ the when stuff is removed:
  (setq tabbar-buffer-groups-function
        (lambda ()
          (list "All Buffers")))
-
+ 
  (setq tabbar-buffer-list-function
        (lambda ()
          (remove-if
@@ -304,7 +304,7 @@ easily be extended). The tabbar is disabled on the other buffers.
  (when (require 'tabbar nil t)
    ;; Enable tabbars globally:
    (tabbar-mode 1)
-
+   
    ;; I use this minor-mode mainly as a global mode (see below):
    (define-minor-mode tabbar-on-term-only-mode
      "Display tabbar on terminals and buffers in fundamental mode only."
@@ -318,11 +318,11 @@ easily be extended). The tabbar is disabled on the other buffers.
            (tabbar-local-mode 1))
        ;; always activate tabbar locally when we disable the minor mode:
        (tabbar-local-mode -1)))
-
+   
    (defun tabbar-on-term-only-mode-on ()
      "Turn on tabbar if current buffer is a terminal."
      (unless (minibufferp) (tabbar-on-term-only-mode 1)))
-
+   
    ;; Define a global switch for the mode. Note that this is not set for buffers
    ;; in fundamental mode.
    ;;
@@ -330,7 +330,7 @@ easily be extended). The tabbar is disabled on the other buffers.
    ;; `after-change-major-mode-hook'...
    (define-globalized-minor-mode global-tabbar-on-term-only-mode
      tabbar-on-term-only-mode tabbar-on-term-only-mode-on)
-
+   
    ;; Eventually, switch on this global filter for tabbars:
    (global-tabbar-on-term-only-mode 1))
 
@@ -344,18 +344,18 @@ easily be extended). The tabbar is disabled on the other buffers.
                   (buffer-file-name (tabbar-tab-value tab)))
              (concat " + " (concat ad-return-value " "))
            (concat " " (concat ad-return-value " ")))))
-
+ 
  ;; Called each time the modification state of the buffer changed.
  (defun ztl-modification-state-change ()
    (tabbar-set-template tabbar-current-tabset nil)
    (tabbar-display-update))
-
+ 
  ;; First-change-hook is called BEFORE the change is made.
  (defun ztl-on-buffer-modification ()
    (set-buffer-modified-p t)
    (ztl-modification-state-change))
  (add-hook 'after-save-hook 'ztl-modification-state-change)
-
+ 
  ;; This doesn't work for revert, I don't know.
  ;;(add-hook 'after-revert-hook 'ztl-modification-state-change)
  (add-hook 'first-change-hook 'ztl-on-buffer-modification)
@@ -393,7 +393,7 @@ group buffers under the parent directory.
    "Make tabbar briefly show itself while you are switching
  buffers with shortcuts.  Tested with GNU Emacs 23."
    (defvar *tabbar-autohide-delay* 3)
-
+   
    (interactive)
    (tabbar-mode nil)
    (defvar *tabbar-autohide-timer* nil)
@@ -406,7 +406,7 @@ group buffers under the parent directory.
                     (tabbar-mode nil)
                     (setf *tabbar-autohide-timer*
                           nil)))))
-
+   
    (global-set-key
     [C-next]
     (lambda ()
@@ -423,7 +423,7 @@ group buffers under the parent directory.
           (tabbar-backward)
         (tabbar-mode t))
       (renew-tabbar-autohide-timer))))
-
+ 
  (autohide-tabbar)
 
 === Speed up by not using images ===
@@ -450,7 +450,7 @@ Here is one approach for integrating tabbar groups with
        ((memq major-mode '(org-mode calendar-mode diary-mode)) '("Org"))
        ((memq major-mode '(dired-mode)) '("Dir"))
        (t '("Main")))))
-
+ 
   (defun my-buffer-eproject-name ()
     (when eproject-root
       (let ((lst (eproject-projects))
@@ -518,14 +518,14 @@ you can easily adapt it to other scenarios.
    "Fix frame-local value of `default-header-line-format'."
    (interactive)
    default-header-line-format)
-
+ 
  ;; This absolutely must be after delete-frame, so
  ;; `delete-frame-functions' won't work.
  (defadvice delete-frame (after adapt-delete-frame-parameters activate)
    "Fix frame-local value of `default-header-line-format'."
    (interactive)
    default-header-line-format)
-
+ 
  ;; Example usage: Set per-terminal (frame-local) options.
  (defun customize-terminal-frame (frame)
    (cond
@@ -535,7 +535,7 @@ you can easily adapt it to other scenarios.
     (t
      (set-frame-parameter frame 'default-header-line-format nil)
      (set-frame-parameter frame 'menu-bar-lines 0))))
-
+ 
  (add-hook 'after-make-frame-functions 'customize-terminal-frame)
 
 ----
