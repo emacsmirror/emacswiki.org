@@ -35,7 +35,7 @@ See also: MenuAccessFromKeyboard: using menus from the keyboard.
 
 == Bind your own keys: keyboard, mouse, or menu ==
 
-* [[KeyBindingDiscussion|Choosing keys]] to bind
+* [[ChoosingKeysToBind|Choosing keys]] to bind
 * [[PrefixKey|Define prefix keys]] to group related commands
 * [[http://www.nongnu.org/emacs-tiny-tools/keybindings/ In-depth info]] about binding keys, by JariAalto
 * Libraries and code that might help you bind keys
