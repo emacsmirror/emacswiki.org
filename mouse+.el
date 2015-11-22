@@ -1,4 +1,4 @@
-;;; mouse+.el --- Extensions to `mouse.el'.   -*- lexical-binding: t -*-
+;;; mouse+.el --- Extensions to `mouse.el'.
 ;;
 ;; Filename: mouse+.el
 ;; Description: Extensions to `mouse.el'.
@@ -8,9 +8,9 @@
 ;; Created: Fri Jun 28 14:47:12 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov 21 13:31:34 2015 (-0800)
+;; Last-Updated: Sun Nov 22 08:57:19 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 592
+;;     Update #: 598
 ;; URL: http://www.emacswiki.org/mouse+.el
 ;; Doc URL: http://emacswiki.org/MousePlus
 ;; Keywords: mouse
@@ -109,6 +109,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/11/22 dadams
+;;     mouse-drag-region: Corrected test for mouse-drag-track call to Emacs 25+.
+;;     Removed lexical-binding declaration to file.
 ;; 2015/11/21 dadams
 ;;     Added lexical-binding declaration to file.  Otherwise, mouse-drag-region no longer
 ;;       set the region (when mouse-drag-copy-region = t).
@@ -461,12 +464,9 @@ If the click is in the echo area, then:
 
         ;; Give temporary modes such as isearch a chance to turn off.
         (run-hooks 'mouse-leave-buffer-hook)
-        (let ((emacs24.4+  (or (> emacs-major-version 24)
-                               (and (= emacs-major-version 24)
-                                    (not (version< emacs-version "24.3.50"))))))
-          (if emacs24.4+
-              (mouse-drag-track start-event)
-            (mouse-drag-track start-event t)))))))
+        (if (> emacs-major-version 24)
+            (mouse-drag-track start-event)
+          (mouse-drag-track start-event t))))))
 
 
 
