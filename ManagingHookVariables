@@ -1,3 +1,4 @@
+[[fr:GérerVariableHook]]
 == Managing Emacs Hook Variables == by VanceSimpson
 
 Hook variables such as `text-mode-hook' and `shell-mode-hook' (and other ModeHooks)
