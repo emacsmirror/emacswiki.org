@@ -1,0 +1,14 @@
+I'd like to know a way to define abbreviations which start with backslash character, '\'. This would be useful in composing LaTeX files.
+I have used the code snippet
+<pre>
+(define-abbrev-table 'text-mode-abbrev-table '(
+  ("\\a" "\\alpha" nil 0)                  ; define \a to be an abbreviation for \alpha
+  ("\\b" "\\beta" nil 0)                    ; and \b for \beta
+  ("\\lra" "\\leftrightarrow" nil 0)    ; and \rla for \leftrightarrow
+ )
+)
+</pre>
+taken from here [https://github.com/oleg-alexandrov/olegmisc/blob/master/emacs/test_emacs/.xemacs/my-abbreviations.el]; however, this does not work!
+
+-- Anonymous 2015-11-23 12:02 UTC
+
