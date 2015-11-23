@@ -1,38 +1,44 @@
 [[zh:安装软件包]]
-== Installing packages from the Internet ==
 
 The most common method of installing packages of Emacs Lisp since Emacs 24 has been [[ELPA]] packages.
 
-Additional package archives such as  [[MELPA]] or [[MarmaladeRepo]] exist to supplement what is in [[ELPA]].
+Additional package archives such as [[MELPA]] or [[MarmaladeRepo]] exist to supplement what is in [[ELPA]].
 
+[:package-archives]
+== Adding a package source ==
 
-=== Basic package installation ===
+By default, Emacs 24 or later is set up with the [[ELPA]] package
+archive. If you need to add more sources, include Emacs code like this
+to your InitFile:
 
-Type <code>M-x list-packages</code> to open the package list.  Press i to mark for installation, u to unmark, and x to perform the installation.  Press enter to read more about installing and using each package.  
+{{{
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+}}}
 
-I recommend you start with the package <code>paradox</code>.  This will install the improved <code>paradox-list-packages</code>, which among other things gives the ability to sort package list by GitHub popularity.  Starting with the most popular packages is a good way to find the most useful and effective ones.  
+Alternatively, you can use the Customize interface with the command `M-x customize-variable package-archives' .
 
-=== Using and configuring packages ===
+The value will depend on the package source you want to add. See [[MELPA]] or [[MarmaladeRepo]] for more information.
 
-Many packages come with instructions on installation and use.  These can be viewed in the package manager.
+== Installing packages ==
 
-A useful tool for organizing your package collection is the /use-package/ package. Its homepage is here and it can be found on MELPA.  https://github.com/jwiegley/use-package
+Type <code>M-x list-packages</code> to open the package list.  Press `i' to mark for installation, `u' to unmark, and `x' to perform the installation.  Press `RET' to read more about installing and using each package.  
 
-For more inspiration and examples, you should look into the source of the emacs starter configurations such as the ones found [[http://ergoemacs.org/misc/list_of_emacs_starter_kits.html here]].  
+If you don't see the package listed there, you may need to add another package source to your ##package-archives## variable. See the section on [[#package-archives|adding a package source]].
 
-== Installing individual elisp files ==
+You may want to start by installing the <code>paradox</code> package.  This will allow you to use the command <code>paradox-list-packages</code>, which among other things gives the ability to sort package list by GitHub popularity.  Starting with the most popular packages is a good way to find the most useful and effective ones.  
 
-Some emacs lisp configuration is offered in the form of elisp snippets, or individual .el files.  You can begin by collecting these files together in a directory  ~/.emacs.d/private/
+== Using and configuring packages ==
 
-Make sure this directory is listed in your `load-path' variable. This is achieved by:
+Many packages come with instructions on installation and use.  These can be viewed in the package manager by pressing `RET' on the package line.
 
-    (add-to-list 'load-path "~/.emacs.d/private")
+UsePackage can make it easier for you to organize your package-related configuration. For more information, see its homepage: https://github.com/jwiegley/use-package
 
-You can read more about the `load-path' at LoadPath. 
+For more inspiration and examples, look into the source of the Emacs starter configurations such as the ones found [[http://ergoemacs.org/misc/list_of_emacs_starter_kits.html here]].  
 
-If you have put a file called /custom.el/ in a directory contained in your load path, simply add: 
+== Installing individual Emacs Lisp files ==
 
-    (load-file "custom.el")
+Some Emacs Lisp libraries or configuration snippets not available as packages. To install them, see LoadPath.
 
 ----
 CategoryPackaging.
