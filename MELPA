@@ -7,7 +7,24 @@ Currently supported backends are git, svn, bzr, hg, darcs and emacswiki. The col
 Melpa uses a recipe system similar to [[el-get]].  Recipes are stored on a git-hub repository which tells the updated package.el how to download each package.  The source of the package might be from git, svn, darcs or this wiki.
 
 * [https://github.com/milkypostman/melpa Github page]
-* [http://melpa.milkbox.net/ Homepage]
+* [http://melpa.org/ Homepage]
+
+Here's how to add MELPA to your ##package-archives##:
+
+{{{
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+}}}
+
+If you prefer versions that have been tagged by their maintainers for release, you can use this instead:
+
+{{{
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/"))
+}}}
+
+For more information, see [http://melpa.org/#/getting-started Getting started with MELPA].
 
 ----
 CategoryPackaging
