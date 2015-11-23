@@ -15,13 +15,13 @@ wrapped around the buffer (Emacs 22+ only).
 
 [:isearchp-restrict-to-region-flag]
 [:isearchp-deactivate-region-flag]
-* Optional restriction of search to the [[active region]], controlled by option '''`isearchp-restrict-to-region-flag''''.  Deactivation of the active region, controlled by option
+* Optional restriction of search to the [[active region]], controlled by option '''`isearchp-restrict-to-region-flag''''.  Deactivation of the active region is controlled by option
 '''`isearchp-deactivate-region-flag''''.  Both of these are available
 for Emacs 24.3 and later.  You can use '''`C-x n'''' (command '''`isearchp-toggle-region-restriction'''') during search to toggle `isearchp-restrict-to-region-flag'.
 
 [:modeline-position]
 [:query-replace]
-* If you use library ModeLinePosition (<tt>[[modeline-posn.el]]</tt> then not only can you restrict Isearch to the active region but you can keep that restriction when you invoke a query-replacement command from Isearch (e.g. `M-%' from Isearch, to use `query-replace'). The main job of that library is to show information about the active region in the [[mode line]].  And whenever you invoke a replacement command or Isearch for the active region, that region information is highlighted specially. See ModeLinePosition for screenshots and more info.
+* If you use library ModeLinePosition (<tt>[[modeline-posn.el]]</tt> then not only can you restrict Isearch to the active region but you can keep that restriction when you invoke a query-replacement command from Isearch (e.g. `##M-%##' from Isearch, to use `query-replace'). The main job of that library is to show information about the active region in the [[mode line]].  And whenever you invoke a replacement command or Isearch for the active region, that region information is highlighted specially. See ModeLinePosition for screenshots and more info.
 
 
 [:isearchp-set-region-flag]
@@ -408,7 +408,7 @@ ignoring comments during Isearch, using '''`##C-M-;##'''' (command
 [:isearchp-zones-forward-regexp]
 [:isearchp-zones-backward]
 [:isearchp-zones-backward-regexp]
-* If you use library '''<tt>[[zones.el]]</tt>''' then you can
+* If you use library '''<tt>[[zones.el]]</tt>''' (see '''[[Zones]]''') then you can
 search a set of [[buffer]] zones that are defined by their
 limits ([[marker]]s or numbers) -- like multiple [[region]]s, using
 commands '''`isearchp-zones-forward'''' and
@@ -443,7 +443,7 @@ set.  By default the variable is `zz-izones'.
 
 
 
-
+----
 
 
 == Searching for unicode characters with IsearchPlus when IdoUbiquitous is enabled. ==
