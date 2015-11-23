@@ -41,7 +41,7 @@ standard library `##replace.el##' are handled this way.
 
 If you also use library '''[[Isearch+]]''' (<tt>[[isearch+.el]]</tt>) then (for Emacs 24.3+) Isearch commands too can optionally be restricted to the
 active region, and they too are handled by the special mode-line
-highlighting.  This includes `M-%' and `C-M-%' during Isearch,
+highlighting.  This includes `##M-%##' and `##C-M-%##' during Isearch,
 which invoke query-replacement.  Not only is the Isearch region
 indicated in the mode line, but the query-replacement command is
 invoked from Isearch with that region active, so it too is limited to that scope.
