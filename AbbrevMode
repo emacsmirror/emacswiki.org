@@ -7,22 +7,22 @@ See also: DynamicAbbreviations
 
 Emacs has a nice feature to expand abbreviations.  If for example, you
 wanted an abbreviation for 'Your Name' to be 'yn', just type 'yn' and
-with your point after the 'n' do 'C-xaig' (mnemonic add inverse
+with your point after the 'n' do ##C-x a i g## (mnemonic add inverse
 global) and enter the expansion, in this case 'Your Name'.  In the
 future, whenever you type 'yn' your name will be inserted.  The
 abbrevs are automatically saved between sessions in a file
-~/.abbrev_defs.
+##~/.abbrev_defs##.
 
 I find this most useful for fixing typos.  Whenever you have a typo (I
 type 'becasue' almost every time) if you are religious (see
-alt.religion.emacs) and never correct it but instead do 'C-xaig' and
+alt.religion.emacs) and never correct it but instead do ##C-x a i g## and
 enter the correct spelling, emacs will fix all your typos, and you can
 type like a reckless madman and emacs will clean up the mess behind
 you.  See AutoCorrection.
 
 If you don't like an abbrev that you have set up, then do M-x
 edit-abbrevs.  You can have different abbrevs for each mode (cperl,
-c++, Message); the 'g' in C-xaig is for global, meaning every mode.
+c++, Message); the ##g## in ##C-x a i g## is for global, meaning every mode.
 
 See the Abbrevs node in the emacs info for more.
 
@@ -30,27 +30,27 @@ JohnHunter
 
 == Defining Abbrevs ==
 
-Type the word you want to use as expansion, and then type `C-x a g'
+Type the word you want to use as expansion, and then type ##C-x a g##
 and the abbreviation for it.  Example:
 
     t h e C-x a g t e h RET
 
 Unfortunately, if you wanted to abbreviate Read The Fine Manual with RTFM, you couldn't just type C-x a g after "Read the Fine Manual".  Emacs would ask you for an abbreviation for Manual.  A simple solution is to use a numeric prefix.
 Note how many words you want to be part of the expansion, and then use
-C-u 4 C-x a g after "Read the Fine Manual" -- four words.
+##C-u 4 C-x a g## after "Read the Fine Manual" -- four words.
 
 == Saving Abbrevs ==
 
-Use `M-x write-abbrev-file' and just hit RET when asked for a
-filename.  The default is "~/.abbrev_defs".  In the future, Emacs
+Use ##M-x write-abbrev-file## and just hit RET when asked for a
+filename.  The default is ##~/.abbrev_defs##.  In the future, Emacs
 should save the abbrevs automatically when you quit Emacs.
 
-You may not want to use "~/.abbrev_defs" as your abbrev file.  I use the following in my .emacs code to store my abbrevs in [[.emacs.d]]
+You may not want to use ##~/.abbrev_defs## as your abbrev file.  I use the following in my .emacs code to store my abbrevs in [[.emacs.d]]
 
   (setq abbrev-file-name             ;; tell emacs where to read abbrev
         "~/.emacs.d/abbrev_defs")    ;; definitions from...
 
-Also, if you want abbreviations to be saved whenever you save files (C-x s) or quit emacs, add the following to your .emacs:
+Also, if you want abbreviations to be saved whenever you save files (##C-x s##) or quit emacs, add the following to your .emacs:
 
   (setq save-abbrevs t)              ;; save abbrevs when files are saved
                                      ;; you will be asked before the abbreviations are saved
@@ -67,7 +67,7 @@ If you want to read you abbrev file at a different time, perhaps at init without
     (quietly-read-abbrev-file)       ;; reads the abbreviations file
 
 This will read the definitions from the default file,
-"~/.abbrev_defs".
+##~/.abbrev_defs##.
 
 If you want to avoid errors if the abbrev-file is missing, use something like:
 
@@ -76,8 +76,8 @@ If you want to avoid errors if the abbrev-file is missing, use something like:
 
 == Using Abbrevs ==
 
-`M-x abbrev-mode' toggles Abbrev mode.  You can also put the following
-in your ~/.emacs file if you want it always on:
+##M-x abbrev-mode## toggles Abbrev mode.  You can also put the following
+in your ##~/.emacs## file if you want it always on:
 
     (setq default-abbrev-mode t)
 
@@ -98,15 +98,18 @@ VisualBasicMode does a nifty trick that checks its syntactic content and only ex
 
 Add this to the mode definition (sql-mode in this case):
 
+{{{
      (if 1
 	  (progn
 		(make-local-variable 'pre-abbrev-expand-hook)
 		(add-hook 'pre-abbrev-expand-hook 'sql-pre-abbrev-expand-hook)
 		(abbrev-mode 1)))
+}}}
 
 And build a hook:
 
- (defun sql-in-code-context-p ()
+{{{
+(defun sql-in-code-context-p ()
   (if (fboundp 'buffer-syntactic-context) ; XEmacs function.
        (null (buffer-syntactic-context))
      ;; Attempt to simulate buffer-syntactic-context
@@ -119,17 +122,19 @@ And build a hook:
        (and (null (nth 3 list))		; inside string.
  	   (null (nth 4 list))))))	; inside cocmment
 
- (defun sql-pre-abbrev-expand-hook ()
+(defun sql-pre-abbrev-expand-hook ()
   ;; Allow our abbrevs only in a code context.
   (setq local-abbrev-table
 	(if (sql-in-code-context-p)
 	    sql-mode-abbrev-table)))
+}}}
 
 == Example .abbrev_defs File ==
 
 Amongst many define-abbrev-table statements, you'll find a statement
 for the global-abbrev-table.  Here is mine:
 
+{{{
     (define-abbrev-table 'global-abbrev-table '(
 	("afaict" "as far as I can tell" nil 1)
 	("omuse" "http://www.emacswiki.org/cgi-bin/oddmuse.pl" nil 0)
@@ -138,18 +143,19 @@ for the global-abbrev-table.  Here is mine:
 	("ewiki" "http://www.emacswiki.org/cgi-bin/wiki.pl" nil 3)
 	("pov" "point of view" nil 1)
 	))
+}}}
 
 == Abbrev with Hooking ==
 
 If you prefer that the expansion character not be inserted, you can use a hook that returns non-nil (example here for latex-mode)
 
+{{{
   (defun dont-insert-expansion-char ()  t)    ;; this is the "hook" function
   (put 'dont-insert-expansion-char 'no-self-insert t)   ;; the hook should have a "no-self-insert"-property set 
   
   (define-abbrev-table 'latex-mode-abbrev-table   '(
       ("em" "\\emph{" dont-insert-expansion-char 0)
-
-
+}}}
 
 [new]
 I'm wanting to write a Macro/Abbrev in Emacs/XEmacs so that when I type <code>sout</code> Emacs automatically replaces it with System.out.println("|") and positions the TextCursor in between the quotes.  A simple Abbrev gets me the replace, but how can I get it to reposition the cursor??  I realise this may not be the best place to ask these sorts of  questions, is there a page on this wiki for such things?
