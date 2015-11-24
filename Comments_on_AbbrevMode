@@ -12,3 +12,18 @@ taken from here [https://github.com/oleg-alexandrov/olegmisc/blob/master/emacs/t
 
 -- Anonymous 2015-11-23 12:02 UTC
 
+
+----
+
+I'd suggest the following: Go to the buffer where you want the abbrev to work. Type ##\alpha## followed by ##C-x a g## and see what it suggests. In Text Mode, it will only suggest "alpha" as the abbreviation because ##\## is considered to be *punctuation*, not a word constituent! Use ##C-u C-x =## to confirm it: "syntax: . 	which means: punctuation".
+
+So, you need to change the syntax category of the backslash for the mode you're interested in. See EmacsSyntaxTable. Put the following in your InitFile and evaluate it:
+
+{{{
+(modify-syntax-entry ?\\ "w" text-mode-syntax-table)
+}}}
+
+Now you should be able to type ##\alpha## followed by ##C-x a g## and type ##\a## to abbreviate it. That should work.
+
+-- AlexSchroeder 2015-11-24 07:02 UTC
+
