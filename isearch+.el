@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 26 10:28:14 2015 (-0700)
+;; Last-Updated: Mon Nov 23 19:54:58 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 3808
+;;     Update #: 3896
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -83,6 +83,7 @@
 ;;    `isearchp-fontify-buffer-now', `isearchp-init-edit',
 ;;    `isearchp-open-recursive-edit' (Emacs 22+),
 ;;    `isearchp-remove-failed-part' (Emacs 22+),
+;;    `isearchp-remove-failed-part-or-last-char' (Emacs 22+),
 ;;    `isearchp-retrieve-last-quit-search',
 ;;    `isearchp-set-region-around-search-target',
 ;;    `isearchp-toggle-lazy-highlight-cleanup' (Emacs 22+),
@@ -107,6 +108,7 @@
 ;;    `isearchp-mouse-2-flag', `isearchp-on-demand-action-function'
 ;;    (Emacs 22+), `isearchp-regexp-quote-yank-flag',
 ;;    `isearchp-restrict-to-region-flag' (Emacs 24.3+),
+;;    `isearchp-resume-with-last-when-empty-flag' (Emacs 22+),
 ;;    `isearchp-ring-bell-function', `isearchp-set-region-flag',
 ;;    `isearchp-toggle-option-flag'.
 ;;
@@ -137,7 +139,6 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `isearchp-if-empty-prefer-resuming-with-last',
 ;;    `isearchp-last-non-nil-invisible',
 ;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
 ;;    `isearchp-nomodify-action-hook' (Emacs 22+),
@@ -271,7 +272,7 @@
 ;;
 ;;  * Optional limiting of search to the active region, controlled by
 ;;    option `isearchp-restrict-to-region-flag'.  Deactivation of the
-;;    active region, controlled by option
+;;    active region is controlled by option
 ;;    `isearchp-deactivate-region-flag'.  Both of these are available
 ;;    for Emacs 24.3 and later.  You can use `C-x n' (command
 ;;    `isearchp-toggle-region-restriction') during search to toggle
@@ -489,9 +490,20 @@
 ;;    next) or automatically if you use `M-k' (see below).  I added
 ;;    this feature to GNU Emacs 23.1.
 ;;
+;;  * Option `isearchp-resume-with-last-when-empty-flag' non-`nil'
+;;    (the default) means that if Isearch is resumed with an empty
+;;    search string, after being suspended, the previous search string
+;;    is used.  If `nil', it is resumed with an empty search string,
+;;    as if starting over from the resumed location.
+;;
 ;;  * `C-M-l' (`isearchp-remove-failed-part') removes the failed part
 ;;     of the search string, if any.  `C-g' does this as well, but
 ;;     `C-g' also has an effect when search is successful.
+;;
+;;  * `C-<backspace>' (`isearchp-remove-failed-part-or-last-char')
+;;    also removes the failed part, if any.  If there is none then it
+;;    removes the last character.  You might prefer to bind this to
+;;    `DEL' (Backspace), in place of `isearch-delete-char'.
 ;;
 ;;  * `M-k' (`isearchp-cycle-mismatch-removal') cycles automatic
 ;;    removal or replacement of the input portion that does not match.
@@ -615,6 +627,14 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/11/23 dadams
+;;     Added: isearchp-remove-failed-part-or-last-char.  Bound to C-backspace.
+;;     Renamed isearchp-if-empty-prefer-resuming-with-last to isearchp-resume-with-last-when-empty-flag, and
+;;      made it a defcustom.
+;;     isearchp-remove-failed-part:
+;;       Simplified and fixed problem of isearch-delete-char afterward restoring failed part.
+;;     with-isearch-suspended: Do not call isearch-ring-adjust1 if isearch-string is empty.
+;;     (put 'with-isearch-suspended 'common-lisp-indent-function '(&body))
 ;; 2015/10/26 dadams
 ;;     with-isearch-suspended: Applied Tino Calancha's fix for Emacs bug #21663.
 ;; 2015/09/01 dadams
@@ -1284,6 +1304,16 @@ You can toggle this with `isearchp-toggle-regexp-quote-yank', bound to
   :type 'boolean :group 'isearch-plus)
 
 ;;;###autoload
+(defcustom isearchp-resume-with-last-when-empty-flag t
+  "If non-nil, `isearch-new-string' = \"\" resumes with last string.
+If nil, or if there is no search string, search resumes with the empty
+ search string.
+This applies to resumption of search after `with-isearch-suspended'.
+
+This option has no effect for Emacs releases prior to Emacs 22."
+  :type 'boolean :group 'isearch-plus)
+
+;;;###autoload
 (defcustom isearchp-ring-bell-function #'ignore
   ;; (if (and (> emacs-major-version 21)  (require 'echo-bell nil t)) #'echo-bell ring-bell-function)
   ;; `echo-bell' is nice, but if you search in zones (e.g. the region or `isearchp-zones-*') then the
@@ -1379,12 +1409,6 @@ You can use `M-`' to toggle this anytime during Isearch.")
   (defvar isearchp-replacement ""
     "Replacement string used by `isearchp-replace-on-demand'."))
 
-(defvar isearchp-if-empty-prefer-resuming-with-last t
-  "If non-nil, `isearch-new-string' = \"\" resumes with last string.
-If nil, or if there is no search string, search resumes with the empty
- search string.
-This applies to resumption of search after `with-isearch-suspended'.")
-
 (defvar isearchp-win-pt-line nil
   "Line number of point before searching, relative to `window-start'.")
 
@@ -1409,6 +1433,8 @@ This variable has an effect only for the current search.")
 ;; 2. Add `catch', and update `isearch-success' with thrown value.
 ;; 3. Temporarily restore `ring-bell-function'.
 ;;
+(put 'with-isearch-suspended 'common-lisp-indent-function '(&body))
+
 (defmacro with-isearch-suspended (&rest body)
   "Exit Isearch mode, run BODY, and reinvoke the pending search.
 BODY can involve use of the minibuffer, including recursive minibuffers.
@@ -1508,7 +1534,7 @@ suspended."
                             multi-isearch-buffer-list     multi-isearch-buffer-list-new))
                     ;; Empty `isearch-string' means use default.
                     (when (= 0 (length isearch-string))
-                      (setq isearch-string   (or (and isearchp-if-empty-prefer-resuming-with-last
+                      (setq isearch-string   (or (and isearchp-resume-with-last-when-empty-flag
                                                       (car (if isearch-regexp
                                                                regexp-search-ring
                                                              search-ring)))
@@ -1516,7 +1542,7 @@ suspended."
                             isearch-message  (mapconcat 'isearch-text-char-description
                                                         isearch-string ""))
                       ;; After taking the last element, adjust ring to previous one.
-                      (isearch-ring-adjust1 nil)))
+                      (unless (equal isearch-string "") (isearch-ring-adjust1 nil))))
                   ;; This used to push the state as of before this `C-s', but it adds an inconsistent state
                   ;; where some of the variables are from the previous search (e.g. `isearch-success'), and
                   ;; some of the variables were just entered from the minibuffer (e.g. `isearch-string').
@@ -1545,23 +1571,23 @@ suspended."
     "Prompt for Lisp sexp, eval it, and append value to the search string."
     (interactive)
     (with-isearch-suspended
-        (let ((sexp  (read-from-minibuffer "Eval: " nil (if (boundp 'pp-read-expression-map) ; In `pp+.el'.
-                                                            pp-read-expression-map
-                                                          read-expression-map)
-                                           t 'read-expression-history)))
-          (message "Evaluating...")
-          (if (or (not (boundp 'eval-expression-debug-on-error))
-                  (null eval-expression-debug-on-error))
-              (setq values  (cons (eval sexp) values))
-            (let ((old-value  (make-symbol "t"))
-                  new-value)
-              ;; Bind `debug-on-error' to something unique so that we can detect when evaled code changes it.
-              (let ((debug-on-error  old-value))
-                (setq values     (cons (eval sexp) values)
-                      new-value  debug-on-error))
-              ;; If eval'd code changed value of `debug-on-error', propagate change to the global binding.
-              (unless (eq old-value new-value) (setq debug-on-error  new-value))))
-          (setq isearch-new-string  (concat isearch-string (prin1-to-string (car values) 'NOESCAPE))))))
+      (let ((sexp  (read-from-minibuffer "Eval: " nil (if (boundp 'pp-read-expression-map) ; In `pp+.el'.
+                                                          pp-read-expression-map
+                                                        read-expression-map)
+                                         t 'read-expression-history)))
+        (message "Evaluating...")
+        (if (or (not (boundp 'eval-expression-debug-on-error))
+                (null eval-expression-debug-on-error))
+            (setq values  (cons (eval sexp) values))
+          (let ((old-value  (make-symbol "t"))
+                new-value)
+            ;; Bind `debug-on-error' to something unique so that we can detect when evaled code changes it.
+            (let ((debug-on-error  old-value))
+              (setq values     (cons (eval sexp) values)
+                    new-value  debug-on-error))
+            ;; If eval'd code changed value of `debug-on-error', propagate change to the global binding.
+            (unless (eq old-value new-value) (setq debug-on-error  new-value))))
+        (setq isearch-new-string  (concat isearch-string (prin1-to-string (car values) 'NOESCAPE))))))
 
   (defun isearchp-act-on-demand (arg)   ; Bound to `C-M-RET' in `isearch-mode-map'.
     "Invoke the value of `isearchp-on-demand-action-function'.
@@ -1573,16 +1599,30 @@ Bound to `\\<isearch-mode-map>\\[isearchp-act-on-demand]' during Isearch."
       (remove-hook 'isearch-mode-end-hook 'isearchp-property-finish)
       (when (and isearch-success  (not isearch-error)  (not isearch-just-started))
         (with-isearch-suspended
-            (let ((isearchp-pref-arg  arg))
-              (funcall isearchp-on-demand-action-function))))))
+          (let ((isearchp-pref-arg  arg))
+            (funcall isearchp-on-demand-action-function))))))
+
+  (defun isearchp-remove-failed-part-or-last-char () ; Bound to `C-<backspace>' in `isearch-mode-map'.
+    "Remove failed part of search string, or last char if successful.
+Do nothing if search string is empty to start with."
+    (interactive)
+    (if (equal isearch-string "")
+        (isearch-update)                ; No-op.  Just redisplay prompt.
+      (if isearch-success
+          (isearch-delete-char)
+        (while (isearch-fail-pos) (isearch-pop-state)))
+      (isearch-update)))
 
   (defun isearchp-remove-failed-part () ; Bound to `C-M-l' in `isearch-mode-map'.
-    "Remove the failed part of the search string, if any."
+    "Remove failed part of search string, if any.
+Do nothing if the search string is empty to start with or the search
+was successful."
     (interactive)
-    (with-isearch-suspended
-        (setq isearch-new-string  (substring isearch-string 0 (or (isearch-fail-pos)
-                                                                  (length isearch-string)))
-              isearch-new-message (mapconcat 'isearch-text-char-description isearch-new-string ""))))
+    (if (equal isearch-string "")
+        (isearch-update)                ; No-op.  Just redisplay prompt.
+      (while (isearch-fail-pos) (isearch-pop-state))
+      (isearch-update)))
+
   )
 
 ;;;###autoload
@@ -1845,25 +1885,24 @@ The following additional command keys are active while editing.
 \\[insert-char] to insert a Unicode character by name (with completion)."
     (interactive)
     (with-isearch-suspended
-        (let* ((message-log-max            nil)
-               ;; Do not add a new search string to the search ring here in `read-from-minibuffer'.
-               ;; It should be added only by `isearch-update-ring', called from `isearch-done'.
-               (history-add-new-input      nil)
-               (minibuffer-history-symbol  nil)) ; Workaround for some incompatibility with `gmhist'.
-          ;; FREE VARS here: `isearch-new-string', `isearch-new-message'.
-          ;; Bound in `with-isearch-suspended'.
-          (setq isearch-new-string   (read-from-minibuffer
-                                      (isearchp-message-prefix nil nil isearch-nonincremental)
-                                      (cons isearch-string (1+ (or (isearch-fail-pos)
-                                                                   (length isearch-string))))
-                                      minibuffer-local-isearch-map  nil
-                                      (if isearch-regexp
-                                          (cons 'regexp-search-ring
-                                                (1+ (or regexp-search-ring-yank-pointer  -1)))
-                                        (cons 'search-ring (1+ (or search-ring-yank-pointer  -1))))
-                                      nil t)
-                isearch-new-message  (mapconcat 'isearch-text-char-description isearch-new-string
-                                                "")))))
+      (let* ((message-log-max            nil)
+             ;; Do not add a new search string to the search ring here in `read-from-minibuffer'.
+             ;; It should be added only by `isearch-update-ring', called from `isearch-done'.
+             (history-add-new-input      nil)
+             (minibuffer-history-symbol  nil)) ; Workaround for some incompatibility with `gmhist'.
+        ;; FREE VARS here: `isearch-new-string', `isearch-new-message'.
+        ;; Bound in `with-isearch-suspended'.
+        (setq isearch-new-string   (read-from-minibuffer
+                                    (isearchp-message-prefix nil nil isearch-nonincremental)
+                                    (cons isearch-string (1+ (or (isearch-fail-pos)
+                                                                 (length isearch-string))))
+                                    minibuffer-local-isearch-map  nil
+                                    (if isearch-regexp
+                                        (cons 'regexp-search-ring
+                                              (1+ (or regexp-search-ring-yank-pointer  -1)))
+                                      (cons 'search-ring (1+ (or search-ring-yank-pointer  -1))))
+                                    nil t)
+              isearch-new-message  (mapconcat 'isearch-text-char-description isearch-new-string "")))))
 
   ;; Suggested by Juri Linkov: http://lists.gnu.org/archive/html/emacs-devel/2012-12/msg00281.html.
   ;;
@@ -1941,14 +1980,12 @@ If first char entered is \\[isearch-yank-word], then do word search instead."
                         (setq isearch-new-string   (read-from-minibuffer
                                                     (isearchp-message-prefix nil nil
                                                                              isearch-nonincremental)
-                                                    (cons isearch-string
-                                                          (1+ (length isearch-string)))
+                                                    (cons isearch-string (1+ (length isearch-string)))
                                                     minibuffer-local-isearch-map nil
                                                     (if isearch-regexp
-                                                        (cons
-                                                         'regexp-search-ring
-                                                         (1+ (or regexp-search-ring-yank-pointer
-                                                                 -1)))
+                                                        (cons 'regexp-search-ring
+                                                              (1+ (or regexp-search-ring-yank-pointer
+                                                                      -1)))
                                                       (cons 'search-ring
                                                             (1+ (or search-ring-yank-pointer  -1))))
                                                     nil t)
@@ -2006,14 +2043,14 @@ Completion is available as in `read-char-by-name', used by `insert-char'.
 With a numeric prefix arg, append that many copies of the character."
     (interactive "p")
     (with-isearch-suspended
-        (let ((char  (read-char-by-name "Append char to search string (Unicode name or hex): ")))
-          (when char
-            (let ((string  (if (and (integerp count)  (> count 1))
-                               (make-string count char)
-                             (char-to-string char))))
-              (setq isearch-new-string   (concat isearch-string string)
-                    isearch-new-message  (concat isearch-message (mapconcat 'isearch-text-char-description
-                                                                            string "")))))))))
+      (let ((char  (read-char-by-name "Append char to search string (Unicode name or hex): ")))
+        (when char
+          (let ((string  (if (and (integerp count)  (> count 1))
+                             (make-string count char)
+                           (char-to-string char))))
+            (setq isearch-new-string   (concat isearch-string string)
+                  isearch-new-message  (concat isearch-message (mapconcat 'isearch-text-char-description
+                                                                          string "")))))))))
 
 (when (fboundp 'isearch-yank-internal)  ; Emacs 22+
   (defun isearchp-yank-char ()          ; Bound to `C-z' and `C-y C-c' in `isearch-mode-map'.
@@ -2320,6 +2357,7 @@ Commands
 \\[isearch-quote-char]\t- quote a control character, to search for it
 \\[isearch-char-by-name]\t- add a Unicode char to search string by Unicode name
 \\[isearchp-remove-failed-part]\t- remove failed part of search string, if any
+\\[isearchp-remove-failed-part-or-last-char]\t- remove failed part or last char
 \\[isearch-abort]\t- remove failed part of search string, or cancel if none
 \\[isearchp-open-recursive-edit]\t- invoke Emacs command loop recursively, during Isearch
 \\[isearchp-retrieve-last-quit-search]\t- insert successful search string from when you hit `C-g'
@@ -3586,6 +3624,9 @@ Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
 
 (when (fboundp 'isearchp-remove-failed-part) ; Emacs 22+
   (define-key isearch-mode-map (kbd "C-M-l")      'isearchp-remove-failed-part))
+
+(when (fboundp 'isearchp-remove-failed-part-or-last-char) ; Emacs 22+
+  (define-key isearch-mode-map (kbd "C-<backspace>") 'isearchp-remove-failed-part-or-last-char))
 
 (when (and (eq system-type 'windows-nt) ; Windows uses `M-TAB' for something else.
            (not (lookup-key minibuffer-local-isearch-map [C-M-tab])))
