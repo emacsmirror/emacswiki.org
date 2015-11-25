@@ -168,3 +168,10 @@ shouldDo.org tracks your weekly progress as a "score" (where perfect equals 100)
 
 http://shouldDo.org
 
+
+----
+
+Could somebody replace flet in org-todo-at-date? flet is deprecated in 24.3 and I failed to do it on my own.
+
+-- BobGreene 2015-11-25 17:13 UTC
+
