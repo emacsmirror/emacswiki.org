@@ -1,9 +1,15 @@
 Page http://freenode.net/using_the_network.html lists the available modes on the FreeNode network.
 
-Typical /topic pattern:
+Typical /topic pattern optimizing for newbies (link first):
 
 <pre>
-/topic See http://emacswiki.org/emacs/EmacsChannel for tips, code of conduct | Go ahead and ask your Emacs question | Treat people with respect. No sexism, racism, homophobia, or discrimination of any kind. | No public logging | <whatever people want to add, such as a quote>
+/topic See http://emacswiki.org/emacs/EmacsChannel for tips, code of conduct | Go ahead and ask your Emacs question | Treat people with respect. No sexism, racism, homophobia, or discrimination of any kind. | No public logging
+</pre>
+
+Typical /topic pattern optimizing for the amusement of regulars (quote first):
+
+<pre>
+/topic quote | See http://emacswiki.org/emacs/EmacsChannel for tips, code of conduct | Go ahead and ask your Emacs question | Treat people with respect. No sexism, racism, homophobia, or discrimination of any kind. | No public logging
 </pre>
 
 == Dealing with violations of the code of conduct ==
@@ -50,7 +56,7 @@ Check what the levels mean:
 /msg chanserv level #emacs list
 </pre>
 
-== Modify access list ==
+=== Modify access list ===
 
 Add only the nicks of identified users.
 
@@ -62,6 +68,21 @@ Add only the nicks of identified users.
 == ERC Commands ==
 
 You may also want to check out https://github.com/jwiegley/dot-emacs/blob/master/lisp/erc-macros.el for ideas.
+
+=== Easy op/deop ===
+
+<pre>
+(defun erc-cmd-OPME ()
+  "Request chanserv to op me."
+  (erc-message "PRIVMSG"
+               (format "chanserv op %s %s"
+                       (erc-default-target)
+                       (erc-current-nick)) nil))
+
+(defun erc-cmd-DEOPME ()
+  "Deop myself from current channel."
+  (erc-cmd-DEOP (format "%s" (erc-current-nick))))
+</pre>
 
 === Ban, kickban ===
 <pre>
