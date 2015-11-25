@@ -1,0 +1,12 @@
+=== Broken when sorting by extension, and probably others ===
+
+Like all other dired sorting packages here, this extension fails when asked to sort by file extension on MacOS as the -X option 
+is not supported by the <code>ls</code> command.  
+The idea of relying on an external command to sort directory listings is an incredibly bad idea.  
+
+If emacs must rely upon en external command to gather directory listings, it should require the least specific 
+functionality that it can possibly get away with.  Requiring that <code>ls</code> support specific command switches is a 
+very fragile solution that is likely to break.
+
+-- cswarth 2015-11-25 18:31 UTC
+
