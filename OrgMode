@@ -330,7 +330,7 @@ The following code snippet allows you to run <code>org-todo</code> as though it 
 <pre>
 (defun org-todo-at-date (date)
   (interactive (list (org-time-string-to-time (org-read-date))))
-  (flet ((org-current-effective-time (&rest r) date)
+  (cl-flet ((org-current-effective-time (&rest r) date)
          (org-today (&rest r) (time-to-days date)))
     (org-todo)))
 </pre>
