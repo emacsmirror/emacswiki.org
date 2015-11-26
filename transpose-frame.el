@@ -135,124 +135,130 @@
 
 (defun transpose-frame-get-arrangement (&optional frame subtree)
   (let ((tree (or subtree
-		  (car (window-tree frame)))))
+                  (car (window-tree frame)))))
     (if (windowp tree)
-	(list (window-buffer tree)
-	      (window-start tree)
-	      (window-point tree)
-	      (window-hscroll tree)
-	      (window-margins tree)
-	      (window-fringes tree)
-	      (window-dedicated-p tree)
-	      (window-redisplay-end-trigger tree)
-	      tree
-	      (eq tree (frame-selected-window frame)))
+        (list (window-buffer tree)
+              (window-start tree)
+              (window-point tree)
+              (window-hscroll tree)
+              (window-margins tree)
+              (window-fringes tree)
+              (window-dedicated-p tree)
+              (window-redisplay-end-trigger tree)
+              tree
+              (eq tree (frame-selected-window frame)))
       (let* ((vertical (car tree))
-	     (edges (cadr tree))
-	     (length (float (if vertical
-				(- (nth 3 edges) (cadr edges))
-			      (- (nth 2 edges) (car edges))))))
-	(cons vertical
-	      (mapcar (lambda (subtree)
-			(cons (transpose-frame-get-arrangement frame subtree)
-			      (/ (let ((edges (if (windowp subtree)
-						  (window-edges subtree)
-						(cadr subtree))))
-				   (if vertical
-				       (- (nth 3 edges) (cadr edges))
-				     (- (nth 2 edges) (car edges))))
-				 length)))
-		      (cddr tree)))))))
+             (edges (cadr tree))
+             (length (float (if vertical
+                                (- (nth 3 edges) (cadr edges))
+                              (- (nth 2 edges) (car edges))))))
+        (cons vertical
+              (mapcar (lambda (subtree)
+                        (cons (transpose-frame-get-arrangement frame subtree)
+                              (/ (let ((edges (if (windowp subtree)
+                                                  (window-edges subtree)
+                                                (cadr subtree))))
+                                   (if vertical
+                                       (- (nth 3 edges) (cadr edges))
+                                     (- (nth 2 edges) (car edges))))
+                                 length)))
+                      (cddr tree)))))))
 
 (defun transpose-frame-set-arrangement (config &optional window-or-frame &rest how)
   (let ((window (if (windowp window-or-frame)
-		    window-or-frame
-		  (frame-selected-window window-or-frame))))
+                    window-or-frame
+                  (frame-selected-window window-or-frame))))
     (unless (windowp window-or-frame)
       (delete-other-windows window))
     (if (bufferp (car config))
-	(let ((buffer (pop config)))
-	  (set-window-buffer window buffer)
-	  (set-window-start window (pop config))
-	  (set-window-point window (pop config))
-	  (set-window-hscroll window (pop config))
-	  (set-window-margins window (caar config) (cdr (pop config)))
-	  (apply 'set-window-fringes window (pop config))
-	  (set-window-dedicated-p window (pop config))
-	  (set-window-redisplay-end-trigger window (pop config))
-	  (let ((orig-window (pop config))
-		(ol-func (lambda (ol)
-			   (if (eq (overlay-get ol 'window) orig-window)
-			       (overlay-put ol 'window window))))
-		(ol-lists (with-current-buffer buffer
-			    (overlay-lists))))
-	    (mapc ol-func (car ol-lists))
-	    (mapc ol-func (cdr ol-lists)))
-	  (if (car config) (select-window window)))
+        (let ((buffer (pop config)))
+          (set-window-buffer window buffer)
+          (set-window-start window (pop config))
+          (set-window-point window (pop config))
+          (set-window-hscroll window (pop config))
+          (set-window-margins window (caar config) (cdr (pop config)))
+          (apply 'set-window-fringes window (pop config))
+          (set-window-dedicated-p window (pop config))
+          (set-window-redisplay-end-trigger window (pop config))
+          (let ((orig-window (pop config))
+                (ol-func (lambda (ol)
+                           (if (eq (overlay-get ol 'window) orig-window)
+                               (overlay-put ol 'window window))))
+                (ol-lists (with-current-buffer buffer
+                            (overlay-lists))))
+            (mapc ol-func (car ol-lists))
+            (mapc ol-func (cdr ol-lists)))
+          (if (car config) (select-window window)))
       (let* ((horizontal (if (memq 'transpose how)
-			     (pop config)
-			   (not (pop config))))
-	     (edges (window-edges window))
-	     (length (if horizontal
-			 (- (nth 2 edges) (car edges))
-		       (- (nth 3 edges) (cadr edges)))))
-	(if (memq (if horizontal 'flop 'flip) how)
-	    (setq config (reverse config)))
-	(while (cdr config)
-	  (setq window (prog1
-			   (split-window window (round (* length (cdar config)))
-					 horizontal)
-			 (apply 'transpose-frame-set-arrangement
-				(caar config) window how))
-		config (cdr config)))
-	(apply 'transpose-frame-set-arrangement
-	       (caar config) window how)))))
+                             (pop config)
+                           (not (pop config))))
+             (edges (window-edges window))
+             (length (if horizontal
+                         (- (nth 2 edges) (car edges))
+                       (- (nth 3 edges) (cadr edges)))))
+        (if (memq (if horizontal 'flop 'flip) how)
+            (setq config (reverse config)))
+        (while (cdr config)
+          (setq window (prog1
+                           (split-window window (round (* length (cdar config)))
+                                         horizontal)
+                         (apply 'transpose-frame-set-arrangement
+                                (caar config) window how))
+                config (cdr config)))
+        (apply 'transpose-frame-set-arrangement
+               (caar config) window how)))))
 
 ;; User commands
 
+;;;###autoload
 (defun transpose-frame (&optional frame)
   "Transpose windows arrangement at FRAME.
 Omitting FRAME means currently selected frame."
   (interactive)
   (transpose-frame-set-arrangement (transpose-frame-get-arrangement frame) frame
-				   'transpose)
+                                   'transpose)
   (if (interactive-p) (recenter)))
 
+;;;###autoload
 (defun flip-frame (&optional frame)
   "Flip windows arrangement vertically at FRAME.
 Omitting FRAME means currently selected frame."
   (interactive)
   (transpose-frame-set-arrangement (transpose-frame-get-arrangement frame) frame
-				   'flip))
+                                   'flip))
 
+;;;###autoload
 (defun flop-frame (&optional frame)
   "Flop windows arrangement horizontally at FRAME.
 Omitting FRAME means currently selected frame."
   (interactive)
   (transpose-frame-set-arrangement (transpose-frame-get-arrangement frame) frame
-				   'flop))
+                                   'flop))
 
+;;;###autoload
 (defun rotate-frame (&optional frame)
   "Rotate windows arrangement 180 degrees at FRAME.
 Omitting FRAME means currently selected frame."
   (interactive)
   (transpose-frame-set-arrangement (transpose-frame-get-arrangement frame) frame
-				   'flip 'flop))
+                                   'flip 'flop))
 
+;;;###autoload
 (defun rotate-frame-clockwise (&optional frame)
   "Rotate windows arrangement 90 degrees clockwise at FRAME.
 Omitting FRAME means currently selected frame."
   (interactive)
   (transpose-frame-set-arrangement (transpose-frame-get-arrangement frame) frame
-				   'transpose 'flop)
+                                   'transpose 'flop)
   (if (interactive-p) (recenter)))
 
+;;;###autoload
 (defun rotate-frame-anticlockwise (&optional frame)
   "Rotate windows arrangement 90 degrees anti-clockwise at FRAME.
 Omitting FRAME means currently selected frame."
   (interactive)
   (transpose-frame-set-arrangement (transpose-frame-get-arrangement frame) frame
-				   'transpose 'flip)
+                                   'transpose 'flip)
   (if (interactive-p) (recenter)))
 
 (provide 'transpose-frame)
