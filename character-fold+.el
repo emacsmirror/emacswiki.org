@@ -8,9 +8,9 @@
 ;; Created: Fri Nov 27 09:12:01 2015 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 27 10:02:42 2015 (-0800)
+;; Last-Updated: Fri Nov 27 11:07:37 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 28
+;;     Update #: 34
 ;; URL: http://www.emacswiki.org/character-fold+.el
 ;; Doc URL: http://emacswiki.org/CharacterFoldPlus
 ;; Keywords: isearch, search, unicode
@@ -36,7 +36,7 @@
 ;;
 ;;  For example, with a `nil' value you can search for "e" (a base
 ;;  character) to find "é", but not vice versa.  With a non-`nil'
-;;  value you can search for either to find itself and the other
+;;  value you can search for either, to find itself and the other
 ;;  members of the equivalence class - the base char is not treated
 ;;  specially.
 ;;
@@ -52,6 +52,17 @@
 ;;
 ;;    An example of a composition is "é".  Searching for that finds
 ;;    the same matches as searching for "é" or searching for "e".
+;;
+;;  If you also use library `isearch+.el' then you can toggle option
+;;  `char-fold-symmetric' anytime during Isearch, using `M-s ='
+;;  (command `isearchp-toggle-symmetric-char-fold').
+;;
+;;  CAVEAT: Be aware that character-fold searching can be much slower
+;;  when symmetric - there are many more possibilities to search for.
+;;  If, for example, you search only for a single "e"-family character
+;;  then every "e" in the buffer is a search hit (which means
+;;  lazy-highlighting them all, by default).  Searching with a longer
+;;  search string is much faster.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
