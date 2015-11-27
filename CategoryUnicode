@@ -39,3 +39,4 @@ These libraries are useful to call from EmacsLisp but do not necessarily focus o
 
 * CategoryFaces
 * CategoryDisplay
+* CategorySearchAndReplace
