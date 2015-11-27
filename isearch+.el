@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 27 11:14:33 2015 (-0800)
+;; Last-Updated: Fri Nov 27 11:30:18 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 4084
+;;     Update #: 4089
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -228,6 +228,7 @@
 ;;    `M-g'        `isearchp-retrieve-last-quit-search'
 ;;    `M-k'        `isearchp-cycle-mismatch-removal'
 ;;    `M-r'        `isearch-toggle-regexp'
+;;    `M-s ='      `isearchp-toggle-symmetric-char-fold' (Emacs 25+)
 ;;    `M-s i'      `isearch-toggle-invisible'
 ;;    `M-s h l'    `isearchp-toggle-lazy-highlight-cleanup'(Emacs 22+)
 ;;    `M-s w'      `isearch-toggle-word'
@@ -291,6 +292,10 @@
 ;;      isearch - toggle `isearchp-set-region-flag'.
 ;;    - Command `isearchp-set-region-around-search-target' - manually
 ;;      set the region around the last search target.
+;;
+;;  * If you also use library `character-fold+.el' then you can use
+;;    `M-s =' (command `isearchp-toggle-symmetric-char-fold') to
+;;    toggle whether character folding is symmetric.
 ;;
 ;;  * When you visit a search hit, you can perform an action on it.
 ;;    Use `C-M-RET' (command `isearchp-act-on-demand' - Emacs 22+
