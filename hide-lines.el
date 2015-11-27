@@ -5,7 +5,7 @@
 ;; Author: Mark Hulme-Jones <ture at plig cucumber dot net>
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Version: 20130623.1701
-;; Last-Updated: 2013-06-23 16:42:00
+;; Last-Updated: Fri Nov 27 18:44:36 2015
 ;;           By: Joe Bloggs
 ;; URL: https://github.com/vapniks/hide-lines
 ;; Keywords: convenience
@@ -46,33 +46,39 @@
 ;; Now, when you type C-c /, you will be prompted for a regexp
 ;; (regular expression).  All lines matching this regexp will be
 ;; hidden in the buffer.
-;; 
+;;
 ;; Alternatively, you can type C-u C-c / (ie. provide a prefix
 ;; argument to the hide-lines command) to hide all lines that *do not*
 ;; match the specified regexp. If you want to reveal previously hidden
 ;; lines you can use any other prefix, e.g. C-u C-u C-c /
 ;; 
 
+
+
 ;;; Commands:
 ;;
-;; Below are complete command list:
+;; Below is a complete list of commands:
 ;;
 ;;  `hide-lines'
 ;;    Hide lines matching the specified regexp.
+;;    Keybinding: M-x hide-lines
 ;;  `hide-lines-not-matching'
 ;;    Hide lines that don't match the specified regexp.
+;;    Keybinding: M-x hide-lines-not-matching
 ;;  `hide-lines-matching'
 ;;    Hide lines matching the specified regexp.
+;;    Keybinding: M-x hide-lines-matching
 ;;  `hide-lines-show-all'
 ;;    Show all areas hidden by the filter-buffer command.
+;;    Keybinding: M-x hide-lines-show-all
 ;;
 ;;; Customizable Options:
 ;;
-;; Below are customizable option list:
+;; Below is a list of customizable options:
 ;;
 ;;  `hide-lines-reverse-prefix'
 ;;    If non-nil then `hide-lines' will call `hide-lines-matching' by default, and `hide-lines-not-matching' with a single prefix.
-;;    default = nil. This variable is buffer local so you can use different values for different buffers.
+;;    default = nil
 
 ;;; Installation:
 ;;
