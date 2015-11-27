@@ -18,6 +18,7 @@ Additional:
 * [[AceJump]] -- a minor mode for Emacs, enabling direct cursor-moving in current view.
 * AcmeSearch -- Simple right-click searching.
 * BuffersMisc
+* [[CharacterFold+]] -- optional symmetric character folding for Isearch
 * [[Icicles]] -- two unrelated features: `icicle-search' and [[completion]] for Isearch:
 ** [[Icicles - Search Commands, Overview|Icicles search]]: [[regexp|Regexp]] search within ''search contexts'': text zones defined using regexps (and their subgroups) or using [[text property|text or overlay property]] values.  Combine syntactic and semantic (predicate) searching. (Cf. [[Isearch+]].)
 ** Use completion against previous [[Icicles - Isearch Enhancements|Isearch search strings]].
@@ -81,6 +82,10 @@ Additional:
 
 
 
+
+
+
+
 [:SearchAcrossFiles]
 == Search Across Files ==
 
@@ -95,6 +100,7 @@ Vanilla:
 Additional:
 
 * [[Anything]] -- `M-x anything-grep' in Lisp:anything-grep.el: narrow the list by multiple patterns
+* [[CharacterFold+]] -- optional symmetric character folding for Isearch
 * FindrPackage -- Breadth-first search for files.  Search for regexp within found files.
 * [[Grep+]] -- Emacs `grep' enhancements
 * Icicles search [[Icicles - Search Commands, Overview|across multiple files]]. Icicles [[Icicles - Other Search Commands|compilation search]] to visit source-file hits in a ##*grep*## or any compilation buffer. Multiple levels of regexp search. 
