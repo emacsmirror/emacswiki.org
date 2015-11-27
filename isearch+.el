@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 27 13:41:10 2015 (-0800)
+;; Last-Updated: Fri Nov 27 13:54:07 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 4108
+;;     Update #: 4110
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -3231,6 +3231,7 @@ Bound to `C-M-`' during Isearch."
     "Toggle option `isearch-lazy-highlight'."
     (interactive)
     (customize-set-value 'isearch-lazy-highlight (not isearch-lazy-highlight))
+    (unless isearch-lazy-highlight (lazy-highlight-cleanup 'FORCE))
     (message "Lazy highlighting is now %s" (if isearch-lazy-highlight 'ON 'OFF))
     (sit-for 1)
     (isearch-update))
