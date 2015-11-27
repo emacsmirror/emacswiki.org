@@ -8,9 +8,9 @@
 ;; Created: Fri Nov 27 09:12:01 2015 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 27 11:07:37 2015 (-0800)
+;; Last-Updated: Fri Nov 27 14:07:52 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 34
+;;     Update #: 44
 ;; URL: http://www.emacswiki.org/character-fold+.el
 ;; Doc URL: http://emacswiki.org/CharacterFoldPlus
 ;; Keywords: isearch, search, unicode
@@ -28,7 +28,8 @@
 ;;
 ;;  Non-nil option `char-fold-symmetric' means that char folding is
 ;;  symmetric: When you search for any of an equivalence class of
-;;  characters you find all of them.
+;;  characters you find all of them.  This behavior applies to
+;;  query-replacing also.
 ;;
 ;;  The default value of `char-fold-symmetric' is `nil', which gives
 ;;  the same behavior as vanilla Emacs: you find all members of the
@@ -57,12 +58,28 @@
 ;;  `char-fold-symmetric' anytime during Isearch, using `M-s ='
 ;;  (command `isearchp-toggle-symmetric-char-fold').
 ;;
-;;  CAVEAT: Be aware that character-fold searching can be much slower
-;;  when symmetric - there are many more possibilities to search for.
-;;  If, for example, you search only for a single "e"-family character
-;;  then every "e" in the buffer is a search hit (which means
-;;  lazy-highlighting them all, by default).  Searching with a longer
-;;  search string is much faster.
+;;
+;;  NOTE:
+;;
+;;    To customize option `char-fold-symmetric', use either Customize
+;;    or a Lisp function designed for customizing options, such as
+;;    `customize-set-variable' or `customize-set-value'.  Do not use
+;;    only `setq', because the necessary `:set' trigger will not be
+;;    invoked.
+;;
+;;
+;;  CAVEAT:
+;;
+;;    Be aware that character-fold searching can be much slower when
+;;    symmetric - there are many more possibilities to search for.
+;;    If, for example, you search only for a single "e"-family
+;;    character then every "e" in the buffer is a search hit (which
+;;    means lazy-highlighting them all, by default).  Searching with a
+;;    longer search string is much faster.
+;;
+;;    If you also use library `isearch+.el' then you can turn off lazy
+;;    highlighting using the toggle key `M-s h L'.  This can vastly
+;;    improve performance when character folding is symmetric.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
