@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 27 11:30:18 2015 (-0800)
+;; Last-Updated: Fri Nov 27 13:21:13 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 4089
+;;     Update #: 4098
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -635,6 +635,7 @@
 ;;
 ;; 2015/11/27 dadams
 ;;     Added: isearchp-toggle-symmetric-char-fold.  Bound to M-s =.
+;;     isearch-message-prefix: Fix yesterday's update for Emacs 25.
 ;;     Soft-require character-fold+.el.
 ;; 2015/11/26 dadams
 ;;     Updated for Emacs 25:
@@ -3040,16 +3041,23 @@ If SPACE-BEFORE is non-nil,  put a space before, instead of after it."
                             (if isearch-forward (> (point) isearch-opoint) (< (point) isearch-opoint))
                             (propertize "over" 'face 'isearchp-overwrapped))
                        (and isearch-wrapped  (propertize "wrapped " 'face 'isearchp-wrapped))
+                       (when (fboundp 'advice-function-mapc) ; Emacs 24.4+
+                         (let ((prefix  ""))
+                           (advice-function-mapc (lambda (_ props)
+                                                   (let ((np  (cdr (assq 'isearch-message-prefix props))))
+                                                     (when np (setq prefix  (concat np prefix)))))
+                                                 isearch-filter-predicate)
+                           prefix))
+                       (if (> emacs-major-version 24)
+                           (isearch--describe-regexp-mode isearch-regexp-function)
+                         (isearch--describe-word-mode isearch-regexp-function))
                        (let ((multi  (propertize "multi " 'face 'isearchp-multi)))
-                         (cond ((> emacs-major-version 24)
-                                (isearch--describe-regexp-mode isearch-regexp-function)
-                                (cond (multi-isearch-file-list   (concat multi "file "))
-                                      (multi-isearch-buffer-list (concat multi "buffer "))
-                                      (t                         "")))
-                               (t
-                                (isearch--describe-word-mode isearch-regexp-function)
-                                (and isearch-regexp  (propertize "regexp " 'face 'isearchp-regexp))
-                                (and multi-isearch-next-buffer-current-function   multi))))
+                         (if (> emacs-major-version 24)
+                             (cond (multi-isearch-file-list   (concat multi "file "))
+                                   (multi-isearch-buffer-list (concat multi "buffer "))
+                                   (t                         ""))
+                           (concat (and isearch-regexp  (propertize "regexp " 'face 'isearchp-regexp))
+                                   (and multi-isearch-next-buffer-current-function   multi))))
                        (and isearch-message-prefix-add
                             (propertize isearch-message-prefix-add 'face 'minibuffer-prompt))
                        (propertize (if nonincremental "search" "I-search") 'face 'minibuffer-prompt)
