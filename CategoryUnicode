@@ -8,11 +8,13 @@ Anything having to do with editing, encoding, or displaying Unicode characters i
 
 * ucs-insert -- use this command to insert any Unicode character by name.
 
+
 == Unicode Libraries ==
 
 These libraries are intended to help users who edit Unicode files.
 
 * AproposUnicode (<tt>[[apu.el]]</tt>)
+* [[CharacterFold+]] -- optional symmetric character folding for [[Isearch]]
 * <tt>[[ucs-cmds.el]]</tt>
 * UnicodeHelperMode
 * UnicodeFonts
