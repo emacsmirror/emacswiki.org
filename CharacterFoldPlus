@@ -26,9 +26,7 @@ If you search for any of the associates then you find only itself.  Vanilla Emac
 
 Library ##character-fold+.el## lets you do either.  Non-`nil' [[option]] '''`char-fold-symmetric'''' means search symmetrically: treat each of the characters in an equivalence class the same.  If `nil', you get the same behavior as vanilla Emacs.
 
-Be aware, however, that character-fold searching can be much
-slower when symmetric -- there are many more possibilities to
-search for.
+Symmetric character folding applies also to query-replace, but in that case the equivalence-class matches are not lazily highlighted, as they are in Isearch.
 
 If you also use library '''[[Isearch+]]''' then you can toggle option `char-fold-symmetric' anytime during Isearch, using '''`##M-s =##''''.
 
