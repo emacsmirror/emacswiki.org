@@ -1,0 +1,46 @@
+This page is about package '''[::CharacterFold+]''', which enhances character folding for [[Isearch]].
+
+
+== Vanilla Emacs Character Folding ==
+
+Emacs 25 introduces the ability for [[IncrementalSearch]] to ignore diacritical and other typographic differences among characters that have the same "base" character.  Think accented letters, for instance.
+
+For example, you can search using the base character '''e''' for not only "e" itself but also any of the following related Unicode "e"-like characters:
+
+e 𝚎 𝙚 𝘦 𝗲 𝖾 𝖊 𝕖 𝔢 𝓮 𝒆 𝑒 𝐞 ｅ ㋎ ㋍ ⓔ ⒠
+ⅇ ℯ ₑ ẽ ẽ ẻ ẻ ẹ ẹ ḛ ḛ ḙ ḙ ᵉ ȩ ȩ ȇ ȇ
+ȅ ȅ ě ě ę ę ė ė ĕ ĕ ē ē ë ë ê ê é é è è
+
+(Depending on the font used, some of these characters might not look "e"-like in your browser, or they might look just like ordinary "e" characters. Those that cannot be rendered properly might be shown as hollow rectangles, for instance.)
+
+
+== Equivalence Classes of Characters ==
+
+Unicode defines a '''base''' character as ''"any graphic character except for those with the General Category of Combining Mark (M). In a combining character sequence, the base character is the initial character, which the combining marks are applied to."''
+
+A base character is often associated with other, non-base characters that can be thought of as resembling it or being derived from it, typically by applying some diacritical mark, such as an accent.  Together, the base character and its associates can be thought of as an equivalence class, where the equivalence relation ignores the diacritical marks.
+
+Starting with Emacs 25, vanilla Isearch lets you search for a base character to find either itself or any of its associates. If you search for "e" then you will find "e" or any of the other "e" associates listed above.
+
+If you search for any of the associates then you find only itself.  Vanilla Emacs does not let you search for any of the associates in order to find any of the other associates or the base character. If you search for "é", for example, you will find only that character, "é".  If you search for "Müller" then you will not find matches for "Muller".
+
+Library ##character-fold+.el## lets you do either.  Non-`nil' option '''`char-fold-symmetric'''' means search symmetrically: treat each of the characters in an equivalence class the same.  If `nil', you get the same behavior as vanilla Emacs.
+
+Be aware, however, that character-fold searching can be much
+slower when symmetric -- there are many more possibilities to
+search for.
+
+If you also use library '''[[Isearch+]]''' then you can toggle option `char-fold-symmetric' anytime during Isearch, using '''`##M-s =##''''.
+
+''CAVEAT:'' Be aware that character-fold searching can be much slower
+when symmetric -- there are typically ''many'' more possibilities to search for.
+If, for example, you search only for a single "e"-family character
+then every "e" in the buffer is a search hit (which means
+lazy-highlighting them all, by default).  Searching with a ''longer
+search string'' is much faster.
+
+
+
+----
+
+[[Isearch+]] CategorySearchAndReplace CategoryUnicode
