@@ -24,6 +24,11 @@ for Emacs 24.3 and later.  You can use '''`C-x n'''' (command '''`isearchp-toggl
 * If you use library ModeLinePosition (<tt>[[modeline-posn.el]]</tt> then not only can you restrict Isearch to the active region but you can keep that restriction when you invoke a query-replacement command from Isearch (e.g. `##M-%##' from Isearch, to use `query-replace'). The main job of that library is to show information about the active region in the [[mode line]].  And whenever you invoke a replacement command or Isearch for the active region, that region information is highlighted specially. See ModeLinePosition for screenshots and more info.
 
 
+[:isearchp-toggle-symmetric-char-fold]
+* If you also use library '''[[CharacterFold+]]''' then you can use
+'''`##M-s =##'''' (command `isearchp-toggle-symmetric-char-fold') to toggle whether character folding is symmetric.
+
+
 [:isearchp-set-region-flag]
 [:isearchp-toggle-set-region]
 [:set-region-around-search-target]
@@ -489,4 +494,7 @@ OK, thanks.  Can you provide a patch?  Note that the same feature might well be 
 http://lists.gnu.org/archive/html/emacs-devel/2012-12/msg00234.html.  So you might want to bring JuriLinkov into the loop about fixing this wrt Ido.  He might also have a suggestion.  Please cc me if you do so by email.  Thx -- DrewAdams
 
 
----- CategorySearchAndReplace 
+----
+
+CategorySearchAndReplace
+CategoryUnicode
