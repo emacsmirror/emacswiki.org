@@ -26,7 +26,7 @@ for Emacs 24.3 and later.  You can use '''`C-x n'''' (command '''`isearchp-toggl
 
 [:isearchp-toggle-symmetric-char-fold]
 * If you also use library '''[[CharacterFold+]]''' then you can use
-'''`##M-s =##'''' (command `isearchp-toggle-symmetric-char-fold') to toggle whether character folding is symmetric.
+'''`##M-s =##'''' (command `isearchp-toggle-symmetric-char-fold') to toggle whether character folding is ''symmetric''.
 
 
 [:isearchp-set-region-flag]
@@ -285,6 +285,11 @@ use command `isearch-lazy-highlight-cleanup', to remove the
 highlighting.  See also option '''`lazy-highlight-max-at-a-time''''.
 
 
+[:isearchp-toggle-lazy-highlighting]
+* '''`M-s h L'''' ('''`isearchp-toggle-lazy-highlighting'''') toggles the
+value of ''option'' '''`isearch-lazy-highlight''''.  Turning this
+highlighting off can sometimes speed up searching considerably,
+in particular for [[#isearchp-toggle-symmetric-char-fold|symmetric character folding]].
 
 
 [:goto-longest-line]
