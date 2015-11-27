@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 27 13:21:13 2015 (-0800)
+;; Last-Updated: Fri Nov 27 13:41:10 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 4098
+;;     Update #: 4108
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -87,6 +87,7 @@
 ;;    `isearchp-retrieve-last-quit-search',
 ;;    `isearchp-set-region-around-search-target',
 ;;    `isearchp-toggle-lazy-highlight-cleanup' (Emacs 22+),
+;;    `isearchp-toggle-lazy-highlighting' (Emacs 22+),
 ;;    `isearchp-toggle-literal-replacement' (Emacs 22+),
 ;;    `isearchp-toggle-option-toggle',
 ;;    `isearchp-toggle-regexp-quote-yank',
@@ -231,6 +232,7 @@
 ;;    `M-s ='      `isearchp-toggle-symmetric-char-fold' (Emacs 25+)
 ;;    `M-s i'      `isearch-toggle-invisible'
 ;;    `M-s h l'    `isearchp-toggle-lazy-highlight-cleanup'(Emacs 22+)
+;;    `M-s h L'    `isearchp-toggle-lazy-highlighting'(Emacs 22+)
 ;;    `M-s w'      `isearch-toggle-word'
 ;;    `M-TAB'      `isearchp-complete'
 ;;    `M-w'        `isearchp-kill-ring-save'
@@ -575,6 +577,10 @@
 ;;     use command `isearch-lazy-highlight-cleanup', to remove the
 ;;     highlighting.  See also option `lazy-highlight-max-at-a-time'.
 ;;
+;;  * `M-s h L' (`isearchp-toggle-lazy-highlighting') toggles the
+;;     value of option `isearch-lazy-highlight'.  Turning this
+;;     highlighting off can sometimes speed up searching considerably,
+;;     in particular for symmetric character folding.
 ;;
 ;;  * Other bindings during Isearch:
 ;;
@@ -635,6 +641,7 @@
 ;;
 ;; 2015/11/27 dadams
 ;;     Added: isearchp-toggle-symmetric-char-fold.  Bound to M-s =.
+;;     Added: isearchp-toggle-lazy-highlighting.  Bound to M-x h L.
 ;;     isearch-message-prefix: Fix yesterday's update for Emacs 25.
 ;;     Soft-require character-fold+.el.
 ;; 2015/11/26 dadams
@@ -2450,7 +2457,8 @@ Commands
 \\[isearch-toggle-case-fold]\t- toggle case-sensitivity (for current search or more: `C-u')
 \\[isearch-toggle-character-fold]\t- toggle character folding
 \\[isearchp-toggle-symmetric-char-fold]\t- toggle character folding being symmetric
-\\[isearchp-toggle-lazy-highlight-cleanup]\t- option `lazy-highlight-cleanup' (removal of highlighting)
+\\[isearchp-toggle-lazy-highlight-cleanup]\t- option `lazy-highlight-cleanup'
+\\[isearchp-toggle-lazy-highlighting]\t- option `isearch-lazy-highlight'
 \\[isearchp-toggle-search-invisible]\t- toggle searching invisible text
 \\[isearch-toggle-invisible]\t- toggle searching invisible text, for current search or more
 \\[isearchp-toggle-option-toggle]\t- toggle option `isearchp-toggle-option-flag'
@@ -3219,6 +3227,16 @@ Bound to `C-M-`' during Isearch."
 
   (define-key isearch-mode-map (kbd "M-s h l") 'isearchp-toggle-lazy-highlight-cleanup)
 
+  (defun isearchp-toggle-lazy-highlighting () ; Bound to `M-s h L' in `isearch-mode-map'.
+    "Toggle option `isearch-lazy-highlight'."
+    (interactive)
+    (customize-set-value 'isearch-lazy-highlight (not isearch-lazy-highlight))
+    (message "Lazy highlighting is now %s" (if isearch-lazy-highlight 'ON 'OFF))
+    (sit-for 1)
+    (isearch-update))
+    
+  (define-key isearch-mode-map (kbd "M-s h L") 'isearchp-toggle-lazy-highlighting)
+
   )
 
 
@@ -3227,6 +3245,11 @@ Bound to `C-M-`' during Isearch."
   (defun isearchp-toggle-symmetric-char-fold () ; Bound to `M-s =' in `isearch-mode-map'.
     "Toggle option `char-fold-symmetric'.
 This does not also toggle character folding.
+
+Note that symmetric character folding can slow down search.  Use
+longer search strings to reduce this problem, or use `M-s h L' to turn
+off lazy highlighting.
+
 You need library `character-fold+.el' for this command."
     (interactive)
     (customize-set-value 'char-fold-symmetric (not char-fold-symmetric))
