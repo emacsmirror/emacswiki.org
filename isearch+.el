@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Nov 26 14:44:46 2015 (-0800)
+;; Last-Updated: Thu Nov 26 16:31:05 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 4061
+;;     Update #: 4065
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -1027,7 +1027,6 @@
 
 ;; Quiet the byte compiler.
 (defvar bidi-display-reordering)         ; Emacs 24+, built-in.
-(defvar character-fold-search)           ; In `character-fold.el' (Emacs 25+).
 (defvar cursor-sensor-inhibit)           ; In `isearch.el' (Emacs 25+).
 (defvar disable-point-adjustment)        ; Built-in, Emacs 22+.
 (defvar eval-expression-debug-on-error)  ; In `simple.el', Emacs 22+.
@@ -1487,6 +1486,7 @@ suspended."
                         (isearch-new-message                 isearch-message)
                         (isearch-new-forward                 isearch-forward)
                         (isearch-new-regexp-function         isearch-regexp-function)
+                        (isearch-new-word                    isearch-regexp-function) ; For backward compatibility
                         (isearch-new-case-fold               isearch-case-fold-search)
                         (isearch-regexp                      isearch-regexp)
                         (isearch-op-fun                      isearch-op-fun)
@@ -1983,6 +1983,7 @@ If first char entered is \\[isearch-yank-word], then do word search instead."
                      (isearch-new-message           isearch-message)
                      (isearch-new-forward           isearch-forward)
                      (isearch-new-regexp-function   isearch-regexp-function)
+                     (isearch-new-word              isearch-regexp-function) ; For backward compatibility
                      (isearch-regexp                isearch-regexp)
                      (isearch-op-fun                isearch-op-fun)
                      (isearch-cmds                  isearch-cmds)
