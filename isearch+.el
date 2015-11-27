@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Nov 26 16:41:41 2015 (-0800)
+;; Last-Updated: Fri Nov 27 11:14:33 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 4068
+;;     Update #: 4084
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -91,9 +91,10 @@
 ;;    `isearchp-toggle-option-toggle',
 ;;    `isearchp-toggle-regexp-quote-yank',
 ;;    `isearchp-toggle-search-invisible',
-;;    `isearchp-toggle-set-region', `isearchp-yank-char' (Emacs 22+),
-;;    `isearchp-yank-line' (Emacs 22+),
-;;    `isearchp-yank-sexp-symbol-or-char' (Emacs 22+),
+;;    `isearchp-toggle-set-region',
+;;    `isearchp-toggle-symmetric-char-fold' (Emacs 25+),
+;;    `isearchp-yank-char' (Emacs 22+), `isearchp-yank-line' (Emacs
+;;    22+), `isearchp-yank-sexp-symbol-or-char' (Emacs 22+),
 ;;    `isearchp-yank-sexp-symbol-or-char-1' (Emacs 22+),
 ;;    `isearchp-yank-symbol-or-char' (Emacs 22+),
 ;;    `isearchp-yank-symbol-or-char-1' (Emacs 22+),
@@ -627,6 +628,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/11/27 dadams
+;;     Added: isearchp-toggle-symmetric-char-fold.  Bound to M-s =.
+;;     Soft-require character-fold+.el.
 ;; 2015/11/26 dadams
 ;;     Updated for Emacs 25:
 ;;      isearch(-lazy-highlight)-word -> isearch(-lazy-highlight)-regexp-function.  Declare variable aliases.
@@ -1021,12 +1025,14 @@
  ;; allow doing (eval-after-load "isearch" '(progn (require 'isearch+)))
 
 (when (> emacs-major-version 22) (require 'isearch-prop nil t)) ;; (no error if not found)
+(when (> emacs-major-version 24) (require 'character-fold+ nil t)) ;; (no error if not found)
 
 (require 'misc-cmds nil t) ;; (no error if not found): goto-longest-line
 
 
 ;; Quiet the byte compiler.
 (defvar bidi-display-reordering)         ; Emacs 24+, built-in.
+(defvar char-fold-symmetric)             ; In `character-fold+.el' (Emacs 25+).
 (defvar cursor-sensor-inhibit)           ; In `isearch.el' (Emacs 25+).
 (defvar disable-point-adjustment)        ; Built-in, Emacs 22+.
 (defvar eval-expression-debug-on-error)  ; In `simple.el', Emacs 22+.
@@ -2436,6 +2442,8 @@ Commands
 
 \\[isearchp-cycle-mismatch-removal]\t- cycle option `isearchp-drop-mismatch'
 \\[isearch-toggle-case-fold]\t- toggle case-sensitivity (for current search or more: `C-u')
+\\[isearch-toggle-character-fold]\t- toggle character folding
+\\[isearchp-toggle-symmetric-char-fold]\t- toggle character folding being symmetric
 \\[isearchp-toggle-lazy-highlight-cleanup]\t- option `lazy-highlight-cleanup' (removal of highlighting)
 \\[isearchp-toggle-search-invisible]\t- toggle searching invisible text
 \\[isearch-toggle-invisible]\t- toggle searching invisible text, for current search or more
@@ -3197,6 +3205,23 @@ Bound to `C-M-`' during Isearch."
     (isearch-update))
 
   (define-key isearch-mode-map (kbd "M-s h l") 'isearchp-toggle-lazy-highlight-cleanup)
+
+  )
+
+
+(when (featurep 'character-fold+)
+
+  (defun isearchp-toggle-symmetric-char-fold () ; Bound to `M-s =' in `isearch-mode-map'.
+    "Toggle option `char-fold-symmetric'.
+This does not also toggle character folding.
+You need library `character-fold+.el' for this command."
+    (interactive)
+    (customize-set-value 'char-fold-symmetric (not char-fold-symmetric))
+    (message "Character folding is now %s" (if char-fold-symmetric 'SYMMETRIC "ONE-WAY ONLY"))
+    (sit-for 1)
+    (isearch-update))
+
+  (define-key isearch-mode-map (kbd "M-s =") 'isearchp-toggle-symmetric-char-fold)
 
   )
 
