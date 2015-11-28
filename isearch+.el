@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 27 19:12:53 2015 (-0800)
+;; Last-Updated: Sat Nov 28 07:46:59 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 4113
+;;     Update #: 4121
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -297,7 +297,10 @@
 ;;
 ;;  * If you also use library `character-fold+.el' then you can use
 ;;    `M-s =' (command `isearchp-toggle-symmetric-char-fold') to
-;;    toggle whether character folding is symmetric.
+;;    toggle whether character folding is symmetric.  Note that lazy
+;;    highlighting can slow down symmetric char folding considerably,
+;;    so you might also want to use `M-s h L' to turn off such
+;;    highlighting.
 ;;
 ;;  * When you visit a search hit, you can perform an action on it.
 ;;    Use `C-M-RET' (command `isearchp-act-on-demand' - Emacs 22+
@@ -639,6 +642,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/11/28 dadams
+;;     isearchp-toggle-symmetric-char-fold: Mention toggling lazy highlighting in message.
 ;; 2015/11/27 dadams
 ;;     Added: isearchp-toggle-symmetric-char-fold.  Bound to M-s =.
 ;;     Added: isearchp-toggle-lazy-highlighting.  Bound to M-x h L.
@@ -3255,8 +3260,10 @@ You need library `character-fold+.el' for this command."
     (interactive)
     ;; Must use `customize-set-variable', to invoke the `:set' function.
     (customize-set-variable 'char-fold-symmetric (not char-fold-symmetric))
-    (message "Character folding is now %s" (if char-fold-symmetric 'SYMMETRIC "ONE-WAY ONLY"))
-    (sit-for 1)
+    (message "Character folding is now %s  (`%s' toggles lazy highlighting)"
+             (if char-fold-symmetric 'SYMMETRIC "ONE-WAY ONLY")
+             (substitute-command-keys "\\<isearch-mode-map>\\[isearchp-toggle-lazy-highlighting]"))
+    (sit-for 2)
     (lazy-highlight-cleanup 'FORCE)     ; Seems to be needed.
     (isearch-update))
 
