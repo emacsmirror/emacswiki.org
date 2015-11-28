@@ -8,9 +8,9 @@
 ;; Created: Fri Nov 27 09:12:01 2015 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 27 19:20:13 2015 (-0800)
+;; Last-Updated: Sat Nov 28 07:48:40 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 48
+;;     Update #: 81
 ;; URL: http://www.emacswiki.org/character-fold+.el
 ;; Doc URL: http://emacswiki.org/CharacterFoldPlus
 ;; Keywords: isearch, search, unicode
@@ -29,7 +29,7 @@
 ;;  Non-nil option `char-fold-symmetric' means that char folding is
 ;;  symmetric: When you search for any of an equivalence class of
 ;;  characters you find all of them.  This behavior applies to
-;;  query-replacing also.
+;;  query-replacing also - see option `replace-character-fold'.
 ;;
 ;;  The default value of `char-fold-symmetric' is `nil', which gives
 ;;  the same behavior as vanilla Emacs: you find all members of the
@@ -80,10 +80,32 @@
 ;;    highlighting using the toggle key `M-s h L'.  This can vastly
 ;;    improve performance when character folding is symmetric.
 ;;
+;;
+;;  Options defined here:
+;;
+;;    `char-fold-ad-hoc', `char-fold-symmetric'.
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `update-char-fold-table'.
+;;
+;;  Internal variables defined here:
+;;
+;;    `char-fold-decomps'.
+;;
+;;
+;;  ***** NOTE: The following function defined in `mouse.el' has
+;;              been ADVISED HERE:
+;;
+;;    `character-fold-to-regexp'.
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2015/11/28 dadams
+;;     Added: char-fold-ad-hoc.
+;;     update-char-fold-table: Use char-fold-ad-hoc.
 ;; 2015/11/27 dadams
 ;;     Created.
 ;;
@@ -112,6 +134,20 @@
 
 (defvar char-fold-decomps ()
   "List of conses of a decomposition and its base char.")
+
+(defcustom char-fold-ad-hoc '((?\" "＂" "“" "”" "”" "„" "⹂" "〞" "‟" "‟" "❞" "❝"
+                               "❠" "“" "„" "〝" "〟" "🙷" "🙶" "🙸" "«" "»")
+                              (?' "❟" "❛" "❜" "‘" "’" "‚" "‛" "‚" "󠀢" "❮" "❯" "‹" "›")
+                              (?` "❛" "‘" "‛" "󠀢" "❮" "‹"))
+  "Ad hoc character foldings.
+Each entry is a list of a character and the strings that fold into it.
+
+The default value includes those ad hoc foldings provided by vanilla
+Emacs."
+  :type '(repeat (cons
+                  (character :tag "Fold to character")
+                  (repeat (string :tag "Fold from string"))))
+  :group 'isearch)
 
 (defun update-char-fold-table ()
   "Update the value of variable `character-fold-table'.
@@ -164,10 +200,7 @@ The new value reflects the current value of `char-fold-symmetric'."
                                         chr-strgs))))))))
            table)
           ;; Add some manual entries.
-          (dolist (it '((?\" "＂" "“" "”" "”" "„" "⹂" "〞" "‟" "‟" "❞" "❝"
-                         "❠" "“" "„" "〝" "〟" "🙷" "🙶" "🙸" "«" "»")
-                        (?' "❟" "❛" "❜" "‘" "’" "‚" "‛" "‚" "󠀢" "❮" "❯" "‹" "›")
-                        (?` "❛" "‘" "‛" "󠀢" "❮" "‹")))
+          (dolist (it  char-fold-ad-hoc)
             (let ((idx        (car it))
                   (chr-strgs  (cdr it)))
               (aset equiv idx (append chr-strgs (aref equiv idx)))))
