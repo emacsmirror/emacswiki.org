@@ -175,3 +175,11 @@ Could somebody replace flet in org-todo-at-date? flet is deprecated in 24.3 and 
 
 -- BobGreene 2015-11-25 17:13 UTC
 
+
+----
+
+org-todo-at-date: Unfortunately, replacing flet with cl-flet is not enough.
+https://stackoverflow.com/questions/18895605/should-flet-be-replaced-with-cl-flet-or-cl-letf
+
+-- BobGreene 2015-11-28 00:00 UTC
+
