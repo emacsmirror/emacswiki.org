@@ -14,11 +14,11 @@ ȅ ȅ ě ě ę ę ė ė ĕ ĕ ē ē ë ë ê ê é é è è
 (Depending on the font used, some of these characters might not look "e"-like in your browser, or they might look just like ordinary "e" characters. Those that cannot be rendered properly might be shown as hollow rectangles, for instance.)
 
 
-== Equivalence Classes of Characters ==
+== Choose One-Way or Symmetric Character Folding ==
 
 Unicode defines a '''base''' character as ''"any graphic character except for those with the General Category of Combining Mark (M). In a combining character sequence, the base character is the initial character, which the combining marks are applied to."''
 
-A base character is often associated with other, non-base characters that can be thought of as resembling it or being derived from it, typically by applying some diacritical mark, such as an accent.  Together, the base character and its associates can be thought of as an equivalence class, where the equivalence relation ignores the diacritical marks.
+A base character is often associated with other, non-base characters that can be thought of as resembling it or being derived from it, typically by applying some diacritical mark, such as an accent.  Together, the base character and its associates can be thought of as an '''equivalence class''', where the equivalence relation ignores the diacritical marks.
 
 Starting with Emacs 25, vanilla Isearch lets you search for a base character to find either itself or any of its associates. If you search for "e" then you will find "e" or any of the other "e" associates listed above.
 
@@ -50,6 +50,27 @@ search string'' is much faster.
 : If you also use library `isearch+.el' then you can turn off lazy
 highlighting using the toggle key `M-s h L'.  This can vastly
 improve performance when character folding is symmetric.
+
+
+
+
+
+
+
+== Customize the Ad Hoc Character Foldings ==
+
+In addition to the standard equivalence classes of a base
+character and its family of diacriticals, vanilla Emacs includes a
+number of ad hoc character foldings, e.g., for different quote
+marks.
+
+[[option|Option]] '''`char-fold-ad-hoc'''' lets you customize this set of ad hoc
+foldings.  The default value is the same set provided by vanilla
+Emacs.
+
+
+
+
 
 ----
 
