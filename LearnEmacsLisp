@@ -1,4 +1,4 @@
-Emacs Lisp is the language that much of Emacs is written in, and it is also the language that you can use to customize Emacs for your own use.
+Emacs Lisp (elisp) is the language that much of Emacs is written in, and it is also the language that you can use to customize Emacs for your own use.
 
 Don't worry - even if you're an EmacsNewbie, you can get the hang of it. Learning a little Emacs Lisp will help you use Emacs more effectively.
 
@@ -21,6 +21,8 @@ Don't worry - even if you're an EmacsNewbie, you can get the hang of it. Learnin
 * Check out examples in ElispCookbook
 
 == General Lisp resources ==
+
+Emacs lisp belong to the lisp family (WikiPedia:Lisp_programming_language), and learning it will teach you lisp concepts, as well as learning lisp concepts will help you with Emacs lisp.
 
 * Pascal Costanza'a intro to Lisp (in general, not Emacs Lisp):
 [http://p-cos.net/lisp/guide.html]
