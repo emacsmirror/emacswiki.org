@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 27 19:05:17 2015 (-0800)
+;; Last-Updated: Fri Nov 27 19:12:53 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 4112
+;;     Update #: 4113
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -3257,6 +3257,7 @@ You need library `character-fold+.el' for this command."
     (customize-set-variable 'char-fold-symmetric (not char-fold-symmetric))
     (message "Character folding is now %s" (if char-fold-symmetric 'SYMMETRIC "ONE-WAY ONLY"))
     (sit-for 1)
+    (lazy-highlight-cleanup 'FORCE)     ; Seems to be needed.
     (isearch-update))
 
   (define-key isearch-mode-map (kbd "M-s =") 'isearchp-toggle-symmetric-char-fold)
