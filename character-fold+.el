@@ -8,9 +8,9 @@
 ;; Created: Fri Nov 27 09:12:01 2015 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov 28 07:48:40 2015 (-0800)
+;; Last-Updated: Sat Nov 28 07:56:22 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 81
+;;     Update #: 85
 ;; URL: http://www.emacswiki.org/character-fold+.el
 ;; Doc URL: http://emacswiki.org/CharacterFoldPlus
 ;; Keywords: isearch, search, unicode
@@ -25,6 +25,10 @@
 ;;; Commentary:
 ;;
 ;;  Extensions to Isearch character folding.
+;;
+;;
+;;  Choose One-Way or Symmetric Character Folding
+;;  ---------------------------------------------
 ;;
 ;;  Non-nil option `char-fold-symmetric' means that char folding is
 ;;  symmetric: When you search for any of an equivalence class of
@@ -79,6 +83,20 @@
 ;;    If you also use library `isearch+.el' then you can turn off lazy
 ;;    highlighting using the toggle key `M-s h L'.  This can vastly
 ;;    improve performance when character folding is symmetric.
+;;
+;;
+;;  Customize the Ad Hoc Character Foldings
+;;  ---------------------------------------
+;;
+;;  In addition to the standard equivalence classes of a base
+;;  character and its family of diacriticals, vanilla Emacs includes a
+;;  number of ad hoc character foldings, e.g., for different quote
+;;  marks.
+;;
+;;  Option `char-fold-ad-hoc' lets you customize this set of ad hoc
+;;  foldings.  The default value is the same set provided by vanilla
+;;  Emacs.
+;;
 ;;
 ;;
 ;;  Options defined here:
