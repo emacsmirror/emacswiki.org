@@ -1,25 +1,27 @@
-EmacsLisp is for [[EmacsNewbie]]s too. Learning Emacs Lisp will log hours into learning to use the Emacs interface.  Lisp is the language that much of Emacs is written in, and it is also the language that you can use to [[Customize|customize]] and extend Emacs for your own use.  Also, Emacs Lisp is the best supported programming language in Emacs -- save for maybe the C programming language.  Learning to use Emacs' capabilities for Emacs Lisp will likely help with other programming you wish to do in Emacs.
+Emacs Lisp is the language that much of Emacs is written in, and it is also the language that you can use to customize Emacs for your own use.
 
-"'''''So what?'''''", you say? You are a newbie, and, besides, you just want to ''use'' Emacs -- you don't care to extend it! Right?
+Don't worry - even if you're an EmacsNewbie, you can get the hang of it. Learning a little Emacs Lisp will help you use Emacs more effectively.
 
-''Wrong!'' You might not care to customize or extend Emacs, but the fact is that if you ''learn'' a little about Emacs Lisp, your use of Emacs will be ''much'' more effective. Why?
+== Learn about the Emacs Lisp for things you already use ==
 
-* You will better understand the documentation and online help for functions and variables.
-* You will be able to consult the Lisp source code for a function or variable, in order to understand it still better.
-* You will be able to convert common [[key sequence]]s you use into, first, [[keyboard macro]]s, and second, your own [[command]]s (defined in Lisp).
-* You will be able to steal snippets of code from the standard source code or off the Web, and adapt them to create your own Emacs commands.
-* You will be able to make Emacs fit your needs and fancies.
-* You will be able to attract better guidance (and/or commiseration) from fellow Emacs users.
-
-Learning a little Emacs Lisp is not that hard. Emacs does its best to help you learn its lingua franca. So, ''how'' can you learn Emacs Lisp?
-
-* Use `C-x ESC ESC' to repeat [[command]]s you execute, and look at the Emacs-Lisp code that executes them, before hitting `RET' (Return) -- see RepeatLastCommand.
-* Use `C-h f' (`describe-function') and `C-h v' (`describe-variable') to understand commands and [[variable]]s you use. In the help description, click the function or variable name (link) to go directly to the source code that defines it. Try to read the source code. When you want to know what some function you see used does, use `C-h f' on it... Got it?
+* Use `C-x ESC ESC' to repeat [[command]]s you execute, and look at the Emacs Lisp code that executes them, before hitting `RET' (Return) -- see RepeatLastCommand.
+* Use `C-h f' (`describe-function') and `C-h v' (`describe-variable') to understand commands and [[variable]]s you use. You'll see a description of the function or variable. If you have the Emacs sources installed, you'll see a link to the source code as well. Click on the link or go to it and press RET to read the source code. When you want to know what a function does, use `C-h f' on it, and so on.
 * Use `C-h k' to see which commands you are executing when you use [[key]]s. Then follow the previous bullet: click the name (link) of the command to see its source code...
+
+== Resources ==
+
 * Read the ''Emacs Lisp Introduction'': EmacsLispIntro. Use `C-h i', then choose `Emacs Lisp Intro'.  You can also read this manual [[https://www.gnu.org/software/emacs/manual/html_node/eintr/index.html on the Web]].
 * Read the ''Emacs Lisp Reference'' manual: EmacsLispReference. Use `C-h i', then choose `Elisp' (Emacs Lisp is sometimes called "Elisp"). You can also read this manual [[https://www.gnu.org/software/emacs/manual/html_node/elisp/index.html on the Web]].
-* SteveYegge's intro to the language: [http://steve-yegge.blogspot.com/2008/01/emergency-elisp.html]
+* [http://steve-yegge.blogspot.com/2008/01/emergency-elisp.html Emergency Elisp]: Good for people with programming backgrounds - by SteveYegge
+* [http://emacs-doctor.com/learn-emacs-lisp-in-15-minutes.html Learn Emacs Lisp in 15 Minutes]
+* [https://github.com/chrisdone/elisp-guide A quick guide to Emacs Lisp programming]
+* [http://emacslife.com/how-to-read-emacs-lisp.html Read Lisp, Tweak Emacs]
+* [http://ergoemacs.org/emacs/elisp.html Practical Emacs Lisp]
 * Mitch Fincher's 50-point summary of the language: [http://www.fincher.org/tips/Languages/Emacs.shtml]
+* Check out examples in ElispCookbook
+
+== General Lisp resources ==
+
 * Pascal Costanza'a intro to Lisp (in general, not Emacs Lisp):
 [http://p-cos.net/lisp/guide.html]
 * Paul Graham's overview of Lisp (in general, not Emacs Lisp):
