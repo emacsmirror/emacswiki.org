@@ -8,9 +8,9 @@
 ;; Created: Fri Nov 27 09:12:01 2015 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 27 14:07:52 2015 (-0800)
+;; Last-Updated: Fri Nov 27 19:20:13 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 44
+;;     Update #: 48
 ;; URL: http://www.emacswiki.org/character-fold+.el
 ;; Doc URL: http://emacswiki.org/CharacterFoldPlus
 ;; Keywords: isearch, search, unicode
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `character-fold'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -63,9 +63,8 @@
 ;;
 ;;    To customize option `char-fold-symmetric', use either Customize
 ;;    or a Lisp function designed for customizing options, such as
-;;    `customize-set-variable' or `customize-set-value'.  Do not use
-;;    only `setq', because the necessary `:set' trigger will not be
-;;    invoked.
+;;    `customize-set-variable', that invokes the necessary `:set'
+;;    function.
 ;;
 ;;
 ;;  CAVEAT:
@@ -174,7 +173,7 @@ The new value reflects the current value of `char-fold-symmetric'."
               (aset equiv idx (append chr-strgs (aref equiv idx)))))
 
           ;; This is the essential bit added by `character-fold+.el'.
-          (when char-fold-symmetric
+          (when (and (boundp 'char-fold-symmetric)  char-fold-symmetric)
             ;; Add an entry for each equivalent char.
             (let ((others  ()))
               (map-char-table
@@ -198,14 +197,6 @@ The new value reflects the current value of `char-fold-symmetric'."
            equiv)
           equiv)))
 
-(defadvice character-fold-to-regexp (before replace-decompositions activate)
-  "Replace any decompositions in `character-fold-table' by their base chars.
-This allows search to match all equivalents."
-  (when char-fold-decomps
-    (dolist (decomp  char-fold-decomps)
-      (ad-set-arg 0  (replace-regexp-in-string (regexp-quote (car decomp)) (cdr decomp)
-                                               (ad-get-arg 0) 'FIXED-CASE 'LITERAL)))))
-
 (defcustom char-fold-symmetric nil
   "Non-nil means char-fold searching treats equivalent chars the same.
 That is, use of any of a set of char-fold equivalent chars in a search
@@ -219,6 +210,13 @@ is turned on."
          (update-char-fold-table))
   :type 'boolean :group 'isearch)
 
+(defadvice character-fold-to-regexp (before replace-decompositions activate)
+  "Replace any decompositions in `character-fold-table' by their base chars.
+This allows search to match all equivalents."
+  (when char-fold-decomps
+    (dolist (decomp  char-fold-decomps)
+      (ad-set-arg 0  (replace-regexp-in-string (regexp-quote (car decomp)) (cdr decomp)
+                                               (ad-get-arg 0) 'FIXED-CASE 'LITERAL)))))
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'character-fold+)
