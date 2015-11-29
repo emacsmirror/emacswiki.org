@@ -1,17 +1,27 @@
-Emacs Lisp (elisp) is the language that much of Emacs is written in, and it is also the language that you can use to customize Emacs for your own use.
+EmacsLisp (Elisp) is the language that much of Emacs is written in, and it is also the language that you can use to [[customize]] Emacs for your own use.
 
-Don't worry - even if you're an EmacsNewbie, you can get the hang of it. Learning a little Emacs Lisp will help you use Emacs more effectively.
+Don't worry - even if you're an EmacsNewbie, you can get the hang of it. Learning a little Emacs Lisp will help you use Emacs more effectively:
 
-== Learn about the Emacs Lisp for things you already use ==
+* You will better understand the documentation and online help for functions and variables.
+* You will be able to consult the Lisp source code for a function or variable, in order to understand it still better.
+* You will be able to convert common [[key sequence]]s you use into [[keyboard macro]]s or your own [[command]]s defined in Lisp.
+* You will be able to take snippets of code from the standard source code or elsewhere and adapt them to create your own Emacs commands.
+* You will be able to attract better guidance (and/or commiseration) from fellow Emacs users.
+* You will be able to make Emacs better fit your needs and fancies.
 
-* Use `C-x ESC ESC' to repeat [[command]]s you execute, and look at the Emacs Lisp code that executes them, before hitting `RET' (Return) -- see RepeatLastCommand.
-* Use `C-h f' (`describe-function') and `C-h v' (`describe-variable') to understand commands and [[variable]]s you use. You'll see a description of the function or variable. If you have the Emacs sources installed, you'll see a link to the source code as well. Click on the link or go to it and press RET to read the source code. When you want to know what a function does, use `C-h f' on it, and so on.
-* Use `C-h k' to see which commands you are executing when you use [[key]]s. Then follow the previous bullet: click the name (link) of the command to see its source code...
+
+== Emacs Lisp for things you already use ==
+
+* Use `C-x ESC ESC' to repeat [[command]]s you execute, and look at the Emacs Lisp code that executes them, before hitting `RET' (Return) -- see RepeatLastCommand.  You can edit that code to get a variation on the last behavior.
+
+* Use `C-h f' (`describe-function') and `C-h v' (`describe-variable') to understand commands and [[variable]]s you use. You'll see a description of the function or variable. If you have the Emacs source code locally, you will also see a link to the relevant definition in the code. Click the link or move the [[cursor]] to it and press `RET' to follow it.
+
+* Use `C-h k' to see which command is invoked when you use a [[key]]. The description shown includes the command description (see previous).
 
 == Resources ==
 
 * Read the ''Emacs Lisp Introduction'': EmacsLispIntro. Use `C-h i', then choose `Emacs Lisp Intro'.  You can also read this manual [[https://www.gnu.org/software/emacs/manual/html_node/eintr/index.html on the Web]].
-* Read the ''Emacs Lisp Reference'' manual: EmacsLispReference. Use `C-h i', then choose `Elisp' (Emacs Lisp is sometimes called "Elisp"). You can also read this manual [[https://www.gnu.org/software/emacs/manual/html_node/elisp/index.html on the Web]].
+* Read the ''Emacs Lisp Reference'' manual: EmacsLispReference. Use `C-h i', then choose `Elisp'. You can also read this manual [[https://www.gnu.org/software/emacs/manual/html_node/elisp/index.html on the Web]].
 * [http://steve-yegge.blogspot.com/2008/01/emergency-elisp.html Emergency Elisp]: Good for people with programming backgrounds - by SteveYegge
 * [http://emacs-doctor.com/learn-emacs-lisp-in-15-minutes.html Learn Emacs Lisp in 15 Minutes]
 * [https://github.com/chrisdone/elisp-guide A quick guide to Emacs Lisp programming]
