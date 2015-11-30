@@ -86,3 +86,5 @@ Here are some examples:
 * http://doc.norang.ca/org-mode.html
 * http://sachachua.com/dotemacs
 * http://mescal.imag.fr/membres/arnaud.legrand/misc/init.php
+
+If you would like to write your config in one Org file but have it generate multiple Emacs Lisp files, see the tutorial at https://github.com/pierre-lecocq/literal-emacs .
