@@ -8,9 +8,9 @@
 ;; Created: Fri Nov 27 09:12:01 2015 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov 28 07:56:22 2015 (-0800)
+;; Last-Updated: Tue Dec  1 07:29:04 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 85
+;;     Update #: 88
 ;; URL: http://www.emacswiki.org/character-fold+.el
 ;; Doc URL: http://emacswiki.org/CharacterFoldPlus
 ;; Keywords: isearch, search, unicode
@@ -121,6 +121,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/12/01 dadams
+;;     char-fold-ad-hoc: Added :set.
 ;; 2015/11/28 dadams
 ;;     Added: char-fold-ad-hoc.
 ;;     update-char-fold-table: Use char-fold-ad-hoc.
@@ -152,20 +154,6 @@
 
 (defvar char-fold-decomps ()
   "List of conses of a decomposition and its base char.")
-
-(defcustom char-fold-ad-hoc '((?\" "＂" "“" "”" "”" "„" "⹂" "〞" "‟" "‟" "❞" "❝"
-                               "❠" "“" "„" "〝" "〟" "🙷" "🙶" "🙸" "«" "»")
-                              (?' "❟" "❛" "❜" "‘" "’" "‚" "‛" "‚" "󠀢" "❮" "❯" "‹" "›")
-                              (?` "❛" "‘" "‛" "󠀢" "❮" "‹"))
-  "Ad hoc character foldings.
-Each entry is a list of a character and the strings that fold into it.
-
-The default value includes those ad hoc foldings provided by vanilla
-Emacs."
-  :type '(repeat (cons
-                  (character :tag "Fold to character")
-                  (repeat (string :tag "Fold from string"))))
-  :group 'isearch)
 
 (defun update-char-fold-table ()
   "Update the value of variable `character-fold-table'.
@@ -247,6 +235,23 @@ The new value reflects the current value of `char-fold-symmetric'."
                         (if (consp ii) (set-char-table-range equiv ii re) (aset equiv ii re))))
            equiv)
           equiv)))
+
+(defcustom char-fold-ad-hoc '((?\" "＂" "“" "”" "”" "„" "⹂" "〞" "‟" "‟" "❞" "❝"
+                               "❠" "“" "„" "〝" "〟" "🙷" "🙶" "🙸" "«" "»")
+                              (?' "❟" "❛" "❜" "‘" "’" "‚" "‛" "‚" "󠀢" "❮" "❯" "‹" "›")
+                              (?` "❛" "‘" "‛" "󠀢" "❮" "‹"))
+  "Ad hoc character foldings.
+Each entry is a list of a character and the strings that fold into it.
+
+The default value includes those ad hoc foldings provided by vanilla
+Emacs."
+  :set (lambda (sym defs)
+         (custom-set-default sym defs)
+         (update-char-fold-table))
+  :type '(repeat (cons
+                  (character :tag "Fold to character")
+                  (repeat (string :tag "Fold from string"))))
+  :group 'isearch)
 
 (defcustom char-fold-symmetric nil
   "Non-nil means char-fold searching treats equivalent chars the same.
