@@ -23,3 +23,10 @@ As most of programming modes inherited from prog-mode you can got what you want.
 
 -- lexa_ 2013-12-11 16:05 UTC
 
+
+----
+
+I installed it using List-package in emacs 24 , after that if I add (require 'fill-column-indicator) in my .emacs I am getting an error , although I can toggle fci-mode with M-x key . and I am not able to enforce it globally . Please can someone point me to right direction .
+
+-- MuditParnami 2015-12-01 08:41 UTC
+
