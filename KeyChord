@@ -1,13 +1,13 @@
-Key-chord lets you bind commands to combination of key-strokes.
+=== About ===
+
+'''Key-chord''' lets you bind commands to combination of key-strokes.
 Here a "key chord" means two keys pressed simultaneously,
 or a single key quickly pressed twice. (*)
 
 The same keys used by their own (or with other keys not defined
 as key chords) retain their original command bindings.
 
-There are some info and examples in the elisp-file.
-
-* Lisp:key-chord.el
+There are some info and examples in the elisp-file: Lisp:key-chord.el
 
 (*) (In other emacs related texts, pressing SHIFT and/or
 META plus another key is sometimes call a "[[chord]]", but not here.
@@ -15,7 +15,19 @@ However SHIFT plus _two_ normal keys might be a "key chord".)
 
 -- DavidAndersson
 
-----
+
+=== Settings ===
+
+    ;; Max time delay between two key presses to be considered a key chord
+    (setq key-chord-two-keys-delay 0.1) ; default 0.1
+    
+    ;; Max time delay between two presses of the same key to be considered a key chord.
+    ;; Should normally be a little longer than `key-chord-two-keys-delay'.
+    (setq key-chord-one-key-delay 0.2) ; default 0.2
+
+
+=== Discussion ===
+
 [new:rubikitch:2008-11-05 03:40 UTC]
 A thumb is a finger of the strongest! Let's utilize a thumb.
 Small hack to define a key-chord starting with Space.
