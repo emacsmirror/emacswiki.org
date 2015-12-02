@@ -1,0 +1,24 @@
+The following code for Gnus allows one to type <tt>C-u C-c C-a</tt> to attach file, auto-generating a detached signature for that same file and attaching it as well.
+
+{{{
+(require 'mml)
+
+(defvar mml-signing-attachment nil)
+
+(defun mml-sign-attached-file (file &optional type description disposition)
+  (unless (or mml-signing-attachment
+              (null current-prefix-arg))
+    (let ((signature
+           (expand-file-name (concat (file-name-nondirectory file) ".sig")
+                             temporary-file-directory))
+          (mml-signing-attachment t))
+      (message "Signing %s..." file)
+      (if t
+          (call-process epg-gpg-program file nil nil
+                        "--output" signature "--detach-sign" file)
+        (with-temp-file signature
+          (setq buffer-file-coding-system 'raw-text-unix)
+          (call-process epg-gpg-program file t nil "--detach-sign")))
+      (message "Signing %s...done" file)
+      (mml-attach-file signature))))
+}}}
