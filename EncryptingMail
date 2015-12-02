@@ -8,6 +8,7 @@ Various packages:
 * mc-bbdb.el
 * PGG (GnusPGG)
 * WlSigningMails for signing mails in WanderLust.
+* EncryptingAttachments for encrypting attached file using detached signatures.
 
 ----
 CategoryGnus CategoryMail CategoryMailAddons
