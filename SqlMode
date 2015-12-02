@@ -124,6 +124,22 @@ PostgreSQL databases with underscores in their names trip up the prompt specifie
 
 -- LukeBurton
 
+A function to uppercase all sql keywords in the buffer using [[FontLockMode]] to determine the keywords.
+
+  (defun upcase-sql-keywords ()
+    (interactive)
+    (save-excursion
+      (dolist (keywords sql-mode-postgres-font-lock-keywords)
+        (goto-char (point-min))
+        (while (re-search-forward (car keywords) nil t)
+          (goto-char (+ 1 (match-beginning 0)))
+          (when (eql font-lock-keyword-face (face-at-point))
+            (backward-char)
+            (upcase-word 1)
+            (forward-char))))))
+
+-- Douglas La Rocca
+
 == Emacs 19 ==
 
 If you are using GNU Emacs 19.34, you will need two additional things:
