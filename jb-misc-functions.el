@@ -7,9 +7,9 @@
 ;; Copyleft (Ↄ) 2015, Joe Bloggs, all rites reversed.
 ;; Created: 2015-11-18 23:42:15
 ;; Version: 20151124.2128
-;; Last-Updated: Sun Nov 29 01:21:13 2015
+;; Last-Updated: Thu Dec  3 02:19:31 2015
 ;;           By: Joe Bloggs
-;;     Update #: 10
+;;     Update #: 21
 ;; URL: https://github.com/vapniks/jb-misc-functions
 ;; Keywords: internal
 ;; Compatibility: GNU Emacs 24.5.1
@@ -42,22 +42,13 @@
 
 ;;; Commentary: 
 
+
 ;; 
 ;; This library contains various functions that are used in some of my other libraries.
 ;; So far it contains mostly functions for doing things with keys and keymaps.
 ;; 
 
 ;;;;;;;;
-
-;;; Commands:
-;;
-;; Below is a complete list of commands:
-;;
-;;
-;;; Customizable Options:
-;;
-;; Below is a list of customizable options:
-;;
 
 ;;; Installation:
 ;;
@@ -85,13 +76,13 @@
 ;;; Code:
 
 ;;;###autoload
-(defun eval-keymap (keymap)
+(defun jb-eval-keymap (keymap)
   "Return the keymap pointed to by KEYMAP, or KEYMAP itself if it is a keymap."
   (cond ((kmu-keymap-variable-p keymap) (eval keymap))
         ((keymapp keymap) keymap)))
 
 ;;;###autoload
-(defun keymaps-in-file (file &optional eval)
+(defun jb-keymaps-in-file (file &optional eval)
   "Return a list of keymaps and variables pointing to keymaps that are used in FILE.
 If EVAL is non-nil eval any variables in the returned list."
   (with-temp-buffer
@@ -108,7 +99,7 @@ If EVAL is non-nil eval any variables in the returned list."
        (cl-remove-duplicates (-flatten sexps))))))
 
 ;;;###autoload
-(defun command-key-description (cmd &optional keymaps sep)
+(defun jb-command-key-description (cmd &optional keymaps sep)
   "Return description of key-sequence for CMD.
 The KEYMAPS can be a single keymap/variable or list of keymaps/variables to search for CMD,
 otherwise `overriding-local-map' is searched.
@@ -129,7 +120,7 @@ If there is no key-sequence for command then a string in the form \"M-x CMD\" wi
       (format "M-x %s" cmd))))
 
 ;;;###autoload
-(defun remove-unreadable (tree)
+(defun jb-remove-unreadable (tree)
   "Remove unreadable objects from TREE.
 Return value has the same structure as TREE but with all unreadable objects removed."
   (cl-subst-if nil (lambda (x)
