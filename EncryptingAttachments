@@ -24,4 +24,4 @@ The following code for Gnus allows one to type <tt>C-u C-c C-a</tt> to attach fi
 }}}
 
 ----
-CategoryGnus
+CategoryGnus CategoryMail CategoryMailAddons
