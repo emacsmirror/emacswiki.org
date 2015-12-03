@@ -4,11 +4,11 @@ Various packages:
 * S/MIME (GnusSMIME, ExtendSMIME)
 * DefaultEncrypt
 * Mailcrypt (BbdbAndMailCrypt)
-* bbdb-pgp.el (part of BbdbMode, see also http://my.gnus.org/Members/robin/Doc/howto_pgp) '''This link is broken'''
+* bbdb-pgp.el (part of BbdbMode)
 * mc-bbdb.el
 * PGG (GnusPGG)
 * WlSigningMails for signing mails in WanderLust.
 * EncryptingAttachments for encrypting attached file using detached signatures.
-
+* [[Gmail, Gnus and GPG]]
 ----
 CategoryGnus CategoryMail CategoryMailAddons
