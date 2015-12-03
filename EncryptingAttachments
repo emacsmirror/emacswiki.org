@@ -22,3 +22,6 @@ The following code for Gnus allows one to type <tt>C-u C-c C-a</tt> to attach fi
       (message "Signing %s...done" file)
       (mml-attach-file signature))))
 }}}
+
+----
+CategoryGnus
