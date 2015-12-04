@@ -1,12 +1,12 @@
-Tumme extends dired to create an image and image thumbnail viewer.  In Emacs 22 it's called `image-dired'.  Using Tumme you can browse, organize and tag your pictures using familiar dired commands.  It will not create thumbnails until they are needed resulting in fast interactive performance.
+Image-Dired extends dired to create an image and image thumbnail viewer.  Using Image-Dired you can browse, organize and tag your pictures using familiar dired commands.  It will not create thumbnails until they are needed resulting in fast interactive performance.
 
-Tumme means thumb in Swedish. If you want to know how to pronounce it, download [http://hem.bredband.net/b431453/tumme.ogg this OGG-file].
+Image-Dired has been part of GNU Emacs since version 22.1. Prior to that it was known as Tumme, which means thumb in Swedish - if you want to know how to pronounce it, download [http://hem.bredband.net/b431453/tumme.ogg this OGG-file].
 
-Tumme comes with GNU Emacs starting with version 22.1 as  `image-dired':
+The code is here: 
 
 : GIT:image-dired.el
 
-For more background and basic usage, reading the Commentary section in tumme.el is strongly recommended.
+For more background and basic usage, reading the Commentary section in image-dired.el is strongly recommended.
 
 == Current version ==
 
@@ -33,15 +33,15 @@ Current version is 0.4.11.
 
 [[image:TummePic01]]
 
-The picture above shows how tumme displays the original image's file name and tags in the echo area and how the movement in the thumbnail buffer have been mirrored automatically in the associated dired buffer. You can also see an automatically sized (tumme creates one on the fly) version in an extra buffer below the thumbnail buffer.
+The picture above shows how Image-Dired displays the original image's file name and tags in the echo area and how the movement in the thumbnail buffer have been mirrored automatically in the associated dired buffer. You can also see an automatically sized (Image-Dired creates one on the fly) version in an extra buffer below the thumbnail buffer.
 
 [[image:TummePic05]]
 
-This image shows how well tumme works with its buffers in different frames.
+This image shows how well Image-Dired works with its buffers in different frames.
 
 === Gallery generation ===
 
-As of version 0.4.5, tumme has a command to generate a simple gallery from your tagged images:
+As of version 0.4.5, Image-Dired has a command to generate a simple gallery from your tagged images:
 
 [[image:TummePic02]]
 
@@ -61,7 +61,7 @@ Btw, if my server is up (you can see the URL in the screenshots, I won't place a
 
 == EXIF rotation ==
 
-By default, image-dired does not respect the EXIF rotation field when displaying thumbnails or images.  However, it's easy to add.  Customize the variables image-dired-cmd-create-temp-image-options and image-dired-cmd-create-thumbnail-options and add -auto-orient to the command lines for convert. For example, you can write the following to add this option to the two variables without knowing too much about their content:
+By default, Image-Dired does not respect the EXIF rotation field when displaying thumbnails or images.  However, it's easy to add.  Customize the variables image-dired-cmd-create-temp-image-options and image-dired-cmd-create-thumbnail-options and add -auto-orient to the command lines for convert. For example, you can write the following to add this option to the two variables without knowing too much about their content:
 
 {{{
 (eval-after-load "image-dired"
