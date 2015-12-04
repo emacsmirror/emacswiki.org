@@ -1,12 +1,15 @@
-Image-Dired extends dired to create an image and image thumbnail viewer.  Using Image-Dired you can browse, organize and tag your pictures using familiar dired commands.  It will not create thumbnails until they are needed resulting in fast interactive performance.
+'''Image-Dired''' extends [[Dired]] to create an image and image thumbnail viewer.  Using Image-Dired you can browse, organize and tag your pictures using familiar dired commands.  It will not create thumbnails until they are needed resulting in fast interactive performance.
 
-Image-Dired has been part of GNU Emacs since version 22.1. Prior to that it was known as Tumme, which means thumb in Swedish - if you want to know how to pronounce it, download [http://hem.bredband.net/b431453/tumme.ogg this OGG-file].
+Image-Dired has been part of GNU Emacs since version 22.1 - prior to that it was known as Tumme, which means thumb in Swedish. If you want to know how to pronounce it, download [http://hem.bredband.net/b431453/tumme.ogg this OGG-file].
 
 The code is here: 
 
 : GIT:image-dired.el
 
-For more background and basic usage, reading the Commentary section in image-dired.el is strongly recommended.
+You can read more about Image-Dired in the Emacs Manual -  http://www.gnu.org/software/emacs/manual/html_node/emacs/Image_002dDired.html. For more background and basic usage, reading the Commentary section in image-dired.el is strongly recommended.
+
+See also [[BookmarkPlus#BookmarkTags|Bookmark Tags]], for another way to tag image files, view tag listings, etc.
+
 
 == Current version ==
 
@@ -27,9 +30,7 @@ Current version is 0.4.11.
 * Because it is based on dired, you can do further file manipulation and image processing by using `dired-do-shell-command'.
 * And, of course, infinitely customizable :)
 
-== Screenshots ==
-
-=== Main interface ===
+== Main interface ==
 
 [[image:TummePic01]]
 
@@ -39,7 +40,22 @@ The picture above shows how Image-Dired displays the original image's file name 
 
 This image shows how well Image-Dired works with its buffers in different frames.
 
-=== Gallery generation ===
+
+== EXIF rotation ==
+
+By default, Image-Dired does not respect the EXIF rotation field when displaying thumbnails or images.  However, it's easy to add.  Customize the variables image-dired-cmd-create-temp-image-options and image-dired-cmd-create-thumbnail-options and add -auto-orient to the command lines for convert. For example, you can write the following to add this option to the two variables without knowing too much about their content:
+
+{{{
+(eval-after-load "image-dired"
+  '(progn
+     (setq image-dired-cmd-create-thumbnail-options
+           (replace-regexp-in-string "-strip" "-auto-orient -strip" image-dired-cmd-create-thumbnail-options)
+           image-dired-cmd-create-temp-image-options
+           (replace-regexp-in-string "-strip" "-auto-orient -strip" image-dired-cmd-create-temp-image-options))))
+}}}
+
+
+== Gallery generation ==
 
 As of version 0.4.5, Image-Dired has a command to generate a simple gallery from your tagged images:
 
@@ -57,24 +73,6 @@ That's it. Simple. Works. I guess that it doesn't get more sexy :), at least not
 
 Btw, if my server is up (you can see the URL in the screenshots, I won't place a link to it in pure text because I'm not sure I want much traffic in there), you can test it live.
 
-----
-
-== EXIF rotation ==
-
-By default, Image-Dired does not respect the EXIF rotation field when displaying thumbnails or images.  However, it's easy to add.  Customize the variables image-dired-cmd-create-temp-image-options and image-dired-cmd-create-thumbnail-options and add -auto-orient to the command lines for convert. For example, you can write the following to add this option to the two variables without knowing too much about their content:
-
-{{{
-(eval-after-load "image-dired"
-  '(progn
-     (setq image-dired-cmd-create-thumbnail-options
-           (replace-regexp-in-string "-strip" "-auto-orient -strip" image-dired-cmd-create-thumbnail-options)
-           image-dired-cmd-create-temp-image-options
-           (replace-regexp-in-string "-strip" "-auto-orient -strip" image-dired-cmd-create-temp-image-options))))
-}}}
-
-----
-
-See also [[BookmarkPlus#BookmarkTags|Bookmark Tags]], for another way to tag image files, view tag listings, etc.
 
 ----
 CategoryDirectories
