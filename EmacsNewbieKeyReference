@@ -107,7 +107,7 @@ See also: [[Region]].
 
 : '''`##C-M-%##'''' ''regexp'' `RET' ''newstring'' `RET'
 
-: (''newstring'' can in fact be a patter that reuses the ''regexp'' in powerful ways -- use `C-h f query-replace-regexp' for more info)
+: (''newstring'' can in fact be a pattern that reuses the ''regexp'' in powerful ways -- use `C-h f query-replace-regexp' for more info)
 
 When query-replace is in progress:
 * `q' or `RET' to quit (no more replacements)
