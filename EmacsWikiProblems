@@ -73,20 +73,12 @@ I just edited and saved a reply someone posted at DrewsElispLibraries. I refrefr
 
 == Markup/Generation Issues==
 
-=== Gist not shown ===
-
-I tried to include a code fragment as gist on the page GermanLaTeXQuotes, which is not displayed. Instead of the gist the code is shown. It seems that the link includes the terminating quote character which is obviously not correct. The working gist on page [[Gists]] only includes numeric characters while my links also has alphanumeric characters. Maybe a problem with the code that validates a correct gist link? -- StefanMoeding
-
-[new]
-Thanks, fixed! -- AlexSchroeder
-
 === Colon line prefix does not indent correctly ===
 
 See [[UnicodeEncoding#ucs-cmds.el]].  No matter how many colons are used for the last paragraph, it does not indent more.  We should be able to have ##::## align more or less with ##**## etc.  This is a regression.  -- DrewAdams
 
 [new]
 I think the problem is that the HTML being generated right now is invalid: ##<dl class="quote"><dl class="quote"><dt /><dd>indent 2</dd></dl></dl>## -- I don't think this ever worked as you intended it to. Right now you need to use ##:## before you can use ##::##. -- AlexSchroeder
-
 
 [new]
 I'm pretty sure it used to work.  I guess you're saying that a workaround is to do this?
@@ -264,10 +256,5 @@ If javascript is disabled, the captcha used on EmacsWiki, is virtually impossibl
 I can offer two solutions: 1. if you are using a browser that stores cookies, you can provide a "secret" URL parameter that tells Emacs Wiki that you have already answered the CAPTCHA: ##uihnscuskc=1##. 2. Switch to one of the Oddmuse modes listed on CategoryOddmuse. I recommend OddmuseCurl because that's what I use. It also serves as an example of how to use the wiki using ##curl##.
 
 
-== Spam filter problems ==
-[new:PhilHudson:2015-03-16 16:04 UTC]
-Vexatious false positive: I've just been prevented from posting because of somebody else's pre-existing, unchanged content, in a different part of the page, that failed the two-bare-urls test. The filter needs to look only at changed/new text, if possible, I think. Either that or the error message should say "go ahead and delete the bad stuff". (The page was [[Nxhtml]].)
-[new:AlexSchroeder:2015-03-18 07:36 UTC]
-This makes sense. I've added the following: "If you just tried to edit an existing page, this means that you have stumbled upon a page that already contains suspicious text. Please go back and delete or rewrite the suspicious text as well. I'm sorry for the inconvenience!" -- Alex
 ----
 CategoryEmacsWikiSite
