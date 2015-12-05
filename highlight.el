@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 18 11:12:31 2015 (-0700)
+;; Last-Updated: Fri Dec  4 16:55:47 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 3984
+;;     Update #: 3989
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -82,7 +82,7 @@
 ;;    `hlt-highlight-all-prop', `hlt-highlight-enclosing-list',
 ;;    `hlt-highlighter', `hlt-highlighter-mouse',
 ;;    `hlt-highlight-isearch-matches',
-;;    `hlt-highlight-line-dups-region',
+;;    `hlt-highlight-line-dups-region', `hlt-highlight-lines',
 ;;    `hlt-highlight-property-with-value',
 ;;    `hlt-highlight-regexp-region',
 ;;    `hlt-highlight-regexp-region-in-buffers',
@@ -397,6 +397,9 @@
 ;;
 ;;  Command `hlt-mouse-face-each-line' puts a `mouse-face' property on
 ;;  each line of the region.
+;;
+;;  Command `hlt-highlight-lines' highlights all lines touched by the
+;;  region, extending the highlighting to the window edges.
 ;;
 ;;  You can highlight and unhighlight multiple buffers at the same
 ;;  time.  Just as for a single buffer, there are commands for regexp
@@ -743,6 +746,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2015/12/04 dadams
+;;     Added: hlt-highlight-lines.
 ;; 2016/08/16 dadams
 ;;     Renamed wide-n.el stuff to zones.el stuff.
 ;; 2015/08/06 dadams
@@ -2329,6 +2334,15 @@ this: if the option value is \"\" then whitespace defined by
                 (hlt-highlight-region (line-beginning-position) (line-end-position))
                 (forward-line 1)))))
         (forward-line 1)))))
+
+;;;###autoload
+(defun hlt-highlight-lines (start end face msgp)
+  "Highlight full lines in region, window-wide."
+  (interactive (list (save-excursion (goto-char (region-beginning)) (line-beginning-position))
+                     (save-excursion (goto-char (region-end))       (line-beginning-position 2))
+                     nil
+                     t))
+  (hlt-highlight-region start end face msgp))
 
 ;;;###autoload
 (defun hlt-mouse-face-each-line (&optional start end face msgp)
