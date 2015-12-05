@@ -1,13 +1,10 @@
-I started using Emacs in 2008, when I had to work over a terminal. It wasn't exactly love at first sight - I had problems with word wrap, line numbering, tab indentation, commenting/uncommenting regions. Just basic editor functions. I wondered, how do people use this thing?? 
+I started using Emacs in 2008, when I had to work over a terminal. It wasn't exactly love at first sight - I had problems with word wrap, line numbering, tab indentation, commenting/uncommenting regions. Just basic editor functions. I wondered, how do people use this thing? After a year I had gotten it to where I could use it better, but I never felt very comfortable with it - I usually preferred using !SciTE for text editing where possible. 
 
-After a year I had gotten it to where I could use it better, but I never felt very comfortable with it - I usually preferred using !SciTE for text editing where possible. 
+Eventually I gathered so much text that !SciTE wasn't cutting it - it was hard managing all the files in different locations, as they grew to ever larger sizes, and it was difficult moving text between them. So after evaluating some other editors, including Sublime Text, I ended up back at Emacs - mainly because it's free and open, and programmable. And... after smoothing out the rough edges, I've gotten to like it much more. 
 
-But eventually I gathered so much text that !SciTE wasn't cutting it - it was hard managing all the files in different locations, as they grew to ever larger sizes, and it was difficult moving text between them. 
-
-So after evaluating some other editors, including Sublime Text, I ended up back at Emacs - mainly because it's free and open, and programmable. And... after smoothing out the rough edges, I've gotten to like it much more. 
-
-
-http://bburns.github.io/  
+Blog: http://bburns.github.io/  
+Github: https://github.com/bburns/  
+StackOverflow: http://stackoverflow.com/users/243392/bburns-km?tab=profile  
 
 ----
 
@@ -15,8 +12,6 @@ http://bburns.github.io/
 Welcome to the wiki! :) -- AlexSchroeder
 [new]
 Thanks :) 
-
-
 
 ----
 
@@ -30,6 +25,16 @@ Some factoring is possible, perhaps - a separate overview of each, and linking b
 
 -- DrewAdams
 
+[new:BrianBurns:2015-12-05 23:00 UTC]
+
+Hi Drew, I agree it would be good to have a place to discuss the differences between the two, on the ColorAndCustomThemes page, but that is currently mostly about ColorThemes, so I thought it would be good to have separate pages for the two. I'd also wanted to have a place to add some information about CustomThemes (e.g. how to override some settings, other than using user customizations). I didn't have time to write much about the differences between, though some of that could have probably been left there instead of being moved to the CustomThemes page. 
+
+I was also going by some of the discussion on http://www.emacswiki.org/emacs/Comments_on_ColorTheme, which seemed to say it would be okay to split them, leaving the ColorAndCustomThemes page for information about the differences. 
+
+I'm a bit curious actually how custom themes won out over color themes - maybe that page could include links to some discussions on the mailing list also, or maybe you know some of the reasons behind the decision. 
+
+Regards, 
+Brian
 
 ----
 CategoryHomepage
