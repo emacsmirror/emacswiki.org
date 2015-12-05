@@ -6,14 +6,22 @@ Originally written by JamieZawinski, BbdbMode is now maintained by RobertWidhopf
 
 == Project information ==
 
-* Latest source code: <code>git clone git://git.savannah.nongnu.org/bbdb.git</code>
-* Project Hub: http://freecode.com/projects/bbdb
-* Homepage: http://bbdb.sourceforge.net
+=== Current Development (as of December 5 2015) ===
+
 * Savannah project page:  http://savannah.nongnu.org/projects/bbdb/
+* Latest source code: <code>git clone git://git.savannah.nongnu.org/bbdb.git</code>
+
+=== Older versions  (dormant/stale) ===
+
+* Homepage: http://bbdb.sourceforge.net
 * Old Sourceforge project page:  http://sourceforge.net/projects/bbdb/
-* Mailing List Archive: http://www.mail-archive.com/bbdb-info%40lists.sourceforge.net/
-* Gmane: http://gmane.org/find.php?list=bbdb
 * Manual: http://bbdb.sourceforge.net/bbdb.html
+* Project Hub: http://freecode.com/projects/bbdb
+
+=== Mailing lists: ===
+
+* Mailing List Archive: http://www.mail-archive.com/bbdb-info%40lists.sourceforge.net/
+* Gmane mirror: http://gmane.org/find.php?list=bbdb
 
 If you keep elaborate notes on people, consider using MiniEdit to
 enter multi-line descriptions, instead of using the minibuffer.
