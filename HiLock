@@ -14,47 +14,7 @@ Starting with emacs 23.1, the hi-lock shortcuts are now:
 
  M-s h w         hi-lock-write-interactive-patterns
  M-s h u         unhighlight-regexp
- M-s h r         highlight-regexp
- M-s h p         highlight-phrase
- M-s h l         highlight-lines-matching-regexp
- M-s h f         hi-lock-find-patterns
-
-The shortcut M-s h r now also works in isearch mode. 
-
-See also: HighlightTemporarily.
-
-= Problem on XEmacs =
-This doesn't work with XEmacs - The following was posted to comp.emacs.xemacs by Kilian A. Foth:
-
- (defface highlight-regexp-face
-   '((t (:foreground "#ff0000")))
-   "face for highlight-regexp.")
-
- (defun highlight-regexp (regexp &optional face property)
-   "Highlight all text matching a regexp.
-
- FACE defaults to a combination of red on white.
- All extents created by this function have the property 'highlight.
- If non-NIL, PROPERTY is also added to each extent.
-
- Returns the number of instances highlighted."
-
-   (interactive "sRegexp: ")
-   (save-excursion
-     (beginning-of-buffer)
-     (let ((num 0))
-       (while (re-search-forward regexp nil t)
-         (incf num)
-         (highlight-range
-          (match-beginning 0) (match-end 0) face property))
-       (message "%d match%s" num (if (= num 1) "" "es"))
-       num)))
-
- (defun highlight-range (from to &optional face property)
-   "Highlight specific range of current buffer.
-
- FACE defaults to a combination of red on white.
- All extents created by this function have the property 'highlight.
+ M-s h r         highligh 'highlight.
  If PROPERTY is a symbol, it is added to each extent with
  the value t. If PROPERTY is a plist, it is merged into the extent."
    (let ((ext (make-extent from to))
