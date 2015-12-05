@@ -16,5 +16,20 @@ Welcome to the wiki! :) -- AlexSchroeder
 [new]
 Thanks :) 
 
+
+
+----
+
+[new:DrewAdams:2015-12-05 01:04 UTC]
+Hi Brian. I reverted your edit of ColorAndCustomThemes. That page ''compares and contrasts'' the two, besides describing each.  It is also linked to from multiple places, including beyond the wiki.
+
+Your edit does not suggest any such comparison or context info is available.
+More importantly, it suggests that custom themes are a ''replacement'' for something that is older. That's precisely the problem - it is a common misunderstanding (Emacs should have not tried to appropriate the same word for something different).  The two have some similarities and some differences.  Neither can replace the other. They really need to be discussed together, and that should be the starting place for anyone interested in themes.
+
+Some factoring is possible, perhaps - a separate overview of each, and linking back to the page that treats both. But what's really needed is a general page about both theme types, which describes the types and their differences.
+
+-- DrewAdams
+
+
 ----
 CategoryHomepage
