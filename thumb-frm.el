@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Sun Dec  6 10:26:55 2015 (-0800)
+;; Last-Updated: Sun Sep 13 11:46:08 2015 (-0700)
 ;;           By: dradams
-;;     Update #: 1785
+;;     Update #: 1784
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -699,9 +699,9 @@ which frame parameters (such as `menu-bar-lines') to remove."
   "Restore thumbnail FRAME to original size (default: selected frame)."
   (interactive)
   (setq frame  (or frame  (selected-frame)))
-  (let ((non-tf-params  (frame-parameter frame 'thumfr-thumbnail-frame))
-        (tf-params      (thumfr-remove-if #'thumfr-thumfr-parameter-p
-                                          (frame-parameters frame))))
+  (let* ((non-tf-params  (frame-parameter frame 'thumfr-thumbnail-frame))
+         (tf-params      (thumfr-remove-if #'thumfr-thumfr-parameter-p
+                                           (frame-parameters frame))))
     (when non-tf-params                 ; No-op if not a thumbnail.
       (set-frame-parameter frame 'thumfr-non-thumbnail-frame tf-params)
       (set-frame-parameter frame 'thumfr-thumbnail-frame     nil)
