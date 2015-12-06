@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 11:03:15 2015 (-0800)
+;; Last-Updated: Sun Dec  6 09:26:20 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 3726
+;;     Update #: 3732
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -128,6 +128,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/12/06 dadams
+;;     Protect uses of menu-bar-doremi-menu with boundp test.
 ;; 2014/12/29 dadams
 ;;     menu-bar-next-tag-other-window: Define only for Emacs 20.  Do not autoload.
 ;; 2014/12/10 dadams
@@ -598,7 +600,7 @@ submenu of the \"Help\" menu."))
       :help "Show, if only one frame visible; else hide.")))
 
 ;;; `Do Re Mi' menu.
-(when (featurep 'doremi-cmd)
+(when (and (featurep 'doremi-cmd)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [doremi-global-marks+]
     '(menu-item "Global Marks" doremi-global-marks+
       :help "Successively cycle among global marks: `up'/`down'"))
@@ -611,15 +613,15 @@ submenu of the \"Help\" menu."))
   (define-key menu-bar-doremi-menu [doremi-buffers+]
     '(menu-item "Buffers" doremi-buffers+
       :help "Successively cycle among buffers: `up'/`down'")))
-(when (featurep 'thumb-frm)
+(when (and (featurep 'thumb-frm)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [thumfr-doremi-thumbnail-frames+]
     '(menu-item "Fisheye Frame" thumfr-doremi-thumbnail-frames+
       :help "Cycle among frames using fisheye: `up'/`down'")))
-(when (and (boundp 'menu-bar-doremi-menu) (featurep 'frame-cmds))
+(when (and (featurep 'frame-cmds)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [save-frame-config]
     '(menu-item "Save Frame Configuration" save-frame-config
       :help "Save current frame configuration (M-x jump-to-frame-config-register restores)")))
-(when (featurep 'doremi-frm)
+(when (and (featurep 'doremi-frm)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [doremi-frame-configs+]
     '(menu-item "Frame Configurations" doremi-frame-configs+
       :help "Cycle among frame configurations recorded: `up'/`down'"))
@@ -687,12 +689,12 @@ submenu of the \"Help\" menu."))
     '(menu-item "Face Background..." doremi-face-bg+
       :help "Change background color of a face incrementally: `up'/`down'"))
   )
-(when (featurep 'doremi-cmd)
+(when (and (featurep 'doremi-cmd)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [doremi-color-themes+]
     '(menu-item "Color Themes" doremi-color-themes+
       :help "Successively cycle among color themes: `up'/`down'")))
 
-(when (featurep 'doremi-frm)
+(when (and (featurep 'doremi-frm)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [doremi-frame-params-separator] '("--"))
   (define-key menu-bar-doremi-menu [doremi-frame-vertically+]
     '(menu-item "Move Frame" doremi-frame-vertically+
@@ -700,7 +702,7 @@ submenu of the \"Help\" menu."))
   (define-key menu-bar-doremi-menu [doremi-frame-height+]
     '(menu-item "Frame Size" doremi-frame-height+
       :help "Resize frame incrementally: `up'/`down'/`left'/`right'")))
-(when (featurep 'doremi-cmd)
+(when (and (featurep 'doremi-cmd)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [doremi-window-height+]
     '(menu-item "Window Size" doremi-window-height+
       :help "Resize window incrementally: `up'/`down'/`left'/`right'"
