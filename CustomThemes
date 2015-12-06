@@ -1,4 +1,4 @@
-Starting with version 23, vanilla GnuEmacs introduced '''[::custom theme]s'''.  See the Emacs manual, node [[Manual:Custom Themes]].
+Starting with version 23, vanilla GnuEmacs introduced '''[::custom theme]s'''.  See the Emacs manual (`C-h r'), node '''[[http://www.gnu.org/software/emacs/manual/html_node/emacs/Custom-Themes.html#Custom-Themes|Custom Themes]]'''.
 
 
 [:ComparedToColorThemes]
