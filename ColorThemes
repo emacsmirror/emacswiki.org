@@ -1,12 +1,16 @@
-The EmacsLisp library  <tt>color-theme.el</tt> provides many predefined '''[::color theme]s'''
+EmacsLisp library <tt>color-theme.el</tt> provides many predefined '''[::color theme]s'''
 for your use, and you can easily define additional themes.  
 
 The library has not been updated recently, but you can use it with any Emacs version since at least Emacs 20 (through at least Emacs 24).  Starting with version 23, vanilla GnuEmacs introduced CustomThemes, which are similar to color themes. 
 
 See the color-theme web page at http://www.nongnu.org/color-theme for how to get
 started with <tt>color-theme.el</tt>.
-
 For questions about color-theme, see ColorThemeQuestions.  
+
+
+
+
+
 
 
 [:InstallingAColorTheme]
@@ -514,7 +518,7 @@ Any ideas what to do about this?
 :: Solved the problem by loading viper-mode after the color-theme call. That seems to fix the problem. It seems like viper basically remembers the last cursor color it knew and forces it down your throat no matter what. -- GirishB
 
 [new:DrewAdams:2007-01-14 01:39 UTC]
-:: I reported that bug in May 2006. It has been fixed recently in Emacs 22. See the thread âcursor-color frame parameter cannot equal background-colorâ in emacs-pretest-bug@gnu.org. This has nothing to do, per se, with color themes, BTW. â DrewAdams
+:: I reported that bug in May 2006. It has been fixed recently in Emacs 22. See the thread "cursor-color frame parameter cannot equal background-color" in emacs-pretest-bug@gnu.org. This has nothing to do, per se, with color themes, BTW. -- DrewAdams
 [new]
 
 * Frame creation is slowed down a lot - it takes seconds to create a new frame when i've applied different color-themes before. The reason seems to be that a myriad of faces is defined, because each color themes defines some 50 faces, and they never get removed before a new face is applied. You can easily end up with 600 faces defined, and Emacs needs a lot of time to go through all of them when it creates a new frame.
