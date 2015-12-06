@@ -15,15 +15,6 @@ Thanks :)
 
 ----
 
-[new:DrewAdams:2015-12-05 01:04 UTC]
-Hi Brian. I reverted your edit of ColorAndCustomThemes. That page ''compares and contrasts'' the two, besides describing each.  It is also linked to from multiple places, including beyond the wiki.
-
-Your edit does not suggest any such comparison or context info is available.
-More importantly, it suggests that custom themes are a ''replacement'' for something that is older. That's precisely the problem - it is a common misunderstanding (Emacs should have not tried to appropriate the same word for something different).  The two have some similarities and some differences.  Neither can replace the other. They really need to be discussed together, and that should be the starting place for anyone interested in themes.
-
-Some factoring is possible, perhaps - a separate overview of each, and linking back to the page that treats both. But what's really needed is a general page about both theme types, which describes the types and their differences.
-
--- DrewAdams
 
 [new:BrianBurns:2015-12-05 23:00 UTC]
 
@@ -35,6 +26,27 @@ I'm a bit curious actually how custom themes won out over color themes - maybe t
 
 Regards, 
 Brian
+
+[new:DrewAdams:2015-12-06 06:19 UTC]
+Brian --
+
+Thanks for looking at this and creating the separate pages. I tried to clean things up a bit more.  There is still some stuff at ColorThemes that could be factored out to another page or cleaned up or removed.  I redirected ColorAndCustomThemes to CustomThemes, where the comparison is now.  (I thought that more was said about comparison before, but I guess not.)
+
+CustomThemes need not say as much as the ColorThemes page, since it can point to the extensive custom-themes doc in Emacs (in the manual).  I've added that link.
+
+As for your question about the history: I don't know or recall much about it.  The author of <tt>color-themes.el</tt>, XavierMaillard, can probably answer it.  This is my guess/recollection:
+
+I don't think that custom themes "won out".  I doubt that ChongYidong, who added custom themes to GNU Emacs, even considered color themes when he did so. There was already a user "theme" in Emacs, if I'm not mistaken, but it was rudimentary -- just holding some variables etc., nothing defining color schemes and such. (But again, I'm no expert on this.)
+
+My guess is that Chong somehow got the idea, perhaps from having heard about the color themes library, that users might want a way to save a color scheme etc. as part of their user information, and they might even want to be able to use multiple such schemes.
+
+But the behavior of what he created is different from that of color themes. It's unfortunate that there are still some custom theme bugs, or lack of features that color themes have. Otherwise, custom themes could be a complete replacement for color themes, and there would be no more confusion about "themes".
+
+Again, I'm no expert on either kind of theme, and I have no special knowledge of the history or design.  Maybe check with Xavier.
+
+HTH -- DrewAdams
+
+
 
 ----
 CategoryHomepage
