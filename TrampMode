@@ -222,7 +222,7 @@ In short, don't use ##::## when you multi-hop!
 
 === Using su to edit stuff as root ===
 
-  C-x C-f /su:&#58;/etc/hosts RET
+  C-x C-f /su::/etc/hosts RET
 
 Please note the double :
 
