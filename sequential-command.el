@@ -27,7 +27,7 @@
 ;; Integrating multiple commands into one command is sometimes
 ;; useful. Pressing C-e at the end of line is useless and adding the
 ;; other behavior in this situation is safe.
-;; 
+;;
 ;; For example, defining `my-end': if point is at the end of line, go
 ;; to the end of buffer, otherwise go to the end of line. Just evaluate it!
 ;;
@@ -108,7 +108,7 @@
   "Stores `point' and `window-start' when sequence of calls of the same
  command was started. This variable is updated by `seq-count'")
 
-(defun seq-count ()
+(defun seq-count* ()
   "Returns number of times `this-command' was executed.
 It also updates `seq-start-position'."
   (if (eq last-command this-command)
@@ -127,7 +127,7 @@ It also updates `seq-start-position'."
                 ".")
        (interactive)
        (call-interactively
-        (aref ,cmdary (mod (seq-count) ,(length cmdary)))))))
+        (aref ,cmdary (mod (seq-count*) ,(length cmdary)))))))
 ;; (macroexpand '(define-sequential-command foo beginning-of-line beginning-of-buffer))
 
 (defun seq-return ()
@@ -146,7 +146,7 @@ It also updates `seq-start-position'."
 
 (defun seq-count-test ()
   (interactive)
-  (message "seq-count: %d" (seq-count)))
+  (message "seq-count: %d" (seq-count*)))
 
 (define-sequential-command seq-home
   beginning-of-line back-to-indentation beginning-of-buffer seq-return)
