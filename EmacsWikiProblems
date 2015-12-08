@@ -9,15 +9,13 @@ Note that this page is not about EmacsWikiMode.
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
 
-==Problem editing pages on Firefox==
+==Problem editing pages on Firefox with KeeFox (solved) ==
 
-When I try to edit a page in Firefox, it shows the correct page's text briefly, then refreshes to show the text for DocString. 
+When I tried to edit a page in Firefox, it would show the correct page's text briefly, then refresh immediately to show the text for DocString. 
 
-I tried restarting in safe mode and the problem went away - so I tried disabling half of my extensions - it was still there, so re-enabled those and disabled the other half, but it was still there. 
+It turned out to be due to KeeFox interacting oddly with the form - I had an entry for emacswiki.org with just my username, but when I removed the entry I could edit the page okay. No more switching to Chrome...
 
-Not sure if I missed something, but if no one knows what might cause this, I'll list my extensions in case someone else has the problem. 
-
--- BrianBurns 2015-12-04
+-- BrianBurns 2015-12-07
 
 
 ==Default Language==
