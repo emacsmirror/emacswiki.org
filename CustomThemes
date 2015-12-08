@@ -2,6 +2,8 @@ Starting with version 23, vanilla GnuEmacs introduced '''[::custom theme]s'''.  
 
 
 [:ComparedToColorThemes]
+=== Comparison with Color Themes ===
+
 Custom themes are similar to '''[[ColorThemes|color themes]]'''.  Though they are newer, they do not ''replace'' color themes –- each approach has its advantages.  Differences between them include:
 
 * Custom themes have a [[Customize]] interface (starting with Emacs 24); color themes do not.
@@ -14,6 +16,15 @@ color themes or not) as something that can function as a (pseudo) color theme, w
 
 * Custom themes have some [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=15740|performance problems]].  Switching among them can be problematic.
 
+
+=== History ===
+
+'''Custom themes''' were first implemented in [[XEmacs]] sometime before 2002 - the idea was to extend the Customization library to handle themes. They were ported to Emacs and made part of the distribution sometime before 2005 - the '''color themes''' library was popular at the time but apparently didn't interact well with the Customization interface... and so, there are two different theme libraries. 
+
+Some relevant old message threads -  
+    http://osdir.com/ml/emacs.xemacs.design/2002-09/msg00128.html  
+and  
+    http://lists.gnu.org/archive/html/emacs-devel/2005-06/msg01062.html  
 
 
 ----
