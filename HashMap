@@ -2,6 +2,9 @@ A hash map associates keys with values and promises to find all values in more o
 
 See the manual at http://www.gnu.org/software/emacs/manual/html_node/elisp/Hash-Tables.html.
 
+For a more consistent and extensive interface to hash tables, see the library ht - https://github.com/Wilfred/ht.el. 
+
+
 == Examining a Hash Map ==
 
 The big part here is getting the interactive declaration right so that completion will only show you variables that contain in fact hash maps as values, and so that it will show the variable at point if possible.
