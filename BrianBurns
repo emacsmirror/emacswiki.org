@@ -15,18 +15,6 @@ Thanks :)
 
 ----
 
-
-[new:BrianBurns:2015-12-05 23:00 UTC]
-
-Hi Drew, I agree it would be good to have a place to discuss the differences between the two, on the ColorAndCustomThemes page, but that is currently mostly about ColorThemes, so I thought it would be good to have separate pages for the two. I'd also wanted to have a place to add some information about CustomThemes (e.g. how to override some settings, other than using user customizations). I didn't have time to write much about the differences between, though some of that could have probably been left there instead of being moved to the CustomThemes page. 
-
-I was also going by some of the discussion on http://www.emacswiki.org/emacs/Comments_on_ColorTheme, which seemed to say it would be okay to split them, leaving the ColorAndCustomThemes page for information about the differences. 
-
-I'm a bit curious actually how custom themes won out over color themes - maybe that page could include links to some discussions on the mailing list also, or maybe you know some of the reasons behind the decision. 
-
-Regards, 
-Brian
-
 [new:DrewAdams:2015-12-06 06:19 UTC]
 Brian --
 
@@ -46,6 +34,15 @@ Again, I'm no expert on either kind of theme, and I have no special knowledge of
 
 HTH -- DrewAdams
 
+
+[new]
+
+Thanks, maybe someday the bugs will get ironed out - I dug up some old discussion threads and added a history section to CustomThemes - it apparently goes all the way back to XEmacs. 
+
+At some point I'll add some more to that page, once I figure out how to customize a theme properly. 
+
+Regards, 
+Brian
 
 
 ----
