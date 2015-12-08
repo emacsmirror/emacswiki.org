@@ -1,5 +1,7 @@
 A hash map associates keys with values and promises to find all values in more or less equal time (unlike an alist, where stuff at the front is found faster than stuff at the back).
 
+See the manual at http://www.gnu.org/software/emacs/manual/html_node/elisp/Hash-Tables.html.
+
 == Examining a Hash Map ==
 
 The big part here is getting the interactive declaration right so that completion will only show you variables that contain in fact hash maps as values, and so that it will show the variable at point if possible.
