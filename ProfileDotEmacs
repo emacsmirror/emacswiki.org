@@ -40,9 +40,10 @@ with PATH being the path to where this file resides.
 
 The specific file to be profiled is hardcoded within profile-dotemacs.el
 
+<code>
 (defvar profile-dotemacs-file "~/.emacs"
   "File to be profiled.")
-
+</code>
 ==Download ==
 
 You can always get the latest version from
