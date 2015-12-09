@@ -46,9 +46,9 @@ Brian
 [new:DrewAdams:2015-12-09 15:46 UTC]
 Excellent. I wasn't aware of that older history. Thx. -- DrewAdams
 
-
-
-
+[new:AlexSchroeder:2015-12-09 16:52 UTC]
+As for some historical context: custom had been ported from XEmacs to Emacs by Per Abrahamsen. custom-theme were added to XEmacs by Jan Vroonhofs. When I learned about it -- and before it finally got added to Emacs -- I had already written color-theme.el based on ideas and initial implementations by Jonadab the Unsightly One. By the time I worked on custom-theme (and not finishing the job, if I remember correctly) I had lost all interest in color-theme.el and handed it off to Xavier Maillard. Once custom-theme was available, nobody was willing to port all the themes from color-theme.el to custom-themes. I'm sure somebody has done it by now? I ended up just porting [[Pink Bliss]]. :)
+I guess you could find more information about the early days in [https://lists.gnu.org/archive/html/emacs-devel/2002-08/msg00615.html this thread].
 
 
 
