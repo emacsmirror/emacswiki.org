@@ -272,7 +272,7 @@ which in most cases is shared with all other buffers in the same major mode."
 (defun key-chord-unset-global (keys)
   "Remove global key-chord of the two keys in KEYS."
   (interactive "sUnset key chord globally (2 keys): ")
-  (key-chord-define (current-local-map) keys nil))
+  (key-chord-define (current-global-map) keys nil))
 
 (defun key-chord-unset-local (keys)
   "Remove local key-chord of the two keys in KEYS."
