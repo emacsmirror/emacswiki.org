@@ -1,6 +1,6 @@
 A hash map associates keys with values and promises to find all values in more or less equal time (unlike an alist, where stuff at the front is found faster than stuff at the back).
 
-See the manual at http://www.gnu.org/software/emacs/manual/html_node/elisp/Hash-Tables.html.
+See the Elisp manual, node [http://www.gnu.org/software/emacs/manual/html_node/elisp/Hash-Tables.html|Hash Tables].
 
 For a more consistent and extensive interface to hash tables, see the library ht - https://github.com/Wilfred/ht.el. 
 
