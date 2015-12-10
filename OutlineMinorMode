@@ -1,7 +1,6 @@
-== Overview ==
 A MinorMode version of OutlineMode.
 
-See also [[Manual:Outline Mode]].
+See also [[Manual:Outline Mode]] in the manual.
 
 == Keys And Functions Summary ==
 
@@ -18,7 +17,7 @@ See also [[Manual:Outline Mode]].
 
 == Cumbersome Key-Bindings  ==
 
-Use OutlineMagic: It extends OutlineMode and OutlineMinorMode with a single command to toggle hiding/showing (<code>outline-cycle</code>) which you can bind to something like <C-tab>.
+Use OutshineMode - it extends OutlineMode and OutlineMinorMode with a single command to toggle hiding/showing (<code>outline-cycle</code>) which is bound to the Tab key as in OrgMode. It is based on an older mode, OutlineMagic. 
 
 --
 
