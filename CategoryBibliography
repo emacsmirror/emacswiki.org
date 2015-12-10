@@ -1,16 +1,23 @@
 [[ja:カテゴリ・書誌学]]
 This page lists modes for Emacs which are designed primarily for managing references and bibliographical data:
 
-=== Major Modes ===
+== Major Modes ==
 * [[BibTeX]] -- a major mode for editing and validating BibTeX files.
 * [[EbibMode]] -- a major mode for managing BibTeX databases.
 * [[Bibus]] -- a major mode for displaying and managing reference keys.
 
-=== Minor Modes ===
+== Minor Modes ==
 * [[RefdbMode]] -- a minor mode which provides access to [http://refdb.sourceforge.net/|RefDB].
 * [[RefTeX]] -- a minor mode which provides support for creating labels, references and citations in LaTeX.
 
-=== Discussion ===
+== Related blog posts and workflows ==
+
+* http://kitchingroup.cheme.cmu.edu/blog/2014/05/13/Using-org-ref-for-citations-and-references/
+* https://tincman.wordpress.com/2011/01/04/research-paper-management-with-emacs-org-mode-and-reftex/
+* http://socialdatablog.com/emacs-org-mode-as-outliner-bibliography-and-citation-manager-working-with-zotero-too.html
+* http://academia.stackexchange.com/questions/1273/use-cases-of-org-mode-as-a-scientific-productivity-tool-for-academics-without-pr
+
+== Discussion ==
 [new:MatthewBall:2013-03-19 08:59 UTC]
 If anyone knows of any other modes related to reference material/bibliographies, please add them to the list.
 
