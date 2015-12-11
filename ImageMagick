@@ -11,7 +11,7 @@ Here's some Emacs things to let you harness ImageMagick,
 * ImageMode -- view files as images
 * EmacsImageManipulation -- manipulate images
 * ThumbsMode -- browse and manipulate images
-* [[Tumme]] -- creates its thumbnails with imagemagick
+* ImageDired -- creates thumbnails with imagemagick
 
 == Using with Windows ==
 
