@@ -8,9 +8,9 @@
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:41:22 2015 (-0800)
+;; Last-Updated: Thu Dec 10 19:08:07 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 730
+;;     Update #: 736
 ;; URL: http://www.emacswiki.org/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -69,6 +69,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/12/10 dadams
+;;     count-dired-files: Back up 1 char first, if eobp.  Thx to Tino Calancha.
 ;; 2014/09/07 dadams
 ;;     update-dired-files-count: Corrected wrt dired-hide-details:
 ;;       Test inside loop, and use beginning of match, not (line-beginning-position 2).
@@ -657,6 +659,7 @@ This includes directory entries, as well as files, but it excludes `.'
 and `..'."
   ;; $$$$ Should we skip `#' files also, as in `dired-trivial-filenames'?
   (save-excursion
+    (when (save-restriction (widen) (eobp)) (goto-char (1- (point))))
     (re-search-backward "^$" nil 'to-bob)
     (if (not (re-search-forward dired-move-to-filename-regexp nil t))
         0
