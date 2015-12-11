@@ -520,7 +520,7 @@ size of the narrowed-region is = `buffer-size', esp. when not
         (or (>  (aref or-chk-wdn 0) 1)
             (/= (aref or-chk-wdn 1) (1+ (aref or-chk-wdn 2)))
             (/= (- (aref or-chk-wdn 1) (aref or-chk-wdn 0)) (aref or-chk-wdn 2))
-            (setq or-chk-wdn))
+            (setq or-chk-wdn nil))
         (save-restriction 
           (widen)
           (setq or-chk-wdn `(t . [,(mon-g2be -1 t) ,(mon-g2be 1 t) ,@(append or-chk-wdn nil)]))))
