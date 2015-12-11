@@ -1156,7 +1156,7 @@ When stack is empty return the empty string.\n
 :SEE-ALSO `mon-error-toplevel' `mon-error', `mon-error-gather',
 `mon-error-gather-peek', `mon-error-gather-finalize', `*mon-help-emacs-errors*',
 `mon-help-errors', `mon-help-CL-error-condition-restart', `report-errors'.\n►►►"
-  (setq *mon-error-gather*))
+  (setq *mon-error-gather* nil))
 
 ;;; ==============================
 ;;; :CHANGESET 2141
