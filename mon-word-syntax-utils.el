@@ -568,9 +568,9 @@ Return results and display in buffer named \"*WORD-COUNT*\".\n
                  mwco-nb)
         ;; Find the longest string
         (if (not intrp)
-            (progn (setq mwco-nb) (setq mwco-st))
+            (progn (setq mwco-nb nil) (setq mwco-st nil))
           (progn
-            (setq mwco-nb)
+            (setq mwco-nb nil)
             (setq mwco-st '(0 . " "))
             (dolist (strl mwco-rslt (setq mwco-st (length (cdr mwco-st))))
               (let ((mwco-strl (length (cdr strl))))
