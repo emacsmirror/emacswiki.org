@@ -1113,7 +1113,7 @@ Return and display results in buffer named \"*MON-WRITE-STRING-TEST*\".\n
     (unintern "rgn-prps" obarray) 
     (let ((rgn-tst "lowercase string aNd UPERCASE STRING")
           rgn-prps)
-      (setq rgn-prps)
+      (setq rgn-prps nil)
       (save-excursion (insert rgn-tst))
       (setplist 'rgn-prps 
                 (mon-region-capitalize (line-beginning-position 1) (line-end-position 1)))
@@ -1490,7 +1490,7 @@ Key :all-tests-passed-p is non-nil if so.\n
                                 :with-result ,with-result
                                 :with-expect ,(cadr mlrdr-D-2))
                               mlrdr-gthr)
-                        (setq with-result)))
+                        (setq with-result nil)))
      (setq with-result
            (apply #'mon-list-reorder (car mlrdr-D-1)))
      (push `(:test-passed ,(equal with-result (cadr mlrdr-D-1))
@@ -1498,7 +1498,7 @@ Key :all-tests-passed-p is non-nil if so.\n
              :with-result ,with-result
              :with-expect ,(cadr mlrdr-D-1))
            mlrdr-gthr)
-    (setq with-result))
+    (setq with-result nil))
    (nconc `(:all-tests-passed 
             ,(zerop (apply #'+ 
                            (mapcar #'(lambda (chk-t) 
