@@ -142,6 +142,7 @@ The [https://github.com/ohler/ert/blob/bc51e3e8121d51dc88618847f0958e7ec832c7d2/
 
 * [http://www.gigamonkeys.com/book/practical-building-a-unit-test-framework.html Practical Common Lisp: Building a Unit Test Framework] -- although written for Common Lisp, a very readable introduction to unit testing in Lisp
 * [http://aperiodic.net/phil/archives/Geekery/notes-on-lisp-testing-frameworks.html Common Lisp Testing Frameworks] -- a survey of different approaches
+* [http://rejeep.github.io/emacs/cask/ert/ert-runner/ert-async/ecukes/testing/travis/2014/01/09/various-testing-tools-in-emacs.html Various testing tools in Emacs] -- short examples
 
 == Discussion ==
 
