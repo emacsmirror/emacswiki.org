@@ -3,7 +3,7 @@
 ;;; Copyright (C) 2008,2009 Peter H. Mao
 
 ;; Author: Peter H. Mao <peter.mao@gmail.com> <peterm@srl.caltech.edu>
-;; Version %Id: 10%
+;; Version %Id: 13%
 
 ;; look-mode.el is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -402,7 +402,7 @@ Uses the look-current-file to set the mode using auto-mode-alist"
                (cadr mode))
           (setq mode (car mode)
                 name (substring name 0 (match-beginning 0)))
-        (setq name))
+        (setq name nil))
       (when mode
         (set-auto-mode-0 mode keep-mode-if-same)
         (setq done t))))
