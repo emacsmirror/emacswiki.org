@@ -280,7 +280,7 @@ Run on the `kill-buffer-hook'.\n
 `css-check-applied-face', `css-check-unapplied-face'.\n►►►"
   (when (get-buffer *CSS-CHECK*)
     (with-current-buffer (buffer-name (get-buffer *CSS-CHECK*))
-      (setq *css-check-file*))))
+      (setq *css-check-file* nil))))
 ;;
 ;; (remove-hook 'kill-buffer-hook 'css-check-kill-buffer-hook)
 
