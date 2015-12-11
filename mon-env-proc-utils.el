@@ -230,7 +230,7 @@ like `mon-get-env-vars-strings' but returns symbols instead of strings.\n
                 (intern (substring mgevsym-L-1 (match-beginning 0) (match-end 1)) mgevsym-obarray)))
           mgevsym-proc-env)
     ;; Reuse local var mgevsym-proc-env to store symbols accumulated to mgevsym-obarray
-    (setq mgevsym-proc-env)
+    (setq mgevsym-proc-env nil)
     (mapatoms #'(lambda (mgevsym-L-2)
                   (unless (null mgevsym-L-2)
                     (push mgevsym-L-2 mgevsym-proc-env)))
