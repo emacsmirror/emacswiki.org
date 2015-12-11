@@ -46,7 +46,7 @@ You can disable edebug on a function by evaluating the function again using `C-M
 
 You can see the code coverage of the defun at point with `C-x X =' or `M-x edebug-display-freq-count'.
 
-== Inserting a direct call to edbug ==
+== Inserting a direct call to edebug ==
 
     (defmacro stop-here (fn)
        "Call edebug here. FN is assumed to be a symbol of the function you are in."
