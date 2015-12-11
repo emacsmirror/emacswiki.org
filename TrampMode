@@ -1092,6 +1092,55 @@ Hi. I had trouble getting the above to work with my emacs 24.3 with this new mul
 
 --- Stefan Eichberger
 
+
+=== Plink by keyfile without Pageant ===
+[new]
+
+After upgrading to  tramp 2.2.13-pre(emacs GNU Emacs 25.0.50.1 (x86_64-w64-mingw32) of 2015-11-10) , I'm not able to redefine the 'plink' tramp-methods again, but define a new one. 
+
+**~/.emacs**
+{{{
+;; tramp initialization
+(require 'tramp)
+(add-to-list 'tramp-methods
+    (list "at-pl"
+       '(tramp-login-program "plink")
+        (cons 'tramp-login-args
+            (list (list 
+                  '("-l" "%u")
+                  '("-P" "%p")
+                  '("-ssh")
+                  '("-t")
+                  '("-a")
+                  '("-x")
+                  (if (equal system-type 'windows-nt)
+                      (progn
+                        (setq keyfilename (expand-file-name (concat (getenv "HOME") "/.ssh/ssh-rsa.putty.ppk")))
+                        (if (file-exists-p keyfilename)
+                            (list "-i" (concat "\"" keyfilename "\"")))))
+                  '("%h")
+                  '("\"")
+                  '("env 'TERM=dumb' 'PROMPT_COMMAND=' 'PS1=#$ '")
+                  '("/bin/sh")
+                  '("\"")
+                  )))
+        '(tramp-remote-shell "/bin/sh")
+        '(tramp-remote-shell-login ("-l"))
+        '(tramp-remote-shell-args ("-c"))
+        '(tramp-default-port 22))
+    t) ;; append to 'myresult
+
+;; tramp backup path (if not set, save in local backup directory)
+(setq tramp-backup-directory-alist nil)
+(setq tramp-auto-save-directory nil)
+}}}
+
+**Usage**
+
+    C-x C-f /at-pl:<user_name>@<remote_server_ip>:/home/ubuntu/.bashrc
+
+--- Alpha TAN
+
 === Tramp and Docker ===
 
 See TrampAndDocker
