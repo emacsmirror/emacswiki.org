@@ -1610,7 +1610,7 @@ defined or nil. If TYPE is 'word return the buffer keyword being looked up."
         (cond
          ((eq type 'word) (setq value (downcase word)))
          ((eq type 'file) (setq value (if (listp value)(cadr value))))
-         (type (setq value))
+         (type (setq value nil))
          (t (unless (stringp value) (setq value (car value))))))
       value)))
 
