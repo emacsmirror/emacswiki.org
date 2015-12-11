@@ -1,0 +1,15 @@
+Just started using that. And here are my 2 cents.
+In order to use this as a proper module you need to add at top level:
+<code>
+(require 'mmm-mode) ;; for evaluating the module correct
+</code>
+
+and at the end:
+<code>
+(provide 'ragel-mode)
+</code>
+
+so at one's <code>.emacs</code> file can be loaded via 
+<code>
+(require 'ragel-mode)
+</code>
