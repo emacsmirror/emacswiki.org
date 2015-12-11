@@ -1096,12 +1096,18 @@ Hi. I had trouble getting the above to work with my emacs 24.3 with this new mul
 === Plink by keyfile without Pageant ===
 [new]
 
-After upgrading to  tramp 2.2.13-pre(emacs GNU Emacs 25.0.50.1 (x86_64-w64-mingw32) of 2015-11-10) , I'm not able to redefine the 'plink' tramp-methods again, but define a new one. 
+After upgrading to  tramp 2.2.13-pre(emacs GNU Emacs 25.0.50.1 (x86_64-w64-mingw32) of 2015-11-10) , it's not able to redefine the 'plink' tramp-methods with again. Or a default version will prepend to the header. But fortunately, it's able to define one with a new method name. 
+
+With following configuration, it's able to define our own keyfile. 
+
+Note that, it's required to define the 'HOME' environment variable.
 
 **~/.emacs**
 {{{
 ;; tramp initialization
 (require 'tramp)
+;; Define a new tramp method name to avoid the conflict of
+;; default version of 'plink'
 (add-to-list 'tramp-methods
     (list "at-pl"
        '(tramp-login-program "plink")
@@ -1128,7 +1134,7 @@ After upgrading to  tramp 2.2.13-pre(emacs GNU Emacs 25.0.50.1 (x86_64-w64-mingw
         '(tramp-remote-shell-login ("-l"))
         '(tramp-remote-shell-args ("-c"))
         '(tramp-default-port 22))
-    t) ;; append to 'myresult
+    t)
 
 ;; tramp backup path (if not set, save in local backup directory)
 (setq tramp-backup-directory-alist nil)
