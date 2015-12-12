@@ -8,86 +8,23 @@ Beyond a basic Python editing, there are two actively maintained packages that p
 * [https://github.com/jorgenschaefer/elpy Elpy], an Emacs package to bring powerful Python editing to Emacs. It combines a number of other packages, both written in Emacs Lisp as well as Python
 Both provide many of the support features listed separately below.  They are easily installed as packages from [MELPA], providing quick ways to create a good Python programming environment in Emacs.
 
-=== Other Support Modes ===
+== Extended Configuration ==
+This section describes various features that can be added to Emacs to support Python editing.  Note that the IDE packages listed above already provide many of these features using packages referred to below.
 
-* [https://taesoo.org/proj/pylookup.html taesoo.org/proj/pylookup Pylookup mode], a mode to search the Python online/offline documentation ([http://github.com/tsgates/pylookup github.com/tsgates/pylookup github])
-* [https://github.com/tavisrudd/emacs.d/blob/master/dss-completion.el Auto-Complete support in IPython shell buffers]
-* [https://github.com/aculich/virtualenv.el virtualenv.el], a mode for working with virtualenvs
-* [https://bitbucket.org/durin42/nosemacs nosemacs], a mode to run the nosetests testing framework
-* [http://tkf.github.com/emacs-ipython-notebook/ Emacs IPython Notebook], an IPython notebook client for Emacs.
-* [https://github.com/burakbayramli/emacs-ipython emacs-ipython], an Emacs extension that allows execution of python code inside a TeX buffer and display its results, text or graphic in the section below. The extension uses Pymacs to connect to a ipython kernel to execute code. 
-* [https://github.com/python-rope/ropemacs Ropemacs], a library using [[Pymacs]] to talk with the Rope refactoring library. You need to install [http://rope.sourceforge.net/ Rope], [http://pypi.python.org/pypi/ropemode Ropemode], [https://github.com/pinard/Pymacs Pymacs] and [http://rope.sourceforge.net/ropemacs.html Ropemacs] to make this work.
+===Completion===
+[https://github.com/tkf/emacs-jedi Jedi.el] is a Python auto-completion package using [AutoComplete] and [https://github.com/davidhalter/jedi jedi]. It can also be used as a back end for [CompanyMode].
 
+[https://github.com/python-rope/ropemacs Ropemacs] can be used as a backend for [AutoComplete] and [CompanyMode].
 
-== Various Python Interpreters ==
+[https://github.com/tavisrudd/emacs.d/blob/master/dss-completion.el Auto-Complete support in IPython shell buffers]
 
-=== IPython ===
+===Refactoring===
+[https://github.com/python-rope/ropemacs Ropemacs] is a library using [[Pymacs]] to talk with the Rope refactoring library.
 
-[ProgrammingWithPythonModeDotEl python-mode.el] comes with IPython support, setup as shown below has been integrated.
+[https://github.com/tkf/emacs-jedi Jedi.el] also has some refactoring support.
 
-First try to use [http://ipython.org/ipython-doc/1/config/editors.html ipython.el], maybe by simply invoking : 
-
-{{{
-(setq ipython-command "/SOME-PATH/ipython") ; discard this line Ipython is already in your PATH
-(require 'ipython)
-}}}
-
-Recipes below should be tried only if this fails
-
-ipython.el looks like it's deprecated. It no longer comes with the IPython distribution. --[[ybendana]]
-
-Emacs' 24.2+ python.el contains the following guide on how to set it up to use IPython 0.11:
-
-{{{
-(setq
- python-shell-interpreter "ipython"
- python-shell-interpreter-args ""
- python-shell-prompt-regexp "In \\[[0-9]+\\]: "
- python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
- python-shell-completion-setup-code
-   "from IPython.core.completerlib import module_completion"
- python-shell-completion-module-string-code
-   "';'.join(module_completion('''%s'''))\n"
- python-shell-completion-string-code
-   "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
-}}}
-
-For iPython 0.10 everything would be the same except for `python-shell-completion-string-code` and `python-shell-completion-module-string-code`:
-
-{{{
-(setq python-shell-completion-string-code
-      "';'.join(__IP.complete('''%s'''))\n"
-      python-shell-completion-module-string-code "")
-}}}
-
-Unfortunately running iPython on Windows needs some more tweaking. The way you must set `python-shell-interpreter` and `python-shell-interpreter-args` is as follows:
-
-{{{
-(setq
- python-shell-interpreter "C:\\Python27\\python.exe"
- python-shell-interpreter-args
- "-i C:\\Python27\\Scripts\\ipython-script.py")
-}}}
-
-That will spawn the iPython process correctly (Of course you need to modify the paths according to your system).
-
-
-=== IronPython ===
-
-* Install [ProgrammingWithPythonModeDotEl python-mode]
-* ##(setq py-jython-command "c:/Program Files/IronPython 2.6 for .NET 4.0/ipy.exe")##
-* Open a .py file. C-c C-t will toggle "jython", C-c ! will start a shell
-
-
-
-== Further Reading ==
-
-* [http://www.enigmacurry.com/2008/05/09/emacs-as-a-powerful-python-ide/ Emacs as a powerful Python IDE]
-* [http://www.enigmacurry.com/2009/01/21/autocompleteel-python-code-completion-in-emacs/ AutoComplete.el: Python Code Completion in Emacs]
-** See [http://www.enigmacurry.com/2009/01/19/my-emacs-config-on-github/ My Emacs config on Github] for dotfiles
-* [http://wenshanren.org/?p=351/ Python Debugging, Send Code to an Arbitrary Buffer]
-
-== Various Configuration Tips ==
+===Virtual Environments==
+[https://github.com/aculich/virtualenv.el virtualenv.el] and [https://github.com/jorgenschaefer/pyvenv pyvenv] both support working with virtualenvs.
 
 === Comment/Uncomment Region ===
 
@@ -121,6 +58,8 @@ These Info files are different than the ones generated from the old Python docum
 }}}
 
 An alternative method for fixing `info-lookup-symbol' support is provided by the [https://bitbucket.org/jonwaltman/pydoc-info/ pydoc-info] package.
+
+[https://taesoo.org/proj/pylookup.html taesoo.org/proj/pylookup Pylookup mode] is a mode to search the Python online/offline documentation ([http://github.com/tsgates/pylookup github.com/tsgates/pylookup github])
 
 
 === Using Flymake with Python ====
@@ -291,9 +230,61 @@ Then, modify one line in the elisp snip given above, to be like this:
 
 
 Also see PyIndent
+===Testing===
+[https://bitbucket.org/durin42/nosemacs nosemacs] is a mode to run the nosetests testing framework.
+
+=== IPython ===
+
+[ProgrammingWithPythonModeDotEl python-mode.el] comes with IPython support, setup as shown below has been integrated.
+
+First try to use [http://ipython.org/ipython-doc/1/config/editors.html ipython.el], maybe by simply invoking : 
+
+{{{
+(setq ipython-command "/SOME-PATH/ipython") ; discard this line Ipython is already in your PATH
+(require 'ipython)
+}}}
+
+Recipes below should be tried only if this fails
+
+ipython.el looks like it's deprecated. It no longer comes with the IPython distribution. --[[ybendana]]
+
+Emacs' 24.2+ python.el contains the following guide on how to set it up to use IPython 0.11:
+
+{{{
+(setq
+ python-shell-interpreter "ipython"
+ python-shell-interpreter-args ""
+ python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+ python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+ python-shell-completion-setup-code
+   "from IPython.core.completerlib import module_completion"
+ python-shell-completion-module-string-code
+   "';'.join(module_completion('''%s'''))\n"
+ python-shell-completion-string-code
+   "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+}}}
+
+For iPython 0.10 everything would be the same except for `python-shell-completion-string-code` and `python-shell-completion-module-string-code`:
+
+{{{
+(setq python-shell-completion-string-code
+      "';'.join(__IP.complete('''%s'''))\n"
+      python-shell-completion-module-string-code "")
+}}}
+
+Unfortunately running iPython on Windows needs some more tweaking. The way you must set `python-shell-interpreter` and `python-shell-interpreter-args` is as follows:
+
+{{{
+(setq
+ python-shell-interpreter "C:\\Python27\\python.exe"
+ python-shell-interpreter-args
+ "-i C:\\Python27\\Scripts\\ipython-script.py")
+}}}
+
+That will spawn the iPython process correctly (Of course you need to modify the paths according to your system).
 
 
-=== IPython debugging/pdbtrack ===
+==== IPython debugging/pdbtrack ====
 
 I made the following changes to python-mode.el to make debugging work again with current IPython (0.9.1):
 
@@ -321,6 +312,15 @@ I made the following changes to python-mode.el to make debugging work again with
 
 Now when I debug in the IPython console (using %run -d, or %pdb on, etc.) pdbtrack makes sure to show me the current source code and corresponding line. Note that these changes may break debugging in a standard python-shell, I have not tested this.
 
+* [https://github.com/burakbayramli/emacs-ipython emacs-ipython], an Emacs extension that allows execution of python code inside a TeX buffer and display its results, text or graphic in the section below. The extension uses Pymacs to connect to a ipython kernel to execute code. 
+
+====IPython notebook====
+* [http://tkf.github.com/emacs-ipython-notebook/ Emacs IPython Notebook], an IPython notebook client for Emacs.
+
+=== IronPython ===
+* Install [ProgrammingWithPythonModeDotEl python-mode]
+* ##(setq py-jython-command "c:/Program Files/IronPython 2.6 for .NET 4.0/ipy.exe")##
+* Open a .py file. C-c C-t will toggle "jython", C-c ! will start a shell
 
 === Using PythonTidy to pretty-print a buffer ===
 
