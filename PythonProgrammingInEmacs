@@ -10,6 +10,9 @@ Beyond a basic Python editing, there are two actively maintained packages that p
 == Extended Configuration ==
 This section describes various features that can be added to Emacs to support Python editing.  Note that the IDE packages listed above already provide many of these features using packages referred to below.
 
+===Virtual Environments==
+[https://github.com/aculich/virtualenv.el virtualenv.el] and [https://github.com/jorgenschaefer/pyvenv pyvenv] both support working with virtualenvs.
+
 ===Indentation===
 The defaults should see you compliant with PEP8 but see IndentingPython for detail.
 
@@ -20,37 +23,8 @@ The defaults should see you compliant with PEP8 but see IndentingPython for deta
 
 [https://github.com/tavisrudd/emacs.d/blob/master/dss-completion.el Auto-Complete support in IPython shell buffers]
 
-===Refactoring===
-[https://github.com/python-rope/ropemacs Ropemacs] is a library using [[Pymacs]] to talk with the Rope refactoring library.
-
-[https://github.com/tkf/emacs-jedi Jedi.el] also has some refactoring support.
-
-===Virtual Environments==
-[https://github.com/aculich/virtualenv.el virtualenv.el] and [https://github.com/jorgenschaefer/pyvenv pyvenv] both support working with virtualenvs.
-
-=== Comment/Uncomment Region ===
-
-If you have `transient-mark-mode' on, you can just use `comment-dwim': select a region and hit `M-;'. The DoWhatIMean means that it will comment or uncomment the region as appropriate. If you do not have `transient-mark-mode' on by default, you can hit C-SPC twice to activate it temporarily.
-
-( doesn't python-mode.el offer `py-comment-region? --CH )
-
-Beside py-comment-region [ProgrammingWithPythonModeDotEl python-mode.el] provides commands to comment/uncomment all known forms, def, block, clause etc.
-
-===Viewing the official Python documentation===
-====Using Info====
-You will first need to obtain the necessary Info files and configure Info so they can be found, e.g. using InfoPath.  These files are not available at https://www.python.org/doc/ but can be built using the instructions at https://github.com/politza/python-info, which also hosts several pre-built versions.  You will then need to configure Info so that `info-lookup-symbol' searches the Python docs, e.g. 
-{{{
-(require 'info-look)
-
-(info-lookup-add-help
- :mode 'python-mode
- :regexp "[[:alnum:]_]+"
- :doc-spec
- '(("(python)Index" nil "")))
-}}}
-[https://bitbucket.org/jonwaltman/pydoc-info/ pydoc-info], available on MELPA, does this configuration too, and also provides more customized support for the Python docs. 
-====Using a web browser====
-[http://github.com/tsgates/pylookup Pylookup mode] allows searching the Python documentation from Emacs and viewing results in a web browser, either on- or off-line.
+=== Code generation helpers ===
+[[Yasnippet]] comes with a set of templates for Python.
 
 ===Lint, style and syntax checkers===
 Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyflakes (flake8 includes both), pylint and pychecker.
@@ -108,52 +82,65 @@ to support virtual environments, but this is largely untested.
 ===Testing===
 [https://bitbucket.org/durin42/nosemacs nosemacs] is a mode to run the nosetests testing framework.
 
+===Refactoring===
+====Refactoring libraries====
+[https://github.com/python-rope/ropemacs Ropemacs] is a library using [[Pymacs]] to talk with the Rope refactoring library.
+
+[https://github.com/tkf/emacs-jedi Jedi.el] also has some refactoring support.
+
+====Reformatting and PEP8 conformance====
+====yapf====
+[https://github.com/google/yapf Yapf] attempts to format Python code to the best formatting that conforms to a style guide, even if the original code didn't violate the style guide.  The style guide can be customized; predefined ones include pep8 and google.
+
+Both [https://melpa.org/#/py-yapf py-yapf] and [https://github.com/jorgenschaefer/elpy Elpy] support applying yapf to the current buffer.
+
+====autopep8====
+[https://pypi.python.org/pypi/autopep8/ autopep8] formats Python code to conform to the PEP 8 style guide using [https://pypi.python.org/pypi/pep8 the pep8 tool].
+
+Both [https://melpa.org/#/py-autopep8 py-autopep8] and [https://github.com/jorgenschaefer/elpy Elpy] support applying autopep8 to the current buffer.
+
+===Viewing the official Python documentation===
+====Using Info====
+You will first need to obtain the necessary Info files and configure Info so they can be found, e.g. using InfoPath.  These files are not available at https://www.python.org/doc/ but can be built using the instructions at https://github.com/politza/python-info, which also hosts several pre-built versions.  You will then need to configure Info so that `info-lookup-symbol' searches the Python docs, e.g. 
+{{{
+(require 'info-look)
+
+(info-lookup-add-help
+ :mode 'python-mode
+ :regexp "[[:alnum:]_]+"
+ :doc-spec
+ '(("(python)Index" nil "")))
+}}}
+[https://bitbucket.org/jonwaltman/pydoc-info/ pydoc-info], available on MELPA, does this configuration too, and also provides more customized support for the Python docs. 
+====Using a web browser====
+[http://github.com/tsgates/pylookup Pylookup mode] allows searching the Python documentation from Emacs and viewing results in a web browser, either on- or off-line.
+
+=== Comment/Uncomment Region ===
+If you have `transient-mark-mode' on, you can just use `comment-dwim': select a region and hit `M-;'. The DoWhatIMean means that it will comment or uncomment the region as appropriate. If you do not have `transient-mark-mode' on by default, you can hit C-SPC twice to activate it temporarily.
+
+[ProgrammingWithPythonModeDotEl python-mode.el] also provides `py-comment-region and commands to comment/uncomment all known forms, def, block, clause etc.
+
 === IPython ===
-To enable IPython globally in Emacs's native python-mode, use:
+====Using IPython as the Python shell==
+In Emacs's native python-mode, use:
 {{{
   (setq python-shell-interpreter "ipython"
        python-shell-interpreter-args "-i")
 }}}
 This should work with any recent IPython, including on Windows.
 
-[ProgrammingWithPythonModeDotEl python-mode.el] also comes with IPython support.  See that page for more information.
-
-* [https://github.com/burakbayramli/emacs-ipython emacs-ipython], an Emacs extension that allows execution of python code inside a TeX buffer and display its results, text or graphic in the section below. The extension uses Pymacs to connect to a ipython kernel to execute code. 
+[ProgrammingWithPythonModeDotEl python-mode.el] also comes with IPython support. 
 
 ====IPython notebook====
 * [http://tkf.github.com/emacs-ipython-notebook/ Emacs IPython Notebook], an IPython notebook client for Emacs.
+
+====LaTeX or MarkDown====
+* [https://github.com/burakbayramli/emacs-ipython emacs-ipython], an Emacs extension that allows execution of python code inside a LaTeX or MarkDown buffer and display its results, text or graphic in the section below. The extension uses Pymacs to connect to an ipython kernel to execute code. 
 
 === IronPython ===
 * Install [ProgrammingWithPythonModeDotEl python-mode]
 * ##(setq py-jython-command "c:/Program Files/IronPython 2.6 for .NET 4.0/ipy.exe")##
 * Open a .py file. C-c C-t will toggle "jython", C-c ! will start a shell
-
-=== Using PythonTidy to pretty-print a buffer ===
-
-[http://lacusveris.com/PythonTidy/ PythonTidy] can be used to pretty-print a buffer in combination
-with shell-command-on-region.
-Installing PythonTidy somewhere on the path, and add this to your .emacs
-
-<pre>
-(defun pytidy-whole-buffer ()
-  (interactive)
-  (let ((a (point)))
-    (shell-command-on-region (point-min) (point-max) "<Name_Of_Executable_Script>" t)
-    (goto-char a)))
-</pre>
-
-Note: <Name_Of_Executable_Script> should match the name of the pythonTidy script on your path, make
-sure you set execute permissions.
-
-bind this to any key you wish, I have:
-
-<pre>
-(define-key python-mode-map  (kbd "<f9>") 'pytidy-whole-buffer)
-</pre>
-
-in my python-mode-hook.
-invoking the command pretty-prints the hole buffer, you can invoke undo if something went
-wrong, and the cursor stays put.
 
 === Unicode on Mac OS X === 
 When using Emacs 24.1 on Mac OS X compiled via homebrew. The python-shell always used US-ASCII as encoding. To fix it I used:
@@ -170,36 +157,6 @@ To determine your encoding in the python-shell use:
 Not having the right encoding set leads to errors in ipython:
 <pre>
 ERROR - failed to write data to stream: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='US-ASCII'>
-</pre>
-
-=== Shortcuts to automatically write commands ===
-The code below adds some shortcuts to automatically write the frequently used python commands. 
-<pre>
-(define-key
-  python-mode-map
-  (kbd "C-c C-x l")
-  (lambda () (interactive)  (insert "lambda ")))
-
-(define-key
-  python-mode-map
-  (kbd "C-c C-x m")
-  (lambda ()
-    (interactive)
-    (insert "map()")
-    (backward-char) 1))
-
-(define-key python-mode-map
-  (kbd "C-c C-x r")
-  (lambda ()
-    (interactive)
-    (insert "reduce()")
-    (backward-char 1)))
-
-(define-key python-mode-map
-  (kbd "C-c C-x e")
-  (lambda ()
-    (interactive)
-    (insert "return ")))
 </pre>
 
 ----
