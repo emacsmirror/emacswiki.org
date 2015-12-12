@@ -120,7 +120,7 @@ You will first need to obtain the necessary Info files and configure Info so the
 ====Using a web browser====
 [http://github.com/tsgates/pylookup Pylookup mode] allows searching the Python documentation from Emacs and viewing results in a web browser, either on- or off-line.
 
-=== IPython ===
+=== Shells ===
 ====Using IPython as the Python shell==
 In Emacs's native python-mode, use:
 {{{
@@ -130,12 +130,15 @@ In Emacs's native python-mode, use:
 This should work with any recent IPython, including on Windows.
 
 [ProgrammingWithPythonModeDotEl python-mode.el] also comes with IPython support. 
-
-====IPython notebook====
-* [http://tkf.github.com/emacs-ipython-notebook/ Emacs IPython Notebook], an IPython notebook client for Emacs.
-
+===Notebook environments===
+====Emacs IPython Notebook (EIN)====
+[http://tkf.github.com/emacs-ipython-notebook/ Emacs IPython Notebook (EIN)] provides a IPython Notebook client and integrated REPL (like SLIME) in Emacs.
+==== ob-python====
+[http://orgmode.org/worg/org-contrib/babel/languages/ob-doc-python.html ob-python] provides Org-Babel support for evaluating Python source code.  Python source code blocks in Org Mode can be used to define functions, filter and analyze data, create graphics and figures, and produce reproducible research papers using a style similar to literate programming. It is included in the 'org-plus-contrib' package from [http://orgmode.org/elpa.html the Org Mode ELPA] or [[MELPA]].
+====ob-ipython====
+[https://github.com/gregsexton/ob-ipython ob-ipython] provides Org-Babel support for evaluating Python source code using an IPython kernel.  It provides similar features to ob-python (and tries to be more robust) as well as IPython-specific features like magics.  
 ====LaTeX or MarkDown====
-* [https://github.com/burakbayramli/emacs-ipython emacs-ipython], an Emacs extension that allows execution of python code inside a LaTeX or MarkDown buffer and display its results, text or graphic in the section below. The extension uses Pymacs to connect to an ipython kernel to execute code. 
+[https://github.com/burakbayramli/emacs-ipython emacs-ipython], an Emacs extension that allows execution of python code inside a LaTeX or MarkDown buffer and display its results, text or graphic in the section below. The extension uses Pymacs to connect to an ipython kernel to execute code. 
 
 === IronPython ===
 * Install [ProgrammingWithPythonModeDotEl python-mode]
