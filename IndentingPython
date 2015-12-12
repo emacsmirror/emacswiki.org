@@ -3,9 +3,11 @@ The official [https://www.python.org/dev/peps/pep-0008/#tabs-or-spaces Style Gui
 The major modes described at PythonMode will normally handle this: they will guess the per-level indentation used in Python source (but may be used to override an incorrect guess) and they will also set `indent-tabs-mode' to `nil'.
 
 For code that already uses tabs for indentation indent-tabs-mode should be set to `t' rather than the default of `nil'.  GuessStyle can do this automatically. Enable it like so:
+
    (add-hook 'python-mode-hook 'guess-style-guess-tabs-mode)
    (add-hook 'python-mode-hook (lambda ()
                                     (guess-style-guess-tab-width)))
+
 For such code [[SmartTabs#Python]] will use tabs only for expressing the indentation level, so that lining up of code is independent of the tab size. 
 
 PyIndent allows using C-like braces embedded in comments to manage indentation.
