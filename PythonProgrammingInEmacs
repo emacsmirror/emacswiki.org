@@ -3,11 +3,9 @@ This page collects information for creating a usable Python programming environm
 There are a number of Python modes for Emacs. The major ones are [ProgrammingWithPythonDotElGallina python.el], which comes with Emacs 24.2 and up, and [ProgrammingWithPythonModeDotEl python-mode.el], which also provides Python IDE support. The older [ProgrammingWithPythonDotEl 'loveshack' python.el] from Emacs 24.1 and before has a number of fans as well.
 
 == Emacs as a Python IDE ==
-Beyond a basic Python editing, there are two actively maintained packages that provide IDE-like features for Python programming:
+Beyond a basic Python editing, there are two actively maintained packages that provide IDE-like features for Python programming.  They provide many of the support features listed separately below and are easily installed as packages from [[MELPA]], providing quick ways to create a good Python programming environment in Emacs.
 * [ProgrammingWithPythonModeDotEl python-mode.el]  Python major mode with powerful Python editing features.
 * [https://github.com/jorgenschaefer/elpy Elpy], an Emacs package to bring powerful Python editing to Emacs. It combines a number of other packages, both written in Emacs Lisp as well as Python
-
-Both provide many of the support features listed separately below.  They are easily installed as packages from [MELPA], providing quick ways to create a good Python programming environment in Emacs.
 
 == Extended Configuration ==
 This section describes various features that can be added to Emacs to support Python editing.  Note that the IDE packages listed above already provide many of these features using packages referred to below.
