@@ -10,6 +10,9 @@ Beyond a basic Python editing, there are two actively maintained packages that p
 == Extended Configuration ==
 This section describes various features that can be added to Emacs to support Python editing.  Note that the IDE packages listed above already provide many of these features using packages referred to below.
 
+===Indentation===
+The defaults should see you compliant with PEP8 but see IndentingPython for detail.
+
 ===Completion===
 [https://github.com/tkf/emacs-jedi Jedi.el] is a Python auto-completion package using [AutoComplete] and [https://github.com/davidhalter/jedi jedi]. It can also be used as a back end for [CompanyMode].
 
@@ -114,7 +117,6 @@ to support virtual environments, but this is largely untested.
 
 : I added this code to pastebins (didn't know which to prefer, so chose three) which should be better than dumping the code here. -- [[Chris2048]]
 
-Also see PyIndent
 ===Testing===
 [https://bitbucket.org/durin42/nosemacs nosemacs] is a mode to run the nosetests testing framework.
 
