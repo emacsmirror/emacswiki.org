@@ -128,7 +128,7 @@ To enable IPython globally in Emacs's native python-mode, use:
 }}}
 This should work with any recent IPython, including on Windows.
 
-[ProgrammingWithPythonModeDotEl python-mode.el] comes with IPython support, setup as shown below has been integrated.
+[ProgrammingWithPythonModeDotEl python-mode.el] also comes with IPython support.
 ==== IPython debugging/pdbtrack ====
 
 I made the following changes to python-mode.el to make debugging work again with current IPython (0.9.1):
