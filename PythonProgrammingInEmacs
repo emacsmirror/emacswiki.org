@@ -88,51 +88,7 @@ Alternatively pyflakes can added as a checker to FlyMake as below:
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pyflakes-init)))
 }}}
-==== Using flymake with pyflakes on Windows ====
-
-When 
-To run pyflakes from a command prompt, you then need something like this:
-
-<code>C:\Python27\python.exe \Python27\Scripts\pyflakes myfile.py</code>
-
-To make it simpler, you can create a file called <code>pyflakes.cmd</code> and put it into c:\python27 . The contents should be:
-
-<pre>
-@echo off
-goto START
--------------------------------------------------------
- pyflakes.cmd
--------------------------------------------------------
-:START
-SETLOCAL
-if  _%1==_ goto USAGE
-%~dp0\python.exe %~dp0\Scripts\pyflakes %*
-goto ALL_DONE
-
-:USAGE
-  echo usage:  pyflakes ^<file^> [^<optionalargs^>]
-  echo run the pyflakes syntax checker on a python source file.
-
-:ALL_DONE
-ENDLOCAL
-</pre>
-
-Then, modify one line in the elisp snip given above, to be like this:
-
-{{{
-(when (load "flymake" t)
-  (defun flymake-pyflakes-init ()
-     ; Make sure it's not a remote buffer or flymake would not work
-     (when (not (subsetp (list (current-buffer)) (tramp-list-remote-buffers)))
-      (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                         'flymake-create-temp-inplace))
-             (local-file (file-relative-name
-                          temp-file
-                          (file-name-directory buffer-file-name))))
-        (list "c:\\Python27\\pyflakes.cmd" (list local-file)))))
-  (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.py\\'" flymake-pyflakes-init)))
-}}}
+This should work as long as pyflakes is installed and on your PATH.
 
 ==== Using multiple checkers ====
 Flymake only natively supports a single checker per buffer. However, more than 
