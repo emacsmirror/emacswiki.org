@@ -121,56 +121,14 @@ to support virtual environments, but this is largely untested.
 [https://bitbucket.org/durin42/nosemacs nosemacs] is a mode to run the nosetests testing framework.
 
 === IPython ===
+To enable IPython globally in Emacs's native python-mode, use:
+{{{
+  (setq python-shell-interpreter "ipython"
+       python-shell-interpreter-args "-i")
+}}}
+This should work with any recent IPython, including on Windows.
 
 [ProgrammingWithPythonModeDotEl python-mode.el] comes with IPython support, setup as shown below has been integrated.
-
-First try to use [http://ipython.org/ipython-doc/1/config/editors.html ipython.el], maybe by simply invoking : 
-
-{{{
-(setq ipython-command "/SOME-PATH/ipython") ; discard this line Ipython is already in your PATH
-(require 'ipython)
-}}}
-
-Recipes below should be tried only if this fails
-
-ipython.el looks like it's deprecated. It no longer comes with the IPython distribution. --[[ybendana]]
-
-Emacs' 24.2+ python.el contains the following guide on how to set it up to use IPython 0.11:
-
-{{{
-(setq
- python-shell-interpreter "ipython"
- python-shell-interpreter-args ""
- python-shell-prompt-regexp "In \\[[0-9]+\\]: "
- python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
- python-shell-completion-setup-code
-   "from IPython.core.completerlib import module_completion"
- python-shell-completion-module-string-code
-   "';'.join(module_completion('''%s'''))\n"
- python-shell-completion-string-code
-   "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
-}}}
-
-For iPython 0.10 everything would be the same except for `python-shell-completion-string-code` and `python-shell-completion-module-string-code`:
-
-{{{
-(setq python-shell-completion-string-code
-      "';'.join(__IP.complete('''%s'''))\n"
-      python-shell-completion-module-string-code "")
-}}}
-
-Unfortunately running iPython on Windows needs some more tweaking. The way you must set `python-shell-interpreter` and `python-shell-interpreter-args` is as follows:
-
-{{{
-(setq
- python-shell-interpreter "C:\\Python27\\python.exe"
- python-shell-interpreter-args
- "-i C:\\Python27\\Scripts\\ipython-script.py")
-}}}
-
-That will spawn the iPython process correctly (Of course you need to modify the paths according to your system).
-
-
 ==== IPython debugging/pdbtrack ====
 
 I made the following changes to python-mode.el to make debugging work again with current IPython (0.9.1):
