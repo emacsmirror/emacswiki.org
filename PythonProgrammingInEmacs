@@ -6,6 +6,7 @@ There are a number of Python modes for Emacs. The major ones are [ProgrammingWit
 Beyond a basic Python editing, there are two actively maintained packages that provide IDE-like features for Python programming:
 * [ProgrammingWithPythonModeDotEl python-mode.el]  Python major mode with powerful Python editing features.
 * [https://github.com/jorgenschaefer/elpy Elpy], an Emacs package to bring powerful Python editing to Emacs. It combines a number of other packages, both written in Emacs Lisp as well as Python
+
 Both provide many of the support features listed separately below.  They are easily installed as packages from [MELPA], providing quick ways to create a good Python programming environment in Emacs.
 
 == Extended Configuration ==
