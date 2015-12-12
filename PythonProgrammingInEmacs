@@ -62,13 +62,13 @@ An alternative method for fixing `info-lookup-symbol' support is provided by the
 
 ===Lint, style and syntax checkers===
 Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyflakes (flake8 includes both), pylint and pychecker.
-===Flycheck===
+====Flycheck====
 Flycheck integrates flake8 and pylint.
-=== Flymake====
-====pylint====
+==== Flymake====
+=====pylint=====
 Flymake can be used with pylint, as documented at http://docs.pylint.org/ide-integration.
 
-====flake8 / pyflakes====
+=====flake8 / pyflakes=====
 https://github.com/purcell/flymake-python-pyflakes is a flymake handler for python-mode.el using pyflakes or flake8, although the author suggests you might be better served using [[Flycheck]].
 
 [https://github.com/jorgenschaefer/elpy Elpy] uses [[FlyMake]] with flake8.  It can also be used alongside [[Flycheck]].
@@ -90,7 +90,7 @@ Alternatively pyflakes can added as a checker to FlyMake as below:
 }}}
 This should work as long as pyflakes is installed and on your PATH.
 
-==== Using multiple checkers ====
+===== Using multiple checkers =====
 Flymake only natively supports a single checker per buffer. However, more than 
 one code checker can be applied by using a
 wrapper script that runs the desired tools and combines their output.
