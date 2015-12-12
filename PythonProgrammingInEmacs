@@ -60,104 +60,20 @@ An alternative method for fixing `info-lookup-symbol' support is provided by the
 
 [https://taesoo.org/proj/pylookup.html taesoo.org/proj/pylookup Pylookup mode] is a mode to search the Python online/offline documentation ([http://github.com/tsgates/pylookup github.com/tsgates/pylookup github])
 
+===Lint, style and syntax checkers===
+Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyflakes (flake8 includes both), pylint and pychecker.
+===Flycheck===
+Flycheck integrates flake8 and pylint.
+=== Flymake====
+====pylint====
+Flymake can be used with pylint, as documented at http://docs.pylint.org/ide-integration.
 
-=== Using Flymake with Python ====
+====flake8 / pyflakes====
+https://github.com/purcell/flymake-python-pyflakes is a flymake handler for python-mode.el using pyflakes or flake8, although the author suggests you might be better served using [[Flycheck]].
 
-==== Using flymake with multiple lint, style and syntax checkers ====
+[https://github.com/jorgenschaefer/elpy Elpy] uses [[FlyMake]] with flake8.  It can also be used alongside [[Flycheck]].
 
-More than one code checking tool can be applied in flymake by using a
-wrapper script that runs the desired tools and combines their output.
-It has lots of issues, one being that flymake does not seem to show
-more than one error message per line of code, meaning that an error or
-warning which is intentionally left unfixed can mask an error or
-warning that would get more attention.
-
-Additionally, the scripts that check python code are either
-rather anemic, and don't notice too much (pychecker) or are
-aggressive, and warn about all sorts of things that they
-should not (pylint). pep8.py tends to be annoyingly aggressive
-about whitespace.
-
-There are several scripts around to do this, supporting various tools.
-Each expects to find the code checking tools in your path (pep8.py,
-pychecker, pylint, pyflakes, etc). Additionally this script attempts
-to support virtual environments, but this is largely untested.
-
-* Newest version of this code from the original author [https://github.com/justinvanwinkle/config-files/blob/master/bin/lintrunner.py here].
-
-* The code [http://python.pastebin.com/f627691e0 here] or [http://pastebin.ca/1797770 here] runs pylint + pychecker + pep8
-
-* [https://github.com/tavisrudd/pylint_etc_wrapper/blob/master/pylint_etc_wrapper.py Here] is an extended, cleaned up and bug-fixed version of the script above by Tavis Rudd (not the original author)
-
-* [http://bitbucket.org/jek/sandbox/src/tip/pycheckers pycheckers] runs pyflakes, pep8, pydo (configurable)
-
-: I added this code to pastebins (didn't know which to prefer, so chose three) which should be better than dumping the code here. -- [[Chris2048]]
-
-Flycheck integrates flake8 and pylint. --[[ybendana]]
-
-==== Using flymake with pylint ====
-
-[new]
-Please note that pylint now comes with an executable "epylint" that is meant to be the interface to Emacs.
-[new:Anonymous:2010-03-31 15:16 UTC]
-
-The flymake mode in Emacs 22 does not understand Python, but it can be
-made to work with [http://www.logilab.org/projects/pylint pylint].  To
-do this, first you'll need to create a script somewhere along your
-PATH called 'epylint'.  That script is [http://pastebin.ca/1797788 here]
-: more pastebins needed? -- [[Chris2048]]
-
-It might appear that for some combinations of flymake, pylint and epylint
-the above script might not work properly (it didn't for me). Debugging showed that
-the regexp wasn't matching the output of pylint, ever, so the lines were being
-printed from pylint verbatim, meaning that flymake was doing a "best effort"
-match, and everything was coming up as an error, even minor warnings.
-
-[http://pastebin.ca/1797794 Here] is an alternative version of the epylint script that works great for me.
-It doesn't throw away all the R and C errors, just the most annoying ones. You can easily
-modify it to include or exclude messages to your preference. I find it easier to have
-the messages in the script rather than messing about with .pylintrc and the like.
-
-(I've also got a version that inserts the overall code quality metric, as determined
-by pylint, so you can see at a glance how close you are to pylint perfection; holler
-here if you want to see it).
-: that would be useful *holler* --[[Chris2048]]
-
-Once you test that this works on sample Python files, then add the
-following to your InitFile to enable flymake checking of Python scripts
-using pylint:
-
-    (when (load "flymake" t)
-      (defun flymake-pylint-init ()
-        (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                           'flymake-create-temp-inplace))
-           (local-file (file-relative-name
-                        temp-file
-                        (file-name-directory buffer-file-name))))
-          (list "epylint" (list local-file))))
-
-      (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.py\\'" flymake-pylint-init)))
-
-Now if you turn on `flymake-mode' inside a Python file, you should see
-lines with warnings highlighted in blue, and lines with errors
-highlighted in red.  Just hover your mouse over either type of line
-for a few seconds and you'll see a tooltip describing the
-error/warning.  Plus, the modeline will show you two numbers, X/Y,
-where X is the number of errors in your script, and Y is the total
-number of warnings. -- JohnWiegley
-: wait, this is for XEmacs, right?  -- [[Chris2048]]
-
-You can customise the way flymake highlights your Python by running
-'M-x customize-face' on 'flymake-errline' or 'flymake-warnline'. For
-example, you can remove the background highlight and make the face
-be just a subtle coloured underline.
-
-==== Using flymake with pyflakes ====
-
-Found a desciption on how to use this pair at [http://www.plope.com/Members/chrism/flymake-mode www.plope.com/Members/chrism/flymake-mode]
-I did a copy 'n paste for simplicity.
-
+Alternatively pyflakes can added as a checker to FlyMake as below:
 {{{
 (when (load "flymake" t)
   (defun flymake-pyflakes-init ()
@@ -172,21 +88,12 @@ I did a copy 'n paste for simplicity.
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pyflakes-init)))
 }}}
-
-The normal operation of flymake allows the user to see the error message for a particular line by "hovering" the mouse over the line. This is inconvenient for people who try to use the keyboard for all input. FlymakeCursor was designed to address that: it displays the flymake error in the minibuffer region, when the cursor is placed on a line containing a flymake error.
-
-
 ==== Using flymake with pyflakes on Windows ====
 
-Download the pyflakes tgz file from [http://pypi.python.org/pypi/pyflakes/  Pypi]. Unpack it, then run the setup:
-
-<code>\Python27\python.exe \temp\\temp\pyflakes-0.5.0\setup.py install</code>
-
-This will install pyflakes.
-
+When 
 To run pyflakes from a command prompt, you then need something like this:
 
-<code>\Python27\python.exe \Python27\Scripts\pyflakes myfile.py</code>
+<code>C:\Python27\python.exe \Python27\Scripts\pyflakes myfile.py</code>
 
 To make it simpler, you can create a file called <code>pyflakes.cmd</code> and put it into c:\python27 . The contents should be:
 
@@ -227,6 +134,29 @@ Then, modify one line in the elisp snip given above, to be like this:
                '("\\.py\\'" flymake-pyflakes-init)))
 }}}
 
+==== Using multiple checkers ====
+Flymake only natively supports a single checker per buffer. However, more than 
+one code checker can be applied by using a
+wrapper script that runs the desired tools and combines their output.
+This has lots of issues, one being that flymake does not seem to show
+more than one error message per line of code, meaning that an error or
+warning which is intentionally left unfixed can mask an error or
+warning that would get more attention.
+
+There are several scripts around to do this, supporting various tools.
+Each expects to find the code checking tools in your path (pep8.py,
+pychecker, pylint, pyflakes, etc). Additionally this script attempts
+to support virtual environments, but this is largely untested.
+
+* Newest version of this code from the original author [https://github.com/justinvanwinkle/config-files/blob/master/bin/lintrunner.py here].
+
+* The code [http://python.pastebin.com/f627691e0 here] or [http://pastebin.ca/1797770 here] runs pylint + pychecker + pep8
+
+* [https://github.com/tavisrudd/pylint_etc_wrapper/blob/master/pylint_etc_wrapper.py Here] is an extended, cleaned up and bug-fixed version of the script above by Tavis Rudd (not the original author)
+
+* [http://bitbucket.org/jek/sandbox/src/tip/pycheckers pycheckers] runs pyflakes, pep8, pydo (configurable)
+
+: I added this code to pastebins (didn't know which to prefer, so chose three) which should be better than dumping the code here. -- [[Chris2048]]
 
 Also see PyIndent
 ===Testing===
