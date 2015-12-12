@@ -16,6 +16,11 @@ This section describes various features that can be added to Emacs to support Py
 ===Indentation===
 The defaults should see you compliant with PEP8 but see IndentingPython for detail.
 
+=== Comment/Uncomment Region ===
+If you have `transient-mark-mode' on, you can just use `comment-dwim': select a region and hit `M-;'. The DoWhatIMean means that it will comment or uncomment the region as appropriate. If you do not have `transient-mark-mode' on by default, you can hit C-SPC twice to activate it temporarily.
+
+[ProgrammingWithPythonModeDotEl python-mode.el] also provides `py-comment-region and commands to comment/uncomment all known forms, def, block, clause etc.
+
 ===Completion===
 [https://github.com/tkf/emacs-jedi Jedi.el] is a Python auto-completion package using [AutoComplete] and [https://github.com/davidhalter/jedi jedi]. It can also be used as a back end for [CompanyMode].
 
@@ -79,9 +84,6 @@ to support virtual environments, but this is largely untested.
 
 : I added this code to pastebins (didn't know which to prefer, so chose three) which should be better than dumping the code here. -- [[Chris2048]]
 
-===Testing===
-[https://bitbucket.org/durin42/nosemacs nosemacs] is a mode to run the nosetests testing framework.
-
 ===Refactoring===
 ====Refactoring libraries====
 [https://github.com/python-rope/ropemacs Ropemacs] is a library using [[Pymacs]] to talk with the Rope refactoring library.
@@ -89,15 +91,18 @@ to support virtual environments, but this is largely untested.
 [https://github.com/tkf/emacs-jedi Jedi.el] also has some refactoring support.
 
 ====Reformatting and PEP8 conformance====
-====yapf====
+=====yapf=====
 [https://github.com/google/yapf Yapf] attempts to format Python code to the best formatting that conforms to a style guide, even if the original code didn't violate the style guide.  The style guide can be customized; predefined ones include pep8 and google.
 
 Both [https://melpa.org/#/py-yapf py-yapf] and [https://github.com/jorgenschaefer/elpy Elpy] support applying yapf to the current buffer.
 
-====autopep8====
+=====autopep8=====
 [https://pypi.python.org/pypi/autopep8/ autopep8] formats Python code to conform to the PEP 8 style guide using [https://pypi.python.org/pypi/pep8 the pep8 tool].
 
 Both [https://melpa.org/#/py-autopep8 py-autopep8] and [https://github.com/jorgenschaefer/elpy Elpy] support applying autopep8 to the current buffer.
+
+===Running tests===
+[https://bitbucket.org/durin42/nosemacs nosemacs] is a mode to run the nosetests testing framework.
 
 ===Viewing the official Python documentation===
 ====Using Info====
@@ -114,11 +119,6 @@ You will first need to obtain the necessary Info files and configure Info so the
 [https://bitbucket.org/jonwaltman/pydoc-info/ pydoc-info], available on MELPA, does this configuration too, and also provides more customized support for the Python docs. 
 ====Using a web browser====
 [http://github.com/tsgates/pylookup Pylookup mode] allows searching the Python documentation from Emacs and viewing results in a web browser, either on- or off-line.
-
-=== Comment/Uncomment Region ===
-If you have `transient-mark-mode' on, you can just use `comment-dwim': select a region and hit `M-;'. The DoWhatIMean means that it will comment or uncomment the region as appropriate. If you do not have `transient-mark-mode' on by default, you can hit C-SPC twice to activate it temporarily.
-
-[ProgrammingWithPythonModeDotEl python-mode.el] also provides `py-comment-region and commands to comment/uncomment all known forms, def, block, clause etc.
 
 === IPython ===
 ====Using IPython as the Python shell==
