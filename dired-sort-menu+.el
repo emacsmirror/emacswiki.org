@@ -8,9 +8,9 @@
 ;; Created: Thu Jul 07 12:39:36 2005
 ;; Version: 0
 ;; Package-Requires: ((dired-sort-menu "0"))
-;; Last-Updated: Thu Jan  1 10:35:12 2015 (-0800)
+;; Last-Updated: Sun Dec 13 14:44:44 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 106
+;;     Update #: 132
 ;; URL: http://www.emacswiki.org/dired-sort-menu+.el
 ;; Doc URL: http://emacswiki.org/DiredSortMenu
 ;; Keywords: directories, diredp, dired
@@ -41,6 +41,16 @@
 ;;      `dired-sort-menu-toggle-dirs-first' unless they can be used.
 ;;
 ;;   3. `handle-delete-frame' is protected against nil `buffer-name'.
+;;
+;;
+;;  ***** NOTE: The following functions defined in `dired.el' have
+;;              been REDEFINED or ADVISED HERE:
+;;
+;;  `dired-sort-dialogue' -
+;;    1. Fit frame.  2. Do not add `dired-sort-dialogue-auto-kill-1'
+;;    to `kill-buffer-hook'.
+;;  `dired-sort-dialogue-close' - Just `kill-buffer'.
+;;  `handle-delete-frame' - Do nothing if `buffer-name' is nil.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -132,11 +142,11 @@
 (define-key dired-mode-map "|" 'dired-sort-menu-toggle-reverse)
 
 ;; Don't define it unless you can use it.
-(when (and (fboundp 'ls-lisp-var-p) (ls-lisp-var-p 'ls-lisp-ignore-case))
+(when (and (fboundp 'ls-lisp-var-p)  (ls-lisp-var-p 'ls-lisp-ignore-case))
   (define-key dired-mode-map "c" 'dired-sort-menu-toggle-ignore-case))
 
 ;; 1. Use "/", not "b". 2. Don't define it unless you can use it.
-(when (and (fboundp 'ls-lisp-var-p) (ls-lisp-var-p 'ls-lisp-dirs-first))
+(when (and (fboundp 'ls-lisp-var-p)  (ls-lisp-var-p 'ls-lisp-dirs-first))
   (define-key dired-mode-map "/" 'dired-sort-menu-toggle-dirs-first))
 
 
@@ -159,26 +169,24 @@
   "A static dialogue version of the Dired sort menu.
 This command *must* be run in the Dired buffer!"
   (interactive)
-  (or (eq major-mode 'dired-mode)
-      (error "This command may only be run in a Dired buffer"))
+  (unless (eq major-mode 'dired-mode)
+    (error "This command may only be run in a Dired buffer"))
   (let
       ;; Must set these variables while still in the dired buffer!
-      ((radio (dired-sort-dialogue-choice))
-       (reverse (dired-sort-menu-switch-p "r"))
-       (recursive (dired-sort-menu-switch-p "R"))
-       (dired-buffer (current-buffer))
+      ((radio         (dired-sort-dialogue-choice))
+       (reverse       (dired-sort-menu-switch-p "r"))
+       (recursive     (dired-sort-menu-switch-p "R"))
+       (dired-buffer  (current-buffer))
        ;; Suspend automatic mechanisms:
-       window-configuration-change-hook
-       kill-buffer-hook)
+       window-configuration-change-hook kill-buffer-hook)
 
     ;; Check whether a dialogue buffer for this dired buffer is
     ;; already visible, and if so re-use its window:
-    (let ((bufname (dired-sort-dialogue-buffer-name))
-          (bufs (buffer-list)) buf
-          (title (concat "<" (buffer-name dired-buffer) ">")))
-      (while (and bufs (not (string= bufname
-                                     (buffer-name (setq buf (car bufs))))))
-        (setq bufs (cdr bufs)))
+    (let ((bufname  (dired-sort-dialogue-buffer-name))
+          (bufs     (buffer-list)) buf
+          (title    (concat "<" (buffer-name dired-buffer) ">")))
+      (while (and bufs  (not (string= bufname (buffer-name (setq buf  (car bufs))))))
+        (setq bufs  (cdr bufs)))
       (if bufs
           (progn
             (if (dired-sort-dialogue-own-frame-really)
@@ -191,21 +199,21 @@ This command *must* be run in the Dired buffer!"
         (if (dired-sort-dialogue-own-frame-really)
             ;; If room then put dialogue immediately to the right of
             ;; the dired frame, else at right edge of screen.
-            (let* ((alist (frame-parameters))
-                   (top (cdr (assq 'top alist))) ; pixels
-                   (left (cdr (assq 'left alist))) ; pixels
+            (let* ((alist  (frame-parameters))
+                   (top    (cdr (assq 'top alist))) ; pixels
+                   (left   (cdr (assq 'left alist))) ; pixels
                    )
               ;; Allow form INTEGER or (+ INTEGER):
-              (or (atom left) (setq left (cadr left)))
+              (or (atom left)  (setq left  (cadr left)))
               ;; Set left of dialogue frame to avoid falling off right
               ;; of display:
-              (setq left (+ left (frame-pixel-width)))
-              (setq left (if (> (+ left (* dired-sort-dialogue-width
-                                           (frame-char-width)))
-                                (x-display-pixel-width))
-                             -10
-                           ;; (+ left (* 2 (cdr (assq 'border-width alist))))))
-                           (+ left 10)))
+              (setq left  (+ left (frame-pixel-width))
+                    left  (if (> (+ left (* dired-sort-dialogue-width
+                                            (frame-char-width)))
+                                 (x-display-pixel-width))
+                              -10
+                            ;; (+ left (* 2 (cdr (assq 'border-width alist))))))
+                            (+ left 10)))
               (select-frame (make-frame
                              `((title . ,title)
                                (top . ,top)
@@ -226,17 +234,17 @@ This command *must* be run in the Dired buffer!"
       (kill-all-local-variables)
       ;;       (or buffer-display-table
       ;;         (setq buffer-display-table
-      ;;               (or standard-display-table (make-display-table))))
+      ;;               (or standard-display-table  (make-display-table))))
       ;;       (set-display-table-slot buffer-display-table 0 ?_)
-      (setq truncate-lines t
-            mode-line-format title))
+      (setq truncate-lines    t
+            mode-line-format  title))
 
-    (let ((inhibit-read-only t))
+    (let ((inhibit-read-only  t))
       (erase-buffer))
     ;; Must set this only once in the dialogue buffer!
-    (setq dired-sort-dialogue-dired-buffer dired-buffer)
+    (setq dired-sort-dialogue-dired-buffer  dired-buffer)
 
-    (let ((start (point)))
+    (let ((start  (point)))
       (widget-insert "Dired Sort Options")
       (put-text-property start (point) 'face 'bold))
     (widget-insert " for\n<"
@@ -309,13 +317,13 @@ This command *must* be run in the Dired buffer!"
     (widget-setup)
     (goto-char (point-min))
     ;;      (use-local-map widget-keymap)
-    ;;      (let ((map (make-sparse-keymap)))
+    ;;      (let ((map  (make-sparse-keymap)))
     ;;        (suppress-keymap map)
     ;;        (set-keymap-parent map widget-keymap)
     ;;        (define-key map [down-mouse-1] 'widget-button-click)
     ;;        (define-key map [down-mouse-3] 'widget-button-click)
     ;;        (use-local-map map))
-    (let ((map widget-keymap))
+    (let ((map  widget-keymap))
       ;; (define-key map [t] 'undefined)
       ;; (define-key map [tab] 'widget-forward)
       ;; (define-key map [return] 'widget-button-press)
@@ -342,31 +350,32 @@ This command *must* be run in the Dired buffer!"
 ;;
 ;; Redefined to just `kill-buffer'. My other libraries take care of the rest.
 ;;
+;;;###autoload
 (defun dired-sort-dialogue-close (&rest ignore)
   "Close the dired sort dialogue (ignoring the settings)."
   (kill-buffer (current-buffer)))
 ;;; (defun dired-sort-dialogue-close (&rest ignore)
 ;;;   "Close the dired sort dialogue (ignoring the settings)."
-;;;   (let ((dired-buffer dired-sort-dialogue-dired-buffer)
+;;;   (let ((dired-buffer  dired-sort-dialogue-dired-buffer)
 ;;;     window-configuration-change-hook
 ;;;     kill-buffer-hook)
 ;;;     (set-window-dedicated-p (selected-window) nil)
 ;;;     (kill-buffer (current-buffer))
 ;;;     (if (dired-sort-dialogue-own-frame-really)
 ;;;     (delete-frame)
-;;;       (or (one-window-p t) (delete-window)))
+;;;       (or (one-window-p t)  (delete-window)))
 ;;;     (select-window (get-buffer-window dired-buffer))))
 
 
 ;; REPLACE ORIGINAL in `dired-sort-menu.el'.
 ;;
-;; Protect in case buffer-name is nil.
+;; Protect in case `buffer-name' is nil.
 ;;
 (defadvice handle-delete-frame
   (before handle-delete-frame-advice activate)
   "Kill dialogue buffer before killing its frame."
-  (let* ((frame (posn-window (event-start (ad-get-arg 0))))
-         (buf (car (buffer-list frame))))
+  (let* ((frame  (posn-window (event-start (ad-get-arg 0))))
+         (buf    (car (buffer-list frame))))
     (when (and (buffer-name buf)
                (dired-sort-dialogue-buffer-p (buffer-name buf)))
       (set-window-dedicated-p (selected-window) nil)
