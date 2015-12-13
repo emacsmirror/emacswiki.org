@@ -1,6 +1,126 @@
 Many operations in the [[Gnus]] news/mail reader are slow (and also slower than other mail clients). This page wants to make Gnus faster, and lists the common sources of waiting, the reasons of the slowness, the final solutions to quicken Gnus  and the practical tips and tricks against Gnus' slowness.
 
-Please expand this page with more technical content from experts.
+==Practical tips and tricks to improve Gnus' speed==
+
+=== Install gnutls-cli tool ===
+
+If you see a message like this in your *Messages* buffer
+
+Opening TLS connection with `gnutls-cli --insecure -p 993 imap.gmail.com'...failed
+
+that means gnutls-cli is not installed (as in the case of a default Ubuntu install)
+
+Install it and you will gain precious couple of seconds on startup.
+
+===Some suggestions from the official manual===
+http://www.gnu.org/software/emacs/manual/html_node/gnus/_005b9_002e2_005d.html
+
+Namely:
+* (gnus-compile) --removed http://git.gnus.org/cgit/gnus.git/commit/?id=59403f318f769dc0ff91a59405c4d8d122a10ab6
+* (setq gc-cons-threshold 3500000)
+* (setq gnus-use-correct-string-widths nil)
+
+===Use different levels of subscription for groups===
+
+Use group levels to make checking for new mails faster. Use high
+levels (4 or 5) for groups like spam/ham and less important mailing
+lists which you do not need to check regularly. Use
+'gnus-activate-level' to specify which groups you'd like to be
+activated on startup. Put your important mail groups on level 1 and
+use prefix arguments like '1 g' to specify which groups you'd like to
+check for new mail.
+
+You can set the level of a group with =S l=, and you can check for
+updates in groups by level by specifying that as the argument to =M-x
+gnus=. See the "(gnus) Group Levels" section in the Gnus manual for
+more information.
+
+===Use the Gnus agent to check for new mail on specific servers===
+
+Gnus Agent allows you to mark servers with =J a= (`gnus-agent-add-server') or =J r= (`gnus-agent-remove-server'). You can then start Gnus with `M-x gnus-unplugged', which skips updates in groups covered by the agent. =J j= toggles your plugged/unplugged state, and =g= checks for new mail. You can also use the agent to download mail or news for offline reading. For more information, see the Gnus manual.
+
+===Skip scanning for new groups===
+
+If you've already subscribed to the groups you're interested in, you can disable scanning for new newsgroups with:
+
+(setq gnus-check-new-newsgroups nil)
+
+===Skip groups you don't frequently read by accessing them through a foreign server===
+
+From the =*Group*= buffer, you can use =B= to browse a foreign server and subscribe to the group you're interested in. Then, in the =*Group*= buffer, press =U= on the group to unsubscribe from it. The group will be available in the list of groups displayed by =L=, but will not be checked for updates by default.
+
+===Disable adaptive scoring===
+[http://www.gnu.org/software/emacs/manual/html_node/gnus/Adaptive-Scoring.html Adaptive scoring] can use a lot of space and may affect speed. The variable gnus-use-adaptive-scoring (nil by default) controls whether to use it.
+
+===Avoid using some types of scoring===
+Some people suggest omitting scoring completely for maximum speed. Others don't notice any speed penalty, or find scoring too valuable to ignore.
+
+Scoring can be slow if you do it against the full head or body because Gnus has to request much data. See [http://article.gmane.org/gmane.emacs.gnus.general/68828 this example] with timings. Scoring basic headers like to/from/subject should be faster.
+
+An alternative to search inside the body is to use keywords; see [http://article.gmane.org/gmane.emacs.gnus.general/68830 description].
+
+You can prohibit scoring in headers or body via the variable gnus-inhibit-slow-scoring; for instance if it is set to "^nntp[+:]"
+
+===Use proxy servers===
+E.g. use offlineimap (an IMAP synchronization tool) to pull emails from a remote server instead of connecting directly to [[GnusGmail]], for instance. Several Gnus users run a local IMAP server, such as dovecot, which they synchronize using offlineimap and access from Gnus  via nnimap.
+
+Other option: use fetchmail+maildrop to get mails and deliver to local Maildir, then use nnmaildir to read mails.
+
+If you are running debian (or a derivative) and you use exim4 for smtp delivery with a smarthost, add the option '-odqs' in /etc/default/exim4 SMTPLISTENEROPTIONS (otherwise gnus still locks up your emacs when sending large attachments). Also change QUEUEINTERVAL to something smaller like 5m. If you need a message sent immediately run sudo exim4 -q.
+
+===Keep summary buffers small===
+* Set the 'large-newsgroup-initial' group parameter to a small value  (e.g. 50), so that you get smaller summary buffers.
+* Sort articles/threads by number.
+* Depending on the IMAP server and the back end it uses, it might be wise to keep your groups small. Use expiry to automatically create archive groups (see variable nnmail-fancy-expiry-targets). Use searching facilities like nnir/nnmairix for an efficient search in those archives, so that you don't have to build huge summary buffers with thousands of mails.
+
+===Specific for nnimap===
+
+* If you use nnimap, put an appropriate server definition in gnus-select-method or gnus-secondary-select-methods. Don't use it as a foreign server.
+** TODO: Why are foreign servers slower to check mail?  Discuss/fix this on the mailing list. Maybe it's because they re-run the hook to get new news on every group.
+
+* Consider mirroring your mail using a tool such as =fetchmail= or
+  =offlineimap= and a local IMAP server such as Dovecot. Local IMAP
+  access can be much faster than remote IMAP access.
+
+===Specific for nnrss===
+
+* Use shell scripts to retrieve RSS feeds asynchronously (e.g. via cron). Set nnrss-use-local to 't' and use 'nnrss-generate-download-script' to generate the shell script for retrieving the feeds. If you had atom feeds by using the instructions [http://www.emacswiki.org/emacs/GnusRss#toc6 here], you need to edit the script by hand. An example for planet emacs:
+
+$WGET -q 'http://planet.emacsen.org/atom.xml' -O - | xsltproc -o "$RSSDIR"/'Planet\ Emacs.xml' ~/.emacs.d/atom2rss-exslt.xsl -
+
+If you use shimbuns, there's 'shimbun-use-local' and 'nnshimbun-generate-download-script' which do the same.
+
+The following can be used to update automatically the shimbun script created by nnshimbun-generate-download-script (useful if one has added or removed shimbun groups in Gnus):
+
+ (defun my-nnshimbun-generate-download-script ()
+  (nnshimbun-generate-download-script)
+  (write-file "~/bin/nnshimbun.sh")
+  (kill-buffer nil)
+  (shell-command "chmod u+x ~/bin/nnshimbun.sh")
+  (message "Nnshimbun script saved."))
+
+ (add-hook 'gnus-exit-gnus-hook 'my-nnshimbun-generate-download-script)
+
+Note: such a hook does not work so well with nnrss-generate-download-script, which populates the script only with nnrss groups that have been updated in the current session of Gnus (as opposed to all subscribed rss groups).
+
+===Tweak your `gnus-summary-line-format'===
+Try tweaking `gnus-summary-line-format' to speed up summary line display when entering a group.
+For example using %D instead of %d to display dates is much faster.
+
+
+===Activate asynchronous behaviour in Gnus===
+There are many variables like gnus-asynchronous. Can they make a difference if set to true?
+
+TODO
+
+===Last instance: open another Emacs===
+
+Many people end up opening two Emacs processes: one for editing, other
+for Gnus. In this way, even if Gnus blocks, the editing Emacs is
+responsive. However, you lose the benefits of integration. It will be
+more cumbersome to pass stuff around stuff (bookmarks, org-mode, Lisp
+code, etc.) and you may have to maintain two configurations or keep
+file updates in mind.
 
 ==What operations are slow in Gnus==
 List and discuss them here.
@@ -63,94 +183,6 @@ You can notice that even opening a new Emacs instance takes very little time:
 
 So why not delegate some tasks to another process?
 
-
-==Practical tips and tricks to improve Gnus' speed==
-
-=== Install gnutls-cli tool ===
-
-If you see a message like this in your *Messages* buffer
-
-Opening TLS connection with `gnutls-cli --insecure -p 993 imap.gmail.com'...failed
-
-that means gnutls-cli is not installed (the case of Ubuntu)
-
-Install it and you will gain preciouscouple of seconds on startup.
-
-===Some suggestions from the official manual===
-http://www.gnu.org/software/emacs/manual/html_node/gnus/_005b9_002e2_005d.html
-
-Namely:
-* (gnus-compile) --removed http://git.gnus.org/cgit/gnus.git/commit/?id=59403f318f769dc0ff91a59405c4d8d122a10ab6
-* (setq gc-cons-threshold 3500000)
-* (setq gnus-use-correct-string-widths nil)
-
-===Activate asynchronous behaviour in Gnus===
-There are many variables like gnus-asynchronous. Can they make a difference if set to true?
-
-TODO
-
-===Agent===
-Does the gnus-agent improve Gnus's speed for all groups?
-
-TODO
-
-===Disable adaptive scoring===
-[http://www.gnu.org/software/emacs/manual/html_node/gnus/Adaptive-Scoring.html Adaptive scoring] can use a lot of space and maybe affect speed. The variable gnus-use-adaptive-scoring (nil by default) controls whether to use it.
-
-===Avoid using some types of scoring===
-Some people suggest omitting scoring completely for maximum speed. Others don't notice any speed penalty, or find scoring too valuable to ignore.
-
-Scoring can be slow if you do it against the full head or body because Gnus has to request much data. See [http://article.gmane.org/gmane.emacs.gnus.general/68828 this example] with timings. Scoring basic headers like to/from/subject should be faster.
-
-An alternative to search inside the body is to use keywords; see [http://article.gmane.org/gmane.emacs.gnus.general/68830 description].
-
-You can prohibit scoring in headers or body via the variable gnus-inhibit-slow-scoring; for instance if it is set to "^nntp[+:]"
-
-===Use proxy servers===
-E.g. use offlineimap (an IMAP synchronization tool) to pull emails from a remote server instead of connecting directly to [[GnusGmail]], for instance. Several Gnus users run a local IMAP server, such as dovecot, which they synchronize using offlineimap and access from Gnus  via nnimap.
-
-Other option: use fetchmail+maildrop to get mails and deliver to local Maildir, then use nnmaildir to read mails.
-
-If you are running debian (or a derivative) and you use exim4 for smtp delivery with a smarthost, add the option '-odqs' in /etc/default/exim4 SMTPLISTENEROPTIONS (otherwise gnus still locks up your emacs when sending large attachments). Also change QUEUEINTERVAL to something smaller like 5m. If you need a message sent immediately run sudo exim4 -q.
-
-===Keep summary buffers small===
-* Set the 'large-newsgroup-initial' group parameter to a small value  (e.g. 50), so that you get smaller summary buffers.
-* Sort articles/threads by number.
-* Depending on the IMAP server and the back end it uses, it might be wise to keep your groups small. Use expiry to automatically create archive groups (see variable nnmail-fancy-expiry-targets). Use searching facilities like nnir/nnmairix for an efficient search in those archives, so that you don't have to build huge summary buffers with thousands of mails.
-
-===Specific for nnimap===
-* If you use nnimap, put an appropriate server definition in gnus-select-method or gnus-secondary-select-methods. Don't use it as a foreign server.
-** TODO: Why are foreign servers slower to check mail?  Discuss/fix this on the mailing list. Maybe it's because they re-run the hook to get new news on every group.
-
-===Specific for nnrss===
-* Use shell scripts to retrieve RSS feeds asynchronously (e.g. via cron). Set nnrss-use-local to 't' and use 'nnrss-generate-download-script' to generate the shell script for retrieving the feeds. If you had atom feeds by using the instructions [http://www.emacswiki.org/emacs/GnusRss#toc6 here], you need to edit the script by hand. An example for planet emacs:
-
-$WGET -q 'http://planet.emacsen.org/atom.xml' -O - | xsltproc -o "$RSSDIR"/'Planet\ Emacs.xml' ~/.emacs.d/atom2rss-exslt.xsl -
-
-If you use shimbuns, there's 'shimbun-use-local' and 'nnshimbun-generate-download-script' which do the same.
-
-The following can be used to update automatically the shimbun script created by nnshimbun-generate-download-script (useful if one has added or removed shimbun groups in Gnus):
-
- (defun my-nnshimbun-generate-download-script ()
-  (nnshimbun-generate-download-script)
-  (write-file "~/bin/nnshimbun.sh")
-  (kill-buffer nil)
-  (shell-command "chmod u+x ~/bin/nnshimbun.sh")
-  (message "Nnshimbun script saved."))
-
- (add-hook 'gnus-exit-gnus-hook 'my-nnshimbun-generate-download-script)
-
-Note: such a hook does not work so well with nnrss-generate-download-script, which populates the script only with nnrss groups that have been updated in the current session of Gnus (as opposed to all subscribed rss groups).
-
-===Use group levels===
-* Use group levels to make checking for new mails faster. Use high levels (4 or 5) for groups like spam/ham and less important mailing lists etc. which you do not need to check regularly. Use 'gnus-activate-level' to specify which groups you'd like to be activated on startup. Put your important mail groups on level 1 and use prefix arguments like '1 g' to specify which groups you'd like to check for new mail.
-
-===Tweak your `gnus-summary-line-format'===
-Try tweaking `gnus-summary-line-format' to speed up summary line display when entering a group.
-For example using %D instead of %d to display dates is much faster.
-
-===Last instance: open another Emacs===
-Many people end up opening two Emacs processes: one for editing, other for Gnus. In this way, even if Gnus blocks, the editing Emacs is responsive. You lose however the integration; it will be more cumbersome to pass stuff around stuff (bookmarks, org-mode, Lisp code.) and you will have to maintain 2 configurations. It isn't anymore *1 Emacs to rule them all*, they are 2.
 
 ==Related information==
 
