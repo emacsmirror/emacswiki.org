@@ -34,10 +34,10 @@ If you have `transient-mark-mode' on, you can just use `comment-dwim': select a 
 ===Lint, style and syntax checkers===
 Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyflakes (flake8 includes both), pylint and pychecker.
 ====Flycheck====
-Flycheck integrates flake8 and pylint.
+[[Flycheck]] integrates flake8 and pylint.  It can be used with multiple checkers per buffer.
 ==== Flymake====
 =====pylint=====
-Flymake can be used with pylint, as documented at http://docs.pylint.org/ide-integration.
+[[FlyMake]] can be used with pylint, as documented at http://docs.pylint.org/ide-integration.
 
 =====flake8 / pyflakes=====
 https://github.com/purcell/flymake-python-pyflakes is a flymake handler for python-mode.el using pyflakes or flake8, although the author suggests you might be better served using [[Flycheck]].
