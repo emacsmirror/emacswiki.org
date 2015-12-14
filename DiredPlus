@@ -76,6 +76,8 @@ If the file is an [[BookmarkPlus#AutofileBookmarks|autofile]] then the informati
 
 * '''Dired+''' recognizes [[Sunrise Commander]], so you can use them together.
 
+
+[:RegionMenu]
 Here is a screenshot of '''Dired+''', showing highlighting and the `mouse-3' menu when a region is active.
 
 [[image:DrewsEmacsDired]]
@@ -100,7 +102,7 @@ Things to notice in this screenshot:
 * Files that are marked and files that are flagged for deletion have the mark/flag highlighted differently (e.g. '''<code>Makefile</code>''' versus '''<code>psgml-api.elc</code>'''). 
 
 
-
+[:RegionMenuWithMouse3Library]
 If you also use library <tt>[[mouse3.el]]</tt> then you can choose to use its popup menu, which is specially adapted for Dired, whenever there is an active region, rather than the simpler menu shown above.  Here is a screenshot. 
 
 [[image:DrewsEmacsDiredRegionMouse3]]
