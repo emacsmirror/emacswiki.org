@@ -17,6 +17,11 @@ emacs版本的package.el支持多个仓库，你可以用GNU ELPA来添加其它
 任何仓库的组合都是很好的。你或许应该总是把GNU的核心的仓库包括进去，但是这个不是必需的。
 
 包的归档也可以是本地的
+中国大陆的用户可以使用popkit.org(http://elpa.popkit.org/)提供的elpa仓库：
+{{{
+(add-to-list 'package-archives
+          '("popkit" . "http://elpa.popkit.org/packages/"))
+}}}
 
 ===增加交互性===
 你可以交互性的做.
