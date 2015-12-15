@@ -8,9 +8,9 @@
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 10 19:08:07 2015 (-0800)
+;; Last-Updated: Tue Dec 15 06:12:01 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 736
+;;     Update #: 740
 ;; URL: http://www.emacswiki.org/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -69,6 +69,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/12/15 dadams
+;;     insert-directory: Use match beginning for "total" text.  Thx to Tino Calancha.
 ;; 2015/12/10 dadams
 ;;     count-dired-files: Back up 1 char first, if eobp.  Thx to Tino Calancha.
 ;; 2014/09/07 dadams
@@ -627,7 +629,7 @@ normally equivalent short `-D' option is just passed on to
             (save-excursion
               (goto-char beg)
               (while (re-search-forward "^ *\\(total\\)" nil t)
-                (beginning-of-line)
+                (goto-char (match-beginning 1))
                 (insert "files " (number-to-string (save-match-data
                                                      (count-dired-files)))
                         "/" (number-to-string
@@ -635,7 +637,7 @@ normally equivalent short `-D' option is just passed on to
                                                          nil nil t)) 2))
                         " ")
                 (goto-char beg)
-                (re-search-forward "^files [0-9]+/[0-9]+ \\(total\\)" nil t)
+                (re-search-forward "^ *files [0-9]+/[0-9]+ \\(total\\)" nil t)
                 (replace-match "space used" nil nil nil 1)
                 (let ((available  (and (fboundp 'get-free-disk-space)
                                        (get-free-disk-space ".")))
