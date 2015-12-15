@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep  9 08:39:25 2015 (-0700)
+;; Last-Updated: Tue Dec 15 06:42:44 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 2165
+;;     Update #: 2167
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -117,6 +117,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/12/15 dadams
+;;     describe-file: Remove `' around file name in title.
 ;; 2015/09/09 dadams
 ;;     describe-variable: Fixed test order for non-"" VARDOC, so it does not become t.
 ;; 2015/09/08 dadams
@@ -2698,7 +2700,7 @@ Non-nil optional arg NO-ERROR-P prints an error message but does not
                                                 (format "\nImage Data (EXIF)\n-----------------\n%s" all))))
                                       (error nil))))
              (help-text        (concat
-                                (format "`%s'\n%s\n\n" filename (make-string (+ 2 (length filename)) ?-))
+                                (format "%s\n%s\n\n" filename (make-string (length filename) ?-))
                                 (format "File Type:                       %s\n"
                                         (cond ((eq t type)  "Directory")
                                               ((stringp type)  (format "Symbolic link to `%s'" type))
