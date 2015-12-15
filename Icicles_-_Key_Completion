@@ -160,7 +160,7 @@ prefix key whose completions you do not need to be reminded of.
 
 To add top-level key completion to, say, the menu-bar '''Edit''' menu,
 you would customize `icicle-complete-keys-ignored-prefix-keys' by
-adding `<menu-bar> <edit>' as a prefix key to ignore.  Then
+adding `##<menu-bar> <edit>##' as a prefix key to ignore.  Then
 you would add `icicle-complete-keys' as a '''Complete Keys''' menu item on the '''Edit'''
 menu, as follows:
 
