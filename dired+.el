@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 10 09:24:07 2015 (-0800)
+;; Last-Updated: Tue Dec 15 06:47:13 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 9336
+;;     Update #: 9341
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -645,6 +645,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2015/12/15 dadams
+;;     diredp-font-lock-keywords-1: Follow # with optional [/ ], for face diredp-number.  Thx to Tino Calancha.
 ;; 2015/11/10 dadams
 ;;     diredp-fileset(-other-window): Separate error msgs for unloaded filesets.el and empty filesets-data.
 ;; 2015/10/02 dadams
@@ -4302,7 +4304,7 @@ In particular, inode number, number of hard links, and file size."
 
    ;; Inode, hard-links, & file size (. and , are for the decimal point, depending on locale)
    ;; See comment for `directory-listing-before-filename-regexp' in `files.el' or `files+.el'.
-   '("\\(\\([0-9]+\\([.,][0-9]+\\)?\\)[BkKMGTPEZY]? \\)" 1 diredp-number)
+   '("\\(\\([0-9]+\\([.,][0-9]+\\)?\\)[BkKMGTPEZY]?[ /]?\\)" 1 diredp-number)
 
    ;; Directory names - exclude d:/..., Windows drive letter in a dir heading.
    (list (concat dired-re-maybe-mark dired-re-inode-size "\\(d\\)[^:]")
