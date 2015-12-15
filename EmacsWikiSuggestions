@@ -54,6 +54,9 @@ Given the selection we have on the [[CSS]] page, which are the themes you'd like
 [new]
 I went through the available stylesheets and moved my favorites to the top.  None of them are perfect but several could potentially be fixed into something decent with a bit of tweaking. In my opinion this is a very serious issue.  Applying a new CSS theme made the wiki spring to life for me.  --MikeAbrahams
 
+[new]
+What do you guys think about updating the default theme of the site? I think it looks really nice with a lighter theme like Cali+ or  [http://www.emacswiki.org/emacs?action=browse;bootstrap=0;id=CSS;css=/css/pedia.css Wikipedia], but the gray and orange theme is kind of dark. I'm mostly thinking of new users - it took me a couple of years to realize you could change the look of the site, but I've really enjoyed visiting here since discovering those other themes. 
+-- BrianBurns
 
 
 == Talk link indicates whether page already exists ==
