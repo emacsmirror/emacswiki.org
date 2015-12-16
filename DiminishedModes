@@ -1,4 +1,4 @@
-diminish.el[http://www.eskimo.com/~seldon/diminish.el] lets you fight modeline clutter by removing or abbreviating minor mode indicators.
+diminish.el[https://github.com/myrjola/diminish.el] lets you fight modeline clutter by removing or abbreviating minor mode indicators.
 
     (require 'diminish)
     (eval-after-load "filladapt" '(diminish 'filladapt-mode))
