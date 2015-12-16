@@ -18,7 +18,7 @@ Home page and wiki: http://darcs.net/
 Manual: http://darcs.net/manual/darcs.html
 
 Emacs modes for Darcs (largely a circular reference which should be
-rationalized):  http://darcs.net/RelatedSoftware/Emacs
+rationalized, but may be more up-to-date):  http://darcs.net/RelatedSoftware/Emacs
 
 Downloads: http://darcs.net/Binaries
 
@@ -31,14 +31,14 @@ channel is too quiet, try at #emacs at irc://irc.freenode.net).
 
 There are two VC implementations for Darcs available at
 * http://www.pps.jussieu.fr/~jch/software/repos/vc-darcs/ and
-* http://www.loveshack.ukfsn.org/emacs/vc-darcs.el.
+* http://hub.darcs.net/fx/vc-darcs
 
 They seem to differ particularly in how they treat "revisions" for VC.
 The first one is available from MELPA, while the raison d'être of the latter is copyright assignment to the FSF, so
 it is the one to contribute to if you want to try to get support into
-Emacs.
+Emacs.  It probably works with Emacs as far back as version 21 and maybe still darcs1.
 
-VC intrinsically still doesn't seem to support systems like Darcs
+VC intrinsically still doesn't support patch-based systems like Darcs
 properly (and changes to generalize it have been rejected).
 
 === Not VC-based ===
