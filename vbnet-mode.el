@@ -1334,7 +1334,7 @@ fast enough.
       "Of" "Module"
       )))
 
-
+(defvar vbnet-namespace-face 'vbnet-namespace-face)
 (defface vbnet-namespace-face
   '((((background light))
      (:foreground "DarkSalmon"))
@@ -1343,6 +1343,7 @@ fast enough.
   "Face for namespace names (in the Imports statement) in VB.NET buffers."
   :group 'vbnet)
 
+(defvar vbnet-funcall-face 'vbnet-funcall-face)
 (defface vbnet-funcall-face
   '((((background light))
      (:foreground "dim gray"))
