@@ -1,4 +1,5 @@
 [[ja:PythonProgrammingInEmacs-ja]]
+[[ja:PythonProgrammingInEmacs-ja]]
 This page collects information for creating a usable Python programming environment in Emacs.
 ==Quick start==
 Emacs already has out-of-the-box Python support via `python-mode'.  The IDE packages listed below can be used to set up a more complete environment quickly.
