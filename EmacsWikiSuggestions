@@ -62,6 +62,21 @@ What do you guys think about updating the default theme of the site? I think it 
 I'm in favor of trying something new!
 -- AlexSchroeder
 
+[new]
+
+Okay great! I put up an album of screenshots for some themes (just things that I thought might look good as a default theme, and some others) for comparison at http://imgur.com/a/czk9D - I like the lighter themes but they could still use some tweaking - I'd like to try and make one that combines 
+
+* Made in California (gray links, but larger `function references' text)
+* Cali+ (headings, have section separators but lighter dots, box around table of contents) 
+* Planet CSS (code block font, colored syntax highlighting)
+* Wikipedia (large logo on left, maybe try a vertical sidebar)
+
+and see how it looks - other suggestions are welcome too. I'll put the CSS on Github when I get it started - it can be a collaborative effort, and I'll post to the dev list and reddit once I get the Github up for some more feedback. 
+
+-- BrianBurns
+
+
+
 == Talk link indicates whether page already exists ==
 Could there be some sort of styling or tooltip to indicate if the talk page exists/has talk on it?
 I like to browse the talk pages to see some meta-discussion.
