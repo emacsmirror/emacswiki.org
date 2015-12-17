@@ -1,30 +1,25 @@
-This page aims to give a brief preview of the main features of a [[CSS|CSS stylesheet]] - for a more complete preview see TextFormattingRules. 
-
+This page aims to give a brief preview of the main features of a [[CSS|CSS stylesheet]] - code blocks, wikilinks, lists, key sequences and function references - for a more complete preview see TextFormattingRules.  This sentence is just here for a bit of padding - you don't need to read it. 
 
 
 == Basics ==
 
+Here is a '''bulleted list''' - 
+
 * Use `C-h f' (`describe-function') and `C-h v' (`describe-variable') to understand commands and [[variable]]s you use. 
 
-* Use '''Preview''' when you edit, to see the effect of what you write.
-
 * Code (usually monospaced, plus escaping of wiki processing): %%<code>foo</code>%% -> <code>foo</code>
+
+* For more hash table functions see https://github.com/Wilfred/ht.el.
 
 
 == Code Blocks ==
 
-For more hash table functions see https://github.com/Wilfred/ht.el.
-
   (defun describe-hash-descend (hash)
-    "Recursive describe hash func for nested hash-tables"
+    "Recursive describe hash func for nested hash-tables - mangled"
     (maphash (lambda (key value)
                (pp key) (princ " => ")
                (if (hash-table-p value)
-                   (progn
-                     (princ " { ") (terpri)
-                     (describe-hash-descend value)
-                     (princ " } "))
-                 (pp value)) (terpri))
+                     (describe-hash-descend value))
              hash))
 
 {{{
