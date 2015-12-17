@@ -22,6 +22,8 @@ Here is a '''bulleted list''' -
                      (describe-hash-descend value))
              hash))
 
+== Cons cells and lists ==
+
 {{{
           +-------+---+    +------+---+  +-------+-----+
  list1--->| alpha | *----->| beta | *--->| gamma | nil |
