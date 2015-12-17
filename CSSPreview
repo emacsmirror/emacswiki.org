@@ -1,6 +1,6 @@
 This page aims to give a brief preview of the main features of a [[CSS|CSS stylesheet]] - for a more complete preview see TextFormattingRules. 
 
-: "I suppose I should learn Lisp, but it seems so foreign." - Paul Graham, Nov 1983
+
 
 == Basics ==
 
@@ -32,6 +32,10 @@ For more hash table functions see https://github.com/Wilfred/ht.el.
  list1--->| alpha | *----->| beta | *--->| gamma | nil |
           +-------+---+    +------+---+  +-------+-----+
 }}}
+
+== Quotes ==
+
+: "I suppose I should learn Lisp, but it seems so foreign." - Paul Graham, Nov 1983
 
 
 ----
