@@ -1,4 +1,4 @@
-The bell rings whenever <code>(ding)</code> is called.  What the bell does depends on the value of two variables:
+The bell rings whenever <code>(ding)</code>  is called.  What the bell does depends on the value of two variables:
 
 * visible-bell = nil: Emacs makes an audible ding.
 * visible-bell != nil: Emacs flashes the screen.
@@ -6,12 +6,14 @@ The bell rings whenever <code>(ding)</code> is called.  What the bell does depen
 
 Combinations of these two variables can create very interesting alert functions, as described in the following hacks.
 
+See also: [http://www.emacswiki.org/emacs/echo-bell.el echo-bell-mode]
+
 == Get visual indication of an exception == 
 
 During a normal editing session Emacs gives a warning signal quite
 often. Every time you type Ctrl-G, to stop searching, or stop what you were typing and do something else, and so on... you will get the bell. 
 Some people find all the beeping annoying. To get a visual signal
-instead, put the following in your [[InitFile ~/.emacs]]:
+instead, put the following in your [InitFile ~/.emacs]:
 
  (setq visible-bell 1)
 
