@@ -1,4 +1,4 @@
-The bell rings whenever (ding) is called.  What the bell does depends on the value of two variables:
+The bell rings whenever <code>(ding)</code> is called.  What the bell does depends on the value of two variables:
 
 * visible-bell = nil: Emacs makes an audible ding.
 * visible-bell != nil: Emacs flashes the screen.
@@ -6,7 +6,46 @@ The bell rings whenever (ding) is called.  What the bell does depends on the val
 
 Combinations of these two variables can create very interesting alert functions, as described in the following hacks.
 
-== Ring the Bell when Emacs is Out of Focus ==
+== Get visual indication of an exception == 
+
+During a normal editing session Emacs gives a warning signal quite
+often. Every time you type Ctrl-G, to stop searching, or stop what you were typing and do something else, and so on... you will get the bell. 
+Some people find all the beeping annoying. To get a visual signal
+instead, put the following in your [[InitFile ~/.emacs]]:
+
+ (setq visible-bell 1)
+
+== Flash the screen ==
+
+If <tt>(setq visible-bell t)</tt> doesn't work for you, you can use a different visual indicator: 
+
+    ;; quiet, please! No dinging!
+    (setq visible-bell nil)
+    (setq ring-bell-function `(lambda ()
+                                (set-face-background 'default "DodgerBlue")
+                                (set-face-background 'default "black")))
+
+== Turn off alarms completely ==
+
+Some people find the flashing annoying. 
+To turn the alarm off totally, you can use this:
+
+ (setq ring-bell-function 'ignore)
+
+== Play a different sound ==
+
+Instead of beeping or flashing, Emacs could play a cool sound file, whenever an error occurs (this handles .au or .wav files):
+
+ (setq ring-bell-function (lambda () (play-sound-file "/this/is/my/errorsound.au")))
+
+Or 
+
+ (setq ring-bell-function (lambda () 
+          (call-process "audioplay" nil 0 nil "/this/is/my/errorsound.au")))
+
+You might have to replace "audioplay" by "wavplay" or whatever application you have for playing audio files.
+
+== Ring the bell when Emacs is out of focus ==
 
 The visible bell is great if Emacs is the only program you ever use.  However, if you aren't paying attention to Emacs, or it's on another desktop, you won't see the visible bell.  In those cases, you probably want the bell to ring instead of blink.  Use the following:
 
@@ -52,31 +91,6 @@ The visible bell is great if Emacs is the only program you ever use.  However, i
   )
   (unfocused-ding-blink)
 
-== Get visual indication of an exception == 
-
-During a normal editing session Emacs gives a warning signal quite
-often. Every time you type Ctrl-G, to stop searching, or stop what you were typing and do something else, and so on... you will get the bell. 
-Some people find all the beeping annoying. To get a visual signal
-instead, put the following in your .emacs:
-
- (setq visible-bell 1)
-
-
-
-== Turn off alarms completely ==
-
-Now some people find the flashing annoying. 
-To turn the alarm totally
-off, you can use this:
-
- (setq ring-bell-function 'ignore)
-
-== XEmacs: Flash top and bottom line only ==
-
-For XEmacs you can set the visible bell not to flash the whole screen (as is default in XEmacs) but only the top and bottom line (default in GnuEmacs) by setting the visible-bell to anything other than t or nil:
-
- (setq visible-bell 'top-bottom)
-
 == Reduce the number of warnings == 
 
 In some cases, you'd like to reduce the number of warnings or eliminate warnings in certain conditions. The following
@@ -91,18 +105,62 @@ minibuffer or during an `isearch'.
 	  (ding))))
 
 
-== Play a different sound ==
+== A predicate for suppressing the bell at night ==
 
-Instead of beeping or flashing, Emacs could play a cool sound file, whenever an error occurs (this handles .au or .wav files):
+I have a younger sister and the bell wakes her up, so I've wrote this
+predicate to control the beeping.  -- PiotrMieszkowski
 
- (setq ring-bell-function (lambda () (play-sound-file "/this/is/my/errorsound.au")))
+    (defvar night-start 22
+      "The hour that people go to sleep.")
+    
+    (defvar night-end 8
+      "The hour that people wake up.")
+    
+    (defun nightp ()
+      "Check if it is night."
+      (let ((hr (nth 2 (decode-time (current-time)))))
+        (or (< hr night-end)
+        (> hr night-start))))
 
-Or 
 
- (setq ring-bell-function (lambda () 
-          (call-process "audioplay" nil 0 nil "/this/is/my/errorsound.au")))
+== Less obtrusive visible bell for terminals ==
 
-You might have to replace "audioplay" by "wavplay" or whatever application you have for playing audio files.
+I dislike the visible bell in terminals (i.e. flashing the whole terminal), so I'm experimenting with the following, which thus far seems to work nicely:
+
+ (defun my-terminal-visible-bell ()
+   "A friendlier visual bell effect."
+   (invert-face 'mode-line)
+   (run-with-timer 0.1 nil 'invert-face 'mode-line))
+ 
+ (setq visible-bell nil
+       ring-bell-function 'my-terminal-visible-bell)
+
+In GUI Emacs I prefer the default visible-bell however, so I'd ideally like to switch automatically depending on the currently-focused display. Unfortunately these variables aren't terminal-local, which makes it more awkward. My current approach is to use focus-in-hook, which doesn't catch all situations, but certainly accounts for many (and if you don't switch between GUI and terminal frames, it should be fine in any case). FWIW:
+
+ (defun my-configure-visible-bell ()
+   "Use a nicer visual bell in terminals."
+   (if window-system
+       (setq visible-bell t
+             ring-bell-function nil)
+     (setq visible-bell nil
+           ring-bell-function 'my-terminal-visible-bell)))
+ 
+ (defun my-frame-config (frame)
+   "Custom behaviours for new frames."
+   (with-selected-frame frame
+     (my-configure-visible-bell)))
+ ;; Run now, for non-daemon Emacs...
+ (my-frame-config (selected-frame))
+ ;; ...and later, for new frames / emacsclient
+ (add-hook 'after-make-frame-functions 'my-frame-config)
+ ;; ...and whenever a frame gains input focus.
+ (add-hook 'focus-in-hook 'my-configure-visible-bell)
+
+== XEmacs: Flash top and bottom line only ==
+
+For XEmacs you can set the visible bell not to flash the whole screen (as is default in XEmacs) but only the top and bottom line (default in GnuEmacs) by setting the visible-bell to anything other than t or nil:
+
+ (setq visible-bell 'top-bottom)
 
 == XEmacs: set the bell volume ==
 
@@ -157,66 +215,6 @@ The following version of caps lock flash uses emacs-deferred for async, timing a
 
 Seems like the Scroll Lock LED may be useful after all ;) -- mina86
 
-== A predicate for suppressing the bell at night ==
-
-I have a younger sister and the bell wakes her up, so I've wrote this
-predicate to control the beeping.  -- PiotrMieszkowski
-
-    (defvar night-start 22
-      "The hour that people go to sleep.")
-    
-    (defvar night-end 8
-      "The hour that people wake up.")
-    
-    (defun nightp ()
-      "Check if it is night."
-      (let ((hr (nth 2 (decode-time (current-time)))))
-        (or (< hr night-end)
-        (> hr night-start))))
-
-
-== Flash the screen ==
-
-When I use <tt>(setq visible-bell t)</tt> I see nothing.  So I use this as a visual indicator: 
-
-    ;; quiet, please! No dinging!
-    (setq visible-bell nil)
-    (setq ring-bell-function `(lambda ()
-                                (set-face-background 'default "DodgerBlue")
-                                (set-face-background 'default "black")))
-
-== Less obtrusive visible bell for terminals ==
-
-I dislike the visible bell in terminals (i.e. flashing the whole terminal), so I'm experimenting with the following, which thus far seems to work nicely:
-
- (defun my-terminal-visible-bell ()
-   "A friendlier visual bell effect."
-   (invert-face 'mode-line)
-   (run-with-timer 0.1 nil 'invert-face 'mode-line))
- 
- (setq visible-bell nil
-       ring-bell-function 'my-terminal-visible-bell)
-
-In GUI Emacs I prefer the default visible-bell however, so I'd ideally like to switch automatically depending on the currently-focused display. Unfortunately these variables aren't terminal-local, which makes it more awkward. My current approach is to use focus-in-hook, which doesn't catch all situations, but certainly accounts for many (and if you don't switch between GUI and terminal frames, it should be fine in any case). FWIW:
-
- (defun my-configure-visible-bell ()
-   "Use a nicer visual bell in terminals."
-   (if window-system
-       (setq visible-bell t
-             ring-bell-function nil)
-     (setq visible-bell nil
-           ring-bell-function 'my-terminal-visible-bell)))
- 
- (defun my-frame-config (frame)
-   "Custom behaviours for new frames."
-   (with-selected-frame frame
-     (my-configure-visible-bell)))
- ;; Run now, for non-daemon Emacs...
- (my-frame-config (selected-frame))
- ;; ...and later, for new frames / emacsclient
- (add-hook 'after-make-frame-functions 'my-frame-config)
- ;; ...and whenever a frame gains input focus.
- (add-hook 'focus-in-hook 'my-configure-visible-bell)
 
 ----
 CategoryDotEmacs
