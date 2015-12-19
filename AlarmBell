@@ -1,31 +1,48 @@
-The bell rings whenever <code>(ding)</code>  is called.  What the bell does depends on the value of two variables:
+The bell rings whenever function `ding'  is called.  What the bell does depends on the value of these variables:
 
-* visible-bell = nil: Emacs makes an audible ding.
-* visible-bell != nil: Emacs flashes the screen.
-* ring-bell-function != nil: Emacs does whatever the ring-bell function tells it to do.
+* If `visible-bell' is `nil', Emacs makes an audible ding.
+* If `visible-bell' is non-`nil', Emacs flashes the screen.
+* If `ring-bell-function' is a function, Emacs does whatever that function tells it to do.
 
-Combinations of these two variables can create very interesting alert functions, as described in the following hacks.
+Combinations of these variables can create different alert functions, as described below.
 
-See also: [http://www.emacswiki.org/emacs/echo-bell.el echo-bell-mode]
+See also: <tt>[[echo-bell.el|echo-bell-mode]]</tt>.
+
+
+
+
+
 
 == Get visual indication of an exception == 
 
 During a normal editing session Emacs gives a warning signal quite
 often. Every time you type Ctrl-G, to stop searching, or stop what you were typing and do something else, and so on... you will get the bell. 
 Some people find all the beeping annoying. To get a visual signal
-instead, put the following in your [InitFile ~/.emacs]:
+instead, put the following in your [[InitFile|init file]]:
 
  (setq visible-bell 1)
 
+
+
+
+
+
+
 == Flash the screen ==
 
-If <tt>(setq visible-bell t)</tt> doesn't work for you, you can use a different visual indicator: 
+If ##(setq visible-bell t)## doesn't work for you, you can use a different visual indicator: 
 
     ;; quiet, please! No dinging!
     (setq visible-bell nil)
-    (setq ring-bell-function `(lambda ()
-                                (set-face-background 'default "DodgerBlue")
-                                (set-face-background 'default "black")))
+    (setq ring-bell-function (lambda ()
+                               (set-face-background 'default "DodgerBlue")
+                               (set-face-foreground 'default "black")))
+
+
+
+
+
+
 
 == Turn off alarms completely ==
 
@@ -34,16 +51,24 @@ To turn the alarm off totally, you can use this:
 
  (setq ring-bell-function 'ignore)
 
+
+
+
+
+
+
 == Play a different sound ==
 
 Instead of beeping or flashing, Emacs could play a cool sound file, whenever an error occurs (this handles .au or .wav files):
 
- (setq ring-bell-function (lambda () (play-sound-file "/this/is/my/errorsound.au")))
+ (setq ring-bell-function (lambda ()
+                            (play-sound-file "/this/is/my/errorsound.au")))
 
 Or 
 
  (setq ring-bell-function (lambda () 
-          (call-process "audioplay" nil 0 nil "/this/is/my/errorsound.au")))
+                            (call-process "audioplay" nil 0 nil 
+                                          "/this/is/my/errorsound.au")))
 
 You might have to replace "audioplay" by "wavplay" or whatever application you have for playing audio files.
 
@@ -52,10 +77,11 @@ You might have to replace "audioplay" by "wavplay" or whatever application you h
 The visible bell is great if Emacs is the only program you ever use.  However, if you aren't paying attention to Emacs, or it's on another desktop, you won't see the visible bell.  In those cases, you probably want the bell to ring instead of blink.  Use the following:
 
   (defun unfocused-ding-blink ()
-    "Flash the screen when Emacs is focused, ring the bell (ding) if not."
-    (setq ring-bell-function `(lambda ()
-      (setq visible-bell (fsm-frame-x-active-window-p (selected-frame)))
-      (ding)))
+   "Flash the screen when Emacs is focused, ring the bell (ding) if not."
+    (setq ring-bell-function (lambda ()
+                               (setq visible-bell
+                                     (fsm-frame-x-active-window-p (selected-frame)))
+                               (ding)))
   
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; Frame-related functions ;;
@@ -68,30 +94,29 @@ The visible bell is great if Emacs is the only program you ever use.  However, i
       "Return the window ID of the current active window in X, as
   given by the _NET_ACTIVE_WINDOW of the root window set by the
   window-manager, or nil if not able to"
-      (if (eq (window-system) 'x)
-          (let ((x-active-window (x-window-property "_NET_ACTIVE_WINDOW" nil "WINDOW" 0 nil t)))
-            (string-to-number (format "%x00%x" (car x-active-window) (cdr x-active-window)) 16))
-        nil))
+      (and (eq (window-system) 'x)
+           (let ((x-active-window (x-window-property
+                                    "_NET_ACTIVE_WINDOW" nil "WINDOW" 0 nil t)))
+             (string-to-number (format "%x00%x"
+                                       (car x-active-window) 
+                                       (cdr x-active-window))
+                               16))))
   
     (defun fsm-frame-outer-window-id (frame)
       "Return the frame outer-window-id property, or nil if FRAME not of the correct type"
-      (if (framep frame)
-          (string-to-number
-           (frame-parameter frame 'outer-window-id))
-        nil))
+      (and (framep frame)
+           (string-to-number (frame-parameter frame 'outer-window-id))))
   
     (defun fsm-frame-x-active-window-p (frame)
       "Check if FRAME is is the X active windows
   Returns t if frame has focus or nil if"
-      (if (framep frame)
-          (progn
-            (if (eq (fsm-frame-outer-window-id frame)
-                    (fsm-x-active-window))
-                t
-              nil))
-        nil))
-  )
-  (unfocused-ding-blink)
+      (and (framep frame)
+           (eq (fsm-frame-outer-window-id frame)
+               (fsm-x-active-window)))
+
+   )
+
+   (unfocused-ding-blink)
 
 == Reduce the number of warnings == 
 
@@ -121,8 +146,7 @@ predicate to control the beeping.  -- PiotrMieszkowski
     (defun nightp ()
       "Check if it is night."
       (let ((hr (nth 2 (decode-time (current-time)))))
-        (or (< hr night-end)
-        (> hr night-start))))
+        (unless (< hr night-end) (> hr night-start))))
 
 
 == Less obtrusive visible bell for terminals ==
@@ -134,23 +158,23 @@ I dislike the visible bell in terminals (i.e. flashing the whole terminal), so I
    (invert-face 'mode-line)
    (run-with-timer 0.1 nil 'invert-face 'mode-line))
  
- (setq visible-bell nil
-       ring-bell-function 'my-terminal-visible-bell)
+ (setq visible-bell       nil
+       ring-bell-function #'my-terminal-visible-bell)
 
 In GUI Emacs I prefer the default visible-bell however, so I'd ideally like to switch automatically depending on the currently-focused display. Unfortunately these variables aren't terminal-local, which makes it more awkward. My current approach is to use focus-in-hook, which doesn't catch all situations, but certainly accounts for many (and if you don't switch between GUI and terminal frames, it should be fine in any case). FWIW:
 
  (defun my-configure-visible-bell ()
    "Use a nicer visual bell in terminals."
    (if window-system
-       (setq visible-bell t
+       (setq visible-bell       t
              ring-bell-function nil)
-     (setq visible-bell nil
-           ring-bell-function 'my-terminal-visible-bell)))
+     (setq visible-bell       nil
+           ring-bell-function #'my-terminal-visible-bell)))
  
  (defun my-frame-config (frame)
    "Custom behaviours for new frames."
-   (with-selected-frame frame
-     (my-configure-visible-bell)))
+   (with-selected-frame frame (my-configure-visible-bell)))
+
  ;; Run now, for non-daemon Emacs...
  (my-frame-config (selected-frame))
  ;; ...and later, for new frames / emacsclient
@@ -158,11 +182,19 @@ In GUI Emacs I prefer the default visible-bell however, so I'd ideally like to s
  ;; ...and whenever a frame gains input focus.
  (add-hook 'focus-in-hook 'my-configure-visible-bell)
 
+
+
+
+
 == XEmacs: Flash top and bottom line only ==
 
 For XEmacs you can set the visible bell not to flash the whole screen (as is default in XEmacs) but only the top and bottom line (default in GnuEmacs) by setting the visible-bell to anything other than t or nil:
 
  (setq visible-bell 'top-bottom)
+
+
+
+
 
 == XEmacs: set the bell volume ==
 
@@ -170,20 +202,24 @@ XEmacs offers an option to set the variable <tt>bell-volume</tt>. The following 
 
     (setq bell-volume 0)
 
+
+
+
+
 == Use the Scroll-lock LED as an alarm indicator == 
 
 I use the following to make the Scroll Lock LED blink:
 
  (setq ring-bell-function (lambda ()
-   (call-process-shell-command "xset led 3; xset -led 3" nil 0 nil)))
+                            (call-process-shell-command
+                              "xset led 3; xset -led 3" nil 0 nil)))
 
 Two points. The LED numbers are different on different hardware.  And on some systems the Scroll Lock LED doesn't respond if the command to turn it on and off are sent in the same system call.  A more robust way to get the same effect is to write:
 
  (setq ring-bell-function
        (lambda ()
-        (progn
-	   (call-process-shell-command "xset led named 'Scroll Lock'")
-	   (call-process-shell-command "xset -led named 'Scroll Lock'")))
+	 (call-process-shell-command "xset led named 'Scroll Lock'")
+	 (call-process-shell-command "xset -led named 'Scroll Lock'"))
 
 The following version of caps lock flash uses emacs-deferred for async, timing and error checking.
 
@@ -191,29 +227,24 @@ The following version of caps lock flash uses emacs-deferred for async, timing a
     (defvar flash-scroll-lock-active nil)
     (defun flash-scroll-lock ()
       (interactive)
-      (when (and
-             (not flash-scroll-lock-active)
-             flash-scroll-lock-enabled)
+      (when (and (not flash-scroll-lock-active)
+                 flash-scroll-lock-enabled)
         (setq flash-scroll-lock-active t)
         (deferred:$
           (deferred:$
             (deferred:process  "xset" "led" "named" "Scroll Lock")
             (deferred:nextc it
-              (lambda ()
-                (deferred:wait 300)))
+              (lambda () (deferred:wait 300)))
             (deferred:nextc it
-              (lambda ()
-                (deferred:process  "xset" "-led" "named" "Scroll Lock")))
+              (lambda () (deferred:process  "xset" "-led" "named" "Scroll Lock")))
             (deferred:nextc it
-              (lambda ()
-                (deferred:wait 200)))
+              (lambda () (deferred:wait 200)))
             (deferred:nextc it
-              (lambda ()
-                (setq flash-scroll-lock-active nil))))
+              (lambda () (setq flash-scroll-lock-active nil))))
           (deferred:error it
             (lambda (err)
-              (setq flash-scroll-lock-active nil)
-              (setq flash-scroll-lock-enabled nil))))))
+              (setq flash-scroll-lock-active  nil
+                    flash-scroll-lock-enabled nil))))))
 
 Seems like the Scroll Lock LED may be useful after all ;) -- mina86
 
