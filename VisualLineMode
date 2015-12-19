@@ -54,6 +54,11 @@ The following code convinces visual-line-mode to wrap at a given column by expan
             (set-window-margins nil (car current-margins))
             (set-window-margins nil (car current-margins)
                                 (- current-available visual-wrap-column))))))
+
+[new]
+
+I used the code above from JamesWright very successfully for a few years, but now there is also [http://melpa.org/#/visual-fill-column visual-fill-column] which uses the fill-column setting to wrap lines in visual line mode. Seems to work really well, I started having trouble with line wrapping when I switched to working in a terminal, but it appears to be sorted out now with visual-fill-column. -- TomHFife
+
 [new]
 
 See also LineWrap.
