@@ -175,5 +175,11 @@ Not having the right encoding set leads to errors in ipython:
 ERROR - failed to write data to stream: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='US-ASCII'>
 </pre>
 
+===How to improve this page===
+Round out support features in line with https://lists.gnu.org/archive/html/emacs-devel/2015-10/msg00669.html
+
+Add sections on: debugging, profiling, semantic editing, code coverage (?)
+
+Extend sections on: documentation lookup, refactoring, completion 
 ----
 Categories: CategoryProgramming, ProgrammingModes
