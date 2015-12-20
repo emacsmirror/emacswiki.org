@@ -31,7 +31,7 @@ $ ~/.emacs.d/jslint-reporter.bat test.js
 test.js:2:1:'console' was used before it was defined.
 </pre>
 
-5. Install [https://github.com/flycheck/flycheck Flycheck].
+5. [http://www.flycheck.org/manual/latest/Installation.html#Installation Install Flycheck]
 
 6. Add to <code>~/.emacs</code> <em>(on Windows <code>"~/.emacs.d/jslint-reporter.bat"</code>):</em>
 
