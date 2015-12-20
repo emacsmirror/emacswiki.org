@@ -1,5 +1,7 @@
 [http://www.flycheck.org Flycheck] is a modern on-the-fly syntax checking extension, and a modern alternative to Flymake. It supports [http://www.flycheck.org/manual/latest/Supported-languages.html#Supported-languages many languages] with many different syntax checkers out of the box. 
 
+Please be aware that the Flycheck maintainers to not support or endorse any of the following content.  Use at your own risk.
+
 == JSLint with Flycheck ==
 
 As of April 2014, Flycheck has no built in support for JSLint (but does include support for jshint, eslint, and gjslint). Fortunately support is straight forward to add.
