@@ -1,4 +1,4 @@
-Flycheck is a modern on-the-fly syntax checking extension, and a modern alternative to Flymake. It supports [http://flycheck.readthedocs.org/en/latest/guide/languages.html 39 languages] with 65 syntax checkers out of the box. It is available and well documented [https://github.com/flycheck/flycheck on GitHub].
+[http://www.flycheck.org Flycheck] is a modern on-the-fly syntax checking extension, and a modern alternative to Flymake. It supports [http://www.flycheck.org/manual/latest/Supported-languages.html#Supported-languages many languages] with many different syntax checkers out of the box. 
 
 == JSLint with Flycheck ==
 
