@@ -37,6 +37,8 @@ test.js:2:1:'console' was used before it was defined.
 
 <pre>
 (require 'flycheck)
+(global-flycheck-mode)
+
 (flycheck-define-checker javascript-jslint-reporter
   "A JavaScript syntax and style checker based on JSLint Reporter.
 
@@ -45,9 +47,8 @@ See URL `https://github.com/FND/jslint-reporter'."
   :error-patterns
   ((error line-start (1+ nonl) ":" line ":" column ":" (message) line-end))
   :modes (js-mode js2-mode js3-mode))
-(add-hook 'js-mode-hook (lambda ()
-                          (flycheck-select-checker 'javascript-jslint-reporter)
-                          (flycheck-mode)))
+
+(add-to-list 'flycheck-checkers 'javascript-jslint-reporter)
 </pre>
 
 7. Restart Emacs to make sure everything loads fine.
