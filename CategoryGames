@@ -22,7 +22,7 @@ Click on the header to list some pages related to game playing on Emacs.
 * <tt>snake</tt> - guide a snake around the screen, eat to grow
 * <tt>solitaire</tt> - balls on an 8x8 cross shaped grid
 * <tt>studlify-region</tt> - convert text to stUdlY caps
-* TetrisMode - arrange falling blocks
+* TetrisMode - arrange falling blocks (see also: https://github.com/skeeto/autotetris-mode)
 * <tt>yow</tt> - random Zippy quote
 * ZoneMode - crazy screen effects when idle
 
@@ -67,12 +67,20 @@ Click on the header to list some pages related to game playing on Emacs.
 * [https://github.com/krameshkrr/Emacs/tree/master/Turing-machine Turing machine] -- Turing machine puzzle game (Same as Alan Turing's 100th Birthday google doodle)
 * [https://github.com/codingteam/pacmacs.el Pacmacs] -- Pacman-like game for Emacs
 
-
 == Other modes for games related things ==
 
 * AntMode -- edit ant brain files for Ant Wars
 * WmlMode -- edit Wesnoth Markup Language (WML) files for Battle of Wesnoth
 * TinyFugueMode -- edit TF files
+
+== Other amusements ==
+
+* [https://www.reddit.com/r/emacs/comments/3xoins/totally_useless_and_utterly_awesome_packages/ Totally useless and utterly awesome packages (Reddit)] discusses Emacs-based amusements, such as:
+** https://github.com/johanvts/emacs-fireplace/
+** https://github.com/TeMPOraL/nyan-mode/ and https://github.com/wasamasa/zone-nyan
+** http://melpa.org/#/highlight-tail
+** https://github.com/rbanffy/selectric-mode
+** http://www.emacswiki.org/emacs/Deldo
 
 ----
 CategoryGames
