@@ -6,7 +6,7 @@ Unix-style line endings (line feed only). You can reopen the file with
 the correct line ending with a command like `M-x
 revert-buffer-with-coding-system utf-8-dos'. If your file is not in
 Unicode, be sure to specify the correct encoding system instead of
-=utf-8-dos=.
+`utf-8-dos'.
 
 If you have a mix of lines that end in ^M and lines that don't, you
 can remove the ^M by with `M-x replace-string RET C-q C-m RET RET'.
