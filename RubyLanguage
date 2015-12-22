@@ -1,15 +1,14 @@
-Stuff for [http://www.ruby-lang.org/ Object Oriented Scripting Language Ruby].
+Stuff for [http://www.ruby-lang.org/ Ruby, an object-oriented scripting language].
 
+* [https://github.com/emacs-tw/awesome-emacs#ruby has package recommendations]
 * RubyMode
-* EmacsLispForRuby
-* ReLisp (another ruby/emacs bridge)
-* LangHelp
-* GonzuiForEmacs
-* FlymakeRuby
-* RubyBlockMode
-* RubyTestMode
-* [[ruby-debug]] For a more easy way for debugging in ruby.
-* [[ruby-compilation.el]] Run a ruby process in a compilation buffer
+* EnhancedRubyMode
+* GonzuiForEmacs - search source code
+* FlymakeRuby - on-the-fly syntax checking
+* RubyBlockMode - highlight matching blocks
+* RubyTestMode - run ruby tests
+* [[ruby-debug]] - an easier way to debugging in ruby.
+* [[ruby-compilation.el]] - run a ruby process in a compilation buffer
 * RubyEvalRegion
 
 == Documentation ==
@@ -17,12 +16,18 @@ Utilities for consulting the documentation using Ri or other tools.
 
 * RiEl
 * [http://www.emacswiki.org/emacs/YARI YARI] (Yet Another Ri Interface)
+* LangHelp
 
 == Ruby on Rails ==
 Tools specifically used for helping you with developing in [http://rubyonrails.org/ Ruby on Rails].
 
 * RubyOnRails
 * [NxhtmlMode nXhtml]
+
+== Using Ruby to extend Emacs ==
+
+* EmacsLispForRuby
+* ReLisp (another ruby/emacs bridge)
 
 ----
 CategoryProgramming
