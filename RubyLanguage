@@ -6,6 +6,7 @@ Stuff for [http://www.ruby-lang.org/ Ruby, an object-oriented scripting language
 * GonzuiForEmacs - search source code
 * FlymakeRuby - on-the-fly syntax checking
 * RubyBlockMode - highlight matching blocks
+* RspecMode - navigate to and run specs
 * RubyTestMode - run ruby tests
 * [[ruby-debug]] - an easier way to debugging in ruby.
 * [[ruby-compilation.el]] - run a ruby process in a compilation buffer
