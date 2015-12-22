@@ -187,7 +187,7 @@ The link posted by the other user has 2 issues:
 
 ----  
 
-I am using Emacs in server environments where I do not have X11 available, so I use it in text terminal. Minimap shows fonts at same size as other buffers if used this way. Is it possible to solve this issue?  [Nope.]
+I am using Emacs in server environments where I do not have X11 available, so I use it in text terminal. Minimap shows fonts at same size as other buffers if used this way. Is it possible to solve this issue?  Yes, but not totally: [https://cloud.githubusercontent.com/assets/7250745/8083436/d4aaf9d4-0f84-11e5-9383-cb02bba384bc.png vim-minimap] uses drawille library to lower the size of the text in terminal.  Emacs' minimap could do the same: https://github.com/dengste/minimap/issues/12.
 
 ----
 
