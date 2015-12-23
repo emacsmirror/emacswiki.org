@@ -114,7 +114,7 @@ number is displayed whenever you change direction when [[Icicles - Cycling Compl
 
 
 
-
+[:IncrementalCompletion]
 [:CompletionsIcompletion]
 === Icompletion in *Completions*: Apropos and Prefix Completion ===
 
@@ -420,7 +420,6 @@ CategoryCompletion
 CategoryDocumentation
 CategoryHelp
 CategoryProgrammerUtils
-
 
 
 
