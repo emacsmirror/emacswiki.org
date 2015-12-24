@@ -16,16 +16,16 @@ Here are other pages relating to this mode,
 * [http://user42.tuxfamily.org/compile-command-default/index.html compile-command-default.el] -- establish a default compile command
 * CheckBufferCompiled -- Checking whether current buffer's modification time is newer than the time of the last compile.
 
-== Suppress COLUMNS environment variable? ==
+== Control the scrolling of the compilation buffer ==
 
-I have just built emacs 21.3 on HP-UX.  When I try to do a compile from various frames, I find that the compilation mode has set the environment variable COLUMNS, which the compiler then uses to format it's output.  The COLUMNS is set from the frame that I issue the compile-command.  However, I have *compilation* set in my special-display-buffer-names variable, so the column-width is completely irrelevant for any other frame.  The upshot is that this interferes with the interpretation of compile errors.  Is there a way to suppress COLUMNS from being set?
+If you want the compilation buffer to stop scrolling so that the first error is visible, set <code>compilation-scroll-output</code> to <code>'first-error</code>. See the documentation for <code>compilation-scroll-output</code> for more options.
 
-== Browse Among Compilation Errors Using Regexp Search ==
+== Browse compilation errors using regexp search ==
 
 See [[Icicles - Other Search Commands]], command `icicle-compilation-search', for a way to navigate among compilation errors or `grep' search hits using one or multiple regexps.
 
 
-==Small Compile Window w/Highlighted Errors==
+==Small compile window with highlighted errors==
 
 I use the following in order to get a nice behaving small compile window.  F5 closes any old compile windows and opens a new one that is then resized.
 C-n and C-p step through errors highlighting the line that they are on.
@@ -68,7 +68,7 @@ C-n and C-p step through errors highlighting the line that they are on.
   
   (global-set-key [f5] 'my-recompile)
 
-==Another Small Compiler Window==
+==Another small compiler window==
 
 Here we keep the compiler window 10 lines height, and also make sure that its always does a vertical split (prevents using other window), 
 also this version does not close the compilation window. (default binding to F9)
@@ -223,8 +223,12 @@ Here's a snippet that adds Java stack trace support to `compilation-mode' and `n
         ("^[[:space:]]*at \\(\\(?:[[:lower:]]+\\.\\)+\\)[^(]+(\\([[:alnum:]]+\\.java\\):\\([[:digit:]]+\\))"
          java-stack-trace-regexp-to-filename 3)))
 
+== Question: Suppress COLUMNS environment variable? ==
+
+I have just built emacs 21.3 on HP-UX.  When I try to do a compile from various frames, I find that the compilation mode has set the environment variable COLUMNS, which the compiler then uses to format it's output.  The COLUMNS is set from the frame that I issue the compile-command.  However, I have *compilation* set in my special-display-buffer-names variable, so the column-width is completely irrelevant for any other frame.  The upshot is that this interferes with the interpretation of compile errors.  Is there a way to suppress COLUMNS from being set?
+
 ----
 '''See Also''': GrepMode
 
 ----
-CategoryProgrammerUtils CategoryModesCategoryNavigation
+CategoryProgrammerUtils CategoryModes CategoryNavigation
