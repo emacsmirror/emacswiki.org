@@ -28,6 +28,8 @@ If you don't see the package listed there, you may need to add another package s
 
 You may want to start by installing the <code>paradox</code> package.  This will allow you to use the command <code>paradox-list-packages</code>, which among other things gives the ability to sort package list by GitHub popularity.  Starting with the most popular packages is a good way to find the most useful and effective ones.  
 
+If you move to a different system and you would like to quickly install all of your previously installed packages, look into `M-x package-install-selected-packages'. If you use UsePackage, the <code>:ensure t</code> property will tell Emacs to install a package if it hasn't already been installed.
+
 == Using and configuring packages ==
 
 Many packages come with instructions on installation and use.  These can be viewed in the package manager by pressing `RET' on the package line.
@@ -40,5 +42,21 @@ For more inspiration and examples, look into the source of the Emacs starter con
 
 Some Emacs Lisp libraries or configuration snippets not available as packages. To install them, see LoadPath.
 
+== Configuring packages ==
+
+The autoloads for installed packages will automatically be loaded
+after your InitFile has finished processing, so common commands will
+be available without any additional configuration. You can also use
+Customize to change the settings for your installed files.
+
+If you need to configure other settings in your InitFile and you're
+running into undefined functions or variables, you can use
+<code>(package-initialize)</code> to set up the load-paths and
+autoloads for installed packages. Then you can use <code>(require
+'package-name)</code> to fully load the package, <code>(eval-after-load
+'package-name ...)</code> to run code after a package is loaded, or
+something like the UsePackage macro to organize your package-related
+configuration.
+
 ----
-CategoryPackaging.
+CategoryPackaging
