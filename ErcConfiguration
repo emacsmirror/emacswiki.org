@@ -205,6 +205,13 @@ If you are behind a quirky corporate firewall, the irc server (viz., like, irc.f
 
 IF you don't setq erc-auto-reconnect to nil above, then if a channel split logs you off, the pings seem to pile up and upon auto-join, you get  an excess flood quit.. which then keeps going on forever..
 
+== Reconnect in the background ==
+
+By default, ERC selects the channel buffers when it reconnects. If you'd like it to connect to channels in the background, add this to your InitFile:
+
+   (setq erc-join-buffer 'bury)
+
+See the documentation for <code>erc-join-buffer</code> for other options.
 
 == Erc Button URL ==
 
