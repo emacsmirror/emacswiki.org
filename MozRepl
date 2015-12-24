@@ -30,7 +30,7 @@ Also, if you have multiple tabs/windows open it might initially pick the wrong w
                        '(lambda ()
                           (interactive)
                           (comint-send-string (inferior-moz-process)
-                                              "setTimeout(BrowserReload(), \"1000\");"))
+                                              "setTimeout(BrowserReload, \"1000\");"))
                        'append 'local)) ; buffer-local
 
 ;; Example - you may want to add hooks for your own modes.
