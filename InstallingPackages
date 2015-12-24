@@ -52,9 +52,7 @@ Customize to change the settings for your installed files.
 If you need to configure other settings in your InitFile and you're
 running into undefined functions or variables, you can use
 <code>(package-initialize)</code> to set up the load-paths and
-autoloads for installed packages. Then you can use <code>(require
-'package-name)</code> to fully load the package, <code>(eval-after-load
-'package-name ...)</code> to run code after a package is loaded, or
+autoloads for installed packages. Then you can use <code>(require 'package-name)</code> to fully load the package, <code>(eval-after-load 'package-name ...)</code> to run code after a package is loaded, or
 something like the UsePackage macro to organize your package-related
 configuration.
 
