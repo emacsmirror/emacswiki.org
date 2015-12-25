@@ -6636,6 +6636,7 @@
 ;;  * `icicle-search' (`C-c `')        - Trip among regexp search hits
 ;;  * `icicle-search-bookmarks-together' (`C-u C-c `'),
 ;;    `icicle-search-bookmark',        - Search multiple bookmarks
+;;
 ;;  * Type-specific bookmark searches
 ;;    `icicle-search-bookmark-list-bookmark' - Search bookmark lists
 ;;    `icicle-search-dired-bookmark'   - Search Dired bookmarks
