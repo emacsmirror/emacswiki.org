@@ -8,7 +8,10 @@ Unicode, be sure to specify the correct encoding system instead of
 `utf-8-dos'.
 
 If you have a mix of lines that end in ^M and lines that don't, you
-can remove the ^M with `M-x replace-string RET C-q C-m RET RET'.
+can remove the ^M with `M-x replace-string RET C-q C-m RET'. C-q
+quotes the keys you press right after it, allowing you to insert an
+actual ^M. Note that typing C-m or ^M won't work - you have to press
+Control and then q, and then Control and then m.
 
 ----
 
