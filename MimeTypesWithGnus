@@ -13,6 +13,18 @@ And then, in Emacs, do "M-x mailcap-parse-mailcaps" to force a re-read of that f
     application/*; xdg-open %s
 
 which opens most files in the system-defined viewer.
+If one don't want to create/modify .mailcap, there is a possibility to use the function 
+   
+    mailcap-add-mailcap-entry
+
+In OSX there is a way to get preview of the file in Finder with the Space key. We can use this functionality to preview in Gnus as well:
+  
+    (mailcap-add-mailcap-entry "application" "pdf" '((viewer "/usr/bin/qlmanage -p %s") (type . "application/pdf")))
+    (mailcap-add-mailcap-entry "image" "jpeg" '((viewer "/usr/bin/qlmanage -p %s") (type . "image/*")))
+
+It is also convenient to redefine Space key while cursor is on attachement to use this preview:
+
+    (define-key gnus-mime-button-map " " 'gnus-mime-view-part-externally)
 
 Since Emacs can display images inline, you may not want to treat them
 as real attachments (ie. no clicking on them and saving them).  Here's
