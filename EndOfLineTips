@@ -1,17 +1,15 @@
 This page is for tips about [[line ending]] characters.
 
-If you see ^M in your file, you may have opened a file with DOS-style
+If you see '''##^M##''' in your file, you may have opened a file with DOS-style
 line endings (carriage return + line feed) while Emacs assumes it has
-Unix-style line endings (line feed only). You can reopen the file with
+Unix-style line endings (line feed only).  (The carriage-return character, sometimes abbreviated as ##CR##, is '''##^M##'''.  The line-feed character, sometimes abbreviated as ##LF##, is '''##^J##'''.)
+
+You can reopen the file with
 the correct line ending with a command like `M-x revert-buffer-with-coding-system utf-8-dos'. If your file is not in
 Unicode, be sure to specify the correct encoding system instead of
 `utf-8-dos'.
 
-If you have a mix of lines that end in ^M and lines that don't, you
-can remove the ^M with `M-x replace-string RET C-q C-m RET'. C-q
-quotes the keys you press right after it, allowing you to insert an
-actual ^M. Note that typing C-m or ^M won't work - you have to press
-Control and then q, and then Control and then m.
+If you have a mix of lines that end in ##^M## and lines that don't, you can  use `M-x replace-string RET C-q C-m RET' to remove the ##^M##'s.  '''`C-q'''' quotes the key you press right after it, letting you insert a ##^M## character.  Typing `C-m' won't work -- you have to hold down `Control' while hitting `q' followed by `m'.
 
 ----
 
@@ -21,9 +19,9 @@ You can see an example from Elisp in SeijiZenitaniDotEmacs;
 
 Here are the specific codes:
 
-* M-x set-buffer-file-coding-system utf-8-unix  (for LF)
-* M-x set-buffer-file-coding-system utf-8-mac   (for CR)
-* M-x set-buffer-file-coding-system utf-8-dos   (for CR+LF)
+* `M-x set-buffer-file-coding-system utf-8-unix'  (for ##LF##)
+* `M-x set-buffer-file-coding-system utf-8-mac'   (for ##CR##)
+* `M-x set-buffer-file-coding-system utf-8-dos'   (for ##CR+LF##)
 
 ----
 
