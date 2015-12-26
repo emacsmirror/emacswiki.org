@@ -19,6 +19,9 @@ I've been [s]using[/s] living in Emacs since May, 2012.  I can be found on [[Ema
 * [https://github.com/alezost/mwim.el mwim] -- "Move Where I Mean" --
   Move point to the beginning/end of line or code.
 
+* [https://github.com/alezost/dim.el dim] -- Change mode-line
+  names of major and minor modes.
+
 * [https://github.com/alezost/imenus.el imenus] -- Imenu for multiple buffers.
 
 * [[Debpaste]] -- Client for [http://paste.debian.net/ paste.debian.net].
@@ -51,7 +54,7 @@ I've been [s]using[/s] living in Emacs since May, 2012.  I can be found on [[Ema
   radio.
 
 * And some other packages that can be found on
-  [https://gitorious.org/alezost-emacs gitorious].
+  [https://gitlab.com/groups/alezost-emacs gitlab].
 
 
 ===My emacs config===
