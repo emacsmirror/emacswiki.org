@@ -1,3 +1,4 @@
+[[ja:VariableDefinition-ja]]
 This pages explains when to use defcustom, when to use defvar, when to
 use defconst, and when to start the DocString with an asterisk `*'.
 Variables with DocStrings that start with an asterisk are possible
