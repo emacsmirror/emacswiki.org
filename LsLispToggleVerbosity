@@ -47,7 +47,7 @@ fields which we need."
     ad-do-it
     (setq ad-return-value (concat 
       (substring ad-return-value 0 1)
-      (substring ad-return-value 1 3)))))
+      (substring ad-return-value 13)))))
 (ad-activate 'ls-lisp-format t)
 </pre>
 You should add it to "~/.emacs".
