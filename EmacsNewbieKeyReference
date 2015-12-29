@@ -36,8 +36,8 @@ These commands move the TextCursor and [[Point]]:
 * Go to the end of the line: `C-e'
 * Forward a word: `M-f'
 * Backward a word: `M-b'
-* Forward a sentence: `M-a'
-* Backward a sentence: `M-e'
+* Forward a sentence: `M-e'
+* Backward a sentence: `M-a'
 * Go to the beginning of the buffer: ##`M-<'##
 * Go to the end of the buffer: ##`M->'##
 
