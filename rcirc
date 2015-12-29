@@ -144,7 +144,7 @@ There's [http://permalink.gmane.org/gmane.emacs.gnus.general/83425 an explanatio
 ; [[rcircRandomNames]]: change all the nicks to random names
 ; [[rcircCloudToButt]]: Replace "cloud" with "butt" and other idiocy
 
-The following code snippet highlights the channel in the mode line when your nick is mentioned in the channel.
+;rcirc highlight the channel in the mode line only when your nick is mentioned in the channel. Use the following code snippet:
 
 <pre>
 (rcirc-track-minor-mode 1)
