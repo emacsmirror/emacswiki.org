@@ -53,7 +53,7 @@ These libraries let you switch among buffers and files based on matching their c
 
 * [[Lisp:contentswitch.el]]
 * [[Icicles]] -- see [[Icicles - Buffer-Name Input]] and [[Icicles - File-Name Input#MatchFileContent|Match File Content]]
-* helm-multi-swoop-all
+* helm-multi-swoop-all from helm-swoop https://github.com/ShingoFukuyama/helm-swoop/commits/master
 
 
 
