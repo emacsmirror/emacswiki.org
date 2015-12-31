@@ -4,13 +4,13 @@
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2015.07.05
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 20 10:52:29 2015 (-0700)
+;; Last-Updated: Thu Dec 31 14:03:44 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 23672
+;;     Update #: 23673
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -25,7 +25,7 @@
 ;;   `bookmark+-lit', `cl', `cmds-menu', `cus-edit', `cus-face',
 ;;   `cus-load', `cus-start', `cus-theme', `dired', `dired+',
 ;;   `dired-aux', `dired-x', `doremi', `easymenu', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
+;;   `ffap', `ffap-', `fit-frame', `flx', `frame-cmds', `frame-fns',
 ;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `highlight',
 ;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
 ;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
