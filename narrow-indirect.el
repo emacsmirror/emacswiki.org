@@ -4,13 +4,13 @@
 ;; Description: Narrow using an indirect buffer that is a clone
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2014-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2014-2016, Drew Adams, all rights reserved.
 ;; Created: Sun May 11 08:05:59 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 11:05:55 2015 (-0800)
+;; Last-Updated: Thu Dec 31 15:44:16 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 195
+;;     Update #: 202
 ;; URL: http://www.emacswiki.org/narrow-indirect.el
 ;; Doc URL: http://www.emacswiki.org/NarrowIndirect
 ;; Keywords: narrow indirect buffer clone view multiple-modes
@@ -226,8 +226,8 @@ However, the buffer name is in any case truncated at
 `ni-narrowed-buf-name-max' chars.
 
 Non-interactively:
-* FULL-NAME is the full buffer name, and TEXT is ignored.
-* TEXT is used for NAME, if FULL-NAME is nil.
+* Non-nil FULL-NAME is the full buffer name, and TEXT is ignored.
+* Non-nil TEXT is used for NAME, if FULL-NAME is nil.
 
 See `clone-indirect-buffer'."
   (interactive (list (and current-prefix-arg
@@ -239,8 +239,8 @@ See `clone-indirect-buffer'."
   (let ((here  (point)))
     (mark-defun)
     (ni-narrow-to-region-indirect-other-window
-     (region-beginning) (region-end) here full-name (and (not full-name)  (or text  (progn (require 'which-func)
-                                                                                           (which-function)))))))
+     (region-beginning) (region-end) here full-name
+     (and (not full-name)  (or text  (progn (require 'which-func) (which-function)))))))
 
 ;;;###autoload
 (defun ni-narrow-to-region-indirect-other-window (start end here &optional full-name text msgp)
