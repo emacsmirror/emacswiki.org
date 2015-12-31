@@ -6,13 +6,13 @@
 ;;      Sebastian Kremer <sk@thp.uni-koeln.de>,
 ;;      Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 29 21:56:15 2015 (-0700)
+;; Last-Updated: Thu Dec 31 13:15:25 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1194
+;;     Update #: 1196
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -23,8 +23,8 @@
 ;;   `apropos', `apropos+', `autofit-frame', `avoid', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `cmds-menu', `dired', `dired+', `dired-aux',
-;;   `dired-x', `easymenu', `ffap', `find-dired', `find-dired-',
-;;   `fit-frame', `frame-fns', `help+20', `highlight', `image-dired',
+;;   `dired-x', `easymenu', `ffap', `find-dired', `fit-frame',
+;;   `frame-fns', `help+20', `highlight', `image-dired',
 ;;   `image-file', `info', `info+20', `menu-bar', `menu-bar+',
 ;;   `misc-cmds', `misc-fns', `naked', `pp', `pp+', `second-sel',
 ;;   `strings', `subr-21', `thingatpt', `thingatpt+', `time-date',
