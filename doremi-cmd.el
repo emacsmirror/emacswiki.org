@@ -4,13 +4,13 @@
 ;; Description: Miscellaneous Do Re Mi commands
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2016, Drew Adams, all rights reserved.
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0"))
-;; Last-Updated: Thu Jan  1 10:35:36 2015 (-0800)
+;; Last-Updated: Thu Dec 31 12:57:56 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 489
+;;     Update #: 491
 ;; URL: http://www.emacswiki.org/doremi-cmd.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat
@@ -250,11 +250,11 @@ doremi-cmd.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+          "http://www.emacswiki.org/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cgi-bin/wiki/doremi-cmd.el")
+          "http://www.emacswiki.org/doremi-cmd.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/Doremi")
+          "http://www.emacswiki.org/Doremi")
   :link '(emacs-commentary-link :tag "Commentary" "doremi-cmd")
   )
 
