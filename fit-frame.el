@@ -4,13 +4,13 @@
 ;; Description: Resize a frame.  In particular, fit a frame to its buffers.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:43:29 2015 (-0800)
+;; Last-Updated: Thu Dec 31 13:19:48 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1367
+;;     Update #: 1369
 ;; URL: http://www.emacswiki.org/fit-frame.el
 ;; Doc URL: http://www.emacswiki.org/Shrink-Wrapping_Frames
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -302,11 +302,11 @@ fit-frame.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+          "http://www.emacswiki.org/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cgi-bin/wiki/fit-frame.el")
+          "http://www.emacswiki.org/fit-frame.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/Shrink-Wrapping_Frames")
+          "http://www.emacswiki.org/Shrink-Wrapping_Frames")
   :link '(emacs-commentary-link :tag "Commentary" "fit-frame"))
 
 ;;;###autoload
