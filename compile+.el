@@ -4,13 +4,13 @@
 ;; Description: Extensions to `compile.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 16 16:38:23 2004
 ;; Version: 0
 ;; Package-Requires: ((compile- "0"))
-;; Last-Updated: Wed Apr  1 08:21:48 2015 (-0700)
+;; Last-Updated: Thu Dec 31 12:39:36 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 935
+;;     Update #: 937
 ;; URL: http://www.emacswiki.org/compile+.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Doc URL: http://www.emacswiki.org/CompilationMode
