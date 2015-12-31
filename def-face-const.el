@@ -4,13 +4,13 @@
 ;; Description: Macro for defining faces & their variables.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 09:08:55 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:32:09 2015 (-0800)
+;; Last-Updated: Thu Dec 31 12:47:33 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 96
+;;     Update #: 97
 ;; URL: http://www.emacswiki.org/def-face-const.el
 ;; Doc URL: http://emacswiki.org/DefineFaceConstant
 ;; Keywords: faces
