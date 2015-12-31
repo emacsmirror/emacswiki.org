@@ -5,15 +5,15 @@
 ;; Author: Lynn Slater
 ;;         Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 1989 Free Software Foundation, Inc.
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:48:48 2015 (-0800)
+;; Last-Updated: Thu Dec 31 13:31:02 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1890
+;;     Update #: 1892
 ;; URL: http://www.emacswiki.org/header2.el
 ;; Doc URL: http://emacswiki.org/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
@@ -28,7 +28,7 @@
 ;; Some of this code and commentary were originally written by Lynn
 ;; Slater as file `header.el'.  Drew Adams updated it and maintains it
 ;; as `header2.el'.  The original is here:
-;; `http://www.emacswiki.org/cgi-bin/wiki/download/OriginalHeaderEl'.
+;; `http://www.emacswiki.org/download/OriginalHeaderEl'.
 ;;
 ;; Commands (interactive functions) defined here:
 ;;
@@ -370,11 +370,11 @@ header2.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+          "http://www.emacswiki.org/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cgi-bin/wiki/header2.el")
+          "http://www.emacswiki.org/header2.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/cgi-bin/wiki/AutomaticFileHeaders#header2")
+          "http://www.emacswiki.org/AutomaticFileHeaders#header2")
   :link '(emacs-commentary-link :tag "Commentary" "header2")
   )
 
