@@ -4,11 +4,11 @@
 ;; Description: Macros for Bookmark+.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Fri Apr  3 09:48:36 2015 (-0700)
+;; Last-Updated: Thu Dec 31 12:24:31 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 196
+;;     Update #: 197
 ;; URL: http://www.emacswiki.org/bookmark+-mac.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
