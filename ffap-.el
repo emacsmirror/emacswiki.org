@@ -4,13 +4,13 @@
 ;; Description: Extensions to library `ffap.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2016, Drew Adams, all rights reserved.
 ;; Created: Wed Feb 08 10:47:56 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:40:59 2015 (-0800)
+;; Last-Updated: Thu Dec 31 13:12:17 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 117
+;;     Update #: 118
 ;; URL: http://www.emacswiki.org/ffap-.el
 ;; Doc URL: http://emacswiki.org/FindFileAtPoint
 ;; Keywords: files, hypermedia, matching, mouse, convenience
