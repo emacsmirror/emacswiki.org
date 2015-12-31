@@ -4,13 +4,13 @@
 ;; Description: Change cursor dynamically, depending on the context.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Aug 29 11:23:06 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:31:13 2015 (-0800)
+;; Last-Updated: Thu Dec 31 12:45:13 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 210
+;;     Update #: 213
 ;; URL: http://www.emacswiki.org/cursor-chg.el
 ;; Keywords: cursor, accessibility
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -272,10 +272,10 @@ cursor-chg.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
       :link '(url-link :tag "Other Libraries by Drew"
-              "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
-      :link '(url-link :tag "Download" "http://www.emacswiki.org/cgi-bin/wiki/cursor-chg.el")
+              "http://www.emacswiki.org/DrewsElispLibraries")
+      :link '(url-link :tag "Download" "http://www.emacswiki.org/cursor-chg.el")
       :link '(url-link :tag "Description"
-              "http://www.emacswiki.org/cgi-bin/wiki/ChangingCursorDynamically")
+              "http://www.emacswiki.org/ChangingCursorDynamically")
       :link '(emacs-commentary-link :tag "Commentary" "cursor-chg")
       (cond (change-cursor-mode
              (if curchg-change-cursor-on-overwrite/read-only-flag
