@@ -4,13 +4,13 @@
 ;; Description: Extensions to `buff-menu.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2014, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 26 08:34:09 2013 (-0800)
+;; Last-Updated: Thu Dec 31 12:28:01 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 2842
+;;     Update #: 2845
 ;; URL: http://www.emacswiki.org/buff-menu+.el
 ;; Doc URL: http://www.emacswiki.org/BufferMenuPlus
 ;; Keywords: mouse, local, convenience
@@ -472,11 +472,11 @@ buff-menu+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
     :link '(url-link :tag "Other Libraries by Drew"
-            "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+            "http://www.emacswiki.org/DrewsElispLibraries")
     :link '(url-link :tag "Download"
-            "http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el")
+            "http://www.emacswiki.org/buff-menu+.el")
     :link '(url-link :tag "Description"
-            "http://www.emacswiki.org/cgi-bin/wiki/BufferMenu#BufferMenuPlus")
+            "http://www.emacswiki.org/BufferMenu#BufferMenuPlus")
     :link '(emacs-commentary-link :tag "Commentary" "buff-menu+")
     :group 'tools :group 'convenience))
 
@@ -489,11 +489,11 @@ buff-menu+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
     :link '(url-link :tag "Other Libraries by Drew"
-            "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+            "http://www.emacswiki.org/DrewsElispLibraries")
     :link '(url-link :tag "Download"
-            "http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el")
+            "http://www.emacswiki.org/buff-menu+.el")
     :link '(url-link :tag "Description"
-            "http://www.emacswiki.org/cgi-bin/wiki/BufferMenu#BufferMenuPlus")
+            "http://www.emacswiki.org/BufferMenu#BufferMenuPlus")
     :link '(emacs-commentary-link :tag "Commentary" "buff-menu+")
     :group 'Buffer-menu :group 'tools :group 'convenience)
 
