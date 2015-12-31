@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2015.07.05
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 14:03:44 2015 (-0800)
+;; Last-Updated: Thu Dec 31 14:54:27 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 23673
+;;     Update #: 23675
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -1022,8 +1022,8 @@
 ;;    `icicle-case-string-less-p', `icicle-cdr-lessp',
 ;;    `icicle-char-cands-from-charlist',
 ;;    `icicle-char-properties-in-buffer',
-;;    `icicle-char-properties-in-buffers', `icicle-chars-after',
-;;    `icicle-chars-before', `icicle-choose-anything-candidate',
+;;    `icicle-char-properties-in-buffers',
+;;    `icicle-choose-anything-candidate',
 ;;    `icicle-choose-candidate-of-type',
 ;;    `icicle-choose-completion-string', `icicle-clear-history-1',
 ;;    `icicle-clear-history-entry', `icicle-clear-lighter',
@@ -1361,6 +1361,7 @@
 ;;    `icicle-special-candidates-first-p', `icicle-special-display-p',
 ;;    `icicle-special-variable-p', `icicle-split-input',
 ;;    `icicle-start-of-candidates-in-Completions',
+;;    `icicle-string-after-p', `icicle-string-before-p',
 ;;    `icicle-string-match-p', `icicle-strip-ignored-files-and-sort',
 ;;    `icicle-subst-envvar-in-file-name',
 ;;    `icicle-substring-no-properties', `icicle-substrings-of-length',
