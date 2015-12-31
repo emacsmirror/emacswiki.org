@@ -4,13 +4,13 @@
 ;; Description: Extensions to `mouse.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 14:47:12 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 22 08:57:19 2015 (-0800)
+;; Last-Updated: Thu Dec 31 15:30:47 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 598
+;;     Update #: 599
 ;; URL: http://www.emacswiki.org/mouse+.el
 ;; Doc URL: http://emacswiki.org/MousePlus
 ;; Keywords: mouse
