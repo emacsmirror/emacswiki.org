@@ -4,13 +4,13 @@
 ;; Description: Enhancements to Ediff
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2016, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 26 11:14:34 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:36:35 2015 (-0800)
+;; Last-Updated: Thu Dec 31 13:02:41 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 126
+;;     Update #: 128
 ;; URL: http://www.emacswiki.org/ediff+.el
 ;; Doc URL: http://emacswiki.org/EdiffMode
 ;; Keywords: comparing, merging, patching, version control
@@ -145,7 +145,8 @@ Use `setq-default' if setting it in .emacs")
   (define-key ediff-mode-map
     (if (or (and (boundp 'ediff-emacs-p) ediff-emacs-p) ; Emacs <23
             (featurep 'emacs))          ; Emacs 23
-        [mouse-2] [button2]) 'ediff-help-for-quick-help)
+        [mouse-2] [button2])
+    'ediff-help-for-quick-help)
   (define-key ediff-mode-map "\C-m"  'ediff-help-for-quick-help)
 
   (define-key ediff-mode-map "p" 'ediff-previous-difference)
