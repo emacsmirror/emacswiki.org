@@ -4,14 +4,14 @@
 ;; Description: fuzzy matching
 ;; Author: Simon Marshall (concat "simon" "@" "gnu" ".org")
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 1993, 1994 Simon Marshall, all rights reserved.
 ;; Created: 1993, by Simon Marshall
 ;; Version: 1.04
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:45:16 2015 (-0800)
+;; Last-Updated: Thu Dec 31 13:29:03 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 186
+;;     Update #: 188
 ;; URL: http://www.emacswiki.org/fuzzy-match.el
 ;; Doc URL: http://emacswiki.org/Icicles_-_Fuzzy_Completion
 ;; Keywords: matching completion string
@@ -165,7 +165,7 @@
 ;;
 ;;  If you like `fuzzy-match.el', you might also be interested in
 ;;  Icicles, which lets you use the same fuzzy matching for minibuffer
-;;  input completion: http://www.emacswiki.org/cgi-bin/wiki/Icicles.
+;;  input completion: http://www.emacswiki.org/Icicles.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
