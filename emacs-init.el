@@ -4,13 +4,13 @@
 ;; Description: Emacs init file for use with libraries from Drew Adams
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 15:54:33 1995
 ;; Version: 0
 ;; Package-Requires: ((start "0"))
-;; Last-Updated: Thu Jan  1 10:36:48 2015 (-0800)
+;; Last-Updated: Thu Dec 31 13:03:47 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 2181
+;;     Update #: 2182
 ;; URL: http://www.emacswiki.org/emacs-init.el
 ;; Keywords: init, .emacs, _emacs, dotemacs
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -33,7 +33,7 @@
 ;;   `el-swank-fuzzy', `em-joc', `emacsbug', `eshell-auto',
 ;;   `eyedropper', `facemenu', `facemenu+', `faces', `faces+',
 ;;   `ffap', `ffap-', `files+', `find-dired', `find-dired+',
-;;   `find-dired-', `finder', `finder+', `finder-inf', `fit-frame',
+;;   `finder', `finder+', `finder-inf', `fit-frame', `flx',
 ;;   `font-lock', `font-lock-menus', `frame-cmds', `frame-fns',
 ;;   `fuzzy', `fuzzy-match', `header2', `help+20', `hexrgb',
 ;;   `highlight', `highlight-chars', `icicles', `icicles-cmd1',
@@ -52,10 +52,10 @@
 ;;   `setup-cygwin', `setup-keys', `simple+', `speedbar', `start',
 ;;   `start-opt', `strings', `subr+', `subr-21', `swiss-move',
 ;;   `synonyms', `thing-cmds', `thingatpt', `thingatpt+',
-;;   `thumb-frm', `timer', `timer+', `unaccent', `vc', `vc+', `vc-',
-;;   `vc-hooks', `vc-hooks+', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget', `wimpy-del', `window+',
-;;   `zoom-frm'.
+;;   `thumb-frm', `time-date', `timer', `timer+', `unaccent', `vc',
+;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `wimpy-del', `window+', `zones', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
