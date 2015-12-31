@@ -4,22 +4,21 @@
 ;; Description: Extensions to `descr-text.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2011-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2016, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 24 11:57:04 2011 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri May  8 08:14:24 2015 (-0700)
+;; Last-Updated: Thu Dec 31 12:51:15 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 307
+;;     Update #: 310
 ;; URL: http://www.emacswiki.org/descr-text+.el
 ;; Keywords: help, characters, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `cl', `cl-lib', `descr-text', `gv', `help-fns',
-;;   `help-fns+', `help-mode', `info', `macroexp', `naked',
-;;   `wid-edit', `wid-edit+'.
+;;   `button', `cl', `descr-text', `help-fns', `help-fns+',
+;;   `help-mode', `info', `naked', `view', `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
