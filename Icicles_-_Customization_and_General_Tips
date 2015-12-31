@@ -232,7 +232,7 @@ User option '''`icicle-default-value'''' controls the treatment of a
 default value for minibuffer input.  When the value is non-`nil'
 and the ##INITIAL-INPUT## argument of minibuffer-reading functions is `nil' or ##""##, the ##DEFAULT-VALUE## argument can be inserted into the minibuffer as the initial input.  
 
-For `completing-read' and `read-file-name', if the option value is `t' then the default value is normally added the prompt as a hint.
+For `completing-read' and `read-file-name', if the option value is `t' then the default value is normally added to the prompt as a hint.
 However, for `read-file-name', if option `insert-default-directory' is
 non-`nil', then to avoid duplication:
 
@@ -324,7 +324,7 @@ ComintMode.  By default, it treats Comint mode and ShellMode.
 ==== Option icicle-input-string ====
 
 User option '''`icicle-input-string'''' is a [[regexp]] string that is
-inserted in the minibuffer when you use '''`C-=''''.  See 
+inserted in the minibuffer when you use '''`##C-=##''''.  See 
 [[Icicles - Inserting a Regexp from a Variable or Register]].
 
 
@@ -923,8 +923,8 @@ which is the standard Emacs behavior.  The default value is `t'. (Actually, the 
 
 Non-`nil' option '''`icicle-max-candidates'''' means truncate the list of completion
 candidates to at most this many.  If you use library <tt>[[doremi.el]]</tt> then you can
-use '''`C-x #'''' during completion to increment or decrement the
-option value using the vertical arrow keys or the mouse wheel.  A numeric prefix argument for `C-x #' sets the increment size.  A plain prefix argument (`C-u') resets `icicle-max-candidates' to `nil', meaning no
+use '''`##C-x ###'''' during completion to increment or decrement the
+option value using the vertical arrow keys or the mouse wheel.  A numeric prefix argument for `##C-x ###' sets the increment size.  A plain prefix argument (`C-u') resets `icicle-max-candidates' to `nil', meaning no
 truncation.
 
 
@@ -2167,7 +2167,7 @@ User option '''`icicle-completion-history-max-length'''' limits the
 number of ''completion inputs'' to save.  If you customize user
 option '''`icicle-C-l-uses-completion-flag'''' to non-`nil', then,
 instead of cycling, `C-l' lets you use '''Icicles''' completion to
-retrieve a past completion input.  (`##C-##'''##L##'''' does the same thing.)  If you use SaveHist (library ##savehist.el## or <tt>[[savehist-20+.el]]</tt>), then you can save the history
+retrieve a past completion input.  ('''`C-L'''' does the same thing.)  If you use SaveHist (library ##savehist.el## or <tt>[[savehist-20+.el]]</tt>), then you can save the history
 of completion inputs persistently by customizing user option
 `savehist-additional-variables' to include the '''Icicles''' internal
 variables `icicle-previous-raw-file-name-inputs' and `icicle-previous-raw-non-file-name-inputs'.
@@ -2602,9 +2602,7 @@ be limited to terms from your completions database.
 ==== Option icicle-customize-save-variable-function ====
 
 The value of option '''`icicle-customize-save-variable-function'''' is the function
-'''Icicles''' uses to automatically save user option changes made by
-some commands.  I recommend that you do '''''NOT''''' change this option
-value.  This is provided only for users who might want to
+'''Icicles''' uses to automatically save user option changes made by some commands.  I recommend that you do '''NOT''' change this option value.  This is provided only for users who might want to
 disable such automatic saving of option changes, by setting this
 to `ignore', or users who might want to manage such option
 saving using their own function instead of the default value,
