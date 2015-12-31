@@ -4,13 +4,13 @@
 ;; Description: Extensions to `facemenu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2016, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 16 17:25:44 2015 (-0700)
+;; Last-Updated: Thu Dec 31 13:09:29 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1950
+;;     Update #: 1951
 ;; URL: http://www.emacswiki.org/facemenu+.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
@@ -19,10 +19,12 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `doremi', `doremi-frm', `easymenu', `eyedropper',
-;;   `facemenu', `faces', `faces+', `font-lock-menus', `frame-cmds',
-;;   `frame-fns', `hexrgb', `misc-fns', `mwheel', `ring', `strings',
-;;   `thingatpt', `thingatpt+'.
+;;   `avoid', `button', `cl', `custom', `doremi', `doremi-frm',
+;;   `easymenu', `facemenu', `faces', `faces+', `font-lock-menus',
+;;   `frame-cmds', `frame-fns', `help-fns', `help-fns+', `help-mode',
+;;   `hexrgb', `info', `misc-cmds', `misc-fns', `mwheel', `naked',
+;;   `palette', `ring', `strings', `thingatpt', `thingatpt+',
+;;   `timer', `view', `wid-edit', `wid-edit+', `widget', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
