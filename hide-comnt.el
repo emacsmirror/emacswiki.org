@@ -4,13 +4,13 @@
 ;; Description: Hide/show comments in code.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2011-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2016, Drew Adams, all rights reserved.
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug  1 09:21:12 2015 (-0700)
+;; Last-Updated: Thu Dec 31 13:39:18 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 205
+;;     Update #: 206
 ;; URL: http://www.emacswiki.org/hide-comnt.el
 ;; Doc URL: http://www.emacswiki.org/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
