@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Dec 31 14:00:13 2015 (-0800)
+;; Last-Updated: Thu Dec 31 15:09:47 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 19752
+;;     Update #: 19763
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -295,7 +295,6 @@
 ;;    `icicle-candidate-set-retrieve-1',
 ;;    `icicle-candidate-set-save-1',
 ;;    `icicle-candidate-set-save-selected-1', `icicle-cand-preds',
-;;    `icicle-chars-after', `icicle-chars-before',
 ;;    `icicle-column-wise-cand-nb',
 ;;    `icicle-isearch-complete-past-string',
 ;;    `icicle-Completions-popup-choice',
@@ -323,7 +322,8 @@
 ;;    `icicle-replace-input-w-parent-dir',
 ;;    `icicle-retrieve-candidates-from-set',
 ;;    `icicle-row-wise-cand-nb', `icicle-signum',
-;;    `icicle-split-input', `icicle-substitute-keymap-vars',
+;;    `icicle-split-input', `icicle-string-after-p',
+;;    `icicle-string-before-p', `icicle-substitute-keymap-vars',
 ;;    `icicle-successive-action', `icicle-transform-sole-candidate',
 ;;    `icicle-transpose-chars-magic',
 ;;    `icicle-unbind-buffer-candidate-keys',
@@ -984,36 +984,20 @@ POSITION is a buffer position."
   "Like `looking-at', but this saves and restores the match data."
   (save-match-data (looking-at regexp)))
 
-;; Same as `chars-after' in `misc-fns.el'.
-(defun icicle-chars-after (chars)
-  "Return non-nil if the string CHARS is right after point."
-  (let* ((len  (length chars))
-         (idx  (1- len))
-         (pt   (point)))
-    (catch 'icicle-chars-after
-      (dolist (char  (nreverse (append chars ())))
-        (unless (condition-case nil
-                    (eq char (char-after (+ pt idx)))
-                  (error nil))          ; e.g. `eobp'
-          (throw 'icicle-chars-after nil))
-        (setq idx  (1- idx)))
-      t)))
+;; Same as `string-after' in `misc-fns.el'.
+(defun icicle-string-after-p (chars)
+  "Return non-nil if the literal string CHARS is right after point."
+  (let ((end  (+ (point) (length chars))))
+    (and (<= end (point-max))
+         (string= chars (buffer-substring-no-properties (point) end)))))
 
-;; Same as `chars-before' in `misc-fns.el'.
-(defun icicle-chars-before (chars)
-  "Return non-nil if the string CHARS is right before point.
+;; Same as `string-before' in `misc-fns.el'.  Suggested by Martin Rudalics in Emacs bug #17284.
+(defun icicle-string-before-p (chars)
+  "Return non-nil if the literal string CHARS is right before point.
 This is more efficient that `looking-back' for this use case."
-  (let* ((len  (length chars))
-         (idx  (1- len))
-         (pt   (point)))
-    (catch 'icicle-chars-before
-      (dolist (char  (append chars ()))
-        (unless (condition-case nil
-                    (eq char (char-before (- pt idx)))
-                  (error nil))          ; e.g. `bobp'
-          (throw 'icicle-chars-before nil))
-        (setq idx  (1- idx)))
-      t)))
+  (let ((start  (- (point) (length chars))))
+    (and (>= start (point-min))
+         (string= chars (buffer-substring-no-properties start (point))))))
 
 ;; Used only in `icicle-transpose-chars-magic'.
 (defun icicle-forward-char-magic (&optional n)
@@ -1060,9 +1044,9 @@ That is, handle dots (`.') and `icicle-list-join-string'."
   (let ((len-dot   (length icicle-anychar-regexp))
         (len-join  (length icicle-list-join-string)))
     (dotimes (i  (abs n))
-      (cond ((icicle-chars-before icicle-anychar-regexp)
+      (cond ((icicle-string-before-p icicle-anychar-regexp)
              (backward-delete-char-untabify len-dot  killflag))
-            ((icicle-chars-before icicle-list-join-string)
+            ((icicle-string-before-p icicle-list-join-string)
              (backward-delete-char-untabify len-join killflag))
             (t
              (backward-delete-char-untabify 1        killflag))))))
@@ -1082,9 +1066,9 @@ Handles Icicles dots (`.') and `icicle-list-join-string'."
   (let ((len-dot   (length icicle-anychar-regexp))
         (len-join  (length icicle-list-join-string)))
     (dotimes (i  (abs n))
-      (cond ((icicle-chars-before icicle-anychar-regexp)
+      (cond ((icicle-string-before-p icicle-anychar-regexp)
              (delete-char (- len-dot)  killflag))
-            ((icicle-chars-before icicle-list-join-string)
+            ((icicle-string-before-p icicle-list-join-string)
              (delete-char (- len-join) killflag))
             (t
              (delete-char -1           killflag))))))
@@ -1104,9 +1088,9 @@ Handles Icicles dots (`.') and `icicle-list-join-string'."
   (let ((len-dot   (length icicle-anychar-regexp))
         (len-join  (length icicle-list-join-string)))
     (dotimes (i  (abs n))
-      (cond ((icicle-chars-after icicle-anychar-regexp)
+      (cond ((icicle-string-after-p icicle-anychar-regexp)
              (delete-char len-dot  killflag))
-            ((icicle-chars-after icicle-list-join-string)
+            ((icicle-string-after-p icicle-list-join-string)
              (delete-char len-join killflag))
             (t
              (delete-char 1        killflag))))))
