@@ -4,13 +4,13 @@
 ;; Description: Extensions to `character-fold.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2015-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Nov 27 09:12:01 2015 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec  1 07:29:04 2015 (-0800)
+;; Last-Updated: Thu Dec 31 12:33:23 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 88
+;;     Update #: 92
 ;; URL: http://www.emacswiki.org/character-fold+.el
 ;; Doc URL: http://emacswiki.org/CharacterFoldPlus
 ;; Keywords: isearch, search, unicode
@@ -18,7 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `character-fold'.
+;;   `backquote', `button', `bytecomp', `cconv', `character-fold',
+;;   `cl-extra', `cl-lib', `help-mode', `macroexp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -164,14 +165,14 @@ The new value reflects the current value of `char-fold-symmetric'."
                (table  (unicode-property-table-internal 'decomposition))
                (func   (char-table-extra-slot table 1)))
           ;; Ensure that the table is populated.
-          (map-char-table (lambda (ii vv) (when (consp ii) (funcall func (car ii) vv table))) table)
+          (map-char-table (lambda (ch val) (when (consp ch) (funcall func (car ch) val table))) table)
           ;; Compile a list of all complex chars that each simple char should match.
           (map-char-table
-           (lambda (ii dec)
+           (lambda (ch dec)
              (when (consp dec)
                (when (symbolp (car dec)) (setq dec  (cdr dec))) ; Discard a possible formatting tag.
                ;; Skip trivial cases like ?a decomposing to (?a).
-               (unless (and (eq ii (car dec))  (null (cdr dec)))
+               (unless (and (null (cdr dec))  (eq ch (car dec)))
                  (let ((dd           dec)
                        (fold-decomp  t)
                        kk found)
@@ -199,8 +200,8 @@ The new value reflects the current value of `char-fold-symmetric'."
                          (setq fold-decomp  t))))
                    ;; Add II to the list of chars that KK can represent.  Maybe add its decomposition
                    ;; too, so we can match multi-char representations like (format "a%c" 769).
-                   (when (and found  (not (eq ii kk)))
-                     (let ((chr-strgs  (cons (char-to-string ii) (aref equiv kk))))
+                   (when (and found  (not (eq ch kk)))
+                     (let ((chr-strgs  (cons (char-to-string ch) (aref equiv kk))))
                        (aset equiv kk (if fold-decomp
                                           (cons (apply #'string dec) chr-strgs)
                                         chr-strgs))))))))
@@ -216,7 +217,7 @@ The new value reflects the current value of `char-fold-symmetric'."
             ;; Add an entry for each equivalent char.
             (let ((others  ()))
               (map-char-table
-               (lambda (base vv)
+               (lambda (base val)
                  (let ((chr-strgs  (aref equiv base)))
                    (when (consp chr-strgs)
                      (dolist (strg  (cdr chr-strgs))
@@ -231,8 +232,8 @@ The new value reflects the current value of `char-fold-symmetric'."
                   (aset equiv base (append chr-strgs (aref equiv base)))))))
 
           (map-char-table ; Convert the lists of characters we compiled into regexps.
-           (lambda (ii vv) (let ((re  (regexp-opt (cons (char-to-string ii) vv))))
-                        (if (consp ii) (set-char-table-range equiv ii re) (aset equiv ii re))))
+           (lambda (ch val) (let ((re  (regexp-opt (cons (char-to-string ch) val))))
+                        (if (consp ch) (set-char-table-range equiv ch re) (aset equiv ch re))))
            equiv)
           equiv)))
 
