@@ -4,13 +4,13 @@
 ;; Description: Extensions to `emacsbug.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2013-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2013-2016, Drew Adams, all rights reserved.
 ;; Created: Sat Jan 19 15:24:48 2013 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:37:18 2015 (-0800)
+;; Last-Updated: Thu Dec 31 13:04:49 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 367
+;;     Update #: 369
 ;; URL: http://www.emacswiki.org/emacsbug%2b.el
 ;; Keywords: report bug
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -126,9 +126,9 @@ emacsbug+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+          "http://www.emacswiki.org/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cgi-bin/wiki/emacsbug+.el"))
+          "http://www.emacswiki.org/emacsbug+.el"))
 
 ;;;###autoload
 (defcustom ebp-report-emacs-bug-included-fields '(version settings major-mode
