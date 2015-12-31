@@ -8,9 +8,9 @@
 ;; Created: Sun Mar 25 15:21:07 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:21:38 2015 (-0800)
+;; Last-Updated: Thu Dec 31 13:24:28 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 213
+;;     Update #: 214
 ;; URL: http://www.emacswiki.org/font-lock+.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: languages, faces, highlighting
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `font-lock', `syntax'.
+;;   `font-lock', `syntax'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
