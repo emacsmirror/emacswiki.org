@@ -4,11 +4,11 @@
 ;; Description: Macros for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Wed Jan 21 08:52:30 2015 (-0800)
+;; Last-Updated: Thu Dec 31 13:59:23 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1268
+;;     Update #: 1269
 ;; URL: http://www.emacswiki.org/icicles-mac.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
