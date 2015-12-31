@@ -4,13 +4,13 @@
 ;; Description: Extensions to Dired.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 15 06:47:13 2015 (-0800)
+;; Last-Updated: Thu Dec 31 12:54:46 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 9341
+;;     Update #: 9342
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
