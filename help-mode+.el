@@ -4,13 +4,13 @@
 ;; Description: Extensions to `help-mode.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2016, Drew Adams, all rights reserved.
 ;; Created: Sat Nov 06 15:14:12 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:50:40 2015 (-0800)
+;; Last-Updated: Thu Dec 31 13:37:15 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 191
+;;     Update #: 192
 ;; URL: http://www.emacswiki.org/help-mode+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
