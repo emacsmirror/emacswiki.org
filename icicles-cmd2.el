@@ -4,11 +4,11 @@
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sat Sep 19 23:17:59 2015 (-0700)
+;; Last-Updated: Thu Dec 31 13:56:30 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 7281
+;;     Update #: 7282
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -21,12 +21,12 @@
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `cl', `cmds-menu', `cus-edit', `cus-face',
 ;;   `cus-load', `cus-start', `cus-theme', `doremi', `easymenu',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-cmds',
-;;   `frame-fns', `fuzzy', `fuzzy-match', `help+20', `hexrgb',
-;;   `icicles-cmd1', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image-dired', `info', `info+20', `kmacro',
-;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mouse3', `mwheel', `naked', `package', `pp', `pp+',
+;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `flx',
+;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `help+20',
+;;   `hexrgb', `icicles-cmd1', `icicles-fn', `icicles-mcmd',
+;;   `icicles-opt', `icicles-var', `image-dired', `info', `info+20',
+;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `mouse3', `mwheel', `naked', `package', `pp', `pp+',
 ;;   `regexp-opt', `ring', `second-sel', `strings', `thingatpt',
 ;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
 ;;   `wid-edit+', `widget'.
