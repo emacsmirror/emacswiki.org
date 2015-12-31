@@ -4,13 +4,13 @@
 ;; Description: Enhancements to standard library `font-lock.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Sun Mar 25 15:21:07 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 10:43:51 2015 (-0800)
+;; Last-Updated: Thu Dec 31 13:21:38 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 210
+;;     Update #: 213
 ;; URL: http://www.emacswiki.org/font-lock+.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: languages, faces, highlighting
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `font-lock', `syntax'.
+;;   `backquote', `bytecomp', `font-lock', `syntax'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
