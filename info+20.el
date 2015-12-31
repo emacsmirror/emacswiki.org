@@ -4,13 +4,13 @@
 ;; Description: Extensions to `info.el' for Emacs 20-22.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Sun May  4 09:18:30 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb 28 08:39:15 2015 (-0800)
+;; Last-Updated: Thu Dec 31 14:10:39 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 5236
+;;     Update #: 5238
 ;; URL: http://www.emacswiki.org/info+20.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
