@@ -4,11 +4,11 @@
 ;; Description: Bookmark highlighting for Bookmark+.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2010-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2016, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Thu Apr  2 14:48:56 2015 (-0700)
+;; Last-Updated: Thu Dec 31 12:23:32 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 904
+;;     Update #: 906
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -331,7 +331,7 @@ will be the buffer before jumping."
 (defcustom bmkp-light-priorities '((bmkp-autonamed-overlays        . 160)
                                    (bmkp-non-autonamed-overlays    . 150))
   "*Priorities of bookmark highlighting overlay types.
-As an idea, `ediff' uses 100+, `isearch' uses 1001."
+As an idea, `isearch' uses 1000 and 1001."
   :group 'bookmark-plus :type '(alist :key-type symbol :value-type integer))
 
 ;; Not used for Emacs 20-21.
