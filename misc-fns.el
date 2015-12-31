@@ -4,13 +4,13 @@
 ;; Description: Miscellaneous non-interactive functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Apr  3 09:22:15 2015 (-0700)
+;; Last-Updated: Thu Dec 31 15:14:29 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 625
+;;     Update #: 657
 ;; URL: http://www.emacswiki.org/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -41,18 +41,24 @@
 ;;
 ;;  Functions defined here:
 ;;
-;;    `another-buffer', `chars-after', `chars-before',
-;;    `color-named-at', `current-line', `display-in-mode-line',
-;;    `do-files', `flatten', `fontify-buffer', `interesting-buffer-p',
-;;    `live-buffer-name', `make-transient-mark-mode-buffer-local',
-;;    `mode-ancestors', `mod-signed', `notify-user-of-mode',
-;;    `region-or-buffer-limits', `signum', `undefine-keys-bound-to',
-;;    `undefine-killer-commands', `unique-name'.
+;;    `another-buffer', `color-named-at', `current-line',
+;;    `display-in-mode-line', `do-files', `flatten', `fontify-buffer',
+;;    `interesting-buffer-p', `live-buffer-name',
+;;    `make-transient-mark-mode-buffer-local', `mode-ancestors',
+;;    `mod-signed', `notify-user-of-mode', `region-or-buffer-limits',
+;;    `signum', `string-after-p', `string-before-p',
+;;    `undefine-keys-bound-to', `undefine-killer-commands',
+;;    `unique-name'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2015/12/31 dadams
+;;     Renamed: chars-(after|before) to string-(after|before)-p.
+;;     chars-(after|before): Use version from Martin Rudalics in Emacs bug #17284.
+;; 2015/10/02 dadams
+;;     chars-before: Use version from Tassilo Horn (help-gnu-emacs@gnu.org).
 ;; 2015/04/03 dadams
 ;;     Added: chars-after, chars-before.
 ;; 2014/10/14 dadams
@@ -540,34 +546,65 @@ Return nil if no color is named at point."
                    (word-at-point))))
       (and word  (color-defined-p word)  word))))
 
-(defun chars-after (chars)
-  "Return non-nil if the literal string CHARS is right after point."
-  (let* ((len  (length chars))
-         (idx  (1- len))
-         (pt   (point)))
-    (catch 'chars-after
-      (dolist (char  (nreverse (append chars ())))
-        (unless (condition-case nil
-                    (eq char (char-after (+ pt idx)))
-                  (error nil))          ; e.g. `eobp'
-          (throw 'chars-after nil))
-        (setq idx  (1- idx)))
-      t)))
+;;; (defun chars-after (chars)
+;;;   "Return non-nil if the literal string CHARS is right after point."
+;;;   (let* ((len  (length chars))
+;;;          (idx  (1- len))
+;;;          (pt   (point)))
+;;;     (catch 'chars-after
+;;;       (dolist (char  (nreverse (append chars ())))
+;;;         (unless (condition-case nil
+;;;                     (eq char (char-after (+ pt idx)))
+;;;                   (error nil))          ; e.g. `eobp'
+;;;           (throw 'chars-after nil))
+;;;         (setq idx  (1- idx)))
+;;;       t)))
 
-(defun chars-before (chars)
+;; Version similar to `chars-before' by Martin Rudalics in bug #17284.
+;; And renamed from `chars-after'.
+;;
+(defun string-after-p (chars)
+  "Return non-nil if the literal string CHARS is right after point."
+  (let ((end  (+ (point) (length chars))))
+    (and (<= end (point-max))
+         (string= chars (buffer-substring-no-properties (point) end)))))
+
+;;; (defun chars-before (chars)
+;;;   "Return non-nil if the literal string CHARS is right before point.
+;;; This is more efficient that `looking-back' for this use case."
+;;;   (let* ((len  (length chars))
+;;;          (idx  (1- len))
+;;;          (pt   (point)))
+;;;     (catch 'chars-before
+;;;       (dolist (char  (append chars ()))
+;;;         (unless (condition-case nil
+;;;                     (eq char (char-before (- pt idx)))
+;;;                   (error nil))          ; e.g. `bobp'
+;;;           (throw 'chars-before nil))
+;;;         (setq idx  (1- idx)))
+;;;       t)))
+
+;; Version from Tassilo Horn [tsdh@gnu.org], in help-gnu-emacs@gnu.org,
+;; 2015-10-02, Subject "`looking-back' strange warning".
+;;
+;;; (defun chars-before (chars)
+;;;   "Return non-nil if the literal string CHARS is right before point.
+;;; This is more efficient that `looking-back' for this use case."
+;;;   (let ((beg  (- (point) (length chars))))
+;;;     (unless (< beg 0)
+;;;       (save-excursion
+;;; 	(goto-char beg)
+;;; 	(looking-at (regexp-quote chars))))))
+
+;; Version from Martin Rudalics in thread of Emacs bug #17284.
+;; And renamed from `chars-before'.
+;;
+(defun string-before-p (chars)
   "Return non-nil if the literal string CHARS is right before point.
 This is more efficient that `looking-back' for this use case."
-  (let* ((len  (length chars))
-         (idx  (1- len))
-         (pt   (point)))
-    (catch 'chars-before
-      (dolist (char  (append chars ()))
-        (unless (condition-case nil
-                    (eq char (char-before (- pt idx)))
-                  (error nil))          ; e.g. `bobp'
-          (throw 'chars-before nil))
-        (setq idx  (1- idx)))
-      t)))
+  (let ((start  (- (point) (length chars))))
+    (and (>= start (point-min))
+         (string= chars (buffer-substring-no-properties start (point))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; misc-fns.el ends here
