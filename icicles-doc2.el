@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Wed Aug 19 22:43:28 2015 (-0700)
+;; Last-Updated: Thu Dec 31 10:08:30 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 29941
+;;     Update #: 29942
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4949,8 +4949,8 @@
 ;;    the minibuffer as the initial input.
 ;;
 ;;    For `completing-read' and `read-file-name', if the option value
-;;    is `t' then the default value is normally added the prompt as a
-;;    hint.  However, for `read-file-name', if option
+;;    is `t' then the default value is normally added to the prompt as
+;;    a hint.  However, for `read-file-name', if option
 ;;    `insert-default-directory' is non-`nil', then to avoid
 ;;    duplication:
 ;;
