@@ -4,13 +4,13 @@
 ;; Description:
 ;; Author: Markus Hoenika
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2016, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 0
 ;; Package-Requires: ((cygwin-mount "0"))
-;; Last-Updated: Sat Oct 31 09:07:15 2015 (-0700)
+;; Last-Updated: Thu Dec 31 16:00:29 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 169
+;;     Update #: 170
 ;; URL: http://www.emacswiki.org/setup-cygwin.el
 ;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
