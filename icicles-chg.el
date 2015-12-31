@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Dec 31 13:47:23 2015 (-0800)
+;; Last-Updated: Thu Dec 31 15:19:26 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 11562
+;;     Update #: 11568
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4552,6 +4552,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2015/12/31 dadams
+;;     Renamed: icicle-chars-(after|before) to icicle-string-(after|before)-p.
+;;     icicle-string-(after|before)-p: Use code suggested by Martin Rudalics in Emacs bug #17284.
+;;     icicle-backward-delete-char-untabify-magic, icicle-delete-backward-char-magic,
+;;       icicle-delete-char-magic:
+;;         Applied renamings.
 ;; 2015/10/11 dadams
 ;;     icicle-help-on-candidate:
 ;;       Call icicle-raise-Completions-frame, so respect icicle-move-Completions-frame.
