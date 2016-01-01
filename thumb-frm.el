@@ -4,13 +4,13 @@
 ;; Description: Commands for thumbnail frames.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Sun Dec  6 10:30:26 2015 (-0800)
+;; Last-Updated: Thu Dec 31 16:16:58 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 1788
+;;     Update #: 1792
 ;; URL: http://www.emacswiki.org/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -193,7 +193,7 @@
 ;;    `window-mgr-title-bar-pixel-width'.
 ;;
 ;;
-;;  Internal variable defined here:
+;;  Internal variables defined here:
 ;;
 ;;    `thumfr-last-row-show', `thumfr-last-sort-function',
 ;;    `thumfr-next-stack-xoffset', `thumfr-next-stack-yoffset'.
@@ -699,9 +699,9 @@ which frame parameters (such as `menu-bar-lines') to remove."
   "Restore thumbnail FRAME to original size (default: selected frame)."
   (interactive)
   (setq frame  (or frame  (selected-frame)))
-  (let* ((non-tf-params  (frame-parameter frame 'thumfr-thumbnail-frame)) ; `let*' for order.
-         (tf-params      (thumfr-remove-if #'thumfr-thumfr-parameter-p
-                                           (frame-parameters frame))))
+  (let* ((fr-params      (frame-parameters frame))
+         (non-tf-params  (frame-parameter frame 'thumfr-thumbnail-frame))
+         (tf-params      (thumfr-remove-if #'thumfr-thumfr-parameter-p fr-params)))
     (when non-tf-params                 ; No-op if not a thumbnail.
       (set-frame-parameter frame 'thumfr-non-thumbnail-frame tf-params)
       (set-frame-parameter frame 'thumfr-thumbnail-frame     nil)
