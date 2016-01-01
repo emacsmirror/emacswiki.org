@@ -4,12 +4,12 @@
 ;; Description: Extensions to `thingatpt.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Sun Aug 23 17:12:38 2015 (-0700)
+;; Last-Updated: Thu Dec 31 16:16:00 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 2207
+;;     Update #: 2208
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
