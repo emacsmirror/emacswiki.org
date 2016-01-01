@@ -4,13 +4,13 @@
 ;; Description: Customizations to be done at the end of startup.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2016, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar 26 09:12:04 2015 (-0700)
+;; Last-Updated: Thu Dec 31 16:07:44 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 2000
+;;     Update #: 2002
 ;; URL: http://www.emacswiki.org/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -249,18 +249,18 @@
 
 
 ;;; Some standard faces redefined, and two simple faces defined.
-(condition-case nil
-    (progn
-      ;; (set-face-background 'highlight "Cyan") ; Highlight face.
-      ;; (set-face-foreground (if (facep 'modeline) 'modeline 'mode-line) ; Mode-line.
-      ;;                      "Black")
-      ;; (set-face-background 'region "MediumAquamarine")
-      ;; (set-face-background list-matching-lines-face "SkyBlue") ; Defined in `replace.el'
-      ;; (set-face-background 'secondary-selection "White") ; Secondary sel.
-      ;; (set-face-foreground 'secondary-selection "Black") ; (Netscape/X: 000000).
-      ;; (set-face-background 'show-paren-match-face "Aquamarine") ; in `paren.el'
-      )
-  (error nil))
+;;; (condition-case nil
+;;;     (progn
+;;;       ;; (set-face-background 'highlight "Cyan") ; Highlight face.
+;;;       ;; (set-face-foreground (if (facep 'modeline) 'modeline 'mode-line) ; Mode-line.
+;;;       ;;                      "Black")
+;;;       ;; (set-face-background 'region "MediumAquamarine")
+;;;       ;; (set-face-background list-matching-lines-face "SkyBlue") ; Defined in `replace.el'
+;;;       ;; (set-face-background 'secondary-selection "White") ; Secondary sel.
+;;;       ;; (set-face-foreground 'secondary-selection "Black") ; (Netscape/X: 000000).
+;;;       ;; (set-face-background 'show-paren-match-face "Aquamarine") ; in `paren.el'
+;;;       )
+;;;   (error nil))
 
 (unless (facep 'font-lock-string-face)
   (make-face 'font-lock-string-face)
