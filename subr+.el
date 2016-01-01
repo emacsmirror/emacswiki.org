@@ -4,13 +4,13 @@
 ;; Description: Extensions to standard library `subr.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2014-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2014-2016, Drew Adams, all rights reserved.
 ;; Created: Sat May 24 19:24:18 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan  1 11:16:28 2015 (-0800)
+;; Last-Updated: Thu Dec 31 16:13:30 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 160
+;;     Update #: 161
 ;; URL: http://www.emacswiki.org/simple%2b.el
 ;; Doc URL: http://www.emacswiki.org/SplittingStrings
 ;; Keywords: strings, text
