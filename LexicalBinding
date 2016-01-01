@@ -86,8 +86,21 @@ Alternatively, you can assign lambdas to variables and then use them with <code>
 => "I am foo."
 </pre>
 However, like with <code>cl-flet</code>, this doesn't allow the functions to recurse.\\  
-If you know of a simple way (other than <code>cl-flet</code>) to have lexically-bound functions that can recurse, please edit this page.
 
+For recursion you need more machinery. The <code>make-rec</code> macro (below) takes a name, and a function (which may use that name) and returns an anonymous
+recursive function. (Note: the use of <code>funcall</code> is still required)
+<pre>
+(defmacro make-rec (name fun)
+  `((lambda (x) (funcall x x))
+    (lambda (y)
+      (funcall (lambda (,name) ,fun) (lambda (&rest args) (apply (funcall y y) args))))))
+(let ((fac (make-rec f
+                     (lambda (n) (if (= n 0) 1 (* n (funcall f (1- n))))))))
+ (defun bar (n)
+   (funcall fac n)))
+(bar 5)
+=> 120
+</pre>
 
 Note: I have named the macro <code>defun**</code> so that it doesn't clash with
 the macro <code>defun*</code> in the **cl** package, however it doesn't depend on
