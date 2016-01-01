@@ -4,13 +4,13 @@
 ;; Description: Extensions to standard library tool-bar.el
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Oct 05 17:02:16 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  4 17:02:07 2015 (-0800)
+;; Last-Updated: Thu Dec 31 16:20:32 2015 (-0800)
 ;;           By: dradams
-;;     Update #: 246
+;;     Update #: 247
 ;; URL: http://www.emacswiki.org/tool-bar%2b.el
 ;; Doc URL: http://emacswiki.org/ToolBar
 ;; Keywords: tool-bar, convenience, mouse, button, frame
