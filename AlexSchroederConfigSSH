@@ -1,3 +1,8 @@
+DeletedPage
+
+I'm no longer using this and haven't used this for years.
+
+{{{
 ;;; another config file
 ;; http://www.emacswiki.org/cgi-bin/emacs?action=edit;id=AlexSchroederConfigSSH
 ;; (set-terminal-coding-system 'latin-1)
@@ -106,3 +111,4 @@
 (global-set-key (kbd "ESC <deletechar>") 'backward-kill-word)
 
 (set-face-foreground 'diff-context-face "grey60")
+}}}
