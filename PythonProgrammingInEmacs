@@ -9,11 +9,10 @@ There are a number of Python major modes for Emacs. As well as basic editing the
 * [ProgrammingWithPythonModeDotEl python-mode.el].
 * [ProgrammingWithPythonDotEl 'loveshack' python.el] from Emacs 24.1 and before has a number of fans as well.
 == IDE packages==
-These provide powerful and relatively complete environments by combining and customizing other packages, both Emacs Lisp and Python, and resolving conflicts between them.   
+These provide powerful and relatively complete environments by combining and customizing other packages, both Emacs Lisp and Python, and resolving conflicts between them.   The first two build on the `python-mode' in python.el; python-mode.el replaces it.
 * [https://github.com/jorgenschaefer/elpy Elpy]
-* [https://github.com/proofit404/anaconda-mode anacoda-mode] 
+* [https://github.com/proofit404/anaconda-mode anaconda-mode] 
 * [ProgrammingWithPythonModeDotEl python-mode.el]
-The first two build on the `python-mode' in python.el.  python-mode.el replaces it.
 == Support Features ==
 Various features that can be added to or improved in Emacs.  Note that the IDE packages listed above provide many of these using packages referred to below.
 
