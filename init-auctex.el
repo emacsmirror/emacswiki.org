@@ -1,7 +1,7 @@
-;;; init-auctex.el --- Newsticker configuration
+;;; init-auctex.el --- AUCTeX configuration
 
 ;; Filename: init-auctex.el
-;; Description: Newsticker configuration
+;; Description: AUCTeX configuration
 ;; Author: Andy Stewart lazycat.manatee@gmail.com
 ;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
@@ -39,7 +39,7 @@
 
 ;;; Commentary:
 ;;
-;; Newsticker configuration
+;; AUCTeX configuration
 ;;
 
 ;;; Installation:
@@ -51,7 +51,7 @@
 ;;
 ;; And the following to your ~/.emacs startup file.
 ;;
-;; (require 'init-newsticker)
+;; (require 'init-auctex)
 ;;
 ;; No need more.
 
