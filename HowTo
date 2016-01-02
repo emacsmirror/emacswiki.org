@@ -7,6 +7,8 @@
 
 * [[HowToEdit|Edit]] the wiki (including how to upload EmacsLisp libraries).
 
+* Have a [[TextFormattingRules#dialog|conversation]] - start your text with [<nowiki>new::</nowiki>] on a line and your name and the time will be filled out. 
+
 * Use different natural [[HowLanguagesWork|languages]] on the wiki.
 
 * Change the [[CSS|look and feel]] of the wiki with different CSS stylesheets (e.g. 
