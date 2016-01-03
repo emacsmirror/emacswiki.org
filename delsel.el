@@ -9,9 +9,9 @@
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 12:48:27 2015 (-0800)
+;; Last-Updated: Sat Jan  2 19:15:28 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 486
+;;     Update #: 490
 ;; URL: http://www.emacswiki.org/delsel.el
 ;; Doc URL: http://emacswiki.org/DeleteSelectionMode
 ;; Keywords: abbrev, emulations, local, convenience
@@ -90,6 +90,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/01/02 dadams
+;;     delete-selection-mode: For Emacs 24.4+, do not turn on transient-mark-mode.
 ;; 2014/07/23 dadams
 ;;     Added: delete-selection-helper.  Modify vanilla version per my
 ;;            previous delete-selection-pre-hook-1 definition, (1) updating that for types
@@ -220,7 +222,9 @@ at point, as usual."
             (if (not delete-selection-mode)
                 (remove-hook 'pre-command-hook 'delete-selection-pre-hook)
               (add-hook 'pre-command-hook 'delete-selection-pre-hook)
-              (transient-mark-mode t))
+              (unless (or (> emacs-major-version 24)
+                          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+                (transient-mark-mode 1)))
             (when (interactive-p)
               (message "Delete Selection mode is now %s."
                        (if delete-selection-mode "ON" "OFF")))))
