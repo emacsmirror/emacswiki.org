@@ -1,11 +1,8 @@
 [[fr:FichiersRécents]]
 
 Recentf is a minor mode that builds a list of recently opened files.
-This list is is automatically saved across Emacs sessions. 
-You can then access this list through a menu.
-
-This mode is part of GNU Emacs 21. Or you can download it here:
-* http://perso.wanadoo.fr/david.ponce/downloads/recentf-1.23.zip
+This list is is automatically saved across sessions on exiting Emacs - 
+you can then access this list through a command or the menu.
 
 To enable `recentf-mode', put this in your `~/.emacs':
 {{{
@@ -15,17 +12,24 @@ To enable `recentf-mode', put this in your `~/.emacs':
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 }}}
 
+This mode has been part of GNU Emacs since version 21. 
+
+
+
+
+
+
+== Periodically saving the list of files ==
+
+By default, Recentf saves the list of recent files on exiting Emacs (specifically, `recentf-save-list` is called on `kill-emacs-hook`).  If Emacs exits abruptly for some reason the recent file list will be lost - therefore you may wish to call `recentf-save-list` periodically, e.g. every 5 minutes: 
+
+    (run-at-time nil (* 5 60) 'recentf-save-list)
+
+
+
+
+
 [:RecentFilesWithCompletion]
-
-
-
-
-
-
-
-
-
-
 == Recentf Filters (Structured Menu) ==
 
 Recentf lets you ''structure its menus'' in various ways, using what it calls ''filters''. This section describes ways to take advantage of that menu organization at the keyboard, with completion.
@@ -488,6 +492,8 @@ overwriting each other's changes."
 
 }}}
 
+
+
 == Entries for files that were never displayed ==
 
 If you, for example, use [[CEDET]], the recentf package may be fairly useless by default.  The problem is that CEDET can scan lots of source files and make files in the process of building a tags database or managing the build system.  The recentf list is then saturated with files you haven't displayed or edited on screen.
@@ -574,6 +580,14 @@ The Opera web browser has a surprisingly useful feature called the "trash can". 
 
 
 See Also: GnomeIntegration for opening files in GNOME's recent-files list.
+
+
+== History ==
+
+An older version is available here: 
+* http://perso.wanadoo.fr/david.ponce/downloads/recentf-1.23.zip
+
+
 
 ----
 CategoryCommands CategoryDotEmacs CategoryPersistence CategoryCompletion
