@@ -9,9 +9,9 @@
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jan  2 19:15:28 2016 (-0800)
+;; Last-Updated: Sat Jan  2 19:59:14 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 490
+;;     Update #: 497
 ;; URL: http://www.emacswiki.org/delsel.el
 ;; Doc URL: http://emacswiki.org/DeleteSelectionMode
 ;; Keywords: abbrev, emulations, local, convenience
@@ -205,12 +205,30 @@
 ;; Macro `define-minor-mode' is not defined in Emacs 20, so in order
 ;; to be able to byte-compile this file in Emacs 20, prohibit
 ;; byte-compiling of the `define-minor-mode' call.
-(if (fboundp 'define-minor-mode)
+;;
+(cond ((or (> emacs-major-version 24)   ; Emacs 24.4+
+           (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+       (eval '(define-minor-mode delete-selection-mode
+               "Toggle Delete Selection mode.
+With prefix argument ARG, enable Delete Selection mode if ARG is
+positive.  If called from Lisp, enable the mode if ARG is omitted or
+nil.
 
-    ;; Emacs 21 ------------
-    (eval '(define-minor-mode delete-selection-mode
-            "Toggle Delete Selection mode.
-With prefix ARG, turn Delete Selection mode on if and only if ARG is
+When Delete Selection mode is enabled, typed text replaces the
+selection if the selection is active, and DEL deletes the selection.
+Otherwise, typed text is just inserted at point, as usual."
+               :global t :group 'editing-basics
+               (if (not delete-selection-mode)
+                   (remove-hook 'pre-command-hook 'delete-selection-pre-hook)
+                 (add-hook 'pre-command-hook 'delete-selection-pre-hook))
+               (when (interactive-p)
+                 (message "Delete Selection mode is now %s."
+                          (if delete-selection-mode "ON" "OFF"))))))
+
+      ((fboundp 'define-minor-mode)     ; Emacs 21 to 24.3 ------------
+       (eval '(define-minor-mode delete-selection-mode
+               "Toggle Delete Selection mode.
+With prefix argument ARG, enable Delete Selection mode if ARG is
 positive.  If called from Lisp, enable the mode if ARG is omitted or
 nil.
 
@@ -218,21 +236,19 @@ When Delete Selection mode is enabled, Transient Mark mode is also
 enabled, typed text replaces the selection if the selection is active,
 and DEL deletes the selection.  Otherwise, typed text is just inserted
 at point, as usual."
-            :global t :group 'editing-basics
-            (if (not delete-selection-mode)
-                (remove-hook 'pre-command-hook 'delete-selection-pre-hook)
-              (add-hook 'pre-command-hook 'delete-selection-pre-hook)
-              (unless (or (> emacs-major-version 24)
-                          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
-                (transient-mark-mode 1)))
-            (when (interactive-p)
-              (message "Delete Selection mode is now %s."
-                       (if delete-selection-mode "ON" "OFF")))))
+               :global t :group 'editing-basics
+               (if (not delete-selection-mode)
+                   (remove-hook 'pre-command-hook 'delete-selection-pre-hook)
+                 (add-hook 'pre-command-hook 'delete-selection-pre-hook)
+                 (transient-mark-mode 1))
+               (when (interactive-p)
+                 (message "Delete Selection mode is now %s."
+                          (if delete-selection-mode "ON" "OFF"))))))
 
-  ;; Emacs 20 ---------------
-  (defun delete-selection-mode (&optional arg)
-    "Toggle Delete Selection mode.
-With prefix ARG, turn Delete Selection mode on if and only if ARG is
+      ;; Emacs 20 ---------------
+      (t (defun delete-selection-mode (&optional arg)
+           "Toggle Delete Selection mode.
+With prefix argument ARG, enable Delete Selection mode if ARG is
 positive.  If called from Lisp, enable the mode if ARG is omitted or
 nil.
 
@@ -240,18 +256,18 @@ When Delete Selection mode is enabled, Transient Mark mode is also
 enabled, typed text replaces the selection if the selection is active,
 and DEL deletes the selection.  Otherwise, typed text is inserted at
 point, as usual."
-    (interactive "P")
-    (setq delete-selection-mode  (if arg
-                                     (> (prefix-numeric-value arg) 0)
-                                   (not delete-selection-mode)))
-    (force-mode-line-update)
-    (if (not delete-selection-mode)
-        (remove-hook 'pre-command-hook 'delete-selection-pre-hook)
-      (add-hook 'pre-command-hook 'delete-selection-pre-hook)
-      (transient-mark-mode t))
-    (when (interactive-p)
-      (message "Delete Selection mode is now %s."
-               (if delete-selection-mode "ON" "OFF")))))
+           (interactive "P")
+           (setq delete-selection-mode  (if arg
+                                            (> (prefix-numeric-value arg) 0)
+                                          (not delete-selection-mode)))
+           (force-mode-line-update)
+           (if (not delete-selection-mode)
+               (remove-hook 'pre-command-hook 'delete-selection-pre-hook)
+             (add-hook 'pre-command-hook 'delete-selection-pre-hook)
+             (transient-mark-mode t))
+           (when (interactive-p)
+             (message "Delete Selection mode is now %s."
+                      (if delete-selection-mode "ON" "OFF"))))))
 
 ;;;###autoload
 (defcustom delete-selection-mode nil
