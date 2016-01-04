@@ -29,6 +29,8 @@ These third-party packages are neither part of Git nor Emacs. These front ends s
 
 These packages are *not* "complete" front ends but "only" to certain Git features.  Often they can be used *in addition to* the front ends mentioned above.
 
+* [https://github.com/dgutov/diff-hl diff-hl] highlights uncommitted changes on the fly (see ##diff-hl-flydiff-mode##).
+
 * [https://github.com/nonsequitur/git-gutter-plus git-gutter-plus] supports reverting, staging, and committing Git hunks straight from the buffer.
 
 * [http://github.com/jimhourihan/egit/tree/master egit] is an Emacs Git *history* interface intended to be similar to ##qgit## or ##gitk##.  Requires ##git.el##.
