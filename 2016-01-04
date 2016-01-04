@@ -1,7 +1,7 @@
 [new]
 Two things on my mind:
 
-# HTTPS. [https://www.eff.org/encrypt-the-web Encrypting the Web] is important. We can do it. https://www.emacswiki.org/ works thanks to [https://letsencrypt.org/ Let's Encrypt], but for the moment all it's links point back to http://www.emacswiki.org/. I want to work on that.
+# HTTPS. [https://www.eff.org/encrypt-the-web Encrypting the Web] is important. We can do it. https://www.emacswiki.org/ works thanks to [https://letsencrypt.org/ Let's Encrypt], but for the moment all it's links point back to http://www.emacswiki.org/. I want to work on that. Right now, the default CSS is served via HTTP, for example.
 
 # A new CSS. BrianBurns has been working on a new theme. 
 Learn more: [https://github.com/bburns/emacswiki-light-theme on GitHub], [http://www.emacswiki.org/emacs?action=browse;bootstrap=0;id=CSSPreview;css=https://rawgit.com/bburns/emacswiki-light-theme/master/light.css try it], [http://www.emacswiki.org/emacs?action=browse;id=2016-01-04;bootstrap=1;css=;theme= reset]). Give it a try and report issues on GitHub or send pull requests. :)
