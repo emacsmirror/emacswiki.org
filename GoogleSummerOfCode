@@ -84,11 +84,7 @@ This will ease support for other languages and integrate much wanted features li
 Lots of things must be done to make Emacs a better IDE, and this is one of them.
 
 === Improve VC (version control system) ===
-How about also having a proposal for improving VC?
-* implement vc-pull / vc-push
-* improve dealing with branches
-* implement vc-ignore
-* add other features that are needed for modern version control systems.
+How about also having a proposal for improving VC?  Improve dealing with branches and add other features that are needed for modern version control systems.
 
 === Good multithreading support for Emacs ===
 This is much wanted, specially for background processes like checking mail. It is necessary to profit from multicore processors, very common nowadays.
