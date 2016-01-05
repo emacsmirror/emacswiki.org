@@ -4,8 +4,8 @@
 Some features described on EmacsWiki are available only in the latest
 '''[::EmacsDevelopmentVersion]'''. To obtain those features, you will
 need to build Emacs using the development source code. This page is
-about that source code and how to use it. Every contributor should also
-be acquainted with and follow the guidelines in the source code repository
+about that source code and how to use it.  First and foremost, every
+contributor should be acquainted with and follow the guidelines in the source code repository
 [http://git.savannah.gnu.org/cgit/emacs.git/plain/CONTRIBUTE CONTRIBUTE file].
 
 This is a quick-start guide to using [http://git-scm.com Git] for
