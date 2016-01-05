@@ -1,5 +1,7 @@
 You can use OrgMode to blog.  There are a few different ways to do this:
 
+* [http://orgmode.org/manual/Publishing.html org-publish] -- built in to org
+* [https://github.com/Malabarba/ox-jekyll-subtree ox-jekyll-subtree] -- publish entries in an org file to Jekyll
 * [http://orgmode.org/worg/blorgit.html blorgit] -- publish org files with Ruby Sinatra
 * [https://github.com/novoid/lazyblorg lazyblorg] -- publish from org files to static blog
 * [https://github.com/renard/o-blog/ o-blog] -- standalone blog publisher for org-mode
