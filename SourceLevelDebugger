@@ -138,30 +138,31 @@ The function was entered 6 times, and the second condition 5 times.
 
 == The simple 'Watch window' functionality ==
 In Edebug one can get the evaluation list where one could type statements, inspect variables etc, by using `E' key. 
-With this one could easily simulate Watch window functionality from other IDEs, i.e. add variables/statements there. There is (as always) a way to automate it: one could position a cursor on the variable or select a statement and hit the 'A' key to get the statement in the Edebug eval list buffer with the following code: 
+With this one could easily simulate *Watch window* functionality from other IDEs, i.e. add variables/statements there. There is (as always) a way to automate it: one could position a cursor on the variable or select a statement and hit the `A' key to get the statement in the Edebug eval list buffer with the code below.
 
-(require 'eldoc)
-
-(define-key edebug-mode-map "A" 'my-elisp-add-to-watch) 
-
-(defun my-elisp-add-to-watch (&optional region-start region-end)
-  "Add the current variable to the *EDebug* window"
-  (interactive "r")
-  (let ((statement
-         (if (and region-start region-end (use-region-p))
-             (buffer-substring region-start region-end)
-           (symbol-name (eldoc-current-symbol)))))
-    ;; open eval buffer
-    (edebug-visit-eval-list)
-    ;; jump to the end of it and add a newline
-    (goto-char (point-max))
-    (newline)
-    ;; insert the variable
-    (insert statement)
-    ;; update the list
-    (edebug-update-eval-list)
-    ;; jump back to where we were
-    (edebug-where)))
+  ;; we are using eldoc-current-symbol from eldoc
+  (require 'eldoc)
+  ;; define a key
+  (define-key edebug-mode-map "A" 'my-elisp-add-to-watch) 
+  ;; the implementation
+  (defun my-elisp-add-to-watch (&optional region-start region-end)
+    "Add the current variable to the *EDebug* window"
+    (interactive "r")
+    (let ((statement
+             (if (and region-start region-end (use-region-p))
+               (buffer-substring region-start region-end)
+             (symbol-name (eldoc-current-symbol)))))
+      ;; open eval buffer
+      (edebug-visit-eval-list)
+      ;; jump to the end of it and add a newline
+      (goto-char (point-max))
+      (newline)
+      ;; insert the variable
+      (insert statement)
+      ;; update the list
+      (edebug-update-eval-list)
+      ;; jump back to where we were
+      (edebug-where)))
 
 
 See also
