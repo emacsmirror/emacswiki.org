@@ -74,7 +74,7 @@ CategoryModes
 CategoryProgrammerUtils
 CategoryProject
 
-== Multiple Frame ECB ==
+== Multi-Frame ECB ==
 
 I came up with a solution to satisfy my need to use ECB in multiple frames, and
 would like to share it here. The solution just deactivate ECB, then ectivates
