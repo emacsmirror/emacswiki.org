@@ -73,3 +73,37 @@ The patched version of ECB is also available on the [[MELPA]] package repository
 CategoryModes
 CategoryProgrammerUtils
 CategoryProject
+
+== Multiple Frame ECB ==
+
+I came up with a solution to satisfy my need to use ECB in multiple frames, and
+would like to share it here. The solution just deactivate ECB, then ectivates
+it again in current selected frame.
+
+The following is the lisp code. It is an command. So just put it in your Emacs
+configuration file and call it as any other commands.
+
+    (defun ecb-activated-in-selected-frame ()
+    "A hack to use ECB in multiple frames. It first deactivates ECB, then
+    activate it in current frame."
+    (interactive)
+    (let ((current-frame (selected-frame)))
+        ; The frame foucs change when activating or deactivating ECB is weird, so
+        ; activate current selected frame explicitly.
+        (if (and (boundp 'ecb-minor-mode) (ecb-minor-mode))
+            (ecb-deactivate)
+        )
+        (select-frame current-frame)
+        (ecb-activate)
+        )
+    )
+
+The code is also on Github: https://github.com/shawnLeeZX/emacs.d/blob/master/lisp/init-ecb.el
+
+Happy coding :)
+
+Shuai Li
+
+Best
+
+
