@@ -1,12 +1,13 @@
-==What is SrSpeedbar?==
-SrSpeedbar is mode make [[SpeedBar]] show in *Current Frame* by SebastianRose. 
+SrSpeedbar is a mode that makes [[SpeedBar]] show in the *Current Frame*, by SebastianRose. 
 
 ==Install==
-: Put Lisp:sr-speedbar.el in your load-path, add 
+
+: Put Lisp:sr-speedbar.el in your load-path, and add 
 {{{
         (require 'sr-speedbar)
 }}}
 : in ~/.emacs
+
 
 ==Usage==
 
@@ -42,7 +43,8 @@ All below setup can customize by:
 
 [[image:MultiTermDedicatedShotPage]]
 
-----
+
+==Discussion==
 
 How can I disable the icons? I only want ASCII, even in GUI Emacs.
 
@@ -146,5 +148,7 @@ Hope it helps.
 
 (advice-add 'sr-speedbar-open :after #'my-sr-speedbar-open-hook)
 }}}
+
 ----
+
 CategoryNavigation
