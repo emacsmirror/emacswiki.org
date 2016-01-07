@@ -5,7 +5,7 @@
 ;; Author: Ye Wenbin <wenbinye@gmail.com>
 ;; Maintainer: Kirill Babikhin <mrakobes86reg@yandex.ru>
 ;; Created: 22 Dec 2007
-;; Version: 0.04
+;; Version: 0.05
 ;; Keywords: tools, convenience, languages
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -63,6 +63,8 @@
 (eval-when-compile
   (require 'cl))
 
+(require 'bindings)
+
 (defgroup perltidy nil
   "Tidy perl code using perltidy"
   :group 'tools
@@ -115,9 +117,10 @@
           (perltidy-run-list perltidy-program-params)
           )
 
-      (if (and (boundp 'remote?)
+      (if (and (bound-and-true-p remote?)
                perltidyrc)
           (progn
+            (require 'tramp-sh)
             (tramp-sh-handle-copy-file perltidyrc pertidyrc-remote t)
             (setq perltidyrc pertidyrc-remote)
             (setq perltidy-run-list
