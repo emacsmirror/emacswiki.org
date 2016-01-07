@@ -22,6 +22,23 @@ Here is a '''bulleted list''' -
                      (describe-hash-descend value))
              hash))
 
+
+== Tables ==
+
+||Name                  ||Started  ||Location  ||
+||Lisp 1                ||1958     ||MIT       ||  
+||Lisp 1.5              ||1960     ||MIT       ||   
+||BBN Lisp              ||1964     ||BBN       ||     
+||!MacLisp               ||1966     ||MIT       ||    
+||Muddle (MDL)          ||1971?    ||MIT       ||     
+||!InterLisp             ||1972     ||Xerox Parc  || 
+||Scheme                ||1975     ||MIT       ||  
+||Lisp Machine Lisp     ||         ||MIT       ||  
+||Common Lisp           ||1981     ||          ||
+||Kyoto Common Lisp (KCL) ||1984     ||Kyoto Japan ||
+||Gnu Common Lisp (GCL) ||1994     ||Austin ||
+
+
 == Cons cells and lists ==
 
 {{{
@@ -30,9 +47,10 @@ Here is a '''bulleted list''' -
           +-------+---+    +------+---+  +-------+-----+
 }}}
 
+
 == Quotes ==
 
-: "I suppose I should learn Lisp, but it seems so foreign." - Paul Graham, Nov 1983
+: If you have a garden and a library, you have everything you need. - Cicero
 
 
 ----
