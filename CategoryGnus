@@ -144,6 +144,27 @@ Suggestions:
 * GnusAutoCheck -- Autocheck for new incoming news and mails for given days and/or time frames
 * GnusFormatFlowed -- Flowing the spice with Gnus
 
+== Problem solving and debugging ==
+
+The following functions and variables are useful for tracking down and debugging problems with your gnus setup:
+
+| nnmail-split-history         | see where mail were split                                     |
+| gnus-summary-respool-trace   | see where the respool algorithm would put the current article |
+| gnus-summary-respool-article | respool the current article                                   |
+| gnus-summary-respool-query   | Query where the respool algorithm would put this article.     |
+| gnus-get-info                | show info for a specific group                                |
+| gnus-set-info                | set info for a specific group                                 |
+| gnus-newsrc-alist            | assoc list of read articles and group info                    |
+| gnus-newsrc-hashtb           | hashtable of info stored in gnus-newsrc-alist                 | 
+
+Group info is stored in the .newsrc.eld file (in the same location as <code>gnus-startup-file</code>),
+and includes extra info not accesible via normal group parameter editing (<code>gnus-group-edit-group-method</code>).
+You can alter group info using the <code>gnus-set-info</code> function, but to make sure the new settings are permanent
+you may need to edit .newsrc.eld (after quitting gnus). For more info about .newsrc.eld and other startup files see
+the manual: http://www.gnus.org/manual/gnus_7.html#Startup-Files
+
+I use https://github.com/vapniks/org-dotemacs to store my gnus config code which makes tracking down errors easier.
+
 == Getting Gnus ==
 
 TODO explain how to get it from git.  Preferably without creating a new page.
