@@ -113,7 +113,7 @@ most certainly that's not all you want.  To subscribe to a group you know the
 name of, say U and enter the name of the group (with tab-completion). If you
 want the complete group list say A A or M-d if you want the taglines too.  To
 search in the list use C-s.  u subscribes you to the group which is under the
-cursor.  There are more options, see the info for this.
+cursor. Press l to filter out unsubscribed groups. There are more options, see the info for this.
 
 ==== The Topic-Mode ====
 
