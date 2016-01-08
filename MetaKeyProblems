@@ -209,6 +209,9 @@ equivalents under X11</code> under the input preferences is one easy
 way to fix this, but this will effectively kill a few useful
 keybindings of the X11 servers too.
 
+Typing the ESC key, and releasing it, comes down to holding the ALT key down. EX : search and replace would be ESC and release then % 
+Off course I only tested on a french leyboard running ElCaptain (sorry.) Off course, this isn't the real key bindings for emacs. BUT this comes very handy when running emacs through a couple of ssh connections on a distant *nix server. 
+
 If one is running the native EmacsForMacOS, the variable
 <code>mac-command-key-is-meta</code> might be of interest, but it
 ought to be true by default.
