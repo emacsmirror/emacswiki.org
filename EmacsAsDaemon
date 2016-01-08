@@ -337,6 +337,8 @@ This can then be installed in ##/Library/LaunchAgents## and loaded via:
 
 For further instructions see [http://cubiclemuses.com/cm/articles/2009/08/06/emacs-and-os-x-launchd/]
 
+: Link dead? This site http://launchd.info/ seems to suggest we don't need sudo above. Not sure, please delete my remark if you can edit above. 
+
 == Systemd user service on startup ==
 
 It's simple enough to run the emacs daemon with [http://www.freedesktop.org/wiki/Software/systemd systemd].
