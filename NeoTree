@@ -62,6 +62,14 @@ Open (toggle) NeoTree:
 
 == Useful tips ==
 
+=== neo-smart-open ===
+
+Every time when the neotree window is opened, let it find current file and jump
+to node.
+
+    (setq neo-smart-open t)
+
+
 === Work with Projectile ===
 
 When running `projectile-switch-project' (C-c p p), `neotree' will change root automatically.
