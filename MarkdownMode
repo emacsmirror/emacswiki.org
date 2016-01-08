@@ -34,5 +34,38 @@ Useful markdown-specific editing features:
 * Section navigation via outline-minor-mode using the same keybindings as in org-mode (`C-c C-f', `C-c C-b', `C-c C-u', `C-c C-p', and `C-c C-n').
 * Reorder list items with `M-<up>' and `M-<down>'.
 
+== HTML 5 and UTF-8 ==
+
+Assuming you are using the Perl script `markdown` which is called without a filename, and assuming you write all your files using UTF-8, then this is for you:
+
+{{{
+(eval-after-load "markdown-mode"
+  '(defalias 'markdown-add-xhtml-header-and-footer 'as/markdown-add-xhtml-header-and-footer))
+
+(defun as/markdown-add-xhtml-header-and-footer (title)
+    "Wrap XHTML header and footer with given TITLE around current buffer."
+    (goto-char (point-min))
+    (insert "<!DOCTYPE html5>\n"
+	    "<html>\n"
+	    "<head>\n<title>")
+    (insert title)
+    (insert "</title>\n")
+    (insert "<meta charset=\"utf-8\" />\n")
+    (when (> (length markdown-css-paths) 0)
+      (insert (mapconcat 'markdown-stylesheet-link-string markdown-css-paths "\n")))
+    (insert "\n</head>\n\n"
+	    "<body>\n\n")
+    (goto-char (point-max))
+    (insert "\n"
+	    "</body>\n"
+	    "</html>\n"))
+}}}
+
+This does the following:
+
+* generates a HTML 5 header instead of an XHTML header
+* adds a UTF-8 charset declaration and ignores ##markdown-content-type## and ##markdown-coding-system##
+* ##markdown-xhtml-header-content## is also ignored
+
 ----
 MarkupModes
