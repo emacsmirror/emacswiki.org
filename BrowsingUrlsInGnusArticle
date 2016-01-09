@@ -88,6 +88,14 @@ I use this little piece of code, it only works with gwene and gmane articles, he
 		    (message "Couldn't find any likely url")))))))
 
 
+----
+
+[[Ace-link]] works really well for quickly following url's through out
+emacs, and especially with gnus.  Install it from melpa and add this
+to your .gnus:
+
+   (define-key gnus-summary-mode-map (kbd "M-o") 'ace-link-gnus)
+   (define-key gnus-article-mode-map (kbd "M-o") 'ace-link-gnus)	
 
 ----
 CategoryHypermedia
