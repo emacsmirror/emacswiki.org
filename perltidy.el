@@ -63,8 +63,6 @@
 (eval-when-compile
   (require 'cl))
 
-(require 'bindings)
-
 (defgroup perltidy nil
   "Tidy perl code using perltidy"
   :group 'tools
