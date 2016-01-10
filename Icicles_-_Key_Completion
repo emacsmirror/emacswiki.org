@@ -406,7 +406,7 @@ What does vanilla Emacs offer out of the box in this regard?
 * You can use `M-x' plus `RET' to execute any command. But how would
   you insert text?
 
-* Similarly, for `M-:', which lets you evaluate any EmacsLisp
+* Similarly, for `##M-:##', which lets you evaluate any EmacsLisp
   [[sexp]]. You still need a way to type characters.
 
 '''Icicles''' key completion lets you do almost anything in
@@ -421,7 +421,7 @@ Emacs with three or four keys, buttons, or whatever:
 
 * And of course `C-g', to cancel the current operation.
 
-`S-TAB' includes key `M-x', which offers all commands (even those not bound) as possible choices. It also includes key `M-:', which lets you execute any EmacsLisp expression. That's almost all of Emacs! (See also [[MousePlus#M-xViaMouse2|M-x via `mouse-2']].)
+`S-TAB' includes key `M-x', which offers all commands (even those not bound) as possible choices. It also includes key `##M-:##', which lets you execute any EmacsLisp expression. That's almost all of Emacs! (See also [[MousePlus#M-xViaMouse2|M-x via `mouse-2']].)
 
 You could even perhaps get away with only three mouse buttons, and no keyboard:
 
