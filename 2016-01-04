@@ -18,7 +18,7 @@ There are still bits that need tweaking here and there - at some point we could 
 [new]
 I think this just got better. For the moment I want to keep both HTTP and HTTPS versions of the site up and running.
 Right now, nginx should set HTTP_X_FORWARDED_PROTO to "http" or "https" and the configuration of Emacs Wiki should
-now take this into account, generating links using "http" or "https" as appropriate. If a page's raw text contains the HTTP link -- like in the paragraphs above -- then those won't change, obviously. When I make the final switch over, those will all redirect to the HTTPS version of the site, however.
+now take this into account, generating links using "http" or "https" as appropriate. If a page's raw text contains the HTTP link -- like in the paragraphs above -- then those won't change, obviously. When I make the final switch over, those will all redirect to the HTTPS version of the site.
 
 Anyway. I've changed my bookmark to the following, using HTTPS:
 https://www.emacswiki.org/emacs/?action=rc;showedit=1;rollback=1
