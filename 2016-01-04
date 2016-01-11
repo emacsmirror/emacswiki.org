@@ -1,7 +1,7 @@
 [new]
 Two things on my mind:
 
-# HTTPS. [https://www.eff.org/encrypt-the-web Encrypting the Web] is important. We can do it. https://www.emacswiki.org/ works thanks to [https://letsencrypt.org/ Let's Encrypt], but for the moment all it's links point back to http://www.emacswiki.org/. I want to work on that. Right now, the default CSS is served via HTTP, for example.
+# HTTPS. [https://www.eff.org/encrypt-the-web Encrypting the Web] is important. We can do it. https://www.emacswiki.org/ works thanks to [https://letsencrypt.org/ Let's Encrypt].
 
 # A new CSS. BrianBurns has been working on a new theme. 
 Learn more: [https://github.com/bburns/emacswiki-light-theme on GitHub], [http://www.emacswiki.org/emacs?action=browse;bootstrap=0;id=CSSPreview;css=https://rawgit.com/bburns/emacswiki-light-theme/master/light.css try it], [http://www.emacswiki.org/emacs?action=browse;id=2016-01-04;bootstrap=1;css=;theme= reset]). Give it a try and report issues on [https://github.com/bburns/emacswiki-light-theme/issues GitHub] or send pull requests. :)
@@ -16,7 +16,7 @@ There are still bits that need tweaking here and there - at some point we could 
 -- BrianBurns
 
 [new]
-I think this just got better. For the moment I want to keep both HTTP and HTTPS versions of the site up and running.
+I think HTTPS support just got better. For the moment I want to keep both HTTP and HTTPS versions of the site up and running.
 Right now, nginx should set HTTP_X_FORWARDED_PROTO to "http" or "https" and the configuration of Emacs Wiki should
 now take this into account, generating links using "http" or "https" as appropriate. If a page's raw text contains the HTTP link -- like in the paragraphs above -- then those won't change, obviously. When I make the final switch over, those will all redirect to the HTTPS version of the site.
 
