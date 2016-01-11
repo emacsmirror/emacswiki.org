@@ -1,6 +1,6 @@
 When working with multiple windows it can be annoying if they get out of order.
 
-If you have 2 windows and want to swap the top buffer with the bottom, you could use the sequence of seven keys, `C-x 0 C-x 4 b'.  More likely you are in the bottom buffer and want to be on top.  In that case, use `C-x 0 C-x 2 C-x b RET'.
+If you have 2 windows and want to swap the top buffer with the bottom, you could use the sequence of seven keys, `C-x 0 C-x 4 b'.  More likely you are in the bottom buffer and want to be on top.  In that case, use `C-x 0 C-x 2 C-x b RET'. (Note that these don't handle the case where the window is split ''vertically'' instead of horizontally.)
 
 Alternatively, a simple function could be written in Lisp and assigned to a single key sequence.  This is a slight rewrite of an original written by ThomasBellman.
 
