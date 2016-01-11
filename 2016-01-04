@@ -24,3 +24,10 @@ Anyway. I've changed my bookmark to the following, using HTTPS:
 https://www.emacswiki.org/emacs/?action=rc;showedit=1;rollback=1
 
 -- AlexSchroeder
+
+[new]
+With the help of ##forcer## and ##kodein## on the EmacsChannel I managed to improve the SSL Server Test score from a C to an A. Thanks!
+The only thing I haven't enabled is HSTS.
+I'm still waiting to see people report problems.
+
+-- Alex
