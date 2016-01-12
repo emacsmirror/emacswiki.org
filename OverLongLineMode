@@ -1,0 +1,9 @@
+This is a work-in-progress workaround for the issue of large minified files of programming code bringing Emacs to its knees on account of the relevant modes not being (remotely) optimised for that use-case.
+
+==Download==
+
+Lisp:over-long-line-mode.el
+
+==Install==
+
+Place the library somewhere in your Emacs load-path, and ##(require 'over-long-line-mode)##
