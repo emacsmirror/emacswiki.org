@@ -3,7 +3,8 @@
 ;; Author: Phil S.
 ;; URL: http://www.emacswiki.org/emacs/OverLongLineMode
 ;; Created: 12 Jan 2016
-;; Version: 0.2
+;; Package-Requires: ((emacs "24.3"))
+;; Version: 0.3
 
 ;; This file is not part of GNU Emacs.
 
@@ -34,6 +35,7 @@
 
 ;;; Change Log:
 ;;
+;; 0.3 - Defer to a 'mode' local variable.
 ;; 0.2 - Initial release to EmacsWiki.
 
 ;;; Code:
@@ -112,7 +114,7 @@ Alternatively, the normal mode can be manually invoked, or a file-local
 `over-long-line-mode-inhibited' may be set non-nil to ensure that
 the normal mode is always used for the file in question."
   (setq font-lock-mode 0)
-  (message "Changed to %s (from %s) on account of line length. %s to undo."
+  (message "Changed to %s (from %s) on account of line length. %s to revert."
            major-mode
            over-long-line-original-mode
            (substitute-command-keys "\\[over-long-line-mode-revert]")))
@@ -128,18 +130,30 @@ before `over-long-line-mode' was called to replace it."
 (define-key over-long-line-mode-map (kbd "C-c C-c")
   'over-long-line-mode-revert)
 
+(defadvice hack-local-variables (after over-long-line-mode--local-variables)
+  "Ensure that `over-long-line-mode' defers to local variable mode declarations.
+
+This advice acts after the initial MODE-ONLY call to `hack-local-variables',
+and ensures that we honour a 'mode' local variable, never changing to
+`over-long-line-mode' in that scenario."
+  (when (ad-get-arg 0) ; MODE-ONLY argument to `hack-local-variables'
+    (unless ad-return-value ; No local variable 'mode' was found
+      (setq-local over-long-line-mode-inhibited t))))
+(ad-activate 'hack-local-variables)
+
 (defadvice set-auto-mode (after over-long-line-mode--set-auto-mode)
-  "Maybe use `over-long-line-mode' for files with very long lines.
+  "Maybe change to `over-long-line-mode' for files with very long lines.
 
-This advice acts after `set-auto-mode' has made its decision.
+This advice acts after `set-auto-mode' has set the buffer's major mode.
 
-We can't sensible act before this point, as some major modes must
-be exempt from `over-long-line-mode' (binary file modes, for
-example).  Instead only act when the selected major mode is a member
-of `over-long-line-mode-target-modes', or a derivative thereof.
+We can't act before this point, because some major modes must be exempt from
+`over-long-line-mode' (binary file modes, for example).  Instead, we only act
+when the selected major mode is a member of `over-long-line-mode-target-modes',
+or a derivative thereof.
 
-If buffer-local `over-long-line-mode-inhibited' is non-nil, then
-do nothing."
+`over-long-line-detected-p' then determines whether the mode change is needed.
+
+If buffer-local `over-long-line-mode-inhibited' is non-nil, then do nothing."
   (unless (bound-and-true-p over-long-line-mode-inhibited)
     (when (and (apply 'derived-mode-p over-long-line-mode-target-modes)
                (over-long-line-detected-p))
