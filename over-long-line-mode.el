@@ -3,7 +3,7 @@
 ;; Author: Phil S.
 ;; URL: http://www.emacswiki.org/emacs/OverLongLineMode
 ;; Created: 12 Jan 2016
-;; Version: 0.1
+;; Version: 0.2
 
 ;; This file is not part of GNU Emacs.
 
