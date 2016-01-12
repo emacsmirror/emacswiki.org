@@ -103,12 +103,6 @@ type \\[over-long-line-mode-revert].
 Alternatively, the normal mode can be manually invoked, or a file-local
 `over-long-line-mode-inhibited' may be set non-nil to ensure that
 the normal mode is always used for the file in question."
-  ;; TODO:
-  ;; define/process alist of mode lists (for derived-mode-p) mapped to
-  ;; behaviours. include typical use of symbol for callback; otherwise
-  ;; some standard things such as disabling font-lock-mode. Perhaps it
-  ;; should just be a body of forms to evaluate, for maximum flexibility?
-  ;; but then symbol=>callback effectively covers that.
   (setq font-lock-mode 0)
   (message "Changed to %s (from %s) on account of line length. %s to undo."
            major-mode
