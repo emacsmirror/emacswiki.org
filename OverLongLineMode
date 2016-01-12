@@ -6,4 +6,4 @@ Lisp:over-long-line-mode.el
 
 ==Install==
 
-Place the library somewhere in your Emacs load-path, and ##(require 'over-long-line-mode)##
+Place the library somewhere in your Emacs load-path (or use ##M-x package-install-file## for the downloaded file), and add ##(require 'over-long-line-mode)## to your init file.
