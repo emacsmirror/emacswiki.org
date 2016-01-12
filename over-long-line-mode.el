@@ -1,8 +1,13 @@
-;;; over-long-line-mode.el - Stops minified code bringing Emacs to its knees.
+;;; over-long-line-mode.el --- Stops minified code bringing Emacs to its knees.
 ;;
 ;; Author: Phil S.
 ;; URL: http://www.emacswiki.org/emacs/OverLongLineMode
+;; Created: 12 Jan 2016
 ;; Version: 0.1
+
+;; This file is not part of GNU Emacs.
+
+;; This file is free software.
 
 ;;; Commentary:
 ;;
@@ -24,7 +29,7 @@
 ;; whether this mode will be invoked for a given file.  The tests are made after
 ;; `set-auto-mode' has set the normal major mode.
 
-;;; Changelog:
+;;; Change Log:
 ;;
 ;; 0.1 - Initial release to EmacsWiki.
 
