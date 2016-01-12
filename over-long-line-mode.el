@@ -4,7 +4,7 @@
 ;; URL: http://www.emacswiki.org/emacs/OverLongLineMode
 ;; Version: 0.1
 
-;; Commentary:
+;;; Commentary:
 ;;
 ;; Many Emacs modes struggle with buffers which contain excessively long lines,
 ;; and may consequently cause unacceptable performance issues.
