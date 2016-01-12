@@ -6,7 +6,6 @@
 ;; Version: 0.1
 
 ;; This file is not part of GNU Emacs.
-
 ;; This file is free software.
 
 ;;; Commentary:
