@@ -34,7 +34,7 @@
 
 ;;; Change Log:
 ;;
-;; 0.1 - Initial release to EmacsWiki.
+;; 0.2 - Initial release to EmacsWiki.
 
 ;;; Code:
 
