@@ -34,9 +34,3 @@ provides the following capabilities:
 # Download latest version of RspecMode at http://github.com/pezra/rspec-mode
 # Place rspec-mode.el in your Emacs load path
 # Add `(require 'rspec-mode)` to your .emacs file
-
-== Dependencies ==
-
-This minor mode depends on `mode-compile`.  The expectations depend
-`on el-expectataions.el`.
- 
