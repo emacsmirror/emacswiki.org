@@ -8,9 +8,9 @@
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 0
 ;; Package-Requires: ((cygwin-mount "0"))
-;; Last-Updated: Thu Dec 31 16:00:29 2015 (-0800)
+;; Last-Updated: Fri Jan 15 15:28:17 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 170
+;;     Update #: 172
 ;; URL: http://www.emacswiki.org/setup-cygwin.el
 ;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
@@ -31,6 +31,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/01/15 dadams
+;;     setcyg-dir-p: Return nil if arg is not a string.
 ;; 2015/10/31 dadams
 ;;     buffer-file-coding-system: Use suggestions from Emacs bug #21780.
 ;; 2014/01/30 dadams
@@ -111,7 +113,7 @@ other hooks, such as major mode hooks, can do the job."
 
 (defun setcyg-dir-p (directory)
   "Return DIRECTORY if DIRECTORY is a readable directory, nil otherwise."
-  (and (file-directory-p directory)  (file-readable-p directory)  directory))
+  (and (stringp directory)  (file-directory-p directory)  (file-readable-p directory)  directory))
 
 (defcustom cygwin-root-directory (or (setcyg-dir-p "C:/cygwin64/")  (setcyg-dir-p "C:/cygwin/"))
   "Root directory of Cygwin installation.
