@@ -113,7 +113,7 @@ to move them along with your configuration to a different machine.
 
 == Debugging ==
 
-First, `M-h v load-path RET' gives you the documentation variable `load-path', as well as its current value. If your directory is not listed,
+First, `C-h v load-path RET' gives you the documentation variable `load-path', as well as its current value. If your directory is not listed,
 add it (see above).
 
 If your directory ''is'' listed, check for ConflictingLibraries.
