@@ -246,6 +246,8 @@ patterns however, so you might prefer customizing this to
 non-`nil' and using `M-k' to turn `isearchp-drop-mismatch' off
 only temporarily, when needed.
 
+
+[:isearchp-repeat-search-if-fail-flag]
 * Non-nil option '''`isearchp-repeat-search-if-fail-flag'''' means that
 Isearch fails only when there are no search hits within the
 search limits.  If there are search hits, and if there are no
