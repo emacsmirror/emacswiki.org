@@ -198,6 +198,13 @@ anything you like (including search for something different).
 Using '''`C-M-c'''' closes the recursive editing session and resumes
 the search (from the current position when you hit `C-M-c').
 
+[:isearchp-resume-with-last-when-empty-flag]
+* Option '''`isearchp-resume-with-last-when-empty-flag'''' non-`nil'
+(the default) means that if Isearch is resumed with an empty
+search string, after being suspended, the previous search string
+is used.  If `nil', it is resumed with an empty search string,
+as if starting over from the resumed location.
+
 * `C-g' after successfully finding matches restores not only the original position but also its relative position in the window.  IOW, you get back to what you saw before searching.  Fixes GnuEmacs [[http://debbugs.gnu.org/cgi/bugreport.cgi?bug=12253|bug #12253]] for Isearch.
 
 * Highlighting of the mismatched portion of your search string. This is the portion that is removed if you do `C-g', or removed/replaced manually if you use `C-M-l' (see next) or automatically if you use `M-k' (see below).  I added this feature to GnuEmacs 23.1.
@@ -205,6 +212,13 @@ the search (from the current position when you hit `C-M-c').
 [:isearchp-remove-failed-part]
 * '''`C-M-l'''' ('''`isearchp-remove-failed-part'''') removes the failed part of the search string, if any.  `C-g' does this as well, but
 `C-g' also has an effect when search is successful.
+
+[:isearchp-remove-failed-part-or-last-char]
+* '''`##C-<backspace>##'''' ('''`isearchp-remove-failed-part-or-last-char'''')
+also removes the failed part, if any.  If there is none then it
+removes the last character.  You might prefer to bind this to
+`DEL' (Backspace), in place of `isearch-delete-char'.
+
 
 [:isearchp-cycle-mismatch-removal]
 [:isearchp-drop-mismatch]
@@ -221,8 +235,6 @@ previous input has a mismatched portion.
 successful matches.
 
 
-
-
 [:isearchp-drop-mismatch-regexp-flag]
 * Option '''`isearchp-drop-mismatch-regexp-flag'''' controls whether
 [[regexp]] search respects option `isearchp-drop-mismatch'.  If
@@ -234,6 +246,12 @@ patterns however, so you might prefer customizing this to
 non-`nil' and using `M-k' to turn `isearchp-drop-mismatch' off
 only temporarily, when needed.
 
+* Non-nil option '''`isearchp-repeat-search-if-fail-flag'''' means that
+Isearch fails only when there are no search hits within the
+search limits.  If there are search hits, and if there are no
+more hits in the current search direction, then search restarts
+automatically at the limit.  You can toggle this behavior using
+'''`M-s M-k'''' anytime during Isearch.
 
 
 [:isearchp-ring-bell-function]
