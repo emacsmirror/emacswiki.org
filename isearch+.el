@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 15 08:34:23 2016 (-0800)
+;; Last-Updated: Fri Jan 15 09:24:17 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4192
+;;     Update #: 4202
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -211,7 +211,6 @@
 ;;    `C-+'        `isearchp-toggle-search-invisible'
 ;;    `C-_'        `isearchp-yank-symbol-or-char' (Emacs 22+)
 ;;    `C-('        `isearchp-yank-sexp-symbol-or-char' (Emacs 22+)
-;;    `C-SPC'      `isearchp-toggle-set-region'
 ;;    `C-end'      `goto-longest-line' (requires `misc-cmds.el')
 ;;    `C-h'        `isearch-mode-help'
 ;;    `C-x n'      `isearchp-toggle-region-restriction' (Emacs 24.3+)
@@ -238,6 +237,8 @@
 ;;    `M-s h L'    `isearchp-toggle-lazy-highlighting'(Emacs 22+)
 ;;    `M-s w'      `isearch-toggle-word'
 ;;    `M-TAB'      `isearchp-complete'
+;;    `M-s M-SPC'  `isearchp-toggle-set-region'
+;;    `M-s M-k'    `isearchp-toggle-repeat-search-if-fail'
 ;;    `M-w'        `isearchp-kill-ring-save'
 ;;    `C-M-i'      `isearchp-complete'
 ;;    `C-M-l'      `isearchp-remove-failed-part' (Emacs 22+)
@@ -293,8 +294,8 @@
 ;;
 ;;    - Option `isearchp-set-region-flag' - Non-`nil' means
 ;;      automatically set the region around the last search target.
-;;    - Command `isearchp-toggle-set-region', bound to `C-SPC' during
-;;      isearch - toggle `isearchp-set-region-flag'.
+;;    - Command `isearchp-toggle-set-region', bound to `M-s M-SPC'
+;;      during isearch - toggle `isearchp-set-region-flag'.
 ;;    - Command `isearchp-set-region-around-search-target' - manually
 ;;      set the region around the last search target.
 ;;
@@ -653,9 +654,10 @@
 ;;(@* "Change log")
 ;;
 ;; 2016/01/15 dadams
-;;     Added: isearchp-repeat-search-if-fail-flag, , isearchp-toggle-repeat-search-if-fail,
+;;     Added: isearchp-repeat-search-if-fail-flag, isearchp-toggle-repeat-search-if-fail,
 ;;            isearchp--repeat-search-if-fail-repeated.
 ;;     Bind isearchp-toggle-repeat-search-if-fail to M-s M-k.
+;;     Bind isearchp-toggle-set-region to M-s M-SPC, not to C-SPC.
 ;;     isearch-forward: Mention isearchp-toggle-repeat-search-if-fail in doc string.
 ;;     isearchp-replace-literally: Corrected doc string: C-M-`, not M-`.
 ;; 2015/11/28 dadams
@@ -1402,7 +1404,7 @@ Possible functions you can use:
   "*Non-nil means set region around search target.
 This is used only for Transient Mark mode.
 You can toggle this using `isearchp-toggle-set-region', bound to
-`C-SPC' during Isearch."
+`M-s M-SPC' during Isearch."
   :type 'boolean :group 'isearch-plus)
 
 ;;;###autoload
@@ -1930,7 +1932,7 @@ Toggles between nil and the last non-nil value."
   (isearch-update))
 
 ;;;###autoload
-(defun isearchp-toggle-set-region ()    ; Bound to `C-SPC' in `isearch-mode-map'.
+(defun isearchp-toggle-set-region ()    ; Bound to `M-s M-SPC' in `isearch-mode-map'.
   "Toggle `isearchp-set-region-flag'."
   (interactive)
   (setq isearchp-set-region-flag  (not isearchp-set-region-flag))
@@ -3781,7 +3783,6 @@ Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
 
 (define-key isearch-mode-map [(control ?+)]       'isearchp-toggle-search-invisible)
 (define-key isearch-mode-map [(control ?`)]       'isearchp-toggle-regexp-quote-yank)
-(define-key isearch-mode-map [(control ? )]       'isearchp-toggle-set-region)
 (define-key isearch-mode-map "\C-h"               'isearch-mode-help)
 
 ;; An alternative to binding `isearch-edit-string' (but less flexible):
@@ -3803,6 +3804,7 @@ Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
   (define-key isearch-mode-map "\M-sw"            'isearch-toggle-word))
 (when (fboundp 'isearchp-toggle-repeat-search-if-fail)
   (define-key isearch-mode-map "\M-s\M-k"         'isearchp-toggle-repeat-search-if-fail))
+(define-key isearch-mode-map [(meta ?s) (meta ? )] 'isearchp-toggle-set-region)
 (define-key isearch-mode-map "\M-w"               'isearchp-kill-ring-save)
 (when (fboundp 'isearch-yank-internal)
   (define-key isearch-mode-map "\C-z"             'isearchp-yank-char)
