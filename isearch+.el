@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 14:11:36 2015 (-0800)
+;; Last-Updated: Fri Jan 15 08:34:23 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4122
+;;     Update #: 4192
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -91,6 +91,7 @@
 ;;    `isearchp-toggle-literal-replacement' (Emacs 22+),
 ;;    `isearchp-toggle-option-toggle',
 ;;    `isearchp-toggle-regexp-quote-yank',
+;;    `isearchp-toggle-repeat-search-if-fail' (Emacs 22+),
 ;;    `isearchp-toggle-search-invisible',
 ;;    `isearchp-toggle-set-region',
 ;;    `isearchp-toggle-symmetric-char-fold' (Emacs 25+),
@@ -109,6 +110,7 @@
 ;;    `isearchp-initiate-edit-commands' (Emacs 22+),
 ;;    `isearchp-mouse-2-flag', `isearchp-on-demand-action-function'
 ;;    (Emacs 22+), `isearchp-regexp-quote-yank-flag',
+;;    `isearchp-repeat-search-if-fail-flag' (Emacs 22+),
 ;;    `isearchp-restrict-to-region-flag' (Emacs 24.3+),
 ;;    `isearchp-resume-with-last-when-empty-flag' (Emacs 22+),
 ;;    `isearchp-ring-bell-function', `isearchp-set-region-flag',
@@ -131,8 +133,9 @@
 ;;    `isearchp-message-suffix', `isearchp-read-face-names',
 ;;    `isearchp-read-face-names--read', `isearchp-read-sexps',
 ;;    `isearchp-remove-duplicates', `isearchp-remove-mismatch',
-;;    `isearchp-repeat-command', `isearchp-replace-fixed-case-p'
-;;    (Emacs 22+), `isearchp-replace-match' (Emacs 22+),
+;;    `isearchp-repeat-command', `isearchp-repeat-search-if-fail'
+;;    (Emacs 22+), `isearchp-replace-fixed-case-p' (Emacs 22+),
+;;    `isearchp-replace-match' (Emacs 22+),
 ;;    `isearchp-replace-multiple' (Emacs 22+),
 ;;    `isearchp-replace-on-demand' (Emacs 22+),
 ;;    `isearchp-reset-noprompt-action-fn', `isearchp-set-region',
@@ -490,6 +493,12 @@
 ;;    recursive editing session and resumes the search (from the
 ;;    current position where you hit `C-M-c').
 ;;
+;;  * Option `isearchp-resume-with-last-when-empty-flag' non-`nil'
+;;    (the default) means that if Isearch is resumed with an empty
+;;    search string, after being suspended, the previous search string
+;;    is used.  If `nil', it is resumed with an empty search string,
+;;    as if starting over from the resumed location.
+;;
 ;;  * `C-g' after successfully finding matches restores not only the
 ;;    original position but also its relative position in the window.
 ;;    IOW, you get back to what you saw before searching.  Fixes Emacs
@@ -500,12 +509,6 @@
 ;;    `C-g', or removed/replaced manually if you use `C-M-l' (see
 ;;    next) or automatically if you use `M-k' (see below).  I added
 ;;    this feature to GNU Emacs 23.1.
-;;
-;;  * Option `isearchp-resume-with-last-when-empty-flag' non-`nil'
-;;    (the default) means that if Isearch is resumed with an empty
-;;    search string, after being suspended, the previous search string
-;;    is used.  If `nil', it is resumed with an empty search string,
-;;    as if starting over from the resumed location.
 ;;
 ;;  * `C-M-l' (`isearchp-remove-failed-part') removes the failed part
 ;;     of the search string, if any.  `C-g' does this as well, but
@@ -540,6 +543,13 @@
 ;;    patterns however, so you might prefer customizing this to
 ;;    non-`nil' and using `M-k' to turn `isearchp-drop-mismatch' off
 ;;    only temporarily, when needed.
+;;
+;;  * Non-nil option `isearchp-repeat-search-if-fail-flag' means that
+;;    Isearch fails only when there are no search hits within the
+;;    search limits.  If there are search hits, and if there are no
+;;    more hits in the current search direction, then search restarts
+;;    automatically at the limit.  You can toggle this behavior using
+;;    `M-s M-k' anytime during Isearch.
 ;;
 ;;  * You can use option `isearchp-ring-bell-function' to suppress or
 ;;    replace bell ringing (`ding') during Isearch (but not for
@@ -642,6 +652,12 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/01/15 dadams
+;;     Added: isearchp-repeat-search-if-fail-flag, , isearchp-toggle-repeat-search-if-fail,
+;;            isearchp--repeat-search-if-fail-repeated.
+;;     Bind isearchp-toggle-repeat-search-if-fail to M-s M-k.
+;;     isearch-forward: Mention isearchp-toggle-repeat-search-if-fail in doc string.
+;;     isearchp-replace-literally: Corrected doc string: C-M-`, not M-`.
 ;; 2015/11/28 dadams
 ;;     isearchp-toggle-symmetric-char-fold: Mention toggling lazy highlighting in message.
 ;; 2015/11/27 dadams
@@ -1095,6 +1111,8 @@
 (defvar isearchp-nomodify-action-hook)   ; Here (Emacs 22+).
 (defvar isearchp-on-demand-action-function) ; Here (Emacs 22+).
 (defvar isearchp-replacement)            ; Here (Emacs 22+).
+(defvar isearchp-repeat-search-if-fail-flag) ; Here (Emacs 22+).
+(defvar isearchp--repeat-search-if-fail-repeated) ; Here (Emacs 22+).
 (defvar isearchp-restrict-to-region-flag) ; Here (Emacs 24.3+).
 (defvar last-repeatable-command)         ; In `repeat.el'.
 (defvar lazy-highlight-cleanup)         ; In `isearch.el' (Emacs 22+).
@@ -1339,9 +1357,16 @@ hit with the value of `isearchp-replacement'."
 ;;;###autoload
 (defcustom isearchp-regexp-quote-yank-flag t
   "*Non-nil means escape special chars in text yanked for a regexp isearch.
-You can toggle this with `isearchp-toggle-regexp-quote-yank', bound to
-`C-`' during isearch."
+You can toggle this using `isearchp-toggle-regexp-quote-yank', bound
+to `C-`' during Isearch."
   :type 'boolean :group 'isearch-plus)
+
+(when (fboundp 'isearch-fail-pos)       ; Emacs 22+
+  (defcustom isearchp-repeat-search-if-fail-flag nil
+    "*Non-nil means on failure, restart search automatically from search limit.
+You can toggle this using `isearchp-toggle-repeat-search-if-fail', bound to
+`M-s M-k' during Isearch."
+    :type 'boolean :group 'isearch-plus))
 
 ;;;###autoload
 (defcustom isearchp-resume-with-last-when-empty-flag t
@@ -1376,8 +1401,8 @@ Possible functions you can use:
 (defcustom isearchp-set-region-flag nil
   "*Non-nil means set region around search target.
 This is used only for Transient Mark mode.
-You can toggle this with `isearchp-toggle-set-region', bound to
-`C-SPC' during isearch."
+You can toggle this using `isearchp-toggle-set-region', bound to
+`C-SPC' during Isearch."
   :type 'boolean :group 'isearch-plus)
 
 ;;;###autoload
@@ -1440,14 +1465,20 @@ Set when Isearch is started.")
 
 (when (> emacs-major-version 21)
 
-  (defvar isearchp-replace-literally nil  ; Toggle using `M-`'.
+  (defvar isearchp-replace-literally nil ; Toggle using `C-M-`'.
     "Non-nil means to treat replacement text literally.
 Otherwise (nil), interpret `\\' specially in replacement text, as in
 the LITERAL argument to `replace-match'.
-You can use `M-`' to toggle this anytime during Isearch.")
+You can toggle this using `isearchp-toggle-literal-replacement', bound
+to `C-M-`' during Isearch.")
 
   (defvar isearchp-replacement ""
-    "Replacement string used by `isearchp-replace-on-demand'."))
+    "Replacement string used by `isearchp-replace-on-demand'.")
+
+  (defvar isearchp--repeat-search-if-fail-repeated nil
+    "Non-nil means `isearchp-repeat-search-if-fail' was repeated.")
+
+  )
 
 (defvar isearchp-win-pt-line nil
   "Line number of point before searching, relative to `window-start'.")
@@ -1680,6 +1711,40 @@ was successful."
       (while (isearch-fail-pos) (isearch-pop-state))
       (isearch-update)))
 
+  (defun isearchp-repeat-search-if-fail ()
+    "On failure, restart search automatically from the search limit.
+Fail only if there is no search hit within the search limits.
+
+The limit is the buffer limit or, if the region is active and
+`isearchp-restrict-to-region-flag' is non-nil, the region limit.
+\(The region limit is used only for Emacs 24.3 and later.)
+
+Note: You cannot use `DEL' (Backspace) to remove the failed portion of
+      the search string.  To do that, use \\<isearch-mode-map>\
+`\\[isearchp-remove-failed-part]' or `\\[isearchp-remove-failed-part-or-last-char]'."
+    (if (or isearch-success  isearchp--repeat-search-if-fail-repeated)
+        (setq isearchp--repeat-search-if-fail-repeated  nil)
+      (unless isearchp--repeat-search-if-fail-repeated
+        (setq isearch-wrapped                     t
+              isearchp--repeat-search-if-fail-repeated  t)
+        (if isearch-wrap-function
+            (funcall isearch-wrap-function)
+          (goto-char (if isearch-forward
+                         (or isearchp-reg-beg  (point-min))
+                       (or isearchp-reg-end  (point-max))))
+          (isearch-repeat (if isearch-forward 'forward 'backward))))))
+
+  (defun isearchp-toggle-repeat-search-if-fail () ; Bound to `M-s M-k' in `isearch-mode-map'.
+    "Toggle the value of user option `isearchp-repeat-search-if-fail-flag'."
+    (interactive)
+    (setq isearchp-repeat-search-if-fail-flag  (not isearchp-repeat-search-if-fail-flag))
+    (if isearchp-repeat-search-if-fail-flag
+        (add-hook 'isearch-update-post-hook 'isearchp-repeat-search-if-fail)
+      (remove-hook 'isearch-update-post-hook 'isearchp-repeat-search-if-fail))
+    (message "Restart search automatically on failure is now %s"
+             (if isearchp-repeat-search-if-fail-flag 'ON 'OFF))
+    (sit-for 1))
+
   )
 
 ;;;###autoload
@@ -1711,7 +1776,6 @@ Do nothing when regexp searching and option
     (remove-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)
     (isearch-update)
     (add-hook 'isearch-update-post-hook 'isearchp-remove-mismatch)))
-
 
 
 (when (< emacs-major-version 25)
@@ -2065,8 +2129,7 @@ If first char entered is \\[isearch-yank-word], then do word search instead."
                    ;; Set point at the start (end) of old match if forward (backward),
                    ;; so after exiting minibuffer isearch resumes at the start (end)
                    ;; of this match and can find it again.
-                   (if (and old-other-end  (eq old-point (point))  (eq isearch-forward
-                                                                       isearch-new-forward))
+                   (if (and old-other-end  (eq old-point (point))  (eq isearch-forward isearch-new-forward))
                        (goto-char old-other-end))
                    ;; Always resume isearching by restarting it.
                    (isearch-mode isearch-forward isearch-regexp isearch-op-fun nil isearch-regexp-function)
@@ -2459,6 +2522,7 @@ Commands
 \\[isearch-describe-mode]\t- show documentation for Isearch mode
 
 \\[isearchp-cycle-mismatch-removal]\t- cycle option `isearchp-drop-mismatch'
+\\[isearchp-repeat-search-if-fail-flag]\t- toggle restarting search on failure
 \\[isearch-toggle-case-fold]\t- toggle case-sensitivity (for current search or more: `C-u')
 \\[isearch-toggle-character-fold]\t- toggle character folding
 \\[isearchp-toggle-symmetric-char-fold]\t- toggle character folding being symmetric
@@ -3737,6 +3801,8 @@ Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
 (define-key isearch-mode-map "\M-sv"              'isearchp-toggle-option-toggle)
 (when (< emacs-major-version 23)
   (define-key isearch-mode-map "\M-sw"            'isearch-toggle-word))
+(when (fboundp 'isearchp-toggle-repeat-search-if-fail)
+  (define-key isearch-mode-map "\M-s\M-k"         'isearchp-toggle-repeat-search-if-fail))
 (define-key isearch-mode-map "\M-w"               'isearchp-kill-ring-save)
 (when (fboundp 'isearch-yank-internal)
   (define-key isearch-mode-map "\C-z"             'isearchp-yank-char)
