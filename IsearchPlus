@@ -35,7 +35,7 @@ for Emacs 24.3 and later.  You can use '''`C-x n'''' (command '''`isearchp-toggl
 * [[option|Option]] and commands to let you select the last target occurrence (set the [[region]] around it):
 ** Option '''`isearchp-set-region-flag'''' -- Non-`nil' means automatically set the region around the last search target.
 ** Command `isearchp-toggle-set-region', bound to
-'''`C-SPC'''' during isearch -- toggle `isearchp-set-region-flag'.
+'''`M-s M-SPC'''' during isearch -- toggle `isearchp-set-region-flag'.
 ** Command '''`set-region-around-search-target'''' -- manually set the region around the last search target.
 
 
