@@ -30,6 +30,21 @@ You may want to start by installing the <code>paradox</code> package.  This will
 
 If you move to a different system and you would like to quickly install all of your previously installed packages, look into `M-x package-install-selected-packages'. If you use UsePackage, the <code>:ensure t</code> property will tell Emacs to install a package if it hasn't already been installed.
 
+== Working with network proxies ==
+
+If you are behind a firewall that requires the use of a proxy, you may need to configure HTTP or HTTPS proxies in order to list or install packages.
+Here is sample code from [http://stackoverflow.com/questions/10787087/use-elpa-emacs-behind-proxy-requiring-authentication Stack Overflow]. Replace the proxy information with whatever your network requires.
+
+    (setq url-proxy-services
+       '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+         ("http" . "proxy.com:8080")
+         ("https" . "proxy.com:8080")))
+
+    (setq url-http-proxy-basic-auth-storage
+        (list (list "proxy.com:8080"
+                    (cons "Input your LDAP UID !"
+                          (base64-encode-string "LOGIN:PASSWORD")))))
+
 == Using and configuring packages ==
 
 Many packages come with instructions on installation and use.  These can be viewed in the package manager by pressing `RET' on the package line.
