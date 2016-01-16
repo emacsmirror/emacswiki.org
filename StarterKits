@@ -1,0 +1,18 @@
+There are several Emacs starter kits which provide default configurations. 
+
+Ranked in terms of popularity, as measured by the number of stars on their !GitHub repos (all numbers as of 2016-01-16):
+
+|| Name                 || Stars || Contributors || Commits || Size (kb, zipped) || Site ||
+|| Spacemacs            ||  5476 ||          318 ||    5276 ||              6040 || https://github.com/syl20bnr/spacemacs ||
+|| Prelude              ||  2723 ||          100 ||    1188 ||                80 || https://github.com/bbatsov/prelude ||
+|| purcell emacs.d      ||  2417 ||           13 ||    2427 ||                60 || https://github.com/purcell/emacs.d || 
+|| magnars emacs.d      ||   910 ||            6 ||    1359 ||               500 || https://github.com/magnars/.emacs.d ||
+|| Emacs-24 Starter Kit ||   630 ||           19 ||     568 ||               190 || https://github.com/eschulte/emacs24-starter-kit || 
+|| oh-my-emacs          ||   540 ||           10 ||     325 ||               110 || https://github.com/xiaohanyu/oh-my-emacs || 
+|| Better Defaults      ||   379 ||            2 ||      11 ||                 4 || https://github.com/technomancy/better-defaults || 
+|| Graphene             ||   189 ||            2 ||     335 ||                40 || https://github.com/rdallasgray/graphene || 
+|| Ergoemacs            ||   115 ||           13 ||    2570 ||              1800 || https://github.com/ergoemacs/ergoemacs-mode || 
+
+
+
+
