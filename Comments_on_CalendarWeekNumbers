@@ -1,0 +1,15 @@
+When <code>calendar-week-start-day</code> is NOT <b>1</b>, then you should apply the following code.
+
+<pre>
+(setq calendar-intermonth-text
+      '(propertize
+        (format "%02d"
+                (car
+                 (calendar-iso-from-absolute
+                  (calendar-absolute-from-gregorian
+                   (list month (- day (1- calendar-week-start-day)) year)))))
+        'font-lock-face 'calendar-iso-week-face))
+</pre>
+
+-- takaxp 2016-01-17 01:34 UTC
+
