@@ -50,5 +50,20 @@ Showing the undo-tree visualizer, with some undo states stored in registers, and
 
 [[image:UndoTreeScreenshot]]
 
+== Playing nicely with linum ==
+
+I use linum and I was experiencing glitches with line numbers when I tried to jump from one buffer state to another with undo tree. The line numbers may had become scrambled, missing or incorrect. I've solved the issue like this:
+{{{
+(defun undo-tree-visualizer-update-linum (&rest args)
+    (linum-update undo-tree-visualizer-parent-buffer))
+(advice-add 'undo-tree-visualize-undo :after #'undo-tree-visualizer-update-linum)
+(advice-add 'undo-tree-visualize-redo :after #'undo-tree-visualizer-update-linum)
+(advice-add 'undo-tree-visualize-undo-to-x :after #'undo-tree-visualizer-update-linum)
+(advice-add 'undo-tree-visualize-redo-to-x :after #'undo-tree-visualizer-update-linum)
+(advice-add 'undo-tree-visualizer-mouse-set :after #'undo-tree-visualizer-update-linum)
+(advice-add 'undo-tree-visualizer-set :after #'undo-tree-visualizer-update-linum)
+}}}
+Wouldn't it be nice to have something like "after buffer state changed" hook here? Dear author, if you're reading this, please consider making use of hooks in the future release. Thanks.
+
 ----
 CategoryUndo
