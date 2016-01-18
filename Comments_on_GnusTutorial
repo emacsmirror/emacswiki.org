@@ -9,3 +9,11 @@ All the discussion of different mail backends really de-emphasizes IMAP, which I
 
 -- [http://daveabrahams.com DaveAbrahams] 2016-01-18 04:57 UTC
 
+
+----
+
+This procedure doesn’t work for me http://www.emacswiki.org/emacs/GnusTutorial#toc14
+because there’s no `?’ available after `C-h ?'
+
+-- [http://daveabrahams.com DaveAbrahams] 2016-01-18 06:20 UTC
+
