@@ -2,3 +2,10 @@ Gnus did not subscribe me to any groups automatically. Is that still valid?
 
 -- IanKelling 2014-05-29 10:22 UTC
 
+
+----
+
+All the discussion of different mail backends really de-emphasizes IMAP, which I would bet is the most common way people have of accessing mail these days.  If this is supposed to be an easy tutorial I might put the IMAP stuff in the main flow and segregate all of those backend details in another section.
+
+-- [http://daveabrahams.com DaveAbrahams] 2016-01-18 04:57 UTC
+
