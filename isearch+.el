@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 15 09:24:17 2016 (-0800)
+;; Last-Updated: Mon Jan 18 08:33:48 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4202
+;;     Update #: 4208
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -653,6 +653,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/01/18 dadams
+;;     isearchp-repeat-search-if-fail-flag: Added :set function.
 ;; 2016/01/15 dadams
 ;;     Added: isearchp-repeat-search-if-fail-flag, isearchp-toggle-repeat-search-if-fail,
 ;;            isearchp--repeat-search-if-fail-repeated.
@@ -1368,7 +1370,16 @@ to `C-`' during Isearch."
     "*Non-nil means on failure, restart search automatically from search limit.
 You can toggle this using `isearchp-toggle-repeat-search-if-fail', bound to
 `M-s M-k' during Isearch."
-    :type 'boolean :group 'isearch-plus))
+    :type 'boolean
+    :set   #'(lambda (sym val)
+               (custom-set-default sym val)
+               (if val
+                   (add-hook 'isearch-update-post-hook 'isearchp-repeat-search-if-fail)
+                 (remove-hook 'isearch-update-post-hook 'isearchp-repeat-search-if-fail))
+               (message "Restart search automatically on failure is now %s"
+                        (if isearchp-repeat-search-if-fail-flag 'ON 'OFF))
+               (sit-for 1))
+    :group 'isearch-plus))
 
 ;;;###autoload
 (defcustom isearchp-resume-with-last-when-empty-flag t
