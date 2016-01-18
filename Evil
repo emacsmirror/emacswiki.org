@@ -2,7 +2,7 @@
 
 '''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to [[Vimpulse]] and [VimMode vim-mode]. Its [https://bitbucket.org/lyro/evil/wiki/Home home page].
 
-Current stable version: **1.2.10**
+Current stable version: **1.2.9**
 
 There's a [http://youtu.be/Uz_0i27wYbg four-minute Evil demo] on !YouTube, created by Bailey Ling. The captions in the corner of the frame show the keystrokes which Bailey is entering.
 
@@ -11,8 +11,6 @@ There's a [http://youtu.be/Uz_0i27wYbg four-minute Evil demo] on !YouTube, creat
 Install using the latest version of Emacs and its builtin package system. Start with this in your .emacs:
 
   (require 'package)
-  (push '("marmalade" . "http://marmalade-repo.org/packages/")
-        package-archives )
   (push '("melpa" . "http://melpa.milkbox.net/packages/")
         package-archives)
   (package-initialize)
@@ -22,7 +20,7 @@ Then:
   M-x list-packages
   C-s evil
 
-The latest stable version is available from the [[Marmalade]] repository, the current development version from [[MELPA]]. Use the packaging system UI to install either of these by:
+The latest stable version is available from the [https://stable.melpa.org MELPA Stable] repository, the current development version from [[MELPA]]. Use the packaging system UI to install either of these by:
 
 Moving cursor over package name.
 
