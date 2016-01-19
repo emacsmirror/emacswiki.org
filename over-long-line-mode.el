@@ -164,8 +164,8 @@ This advice acts after `set-auto-mode' has set the buffer's major mode.
 
 We can't act before this point, because some major modes must be exempt from
 `over-long-line-mode' (binary file modes, for example).  Instead, we only act
-when the selected major mode is a member of `over-long-line-target-modes',
-or a derivative thereof.
+when the selected major mode is a member (or derivative of a member) of
+`over-long-line-target-modes'.
 
 `over-long-line-detected-p' then determines whether the mode change is needed."
   (setq over-long-line-mode--inhibited nil) ; is permanent-local
