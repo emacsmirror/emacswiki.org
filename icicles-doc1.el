@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Thu Dec 31 13:50:50 2015 (-0800)
+;; Last-Updated: Tue Jan 19 08:32:46 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 28467
+;;     Update #: 28475
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2946,6 +2946,16 @@
 ;;  the same thing.  You can thus use only `S-SPC', any number of
 ;;  times, to choose a candidate by narrowing down the matches.
 ;;
+;;  Note that if the current Icicles completion method is `basic' (see
+;;  (@file :file-name "icicles-doc2.el" :to "Completion Methods and Styles"))
+;;  and you initiate completion using prefix completion (`TAB'), then
+;;  Icicles implicitly prefixes your minibuffer input with "^" if you
+;;  then use progressive completion (e.g. `S-SPC').  No such
+;;  convenience is possible if the completion method is not `basic',
+;;  because completion does not necessarily match your input as a
+;;  prefix.  In this case, if you want to treat your input as a prefix
+;;  then you need to prefix it with "^" explicitly.
+;;  
 ;;  With a prefix argument, `S-SPC' uses predicate narrowing, that is,
 ;;  `C-u S-SPC' is the same as `S-TAB' followed by `M-&' (described in
 ;;  the next section) .
