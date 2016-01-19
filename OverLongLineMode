@@ -2,7 +2,7 @@ This is a work-in-progress workaround for the issue of large minified files of p
 
 See the Commentary of ##over-long-line-mode.el## for more details.
 
-(I am quite tempted to rename this library ##so-long-farewell.el##)
+(I am quite tempted to rename this library so-long-farewell.el.)
 
 ==Download==
 
