@@ -8,6 +8,12 @@ Start the emacs daemon with
 emacs --daemon
 </pre>
 
+or,
+
+<pre>
+sudo emacs --daemon
+</pre>
+
 == Simple setup ==
 
 Put
