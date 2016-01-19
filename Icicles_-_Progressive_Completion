@@ -135,9 +135,19 @@ followed by `M-*', you can use '''`S-SPC'''' (command
 '''`icicle-apropos-complete-and-narrow'''') to do the same thing.    You can thus use only `S-SPC', any number of
 times, to choose a candidate by narrowing down the matches.
 
+Note that if the current '''Icicles''' completion method is `basic' (see [[Icicles - Completion Methods and Styles]])
+and you initiate completion using prefix completion (`TAB'), then
+'''Icicles''' implicitly prefixes your minibuffer input with "^" if you
+then use progressive completion (e.g. `S-SPC').  No such
+convenience is possible if the completion method is not `basic',
+because completion does not necessarily match your input as a
+prefix.  In this case, if you want to treat your input as a prefix
+then you need to prefix it with "^" explicitly.
+
+
 With a [[prefix argument]], `S-SPC' uses predicate narrowing, that is,
 `C-u S-SPC' is the same as `S-TAB' followed by `##M-&##' (described in
-the next section) .
+the next section).
 
 I call this process of completion by
 successive approximation, or progressively narrowing the candidate
