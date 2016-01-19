@@ -1,0 +1,4 @@
+<tt>M-x org-cdlatex-mode</tt> yields strange message: "/Cannot open load file: no such file or directory, cdlatex/". Where do you put the *cdlatex.el* script then (in a Windows machine)? There's no cdlatex package in the list that appears after typing <tt>M-x list-packages</tt>. Please see this [http://emacs.stackexchange.com/questions/19614/org-cdlatex-doesnt-work emacs.SX question].
+
+-- Porgy 2016-01-19 18:45 UTC
+
