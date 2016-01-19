@@ -103,3 +103,14 @@ shawn (at) weirdness (dot) com
 
 -- realscrappy 2014-05-12 18:58 UTC
 
+
+----
+
+"After that, using emacsclient (or emacsclient -t) will automatically start an emacs in daemon mode and connect to it if one is not found running, and sane programs will know to run emacsclient to start an editor."
+
+This point is debatable, and so makes the "Simple setup" misleading:
+
+If the emacs daemon isn't started, either by `emacs --daemon`, or by `M-x server-start` in emacs, then plenty of sane programs -- for instance, most bash shells -- will not start an editor. They will output, `emacsclient: can't find socket; have you started the server?`.
+
+-- joseph8th 2016-01-19 03:43 UTC
+
