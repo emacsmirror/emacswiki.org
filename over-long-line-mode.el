@@ -4,7 +4,7 @@
 ;; URL: http://www.emacswiki.org/emacs/OverLongLineMode
 ;; Created: 12 Jan 2016
 ;; Package-Requires: ((emacs "24.3"))
-;; Version: 0.4
+;; Version: 0.4.1
 
 ;; This file is not part of GNU Emacs.
 
@@ -28,7 +28,7 @@
 ;; almost equivalent to `fundamental-mode', and hence has a minimal affect on
 ;; performance in the buffer.
 ;;
-;; The variables `over-long-line-mode-target-modes', `over-long-line-threshold',
+;; The variables `over-long-line-target-modes', `over-long-line-threshold',
 ;; `over-long-line-max-lines', and `over-long-line-mode-enabled' determine
 ;; whether this mode will be invoked for a given file.  The tests are made after
 ;; `set-auto-mode' has set the normal major mode.
@@ -51,13 +51,15 @@
 
 ;;; Change Log:
 ;;
-;; 0.4 - Amend/document behaviour with file-local 'mode' variables.
+;; 0.4.1 - Renamed `over-long-line-mode-target-modes'
+;;         to `over-long-line-target-modes'
+;; 0.4 - Amended/documented behaviour with file-local 'mode' variables.
 ;; 0.3 - Defer to a file-local 'mode' variable.
 ;; 0.2 - Initial release to EmacsWiki.
 
 ;;; Code:
 
-(defvar over-long-line-mode-target-modes
+(defvar over-long-line-target-modes
   '(prog-mode css-mode)
   "`over-long-line-mode' affects only these modes and their derivatives.
 
@@ -84,7 +86,7 @@ See `over-long-line-detected-p' for details.")
   "Stores the original `major-mode' value.")
 (put 'over-long-line-original-mode 'permanent-local t)
 
-(defvar over-long-line-mode--inhibited nil) ; internal
+(defvar over-long-line-mode--inhibited nil) ; internal use
 (make-variable-buffer-local 'over-long-line-mode--inhibited)
 (put 'over-long-line-mode--inhibited 'permanent-local t)
 
@@ -120,7 +122,7 @@ cases will rarely be an issue.
 
 When such files are detected, we invoke this mode. This happens after
 `set-auto-mode' has set the major mode, should the selected major mode be a
-member (or derivative of a member) of `over-long-line-mode-target-modes'.
+member (or derivative of a member) of `over-long-line-target-modes'.
 
 By default this mode is essentially equivalent to `fundamental-mode', and
 exists mainly to provide information to the user as to why the expected mode
@@ -138,7 +140,7 @@ type \\[over-long-line-mode-revert], or else re-invoke it manually."
   "Call the `major-mode' which was selected by `set-auto-mode'
 before `over-long-line-mode' was called to replace it."
   (interactive)
-  (if (bound-and-true-p over-long-line-original-mode)
+  (if over-long-line-original-mode
       (funcall over-long-line-original-mode)
     (error "Original mode unknown.")))
 
@@ -162,15 +164,15 @@ This advice acts after `set-auto-mode' has set the buffer's major mode.
 
 We can't act before this point, because some major modes must be exempt from
 `over-long-line-mode' (binary file modes, for example).  Instead, we only act
-when the selected major mode is a member of `over-long-line-mode-target-modes',
+when the selected major mode is a member of `over-long-line-target-modes',
 or a derivative thereof.
 
 `over-long-line-detected-p' then determines whether the mode change is needed."
-  (setq over-long-line-mode--inhibited nil)
+  (setq over-long-line-mode--inhibited nil) ; is permanent-local
   ad-do-it ; `set-auto-mode'
   (when over-long-line-mode-enabled
     (unless over-long-line-mode--inhibited
-      (when (and (apply 'derived-mode-p over-long-line-mode-target-modes)
+      (when (and (apply 'derived-mode-p over-long-line-target-modes)
                  (over-long-line-detected-p))
         (setq over-long-line-original-mode major-mode)
         (over-long-line-mode)))))
