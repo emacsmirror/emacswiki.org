@@ -1,0 +1,11 @@
+This is a work-in-progress workaround for the issue of large minified files of programming code bringing Emacs to its knees on account of the relevant modes not being (remotely) optimised for that use-case.
+
+See the Commentary of ##so-long.el## for more details.
+
+==Download==
+
+Download the library from Lisp:so-long.el
+
+==Install==
+
+Place the library somewhere in your Emacs load-path (or use ##M-x package-install-file## for the downloaded file), and add ##(when (require 'so-long nil :noerror) (so-long-enable))## to your init file.
