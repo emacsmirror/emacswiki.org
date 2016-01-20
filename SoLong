@@ -1,4 +1,6 @@
-This is a work-in-progress workaround for the issue of large minified files of programming code bringing Emacs to its knees on account of the relevant modes not being (remotely) optimised for that use-case.
+This is a work-in-progress workaround for the issue of large minified files of programming code (i.e., code that has been
+compacted into the smallest file size possible, which often entails removing
+newlines should they not be strictly necessary) bringing Emacs to its knees on account of the relevant modes not being (remotely) optimised for that use-case.
 
 When the lines in a buffer are /so long/ that performance could suffer to an unacceptable degree, we say "so long"[sup]1[/sup] to the buffer's major mode, and invoke something much more basic in its place.
 
