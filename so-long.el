@@ -1,4 +1,4 @@
-;;; so-long.el --- Stops minified code bringing Emacs to its knees.
+;;; so-long.el --- Say farewell to performance problems in minified code buffers.
 ;;
 ;; Author: Phil S.
 ;; URL: http://www.emacswiki.org/emacs/SoLong
