@@ -4,7 +4,7 @@ newlines should they not be strictly necessary) bringing Emacs to its knees on a
 
 When the lines in a buffer are /so long/ that performance could suffer to an unacceptable degree, we say "so long"[sup]1[/sup] to the buffer's major mode, and invoke something much more basic in its place.
 
-See the Commentary of ##so-long.el## for more details.
+See the library's Commentary for more details.
 
 [sup]1[/sup] farewell, auf wiedersehen, etc...
 
@@ -14,4 +14,7 @@ Download the library from Lisp:so-long.el
 
 ==Install==
 
-Place the library somewhere in your Emacs load-path (or use ##M-x package-install-file## for the downloaded file), and add ##(when (require 'so-long nil :noerror) (so-long-enable))## to your init file.
+Place the library somewhere in your Emacs load-path (or use ##M-x package-install-file## for the downloaded file), and add the following to your init file:
+
+ (when (require 'so-long nil :noerror)
+   (so-long-enable))
