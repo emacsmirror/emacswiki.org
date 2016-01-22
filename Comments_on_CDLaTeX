@@ -2,3 +2,10 @@
 
 -- Porgy 2016-01-19 18:45 UTC
 
+
+----
+
+As suggested by the users in the emacs-orgmode mailing list, put that script inside one of the <i>load-paths</i>. To find the load paths, try <code>C-h v RET load-path</code>.
+
+-- Pordy 2016-01-22 10:24 UTC
+
