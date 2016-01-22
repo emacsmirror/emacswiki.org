@@ -146,7 +146,7 @@ was not used.
 To revert to the original mode despite any potential performance issues,
 type \\[so-long-mode-revert], or else re-invoke it manually."
   ;; Disable font-lock (circumventing `global-font-lock-mode').
-  ;; (setq-local font-lock-global-modes '(not over-long-line-mode))
+  ;; (setq-local font-lock-global-modes '(not so-long-mode))
   (add-hook 'after-change-major-mode-hook
             (lambda () (font-lock-mode 0)) :append :local)
   ;; Inform the user about our major mode hijacking.
