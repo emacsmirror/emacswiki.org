@@ -49,6 +49,43 @@ I don't think this is a problem, since the advice is interactive. Thus it is not
 
 As it happens, the same principle is employed in WholeLineOrRegion, which copies the current line when the mark is inactive.
 
+== Interleaved Yanking ==
+
+I made the following function so that you could yank a block of lines onto an existing block of lines in the buffer -- each line in the yanked block either goes at the front or the end of the existing buffer lines, depending on where point starts. The idea is that this is a bit like rectangle yanking, except line lengths are honored, and it won't cut anything off.
+
+    (defun yank-interleaved (separator)
+      "Yank the previous kill, interleaving each line of the yanked
+      text with a line in current buffer.
+    
+    Interleaving begins on the line containing point, and moves
+    downward. If point is at the beginning of the line, the yanked
+    lines are inserted before the buffer lines. If it is at the end
+    of the line, the yanked lines are inserted after.
+    
+    If the argument SEPARATOR is given, insert this between each
+    buffer line and yanked line."
+      ;; TODO: Make it work with active region
+      (interactive "MSeparator: ")
+      (let ((yank (current-kill 1 t))
+             dir line)
+        (if (null (string-match-p "\n" yank))
+    	    (yank)
+          (setq dir
+    	        (cond
+    	         ((bolp) 'front)
+    	         ((eolp) 'back)
+    	         (t (user-error "Call with point at beginning or end of line"))))
+          (setq yank (split-string yank "\n" t "[[:space:]]"))
+          (while (setq line (pop yank))
+    	(if (eq dir 'front)
+    	    (progn
+    	      (beginning-of-line)
+    	      (insert line)
+    	      (insert separator))
+    	  (end-of-line)
+    	  (insert separator)
+    	  (insert line))
+     	(forward-line)))))
 -------------------
 
 See also:
