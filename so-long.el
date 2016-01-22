@@ -2,6 +2,7 @@
 ;;
 ;; Author: Phil S.
 ;; URL: http://www.emacswiki.org/emacs/SoLong
+;; Keywords: convenience
 ;; Created: 12 Jan 2016
 ;; Package-Requires: ((emacs "24.3"))
 ;; Version: 0.5
