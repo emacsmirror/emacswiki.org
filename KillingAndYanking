@@ -77,15 +77,15 @@ I made the following function so that you could yank a block of lines onto an ex
     	         (t (user-error "Call with point at beginning or end of line"))))
           (setq yank (split-string yank "\n" t "[[:space:]]"))
           (while (setq line (pop yank))
-    	(if (eq dir 'front)
-    	    (progn
-    	      (beginning-of-line)
-    	      (insert line)
-    	      (insert separator))
-    	  (end-of-line)
-    	  (insert separator)
-    	  (insert line))
-     	(forward-line)))))
+    	    (if (eq dir 'front)
+    	        (progn
+    	          (beginning-of-line)
+    	          (insert line)
+    	          (insert separator))
+    	      (end-of-line)
+    	      (insert separator)
+    	      (insert line))
+       	   (forward-line)))))
 -------------------
 
 See also:
