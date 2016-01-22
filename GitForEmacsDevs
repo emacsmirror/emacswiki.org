@@ -64,8 +64,8 @@ the /master/ branch, or the release branch (currently called /emacs-24/,
 but that will change as future Emacs versions are released).
 
 The command examples are generally given in Unix command-line style,
-but they are equally applicable to MS-Windows, if you use the msysGit Bash
-prompt installed and configured by msysGit.
+but they are equally applicable to MS-Windows, if you use the Bash
+prompt installed and configured by Git for Windows.
 
 [:GettingStarted]
 == Getting Started ==
@@ -73,8 +73,8 @@ prompt installed and configured by msysGit.
 [:Help]
 === Getting help on Git ===
 
-Git provides both Unix-style man pages (start with ##man git##; doesn't 
-work with msysGit on Windows because msysGit does not install man pages)
+Git provides both Unix-style man pages (start with ##man git##;
+Git for Windows because doesn't install man pages, use ##git help git## instead)
 and embedded help (start with ##git help##). See [[#OtherResources]] for
 more documentation.
 
@@ -441,7 +441,7 @@ second one.
 
 # Use the git-new-workdir script to create a second working tree from the
 same repository meta-data.  Please read the documentation of that
-script for the details.
+script for the details. As of git version 2.5, the builtin ##git worktree## command is preferred.
 
 === Merging Changes from the Release Branch to Master ===
 
@@ -473,11 +473,6 @@ automatically, it will stop and present the list of files with
 conflicts.  Resolve these conflicts, save the modified files, and
 invoke ##M-x gitmerge## again in a buffer whose default-directory is
 the top-level repository directory.
-
-Another aspect that might need manual intervention is the order of
-entries in the ChangeLog files.  You should make sure the entries from
-the merged changes all appear at the top of their respective ChangeLog
-files and have today's date, and that there are no duplicate entries.
 
 When you are done with resolving the conflicts, the results of the
 merge will be committed locally to the master branch of your
