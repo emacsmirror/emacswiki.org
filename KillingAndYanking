@@ -75,7 +75,7 @@ I made the following function so that you could yank a block of lines onto an ex
     	         ((bolp) 'front)
     	         ((eolp) 'back)
     	         (t (user-error "Call with point at beginning or end of line"))))
-          (setq yank (split-string yank "\n" t "[[:space:]]"))
+          (setq yank (split-string yank "\n" t "\\s-"))
           (while (setq line (pop yank))
     	    (if (eq dir 'front)
     	        (progn
