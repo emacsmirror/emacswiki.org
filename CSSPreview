@@ -23,6 +23,11 @@ Here is a '''bulleted list''' -
              hash))
 
 
+=== A subheading ===
+
+This is a subheading to show the subheading style. 
+
+
 == Tables ==
 
 ||Name                  ||Started  ||Location  ||
@@ -31,12 +36,6 @@ Here is a '''bulleted list''' -
 ||BBN Lisp              ||1964     ||BBN       ||     
 ||!MacLisp               ||1966     ||MIT       ||    
 ||Muddle (MDL)          ||1971?    ||MIT       ||     
-||!InterLisp             ||1972     ||Xerox Parc  || 
-||Scheme                ||1975     ||MIT       ||  
-||Lisp Machine Lisp     ||         ||MIT       ||  
-||Common Lisp           ||1981     ||          ||
-||Kyoto Common Lisp (KCL) ||1984     ||Kyoto Japan ||
-||Gnu Common Lisp (GCL) ||1994     ||Austin ||
 
 
 == Cons cells and lists ==
