@@ -1,3 +1,3 @@
-See https://launchpad.net/mediawiki-el/+download to download the latest version.
+See https://github.com/hexmode/mediawiki-el for the latest version.
 
 Mailing list: http://lists.everybody.org/listinfo/mediawiki-el
