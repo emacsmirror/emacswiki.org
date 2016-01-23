@@ -17,7 +17,7 @@ workflows that can help you use Emacs more effectively.
 * [https://www.youtube.com/watch?v=K3_SFerNIeI Emacs in 10 minutes!] (9:33)
 * [https://www.youtube.com/watch?v=B6jfrrwR10k Emacs introduction and demonstration] (36:34)
 * [https://www.youtube.com/watch?v=hbmV1bnQ-i0 Basic Emacs tutorial] (37:14)
-* [Emacs Tutorial (Beginners) - Part 1 - File commands, cut/copy-paste, cursor commands] (5:59)
+* [https://www.youtube.com/watch?v=ujODL7MD04Q Emacs Tutorial (Beginners) - Part 1 - File commands, cut/copy-paste, cursor commands] (5:59)
 * [https://www.youtube.com/watch?v=6I438IEjT1A Tutoriel Emacs francais (Débutant)]
 * [http://www.youtube.com/watch?v=MRYzPWnk2mE&list=PLxj9UAX4Em-IiOfvF2Qs742LxEK4owSkr&index=1 Minimalist programming with Jekor]:
 ** [https://www.youtube.com/watch?v=MRYzPWnk2mE&index=1&list=PLxj9UAX4Em-IiOfvF2Qs742LxEK4owSkr Getting started and playing games]
@@ -37,6 +37,12 @@ workflows that can help you use Emacs more effectively.
 * [https://www.youtube.com/watch?v=B6jfrrwR10k Emacs introduction and demonstration] (36:34, Howard Abrams)
 * [http://www.pluralsight.com/courses/meet-emacs PeepCode's Meet Emacs] is an hour-long professionally-recorded video (available in Ogg and other formats) that teaches Emacs. It is sold for $12.
 * General getting started screencasts for Emacs on OS X: http://railsnewbie.com (6 large quicktime movies)
+* [https://www.youtube.com/playlist?list=PLEB9CCD61FA858FC5  Kurt Schwehr's 2011 course at the UNH Center for Coastal and Ocean Mapping (CCOM) / Joint Hydrographic Center (JHC). There are some other videos on Python, Bash and R. The research tools website is: http://vislab-ccom.unh.edu/~schwehr/rt/]
+** [https://www.youtube.com/watch?v=16Rd46SE-20 Kurt Schwehr CCOM Research Tools Screencast 01 - emacs keyboard introduction]
+** [https://www.youtube.com/watch?v=P2Q_WL0h-mY Kurt Schwehr CCOM Research Tools Screencast 02 - emacs part 2 - more advanced emacs
+** [https://www.youtube.com/watch?v=ht4JtEbFtFI Kurt Schwehr CCOM Research Tools Screencast 03 - emacs part 3 - org-mode and babel
+** [https://www.youtube.com/watch?v=2Cl_aiUkkG0 Kurt Schwehr CCOM Research Tools Screencast 04 - emacs part 4 - yet more emacs
+** [https://www.youtube.com/watch?v=LLhSroiMexE Kurt Schwehr CCOM Research Tools Emacs part 5 - modes
 
 === Video channels and screencast series ===
 
