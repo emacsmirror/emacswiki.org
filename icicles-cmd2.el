@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Thu Dec 31 13:56:30 2015 (-0800)
+;; Last-Updated: Sun Jan 24 09:26:18 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 7282
+;;     Update #: 7283
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3362,9 +3362,9 @@ remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
       (with-current-buffer icicle-orig-buff
         (let* ((keys   (where-is-internal (intern-soft cand) overriding-local-map))
                (keys1  (mapconcat #'icicle-key-description keys "', `")))
-          (message (if (string= "" keys1)
-                       (format "`%s' is not on any key" cand)
-                     (format "`%s' is on `%s'" cand (icicle-propertize keys1 'face 'icicle-msg-emphasis))))
+          (message "%s" (if (string= "" keys1)
+                            (format "`%s' is not on any key" cand)
+                          (format "`%s' is on `%s'" cand (icicle-propertize keys1 'face 'icicle-msg-emphasis))))
           (sit-for 3)))))
    (icicle-candidate-alt-action-fn
     (or icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "command")))
