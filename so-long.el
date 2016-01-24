@@ -1,4 +1,4 @@
-;;; so-long.el --- Say farewell to performance problems in minified code buffers.
+;;; so-long.el --- Say farewell to performance problems with minified code.
 ;;
 ;; Author: Phil S.
 ;; URL: http://www.emacswiki.org/emacs/SoLong
