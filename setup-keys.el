@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 16:01:17 2015 (-0800)
+;; Last-Updated: Sun Jan 24 08:30:19 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 1300
+;;     Update #: 1306
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -75,6 +75,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/01/24 dadams
+;;     Bound C-x 5 1 to tear-off-window.
 ;; 2015/06/30 dadams
 ;;     Changed highlight-symbol-* bindings to f9 from f11.
 ;;     Replaced f12 by f8.
@@ -351,7 +353,8 @@
                             ;; iconify-everything, iconify/map-frame, move-frame-*,
                             ;; mouse-iconify/map-frame, mouse-remove-window,
                             ;; mouse-show-hide-mark-unmark, other-window-or-frame,
-                            ;; show-*Help*-buffer, show-hide, shrink-frame*
+                            ;; show-*Help*-buffer, show-hide, shrink-frame*,
+                            ;; tear-off-window
 (require 'mouse+ nil t) ;; (no error if not found): mouse-tear-off-window, mouse-flash-position
 (require 'highlight nil t) ;; (no error if not found): hlt-highlight, hlt-highlighter,
                            ;; hlt-eraser, hlt-(next|previous)-highlight
@@ -503,17 +506,18 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
     (global-set-key [(control ?z)] 'iconify/map-frame)                           ; `C-z'
     ;; $$$$ (global-set-key [(control ?x) (control ?z)] 'iconify-everything)
     (global-set-key [(shift control meta ?z)] 'show-hide)                        ; `C-M-S-z'
-    (global-set-key [C-down-mouse-1] 'mouse-show-hide-mark-unmark)               ; `C-mouse-1'
-    (global-set-key [C-mouse-1] 'ignore)
-    (global-set-key [S-down-mouse-1] nil) ; Get rid of `mouse-set-font'.         ; `S-mouse-1'
+    (global-set-key [C-down-mouse-1]        'mouse-show-hide-mark-unmark)        ; `C-mouse-1'
+    (global-set-key [C-mouse-1]            'ignore)
+    (global-set-key [S-down-mouse-1]       nil) ; Get rid of `mouse-set-font'.   ; `S-mouse-1'
     ;;(global-set-key [vertical-line mouse-1] 'ignore)
     (global-set-key [vertical-line C-down-mouse-1] 'show-hide)
     ;;(global-set-key [vertical-line C-mouse-1] 'ignore)
     (global-set-key [vertical-line S-down-mouse-1] 'iconify-everything)
     ;;(global-set-key [vertical-line S-mouse-1] 'ignore)
     ;; [mode-line mouse-3] as deletion (Emacs std) is too hazardous.  Iconify instead.
-    (global-set-key [mode-line mouse-3] 'mouse-iconify/map-frame)
-    (global-set-key [mode-line C-mouse-3] 'mouse-remove-window)))
+    (global-set-key [mode-line mouse-3]     'mouse-iconify/map-frame)
+    (global-set-key [mode-line C-mouse-3]   'mouse-remove-window)
+    (define-key ctl-x-5-map "1"             'tear-off-window)))
 
 (eval-after-load "framemove"
   '(progn
