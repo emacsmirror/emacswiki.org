@@ -5,7 +5,7 @@
 ;; Keywords: convenience
 ;; Created: 12 Jan 2016
 ;; Package-Requires: ((emacs "24.3"))
-;; Version: 0.5
+;; Version: 0.6
 
 ;; This file is not part of GNU Emacs.
 
@@ -66,6 +66,7 @@
 
 ;;; Change Log:
 ;;
+;; 0.6 - Added `so-long-minor-modes' and `so-long-hook'.
 ;; 0.5 - Renamed library so-long.el.
 ;;     - Added explicit `so-long-enable' command to activate our advice.
 ;; 0.4 - Amended/documented behaviour with file-local 'mode' variables.
@@ -74,13 +75,6 @@
 ;; 0.1 - Experimental.
 
 ;;; Code:
-
-(defvar so-long-target-modes
-  '(prog-mode css-mode)
-  "`so-long-mode' affects only these modes and their derivatives.
-
-Our primary use-case is minified programming code, so `prog-mode' covers
-most cases, but there are some exceptions to this.")
 
 (defvar so-long-threshold 250
   "Number of columns after which the normal mode for a file will not be
@@ -97,6 +91,32 @@ See `so-long-line-detected-p' for details.")
 
 (defvar so-long-mode-enabled t
   "Set to nil to prevent `so-long-mode' from being triggered.")
+
+(defvar so-long-target-modes
+  '(prog-mode css-mode)
+  "`so-long-mode' affects only these modes and their derivatives.
+
+Our primary use-case is minified programming code, so `prog-mode' covers
+most cases, but there are some exceptions to this.")
+
+(defvar so-long-minor-modes
+  '(font-lock-mode line-number-mode linum-mode which-function-mode)
+  "List of minor modes to explicitly disable in `so-long-mode'.
+
+Modes are disabled by calling them with a single numeric argument of zero.
+
+`so-long-hook' can be used where more custom behaviour is desired.
+
+Occurs during `after-change-major-mode-hook' so that global minor modes
+can also be handled.")
+
+(defvar so-long-hook nil
+  "List of functions to call in `so-long-mode'.
+
+Occurs during `after-change-major-mode-hook' so that global minor modes
+can also be handled.
+
+See also `so-long-minor-modes'.")
 
 (defvar-local so-long-original-mode nil
   "Stores the original `major-mode' value.")
@@ -149,12 +169,22 @@ type \\[so-long-mode-revert], or else re-invoke it manually."
   ;; Disable font-lock (circumventing `global-font-lock-mode').
   ;; (setq-local font-lock-global-modes '(not so-long-mode))
   (add-hook 'after-change-major-mode-hook
-            (lambda () (font-lock-mode 0)) :append :local)
+            'so-long-after-change-major-mode :append :local)
   ;; Inform the user about our major mode hijacking.
   (message "Changed to %s (from %s) on account of line length. %s to revert."
            major-mode
            so-long-original-mode
            (substitute-command-keys "\\[so-long-mode-revert]")))
+
+(defun so-long-after-change-major-mode ()
+  "Disable modes in `so-long-minor-modes' and run `so-long-hook' functions.
+
+This happens during `after-change-major-mode-hook'."
+  (mapc (lambda (mode)
+          (when (bound-and-true-p mode)
+            (funcall mode 0)))
+        so-long-minor-modes)
+  (run-hooks 'so-long-hook))
 
 (defun so-long-mode-revert ()
   "Call the `major-mode' which was originally selected by `set-auto-mode'
@@ -165,6 +195,11 @@ before `so-long-mode' was called to replace it."
     (error "Original mode unknown.")))
 
 (define-key so-long-mode-map (kbd "C-c C-c") 'so-long-mode-revert)
+
+;; How do you solve a problem like a long line?
+;; How do you stop a mode from slowing down?
+;; How do you cope with processing a long line?
+;; A bit of advice! A mode! A workaround!
 
 (defadvice hack-local-variables (after so-long--file-local-mode disable)
   "Ensure that `so-long-mode' defers to file-local mode declarations.
