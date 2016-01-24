@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Dec 31 15:19:26 2015 (-0800)
+;; Last-Updated: Sun Jan 24 09:30:01 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 11568
+;;     Update #: 11569
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1164,6 +1164,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2016/01/24 dadams
+;;     icicle-where-is: Added format string as first arg to message, to protect % in message text.
 ;; 2015/09/19 dadams
 ;;     icicle-synonyms: Action fn passes APPENDP and MOREP to synonyms-action (are free in action fn).
 ;; 2015/08/23 dadams
