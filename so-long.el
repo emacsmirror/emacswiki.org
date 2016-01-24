@@ -168,11 +168,14 @@ When such files are detected, we invoke this mode. This happens after
 `set-auto-mode' has set the major mode, should the selected major mode be
 a member (or derivative of a member) of `so-long-target-modes'.
 
+<<<<<<< ancestor
+=======
 After changing modes, any active minor modes listed in `so-long-minor-modes'
 are disabled for the current buffer, and finally `so-long-hook' is run.
 These two steps occur as part of `after-change-major-mode-hook', so that
 active global minor modes are visible.
 
+>>>>>>> other
 By default this mode is essentially equivalent to `fundamental-mode', and
 exists mainly to provide information to the user as to why the expected mode
 was not used.
