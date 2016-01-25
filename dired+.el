@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan 24 10:58:06 2016 (-0800)
+;; Last-Updated: Sun Jan 24 19:12:23 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 9477
+;;     Update #: 9478
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -3129,7 +3129,7 @@ If no one is selected, symmetric encryption will be performed.  "
 
 (define-key diredp-menu-bar-operate-menu [diredp-describe-marked-autofiles]
   '(menu-item "Describe Marked Autofiles" diredp-describe-marked-autofiles
-    :help "Describe the marked autofiles"
+    :help "Show the metadata for the marked files that are autofiles"
     :enable (featurep 'bookmark+)))
 (define-key diredp-menu-bar-operate-menu [separator-describe] '("--")) ; -----------------------
 
