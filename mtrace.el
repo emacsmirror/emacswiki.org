@@ -247,8 +247,7 @@ other-window option set."
     (remove-hook 'after-change-functions 'mtrace-after-change t)))
 
 (defun mtrace-mode-enable (&optional arg)
-  (make-local-hook 'after-change-functions)
-  (mtrace-install-hook)
+ (mtrace-install-hook)
   (setq mtrace-mode t)
   (run-hooks 'mtrace-mode-hook))
 (defun mtrace-mode-disable (&optional arg)
@@ -266,7 +265,6 @@ Takes just one argument, REGEXP."
      'mtrace-trigger-on-history)))
   (if (string-equal "" regexp)
       (kill-local-variable 'mtrace-regexp)
-    (make-local-variable 'mtrace-regexp)
     (setq mtrace-regexp regexp)
     (unless mtrace-mode (mtrace-mode-enable))))
 
