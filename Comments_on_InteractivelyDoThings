@@ -98,3 +98,10 @@ Debugger entered--Lisp error: (wrong-type-argument listp 436)
 
 -- Anonymous 2016-01-27 00:33 UTC
 
+
+----
+
+I'd probably use [[Edebug]] and instrument `basic-save-buffer' in order to get an idea of what the byte code up there is trying to do.
+
+-- AlexSchroeder 2016-01-27 15:00 UTC
+
