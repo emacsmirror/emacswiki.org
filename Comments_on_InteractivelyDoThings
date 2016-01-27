@@ -75,6 +75,7 @@ saving .ido.history fails.
 
 Attached is the trace. Not sure if much can be gleaned from it, but would appreciate any help.
 
+{{{
 Debugger entered--Lisp error: (wrong-type-argument listp 436)
   #[0 "\302	\300\242@\"\207" [(436) buffer-file-name set-file-modes] 3 "\n\n(fn)"]()
   funcall(#[0 "\302	\300\242@\"\207" [(436) buffer-file-name set-file-modes] 3 "\n\n(fn)"])
@@ -93,6 +94,7 @@ Debugger entered--Lisp error: (wrong-type-argument listp 436)
   apply(ad-Advice-call-interactively #<subr call-interactively> (save-buffers-kill-terminal nil nil))
   call-interactively(save-buffers-kill-terminal nil nil)
   command-execute(save-buffers-kill-terminal)
+}}}
 
 -- Anonymous 2016-01-27 00:33 UTC
 
