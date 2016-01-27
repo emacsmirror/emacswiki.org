@@ -1,6 +1,8 @@
-== Description ==
+For a different package that will let you profile your Emacs config without restarting, see [https://github.com/jschaf/esup The Emacs Startup Profiler (ESUP)].
 
-This is to easily profile your Emacs InitFile (or any other
+== profile-dotemacs Description ==
+
+Here's some code to easily profile your Emacs InitFile (or any other
 script-like Emacs Lisp file, for that matter).
 
 It will go over all sexp's (balanced expressions) in the file and
