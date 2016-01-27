@@ -67,3 +67,32 @@ Is there a way to open all files in a directory with ido?
 
 -- [https://github.com/mathiasciarlo MathiasCiarlo] 2015-11-01 17:16 UTC
 
+
+----
+
+Moving from emacs 24.3 to emacs 24.4, I get errors while exiting emacs because 
+saving .ido.history fails. 
+
+Attached is the trace. Not sure if much can be gleaned from it, but would appreciate any help.
+
+Debugger entered--Lisp error: (wrong-type-argument listp 436)
+  #[0 "\302	\300\242@\"\207" [(436) buffer-file-name set-file-modes] 3 "\n\n(fn)"]()
+  funcall(#[0 "\302	\300\242@\"\207" [(436) buffer-file-name set-file-modes] 3 "\n\n(fn)"])
+  #[0 "\302\303\304\305\306\307\310\300!\311\"\312\313%D\314\303\315\302EDC\217?\205\" \316	\300\242A@\"\207" [(436) buffer-file-name err funcall make-byte-code 0 "\302	\300\242@\"\207" vconcat vector [buffer-file-name set-file-modes] 3 "\n\n(fn)" (debug error) #[257 "\300\301 \"\210\302\207" [message "Error: %S" nil] 4 "\n\n(fn ERR)"] set-file-extended-attributes] 8 "\n\n(fn)"]()
+  funcall(#[0 "\302\303\304\305\306\307\310\300!\311\"\312\313%D\314\303\315\302EDC\217?\205\" \316	\300\242A@\"\207" [(436) buffer-file-name err funcall make-byte-code 0 "\302	\300\242@\"\207" vconcat vector [buffer-file-name set-file-modes] 3 "\n\n(fn)" (debug error) #[257 "\300\301 \"\210\302\207" [message "Error: %S" nil] 4 "\n\n(fn ERR)"] set-file-extended-attributes] 8 "\n\n(fn)"])
+  basic-save-buffer()
+  save-buffer()
+  write-file("/home/amit/.ido.last" nil)
+  ido-save-history()
+  ido-kill-emacs-hook()
+  kill-emacs()
+  save-buffers-kill-emacs(nil)
+  save-buffers-kill-terminal(nil)
+  #<subr call-interactively>(save-buffers-kill-terminal nil nil)
+  ad-Advice-call-interactively(#<subr call-interactively> save-buffers-kill-terminal nil nil)
+  apply(ad-Advice-call-interactively #<subr call-interactively> (save-buffers-kill-terminal nil nil))
+  call-interactively(save-buffers-kill-terminal nil nil)
+  command-execute(save-buffers-kill-terminal)
+
+-- Anonymous 2016-01-27 00:33 UTC
+
