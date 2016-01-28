@@ -23,3 +23,4 @@
 \[https?:\S+\s+[^]\n]*\binsurance\b[^]\n]*\] # 2014-02-05 links to something about an insurance such as [http://example.com home insurance quotes]
 \b(jspaypal|bode_jones)\b # 2015-08-01 hacking offers
 draxlerdumps # 2015-10-15 Comments on pastebin.el
+1[ .]?\d{3}[ .]?\d{3}[ .]?\d{3,4} # 2016-01-27 We don't need phone numbers
