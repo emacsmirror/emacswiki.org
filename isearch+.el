@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan 18 08:33:48 2016 (-0800)
+;; Last-Updated: Thu Jan 28 08:04:03 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4208
+;;     Update #: 4209
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -2659,7 +2659,7 @@ A `SPC' char normally matches all whitespace defined by variable
 `search-whitespace-regexp'.  See also variables
 `isearch-lax-whitespace' and `isearch-regexp-lax-whitespace'.
 To search for a literal space and nothing else, use `C-q SPC'.
-To toggle whitespace matching, use `isearch-toggle-lax-whitespace'."
+To toggle whitespace matching, use \\<isearch-mode-map>`\\[isearch-toggle-lax-whitespace]'."
   (interactive "P\np")
   (let ((numarg  (prefix-numeric-value arg)))
     (cond ((and (eq arg '-)  (fboundp 'multi-isearch-buffers))
