@@ -343,6 +343,17 @@ Add the following to .emacs:
     (setq browse-url-browser-function 'browse-url-generic
           browse-url-generic-program "icecat")
 
+=== Microsoft Edge (Windows 10) ===
+Add the following to .emacs
+
+    (defun browse-url-edge (url &optional new-window)
+      (shell-command
+        (concat "start microsoft-edge:" url)))
+
+and set the browser function
+
+    (setq browse-url-browser-function 'browse-url-edge)
+
 
 == Feeling Lucky? ==
 
