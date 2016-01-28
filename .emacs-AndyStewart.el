@@ -1,3 +1,4 @@
+[[de:Persion]]
 ;;;
 ;; 加载目录和子目录
 (defun add-subdirs-to-load-path (dir)
