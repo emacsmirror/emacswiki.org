@@ -161,6 +161,8 @@ This should work with any recent IPython, including on Windows.
 When using Emacs 24.1 on Mac OS X compiled via homebrew. The python-shell always used US-ASCII as encoding. To fix it I used:
 <pre>
 (setenv "LC_CTYPE" "UTF-8")
+(setenv "LC_ALL" "en_US.UTF-8")
+(setenv "LANG" "en_US.UTF-8")
 </pre>
 
 To determine your encoding in the python-shell use:
