@@ -133,7 +133,7 @@ up your login credentials for each smtp server
 using the [https://gnu.org/software/emacs/manual/auth.html auth-source] library, meaning they can be encrypted using gpg or your OS keyring.
 
 It's a pain to add this header line manually whenever you want to switch SMTP servers, obviously. But if you use Gnus, you could use [http://gnus.org/manual/gnus_76.html#Posting-Styles posting styles] to add it automatically.
-For example,
+For example, our gnus-posting-styles could contain an entry
 
         ((header "Delivered-To" "somebodyelse@othermail.com")
          (From "Somebody Else <somebodyelse@othermail.com>")
