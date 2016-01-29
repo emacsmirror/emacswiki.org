@@ -122,8 +122,30 @@ if you'd like your domain name to be added automatically to the addresses, see
 SendMailAddressRewrite.
 
 == Managing Multiple SMTP Accounts ==
+There are multiple internal and external solutions to managing multiple email identities with different SMTP servers.
 
-Unfortunately, there doesn't exist a built-in feature to set the will be used SMTP server by looking at the "From:" line of the current post. But you can easily implement yours via mail hooks. See MultipleSMTPAccounts.
+Message mode and smtpmail.el have internal support for a special header called <code>X-Message-SMTP-Method</code>.
+This header is not really sent to your email recipient, but it tells smtpmail to override <code>smtpmail-smtp-server</code> and/or <code>message-send-mail-function</code>
+just for this message. For example, if you usually use your system's Mail Transfer Agent to send mail but want to send some mail through <code>external.smtp.com</code>
+at port 465, you could add the header line <code>X-Message-SMTP-Method: smtp external.smtp.com 465</code>  to your message. The full syntax of this header
+is described in the [https://gnu.org/software/emacs/manual/html_node/message/Mail-Variables.html#Mail-Variables Message mode manual]. The smtpmail library will look
+up your login credentials for each smtp server
+using the [https://gnu.org/software/emacs/manual/auth.html auth-source] library, meaning they can be encrypted using gpg or your OS keyring.
+
+It's a pain to add this header line manually whenever you want to switch SMTP servers, obviously. But if you use Gnus, you could use [http://gnus.org/manual/gnus_76.html#Posting-Styles posting styles] to add it automatically.
+For example,
+
+<code>
+        ((header "Delivered-To" "somebodyelse@othermail.com")
+         (From "Somebody Else <somebodyelse@othermail.com>")
+         (X-Message-SMTP-Method "smtp smtp.othermail.com 465"))
+</code>
+
+This means that when we are replying to a message with a "Delivered-To" header of somebodyelse@othermail.com, Gnus will set the From line and the X-Message-SMTP-Method line appropriately to respond using the correct alternate name and SMTP server.
+
+You can also add the <code>X-Message-SMTP-Method</code> header when composing a new message that isn't a reply. I (wgreenhouse) like to do this by setting up keybindings to commands that call `compose-mail' with the alternate header lines (note the <code>OTHER-HEADERS</code> argument of `compose-mail'). An external library like http://www.emacswiki.org/emacs/GnusAlias could also help here.
+
+See MultipleSMTPAccounts for some external solutions.
 
 If you have more than one email address and have to send them using different SMTP servers, then you might want to take a look at esmtpmail.el a fork from smtpmail.el
 
