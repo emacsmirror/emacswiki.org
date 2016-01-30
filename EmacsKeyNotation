@@ -27,9 +27,9 @@ Starting with release 21, the GnuEmacs maintainers decided to denote such keys b
 
 Modifier keys that are part of a key sequence that contains a pseudo key are sometimes written inside the angle brackets: `##<S-tab>##', `##<C-insert>##'.  And sometimes they are written outside: `##S-<tab>##', `##C-<insert>##'.
 
-Are the angle brackets really ''necessary'', in order to disambiguate keys?  No.
+=== Are angle brackets really necessary, in order to disambiguate keys? ===
 
-If you would like to do without the angle brackets, at least in most interactive contexts (i.e., not hard-coded, literal occurrences), you can do so.  Just use library NaKeD (No Angles Key Descriptions).  
+'''No.'''  If you would like to do without the angle brackets, at least in most interactive contexts (i.e., not hard-coded, literal occurrences), you can do so.  Just use library '''NaKeD''' (No Angles Key Descriptions).  
 
 
 ----
