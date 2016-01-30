@@ -305,7 +305,7 @@ where <BEGIN> and <END> identifies the range of commits in your change.
 This will produce a sequence of files, one per commit in the sequence, 
 each with a name generated from the summary line of the commit.
 
-Send mail to the Emacs Devel list describing the change; attach the
+Send mail to either the Emacs Devel list or the list for the bug. Describe the change and attach the
 patch set to that mail (please use MIME type ##text/plain##).  If the
 reviewers ask for further tweaks, repeat the cycle.  Edit the files,
 build and test as necessary, and
