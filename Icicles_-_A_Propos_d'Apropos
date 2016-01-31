@@ -54,6 +54,14 @@ summary of useful information.  For a [[buffer]]-name candidate, for
 example, it includes the [[major mode|mode]] name, buffer size, and associated
 file or directory, if any.  The full directory name can be especially helpful for choosing among [[Dired]] buffers.
 
+Note that you can sometimes improve performance by not displaying
+help in the mode line, that is, by setting
+'''`<tt>[[Icicles - Customization and General Tips#icicle-help-in-mode-line-delay|icicle-help-in-mode-line-delay]]</tt>'''' to zero.  This is because it
+takes time to compute and display some kinds of help in the
+mode-line.  In any case, a user event (e.g. a key press) always
+interrupts the mode-line display of help.  But it might not be
+obvious to you that you can interrupt help display this way.
+
 To see more help than what is shown in the mode-line, for each candidate or any given candidate as you
 cycle, press and
 hold the Control key while using the vertical arrow keys, for [[prefix completion]], or the `prior' and `next' keys (often labeled '''Page Up''' and '''Page Down'''), for [[apropos completion]].  To
