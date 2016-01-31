@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Jan 19 08:32:46 2016 (-0800)
+;; Last-Updated: Sun Jan 31 10:09:37 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 28475
+;;     Update #: 28479
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5073,6 +5073,14 @@
 ;;  example, it includes the mode name, buffer size, and associated
 ;;  file or directory, if any.  The full directory name can be
 ;;  especially helpful for choosing among Dired buffers.
+;;
+;;  Note that you can sometimes improve performance by not displaying
+;;  help in the mode line, that is, by setting
+;;  `icicle-help-in-mode-line-delay' to zero.  This is because it
+;;  takes time to compute and display some kinds of help in the
+;;  mode-line.  In any case, a user event (e.g. a key press) always
+;;  interrupts the mode-line display of help.  But it might not be
+;;  obvious to you that you can interrupt help display this way.
 ;;
 ;;  To see more help than what is shown in the mode-line, for each
 ;;  candidate or any given candidate as you cycle, press and hold the
