@@ -31,3 +31,7 @@ The only thing I haven't enabled is HSTS.
 I'm still waiting to see people report problems.
 
 -- Alex
+
+[new]
+I'm testing /both/, now: new CSS by BrianBurns /and/ HTTPS.
+Learn more: [https://github.com/bburns/emacswiki-light-theme on GitHub], [https://www.emacswiki.org/emacs?action=browse;bootstrap=0;id=CSSPreview;css=https://rawgit.com/bburns/emacswiki-light-theme/master/light.css try it], [https://www.emacswiki.org/emacs?action=browse;id=2016-01-04;bootstrap=1;css=;theme= reset]). Give it a try and report issues on [https://github.com/bburns/emacswiki-light-theme/issues GitHub] or send pull requests. :)
