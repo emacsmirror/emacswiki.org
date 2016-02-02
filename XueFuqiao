@@ -21,7 +21,6 @@ RepeatedStrainInjury -- ErgoemacsKeybindings and Spacemacs helped me a lot!
 * Make ##emacsclient## work across all network connections.
 * Implement a version control system in EmacsLisp.
 * Implement a search engine in EmacsLisp.
-* Make a keyboard layout for Emacs.
 * Implement a DHCP client in EmacsLisp.
 * Implement a spell checker in EmacsLisp.
 * Implement multiple cursors in Emacs.
