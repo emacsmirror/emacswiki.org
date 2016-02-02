@@ -27,3 +27,23 @@ I have files of extensions that are not *.c or *.h which are not getting listed 
 
 -- h4nnibal 2015-03-10 09:57 UTC
 
+
+----
+
+I think following code looks like wired to me.
+< sr-speedbar.el >
+
+(defun sr-speedbar-open
+...
+          (if (<= (sr-speedbar-current-window-take-width) sr-speedbar-width)
+              (setq sr-speedbar-width sr-speedbar-default-width))
+...
+
+In my opinion this code should be
+          (if (>= (sr-speedbar-current-window-take-width) sr-speedbar-width)
+              (setq sr-speedbar-width sr-speedbar-default-width))
+---------------------- (please focus on 'inequality operator' ---------------------------
+Am I missing something???
+
+-- yhcting77 2016-02-02 10:01 UTC
+
