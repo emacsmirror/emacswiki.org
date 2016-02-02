@@ -1,6 +1,3 @@
-* Please send suggestions and bug reports to [http://www.emacswiki.org/emacs/ahei Ahei] , he’s the new maintainer. Thanks! – AndyStewart
-
-
 ==What is multi-term.el ?==
 : MultiTerm is a mode based on term.el, for managing multiple terminal buffers in Emacs.
 
