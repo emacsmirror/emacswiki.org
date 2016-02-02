@@ -6,7 +6,7 @@ Emacs supports three spelling checkers by default: Hunspell, which is now widely
 
 === Hunspell ===
 
-[http://hunspell.sourceforge.net/ Hunspell] is a widely-used free software spelling checker, and supports a wider range of languages than others. It has many [http://wiki.services.openoffice.org/wiki/Dictionaries dictionaries].
+[https://hunspell.github.io/ Hunspell] is a widely-used free software spelling checker, and supports a wider range of languages than others. It has many [http://wiki.services.openoffice.org/wiki/Dictionaries dictionaries].
 
 === Emacs 24.4+ ===
 
