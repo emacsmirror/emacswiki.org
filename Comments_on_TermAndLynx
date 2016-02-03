@@ -1,0 +1,13 @@
+Hello
+With now doubt that Lynx&Emacs bundle might be convenient in many cases. For example it is handy to accumulate text out from browser into Emacs buffer or register. But there are few obstacles there:
+
+ - Emacs frame with Lynx don't know about:
+   - C-x SPC or C-x @ to mark necessary region;
+   - M-x. Hence it is not possible to accumulate.
+
+Does anybody know about available solution?
+Thank you.
+Anton
+
+-- [http://kosmic.pythonanywhere.com Aplysia] 2016-02-03 15:46 UTC
+
