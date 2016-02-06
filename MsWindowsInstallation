@@ -1,4 +1,4 @@
-==GNU-EMACS ON MS-WINDOWS OTHER THAN EMACSW32==
+== GNU Emacs on MS Windows other than Emacs W32 ==
 
 Apart from [[EmacsW32]] there are several distributions of binaries of Gnu-Emacs for
 MS-Windows to choose from:
@@ -9,18 +9,18 @@ MS-Windows to choose from:
 
 * *The official stable binaries.* These have version 22.1.1 which is a little out-dated
   (one notices e.g. that the tool-bar is black-and-white). But the resulting Emacs runs
-  well with MS-Windows and Cygwin and guidelines for installation are given below.
+  well with MS-Windows and Cygwin, and guidelines for installation are given below.
 
 * *Versions available through Cygwin setup.* These have drawbacks as detailed [[#below]],
   and installation guidelines will not be given here.
 
-==GUIDELINES FOR INSTALLING EMACS ON MS-WINDOWS==
+==Guidelines for installing Emacs on MS Windows==
 
 If installing the *CVS versions* from !SourceForge:
 
 : Visit the site http://ntemacs.sourceforge.net and download one of the .exe files marked
-  "binary" near the bottom (both are about 20 Mb). Once downloaded run the file (it is a
-  self-extracting zip file) and answer "Extract to" with a directory (or folder) of your
+  "binary" near the bottom (both are about 20 Mb). Once downloaded, run the file (it is a
+  self-extracting zip file). Answer "Extract to" with a directory (or folder) of your
   choice (e.g. ##c:\\packages##). A directory named ntemacs22 or ntemacs23 will be created
   therein.
 
@@ -48,7 +48,7 @@ own window one must install X-Windows, and in addition open an /xterm/-window an
 Emacs from there. The xterm-window does not honour national keyboards (at least without
 some twitching).
 
-==SETTING UP EMACS ON MS-WINDOWS==
+==Setting up Emacs on MS Windows==
 
 This section describes two of the more important steps for setting up Emacs on
 MS-Windows: The /home directory/ and the /starting directory/. In addition, MS-Windows
@@ -59,8 +59,8 @@ keyboard shortcuts to be more like what is traditional in MS-Windows. Customizat
 these features is described in MsWindowsCustomize.
 
 When run by selecting the shortcut, by default Emacs starts in the bin subdirectory of the
-installation folder and when started from a command line it starts in the current
-directory. In both cases the /home/ directory (where customization files are read from, in
+installation folder. When started from a command line, it starts in the current
+directory. In both cases, the /home/ directory (where customization files are read from, in
 particular the ##.emacs## file) is set to ##C:\Documents and Settings\##/user/##\Application
 Data## (on Vista it is set to ##C:\Users\##/user/##\AppData\Roaming##). It is possible to stick
 with this default behaviour and place customization files in Application Data, but here
