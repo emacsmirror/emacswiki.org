@@ -582,8 +582,7 @@ The Opera web browser has a surprisingly useful feature called the "trash can". 
 See Also: GnomeIntegration for opening files in GNOME's recent-files list.
 
 == recentf and dired buffers ==
-After executing the following code the directories visited through dired buffers will also be put to recentf.
-Note: work based on recentf.el: recentf-track-opened-file and recentf-track-closed-file.
+After evaluating the following code the directories visited through dired buffers will also be put to recentf.
 
 {{{
 (defun recentd-track-opened-file ()
@@ -603,6 +602,34 @@ That is, remove a non kept dired from the recent list."
 (add-hook 'kill-buffer-hook 'recentd-track-closed-file)
 
 }}}
+
+Alternative solution is to redefine recentf-track-opened-file and recentf-track-closed-file core emacs functions.
+This solution is twice as fast (does it matter?), but the drawback is that emacs functions are redefined.
+
+For emacs 24.5.1 do the following:
+
+{{{
+(eval-after-load "recentf"
+'(progn
+(defun recentf-track-opened-file ()
+  "Insert the name of the dired or file just opened or written into the recent list."
+  (let ((buff-name (or buffer-file-name (and (derived-mode-p 'dired-mode) default-directory))))
+    (and buff-name
+         (recentf-add-file buff-name)))
+  ;; Must return nil because it is run from `write-file-functions'.
+  nil)
+
+(defun recentf-track-closed-file ()
+  "Update the recent list when a file or dired buffer is killed.
+That is, remove a non kept file from the recent list."
+  (let ((buff-name (or buffer-file-name (and (derived-mode-p 'dired-mode) default-directory))))
+    (and buff-name
+         (recentf-remove-if-non-kept buff-name))))
+
+(add-hook 'dired-after-readin-hook 'recentf-track-opened-file)))
+}}}
+
+Tip: when helm is used, use "someDir/$" to narrow to directory only pattern. "someDir" pattern also works of course, but it will display other paths containing "someDir" as well.
 
 == History ==
 
