@@ -2,8 +2,7 @@
 [[ja:Todoリストモード]]
 TodoListMode, by [http://www.lamberta.org/ Billy Lamberta], provides color highlighting for a numbered todo list file; simple and straight-forward to use.
 
-* [http://github.com/biilly/todo-list-mode GitHub page]
-* [http://github.com/biilly/todo-list-mode/raw/master/todo-list-mode.el todo-list-mode.el]
+* [https://github.com/lamberta/todo-list GitHub page]
 
 To include this mode automaticaly, add to your .emacs
 {{{
