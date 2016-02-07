@@ -1,5 +1,5 @@
 ;;; -*- emacs-lisp -*-
-;; .emacs, fichier de configuration d'emacs de Dom - $Revision: 1.281 $
+;; .emacs, fichier de configuration d'emacs de Dom - $Revision: 1.284 $
 ;;
 ;; MODE D'EMPLOI
 ;;
@@ -117,9 +117,6 @@ personnels, comme par exemple \"~/lib/emacs\".
         (pointemacs-discretement
          (run-hooks 'pointemacs-taches-periodiques-hook))))))
 
-(defun pointemacs-sur-tous-les-noeuds (arbre func)
-  (cl-subst-if nil #'null arbre :key (lambda (n) (prog1 t (funcall func n)))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         (pointemacs-progression "Chemins d'accès")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -144,7 +141,8 @@ fichiers temporaires, etc.")
                    (list pointemacs-repertoire-lib)
                    (mapcar (lambda (subdir)
                              (concat pointemacs-repertoire-lib "/" subdir))
-                           (list emacs-version "magit" "el-get/el-get"))
+                           (list emacs-version "magit" "el-get/el-get"
+                                 "sgml-edit"))
                    '("/usr/local/share/emacs/site-lisp"
                      "/usr/share/doc/git-core/contrib/emacs"
                      "/usr/share/org-mode/lisp"))))
@@ -268,13 +266,30 @@ fichiers temporaires, etc.")
     "Désactivation de certaines touches électriques insupportables"
     (cperl-define-key ":" 'self-insert-command)))
 
+;; Combinaisons Compose supplémentaires
+;; Voir aussi http://lolengine.net/blog/2012/06/17/compose-key-on-os-x
+(when (require-faible 'iso-transl)
+  (let ((combinaisons           
+         '(("->" . [?→]) ("=>" . [?⇒]) ("<-" . [?←])
+           (":)" . [?☺]) (":)" . [?☹]))))
+    (dolist (combinaison combinaisons)
+      (let* ((touches (car combinaison))
+             (valeur (cdr combinaison))
+             (premiere-touche (substring touches 0 1)))
+        (unless (keymapp (lookup-key iso-transl-ctl-x-8-map premiere-touche))
+          (define-key iso-transl-ctl-x-8-map premiere-touche
+            (make-sparse-keymap)))
+        (define-key iso-transl-ctl-x-8-map touches valeur)))))
+
 ;; http://www.emacswiki.org/emacs/EmacsForMacOS
 (when (eq system-type 'darwin)
   (setq mac-option-modifier nil)
   (setq mac-command-modifier 'meta)
   ;; Control-crochet fermant sur claviers AZERTY et QWERTZ (suisse):
   (global-set-key [C-S-268632091] 'abort-recursive-edit)
-  (global-set-key [C-S-268632093] 'abort-recursive-edit))
+  (global-set-key [C-S-268632093] 'abort-recursive-edit)
+  ;; ⌘ de droite = touche Compose, comme dans Karabiner:
+  (define-key key-translation-map (kbd "C-<f13>") iso-transl-ctl-x-8-map))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         (pointemacs-progression "Cycle de vie de l'éditeur")
@@ -408,7 +423,8 @@ fichiers temporaires, etc.")
 
 (defadvice shell (around pointemacs-shell-interactif activate)
   (let (explicit-shell-file-name)
-    (when (not (and (buffer-file-name) (file-remote-p (buffer-file-name))))
+    (when (not (and (boundp 'default-directory) default-directory
+                    (file-remote-p default-directory)))
       (setq explicit-shell-file-name "/opt/local/bin/bash"))
     ad-do-it))
 
@@ -620,6 +636,10 @@ Au lieu d'effacer tout le répertoire précédent, efface seulement le slash"
 (pointemacs-personnalise '(js-indent-level 4) '(js-auto-indent-flag nil))
 (put 'js-indent-level 'safe-local-variable 'integerp)
 
+(eval-after-load "sgml-mode"
+  '(when (require-faible 'sgml-edit)
+     (define-key html-mode-map "\C-c\r" 'sgml-split-element)))
+
 (pointemacs-progression "Mode Perl") ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defalias 'perl-mode 'cperl-mode)
@@ -685,54 +705,16 @@ Au lieu d'effacer tout le répertoire précédent, efface seulement le slash"
 ;; un fichier .emacs-dirvars
 (require-faible 'dirvars)
 
+(pointemacs-progression "IBuffer") ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(when (require-faible 'ibuffer)
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (and (require-faible 'ibuffer-projectile)
+       (ibuffer-projectile-set-filter-groups)))
+
 (pointemacs-progression "Recherche dans le code source") ;;;;;;;;;;;;;;
 
 (pointemacs-personnalise '(grep-program "zgrep"))
-
-(eval-after-load "grep" '(progn
-     ;; M-x grep, M-x rgrep : extension des motifs des fichiers consultés.
-     (dolist (item '("all" "c")) (adelete 'grep-files-aliases item))
-     (aput 'grep-files-aliases "ch" "*.c *.cc *.cpp *.h")
-
-     (defadvice grep-read-files (around pointemacs-wildcards-multiples activate)
-       "Sélectionne un wildcard multiple comme valeur par défaut si opportun."
-       (let ((wildcard-to-regexp-orig (symbol-function 'wildcard-to-regexp)))
-         (flet ((wildcard-to-regexp (wildcards)
-                 (concat "\\(" (mapconcat (lambda (wildcard)
-                                    (funcall wildcard-to-regexp-orig wildcard))
-                                          (split-string wildcards) "\\|")
-                         "\\)")))
-           ad-do-it)))
-
-     (defadvice grep-compute-defaults (around pointemacs-grep-P activate)
-       "Utilisation de grep -P (PCRE) si supporté"
-       (let* ((h (intern (or (file-remote-p default-directory) "localhost")))
-              (nouveaux-host-defaults (not (assq h grep-host-defaults-alist))))
-         ad-do-it
-         (when (and nouveaux-host-defaults
-                  (grep-probe "grep" `(nil t nil "-P" "." ,null-device) nil 1))
-           (pointemacs-sur-tous-les-noeuds
-            (assq h grep-host-defaults-alist)
-            (lambda (n) (and (consp n) (stringp (car n))
-                             (setcar n (replace-regexp-in-string
-                                        "grep" "grep -P" (car n))))))
-           ad-do-it)))))
-
-(defun pointemacs-grep-find-moins-verbeux ()
-  "Rend invisible la liste des exclusions dans la ligne de commande de find."
-  (set (make-local-variable 'font-lock-extra-managed-props) '(invisible))
-  (add-to-invisibility-spec '(find-prune . t))
-  (font-lock-add-keywords
-   nil '(("-type d \\\\( \\(.*?\\) \\\\) -prune"
-          1 '(face font-lock-comment-face invisible 'find-prune)))))
-(add-hook 'grep-mode-hook 'pointemacs-grep-find-moins-verbeux)
-
-;; M-x find-dired : read-directory-name au lieu de read-file-name
-(defadvice find-dired (before pointemacs-repertoire activate)
-  "Correction de bug : lit le répertoire de départ avec `read-directory-name'"
-  (interactive (list (read-directory-name "Run find in directory: " nil "" t)
-		     (read-string "Run find (with args): " find-args
-				  '(find-args-history . 1)))))
+(require-faible 'grep-domq)
 
 (pointemacs-progression "Contrôle de versions") ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -906,30 +888,6 @@ Pour quitter une sous-session du débogueur en erreur (par exemple si on a tapé
 (pointemacs-personnalise '(eval-expression-print-length nil)
                       '(eval-expression-print-level nil))
 
-;; MozLab: mettez un Emacs dans votre Mozilla
-;; http://hyperstruct.net/projects/mozrepl/emacs-integration
-(autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
-(autoload 'run-mozilla "moz"
-  "Show the inferior mozilla buffer.  Start the process if needed.")
-;; Intégration entre MozLab et js2-mode
-(add-hook 'js2-mode-hook (lambda () (moz-minor-mode 1)))
-;; Les deux fonctions `moz-send-defun' et `moz-send-defun-and-go' sont
-;; implémentées comme des crocks inutilisables dans moz.el : on les redéfinit.
-(eval-after-load "moz" '(progn
-  (defun moz-send-defun ()
-    "Send the current function to Firefox via MozRepl.
-Curent function is the one recognized by `js2-mode-function-at-point'."
-    (interactive)
-    (let ((node (js2-mode-function-at-point)))
-      (moz-send-region (js2-node-abs-pos node) (js2-node-abs-end node))))
-  (defun moz-send-defun-and-go ()
-    "Send the current function to Firefox via MozRepl.
-Also switch to the interaction buffer."
-    (interactive)
-    (moz-send-defun)
-    ;; L'original a un bug à la ligne suivante :
-    (inferior-moz-switch-to-mozilla nil))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         (pointemacs-progression "Goodies")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -961,13 +919,34 @@ Also switch to the interaction buffer."
 ;; shell-mode en couleurs
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
-;; Tramp : accès par ssh + sudo selon /sudo:root@kilim:/etc/passwd
-;; http://www.emacswiki.org/emacs/TrampMode#toc12
-(pointemacs-personnalise
- '(tramp-default-host "localhost")
- '(tramp-default-proxies-alist
-   '(("localhost" nil nil)
-     ("..*" "^root$" "/ssh:%h:"))))
+(pointemacs-progression "Tramp") ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Tramp + docker, yow! /docker:drunk_bardeen:/etc/passwd
+(aput 'tramp-methods "docker" '(
+  (tramp-login-program "docker")
+  (tramp-login-args (("exec" "-it") ("%h") ("/bin/bash" "--norc")))
+  (tramp-remote-shell "/bin/bash")
+  (tramp-remote-shell-args ("-i") ("-c"))))
+
+;; Complétion possible après /docker: (seulement avec ido) :
+(defadvice tramp-completion-handle-file-name-all-completions
+  (around pointemacs-completion-docker activate)
+  "(tramp-completion-handle-file-name-all-completions \"\" \"/docker:\" renvoie
+    la liste des noms des conteneurs Docker actifs, suivis de deux points."
+  (if (equal (ad-get-arg 1) "/docker:")
+      (let* ((dockernames-raw (shell-command-to-string "docker ps | perl -we 'use strict; $_ = <>; m/^(.*)NAMES/ or die; my $offset = length($1); while(<>) {substr($_, 0, $offset, q()); chomp; print map { qq($_:\n) } (m/[[:^space:]]+/g); }'"))
+             (dockernames (cl-remove-if-not
+                           #'(lambda (dockerline) (string-match ":$" dockerline))
+                           (split-string dockernames-raw "\n"))))
+        (setq ad-return-value dockernames))
+    ad-do-it))
+
+;; Tramp + fleetctl! /fleet:stiitops@stiitops.prometheus.service:/etc/passwd
+(aput 'tramp-methods "fleet" '(
+  (tramp-login-program "fleetctl")
+  (tramp-login-args (("ssh") ("%u@%h") ("/bin/sh")))
+  (tramp-remote-shell "/bin/bash")
+  (tramp-remote-shell-args ("-i") ("-c"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         (pointemacs-progression "Chargement du .emacs terminé")
