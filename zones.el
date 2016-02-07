@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 16:30:31 2015 (-0800)
+;; Last-Updated: Sat Feb  6 17:19:51 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 1713
+;;     Update #: 1714
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -28,6 +28,9 @@
 ;;     Zones of text - like multiple regions.
 ;;
 ;;    More description below.
+;;
+;;    Bug reports etc.: (concat "drew" ".adams" "@" "oracle" ".com")
+;;      
  
 ;;(@> "Index")
 ;;
