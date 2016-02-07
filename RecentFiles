@@ -583,6 +583,7 @@ See Also: GnomeIntegration for opening files in GNOME's recent-files list.
 
 == recentf and dired buffers ==
 After executing the following code the directories visited through dired buffers will also be put to recentf.
+Note: work based on recentf.el: recentf-track-opened-file and recentf-track-closed-file.
 
 {{{
 (defun recentd-track-opened-file ()
