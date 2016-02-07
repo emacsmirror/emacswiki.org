@@ -582,7 +582,7 @@ The Opera web browser has a surprisingly useful feature called the "trash can". 
 See Also: GnomeIntegration for opening files in GNOME's recent-files list.
 
 == recentf and dired buffers ==
-After evaluating the following code the directories visited through dired buffers will also be put to recentf.
+After evaluating the following code the directories visited through dired buffers will also be put to recentf. -- vibrys.
 
 {{{
 (defun recentd-track-opened-file ()
@@ -630,6 +630,7 @@ That is, remove a non kept file from the recent list."
 }}}
 
 Tip: when helm is used, use "someDir/$" to narrow to directory only pattern. "someDir" pattern also works of course, but it will display other paths containing "someDir" as well.
+ -- vibrys
 
 == History ==
 
