@@ -1,5 +1,5 @@
 I tried to clone the repository but it doesn't work. Do I need a password to do that? On the other hand, by download it from the link, the makefile raise an error:
-
+{{{
 emacs --batch -L ./ -f batch-byte-compile completion-ui-dynamic.el
 Loading 00debian-vars...
 Loading /etc/emacs23/site-start.d/50auctex.el (source)...
@@ -21,6 +21,7 @@ Loading `completion-ui': old-style backquotes detected!
 In toplevel form:
 completion-ui-dynamic.el:31:1:Error: Invalid read syntax: ". in wrong context"
 make: *** [completion-ui-dynamic.elc] Error 1
+}}}
 
 M
 
