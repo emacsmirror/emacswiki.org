@@ -1,0 +1,8 @@
+[new:AlexSchroeder:2016-02-08 16:46 UTC]
+Moved to *HTTPS* and installed *new CSS* by BrianBurns, as indicated a while ago ([[2016-01-04]]).
+
+Let me know if anything breaks.
+
+You can report CSS issues [https://github.com/bburns/emacswiki-light-theme/issues on GitHub].
+There's some discussion [https://www.reddit.com/r/emacs/comments/42dqdg/emacswiki_theme_v2/ on reddit]
+and [https://lists.gnu.org/archive/html/emacs-tangents/2016-01/msg00014.html emacs-tangents] (a mailing list).
