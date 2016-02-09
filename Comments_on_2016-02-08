@@ -2,3 +2,16 @@ Hi Alex. I've lost the look I've always used. How to regain it? Do I need to go 
 
 -- DrewAdams 2016-02-08 21:50 UTC
 
+
+----
+
+Bookmark a link like the following:
+
+* https://www.emacswiki.org/emacs?action=rc;showedit=1;days=3;rollback=1;lang=;theme=;css=/css/emacs.css
+
+(This would be my control-freak version of Recent Changes.)
+
+Alternatively, edit your bookmark and change ##css=## to ##css=/css/emacs.css##. It probably also says ##bootstrap=0## somewhere and that no longer has any effect so you may as well remove it.
+
+-- AlexSchroeder 2016-02-09 11:41 UTC
+
