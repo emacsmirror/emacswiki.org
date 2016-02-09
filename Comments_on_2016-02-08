@@ -18,7 +18,7 @@ Alternatively, edit your bookmark and change ##css=## to ##css=/css/emacs.css##.
 
 ----
 
-My recent-changes bookmark has neither ##ccc=## nor ##bookstrap=##. It is this:
+My recent-changes bookmark has neither ##css=## nor ##bootstrap=##. It is this:
 
     https://www.emacswiki.org/emacs?action=rc;days=7;all=0;rollback=1;showedit=1
 
