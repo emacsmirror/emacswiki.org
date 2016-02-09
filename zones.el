@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb  6 17:19:51 2016 (-0800)
+;; Last-Updated: Tue Feb  9 09:26:40 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 1714
+;;     Update #: 1724
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -404,6 +404,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/02/09 dadams
+;;     zz-zones-complement: Removed unused optional BUFFER arg.  Use zz-marker-from-object on BEG and END.
 ;; 2015/09/07 dadams
 ;;     zz-some: Return cons (ELEMENT . VALUE).
 ;;     zz-buffer-of-markers: Adjust for new zz-some behavior.
@@ -705,12 +707,12 @@ from the same buffer."
          (mkr2   (or (and (markerp car2)   car2)  (and (markerp cadr2)  cadr2))))
     (or (not (and mkr1  mkr2))  (eq (marker-buffer mkr1) (marker-buffer mkr2)))))
 
-(defun zz-zones-complement (zones &optional beg end)
+(defun zz-zones-complement (zones &optional beg end buffer)
   "Return a list of zones that is the complement of ZONES, from BEG to END.
 ZONES is assumed to be a union, i.e., sorted by car, with no overlaps.
 Any extra info in a zone of ZONES, i.e., after the cadr, is ignored."
-  (setq beg  (or beg  (point-min))
-        end  (or end  (point-max)))
+  (setq beg  (zz-marker-from-object (or beg  (point-min)))
+        end  (zz-marker-from-object (or end  (point-max))))
   (let ((res  ()))
     (dolist (zone  zones)
       (push (list beg (car zone)) res)
@@ -1171,8 +1173,8 @@ This is a non-destructive operation: it returns a new list."
       (setq ii  (1+ ii))))
   izone)
 
-(defun zz-marker-from-object (object &optional buffer)
-  "Return equivalent marker for OBJECT.
+(defun zz-marker-from-object (object)
+  "Return an equivalent marker for OBJECT.
 This is a non-destructive operation: OBJECT is not modified.
 
 If OBJECT is a marker then return it.
@@ -1181,8 +1183,8 @@ If it is a readable-marker sexp then return an equivalent real marker.
 Otherwise, return nil.
 
 A readable marker is a sexp of form (marker BUFFER POSITION), where
-BUFFER is a buffer name (string) and POSITION is buffer
-position (number)."
+BUFFER is a buffer name (string) and POSITION is a buffer position
+\(number)."
   (cond ((markerp object) object)
         ((numberp object) (copy-marker object))
         ((zz-readable-marker-p object)
@@ -1224,7 +1226,7 @@ position (number)."
     (and mrkr  `(marker ,buf ,(marker-position mrkr)))))
 
 (defun zz-izones-p (value)
-  "Return non-nil if VALUE is a list of izones.
+  "Return non-nil if VALUE is a (possibly empty) list of izones.
 That is, non-nil means that VALUE has the form of `zz-izones'."
   (and (listp value)  (listp (cdr (last value))) ; Proper list.
        (let ((res  t))
