@@ -2,7 +2,7 @@ Aerospace engineering graduate student at [http://www.princeton.edu/ Princeton U
 
 [:AboutMe]
 ==About Me==
-portrait:http://izaakbeekman.com/img/team/avatar.jpg
+portrait:https://izaakbeekman.com/img/team/avatar.jpg
 
  
  
@@ -10,13 +10,13 @@ I use Emacs 24.  I am an new to intermediate programmer and emacs user, but a fa
 
 [:MyBlog]
 ====My Blog====
-I am planning on adding a blog to my [http://IzaakBeekman.com personal website.] An old blog entry about setting up subversion to use ediff as a graphical merge client can be found [http://bit.ly/m9ozZr here], but I am planning to unify and migrate my web presence to my new personal website.
+I am planning on adding a blog to my [https://IzaakBeekman.com personal website.] An old blog entry about setting up subversion to use ediff as a graphical merge client can be found [http://zaakbeekman.blogspot.com/2011/04/using-emacs-ediff-as-graphical-merge.html here], but I am planning to unify and migrate my web presence to my new personal website.
 
 [:ContactInfo]
 ==Contact Info==
 I make occasional appearances on the #emacs IRC channel, as well as the #bash, and #fortran channels, and my usual nick is [::ibeekman].
 I can also be reached via email at [mailto:contactNOSPAM@IzaakBeekman.com contact.NOSPAM@IzaakBeekman.com].
-My personal website is http://IzaakBeekman.com
+My personal website is https://IzaakBeekman.com
 
 [:Humor]
 ==Humor==
