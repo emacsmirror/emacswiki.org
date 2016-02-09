@@ -15,3 +15,20 @@ Alternatively, edit your bookmark and change ##css=## to ##css=/css/emacs.css##.
 
 -- AlexSchroeder 2016-02-09 11:41 UTC
 
+
+----
+
+My recent-changes bookmark has neither ##ccc=## nor ##bookstrap=##. It is this:
+
+    https://www.emacswiki.org/emacs?action=rc;days=7;all=0;rollback=1;showedit=1
+
+I also have plenty of other Emacs Wiki bookmarks. Here is what I use for the Elisp Area:
+
+    https://www.emacswiki.org/emacs/ElispArea
+
+Am I supposed to change all of them? Previously, none of my bookmarks needed to contain info about CSS.
+
+I want all pages on the wiki to be rendered in the original, simple style, whether bookmarked or not.
+
+-- DrewAdams 2016-02-09 17:01 UTC
+
