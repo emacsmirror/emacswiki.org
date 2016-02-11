@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 16 16:38:23 2004
 ;; Version: 0
 ;; Package-Requires: ((compile- "0"))
-;; Last-Updated: Thu Dec 31 12:39:36 2015 (-0800)
+;; Last-Updated: Thu Feb 11 13:58:50 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 937
+;;     Update #: 939
 ;; URL: http://www.emacswiki.org/compile+.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Doc URL: http://www.emacswiki.org/CompilationMode
@@ -65,6 +65,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/02/11 dadams
+;;     Removed r and R bindings for recompile (they are used in grep+.el to rename buffer).
 ;; 2015/04/01 dadams
 ;;     compilation-goto-locus: Fix for Emacs bug #20241.
 ;; 2011/10/03 dadams
@@ -155,7 +157,6 @@
 (define-key compilation-minor-mode-map "o" 'compile-mode-summary)
 (define-key compilation-minor-mode-map "p" 'compilation-previous-error)
 (define-key compilation-minor-mode-map "q" 'quit-window)
-(define-key compilation-minor-mode-map "r" 'recompile)
 (define-key compilation-minor-mode-map "s" 'compile-mode-summary)
 (define-key compilation-minor-mode-map "t" 'compile-mode-summary)
 (define-key compilation-minor-mode-map "u" 'compile-mode-summary)
@@ -181,7 +182,6 @@
 (define-key compilation-minor-mode-map "O" 'compile-mode-summary)
 (define-key compilation-minor-mode-map "P" 'compilation-previous-error)
 (define-key compilation-minor-mode-map "Q" 'quit-window)
-(define-key compilation-minor-mode-map "R" 'recompile)
 (define-key compilation-minor-mode-map "S" 'compile-mode-summary)
 (define-key compilation-minor-mode-map "T" 'compile-mode-summary)
 (define-key compilation-minor-mode-map "U" 'compile-mode-summary)
