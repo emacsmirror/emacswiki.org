@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:30:02 2015 (-0800)
+;; Last-Updated: Thu Feb 11 13:57:44 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 649
+;;     Update #: 676
 ;; URL: http://www.emacswiki.org/grep+.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes, compile
@@ -35,31 +35,46 @@
 ;;    4. Commands are provided to remove commented lines from `grep'
 ;;       output and toggle their automatic removal.
 ;;
+;;  If you want the current `grep' buffer to be renamed automatically
+;;  to reflect the particular `grep' command used, do this:
+;;
+;;  (add-hook 'grep-mode-hook 'grepp-rename-buffer-to-last-no-confirm)
+;;
+;;  Otherwise, you can use `r' to rename it on demand (command
+;;  `grepp-rename-buffer-to-last').
+;;
+;;
 ;;  Put this in your initialization file (`~/.emacs'):
 ;;
 ;;    (require 'grep+)
 ;;
-;;  Face suggestions (what I use):
+;;  Face suggestions:
 ;;
 ;;    `compilation-info-face':   Blue3' foreground,        no inherit
 ;;    `compilation-line-number': DarkGoldenrod foreground, no inherit
 ;;    `match':                   SkyBlue background,       no inherit
 ;;
-;;
-;;  New user options defined here:
+;;  User options defined here:
 ;;
 ;;    `grepp-default-comment-line-regexp', `grepp-default-regexp-fn'.
 ;;
-;;  New commands defined here:
+;;  Commands defined here:
 ;;
 ;;    `choose-grep-buffer', `grepp-choose-grep-buffer',
 ;;    `grepp-new-grep-buffer', `grepp-remove-comments',
-;;    `grepp-toggle-comments', `new-grep-buffer',
-;;    `remove-grep-comments', `toggle-grep-comments'.
+;;    `grepp-rename-buffer-to-last', `grepp-toggle-comments',
+;;    `new-grep-buffer', `remove-grep-comments',
+;;    `toggle-grep-comments'.
 ;;
-;;  New non-interactive functions defined here:
+;;  Non-interactive functions defined here:
 ;;
-;;    `grepp-buffers', `grepp-default-regexp-fn'.
+;;    `grepp-buffers', `grepp-default-regexp-fn',
+;;    `grepp-rename-buffer-to-last-no-confirm'.
+;;
+;;  Internal variables defined here:
+;;
+;;    `grepp-last-args'.
+;;
 ;;
 ;;
 ;;  ***** NOTE: The following variables defined in `grep.el'
@@ -86,6 +101,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/02/11 dadams
+;;     Added: grepp-rename-buffer-to-last, grepp-rename-buffer-to-last-no-confirm, grepp-last-args.
+;;     Bind grepp-rename-buffer-to-last to r and R.
+;;     grep: Save command args as grepp-last-args.
 ;; 2013/12/05 dadams
 ;;     grep-default-command: Made argument &optional, since can be called elsewhere.
 ;; 2013/07/03 dadams
@@ -220,6 +239,9 @@ first of these that references a defined function:
         ((fboundp 'non-nil-symbol-name-nearest-point) 'non-nil-symbol-name-nearest-point)
         (t 'find-tag-default)))
 
+(defvar grepp-last-args nil
+  "String holding the arguments of the last `grep' command used.")
+
 
 
 ;;; REPLACE ORIGINAL in `grep.el'
@@ -321,7 +343,7 @@ temporarily highlight in visited source lines."
                      " "))
            nil nil 'grep-history
            (if current-prefix-arg nil default-cmd)))))))
-
+  (setq grepp-last-args  (substring command-args 4))
   ;; Setting process-setup-function makes exit-message-function work
   ;; even when async processes aren't supported.
   (compilation-start (if (and grep-use-null-device null-device)
@@ -365,6 +387,20 @@ Current buffer must be a grep buffer.  It is renamed to *grep*<N>."
       (when (string-match "\\*grep\\*" (buffer-name buf))
         (push (list (buffer-name buf)) bufs)))
     (nreverse bufs)))
+
+;;;###autoload
+(defun grepp-rename-buffer-to-last (&optional no-confirm)
+  "Rename current `grep' buffer uniquely to reflect the command args."
+  (interactive)
+  (unless grepp-last-args (error "You must invoke Emacs command `grep' first"))
+  (when (and (eq major-mode 'grep-mode)
+             (or no-confirm  (y-or-n-p (format "Rename buffer to `*grep* %s'? " grepp-last-args))))
+    (rename-buffer (concat "*grep* " grepp-last-args) 'UNIQUE)))
+
+(defun grepp-rename-buffer-to-last-no-confirm ()
+  "Rename current `grep' buffer uniquely to reflect the command args."
+  (unless grepp-last-args (error "You must invoke Emacs command `grep' first"))
+  (when (eq major-mode 'grep-mode) (rename-buffer (concat "*grep* " grepp-last-args) 'UNIQUE)))
 
 ;;;###autoload
 (defalias 'remove-grep-comments 'grepp-remove-comments)
@@ -419,6 +455,8 @@ between /* and */."
 (define-key grep-mode-map "+" 'grepp-new-grep-buffer)
 (define-key grep-mode-map "b" 'grepp-choose-grep-buffer)
 (define-key grep-mode-map "B" 'grepp-choose-grep-buffer)
+(define-key grep-mode-map "r" 'grepp-rename-buffer-to-last)
+(define-key grep-mode-map "R" 'grepp-rename-buffer-to-last)
 (define-key grep-mode-map ";" 'grepp-remove-comments)
 (define-key grep-mode-map [(meta ?\;)] 'grepp-toggle-comments)
 
