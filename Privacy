@@ -30,7 +30,6 @@ This information is available in multiple places.
 
 *Every “kept” page* stores the IP number that did the last edit. /Kept Pages/ are the old revisions that are still available via a history page. If you check the [Self:action=history;id=SiteMap SiteMap history], for example, you'll see that only a small number of pages are actually kept. Again, if you hover the mouse pointer over the author's name, you'll see the IP number they used. Currently, kept pages older than a year are deleted. Thus, as long as you edited a page within the last year, your IP number will be available to others, even if you're not the last author to edit that page.
 
-[quote]
 *What are Kept Pages?*
 
 The details are on [[Oddmuse:Kept Pages]]. But basically, when a page is saved…
@@ -40,8 +39,6 @@ The details are on [[Oddmuse:Kept Pages]]. But basically, when a page is saved�
 # the new page is saved
 
 Thus, you can always go back at least a year.
-[/quote]
-
 In the past, this time window was much smaller. It used to be two weeks instead of a year.
 
 == Spammers ==
