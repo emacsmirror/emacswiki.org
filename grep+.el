@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 11 13:57:44 2016 (-0800)
+;; Last-Updated: Fri Feb 12 06:31:37 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 676
+;;     Update #: 682
 ;; URL: http://www.emacswiki.org/grep+.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes, compile
@@ -101,6 +101,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/02/12 dadams
+;;     Added commands to Grep menu-bar menu.
 ;; 2016/02/11 dadams
 ;;     Added: grepp-rename-buffer-to-last, grepp-rename-buffer-to-last-no-confirm, grepp-last-args.
 ;;     Bind grepp-rename-buffer-to-last to r and R.
@@ -459,6 +461,29 @@ between /* and */."
 (define-key grep-mode-map "R" 'grepp-rename-buffer-to-last)
 (define-key grep-mode-map ";" 'grepp-remove-comments)
 (define-key grep-mode-map [(meta ?\;)] 'grepp-toggle-comments)
+
+;; Menu-bar menu `Grep'.
+(define-key-after grep-mode-map [menu-bar grep grepp-separator1] '("----") 'compilation-compile)
+(define-key-after grep-mode-map [menu-bar grep grepp-new-grep-buffer]
+  '(menu-item "Rename and Switch" grepp-new-grep-buffer
+    :help "Rename current buffer to *grep*<N> and switch to new buffer *grep*.")
+  'grepp-separator1)
+(define-key-after grep-mode-map [menu-bar grep grepp-choose-grep-buffer]
+  '(menu-item "Switch to Other Grep Buffer..." grepp-choose-grep-buffer)
+  'grepp-new-grep-buffer)
+(define-key-after grep-mode-map [menu-bar grep grepp-rename-buffer-to-last]
+  '(menu-item "Rename Showing Args" grepp-rename-buffer-to-last
+    :help "Rename current `grep' buffer uniquely to reflect the command args.")
+  'grepp-choose-grep-buffer)
+(define-key-after grep-mode-map [menu-bar grep grepp-separator2] '("----") 'grepp-rename-buffer-to-last)
+(define-key-after grep-mode-map [menu-bar grep grepp-remove-comments]
+  '(menu-item "Removed Commented Lines" grepp-remove-comments
+    :help "Remove output lines that are completely commented out.")
+  'grepp-separator2)
+(define-key-after grep-mode-map [menu-bar grep grepp-toggle-comments]
+  '(menu-item "Automatic Removal of Commented Lines" grepp-toggle-comments
+    :help "Toggle removal of commented lines in grep output.")
+  'grepp-remove-comments)
 
 
 
