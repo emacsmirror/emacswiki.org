@@ -52,11 +52,11 @@ How many revisions does this wiki save?
 [new]
 The details are on [[Oddmuse:Kept Pages]]. But basically, when a page is saved…
 
-# all revisions older than two weeks are deleted
-# the current revision gets a new timestamp (so it will not be deleted for another two weeks!) and is saved as an old revision (a "kept page")
+# all revisions older than a year are deleted
+# the current revision gets a new timestamp (so it will not be deleted for another year!) and is saved as an old revision (a "kept page")
 # the new page is saved
 
-Thus, you can always go back at least two weeks. -- AlexSchroeder
+Thus, you can always go back at least a year. This time window has been extended, recently. It used to be just two weeks. But remember, you can get back all the old revisions from our [[Git repository]]. -- AlexSchroeder
 
 ----
 WikiMaintenance
