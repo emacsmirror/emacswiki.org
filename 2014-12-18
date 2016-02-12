@@ -11,3 +11,26 @@ Send [mailto:kensanata@gmail.com mail] or contact me [EmacsChannel on IRC].
 I'm currently going through things like the ElispArea, cron jobs, and all that.
 
 Happy editing. :)
+
+[new:AlexSchroeder:2014-12-18 19:27 UTC]
+The extraordinary load the new server had to take (the wiki being a simple CGI script) was a load to bear…
+It took my a bit but I think the basics are up again, this time using !FastCGI ([http://httpd.apache.org/mod_fcgid/mod/mod_fcgid.html mod_fcgid]).
+We'll see how far this goes.
+
+This is now [http://www.edis.at/de/server/linux-vps-solusvm-openvz/schweiz/ovz-advanced/ an openvz solution with two cores and 2G RAM].
+
+This entire !FastCGI thing is very new to me. I've looked at it a few years ago, but never used it for one of my sites.
+Well, load around 198 does this to you. ;)
+
+I've configured Apache using the following parameters:
+
+{{{
+FcgidMaxProcesses 20
+FcgidProcessLifeTime 300
+FcgidMaxRequestsPerProcess 100
+}}}
+
+For the curious, the setup is [http://oddmuse.org/wiki/Using_mod_fastcgi#h5o-5 documented on the Oddmuse wiki].
+
+Currently, language-specific invocations (emacs-de, emacs-zh and the like still use the CGI interface. People don't seem to be using these so much, so that's good.
+I might end up getting rid of those, eventually. :)
