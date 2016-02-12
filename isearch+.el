@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan 28 08:04:03 2016 (-0800)
+;; Last-Updated: Fri Feb 12 13:28:45 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4209
+;;     Update #: 4221
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -653,6 +653,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/02/12 dadams
+;;     isearchp-repeat-search-if-fail-flag: Removed message and sit-for.
 ;; 2016/01/18 dadams
 ;;     isearchp-repeat-search-if-fail-flag: Added :set function.
 ;; 2016/01/15 dadams
@@ -1375,10 +1377,7 @@ You can toggle this using `isearchp-toggle-repeat-search-if-fail', bound to
                (custom-set-default sym val)
                (if val
                    (add-hook 'isearch-update-post-hook 'isearchp-repeat-search-if-fail)
-                 (remove-hook 'isearch-update-post-hook 'isearchp-repeat-search-if-fail))
-               (message "Restart search automatically on failure is now %s"
-                        (if isearchp-repeat-search-if-fail-flag 'ON 'OFF))
-               (sit-for 1))
+                 (remove-hook 'isearch-update-post-hook 'isearchp-repeat-search-if-fail)))
     :group 'isearch-plus))
 
 ;;;###autoload
