@@ -26,21 +26,23 @@ This information is available in multiple places.
 
 *Recent changes* records IP number of authors. If you check RecentChanges, you'll note that if you hover the mouse pointer over the author's name, you'll see the IP number they used. The IP numbers are removed from older log entry by the [http://www.emacswiki.org/maintenance/ maintenance job]. If you check the [Self:action=rc;days=30 recent changes for the last 30 days], you should see that changes at the very bottom of the list---the changes older than 28 days---no longer have an IP number.
 
-*Every page* stores the IP number that did the last edit. At the bottom of the page, you'll see a line saying "Last edited 2014-02-05 06:54 UTC by _AlexSchroeder_ (_diff_)". If you hover the mouse pointer over the last author's name, you'll see the IP number they used. The IP number stays until somebody else edits the page.
+*Every page* stores the IP number that did the last edit. At the bottom of the page, you'll see a line saying "Last edited 2014-02-05 06:54 UTC by _AlexSchroeder_ (_diff_)". If you hover the mouse pointer over the last author's name, you'll see the IP number they used. The IP number stays until somebody else edits the page. Thus, as long as you're the last author to edit a page, your IP number will be available to others.
 
-*Every “kept” page* stores the IP number that did the last edit. /Kept Pages/ are the old revisions that are still available via a history page. If you check the [Self:action=history;id=SiteMap SiteMap history], for example, you'll see that only a very small number of pages are actually kept. Again, if you hover the mouse pointer over the author's name, you'll see the IP number they used. Over time, kept pages are deleted.
+*Every “kept” page* stores the IP number that did the last edit. /Kept Pages/ are the old revisions that are still available via a history page. If you check the [Self:action=history;id=SiteMap SiteMap history], for example, you'll see that only a small number of pages are actually kept. Again, if you hover the mouse pointer over the author's name, you'll see the IP number they used. Currently, kept pages older than a year are deleted. Thus, as long as you edited a page within the last year, your IP number will be available to others, even if you're not the last author to edit that page.
 
 [quote]
 *What are Kept Pages?*
 
 The details are on [[Oddmuse:Kept Pages]]. But basically, when a page is saved…
 
-# all revisions older than two weeks are deleted (the last /major/ revision is always kept)
-# the current revision gets a new timestamp (so it will not be deleted for another two weeks!) and is saved as an old revision (a "kept page")
+# all revisions older than a year are deleted (the last /major/ revision is always kept)
+# the current revision gets a new timestamp (so it will not be deleted for another year!) and is saved as an old revision (a "kept page")
 # the new page is saved
 
-Thus, you can always go back at least two weeks.
+Thus, you can always go back at least a year.
 [/quote]
+
+In the past, this time window was much smaller. It used to be two weeks instead of a year.
 
 == Spammers ==
 
