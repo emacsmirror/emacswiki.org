@@ -8,7 +8,7 @@ If you examine the cookie, you need to split it along the URL-encoded 0x1e byte 
 and ##username AlexSchroeder## (which says which username you'd like to use when editing a page).
 Nothing requires usernames to be unique.
 
-== Tracking of IP numbers of readers trackers by the wiki ==
+== Tracking of IP numbers of readers by the wiki ==
   
 In order to prevent leeching (downloading a lot of pages using a bot instead of using one of the methods listed on WikiDownload), the wiki also
 keeps track of the IP numbers that have visited the site in the last 20 seconds. The ##visitors.log## file lists IP numbers and timestamps as follows:
