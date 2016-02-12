@@ -8,7 +8,7 @@ If you examine the cookie, you need to split it along the URL-encoded 0x1e byte 
 and ##username AlexSchroeder## (which says which username you'd like to use when editing a page).
 Nothing requires usernames to be unique.
 
-== Tracking of IP numbers and hostnames of readers trackers by the wiki ==
+== Tracking of IP numbers of readers trackers by the wiki ==
   
 In order to prevent leeching (downloading a lot of pages using a bot instead of using one of the methods listed on WikiDownload), the wiki also
 keeps track of the IP numbers that have visited the site in the last 20 seconds. The ##visitors.log## file lists IP numbers and timestamps as follows:
@@ -19,16 +19,16 @@ keeps track of the IP numbers that have visited the site in the last 20 seconds.
 
 This is updated whenever somebody visits the site. This information is not public.
 
-== Tracking of IP numbers and hostnames of authors by the wiki ==
+== Tracking of IP numbers of authors by the wiki ==
 
-The wiki also tracks IP numbers and hostnames whenever a page is edited. The idea is that we want to ban certain people from editing the site via BannedHosts.
+The wiki also tracks IP numbers whenever a page is edited. The idea is that we want to ban certain people from editing the site via BannedHosts.
 This information is available in multiple places.
 
-*Recent changes* records IP number or hostname of authors. If you check RecentChanges, you'll note that if you hover the mouse pointer over the author's name, you'll see the IP number or hostname they used. The IP numbers and hostnames are removed from older log entry by the [http://www.emacswiki.org/maintenance/ maintenance job]. If you check the [Self:action=rc;days=30 recent changes for the last 30 days], you should see that changes at the very bottom of the list---the changes older than 28 days---no longer have an IP number or hostname.
+*Recent changes* records IP number of authors. If you check RecentChanges, you'll note that if you hover the mouse pointer over the author's name, you'll see the IP number they used. The IP numbers are removed from older log entry by the [http://www.emacswiki.org/maintenance/ maintenance job]. If you check the [Self:action=rc;days=30 recent changes for the last 30 days], you should see that changes at the very bottom of the list---the changes older than 28 days---no longer have an IP number.
 
-*Every page* stores the IP number or hostname that did the last edit. At the bottom of the page, you'll see a line saying "Last edited 2014-02-05 06:54 UTC by _AlexSchroeder_ (_diff_)". If you hover the mouse pointer over the last author's name, you'll see the IP number or hostname they used. The IP number or hostname stays until somebody else edits the page.
+*Every page* stores the IP number that did the last edit. At the bottom of the page, you'll see a line saying "Last edited 2014-02-05 06:54 UTC by _AlexSchroeder_ (_diff_)". If you hover the mouse pointer over the last author's name, you'll see the IP number they used. The IP number stays until somebody else edits the page.
 
-*Every “kept” page* stores the IP number or hostname that did the last edit. /Kept Pages/ are the old revisions that are still available via a history page. If you check the [Self:action=history;id=SiteMap SiteMap history], for example, you'll see that only a very small number of pages are actually kept. Again, if you hover the mouse pointer over the author's name, you'll see the IP number or hostname they used. Over time, kept pages are deleted.
+*Every “kept” page* stores the IP number that did the last edit. /Kept Pages/ are the old revisions that are still available via a history page. If you check the [Self:action=history;id=SiteMap SiteMap history], for example, you'll see that only a very small number of pages are actually kept. Again, if you hover the mouse pointer over the author's name, you'll see the IP number they used. Over time, kept pages are deleted.
 
 [quote]
 *What are Kept Pages?*
