@@ -128,9 +128,8 @@ most cases, but there are some exceptions to this.")
 
 (defvar so-long-minor-modes
   '(font-lock-mode
-    highlight-changes-mode hi-lock-mode hl-line-mode line-number-mode
-    linum-mode nlinum-mode prettify-symbols-mode visual-line-mode
-    which-function-mode)
+    highlight-changes-mode hi-lock-mode hl-line-mode linum-mode nlinum-mode
+    prettify-symbols-mode visual-line-mode which-function-mode)
   ;; It's not clear to me whether all of these would be problematic, but they
   ;; seemed like reasonable targets.  Some are certainly excessive in smaller
   ;; buffers of minified code, but we should be aiming to maximise performance
