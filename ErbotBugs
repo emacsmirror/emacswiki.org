@@ -377,8 +377,5 @@ telling them to ask away, etc
 
 * nice if tell foo that bar baz be equivalent to: say foo: bar baz...
 
-== Resolved Bugs == 
-
-* USer Variables  don't get saved! -- Now they are.
 ----
 ErBot
