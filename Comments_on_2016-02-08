@@ -69,3 +69,10 @@ Bigger font – great! Sunglasses are not included – bad. One thing for sure: 
 
 -- AlexDaniel 2016-02-13 04:21 UTC
 
+
+----
+
+The move to HTTPS might have broken the [https://oddmuse.org/wiki/ReCaptcha_Extension ReCaptcha extension] we've been using. In the [https://oddmuse.org/wiki/Comments_on_ReCaptcha_Extension comments] you see a link to [https://googleonlinesecurity.blogspot.ch/2014/12/are-you-robot-introducing-no-captcha.html Google launched reCAPTCHA v2]. I haven't looked into it, yet. For now, I've simply switched back to the [https://oddmuse.org/wiki/QuestionAsker_Extension QuestionAsker extension] which wants you to name the greatest editor out there. And you don't necessarily have to answer "Emacs". :)
+
+-- [http://alexschroeder.ch/wiki/Emacs AlexSchroeder] 2016-02-13 08:38 UTC
+
