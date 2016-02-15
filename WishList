@@ -129,6 +129,7 @@ These are wishes for better support for text editing, especially writers, but no
 * Gnu Emacs should have a MarginMode.
 
 * I'd like to scroll a buffer with the mouse wheel and have the cursor remain at the original line, even if it goes off-screen. Emacs seems to be designed with the premise that the cursor be on-screen all the time, but could make an exception for wheel/scroll-bar events and refocus the cursor on keypress. Otherwise the user who habitually scrolls will be constantly worried of losing the cursor position… Mmm; that's a feature to discourage excessive glancing. -- [[DanielClemente]]
+** This is from Emacs' console heritage, where there is no concept of the cursor being offscreen. You can browse around a file while keeping the cursor position by just popping open another window and scrolling there. You can even isearch and edit in that other window...
 
 == User-Interface Wishes ==
 
