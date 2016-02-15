@@ -1,6 +1,6 @@
 == Standard Emacs ==
 
-There are various way to copy the copy the current [[line]] to the [[kill ring]] in vanilla GnuEmacs:
+There are various ways to copy the copy the current [[line]] to the [[kill ring]] in vanilla GnuEmacs:
 
 [:CopyLineWithMouse]
 __Using the mouse__
