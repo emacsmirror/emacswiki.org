@@ -59,6 +59,8 @@ TexSmartUmlauts translates LaTeX encoded non-ASCII characters to their "visible"
 
 GermanLaTeXQuotes automatically switches between german and english quotes in <code>`latex-mode'</code> depending on context.
 
+OrgMode can export to LaTeX.
+
 == Discussion ==
 
 [new]
