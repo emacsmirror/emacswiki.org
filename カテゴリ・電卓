@@ -9,6 +9,7 @@
 * [[AdvancedDeskCalculator]]は逆ポーランド記法, 任意精度(浮動小数点), 複素数, error forms, ベクトル, 行列, 日付, 時間, gnuplotへのインターフェース, そしてシンボリック計算をフィーチャーしているとてもパワフルなパッケージです.  GNU Calcとしても知られています.
 * [[そろばんモード]]はあなたの全ての数学の要求のために伝統的なアバカス(そろばん)をシミュレートします.
 * [[CalculationPad]]はEmacsバッファで走る簡易functional言語です.
+* [[https://gist.github.com/jidaikobo-shibata/b967d6a7441f85aa541d calculate-region-and-insert.el]]はregionの数式を計算して, バッファに文字列としてinsertします.
 
 他の雑多な数学関連のもの:
 
@@ -20,4 +21,3 @@
 * [[ComputerAlgebraSystems]] -- Emacsインターフェース付きの外部プログラムのリスト
 * [[MatrixOperations]] -- あなたが多次元配列を使いそしてそれらの上で行列演算をすることを助けるための[[EmacsLisp]]コード 
 * [[AddCommasToNumbers]] -- 適切に置かれたカンマで10進数を書式を整形する
-
