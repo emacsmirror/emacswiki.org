@@ -193,6 +193,10 @@ Note that arrived here after a search on "font" which, I think, seems quite a re
 [new]
 For downloading fonts and installing them, there's nothing Emacs-specific. Emacs uses your system's fonts. If you're using Emacs with X11, then use the X11 font installation technique (xset fp etc.). If you're using Emacs with X11/Xft, then use the Xft font installation technique (.fonts.conf). If you're using Emacs with MS Windows, then use the MS Windows font installation technique (Control Panel / Fonts). If you're using Emacs with Mac, then use the Mac font installation technique (Font Book / Add Fonts).
 
+[new]
+X Logical Font Description (XLFD) python utility: https://gist.github.com/tomleo/b14a7a75e49d57c08bc1
+-- TomLeo
+
 === Good Pixel Fonts ===
 
 * http://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html has a few good pixel fonts that won't anti-alias and work very well in Emacs in Linux.
