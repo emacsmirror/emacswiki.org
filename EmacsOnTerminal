@@ -45,7 +45,7 @@ the screen.  By default it's bound to <code>C-l</code>.
 
 ==DEC's VT-series of terminals==
 
-Terminals by Digital Electronics Corporation, or
+Terminals by Digital Equipment Corporation, or
 <code>|d|i|g|i|t|a|l|</code> are common, and often emulated.  Maybe
 the most common terminal mode of all is the ''vt100'', and also
 ''vt101'', ''vt102'' and ''vt220''.  Emacs handles there terminals
