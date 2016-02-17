@@ -197,6 +197,9 @@ For downloading fonts and installing them, there's nothing Emacs-specific. Emacs
 X Logical Font Description (XLFD) python utility: https://gist.github.com/tomleo/b14a7a75e49d57c08bc1
 -- TomLeo
 
+[new:DrewAdams:2016-02-17 03:16 UTC]
+: Great. How about porting it to EmacsLisp? ;-) -- DrewAdams
+
 === Good Pixel Fonts ===
 
 * http://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html has a few good pixel fonts that won't anti-alias and work very well in Emacs in Linux.
