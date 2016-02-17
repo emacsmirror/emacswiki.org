@@ -6,9 +6,9 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-02-07 20:56:08
-;; Version: 0.1
-;; Last-Updated: 2009-02-07 20:56:08
-;;           By: Andy Stewart
+;; Version: 0.2
+;; Last-Updated: 2016-02-17
+;;           By: Reuben Thomas
 ;; URL: http://www.emacswiki.org/emacs/download/basic-toolkit.el
 ;; Keywords: edit, toolkit
 ;; Compatibility: GNU Emacs 23.0.60.1
@@ -620,7 +620,7 @@ If the region is not active or empty, then bob and eob are used."
     (goto-char (cadar point-stack))
     (setq point-stack (cdr point-stack))))
 
-(defun count-words ()
+(defun count-ce-words ()
   "Count the number of word in buffer, include Chinese."
   (interactive)
   (let ((begin (point-min))
@@ -630,7 +630,7 @@ If the region is not active or empty, then bob and eob are used."
               end (region-end)))
     (count-ce-words begin end)))
 
-(defun count-ce-words (beg end)
+(defun count-ce-words-in-region (beg end)
   "Count Chinese and English words in marked region."
   (interactive "r")
   (let ((cn-word 0)
@@ -655,7 +655,7 @@ If the region is not active or empty, then bob and eob are used."
   (replace-match replace-str nil nil object 0))
 
 (defun forward-indent ()
-  "Backward indent."
+  "Forward indent."
   (interactive)
   (insert-string "    "))
 
@@ -696,7 +696,7 @@ use function `completion-delete'."
   (scroll-other-window 1))
 
 (defun scroll-other-window-down-line ()
-  "Scroll other window line down."
+  "Scroll other window down one line."
   (interactive)
   (scroll-other-window-down 1))
 
