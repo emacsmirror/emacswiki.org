@@ -2760,6 +2760,9 @@ There are three ways to show only certain bookmarks.
 
 3. Filter out the marked or unmarked bookmarks.
 
+
+
+[:FilteringByBookmarkType]
 ==== Filtering by bookmark type ====
 
 The commands that show only bookmarks of a particular type are
@@ -2774,6 +2777,9 @@ Note: It is only filtering by bookmark type that is remembered
 when you save a bookmark-list display state or you create a
 bookmark-list bookmark.  See [[#StateRestoration|State-Restoring Commands and Bookmarks]].
 
+
+
+[:FilteringIncrementallyByPatternMatching]
 ==== Filtering incrementally by pattern matching ====
 
 These commands show only bookmarks that in some way match a
