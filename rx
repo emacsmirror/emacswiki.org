@@ -9,7 +9,7 @@ Example:
 }}}
 yields
 {{{
-"\\(?:^[[:blank:]]*[[:digit:]]+:\\)"
+""^[[:blank:]]*[[:digit:]]+:""
 }}}
 
 When given just a single string argument, it acts just like regexp-to-string.
