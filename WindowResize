@@ -2,10 +2,10 @@ You can resize windows using the keyboard (eg. C-x ^ to make the current windows
 not be appropriate for you, however.  Here is a very simple suggestion
 to make them more accessible.
 
-    (global-set-key (kbd "S-C- <left>") 'shrink-window-horizontally)
-    (global-set-key (kbd "S-C- <right>") 'enlarge-window-horizontally)
-    (global-set-key (kbd "S-C- <down>") 'shrink-window)
-    (global-set-key (kbd "S-C- <up>") 'enlarge-window)
+    (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+    (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+    (global-set-key (kbd "S-C-<down>") 'shrink-window)
+    (global-set-key (kbd "S-C-<up>") 'enlarge-window)
 
 Note that by default only the enlarging functions are bound to keys.
 In order to shrink a window, you can enlarge an ''other'' window or you can use a negative prefix argument (eg. C-u -1 C-x ^ behaves exactly like shrink-window (or even nicer M -1 C-x ^)). 
