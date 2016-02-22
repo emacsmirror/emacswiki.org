@@ -1,5 +1,3 @@
-= Jq-mode =
-
 jq-mode is an emacs major mode for editing [https://github.com/stedolan/jq jq-scripts].
 
 == Getting started ==
