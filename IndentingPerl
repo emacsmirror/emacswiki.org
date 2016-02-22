@@ -35,6 +35,8 @@ can be configured to be indented correctly. Get it at:
 
 * http://math.berkeley.edu/~ilya/software/emacs/cperl-mode.el.5.0.bz2
 
+Note: As of 2016-02-22, the previous link is broken
+
 (Can we expand on how to do this? I'd also like to see how to prevent cperl-mode from indenting like this
 
    function_call(
