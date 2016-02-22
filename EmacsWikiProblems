@@ -12,7 +12,7 @@ Note that this page is not about EmacsWikiMode.
 
 I would like to submit a change to the file found at https://www.emacswiki.org/emacs/perltidy.el, but I can't seem to figure out which repo to clone. Do I clone the emacs wiki repo or is there some other upstream repo to which I should submit my proposed changes?
 
--- Matthew Persico 2016-02-22
+-- MatthewPersico 2016-02-22
 
 ==Problem editing pages on Firefox with KeeFox (solved) ==
 
