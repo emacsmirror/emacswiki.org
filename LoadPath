@@ -42,7 +42,7 @@ To add only some descendant directories, pass the list as a second argument.  Fo
   (normal-top-level-add-to-load-path '("emms" "erc" "planner" "w3")))
 }}}
 
-To have libraries in particular paths take precedence over other libraries with the same nam, elsewhere, put the
+To have libraries in particular paths take precedence over other libraries with the same name, elsewhere, put the
 directories or those prioritized libraries at the beginning of `load-path'.
 
 {{{
