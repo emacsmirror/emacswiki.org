@@ -2,7 +2,7 @@ Use the following in your ~/.emacs file have Emacs display a little
 marker in the left fringe for window area not part of the buffer
 (ie. not filled with empty lines):
 
-    (setq default-indicate-empty-lines t)
+    (setq-default indicate-empty-lines t)
 
 Or temporarily use M-x set-variable to set `indicate-empty-lines' to
 t.
