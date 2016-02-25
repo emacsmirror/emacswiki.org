@@ -1,0 +1,15 @@
+Anyone having issues using Gnus in a console emacs over ssh? I had it working with gmail prior to Emacs 24.5 but now when I select a mailbox I get the following error in the minibuffer:
+
+gmm-image-load-path-for-library: Symbol's value as variable is void: image-load-path
+
+I've tried preloading image with (require 'image) which lets me load the mailbox contents, but the buffer is in fundamental mode. Manually switching it to gnus-summary-mode just gives the error again. I tried setting image-load-path to nil - the summary buffer still loads in fundamental-mode, but I am able to switch it to gnus-summary-mode manually. However, trying to read a message gives me Wrong type argument: stringp, nil.
+
+I googled and found the following seemingly-related issue but it's from 2005:
+http://ding.gnus.narkive.com/2AJKHOBK/problem-running-gnus-when-image-is-not-already-loaded
+
+** UPDATE: FIXED **
+
+I set image-load-path to an actual path (/usr/share/pixmaps) and all is good. Still posting in case anyone else has the same issue.
+
+** TLDR **
+If your gnus won't work over ssh, set image-load-path to an existing path.
