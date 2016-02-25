@@ -13,3 +13,5 @@ I set image-load-path to an actual path (/usr/share/pixmaps) and all is good. St
 
 **TLDR**
 If your gnus won't work over ssh, set image-load-path to an existing path.
+
+CategoryGnus
