@@ -7,9 +7,9 @@ I've tried preloading image with (require 'image) which lets me load the mailbox
 I googled and found the following seemingly-related issue but it's from 2005:
 http://ding.gnus.narkive.com/2AJKHOBK/problem-running-gnus-when-image-is-not-already-loaded
 
-** UPDATE: FIXED **
+**UPDATE: FIXED**
 
 I set image-load-path to an actual path (/usr/share/pixmaps) and all is good. Still posting in case anyone else has the same issue.
 
-** TLDR **
+**TLDR**
 If your gnus won't work over ssh, set image-load-path to an existing path.
