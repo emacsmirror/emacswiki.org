@@ -10,18 +10,18 @@
 [[de:Übersicht]]
 <include "WikiLanguageMenu">
 
-The '''EmacsWiki''' is dedicated to documenting and discussing EmacsAndXEmacs and EmacsLisp. See the MissionStatement for more information.
+'''EmacsWiki''' è dedicata alla documentazione e alla discussione di EmacsAndXEmacs e EmacsLisp. Si legga il MissionStatement per maggiori informazioni.
 
-You can edit this website.  There's a link, '''Edit this page''', at the bottom of this and other pages.  ''Please check [[Comments on SiteMap]] before editing this SiteMap page, however.''
+Questo sito può essere modificato. In fondo a questa pagina (e delle altre) si trova un link, '''Edit this page'''. ''Prima di modificare questa pagina SiteMap, si prega tuttavia di leggere i [[Comments on SiteMap]].''
 
-==How to use this site==
+==Come usare questo sito==
 
-* HowToNavigate -- how to find what you're looking for 
-* HowToEdit -- how you can contribute to the site
-* ElispArea -- upload and download EmacsLisp source code
-* [EmacsWiki:CSS Appearance] -- how to change the way the site appears to you
-* WikiDownload -- how to get copies of the site
-* EmacsWikiAdministrators -- handling vandalism and spam on this site
+* HowToNavigate -- come trovare ciò che stiamo cercando 
+* HowToEdit -- come contribuire al sito
+* ElispArea -- caricare e scaricare codice sorgente EmacsLisp
+* [EmacsWiki:CSS Appearance] -- come cambiare l'aspetto del sito nel nostro browser
+* WikiDownload -- come scaricare una copia del sito
+* EmacsWikiAdministrators -- come regolarsi verso il vandalismo e lo spam su questo sito
 
 [:LearningEmacs]
 ==Learning About Emacs==
@@ -154,4 +154,3 @@ extensions
 
 ----
 CategoryEmacsWikiSite
-
