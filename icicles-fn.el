@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Thu Dec 31 13:58:36 2015 (-0800)
+;; Last-Updated: Fri Feb 26 15:52:14 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 15127
+;;     Update #: 15131
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1388,16 +1388,20 @@ COLL is an Icicles collection argument acceptable to
 PRED is a predicate.
 
 Returns a new two-element list of the new collection and predicate:
-\(MCT NEWPRED), where MCT is COLL transformed and NEWPRED is PRED
-transformed.  MCT is a collection suitable for vanilla
-`completing-read'.
+
+ * If COLL is not a list other than a lambda form then the new list
+   returned is just (COLL PRED).
+
+ * Otherwise, it is (MCT NEWPRED), where MCT is COLL transformed and
+   NEWPRED is PRED transformed.  MCT is a collection suitable for
+   vanilla `completing-read'.
 
 COLL is transformed to MCT by applying `icicle-mctized-full-candidate'
 to each of its elements.
 
 If PRED is non-nil, then NEWPRED is a predicate that applies PRED to
 the cdr of an MCT entry.  If PRED is nil, so is NEWPRED."
-  (when (consp coll)
+  (when (and (consp coll)  (not (functionp coll))) ; Exclude lambda form.
     ;; Copy alist collection COLL, so we don't change the original alist in any way.
     ;; Change each entry in COLL using `icicle-mctized-full-candidate'.
     (setq coll  (mapcar #'icicle-mctized-full-candidate coll))
