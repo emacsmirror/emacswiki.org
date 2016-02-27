@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jan 24 09:30:01 2016 (-0800)
+;; Last-Updated: Fri Feb 26 16:28:38 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 11569
+;;     Update #: 11571
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2225,6 +2225,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2016/02/26 dadams
+;;     icicle-read-char-by-name:
+;;       Handle case where multi-completing-p but user enters whole name without completing.
+;;     icicle-mctize-all: Do not mctize a list that is a lambda form.
 ;; 2015/10/15 dadams
 ;;     icicle-(lru|mru)-window-for-buffer: Convert times to lists (needed for Emacs 24, not for 25+).
 ;; 2015/09/20 dadams
