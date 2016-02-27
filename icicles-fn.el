@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Feb 26 15:52:14 2016 (-0800)
+;; Last-Updated: Fri Feb 26 16:31:29 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 15131
+;;     Update #: 15137
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2352,8 +2352,8 @@ Non-nil optional arg NAMES is an alist of names to use in place of the
 value returned by `icicle-ucs-names'.  It must have the same form as
 such a return value: (CHAR-NAME . CHAR-CODE)."
     (unless names  (setq names  (icicle-ucs-names)))
-    (setq names  (delq nil (mapcar #'icicle-make-char-candidate names)))
-    (let* ((new-prompt                             (copy-sequence prompt))
+    (let* ((cands                                  (delq nil (mapcar #'icicle-make-char-candidate names)))
+           (new-prompt                             (copy-sequence prompt))
            (enable-recursive-minibuffers           t)
            (completion-ignore-case                 t)
            (icicle-multi-completing-p              (and icicle-read-char-by-name-multi-completion-flag
@@ -2363,7 +2363,7 @@ such a return value: (CHAR-NAME . CHAR-CODE)."
            (icicle-list-join-string                "\t")
            (icicle-candidate-properties-alist      '((3 (face icicle-candidate-part))))
            (icicle-whole-candidate-as-text-prop-p  icicle-multi-completing-p)
-           (mctized-cands                          (car (icicle-mctize-all names nil)))
+           (mctized-cands                          (car (icicle-mctize-all cands nil)))
            (collection-fn                          `(lambda (string pred action)
                                                      (if (eq action 'metadata)
                                                          '(metadata (category . unicode-name))
@@ -2374,12 +2374,15 @@ such a return value: (CHAR-NAME . CHAR-CODE)."
       (setq chr  (cond ((string-match-p "\\`[0-9a-fA-F]+\\'" input)  (string-to-number input 16))
                        ((string-match-p "^#" input)                  (read input))
                        ((if icicle-multi-completing-p
-                            (cddr (assoc-string input mctized-cands t)) ; INPUT is one of the multi-completions.
+                            ;; Either user completed and INPUT is a multi-completion or user did not complete
+                            ;; and INPUT is a character name.
+                            (or (cddr (assoc-string input mctized-cands t))
+                                (cdr (assoc-string input names t)))
                           (cdr (assoc-string input mctized-cands t)))) ; INPUT is a character name.
                        (icicle-multi-completing-p
                         (let ((completion  (try-completion input collection-fn)))
                           (and (stringp completion)
-                               ;; INPUT is not a multi-completion, but it may match a single sulti-completion.
+                               ;; INPUT is not a multi-completion, but it may match a single multi-completion.
                                ;; In particular, it might match just the NAME or CODE part of it.
                                (let* ((name                       (icicle-transform-multi-completion
                                                                    completion))
