@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Feb 12 13:28:45 2016 (-0800)
+;; Last-Updated: Sat Feb 27 09:52:55 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4221
+;;     Update #: 4224
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -653,6 +653,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/02/27 dadams
+;;     isearch-update: Fix for Emacs 24.1 and 24.2 (window-body-width arity changed).
 ;; 2016/02/12 dadams
 ;;     isearchp-repeat-search-if-fail-flag: Removed message and sit-for.
 ;; 2016/01/18 dadams
@@ -2411,7 +2413,8 @@ At the end, run `isearch-update-post-hook'."
         (let ((current-scroll  (window-hscroll)) ; Keep same hscrolling as at search start.
               visible-p)
           (set-window-hscroll (selected-window) isearch-start-hscroll)
-          (unless (if (not (fboundp 'window-body-width)) ; Emacs < 25
+          (unless (if (or (not (fboundp 'window-body-width)) ; Emacs < 24
+                          (< (cdr (subr-arity (symbol-function 'window-body-width))) 2)) ; Emacs < 24.4
                       (pos-visible-in-window-p)
                     (setq visible-p  (pos-visible-in-window-p nil nil t))
                     (or (not visible-p)
