@@ -577,6 +577,16 @@ Can you please add this to the defcustom for whitespace-style?
 
 I'd have sent you a proper patch, but I don't know where your repository is. -- RyanDavis
 
+[new]
+: Hi RyanDavis,
+
+
+: Sorry for the very long delay, this was already part of defcustom for whitespace-style:
+
+			(const :tag "(Face) Lines, only overlong part" lines-tail)
+
+: -- ViniciusJoseLatorre
+
 ------
 
 CategoryHomepage
