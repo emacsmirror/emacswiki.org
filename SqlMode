@@ -250,6 +250,23 @@ encoding is borked. Here is how to force Emacs to use code page 850 for every
 
 -- AlexSchroeder
 
+[new]
+Better late then never: This is a general Problem with the ''cmdproxy.exe''
+that is used in the ''comint-mode''. The sqlcmd program Looks for some
+special characteristic of the usual Windows command processor ''cmd.exe'' to
+decide if it is running in interactive mode (shows  a prompt) or if it is
+running in Batch mode (no prompt shown). If SQLCMD is started from
+''cmdproxy'' it thinks it is running in Batch mode and does not Display any
+prompt. Something analogous is happening with the <nowiki>PostgreSQL</nowiki>
+ terminal ''psql'.
+
+So there is no solution for this Problem. Even a change in the source code
+of ''cmdproxy'' might not help. I think I saw a work around for the <nowiki>PostgreSQL</nowiki>
+case, where someone patched the source of the ''psql'' tool. But I doubt that
+there is such a ''someone'' to do something similar for a Microsoft product.
+
+-- RolfUnger
+
 ----
 CategoryModes
 CategorySql
