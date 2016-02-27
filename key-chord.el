@@ -294,8 +294,7 @@ If COMMAND is nil, the key-chord is removed."
     (if (eq key1 key2)
 	(define-key keymap (vector 'key-chord key1 key2) command)
       ;; else
-      (define-key keymap (vector 'key-chord key1 key2) command)
-      (define-key keymap (vector 'key-chord key2 key1) command))))
+      (define-key keymap (vector 'key-chord key1 key2) command))))
 
 (defun key-chord-lookup-key1 (keymap key)
   "Like lookup-key but no third arg and no numeric return value."
