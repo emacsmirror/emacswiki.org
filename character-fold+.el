@@ -8,13 +8,13 @@
 ;; Created: Fri Nov 27 09:12:01 2015 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 12:33:23 2015 (-0800)
+;; Last-Updated: Sat Feb 27 15:05:20 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 92
+;;     Update #: 93
 ;; URL: http://www.emacswiki.org/character-fold+.el
 ;; Doc URL: http://emacswiki.org/CharacterFoldPlus
 ;; Keywords: isearch, search, unicode
-;; Compatibility: GNU Emacs: 25.x
+;; Compatibility: GNU Emacs: 25.x builds ON OR BEFORE 2015-12-10 
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -26,6 +26,14 @@
 ;;; Commentary:
 ;;
 ;;  Extensions to Isearch character folding.
+;;
+;;
+;;  NOTE: This library is NOT UP-TO-DATE WRT EMACS 25.  The vanilla
+;;        Emacs library `character-fold.el', which this library
+;;        extends, was changed in incompatible ways after this library
+;;        was written.  I have not yet had a chance to update this
+;;        (and am waiting for Emacs 25 to be released to do so).
+;;        Sorry about that.
 ;;
 ;;
 ;;  Choose One-Way or Symmetric Character Folding
