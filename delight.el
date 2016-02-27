@@ -2,7 +2,7 @@
 ;;
 ;; Author: Phil S.
 ;; URL: http://www.emacswiki.org/emacs/DelightedModes
-;; Version: 1.03
+;; Version: 1.04
 
 ;;; Commentary:
 ;;
@@ -52,6 +52,7 @@
 
 ;;; Changelog:
 ;;
+;; 1.04 (2016-02-28) Respect `inhibit-mode-name-delight' when already set.
 ;; 1.03 (2014-05-30) Added support for `mode-line-mode-menu'.
 ;; 1.02 (2014-05-04) Bug fix for missing 'cl requirement for
 ;;       destructuring-bind macro.
@@ -156,10 +157,14 @@ When `mode-name' is displayed in other contexts (such as in the
                         ,mode-name ;; glum
                         ,(cadr major-delight)))))) ;; delighted
 
+(defvar inhibit-mode-name-delight)
+
 (defadvice format-mode-line (around delighted-modes-are-glum activate)
   "Delighted modes should exhibit their original `mode-name' when
 `format-mode-line' is called. See `delight-major-mode'."
-  (let ((inhibit-mode-name-delight t))
+  (let ((inhibit-mode-name-delight (if (boundp 'inhibit-mode-name-delight)
+                                       inhibit-mode-name-delight
+                                     t)))
     ad-do-it))
 
 (provide 'delight)
