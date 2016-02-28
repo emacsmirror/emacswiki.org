@@ -24,7 +24,7 @@ OK, but then you have to scroll down the list of bindings, searching for the com
 [:CompletingKeys]
 === Completing Keys ===
 
-To complete keys in '''Icicles''', start the key sequence as usual, and then hit `S-TAB'. For example, use `C-x' or `C-x 4', and then hit `S-TAB' to complete the [[prefix key|prefix]] `C-x' or `C-x 4' (or whatever). You're then completing against candidates that are composed of two parts, separated by "'''##  =  ##'''":
+To complete keys in '''Icicles''', start the key sequence as usual, and then hit `S-TAB'. For example, use `C-x' or `C-x 4', and then hit `S-TAB' to complete the [[prefix key|prefix]] `C-x' or `C-x 4' (or whatever). You're then completing against candidates that are composed of two parts, separated by the value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-complete-keys-separator|icicle-complete-keys-separator]]</tt>'''' ('''"##  =  ##"''' by default):
 
 * a key binding that completes what you've typed so far -- e.g. `C-j' (that is, `C-x C-j')
 * the command it is bound to -- e.g. `dired-jump-other-window'
@@ -564,5 +564,3 @@ CategoryProgrammerUtils
 CategoryCode
 CategoryAccessibility
 CategoryMenus
-
-
