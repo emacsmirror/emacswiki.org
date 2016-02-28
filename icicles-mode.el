@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Thu Dec 31 14:01:13 2015 (-0800)
+;; Last-Updated: Sun Feb 28 15:06:19 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 10261
+;;     Update #: 10262
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3601,7 +3601,10 @@ the function to the candidate and use the result as the help."
                               (if (string= ".." candidate)
                                   "GO UP"
                                 (let ((cmd-name  (save-match-data
-                                                   (string-match "\\(.+\\)  =  \\(.+\\)" candidate)
+                                                   (string-match (concat "\\(.+\\)"
+                                                                         icicle-complete-keys-separator
+                                                                         "\\(.+\\)")
+                                                                 candidate)
                                                    (substring candidate (match-beginning 2)
                                                               (match-end 2)))))
                                   (if (string= "..." cmd-name) "Prefix key" (intern-soft cmd-name)))))
