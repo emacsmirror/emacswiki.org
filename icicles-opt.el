@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Thu Dec 31 14:02:16 2015 (-0800)
+;; Last-Updated: Sun Feb 28 14:53:33 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 6116
+;;     Update #: 6118
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -101,6 +101,7 @@
 ;;    `icicle-complete-key-anyway-flag',
 ;;    `icicle-complete-keys-ignored-prefix-keys',
 ;;    `icicle-complete-keys-self-insert-ranges',
+;;    `icicle-complete-keys-separator',
 ;;    `icicle-completing-read+insert-keys',
 ;;    `icicle-completion-history-max-length',
 ;;    `icicle-completion-key-bindings',
@@ -1936,6 +1937,10 @@ Upper ranges:
  (118784 . 131071) = (#x1D000 . #x1FFFF)
  (917504 . 918015) = (#xE0000 . #xE01FF)"
     :type '(alist :key-type integer :value-type integer) :group 'Icicles-Key-Completion))
+
+(defcustom icicle-complete-keys-separator "  =  "
+  "Characters that separate keys from their commands, in key completions."
+  :type 'string :group 'Icicles-Key-Completion)
 
 (defcustom icicle-completing-read+insert-keys '([(control meta shift ?c)]) ; `C-M-S-c'
   "*Key sequences to invoke `icicle-completing-read+insert'.
