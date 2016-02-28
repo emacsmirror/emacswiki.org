@@ -5,7 +5,9 @@ This library ensures that DelightedModes are displayed when PowerLine is used.
 ==Dependencies==
 
 * delight.el version 1.04+
-* powerline 1.2+
+* powerline 1.0+
+
+(I think this will be compatible with all of the powerline variants I've seen.)
 
 ==Download==
 
