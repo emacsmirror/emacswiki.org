@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Dec 31 15:09:47 2015 (-0800)
+;; Last-Updated: Sun Feb 28 15:05:33 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 19763
+;;     Update #: 19764
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6292,7 +6292,8 @@ You can use this command only from the minibuffer or `*Completions*'
           (;; A key-completion candidate.  Get the true command from the candidate.
            icicle-completing-keys-p
            (save-match-data
-             (string-match "\\(.+\\)  =  \\(.+\\)" icicle-last-completion-candidate)
+             (string-match (concat "\\(.+\\)" icicle-complete-keys-separator "\\(.+\\)")
+                           icicle-last-completion-candidate)
              (setq cand-symb  (intern-soft (substring icicle-last-completion-candidate
                                                       (match-beginning 2) (match-end 2))))
              (cond ((eq '\.\.\. cand-symb) ; Prefix key - describe its binding.
