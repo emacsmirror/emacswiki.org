@@ -4,7 +4,7 @@
 ;; URL: http://www.emacswiki.org/emacs/DelightedPowerLine
 ;; Keywords: convenience
 ;; Created: 28 Feb 2016
-;; Package-Requires: ((delight "1.04") (powerline "1.2"))
+;; Package-Requires: ((delight "1.04") (powerline "1.0"))
 ;; Version: 1.0
 
 ;; This file is not part of GNU Emacs.
