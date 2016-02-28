@@ -48,6 +48,9 @@
 ;;; Code:
 
 (defadvice powerline-major-mode (around delight-powerline-major-mode activate)
+  "Ensure that powerline's major mode names are delighted.
+
+See `delight-major-mode'."
   (let ((inhibit-mode-name-delight nil))
     ad-do-it))
 
