@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Thu Dec 31 14:02:55 2015 (-0800)
+;; Last-Updated: Sun Feb 28 15:08:50 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 1839
+;;     Update #: 1840
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -423,6 +423,9 @@ Each alist element is of the form (NAME KEY . BINDING), where:
    KEYNAME  =  BINDING-NAME
  KEY is the actual key sequence
  BINDING is the actual binding of KEY.
+
+\(The separator between KEY and BINDING-NAME is the value of option
+`icicle-complete-keys-separator'.  Its default value is \"  =  \".)
 
 Used only for Emacs 22 and later.")
 
