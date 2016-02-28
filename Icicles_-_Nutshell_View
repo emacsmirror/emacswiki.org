@@ -1702,7 +1702,11 @@ Try `S-TAB' at the top level (without first invoking a command that reads input)
 completion as `S-TAB'.  Actually, it is `S-TAB' only by default.
 You can customize it, using option '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>''''.)
 
-You can then type part of a key name or a [[command]] name, and hit `S-TAB' again to apropos-complete your input. You can navigate down the key-sequence hierarchy by completing a [[key sequence]] piece by piece: 
+You can then type part of a key name or a [[command]] name, and hit `S-TAB' again to apropos-complete your input. You can navigate down the key-sequence hierarchy by completing a [[key sequence]] piece by piece.
+
+Completion candidates are a key description, followed by the value
+of option '''`<tt>[[Icicles - Customization and General Tips#icicle-complete-keys-separator|icicle-complete-keys-separator]]</tt>'''', followed by the
+associated command name.  The option value is '''##"  =  "##''' by default.
 
 : ##S-TAB## to see the available keys at top level
 : Click (using `mouse-2') candidate `##C-x  =  ...##', to see the keys that start with `C-x'
@@ -1787,7 +1791,6 @@ DrewsElispLibraries referenced here: Lisp:icicles.el
 CategoryCommands 
 CategoryCompletion
 CategoryRegexp
-
 
 
 
