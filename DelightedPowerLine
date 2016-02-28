@@ -11,3 +11,14 @@ Download the library from Lisp:delight-powerline.el
 Place the library somewhere in your Emacs load-path (or use ##M-x package-install-file## for the downloaded file), and add the following to your init file:
 
  (require 'delight-powerline)
+
+Example:
+
+ ;; Configure delighted modes
+ (require 'delight)
+ (delight 'emacs-lisp-mode "eLisp" :major)
+ 
+ ;; Enable powerline
+ (require 'powerline)
+ (require 'delight-powerline)
+ (powerline-default-theme)
