@@ -14,6 +14,17 @@
 ;; Foundation, either version 3 of the License, or (at your option) any later
 ;; version. See <http://www.gnu.org/licenses/>.
 
+;;; Example usage:
+;;
+;; ;; Configure delighted modes
+;; (require 'delight)
+;; (delight 'emacs-lisp-mode "eLisp" :major)
+;;
+;; ;; Enable powerline
+;; (require 'powerline)
+;; (require 'delight-powerline)
+;; (powerline-default-theme)
+
 ;;; Commentary:
 ;;
 ;; With the exception of Emacs’ default mode line rendering, anything
@@ -21,17 +32,17 @@
 ;; default, delight.el wants to display delighted major mode names
 ;; ONLY in the mode line and not elsewhere, and so delighted major
 ;; mode names are inhibited during calls to `format-mode-line'.
-;; 
+;;
 ;; Powerline, however, calls `format-mode-line' for the purpose of
 ;; replacing the standard mode line rendering, in which case we DO
 ;; want to see the delighted major mode names.
-;; 
+;;
 ;; As of version 1.04, delight.el respects the value of
 ;; `inhibit-mode-name-delight' if it has been bound by something else,
 ;; and so it is possible for other libraries/advice to let-bind this
 ;; variable (to `nil') around calls to `format-mode-line' in order
 ;; that the delighted value will be used for major modes.
-;; 
+;;
 ;; This library implements this behaviour for powerline specifically.
 
 ;;; Code:
