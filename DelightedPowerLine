@@ -2,6 +2,11 @@ This library ensures that DelightedModes are displayed when PowerLine is used.
 
 (Specifically delighted <em>major</em> modes, which otherwise will not display as intended.)
 
+==Dependencies==
+
+* delight.el version 1.4+
+* powerline 1.2+
+
 ==Download==
 
 Download the library from Lisp:delight-powerline.el
