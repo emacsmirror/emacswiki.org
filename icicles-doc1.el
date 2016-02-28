@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jan 31 10:09:37 2016 (-0800)
+;; Last-Updated: Sun Feb 28 15:46:53 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 28479
+;;     Update #: 28486
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2015,7 +2015,11 @@
 ;;  You can then type part of a key name or a command name, and hit
 ;;  `S-TAB' again to apropos-complete your input.  You can navigate
 ;;  down the key-sequence hierarchy by completing a key sequence piece
-;;  by piece:
+;;  by piece.
+;;
+;;  Completion candidates are a key description, followed by the value
+;;  of option `icicle-complete-keys-separator', followed by the
+;;  associated command name.  The option value is "  =  " by default.
 ;;
 ;;    S-TAB to see the available keys at top level
 ;;
@@ -2038,7 +2042,7 @@
 ;;
 ;;  * `M-x' - Execute an arbitrary command.
 ;;    `M-x' is treated as `ESC-x', so complete first `ESC  =  ...',
-;;    then `x = icicle-execute-extended-command'.
+;;    then `x  =  icicle-execute-extended-command'.
 ;;
 ;;  * `M-:' - Evaluate any Emacs-Lisp expression.
 ;;    In Icicles, `M-:' gives you a quick pop-up mode for evaluating a
@@ -6774,7 +6778,8 @@
 ;;  then hit `S-TAB' (command `icicle-complete-keys').  For example,
 ;;  use `C-x' or `C-x 4', and then hit `S-TAB' to complete the prefix
 ;;  `C-x' or `C-x 4' (or whatever).  You're then completing against
-;;  candidates that are composed of two parts, separated by "  =  ":
+;;  candidates that are composed of two parts, separated by the value
+;;  of option `icicle-complete-keys-separator' ("  =  " by default):
 ;;
 ;;  * a key binding that completes what you've typed so far -
 ;;    e.g. `C-j' (that is, `C-x C-j')
@@ -6936,7 +6941,7 @@
 ;;  In fact, since menu-bar bindings are also key bindings, you can
 ;;  also use key completion to navigate the menu-bar hierarchy - just
 ;;  complete the prefix key `menu-bar'!  Start with `S-TAB', choose
-;;  `menu-bar = ...', then choose a menu, and so on.  But menu-bar
+;;  `menu-bar  =  ...', then choose a menu, and so on.  But menu-bar
 ;;  menu completion is handy enough that it has its own Icicle mode
 ;;  key binding, by default: `S-f10'.
 ;;
