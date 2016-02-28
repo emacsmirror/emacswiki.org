@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Feb 26 16:31:29 2016 (-0800)
+;; Last-Updated: Sun Feb 28 15:17:06 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 15137
+;;     Update #: 15143
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7260,7 +7260,7 @@ followed by non-prefix keys.  Letter case is ignored.
 
 The special key representation \"..\" is, however, less than all other
 keys, including prefix keys."
-  (let* ((prefix-string           "  =  \\.\\.\\.$")
+  (let* ((prefix-string           (concat icicle-complete-keys-separator "\\.\\.\\.$"))
          (parent-string           "..")
          (s1-prefix-p             (save-match-data (string-match prefix-string s1)))
          (s2-prefix-p             (save-match-data (string-match prefix-string s2)))
@@ -7292,8 +7292,9 @@ keys, including local keys."
   "Non-nil if command name of S1 `icicle-case-string-less-p' that of S2.
 When used as a comparison function for completion candidates, this
 assumes that each candidate, S1 and S2, is composed of a key name
-followed by \"  =  \", followed by the corresponding command name."
-  (let ((icicle-list-join-string  "  =  ")) ; Fake a multi-completion.  Candidate is key  =  cmd.
+followed by the value of `icicle-complete-keys-separator', followed by
+the corresponding command name."
+  (let ((icicle-list-join-string  icicle-complete-keys-separator)) ; Fake a multi-completion.
     (icicle-part-2-lessp s1 s2)))
 
 (defun icicle-special-candidates-first-p (s1 s2)
