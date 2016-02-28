@@ -26,7 +26,7 @@
 ;; replacing the standard mode line rendering, in which case we DO
 ;; want to see the delighted major mode names.
 ;; 
-;; As of version 1.4, delight.el respects the value of
+;; As of version 1.04, delight.el respects the value of
 ;; `inhibit-mode-name-delight' if it has been bound by something else,
 ;; and so it is possible for other libraries/advice to let-bind this
 ;; variable (to `nil') around calls to `format-mode-line' in order
