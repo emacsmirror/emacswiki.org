@@ -19,7 +19,7 @@ See [[Icicles - Programming with Fancy Candidates]].
 You can define your own '''Icicles''' [[command]]s that use
 multi-completions.  You can bind `icicle-list-join-string' to any string you like, depending on
 your needs.  See [[Icicles - Key Completion]] for an example
-where it is bound to '''##"  =  "##'''.  This section describes two
+where it is bound to the value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-complete-keys-separator|icicle-complete-keys-separator]]</tt>'''' ('''##"  =  "##''' by default).  This section describes two
 additional [[variable]]s that you can bind to affect the appearance
 and behavior of multi-completions.
 
