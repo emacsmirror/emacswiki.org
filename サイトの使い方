@@ -1,0 +1,51 @@
+[[zh:怎样浏览]]
+[[fr:Comment_s'y_retrouver]]
+[[es:CómoNavegar]]
+[[en:HowToNavigate]]
+
+Emacs Wikiのよいところは、誰でも貢献できることです。でも、さっそくページを編集していく前に、サイトの使い方を学んでおくべきでしょう。
+
+== カテゴリ ==
+
+Emacs Wikiの各ページは'''カテゴリ'''に分類されています。[[サイトマップ]]ページには、すべてのカテゴリがリストアップされていて、それぞれのカテゴリにリンクされています。
+
+あなたがWikiページを作成するとき、なんらかのカテゴリに所属させるために、編集欄の末尾にカテゴリ名称を付記してください。ただし、カテゴリ名は、省略されていることがあるので、注意してください（[[ほげほげかてごり|ほげほげ]]という具合に）。カテゴリに所属させるためには、完全な名称（先の例の場合「ほげほげかてごり」）を記載する必要があります。
+
+ほとんどのカテゴリにはEmacsやユーザーが投稿したEmacsのライブラリに関する情報が含まれています。サイト自身を表す'''CategoryEmacsWikiSite'''というカテゴリに所属している場合もあります（誤訳？）。
+
+== ヘッダとフッタのナビゲーション ==
+
+幾つかのリンクは、ヘッダとフッタで、各ページに繰り返し登場します。
+
+* [[サイトマップ]] -- 各カテゴリへのリンクを持ったEmacs Wikiのいわゆるトップページです。
+* [[利用手引]] -- Emacs Wikiの利用手引きです。貢献の仕方が記載されています。
+* [[Search]]  --  検索です。英語しかダメみたいですが、結局duckduckgoで、「キーワード site:emacswiki.org」とするのと同じです。
+* ElispArea -- Upload and download EmacsLisp source code for extending and customizing Emacs.
+* [[RecentChanges]] -- Emacs Wikiの更新履歴です。
+* [[News]] -- Emacs Wikiの時系列のブログです。これも原則英語のみです。
+* [[Problems]] -- Emacs Wikiについての問題点を共有する場所です。これも原則英語のみです。
+* [[Suggestions]] -- Emacs Wikiについての改善点を共有する場所です。これも原則英語のみです。
+
+フッタには、'''Edit this page'''というリンクがあります。[[編集の仕方]]を参照の上、新しいページを足したり、既存のページを編集したりしてください。
+
+== リンクの張り方 ==
+
+Emacs Wikiでページ間のリンクを張るのは、たいへん簡単です。単語や文章をクリックすると詳細を閲覧できます。リンクは、箇条書きや本文中、ヘッダやフッタに配置されています。
+
+逆方向のリンクもまた可能です。現在のページにリンクしているそれぞれのページを、単語間、あるいは文章間の関係から探し出します。現在のトピックに言及したページを見つけるために、ページの上部にある見出しタイトルをクリックします。カテゴリページの場合は、タイトルの見出しをクリックすると、そのカテゴリ内にあるすべてのページが一覧表示されます。[[Wikiの組織方法]]を参照してください。
+
+== Wiki community ==
+
+* WikiNode -- Neighbouring sites: Text editors in general, Vim.
+* NearMap -- Wikis in the neighborhood (Meatball, Community)
+* InterMap -- Wikis outside the neighborhood, but useful for InterLinks.
+
+== Advanced ==
+
+* EmacsWikiAppearance -- User features for customizing the experience at EmacsWiki.
+* [[CSS]] -- changing the look of the wiki with complete custom stylesheets.
+* [[Mozilla]] -- Using mozex and Emacs, using a quicksearch for the wiki.
+* RssFeeds -- Including RSS feeds from your blog onto your page on this wiki.
+
+----
+利用手引
