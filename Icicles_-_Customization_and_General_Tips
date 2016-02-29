@@ -2055,6 +2055,23 @@ killed.  This option applies only to Emacs 23 and later.
 
 
 
+
+
+----
+[:icicle-complete-keys-separator]
+==== Option icicle-complete-keys-separator ====
+
+User option '''`icicle-complete-keys-separator'''' is the string that
+separates the two parts (key description and command name) of a
+key completion candidate during [[Icicles - Key Completion|key completion]].  The default
+value is '''##"  =  "##'''.  You could, for example, change this to, say,
+Unicode character ##RIGHT ARROW##.
+
+
+
+
+
+
 ----
 [:icicle-list-join-string]
 [:icicle-list-nth-parts-join-string]
