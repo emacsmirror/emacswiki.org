@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Thu Dec 31 13:51:53 2015 (-0800)
+;; Last-Updated: Sun Feb 28 16:08:00 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 29943
+;;     Update #: 29946
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6199,6 +6199,12 @@
 ;;    are killed when the command is finished.  If `nil' then they are
 ;;    not killed.  This option applies only to Emacs 23 and later.
 ;;
+;;  * User option `icicle-complete-keys-separator' is the string that
+;;    separates the two parts (key description and command name) of a
+;;    key completion candidate during key completion.  The default
+;;    value is "  =  ".  You could, for example, change this to, say,
+;;    Unicode character RIGHT ARROW.
+;;
 ;;  * User options `icicle-list-join-string' and
 ;;    `icicle-list-nth-parts-join-string' are described in sections
 ;;    (@file :file-name "icicles-doc1.el" :to "Multi-Completions")
@@ -8129,9 +8135,10 @@
 ;;  multi-completions.  You can bind `icicle-list-join-string' to any
 ;;  string you like, depending on your needs.  See
 ;;  (@file :file-name "icicles-doc1.el" :to "Key Completion") for an
-;;  example where it is bound to " = ".  This section describes two
-;;  additional variables that you can bind to affect the appearance
-;;  and behavior of multi-completions.
+;;  example where it is bound to the value of option
+;;  `icicle-complete-keys-separator' ("  =  " by default).  This
+;;  section describes two additional variables that you can bind to
+;;  affect the appearance and behavior of multi-completions.
 ;;
 ;;(@* "Variable icicle-list-use-nth-parts")
 ;;  ** Variable icicle-list-use-nth-parts **
