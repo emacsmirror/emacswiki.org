@@ -8,9 +8,9 @@
 ;; Created: Sat Jan 19 15:24:48 2013 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:04:49 2015 (-0800)
+;; Last-Updated: Mon Feb 29 12:42:11 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 369
+;;     Update #: 371
 ;; URL: http://www.emacswiki.org/emacsbug%2b.el
 ;; Keywords: report bug
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -60,6 +60,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/02/29 dadams
+;;     ebp-insert-version: Change field label to Repository version from Bzr revision.
 ;; 2013/01/20 dadams
 ;;     Added: ebp-insert-all, ebp-insert-features, ebp-insert-load-path-shadows,
 ;;            ebp-insert-major-mode, ebp-insert-minor-modes, ebp-insert-recent-input,
@@ -174,7 +176,7 @@ It has the same effect as the default value of option
     (error "Version info is already included"))
   (insert "\n\nIn " (emacs-version) "\n")
   (when (and (boundp 'emacs-bzr-version)  (stringp emacs-bzr-version))
-    (insert "Bzr revision: " emacs-bzr-version "\n"))
+    (insert "Repository revision: " emacs-bzr-version "\n"))
   (when (fboundp 'x-server-vendor)
     (condition-case nil
         ;; This is used not only for X11 but also W32 and others.
