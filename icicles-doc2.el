@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Feb 28 16:08:00 2016 (-0800)
+;; Last-Updated: Tue Mar  1 07:54:52 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 29946
+;;     Update #: 29947
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5903,7 +5903,7 @@
 ;;    there are many search contexts - the highlighting is updated
 ;;    with each input change.  You can toggle the value at any time
 ;;    using command `icicle-toggle-highlight-all-current', bound to
-;;    `C-^' in the minibuffer (except during file-name completion).
+;;    `C-^' in the minibuffer during Icicles search.
 ;;
 ;;  * If, in addition to `icicle-expand-input-to-common-match' causing
 ;;    your input to be expanded and
