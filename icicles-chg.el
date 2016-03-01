@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Mar  1 08:00:58 2016 (-0800)
+;; Last-Updated: Tue Mar  1 08:52:38 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 11587
+;;     Update #: 11592
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1164,6 +1164,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2016/03/01 dadams
+;;     icicle-search-action: Corrected doc string: If icicle-search-highlight-threshold is NOT zero.
+;;     icicle-search-highlight-input-matches-here: Wrap re-search-forward in condition-case.
 ;; 2016/02/28 dadams
 ;;     icicle-complete-keys: Mention icicle-complete-keys-separator in doc string.
 ;;     icicle-complete-keys-action, icicle-add-key+cmd, icicle-complete-keys-help:
@@ -2231,6 +2234,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2016/03/01 dadams
+;;     icicle-insert-cand-in-minibuffer: Wrap string-match in condition-case, to ignore errors.
 ;; 2016/02/28 dadams
 ;;     icicle-prefix-keys-first-p, icicle-command-names-alphabetic-p:
 ;;       Use new option icicle-complete-keys-separator, not its default value.
