@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Feb 28 15:32:27 2016 (-0800)
+;; Last-Updated: Tue Mar  1 08:44:12 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 7298
+;;     Update #: 7302
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4973,8 +4973,8 @@ STRING is a search-hit string.  It is matched by the initial regexp
 \(context regexp).
 
 1. Move to the STRING occurrence in original buffer.  Highlight it.
-2. If `icicle-search-highlight-threshold' is zero, highlight what the
-   current input matches, inside the STRING occurrence.
+2. If `icicle-search-highlight-threshold' is not zero, highlight what
+   the current input matches, inside the STRING occurrence.
 3. If REPLACEMENT is non-nil, use it to replace the current match.
    If `icicle-search-replace-whole-candidate-flag' is non-nil, replace
    the entire STRING occurrence.  Otherwise, replace only the part
@@ -5275,8 +5275,10 @@ No such highlighting is done if any of these conditions holds:
         (setq icicle-search-refined-overlays  (cdr icicle-search-refined-overlays))))
     (let ((ov  nil))
       (save-match-data
-        (while (and (not (eobp))  (re-search-forward (or icicle-search-ecm  icicle-current-input)
-                                                     nil 'move-to-end))
+        (while (and (not (eobp))
+                    (condition-case nil ; Ignore errors, in case input is, say, "\".
+                        (re-search-forward (or icicle-search-ecm  icicle-current-input) nil 'move-to-end)
+                      (error nil)))
           (if (equal (match-beginning 0) (match-end 0))
               (forward-char 1)
             (setq ov  (make-overlay (match-beginning 0) (match-end 0)))
