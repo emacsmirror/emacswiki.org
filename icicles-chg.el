@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Feb 28 15:39:28 2016 (-0800)
+;; Last-Updated: Tue Mar  1 08:00:58 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 11584
+;;     Update #: 11587
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7666,6 +7666,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2016/03/01 dadams
+;;     icicle-search-replace-common-match-flag: Qualify toggle keys as being for Icicles search.
 ;; 2016/02/28 dadams
 ;;     Added: icicle-complete-keys-separator.
 ;; 2015/08/01 dadams
