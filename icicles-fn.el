@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Feb 28 15:17:06 2016 (-0800)
+;; Last-Updated: Tue Mar  1 08:40:36 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 15143
+;;     Update #: 15145
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4440,7 +4440,9 @@ REGEXP-P non-nil means use regexp matching to highlight root."
         indx)
     (unless (and regexp-p  (not icicle-regexp-quote-flag)) (setq inp  (regexp-quote inp)))
     (save-match-data
-      (setq indx  (string-match inp icicle-last-completion-candidate))
+      (setq indx  (condition-case nil   ; Ignore errors, in case INP is, say, "\".
+                      (string-match inp icicle-last-completion-candidate)
+                    (error nil)))
       (when indx
         ;; Should not need to ignore errors, but `*-last-completion-candidate' has been a read-only object (?)
         (condition-case nil
