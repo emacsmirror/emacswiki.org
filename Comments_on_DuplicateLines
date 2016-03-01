@@ -9,3 +9,10 @@ Looks like the code as written has a bug. Try using `newline' in place of `new-l
 
 -- DrewAdams 2014-09-25 20:45 UTC
 
+
+----
+
+Doesn't <code>delete-duplicate-lines</code> belong here??
+
+-- [http://tn-home.de TN] 2016-03-01 21:54 UTC
+
