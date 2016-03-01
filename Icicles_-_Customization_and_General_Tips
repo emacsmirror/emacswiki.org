@@ -1663,7 +1663,7 @@ the [[Icicles - Expanded-Common-Match Completion|expanded common match]] among a
 The default value of `icicle-search-highlight-all-current-flag' is `nil', because non-`nil' can
 impact performance negatively if there are many search contexts -- the highlighting is
 updated with each input change.  You can ''toggle'' the value at any time using command
-`icicle-toggle-highlight-all-current', bound to '''`##C-^##'''' in the minibuffer (except during file-name completion).  See [[Icicles - Search Commands, Overview]].
+`icicle-toggle-highlight-all-current', bound to '''`##C-^##'''' in the minibuffer during Icicles search.  See [[Icicles - Search Commands, Overview]].
 
 ----
 [:icicle-search-replace-common-match-flag]
