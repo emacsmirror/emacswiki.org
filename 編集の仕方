@@ -1,0 +1,34 @@
+[[en:HowToEdit]]
+[[es:ComoEditar]]
+[[fr:CommentEditer]]
+
+'''wiki'''は共同で作るウェブサイトです。'''あなたも貢献できます'''。
+が、そのまえに[[Wikiの組織方法]]を読んで、Emacs Wikiがどのように成り立っているかを学んでください。
+
+== 編集の仕方と貢献の仕方 ==
+
+* [[既存のページの編集]]は、各ページのフッタにある"'''Edit this page'''"をクリックするかaccesskeyのaを打鍵することで編集できます。
+** accesskeyはほとんどのブラウザでは、'''<code>Alt e</code>'''です。
+** Mac OS XのFirefoxでは、'''<code>Ctrl Alt e</code>''''です。
+** Windows/LinuxのFirefoxでは'''<code>Alt Shift e</code>'''です。
+* [EmacsWiki:Yaoddmuse Yaoddmuse mode]-- Emacsをつかって
+Emacs Wikiを編集できます。Yaoddmuse modeは、[[OddmuseMode]]の派生です。ほかのOddmuse wikisでも動作します。
+* [[テキスト整形ルール]] -- リンクの作り方など、どのようにテキストを整形したら良いかを説明します。Emacs Wikiは[http://www.oddmuse.org/ Oddmuse] wikiを使っていて、そこで整形ルールが決められています。
+* [[新規ページ作成]] -- 新しいページの作り方です。あなたの最初のページのを作るのに良い方法は、[[CategoryHomepage]]にあなたの[[ユーザ名]]を追加することです（訳注：CategoryHomepageは、いわゆるマイページ群です。自分の名前のページを作って、そこに自分について書くわけです）。
+* [[ページの削除]] -- ページの削除方法です。
+* [[スタイルガイド]] -- 分かりやすく書くためにどのようにしたら良いかのガイドです。
+* [[ElispArea]] -- Emacs Lispのアップロードの仕方です。
+* [[UploadingImages]] -- Emacs Wikiへの画像の追加の仕方です。
+* [[ユーザ名]] -- あなたの名前でWikiへの貢献をサインしましょう。
+* [[ユーザポートレイト]] -- ディスカッションにあなたのアバターを追加できます。
+
+== ポリシー ==
+* MinorEdit --  About the "This change is a minor edit" checkbox. 
+* IfYouRenameOrDeletePages -- If you rename or delete an EmacsWiki page you're responsible for fixing any links that pointed to the page.
+* PageRedirection -- Redirecting requests for a page to another page.
+* TranslationHelp -- How to translate pages, and how to link to translations
+* AppropriateMedia -- When to use the wiki.
+* CrossPosting -- About crossposting messages from other discussion media.
+
+----
+利用の手引
