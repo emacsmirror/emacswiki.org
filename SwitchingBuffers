@@ -179,6 +179,15 @@ See also:
 
 ----
 
+== Switching to the Previous Buffer ==
+
+Using `switch-to-buffer' or `ido-switch-to-buffer' to navigate to the previous buffer involves having to hit `RET` to confirm the default selection and might become frustrating for an action that is performed frequently. Using `mode-line-other-buffer' avoids this problem. A convenient binding might be:
+
+<pre>
+(global-set-key (kbd "M-o")  'mode-line-other-buffer)
+</pre>
+
+
 == Discussion ==
 
 [new:DavePeck:2008-08-05 16:00 UTC]
