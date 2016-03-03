@@ -1,6 +1,6 @@
 Use `M-x find-grep-dired' interactively to search and replace a regex across all files in a specified directory and subdirectories which match a pattern.
 
-As described in [http://atomized.org/2009/05/emacs-nerdery-search-replace-across-files/ this blog post], basic usage is:
+Basic usage is:
 
 # invoke, passing your search phrase ##M-x find-grep-dired RET catch (FooException RET##
 # mark buffers of interest ##% m .php$ RET##
