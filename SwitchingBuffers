@@ -87,9 +87,12 @@ With `C-z' contents of selected candidate are displayed.
 
 With the "switching" or "buffer flipping" technique, the challenge is to do as little buffer-switching as possible. That is, you would like the buffers you switch between most to be near to each other. One solution is to sort buffers in the order they were visited. Then the most-recently-used buffer is always just below the current one. You hit a problem, though, when you want to switch between two buffers which are further apart in the stack. Imagine you are at the first buffer. As you move through the stack, each buffer is visited and gets put on top, so by the time you get to the target buffer there are a bunch of buffers between you and the first. If you want to go back, you have to switch through them again.
 
-A solution without this problem is demonstrated by Microsoft Windows. On this platform, ALT-TAB lets you switch through windows ("[[Frame]]s" in Emacs lingo) to pick the one you want, then pulls that window to the top. This comes much closer to the ideal of stacking in order of use because it distinguishes between "using" and "switching" -- unlike the simple model described above.  Several libraries provide something similar for Emacs buffers:
+A solution without this problem is demonstrated by Microsoft Windows. On this platform, ALT-TAB lets you switch through windows ("[[Frame]]s" in Emacs lingo) to pick the one you want, then pulls that window to the top. This comes much closer to the ideal of stacking in order of use because it distinguishes between "using" and "switching" -- unlike the simple model described above.  Several approaches provide something similar for Emacs buffers:
+* The command `mode-line-other-buffer' will achieve this. A convenient binding might be:
 
-* The super-simple solution goes like this:
+      (global-set-key (kbd "M-o")  'mode-line-other-buffer)
+
+* Another solution goes like this:
 
       (defun switch-to-previous-buffer ()
       (interactive)
@@ -178,14 +181,6 @@ See also:
 * WindMove
 
 ----
-
-== Switching to the Previous Buffer ==
-
-Using `switch-to-buffer' or `ido-switch-to-buffer' to navigate to the previous buffer involves having to hit `RET` to confirm the default selection and might become frustrating for an action that is performed frequently. Using `mode-line-other-buffer' avoids this problem. A convenient binding might be:
-
-<pre>
-(global-set-key (kbd "M-o")  'mode-line-other-buffer)
-</pre>
 
 
 == Discussion ==
