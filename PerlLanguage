@@ -9,6 +9,8 @@ Here are some things for working with Perl in Emacs.  Click the title heading to
 * [http://search.cpan.org/dist/Devel-PerlySense/ PerlySense] is a  Perl IDE back-end that integrates with editor front-ends,
 currently Emacs.
 
+* [https://github.com/aki2o/emacs-plsense emacs-plsense] is an extension to Emacs that provides interface to [https://github.com/aki2o/plsense PlSense].
+
 == Support packages ==
 
 * PerlNow: perlnow.el is an emacs package that fills in some gaps in emacs perl support.
