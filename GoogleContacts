@@ -15,5 +15,12 @@ is or should be.
 [new:Divinenephron: Tue Nov 18 14:45 GMT 2014]
 When you first use GoogleContacts you are asked to paste an oauth2 token into the emacs minbuffer. Then you're asked to enter a passphrase. It's not obvious, but here you are creating a new passphrase to encrypt the oauth2 token with. If you enter the same passphrase next time you're asked, GoogleContacts will work. This happens because GoogleContacts uses [https://github.com/emacsmirror/oauth2/blob/master/oauth2.el oauth2.el], which stores authentication information in a GPG encrypted file using [https://github.com/emacsmirror/gnus/blob/master/lisp/plstore.el plstore.el]. 
 
+[new:aerique: 2016-03-03T10:12Z]
+If you do not want to have to enter your password for every google-contacts lookup you need to set [code]plstore-cache-passphrase-for-symmetric-encryption[/code] to [code]t[/code].  I've added this to my Emacs config (since I use [code]use-package[/code]:
+
+    (use-package plstore
+      :defer t
+      :config (setq plstore-cache-passphrase-for-symmetric-encryption t))
+
 ----
 CategoryInterface
