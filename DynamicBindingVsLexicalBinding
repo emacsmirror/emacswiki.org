@@ -39,7 +39,7 @@ called:
 
 A binding made by a function call lasts until the call returns.
 
-A `let' expression is indeed just "syntatic sugar", a
+A `let' expression is indeed just "syntactic sugar", a
 convenience, for the corresponding `lambda' form:
 
     (let ((a 1)
@@ -182,8 +182,8 @@ current compiler).}}}
 
 Most languages only have lexical bindings for names.
 
-* EmacsLisp has dynamic binding only.  As of emacs 24 lexical binding may be turned on for a file or buffer.
-* CommonLisp has both dynamic binding and lexical binding.  You get lexical binding by default, but you can ask for dynamic binding by `defvar'ing your name or `declare'ing it "special".
+* Emacs Lisp has dynamic binding only.  As of Emacs 24, lexical binding may be turned on for a file or buffer.
+* Common Lisp has both dynamic binding and lexical binding.  You get lexical binding by default, but you can ask for dynamic binding by `defvar'ing your name or `declare'ing it "special".
 
 [:Scheme]
 * [[Scheme]] was the first language to introduce lexical binding.  Many [[Scheme]] implementations today support both kinds of behaviour, although dynamic binding is not specified by the [http://www.schemers.org/Documents/Standards/R5RS/HTML/r5rs.html Scheme Standard].   Variables subject to dynamic binding are usually refered to as "fluid variables" or "parameters" on these systems.
@@ -193,7 +193,7 @@ Most languages only have lexical bindings for names.
 
 == Why Emacs has dynamic binding ==
 
-RichardStallman wrote a paper describing the design of the original
+Richard Stallman wrote a paper describing the design of the original
 Emacs and the lessons to be learned from it.  It also contains a [http://www.gnu.org/software/emacs/emacs-paper.html#SEC17 section
 on dynamic binding].
 
