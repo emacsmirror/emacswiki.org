@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Mar  1 08:44:12 2016 (-0800)
+;; Last-Updated: Thu Mar  3 09:36:50 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 7302
+;;     Update #: 7303
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4573,6 +4573,7 @@ The arguments are for use by `completing-read' to read the regexp.
          def     (or def   (icicle-defaults-at-point)))
   (let* ((icicle-candidate-action-fn  nil)
          (icicle-candidate-help-fn    nil)
+         (icicle-regexp-quote-flag    nil) ; Disable quoting of regexp special chars.
          (regexp                      (icicle-completing-read-history
                                        prompt 'regexp-history pred init def i-i-m)))
     (while (string= "" regexp)
