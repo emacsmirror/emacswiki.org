@@ -1,14 +1,4 @@
-Just created this page.
-Something useful should appear here soon!
-
-
-
-
-[new:DrewAdams:2012-11-17 06:55 UTC]
-Welcome to the wiki. -- DrewAdams
-
-[new:Bernard Hurley:2012-11-18 03:04 UTC]
-Thanks! I'm glad I found it! -- [[Bernard Hurley]]
+I have just written a mode [https://bitbucket.org/BernardHurley/rawpinyin rawpinyin-minor-mode] for inputting literal pīnyīn into a file.  The basic functionality is there but I plan some enhancements.
 
 ----
 CategoryHomepage
