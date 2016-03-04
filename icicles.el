@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2015.07.05
+;; Version: 2016.03.04
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 14:54:27 2015 (-0800)
+;; Last-Updated: Fri Mar  4 09:19:47 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 23675
+;;     Update #: 23697
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -1701,14 +1701,10 @@
                     "icicle-define-sort-command" "icicle-with-help-window"
                     "icicle-with-selected-window")
                   t)
-             (if (> emacs-major-version 21)
-                 "\\_>[ \t'\(]*\\(\\(\\sw\\|\\s_\\)+\\)?"
-               "\\>[ \t'\(]*\\(\\sw+\\)?"))
+             (if (> emacs-major-version 21) "\\_>" "\\>")
+             "[ \t'\(]*\\(\\(\\sw\\|\\s_\\)+\\)?")
     (1 font-lock-keyword-face)
-    ;; Index (2 or 3) depends on whether or not shy groups are supported.
-    ,(list (if (string-match "\\(?:\\)" "")
-               2
-             5)
+    ,(list (if (string-match "\\(?:\\)" "") 2 7) ; Index depends on whether shy groups are supported.
            'font-lock-function-name-face nil t))
    ("(\\(icicle-condition-case-no-debug\\)\\>" 1 font-lock-keyword-face)
    ("(\\(icicle-user-error\\)\\>" 1 font-lock-warning-face)))
