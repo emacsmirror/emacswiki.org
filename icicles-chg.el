@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Thu Mar  3 09:37:32 2016 (-0800)
+;; Last-Updated: Fri Mar  4 09:19:25 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 11593
+;;     Update #: 11595
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -9085,6 +9085,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2016/03/04 dadams
+;;     Version 2016.03.04.
+;;     font-lock-add-keywords: Use index 7 for old Emacs versions.
 ;; 2015/07/05 dadams
 ;;     Version 2015.07.05.
 ;; 2015/01/04 dadams
