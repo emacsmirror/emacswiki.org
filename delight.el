@@ -81,7 +81,7 @@
 ;; you change the sorting criteria) in which cases this library may
 ;; prove inadequate.
 
-;;; Changelog:
+;;; Change Log:
 ;;
 ;; 1.05 (2016-03-01) Support FILE value t, meaning that the minor MODE
 ;;       in question is guaranteed to already be loaded.
