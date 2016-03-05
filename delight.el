@@ -4,7 +4,7 @@
 ;; URL: http://www.emacswiki.org/emacs/DelightedModes
 ;; Keywords: convenience
 ;; Created: 25 Jun 2013
-;; Version: 1.04
+;; Version: 1.05
 
 ;; This file is not part of GNU Emacs.
 
@@ -30,7 +30,29 @@
 ;;            (smart-tab-mode " \\t" "smart-tab")
 ;;            (eldoc-mode nil "eldoc")
 ;;            (rainbow-mode)
+;;            (overwrite-mode " Ov" t)
 ;;            (emacs-lisp-mode "Elisp" :major)))
+;;
+;; The first argument is the mode symbol.
+;;
+;; The second argument is the replacement name to use in the mode line
+;; (or nil to hide it).
+;;
+;; The third argument is either the keyword :major for major modes or,
+;; for minor modes, the library which defines the mode. This is passed
+;; to ‘eval-after-load’ and so should be either the name (as a string)
+;; of the library file which defines the mode, or the feature (symbol)
+;; provided by that library. If this argument is nil, the mode symbol
+;; will be passed as the feature. If this argument is either t or 'emacs
+;; then it is assumed that the mode is already loaded (you can use this
+;; with standard minor modes that are pre-loaded by default when Emacs
+;; starts).
+;;
+;; To determine which library defines a mode, use e.g.: C-h f
+;; eldoc-mode RET. The name of the library is displayed in the first
+;; paragraph, with an “.el” suffix (in this example it displays
+;; “eldoc.el”, and therefore we could use the value “eldoc” for the
+;; library).
 ;;
 ;; Important note:
 ;;
@@ -61,6 +83,8 @@
 
 ;;; Changelog:
 ;;
+;; 1.05 (2016-03-01) Support FILE value t, meaning that the minor MODE
+;;       in question is guaranteed to already be loaded.
 ;; 1.04 (2016-02-28) Respect `inhibit-mode-name-delight' when already set.
 ;; 1.03 (2014-05-30) Added support for `mode-line-mode-menu'.
 ;; 1.02 (2014-05-04) Bug fix for missing 'cl requirement for
@@ -98,8 +122,9 @@ mode-line construct. For details see the `mode-line-format' variable, and
 Info node `(elisp) Mode Line Format'.
 
 The FILE argument is passed through to `eval-after-load'. If FILE is nil then
-the mode symbol is passed as the required feature. Both of these cases are
-relevant to minor modes only.
+the mode symbol is passed as the required feature. If FILE is t then it is
+assumed that the mode is already loaded. (Note that you can also use 'emacs
+for this purpose). These FILE options are relevant to minor modes only.
 
 For major modes you should specify the keyword :major as the value of FILE,
 to prevent the mode being treated as a minor mode."
@@ -110,7 +135,7 @@ to prevent the mode being treated as a minor mode."
         (assq-delete-all mode delighted-modes)
         (add-to-list 'delighted-modes (list mode value file))
         (unless (eq file :major)
-          (eval-after-load (or file mode)
+          (eval-after-load (if (eq file t) 'emacs (or file mode))
             `(let ((minor-delight (assq ',mode minor-mode-alist)))
                (when minor-delight
                  (setcar (cdr minor-delight) ',value)
