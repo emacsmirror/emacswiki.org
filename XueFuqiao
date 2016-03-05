@@ -23,7 +23,6 @@ RepeatedStrainInjury -- ErgoemacsKeybindings and Spacemacs helped me a lot!
 * Implement a search engine in EmacsLisp.
 * Implement a DHCP client in EmacsLisp.
 * Implement a spell checker in EmacsLisp.
-* Implement multiple cursors in Emacs.
 * Make all operating systems come with Emacs built-in.
 * Implement a multi-protocol download utility in Emacs Lisp.
 * Make EmacsLisp simpler and cleaner.
