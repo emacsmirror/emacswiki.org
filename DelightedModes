@@ -30,7 +30,7 @@ Modifying multiple modes:
 
 The first argument is the mode symbol.
 
-The second argument is the replacement name to use in the mode line (or nil to hide it).
+The second argument is the replacement name to use in the mode line (or ##nil## to hide it).
 
 The third argument is either the keyword ##:major## for major modes or, for minor modes, the library which defines the mode. This is passed to `eval-after-load' and so should be either the name (as a string) of the library file which defines the mode, or the feature (symbol) provided by that library. If this argument is ##nil##, the mode symbol will be passed as the feature. If this argument is either ##t## or ##'emacs## then it is assumed that the mode is already loaded (you can use this with standard minor modes that are pre-loaded by default when Emacs starts).
 
