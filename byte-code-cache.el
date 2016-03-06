@@ -331,7 +331,7 @@ it."
         ;; Called for side-effect
         (documentation-property fun 'function-documentation (ad-get-arg 1))
 
-      (setq fun (indirect-function fun t))
+      (setq fun (indirect-function fun))
       (setq funcar (car-safe fun))
 
       (when (eq funcar 'macro)
