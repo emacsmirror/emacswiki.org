@@ -93,7 +93,6 @@ For help setting up Emacs to be used as Subversion's graphical merge tool via
 {{{
 ediff-merge-files-with-ancestor
 }}}
-please see the following blog post: http://bit.ly/m9ozZr
-
+please see the following blog post: http://zaakbeekman.blogspot.co.uk/2011/04/using-emacs-ediff-as-graphical-merge.html
 ----
 CategoryVersionControl
