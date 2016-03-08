@@ -1,4 +1,5 @@
-There is no need to quote a lambda expression because lambda is a macro that expands into ##(function (lambda ...))##.  And ##(function ...)## is more or less equivalent to ##(quote ...)## and that is equivalent to ##'...## -- using function instead of quote just helps the byte compiler a little bit.
+There is no need to quote a lambda expression because lambda is a macro that expands into ##(function (lambda ...))##.
+##(function ...)## is more or less equivalent to ##(quote ...)## and that is equivalent to ##'...## -- using function instead of quote just helps the byte compiler a little bit.
 
 Here's an example where quoting is not necessary:
 
