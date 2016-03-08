@@ -5,6 +5,8 @@ Here's an example where quoting is not necessary:
 
  (add-hook 'c-mode-hook (lambda () (setq c-basic-offset 4)))
 
+== How To Verify This ==
+
 Here's how to verify the expansion of a lambda expression.  Note that the result is the same every time.
 
  (macroexpand '(lambda () (setq c-basic-offset 4)))
