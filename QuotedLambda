@@ -48,7 +48,22 @@ byte-compiled:
  (byte-compile (defun foo () (setq foo #'(lambda (x) (+ x 1)))))
  #<compiled-function nil "...(4)" [foo #<compiled-function (x) "...(3)" [x] 1>] 2>
 
-= Longer Explanation =
+== OK, but what does it mean? ==
+
+The difference is relevant in exactly two contexts: First,
+for byte-compiling lambda expressions, where ###'(lambda () 1)## is
+byte-compiled but ##'(lambda () 1)## is not, which is irrelevant, because
+##(lambda () 1)## is equivalent to the former already. Second, for certain
+CL macros which treat ##(function ...)## differently from ##(quote ...)## and
+do some slightly different magic there.
+
+Otherwise there is no difference between the two. And because
+using those highly magic CL macros is a bad idea anyhow, the only
+reason to ever use ###'foo## is when you want to help the human reader of
+your code to distinguish your *intent* -- whether you mean the symbol or
+the function bound to the symbol.
+
+== A Longer Explanation ==
 
 Sometimes you do not want to refer to a variable but to a function.  For example in this case:
 
