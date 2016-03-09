@@ -108,6 +108,9 @@ And here are two ways to advise `dired-find-file', so it reuses a directory buff
      	     (dired up)
      	     (dired-goto-file dir))))))
 
+== See Also (Links) ==
+
+See also [[http://ergoemacs.org/emacs/emacs_dired_tips.html|Xah Lee's page of Emacs Dired Customizations]], especially under the section entitled, "How to make dired use the same buffer for viewing directory?"
 
 == Experiences ==
 
