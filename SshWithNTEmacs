@@ -23,6 +23,10 @@ As noted in the Cygwin archives[http://cygwin.com/ml/cygwin/2001-11/msg00631.htm
 
 which works nicely for me!
 
+There's also https://github.com/d5884/fakecygpty, which extends fakecygpty to handle signals and special chars. 
+This allows to stop, continue and interrupt Cygwin processes, directly or from a Cygwin shell (C-c C-c, etc.).
+<code>`set-process-window-size`</code> and <code>`process-send-eof`</code> are also supported.
+
 === Xming ===
 
 X forwarding with Xming[http://sourceforge.net/projects/xming] can be used as usual to fire up graphical applications on the remote host. The DISPLAY environment variable may need some modification however:
