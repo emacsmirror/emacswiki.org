@@ -15,7 +15,7 @@ Deepin emacs Video:
 [http://www.youtube.com/watch?v=ZA3uuflGtk8 MyEmacs]
 
 Deepin Emacs souce code:
-git clone https://github.com/linuxdeepin/deepin-emacs
+git clone https://github.com/manateelazycat/deepin-emacs
 
 ==Packages==
 * Standalone packages.
