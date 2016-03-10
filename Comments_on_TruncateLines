@@ -1,0 +1,7 @@
+> You can also use the following in your InitFile, although we don’t recommend it.
+> (set-default 'truncate-lines t)
+
+Why is this not recommended?
+
+-- [http://igor.kupczynski.info Igor] 2016-03-10 11:55 UTC
+
