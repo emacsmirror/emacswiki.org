@@ -3,7 +3,7 @@ A simple elisp TCP echo server.
 Usage:
 * M-x echo-server-start RET
 * telnet localhost 10000
-* M-x echo-server-top RET 
+* M-x echo-server-stop RET 
 
 For Emacs22 or later (requires server-socket).
 
