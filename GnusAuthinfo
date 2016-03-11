@@ -37,10 +37,13 @@ If you think you provided the correct information in the file, and Gnus asks you
 password as it tries to connect, and Gnus still fails to authenticate, it's time to check
 your authinfo file. Use `M-x netrc-parse' and test your file. Perhaps you misplaced some
 quotes, or you used multibyte Unicode characters. These are problematic because Emacs
-keeps a cache of the authinfo file in memory. The cache is obfuscated using
+keeps a cache of the authinfo file in memory. [s]The cache is obfuscated using
 `base64-encode-string' and `rot13-string'. The problem is that base64 requires bytes and will
 refuse to encode multibyte characters. Unfortunately for you this error messages is
-surpressed when Gnus tries to connect to servers...
+surpressed when Gnus tries to connect to servers...[/s]
+
+[new:wgreenhouse:2016-03-11 19:10 UTC]
+The above is inaccurate today; `auth-source' now stashes password caches in a [http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/auth-source.el#n1003 closure], and has no problem with multibyte characters, since it uses `buffer-string'.
 
 == Different Files for Different Server Methods ==
 
