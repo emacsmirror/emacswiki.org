@@ -1,6 +1,6 @@
 == Annotations ==
 
-##java-mode## does not indent Java 1.5 ##@##-style annotations correctly. A quick fix is to define them as comments:[http://bentomasini.com/blog/2007/06/10/installing-emacs-22-on-ubuntu-feisty-fawn/]
+In very old versions of emacs (<24.1?, cc-mode < 5.32?), ##java-mode## below does not indent Java 1.5 ##@##-style annotations correctly. A quick fix is to define them as comments:[http://bentomasini.com/blog/2007/06/10/installing-emacs-22-on-ubuntu-feisty-fawn/]
 
     (add-hook 'java-mode-hook
               (lambda ()
