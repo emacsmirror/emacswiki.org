@@ -5,7 +5,7 @@
 ;; Keywords: convenience
 ;; Created: 12 Jan 2016
 ;; Package-Requires: ((emacs "24.3"))
-;; Version: 0.7
+;; Version: 0.7.1
 
 ;; This file is not part of GNU Emacs.
 
@@ -63,7 +63,7 @@
 ;; with targeting globalized minor modes, as these are also activated during
 ;; this hook (however `so-long-hook' always runs after any globalized minor
 ;; modes have acted, because we call `add-hook' with the APPEND argument, and
-;; global modes do not).
+;; globalized modes do not).
 ;;
 ;; Between these two hooks it will usually be possible to inhibit or otherwise
 ;; counter-act any minor mode you wish to disable; but you may need to inspect
@@ -128,14 +128,14 @@ The modes are disabled by calling them with a single numeric argument of zero.
 
 `so-long-hook' can be used where more custom behaviour is desired.
 
-Occurs during `after-change-major-mode-hook' so that global minor modes
+Occurs during `after-change-major-mode-hook' so that globalized minor modes
 can also be handled.")
 
 (defvar so-long-hook '(so-long-inhibit-whitespace-mode
                        so-long-make-buffer-read-only) ;; n.b. do this last.
   "List of functions to call after `so-long-mode'.
 
-Occurs during `after-change-major-mode-hook' so that global minor modes
+Occurs during `after-change-major-mode-hook' so that globalized minor modes
 can also be handled.
 
 See also `so-long-minor-modes'.")
@@ -191,9 +191,9 @@ a member (or derivative of a member) of `so-long-target-modes'.
 After changing modes, any active minor modes listed in `so-long-minor-modes'
 are disabled for the current buffer, and finally `so-long-hook' is run.
 These two steps occur as part of `after-change-major-mode-hook', so that
-active global minor modes are visible.
+active globalized minor modes are visible.
 
-Some global minor modes may be inhibited by acting in `so-long-mode-hook'.
+Some globalized minor modes may be inhibited by acting in `so-long-mode-hook'.
 
 By default this mode is essentially equivalent to `fundamental-mode', and
 exists mainly to provide information to the user as to why the expected mode
