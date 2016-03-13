@@ -5,7 +5,7 @@
 ;; Keywords: convenience
 ;; Created: 12 Jan 2016
 ;; Package-Requires: ((emacs "24.3"))
-;; Version: 0.6.6
+;; Version: 0.7
 
 ;; This file is not part of GNU Emacs.
 
@@ -94,7 +94,8 @@
 
 ;;; Change Log:
 ;;
-;; 0.6.6 - Hack local variables after reverting to the original major mode.
+;; 0.7   - Handle header 'mode' declarations.
+;;       - Hack local variables after reverting to the original major mode.
 ;;       - Reverted `so-long-max-lines' to a default value of 5.
 ;; 0.6.5 - Inhibit globalized `hl-line-mode' and `whitespace-mode'.
 ;;       - Set `buffer-read-only' by default.
@@ -278,6 +279,60 @@ Run by default in `so-long-hook' to counteract `global-whitespace-mode'."
     ;; (setq-local whitespace-mode nil)
     ))
 
+(defun so-long-check-header-modes ()
+  "Handles the header-comments processing in `set-auto-mode'.
+
+`set-auto-mode' has some special-case code to handle the 'mode' pseudo-variable
+when set in the header comment.  This runs outside of `hack-local-variables'
+and cannot be conveniently intercepted, so we are forced to replicate it here.
+
+This special-case code will ultimately be removed from Emacs, as it exists to
+deal with a deprecated feature; but until then we need to replicate it in order
+to inhibit our own behaviour in the presence of a header comment 'mode'
+declaration."
+  ;; The following code for processing MODE declarations in the header
+  ;; comments is copied verbatim from `set-auto-mode', because we have
+  ;; no way of intercepting it.
+  ;;
+  (let ((try-locals (not (inhibit-local-variables-p)))
+        end done mode modes)
+    ;; Once we drop the deprecated feature where mode: is also allowed to
+    ;; specify minor-modes (ie, there can be more than one "mode:"), we can
+    ;; remove this section and just let (hack-local-variables t) handle it.
+    ;; Find a -*- mode tag.
+    (save-excursion
+      (goto-char (point-min))
+      (skip-chars-forward " \t\n")
+      ;; Note by design local-enable-local-variables does not matter here.
+      (and enable-local-variables
+           try-locals
+           (setq end (set-auto-mode-1))
+           (if (save-excursion (search-forward ":" end t))
+               ;; Find all specifications for the `mode:' variable
+               ;; and execute them left to right.
+               (while (let ((case-fold-search t))
+                        (or (and (looking-at "mode:")
+                                 (goto-char (match-end 0)))
+                            (re-search-forward "[ \t;]mode:" end t)))
+                 (skip-chars-forward " \t")
+                 (let ((beg (point)))
+                   (if (search-forward ";" end t)
+                       (forward-char -1)
+                     (goto-char end))
+                   (skip-chars-backward " \t")
+                   (push (intern (concat (downcase (buffer-substring beg (point))) "-mode"))
+                         modes)))
+             ;; Simple -*-MODE-*- case.
+             (push (intern (concat (downcase (buffer-substring (point) end))
+                                   "-mode"))
+                   modes))))
+
+    ;; `so-long' now processes the resulting mode list.  If any modes were
+    ;; listed, we assume that one of them is a major mode.  It's possible that
+    ;; this isn't true, but the buffer would remain in fundamental-mode if that
+    ;; were the case, so it is very unlikely.
+    (setq so-long-mode--inhibited modes)))
+
 ;; How do you solve a problem like a long line?
 ;; How do you stop a mode from slowing down?
 ;; How do you cope with processing a long line?
@@ -313,7 +368,9 @@ Local variables are not processed after changing to `so-long-mode', as
 they might negatively affect performance.  (Local variables are processed
 again if `so-long-mode-revert' is called, however.)"
   (setq so-long-mode--inhibited nil) ; is permanent-local
-  ad-do-it ; `set-auto-mode'
+  (when so-long-mode-enabled
+    (so-long-check-header-modes)) ; may set `so-long-mode--inhibited'
+  ad-do-it ; `set-auto-mode'      ; may set `so-long-mode--inhibited'
   (when so-long-mode-enabled
     (unless so-long-mode--inhibited
       (when (and (apply 'derived-mode-p so-long-target-modes)
