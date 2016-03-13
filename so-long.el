@@ -5,7 +5,7 @@
 ;; Keywords: convenience
 ;; Created: 12 Jan 2016
 ;; Package-Requires: ((emacs "24.3"))
-;; Version: 0.6.5
+;; Version: 0.6.6
 
 ;; This file is not part of GNU Emacs.
 
@@ -94,6 +94,8 @@
 
 ;;; Change Log:
 ;;
+;; 0.6.6 - Hack local variables after reverting to the original major mode.
+;;       - Reverted `so-long-max-lines' to a default value of 5.
 ;; 0.6.5 - Inhibit globalized `hl-line-mode' and `whitespace-mode'.
 ;;       - Set `buffer-read-only' by default.
 ;; 0.6   - Added `so-long-minor-modes' and `so-long-hook'.
@@ -114,7 +116,7 @@
 
 See `so-long-line-detected-p' for details.")
 
-(defvar so-long-max-lines 20
+(defvar so-long-max-lines 5
   "Number of non-blank, non-comment lines to test for excessive length.
 
 See `so-long-line-detected-p' for details.")
@@ -129,7 +131,7 @@ most cases, but there are some exceptions to this.")
 (defvar so-long-minor-modes
   '(font-lock-mode
     highlight-changes-mode hi-lock-mode hl-line-mode linum-mode nlinum-mode
-    prettify-symbols-mode visual-line-mode)
+    prettify-symbols-mode visual-line-mode which-function-mode)
   ;; It's not clear to me whether all of these would be problematic, but they
   ;; seemed like reasonable targets.  Some are certainly excessive in smaller
   ;; buffers of minified code, but we should be aiming to maximise performance
@@ -160,6 +162,12 @@ See also `so-long-minor-modes'.")
 (defvar so-long-mode--inhibited nil) ; internal use
 (make-variable-buffer-local 'so-long-mode--inhibited)
 (put 'so-long-mode--inhibited 'permanent-local t)
+
+;; When the line's long
+;; When the mode's slow
+;; When Emacs is sad
+;; We change automatically to faster code
+;; And then I won't feel so mad
 
 (defun so-long-line-detected-p ()
   "Following any initial comments and blank lines, the next N lines of the
@@ -232,11 +240,13 @@ This happens during `after-change-major-mode-hook'."
 
 (defun so-long-mode-revert ()
   "Call the `major-mode' which was originally selected by `set-auto-mode'
-before `so-long-mode' was called to replace it."
+before `so-long-mode' was called to replace it, and then re-process the
+local variables."
   (interactive)
-  (if so-long-original-mode
-      (funcall so-long-original-mode)
-    (error "Original mode unknown.")))
+  (unless so-long-original-mode
+    (error "Original mode unknown."))
+  (funcall so-long-original-mode)
+  (hack-local-variables))
 
 (define-key so-long-mode-map (kbd "C-c C-c") 'so-long-mode-revert)
 
@@ -297,7 +307,11 @@ from `so-long-mode' (binary file modes, for example).  Instead, we act
 only when the selected major mode is a member (or derivative of a member)
 of `so-long-target-modes'.
 
-`so-long-line-detected-p' then determines whether the mode change is needed."
+`so-long-line-detected-p' then determines whether the mode change is needed.
+
+Local variables are not processed after changing to `so-long-mode', as
+they might negatively affect performance.  (Local variables are processed
+again if `so-long-mode-revert' is called, however.)"
   (setq so-long-mode--inhibited nil) ; is permanent-local
   ad-do-it ; `set-auto-mode'
   (when so-long-mode-enabled
