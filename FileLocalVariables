@@ -1,21 +1,29 @@
 See also: LocalVariables, DirectoryVariables
 
-In short local or file variables can be used to set certain aspects of Emacs local to a file. This might be useful for setting the indention level of a C program as well as setting the MajorMode to use for this file. This mechanism is regularly used in multi-document LaTeX projects where AUCTeX stores the information which file is the master document so it can compile the right one when the user invokes the LaTeX command (usually via C-c C-c).
+File-local variables can be used to make certain configurations local to a file. This might be useful for setting the indention level of a C program as well as setting the MajorMode to use for this file. This mechanism is regularly used in multi-document LaTeX projects where AUCTeX stores the information about the master document so it can compile the right one when the user invokes the LaTeX command (usually via C-c C-c).
 
-Those variables are located at the end of your file and look like this:
+These settings may be located in a comment on the first line of the file (or one of the first /two/ lines, if the files starts with ###!##), in which case they are wrapped by the special marker ##-*-##. e.g.:
+
+ ;; -*- mode: emacs-lisp; fill-column: 75; comment-column: 50; -*-
+
+Note that ##mode## is a pseudo-variable, and that its value does not contain the ##-mode## suffix.
+
+Otherwise (or additionally) they are located at the end of your file, in a comment block like this:
 
  # Local Variables:
  # mode: ksh
+ # fill-column: 75
+ # comment-column: 50
  # End:
 
-That is there is a special keyword "Local Variables:" which starts the section and is surrounded by a prefix ("# " in the above example) and a postfix (empty here). The keyword "End:" (with the same post- and prefixes) finishes that section. Obviously the prefix and postfixes are important to comment those lines according to the file-type.
+i.e. there is a special keyword ##Local Variables:## which starts the section and is surrounded by a prefix ("# " in the above example) and a postfix (empty here). The keyword ##End:## (with the same post- and prefixes) finishes that section. Obviously the prefix and postfixes are important to comment those lines according to the file-type.
 
 For detailed documentation, see [[Manual:File Variables]].
 
 [new]
 As of Emacs 24:
-Using "mode: MINOR-MODE" to enable a minor mode is deprecated.
-Instead, use "eval: (minor-mode 1)".
+Using ##mode: MINOR-MODE## to enable a minor mode is deprecated.\\
+Instead, use ##eval: (minor-mode 1)##
 
 == Funny Side Effect ==
 
