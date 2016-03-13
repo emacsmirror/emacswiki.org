@@ -60,10 +60,10 @@
 ;; `change-major-mode-after-body-hook' and `after-change-major-mode-hook'.
 ;;
 ;; `so-long-hook' runs during `after-change-major-mode-hook'. This is to assist
-;; with targeting globalized minor modes, as these are also activated during
-;; this hook (however `so-long-hook' always runs after any globalized minor
-;; modes have acted, because we call `add-hook' with the APPEND argument, and
-;; globalized modes do not).
+;; with targeting globalized minor modes, as these will activate the modes they
+;; control during this hook as well (however `so-long-hook' always runs after
+;; any globalized minor modes have acted, because we call `add-hook' with the
+;; APPEND argument, and globalized modes do not).
 ;;
 ;; Between these two hooks it will usually be possible to inhibit or otherwise
 ;; counter-act any minor mode you wish to disable; but you may need to inspect
@@ -191,7 +191,7 @@ a member (or derivative of a member) of `so-long-target-modes'.
 After changing modes, any active minor modes listed in `so-long-minor-modes'
 are disabled for the current buffer, and finally `so-long-hook' is run.
 These two steps occur as part of `after-change-major-mode-hook', so that
-active globalized minor modes are visible.
+modes controlled by globalized minor modes are also visible.
 
 Some globalized minor modes may be inhibited by acting in `so-long-mode-hook'.
 
