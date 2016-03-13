@@ -2,7 +2,7 @@ See also: LocalVariables, DirectoryVariables
 
 File-local variables can be used to make certain configurations local to a file. This might be useful for setting the indention level of a C program as well as setting the MajorMode to use for this file. This mechanism is regularly used in multi-document LaTeX projects where AUCTeX stores the information about the master document so it can compile the right one when the user invokes the LaTeX command (usually via C-c C-c).
 
-These settings may be located in a comment on the first line of the file (or one of the first /two/ lines, if the files starts with ###!##), in which case they are wrapped by the special marker ##-*-##. e.g.:
+These settings may be located in a comment on the first line of the file (or one of the first /two/ lines, if the file starts with ###!##), in which case they are wrapped by the special marker ##-*-##. e.g.:
 
  ;; -*- mode: emacs-lisp; fill-column: 75; comment-column: 50; -*-
 
