@@ -70,22 +70,6 @@
 ;; the code for a given mode (on a case by case basis) to determine the right
 ;; way to disable it, as not all modes are alike.
 
-;; File-local MODE specifications
-;; ------------------------------
-;; Ideally we would defer seamlessly to any file-local MODE variable; but at
-;; present (Emacs 24.5) -*- mode: MODE; -*- header comments are processed by
-;; `set-auto-mode' directly, with the outcome that we never get a chance to
-;; inhibit our own mode switch.  Ultimately that specified mode *is* still
-;; called (as part of the main `hack-local-variables' evaluation), but our mode
-;; switch is *also* called prior to that, which is undesirable (as we display
-;; messages at that time).  Once Emacs drops the deprecated feature whereby
-;; 'mode:' is also allowed to specify minor-modes (i.e. there can be more than
-;; one "mode:"), this problem will be removed, as (hack-local-variables t) will
-;; handle file-local modes in all cases.
-;;
-;; In the interim, it's cleanest to use a Local Variables comment block to
-;; specify a mode override, if one is required.
-
 ;; Implementation notes
 ;; --------------------
 ;; This library advises `hack-local-variables' (in order that we may inhibit our
