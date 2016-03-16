@@ -8,9 +8,9 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 16:07:44 2015 (-0800)
+;; Last-Updated: Wed Mar 16 10:39:53 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 2002
+;;     Update #: 2003
 ;; URL: http://www.emacswiki.org/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -58,6 +58,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/03/16 dadams
+;;     Do not use latex-mode for *.log files.
 ;; 2015/03/26 dadams
 ;;     Added: turn-font-lock-off-then-on.  Use it for dired-after-readin-hook.
 ;; 2015/03/14 dadams
@@ -448,7 +450,7 @@
                                 '("\\.aux\\'" . LaTeX-mode)
                                 '("\\.glo\\'" . LaTeX-mode)
                                 '("\\.lof\\'" . LaTeX-mode)
-                                '("\\.log\\'" . LaTeX-mode)
+                                ;; '("\\.log\\'" . LaTeX-mode)
                                 '("\\.lot\\'" . LaTeX-mode)
                                 '("\\.toc\\'" . LaTeX-mode)
                                 ;; '("\\.ftex\\'" . LaTeX-mode)
