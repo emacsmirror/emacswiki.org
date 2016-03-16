@@ -19,7 +19,7 @@ Various features that can be added to or improved in Emacs.  Note that the IDE p
 ===Virtual Environments==
 There is some built-in support for virtual environments in python.el, but these packages provide more features.
 * [https://github.com/jorgenschaefer/pyvenv pyvenv] - used in elpy, written by the same author. 
-* [https://github.com/tkf/emacs-python-environment, python-environment] - used in jedi, written by the same author 
+* [https://github.com/tkf/emacs-python-environment python-environment] - used in jedi, written by the same author 
 * [https://github.com/proofit404/pyenv-mode pyenv-mode] - uses [https://github.com/yyuu/pyenv pyenv], written by the author of anaconda-mode.
 * [https://github.com/porterjamesj/virtualenvwrapper.el virtualenvwrapper]
 * [https://github.com/aculich/virtualenv.el virtualenv.el] - deprecated. 
