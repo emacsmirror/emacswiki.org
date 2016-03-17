@@ -156,8 +156,8 @@ spaces, tabs, or a mixture of both."
              ;; TODO: Follow up in bug 21533.
              `(display (space :relative-width
                               ,redshift-cosmological-constant)))
-             ;; `(display (space :width ,(* this-char-width
-             ;;                             redshift-cosmological-constant))))
+            ;; `(display (space :width ,(* this-char-width
+            ;;                             redshift-cosmological-constant))))
             (setq end-char this-char
                   end-column this-column)))))))
 
