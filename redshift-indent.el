@@ -51,9 +51,8 @@
 
 ;;; Known issues:
 ;;
-;; The current implementation unavoidably breaks for tabs which are visually
-;; narrower than tab-width.  If you do not use tabs for indentation, this will
-;; probably be ok.  This might be resolved in future releases of Emacs.
+;; The current implementation doesn't correctly handle tabs, so I recommend
+;; only using this for indentation which is 100% spaces.
 
 ;;; Naming scheme:
 ;;
