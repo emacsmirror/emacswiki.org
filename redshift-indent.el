@@ -4,7 +4,7 @@
 ;; URL: https://www.emacswiki.org/emacs/redshift-indent.el
 ;; Keywords: convenience
 ;; Created: Sep 2015
-;; Version: 0.43
+;; Version: 0.4.3
 
 ;; This file is not part of GNU Emacs.
 ;;
@@ -86,7 +86,7 @@
 ;; the indentation for that line, but this is less agreeable when editing).
 
 ;;; Change Log:
-;; 0.43 - Work-in-progress release to the Emacs Wiki.
+;; 0.4.3 - Work-in-progress release to the Emacs Wiki.
 
 ;;; Code:
 
