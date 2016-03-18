@@ -65,7 +65,7 @@ else
 fi
 }}}
 
-Wherever you run ##gpg##, you need to set the ##GPG_AGENT_INFO## environment variable. Here's what I have in my ##~/.bashrc## because I use ##bash#. And ##~/.bash_profile## sources the same file, so this code runs no matter what.
+Wherever you run ##gpg##, you need to set the ##GPG_AGENT_INFO## environment variable. Here's what I have in my ##~/.bashrc## because I use ##bash##. And ##~/.bash_profile## sources the same file, so this code runs no matter what.
 
 {{{
 # GPG
