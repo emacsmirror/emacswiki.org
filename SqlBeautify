@@ -98,6 +98,25 @@ Write following definitions to .emacs:
 </pre>
 
 And you can format SQL with <code>M-x sql-beautify-region</code> or <code>M-x sql-beautify-buffer</code>.
+
+Alternatively, provide another function to automatically beautify the entire buffer or the marked region, if one is active.
+
+<pre>
+(defun sql-beautify-region-or-buffer ()
+  "Beautify SQL for the entire buffer or the marked region between beg and end"
+  (interactive)
+  (if (use-region-p)
+      (sql-beautify-region (region-beginning) (region-end))
+    (sql-beautify-buffer)))
+</pre>
+
+Then provide a hook to assign a key command when in sql-mode:
+<pre>
+(add-hook 'sql-mode-hook '(lambda ()                                                                               
+  ;; beautify region or buffer                                                           
+  (local-set-key (kbd "C-M-]") 'sql-beautify-region-or-buffer))) 
+</pre>
+
 == Joseph 's Emacs Frontend ==
 <pre>
  (define-key sql-mode-map "\C-\M-\\" 'sql-beautify)
