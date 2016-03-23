@@ -107,6 +107,7 @@ I'm not sure if this is truly a bug, but it is a frustration to which I haven't 
 
 == Running Screen Under AnsiTerm ==
 
+=== General solution for eterm-color ===
 If you get the message ##Cannot find terminfo entry for 'eterm-color'.## try copying the ##eterm## entry: ##cp /usr/share/terminfo/e/eterm /usr/share/terminfo/e/eterm-color##
 
 If the remote server is SunOS, we might need to put the following
@@ -116,6 +117,12 @@ If the remote server is SunOS, we might need to put the following
 ##export TERMINFO##
 
 in the remote server's ##.bashrc## file.
+
+=== Debian-based solution for eterm-color ===
+If you are in Debian, Ubuntu, Mint, etc. it is possible to install ncurses-term:
+{{{
+sudo aptitude install ncurses-term
+}}}
 
 == Fast connection to a remote shell ==
 
