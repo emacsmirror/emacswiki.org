@@ -10,6 +10,23 @@ only once you actually Save.
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
+===Adding options to mudraw in DocViewMode===
+[new]
+How to send arguments to mudraw with doc-view? I don't really know how to do this. I could possibly hack my way using doc-view.el, but my previous excursions show me that I can deal with simple stuff, and something more complex takes me days off my actual job. I know that DocViewMode can set customizations for ghostscript, for instance, but setting them for mudraw is not possible yet. I managed to do a static change that allows me to have inverted colors (look at the ,##"-I"##):
+{{{
+(defun doc-view-pdf->png-converter-mupdf (pdf png page callback)
+  "This function was modified to have inverted colors"
+  (doc-view-start-process
+   "pdf->png" doc-view-pdfdraw-program
+   `(,(concat "-o" png)
+     ,(format "-r%d" (round doc-view-resolution))
+     ,"-I"                                        ; ← change is here
+     ,pdf
+     ,@(if page `(,(format "%d" page))))
+   callback))
+}}}
+I think that this can be useful to someone (what I did and what can be done).
+
 ===Speedbar-sr should activate the newly opened window===
 [new] 
 When clicking on a file in the speedbar tree, is it possible to activate that frame when the new buffer opens. For me, the speedbar window remains active
