@@ -47,3 +47,22 @@ I think your question is "Why do I see an extra `1' at the end?"  If so, the ans
 
 -- DrewAdams 2013-05-08 14:45 UTC
 
+
+----
+
+Again, macros can be useful.
+
+(defmacro lambda-evaluator (lambda-form)
+  `(funcall ,lambda-form))
+
+(defun my-f (param)
+  (lambda-evaluator #'(lambda () (+ 1 param))))
+
+(my-f 1)
+==> 2
+
+(my-f 2)
+==> 3
+
+-- hajovonta 2016-03-23 21:15 UTC
+
