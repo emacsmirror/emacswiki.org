@@ -38,10 +38,19 @@ NOTE: On a Mac install asciidoc and docbook2x first. For example, via brew:
 
 === Python ===
 
+At https://github.com/politza/python-info you can find info files for a few most
+recent Python versions 2 and 3. In the README of that repo are instructions how to
+convert any Python documentation, if based on "Sphinx", to emacs info files.
+
+To install:
+
+  $ wget https://github.com/politza/python-info/raw/master/python-2.7.6.info.gz
+  $ install-info python-2.7.6.info.gz dir
+
+This one seems to be no longer updated (via JonathanWaltman)
+
   $ wget https://bitbucket.org/jonwaltman/pydoc-info/downloads/python.info.gz
   $ install-info python.info.gz dir
-
-(via JonathanWaltman)
 
 === Perl ===
 
