@@ -10,3 +10,6 @@ the edit buffer and copies back the text commented according to the
 current comment style into the original buffer.
 
 Details can be found in the commentary section of the source file.
+
+
+balducci at units dot it
