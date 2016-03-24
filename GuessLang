@@ -6,11 +6,7 @@ currently supported are English, French, German, Danish, Polish,
 Spanish and somewhat Russian (based on loosely collected words from
 various .po files ... does anybody want to help ?).
 
-You can get it from here:
-
-* http://www.grassouille.org/code/sources/guess-lang.el
-
-The file was also posted to gnu.emacs.sources so you might have better luck there.  See EmacsNewsgroups for the archive.
+The file was posted to gnu.emacs.sources so you might have better luck there.  See EmacsNewsgroups for the archive.
 ----
 See also AutoLangMode.
 ----
