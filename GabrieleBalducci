@@ -1,0 +1,12 @@
+hello
+
+here you can find Lisp:comment-edit.el, which allows to create and/or edit
+shell-like (aka end-of-line) comments.
+
+Comments are created/edited in a dedicated buffer which is popped up
+when the comment-edit command is invoked; the user edits the comment
+as ordinary text in the edit buffer; when finished, C-cC-c pops down
+the edit buffer and copies back the text commented according to the
+current comment style into the original buffer.
+
+Details can be found in the commentary section of the source file.
