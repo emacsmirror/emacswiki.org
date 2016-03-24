@@ -39,7 +39,7 @@ choose node `##Isearch Yank##', whose name contains `yan' but does not
 start with it.  This is an obvious and standard '''Icicles''' feature.
 
 Although vanilla Emacs also accepts a substring as input for `i',
-it does not provide [[regexp]]completion, and it will not
+it does not provide [[regexp]] completion, and it will not
 accept a regexp as final input.
 
 ''Icicle'' mode binds `g', `i', and `m' to ''[[multi-command]]s''
