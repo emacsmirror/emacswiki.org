@@ -24,13 +24,13 @@ These pages offer spelling help:
 * FlyspellBabel -- Switch flyspell language according to LaTeX
 Babel commands.
 
+* AutoDictionaryMode -- Yet another dictionary guesser.  Works during idle time and supports self-updating templates.
+
 * AutoLangMode -- Guesses the language of the current buffer/paragraph from content.
 
 * GuessLang -- Similar guessing from content, but only for a whole buffer.
 
 * GuessBufferLanguage -- A simpler approach for guessing the language of a buffer.
-
-* AutoDictionaryMode -- Yet another dictionary guesser.  Works during idle time and supports self-updating templates.
 
 * WikiSpell -- GuessBufferLanguage adapted for use with Wikis.
 
