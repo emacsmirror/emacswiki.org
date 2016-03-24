@@ -50,3 +50,6 @@ For instance, this works for ERC:
   (put 'erc-mode 'flyspell-mode-predicate 'erc-flyspell-predicate)
 
 -- [[nschum]]
+
+----
+CategorySpelling
