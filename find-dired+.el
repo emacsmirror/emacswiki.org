@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:15:25 2015 (-0800)
+;; Last-Updated: Fri Mar 25 14:13:15 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1196
+;;     Update #: 1199
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -90,6 +90,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/03/25 dadams
+;;     find-dired-sentinel: Put 2 SPC chars at bol so msg not taken as a mark.  Thx to Tino Calancha.
 ;; 2015/08/27 dadams
 ;;     Removed require of find-dired-.el.
 ;; 2015/08/19 dadams
@@ -584,7 +586,7 @@ STATE is the state of process PROC."
         (let ((buffer-read-only  nil))
           (save-excursion
             (goto-char (point-max))
-            (insert "\nfind " state)    ; STATE is, e.g., "finished".
+            (insert "\n  find " state)  ; STATE is, e.g., "finished".  Insert 2 SPC so f in `find' is not taken as a mark.
             (forward-char -1)           ; Back up before \n at end of STATE.
             (insert " at " (substring (current-time-string) 0 19))
             (forward-char 1)
