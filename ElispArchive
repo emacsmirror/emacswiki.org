@@ -8,6 +8,9 @@ The classic anonymous ftp access changed to
 Even the original index web page can be viewed at
 * ftp://ftp.cse.ohio-state.edu/pub/emacs-lisp/WWW/index.html
 
+A copy of the final state of the archive is available on github:
+* https://github.com/emacsmirror/ohio-archive
+
 ------------
 
 The Ohio Emacs Lisp Archive is closed.  Use the ElispArea instead.
