@@ -270,6 +270,8 @@ Hi Andy - thanks for multiterm :)  I'm experiencing an odd issue in FreeBSD, whi
 What's the dedicated-open for?
 -Mike
 
+[new]
+Mike, it opens a dedicated window for multi-term. You can read about dedicated windows in [https://www.gnu.org/software/emacs/manual/html_node/elisp/Dedicated-Windows.html the Emacs manual].
 ----
 CategoryShell
 
