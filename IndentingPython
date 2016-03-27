@@ -14,12 +14,12 @@ PyIndent allows using C-like braces embedded in comments to manage indentation.
 
 when using python-mode.el and you want TAB characters, and not spaces this is what worked for me:
 
-(add-hook 'python-mode-hook
-	(lambda ()
-		(setq-default indent-tabs-mode t)
-		(setq-default tab-width 4)
-		(setq-default py-indent-tabs-mode t)
-	(add-to-list 'write-file-functions 'delete-trailing-whitespace)))
+    (add-hook 'python-mode-hook
+	    (lambda ()
+		    (setq-default indent-tabs-mode t)
+		    (setq-default tab-width 4)
+		    (setq-default py-indent-tabs-mode t)
+	    (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
 
 OK the delete-trailing-whitespace is extra magic and unrelated.
 ----
