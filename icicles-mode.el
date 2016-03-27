@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sun Feb 28 15:06:19 2016 (-0800)
+;; Last-Updated: Sun Mar 27 14:37:48 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 10262
+;;     Update #: 10267
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -184,7 +184,7 @@
   ;; icicle-saved-candidate-overlays, icicle-saved-completion-candidates, icicle-saved-kmacro-ring-max,
   ;; icicle-saved-proxy-candidates, icicle-saved-regexp-search-ring-max, icicle-saved-region-background,
   ;; icicle-saved-search-ring-max, icicle-search-complement-domain-p, icicle-search-current-overlay,
-  ;; icicle-search-map, icicle-search-overlays, icicle-search-refined-overlays
+  ;; icicle-search-map, icicle-search-overlays, icicle-search-refined-overlays, icicle-toggle-map
 (require 'icicles-cmd1)                 ; (This is required anyway by `icicles-cmd2.el'.)
   ;; icicle-add-buffer-candidate, icicle-add-buffer-config, icicle-customize-face-other-window,
   ;; icicle-select-bookmarked-region
@@ -745,7 +745,7 @@ Commentary headers of files `icicles-cmd1.el' and `icicles-cmd2.el'."
 
 (define-key icicle-minibuf-history-menu-map [icicle-clear-current-history]
   '(menu-item "Clear History Entries" icicle-clear-current-history
-    :help "Clear current minibuffer history of selected entries"))
+    :help "Clear current minibuffer history of selected entries" :keys "M-K"))
 (define-key icicle-minibuf-history-menu-map [icicle-erase-minibuffer]
   '(menu-item "Delete from History" icicle-erase-minibuffer-or-history-element
     :visible (memq last-command
@@ -3003,6 +3003,8 @@ Otherwise, bind COMMAND to whatever CURRENT is bound to in MAP."
 MAP is `minibuffer-local-completion-map' or
 `minibuffer-local-must-match-map'."
 
+  (define-key map (icicle-kbd "M-i") 'icicle-toggle-map)
+
   ;; Menu-bar `Minibuf' menu.
 
   (define-key map [menu-bar minibuf separator-complete2] '("--"))
@@ -3151,6 +3153,8 @@ MAP is `minibuffer-local-completion-map' or
 MAP is `minibuffer-local-completion-map',
 `minibuffer-local-filename-completion-map', or
 `minibuffer-local-must-match-map'."
+
+  (define-key map (icicle-kbd "M-i") nil)
 
   ;; Menu-bar `Minibuf' menu.
   ;; In Emacs 22+, local is parent of local-completion
