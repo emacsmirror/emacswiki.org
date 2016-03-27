@@ -16,7 +16,7 @@ Additionally _most_ packages distributed on the Emacswiki are also available as 
 
 Such repositories contains the full history of all files that are part of a particular package but purges all other history. These repositories can lag behind a few days.
 
-Also, if you are already comfortable using git and need to make changes to a package which can't be merged right away, branch that package's repository from the Emacsmirror and hack away without having to worry about stepping on somebody's toes (as it can happen when you edit somebodies package here on the Emacswiki without prior approval). As always when you fork: don't forget to ask upstream to merge once you are satisfied with your changes!
+Also, if you are already comfortable using git and need to make changes to a package which can't be merged right away, branch that package's repository from the Emacsmirror and hack away without having to worry about stepping on somebody's toes (as it can happen when you edit somebody's package here on the Emacswiki without prior approval). As always when you fork: don't forget to ask upstream to merge once you are satisfied with your changes!
 
 == Binary Files ==
 
