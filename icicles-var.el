@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Sun Feb 28 15:08:50 2016 (-0800)
+;; Last-Updated: Sun Mar 27 15:09:37 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1840
+;;     Update #: 1851
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -162,9 +162,9 @@
 ;;    `icicle-search-replacement-history',
 ;;    `icicle-successive-grab-count',
 ;;    `icicle-text-property-value-history',
-;;    `icicle-thing-at-pt-fns-pointer',
-;;    `icicle-transform-before-sort-p', `icicle-transform-function',
+;;    `icicle-thing-at-pt-fns-pointer', `icicle-toggle-map',
 ;;    `icicle-toggle-transforming-message',
+;;    `icicle-transform-before-sort-p', `icicle-transform-function',
 ;;    `icicle-universal-argument-map',
 ;;    `icicle-use-candidates-only-once-alt-p',
 ;;    `icicle-vardoc-last-initial-cand-set',
@@ -1450,6 +1450,48 @@ a single overlay (or nil).  Otherwise, this is a list of overlays.")
 (defvar icicle-thing-at-pt-fns-pointer 0
   "Current index into the car of `icicle-thing-at-point-functions'.
 This points to the current function in the list.")
+
+(defvar icicle-toggle-map nil
+  "Icicles keymap for toggle and cycle commands on prefix key `M-i'.
+Active only during completion in Icicle mode.")
+
+(define-prefix-command 'icicle-toggle-map)
+(define-key icicle-toggle-map (icicle-kbd "M-i") 'icicle-toggle-option) ; not bound, `M-i'
+(define-key icicle-toggle-map (icicle-kbd "a") 'icicle-toggle-annotation) ; C-x C-a, `a'
+(define-key icicle-toggle-map (icicle-kbd "A") 'icicle-toggle-case-sensitivity) ; C-A, `A'
+(define-key icicle-toggle-map "F" 'icicle-toggle-include-cached-files) ; C-x F, `F'
+(define-key icicle-toggle-map "g" 'icicle-toggle-C-for-actions) ; M-g, `g'
+(define-key icicle-toggle-map "h" 'icicle-dispatch-C-x.) ; C-x ., `h'
+(define-key icicle-toggle-map "m" 'icicle-toggle-show-multi-completion) ; M-m, `m'
+(define-key icicle-toggle-map "p" 'icicle-toggle-proxy-candidates) ; C-M-_, `p'
+(define-key icicle-toggle-map "q" 'icicle-dispatch-M-q) ; M-q, `q'
+(define-key icicle-toggle-map "r" 'icicle-toggle-include-recent-files) ; C-x R, `r'
+(define-key icicle-toggle-map "s" 'icicle-toggle-highlight-saved-candidates) ; S-pause, `s'
+(define-key icicle-toggle-map "t" 'icicle-cycle-image-file-thumbnail) ; C-x t, `t'
+(define-key icicle-toggle-map "w" 'icicle-toggle-WYSIWYG-Completions) ; C-S-pause, `w'
+(define-key icicle-toggle-map "," 'icicle-toggle-sorting) ; C-, is `*-change-sort-order', `,'
+(define-key icicle-toggle-map "\M-," 'icicle-toggle-alternative-sorting) ; C-M-,, `M-,'
+(define-key icicle-toggle-map "<" 'icicle-toggle-angle-brackets) ; not bound, `<'
+(define-key icicle-toggle-map "/" 'icicle-toggle-expand-directory) ; C-x /, `/'
+(define-key icicle-toggle-map "\"" 'icicle-toggle-expand-to-common-match) ; C-", `"'
+(define-key icicle-toggle-map "\M-\"" 'icicle-cycle-expand-to-common-match) ; C-", `"'
+(define-key icicle-toggle-map "#" 'icicle-cycle-incremental-completion) ; C-#,
+(define-key icicle-toggle-map (icicle-kbd "M-#") 'icicle-toggle-icomplete-mode) ; C-M-#, `#'
+(define-key icicle-toggle-map ":" 'icicle-toggle-network-drives-as-remote) ; C-x :, `:'
+(define-key icicle-toggle-map "$" 'icicle-toggle-transforming) ; C-$, `$'
+(define-key icicle-toggle-map "^" 'icicle-dispatch-C-^) ; C-^ via, `^'
+(define-key icicle-toggle-map "\M-^" 'icicle-toggle-completions-format) ; C-M-^, `M-^'
+(define-key icicle-toggle-map "." 'icicle-dispatch-C-.) ; C-., `.'
+(define-key icicle-toggle-map (icicle-kbd "M-.") 'icicle-toggle-dot) ; C-M-., `M-.'
+(define-key icicle-toggle-map "_" 'icicle-dispatch-M-_) ; M-_, `_'
+(define-key icicle-toggle-map "`" 'icicle-toggle-literal-replacement) ; C-M-`, ``'
+(define-key icicle-toggle-map (icicle-kbd "C-`") 'icicle-toggle-regexp-quote) ; C-`, `C-`'
+(define-key icicle-toggle-map ";" 'icicle-toggle-ignoring-comments) ; C-M-; `;'
+(define-key icicle-toggle-map "\M-;" 'icicle-toggle-search-replace-common-match) ; M-;, `M-;'
+(define-key icicle-toggle-map "~" 'icicle-toggle-search-complementing-domain) ; C-M-~, `~'
+(define-key icicle-toggle-map "\M-~" 'icicle-toggle-~-for-home-dir) ; M-~, `M-~'
+(define-key icicle-toggle-map (icicle-kbd "pause")
+  'icicle-toggle-highlight-historical-candidates) ; C-pause, `pause'
 
 (defvar icicle-toggle-transforming-message "Completion-candidate transformation is now %s"
   "Message used by `icicle-toggle-transforming'.
