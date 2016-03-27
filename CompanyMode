@@ -33,6 +33,12 @@ A visualization (frontend) is also a single function.  It looks like this:
 
 It can be installed by adding it to ''company-frontends''.
 
+==Related packages other than backends==
+
+[http://melpa.org/#/helm-company helm-company] provides a helm interface for company-mode.
+
+[http://melpa.org/#/company-quickhelp company-quickhelp] provides popup documentation for completion candidates, as [https://github.com/expez/company-quickhelp#is-it-any-good here].
+
 == Issues & questions ==
 
 ==== Why is `company-backends' initialized with `company-css', `company-elisp', etc? Shouldn't we add those symbols to `company-backends' when their respective libraries are required? ===
