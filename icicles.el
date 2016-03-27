@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2016.03.04
+;; Version: 2016.03.27
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar  4 09:19:47 2016 (-0800)
+;; Last-Updated: Sun Mar 27 16:41:13 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 23697
+;;     Update #: 23699
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -1561,8 +1561,8 @@
 ;;    `icicle-successive-grab-count',
 ;;    `icicle-text-property-value-history',
 ;;    `icicle-thing-at-pt-fns-pointer', `icicle-this-cmd-keys',
+;;    `icicle-toggle-map', `icicle-toggle-transforming-message',
 ;;    `icicle-transform-before-sort-p', `icicle-transform-function',
-;;    `icicle-toggle-transforming-message',
 ;;    `icicle-universal-argument-map',
 ;;    `icicle-vardoc-last-initial-cand-set',
 ;;    `icicle-variable-name-history', `icicle-vmfoc-other-win-p',
