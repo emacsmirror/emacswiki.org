@@ -84,7 +84,9 @@ Both [https://melpa.org/#/py-yapf py-yapf] and [https://github.com/jorgenschaefe
 Both [https://melpa.org/#/py-autopep8 py-autopep8] and [https://github.com/jorgenschaefer/elpy Elpy] support applying autopep8 to the current buffer.
 
 ===Running tests===
-[https://bitbucket.org/durin42/nosemacs nosemacs] is a mode to run the nosetests testing framework.
+[https://melpa.org/#/nose nose] and [https://bitbucket.org/durin42/nosemacs nosemacs] support running nose tests.
+
+Elpy supports the standard unittest discovery runner, the Django discovery runner, nose and py.test
 
 ===Reporting test coverage===
 [https://github.com/mattharrison/pycoverage.el pycoverage.el] generates reports using  [https://pypi.python.org/pypi/coverage coverage] and provides a minor mode for displaying coverage by overriding `linum-mode'.  Alternatively, a [[Flycheck]] checker could be used to display coverage.
