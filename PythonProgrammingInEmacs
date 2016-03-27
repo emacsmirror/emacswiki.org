@@ -48,29 +48,12 @@ Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyf
 [[Flycheck]] integrates flake8 and pylint.  It can be used with multiple checkers per buffer.
 ==== Flymake====
 =====pylint=====
-[[FlyMake]] can be used with pylint, as documented at http://docs.pylint.org/ide-integration.
+Pylint can be configured to use [[FlyMake]], as documented at http://docs.pylint.org/ide-integration.
 
 =====flake8 / pyflakes=====
-https://github.com/purcell/flymake-python-pyflakes is a flymake handler for python-mode.el using pyflakes or flake8, although the author suggests you might be better served using [[Flycheck]].
+[https://melpa.org/#/flymake-python-pyflakes flymake-python-pyflakes] is a FlyMake handler using pyflakes or flake8, although the author suggests you might be better served using [[Flycheck]].
 
-[https://github.com/jorgenschaefer/elpy Elpy] uses [[FlyMake]] with flake8.  It can also be used alongside [[Flycheck]].
-
-Alternatively pyflakes can added as a checker to FlyMake as below:
-{{{
-(when (load "flymake" t)
-  (defun flymake-pyflakes-init ()
-     ; Make sure it's not a remote buffer or flymake would not work
-     (when (not (subsetp (list (current-buffer)) (tramp-list-remote-buffers)))
-      (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                         'flymake-create-temp-inplace))
-             (local-file (file-relative-name
-                          temp-file
-                          (file-name-directory buffer-file-name))))
-        (list "pyflakes" (list local-file)))))
-  (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.py\\'" flymake-pyflakes-init)))
-}}}
-This should work as long as pyflakes is installed and on your PATH.
+[https://github.com/jorgenschaefer/elpy Elpy] supports using FlyMake with flake8.
 
 ===== Using multiple checkers =====
 Flymake only natively supports a single checker per buffer. However, more than 
