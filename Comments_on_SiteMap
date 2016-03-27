@@ -249,7 +249,11 @@ These are some conclusions from past discussions.
 
 ==New topic...==
 [new:JimThompson:2016-03-27 11:50 UTC]
-I really like the look and feel of the EmacsWiki. Can someone tell me what software powers it? (I looked around the site and even glanced at the HTML source, but no luck.)
+[s]I really like the look and feel of the EmacsWiki. Can someone tell me what software powers it? (I looked around the site and even glanced at the HTML source, but no luck.)[/s]
+
+Never mind. I found it on the WikiIntro page.
+[new:JimThompson:2016-03-27 11:55 UTC]
+Second question: The style at EmacsWiki is different than that at [http://www.oddmuse.org/ Oddmuse]. I like the EmacsWiki style better - it's just as simple yet also more elegant. Would it be possible for me to get my hands on the stylesheet for the wiki? Who would I ask?
 
 -- JimThompson
 
