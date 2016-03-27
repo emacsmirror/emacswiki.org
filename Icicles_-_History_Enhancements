@@ -53,7 +53,7 @@ limits the number of completion inputs to save.
 
 If you customize user option '''`<tt>[[Icicles - Customization and General Tips#icicle-C-l-uses-completion-flag|icicle-C-l-uses-completion-flag]]</tt>'''' to
 non-`nil', then, instead of cycling, `C-l' lets you use '''Icicles'''
-completion to retrieve a past completion input (`##C-##'''##L##'''' does the
+completion to retrieve a past completion input ('''`C-L'''' does the
 same thing).  Using completion to retrieve a past input does not
 also ''choose'' that input as the candidate for the main completion;
 it just replaces your current minibuffer input with it.  Because
