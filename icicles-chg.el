@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Mar  4 09:19:25 2016 (-0800)
+;; Last-Updated: Sun Mar 27 16:40:03 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 11595
+;;     Update #: 11606
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1164,6 +1164,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2016/03/27 dadams
+;;     icicle-add-key+cmd: Use princ, not prin1, for BNDG, for commands like icicle-dispatch-C-..
 ;; 2016/03/03 dadams
 ;;     icicle-search-read-context-regexp: Bind icicle-regexp-quote-flag to nil when reading regexp.
 ;; 2016/03/01 dadams
@@ -6360,6 +6362,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2016/03/27 dadams
+;;     icicle-(bind|restore)-completion-keys: Bind M-i to icicle-toggle-map and restore to nil.
 ;; 2016/02/28 dadams
 ;;     icicle-show-help-in-mode-line: Use new option icicle-complete-keys-separator.
 ;; 2015/08/20 dadams
@@ -7673,6 +7677,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2016/03/27 dadams
+;;     icicle-completion-key-bindings, icicle-minibuffer-key-bindings:
+;;       Changed icicle-clear-current-history from M-i to M-K.
+;;     icicle-keymaps-for-key-completion: Added icicle-toggle-map.
 ;; 2016/03/01 dadams
 ;;     icicle-search-replace-common-match-flag: Qualify toggle keys as being for Icicles search.
 ;; 2016/02/28 dadams
@@ -8618,6 +8626,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2016/03/27 dadams
+;;     Added: icicle-toggle-map.  Define its keys here too.
 ;; 2016/02/28 dadams
 ;;     icicle-complete-keys-alist: Refer to new option icicle-complete-keys-separator.
 ;; 2015/08/22 dadams
