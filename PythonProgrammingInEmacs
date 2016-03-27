@@ -33,11 +33,20 @@ If you have `transient-mark-mode' on, you can just use `comment-dwim': select a 
 [ProgrammingWithPythonModeDotEl python-mode.el] also provides `py-comment-region and commands to comment/uncomment all known forms, def, block, clause etc.
 
 ===Completion===
-[https://github.com/tkf/emacs-jedi Jedi.el] is a Python auto-completion package using [AutoComplete] and [https://github.com/davidhalter/jedi jedi]. It can also be used as a back end for [CompanyMode].
 
-[https://github.com/python-rope/ropemacs Ropemacs] can be used as a backend for [AutoComplete] and [CompanyMode].
+Note that some IDE packages provide completion, e.g. Elpy provides completion using either jedi or rope as a backend to CompanyMode.
 
-[https://github.com/tavisrudd/emacs.d/blob/master/dss-completion.el Auto-Complete support in IPython shell buffers]
+You can also configure completion by using either jedi or rope as a backend to either CompanyMode or AutoComplete.
+
+For [https://github.com/davidhalter/jedi jedi]:
+* [https://melpa.org/#/company-jedi company-jedi] provides a backend for CompanyMode.
+* [https://github.com/tkf/emacs-jedi Jedi.el] provides a backend for AutoComplete.
+
+For [https://pypi.python.org/pypi/rope rope]:
+* [https://github.com/python-rope/ropemacs Ropemacs] can be used as a backend for both CompanyMode and AutoComplete.
+
+An experiment:
+* [https://github.com/tavisrudd/emacs.d/blob/master/dss-completion.el AutoComplete support in IPython shell buffers]
 
 === Code generation helpers ===
 [[Yasnippet]] comes with a set of templates for Python.
@@ -175,8 +184,8 @@ ERROR - failed to write data to stream: <_io.TextIOWrapper name='<stdout>' mode=
 ===How to improve this page===
 Round out support features in line with https://lists.gnu.org/archive/html/emacs-devel/2015-10/msg00669.html
 
-Add sections on: debugging, profiling, semantic editing (?)
+Add sections on: debugging, profiling, semantic editing (?), code navigation
 
-Extend sections on: refactoring, completion 
+Extend sections on: refactoring 
 ----
 Categories: CategoryProgramming, ProgrammingModes
