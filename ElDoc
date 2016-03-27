@@ -7,8 +7,7 @@ ElDoc works for EmacsLisp and certain other language modes that implement suppor
 * css-eldoc -- for css-mode, available on melpa, see https://github.com/zenozeng/css-eldoc
 * EshellElDoc -- for Eshell
 * EukleidesMode -- for Eukleides plane geometry language
-* PythonMode (the <tt>python.el</tt> one) -- but only in Emacs 22, or using an
-Emacs 21 [http://www.loveshack.ukfsn.org/emacs/eldoc.el back-port]
+* PythonMode (the <tt>python.el</tt> one)
 * SemanticBovinator -- tools using that system
 * TaclMode -- Tandem/NSK/Guardian
 * TalMode -- Tandem/NSK/Guardian
