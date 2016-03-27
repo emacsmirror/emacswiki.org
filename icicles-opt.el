@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Tue Mar  1 07:53:15 2016 (-0800)
+;; Last-Updated: Sun Mar 27 15:39:00 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 6121
+;;     Update #: 6127
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2016,12 +2016,11 @@ the full candidate object.")
                                                                                       ; (`C-M-S-v')
     (,(icicle-kbd "C-=")     icicle-insert-string-from-variable
      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `C-='
-    ;; Replaces `tab-to-tab-stop':
-    (,(icicle-kbd "M-i")     icicle-clear-current-history
-     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-i'
     ;; Replaces `kill-sentence':
     (,(icicle-kbd "M-k")     icicle-erase-minibuffer-or-history-element
      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-k'
+    (,(icicle-kbd "M-K")     icicle-clear-current-history
+     (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-K'
     (,(icicle-kbd "M-o")     icicle-insert-history-element
      (not (eq minibuffer-local-map (keymap-parent minibuffer-local-completion-map)))) ; `M-o'
     (,(icicle-kbd "M-.")     icicle-insert-string-at-point
@@ -3460,8 +3459,9 @@ to toggle an option value."
 
 (defcustom icicle-keymaps-for-key-completion
   '(apropos-mode-map bookmark-bmenu-mode-map bmkp-jump-map bmkp-jump-other-window-map
-    calendar-mode-map dired-mode-map facemenu-keymap help-mode-map jde-mode-map jde-jdb-mode-map
-    senator-mode-map srecode-mode-map synonyms-mode-map vc-dired-mode-map)
+    calendar-mode-map dired-mode-map facemenu-keymap help-mode-map icicle-toggle-map
+    jde-mode-map jde-jdb-mode-map senator-mode-map srecode-mode-map synonyms-mode-map
+    vc-dired-mode-map)
   "*List of keymaps in which to bind `S-TAB' to `icicle-complete-keys'.
 List elements are symbols that are bound to keymaps.
 
@@ -3609,8 +3609,8 @@ to toggle an option value."
     (,(icicle-kbd "M-.")           icicle-insert-string-at-point t)                   ; `M-.'
     (,(icicle-kbd "C-x C-f")       icicle-resolve-file-name t)                        ; `C-x C-f'
     (,(icicle-kbd "C-=")           icicle-insert-string-from-variable t)              ; `C-='
-    (,(icicle-kbd "M-i")           icicle-clear-current-history t)                    ; `M-i'
     (,(icicle-kbd "M-k")           icicle-erase-minibuffer-or-history-element t)      ; `M-k'
+    (,(icicle-kbd "M-K")           icicle-clear-current-history t)                    ; `M-K'
     (,(icicle-kbd "M-o")           icicle-insert-history-element t)                   ; `M-o'
     (,(icicle-kbd "M-R")           icicle-multi-inputs-act t)                         ; `M-R'
     (,(icicle-kbd "M-S")           icicle-multi-inputs-save t)                        ; `M-S'
