@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Thu Mar  3 09:36:50 2016 (-0800)
+;; Last-Updated: Sun Mar 27 16:05:30 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7303
+;;     Update #: 7306
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -9077,9 +9077,12 @@ Each is a vector."
                                               'face 'icicle-candidate-part)))
                     (candidate  (intern (concat key-desc
                                                 icicle-complete-keys-separator
-                                                (if (keymapp bndg) "..." (prin1-to-string bndg))))))
+                                                (if (keymapp bndg)
+                                                    "..."
+                                                  ;; Use `princ' so `C-M-RET' works for, e.g. ".  =  foo-."
+                                                  (with-output-to-string (princ bndg)))))))
                ;; Skip keys bound to `undefined'.
-               (unless (string= "undefined" (prin1-to-string bndg))
+               (unless (string= "undefined" (with-output-to-string (princ bndg)))
                  (push (cons candidate (cons (vector event) bndg)) icicle-complete-keys-alist))
                (when (eq icicle-active-map (current-local-map))
                  (if (and (stringp mitem)  (keymapp bndg))
