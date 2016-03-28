@@ -161,6 +161,8 @@ This should work with any recent IPython, including on Windows.
 * Install [ProgrammingWithPythonModeDotEl python-mode]
 * ##(setq py-jython-command "c:/Program Files/IronPython 2.6 for .NET 4.0/ipy.exe")##
 * Open a .py file. C-c C-t will toggle "jython", C-c ! will start a shell
+===Cython===
+See CythonMode
 
 === Unicode on Mac OS X === 
 When using Emacs 24.1 on Mac OS X compiled via homebrew. The python-shell always used US-ASCII as encoding. To fix it I used:
