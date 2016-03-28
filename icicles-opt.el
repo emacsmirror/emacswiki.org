@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Mar 27 15:39:00 2016 (-0700)
+;; Last-Updated: Sun Mar 27 21:29:32 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 6127
+;;     Update #: 6134
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -792,7 +792,7 @@ Note: A few Icicles commands ignore this setting, in order to \"do the
 right thing\".
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Key-Bindings :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-add-proxy-candidates-flag nil ; Toggle with `C-M-_'.
@@ -812,7 +812,7 @@ the completing command for the new value to take effect.  (This is for
 performance reasons.)
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Matching)
 
 (defcustom icicle-alternative-actions-alist ()
@@ -870,7 +870,7 @@ Anything candidates might be more readable.
 This option has no effect if library `anything.el' cannot be loaded.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
 (defcustom icicle-apropos-complete-keys (if (> emacs-major-version 23) ; `S-TAB'
@@ -997,7 +997,7 @@ Regardless of the option value, the cache is refreshed whenever you
 use `S-delete' to delete a candidate bookmark.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
 (defcustom icicle-buffer-candidate-key-bindings
@@ -1046,7 +1046,8 @@ List elements are strings."
 You can toggle this option from the minibuffer using
 `\\<minibuffer-local-completion-map>\\[icicle-dispatch-M-_]' (except during Icicles searching).  \
 You can also use
-multi-command `icicle-toggle-option' anytime to toggle the option."
+multi-command `icicle-toggle-option' anytime (`M-i M-i' during
+completion) to toggle the option."
   :type 'boolean :group 'Icicles-Buffers :group 'Icicles-Matching)
 
 (defcustom icicle-buffer-include-cached-files-nflag (if (boundp 'most-positive-fixnum)
@@ -1257,7 +1258,7 @@ Specifically, those commands then bind these options to t:
  `icicle-default-value'
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Buffers :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
 (defcustom icicle-candidate-action-keys '([C-return]) ; `C-return'
@@ -1688,7 +1689,7 @@ value for this option is particularly useful if you use
 delete-selection mode.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Minibuffer-Display)
 
 (defcustom icicle-change-sort-order-completion 7
@@ -1716,7 +1717,7 @@ entries, by default.  Otherwise, it cycles among the possible previous
 inputs.  You can override the behavior by using `C-u' with `\\[icicle-retrieve-previous-input]'.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Minibuffer-Display :group 'Icicles-Matching)
 
 (defcustom icicle-cmpl-include-cdabbrev-flag nil
@@ -1739,7 +1740,7 @@ with these differences:
 * Case-sensitivity is handled as for other `completion.el' completion.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Matching)
 
 (defcustom icicle-cmpl-max-candidates-to-cycle 7
@@ -1838,7 +1839,7 @@ invoked via ABBREV.  Both COMMAND and ABBREV are symbols."
 Otherwise, an abbrev need match only a prefix of the command name.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Matching)
 
 (defcustom icicle-command-abbrev-priority-flag nil
@@ -1846,7 +1847,7 @@ to toggle an option value."
 \\[icicle-command-abbrev]'.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Matching)
 
 (defcustom icicle-complete-key-anyway-flag nil
@@ -1861,7 +1862,7 @@ Note: the keys in `icicle-key-complete-keys' are always bound to
 the binding of those keys in `icicle-keymaps-for-key-completion'.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Key-Completion :group 'Icicles-Key-Bindings)
 
 (when (fboundp 'map-keymap)             ; Emacs 22+.
@@ -2457,7 +2458,7 @@ That is, add some functions to `kill-emacs-hook' that call
 `icicle-command-abbrev-alist'.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Minibuffer-Display)
 
 (defcustom icicle-customize-save-variable-function 'customize-save-variable
@@ -2674,7 +2675,7 @@ case, no such command is ever defined by Icicles if a function with
 the same name is already defined.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
    :type 'boolean :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-deletion-action-flag t
@@ -2689,7 +2690,7 @@ accidentally hitting `S-delete', you can customize this to nil to
 inhibit `S-delete' object deletion during completion.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-dot-show-regexp-flag nil
@@ -2698,7 +2699,7 @@ Otherwise, display it as a highlighted `.' only.
 This has no effect for Emacs versions prior to 21: acts as if non-nil.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Matching :group 'Icicles-Minibuffer-Display)
 
 (defcustom icicle-dot-string "."
@@ -2861,7 +2862,7 @@ Specifically, those commands then bind these options to t:
 This option has no effect for Emacs 20.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean
   :group 'Icicles-Files :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
@@ -2875,7 +2876,7 @@ filesets of different type.  Available only for Emacs 22 and later,
 and you must load library `filesets.el'.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Matching)
 
 (defcustom icicle-find-file-expand-directory-flag nil
@@ -3037,7 +3038,7 @@ ellipsis (`...').
 
 You can toggle this option during completion using `C-x .' (no prefix
 arg).  You can also use multi-command `icicle-toggle-option' anytime
-to toggle the option value.
+\(`M-i M-i' during completion) to toggle the option value.
 
 See also option `icicle-hide-non-matching-lines-flag'."
   :type 'boolean :group 'Icicles-Miscellaneous)
@@ -3050,7 +3051,7 @@ minibuffer input are elided using ellipsis (`...').
 
 You can toggle this option during completion using `C-u C-x .'.  You
 can also use multi-command `icicle-toggle-option' anytime to toggle
-the option value.
+\(`M-i M-i' during completion) the option value.
 
 See also option `icicle-hide-common-match-in-Completions-flag'."
   :type 'boolean :group 'Icicles-Completions-Display)
@@ -3072,7 +3073,7 @@ Historical candidates are those that you have entered (using `RET' or
 
 You can toggle this option from the minibuffer at any time using
 `C-pause'.  You can also use multi-command `icicle-toggle-option'
-anytime to toggle the option value."
+\(`M-i M-i' during completion) anytime to toggle the option value."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 (defcustom icicle-highlight-input-completion-failure 'implicit-strict
@@ -3177,7 +3178,7 @@ candidate starts with whitespace, and if Icicles is highlighting input
 completion failure, then only that highlighting is shown.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Minibuffer-Display)
 
 (defcustom icicle-highlight-lighter-flag t
@@ -3186,7 +3187,7 @@ See the Icicles doc, section `Nutshell View of Icicles', subsection
 `Completion Status Indicators' for more information.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-highlight-saved-candidates-flag t ; Toggle with `S-pause'.
@@ -3196,7 +3197,7 @@ You save candidates using, for example, `C-M->'.
 
 You can toggle this option from the minibuffer at any time using
 `S-pause'.  You can also use multi-command `icicle-toggle-option'
-anytime to toggle the option value."
+\(`M-i M-i' during completion) anytime to toggle the option value."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 (defcustom icicle-icomplete-mode-max-candidates 30
@@ -3228,7 +3229,7 @@ You can toggle this option using `C-M-;' in the minibuffer, but to see
 the effect you might need to invoke the current command again.
 
 You can also use multi-command `icicle-toggle-option' anytime to
-toggle the option value."
+\(`M-i M-i' during completion) toggle the option value."
   :type 'boolean :group 'Icicles-Searching)
 
 (defcustom icicle-ignored-directories (and (boundp 'vc-directory-exclusion-list)
@@ -3365,7 +3366,7 @@ reactivated when you leave Icicle mode."
 If nil, Icicles sometimes signals you with a sound.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-input-string ".*"
@@ -3454,7 +3455,7 @@ This has no effect for versions of Emacs prior to 21, because
 they never use angle brackets.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Key-Completion :group 'Icicles-Minibuffer-Display)
 
 (defcustom icicle-keymaps-for-key-completion
@@ -3592,7 +3593,7 @@ After you change the value of this option, toggle Icicle mode off,
 then on again, for the change to take effect in the same session.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;; Inspired from `icomplete-minibuffer-setup-hook'.
@@ -3824,7 +3825,7 @@ tests (`interactive-p' and `called-interactively-p') to fail, whenever
 feature).
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
     :type 'boolean :group 'Icicles-Miscellaneous))
 
 (defcustom icicle-pp-eval-expression-print-length nil
@@ -3951,7 +3952,7 @@ See the doc string of `icicle-quote-file-name-part-of-cmd' for
 information about the characters that, like SPC, lead to quoting.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 (when (fboundp 'read-char-by-name)      ; Emacs 23+
@@ -3994,7 +3995,7 @@ completion.  It also turns Icicles searching into literal searching.
 
 You can toggle this option from the minibuffer at any time using
 `C-`'.  You can also use multi-command `icicle-toggle-option' anytime
-to toggle the option value."
+\(`M-i M-i' during completion) to toggle the option value."
   :type 'boolean :group 'Icicles-Matching)
 
 (defcustom icicle-regexp-search-ring-max (if (boundp 'most-positive-fixnum)
@@ -4096,7 +4097,8 @@ If this is nil, highlighting can be removed manually with
 
 You can toggle this option from the minibuffer during Icicles search
 \(e.g., `C-c`') using `C-.'.  You can also use multi-command
-`icicle-toggle-option' anytime to toggle the option value."
+`icicle-toggle-option' (`M-i M-i' during completion) anytime to
+toggle the option value."
   :type 'boolean :group 'Icicles-Searching)
 
 (defcustom icicle-search-from-isearch-keys (if (> emacs-major-version 23) ; `S-TAB'
@@ -4128,7 +4130,8 @@ highlighting is updated with each input change.
 
 You can toggle this option from the minibuffer during Icicles search
 \(e.g., `C-c`') using `C-^'.  You can also use multi-command
-`icicle-toggle-option' anytime to toggle the option value."
+`icicle-toggle-option' (`M-i M-i' during completion) anytime to
+toggle the option value."
   :type 'boolean :group 'Icicles-Searching)
 
 (defcustom icicle-search-highlight-context-levels-flag t
@@ -4138,7 +4141,7 @@ not used as the search context, that is, the context corresponds to
 the entire search regexp.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Searching)
 
 (defcustom icicle-search-highlight-threshold 100000
@@ -4179,8 +4182,8 @@ You can cycle those options from the minibuffer during Icicles search
 using `C-^' and `C-M-\"', respectively.  You can toggle
 `icicle-search-replace-common-match-flag' using `M-;'.
 
-Remember that you can also use multi-command `icicle-toggle-option'
-anytime to toggle an option value."
+Remember that you can use multi-command `icicle-toggle-option' anytime
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Searching)
 
 (defcustom icicle-search-replace-literally-flag nil ; Toggle with `C-M-`'.
@@ -4189,8 +4192,8 @@ Otherwise (nil), interpret `\\' specially in replacement text, as in
 the LITERAL argument to `replace-match'.
 
 You can use `C-M-`' to toggle this at any time during Icicles search.
-You can also use multi-command `icicle-toggle-option' anytime to
-toggle the option value."
+You can also use multi-command `icicle-toggle-option' anytime
+\(`M-i M-i' during completion) to toggle the option value."
   :type 'boolean :group 'Icicles-Searching)
 
 (defcustom icicle-search-replace-whole-candidate-flag t ; Toggle with `M-_'.
@@ -4199,8 +4202,8 @@ Otherwise (nil), replace only what matches your current input.
 
 You can use `\\<minibuffer-local-completion-map>\\[icicle-dispatch-M-_]' to \
 toggle this at any time during Icicles search.
-You can also use multi-command `icicle-toggle-option' anytime to
-toggle the option value."
+You can also use multi-command `icicle-toggle-option' anytime
+\(`M-i M-i' during completion) to toggle the option value."
   :type 'boolean :group 'Icicles-Searching)
 
 (defcustom icicle-search-ring-max (if (boundp 'most-positive-fixnum)
@@ -4225,8 +4228,8 @@ can include embedded whitespace in a \"word\", e.g., `foo bar'.
 
 You can use `M-q' to toggle this at any time during Icicles search;
 the new value takes effect for the next complete search.  You can also
-use multi-command `icicle-toggle-option' anytime to toggle the
-option value."
+use multi-command `icicle-toggle-option' anytime (`M-i M-i' during
+completion)  to toggle the option value."
   :type 'boolean :group 'Icicles-Searching)
 
 ;; Based more or less on `shell-dynamic-complete-as-command'.
@@ -4281,7 +4284,7 @@ candidates.  They are highlighted using face `icicle-annotation'.
 
 You can toggle this option from the minibuffer using `\\<minibuffer-local-completion-map>\
 \\[icicle-toggle-annotation]'.  You can also use multi-command `icicle-toggle-option'
-anytime to toggle the option value."
+anytime (`M-i M-i' during completion) to toggle the option value."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 (defcustom icicle-show-Completions-help-flag t
@@ -4292,7 +4295,7 @@ Note that vanilla Emacs option `completion-show-help' has no effect in
 Icicle mode.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 (defcustom icicle-show-Completions-initially-flag nil
@@ -4307,7 +4310,7 @@ That displays buffer `*Completions*' as soon as you type or delete
 input, but not initially.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 (defcustom icicle-show-multi-completion-flag t
@@ -4332,7 +4335,7 @@ shown.
 You can toggle this option from the minibuffer using `M-m'.  The new
 value takes effect after you exit the minibuffer (i.e., for the next
 command).  You can also use multi-command `icicle-toggle-option'
-anytime to toggle the option value."
+anytime (`M-i M-i' during completion) to toggle the option value."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 ;; This is similar to `bmkp-sort-comparer'.
@@ -4777,7 +4780,7 @@ Actually, the concerned keys are those defined by option
 `icicle-prefix-complete-keys', not necessarily `TAB'.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Key-Bindings)
 
 (defcustom icicle-TAB/S-TAB-only-completes-flag nil
@@ -4822,7 +4825,8 @@ avoid the cost of remote file name completion.
 
 You can toggle this option from the minibuffer using `C-^' (except
 during Icicles search).  You can also use multi-command
-`icicle-toggle-option' anytime to toggle the option value."
+`icicle-toggle-option' anytime (`M-i M-i' during completion) to toggle
+the option value."
   :initialize (lambda (opt-name val) (set opt-name t))
   :set (lambda (opt-name val)
          (or (not (require 'tramp nil t))  (prog1 (set opt-name (not val))
@@ -5310,7 +5314,7 @@ value incrementally."
 The sole completion is accepted.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Matching)
 
 (defcustom icicle-touche-pas-aux-menus-flag nil
@@ -5335,7 +5339,7 @@ Customize into your `user-init-file' or your `custom-file' is invoked
 before you enter Icicle mode.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Key-Bindings)
 
 (defcustom icicle-type-actions-alist
@@ -5526,7 +5530,7 @@ added by Icicles are always removed anyway.  A non-nil value lets you
 also remove properties such as `face'.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 (defcustom icicle-update-input-hook nil
@@ -5537,7 +5541,7 @@ to toggle an option value."
   "*Non-nil means abbreviate your home directory using `~'.
 You can toggle this option from the minibuffer at any time using
 `M-~'.  You can also use multi-command `icicle-toggle-option' anytime
-to toggle the option value."
+\(`M-i M-i' during completion) to toggle the option value."
   :type 'boolean :group 'Icicles-Key-Bindings)
 
 (defcustom icicle-use-C-for-actions-flag t ; Toggle with `M-g'.
@@ -5558,7 +5562,7 @@ those defined by these options:
 
 You can toggle this option from the minibuffer at any time using
 `M-g'.  You can also use multi-command `icicle-toggle-option' anytime
-to toggle the option value."
+\(`M-i M-i' during completion) to toggle the option value."
   :type 'boolean :group 'Icicles-Key-Bindings)
 
 (defcustom icicle-use-anything-candidates-flag t
@@ -5570,7 +5574,7 @@ used by command `icicle-object-action' (aka `a' and `what-which-how').
 This option has no effect if library `anything.el' cannot be loaded.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Matching)
 
 (defcustom icicle-use-candidates-only-once-flag nil
@@ -5591,7 +5595,7 @@ again, and they are not distracted seeing it as a candidate.
 See also non-option variable `icicle-use-candidates-only-once-alt-p'.
 
 Remember that you can use multi-command `icicle-toggle-option' anytime
-to toggle an option value."
+\(`M-i M-i' during completion) to toggle an option value."
   :type 'boolean :group 'Icicles-Matching)
 
 (defun icicle-widgetp (widget)
