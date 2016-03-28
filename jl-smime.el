@@ -2,9 +2,8 @@
 ;; -*- Mode: Emacs-Lisp -*-
 ;; -*- coding: utf-8 -*-
 
-;; Copyright (C) 2011, 2012, 2013 Jens Lechtenbörger
+;; Copyright (C) 2011, 2012, 2013, 2016 Jens Lechtenbörger
 
-;; Version: $Id: jl-smime.el,v 1.10 2013/12/31 12:01:57 lechten Exp $
 ;; Changelog:
 ;; 2012/03/09, Version 1.1, initial release
 ;; 2012/05/01, Version 1.2, extract certificate from signed message to file
@@ -19,9 +18,10 @@
 ;;    - new command jl-smime-key-available-p
 ;; 2013/12/31, Version 3.1:
 ;;    - updated documentation
+;; 2016/03/28, Version 3.2:
+;;    - version for Emacs 25.1, no change in functionality
 
-;; Compatibility: Developed on GNU Emacs 24.3; may work with GNU Emacs 23.2
-;; and later
+;; Compatibility: GNU Emacs 25.1
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -92,8 +92,9 @@
 ;; Message security (as described in Info node `(message) Security')
 ;; https://www.gnu.org/software/emacs/manual/html_node/message/Security.html
 ;; automatically prefers EasyPG with gpgsm over openssl if EasyPG is loaded
-;; first.  Thus, place jl-smime.el as well as jl-encrypt.el into your
-;; load-path, and add the following to ~/.emacs:
+;; first.  (See `mml-smime-use'.)
+;; Thus, place jl-smime.el as well as jl-encrypt.el into your load-path,
+;; and add the following to ~/.emacs:
 ;;
 ;;     (require 'epa-file)
 ;;     (load "jl-smime")
@@ -233,7 +234,7 @@ If 0, keep entries forever."
 ;; No configuration options beyond this point.  Just code.
 ;;
 
-(add-to-list 'jl-method-table
+(add-to-list 'mml-secure-method-table
 	     '(CMS (("test" jl-smime-key-available-p)
 		    ("doit" jl-secure-message-smime)
 		    ("ask" "S/MIME certificates available \
@@ -313,11 +314,12 @@ point is used as default value for RECIPIENT and FORCED is set to t."
 				     (thing-at-point 'email))
                              nil nil (thing-at-point 'email))
 		t))
-  (let* ((epa-protocol 'CMS)
-	 (found (or (jl-epg-find-usable-keys recipient)
+  (let* ((context (epg-make-context 'CMS))
+	 ;(epa-protocol 'CMS) ; TODO still necessary?
+	 (found (or (mml-epg-find-usable-keys context recipient 'encrypt)
 		    (when (or forced (jl-smime-ldap-permitted-p recipient))
 		      (jl-smime-cert-by-ldap recipient)
-		      (jl-epg-find-usable-keys recipient))))
+		      (mml-epg-find-usable-keys context recipient 'encrypt))))
 	 (no (length found)))
     (if forced
 	;; Display of message in interactive call does not return nil in case
@@ -328,16 +330,20 @@ point is used as default value for RECIPIENT and FORCED is set to t."
 	  (message "Found %s certificate(s)" no))
       found)))
 
+(defun jl-smime-cachename (email)
+  "Internal function to compute filename for certificate of EMAIL."
+  (concat jl-smime-negative-cache-dir (downcase email)))
+
 (defun jl-smime-add-negcache (email)
   "Create negative cache entry for EMAIL."
-  (let ((cachename (concat jl-smime-negative-cache-dir (downcase email))))
+  (let ((cachename (jl-smime-cachename email)))
     (write-region "" nil cachename)
     (message "Created negative cache entry %s" cachename)))
 
 (defun jl-smime-del-negcache (email)
   "Remove negative cache file for EMAIL if it exists.
 Always return nil."
-  (let ((cachename (concat jl-smime-negative-cache-dir (downcase email))))
+  (let ((cachename (jl-smime-cachename email)))
     (when (file-exists-p cachename)
       (delete-file cachename)
       (message "Deleted negative cache entry %s" cachename))
@@ -346,7 +352,7 @@ Always return nil."
 (defun jl-smime-negcache-expire (email)
   "Delete cache entry for EMAIL if it has expired.
 An entry expires once it is older than `jl-smime-negcache-maxage'."
-  (let ((cachename (concat jl-smime-negative-cache-dir (downcase email))))
+  (let ((cachename (jl-smime-cachename email)))
     (if (and (> jl-smime-negcache-maxage 0)
 	     (file-exists-p cachename))
 	(unless (> jl-smime-negcache-maxage
@@ -357,9 +363,9 @@ An entry expires once it is older than `jl-smime-negcache-maxage'."
 
 (defun jl-smime-isnegcached-p (email)
   "Return non-nil if EMAIL is negatively cached."
-  (let ((cachename (concat jl-smime-negative-cache-dir (downcase email))))
+  (let ((cachename (jl-smime-cachename email)))
     (jl-smime-negcache-expire email)
-    (file-exists-p cachename)))1
+    (file-exists-p cachename)))
 
 (defun jl-smime-ldap-permitted-p (email)
   "Return non-nil if LDAP query for EMAIL is permitted.
@@ -372,7 +378,7 @@ expression, and (c) email matches `jl-smime-permit-ldap'."
 
 (defun jl-secure-message-smime ()
   "Invoke MML function to add appropriate secure tag for S/MIME.
-Creation of signatures is controlled by `jl-do-not-sign-p'."
-  (mml-secure-message-encrypt-smime (jl-do-not-sign-p)))
+Creation of signatures is controlled by `mml-secure-do-not-sign-p'."
+  (mml-secure-message-encrypt-smime (mml-secure-do-not-sign-p)))
 
 ;;; jl-smime.el ends here
