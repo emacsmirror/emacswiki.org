@@ -870,6 +870,7 @@ the region has been deactivated).
 
 
 [:ToggleOptions]
+[:icicle-toggle-option]
 == Toggle Options on the Fly ==
 
 There are many [[user option]]s that affect the behavior of '''Icicles'''
@@ -901,6 +902,18 @@ shows you the new option value.  So as an alternative to using
 `##M-?##' to see the current value of an option, you can just toggle
 it twice.
 
+In addition, all of the '''Icicles''' toggle commands, besides generally
+having their own minibuffer key bindings also have bindings on
+prefix key '''`M-i'''' during completion.  You can use `M-i S-TAB' to
+complete them, or you can use `M-i C-h' to see a list of them.
+For example, besides using `C-A', you can use `M-i A' to toggle
+case-sensitivity.
+
+Finally, '''`M-i M-i'''' during completion invokes the general command
+'''`icicle-toggle-option'''', which prompts you for a user option (any
+option, '''Icicles''' or not), and toggles it.  With a prefix argument
+you can toggle options and other variables whose values are
+generalized Booleans: `nil' or non-`nil' (not just `t').
 
 
 
