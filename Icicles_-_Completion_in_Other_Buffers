@@ -159,8 +159,7 @@ the database.  (It is generally slower than database lookup.)
 
 '''Icicles''' lets you choose whether to match only database completions
 or also terms found in your current Emacs windows (`cdabbrev'), by
-customizing option '''`<tt>[[Icicles - Customization and General Tips#icicle-cmpl-include-cdabbrev-flag|icicle-cmpl-include-cdabbrev-flag]]</tt>''''.  (You can
-toggle the value anytime using `M-x icicle-toggle-option'.)
+customizing option '''`<tt>[[Icicles - Customization and General Tips#icicle-cmpl-include-cdabbrev-flag|icicle-cmpl-include-cdabbrev-flag]]</tt>''''.
 
 If the option value is non-`nil' then whenever '''Icicles''' completion
 is used the candidates include the completions found dynamically
