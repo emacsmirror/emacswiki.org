@@ -6074,9 +6074,10 @@
 ;;  highlighted, then set option `icicle-dot-show-regexp-flag' to
 ;;  non-`nil'.  (In Emacs 20, the newline-matching dot is always shown
 ;;  as that full regexp.)  And remember that you can use multi-command
-;;  `icicle-toggle-option' anytime to toggle the option.  If you
-;;  prefer to turn on newline matching by default, then just customize
-;;  option `icicle-dot-string'.
+;;  `icicle-toggle-option' anytime (bound to `M-i M-i' during
+;;  completion) to toggle the option.  If you prefer to turn on
+;;  newline matching by default, then just customize option
+;;  `icicle-dot-string'. 
 ;;
 ;;  This match-anything dot is handy, but sometimes you might want to
 ;;  match anything except a newline, perhaps in the same input pattern
