@@ -49,7 +49,11 @@ An experiment:
 * [https://github.com/tavisrudd/emacs.d/blob/master/dss-completion.el AutoComplete support in IPython shell buffers]
 
 === Code generation helpers ===
-[[Yasnippet]] comes with a set of templates for Python.
+====yasnippet====
+[[Yasnippet]] comes with a broad set of templates for Python.
+====sphinx-doc====
+[https://melpa.org/#/sphinx-doc sphinx-doc] supports inserting and updating docstring skeletons
+as used by [http://www.sphinx-doc.org Sphinx].  
 
 ===Lint, style and syntax checkers===
 Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyflakes (flake8 includes both), pylint and pychecker.
