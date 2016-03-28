@@ -139,7 +139,7 @@ the main minibuffer reading does not allow completion).
 You can choose among any variables whose names end in `history' or `ring', which includes the [[Isearch]] histories `search-ring' and `regexp-search-ring'.
 
 
-'''8.''' Commands '''`icicle-clear-history'''' and '''`icicle-clear-current-history'''' ('''`M-i'''' in the minibuffer) provide a general way to clean up histories.
+'''8.''' Commands '''`icicle-clear-history'''' and '''`icicle-clear-current-history'''' ('''`M-K'''' in the minibuffer) provide a general way to clean up histories.
 
 [:M-k]
 '''9.''' When you cycle among previously entered inputs using `M-p' and
@@ -495,7 +495,7 @@ behavior described above -- see [[#CompletingAgainstAllInteractiveCommands|Compl
 
 
 
-[:M-i]
+[:M-K]
 [:ClearHistoryEntries]
 === Cleaning Up History Lists ===
 
@@ -504,7 +504,7 @@ remove individual input occurrences from the current history list,
 you can use commands '''`icicle-clear-history'''' and
 '''`icicle-clear-current-history'''' to clean minibuffer histories
 entirely of selected entries.  Command
-`icicle-clear-current-history' is bound to '''`M-i'''' in the
+`icicle-clear-current-history' is bound to '''`M-K'''' in the
 minibuffer.  It is `icicle-clear-history' specialized to work on
 just the current history list.
 
