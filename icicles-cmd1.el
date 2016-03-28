@@ -4887,7 +4887,10 @@ You can use a prefix argument to change the set of completion
 candidates, as follows:
 
  - With a non-negative prefix arg, all user options are candidates.
- - With a negative prefix arg, all variables are candidates." ; Doc string
+ - With a negative prefix arg, all variables are candidates.
+
+Note: You cannot toggle option `enable-recursive-minibuffers' using
+this command."                          ; Doc string
   (lambda (opt)                         ; Action function
     (let ((sym  (intern opt)))
       (set sym (not (eval sym)))
