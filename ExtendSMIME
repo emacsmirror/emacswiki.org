@@ -37,7 +37,8 @@ Documentation concerning S/MIME with GNU Emacs is mostly targeting openssl
 but not gpgsm.  See installation instructions below.
 
 ==Installation==
-Signed versions of jl-smime.el and jl-encrypt.el are available
+Signed versions of jl-smime.el and jl-encrypt.el as well as versions for Emacs
+24.x and earlier are available
 [http://www.informationelle-selbstbestimmung-im-internet.de/Emacs.html over there].
 
 Message security (as described in
