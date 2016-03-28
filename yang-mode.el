@@ -4,12 +4,12 @@
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation; either version 2 of the License, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
@@ -21,6 +21,9 @@
 ;; later.
 
 ;; Version:
+;;   00.7 - 2016-03-15
+;;        draft-ietf-netmod-rfc6020bis-11 compliant
+;;        added support for new 1.1 keywords
 ;;   00.6 - 2012-02-01
 ;;        removed unused defcustom yang-font-lock-extra-types
 ;;          made emacs24 to give a warning
@@ -40,7 +43,8 @@
 ;; Useful tips:
 ;;
 ;;   For use with emacs 23, put this in your .emacs:
-;;     (autoload 'yang-mode "yang-mode" "Major mode for editing YANG modules." t)
+;;     (autoload 'yang-mode "yang-mode" "Major mode for editing YANG modules."
+;;               t)
 ;;     (add-to-list 'auto-mode-alist '("\\.yang$" . yang-mode))
 ;;
 ;;   Some users have reported other errors with emacs 23, and have found
@@ -58,12 +62,12 @@
 ;;       "Configuration for YANG Mode. Add this to `yang-mode-hook'."
 ;;       (if window-system
 ;;         (progn
-;;     	     (c-set-style "BSD")
-;;     	     (setq indent-tabs-mode nil)
-;;     	     (setq c-basic-offset 2)
-;;     	     (setq font-lock-maximum-decoration t)
-;;     	     (font-lock-mode t))))
-;;     
+;;           (c-set-style "BSD")
+;;           (setq indent-tabs-mode nil)
+;;           (setq c-basic-offset 2)
+;;           (setq font-lock-maximum-decoration t)
+;;           (font-lock-mode t))))
+;;
 ;;     (add-hook 'yang-mode-hook 'my-yang-mode-hook)
 ;;
 ;;   Use the oultine minor mode for YANG.
@@ -77,7 +81,7 @@
 ;;       (interactive)
 ;;       (show-entry)
 ;;       (show-children))
-;;     
+;;
 ;;     (defun my-outline-bindings ()
 ;;       "sets shortcut bindings for outline minor mode"
 ;;       (interactive)
@@ -91,21 +95,21 @@
 ;;       (local-set-key [M-down] 'outline-forward-same-level)
 ;;       (local-set-key [M-left] 'hide-subtree)
 ;;       (local-set-key [M-right] 'show-subtree))
-;;     
+;;
 ;;     (add-hook
 ;;      'outline-minor-mode-hook
-;;      'my-outline-bindings) 
-;;     
+;;      'my-outline-bindings)
+;;
 ;;     (defconst sort-of-yang-identifier-regexp "[-a-zA-Z0-9_\\.:]*")
-;;     
+;;
 ;;     (add-hook
 ;;      'yang-mode-hook
 ;;      '(lambda ()
 ;;         (outline-minor-mode)
 ;;         (setq outline-regexp
-;;     	    (concat "^ *" sort-of-yang-identifier-regexp " *" 
-;;     	            sort-of-yang-identifier-regexp
-;;     	            " *{"))))
+;;           (concat "^ *" sort-of-yang-identifier-regexp " *"
+;;                   sort-of-yang-identifier-regexp
+;;                   " *{"))))
 
 ;;; Code:
 
@@ -145,79 +149,82 @@
 
 (c-lang-defconst c-decl-start-kwds
   yang '(
-	 "anyxml"
-	 "argument"
-	 "augment"
+         "action"
+         "anydata"
+         "anyxml"
+         "argument"
+         "augment"
          "base"
-	 "belongs-to"
-	 "bit"
-	 "case"
-	 "choice"
-	 "config"
-	 "contact"
-	 "container"
-	 "default"
-	 "description"
-	 "deviate"
-	 "deviation"
-	 "enum"
-	 "error-app-tag"
-	 "error-message"
-	 "extension"
-	 "feature"
-	 "fraction-digits"
-	 "grouping"
+         "belongs-to"
+         "bit"
+         "case"
+         "choice"
+         "config"
+         "contact"
+         "container"
+         "default"
+         "description"
+         "deviate"
+         "deviation"
+         "enum"
+         "error-app-tag"
+         "error-message"
+         "extension"
+         "feature"
+         "fraction-digits"
+         "grouping"
          "identity"
-	 "if-feature"
-	 "import"
-	 "include"
-	 "input"
-	 "key"
-	 "leaf"
-	 "leaf-list"
-	 "length"
-	 "list"
-	 "mandatory"
-	 "max-elements"
-	 "min-elements"
-	 "module"
-	 "must"
-	 "namespace"
-	 "notification"
-	 "ordered-by"
-	 "organization"
-	 "output"
-	 "path"
-	 "pattern"
-	 "position"
-	 "prefix"
-	 "presence"
-	 "range"
-	 "reference"
+         "if-feature"
+         "import"
+         "include"
+         "input"
+         "key"
+         "leaf"
+         "leaf-list"
+         "length"
+         "list"
+         "mandatory"
+         "max-elements"
+         "min-elements"
+         "modifier"
+         "module"
+         "must"
+         "namespace"
+         "notification"
+         "ordered-by"
+         "organization"
+         "output"
+         "path"
+         "pattern"
+         "position"
+         "prefix"
+         "presence"
+         "range"
+         "reference"
          "refine"
-	 "require-instance"
-	 "revision"
-	 "revision-date"
+         "require-instance"
+         "revision"
+         "revision-date"
          "rpc"
-	 "status"
-	 "submodule"
-	 "type"
-	 "typedef"
-	 "unique"
-	 "units"
-	 "uses"
-	 "value"
-	 "when"
-	 "yang-version"
-	 "yin-element"
-	 ))
+         "status"
+         "submodule"
+         "type"
+         "typedef"
+         "unique"
+         "units"
+         "uses"
+         "value"
+         "when"
+         "yang-version"
+         "yin-element"
+         ))
 
 ;; No cpp in this language. (The definitions for the extra keywords
 ;; above are enough to incorporate them into the fontification regexps
 ;; for types and keywords, so no additional font-lock patterns are
 ;; required.)
 (c-lang-defconst c-cpp-matchers
-  yang 
+  yang
       ;; There are some other things in `c-cpp-matchers' besides the
       ;; preprocessor support, so include it.
       (c-lang-const c-cpp-matchers))
@@ -226,7 +233,7 @@
 ;; FIXME: how do I make '.' part of the identifier?
 (c-lang-defconst c-identifier-syntax-modifications
   yang (append '((?- . "w") (?: . "w"))
-	       (c-lang-const c-identifier-syntax-modifications)))
+               (c-lang-const c-identifier-syntax-modifications)))
 
 (c-lang-defconst c-symbol-chars
   yang (concat c-alnum ":_-"))
@@ -251,7 +258,7 @@
   "Syntax table used in yang-mode buffers.")
 (or yang-mode-syntax-table
     (setq yang-mode-syntax-table
-	  (funcall (c-lang-const c-make-mode-syntax-table yang))))
+          (funcall (c-lang-const c-make-mode-syntax-table yang))))
 
 (defvar yang-mode-abbrev-table nil
   "Abbreviation table used in yang-mode buffers.")
@@ -262,17 +269,17 @@
   '())
 
 (defvar yang-mode-map (let ((map (c-make-inherited-keymap)))
-		      ;; Add bindings which are only useful for YANG
-		      map)
+                      ;; Add bindings which are only useful for YANG
+                      map)
   "Keymap used in yang-mode buffers.")
 
 (easy-menu-define yang-menu yang-mode-map "YANG Mode Commands"
-		  ;; Can use `yang' as the language for `c-mode-menu'
-		  ;; since its definition covers any language.  In
-		  ;; this case the language is used to adapt to the
-		  ;; nonexistence of a cpp pass and thus removing some
-		  ;; irrelevant menu alternatives.
-		  (cons "YANG" (c-lang-const c-mode-menu yang)))
+                  ;; Can use `yang' as the language for `c-mode-menu'
+                  ;; since its definition covers any language.  In
+                  ;; this case the language is used to adapt to the
+                  ;; nonexistence of a cpp pass and thus removing some
+                  ;; irrelevant menu alternatives.
+                  (cons "YANG" (c-lang-const c-mode-menu yang)))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.yang\\'" . yang-mode))
@@ -291,9 +298,9 @@ Key bindings:
   (c-initialize-cc-mode t)
   (set-syntax-table yang-mode-syntax-table)
   (setq major-mode 'yang-mode
-	mode-name "YANG"
-	local-abbrev-table yang-mode-abbrev-table
-	abbrev-mode t)
+        mode-name "YANG"
+        local-abbrev-table yang-mode-abbrev-table
+        abbrev-mode t)
   (use-local-map c-mode-map)
   ;; `c-init-language-vars' is a macro that is expanded at compile
   ;; time to a large `setq' with all the language variables and their
@@ -305,6 +312,8 @@ Key bindings:
   ;; only makes the necessary initialization to get the syntactic
   ;; analysis and similar things working.
   (c-common-init 'yang-mode)
+  ;; Allow auto-fill in strings
+  (setq c-ignore-auto-fill '(cpp code))
   (easy-menu-add yang-menu)
   (run-hooks 'c-mode-common-hook)
   (run-hooks 'yang-mode-hook)
