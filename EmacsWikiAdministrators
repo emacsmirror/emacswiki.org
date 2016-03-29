@@ -6,6 +6,9 @@ We fight WikiSpam day and night!  :)
 
 You're welcome to come help us out -- just ask
 one of the existing administrators for an [Self:action=password admin password].
+For the moment, AlexSchroeder is your best bet. You can find his email address
+on his name page.
+
 The only real job we have is maintaining BannedContent, BannedRegexps and BannedHosts.
 These pages contain [http://perldoc.perl.org/perlre.html Perl regular expressions].
 
@@ -72,6 +75,3 @@ Note that these entries are probably useless against spammers that keep changing
 
 ----
 CategoryEmacsWikiSite
-
-[new:JimThompson:2016-03-29 05:58 UTC]
-I volunteer. Happy to help, even if it does mean re-learning [http://perldoc.perl.org/perlre.html Perl regular expressions]. --JimThompson
