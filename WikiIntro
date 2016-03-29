@@ -10,6 +10,6 @@ If you want to make some test edits, use the SandBox.
 * You can also read more about it on [[Oddmuse:What Is A Wiki]].
 * Community:WhyWikiWorks explains why wikis (hopefully) generate
 interesting content and why there is not much abuse.
-* Oddmuse:SiteMap is the homepage of the wiki engine -- the CGI script
-(in Perl, I am sorry to say) that produces the pages you are reading.
+* Oddmuse:SiteMap is the homepage of the wiki engine -- the software
+that produces the pages you are reading.
 * See TextFormattingRules for the basic formatting rules you need.
