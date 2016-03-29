@@ -43,3 +43,7 @@ See also `my-jump-to-function' on my person-page, which uses ido completion with
 -- SeanO
 
 Semantic now contains <code>semantic-ia-fast-jump</code> in CVS, which also does this.  -- [[nschum]]
+
+== Dumb Jump ==
+
+[https://github.com/jacktasia/dumb-jump Dumb Jump] is an Emacs "jump to definition" package with support for multiple programming languages that favors "just working". It uses [https://github.com/ggreer/the_silver_searcher The Silver Searcher] (and falls back to grep) to find potential definitions of a function or variable under point.
