@@ -1,6 +1,6 @@
 [new:AlexSchroeder:2016-02-08 16:46 UTC]
 Moved to *HTTPS* and installed *new CSS* by BrianBurns, as indicated a while ago ([[2016-01-04]]).
-Let me know if anything breaks. You can also try out [EmacsWiki:action=browse;id=CSS;css=/light.css;theme=dark Dark] variant of the same theme.
+Let me know if anything breaks. You can also try out the [EmacsWiki:action=browse;id=CSS;css=/light.css;theme=dark Dark] variant of the same theme.
 
 You can report CSS issues [https://github.com/bburns/emacswiki-light-theme/issues on GitHub].
 There's some discussion [https://www.reddit.com/r/emacs/comments/42dqdg/emacswiki_theme_v2/ on reddit]
