@@ -1,7 +1,7 @@
 Magit is a front end, or "porcelain" for the [[Git]] version control system.
 
-* Homepage: http://magit.vc
-* Development: http://github.com/magit/magit
+* Homepage: https://magit.vc
+* Development: https://github.com/magit/magit
 
 == Crash course ==
 
@@ -27,7 +27,7 @@ Other handy keys:
 * [https://www.youtube.com/watch?v=VO7xj2ArpZw EmacsATX: Magit] (38:15)
 * [https://www.youtube.com/watch?v=4ccCNQaTJ10 EmacsConf 2015 Lightning talk - Magit] (14:28)
 * [https://www.youtube.com/watch?v=14ffNKijEz4 magitのインストール] (1:06)
-* [http://vimeo.com/2871241 Meet Magit]
+* [https://vimeo.com/2871241 Meet Magit]
 
 == Extensions ==
 
