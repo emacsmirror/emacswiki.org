@@ -79,7 +79,7 @@ Additional:
 * ReplaceRecentCharacter -- Quickly fix typos using a non-incremental search and replace.
 * SearchAndReplaceDelimitedStrings -- Replace (only) the prefix and suffix of a pattern.
 * [[Replace-in-buffer]] -- Replace text in complete buffer, use current region or next word as pattern
-
+* Lisp:replace-string-simulatenously.el -- Replace several strings at the same time. For example, you want to replace "yes"->"no" and "no"->"yes" in some text. If you do it in two replacements, it will replace all occurences "yes" for "no", so you can't differentiate between those. With this function, you just do M-x replace-string-simulatenously yes RET no RET no RET yes RET RET
 
 
 
