@@ -36,10 +36,11 @@ To precalculate the line number width to avoid horizontal jumps on scrolling:
 ;; Preset width nlinum
 (add-hook 'nlinum-mode-hook
           (lambda ()
-            (unless (boundp 'nlinum--width)
+            (when nlinum-mode
               (setq nlinum--width
-                (length (number-to-string
-                         (count-lines (point-min) (point-max))))))))
+                    (length (number-to-string
+                             (count-lines (point-min) (point-max)))))
+              (nlinum--flush))))
 </pre>
 
 == Linum ==
