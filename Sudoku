@@ -2,7 +2,6 @@ JesseRosenthal's sudoku.el is available from his page: "A major mode for playing
 
 * what about http://sourceforge.net/projects/sudoku-elisp/
 
-
 KimStorm posted a solver on [[gnu.emacs.sources]]:
 
 * Groups:sudoku-solver.el
@@ -13,6 +12,21 @@ The format of the web source has changed, resulting in an error when you try to 
 
     (11/29/10 --- kc5gmr)
 
+
+Also check out this sudoku on steroids https://github.com/zevlg/gnu-emacs-stuff/blob/master/sudoku.el with bunch of features:
+
+* Custom puzzle editor
+* Printing puzzles (TeX source generator)
+* Puzzle Solver (simple heuristics + trial and error)
+* Auto-insert assistance (S1, H1, CC i.e. Constrained Cell)
+* Step-by-step puzzle deduce (using S1, H1 and CC heuristics)
+* Nifty pencils (assist for Nishio, Cycles, Loops)
+* Undo/Redo operations
+* Optimal (single solution) puzzles generator (very
+  straightforward, but usable)
+* Board downloader (from websudoku.com and menneske.no)
+* Save/Load puzzles
+* Collection of built-in puzzles
 
 ----
 CategoryGames
