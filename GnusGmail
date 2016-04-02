@@ -240,7 +240,11 @@ A workaround can be CCing yourself whenever you send a mail. With this approach 
          (address "username@gmail.com"))))
 </pre>
 
-NOTE: The above setting messes up CC field when you are sending wide reply. All contacts in CC are removed and replaced with your given address in the CC field.
+NOTE: The above setting messes up CC field when you are sending wide reply. All contacts in CC are removed and replaced with your given address in the CC field. A better way is to set ##gnus-message-archive-group## to the sent items group,
+{{{
+(setq gnus-message-archive-group
+      '((".*" "nnimap+myserver:Sent Items")))
+}}}
 
 Actually, the problem seems to be solved *if* you send mail via gmail's smtp server - at their "Recommended IMAP client settings" they say:
 
