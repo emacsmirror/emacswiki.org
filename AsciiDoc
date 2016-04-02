@@ -2,8 +2,6 @@
 
 **adoc-mode** is an Emacs major mode for editing AsciiDoc files. You can install it from [[MELPA]] or [https://github.com/sensorflo/adoc-mode from GitHub]. It comes with it's [https://github.com/sensorflo/adoc-mode/wiki own manual] (a single page on the GitHub wiki).
 
-== Alternatives ==
-
 Lisp:asciidoc.el is a set of templates which eases the creation of AsciiDoc documents. It is also available [http://github.com/metaperl/asciidoc-el from GitHub].
 
 ----
