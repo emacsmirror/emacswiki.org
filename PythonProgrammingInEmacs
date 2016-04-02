@@ -77,7 +77,7 @@ more than one error message per line of code, meaning that an error or
 warning which is intentionally left unfixed can mask an error or
 warning that would get more attention.
 
-There are several such scripts, supporting various tools.  One of the best-maintained is [https://github.com/justinvanwinkle/config-files/blob/master/bin/lintrunner.py lintrunner.py].  There are similar scripts [http://python.pastebin.com/f627691e0 here], [http://pastebin.ca/1797770 here], [https://github.com/tavisrudd/pylint_etc_wrapper/blob/master/pylint_etc_wrapper.py here], and [http://bitbucket.org/jek/sandbox/src/tip/pycheckers here].
+One of the best-maintained such scripts is [https://github.com/justinvanwinkle/config-files/blob/master/bin/lintrunner.py lintrunner.py].  There are others [http://python.pastebin.com/f627691e0 here], [http://pastebin.ca/1797770 here], [https://github.com/tavisrudd/pylint_etc_wrapper/blob/master/pylint_etc_wrapper.py here], and [http://bitbucket.org/jek/sandbox/src/tip/pycheckers here].
 
 ===Refactoring===
 ====Refactoring libraries====
