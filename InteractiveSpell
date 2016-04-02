@@ -208,6 +208,21 @@ WcheckMode is a fast general-purpose on-the-fly (spell-)checker interface which 
 
 === Spell-checking with curly quotes as apostrophes ===
 
+==== Emacs 24.4+ ====
+
+If you're using hunspell, Emacs parses the dictionary's .aff file to determine which letters are allowed in words automatically. The .aff file should have some entries similar to:
+
+{{{
+ICONV 1
+ICONV ’ '
+
+WORDCHARS 0123456789'’
+}}}
+
+The ICONV lines tell the spell checker that the curly and straight apostrophes are equivalent, and WORDCHARS is a list of the characters that are allowed in words, which both the spell checker and Emacs parse. WORDCHARS needs to contain both the curly and straight apostrophe.
+
+==== Other Versions ====
+
 If you use TypographicalPunctuationMarks you may find you get spelling errors for words like "isn’t". To fix this, you need to tell Emacs that the extra characters you use are allowed in words. Customize ispell-local-dictionary-alist, and add, for example:
 
 {{{
