@@ -148,14 +148,16 @@ Suggestions:
 
 The following functions and variables are useful for tracking down and debugging problems with your gnus setup:
 
-| nnmail-split-history         | see where mail were split                                     |
-| gnus-summary-respool-trace   | see where the respool algorithm would put the current article |
-| gnus-summary-respool-article | respool the current article                                   |
-| gnus-summary-respool-query   | Query where the respool algorithm would put this article.     |
-| gnus-get-info                | show info for a specific group                                |
-| gnus-set-info                | set info for a specific group                                 |
-| gnus-newsrc-alist            | assoc list of read articles and group info                    |
-| gnus-newsrc-hashtb           | hashtable of info stored in gnus-newsrc-alist                 | 
+|| function/variable            || Description                                                   ||
+|| nnmail-split-history         || see where mail were split                                     ||
+|| gnus-summary-respool-trace   || see where the respool algorithm would put the current article ||
+|| gnus-summary-respool-article || respool the current article                                   ||
+|| gnus-summary-respool-query   || Query where the respool algorithm would put this article.     ||
+|| gnus-get-info                || show info for a specific group                                ||
+|| gnus-set-info                || set info for a specific group                                 ||
+|| gnus-newsrc-alist            || assoc list of read articles and group info                    ||
+|| gnus-newsrc-hashtb           || hashtable of info stored in gnus-newsrc-alist                 || 
+
 
 Group info is stored in the .newsrc.eld file (in the same location as <code>gnus-startup-file</code>),
 and includes extra info not accesible via normal group parameter editing (<code>gnus-group-edit-group-method</code>).
