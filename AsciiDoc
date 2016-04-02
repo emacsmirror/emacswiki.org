@@ -4,8 +4,7 @@
 
 == Alternatives ==
 
-Lisp:asciidoc.el is a set of templates which eases the creation of AsciiDoc documents. It is also available at:
-* http://github.com/metaperl/asciidoc-el 
+Lisp:asciidoc.el is a set of templates which eases the creation of AsciiDoc documents. It is also available [http://github.com/metaperl/asciidoc-el from GitHub].
 
 ----
 CategoryDoc
