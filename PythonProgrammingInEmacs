@@ -109,6 +109,16 @@ Elpy supports the standard unittest discovery runner, the Django discovery runne
 ===Reporting test coverage===
 [https://melpa.org/#/pycoverage pycoverage] generates reports using  [https://pypi.python.org/pypi/coverage coverage] and provides a minor mode for displaying coverage by overriding `linum-mode'.  Alternatively, a [[Flycheck]] checker could be used to display coverage.
 
+===Debugging===
+
+====Python pdb, Emacs pdb====
+The native `python-mode' supports pdb tracking: when you execute a block of code that 
+contains some call to Python's pdb (or ipdb) it will prompt the block of code and will follow 
+the execution of pdb marking the current line with an arrow.  
+
+To debug a script run the Emacs command "M-x pdb" and invoke Python's pdb as 
+"python -m pdb foo.py"
+
 === Interactive environments - Shells, REPLs and notebooks ===
 ====Using IPython as the Python shell==
 In Emacs's native python-mode, use:
