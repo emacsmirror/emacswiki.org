@@ -240,6 +240,8 @@ A workaround can be CCing yourself whenever you send a mail. With this approach 
          (address "username@gmail.com"))))
 </pre>
 
+NOTE: The above setting messes up CC field when you are sending wide reply. All contacts in CC are removed and replaced with your given address in the CC field.
+
 Actually, the problem seems to be solved *if* you send mail via gmail's smtp server - at their "Recommended IMAP client settings" they say:
 
 "Do NOT save sent messages on the server. If your client is sending mail through Gmail's SMTP server, your sent messages will be automatically copied to the [Gmail]/Sent Mail folder."
