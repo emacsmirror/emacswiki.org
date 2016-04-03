@@ -94,17 +94,19 @@ Add the following code segment into your .emacs init script. It will search ".em
 ----
 
 [new]
-Session is not work well with emacs daemon.
-When daemon is exit/restart, session position is not saved.
+Session is not work well with emacs daemon mode.
+
+When exit/restart emacs server, session position is not saved.
+
 because kill-emacs-hook is not run in this case.
 
-Here is my solution for session.el, it worked fine for emacs 24.3 daemon.
+Here is my solution for session.el, it worked fine for emacs 24.3.
 
 {{{
 (require 'session)
 (session-jump-to-last-change)
 (session-initialize)
-;; will run when any frame is deleted.
+;; session will save if any frame is deleted.
 (add-hook 'delete-frame-functions
          (lambda (frame)
            (session-save-session t)
@@ -113,7 +115,8 @@ Here is my solution for session.el, it worked fine for emacs 24.3 daemon.
 }}}
 
 
-Just be careful exist exist emacs frame before restart emacs daemon.
+Just be careful exit exist emacs frame before restart emacs daemon.
+
 we should do like this, ah?
 
 -- Billy.Zheng (zw963)
