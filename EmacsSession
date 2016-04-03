@@ -116,5 +116,7 @@ Here is my solution for session.el, it worked fine for emacs 24.3 daemon.
 Just be careful exist exist emacs frame before restart emacs daemon.
 we should do like this, ah?
 
+-- Billy.Zheng (zw963)
+
 CategoryPersistence
 SessionManagement
