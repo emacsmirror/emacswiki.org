@@ -49,6 +49,14 @@ For [https://pypi.python.org/pypi/rope rope]:
 An experiment:
 * [https://github.com/tavisrudd/emacs.d/blob/master/dss-completion.el AutoComplete support in IPython shell buffers]
 
+===Code navigation===
+
+The tools built on jedi support using it to find definitions. [https://github.com/tkf/emacs-jedi-direx jedi-direx] provides a tree-style source code viewer for Python buffers but is not on MELPA.
+
+[[Helm]] provides an interface for navigating buffers via `helm-semantic-or-imenu'. 
+
+[https://melpa.org/#/helm-cscope helm-cscope] provides a Helm interface to [https://melpa.org/#/xcscope xcscope].  [https://pypi.python.org/pypi/pycscope/ pycscope] supports generating the required cscope index of Python source trees.
+
 === Code generation helpers ===
 ====yasnippet====
 [[Yasnippet]] comes with a broad set of templates for Python.
@@ -209,8 +217,8 @@ ERROR - failed to write data to stream: <_io.TextIOWrapper name='<stdout>' mode=
 ===How to improve this page===
 Round out support features in line with https://lists.gnu.org/archive/html/emacs-devel/2015-10/msg00669.html
 
-Add sections on: profiling, semantic editing (?), code navigation
+Add sections on: profiling, semantic editing (?), 
 
-Extend sections on: refactoring
+Extend sections on: refactoring, code navigation
 ----
 Categories: CategoryProgramming, ProgrammingModes
