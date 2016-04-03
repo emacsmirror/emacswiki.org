@@ -107,6 +107,8 @@ Elpy supports using [https://pypi.python.org/pypi/importmagic importmagic].
 
 Elpy supports the standard unittest discovery runner, the Django discovery runner, nose and py.test
 
+[https://melpa.org/#/pytest pytest] supports the [http://pytest.org pytest Python package], thus tests written with pytest, nose, unittest and doctest style test suites, including Django and trial.
+
 ===Reporting test coverage===
 [https://melpa.org/#/pycoverage pycoverage] generates reports using  [https://pypi.python.org/pypi/coverage coverage] and provides a minor mode for displaying coverage by overriding `linum-mode'.  Alternatively, a [[Flycheck]] checker could be used to display coverage.
 
