@@ -201,6 +201,9 @@ Not having the right encoding set leads to errors in ipython:
 ERROR - failed to write data to stream: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='US-ASCII'>
 </pre>
 
+===Editing pip requirements files===
+[https://melpa.org/#/pip-requirements pip-requirements] is a major mode for editing pip requirements files, with support for syntax highlighting, togglable comments and auto-completion of package names from PyPI.
+
 ===How to improve this page===
 Round out support features in line with https://lists.gnu.org/archive/html/emacs-devel/2015-10/msg00669.html
 
