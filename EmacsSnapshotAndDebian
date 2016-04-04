@@ -11,10 +11,7 @@ Packages at [[http://emacs.naquadah.org/|http://emacs.naquadah.org/]] are no lon
 
 == Ubuntu packages ==
 
-Alternatives include:
-
-* Damien Cassou's [[https://launchpad.net/~cassou/+archive/emacs|bimonthly-build Ubuntu PPA]]
-* Robert Parks' [[https://launchpad.net/~ubuntu-elisp/+archive/ppa/|daily-build Ubuntu PPA]]
+The [[https://launchpad.net/~ubuntu-elisp|“Ubuntu Emacs Lisp” team]] maintain [[https://launchpad.net/~ubuntu-elisp/+archive/ubuntu/ppa|The Official ;-) Ubuntu Emacs Daily Snapshot PPA]]
 
 == Installing from source on Debian and similar ==
 
@@ -114,4 +111,3 @@ sudo make install
 }}}
 
 or use the alternative method to have a prefixed emacs.
-
