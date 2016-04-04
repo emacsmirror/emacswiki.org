@@ -1,7 +1,8 @@
 Haxe mode for Emacs:
 
-* https://bitbucket.org/jpsecher/haxe-mode - from Jens Peter Secher 
+* https://bitbucket.org/jpsecher/haxe-mode - from Jens Peter Secher (not maintained anymore; see https://bitbucket.org/jpsecher/haxe-mode/issues/2/haxe-mode-does-not-indent)
 * http://lists.motion-twin.com/pipermail/haxe/attachments/20090430/2feee92b/haxe-mode.obj - from David Bergman
+* https://github.com/pierre-arlaud/funda-haxe-mode - from Pierre Arlaud
 
 Haxe completion:
 
