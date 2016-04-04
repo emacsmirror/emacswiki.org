@@ -243,5 +243,7 @@ The source code for [[Marmalade]] is available on
 [[https://github.com/nicferrier/elmarmalade GitHub]]. It is a complete
 EmacsLisp project, an [[Elnode]] webapp.
 
+== Create Local Repositories ==
+https://github.com/redguardtoo/elpa-mirror creates a local fallback repository from installed packages. For example, you successfully installed all the packages from https://melpa.org at your home computer. You can run command `M-x elpamr-create-mirror-from-installed` to create a fallback repository which containing all the packages you are using. Then when you set 
 ----
 CategoryCode CategoryPackaging
