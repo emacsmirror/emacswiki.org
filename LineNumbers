@@ -262,7 +262,7 @@ I have generalized this to a lisp add-on file Lisp:linum-off.el
 
 -- MatthewFidler
 
-== Linum: Select lines my clicking ==
+== Linum: Select lines by clicking ==
 [new:sabof:2011-11-12 12:40 UTC]
 Select lines by click-dragging on the margin.
 Tested with GNU Emacs 23.3
