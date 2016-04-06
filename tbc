@@ -2,6 +2,9 @@ I'm Tim Chambers 1E4AF729D5CEFFD0. I love GnuEmacs. My initials are tbc. I'm an 
 
 [new]
 == Blog ==
+''06 Apr 16''
+
+''What I said March 18th on IRC at work.'' I wouldn't recommend using Emacs unless one has an instance running all the time, uses emacsclient to edit from shells on the same machine, and uses TRAMP to edit remote files. Emacs is a UI to the OS. For quickly editing files I myself use vi or, occasionally, gedit.
 
 ''19 Oct 13'' EasyPG rocks!
 
@@ -30,7 +33,7 @@ If you're the first one to guess my email and write to me, I'll buy you a bevera
 Welcome to the wiki. -- DrewAdams (who prefers Duvel ;-))
 
 [new:tbc:2013-02-24 23:37 UTC]
-Thanks, Drew! I don't see email from you, but I'll make a special exception since you're the first to send me WikiMail. :) Next time you're in Colorado, give me a call (or SMS): +1 719.357.7822. I'll buy you a Duvel. – Tim
+Thanks, Drew! I don't see email from you, but I'll make a special exception since you're the first to send me WikiMail. :) Next time you're in Colorado, give me a call (or SMS): plus one seven one nine three five seven seven eight two two. I'll buy you a Duvel. – Tim
 
 ----
 CategoryHomepage
