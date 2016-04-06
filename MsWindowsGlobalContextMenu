@@ -48,19 +48,17 @@ REGEDIT4
 # (The '&' makes the next character a shortcut.)
 
 [HKEY_CLASSES_ROOT\*\shell\openwemacs\command]
-@="C:\\Program Files\\Emacs\\bin\\emacsclientw -n \"%1\""
+@="C:\\Program Files\\Emacs\\bin\\emacsclientw -n -a \"C:\\Program Files\\Emacs\\bin\\runemacs\" \"%1\""
 # The above has to point to where you install Emacs
 </pre>
 
 -- JonathanArkell
 
-[new]
-Thanks for this Jonathan and thundt.
-I might steal it later, but there is already a rather similar entry in [[EmacsW32]] in the /Send To/ submenu.
+Emacsclient may stop functioning if there is an old server file left over from previous instance of Emacs which has not shut down properly. To fix this you can clear the server files (Powershell syntax): 
 
-[new]
-Might I suggest using the following command with 22.3:
+ rm "~\.emacs.d\server\*"
 
- C:\emacs-22.3\bin\emacsclientw -a C:\emacs-22.3\bin\runemacs.exe -n "%1" 
 
-Also there is no pop up cmd window any longer.
+There is a similar registry code at [[EmacsW32]] in the /Send To/ submenu.
+
+-- Abrahams
