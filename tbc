@@ -6,6 +6,10 @@ I'm Tim Chambers 1E4AF729D5CEFFD0. I love GnuEmacs. My initials are tbc. I'm an 
 
 ''What I said March 18th on IRC at work.'' I wouldn't recommend using Emacs unless one has an instance running all the time, uses emacsclient to edit from shells on the same machine, and uses TRAMP to edit remote files. Emacs is a UI to the OS. For quickly editing files I myself use vi or, occasionally, gedit.
 
+To which I add: I refuse to use Emacs without my customizations.
+
+Also, I joined the [https://plus.google.com/communities/101818454981911211159 Church of Emacs] but fear I will be banned as a heretic.
+
 ''19 Oct 13'' EasyPG rocks!
 
 [new]
