@@ -1,72 +1,22 @@
 This page provides a way to format SQL in Emacs.
 
 == Backend ==
-SqlBeautify uses blancoSqlFormatter as a backend.
+SqlBeautify is a shell utility which uses blancoSqlFormatter as a backend.
 
-First, download blancoSqlFormatter source from https://osdn.jp/projects/blancofw/releases/36395.
+See [SqlBeautify](https://github.com/ldeck/SqlBeautify) on github.
 
-Unzip it and build the jar using ant as follows:
+SqlBeautify is quick and easy to install and use.
+
+Example usage:
 <pre>
-% mkdir ~/opt
-% unzip balcoSqlFormatter-0.1.1.src.zip -d ~/opt
-% cd ~/opt/blancoSqlFormatter
-% ant compile
-% ant jar
-</pre>
-
-Second, write a Java client which reads from stdin and prints to stdout the reformatted text, using the api of the above built lib ~/opt/blancoSqlFormatter/blancosqlformatter-0.1.1.jar.
-
-~/opt/SqlBeautify/SqlBeautify.java:
-<pre>
-import java.io.InputStream;
-
-import blanco.commons.sql.format.BlancoSqlFormatter;
-import blanco.commons.sql.format.BlancoSqlRule;
-
-public class SqlBeautify {
-    public static void main(String[] args) throws Exception {
-        InputStream is = System.in;
-        StringBuilder sb = new StringBuilder();
-        byte[] buffer = new byte[4096];
-        int read;
-        while ((read = is.read(buffer)) != -1) {
-            sb.append(new String(buffer, 0, read));
-        }
-        System.out.println(new BlancoSqlFormatter(new BlancoSqlRule()).format(sb.toString()));
-    }
-}
-</pre>
-
-Thirdly, compile SqlBeautify.java:
-
-<pre>
-% cd ~/opt/SqlBeautify
-% javac -classpath .:~/opt/blancoSqlFormatter/blancosqlformatter-0.1.1.jar SqlBeautify.java
-</pre>
-
-Fourthly, write a shell script wrapper to pipe stdin to the java client app (configured to run with its necessary classpath):
-
-~/bin/sqlbeautify:
-<pre>
-#!/bin/sh
-
-SB_HOME=$HOME/opt/SqlBeautify
-BSF_LIB=$HOME/opt/blancoSqlFormatter/blancosqlformatter-0.1.1.jar
-
-java -cp $SB_HOME:$BSF_LIB SqlBeautify
-</pre>
-
-Finally, test it:
-
-<pre>
-% chmod +x ~/bin/sqlbeautify
-% echo 'select * from dual;' | sqlbeautify
-SELECT                                                       
+$ echo "select * from foo;" | bin/beautify-sql 
+SELECT
         *
     FROM
-        dual
+        foo
 ;
 </pre>
+
 
 == Emacs Frontend ==
 
