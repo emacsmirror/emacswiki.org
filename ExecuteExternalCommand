@@ -45,7 +45,7 @@ Starting with Emacs 23, `TAB' [[completion]] is available for `##M-!##' and `##M
 
 You can run a shell command asynchronously by adding an ampersand (##&##) after it, if you have a UNIX or UNIX-like environment.
 
-Here is a some EmacsLisp code that modifies `shell-command' to allow many commands to execute asynchronously (and show the command at the top of the buffer):
+Here is some EmacsLisp code that modifies `shell-command' to allow many commands to execute asynchronously (and show the command at the top of the buffer):
 
 <pre>
 (defadvice erase-buffer (around erase-buffer-noop)
