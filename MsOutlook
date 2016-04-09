@@ -20,6 +20,14 @@ You need some glue to move the message between Emacs and Outlook.
 
 -- can I do the same with Mozilla Mail ? http://globs.org/articles.php?lng=en&pg=2
 
+== Use Emacs to access Exchange Calendar ==
+
+You can access your Exchange calendard directly from within Emacs using the Excorporate package available in the GNU ELPA repository.
+
+<pre>
+M-x list-packages
+</pre>
+
 == Windows script glue ==
 
 If your machine has the windows script host installed which should be true for almost all
