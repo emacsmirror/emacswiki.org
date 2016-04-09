@@ -78,7 +78,7 @@ GPG_TTY=$(tty)
 export GPG_TTY
 }}}
 
-We also need to make sure that the agent uses pinentry for a Mac. This is what I have in my ##~/.gnupg/gnu-agent.conf##.
+We also need to make sure that the agent uses pinentry for a Mac. This is what I have in my ##~/.gnupg/gpg-agent.conf##.
 
 {{{
 pinentry-program /usr/local/bin/pinentry-mac
