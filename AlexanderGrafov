@@ -7,7 +7,7 @@ I use GNU/Emacs approximately since 2000. I use GNU/Linux (Gentoo, Debian, Ubunt
 
 See [https://github.com/grafov] for my programming works.
 
-== Colemecs keyboard layout ==
+== Colemacs keyboard layout ==
 
 [https://github.com/grafov/keyboard]  It is experiment how to make ergonomic layout  for Emacs on default keyboard. Instead of change keybindings in Emacs I reprogrammed a keyboard layout.
 
