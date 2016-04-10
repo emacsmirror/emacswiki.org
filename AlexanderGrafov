@@ -7,14 +7,18 @@ I use GNU/Emacs approximately since 2000. I use GNU/Linux (Gentoo, Debian, Ubunt
 
 See [https://github.com/grafov] for my programming works.
 
-== Colemacs keyboard layout ==
+== Colemecs keyboard layout ==
 
 [https://github.com/grafov/keyboard]  It is experiment how to make ergonomic layout  for Emacs on default keyboard. Instead of change keybindings in Emacs I reprogrammed a keyboard layout.
+
+== Playground mode for Go language ==
+
+[https://github.com/grafov/go-playground] This mode offers functionality similar to playg.golang.org but inside Emacs.
 
 == Contacts ==
 
 grafov@gmail.com
-also you may cc axel@drupal.ru, dev@axel.pp.ru
+also you may cc dev@axel.pp.ru
 Homepage: http://siberian.laika.name
 
 [new:DrewAdams:2012-03-10 23:16 UTC]
