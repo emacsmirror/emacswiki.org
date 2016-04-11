@@ -60,6 +60,7 @@ I wrote InternetTime (from swatch.com) for DisplayTime, check it out.
 a discussion on #haskell about making a Haskell Emacs clone turned up this interesting link: http://cristal.inria.fr/ICFP2001/Abstracts/50.html
 
 : The same paper is referenced in DynamicBindingVsLexicalBinding.  There is also code by SamSteingold, referenced on CommonLisp. -- AlexSchroeder
-
+----
+Look, it's still me!
 ----
 CategoryHomepage
