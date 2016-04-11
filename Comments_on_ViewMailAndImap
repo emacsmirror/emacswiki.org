@@ -1,0 +1,18 @@
+It says:
+
+[quote]
+If she wants to use her inbox at work account as the main inbox, she can put in her .vm file:
+
+    (setq vm-primary-inbox "imap-ssl:mail.foocorp.com:993:inbox:login:becky:*")
+
+This refers to the inbox folder on foocorp, specifically. We can’t use * as the MAILBOX here. Once this is done, she can just use M-x vm to read her inbox at work.
+[/quote]
+
+This is contradictory. I think what is meant is:
+
+[code](setq vm-primary-inbox "imap-ssl:mail.foocorp.com:993:inbox:login:becky:inbox")[/code]
+
+otherwise the comment doesn't make sense.
+
+-- pietvanoostrum 2016-04-11 11:28 UTC
+
