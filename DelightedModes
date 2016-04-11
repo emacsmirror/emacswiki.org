@@ -38,6 +38,25 @@ In the above example, ##rainbow-mode## is the symbol for both the minor mode and
 
 To determine which library defines a mode, use e.g.: ##C-h f eldoc-mode RET##. The name of the library is displayed in the first paragraph, with an ".el" suffix (in this example it displays "eldoc.el", and therefore we could use the value "eldoc" for the library).
 
+This however isn't always the case so figuring out how to make the lighter disappear for some "built in" modes is sometimes more complicated: no ".el" file is available! A way to disable lighter for such a mode is to force the execution of ##(delight 'something-mode nil t)## once the mode is loaded.
+
+=== Some corner cases ===
+Sometimes the mode-symbol is not getting set correctly (someone please double-check this terminology)
+
+Substitutes for some modes are:
+
+* *auto-fill-mode*
+
+    (delight 'auto-fill-function nil t)
+
+* *server-mode*
+
+    ????
+
+* *reftex-mode*
+
+    ????
+
 ==Important notes==
 
 Although strings are common, any mode-line construct is permitted as the value (for both minor and major modes); so before you override a value you should check the existing one, as you may want to replicate any structural elements in your replacement if it turns out not to be a simple string.
