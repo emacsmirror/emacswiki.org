@@ -271,6 +271,8 @@ those above.
 Or, a more interesting example:
 
 {{{
+<kensanata> forget channel-wisdom
+<fsbot> Forgot "channel-wisdom" which had one note:  ["redirect shit#emacssays"]
 <kensanata> (defun channel-wisdom (&rest args) (concat "Shut up, " nick "!"))
 <fsbot> fs-channel-wisdom  ..(symbol)
 <kensanata> channel-wisdom
