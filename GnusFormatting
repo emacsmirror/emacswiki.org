@@ -12,8 +12,6 @@ lots of percentages everywhere."
 
 It is possible to show threads with line drawing characters <b>in a terminal</b>.
 
-http://www.dd.chalmers.se/~bojohan/emacs/img/tree_small.png
-
 First we create the glyphs we want to use for the tree. It doesn't work to put color on these characters through faces in Emacs so we color them directly using escape sequences.
 
     (dolist (c '((?\207 . ?q) (?\216 . ?x) (?\212 . ?t) (?\203 . ?m)))
@@ -64,7 +62,7 @@ been generated.
 
 The variable <code>glyph-table</code> (shown using <code>C-h v</code>) should now contain a vector:
 
-    [129 130 131 132 133 134 135 136 137 138 139 140 ... ]
+    [129 130 131 132 133 ... ]
 
 The order of the glyph codes in the vector corresponds to the order of the glyphs shown by <code>(describe-current-display-table)</code>.
 In the example shown here, the fourth glyph shown by <code>(describe-current-display-table)</code> corresponds to the fourth glyph code: <code>132</code>. 
