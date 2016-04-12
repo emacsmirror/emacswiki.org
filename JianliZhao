@@ -23,7 +23,7 @@ To install:
 
 ****** region-list-edit.el(bellow)
 
-****** highlight.el on this emacswiki
+****** highlight.el on ELPA or this emacswiki
 
 
 ***  add below into .emacs (load-file can be replaced by require if wish).  
@@ -32,10 +32,12 @@ These lines are minimum configuration needed in emacs 24.3
 {{{
 (semantic-mode 1)
 (require 'semantic/bovine/c nil 'noerror)
-(load-file "~/.emacs.d/myconfig/site-lisp/highlight.el")
+(load-file "~/.emacs.d/myconfig/site-lisp/highlight.el") ;;OR in ELPA
 (load-file "~/.emacs.d/myconfig/site-lisp/region-list-edit.el")
 (load-file "~/.emacs.d/myconfig/site-lisp/zjl-hl.el")
 (zjl-hl-enable-global 'c-mode)
+(zjl-hl-enable-global 'c++-mode)
+(zjl-hl-enable-global 'java-mode)
 }}}
 
 * 2 http://www.emacswiki.org/emacs/region-list-edit.el
