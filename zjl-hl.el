@@ -1,16 +1,15 @@
-;;;This package can highlight variables and function calling and other keywords in c
-;; to enable this package, add this two lines into your .emacs:
-;; (require 'zjl-hl)
-;; (zjl-hl-enable-global-all-modes);to disable, call (zjl-hl-disable-global-all-modes)
+;;;Updated in 2016.4.12
+;;;This package can highlight argument/variable and keywords in c/c++/java
+;; Issue now: all disable function can not remove keyword I add, don't know how
 
-;;; begin lisp code
 (require 'highlight)
 (require 'region-list-edit)
 
-(defcustom zjl-hl-make-fun-call-notable  t
-  "enlarge font of called function, so that become notable"
+(defcustom zjl-hl-make-fun-call-noticeable  t
+  "enlarge font of called function, so that become noticeable"
   :type 'boolean :group 'zjl-hl)
-(defcustom zjl-hl-fun-call-notable-degree  1.2
+
+(defcustom zjl-hl-fun-call-noticeable-degree  1.2
   "Control the font size of function call"
   :type 'boolean :group 'zjl-hl)
 
@@ -19,44 +18,47 @@
   :type 'boolean :group 'zjl-hl)
 
 (defcustom zjl-hl-c++-mode-enable-flag nil
-  "Enable c++ mode highlight when zjl-hl-enable-global-all is called.
-Currently only c style file but named as *.cpp is supported"
+  "Enable c++ mode highlight when zjl-hl-enable-global-all is called."
   :type 'boolean :group 'zjl-hl)
 
+(defcustom zjl-hl-java-mode-enable-flag nil
+  "Enable Java highlight when zjl-hl-enable-global-all is called."
+  :type 'boolean :group 'zjl-hl)
 
-
-(defcustom zjl-hl-normal-size 40000
+(defcustom zjl-hl-no-delay-max-size 10000
   "The size of erea that zjl-hl can highlight without any delay.
 You can improve this if your computer has enough performance."
   :type 'integer :group 'zjl-hl)
 
-(defcustom zjl-hl-toobig-size 10000000
+(defcustom zjl-hl-too-big-size 200000
   "The threshold size of function that zjl-hl will stop to highlight since it is too big. The size corresponds to the largest function found in current screen and
 +-zjl-hl-numberofscreen-to-hl-each-time screens"
   :type 'integer :group 'zjl-hl)
 
-(defcustom zjl-hl-toobig-not-update-size 1000000
-  "The size of function that zjl-chl will stop to  highlight when the function is modified.
-the function means those that inculded in current screen and +-zjl-hl-numberofscreen-to-hl-each-time
-screens"
+(defcustom zjl-hl-too-big-to-update-size 100000
+  "If the edited function's size is too large, zjl-hl will stop to do partial highlight"
   :type 'integer :group 'zjl-hl)
 
 (defcustom zjl-hl-numberofscreen-to-hl-each-time 1
-  "The number of screens around current screen to highlight every time.
-This variable is define for:
-I use idle timer delay to begin highlight current screen when user stop to scroll screen
-(so as to have no delay when scroll),but this cause the highlight happen delay 0.5sec
-after we stop scroll screen, and this not feels so good. The way to void this(in some degree)
-is highlighting [-zjl-hl-numberofscreen-to-hl-each-time +zjl-hl-numberofscreen-to-hl-each-time]
-screens for each time zjl-hl work"
+  "The number of screens around current screen to highlight every time, need because:
+   I use idle timer delay to begin highlight current screen when user stop to scroll screen (so as to have no delay when scroll),but this cause the highlight happen delay 0.5sec after we stop scroll screen, and this not feels so good. The way somehow to void this is highlighting [-zjl-hl-numberofscreen-to-hl-each-time +zjl-hl-numberofscreen-to-hl-each-time] screens for each time zjl-hl work"
     :type 'integer :group 'zjl-hl)
 
+(defcustom zjl-hl-semantic-parse-depth 20
+  "the deepest subscope zjl-hl try to get semantic parse to get local variable, it is fine to set as high as 20"
+  :type 'integer :group 'zjl-hl)
 
 (defcustom zjl-hl-global-variable-hl nil
-"xxx"
-    :type 'boolean :group 'zjl-hl)
+  "xxx"
+  :type 'boolean :group 'zjl-hl)
 
+(defcustom zjl-hl-error-message-print-p t
+  "xxx"
+  :type 'boolean :group 'zjl-hl)
 
+(defcustom zjl-hl-dbg-print-p 'critical
+  "whether to print debug info or not"
+  :type 'boolean :group 'zjl-hl)
 
 (defcustom zjl-hl-firstscreen-hl-toggle nil
   "When not nil and when you open a new buffer, hl buffer before it shown on window.
@@ -64,10 +66,20 @@ this will cause delay that feel uncomfortable.Don't enable this unless your comp
 enough performance."
   :type 'boolean :group 'zjl-hl)
 
-;;variable that use to add/remove timer
-(setq zjl-hl-timer-obj nil)
-(setq zjl-hl-timer-semantic-update-obj nil)
+(defcustom zjl-hl-delete-else-do-hl nil
+  "When not nil and when you open a new buffer, hl buffer before it shown on window.
+this will cause delay that feel uncomfortable.Don't enable this unless your computer has
+enough performance."
+  :type 'boolean :group 'zjl-hl)
 
+(defcustom zjl-hl-generic-macro-enable 10
+  "When t, assume symbol as Macro if it is purly composed by capital/number/underline.
+When number, also consider symbol as Macro as long as first N chars are capital/number/underline.
+When nil, do not apply above two assumptions, most Macro won't be highlighted"
+  :type 'integer :group 'zjl-hl)
+
+(setq zjl-hl-timer-obj nil)
+(setq zjl-hl-update-screen-timer nil)
 
 (defface zjl-hl-font-lock-bracket-face
   '((((class color)
@@ -76,11 +88,26 @@ enough performance."
     (((class color)
       (background light))
      (:foreground "firebrick3" :bold nil :italic nil))
-    (t
-     ()))
+    (t()))
   "*Font lock mode face for brackets, e.g. '(', ']', etc."
   :group 'zjl-hl-faces)
+
 (defvar zjl-hl-font-lock-bracket-face 'zjl-hl-font-lock-bracket-face
+  "Font lock mode face for backets.  Changing this directly
+  affects only new buffers.")
+
+(defface zjl-hl-font-lock-bracket-more-visible-face
+  '((((class color)
+      (background dark))
+     (:foreground "brown1" :bold t :italic nil))
+    (((class color)
+      (background light))
+     (:foreground "brown1" :bold t :italic nil))
+    (t()))
+  "*Font lock mode face for brackets, e.g. '(', ']', etc."
+  :group 'zjl-hl-faces)
+
+(defvar zjl-hl-font-lock-bracket-more-visible-face 'zjl-hl-font-lock-bracket-more-visible-face
   "Font lock mode face for backets.  Changing this directly
   affects only new buffers.")
 
@@ -91,10 +118,10 @@ enough performance."
     (((class color)
       (background light))
      (:foreground "DarkGoldenrod4" :bold nil :italic nil))
-    (t
-     ()))
+    (t()))
   "*Font lock mode face for operater, e.g. '+', '-', etc."
   :group 'zjl-hl-faces)
+
 (defvar zjl-hl-operators-face 'zjl-hl-operators-face)
 
 (defface zjl-hl-member-reference-face
@@ -103,18 +130,11 @@ enough performance."
      (:foreground "#f4a957" :bold nil :italic nil))
     (((class color)
       (background light))
-     ;(:foreground "#008000" :bold nil :italic nil); theme 0
-     ;(:foreground "#009c00" :bold nil :italic nil);between color-28/34, prefer 34
-     ;(:foreground "#28a028" :bold nil :italic nil)
-     (:foreground "#008024" :bold nil :italic nil)     
-     ;;(:foreground "DarkKhaki")
-     ;; (:foreground "DarkSalmon"); theme 1
-     ;(:foreground "PaleVioletRed")
-     )
-    (t
-     ()))
+     (:foreground "#008024" :bold nil :italic nil))
+    (t()))
   "*Font lock mode face for the struct member reference, e.g. b in \"a->b\"."
   :group 'zjl-hl-faces)
+
 (defvar zjl-hl-member-reference-face 'zjl-hl-member-reference-face)
 
 (defface zjl-hl-function-call-face
@@ -123,18 +143,14 @@ enough performance."
      (:foreground "#e566d7" :bold t))
     (((class color)
       (background light))
-     ;(:foreground "#008000" :bold t :italic nil);theme 0
-     ;(:foreground "#009c00" :bold t :italic nil);between color-28/34, prefer 34
-     ;(:foreground "#28a028" :bold t :italic nil)
-     (:foreground "#008024" :bold t :italic nil)     
-     ;; (:foreground "#008080" :bold t);; theme 1
-     )
-    (t
-     ()))
+     (:foreground "#008024" :bold t :italic nil))
+    (t()))
   "*Font lock mode face for functioin calling."
   :group 'zjl-hl-faces)
 (defvar zjl-hl-function-call-face 'zjl-hl-function-call-face)
-;; (defvar zjl-hl-function-call-face 'font-lock-function-name-face)
+
+(copy-face 'font-lock-type-face 'zjl-hl-template-face)
+(defvar zjl-hl-template-face 'zjl-hl-template-face)
 
 (defface zjl-hl-local-variable-reference-face
   '((((class color)
@@ -142,24 +158,12 @@ enough performance."
      (:foreground "LightGoldenrod"))
     (((class color)
       (background light))
-    ;(:foreground "LimeGreen")
-     ;SpringGreen4
-     ;(:foreground "red")
-     ;(:foreground "#008080")
-     ;(:foreground "color-36")
-     ;(:foreground "#00afaf");(:foreground "color-37")
-     (:foreground "#127974");(:foreground "color-37")
-     ;(:foreground "#008000" :bold nil :italic nil);;theme 0
-     ;(:foreground "#28a028");;lighter than the ForestGreen but darker than the LimeGreen;;; theme 1
-     )
-    (t
-     ()))
+     (:foreground "#127974"))
+    (t()))
   "*Font lock mode face for variable in function body."
   :group 'zjl-hl-faces)
 
 (defvar zjl-hl-local-variable-reference-face 'zjl-hl-local-variable-reference-face)
-;; (defvar zjl-hl-local-variable-reference-face 'font-lock-variable-name-face)
-
 
 (defface zjl-hl-global-variable-reference-face
   '((((class color)
@@ -167,12 +171,11 @@ enough performance."
      (:foreground "LightGoldenrod"))
     (((class color)
       (background light))
-     (:foreground "maroon" :bold nil :italic t)
-     )
-    (t
-     ()))
+     (:foreground "maroon" :bold nil :italic t))
+    (t()))
   "*Font lock mode face for variable in function body."
   :group 'zjl-hl-faces)
+
 (defvar zjl-hl-global-variable-reference-face 'zjl-hl-global-variable-reference-face)
 
 (defface zjl-hl-parameters-reference-face
@@ -181,14 +184,11 @@ enough performance."
      (:foreground "LightGoldenrod" :bold t))
     (((class color)
       (background light))
-     ;(:foreground "#008080" :bold t :italic nil));theme 0
-     ;(:foreground "color-36" :bold t :italic nil));theme 0
-     ;(:foreground "#00afaf" :bold t :italic nil));(:foreground "color-37" :bold t :italic nil));theme 0
-    (:foreground "#127974" :bold t :italic nil));(:foreground "color-37" :bold t :italic nil));theme 0
-    (t
-     ()))
+     (:foreground "#127974" :bold t :italic nil))
+    (t()))
   "*Font lock mode face for parameters in function body"
   :group 'zjl-hl-faces)
+
 (defvar zjl-hl-parameters-reference-face 'zjl-hl-parameters-reference-face)
 
 (defface zjl-hl-number-face
@@ -198,10 +198,10 @@ enough performance."
     (((class color)
       (background light))
      (:foreground "red" :bold nil :italic nil))
-    (t
-     ()))
+    (t()))
   "*Font lock mode face for number, e.g. \"0xf5\" \"0.5\" \"234\", etc."
   :group 'zjl-hl-faces)
+
 (defvar zjl-hl-number-face 'zjl-hl-number-face)
 
 (defface zjl-hl-member-point-face
@@ -211,16 +211,13 @@ enough performance."
     (((class color)
       (background light))
      (:foreground "SpringGreen4" :bold nil :italic nil))
-    (t
-     ()))
+    (t()))
   "*Font lock mode face for \"->\"."
   :group 'zjl-hl-faces)
+
 (defvar zjl-hl-member-point-face 'zjl-hl-member-point-face)
 
-(  )
 (set-face-attribute 'font-lock-constant-face nil :foreground "red")
-
-;;comment should be #ff00000 for good look.
 
 (setq zjl-hl-operators-regexp
       (regexp-opt '("+" "-" "*" "/" "%" "!"
@@ -228,637 +225,806 @@ enough performance."
                     "=" "<" ">"
                     "." "," ";" ":")))
 
-(setq zjl-hl-brackets-regexp
-      (regexp-opt '("(" ")" "[" "]" "{" "}")))
+(setq zjl-hl-brackets-regexp (regexp-opt '("(" ")" "[" "]")))
+(setq zjl-hl-brackets-more-visible-regexp (regexp-opt '("{" "}")))
+
+(setq zjl-hl-types-name '("int" "INT" "int8" "int16" "int32" "int64" "INT8" "INT16" "INT32" "INT64" "uint8" "uint16" "uint32" "uint64" "UINT8" "UINT16" "UINT32" "UINT64" "u8" "u16" "u32" "u64" "U8" "U16" "U32" "U64" "long" "short" "char" "CHAR" "float" "FLOAT" "unsigned" "UNSIGNED" "void" "VOID"))
 
 (setq zjl-hl-types-regexp
       (concat
        "\\_<[_a-zA-Z][_a-zA-Z0-9]*_t\\_>" "\\|"       
-      (concat "\\_<" (regexp-opt '("unsigned" "int" "char" "float" "void" "VOID" "UNSIGNED" "INT" "CHAR" "FLOAT" "UINT8" "UINT16" "UINT32" "UINT64") 'words) "\\_>")))
+       (concat "\\_<" (regexp-opt zjl-hl-types-name 'words) "\\_>")))
 
 (setq zjl-hl-warning-words-regexp
       (concat "\\_<" (regexp-opt '("FIXME" "TODO" "HACK" "fixme" "todo" "hack" "BUG" "XXX" "DEBUG")) "\\_>"))
 
 (setq zjl-hl-macro-regexp
-      (concat "\\_<\\(" "BIT[0-9]\\|SUCCESS\\|ERROR\\|FALSE\\|TRUE\\|IN\\|OUT" "\\)\\_>"))
+      (concat "\\_<\\(" "BIT[0-9]\\|\\(?:0x\\)?[0-9]+\\(?:ULL?\\|ull?\\|llu\\|LLU\\|[uU]\\)\\|SUCCESS\\|ERROR\\|FALSE\\|TRUE\\|IN\\|OUT" "\\)\\_>"))
 
+;;;http://emacs.stackexchange.com/questions/7396/how-can-i-determine-which-function-was-called-interactively-in-the-stack
+(defun zjl-hl-get-caller-func-name ()
+  "Get the current function' caller function name"
+  (let* ((index 5)
+         (frame (backtrace-frame index))
+         (found 0))
+    (while (not (equal found 2))
+      (setq frame (backtrace-frame (incf index)))
+      (when (equal t (first frame)) (incf found)))
+    (second frame)))
+
+(defun zjl-hl-dbg-print (str &optional value level)
+  (when (or (and (equal zjl-hl-dbg-print-p 'critical)
+		 (or (equal level 'critical)))
+	    (and (equal zjl-hl-dbg-print-p 'debug)
+		 (member level '(critical debug)))
+	    (equal zjl-hl-dbg-print-p 'verbose))
+    (let (str-text value-text)
+      (setq str-text (format "\n\n=== TIME=%s buffer=%s Elisp-Func=%s Code-Func=%s  %s\n" (substring (current-time-string) 11 19) (buffer-name) (zjl-hl-get-caller-func-name) (which-function) str))
+      (when value (setq value-text (prin1-to-string value)))
+      (get-buffer-create "*zjl-hl-dbg-print*")
+      (with-current-buffer "*zjl-hl-dbg-print*"
+        (goto-char (point-max))
+        (insert str-text)
+        (when value (insert value-text))))))
+
+(defun zjl-hl-search-member-function-call (limit)
+  (let ((pos (re-search-forward "\\(?:\\.\\|->\\)\\(\\_<\\(?:\\w\\|\\s_\\)+\\_>\\)[ 	\n]*[^\\(]" limit t)))
+    (when pos
+      (goto-char (- pos 1))
+      (save-match-data (re-search-backward "\\.\\|->")))))
 (setq zjl-hl-c-mode-keywords (list
-       '("->"
-          0  zjl-hl-member-point-face keep) ;;should put before the c-operators
-       (cons zjl-hl-operators-regexp (cons 0  '(zjl-hl-operators-face keep)))       
-       (cons zjl-hl-brackets-regexp 'zjl-hl-font-lock-bracket-face)
-       (cons zjl-hl-types-regexp 'font-lock-type-face)
-       (cons zjl-hl-warning-words-regexp 'font-lock-warning-face)
-       (cons zjl-hl-macro-regexp 'zjl-hl-number-face)
-       '("\\(\\_<\\(?:\\(?:0x[0-9a-fA-F]*\\)\\|\\(?:[0-9]+\\(\\.[0-9]+\\)?\\)\\|\\(?:0[0-7]*\\)\\|\\(?:[01]+b\\)\\)\\_>\\)"
-        0  zjl-hl-number-face keep)
-       '("\\(?:\\.\\|->\\)\\(\\_<\\(?:\\w\\|\\s_\\)+\\_>\\)"
-         1  zjl-hl-member-reference-face keep)
-       '("\\(\\_<\\(\\w\\|\\s_\\)+\\_>\\)[ 	
-]*("
-         1  zjl-hl-function-call-face keep)
-       ))
+                              '("->"
+                                0  zjl-hl-member-point-face keep) ;;should put before the c-operators
+                              (cons zjl-hl-operators-regexp (cons 0  '(zjl-hl-operators-face keep)))       
+                              (cons zjl-hl-brackets-regexp 'zjl-hl-font-lock-bracket-face)
+                              (cons zjl-hl-brackets-more-visible-regexp 'zjl-hl-font-lock-bracket-more-visible-face)       
+                              (cons zjl-hl-types-regexp 'font-lock-type-face)
+                              (cons zjl-hl-warning-words-regexp 'font-lock-warning-face)
+                              (cons zjl-hl-macro-regexp 'zjl-hl-number-face)
+                              '("\\(\\_<\\(?:\\(?:0x[0-9a-fA-F]*\\)\\|\\(?:[0-9]+\\(\\.[0-9]+\\)?\\)\\|\\(?:0[0-7]*\\)\\|\\(?:[01]+b\\)\\)\\_>\\)"
+                                0  zjl-hl-number-face keep)
+                              '(zjl-hl-search-member-function-call 1  zjl-hl-member-reference-face keep);; this is for case of a.b.c, need this function to let b and c both cover
+                              '("\\(?:\\.\\|->\\)\\(\\_<\\(?:\\w\\|\\s_\\)+\\_>\\)[ 	\n]*("
+                                1  zjl-hl-function-call-face keep)       
+                              '("\\(\\_<\\(\\w\\|\\s_\\)+\\_>\\)[ 	\n]*("
+                                1  zjl-hl-function-call-face keep)))
 
-;;; begin lisp code
-;;DarkGoldenrod4
-;;SaddleBrown
-;;RosyBrown
+;; Do not forbid the first captial to be number, because there are \\_<[0-9]+ULL?\\_> in kernel code
+(cond
+ ((equal t zjl-hl-generic-macro-enable)
+  (add-to-list 'zjl-hl-c-mode-keywords '("\\_<\\([_A-Z0-9]+\\)\\_>" 
+                                         0  zjl-hl-number-face keep) t))
+ ((numberp zjl-hl-generic-macro-enable)
+  (add-to-list 'zjl-hl-c-mode-keywords (list (concat "\\(" "\\_<\\([_A-Z0-9]+\\)\\_>" "\\|" "\\_<\\([_A-Z0-9]\\{"  (number-to-string zjl-hl-generic-macro-enable) ",\\}[_A-Z0-9a-z]+\\)\\_>" "\\)") 0  'zjl-hl-number-face 'keep) t))
+ (t nil)
+ )
 
+(setq zjl-hl-c++-mode-keywords zjl-hl-c-mode-keywords)
+(add-to-list 'zjl-hl-c++-mode-keywords '("<[_a-zA-Z][_a-zA-Z0-9]*\\(::[_a-zA-Z][_a-zA-Z0-9]*\\)?[ 	]*\\*?>"
+                                         0  zjl-hl-template-face keep) t)
+(defvaralias 'zjl-hl-java-mode-keywords 'zjl-hl-c-mode-keywords) ;java default deal with template <>, though with different face, I guess its fine
 
+;;Need to ensure the result is all strings!
+(defun zjl-hl-get-var-in-semantic-parcel (input &optional argument)
+  (interactive)
+  (let (result type-str)
+    (dolist (item input)
+      (when (listp item)
+        (if (or (eq (cadr item) 'variable) (and argument (eq (cadr item) 'function)))
+            (cond ((listp (car item))
+                   (dolist (var-desc (car item))
+                     (when (and (listp var-desc) 
+                                (stringp (car var-desc))
+                                (not (member (car var-desc) zjl-hl-types-name)))
+                       (add-to-list 'result (car var-desc)))))
+                  ((stringp (car item))
+                   (if (and (not (equal "" (car item)))
+                            (not (member (car item) zjl-hl-types-name)))
+                       (add-to-list 'result (car item))
+                     (when (listp (caddr item))
+                       (setq type-str (plist-get (caddr item) ':type))
+                       (when (and (stringp type-str)
+                                  (not (member type-str zjl-hl-types-name)))
+                         (add-to-list 'result type-str)))))))))
+    result))
 
-(defun zjl-hl-local-variable-and-parameter-in-func-region (start end )
-  (condition-case nil         
+;; Default replace-regexp print info in message buffer, so need a custom function
+(defun zjl-hl-replace-regexp (regexp to-string &optional delimited start end)
+  (save-excursion
+      (when start (goto-char start))
+      (zjl-hl-dbg-print "while start" nil 'debug)
+      (while (re-search-forward regexp end t)
+        (replace-match to-string))
+      (zjl-hl-dbg-print "while end" nil 'debug)))
+
+(defun zjl-hl-get-arg-use-regexp (arg-start arg-end)
+  "Two marker as args and return args between two marks as list"
+  (let (items item)
+    (when (and arg-start arg-end)
+      (goto-char arg-start)
+      (zjl-hl-replace-regexp  "\\(=.*?\\)\\(,\\|)\\)" "\\2" nil arg-start arg-end)
+      (goto-char arg-start)
+
+      (zjl-hl-dbg-print "while start search function pointer" nil 'debug)
+      ;; argument like void * (*func-pointer)(int a, int b),
+      (while (re-search-forward "([ 	\n]*\\*[ 	\n]*\\_<\\([_A-Za-z0-9]+\\)\\_>[ 	\n]*)[ 	\n]*(.*?)[ 	\n]*\\(,\\|)\\)" arg-end t)
+        (setq item (match-string-no-properties 1))
+        (when (not (member item zjl-hl-types-name))
+          (add-to-list 'items item)))
+      (zjl-hl-dbg-print "while end search function pointer" nil 'debug)
+      
+      (zjl-hl-replace-regexp  "\\*\\|\n\\|(.*?)" "" nil arg-start arg-end) ;; remove just incase there is another () inside arg (), and remove * \n.
+      (zjl-hl-replace-regexp  "[ 	]\\{2,\\}" " " nil arg-start arg-end)
+      (goto-char arg-start)
+      (zjl-hl-dbg-print "while start normal argument" nil 'debug)
+      (while (re-search-forward "\\_<\\([_A-Za-z0-9]+\\)\\_>[ 	\n]*\\(,\\|)\\)" arg-end t)
+        (setq item (match-string-no-properties 1))
+        (when (not (member item zjl-hl-types-name))
+          (add-to-list 'items item)))
+      (zjl-hl-dbg-print "while end normal argument" nil 'debug))
+    items))
+
+(setq zjl-hl-dbg-profile-func-start-time nil)
+(setq zjl-hl-dbg-profile-prev-time nil)
+(defun zjl-hl-dbg-profile-start ()
+  (when (equal zjl-hl-dbg-print-p 'verbose)
+    (setq zjl-hl-dbg-profile-prev-time (float-time))
+    (setq zjl-hl-dbg-profile-func-start-time (float-time))))
+(defun zjl-hl-dbg-profile-print (str)
+  (when (equal zjl-hl-dbg-print-p 'verbose)
+    (when zjl-hl-dbg-profile-prev-time
+      (let ((temp (- (float-time) zjl-hl-dbg-profile-prev-time)))
+        (zjl-hl-dbg-print (format "zjl-hl-dbg-profile-print: %s" str) temp)))
+    (setq zjl-hl-dbg-profile-prev-time (float-time))))
+(defun zjl-hl-dbg-profile-end (str)
+  (when (equal zjl-hl-dbg-print-p 'verbose)
+    (when zjl-hl-dbg-profile-func-start-time
+      (let ((temp (- (float-time) zjl-hl-dbg-profile-func-start-time)))
+        (zjl-hl-dbg-print (format "zjl-hl-dbg-profile-end:%s" str) temp)))))
+
+(defun zjl-hl-c-beginning-of-defun ()
+  (condition-case err
+      (c-beginning-of-defun)
+    (error (zjl-hl-dbg-print (format "%s() call c-beginning-of-defun and got error:" (zjl-hl-get-caller-func-name)) (error-message-string err) 'critical)
+           nil)))
+(defun zjl-hl-c-end-of-defun ()
+  (condition-case err
+      (c-end-of-defun)
+    (error (zjl-hl-dbg-print (format "%s() call c-end-of-defun and got error:" (zjl-hl-get-caller-func-name)) (error-message-string err) 'critical)
+           nil)))
+
+(defun zjl-hl-do-func-region (start end AB)
+  "the two parmeters are marker"
+  (condition-case err
       (save-excursion
-        (let* ((local-variable-list '()) (local-constant-list '())
+        (let* ((local-variable-list '())
                (parameter-list '())                
-               (func-body-begin (funcall zjl-hl-get-body-begin start end))
+               (func-body-begin (funcall zjl-hl-get-body-begin start end)) ;point, not marker
                (case-fold-search nil)
                items
-               item
-               allitems   ;;name-nned-to-clean, also some zjl-hl-variable need to clean
+               items-deepest
+               depth
                (successful t)
-               subdomain-start
-               subdomain-end
-               temppoint
-               temppoint2
-               temp-value
-               meet-a-for
-               meet-a-for-end
-               (allitemsstrstart 0) ;;name need to clean
-               allitemstemp ;;name need to clean
-               (domainstartlist '()))
+               (nonterminal (case major-mode
+                              ('c-mode 'bovine-inner-scope)
+                              ('c++-mode 'bovine-inner-scope)
+                              ('java-mode 'field_declaration)))
+               (original-mode major-mode)
+               (original-buffer (current-buffer))
+               )
           (setq zjl-hl-local-variable-list nil)
-          (setq zjl-hl-local-parameter-list nil)
           (setq zjl-hl-global-variable-list nil)
-          (condition-case nil         
-              (when func-body-begin
-                
-                (goto-char func-body-begin)
-                
-                (setq items (semantic-get-local-arguments))
+          (condition-case err
+              (progn 
+                (case AB ('A (condition-case nil;;use this to limit err impaction
+                                 (let (func-body-begin-temp-buffer)
+                                   (with-temp-buffer
+                                     ;; with-current-buffer (find-file-noselect "/home/xxx/work/test/zjl-hl-test.c")
+                                     ;; (erase-buffer)
+                                     ;; (setq original-mode 'c++-mode)
 
-                ;; (unless items
-                ;;   (semantic-parse-region start end);;force reparse, idea from ecb-method
-                ;;   (setq items (semantic-get-local-arguments)))
-                
-                (when items
-                  (dolist (item items)
-                    (when (not (member (car item) parameter-list))
-                      (setq parameter-list (cons (car item) parameter-list)))
-                    ))
-                
-                (save-excursion
-                  (if parameter-list ;; should before local-variable-list since some parameter will override by local-variable
-                      (progn (setq zjl-hl-local-parameter-list parameter-list)
-                             (case major-mode
-                               ('c-mode (zjl-hl-symbol-region func-body-begin end (concat "\\_<" (regexp-opt parameter-list) "\\_>") zjl-hl-parameters-reference-face t nil nil))
-                               ('c++-mode (zjl-hl-symbol-region func-body-begin end (concat "\\_<" (regexp-opt parameter-list) "\\_>") zjl-hl-parameters-reference-face t nil nil))
-                               ))
-                    (when (zjl-hl-find-regexp-return-end-pos2 start func-body-begin "," nil)
-                      (setq successful nil));; since if there is "," foudn in parameter area, so should have a argument, but the cedit may return nil, so.. 
-                    )
-                  ))
-            (error (setq successful nil)))
+                                     (insert-buffer-substring-no-properties original-buffer start end)
+                                     (setq func-body-begin-temp-buffer (copy-marker (+ (- func-body-begin (marker-position start)) 1)))
+                                     ;; remove all comment
+                                     (zjl-hl-replace-regexp  "\\(//.*\\)\\|\\(/\\*\\(?:.\\|\n\\)*?\\*/\\)" "" nil (point-min) (point-max))
+				     ;; replace all string as ""
+                                     (zjl-hl-replace-regexp  "\"\"\\|\\(\"\\([^\"]\\|\"\\)*?[^\\]\"\\)" "\"\"" nil (point-min) (point-max))
+				     (let ((zjl-hl-disable-init-for-temp-buffer t))
+				       (funcall (intern-soft (symbol-name original-mode))))
 
-          ;;current code if there is for (int i;;;;) then the i outside of the for()  will also been higlight.. not so good... ,the up-list will go to for();
-          (condition-case nil
-              (when func-body-begin                               
-                (goto-char func-body-begin)
-                
-                
-                (setq local-variable-list '())
-                (setq global-variable-list '())
-                
-                (while (progn (setq temp-value (zjl-hl-find-regexp-return-end-pos2 (point) end "\\(\\_<return\\_>\\)\\|\\(\\(?:volatile +\\)?\\_<\\(?:\\w\\|\\s_\\)+\\_>\\(?:[ ]+\\**\\|\\**[ ]+\\)\\(?:\\_<\\(?:\\w\\|\\s_\\)+\\_>\\)[ 
-]*\\(?:[=;,[][^=]\\)\\)" 12));
-                              (setq temppoint (car-safe temp-value)));
-                                        ;[^=] is to prevent the #if xxx == ss
-                  (goto-char temppoint)
-                  (when (cdr-safe temp-value);; thus skip the "..." and the return.. skp the ".." is because the (blackward-up-list) will crash if the point is in the "..".    NUMBER 12 here is because the zjl-xxxx-pos2 is has a \\(in it)
-                    (save-excursion
-                      (backward-up-list)    ; for(int i;...) will stop at (..  but in some compiler this i is available in the upper {}, so need the below two lines
-                      (setq subdomain-start (point)) ;;this can be a begining of {, or can be beginning of ( of a "for"
-                      (while (not (looking-at-p "{"))   ;; for the "for" expression -start
-                        (unless meet-a-for
-                          (setq meet-a-for t)
-                          (forward-sexp)
-                          (setq meet-a-for-end (1- (point)))
-                          (backward-sexp)
-                          )
-                        (backward-up-list)
-                        )                              ;; for the "for" expression -end
+                                     (goto-char (point-min))
 
-                      (forward-sexp)
-                      (setq subdomain-end (point))
-                      )
-                    
-                    (when (not (member subdomain-start domainstartlist))
-                      (setq domainstartlist (cons subdomain-start domainstartlist))
+				     ;; this let is to simplify all "a = xxxx;" as "a=0"
+                                     (let (start-point start-marker stop-marker search-stop-point search-exp-sucess)
+				       (zjl-hl-dbg-print "while start replace a = xxxx" nil 'debug)
+                                       (while (setq start-point (zjl-hl-find-regexp-return-end-pos (point) (point-max) "[^!>=<]=[^=]" ))
+                                         (goto-char (1- (car start-point)))
+                                         (setq start-marker (point-marker))
 
-                      (condition-case nil
-                          (if meet-a-for
-                              (progn
-                                (setq meet-a-for nil)
-                                (setq items (semantic-parse-region (1+ subdomain-start) meet-a-for-end 'bovine-inner-scope nil t)));; search in the for () experssion
-                            (progn
-                              ;;(setq items (semantic-get-local-variables))
-                              (setq items (semantic-parse-region (1+ subdomain-start) (1- subdomain-end) 'bovine-inner-scope nil t));;if use the parse-region then need this line
-                              ;; Without this 'bovine-inner-scope, the semantic will return func calling and variables that is global defined, or is  yyy in the xxx.ddds.yyy
-                              ;; semantic-get-local-variables sometime will lose a local defination
-                              ))
-                        (error (progn (setq successful nil) (message "zjl-hl-local-variable-and-parameter-in-func-region error"))))         
+                                         ;;To deal with "for (i = 0; i !=0 ; i = 0)", because of there is no ; after =
+                                         (backward-up-list)
+                                         (forward-sexp)
+                                         (setq search-stop-point (point))
+                                         (goto-char start-marker)
 
-                      ;;difference of semantic-get-local-variables and semantic-parse-region here is just for:constant and that cahce in definfination of ..-get-local-...  the variable the two get should be same. (based on my experience now 2012/03/10)
-                      (when items
-                        (dolist (item items)
-                          (when (and (not (member (car item) local-variable-list))
-                                     (not (member (car item) local-constant-list));;if use the parse-region then need this line
-                                     )
+                                         ;;must able to do with "unsigned int best_score =0,score = 0;"
+                                         (setq search-exp-sucess nil)
+                                         (condition-case nil
+                                             (let ((continue t))
+					       (zjl-hl-dbg-print "while start searching *,; in variables definition" nil 'debug)
+                                               (while (and continue
+                                                           (<= (point) search-stop-point))
+                                                 (forward-sexp)
+                                                 (when (looking-at "[ 	\n]*[,;]")
+                                                   (setq search-exp-sucess t)
+                                                   (setq continue nil)))
+					       (zjl-hl-dbg-print "while end searching *,; in variables definition" nil 'debug))
+                                           (error (setq search-exp-sucess nil)))
+                                         (when search-exp-sucess
+                                           (progn (setq stop-marker (point-marker))
+                                                  (delete-region start-marker stop-marker)
+                                                  (insert "0"))))
+				       (zjl-hl-dbg-print "while end replace a = xxxx" nil 'debug))
 
-                            ;;(setq local-variable-list (cons (car item) local-variable-list)) ;; if use the semantic-get-local-variables, use this line
-                            (if (equal '(:constant-flag t) (nth 2 item))                        ;;if use the parse-region then need this if, other wise the above line
-                                (setq local-constant-list (cons (car item) local-constant-list))
-                              (setq local-variable-list (cons (car item) local-variable-list))
-                              )
-                            )
-                          ))
+				     ;; Remove <...> which cause semantic failed to variable detect
+                                     (when (or (equal 'c++-mode original-mode) (equal 'java-mode original-mode))
+                                       (goto-char (point-min))
+                                       (let (start-point)
+					 (zjl-hl-dbg-print "while start remove <>" nil 'debug)
+                                         (while (setq start-point (zjl-hl-find-regexp-return-end-pos (point) (point-max) "<"))
+                                           (goto-char (1- (car start-point)))
+					   (forward-sexp)
+					   (if (looking-back ">")
+					       (delete-region (1- (car start-point)) (point))))
+					 (zjl-hl-dbg-print "while end  remove <>" nil 'debug)))
 
-                      (save-excursion
-                        (when local-variable-list
-                          (case major-mode
-                            ('c-mode (zjl-hl-symbol-region subdomain-start subdomain-end (concat "\\_<" (regexp-opt local-variable-list) "\\_>")  zjl-hl-local-variable-reference-face t nil nil))
-                            ('c++-mode (zjl-hl-symbol-region func-body-begin end (concat "\\_<" (regexp-opt local-variable-list) "\\_>")  zjl-hl-local-variable-reference-face t nil nil))
-                            )
-                          )
+				     (goto-char func-body-begin-temp-buffer)
+				     (let (start-point)
+				       (zjl-hl-dbg-print "while start remove all function call" nil 'debug)
+				       (while (setq start-point (zjl-hl-find-regexp-return-end-pos (point) (point-max) "("))
+					 (if (looking-back "\\_<if\\|for\\|while\\|switch\\_>[ 	\n]*(")
+				     	     (progn (goto-char (car start-point)))
+				     	   (goto-char (1- (car start-point)))
+				     	   (forward-sexp)
+				     	   (if (looking-back ")")
+				     	       (delete-region (1- (car start-point)) (point)))))
+				       (zjl-hl-dbg-print "while end  remove all function call" nil 'debug))
 
-                        ;;if use the parse-region then need these "when" clasue
-                        (when local-constant-list
-                          (case major-mode
-                            ('c-mode (zjl-hl-symbol-region subdomain-start subdomain-end (concat "\\_<" (regexp-opt local-constant-list) "\\_>")  zjl-hl-number-face t nil nil))
-                            )
-                          )
-                        )
+                                     (semantic-new-buffer-fcn)
 
-                      )
-                    (if (setq temppoint2 (car-safe (zjl-hl-find-regexp-return-end-pos2 (point) end "{\\|\\_<for\\_>")) );;for the "for" expression;; and skip the return clause. thus it won't be checked by the while xxx re-search
-                        (goto-char temppoint2)
-                      (goto-char end)))
-                  )
+                                     (condition-case err ;; to isolate err impact
+                                         (when func-body-begin-temp-buffer
+                                           (goto-char func-body-begin-temp-buffer)
+                                           (setq items-deepest (semantic-parse-region func-body-begin-temp-buffer (- (point-max) 2) nonterminal zjl-hl-semantic-parse-depth nil))
+                                           (zjl-hl-dbg-print "in temp buffer var(with large depth)=" items-deepest)
+                                           (dolist (item (zjl-hl-get-var-in-semantic-parcel items-deepest))
+                                             (add-to-list 'local-variable-list item))
+                                           (setq depth 0)
+					   (zjl-hl-dbg-print "while start in temp buffer get var" nil 'debug)
+                                           (while (< depth zjl-hl-semantic-parse-depth)
+                                             (setq items (semantic-parse-region func-body-begin-temp-buffer (- (point-max) 2) nonterminal depth nil))
+                                             ;;since the semantic-parse-region cost 95% of zjl-hl, so must reduce its calling as much as possible
+                                             (if (equal items items-deepest)
+                                                 (setq depth zjl-hl-semantic-parse-depth)
+                                               (zjl-hl-dbg-print "in temp buffer var(with less depth)=" items)
+                                               (dolist (item (zjl-hl-get-var-in-semantic-parcel items))
+                                                 (add-to-list 'local-variable-list item)))
+                                             (setq depth (1+ depth)))
+					   (zjl-hl-dbg-print "while end in temp buffer get var" nil 'debug))
+                                       (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region when find local variable in temp buffer" (error-message-string err) 'critical)))
 
+                                     ;; Use REGEXP to get arg, because below two formal methods do not work in temp buffer (but work most time in real file buffer), don't know why
+                                     ;;1. (semantic-parse-region (point-min) (point-max) nonterminal nil nil)  -- this alawys return nil in temp buffer or a temp file buffer
+                                     ;;2. (semantic-get-local-auguments) -- this always return nil in temp file buffer when file is first time opened, and have data returnned if close and then reopen file.
+                                     (condition-case err ;; to isolate err impact
+                                         (when func-body-begin-temp-buffer
+                                           (goto-char func-body-begin-temp-buffer)
+                                           (let (arg-start arg-end);;start is after(, end is after )
+                                             (when (and (equal major-mode 'c++-mode) (re-search-backward "[^:]:[^:]" nil t))
+                                               (forward-char 1))
+                                             (when (search-backward ")" nil t)
+                                               (forward-char 1)
+                                               (setq arg-end (point-marker)) ;; after point  )
+                                               (backward-sexp)
+                                               (forward-char 1)
+                                               (setq arg-start (point-marker)))
+                                             (dolist (item (zjl-hl-get-arg-use-regexp arg-start arg-end))
+                                               (add-to-list 'parameter-list item))
 
-                (when zjl-hl-global-variable-hl
-                  (setq allitems (semantic-parse-region func-body-begin end))
-                  (setq zjl-hl-local-variable-list local-variable-list)
-                  (when allitems
-
-                    (zjl-hl-test allitems nil nil nil nil)
-
-                    ;;(setq allitemsstr (prin1-to-string allitems));;
-                                        ;(prin1 allitems)
-                    ;; (while (setq allitemsstrstart (string-match "\\(\".*?\"\\) \\(type\\|variable\\)"  allitemsstr  allitemsstrstart))
-                    ;;   (when (not (equal (substring allitemsstr (nth 4 (match-data)) (nth 5 (match-data))) "function"))
-                    ;;     (setq item (substring allitemsstr (nth 2 (match-data)) (nth 3 (match-data))))
-                    ;;     (when (and    
-                    ;;            (not (member item local-variable-list))
-                    ;;            (not (member item local-constant-list));;if use the parse-region then need this line
-                    ;;            (not (member item global-variable-list))
-                    ;;            )
-                    ;;       ;(setq global-variable-list (cons item global-variable-list))
-                    ;;       nil
-                    ;;       ))
-                    ;;   )
-                    (when zjl-hl-global-variable-list
-                      (case major-mode
-                        ('c-mode
-                         (zjl-hl-symbol-region func-body-begin end (concat "\\_<" (regexp-opt zjl-hl-global-variable-list) "\\_>")  zjl-hl-global-variable-reference-face t nil nil)
-                         )
-                        )
-                      )
-                    ));;when allitems
-                )
-            (error (progn (setq successful nil)
-                          (message "zjl-hl-local-variable-and-parameter-in-func-region error"))))
-          successful))
-    (error (progn (message "zjl-hl-local-variable-and-parameter-in-func-region error")
-                  nil)))
-  )
-
-
-(defun zjl-hl-test (allitems empty nowfunction nowflag nownothing)
-  (let (item )
-    (dolist (item allitems)
-      (when (listp item)
-        (when (and (or (equal 'variable (nth 1 item))
-                       (equal 'type (nth 1 item)))
-                   (not (member (car item) zjl-hl-local-variable-list))
-                   (not (member (car item) zjl-hl-local-parameter-list))
-                   (not (member (car item) zjl-hl-global-variable-list))
-                   )
+                                             ;; This is to double check the () is the one hold args, by search the () after the func name
+                                             (goto-char (point-min))
+                                             (when (and (search-forward (concat (replace-regexp-in-string "[(*=)]" "" (which-function)) "[ 	\n]*(") func-body-begin-temp-buffer t)
+                                                        (not (equal (point-marker) arg-start)))
+                                               (setq arg-start (point-marker))
+                                               (backward-char 1)
+                                               (forward-sexp)
+                                               (setq arg-end (point-marker)))
+                                             (dolist (item (zjl-hl-get-arg-use-regexp arg-start arg-end))
+                                               (add-to-list 'parameter-list item)))
+                                           (zjl-hl-dbg-print "in temp buffer arg=" parameter-list))
+                                       (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region when find arg in temp buffer" (error-message-string err) 'critical)))))
+                               (error (set-buffer original-buffer)
+                                      (setq successful nil))))
+                      ('B (condition-case err ;; to isolate err impact
+                              (when func-body-begin
+                                (goto-char func-body-begin)
+                                (setq items (semantic-get-local-arguments))
+                                (zjl-hl-dbg-print "in current buffer arg=" items)
+                                (dolist (item (zjl-hl-get-var-in-semantic-parcel items t))
+                                  ;; (when (not (member item parameter-list)) (zjl-hl-dbg-print "find more arg" item));;purelly for debug
+                                  (add-to-list 'parameter-list item)))
+                            (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region when find arg" (error-message-string err) 'critical)))
+                          (condition-case err ;; To isolate err impact
+                              (when func-body-begin
+                                (goto-char func-body-begin)
+                                (setq items-deepest (semantic-parse-region func-body-begin (- end 2) nonterminal zjl-hl-semantic-parse-depth nil))
+                                (zjl-hl-dbg-print "in current buffer var(with large depth)=" items-deepest)
+                                (dolist (item (zjl-hl-get-var-in-semantic-parcel items-deepest))
+                                  ;; (when (not (member item  local-variable-list)) (zjl-hl-dbg-print "find more var" item));;purelly for debug
+                                  (add-to-list 'local-variable-list item))
+                                (setq depth 0)
+				(zjl-hl-dbg-print "while start in current buffer get var" nil 'debug)
+                                (while (< depth zjl-hl-semantic-parse-depth)
+                                  (setq items (semantic-parse-region func-body-begin (- end 2) nonterminal depth nil))
+                                  ;; Since the semantic-parse-region cost 95% of zjl-hl, so must reduce its calling as much as possible
+                                  (if (equal items items-deepest)
+                                      (setq depth zjl-hl-semantic-parse-depth)
+                                    (zjl-hl-dbg-print "in current buffer var(with less depth)=" items)
+                                    (dolist (item (zjl-hl-get-var-in-semantic-parcel items))
+                                      ;; (when (not (member item local-variable-list)) (zjl-hl-dbg-print "find more var" item));;purelly for debug
+                                      (add-to-list 'local-variable-list item)))
+                                  (setq depth (1+ depth)))
+				(zjl-hl-dbg-print "while end in current buffer get var" nil 'debug))
+                            (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region when find local variable" (error-message-string err) 'critical))))))
+            (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region:" (error-message-string err) 'critical)
+                   (setq successful nil)))
           (save-excursion
-            (if (and (arrayp (nth 4 item))
-                     (aref (nth 4 item) 0))
-                (progn
-                  (goto-char (aref (nth 4 item) 0))
-                  (when (not (looking-back "-> *\\|\\. *"))
-                    (setq zjl-hl-global-variable-list (cons (car item) zjl-hl-global-variable-list))      
-                    ))
-              (setq zjl-hl-global-variable-list (cons (car item) zjl-hl-global-variable-list))      
-              )
-            )
-          )
-        (when (or (and (equal 'function (nth 1 item))
-                       (setq nowfunction t))
-                  (and nowfunction
-                       (equal ':prototype-flag (nth 0 item))
-                       (not (setq nowfunction nil))
-                       (setq nowflag t)
-                       )
-                  (and nowflag
-                       (not (setq nowflag nil))
-                       (setq nownothing t)
-                       )
-                  (and nownothing
-                       (equal "" (nth 0 item))
-                       (not (setq nownothing nil))
-                       (setq empty t))
-                  (and empty
-                       (equal ':type (nth 0 item))
-                       (not (setq empty nil)))
-                  )
-          (zjl-hl-test item empty nowfunction nowflag nownothing))
-          )
-        ))
-    )
+            (when parameter-list ;; Should place before local-variable-list since some parameter will override by local-variable
+              (zjl-hl-symbol-region start end (concat "\\_<" (regexp-opt parameter-list) "\\_>") zjl-hl-parameters-reference-face))
+            (when local-variable-list
+              (zjl-hl-symbol-region func-body-begin end (concat "\\_<" (regexp-opt local-variable-list) "\\_>")  zjl-hl-local-variable-reference-face)))
+          successful))
+    (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region:" (error-message-string err) 'critical)
+           nil)))
 
-(defun zjl-hl-symbol-region (start end symbol-exp symbol-face override-c-mode override-my override-nil)
+(defun zjl-hl-symbol-region (start end symbol-exp symbol-face)
   (let (target-this-end target-next-start (case-fold-search nil) pos-pair)
     (save-excursion
       (goto-char start)
-      (while   (< (point) end)
-        (setq pos-pair (zjl-hl-next-valid-code-pos-c (point) end))
+      (zjl-hl-dbg-print "while start" nil 'debug)
+      (while (< (point) end)
+        (setq pos-pair (zjl-hl-next-region-to-ignore-hl (point) end))
         (if pos-pair
             (progn
               (setq target-this-end (car pos-pair))
               (setq target-next-start (cdr pos-pair)))
           (setq target-this-end end)
           (setq target-next-start end))
-        (if override-c-mode
-            (progn
-              (hlt-highlight-regexp-region (point) target-this-end symbol-exp symbol-face)
-              (goto-char target-next-start))
-          (while (and (re-search-forward symbol-exp target-this-end t)
-                      (save-excursion
-                        (re-search-backward symbol-exp)
-                        (not (looking-back "\\.\\|->"))))
-            (backward-char)
-            (when (or 
-                   (and override-my
-                        (or (equal (get-char-property (point) 'face) 'zjl-hl-parameters-reference-face)
-                            (equal (get-char-property (point) 'face) 'zjl-hl-local-variable-reference-face)
-                            (not (zjl-hl-what-face))))
-                   (and override-nil
-                        (not (zjl-hl-what-face))))
-              (let ((symbol-boundaries (bounds-of-thing-at-point 'symbol)))
-                (hlt-highlight-regexp-region (car symbol-boundaries) (cdr symbol-boundaries) ".*" symbol-face)))
-            (forward-char))
-          (goto-char target-next-start))))))
+        (progn
+          (hlt-highlight-regexp-region (point) target-this-end symbol-exp symbol-face)
+          (goto-char target-next-start)))
+      (zjl-hl-dbg-print "while end" nil 'debug))))
 
-(defun zjl-hl-next-valid-code-pos-c (start end) ;;; 
+(defun zjl-hl-next-region-to-ignore-hl (start end)
   (save-excursion
     (let (pos-pair find-p)
       (goto-char start)
       (save-excursion
-        (when (re-search-forward "\\(\"[^\"]*\"\\)\\|\\(//.*\\)\\|\\(/\\*\\(?:.\\|
-\\)*?\\*/\\)" end t) ;; in test, this regexp can handle the /* ... // ^M *// correctly. since it search after the match of the /* it the emacs c-gode just start to search the */ ----this is my guess.
-          (setq pos-pair (cons (nth 0 (match-data)) (nth 1 (match-data))))
-          )
-        )
+        ;;possible of pr_debug("xxx \"chosen\"xxx\n"); a("", "xxx")
+        (when (re-search-forward "\\(//.*\\)\\|\\(/\\*\\(?:.\\|\n\\)*?\\*/\\)\\|\\(\"\"\\|\\(\"\\([^\"]\\|\\\"\\)*?[^\\]\"\\)\\)\\|\\(\\(\\.\\|->\\)\\_<[_a-zA-Z]\\(\\w\\|\\s_\\)*\\)" end t) 
+          (setq pos-pair (cons (nth 0 (match-data)) (nth 1 (match-data))))))
       pos-pair)))
 
-
-(defun zjl-hl-find-regexp-return-end-pos (start end regexp);;if find, return point after the re-search, else return nil; point didn't move
-  (let (target-this-end target-next-start (case-fold-search nil) find-p pos-pair)
-    (save-excursion
-      (goto-char start)
-      (while   (< (point) end)
-        (setq pos-pair (funcall zjl-hl-next-comment-pos (point) end))
-        (if pos-pair
-            (progn
-              (setq target-this-end (car pos-pair))
-              (setq target-next-start (cdr pos-pair)))
-          (setq target-this-end end)
-          (setq target-next-start end))
-        (setq find-p (re-search-forward regexp target-this-end t))
-        (if find-p
-            (progn  (setq find-p (point))
-                    (goto-char end))
-          (goto-char target-next-start))))
-        find-p))
-
-
-(defun zjl-hl-find-regexp-return-end-pos2 (start end regexp &optional index);;if find, return point after the re-search, else return nil; point didn't move
+;;; If find, return point after the re-search, else return nil; point didn't move
+;;; But be careful, the car of return alist is the last point not the nth n+1th point
+(defun zjl-hl-find-regexp-return-end-pos (start end regexp &optional index)
   (let (target-this-end target-next-start (case-fold-search nil) find-p3 find-p pos-pair tempstart)
     (save-excursion
       (goto-char start)
-      (while   (< (point) end)
+      (zjl-hl-dbg-print "while start" nil 'debug)
+      (while (< (point) end)
         (setq tempstart (point))
-        (setq find-p3 (re-search-forward (concat "\\(\"[^\"]*\"\\)\\|\\(//.*\\)\\|\\(/\\*\\(?:.\\|
-\\)*?\\*/\\)\\|\\(" regexp "\\)") end t))
-;;;; in test, this regexp can handle the "/* ... // ^M *//"  or "/*   define */" or "// define" correctly. since it search after the match of the /* it the emacs c-gode just start to search the */ ----this is my guess.
+        ;;possible of pr_debug("xxx \"chosen\"xxx\n");
+        (setq find-p3 (re-search-forward (concat "\\(//.*\\)\\|\\(/\\*\\(?:.\\|\n\\)*?\\*/\\)\\|\\(\"\"\\|\\(?:\"\\(?:[^\"]\\|\\\"\\)*?[^\\]\"\\)\\)\\|\\(" regexp "\\)") end t))
         (if (not find-p3)
             (goto-char end)
-          (when (nth 8 (match-data))
-            ;;!!!!!!!!!!!!!!!!!!!!! if use (match-data t)  meet emacs error !!!!!!!!!!!!!!!!!!!!!
-            ;;don't know why there is 8th elemant(29170 29171 nil nil nil nil nil nil 29170 29171 #<buffer DxeMain.c>), and this is not seen when in debug mode
-            (if index
-                (setq find-p (cons (point) (nth index (match-data t))));(list nil nil)m
-              (setq find-p (cons (point) nil))
-              )
-            (goto-char end))
-          )
-        ))
+          (when (nth 8 (match-data)) ;;Don't use (match-data t), it has a buffer obj in end of list
+            (if (and index (nth index (match-data))) 
+                (setq find-p (cons (point) (nth index (match-data t))))
+              (setq find-p (cons (point) nil)))
+            (goto-char end))))
+      (zjl-hl-dbg-print "while end" nil 'debug))
     find-p))
 
- 
-
-
-(defun zjl-hl-local-variable-and-parameter-region (start end)
+(defun zjl-hl-splitting-to-func (start end AB)
   (save-excursion
-    (hlt-unhighlight-region-for-face zjl-hl-parameters-reference-face start end)
-    (hlt-unhighlight-region-for-face zjl-hl-local-variable-reference-face start end)
-        
     (let ((regions (funcall zjl-hl-find-hl-var-arg-regions start end))
-          regionbak
           temp-regions
           (successful t)
           (successful-all t))
+      (zjl-hl-dbg-print "regions=" regions)
       (dolist (each-region regions)
-        (setq  successful-all (and (setq successful (zjl-hl-local-variable-and-parameter-in-func-region (car each-region) (cdr each-region)))
-                               successful-all))
-        (when successful
-          (setq zjl-hl-regions-already-hl (region-list-edit-add zjl-hl-regions-already-hl each-region t))
-          )
-        (when (not successful)
-          (message "zjlb")
-          (setq regionbak each-region)
-          (setq temp-regions (list each-region))
-          (dolist (retry1-region zjl-hl-regions-already-retry1)
-            (setq temp-regions (region-list-edit-delete temp-regions retry1-region)))
-          (if temp-regions
-              ;;this means the region each-region has not been in retry1, the last failure is seen first time, so so need to add to it retry1
-              (setq zjl-hl-regions-already-retry1 (region-list-edit-add zjl-hl-regions-already-retry1 each-region t))
-              ;;else it has already been retry once, so need to add to retry1done
-            (setq zjl-hl-regions-already-retry1-done (region-list-edit-add zjl-hl-regions-already-retry1-done each-region t))
-              )
-          
-          )
+        (setq  successful-all (and (setq successful (zjl-hl-do-func-region (car each-region) (cdr each-region) AB))
+                                   successful-all))
+        (zjl-hl-dbg-print "function success or not?" successful)
+        (case AB ('A (if (not zjl-hl-semantic-parse-done)
+                         (setq zjl-hl-regions-1A-DONE (region-list-edit-add zjl-hl-regions-1A-DONE each-region t))
+                       (when successful
+                         (setq zjl-hl-regions-2A-Y (region-list-edit-add zjl-hl-regions-2A-Y each-region t)))
+                       (when (not successful)
+                         (setq temp-regions (list each-region))
+                         (dolist (retry-region zjl-hl-regions-2A-X-try-again)
+                           (setq temp-regions (region-list-edit-delete temp-regions retry-region)))
+                         (if temp-regions
+                             ;;The region isn't in retry list yet, so add to retry list for 2nd chance
+                             (setq zjl-hl-regions-2A-X-try-again (region-list-edit-add zjl-hl-regions-2A-X-try-again each-region t))
+                           ;;Else it has benn retried, so add to retry done list to prevent further retry
+                           (setq zjl-hl-regions-2A-X-X (region-list-edit-add zjl-hl-regions-2A-X-X each-region t))))))
+              ('B (if (not zjl-hl-semantic-parse-done)
+                         (setq zjl-hl-regions-1B-DONE (region-list-edit-add zjl-hl-regions-1B-DONE each-region t))
+                       (when successful
+                         (setq zjl-hl-regions-2B-Y (region-list-edit-add zjl-hl-regions-2B-Y each-region t)))
+                       (when (not successful)
+                         (setq temp-regions (list each-region))
+                         (dolist (retry-region zjl-hl-regions-2B-X-try-again)
+                           (setq temp-regions (region-list-edit-delete temp-regions retry-region)))
+                         (if temp-regions
+                             ;;The region isn't in retry list yet, so add to retry list for 2nd chance
+                             (setq zjl-hl-regions-2B-X-try-again (region-list-edit-add zjl-hl-regions-2B-X-try-again each-region t))
+                           ;;Else it has benn retried, so add to retry done list to prevent further retry
+                           (setq zjl-hl-regions-2B-X-X (region-list-edit-add zjl-hl-regions-2B-X-X each-region t)))))))
         )
-      successful-all)
-    ))
+      successful-all)))
 
-;;borrow from http://stackoverflow.com/questions/1242352/get-font-face-under-cursor-in-emacs
-
-(defun zjl-hl-what-face ()
-  (let ((face (or (get-char-property (point) 'read-face-name)
-                  (get-char-property (point) 'face))))
-    face))
-
-
-
-(defun zjl-hl-func-too-big-stop-reset(thisbuffer)
-  (condition-case nil
+(setq zjl-hl-timer-B-obj nil)
+(setq zjl-hl-timer-pre-hl-obj nil)
+(defun zjl-hl-timer-do-whole (thisbuffer &optional start end AB)
+  (condition-case err
       (save-excursion
         (when (buffer-live-p thisbuffer)
-          (set-buffer thisbuffer)
-          (setq zjl-hl-func-too-big-stop 1)
-          (setq zjl-hl-func-too-big-interval 1)
-          (setq zjl-hl-func-too-big-timer-registed nil)))
-    (error (message "zjl-hl-func-too-big-stop-reset error")))
-  )
-
-
-(defun zjl-hl-timer-do-every-time (thisbuffer)
-  (condition-case nil
-      (save-excursion
-         (when (buffer-live-p thisbuffer)
           (with-current-buffer thisbuffer
             (when (get-buffer-window)
-              (let(start end temp-regions temptime (all-regions-successful t) win-s win-e)
-                ;;current-screen not include  window-end this point, but it is ok to include it from hl.
-                (if (and (setq win-s (window-start))
-                         (setq win-e (window-end)))
+              (let(temp-regions (win-s (window-start)) (win-e (window-end)) next-step A-time (start-time (float-time)))
+                (unless (and start end)
+                  (if (and win-s win-e)
+                      (progn
+                        (setq start (copy-marker (max (point-min);;hl larger of region that cover current screen
+                                                      (- win-s
+                                                         (* zjl-hl-numberofscreen-to-hl-each-time (- win-e win-s))))))
+                        (setq end (copy-marker (min (point-max)
+                                                    (+ win-e
+                                                       (* zjl-hl-numberofscreen-to-hl-each-time (- win-e win-s)))))))
                     (progn
-                      (setq start (copy-marker (max (point-min);; hl eary around screen window
-                                                    (- win-s
-                                                       (* zjl-hl-numberofscreen-to-hl-each-time (- win-e win-s))))))
-                      (setq end (copy-marker (min (point-max)
-                                                  (+ win-e
-                                                     (* zjl-hl-numberofscreen-to-hl-each-time (- win-e win-s)))))))
-                  (progn
-                    (setq end (point-max-marker))
-                    (setq start (point-min-marker))))
-
+                      (setq end (point-max-marker))
+                      (setq start (point-min-marker)))))
                 (setq start (save-excursion
                               (goto-char start)
-                              (if (beginning-of-defun) 
+                              (if (zjl-hl-c-beginning-of-defun) 
                                   (point-marker)
-                                start)))
+                                (copy-marker (max start (point-min-marker))))))
                 (setq end (save-excursion
                             (goto-char end)
-                            (if (let ((orginal (point)));;for end-of-defun's bug,  it return nil whenever it is called
-                                  (end-of-defun)
-                                  (/= (point) orginal))
+                            (if (zjl-hl-c-end-of-defun)
                                 (point-marker)
-                              end)))
-                (when (and (< (- end start) zjl-hl-toobig-size)
-                           (or (< (- end start) zjl-hl-normal-size)
-                               (< zjl-hl-func-too-big-stop 2)))
-                  (setq temp-regions (list (cons start end)))
+                              (copy-marker (min end (point-max-marker))))))
+                (zjl-hl-dbg-print "start end=" (cons start end))
 
-                  (dolist (hl-region zjl-hl-regions-already-hl)
-                    (setq temp-regions (region-list-edit-delete temp-regions hl-region)))
-                  (dolist (hl-region zjl-hl-regions-already-retry1-done)
-                    (setq temp-regions (region-list-edit-delete temp-regions hl-region)))                  
-                  (when temp-regions
-                    (dolist (each-region temp-regions)
-                      (unless (zjl-hl-local-variable-and-parameter-region (car each-region) (cdr each-region))
-                        (setq all-regions-successful nil))
-                      )
+                (setq next-step start)
+                (when (> (- end start) (* 3 zjl-hl-no-delay-max-size))
+                  (save-excursion
+                    (let (find-better-end)
+		      (zjl-hl-dbg-print "while start find-better-end" nil 'debug)
+                      (while (and (<= (- next-step start) zjl-hl-too-big-size)
+                                  (< next-step (point-max))
+                                  (< next-step end)
+                                  (not find-better-end))
+                        (goto-char (setq next-step (min (+ next-step (/ zjl-hl-no-delay-max-size 4))
+                                                        (point-max))))
+                        (when (and (zjl-hl-c-end-of-defun)
+                                   (< (point-marker) end))
+                          (setq find-better-end (point-marker))))
+		      (zjl-hl-dbg-print "while end find-better-end" nil 'debug)
+                      (when find-better-end (setq end find-better-end)))))
+                
+                (zjl-hl-dbg-print "after shrink, start end=" (cons start end))
 
-                    (when all-regions-successful
-                      (when (and (> (- end start) zjl-hl-normal-size)
-                                 (< zjl-hl-func-too-big-stop 2))          
-                        (setq zjl-hl-func-too-big-stop (1+ zjl-hl-func-too-big-stop)))
+                (when (> zjl-hl-pre-hl-max 0)
+                  (setq zjl-hl-pre-hl-max (1- zjl-hl-pre-hl-max))
+                  (let ((pre-hl-start  (copy-marker (min (point-max) (1+ end))))
+                        (pre-hl-end    (copy-marker (min (point-max) (+ end (* zjl-hl-numberofscreen-to-hl-each-time (- win-e win-s)))))))
+                    (unless (> pre-hl-end pre-hl-start)
+                      (setq pre-hl-start  (point-min-marker)
+                            pre-hl-end    (copy-marker (min  (point-max) (+ (point-min) (* zjl-hl-numberofscreen-to-hl-each-time (- win-e win-s)))))))
+                    (when zjl-hl-timer-pre-hl-obj
+                      (cancel-timer zjl-hl-timer-pre-hl-obj)
+                      (setq zjl-hl-timer-pre-hl-obj nil))
+                    (setq zjl-hl-timer-pre-hl-obj (run-with-idle-timer 5 nil 'zjl-hl-timer-do-whole thisbuffer pre-hl-start pre-hl-end))))
 
-                      (when (and (> (- end start) zjl-hl-normal-size)
-                                 (<= zjl-hl-func-too-big-stop 2))
-                        (setq temptime  (/ (- end start) (/ zjl-hl-normal-size 8)))
-                        (setq zjl-hl-func-too-big-interval (max temptime zjl-hl-func-too-big-interval)))
-                      (when (and (equal zjl-hl-func-too-big-stop 2)
-                                 (not zjl-hl-func-too-big-timer-registed))
-                        (run-with-idle-timer zjl-hl-func-too-big-interval nil 'zjl-hl-func-too-big-stop-reset (current-buffer))
-                        (setq zjl-hl-func-too-big-timer-registed t)))))))
-            ))
-        )        (error (message "zjl-hl-timer-do-every-time error")))
-  )
+
+                (when (< (- end start) zjl-hl-too-big-size)
+                  (setq A-time (float-time))
+                  (zjl-hl-dbg-print "zjl-hl-semantic-parse-done" zjl-hl-semantic-parse-done)
+                  (zjl-hl-dbg-print "zjl-hl-regions-1A-DONE" zjl-hl-regions-1A-DONE)
+		  (zjl-hl-dbg-print "zjl-hl-regions-2A-Y" zjl-hl-regions-2A-Y)
+		  (zjl-hl-dbg-print "zjl-hl-regions-2A-X-X" zjl-hl-regions-2A-X-X)
+                  (progn
+                    (setq temp-regions (list (cons start end)))
+                    (if (not zjl-hl-semantic-parse-done)
+                        (progn (dolist (hl-region zjl-hl-regions-1A-DONE)
+                                 (setq temp-regions (region-list-edit-delete temp-regions hl-region))))
+                      (dolist (hl-region zjl-hl-regions-2A-Y)
+                        (setq temp-regions (region-list-edit-delete temp-regions hl-region)))
+                      (dolist (hl-region zjl-hl-regions-2A-X-X)
+                        (setq temp-regions (region-list-edit-delete temp-regions hl-region))))
+		    (zjl-hl-dbg-print "before splitting to func - A" nil 'debug)
+                    (when temp-regions
+                      (zjl-hl-dbg-print "temp-regions=" temp-regions)
+                      (dolist (each-region temp-regions)
+                        (when (zjl-hl-splitting-to-func (car each-region) (cdr each-region) 'A)
+                          ;; Though in zjl-hl-splitting-to-func has add highlighted each function region into list already, here add the whole region again, so reduce list fragment.
+                          (if (not zjl-hl-semantic-parse-done) 
+                              (setq zjl-hl-regions-1A-DONE (region-list-edit-add zjl-hl-regions-1A-DONE each-region t))
+                            (setq zjl-hl-regions-2A-Y (region-list-edit-add zjl-hl-regions-2A-Y each-region t))))))
+		    (zjl-hl-dbg-print "after splitting to func - A" nil 'debug))
+                  (setq A-time (- (float-time) A-time))
+                  (if (or AB (< A-time 0.75))
+                      (progn
+                        (zjl-hl-dbg-print "continue after A-time" A-time)
+                        (zjl-hl-dbg-print "zjl-hl-regions-1B-DONE" zjl-hl-regions-1B-DONE)
+			(zjl-hl-dbg-print "zjl-hl-regions-2B-Y" zjl-hl-regions-2B-Y)
+			(zjl-hl-dbg-print "zjl-hl-regions-2B-X-X" zjl-hl-regions-2B-X-X)
+                        (setq temp-regions (list (cons start end)))
+                        (if (not zjl-hl-semantic-parse-done)
+                            (progn (dolist (hl-region zjl-hl-regions-1B-DONE)
+                                     (setq temp-regions (region-list-edit-delete temp-regions hl-region))))
+                          (dolist (hl-region zjl-hl-regions-2B-Y)
+                            (setq temp-regions (region-list-edit-delete temp-regions hl-region)))
+                          (dolist (hl-region zjl-hl-regions-2B-X-X)
+                            (setq temp-regions (region-list-edit-delete temp-regions hl-region))))
+			(zjl-hl-dbg-print "before splitting to func - B" nil 'debug)
+                        (when temp-regions
+                          (zjl-hl-dbg-print "temp-regions=" temp-regions)
+                          (dolist (each-region temp-regions)
+                            (when (zjl-hl-splitting-to-func (car each-region) (cdr each-region) 'B)
+                              ;; Though in zjl-hl-splitting-to-func has add highlighted each function region into list already, here add the whole region again, so reduce list fragment.
+                              (if (not zjl-hl-semantic-parse-done)
+                                  (setq zjl-hl-regions-1B-DONE (region-list-edit-add zjl-hl-regions-1B-DONE each-region t))
+                                (setq zjl-hl-regions-2B-Y (region-list-edit-add zjl-hl-regions-2B-Y each-region t))))))
+			(zjl-hl-dbg-print "after splitting to func - B" nil 'debug))
+                    (when zjl-hl-timer-B-obj
+                      (cancel-timer zjl-hl-timer-B-obj)
+                      (setq zjl-hl-timer-B-obj nil))
+                    (setq zjl-hl-timer-B-obj (run-with-idle-timer 2 nil 'zjl-hl-timer-do-whole thisbuffer))))
+		(if (> (- (float-time) start-time) 8)
+		    (if (y-or-n-p-with-timeout "!! zjl-hl detect freeze, can I stop work on this buffer?" 5 t)
+			(progn (zjl-hl-disable-current-buffer) (message "zjl-hl stop work on this buffer"))
+		      (message "zjl-hl continue work on this buffer"))
+		  (when (> (- (float-time) start-time) 3)
+		    (setq zjl-hl-freeze-max-times (1+ zjl-hl-freeze-max-times))
+		    (when (= zjl-hl-freeze-max-times 10)
+		      (if (y-or-n-p-with-timeout "!! zjl-hl detect freeze, can I stop work on this buffer?" 5 t)
+			  (progn (zjl-hl-disable-current-buffer) (message "zjl-hl stop work on this buffer"))
+			(setq zjl-hl-freeze-max-times 0)
+			(message "zjl-hl continue work on this buffer"))))))))))
+    (error (zjl-hl-dbg-print "error in zjl-hl-timer-do-whole:" (error-message-string err) 'critical))))
 
 (defun zjl-hl-window-scroll-hook(par1 par2)
-  (condition-case nil
+  (condition-case err
       (save-excursion
-        (when (or (equal major-mode 'c-mode) ;;if major-mode changed,this hook may still running???
+        (when (or (equal major-mode 'c-mode) ;;If major-mode changed,this hook may still running???
                   (equal major-mode 'c++-mode)
-                  )
+                  (equal major-mode 'java-mode))
           (when zjl-hl-firsttime
-            (add-hook 'semantic-after-partial-cache-change-hook 'zjl-hl-semantic-after-partial-cache-change-hook t)
+            ;; (add-hook 'semantic-after-partial-cache-change-hook 'zjl-hl-semantic-after-partial-cache-change-hook t)
             (setq zjl-hl-firsttime nil))
-
-          ;;this should before if, to canel possbile hl timer, before zjl-hl-timer-do-every-time realy begin
+          ;;This should before if, to canel possbile hl timer, before zjl-hl-timer-do-whole realy begin
           (when zjl-hl-timer-obj
-            (cancel-timer zjl-hl-timer-obj))
-          
-          (if zjl-hl-firsttime-need-hl
-              (progn (zjl-hl-timer-do-every-time (current-buffer))
-                     (setq zjl-hl-firsttime-need-hl nil))
-            
-            (setq zjl-hl-timer-obj (run-with-idle-timer 0.5 nil 'zjl-hl-timer-do-every-time (current-buffer)))
-            )))
-(error (message "zjl-hl-window-scroll-hook error"))))
+            (cancel-timer zjl-hl-timer-obj)
+            (setq zjl-hl-timer-obj nil))
+          (if zjl-hl-first-time-hl-no-delay-p
+              (progn (zjl-hl-timer-do-whole (current-buffer))
+                     (setq zjl-hl-first-time-hl-no-delay-p nil))
+            (setq zjl-hl-timer-obj (run-with-idle-timer 0.2 nil 'zjl-hl-timer-do-whole (current-buffer))))))
+    (error (zjl-hl-dbg-print "error in zjl-hl-window-scroll-hook:" (error-message-string err) 'critical))))
 
+
+(setq zjl-hl-firsttime t)
+(setq zjl-hl-first-time-hl-no-delay-p nil)
+(setq zjl-hl-regions-2A-Y nil)
+(setq zjl-hl-regions-1A-DONE nil)
+(setq zjl-hl-regions-2A-X-try-again nil)
+(setq zjl-hl-regions-2A-X-X nil)
+(setq zjl-hl-regions-2B-Y nil)
+(setq zjl-hl-regions-1B-DONE nil)
+(setq zjl-hl-regions-2B-X-try-again nil)
+(setq zjl-hl-regions-2B-X-X nil)
+(setq zjl-hl-pre-hl-max 30)
+(setq zjl-hl-freeze-max-times 0)
+(setq zjl-hl-semantic-parse-done nil)
+(setq zjl-hl-semantic-parse-done-count 1)
+(setq zjl-hl-local-variable-list nil)
+(setq zjl-hl-global-variable-list nil)
+(setq zjl-hl-has-if-else-macro-with-unbalanced-brace nil)
+(setq zjl-hl-after-semantic-parse-done-obj nil)
+(setq zjl-hl-partial-change-region nil)
+(setq zjl-hl-partial-change-region-activate nil)
+(setq zjl-hl-partial-change-region-activate-timer nil)
+(setq zjl-hl-disable-init-for-temp-buffer nil)
+(setq zjl-hl-init-called-already nil)
 (defun zjl-hl-init ()
   (save-excursion
+    (unless (or (and zjl-hl-disable-init-for-temp-buffer (not buffer-file-name)) ;;temp buffer so disable zjl-hl-init
+		zjl-hl-init-called-already) ;;(string-match-p "\\.h$" buffer-file-name)
       (let (start end)
-        (make-local-variable 'zjl-hl-func-too-big-stop)
-        (make-local-variable 'zjl-hl-func-too-big-interval)
-        (make-local-variable 'zjl-hl-func-too-big-timer-registed)
-        (make-local-variable 'zjl-hl-firsttime)
-        (make-local-variable 'zjl-hl-firsttime-need-hl)
-        (make-local-variable 'zjl-hl-regions-already-hl)
-        (make-local-variable 'zjl-hl-regions-already-retry1)        
-        (make-local-variable 'zjl-hl-regions-already-retry1-done)        
-        (make-local-variable 'zjl-hl-temp-list)
-        
-        (make-local-variable 'zjl-hl-local-variable-list)
-        (make-local-variable 'zjl-hl-global-variable-list)
-        (make-local-variable 'zjl-hl-local-parameter-list)
-        (setq zjl-hl-global-variable-list nil)
-        
-        (setq zjl-hl-regions-already-hl nil)
-        (setq zjl-hl-regions-already-retry1 nil)
-        (setq zjl-hl-regions-already-retry1-done nil)        
-        (setq zjl-hl-func-too-big-timer-registed nil)
-        (setq zjl-hl-func-too-big-stop 0)
-        (setq zjl-hl-func-too-big-interval 1)
-        (setq zjl-hl-firsttime t)
-        
-        (make-local-variable 'zjl-hl-find-hl-var-arg-regions)
-        (setq zjl-hl-find-hl-var-arg-regions
-              (case major-mode
-                ('c-mode 'zjl-hl-find-hl-var-arg-regions-c)
-                ('c++-mode 'zjl-hl-find-hl-var-arg-regions-c)
-                ))
+	(make-local-variable 'zjl-hl-init-called-already)
+	(setq zjl-hl-init-called-already t)
+	(make-local-variable 'zjl-hl-firsttime)
+	(make-local-variable 'zjl-hl-first-time-hl-no-delay-p)
+	(make-local-variable 'zjl-hl-regions-2A-Y)
+	(make-local-variable 'zjl-hl-regions-1A-DONE)
+	(make-local-variable 'zjl-hl-regions-2A-X-try-again)
+	(make-local-variable 'zjl-hl-regions-2A-X-X)
+	(make-local-variable 'zjl-hl-regions-2B-Y)
+	(make-local-variable 'zjl-hl-regions-1B-DONE)
+	(make-local-variable 'zjl-hl-regions-2B-X-try-again)
+	(make-local-variable 'zjl-hl-regions-2B-X-X)
+	(make-local-variable 'zjl-hl-semantic-parse-done)
+	(make-local-variable 'zjl-hl-semantic-parse-done-count)
+	(make-local-variable 'zjl-hl-local-variable-list)
+	(make-local-variable 'zjl-hl-global-variable-list)
+	(make-local-variable 'zjl-hl-find-hl-var-arg-regions)
+	(make-local-variable 'zjl-hl-after-semantic-parse-done-obj)
+	(make-local-variable 'zjl-hl-after-semantic-parse-done-obj)
+	(make-local-variable 'zjl-hl-pre-hl-max)
+	(make-local-variable 'zjl-hl-freeze-max-times)
+	(make-local-variable 'zjl-hl-partial-change-region)
+	(make-local-variable 'zjl-hl-partial-change-region-activate)
+	(make-local-variable 'zjl-hl-partial-change-region-activate-timer)
 
-        (make-local-variable 'zjl-hl-next-comment-pos)
-        (setq zjl-hl-next-comment-pos
-              (case major-mode
-                ('c-mode 'zjl-hl-next-comment-pos-c)
-                ('c++-mode 'zjl-hl-next-comment-pos-c)
-                ))
+	(setq zjl-hl-find-hl-var-arg-regions
+	      (case major-mode
+		('c-mode 'zjl-hl-find-hl-var-arg-regions-c)
+		('c++-mode 'zjl-hl-find-hl-var-arg-regions-c++)
+		('java-mode 'zjl-hl-find-hl-var-arg-regions-c++)))
 
-        (make-local-variable 'zjl-hl-get-body-begin)
-        (setq zjl-hl-get-body-begin
-              (case major-mode
-                ('c-mode 'zjl-hl-get-body-begin-c)
-                ('c++-mode 'zjl-hl-get-body-begin-c)
-                ))
+	(make-local-variable 'zjl-hl-get-body-begin)
+	(setq zjl-hl-get-body-begin
+	      (case major-mode
+		('c-mode 'zjl-hl-get-body-begin-c)
+		('c++-mode 'zjl-hl-get-body-begin-c)
+		('java-mode 'zjl-hl-get-body-begin-c)))
 
-        
-        (setq zjl-hl-firsttime-need-hl nil)
-        
-        (when zjl-hl-firstscreen-hl-toggle
-          (setq start (copy-marker (max (point-min);; hl early around screen window
-                                        (- (window-start)
-                                           (* zjl-hl-numberofscreen-to-hl-each-time (- (window-end) (window-start)))))))
-          (setq end (copy-marker (min (point-max)
-                                      (+ (window-end)
-                                         (* zjl-hl-numberofscreen-to-hl-each-time (- (window-end) (window-start)))))))
-          (if (< (- end start) zjl-hl-normal-size)
-              (setq zjl-hl-firsttime-need-hl t)
-            (setq zjl-hl-firsttime-need-hl nil)))
-        
-        (add-hook 'window-scroll-functions 'zjl-hl-window-scroll-hook t t))))
+	(make-local-variable 'zjl-hl-has-if-else-macro-with-unbalanced-brace)
 
+	(goto-char (point-min))
+	(condition-case  err
+	    (let (temp-point)
+	      (while (setq temp-point (zjl-hl-find-regexp-return-end-pos (point) (point-max) "^[ 	]*#else" ))
+		(goto-char (car temp-point))
+		(end-of-defun)))
+	  (error (message "!! zjl-hl: see unbalanced brace in #else part and might has problem to hl, error string= %s" (error-message-string err))
+		 (zjl-hl-dbg-print "!! zjl-hl: see unbalanced brace in #else part and might has problem to hl, error string= %s" (error-message-string err))
+		 (when zjl-hl-delete-else-do-hl
+		   (setq zjl-hl-has-if-else-macro-with-unbalanced-brace t))))
 
-(defun zjl-hl-semantic-update-screen-update (thisbuffer)
-  (condition-case nil
+	;; This is needed, the buffer might be parsed recently and result is cached before file is open, so no parse semantic-after-idle-scheduler-reparse-hook called to set the parse-done flag.
+	(when (not (equal (buffer-name) "zjl-hl-test.c"));;sometime I use this buffer for test hl of simplified code, and do not want be bothered.
+	  (run-with-idle-timer 7 nil 'zjl-hl-after-buffer-load-a-while-force-set-parse-done (current-buffer))
+	  (run-with-timer 20 nil 'zjl-hl-after-buffer-load-a-while-force-set-parse-done (current-buffer))
+	  
+	  ;;hl larger of region that cover current screen
+	  (when zjl-hl-firstscreen-hl-toggle
+	    (setq start (copy-marker (max (point-min)
+					  (- (window-start)
+					     (* zjl-hl-numberofscreen-to-hl-each-time (- (window-end) (window-start)))))))
+	    (setq end (copy-marker (min (point-max)
+					(+ (window-end)
+					   (* zjl-hl-numberofscreen-to-hl-each-time (- (window-end) (window-start)))))))
+	    (if (< (- end start) zjl-hl-no-delay-max-size)
+		(setq zjl-hl-first-time-hl-no-delay-p t)
+	      (setq zjl-hl-first-time-hl-no-delay-p nil)))
+
+	  (add-hook 'semantic-after-idle-scheduler-reparse-hook 'zjl-hl-after-semantic-idle t t)
+	  (add-hook 'window-scroll-functions 'zjl-hl-window-scroll-hook t t))))))
+
+(defun zjl-hl-update-screen (thisbuffer)
+  (condition-case err
       (when (buffer-live-p thisbuffer)
         (with-current-buffer thisbuffer
           (when (get-buffer-window thisbuffer 'visible)
-            (zjl-hl-window-scroll-hook 1 1)  
-            )
-          ))
-    (error (message "zjl-hl-semantic-update-screen-update error")))
-  )
+            (zjl-hl-window-scroll-hook 1 1))))
+    (error (zjl-hl-dbg-print "error in zjl-hl-update-screen:" (error-message-string err) 'critical))))
 
-;idea from how ecb update method buffer
+;;Idea from how ecb update method buffer
 ;;(add-hook (ecb--semantic-after-partial-cache-change-hook) 'ecb-update-after-partial-reparse t)
 ;;(add-hook (ecb--semantic-after-toplevel-cache-change-hook) 'ecb-rebuild-methods-buffer-with-tagcache t)
-;; can refer to site-lisp\ecb\ecb-method-browser.el later for ecb-update-after-partial-reparse and ecb--semantic-after-partial-cache-change-hook
+;; can refer to ecb\ecb-method-browser.el later for ecb-update-after-partial-reparse and ecb--semantic-after-partial-cache-change-hook
 (defun zjl-hl-semantic-after-partial-cache-change-hook (updated-tags)
-  (condition-case nil
-      (when zjl-hl-regions-already-hl  ;;maybe zjl-hl-init has not hl any where
-        (let (start end overlay todo)
+  (condition-case err
+      (when (or zjl-hl-regions-2A-Y zjl-hl-regions-2B-Y)  ;;maybe zjl-hl-init has not hl any where
+        (let (overlay todo todo-p)
           (dolist (tags updated-tags)
             (setq overlay (semantic-tag-overlay tags))
-            (setq todo (cons (overlay-start overlay) (overlay-end overlay)))
-            (setq zjl-hl-regions-already-hl (region-list-edit-delete zjl-hl-regions-already-hl todo))
-            )
-          
-          ;;I suspect too frequent calling is the reason of dead of emacs(20-30% cpu occupied). but if just comment out this line, the hl is not do unless  movescreen.  and the dead is still seen. so the dead is not related to this..
-          ;; (when (< (- (overlay-end overlay) (overlay-start overlay)) zjl-hl-toobig-not-update-size) 
-          ;;   (zjl-hl-window-scroll-hook 1 1))
-          
-          ;; use below code to reduce the calling of zjl-hl-window-scroll-hook (test result show that that modify a word may call this function 3 times if it is called directly, like above)
-          (when zjl-hl-timer-semantic-update-obj
-            (cancel-timer zjl-hl-timer-semantic-update-obj))
-          (when (< (- (overlay-end overlay) (overlay-start overlay)) zjl-hl-toobig-not-update-size) 
-            (setq zjl-hl-timer-semantic-update-obj (run-with-idle-timer 3 nil 'zjl-hl-semantic-update-screen-update (current-buffer))))
-          )
-        )
-    (error (message "zjl-hl-semantic-after-partial-cache-change-hook error"))))
-                        
+	    (when (overlayp overlay);add blank line will has no overlay
+	      (when (and (eq (current-buffer) (overlay-buffer overlay))
+			 (< (- (overlay-end overlay) (overlay-start overlay)) zjl-hl-too-big-to-update-size))
+		(setq todo (cons (copy-marker (overlay-start overlay)) (copy-marker (overlay-end overlay))))
+		(setq zjl-hl-partial-change-region (region-list-edit-add zjl-hl-partial-change-region todo t))
+		(setq todo-p t))))
 
-(setq zjl-hl-fun-call-notable-degree-old-value nil)
+          ;; Minimize call of hl, test shows that modificaiton of a word may call this function 3 times
+	  (when todo-p
+	    (when zjl-hl-partial-change-region-activate-timer
+	      (cancel-timer zjl-hl-partial-change-region-activate-timer)
+	      (setq zjl-hl-partial-change-region-activate-timer nil))
+	    (setq zjl-hl-partial-change-region-activate-timer (run-with-idle-timer 5 nil 'zjl-hl-partial-change-region-activate (current-buffer))))))
+    (error (zjl-hl-dbg-print "error in zjl-hl-semantic-after-partial-cache-change-hook:" (error-message-string err) 'critical))))
+
+(defun zjl-hl-partial-change-region-activate (change-buffer)
+  (when (buffer-live-p change-buffer)
+    (with-current-buffer change-buffer
+      (when (and zjl-hl-partial-change-region (listp zjl-hl-partial-change-region))
+	(dolist (change-region zjl-hl-partial-change-region)
+	  (setq zjl-hl-regions-2A-Y (region-list-edit-delete zjl-hl-regions-2A-Y change-region))
+	  (setq zjl-hl-regions-2A-X-X (region-list-edit-delete zjl-hl-regions-2A-X-X change-region))
+	  (setq zjl-hl-regions-2B-Y (region-list-edit-delete zjl-hl-regions-2B-Y change-region))
+	  (setq zjl-hl-regions-2B-X-X (region-list-edit-delete zjl-hl-regions-2B-X-X change-region)))
+
+	(when zjl-hl-update-screen-timer
+	  (cancel-timer zjl-hl-update-screen-timer)
+	  (setq zjl-hl-update-screen-timer nil))
+	(setq zjl-hl-update-screen-timer (run-with-idle-timer 1 nil 'zjl-hl-update-screen (current-buffer))))
+      (setq zjl-hl-partial-change-region nil))))
+
+(setq zjl-hl-fun-call-noticeable-degree-old-value nil)
 
 (defun zjl-hl-enable-global-all-modes ()
   (interactive)
-  (when zjl-hl-make-fun-call-notable
-    ;; (setq zjl-hl-fun-call-notable-degree-old-value (face-attribute 'font-lock-function-name-face :height))
-    ;; (set-face-attribute 'font-lock-function-name-face nil
-    ;;                 :height zjl-hl-fun-call-notable-degree)
-    (setq zjl-hl-fun-call-notable-degree-old-value (face-attribute 'font-lock-function-name-face :underline))    
-    (set-face-attribute 'font-lock-function-name-face nil :underline t)
-    )
-    (when zjl-hl-c-mode-enable-flag
+  (when zjl-hl-make-fun-call-noticeable
+    (setq zjl-hl-fun-call-noticeable-degree-old-value (face-attribute 'font-lock-function-name-face :underline))
+    (set-face-attribute 'font-lock-function-name-face nil :underline t))
+  (when zjl-hl-c-mode-enable-flag
     (zjl-hl-enable-global 'c-mode))
   (when zjl-hl-c++-mode-enable-flag
     (zjl-hl-enable-global 'c++-mode))
-
-)
+  (when zjl-hl-java-mode-enable-flag
+    (zjl-hl-enable-global 'java-mode)))
 
 
 (defun zjl-hl-disable-global-all-modes ()
   (interactive)
-  (when (and zjl-hl-make-fun-call-notable
-             zjl-hl-fun-call-notable-degree-old-value)
-    ;; (set-face-attribute 'font-lock-function-name-face nil :height zjl-hl-fun-call-notable-degree-old-value)
-     (set-face-attribute 'font-lock-function-name-face nil :underline zjl-hl-fun-call-notable-degree-old-value)
-    )
+  (when (and zjl-hl-make-fun-call-noticeable
+             zjl-hl-fun-call-noticeable-degree-old-value)
+    (set-face-attribute 'font-lock-function-name-face nil :underline zjl-hl-fun-call-noticeable-degree-old-value))
   (when zjl-hl-c-mode-enable-flag
     (zjl-hl-disable-global 'c-mode))
   (when zjl-hl-c++-mode-enable-flag
-     (zjl-hl-disable-global 'c++-mode))
-  )
+    (zjl-hl-disable-global 'c++-mode))
+  (when zjl-hl-java-mode-enable-flag
+    (zjl-hl-disable-global 'java-mode)))
 
+(defun zjl-hl-enable-current-buffer ()
+  (interactive)
+  (when (or (equal major-mode 'c-mode)
+            (equal major-mode 'c++-mode)
+            (equal major-mode 'java-mode))
+    (let ((mode-name (symbol-name major-mode)) hook keywords)
+      (setq keywords (intern-soft (concat "zjl-hl-" mode-name "-keywords")))
+      (font-lock-add-keywords major-mode (symbol-value keywords) 1)
+      (funcall major-mode)
+      (zjl-hl-init)
+      (zjl-hl-window-scroll-hook 1 1))))
+
+(defun zjl-hl-disable-current-buffer ()
+  (interactive)
+  (when (or (equal major-mode 'c-mode)
+            (equal major-mode 'c++-mode)
+            (equal major-mode 'java-mode))
+    (remove-hook 'window-scroll-functions 'zjl-hl-window-scroll-hook t)
+    (remove-hook 'semantic-after-partial-cache-change-hook 'zjl-hl-semantic-after-partial-cache-change-hook t)
+    (when zjl-hl-timer-pre-hl-obj
+      (cancel-timer zjl-hl-timer-pre-hl-obj)
+      (setq zjl-hl-timer-pre-hl-obj nil))))
 
 (defun zjl-hl-enable-global (mode)
   (let ((mode-name (symbol-name mode)) hook keywords)
@@ -867,61 +1033,162 @@ enough performance."
     (setq hook (intern-soft (concat mode-name "-hook")))
     (add-hook hook 'zjl-hl-init)))
 
-
 (defun zjl-hl-disable-global (mode)
   (let ((mode-name (symbol-name mode)) hook keywords)
     (setq keywords (intern-soft (concat "zjl-hl-" mode-name "-keywords")))
     (font-lock-remove-keywords mode (symbol-value keywords))
     (setq hook (intern-soft (concat mode-name "-hook")))
     (remove-hook hook 'zjl-hl-init)
-    (remove-hook 'window-scroll-functions 'zjl-hl-window-scroll-hook t)
-    (remove-hook 'semantic-after-partial-cache-change-hook 'zjl-hl-semantic-after-partial-cache-change-hook t)
-    ))
+    (remove-hook 'window-scroll-functions 'zjl-hl-window-scroll-hook)
+    (remove-hook 'semantic-after-partial-cache-change-hook 'zjl-hl-semantic-after-partial-cache-change-hook)))
 
-
-(defun zjl-hl-get-body-begin-c (start end);;if has no begin, return nil, (zjl-hl-find-regexp-return-end-pos) may return nil
+(defun zjl-hl-get-body-begin-c (start end)
   (save-excursion
     (goto-char start)
-    (car-safe (zjl-hl-find-regexp-return-end-pos2 start end "{"))))
-
-
+    (car-safe (zjl-hl-find-regexp-return-end-pos start end "{"))))
 
 (defun zjl-hl-find-hl-var-arg-regions-c (start end)
   (save-excursion
     (goto-char start)
-    (let (defun-start defun-end regions)
-      (while (and (setq defun-end 
-                        (if (let ((orginal (point)));;for end-of-defun's bug,  it return nil whenever it is called
-                              (end-of-defun)
-                              (/= (point) orginal))
-                            (point)
+    ;; Add last begin/end and iteration limitation is to stop some wrong parenthesis pair ("#ifdef.else .endif" inside fun call paramter might cause this) to freezen emacs 
+    (let (fun-begin fun-end regions (iteration-num 0) last-fun-begin last-fun-end)
+      (zjl-hl-dbg-print "while start" nil 'debug)
+      (while (and (setq fun-end 
+                        (if (and (zjl-hl-c-end-of-defun)
+                                 (not (equal (point-marker) last-fun-end)))
+                            (point-marker)
                           nil))
-                  (setq defun-start
-                        (if (beginning-of-defun)
-                            (point)
+                  (setq fun-begin
+                        (if (and (zjl-hl-c-beginning-of-defun)
+                                 (not (equal (point-marker) last-fun-begin)))
+                            (point-marker)
                           nil))
-                  (< defun-start end))
-        (setq regions  (cons (cons defun-start defun-end) regions))
-        (goto-char defun-end))
+                  (< fun-begin end)
+                  (< iteration-num 100))
+        (setq regions  (cons (cons fun-begin fun-end) regions))
+        (goto-char fun-end)
+
+        (setq last-fun-begin fun-begin)
+        (setq last-fun-end fun-end)
+        (setq iteration-num (1+ iteration-num)))
+      (zjl-hl-dbg-print "while end" nil 'debug)
       regions)))
 
-;; (progn (re-search-forward  "([ 	]*let" nil t)
-;;        (goto-char (match-beginning 0)))
-
-
-
-(defun zjl-hl-next-comment-pos-c (start end) ;;; 
+;;Function need to work for class/namespace in c++/java, and like special below case: in 1,2 point, both get same function start, 1 end in large scope, 2 end in scope inside 1.
+;;@SuppressWarnings({1"EmptyCatchBlock", "PointlessBooleanExpression"})
+;;public final class ViewRootImpl implements ViewParent,
+;;        View.AttachInfo.Callbacks, HardwareRenderer.HardwareDrawCallbacks {2
+;;...
+;;}
+(defun zjl-hl-find-hl-var-arg-regions-c++ (start end)
   (save-excursion
-    (let (pos-pair find-p)
-      (goto-char start)
-      (save-excursion
-        (when (re-search-forward "\\(//.*\\)\\|\\(/\\*\\(?:.\\|
-\\)*?\\*/\\)" end t) ;; in test, this regexp can handle the /* ... // ^M *// correctly. since it search after the match of the /* it the emacs c-gode just start to search the */ ----this is my guess.
-          (setq pos-pair (cons (nth 0 (match-data)) (nth 1 (match-data))))
-          )
-        )
-      pos-pair)))
+    (goto-char start)
+    (let (tempvalue fun-begin fun-end regions (iteration-num 0) last-fun-begin last-fun-end index region)
+      (zjl-hl-dbg-print "while start" nil 'debug)
+      (while (and  (setq tempvalue (car (zjl-hl-find-regexp-return-end-pos (point) end "{" nil)))
+                   (goto-char tempvalue)
+                   (setq fun-end 
+                         (if (zjl-hl-c-end-of-defun)
+                             (point-marker)
+                           nil))
+                   (setq fun-begin
+                         (if (zjl-hl-c-beginning-of-defun)
+                             (point-marker)
+                           nil))
+                   (< fun-begin end)
+                   (< iteration-num 200))
+        
+        ;; (setq index 0)
+        ;; (while (setq region (nth index regions))
+        ;;   (if (and (<= (car region) fun-begin) (>= (cdr region) fun-end))
+        ;;     (setq regions (delete region regions))  
+        ;;     (setq index (1+ index))))
+        
+        ;;In case of class or name space, need skip the end of class/namespace
+        (goto-char fun-end)
+        (re-search-backward "}")
+        
+        (if (and (zjl-hl-c-beginning-of-defun)
+                 (not (equal (point-marker) fun-begin)))
+            (goto-char tempvalue)
+          (setq regions (cons (cons fun-begin fun-end) regions))
+          (goto-char fun-end))
 
+        (when (or (equal fun-begin last-fun-begin) (equal fun-end last-fun-end))
+          (goto-char tempvalue))
+      
+        (setq last-fun-begin fun-begin)
+        (setq last-fun-end fun-end)
+        (setq iteration-num (1+ iteration-num)))
+      (zjl-hl-dbg-print "while end" nil 'debug)
+      (zjl-hl-dbg-print "regions=" regions)
+      regions)
+))
+
+(defun zjl-hl-after-semantic-idle ()
+  (when zjl-hl-after-semantic-parse-done-obj
+    (cancel-timer zjl-hl-after-semantic-parse-done-obj)
+    (setq zjl-hl-after-semantic-parse-done-obj nil))
+  (setq zjl-hl-after-semantic-parse-done-obj (run-with-idle-timer 2.5 nil 'zjl-hl-after-semantic-parse-done (current-buffer))))
+
+(defun zjl-hl-revert-clone-buffer-then-kill (thisbuffer)
+  (when (buffer-live-p thisbuffer)
+    (revert-buffer thisbuffer t t)
+    (kill-buffer thisbuffer)))
+
+(defun zjl-hl-hl-whole-buffer (&optional thisbuffer)
+  (interactive)
+  (unless thisbuffer (setq thisbuffer (current-buffer)))
+  (condition-case err
+      (when (buffer-live-p thisbuffer)
+        (with-current-buffer thisbuffer
+	  (let (else-deleted)
+	    (when (and zjl-hl-delete-else-do-hl zjl-hl-has-if-else-macro-with-unbalanced-brace)
+	      (with-current-buffer (clone-indirect-buffer nil nil)
+		(message "zjl-hl delete #else part to hl this buffer")
+		(sit-for 3)
+		(setq else-deleted t)
+		(zjl-hl-replace-regexp  "\\(^[ 	]*#else.*\\(?:.\\|\n\\)*?\\)\\(#endif\\)" "\n// TODO : zjl-hl delete the #else clause here, need fix\n/*\n#\\1*/\n\\2" nil (point-min) (point-max))))
+	    (setq zjl-hl-regions-2A-Y nil)
+	    (setq zjl-hl-regions-2A-X-try-again nil)
+	    (setq zjl-hl-regions-2A-X-X nil)
+	    (setq zjl-hl-regions-2B-Y nil)
+	    (setq zjl-hl-regions-2B-X-try-again nil)
+	    (setq zjl-hl-regions-2B-X-X nil)
+	    (zjl-hl-timer-do-whole thisbuffer (point-min-marker) (point-max-marker) 'AB)
+	    (when else-deleted
+	      (run-with-idle-timer 6 nil 'zjl-hl-revert-clone-buffer-then-kill (current-buffer))))))
+    (error (message "error in zjl-hl-hl-whole-buffer: %s" (error-message-string err))
+           (zjl-hl-dbg-print "error in zjl-hl-hl-whole-buffer:" (error-message-string err)))))
+
+(defun zjl-hl-after-semantic-parse-done (thisbuffer)
+  (when (buffer-live-p thisbuffer)
+    (with-current-buffer thisbuffer
+      (unless zjl-hl-semantic-parse-done
+        (when (< zjl-hl-semantic-parse-done-count 20)
+          ;; I just saw the semantic-after-idle-scheduler-reparse-hook is run 3 times for a file, with interval of 1 and 3 seconds.
+          ;; So for now I clean the whole hl regions list for a short solution, but this is conflict with the partial update of above
+          ;;(message "zjl:%s clean the hl regions list !!! :%s" (current-time) (buffer-name))
+          (setq zjl-hl-semantic-parse-done-count (1+ zjl-hl-semantic-parse-done-count))
+          (setq zjl-hl-regions-2A-Y nil)
+          (setq zjl-hl-regions-2A-X-try-again nil)
+          (setq zjl-hl-regions-2A-X-X nil)
+          (setq zjl-hl-regions-2B-Y nil)
+          (setq zjl-hl-regions-2B-X-try-again nil)
+          (setq zjl-hl-regions-2B-X-X nil)
+
+          (when zjl-hl-update-screen-timer
+            (cancel-timer zjl-hl-update-screen-timer)
+            (setq zjl-hl-update-screen-timer nil))
+	  (if (not (and zjl-hl-delete-else-do-hl zjl-hl-has-if-else-macro-with-unbalanced-brace))
+	      (setq zjl-hl-update-screen-timer (run-with-idle-timer 1 nil 'zjl-hl-update-screen (current-buffer)))
+	    (if (y-or-n-p-with-timeout "!! zjl-hl: see unbalance brace, can I temporarily delete #else part to do whole buffer highlight?" 5 nil)
+		(progn (message "zjl-hl delete #else part to hl this buffer")
+		       (zjl-hl-hl-whole-buffer (current-buffer)))
+	      (message "zjl-hl didn't delete #else part")
+	      (setq zjl-hl-update-screen-timer (run-with-idle-timer 1 nil 'zjl-hl-update-screen (current-buffer)))))
+          (setq zjl-hl-semantic-parse-done t))))))
+(defun zjl-hl-after-buffer-load-a-while-force-set-parse-done (thisbuffer)  
+  (zjl-hl-after-semantic-parse-done thisbuffer))
 
 (provide 'zjl-hl)
-;;; end lisp code 
