@@ -18,15 +18,15 @@ This highlight C/C++JAVA file local variable/parameters, function call and some 
 
 To install: 
 
-***  download 
-****** zjl-hl.el, 
+**  download 
+*** zjl-hl.el, 
 
-****** region-list-edit.el(bellow)
+*** region-list-edit.el(bellow)
 
-****** highlight.el on ELPA or this emacswiki
+*** highlight.el on ELPA or this emacswiki
 
 
-***  add below into .emacs (load-file can be replaced by require if wish).  
+**  add below into .emacs (load-file can be replaced by require if wish).  
 
 These lines are minimum configuration needed in emacs 24.5.1
 {{{
