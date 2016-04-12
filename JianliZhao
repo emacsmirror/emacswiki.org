@@ -5,8 +5,8 @@ My email: jianlizhao1@gmail.com.
 Bellow zjl-hl.el and region-list-edit.el are updated in 2016.4.12 and have lot improvement on
 
 *  C++/JAVA highlight
-*  The recognize rate of the local var is much much higher and thus is highlighted properly. This is mostly by copying the function body to a temp buffer and do code clean so it semantic can recognize the local var with much higher rate.
-*  Improved stability (use this version for half year by myself)
+*  The recognize rate of the local var/parameters is much much higher and thus highlighted properly. This is mostly by copying the function body to a temp buffer and do code clean so semantic can recognize the local var with much higher rate.
+*  Good stability (was using this version for half year by myself)
 
 
 Beside above for now I disable the zjl-hl once a buffer is edited, because the potential  new added parenthesis might not be paired and cause zjl-hl/semantic dead emacs.
@@ -28,7 +28,7 @@ To install:
 
 ***  add below into .emacs (load-file can be replaced by require if wish).  
 
-These lines are minimum configuration needed in emacs 24.3
+These lines are minimum configuration needed in emacs 24.5.1
 {{{
 (semantic-mode 1)
 (require 'semantic/bovine/c nil 'noerror)
