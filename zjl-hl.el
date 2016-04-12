@@ -1,7 +1,7 @@
 ;;;Updated in 2016.4.12
 ;;;This package can highlight argument/variable and keywords in c/c++/java
 ;; Issue now: all disable function can not remove keyword I add, don't know how
-
+(require 'cl)
 (require 'highlight)
 (require 'region-list-edit)
 
