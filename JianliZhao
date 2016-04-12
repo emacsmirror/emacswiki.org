@@ -2,9 +2,17 @@ I use Emacs since 2009.08.  I use Emacs to read and write c/asm/elisp code. so I
 
 My email: jianlizhao1@gmail.com. 
 
+Bellow zjl-hl.el and region-list-edit.el are updated in 2016.4.12 and have lot improvement on
+1. C++/JAVA highlight
+2. The recognize rate of the local var is much much higher and thus is highlighted properly. This is mostly by copying the function body to a temp buffer and do code clean so it semantic can recognize the local var with much higher rate.
+3. Improved stability (use this version for half year by myself)
+
+But I disable the highlight once a buffer is changed, otherwise new added the parenthesis might not be paired and cause zjl-hl/semantic dead emacs.
+
+
 * 1 http://www.emacswiki.org/emacs/zjl-hl.el
 
-This highlight C file local variable/parameters, function call and some other to make code easier to read
+This highlight C/C++JAVA file local variable/parameters, function call and some other to make code easier to read
 
 To install: 
 
@@ -31,8 +39,6 @@ These lines are minimum configuration needed in emacs 24.3
 * 2 http://www.emacswiki.org/emacs/region-list-edit.el
 
 This file is used by zjl-hl.el, it can add/delete a region into/from a region list, such as '((4 . 7) (11 . 15) (17 . 17) (20 . 25))
-
-The above two el is updated at 20140602
 
 [new:DrewAdams:2010-05-30 08:12 UTC]
 Welcome to the wiki. -- DrewAdams
