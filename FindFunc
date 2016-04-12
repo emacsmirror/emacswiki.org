@@ -1,4 +1,5 @@
 = find-function = 
+<pre>
 ;;; Commentary:
 ;;
 ;; The funniest thing about this is that I can't imagine why a package
@@ -17,7 +18,7 @@
 ;; The code started out from `describe-function', `describe-key'
 ;; ("help.el") and `fff-find-loaded-emacs-lisp-function' (Noah Friedman's
 ;; "fff.el").
-
+</pre>
 == Suggestion ==
 
 === widen before jump ===
