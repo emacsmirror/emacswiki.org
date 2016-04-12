@@ -923,7 +923,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 	    (if (< (- end start) zjl-hl-no-delay-max-size)
 		(setq zjl-hl-first-time-hl-no-delay-p t)
 	      (setq zjl-hl-first-time-hl-no-delay-p nil)))
-
+	  (add-hook 'first-change-hook 'zjl-hl-disable-current-buffer t t)
 	  (add-hook 'semantic-after-idle-scheduler-reparse-hook 'zjl-hl-after-semantic-idle t t)
 	  (add-hook 'window-scroll-functions 'zjl-hl-window-scroll-hook t t))))))
 
