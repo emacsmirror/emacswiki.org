@@ -1,3 +1,4 @@
+;;;Updated in 2016.4.12
 ;;;This package can add/delete a region into/from a region list, such as ‘((4 . 7) (11 . 15) (17 . 17) (20 . 25))
 ;;The member of regioin-list always include the node of the start and end. for example: (3 . 5), then 3 and 5 is both belong to this region.
 
@@ -187,25 +188,32 @@
 (defun region-list-edit-delete (regions-list todo)
   "Delete a region todo from regions-list, the start and end node of todo, is included"
   (interactive)
-
-  (setq todo (cons (if (markerp (car todo));;if is marker, then keep as marker
-                       (copy-marker (1- (car todo)))
-                     (1- (car todo)))
-                   (if (markerp (cdr todo))
-                       (copy-marker (1+ (cdr todo)))
-                     (1+ (cdr todo)))))
-  
-  (let (beg-node-to-insert beg-node-included-p end-node-to-insert end-node-included-p beg-have-find-p end-have-find-p temp-node temp-list temp-pre temp-next)
+  (let (beg-node-to-insert beg-node-included-p end-node-to-insert end-node-included-p beg-have-find-p end-have-find-p temp-node temp-list temp-pre temp-next cartodo cdrtodo)
+    ;; because (copy-marker (1- (car todo))) minimum=1, even (car todo) ==1, so need cartodo just for boundary check.
+    ;; same as cdrtodo
+    (setq cartodo (if (markerp (car todo));;if is marker, then keep as marker
+		      (1- (marker-position (car todo)))
+		    (1- (car todo))))
+    (setq cdrtodo (if (markerp (cdr todo))
+		      (1+ (marker-position (cdr todo)))
+		    (1+ (cdr todo))))
+    
+    (setq todo (cons (if (markerp (car todo));;if is marker, then keep as marker
+			 (copy-marker (1- (car todo)))
+		       (1- (car todo)))
+		     (if (markerp (cdr todo))
+			 (copy-marker (1+ (cdr todo)))
+		       (1+ (cdr todo)))))
     (dotimes (Num (length regions-list))
       (cond ((and (not beg-have-find-p);;in the inner of Num'th node,include the start and end of Num'th node
-                  (>= (car todo) (car (nth Num regions-list)))
-                  (<= (car todo) (cdr (nth Num regions-list))))
+                  (>= cartodo (car (nth Num regions-list)))
+                  (<= cartodo (cdr (nth Num regions-list))))
              (setq beg-have-find-p t)
              (setq beg-node-to-insert Num)
              (setq beg-node-included-p t))
 
             ((and (not beg-have-find-p);;before the Num'th node
-                  (< (car todo) (cdr (nth Num regions-list))))
+                  (< cartodo (cdr (nth Num regions-list))))
              (setq beg-have-find-p t)
              (setq beg-node-to-insert Num)
              (setq beg-node-included-p nil))
@@ -213,14 +221,14 @@
     
     (dotimes (Num (length regions-list))
       (cond ((and (not end-have-find-p);;in the inner of Num'th node
-                  (>= (cdr todo) (car (nth Num regions-list)))
-                  (<= (cdr todo) (cdr (nth Num regions-list))))
+                  (>= cdrtodo (car (nth Num regions-list)))
+                  (<= cdrtodo (cdr (nth Num regions-list))))
              (setq end-have-find-p t)
              (setq end-node-to-insert Num)
              (setq end-node-included-p t))
 
             ((and (not end-have-find-p);;before the Num'th node
-                  (< (cdr todo) (car (nth Num regions-list))))
+                  (< cdrtodo (car (nth Num regions-list))))
              (setq end-have-find-p t)
              (setq end-node-to-insert Num)
              (setq end-node-included-p nil))
