@@ -851,6 +851,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 (setq zjl-hl-partial-change-region-activate-timer nil)
 (setq zjl-hl-disable-init-for-temp-buffer nil)
 (setq zjl-hl-init-called-already nil)
+(setq zjl-hl-first-change-hook-called-already nil)
 (defun zjl-hl-init ()
   (save-excursion
     (unless (or (and zjl-hl-disable-init-for-temp-buffer (not buffer-file-name)) ;;temp buffer so disable zjl-hl-init
@@ -880,6 +881,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 	(make-local-variable 'zjl-hl-partial-change-region)
 	(make-local-variable 'zjl-hl-partial-change-region-activate)
 	(make-local-variable 'zjl-hl-partial-change-region-activate-timer)
+	(make-local-variable 'zjl-hl-first-change-hook-called-already)	
 
 	(setq zjl-hl-find-hl-var-arg-regions
 	      (case major-mode
@@ -1014,10 +1016,12 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
       (funcall major-mode)
       (zjl-hl-init)
       (zjl-hl-window-scroll-hook 1 1))))
+
 (defun zjl-hl-disable-current-buffer--change-hook (beg end)
-  (interactive)
-  (message "zjl~~~first-triggered")
-  (zjl-hl-disable-current-buffer))
+  (unless zjl-hl-first-change-hook-called-already
+    (setq zjl-hl-first-change-hook-called-already t)
+    (zjl-hl-disable-current-buffer)))
+
 (defun zjl-hl-disable-current-buffer ()
   (interactive)
   (when (or (equal major-mode 'c-mode)
