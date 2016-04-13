@@ -1,4 +1,4 @@
-;;;Updated in 2016.4.12
+;;;Updated in 2016.4.13
 ;;;This package can highlight argument/variable and keywords in c/c++/java
 ;; Issue now: all disable function can not remove keyword I add, don't know how
 (require 'cl)
@@ -923,7 +923,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 	    (if (< (- end start) zjl-hl-no-delay-max-size)
 		(setq zjl-hl-first-time-hl-no-delay-p t)
 	      (setq zjl-hl-first-time-hl-no-delay-p nil)))
-	  (add-hook 'first-change-hook 'zjl-hl-disable-current-buffer t t)
+	  (add-hook 'before-change-functions 'zjl-hl-disable-current-buffer--change-hook t t)
 	  (add-hook 'semantic-after-idle-scheduler-reparse-hook 'zjl-hl-after-semantic-idle t t)
 	  (add-hook 'window-scroll-functions 'zjl-hl-window-scroll-hook t t))))))
 
@@ -1014,7 +1014,10 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
       (funcall major-mode)
       (zjl-hl-init)
       (zjl-hl-window-scroll-hook 1 1))))
-
+(defun zjl-hl-disable-current-buffer--change-hook (beg end)
+  (interactive)
+  (message "zjl~~~first-triggered")
+  (zjl-hl-disable-current-buffer))
 (defun zjl-hl-disable-current-buffer ()
   (interactive)
   (when (or (equal major-mode 'c-mode)
