@@ -28,6 +28,8 @@ Of course I could try and package any extension I find I need and submit it to E
 
 MELPA has been described as "server-side el-get". Since all the fetching is done on the server it does offer some more convenience. However, it also takes away control: MELPA only offers the latest version of the package, whereas el-get can get any revision you want, or even use a different fork. Since el-get uses package.el as one of the fetching methods, MELPA's convenience is still available.
 
+In addition, el-get also offers more local initialization features than MELPA. For example, some packages have some C program dependencies that el-get can auto build but MELPA does not and [https://github.com/melpa/melpa/issues/1704 will not handle].
+
 == Example Usage ==
 The following is an example of how to use it in your ##.emacs##, you could also consider starting from the [https://github.com/dimitri/emacs-kicker emacs-kicker].
 
