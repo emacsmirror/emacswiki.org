@@ -156,5 +156,12 @@ content.")
 
 The trailing '\' must be followed immediately by a newline.
 
+= Unified Configuration Across Editors =
+
+Unified configuration across editors can be useful for a team in which
+everyone uses their own editing tool. This can be done by using
+[http://editorconfig EditorConfig]. Its Emacs extension is available
+[https://github.com/editorconfig/editorconfig-emacs here].
+
 ----
 CategoryCode
