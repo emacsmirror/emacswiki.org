@@ -38,24 +38,17 @@ In the above example, ##rainbow-mode## is the symbol for both the minor mode and
 
 To determine which library defines a mode, use e.g.: ##C-h f eldoc-mode RET##. The name of the library is displayed in the first paragraph, with an ".el" suffix (in this example it displays "eldoc.el", and therefore we could use the value "eldoc" for the library).
 
-This however isn't always the case so figuring out how to make the lighter disappear for some "built in" modes is sometimes more complicated: no ".el" file is available! A way to disable lighter for such a mode is to force the execution of ##(delight 'something-mode nil t)## once the mode is loaded.
+If you simply cannot figure out which library to specify, an alternative approach is to evaluate ##(delight 'something-mode nil t)## once you know for sure that the mode has already been loaded, perhaps by using the mode hook for that mode.
 
 === Some corner cases ===
-Sometimes the mode-symbol is not getting set correctly (someone please double-check this terminology)
 
-Substitutes for some modes are:
+If all else fails, it's worth looking at ##C-h v minor-mode-alist## (after enabling the minor mode in question). There are rare cases where the entry in ##minor-mode-alist## has a different symbol to the minor mode with which it is associated, and in these situations you will need to specify the name in the alist, rather than the name of the mode itself.
 
-* *auto-fill-mode*
+Some known examples are:
 
-    (delight 'auto-fill-function nil t)
-
-* *server-mode*
-
-    ????
-
-* *reftex-mode*
-
-    ????
+||*minor mode*||||*how to delight*||
+||##auto-fill-mode##||||##(delight 'auto-fill-function " AF" t)##||
+||##server-mode##||||##(delight 'server-buffer-clients " SV" 'server)##||
 
 ==Important notes==
 
