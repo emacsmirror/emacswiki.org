@@ -1,3 +1,92 @@
+WindMove is awesome, but I don't wanna bind arrow keys to something that I don't use that often:
+
+    (defconst electric-windmove-quiet nil)
+    (defconst electric-windmove-select-only nil)
+
+    (defun electric-windmove (&optional nav-prompt selection-msg)
+      (interactive)
+      (if (or (< (count-windows) 3) (minibuffer-window-active-p (selected-window)))
+          (progn
+            (other-window 1)
+            (selected-window))
+        (let ((done nil)
+              (start (selected-window))
+              (start-buffer (window-buffer))
+              (orig (current-window-configuration))
+              (keys-alist (list (cons (kbd "<left>") #'windmove-left)
+                                (cons (kbd "C-b") #'windmove-left)
+                                (cons (kbd "<right>") #'windmove-right)
+                                (cons (kbd "C-f") #'windmove-right)
+                                (cons (kbd "<up>") #'windmove-up)
+                                (cons (kbd "C-p") #'windmove-up)
+                                (cons (kbd "<down>") #'windmove-down)
+                                (cons (kbd "C-n") #'windmove-down)))
+              (orig-mode-line-height (face-attribute 'mode-line :height))
+              key last-error target-buffer func selected-win)
+          (set-face-attribute 'mode-line (selected-frame)
+                              :height (* 2 orig-mode-line-height))
+          (unless nav-prompt
+            (setq nav-prompt "Window navigation: arrow keys:move RET:select DEL:delete C-xC-x:swap"))
+          (unwind-protect
+              (while (not done)
+                (setq key (read-key-sequence nav-prompt))
+                (if (setq func (cdr (assoc key keys-alist)))
+                    (condition-case err
+                        (progn
+                          (funcall func))
+                      (error (if (equal err last-error)
+                                 (setq done t)
+                               (message "%s" (cadr err))
+                               (sit-for 1))
+                             (setq last-error err)))
+                  (setq done t))
+                (when done
+                  (cond ((equal (kbd "C-g") key)
+                         (unless electric-windmove-quiet (message "electric windmove canceled!"))
+                         (set-window-configuration orig))
+                        ((equal (kbd "RET") key)
+                         (if selection-msg
+                             (message selection-msg )
+                           (unless electric-windmove-quiet
+                             (message "you reached your target window, goodbye!")))
+                         (setq selected-win (selected-window)))
+                        ((and (equal (kbd "DEL") key) (not electric-windmove-select-only))
+                         (delete-window)
+                         (unless electric-windmove-quiet (message "target window removed, goodbye!"))
+                         (select-window start))
+                        ((and (equal (kbd "C-x C-x") key) (not electric-windmove-select-only))
+                         (setq target-buffer (window-buffer))
+                         (set-window-buffer (selected-window) start-buffer)
+                         (set-window-buffer start target-buffer)
+                         (unless electric-windmove-quiet (message "buffers swapped, goodbye!"))
+                         (select-window start)
+                         (setq selected-win (selected-window)))
+                        (t
+                         (unless electric-windmove-quiet (message "ok, bye!"))
+                         (command-execute key)
+                         (setq selected-win (selected-window))))))
+            (set-face-attribute 'mode-line (selected-frame)
+                                :height orig-mode-line-height))
+          selected-win)))
+
+    (require 'helm-buffers)
+    (defun select-buffer-for-window ()
+      (interactive)
+      (let ((orig-win (selected-window))
+    	(electric-windmove-quiet t)
+    	(electric-windmove-select-only t)
+    	(helm-split-window-default-side 'same)
+    	other-win)
+        (setq other-win
+    	  (electric-windmove "choose a window: arrow keys:move RET:select" nil))
+        (when other-win
+          (helm-buffers-list))
+        (select-window orig-win)
+        (message "%s" other-win)))
+
+
+
+
 How come simple routines such as:
 * flatten-list
 * common-prefix-of-strings
