@@ -15,7 +15,7 @@ Lisp:delight.el
 Modifying a single mode at a time:
 
  (require 'delight)
- (delight 'abbrev-mode " Abv" "abbrev")
+ (delight 'abbrev-mode " Abv" 'abbrev)
  (delight 'rainbow-mode)
 
 Modifying multiple modes:
