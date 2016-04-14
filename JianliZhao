@@ -43,7 +43,8 @@ These lines are minimum configuration needed in emacs 24.5.1
 
 * 2 http://www.emacswiki.org/emacs/region-list-edit.el
 
-This file is used by zjl-hl.el, it can add/delete a region into/from a region list, such as '((4 . 7) (11 . 15) (17 . 17) (20 . 25))
+This file can add/delete a region into/from a region list, such as '((4 . 7) (11 . 15) (17 . 17) (20 . 25)) 
+zjl-hl use it to record/merge/invalid the region has been hl
 
 [new:DrewAdams:2010-05-30 08:12 UTC]
 Welcome to the wiki. -- DrewAdams
