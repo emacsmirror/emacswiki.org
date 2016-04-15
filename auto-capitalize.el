@@ -3,7 +3,7 @@
 
 ;; Copyright � 1998,2001,2002,2005 Kevin Rodgers
 
-;; Author: Kevin Rodgers <ihs_4664@yahoo.com>
+;; Author: Kevin Rodgers <kevin.d.rodgers@gmail.com>
 ;; Created: 20 May 1998
 ;; Version: $Revision: 2.20 $
 ;; Package-Version: 2.20
