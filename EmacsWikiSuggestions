@@ -306,5 +306,8 @@ A parenthetical remark concerning my libraries: As an Emacs-Wiki administrator, 
 
 Emacs Wiki relies on DuckDuckGo for in-site search. Maybe develop a [https://duck.co/ia DuckDuckGo instant answer] such that each time when EmacsWiki updates, the changes in DuckDuckGo's search results are updated instantly?
 
+[new]
+How is that going to work? The way I see it, an Instant Answer can take a search query and produce an answer using code and data – but what we would like is /push/ page edits so that DuckDuckGo updates their index, right? Or am I misunderstanding something? -- AlexSchroeder
+
 ----
 CategoryEmacsWikiSite
