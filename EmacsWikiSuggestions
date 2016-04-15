@@ -34,6 +34,9 @@ I think a syntax like <nowiki>^EmacsWiki</nowiki> to automatically generate a li
 
 --MikeAbrahams
 
+[new:JimThompson:2016-04-15 09:39 UTC]
+I second this suggestion. --JimThompson
+
 == Provide alternate stylesheets ==
 
 I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets---see  [http://orgmode.org/worg/ Worg]---then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
