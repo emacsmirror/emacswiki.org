@@ -1,5 +1,5 @@
 == Emacs for ChromeBooks and Chrome ==
-The Chrome Web Store has a DevEnv app with Emacs built into the development environment (it also has gcc, make, and other tools one would use to write software). https://chrome.google.com/webstore/detail/nacl-development-environm/aljpgkjeipgnmdpikaajmnepbcfkglfa
+The Chrome Web Store has a DevEnv app with Emacs built into the development environment (it also has gcc, make, and other tools one would use to write software). https://chrome.google.com/webstore/detail/nacl-development-environm/aljpgkjeipgnmdpikaajmnepbcfkglfa.  It is currently at Beta quality level, but should be good enough for many users.
 
 
 
