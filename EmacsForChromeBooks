@@ -40,7 +40,7 @@ Things that are known not to work as of April 2016 (highlights, see the link for
 
 
 Things that are not known if they work yet:
-There’s a ton of Emacs packages out there, and not all of them have been tested yet.  Please report of broken packages.  Packages that people report as working will get added to the list of known working packages.
+There’s a ton of Emacs packages out there, and not all of them have been tested yet.  Please report broken packages.  Packages that people report as working will get added to the list of known working packages.
 
 
 Customizing your Emacs (and getting files into and out of the dev env):
