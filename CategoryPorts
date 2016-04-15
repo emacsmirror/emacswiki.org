@@ -19,6 +19,7 @@ Here are the pages for platforms / distributions with binary packages:
 * EmacsOnFreerunner
 * EmacsOnAndroid -- run Emacs on your google phone
 * MaemoEmacs -- Emacs on Nokia N800, N810, N900
+* EmacsForChromeBooks -- run Emacs on a ChromeBook or in the Chrome browser
 
 How well alternate versions of
 emacs match the capabilities of Emacs and XEmacs is documented
