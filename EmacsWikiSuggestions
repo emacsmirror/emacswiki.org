@@ -302,6 +302,9 @@ Perhaps the download button should carry a warning? Then again, perhaps every pa
 [new:DrewAdams:2014-04-09 13:59 UTC]
 A parenthetical remark concerning my libraries: As an Emacs-Wiki administrator, I lock the wiki pages for the code I upload, so you can be pretty sure that it has not been tampered with. -- DrewAdams
 
+== Instant Answers for DuckDuckGo ==
+
+Emacs Wiki relies on DuckDuckGo for in-site search. Maybe develop a [https://duck.co/ia DuckDuckGo instant answer] such that each time when EmacsWiki updates, the changes in DuckDuckGo's search results are updated instantly?
 
 ----
 CategoryEmacsWikiSite
