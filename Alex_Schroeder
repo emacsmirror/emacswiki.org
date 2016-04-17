@@ -1,1 +1,74 @@
-#REDIRECT AlexSchroeder
+portrait:https://www.emacswiki.org/pics/static/AlexSchroederPortrait
+
+I'm an editor of the EmacsWiki. I invite all Emacs and XEmacs users to
+take up editing responsibilities as well. All you need to do is edit
+new pages, correct typos, add categories, rework pages. A good rule of
+thumb I try to follow is to make all pages potential sections in a
+printed book or info manual.
+
+I usually don't sign my contributions because I think that encourages
+other people to rework the page. Signing contributions would not
+make sense in a traditional book, either.
+
+You can contact me [mailto:kensanata@gmail.com using mail].
+
+I use Emacs.
+I am [http://member.fsf.org FSF Member] #894, joined on 2003-03-06,
+I am [http://www.fsfe.org/ FSFE Member] #372, joined 2005-05-22,
+and I am an [http://www.eff.org/ EFF Member], joined 2006-03-14.
+It's sad how I need to support foreign NGOs because policy in the USA and the EU
+will end up affecting me whether I like it or not. 
+
+My favorite [[CSS|Emacs Wiki Theme]] is [Self:action=browse;id=AlexSchroeder;css=;bootstrap=0 Classic No Bootstrap].
+
+* [http://alexschroeder.ch/wiki/Contact Contact]
+
+* [http://alexschroeder.ch/wiki/ Blog]
+
+* [http://alexschroeder.ch/pics/pink-bliss.png Emacs Screenshot]
+
+* [http://www.oddmuse.org/ Oddmuse] is the wiki engine used for this wiki.
+
+I use [[CSS]] to switch to the /Classic/ theme on this wiki. No bootstrap for me!
+
+If you think that Emacs Wiki is a mess and needs to be based on a different
+technology, feel free to read a blog post of mine, [http://alexschroeder.ch/wiki/2012-03-24_How_Emacs_Wiki_Works How Emacs Wiki Works].
+
+I am also known as [::kensanata] on IRC.
+"Kensanata" doesn't mean anything. It was the name of my character
+when I started [http://alexschroeder.ch/wiki/J%C3%BCnger_des_Blauen_Mondes playing PBEM games].
+I started my first homepage for this game on Geocities and needed an account name.
+Instead of alex4365472432009 I chose a name related to the game. And
+since Geocities and Yahoo and AOL started to cooperate, "kensanata"
+turned out to be the name of my Yahoo mailbox and my AIM handle.
+Later, I also used it on ICQ. And now I'm using it on IRC.
+
+13:03 <Blkt> kensanata: may I ask you another thing?
+13:03 <kensanata> This is IRC!!! ##*boot*##
+
+== Code ==
+
+* https://github.com/kensanata/emacs-setup -- my new setup, inspired by EmacsLife
+* https://github.com/kensanata/elisp/ -- various elisp files I'm no longer using (if I were to use them, they'd be in the ##emacs-setup## repository)
+* https://github.com/kensanata/ggg -- my Gmail Gnus GPG Guide (GGGG)
+* AlexSchroederConfigMegabombus -- the old setup on my wife's Powerbook @ home running Mac OS X
+* AlexSchroederConfigOrientalibombus -- the very old iBook 4G using Xubuntu
+* AlexSchroederConfigPyrobombus -- the old Mac Mini @ home running Mac OS X, no longer in use
+* AlexSchroederConfigWindows -- the workstation @ work running Windows 7; get grep and friends from [http://gnuwin32.sourceforge.net/packages.html GnuWin32]
+** EmacsSession EshellAutojump
+   [[rcircColoredNicks]] [[rcircColors]] [[rcircGroupMode]] [[rcircPounce]]
+* AlexSchroederConfigConfusibombus -- no longer used for an old Ubuntu installation
+* AlexSchroederConfigAlpinobombus -- no longer used as I switched the iBook from Mac OS 10.3 to Ubuntu
+* AlexSchroederErcConfig -- no longer used as I switched to [[rcirc]]
+
+== RSI ==
+
+[new:AlexSchroeder:2016-02-08 19:46 UTC]
+RepeatedStrainInjury -- saw a doctor, started physiotherapy on
+2002-02-05. I bought a Kinesis keyboard. I used little programs that
+forced me to take a lot of breaks. It didn't help. I stopped therapy
+2002-10-21 and decided to work less, get up more often, started
+practicing Aikido, and no longer work in long shifts. That helped.
+
+----
+CategoryHomepage
