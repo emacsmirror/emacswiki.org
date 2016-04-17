@@ -37,6 +37,9 @@ I think a syntax like <nowiki>^EmacsWiki</nowiki> to automatically generate a li
 [new:JimThompson:2016-04-15 09:39 UTC]
 I second this suggestion. --JimThompson
 
+[new]
+I wonder whether I understood this correctly. You can always create link to pages containing spaces using double square brackets ##[[Like This]]##. And we should totally encourage people to do that, and to redirect from pages ##LikeThis## to pages ##[[Like This]]##. Are you arguing that typing ##^LikeThis## is much easier than ##[[Like This]]## or were you unaware of the double square bracket syntax, or did I miss something? -- [[Alex Schroeder]]
+
 == Provide alternate stylesheets ==
 
 I would like to choose the stylesheet for EmacsWiki easily.  If Emacswiki could provide alternate stylesheets---see  [http://orgmode.org/worg/ Worg]---then I will be able to choose the theme using View->Page Style->etc menu in Firefox. -- [[115.241.16.57]]
