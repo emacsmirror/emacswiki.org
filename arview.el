@@ -5,8 +5,10 @@
 ;; Author: Andrey Fainer <fandrey@gmx.com>
 ;; Version: 1.2
 ;; Keywords: files
-;; URL: http://www.emacswiki.org/emacs/arview.el
+;; URL: https://github.com/afainer/arview
 ;; Compatibility: Emacs24, Emacs23
+
+;; This file is not part of GNU Emacs.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -135,8 +137,9 @@ See `arview-file-alist'."
       (intern ext))))
 
 (defun arview-copy-remote-file (filename tempdir)
-  "Copy FILENAME from a remote host to the temp directory.
-If FILENAME is on the local host return it."
+  "Copy FILENAME to TEMPDIR.
+Copy only if FILENAME and TEMPDIR on different hosts.  Otherwise
+return FILENAME."
   (if (tramp-tramp-file-p filename)
       (if (and (tramp-tramp-file-p tempdir)
                (string= (tramp-file-name-host
@@ -196,16 +199,14 @@ Insert output in the buffer LOG."
 The type of the archive determined with the function
 `arview-archive-type'.  The archive extracted using the archive
 program associated with the archive type (see `arview-types').
+ARGS is additional arguments fo the archive program.
 
 The temporary directory where the archive is extracted to is
 
-`temporary-file-directory'/arview-FILENAME.<random-string>
+TEMPDIR/arview-FILENAME.<random-string>
 
-Copy remote archives to the local temporary directory.
-
-Remove the extracted archive directory when its dired buffer is
-killed (see `arview-kill-buffer-hook').  Also if archive is a
-remote file remove its local copy."
+Set `arview-buffer-p' to t or FILENAME if FILENAME is a remote
+file.  The variable is local to the temporary directory buffer."
   (let ((ar (cdr (assoc (arview-archive-type filename) arview-types)))
         (tempdir (if tempdir tempdir temporary-file-directory)))
     (if (not ar)
@@ -246,7 +247,10 @@ Also if archive is a remote file remove its local copy.  See
 When `arview' or `arview-dired' commands called with one prefix
 argument, prompt for another temporary directory, not the default
 one.  With two prefix arguments also promt for additional
-arguments for the archive command."
+arguments for the archive command.
+
+ARG is the value of the prefix argument `arview' and
+`arview-dired' called with."
   (if (equal arg '(4))
       (list (expand-file-name
              (read-directory-name "Temporary directory: "
@@ -261,9 +265,11 @@ arguments for the archive command."
                                     t))
               (concat " " (read-string "Additional arguments: "))))))
 
+;;;###autoload
 (defun arview-dired (arg)
   "View the arview under point in the current dired buffer.
-See `arview-view'."
+Process ARG using `arview-process-prefix-arg'.  See
+`arview-view'."
   (interactive "P")
   (if (eq major-mode 'dired-mode)
       (let ((file (dired-get-filename)))
@@ -272,9 +278,11 @@ See `arview-view'."
 (unless (lookup-key dired-mode-map [C-return])
   (define-key dired-mode-map [C-return] 'arview-dired))
 
+;;;###autoload
 (defun arview (arg filename)
   "Ask for the archive FILENAME and view it.
-See `arview-view'."
+Process ARG using `arview-process-prefix-arg'.  See
+`arview-view'."
   (interactive "P\nfArchive file name: ")
   (apply #'arview-view filename (arview-process-prefix-arg arg)))
 
