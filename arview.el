@@ -1,9 +1,9 @@
 ;;; arview.el --- extract and view archives in the temporary directory
 
-;; Copyright (C) 2013  Andrey Fainer
+;; Copyright (C) 2013-2016  Andrey Fainer
 
 ;; Author: Andrey Fainer <fandrey@gmx.com>
-;; Version: 1.0
+;; Version: 1.2
 ;; Keywords: files
 ;; URL: http://www.emacswiki.org/emacs/arview.el
 ;; Compatibility: Emacs24, Emacs23
@@ -44,6 +44,10 @@
 
 ;; Use the command `arview' which asks for an archive file name.  In
 ;; `dired-mode' use `arview-dired' (bound to C-return by default).
+;; When the commands called with one prefix argument, arview prompts
+;; you for another temporary directory instead of the default one.
+;; With two prefix arguments you can also specify additional arguments
+;; for the archive program.
 
 ;; To use arview, make sure that this file is in load-path and insert
 ;; in your .emacs:
@@ -52,9 +56,8 @@
 
 ;;; Code:
 
-;; FIXME Temp directories are not deleted if Emacs is killed.
-
 (require 'dired-aux)
+(require 'tramp)
 
 (eval-when-compile
   (require 'cl))
@@ -73,14 +76,10 @@ name."
   :group 'arview)
 
 (defcustom arview-types
-  (let (types)
-    (mapc #'(lambda (type)
-              (when (executable-find (cadr type))
-                (push type types)))
-          '((zip "unzip")
-            (7z "7z" "x")
-            (rar "unrar" "x")))
-    types)
+  '((tar "tar" "-xf")
+    (zip "unzip")
+    (7z "7z" "x")
+    (rar "unrar" "x"))
   "Archive types known to arview.
 Each element of the alist is
 
@@ -93,7 +92,8 @@ ARGUMENTS - command-line arguments to the program."
   :group 'arview)
 
 (defcustom arview-file-alist
-  '((zip . ".*: Zip archive data")
+  '((tar . ".*: .* tar archive")
+    (zip . ".*: Zip archive data")
     (7z  . ".*: 7-zip archive data")
     (rar . ".*: RAR archive data"))
   "Alist of archive type for the function `arview-file-archive'.
@@ -127,18 +127,31 @@ See `arview-file-alist'."
 
 (defun arview-file-extension (filename)
   "Determine the type of FILENAME by its extension."
-  (intern (downcase (file-name-extension filename))))
+  (let ((ext (downcase (file-name-extension filename))))
+    (if (or (string= ext "tar")
+            (string= ext "tgz")
+            (string-match-p "\.tar\.[bgx]z2?$" filename))
+        'tar
+      (intern ext))))
 
-(defun arview-copy-remote-file (filename)
+(defun arview-copy-remote-file (filename tempdir)
   "Copy FILENAME from a remote host to the temp directory.
 If FILENAME is on the local host return it."
-  (if (eq (find-file-name-handler filename 'copy-file)
-          'tramp-file-name-handler)
-      (progn
-        (copy-file filename temporary-file-directory)
-        (concat temporary-file-directory
-                (file-name-nondirectory filename)))
-    filename))
+  (if (tramp-tramp-file-p filename)
+      (if (and (tramp-tramp-file-p tempdir)
+               (string= (tramp-file-name-host
+                         (tramp-dissect-file-name filename))
+                        (tramp-file-name-host
+                         (tramp-dissect-file-name tempdir))))
+          filename
+        (progn
+          (copy-file filename tempdir)
+          (concat tempdir (file-name-nondirectory filename))))
+    (if (tramp-tramp-file-p tempdir)
+        (progn
+          (copy-file filename tempdir)
+          (concat tempdir (file-name-nondirectory filename)))
+      filename)))
 
 (defun arview-archive-type (filename)
   "Determine FILENAME type using `arview-archive-type-functions'."
@@ -147,7 +160,38 @@ If FILENAME is on the local host return it."
       (setq type (funcall fn filename))
       (when type (return type)))))
 
-(defun arview-view (filename)
+(defun arview-process-file (arcmd arargs file log)
+  "Run a shell process with ARCMD and ARARGS.
+The filename FILE is a file for the archive command ARCMD.
+Insert output in the buffer LOG."
+  (let* ((comint-file-name-quote-list shell-file-name-quote-list)
+         (args (if (not (tramp-tramp-file-p file))
+                   ;; For consistency, run a local process with shell
+                   ;; too.
+                   (list shell-file-name
+                         shell-command-switch
+                         (concat arcmd " " arargs " "
+                                 (comint-quote-filename
+                                  (expand-file-name file))))
+                 ;; Shamelessly stolen from
+                 ;; `tramp-handle-shell-command'
+                 (append
+                  (cons (tramp-get-method-parameter
+                         (tramp-file-name-method
+                          (tramp-dissect-file-name file))
+                         'tramp-remote-shell)
+                        (tramp-get-method-parameter
+                         (tramp-file-name-method
+                          (tramp-dissect-file-name file))
+                         'tramp-remote-shell-args))
+                  (list (concat arcmd " " arargs " "
+                                (comint-quote-filename
+                                 (tramp-file-name-localname
+                                  (tramp-dissect-file-name
+                                   (expand-file-name file))))))))))
+    (apply #'process-file (car args) nil log nil (cdr args))))
+
+(defun arview-view (filename &optional tempdir args)
   "Extract the archive FILENAME and open its dired buffer.
 The type of the archive determined with the function
 `arview-archive-type'.  The archive extracted using the archive
@@ -162,25 +206,27 @@ Copy remote archives to the local temporary directory.
 Remove the extracted archive directory when its dired buffer is
 killed (see `arview-kill-buffer-hook').  Also if archive is a
 remote file remove its local copy."
-  (let ((ar (cdr (assoc (arview-archive-type filename) arview-types))))
+  (let ((ar (cdr (assoc (arview-archive-type filename) arview-types)))
+        (tempdir (if tempdir tempdir temporary-file-directory)))
     (if (not ar)
         (error "Unknown type of archive file: %s" filename)
       (let ((log (get-buffer-create arview-log-buffer-name))
-            (file (arview-copy-remote-file filename)))
+            (file (arview-copy-remote-file filename tempdir)))
         (find-file
-         (make-temp-file (concat "arview-"
-                                 (file-name-nondirectory filename)
-                                 ".")
-                         t))
+         (let ((temporary-file-directory tempdir))
+           (make-temp-file (concat "arview-"
+                                   (file-name-nondirectory filename)
+                                   ".")
+                           t)))
         (setq arview-buffer-p
               (if (string-equal file filename) t file))
         (with-current-buffer log
           (delete-region (point-min) (point-max)))
-        (if (/= 0
-                (apply 'call-process
-                       (append (list* (car ar) nil log nil (cdr ar))
-                               (list (expand-file-name file)))))
-            (display-buffer log t))
+        (unless (zerop (arview-process-file (car ar)
+                                            (concat (cadr ar) args)
+                                            file
+                                            log))
+          (display-buffer log t))
         (revert-buffer)))))
 
 (defun arview-kill-buffer-hook ()
@@ -195,22 +241,42 @@ Also if archive is a remote file remove its local copy.  See
 
 (add-hook 'kill-buffer-hook 'arview-kill-buffer-hook)
 
-(defun arview-dired ()
+(defun arview-process-prefix-arg (arg)
+  "Read from the minibuffer a temp dir and additional args.
+When `arview' or `arview-dired' commands called with one prefix
+argument, prompt for another temporary directory, not the default
+one.  With two prefix arguments also promt for additional
+arguments for the archive command."
+  (if (equal arg '(4))
+      (list (expand-file-name
+             (read-directory-name "Temporary directory: "
+                                  temporary-file-directory
+                                  nil
+                                  t)))
+    (if (equal arg '(16))
+        (list (expand-file-name
+               (read-directory-name "Temporary directory: "
+                                    temporary-file-directory
+                                    nil
+                                    t))
+              (concat " " (read-string "Additional arguments: "))))))
+
+(defun arview-dired (arg)
   "View the arview under point in the current dired buffer.
 See `arview-view'."
-  (interactive)
+  (interactive "P")
   (if (eq major-mode 'dired-mode)
       (let ((file (dired-get-filename)))
-        (arview-view file))))
+        (apply #'arview-view file (arview-process-prefix-arg arg)))))
 
 (unless (lookup-key dired-mode-map [C-return])
   (define-key dired-mode-map [C-return] 'arview-dired))
 
-(defun arview (filename)
+(defun arview (arg filename)
   "Ask for the archive FILENAME and view it.
 See `arview-view'."
-  (interactive "fArchive file name: ")
-  (arview-view filename))
+  (interactive "P\nfArchive file name: ")
+  (apply #'arview-view filename (arview-process-prefix-arg arg)))
 
 (provide 'arview)
 ;;; arview.el ends here
