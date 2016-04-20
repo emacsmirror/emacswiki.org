@@ -54,9 +54,15 @@ More specifically, for copy&paste, there are only two commands:
   simpleclip-get-contents
   simpleclip-set-contents
 
+==== cliphist ====
+
+Read clipboard history from clipboard managers (Parcellite on Linux and Flycut on OS X).
+https://github.com/redguardtoo/cliphist
+
 ==== datclip ====
 
 If it's getting to be a bit of a hassle, use https://github.com/thomp/datclip to simply show the primary, secondary, and clipboard selections in the datclip buffer.
+
 
 
 ---- 
