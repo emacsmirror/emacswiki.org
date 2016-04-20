@@ -130,6 +130,12 @@ A package that supports Vim-like incrementing and decrementing is [https://githu
 
 ----
 
+There is also another simple package that provides 2 commands to
+increase/decrease the number at point or on the current line:
+[https://github.com/alezost/shift-number.el shift-number].
+
+----
+
 See ReplaceRegexp, ReplaceCount, RenumberList and MacroMath for other ways to deal with automatic incrementation.
 
 ----
