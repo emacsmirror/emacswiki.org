@@ -156,6 +156,19 @@ This alignment rule may be loaded at startup by adding the above code to the <co
                       (modes   . align-text-modes)
                       (repeat  . t)))))
 
+== Adding align support for new/unsupported languages ===
+
+Align currently has (partial) built-in support for:
+* C
+* C++
+* Lisp
+* Python
+* Perl
+
+New languages can be supported by adding approriate rules to *align-rules-list*, *align-exclude-rules-list* and perhaps a custom *align-region-separate*, see the link(s) below:
+
+* [https://github.com/jannisteunissen/align-f90 Fortran 90]
+
 == Tabs for indentation, spaces for alignment ===
 
 See SmartTabs.
