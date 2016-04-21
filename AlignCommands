@@ -165,7 +165,7 @@ Align currently has (partial) built-in support for:
 * Python
 * Perl
 
-New languages can be supported by adding approriate rules to *align-rules-list*, *align-exclude-rules-list* and perhaps a custom *align-region-separate*, see the link(s) below:
+New languages can be supported by adding approriate rules to <code>align-rules-list</code>, <code>align-exclude-rules-list</code> and perhaps a custom <code>align-region-separate</code>, see the link(s) below:
 
 * [https://github.com/jannisteunissen/align-f90 Fortran 90]
 
