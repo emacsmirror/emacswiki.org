@@ -1,5 +1,3 @@
-This is based on a posting by Thomas Burdick. -- AlexSchroeder
-
 Newbies are often confused when creating new lists.  This page presents some
 examples showing box diagrams.  Maybe that helps.
 
@@ -132,13 +130,8 @@ Duplicates elements can be easily removed from a list, but you may need to suppl
  ELISP> (setq a '("one" "one" "two"))
  ("one" "one" "two")
 
- ELISP> (remove-duplicates a :test 'string=)
+ ELISP> (delete-dups a)
  ("one" "two")
-
-In the case of strings, if you neglect the comparison test, you get an incorrect result:
-
- ELISP> (remove-duplicates a)
- ("one" "one" "two")
 
 Numbers would work as expected here, because the default test is 'eq'.
 
