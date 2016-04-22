@@ -142,11 +142,11 @@ In the case of strings, if you neglect the comparison test, you get an incorrect
 
 Numbers would work as expected here, because the default test is `eq'.
 
-Be aware, however, that `remove-duplicates' does not modify the original list. It returns a new list that has no duplicates. If you want to update the value of a variable to the new list, then do that:
+Similar to `remove', the original list is unchanged. If you want to update the value of a variable to the new list, then do that:
 
     (setq a (remove-duplicates a))
 
-If you want to modify the original list, instead of returning a new list, then you can use function `delete-dups':
+If you don't mind having the original list modified and you want to conserve memory, you can use the DestructiveOperation, `delete-dups'. It returns the new duplicate-free list, possibly reusing some of the memory from the original list. `delete-dups' always uses `equals' for comparison.
 
     (setq a (delete-dups a)) 
 
