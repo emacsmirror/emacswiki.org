@@ -38,8 +38,13 @@ To precalculate the line number width to avoid horizontal jumps on scrolling:
           (lambda ()
             (when nlinum-mode
               (setq nlinum--width
+                    ;; works with the default `nlinum-format'
                     (length (number-to-string
                              (count-lines (point-min) (point-max)))))
+                    ;; use this instead if your `nlinum-format' has one space
+                    ;; (or other character) after the number
+                    ;;(1+ (length (number-to-string
+                    ;;             (count-lines (point-min) (point-max)))))
               (nlinum--flush))))
 </pre>
 
