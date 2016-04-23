@@ -574,3 +574,12 @@ Years ago the default behavior on X11+emacs was that anything highlighted in any
 
 -- DrewAdams 2014-11-07 15:50 UTC
 
+
+----
+
+I wonder why nobody talks about this problem: I run emacs (emacsclient) from a terminal emulator. Usual X copy-and-paste using PRIMARY selection works fine, unless the marked region contains a line break. In this case, the _visible_area_ is copied to the primary selection rather than _the_actual_buffer_contents_. This means, that either $'s or \'s are copied into the X PRIMARY selection buffer, as soon as a line exceeds the size of the frame.
+
+With XEmacs, everything works fine.
+
+-- Anonymous 2016-04-23 10:33 UTC
+
