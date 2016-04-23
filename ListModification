@@ -148,7 +148,12 @@ Similar to `remove', the original list is unchanged. If you want to update the v
 
 If you don't mind having the original list modified and you want to conserve memory, you can use the DestructiveOperation, `delete-dups'. It returns the new duplicate-free list, possibly reusing some of the memory from the original list. `delete-dups' always uses `equals' for comparison.
 
-    (setq a (delete-dups a)) 
+Again, if you want to update the value of a variable to the returned list then do that:
+
+    (setq a (delete-dups a))
+
+See the Elisp manual, node [Rearrangement](http://www.gnu.org/software/emacs/manual/html_node/elisp/Rearrangement.html) for information about list-modifying functions.
+
 
 == cons ==
 
