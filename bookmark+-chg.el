@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr 23 15:16:22 2016 (-0700)
+;; Last-Updated: Sat Apr 23 15:33:28 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16014
+;;     Update #: 16015
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,7 +147,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2016/04/23 dadams
-;;     Added: bmkp-set-dired-bmk-for-files.
+;;     Added: bmkp-set-dired-bookmark-for-files.
 ;; 2015/10/31 dadams
 ;;     bookmark-import-new-list: Added arg RETURN-BMKS: Return bookmarks added, if non-nil.
 ;; 2015/09/07 dadams
