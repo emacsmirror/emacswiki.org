@@ -1,3 +1,4 @@
+[[de:arabic]]
 ;;; init-emms.el --- Emms configuration
 
 ;; Filename: init-emms.el
