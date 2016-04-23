@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Dec 31 12:19:02 2015 (-0800)
+;; Last-Updated: Sat Apr 23 15:16:44 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7849
+;;     Update #: 7859
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -263,6 +263,7 @@
 ;;    `bmkp-set-autonamed-regexp-buffer',
 ;;    `bmkp-set-autonamed-regexp-region',
 ;;    `bmkp-set-bookmark-file-bookmark', `bmkp-set-desktop-bookmark',
+;;    `bmkp-set-dired-bmk-for-files',
 ;;    `bmkp-set-icicle-search-hits-bookmark',
 ;;    `bmkp-set-izones-bookmark', `bmkp-set-sequence-bookmark',
 ;;    `bmkp-set-snippet-bookmark', `bmkp-set-tag-value',
@@ -4377,6 +4378,34 @@ message."
       (setq bmkp-latest-bookmark-alist  (cons new bmkp-latest-bookmark-alist)))
     (bookmark-bmenu-surreptitiously-rebuild-list (not msg-p))
     new))
+
+;;;###autoload (autoload 'bmkp-set-dired-bmk-for-files "bookmark+")
+(defun bmkp-set-dired-bmk-for-files (bookmark-name dired-name to-add &optional switches msg-p)
+  "Create a Dired bookmark for a set of files and directories.
+You are prompted for the Dired buffer name and the file or directory
+entries to include.  With a prefix arg, you are also prompted for the
+`ls' switches.
+
+Use `C-g' when done choosing file and directory names.  Any directory
+names you choose this way are included as single entries in the
+listing - the directory contents are not included.  To instead include
+the contents of a directory, use a glob pattern: put `/*' after the
+directory name.
+
+You need library `Dired+' for this command."
+  (interactive
+   (let* ((_IGNORE             (unless (require 'dired+ nil t)
+                                 (error "You need library `Dired+' for this command")))
+          (current-prefix-arg  (if current-prefix-arg 0 -1))
+          (all                 (diredp-dired-union-interactive-spec
+                                "add files/dirs "
+                                'NO-DIRED-BUFS
+                                'READ-EXTRA-FILES-P)))
+     (list (bmkp-completing-read-lax "Bookmark") (nth 0 all) (nth 3 all) (nth 2 all) 'MSG)))
+  (bmkp-make-function-bookmark
+   bookmark-name
+   `(lambda () (diredp-add-to-dired-buffer ',dired-name ',to-add ',switches))
+   msg-p))
 
 ;;;###autoload (autoload 'bmkp-revert-bookmark-file "bookmark+")
 (defun bmkp-revert-bookmark-file (&optional msg-p) ; Same as `C-u g' in bookmark list (but not bound).
