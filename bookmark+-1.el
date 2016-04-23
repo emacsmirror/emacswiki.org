@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Apr 23 15:16:44 2016 (-0700)
+;; Last-Updated: Sat Apr 23 15:32:19 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7859
+;;     Update #: 7860
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -263,7 +263,7 @@
 ;;    `bmkp-set-autonamed-regexp-buffer',
 ;;    `bmkp-set-autonamed-regexp-region',
 ;;    `bmkp-set-bookmark-file-bookmark', `bmkp-set-desktop-bookmark',
-;;    `bmkp-set-dired-bmk-for-files',
+;;    `bmkp-set-dired-bookmark-for-files',
 ;;    `bmkp-set-icicle-search-hits-bookmark',
 ;;    `bmkp-set-izones-bookmark', `bmkp-set-sequence-bookmark',
 ;;    `bmkp-set-snippet-bookmark', `bmkp-set-tag-value',
@@ -4379,8 +4379,8 @@ message."
     (bookmark-bmenu-surreptitiously-rebuild-list (not msg-p))
     new))
 
-;;;###autoload (autoload 'bmkp-set-dired-bmk-for-files "bookmark+")
-(defun bmkp-set-dired-bmk-for-files (bookmark-name dired-name to-add &optional switches msg-p)
+;;;###autoload (autoload 'bmkp-set-dired-bookmark-for-files "bookmark+")
+(defun bmkp-set-dired-bookmark-for-files (bookmark-name dired-name to-add &optional switches msg-p)
   "Create a Dired bookmark for a set of files and directories.
 You are prompted for the Dired buffer name and the file or directory
 entries to include.  With a prefix arg, you are also prompted for the
