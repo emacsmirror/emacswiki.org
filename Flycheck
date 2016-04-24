@@ -4,57 +4,40 @@ Please be aware that the Flycheck maintainers to not support or endorse any of t
 
 == JSLint with Flycheck ==
 
-As of April 2014, Flycheck has no built in support for JSLint (but does include support for jshint, eslint, and gjslint). Fortunately support is straight forward to add.
+As of April 2016, Flycheck has no built in support for JSLint (but does include support for jshint, eslint, and gjslint). Fortunately support is straight forward to add.
 
-1. Install [http://nodejs.org/ Node.js].
+1. Install [http://nodejs.org/ Node.js] and NPM.
 
-2. Install [https://github.com/FND/jslint-reporter jslint-reporter] into: <code>~/.emacs.d/jslint-reporter</code>
-
-3. Download JSLint (or JSHint, using <code>--jshint</code>):
+2. Install JSLinter:
 
 <pre>
-$ cd ~/.emacs.d/jslint-reporter
-$ node wrapper.js --upgrade
+npm install jslinter -g
 </pre>
 
-4. From EShell (CategoryEshell) test jslint-reporter
-
-Unix:
-
-<pre>
-$ ~/.emacs.d/jslint-reporter test.js
-test.js:2:1:'console' was used before it was defined.
-</pre>
-
-Windows:
-
-<pre>
-$ ~/.emacs.d/jslint-reporter.bat test.js
-test.js:2:1:'console' was used before it was defined.
-</pre>
-
-5. [http://www.flycheck.org/manual/latest/Installation.html#Installation Install Flycheck]
-
-6. Add to <code>~/.emacs</code> <em>(on Windows <code>"~/.emacs.d/jslint-reporter.bat"</code>):</em>
+3. Add to <code>~/.emacs</code>:
 
 <pre>
 (require 'flycheck)
-(global-flycheck-mode)
+(defun parse-jslinter-warning (warning)
+  (flycheck-error-new
+   :line (1+ (cdr (assoc 'line warning)))
+   :column (1+ (cdr (assoc 'column warning)))
+   :message (cdr (assoc 'message warning))
+   :level 'error))
+(defun jslinter-error-parser (output checker buffer)
+  (mapcar 'parse-jslinter-warning
+          (cdr (assoc 'warnings (aref (json-read-from-string output) 0)))))
+(flycheck-define-checker javascript-jslinter
+  "A JavaScript syntax and style checker based on using JSLinter.
 
-(flycheck-define-checker javascript-jslint-reporter
-  "A JavaScript syntax and style checker based on JSLint Reporter.
-
-See URL `https://github.com/FND/jslint-reporter'."
-  :command ("~/.emacs.d/jslint-reporter" source)
-  :error-patterns
-  ((error line-start (1+ nonl) ":" line ":" column ":" (message) line-end))
+See URL `https://github.com/tensor5/JSLinter'."
+  :command ("c:/Users/Felix/AppData/Roaming/npm/jslint" "--raw" source)
+  :error-parser jslinter-error-parser
   :modes (js-mode js2-mode js3-mode))
-
-(add-to-list 'flycheck-checkers 'javascript-jslint-reporter)
 </pre>
 
-7. Restart Emacs to make sure everything loads fine.
+4. Restart Emacs to make sure everything loads fine.
 
-8. Test by opening above <code>test.js</code>.
+5. Test by opening above <code>test.js</code>.
 
-[[image:JslintFlycheckOnWindowsScreenshot]]
+[[image:JslinterFlycheckOnWindowsScreenshot]]
