@@ -39,6 +39,17 @@ and the 'terrestrial-branch' (地支) in Chinese:
           ["子" "丑" "寅" "卯" "辰" "巳" "午" "未" "申" "酉" "戌" "亥"])
 
 
+=== Czech ===
+
+    (setq calendar-week-start-day 1
+          calendar-day-name-array
+          ["neděle" "pondělí" "úterý" "středa" 
+           "čtvrtek" "pátek" "sobota"]
+          calendar-month-name-array
+          ["leden" "únor" "březen" "duben" "květen"
+           "červen" "červenec" "srpen" "září"
+           "říjen" "listopad" "prosinec"])
+
 === Dutch ===
 
     (setq calendar-week-start-day 1
@@ -183,6 +194,14 @@ Modified version of the above using traditional Chinese characters (plus some ni
 	(holiday-fixed 10 12 "Día de las Culturas")
         (holiday-fixed 12 25 "Navidad")))
 </pre>
+
+=== Czech ===
+
+There is a package [https://github.com/hydandata/czech-holidays czech-holidays] which is available through ##MELPA##. Add following call somewhere in your init file. Note that this must be called before Emacs calendar is loaded.
+    
+    (czech-holidays-add)
+
+If you have ##org-agenda-include-diary## set to ##t##, these will be also listed in the ##org-agenda## view.
 
 === Korean ===
 
