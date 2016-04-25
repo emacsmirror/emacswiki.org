@@ -14,7 +14,7 @@ As of April 2016, Flycheck has no built in support for JSLint (but does include 
 npm install jslinter -g
 </pre>
 
-3. Add to <code>~/.emacs</code>:
+3. Add to <code>~/.emacs</code> (adapt <code>:command</code> according to your system):
 
 <pre>
 (require 'json)
