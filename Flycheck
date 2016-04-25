@@ -17,6 +17,7 @@ npm install jslinter -g
 3. Add to <code>~/.emacs</code>:
 
 <pre>
+(require 'json)
 (require 'flycheck)
 (defun parse-jslinter-warning (warning)
   (flycheck-error-new
