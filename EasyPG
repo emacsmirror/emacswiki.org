@@ -100,8 +100,8 @@ IMHO The best solution seem to use the 1.4.9 version.
 Uninstalling seahorse doesn't work for me (gentoo) - even though GPG_AGENT_INFO is unset I still get the graphical password prompt %%*scowl*%%
 
 ----
-[new]
-I use this to temporarily unset the GPG_AGENT_INFO environment variable if running in terminal:
+
+I used to use this to temporarily unset the GPG_AGENT_INFO environment variable if running in terminal:
 
     ;; Do not use gpg agent when runing in terminal
     (defadvice epg--start (around advice-epg-disable-agent activate)
@@ -127,6 +127,9 @@ If you use emacsclient and sometimes over plaintext ssh, sometimes in X, this wi
     (ad-activate 'epg--start)
 
 Note also there's a bug in pinentry in GnuPG2, if you run Arch Linux you could install gnupg1 and do <code>(when (file-executable-p "/usr/bin/gpg1") (setq epg-gpg-program "/usr/bin/gpg1"))</code> to make it use gpg1 on your Arch boxen.
+
+[new]
+I now use this method instead: http://unix.stackexchange.com/questions/55638/can-emacs-use-gpg-agent-in-a-terminal-at-all/278875#278875
 
 ----
 [new]
