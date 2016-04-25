@@ -29,7 +29,7 @@ npm install jslinter -g
   (mapcar 'parse-jslinter-warning
           (cdr (assoc 'warnings (aref (json-read-from-string output) 0)))))
 (flycheck-define-checker javascript-jslinter
-  "A JavaScript syntax and style checker based on using JSLinter.
+  "A JavaScript syntax and style checker based on JSLinter.
 
 See URL `https://github.com/tensor5/JSLinter'."
   :command ("c:/Users/Felix/AppData/Roaming/npm/jslint" "--raw" source)
