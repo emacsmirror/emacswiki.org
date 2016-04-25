@@ -39,6 +39,6 @@ See URL `https://github.com/tensor5/JSLinter'."
 
 4. Restart Emacs to make sure everything loads fine.
 
-5. Test by opening above <code>test.js</code>.
+5. Test.
 
 [[image:JslinterFlycheckOnWindowsScreenshot]]
