@@ -18,6 +18,7 @@ The indirect buffer shares its text with the original buffer, including properti
 [new:DrewAdams:2014-05-11 20:58 UTC]
 That's OK -- no problem.  Just toggle `font-lock-mode' in the base buffer (twice) to get back its font-locking.  You can have different [[major mode]]s in the buffers, and they can use different font-locking. -- DrewAdams
 
+Also see [https://github.com/Fanael/edit-indirect Edit Indirect], which lets you edit regions in a separate buffer, with its own major mode and text properties. -- [[Anonymous]]
 
 == Indirect Buffers that Clone and Narrow Other Buffers ==
 
