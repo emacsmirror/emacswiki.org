@@ -9,6 +9,11 @@ Or in your ~/.emacs:
 
 == GNU/Linux Console ==
 
+In Emacs 24 adding the following to your init.el:
+
+ (setq visible-cursor nil)
+
+
 According to EvgenyRoubinchtein, the blinking cursor on the GNU/Linux
 console may be disabled on Emacs 20, by adding
 (send-string-to-terminal "\033[?17;0;16c") to `term-setup-hook'.  This
