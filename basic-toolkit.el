@@ -6,9 +6,9 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Created: 2009-02-07 20:56:08
-;; Version: 0.2
-;; Last-Updated: 2016-02-17
-;;           By: Reuben Thomas
+;; Version: 0.3
+;; Last-Updated: 2016-04-26
+;;           By: Victor Gaydov
 ;; URL: http://www.emacswiki.org/emacs/download/basic-toolkit.el
 ;; Keywords: edit, toolkit
 ;; Compatibility: GNU Emacs 23.0.60.1
@@ -61,6 +61,8 @@
 ;;
 ;; 2009/02/07
 ;;      * First released.
+;; 2016/04/26
+;;      * Added autoloads (Victor Gaydov <victor@enise.org>)
 ;;
 
 ;;; Acknowledgements:
@@ -81,6 +83,7 @@
 
 ;;; Code:
 
+;;;###autoload
 (defun unmark-all-buffers ()
   "Unmark all have marked buffers."
   (interactive)
@@ -105,6 +108,7 @@ The test for presence of the car of ELT-CONS is done with `equal'."
       (set alist-var (cons elt-cons (symbol-value alist-var)))))
   (symbol-value alist-var))
 
+;;;###autoload
 (defun open-newline-above (arg)
   "Move to the previous line (like vi) and then opens a line."
   (interactive "p")
@@ -114,6 +118,7 @@ The test for presence of the car of ELT-CONS is done with `equal'."
       (indent-according-to-mode)
     (beginning-of-line)))
 
+;;;###autoload
 (defun open-newline-below (arg)
   "Move to the next line (like vi) and then opens a line."
   (interactive "p")
@@ -124,6 +129,7 @@ The test for presence of the car of ELT-CONS is done with `equal'."
       (indent-according-to-mode)
     (beginning-of-line)))
 
+;;;###autoload
 (defun insert-line-number (beg end &optional start-line)
   "Insert line numbers into buffer."
   (interactive "r")
@@ -138,6 +144,7 @@ The test for presence of the car of ELT-CONS is done with `equal'."
         (incf line)
         (incf counter)))))
 
+;;;###autoload
 (defun insert-line-number+ ()
   "Insert line number into buffer."
   (interactive)
@@ -145,6 +152,7 @@ The test for presence of the car of ELT-CONS is done with `equal'."
       (insert-line-number (region-beginning) (region-end) (read-number "Start line: "))
     (insert-line-number (point-min) (point-max))))
 
+;;;###autoload
 (defun strip-blank-lines()
   "Strip all blank lines in select area of buffer,
 if not select any area, then strip all blank lines of buffer."
@@ -152,6 +160,7 @@ if not select any area, then strip all blank lines of buffer."
   (strip-regular-expression-string "^[ \t]*\n")
   (message "Have strip blanks line. ^_^"))
 
+;;;###autoload
 (defun strip-line-number()
   "Strip all line number in select area of buffer,
 if not select any area, then strip all line number of buffer."
@@ -159,6 +168,7 @@ if not select any area, then strip all line number of buffer."
   (strip-regular-expression-string "^[0-9]+")
   (message "Have strip line number. ^_^"))
 
+;;;###autoload
 (defun strip-regular-expression-string (regular-expression)
   "Strip all string that match REGULAR-EXPRESSION in select area of buffer.
 If not select any area, then strip current buffer"
@@ -174,11 +184,13 @@ If not select any area, then strip current buffer"
                   (re-search-backward regular-expression nil t)) ;and find string that match regular expression
         (replace-match "" t t)))))                               ;replace target string with null
 
+;;;###autoload
 (defun comment-part-move-up (n)
   "Move comment part up."
   (interactive "p")
   (comment-part-move (or (- n) -1)))
 
+;;;###autoload
 (defun comment-part-move-down (n)
   "Move comment part down."
   (interactive "p")
@@ -223,6 +235,7 @@ If not select any area, then strip current buffer"
         (forward-line (- n))
         (if cmt-another (comment-indent))))))
 
+;;;###autoload
 (defun comment-copy (arg)
   "Copy the first comment on this line, if any.
 With prefix ARG, copy comments on that many lines starting with this one."
@@ -266,6 +279,7 @@ If have comment return COMMENT-START, otherwise return nil."
     (beginning-of-line)
     (comment-search-forward (line-end-position) t)))
 
+;;;###autoload
 (defun comment-dwim-next-line (&optional reversed)
   "Move to next line and comment dwim.
 Optional argument REVERSED default is move next line, if reversed is non-nil move previous line."
@@ -275,11 +289,13 @@ Optional argument REVERSED default is move next line, if reversed is non-nil mov
     (call-interactively 'next-line))
   (call-interactively 'comment-dwim))
 
+;;;###autoload
 (defun comment-dwim-prev-line ()
   "Move to previous line and comment dwim."
   (interactive)
   (comment-dwim-next-line 't))
 
+;;;###autoload
 (defun indent-buffer ()
   "Automatic format current buffer."
   (interactive)
@@ -288,11 +304,13 @@ Optional argument REVERSED default is move next line, if reversed is non-nil mov
     (delete-trailing-whitespace)
     (untabify (point-min) (point-max))))
 
+;;;###autoload
 (defun indent-comment-buffer ()
   "Indent comment of buffer."
   (interactive)
   (indent-comment-region (point-min) (point-max)))
 
+;;;###autoload
 (defun indent-comment-region (start end)
   "Indent region."
   (interactive "r")
@@ -304,6 +322,7 @@ Optional argument REVERSED default is move next line, if reversed is non-nil mov
           (comment-indent)
         (goto-char end)))))
 
+;;;###autoload
 (defun duplicate-line-or-region-above (&optional reverse)
   "Duplicate current line or region above.
 By default, duplicate current line above.
@@ -347,6 +366,7 @@ Default duplicate above, unless option REVERSE is non-nil."
     (insert duplicate-content)
     (move-to-column origianl-column t)))
 
+;;;###autoload
 (defun duplicate-line-or-region-below ()
   "Duplicate current line or region below.
 By default, duplicate current line below.
@@ -354,6 +374,7 @@ If mark is activate, duplicate region lines below."
   (interactive)
   (duplicate-line-or-region-above t))
 
+;;;###autoload
 (defun duplicate-line-above-comment (&optional reverse)
   "Duplicate current line above, and comment current line."
   (interactive)
@@ -366,11 +387,13 @@ If mark is activate, duplicate region lines below."
       (forward-line +1))
     (comment-or-uncomment-region+)))
 
+;;;###autoload
 (defun duplicate-line-below-comment ()
   "Duplicate current line below, and comment current line."
   (interactive)
   (duplicate-line-above-comment t))
 
+;;;###autoload
 (defun comment-or-uncomment-region+ ()
   "This function is to comment or uncomment a line or a region."
   (interactive)
@@ -384,18 +407,21 @@ If mark is activate, duplicate region lines below."
     (save-excursion
       (comment-or-uncomment-region beg end))))
 
+;;;###autoload
 (defun upcase-char (arg)
   "Uppercase for character."
   (interactive "P")
   (upcase-region (point) (+ (point) (or arg 1)))
   (forward-char (or arg 1)))
 
+;;;###autoload
 (defun downcase-char (arg)
   "Downcase for character."
   (interactive "P")
   (downcase-region (point) (+ (point) (or arg 1)))
   (forward-char (or arg 1)))
 
+;;;###autoload
 (defun kill-syntax-forward (&optional arg)
   "Kill ARG set of syntax characters after point."
   (interactive "p")
@@ -415,11 +441,13 @@ If mark is activate, duplicate region lines below."
         (message "Beginning of buffer"))
     (kill-region opoint (point))))
 
+;;;###autoload
 (defun kill-syntax-backward (&optional arg)
   "Kill ARG set of syntax characters preceding point."
   (interactive "p")
   (kill-syntax-forward (- 0 (or arg 1))))
 
+;;;###autoload
 (defun mark-line ()
   "Mark one whole line, similar to `mark-paragraph'."
   (interactive)
@@ -430,6 +458,7 @@ If mark is activate, duplicate region lines below."
   (forward-line)
   (exchange-point-and-mark))
 
+;;;###autoload
 (defun kill-and-join-forward (&optional arg)
   "Delete empty line in select region."
   (interactive "P")
@@ -456,6 +485,7 @@ Optional argument REVERSE default is delete forward, if reverse is non-nil delet
   "Delete chars backward use `hungry' style."
   (delete-chars-hungry-forward t))
 
+;;;###autoload
 (defun reverse-chars-in-region (start end)
   "Reverse the region character by character without reversing lines."
   (interactive "r")
@@ -470,6 +500,7 @@ Optional argument REVERSE default is delete forward, if reverse is non-nil delet
           (apply 'insert chars))
         (newline)))))
 
+;;;###autoload
 (defun underline-line-with (char)
   "Insert some char below at current line."
   (interactive "cType one char: ")
@@ -495,6 +526,7 @@ Argument STRING the string that need pretty."
         (setq string (replace-match (cdr replace) nil nil string))))
     string))
 
+;;;###autoload
 (defun forward-button-with-line-begin ()
   "Move to next button with line begin."
   (interactive)
@@ -502,6 +534,7 @@ Argument STRING the string that need pretty."
   (while (not (bolp))
     (call-interactively 'forward-button)))
 
+;;;###autoload
 (defun backward-button-with-line-begin ()
   "Move to previous button with line begin."
   (interactive)
@@ -509,6 +542,7 @@ Argument STRING the string that need pretty."
   (while (not (bolp))
     (call-interactively 'backward-button)))
 
+;;;###autoload
 (defun match-paren (arg)
   "Go to the matching parenthesis if on parenthesis, otherwise insert %."
   (interactive "p")
@@ -518,11 +552,13 @@ Argument STRING the string that need pretty."
          (backward-list))
         (t (self-insert-command (or arg 1)))))
 
+;;;###autoload
 (defun goto-column (number)
   "Untabify, and go to a column NUMBER within the current line (0 is beginning of the line)."
   (interactive "nColumn number: ")
   (move-to-column number t))
 
+;;;###autoload
 (defun only-comment-p ()
   "Return t if only comment in current line.
 Otherwise return nil."
@@ -538,6 +574,7 @@ Otherwise return nil."
                    (point))))
       nil)))
 
+;;;###autoload
 (defun zap-back-to-char (arg char)
   "No need to enter C-- to zap back."
   (interactive "p\ncZap back to char: ")
@@ -550,6 +587,7 @@ If the region is not active or empty, then bob and eob are used."
       (list (point-min) (point-max))
     (if (< (point) (mark)) (list (point) (mark)) (list (mark) (point)))))
 
+;;;###autoload
 (defun goto-longest-line (beg end)
   "Goto the longest line of current buffer."
   (interactive `,(region-or-buffer-limits))
@@ -586,17 +624,20 @@ If the region is not active or empty, then bob and eob are used."
          (- line start-line))))
     (list (car long-lines) max-width (cdr long-lines) (- line start-line))))
 
+;;;###autoload
 (defun current-line-move-to-top()
   "Move current line to top of buffer."
   (interactive)
   (recenter 0))
 
+;;;###autoload
 (defun remember-init ()
   "Remember current position and setup."
   (interactive)
   (point-to-register 8)
   (message "Have remember one position"))
 
+;;;###autoload
 (defun remember-jump ()
   "Jump to latest position and setup."
   (interactive)
@@ -605,12 +646,14 @@ If the region is not active or empty, then bob and eob are used."
     (set-register 8 tmp))
   (message "Have back to remember position"))
 
+;;;###autoload
 (defun point-stack-push ()
   "Push current point in stack."
   (interactive)
   (message "Location marked.")
   (setq point-stack (cons (list (current-buffer) (point)) point-stack)))
 
+;;;###autoload
 (defun point-stack-pop ()
   "Pop point from stack."
   (interactive)
@@ -620,6 +663,7 @@ If the region is not active or empty, then bob and eob are used."
     (goto-char (cadar point-stack))
     (setq point-stack (cdr point-stack))))
 
+;;;###autoload
 (defun count-ce-words ()
   "Count the number of word in buffer, include Chinese."
   (interactive)
@@ -630,6 +674,7 @@ If the region is not active or empty, then bob and eob are used."
               end (region-end)))
     (count-ce-words begin end)))
 
+;;;###autoload
 (defun count-ce-words-in-region (beg end)
   "Count Chinese and English words in marked region."
   (interactive "r")
@@ -644,6 +689,7 @@ If the region is not active or empty, then bob and eob are used."
     (message (format "Total: %d (CN: %d, EN: %d) words, %d bytes."
                      total-word cn-word en-word total-byte))))
 
+;;;###autoload
 (defun goto-percent (percent)
   "Goto PERCENT of buffer."
   (interactive "nGoto percent: ")
@@ -654,16 +700,19 @@ If the region is not active or empty, then bob and eob are used."
   (string-match match-str object)
   (replace-match replace-str nil nil object 0))
 
+;;;###autoload
 (defun forward-indent ()
   "Forward indent."
   (interactive)
   (insert-string "    "))
 
+;;;###autoload
 (defun backward-indent ()
   "Backward indent."
   (interactive)
   (goto-column (- (current-column) 4)))
 
+;;;###autoload
 (defun kill-syntax-forward+ (&optional arg)
   "Kill ARG set of syntax characters after point.
 And if `completion-auto-mode' is active,
@@ -673,6 +722,7 @@ use function `completion-delete'."
       (completion-delete 'kill-syntax-forward arg)
     (kill-syntax-forward arg)))
 
+;;;###autoload
 (defun kill-syntax-backward+ (&optional arg)
   "Kill ARG set of syntax characters preceding point."
   (interactive "p")
@@ -680,26 +730,31 @@ use function `completion-delete'."
       (completion-backward-delete 'kill-syntax-forward (- arg))
     (kill-syntax-forward (- arg))))
 
+;;;###autoload
 (defun scroll-up-one-line()
   "Scroll up one line."
   (interactive)
   (scroll-up 1))
 
+;;;###autoload
 (defun scroll-down-one-line()
   "Scroll down one line."
   (interactive)
   (scroll-down 1))
 
+;;;###autoload
 (defun scroll-other-window-up-line ()
   "Scroll other window up one line."
   (interactive)
   (scroll-other-window 1))
 
+;;;###autoload
 (defun scroll-other-window-down-line ()
   "Scroll other window down one line."
   (interactive)
   (scroll-other-window-down 1))
 
+;;;###autoload
 (defun refresh-file ()
   "Automatic reload current file."
   (interactive)
@@ -717,12 +772,14 @@ use function `completion-delete'."
          (save-buffer))
         (t (message "Current mode is not supported, so not reload"))))
 
+;;;###autoload
 (defun go-to-next-pair-right()
   "To right of next match parentheses."
   (interactive)
   (while (not (looking-at "\\(['\">)}]\\|]\\)")) (forward-char 1))
   (forward-char 1))
 
+;;;###autoload
 (defun go-to-next-pair-left()
   "To left of previous match parentheses."
   (interactive)
@@ -741,12 +798,14 @@ use function `completion-delete'."
   (setq cycle-buffer-filter (cons '(and (eq major-mode special-mode) (not (equal (buffer-name) except-buffer-name))) cycle-buffer-filter))
   (cycle-buffer-backward-permissive 1))
 
+;;;###autoload
 (defun find-file-root (file)
   "Find file with root."
   (interactive "fFind file as sudo: ")
   (tramp-cleanup-all-connections)
   (find-file (concat "/sudo:root@localhost:" file)))
 
+;;;###autoload
 (defun find-file-smb(file)
   "Access file through samba protocol."
   (interactive "fFind file as samba: ")
