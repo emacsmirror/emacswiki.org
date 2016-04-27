@@ -1,13 +1,15 @@
 ;;; cycle-buffer.el --- select buffer by cycling through
 
-;; Author:     Vladimir Alexiev <vladimir@cs.ualberta.ca>
-;; Maintainer: same
+;; This is free software and in the public domain.
+;; Author:     Vladimir Alexiev <vladimir.alexiev@ontotext.com>
 ;; Idea by:    Kurt Partridge <kepart@cs.washington.edu>
-;; Created: 05 June 1996
-;; Keywords: switch-to-buffer, cycle buffer list
+;; Created:    05-Jun-1996
+;; Updated:    21-May-1997
+;; Version:    2.16
+;; Keywords:   switch-to-buffer, cycle buffer list
 
 ;; LCD Archive Entry:
-;; cycle-buffer|Vladimir Alexiev|vladimir@cs.ualberta.ca|
+;; cycle-buffer|Vladimir Alexiev|vladimir.alexiev@ontotext.com|
 ;; Select buffers by cycling|
 ;; ftp://ftp.cs.ualberta.ca/pub/oolog/emacs/cycle-buffer.el|
 ;; 21-May-97|Version 2.16|
@@ -386,4 +388,3 @@ considered by cycle-buffer when cycle-buffer-interesting is t."
 (provide 'cycle-buffer)
 
 ;;; end of cycle-buffer.el
-
