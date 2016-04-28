@@ -10,7 +10,7 @@ However, text-mode junkie Emacs enthusiasts who would also be GNU screen lovers,
 
 == Redefining the Command key ==
 
-Emacs uses `C-a' for `beginning-of-line'. It is also the command key for GNU Screen, which causes a problem of "muscle memory impedence matching."
+Emacs uses `C-a' for `beginning-of-line'. It is also the command key for GNU Screen, which causes a problem of "muscle memory impedance matching."
 
 === Suggestions for Command key Redefinition ===
 [new]
