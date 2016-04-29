@@ -23,3 +23,10 @@ cygwin bash: cannot set terminal process group (-1): inappropriate ioctl for dev
 
 -- Anonymous 2015-12-07 16:19 UTC
 
+
+----
+
+Would like to see this file fixed and put on melpa.
+
+-- Anonymous 2016-04-29 22:12 UTC
+
