@@ -16,11 +16,17 @@ I've been [s]using[/s] living in Emacs since May, 2012.  I can be found on [[Ema
 * [https://github.com/alezost/aurel aurel] -- A package to search, vote for
   and download [https://aur.archlinux.org/ AUR packages].
 
-* [https://github.com/alezost/mwim.el mwim] -- "Move Where I Mean" --
-  Move point to the beginning/end of line or code.
+* [https://github.com/alezost/mwim.el mwim] -- "Move Where I Mean" -- Move
+  point to the beginning/end of line or code.
 
 * [https://github.com/alezost/dim.el dim] -- Change mode-line
   names of major and minor modes.
+
+* [https://github.com/alezost/shift-number.el shift-number] -- Increase
+  or decrease the number at point.
+
+* [https://github.com/alezost/pathify.el pathify] -- Make symlinks to ~/bin
+  easily.
 
 * [https://github.com/alezost/imenus.el imenus] -- Imenu for multiple buffers.
 
@@ -28,8 +34,8 @@ I've been [s]using[/s] living in Emacs since May, 2012.  I can be found on [[Ema
 
 * [[MakeColor]] -- "Pick" a color by changing a sample with r/g/b/... keys.
 
-* [https://gitorious.org/alezost-emacs/pretty-sha-path pretty-sha-path]
-  -- Prettify Guix/Nix store paths.
+* [https://github.com/alezost/pretty-sha-path.el pretty-sha-path] -- Prettify
+  Guix/Nix store paths.
 
 * [https://github.com/alezost/mana.el mana] -- Start
   [http://manaplus.org/ ManaPlus] client without prompting for credentials.
@@ -43,13 +49,16 @@ I've been [s]using[/s] living in Emacs since May, 2012.  I can be found on [[Ema
 * [https://github.com/alezost/point-pos.el point-pos] -- Save and
   restore point positions.
 
-* [https://github.com/alezost/dvorak-layouts.el dvorak-layouts] --
-  Additional input methods for the Dvorak global (system) layout.
+* [https://github.com/alezost/dvorak-layouts.el dvorak-layouts] -- Additional
+  input methods for the Dvorak global (system) layout.
 
-* [https://github.com/alezost/date-at-point.el date-at-point] --
-  Additional `date' thing for `thing-at-point' function.
+* [https://github.com/alezost/date-at-point.el date-at-point] -- Additional
+  `date' thing for `thing-at-point' function.
 
-* [https://gitorious.org/alezost-emacs/echo-msk echo-msk] -- A package I
+* [https://github.com/alezost/emms-status.el emms-status] -- A
+  replacement for `emms-playing-time' and `emms-mode-line'.
+
+* [https://gitlab.com/alezost-emacs/echo-msk echo-msk] -- A package I
   use to listen (with [[EMMS]]) to programs of [http://www.echo.msk.ru/ Эхо Москвы]
   radio.
 
@@ -62,12 +71,8 @@ I've been [s]using[/s] living in Emacs since May, 2012.  I can be found on [[Ema
 The most important and useful code for me (and probably the most useless
 for anyone else):
 
-* [https://github.com/alezost/emacs-config emacs-config] -- My ".emacs".
-
-* [https://github.com/alezost/emacs-utils emacs-utils] -- An additional
-  part of my ".emacs": a lot of additional functions I use that are not
-  required for my config to be started successfully.
-
+* [https://github.com/alezost/emacs-config emacs-config] -- My ".emacs",
+  separated into multiple files.
 
 
 [new:DrewAdams:2013-12-13 01:30 UTC]
@@ -77,9 +82,5 @@ Welcome to the wiki. -- DrewAdams
 Thank you -- AlexKost
 
 
-
-
-
 ----
-
 CategoryHomepage
