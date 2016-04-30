@@ -1,7 +1,8 @@
 NTEmacs is commonly used to denote Emacs compiled as a native w32 application.
 For precompiled versions and instructions on how to build see CategoryWThirtyTwo.
 
-==Current issue (as of 26 Sep 2012): NTEmacs breaks cygwin bash==
+[:bash-issue]
+== Issue (as of 26 Sep 2012): NTEmacs breaks cygwin bash==
 When using precompiled *NTemacs version GNU Emacs 23.4.1* (i386-mingw-nt6.1.7601) with a Cygwin installation *with Cygwin1.dll version 1.7.11-1*, you have trouble running bash in emacs. On `M-x shell` you get: 
 
   bash: cannot set terminal process group (-1): Inappropriate ioctl for device
