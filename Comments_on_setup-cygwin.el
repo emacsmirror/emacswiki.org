@@ -30,3 +30,14 @@ Would like to see this file fixed and put on melpa.
 
 -- Anonymous 2016-04-29 22:12 UTC
 
+
+----
+
+1. Anonymous0: I added a proper `defgroup'.
+
+2. Anonymous1: Yes, see [[NTEmacsWithCygwin#bash-issue]].
+
+3. Anonymous2: I don't know the fix to the issue Anonymous1 mentioned, if that's what you mean by fix it.  I could put it on [[MELPA]], but it's less a proper library than a set of initializations. Do you really think it's important to put it on MELPA?
+
+-- DrewAdams 2016-04-30 04:26 UTC
+
