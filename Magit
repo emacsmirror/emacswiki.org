@@ -38,7 +38,6 @@ Various packages exist which extend Magit.
 * [https://github.com/terranpro/magit-gerrit magit-gerrit] Magit plugin for Gerrit Code Review
 * [https://github.com/sigma/magit-gh-pulls magit-gh-pulls] Magit plugin for dealing with GitHub pull requests
 * [https://github.com/jtatarik/magit-gitflow magit-gitflow] ## git flow## extension for Magit
-* [https://github.com/tarsius/magit-push-remote magit-push-remote] Push remote support for Magit
 * [https://github.com/magit/magit-svn magit-svn] use Magit with git svn repositories
 * [https://github.com/magit/magit-tramp magit-tramp] Git method for Emacs Tramp
 * [https://github.com/magit/orgit orgit] support for Org links to Magit buffers
