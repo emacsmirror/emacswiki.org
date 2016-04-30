@@ -41,3 +41,14 @@ Would like to see this file fixed and put on melpa.
 
 -- DrewAdams 2016-04-30 04:26 UTC
 
+
+----
+
+Drew,
+
+first and foremost I meant all the issues that can be fixed easyly. Thanks for fixing the byte-compile-issue. Well for me it's the only file I don't get from melpa. Melpa makes updating easy and Emacs 25 even shows dependencies and they are resolved automatically and this file requires cygwin-mount as dependency. This file is usefull and I think there is a lot on melpa that is a lot less useful.
+
+The problem with the broken shell is severe. It kills the everything goes into emacs approach. I don't get why this problem exists for years but no one with coding knowledge seems to care. Isn't cygwin maintained by Red-Hat? The workaround of using an old cygwin.dll doesn't seem to viable option. What are the side-effects regarding security, bugs, features and 64bit? Using the w32emacs from inside cywin isn't right for me either. This version has it's own disadvantages compared to native ntemacs.
+
+-- Anonymous 2016-04-30 17:38 UTC
+
