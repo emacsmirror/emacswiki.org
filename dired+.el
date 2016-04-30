@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan 24 19:12:23 2016 (-0800)
+;; Last-Updated: Fri Apr 29 20:59:23 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 9478
+;;     Update #: 9487
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -649,6 +649,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/04/29 dadams
+;;     diredp-next-line: Respect goal-column.
 ;; 2016/01/24 dadams
 ;;     Added: diredp-ensure-bookmark+, diredp-mark-autofiles, diredp-unmark-autofiles,
 ;;            diredp-mark/unmark-autofiles, diredp-describe-autofile, diredp-show-metadata,
@@ -4647,9 +4649,13 @@ buffer, then its `default-directory' is the same as the
 
 If you use a non-positive prefix arg, then you can next choose
 additional file and directory names to add to the listing.  Use `C-g'
-when done choosing them.  Any directory names you choose this way are
-included as single entries in the listing - the directory contents are
-not included (these directories are not unioned).
+when done choosing them.
+
+Any directory names you choose this way are included as single entries
+in the listing - the directory contents are not included (these
+directories are not unioned).  To instead include the contents of a
+directory chosen this way, use a glob pattern: `/*' after the
+directory name.
 
 You are then prompted for the Dired buffers to union.  Use `C-g' when
 done choosing them.  These Dired listings to union are included in the
@@ -4662,6 +4668,8 @@ case of conflict between marked or unmarked status for the same entry,
 the entry is marked.  Similarly, in case of conflict over an included
 subdirectory between it being hidden or shown, it is hidden, but its
 contained files are also listed.
+
+See also command `diredp-add-to-dired-buffer'.
 
 From Lisp:
  DIRED-NAME is the name of the resulting Dired union buffer.
@@ -4684,9 +4692,13 @@ The buffer must either not exist yet or must list arbitrary file and
 directory names.  That is, it cannot be an ordinary Dired directory
 listing - those cannot be modified.
 
-If you want to include a directory listing (ordinary or of arbitrary
-file names), and not just add a line for a directory name, then use
-command `diredp-dired-union' instead.
+Any directory names you choose this way are included as single entries
+in the listing - the directory contents are not included (these
+directories are not unioned).  To instead include the contents of a
+directory chosen this way, use a glob pattern: `/*' after the
+directory name.
+
+See also command `diredp-dired-union'.
 
 From Lisp:
  DIRED-NAME is the name of the Dired buffer to modify.
@@ -8502,9 +8514,12 @@ in this case there is no buffer reuse."
                (dired-goto-file dir))
         (and (memq system-type '(windows-nt ms-dos))  (diredp-w32-drives)))))
 
+;; Differs from `dired-next-line' in both wraparound and respect of `goal-column'.
+;;
 ;;;###autoload
 (defun diredp-next-line (arg)           ; Bound to `SPC', `n', `C-n', `down'
-  "Move down lines then position at filename.
+  "Move down lines then position cursor at filename.
+If `goal-column' is non-nil then put the cursor at that column.
 Optional prefix ARG says how many lines to move; default is one line.
 
 If `diredp-wrap-around-flag' is non-nil then wrap around if none is
@@ -8512,7 +8527,8 @@ found before the buffer end (buffer beginning, if ARG is negative).
 Otherwise, just move to the buffer limit."
   (interactive "p")
   (let* ((line-move-visual  nil)
-         (goal-column       nil)
+         ;; (goal-column       nil)
+
          ;; Use `condition-case' and `(progn... t)' because Emacs < 22 `line-move' has no
          ;; NO-ERROR arg and it always returns nil.
          (no-more           (or (not (condition-case nil (progn (line-move arg) t) (error nil)))
@@ -8526,12 +8542,13 @@ Otherwise, just move to the buffer limit."
                 (invisible-p (point))
                 (not (if (and arg  (< arg 0)) (bobp) (eobp))))
       (forward-char (if (and arg  (< arg 0)) -1 1)))
-    (dired-move-to-filename)))
+    (unless goal-column (dired-move-to-filename))))
 
 ;; In Emacs < 22, `C-p' does not wrap around, because it never moves to the first header line.
 ;;;###autoload
 (defun diredp-previous-line (arg)       ; Bound to `p', `C-p', `up'
-  "Move up lines then position at filename.
+  "Move up lines then position cursor at filename.
+If `goal-column' is non-nil then put the cursor at that column.
 Optional prefix ARG says how many lines to move; default is one line.
 
 If `diredp-wrap-around-flag' is non-nil then wrap around if none is
