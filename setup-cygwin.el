@@ -8,9 +8,9 @@
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 0
 ;; Package-Requires: ((cygwin-mount "0"))
-;; Last-Updated: Fri Jan 15 15:28:17 2016 (-0800)
+;; Last-Updated: Fri Apr 29 21:19:02 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 172
+;;     Update #: 179
 ;; URL: http://www.emacswiki.org/setup-cygwin.el
 ;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
@@ -27,10 +27,38 @@
 ;;   Set up Emacs for using Cygwin.  From Markus Hoenika's paper "SGML
 ;;   for Windows NT" <hoenika_markus@compuserve.com>
 ;;
+;;  NOTE:
+;;
+;;   When using precompiled GNU Emacs (all versions, at least 20-25)
+;;   with a Cygwin installation with Cygwin1.dll version 1.7.11-1, you
+;;   have trouble running bash in emacs. On `M-x shell` you get:
+;;
+;;    bash: cannot set terminal process group (-1):
+;;          Inappropriate ioctl for device
+;;    bash: no job control in this shell
+;;
+;;   This shell then is rather useless, because apart from the missing
+;;   job control some commands called in that shell just hang.
+;;
+;;   People on the Cygwin mailing list have apparently suggested that
+;;   it is a GNU Emacs problem.  This issue is still not resolved yet.
+;;
+;;   Workarounds some people have tried:
+;;
+;;   * Use Cygwin Emacs (package emacs-w32 uses the windows GUI, there
+;;     are also X11 and console packages)
+;;
+;;   * Don't upgrade Cygwin above Cygwin1.dll, version 1.7.9.
+;;
+;;   See also https://www.emacswiki.org/emacs/NTEmacsWithCygwin.
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2016/04/29 dadams
+;;     Better defgroup.
+;;     Added note to commentary about bash problem with Cygwin.
 ;; 2016/01/15 dadams
 ;;     setcyg-dir-p: Return nil if arg is not a string.
 ;; 2015/10/31 dadams
@@ -109,7 +137,17 @@ other hooks, such as major mode hooks, can do the job."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defgroup setup-cygwin nil
-  "Set up Emacs to use Cygwin.")
+  "Set up Emacs to use Cygwin."
+  :group 'files
+  :group 'processes
+  :link `(url-link :tag "Send Bug Report"
+          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+setup-cygwin.el bug: \
+&body=Describe bug here, starting with `emacs -Q'.  \
+Don't forget to mention your Emacs and library versions."))
+  :link '(url-link :tag "Download" "http://www.emacswiki.org/setup-cygwin.el")
+  :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/NTEmacsWithCygwin")
+  :link '(emacs-commentary-link :tag "Commentary" "setup-cygwin"))
 
 (defun setcyg-dir-p (directory)
   "Return DIRECTORY if DIRECTORY is a readable directory, nil otherwise."
