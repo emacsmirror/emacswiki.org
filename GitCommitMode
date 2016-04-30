@@ -7,5 +7,6 @@ It appears that not every Git user was aware of its existence or wanted to write
 * Magit used to bundle yet another implementation ##magit-log-edit.el##.
 * Jonas Bernoulli merged Sebastians' ##git-commit-mode.el## and Magit's ##magit-log-edit.el##. The former name was used for the merged mode,which remains in the ##git-modes## repository (which has been moved to [https://github.com/magit/git-modes magit/git-modes]), and Jonas became its new maintainer.
 * That library became the new official commit mode used by Magit and ##magit-log-edit.el## was removed from Magit.
+* ###git-commit.e### was moved from the ###git-modes### repository to the ###magit### repository.
 ----
 [[Git]] CategoryVersionControl
