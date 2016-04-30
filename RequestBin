@@ -1,0 +1,4 @@
+[http://requestb.in RequestBin] allows one to collect and inspect HTTP requests.
+
+See [https://gist.github.com/sshaw/19d1e0d85eadd555c178ae1754cc6211 request-bin.el]. 
+ 
