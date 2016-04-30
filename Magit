@@ -14,8 +14,8 @@ Getting started with Magit is really easy:
 
 Other handy keys:
 
-* ##P P## to do a git push
-* ##F F## to do a git pull
+* ##P u## to do a git push
+* ##F u## to do a git pull
 * try to press ##TAB##
 
 [:Screencasts]
