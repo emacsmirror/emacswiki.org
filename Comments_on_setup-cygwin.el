@@ -52,3 +52,10 @@ The problem with the broken shell is severe. It kills the everything goes into e
 
 -- Anonymous 2016-04-30 17:38 UTC
 
+
+----
+
+Anonymous: I don't know the answer to your question about the shell. I'm no expert on this. I'll think about adding it to MELPA.
+
+-- DrewAdams 2016-05-01 04:53 UTC
+
