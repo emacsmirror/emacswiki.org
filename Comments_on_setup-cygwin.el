@@ -59,3 +59,10 @@ Anonymous: I don't know the answer to your question about the shell. I'm no expe
 
 -- DrewAdams 2016-05-01 04:53 UTC
 
+
+----
+
+Well, maybe one fixes the other. Melpa might bring attention to setup-cygwin and someone else will fix that part.
+
+-- Anonymous 2016-05-01 10:05 UTC
+
