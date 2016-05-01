@@ -1,3 +1,7 @@
 An online service for storing bookmarks http://pinboard.in
 
+* [https://melpa.org/#/pinboard-api pinboard-api] Rudimentary http://pinboard.in integration
+
+* [https://github.com/joddie/pinboard-list.el pinboard-list.el] https://github.com/joddie/pinboard-list.el
+
 Some Elisp for turning pinboard urls into CreoleMode is [[https://gist.github.com/nicferrier/5043465|here]]
