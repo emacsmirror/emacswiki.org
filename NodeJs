@@ -1,4 +1,4 @@
-[[http://nodejs.org/|Node-JS]] is an asynchronous TCP programming framework using JavaScript. There are several modes for running node.js inside of Emacs:
+[[http://nodejs.org/|Node-JS]] is a Javascript runtime enviroment, popular for making async web and TCP servers. There are several modes for running node.js inside of Emacs:
 
 == Using comint mode ==
 
