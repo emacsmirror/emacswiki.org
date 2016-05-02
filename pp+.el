@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 15:51:31 2015 (-0800)
+;; Last-Updated: Sun May  1 20:36:01 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 236
+;;     Update #: 239
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -50,6 +50,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/05/01 dadams
+;;     pp-eval-expression: Return result of evaluation.
 ;; 2015/04/18 dadms
 ;;     Added: pp-read--expression.
 ;;     pp-eval-expression: Updated for Emacs 24.4+: use pp-read--expression.
@@ -169,6 +171,7 @@ A value of nil means no limit."
 ;; 4. Respect `pp-eval-expression-print-length', `pp-eval-expression-print-level',
 ;;    and `eval-expression-debug-on-error'.
 ;; 5. Adjusted to work in different Emacs releases.
+;; 6. Return result of evaluation (it is also the car of variable `values').
 ;;
 ;;;###autoload
 (defun pp-eval-expression (expression &optional insert-value)
@@ -219,7 +222,8 @@ Emacs-Lisp mode completion and indentation bindings are in effect."
            (if (or (not (stringp (car values))) (wholenump insert-value))
                (pp (car values) (current-buffer))
              (princ (car values) (current-buffer))))
-          (t (pp-display-expression (car values) "*Pp Eval Output*")))))
+          (t (pp-display-expression (car values) "*Pp Eval Output*")))
+    (car values)))
 
 
 ;; REPLACES ORIGINAL in `pp.el':
