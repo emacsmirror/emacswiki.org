@@ -22,21 +22,19 @@ This is a ruby debug mode that's layered on top of inf-ruby.  It adds single-key
 
 == Usage ==
 
-There are two modes:
+*Modes*
+|| Mode        || Binding   || Definition||
+|| activated   || `C-c C-s' || Starts ruby-debug, enables single-key bindings for debugger control.  E.g., 'n' calls 'rubyd-next'. ||
+|| deactivated || `C-c C-n' || Stops ruby-debug, disables single-key bindings. ||
 
-; activated : Enables single-key bindings for debugger control.  E.g., 'n' calls 'rubyd-next'.
-; deactivated: Disables single-key bindings.
 
-`C-c C-s': starts ruby-debug
-`C-c C-n': stops ruby-debug
-
-Single-key bindings:
-
-; n : `next'
-; i : `step' (into)
-; d : `display'
-; D : `undisplay'
-; s : `rubyd-show-line' ruby-debug command. This will show you the last line evaluated by the ruby debugger.
+*Single-key bindings*
+||Key||Definition||
+|| n || next ||
+|| i || step (into) ||
+|| d || display ||
+|| D || undisplay ||
+|| s || `rubyd-show-line' ruby-debug command. This will show you the last line evaluated by the ruby debugger.||
 
 
 === Debugging in Ruby ===
