@@ -1,6 +1,10 @@
 I'm Tim Chambers 1E4AF729D5CEFFD0. I love GnuEmacs. My initials are tbc. I'm an alum of MIT and started using emacs in January, 1981. It was written by RMS in TECO and ran on a DECSYSTEM-20 from a VT100 monochrome terminal.
 
 == Blog ==
+''03 May 16''
+
+Excited to discover [http://www.meetup.com/Denver-Emacs-Meetup/ Denver Emacs Meetup]!
+
 ''06 Apr 16''
 
 ''What I said March 18th on IRC at work.'' I wouldn't recommend using Emacs unless one has an instance running all the time, uses emacsclient to edit from shells on the same machine, and uses TRAMP to edit remote files. Emacs is a UI to the OS. For quickly editing files I myself use vi or, occasionally, gedit.
