@@ -1,67 +1,67 @@
 == Ruby Debug ==
 
-When using the debug module in the middle of any ruby script for searching a bug, the inferior ruby don't help you out and you have to type and type.
+This is a ruby debug mode that's layered on top of inf-ruby.  It adds single-key bindings for easy program control and it reports on the file and line number of the program counter.
 
-Also, it doesn't search the file and line where the trace is going on. 
+== Installation ==
 
+# Download inf-ruby [https://github.com/nonsequitur/inf-ruby nonsequitur's inf-ruby page]
+# Download ruby-debug: Lisp:ruby-debug.el
+# Save both locally (e.g., ~/.emacs.d/)
+# Add to ~/.emacs file:
 
-So, this elisp script was created for showing the file and line taking advantage of the debug capabilites and default features for emacs and giving some keybindings for easy debugging with one keypress.
+<pre>
+(setq load-path (cons (expand-file-name "~/.emacs.d/") load-path))
 
-== Instalation ==
+; add the following lines for inf-ruby (downloaded separately)
+(autoload 'inf-ruby-minor-mode "inf-ruby" "Run an inferior Ruby process" t)
+(add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
 
-Download from the Lisp:ruby-debug.el the code and save it in any reachable directory. See the `load-path' variable if you want to know which directory are we talking about.
+(require 'ruby-debug)
+</pre>
 
-Then add this to your .emacs file:
-
-<code>
-        ;; (add-to-list 'load-path "/the/path/to/your/ruby-debug/script") ;; If you placed elsewhere the `load-path' says.
-        (require 'ruby-debug)
-</code>
-
-
-Remember that you need the inf-ruby script. Take a look at the [https://github.com/nonsequitur/inf-ruby nonsequitur's inf-ruby page], there will explain how to download and install.
 
 == Usage ==
 
-There is two mode:
+There are two modes:
 
-; activated : Where some keybindings are defined and ready for using. In this mode you cannot write with ease: for example, key `n' is defined for executing `rubyd-next' function, so you cannot press the `n' key when writing. You should use this when starting the ruby debugger.
-; deactivated: Where ruby-debug keybindings are cleared. With this mode you can write as usual and return to "normal mode".
+; activated : Enables single-key bindings for debugger control.  E.g., 'n' calls 'rubyd-next'.
+; deactivated: Disables single-key bindings.
 
+`C-c C-s': starts ruby-debug
+`C-c C-n': stops ruby-debug
 
-For activating the ruby-debug, press `C-c C-s'. And for deactivating use `C-c C-n'.
+Single-key bindings:
 
-Once activated, you can use these keys for sending a ruby debugger command:
-
-; n : `next' debug command.
-; i : `step' (into) debug command.
-; d : `display' command.
-; D : `undisplay' command.
+; n : `next'
+; i : `step' (into)
+; d : `display'
+; D : `undisplay'
 ; s : `rubyd-show-line' ruby-debug command. This will show you the last line evaluated by the ruby debugger.
+
 
 === Debugging in Ruby ===
 
-First, start `inf-ruby' and load every ruby script you need.
+First, start `inf-ruby' and load all necessary source files.
 
 Then, in the middle of any Ruby code you can use the <code>require 'debug'</code> instruction where you want to stop the execution and start the debugger.
 
 For example:
 
-<code>
+<pre>
 def foo()
     require 'debug'
     print "hi world!"
     print "This is a test! :-)" 
 end
-</code>
+</pre>
 
-As soon as you call the `foo' function, ruby will stop at the require instruction starting the debugger and waiting for commands. There You can use the `help' command to read which one are available and how to use them.
+As soon as you call the `foo' function, ruby will stop at the require instruction starting the debugger and wait for commands.  Try `help' to see a list of available commands.
 
-If you press `C-c C-s' you will activate the ruby-debug keybindings. Pressing the `n' key will do a step by step execution, with the `s' key a "step into" and with `d' you can enter an expression for evaluating every time you do a step.
+`C-c C-s' will activate ruby-debug keybindings.
 
 In case you need to evaluate an expression only once or write a command by yourself in the middle of the debugging, you can press `C-c C-n' to deactivate the keybindings (still the functions using the `M-x' are available) and write as usual, then start again using `C-c C-s'.
 
-When you finish, use the `C-c C-n' to deactivate the keybindings and write normally.
+`C-c C-n' to deactivate the keybindings to resume normal input.
 
 ----
 RubyLanguage RubyMode
