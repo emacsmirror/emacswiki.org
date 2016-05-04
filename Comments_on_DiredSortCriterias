@@ -1,0 +1,7 @@
+I replaced the last part by the following, since the original version does not work if `dired-listing-switches` does not end with short name switches.
+
+  (dired-sort-other
+   (format "%s -%s" dired-listing-switches (match-string 1 criteria)))
+
+-- [http://www.topbug.net xuhdev] 2016-05-04 01:36 UTC
+
