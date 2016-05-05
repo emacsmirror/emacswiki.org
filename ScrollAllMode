@@ -8,10 +8,10 @@ It doesn't work with the mouse wheel or scroll-bar (tested on both GNU Emacs 21.
 [new]
 Possible workaround for the mouse wheel issue:
 {{{
-(defun mwheel-scroll-all-function-all (func arg)
-  (if scroll-all-mode
+(defun mwheel-scroll-all-function-all (func &optional arg)
+  (if (and scroll-all-mode arg)
       (save-selected-window
-        (walk-windows 
+        (walk-windows
          (lambda (win)
            (select-window win)
            (condition-case nil
@@ -19,10 +19,10 @@ Possible workaround for the mouse wheel issue:
              (error nil)))))
     (funcall func arg)))
 
-(defun mwheel-scroll-all-scroll-up-all (arg)
+(defun mwheel-scroll-all-scroll-up-all (&optional arg)
   (mwheel-scroll-all-function-all 'scroll-up arg))
 
-(defun mwheel-scroll-all-scroll-down-all (arg)
+(defun mwheel-scroll-all-scroll-down-all (&optional arg)
   (mwheel-scroll-all-function-all 'scroll-down arg))
 
 (setq mwheel-scroll-up-function 'mwheel-scroll-all-scroll-up-all)
@@ -32,11 +32,6 @@ Possible workaround for the mouse wheel issue:
 
 [new]
 In emacs before 2002, scrolling by full pages was buggy.
-
-[new]
-Make the arguments to 'mwheel-scroll-all-scroll-down-all and
-'mwheel-scroll-all-scroll-up-all optional to avoid errors when scrolling 
-past the beginning of a buffer.
 
 ==See also==
 
