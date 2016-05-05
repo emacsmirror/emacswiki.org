@@ -246,5 +246,19 @@ A simple macro can be triggered on a match line to load the file/lineno into ano
 
 I have found this to be far easier and quicker than etags or source browsing tools to inspect code.  It also uses standard tools with a large number of recipes to follow.  I extensively use registers and bookmarks for later referral.
 
+== Grep with start directory in modeline ==
+
+This is what I use:
+
+	(defun mygrep ()
+	  "Run grep recursively from the directory of the current buffer or the default directory"
+	 (interactive)
+	  (let ((dir (file-name-directory (or load-file-name buffer-file-name default-directory))))
+	    (let ((command (read-from-minibuffer "Run grep (like this): "
+	                                         (cons (concat "grep -nH -r  " dir) 13))))
+	          (grep command))))
+
+I use it because the starting directory is explicitly shown in the minibuffer. (With the standard Emacs function I am always wondering from what directory grep will start searching.)
+
 ----
 CategoryRegexp CategoryExternalUtilities CategorySearchAndReplace CategoryProgrammerUtils CategoryNavigation
