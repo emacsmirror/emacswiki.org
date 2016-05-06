@@ -157,6 +157,7 @@ also works smoother than the ones above:
   (isearch-search-and-update))
 }}}
 
+
 == Using ThingAtPoint and the Existing C-s C-w ==
 
 Maybe you only want Vim's `g*' and `g#', (search for "word" under point, as opposed to "\<word\>").
@@ -200,13 +201,25 @@ One common issue when using the standard emacs commands is that you have to pres
   (global-set-key (kbd "M-f") 'forward-symbol)
 
 
+== Extending swiper ==
+
+With [https://github.com/abo-abo/swiper swiper], the following key bindings can be defined to insert the current symbol/word at point to the swiper minibuffer:
+
+{{{
+(define-key swiper-map (kbd "C-.")
+  (lambda () (interactive) (insert (format "\\<%s\\>" (with-ivy-window (thing-at-point 'symbol))))))
+(define-key swiper-map (kbd "M-.")
+  (lambda () (interactive) (insert (format "\\<%s\\>" (with-ivy-window (thing-at-point 'word))))))
+}}}
+
+
 == Using `M-.' in Icicles ==
 
 With [[Icicles]], anytime you are in the [[minibuffer]] you can use `##M-.##' to yank a text thing at point into the minibuffer.  In Isearch, `M-e' puts you in the minibuffer (to edit the search string), and `C-s' then searches with your edited text.  So to yank something at point into the Isearch search string you can use `##M-e M-. C-s##'.
 
 The behavior of `##M-.##' is customizable.  You can control the possible things to yank, and you can decide whether repeated `##M-.##' yanks successive words or yanks different types of thing as alternatives.  Use this feature with [[ThingAtPoint+]] to get better thing support.
 
-For example, you can hit `##M-. M-.##' to pick up the most immediatly surrounding list at point.  Or `##M-. M-. M-. M-.##' to pick up the list that encloses the list that encloses that list (3rd level up).  This is useful when searching for Lisp program parts.
+For example, you can hit `##M-. M-.##' to pick up the most immediately surrounding list at point.  Or `##M-. M-. M-. M-.##' to pick up the list that encloses the list that encloses that list (3rd level up).  This is useful when searching for Lisp program parts.
 
 See [[Icicles - Inserting Text from Cursor#RepeatedM.|Inserting Text from Cursor]].
 
