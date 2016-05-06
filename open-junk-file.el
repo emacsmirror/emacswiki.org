@@ -123,6 +123,12 @@ It can include `format-time-string' format specifications."
   :type 'string  
   :group 'open-junk-file)
 (defvaralias 'open-junk-file-format 'open-junk-file-directory)
+(defcustom open-junk-file-make-directory t
+  "*Whether to immediately create a directory for the junk file.
+If `t', the directory will be created immediately.
+If `nil' Emacs will prompt to create the directory when the buffer is saved."
+  :type 'boolean
+  :group 'open-junk-file)
 (defcustom open-junk-file-find-file-function 'find-file-other-window
   "*Function to open junk files."
   :type 'function  
@@ -135,10 +141,11 @@ It can include `format-time-string' format specifications."
 For example, in Emacs Lisp programming, use M-x `open-junk-file'
 instead of *scratch* buffer. The junk code is SEARCHABLE."
   (interactive)
-  (let* ((file (format-time-string open-junk-file-format (current-time)))
-         (dir (file-name-directory file)))
-    (make-directory dir t)
-    (funcall open-junk-file-find-file-function (read-string "Junk Code (Enter extension): " file))))
+  (let ((file (read-file-name "Junk Code (Enter extension): " nil nil nil
+               (format-time-string open-junk-file-format (current-time)))))
+    (when open-junk-file-make-directory
+      (make-directory (file-name-directory file) t))
+    (funcall open-junk-file-find-file-function file)))
 
 ;;;; Bug report
 (defvar open-junk-file-maintainer-mail-address
