@@ -1,23 +1,22 @@
-=Packages at Melpa=
+==Packages at Melpa==
 
 * emacsshot.  Find a function for taking a screenshot of Emacs from within Emacs at https://github.com/marcowahl/emacsshot.
 
 * rope-read-mode.  A mode for genuine bidirectional reading of text by reversing every other line in the visible buffer part.  This mode depends on program 'convert' of the Image Magick-suite.  Get the latest version at https://github.com/marcowahl/rope-read-mode.
 
-= Externalized Brain =
+== Externalized Brain ==
 
-== Revisit ==
+=== Revisit ===
 
 PlanetEmacsen
 
-==SIGUSR2 Kill Emacs==
+===SIGUSR2 Kill Emacs===
 
 Tweet of @_wilfredh about stopping Emacs (2015)(https://twitter.com/_wilfredh/status/659499112677642242):
 
 //Emacs tip: If your instance hangs and won't respond to C-g, you can use `pkill -SIGUSR2 emacs` to force emacs to stop whatever it's doing.//
 
-
-=Historic=
+==Historic==
 
 Test: Editing via w3.
 
