@@ -21,6 +21,7 @@ See DiredSortDirectoriesFirst for other solutions.
 * DiredSortCriterias
 * DiredSortMenu - Lets you sort Dired listings in various ways. Provides a menu bar menu and a popup menu for this.
 * Lisp:dired-sort-map.el
+* [https://gitlab.com/xuhdev/dired-quick-sort dired-quick-sort]
 
 = See also =
 * DiredOmitMode - Lets you hide boring files.
