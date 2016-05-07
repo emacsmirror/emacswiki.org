@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Apr 29 20:59:23 2016 (-0700)
+;; Last-Updated: Sat May  7 12:18:17 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 9487
+;;     Update #: 9488
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -317,6 +317,9 @@
 ;;  -----------------
 ;;
 ;;  Starting with Emacs 24.4, listing details are hidden by default.
+;;  Note that this is different from the vanilla Emacs behavior, which
+;;  is to show details by default.
+;;
 ;;  Use `(' anytime to toggle this hiding.  You can use option
 ;;  `diredp-hide-details-initially-flag' to change the default/initial
 ;;  state.  See also option `diredp-hide-details-propagate-flag'.
