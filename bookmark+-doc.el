@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Dec 31 12:21:52 2015 (-0800)
+;; Last-Updated: Sun May  8 16:11:22 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 15054
+;;     Update #: 15071
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -525,19 +525,35 @@
 ;;     All of these prefix keys correspond to prefix-map variables, so
 ;;     you need not use these particular prefixes.  You can bind these
 ;;     maps to any prefix keys you want.  These are the maps, together
-;;     with their predefined bindings.  (Note that the keymap for
-;;     setting bookmarks is bound to a prefix in `bookmark-map'.)
+;;     with their predefined bindings.
 ;;
-;;       `bookmark-map'               - `C-x p' 
+;;       `bookmark-map'               - `C-x p'
 ;;       `bmkp-set-map'               - `C-x p c'
+;;       `bmkp-tags-map'              - `C-x p t'
 ;;       `bmkp-jump-map'              - `C-x j'
 ;;       `bmkp-jump-other-window-map' - `C-x 4 j'
 ;;
-;;     In addition, mode-specific bookmarking commands are bound in
-;;     some other modes: Occur, Compilation (including Grep),
-;;     Buffer-menu, Gnus, Info, Man, Woman, W3M, and Dired (if you use
-;;     library `Dired+').  These keys let you set or jump to bookmarks
-;;     specific to the modes.
+;;     Those are the prefix keys that are available by default.  To
+;;     change them, just customize these user options, each of which
+;;     is a list of the key sequences to use as prefix key.
+;;
+;;     - `bmkp-bookmark-map-prefix-keys'          - default: ("^Xp")
+;;     - `bmkp-jump-map-prefix-keys'              - default: ("^Xj")
+;;     - `bmkp-jump-other-window-map-prefix-keys' - default: ("^X4j")
+;;
+;;     (`^X' here is actually the Control-X character.)
+;;
+;;     Keymaps `bmkp-set-map' and `bmkp-tags-map' are always on
+;;     `bookmark-map', whatever prefix keys it is on.  So if, for
+;;     example, you customize `bmkp-bookmark-map-prefix-keys' to be
+;;     ("^Xp" [f9]) then the keys in `bmkp-set-map' have both prefix
+;;     `C-x p c' and prefix `<f9> c'.
+;;
+;;     In addition to keys on Bookmark+ keymaps, Bookmark+ binds some
+;;     mode-specific bookmarking commands in some other modes: Occur,
+;;     Compilation (including Grep), Buffer-menu, Gnus, Info, Man,
+;;     Woman, W3M, and Dired (if you use library `Dired+').  These
+;;     keys let you set or jump to bookmarks specific to the modes.
 ;;
 ;;  * Helpful help.
 ;;
@@ -815,7 +831,9 @@
 ;;  More precisely, the bookmark jump commands are on the prefix maps
 ;;  `bmkp-jump-map' and `bmkp-jump-other-window-map', which have the
 ;;  default bindings `C-x j' and `C-x 4 j'.  You can bind these maps
-;;  to any keys you like.
+;;  to any keys you like, by customizing options
+;;  `bmkp-jump-map-prefix-keys' and
+;;  `bmkp-jump-other-window-map-prefix-keys'.
 ;;
 ;;  If you do not remember the different type-specfic bindings, you
 ;;  can use commands `bmkp-jump-to-type' and
@@ -2933,9 +2951,9 @@
 ;;
 ;;  Bookmark+ does not define such key bindings, but you can.  What it
 ;;  does is define repeatable keys on the `bookmark-map' keymap, which
-;;  has prefix `C-x p'.  To do this it binds similar commands that can
-;;  be repeated by simply repeating the key-sequence suffix.  These
-;;  are the keys:
+;;  by default has prefix `C-x p'.  To do this it binds similar
+;;  commands that can be repeated by simply repeating the key-sequence
+;;  suffix.  These are the (default) keys:
 ;;
 ;;  Forward:  `C-x p f', `C-x p C-f', `C-x p right'
 ;;  Backward: `C-x p b', `C-x p C-b', `C-x p left'
