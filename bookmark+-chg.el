@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr 23 15:33:28 2016 (-0700)
+;; Last-Updated: Sun May  8 16:25:57 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16015
+;;     Update #: 16021
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1764,6 +1764,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2016/05/08 dadams
+;;     Added: bmkp-bookmark-map-prefix-key, bmkp-jump-map-prefix-key,
+;;            bmkp-jump-other-window-map-prefix-key, bmkp-set-map-prefix-key.
+;;     Removed hard-coded bindings for keymaps in ctl-x-map, ctl-x-4-map.
+;;     (eval-when-compile (require 'cl)) ;; case
 ;; 2015/01/04 dadams
 ;;     Bind bmkp-region-jump-narrow-indirect-other-window to C-x 4 j R.
 ;; 2014/07/11 dadams
