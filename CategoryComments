@@ -23,5 +23,5 @@ Comments in code depend on the programming language used.
 * UncommentSexp -- comment/uncomment a [[sexp]]
 * [[VimMode - Examples]] -- comment/uncomment the [[region]]
 * EndOfLineNoComments -- a command to move to the end of your code, not the end of your line
-
+* CommentEdit -- create/edit shell-like (aka end-of-line) comments in a dedicated buffer
 ----
