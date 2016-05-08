@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Thu Dec 31 12:22:30 2015 (-0800)
+;; Last-Updated: Sun May  8 15:53:53 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 708
+;;     Update #: 729
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -54,11 +54,16 @@
 ;;    `bookmark+-doc.el' in your `load-path'.)
 ;;
 ;;
+;;  User options defined here:
+;;
+;;    `bmkp-bookmark-map-prefix-key', `bmkp-jump-map-prefix-key',
+;;    `bmkp-jump-other-window-map-prefix-key'.
+;;
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `bookmark-name-from-full-record', `bookmark-name-from-record',
 ;;    `bmkp-bookmark-data-from-record',
-;;    `bmkp-bookmark-name-from-record.'
+;;    `bmkp-bookmark-name-from-record', `bmkp-set-map-prefix-key'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -96,6 +101,65 @@
        (error nil))
      (require 'bookmark+-mac)))         ; Require, so can load separately if not on `load-path'.
 ;; bmkp-menu-bar-make-toggle
+
+(eval-when-compile (require 'cl)) ;; case
+
+
+;; Prefix keys.
+;;
+;; These two maps are always on `bookmark-map', wherever it is: `bmkp-set-map', `bmkp-tags-map'.
+;;
+(defun bmkp-set-map-prefix-key (pref-keys-option keys)
+  "Set prefix key option SYMBOL to key-sequence VALUE."
+  (set pref-keys-option keys)
+  (let* ((g-map     (current-global-map))
+         (b-map     (case pref-keys-option
+                      (bmkp-bookmark-map-prefix-keys          'bookmark-map)
+                      (bmkp-jump-map-prefix-keys              'bmkp-jump-map)
+                      (bmkp-jump-other-window-map-prefix-keys 'bmkp-jump-other-window-map))))
+    (dolist (key  (where-is-internal b-map g-map))
+      (define-key g-map key nil))
+    (dolist (key  keys)
+      (define-key g-map key b-map))))
+
+(defcustom bmkp-bookmark-map-prefix-keys (list (kbd "C-x p"))
+  "Prefix keys for `bookmark-map' in `current-global-map'.
+Each value of the list is a prefix key bound to keymap `bookmark-map'."
+  :type (if (> emacs-major-version 21)
+            '(repeat (key-sequence :tag "Key" :value [ignore]))
+          '(repeat (restricted-sexp
+                    :tag "Key"
+                    :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x))))
+                    :value [ignore])))
+  :set 'bmkp-set-map-prefix-key
+  :group 'bookmark-plus)
+
+(defcustom bmkp-jump-map-prefix-keys (list (kbd "C-x j"))
+  "Prefix keys for `bmkp-jump-map' in `current-global-map'.
+Each value of the list is a prefix key bound to keymap
+`bmkp-jump-map'."
+  :type (if (> emacs-major-version 21)
+            '(repeat (key-sequence :tag "Key" :value [ignore]))
+          '(repeat (restricted-sexp
+                    :tag "Key"
+                    :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x))))
+                    :value [ignore])))
+  :set 'bmkp-set-map-prefix-key
+  :group 'bookmark-plus)
+
+(defcustom bmkp-jump-other-window-map-prefix-keys (list (kbd "C-x 4 j"))
+  "Prefix keys for `bmkp-jump-other-window-map' in `current-global-map'.
+Each value of the list is a prefix key bound to keymap
+`bmkp-jump-other-window-map'."
+  :type (if (> emacs-major-version 21)
+            '(repeat (key-sequence :tag "Key" :value [ignore]))
+          '(repeat (restricted-sexp
+                    :tag "Key"
+                    :match-alternatives ((lambda (x) (or (stringp x)  (vectorp x))))
+                    :value [ignore])))
+  :set 'bmkp-set-map-prefix-key
+  :group 'bookmark-plus)
+
 
 
 ;; Some general Renamings.
@@ -137,9 +201,10 @@
 
 ;; `bookmark-map'
 
-(define-key ctl-x-map "p" bookmark-map)
-(define-key ctl-x-map "pj" 'bookmark-jump-other-window)                  ; `C-x p j' (also `C-x 4 j j')
+;; (define-key ctl-x-map "p" bookmark-map)
+;; (define-key ctl-x-map "pj" 'bookmark-jump-other-window)               ; `C-x p j' (also `C-x 4 j j')
 (define-key ctl-x-map "rK" 'bmkp-set-desktop-bookmark)        ; `C-x r K' (also `C-x p K', `C-x p c K')
+
 (define-key bookmark-map "0"      'bmkp-empty-file)                                   ; `C-x p 0'
 (define-key bookmark-map "B"      'bmkp-choose-navlist-from-bookmark-list)            ; `C-x p B'
 ;; `e' is `edit-bookmarks' (aka `bookmark-bmenu-list', from vanilla Emacs.
@@ -298,8 +363,8 @@
 
 (define-prefix-command 'bmkp-jump-map)
 (define-prefix-command 'bmkp-jump-other-window-map)
-(define-key ctl-x-map   "j" bmkp-jump-map)
-(define-key ctl-x-4-map "j" bmkp-jump-other-window-map)
+;; (define-key ctl-x-map   "j" bmkp-jump-map)
+;; (define-key ctl-x-4-map "j" bmkp-jump-other-window-map)
 (define-key bookmark-bmenu-mode-map "j"  nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "J"  nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "J"  bmkp-jump-map)
