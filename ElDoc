@@ -1,5 +1,7 @@
 A very simple but effective thing, eldoc-mode is a MinorMode which shows you, in the echo area, the argument list of the function call you are currently writing. Very handy. By NoahFriedman. Part of Emacs.
 
+== Overview ==
+
 ElDoc works for EmacsLisp and certain other language modes that implement support for ElDoc.  These include
 
 * CEldocMode -- for C, by grepping cpp
