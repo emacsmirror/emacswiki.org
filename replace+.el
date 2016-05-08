@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 15:54:18 2015 (-0800)
+;; Last-Updated: Sun May  8 08:43:38 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1818
+;;     Update #: 1824
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -137,6 +137,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/05/08 dadams
+;;     query-replace-read-from: Use query-replace-compile-replacement, like vanilla.  Thx to Tino Calancha.
 ;; 2015/07/23 dadams
 ;;     replace-regexp: Typo: FROM -> REGEXP.  Thx to Tino Calancha. 
 ;; 2014/04/16 dadams
@@ -612,7 +614,10 @@ to a symbol name."
                                                  from-prompt nil nil nil
                                                  query-replace-from-history-variable default t))))))
       (if (and (zerop (length from)) lastto lastfrom)
-          (cons lastfrom lastto)
+          (cons lastfrom
+                (if (fboundp 'query-replace-compile-replacement)
+                    (query-replace-compile-replacement lastto regexp-flag)
+                  lastto))
         ;; Warn if user types \n or \t, but don't reject the input.
         (and regexp-flag
              (string-match "\\(\\`\\|[^\\]\\)\\(\\\\\\\\\\)*\\(\\\\[nt]\\)" from)
