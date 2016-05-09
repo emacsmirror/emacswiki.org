@@ -193,6 +193,14 @@ And inspired by the above, code to do this as-you-type. (I was originally using 
 
 -- Phil S.
 
+=== Misaligned query results / Filtering the prompts from query output ===
+
+For PostgreSQL at least, this can be an annoyance. The following answer at Emacs.StackExchange provides a solution:
+
+http://emacs.stackexchange.com/a/18403/454
+
+-- Phil S.
+
 == Emacs 19 ==
 
 If you are using GNU Emacs 19.34, you will need two additional things:
