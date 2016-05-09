@@ -160,8 +160,8 @@ And inspired by the above, code to do this as-you-type. (I was originally using 
  (defun my-sql-keyword-upcase ()
    "Automatically upcase SQL keywords and builtin function names.
  
-  Triggered by `post-self-insert-hook', and utilising the product-specific
-  font-lock keywords specified in `sql-product-alist'."
+ Triggered by `post-self-insert-hook', and utilising the product-specific
+ font-lock keywords specified in `sql-product-alist'."
    ;; If the last self-inserted character was whitespace or a parenthesis...
    (and (if (characterp last-input-event)
             (memq (char-syntax last-input-event) '(32 40 41)) ;;[ ()]
@@ -173,22 +173,21 @@ And inspired by the above, code to do this as-you-type. (I was originally using 
         ;; (1) is itself preceded by (only) whitespace or (
         ;; (2a) matches the regexp for a keyword
         ;; (2b) matches the regexp for a builtin, followed by (
-        (when (catch 'keyword
-                (save-excursion
-                  (forward-word -1)
-                  (unless (bolp)
-                    (forward-char -1))
-                  (dolist (keywords (sql-get-product-feature
-                                     sql-product :font-lock))
-                    (when (or (and (eq (cdr keywords) 'font-lock-keyword-face)
-                                   (looking-at
-                                    (concat "\\(?:^\\|[[:space:](]\\)"
-                                            (car keywords))))
-                              (and (eq (cdr keywords) 'font-lock-builtin-face)
-                                   (looking-at
-                                    (concat "\\(?:^\\|[[:space:](]\\)"
-                                            (car keywords) "("))))
-                      (throw 'keyword t)))))
+        (catch 'keyword
+          (save-excursion
+            (forward-word -1)
+            (unless (bolp)
+              (forward-char -1))
+            (dolist (keywords (sql-get-product-feature
+                               sql-product :font-lock))
+              (when (or (and (eq (cdr keywords) 'font-lock-keyword-face)
+                             (looking-at (concat "\\(?:^\\|[[:space:](]\\)"
+                                                 (car keywords))))
+                        (and (eq (cdr keywords) 'font-lock-builtin-face)
+                             (looking-at (concat "\\(?:^\\|[[:space:](]\\)"
+                                                 (car keywords) "("))))
+                (throw 'keyword t)))))
+        (progn
           (undo-boundary)
           (upcase-region (match-beginning 0) (match-end 0)))))
 
