@@ -127,6 +127,8 @@ PostgreSQL databases with underscores in their names trip up the prompt specifie
 
 -- LukeBurton
 
+=== Automatically upcase SQL keywords ===
+
 A function to uppercase all sql keywords in the buffer using [[FontLockMode]] to determine the keywords.
 
   (defun upcase-sql-keywords ()
@@ -142,6 +144,55 @@ A function to uppercase all sql keywords in the buffer using [[FontLockMode]] to
             (forward-char))))))
 
 -- Douglas La Rocca
+
+And inspired by the above, code to do this as-you-type. (I was originally using abbrev-mode for this, but it entailed a separate copy of the list of keywords, and a lot of hacking around the limitations of abbrev to prevent it from being overly eager. Using the pre-existing font-lock keywords is a great improvement.)
+
+ (add-hook 'sql-mode-hook 'my-sql-mode-hook)
+ (defun my-sql-mode-hook ()
+   "Custom SQL mode behaviours. See `sql-mode-hook'."
+   (add-hook 'post-self-insert-hook 'my-sql-keyword-upcase nil :local))
+ 
+ (add-hook 'sql-interactive-mode-hook 'my-sql-interactive-mode-hook)
+ (defun my-sql-interactive-mode-hook ()
+   "Custom interactive SQL mode behaviours. See `sql-interactive-mode-hook'."
+   (add-hook 'post-self-insert-hook 'my-sql-keyword-upcase nil :local))
+ 
+ (defun my-sql-keyword-upcase ()
+   "Automatically upcase SQL keywords and builtin function names.
+ 
+  Triggered by `post-self-insert-hook', and utilising the product-specific
+  font-lock keywords specified in `sql-product-alist'."
+   ;; If the last self-inserted character was whitespace or a parenthesis...
+   (and (if (characterp last-input-event)
+            (memq (char-syntax last-input-event) '(32 40 41)) ;;[ ()]
+          (memq last-input-event '(newline return tab)))
+        ;; ...and the preceding character was of word syntax...
+        (> (point) (point-min))
+        (eq (char-syntax (char-before (1- (point)))) ?w)
+        ;; ...then test whether the preceding word:
+        ;; (1) is itself preceded by (only) whitespace or (
+        ;; (2a) matches the regexp for a keyword
+        ;; (2b) matches the regexp for a builtin, followed by (
+        (when (catch 'keyword
+                (save-excursion
+                  (forward-word -1)
+                  (unless (bolp)
+                    (forward-char -1))
+                  (dolist (keywords (sql-get-product-feature
+                                     sql-product :font-lock))
+                    (when (or (and (eq (cdr keywords) 'font-lock-keyword-face)
+                                   (looking-at
+                                    (concat "\\(?:^\\|[[:space:](]\\)"
+                                            (car keywords))))
+                              (and (eq (cdr keywords) 'font-lock-builtin-face)
+                                   (looking-at
+                                    (concat "\\(?:^\\|[[:space:](]\\)"
+                                            (car keywords) "("))))
+                      (throw 'keyword t)))))
+          (undo-boundary)
+          (upcase-region (match-beginning 0) (match-end 0)))))
+
+-- Phil S.
 
 == Emacs 19 ==
 
