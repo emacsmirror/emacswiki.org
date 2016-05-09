@@ -118,6 +118,8 @@ or to support other human languages and compatibility issues between other Emacs
 * I wish I could write Arabic in Emacs
 ** And I wish I could write Hebrew (go BiDi), with vowel points.
 
+* Emacs ought to be fully internationalized, with multi-lingual tool-bar, help, fn-descriptions etc.  At least, it ought to move away from the use of purely US-American terms to International (ie., British/Commonwealth) English (US-English always irritates me a lot).
+
 == Editing Wishes ==
 
 These are wishes for better support for text editing, especially writers, but not exclusively.
@@ -361,6 +363,9 @@ string including the beginning and quotes.")
 
 * rcirc support of automatic reconnection.
 
+* full XEmbed-suport as per the X11R5, X11R6 and X11R7 specifications.  Emacs-X11 ought to be able to „swallow” other applications or gadgets, and ought to be able to be „swallowed” by another XEmbed-capable application.  The current (Emacs 24/pre25) implementation of XEmbed via GTK3 and a minor subset of X11 is rather lud… I mean, unsatisfactory.
+
+* splitting of Emacs binary and GUI front-end into GUI binaries which chain-load the actual Emacs binary.  No more compiling Emacs with different UI toolkits; just compiling Emacs once and then the toolkit-based frontends one wants/needs.
 
 == Utopian Wishes ==
 
