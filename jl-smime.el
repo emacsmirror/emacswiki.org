@@ -20,6 +20,9 @@
 ;;    - updated documentation
 ;; 2016/03/28, Version 3.2:
 ;;    - version for Emacs 25.1, no change in functionality
+;; 2016/05/09, Version 3.3:
+;;    - bug fix, replace mml-epg-find-usable-keys with
+;;      mml-secure-find-usable-keys
 
 ;; Compatibility: GNU Emacs 25.1
 
@@ -315,11 +318,11 @@ point is used as default value for RECIPIENT and FORCED is set to t."
                              nil nil (thing-at-point 'email))
 		t))
   (let* ((context (epg-make-context 'CMS))
-	 ;(epa-protocol 'CMS) ; TODO still necessary?
-	 (found (or (mml-epg-find-usable-keys context recipient 'encrypt)
+	 (found (or (mml-secure-find-usable-keys context recipient 'encrypt)
 		    (when (or forced (jl-smime-ldap-permitted-p recipient))
 		      (jl-smime-cert-by-ldap recipient)
-		      (mml-epg-find-usable-keys context recipient 'encrypt))))
+		      (mml-secure-find-usable-keys
+		       context recipient 'encrypt))))
 	 (no (length found)))
     (if forced
 	;; Display of message in interactive call does not return nil in case
