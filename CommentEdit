@@ -13,8 +13,68 @@ following into your ##~/.emacs##:
 
 
 ==Usage and description==
-TODO: for now, see the commentary in the source file
+This code allows to create and/or edit shell-like (aka end-of-line)
+comments in a dedicated buffer.
 
+When the user invokes the main command, ##M-x comment-edit##, a
+temporary buffer is popped up and the user typesets the comment as
+ordinary text. When finished, typing ##C-cC-c## in the temporary
+buffer pops down it and inserts the comment text into the original
+buffer with the proper comment syntax.
+
+The code was inspired by (and partially stolen from) ##c-comment-edit2##,
+which does the same service for the block comments of the C language.
+
+The main end-user commands are:
+
+; ##M-x comment-edit##: create/edit a comment using current style (I bind this to ##C-ce##)
+; ##C-uN M-x comment-edit##: create/edit a comment using style N
+and set style N as the current
+style (N=1,4; comment styles shown below)
+; ##C-cC-c##: finish editing and insert comment text into the original buffer
+; ##C-u M-x comment-edit##: ask in the minibuffer for the style to be set as the default for future calls
+
+When the edited text is pasted into the original buffer, this can be
+done in one of (presently) four possible comment styles.
+(following examples are for the unix shell language)
+
+; Style n. 1: "simplest"
+ 
+{{{
+     # comment line 1
+     # comment line 2
+     # comment line 3
+}}}
+ 
+; Style n. 2: "simple"
+ 
+{{{
+     #
+     # comment line 1
+     # comment line 2
+     # comment line 3
+     #
+}}}
+ 
+; Style n. 3: "narrow-box"
+ 
+{{{
+     ##################
+     # comment line 1 #
+     # comment line 2 #
+     # comment line 3 #
+     ##################
+}}}
+ 
+; Style n. 4: "wide-box"
+ 
+{{{
+     ########################################################################
+     # comment line 1                                                       #
+     # comment line 2                                                       #
+     # comment line 3                                                       #
+     ########################################################################
+}}}
 
 
 
