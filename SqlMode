@@ -169,6 +169,10 @@ And inspired by the above, code to do this as-you-type. (I was originally using 
         ;; ...and the preceding character was of word syntax...
         (> (point) (point-min))
         (eq (char-syntax (char-before (1- (point)))) ?w)
+        ;; ...and we're not typing a comment or a string...
+        (let ((syn (syntax-ppss)))
+          (not (or (nth 8 syn) ; comment
+                   (nth 3 syn)))) ; string
         ;; ...then test whether the preceding word:
         ;; (1) is itself preceded by (only) whitespace or (
         ;; (2a) matches the regexp for a keyword
