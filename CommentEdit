@@ -1,6 +1,15 @@
 ==What it does==
 The Lisp:comment-edit.el lib allows creation/editing of shell-like (aka end-of-line) comments in a dedicated buffer. When the %%comment-edit%% command is invoked, a buffer is popped up and the user edits the command as ordinary text in that buffer. When she is finished editing, %%C-cC-c%% pops down the edit buffer and inserts the text with proper comment syntax into the original buffer.
 
+==Installation==
+Put the source file  into your %%load-path%%, optionally byte  compile it (with:
+%%emacs  -batch -f  batch-byte-compile comment-edit.el%%)  and plop  the
+following into your %%~/.emacs%%:
+
+%%(require 'comment-edit)%%
+
+
+
 ==Usage and description==
 TODO: for now, see the commentary in the source file
 
