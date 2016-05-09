@@ -173,8 +173,8 @@ And inspired by the above, code to do this as-you-type. (I was originally using 
         ;; (1) is itself preceded by (only) whitespace or (
         ;; (2a) matches the regexp for a keyword
         ;; (2b) matches the regexp for a builtin, followed by (
-        (catch 'keyword
-          (save-excursion
+        (save-excursion
+          (catch 'keyword
             (forward-word -1)
             (unless (bolp)
               (forward-char -1))
