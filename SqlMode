@@ -1,7 +1,10 @@
  sql.el --- specialized comint.el for SQL interpreters
 
-This page is home of SQL mode for Emacs and XEmacs.  SQL mode is part
-of both Emacs and XEmacs.  You can get the latest versions here.
+This page is home of SQL mode for Emacs and XEmacs.
+
+== Overview ==
+
+SQL mode is part of both Emacs and XEmacs.  You can get the latest versions here.
 
 The interactive SQL mode is based on ComintMode.  The following
 interpreters are supported:
