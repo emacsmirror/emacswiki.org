@@ -15,7 +15,7 @@ The following packages use or extend <code>htmlize</code>,
 ** WThirtyTwoFontifiedRegionToClipboard -- similar with MS Word
 * SaveAsHtml -- extending to htmlify links like Info and Dired
 
-See also HtmlFontify which does similar things (and hopefully will be included in Emacs soon). However, HtmlFontify appears not to support converting a region which is really practical for publishing small snippets on blogs.
+See also HtmlFontify which does similar things. However, HtmlFontify appears not to support converting a region which is really practical for publishing small snippets on blogs.
 
 [new]
 Converting a region is supported in hfyview.el (which uses htmlfontify.el).
