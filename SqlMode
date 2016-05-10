@@ -161,6 +161,7 @@ Combined with `after-change-functions', this version now processes ALL inserted 
    "Custom SQL log-in behaviours. See `sql-login-hook'."
    (my-sql-upcase-mode 1))
  
+ 
  (define-minor-mode my-sql-upcase-mode
    "Automatically upcase SQL keywords as text is inserted in the buffer.
  
@@ -186,33 +187,34 @@ Combined with `after-change-functions', this version now processes ALL inserted 
  function arguments), and utilising the product-specific font-lock
  keywords specified in `sql-product-alist'."
    (when (eq old-len 0) ; The text change was an insertion.
-     (let ((upcase-regions nil)
-           (case-fold-search my-sql-upcase-mixed-case))
-       (save-excursion
-         ;; Any errors must be handled, otherwise we will be removed
-         ;; automatically from `after-change-functions'.
-         (with-demoted-errors "my-sql-upcase-keywords error: %S"
-           ;; Process all keywords affected by the inserted text.
-           (goto-char beginning)
-           (while (and (< (point) end)
-                       (re-search-forward "[\t\n\r ();]" end :noerror))
-             (and
-              ;; ...if the preceding character is of word syntax...
-              (eq (char-syntax (char-before (1- (point)))) ?w)
-              ;; ...and we're not inside a string or a comment...
-              (let ((syn (syntax-ppss)))
-                (not (or (nth 3 syn) ; string
-                         (nth 4 syn)))) ; comment
-              ;; ...and the preceding word matches a SQL keyword...
-              (my-sql-upcase--keyword-matched)
-              ;; ...then we flag the matched region for upcasing.
-              (push (cons (match-beginning 0) (match-end 0))
-                    upcase-regions)))))
-       ;; upcase matched regions (if any)
-       (when upcase-regions
-         (undo-boundary) ;; now that save-excursion has returned
-         (mapc (lambda (r) (upcase-region (car r) (cdr r)))
-               upcase-regions)))))
+     (unless undo-in-progress
+       (let ((upcase-regions nil)
+             (case-fold-search my-sql-upcase-mixed-case))
+         (save-excursion
+           ;; Any errors must be handled, otherwise we will be removed
+           ;; automatically from `after-change-functions'.
+           (with-demoted-errors "my-sql-upcase-keywords error: %S"
+             ;; Process all keywords affected by the inserted text.
+             (goto-char beginning)
+             (while (and (< (point) end)
+                         (re-search-forward "[\t\n\r ();]" end :noerror))
+               (and
+                ;; ...if the preceding character is of word syntax...
+                (eq (char-syntax (char-before (1- (point)))) ?w)
+                ;; ...and we're not inside a string or a comment...
+                (let ((syn (syntax-ppss)))
+                  (not (or (nth 3 syn) ; string
+                           (nth 4 syn)))) ; comment
+                ;; ...and the preceding word matches a SQL keyword...
+                (my-sql-upcase--keyword-matched)
+                ;; ...then we flag the matched region for upcasing.
+                (push (cons (match-beginning 0) (match-end 0))
+                      upcase-regions)))))
+         ;; upcase matched regions (if any)
+         (when upcase-regions
+           (undo-boundary) ;; now that save-excursion has returned
+           (mapc (lambda (r) (upcase-region (car r) (cdr r)))
+                 upcase-regions))))))
  
  ;; Silence byte-compilation warnings.
  (defvar sql-ansi-statement-starters)
