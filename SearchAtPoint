@@ -13,6 +13,14 @@ See [[Evil]] for installation instructions, then create keybinds. For example:
 
 Or dive into the Evil package and use it for even more Vim stuff.
 
+If [[https://github.com/abo-abo/swiper swiper]] is used, the following key bindings can be defined to simulate "*" in Vim with a better interface:
+
+  (define-key evil-normal-state-map (kbd "*")
+    (lambda () (interactive) (swiper (format "\\<%s\\>" (thing-at-point 'symbol)))))
+  (define-key evil-normal-state-map (kbd "#")
+    (lambda () (interactive) (swiper (format "\\<%s\\>" (thing-at-point 'word)))))
+
+
 == HighlightSymbol ==
 
 Enable highlight-symbol-mode (usually done conditionally depending on major mode, as in this example), and set highlight-symbol-on-navigation-p.
@@ -211,7 +219,6 @@ With [https://github.com/abo-abo/swiper swiper], the following key bindings can 
 (define-key swiper-map (kbd "M-.")
   (lambda () (interactive) (insert (format "\\<%s\\>" (with-ivy-window (thing-at-point 'word))))))
 }}}
-
 
 == Using `M-.' in Icicles ==
 
