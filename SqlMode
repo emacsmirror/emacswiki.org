@@ -152,26 +152,27 @@ And inspired by the above, code to do this as-you-type. (I was originally using 
  (add-hook 'sql-mode-hook 'my-sql-mode-hook)
  (defun my-sql-mode-hook ()
    "Custom SQL mode behaviours. See `sql-mode-hook'."
-   (add-hook 'post-command-hook 'my-sql-keyword-upcase nil :local))
+   (add-hook 'after-change-functions 'my-sql-keyword-upcase nil :local))
  
  (add-hook 'sql-interactive-mode-hook 'my-sql-interactive-mode-hook)
  (defun my-sql-interactive-mode-hook ()
    "Custom interactive SQL mode behaviours. See `sql-interactive-mode-hook'."
-   (add-hook 'post-command-hook 'my-sql-keyword-upcase nil :local))
+   (add-hook 'after-change-functions 'my-sql-keyword-upcase nil :local))
  
- (defvar-local my-sql-keyword-upcase-pos 0
-   "The previous position of point.")
- 
- (defun my-sql-keyword-upcase ()
+ (defun my-sql-keyword-upcase (beginning end length)
    "Automatically upcase SQL keywords and builtin function names.
  
- Triggered by `post-command-hook', and utilising the product-specific
+ Triggered by `after-change-functions', and utilising the product-specific
  font-lock keywords specified in `sql-product-alist'."
+   ;; Three arguments are passed: the positions of the BEGINNING and
+   ;; END of the range of changed text, and the LENGTH in chars of the
+   ;; pre-change text replaced by that range.  (For an insertion, the
+   ;; pre-change LENGTH is zero; for a deletion, that LENGTH is the
+   ;; number of chars deleted, and the post-change BEGINNING and END
+   ;; are at the same place.)
    (with-demoted-errors "my-sql-keyword-upcase error: %S"
      (and
-      ;; We track point between commands, as a cheap way of detecting inserts.
-      ;; TODO: Using `after-change-functions' would make more sense.
-      (> (point) my-sql-keyword-upcase-pos)
+      (eq length 0) ;; this means the text change was an insertion.
       ;; If the last character was whitespace, parenthesis, or a semicolon...
       (memq (char-before) '(9 10 13 32 40 41 59)) ; [\t\n\r ();]
       ;; ...and the preceding character was of word syntax...
@@ -200,13 +201,9 @@ And inspired by the above, code to do this as-you-type. (I was originally using 
                            (looking-at (concat "\\(?:^\\|[[:space:](]\\)"
                                                (car keywords) "("))))
               (throw 'keyword t)))))
-      ;; If so, upcase the matched keyword. We set an undo boundary first,
-      ;; so that false-positives are trivial to revert.
       (progn
         (undo-boundary)
-        (upcase-region (match-beginning 0) (match-end 0)))))
-   ;; Store point.
-   (setq my-sql-keyword-upcase-pos (point)))
+        (upcase-region (match-beginning 0) (match-end 0))))))
 
 -- Phil S.
 
