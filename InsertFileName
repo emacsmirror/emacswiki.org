@@ -96,6 +96,22 @@ To replace the file at point, you can use the following extension of FindFileAtP
   
   (global-set-key "\C-c\C-v" 'my-replace-file-at-point)
 
+== Ivy mode ==
+
+If you use ivy-mode, the following code can be used to insert the file name in the counsel-find-file minibuffer (which is usually bound to "C-x C-f" to replace find-files).
+
+  (ivy-add-actions t
+                   '(("I" (lambda (x) (with-ivy-window (insert x))) "insert")))
+  (ivy-add-actions 'counsel-find-file
+                   '(("F" (lambda (x) (with-ivy-window (insert (file-relative-name x))))
+                      "insert relative file name")
+                     ("B" (lambda (x)
+                            (with-ivy-window
+                              (insert (file-name-nondirectory (replace-regexp-in-string "/\\'" "" x)))))
+                      "insert file name without any directory information")))
+
+Then after calling up the minibuffer, use "M-o F", "M-o I" or "M-o B" to insert the file path in the minibuffer.
+
 See also CompleteFileName, FindFileAtPoint.
   
 ----
