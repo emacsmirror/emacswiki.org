@@ -35,7 +35,7 @@ style (N=1,4; comment styles shown below)
 ; ##C-u M-x comment-edit##: ask in the minibuffer for the style to be set as the default for future calls
 
 When the edited text is pasted into the original buffer, this can be
-done in one of (presently) four possible comment styles.
+done in one of (presently) four possible (fairly customizable) comment styles
 (following examples are for the unix shell language)
 
 ; Style n. 1: "simplest"
@@ -76,8 +76,158 @@ done in one of (presently) four possible comment styles.
      ########################################################################
 }}}
 
+===Comment style customization===
+
+Comments have the following general structure:
+
+{{{
+       <s1><b2><c><c>...<c><c><b3>
+       <s1><s2>comment line 1 <s3>
+       <s1><s2>comment line 2 <s3>
+               .....
+       <s1><s2>comment line n <s3>
+       <s1><b2><c><c>...<c><c><b3>
+}}}
+
+where the various components are stored into user customizable variables as
+detailed below.
+
+{{{
+comp.     variable                 explanation
+-----------------------------------------------------------------------
+<s1> comment-edit-comment-string  this is the comment string as defined  by the language (i.e. # for shell, % for latex,
+                                  ; for lisp etc). NOTE: it is a string  (not a char), since for some languages this can
+                                  have >1 chars (e.g.  "REM") or the user might want to define  this to multiple comment
+                                  chars, e.g. "###"||
+<s2> comment-edit-comment-leader  this  string is inserted *AFTER* comment-edit-comment-string at  the beginning of each
+                                  line of the comment text
+<s3> comment-edit-comment-trailer this string is  used for *-box style comments only and is inserted  at the end of each
+                                  line of the comment text
+<b2>  comment-edit-line-leader    this  string  is  used  for  *-box style  comments  only  and  is  inserted  *AFTER*
+                                  comment-edit-comment-string  at the  beginning  of the  FIRST and  LAST  lines of  the
+                                  comment text (see above)
+<b3> comment-edit-line-trailer    this  string is used for *-box style  comments only and is inserted at  the end of the
+                                  FIRST and LAST lines of the comment text (see above)
+<c>  comment-edit-line-filler     this is a  char (not a string) used for *-box style comments  only; the FIRST and LAST
+                                  lines of the boxed comment will be filled with this character
+}}}
+
+Example.
+
+If:
+
+{{{
+comment-edit-comment-string   "REM"
+comment-edit-comment-leader   " "
+comment-edit-comment-trailer  " |"
+comment-edit-line-leader      " + "
+comment-edit-line-filler      ?-
+comment-edit-line-trailer     " +"
+}}}
+
+then the appearance of the comments in the four styles is like this:
+
+{{{
+REM I am a comment
+REM in the simplest style
 
 
+REM
+REM I am a comment
+REM in the simple style
+REM
+
+
+REM +-------------------- +
+REM I am a comment in the |
+REM narrow-box style      |
+REM +-------------------- +
+
+
+REM +------------------------------------------------------------------- +
+REM I am a comment in the                                                |
+REM wide-box style                                                       |
+REM +------------------------------------------------------------------- +
+}}}
+
+The variables defining the different comment styles are set according
+to the buffer mode and, optionally, to the extension of the name of
+the file being edited or the name of the buffer (if the buffer is not
+visiting any file). Basically, the buffer mode and optionally the file or
+buffer name are matched against corresponding regexes: if the match
+succeeds, then the variables are set accordingly. All the pieces
+needed for this mechanism are stored into the user customizable
+comment-edit-language-selector variable. This is a list of 2-elements
+lists: the first element of each is a list of 1 or 2 elements, the
+second element is a list of 6 elements:
+
+{{{
+        comment-edit-language-selector:
+
+         '(
+           ( (regex1 [regex2]) (s1 s2 s3 s4 c s5) )
+          ...
+           ( (regex1 [regex2]) (s1 s2 s3 s4 c s5) )
+          )
+
+}}}
+
+; ##(regex1 [regex2])##:   is a list of 1 or 2 elements
+                    The first element is a regex (string) to be
+                    matched against
+                    (format-mode-line mode-line-format)
+                    If the second element is
+                    present, it is interpreted as a regex (string)
+                    to be matched against either the extension of
+                    the name of the file being visited or the
+                    buffer name
+                    If both elements are present, then both matches
+                    must be successful
+; ##(s1 s2 s3 s4 c s5)##:  is a list of 6 elements: s1 s2 s3 s4 and s5 are
+                    strings, while c is a char.
+                    These are the values of the variables defining the
+                    comment styles for the buffer matching the
+                    conditions defined by the (regex1 [regex2])
+                    list. More specifically:
+
+{{{
+             s1  -->  comment-edit-comment-string   
+             s2  -->  comment-edit-comment-leader   
+             s3  -->  comment-edit-comment-trailer  
+             s4  -->  comment-edit-line-leader      
+             c   -->  comment-edit-line-filler      
+             s5  -->  comment-edit-line-trailer     
+}}}
+
+The tests defined by the elements of ##comment-edit-language-selector##
+are performed sequentially and the loop terminates on the first
+success.
+
+A default ##comment-edit-language-selector## value is set in the code:
+
+{{{
+          (defcustom comment-edit-language-selector
+            '(
+              (("(Shell-script")("#"" "" #"""?#""))
+              (("(Tcl")("#"" "" #"""?#""))
+              (("(Fundamental")("#"" "" #"""?#""))
+              (("(Text")("#"" "" #"""?#""))
+              (("(Octave")("#"" "" #"""?#""))
+              (("(Lisp")(";;" " " " ;;" "" ?; ""))
+              (("(Emacs-Lisp")(";;" " " " ;;" "" ?; ""))
+              (("(TeX")("%%" " " " %%" "" ?% ""))
+              (("(LaTeX")("%%" " " " %%" "" ?% ""))
+              (("(BibTeX")("%%" " " " %%" "" ?% ""))
+              (("(Texinfo")("@c" " " " |" "" ?= "|"))
+              (("(C\+\+")("//" " " " |" "" ?= "|"))
+              (("(Fortran")("C" " " " |" "" ?= "|"))
+              (("(F90")("!" " " " |" "" ?= "|"))
+              )
+}}}
+
+but the user is expected to define her own
+##comment-edit-language-selector## variable, based on the languages
+usually spoken and preferences for the comment appearance.
 
 -------------------------------
 CategoryComments
