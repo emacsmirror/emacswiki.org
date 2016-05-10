@@ -129,6 +129,8 @@ PostgreSQL databases with underscores in their names trip up the prompt specifie
 
 === Automatically upcase SQL keywords ===
 
+See also http://stackoverflow.com/q/22091936/324105
+
 A function to uppercase all sql keywords in the buffer using [[FontLockMode]] to determine the keywords.
 
   (defun upcase-sql-keywords ()
