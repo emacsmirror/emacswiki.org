@@ -14,7 +14,7 @@ The simplest method is to just use Emacs's Comint mode:
 
 If you start a repl using "js-run", you can then later send code to the repl using "js-send-region".
 
-NOTE: tab-completion doesn't work, though <kbd>M-/</kbd> does.
+NOTE: tab-completion doesn't work, though <code>M-/</code> does.
 
 Also tested on Win7, Emacs 24 and node.js 0.10.5. Size: 7KB
 
