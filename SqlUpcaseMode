@@ -1,0 +1,13 @@
+##sql-upcase-mode## is a minor mode which converts lower-case SQL keywords to upper-case as you type (or otherwise insert text).
+
+==Download==
+
+Download the library from Lisp:sql-upcase-mode.el
+
+==Install==
+
+Place the library somewhere in your Emacs load-path (or use ##M-x package-install-file## for the downloaded file), and add the following to your init file:
+
+ (when (require 'sql-upcase-mode nil :noerror)
+   (add-hook 'sql-mode-hook 'sql-upcase-mode)
+   (add-hook 'sql-interactive-mode-hook 'sql-upcase-mode))
