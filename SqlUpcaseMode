@@ -1,4 +1,6 @@
-A minor mode which converts lower-case SQL keywords to upper-case as you type (or otherwise insert text).
+A minor mode which converts lower-case SQL keywords to upper-case as you type or otherwise insert text in the buffer -- for instance, killing and yanking an entire SQL query would upcase all keywords in that query.
+
+It utilises the product-specific regexps defined by sql.el, and thus will upcase only the keywords defined for the buffer's `sql-product'. (Note that `sql-mode' buffers default to the `ansi' product.)
 
 ==Download==
 
