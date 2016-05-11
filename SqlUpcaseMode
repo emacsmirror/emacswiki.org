@@ -1,4 +1,4 @@
-##sql-upcase-mode## is a minor mode which converts lower-case SQL keywords to upper-case as you type (or otherwise insert text).
+A minor mode which converts lower-case SQL keywords to upper-case as you type (or otherwise insert text).
 
 ==Download==
 
