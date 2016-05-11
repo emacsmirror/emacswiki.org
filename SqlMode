@@ -36,6 +36,7 @@ If those with pre-22.1 versions of Emacs can identify changes needed to run on o
  
 == Related Pages ==
 
+* CategorySql -- all pages in this category.
 * PlsqlMode -- support for writing PL/SQL code. This was inspired by the old and sadly unsupported Oracle PL/SQL mode.
 * ImenuMode -- has an example for SQL and PL/SQL support
 * SqlIndent (sql-indent.el) -- indentation of SQL statements
