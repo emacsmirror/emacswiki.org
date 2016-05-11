@@ -22,7 +22,7 @@ By default, /only/ lower-case keywords are processed. ##(setq sql-upcase-mixed-c
 
 1. This is slightly aggressive in ##sql-interactive-mode##, in that text insertions in that mode are not always typed by the user. The biggest concern /is/ handled -- output from the inferior comint process is not touched. However there may be other cases (e.g. cycling through the comint command history) in which automatic modifications to the inserted text are less desirable. In practice this is probably ok, but YMMV.
 
-2. It is assumed that font-lock patterns using ##font-lock-builtin-face## are functions, and should only be upcased when followed by an opening paren. In practice this is not always accurate (an example being that ##set## is treated as a 'builtin' rather than a 'keyword'). It may be better to treat both types the same, and not insist upon the openin paren for builtins, but more investigation is needed.
+2. It is assumed that font-lock patterns using ##font-lock-builtin-face## are functions, and should only be upcased when followed by an opening paren. In practice this is not always accurate (an example being that, for PostgreSQL, ##set## is treated as a 'builtin' rather than a 'keyword'). It may be better to treat both types the same, and not insist upon the openin paren for builtins, but more investigation is needed.
 
 3. Contextual behaviour is limited to ignoring comments and strings, so if you have an identifier name in your query which is also a keyword, it will be upcased. If an unwanted upcasing occurs, you can use undo to revert to the original case.
 
