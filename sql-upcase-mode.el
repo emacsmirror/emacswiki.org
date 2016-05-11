@@ -39,25 +39,6 @@
 ;;
 ;; 0.1 - Initial release to EmacsWiki.
 
-
-;; Updated notes for Stack Overflow, once this is on its own SqlUpcaseMode
-;; EmacsWiki page.
-
-;; Here's the code I've just put on the [EmacsWiki][1] for upper-casing keywords and function names as-you-type. I feel (from experience) this is a much nicer approach than trying to bend `abbrev` to this task.
-;;
-;; It was inspired by the use of font-lock keywords in Douglas La Rocca's function for upper-casing all PostgreSQL keywords in a buffer, which can be found on that same page (and which also bears similarities to the method used in user2053036's accepted answer to this question), but also differs significantly from those solutions in that it processes the text automatically as you type.
-;;
-;; This code should Just Work across *all* SQL products supported by Emacs, as it always uses the keyword patterns for the current product.
-;;
-;; The current version triggers via `after-change-functions` and processes *all* text insertions, rather than just the latest word. Therefore you can paste an entire query into a `sql-mode` buffer, and all of the keywords will automatically be upcased.
-;;
-;; Contextual behaviour is limited to ignoring comments and strings, so if you have an identifier name which is also a keyword, it will be upcased. If an unwanted upcasing occurs, simply use `undo` to revert to the original case.
-
-
-
-
-
-
 ;;; Code:
 
 ;;;###autoload
