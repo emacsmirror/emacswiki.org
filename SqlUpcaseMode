@@ -13,3 +13,7 @@ Place the library somewhere in your Emacs load-path (or use ##M-x package-instal
  (when (require 'sql-upcase-mode nil :noerror)
    (add-hook 'sql-mode-hook 'sql-upcase-mode)
    (add-hook 'sql-interactive-mode-hook 'sql-upcase-mode))
+
+----
+CategoryModes
+CategorySql
