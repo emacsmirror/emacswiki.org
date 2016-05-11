@@ -13,6 +13,7 @@ Click on the header to list all SQL related pages.
 ** SqlTransform
 ** SqlPreviousWhereClause
 ** SqlBeautify
+** SqlUpcaseMode
 ** TsqlIndent
 ** SqlCustomSession
 ** SqlPlusMode
