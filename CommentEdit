@@ -32,6 +32,7 @@ The main end-user commands are:
 and set style N as the current
 style (N=1,4; comment styles shown below)
 ; ##C-cC-c##: finish editing and insert comment text into the original buffer
+; ##C-uC-cC-c##: abort current edit, pop down the edit buffer and go back to the original buffer unchanged
 ; ##C-u M-x comment-edit##: ask in the minibuffer for the style to be set as the default for future calls
 
 When the edited text is pasted into the original buffer, this can be
@@ -157,7 +158,7 @@ visiting any file). Basically, the buffer mode and optionally the file or
 buffer name are matched against corresponding regexes: if the match
 succeeds, then the variables are set accordingly. All the pieces
 needed for this mechanism are stored into the user customizable
-comment-edit-language-selector variable. This is a list of 2-elements
+##comment-edit-language-selector## variable. This is a list of 2-elements
 lists: the first element of each is a list of 1 or 2 elements, the
 second element is a list of 6 elements:
 
@@ -175,7 +176,7 @@ second element is a list of 6 elements:
 ; ##(regex1 [regex2])##:   is a list of 1 or 2 elements
                     The first element is a regex (string) to be
                     matched against
-                    (format-mode-line mode-line-format)
+                    ##(format-mode-line mode-line-format)##
                     If the second element is
                     present, it is interpreted as a regex (string)
                     to be matched against either the extension of
@@ -187,7 +188,7 @@ second element is a list of 6 elements:
                     strings, while c is a char.
                     These are the values of the variables defining the
                     comment styles for the buffer matching the
-                    conditions defined by the (regex1 [regex2])
+                    conditions defined by the ##(regex1 [regex2])##
                     list. More specifically:
 
 {{{
@@ -229,5 +230,28 @@ but the user is expected to define her own
 ##comment-edit-language-selector## variable, based on the languages
 usually spoken and preferences for the comment appearance.
 
+===Creating new comments vs editing existing comments===
+* In order to edit an existing comment, position the cursor anywhere inside the comment text and invoke ##comment-edit##: the whole commented region is copied into the edit buffer for editing. The comment style currently in use should match that of the original comment region. However, if that is not the case, the comment will be pasted back in the *current* comment style, no matter what was the style of the original comment. Note that this doesn't always work since it wasn't planned, but it turns out that it works almost always.\\\\
+If you want to change the style of an existing comment, just edit it with the new style as the current style  and make the necessary changes in the edit buffer, if needed (eg, delete end-of-line characters when converting ##*-box## into ##simple*## comments).\\\\
+
+* In order to create a new comment, place the cursor at the position where you want the comment to appear
+
+** if the cursor is placed on a non-empty, non-comment line, the comment
+will be inserted before that line, indented as much as the
+cursor position
+
+** if the cursor is placed on an empty line, the comment is inserted at
+that one line, indentation being determined again by the
+cursor position
+
+==Limitations==
+* comments after code on the same line are *NOT* supported; eg:
+{{{
+     a=1  # comment-edit does not handle this comment
+}}}
+
+-----------------------------------------------
+
+(work in progress...)
 -------------------------------
 CategoryComments
