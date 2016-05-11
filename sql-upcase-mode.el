@@ -1,7 +1,7 @@
 ;;; sql-upcase-mode.el --- Automatically upcase SQL keywords as you type
 
 ;; Author: Phil S.
-;; URL: http://www.emacswiki.org/emacs/SqlUpcaseMode
+;; URL: https://www.emacswiki.org/emacs/SqlUpcaseMode
 ;; Keywords: abbrev, convenience, languages
 ;; Created: 9 May 2016
 ;; Package-Requires: ((emacs "24.3"))
