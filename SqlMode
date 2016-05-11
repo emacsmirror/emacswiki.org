@@ -36,21 +36,7 @@ If those with pre-22.1 versions of Emacs can identify changes needed to run on o
  
 == Related Pages ==
 
-* CategorySql -- all pages in this category.
-* PlsqlMode -- support for writing PL/SQL code. This was inspired by the old and sadly unsupported Oracle PL/SQL mode.
-* ImenuMode -- has an example for SQL and PL/SQL support
-* SqlIndent (sql-indent.el) -- indentation of SQL statements
-* SqlTransform (sql-transform.el) -- transform select statements into update statements and more
-* MasterMode (master-mode.el) -- remote control one buffer from another
-* ComintPatched (comint.el) -- retrieve multi-line commands from the history of SQL statements
-* SqlSendHistory -- store SQL statements you sent from the SQL to the SQLi buffer in your history
-* SqlPlusNukeLineNo -- get rid of the junk line numbers SQL*Plus emits
-* SqlPlus -- Facilitates interaction with Oracle via SQL*Plus
-* SqlComplete -- experimental completion for columns and tables
-* SqlSwitchBuffer -- switch-to-buffer instead of pop-to-buffer
-* SqlRenameBuffer -- renaming the buffer
-* SqlReplace -- replace bind variables before sending a statement
-* SqlWithPlaceholders -- process SQL statements with placeholders embodied within them
+Related pages are maintained in CategorySql
 
 == Miscellaneous Settings ==
 
