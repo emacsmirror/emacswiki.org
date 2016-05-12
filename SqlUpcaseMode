@@ -28,7 +28,7 @@ By default, /only/ lower-case keywords are processed. ##(setq sql-upcase-mixed-c
 
 # It's possible for ##(syntax-ppss)## to get confused in ##sql-interactive-mode##. I've observed a case where an unbalanced quote in earlier output caused ##sql-upcase-mode## to think everything subsequent was in a string, and so it was refraining from doing anything. Forcing another unbalanced quote into the buffer worked around the problem. I strongly suspect this issue can be resolved with constrained usage of ##(parse-partial-sexp)## (not looking further backwards than the most recent prompt or semicolon would seem the sensible thing to do).
 
-# I'm aware of a couple of bugs, which I'll fix very soon...
+# I'm aware of a couple of other bugs, which I'll fix very soon. Expect a new version over the weekend.
 
 ----
 CategoryModes
