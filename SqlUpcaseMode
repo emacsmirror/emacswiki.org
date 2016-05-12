@@ -26,6 +26,10 @@ By default, /only/ lower-case keywords are processed. ##(setq sql-upcase-mixed-c
 
 # Contextual behaviour is limited to ignoring comments and strings, so if you have an identifier name in your query which is also a keyword, it will be upcased. If an unwanted upcasing occurs, you can use undo to revert to the original case.
 
+# It's possible for ##(syntax-ppss)## to get confused in ##sql-interactive-mode##. I've observed a case where an unbalanced quote in earlier output caused ##sql-upcase-mode## to think everything subsequent was in a string, and so it was refraining from doing anything. Forcing another unbalanced quote into the buffer worked around the problem. I strongly suspect this issue can be resolved with constrained usage of ##(parse-partial-sexp)## (not looking further backwards than the most recent prompt or semicolon would seem the sensible thing to do).
+
+# I'm aware of a couple of bugs, which I'll fix very soon...
+
 ----
 CategoryModes
 CategorySql
