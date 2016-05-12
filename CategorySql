@@ -17,6 +17,7 @@ Click on the header to list all SQL related pages.
 ** SqlPlusMode
 ** SqlPlusNukeLineNo -- get rid of the junk line numbers SQL*Plus emits
 ** SqlPreviousWhereClause
+** SqlQueryBuffer -- open a connected ##sql-mode## buffer directly from ##sql-interactive-mode##
 ** SqlRenameBuffer -- renaming the buffer
 ** SqlReplace -- replace bind variables before sending a statement
 ** SqlSendHistory -- store SQL statements you sent from the SQL to the SQLi buffer in your history
