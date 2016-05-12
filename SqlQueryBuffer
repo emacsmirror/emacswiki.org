@@ -30,3 +30,5 @@ Use this command in an ##sql-interactive-mode## buffer to open a connected ##sql
 
  (eval-after-load "sql"
    '(define-key sql-interactive-mode-map (kbd "C-c q") 'my-sql-query-buffer))
+
+Note that you can do the reverse by default -- from a ##sql-mode## buffer with the appropriate selected product, use ##C-c TAB## to create the connected ##sql-interactive-mode## buffer, and start an interactive session. (Use a prefix argument to also select the product.)
