@@ -29,7 +29,7 @@ After the rollback, visit every one of them and revert the rollback as if it wer
 Here's a quick sketch of how the spam filtering works:
 
 # before a page is saved, a question is asked unless the cookie shows that user has answered a question before
-# the IP number and hostname of the person saving a page is checked against the list on the BannedHosts page, if it exists
+# the IP number of the person saving a page is checked against the list on the BannedHosts page, if it exists
 # all the URLs on the page are checked against the list on the BannedContent page, if it exists
 # the entire text of the page is checked against the list on the BannedRegexps page, if it exists
 
