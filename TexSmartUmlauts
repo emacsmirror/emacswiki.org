@@ -6,7 +6,7 @@
 
 1. Release [http://hub.darcs.net/lyro/tex-smart-umlauts/raw-file/tex-smart-umlauts.el tex-smart-umlauts.el]
 
-2. From Marmalade
+2. From MELPA
 
     M-x package-install RET tex-smart-umlauts RET
 
