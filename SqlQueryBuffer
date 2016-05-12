@@ -1,0 +1,32 @@
+Use this command in an ##sql-interactive-mode## buffer to open a connected ##sql-mode## buffer, in which you can edit queries to send to the database process (check ##C-h m## for the keybindings to do that).
+
+ (defun my-sql-query-buffer (arg)
+   "Open a `sql-mode' buffer which interacts with the current SQLi buffer.
+ 
+ Switches to an existing buffer if possible, otherwise creates a new buffer.
+ 
+ With C-u prefix arg, always creates a new buffer."
+   (interactive "P")
+   (let ((sqlibuf (current-buffer)))
+     (if (null (sql-buffer-live-p sqlibuf))
+         (error "Buffer %s is not a working SQLi buffer" sqlibuf)
+       (let ((product sql-product)
+             (querybuf
+              (or (and (not (consp arg)) ;; prefix arg
+                       (boundp 'my-sql-query-buffer)
+                       (buffer-live-p (get-buffer my-sql-query-buffer))
+                       (get-buffer my-sql-query-buffer))
+                  (generate-new-buffer
+                   (format "*SQL ctl: %s*" (buffer-name sqlibuf))))))
+         (setq-local my-sql-query-buffer querybuf)
+         (pop-to-buffer querybuf '(display-buffer-reuse-window
+                                   . ((reusable-frames . visible))))
+         (unless (eq major-mode 'sql-mode)
+           (sql-mode)
+           (setq sql-product product)
+           (sql-highlight-product)
+           (setq sql-buffer sqlibuf)
+           (run-hooks 'sql-set-sqli-hook))))))
+
+ (eval-after-load "sql"
+   '(define-key sql-interactive-mode-map (kbd "C-c q") 'my-sql-query-buffer))
