@@ -28,7 +28,7 @@ brew install gpg2
 brew install pinentry-mac
 }}}
 
-== Pinentry ==
+== Setting Up Pinentry ==
 
 We also need to make sure that the agent uses pinentry for a Mac. This is what I have in my ##~/.gnupg/gpg-agent.conf##.
 
