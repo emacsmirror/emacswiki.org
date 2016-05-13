@@ -1,11 +1,11 @@
 ;;; so-long.el --- Say farewell to performance problems with minified code.
 ;;
 ;; Author: Phil S.
-;; URL: http://www.emacswiki.org/emacs/SoLong
+;; URL: https://www.emacswiki.org/emacs/SoLong
 ;; Keywords: convenience
 ;; Created: 12 Jan 2016
 ;; Package-Requires: ((emacs "24.3"))
-;; Version: 0.7.1
+;; Version: 0.7.2
 
 ;; This file is not part of GNU Emacs.
 
@@ -78,6 +78,8 @@
 
 ;;; Change Log:
 ;;
+;; 0.7.2 - Remember the original major mode even with M-x `so-long-mode'.
+;; 0.7.1 - Clarified interaction with globalized minor modes.
 ;; 0.7   - Handle header 'mode' declarations.
 ;;       - Hack local variables after reverting to the original major mode.
 ;;       - Reverted `so-long-max-lines' to a default value of 5.
@@ -140,13 +142,21 @@ can also be handled.
 
 See also `so-long-minor-modes'.")
 
+(defvar so-long-mode--inhibited nil) ; internal use
+(make-variable-buffer-local 'so-long-mode--inhibited)
+(put 'so-long-mode--inhibited 'permanent-local t)
+
 (defvar-local so-long-original-mode nil
   "Stores the original `major-mode' value.")
 (put 'so-long-original-mode 'permanent-local t)
 
-(defvar so-long-mode--inhibited nil) ; internal use
-(make-variable-buffer-local 'so-long-mode--inhibited)
-(put 'so-long-mode--inhibited 'permanent-local t)
+(add-hook 'change-major-mode-hook 'so-long-change-major-mode)
+
+(defun so-long-change-major-mode ()
+  "Ensures that `so-long-mode' knows the original `major-mode'
+even when invoked interactively."
+  (unless (eq major-mode 'so-long-mode)
+    (setq so-long-original-mode major-mode)))
 
 ;; When the line's long
 ;; When the mode's slow
@@ -208,7 +218,7 @@ type \\[so-long-mode-revert], or else re-invoke it manually."
   ;; Inform the user about our major mode hijacking.
   (message "Changed to %s (from %s) on account of line length. %s to revert."
            major-mode
-           so-long-original-mode
+           (or so-long-original-mode "Unknown")
            (substitute-command-keys "\\[so-long-mode-revert]")))
 
 (add-hook 'so-long-mode-hook 'so-long-inhibit-global-hl-line-mode)
@@ -359,7 +369,6 @@ again if `so-long-mode-revert' is called, however.)"
     (unless so-long-mode--inhibited
       (when (and (apply 'derived-mode-p so-long-target-modes)
                  (so-long-line-detected-p))
-        (setq so-long-original-mode major-mode)
         (so-long-mode)))))
 
 ;;;###autoload
