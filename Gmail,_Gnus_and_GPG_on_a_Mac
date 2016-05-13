@@ -100,7 +100,7 @@ Given this setup, the `gpg-agent-startup' function above will detect a running a
 
 == Launching GPG Agent for Other Programs ==
 
-You want to launch the GPG agent as soon as you log on. When it starts, it should write its contact info into a /file/ which we can then read from every shell. The environment variables will then get inherited by child processes and so every program you call from the command line will also be able to use the same agent.
+You want to launch the GPG agent as soon as you log on. When it starts, it should write its contact info into an environment file which we can then read from every shell (and from Emacs, as seen in the previous section). The environment variables will then get inherited by child processes and so every program you call from the command line will also be able to use the same agent.
 
 Create the file ##~/Library/LaunchAgents/org.gnupg.gpg-agent.plist## with the following content. Make sure you change my username ("alex") to something else!
 
