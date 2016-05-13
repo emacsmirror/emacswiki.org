@@ -96,7 +96,7 @@ be useless, in which case you should restart it using
 (gpg-agent-startup)
 }}}
 
-Given this setup, the `gpg-agent-startup' function above will detect a running agent and just parse this file. This is important for if you want to use Emacs outside a terminal. In a terminal, Emacs is started from the shell and inherits its environment (which we'll set up in the next section). If Emacs is started by a window manager, it does not inherit an environment from a shell. That's why the above is necessary.
+Given this setup, the `gpg-agent-startup' function above will detect a running agent and just parse the environment file it created. This is important if you want to use Emacs outside a terminal. In a terminal, Emacs is started from the shell and inherits its environment (which we'll set up in the next section). If Emacs is started by a window manager, it does not inherit an environment from a shell. That's why the above is necessary.
 
 == Launching GPG Agent for Other Programs ==
 
