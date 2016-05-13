@@ -152,6 +152,14 @@ You can use DirectoryVariables to make the Lisp directory read-only, but not in 
    '((nil . ((buffer-read-only . t)))))
   (dir-locals-set-directory-class "/usr/share/emacs/" 'unwritable-directory)
 
+== View current buffer ==
+
+I have this to pop open a window onto the current buffer for isearch or to grab something from elsewhere without losing my place:
+
+    (defun view-indirect-buffer-other-window ()
+      (interactive)
+      (clone-indirect-buffer-other-window (buffer-name) t)
+      (view-buffer (current-buffer)))
 
 ----
 CategoryFiles
