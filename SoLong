@@ -21,3 +21,10 @@ Place the library somewhere in your Emacs load-path (or use ##M-x package-instal
 ==Configure==
 
 See the commentary in the code for details of controlling the situations in which ##so-long-mode## will be triggered, and the actions that it takes.
+
+To configure a list of additional buffer-local minor modes to be disabled, you can use the following pattern:
+
+ (when (require 'so-long nil :noerror)
+   (mapc (apply-partially 'add-to-list 'so-long-minor-modes)
+         '(hl-sexp-mode diff-hl-mode diff-hl-amend-mode diff-hl-flydiff-mode))
+   (so-long-enable))
