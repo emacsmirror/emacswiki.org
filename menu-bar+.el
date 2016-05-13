@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 14:27:39 2015 (-0800)
+;; Last-Updated: Thu May 12 17:16:02 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 3733
+;;     Update #: 3737
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -128,6 +128,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/05/12 dadams
+;;     menu-bar-doremi-menu: Added doremi-windows+.
 ;; 2015/12/06 dadams
 ;;     Protect uses of menu-bar-doremi-menu with boundp test.
 ;; 2014/12/29 dadams
@@ -612,7 +614,13 @@ submenu of the \"Help\" menu."))
       :help "Successively cycle among bookmarks: `up'/`down'"))
   (define-key menu-bar-doremi-menu [doremi-buffers+]
     '(menu-item "Buffers" doremi-buffers+
-      :help "Successively cycle among buffers: `up'/`down'")))
+      :help "Successively cycle among buffers: `up'/`down'"))
+  (when (fboundp 'doremi-windows+)      ; Emacs 22+
+    (define-key menu-bar-doremi-menu [doremi-windows]
+      '(menu-item "Windows" doremi-windows+
+        :help "Successively cycle among windows: `up'/`down'"
+        :enable (not (one-window-p))))))
+
 (when (and (featurep 'thumb-frm)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [thumfr-doremi-thumbnail-frames+]
     '(menu-item "Fisheye Frame" thumfr-doremi-thumbnail-frames+
