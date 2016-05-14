@@ -1,19 +1,58 @@
 portrait:https://ja.gravatar.com/userimage/33138763/73307bcccd5d95508f4e78348eab4a5b.png?size=200
 
-I'm [https://en.wiktionary.org/wiki/DT#Japanese DT], PHPer and programming hobbyist.
+I'm [https://en.wiktionary.org/wiki/DT#Japanese DT], PHPer and programming hobbyist. I use Emacs everyday! I like EmacsLisp and PHP.
 
 I am also known as [::tadsan] on Twitter. GitHub and Packagist account is [::zonuexe].
 
 == Code ==
 
+* https://github.com/zonuexe/right-click-context - ContextMenu implementation
 * https://github.com/zonuexe/magic-filetype.el
-* https://github.com/zonuexe/right-click-context
-* https://github.com/zonuexe/psysh.el
+* https://github.com/zonuexe/psysh.el - PHP REPL based on ComintMode
 * https://github.com/zonuexe/init-open-recentf.el
 * https://github.com/zonuexe/robots-txt-mode
 * https://github.com/zonuexe/emoji-fontset.el
 * https://github.com/zonuexe/aa-edit-mode - MajorMode for editing ShiftJisArt
+* https://github.com/zonuexe/maruo-macro-mode.el - MajorMode for editing MaruoMacro script
 * https://github.com/zonuexe/pixiv-novel-mode.el
+<<<<<<< you
+
+== Article ==
+
+I'm writing articles about Emacs and Lisp in Japanese.
+
+=== Emacs ===
+
+* [http://qiita.com/tadsan/items/a4fe3c602df6115938cf Emacsで世界を滅ぼす - Qiita]
+* [http://qiita.com/tadsan/items/9e6903e5db738f408292 (Emacs|Vim)初心者から脱出するためのなんやかんや - Qiita]
+* [http://qiita.com/tadsan/items/e7557c8db33a3c590fec ESCを連打したときにclose-other-windowsされたくない - Qiita]
+* [http://qiita.com/tadsan/items/114ffe6bb645551268dd Emacsの分割ウィンドウを←↓↑→で移動 - Qiita]
+* [http://qiita.com/tadsan/items/df73c711f921708facdc show-trailing-whitespaceは便利だが、見栄えが悪いこともある - Qiita]
+* [http://qiita.com/tadsan/items/a67b28dd02bf819f3f4e Emacsで絵文字を表示する - Qiita]
+* [http://qiita.com/tadsan/items/55c4e5a5ecdb19474de4 MySQLなどのSQLが書かれたファイルを編集する - Qiita]
+* [http://qiita.com/tadsan/items/6aea9d6143f722900260 ファイルパスによってインデントを変更する - Qiita]
+* [http://qiita.com/tadsan/items/4ed132f5d4372447090f Emacsでもアスキーアートが読める - Qiita]
+* [http://qiita.com/tadsan/items/1c63624156c4620da164 image-modeでぬるぬるスクロール - Qiita]
+* [http://qiita.com/tadsan/items/8b5976682b955788c262 指定したマイナーモードを表示しない - Qiita]
+* [http://qiita.com/tadsan/items/c859c5c04724cbda75fc 指定したマイナーモードを表示しない(diminish篇) - Qiita]
+* [http://qiita.com/tadsan/items/bb84dbb6008dabca4891 OS Xでいつの間にかEmacsが暴走してて困る - Qiita]
+* [http://qiita.com/tadsan/items/a21c268021b46b8a6b33 拡張子の関連付け：ファイル名ごとにモードを設定する - Qiita]
+* [http://qiita.com/tadsan/items/20c0325520cb86cfb230 TRAMP経由かどうか判定する - Qiita]
+* [http://qiita.com/tadsan/items/9cc262e1772edb630dd9 物覚えが悪いから同時に押す - Qiita]
+* [http://qiita.com/tadsan/items/3d4c5d14850cff7fbcb5 起動直後になんかする。recentfとかね - Qiita]
+* [http://qiita.com/tadsan/items/7933bdc5ffa3e423cd9b 新規ファイルにテンプレ挿入する(めんどくさくない版) - Qiita]
+* [http://qiita.com/tadsan/items/6aea9d6143f722900260 ファイルパスによってインデントを変更する - Qiita]
+* [http://qiita.com/tadsan/items/ab3c3b594b5bf6203f02 auto-complete環境で補完の大文字小文字を区別する - Qiita]
+* [http://qiita.com/tadsan/items/3d3f5d8c6ec24c324963 ぼくの.emacs 2014 - Qiita]
+* [http://qiita.com/tadsan/items/c4a80f46623ea266f5c5 ぼくの.emacs 2013 - Qiita]
+
+=== Emacs Lisp ===
+
+* [http://qiita.com/tadsan/items/248f63934204683f909b ファイルを読み込む - Qiita]
+* [http://qiita.com/tadsan/items/b74856f555720a5ca2e5 MELPAにレシピを投稿するには - Qiita]
+* [http://qiita.com/tadsan/items/4f5743de21b7aa06ca35 Emacsを起動する - Qiita]
+||||||| ancestor
+=======
 
 
 
@@ -31,3 +70,4 @@ Welcome to the wiki. -- DrewAdams
 ----
 
 CategoryHomepage
+>>>>>>> other
