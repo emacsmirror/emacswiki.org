@@ -24,8 +24,6 @@ See the commentary in the code for details of controlling the situations in whic
 
 ##M-x customize-group RET so-long RET## to configure the library.
 
-To configure a list of additional buffer-local minor modes to be disabled, you can use the following pattern:
-
 ===Minor modes===
 
 The following minor modes are disabled by default:
