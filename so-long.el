@@ -5,7 +5,7 @@
 ;; Keywords: convenience
 ;; Created: 12 Jan 2016
 ;; Package-Requires: ((emacs "24.3"))
-;; Version: 0.7.3
+;; Version: 0.7.4
 
 ;; This file is not part of GNU Emacs.
 
@@ -80,6 +80,7 @@
 
 ;;; Change Log:
 ;;
+;; 0.7.4 - Refactored the handling of `whitespace-mode'.
 ;; 0.7.3 - Added customize group `so-long' with user options.
 ;;       - Added `so-long-original-values' to generalise the storage and
 ;;         restoration of values from the original mode upon `so-long-revert'.
@@ -132,7 +133,7 @@ most cases, but there are some exceptions to this."
 (defcustom so-long-minor-modes
   '(font-lock-mode
     highlight-changes-mode hi-lock-mode hl-line-mode linum-mode nlinum-mode
-    prettify-symbols-mode visual-line-mode)
+    prettify-symbols-mode visual-line-mode whitespace-mode)
   ;; It's not clear to me whether all of these would be problematic, but they
   ;; seemed like reasonable targets.  Some are certainly excessive in smaller
   ;; buffers of minified code, but we should be aiming to maximise performance
@@ -146,18 +147,19 @@ This happens during `after-change-major-mode-hook', and after any globalized
 minor modes have acted, so that buffer-local modes controlled by globalized
 modes can also be targeted.
 
-`so-long-hook' can be used where more custom behaviour is desired."
+`so-long-hook' can be used where more custom behaviour is desired.
+
+See also `so-long-mode-hook'."
   :type '(repeat symbol) ;; not function, as may be unknown => mismatch.
   :group 'so-long)
 
-(defcustom so-long-hook '(so-long-inhibit-whitespace-mode
-                          so-long-make-buffer-read-only) ;; n.b. do this last.
+(defcustom so-long-hook '(so-long-make-buffer-read-only) ;; n.b. do this last.
   "List of functions to call after `so-long-mode'.
 
 This hook runs during `after-change-major-mode-hook', and after any globalized
 minor modes have acted.
 
-See also `so-long-minor-modes'."
+See also `so-long-mode-hook' and `so-long-minor-modes'."
   :type '(repeat function)
   :group 'so-long)
 
@@ -271,7 +273,19 @@ type \\[so-long-mode-revert], or else re-invoke it manually."
            (or (so-long-original 'major-mode) "<unknown>")
            (substitute-command-keys "\\[so-long-mode-revert]")))
 
-(add-hook 'so-long-mode-hook 'so-long-inhibit-global-hl-line-mode)
+(defcustom so-long-mode-hook '(so-long-inhibit-global-hl-line-mode)
+  ;; This must be defined after `so-long-mode', otherwise a default
+  ;; docstring will be used instead of the following.
+  "List of functions to call when `so-long-mode' is invoked.
+
+This is the standard mode hook for `so-long-mode' which runs between
+`change-major-mode-after-body-hook' and `after-change-major-mode-hook'.
+
+Note that globalized minor modes have not yet acted.
+
+See also `so-long-hook' and `so-long-minor-modes'."
+  :type '(repeat function)
+  :group 'so-long)
 
 (defun so-long-after-change-major-mode ()
   "Disable modes in `so-long-minor-modes' and run `so-long-hook' functions.
@@ -320,17 +334,6 @@ Called by default in `so-long-revert-hook'."
 
 Called by default during `so-long-mode-hook'."
   (setq-local global-hl-line-mode nil))
-
-(defun so-long-inhibit-whitespace-mode ()
-  "Turn off `whitespace-mode'.
-
-Called by default in `so-long-hook' to counteract `global-whitespace-mode'."
-  (when (fboundp 'whitespace-turn-off)
-    (whitespace-turn-off)
-    ;; TODO: are the following also necessary?
-    ;; (setq-local global-whitespace-mode nil)
-    ;; (setq-local whitespace-mode nil)
-    ))
 
 (defun so-long-check-header-modes ()
   "Handles the header-comments processing in `set-auto-mode'.
