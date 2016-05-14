@@ -1,6 +1,6 @@
 This is a workaround for the issue of large 'minified'[sup]1[/sup] files of programming code (i.e., code that has been compacted into the smallest file size possible, which often entails removing newlines should they not be strictly necessary) bringing Emacs to its knees on account of the relevant modes not being (remotely) optimised for that use-case.
 
-When the lines in a buffer are /so long/ that performance could suffer to an unacceptable degree, we say "so long"[sup]2[/sup] to the buffer's major mode, and invoke something much more basic in its place.
+When the lines in a buffer are /so long/ that performance could suffer to an unacceptable degree, we say "so long"[sup]2[/sup] to the buffer's major mode, and invoke something much more basic in its place (including disabling minor modes which are considered to affect performance noticeably).
 
 See the commentary in ##so-long.el## for more details.
 
@@ -22,9 +22,27 @@ Place the library somewhere in your Emacs load-path (or use ##M-x package-instal
 
 See the commentary in the code for details of controlling the situations in which ##so-long-mode## will be triggered, and the actions that it takes.
 
+##M-x customize-group RET so-long RET## to configure the library.
+
 To configure a list of additional buffer-local minor modes to be disabled, you can use the following pattern:
 
- (when (require 'so-long nil :noerror)
-   (mapc (apply-partially 'add-to-list 'so-long-minor-modes)
-         '(hl-sexp-mode diff-hl-mode diff-hl-amend-mode diff-hl-flydiff-mode))
-   (so-long-enable))
+===Minor modes===
+
+The following minor modes are disabled by default:
+
+* font-lock-mode
+* highlight-changes-mode
+* hi-lock-mode
+* hl-line-mode
+* linum-mode
+* nlinum-mode
+* prettify-symbols-mode
+* visual-line-mode
+
+It is a good idea to customize ##so-long-minor-modes## to add any additional buffer-local minor modes that you use which you know to have performance implications. Some known examples are as follows. Please contribute to this list, regardless of whether the mode is part of Emacs, or from a third party library or package.
+
+* hl-sexp-mode
+* diff-hl-mode
+* diff-hl-amend-mode
+* diff-hl-flydiff-mode
+
