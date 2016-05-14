@@ -36,6 +36,7 @@ The following minor modes are disabled by default:
 * nlinum-mode
 * prettify-symbols-mode
 * visual-line-mode
+* whitespace-mode
 
 It is a good idea to customize ##so-long-minor-modes## to add any additional buffer-local minor modes that you use which you know to have performance implications. Some known examples are as follows. Please contribute to this list, regardless of whether the mode is part of Emacs, or from a third party library or package.
 
