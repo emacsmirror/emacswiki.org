@@ -5,7 +5,7 @@
 ;; Keywords: convenience
 ;; Created: 12 Jan 2016
 ;; Package-Requires: ((emacs "24.3"))
-;; Version: 0.7.2
+;; Version: 0.7.3
 
 ;; This file is not part of GNU Emacs.
 
@@ -29,10 +29,11 @@
 ;;
 ;; When such files are detected, we invoke `so-long-mode' in place of the mode
 ;; that Emacs selected.  This is almost identical to `fundamental-mode', and
-;; so provides optimal performance in the buffer.
+;; so provides optimal performance in the buffer.  In addition, we explicitly
+;; disable a (configurable) list of minor modes with performance implications.
 ;;
-;; These kinds of files are typically not intended to be edited; so not
-;; providing the usual editing mode in such cases will rarely be an issue.
+;; These kinds of minified files are typically not intended to be edited; so
+;; not providing the usual editing mode in such cases will rarely be an issue.
 ;; However, should the user wish to do so, the original mode may be reinstated
 ;; easily in any given buffer using `so-long-mode-revert' (the key binding for
 ;; which is advertised when the mode is entered).
@@ -51,8 +52,9 @@
 
 ;; Inhibiting and disabling minor modes
 ;; ------------------------------------
-;; The simple way to disable most minor modes is to add the mode symbol to the
-;; `so-long-minor-modes' list.  Several modes are targeted by default.
+;; The simple way to disable most buffer-local minor modes is to add the mode
+;; symbol to the `so-long-minor-modes' list.  Several modes are targeted by
+;; default.
 ;;
 ;; In addition, two custom hooks are available for custom behaviours:
 ;;
@@ -78,6 +80,10 @@
 
 ;;; Change Log:
 ;;
+;; 0.7.3 - Added customize group `so-long' with user options.
+;;       - Added `so-long-original-values' to generalise the storage and
+;;         restoration of values from the original mode upon `so-long-revert'.
+;;       - Added `so-long-revert-hook'.
 ;; 0.7.2 - Remember the original major mode even with M-x `so-long-mode'.
 ;; 0.7.1 - Clarified interaction with globalized minor modes.
 ;; 0.7   - Handle header 'mode' declarations.
@@ -95,27 +101,35 @@
 
 ;;; Code:
 
-(defvar so-long-mode-enabled t
-  "Set to nil to prevent `so-long-mode' from being triggered.")
+(defgroup so-long nil
+  "Prevent unacceptable performance degradation with very long lines."
+  :prefix "so-long"
+  :group 'convenience)
 
-(defvar so-long-threshold 250
+(defcustom so-long-threshold 250
   "Maximum line length permitted before invoking `so-long-mode'.
 
-See `so-long-line-detected-p' for details.")
+See `so-long-line-detected-p' for details."
+  :type 'integer
+  :group 'so-long)
 
-(defvar so-long-max-lines 5
+(defcustom so-long-max-lines 5
   "Number of non-blank, non-comment lines to test for excessive length.
 
-See `so-long-line-detected-p' for details.")
+See `so-long-line-detected-p' for details."
+  :type 'integer
+  :group 'so-long)
 
-(defvar so-long-target-modes
+(defcustom so-long-target-modes
   '(prog-mode css-mode)
   "`so-long-mode' affects only these modes and their derivatives.
 
 Our primary use-case is minified programming code, so `prog-mode' covers
-most cases, but there are some exceptions to this.")
+most cases, but there are some exceptions to this."
+  :type '(repeat symbol) ;; not function, as may be unknown => mismatch.
+  :group 'so-long)
 
-(defvar so-long-minor-modes
+(defcustom so-long-minor-modes
   '(font-lock-mode
     highlight-changes-mode hi-lock-mode hl-line-mode linum-mode nlinum-mode
     prettify-symbols-mode visual-line-mode)
@@ -124,39 +138,75 @@ most cases, but there are some exceptions to this.")
   ;; buffers of minified code, but we should be aiming to maximise performance
   ;; by default, so that Emacs is as responsive as we can manage in even very
   ;; large buffers of minified code.
-  "List of minor modes to explicitly disable in `so-long-mode'.
+  "List of buffer-local minor modes to explicitly disable in `so-long-mode'.
 
 The modes are disabled by calling them with a single numeric argument of zero.
 
-`so-long-hook' can be used where more custom behaviour is desired.
+This happens during `after-change-major-mode-hook', and after any globalized
+minor modes have acted, so that buffer-local modes controlled by globalized
+modes can also be targeted.
 
-Occurs during `after-change-major-mode-hook' so that globalized minor modes
-can also be handled.")
+`so-long-hook' can be used where more custom behaviour is desired."
+  :type '(repeat symbol) ;; not function, as may be unknown => mismatch.
+  :group 'so-long)
 
-(defvar so-long-hook '(so-long-inhibit-whitespace-mode
-                       so-long-make-buffer-read-only) ;; n.b. do this last.
+(defcustom so-long-hook '(so-long-inhibit-whitespace-mode
+                          so-long-make-buffer-read-only) ;; n.b. do this last.
   "List of functions to call after `so-long-mode'.
 
-Occurs during `after-change-major-mode-hook' so that globalized minor modes
-can also be handled.
+This hook runs during `after-change-major-mode-hook', and after any globalized
+minor modes have acted.
 
-See also `so-long-minor-modes'.")
+See also `so-long-minor-modes'."
+  :type '(repeat function)
+  :group 'so-long)
+
+(defcustom so-long-revert-hook '(so-long-revert-buffer-read-only)
+  "List of functions to call after `so-long-mode-revert'."
+  :type '(repeat function)
+  :group 'so-long)
+
+(defvar so-long-mode-enabled t
+  "Set to nil to prevent `so-long-mode' from being triggered.")
 
 (defvar so-long-mode--inhibited nil) ; internal use
 (make-variable-buffer-local 'so-long-mode--inhibited)
 (put 'so-long-mode--inhibited 'permanent-local t)
 
-(defvar-local so-long-original-mode nil
-  "Stores the original `major-mode' value.")
-(put 'so-long-original-mode 'permanent-local t)
+(defvar-local so-long-original-values nil
+  "Alist holding the buffer's original `major-mode' value, and other data.
+
+Any values to be restored by `so-long-revert' can be stored here during
+`change-major-mode-hook' and reinstated during `so-long-revert-hook'.
+
+See also `so-long-remember' and `so-long-original'.")
+(put 'so-long-original-values 'permanent-local t)
+
+(defun so-long-original (key &optional exists)
+  "Return the current value for KEY in `so-long-original-values'.
+
+If you need to differentiate between a stored value of nil and no stored value
+at all, make EXISTS non-nil. This then returns the result of `assq' directly:
+nil if no value was set, and a cons cell otherwise."
+  (if exists
+      (assq key so-long-original-values)
+    (cdr (assq key so-long-original-values))))
+
+(defun so-long-remember (variable)
+  "Push the `symbol-value' for VARIABLE to `so-long-original-values'."
+  (push (cons variable (symbol-value variable))
+        so-long-original-values))
 
 (add-hook 'change-major-mode-hook 'so-long-change-major-mode)
 
 (defun so-long-change-major-mode ()
   "Ensures that `so-long-mode' knows the original `major-mode'
-even when invoked interactively."
+even when invoked interactively.
+
+Called by default during `change-major-mode-hook'."
   (unless (eq major-mode 'so-long-mode)
-    (setq so-long-original-mode major-mode)))
+    (so-long-remember 'major-mode)
+    (so-long-remember 'buffer-read-only)))
 
 ;; When the line's long
 ;; When the mode's slow
@@ -207,7 +257,7 @@ Some globalized minor modes may be inhibited by acting in `so-long-mode-hook'.
 
 By default this mode is essentially equivalent to `fundamental-mode', and
 exists mainly to provide information to the user as to why the expected mode
-was not used.
+was not used, and to facilitate hooks for other so-long functionality.
 
 To revert to the original mode despite any potential performance issues,
 type \\[so-long-mode-revert], or else re-invoke it manually."
@@ -218,7 +268,7 @@ type \\[so-long-mode-revert], or else re-invoke it manually."
   ;; Inform the user about our major mode hijacking.
   (message "Changed to %s (from %s) on account of line length. %s to revert."
            major-mode
-           (or so-long-original-mode "Unknown")
+           (or (so-long-original 'major-mode) "<unknown>")
            (substitute-command-keys "\\[so-long-mode-revert]")))
 
 (add-hook 'so-long-mode-hook 'so-long-inhibit-global-hl-line-mode)
@@ -234,38 +284,47 @@ This happens during `after-change-major-mode-hook'."
   (run-hooks 'so-long-hook))
 
 (defun so-long-mode-revert ()
-  "Call the `major-mode' which was originally selected by `set-auto-mode'
-before `so-long-mode' was called to replace it, and then re-process the
-local variables."
+  "Call the `major-mode' which was selected before `so-long-mode' replaced it,
+and re-process the local variables.  Lastly run `so-long-revert-hook'."
   (interactive)
-  (unless so-long-original-mode
-    (error "Original mode unknown."))
-  (funcall so-long-original-mode)
-  (hack-local-variables))
+  (let ((so-long-original-mode (so-long-original 'major-mode)))
+    (unless so-long-original-mode
+      (error "Original mode unknown."))
+    (funcall so-long-original-mode)
+    (hack-local-variables)
+    (run-hooks 'so-long-revert-hook)))
 
 (define-key so-long-mode-map (kbd "C-c C-c") 'so-long-mode-revert)
 
 (defun so-long-make-buffer-read-only ()
   "Make a so-long buffer read-only.
 
-Run by default as the final action of `so-long-hook', as some earlier actions
-may generate warnings when performed in a read-only buffer (e.g. disabling
-`highlight-changes-mode').
+Called by default as the final action of `so-long-hook', as some earlier
+actions may generate warnings when performed in a read-only buffer (e.g.
+disabling `highlight-changes-mode').
 
-As such, making the buffer read-only should be the final action taken, to
-avoid any potential errors."
+As such, making the buffer read-only should be the final action taken,
+to avoid any potential errors."
   (setq buffer-read-only t))
+
+(defun so-long-revert-buffer-read-only ()
+  "Restore `buffer-read-only' to its original value.
+
+Called by default in `so-long-revert-hook'."
+  (let ((readonly (so-long-original 'buffer-read-only :exists)))
+    (when readonly
+      (setq buffer-read-only (cdr readonly)))))
 
 (defun so-long-inhibit-global-hl-line-mode ()
   "Prevent `global-hl-line-mode' from activating.
 
-Run by default in `so-long-mode-hook'."
+Called by default during `so-long-mode-hook'."
   (setq-local global-hl-line-mode nil))
 
 (defun so-long-inhibit-whitespace-mode ()
   "Turn off `whitespace-mode'.
 
-Run by default in `so-long-hook' to counteract `global-whitespace-mode'."
+Called by default in `so-long-hook' to counteract `global-whitespace-mode'."
   (when (fboundp 'whitespace-turn-off)
     (whitespace-turn-off)
     ;; TODO: are the following also necessary?
