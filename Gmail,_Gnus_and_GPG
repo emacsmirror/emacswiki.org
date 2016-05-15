@@ -35,7 +35,7 @@ screen loggers). But,
 is important. Every little thing helps. And it definitely makes mass
 surveillance much harder and more expensive to do.
 
-== Getting a secret key for GPG =
+== Getting a secret key for GPG ==
 
 We'll generate a new secret key using GPG. A secret key is like your
 identity. You need to keep it safe. Every secret key comes with a public
@@ -138,7 +138,7 @@ learn more by reading
 [https://alexcabal.com/creating-the-perfect-gpg-keypair/ Creating the perfect GPG keypair]
 by Alex Cabal.
 
-== Exchanging public keys with partners =
+== Exchanging public keys with partners ==
 
 This is what we would send our partners:
 
@@ -230,7 +230,7 @@ and so on. Consider using [https://keybase.io/ Keybase]. It allows you
 to "Get a public key, safely, starting just with someone's social media
 username(s)."
 
-== Getting a password for Gmail =
+== Getting a password for Gmail ==
 
 This setup assumes that you have
 [https://www.google.com/landing/2step/ enabled 2-step authentication]
@@ -249,7 +249,7 @@ that somebody may have stolen it.
 
 Let's assume that the password generated is "thisismysecretpw".
 
-== Storing your Gmail password for Gnus, using GPG to encrypt it =
+== Storing your Gmail password for Gnus, using GPG to encrypt it ==
 
 We want Gnus to know about this password. Gnus uses a file called
 ##~./authinfo.gpg## for all your passwords. This file will be protected by
@@ -288,7 +288,7 @@ Move the line marked with the ##u##. This is the key with "ultimate trust"
 If you exit Emacs and try to open the file again, you'll be asked for
 your passphrase. Excellent!
 
-== Setting up Gnus for Gmail =
+== Setting up Gnus for Gmail ==
 
 Gnus is a powerful tool. Originally, it was intended to read news on
 USENET. Then backends were added and now it can read RSS files, mail in
@@ -356,7 +356,7 @@ This moves them into the Spam folder."
   (gnus-summary-move-article nil "nnimap+imap.gmail.com:[Gmail]/Spam"))
 }}}
 
-== Run Gnus =
+== Run Gnus ==
 
 Do it now! Start Emacs and run ##M-x gnus##. You will be prompted for your
 passphrase to unlock the Gmail password, and then Gnus will start
@@ -372,7 +372,7 @@ running. You should see something like the following:
 *      0: [Gmail]/Starred
 }}}
 
-== Send encrypted mail =
+== Send encrypted mail ==
 
 Let's test sending some encrypted mail. Hit ##m## to create a message
 buffer. The tag ##<#secure method=pgpmime mode=encrypt>## makes sure that
@@ -435,7 +435,7 @@ Cheers
 Alex
 }}}
 
-== Troubleshooting =
+== Troubleshooting ==
 
 If you installed Emacs for Windows and you're reading an email message
 containing HTML, Gnus will try to render it for you. This uses the
@@ -449,7 +449,7 @@ you to install it from Eli Zaretskii's collection [http://sourceforge.net/projec
 important part is that the files in its ##bin## directory are on your
 ##PATH##.
 
-== Keyservers =
+== Keyservers ==
 
 You can install support for keyservers. Modify your ##~/.gnupg/gpg.conf##
 and add the following two lines:
@@ -551,7 +551,7 @@ Your signature was verified.
 
 Yay!
 
-== The GPG Agent and Emacs =
+== The GPG Agent and Emacs ==
 
 The GPG Agent is a service that will remember your passphrase for a
 short while. If you don't use it, Gnus will ask you for your
@@ -625,7 +625,7 @@ However, if Emacs is started by a window manager, it does not inherit
 the environment from a shell. That's why we're using an environment
 file.
 
-== The GPG Agent and the Shell =
+== The GPG Agent and the Shell ==
 
 If you want to use GPG from the shell, we repeat the same process
 using a shell script.
@@ -685,7 +685,7 @@ Guest@Megabombus:~$ gpg-agent
 gpg-agent: gpg-agent running and available
 }}}
 
-== Using Homebrew to Install GPG =
+== Using Homebrew to Install GPG ==
 
 Using [http://brew.sh/ Homebrew]:
 
@@ -699,7 +699,7 @@ Installing ##gpg-agent## tells you to make sure you use
 ##use-standard-socket## in your ##~/.gnupg/gpg-agent.conf##. This appears
 not to be necessary, however.
 
-=== Starting the GPG Agent as a Service on a Mac =
+=== Starting the GPG Agent as a Service on a Mac ===
 
 If you need the gpg-agent to be available to other applications aside
 from Emacs and the shell, you might want to have it launched when you
@@ -766,7 +766,7 @@ Guest@Megabombus:~$ gpg-agent
 gpg-agent: gpg-agent running and available
 }}}
 
-=== Pinentry on a Mac =
+=== Pinentry on a Mac ===
 
 On a Mac, when decrypting a message using Emacs started from the GUI,
 you'll see a simple, cut off message saying
@@ -802,7 +802,7 @@ Emacs!
 └────────────────────────────────────────────────────────────────────────────────────┘
 }}}
 
-== Further Reading =
+== Further Reading ==
 
 * [https://gist.github.com/grugq/03167bed45e774551155 Operational PGP]
 * [http://keyring.debian.org/creating-key.html Creating a new GPG key]
