@@ -237,6 +237,27 @@ If you use '''[[Icicles]]''' then this has an '''Icicles''' submenu:
 ;; '''Icicles''': [[image:DiredPlusDirIciclesMenu]]
 
 
+If you use <tt>[[find-dired+.el]]</tt> then it has a '''Run `find' Command''' submenu:
+
+;; '''Run `find' Command''': [[image:DiredPlusFindCommandMenu]]
+
+
+It has a '''Navigate''' submenu:
+
+;; '''Navigate''': [[image:DiredPlusNavigateMenu]]
+
+
+It has a '''Bookmark''' submenu:
+
+;; '''Bookmark''': [[image:DiredPlusBookmarkMenu]]
+
+
+It has a '''Hide/Show''' submenu:
+
+;; '''Hide/Show''': [[image:DiredPlusHideShowMenu]]
+
+
+
 If you use DiredSortMenu then it has a '''Sort By''' submenu, which has its own submenus (not shown here):
 
 ;; '''Sort By''': [[image:DiredPlusDirSortByMenu]]
