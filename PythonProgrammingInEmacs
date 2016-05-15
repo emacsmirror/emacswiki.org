@@ -63,7 +63,9 @@ The tools built on jedi support using it to find definitions. [https://github.co
 ====sphinx-doc====
 [https://melpa.org/#/sphinx-doc sphinx-doc] supports inserting and updating docstring skeletons
 as used by [http://www.sphinx-doc.org Sphinx].  
-
+====python-docstring====
+[https://melpa.org/#/python-docstring python-docstring] is a minor mode for intelligently
+reformatting (refilling) and highlighting Python docstrings. It understands both epytext and Sphinx formats (even intermingled!), so it knows how to reflow them correctly. It will also highlight markup in your docstrings, including epytext and reStructuredText.
 ===Lint, style and syntax checkers===
 Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyflakes (flake8 includes both), pylint and pychecker.
 ====Flycheck====
