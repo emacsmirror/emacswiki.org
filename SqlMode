@@ -144,7 +144,7 @@ And inspired by the above, I've written `sql-upcase-mode' (see SqlUpcase) which 
 
 === Misaligned query results / Filtering the prompts from query output ===
 
-For PostgreSQL at least, this can be an annoyance. The following answer at Emacs.StackExchange provides a solution:
+For PostgreSQL at least, this can be an annoyance. The following answer at EmacsStackExchange provides a solution:
 
 http://emacs.stackexchange.com/a/18403/454
 
