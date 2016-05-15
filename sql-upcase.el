@@ -1,7 +1,7 @@
 ;;; sql-upcase.el --- Upcase SQL keywords -*- lexical-binding: t -*-
 
 ;; Author: Phil S.
-;; URL: https://www.emacswiki.org/emacs/SqlUpcaseMode
+;; URL: https://www.emacswiki.org/emacs/SqlUpcase
 ;; Keywords: abbrev, convenience, languages
 ;; Created: 9 May 2016
 ;; Package-Requires: ((emacs "24.3"))
