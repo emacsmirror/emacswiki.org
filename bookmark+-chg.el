@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun May  8 16:25:57 2016 (-0700)
+;; Last-Updated: Sun May 15 10:03:22 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16021
+;;     Update #: 16026
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1764,6 +1764,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2016/05/15 dadams
+;;     dired-mode-hook:
+;;       If diredp-bookmark-menu is defined then use that.
+;;       Rename menu item: Show This Dir Using a Bookmark -> Jump to a Dired Bookmark For This Dir.
 ;; 2016/05/08 dadams
 ;;     Added: bmkp-bookmark-map-prefix-key, bmkp-jump-map-prefix-key,
 ;;            bmkp-jump-other-window-map-prefix-key, bmkp-set-map-prefix-key.
