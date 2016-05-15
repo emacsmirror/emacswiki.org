@@ -1,6 +1,6 @@
 A minor mode which converts lower-case SQL keywords to upper-case as you type or otherwise insert text in the buffer -- for instance, killing and yanking an entire SQL query would upcase all keywords in that query.
 
-Commands are also provided for upcasing all keywords in the buffer (##sql-upcase-buffer##), or a specified region (##sql-upcase-region##).
+Commands are also provided for upcasing all keywords in the buffer (`sql-upcase-buffer'), or a specified region (`sql-upcase-region').
 
 The library utilises the product-specific regexps defined by SqlMode, and thus will upcase only the keywords defined for the buffer's `sql-product'. (Note that `sql-mode' buffers default to the `ansi' product. See also SqlQueryBuffer.)
 
@@ -22,13 +22,13 @@ By default, /only/ lower-case keywords are processed. ##(setq sql-upcase-mixed-c
 
 ==Known issues==
 
-# This is slightly aggressive in ##sql-interactive-mode##, in that text insertions in that mode are not always typed by the user. The biggest concern /is/ handled -- output from the inferior comint process is not touched. However there may be other cases (e.g. cycling through the comint command history) in which automatic modifications to the inserted text are less desirable. In practice this is probably ok, but YMMV.
+# This is slightly aggressive in `sql-interactive-mode', in that text insertions in that mode are not always typed by the user. The biggest concern /is/ handled -- output from the inferior comint process is not touched. However there may be other cases (e.g. cycling through the comint command history) in which automatic modifications to the inserted text are less desirable. In practice this is probably ok, but YMMV.
 
-# It is assumed that font-lock patterns using ##font-lock-builtin-face## are functions, and should only be upcased when followed by an opening parenthesis. In practice this is not always accurate (an example being that, for PostgreSQL, ##set## is treated as a 'builtin' rather than a 'keyword'). It may be better to treat both types the same, and not insist upon the opening parenthesis for builtins, but more investigation is needed.
+# It is assumed that font-lock patterns using `font-lock-builtin-face' are functions, and should only be upcased when followed by an opening parenthesis. In practice this is not always accurate (an example being that, for PostgreSQL, ##set## is treated as a 'builtin' rather than a 'keyword'). It may be better to treat both types the same, and not insist upon the opening parenthesis for builtins, but more investigation is needed.
 
 # Contextual behaviour is limited to ignoring comments and strings, so if you have an identifier name in your query which is also a keyword, it will be upcased. If an unwanted upcasing occurs, you can use undo to revert to the original case.
 
-# Unbalanced quotes in a sql-mode buffer prior to the current statement could confuse the code which checks whether a potential keyword is actually part of a string. This could probably be improved by using ##sql-beginning-of-statement##, but I believe that is really intended for interactive usage. Regardless, I expect this code can be improved. (In SQLi buffers the prompt constrains the query, which should be fairly reliable.)
+# Unbalanced quotes in a sql-mode buffer prior to the current statement could confuse the code which checks whether a potential keyword is actually part of a string. This could probably be improved by using `sql-beginning-of-statement', but I believe that is really intended for interactive usage. Regardless, I expect this code can be improved. (In SQLi buffers the prompt constrains the query, which should be fairly reliable.)
 
 ----
 CategoryModes
