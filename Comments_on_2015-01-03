@@ -795,5 +795,9 @@ A new idea! Perhaps nginx doesn't care about the *Vary* header the backend is se
 proxy_cache_key $scheme$proxy_host$request_uri$http_accept_language;
 }}}
 
+I get the feeling that things are working, right now! If so, it only took 17½ month to find the solution...
+
+In the mean time, bit rot has apparently degraded part of the language loading code because now that I have a working German setup, I notice that the key interface elements are not translated. I get a translated menu on the sidebar ("Übersicht, Letzte Änderundern, Neuigkeiten, ...") but the no translated keywords elsewhere ("Editing ... Summary ... Username ... Save Preview Cancel"). This, at least, looks like a far simpler problem to solve. Let's hope I'm right. :)
+
 -- [http://alexschroeder.ch/wiki/Emacs Alex Schroeder] 2016-05-15 18:45 UTC
 
