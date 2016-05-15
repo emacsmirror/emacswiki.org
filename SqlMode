@@ -134,11 +134,11 @@ A function to uppercase all sql keywords in the buffer using [[FontLockMode]] to
 
 -- Douglas La Rocca
 
-And inspired by the above, I've written SqlUpcaseMode which upcases SQL keywords automatically as text is inserted into the buffer.
+And inspired by the above, I've written `sql-upcase-mode' (see SqlUpcase) which upcases SQL keywords automatically as text is inserted into the buffer.
 
 (I was originally using AbbrevMode for as-you-type upcasing, but it entailed maintaining a separate list of keywords, and a lot of hacking around the limitations of abbrev to prevent it from being overly eager. Using the pre-existing font-lock keywords is a great improvement.)
 
-SqlUpcaseMode processes all inserted text; so it not only upcases keywords as you type, but it will upcase /all/ keywords in any text you yank into the buffer (so to reformat existing SQL, you can simply kill it and yank it into a sql-mode buffer).
+`sql-upcase-mode' processes all inserted text; so it not only upcases keywords as you type, but it will upcase /all/ keywords in any text you yank into the buffer (so to reformat existing SQL, you can simply kill it and yank it into a SqlMode buffer -- although commands to upcase a SqlMode buffer or region are also provided).
 
 -- Phil S.
 
