@@ -6,6 +6,6 @@ https://www.emacswiki.org/emacs/2016-05-15?interface=
 
 Or you can set your preferences in a cookie:
 
-<include "WikiTranslationMenu">
+<include "WikiLanguageMenu">
 
 -- [[Alex Schroeder]]
