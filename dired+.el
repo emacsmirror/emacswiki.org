@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 10 16:55:53 2016 (-0700)
+;; Last-Updated: Sun May 15 09:54:53 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 9492
+;;     Update #: 9525
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -535,11 +535,12 @@
 ;;
 ;;  Variables defined here:
 ;;
-;;    `diredp-file-line-overlay', `diredp-files-within-dirs-done',
-;;    `diredp-font-lock-keywords-1', `diredp-hide-details-last-state'
-;;    (Emacs 24.4+), `diredp-hide-details-toggled' (Emacs 24.4+),
-;;    `diredp-list-files-map', `diredp-loaded-p',
-;;    `diredp-menu-bar-encryption-menu',
+;;    `diredp-bookmark-menu', `diredp-file-line-overlay',
+;;    `diredp-files-within-dirs-done', `diredp-font-lock-keywords-1',
+;;    `diredp-hide-details-last-state' (Emacs 24.4+),
+;;    `diredp-hide-details-toggled' (Emacs 24.4+),
+;;    `diredp-hide/show-menu', `diredp-list-files-map',
+;;    `diredp-loaded-p', `diredp-menu-bar-encryption-menu',
 ;;    `diredp-menu-bar-images-menu.',
 ;;    `diredp-menu-bar-immediate-menu',
 ;;    `diredp-menu-bar-immediate-bookmarks-menu',
@@ -549,8 +550,8 @@
 ;;    `diredp-menu-bar-operate-recursive-menu',
 ;;    `diredp-menu-bar-regexp-menu',
 ;;    `diredp-menu-bar-regexp-recursive-menu',
-;;    `diredp-menu-bar-subdir-menu', `diredp-re-no-dot',
-;;    `diredp-w32-drives-mode-map'.
+;;    `diredp-menu-bar-subdir-menu', `diredp-navigate-menu',
+;;    `diredp-re-no-dot', `diredp-w32-drives-mode-map'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -652,6 +653,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/05/15 dadams
+;;     Added: diredp-bookmark-menu, diredp-hide/show-menu, diredp-navigate-menu.
+;;     Move insert after revert and rename it to Insert/Move-To This Subdir.  Move create-directory before revert.
 ;; 2016/04/29 dadams
 ;;     diredp-next-line: Respect goal-column.
 ;; 2016/01/24 dadams
@@ -3519,7 +3523,7 @@ If no one is selected, symmetric encryption will be performed.  "
     :help "Show thumbnails for marked image files, including those in marked subdirs"))
 
 
-;; `Multiple' `Marked Here and Below' > `Encryption' menu.
+;; `Multiple' > `Marked Here and Below' > `Encryption' menu.
 ;;
 (when (fboundp 'epa-dired-do-encrypt)   ; Emacs 23+
   (defvar diredp-menu-bar-encryption-recursive-menu (make-sparse-keymap "Encryption"))
@@ -3539,7 +3543,7 @@ If no one is selected, symmetric encryption will be performed.  "
       :help "Encrypt marked files, including those in marked subdirs")))
 
 
-;; `Multiple' `Marked Here and Below' > `Search' menu.
+;; `Multiple' > `Marked Here and Below' > `Search' menu.
 ;;
 (defvar diredp-menu-bar-search-recursive-menu (make-sparse-keymap "Search"))
 (define-key diredp-menu-bar-operate-recursive-menu [search]
@@ -3562,7 +3566,7 @@ If no one is selected, symmetric encryption will be performed.  "
     :help "Run `grep' on the marked files, including those in marked subdirs"))
 
 
-;; `Multiple' `Marked Here and Below' > `Bookmark' menu.
+;; `Multiple' > `Marked Here and Below' > `Bookmark' menu.
 ;;
 (defvar diredp-menu-bar-bookmarks-recursive-menu (make-sparse-keymap "Bookmark"))
 (define-key diredp-menu-bar-operate-recursive-menu [bookmarks]
@@ -3739,6 +3743,9 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-mark-menu [unmark]
   '(menu-item "Unmark" dired-unmark :help "Unmark or unflag current line's file"))
 
+
+;; `Mark' > `Tagged' menu.
+;;
 (when (require 'bookmark+ nil t)
   (defvar diredp-mark-tags-menu (make-sparse-keymap "Tagged")
     "`Tags' submenu for Dired menu-bar `Mark' menu.")
@@ -3784,37 +3791,70 @@ If no one is selected, symmetric encryption will be performed.  "
 (defvar diredp-menu-bar-subdir-menu (make-sparse-keymap "Dir"))
 (define-key dired-mode-map [menu-bar subdir] (cons "Dir" diredp-menu-bar-subdir-menu))
 
+
+;; `Dir' > `Hide/Show' menu.
+;;
+(defvar diredp-hide/show-menu (make-sparse-keymap "Hide/Show")
+  "`Hide/Show' submenu for Dired menu-bar `Dir' menu.")
+(define-key diredp-menu-bar-subdir-menu [hide-show] (cons "Hide/Show" diredp-hide/show-menu))
+
 (when (fboundp 'dired-omit-mode)
-  (define-key diredp-menu-bar-subdir-menu [dired-omit-mode]
+  (define-key diredp-hide/show-menu [dired-omit-mode]
     '(menu-item "Hide/Show Uninteresting (Omit Mode)" dired-omit-mode
       :help "Toggle omission of uninteresting files (Omit mode)")))
 (when (fboundp 'dired-hide-details-mode) ; Emacs 24.4+
-  (define-key diredp-menu-bar-subdir-menu [hide-details]
+  (define-key diredp-hide/show-menu [hide-details]
     '(menu-item "Hide/Show Details" dired-hide-details-mode
       :help "Hide or show less important fields of directory listing")))
-(define-key diredp-menu-bar-subdir-menu [hide-all]
+(define-key diredp-hide/show-menu [hide-all]
   '(menu-item "Hide/Show All Subdirs" dired-hide-all
     :help "Hide all subdirectories, leave only header lines"))
-(define-key diredp-menu-bar-subdir-menu [hide-subdir]
+(define-key diredp-hide/show-menu [hide-subdir]
   '(menu-item "Hide/Show Subdir" diredp-hide-subdir-nomove
     :help "Hide or unhide current directory listing"))
-(define-key diredp-menu-bar-subdir-menu [tree-down]
-  '(menu-item "Tree Down" dired-tree-down :help "Go to first subdirectory header down the tree"))
-(define-key diredp-menu-bar-subdir-menu [tree-up]
-  '(menu-item "Tree Up" dired-tree-up :help "Go to first subdirectory header up the tree"))
-(define-key diredp-menu-bar-subdir-menu [up]
-  '(menu-item "Up Directory" diredp-up-directory :help "Dired the parent directory"))
-(define-key diredp-menu-bar-subdir-menu [prev-subdir]
-  '(menu-item "Prev Subdir" diredp-prev-subdir :help "Go to previous subdirectory header line"))
-(define-key diredp-menu-bar-subdir-menu [next-subdir]
-  '(menu-item "Next Subdir" diredp-next-subdir :help "Go to next subdirectory header line"))
-(define-key diredp-menu-bar-subdir-menu [prev-dirline]
-  '(menu-item "Prev Dirline" diredp-prev-dirline :help "Move to previous directory-file line"))
-(define-key diredp-menu-bar-subdir-menu [next-dirline]
-  '(menu-item "Next Dirline" diredp-next-dirline :help "Move to next directory-file line"))
-(define-key diredp-menu-bar-subdir-menu [insert]
-  '(menu-item "This Subdir" dired-maybe-insert-subdir
+
+
+;; `Dir' > `Bookmark' menu.
+;;
+(defvar diredp-bookmark-menu (make-sparse-keymap "Bookmark")
+  "`Bookmark' submenu for Dired menu-bar `Dir' menu.")
+(define-key diredp-menu-bar-subdir-menu [bookmark] (cons "Bookmark" diredp-bookmark-menu))
+
+(define-key diredp-bookmark-menu [diredp-highlight-autofiles-mode]
+  '(menu-item "Toggle Autofile Highlighting" diredp-highlight-autofiles-mode
+    :help "Toggle whether to highlight autofile bookmarks"
+    :visible (and (featurep 'bookmark+)  (featurep 'highlight))))
+(define-key diredp-bookmark-menu [diredp-do-bookmark-dirs-recursive]
+    '(menu-item "Bookmark Dirs Here and Below..." diredp-do-bookmark-dirs-recursive
+      :help "Bookmark this Dired buffer and marked subdirectory Dired buffers, recursively."))
+(define-key diredp-bookmark-menu [bookmark-dired]
+  '(menu-item "Bookmark Dired Buffer..." bookmark-set :help "Bookmark this Dired buffer"))
+
+
+;; `Dir' > `Navigate' menu.
+;;
+(defvar diredp-navigate-menu (make-sparse-keymap "Navigate")
+  "`Navigate' submenu for Dired menu-bar `Dir' menu.")
+(define-key diredp-menu-bar-subdir-menu [navigate] (cons "Navigate" diredp-navigate-menu))
+
+(define-key diredp-navigate-menu [insert]
+  '(menu-item "Move To This Subdir" dired-maybe-insert-subdir
     :help "Move to subdirectory line or listing"))
+(define-key diredp-navigate-menu [tree-down]
+  '(menu-item "Tree Down" dired-tree-down :help "Go to first subdirectory header down the tree"))
+(define-key diredp-navigate-menu [tree-up]
+  '(menu-item "Tree Up" dired-tree-up :help "Go to first subdirectory header up the tree"))
+(define-key diredp-navigate-menu [up]
+  '(menu-item "Up Directory" diredp-up-directory :help "Dired the parent directory"))
+(define-key diredp-navigate-menu [prev-subdir]
+  '(menu-item "Prev Subdir" diredp-prev-subdir :help "Go to previous subdirectory header line"))
+(define-key diredp-navigate-menu [next-subdir]
+  '(menu-item "Next Subdir" diredp-next-subdir :help "Go to next subdirectory header line"))
+(define-key diredp-navigate-menu [prev-dirline]
+  '(menu-item "Prev Dirline" diredp-prev-dirline :help "Move to previous directory-file line"))
+(define-key diredp-navigate-menu [next-dirline]
+  '(menu-item "Next Dirline" diredp-next-dirline :help "Move to next directory-file line"))
+
 (define-key diredp-menu-bar-subdir-menu [separator-subdir] '("--")) ; --------------------------
 
 (define-key diredp-menu-bar-subdir-menu [image-dired-dired-toggle-marked-thumbs]
@@ -3837,13 +3877,7 @@ If no one is selected, symmetric encryption will be performed.  "
   (define-key diredp-menu-bar-subdir-menu [compare-directories]
     '(menu-item "Compare Directories..." dired-compare-directories
       :help "Mark files with different attributes in two Dired buffers")))
-(define-key diredp-menu-bar-subdir-menu [diredp-do-bookmark-dirs-recursive]
-    '(menu-item "Bookmark Dirs Here and Below..." diredp-do-bookmark-dirs-recursive
-      :help "Bookmark this Dired buffer and marked subdirectory Dired buffers, recursively."))
-(define-key diredp-menu-bar-subdir-menu [bookmark-dired]
-  '(menu-item "Bookmark Dired Buffer..." bookmark-set :help "Bookmark this Dired buffer"))
-(define-key diredp-menu-bar-subdir-menu [create-directory] ; Moved from "Immediate".
-  '(menu-item "New Directory..." dired-create-directory :help "Create a directory"))
+
 (define-key diredp-menu-bar-subdir-menu [separator-dired-on-set] '("--")) ; --------------------
 
 (define-key diredp-menu-bar-subdir-menu [diredp-dired-recent-dirs]
@@ -3879,12 +3913,16 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-subdir-menu [dired]
   '(menu-item "Dired (Filter via Wildcards)..." dired
     :help "Explore a directory (you can provide wildcards)"))
-(define-key diredp-menu-bar-subdir-menu [diredp-highlight-autofiles-mode]
-  '(menu-item "Toggle Autofile Highlighting" diredp-highlight-autofiles-mode
-    :help "Toggle whether to highlight autofile bookmarks"
-    :visible (and (featurep 'bookmark+)  (featurep 'highlight))))
+
+(define-key diredp-menu-bar-subdir-menu [separator-dired] '("--")) ; ---------------------
+
+(define-key diredp-menu-bar-subdir-menu [insert]
+  '(menu-item "Insert/Move-To This Subdir" dired-maybe-insert-subdir
+    :help "Move to subdirectory line or listing"))
 (define-key diredp-menu-bar-subdir-menu [revert]
   '(menu-item "Refresh (Sync \& Show All)" revert-buffer :help "Update directory contents"))
+(define-key diredp-menu-bar-subdir-menu [create-directory] ; Moved from "Immediate".
+  '(menu-item "New Directory..." dired-create-directory :help "Create a directory"))
 
 
 ;;; Mouse-3 menu binding.
