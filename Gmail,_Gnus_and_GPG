@@ -708,11 +708,11 @@ log in.
 Note: If you only use GPG from the shell and within Emacs, you don't
 need to this. Skip this section.
 
-First, let's verify that the gpg-agent doesn't run:
+First, let's verify that the gpg-agent is not running:
 
 {{{
 Guest@Megabombus:~$ gpg-agent
--bash: gpg-agent: command not found
+gpg-agent: can't connect to the agent: IPC connect call failed
 }}}
 
 Create the file ##~/Library/LaunchAgents/org.gnupg.gpg-agent.plist##
