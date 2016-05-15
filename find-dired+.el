@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar 25 14:13:15 2016 (-0700)
+;; Last-Updated: Sun May 15 09:57:39 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1199
+;;     Update #: 1202
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -90,6 +90,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/05/15 dadams
+;;     Moved find after wdired-mode, in diredp-menu-bar-subdir-menu.
 ;; 2016/03/25 dadams
 ;;     find-dired-sentinel: Put 2 SPC chars at bol so msg not taken as a mark.  Thx to Tino Calancha.
 ;; 2015/08/27 dadams
@@ -759,7 +761,11 @@ If `encode-time' returns nil then the current time is returned."
   (define-key dired-mode-map [menu-bar search find] '("Run `find' Command" . menu-bar-run-find-menu)))
 ;; Add it to Dired's `Dir' menu (called `Subdir' in `dired.el').
 (when (boundp 'diredp-menu-bar-subdir-menu) ; Defined in `dired+.el'.
-  (define-key-after diredp-menu-bar-subdir-menu [find] '("Run `find' Command" . menu-bar-run-find-menu) 'up))
+  (if (or (> emacs-major-version 21)  (fboundp 'wdired-change-to-wdired-mode))
+      (define-key-after diredp-menu-bar-subdir-menu [find]
+        '("Run `find' Command" . menu-bar-run-find-menu)
+        'wdired-mode)
+    (define-key diredp-menu-bar-subdir-menu [find] '("Run `find' Command" . menu-bar-run-find-menu))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
