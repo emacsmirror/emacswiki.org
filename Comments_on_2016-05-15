@@ -14,3 +14,10 @@ But resetting the cookie seems to take care of it. How/why it got changed, I don
 
 -- DrewAdams 2016-05-15 14:39 UTC
 
+
+----
+
+Hm. I'll try and get rid of the nginx cache over the summer. People getting cached pages in the wrong language has been annoying me for too long.
+
+-- [http://alexschroeder.ch/wiki/Emacs Alex Schroeder] 2016-05-15 18:02 UTC
+
