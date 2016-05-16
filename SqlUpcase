@@ -28,7 +28,7 @@ By default, /only/ lower-case keywords are processed. ##(setq sql-upcase-mixed-c
 
 # Contextual behaviour is limited to ignoring comments and strings, so if you have an identifier name in your query which is also a keyword, it will be upcased. If an unwanted upcasing occurs, you can use undo to revert to the original case.
 
-# Unbalanced quotes in a sql-mode buffer prior to the current statement could confuse the code which checks whether a potential keyword is actually part of a string. This could probably be improved by using `sql-beginning-of-statement', but I believe that is really intended for interactive usage. Regardless, I expect this code can be improved. (In SQLi buffers the prompt constrains the query, which should be fairly reliable.)
+# Unbalanced quotes in a sql-mode buffer prior to the current statement could confuse the code which checks whether a potential keyword is actually part of a string. This could perhaps be improved by using `sql-beginning-of-statement', but it's neither clear to me that that command is robust enough for non-interactive uses, nor that the /general/ question of establishing the (outer) beginning of a SQL statement without parsing it is even possible when it may be preceded by arbitrary content. For instance, the actual query might easily appear as the sub-query of some incomplete SQL earlier in the buffer. Narrowing the buffer to the query you are actually editing should be a workaround for any such issues, however. (Note that in SQLi buffers we use the prompt to constrain the query, which should be fairly reliable.)
 
 ----
 CategoryModes
