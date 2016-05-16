@@ -1,6 +1,6 @@
 <i>This is now part of GNU emacs as find-cmd.el.</i>
 
-With [http://www.shellarchive.co.uk/content/lisp/find.el find.el] you can build up a (hopefully) valid find(1) string ready for the command line. For example:
+With find-cmd.el you can build up a (hopefully) valid find(1) string ready for the command line. For example:
 
     (find-cmd '(prune (name ".svn" ".git" ".CVS"))
               '(and (or (name "*.pl" "*.pm" "*.t")
