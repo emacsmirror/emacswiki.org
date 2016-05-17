@@ -45,8 +45,7 @@ Example .wl:
 (setq wl-strict-diff-folders wl-biff-check-folder-list)
 }}}
 
-(Unfortunately this still does not update the unread counts in the
-##Folder## view correctly.)
+(Note that for the counts in the ##Folder## view to be updated correctly, the items in ##wl-biff-check-folder-list## must match the folder names in .wl-folders *exactly*.)
 
 == Offline ==
 
