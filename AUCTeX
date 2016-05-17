@@ -307,6 +307,25 @@ It's nice to have the same behavior for the '##'##' key -- inserting "##`##" or 
               '(lambda ()
                  (local-set-key "'" 'TeX-insert-single-quote)))
 
+== Local variables ==
+Local variables can be very useful, mostly when you are using non default settings. For example, if you are using xetex, on files encoded in unicode utf-8, with a master file named mymaster.tex, a local dictionary, and want to revert search you can add these lines at the very end of any file:
+{{{
+     \end{document}
+     %
+     % These lines tells gnu-emacs to typeset with the xetex engine
+     % which requires Unicode encoding only (utf-8)
+     % ^c^t^s for toggling synctex. 
+     % ^-Shift-Click to move from pdf to source, Command-Shift-Click on OSX
+     %%% Local Variables:
+     %%% TeX-engine: xetex
+     %%% TeX-source-correlate-method-active: synctex
+     %%% ispell-local-dictionary: "francais"
+     %%% coding: utf-8
+     %%% TeX-master: "mymaster.tex"
+     %%% End:
+}}}
+
+
 == Automagic detection of master file ==
 
 When editing a multifile document, it is necessary to set the ##TeX-master## variable for !AUCTeX and !RefTeX to work properly. Whilst this can be done using file-local variables, it has the disadvantage of adding noise in your source files. An alternative is to add the following line to your ##LaTeX-mode-hook##:
