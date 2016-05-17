@@ -2,7 +2,7 @@
 
 With find-cmd.el you can build up a (hopefully) valid find(1) string ready for the command line. For example:
 
-    (find-cmd '(prune (name ".svn" ".git" ".CVS"))
+    (find-cmd '(prune (name ".svn" ".git" "CVS"))
               '(and (or (name "*.pl" "*.pm" "*.t")
                         (mtime "+1"))
                     (fstype "nfs" "ufs")))
@@ -18,9 +18,9 @@ will become (un-wrapped):
 
 As you can see multiple arguments to `name' (for example) are or'd together:
 
-    (find-cmd '(name ".svn" ".CVS"))
+    (find-cmd '(name ".svn" "CVS"))
 
-    "find '/home/phil/' \\( -name '.svn' -or -name '.CVS' \\) "
+    "find '/home/phil/' \\( -name '.svn' -or -name 'CVS' \\) "
 
 If you would like them and'd together then this will do what you want:
 
