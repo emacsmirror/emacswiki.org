@@ -15,6 +15,39 @@ In your .wl:
         (append wl-address-completion-list (build-mail-aliases))))
 }}}
 
+== How can I enable new mail notifications for Gmail and other IMAP servers? ==
+
+Wanderlust expects IMAP servers to tell it about new mail via a
+'Recent' field. Since Gmail and some other IMAP servers do not supply
+a meaningful value for this field, new mail notification does not
+work. It is possible to force Wanderlust to re-sync and work out
+whether there are new messages by specifying a list of folder names in
+##wl-strict-diff-folders##. 
+
+Because this way of checking for new mail is slower, it is useful to
+only check for new mail when idle.
+
+Example .wl:
+
+{{{
+;; Check these folders for new mail
+(setq wl-biff-check-folder-list 
+      '("%INBOX:\"user@gmail.com\"/clear@imap.gmail.com:993"
+        "%INBOX:\"user@other.domain\"/clear@imapserver.other.domain:993"))
+
+;; Check every 60 seconds
+(setq wl-biff-check-interval 60)
+
+;; Check only when idle
+(setq wl-biff-use-idle-timer t)
+
+;; Use strict diff so wl-biff works with Gmail and others
+(setq wl-strict-diff-folders wl-biff-check-folder-list)
+}}}
+
+(Unfortunately this still does not update the unread counts in the
+##Folder## view correctly.)
+
 == Offline ==
 
 === How do I force Wanderlust to pre-fetch all messages in a folder for offline access? ==
@@ -148,6 +181,7 @@ James
 
 === How to check for new messages ===
 Press the 's' key (##wl-summary-sync##), then it asks you the update method (allowed: ##no-sync first last cache-status mark rescan rescan-noscore rescan-thread update update-entirely all all-entirely##). You probably want to say 'update' (the default), which will query the server for what has changed since last time; if you want to re-check everything, say 'all'.
+
 
 === How can I make my "Sent" folder show TO rather than FROM in the list ===
 Provided you sent folder has the word "Sent" somewhere use:
