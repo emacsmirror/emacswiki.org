@@ -356,6 +356,10 @@ Of course, you also need to define this ##guess-TeX-master## function, for examp
 
 Feel free to improve this function to suit your needs (for example by adding support for other forms of the the "##include##" syntax), but it works quite well for me. Note that it will return ##nil## for files that do not get included in other files, which is the case for single file documents, or for the master files themselves. In this case, the ##TeX-master## variable gets set to ##nil##, which works.
 
+== Synctex and Zathura ==
+
+AUCTeX 11.89.3 has Zathura Pdf viewer ready in the TeX-view-program-selection. Just customize the output-pdf with Zathura instead of Evince. Verify that Zathura is compiled with WITH_SYNCTEX by testing the availability of the option --synctex-forward. Then pdftex or xetex or xelatex or whatever TeX engine to create a synctex pdf using option --synctex=1 from a Tex file foo.tex . Then, verify with command <code>zathura --synctex-forward 93:0:foo.tex foo.pdf</code> that zathura is opened, hilighting line 93. Then Ctrl_left click the pdf on an other line or page, it should open emacs with buffer foo.tex at the corresponding line of .tex source.
+
 == Synctex and Evince ==
 
 Recent versions of the document reader Evince (since 2.32) have support for backward search; i.e. you press Ctrl
