@@ -786,7 +786,7 @@ While we're on topic, let me say what I *want* to happen:
 
 ----
 
-A new idea! Perhaps nginx doesn't care about the *Vary* header the backend is sending. And today I learned about the *proxy_header_hey* setting. As you can see, the default is inadequate!
+A new idea! Perhaps nginx doesn't care about the *Vary* header the backend is sending. And today I learned about the ##proxy_header_key## setting. As you can see, the default is inadequate!
 [https://www.nginx.com/blog/nginx-caching-guide/]
 [http://nginx.org/en/docs/http/ngx_http_core_module.html#var_http_]
 
