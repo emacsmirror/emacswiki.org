@@ -43,7 +43,7 @@ Wanderlust starts in folder buffer, from which you can open a summary buffer (pr
 
 Pressing a/A opens the draft buffer for answering the message at point with/without citing the message. To write a new message press "w". You can auto complete email addresses (form ~/.addresses), with TAB in the draft buffer. 
 
-There's tons of more stuff you can do so reading the manual is a must. (<code>M-x info RET >> C-s Wanderlust</code>). The [http://www.gohome.org original documentation website] has been taken down and the most up-to-date documentation is in the Info file. (At least as of February 2013 in the wl-beta Ubuntu package).
+There's tons of more stuff you can do so reading the manual is a must. (<code>M-x info RET >> C-s Wanderlust</code>). The manual is also available at [http://wanderlust.github.io/wl-docs/wl.html Github].
 
 
 == Configuration (Quickstart) ==
@@ -93,7 +93,7 @@ Check that you have enabled IMAP in your Gmail account settings, then put the fo
       elmo-imap4-default-port '993
       elmo-imap4-default-stream-type 'ssl
 
-      ;;for non ascii-characters in folder-names
+      ;; For non ascii-characters in folder-names
       elmo-imap4-use-modified-utf7 t)
 
 ;; SMTP
@@ -107,18 +107,20 @@ Check that you have enabled IMAP in your Gmail account settings, then put the fo
 
 (setq wl-from "My Name <myname@gmail.com>"
 
-      ;;all system folders (draft, trash, spam, etc) are placed in the
-      ;;[Gmail]-folder, except inbox. "%" means it's an IMAP-folder
+      ;; All system folders (draft, trash, spam, etc) are placed in the
+      ;; [Gmail]-folder, except inbox. "%" means it's an IMAP-folder
       wl-default-folder "%inbox"
       wl-draft-folder   "%[Gmail]/Drafts"
       wl-trash-folder   "%[Gmail]/Trash"
-      wl-fcc            "%[Gmail]/Sent"
+      ;; The below is not necessary when you send mail through Gmail's SMTP server,
+      ;; see https://support.google.com/mail/answer/78892?hl=en&rd=1
+      ;; wl-fcc            "%[Gmail]/Sent"
 
-      ;; mark sent messages as read (sent messages get sent back to you and
+      ;; Mark sent messages as read (sent messages get sent back to you and
       ;; placed in the folder specified by wl-fcc)
       wl-fcc-force-as-read    t
 
-      ;;for when auto-compleating foldernames
+      ;; For auto-completing foldernames
       wl-default-spec "%")
 }}}
 Then you also need to set up your .folder-file. See [[WlMultipleAccounts]] for an example. 
