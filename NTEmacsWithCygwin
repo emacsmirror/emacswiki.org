@@ -24,7 +24,7 @@ I don't think that is true. I've seen recent reports of the problem (about a mon
 
 "Simply install emacs-w32" means nothing, to me at least. "Installing" Emacs for Windows just means picking up an executable for it, or building Emacs yourself. That does not give you Cygwin. The problem reported is using native Emacs on Windows (not Cygwin Emacs) together with recent (not even so recent anymore) Cygwin versions.
 
-If you want to convince people there is no such problem, or you really want to help people, please consider providing a step-by-step recipe for your "simply" solution, instead of just "simply install emacs-w32". -- DrewAdams
+If you want to convince people there is no such problem, or you really want to help people, please consider providing a step-by-step recipe for your "simply" solution, instead of just "simply install emacs-w32". -- DrewAdams 2016-05-18
 [new]
 
 
