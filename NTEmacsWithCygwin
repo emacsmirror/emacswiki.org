@@ -15,6 +15,10 @@ The helpful people from the Cygwin mailing list suggest that it is an NTEmacs pr
 [new:DrewAdams:2014-10-14 16:51 UTC]
 Still a problem as of October 2014, with all Emacs versions (starting with Emacs 20, at least), including Emacs 25 dev snapshots. -- DrewAdams
 [new]
+[new:dkulp:2016-05-19 01:54 UTC]
+This is a non-issue. Simply install emacs-w32. Problem solved. --dkulp
+[new]
+
 
 Workarounds: 
 # Use Cygwin Emacs (package emacs-w32 uses the windows GUI, there are also X11 and console packages)
