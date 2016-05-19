@@ -8,3 +8,10 @@ sorry , I'm not emacs expert
 
 -- oneivan 2013-10-30 07:28 UTC
 
+
+----
+
+Я иcпользую org-mode и приложение Mobileorg из google play. Мне нужно открывать/сохранять *.org файлы в UTF-8 и создавать агенду для mobile-org в UTF-8. Все же остальные файлы нужно открывать/сохранять в windows-1251. Приложение из маркета распознает только UTF-8. Мой  .emacs http://pastebin.com/rs93W6Cc . Подскажите что-нибудь, пожалуйста.
+
+-- emacsizator 2016-05-19 08:04 UTC
+
