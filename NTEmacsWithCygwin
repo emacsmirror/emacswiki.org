@@ -16,7 +16,8 @@ The helpful people from the Cygwin mailing list suggest that it is an NTEmacs pr
 Still a problem as of October 2014, with all Emacs versions (starting with Emacs 20, at least), including Emacs 25 dev snapshots. -- DrewAdams
 [new]
 [new:dkulp:2016-05-19 01:54 UTC]
-This is a non-issue. Simply install emacs-w32. Problem solved. --dkulp
+This is a non-issue. At least as of 2016, simply install emacs-w32. Problem solved.
+Fast. Mouse support. Shell fully functional. No cygwin-mount issues. It just works.
 [new]
 
 
