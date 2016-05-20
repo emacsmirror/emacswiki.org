@@ -13,3 +13,10 @@ syslog-mode.el:492:1:Warning: the function `add-invisible-overlay' is not known 
 
 -- Anonymous 2016-05-20 15:44 UTC
 
+
+----
+
+Lisp was updated today. Last warning is now gone, the first three are still there.
+
+-- Anonymous 2016-05-20 15:53 UTC
+
