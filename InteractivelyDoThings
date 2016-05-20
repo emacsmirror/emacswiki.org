@@ -623,39 +623,13 @@ https://github.com/vapniks/ido-jb-misc-extras
 Included is a redefinition of ##ido-restrict-to-matches## so that when called with a prefix arg it removes matching
 items from the current list instead of restricting to them.
 
-=== disable ido mode temporarily for write-file ===
+=== Disable ido mode for particular commands, e.g. write-file ===
 
-While ido is a great thing, it is totally annoying when trying to write a new file. Of course you can cancel the useles completion prompt anytime with C-f. However, I do this every single time when I hot C-x C-w. So I decided to turn ido off for write-file. The bad thing is: it is not easy to disable ido for a particular function, so I came up with this solution:
+While ido is a great thing, it is totally annoying when trying to write a new file. Of course you can cancel the useles completion prompt anytime with `C-f'. However, I do this every single time when I hot `C-x C-w'. So I decided to turn ido off for write-file.
 
-There's   a  new   global variable,  'my-ido-disabled,   which  is   nil  by
-default. Whenever I  hit C-x C-w (in order  to execute write-file),
-it will be  set to t, ido mode will  be disabled and ido-write-file
-will be called. Since ideo mode  is now disabled, it just calls the
-original write-file, which is what I want.
+##ido-mode##'s remapping keys are defined in ##ido-minor-mode-map-entry##, this is not the keymap, but its `cdr' is the keymap. So to disable the `C-x C-w' remapping:
 
-When I'm finished  selecting a filename and writing,  ido mode will
-be turned  on again and the  variable will be set  to nil. However,
-sometimes I may abort the process  using C-g. In that case ido mode
-may end  up being disabled  because the  :after advice will  not be
-called on C-g.
-
-So,  I   also  advice  the   minibuffer  C-g  function,   which  is
-'abort-recursive-edit, and  re-enable ido mode  from here if  it is
-still disabled.
-
-    (defvar my-ido-disabled nil)
-    (advice-add 'ido-write-file :before '(lambda (&rest args) (ido-mode 0) (setq my-ido-disabled t)))
-    (advice-add 'ido-write-file :after  '(lambda (&rest args) (ido-mode 1) (setq my-ido-disabled nil)))
-    
-    (defun my-keyboard-quit-advice (fn &rest args)
-      (when my-ido-disabled
-        (ido-mode 1)
-        (setq my-ido-disabled nil))
-      (apply fn args))
-    
-    (advice-add 'abort-recursive-edit :around #'my-keyboard-quit-advice)
-    
-- [[thomas-von-dein]]
+    (define-key (cdr ido-minor-mode-map-entry) [remap write-file] nil)
 
 == ido-preview ==
 Two functions, that allow to view current item contents in a temporary buffer and window(clearing surrounding windows, but it's safe). Content is either file contents, buffer contents or function description. 
