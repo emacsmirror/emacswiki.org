@@ -1,0 +1,15 @@
+Compile on current stable (24.5) results in warnings below:
+
+syslog-mode.el:165:1:Warning: defgroup for `syslog' fails to specify containing group
+
+In syslog-mode:
+syslog-mode.el:367:4:Warning: `toggle-read-only' is an obsolete function (as of 24.3); use `read-only-mode' instead.
+
+In syslog-find-file-func:
+syslog-mode.el:466:24:Warning: reference to free variable `syslog-sequence-start-regexp'
+
+In end of data:
+syslog-mode.el:492:1:Warning: the function `add-invisible-overlay' is not known to be defined.
+
+-- Anonymous 2016-05-20 15:44 UTC
+
