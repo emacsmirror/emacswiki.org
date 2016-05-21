@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Dec 31 13:54:28 2015 (-0800)
+;; Last-Updated: Sat May 21 13:45:48 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 27441
+;;     Update #: 27467
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -799,7 +799,7 @@ Non-nil READ-ONLY-P means visit file in read-only mode."
 
 
 ;; Only difference is `icicle-read-expression-map' instead of `read-expression-map'.
-(when (fboundp 'read--expression)
+(when (fboundp 'read--expression)       ; Emacs 24.4+
   (defun icicle-read--expression (prompt &optional initial-contents)
     (let ((minibuffer-completing-symbol t))
       (minibuffer-with-setup-hook
@@ -814,7 +814,9 @@ Non-nil READ-ONLY-P means visit file in read-only mode."
 ;; REPLACE ORIGINAL `pp-eval-expression' defined in `pp.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; This is essentially the same as `pp-eval-expression' defined in `pp+.el'.
+;; This is essentially the same as `pp-eval-expression' defined in `pp+.el', except that it
+;; uses `icicle-read-expression-map', `icicle-pp-eval-expression-print-length', and
+;; `icicle-pp-eval-expression-print-level'.
 ;;
 ;; 1. Read with completion, using `icicle-read-expression-map'.
 ;; 2. Progress message added.
@@ -822,6 +824,7 @@ Non-nil READ-ONLY-P means visit file in read-only mode."
 ;; 4. Respect `icicle-pp-eval-expression-print-length', `icicle-pp-eval-expression-print-level',
 ;;    and `eval-expression-debug-on-error'.
 ;; 5. Adjusted to work in different Emacs releases.
+;; 6. Return result of evaluation (it is also the car of variable `values').
 ;;
 (defun icicle-pp-eval-expression (expression ; Bound to `M-:' in Icicle mode.
                                   &optional insert-value)
@@ -847,7 +850,7 @@ bound to `eval-expression' or `pp-eval-expression' to
 customize option `icicle-top-level-key-bindings'."
   (interactive
    (list (if (fboundp 'read--expression)
-             (read--expression "Eval: ")
+             (icicle-read--expression "Eval: ")
            (read-from-minibuffer "Eval: " nil icicle-read-expression-map t 'read-expression-history))
          current-prefix-arg))
   (message "Evaluating...")
@@ -875,7 +878,8 @@ customize option `icicle-top-level-key-bindings'."
            (if (or (not (stringp (car values)))  (wholenump insert-value))
                (pp (car values) (current-buffer))
              (princ (car values) (current-buffer))))
-          (t (icicle-pp-display-expression (car values) "*Pp Eval Output*")))))
+          (t (icicle-pp-display-expression (car values) "*Pp Eval Output*")))
+    (car values)))
 
 
 ;; REPLACE ORIGINAL in `pp.el':
@@ -886,47 +890,47 @@ customize option `icicle-top-level-key-bindings'."
 ;; Same as `pp-display-expression' definition in `pp+.el'.
 ;;
 (defun icicle-pp-display-expression (expression out-buffer-name)
-  "Prettify and show EXPRESSION in a way appropriate to its length.
+  "Prettify and show EXPRESSION.
+If you use library `pp+.el' then the prettified result can optionally
+be shown in a tooltip - see option `pp-max-tooltip-size'.
+
 If a temporary buffer is needed for representation, it is named
 OUT-BUFFER-NAME."
-  (let* ((old-show-function  temp-buffer-show-function)
-         ;; Use this function to display the buffer.
-         ;; This function either decides not to display it at all
-         ;; or displays it in the usual way.
-         (temp-buffer-show-function
-          `(lambda (buf)
-            (with-current-buffer buf
-              (goto-char (point-min))
-              (end-of-line 1)
-              (if (or (< (1+ (point)) (point-max))
-                      (>= (- (point) (point-min)) (frame-width)))
-                  (let ((temp-buffer-show-function  ',old-show-function)
-                        (old-selected               (selected-window))
-                        (window                     (display-buffer buf)))
-                    (goto-char (point-min)) ; expected by some hooks ...
-                    (make-frame-visible (window-frame window))
-                    (unwind-protect
-                         (progn (select-window window)
-                                (run-hooks 'temp-buffer-show-hook))
-                      (when (window-live-p old-selected) (select-window old-selected))
-                      (message "Evaluating...done.  See buffer `%s'."
-                               out-buffer-name)))
-                (message "%s" (buffer-substring (point-min) (point))))))))
-    (with-output-to-temp-buffer out-buffer-name
-      (pp expression)
-      (with-current-buffer standard-output
-        (setq buffer-read-only  nil)
-        ;; Avoid `let'-binding because `change-major-mode-hook' is local.
-        ;; IOW, avoid this runtime message:
-        ;; "Making change-major-mode-hook buffer-local while locally let-bound!"
-        ;; Suggestion from Stefan M.: Can just set these hooks instead of binding,
-        ;; because they are not permanent-local.  They'll be emptied and
-        ;; repopulated as needed by the call to emacs-lisp-mode.
-        (set (make-local-variable 'emacs-lisp-mode-hook) nil)
-        (set (make-local-variable 'change-major-mode-hook) nil)
-        (emacs-lisp-mode)
-        (set (make-local-variable 'font-lock-verbose) nil)
-        (font-lock-fontify-buffer)))))
+  (if (require 'pp+ nil t)
+      (pp-display-expression expression out-buffer-name)
+    (let* ((old-show-function  temp-buffer-show-function)
+           (temp-buffer-show-function
+            `(lambda (buf)
+              (with-current-buffer buf
+                (goto-char (point-min))
+                (end-of-line 1)
+                (if (or (< (1+ (point)) (point-max))
+                        (>= (- (point) (point-min)) (frame-width)))
+                    (let ((temp-buffer-show-function  ',old-show-function)
+                          (old-selected               (selected-window))
+                          (window                     (display-buffer buf)))
+                      (goto-char (point-min)) ; Expected by some hooks ...
+                      (make-frame-visible (window-frame window))
+                      (unwind-protect
+                           (progn (select-window window)
+                                  (run-hooks 'temp-buffer-show-hook))
+                        (when (window-live-p old-selected) (select-window old-selected))
+                        (message "Evaluating...done.  See buffer `%s'."
+                                 out-buffer-name)))
+                  (message "%s" (buffer-substring (point-min) (point))))))))
+      (with-output-to-temp-buffer out-buffer-name
+        (pp expression)
+        (with-current-buffer standard-output
+          (setq buffer-read-only  nil)
+          ;; Avoid `let'-binding because `change-major-mode-hook' is local.  IOW, avoid runtime
+          ;; message: "Making change-major-mode-hook buffer-local while locally let-bound!"
+          ;; Suggestion from Stefan M.: Set these hooks instead of binding, because they are not
+          ;; permanent-local.  They are emptied and repopulated as needed by `emacs-lisp-mode'.
+          (set (make-local-variable 'emacs-lisp-mode-hook) nil)
+          (set (make-local-variable 'change-major-mode-hook) nil)
+          (emacs-lisp-mode)
+          (set (make-local-variable 'font-lock-verbose) nil)
+          (font-lock-fontify-buffer))))))
 
 (defun icicle-shell-command-on-file (file)
   "Read a shell command and invoke it, passing FILE as an argument."
@@ -4819,7 +4823,7 @@ history entries, so `C-next' and so on act on the current candidate."
     (message "`%s' deleted from history `%s'" cand icicle-clear-history-hist))
   nil)
 
-(icicle-define-command icicle-clear-current-history ; Bound to `M-i' in minibuffer.
+(icicle-define-command icicle-clear-current-history ; Bound to `M-K' in minibuffer.
   "Clear current minibuffer history of selected entries.
 You are prompted for the history entries to delete.
 
