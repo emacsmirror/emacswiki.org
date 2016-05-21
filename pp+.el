@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 21 14:55:17 2016 (-0700)
+;; Last-Updated: Sat May 21 16:56:48 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 309
+;;     Update #: 327
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -217,16 +217,18 @@ A value of nil means no limit."
 The value can be:
 
 * A cons that has the same form as `x-max-tooltip-size', which is the
-  default value: a cons (COLUMNS . ROWS), where COLUMNS is the max
-  width of the tooltip in chars and ROWS is the max height in chars.
+  default value: a cons (WIDTH . HEIGHT), where WIDTH is the max width
+  of the tooltip in chars and HEIGHT is the max height in chars.
 
 * nil, meaning never use a tooltip.
 
 * t, meaning use a tooltip but clip the value to `x-max-tooltip-size'."
-    :type '(choice
-            (const :tag "Do not use tooltip" nil)
-            (const :tag "Always use tooltip, and clip value if too big" t)
-            (cons integer integer))
+    :type `(choice
+            (const :tag "Do not use a tooltip" nil)
+            (const :tag "Always use a tooltip, and clip value if too big" t)
+            (cons  :tag "Use a tooltip if smaller than WIDTH x HEIGHT"
+             (integer :tag "Width (characters)"  :value ,(car x-max-tooltip-size))
+             (integer :tag "Height (characters)" :value ,(cdr x-max-tooltip-size))))
     :group 'pp :group 'lisp)
 
   (defface pp-tooltip
