@@ -20,7 +20,7 @@ contained in the declaration.
 
 ; ##M-x set-variable##: You can set [[user option]]s using ‘M-x set-variable’. This can be quicker than evaluating an assignment sexp: `##M-: (setq my-variable some-value)##'.
 
-; ##M-:##: You can evaluate any [[sexp]] using `M-:' (command `eval-expression', by default). 
+; ##M-:##: You can evaluate any [[sexp]] using `##M-:##' (command `eval-expression', by default). 
 
 : This prompts you to type a sexp in the [[minibuffer]]. The sexp is evaluated and the result is shown in the [[echo area]] (or inserted into the 
 current buffer if you use a [[prefix argument]]). 
@@ -29,8 +29,15 @@ current buffer if you use a [[prefix argument]]).
 useful when you are coding and testing. It lets you 
 quickly invoke non-interactive functions (non-[[command]]s).  It saves you from typing them into a buffer and using `C-x C-e' to evaluate them.
 
+
+
+
+
+
 [:PrettyPrintEvalExpression]
-To make `M-:' pretty-print:
+== Pretty-Printing for M-: ==
+
+To make `##M-:##' pretty-print:
 
       (global-set-key [remap eval-expression] 'pp-eval-expression)
 
@@ -46,7 +53,7 @@ or for Emacs before 22
 
       (substitute-key-definition 'eval-last-sexp 'pp-eval-last-sexp global-map)
 
-These replace all `global-map' bindings for `eval-'* by the corresponding `pp-eval-'*.  This means that the result of a [[sexp]] evaluation is pretty-printed in a separate [[buffer]], `##*Pp Eval Output*##'. You can edit the definition there, or copy it to other EmacsLisp code.
+These replace all `global-map' bindings for `eval-*' by the corresponding `pp-eval-*'.  This means that the result of a [[sexp]] evaluation is pretty-printed in a separate [[buffer]], `##*Pp Eval Output*##'. You can edit the definition there, or copy it to other EmacsLisp code.
 
 Some people like to use InferiorEmacsLispMode -- `M-x ielm'.  This creates a buffer much like a shell buffer.  Whatever Lisp
 expressions you type are evaluated and the result is printed into
@@ -56,22 +63,16 @@ Similarly, you can use buffer `##*scratch*##' much as you would a buffer in Emac
 
 If you want to evaluate a region and insert the result of each top-level form as a comment (similar to code snippets in the EmacsLispManual), use [https://github.com/lewang/le_emacs_libs/blob/master/le-eval-and-insert-results.el le-eval-and-insert-results.el]
 
+
+
+
+
+
+
+== See Also ==
+
 [:PpPlus]
-== Enhance Pretty-Printing Evaluation, `pp-eval-expression' ==
-
-In addition, you can use library '''<tt>[[pp+.el]]</tt>''' to enhance pretty-print evaluation by redefining `pp-eval-expression' as follows:
-
-* Does not use `emacs-lisp-mode-hook'.
-* Fontifies the result buffer, `##*Pp Eval Output*##'.
-* Makes several EmacsLisp keybindings available while reading the expression -- uses a new keymap, `pp-read-expression-map'. You can use:
-** `C-M-q' to indent a sexp
-** `C-M-x' to eval a sexp
-** `TAB' to Lisp-indent
-** `M-TAB' to complete a Lisp symbol
-* With a prefix arg, inserts the pretty-printed result in the current buffer. With a negative prefix arg and a string result, inserts it without enclosing double-quotes (`"').
-* Respects `pp-eval-expression-print-length' and `pp-eval-expression-print-level', new options that control the print length and print level. Respects standard option `eval-expression-debug-on-error'.
-
-Note: If you use '''[[Icicles]]''', then the same behavior is available in ''Icicle'' mode without library <tt>[[pp+.el]]</tt>.  -- DrewAdams
+Library '''PpPlus''' ('''<tt>[[pp+.el]]</tt>''') enhances pretty-printing in several ways.
 
 ----
 CategoryCode
