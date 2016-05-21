@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May  1 20:36:01 2016 (-0700)
+;; Last-Updated: Sat May 21 13:41:36 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 239
+;;     Update #: 304
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -26,12 +26,53 @@
 ;;
 ;;    Extensions to `pp.el'.
 ;;
+;;  Features:
+;;
+;;   * You can optionally show the result of pretty-printing in a
+;;     tooltip at point, by customizing option `pp-max-tooltip-size'.
+;;
+;;   * Pretty-printing respects options
+;;     `pp-eval-expression-print-length' and
+;;     `pp-eval-expression-print-level', which act like `print-length'
+;;     and `print-level', but only for pretty-printing.
+;;
+;;   * The buffer displaying the pretty-printed result is in
+;;     `emacs-lisp-mode' (and is fontified accordingly), but without
+;;     having run `emacs-lisp-mode-hook' or `change-major-mode-hook'.
+;;
+;;   * Command `pp-eval-expression' is enhanced in these ways:
+;;
+;;      - Option `eval-expression-debug-on-error' is respected.
+;;
+;;      - Completion is available, using keymap
+;;        `pp-read-expression-map', which is like
+;;        `read-expression-map' but with some Emacs-Lisp key bindings.
+;;
+;;      - With a prefix arg, the value is inserted into the current
+;;        buffer at point.  With a negative prefix arg, if the value
+;;        is a string, then it is inserted without being enclosed in
+;;        double-quotes (`"').
+;;
+;;  Suggested binding:
+;;
+;;    (global-set-key [remap eval-expression] 'pp-eval-expression)
+;;
+;;
 ;;  User options defined here:
 ;;
 ;;    `pp-eval-expression-print-length',
-;;    `pp-eval-expression-print-level'.
+;;    `pp-eval-expression-print-level', `pp-max-tooltip-size' (Emacs
+;;    24+).
 ;;
-;;  Internal variables defined here:
+;;  Faces defined here:
+;;
+;;    `pp-tooltip' (Emacs 24+).
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `pp-expression-size', `pp-show-tooltip', `pp-tooltip-show'.
+;;
+;;  Variables defined here:
 ;;
 ;;    `pp-read-expression-map'.
 ;;
@@ -41,15 +82,15 @@
 ;;
 ;;    `pp-display-expression', `pp-eval-expression'.
 ;;
-;;
-;;  Suggested binding:
-;;
-;;   (substitute-key-definition 'eval-expression 'pp-eval-expression global-map)
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2016/05/21 dadams
+;;     Added: pp-max-tooltip-size, face pp-tooltip, pp-show-tooltip,
+;;            pp-tooltip-show, pp-expression-size.
+;;     pp-display-expression: Use tooltip if pp-max-tooltip-size says to.
+;;     pp-eval-expression: Use pp-read--expression (forgot to use it on 2015-04-18).
 ;; 2016/05/01 dadams
 ;;     pp-eval-expression: Return result of evaluation.
 ;; 2015/04/18 dadms
@@ -58,8 +99,7 @@
 ;; 2013/12/03 dadams
 ;;     pp-read-expression-map: Swap TAB and M-TAB, so 1st completes Lisp symbols.
 ;; 2013/02/15 dadams
-;;     pp-eval-expression:
-;;       Bind deactivate-mark to nil, like fix for Emacs bug #13724.
+;;     pp-eval-expression: Bind deactivate-mark to nil, like fix for Emacs bug #13724.
 ;; 2012/07/22 dadams
 ;;     pp-display-expression:
 ;;       Do not try to select old-window if it is no longer live.
@@ -118,6 +158,11 @@
 (defvar eldoc-documentation-function)   ; In `eldoc.el' (Emacs 23+)
 (defvar eval-expression-debug-on-error)
 (defvar lexical-binding)                ; Emacs 24+
+(defvar pp-max-tooltip-size)            ; Here, for Emacs 24+
+(defvar tooltip-frame-parameters)       ; Emacs 22+
+(defvar tooltip-hide-delay)             ; Emacs 22+
+(defvar tooltip-x-offset)               ; Emacs 22+
+(defvar tooltip-y-offset)               ; Emacs 22+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -149,7 +194,8 @@ A value of nil means no limit."
   :group 'pp :group 'lisp :type '(choice (const :tag "No Limit" nil) integer))
 
 ;; Only difference is `pp-read-expression-map' instead of `read-expression-map'.
-(when (fboundp 'read--expression)
+(when (fboundp 'read--expression)       ; Emacs 24.4+
+
   (defun pp-read--expression (prompt &optional initial-contents)
     (let ((minibuffer-completing-symbol t))
       (minibuffer-with-setup-hook
@@ -162,6 +208,100 @@ A value of nil means no limit."
          (run-hooks 'eval-expression-minibuffer-setup-hook))
        (read-from-minibuffer prompt initial-contents
                              pp-read-expression-map t 'read-expression-history)))))
+
+(when (fboundp 'window-inside-absolute-pixel-edges) ; Emacs 24+
+
+  (defcustom pp-max-tooltip-size nil
+    ;; (and (boundp 'x-max-tooltip-size)  x-max-tooltip-size)
+    "Max size for showing pretty-printed values in a tooltip at point.
+The value can be:
+
+* A cons that has the same form as `x-max-tooltip-size', which is the
+  default value: a cons (COLUMNS . ROWS), where COLUMNS is the max
+  width of the tooltip in chars and ROWS is the max height in chars.
+
+* nil, meaning never use a tooltip.
+
+* t, meaning use a tooltip but clip the value to `x-max-tooltip-size'."
+    :type '(choice
+            (const :tag "Do not use tooltip" nil)
+            (const :tag "Always use tooltip, and clip value if too big" t)
+            (cons integer integer))
+    :group 'pp :group 'lisp)
+
+  (defface pp-tooltip
+      '((((class color))
+         :background "lightyellow"
+         :foreground "black"
+         :family     "Courier")
+        (t
+         :family     "Courier"))
+    "Face for `pp-show-tooltip'."
+    :group 'tooltip)
+
+  (defun pp-tooltip-show (text &optional use-echo-area face)
+    "Show TEXT according to option `pp-max-tooltip-size'.
+Optional arg USE-ECHO-AREA non-nil means show TEXT in the echo area
+ instead of in a tooltip.
+Optional arg FACE defaults to `pp-tooltip'."
+    (setq face  (or face  'pp-tooltip))
+    (if use-echo-area                   ; Not used in code here.
+        (tooltip-show-help-non-mode text)
+      (condition-case error
+          (let ((params  (copy-sequence tooltip-frame-parameters))
+                (fg      (face-attribute face :foreground))
+                (bg      (face-attribute face :background)))
+            (when (stringp fg)
+              (setq params  (tooltip-set-param params 'foreground-color fg)
+                    params  (tooltip-set-param params 'border-color     fg)))
+            (when (stringp bg)
+              (setq params  (tooltip-set-param params 'background-color bg)))
+            (x-show-tip (propertize text 'face face)
+                        (selected-frame)
+                        params
+                        tooltip-hide-delay
+                        tooltip-x-offset
+                        tooltip-y-offset))
+        (error (message "Error while displaying tooltip: %s" error)
+               (sit-for 1)
+               (message "%s" text)))))
+
+  (defun pp-show-tooltip (value)
+    "Show Lisp VALUE in a tooltip at point using face `pp-tooltip'."
+    (let* ((posn-at-pt                (posn-at-point))
+           (x-y                       (and posn-at-pt  (posn-x-y posn-at-pt)))
+           (win-edges                 (and x-y  (window-inside-absolute-pixel-edges)))
+           (left                      (and x-y  (+ (car x-y) (car win-edges))))
+           (top                       (and x-y  (+ (cdr x-y) (cadr win-edges))))
+           (tooltip-frame-parameters  `((name . "tooltip")
+                                        (internal-border-width . 2)
+                                        (border-width . 1)
+                                        (left ,@ left)
+                                        (top  ,@ top))))
+      (pp-tooltip-show (pp-to-string value))
+      value))
+
+  (defun pp-expression-size (value buffer)
+    "Return the size in characters needed to pretty-print Lisp VALUE.
+Pretty-print VALUE in BUFFER in a temporary invisible frame, then
+return the value of `posn-col-row'.  If the value is non-`nil', it is
+a cons (COLUMNS . ROWS) of the rectangle needed for the result of
+pretty-printing."
+    (let ((buf  (get-buffer-create buffer))
+          posn)
+      (with-current-buffer buf
+        (erase-buffer)
+        (let* ((special-display-buffer-names  ())
+               (special-display-regexps       ())
+               (invis-frame                   (make-frame '((visibility . nil))))
+               (win                           (display-buffer buf nil invis-frame)))
+          (pp value buf)
+          (with-selected-frame invis-frame
+            (select-window win)
+            (goto-char (point-max))
+            (setq posn  (posn-at-point))
+            (prog1 (and posn  (posn-col-row posn))
+              (delete-frame))))))))
 
 
 ;; REPLACES ORIGINAL in `pp.el':
@@ -190,8 +330,8 @@ This command respects user options `pp-eval-expression-print-length',
 
 Emacs-Lisp mode completion and indentation bindings are in effect."
   (interactive
-   (list (if (fboundp 'read--expression)
-             (read--expression "Eval: ")
+   (list (if (fboundp 'pp-read--expression)
+             (pp-read--expression "Eval: ")
            (read-from-minibuffer
             "Eval: " nil pp-read-expression-map t 'read-expression-history))
          current-prefix-arg))
@@ -227,52 +367,60 @@ Emacs-Lisp mode completion and indentation bindings are in effect."
 
 
 ;; REPLACES ORIGINAL in `pp.el':
-;; 1. Use no `emacs-lisp-mode-hook' or `change-major-mode-hook'.
-;; 2. Call `font-lock-fontify-buffer'.
+;;
+;; 1. Respects `pp-max-tooltip-size'.
+;; 2. Use no `emacs-lisp-mode-hook' or `change-major-mode-hook'.
+;; 3. Call `font-lock-fontify-buffer'.
 ;;
 (defun pp-display-expression (expression out-buffer-name)
-  "Prettify and show EXPRESSION in a way appropriate to its length.
-If a temporary buffer is needed for representation, it is named
-OUT-BUFFER-NAME."
-  (let* ((old-show-function  temp-buffer-show-function)
-         ;; Use this function to display the buffer.
-         ;; This function either decides not to display it at all
-         ;; or displays it in the usual way.
-         (temp-buffer-show-function
-          `(lambda (buf)
-            (with-current-buffer buf
-              (goto-char (point-min))
-              (end-of-line 1)
-              (if (or (< (1+ (point)) (point-max))
-                      (>= (- (point) (point-min)) (frame-width)))
-                  (let ((temp-buffer-show-function  ',old-show-function)
-                        (old-selected               (selected-window))
-                        (window                     (display-buffer buf)))
-                    (goto-char (point-min)) ; expected by some hooks ...
-                    (make-frame-visible (window-frame window))
-                    (unwind-protect
-                         (progn (select-window window)
-                                (run-hooks 'temp-buffer-show-hook))
-                      (when (window-live-p old-selected)
-                        (select-window old-selected))
-                      (message "Evaluating...done.  See buffer `%s'."
-                               out-buffer-name)))
-                (message "%s" (buffer-substring (point-min) (point))))))))
-    (with-output-to-temp-buffer out-buffer-name ; Same code, but for Emacs < 23.
-      (pp expression)
-      (with-current-buffer standard-output
-        (setq buffer-read-only  nil)
-        ;; Avoid `let'-binding because `change-major-mode-hook' is local.
-        ;; IOW, avoid this runtime message:
-        ;; "Making change-major-mode-hook buffer-local while locally let-bound!"
-        ;; Suggestion from Stefan M.: Can just set these hooks instead of binding,
-        ;; because they are not permanent-local.  They'll be emptied and
-        ;; repopulated as needed by the call to emacs-lisp-mode.
-        (set (make-local-variable 'emacs-lisp-mode-hook) nil)
-        (set (make-local-variable 'change-major-mode-hook) nil)
-        (emacs-lisp-mode)
-        (set (make-local-variable 'font-lock-verbose) nil)
-        (font-lock-fontify-buffer)))))
+  "Prettify and show EXPRESSION, respecting option `pp-max-tooltip-size'.
+If `pp-max-tooltip-size' is non-`nil' then show it with a tooltip.
+Else, if there is room then show it in the echo-area.
+Else show it in buffer OUT-BUFFER-NAME."
+  (let* ((use-tooltip  (and (boundp 'pp-max-tooltip-size)  (eq pp-max-tooltip-size t))) ; Emacs 24+
+         (sexp-size    (and (fboundp 'pp-show-tooltip) ; Emacs 24+
+                            (not use-tooltip)
+                            pp-max-tooltip-size
+                            (pp-expression-size expression out-buffer-name)))
+         (use-tooltip  (or use-tooltip  (and sexp-size
+                                             (<= (car sexp-size) (car pp-max-tooltip-size))
+                                             (<= (cdr sexp-size) (cdr pp-max-tooltip-size))))))
+    (if use-tooltip
+        (progn (pp-show-tooltip expression) (message nil))
+      (let* ((old-show-function  temp-buffer-show-function)
+             (temp-buffer-show-function
+              `(lambda (buf)
+                 (with-current-buffer buf
+                   (goto-char (point-min))
+                   (end-of-line 1)
+                   (if (or (< (1+ (point)) (point-max))
+                           (>= (- (point) (point-min)) (frame-width)))
+                       (let ((temp-buffer-show-function  ',old-show-function)
+                             (old-selected               (selected-window))
+                             (window                     (display-buffer buf)))
+                         (goto-char (point-min)) ; Expected by some hooks ...
+                         (make-frame-visible (window-frame window))
+                         (unwind-protect
+                              (progn (select-window window)
+                                     (run-hooks 'temp-buffer-show-hook))
+                           (when (window-live-p old-selected)
+                             (select-window old-selected))
+                           (message "Evaluating...done.  See buffer `%s'."
+                                    out-buffer-name)))
+                     (message "%s" (buffer-substring (point-min) (point))))))))
+        (with-output-to-temp-buffer out-buffer-name
+          (pp expression)
+          (with-current-buffer standard-output
+            (setq buffer-read-only  nil)
+            ;; Avoid `let'-binding because `change-major-mode-hook' is local.  IOW, avoid runtime
+            ;; message: "Making change-major-mode-hook buffer-local while locally let-bound!"
+            ;; Suggestion from Stefan M.: Set these hooks instead of binding, because they are not
+            ;; permanent-local.  They are emptied and repopulated as needed by `emacs-lisp-mode'.
+            (set (make-local-variable 'emacs-lisp-mode-hook) nil)
+            (set (make-local-variable 'change-major-mode-hook) nil)
+            (emacs-lisp-mode)
+            (set (make-local-variable 'font-lock-verbose) nil)
+            (font-lock-fontify-buffer)))))))
 
 ;;;;;;;;;;;;;;;;;;
 
