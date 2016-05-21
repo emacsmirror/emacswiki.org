@@ -150,6 +150,12 @@ Is it possible to set speedbar's font size in my InitFile? In my installation Sp
 ----
 : ''Question: is it possible to make the speedarbar hide files and directories beginning with "."?''
 
+:: Yes, it's a little hard to find, but put this in your .emacs/init.el
+<pre>
+        (setq speedbar-directory-unshown-regexp "^\\(\\.\\.?\\)$")
+</pre>
+and you won't see . or .. --mykphyre
+
 ----
 : ''Question: can speedbar use some other mode-detection-scheme than filename extensions?''  I do have the habit to name "minor" perl-programs "something.pl" and larger projects without extension.  I desperately need speedbar in the larger projects whereas navigation in smaller scripts is easy without it.
 
