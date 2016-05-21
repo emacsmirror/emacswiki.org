@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat May 21 13:45:48 2016 (-0700)
+;; Last-Updated: Sat May 21 15:04:01 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 27467
+;;     Update #: 27473
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -801,11 +801,11 @@ Non-nil READ-ONLY-P means visit file in read-only mode."
 ;; Only difference is `icicle-read-expression-map' instead of `read-expression-map'.
 (when (fboundp 'read--expression)       ; Emacs 24.4+
   (defun icicle-read--expression (prompt &optional initial-contents)
-    (let ((minibuffer-completing-symbol t))
+    (let ((minibuffer-completing-symbol  t))
       (minibuffer-with-setup-hook
-       (lambda ()
-         ;; Vanilla Emacs FIXME: call `emacs-lisp-mode'?
-         (setq-local eldoc-documentation-function #'elisp-eldoc-documentation-function)
+       (lambda ()                       ; Vanilla Emacs FIXME: call `emacs-lisp-mode'?
+         ;; Do not use `add-function' or `setq-local' so can use `icicles-cmd1.elc' from earlier version.
+         (set (make-local-variable 'eldoc-documentation-function) #'elisp-eldoc-documentation-function)
          (add-hook 'completion-at-point-functions #'elisp-completion-at-point nil t)
          (run-hooks 'eval-expression-minibuffer-setup-hook))
        (read-from-minibuffer prompt initial-contents icicle-read-expression-map t 'read-expression-history)))))
