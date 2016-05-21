@@ -1,0 +1,41 @@
+This page is about library '''<tt>[[pp+.el]]</tt>''' which extends standard library ##pp.el## to provide enhanced pretty-printing.
+
+
+== Features ==
+
+* You can optionally show the result of pretty-printing in a
+   [[tooltip]] at point, by customizing option '''`pp-max-tooltip-size''''.
+
+* Pretty-printing respects options
+   '''`pp-eval-expression-print-length'''' and
+   '''`pp-eval-expression-print-level'''', which act like `print-length'
+   and `print-level', but only for pretty-printing.
+
+* The buffer displaying the pretty-printed result is in
+   EmacsLisp mode (and is fontified accordingly), but without
+   having run `emacs-lisp-mode-hook' or `change-major-mode-hook'.
+
+* Command '''`pp-eval-expression'''' is enhanced in these ways:
+
+** Option `eval-expression-debug-on-error' is respected.
+
+** With a [[prefix argument]], the value is inserted into the current
+      buffer at point.  With a negative prefix arg, if the value
+      is a string, then it is inserted without being enclosed in
+      double-quotes (`##"##').
+
+** Completion is available, using keymap
+      '''`pp-read-expression-map'''', which is like `read-expression-map' but with some EmacsLisp key bindings:
+
+*** `C-M-q' to indent a sexp
+*** `C-M-x' to eval a sexp
+*** `TAB' to Lisp-indent
+*** `M-TAB' to complete a Lisp symbol
+
+Suggested keybinding:
+
+     (global-set-key [remap eval-expression] 'pp-eval-expression)
+
+
+----
+CategoryCode
