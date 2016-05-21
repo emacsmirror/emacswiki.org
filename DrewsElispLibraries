@@ -200,7 +200,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[mouse+.el]]</tt> -- extensions to standard library `mouse' -- see MousePlus
 * <tt>[[novice+.el]]</tt> -- extensions to standard library `novice'
 * <tt>[[oneonone.el]]</tt> -- define a special multi-frame setup; see '''OneOnOneEmacs'''; see also '''[[Dedicated Minibuffer Frame]]''', '''[[Special Frames]]''', and '''[[Help and Completions Frames]]'''
-* <tt>[[pp+.el]]</tt> -- extensions to standard library `pp'
+* <tt>[[pp+.el]]</tt> -- extensions to standard library `pp' -- see [[PP+]]
 * <tt>[[pp-c-l.el]]</tt> -- display Control-l characters in a pretty way -- see '''PrettyControlL'''
 * <tt>[[replace+.el]]</tt> -- extensions to standard library `replace'; see also '''OccurBuffer'''
 * <tt>[[ring+.el]]</tt> -- extensions to standard library `ring'; see also '''RingPlus'''
