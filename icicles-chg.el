@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Mar 27 16:40:03 2016 (-0700)
+;; Last-Updated: Sat May 21 13:46:18 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 11606
+;;     Update #: 11611
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2016/05/21 dadams
+;;     icicle-pp-display-expression: Soft-require pp+.el and use pp-display-expression if available.
+;;     icicle-pp-eval-expression: Return (car values).  Use icicle-read--expression (forgot).
 ;; 2015/08/25 dadams
 ;;     icicle-find-file-(no-search|of-content)-in-tags-table-1:
 ;;       Fix for MS Windows: use file-relative-name, to convert \\ to /.  Thx to Chris Hecker.
