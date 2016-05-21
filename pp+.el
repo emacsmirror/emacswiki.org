@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 21 13:41:36 2016 (-0700)
+;; Last-Updated: Sat May 21 14:55:17 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 304
+;;     Update #: 309
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -91,6 +91,7 @@
 ;;            pp-tooltip-show, pp-expression-size.
 ;;     pp-display-expression: Use tooltip if pp-max-tooltip-size says to.
 ;;     pp-eval-expression: Use pp-read--expression (forgot to use it on 2015-04-18).
+;;     pp-read--expression: Updated per Emacs 25 - use add-function.
 ;; 2016/05/01 dadams
 ;;     pp-eval-expression: Return result of evaluation.
 ;; 2015/04/18 dadms
@@ -199,10 +200,9 @@ A value of nil means no limit."
   (defun pp-read--expression (prompt &optional initial-contents)
     (let ((minibuffer-completing-symbol t))
       (minibuffer-with-setup-hook
-       (lambda ()
-         ;; Vanilla Emacs FIXME: call `emacs-lisp-mode'?
-         (setq-local eldoc-documentation-function
-                     #'elisp-eldoc-documentation-function)
+       (lambda ()                       ; Vanilla Emacs FIXME: call `emacs-lisp-mode'?
+         (add-function :before-until (local 'eldoc-documentation-function)
+                       #'elisp-eldoc-documentation-function)
          (add-hook 'completion-at-point-functions
                    #'elisp-completion-at-point nil t)
          (run-hooks 'eval-expression-minibuffer-setup-hook))
@@ -332,8 +332,7 @@ Emacs-Lisp mode completion and indentation bindings are in effect."
   (interactive
    (list (if (fboundp 'pp-read--expression)
              (pp-read--expression "Eval: ")
-           (read-from-minibuffer
-            "Eval: " nil pp-read-expression-map t 'read-expression-history))
+           (read-from-minibuffer "Eval: " nil pp-read-expression-map t 'read-expression-history))
          current-prefix-arg))
   (message "Evaluating...")
   (if (or (not (boundp 'eval-expression-debug-on-error))
