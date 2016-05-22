@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 21 17:52:54 2016 (-0700)
+;; Last-Updated: Sat May 21 17:59:50 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 343
+;;     Update #: 346
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -349,7 +349,7 @@ Ignores leading comment characters."
 ;; 2. Progress message added.
 ;; 3. Added optional arg and insertion behavior.
 ;; 4. Respect `pp-eval-expression-print-length', `pp-eval-expression-print-level',
-;;    and `eval-expression-debug-on-error'.
+;;    `pp-max-tooltip-size', and `eval-expression-debug-on-error'.
 ;; 5. Adjusted to work in different Emacs releases.
 ;; 6. Return result of evaluation (it is also the car of variable `values').
 ;;
@@ -360,12 +360,12 @@ Add the value to the front of the variable `values'.
 With a prefix arg, insert the value into the current buffer at point.
  With a negative prefix arg, if the value is a string, then insert it
  into the buffer without double-quotes (`\"').
-With no prefix arg:
- If the value fits on one line (frame width) show it in the echo area.
- Otherwise, show the value in buffer `*Pp Eval Output*'.
+With no prefix arg, respect `pp-max-tooltip-size'.  If a tooltip is
+ not used then if the value fits on one line (frame width) show it in
+ the echo area.  Otherwise, show it in buffer `*Pp Eval Output*'.
 
 This command respects user options `pp-eval-expression-print-length',
-`pp-eval-expression-print-level', and
+`pp-eval-expression-print-level', `pp-max-tooltip-size', and
 `eval-expression-debug-on-error'.
 
 Emacs-Lisp mode completion and indentation bindings are in effect."
