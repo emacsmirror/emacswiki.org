@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 21 19:25:52 2016 (-0700)
+;; Last-Updated: Sat May 21 19:44:12 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 372
+;;     Update #: 379
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -32,6 +32,15 @@
 ;;     tooltip at point, by customizing option `pp-max-tooltip-size'
 ;;     (Emacs 24.4+).
 ;;
+;;   * You can use a zero prefix argument (e.g. `M-o') with
+;;     `pp-eval-last-sexp' (`C-x C-e') or `pp-eval-expression'
+;;     (`M-:'), to swap the use of a tooltip defined by option
+;;     `pp-max-tooltip-size'.
+;;
+;;   * There are additional commands that are versions of
+;;     `pp-eval-last-sexp' and `pp-eval-expression' that always or
+;;     never use a tooltip.
+;;
 ;;   * Pretty-printing respects options
 ;;     `pp-eval-expression-print-length' and
 ;;     `pp-eval-expression-print-level', which act like `print-length'
@@ -45,6 +54,21 @@
 ;;
 ;;      - Option `eval-expression-debug-on-error' is respected.
 ;;
+;;      - With no prefix argument, option `pp-max-tooltip-size' is
+;;        respected. If a tooltip is not used then if the value fits
+;;        on one line (frame width) it is shown in the echo
+;;        area. Otherwise, it is shown in buffer *Pp Eval Output*'.
+;;
+;;      - With a zero prefix arg, the use of a tooltip according to
+;;        `pp-max-tooltip-size' is swapped: if that option is `nil'
+;;        then a tooltip is used, and if non-`nil' a tooltip is not
+;;        used.
+;;
+;;      - With non-zero prefix argument, the value is inserted into
+;;        the current buffer at point. With a negative prefix arg, if
+;;        the value is a string, then it is inserted without being
+;;        enclosed in double-quotes (").
+;;
 ;;      - Completion is available, using keymap
 ;;        `pp-read-expression-map', which is like
 ;;        `read-expression-map' but with some Emacs-Lisp key bindings.
@@ -53,6 +77,16 @@
 ;;        buffer at point.  With a negative prefix arg, if the value
 ;;        is a string, then it is inserted without being enclosed in
 ;;        double-quotes (`"').
+;;
+;;   * Command `pp-eval-last-sexp' is enhanced in these ways:
+;;
+;;      - With a zero prefix arg, the use of a tooltip according to
+;;        `pp-max-tooltip-size' is swapped: if that option is `nil'
+;;        then a tooltip is used, and if non-`nil' a tooltip is not
+;;        used.
+;;
+;;      - With a non-zero prefix arg, the value is inserted into the
+;;        current buffer at point.
 ;;
 ;;   * Alternative commands are defined that use a tooltip whenever
 ;;     possible, or that never use a tooltip (they ignore option
