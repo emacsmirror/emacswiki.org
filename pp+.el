@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 21 16:56:48 2016 (-0700)
+;; Last-Updated: Sat May 21 17:35:35 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 327
+;;     Update #: 332
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -212,13 +212,14 @@ A value of nil means no limit."
 (when (fboundp 'window-inside-absolute-pixel-edges) ; Emacs 24+
 
   (defcustom pp-max-tooltip-size nil
-    ;; (and (boundp 'x-max-tooltip-size)  x-max-tooltip-size)
     "Max size for showing pretty-printed values in a tooltip at point.
 The value can be:
 
-* A cons that has the same form as `x-max-tooltip-size', which is the
-  default value: a cons (WIDTH . HEIGHT), where WIDTH is the max width
-  of the tooltip in chars and HEIGHT is the max height in chars.
+* A cons that has the same form as `x-max-tooltip-size':
+  (WIDTH . HEIGHT), where WIDTH is the max width of the tooltip in
+  chars and HEIGHT is the max height in chars.  If the value to be
+  printed cannot fit in a tooltip this large then it is shown in
+  buffer `*Pp Eval Output*'.
 
 * nil, meaning never use a tooltip.
 
@@ -226,7 +227,7 @@ The value can be:
     :type `(choice
             (const :tag "Do not use a tooltip" nil)
             (const :tag "Always use a tooltip, and clip value if too big" t)
-            (cons  :tag "Use a tooltip if smaller than WIDTH x HEIGHT"
+            (cons  :tag "Use a tooltip only if smaller than WIDTH x HEIGHT"
              (integer :tag "Width (characters)"  :value ,(car x-max-tooltip-size))
              (integer :tag "Height (characters)" :value ,(cdr x-max-tooltip-size))))
     :group 'pp :group 'lisp)
