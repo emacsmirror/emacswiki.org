@@ -323,6 +323,18 @@ Then remount /system and change the desired keys in <code>/system/usr/keymaps</c
 
 Again Key 58 is the SHIFT key. Set it to CTRL_LEFT for instance. Save the file and restart your tablet/phone.
 
+=== Another method ===
+
+Files placed in /system will be replaced during an Android system update. Instead of overwriting the Generic.kl file, you can copy it as /data/system/devices/keylayout/Vendor_XXXX_Product_XXXX.kl and make the appropriate changes in that file.
+
+You can find out the Vendor and Product id of your external keyboard by running
+
+<pre>
+cat /proc/bus/input/devices
+</pre>
+
+Your keyboard's info should appear. Ensure that the created .kl file, as well as any directory you create to place it in, has the appropriate permissions i.e. the keylayout file should not be world-writable, or Android will not load it.
+
 [:Using space bar as both space and control]
 == Using space bar as both space and control ==
 
