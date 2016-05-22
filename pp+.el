@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 21 17:59:50 2016 (-0700)
+;; Last-Updated: Sat May 21 19:25:52 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 346
+;;     Update #: 372
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -55,8 +55,11 @@
 ;;        double-quotes (`"').
 ;;
 ;;   * Alternative commands are defined that use a tooltip whenever
-;;     possible: `pp-eval-expression-to-tooltip' and
-;;     `pp-eval-last-sexp-to-tooltip' (Emacs 24.4+).
+;;     possible, or that never use a tooltip (they ignore option
+;;     `pp-max-tooltip-size'): `pp-eval-expression-with-tooltip',
+;;     `pp-eval-expression-without-tooltip',
+;;     `pp-eval-last-sexp-with-tooltip', and
+;;     `pp-eval-last-sexp-without-tooltip' (Emacs 24.4+).
 ;;
 ;; 
 ;;
@@ -77,7 +80,10 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `pp-eval-expression-to-tooltip', `pp-eval-last-sexp-to-tooltip'.
+;;    `pp-eval-expression-with-tooltip',
+;;    `pp-eval-expression-without-tooltip',
+;;    `pp-eval-last-sexp-with-tooltip',
+;;    `pp-eval-last-sexp-without-tooltip'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -91,7 +97,8 @@
 ;;  ***** NOTE: The following functions defined in `pp.el' have
 ;;              been REDEFINED HERE:
 ;;
-;;    `pp-display-expression', `pp-eval-expression'.
+;;    `pp-display-expression', `pp-eval-expression',
+;;    `pp-eval-last-sexp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -99,10 +106,11 @@
 ;;
 ;; 2016/05/21 dadams
 ;;     Added: pp-max-tooltip-size, face pp-tooltip, pp-show-tooltip,
-;;            pp-tooltip-show, pp-expression-size, pp-eval-expression-to-tooltip,
-;;            pp-eval-last-sexp-to-tooltip.
-;;     pp-display-expression: Use tooltip if pp-max-tooltip-size says to.
-;;     pp-eval-expression: Use pp-read--expression (forgot to use it on 2015-04-18).
+;;            pp-tooltip-show, pp-expression-size, pp-eval-expression-with(out)-tooltip,
+;;            pp-eval-last-sexp-with(out)-tooltip, (redefinition of) pp-eval-last-sexp.
+;;     pp-display-expression: Use tooltip if pp-max-tooltip-size says to.  Added autoload cookie.
+;;     pp-eval-expression: Added SWAP-TOOLTIP optional arg.
+;;                         Use pp-read--expression (forgot to use it on 2015-04-18).
 ;;     pp-read--expression: Updated per Emacs 25 - use add-function.
 ;; 2016/05/01 dadams
 ;;     pp-eval-expression: Return result of evaluation.
@@ -318,9 +326,9 @@ pretty-printing."
             (prog1 (and posn  (posn-col-row posn))
               (delete-frame)))))))
 
-  (defun pp-eval-expression-to-tooltip (expression &optional insert-value)
+  (defun pp-eval-expression-with-tooltip (expression &optional insert-value)
     "This is `pp-eval-expression', but using a tooltip when possible.
-This is `pp-eval-expression' with `pp-max-tooltip-size' set to
+This is `pp-eval-expression' with `pp-max-tooltip-size' bound to
 `x-max-tooltip-size'.  A printed value larger than this is shown in
 buffer `*Pp Eval Output*'."
     (interactive
@@ -331,14 +339,35 @@ buffer `*Pp Eval Output*'."
     (let ((pp-max-tooltip-size  x-max-tooltip-size))
       (pp-eval-expression expression insert-value)))
 
-  (defun pp-eval-last-sexp-to-tooltip (arg)
-    "Run `pp-eval-expression-to-tooltip' on the sexp before point.
-With a prefix argument, pretty-print output into current buffer.
-Ignores leading comment characters."
+  (defun pp-eval-expression-without-tooltip (expression &optional insert-value)
+    "This is `pp-eval-expression', but never using a tooltip.
+This is `pp-eval-expression' with `pp-max-tooltip-size' bound to `nil'."
+    (interactive
+     (list (if (fboundp 'pp-read--expression)
+               (pp-read--expression "Eval: ")
+             (read-from-minibuffer "Eval: " nil pp-read-expression-map t 'read-expression-history))
+           current-prefix-arg))
+    (let ((pp-max-tooltip-size  nil))
+      (pp-eval-expression expression insert-value)))
+
+  (defun pp-eval-last-sexp-with-tooltip (arg)
+    "Run `pp-eval-expression-with-tooltip' on the sexp before point.
+This is `pp-eval-last-sexp' with `pp-max-tooltip-size' bound to
+`x-max-tooltip-size'.  A printed value larger than this is shown in
+buffer `*Pp Eval Output*'."
     (interactive "P")
     (if arg
         (insert (pp-to-string (eval (pp-last-sexp) lexical-binding)))
       (let ((pp-max-tooltip-size  x-max-tooltip-size))
+        (pp-eval-expression (pp-last-sexp)))))
+
+  (defun pp-eval-last-sexp-without-tooltip (arg)
+    "Run `pp-eval-expression-without-tooltip' on the sexp before point.
+This is `pp-eval-expression' with `pp-max-tooltip-size' bound to `nil'."
+    (interactive "P")
+    (if arg
+        (insert (pp-to-string (eval (pp-last-sexp) lexical-binding)))
+      (let ((pp-max-tooltip-size  nil))
         (pp-eval-expression (pp-last-sexp)))))
 
   )
@@ -347,22 +376,33 @@ Ignores leading comment characters."
 ;; REPLACES ORIGINAL in `pp.el':
 ;; 1. Read with completion, using `pp-read-expression-map'.
 ;; 2. Progress message added.
-;; 3. Added optional arg and insertion behavior.
+;; 3. Added optional args: insertion behavior and swapping use of a tooltip.
 ;; 4. Respect `pp-eval-expression-print-length', `pp-eval-expression-print-level',
 ;;    `pp-max-tooltip-size', and `eval-expression-debug-on-error'.
 ;; 5. Adjusted to work in different Emacs releases.
 ;; 6. Return result of evaluation (it is also the car of variable `values').
 ;;
 ;;;###autoload
-(defun pp-eval-expression (expression &optional insert-value)
-  "Evaluate Emacs-Lisp sexp EXPRESSION, and pretty-print its value.
+(defun pp-eval-expression (expression &optional insert-value swap-tooltip)
+  "Read an Emacs-Lisp sexp, evaluate it, and pretty-print its value.
 Add the value to the front of the variable `values'.
-With a prefix arg, insert the value into the current buffer at point.
- With a negative prefix arg, if the value is a string, then insert it
- into the buffer without double-quotes (`\"').
 With no prefix arg, respect `pp-max-tooltip-size'.  If a tooltip is
  not used then if the value fits on one line (frame width) show it in
  the echo area.  Otherwise, show it in buffer `*Pp Eval Output*'.
+With a zero prefix arg, this swaps the use of a tooltip according to
+ `pp-max-tooltip-size': if that option is nil then a tooltip is used,
+ and if non-nil a tooltip is not used.
+With a non-zero prefix arg, insert the value into the current buffer
+ at point.  If the prefix arg is negative and the value is a string
+ then insert it into the buffer without double-quotes (`\"').
+
+For Emacs prior to 24.4, the command has no support for a tooltip.
+A zero prefix arg is then treated the same as a positive prefix arg.
+
+Non-interactively:
+ * Non-nil SWAP-TOOLTIP means swap the use of a tooltip.
+ * Non-nil INSERT-VALUE is treated like a non-zero raw prefix arg:
+   insert the value in the buffer (sans quotes if negative).
 
 This command respects user options `pp-eval-expression-print-length',
 `pp-eval-expression-print-level', `pp-max-tooltip-size', and
@@ -373,36 +413,79 @@ Emacs-Lisp mode completion and indentation bindings are in effect."
    (list (if (fboundp 'pp-read--expression)
              (pp-read--expression "Eval: ")
            (read-from-minibuffer "Eval: " nil pp-read-expression-map t 'read-expression-history))
-         current-prefix-arg))
-  (message "Evaluating...")
-  (if (or (not (boundp 'eval-expression-debug-on-error))
-          (null eval-expression-debug-on-error))
-      (setq values  (cons (if (boundp 'lexical-binding) ; Emacs 24+
-                              (eval expression lexical-binding)
-                            (eval expression))
-                          values))
-    (let ((old-value  (make-symbol "t"))
-          new-value)
-      ;; Bind `debug-on-error' to something unique so that we can
-      ;; detect when evaled code changes it.
-      (let ((debug-on-error  old-value))
-	(setq values     (cons (eval expression) values)
-              new-value  debug-on-error))
-      ;; If evaled code has changed the value of `debug-on-error',
-      ;; propagate that change to the global binding.
-      (unless (eq old-value new-value)
-	(setq debug-on-error  new-value))))
-  (let ((print-length     pp-eval-expression-print-length)
-	(print-level      pp-eval-expression-print-level)
-        (deactivate-mark  nil))
-    (cond (insert-value
-           (message "Evaluating...done. Value inserted.")
-           (setq insert-value  (prefix-numeric-value insert-value))
-           (if (or (not (stringp (car values))) (wholenump insert-value))
-               (pp (car values) (current-buffer))
-             (princ (car values) (current-buffer))))
-          (t (pp-display-expression (car values) "*Pp Eval Output*")))
-    (car values)))
+         current-prefix-arg
+         (zerop (prefix-numeric-value current-prefix-arg))))
+  (if (and swap-tooltip  (fboundp 'pp-eval-expression-with-tooltip)) ; Emacs 24.4+
+      (if (not pp-max-tooltip-size)
+          (pp-eval-expression-with-tooltip expression)
+        (pp-eval-expression-without-tooltip expression))
+    (message "Evaluating...")
+    (if (or (not (boundp 'eval-expression-debug-on-error))
+            (null eval-expression-debug-on-error))
+        (setq values  (cons (if (boundp 'lexical-binding) ; Emacs 24+
+                                (eval expression lexical-binding)
+                              (eval expression))
+                            values))
+      (let ((old-value  (make-symbol "t"))
+            new-value)
+        ;; Bind `debug-on-error' to something unique so that we can
+        ;; detect when evaled code changes it.
+        (let ((debug-on-error  old-value))
+          (setq values     (cons (eval expression) values)
+                new-value  debug-on-error))
+        ;; If evaled code has changed the value of `debug-on-error',
+        ;; propagate that change to the global binding.
+        (unless (eq old-value new-value)
+          (setq debug-on-error  new-value))))
+    (let ((print-length     pp-eval-expression-print-length)
+          (print-level      pp-eval-expression-print-level)
+          (deactivate-mark  nil))
+      (cond (insert-value
+             (message "Evaluating...done. Value inserted.")
+             (setq insert-value  (prefix-numeric-value insert-value))
+             (if (or (not (stringp (car values))) (wholenump insert-value))
+                 (pp (car values) (current-buffer))
+               (princ (car values) (current-buffer))))
+            (t (pp-display-expression (car values) "*Pp Eval Output*")))
+      (car values))))
+
+
+;; REPLACES ORIGINAL in `pp.el':
+;; 1. Added optional arg: swapping use of a tooltip.
+;; 4. Respect `pp-eval-expression-print-length', `pp-eval-expression-print-level',
+;;    `pp-max-tooltip-size', and `eval-expression-debug-on-error'.
+;; 5. Adjusted to work in different Emacs releases.
+;;
+;;;###autoload
+(defun pp-eval-last-sexp (insert-value &optional swap-tooltip)
+  "Run `pp-eval-expression' on sexp before point.
+With a zero prefix arg, this swaps the use of a tooltip according to
+ `pp-max-tooltip-size': if that option is nil then a tooltip is used,
+ and if non-nil a tooltip is not used.
+With a non-zero prefix arg, pretty-print the value into the current
+ buffer.
+Ignores leading comment characters.
+
+For Emacs prior to 24.4, the command has no support for a tooltip.
+A zero prefix arg is then treated the same as a positive prefix arg.
+
+Non-interactively:
+ * Non-nil SWAP-TOOLTIP means swap the use of a tooltip.
+ * Non-nil INSERT-VALUE is treated like a non-zero prefix arg:
+   insert the value in the buffer.
+
+This command respects user options `pp-eval-expression-print-length',
+`pp-eval-expression-print-level', `pp-max-tooltip-size', and
+`eval-expression-debug-on-error'."
+  (interactive (list current-prefix-arg 
+                     (zerop (prefix-numeric-value current-prefix-arg))))
+  (if swap-tooltip
+      (if (not pp-max-tooltip-size)
+          (pp-eval-last-sexp-with-tooltip nil)
+        (pp-eval-last-sexp-without-tooltip nil))
+    (if insert-value
+        (insert (pp-to-string (eval (pp-last-sexp) lexical-binding)))
+      (pp-eval-expression (pp-last-sexp)))))
 
 
 ;; REPLACES ORIGINAL in `pp.el':
@@ -411,6 +494,7 @@ Emacs-Lisp mode completion and indentation bindings are in effect."
 ;; 2. Use no `emacs-lisp-mode-hook' or `change-major-mode-hook'.
 ;; 3. Call `font-lock-fontify-buffer'.
 ;;
+;;;###autoload
 (defun pp-display-expression (expression out-buffer-name)
   "Prettify and show EXPRESSION, respecting option `pp-max-tooltip-size'.
 If `pp-max-tooltip-size' is non-`nil' then show it with a tooltip.
