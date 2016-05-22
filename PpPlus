@@ -19,7 +19,7 @@ This page is about library '''[::PP+]''' ('''<tt>[[pp+.el]]</tt>'''), which exte
    EmacsLisp mode (and is fontified accordingly), but without
    having run `emacs-lisp-mode-hook' or `change-major-mode-hook'.
 
-* Command '''`pp-eval-expression'''' is enhanced in these ways:
+* Command '''`pp-eval-expression'''' ('''`##M-:##'''') is enhanced in these ways:
 
 ** Option `eval-expression-debug-on-error' is respected.
 
@@ -29,7 +29,6 @@ This page is about library '''[::PP+]''' ('''<tt>[[pp+.el]]</tt>'''), which exte
 ** With a ''zero'' prefix arg, the use of a tooltip according to
  `pp-max-tooltip-size' is ''swapped'': if that option is `nil' then a tooltip is used,
  and if non-`nil' a tooltip is not used.
-
 
 ** With ''non''-zero prefix argument, the value is inserted into the current
       buffer at point.  With a ''negative'' prefix arg, if the value
@@ -43,6 +42,16 @@ This page is about library '''[::PP+]''' ('''<tt>[[pp+.el]]</tt>'''), which exte
 *** `C-M-x' to eval a sexp
 *** `TAB' to Lisp-indent
 *** `M-TAB' to complete a Lisp symbol
+
+* Command '''`pp-eval-last-sexp'''' ('''`C-x C-e'''') is enhanced in these ways:
+
+** With a zero prefix arg, the use of a tooltip according to
+ `pp-max-tooltip-size' is swapped: if that option is `nil'
+ then a tooltip is used, and if non-`nil' a tooltip is not
+ used.
+
+** With a non-zero prefix arg, the value is inserted into the
+current buffer at point.
 
 Suggested keybinding:
 
