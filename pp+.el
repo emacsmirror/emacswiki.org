@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 21 17:35:35 2016 (-0700)
+;; Last-Updated: Sat May 21 17:52:54 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 332
+;;     Update #: 343
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -29,7 +29,8 @@
 ;;  Features:
 ;;
 ;;   * You can optionally show the result of pretty-printing in a
-;;     tooltip at point, by customizing option `pp-max-tooltip-size'.
+;;     tooltip at point, by customizing option `pp-max-tooltip-size'
+;;     (Emacs 24.4+).
 ;;
 ;;   * Pretty-printing respects options
 ;;     `pp-eval-expression-print-length' and
@@ -53,6 +54,12 @@
 ;;        is a string, then it is inserted without being enclosed in
 ;;        double-quotes (`"').
 ;;
+;;   * Alternative commands are defined that use a tooltip whenever
+;;     possible: `pp-eval-expression-to-tooltip' and
+;;     `pp-eval-last-sexp-to-tooltip' (Emacs 24.4+).
+;;
+;; 
+;;
 ;;  Suggested binding:
 ;;
 ;;    (global-set-key [remap eval-expression] 'pp-eval-expression)
@@ -67,6 +74,10 @@
 ;;  Faces defined here:
 ;;
 ;;    `pp-tooltip' (Emacs 24+).
+;;
+;;  Commands defined here:
+;;
+;;    `pp-eval-expression-to-tooltip', `pp-eval-last-sexp-to-tooltip'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -88,7 +99,8 @@
 ;;
 ;; 2016/05/21 dadams
 ;;     Added: pp-max-tooltip-size, face pp-tooltip, pp-show-tooltip,
-;;            pp-tooltip-show, pp-expression-size.
+;;            pp-tooltip-show, pp-expression-size, pp-eval-expression-to-tooltip,
+;;            pp-eval-last-sexp-to-tooltip.
 ;;     pp-display-expression: Use tooltip if pp-max-tooltip-size says to.
 ;;     pp-eval-expression: Use pp-read--expression (forgot to use it on 2015-04-18).
 ;;     pp-read--expression: Updated per Emacs 25 - use add-function.
@@ -304,7 +316,32 @@ pretty-printing."
             (goto-char (point-max))
             (setq posn  (posn-at-point))
             (prog1 (and posn  (posn-col-row posn))
-              (delete-frame))))))))
+              (delete-frame)))))))
+
+  (defun pp-eval-expression-to-tooltip (expression &optional insert-value)
+    "This is `pp-eval-expression', but using a tooltip when possible.
+This is `pp-eval-expression' with `pp-max-tooltip-size' set to
+`x-max-tooltip-size'.  A printed value larger than this is shown in
+buffer `*Pp Eval Output*'."
+    (interactive
+     (list (if (fboundp 'pp-read--expression)
+               (pp-read--expression "Eval: ")
+             (read-from-minibuffer "Eval: " nil pp-read-expression-map t 'read-expression-history))
+           current-prefix-arg))
+    (let ((pp-max-tooltip-size  x-max-tooltip-size))
+      (pp-eval-expression expression insert-value)))
+
+  (defun pp-eval-last-sexp-to-tooltip (arg)
+    "Run `pp-eval-expression-to-tooltip' on the sexp before point.
+With a prefix argument, pretty-print output into current buffer.
+Ignores leading comment characters."
+    (interactive "P")
+    (if arg
+        (insert (pp-to-string (eval (pp-last-sexp) lexical-binding)))
+      (let ((pp-max-tooltip-size  x-max-tooltip-size))
+        (pp-eval-expression (pp-last-sexp)))))
+
+  )
 
 
 ;; REPLACES ORIGINAL in `pp.el':
