@@ -6,7 +6,7 @@ This page is about library '''[::PP+]''' ('''<tt>[[pp+.el]]</tt>'''), which exte
 * You can optionally show the result of pretty-printing in a
    [[tooltip]] at point, by customizing option '''`pp-max-tooltip-size''''.
 
-* You can use a zero [[prefix argument]] (e.g. `M-o') with `pp-eval-last-sexp' (`C-x C-e') or `pp-eval-expression' (`##M-:##'), to ''swap'' the use of a tooltip defined by option `pp-max-tooltip-size'.
+* You can use a zero [[prefix argument]] (e.g. `M-o') with `pp-eval-last-sexp' (`C-x C-e') or `pp-eval-expression', to ''swap'' the use of a tooltip defined by option `pp-max-tooltip-size'.
 
 * There are additional commands that are versions of `pp-eval-last-sexp' and `pp-eval-expression' that always or never use a tooltip.
 
@@ -19,7 +19,7 @@ This page is about library '''[::PP+]''' ('''<tt>[[pp+.el]]</tt>'''), which exte
    EmacsLisp mode (and is fontified accordingly), but without
    having run `emacs-lisp-mode-hook' or `change-major-mode-hook'.
 
-* Command '''`pp-eval-expression'''' ('''`##M-:##'''') is enhanced in these ways:
+* Command '''`pp-eval-expression'''' is enhanced in these ways:
 
 ** Option `eval-expression-debug-on-error' is respected.
 
@@ -53,7 +53,7 @@ This page is about library '''[::PP+]''' ('''<tt>[[pp+.el]]</tt>'''), which exte
 ** With a non-zero prefix arg, the value is inserted into the
 current buffer at point.
 
-Suggested keybinding:
+Suggested keybinding: use '''`##M-:##'''' for `pp-eval-expression'.
 
      (global-set-key [remap eval-expression] 'pp-eval-expression)
 
