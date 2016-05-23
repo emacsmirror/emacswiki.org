@@ -20,3 +20,12 @@ Lisp was updated today. Last warning is now gone, the first three are still ther
 
 -- Anonymous 2016-05-20 15:53 UTC
 
+
+----
+
+I get error below when starting. It seems to have something to do with dired plus which I haven't installed. I would like to see it working without the requirement of dired plus - like the 2014 version before.
+
+Symbol's value as variable is void: diredp-file-name
+
+-- Anonymous 2016-05-23 14:29 UTC
+
