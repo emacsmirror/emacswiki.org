@@ -18,7 +18,7 @@ In addition
 
 * If you click '''`mouse-1'''' on the lighter then full information about the character is shown in buffer `*Help*', including the font and faces used (for the character in the buffer, not for the lighter in the mode-line).
    
-* If you click '''`mouse-2'''' on the lighter then the character is copied to the [[SecondarySelection secondary selection]].
+* If you click '''`mouse-2'''' on the lighter then the character is copied to the [[SecondarySelection|secondary selection]].
 
 * If you click '''`mouse-3'''' on the lighter then the character is shown enlarged in a tooltip.
 
