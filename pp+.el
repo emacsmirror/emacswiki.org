@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 21 19:44:12 2016 (-0700)
+;; Last-Updated: Mon May 23 14:46:08 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 379
+;;     Update #: 381
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -33,8 +33,8 @@
 ;;     (Emacs 24.4+).
 ;;
 ;;   * You can use a zero prefix argument (e.g. `M-o') with
-;;     `pp-eval-last-sexp' (`C-x C-e') or `pp-eval-expression'
-;;     (`M-:'), to swap the use of a tooltip defined by option
+;;     `pp-eval-last-sexp' (`C-x C-e') or `pp-eval-expression', to
+;;     swap the use of a tooltip defined by option
 ;;     `pp-max-tooltip-size'.
 ;;
 ;;   * There are additional commands that are versions of
@@ -97,7 +97,7 @@
 ;;
 ;; 
 ;;
-;;  Suggested binding:
+;;  Suggested binding: use `M-:' for `pp-eval-expression'.
 ;;
 ;;    (global-set-key [remap eval-expression] 'pp-eval-expression)
 ;;
