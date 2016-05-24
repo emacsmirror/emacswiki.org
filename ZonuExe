@@ -7,6 +7,7 @@ I am also known as [::tadsan] on Twitter. GitHub and Packagist account is [::zon
 == Code ==
 
 * https://github.com/zonuexe/right-click-context - ContextMenu implementation
+* https://github.com/zonuexe/emacs-datetime - DateTime formatting helper
 * https://github.com/zonuexe/magic-filetype.el
 * https://github.com/zonuexe/psysh.el - PHP REPL based on ComintMode
 * https://github.com/zonuexe/init-open-recentf.el
@@ -50,6 +51,8 @@ I'm writing articles about Emacs and Lisp in Japanese.
 * [http://qiita.com/tadsan/items/248f63934204683f909b ファイルを読み込む - Qiita]
 * [http://qiita.com/tadsan/items/b74856f555720a5ca2e5 MELPAにレシピを投稿するには - Qiita]
 * [http://qiita.com/tadsan/items/4f5743de21b7aa06ca35 Emacsを起動する - Qiita]
+* [http://qiita.com/tadsan/items/24d13570db922ba66e4e Emacsでも愛が生まれた - Qiita]
+* [http://qiita.com/tadsan/items/0d3a772f4b8fb733bf52 Emacsを書く前のLisp - Qiita]
 
 == Comment ==
 
