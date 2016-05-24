@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 24 07:13:36 2016 (-0700)
+;; Last-Updated: Tue May 24 16:23:36 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 9527
+;;     Update #: 9543
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -654,8 +654,7 @@
 ;;; Change Log:
 ;;
 ;; 2016/05/24 dadams
-;;     dired-mark-files-regexp:
-;;       Use no-dir, not LOCALP, in call to dired-get-filename, so we don't include name of inserted subdir.
+;;     dired-mark-files-regexp: Added optional arg LOCALP, so can mark/unmark matching different file-name forms.
 ;; 2016/05/15 dadams
 ;;     Added: diredp-bookmark-menu, diredp-hide/show-menu, diredp-navigate-menu.
 ;;     Move insert after revert and rename it to Insert/Move-To This Subdir.  Move create-directory before revert.
@@ -6076,6 +6075,13 @@ subdirectories are handled recursively in the same way."
 (defun diredp-mark-files-regexp-recursive (regexp &optional marker-char ignore-marks-p) ; Bound to `M-+ % m'
   "Mark all files matching REGEXP, including those in marked subdirs.
 Like `dired-mark-files-regexp' but act recursively on marked subdirs.
+
+However, file names to be matched are always constructed relative to
+`default-directory'.  For an entry in an included subdir listing, this
+means that the relative file name (no directory part) is prefixed with
+the subdir name relative to the value of `default-directory' in the
+current Dired buffer.
+
 Directories `.' and `..' are never marked.
 
 A non-negative prefix arg means to UNmark the files instead.
@@ -6108,7 +6114,7 @@ then only the first such is used."
           (setq total-count  
                 (dired-mark-if (and (not (looking-at dired-re-dot))
                                     (not (eolp)) ; Empty line
-                                    (let ((fn  (dired-get-filename 'LOCALP 'NO-ERROR)))
+                                    (let ((fn  (dired-get-filename t 'NO-ERROR)))
                                       (and fn  (diredp-string-match-p regexp fn))))
                                "matching file")))))
     (message "%s %ss..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking") "matching file")))
@@ -8688,13 +8694,16 @@ Otherwise, this is a mirror image of `diredp-next-subdir'."
 (defun dired-get-filename (&optional localp no-error-if-not-filep)
   "In Dired, return name of file mentioned on this line.
 Value returned normally includes the directory name.
-Optional arg LOCALP with value `no-dir' means don't include directory
-name in result.  A value of `verbatim' means to return the name exactly as
-it occurs in the buffer, and a value of t means construct name relative to
-`default-directory', which still may contain slashes if in a subdirectory.
+
+Optional arg LOCALP:
+ `no-dir' means do not include directory name in result.
+ `verbatim' means  return the name exactly as it occurs in the buffer.
+ Any other non-nil value means construct the name relative to
+  `default-directory', which still might contain slashes if point is
+  in a subdirectory.
 
 Non-nil optional arg NO-ERROR-IF-NOT-FILEP means treat `.' and `..' as
-regular filenames and return nil if no filename on this line.
+regular filenames and return nil if there is no filename on this line.
 Otherwise, an error occurs in these cases."
   (let ((case-fold-search  nil)
         (already-absolute  nil)
@@ -9067,26 +9076,68 @@ FUNCTION should not manipulate the files.  It should just read input
 
 ;; REPLACE ORIGINAL in `dired.el':
 ;;
-;; Push REGEXP onto `regexp-search-ring'.
+;; 1, Added optional arg LOCALP, so you can mark/unmark matching different file-name forms.
+;; 2. Push REGEXP onto `regexp-search-ring'.
 ;;
 ;;;###autoload
-(defun dired-mark-files-regexp (regexp &optional marker-char)
+(defun dired-mark-files-regexp (regexp &optional marker-char localp)
   "Mark all files matching REGEXP for use in later commands.
-A prefix argument means to unmark them instead.
-`.' and `..' are never marked.
+`.' and `..' are never marked or unmarked by this command.
 
-REGEXP is an Emacs regexp, not a shell wildcard.  Thus, use `\\.o$' for
-object files--just `.o' will mark more than you might think.
+Whether to mark or unmark, and what form of file name to match, are
+governed by the prefix argument.  For this, a plain (`C-u') or a
+double-plain (`C-u C-u') prefix arg is considered only as such - it is
+not considered numerically.
+
+Whether to mark or unmark:
+
+ - No prefix arg, a positive, or a negative arg means mark.
+
+ - Plain (`C-u'), double-plain (`C-u C-u'), or zero (e.g. `M-0' means
+   unmark.
+
+The form of a file name used for matching:
+
+ - No prefix arg (to mark) or a plain prefix arg (`C-u', to unmark)
+   means use the absolute file name, that is, including all directory
+   components.
+
+ - A negative arg (e.g. `M--', to mark) or a zero arg (e.g. `M-0', to
+   unmark) means use the relative file name (no directory part).
+
+ - A positive arg (e.g. `M-+', to mark) or a double plain arg (`C-u
+   C-u', to unmark) means construct the name relative to
+   `default-directory'.  For an entry in an inserted subdir listing,
+   this means prefix the relative file name (no directory part) with
+   the subdir name relative to `default-directory'.
+
+Using no prefix arg or a plain prefix arg `C-u' thus gives you the
+same behavior as vanilla Emacs (marking or unmarking, respectively).
+
+What Dired+ offers in addition is the possibility to match against
+names that are relative (have no directory part) or are relative to
+the `default-directory'.
+
+REGEXP is an Emacs regexp, not a shell wildcard.  Thus, use `\\.o$'
+for object files--just `.o' might mark more than you might expect.
 
 REGEXP is added to `regexp-search-ring', for regexp search."
-  (interactive (list (dired-read-regexp (concat (if current-prefix-arg "UNmark" "Mark")
-                                                " files (regexp): "))
-                     (and current-prefix-arg  ?\040)))
+  (interactive
+   (let* ((raw      current-prefix-arg)
+          (C-u      (and (consp raw)  (= 4 (car raw))))
+          (C-u-C-u  (and (consp raw)  (= 16 (car raw))))
+          (num      (and raw  (prefix-numeric-value raw))))
+     (list (dired-read-regexp (concat (if raw "UNmark" "Mark")
+                                      " files (regexp): "))
+           (and raw  (or C-u  C-u-C-u  (zerop num))  ?\040)
+           (cond ((or (not raw)  C-u)  nil) ; none, `C-u' 
+                 ((> num 0)            t) ; `M-+', `C-u C-u'
+                 (t                    'no-dir))))) ; `M--', `M-0'
   (add-to-list 'regexp-search-ring regexp) ; Add REGEXP to `regexp-search-ring'.
   (let ((dired-marker-char  (or marker-char  dired-marker-char)))
     (dired-mark-if (and (not (looking-at dired-re-dot))
                         (not (eolp))    ; Empty line
-                        (let ((fn  (dired-get-filename 'no-dir 'NO-ERROR)))
+                        (let ((fn  (dired-get-filename localp t)))
                           (and fn  (diredp-string-match-p regexp fn))))
                    "matching file")))
 
