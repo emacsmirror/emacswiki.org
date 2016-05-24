@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 15 09:54:53 2016 (-0700)
+;; Last-Updated: Tue May 24 07:13:36 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 9525
+;;     Update #: 9527
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -653,6 +653,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/05/24 dadams
+;;     dired-mark-files-regexp:
+;;       Use no-dir, not LOCALP, in call to dired-get-filename, so we don't include name of inserted subdir.
 ;; 2016/05/15 dadams
 ;;     Added: diredp-bookmark-menu, diredp-hide/show-menu, diredp-navigate-menu.
 ;;     Move insert after revert and rename it to Insert/Move-To This Subdir.  Move create-directory before revert.
@@ -9083,7 +9086,7 @@ REGEXP is added to `regexp-search-ring', for regexp search."
   (let ((dired-marker-char  (or marker-char  dired-marker-char)))
     (dired-mark-if (and (not (looking-at dired-re-dot))
                         (not (eolp))    ; Empty line
-                        (let ((fn  (dired-get-filename 'LOCALP 'NO-ERROR)))
+                        (let ((fn  (dired-get-filename 'no-dir 'NO-ERROR)))
                           (and fn  (diredp-string-match-p regexp fn))))
                    "matching file")))
 
