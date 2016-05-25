@@ -26,7 +26,7 @@ See the commentary in the code for details of controlling the situations in whic
 
 ===Minor modes===
 
-The following minor modes are disabled by default:
+The following minor modes are disabled by default (even when the buffer-local mode is enabled by a globalized minor mode).
 
 * font-lock-mode
 * highlight-changes-mode
@@ -48,7 +48,7 @@ It is a good idea to customize ##so-long-minor-modes## to add any additional buf
 
 ===Hooks===
 
-##so-long-hook## is generally the best place to put custom code, as it runs after globalized minor modes have acted. e.g.:
+`so-long-hook' is generally the best place to put custom code, because it runs after globalized minor modes have acted. (It runs immediately after the minor modes above have been disabled.)
 
  (add-hook 'so-long-hook 'my-so-long-hook)
  (defun my-so-long-hook ()
@@ -57,3 +57,5 @@ It is a good idea to customize ##so-long-minor-modes## to add any additional buf
    (when (bound-and-true-p idle-highlight-timer)
      (cancel-timer idle-highlight-timer)
      (setq idle-highlight-timer nil)))
+
+The standard mode hook `so-long-mode-hook' (which runs between `change-major-mode-after-body-hook' and `after-change-major-mode-hook') is also available.
