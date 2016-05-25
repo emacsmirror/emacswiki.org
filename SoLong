@@ -45,3 +45,14 @@ It is a good idea to customize ##so-long-minor-modes## to add any additional buf
 * diff-hl-amend-mode
 * diff-hl-flydiff-mode
 
+===Hooks===
+
+##so-long-hook## is generally the best place to put custom code, as it runs after globalized minor modes have acted. e.g.:
+
+ (add-hook 'so-long-hook 'my-so-long-hook)
+ 
+ (defun my-so-long-hook ()
+   "Used in `so-long-hook'."
+   (when (bound-and-true-p idle-highlight-timer)
+     (cancel-timer idle-highlight-timer)
+     (setq idle-highlight-timer nil)))
