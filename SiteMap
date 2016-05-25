@@ -95,8 +95,6 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryWriting|Writing]] -- using Emacs as a prose text editor
 
 
-
-
 [:ExternalPrograms]
 ==Applications within Emacs==
 
@@ -120,6 +118,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 ** [[CategoryMailAddons|MailAddons]] -- mail-handling add-ons (not Gnus-related).
 ** [[CategoryViewMail|View Mail]] -- VM is an mail package that is an alternative to [[Rmail]]
 ** [[WanderLust|WanderLust]] -- another Emacs news and mail reader
+** [[mu4e]] -- another Emacs based mail program.
 * [[CategoryPersonalInformationManager|PersonalInformationManager]] -- PIM functionalities
 ** [[CategoryBbdb|Bbdb]] -- "Big Brother <nowiki>DataBase</nowiki>": maintaining phone numbers, mail addresses
 * [[CategoryProgrammerUtils|ProgrammerUtils]] -- tools for programmers (e.g. code browsers)
