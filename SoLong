@@ -40,19 +40,20 @@ The following minor modes are disabled by default:
 
 It is a good idea to customize ##so-long-minor-modes## to add any additional buffer-local minor modes that you use which you know to have performance implications. Some known examples are as follows. Please contribute to this list, regardless of whether the mode is part of Emacs, or from a third party library or package.
 
-* hl-sexp-mode
 * diff-hl-mode
 * diff-hl-amend-mode
 * diff-hl-flydiff-mode
+* hl-sexp-mode
+* idle-highlight-mode
 
 ===Hooks===
 
 ##so-long-hook## is generally the best place to put custom code, as it runs after globalized minor modes have acted. e.g.:
 
  (add-hook 'so-long-hook 'my-so-long-hook)
- 
  (defun my-so-long-hook ()
    "Used in `so-long-hook'."
+   ;; Disable the old `idle-highlight' (pre-`idle-highlight-mode')
    (when (bound-and-true-p idle-highlight-timer)
      (cancel-timer idle-highlight-timer)
      (setq idle-highlight-timer nil)))
