@@ -29,3 +29,10 @@ Symbol's value as variable is void: diredp-file-name
 
 -- Anonymous 2016-05-23 14:29 UTC
 
+
+----
+
+Fixed. Check out the new version on github: https://github.com/vapniks/syslog-mode
+
+-- JoeBloggs 2016-05-26 02:13 UTC
+
