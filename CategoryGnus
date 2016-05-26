@@ -73,6 +73,7 @@ Suggestions:
 * EncryptingMail -- general page
 * GnusSMIME -- using openssl for signing/encrypting mails
 * GnusAndOutlookPGP -- workaround for inter-operating with PGP plugins for Outlook not capable of PGP/MIME
+* '''Lisp:gnus-security-ext.el''' -- Extra gnus functions for virus scanning, etc.
 
 == Gnus Buffers ==
 
@@ -175,5 +176,4 @@ TODO explain how to get it from git.  Preferably without creating a new page.
 
 * Check out Gnus merchandise on Cafe Press: http://www.cafeshops.com/ngen   50 % of the Proceeds benefit either the EFF or FSF!
 **This link seems to be broken.
-
 
