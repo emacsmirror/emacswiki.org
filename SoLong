@@ -48,7 +48,7 @@ It is a good idea to customize ##so-long-minor-modes## to add any additional buf
 
 ===Hooks===
 
-`so-long-hook' is generally the best place to put custom code, because it runs after globalized minor modes have acted. (It runs immediately after the minor modes above have been disabled.)
+While the standard mode hook `so-long-mode-hook' (which runs between `change-major-mode-after-body-hook' and `after-change-major-mode-hook') is available, `so-long-hook' is generally the best place to put custom code, because it runs after globalized minor modes have acted (immediately after the minor modes above have been disabled, to be specific).
 
  (add-hook 'so-long-hook 'my-so-long-hook)
  (defun my-so-long-hook ()
@@ -57,5 +57,3 @@ It is a good idea to customize ##so-long-minor-modes## to add any additional buf
    (when (bound-and-true-p idle-highlight-timer)
      (cancel-timer idle-highlight-timer)
      (setq idle-highlight-timer nil)))
-
-The standard mode hook `so-long-mode-hook' (which runs between `change-major-mode-after-body-hook' and `after-change-major-mode-hook') is also available.
