@@ -2,19 +2,14 @@ I use Emacs since 2009.08 to read/write c/c++/java/asm code, so I write some pac
 
 My email: jianlizhao1@gmail.com. 
 
-Bellow zjl-hl.el and region-list-edit.el are updated in 2016.4.12 and have lot improvement on
+Bellow zjl-hl.el and region-list-edit.el are updated in 2016.5.27 and have lot improvement on
 
 **  C++/JAVA highlight
 **  The recognize rate of the local var/parameters is much much higher and thus highlighted properly. This is mostly by copying the function body to a temp buffer and do code clean so semantic can recognize the local var with much higher rate.
 **  Good stability (was using this version for half year by myself)
 
 
-Beside above for now I disable the zjl-hl once a buffer is edited, because the potential  new added parenthesis might not be paired and cause zjl-hl/semantic dead emacs.
-
-
-* 1 http://www.emacswiki.org/emacs/zjl-hl.el    (2016.4.13 version)
-
-<<<sorry!,  2016.4.12 uploaded version has issue because of a last second change... if you happen to download that day version please update.>>>
+* 1 http://www.emacswiki.org/emacs/zjl-hl.el    (2016.5.27 version)
 
 This highlight C/C++JAVA file local variable/parameters, function call and some other to make code easier to read
 
