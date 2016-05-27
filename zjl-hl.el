@@ -1,4 +1,4 @@
-;;;Updated in 2016.4.13
+;;;Updated in 2016.5.27
 ;;;This package can highlight argument/variable and keywords in c/c++/java
 ;; Issue now: all disable function can not remove keyword I add, don't know how
 (require 'cl)
@@ -30,13 +30,17 @@
 You can improve this if your computer has enough performance."
   :type 'integer :group 'zjl-hl)
 
-(defcustom zjl-hl-too-big-size 200000
+(defcustom zjl-hl-too-big-size 40000
   "The threshold size of function that zjl-hl will stop to highlight since it is too big. The size corresponds to the largest function found in current screen and
 +-zjl-hl-numberofscreen-to-hl-each-time screens"
   :type 'integer :group 'zjl-hl)
 
-(defcustom zjl-hl-too-big-to-update-size 100000
+(defcustom zjl-hl-too-big-to-update-size 40000
   "If the edited function's size is too large, zjl-hl will stop to do partial highlight"
+  :type 'integer :group 'zjl-hl)
+
+(defcustom zjl-hl-pre-hl-max 10
+  "xxx"
   :type 'integer :group 'zjl-hl)
 
 (defcustom zjl-hl-numberofscreen-to-hl-each-time 1
@@ -239,7 +243,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
       (concat "\\_<" (regexp-opt '("FIXME" "TODO" "HACK" "fixme" "todo" "hack" "BUG" "XXX" "DEBUG")) "\\_>"))
 
 (setq zjl-hl-macro-regexp
-      (concat "\\_<\\(" "BIT[0-9]\\|\\(?:0x\\)?[0-9]+\\(?:ULL?\\|ull?\\|llu\\|LLU\\|[uU]\\)\\|SUCCESS\\|ERROR\\|FALSE\\|TRUE\\|IN\\|OUT" "\\)\\_>"))
+      (concat "\\_<\\(" "BIT[0-9]\\|\\(?:0x\\)?[0-9]+\\(?:ULL?\\|ull?\\|llu\\|LLU\\|[uU]\\)\\|SUCCESS\\|ERROR\\|FALSE\\|TRUE\\|IN\\|OUT\\|__\\(func\\|file\\|line\\)__" "\\)\\_>"))
 
 ;;;http://emacs.stackexchange.com/questions/7396/how-can-i-determine-which-function-was-called-interactively-in-the-stack
 (defun zjl-hl-get-caller-func-name ()
@@ -251,22 +255,40 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
       (setq frame (backtrace-frame (incf index)))
       (when (equal t (first frame)) (incf found)))
     (second frame)))
+(defun zjl-hl-call-stack ()
+  "Return the current call stack frames."
+  (let ((frames)
+        (frame)
+        (index 5))
+    (while (setq frame (backtrace-frame index))
+      (push frame frames)
+      (incf index))
+    (remove-if-not 'car frames)))
+(defun zjl-hl-function-stack ()
+  "Like call-stack but is a list of only the function names; And this function might cause emacs crash"s
+  (butlast (mapcar 'cl-second (zjl-hl-call-stack))))
 
-(defun zjl-hl-dbg-print (str &optional value level)
+(defun zjl-hl-dbg-print (str &optional level &rest value)
   (when (or (and (equal zjl-hl-dbg-print-p 'critical)
-		 (or (equal level 'critical)))
+		 (equal level 'critical))
 	    (and (equal zjl-hl-dbg-print-p 'debug)
 		 (member level '(critical debug)))
 	    (equal zjl-hl-dbg-print-p 'verbose))
-    (let (str-text value-text)
-      (setq str-text (format "\n\n=== TIME=%s buffer=%s Elisp-Func=%s Code-Func=%s  %s\n" (substring (current-time-string) 11 19) (buffer-name) (zjl-hl-get-caller-func-name) (which-function) str))
-      (when value (setq value-text (prin1-to-string value)))
+    (let (str-text)
+      ;; do not use zjl-hl-function-stack with 'debug in mostly, emacs crash because of it
+      (setq str-text (format "\n\n=== TIME=%s buffer=%s Elisp-Func=%s Code-Func=%s  %s\n" (substring (current-time-string) 11 19) (buffer-name) (zjl-hl-get-caller-func-name) (which-function) (apply #'format str value)))
       (get-buffer-create "*zjl-hl-dbg-print*")
       (with-current-buffer "*zjl-hl-dbg-print*"
         (goto-char (point-max))
         (insert str-text)
-        (when value (insert value-text))))))
-
+	(let ((beyond (- (point-max) 700000)))
+	  (when (> beyond 0)
+	    (goto-char (point-min))
+	    (delete-region (point-min) (+ (point-min) beyond))
+	    (kill-line)))))))
+(defun zjl-hl-dbg-print-message (str &rest value)
+  (apply #'zjl-hl-dbg-print str 'critical value)
+  (apply #'message str value))
 (defun zjl-hl-search-member-function-call (limit)
   (let ((pos (re-search-forward "\\(?:\\.\\|->\\)\\(\\_<\\(?:\\w\\|\\s_\\)+\\_>\\)[ 	\n]*[^\\(]" limit t)))
     (when pos
@@ -332,10 +354,10 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 (defun zjl-hl-replace-regexp (regexp to-string &optional delimited start end)
   (save-excursion
       (when start (goto-char start))
-      (zjl-hl-dbg-print "while start" nil 'debug)
+      (zjl-hl-dbg-print "while start" 'debug)
       (while (re-search-forward regexp end t)
         (replace-match to-string))
-      (zjl-hl-dbg-print "while end" nil 'debug)))
+      (zjl-hl-dbg-print "while end" 'debug)))
 
 (defun zjl-hl-get-arg-use-regexp (arg-start arg-end)
   "Two marker as args and return args between two marks as list"
@@ -345,23 +367,23 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
       (zjl-hl-replace-regexp  "\\(=.*?\\)\\(,\\|)\\)" "\\2" nil arg-start arg-end)
       (goto-char arg-start)
 
-      (zjl-hl-dbg-print "while start search function pointer" nil 'debug)
+      (zjl-hl-dbg-print "while start search function pointer" 'debug)
       ;; argument like void * (*func-pointer)(int a, int b),
       (while (re-search-forward "([ 	\n]*\\*[ 	\n]*\\_<\\([_A-Za-z0-9]+\\)\\_>[ 	\n]*)[ 	\n]*(.*?)[ 	\n]*\\(,\\|)\\)" arg-end t)
         (setq item (match-string-no-properties 1))
         (when (not (member item zjl-hl-types-name))
           (add-to-list 'items item)))
-      (zjl-hl-dbg-print "while end search function pointer" nil 'debug)
+      (zjl-hl-dbg-print "while end search function pointer" 'debug)
       
       (zjl-hl-replace-regexp  "\\*\\|\n\\|(.*?)" "" nil arg-start arg-end) ;; remove just incase there is another () inside arg (), and remove * \n.
       (zjl-hl-replace-regexp  "[ 	]\\{2,\\}" " " nil arg-start arg-end)
       (goto-char arg-start)
-      (zjl-hl-dbg-print "while start normal argument" nil 'debug)
+      (zjl-hl-dbg-print "while start normal argument" 'debug)
       (while (re-search-forward "\\_<\\([_A-Za-z0-9]+\\)\\_>[ 	\n]*\\(,\\|)\\)" arg-end t)
         (setq item (match-string-no-properties 1))
         (when (not (member item zjl-hl-types-name))
           (add-to-list 'items item)))
-      (zjl-hl-dbg-print "while end normal argument" nil 'debug))
+      (zjl-hl-dbg-print "while end normal argument" 'debug))
     items))
 
 (setq zjl-hl-dbg-profile-func-start-time nil)
@@ -374,23 +396,23 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
   (when (equal zjl-hl-dbg-print-p 'verbose)
     (when zjl-hl-dbg-profile-prev-time
       (let ((temp (- (float-time) zjl-hl-dbg-profile-prev-time)))
-        (zjl-hl-dbg-print (format "zjl-hl-dbg-profile-print: %s" str) temp)))
+        (zjl-hl-dbg-print "zjl-hl-dbg-profile-print: %s %s" 'verbose str temp)))
     (setq zjl-hl-dbg-profile-prev-time (float-time))))
 (defun zjl-hl-dbg-profile-end (str)
   (when (equal zjl-hl-dbg-print-p 'verbose)
     (when zjl-hl-dbg-profile-func-start-time
       (let ((temp (- (float-time) zjl-hl-dbg-profile-func-start-time)))
-        (zjl-hl-dbg-print (format "zjl-hl-dbg-profile-end:%s" str) temp)))))
+        (zjl-hl-dbg-print "zjl-hl-dbg-profile-end: %s %s" 'verbose str temp)))))
 
 (defun zjl-hl-c-beginning-of-defun ()
   (condition-case err
       (c-beginning-of-defun)
-    (error (zjl-hl-dbg-print (format "%s() call c-beginning-of-defun and got error:" (zjl-hl-get-caller-func-name)) (error-message-string err) 'critical)
+    (error (zjl-hl-dbg-print "%s() call c-beginning-of-defun and got error: %s" 'critical (zjl-hl-get-caller-func-name) (error-message-string err))
            nil)))
 (defun zjl-hl-c-end-of-defun ()
   (condition-case err
       (c-end-of-defun)
-    (error (zjl-hl-dbg-print (format "%s() call c-end-of-defun and got error:" (zjl-hl-get-caller-func-name)) (error-message-string err) 'critical)
+    (error (zjl-hl-dbg-print "%s() call c-end-of-defun and got error: %s" 'critical (zjl-hl-get-caller-func-name) (error-message-string err))
            nil)))
 
 (defun zjl-hl-do-func-region (start end AB)
@@ -436,7 +458,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 
 				     ;; this let is to simplify all "a = xxxx;" as "a=0"
                                      (let (start-point start-marker stop-marker search-stop-point search-exp-sucess)
-				       (zjl-hl-dbg-print "while start replace a = xxxx" nil 'debug)
+				       (zjl-hl-dbg-print "while start replace a = xxxx" 'debug)
                                        (while (setq start-point (zjl-hl-find-regexp-return-end-pos (point) (point-max) "[^!>=<]=[^=]" ))
                                          (goto-char (1- (car start-point)))
                                          (setq start-marker (point-marker))
@@ -451,36 +473,36 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
                                          (setq search-exp-sucess nil)
                                          (condition-case nil
                                              (let ((continue t))
-					       (zjl-hl-dbg-print "while start searching *,; in variables definition" nil 'debug)
+					       (zjl-hl-dbg-print "while start searching *,; in variables definition" 'debug)
                                                (while (and continue
                                                            (<= (point) search-stop-point))
                                                  (forward-sexp)
                                                  (when (looking-at "[ 	\n]*[,;]")
                                                    (setq search-exp-sucess t)
                                                    (setq continue nil)))
-					       (zjl-hl-dbg-print "while end searching *,; in variables definition" nil 'debug))
+					       (zjl-hl-dbg-print "while end searching *,; in variables definition" 'debug))
                                            (error (setq search-exp-sucess nil)))
                                          (when search-exp-sucess
                                            (progn (setq stop-marker (point-marker))
                                                   (delete-region start-marker stop-marker)
                                                   (insert "0"))))
-				       (zjl-hl-dbg-print "while end replace a = xxxx" nil 'debug))
+				       (zjl-hl-dbg-print "while end replace a = xxxx" 'debug))
 
 				     ;; Remove <...> which cause semantic failed to variable detect
                                      (when (or (equal 'c++-mode original-mode) (equal 'java-mode original-mode))
                                        (goto-char (point-min))
                                        (let (start-point)
-					 (zjl-hl-dbg-print "while start remove <>" nil 'debug)
+					 (zjl-hl-dbg-print "while start remove <>" 'debug)
                                          (while (setq start-point (zjl-hl-find-regexp-return-end-pos (point) (point-max) "<"))
                                            (goto-char (1- (car start-point)))
 					   (forward-sexp)
 					   (if (looking-back ">")
 					       (delete-region (1- (car start-point)) (point))))
-					 (zjl-hl-dbg-print "while end  remove <>" nil 'debug)))
+					 (zjl-hl-dbg-print "while end remove <>" 'debug)))
 
 				     (goto-char func-body-begin-temp-buffer)
 				     (let (start-point)
-				       (zjl-hl-dbg-print "while start remove all function call" nil 'debug)
+				       (zjl-hl-dbg-print "while start remove all function call" 'debug)
 				       (while (setq start-point (zjl-hl-find-regexp-return-end-pos (point) (point-max) "("))
 					 (if (looking-back "\\_<if\\|for\\|while\\|switch\\_>[ 	\n]*(")
 				     	     (progn (goto-char (car start-point)))
@@ -488,30 +510,33 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 				     	   (forward-sexp)
 				     	   (if (looking-back ")")
 				     	       (delete-region (1- (car start-point)) (point)))))
-				       (zjl-hl-dbg-print "while end  remove all function call" nil 'debug))
+				       (zjl-hl-dbg-print "while end remove all function call" 'debug))
 
                                      (semantic-new-buffer-fcn)
 
                                      (condition-case err ;; to isolate err impact
-                                         (when func-body-begin-temp-buffer
-                                           (goto-char func-body-begin-temp-buffer)
-                                           (setq items-deepest (semantic-parse-region func-body-begin-temp-buffer (- (point-max) 2) nonterminal zjl-hl-semantic-parse-depth nil))
-                                           (zjl-hl-dbg-print "in temp buffer var(with large depth)=" items-deepest)
-                                           (dolist (item (zjl-hl-get-var-in-semantic-parcel items-deepest))
-                                             (add-to-list 'local-variable-list item))
-                                           (setq depth 0)
-					   (zjl-hl-dbg-print "while start in temp buffer get var" nil 'debug)
-                                           (while (< depth zjl-hl-semantic-parse-depth)
-                                             (setq items (semantic-parse-region func-body-begin-temp-buffer (- (point-max) 2) nonterminal depth nil))
-                                             ;;since the semantic-parse-region cost 95% of zjl-hl, so must reduce its calling as much as possible
-                                             (if (equal items items-deepest)
-                                                 (setq depth zjl-hl-semantic-parse-depth)
-                                               (zjl-hl-dbg-print "in temp buffer var(with less depth)=" items)
-                                               (dolist (item (zjl-hl-get-var-in-semantic-parcel items))
-                                                 (add-to-list 'local-variable-list item)))
-                                             (setq depth (1+ depth)))
-					   (zjl-hl-dbg-print "while end in temp buffer get var" nil 'debug))
-                                       (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region when find local variable in temp buffer" (error-message-string err) 'critical)))
+                                         (let ((start-time (float-time)))
+					   (when func-body-begin-temp-buffer
+					     (goto-char func-body-begin-temp-buffer)
+					     (setq items-deepest (semantic-parse-region func-body-begin-temp-buffer (- (point-max) 2) nonterminal zjl-hl-semantic-parse-depth nil))
+					     (zjl-hl-dbg-print "in temp buffer var(with large depth)=%s" 'verbose items-deepest)
+					     (dolist (item (zjl-hl-get-var-in-semantic-parcel items-deepest))
+					       (add-to-list 'local-variable-list item))
+					     (setq depth 0)
+					     (zjl-hl-dbg-print "while start in temp buffer get var" 'debug)
+					     (while (and (< depth zjl-hl-semantic-parse-depth)
+							 (< (- (float-time) start-time) 2))
+					       (setq items (semantic-parse-region func-body-begin-temp-buffer (- (point-max) 2) nonterminal depth nil))
+					       ;;since the semantic-parse-region cost 95% of zjl-hl, so must reduce its calling as much as possible
+					       (if (equal items items-deepest)
+						   (setq depth zjl-hl-semantic-parse-depth)
+						 (zjl-hl-dbg-print "in temp buffer var(with less depth)=%s" 'verbose items)
+						 (dolist (item (zjl-hl-get-var-in-semantic-parcel items))
+						   (add-to-list 'local-variable-list item)))
+					       (setq depth (1+ depth)))
+
+					     (zjl-hl-dbg-print "while end in temp buffer get var" 'debug)))
+                                       (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region when find local variable in temp buffer %s" 'critical (error-message-string err))))
 
                                      ;; Use REGEXP to get arg, because below two formal methods do not work in temp buffer (but work most time in real file buffer), don't know why
                                      ;;1. (semantic-parse-region (point-min) (point-max) nonterminal nil nil)  -- this alawys return nil in temp buffer or a temp file buffer
@@ -541,42 +566,44 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
                                                (setq arg-end (point-marker)))
                                              (dolist (item (zjl-hl-get-arg-use-regexp arg-start arg-end))
                                                (add-to-list 'parameter-list item)))
-                                           (zjl-hl-dbg-print "in temp buffer arg=" parameter-list))
-                                       (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region when find arg in temp buffer" (error-message-string err) 'critical)))))
+                                           (zjl-hl-dbg-print "in temp buffer arg=%s" 'verbose parameter-list))
+                                       (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region when find arg in temp buffer:%s" 'critical (error-message-string err))))))
                                (error (set-buffer original-buffer)
                                       (setq successful nil))))
                       ('B (condition-case err ;; to isolate err impact
                               (when func-body-begin
                                 (goto-char func-body-begin)
                                 (setq items (semantic-get-local-arguments))
-                                (zjl-hl-dbg-print "in current buffer arg=" items)
+                                (zjl-hl-dbg-print "in current buffer arg=%s" 'verbose items)
                                 (dolist (item (zjl-hl-get-var-in-semantic-parcel items t))
                                   ;; (when (not (member item parameter-list)) (zjl-hl-dbg-print "find more arg" item));;purelly for debug
                                   (add-to-list 'parameter-list item)))
-                            (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region when find arg" (error-message-string err) 'critical)))
+                            (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region when find arg:%s" 'critical (error-message-string err))))
                           (condition-case err ;; To isolate err impact
-                              (when func-body-begin
-                                (goto-char func-body-begin)
-                                (setq items-deepest (semantic-parse-region func-body-begin (- end 2) nonterminal zjl-hl-semantic-parse-depth nil))
-                                (zjl-hl-dbg-print "in current buffer var(with large depth)=" items-deepest)
-                                (dolist (item (zjl-hl-get-var-in-semantic-parcel items-deepest))
-                                  ;; (when (not (member item  local-variable-list)) (zjl-hl-dbg-print "find more var" item));;purelly for debug
-                                  (add-to-list 'local-variable-list item))
-                                (setq depth 0)
-				(zjl-hl-dbg-print "while start in current buffer get var" nil 'debug)
-                                (while (< depth zjl-hl-semantic-parse-depth)
-                                  (setq items (semantic-parse-region func-body-begin (- end 2) nonterminal depth nil))
-                                  ;; Since the semantic-parse-region cost 95% of zjl-hl, so must reduce its calling as much as possible
-                                  (if (equal items items-deepest)
-                                      (setq depth zjl-hl-semantic-parse-depth)
-                                    (zjl-hl-dbg-print "in current buffer var(with less depth)=" items)
-                                    (dolist (item (zjl-hl-get-var-in-semantic-parcel items))
-                                      ;; (when (not (member item local-variable-list)) (zjl-hl-dbg-print "find more var" item));;purelly for debug
-                                      (add-to-list 'local-variable-list item)))
-                                  (setq depth (1+ depth)))
-				(zjl-hl-dbg-print "while end in current buffer get var" nil 'debug))
-                            (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region when find local variable" (error-message-string err) 'critical))))))
-            (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region:" (error-message-string err) 'critical)
+                              (let ((start-time (float-time)))
+				(when func-body-begin
+				  (goto-char func-body-begin)
+				  (setq items-deepest (semantic-parse-region func-body-begin (- end 2) nonterminal zjl-hl-semantic-parse-depth nil))
+				  (zjl-hl-dbg-print "in current buffer var(with large depth)=%s" 'verbose items-deepest)
+				  (dolist (item (zjl-hl-get-var-in-semantic-parcel items-deepest))
+				    (add-to-list 'local-variable-list item))
+				  (setq depth 0)
+				  (zjl-hl-dbg-print "while start in current buffer get var" 'debug)
+				  (while (and (< depth zjl-hl-semantic-parse-depth)
+					      (< (- (float-time) start-time) 2))
+				    (setq items (semantic-parse-region func-body-begin (- end 2) nonterminal depth nil))
+				    ;; Since the semantic-parse-region cost 95% of zjl-hl, so must reduce its calling as much as possible
+				    (if (equal items items-deepest)
+					(setq depth zjl-hl-semantic-parse-depth)
+				      (zjl-hl-dbg-print "in current buffer var(with less depth)=%s" 'verbose items)
+				      (dolist (item (zjl-hl-get-var-in-semantic-parcel items))
+					;; (when (not (member item local-variable-list)) (zjl-hl-dbg-print "find more var" item));;purelly for debug
+					(add-to-list 'local-variable-list item)))
+				    (setq depth (1+ depth)))
+
+				  (zjl-hl-dbg-print "while end in current buffer get var" 'debug)))
+                            (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region when find local variable=%s" 'critical (error-message-string err)))))))
+            (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region:%s" 'critical (error-message-string err))
                    (setq successful nil)))
           (save-excursion
             (when parameter-list ;; Should place before local-variable-list since some parameter will override by local-variable
@@ -584,14 +611,14 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
             (when local-variable-list
               (zjl-hl-symbol-region func-body-begin end (concat "\\_<" (regexp-opt local-variable-list) "\\_>")  zjl-hl-local-variable-reference-face)))
           successful))
-    (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region:" (error-message-string err) 'critical)
+    (error (zjl-hl-dbg-print "error in zjl-hl-do-func-region:%s" 'critical (error-message-string err))
            nil)))
 
 (defun zjl-hl-symbol-region (start end symbol-exp symbol-face)
   (let (target-this-end target-next-start (case-fold-search nil) pos-pair)
     (save-excursion
       (goto-char start)
-      (zjl-hl-dbg-print "while start" nil 'debug)
+      (zjl-hl-dbg-print "while start" 'debug)
       (while (< (point) end)
         (setq pos-pair (zjl-hl-next-region-to-ignore-hl (point) end))
         (if pos-pair
@@ -603,7 +630,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
         (progn
           (hlt-highlight-regexp-region (point) target-this-end symbol-exp symbol-face)
           (goto-char target-next-start)))
-      (zjl-hl-dbg-print "while end" nil 'debug))))
+      (zjl-hl-dbg-print "while end" 'debug))))
 
 (defun zjl-hl-next-region-to-ignore-hl (start end)
   (save-excursion
@@ -621,7 +648,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
   (let (target-this-end target-next-start (case-fold-search nil) find-p3 find-p pos-pair tempstart)
     (save-excursion
       (goto-char start)
-      (zjl-hl-dbg-print "while start" nil 'debug)
+      (zjl-hl-dbg-print "while start" 'debug)
       (while (< (point) end)
         (setq tempstart (point))
         ;;possible of pr_debug("xxx \"chosen\"xxx\n");
@@ -633,7 +660,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
                 (setq find-p (cons (point) (nth index (match-data t))))
               (setq find-p (cons (point) nil)))
             (goto-char end))))
-      (zjl-hl-dbg-print "while end" nil 'debug))
+      (zjl-hl-dbg-print "while end" 'debug))
     find-p))
 
 (defun zjl-hl-splitting-to-func (start end AB)
@@ -642,42 +669,50 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
           temp-regions
           (successful t)
           (successful-all t))
-      (zjl-hl-dbg-print "regions=" regions)
+      (zjl-hl-dbg-print "regions=%s" 'debug regions)
       (dolist (each-region regions)
         (setq  successful-all (and (setq successful (zjl-hl-do-func-region (car each-region) (cdr each-region) AB))
                                    successful-all))
-        (zjl-hl-dbg-print "function success or not?" successful)
+        (zjl-hl-dbg-print "function success or not? %s" 'verbose successful)
         (case AB ('A (if (not zjl-hl-semantic-parse-done)
-                         (setq zjl-hl-regions-1A-DONE (region-list-edit-add zjl-hl-regions-1A-DONE each-region t))
+                         (setq zjl-hl-regions-1A-DONE (region-list-edit-add zjl-hl-regions-1A-DONE each-region))
                        (when successful
-                         (setq zjl-hl-regions-2A-Y (region-list-edit-add zjl-hl-regions-2A-Y each-region t)))
+                         (setq zjl-hl-regions-2A-Y (region-list-edit-add zjl-hl-regions-2A-Y each-region)))
                        (when (not successful)
                          (setq temp-regions (list each-region))
                          (dolist (retry-region zjl-hl-regions-2A-X-try-again)
                            (setq temp-regions (region-list-edit-delete temp-regions retry-region)))
                          (if temp-regions
                              ;;The region isn't in retry list yet, so add to retry list for 2nd chance
-                             (setq zjl-hl-regions-2A-X-try-again (region-list-edit-add zjl-hl-regions-2A-X-try-again each-region t))
-                           ;;Else it has benn retried, so add to retry done list to prevent further retry
-                           (setq zjl-hl-regions-2A-X-X (region-list-edit-add zjl-hl-regions-2A-X-X each-region t))))))
+                             (setq zjl-hl-regions-2A-X-try-again (region-list-edit-add zjl-hl-regions-2A-X-try-again each-region))
+                           ;;Else it has been retried, so add to retry done list to prevent further retry
+                           (setq zjl-hl-regions-2A-X-X (region-list-edit-add zjl-hl-regions-2A-X-X each-region))))))
               ('B (if (not zjl-hl-semantic-parse-done)
-                         (setq zjl-hl-regions-1B-DONE (region-list-edit-add zjl-hl-regions-1B-DONE each-region t))
+                         (setq zjl-hl-regions-1B-DONE (region-list-edit-add zjl-hl-regions-1B-DONE each-region))
                        (when successful
-                         (setq zjl-hl-regions-2B-Y (region-list-edit-add zjl-hl-regions-2B-Y each-region t)))
+                         (setq zjl-hl-regions-2B-Y (region-list-edit-add zjl-hl-regions-2B-Y each-region)))
                        (when (not successful)
                          (setq temp-regions (list each-region))
                          (dolist (retry-region zjl-hl-regions-2B-X-try-again)
                            (setq temp-regions (region-list-edit-delete temp-regions retry-region)))
                          (if temp-regions
                              ;;The region isn't in retry list yet, so add to retry list for 2nd chance
-                             (setq zjl-hl-regions-2B-X-try-again (region-list-edit-add zjl-hl-regions-2B-X-try-again each-region t))
+                             (setq zjl-hl-regions-2B-X-try-again (region-list-edit-add zjl-hl-regions-2B-X-try-again each-region))
                            ;;Else it has benn retried, so add to retry done list to prevent further retry
-                           (setq zjl-hl-regions-2B-X-X (region-list-edit-add zjl-hl-regions-2B-X-X each-region t)))))))
+                           (setq zjl-hl-regions-2B-X-X (region-list-edit-add zjl-hl-regions-2B-X-X each-region)))))))
         )
       successful-all)))
 
 (setq zjl-hl-timer-B-obj nil)
 (setq zjl-hl-timer-pre-hl-obj nil)
+(defun zjl-hl-stop-work (&optional seconds)
+  (if (not zjl-hl-freeze-already)
+      (progn (setq zjl-hl-freeze-already t)
+	     (setq zjl-hl-too-big-size (/ zjl-hl-too-big-size 4))
+	     (setq zjl-hl-too-big-to-update-size (/ zjl-hl-too-big-to-update-size 4))
+	     (zjl-hl-dbg-print-message "zjl-hl shrink zjl-hl-too-big-size after detect freeze for seconds %s" (if seconds seconds "") )))
+  (zjl-hl-disable-current-buffer)
+  (zjl-hl-dbg-print-message "zjl-hl stop work on this buffer after detect freeze again"))
 (defun zjl-hl-timer-do-whole (thisbuffer &optional start end AB)
   (condition-case err
       (save-excursion
@@ -707,13 +742,13 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
                             (if (zjl-hl-c-end-of-defun)
                                 (point-marker)
                               (copy-marker (min end (point-max-marker))))))
-                (zjl-hl-dbg-print "start end=" (cons start end))
+                (zjl-hl-dbg-print "start end=%s" 'verbose (cons start end))
 
                 (setq next-step start)
                 (when (> (- end start) (* 3 zjl-hl-no-delay-max-size))
                   (save-excursion
                     (let (find-better-end)
-		      (zjl-hl-dbg-print "while start find-better-end" nil 'debug)
+		      (zjl-hl-dbg-print "while start find-better-end" 'debug)
                       (while (and (<= (- next-step start) zjl-hl-too-big-size)
                                   (< next-step (point-max))
                                   (< next-step end)
@@ -723,13 +758,13 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
                         (when (and (zjl-hl-c-end-of-defun)
                                    (< (point-marker) end))
                           (setq find-better-end (point-marker))))
-		      (zjl-hl-dbg-print "while end find-better-end" nil 'debug)
+		      (zjl-hl-dbg-print "while end find-better-end" 'debug)
                       (when find-better-end (setq end find-better-end)))))
                 
-                (zjl-hl-dbg-print "after shrink, start end=" (cons start end))
+                (zjl-hl-dbg-print "after shrink, start end=%s" 'debug (cons start end))
 
-                (when (> zjl-hl-pre-hl-max 0)
-                  (setq zjl-hl-pre-hl-max (1- zjl-hl-pre-hl-max))
+                (when (< zjl-hl-pre-hl-max-buffer zjl-hl-pre-hl-max)
+                  (setq zjl-hl-pre-hl-max-buffer (1+ zjl-hl-pre-hl-max-buffer))
                   (let ((pre-hl-start  (copy-marker (min (point-max) (1+ end))))
                         (pre-hl-end    (copy-marker (min (point-max) (+ end (* zjl-hl-numberofscreen-to-hl-each-time (- win-e win-s)))))))
                     (unless (> pre-hl-end pre-hl-start)
@@ -743,10 +778,10 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 
                 (when (< (- end start) zjl-hl-too-big-size)
                   (setq A-time (float-time))
-                  (zjl-hl-dbg-print "zjl-hl-semantic-parse-done" zjl-hl-semantic-parse-done)
-                  (zjl-hl-dbg-print "zjl-hl-regions-1A-DONE" zjl-hl-regions-1A-DONE)
-		  (zjl-hl-dbg-print "zjl-hl-regions-2A-Y" zjl-hl-regions-2A-Y)
-		  (zjl-hl-dbg-print "zjl-hl-regions-2A-X-X" zjl-hl-regions-2A-X-X)
+                  (zjl-hl-dbg-print "zjl-hl-semantic-parse-done %s" 'debug zjl-hl-semantic-parse-done)
+                  (zjl-hl-dbg-print "zjl-hl-regions-1A-DONE %s" 'debug zjl-hl-regions-1A-DONE)
+		  (zjl-hl-dbg-print "zjl-hl-regions-2A-Y %s" 'debug zjl-hl-regions-2A-Y)
+		  (zjl-hl-dbg-print "zjl-hl-regions-2A-X-X %s" 'debug zjl-hl-regions-2A-X-X)
                   (progn
                     (setq temp-regions (list (cons start end)))
                     (if (not zjl-hl-semantic-parse-done)
@@ -756,23 +791,23 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
                         (setq temp-regions (region-list-edit-delete temp-regions hl-region)))
                       (dolist (hl-region zjl-hl-regions-2A-X-X)
                         (setq temp-regions (region-list-edit-delete temp-regions hl-region))))
-		    (zjl-hl-dbg-print "before splitting to func - A" nil 'debug)
+		    (zjl-hl-dbg-print "before splitting to func - A" 'debug)
                     (when temp-regions
-                      (zjl-hl-dbg-print "temp-regions=" temp-regions)
+                      (zjl-hl-dbg-print "temp-regions=%s" 'debug temp-regions)
                       (dolist (each-region temp-regions)
                         (when (zjl-hl-splitting-to-func (car each-region) (cdr each-region) 'A)
                           ;; Though in zjl-hl-splitting-to-func has add highlighted each function region into list already, here add the whole region again, so reduce list fragment.
                           (if (not zjl-hl-semantic-parse-done) 
-                              (setq zjl-hl-regions-1A-DONE (region-list-edit-add zjl-hl-regions-1A-DONE each-region t))
-                            (setq zjl-hl-regions-2A-Y (region-list-edit-add zjl-hl-regions-2A-Y each-region t))))))
-		    (zjl-hl-dbg-print "after splitting to func - A" nil 'debug))
+                              (setq zjl-hl-regions-1A-DONE (region-list-edit-add zjl-hl-regions-1A-DONE each-region))
+                            (setq zjl-hl-regions-2A-Y (region-list-edit-add zjl-hl-regions-2A-Y each-region))))))
+		    (zjl-hl-dbg-print "after splitting to func - A" 'debug))
                   (setq A-time (- (float-time) A-time))
                   (if (or AB (< A-time 0.75))
                       (progn
-                        (zjl-hl-dbg-print "continue after A-time" A-time)
-                        (zjl-hl-dbg-print "zjl-hl-regions-1B-DONE" zjl-hl-regions-1B-DONE)
-			(zjl-hl-dbg-print "zjl-hl-regions-2B-Y" zjl-hl-regions-2B-Y)
-			(zjl-hl-dbg-print "zjl-hl-regions-2B-X-X" zjl-hl-regions-2B-X-X)
+                        (zjl-hl-dbg-print "continue after A-time %s" 'debug A-time)
+                        (zjl-hl-dbg-print "zjl-hl-regions-1B-DONE %s" 'debug zjl-hl-regions-1B-DONE)
+			(zjl-hl-dbg-print "zjl-hl-regions-2B-Y %s" 'debug zjl-hl-regions-2B-Y)
+			(zjl-hl-dbg-print "zjl-hl-regions-2B-X-X %s" 'debug zjl-hl-regions-2B-X-X)
                         (setq temp-regions (list (cons start end)))
                         (if (not zjl-hl-semantic-parse-done)
                             (progn (dolist (hl-region zjl-hl-regions-1B-DONE)
@@ -781,32 +816,30 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
                             (setq temp-regions (region-list-edit-delete temp-regions hl-region)))
                           (dolist (hl-region zjl-hl-regions-2B-X-X)
                             (setq temp-regions (region-list-edit-delete temp-regions hl-region))))
-			(zjl-hl-dbg-print "before splitting to func - B" nil 'debug)
+			(zjl-hl-dbg-print "before splitting to func - B" 'debug)
                         (when temp-regions
-                          (zjl-hl-dbg-print "temp-regions=" temp-regions)
+                          (zjl-hl-dbg-print "temp-regions= %s" 'debug temp-regions)
                           (dolist (each-region temp-regions)
                             (when (zjl-hl-splitting-to-func (car each-region) (cdr each-region) 'B)
                               ;; Though in zjl-hl-splitting-to-func has add highlighted each function region into list already, here add the whole region again, so reduce list fragment.
                               (if (not zjl-hl-semantic-parse-done)
-                                  (setq zjl-hl-regions-1B-DONE (region-list-edit-add zjl-hl-regions-1B-DONE each-region t))
-                                (setq zjl-hl-regions-2B-Y (region-list-edit-add zjl-hl-regions-2B-Y each-region t))))))
-			(zjl-hl-dbg-print "after splitting to func - B" nil 'debug))
+                                  (setq zjl-hl-regions-1B-DONE (region-list-edit-add zjl-hl-regions-1B-DONE each-region))
+                                (setq zjl-hl-regions-2B-Y (region-list-edit-add zjl-hl-regions-2B-Y each-region))))))
+			(zjl-hl-dbg-print "after splitting to func - B" 'debug))
                     (when zjl-hl-timer-B-obj
                       (cancel-timer zjl-hl-timer-B-obj)
                       (setq zjl-hl-timer-B-obj nil))
                     (setq zjl-hl-timer-B-obj (run-with-idle-timer 2 nil 'zjl-hl-timer-do-whole thisbuffer))))
 		(if (> (- (float-time) start-time) 8)
-		    (if (y-or-n-p-with-timeout "!! zjl-hl detect freeze, can I stop work on this buffer?" 5 t)
-			(progn (zjl-hl-disable-current-buffer) (message "zjl-hl stop work on this buffer"))
-		      (message "zjl-hl continue work on this buffer"))
-		  (when (> (- (float-time) start-time) 3)
+		    (zjl-hl-stop-work (- (float-time) start-time))
+		  (when (> (- (float-time) start-time) 2)
 		    (setq zjl-hl-freeze-max-times (1+ zjl-hl-freeze-max-times))
 		    (when (= zjl-hl-freeze-max-times 10)
-		      (if (y-or-n-p-with-timeout "!! zjl-hl detect freeze, can I stop work on this buffer?" 5 t)
-			  (progn (zjl-hl-disable-current-buffer) (message "zjl-hl stop work on this buffer"))
-			(setq zjl-hl-freeze-max-times 0)
-			(message "zjl-hl continue work on this buffer"))))))))))
-    (error (zjl-hl-dbg-print "error in zjl-hl-timer-do-whole:" (error-message-string err) 'critical))))
+		      (setq zjl-hl-freeze-max-times 0)
+		      (zjl-hl-dbg-print "seems frequence freeze detected" 'debug)
+		      (zjl-hl-stop-work)
+		      ))))))))
+    (error (zjl-hl-dbg-print "error in zjl-hl-timer-do-whole: %s" 'critical (error-message-string err)))))
 
 (defun zjl-hl-window-scroll-hook(par1 par2)
   (condition-case err
@@ -815,7 +848,8 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
                   (equal major-mode 'c++-mode)
                   (equal major-mode 'java-mode))
           (when zjl-hl-firsttime
-            ;; (add-hook 'semantic-after-partial-cache-change-hook 'zjl-hl-semantic-after-partial-cache-change-hook t)
+            (add-hook 'semantic-after-partial-cache-change-hook 'zjl-hl-semantic-after-partial-cache-change-hook t)
+	    (zjl-hl-dbg-print "add semantic partial change hook" 'debug)
             (setq zjl-hl-firsttime nil))
           ;;This should before if, to canel possbile hl timer, before zjl-hl-timer-do-whole realy begin
           (when zjl-hl-timer-obj
@@ -825,7 +859,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
               (progn (zjl-hl-timer-do-whole (current-buffer))
                      (setq zjl-hl-first-time-hl-no-delay-p nil))
             (setq zjl-hl-timer-obj (run-with-idle-timer 0.2 nil 'zjl-hl-timer-do-whole (current-buffer))))))
-    (error (zjl-hl-dbg-print "error in zjl-hl-window-scroll-hook:" (error-message-string err) 'critical))))
+    (error (zjl-hl-dbg-print "error in zjl-hl-window-scroll-hook: %s" 'critical (error-message-string err)))))
 
 
 (setq zjl-hl-firsttime t)
@@ -838,7 +872,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 (setq zjl-hl-regions-1B-DONE nil)
 (setq zjl-hl-regions-2B-X-try-again nil)
 (setq zjl-hl-regions-2B-X-X nil)
-(setq zjl-hl-pre-hl-max 30)
+(setq zjl-hl-pre-hl-max-buffer 0)
 (setq zjl-hl-freeze-max-times 0)
 (setq zjl-hl-semantic-parse-done nil)
 (setq zjl-hl-semantic-parse-done-count 1)
@@ -851,7 +885,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 (setq zjl-hl-partial-change-region-activate-timer nil)
 (setq zjl-hl-disable-init-for-temp-buffer nil)
 (setq zjl-hl-init-called-already nil)
-(setq zjl-hl-first-change-hook-called-already nil)
+(setq zjl-hl-freeze-already nil)
 (defun zjl-hl-init ()
   (save-excursion
     (unless (or (and zjl-hl-disable-init-for-temp-buffer (not buffer-file-name)) ;;temp buffer so disable zjl-hl-init
@@ -876,12 +910,12 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 	(make-local-variable 'zjl-hl-find-hl-var-arg-regions)
 	(make-local-variable 'zjl-hl-after-semantic-parse-done-obj)
 	(make-local-variable 'zjl-hl-after-semantic-parse-done-obj)
-	(make-local-variable 'zjl-hl-pre-hl-max)
+	(make-local-variable 'zjl-hl-pre-hl-max-buffer)
 	(make-local-variable 'zjl-hl-freeze-max-times)
 	(make-local-variable 'zjl-hl-partial-change-region)
 	(make-local-variable 'zjl-hl-partial-change-region-activate)
 	(make-local-variable 'zjl-hl-partial-change-region-activate-timer)
-	(make-local-variable 'zjl-hl-first-change-hook-called-already)	
+	(make-local-variable 'zjl-hl-freeze-already)
 
 	(setq zjl-hl-find-hl-var-arg-regions
 	      (case major-mode
@@ -904,8 +938,8 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 	      (while (setq temp-point (zjl-hl-find-regexp-return-end-pos (point) (point-max) "^[ 	]*#else" ))
 		(goto-char (car temp-point))
 		(end-of-defun)))
-	  (error (message "!! zjl-hl: see unbalanced brace in #else part and might has problem to hl, error string= %s" (error-message-string err))
-		 (zjl-hl-dbg-print "!! zjl-hl: see unbalanced brace in #else part and might has problem to hl, error string= %s" (error-message-string err))
+	  (error (zjl-hl-dbg-print-message "!! zjl-hl: see unbalanced brace in #else part and might has problem to hl, error string= %s" (error-message-string err))
+		 (zjl-hl-dbg-print "!! zjl-hl: see unbalanced brace in #else part and might has problem to hl, error string= %s" 'verbose (error-message-string err))
 		 (when zjl-hl-delete-else-do-hl
 		   (setq zjl-hl-has-if-else-macro-with-unbalanced-brace t))))
 
@@ -925,7 +959,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 	    (if (< (- end start) zjl-hl-no-delay-max-size)
 		(setq zjl-hl-first-time-hl-no-delay-p t)
 	      (setq zjl-hl-first-time-hl-no-delay-p nil)))
-	  (add-hook 'before-change-functions 'zjl-hl-disable-current-buffer--change-hook t t)
+	  (add-hook 'after-change-functions 'zjl-hl-after-change-functions--hook t t)
 	  (add-hook 'semantic-after-idle-scheduler-reparse-hook 'zjl-hl-after-semantic-idle t t)
 	  (add-hook 'window-scroll-functions 'zjl-hl-window-scroll-hook t t))))))
 
@@ -935,7 +969,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
         (with-current-buffer thisbuffer
           (when (get-buffer-window thisbuffer 'visible)
             (zjl-hl-window-scroll-hook 1 1))))
-    (error (zjl-hl-dbg-print "error in zjl-hl-update-screen:" (error-message-string err) 'critical))))
+    (error (zjl-hl-dbg-print "error in zjl-hl-update-screen: %s" 'critical (error-message-string err)))))
 
 ;;Idea from how ecb update method buffer
 ;;(add-hook (ecb--semantic-after-partial-cache-change-hook) 'ecb-update-after-partial-reparse t)
@@ -944,38 +978,90 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 (defun zjl-hl-semantic-after-partial-cache-change-hook (updated-tags)
   (condition-case err
       (when (or zjl-hl-regions-2A-Y zjl-hl-regions-2B-Y)  ;;maybe zjl-hl-init has not hl any where
-        (let (overlay todo todo-p)
-          (dolist (tags updated-tags)
-            (setq overlay (semantic-tag-overlay tags))
+	(let (overlay todo todo-p)
+	  (zjl-hl-dbg-print "zjl-hl-semantic-after-partial-cache-change-hook start" 'debug)
+	  (dolist (tags updated-tags)
+	    (setq overlay (semantic-tag-overlay tags))
 	    (when (overlayp overlay);add blank line will has no overlay
 	      (when (and (eq (current-buffer) (overlay-buffer overlay))
 			 (< (- (overlay-end overlay) (overlay-start overlay)) zjl-hl-too-big-to-update-size))
 		(setq todo (cons (copy-marker (overlay-start overlay)) (copy-marker (overlay-end overlay))))
-		(setq zjl-hl-partial-change-region (region-list-edit-add zjl-hl-partial-change-region todo t))
-		(setq todo-p t))))
-
-          ;; Minimize call of hl, test shows that modificaiton of a word may call this function 3 times
+		(when todo
+		  (zjl-hl-dbg-print "zjl-hl-semantic-after-partial-cache-change-hook todo=%s" 'debug todo)
+		  (setq zjl-hl-partial-change-region (region-list-edit-add zjl-hl-partial-change-region todo))
+		  (setq todo-p t)))))
+	  ;; Minimize call of hl, test shows that modificaiton of a word may call this function 3 times
 	  (when todo-p
 	    (when zjl-hl-partial-change-region-activate-timer
 	      (cancel-timer zjl-hl-partial-change-region-activate-timer)
 	      (setq zjl-hl-partial-change-region-activate-timer nil))
 	    (setq zjl-hl-partial-change-region-activate-timer (run-with-idle-timer 5 nil 'zjl-hl-partial-change-region-activate (current-buffer))))))
-    (error (zjl-hl-dbg-print "error in zjl-hl-semantic-after-partial-cache-change-hook:" (error-message-string err) 'critical))))
+    (error (zjl-hl-dbg-print "error in zjl-hl-semantic-after-partial-cache-change-hook:%s" 'critical (error-message-string err)))))
+
+
+(defun zjl-hl-after-change-functions--hook (beg end len)
+  (condition-case err
+      (when (or zjl-hl-regions-2A-Y zjl-hl-regions-2B-Y)  ;;maybe zjl-hl-init has not hl any where
+	(let (overlay todo todo-p)
+	  (zjl-hl-dbg-print "zjl-hl-after-change-functions--hook  partial change start" 'debug)
+	  (when (< (- end beg) zjl-hl-too-big-to-update-size)
+	    (setq todo (cons (copy-marker beg) (copy-marker end)))
+	    (when todo
+	      (zjl-hl-dbg-print "zjl-hl-after-change-functions--hook partial change todo=%s" 'debug todo)
+	      (setq zjl-hl-partial-change-region (region-list-edit-add zjl-hl-partial-change-region todo))))
+	  ;; Minimize call of hl, test shows that modificaiton of a word may call this function 3 times
+	  (when todo
+	    (when zjl-hl-partial-change-region-activate-timer
+	      (cancel-timer zjl-hl-partial-change-region-activate-timer)
+	      (setq zjl-hl-partial-change-region-activate-timer nil))
+	    (setq zjl-hl-partial-change-region-activate-timer (run-with-idle-timer 5 nil 'zjl-hl-partial-change-region-activate (current-buffer))))))
+    (error (zjl-hl-dbg-print "error in zjl-hl-after-change-functions--hook" 'critical (error-message-string err))))
+  )
 
 (defun zjl-hl-partial-change-region-activate (change-buffer)
   (when (buffer-live-p change-buffer)
     (with-current-buffer change-buffer
       (when (and zjl-hl-partial-change-region (listp zjl-hl-partial-change-region))
-	(dolist (change-region zjl-hl-partial-change-region)
-	  (setq zjl-hl-regions-2A-Y (region-list-edit-delete zjl-hl-regions-2A-Y change-region))
-	  (setq zjl-hl-regions-2A-X-X (region-list-edit-delete zjl-hl-regions-2A-X-X change-region))
-	  (setq zjl-hl-regions-2B-Y (region-list-edit-delete zjl-hl-regions-2B-Y change-region))
-	  (setq zjl-hl-regions-2B-X-X (region-list-edit-delete zjl-hl-regions-2B-X-X change-region)))
+	(zjl-hl-dbg-print "partial before" 'debug)
+	(zjl-hl-dbg-print "zjl-hl-partial-change-region= %s" 'debug zjl-hl-partial-change-region)
+	(zjl-hl-dbg-print "zjl-hl-regions-2A-Y= %s" 'debug zjl-hl-regions-2A-Y)
+	(zjl-hl-dbg-print "zjl-hl-regions-2A-X-X= %s" 'debug zjl-hl-regions-2A-X-X)
+	(zjl-hl-dbg-print "zjl-hl-regions-2B-Y= %s" 'debug zjl-hl-regions-2B-Y)
+	(zjl-hl-dbg-print "zjl-hl-regions-2B-X-X= %s" 'debug zjl-hl-regions-2B-X-X)
+	(let (func-start func-end func-region)
+	  (dolist (change-region zjl-hl-partial-change-region)
+	    ;; I observe that when a { is add in cpp, the semantic change hook will give the new larger "func"
+	    ;; area in its parameter in most time but could also be the smaller old func area in sometime.
+	    ;; And when the added { is removed then the smaller old func area is updated in parameter
+	    ;; so need to manually find out the exact larger area we expected
+	    (setq func-start (save-excursion
+			       (goto-char (car change-region))
+			       (if (zjl-hl-c-beginning-of-defun)
+				   (point-marker)
+				 (car change-region))))
+	    (setq func-end (save-excursion
+			       (goto-char (cdr change-region))
+			       (if (zjl-hl-c-end-of-defun)
+				   (point-marker)
+				 (cdr change-region))))
+	    (setq func-region (cons func-start func-end))
+	    (setq zjl-hl-regions-2A-Y (region-list-edit-delete-greed zjl-hl-regions-2A-Y func-region))
+	    (setq zjl-hl-regions-2A-X-X (region-list-edit-delete-greed zjl-hl-regions-2A-X-X func-region))
+	    (setq zjl-hl-regions-2A-X-try-again (region-list-edit-delete-greed zjl-hl-regions-2A-X-try-again func-region))
+	    (setq zjl-hl-regions-2B-Y (region-list-edit-delete-greed zjl-hl-regions-2B-Y func-region))
+	    (setq zjl-hl-regions-2B-X-X (region-list-edit-delete-greed zjl-hl-regions-2B-X-X func-region))
+	    (setq zjl-hl-regions-2B-X-try-again (region-list-edit-delete-greed zjl-hl-regions-2B-X-try-again func-region))))
 
+	(zjl-hl-dbg-print "partial after" 'debug)
+	(zjl-hl-dbg-print "zjl-hl-regions-2A-Y= %s" 'debug zjl-hl-regions-2A-Y)
+	(zjl-hl-dbg-print "zjl-hl-regions-2A-X-X= %s" 'debug zjl-hl-regions-2A-X-X)
+	(zjl-hl-dbg-print "zjl-hl-regions-2B-Y= %s" 'debug zjl-hl-regions-2B-Y)
+	(zjl-hl-dbg-print "zjl-hl-regions-2B-X-X= %s" 'debug zjl-hl-regions-2B-X-X)
+	;; (zjl-hl-dbg-print "in region partial-5" 'debug)
 	(when zjl-hl-update-screen-timer
 	  (cancel-timer zjl-hl-update-screen-timer)
 	  (setq zjl-hl-update-screen-timer nil))
-	(setq zjl-hl-update-screen-timer (run-with-idle-timer 1 nil 'zjl-hl-update-screen (current-buffer))))
+	(setq zjl-hl-update-screen-timer (run-with-idle-timer 7 nil 'zjl-hl-update-screen (current-buffer))))
       (setq zjl-hl-partial-change-region nil))))
 
 (setq zjl-hl-fun-call-noticeable-degree-old-value nil)
@@ -1017,10 +1103,6 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
       (zjl-hl-init)
       (zjl-hl-window-scroll-hook 1 1))))
 
-(defun zjl-hl-disable-current-buffer--change-hook (beg end)
-  (unless zjl-hl-first-change-hook-called-already
-    (setq zjl-hl-first-change-hook-called-already t)
-    (zjl-hl-disable-current-buffer)))
 
 (defun zjl-hl-disable-current-buffer ()
   (interactive)
@@ -1028,10 +1110,27 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
             (equal major-mode 'c++-mode)
             (equal major-mode 'java-mode))
     (remove-hook 'window-scroll-functions 'zjl-hl-window-scroll-hook t)
+    (remove-hook 'after-change-functions 'zjl-hl-after-change-functions--hook t)
+    (zjl-hl-dbg-print "remove 'zjl-hl-semantic-after-partial-cache-change-hook" 'debug)
     (remove-hook 'semantic-after-partial-cache-change-hook 'zjl-hl-semantic-after-partial-cache-change-hook t)
+    (when zjl-hl-timer-obj
+      (cancel-timer zjl-hl-timer-obj)
+      (setq zjl-hl-timer-obj nil))
+    (when zjl-hl-timer-B-obj
+      (cancel-timer zjl-hl-timer-B-obj)
+      (setq zjl-hl-timer-B-obj nil))
     (when zjl-hl-timer-pre-hl-obj
       (cancel-timer zjl-hl-timer-pre-hl-obj)
-      (setq zjl-hl-timer-pre-hl-obj nil))))
+      (setq zjl-hl-timer-pre-hl-obj nil))
+    (when zjl-hl-update-screen-timer
+      (cancel-timer zjl-hl-update-screen-timer)
+      (setq zjl-hl-update-screen-timer nil))
+    (when zjl-hl-after-semantic-parse-done-obj
+      (cancel-timer zjl-hl-after-semantic-parse-done-obj)
+      (setq zjl-hl-after-semantic-parse-done-obj nil))
+    (when zjl-hl-partial-change-region-activate-timer
+      (cancel-timer zjl-hl-partial-change-region-activate-timer)
+      (setq zjl-hl-partial-change-region-activate-timer nil))))
 
 (defun zjl-hl-enable-global (mode)
   (let ((mode-name (symbol-name mode)) hook keywords)
@@ -1047,6 +1146,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
     (setq hook (intern-soft (concat mode-name "-hook")))
     (remove-hook hook 'zjl-hl-init)
     (remove-hook 'window-scroll-functions 'zjl-hl-window-scroll-hook)
+    (zjl-hl-dbg-print "remove 'zjl-hl-semantic-after-partial-cache-change-hook" 'debug)
     (remove-hook 'semantic-after-partial-cache-change-hook 'zjl-hl-semantic-after-partial-cache-change-hook)))
 
 (defun zjl-hl-get-body-begin-c (start end)
@@ -1059,7 +1159,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
     (goto-char start)
     ;; Add last begin/end and iteration limitation is to stop some wrong parenthesis pair ("#ifdef.else .endif" inside fun call paramter might cause this) to freezen emacs 
     (let (fun-begin fun-end regions (iteration-num 0) last-fun-begin last-fun-end)
-      (zjl-hl-dbg-print "while start" nil 'debug)
+      (zjl-hl-dbg-print "while start" 'debug)
       (while (and (setq fun-end 
                         (if (and (zjl-hl-c-end-of-defun)
                                  (not (equal (point-marker) last-fun-end)))
@@ -1078,7 +1178,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
         (setq last-fun-begin fun-begin)
         (setq last-fun-end fun-end)
         (setq iteration-num (1+ iteration-num)))
-      (zjl-hl-dbg-print "while end" nil 'debug)
+      (zjl-hl-dbg-print "while end" 'debug)
       regions)))
 
 ;;Function need to work for class/namespace in c++/java, and like special below case: in 1,2 point, both get same function start, 1 end in large scope, 2 end in scope inside 1.
@@ -1091,7 +1191,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
   (save-excursion
     (goto-char start)
     (let (tempvalue fun-begin fun-end regions (iteration-num 0) last-fun-begin last-fun-end index region)
-      (zjl-hl-dbg-print "while start" nil 'debug)
+      (zjl-hl-dbg-print "while start" 'debug)
       (while (and  (setq tempvalue (car (zjl-hl-find-regexp-return-end-pos (point) end "{" nil)))
                    (goto-char tempvalue)
                    (setq fun-end 
@@ -1127,8 +1227,8 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
         (setq last-fun-begin fun-begin)
         (setq last-fun-end fun-end)
         (setq iteration-num (1+ iteration-num)))
-      (zjl-hl-dbg-print "while end" nil 'debug)
-      (zjl-hl-dbg-print "regions=" regions)
+      (zjl-hl-dbg-print "while end" 'debug)
+      (zjl-hl-dbg-print "regions=%s" 'verbose regions)
       regions)
 ))
 
@@ -1152,7 +1252,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 	  (let (else-deleted)
 	    (when (and zjl-hl-delete-else-do-hl zjl-hl-has-if-else-macro-with-unbalanced-brace)
 	      (with-current-buffer (clone-indirect-buffer nil nil)
-		(message "zjl-hl delete #else part to hl this buffer")
+		(zjl-hl-dbg-print-message "zjl-hl delete #else part to hl this buffer")
 		(sit-for 3)
 		(setq else-deleted t)
 		(zjl-hl-replace-regexp  "\\(^[ 	]*#else.*\\(?:.\\|\n\\)*?\\)\\(#endif\\)" "\n// TODO : zjl-hl delete the #else clause here, need fix\n/*\n#\\1*/\n\\2" nil (point-min) (point-max))))
@@ -1165,8 +1265,8 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 	    (zjl-hl-timer-do-whole thisbuffer (point-min-marker) (point-max-marker) 'AB)
 	    (when else-deleted
 	      (run-with-idle-timer 6 nil 'zjl-hl-revert-clone-buffer-then-kill (current-buffer))))))
-    (error (message "error in zjl-hl-hl-whole-buffer: %s" (error-message-string err))
-           (zjl-hl-dbg-print "error in zjl-hl-hl-whole-buffer:" (error-message-string err)))))
+    (error (zjl-hl-dbg-print-message "error in zjl-hl-hl-whole-buffer: %s" (error-message-string err))
+           (zjl-hl-dbg-print "error in zjl-hl-hl-whole-buffer: %s" 'verbose (error-message-string err)))))
 
 (defun zjl-hl-after-semantic-parse-done (thisbuffer)
   (when (buffer-live-p thisbuffer)
@@ -1175,7 +1275,7 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
         (when (< zjl-hl-semantic-parse-done-count 20)
           ;; I just saw the semantic-after-idle-scheduler-reparse-hook is run 3 times for a file, with interval of 1 and 3 seconds.
           ;; So for now I clean the whole hl regions list for a short solution, but this is conflict with the partial update of above
-          ;;(message "zjl:%s clean the hl regions list !!! :%s" (current-time) (buffer-name))
+          ;;(zjl-hl-dbg-print-message "zjl:%s clean the hl regions list !!! :%s" (current-time) (buffer-name))
           (setq zjl-hl-semantic-parse-done-count (1+ zjl-hl-semantic-parse-done-count))
           (setq zjl-hl-regions-2A-Y nil)
           (setq zjl-hl-regions-2A-X-try-again nil)
@@ -1190,9 +1290,9 @@ When nil, do not apply above two assumptions, most Macro won't be highlighted"
 	  (if (not (and zjl-hl-delete-else-do-hl zjl-hl-has-if-else-macro-with-unbalanced-brace))
 	      (setq zjl-hl-update-screen-timer (run-with-idle-timer 1 nil 'zjl-hl-update-screen (current-buffer)))
 	    (if (y-or-n-p-with-timeout "!! zjl-hl: see unbalance brace, can I temporarily delete #else part to do whole buffer highlight?" 5 nil)
-		(progn (message "zjl-hl delete #else part to hl this buffer")
+		(progn (zjl-hl-dbg-print-message "zjl-hl delete #else part to hl this buffer")
 		       (zjl-hl-hl-whole-buffer (current-buffer)))
-	      (message "zjl-hl didn't delete #else part")
+	      (zjl-hl-dbg-print-message "zjl-hl didn't delete #else part")
 	      (setq zjl-hl-update-screen-timer (run-with-idle-timer 1 nil 'zjl-hl-update-screen (current-buffer)))))
           (setq zjl-hl-semantic-parse-done t))))))
 (defun zjl-hl-after-buffer-load-a-while-force-set-parse-done (thisbuffer)  
