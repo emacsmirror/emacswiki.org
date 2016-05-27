@@ -1,18 +1,19 @@
 ;;; window-number.el --- Select windows by numbers.
+;; Copyright (C) 2004, Johann "Myrkraverk" Oskarsson, all rights reserved.
+;; Copyright (C) 2014, Andy Stewart, all rights reserved.
 
 ;; Filename: window-number.el
 ;; Description: Select windows by numbers.
 ;; Author: Johann "Myrkraverk" Oskarsson <myrkraverk@users.sourceforge.net>
-;; Maintainer: Johann "Myrkraverk" Oskarsson <myrkraverk@users.sourceforge.net>
+;; Maintainer: Nik Nyby <niknyby@riseup.net>
+;;             Johann "Myrkraverk" Oskarsson <myrkraverk@users.sourceforge.net>
 ;;             Andy Stewart <lazycat.manatee@gmail.com>
-;; Copyright (C) 2004, Johann "Myrkraverk" Oskarsson, all rights reserved.
-;; Copyright (C) 2014, Andy Stewart, all rights reserved.
 ;; Created: 2004
-;; Version: 0.1
-;; Last-Updated: 2014-01-24 10:25:03
-;;           By: Andy Stewart
-;; URL: http://www.emacswiki.org/emacs/download/window-number.el
-;; Keywords:
+;; Version: 1.0.3
+;; Last-Updated: 2014-11-06 21:24:03
+;;           By: Nik Nyby
+;; URL: https://github.com/nikolas/window-number
+;; Keywords: windows
 ;; Compatibility: GNU Emacs 24.3.50.1
 ;;
 ;; Features that might be required by this library:
@@ -77,6 +78,9 @@
 
 ;;; Change log:
 ;;
+;; 2014/11/06
+;;      * Fix some compile warnings
+;;
 ;; 2014/01/24
 ;;      * Fixed bug of `window-number-set-active-color' and `window-number-set-inactive-color' that not use user's color.
 ;;
@@ -107,7 +111,8 @@
 ;;; Code:
 
 (defgroup window-number nil
-  "Window number group")
+  "Window number group"
+  :group 'convenience)
 
 (defcustom window-number-active-foreground "black"
   "The foreground color when window number active."
@@ -166,7 +171,7 @@ Prompt user input window number if have more windows."
           (window-number-select
            (if (string= select-index-string "")
                next-window-index
-             (string-to-int select-index-string))))
+             (string-to-number select-index-string))))
       ;; Reset to inactive color if interactive is intercept by Ctrl+g
       (window-number-set-inactive-color)
       ))
