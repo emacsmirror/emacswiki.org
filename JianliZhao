@@ -9,7 +9,7 @@ Bellow zjl-hl.el and region-list-edit.el are updated in 2016.5.27 and have lot i
 **  Good stability (was using this version for half year by myself)
 
 
-* 1 http://www.emacswiki.org/emacs/zjl-hl.el    (2016.5.27 version)
+* 1 http://www.emacswiki.org/emacs/zjl-hl.el 
 
 This highlight C/C++JAVA file local variable/parameters, function call and some other to make code easier to read
 
