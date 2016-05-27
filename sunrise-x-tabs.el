@@ -7,7 +7,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Oct 2009
 ;; Version: 1
-;; RCS Version: $Rev: 445 $
+;; RCS Version: $Rev: 446 $
 ;; Keywords: sunrise commander, tabs
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tabs.el
 ;; Compatibility: GNU Emacs 22+
@@ -107,6 +107,25 @@
   "Maximum width of a Sunrise Commander tab."
   :group 'sunrise
   :type 'integer)
+
+(defcustom sr-tabs-truncation-style 'right
+  "On which side should we truncate the tag a of new tab if it
+happens to be longer than `sr-tabs-max-tabsize`."
+  :group 'sunrise
+  :type '(choice
+          (const :tag "Truncate from the right" right)
+          (const :tag "Truncate from the left"  left)))
+
+(defcustom sr-tabs-tag-provider
+  (defun sr-tabs-tag-provider-default (buffer-name)
+    "Default provider of tags based on the buffer name of a pane."
+    buffer-name)
+  "Function to use to determine the tag to use when creating a new tab.
+It should take one argument which is to be interpreted as the
+name of the buffer that contains the pane to be assigned to the
+tab."
+  :group 'sunrise
+  :type 'function)
 
 (defface sr-tabs-active-face
   '((((type tty) (class color) (min-colors 88))
@@ -332,11 +351,9 @@ removes the tab."
 AS-ACTIVE determines whether to propertize it as an active or a
 passive tab (nil = passive, t = active). The optional argument
 TAG allows to provide a pretty name to label the tab."
-  (let ((tag (or tag name))
+  (let ((tag (sr-tabs-truncate (or tag name)))
         (side sr-selected-window)
         (keymap (make-sparse-keymap)))
-    (if (< sr-tabs-max-tabsize (length tag))
-        (setq tag (concat (substring tag 0 sr-tabs-max-tabsize) "…")))
     (setq tag (concat sr-tabs-sep tag sr-tabs-sep))
     (define-key keymap [header-line mouse-1] (sr-tabs-focus-cmd name side))
     (define-key keymap [header-line mouse-2] (sr-tabs-rename-cmd name))
@@ -345,12 +362,21 @@ TAG allows to provide a pretty name to label the tab."
         (sr-tabs-propertize-tag tag 'sr-tabs-active-face keymap)
       (sr-tabs-propertize-tag tag 'sr-tabs-inactive-face keymap))))
 
+(defun sr-tabs-truncate (tag)
+  "Truncate and add an ellipsis mark to the given tag if necessary."
+  (if (>= sr-tabs-max-tabsize (length tag))
+      tag
+    (case sr-tabs-truncation-style
+      (right (concat (substring tag 0 sr-tabs-max-tabsize) "…"))
+      (left (concat "…" (substring tag (* -1 sr-tabs-max-tabsize))))
+      (t (ignore)))))
+
 (defun sr-tabs-make-label (name &optional alias)
   "Return a new label for decorating a tab named NAME.
 A label is a dotted pair of tags, for active and passive state.
 The new label is put in cache for later reuse. The optional
 argument ALIAS allows to provide a pretty name to label the tab."
-  (let* ((alias (or alias name))
+  (let* ((alias (or alias (apply sr-tabs-tag-provider (list name))))
          (label (cons (sr-tabs-make-tag name t alias)
                       (sr-tabs-make-tag name nil alias)))
          (entry (list (cons name label)))
