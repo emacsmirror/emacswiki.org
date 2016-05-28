@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 24 16:23:36 2016 (-0700)
+;; Last-Updated: Sat May 28 07:40:56 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 9543
+;;     Update #: 9553
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -653,6 +653,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/05/28 dadams
+;;     diredp-mark-files-regexp-recursive: Use nil for dired-get-filename LOCALP arg.
+;;     dired-mark-files-regexp: Corrected doc string: absolute filename matching by default.
 ;; 2016/05/24 dadams
 ;;     dired-mark-files-regexp: Added optional arg LOCALP, so can mark/unmark matching different file-name forms.
 ;; 2016/05/15 dadams
@@ -6076,11 +6079,11 @@ subdirectories are handled recursively in the same way."
   "Mark all files matching REGEXP, including those in marked subdirs.
 Like `dired-mark-files-regexp' but act recursively on marked subdirs.
 
-However, file names to be matched are always constructed relative to
-`default-directory'.  For an entry in an included subdir listing, this
-means that the relative file name (no directory part) is prefixed with
-the subdir name relative to the value of `default-directory' in the
-current Dired buffer.
+The file names to be matched by this command are always absolute -
+they include the full directory.  This corresponds to the default
+behavior for `dired-mark-files-regexp' with Dired+.  The other
+matching possibilities offered by `dired-mark-files-regexp' are not
+available for this command.
 
 Directories `.' and `..' are never marked.
 
@@ -6114,7 +6117,7 @@ then only the first such is used."
           (setq total-count  
                 (dired-mark-if (and (not (looking-at dired-re-dot))
                                     (not (eolp)) ; Empty line
-                                    (let ((fn  (dired-get-filename t 'NO-ERROR)))
+                                    (let ((fn  (dired-get-filename nil 'NO-ERROR)))
                                       (and fn  (diredp-string-match-p regexp fn))))
                                "matching file")))))
     (message "%s %ss..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking") "matching file")))
@@ -9111,12 +9114,17 @@ The form of a file name used for matching:
    this means prefix the relative file name (no directory part) with
    the subdir name relative to `default-directory'.
 
-Using no prefix arg or a plain prefix arg `C-u' thus gives you the
-same behavior as vanilla Emacs (marking or unmarking, respectively).
+Note that the default matching behavior of this command is different
+for Dired+ than it is for vanilla Emacs.  Using a positive prefix arg
+or a double plain prefix arg (`C-u C-u' gives you the same behavior as
+vanilla Emacs (marking or unmarking, respectively): matching against
+names that are relative to the `default-directory'.
 
 What Dired+ offers in addition is the possibility to match against
-names that are relative (have no directory part) or are relative to
-the `default-directory'.
+names that are absolute (no prefix arg or `C-u', to mark or unmark,
+respectively) or relative (have no directory part - `M--' or `M-0',
+respectively).  The default behavior uses absolute names because it
+gives you more flexibility.
 
 REGEXP is an Emacs regexp, not a shell wildcard.  Thus, use `\\.o$'
 for object files--just `.o' might mark more than you might expect.
