@@ -2,3 +2,13 @@ In end-of-code-or-line, point-in-comment gives an error and does not seem to be 
 
 -- deb0ch 2016-05-27 10:35 UTC
 
+
+----
+
+Hm, this is strange.  I'm almost sure, when I looked at this page, it
+has a working code.  ISTR this 'point-in-comment' was defined using
+'syntax-ppss'.  Anyway, did you try "mwim" package?  I use it all the
+time :-)
+
+-- AlexKost 2016-05-28 17:32 UTC
+
