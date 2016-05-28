@@ -34,3 +34,4 @@ For the curious, the setup is [http://oddmuse.org/wiki/Using_mod_fastcgi#h5o-5 d
 
 Currently, language-specific invocations (emacs-de, emacs-zh and the like still use the CGI interface. People don't seem to be using these so much, so that's good.
 I might end up getting rid of those, eventually. :)
+
