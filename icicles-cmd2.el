@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Mar 27 16:05:30 2016 (-0700)
+;; Last-Updated: Sun May 29 15:56:12 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7306
+;;     Update #: 7311
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4016,7 +4016,8 @@ the markers in each buffer."
                                                             (allp "No markers")
                                                             (t "No markers in this buffer"))))
            (cond ((cdr markers)
-                  (icicle-apply (mapcar (lambda (mrkr) (icicle-marker+text mrkr (or allp  globalp))) markers)
+                  (icicle-apply (delq nil (mapcar (lambda (mrkr) (icicle-marker+text mrkr (or allp  globalp)))
+                                                  markers))
                                 #'icicle-goto-marker-1-action
                                 'nomsg
                                 (lambda (cand) (marker-buffer (cdr cand)))))
@@ -4035,30 +4036,31 @@ the markers in each buffer."
 
 (defun icicle-marker+text (marker &optional show-bufname-p)
   "Cons of text line that includes MARKER with MARKER itself.
+But nil if MARKER is not from a live buffer.
 If the marker is on an empty line, then text \"<EMPTY LINE>\" is used.
 If both optional argument SHOW-BUFNAME-P and option
 `icicle-show-multi-completion-flag' are non-nil, then the text is
 prefixed by MARKER's buffer name and the line number."
-  (when (buffer-live-p (marker-buffer marker))
-    (with-current-buffer (marker-buffer marker)
-      (save-excursion
-        (goto-char marker)
-        (let* ((line    (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
-                          (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
-               (lineno  (line-number-at-pos))
-               (buff    (and show-bufname-p  icicle-show-multi-completion-flag
-                             (format "%s:%5d" (buffer-name) lineno)))
-               (help    (and (or (> icicle-help-in-mode-line-delay 0) ; Get it only if user will see it.
-                                 (and (boundp 'tooltip-mode)  tooltip-mode))
-                             (format "Line: %d, Char: %d" lineno (point)))))
-          (when (string= "" line) (setq line  "<EMPTY LINE>"))
-          (when help
-            (icicle-candidate-short-help help line)
-            (when (and show-bufname-p  icicle-show-multi-completion-flag)
-              (icicle-candidate-short-help help buff)))
-          (if (and show-bufname-p  icicle-show-multi-completion-flag)
-              (cons (list buff line) marker)
-            (cons line marker)))))))
+  (and (buffer-live-p (marker-buffer marker))
+       (with-current-buffer (marker-buffer marker)
+         (save-excursion
+           (goto-char marker)
+           (let* ((line    (let ((inhibit-field-text-motion  t)) ; Just to be sure, for `line-end-position'.
+                             (buffer-substring-no-properties (line-beginning-position) (line-end-position))))
+                  (lineno  (line-number-at-pos))
+                  (buff    (and show-bufname-p  icicle-show-multi-completion-flag
+                                (format "%s:%5d" (buffer-name) lineno)))
+                  (help    (and (or (> icicle-help-in-mode-line-delay 0) ; Get it only if user will see it.
+                                    (and (boundp 'tooltip-mode)  tooltip-mode))
+                                (format "Line: %d, Char: %d" lineno (point)))))
+             (when (string= "" line) (setq line  "<EMPTY LINE>"))
+             (when help
+               (icicle-candidate-short-help help line)
+               (when (and show-bufname-p  icicle-show-multi-completion-flag)
+                 (icicle-candidate-short-help help buff)))
+             (if (and show-bufname-p  icicle-show-multi-completion-flag)
+                 (cons (list buff line) marker)
+               (cons line marker)))))))
 
 (defun icicle-markers (buffers)
   "Return the list of markers in the mark rings of BUFFERS.
