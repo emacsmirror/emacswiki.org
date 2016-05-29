@@ -8,9 +8,9 @@
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 12:46:44 2015 (-0800)
+;; Last-Updated: Sun May 29 14:35:57 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1534
+;;     Update #: 1535
 ;; URL: http://www.emacswiki.org/cus-edit+.el
 ;; Doc URL: http://emacswiki.org/CustomizingAndSaving
 ;; Keywords: help, customize, help, faces
@@ -1727,7 +1727,7 @@ are ignored by `customize-customized'."
 (when (fboundp 'custom-group-of-mode)   ; Emacs 22+
   (defun customize-mode (mode)
     "Customize options related to a major or minor mode.
-By default the current major is used.
+By default the current major mode is used.
 With a prefix argument or if the current major mode has no known group,
 you are prompted for the MODE to customize."
     (interactive
