@@ -6,4 +6,48 @@ Currently, Apache still handles a few things for me, however, so I can't switch 
 
 Until then, keep your eyes peeled and let me know if old wiki links aren't being redirected correctly. I'm a big fan of [https://www.w3.org/Provider/Style/URI Cool URIs don't change] so I definitely want to keep that redirection chain up and running. :)
 
+My test script for today:
+
+{{{
+kensanata@po6:~$ bin/test-redirects
+OK emacs-de
+OK emacs.pl
+OK wiki
+OK wiki.pl
+OK cgi-bin/emacs-de
+OK cgi-bin/emacs.pl
+OK cgi-bin/wiki
+OK cgi-bin/wiki.pl
+OK cgi-bin/emacs
+OK emacs-test
+OK http
+OK cgi-bin/info-ref
+OK /alex/geocities
+OK /alex/gridmapper
+OK /alex/papers
+OK /alex/pdfs
+OK /alex/pics
+OK /alex/rose.html
+OK /alex/markup-comparison
+OK /alex/txt
+OK /cgi-bin/alex
+OK /alex
+OK /alex-mob
+OK /geocities
+OK /cgi-bin/svg-map
+OK /cgi-bin/uwp-generator
+OK /helmut/static
+OK /helmut
+OK /hug
+OK /paper
+OK /elisp/alex.el
+OK /elisp/alex.el.diff
+OK /elisp/changelog.html
+OK /elisp/changelog.rss
+OK /elisp/index.html
+OK /elisp
+OK /elisp/
+OK /elisp/alex
+}}}
+
 -- [[Alex Schroeder]]
