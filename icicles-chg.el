@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat May 21 15:06:05 2016 (-0700)
+;; Last-Updated: Sun May 29 16:38:26 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 11612
+;;     Update #: 11614
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1168,6 +1168,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2016/05/29 dadams
+;;     icicle-goto-marker-1: Delete any nil entries from mapping icicle-marker+text over markers.
+;;     icicle-marker+text: Make clear in doc string that it can return nil.
 ;; 2016/03/27 dadams
 ;;     icicle-add-key+cmd: Use princ, not prin1, for BNDG, for commands like icicle-dispatch-C-..
 ;; 2016/03/03 dadams
