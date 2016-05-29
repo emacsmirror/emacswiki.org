@@ -1,28 +1,15 @@
-= CSharpMode (CSharp, C#) =
+This is a major-mode for editing C# files.
 
-Lisp:csharp-mode.el
+The most current version of this package can always be found on github:
 
-Provides an editing mode for C# code.  Includes code indentation, fontification, codedoc generation, and integration with imenu.el.
+* https://github.com/josteink/csharp-mode
 
-[new]
-As of December 2014, the new project is hosted at https://github.com/josteink/csharp-mode and the older version is available at http://code.google.com/p/csharpmode/, and there is a (maybe older) version available here: Lisp:csharp-mode.el.
-
-[new]
-v.0.8.7 several longstanding bugs have been fixed. compile, flymake, and yasnippet integration were removed because they either didn't work or were superseded by better support in [http://github.com/sp3ctum/omnisharp-emacs Omnisharp-Emacs].
-
-[new]
-
-v0.7.3 now correctly indents and fontifies instance initializers, enum types including those that explicitly derive from a base type, and verbatim literal strings that end in slash.
-
-http://i42.tinypic.com/a5bwhw.jpg
-
-----
+It provides an editing mode for C# code and includes code indentation, fontification, codedoc generation, and integration with imenu.el.
 
 Note:
 
 [NxhtmlMode nXhtml] includes a slightly modified version of latest csharp-mode.el.
 
-----
 == Usage Notes and Hints ==
 
 === Imenu ===
