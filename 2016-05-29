@@ -1,0 +1,9 @@
+I've started fiddling with the website setup again, now that it seems that we finally fixed those nginx caching issues messing with the multi-language settings.
+
+In the background, I'm trying to get rid of the CGI script that answers the requests that won't get answered by the cache. Currently, this is an Apache webserver running Oddmuse as a CGI script for every request. I have set up a [http://search.cpan.org/perldoc?Toadfarm Toadfarm] running Oddmuse, no external web server required and it seems to work.
+
+Currently, Apache still handles a few things for me, however, so I can't switch over just yet. Today, I've migrated all the redirections to the nginx config file; the URL rewriting rules will be next. Once that is done, I'll be ready to switch the backend from Apache to Toadfarm.
+
+Until then, keep your eyes peeled and let me know if old wiki links aren't being redirected correctly. I'm a big fan of [https://www.w3.org/Provider/Style/URI Cool URIs don't change] so I definitely want to keep that redirection chain up and running. :)
+
+-- [[Alex Schroeder]]
