@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 15:14:29 2015 (-0800)
+;; Last-Updated: Sun May 29 14:48:39 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 657
+;;     Update #: 662
 ;; URL: http://www.emacswiki.org/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -45,15 +45,17 @@
 ;;    `display-in-mode-line', `do-files', `flatten', `fontify-buffer',
 ;;    `interesting-buffer-p', `live-buffer-name',
 ;;    `make-transient-mark-mode-buffer-local', `mode-ancestors',
-;;    `mod-signed', `notify-user-of-mode', `region-or-buffer-limits',
-;;    `signum', `string-after-p', `string-before-p',
-;;    `undefine-keys-bound-to', `undefine-killer-commands',
-;;    `unique-name'.
+;;    `mode-symbol-p', `mod-signed', `notify-user-of-mode',
+;;    `read-mode-name', `region-or-buffer-limits', `signum',
+;;    `string-after-p', `string-before-p', `undefine-keys-bound-to',
+;;    `undefine-killer-commands', `unique-name'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2016/05/19 dadams
+;;     Added: mode-symbol-p, read-mode-name.
 ;; 2015/12/31 dadams
 ;;     Renamed: chars-(after|before) to string-(after|before)-p.
 ;;     chars-(after|before): Use version from Martin Rudalics in Emacs bug #17284.
@@ -372,6 +374,40 @@ Uses symbol property `derived-mode-parent' to trace backwards."
       (setq parent  (get parent 'derived-mode-parent)))
     modes))
 
+(defun mode-symbol-p (symbol)
+  "Return non-nil if SYMBOL is a major-mode or minor-mode symbol.
+Note: This might falsely return nil in some exceptional cases."
+  (or (get symbol 'derived-mode-parent) ; Most modes.
+      (get symbol 'custom-mode-group) ; Some modes, such as `ada-mode'.
+      ;; Use `FOO-mode' as candidate if `FOO' has a custom group.
+      (and (string-match "-mode\\'" (symbol-name symbol))
+           (get (setq symbol  (intern (substring (symbol-name symbol) 0
+                                                 (match-beginning 0))))
+                'custom-group))
+      (eq 'fundamental-mode symbol)))
+
+(defun read-mode-name (&optional prompt predicate require-match initial-input
+                         history def inherit-input-method keymap)
+  "Read the name of a major or minor mode symbol, with completion.
+Optional args are as for `completing-read', but without COLLECTION.
+Optional arg PREDICATE is applied only to mode symbols."
+  (let ((emacs-23+  (fboundp 'completion-table-with-predicate)) ; Emacs 23+
+        (pred       (if (not predicate)
+                        'mode-symbol-p
+                      `(lambda (symb) (and (funcall 'mode-symbol-p symb)
+                                      (funcall ',predicate symb))))))
+    (completing-read (or prompt  "Mode: ")
+                     (if emacs-23+
+                         (apply-partially #'completion-table-with-predicate
+                                          obarray pred t)
+                       obarray)
+                     (and (not emacs-23+)  pred)
+                     require-match
+                     (or initial-input  (symbol-name major-mode))
+                     history
+                     def
+                     inherit-input-method
+                     keymap)))
 
 
 ;;;$ FILES --------------------------------------------------------------------
