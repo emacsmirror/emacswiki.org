@@ -2,3 +2,10 @@ hey, [[targzeta]] - could you explain more how the EmacsWiki is buggy?
 
 -- [http://www.xradiograph.com MichaelPaulukonis] 2013-05-16 02:04 UTC
 
+
+----
+
+Smex with acronyms helped me a lot when I used Emacs 24.5. However, it doesn't seem to be compatible with Emacs 25.0.94. For example, I can only type in three letters after I hit M-x. The fourth letter will overwrite the third letter.
+
+-- Diels_Alder 2016-05-29 03:38 UTC
+
