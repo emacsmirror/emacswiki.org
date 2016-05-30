@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun May 15 10:03:22 2016 (-0700)
+;; Last-Updated: Mon May 30 10:30:08 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16026
+;;     Update #: 16028
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2016/05/30 dadams
+;;     bmkp-not-near-other-auto-idle-bmks: Corrected typo: test distance for POSITION, not point.
 ;; 2016/04/23 dadams
 ;;     Added: bmkp-set-dired-bookmark-for-files.
 ;; 2015/10/31 dadams
