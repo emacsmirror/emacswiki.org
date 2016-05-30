@@ -1,1 +1,182 @@
+This page is about ways to browse the [[kill ring]], choosing a kill to [[yank]].
 
+== Browsing the Kill Ring ==
+
+=== Use Edit -> Paste from Kill Menu ===
+
+A quite simple standard way to browse and select the first couple of kill ring items is to use Edit -> Paste from Kill Menu. In Emacs 24, F10 will open the menu bar, either the graphical one if the menu bar is enabled, or the textual one. Regardless of which one that opens you can navigate the first couple of kill ring items using your keyboard. -- MaDa
+
+=== Using the information from the standard paste menu ===
+
+Similar to browse-kill-ring -- makes it easy to access and yank text from the kill ring:
+
+       (global-set-key "\C-cy" '(lambda ()
+                                 (interactive)
+                                 (popup-menu 'yank-menu)))
+
+=== browse-kill-ring.el ===
+ 
+##browse-kill-ring.el## -- a package by ColinWalters, and later maintained by Nick Hurley. You can get it here:
+** https://github.com/browse-kill-ring/browse-kill-ring Created in agreement with Nick Hurley.
+** Debian: ##apt-get install emacs-goodies-el## (DebianPackage:emacs-goodies-el)
+** <tt>[[browse-kill-ring.el]]</tt> is an older version of this package, it lacks some of the features of the github version.
+
+=== browse-kill-ring+.el ===
+
+[:browse-kill-ring+.el]
+
+<tt>[[browse-kill-ring+.el]]</tt> -- Enhancements to ##browse-kill-ring.el##.
+** You can browse (or pop) other rings, in addition to the `kill-ring' --- in particular, the `secondary-selection-ring' (see [[SecondarySelection#secondary-sel.el|secondary-sel.el]]).
+** You can copy or move selections from one ring to another (using `c').
+** You can toggle the display style (new command and key binding).
+** Does the right thing when you use DeleteSelectionMode: deletes (replaces) the [[active region]] whenever you insert a kill.
+
+=== Icicles ===
+
+[[Icicles]] -- You can clean up the ring selectively during completion, deleting entries on the fly. And you can sort completions in various ways.  All Icicles completion features are available, including [[progressive completion]].  Two ways:
+
+** `C-- C-y' yanks from the kill ring using completion.
+
+** `M-y' at top level (i.e., not after a yank from either the kill ring or the `secondary-selection-ring' of <tt>[[second-sel.el]]</tt>) yanks from one of those rings using completion.  It yanks a kill by default, but a secondary selection if you use a [[prefix argument]].
+
+* <tt>[[kill-ring-ido.el]]</tt> -- browse kill ring with [[InteractivelyDoThings]].
+** You can browse `secondary-selection-ring' (see [[SecondarySelection#secondary-sel.el|secondary-sel.el]]).
+** Can search some part of phrase, as you do it in '''ido'''.
+** Works in minibuffer, so it don't open other buffers. Every match is cut, so basically you see only 10 first characters, 10 last characters and number of cutted characters in the middle. To preview whole text, use Lisp:ido-preview.el
+
+=== KillRingSearch ===
+
+KillRingSearch -- incremental search of the kill ring
+
+=== popup-kill-ring.el ===
+
+<tt>[[popup-kill-ring.el]]</tt> -- interactively insert item from kill-ring
+
+=== view-kill.el ===
+
+[[view-kill.el]] – Displays the entire kill ring as a menu.
+
+=== wuxch-browse-kill-ring.el ===
+
+<tt>[[wuxch-browse-kill-ring.el]]</tt> -- key bindings, customization
+
+=== Yet another way... ===
+
+Yet another way to get access to the kill ring with completion. Let [[Anything]], [[Icicles]], [[Ido]] or any other library that customizes `completing-read' do the rest:
+
+         (defun konix/kill-ring-insert ()
+           (interactive)
+           (let ((to_insert (completing-read "Yank : "
+                                            (delete-duplicates kill-ring :test #'equal))))
+            (when (and to_insert (region-active-p))
+              ;; the currently highlighted section is to be replaced by the yank
+              (delete-region (region-beginning) (region-end)))
+            (insert to_insert)))
+
+=== Using Anything ===
+
+Similar function with [[Anything]], a candidate selection framework. Start with `M-x anything-show-kill-ring', narrow the list by typing some patterns(multiple patterns are space-delimited string), select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter to insert an element of `kill-ring'.
+
+== Discussion ==
+
+[new]
+I can't praise browse-kill-ring enough -- I don't use it all that much, but when I need it there's no replacing it. -- [[Anonymous]]
+
+[new]
+Someone once said "The easiest way to invoke kill-ring browsing is just to use `M-y' without first using `C-y'".  But when I try that (with Emacs 22) I just get "Previous command was not a yank".
+
+[new]
+To get the "M-y immediately pulls up the kill ring" behavior, you need to run M-x browse-kill-ring-default-keybindings.  Or, to put this in .emacs
+
+ (require 'browse-kill-ring)
+ (browse-kill-ring-default-keybindings)
+
+[new]
+Not that anyone here will believe me, but I am the NickHurley referenced above. I can safely say that I have abandoned browse-kill-ring.el (which is now hosted on GitHub: https://github.com/todesschaf/browse-kill-ring for those who are interested). Enjoy.
+
+[new]
+
+Here's a "poor man's kill-ring-browser":
+
+    (defun yank-browse (string)
+      "Browse the `kill-ring' to choose which entry to yank."
+      (interactive
+       (minibuffer-with-setup-hook #'minibuffer-completion-help
+         (let* ((kills (delete-dups (append kill-ring-yank-pointer kill-ring nil)))
+                (entries
+                 (mapcar (lambda (string)
+                           (let ((pos 0))
+                             ;; FIXME: Maybe we should start by removing
+                             ;; all properties.
+                             (setq string (copy-sequence string))
+                             (while (string-match "\n" string pos)
+                               ;; FIXME: Maybe completion--insert-strings should
+                               ;; do that for us.
+                               (put-text-property
+                                (match-beginning 0) (match-end 0)
+                                'display (eval-when-compile
+                                           (propertize "\\n" 'face 'escape-glyph))
+                                string)
+                               (setq pos (match-end 0)))
+                             ;; FIXME: We may use the window-width of the
+                             ;; wrong window.
+                             (when (>= (* 3 (string-width string))
+                                       (* 2 (window-width)))
+                               (let ((half (- (/ (window-width) 3) 1)))
+                                 ;; FIXME: We're using char-counts rather than
+                                 ;; width-count.
+                                 (put-text-property
+                                  half (- (length string) half)
+                                  'display (eval-when-compile
+                                             (propertize "……" 'face 'escape-glyph))
+                                  string)))
+                             string))
+                         kills))
+                (table (lambda (string pred action)
+                         (cond
+                          ((eq action 'metadata)
+                           '(metadata (category . kill-ring)))
+                          (t
+                           (complete-with-action action entries string pred))))))
+           ;; FIXME: We should return the entry from the kill-ring rather than
+           ;; the entry from the completion-table.
+           ;; FIXME: substring completion doesn't work well because it only matches
+           ;; subtrings before the first \n.
+           ;; FIXME: completion--insert-strings assumes that boundaries of
+           ;; candidates are obvious enough, but with kill-ring entries this is not
+           ;; true, so we'd probably want to display them with «...» around them.
+           (list (completing-read "Yank: " table nil t)))))
+      (setq this-command 'yank)
+      (insert-for-yank string))
+
+[new]
+I adapted popup-kill-ring to replace a potential previous yank like the default M-y does (yank-pop).
+
+{{{
+diff --git a/libs/popup-kill-ring.el b/libs/popup-kill-ring.el
+--- a/libs/popup-kill-ring.el
++++ b/libs/popup-kill-ring.el
+@@ -280,6 +280,8 @@ and `pos-tip.el'"
+                                            :scroll-bar t
+                                            :isearch popup-kill-ring-isearch))
+                    (when item
++                     (when (or (eq last-command 'cua--paste-rectangle) (eq last-command 'yank))
++                       (undo))
+                      (setq num (popup-kill-ring-get-index item))
+                      (when num
+                        (let ((kill-ring-item (nth num kill-ring)))
+}}}
+
+
+-- ArneBab
+
+[new]
+The problem with browse-kill-ring is that when my frame is split into two windows, a and b, it will open in b if my focus is on a. When I close it (by pressing ‘q’) b is closed and what I had there is buried (I can select that it won’t close the window it creates, but that’s also not good; I might have just one window initially and I don’t want to end up with two). The ideal behaviour would be similar to bs-mode (open in it’s own small window and close when I press ‘q’ or once I select an entry).
+
+--user19865
+
+[new]
+The version of browse-kill-ring on github will, by default, preserve the window/buffer configuration when browse-kill-ring is invoked, and restore it when you quit, this should solve the issue of the disappearing window/buffers. 
+----
+
+CategoryEditing
