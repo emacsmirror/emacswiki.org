@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Apr 23 15:32:19 2016 (-0700)
+;; Last-Updated: Mon May 30 10:28:56 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7860
+;;     Update #: 7863
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -11676,11 +11676,12 @@ all other automatic bookmarks in the same buffer.  Else return nil."
   (unless position (setq position  (point)))
   (or (not bmkp-auto-idle-bookmark-min-distance)
       (catch 'bmkp-not-near-other-auto-idle-bmks
-        (let (pos)
+        (let (bmk-pos)
           (dolist (bmk  bmkp-auto-idle-bookmarks)
             (when (and (bmkp-this-buffer-p bmk)
-                       (setq pos  (bookmark-get-position bmk))
-                       (or (not pos)  (< (abs (- (point) pos)) bmkp-auto-idle-bookmark-min-distance)))
+                       (setq bmk-pos  (bookmark-get-position bmk))
+                       (or (not bmk-pos)
+                           (< (abs (- position bmk-pos)) bmkp-auto-idle-bookmark-min-distance)))
               (throw 'bmkp-not-near-other-auto-idle-bmks nil)))
           t))))
 
