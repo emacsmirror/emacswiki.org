@@ -1,8 +1,8 @@
-== Emacs 23 and transparency ==
+== Emacs and transparency ==
 
 On the following platforms,
 
-* Emacs 23
+* Emacs 23+
 ** X Window System and a compositing window manager (e.g. Compiz, Beryl and Compiz Fusion)
 ** Mac OS X; Mac Ports.
 ** Emacs NT - GNU Emacs 23.1.50.1 (i386-mingw-nt6.1.7600) works, can't confirm any other versions.
@@ -12,20 +12,24 @@ On the following platforms,
 
 the user can controls the frame opacity by adding the below lines in InitFile. 
 
- ;;(set-frame-parameter (selected-frame) 'alpha '(<active> [<inactive>]))
- (set-frame-parameter (selected-frame) 'alpha '(85 50))
- (add-to-list 'default-frame-alist '(alpha 85 50))
+ ;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
+ ;;(set-frame-parameter (selected-frame) 'alpha <both>)
+ (set-frame-parameter (selected-frame) 'alpha '(85 . 50))
+ (add-to-list 'default-frame-alist '(alpha . (85 . 50)))
 
 You can use the following snippet after you've set the alpha as above to assign a toggle to "C-c t":
 
- (eval-when-compile (require 'cl))
  (defun toggle-transparency ()
    (interactive)
-   (if (/=
-        (cadr (frame-parameter nil 'alpha))
-        100)
-       (set-frame-parameter nil 'alpha '(100 100))
-     (set-frame-parameter nil 'alpha '(85 50))))
+   (let ((alpha (frame-parameter nil 'alpha)))
+     (set-frame-parameter
+      nil 'alpha
+      (if (eql (cond ((numberp alpha) alpha)
+                     ((numberp (cdr alpha)) (cdr alpha))
+                     ;; Also handle undocumented (<active> <inactive>) form.
+                     ((numberp (cadr alpha)) (cadr alpha)))
+               100)
+          '(85 . 50) '(100 . 100)))))
  (global-set-key (kbd "C-c t") 'toggle-transparency)
 
 A general transparency function:
@@ -47,6 +51,8 @@ Note that unlike other transparency hacks (like the background image hack below)
 ::: I concur with thomas001: having the whole window transparent is somewhat undesirable, and I would prefer to have only the background beeing transparent (as is the case in Terminal.app on OSX). Any ideas/plans about how to obtain that behaviour ? I'm using stock Carbon Emacs (Spring 2008) on OSX (Tiger) -- [[Gyom]]
 
 : Does anyone know how to disable it though? Emacs handling alpha value messes with my window manager (ie. I have such a feature configured in my WM). -- mina86
+
+:: <code>(set-frame-parameter nil 'alpha nil)</code> should let the window manger handle it again.
 
 [new:Quantheory:2012-03-01 01:10 UTC]
 I would love to hear of a way to do this so that only the background is translucent. Unfortunately, I don't believe there's any way that doesn't involve patching the source or using an OS-specific, obsolete setting. -- Quantheory
