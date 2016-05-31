@@ -2,3 +2,10 @@ I don't see this functionality in the main Emacs Git repo.  Has a pull request b
 
 -- franl 2016-05-30 14:26 UTC
 
+
+----
+
+Looks like no, see https://github.com/joseph-gay/erc-sasl/issues/2
+
+-- npostavs 2016-05-31 19:16 UTC
+
