@@ -3,3 +3,16 @@ Is it possible to highlight the characters in a line when the cursor is hovering
 
 -- johnbendi 2016-06-01 14:43 UTC
 
+
+----
+
+Do you mean highlight the line under the mouse pointer?
+
+You can do that using library `highlight.el` by putting property `mouse-face` on the line, either as a text property or as an overlay.  That is, you use property `mouse-face` instead of property `face`.
+
+And in fact there is a command for this: **`hlt-mouse-face-each-line`**. It makes each line in the region highlighted when you hover the mouse over that line.
+
+With a prefix arg it prompts you for the highlighting face to use. Use `C-h f hlt-mouse-face-each-line` for more info.
+
+-- DrewAdams 2016-06-01 16:16 UTC
+
