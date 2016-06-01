@@ -1,0 +1,9 @@
+I would like to respectfully suggest that emacs dot file bankruptcy is no longer an issue. Most of what made it an
+issue was when someone would try to update it somehow. Such as install a new package, and then three packages
+already installed complained about things. And you don't know for sure if what you were trying to do worked or not.
+Now there is excellent package management. And more than that. There is the combo of cask and pallet.
+Yes there will always be people who get frustrated and start from scratch. But a massive number of people such
+that it is a thing in this wiki? I think emacs has evolved past that.
+
+-- freenodeanderson 2016-06-01 14:15 UTC
+
