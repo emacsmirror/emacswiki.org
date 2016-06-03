@@ -277,5 +277,16 @@ To avoid the inactivity timeout, I added a timer that periodically issues a "NOO
 
 Emacs 24 has keepalive support built in.
 
+== Choose Attachments with Dired ==
+
+M-x turn-on-gnus-dired-mode in a dired buffer adds key-sequence C-c C-m C-a which is bound to gnus-dired-attach.  With this setting you can open a gnus message composition, mark some files in the dired and then set these files as attachments for the message with the key-sequence.
+
+Have this mode activated for every dired by hooking in like
+{{{
+(add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
+}}}
+
+-- MarcoWahl
+
 ----
 CategoryGnus 
