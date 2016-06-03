@@ -43,6 +43,9 @@ Renaming refactoring is convenient in Iedit mode
 There are also some other facilities you may never think about.  Refer to the
 document of function `iedit-mode' (C-h f iedit-mode RET) for more details.
 
+-------------------
+I hope this package could be extend to support rename html pair tags.
 
+ 
 ----
 CategorySearchAndReplace
