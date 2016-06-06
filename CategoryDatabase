@@ -10,6 +10,7 @@ See [[SQL]] for information on how to use SQL databases from Emacs, as well as:
 * [[MySql]] - EmacsLisp interface to MySQL server
 
 * [[EmacsDb]]  -- an abstract database interface
+* [[SQLite]] -- a file-based SQL database
 
 == NoSQL Databases ==
 
