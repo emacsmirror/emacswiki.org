@@ -81,6 +81,24 @@ If on a wrapped part it first goes to the start of the wrapped line.
 Note: Requires the not yet released Emacs 23.
 (There is also a similar function for end of line.)
 
+[new]
+I've got this that does the standard functionality except if the cursor is at the beginning of the line <i>and the line is empty</i> it will insert the indentation and move to it.
+
+ (defun genius-beginning-of-line ()
+   "Move point to the first non-whitespace character on this line.
+ If point was already at that position, move point to beginning of line.
+ If line is empty, indent the line relative to the preceding line.
+ "
+   (interactive "^")
+   (let ((oldpos (point)))
+     (back-to-indentation)
+     (and (= oldpos (point))
+          (progn (move-beginning-of-line nil)
+                 (when (=
+                        (line-beginning-position)
+                        (line-end-position))
+                   (save-excursion
+                     (indent-according-to-mode)))))))
 
 
 == End of code (before comments) or end of line ==
