@@ -33,6 +33,9 @@ Emacs 21 provides functions to do this easily:
 ; <code>clone-buffer</code>: Use this for <nowiki>*Info*</nowiki> and <nowiki>*Help*</nowiki> buffers.  You
 cannot clone buffers visiting files. You can clone buffers with inferior processes; anything which uses comint, such as *SQL*, *shell*, and *ssh* buffers. A new inferior process is spawned for the cloned buffer.
 
+[new]
+Also see <code>view-indirect-buffer-other-window</code> over at ViewMode
+
 = Emacs 20 =
 
 Here's the code to put in your ~/.emacs in order to get something like
