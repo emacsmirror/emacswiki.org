@@ -7,6 +7,7 @@ I am also known as [::tadsan] on Twitter. GitHub and Packagist account is [::zon
 == Code ==
 
 * https://github.com/zonuexe/right-click-context - ContextMenu implementation
+* https://github.com/zonuexe/copyit - Yanking / Clipboard CopyAndPaste
 * https://github.com/zonuexe/emacs-datetime - DateTime formatting helper
 * https://github.com/zonuexe/magic-filetype.el
 * https://github.com/zonuexe/psysh.el - PHP REPL based on ComintMode
