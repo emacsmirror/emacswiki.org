@@ -16,7 +16,7 @@ This won't help if you use Emacs on a terminal. I've got this that uses asciivie
    ;; use asciiview (part of aatools) to render image file as text to buffer
    (interactive "fChoose image file: ")
    (save-excursion
-     (with-current-buffer (pop-to-buffer "*asciiview*")
+     (with-current-buffer (pop-to-buffer (format "*asciiview %s*" imagefile))
        (insert
         (car (last (butlast
                 (split-string
