@@ -10,7 +10,7 @@ Lisp:image-dimensions-minor-mode.el
 
 ----
 
-This won't help if you use Emacs on a terminal. I've got this that uses asciiview (part of the aview package in debian) to render an images as ascii art:
+This won't help if you use Emacs on a terminal. I've got this that uses asciiview (part of the aview package in debian - http://aa-project.sourceforge.net/aview/) to render an images as ascii art:
 
  (defun asciiview (imagefile)
    ;; use asciiview (part of aatools) to render image file as text to buffer
