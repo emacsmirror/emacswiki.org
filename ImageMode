@@ -8,4 +8,24 @@ See also ImageDired, which allows you to view a collection of thumbnails.
 
 Lisp:image-dimensions-minor-mode.el
 
+----
+
+This won't help if you use Emacs on a terminal. I've got this that uses asciiview (part of aatools in debian) to render an images as ascii art:
+
+ (defun asciiview (imagefile)
+   ;; use asciiview (part of aatools) to render image file as text to buffer
+   (interactive "fChoose image file: ")
+   (save-excursion
+     (with-current-buffer (pop-to-buffer "*asciiview*")
+       (insert
+        (car (last (butlast
+                (split-string
+                 (shell-command-to-string
+                  (format
+                   "echo q | asciiview -driver stdout -kbddriver stdin %s 2>/dev/null"
+                   (shell-quote-argument imagefile)))
+                 "^L")))))
+       (view-mode))))
+
+
 CategoryModes MultimediaModes
