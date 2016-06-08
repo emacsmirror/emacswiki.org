@@ -27,5 +27,6 @@ This won't help if you use Emacs on a terminal. I've got this that uses asciivie
                  "^L")))))
        (view-mode))))
 
+It's not the best rendering but it's usually enough to get a general look at an image. The echo q is because asciiview doesn't just print and exit like a normal program (and doesn't seem to have an option to), it sits around waiting for you to hit 'q' first. The car/last/butlast/split-string bit is because otherwise program output is echoed and the image is printed twice. This could maybe be fixed otherways.
 
 CategoryModes MultimediaModes
