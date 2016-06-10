@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Mar  1 08:40:36 2016 (-0800)
+;; Last-Updated: Fri Jun 10 14:35:32 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 15145
+;;     Update #: 15156
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5182,8 +5182,7 @@ MESSAGE is the confirmation message to display in the minibuffer."
   (if (or (icicle-file-name-input-p)  icicle-abs-file-candidates) ; File names: relative or absolute.
       (setq icicle-completion-candidates
             (icicle-strip-ignored-files-and-sort icicle-completion-candidates))
-    (setq icicle-completion-candidates  (icicle-maybe-sort-maybe-truncate
-                                         icicle-completion-candidates))))
+    (setq icicle-completion-candidates  (icicle-maybe-sort-maybe-truncate icicle-completion-candidates))))
 
 (defun icicle-scroll-or-update-Completions (msg)
   "Scroll `*Completions*' if this command was repeated; else update it."
@@ -5216,7 +5215,7 @@ MESSAGE is the confirmation message to display in the minibuffer."
 Sort according to `icicle-sort-comparer'.
 Truncate according to `icicle-max-candidates'."
   (let ((new-cands  cands))
-    (when icicle-sort-comparer (setq new-cands  (icicle-reversible-sort new-cands)))
+    (setq new-cands  (icicle-reversible-sort new-cands))
     (when icicle-max-candidates
       (let ((lighter  (cadr (assoc 'icicle-mode minor-mode-alist)))
             (regexp   (concat (regexp-quote icicle-lighter-truncation) "$")))
@@ -6171,11 +6170,15 @@ Otherwise, ignore it (treat it as nil)."
   (if icicle-use-~-for-home-dir-flag (abbreviate-file-name filename) filename))
 
 (defun icicle-reversible-sort (list &optional key)
-  "`sort' LIST using `icicle-sort-comparer'.
+  "`sort' LIST using `icicle-sort-comparer' and return the result.
 Reverse the result if `icicle-reverse-sort-p' is non-nil.
 If `icicle-sort-comparer' is a cons (other than a lambda form), then
  use `icicle-multi-sort' as the sort predicate.
 Otherwise, use `icicle-sort-comparer' as the sort predicate.
+
+If `icicle-sort-comparer' is nil and `icicle-reverse-sort-p' is
+non-nil then return LIST reversed.  If `icicle-reverse-sort-p' is nil
+then just return LIST.
 
 Optional arg KEY is a selector function to apply to each item to be be
 compared.  If nil, then the entire item is used."
@@ -6201,10 +6204,12 @@ compared.  If nil, then the entire item is used."
                                   (sit-for 1)
                                   (setq icicle-sort-comparer  nil)
                                   nil))))))
-    (when sort-fn
-      (setq list  (sort list (if icicle-reverse-sort-p
-                                 (lambda (a b) (not (funcall sort-fn a b)))
-                               sort-fn)))))
+    (when (or sort-fn  icicle-reverse-sort-p)
+      (setq list  (if sort-fn
+                      (sort list (if icicle-reverse-sort-p
+                                     (lambda (a b) (not (funcall sort-fn a b)))
+                                   sort-fn))
+                    (nreverse list)))))
   list)
 
 ;; Essentially the same as `bmkp-multi-sort'.
