@@ -1,4 +1,4 @@
-You can resize windows using the keyboard (eg. C-x ^ to make the current windows taller (and C-x } to make it wider ({ to make it shrink-horizontally)). The default keybindings might
+You can resize windows using the keyboard (eg. `C-x ^` to make the current windows taller and `C-x }` to make it wider). The default keybindings might
 not be appropriate for you, however.  Here is a very simple suggestion
 to make them more accessible.
 
