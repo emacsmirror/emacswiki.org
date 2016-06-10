@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun May 29 16:38:26 2016 (-0700)
+;; Last-Updated: Fri Jun 10 14:48:09 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 11614
+;;     Update #: 11622
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2245,6 +2245,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2016/06/10 dadams
+;;     icicle-maybe-sort-maybe-truncate:
+;;       Call icicle-reversible-sort even if icicle-sort-comparer is nil.
+;;     icicle-reversible-sort: Reverse LIST if icicle-reverse-sort-p is non-nil.
 ;; 2016/03/01 dadams
 ;;     icicle-insert-cand-in-minibuffer: Wrap string-match in condition-case, to ignore errors.
 ;; 2016/02/28 dadams
@@ -4583,6 +4587,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2016/06/10 dadams
+;;     icicle-display-candidates-in-Completions:
+;;       Respect icicle-reverse-sort-p even if icicle-sort-comparer is nil.
 ;; 2016/02/28 dadams
 ;;     icicle-help-on-candidate: Use new option icicle-complete-keys-separator, not its default value.
 ;; 2015/12/31 dadams
