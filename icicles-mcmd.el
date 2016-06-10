@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Feb 28 15:05:33 2016 (-0800)
+;; Last-Updated: Fri Jun 10 14:21:26 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 19764
+;;     Update #: 19765
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2655,7 +2655,7 @@ By default, this is bound to `C-x C-M-l' during completion."
                           (icicle-propertize (or (car (rassoc icicle-sort-comparer icicle-sort-orders-alist))
                                                  "turned OFF")
                                              'face 'icicle-mode-line-help)
-                          (if (and icicle-reverse-sort-p  icicle-sort-comparer)
+                          (if icicle-reverse-sort-p
                               (icicle-propertize " (reversed)" 'face 'icicle-mode-line-help)
                             "")))
              (let* ((lighter  (cadr (assoc 'icicle-mode minor-mode-alist)))
