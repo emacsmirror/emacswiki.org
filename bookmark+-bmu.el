@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Dec 31 12:19:48 2015 (-0800)
+;; Last-Updated: Sat Jun 11 07:48:57 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 3747
+;;     Update #: 3749
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1264,7 +1264,7 @@ Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
                                                              'bmkp-omitted-alist-only))
                                                     bmkp-bmenu-omitted-bookmarks)))
       (dolist (bmk  bmkp-sorted-alist)
-        (setq max-width  (max max-width (length (bmkp-bookmark-name-from-record bmk)))))
+        (setq max-width  (max max-width (string-width (bmkp-bookmark-name-from-record bmk)))))
       (setq max-width  (+ max-width bmkp-bmenu-marks-width))
       (dolist (bmk  bmkp-sorted-alist)
         (setq name        (bmkp-bookmark-name-from-record bmk)
@@ -1894,7 +1894,7 @@ Non-nil optional arg NO-MSG-P means do not show progress messages."
             (setq bookmark-bmenu-hidden-bookmarks  (nreverse bookmark-bmenu-hidden-bookmarks))
             (let ((max-width  0))
               (dolist (name  bookmark-bmenu-hidden-bookmarks)
-                (setq max-width  (max max-width (length name))))
+                (setq max-width  (max max-width (string-width name))))
               (setq max-width  (+ max-width bmkp-bmenu-marks-width))
               (save-excursion
                 (let ((inhibit-read-only  t))
