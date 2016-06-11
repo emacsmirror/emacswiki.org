@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon May 30 10:30:08 2016 (-0700)
+;; Last-Updated: Sat Jun 11 07:49:09 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16028
+;;     Update #: 16030
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1192,6 +1192,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2016/06/11 dadams
+;;     bmkp-bmenu-list-1, bookmark-bmenu-hide-filenames:
+;;       Use string-width, not length.  Thx to Toshikazu Nakamura.
 ;; 2015/11/07 dadams
 ;;     bmkp-bmenu-copy-marked-to-bookmark-file: Added missing zerop test for No-changes case.
 ;;     bmkp-bmenu-create-bookmark-file-from-marked:
