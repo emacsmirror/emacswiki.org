@@ -31,7 +31,7 @@ This is what I did in order to get Arduino support for OS X:
 [http://cedet.sourceforge.net CEDET] is a very complex and powerful  package, but I will perform a simple installation from the bazaar repository:
 
 <pre>
-~/.emacs.d/vendor $ /opt/local/bin/bzr checkout bzr://cedet.bzr.sourceforge.net/bzrroot/cedet/code/trunk cedet
+~/.emacs.d/vendor $ git clone http://git.code.sf.net/p/cedet/git cedet
 ~/.emacs.d/vendor $ cd cedet
 ~/.emacs.d/vendor $ make EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs
 </pre>
