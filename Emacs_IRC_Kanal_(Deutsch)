@@ -17,8 +17,8 @@ Wenn man nichts weiter eingestellt hat, wird man automatisch mit dem [[EmacsChat
 Mit <code>C-c C-j ##emacs.de RET</code> kann man sich mit dem deutschsprachigen Kanal verbinden.
 Nun sollte man im Emacs mindestens drei Buffer haben:
 
-# **#emacs** ist der englische Kanal
-# **##emacs.de** ist der deutsche Kanal
+# **#emacs@chat.freenode.net** ist der englische Kanal
+# **##emacs.de@chat.freenode.net** ist der deutsche Kanal
 # <b><nowiki>*chat.freenode.net*</nowiki></b> ist die direkte Verbindung zu einem Server im Freenode Netz
 
 ----
