@@ -12,7 +12,7 @@ Emacs beinhaltet [[rcirc]] und [[ERC]], aber es gibt auch weitere Pakete, welche
 
 == Ich brauche ein Beispiel ==
 
-In Emacs kann man mit `M-x rcirc' einen IRC Client starten.
+In Emacs kann man mit ##M-x rcirc## einen IRC Client starten.
 Wenn man nichts weiter eingestellt hat, wird man automatisch mit dem [[rcirc]] Hilfe Kanal verbunden.
 Mit <code>C-c C-j ##emacs.de RET</code> kann man sich mit dem deutschsprachigen Kanal verbinden (J steht für /join/).
 Nun sollte man im Emacs mindestens drei Buffer haben:
