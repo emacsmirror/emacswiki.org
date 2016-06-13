@@ -1,4 +1,25 @@
 Der [[IRC]] Kanal **##emacs.de** auf dem Freenode Netzwerk dient der Unterhaltung zum Thema auf Deutsch.
 
+== Wie geht das? ==
+
+Um sich mit dem Kanal zu verbinden, braucht es einen /IRC Client/.
+
+== Was ist ein IRC Client? ==
+
+Das ist ein Programm, mit dem man auf einem IRC Netzwerk mit Leuten chatten kann.
+Es gibt diverse Programme, welche innerhalb von Emacs laufen:
+Emacs beinhaltet [[rcirc]] und [[ERC]], aber es gibt auch weitere Pakete, welche einen IRC Client implementieren, zB. [[Circe]].
+
+== Ich brauche ein Beispiel ==
+
+In Emacs kann man mit `M-x rcirc' einen IRC Client starten.
+Wenn man nichts weiter eingestellt hat, wird man automatisch mit dem [[EmacsChatChannel|englischen #emacs]] verbunden.
+Mit <code>C-c C-j ##emacs.de RET</code> kann man sich mit dem deutschsprachigen Kanal verbinden.
+Nun sollte man im Emacs mindestens drei Buffer haben:
+
+# **#emacs** ist der englische Kanal
+# **##emacs.de** ist der deutsche Kanal
+# ***chat.freenode.net*** ist die direkte Verbindung zu einem Server im Freenode Netz
+
 ----
 CategoryChat
