@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Mar 27 21:29:32 2016 (-0700)
+;; Last-Updated: Sun Jun 12 16:06:35 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 6134
+;;     Update #: 6152
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -69,6 +69,7 @@
 ;;    `icicle-apropos-cycle-previous-action-keys',
 ;;    `icicle-apropos-cycle-previous-alt-action-keys',
 ;;    `icicle-apropos-cycle-previous-help-keys',
+;;    `icicle-auto-complete-key-delay' (Emacs 22+),
 ;;    `icicle-bookmark-name-length-max',
 ;;    `icicle-bookmark-refresh-cache-flag',
 ;;    `icicle-buffer-candidate-key-bindings', `icicle-buffer-configs',
@@ -99,23 +100,24 @@
 ;;    `icicle-command-abbrev-match-all-parts-flag',
 ;;    `icicle-command-abbrev-priority-flag',
 ;;    `icicle-complete-key-anyway-flag',
-;;    `icicle-complete-keys-ignored-prefix-keys',
+;;    `icicle-complete-keys-ignored-prefix-keys' (Eamcs 22+),
 ;;    `icicle-complete-keys-self-insert-ranges',
 ;;    `icicle-complete-keys-separator',
 ;;    `icicle-completing-read+insert-keys',
 ;;    `icicle-completion-history-max-length',
 ;;    `icicle-completion-key-bindings',
 ;;    `icicle-completion-list-key-bindings',
-;;    `icicle-completion-style-sets',
+;;    `icicle-completion-style-sets' (Emacs 23+),
 ;;    `icicle-Completions-display-min-input-chars',
 ;;    `icicle-completions-format', `icicle-Completions-max-columns',
 ;;    `icicle-Completions-mouse-3-menu-entries',
-;;    `icicle-Completions-text-scale-decrease',
+;;    `icicle-Completions-text-scale-decrease' (Emacs 23+),
 ;;    `icicle-Completions-window-max-height',
 ;;    `icicle-customize-save-flag',
 ;;    `icicle-customize-save-variable-function',
-;;    `icicle-custom-themes', `icicle-custom-themes-accumulate-flag',
-;;    `icicle-custom-themes-update-flag',
+;;    `icicle-custom-themes' (Emacs 24+),
+;;    `icicle-custom-themes-accumulate-flag' (Emacs 24+),
+;;    `icicle-custom-themes-update-flag' (Emacs 24+),
 ;;    `icicle-default-in-prompt-format-function',
 ;;    `icicle-default-cycling-mode', `icicle-default-thing-insertion',
 ;;    `icicle-default-value', `icicle-define-alias-commands-flag',
@@ -147,7 +149,7 @@
 ;;    `icicle-incremental-completion',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-threshold',
-;;    `icicle-Info-highlight-visited-nodes',
+;;    `icicle-Info-highlight-visited-nodes' (Emacs 22+),
 ;;    `icicle-inhibit-advice-functions', `icicle-inhibit-ding-flag',
 ;;    `icicle-input-string', `icicle-inter-candidates-min-spaces',
 ;;    `icicle-isearch-complete-keys',
@@ -156,11 +158,11 @@
 ;;    `icicle-key-complete-keys',
 ;;    `icicle-key-complete-keys-for-minibuffer',
 ;;    `icicle-key-descriptions-use-<>-flag',
-;;    `icicle-key-descriptions-use-angle-brackets-flag',
+;;    `icicle-key-descriptions-use-angle-brackets-flag' (Emacs 22+),
 ;;    `icicle-keymaps-for-key-completion',
-;;    `icicle-kill-visited-buffers-flag', `icicle-kmacro-ring-max',
-;;    `icicle-levenshtein-distance', `icicle-list-join-string',
-;;    `icicle-list-nth-parts-join-string',
+;;    `icicle-kill-visited-buffers-flag', `icicle-kmacro-ring-max'
+;;    (Emacs 22+), `icicle-levenshtein-distance',
+;;    `icicle-list-join-string', `icicle-list-nth-parts-join-string',
 ;;    `icicle-mark-position-in-candidate', `icicle-max-candidates',
 ;;    `icicle-menu-items-to-history-flag',
 ;;    `icicle-minibuffer-key-bindings',
@@ -176,7 +178,7 @@
 ;;    `icicle-option-type-prefix-arg-list',
 ;;    `icicle-network-drive-means-remote-flag',
 ;;    `icicle-point-position-in-candidate',
-;;    `icicle-populate-interactive-history-flag',
+;;    `icicle-populate-interactive-history-flag' (Emacs 23+),
 ;;    `icicle-pp-eval-expression-print-length',
 ;;    `icicle-pp-eval-expression-print-level',
 ;;    `icicle-prefix-complete-keys',
@@ -230,13 +232,13 @@
 ;;    `icicle-use-candidates-only-once-flag',
 ;;    `icicle-widgets-to-redefine', `icicle-word-completion-keys',
 ;;    `icicle-WYSIWYG-Completions-flag', `icicle-yank-function',
-;;    `icicle-zap-to-char-candidates'.
+;;    `icicle-zap-to-char-candidates' (Emacs 23+).
 ;;
 ;;  Functions defined here:
 ;;
 ;;    `icicle-bind-top-level-commands',
-;;    `icicle-buffer-sort-*...*-last', `icicle-color-defined-p',
-;;    `icicle-compute-shell-command-candidates',
+;;    `icicle-buffer-sort-*...*-last', `icicle-color-defined-p' (Emacs
+;;    22+), `icicle-compute-shell-command-candidates',
 ;;    `icicle-edmacro-parse-keys', `icicle-kbd', `icicle-remap',
 ;;    `icicle-thing-at-point', `icicle-widgetp'.
 ;;
@@ -967,6 +969,14 @@ A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
 different keyboards."
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
+
+(when (fboundp 'map-keymap)             ; Emacs 22+.
+  (defcustom icicle-auto-complete-key-delay 1.0
+    "*Seconds to wait when idle, before automatically completing a key.
+If you use Do Re Mi (library `doremi.el') then you can use
+multi-command `icicle-increment-option' anytime to change the option
+value incrementally."
+    :type 'number :group 'Icicles-Key-Completion))
 
 (defcustom icicle-bookmark-name-length-max 70
   "*Maximum number of characters used to name a bookmark.
@@ -3330,7 +3340,7 @@ multi-command `icicle-increment-option' anytime to change the option
 value incrementally."
   :type 'integer :group 'Icicles-Completions-Display)
 
-(when (> emacs-major-version 21)
+(when (> emacs-major-version 21)        ; Emacs 22+
   (defcustom icicle-Info-highlight-visited-nodes nil
     "When to automatically highlight visited Info node names in `*Completions*'.
 Regardless of the value, on-demand highlighting is always available,
@@ -3808,7 +3818,7 @@ This pertains to an MS Windows mapped netword drive, such as `f:'.
 You can use `C-x :' during completion to toggle this option."
   :type 'boolean :group 'Icicles-Files)
 
-(when (> emacs-major-version 22)
+(when (> emacs-major-version 22)        ; Emacs 23+
   (defcustom icicle-populate-interactive-history-flag nil
     "*Non-nil means populate `icicle-interactive-history'.
 That means add commands invoked interactively to that history, for use
@@ -5674,7 +5684,7 @@ that (non-Icicles) function does not support WYSIWYG candidates."
           (const  :tag "Show candidate as is, with no text properties"      nil))
   :group 'Icicles-Completions-Display)
 
-(when (fboundp 'read-char-by-name)
+(when (fboundp 'read-char-by-name)      ; Emacs 23+
   (defcustom icicle-zap-to-char-candidates nil
     "*Names to use for `icicle-zap-to-char' when completing.
 Either a function that returns a list of the same form as `ucs-names',
