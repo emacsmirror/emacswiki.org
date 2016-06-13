@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Sun Mar 27 15:09:37 2016 (-0700)
+;; Last-Updated: Sun Jun 12 15:54:10 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1851
+;;     Update #: 1858
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -45,6 +45,7 @@
 ;;    `icicle-allowed-sort-predicate', `icicle-apply-nomsg',
 ;;    `icicle-apropos-complete-match-fn',
 ;;    `icicle-apropos-value-last-initial-cand-set',
+;;    `icicle-auto-complete-key-idle-timer' (Emacs 22+),
 ;;    `icicle-auto-no-icomplete-mode-p', `icicle-auto-no-sort-p',
 ;;    `icicle-bookmark-history', `icicle-bookmark-list-names-only-p',
 ;;    `icicle-bookmark-types', `icicle-buffer-complete-fn',
@@ -83,7 +84,7 @@
 ;;    `icicle-face-name-history', `icicle-face-remapping-Completions',
 ;;    `icicle-face-remapping-region', `icicle-fancy-candidates-p',
 ;;    `icicle-fancy-cands-internal-p',
-;;    `icicle-file-name-completion-table',
+;;    `icicle-file-name-completion-table' (Emacs 24+),
 ;;    `icicle-file-sort-first-time-p',
 ;;    `icicle-filtered-default-value', `icicle-font-name-history',
 ;;    `icicle-frame-alist', `icicle-frame-name-history',
@@ -101,7 +102,7 @@
 ;;    `icicle-insert-string-at-pt-start',
 ;;    `icicle-interactive-history', `icicle-izones-var',
 ;;    `icicle-key-prefix-description', `icicle-kill-history',
-;;    `icicle-kmacro-alist', `icicle-kmacro-history',
+;;    `icicle-kmacro-alist' (Emacs 22+), `icicle-kmacro-history',
 ;;    `icicle-last-apropos-complete-match-fn',
 ;;    `icicle-last-completion-candidate',
 ;;    `icicle-last-completion-command',
@@ -137,16 +138,18 @@
 ;;    `icicle-previous-raw-non-file-name-inputs',
 ;;    `icicle-progressive-completing-p', `icicle-prompt',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
-;;    `icicle-read-char-history', `icicle-read-expression-map',
-;;    `icicle-remove-icicles-props-p', `icicle-re-no-dot',
-;;    `icicle-require-match-p', `icicle-reverse-multi-sort-p',
-;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
+;;    `icicle-read-char-history' (Emacs 23+),
+;;    `icicle-read-expression-map', `icicle-remove-icicles-props-p',
+;;    `icicle-re-no-dot', `icicle-require-match-p',
+;;    `icicle-reverse-multi-sort-p', `icicle-reverse-sort-p',
+;;    `icicle-saved-candidate-overlays',
 ;;    `icicle-saved-candidates-variables-obarray',
 ;;    `icicle-saved-completion-candidate',
 ;;    `icicle-saved-completion-candidates',
 ;;    `icicle-saved-completion-candidates-internal',
 ;;    `icicle-saved-ignored-extensions',
-;;    `icicle-saved-kmacro-ring-max', `icicle-saved-proxy-candidates',
+;;    `icicle-saved-kmacro-ring-max' (Emacs 22+),
+;;    `icicle-saved-proxy-candidates',
 ;;    `icicle-saved-regexp-search-ring-max',
 ;;    `icicle-saved-region-background',
 ;;    `icicle-saved-search-ring-max', `icicle-scan-fn-or-regexp',
@@ -282,6 +285,10 @@ not filtered by the input, except possibly by a function-valued
 
 (defvar icicle-apropos-value-last-initial-cand-set ()
   "Cache for initial set of completion cands for `icicle-apropos-value'.")
+
+(when (> emacs-major-version 21)
+  (defvar icicle-auto-complete-key-idle-timer nil
+    "Timer used to automatically complete a key sequence when Emacs is idle."))
 
 (defvar icicle-auto-no-icomplete-mode-p nil
   "Non-nil means Icomplete mode has been turned off for this minibuffer activation.
