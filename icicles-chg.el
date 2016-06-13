@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Jun 10 14:48:09 2016 (-0700)
+;; Last-Updated: Sun Jun 12 18:02:04 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 11622
+;;     Update #: 11629
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1168,6 +1168,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2016/06/12 dadams
+;;     Added: icicle-auto-complete-key, icicle-auto-complete-keys-mode.
 ;; 2016/05/29 dadams
 ;;     icicle-goto-marker-1: Delete any nil entries from mapping icicle-marker+text over markers.
 ;;     icicle-marker+text: Make clear in doc string that it can return nil.
@@ -7691,6 +7693,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2016/06/12 dadams
+;;     Added: icicle-auto-complete-key-delay.
 ;; 2016/03/27 dadams
 ;;     icicle-completion-key-bindings, icicle-minibuffer-key-bindings:
 ;;       Changed icicle-clear-current-history from M-i to M-K.
@@ -8640,6 +8644,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2016/06/12 dadams
+;;     Added: icicle-auto-complete-key-idle-timer.
 ;; 2016/03/27 dadams
 ;;     Added: icicle-toggle-map.  Define its keys here too.
 ;; 2016/02/28 dadams
@@ -9109,6 +9115,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2016/06/12 dadams
+;;     Version 2016.06.12.
 ;; 2016/03/04 dadams
 ;;     Version 2016.03.04.
 ;;     font-lock-add-keywords: Use index 7 for old Emacs versions.
