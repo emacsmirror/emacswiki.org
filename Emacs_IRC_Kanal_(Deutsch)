@@ -21,6 +21,12 @@ Nun sollte man im Emacs mindestens drei Buffer haben:
 # **#rcirc@chat.freenode.net** ist der englische Kanal über den Chat Client
 # **##emacs.de@chat.freenode.net** ist der deutsche Kanal über Emacs im Allgemeinen
 
+Typischerweise geht das auch, in dem man beim Prompt den Befehl ##/join <Kanal>## verwendet. Das sieht dann so aus:
+
+{{{
+15:05 /join #test
+}}}
+
 == Auswahl des Spitznamen ==
 
 Per default kriegt man irgend einen Spitznamen, der auf dem Login Namen basiert, und dann mit Apostrophen und so Zeug eineindeutig gemacht wird.
@@ -30,6 +36,15 @@ Das Resultat:
 
 {{{
 15:08 *** asc` NICK ascology
+}}}
+
+Typischerweise geht das auch, in dem man beim Prompt den Befehl ##/nick <Spitzname>## verwendet. Das sieht dann so aus:
+
+{{{
+15:14 /nick ascology2
+15:14 *** ascology NICK ascology2
+15:14 /nick ascology
+15:14 *** ascology2 NICK ascology
 }}}
 
 == Registrierung ==
@@ -58,6 +73,12 @@ Das sieht dann so aus:
 15:11 -NickServ- help you can /join #freenode to find network
                  staff.
 > 
+}}}
+
+Typischerweise geht das auch, in dem man beim Prompt den Befehl ##/query <Spitzname>## verwendet. Das sieht dann so aus:
+
+{{{
+15:16 /query nickserv
 }}}
 
 == Einfache rcirc Konfiguration ==
