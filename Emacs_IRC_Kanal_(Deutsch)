@@ -13,18 +13,57 @@ Emacs beinhaltet [[rcirc]] und [[ERC]], aber es gibt auch weitere Pakete, welche
 == Ich brauche ein Beispiel ==
 
 In Emacs kann man mit `M-x rcirc' einen IRC Client starten.
-Wenn man nichts weiter eingestellt hat, wird man automatisch mit dem [[EmacsChatChannel|englischen #emacs]] verbunden.
-Mit <code>C-c C-j ##emacs.de RET</code> kann man sich mit dem deutschsprachigen Kanal verbinden.
+Wenn man nichts weiter eingestellt hat, wird man automatisch mit dem [[rcirc]] Hilfe Kanal verbunden.
+Mit <code>C-c C-j ##emacs.de RET</code> kann man sich mit dem deutschsprachigen Kanal verbinden (J steht für /join/).
 Nun sollte man im Emacs mindestens drei Buffer haben:
 
-# **#emacs@chat.freenode.net** ist der englische Kanal
-# **##emacs.de@chat.freenode.net** ist der deutsche Kanal
 # <b><nowiki>*chat.freenode.net*</nowiki></b> ist die direkte Verbindung zu einem Server im Freenode Netz
+# **#rcirc@chat.freenode.net** ist der englische Kanal über den Chat Client
+# **##emacs.de@chat.freenode.net** ist der deutsche Kanal über Emacs im Allgemeinen
+
+== Auswahl des Spitznamen ==
+
+Per default kriegt man irgend einen Spitznamen, der auf dem Login Namen basiert, und dann mit Apostrophen und so Zeug eineindeutig gemacht wird.
+Mit <code>C-c C-r NeuerSpitzname RET</code> wählt man sich einen neuen Spitznamen (R steht wohl für /rename/).
+
+Das Resultat:
+
+{{{
+15:08 *** asc` NICK ascology
+}}}
+
+== Registrierung ==
+
+Sobald man sich zum ersten Mal angemeldet hat, sollte man sich seinen Spitznamen (/nick/) beim /nickserv/ reservieren lassen.
+Mit <code>C-c C-q nickserv RET</code> beginnt man ein Gespräch mit /nickserv/ (Q steht für /query/).
+Mit dem Befehl ##register <Passwort> <E-Mail Adresse>## startet man die Registratur.
+
+Das sieht dann so aus:
+
+{{{
+15:11 <ascology> register *secret* kensanata+irc@gmail.com
+15:11 -NickServ- An email containing nickname activation
+                 instructions has been sent to
+                 kensanata+irc@gmail.com.
+15:11 -NickServ- If you do not complete registration within one
+                 day, your nickname will expire.
+15:11 -NickServ- ascology is now registered to
+                 kensanata+irc@gmail.com, with the password
+                 *secret*.
+15:11 -NickServ-  
+15:11 -NickServ- For frequently-asked questions about the network,
+                 please see the
+15:11 -NickServ- FAQ page (http://freenode.net/faq.shtml). Should
+                 you need more
+15:11 -NickServ- help you can /join #freenode to find network
+                 staff.
+> 
+}}}
 
 == Einfache rcirc Konfiguration ==
 
 {{{
-(setq rcirc-default-nick "kensanata"
+(setq rcirc-default-nick "ascology"
       rcirc-nick-prefix-chars "~&@%+!"
       rcirc-server-alist
       `(("chat.freenode.net"
