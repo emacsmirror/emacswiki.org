@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2016.03.27
+;; Version: 2016.06.12
 ;; Package-Requires: ()
-;; Last-Updated: Sun Mar 27 16:41:13 2016 (-0700)
+;; Last-Updated: Sun Jun 12 18:03:01 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 23699
+;;     Update #: 23704
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -134,9 +134,9 @@
 ;;    `icicle-apropos-options-of-type', `icicle-apropos-value',
 ;;    `icicle-apropos-variable',
 ;;    `icicle-apropos-vars-w-val-satisfying', `icicle-apropos-zippy',
-;;    `icicle-bbdb-complete-mail', `icicle-bbdb-complete-name',
-;;    `icicle-bookmark', `icicle-bookmark-a-file',
-;;    `icicle-bookmark-all-tags',
+;;    `icicle-auto-complete-keys-mode', `icicle-bbdb-complete-mail',
+;;    `icicle-bbdb-complete-name', `icicle-bookmark',
+;;    `icicle-bookmark-a-file', `icicle-bookmark-all-tags',
 ;;    `icicle-bookmark-all-tags-other-window',
 ;;    `icicle-bookmark-all-tags-regexp',
 ;;    `icicle-bookmark-all-tags-regexp-other-window',
@@ -782,6 +782,7 @@
 ;;    `icicle-apropos-cycle-previous-action-keys',
 ;;    `icicle-apropos-cycle-previous-alt-action-keys',
 ;;    `icicle-apropos-cycle-previous-help-keys',
+;;    `icicle-auto-complete-key-delay',
 ;;    `icicle-bookmark-name-length-max',
 ;;    `icicle-bookmark-refresh-cache-flag',
 ;;    `icicle-buffer-candidate-key-bindings', `icicle-buffer-configs',
@@ -961,7 +962,7 @@
 ;;    `icicle-apropos-any-file-name-candidates-p',
 ;;    `icicle-apropos-candidates', `icicle-apropos-complete-1',
 ;;    `icicle-apropos-complete-2', `icicle-apropos-opt-action',
-;;    `icicle-autofile-action',
+;;    `icicle-auto-complete-key', `icicle-autofile-action',
 ;;    `icicle-backward-delete-char-untabify-magic',
 ;;    `icicle-barf-if-outside-Completions',
 ;;    `icicle-barf-if-outside-Completions-and-minibuffer',
@@ -1409,15 +1410,17 @@
 ;;    `icicle-allowed-sort-predicate', `icicle-anychar-regexp',
 ;;    `icicle-apply-nomsg', `icicle-apropos-complete-match-fn',
 ;;    `icicle-apropos-value-last-initial-cand-set',
-;;    `icicle-auto-no-sort-p', `icicle-bookmark-history',
-;;    `icicle-bookmark-list-names-only-p', `icicle-bookmark-menu-map',
-;;    `icicle-bookmark-types', `icicle-buffer-config-history',
-;;    `icicle-buffer-name-input-p', `icicle-buffer-sort-first-time-p',
-;;    `icicle-bufflist', `icicle-candidate-action-fn',
-;;    `icicle-candidate-alt-action-fn', `icicle-candidate-entry-fn',
-;;    `icicle-candidate-help-fn', `icicle-candidate-nb',
-;;    `icicle-candidate-properties-alist', `icicle-candidates-alist',
-;;    `icicle-cands-to-narrow', `icicle-char-property-value-history',
+;;    `icicle-auto-complete-key-idle-timer',
+;;    `icicle-auto-no-icomplete-mode-p', `icicle-auto-no-sort-p',
+;;    `icicle-bookmark-history', `icicle-bookmark-list-names-only-p',
+;;    `icicle-bookmark-menu-map', `icicle-bookmark-types',
+;;    `icicle-buffer-config-history', `icicle-buffer-name-input-p',
+;;    `icicle-buffer-sort-first-time-p', `icicle-bufflist',
+;;    `icicle-candidate-action-fn', `icicle-candidate-alt-action-fn',
+;;    `icicle-candidate-entry-fn', `icicle-candidate-help-fn',
+;;    `icicle-candidate-nb', `icicle-candidate-properties-alist',
+;;    `icicle-candidates-alist', `icicle-cands-to-narrow',
+;;    `icicle-char-property-value-history',
 ;;    `icicle-cmd-calling-for-completion', `icicle-cmd-reading-input',
 ;;    `icicle-color-history', `icicle-color-theme-history',
 ;;    `icicle-command-abbrev-history', `icicle-commands-for-abbrev',
