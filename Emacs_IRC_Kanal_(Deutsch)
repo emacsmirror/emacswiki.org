@@ -21,5 +21,17 @@ Nun sollte man im Emacs mindestens drei Buffer haben:
 # **##emacs.de@chat.freenode.net** ist der deutsche Kanal
 # <b><nowiki>*chat.freenode.net*</nowiki></b> ist die direkte Verbindung zu einem Server im Freenode Netz
 
+== Einfache rcirc Konfiguration ==
+
+{{{
+(setq rcirc-default-nick "kensanata"
+      rcirc-nick-prefix-chars "~&@%+!"
+      rcirc-server-alist
+      `(("chat.freenode.net"
+         :port 6697
+         :encryption tls
+	 :channels ("#emacs" "##emacs.de" "#rcirc"))))
+}}}
+
 ----
 CategoryChat
