@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun May 29 15:56:12 2016 (-0700)
+;; Last-Updated: Sun Jun 12 17:50:55 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7311
+;;     Update #: 7392
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -62,18 +62,19 @@
 ;;
 ;;  Commands defined here - (+) means a multi-command:
 ;;
-;;    (+)`a', (+)`any', (+)`buffer', (+)`file', (+)`icicle-anything',
-;;    (+)`icicle-apply', (+)`icicle-bookmark-a-file',
-;;    (+)`icicle-bookmark-tagged',
+;;    (+)`a', (+)`any' (Emacs 22+), (+)`buffer', (+)`file',
+;;    (+)`icicle-anything' (Emacs 22+), (+)`icicle-apply',
+;;    `icicle-auto-complete-keys-mode' (Emacs 22+),
+;;    (+)`icicle-bookmark-a-file', (+)`icicle-bookmark-tagged',
 ;;    (+)`icicle-bookmark-tagged-other-window',
 ;;    (+)`icicle-buffer-narrowing', (+)`icicle-choose-faces',
 ;;    (+)`icicle-choose-invisible-faces',
 ;;    (+)`icicle-choose-visible-faces', (+)`icicle-comint-command',
 ;;    (+)`icicle-comint-search', (+)`icicle-compilation-search',
-;;    `icicle-complete', (+)`icicle-complete-keys',
-;;    (+)`icicle-complete-menu-bar',
-;;    `icicle-complete-thesaurus-entry', `icicle-describe-package',
-;;    (+)`icicle-doc', (+)`icicle-exchange-point-and-mark',
+;;    `icicle-complete', (+)`icicle-complete-keys' (Emacs 22+),
+;;    (+)`icicle-complete-menu-bar' (Emacs 22+),
+;;    `icicle-complete-thesaurus-entry', `icicle-describe-package'
+;;    Emacs 24+, (+)`icicle-doc', (+)`icicle-exchange-point-and-mark',
 ;;    (+)`icicle-find-file-all-tags',
 ;;    (+)`icicle-find-file-all-tags-other-window',
 ;;    (+)`icicle-find-file-all-tags-regexp',
@@ -86,7 +87,7 @@
 ;;    (+)`icicle-find-file-some-tags-regexp-other-window',
 ;;    (+)`icicle-find-file-tagged',
 ;;    (+)`icicle-find-file-tagged-other-window', (+)`icicle-font',
-;;    (+)`icicle-font-lock-keyword', (+)`icicle-frame-bg',
+;;    (+)`icicle-font-lock-keyword' (Emacs 22+), (+)`icicle-frame-bg',
 ;;    (+)`icicle-frame-fg', (+)`icicle-fundoc',
 ;;    (+)`icicle-goto-any-marker', (+)`icicle-goto-global-marker',
 ;;    (+)`icicle-goto-global-marker-or-pop-global-mark',
@@ -105,18 +106,19 @@
 ;;    (+)`icicle-imenu-non-interactive-function-full',
 ;;    (+)`icicle-imenu-user-option',
 ;;    (+)`icicle-imenu-user-option-full', (+)`icicle-imenu-variable',
-;;    (+)`icicle-imenu-variable-full', `icicle-ido-like-mode',
-;;    (+)`icicle-Info-goto-node',
+;;    (+)`icicle-imenu-variable-full', `icicle-ido-like-mode' (Emacs
+;;    22+), (+)`icicle-Info-goto-node',
 ;;    (+)`icicle-Info-goto-node-no-search',
-;;    (+)`icicle-Info-goto-node-of-content', (+)`icicle-Info-index',
-;;    (+)`icicle-Info-index-20', (+)`icicle-Info-menu',
-;;    (+)`icicle-Info-menu-cmd', `icicle-Info-virtual-book',
-;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-load-library',
-;;    (+)`icicle-map', `icicle-next-font-lock-keywords',
-;;    `icicle-next-font-lock-keywords-repeat',
-;;    `icicle-next-visible-thing', `icicle-non-whitespace-string-p',
-;;    (+)`icicle-object-action', (+)`icicle-occur',
-;;    (+)`icicle-occur-dired-marked',
+;;    (+)`icicle-Info-goto-node-of-content' (Emacs 22+),
+;;    (+)`icicle-Info-index', (+)`icicle-Info-index-20',
+;;    (+)`icicle-Info-menu', (+)`icicle-Info-menu-cmd',
+;;    `icicle-Info-virtual-book' (Emacs 22+),
+;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-load-library'
+;;    (Emacs 21+), (+)`icicle-map', `icicle-next-font-lock-keywords'
+;;    (Emacs 22+), `icicle-next-font-lock-keywords-repeat' (Emacs
+;;    22+), `icicle-next-visible-thing',
+;;    `icicle-non-whitespace-string-p', (+)`icicle-object-action',
+;;    (+)`icicle-occur', (+)`icicle-occur-dired-marked',
 ;;    (+)`icicle-occur-dired-marked-recursive',
 ;;    (+)`icicle-pick-color-by-name', (+)`icicle-plist',
 ;;    `icicle-previous-visible-thing', `icicle-read-color',
@@ -171,11 +173,13 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `icicle-add-key+cmd', `icicle-anything-candidate-value',
+;;    `icicle-add-key+cmd' (Emacs 22+),
+;;    `icicle-anything-candidate-value' (Emacs 22+),
 ;;    `icicle-apply-action', `icicle-apply-list-action',
+;;    `icicle-auto-complete-key' (Emacs 22+),
 ;;    `icicle-char-properties-in-buffer',
 ;;    `icicle-char-properties-in-buffers',
-;;    `icicle-choose-anything-candidate',
+;;    `icicle-choose-anything-candidate' (Emacs 22+),
 ;;    `icicle-choose-candidate-of-type',
 ;;    `icicle-color-from-multi-completion-input',
 ;;    `icicle-cmd2-after-load-bookmark+',
@@ -195,34 +199,35 @@
 ;;    `icicle-comint-search-get-minibuffer-input',
 ;;    `icicle-comint-search-send-input', `icicle-compilation-hook-fn',
 ;;    `icicle-compilation-search-in-context-fn',
-;;    `icicle-complete-keys-1', `icicle-complete-keys-action',
-;;    `icicle-doc-action', `icicle-fn-doc-minus-sig',
-;;    `icicle-get-anything-actions-for-type',
-;;    `icicle-get-anything-cached-candidates',
-;;    `icicle-get-anything-candidates',
-;;    `icicle-get-anything-candidates-of-type',
-;;    `icicle-get-anything-default-actions-for-type',
-;;    `icicle-get-anything-input-delay',
-;;    `icicle-get-anything-req-pat-chars',
-;;    `icicle-get-anything-types', `icicle-goto-marker-1',
+;;    `icicle-complete-keys-1' (Emacs 22+),
+;;    `icicle-complete-keys-action' (Emacs 22+), `icicle-doc-action',
+;;    `icicle-fn-doc-minus-sig',
+;;    `icicle-get-anything-actions-for-type' (Emacs 22+),
+;;    `icicle-get-anything-cached-candidates' (Emacs 22+),
+;;    `icicle-get-anything-candidates' (Emacs 22+),
+;;    `icicle-get-anything-candidates-of-type' (Emacs 22+),
+;;    `icicle-get-anything-default-actions-for-type' (Emacs 22+),
+;;    `icicle-get-anything-input-delay' (Emacs 22+),
+;;    `icicle-get-anything-req-pat-chars' (Emacs 22+),
+;;    `icicle-get-anything-types' (Emacs 22+), `icicle-goto-marker-1',
 ;;    `icicle-goto-marker-1-action', `icicle-group-regexp',
 ;;    `icicle-hide/show-comments-1', `icicle-imenu-command-p',
 ;;    `icicle-imenu-help', `icicle-imenu-in-buffer-p',
 ;;    `icicle-imenu-macro-p',
 ;;    `icicle-imenu-non-interactive-function-p',
-;;    `icicle-Info-apropos-complete-match',
+;;    `icicle-Info-apropos-complete-match' (Emacs 22+),
 ;;    `icicle-Info-build-node-completions',
 ;;    `icicle-Info-build-node-completions-1',
-;;    `icicle-Info-content-match', `icicle-Info-goto-node-1',
-;;    `icicle-Info-goto-node-action', `icicle-Info-index-action',
-;;    `icicle-Info-multi-read-node-name',
-;;    `icicle-Info-read-node-name',
-;;    `icicle-Info-read-node-of-content',
+;;    `icicle-Info-content-match' (Emacs 22+),
+;;    `icicle-Info-goto-node-1', `icicle-Info-goto-node-action',
+;;    `icicle-Info-index-action', `icicle-Info-multi-read-node-name'
+;;    (Emacs 22+), `icicle-Info-read-node-name',
+;;    `icicle-Info-read-node-of-content' (Emacs 22+),
 ;;    `icicle-insert-thesaurus-entry-cand-fn',
 ;;    `icicle-invisible-face-p', `icicle-invisible-p',
-;;    `icicle-keys+cmds-w-prefix', `icicle-make-color-candidate',
-;;    `icicle-marker+text', `icicle-markers',
-;;    `icicle-buffer-narrowing-action',
+;;    `icicle-keys+cmds-w-prefix' (Emacs 22+),
+;;    `icicle-make-color-candidate', `icicle-marker+text',
+;;    `icicle-markers', `icicle-buffer-narrowing-action',
 ;;    `icicle-next-single-char-property-change',
 ;;    `icicle-next-visible-thing-1', `icicle-next-visible-thing-2',
 ;;    `icicle-next-visible-thing-and-bounds',
@@ -232,8 +237,8 @@
 ;;    `icicle-previous-single-char-property-change',
 ;;    `icicle-read-args-for-set-completion-methods',
 ;;    `icicle-read-var-value-satisfying',
-;;    `icicle-region-or-buffer-limits', `icicle-same-vector-keyseq-p',
-;;    `icicle-search-action', `icicle-search-action-1',
+;;    `icicle-region-or-buffer-limits', `icicle-same-vector-keyseq-p'
+;;    (Emacs 22+), `icicle-search-action', `icicle-search-action-1',
 ;;    `icicle-search-bookmark-action',
 ;;    `icicle-search-char-property-scan',
 ;;    `icicle-search-char-prop-matches-p',
@@ -261,9 +266,9 @@
 ;;    `icicle-search-thing-scan', `icicle-search-where-arg',
 ;;    `icicle-select-zone-action',
 ;;    `icicle-set-completion-methods-for-command',
-;;    `icicle-things-alist', `icicle-this-command-keys-prefix',
-;;    `icicle-update-f-l-keywords', `icicle-widget-color-complete',
-;;    `icicle-WYSIWYG-font'.
+;;    `icicle-things-alist', `icicle-this-command-keys-prefix' (Emacs
+;;    22+), `icicle-update-f-l-keywords',
+;;    `icicle-widget-color-complete', `icicle-WYSIWYG-font'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -2212,7 +2217,7 @@ build a cache file of synonyms that are used for completion.  See
 
 ;;; Icicles Top-Level Commands, Part 2 -------------------------------
 
-(when (> emacs-major-version 20)
+(when (> emacs-major-version 20)        ; Emacs 21+
   (icicle-define-command icicle-load-library
     "Multi-command version of `load-library'."
     load-library
@@ -2403,7 +2408,8 @@ FULL-NAME)."
 ;;;         (list sized-font)))))
 
 
-(when (> emacs-major-version 21)        ; Need cadr of `font-lock-keywords' to hold uncompiled version.
+(when (> emacs-major-version 21)        ; Emacs 22+.
+                                        ; Need cadr of `font-lock-keywords' to hold uncompiled version.
 
   (defun icicle-next-font-lock-keywords (increment &optional startoverp resetp msgp)
     "Cycle to the next part of `font-lock-keywords'.
@@ -2952,6 +2958,7 @@ Remove pseudo-node `*'.  (This just fixes a bug in Emacs 21 and 22.1.)"
   (select-frame-set-input-focus (selected-frame)))
 
 (when (fboundp 'clone-buffer)           ; Emacs 22+
+
   (defun icicle-Info-goto-node-of-content (nodename &optional arg)
     "Go to Info node whose node name or content matches your input.
 Candidate node names are those in the current Info file.
@@ -3162,6 +3169,7 @@ the name."
   )
 
 (when (fboundp 'completion-table-with-context) ; Emacs 23+.
+
   (defun icicle-Info-multi-read-node-name (strg pred completion-mode)
     "Completion function for `icicle-Info-read-node-of-content'.
 This is used as the value of `minibuffer-completion-table'."
@@ -3219,6 +3227,7 @@ This is used as the value of `minibuffer-completion-table'."
   )
 
 (when (= emacs-major-version 22)        ; Emacs 22.
+
   (defun icicle-Info-multi-read-node-name (strg pred completion-mode)
     "Completion function for `icicle-Info-read-node-of-content'.
 This is used as the value of `minibuffer-completion-table'."
@@ -3269,7 +3278,8 @@ This is used as the value of `minibuffer-completion-table'."
                                      'icicle-Info-goto-node-of-content
                                    'icicle-Info-goto-node-no-search))
 
-(when (> emacs-major-version 21)
+(when (> emacs-major-version 21)        ; Emacs 22+
+
   (defun icicle-Info-virtual-book (nodeset)
     "Open Info on a virtual book of saved Info nodes.
 You need library `info+.el' to use this command.
@@ -7863,7 +7873,7 @@ variable."
                                          (format "Text to save in `%s': " var))))
     (set var text)))
 
-(when (> emacs-major-version 21)
+(when (> emacs-major-version 21)        ; Emacs 22+
 
   (when (and icicle-define-alias-commands-flag  (not (fboundp 'any)))
     (defalias 'any 'icicle-anything))
@@ -8018,7 +8028,7 @@ This command is intended for use only in Icicle mode."
                 (symbol-name typ)))
              icicle-saved-completion-candidate)))
 
-(when (> emacs-major-version 21)
+(when (> emacs-major-version 21)        ; Emacs 22+
   (defun icicle-get-anything-types ()
     "Return list of types defined in `anything-sources'.  See `anything.el'."
     (and (boundp 'anything-sources)  (consp anything-sources)
@@ -8035,7 +8045,7 @@ This command is intended for use only in Icicle mode."
                            typ)
                          (icicle-remove-duplicates types)))))))
 
-(when (> emacs-major-version 21)
+(when (> emacs-major-version 21)        ; Emacs 22+
   (defun icicle-get-anything-candidates-of-type (type)
     "Return list of Anything candidates for type TYPE.
 Used only when `anything-sources' is non-nil - see `anything.el'."
@@ -8053,7 +8063,7 @@ Used only when `anything-sources' is non-nil - see `anything.el'."
 
 ;; Similar to `anything-get-cached-candidates' in `anything.el', but ignores processes.
 ;; Free var here: `anything-candidate-cache'.
-(when (> emacs-major-version 21)
+(when (> emacs-major-version 21)        ; Emacs 22+
   (defun icicle-get-anything-cached-candidates (source)
     "Return cached value of candidates for Anything SOURCE.
 Cache the candidates if there is not yet a cached value."
@@ -8068,7 +8078,7 @@ Cache the candidates if there is not yet a cached value."
         (push candidate-cache anything-candidate-cache))
       candidates)))
 
-(when (> emacs-major-version 21)
+(when (> emacs-major-version 21)        ; Emacs 22+
   (defun icicle-get-anything-candidates (source)
     "Return the list of candidates from Anything SOURCE."
     (let* ((candidate-source  (assoc-default 'candidates source))
@@ -8102,7 +8112,7 @@ Cache the candidates if there is not yet a cached value."
           candidates
         (anything-transform-candidates candidates source)))))
 
-(when (> emacs-major-version 21)
+(when (> emacs-major-version 21)        ; Emacs 22+
   (defun icicle-get-anything-actions-for-type (type)
     "Set and return `icicle-candidates-alist' of actions for type TYPE.
 The display string for each action is highlighted using face
@@ -8122,7 +8132,7 @@ The display string for each action is highlighted using face
       (setq icicle-candidates-alist  (sort all-sources-actions
                                            (lambda (a1 a2)
                                              (funcall icicle-sort-comparer (car a1) (car a2))))))))
-(when (> emacs-major-version 21)
+(when (> emacs-major-version 21)        ; Emacs 22+
   (defun icicle-choose-anything-candidate (type candidates default-actions actions)
     "Read an Anything object of type TYPE with completion, and return it.
 During completion, you can act on selected completion candidates, in
@@ -8192,7 +8202,7 @@ ACTIONS is the list of all actions for type TYPE."
            (completing-read (concat "Which (" (symbol-name type) "): ") candidates nil t))
         (completing-read (concat "Which (" (symbol-name type) "): ") candidates nil t)))))
 
-(when (> emacs-major-version 21)
+(when (> emacs-major-version 21)        ; Emacs 22+
   (defun icicle-get-anything-req-pat-chars (type)
     "Return max `required-pattern' value for sources of type TYPE.
 The value returned is also always at least as big as
@@ -8206,7 +8216,7 @@ The value returned is also always at least as big as
           (setq req-pat  (max req-pat req-pat-this-source))))
       req-pat)))
 
-(when (> emacs-major-version 21)
+(when (> emacs-major-version 21)        ; Emacs 22+
   (defun icicle-get-anything-input-delay (type)
     "Return max `delay' value for sources of type TYPE.
 The value returned is also always at least as big as
@@ -8220,12 +8230,12 @@ The value returned is also always at least as big as
           (setq delay  (max delay delay-this-source))))
       delay)))
 
-(when (> emacs-major-version 21)
+(when (> emacs-major-version 21)        ; Emacs 22+
   (defun icicle-anything-candidate-value (candidate)
     "Return the real value associated with string CANDIDATE."
     (or (cdr-safe (funcall icicle-get-alist-candidate-function candidate))  candidate)))
 
-(when (> emacs-major-version 21)
+(when (> emacs-major-version 21)        ; Emacs 22+
   (defun icicle-get-anything-default-actions-for-type (type)
     "Set and return `icicle-candidates-alist' of default actions for type TYPE."
     (setq icicle-candidates-alist  ())
@@ -9124,6 +9134,45 @@ Each is a vector."
              (help-frame   (and help-window  (window-frame help-window))))
         (when help-frame (redirect-frame-focus help-frame frame-with-focus))))
     (message nil))                      ; Let minibuffer contents show immediately.
+
+
+  ;; Eval this so that even if the library is byte-compiled with Emacs 20, loading it into
+  ;; Emacs 21+ will define variable `icicle-auto-complete-keys-mode'.
+  ;;
+  (eval '(define-minor-mode icicle-auto-complete-keys-mode
+          "Automatically show completions for keys you hit.
+Wait `icicle-auto-complete-key-delay' seconds before displaying the
+key completions.  You can customize this option.
+
+This is a global minor mode.  It can take effect only when Icicle
+minor mode is turned on."
+          :global t :group 'Icicles-Completions-Display :init-value nil
+          (message "Turning %s automatic key completion..."
+           (icicle-propertize (if icicle-auto-complete-keys-mode "ON" "OFF")
+            'face 'icicle-msg-emphasis))
+          (when (timerp icicle-auto-complete-key-idle-timer)
+            (cancel-timer icicle-auto-complete-key-idle-timer))
+          (when icicle-auto-complete-keys-mode
+            (setq icicle-auto-complete-key-idle-timer
+                  (run-with-idle-timer icicle-auto-complete-key-delay t 'icicle-auto-complete-key)))
+          (message "Turning %s automatic key completion...done"
+           (icicle-propertize (if icicle-auto-complete-keys-mode "ON" "OFF")
+            'face 'icicle-msg-emphasis))))
+
+  (defun icicle-auto-complete-key ()
+    "Auto-complete the last key."
+    (let* ((icicle-show-Completions-initially-flag  t)
+           (icicle-incremental-completion           'EAGER)
+           (this-c-k-vector                         (this-command-keys-vector))
+           (this-event                              (and (not (equal [] this-c-k-vector))
+                                                         (elt this-c-k-vector 0))))
+      ;; Prevent `down-mouse-1' etc. from auto-completing.
+      (unless (or (not this-event)
+                  (mouse-movement-p this-event)
+                  ;; This is `mouse-event-p', which is not defined for Emacs 22.
+                  (memq (event-basic-type this-event) '(mouse-1 mouse-2 mouse-3 mouse-movement)))
+        (icicle-complete-keys-1 this-c-k-vector)
+        (clear-this-command-keys))))
 
   )
 
