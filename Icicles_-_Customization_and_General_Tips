@@ -2056,6 +2056,17 @@ killed.  This option applies only to Emacs 23 and later.
 
 
 
+----
+[:icicle-auto-complete-key-delay]
+==== Option icicle-auto-complete-key-delay ====
+
+When `icicle-auto-complete-keys-mode' is enabled, user option
+'''`icicle-auto-complete-key-delay'''' is the number of seconds
+'''Icicles''' waits, before displaying key completions.
+
+
+
+
 
 ----
 [:icicle-complete-keys-separator]
