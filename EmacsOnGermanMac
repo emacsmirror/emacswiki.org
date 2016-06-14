@@ -27,18 +27,19 @@ Leider lesen bash und andere Shells die LANG Umgebungsvariable nur einmal währe
 
 === Umlaute in Emacs eingeben ===
 
-wir bereiten Emacs auf Latin1 Zeichen vor:
+Wir bereiten Emacs auf Latin1 Zeichen vor:
 
   (set-keyboard-coding-system 'iso-latin-1)
 
-Danach stellen wir das Terminal''''''Emulations Programm so ein, dass es Emacs die Zeichen auch genießbar serviert
+Danach stellen wir das Terminal''''''Emulations Programm so ein, dass es Emacs die Zeichen auch genießbar serviert.
 
+{{{
 Terminal -> Fenstereinstellungen -> Emulation
 [ ] Nicht-ASCII-Zeichen in Escape-Sequenz umwandeln (demarkieren)
+}}}
 
-ein Workaround Umlaute einzugeben, ohne das Terminal.app umzustellen wäre das vorinstallierte GNU Screen: `C-a C-v "a' für ein "ä" oder `C-a C-v "s' für "ß".
-(siehe `info screen -O "Virtual Terminal" -O "Digraph"')
-
+Ein Workaround um Umlaute einzugeben, ohne das Terminal.app umzustellen, wäre das vorinstallierte GNU Screen: `C-a C-v "a' für ein "ä" oder `C-a C-v "s' für "ß".
+Siehe `info screen -O "Virtual Terminal" -O "Digraph"'.
 
 === Alt Taste als Meta ===
 
