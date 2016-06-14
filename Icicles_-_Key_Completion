@@ -547,6 +547,36 @@ Notice that there is no keymap variable that corresponds to prefix key `##*##' i
 
 If a keymap listed in `icicle-keymaps-for-key-completion' is not defined when ''Icicle'' mode is entered, then it is ignored.  If you later define that keymap, then just exit and reenter ''Icicle'' mode for the `S-TAB' binding to take effect.  For example, use `M-x icy-mode' twice after entering CalendarMode, to be able to complete `calendar-mode' prefix keys such as `t' -- `##t S-TAB##'.
 
+
+
+
+[:AutomaticKeyCompletion]
+=== Automatic Key Completion ===
+
+There are now a few other libraries, such as ##guide-key.el## and
+##which-key.el##, that provide some of what '''Icicles''' key completion
+offers.
+
+They offer mostly on-the-fly help while you hit keys, not
+completion against the associated command names, browsing of
+prefix-key hierarchies, etc.  Instead of on-demand control of key
+help (`S-TAB'), they show help automatically, after an idle delay.
+
+Similarly, you can opt for automatic display of '''Icicles''' key
+completions by turning on minor mode
+`icicle-auto-complete-keys-mode'.  User option '''`<tt>[[Icicles - Customization and General Tips#icicle-auto-complete-key-delay|icicle-auto-complete-key-delay]]</tt>'''' specifies how many seconds to
+wait before displaying the key completions.
+
+By default this mode is off, because I think help on demand is
+generally more useful.
+
+
+
+
+
+
+
+
 ----
 
 || *Previous:*  [[Icicles - Tripping]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Multi M-x]] ||
