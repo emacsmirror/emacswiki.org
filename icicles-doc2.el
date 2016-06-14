@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Mar  1 07:54:52 2016 (-0800)
+;; Last-Updated: Tue Jun 14 10:56:05 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 29947
+;;     Update #: 29954
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -163,6 +163,7 @@
 ;;    (@file :file-name "icicles-doc1.el" :to "Three-Key Emacs")
 ;;    (@file :file-name "icicles-doc1.el" :to "Entering Special and Foreign Characters")
 ;;    (@file :file-name "icicles-doc1.el" :to "Handling Keymaps That Are Inaccessible From the Global Map")
+;;    (@file :file-name "icicles-doc1.el" :to "Automatic Key Completion")
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "Icicles Multi `M-x'")
 ;;    (@file :file-name "icicles-doc1.el" :to "Examples of Using Multi `M-x'")
@@ -4678,8 +4679,7 @@
 ;;
 ;;  Icicles lets you choose whether to match only database completions
 ;;  or also terms found in your current Emacs windows (`cdabbrev'), by
-;;  customizing option `icicle-cmpl-include-cdabbrev-flag'.  (You can
-;;  toggle the value anytime using `M-x icicle-toggle-option'.)
+;;  customizing option `icicle-cmpl-include-cdabbrev-flag'.
 ;;
 ;;  If the option value is non-`nil' then whenever Icicles completion
 ;;  is used the candidates include the completions found dynamically
@@ -6198,6 +6198,10 @@
 ;;    then any such buffers for files that you do not actually choose
 ;;    are killed when the command is finished.  If `nil' then they are
 ;;    not killed.  This option applies only to Emacs 23 and later.
+;;
+;;  * When `icicle-auto-complete-keys-mode' is enabled, user option
+;;    `icicle-auto-complete-key-delay' is the number of seconds
+;;    Icicles waits, before displaying key completions.
 ;;
 ;;  * User option `icicle-complete-keys-separator' is the string that
 ;;    separates the two parts (key description and command name) of a
