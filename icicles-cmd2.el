@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Jun 12 17:50:55 2016 (-0700)
+;; Last-Updated: Tue Jun 14 13:08:06 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7392
+;;     Update #: 7395
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -3344,8 +3344,11 @@ the current buffer, as in vanilla `where-is' with a prefix arg.
 By default, Icicle mode remaps all key sequences that are normally
 bound to `where-is' to `icicle-where-is'.  If you do not want this
 remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
-  (lambda (x) (let ((symb  (intern-soft x))) ; Action function
-                (where-is symb (and pref-arg  (consp pref-arg)))))
+  (lambda (x)                           ; Action function
+    (let* ((symb     (intern-soft x))
+           (insertp  (and pref-arg  (consp pref-arg))))  
+      (where-is symb insertp)
+      (unless insertp (sit-for 3))))
   (if pref-arg "Where is command: " "Where is bound command: ")
   obarray (and icompletep  pred) t nil nil ; `completing-read' args
   (let ((fn  (or (and (fboundp 'tap-symbol-nearest-point) ; Defined in `thingatpt+.el'.
@@ -4031,7 +4034,7 @@ the markers in each buffer."
                                 #'icicle-goto-marker-1-action
                                 'nomsg
                                 (lambda (cand) (marker-buffer (cdr cand)))))
-                 ((= (point) (car markers)) (message "Already at marker: %d" (point)))
+                 ((= (point) (car markers)) (message "Already at only marker: %d" (point)))
                  (t
                   (icicle-goto-marker-1-action (icicle-marker+text (car markers) (or allp  globalp))))))
       (when (fboundp 'crosshairs-unhighlight) (crosshairs-unhighlight 'even-if-frame-switch)))))
