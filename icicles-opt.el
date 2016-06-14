@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Jun 12 16:06:35 2016 (-0700)
+;; Last-Updated: Tue Jun 14 10:52:58 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 6152
+;;     Update #: 6153
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -973,6 +973,7 @@ different keyboards."
 (when (fboundp 'map-keymap)             ; Emacs 22+.
   (defcustom icicle-auto-complete-key-delay 1.0
     "*Seconds to wait when idle, before automatically completing a key.
+This has an effect only when `icicle-auto-complete-keys-mode' is on.
 If you use Do Re Mi (library `doremi.el') then you can use
 multi-command `icicle-increment-option' anytime to change the option
 value incrementally."
