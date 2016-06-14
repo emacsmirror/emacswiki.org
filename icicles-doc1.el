@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Mar 27 21:03:02 2016 (-0700)
+;; Last-Updated: Tue Jun 14 11:08:22 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 28499
+;;     Update #: 28524
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -285,6 +285,7 @@
 ;;    (@> "Three-Key Emacs")
 ;;    (@> "Entering Special and Foreign Characters")
 ;;    (@> "Handling Keymaps That Are Inaccessible From the Global Map")
+;;    (@> "Automatic Key Completion")
 ;;
 ;;  (@> "Icicles Multi `M-x'")
 ;;    (@> "Examples of Using Multi `M-x'")
@@ -6077,7 +6078,7 @@
 ;;  `icicle-toggle-option' anytime (bound to `M-i M-i' during
 ;;  completion) to toggle the option.  If you prefer to turn on
 ;;  newline matching by default, then just customize option
-;;  `icicle-dot-string'. 
+;;  `icicle-dot-string'.
 ;;
 ;;  This match-anything dot is handy, but sometimes you might want to
 ;;  match anything except a newline, perhaps in the same input pattern
@@ -7343,6 +7344,27 @@
 ;;  for the `S-TAB' binding to take effect.  For example, use `M-x
 ;;  icy-mode' twice after entering Calendar mode, to be able to
 ;;  complete `calendar-mode' prefix keys such as `t' - `t S-TAB'.
+;;
+;;(@* "Automatic Key Completion")
+;;  ** Automatic Key Completion **
+;;
+;;  There are now a few other libraries, such as `guide-key.el' and
+;;  `which-key.el', that provide some of what Icicles key completion
+;;  offers.
+;;
+;;  They offer mostly on-the-fly help while you hit keys, not
+;;  completion against the associated command names, browsing of
+;;  prefix-key hierarchies, etc.  Instead of on-demand control of key
+;;  help (`S-TAB'), they show help automatically, after an idle delay.
+;;
+;;  Similarly, you can opt for automatic display of Icicles key
+;;  completions by turning on minor mode
+;;  `icicle-auto-complete-keys-mode'.  User option
+;;  `icicle-auto-complete-key-delay' specifies how many seconds to
+;;  wait before displaying the key completions.
+;;
+;;  By default this mode is off, because I think help on demand is
+;;  generally more useful.
  
 ;;(@* "Icicles Multi `M-x'")
 ;;
