@@ -428,7 +428,7 @@ Use the function `format-time-string' which is a build in function in both Emacs
     ;; Year-Month-Day:
     (insert (format-time-string "%Y-%m-%d"))
     ;; Hour:Minutes:Seconds
-    (insert (format-time-string "%H-%M-%S"))
+    (insert (format-time-string "%H:%M:%S"))
 
 ==== Conversions ====
 
