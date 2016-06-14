@@ -36,7 +36,7 @@ Danach stellen wir das Terminal''''''Emulations Programm so ein, dass es Emacs d
 Terminal -> Fenstereinstellungen -> Emulation
 [ ] Nicht-ASCII-Zeichen in Escape-Sequenz umwandeln (demarkieren)
 
-ein Workaround Umlaute einzugeben, ohne das Terminal.app umzustellen wäre das vorinstallierteGNU Screen: `C-a C-v "a' für ein "ä" oder `C-a C-v "s' für "ß".
+ein Workaround Umlaute einzugeben, ohne das Terminal.app umzustellen wäre das vorinstallierte GNU Screen: `C-a C-v "a' für ein "ä" oder `C-a C-v "s' für "ß".
 (siehe `info screen -O "Virtual Terminal" -O "Digraph"')
 
 
