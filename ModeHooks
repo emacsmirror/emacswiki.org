@@ -26,5 +26,12 @@ See ManagingHookVariables for more sophisticated ways of adding hooks.
 
 See ChangeHook to use `after-change-functions' and `before-change-functions' for evil hackery (electrifying user input).
 
+
+=== Clearing Hooks ===
+
+To clear all hooks for a given hook, set the hook variable to <code>nil</code>:
+
+  (setq focus-out-hook nil)
+
 ----
 CategoryDotEmacs
