@@ -26,6 +26,13 @@ See ManagingHookVariables for more sophisticated ways of adding hooks.
 
 See ChangeHook to use `after-change-functions' and `before-change-functions' for evil hackery (electrifying user input).
 
+=== Removing Hooks ===
+
+To remove the hook, it's like <code>add-hook</code>, mostly:
+
+  (remove-hook 'text-mode-hook 'turn-on-auto-fill)
+
+If you set the hook from a lambda, you can't do this.
 
 === Clearing Hooks ===
 
