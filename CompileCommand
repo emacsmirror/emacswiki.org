@@ -60,16 +60,10 @@ You can also put the following LocalVariables at the beginning of the file:
 }}}
 
 == Success or failure of compile ==
+You can add you own hooks about what has to be done after the compilation.
 
-It would be nice to be able to do something upon failed or successful compilations. Often I switch to other desktops after I've initiated a compilation, and a success "ding!" or failure "dong!" sound would be somewhat useful ...
+The variable compilation-finish-functions is a list of functions to be executed after the build (by default it's empty). The functions need to have 2 parameters, the first one is the compilation buffer and the second one is the string result.
 
-<em>M-x compile just runs a shell command.  So you could append commands to play different sounds upon success or failure like so:
-{{{
- make -k || bplay failure.wav && bplay success.wav
-}}}
-<em>Of course I'm assuming you have bplay installed and that your shell supports the "||" and "&&" conditionals.</em>
-
-[new]
 You can use tooptip-show or any other way to notify the compilation results.
 {{{
 (defun notify-compilation-result(buffer msg)
@@ -90,7 +84,13 @@ and set the focus back to Emacs frame"
 }}}
 It is very useful for me, since I alway browse the webs while compiling ;-)
 -- Xu Yuan
-[new]
+
+Alternatively since M-x compile just runs a shell command, you could append commands depending on the success or failure. For example you could play a notification like this:
+{{{
+ make -k || bplay failure.wav && bplay success.wav
+}}}
+<em>Of course I'm assuming you have bplay installed and that your shell supports the "||" and "&&" conditionals.</em>
+
 It would be nicer still if compile were written to allow for no buffer at all. God forbid commands should leave window configurations alone.
 [new]
 You could define `recompile' to be done in the background and not disrupt the window configuration. -- AaronHawley
