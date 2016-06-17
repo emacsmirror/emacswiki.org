@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:42:53 2015 (-0800)
+;; Last-Updated: Fri Jun 17 06:16:49 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 3990
+;;     Update #: 3994
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -2211,7 +2211,10 @@ Other arguments:
 ;;;###autoload
 (defun hlt-highlight-symbol (symbol &optional start end all-buffers-p)
   "Highlight occurrences of SYMBOL.
-Use the region if active, or the buffer otherwise.
+The symbol at point is used by default, or the symbol under the mouse
+pointer if the command is invoked using the mouse.
+
+Highlight over the region if active, or the buffer otherwise.
 With a prefix arg, use all buffers that are visible or iconified.
 \(This first unhighlights occurrences, to prevent stacking up multiple
 highlighting on the same occurrences.)"
@@ -2240,7 +2243,10 @@ highlighting on the same occurrences.)"
 ;;;###autoload
 (defun hlt-unhighlight-symbol (symbol &optional start end all-buffers-p)
   "Unhighlight occurrences of SYMBOL.
-Use the region if active, or the buffer otherwise.
+The symbol at point is used by default, or the symbol under the mouse
+pointer if the command is invoked using the mouse.
+
+Unhighlight over the region if active, or the buffer otherwise.
 With a prefix arg, use all buffers that are visible or iconified."
   (interactive
    (save-excursion
