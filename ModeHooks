@@ -32,7 +32,7 @@ To remove the hook, it's like <code>add-hook</code>, mostly:
 
   (remove-hook 'text-mode-hook 'turn-on-auto-fill)
 
-If you set the hook from a lambda, you can't do this.
+If the hook function is anonymous (a lambda), then you need to take care that the exact same lambda is used for the removal. If the lambda has been byte-compiled then you need to make sure the same byte-code object is used for the removal. So clearly it generally makes sense to use named functions on hooks.
 
 === Clearing Hooks ===
 
