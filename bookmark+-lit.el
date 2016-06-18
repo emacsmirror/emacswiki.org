@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2016, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Thu Dec 31 12:23:32 2015 (-0800)
+;; Last-Updated: Sat Jun 18 16:17:37 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 906
+;;     Update #: 908
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -334,15 +334,15 @@ will be the buffer before jumping."
 As an idea, `isearch' uses 1000 and 1001."
   :group 'bookmark-plus :type '(alist :key-type symbol :value-type integer))
 
-;; Not used for Emacs 20-21.
-(when (fboundp 'fringe-columns)
+;; Not used for Emacs 20-21 or Emacs built without fringe support.
+(when (and (fboundp 'fringe-columns)  (boundp 'fringe-bitmaps))
   (defcustom bmkp-light-left-fringe-bitmap 'left-triangle
     "*Symbol for the left fringe bitmap to use to highlight a bookmark.
 This option is not used for Emacs versions before Emacs 22."
     :type (cons 'choice (mapcar (lambda (bb) (list 'const bb)) fringe-bitmaps))
     :group 'bookmark-plus)
 
-  ;; Not used for Emacs 20-21.
+  ;; Not used for Emacs 20-21 or Emacs built without fringe support.
   (defcustom bmkp-light-right-fringe-bitmap 'right-triangle
     "*Symbol for the right fringe bitmap to use to highlight a bookmark.
 This option is not used for Emacs versions before Emacs 22."
