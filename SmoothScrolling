@@ -19,6 +19,15 @@
 
 http://emacs.wordpress.com/2007/09/10/smooth-scrolling/
 
+= sublimity-scroll.el =
+
+While [[https://github.com/zk-phi/sublimity Sublimity]] offers a set of different features, some people are using just the smooth-scrolling:
+
+{{{
+(require 'sublimity)
+(require 'sublimity-scroll)
+}}}
+
 = Sniplets =
 
 If you want the text to scroll one line at a time when you move the [[cursor]] past the top or bottom of the window, use the following setting:
