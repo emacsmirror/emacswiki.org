@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jun 11 07:49:09 2016 (-0700)
+;; Last-Updated: Sat Jun 18 16:19:14 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16030
+;;     Update #: 16031
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1894,6 +1894,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2016/06/18 dadams
+;;     Protected use of fringe-bitmaps with boundp (should not be necessary though).
 ;; 2015/04/02 dadams
 ;;     eval-when-compile require of bookmark+-mac, for bmkp-define-show-only-command.
 ;; 2015/02/08 dadams
