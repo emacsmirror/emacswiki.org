@@ -26,6 +26,7 @@ While [[https://github.com/zk-phi/sublimity Sublimity]] offers a set of differen
 {{{
 (require 'sublimity)
 (require 'sublimity-scroll)
+(sublimity-mode 1)
 }}}
 
 = Sniplets =
