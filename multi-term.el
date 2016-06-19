@@ -2,11 +2,11 @@
 
 ;; Author: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
-;; Copyright (C) 2008, 2009, 2014 Andy Stewart, all rights reserved.
+;; Copyright (C) 2008 ~ 2016 Andy Stewart, all rights reserved.
 ;; Copyright (C) 2010, ahei, all rights reserved.
 ;; Created: <2008-09-19 23:02:42>
 ;; Version: 1.3
-;; Last-Updated: 2015-02-20 21:15:35
+;; Last-Updated: 2016-06-19 17:30:20
 ;; URL: http://www.emacswiki.org/emacs/download/multi-term.el
 ;; Keywords: term, terminal, multiple buffer
 ;; Compatibility: GNU Emacs 23.2.1, GNU Emacs 24.4 (and prereleases)
@@ -127,9 +127,12 @@
 
 ;;; Change log:
 ;;
+;; 2016/06/19
+;;      * Add Hogren's patch: `term-send-delete-word' and binding to key 'M-d'.
+;;
 ;; 2015/02/20
-;;      * Binding C-Backspace to `term-send-backward-kill-word' to follow emacs behaviour. 
-;; 
+;;      * Binding C-Backspace to `term-send-backward-kill-word' to follow emacs behaviour.
+;;
 ;; 2014/12/04
 ;;      * Ernesto Rodriguez Reina <erreina@gmail.com>
 ;;      Fixed the bug of cursor not return to the position it was before opened the dedicated terminal window when
@@ -359,6 +362,7 @@ If this option is nil, don't switch other `multi-term' buffer."
     ("M-N" . term-send-backward-kill-word)
     ("<C-backspace>" . term-send-backward-kill-word)
     ("M-r" . term-send-reverse-search-history)
+    ("M-d" . term-send-delete-word)
     ("M-," . term-send-raw)
     ("M-." . comint-dynamic-complete))
   "The key alist that will need to be bind.
@@ -582,6 +586,11 @@ Because term-send-input have bug that will duplicate input when you C-a and C-m 
   "Search history reverse."
   (interactive)
   (term-send-raw-string "\C-r"))
+
+(defun term-send-delete-word ()
+  "Delete word in term mode."
+  (interactive)
+  (term-send-raw-string "\ed"))
 
 (defun term-send-quote ()
   "Quote the next character in term-mode.
