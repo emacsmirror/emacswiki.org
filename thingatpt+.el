@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Mon Jun 20 07:01:31 2016 (-0700)
+;; Last-Updated: Mon Jun 20 09:53:12 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 2211
+;;     Update #: 2268
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -454,7 +454,10 @@ Don't forget to mention your Emacs and library versions."))
 Used typically by functions that invoke
 `tap-thing/form-nearest-point-with-bounds', and which provide default
 text for minibuffer input.  Such functions can also ignore or override
-this setting temporarily."
+this setting temporarily.
+
+See `tap-thing-nearest-point' for an explanation of the determination
+of \"nearness\"."
   :type 'integer :group 'thing-at-point-plus :group 'minibuffer)
 
 ;;;###autoload
@@ -464,7 +467,10 @@ To constrain search to the same line as point, set this to zero.
 Used typically by functions that invoke
 `tap-thing/form-nearest-point-with-bounds', and which provide default
 text for minibuffer input.  Such functions can also ignore or override
-this setting temporarily."
+this setting temporarily.
+
+See `tap-thing-nearest-point' for an explanation of the determination
+of \"nearness\"."
   :type 'integer :group 'thing-at-point-plus :group 'minibuffer)
 
 
@@ -648,6 +654,8 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
 (defun tap-thing-nearest-point-with-bounds (thing &optional syntax-table)
   "Return the THING nearest point, plus its bounds: (THING START . END).
 Return nil if no such THING is found.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 THING is the `tap-thing-nearest-point', a string.
 START and END are the buffer positions of THING - see
 `tap-bounds-of-thing-nearest-point'.
@@ -660,6 +668,8 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
   "Thing or form nearest point, plus bounds: (THING-OR-FORM START . END).
 Helper for `tap-thing-nearest-point-with-bounds'
 and `tap-form-nearest-point-with-bounds'.
+
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
 
 FN is a function returning a thing or a form at point, and its bounds.
 Other args are as for `tap-thing-nearest-point-with-bounds'."
@@ -736,9 +746,11 @@ Other args are as for `tap-thing-nearest-point-with-bounds'."
 
 (defun tap-bounds-of-thing-nearest-point (thing &optional syntax-table)
   "Return the start and end locations for the THING nearest point.
-See `tap-thing-nearest-point'.
 Return a consp (START . END), where START /= END.
 Return nil if no such THING is found.
+
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 Optional arg SYNTAX-TABLE is a syntax table to use."
   (let ((thing+bds  (tap-thing-nearest-point-with-bounds thing syntax-table)))
     (and thing+bds
@@ -746,7 +758,9 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
 
 (defun tap-thing-nearest-point (thing &optional syntax-table)
   "Return the THING nearest point, if any, else nil.
-See also `tap-thing-at-point'.
+The search for the THING is bounded by options
+`tap-near-point-x-distance' and `tap-near-point-y-distance'.
+
 \"Nearest\" to point is determined as follows:
 
   The nearest THING on the same line is returned, if there is any.
@@ -762,6 +776,8 @@ However, for some THINGs whitespace between THINGs might be considered
 insignificant, as well as the amount of it.  This means that if point
 is between two THINGs and surrounded by whitespace then the \"nearest\"
 THING returned might not be the one that is absolutely closest.
+
+See also `tap-thing-at-point'.
 
 Optional arg SYNTAX-TABLE is a syntax table to use."
   (let ((thing+bds  (tap-thing-nearest-point-with-bounds thing syntax-table)))
@@ -849,6 +865,8 @@ Optional args:
 (defun tap-form-nearest-point-with-bounds (&optional thing predicate syntax-table)
   "Return the form nearest point, plus its bounds: (FORM START . END).
 Return nil if no form is found.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 FORM is from `tap-form-nearest-point'.
 START and END are the buffer positions of FORM.
 Optional args:
@@ -862,6 +880,8 @@ Optional args:
 (defun tap-sexp-nearest-point-with-bounds (&optional predicate syntax-table)
   "Return the sexp nearest point, plus its bounds: (SEXP START . END).
 Return nil if no sexp is found.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 SEXP is an Emacs Lisp entity, the result of reading a textual sexp
  near point.  See `tap-sexp-nearest-point'.
 START and END are the buffer positions of SEXP.
@@ -870,12 +890,13 @@ Optional args are the same as for
   (tap-form-nearest-point-with-bounds 'sexp predicate syntax-table))
 
 (defun tap-bounds-of-form-nearest-point (&optional thing predicate syntax-table)
-  "Return the start and end locations for the THING nearest point.
+  "Return the start and end locations for the form nearest point.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
 See `tap-form-nearest-point'.
+
 Return a consp (START . END), where START /= END.
 Return nil if no form is found.
-Optional args are the same as for
-`tap-form-nearest-point-with-bounds'."
+Arguments are the same as for `tap-form-nearest-point-with-bounds'."
   (let ((form+bds  (tap-form-nearest-point-with-bounds thing predicate syntax-table)))
     (and form+bds
          (cdr form+bds))))
@@ -884,6 +905,8 @@ Optional args are the same as for
 (defun tap-bounds-of-sexp-nearest-point (&optional predicate syntax-table)
   "Return the start and end locations for the sexp nearest point.
 See `tap-sexp-nearest-point'.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 Return a consp (START . END), where START /= END.
 Return nil if no form is found.
 Optional args are the same as for `tap-bounds-of-sexp-nearest-point'."
@@ -893,6 +916,8 @@ Optional args are the same as for `tap-bounds-of-sexp-nearest-point'."
   "Return the form nearest point, if any, else nil.
 This is an Emacs Lisp entity, not necessarily a string.  THING must be
 readable as a Lisp entity, or else nil is returned.
+
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
 
 Reading THING and returning the resulting Lisp entity is the main
 difference between this function and `tap-thing-nearest-point'.  The
@@ -912,6 +937,8 @@ Optional args:
   "Return the Emacs Lisp symbol nearest point, plus its bounds.
 Return (SYMBOL START . END), or nil if no symbol is found.
 Note that nil is also returned if the symbol at point is `nil'.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 SYMBOL is the symbol from `tap-symbol-at-point'.
 START and END are the buffer positions of SYMBOL."
   (tap-form-at-point-with-bounds 'symbol 'symbolp emacs-lisp-mode-syntax-table))
@@ -957,7 +984,8 @@ All but the first return strings, not (non-nil) symbols."
 SYMBOL is the `tap-symbol-nearest-point'.
 If optional arg NON-NIL is non-nil, then the nearest symbol other
   than `nil' is sought.
-Return nil if no such Emacs Lisp symbol is found."
+Return nil if no such Emacs Lisp symbol is found.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'."
   (tap-form-nearest-point-with-bounds 'symbol
                                       (if non-nil
                                           (lambda (sym) (and sym  (symbolp sym)))
@@ -970,7 +998,8 @@ See `tap-symbol-nearest-point'.
 Return a consp (START . END), where START /= END.
 Return nil if no such Emacs Lisp symbol is found.
 If optional arg NON-NIL is non-nil, then seek the nearest symbol other
-than `nil'."
+than `nil'.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'."
   (let ((symb+bds  (tap-symbol-nearest-point-with-bounds non-nil)))
     (and symb+bds
          (cdr symb+bds))))
@@ -978,6 +1007,7 @@ than `nil'."
 (defun tap-symbol-nearest-point (&optional non-nil)
   "Return the Emacs Lisp symbol nearest point, or nil if none.
 \"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 If optional arg NON-NIL is non-nil, then seek the nearest symbol other
   than `nil'.
 
@@ -1032,7 +1062,8 @@ Non-nil UNQUOTEDP means remove the car if it is `quote' or
  `backquote-backquote-symbol'.
 
 Return (LIST START . END) with START and END of the non-empty LIST.
-Return nil if no non-empty list is found."
+Return nil if no non-empty list is found.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'."
   (save-excursion
     (unless (eq at/near 'tap-sexp-at-point-with-bounds)
       ;; Skip over whitespace, including newlines.
@@ -1073,6 +1104,8 @@ Return nil if no non-empty list is found."
 (defun tap-list-at-point-with-bounds (&optional up unquotedp)
   "Return (LIST START . END), boundaries of the `tap-list-at-point'.
 Return nil if no non-empty list is found.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 UP (default: 0) is the number of list levels to go up to start with.
 Non-nil UNQUOTEDP means remove the car if it is `quote' or
  `backquote-backquote-symbol'."
@@ -1081,6 +1114,8 @@ Non-nil UNQUOTEDP means remove the car if it is `quote' or
 (defun tap-list-nearest-point-with-bounds (&optional up unquotedp)
   "Return (LIST START . END), boundaries of the `tap-list-nearest-point'.
 Return nil if no non-empty list is found.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 UP (default: 0) is the number of list levels to go up to start with.
 Non-nil UNQUOTEDP means remove the car if it is `quote' or
  `backquote-backquote-symbol'."
@@ -1104,6 +1139,8 @@ Optional args:
 See `tap-list-nearest-point'.
 Return a consp (START . END), where START /= END.
 Return nil if no non-empty list is found.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 Optional args:
   UP (default: 0) is the number of list levels to go up to start with.
   Non-nil UNQUOTEDP means remove the car if it is `quote' or
@@ -1165,6 +1202,8 @@ UP (default: 0) is the number of list levels to go up to start with."
 (defun tap-list-nearest-point (&optional up)
   "Return the non-nil list nearest point, or nil if none.
 Same as `tap-list-at-point', but returns the nearest list.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 UP (default: 0) is the number of list levels to go up to start with."
   (let ((list+bds  (tap-list-nearest-point-with-bounds up)))
     (and list+bds
@@ -1219,7 +1258,8 @@ include the enclosing `(' and `)' characters."
 
 (defun tap-list-contents-nearest-point ()
   "Return the contents of the list nearest point as a string, or nil.
-See `tap-list-contents-at-point'."
+See `tap-list-contents-at-point'.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'."
   (let ((full  (tap-bounds-of-thing-nearest-point 'list)))
     (and full  (buffer-substring (1+ (car full)) (1- (cdr full))))))
  
@@ -1274,6 +1314,7 @@ See `tap-non-nil-symbol-name-nearest-point'."
 (defun tap-word-nearest-point (&optional syntax-table)
   "Return the word (a string) nearest to point, if any, else nil.
 \"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 Optional arg SYNTAX-TABLE is a syntax table to use."
   (tap-thing-nearest-point 'word syntax-table))
 
@@ -1322,27 +1363,31 @@ Return nil if no color name is found."
   (defun tap-color-nearest-point-with-bounds ()
     "Return the color name nearest point, plus its bounds: (COLOR START . END).
 Return nil if no color name is found.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 COLOR is a color name or RGB code (with prefix `#').
  See `tap-color-nearest-point'.
 START and END are the buffer positions of COLOR."
     (tap-thing-nearest-point-with-bounds 'color))
 
   (defun tap-color-nearest-point ()
-    "Return the color name or RGB code (with prefix `#') nearest point."
+    "Return the color name or RGB code (with prefix `#') nearest point.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'."
     (let ((color+bds  (tap-color-nearest-point-with-bounds)))
       (and color+bds  (car color+bds)))))
 
 (defun tap-sentence-nearest-point (&optional syntax-table)
   "Return the sentence (a string) nearest to point, if any, else \"\".
 \"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 Optional arg SYNTAX-TABLE is a syntax table to use."
   (tap-thing-nearest-point 'sentence syntax-table))
 
 (defun tap-sexp-nearest-point (&optional syntax-table)
   "Return the sexp nearest point, if any, else \"\".
 This is an Emacs Lisp entity, the result of reading a textual sexp
-near point.  \"Nearest\" to point is determined as for
-`tap-thing-nearest-point'.
+near point.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
 
 Optional arg SYNTAX-TABLE is a syntax table to use."
   (tap-form-nearest-point 'sexp nil syntax-table))
@@ -1350,6 +1395,7 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
 (defun tap-number-nearest-point (&optional syntax-table)
   "Return the number nearest to point, if any, else nil.
 \"Nearest\" to point is determined as for `tap-thing-nearest-point'.
+
 Optional arg SYNTAX-TABLE is a syntax table to use."
   (tap-form-nearest-point 'sexp 'numberp syntax-table))
 
@@ -1460,6 +1506,7 @@ those string contents directly using `tap-string-contents-at-point'."
 
   (defun tap-string-nearest-point ()
     "Return the string nearest point, or nil if there is none.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
 See `tap-string-at-point'."
     (tap-thing-nearest-point 'string))
 
@@ -1483,6 +1530,7 @@ enclosing `\"' characters."
 
   (defun tap-string-contents-nearest-point ()
     "Return the contents of the string nearest point, or nil if none.
+\"Nearest\" to point is determined as for `tap-thing-nearest-point'.
 See `tap-string-contents-at-point'."
     (let ((full  (tap-bounds-of-thing-nearest-point 'string)))
       (and full  (buffer-substring (1+ (car full)) (1- (cdr full)))))))
@@ -1681,7 +1729,11 @@ Return the signed number of chars moved if /= ARG, else return nil."
 (defun find-fn-or-var-nearest-point (&optional confirmp)
   "Go to the definition of the function or variable nearest the cursor.
 With a prefix arg, or if no function or variable is near the cursor,
-prompt for the function or variable to find, instead."
+prompt for the function or variable to find, instead.
+
+\"Nearest\" is determined as for `tap-thing-nearest-point'.
+The search is bounded by options `tap-near-point-x-distance' and
+`tap-near-point-y-distance'."
   (interactive "P")
   (let* ((symb  (tap-symbol-nearest-point))
          (var   (and (boundp symb)  symb))
