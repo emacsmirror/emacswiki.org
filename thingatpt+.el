@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Thu Dec 31 16:16:00 2015 (-0800)
+;; Last-Updated: Mon Jun 20 07:01:31 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 2208
+;;     Update #: 2211
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -72,7 +72,7 @@
 ;;    `tap-sentence-nearest-point', `tap-sexp-at-point-with-bounds',
 ;;    `tap-sexp-nearest-point', `tap-sexp-nearest-point-with-bounds',
 ;;    `tap-string-at-point', `tap-string-contents-at-point',
-;;    `tap-string-contents-nearest-point.', `tap-string-match-p',
+;;    `tap-string-contents-nearest-point', `tap-string-match-p',
 ;;    `tap-string-nearest-point', `tap-symbol-at-point-with-bounds',
 ;;    `tap-symbol-name-at-point', `tap-symbol-name-nearest-point',
 ;;    `tap-symbol-nearest-point',
@@ -239,6 +239,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/06/20 dadams
+;;     tap-thing-at-point:
+;;       Typo: convert result of funcall, not original THING, to string.  Thx to Tino Calancha.
 ;; 2015/08/23 dadams
 ;;     tap-list-at/nearest-point-with-bounds:
 ;;       Use (nth 3 (syntax-ppss)) for Emacs 25+ - see Emacs bug #20732.
@@ -638,7 +641,7 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
                           (constrain-to-field nil opoint))))
           (if (stringp thg)
               thg
-            (and thg  (format "%s" thing))))
+            (and thg  (format "%s" thg))))
       (let ((bounds  (tap-bounds-of-thing-at-point thing syntax-table)))
         (and bounds  (buffer-substring (car bounds) (cdr bounds)))))))
 
