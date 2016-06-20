@@ -374,6 +374,11 @@ though the backtrace does end up with epg--list-keys-1)
 == Caching Password for Symmetric Encryption==
 Warning! This is risky if other people than you can access your own session. Despite you should always have to lock the screen when you leave your computer turned on, it is recommended you use this with caution.
 
+One solution is to add a <code>~/.gnupg/gpg-agent.conf</code> file (if not already existent) and add the line, adjusting the number (in seconds) to the desired cache timeout :
+
+    default-cache-ttl 1800 
+
+Another suggestion is:
 For some reason, using Emacs 24 and enabling <code>epa-file-cache-passphrase-for-symmetric-encryption</code> doesn't work and this is so because there's no elisp code for handling passphrase at the epg library (that have the base functions to interact with GPG tool).
 
 So we need to edit <code>epg--start</code> function adding this behaviour. Apply this patch to the epg.el file:
