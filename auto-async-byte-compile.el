@@ -151,6 +151,7 @@ This minor-mode performs `batch-byte-compile' automatically after saving elisp f
       (add-hook 'after-save-hook 'auto-async-byte-compile nil 'local)
     (remove-hook 'after-save-hook 'auto-async-byte-compile 'local)))
 
+;;;###autoload
 (defun enable-auto-async-byte-compile-mode ()
   (auto-async-byte-compile-mode 1))
 
