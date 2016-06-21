@@ -28,6 +28,8 @@ You can run mutt within an AnsiTerm: M-x ansi-term.
 
 Note that ansi-term remaps your default C-x key to C-c.
 
+See also "Extremely slow screen clearing in Emacs 24" in AnsiTermHints
+
 == Further Configuration ==
 
 Since your Mutt mails are now in mail-mode, you can use mail-mode-hook for further configurations.  Here is an example to add AutoFillMode:
