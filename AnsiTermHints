@@ -226,3 +226,17 @@ The above information relating to Remote Term Type can also apply to your local 
 Meh. It's still not perfect. Cursor jumps everywhere when the cursor up key (for last command in bash) is pressed, uses only half the available window for output, etc.
 
 On debian based systems you administer, you can 'apt-get install ncurses-term', which includes /usr/share/terminfo/e/eterm-color.
+
+== Extremely slow screen clearing in Emacs 24 ==
+
+The bi-directional text support introduced in Emacs 24 interacts badly with term.el when large numbers of spaces or tabs are inserted.
+
+This is usually observed when a curses-based application (such as mutt or lynx or dialog) clears the screen (often drawing a new background colour), because curses clears the screen by writing WIDTHxHEIGHT spaces. If the terminal's dimensions are sufficiently large, this redraw may take several seconds.
+
+The workaround is to prevent Emacs from guessing the text direction in term-mode, and simply enforce a left-to-right direction:
+
+ ;; Terminal buffer configuration.
+ (add-hook 'term-mode-hook 'my-term-mode-hook)
+ (defun my-term-mode-hook ()
+   ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=20611
+   (setq bidi-paragraph-direction 'left-to-right))
