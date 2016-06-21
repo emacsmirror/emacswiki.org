@@ -181,7 +181,7 @@ See also trick on CcMode (currently) to set the style according to the directory
 
 == Indenting Preprocessor Statements ==
 
-You can try PpIndent if you want to indent your C Preprocessor (#ifdef, #else, etc...) statements.
+You can try IndentPP if you want to indent your C Preprocessor (#ifdef, #else, etc...) statements.
 
 == More Complex Issues ==
 
