@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jun 18 16:19:14 2016 (-0700)
+;; Last-Updated: Tue Jun 21 17:22:03 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16031
+;;     Update #: 16044
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2016/06/21 dadams
+;;     bmkp-edit-bookmark-records-send, bmkp-set-tag-value-for-bookmarks, bmkp-rename-tag,
+;;       bmkp-delete-bookmarks:
+;;         Put bookmark-save-flag let-binding around iteration only, so modification is recorded etc.
 ;; 2016/05/30 dadams
 ;;     bmkp-not-near-other-auto-idle-bmks: Corrected typo: test distance for POSITION, not point.
 ;; 2016/04/23 dadams
@@ -1192,6 +1196,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2016/06/21 dadams
+;;     bmkp-bmenu-add-tags-to-marked, bmkp-bmenu-remove-tags-from-marked,
+;;       bmkp-bmenu-paste-(add|replace)-tags-to-marked:
+;;         Put bookmark-save-flag let-binding around iteration only, so modification is recorded etc.
 ;; 2016/06/11 dadams
 ;;     bmkp-bmenu-list-1, bookmark-bmenu-hide-filenames:
 ;;       Use string-width, not length.  Thx to Toshikazu Nakamura.
