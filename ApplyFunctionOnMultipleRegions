@@ -27,7 +27,7 @@ See [[Zones]] and [[MultipleNarrowings]] for one treatment of multiple regions. 
 
 === multi-select.el ===
 
-Yet another treatment, written a long time ago -- I haven't evaluated how it compares to [[Icicles]]. Available at http://sites.google.com/site/steveyemacsutils/multi-select-el.
+Yet another treatment, written a long time ago. Available at http://sites.google.com/site/steveyemacsutils/multi-select-el.
 
 Lets you select noncontiguous regions with mouse or by regular expression.  Provides some convenience functions for executing commands over the regions, and also manipulate all the regions as a single region (e.g. kill them all together).
 
