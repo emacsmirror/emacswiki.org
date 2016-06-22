@@ -9,8 +9,8 @@ Lisp:ert-expectations.el translates EmacsLispExpectations syntax into ERT. You c
 
 If you want to run a single ERT test programmatically, here is the syntax. It returns 0 for failed, 1 for passed. And it calls one of the "ert--xxx" functions (whose name contains double hyphens) that users probably shouldn't call... See the full thread at [http://emacs.stackexchange.com/questions/24117/run-a-single-ert-test-programmatically StackOverFlow].
 
-    (ert--stats-passed-expected (ert-run-tests 'my-deftest-name (lambda (&rest args))))
-    0   ;; test my-deftest-name failed
-    1   ;; test my-deftest-name passed
+    (ert-test-passed-p (ert-run-test (ert-get-test 'my-deftest-name)))
+    nil  ;; test my-deftest-name failed
+    t    ;; test my-deftest-name passed
 ----
 See also UnitTesting
