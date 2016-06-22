@@ -3,8 +3,14 @@
 For examples of how to write tests with ERT, take a look at the manual in [[Info]], ##C-h
 i m ert RET##, or [http://www.gnu.org/software/emacs/manual/ert.html read the manual online], or look at [http://repo.or.cz/w/emacs.git/blob/HEAD:/test/automated/ert-tests.el ERT's own tests].
 
-[new]
+
 Lisp:ert-expectations.el translates EmacsLispExpectations syntax into ERT. You can use simple EmacsLispExpectations code in ERT environment.  -- [[rubikitch]]
 
+
+If you want to run a single ERT test programmatically, here is the syntax. It returns 0 for failed, 1 for passed. And it calls one of the "ert--xxx" functions (whose name contains double hyphens) that users probably shouldn't call... See the full thread at [http://emacs.stackexchange.com/questions/24117/run-a-single-ert-test-programmatically StackOverFlow].
+
+    (ert--stats-passed-expected (ert-run-tests 'my-deftest-name (lambda (&rest args))))
+    0   ;; test my-deftest-name failed
+    1   ;; test my-deftest-name passed
 ----
 See also UnitTesting
