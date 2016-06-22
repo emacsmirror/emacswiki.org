@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon May 30 10:28:56 2016 (-0700)
+;; Last-Updated: Tue Jun 21 17:02:16 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7863
+;;     Update #: 7881
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -863,7 +863,7 @@ These are the predefined type predicates:
 This is for `bookmark-alist-modification-count'.  Non-nil means that
 when you invoke a command that acts on multiple bookmarks or acts in
 multiple ways on one bookmark, all of changes together count as only
-one moficication.  That can prevent automatic saving of your bookmark
+one modification.  That can prevent automatic saving of your bookmark
 file during the sequence of modifications, so that when the command is
 done you can choose not to save (i.e., to quit) if you like."
   :type 'boolean :group 'bookmark-plus)
@@ -3912,8 +3912,6 @@ by `bmkp-bmenu-edit-marked' (`\\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-edit-mark
   (let* ((editbuf             (current-buffer))
          (orig-bmks           (bmkp-marked-bookmarks-only))
          (edited-bookmarks    ())
-         (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
-                                   bookmark-save-flag)) ; Save only after `dolist'.
          (read-error-msg
           (catch 'bmkp-edit-bookmark-records-send
             (setq edited-bookmarks  (condition-case err
@@ -3927,27 +3925,29 @@ by `bmkp-bmenu-edit-marked' (`\\<bookmark-bmenu-mode-map>\\[bmkp-bmenu-edit-mark
                    (throw 'bmkp-edit-bookmark-records-send
                      (format "Need %d bookmarks, but there seem to be %d"
                              bmkp-edit-bookmark-records-number (length edited-bookmarks)))))
-            (dolist (edited-bmk  edited-bookmarks)
-              (unless (and (consp edited-bmk)  (stringp (car edited-bmk))) ; Sanity check.
-                (throw 'bmkp-edit-bookmark-records-send (format "Invalid bookmark: `%s'" edited-bmk)))
-              (let ((bname  (bmkp-bookmark-name-from-record edited-bmk))
-                    (data   (bmkp-bookmark-data-from-record edited-bmk)))
-                ;; Put the full bookmark on its name as property `bmkp-full-record'.
-                ;; Do this regardless of Emacs version and `bmkp-propertize-bookmark-names-flag'.
-                ;; If it needs to be stripped, that will be done when saving.
-                (put-text-property 0 (length bname) 'bmkp-full-record edited-bmk bname)
-                ;; Update the original bookmark (same cons cell) with what's in the edited version.
-                (setcar (car orig-bmks) bname)
-                (setcdr (car orig-bmks) data)
-                ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
-                (unless (memq (car orig-bmks) bmkp-modified-bookmarks)
-                  (setq bmkp-modified-bookmarks  (cons (car orig-bmks) bmkp-modified-bookmarks)))
-                (setq orig-bmks  (cdr orig-bmks))))
-            ;; Update using modified ORIG-BMKS.
-            (setq bmkp-bmenu-marked-bookmarks        (mapcar #'bmkp-bookmark-name-from-record
-                                                             bmkp-modified-bookmarks)
-                  bmkp-sorted-alist                  (bmkp-sort-omit bookmark-alist)
-                  bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))
+            (let ((bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                            bookmark-save-flag))) ; Save only after `dolist' and update.
+              (dolist (edited-bmk  edited-bookmarks)
+                (unless (and (consp edited-bmk)  (stringp (car edited-bmk))) ; Sanity check.
+                  (throw 'bmkp-edit-bookmark-records-send (format "Invalid bookmark: `%s'" edited-bmk)))
+                (let ((bname  (bmkp-bookmark-name-from-record edited-bmk))
+                      (data   (bmkp-bookmark-data-from-record edited-bmk)))
+                  ;; Put the full bookmark on its name as property `bmkp-full-record'.
+                  ;; Do this regardless of Emacs version and `bmkp-propertize-bookmark-names-flag'.
+                  ;; If it needs to be stripped, that will be done when saving.
+                  (put-text-property 0 (length bname) 'bmkp-full-record edited-bmk bname)
+                  ;; Update the original bookmark (same cons cell) with what's in the edited version.
+                  (setcar (car orig-bmks) bname)
+                  (setcdr (car orig-bmks) data)
+                  ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
+                  (unless (memq (car orig-bmks) bmkp-modified-bookmarks)
+                    (setq bmkp-modified-bookmarks  (cons (car orig-bmks) bmkp-modified-bookmarks)))
+                  (setq orig-bmks  (cdr orig-bmks))))
+              ;; Update using modified ORIG-BMKS.
+              (setq bmkp-bmenu-marked-bookmarks        (mapcar #'bmkp-bookmark-name-from-record
+                                                               bmkp-modified-bookmarks)
+                    bmkp-sorted-alist                  (bmkp-sort-omit bookmark-alist)
+                    bookmark-alist-modification-count  (1+ bookmark-alist-modification-count)))
             nil)))
     (if (stringp read-error-msg)
         (if msg-p  (message "%s  --> edit and try again" read-error-msg)  (error read-error-msg))
@@ -5175,10 +5175,10 @@ If any of the bookmarks has no tag named TAG, then add one with VALUE."
 If any of the BOOKMARKS has no tag named TAG, then add one with VALUE."
   (let ((bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
                                   bookmark-save-flag))) ; Save only after `dolist'.
-    (dolist (bmk  bookmarks) (bmkp-set-tag-value bmk tag value 'NO-UPDATE-P))
-    (bmkp-tags-list)                    ; Update the tags cache.
-    (bmkp-maybe-save-bookmarks)         ; Increments `bookmark-alist-modification-count'.
-    (bmkp-refresh/rebuild-menu-list nil (not msg-p))))
+    (dolist (bmk  bookmarks) (bmkp-set-tag-value bmk tag value 'NO-UPDATE-P)))
+  (bmkp-tags-list)                      ; Update the tags cache.
+  (bmkp-maybe-save-bookmarks)           ; Increments `bookmark-alist-modification-count'.
+  (bmkp-refresh/rebuild-menu-list nil (not msg-p)))
 
 ;;;###autoload (autoload 'bmkp-set-tag-value "bookmark+")
 (defun bmkp-set-tag-value (bookmark tag value &optional no-update-p msg-p) ; Bound to `C-x p t v'
@@ -5295,11 +5295,11 @@ deletion."
             (when (or assoc-tag member-tag)
               (setq tag-exists-p  t)
               (bookmark-prop-set bmk 'tags newtags))))))
-    (unless tag-exists-p (error "No such tag: `%s'" tag))
-    (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
-    (bmkp-maybe-save-bookmarks)         ; Increments `bookmark-alist-modification-count'.
-    ;; (bmkp-refresh/rebuild-menu-list nil (not msg-p)) ; $$$$$$ No need to redisplay
-    (when msg-p (message "Renamed"))))
+    (unless tag-exists-p (error "No such tag: `%s'" tag)))
+  (bmkp-tags-list)                      ; Update the tags cache now, after iterate.
+  (bmkp-maybe-save-bookmarks)           ; Increments `bookmark-alist-modification-count'.
+  ;; (bmkp-refresh/rebuild-menu-list nil (not msg-p)) ; $$$$$$ No need to redisplay
+  (when msg-p (message "Renamed")))
 
 ;;;###autoload (autoload 'bmkp-copy-tags "bookmark+")
 (defun bmkp-copy-tags (bookmark &optional msg-p) ; Bound to `C-x p t c', `C-x p t M-w'
@@ -11887,18 +11887,17 @@ Non-interactively:
 * Non-nil MSG-P means display informative messages."
   (interactive "d\nP\ni\np")
   (unless position (setq position  (point)))
-  (let ((bmks-to-delete      (and allp  (mapcar #'bmkp-bookmark-name-from-record
-                                                (bmkp-this-buffer-alist-only))))
-        (bmks-deleted        ())
-        (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
-                                  bookmark-save-flag)) ; Save at most once, after `dolist'.
+  (let ((bmks-to-delete  (and allp  (mapcar #'bmkp-bookmark-name-from-record (bmkp-this-buffer-alist-only))))
+        (bmks-deleted    ())
         bmk-pos)
     (when (and msg-p  bmks-to-delete  (not (y-or-n-p (format "Delete ALL bookmarks in buffer `%s'? "
                                                              (buffer-name)))))
       (error "Canceled - no bookmarks deleted"))
     (cond (bmks-to-delete               ; Delete all.
-           (dolist (bname  bmks-to-delete) (bookmark-delete bname 'BATCHP)) ; No refresh yet.
-           (bmkp-refresh/rebuild-menu-list nil (not msg-p)) ; Now refresh, after iterate.
+           (let ((bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                           bookmark-save-flag))) ; Save at most once, after `dolist'.
+             (dolist (bname  bmks-to-delete) (bookmark-delete bname 'BATCHP))) ; No refresh yet.
+           (bmkp-refresh/rebuild-menu-list nil (not msg-p)) ; Refresh now, after iterate.
            (when msg-p (message "Deleted all bookmarks in buffer `%s'" (buffer-name))))
 
           (allp                         ; Requested ALLP, but there are none.  (No-op if not interactive.)
@@ -11911,25 +11910,27 @@ Non-interactively:
                  (setq bname  (bmkp-bookmark-name-from-record bmk))
                  ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
                  (unless (memq bname bmks-to-delete)
-                   (setq bmks-to-delete  (cons bname bmks-to-delete))))))
-           (cond ((cadr bmks-to-delete) ; More than one at point.
-                  (dolist (bname  bmks-to-delete)
-                    (when (or (not msg-p)  (y-or-n-p (format "Delete bookmark `%s'? " bname)))
-                      (bookmark-delete bname 'BATCHP) ; No refresh yet.
-                      ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
-                      (unless (memq bname bmks-deleted) (setq bmks-deleted  (cons bname bmks-deleted)))))
-                  (bmkp-refresh/rebuild-menu-list nil (not msg-p)) ; Now refresh.
-                  (when msg-p
-                    (message (if bmks-deleted
-                                 (format "Deleted bookmarks: %s"
-                                         (mapconcat (lambda (bname) (format "`%s'" bname)) bmks-deleted
-                                                    ", "))
-                               "No bookmarks deleted"))))
-                 (bmks-to-delete        ; Only one bookmark at point.
-                  (bookmark-delete (car bmks-to-delete))
-                  (when msg-p (message "Deleted bookmark `%s'" (car bmks-to-delete))))
-                 (t
-                  (when msg-p (message "No bookmarks at point to delete"))))))))
+                   (setq bmks-to-delete  (cons bname bmks-to-delete)))))
+             (cond ((cadr bmks-to-delete) ; More than one at point.
+                    (let ((bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                                    bookmark-save-flag))) ; Save at most once, after `dolist'.
+                      (dolist (bname  bmks-to-delete)
+                        (when (or (not msg-p)  (y-or-n-p (format "Delete bookmark `%s'? " bname)))
+                          (bookmark-delete bname 'BATCHP) ; No refresh yet.
+                          ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
+                          (unless (memq bname bmks-deleted) (setq bmks-deleted  (cons bname bmks-deleted))))))
+                    (bmkp-refresh/rebuild-menu-list nil (not msg-p)) ; Refresh now.
+                    (when msg-p
+                      (message (if bmks-deleted
+                                   (format "Deleted bookmarks: %s"
+                                           (mapconcat (lambda (bname) (format "`%s'" bname)) bmks-deleted
+                                                      ", "))
+                                 "No bookmarks deleted"))))
+                   (bmks-to-delete      ; Only one bookmark at point.
+                    (bookmark-delete (car bmks-to-delete))
+                    (when msg-p (message "Deleted bookmark `%s'" (car bmks-to-delete))))
+                   (t
+                    (when msg-p (message "No bookmarks at point to delete")))))))))
 
 ;; Because of Emacs bug #19915, we need to use `advice-add' for `org-store-link', so this feature
 ;; is available only for Emacs 24.4+.
