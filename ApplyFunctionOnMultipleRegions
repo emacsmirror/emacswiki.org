@@ -21,9 +21,9 @@ ZajcevEvgeny has this in his ~/.emacs:
 
 == For Gnu Emacs ==
 
-=== Icicles Multiple Regions ===
+=== Zones ===
 
-See [[Icicles - Multiple Regions]] for another treatment of multiple regions. The regions are persistent. You can activate them or search them selectively.
+See [[Zones]] and [[MultipleNarrowings]] for one treatment of multiple regions. The regions can be persistent, as a bookmark, if you use [[Bookmark+]]. With [[Icicles]] you can you can activate them or search them selectively.
 
 === multi-select.el ===
 
