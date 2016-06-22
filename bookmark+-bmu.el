@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Jun 11 07:48:57 2016 (-0700)
+;; Last-Updated: Tue Jun 21 16:43:49 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 3749
+;;     Update #: 3761
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3574,13 +3574,13 @@ Non-interactively:
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((marked                (bmkp-bmenu-marked-or-this-or-all allp include-omitted-p))
         (curr-bmk              (bookmark-bmenu-bookmark))
-        (bookmark-save-flag    (and (not bmkp-count-multi-mods-as-one-flag)
-                                    bookmark-save-flag)) ; Save at most once, after `dolist'.
         (some-were-untagged-p  nil))
     (unless marked (error "No marked bookmarks"))
     (when msg-p (message "Adding tags..."))
-    (dolist (bmk  (mapcar #'car marked))
-      (when (< (bmkp-add-tags bmk tags 'NO-UPDATE-P) 0)  (setq some-were-untagged-p  t)))
+    (let ((bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                    bookmark-save-flag))) ; Save at most once, after `dolist'.
+      (dolist (bmk  (mapcar #'car marked))
+        (when (< (bmkp-add-tags bmk tags 'NO-UPDATE-P) 0)  (setq some-were-untagged-p  t))))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
     (bmkp-refresh-menu-list curr-bmk (not msg-p)) ; Refresh after iterate.
     (when (and some-were-untagged-p  (equal bmkp-sort-comparer '((bmkp-tagged-cp) bmkp-alpha-p)))
@@ -3612,22 +3612,21 @@ Non-interactively, non-nil MSG-P means display messages."
      (unless tgs (error "No tags to remove"))
      (list (bmkp-read-tags-completing tgs t) all omt 'MSG)))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((marked              (if allp
-                                 bookmark-alist
-                               (or (if include-omitted-p
-                                       (bmkp-marked-bookmarks-only)
-                                     (bmkp-remove-if #'bmkp-omitted-bookmark-p
-                                                     (bmkp-marked-bookmarks-only)))
-                                   (and (bookmark-bmenu-bookmark)
-                                        (list (bookmark-get-bookmark (bookmark-bmenu-bookmark)))))))
-        (curr-bmk            (bookmark-bmenu-bookmark))
-        (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
-                                  bookmark-save-flag)) ; Save at most once, after `dolist'.
+  (let ((marked    (if allp
+                       bookmark-alist
+                     (or (if include-omitted-p
+                             (bmkp-marked-bookmarks-only)
+                           (bmkp-remove-if #'bmkp-omitted-bookmark-p (bmkp-marked-bookmarks-only)))
+                         (and (bookmark-bmenu-bookmark)
+                              (list (bookmark-get-bookmark (bookmark-bmenu-bookmark)))))))
+        (curr-bmk  (bookmark-bmenu-bookmark))
         (some-are-now-untagged-p  nil))
     (unless marked (error "No marked bookmarks"))
     (when msg-p (message "Removing tags..."))
-    (dolist (bmk  (mapcar #'car marked))
-      (when (< (bmkp-remove-tags bmk tags 'NO-UPDATE-P) 0)  (setq some-are-now-untagged-p  t)))
+    (let ((bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                    bookmark-save-flag))) ; Save at most once, after `dolist'.
+      (dolist (bmk  (mapcar #'car marked))
+        (when (< (bmkp-remove-tags bmk tags 'NO-UPDATE-P) 0)  (setq some-are-now-untagged-p  t))))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
     (bmkp-refresh-menu-list curr-bmk (not msg-p)) ; Refresh after iterate.
     (when (and some-are-now-untagged-p  (equal bmkp-sort-comparer '((bmkp-tagged-cp) bmkp-alpha-p)))
@@ -3967,13 +3966,13 @@ Non-interactively, non-nil MSG-P means display messages."
                      (and current-prefix-arg  (<  (prefix-numeric-value current-prefix-arg) 0))
                      'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((marked              (bmkp-bmenu-marked-or-this-or-all allp include-omitted-p))
-        (bmk                 (bookmark-bmenu-bookmark))
-        (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
-                                  bookmark-save-flag))) ; Save at most once, after `dolist'.
+  (let ((marked  (bmkp-bmenu-marked-or-this-or-all allp include-omitted-p))
+        (bmk     (bookmark-bmenu-bookmark)))
     (unless marked (error "No marked bookmarks"))
     (when msg-p (message "Adding tags..."))
-    (dolist (bmk  marked) (bmkp-paste-add-tags bmk 'NO-UPDATE-P))
+    (let ((bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                    bookmark-save-flag))) ; Save at most once, after `dolist'.
+      (dolist (bmk  marked) (bmkp-paste-add-tags bmk 'NO-UPDATE-P)))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
     (bmkp-refresh-menu-list bmk (not msg-p)) ; Refresh after iterate.
     (when msg-p (message "Tags added: %S" bmkp-copied-tags))))
@@ -3999,13 +3998,13 @@ Non-interactively, non-nil MSG-P means display messages."
                      (and current-prefix-arg  (<  (prefix-numeric-value current-prefix-arg) 0))
                      'MSG))
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (let ((marked              (bmkp-bmenu-marked-or-this-or-all allp include-omitted-p))
-        (bmk                 (bookmark-bmenu-bookmark))
-        (bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
-                                  bookmark-save-flag))) ; Save at most once, after `dolist'.
+  (let ((marked  (bmkp-bmenu-marked-or-this-or-all allp include-omitted-p))
+        (bmk     (bookmark-bmenu-bookmark)))
     (unless marked (error "No marked bookmarks"))
     (when msg-p (message "Replacing tags..."))
-    (dolist (bmk  marked) (bmkp-paste-replace-tags bmk 'NO-UPDATE-P))
+    (let ((bookmark-save-flag  (and (not bmkp-count-multi-mods-as-one-flag)
+                                    bookmark-save-flag))) ; Save at most once, after `dolist'.
+      (dolist (bmk  marked) (bmkp-paste-replace-tags bmk 'NO-UPDATE-P)))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
     (bmkp-refresh-menu-list bmk (not msg-p)) ; Refresh after iterate.
     (when msg-p (message "Replacement tags: %S" bmkp-copied-tags))))
