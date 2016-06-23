@@ -12,6 +12,7 @@ But only a very few are like that. For the rest, you can use LambdaFunctions:
  (add-hook 'text-mode-hook (lambda () (column-number-mode 1)))
 
 Or just make your own function and assign it:
+
  (defun set-fill-column-for-text-mode ()
    (set-fill-column 72))
  (add-hook 'text-mode-hook 'set-fill-column-for-text-mode)
