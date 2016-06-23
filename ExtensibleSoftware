@@ -9,6 +9,7 @@ Here's a partial list of some software that's inspired by Emacs' model of extens
 * [http://common-lisp.net/project/eclipse/ Eclipse] is a window manager written entirely in CommonLisp.
 * [http://ccrma.stanford.edu/software/snd/snd/snd.html Snd] is a sound editor that can be customized and extended using either Guile or Ruby. 
 * [http://www.gimp.org/ GIMP] is an image editor that has a scripting language ([http://www.xcf.berkeley.edu/~gimp/script-fu/script-fu.html Script-Fu]) based on Scheme.
+* [http://conkeror.org/ Conkeror] is a keyboard-oriented, highly-customizable, highly-extensible web browser based on Mozilla XULRunner, written and configured mainly in JavaScript. It uses Emacs keybindings by default, considers web pages as "buffers" replacing tabs with a buffer list, and you can define modes, hooks etc. specific to certain sites. 
 
 == Dubious ==
 
