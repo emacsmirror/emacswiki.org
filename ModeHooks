@@ -13,8 +13,7 @@ But only a very few are like that. For the rest, you can use LambdaFunctions:
 
 Or just make your own function and assign it:
 
- (defun set-fill-column-for-text-mode ()
-   (set-fill-column 72))
+ (defun set-fill-column-for-text-mode () (set-fill-column 72))
  (add-hook 'text-mode-hook 'set-fill-column-for-text-mode)
 
 How do you know what to put in place of 'text-mode-hook'?
