@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Jun 21 17:02:16 2016 (-0700)
+;; Last-Updated: Thu Jun 23 09:16:03 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7881
+;;     Update #: 7914
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -1903,7 +1903,7 @@ provide it.  If that does not provide it then use
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Added optional args NO-UPDATE-P and NO-MSG-P.
+;; 1. Added optional args NO-REFRESH-P and NO-MSG-P.
 ;; 2. Update the bookmark name also, not just the data, for an existing bookmark.
 ;; 3. Use `bmkp-get-bookmark-in-alist' to test whether the bookmark already exists.
 ;; 4. Put full bookmark record on bookmark name (inside record) as property `bmkp-full-record'.
@@ -1912,7 +1912,7 @@ provide it.  If that does not provide it then use
 ;; 7. Use `bmkp-refresh/rebuild-menu-list', not `bookmark-bmenu-surreptitiously-rebuild-list'.
 ;; 8. Return the bookmark.
 ;;
-(defun bookmark-store (bookmark-name data no-overwrite &optional no-update-p no-msg-p)
+(defun bookmark-store (bookmark-name data no-overwrite &optional no-refresh-p no-msg-p)
   "Store the bookmark named BOOKMARK-NAME, giving it DATA.
 Return the new bookmark.
 
@@ -1924,7 +1924,7 @@ in the current bookmark list (`bookmark-alist') then record the new
 bookmark but do not discard the old one.  The check for existence uses
 `bmkp-get-bookmark-in-alist'.
 
-Non-nil optional arg NO-UPDATE-P means do not refresh/rebuild the
+Non-nil optional arg NO-REFRESH-P means do not refresh/rebuild the
 bookmark-list display.
 
 Non-nil optional arg NO-MSG-P means do not show progress messages.
@@ -1954,7 +1954,7 @@ bookmark file.  Saving the file depends on `bookmark-save-flag'."
                (not (memq bmk bmkp-auto-idle-bookmarks)))
       (setq bmkp-auto-idle-bookmarks  (cons bmk bmkp-auto-idle-bookmarks)))
     (setq bookmark-current-bookmark  bname)
-    (unless no-update-p (bmkp-refresh/rebuild-menu-list bmk no-msg-p))
+    (unless no-refresh-p (bmkp-refresh/rebuild-menu-list bmk no-msg-p))
     bmk))                               ; Return the bookmark.
 
 
@@ -2223,14 +2223,14 @@ property.  Point is irrelevant and unaffected."
 ;;  5. Numeric prefix arg (diff from plain): all bookmarks as completion candidates.
 ;;  6. Ask for confirmation if (a) not plain `C-u' and (b) NAME names an existing bookmark.
 ;;  7. Do not overwrite properties listed in option `bmkp-properties-to-keep'.
-;;  8. Added optional args INTERACTIVEP and NO-UPDATE-P.
+;;  8. Added optional args INTERACTIVEP and NO-REFRESH-P.
 ;;  9. Prompt for tags if `bmkp-prompt-for-tags-flag' is non-nil.
 ;; 10. Possibly highlight bookmark and other bookmarks in buffer, per `bmkp-auto-light-when-set'.
 ;; 11. Make bookmark temporary, if `bmkp-autotemp-bookmark-predicates' says to.
 ;; 12. Run `bmkp-after-set-hook'.
 ;;
 ;;;###autoload (autoload 'bookmark-set "bookmark+")
-(defun bookmark-set (&optional name parg interactivep no-update-p) ; `C-x r M', `C-x p c M'
+(defun bookmark-set (&optional name parg interactivep no-refresh-p) ; `C-x r M', `C-x p c M'
   "Set a bookmark named NAME, then run `bmkp-after-set-hook'.
 If the region is active (`transient-mark-mode') and nonempty, then
 record the region limits in the bookmark.
@@ -2303,7 +2303,7 @@ Use `\\[bookmark-delete]' to remove bookmarks (you give it a name, and it remove
 only the first instance of a bookmark with that name from the list of
 bookmarks).
 
-From Lisp code, non-nil optional arg NO-UPDATE-P means do not
+From Lisp code, non-nil optional arg NO-REFRESH-P means do not
 refresh/rebuild the bookmark-list display."
   (interactive (list nil current-prefix-arg t))
   (unwind-protect
@@ -2348,9 +2348,9 @@ refresh/rebuild the bookmark-list display."
              (when old-bmk              ; Restore props of existing bookmark per `bmkp-properties-to-keep'.
                (dolist (prop  bmkp-properties-to-keep)
                  (bookmark-prop-set record prop (bookmark-prop-get old-bmk prop)))))
-           (bookmark-store bname (cdr record) (consp parg) no-update-p (not interactivep))
+           (bookmark-store bname (cdr record) (consp parg) no-refresh-p (not interactivep))
            (when (and interactivep  bmkp-prompt-for-tags-flag)
-             (bmkp-add-tags bname (bmkp-read-tags-completing) 'NO-UPDATE-P)) ; Do not refresh tags here.
+             (bmkp-add-tags bname (bmkp-read-tags-completing) 'NO-UPDATE-P)) ; Do not update here.
            (case (and (boundp 'bmkp-auto-light-when-set)  bmkp-auto-light-when-set)
              (autonamed-bookmark       (when (bmkp-autonamed-bookmark-p bname)
                                          (bmkp-light-bookmark bname)))
@@ -2719,7 +2719,7 @@ Otherwise, call `bmkp-goto-position' to go to the recorded position."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Added optional arg NO-UPDATE-P.
+;; 1. Added optional arg NO-REFRESH-P.
 ;; 2. Added bookmark default for interactive use.
 ;; 3. Added note about `S-delete' to doc string.
 ;; 4. Changed arg name: BOOKMARK -> BOOKMARK-NAME.
@@ -2727,10 +2727,10 @@ Otherwise, call `bmkp-goto-position' to go to the recorded position."
 ;; 6. Refresh menu list, to show new location.
 ;;
 ;;;###autoload (autoload 'bookmark-relocate "bookmark+")
-(defun bookmark-relocate (bookmark-name &optional no-update-p) ; Not bound
+(defun bookmark-relocate (bookmark-name &optional no-refresh-p) ; Not bound
   "Relocate the bookmark named BOOKMARK-NAME to another file.
 You are prompted for the new file name.
-Non-nil optional arg NO-UPDATE-P means do not refresh/rebuild the
+Non-nil optional arg NO-REFRESH-P means do not refresh/rebuild the
 bookmark-list display.
 
 Changes the file associated with the bookmark.
@@ -2757,7 +2757,7 @@ candidate."
   (bmkp-maybe-save-bookmarks)
   (when (and bookmark-bmenu-toggle-filenames  (get-buffer "*Bookmark List*")
              (get-buffer-window (get-buffer "*Bookmark List*") 0)
-             (not no-update-p))
+             (not no-refresh-p))
     (with-current-buffer (get-buffer "*Bookmark List*") ; Do NOT just use `bmkp-refresh/rebuild-menu-list'.
       (bmkp-refresh-menu-list bookmark-name)))) ; So display new location and `*' marker.
 
@@ -5108,8 +5108,9 @@ Otherwise, return an alist of the full tags."
                                         ; Bound to `C-x p t 0', (`T 0' in bookmark list)
   "Remove all tags from BOOKMARK.
 Non-interactively:
- - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
-   do not refresh/rebuild the bookmark-list display.
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist', do not
+   update the modification count and maybe save bookmarks, and do not
+   refresh/rebuild the bookmark-list display
  - Non-nil optional arg MSG-P means show a message about the removal."
   (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)) nil 'MSG))
   (when (and msg-p  (null (bmkp-get-tags bookmark)))  (error "Bookmark has no tags to remove"))
@@ -5135,10 +5136,11 @@ By default, the tag choices for completion are NOT refreshed, to save
 time.  Use a prefix argument if you want to refresh them.
 
 Non-interactively:
-* TAGS is a list of strings.
-* Non-nil MSG-P means display a message about the addition.
-* Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
-  do not refresh/rebuild the bookmark-list display.
+ - TAGS is a list of strings.
+ - Non-nil MSG-P means display a message about the addition.
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist', do not
+   update the modification count and maybe save bookmarks, and do not
+   refresh/rebuild the bookmark-list display
 
 The absolute value of the return value is the number of tags added.
 If BOOKMARK was untagged before the operation, then the return value
@@ -5185,9 +5187,10 @@ If any of the BOOKMARKS has no tag named TAG, then add one with VALUE."
   "For BOOKMARK's TAG, set the value to VALUE.
 If BOOKMARK has no tag named TAG, then add one with value VALUE.
 Non-interactively:
-* Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist', save
-  bookmarks, or refresh/rebuild the bookmark-list display.
-* Non-nil MSG-P means display a message about the updated value."
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist', do not
+   update the modification count and maybe save bookmarks, and do not
+   refresh/rebuild the bookmark-list display
+ - Non-nil MSG-P means display a message about the updated value."
   (interactive
    (let* ((bmk  (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)))
           (tag  (bmkp-read-tag-completing "Tag: " (mapcar 'bmkp-full-tag (bmkp-get-tags bmk)))))
@@ -5215,10 +5218,11 @@ By default, the tag choices for completion are NOT refreshed, to save
 time.  Use a prefix argument if you want to refresh them.
 
 Non-interactively:
-* TAGS is a list of strings.  The corresponding tags are removed.
-* Non-nil MSG-P means display status messages.
-* Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
-  do not refresh/rebuild the bookmark-list display.
+ - TAGS is a list of strings.  The corresponding tags are removed.
+ - Non-nil MSG-P means display status messages.
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist', do not
+   update the modification count and maybe save bookmarks, and do not
+   refresh/rebuild the bookmark-list display
 
 The absolute value of the return value is the number of tags removed.
 If BOOKMARK is untagged after the operation, then the return value
@@ -5296,7 +5300,7 @@ deletion."
               (setq tag-exists-p  t)
               (bookmark-prop-set bmk 'tags newtags))))))
     (unless tag-exists-p (error "No such tag: `%s'" tag)))
-  (bmkp-tags-list)                      ; Update the tags cache now, after iterate.
+  (bmkp-tags-list)                      ; Update the tags cache now, after iterating.
   (bmkp-maybe-save-bookmarks)           ; Increments `bookmark-alist-modification-count'.
   ;; (bmkp-refresh/rebuild-menu-list nil (not msg-p)) ; $$$$$$ No need to redisplay
   (when msg-p (message "Renamed")))
@@ -5322,9 +5326,10 @@ number of tags copied."
 Return the number of tags added.
 The tags are copied from `bmkp-copied-tags'.
 Non-interactively:
-* Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
-  do not refresh/rebuild the bookmark-list display.
-* Non-nil MSG-P means display a message about the addition."
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist', do not
+   update the modification count and maybe save bookmarks, and do not
+   refresh/rebuild the bookmark-list display
+ - Non-nil MSG-P means display a message about the addition."
   (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)) nil 'MSG))
   (unless (listp bmkp-copied-tags) (error "`bmkp-paste-add-tags': `bmkp-copied-tags' is not a list"))
   (bmkp-add-tags bookmark bmkp-copied-tags no-update-p msg-p))
@@ -5343,9 +5348,10 @@ that you do not replace tags with an empty list of tags, you can check
 the value of variable `bmkp-copied-tags' before pasting.
 
 Non-interactively:
-* Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist' and
-  do not refresh/rebuild the bookmark-list display.
-* Non-nil MSG-P means display a message about the addition."
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist', do not
+   update the modification count and maybe save bookmarks, and do not
+   refresh/rebuild the bookmark-list display
+ - Non-nil MSG-P means display a message about the addition."
   (interactive (list (bookmark-completing-read "Bookmark" (bmkp-default-bookmark-name)) nil 'MSG))
   (unless (listp bmkp-copied-tags)
     (error "`bmkp-paste-replace-tags': `bmkp-copied-tags' is not a list"))
@@ -7323,7 +7329,7 @@ If TRUTH is nil, return nil."
 ;;  *** Indirect Bookmarking Functions ***
 
 ;;;###autoload (autoload 'bmkp-url-target-set "bookmark+")
-(defun bmkp-url-target-set (url &optional arg name/prefix no-overwrite-p no-update-p msg-p)
+(defun bmkp-url-target-set (url &optional arg name/prefix no-overwrite-p no-refresh-p msg-p)
                                         ; Bound globally to `C-x p c u'.
   "Set a bookmark for a URL.  Return the bookmark.
 Interactively you are prompted for the URL.  Completion is available.
@@ -7355,7 +7361,7 @@ Non-interactively:
 * Numeric ARG >= 0 means NAME/PREFIX is a bookmark-name prefix.
 * NAME/PREFIX is the bookmark name or its prefix (the suffix = URL).
 * Non-nil NO-OVERWRITE-P means do not overwrite an existing bookmark.
-* Non-nil NO-UPDATE-P means do not refresh/rebuild the bookmark-list
+* Non-nil NO-REFRESH-P means do not refresh/rebuild the bookmark-list
   display.
 * Non-nil MSG-P means display a status message."
   (interactive
@@ -7383,13 +7389,13 @@ Non-interactively:
         bmk failure)
     (condition-case err
         (setq bmk  (bookmark-store (if arg (concat name/prefix url) name/prefix)
-                                   (cdr (bookmark-make-record))  no-overwrite-p  no-update-p  (not msg-p)))
+                                   (cdr (bookmark-make-record))  no-overwrite-p  no-refresh-p  (not msg-p)))
       (error (setq failure  err)))
     (when failure (error "Failed to create bookmark for `%s':\n%s\n" url failure))
     bmk))                               ; Return the bookmark.
 
 ;;;###autoload (autoload 'bmkp-file-target-set "bookmark+")
-(defun bmkp-file-target-set (file &optional arg name/prefix no-overwrite no-update-p msg-p)
+(defun bmkp-file-target-set (file &optional arg name/prefix no-overwrite no-refresh-p msg-p)
                                         ; Bound to `C-x p c f'
   "Set a bookmark for FILE.  Return the bookmark.
 The bookmarked position is the beginning of the file.
@@ -7424,7 +7430,7 @@ Non-interactively:
 * Numeric ARG >= 0 means NAME/PREFIX is a bookmark-name prefix.
 * NAME/PREFIX is the bookmark name or its prefix.
 * Non-nil NO-OVERWRITE-P means do not overwrite an existing bookmark.
-* Non-nil NO-UPDATE-P means do not refresh/rebuild the bookmark-list
+* Non-nil NO-REFRESH-P means do not refresh/rebuild the bookmark-list
   display.
 * Non-nil MSG-P means show a warning message if file does not exist."
   (interactive
@@ -7452,10 +7458,10 @@ Non-interactively:
         (setq bmk  (bookmark-store (if arg
                                        (concat name/prefix (file-name-nondirectory file))
                                      name/prefix)
-                                   (cdr (bookmark-make-record))  no-overwrite  no-update-p  (not msg-p)))
+                                   (cdr (bookmark-make-record))  no-overwrite  no-refresh-p  (not msg-p)))
       (error (setq failure  (error-message-string err))))
     (when failure (error "Failed to create bookmark for `%s':\n%s\n" file failure))
-    (unless no-update-p (bmkp-refresh/rebuild-menu-list bmk (not msg-p)))
+    (unless no-refresh-p (bmkp-refresh/rebuild-menu-list bmk (not msg-p)))
     (when (and msg-p  (not (file-exists-p file)))
       (message "File name is now bookmarked, but no such file yet: `%s'" (expand-file-name file)))
     bmk))                               ; Return the bookmark.
@@ -7494,20 +7500,20 @@ The bookmarked position will be the beginning of the file."
     (cond ((eq bmkp-autofile-filecache  'autofile-only)
            (bmkp-autofile-set
             (ad-get-arg 0) nil nil
-            'NO-UPDATE-P))
+            'NO-REFRESH-P))
           ((eq bmkp-autofile-filecache  'autofile+cache)
            (progn
              ad-do-it
              (bmkp-autofile-set
               (ad-get-arg 0) nil nil
-              'NO-UPDATE-P 'MSG-P)))
+              'NO-REFRESH-P 'MSG-P)))
           ((eq bmkp-autofile-filecache  'cache-only)
            ad-do-it))))
 
 ;;;###autoload (autoload 'bmkp-bookmark-a-file "bookmark+")
 (defalias 'bmkp-bookmark-a-file 'bmkp-autofile-set)
 ;;;###autoload (autoload 'bmkp-autofile-set "bookmark+")
-(defun bmkp-autofile-set (file &optional dir prefix no-update-p msg-p) ; Bound to `C-x p c a'
+(defun bmkp-autofile-set (file &optional dir prefix no-refresh-p msg-p) ; Bound to `C-x p c a'
   "Set a bookmark for FILE, autonaming the bookmark for the file.
 Return the bookmark.
 Interactively, you are prompted for FILE.  You can use `M-n' to pick
@@ -7535,7 +7541,7 @@ relative file name (non-directory part), but with different absolute
 file names.
 
 Non-interactively:
- - Non-nil NO-UPDATE-P means do not refresh/rebuild the bookmark-list
+ - Non-nil NO-REFRESH-P means do not refresh/rebuild the bookmark-list
    display.
  - Non-nil optional arg MSG-P means display status messages."
   (interactive
@@ -7574,7 +7580,7 @@ Non-interactively:
     ;;   (bmkp-replace-existing-bookmark bmk)) ; Update the existing bookmark.
     (if (not bmk)
         ;; Create a new bookmark, and return it.
-        (bmkp-file-target-set (expand-file-name file dir-to-use) t prefix 'NO-OVERWRITE no-update-p msg-p)
+        (bmkp-file-target-set (expand-file-name file dir-to-use) t prefix 'NO-OVERWRITE no-refresh-p msg-p)
       (when msg-p (message "Autofile bookmark set for `%s'" file))
       bmk)))                            ; Return the bookmark.
 
@@ -7628,7 +7634,10 @@ time.  Use a non-positive prefix argument if you want to refresh them.
 
 Non-interactively:
  - TAGS is a list of strings.
- - DIR, PREFIX, and NO-UPDATE-P are as for `bmkp-autofile-set'.
+ - DIR and PREFIX are as for `bmkp-autofile-set'.
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist', do not
+   update the modification count and maybe save bookmarks, and do not
+   refresh/rebuild the bookmark-list display
  - Non-nil MSG-P means display a message about the addition."
   (interactive
    (list (let ((icicle-unpropertize-completion-result-flag  t))
@@ -7639,7 +7648,7 @@ Non-interactively:
                                (bmkp-thing-at-point 'filename)
                                (buffer-file-name))))
          (bmkp-read-tags-completing nil nil (and current-prefix-arg
-                                                 (< (prefix-numeric-value current-prefix-arg) 1)))
+                                                 (<= (prefix-numeric-value current-prefix-arg) 0)))
          nil
          (and current-prefix-arg  (wholenump (prefix-numeric-value current-prefix-arg))
               (read-string "Prefix for bookmark name: "))
@@ -7674,15 +7683,18 @@ time.  Use a non-positive prefix argument if you want to refresh them.
 
 Non-interactively:
  - TAGS is a list of strings.
- - DIR, PREFIX, and NO-UPDATE-P are as for `bmkp-autofile-set'.
+ - DIR and PREFIX are as for `bmkp-autofile-set'.
+ - Non-nil NO-UPDATE-P means do not update `bmkp-tags-alist', do not
+   update the modification count and maybe save bookmarks, and do not
+   refresh/rebuild the bookmark-list display
  - Non-nil MSG-P means display a message about the removal."
   (interactive
    (lexical-let* ((pref
                    (and current-prefix-arg  (wholenump (prefix-numeric-value current-prefix-arg))
                         (read-string "Prefix for bookmark name: ")))
                   (tgs
-                   (bmkp-read-tags-completing nil nil (and current-prefix-arg  (< (prefix-numeric-value
-                                                                                   current-prefix-arg) 1))))
+                   (bmkp-read-tags-completing nil nil (and current-prefix-arg
+                                                           (<= (prefix-numeric-value current-prefix-arg) 0))))
                   (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
                   (fil   (condition-case nil
                              (read-file-name
