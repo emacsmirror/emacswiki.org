@@ -1,6 +1,6 @@
 “If you love Emacs, and want this other thing to just get out of your way and do what it's supposed to so you can write elisp all the time, you may also like…”
 
-* [http://dwm.suckless.org/ DWM] a minimal tiling window manager written in 2000 lines of C. All configuration is done in the header file. Works will with Emacs if you remap its modifier key to be Windows key (super). This leaves Ctrl and Alt completely open for Emacs.
+* [http://dwm.suckless.org/ DWM] a minimal tiling window manager written in 2000 lines of C. All configuration is done in the header file. Works well with Emacs if you remap its modifier key to be Windows key (super). This leaves Ctrl and Alt completely open for Emacs.
 * [http://ne.di.unimi.it/ ne] is a portable textmode editor that uses GUI keybindings (Ctrl-O/S/X/C/V etc). So you don't have to use vi for quick edits.
 
 CategoryRelated
