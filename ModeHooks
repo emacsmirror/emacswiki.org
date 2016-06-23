@@ -6,10 +6,15 @@ For example, if you want to have AutoFillMode on by default in text mode, add th
 
 That ones easy, because there's a premade function for us, "turn-on-auto-fill."
 
-But only a very few are like that. For the rest, you'll probably want to use LambdaFunctions.
+But only a very few are like that. For the rest, you can use LambdaFunctions:
 
  (add-hook 'text-mode-hook (lambda () (set-fill-column 72)))
  (add-hook 'text-mode-hook (lambda () (column-number-mode 1)))
+
+Or just make your own function and assign it:
+ (defun set-fill-column-for-text-mode ()
+   (set-fill-column 72))
+ (add-hook 'text-mode-hook 'set-fill-column-for-text-mode)
 
 How do you know what to put in place of 'text-mode-hook'?
 
