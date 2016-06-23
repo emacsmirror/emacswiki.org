@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jun 21 17:22:03 2016 (-0700)
+;; Last-Updated: Thu Jun 23 09:16:40 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16044
+;;     Update #: 16066
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2016/06/23 dadams
+;;     bmkp-remove-all-tags, bmkp-add-tags, bmkp-set-tag-value, bmkp-remove-tags,
+;;       bmkp-paste-(add|paste)-tags, bmkp-autofile-add-tags:
+;;         Corrected doc string to say also that NO-UPDATE-P does not update mod count.
+;;     bookmark-store, bookmark-set, bookmark-relocate, bmkp-(url|file)-target-set,
+;;       bmkp-autofile-set, bmkp-autofile-remove-tags:
+;;         Renamed arg NO-UPDATE-P to NO-REFRESH-P.
 ;; 2016/06/21 dadams
 ;;     bmkp-edit-bookmark-records-send, bmkp-set-tag-value-for-bookmarks, bmkp-rename-tag,
 ;;       bmkp-delete-bookmarks:
@@ -1196,6 +1203,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2016/06/23 dadams
+;;     bmkp-bmenu-(add|remove)-tags-(to|from)-marked, bmkp-bmenu-paste-(add|replace)-tags-for-marked:
+;;       Call bmkp-maybe-save-bookmarks (after the iteration).
 ;; 2016/06/21 dadams
 ;;     bmkp-bmenu-add-tags-to-marked, bmkp-bmenu-remove-tags-from-marked,
 ;;       bmkp-bmenu-paste-(add|replace)-tags-to-marked:
