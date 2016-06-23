@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Jun 21 16:43:49 2016 (-0700)
+;; Last-Updated: Thu Jun 23 07:23:57 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 3761
+;;     Update #: 3764
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -3582,6 +3582,7 @@ Non-interactively:
       (dolist (bmk  (mapcar #'car marked))
         (when (< (bmkp-add-tags bmk tags 'NO-UPDATE-P) 0)  (setq some-were-untagged-p  t))))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
+    (bmkp-maybe-save-bookmarks)         ; Increments `bookmark-alist-modification-count'.
     (bmkp-refresh-menu-list curr-bmk (not msg-p)) ; Refresh after iterate.
     (when (and some-were-untagged-p  (equal bmkp-sort-comparer '((bmkp-tagged-cp) bmkp-alpha-p)))
       (bmkp-bmenu-sort-tagged-before-untagged))
@@ -3628,6 +3629,7 @@ Non-interactively, non-nil MSG-P means display messages."
       (dolist (bmk  (mapcar #'car marked))
         (when (< (bmkp-remove-tags bmk tags 'NO-UPDATE-P) 0)  (setq some-are-now-untagged-p  t))))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
+    (bmkp-maybe-save-bookmarks)         ; Increments `bookmark-alist-modification-count'.
     (bmkp-refresh-menu-list curr-bmk (not msg-p)) ; Refresh after iterate.
     (when (and some-are-now-untagged-p  (equal bmkp-sort-comparer '((bmkp-tagged-cp) bmkp-alpha-p)))
       (bmkp-bmenu-sort-tagged-before-untagged))
@@ -3974,6 +3976,7 @@ Non-interactively, non-nil MSG-P means display messages."
                                     bookmark-save-flag))) ; Save at most once, after `dolist'.
       (dolist (bmk  marked) (bmkp-paste-add-tags bmk 'NO-UPDATE-P)))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
+    (bmkp-maybe-save-bookmarks)         ; Increments `bookmark-alist-modification-count'.
     (bmkp-refresh-menu-list bmk (not msg-p)) ; Refresh after iterate.
     (when msg-p (message "Tags added: %S" bmkp-copied-tags))))
 
@@ -4006,6 +4009,7 @@ Non-interactively, non-nil MSG-P means display messages."
                                     bookmark-save-flag))) ; Save at most once, after `dolist'.
       (dolist (bmk  marked) (bmkp-paste-replace-tags bmk 'NO-UPDATE-P)))
     (bmkp-tags-list)                    ; Update the tags cache now, after iterate.
+    (bmkp-maybe-save-bookmarks)         ; Increments `bookmark-alist-modification-count'.
     (bmkp-refresh-menu-list bmk (not msg-p)) ; Refresh after iterate.
     (when msg-p (message "Replacement tags: %S" bmkp-copied-tags))))
 
