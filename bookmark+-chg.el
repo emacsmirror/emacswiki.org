@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jun 23 09:16:40 2016 (-0700)
+;; Last-Updated: Thu Jun 23 09:29:39 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16066
+;;     Update #: 16069
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1205,7 +1205,7 @@
 ;;
 ;; 2016/06/23 dadams
 ;;     bmkp-bmenu-(add|remove)-tags-(to|from)-marked, bmkp-bmenu-paste-(add|replace)-tags-for-marked:
-;;       Call bmkp-maybe-save-bookmarks (after the iteration).
+;;       Call bmkp-maybe-save-bookmarks (after the iteration).  Thx to Alan Wehmann.
 ;; 2016/06/21 dadams
 ;;     bmkp-bmenu-add-tags-to-marked, bmkp-bmenu-remove-tags-from-marked,
 ;;       bmkp-bmenu-paste-(add|replace)-tags-to-marked:
