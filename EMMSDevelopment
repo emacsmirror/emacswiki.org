@@ -136,7 +136,7 @@ The rest of the file (keeping a blank line after the very first line)
 is for describing your changes in detail.  If you want, you can either
 leave this blank or just copy the relevant part of your ChangeLog
 entry here.  The information you use here will appear in the
-[http://lists.gnu.org/mailman/listinfo/emms-patches emms-patches mailing
+[http://lists.gnu.org/mailman/listinfo/emms-help emms-help mailing
 list] when you are done, once you have either pushed your changes or a
 developer has committed a patch that you have sent.
 
@@ -163,7 +163,7 @@ emms-player-mpd: Integrate with emms-lastfm to show track.
 If you have changes that you have committed to EMMS, they are only
 local to your copy of EMMS so far.  If you want to share them, you must
 either push them back to the shared repo, or email them to the
-emms-patches AT gnu.org mailing list.
+emms-help AT gnu.org mailing list.
 
 If you have developer access to the shared archive, you can push
 changes back by doing:
@@ -180,7 +180,7 @@ You may send your changes via email by doing:
 git format-patch -M origin
 </pre>
 
-and then sending the generated patch files to the emms-patches
+and then sending the generated patch files to the emms-help
 mailing list.  Be sure to describe your changes and include a sample
 ChangeLog entry for them.  Be sure that the patch is the body of the
 message, and not an attachment.  Any comments that you wish to make,
@@ -192,7 +192,7 @@ than opening up an email client, you can do the following, where
 PATCH-FILE is the file that <code>git format-patch</code> made:
 
 <pre>
-git send-email --to emms-patches@gnu.org PATCH-FILE
+git send-email --to emms-help@gnu.org PATCH-FILE
 </pre>
 
 == Becoming an EMMS Developer ==
@@ -201,7 +201,7 @@ If you want commit access to the shared EMMS repository on Savannah,
 then register an account at http://sv.gnu.org/ (be sure to add an SSH
 key), browse to the EMMS project at http://sv.gnu.org/p/emms, and
 request to be add to the group.  It would be best to send some patches
-to the emms-patches AT gnu.org mailing list first, so that we know
+to the emms-help AT gnu.org mailing list first, so that we know
 that you know what you are doing.
 
 Alternatively, you can submit patches from your own repo, if you
