@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Jun 23 07:23:57 2016 (-0700)
+;; Last-Updated: Fri Jun 24 09:46:13 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 3764
+;;     Update #: 3769
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -467,6 +467,7 @@ Elements of ALIST that are not conses are ignored."
 (defvar bmkp-sorted-alist)              ; In `bookmark+-1.el'.
 (defvar bmkp-su-or-sudo-regexp)         ; In `bookmark+-1.el'.
 (defvar bmkp-temporary-bookmarking-mode) ; In `bookmark+-1.el'.
+(defvar minibuffer-prompt-properties)   ; Emacs 22+.
 
  
 ;;(@* "Utility Functions")
@@ -2045,54 +2046,71 @@ Non-interactively, non-nil MSG-P means display messages."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Added optional arg MARKEDP: handle bookmarks marked `>', not just those flagged `D'.
-;; 2. Added optional arg NO-CONFIRM-P.
-;; 3. Inhibit saving until all are deleted, then save all.  This is because the Bookmark+ version of
-;;    `bookmark-save' refreshes the bookmark list display, and that removes `D' flags.
-;; 4. Use `bookmark-bmenu-surreptitiously-rebuild-list', instead of using
-;;    `bookmark-bmenu-list', updating the modification count, and saving.
-;; 5. Update `bmkp-latest-bookmark-alist' to reflect the deletions.
-;; 6. Pass full bookmark, not name, to `delete' (and do not use `assoc').
-;; 7. Use `bmkp-bmenu-goto-bookmark-named'.
-;; 8. Added status messages.
-;; 9. Raise error if not in buffer `*Bookmark List*'.
+;;  1. Added optional arg MARKEDP: handle bookmarks marked `>', not just those flagged `D'.
+;;  2. Added optional arg NO-CONFIRM-P.
+;;  3. Delete bookmark on current line (after confirmation) if none are flagged/marked.
+;;  4. Inhibit saving until all are deleted, then save all.  This is because the Bookmark+ version of
+;;     `bookmark-save' refreshes the bookmark list display, and that removes `D' flags.
+;;  5. Use `bookmark-bmenu-surreptitiously-rebuild-list', instead of using
+;;     `bookmark-bmenu-list', updating the modification count, and saving.
+;;  6. Update `bmkp-latest-bookmark-alist' to reflect the deletions.
+;;  7. Pass full bookmark, not name, to `delete' (and do not use `assoc').
+;;  8. Use `bmkp-bmenu-goto-bookmark-named'.
+;;  9. Added status messages.
+;; 10. Raise error if not in buffer `*Bookmark List*'.
 ;;
 ;;;###autoload (autoload 'bookmark-bmenu-execute-deletions "bookmark+")
 (defun bookmark-bmenu-execute-deletions (&optional markedp no-confirm-p) ; Bound to `x' in bookmark list
-  "Delete (visible) bookmarks flagged `D'.
-With a prefix argument, delete the bookmarks marked `>' instead, after
+  "Delete (visible) bookmarks flagged `D', without confirmation.
+With a prefix argument, delete the bookmarks marked `>' instead, but
+only after confirmation.
+
+If NO bookmarks are flagged or marked (depending on whether a prefix
+arg was used), then delete the bookmark on this line, but only after
 confirmation.
 
 Non-interactively, optional arg NO-CONFIRM-P non-nil means do not ask
 for confirmation."
   (interactive "P")
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (if (or (not markedp)  no-confirm-p  (yes-or-no-p "Delete bookmarks marked `>' (not `D') "))
-      (let* ((mark-type  (if markedp "^>" "^D"))
-             (o-str      (and (not (bmkp-looking-at-p mark-type))  (bookmark-bmenu-bookmark)))
-             (o-point    (point))
-             (count      0))
-        (message "Deleting bookmarks...")
-        (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
-        (while (re-search-forward mark-type (point-max) t)
-          (let* ((bmk-name  (bookmark-bmenu-bookmark))
-                 (bmk       (bookmark-get-bookmark bmk-name)))
-            ;; Inhibit saving until all are deleted, then do it once.  Otherwise, some might not be
-            ;; deleted, because `bookmark-save' refreshes the list, which removes `D' flags.
-            (let ((bookmark-save-flag  nil))  (bookmark-delete bmk-name 'BATCHP))
-            ;; Count is misleading if the bookmark is not really in `bookmark-alist'.
-            (setq count                       (1+ count)
-                  bmkp-latest-bookmark-alist  (delete bmk bmkp-latest-bookmark-alist))))
-        (bmkp-maybe-save-bookmarks)     ; Do it now.
-        (if (<= count 0)
-            (message (if markedp "No marked bookmarks" "No bookmarks flagged for deletion"))
-          (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
-          (message "Deleted %d bookmarks" count))
-        (if o-str
-            (bmkp-bmenu-goto-bookmark-named o-str)
-          (goto-char o-point)
-          (beginning-of-line)))
-    (message "OK, nothing deleted")))
+  (if (and (null (if markedp bmkp-bmenu-marked-bookmarks bmkp-flagged-bookmarks))
+           (bookmark-bmenu-bookmark))
+      (if (progn (let ((visible-bell                  t)
+                       (minibuffer-prompt-properties  (append minibuffer-prompt-properties
+                                                              '(face bmkp-*-mark))))
+                   (ding) (ding)
+                   (yes-or-no-p "DELETE THIS bookmark ")))
+          (bookmark-delete (bookmark-bmenu-bookmark))
+        (message "OK, not deleted"))
+    (if (or (not markedp)
+            no-confirm-p
+            (yes-or-no-p "Delete bookmarks marked `>' (not `D') "))
+        (let* ((mark-type  (if markedp "^>" "^D"))
+               (o-str      (and (not (bmkp-looking-at-p mark-type))  (bookmark-bmenu-bookmark)))
+               (o-point    (point))
+               (count      0))
+          (message "Deleting bookmarks...")
+          (goto-char (point-min)) (forward-line bmkp-bmenu-header-lines)
+          (while (re-search-forward mark-type (point-max) t)
+            (let* ((bmk-name  (bookmark-bmenu-bookmark))
+                   (bmk       (bookmark-get-bookmark bmk-name)))
+              ;; Inhibit saving until all are deleted, then do it once.  Otherwise, some might not be
+              ;; deleted, because `bookmark-save' refreshes the list, which removes `D' flags.
+              (let ((bookmark-save-flag  nil))  (bookmark-delete bmk-name 'BATCHP))
+              ;; Count is misleading if the bookmark is not really in `bookmark-alist'.
+              (setq count                       (1+ count)
+                    bmkp-latest-bookmark-alist  (delete bmk bmkp-latest-bookmark-alist))))
+          (bmkp-maybe-save-bookmarks)   ; Do it now.
+          (if (<= count 0)
+              (message (if markedp "No marked bookmarks" "No bookmarks flagged for deletion"))
+            (bookmark-bmenu-surreptitiously-rebuild-list 'NO-MSG-P)
+            (message "Deleted %d bookmarks" count))
+          (if o-str
+              (bmkp-bmenu-goto-bookmark-named o-str)
+            (goto-char o-point)
+            (beginning-of-line)))
+      (message "OK, nothing deleted"))))
+
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
