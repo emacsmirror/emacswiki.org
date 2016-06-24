@@ -4,18 +4,15 @@ My name is Yoni Rabkin. I've been using GNU/Emacs ever since I've started using 
 
 I have a few patches in GNU/Emacs.
 
-I contribute to the [[EMMS]] project, I wrote parts of it and use it daily. I also (re)wrote most of the Emms manual and designed the logo.
+I maintain the [[EMMS]] project, I wrote parts of it and use it daily. I also (re)wrote most of the Emms manual and designed the logo.
 
 I organize my life using text files in GNU/Emacs and a few simple rules. I'd write more about my technique if anyone asked.
 
-You can occasionally find me on irc.freenode.net in #fsf or #fsf-members as [::yrk].
+You can occasionally find me on irc.freenode.net in #fsf, #fsf-members, #gnu, etc. as [::yrk].
 
-[http://yrk.nfshost.com My homepage] has a bit more info, or try [http://themarketscoreboard.com/ my personal hobby site].
+[http://yrk.rabkins.net My homepage] has a bit more info.
 
 == Emacs Hacking ==
-
-=== wireless.el ===
-I wrote, and use [http://gitorious.org/wireless wireless.el] for wireless status information. Essentially it pretty-prints /proc/net/wireless into your mode line, and is based on Ralph Schleicher's battery.el.
 
 === analog-clock.el ===
 I wrote [http://yrk.nfshost.com/repos/analog-clock/analog-clock.el analog-clock.el]. It is an animated analog clock (Seven-Segment or turny) for your temporal enjoyment. It should be in GNU/Emacs proper.
@@ -30,12 +27,6 @@ SLIME, the Superior Lisp Interaction Mode for Emacs, displays a MOTD type encour
 rt-liberation is a GNU/Emacs interface to the [http://bestpractical.com/rt/ RT] system. I wrote and use it every day in order to avoid using a browser and an HTML Web interface to RT. It integrates with Gnus and it's also convenient for zapping spam tickets on public-facing RT queues. It comes with a Lisp domain specific language for writing Ticket-SQL queries. [http://www.nongnu.org/rtliber/ get it through Savannah].
 
 If you work with RT and hang around IRC, you might also be interested in [http://yrk.nfshost.com/projects/queue-status/ Queue-Status].
-
-=== emacs-android.el ===
-I write some Android stuff. Some of the Emacs Lisp hacks I write to help me hack Android Java in Emacs find their way into emacs-android.el. You can get a copy with: git clone http://yrk.nfshost.com/repos/emacs-android.git
-
-=== emacs-pmd.el ===
-For Emacs integration with PMD (http://pmd.sourceforge.net/), see emacs-pmd.el here: http://yrk.nfshost.com/projects/emacs-pmd/
 
 Bug reports and patches are welcome. Happy hacking.
 
