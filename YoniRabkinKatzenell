@@ -18,10 +18,10 @@ You can occasionally find me on irc.freenode.net in #fsf, #fsf-members, #gnu, et
 I wrote [http://yrk.nfshost.com/repos/analog-clock/analog-clock.el analog-clock.el]. It is an animated analog clock (Seven-Segment or turny) for your temporal enjoyment. It should be in GNU/Emacs proper.
 
 === vernacular-time.el ===
-I wrote [http://yrk.nfshost.com/repos/vernacular-time/vernacular-time.el vernacular-time.el] to display times stamps in Emacs in the vernacular. It has a useful Dired mode to transform "ls" time stamps. You can pull from the Darcs repository at http://yrk.nfshost.com/repos/vernacular-time/. This too should come with GNU/Emacs.
+I wrote [http://yrk.nfshost.com/repos/vernacular-time/vernacular-time.el vernacular-time.el] to display times stamps in Emacs in the vernacular. It has a useful Dired mode to transform "ls" time stamps.
 
 === slime-cl-pitfalls.el ===
-SLIME, the Superior Lisp Interaction Mode for Emacs, displays a MOTD type encouragement when loaded. With [http://yrk.nfshost.com/repos/slime-cl-pitfalls/slime-cl-pitfalls.el slime-cl-pitfalls.el] you will instead be treated with a randomly selected Common Lisp pitfall for your edification. You can pull from the Darcs repository at http://yrk.nfshost.com/repos/slime-cl-pitfalls/.
+SLIME, the Superior Lisp Interaction Mode for Emacs, displays a MOTD type encouragement when loaded. With [http://yrk.nfshost.com/repos/slime-cl-pitfalls/slime-cl-pitfalls.el slime-cl-pitfalls.el] you will instead be treated with a randomly selected Common Lisp pitfall for your edification.
 
 === rt-liberation.el ===
 rt-liberation is a GNU/Emacs interface to the [http://bestpractical.com/rt/ RT] system. I wrote and use it every day in order to avoid using a browser and an HTML Web interface to RT. It integrates with Gnus and it's also convenient for zapping spam tickets on public-facing RT queues. It comes with a Lisp domain specific language for writing Ticket-SQL queries. [http://www.nongnu.org/rtliber/ get it through Savannah].
@@ -30,15 +30,6 @@ If you work with RT and hang around IRC, you might also be interested in [http:/
 
 Bug reports and patches are welcome. Happy hacking.
 
-== Emacs Hacking: Older Projects ==
-
-I'm keeping these around so that people looking for them will still find the code, but I don't work on these for whatever reason.
-
-=== diamondsms.el ===
-If you have a VOIP account you can use [http://yrk.nfshost.com/repos/diamondsms/diamondsms.el diamondsms.el] to send SMS' from Emacs. Please note that it currently only works with one provider, namely Diamondcard VOIP. I hope to be able to add more providers, so if you know about any VOIP providers with an SMS API, please contact me. You can pull from the Darcs repository at http://yrk.nfshost.com/repos/diamondsms/.
-
-=== emacs-linphone.el ===
-[http://www.linphone.org/ linphone] is GPL'd VOIP software for speech and video. emacs-linphone.el is an Emacs interface to linphone. Get in on the action at: git clone http://yrk.nfshost.com/repos/emacs-linphone.git
 
 == General Emacs Tips ==
 
