@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jun 24 07:32:32 2016 (-0700)
+;; Last-Updated: Fri Jun 24 09:40:06 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16070
+;;     Update #: 16071
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1203,6 +1203,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2016/06/24 dadams
+;;     bookmark-bmenu-execute-deletions: Delete bookmark on the current line if none flagged/marked.
 ;; 2016/06/23 dadams
 ;;     bmkp-bmenu-(add|remove)-tags-(to|from)-marked, bmkp-bmenu-paste-(add|replace)-tags-for-marked:
 ;;       Call bmkp-maybe-save-bookmarks (after the iteration).  Thx to Alan Wehmann.
