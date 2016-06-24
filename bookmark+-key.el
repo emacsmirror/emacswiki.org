@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Sun May 15 09:39:01 2016 (-0700)
+;; Last-Updated: Fri Jun 24 07:31:32 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 749
+;;     Update #: 752
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -233,6 +233,9 @@ Each value of the list is a prefix key bound to keymap
 (define-key bookmark-map ":"      'bmkp-choose-navlist-of-type)                       ; `C-x p :'
 (define-key bookmark-map "\r"     'bmkp-toggle-autonamed-bookmark-set/delete)         ; `C-x p RET'
 (define-key bookmark-map [delete] 'bmkp-delete-bookmarks)                             ; `C-x p delete'
+(define-key bookmark-map [deletechar] 'bmkp-delete-bookmarks)                      ; `C-x p deletechar'
+;; For Mac Book:
+(define-key bookmark-map [kp-delete] 'bmkp-delete-bookmarks)                       ; `C-x p kp-delete'
 
 ;; If you use Emacs before Emacs 22, then you will want to bind the commands
 ;; whose names do *not* end in `-repeat' to keys that are easily repeatable.
