@@ -1,5 +1,5 @@
 == Binaries for OS X ==
-The official Emacs fully supports Mac OS X (along with GNU/Linux, Windows, DOS, and then some).  You can find precompiled versions of this at http://emacsformacosx.com/.
+The official Emacs fully supports Mac OS X (along with GNU/Linux, Windows, DOS, and then some).  You can find precompiled versions of emacs and Emacs.app at http://emacsformacosx.com/.
 
 A copy of GNU Emacs 22 without GUI support compiled in is available on all recent versions of Mac OS X via the shell. However, there are other Emacs distributions geared towards Mac OS X that include GUI support as well as other distinctions that may make it a more appropriate choice for some.
 
@@ -10,7 +10,9 @@ Carbon is the C language API (developed by Apple) that lets applications written
 X11 Emacs is the "original" emacs running under X11 (installed by default in recent versions of Mac OS X)
 
 If you are a Mac user new to Emacs, many people find Aquamacs to be a good choice.  Many find it to be more Mac-like than Emacs.app.
-If you've used Emacs before and already have your own Emacs initialization file, then Emacs.app is likely a better choice.  As compared to Aquamacs, Emacs.app is more traditional in its approach, prefers a single frame, and is more likely to work with existing emacs initialization files.
+If you've used Emacs before and already have your own Emacs initialization file, then Emacs.app is likely a better choice.  
+
+As compared to Aquamacs, Emacs.app is more traditional in its approach, prefers a single frame, and is more likely to work with existing emacs initialization files. When using the vanilla EmacsforOsx binary, a useful site for setting, at least, Emacs server and Emacs client applications is [https://korewanetadesu.com/emacs-on-os-x.html Configuring Emacs on Mac OS X]. Emacs shell environments behave differently from Terminal environments and in order to have correct environments like LANG=en_GB.utf-8 LC_ALL=en_GB.utf-8 or PATH= for sub-applications launched from Emacs like R, Octave, Gnuplot etc., set the environments not only in .bash_profile but in .bashrc and try (since Yosemite /etc/launchd.conf is no more consulted for security reasons).  
 
 A similar page on a German blog: [https://web.archive.org/web/20120630005123/http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS-X.html Die Emacssituation unter OS X] (in German).
 
