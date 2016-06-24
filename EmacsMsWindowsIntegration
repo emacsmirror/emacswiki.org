@@ -71,9 +71,11 @@ A quick and dirty way to replace all ##notepad.exe## calls from any application 
 Note that this will pretty much break the usual ##-F## behavior but it is needed as ##emacsclientw## has no [http://stackoverflow.com/questions/2984846/set-image-file-execution-options-will-always-open-the-named-exe-file-as-defaul -z parameter] (yet).
 
 
-== Use Cygwin bash for `term`/`ansi-term`
+== Workaround to get`term`/`ansi-term` working with `cmd.exe` or Cygwin bash
 
 Check out [https://github.com/d5884/fakecygpty]. This is your best bet to get `term`/`ansi-term` working with a proper shell on Windows with Win32 Emacs.
+
+You will need Cygwin installed to build it.
 
 ----
 
