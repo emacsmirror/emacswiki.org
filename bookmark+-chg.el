@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jun 23 09:29:39 2016 (-0700)
+;; Last-Updated: Fri Jun 24 07:32:32 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16069
+;;     Update #: 16070
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1787,6 +1787,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2016/06/24 dadams
+;;     Added bmkp-delete-bookmarks binding for <deletechar> and <kp-delete>.
 ;; 2016/05/15 dadams
 ;;     dired-mode-hook:
 ;;       If diredp-bookmark-menu is defined then use that.
