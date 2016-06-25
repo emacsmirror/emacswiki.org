@@ -27,13 +27,13 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 ==Learning About Emacs==
 
 * EmacsNewbie -- basic concepts, vocabulary, notation used in documentation
-* [[CategoryDocumentation|Documentation]] -- Emacs is self-documenting and helpful
+* [[CategoryDocumentation|Documentation]] -- learn why Emacs is called the self-documenting text editor.
 * [[CategoryHelp|Help]] -- online help from Emacs itself and its users
+* [[LearningEmacs|Learning Emacs]] -- there are many resources ways to learn Emacs, and lots of aids to learning
+* [[LearnEmacsLisp|Learn Emacs Lisp]] -- EmacsLisp is not just the language that most of Emacs is implemented in. It '''''is''''' Emacs.
+* [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to use the EmacsLisp code snippets from this site.
 * [[CategoryGlossary|Glossary]] -- Emacs terminology
-* LearningEmacs -- there are lots of ways to learn Emacs, and lots of aids to learning
-* LearnEmacsLisp -- EmacsLisp is not just the language that most of Emacs is implemented in. It '''''is''''' Emacs. 
-* [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to execute EmacsLisp code snippets you'll find here
-* EmacsNiftyTricks -- some extra tips
+* [[EmacsNiftyTricks|Nifty Tricks]] -- some extra tips
 * RandomPage -- for serendipitous visitors
 * [[CategoryCommunity|Community]] -- learning from other people who use Emacs
 
