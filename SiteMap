@@ -30,7 +30,7 @@ You can edit this website.  There's a link, '''Edit this page''', at the bottom 
 * [[CategoryDocumentation|Documentation]] -- learn why Emacs is called the self-documenting text editor.
 * [[CategoryHelp|Help]] -- online help from Emacs itself and its users
 * [[LearningEmacs|Learning Emacs]] -- there are many resources ways to learn Emacs, and lots of aids to learning
-* [[LearnEmacsLisp|Learn Emacs Lisp]] -- EmacsLisp is not just the language that most of Emacs is implemented in. It '''''is''''' Emacs.
+* [[LearnEmacsLisp|Learn Emacs Lisp]] -- EmacsLisp is the heart and soul of Emacs.
 * [[CategoryDotEmacs|DotEmacs]] -- writing an [[init file]] to use the EmacsLisp code snippets from this site.
 * [[CategoryGlossary|Glossary]] -- Emacs terminology
 * [[EmacsNiftyTricks|Nifty Tricks]] -- some extra tips
