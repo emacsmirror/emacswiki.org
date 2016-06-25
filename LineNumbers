@@ -60,6 +60,7 @@ the lastest Nlinum-mode git version(1.6) not worked with emacs deamon mode, use 
   (nlinum-mode -1) ad-do-it (nlinum-mode 1)))
 </pre>
 
+- zw963(Billy)
 == Linum ==
 
 Library ##linum.el## works incrementally and can number large files very quickly.
