@@ -90,14 +90,14 @@ Faster, simpler:
                          string)
            t))
 
-The first argument to rx-to-string `(: ,suffix eos) is a regular expression in sexp form.  The help page for "rx" elucidates the syntax:
+The first argument to rx-to-string <code>`(: ,suffix eos)</code> is a regular expression in sexp form.  The help page for "rx" elucidates the syntax:
 
     `(: SEXP1 SEXP2 ...)'
     matches what SEXP1 matches, followed by what SEXP2 matches, etc.
 
-,suffix is SEXP1 and eos is SEXP2
-'(: suffix eos) would create a list of three elements: The symbol named ":", the symbol named "suffix", and the symbol named "eos".  But that's not what this function wants. It wants the *value* of the symbol named "suffix", not the symbol itself.  ` is special syntax (note the backtick, not just tick) that allows some things in the list to be preceded by a comma, which are then evaluated.
-`(: ,suffix eos) is convenience syntax for (list ': suffix 'eos).
+<code>,suffix</code> is SEXP1 and <code>eos</code> is SEXP2
+<code>'(: suffix eos)</code> would create a list of three elements: The symbol named ":", the symbol named "suffix", and the symbol named "eos".  But that's not what this function wants. It wants the *value* of the symbol named "suffix", not the symbol itself.  ` is special syntax (note the backtick, not just tick) that allows some things in the list to be preceded by a comma, which are then evaluated.
+<code>`(: ,suffix eos)</code> is convenience syntax for <code>(list ': suffix 'eos)</code>.
 The only symbol that is evaluated is suffix.  Because there is no , before : or eos, both : and eos are not evaluated.  Symbols are not evaluated by default in the `( ... ) syntax and require a , if you want them to be evaluated.  Thanks to <forcer> on #emacs-beginners irc channel for the explanation.
 
 
