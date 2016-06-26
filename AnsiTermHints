@@ -227,7 +227,7 @@ Meh. It's still not perfect. Cursor jumps everywhere when the cursor up key (for
 
 On debian based systems you administer, you can 'apt-get install ncurses-term', which includes /usr/share/terminfo/e/eterm-color.
 
-== Extremely slow screen clearing in Emacs 24.x and 25.x ==
+== Extremely slow screen clearing in Emacs 24.x ==
 
 The bi-directional text support introduced in Emacs 24 interacts badly with term.el when large numbers of spaces or tabs are inserted.
 
@@ -241,4 +241,6 @@ The workaround is to prevent Emacs from guessing the text direction in term-mode
    ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=20611
    (setq bidi-paragraph-direction 'left-to-right))
 
-This has been fixed in the Emacs master branch, such that this workaround is not necessary. The fix should be included in either Emacs 25.2 or 25.3.
+You only need to use this hook for Emacs 24.x, as it will be active by default in the 25.1 release. (If your pre-release version of Emacs 25 suffers from this issue, simply update it.)
+
+Furthermore, the root of the problem has been fixed in the Emacs master branch (such that the workaround is not necessary at all). That fix should be included in either Emacs 25.2 or 25.3.
