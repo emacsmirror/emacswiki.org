@@ -2,7 +2,15 @@ From its documentation:
 
 : //Hyperbole (pronounced Hi-per-bo-lee) is an open, efficient, and programmable hypertextual information management and outliner system.//
 
-The project page is http://sourceforge.net/projects/hyperbole.  There is also an older version available from the FSF at http://directory.fsf.org/hyperbole.html.
+The project page is http://savannah.gnu.org/projects/hyperbole/. The development work has recently (2016) started again with the goal of having a new release some time during the summer.
+
+Hyperbole has the follwing features:
+ 
+* Info Management: an interactive, unstructured textual information management interface.
+* Screen Control: fast and easiest-to-use window and frame control. 
+* KoutlineMode: advanced outliner with multi-level autonumbering.
+* Button Types: set of hyper-button types which supply core hypertext and other behaviors.
+* Programming Library: library classes for system developers who want to integrate with Hyperbole.
 
 [new]
 I would like to see a comparison between the various Information Management tools and [[Hyperbole]].  Could anyone comment on this?
