@@ -32,6 +32,17 @@ And here is what I have in dot emacs
     (setq matlab-shell-echoes nil)
 
 
+== On Mac ==
+Matlab on Mac is accessible as a CLI application on Mac (and maybe Linux) with settings similar to the following:
+
+    % CLI matlab from the shell:
+    % /Applications/MATLAB_R2016a.app/bin/matlab -nodesktop
+    %
+    % elisp setup for matlab-mode:
+    (setq matlab-shell-command "/Applications/MATLAB_R2016a.app/bin/matlab")
+    (setq matlab-shell-command-switches (list "-nodesktop"))
+
+
 == Wiki Pages ==
 * MatlabFunctionTemplate
 
