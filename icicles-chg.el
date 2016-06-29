@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jun 12 18:02:04 2016 (-0700)
+;; Last-Updated: Wed Jun 29 06:47:30 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 11629
+;;     Update #: 11630
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1168,6 +1168,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2016/06/29 dadams
+;;     icicle-search: Escaped a few backslashes in doc string.  Thx to Tino Calancha.
 ;; 2016/06/12 dadams
 ;;     Added: icicle-auto-complete-key, icicle-auto-complete-keys-mode.
 ;; 2016/05/29 dadams
