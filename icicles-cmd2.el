@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Jun 14 13:08:06 2016 (-0700)
+;; Last-Updated: Wed Jun 29 06:46:12 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7395
+;;     Update #: 7396
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4182,11 +4182,11 @@ match another regexp against the text in a search context.  See the
 end of this description for information about the other arguments.
 
 If the search-context regexp contains regexp subgroups, that is,
-subexpressions of the form `\(...\)', then you are prompted for the
+subexpressions of the form `\\(...\\)', then you are prompted for the
 subgroup to use to define the search contexts.  Subgroup 0 means the
 context is whatever matches the whole regexp.  Subgroup 1 means the
 context is whatever matches the first subgroup, and so on.  The
-subgroup number is the number of occurrences of `\(', starting at the
+subgroup number is the number of occurrences of `\\(', starting at the
 beginning of the regexp.
 
 Search respects `icicle-regexp-quote-flag' and
@@ -4442,9 +4442,9 @@ Icicles options:
 
 Finally, the replacement string can be nearly anything that is allowed
 as a replacement by `query-replace-regexp'.  In Emacs 22 or later,
-this includes Lisp sexp evaluation via `\,' and constructs such as
-`\#' and `\N' (back references).  You can also use `\?', but it is not
-very useful - you might as well use `M-,' instead, to change the
+this includes Lisp sexp evaluation via `\\,' and constructs such as
+`\\#' and `\\N' (back references).  You can also use `\\?', but it is
+not very useful - you might as well use `M-,' instead, to change the
 replacement text.
 
 
