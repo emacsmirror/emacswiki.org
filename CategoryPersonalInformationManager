@@ -26,22 +26,22 @@ outlines).
 * DiaryMode allow you to make appointments, plan ahead, remember
 birthdays (these are not linked to entries in the BBDB), holidays.
 
-* EmacsPilot allows synchronization of the BBDB database and the Emacs diary with 
-any PDA supported by pilot-link.
-
 * EmacsDataBase is a flexible system for defining, accessing, modifying,
 summarizing, and generally playing with, a set of records.  You can view each
 record individually or summarized (with other records) in separate buffer.
 Record format (field names and their types) can be arbitrarily complex.
 
+* EmacsPilot allows synchronization of the BBDB database and the Emacs diary with 
+any PDA supported by pilot-link.
+
 * ExtendedPageHandling provides an early and primitive system to sort, search
   and navigate records separated by PageBreaks.
 
-* [[Hyperbole]], the Everyday Hypertextual Information Manager, is a set of tools with easy-to-navigate keyboard and menubar menus that lets you hyperlink your world without learning a markup language, lets you precisely and quickly control your windows and frames, lets you quickly look up contacts in hierarchical categories (including basic BBDB integration) and comes with an extensive manual.
-
 * HowmMode allows you to take notes fragmentarily and browse them collectively.
 
-* OrgMode is a organizer based on OutlineMode.
+* [[Hyperbole]], the Everyday Hypertextual Information Manager, is a set of tools with easy-to-navigate keyboard and menubar menus that lets you hyperlink your world without learning a markup language, lets you precisely and quickly control your windows and frames, lets you quickly look up contacts in hierarchical categories (including basic BBDB integration) and comes with an extensive manual.
+
+* [[LinkdMode|LinkD]] lets you create links within and among Emacs buffers and files.
 
 * OrganizerMode generates and uses pages with linked information from
 todo mode, bbdb, diary, gnus, vm, etc.. as well as a related organizer
@@ -50,6 +50,8 @@ their proper pages and access the proper pages from entries in their
 native modes as distributed with emacs.  Organizer actions may be
 performed on upon organizer page entries.  Note that OrganizerMode is not being
 maintained anymore.
+
+* OrgMode is a organizer based on OutlineMode.
 
 * PlannerMode integrates the various modes out there (EmacsWikiMode,
 BbdbMode, DiaryMode, Gnus, etc.)  and tries to provide a coherent,
