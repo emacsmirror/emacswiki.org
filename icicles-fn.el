@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Jun 10 14:35:32 2016 (-0700)
+;; Last-Updated: Fri Jul  1 09:06:21 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 15156
+;;     Update #: 15157
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5495,8 +5495,8 @@ RELATIVEP non-nil means use relative file names."
 ;; Note that initial and trailing spaces will not be noticeable.  That's OK.
 (defun icicle-highlight-complete-input ()
   "Highlight minibuffer input, showing that it is a sole completion.
-Overlay `icicle-complete-input-overlay' is created with `match' face,
-unless it exists."
+Overlay `icicle-complete-input-overlay' is created with face
+`icicle-complete-input', unless it exists."
   (let ((case-fold-search
          ;; Don't bother with buffer completion and `read-buffer-completion-ignore-case'.
          (if (and (or (icicle-file-name-input-p)  icicle-abs-file-candidates)
