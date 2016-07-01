@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 16:11:37 2015 (-0800)
+;; Last-Updated: Fri Jul  1 09:41:03 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 3061
+;;     Update #: 3063
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -84,6 +84,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2016/07/01 dadams
+;;     Do not require bm.el (Bookmark+ does everything it does, and better.)
 ;; 2015/09/20 dadams
 ;;     Soft-require flx.el.
 ;; 2015/08/20 dadams
@@ -535,7 +537,7 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 
 ;; Load `bookmark+.el' after `menu-bar+.el.
 (require 'bookmark+ nil t)              ; Extensions to `bookmark.el'.
-(when (> emacs-major-version 21) (require 'bm nil t)) ; Visible bookmarks.
+;; (when (> emacs-major-version 21) (require 'bm nil t)) ; Visible bookmarks.
 (when (> emacs-major-version 21) (require 'tabbar nil t)) ; Tab bar.
 
 (eval-after-load "pp" '(require 'pp+ nil t)) ; Extensions to `pp.el'.
