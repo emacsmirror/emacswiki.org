@@ -4,9 +4,22 @@ Library <tt>[[info+.el]]</tt> extends the standard Emacs library ##info.el## in 
 ** Quoted names, like this: ##‘name-stands-out’## or ##`name-stands-out'##, and strings, like this: ##"string-stands-out"## are highlighted if '''`Info-fontify-quotations-flag'''' is non-`nil'.
 ** Angle-bracketed names, like this: ##<tab>##, are highlighted if '''`Info-fontify-angle-bracketed-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
 ** Isolated single quotes, like this: ##'foobar##, are highlighted if '''`Info-fontify-single-quote-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
+** Emphasized text, that is, text enclosed in underscore characters, like this: ##_this is emphasized text_## ,is
+highlighted if `Info-fontify-emphasis-flag' is non-`nil'.
+(But if internal variable `info-fontify-emphasis' is `nil'
+then there is no such highlighting, and that option has no
+effect.)
 ** In the Emacs Lisp manual, reference items are highlighted, so they stand out.  This means: constants, [[command]]s, functions, [[macro]]s, special forms, syntax classes, [[user option]]s, and other [[variable]]s.
 
-:: You can toggle each of the `Info-fontify-*-flag' options from the `Info' menu or by command.
+:: Be aware that such highlighting is not 100% foolproof.
+Especially for a manual such as Emacs or Elisp, where arbitrary
+keys and characters can be present anywhere, the highlighting
+can be thrown off.
+
+
+:: You can toggle each of the `Info-fontify-*-flag' options from the `Info' menu or using an `Info-toggle-fontify-*' command.
+For example, command `Info-toggle-fontify-emphasis' toggles
+option `Info-fontify-emphasis-flag'.
 
 :: Here is a screenshot of the <code>*Info*</code> buffer, showing some of the highlighting:
 
@@ -16,7 +29,7 @@ Library <tt>[[info+.el]]</tt> extends the standard Emacs library ##info.el## in 
 
 ** In the mode line. Turned ''on'' by default. See `##Toggle Breadcrumbs##' in `mouse-3' mode-line menu and `##Toggle Breadcrumbs in Mode Line##' in `Info' menu (e.g. in the minor-mode indicator). You can customize [[option]] '''`Info-breadcrumbs-in-mode-line-mode'''' if you want to turn it off by default. (Available for Emacs 23+ only.)
 
-** In the header (just below the header line).  I added this to vanilla Emacs 23. Turned ''off'' by default in '''Info+'''.  See `##Toggle Breadcrumbs in Header Line##' in `Info' menu.  Be aware that unlike breadcrumbs in the mode line, this can occasionally throw off the destination accuracy of cross references and searches slightly. (Available for Emacs 22+ only.)  Here is a screenshot showing breadcrumbs in the header line (only):
+** In the header (just below the header line).  I added this to vanilla Emacs 23. Turned ''off'' by default in '''Info+'''.  See `##Toggle Breadcrumbs in Header Line##' in `Info' menu.  Be aware that unlike breadcrumbs in the mode line, this can occasionally throw off the destination accuracy of cross references and searches slightly. Here is a screenshot showing breadcrumbs in the header line (only):
 
 :: [[image:DrewsEmacsInfoCrumbsInHeaderImage]]
 
@@ -36,7 +49,7 @@ Library <tt>[[info+.el]]</tt> extends the standard Emacs library ##info.el## in 
 * `*info*' has been removed from `same-window-buffer-names', so that a separate window can be used if you so choose.
 
 
-* New commands
+* Some of the commands defined:
 ** '''`Info-virtual-book'''' (bound to '''`v'''') -- Open a virtual Info manual of saved nodes from any number of manuals.  The nodes are those saved in [[option]] '''`Info-virtual-book''''.  With `C-u', [[bookmark]]ed Info nodes are also included.  See also `<tt>[[Icicles - Info Enhancements#VirtualInfoBooks|icicle-Info-virtual-book]]</tt>'.
 ** '''`Info-save-current-node'''' (bound to '''`##.##'''') -- Save name of current node to list `Info-saved-nodes', for use by `v' (`Info-virtual-book').
 ** '''`Info-merge-subnodes'''' -- Integrate the current Info node with its subnodes (the nodes in its Menu), perhaps recursively. 
