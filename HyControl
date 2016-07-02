@@ -154,3 +154,7 @@ The rest of this section goes into some technicalities about HyControl settings.
 HyControl allows placement of frames at screen edges and corners. with the frame cycle command, {'c'}, and direct placement matching the layout of the numeric keypad keys, if available.  (Note that a screen may span multiple physical monitors).  To prevent widgets and toolbars at the corners of the screen from being obscured, HyControl can offset each frame from each screen edge by a fixed number of pixels.  These offsets are specified by the variable, 'hycontrol-screen-offset-alist' and can differ for each type of screen; see its documentation for details.  If you change its value, then call 'hycontrol-set-screen-offsets' to set any new offset values.  'hycontrol-get-screen-offsets' returns the list of offsets in clockwise order starting from the top edge.  Both functions display a minibuffer message with the current offsets when called interactively.
 
 When HyControl creates a new frame, it automatically sizes it to the same size as the previously selected frame and offsets it from that frame by the (X .  Y) number of pixels given in the variable, 'hycontrol-frame-offset'.
+
+----
+
+CategoryPersonalInformationManager
