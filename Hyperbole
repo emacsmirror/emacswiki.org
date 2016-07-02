@@ -7,7 +7,7 @@ The project page is http://savannah.gnu.org/projects/hyperbole/. The development
 Hyperbole has the following features:
  
 * Info Management: an interactive, unstructured textual information management interface.
-* Screen Control: fast and easiest-to-use window and frame control. 
+* HyControl: the fastest and easiest-to-use window and frame control. 
 * KoutlineMode: advanced outliner with multi-level autonumbering.
 * Button Types: set of hyper-button types which supply core hypertext and other behaviors.
 * Programming Library: library classes for system developers who want to integrate with Hyperbole.
@@ -17,7 +17,7 @@ I would like to see a comparison between the various Information Management tool
 
 From RSW, author of GNU Hyperbole:
 
-People often ask us about the differences between Org mode and Hyperbole.  Although on the surface this comes up a lot, once you use both of these, you'll quickly see how different they are.  Because they are so different, it is likely that there will be some integration in the future.  You can use both together already with very little conflict.  Here is a contrast of the two, for those intereest.
+People often ask us about the differences between Org mode and Hyperbole.  Although on the surface this comes up a lot, once you use both of these, you'll quickly see how different they are.  Because they are so different, it is likely that there will be some integration in the future.  You can use both together already with very little conflict.  Here is a contrast of the two, for those interest.
 
 * Org-mode is a major-mode that works on structured files built atop Emacs outlining mode.
 * Hyperbole is a system that spans across much of Emacs' functionality, providing quick access keys and hyperbuttons wherever needed.
