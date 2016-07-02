@@ -37,9 +37,6 @@ If you have Windows NT or XP, you can set the <code>HOME</code> environment vari
 # Click '''Environment Variables'''.
 # Under '''User Variables''', click '''New''' and create a variable named <code>HOME</code> that points to where you want your home folder. 
 
-[new:IainDalton:2009-02-10 01:38 UTC]
-Windows NT and up set a <code>UserProfile</code> environment variable that's equivalent to <code>HOME</code>.  This might be useful somehow, though this whole issue is moot with Emacs 22 and up, if it really does set <code>HOME</code> for you.
-
 The cleanest option I've found is to soft link my version-controlled .emacs file in the default emacs.exe HOME directory:
 
 <code>cmd /c "mklink C:\Users\andrew\AppData\Roaming\.emacs C:\Users\andrew\src\dotfiles\.emacs"</code>
@@ -47,6 +44,9 @@ The cleanest option I've found is to soft link my version-controlled .emacs file
 (Use <code>M-: (getenv "HOME") RET</code> to get your HOME directory as seen by Emacs.)
 
 --mcandre
+
+[new:IainDalton:2009-02-10 01:38 UTC]
+Windows NT and up set a <code>UserProfile</code> environment variable that's equivalent to <code>HOME</code>.  This might be useful somehow, though this whole issue is moot with Emacs 22 and up, if it really does set <code>HOME</code> for you.
 
 ----
 CategoryWThirtyTwo CategoryDotEmacs
