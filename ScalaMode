@@ -1,7 +1,7 @@
 There are two major modes for editing Scala programs.
 For more about Scala, see [WikiPedia:Scala_%28programming_language%29 Scala on Wikipedia] and the [http://scala-lang.org Scala website].
 
-The old scala-mode works on emacs 23 and newer. It is available from [[Marmalade]] and from https://github.com/scala/scala-dist/tree/master/tool-support/src/emacs
+The old scala-mode works on emacs 23 and newer. It is available from [[Marmalade]] and from https://github.com/scala/scala-tool-support/tree/master/tool-support/emacs
 
 The new scala-mode2 requires emacs 24 (or newer). It is available from [[MELPA]] and from https://github.com/hvesalai/scala-mode2
 
