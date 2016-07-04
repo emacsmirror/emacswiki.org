@@ -8,9 +8,9 @@
 ;; Created: Sun Mar 22 16:24:39 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 16:04:57 2015 (-0800)
+;; Last-Updated: Mon Jul  4 14:21:25 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 114
+;;     Update #: 119
 ;; URL: http://www.emacswiki.org/showkey.el
 ;; Doc URL: http://www.emacswiki.org/ShowKey
 ;; Keywords: help keys mouse
@@ -90,6 +90,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2016/07/04 dadams
+;;     showkey-log: Respect showkey-tooltip-key-only-flag too.
 ;; 2015/05/27 dadams
 ;;     Added: showkey-tooltip-height, showkey-tooltip-key-only-flag.
 ;;     showkey-show-tooltip: Respect those new options.
@@ -318,8 +320,10 @@ are not logged."
                                                (memq 'drag modifiers))
                                            " at that spot"
                                          ""))
-             (cmd-desc                 (format "%s%s runs the command `%S'"
-                                               key-desc mouse-msg (key-binding key t)))
+             (cmd-desc                 (if showkey-tooltip-key-only-flag
+                                           (format "%s" key-desc)
+                                         (format "%s%s runs the command `%S'"
+                                                 key-desc mouse-msg (key-binding key t))))
              (w32-grab-focus-on-raise  nil))
         (save-selected-window
           (select-window (get-buffer-window "*KEYS*" 0))
