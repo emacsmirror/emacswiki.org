@@ -16,4 +16,6 @@
 # pages this will affect, take a look at this link (it's very slow):
 # http://www.emacswiki.org/emacs/?action=list-banned-content
 \s(https?:\S+\s+https?:\S+) # 2013-01-30 two consecutive bare links (http:... http://...) usually mean spam
-1[ ._-]\d{3}[ ._-]\d{3}[ ._-]\d{3,4} # 2016-01-27 We don't need phone numbers
+1[ ._-]\d{3}[ ._-]\d{3}[ ._-]\d{3,4} # 2016-01-27 phone numbers usually means spam
+1([0-8][.- _]?){9,10} # 2016-01-27 phone numbers usually means spam
+
