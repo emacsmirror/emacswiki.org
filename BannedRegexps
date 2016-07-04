@@ -17,5 +17,5 @@
 # http://www.emacswiki.org/emacs/?action=list-banned-content
 \s(https?:\S+\s+https?:\S+) # 2013-01-30 two consecutive bare links (http:... http://...) usually mean spam
 1[ ._-]\d{3}[ ._-]\d{3}[ ._-]\d{3,4} # 2016-01-27 phone numbers usually means spam
-1([0-8][.- _]?){9,10} # 2016-07-04 phone numbers usually means spam
+1([0-9][.- _]?){9,10} # 2016-07-04 phone numbers usually means spam
 ((customer|printer|tech(nical)?)\s(service|support)|toll\sfree|antivirus)(\sphone)?\snumber # 2016-07-04 phone numbers usually means spam
