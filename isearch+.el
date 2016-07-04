@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb 27 14:23:16 2016 (-0800)
+;; Last-Updated: Mon Jul  4 08:05:45 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 4272
+;;     Update #: 4276
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -653,6 +653,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/07/04 dadams
+;;     isearchp-replace-on-demand: Doubled backslashes in doc string.
+;;     isearch-lazy-highlight-update: Use lazy-highlight, not variable lazy-highlight-face.  Thx to Tino Calancha.
 ;; 2016/02/27 dadams
 ;;     Temporarily remove soft-require of character-fold+.el.
 ;;     Updated for Emacs 25 isearch.el changes:
@@ -1136,7 +1139,6 @@
 (defvar isearchp-restrict-to-region-flag) ; Here (Emacs 24.3+).
 (defvar last-repeatable-command)         ; In `repeat.el'.
 (defvar lazy-highlight-cleanup)         ; In `isearch.el' (Emacs 22+).
-(defvar lazy-highlight-face)             ; In `isearch.el' (Emacs 24+).
 (defvar lazy-highlight-interval)         ; In `isearch.el' (Emacs 24+).
 (defvar lazy-highlight-max-at-a-time)    ; In `isearch.el' (Emacs 24+).
 (defvar minibuffer-message-timeout)      ; In Emacs C code.
@@ -3233,7 +3235,7 @@ To use this command with a prefix arg, you must set
 You can use `C-M-`' anytime during Isearch to toggle whether the
 replacement text is taken literally or interpreted as using the
 special regexp replacement constructs.  These are the same as in
-`query-replace-regexp': `\&`, `\=\N', `\#', and `\,' (but not `\?')."
+`query-replace-regexp': `\\&`, `\\=\\N', `\\#', and `\\,' (but not `\\?')."
     (let ((numarg  (and isearchp-pref-arg  (prefix-numeric-value isearchp-pref-arg))))
       (when isearchp-pref-arg
         (when (consp isearchp-pref-arg) (setq numarg 1)) ; Treat plain `C-u' like `C-1'.
@@ -3659,7 +3661,7 @@ Attempt to do the search exactly the way the pending Isearch would."
                           (push ov isearch-lazy-highlight-overlays)
                           ;; 1000 is higher than ediff's 100+, but lower than isearch main overlay's 1001
                           (overlay-put ov 'priority 1000)
-                          (overlay-put ov 'face lazy-highlight-face)
+                          (overlay-put ov 'face 'lazy-highlight)
                           ))
                           ;;; (overlay-put ov 'window (selected-window)))) ; Emacs 25+ commented this out.
                       ;; Remember current point for next call of `isearch-lazy-highlight-update' when
