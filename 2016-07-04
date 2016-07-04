@@ -1,3 +1,13 @@
 [[DrewAdams|Drew Adams]] alerted me to a new wave of spam attacks, reverted them, and locked the wiki.
 I'm going to see whether a bunch of new regular expressions added to BannedRegexps will fix the problem. :)
+
+Sadly, the spammers forced me to add a really broad regular expression which ends up making many existing pages
+uneditable because they contain false positives.
+
+Assuming that the wiki currently contains no spammed pages, this list is all the false positives:
+
+* [https://www.emacswiki.org/emacs/?action=list-banned-content List Banned Pages]
+
+If you have an idea to improve the regular expressions in BannedRegexps, leave a comment and let me know.
+
 -- [[Alex Schroeder]]
