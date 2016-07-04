@@ -14,4 +14,4 @@ See [[Git]] for more about Emacs support for git.
 
 [https://github.com/sshaw/git-link git-link] Get the GitHub/Bitbucket/[[GitLab]]/... URL for a buffer location
 
-[https://github.com/xuchunyang/github-notifier.el github-notifier] displays your GitHub unread notifications count in the mode-line
+[https://github.com/xuchunyang/github-notifier.el github-notifier.el] displays your GitHub unread notifications count in the mode-line
