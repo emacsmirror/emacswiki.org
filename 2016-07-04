@@ -6,7 +6,7 @@ uneditable because they contain false positives.
 
 Assuming that the wiki currently contains no spammed pages, this list is all the false positives:
 
-* [https://www.emacswiki.org/emacs/?action=list-banned-content List Banned Pages]
+* [https://www.emacswiki.org/emacs/?action=list-banned-content List Banned Pages] (/slooooow.../)
 
 If you have an idea to improve the regular expressions in BannedRegexps, leave a comment and let me know.
 
