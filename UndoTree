@@ -65,5 +65,13 @@ I use linum and I was experiencing glitches with line numbers when I tried to ju
 }}}
 Wouldn't it be nice to have something like "after buffer state changed" hook here? Dear author, if you're reading this, please consider making use of hooks in the future release. Thanks.
 
+[new]
+
+What's wrong with the standard `after-change-functions` hook? Doesn't it work?
+
+(BTW, if you want a timely response from the package author, I strongly recommend emailing him rather than writing something on EmacsWiki. I hear he doesn't spend his time polling EmacsWiki just in case someone writes something about one of his packages. Or stackexchange. Or comments on github clones of his repos he doesn't even know about. Or reddit. Or any other random web sites. I have this on fairly good authority :)
+
+--TobyCubitt
+
 ----
 CategoryUndo
