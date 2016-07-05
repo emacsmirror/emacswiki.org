@@ -8,9 +8,9 @@
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 14:05:58 2015 (-0800)
+;; Last-Updated: Mon Jul  4 19:57:13 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1696
+;;     Update #: 1700
 ;; URL: http://www.emacswiki.org/icomplete+.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
@@ -125,6 +125,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/07/04 dadams
+;;     icomplete-exhibit (Emacs 24.4+): Call icomplete--field-(beg|end) only once.
 ;; 2015/06/18 dadams
 ;;     icomplete-completions: Use boundp for icicle-mode, not fboundp.
 ;; 2014/04/15 dadams
@@ -605,7 +607,7 @@ and `minibuffer-setup-hook'."
             (when (and (or (and (boundp 'icomplete-show-matches-on-no-input)
                                 icomplete-show-matches-on-no-input)
                            (and (numberp field-end)  (numberp field-beg)
-                                (> (icomplete--field-end) (icomplete--field-beg))))
+                                (> field-end field-beg)))
                        (save-excursion  ; Do nothing if looking at a list, string, etc.
                          (when (numberp field-end) (goto-char field-end))
                          (save-match-data
@@ -613,7 +615,7 @@ and `minibuffer-setup-hook'."
                                  "\\(\\s-+$\\|\\s-*\\(\\s(\\|\\s\"\\|\\s'\\|\\s<\\|[0-9]\\)\\)"))))
                        (or
                         ;; Do not bother with delay after certain number of chars:
-                        (> (- (point) (icomplete--field-beg)) icomplete-max-delay-chars)
+                        (> (- (point) field-beg) icomplete-max-delay-chars)
                         ;; Do not delay if completions are known.
                         completion-all-sorted-completions
                         ;; Do not delay if alternatives number is small enough:
@@ -1158,7 +1160,8 @@ If SORT-FUNCTION is nil, sort per `completion-all-sorted-completions':
             (if (fboundp 'icomplete--field-beg) ; Emacs 24.4+
                 (completion--cache-all-sorted-completions
                  (icomplete--field-beg) (icomplete--field-end) (nconc all base-size))
-              (completion--cache-all-sorted-completions (nconc all base-size))))))))
+              (completion--cache-all-sorted-completions (nconc all base-size)))))))
+  )
 
 
 (when (or (> emacs-major-version 24)    ; Emacs 24.4+
