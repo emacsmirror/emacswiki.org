@@ -1,0 +1,9 @@
+The battle [[2016-07-04|continues]].
+I keep tweaking the regular expression to catch phone number spam and if things don't improve I'll have to write some special purpose code to stop the idiots. Oh well. In the mean time, any of the [[EmacsWikiAdministrators|wiki administrators]] are invited to help.
+
+If you notice an attack, you can follow [[DrewAdam|Drew]]'s example and lock the site by going to the _Administration_ link at the bottom of the page and click _Lock site_.
+
+If you're comfortable with regular expressions, add more or adapt existing ones on BannedRegexps. I usually test them on [https://regex101.com/ regex101].
+
+Down with spam! :)\\
+Alex
