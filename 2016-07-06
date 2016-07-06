@@ -5,7 +5,7 @@ If you notice an attack, you can follow [[DrewAdam|Drew]]'s example and lock the
 
 If you're comfortable with regular expressions, add more or adapt existing ones on BannedRegexps. I usually test them on [https://regex101.com/ regex101].
 
-If you've fixed the regular expressions, use _Administraiton_ -> _Unlock site_.
+If you've fixed the regular expressions, use _Administration_ -> _Unlock site_.
 
 Down with spam! :)\\
 Alex
