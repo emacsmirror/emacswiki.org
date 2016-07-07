@@ -31,7 +31,7 @@ with the startup fontset.
 
 To change the default font for new (non special-display) frames, put either of these in your [[init file]]:
 
-: ##(add-to-list 'default-frame-alist '(font . ## ''##FONT##'' ##))##
+: ##(add-to-list 'default-frame-alist '(font . ## ''##FONT##'' ##)##
 
 : ##(set-face-attribute 'default t :font ## ''##FONT##'' ##)##
 
