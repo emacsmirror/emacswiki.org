@@ -72,6 +72,7 @@ If you are running debian (or a derivative) and you use exim4 for smtp delivery 
 * Set the 'large-newsgroup-initial' group parameter to a small value  (e.g. 50), so that you get smaller summary buffers.
 * Sort articles/threads by number.
 * Depending on the IMAP server and the back end it uses, it might be wise to keep your groups small. Use expiry to automatically create archive groups (see variable nnmail-fancy-expiry-targets). Use searching facilities like nnir/nnmairix for an efficient search in those archives, so that you don't have to build huge summary buffers with thousands of mails.
+* Avoid having lots of ticked articles! I recently sped up entering a (local dovecot IMAP) group from 9.5s to 0.3s by simply hitting '?' (mark dormant) on my 50 or so '!'-ticked articles.
 
 ===Specific for nnimap===
 
