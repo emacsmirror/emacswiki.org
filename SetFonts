@@ -37,7 +37,7 @@ To change the default font for new (non special-display) frames, put either of t
 
 To change the default font for the current frame, as well as future frames, put either of these in your init file:
 
-: ##(set-face-attribute 'default nil :font ## ''##FONT##'' ##))##
+: ##(set-face-attribute 'default nil :font ## ''##FONT##'' ##)##
 
 : ##(set-frame-font  ## ''##FONT##'' ##nil t)##
 
