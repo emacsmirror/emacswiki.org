@@ -1,3 +1,4 @@
+[[ru:auto-complete]]
 ;;; auto-complete.el --- Inline auto completion
 
 ;; Copyright (C) 2008, 2009  MATSUYAMA Tomohiro
