@@ -47,7 +47,7 @@ As you can see on WikiSpam, we log all the blocked edits that ran afoul of our b
 
 == Web Server Logs ==
 
-The web server itself also keeps access log and error logs. These go back 52 weeks. They contain IP numbers and the URLs they requested. These log files are not public.
+The web server itself also keeps access log and error logs. These go back four weeks. They contain IP numbers and the URLs they requested. These log files are not public.
 
 ----
 EmacsWiki
