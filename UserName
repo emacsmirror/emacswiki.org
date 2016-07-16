@@ -12,17 +12,15 @@ yourself.  It is entirely up to you.  Your username is not "secure."
 Anybody can use the same name as you do.  We believe in
 MeatBall:SoftSecurity.
 
-On the edit page, you will find a field for your username.  The username
-should be a word in
-'''<nowiki>CamelCase</nowiki>''' -- mixed case, no spaces.  Just use
-your first and last name smashed together, eg. AlexSchroeder.  If you
+On the edit page, you will find a field for your username. Just use
+your first and last name, eg. "Alex Schroeder" -- if you
 have a nickname that you often use on [[IRC]] or elsewhere online,
 you can put it on your page using square brackets and two colons like
 this: ##[::kensanata]##. Then you'll be able to link to your page using
-either name -- both AlexSchroeder and [[kensanata]] will work.
+either name -- both [[Alex Schroeder]] and [[kensanata]] will work.
 
 The username will be used to tag any edits you make on RecentChanges.
-Note that even if you do have a username, your IP or hostname will be
+Note that even if you do have a username, your IP will be
 logged -- and be visible to others.  If you want to keep it a secret,
 you need to use a network anonymizer like TheOnionRouter (Tor).
 
