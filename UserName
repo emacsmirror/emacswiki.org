@@ -39,13 +39,3 @@ You might want to add your username to CategoryHomepage.
 You might want a button to put on your blog or other website.
 
 See EmacsWikiBling.
-
-== Cookie Problems ==
-
-It seems that some people lose their cookies.  It certainly ''works for me''.
-So at the moment I suspect that this is related to the browser being used.
-If you experience this problem, please indicate browser version and OS version
-down below.  Perhaps we can narrow it down.  Other problem solving ideas
-appreciated.  ;)
-
-* Galeon in Debian testing
