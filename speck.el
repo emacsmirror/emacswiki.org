@@ -2,15 +2,16 @@
 
 ;; Copyright (C) 2006, 2007, 2008, 2009, 2010 Martin Rudalics
 
-;; Time-stamp: "2014-08-30 15:30:34 york"
+;; Time-stamp: "2016-07-17 16:16:52 feklee"
 ;; Author: Martin Rudalics <rudalics@gmx.at>
 ;; Keywords: spell checking
-;; Version: 2014.08.30
+;; Version: 2016.07.17
 
 ;; Contributors:
 ;; Frank Fischer <frank.fischer@mathematik.tu-chemnitz.de>
 ;; Andrei Chițu <andrei.chitu1@gmail.com>
 ;; York Zhao <gtdplatform@gmail.com>
+;; Felix E. Klee <felix.klee@inka.de>
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -32,6 +33,8 @@
 ;; of all windows showing the current buffer.
 
 ;; Change Log:
+;; 2016/07/17 Felix E. Klee
+;;     Fix: Loading buffer local dictionary fails for Hunspell.
 ;; 2014/08/30 York Zhao
 ;;     Add support to allow binding a lisp function to a "replace key" in
 ;;     `speck-replace-keys' and/or `speck-replace-map', so that one can define a
@@ -4989,6 +4992,11 @@ properties."
            ((assoc dictionary (speck-ispell-dictionary-alist))
             (setq speck-saved-dictionary (intern dictionary)))
            ((let ((entry (rassoc dictionary (speck-ispell-dictionary-alist))))
+              (when entry
+                (setq speck-saved-dictionary (intern (car entry))))))
+           ((member dictionary (speck-hunspell-dictionary-names))
+            (setq speck-saved-dictionary (intern dictionary)))
+           ((let ((entry (rassoc dictionary speck-hunspell-dictionary-alist)))
               (when entry
                 (setq speck-saved-dictionary (intern (car entry))))))
            (t
