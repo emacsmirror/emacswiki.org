@@ -2,10 +2,10 @@
 
 ;; Copyright (C) 2006, 2007, 2008, 2009, 2010 Martin Rudalics
 
-;; Time-stamp: "2016-07-17 16:16:52 feklee"
+;; Time-stamp: "2016-07-17 18:48:31 Felix"
 ;; Author: Martin Rudalics <rudalics@gmx.at>
 ;; Keywords: spell checking
-;; Version: 2016.07.17
+;; Version: 2016.07.17.1
 
 ;; Contributors:
 ;; Frank Fischer <frank.fischer@mathematik.tu-chemnitz.de>
@@ -35,6 +35,8 @@
 ;; Change Log:
 ;; 2016/07/17 Felix E. Klee
 ;;     Fix: Loading buffer local dictionary fails for Hunspell.
+;;     Fix: Input encoding not passed to Hunspell
+;;     Change default Hunspell coding system for `ru_RU' to `utf-8'.
 ;; 2014/08/30 York Zhao
 ;;     Add support to allow binding a lisp function to a "replace key" in
 ;;     `speck-replace-keys' and/or `speck-replace-map', so that one can define a
@@ -1034,7 +1036,7 @@ you have installed several dictionaries)."
     ("en" iso-8859-1 nil nil)
     ("fr" iso-8859-1 nil nil)
     ("it" iso-8859-1 nil nil)
-    ("ru" koi8-r nil nil))
+    ("ru" utf-8 nil nil))
   "Hunspell language options.
 Its value should be a list of five entries for each language.
 
@@ -1130,7 +1132,9 @@ customizing `speck-hunspell-language-options'."
            ;; Pipe option and `speck-hunspell-library-directory'
            ;; concatenated with `dictionary-name' - Hunspell wants it
            ;; this way.
-           (list "-a" "-d" (concat speck-hunspell-library-directory dictionary-name))
+           (list "-a"
+                 "-d" (concat speck-hunspell-library-directory dictionary-name)
+                 "-i" (symbol-name coding-system))
            ;; Minimum word length.
            (when minimum-word-length
              (list (concat "-W" (number-to-string minimum-word-length))))
