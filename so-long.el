@@ -3,16 +3,22 @@
 ;; Author: Phil S.
 ;; URL: https://www.emacswiki.org/emacs/SoLong
 ;; Keywords: convenience
-;; Created: 12 Jan 2016
+;; Created: 23 Dec 2015
 ;; Package-Requires: ((emacs "24.3"))
-;; Version: 0.7.4
+;; Version: 0.7.6
 
-;; This file is not part of GNU Emacs.
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
 
-;; This file is free software: you can redistribute it and/or modify it under
-;; the terms of the GNU General Public License as published by the Free Software
-;; Foundation, either version 3 of the License, or (at your option) any later
-;; version. See <http://www.gnu.org/licenses/>.
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 ;;
@@ -45,6 +51,8 @@
 
 ;; Configuration
 ;; -------------
+;; Use M-x customize-group RET so-long RET
+;;
 ;; The variables `so-long-target-modes', `so-long-threshold',
 ;; `so-long-max-lines', and `so-long-mode-enabled' determine whether this mode
 ;; will be invoked for a given buffer.  The tests are made after `set-auto-mode'
@@ -54,23 +62,38 @@
 ;; ------------------------------------
 ;; The simple way to disable most buffer-local minor modes is to add the mode
 ;; symbol to the `so-long-minor-modes' list.  Several modes are targeted by
-;; default.
+;; default, and it is a good idea to customize this variable to add any
+;; additional buffer-local minor modes that you use which you know to have
+;; performance implications. For example:
 ;;
-;; In addition, two custom hooks are available for custom behaviours:
+;; (when (require 'so-long nil :noerror)
+;;   (mapc (apply-partially 'add-to-list 'so-long-minor-modes)
+;;         '(hl-sexp-mode diff-hl-mode diff-hl-amend-mode diff-hl-flydiff-mode
+;;                        idle-highlight-mode rainbow-delimiters-mode))
+;;   (so-long-enable))
+;;
+;; In the case of globalized minor modes, be sure to specify the buffer-local
+;; minor mode, and not the global mode which controls it.
+;;
+;; Note that `so-long-minor-modes' is not useful for other global minor modes
+;; (as distinguished from globalized minor modes), but in some cases it will be
+;; possible to inhibit or otherwise counter-act the behaviour of a global mode
+;; using the following hooks.  You would need to inspect the code for a given
+;; global mode (on a case by case basis) to determine whether it's possible to
+;; inhibit it for a single buffer, and if so how best to do that, as not all
+;; modes are alike.
+
+;; Hooks
+;; -----
+;; Two custom hooks are available for custom behaviours.
 ;;
 ;; `so-long-mode-hook' is the standard major mode hook, which runs between
 ;; `change-major-mode-after-body-hook' and `after-change-major-mode-hook'.
 ;;
-;; `so-long-hook' runs during `after-change-major-mode-hook'. This is to assist
-;; with targeting globalized minor modes, as these will activate the modes they
-;; control during this hook as well (however `so-long-hook' always runs after
-;; any globalized minor modes have acted, because we call `add-hook' with the
-;; APPEND argument, and globalized modes do not).
-;;
-;; Between these two hooks it will usually be possible to inhibit or otherwise
-;; counter-act any minor mode you wish to disable; but you may need to inspect
-;; the code for a given mode (on a case by case basis) to determine the right
-;; way to disable it, as not all modes are alike.
+;; `so-long-hook' runs during `after-change-major-mode-hook', but after
+;; globalized minor modes have acted (because we call `add-hook' with the
+;; APPEND argument, and globalized modes do not).  This hook runs immediately
+;; after `so-long-minor-modes' has been processed.
 
 ;; Implementation notes
 ;; --------------------
@@ -80,6 +103,9 @@
 
 ;;; Change Log:
 ;;
+;; 0.7.6 - Bug fix for `so-long-mode-hook' losing its default value.
+;; 0.7.5 - Documentation.
+;;       - Added sgml-mode and nxml-mode to `so-long-target-modes'.
 ;; 0.7.4 - Refactored the handling of `whitespace-mode'.
 ;; 0.7.3 - Added customize group `so-long' with user options.
 ;;       - Added `so-long-original-values' to generalise the storage and
@@ -122,7 +148,7 @@ See `so-long-line-detected-p' for details."
   :group 'so-long)
 
 (defcustom so-long-target-modes
-  '(prog-mode css-mode)
+  '(prog-mode css-mode sgml-mode nxml-mode)
   "`so-long-mode' affects only these modes and their derivatives.
 
 Our primary use-case is minified programming code, so `prog-mode' covers
@@ -234,6 +260,15 @@ Returns non-nil if any such excessive-length line is detected."
             (forward-line)
             (setq count (1+ count))))))))
 
+(defcustom so-long-mode-hook '(so-long-inhibit-global-hl-line-mode)
+  ;; This user option must be defined prior to `so-long-mode' to
+  ;; prevent `define-derived-mode' setting its value to nil; however
+  ;; the mode definition will clobber our docstring, so we will set
+  ;; that after the mode has been defined.
+  ""
+  :type '(repeat function)
+  :group 'so-long)
+
 (define-derived-mode so-long-mode nil "So long"
   "This mode is used if line lengths exceed `so-long-threshold'.
 
@@ -273,19 +308,19 @@ type \\[so-long-mode-revert], or else re-invoke it manually."
            (or (so-long-original 'major-mode) "<unknown>")
            (substitute-command-keys "\\[so-long-mode-revert]")))
 
-(defcustom so-long-mode-hook '(so-long-inhibit-global-hl-line-mode)
-  ;; This must be defined after `so-long-mode', otherwise a default
-  ;; docstring will be used instead of the following.
-  "List of functions to call when `so-long-mode' is invoked.
+;; In order to provide a custom docstring for `so-long-mode-hook', we
+;; must set it after `so-long-mode' is defined, as `define-derived-mode'
+;; clobbers any existing docstring (see the user option definition for
+;; why we define it first).
+(put 'so-long-mode-hook 'variable-documentation
+     "List of functions to call when `so-long-mode' is invoked.
 
 This is the standard mode hook for `so-long-mode' which runs between
 `change-major-mode-after-body-hook' and `after-change-major-mode-hook'.
 
 Note that globalized minor modes have not yet acted.
 
-See also `so-long-hook' and `so-long-minor-modes'."
-  :type '(repeat function)
-  :group 'so-long)
+See also `so-long-hook' and `so-long-minor-modes'.")
 
 (defun so-long-after-change-major-mode ()
   "Disable modes in `so-long-minor-modes' and run `so-long-hook' functions.
