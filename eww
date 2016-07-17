@@ -3,8 +3,9 @@ Emacs Web Wowser (eww) is a Web browser written in elisp and based on shr.el.  I
 
 == Windows ==
 
-To access web pages via HTTPS, you need to install GnuTLS, provided for example as part of [http://sourceforge.net/projects/ezwinports/files/ ezwinports]. Make sure that the location of <code>gnutls-cli.exe</code> and of the GnuTLS DLLs is in <code>%PATH%</code>. You may also need to install certificates, as explained in Magnus’ article [http://xn--9dbdkw.se/diary/how_to_enable_GnuTLS_for_Emacs_24_on_Windows/index.en.html “how to enable GnuTLS for Emacs 24 on Windows”].
+Make sure that libxml2 and GnuTLS are installed and that the executables and DLLs can be found by EMACS. You may add their location to <code>%PATH%</code>. The aforementioned packages are provided by [http://sourceforge.net/projects/ezwinports/files/ ezwinports].
 
+You may also need to install TLS certificates, as explained in Magnus’ article [http://xn--9dbdkw.se/diary/how_to_enable_GnuTLS_for_Emacs_24_on_Windows/index.en.html “how to enable GnuTLS for Emacs 24 on Windows”].
 
 == EWW AddOns ==
 * [[eww-lnum]] -- A Conkeror-style "follow numeric link shortcuts" extension for eww.
