@@ -6,7 +6,7 @@ Another alternative to delight is [https://github.com/alezost/dim.el dim].
 
 ==Download and Install==
 
-Use ##M-x package-install## to install the [http://elpa.gnu.org/packages/delight.html delight] package from [http://elpa.gnu.org/ GNU ELPA].)
+[InstallingPackages Install] the [http://elpa.gnu.org/packages/delight.html delight] package from the default [http://elpa.gnu.org/ GNU ELPA] repository.
 
 ==Example usage==
 
