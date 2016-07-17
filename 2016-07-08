@@ -3,3 +3,5 @@ As "bobatwork" is still at work, I've locked the wiki for the moment. It gets a 
 -- [[Alex Schroeder]]
 
 *Update*: Emacs Wiki is back for business. Let's see whether phone-spammer-bob comes back.
+
+*Update*: The large number of rollbacks seems to cause some problems for Recent Changes and the default RSS feeds. For the moment, I'm redirecting a few URLs to only include changes for the last day in order to get CPU usage down from 100%. I'm thinking that maybe I should clean up that log file and get rid of all those spam entries anyway...
