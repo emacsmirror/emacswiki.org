@@ -4,11 +4,9 @@ It is similar in purpose to DiminishedModes but it accounts for major modes as w
 
 Another alternative to delight is [https://github.com/alezost/dim.el dim].
 
-==Download==
+==Download and Install==
 
-Lisp:delight.el
-
-(or install the ##delight## package from [[MELPA]].)
+Use ##M-x package-install## to install the [http://elpa.gnu.org/packages/delight.html delight] package from [http://elpa.gnu.org/ GNU ELPA].)
 
 ==Example usage==
 
