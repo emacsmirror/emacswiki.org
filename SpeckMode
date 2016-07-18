@@ -36,7 +36,7 @@ The texinfo documentation can be downloaded on the following page:
 
 # Make sure that <code>C:\ezwinports\bin</code> is in <code>%PATH%</code>.
 
-# Download <code>es_ES.oxt</code> from the LibreOffice [http://extensions.libreoffice.org/extension-center/spanish-dictionaries extensions repository].
+# Download <code>es_ES.oxt</code> from the !LibreOffice [http://extensions.libreoffice.org/extension-center/spanish-dictionaries extensions repository].
 
 # Rename <code>es_ES.oxt</code> to <code>es_ES.zip</code>, and unpack its contents into: <code>C:\ezwinports\share\hunspell</code>
 
