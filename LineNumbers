@@ -33,20 +33,23 @@ The ##nlinum.el## library, available from GNU ELPA (http://elpa.gnu.org/packages
 
 To precalculate the line number width to avoid horizontal jumps on scrolling:
 <pre>
-;; Preset width nlinum
-(add-hook 'nlinum-mode-hook
-          (lambda ()
-            (when nlinum-mode
-              (setq nlinum--width
-                    ;; works with the default `nlinum-format'
-                    (length (number-to-string
-                             (count-lines (point-min) (point-max)))))
-                    ;; use this instead if your `nlinum-format' has one space
-                    ;; (or other character) after the number
-                    ;;(1+ (length (number-to-string
-                    ;;             (count-lines (point-min) (point-max)))))
-              (nlinum--flush))))
+;; Preset `nlinum-format' for minimum width.
+(defun my-nlinum-mode-hook ()
+  (when nlinum-mode
+    (setq-local nlinum-format
+                (concat "%" (number-to-string
+                             ;; Guesstimate number of buffer lines.
+                             (ceiling (log (max 1 (/ (buffer-size) 80)) 10)))
+                        "d"))))
+(add-hook 'nlinum-mode-hook #'my-nlinum-mode-hook)
 </pre>
+
+Note: a previous version set <code>nlinum--width</code> and then
+called <code>nlinum-flush</code>, but that can cause problems in
+nlinum's timers, see
+http://debbugs.gnu.org/cgi/bugreport.cgi?bug=23777.
+
+----
 
 the lastest Nlinum-mode git version(1.6) not worked with emacs deamon mode, use emacsclient to open a file, will result a "*ERROR*: Invalid face: linum" error, following hack worked for me on emacs-version 24.5.1.
 
