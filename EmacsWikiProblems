@@ -10,7 +10,7 @@ Note that this page is not about EmacsWikiMode.
 
 == Having trouble editing elisp file (yaoddmuse.el) ==
 
-I tried to make an update to yaoddmuse.el, but I seem to have put it into a funny mode where it doesn't show the code in the page any more, just a link.  And I can't rollback because of the anti-spam regexps... :(
+I tried to make an update to [[yaoddmuse.el]], but I seem to have put it into a funny mode where it doesn't show the code in the page any more, just a link.  And I can't rollback because of the anti-spam regexps... :(
 
 ==Cannot find where file lives for change submission ==
 
