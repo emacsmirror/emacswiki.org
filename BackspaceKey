@@ -4,9 +4,15 @@ Traditionally, Unix uses the ^H keystroke to send a backspace from or to a termi
 
   (global-set-key [(control h)] 'delete-backward-char)
 
+Note: This does not work on Linux Mint and probably all debian based distros.
+
 : Personally, I prefer##(keyboard-translate ?\C-h ?\C-?)##; that way, the key does whatever it is supposed to do regardless of mode. -- Anonymous
 
+Note: This also does not work on Linux Mint.
+
 : ##(define-key key-translation-map [?\C-h] [?\C-?])## is usually a better solution than##keyboard-translate##.  That latter is local to "terminals" so that it doesn't work well with emacs daemon. -- Ryo
+
+Note: This also does not work on Linux Mint.
 
 If you do this, you probably also want to remap the the help function, too:
 
@@ -24,6 +30,8 @@ I like the following setting:
 }}}
 
 That way C-h and M-h behave like the backwards version of C-d and M-d, and my right pinky does not suffer by trying to get to the backspace or del key (this and mapping ctrl to alt-keys and meta to super and right crtl solves the pinkys problem)
+
+Note: This also does not work on Linux Mint.
 
 ''Question: How do I make Backspace and Del work as usual in X with a PC keyboard? Backspace should delete to the left, Del to the right, and Ctrl-H should give help. Now Ctrl-H is help but both Backspace and Del deletes to the left. There is no mention of the problem in the FAQ or Info (Emacs 20). C-h f says both of them are called DEL. I've done it before but don't remember how.''
 
