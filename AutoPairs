@@ -22,7 +22,7 @@ Key Points:
 
 ==== How does this work? ====
 
-Does it make use of command loop hooks?  Well the answer to the question "how" is "read the source code", but in short, yes :), ##post-command-hook## is used. Here's is a snippet of the binding for an opening brace/parenthesis/whatever
+##post-command-hook## is used. Here's is a snippet of the binding for an opening brace/parenthesis/whatever
 
    (defun autopair-insert-opening ()
      (interactive)
