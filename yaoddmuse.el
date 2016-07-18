@@ -1,2093 +1,1367 @@
-;;; yaoddmuse.el --- Major mode for EmacsWiki and other Oddmuse wikis
-
-;; Filename: yaoddmuse.el
-;; Description: Yet another oddmuse for Emacs
-;; Author: Andy Stewart lazycat.manatee@gmail.com
-;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
-;; Copyright (C) 2009, Andy Stewart, all rights reserved.
-;; Copyright (C) 2009, 2010 rubikitch, all rights reserved.
-;; Created: 2009-01-06 12:41:17
-;; Version: 0.1.2
-;; Package-Version: 20150521.1841
-;; Last-Updated: 2015/21/05 2:40
-;;           By: Michael Abrahams
-;; URL: http://www.emacswiki.org/emacs/download/yaoddmuse.el
-;; Keywords: yaoddmuse, oddmuse
-;; Compatibility: GNU Emacs 22 ~ 23
-;;
-;; Features that might be required by this library:
-;;
-;;   `dired', `find-func', `mail-prsvr', `mailcap', `mm-util',
-;;   `sgml-mode', `skeleton', `thingatpt', `timer', `timezone',
-;;   `url', `url-cookie', `url-expand', `url-history', `url-methods',
-;;   `url-parse', `url-privacy', `url-proxy', `url-util', `url-vars'.
-;;
-
-;;; This file is NOT part of GNU Emacs
-
-;;; License
-;;
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 3, or (at your option)
-;; any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;; Floor, Boston, MA 02110-1301, USA.
-
-;;; Commentary:
-;;
-;; Yet another oddmuse for Emacs.
-;;
-;; This mode can edit or post wiki page *asynchronous*.
-;; So it can't hang your emacs.
-;; You can do your work when get or post wiki page.
-;;
-;; Below are the command you can use:
-;;
-;; * Edit:
-;;      `yaoddmuse-edit'                     edit wiki page.
-;;      `yaoddmuse-edit-default'             edit default wiki page.
-;;      `yaoddmuse-follow'                   figure out what page we need to visit
-;; * Post:
-;;      `yaoddmuse-post-buffer'              post buffer to wiki.
-;;      `yaoddmuse-post-current-buffer'      post current buffer to wiki
-;;      `yaoddmuse-post-file'                post file to wiki.
-;;      `yaoddmuse-post-file-default'        post file to default wiki.
-;;      `yaoddmuse-post-library'             post library to wiki.
-;;      `yaoddmuse-post-library-default'     post library to default wiki.
-;;      `yaoddmuse-post-dired'               post dired marked files to wiki.
-;;      `yaoddmuse-post-dired-default'       post dired marked files to wiki.
-;;      `yaoddmuse-post-screenshot'          post screenshot to wiki.
-;;      `yaoddmuse-post-screenshot-default'  post screenshot to default wiki.
-;; * View:
-;;      `yaoddmuse-revert'                   reload current wiki page.
-;;      `yaoddmuse-browse-page'              browse wiki page.
-;;      `yaoddmuse-browse-page-default'      browse default wiki page.
-;;      `yaoddmuse-browse-page-diff'         browse wiki page diff.
-;;      `yaoddmuse-browse-page-default-diff' browse default wiki page diff.
-;;      `yaoddmuse-browse-current-page'      browse current wiki page.
-;; * Navigation:
-;;      `yaoddmuse-navi-next-heading'        jump next heading.
-;;      `yaoddmuse-navi-prev-heading'        jump previous heading.
-;; * Update:
-;;      `yaoddmuse-update-pagename'          will update Wiki page name.
-;; * Insert:
-;;      `yaoddmuse-insert-pagename'          insert wiki page name.
-;;      `yaoddmuse-insert-file-content'      insert file content.
-;; * Misc:
-;;      `yaoddmuse-kill-url'                 kill current wiki page url in yank.
-;;      `yaoddmuse-toggle-minor'             toggle minor mode state.
-;;      `yaoddmuse-redirect'                 redirect page.
-;;      `yaoddmuse-delete'                   delete page.
-;;      `yaoddmuse-toggle-image-status'      toggle image status.
-;;      `yaoddmuse-save-as'                  save special page.
-;;
-;; Tips:
-;; ・ Get page around point:
-;;      Command ‘yaoddmuse-follow’ try to get valid page link around point.
-;;      If it find, edit this page, otherwise show “No link found at point.”
-;;      And you can type “C-u” before call this command,
-;;      then it will give you page name completing for edit.
-;; ・ Reload or switch edit page:
-;;      When you use command ‘yaoddmuse-edit’ or ‘yaoddmuse-edit-default’,
-;;      it will prefer to switch edit page if already have one exist.
-;;      If you want to reload edit page forcibly, just hit “C-u” before
-;;      execute command.
-;; ・ Smart display edit page.
-;;      Default, edit page buffer popup when current major-mode
-;;      is not ‘yaoddmuse-mode’, or use switch edit page buffer
-;;      when current major-mode is ‘yaoddmuse-mode’.
-;; ・ Revert edit page:
-;;      Command ‘yaoddmuse-revert’ revert current edit page and don’t
-;;      need input wiki name or page name.
-;; ・ Browse page after post successful:
-;;      If you type “C-u” before call post command,
-;;      will browse page after post successful.
-;; ・ Post buffer to wiki:
-;;      Command ‘yaoddmuse-post-buffer’ post special buffer to wiki,
-;;      or use command ‘yaoddmuse-post-current-buffer’ post current buffer to wiki.
-;; ・ Post file to wiki:
-;;      Command ‘yaoddmuse-post-file’ post special file to wiki,
-;;      it’s useful to fast posting when you don’t want open file.
-;; ・ Post mark files in dired to wiki:
-;;      Command ‘yaoddmuse-post-dired’ post mark files in dired to wiki,
-;;      this command is useful when update many files to wiki.
-;; ・ Post library to wiki:
-;;      Command ‘yaoddmuse-post-library’ and ‘yaoddmuse-post-library-default’
-;;      will post special library to wiki, and not need input file path,
-;;      it’s so lazy! ;)
-;; ・ Remember last summary:
-;;      By default, yaoddmuse remember last `summary' string, if you input
-;;      same `summary' as previous time, just hit RET.
-;; ・ Pick up file name:
-;;      By default, when you use command `yaoddmuse-post-library' and
-;;      `yaoddmuse-post-library-default', those commands can pick up
-;;      file name around point, if it's library name you want, just
-;;      hit RET.  ;)
-;; ・ Pick up page name:
-;;      When you use commands `yaoddmuse-browse-page' or `yaoddmuse-browse-page-default',
-;;      it will try to pick-up page name around point.
-;; ・ Encode special file:
-;;      If you post special file, such as picture or compress file,
-;;      it can encode file content before post it.
-;; ・ Redirect page:
-;;      You can use command `yaoddmuse-redirect' redirect page.
-;;      Just input page name that you want redirect to.
-;;      You need input redirect from page if current buffer not
-;;      `yaoddmuse' buffer.
-;; ・ Delete page:
-;;      You can use command `yaoddmuse-delete' delete page.
-;;      Just input page name that you want delete.
-;; ・ Insert special file:
-;;      You can use command `yaoddmuse-insert-file-content' insert
-;;      file content.
-;;      This command will try to encode special file content, such as,
-;;      picture or compress file.
-;; ・ Save page:
-;;      You can use command `yaoddmuse-save-as' save special page,
-;;      such as picture or compress format, and it will notify you
-;;      correct suffix to save.
-;; ・ Toggle image view:
-;;      By default, when got image page, it will decode image and view it.
-;;      You can use command `yaoddmuse-toggle-image-status' to toggle
-;;      image status for view different content.
-;;
-
-;;; Commands:
-;;
-;; Below are complete command list:
-;;
-;;  `yaoddmuse-mode'
-;;    Yet another mode to edit Oddmuse wiki pages.
-;;  `yaoddmuse-edit'
-;;    Edit a page on a wiki.
-;;  `yaoddmuse-edit-default'
-;;    Edit a page with default wiki `yaoddmuse-default-wiki'.
-;;  `yaoddmuse-follow'
-;;    Figure out what page we need to visit and call `yaoddmuse-edit' on it.
-;;  `yaoddmuse-post-buffer'
-;;    Post the BUFFER to the current wiki.
-;;  `yaoddmuse-post-current-buffer'
-;;    Post current buffer to current wiki.
-;;  `yaoddmuse-post-file'
-;;    Post file to current wiki.
-;;  `yaoddmuse-post-file-default'
-;;    Post file to default wiki.
-;;  `yaoddmuse-post-library'
-;;    Post library to current wiki.
-;;  `yaoddmuse-post-library-default'
-;;    Post library to default wiki.
-;;  `yaoddmuse-post-dired'
-;;    Post dired marked files to current wiki.
-;;  `yaoddmuse-post-dired-default'
-;;    Post dired marked files to default wiki.
-;;  `yaoddmuse-post-screenshot'
-;;    Post screenshot to current wiki.
-;;  `yaoddmuse-post-screenshot-default'
-;;    Post screenshot to default wiki.
-;;  `yaoddmuse-revert'
-;;    Reload current edit page.
-;;  `yaoddmuse-browse-page'
-;;    Browse special page in wiki.
-;;  `yaoddmuse-browse-page-default'
-;;    Brose special page with `yaoddmuse-default-wiki'.
-;;  `yaoddmuse-browse-page-diff'
-;;    Browse special page diff in wiki.
-;;  `yaoddmuse-browse-page-default-diff'
-;;    Brose special page with `yaoddmuse-default-wiki'.
-;;  `yaoddmuse-browse-current-page'
-;;    Browse current page.
-;;  `yaoddmuse-navi-next-heading'
-;;    Goto next heading.
-;;  `yaoddmuse-navi-prev-heading'
-;;    Goto previous heading.
-;;  `yaoddmuse-insert-pagename'
-;;    Insert a PAGENAME of current wiki with completion.
-;;  `yaoddmuse-insert-file-content'
-;;    Insert FILE content.
-;;  `yaoddmuse-kill-url'
-;;    Make the URL of current oddmuse page the latest kill in the kill ring.
-;;  `yaoddmuse-update-pagename'
-;;    Update all page name match in `yaoddmuse-wikis'.
-;;  `yaoddmuse-toggle-minor'
-;;    Toggle minor mode state.
-;;  `yaoddmuse-redirect'
-;;    Redirect page.
-;;  `yaoddmuse-delete'
-;;    Delete page.
-;;  `yaoddmuse-toggle-image-status'
-;;    Toggle image status.
-;;  `yaoddmuse-save-as'
-;;    Save as file.
-;;  `emacswiki'
-;;    Edit a page on the EmacsWiki.
-;;  `emacswiki-post'
-;;    Post file to the EmacsWiki.
-;;
-;;; Customizable Options:
-;;
-;; Below are customizable option list:
-;;
-;;  `yaoddmuse-directory'
-;;    Directory to storage oddmuse pages.
-;;    default = "~/.yaoddmuse"
-;;  `yaoddmuse-assoc-mode'
-;;    Whether assoc files in `yaoddmuse-directory' with `yaoddmuse-mode'.
-;;    default = t
-;;  `yaoddmuse-wikis'
-;;    Alist mapping wiki names to URLs.
-;;    default = (quote (("TestWiki" "http://www.emacswiki.org/test" utf-8 "uihnscuskc=1;") ("EmacsWiki" "http://www.emacswiki.org/emacs" utf-8 "uihnscuskc=1;") ("CommunityWiki" "http://www.communitywiki.org/cw" utf-8 "uihnscuskc=1;") ("RatpoisonWiki" "http://ratpoison.antidesktop.net/cgi-bin/wiki" utf-8 "uihnscuskc=1;") ("StumpwmWiki" "http://stumpwm.antidesktop.net/cgi-bin/wiki" utf-8 "uihnscuskc=1;") ...))
-;;  `yaoddmuse-default-wiki'
-;;    The default wiki name for edit.
-;;    default = "EmacsWiki"
-;;  `yaoddmuse-username'
-;;    Username to use when posting.
-;;    default = user-full-name
-;;  `yaoddmuse-password'
-;;    Password to use when posting.
-;;    default = ""
-;;  `yaoddmuse-transform-image'
-;;    Whether transform image content.
-;;    default = t
-;;  `yaoddmuse-display-after-get'
-;;    Whether display `yaoddmuse-mode' buffer after GET.
-;;    default = t
-;;  `yaoddmuse-close-after-post'
-;;    Whether close `yaoddmuse-mode' buffer after POST.
-;;    default = nil
-;;  `yaoddmuse-post-dired-confirm'
-;;    Whether confirmation is needed to post mark dired files.
-;;    default = t
-;;  `yaoddmuse-edit-protect'
-;;    This option is make user can post wiki page without text captcha.
-;;    default = t
-;;  `yaoddmuse-use-always-minor'
-;;    When t, set all the minor mode bit to all editions.
-;;    default = nil
-;;  `yaoddmuse-browse-function'
-;;    The browse function use in `yaoddmuse-handle-browse'.
-;;    default = (quote browse-url)
-;;  `yaoddmuse-notify-function'
-;;    Notify function for getting and posting.
-;;    default = (quote yaoddmuse-notify-default)
-;;  `yaoddmuse-highlight-elisp-page'
-;;    Whether use syntax highlight elisp page.
-;;    default = t
-;;  `yaoddmuse-screenshot-program'
-;;    The default tool for screenshot.
-;;    default = "import"
-;;  `yaoddmuse-screenshot-filename'
-;;    The default file for save screenshot.
-;;    default = "/tmp/yaoddmuse-screenshot.png"
-
-;;; Installation:
-;;
-;; Put yaoddmuse.el to your load-path.
-;; The load-path is usually ~/elisp/.
-;; It's set in your ~/.emacs like this:
-;; (add-to-list 'load-path (expand-file-name "~/elisp"))
-;;
-;; And the following to your ~/.emacs startup file.
-;;
-;; (require 'yaoddmuse)
-;;
-;; If your computer is always connected Internet when Emacs start up,
-;; I recommended you add below to your ~/.emacs, to update Wiki page name
-;; when start up:
-;;
-;;      (yaoddmuse-update-pagename t)
-;;
-;; And above setup is not necessary, because Yaoddmuse will automatically
-;; update Wiki page name when you first call yaoddmuse function.
-;; Above setup just avoid *delay* when you first call function.
-;;
-
-;;; Customize:
-;;
-;; `yaoddmuse-directory' to storage oddmuse pages.
-;;
-;; `yaoddmuse-assoc-mode' Whether assoc files in
-;; `yaoddmuse-directory' with `yaoddmuse-mode'.
-;;
-;; `yaoddmuse-wikis' is alist mapping wiki names to URLs.
-;; You can add Oddmuse wiki element with format
-;; ("WikiName" "WikiUrl" coding "CaptchaString").
-;; But don't modified default elements of `yaoddmuse-wikis',
-;; probably causes trouble!
-;;
-;; `yaoddmuse-default-wiki' the default wiki name for command
-;; `yaoddmuse-edit-default'.
-;;
-;; `yaoddmuse-username' user name for posting, default is
-;; this value of `user-full-name'.
-;;
-;; `yaoddmuse-password' password for posting,
-;; You only need this if you want to edit locked pages and you
-;; know an administrator password.
-;;
-;; `yaoddmuse-transform-image' Whether transform image content.
-;; If non-nil, will transform image content and view it.
-;; Otherwise, don't transform image content.
-;;
-;; `yaoddmuse-display-after-get' whether display page after get.
-;;
-;; `yaoddmuse-close-after-post' whether close edit buffer after
-;; post wiki page.
-;;
-;; `yaoddmuse-post-dired-confirm' Whether confirmation is needed
-;; to post mark dired files.
-;;
-;; `yaoddmuse-edit-protect' Some wikis, such as EmacsWiki,
-;; use a text captcha to protect pages from being edited.
-;; This option is make user can post wiki page without text captcha.
-;; So if you edit wiki (such as EmacsWiki),
-;; please make sure this option is `non-nil'.Default
-;;
-;; `yaoddmuse-use-always-minor' When t,
-;; set all the minor mode bit to all editions.
-;;
-;; `yaoddmuse-browse-function' the browse function use
-;; in `yaoddmuse-handle-browse',
-;; you can customize your own advanced browse function.
-;;
-;; `yaoddmuse-notify-function' the notify function for
-;; get/post message,
-;; you can customize your own advanced notify function.
-;;
-;; `yaoddmuse-highlight-elisp-page'
-;; Whether to render ‘emacs-lisp-mode’ syntax highlighting
-;; when the current page is an elisp file.
-;; If you don’t like this, change it to nil.
-;;
-;; `yaoddmuse-screenshot-program'
-;; The default tool program for screenshot.
-;;
-;; `yaoddmuse-screenshot-filename'
-;; The default file for save screenshot.
-;;
-;; All of the above can customize by:
-;;      M-x customize-group RET yaoddmuse RET
-;;
-
-
-;;; Bug Report:
-;;
-;; If you have problem, send a bug report via M-x yaoddmuse-send-bug-report.
-;; The step is:
-;;  0) Setup mail in Emacs, the easiest way is:
-;;       (setq user-mail-address "your@mail.address")
-;;       (setq user-full-name "Your Full Name")
-;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
-;;       (setq mail-user-agent 'message-user-agent)
-;;       (setq message-send-mail-function 'message-smtpmail-send-it)
-;;  1) Be sure to use the LATEST version of yaoddmuse.el.
-;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
-;;  3) Use Lisp version instead of compiled one: (load "yaoddmuse.el")
-;;  4) Do it!
-;;  5) If you got an error, please do not close *Backtrace* buffer.
-;;  6) M-x yaoddmuse-send-bug-report and M-x insert-buffer *Backtrace*
-;;  7) Describe the bug using a precise recipe.
-;;  8) Type C-c C-c to send.
-;;  # If you are a Japanese, please write in Japanese:-)
-
-;;; Change log:
-;; 2014/03/06     Andy Stewart
-;;      * `yaoddmuse-post-dired': add sit-for 5 for emacswiki to void upload files failed.
-;;
-;; 25-Feb-2013    ChristianGiménez
-;;      * Tildes recognition in links.
-;;
-;; 2010/05/04
-;;      * Bug report command: `yaoddmuse-send-bug-report'
-;;
-;; 2010/03/20
-;;      * Add Emacswiki-specific commands for convenience:
-;;        `emacswiki'
-;;        `emacswiki-post'
-;; 2010/02/24
-;;      * Please don't use `C-x` key to avoid conflict with Default Emacs binding.
-;;         If you need that, please customize `yaoddmuse-mode-map`, thanks!
-;;
-;; 2010/02/19
-;;      * Add new key binding:  C-x C-v (`yaoddmuse-revert')
-;;
-;; 2009/10/08
-;;      * imenu support.
-;;
-;; 2009/03/29
-;;      * Add commands:
-;;        `yaoddmuse-browse-page-diff'
-;;        `yaoddmuse-browse-page-default-diff'
-;;
-;; 2009/03/13
-;;      * Just ask summary once when post from dired.
-;;
-;; 2009/03/11
-;;      * Refactory code.
-;;      * Fix bugs.
-;;      * Fix doc.
-;;      * Handle retrieve failed case of `yaoddmuse-get-page'.
-;;
-;; 2009/03/08
-;;      * Modified `yaoddmuse-wikis', make captcha string per wiki.
-;;      * High edit status at mode-line.
-;;      * Fix doc.
-;;
-;; 2009/03/04
-;;      * Fix the bug of `yaoddmuse-post-callback'.
-;;
-;; 2009/03/02
-;;      * Refactory code.
-;;      * Add new commands:
-;;        `yaoddmuse-post-screenshot'
-;;        `yaoddmuse-post-screenshot-default'
-;;
-;; 2009/02/27
-;;      * Improve `yaoddmuse-post'.
-;;      * When execute commands
-;;       `yaoddmuse-browse-page' or
-;;       `yaoddmuse-browse-page-default', will try
-;;       to use `yaoddmuse-pagename-at-point' pick-up
-;;       page name from current buffer.
-;;
-;; 2009/02/24
-;;      * Fix `yaoddmuse-mode' load bug.
-;;      * New command `yaoddmuse-insert-file-content'.
-;;      * Transform image page for view.
-;;      * New option `yaoddmuse-transform-image'.
-;;      * New commands:
-;;        `yaoddmuse-toggle-image-status'
-;;        `yaoddmuse-save-as'
-;;      * Command `yaoddmuse-follow' can pick up
-;;        page name from [[image:PAGENAME]].
-;;      * Fix doc.
-;;
-;; 2009/02/23
-;;      * Now can upload picture or compress file to Wiki directly,
-;;        not need browser any more.
-;;      * Highlight new page for warning.
-;;      * New commands
-;;        `yaoddmuse-redirect'.
-;;        `yaoddmuse-delete'.
-;;      * Use "flet" wrap "(basic-save-buffer)".
-;;      * Fix doc.
-;;
-;; 2009/02/22
-;;      * Add (set-buffer-modified-p nil) make modification flag
-;;        with `nil' just after getting page, protect download
-;;        content.
-;;        Thanks rubikitch for this patch. :)
-;;      * Refactory code.
-;;      * New commands:
-;;        `yaoddmuse-post-dired-default'.
-;;        `yaoddmuse-post-file-default'.
-;;      * New options:
-;;        `yaoddmuse-notify-function'.
-;;        `yaoddmuse-display-after-get'.
-;;      * Fix doc.
-;;
-;; 2009/02/19
-;;      * Add new command `yaoddmuse-browse-page-default'.
-;;
-;; 2009/02/17
-;;      * Remove unnecessary completion name for `yaoddmuse-post-library'
-;;        and `yaoddmuse-post-library-default'
-;;      * Pick file name around point when use
-;;        `yaoddmuse-post-library' and `yaoddmuse-post-library-default'.
-;;
-;; 2009/02/13
-;;      * Fix bug of `yaoddmuse-update-pagename'.
-;;
-;; 2009/02/12
-;;      * Remove option `yaoddmuse-startup-get-pagename'.
-;;      * Add new command `yaoddmuse-update-pagename'.
-;;      * Add option `unforced' to function `yaoddmuse-update-pagename'.
-;;      * Add miss command `yaoddmuse-toggle-minor'.
-;;      * Fix doc.
-;;
-;; 2009/02/11
-;;      * Remember last `summary' string for fast input.
-;;
-;; 2009/01/19
-;;      * Add highlight support for [[image:ImagePage]].
-;;
-;; 2009/01/12
-;;      * Improve wiki syntax highlight.
-;;      * Add syntax highlight for `tables' and `dialog'.
-;;      * Fix the bug of `yaoddmuse-pagename-at-point'.
-;;
-;; 2009/01/11
-;;      * Add new feature: browse page after post successful
-;;        if i type "C-u" before call post command.
-;;      * Modified (kill-buffer) to (kill-buffer (current-buffer))
-;;        to compatible with Emacs 22.
-;;      * Add highlight for [url url-name] support.
-;;      * Add navigation functions.
-;;      * Remove blank from `yaoddmuse-username'.
-;;
-;; 2009/01/10
-;;      * Add new command `yaoddmuse-follow' for figure
-;;        out what page we need to visit.
-;;      * Add new option `yaoddmuse-highlight-elisp-page'
-;;        to do `emacs-lisp' syntax highlight when current page
-;;        is elisp file.
-;;        Thanks "benny" for this advice!
-;;      * Add new command `yaoddmuse-post-library-default'
-;;        post library to default wiki.
-;;      * Fix post bug.
-;;
-;; 2009/01/10
-;;      * Add new option `yaoddmuse-browse-function' for customize
-;;        your own advanced browse function.
-;;
-;; 2009/01/09
-;;      * Fix regular expression for keywords highlight.
-;;
-;; 2009/01/06
-;;      * First released.
-;;
-
-;;; Acknowledgements:
-;;
-;;      Alex Schroeder  <mailto:kensanata@gmail.com>
-;;      rubikitch       <rubikitch@ruby-lang.org>
-;;              For create oddmuse.el
-;;
-;;      rubikitch
-;;              For patch.
-;;      benny (IRC nickname)
-;;              For advices.
-;;
-
-;;; TODO
-;;
-;;
-
-;;; Require
-(eval-when-compile (require 'cl))
-(require 'sgml-mode)
-(require 'skeleton)
-(require 'url)
-(require 'thingatpt)
-(require 'find-func)
-(require 'dired)
-
-;;; Code:
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Customize ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defgroup yaoddmuse nil
-  "Yet another Oddmuse mode for Emacs."
-  :group 'edit)
-
-(defcustom yaoddmuse-directory "~/.yaoddmuse"
-  "Directory to storage oddmuse pages."
-  :type 'string
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-assoc-mode t
-  "Whether assoc files in `yaoddmuse-directory' with `yaoddmuse-mode'.
-Default is t."
-  :type 'boolean
-  :set (lambda (symbol value)
-         (set symbol value)
-         (if value
-             (add-to-list 'auto-mode-alist
-                          `(,(expand-file-name yaoddmuse-directory) . yaoddmuse-mode))
-           (remove-hook 'auto-mode-alist
-                        `(,(expand-file-name yaoddmuse-directory) . yaoddmuse-mode))))
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-wikis
-  '(("EmacsWiki" "http://www.emacswiki.org/emacs" utf-8 "uihnscuskc=1;")
-    ("CommunityWiki" "http://www.communitywiki.org/cw" utf-8 "uihnscuskc=1;")
-    ("RatpoisonWiki" "http://ratpoison.wxcvbn.org/cgi-bin/wiki.pl" utf-8 "uihnscuskc=1;")
-    ("OddmuseWiki" "http://www.oddmuse.org/cgi-bin/oddmuse" utf-8 "uihnscuskc=1;"))
-  "Alist mapping wiki names to URLs.
-First argument is Wiki name.
-Second argument is Wiki url.
-Third argument is coding for Wiki.
-Fourth argument is captcha string for edit protected.
-
-You can add new list as format (WikiName WikiURL CodingSystem CaptchaString).
-But don't modified default elements of `yaoddmuse-wikis', probably causes trouble!"
-  :type '(repeat (list (string :tag "Wiki")
-                       (string :tag "URL")
-                       (symbol :tag "Coding System")
-                       (string :tag "Captcha")))
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-default-wiki "EmacsWiki"
-  "The default wiki name for edit.
-This value must match the KEY value of `yaoddmuse-wikis'.
-This value is use by function `yaoddmuse-edit-default'."
-  :type 'string
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-username user-full-name
-  "Username to use when posting.
-Setting a username is the polite thing to do."
-  :type 'string
-  :set (lambda (symbol value)
-         ;; Remove blank from user name for wiki link navigation.
-         (setq value (replace-regexp-in-string " " "" value))
-         (set symbol value))
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-password ""
-  "Password to use when posting.
-You only need this if you want to edit locked pages and you
-know an administrator password."
-  :type 'string
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-transform-image t
-  "Whether transform image content.
-If non-nil, will transform image content and view it.
-Otherwise, don't transform image content.
-Default is t."
-  :type 'boolean
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-display-after-get t
-  "Whether display `yaoddmuse-mode' buffer after GET.
-Non-nil mean display.
-Nil mean don't display.
-Default is t."
-  :type 'boolean
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-close-after-post nil
-  "Whether close `yaoddmuse-mode' buffer after POST.
-Non-nil mean close.
-Nil mean don't close.
-Default is t."
-  :type 'boolean
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-post-dired-confirm t
-  "Whether confirmation is needed to post mark dired files.
-Nil means no confirmation is needed.
-If non-nil, will notify you before post dired mark files."
-  :type 'boolean
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-edit-protect t
-  "This option is make user can post wiki page without text captcha.
-Some wikis, such as EmacsWiki, use a text captcha
-to protect pages from being edited.
-So if you edit wiki (such as EmacsWiki),
-please make sure this option is `non-nil'."
-  :type 'boolean
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-use-always-minor nil
-  "When t, set all the minor mode bit to all editions.
-This can be changed for each edition using `yaoddmuse-toggle-minor'."
-  :type 'boolean
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-browse-function 'browse-url
-  "The browse function use in `yaoddmuse-handle-browse'.
-Default is function `browse-url'."
-  :type 'function
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-notify-function 'yaoddmuse-notify-default
-  "Notify function for getting and posting.
-It accepts one argument, the string to notify."
-  :type 'function
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-highlight-elisp-page t
-  "Whether use syntax highlight elisp page.
-Default is t."
-  :type 'boolean
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-screenshot-program "import"
-  "The default tool for screenshot."
-  :type 'string
-  :group 'yaoddmuse)
-
-(defcustom yaoddmuse-screenshot-filename "/tmp/yaoddmuse-screenshot.png"
-  "The default file for save screenshot."
-  :type 'string
-  :group 'yaoddmuse)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Faces ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defface yaoddmuse-tag
-  '((t (:inherit 'font-lock-preprocessor-face))
-    (((background dark)) (:foreground "Gold")))
-  "Highlight tag."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-link
-  '((((background dark)) (:foreground "Khaki"))
-    (t (:inherit 'link)))
-  "Highlight link."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-url
-  '((((background dark)) (:foreground "Grey20"))
-    (t (:inherit 'link :foreground unspecified :underline nil)))
-  "Highlight link."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-url-name
-  '((t (:foreground "Orange")))
-  "Highlight link."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-dialog
-  '((t (:foreground "Peru")))
-  "Highlight dialog."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-lisp-keyword
-  '((t (:foreground "PaleGreen")))
-  "Highlight lisp keyword `Lisp:'."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-lisp-file
-  '((t (:foreground "GreenYellow")))
-  "Highlight lisp file."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-source-code
-  '((t (:inherit 'fixed-pitch))
-    (((background dark)) (:foreground "Yellow")))
-  "Highlight source-code."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-image-link
-  '((t (:foreground "DarkRed")))
-  "Highlight image-link."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-image-link-name
-  '((t (:foreground "Chocolate")))
-  "Highlight image-link name."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-heading
-  '((t (:foreground "Green")))
-  "Highlight heading."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-tables
-  '((t (:foreground "Aquamarine")))
-  "Highlight tables."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-indent
-  '((t (:foreground "Tomato")))
-  "Highlight indent."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-bold
-  '((t (:foreground "DodgerBlue")))
-  "Highlight bold."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-underline
-  '((t (:foreground "Purple")))
-  "Highlight underline."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-italic
-  '((t (:foreground "Brown")))
-  "Highlight italic."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-short-dash
-  '((t (:foreground "Pink2")))
-  "Highlight short dash."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-long-dash
-  '((t (:foreground "LawnGreen")))
-  "Highlight long dash."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-separate
-  '((t (:foreground "DarkRed")))
-  "Highlight separate."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-level-1
-  '((t (:foreground "Grey100")))
-  "Highlight indent level 1."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-level-2
-  '((t (:foreground "Grey70")))
-  "Highlight indent level 2."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-level-3
-  '((t (:foreground "Grey40")))
-  "Highlight indent level 3."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-new-page
-  '((t (:foreground "Red" :bold t)))
-  "Warning new page."
-  :group 'yaoddmuse)
-
-(defface yaoddmuse-edit-status-face
-  '((((class color) (background dark))
-     (:foreground "Gold")))
-  "Face for highlighting yaoddmuse edit status."
-  :group 'yaoddmuse)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Variable ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defvar yaoddmuse-wikiname nil
-  "The current wiki.
-Must match a key from `yaoddmuse-wikis'.")
-(make-variable-buffer-local 'yaoddmuse-wikiname)
-
-(defvar yaoddmuse-pagename nil
-  "Page name of the current buffer.")
-(make-variable-buffer-local 'yaoddmuse-pagename)
-
-(defvar yaoddmuse-minor nil
-  "Is this editing a minor change.")
-(make-variable-buffer-local 'yaoddmuse-minor)
-
-(defvar yaoddmuse-edit-status-string nil
-  "The edit status at mode-line.")
-(make-variable-buffer-local 'yaoddmuse-edit-status)
-
-(defvar yaoddmuse-retrieve-buffer nil
-  "The download buffer used by `url-retrieve'.")
-(make-variable-buffer-local 'yaoddmuse-retrieve-buffer)
-
-(defvar yaoddmuse-image-status nil
-  "The status of current page.
-This status will turn on when transform image content.
-Default is nil.")
-(make-variable-buffer-local 'yaoddmuse-image-status)
-
-(defvar yaoddmuse-pages-hash (make-hash-table :test 'equal)
-  "The wiki-name / pages pairs.")
-
-(defvar yaoddmuse-last-summary nil
-  "The last summary for input.")
-
-(defvar yaoddmuse-args-get
-  "action=browse;raw=1;id=%t"
-  "Command to use for publishing pages.
-It must print the page to stdout.
-
-%t  URL encoded pagename, eg. HowTo, How_To, or How%20To")
-
-(defvar yaoddmuse-args-index
-  "action=index;raw=1"
-  "URL arguments to use for publishing index pages.")
-
-(defvar yaoddmuse-args-post
-  (concat "title=%t;"
-          "summary=%s;"
-          "username=%u;"
-          "pwd=%p;"
-          "recent_edit=%m;"
-          "text=%x")
-  "URL arguments to use for publishing pages.
-
-%t  pagename
-%s  summary
-%u  username
-%p  password
-%x  text")
-
-(defvar yaoddmuse-post-mime-alist
-  '((".css" . "text/css")
-    (".xml" . "text/xml")
-    (".tar" . "application/x-tar")
-    (".tar.gz" . "application/x-gzip")
-    (".gzip" . "application/x-gzip-compressed")
-    (".zip" . "application/x-zip-compressed")
-    (".jpeg" . "image/jpeg")
-    (".png"  . "image/png"))
-  "An alist of file extensions and corresponding MIME content-types.")
-
-(defvar yaoddmuse-imenu-regexp "^\\(=+\\)\\s-*\\(.*?\\)\\s-*\\1"
-  "A regular expression for headings to be added to an index menu.")
-
-
-(defvar yaoddmuse-mode-map
-  (let ((map (make-sparse-keymap)))
-    ;; Edit.
-    (define-key map (kbd "C-c C-e") 'yaoddmuse-edit-default)
-    (define-key map (kbd "C-c C-S-e") 'yaoddmuse-edit)
-    (define-key map (kbd "C-c C-o") 'yaoddmuse-follow)
-    (define-key map (kbd "C-c C-t") 'sgml-tag)
-    ;; Post.
-    (define-key map (kbd "C-c C-c") 'yaoddmuse-post-current-buffer)
-    (define-key map (kbd "C-c C-S-c") 'yaoddmuse-post-buffer)
-    (define-key map (kbd "C-c C-l") 'yaoddmuse-post-library-default)
-    (define-key map (kbd "C-c C-S-l") 'yaoddmuse-post-library)
-    (define-key map (kbd "C-c C-f") 'yaoddmuse-post-file)
-    (define-key map (kbd "C-c C-S-f") 'yaoddmuse-post-file-default)
-    (define-key map (kbd "C-c C-y") 'yaoddmuse-post-screenshot)
-    (define-key map (kbd "C-c C-S-y") 'yaoddmuse-post-screenshot-default)
-    ;; View.
-    (define-key map (kbd "C-c C-v") 'yaoddmuse-browse-page-default)
-    (define-key map (kbd "C-c C-S-v") 'yaoddmuse-browse-page)
-    (define-key map (kbd "C-c C-'") 'yaoddmuse-browse-page-default-diff)
-    (define-key map (kbd "C-c C-S-'") 'yaoddmuse-browse-page-diff)
-    (define-key map (kbd "C-c C-s") 'yaoddmuse-browse-current-page)
-    (define-key map (kbd "C-c C-r") 'yaoddmuse-revert)
-    ;; Navigation.
-    (define-key map (kbd "C-c C-n") 'yaoddmuse-navi-next-heading)
-    (define-key map (kbd "C-c C-p") 'yaoddmuse-navi-prev-heading)
-    ;; Update.
-    (define-key map (kbd "C-c C-j") 'yaoddmuse-update-pagename)
-    ;; Insert.
-    (define-key map (kbd "C-c C-i") 'yaoddmuse-insert-pagename)
-    (define-key map (kbd "C-c C-x") 'yaoddmuse-insert-file-content)
-    ;; Misc.
-    (define-key map (kbd "C-c C-u") 'yaoddmuse-kill-url)
-    (define-key map (kbd "C-c C-m") `yaoddmuse-toggle-minor)
-    (define-key map (kbd "C-c C-d") 'yaoddmuse-delete)
-    (define-key map (kbd "C-c C-S-D") 'yaoddmuse-redirect)
-    (define-key map (kbd "C-c C-S-t") 'yaoddmuse-toggle-image-status)
-    (define-key map (kbd "C-c C-w") 'yaoddmuse-save-as)
-    map)
-  "Keymap used by `yaoddmuse-mode'.")
-
-(defun yaoddmuse-highlight-keywords ()
-  "Highlight keywords."
-  (font-lock-add-keywords
-   nil
-   '(("\\`This page does not exist.*$" . 'yaoddmuse-new-page)
-     ("<\\(/?[a-z]+\\)>" . 'yaoddmuse-tag)
-     ("^=\\{2,\\}\\([^=]+\\)=\\{2,\\}" 1 'yaoddmuse-heading)
-     ("\\[\\[\\(image:\\)\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]\\]" 1 'yaoddmuse-image-link)
-     ("\\[\\[\\(image:\\)\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]\\]" 2 'yaoddmuse-image-link-name)
-     ("\\[\\(\\([^\\[[:blank:]]\\|[^\\][:blank:]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 1 'yaoddmuse-url)
-     ("\\[\\(\\([^\\[[:blank:]]\\|[^\\][:blank:]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 3 'yaoddmuse-url-name)
-     ;; ("\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 1 'yaoddmuse-url)
-     ;; ("\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)[[:blank:]]\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]" 3 'yaoddmuse-url-name)     
-     ("\\<[A-Z\xc0-\xdeÀÈÌÒÙÁÉÍÓÚÖÜ]+[àèìòùáéíóúüöa-z\xdf-\xff]+\\([ÀÈÌÒÙÁÉÍÓÚÖÜA-Z\xc0-\xde]+[àèìòùáéíóúüöa-z\xdf-\xff]*\\)+\\>" . 'yaoddmuse-link)
-     ("\\[\\[\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]\\]" 1 'yaoddmuse-link)
-     ("\\b\\(Lisp:\\)\\([^ ]+\\.el\\)\\b" 1 'yaoddmuse-lisp-keyword)
-     ("\\b\\(Lisp:\\)\\([^ ]+\\.el\\)\\b" 2 'yaoddmuse-lisp-file)
-     ("^\\({{{\\|}}}\\|;;;\\)\\s-" 1 'yaoddmuse-source-code)
-     ("^\\[new:?\\([^\\[]\\|[^\\]]\\)*\\]$" . 'yaoddmuse-dialog)
-     ("|\\{2,\\}" . 'yaoddmuse-tables)
-     ("^\\([:]+\\)\\s-" 1 'yaoddmuse-indent)
-     ("\\s-\\(--\\)\\s-" . 'yaoddmuse-short-dash)
-     ("\\s-\\(---\\)\\s-" . 'yaoddmuse-long-dash)
-     ("^----$" . 'yaoddmuse-separate)
-     ("''\\([^']+\\)''" 1 'yaoddmuse-bold)
-     ("[^^\n\\*][\\*]+\\([^\\*]+\\)[\\*]+" 1 'yaoddmuse-bold)
-     ("\\s-/+\\([^/]+\\)/+\\s-" 1 'yaoddmuse-italic)
-     ("\\s-_+\\([^_]+\\)_+\\s-" 1 'yaoddmuse-underline)
-     ("^\\(\\([*#]\\)\\{1\\}\\)\\s-" 1 'yaoddmuse-level-1)
-     ("^\\(\\([*#]\\)\\{2\\}\\)\\s-" 1 'yaoddmuse-level-2)
-     ("^\\(\\([*#]\\)\\{3\\}\\)\\s-" 1 'yaoddmuse-level-3)
-     ))
-  (font-lock-mode 1))
-
-(define-derived-mode yaoddmuse-mode text-mode "Yaoddmuse"
-  "Yet another mode to edit Oddmuse wiki pages."
-  ;; Face setup.
-  (yaoddmuse-highlight-keywords)
-  ;; Local variable setup.
-  (set (make-local-variable 'sgml-tag-alist)
-       `(("b") ("code") ("em") ("i") ("strong") ("nowiki")
-         ("pre" \n) ("tt") ("u")))
-  (set (make-local-variable 'skeleton-transformation) 'identity)
-  ;; Wiki and page name setup.
-  (setq imenu-generic-expression (list (list nil yaoddmuse-imenu-regexp 2)))
-  (and buffer-file-name
-       ;; Setup wiki name.
-       (setq yaoddmuse-wikiname
-             (file-name-nondirectory
-              (substring (file-name-directory buffer-file-name) 0 -1)))
-       ;; Setup page name.
-       (setq yaoddmuse-pagename
-             (file-name-nondirectory buffer-file-name))
-       ;; Initialize oddmuse-minor according to `yaoddmuse-use-always-minor'
-       (setq yaoddmuse-minor
-             yaoddmuse-use-always-minor))
-  ;; Load emacs-lisp-mode syntax highlight,
-  ;; if option `yaoddmuse-highlight-elisp-page' is turn on
-  ;; and current page is elisp file.
-  (when (and yaoddmuse-highlight-elisp-page
-             (string-match "^.*\\.el$" yaoddmuse-pagename))
-    (set-syntax-table emacs-lisp-mode-syntax-table)
-    (setq major-mode 'emacs-lisp-mode)
-    (lisp-mode-variables))
-  ;; Load keymap.
-  (use-local-map yaoddmuse-mode-map)
-  ;; Other setup.
-  (goto-address)
-  (setq indent-tabs-mode nil))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; Edit.
-
-;;;###autoload
-(defun yaoddmuse-edit (&optional wikiname pagename prefix)
-  "Edit a page on a wiki.
-WIKINAME is the name of the wiki as defined in `yaoddmuse-wikis',
-PAGENAME is the pagename of the page you want to edit.
-Use a PREFIX argument to force a reload of the page."
-  (interactive)
-  ;; Set value with `prefix'
-  ;; when `prefix' is `nil'
-  ;; and `current-prefix-arg' is `non-nil'.
-  (or prefix (if current-prefix-arg (setq prefix t)))
-  ;; Edit page.
-  (yaoddmuse-get-pagename wikiname pagename
-                          (if prefix
-                              'yaoddmuse-handle-get
-                            'yaoddmuse-handle-get-or-display)))
-
-;;;###autoload
-(defun yaoddmuse-edit-default (prefix)
-  "Edit a page with default wiki `yaoddmuse-default-wiki'.
-Use a PREFIX argument to force a reload of the page."
-  (interactive "P")
-  (yaoddmuse-edit yaoddmuse-default-wiki nil prefix))
-
-(defun yaoddmuse-follow ()
-  "Figure out what page we need to visit and call `yaoddmuse-edit' on it.
-Default, this try to pick up page name around point.
-You can type `C-u' before this command make it prompt
-page name when can't find page name around point."
-  (interactive)
-  ;; Get follow page.
-  (if current-prefix-arg
-      ;; Read page from user.
-      (yaoddmuse-get-pagename yaoddmuse-wikiname nil 'yaoddmuse-handle-follow)
-    ;; Otherwise try follow page around point.
-    (if (yaoddmuse-pagename-at-point)
-        (yaoddmuse-get-page yaoddmuse-wikiname (yaoddmuse-pagename-at-point))
-      (message "No valid link around point."))))
-
-;;; Post
-
-;;;###autoload
-(defun yaoddmuse-post-buffer (&optional post-buffer summary prefix)
-  "Post the BUFFER to the current wiki.
-The current wiki is taken from `yaoddmuse-wiki'.
-The POST-BUFFER is the buffer you want post,
-Default will read buffer name if POST-BUFFER is void.
-SUMMARY is summary name for post.
-If PREFIX is non-nil, will view page after post successful."
-  (interactive)
-  ;; Read buffer name.
-  (or post-buffer
-      (setq post-buffer (read-buffer "Buffer name: ")))
-  (set-buffer post-buffer)
-  ;; Try to save file before post.
-  (when buffer-file-name
-    (flet ((message (&rest args)))
-      (basic-save-buffer)))
-  ;; Post page.
-  (yaoddmuse-post yaoddmuse-wikiname
-                  yaoddmuse-pagename
-                  (buffer-name)
-                  (buffer-string)
-                  summary
-                  prefix))
-
-;;;###autoload
-(defun yaoddmuse-post-current-buffer (prefix)
-  "Post current buffer to current wiki.
-The current wiki is taken from `yaoddmuse-wiki'.
-Use a PREFIX argument to browse page after post successful."
-  (interactive "P")
-  (yaoddmuse-post-buffer (current-buffer) nil prefix))
-
-;;;###autoload
-(defun yaoddmuse-post-file (&optional filename wikiname pagename summary prefix)
-  "Post file to current wiki.
-The current wiki is taken from `yaoddmuse-wiki'.
-FILENAME is file name you want post.
-WIKINAME is wiki name for post.
-PAGENAME is page name for post.
-SUMMARY is summary for post.
-If PREFIX is non-nil, will view page after post successful."
-  (interactive)
-  ;; Read file.
-  (unless filename
-    (setq filename (read-file-name "File name: ")))
-  ;; Check file.
-  (if (and (file-exists-p filename)
-           (not (file-directory-p filename)))
-      ;; Post file.
-      (yaoddmuse-post wikiname
-                      pagename
-                      (file-name-nondirectory filename)
-                      (yaoddmuse-encode-file filename)
-                      summary
-                      prefix)
-    ;; Error when invalid file name.
-    (message "Invalid file name %s" filename)))
-
-;;;###autoload
-(defun yaoddmuse-post-file-default (prefix)
-  "Post file to default wiki.
-If PREFIX is non-nil, will view page after post successful."
-  (interactive "P")
-  (yaoddmuse-post-file nil yaoddmuse-default-wiki nil nil prefix))
-
-;;;###autoload
-(defun yaoddmuse-post-library (&optional library wikiname pagename summary prefix)
-  "Post library to current wiki.
-The current wiki is taken from `yaoddmuse-wikis'.
-LIBRARY is library name you want post.
-WIKINAME is wiki name for post.
-PAGENAME is page name for post.
-SUMMARY is summary for post.
-If PREFIX is non-nil, will view page after post successful."
-  (interactive)
-  ;; Get library name.
-  (or library (setq library (yaoddmuse-get-library)))
-  ;; Post library to wiki.
-  (let ((filename (find-library-name library)))
-    (yaoddmuse-post-file filename wikiname pagename summary prefix)))
-
-;;;###autoload
-(defun yaoddmuse-post-library-default (prefix)
-  "Post library to default wiki.
-Use a PREFIX argument to browse page after post successful."
-  (interactive "P")
-  (let* ((library (yaoddmuse-get-library))
-         (filename (find-library-name library))
-         (pagename (file-name-nondirectory filename)))
-    ;; Post library to default wiki.
-    (yaoddmuse-post-file filename yaoddmuse-default-wiki pagename nil prefix)))
-
-;;;###autoload
-(defun yaoddmuse-post-dired (&optional wikiname summary prefix)
-  "Post dired marked files to current wiki.
-The current wiki is taken from `yaoddmuse-wikis'.
-WIKINAME is wiki name for post.
-SUMMARY is summary for post.
-If PREFIX is non-nil, will view page after post successful."
-  (interactive)
-  (if (eq major-mode 'dired-mode)
-      (if (or (not yaoddmuse-post-dired-confirm)
-              (yes-or-no-p "Do you want post marked files to wiki."))
-          (let (filename pagename)
-            (or summary (setq summary (yaoddmuse-read-summary)))
-            (dolist (file (dired-get-marked-files))
-              (setq filename file)
-              (setq pagename (file-name-nondirectory filename))
-              (yaoddmuse-post-file filename wikiname pagename summary prefix))))
-    (message "This command in only for `dired-mode'.")))
-
-;;;###autoload
-(defun yaoddmuse-post-dired-default (prefix)
-  "Post dired marked files to default wiki.
-Use a PREFIX argument to browse page after post successful."
-  (interactive "P")
-  (yaoddmuse-post-dired yaoddmuse-default-wiki nil prefix))
-
-;;;###autoload
-(defun yaoddmuse-post-screenshot (&optional wikiname summary prefix)
-  "Post screenshot to current wiki.
-The current wiki is taken from `yaoddmuse-wikis'.
-WIKINAME is wiki name for post.
-SUMMARY is summary for post.
-If PREFIX is non-nil, will view page after post successful."
-  (interactive)
-  ;; Check screenshot program.
-  (if (executable-find yaoddmuse-screenshot-program)
-      (progn
-        ;; Screenshot.
-        (message "Please use mouse select region for screenshot.")
-        (call-process yaoddmuse-screenshot-program nil nil nil yaoddmuse-screenshot-filename)
-        ;; Post screenshot.
-        (yaoddmuse-post-file yaoddmuse-screenshot-filename wikiname nil "Screenshot by yaoddmuse.el" prefix))
-    (message "Please make sure have install program '%s'." yaoddmuse-screenshot-program)))
-
-;;;###autoload
-(defun yaoddmuse-post-screenshot-default (prefix)
-  "Post screenshot to default wiki.
-Use a PREFIX argument to browse page after post successful."
-  (interactive "P")
-  (yaoddmuse-post-screenshot yaoddmuse-default-wiki nil prefix))
-
-;;; View
-
-(defun yaoddmuse-revert ()
-  "Reload current edit page."
-  (interactive)
-  (yaoddmuse-get-page yaoddmuse-wikiname yaoddmuse-pagename))
-
-;;;###autoload
-(defun yaoddmuse-browse-page (&optional wikiname pagename)
-  "Browse special page in wiki.
-WIKINAME is the name of the wiki as defined in `yaoddmuse-wikis',
-PAGENAME is the pagename of the page you want to edit."
-  (interactive)
-  (yaoddmuse-get-pagename wikiname pagename 'yaoddmuse-handle-browse))
-
-;;;###autoload
-(defun yaoddmuse-browse-page-default ()
-  "Brose special page with `yaoddmuse-default-wiki'."
-  (interactive)
-  (yaoddmuse-browse-page yaoddmuse-default-wiki))
-
-;;;###autoload
-(defun yaoddmuse-browse-page-diff (&optional wikiname pagename)
-  "Browse special page diff in wiki.
-WIKINAME is the name of the wiki as defined in `yaoddmuse-wikis',
-PAGENAME is the pagename of the page you want to edit."
-  (interactive)
-  (yaoddmuse-get-pagename wikiname pagename 'yaoddmuse-handle-browse-diff))
-
-;;;###autoload
-(defun yaoddmuse-browse-page-default-diff ()
-  "Browse special page with `yaoddmuse-default-wiki'."
-  (interactive)
-  (yaoddmuse-browse-page-diff yaoddmuse-default-wiki))
-
-(defun yaoddmuse-browse-current-page ()
-  "Browse current page."
-  (interactive)
-  (yaoddmuse-browse-page yaoddmuse-wikiname yaoddmuse-pagename))
-
-;;; Navigation
-
-(defun yaoddmuse-navi-next-heading ()
-  "Goto next heading."
-  (interactive)
-  (if (bolp)
-      (forward-char +1))
-  (unless (re-search-forward "^=+" nil t)
-    (message "Reach bottom heading."))
-  (move-beginning-of-line 1))
-
-(defun yaoddmuse-navi-prev-heading ()
-  "Goto previous heading."
-  (interactive)
-  (move-beginning-of-line 1)
-  (unless (re-search-backward "^=+" nil t)
-    (message "Reach top heading.")))
-
-;;; Misc
-
-(defun yaoddmuse-insert-pagename (&optional pagename)
-  "Insert a PAGENAME of current wiki with completion."
-  (interactive)
-  ;; Insert page name.
-  (yaoddmuse-get-pagename yaoddmuse-wikiname pagename 'yaoddmuse-handle-insert))
-
-(defun yaoddmuse-insert-file-content (file)
-  "Insert FILE content.
-This function will encode special file content, such picture or compress file."
-  (interactive "fFile: ")
-  (insert (yaoddmuse-encode-file file)))
-
-(defun yaoddmuse-kill-url ()
-  "Make the URL of current oddmuse page the latest kill in the kill ring."
-  (interactive)
-  (kill-new (yaoddmuse-url yaoddmuse-wikiname yaoddmuse-pagename))
-  (message "Copy current url '%s' in yank" (yaoddmuse-url yaoddmuse-wikiname yaoddmuse-pagename)))
-
-(defun yaoddmuse-update-pagename (&optional unforced)
-  "Update all page name match in `yaoddmuse-wikis'.
-By default, this function will update page name forcibly.
-If UNFORCED is non-nil, just update page name when have not update."
-  (interactive)
-  (unless (and unforced
-               (> (hash-table-count yaoddmuse-pages-hash) 0))
-    (dolist (wiki yaoddmuse-wikis)
-      ;; Force update page name list.
-      (yaoddmuse-get-pagename (car wiki) nil nil t))))
-
-(defun yaoddmuse-toggle-minor (&optional arg)
-  "Toggle minor mode state.
-If ARG is non-nil, always turn on."
-  (interactive)
-  (let ((num (prefix-numeric-value arg)))
-    (cond
-     ((or (not arg) (equal num 0))
-      (setq yaoddmuse-minor (not yaoddmuse-minor)))
-     ((> num 0) (set 'yaoddmuse-minor t))
-     ((< num 0) (set 'yaoddmuse-minor nil)))
-    ;; Update edit status at mode-line.
-    (yaoddmuse-update-edit-status)
-    ;; Return edit status.
-    yaoddmuse-minor))
-
-(defun yaoddmuse-redirect ()
-  "Redirect page."
-  (interactive)
-  ;; Redirect page.
-  (yaoddmuse-get-pagename yaoddmuse-wikiname nil 'yaoddmuse-handle-redirect))
-
-(defun yaoddmuse-delete ()
-  "Delete page."
-  (interactive)
-  ;; Delete page.
-  (yaoddmuse-get-pagename yaoddmuse-wikiname nil 'yaoddmuse-handle-delete))
-
-(defun yaoddmuse-toggle-image-status ()
-  "Toggle image status.
-If content is raw text format, transform it to image format.
-If content is image format, transform it to raw text format."
-  (interactive)
-  (save-excursion
-    ;; Test whether is image content.
-    (if (string-match "\\`#FILE image/\\(png\\|jpeg\\)$"
-                      (buffer-substring-no-properties (goto-char (point-min))
-                                                      (line-end-position)))
-        (if yaoddmuse-image-status
-            (yaoddmuse-turn-off-image-status)
-          (yaoddmuse-turn-on-image-status))
-      (message "Invalid image content."))))
-
-(defun yaoddmuse-save-as ()
-  "Save as file.
-This function will try to encode special page content before save.
-such as picture or compress."
-  (interactive)
-  (save-excursion
-    (let ((test-string (buffer-substring-no-properties
-                        (goto-char (point-min))
-                        (line-end-position)))
-          (data (buffer-substring-no-properties
-                 (point-min)
-                 (point-max)))
-          suffix)
-      (when (string-match "\\`#FILE \\([^ \n]+\\)$" test-string)
-        (setq data (yaoddmuse-decode-string data))
-        (setq suffix (car (rassoc (match-string 1 test-string)
-                                  yaoddmuse-post-mime-alist))))
-      (with-temp-buffer
-        (insert data)
-        (write-file (read-file-name (format "File: (Suffix: %s) " suffix)))))))
-
-;;;###autoload
-(defun emacswiki (&optional pagename prefix)
-  "Edit a page on the EmacsWiki.
-PAGENAME is the pagename of the page you want to edit.
-Use a PREFIX argument to force a reload of the page."
-  (interactive)
-  (yaoddmuse-edit "EmacsWiki" pagename prefix))
-
-(defun emacswiki-post (&optional pagename summary prefix)
-  "Post file to the EmacsWiki.
-PAGENAME is page name for post, whose default is basename of current filename.
-SUMMARY is summary for post.
-If PREFIX is non-nil, will view page after post successful. "
-  (interactive)
-  (let ((file (file-name-nondirectory buffer-file-name)))
-    (yaoddmuse-post-file file "EmacsWiki" (or pagename file) summary prefix)))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilities Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun yaoddmuse-get-pagename (wikiname &optional pagename handle-function forced)
-  "Get page name in wiki for completing.
-WIKINAME is the name of the wiki as defined in `yaoddmuse-wikis',
-PAGENAME is page name.
-HANDLE-FUNCTION is function handle page with special action.
-
-By default, won't update page name when have updated,
-unless option FORCED is non-nil."
-  ;; Read wiki name if `wikiname' is void.
-  (or wikiname (setq wikiname (yaoddmuse-read-wikiname)))
-  ;; Create storage directory.
-  (make-directory (concat yaoddmuse-directory "/" wikiname) t)
-  ;; Get page name or handle page.
-  (if (and (yaoddmuse-get-pagename-table wikiname)
-           (not forced))
-      ;; Call function `handle-function' directly
-      ;; when have updated page name and option `forced' is nil.
-      (when (and (fboundp handle-function)
-                 handle-function)
-        (funcall handle-function wikiname pagename))
-    ;; Otherwise get page name.
-    (let* ((url (yaoddmuse-get-url wikiname))
-           (coding (yaoddmuse-get-coding wikiname))
-           retrieve-buffer
-           retrieve-buffer-name)
-      ;; Initialize url request parameter.
-      (yaoddmuse-retrieve-request "GET")
-      (setq url (yaoddmuse-format yaoddmuse-args-index coding url))
-      ;; Get unique buffer for handle information.
-      (setq retrieve-buffer (yaoddmuse-get-unique-buffer))
-      (setq retrieve-buffer-name (buffer-name retrieve-buffer))
-      ;; Get pagename.
-      (with-current-buffer (get-buffer retrieve-buffer-name)
-        (setq yaoddmuse-retrieve-buffer
-              (url-retrieve url
-                            'yaoddmuse-get-pagename-callback
-                            (list retrieve-buffer-name coding
-                                  wikiname pagename handle-function)))))))
-
-(defun yaoddmuse-get-pagename-callback (&optional redirect retrieve-buffer-name coding
-                                                  wikiname pagename handle-function)
-  "The callback function for `yaoddmuse-get-pagename'.
-REDIRECT is default argument for check status.
-RETRIEVE-BUFFER-NAME is name of retrieve buffer.
-CODING is coding system for decode.
-WIKINAME is wiki name.
-PAGENAME is page name.
-HANDLE-FUNCTION is function that handle download content."
-  (let (table)
-    ;; Decode pagename information.
-    (yaoddmuse-retrieve-decode retrieve-buffer-name coding)
-    ;; Update pagename with wiki.
-    (with-current-buffer (get-buffer retrieve-buffer-name)
-      (setq table (mapcar 'list (split-string (buffer-string))))
-      (puthash wikiname table yaoddmuse-pages-hash)
-      (kill-buffer (current-buffer))    ;in 22, must have argument with kill-buffer
-      )
-    ;; Add special action.
-    (when (and (fboundp handle-function)
-               handle-function)
-      (funcall handle-function wikiname pagename))))
-
-(defun yaoddmuse-get-page (wikiname pagename)
-  "Get page.
-WIKINAME is the name of the wiki as defined in `yaoddmuse-wikis',
-PAGENAME is the pagename of the page you want to edit."
-  (let* ((url (yaoddmuse-get-url wikiname))
-         (coding (yaoddmuse-get-coding wikiname))
-         (yaoddmuse-wikiname wikiname)
-         (yaoddmuse-pagename pagename)
-         retrieve-buffer
-         retrieve-buffer-name)
-    ;; Initialize url request parameter.
-    (yaoddmuse-retrieve-request "GET")
-    (setq url (yaoddmuse-format yaoddmuse-args-get coding url))
-    ;; Get unique buffer for handle information.
-    (setq retrieve-buffer (yaoddmuse-get-unique-buffer))
-    (setq retrieve-buffer-name (buffer-name retrieve-buffer))
-    ;; Get page.
-    (with-current-buffer (get-buffer retrieve-buffer-name)
-      (setq yaoddmuse-retrieve-buffer
-            (url-retrieve url
-                          'yaoddmuse-get-page-callback
-                          (list retrieve-buffer-name coding wikiname pagename))))))
-
-(defun yaoddmuse-get-page-callback (&optional redirect retrieve-buffer-name coding wikiname pagename)
-  "The callback function for `yaoddmuse-get-page'.
-REDIRECT is default argument for check status.
-RETRIEVE-BUFFER-NAME is name of retrieve buffer.
-CODING is coding system for decode.
-WIKINAME is wiki name for post.
-PAGENAME is page name for post."
-  (if (eq (car redirect) ':error)
-      ;; Kill retrieve buffer and notify user when retrieve failed.
-      (with-current-buffer (get-buffer retrieve-buffer-name)
-        (funcall yaoddmuse-notify-function
-                 (format "Get page '%s' from '%s' failed." pagename wikiname))
-        (kill-buffer retrieve-buffer-name))
-    ;; Otherwise display edit buffer.
-    (let ((page-buffer (find-file-noselect
-                        (format "%s/%s/%s" yaoddmuse-directory wikiname pagename)))
-          (page-buffer-name (yaoddmuse-get-page-buffer-name wikiname pagename)))
-      ;; Decode retrieve page information.
-      (yaoddmuse-retrieve-decode retrieve-buffer-name coding)
-      ;; Refresh page content.
-      (set-buffer page-buffer)
-      ;; Rename.
-      (unless (equal page-buffer-name (buffer-name))
-        (rename-buffer page-buffer-name))
-      ;; Erase original information.
-      (erase-buffer)
-      (insert
-       (with-current-buffer (get-buffer retrieve-buffer-name)
-         (prog1
-             (buffer-string)
-           (kill-buffer (current-buffer)) ;in 22, must have argument with kill-buffer
-           )))
-      ;; Notify user.
-      (funcall yaoddmuse-notify-function
-               (format "Get page '%s' form '%s' successful." pagename wikiname))
-      ;; Make sure load `yaoddmuse-mode' first,
-      ;; otherwise buffer-local variable will be reset.
-      (yaoddmuse-mode)
-      ;; Update edit status at mode-line.
-      (yaoddmuse-update-edit-status)
-      ;; Adjust page content.
-      (yaoddmuse-page-content-adjust)
-      ;; Protect download content.
-      (set-buffer-modified-p nil)
-      ;; Switch or popup page.
-      (yaoddmuse-display-page page-buffer-name))))
-
-(defun yaoddmuse-page-content-adjust ()
-  "Adjust page content."
-  (goto-char (point-min))
-  (save-excursion
-    (cond ( ;; If got new page.
-           (looking-at "\\`This page does not exist")
-           ;; Adjust string when got new page.
-           (erase-buffer)
-           (insert "This page does not exist, you can create it now. :)"))
-          ( ;; If got image page and option `yaoddmuse-transform-image' is non-nil.
-           (and (looking-at "\\`#FILE image/\\(png\\|jpeg\\)$")
-                yaoddmuse-transform-image)
-           ;; Transform image content.
-           (yaoddmuse-turn-on-image-status)))))
-
-(defun yaoddmuse-post (wikiname pagename default-pagename post-string summary &optional browse-page)
-  "Posting string to wiki.
-WIKINAME is the name of the wiki as defined in `yaoddmuse-wikis',
-PAGENAME is the pagename of the page you want to edit.
-DEFAULT-PAGENAME is default name for prompt, just use when PAGENAME is nil.
-POST-STRING is the string you want post.
-SUMMARY is summary for post.
-If BROWSE-PAGE is non-nil, will browse page after post successful."
-  ;; Read wiki name when `wikiname' is nil.
-  (unless wikiname
-    (setq wikiname (yaoddmuse-read-wikiname)))
-  ;; Read page name when `pagename' is nil.
-  (unless pagename
-    (setq pagename (yaoddmuse-read-pagename wikiname)))
-  ;; Read summary when `summary' is nil.
-  (unless summary
-    (setq summary (yaoddmuse-read-summary)))
-  ;; If option `browse-page' or `current-prefix-arg' is non-nil,
-  ;; browse corresponding page after post successful.
-  (unless browse-page
-    (setq browse-page current-prefix-arg))
-  ;; Post.
-  (let* ((url (yaoddmuse-get-url wikiname))
-         (coding (yaoddmuse-get-coding wikiname))
-         (yaoddmuse-minor (if yaoddmuse-minor "on" "off"))
-         (yaoddmuse-wikiname wikiname)
-         (yaoddmuse-pagename pagename)
-         (text post-string))
-    (yaoddmuse-retrieve-request "POST" (yaoddmuse-format (yaoddmuse-get-post-args wikiname) coding))
-    (url-retrieve url
-                  'yaoddmuse-post-callback
-                  (list wikiname pagename browse-page))))
-
-(defun yaoddmuse-post-callback (&optional redirect wikiname pagename browse-page)
-  "The callback function for `yaoddmuse-post'.
-REDIRECT is default argument for check status.
-WIKINAME is wiki name for post.
-PAGENAME is page name for post.
-If BROWSE-PAGE is non-nil, will browse page after post successful."
-  (if (eq (car redirect) ':redirect)
-      (let ((table (yaoddmuse-get-pagename-table wikiname)))
-        ;; Update `pagename' in `yaoddmuse-pages-hash'
-        ;; if can't find in `yaoddmuse-pages-hash'.
-        (unless (assoc pagename table)
-          (setq table (cons (list pagename) table))
-          (puthash wikiname table yaoddmuse-pages-hash))
-        ;; Whether close buffer after post.
-        (if yaoddmuse-close-after-post
-            (kill-buffer (yaoddmuse-get-page-buffer-name wikiname pagename)))
-        (funcall yaoddmuse-notify-function
-                 (format "Page '%s' post to '%s' successful." pagename wikiname))
-        ;; Browse page if option `browse-page' is `non-nil'.
-        (if browse-page
-            (funcall yaoddmuse-browse-function (yaoddmuse-url wikiname pagename))))
-    ;; Post failed.
-    (funcall yaoddmuse-notify-function
-             (format "Page '%s' post to '%s' failed." pagename wikiname))))
-
-(defun yaoddmuse-handle-get (&optional wikiname pagename)
-  "The handle function for get page.
-WIKINAME is wiki name for post.
-PAGENAME is page name for post."
-  ;; Read page name when `pagename' is void.
-  (or pagename (setq pagename (yaoddmuse-read-pagename wikiname)))
-  ;; Get page.
-  (yaoddmuse-get-page wikiname pagename))
-
-(defun yaoddmuse-handle-get-or-display (&optional wikiname pagename)
-  "The  function for get or display page.
-WIKINAME is wiki name for post.
-PAGENAME is page name for post."
-  ;; Read page name when `pagename' is void.
-  (or pagename (setq pagename (yaoddmuse-read-pagename wikiname)))
-  ;; Get or display page.
-  (let ((page-buffer-name (yaoddmuse-get-page-buffer-name wikiname pagename)))
-    (if (get-buffer page-buffer-name)
-        ;; Switch page buffer when it have exist.
-        (yaoddmuse-display-page page-buffer-name)
-      ;; Otherwise, get page.
-      (yaoddmuse-get-page wikiname pagename))))
-
-(defun yaoddmuse-handle-follow (&optional wikiname pagename)
-  "The handle function for get page name.
-WIKINAME is wiki name for post.
-PAGENAME is page name for post."
-  ;; Read page name when `pagename' is void.
-  (or pagename (setq pagename (yaoddmuse-read-pagename wikiname "Edit page")))
-  ;; Follow page.
-  (yaoddmuse-get-page wikiname pagename))
-
-(defun yaoddmuse-handle-browse (&optional wikiname pagename)
-  "The handle function for browse page.
-WIKINAME is wiki name for post.
-PAGENAME is page name for post."
-  ;; Read page name when `pagename' is void.
-  (or pagename (setq pagename (yaoddmuse-read-pagename wikiname "Browse page")))
-  ;; Brose page.
-  (funcall yaoddmuse-browse-function (yaoddmuse-url wikiname pagename)))
-
-(defun yaoddmuse-handle-browse-diff (&optional wikiname pagename)
-  "The handle function for browse page diff.
-WIKINAME is wiki name for post.
-PAGENAME is page name for post."
-  ;; Read page name when `pagename' is void.
-  (or pagename (setq pagename (yaoddmuse-read-pagename wikiname "Browse page diff")))
-  ;; Brose page.
-  (funcall yaoddmuse-browse-function (yaoddmuse-url-diff wikiname pagename)))
-
-(defun yaoddmuse-handle-insert (&optional wikiname pagename)
-  "The handle function for insert page name.
-WIKINAME is wiki name for post.
-PAGENAME is page name for post."
-  ;; Read page name when `pagename' is void.
-  (or pagename (setq pagename (yaoddmuse-read-pagename wikiname "Insert page")))
-  ;; Insert page name.
-  (insert pagename))
-
-(defun yaoddmuse-handle-redirect (&optional wikiname pagename)
-  "The handle function for redirect page.
-WIKINAME is wiki name for post.
-PAGENAME is page name for post."
-  (let* ((table (yaoddmuse-get-pagename-table wikiname))
-         (redirect-from-page (yaoddmuse-read-pagename wikiname "Redirect from page"))
-         (redirect-to-page (yaoddmuse-read-pagename wikiname "Redirect to page"))
-         (redirect-string (format "#REDIRECT [[%s]]" redirect-to-page))
-         (redirect-summary (format "Redirect to %s" redirect-to-page)))
-    ;; Modified current buffer if it is
-    ;; `yaoddmuse' buffer.
-    (when yaoddmuse-pagename
-      (erase-buffer)
-      (insert redirect-string))
-    ;; Redirect.
-    (yaoddmuse-post wikiname
-                    redirect-from-page
-                    nil
-                    redirect-string
-                    redirect-summary
-                    current-prefix-arg)))
-
-(defun yaoddmuse-handle-delete (&optional wikiname pagename)
-  "The handle function for delete page.
-WIKINAME is wiki name for delete.
-PAGENAME is page name for delete."
-  ;; Read page name when `pagename' is void.
-  (or pagename (setq pagename (yaoddmuse-read-pagename wikiname "Delete page")))
-  ;; Delete.
-  (yaoddmuse-post wikiname
-                  pagename
-                  nil
-                  "DeletedPage"
-                  "Deleted"
-                  current-prefix-arg))
-
-(defun yaoddmuse-display-page (page-buffer-name)
-  "Display special page buffer.
-PAGE-BUFFER-NAME is buffer name of display page."
-  ;; Display page when option
-  ;; `yaoddmuse-display-after-get' is non-nil.
-  (when yaoddmuse-display-after-get
-    (set-buffer (window-buffer))
-    (if (eq major-mode 'yaoddmuse-mode)
-        ;; Switch to retrieve page buffer
-        ;; when current major mode is `yaoddmuse-mode'.
-        (switch-to-buffer page-buffer-name)
-      ;; Popup retrieve page buffer
-      ;; when current major mode is not `yaoddmuse-mode'.
-      (pop-to-buffer page-buffer-name))))
-
-(defun yaoddmuse-read-wikiname ()
-  "Read wiki name for completing."
-  (completing-read "Wiki name: " yaoddmuse-wikis nil t))
-
-(defun yaoddmuse-read-pagename (wikiname &optional prompt)
-  "Read page name of WIKINAME for completing.
-By default, display \"Page name\" as prompt
-unless option PROMPT is non-nil."
-  (completing-read (concat (or prompt "Page name")
-                           (format " (%s): " (or (yaoddmuse-pagename-at-point) "")))
-                   (yaoddmuse-get-pagename-table wikiname)
-                   nil nil nil nil
-                   (yaoddmuse-pagename-at-point)))
-
-(defun yaoddmuse-read-summary ()
-  "Read summary for post."
-  (setq yaoddmuse-last-summary
-        (read-string (format "Summary (%s): " (or yaoddmuse-last-summary ""))
-                     nil nil yaoddmuse-last-summary)))
-
-(defun yaoddmuse-url (wikiname pagename)
-  "Get the URL of oddmuse wiki.
-WIKINAME is wiki name for view.
-PAGENAME is page name for view."
-  (or (ignore-errors
-        (concat (yaoddmuse-get-url wikiname) "/" pagename))
-      (error (format "Invalid wiki name: '%s'" wikiname))))
-
-(defun yaoddmuse-url-diff (wikiname pagename)
-  "Get the URL of oddmuse wiki.
-WIKINAME is wiki name for view.
-PAGENAME is page name for view."
-  (or (ignore-errors
-        (concat (yaoddmuse-get-url wikiname) "/?action=browse;diff=2;id=" pagename))
-      (error (format "Invalid wiki name: '%s'" wikiname))))
-
-(defun yaoddmuse-get-pagename-table (wikiname)
-  "Get table from `yaoddmuse-pages-hash'.
-WIKINAME is wiki name for post."
-  (gethash wikiname yaoddmuse-pages-hash))
-
-(defun yaoddmuse-get-url (wikiname)
-  "Get url from `yaoddmuse-wikis'.
-WIKINAME is wiki name for post."
-  (cadr (assoc wikiname yaoddmuse-wikis)))
-
-(defun yaoddmuse-get-coding (wikiname)
-  "Get coding from `yaoddmuse-wikis'.
-WIKINAME is wiki name for post."
-  (caddr (assoc wikiname yaoddmuse-wikis)))
-
-(defun yaoddmuse-get-post-args (wikiname)
-  "Return post args for function `yaoddmuse-format'.
-The WIKINAME is wiki name for post."
-  (if yaoddmuse-edit-protect
-      ;; Add Captcha string when option
-      ;; `yaoddmuse-edit-protect' is on.
-      (concat (cadddr (assoc wikiname yaoddmuse-wikis)) yaoddmuse-args-post)
-    ;; Otherwise, just return `yaoddmuse-args-post'.
-    yaoddmuse-args-post))
-
-(defun yaoddmuse-get-page-buffer-name (wikiname pagename)
-  "Function document.
-WIKINAME is wiki name for post.
-PAGENAME is page name for post."
-  (format "%s:%s" wikiname pagename))
-
-(defun yaoddmuse-get-unique-buffer ()
-  "Get a buffer for temporary storage of downloaded content.
-Uses `current-time' to make buffer name unique."
-  (let (time-now buffer)
-    (setq time-now (current-time))
-    (get-buffer-create
-     ;; Leave blank at front
-     ;; to make user can't modified buffer.
-     (format " *%s<%s-%s-%s>*"
-             "yaoddmuse"
-             (nth 0 time-now) (nth 1 time-now) (nth 2 time-now)))))
-
-(defun yaoddmuse-get-library ()
-  "Get library name."
-  (let* ((dirs load-path)
-         (suffixes (find-library-suffixes)))
-    (completing-read (format "Library name (%s): " (or (yaoddmuse-region-or-thing) ""))
-                     (yaoddmuse-get-library-list)
-                     nil nil nil nil
-                     (yaoddmuse-region-or-thing))))
-
-(defun yaoddmuse-region-or-thing (&optional thing)
-  "Return region or thing around point.
-If `mark-active', return region.
-If THING is non-nil, return THING around point;
-otherwise return symbol around point."
-  (if (and mark-active transient-mark-mode)
-      (buffer-substring-no-properties (region-beginning)
-                                      (region-end))
-    (setq thing (or thing 'symbol))
-    (ignore-errors
-      (save-excursion
-        (buffer-substring-no-properties (beginning-of-thing thing)
-                                        (end-of-thing thing))))))
-
-(defun yaoddmuse-get-library-list (&optional dirs string)
-  "Do completion for file names passed to `locate-file'.
-DIRS is directory to search path.
-STRING is string to match."
-  ;; Use `load-path' as path when ignore `dirs'.
-  (or dirs (setq dirs load-path))
-  ;; Init with blank when ignore `string'.
-  (or string (setq string ""))
-  ;; Get library list.
-  (let ((string-dir (file-name-directory string))
-        name
-        names)
-    (dolist (dir dirs)
-      (unless dir
-        (setq dir default-directory))
-      (if string-dir
-          (setq dir (expand-file-name string-dir dir)))
-      (when (file-directory-p dir)
-        (dolist (file (file-name-all-completions
-                       (file-name-nondirectory string) dir))
-          ;; Suffixes match `load-file-rep-suffixes'.
-          (setq name (if string-dir (concat string-dir file) file))
-          (if (string-match (format "^.*\\.el%s$" (regexp-opt load-file-rep-suffixes)) name)
-              (add-to-list 'names name)))))
-    names))
-
-(defun yaoddmuse-get-symbol-non-blank ()
-  "Return symbol between `blank'."
-  (save-excursion
-    (let (start end)
-      (search-backward-regexp " \\|^" nil t)
-      (skip-chars-forward " ")
-      (setq start (point))
-      (search-forward-regexp " \\|$" nil t)
-      (skip-chars-backward " ")
-      (setq end (point))
-      (if (and start
-               end
-               (>= end start))
-          (buffer-substring-no-properties start end)
-        nil))))
-
-(defun yaoddmuse-pagename-at-point ()
-  "Page name at point."
-  (let* ((pagename-wikiname (word-at-point))
-         (pagename-file-link-name
-          (yaoddmuse-get-symbol-non-blank)))
-    (cond
-     ;; Match image link, [[image:PAGENAME]]
-     ((yaoddmuse-image-link-p pagename-file-link-name))
-     ;; Match lisp file link, Lisp:PAGENAME.el
-     ((yaoddmuse-lisp-file-link-p pagename-file-link-name))
-     ;; Match Wiki name.
-     ((yaoddmuse-current-free-link-contents))
-     ((yaoddmuse-wikiname-p pagename-wikiname))
-     ;; Try return current page name.
-     (t yaoddmuse-pagename))))
-
-(defun yaoddmuse-current-free-link-contents ()
-  "Free link contents if the point is between [[ and ]]."
-  (save-excursion
-    (let* ((pos (point))
-           (start (search-backward "[[" nil t))
-           (end (search-forward "]]" nil t)))
-      (and start end (>= end pos)
-           (replace-regexp-in-string
-            " " "_"
-            (buffer-substring (+ start 2) (- end 2)))))))
-
-(defun yaoddmuse-wikiname-p (str)
-  "Whether PAGENAME is WikiName or not.
-Return Wikiname or nil.
-STR is string around point."
-  (let (case-fold-search)
-    (if (and str
-             (string-match (format "^%s$" "\\<[A-Z\xc0-\xde]+[a-z\xdf-\xff]+\\([A-Z\xc0-\xde]+[a-z\xdf-\xff]*\\)+\\>") str))
-        str
-      nil)))
-
-(defun yaoddmuse-lisp-file-link-p (str)
-  "If STR match Lisp:PAGENAME, return PAGENAME.
-Otherwise return nil."
-  (let (case-fold-search)
-    (if (and str
-             (string-match "\\(Lisp:\\)\\([^ ]+\\.el\\)" str))
-        (match-string 2 str)
-      nil)))
-
-(defun yaoddmuse-image-link-p (str)
-  "If STR match [[image:PAGENAME]], return PAGENAME.
-Otherwise return nil."
-  (let (case-fold-search)
-    (if (and str
-             (string-match "\\[\\[image:\\(\\([^\\[]\\|[^\\]]\\)+\\)\\]\\]" str))
-        (match-string 1 str)
-      nil)))
-
-(defun yaoddmuse-retrieve-request (method &optional data)
-  "Initialize url request parameter.
-METHOD is require method.
-DATA is data for post."
-  (setq url-request-extra-headers
-        (and (string= method "POST")
-             '(("Content-type: application/x-www-form-urlencoded;"))))
-  (setq url-request-method method)
-  (setq url-request-data data))
-
-(defun yaoddmuse-retrieve-decode (retrieve-buffer-name coding)
-  "Decode the coding with retrieve page.
-RETRIEVE-BUFFER-NAME is name of retrieve buffer.
-CODING is coding system for decode."
-  (declare (special url-http-end-of-headers))
-  (with-current-buffer (get-buffer retrieve-buffer-name)
-    (insert
-     (with-current-buffer yaoddmuse-retrieve-buffer
-       (set-buffer-multibyte t)
-       (goto-char (1+ url-http-end-of-headers))
-       (decode-coding-region
-        (point) (point-max)
-        (coding-system-change-eol-conversion coding 'dos))
-       (buffer-substring (point) (point-max))))
-    (goto-char (point-min))))
-
-(defun yaoddmuse-format (args coding &optional url)
-  "Format flags.
-Substitute oddmuse format flags according to `yaoddmuse-pagename',
-`summary', `yaoddmuse-username',`yaoddmuse-password', `text'
-Each ARGS is url-encoded with CODING.
-If URL is `non-nil' return new url concat with ARGS."
-  (dolist (pair '(("%t" . yaoddmuse-pagename)
-                  ("%u" . yaoddmuse-username)
-                  ("%m" . yaoddmuse-minor)
-                  ("%p" . yaoddmuse-password)
-                  ("%s" . summary)
-                  ("%x" . text)
-                  ))
-    (when (and (boundp (cdr pair)) (stringp (symbol-value (cdr pair))))
-      (setq args
-            (replace-regexp-in-string
-             (car pair)
-             (url-hexify-string
-              (encode-coding-string (symbol-value (cdr pair))
-                                    coding))
-             args t t))))
-  (if url
-      (concat url "?" args)
-    args))
-
-(defun yaoddmuse-notify-default (msg)
-  "Default notify function for string MSG."
-  (message "%s" msg))
-
-(defun yaoddmuse-encode-file (file)
-  "Encode FILE and return result.
-Just encode file when it's suffix match `yaoddmuse-post-mime-alist'."
-  (let* ((suffix (replace-regexp-in-string "^[^.]+" "" (file-name-nondirectory file)))
-         (mime-type (cdr (assoc suffix yaoddmuse-post-mime-alist))))
-    (if (or (string-equal suffix "")
-            (not mime-type))
-        (with-temp-buffer
-          (insert-file-contents file)
-          (buffer-string))
-      (let ((coding-system-for-read 'binary)
-            (coding-system-for-write 'binary)
-            default-enable-multibyte-characters)
-        (format "#FILE %s\n%s\n"
-                mime-type
-                (base64-encode-string
-                 (with-temp-buffer
-                   (insert-file-contents file)
-                   (buffer-string))))))))
-
-(defun yaoddmuse-decode-string (str)
-  "Decode STR and return result."
-  (with-temp-buffer
-    (insert str)
-    (string-make-unibyte
-     (base64-decode-string
-      (buffer-substring-no-properties
-       (progn
-         (goto-char (point-min))
-         (forward-line +1)              ;skip mime type information
-         (point))
-       (point-max))))))
-
-(defun yaoddmuse-turn-on-image-status ()
-  "Turn on image stats.
-Transform raw text format to image format."
-  (save-excursion
-    (if yaoddmuse-image-status
-        (message "Already image status.")
-      (let* ((data                      ;get picture data
-              (yaoddmuse-decode-string
-               (buffer-substring-no-properties
-                (point-min)
-                (point-max))))
-             (image (create-image data nil t)) ;generate image
-             (props                            ;generate properties
-              `(display ,image
-                        yank-handler
-                        (image-file-yank-handler nil t)
-                        intangible ,image
-                        rear-nonsticky (display intangible))))
-        ;; Add properties.
-        (add-text-properties (point-min) (point-max) props)
-        ;; Set image status.
-        (setq yaoddmuse-image-status t)))))
-
-(defun yaoddmuse-turn-off-image-status ()
-  "Turn off image status.
-Transform image format to raw text."
-  (save-excursion
-    (if yaoddmuse-image-status
-        (let* ((data (buffer-substring-no-properties
-                      (point-min)
-                      (point-max))))
-          ;; Delete image.
-          (erase-buffer)
-          ;; Insert raw text data.
-          (insert data)
-          ;; Set image status.
-          (setq yaoddmuse-image-status nil))
-      (message "Already raw text status."))))
-
-(defun yaoddmuse-update-edit-status ()
-  "Update edit status at mode-line.
-If current is major editor mode, display [Major] at mode-line.
-Otherwise display [Minor] at mode-line."
-  ;; Add `yaoddmuse-edit-status' to mode-line.
-  (unless (member 'yaoddmuse-edit-status-string mode-line-format)
-    (setq mode-line-format (append mode-line-format
-                                   (list 'yaoddmuse-edit-status-string))))
-  ;; Update `yaoddmuse-edit-status' along with `yaoddmuse-minor'.
-  (put 'yaoddmuse-edit-status-string 'risky-local-variable t)
-  (setq yaoddmuse-edit-status-string (propertize
-                                      (if yaoddmuse-minor
-                                          (prog1
-                                              "[Minor]"
-                                            (message "Minor edit mode."))
-                                        (prog1
-                                            "[Major]"
-                                          (message "Major edit mode.")))
-                                      'face 'yaoddmuse-edit-status-face))
-  ;; Update mode line.
-  (force-mode-line-update))
-
-;;;; Bug report
-(defvar yaoddmuse-maintainer-mail-address
-  (concat "rubiki" "tch@ru" "by-lang.org"))
-(defvar yaoddmuse-bug-report-salutation
-  "Describe bug below, using a precise recipe.
-
-When I executed M-x ...
-
-How to send a bug report:
-  1) Be sure to use the LATEST version of yaoddmuse.el.
-  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
-  3) Use Lisp version instead of compiled one: (load \"yaoddmuse.el\")
-  4) If you got an error, please paste *Backtrace* buffer.
-  5) Type C-c C-c to send.
-# If you are a Japanese, please write in Japanese:-)")
-(defun yaoddmuse-send-bug-report ()
-  (interactive)
-  (reporter-submit-bug-report
-   yaoddmuse-maintainer-mail-address
-   "yaoddmuse.el"
-   (apropos-internal "^yaoddmuse-" 'boundp)
-   nil nil
-   yaoddmuse-bug-report-salutation))
-
-(provide 'yaoddmuse)
-
-;;; yaoddmuse.el ends here
-
-;;; LocalWords:  yaoddmuse el oddmuse wikis TestWiki CommunityWiki StumpwmWiki
-;;; LocalWords:  RatpoisonWiki OddmuseWiki username Pagename stdout pagename eg
-;;; LocalWords:  HowTo pwd xc xde xdf xff WikiName builtin sgml nowiki pre tt
-;;; LocalWords:  uihnscuskc sSummary caddr www urlencoded wikiname eol args pos
-;;; LocalWords:  captcha DodgerBlue LawnGreen DarkRed WikiUrl noselect dirs str
-;;; LocalWords:  PaleGreen benny navi ImagePage GreenYellow num screenshot msg
-;;; LocalWords:  css xml gzip jpeg DeletedPage fFile nonsticky CaptchaString
-;;; LocalWords:  WikiURL CodingSystem
+#FILE text/x-emacs-lisp 
+Ozs7IHlhb2RkbXVzZS5lbCAtLS0gTWFqb3IgbW9kZSBmb3IgRW1hY3NXaWtpIGFuZCBvdGhlciBP
+ZGRtdXNlIHdpa2lzCgo7OyBGaWxlbmFtZTogeWFvZGRtdXNlLmVsCjs7IERlc2NyaXB0aW9uOiBZ
+ZXQgYW5vdGhlciBvZGRtdXNlIGZvciBFbWFjcwo7OyBBdXRob3I6IEFuZHkgU3Rld2FydCBsYXp5
+Y2F0Lm1hbmF0ZWVAZ21haWwuY29tCjs7IE1haW50YWluZXI6IEFuZHkgU3Rld2FydCBsYXp5Y2F0
+Lm1hbmF0ZWVAZ21haWwuY29tCjs7IENvcHlyaWdodCAoQykgMjAwOSwgQW5keSBTdGV3YXJ0LCBh
+bGwgcmlnaHRzIHJlc2VydmVkLgo7OyBDb3B5cmlnaHQgKEMpIDIwMDksIDIwMTAgcnViaWtpdGNo
+LCBhbGwgcmlnaHRzIHJlc2VydmVkLgo7OyBDcmVhdGVkOiAyMDA5LTAxLTA2IDEyOjQxOjE3Cjs7
+IFZlcnNpb246IDAuMS4yCjs7IFBhY2thZ2UtVmVyc2lvbjogMjAxNTA1MjEuMTg0MQo7OyBMYXN0
+LVVwZGF0ZWQ6IDIwMTUvMjEvMDUgMjo0MAo7OyAgICAgICAgICAgQnk6IE1pY2hhZWwgQWJyYWhh
+bXMKOzsgVVJMOiBodHRwOi8vd3d3LmVtYWNzd2lraS5vcmcvZW1hY3MvZG93bmxvYWQveWFvZGRt
+dXNlLmVsCjs7IEtleXdvcmRzOiB5YW9kZG11c2UsIG9kZG11c2UKOzsgQ29tcGF0aWJpbGl0eTog
+R05VIEVtYWNzIDIyIH4gMjMKOzsKOzsgRmVhdHVyZXMgdGhhdCBtaWdodCBiZSByZXF1aXJlZCBi
+eSB0aGlzIGxpYnJhcnk6Cjs7Cjs7ICAgYGRpcmVkJywgYGZpbmQtZnVuYycsIGBtYWlsLXByc3Zy
+JywgYG1haWxjYXAnLCBgbW0tdXRpbCcsCjs7ICAgYHNnbWwtbW9kZScsIGBza2VsZXRvbicsIGB0
+aGluZ2F0cHQnLCBgdGltZXInLCBgdGltZXpvbmUnLAo7OyAgIGB1cmwnLCBgdXJsLWNvb2tpZScs
+IGB1cmwtZXhwYW5kJywgYHVybC1oaXN0b3J5JywgYHVybC1tZXRob2RzJywKOzsgICBgdXJsLXBh
+cnNlJywgYHVybC1wcml2YWN5JywgYHVybC1wcm94eScsIGB1cmwtdXRpbCcsIGB1cmwtdmFycycu
+Cjs7Cgo7OzsgVGhpcyBmaWxlIGlzIE5PVCBwYXJ0IG9mIEdOVSBFbWFjcwoKOzs7IExpY2Vuc2UK
+OzsKOzsgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRl
+IGl0IGFuZC9vciBtb2RpZnkKOzsgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJh
+bCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkKOzsgdGhlIEZyZWUgU29mdHdhcmUgRm91
+bmRhdGlvbjsgZWl0aGVyIHZlcnNpb24gMywgb3IgKGF0IHlvdXIgb3B0aW9uKQo7OyBhbnkgbGF0
+ZXIgdmVyc2lvbi4KCjs7IFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUgaG9wZSB0
+aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAo7OyBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhv
+dXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgo7OyBNRVJDSEFOVEFCSUxJVFkgb3IgRklU
+TkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlCjs7IEdOVSBHZW5lcmFsIFB1
+YmxpYyBMaWNlbnNlIGZvciBtb3JlIGRldGFpbHMuCgo7OyBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2
+ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQo7OyBhbG9uZyB3aXRo
+IHRoaXMgcHJvZ3JhbTsgc2VlIHRoZSBmaWxlIENPUFlJTkcuICBJZiBub3QsIHdyaXRlIHRvCjs7
+IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4sIDUxIEZyYW5rbGluIFN0cmVldCwg
+RmlmdGgKOzsgRmxvb3IsIEJvc3RvbiwgTUEgMDIxMTAtMTMwMSwgVVNBLgoKOzs7IENvbW1lbnRh
+cnk6Cjs7Cjs7IFlldCBhbm90aGVyIG9kZG11c2UgZm9yIEVtYWNzLgo7Owo7OyBUaGlzIG1vZGUg
+Y2FuIGVkaXQgb3IgcG9zdCB3aWtpIHBhZ2UgKmFzeW5jaHJvbm91cyouCjs7IFNvIGl0IGNhbid0
+IGhhbmcgeW91ciBlbWFjcy4KOzsgWW91IGNhbiBkbyB5b3VyIHdvcmsgd2hlbiBnZXQgb3IgcG9z
+dCB3aWtpIHBhZ2UuCjs7Cjs7IEJlbG93IGFyZSB0aGUgY29tbWFuZCB5b3UgY2FuIHVzZToKOzsK
+OzsgKiBFZGl0Ogo7OyAgICAgIGB5YW9kZG11c2UtZWRpdCcgICAgICAgICAgICAgICAgICAgICBl
+ZGl0IHdpa2kgcGFnZS4KOzsgICAgICBgeWFvZGRtdXNlLWVkaXQtZGVmYXVsdCcgICAgICAgICAg
+ICAgZWRpdCBkZWZhdWx0IHdpa2kgcGFnZS4KOzsgICAgICBgeWFvZGRtdXNlLWZvbGxvdycgICAg
+ICAgICAgICAgICAgICAgZmlndXJlIG91dCB3aGF0IHBhZ2Ugd2UgbmVlZCB0byB2aXNpdAo7OyAq
+IFBvc3Q6Cjs7ICAgICAgYHlhb2RkbXVzZS1wb3N0LWJ1ZmZlcicgICAgICAgICAgICAgIHBvc3Qg
+YnVmZmVyIHRvIHdpa2kuCjs7ICAgICAgYHlhb2RkbXVzZS1wb3N0LWN1cnJlbnQtYnVmZmVyJyAg
+ICAgIHBvc3QgY3VycmVudCBidWZmZXIgdG8gd2lraQo7OyAgICAgIGB5YW9kZG11c2UtcG9zdC1m
+aWxlJyAgICAgICAgICAgICAgICBwb3N0IGZpbGUgdG8gd2lraS4KOzsgICAgICBgeWFvZGRtdXNl
+LXBvc3QtZmlsZS1kZWZhdWx0JyAgICAgICAgcG9zdCBmaWxlIHRvIGRlZmF1bHQgd2lraS4KOzsg
+ICAgICBgeWFvZGRtdXNlLXBvc3QtbGlicmFyeScgICAgICAgICAgICAgcG9zdCBsaWJyYXJ5IHRv
+IHdpa2kuCjs7ICAgICAgYHlhb2RkbXVzZS1wb3N0LWxpYnJhcnktZGVmYXVsdCcgICAgIHBvc3Qg
+bGlicmFyeSB0byBkZWZhdWx0IHdpa2kuCjs7ICAgICAgYHlhb2RkbXVzZS1wb3N0LWRpcmVkJyAg
+ICAgICAgICAgICAgIHBvc3QgZGlyZWQgbWFya2VkIGZpbGVzIHRvIHdpa2kuCjs7ICAgICAgYHlh
+b2RkbXVzZS1wb3N0LWRpcmVkLWRlZmF1bHQnICAgICAgIHBvc3QgZGlyZWQgbWFya2VkIGZpbGVz
+IHRvIHdpa2kuCjs7ICAgICAgYHlhb2RkbXVzZS1wb3N0LXNjcmVlbnNob3QnICAgICAgICAgIHBv
+c3Qgc2NyZWVuc2hvdCB0byB3aWtpLgo7OyAgICAgIGB5YW9kZG11c2UtcG9zdC1zY3JlZW5zaG90
+LWRlZmF1bHQnICBwb3N0IHNjcmVlbnNob3QgdG8gZGVmYXVsdCB3aWtpLgo7OyAqIFZpZXc6Cjs7
+ICAgICAgYHlhb2RkbXVzZS1yZXZlcnQnICAgICAgICAgICAgICAgICAgIHJlbG9hZCBjdXJyZW50
+IHdpa2kgcGFnZS4KOzsgICAgICBgeWFvZGRtdXNlLWJyb3dzZS1wYWdlJyAgICAgICAgICAgICAg
+YnJvd3NlIHdpa2kgcGFnZS4KOzsgICAgICBgeWFvZGRtdXNlLWJyb3dzZS1wYWdlLWRlZmF1bHQn
+ICAgICAgYnJvd3NlIGRlZmF1bHQgd2lraSBwYWdlLgo7OyAgICAgIGB5YW9kZG11c2UtYnJvd3Nl
+LXBhZ2UtZGlmZicgICAgICAgICBicm93c2Ugd2lraSBwYWdlIGRpZmYuCjs7ICAgICAgYHlhb2Rk
+bXVzZS1icm93c2UtcGFnZS1kZWZhdWx0LWRpZmYnIGJyb3dzZSBkZWZhdWx0IHdpa2kgcGFnZSBk
+aWZmLgo7OyAgICAgIGB5YW9kZG11c2UtYnJvd3NlLWN1cnJlbnQtcGFnZScgICAgICBicm93c2Ug
+Y3VycmVudCB3aWtpIHBhZ2UuCjs7ICogTmF2aWdhdGlvbjoKOzsgICAgICBgeWFvZGRtdXNlLW5h
+dmktbmV4dC1oZWFkaW5nJyAgICAgICAganVtcCBuZXh0IGhlYWRpbmcuCjs7ICAgICAgYHlhb2Rk
+bXVzZS1uYXZpLXByZXYtaGVhZGluZycgICAgICAgIGp1bXAgcHJldmlvdXMgaGVhZGluZy4KOzsg
+KiBVcGRhdGU6Cjs7ICAgICAgYHlhb2RkbXVzZS11cGRhdGUtcGFnZW5hbWUnICAgICAgICAgIHdp
+bGwgdXBkYXRlIFdpa2kgcGFnZSBuYW1lLgo7OyAqIEluc2VydDoKOzsgICAgICBgeWFvZGRtdXNl
+LWluc2VydC1wYWdlbmFtZScgICAgICAgICAgaW5zZXJ0IHdpa2kgcGFnZSBuYW1lLgo7OyAgICAg
+IGB5YW9kZG11c2UtaW5zZXJ0LWZpbGUtY29udGVudCcgICAgICBpbnNlcnQgZmlsZSBjb250ZW50
+Lgo7OyAqIE1pc2M6Cjs7ICAgICAgYHlhb2RkbXVzZS1raWxsLXVybCcgICAgICAgICAgICAgICAg
+IGtpbGwgY3VycmVudCB3aWtpIHBhZ2UgdXJsIGluIHlhbmsuCjs7ICAgICAgYHlhb2RkbXVzZS10
+b2dnbGUtbWlub3InICAgICAgICAgICAgIHRvZ2dsZSBtaW5vciBtb2RlIHN0YXRlLgo7OyAgICAg
+IGB5YW9kZG11c2UtcmVkaXJlY3QnICAgICAgICAgICAgICAgICByZWRpcmVjdCBwYWdlLgo7OyAg
+ICAgIGB5YW9kZG11c2UtZGVsZXRlJyAgICAgICAgICAgICAgICAgICBkZWxldGUgcGFnZS4KOzsg
+ICAgICBgeWFvZGRtdXNlLXRvZ2dsZS1pbWFnZS1zdGF0dXMnICAgICAgdG9nZ2xlIGltYWdlIHN0
+YXR1cy4KOzsgICAgICBgeWFvZGRtdXNlLXNhdmUtYXMnICAgICAgICAgICAgICAgICAgc2F2ZSBz
+cGVjaWFsIHBhZ2UuCjs7Cjs7IFRpcHM6Cjs7IOODuyBHZXQgcGFnZSBhcm91bmQgcG9pbnQ6Cjs7
+ICAgICAgQ29tbWFuZCDigJh5YW9kZG11c2UtZm9sbG934oCZIHRyeSB0byBnZXQgdmFsaWQgcGFn
+ZSBsaW5rIGFyb3VuZCBwb2ludC4KOzsgICAgICBJZiBpdCBmaW5kLCBlZGl0IHRoaXMgcGFnZSwg
+b3RoZXJ3aXNlIHNob3cg4oCcTm8gbGluayBmb3VuZCBhdCBwb2ludC7igJ0KOzsgICAgICBBbmQg
+eW91IGNhbiB0eXBlIOKAnEMtdeKAnSBiZWZvcmUgY2FsbCB0aGlzIGNvbW1hbmQsCjs7ICAgICAg
+dGhlbiBpdCB3aWxsIGdpdmUgeW91IHBhZ2UgbmFtZSBjb21wbGV0aW5nIGZvciBlZGl0Lgo7OyDj
+g7sgUmVsb2FkIG9yIHN3aXRjaCBlZGl0IHBhZ2U6Cjs7ICAgICAgV2hlbiB5b3UgdXNlIGNvbW1h
+bmQg4oCYeWFvZGRtdXNlLWVkaXTigJkgb3Ig4oCYeWFvZGRtdXNlLWVkaXQtZGVmYXVsdOKAmSwK
+OzsgICAgICBpdCB3aWxsIHByZWZlciB0byBzd2l0Y2ggZWRpdCBwYWdlIGlmIGFscmVhZHkgaGF2
+ZSBvbmUgZXhpc3QuCjs7ICAgICAgSWYgeW91IHdhbnQgdG8gcmVsb2FkIGVkaXQgcGFnZSBmb3Jj
+aWJseSwganVzdCBoaXQg4oCcQy114oCdIGJlZm9yZQo7OyAgICAgIGV4ZWN1dGUgY29tbWFuZC4K
+Ozsg44O7IFNtYXJ0IGRpc3BsYXkgZWRpdCBwYWdlLgo7OyAgICAgIERlZmF1bHQsIGVkaXQgcGFn
+ZSBidWZmZXIgcG9wdXAgd2hlbiBjdXJyZW50IG1ham9yLW1vZGUKOzsgICAgICBpcyBub3Qg4oCY
+eWFvZGRtdXNlLW1vZGXigJksIG9yIHVzZSBzd2l0Y2ggZWRpdCBwYWdlIGJ1ZmZlcgo7OyAgICAg
+IHdoZW4gY3VycmVudCBtYWpvci1tb2RlIGlzIOKAmHlhb2RkbXVzZS1tb2Rl4oCZLgo7OyDjg7sg
+UmV2ZXJ0IGVkaXQgcGFnZToKOzsgICAgICBDb21tYW5kIOKAmHlhb2RkbXVzZS1yZXZlcnTigJkg
+cmV2ZXJ0IGN1cnJlbnQgZWRpdCBwYWdlIGFuZCBkb27igJl0Cjs7ICAgICAgbmVlZCBpbnB1dCB3
+aWtpIG5hbWUgb3IgcGFnZSBuYW1lLgo7OyDjg7sgQnJvd3NlIHBhZ2UgYWZ0ZXIgcG9zdCBzdWNj
+ZXNzZnVsOgo7OyAgICAgIElmIHlvdSB0eXBlIOKAnEMtdeKAnSBiZWZvcmUgY2FsbCBwb3N0IGNv
+bW1hbmQsCjs7ICAgICAgd2lsbCBicm93c2UgcGFnZSBhZnRlciBwb3N0IHN1Y2Nlc3NmdWwuCjs7
+IOODuyBQb3N0IGJ1ZmZlciB0byB3aWtpOgo7OyAgICAgIENvbW1hbmQg4oCYeWFvZGRtdXNlLXBv
+c3QtYnVmZmVy4oCZIHBvc3Qgc3BlY2lhbCBidWZmZXIgdG8gd2lraSwKOzsgICAgICBvciB1c2Ug
+Y29tbWFuZCDigJh5YW9kZG11c2UtcG9zdC1jdXJyZW50LWJ1ZmZlcuKAmSBwb3N0IGN1cnJlbnQg
+YnVmZmVyIHRvIHdpa2kuCjs7IOODuyBQb3N0IGZpbGUgdG8gd2lraToKOzsgICAgICBDb21tYW5k
+IOKAmHlhb2RkbXVzZS1wb3N0LWZpbGXigJkgcG9zdCBzcGVjaWFsIGZpbGUgdG8gd2lraSwKOzsg
+ICAgICBpdOKAmXMgdXNlZnVsIHRvIGZhc3QgcG9zdGluZyB3aGVuIHlvdSBkb27igJl0IHdhbnQg
+b3BlbiBmaWxlLgo7OyDjg7sgUG9zdCBtYXJrIGZpbGVzIGluIGRpcmVkIHRvIHdpa2k6Cjs7ICAg
+ICAgQ29tbWFuZCDigJh5YW9kZG11c2UtcG9zdC1kaXJlZOKAmSBwb3N0IG1hcmsgZmlsZXMgaW4g
+ZGlyZWQgdG8gd2lraSwKOzsgICAgICB0aGlzIGNvbW1hbmQgaXMgdXNlZnVsIHdoZW4gdXBkYXRl
+IG1hbnkgZmlsZXMgdG8gd2lraS4KOzsg44O7IFBvc3QgbGlicmFyeSB0byB3aWtpOgo7OyAgICAg
+IENvbW1hbmQg4oCYeWFvZGRtdXNlLXBvc3QtbGlicmFyeeKAmSBhbmQg4oCYeWFvZGRtdXNlLXBv
+c3QtbGlicmFyeS1kZWZhdWx04oCZCjs7ICAgICAgd2lsbCBwb3N0IHNwZWNpYWwgbGlicmFyeSB0
+byB3aWtpLCBhbmQgbm90IG5lZWQgaW5wdXQgZmlsZSBwYXRoLAo7OyAgICAgIGl04oCZcyBzbyBs
+YXp5ISA7KQo7OyDjg7sgUmVtZW1iZXIgbGFzdCBzdW1tYXJ5Ogo7OyAgICAgIEJ5IGRlZmF1bHQs
+IHlhb2RkbXVzZSByZW1lbWJlciBsYXN0IGBzdW1tYXJ5JyBzdHJpbmcsIGlmIHlvdSBpbnB1dAo7
+OyAgICAgIHNhbWUgYHN1bW1hcnknIGFzIHByZXZpb3VzIHRpbWUsIGp1c3QgaGl0IFJFVC4KOzsg
+44O7IFBpY2sgdXAgZmlsZSBuYW1lOgo7OyAgICAgIEJ5IGRlZmF1bHQsIHdoZW4geW91IHVzZSBj
+b21tYW5kIGB5YW9kZG11c2UtcG9zdC1saWJyYXJ5JyBhbmQKOzsgICAgICBgeWFvZGRtdXNlLXBv
+c3QtbGlicmFyeS1kZWZhdWx0JywgdGhvc2UgY29tbWFuZHMgY2FuIHBpY2sgdXAKOzsgICAgICBm
+aWxlIG5hbWUgYXJvdW5kIHBvaW50LCBpZiBpdCdzIGxpYnJhcnkgbmFtZSB5b3Ugd2FudCwganVz
+dAo7OyAgICAgIGhpdCBSRVQuICA7KQo7OyDjg7sgUGljayB1cCBwYWdlIG5hbWU6Cjs7ICAgICAg
+V2hlbiB5b3UgdXNlIGNvbW1hbmRzIGB5YW9kZG11c2UtYnJvd3NlLXBhZ2UnIG9yIGB5YW9kZG11
+c2UtYnJvd3NlLXBhZ2UtZGVmYXVsdCcsCjs7ICAgICAgaXQgd2lsbCB0cnkgdG8gcGljay11cCBw
+YWdlIG5hbWUgYXJvdW5kIHBvaW50Lgo7OyDjg7sgRW5jb2RlIHNwZWNpYWwgZmlsZToKOzsgICAg
+ICBJZiB5b3UgcG9zdCBzcGVjaWFsIGZpbGUsIHN1Y2ggYXMgcGljdHVyZSBvciBjb21wcmVzcyBm
+aWxlLAo7OyAgICAgIGl0IGNhbiBlbmNvZGUgZmlsZSBjb250ZW50IGJlZm9yZSBwb3N0IGl0Lgo7
+OyDjg7sgUmVkaXJlY3QgcGFnZToKOzsgICAgICBZb3UgY2FuIHVzZSBjb21tYW5kIGB5YW9kZG11
+c2UtcmVkaXJlY3QnIHJlZGlyZWN0IHBhZ2UuCjs7ICAgICAgSnVzdCBpbnB1dCBwYWdlIG5hbWUg
+dGhhdCB5b3Ugd2FudCByZWRpcmVjdCB0by4KOzsgICAgICBZb3UgbmVlZCBpbnB1dCByZWRpcmVj
+dCBmcm9tIHBhZ2UgaWYgY3VycmVudCBidWZmZXIgbm90Cjs7ICAgICAgYHlhb2RkbXVzZScgYnVm
+ZmVyLgo7OyDjg7sgRGVsZXRlIHBhZ2U6Cjs7ICAgICAgWW91IGNhbiB1c2UgY29tbWFuZCBgeWFv
+ZGRtdXNlLWRlbGV0ZScgZGVsZXRlIHBhZ2UuCjs7ICAgICAgSnVzdCBpbnB1dCBwYWdlIG5hbWUg
+dGhhdCB5b3Ugd2FudCBkZWxldGUuCjs7IOODuyBJbnNlcnQgc3BlY2lhbCBmaWxlOgo7OyAgICAg
+IFlvdSBjYW4gdXNlIGNvbW1hbmQgYHlhb2RkbXVzZS1pbnNlcnQtZmlsZS1jb250ZW50JyBpbnNl
+cnQKOzsgICAgICBmaWxlIGNvbnRlbnQuCjs7ICAgICAgVGhpcyBjb21tYW5kIHdpbGwgdHJ5IHRv
+IGVuY29kZSBzcGVjaWFsIGZpbGUgY29udGVudCwgc3VjaCBhcywKOzsgICAgICBwaWN0dXJlIG9y
+IGNvbXByZXNzIGZpbGUuCjs7IOODuyBTYXZlIHBhZ2U6Cjs7ICAgICAgWW91IGNhbiB1c2UgY29t
+bWFuZCBgeWFvZGRtdXNlLXNhdmUtYXMnIHNhdmUgc3BlY2lhbCBwYWdlLAo7OyAgICAgIHN1Y2gg
+YXMgcGljdHVyZSBvciBjb21wcmVzcyBmb3JtYXQsIGFuZCBpdCB3aWxsIG5vdGlmeSB5b3UKOzsg
+ICAgICBjb3JyZWN0IHN1ZmZpeCB0byBzYXZlLgo7OyDjg7sgVG9nZ2xlIGltYWdlIHZpZXc6Cjs7
+ICAgICAgQnkgZGVmYXVsdCwgd2hlbiBnb3QgaW1hZ2UgcGFnZSwgaXQgd2lsbCBkZWNvZGUgaW1h
+Z2UgYW5kIHZpZXcgaXQuCjs7ICAgICAgWW91IGNhbiB1c2UgY29tbWFuZCBgeWFvZGRtdXNlLXRv
+Z2dsZS1pbWFnZS1zdGF0dXMnIHRvIHRvZ2dsZQo7OyAgICAgIGltYWdlIHN0YXR1cyBmb3Igdmll
+dyBkaWZmZXJlbnQgY29udGVudC4KOzsKCjs7OyBDb21tYW5kczoKOzsKOzsgQmVsb3cgYXJlIGNv
+bXBsZXRlIGNvbW1hbmQgbGlzdDoKOzsKOzsgIGB5YW9kZG11c2UtbW9kZScKOzsgICAgWWV0IGFu
+b3RoZXIgbW9kZSB0byBlZGl0IE9kZG11c2Ugd2lraSBwYWdlcy4KOzsgIGB5YW9kZG11c2UtZWRp
+dCcKOzsgICAgRWRpdCBhIHBhZ2Ugb24gYSB3aWtpLgo7OyAgYHlhb2RkbXVzZS1lZGl0LWRlZmF1
+bHQnCjs7ICAgIEVkaXQgYSBwYWdlIHdpdGggZGVmYXVsdCB3aWtpIGB5YW9kZG11c2UtZGVmYXVs
+dC13aWtpJy4KOzsgIGB5YW9kZG11c2UtZm9sbG93Jwo7OyAgICBGaWd1cmUgb3V0IHdoYXQgcGFn
+ZSB3ZSBuZWVkIHRvIHZpc2l0IGFuZCBjYWxsIGB5YW9kZG11c2UtZWRpdCcgb24gaXQuCjs7ICBg
+eWFvZGRtdXNlLXBvc3QtYnVmZmVyJwo7OyAgICBQb3N0IHRoZSBCVUZGRVIgdG8gdGhlIGN1cnJl
+bnQgd2lraS4KOzsgIGB5YW9kZG11c2UtcG9zdC1jdXJyZW50LWJ1ZmZlcicKOzsgICAgUG9zdCBj
+dXJyZW50IGJ1ZmZlciB0byBjdXJyZW50IHdpa2kuCjs7ICBgeWFvZGRtdXNlLXBvc3QtZmlsZScK
+OzsgICAgUG9zdCBmaWxlIHRvIGN1cnJlbnQgd2lraS4KOzsgIGB5YW9kZG11c2UtcG9zdC1maWxl
+LWRlZmF1bHQnCjs7ICAgIFBvc3QgZmlsZSB0byBkZWZhdWx0IHdpa2kuCjs7ICBgeWFvZGRtdXNl
+LXBvc3QtbGlicmFyeScKOzsgICAgUG9zdCBsaWJyYXJ5IHRvIGN1cnJlbnQgd2lraS4KOzsgIGB5
+YW9kZG11c2UtcG9zdC1saWJyYXJ5LWRlZmF1bHQnCjs7ICAgIFBvc3QgbGlicmFyeSB0byBkZWZh
+dWx0IHdpa2kuCjs7ICBgeWFvZGRtdXNlLXBvc3QtZGlyZWQnCjs7ICAgIFBvc3QgZGlyZWQgbWFy
+a2VkIGZpbGVzIHRvIGN1cnJlbnQgd2lraS4KOzsgIGB5YW9kZG11c2UtcG9zdC1kaXJlZC1kZWZh
+dWx0Jwo7OyAgICBQb3N0IGRpcmVkIG1hcmtlZCBmaWxlcyB0byBkZWZhdWx0IHdpa2kuCjs7ICBg
+eWFvZGRtdXNlLXBvc3Qtc2NyZWVuc2hvdCcKOzsgICAgUG9zdCBzY3JlZW5zaG90IHRvIGN1cnJl
+bnQgd2lraS4KOzsgIGB5YW9kZG11c2UtcG9zdC1zY3JlZW5zaG90LWRlZmF1bHQnCjs7ICAgIFBv
+c3Qgc2NyZWVuc2hvdCB0byBkZWZhdWx0IHdpa2kuCjs7ICBgeWFvZGRtdXNlLXJldmVydCcKOzsg
+ICAgUmVsb2FkIGN1cnJlbnQgZWRpdCBwYWdlLgo7OyAgYHlhb2RkbXVzZS1icm93c2UtcGFnZScK
+OzsgICAgQnJvd3NlIHNwZWNpYWwgcGFnZSBpbiB3aWtpLgo7OyAgYHlhb2RkbXVzZS1icm93c2Ut
+cGFnZS1kZWZhdWx0Jwo7OyAgICBCcm9zZSBzcGVjaWFsIHBhZ2Ugd2l0aCBgeWFvZGRtdXNlLWRl
+ZmF1bHQtd2lraScuCjs7ICBgeWFvZGRtdXNlLWJyb3dzZS1wYWdlLWRpZmYnCjs7ICAgIEJyb3dz
+ZSBzcGVjaWFsIHBhZ2UgZGlmZiBpbiB3aWtpLgo7OyAgYHlhb2RkbXVzZS1icm93c2UtcGFnZS1k
+ZWZhdWx0LWRpZmYnCjs7ICAgIEJyb3NlIHNwZWNpYWwgcGFnZSB3aXRoIGB5YW9kZG11c2UtZGVm
+YXVsdC13aWtpJy4KOzsgIGB5YW9kZG11c2UtYnJvd3NlLWN1cnJlbnQtcGFnZScKOzsgICAgQnJv
+d3NlIGN1cnJlbnQgcGFnZS4KOzsgIGB5YW9kZG11c2UtbmF2aS1uZXh0LWhlYWRpbmcnCjs7ICAg
+IEdvdG8gbmV4dCBoZWFkaW5nLgo7OyAgYHlhb2RkbXVzZS1uYXZpLXByZXYtaGVhZGluZycKOzsg
+ICAgR290byBwcmV2aW91cyBoZWFkaW5nLgo7OyAgYHlhb2RkbXVzZS1pbnNlcnQtcGFnZW5hbWUn
+Cjs7ICAgIEluc2VydCBhIFBBR0VOQU1FIG9mIGN1cnJlbnQgd2lraSB3aXRoIGNvbXBsZXRpb24u
+Cjs7ICBgeWFvZGRtdXNlLWluc2VydC1maWxlLWNvbnRlbnQnCjs7ICAgIEluc2VydCBGSUxFIGNv
+bnRlbnQuCjs7ICBgeWFvZGRtdXNlLWtpbGwtdXJsJwo7OyAgICBNYWtlIHRoZSBVUkwgb2YgY3Vy
+cmVudCBvZGRtdXNlIHBhZ2UgdGhlIGxhdGVzdCBraWxsIGluIHRoZSBraWxsIHJpbmcuCjs7ICBg
+eWFvZGRtdXNlLXVwZGF0ZS1wYWdlbmFtZScKOzsgICAgVXBkYXRlIGFsbCBwYWdlIG5hbWUgbWF0
+Y2ggaW4gYHlhb2RkbXVzZS13aWtpcycuCjs7ICBgeWFvZGRtdXNlLXRvZ2dsZS1taW5vcicKOzsg
+ICAgVG9nZ2xlIG1pbm9yIG1vZGUgc3RhdGUuCjs7ICBgeWFvZGRtdXNlLXJlZGlyZWN0Jwo7OyAg
+ICBSZWRpcmVjdCBwYWdlLgo7OyAgYHlhb2RkbXVzZS1kZWxldGUnCjs7ICAgIERlbGV0ZSBwYWdl
+Lgo7OyAgYHlhb2RkbXVzZS10b2dnbGUtaW1hZ2Utc3RhdHVzJwo7OyAgICBUb2dnbGUgaW1hZ2Ug
+c3RhdHVzLgo7OyAgYHlhb2RkbXVzZS1zYXZlLWFzJwo7OyAgICBTYXZlIGFzIGZpbGUuCjs7ICBg
+ZW1hY3N3aWtpJwo7OyAgICBFZGl0IGEgcGFnZSBvbiB0aGUgRW1hY3NXaWtpLgo7OyAgYGVtYWNz
+d2lraS1wb3N0Jwo7OyAgICBQb3N0IGZpbGUgdG8gdGhlIEVtYWNzV2lraS4KOzsKOzs7IEN1c3Rv
+bWl6YWJsZSBPcHRpb25zOgo7Owo7OyBCZWxvdyBhcmUgY3VzdG9taXphYmxlIG9wdGlvbiBsaXN0
+Ogo7Owo7OyAgYHlhb2RkbXVzZS1kaXJlY3RvcnknCjs7ICAgIERpcmVjdG9yeSB0byBzdG9yYWdl
+IG9kZG11c2UgcGFnZXMuCjs7ICAgIGRlZmF1bHQgPSAifi8ueWFvZGRtdXNlIgo7OyAgYHlhb2Rk
+bXVzZS1hc3NvYy1tb2RlJwo7OyAgICBXaGV0aGVyIGFzc29jIGZpbGVzIGluIGB5YW9kZG11c2Ut
+ZGlyZWN0b3J5JyB3aXRoIGB5YW9kZG11c2UtbW9kZScuCjs7ICAgIGRlZmF1bHQgPSB0Cjs7ICBg
+eWFvZGRtdXNlLXdpa2lzJwo7OyAgICBBbGlzdCBtYXBwaW5nIHdpa2kgbmFtZXMgdG8gVVJMcy4K
+OzsgICAgZGVmYXVsdCA9IChxdW90ZSAoKCJUZXN0V2lraSIgImh0dHA6Ly93d3cuZW1hY3N3aWtp
+Lm9yZy90ZXN0IiB1dGYtOCAidWlobnNjdXNrYz0xOyIpICgiRW1hY3NXaWtpIiAiaHR0cDovL3d3
+dy5lbWFjc3dpa2kub3JnL2VtYWNzIiB1dGYtOCAidWlobnNjdXNrYz0xOyIpICgiQ29tbXVuaXR5
+V2lraSIgImh0dHA6Ly93d3cuY29tbXVuaXR5d2lraS5vcmcvY3ciIHV0Zi04ICJ1aWhuc2N1c2tj
+PTE7IikgKCJSYXRwb2lzb25XaWtpIiAiaHR0cDovL3JhdHBvaXNvbi5hbnRpZGVza3RvcC5uZXQv
+Y2dpLWJpbi93aWtpIiB1dGYtOCAidWlobnNjdXNrYz0xOyIpICgiU3R1bXB3bVdpa2kiICJodHRw
+Oi8vc3R1bXB3bS5hbnRpZGVza3RvcC5uZXQvY2dpLWJpbi93aWtpIiB1dGYtOCAidWlobnNjdXNr
+Yz0xOyIpIC4uLikpCjs7ICBgeWFvZGRtdXNlLWRlZmF1bHQtd2lraScKOzsgICAgVGhlIGRlZmF1
+bHQgd2lraSBuYW1lIGZvciBlZGl0Lgo7OyAgICBkZWZhdWx0ID0gIkVtYWNzV2lraSIKOzsgIGB5
+YW9kZG11c2UtdXNlcm5hbWUnCjs7ICAgIFVzZXJuYW1lIHRvIHVzZSB3aGVuIHBvc3RpbmcuCjs7
+ICAgIGRlZmF1bHQgPSB1c2VyLWZ1bGwtbmFtZQo7OyAgYHlhb2RkbXVzZS1wYXNzd29yZCcKOzsg
+ICAgUGFzc3dvcmQgdG8gdXNlIHdoZW4gcG9zdGluZy4KOzsgICAgZGVmYXVsdCA9ICIiCjs7ICBg
+eWFvZGRtdXNlLXRyYW5zZm9ybS1pbWFnZScKOzsgICAgV2hldGhlciB0cmFuc2Zvcm0gaW1hZ2Ug
+Y29udGVudC4KOzsgICAgZGVmYXVsdCA9IHQKOzsgIGB5YW9kZG11c2UtZGlzcGxheS1hZnRlci1n
+ZXQnCjs7ICAgIFdoZXRoZXIgZGlzcGxheSBgeWFvZGRtdXNlLW1vZGUnIGJ1ZmZlciBhZnRlciBH
+RVQuCjs7ICAgIGRlZmF1bHQgPSB0Cjs7ICBgeWFvZGRtdXNlLWNsb3NlLWFmdGVyLXBvc3QnCjs7
+ICAgIFdoZXRoZXIgY2xvc2UgYHlhb2RkbXVzZS1tb2RlJyBidWZmZXIgYWZ0ZXIgUE9TVC4KOzsg
+ICAgZGVmYXVsdCA9IG5pbAo7OyAgYHlhb2RkbXVzZS1wb3N0LWRpcmVkLWNvbmZpcm0nCjs7ICAg
+IFdoZXRoZXIgY29uZmlybWF0aW9uIGlzIG5lZWRlZCB0byBwb3N0IG1hcmsgZGlyZWQgZmlsZXMu
+Cjs7ICAgIGRlZmF1bHQgPSB0Cjs7ICBgeWFvZGRtdXNlLWVkaXQtcHJvdGVjdCcKOzsgICAgVGhp
+cyBvcHRpb24gaXMgbWFrZSB1c2VyIGNhbiBwb3N0IHdpa2kgcGFnZSB3aXRob3V0IHRleHQgY2Fw
+dGNoYS4KOzsgICAgZGVmYXVsdCA9IHQKOzsgIGB5YW9kZG11c2UtdXNlLWFsd2F5cy1taW5vcicK
+OzsgICAgV2hlbiB0LCBzZXQgYWxsIHRoZSBtaW5vciBtb2RlIGJpdCB0byBhbGwgZWRpdGlvbnMu
+Cjs7ICAgIGRlZmF1bHQgPSBuaWwKOzsgIGB5YW9kZG11c2UtYnJvd3NlLWZ1bmN0aW9uJwo7OyAg
+ICBUaGUgYnJvd3NlIGZ1bmN0aW9uIHVzZSBpbiBgeWFvZGRtdXNlLWhhbmRsZS1icm93c2UnLgo7
+OyAgICBkZWZhdWx0ID0gKHF1b3RlIGJyb3dzZS11cmwpCjs7ICBgeWFvZGRtdXNlLW5vdGlmeS1m
+dW5jdGlvbicKOzsgICAgTm90aWZ5IGZ1bmN0aW9uIGZvciBnZXR0aW5nIGFuZCBwb3N0aW5nLgo7
+OyAgICBkZWZhdWx0ID0gKHF1b3RlIHlhb2RkbXVzZS1ub3RpZnktZGVmYXVsdCkKOzsgIGB5YW9k
+ZG11c2UtaGlnaGxpZ2h0LWVsaXNwLXBhZ2UnCjs7ICAgIFdoZXRoZXIgdXNlIHN5bnRheCBoaWdo
+bGlnaHQgZWxpc3AgcGFnZS4KOzsgICAgZGVmYXVsdCA9IHQKOzsgIGB5YW9kZG11c2Utc2NyZWVu
+c2hvdC1wcm9ncmFtJwo7OyAgICBUaGUgZGVmYXVsdCB0b29sIGZvciBzY3JlZW5zaG90Lgo7OyAg
+ICBkZWZhdWx0ID0gImltcG9ydCIKOzsgIGB5YW9kZG11c2Utc2NyZWVuc2hvdC1maWxlbmFtZScK
+OzsgICAgVGhlIGRlZmF1bHQgZmlsZSBmb3Igc2F2ZSBzY3JlZW5zaG90Lgo7OyAgICBkZWZhdWx0
+ID0gIi90bXAveWFvZGRtdXNlLXNjcmVlbnNob3QucG5nIgoKOzs7IEluc3RhbGxhdGlvbjoKOzsK
+OzsgUHV0IHlhb2RkbXVzZS5lbCB0byB5b3VyIGxvYWQtcGF0aC4KOzsgVGhlIGxvYWQtcGF0aCBp
+cyB1c3VhbGx5IH4vZWxpc3AvLgo7OyBJdCdzIHNldCBpbiB5b3VyIH4vLmVtYWNzIGxpa2UgdGhp
+czoKOzsgKGFkZC10by1saXN0ICdsb2FkLXBhdGggKGV4cGFuZC1maWxlLW5hbWUgIn4vZWxpc3Ai
+KSkKOzsKOzsgQW5kIHRoZSBmb2xsb3dpbmcgdG8geW91ciB+Ly5lbWFjcyBzdGFydHVwIGZpbGUu
+Cjs7Cjs7IChyZXF1aXJlICd5YW9kZG11c2UpCjs7Cjs7IElmIHlvdXIgY29tcHV0ZXIgaXMgYWx3
+YXlzIGNvbm5lY3RlZCBJbnRlcm5ldCB3aGVuIEVtYWNzIHN0YXJ0IHVwLAo7OyBJIHJlY29tbWVu
+ZGVkIHlvdSBhZGQgYmVsb3cgdG8geW91ciB+Ly5lbWFjcywgdG8gdXBkYXRlIFdpa2kgcGFnZSBu
+YW1lCjs7IHdoZW4gc3RhcnQgdXA6Cjs7Cjs7ICAgICAgKHlhb2RkbXVzZS11cGRhdGUtcGFnZW5h
+bWUgdCkKOzsKOzsgQW5kIGFib3ZlIHNldHVwIGlzIG5vdCBuZWNlc3NhcnksIGJlY2F1c2UgWWFv
+ZGRtdXNlIHdpbGwgYXV0b21hdGljYWxseQo7OyB1cGRhdGUgV2lraSBwYWdlIG5hbWUgd2hlbiB5
+b3UgZmlyc3QgY2FsbCB5YW9kZG11c2UgZnVuY3Rpb24uCjs7IEFib3ZlIHNldHVwIGp1c3QgYXZv
+aWQgKmRlbGF5KiB3aGVuIHlvdSBmaXJzdCBjYWxsIGZ1bmN0aW9uLgo7OwoKOzs7IEN1c3RvbWl6
+ZToKOzsKOzsgYHlhb2RkbXVzZS1kaXJlY3RvcnknIHRvIHN0b3JhZ2Ugb2RkbXVzZSBwYWdlcy4K
+OzsKOzsgYHlhb2RkbXVzZS1hc3NvYy1tb2RlJyBXaGV0aGVyIGFzc29jIGZpbGVzIGluCjs7IGB5
+YW9kZG11c2UtZGlyZWN0b3J5JyB3aXRoIGB5YW9kZG11c2UtbW9kZScuCjs7Cjs7IGB5YW9kZG11
+c2Utd2lraXMnIGlzIGFsaXN0IG1hcHBpbmcgd2lraSBuYW1lcyB0byBVUkxzLgo7OyBZb3UgY2Fu
+IGFkZCBPZGRtdXNlIHdpa2kgZWxlbWVudCB3aXRoIGZvcm1hdAo7OyAoIldpa2lOYW1lIiAiV2lr
+aVVybCIgY29kaW5nICJDYXB0Y2hhU3RyaW5nIikuCjs7IEJ1dCBkb24ndCBtb2RpZmllZCBkZWZh
+dWx0IGVsZW1lbnRzIG9mIGB5YW9kZG11c2Utd2lraXMnLAo7OyBwcm9iYWJseSBjYXVzZXMgdHJv
+dWJsZSEKOzsKOzsgYHlhb2RkbXVzZS1kZWZhdWx0LXdpa2knIHRoZSBkZWZhdWx0IHdpa2kgbmFt
+ZSBmb3IgY29tbWFuZAo7OyBgeWFvZGRtdXNlLWVkaXQtZGVmYXVsdCcuCjs7Cjs7IGB5YW9kZG11
+c2UtdXNlcm5hbWUnIHVzZXIgbmFtZSBmb3IgcG9zdGluZywgZGVmYXVsdCBpcwo7OyB0aGlzIHZh
+bHVlIG9mIGB1c2VyLWZ1bGwtbmFtZScuCjs7Cjs7IGB5YW9kZG11c2UtcGFzc3dvcmQnIHBhc3N3
+b3JkIGZvciBwb3N0aW5nLAo7OyBZb3Ugb25seSBuZWVkIHRoaXMgaWYgeW91IHdhbnQgdG8gZWRp
+dCBsb2NrZWQgcGFnZXMgYW5kIHlvdQo7OyBrbm93IGFuIGFkbWluaXN0cmF0b3IgcGFzc3dvcmQu
+Cjs7Cjs7IGB5YW9kZG11c2UtdHJhbnNmb3JtLWltYWdlJyBXaGV0aGVyIHRyYW5zZm9ybSBpbWFn
+ZSBjb250ZW50Lgo7OyBJZiBub24tbmlsLCB3aWxsIHRyYW5zZm9ybSBpbWFnZSBjb250ZW50IGFu
+ZCB2aWV3IGl0Lgo7OyBPdGhlcndpc2UsIGRvbid0IHRyYW5zZm9ybSBpbWFnZSBjb250ZW50Lgo7
+Owo7OyBgeWFvZGRtdXNlLWRpc3BsYXktYWZ0ZXItZ2V0JyB3aGV0aGVyIGRpc3BsYXkgcGFnZSBh
+ZnRlciBnZXQuCjs7Cjs7IGB5YW9kZG11c2UtY2xvc2UtYWZ0ZXItcG9zdCcgd2hldGhlciBjbG9z
+ZSBlZGl0IGJ1ZmZlciBhZnRlcgo7OyBwb3N0IHdpa2kgcGFnZS4KOzsKOzsgYHlhb2RkbXVzZS1w
+b3N0LWRpcmVkLWNvbmZpcm0nIFdoZXRoZXIgY29uZmlybWF0aW9uIGlzIG5lZWRlZAo7OyB0byBw
+b3N0IG1hcmsgZGlyZWQgZmlsZXMuCjs7Cjs7IGB5YW9kZG11c2UtZWRpdC1wcm90ZWN0JyBTb21l
+IHdpa2lzLCBzdWNoIGFzIEVtYWNzV2lraSwKOzsgdXNlIGEgdGV4dCBjYXB0Y2hhIHRvIHByb3Rl
+Y3QgcGFnZXMgZnJvbSBiZWluZyBlZGl0ZWQuCjs7IFRoaXMgb3B0aW9uIGlzIG1ha2UgdXNlciBj
+YW4gcG9zdCB3aWtpIHBhZ2Ugd2l0aG91dCB0ZXh0IGNhcHRjaGEuCjs7IFNvIGlmIHlvdSBlZGl0
+IHdpa2kgKHN1Y2ggYXMgRW1hY3NXaWtpKSwKOzsgcGxlYXNlIG1ha2Ugc3VyZSB0aGlzIG9wdGlv
+biBpcyBgbm9uLW5pbCcuRGVmYXVsdAo7Owo7OyBgeWFvZGRtdXNlLXVzZS1hbHdheXMtbWlub3In
+IFdoZW4gdCwKOzsgc2V0IGFsbCB0aGUgbWlub3IgbW9kZSBiaXQgdG8gYWxsIGVkaXRpb25zLgo7
+Owo7OyBgeWFvZGRtdXNlLWJyb3dzZS1mdW5jdGlvbicgdGhlIGJyb3dzZSBmdW5jdGlvbiB1c2UK
+OzsgaW4gYHlhb2RkbXVzZS1oYW5kbGUtYnJvd3NlJywKOzsgeW91IGNhbiBjdXN0b21pemUgeW91
+ciBvd24gYWR2YW5jZWQgYnJvd3NlIGZ1bmN0aW9uLgo7Owo7OyBgeWFvZGRtdXNlLW5vdGlmeS1m
+dW5jdGlvbicgdGhlIG5vdGlmeSBmdW5jdGlvbiBmb3IKOzsgZ2V0L3Bvc3QgbWVzc2FnZSwKOzsg
+eW91IGNhbiBjdXN0b21pemUgeW91ciBvd24gYWR2YW5jZWQgbm90aWZ5IGZ1bmN0aW9uLgo7Owo7
+OyBgeWFvZGRtdXNlLWhpZ2hsaWdodC1lbGlzcC1wYWdlJwo7OyBXaGV0aGVyIHRvIHJlbmRlciDi
+gJhlbWFjcy1saXNwLW1vZGXigJkgc3ludGF4IGhpZ2hsaWdodGluZwo7OyB3aGVuIHRoZSBjdXJy
+ZW50IHBhZ2UgaXMgYW4gZWxpc3AgZmlsZS4KOzsgSWYgeW91IGRvbuKAmXQgbGlrZSB0aGlzLCBj
+aGFuZ2UgaXQgdG8gbmlsLgo7Owo7OyBgeWFvZGRtdXNlLXNjcmVlbnNob3QtcHJvZ3JhbScKOzsg
+VGhlIGRlZmF1bHQgdG9vbCBwcm9ncmFtIGZvciBzY3JlZW5zaG90Lgo7Owo7OyBgeWFvZGRtdXNl
+LXNjcmVlbnNob3QtZmlsZW5hbWUnCjs7IFRoZSBkZWZhdWx0IGZpbGUgZm9yIHNhdmUgc2NyZWVu
+c2hvdC4KOzsKOzsgQWxsIG9mIHRoZSBhYm92ZSBjYW4gY3VzdG9taXplIGJ5Ogo7OyAgICAgIE0t
+eCBjdXN0b21pemUtZ3JvdXAgUkVUIHlhb2RkbXVzZSBSRVQKOzsKCgo7OzsgQnVnIFJlcG9ydDoK
+OzsKOzsgSWYgeW91IGhhdmUgcHJvYmxlbSwgc2VuZCBhIGJ1ZyByZXBvcnQgdmlhIE0teCB5YW9k
+ZG11c2Utc2VuZC1idWctcmVwb3J0Lgo7OyBUaGUgc3RlcCBpczoKOzsgIDApIFNldHVwIG1haWwg
+aW4gRW1hY3MsIHRoZSBlYXNpZXN0IHdheSBpczoKOzsgICAgICAgKHNldHEgdXNlci1tYWlsLWFk
+ZHJlc3MgInlvdXJAbWFpbC5hZGRyZXNzIikKOzsgICAgICAgKHNldHEgdXNlci1mdWxsLW5hbWUg
+IllvdXIgRnVsbCBOYW1lIikKOzsgICAgICAgKHNldHEgc210cG1haWwtc210cC1zZXJ2ZXIgInlv
+dXIuc210cC5zZXJ2ZXIuanAiKQo7OyAgICAgICAoc2V0cSBtYWlsLXVzZXItYWdlbnQgJ21lc3Nh
+Z2UtdXNlci1hZ2VudCkKOzsgICAgICAgKHNldHEgbWVzc2FnZS1zZW5kLW1haWwtZnVuY3Rpb24g
+J21lc3NhZ2Utc210cG1haWwtc2VuZC1pdCkKOzsgIDEpIEJlIHN1cmUgdG8gdXNlIHRoZSBMQVRF
+U1QgdmVyc2lvbiBvZiB5YW9kZG11c2UuZWwuCjs7ICAyKSBFbmFibGUgZGVidWdnZXIuIE0teCB0
+b2dnbGUtZGVidWctb24tZXJyb3Igb3IgKHNldHEgZGVidWctb24tZXJyb3IgdCkKOzsgIDMpIFVz
+ZSBMaXNwIHZlcnNpb24gaW5zdGVhZCBvZiBjb21waWxlZCBvbmU6IChsb2FkICJ5YW9kZG11c2Uu
+ZWwiKQo7OyAgNCkgRG8gaXQhCjs7ICA1KSBJZiB5b3UgZ290IGFuIGVycm9yLCBwbGVhc2UgZG8g
+bm90IGNsb3NlICpCYWNrdHJhY2UqIGJ1ZmZlci4KOzsgIDYpIE0teCB5YW9kZG11c2Utc2VuZC1i
+dWctcmVwb3J0IGFuZCBNLXggaW5zZXJ0LWJ1ZmZlciAqQmFja3RyYWNlKgo7OyAgNykgRGVzY3Jp
+YmUgdGhlIGJ1ZyB1c2luZyBhIHByZWNpc2UgcmVjaXBlLgo7OyAgOCkgVHlwZSBDLWMgQy1jIHRv
+IHNlbmQuCjs7ICAjIElmIHlvdSBhcmUgYSBKYXBhbmVzZSwgcGxlYXNlIHdyaXRlIGluIEphcGFu
+ZXNlOi0pCgo7OzsgQ2hhbmdlIGxvZzoKOzsgMjAxNC8wMy8wNiAgICAgQW5keSBTdGV3YXJ0Cjs7
+ICAgICAgKiBgeWFvZGRtdXNlLXBvc3QtZGlyZWQnOiBhZGQgc2l0LWZvciA1IGZvciBlbWFjc3dp
+a2kgdG8gdm9pZCB1cGxvYWQgZmlsZXMgZmFpbGVkLgo7Owo7OyAyNS1GZWItMjAxMyAgICBDaHJp
+c3RpYW5HaW3DqW5lego7OyAgICAgICogVGlsZGVzIHJlY29nbml0aW9uIGluIGxpbmtzLgo7Owo7
+OyAyMDEwLzA1LzA0Cjs7ICAgICAgKiBCdWcgcmVwb3J0IGNvbW1hbmQ6IGB5YW9kZG11c2Utc2Vu
+ZC1idWctcmVwb3J0Jwo7Owo7OyAyMDEwLzAzLzIwCjs7ICAgICAgKiBBZGQgRW1hY3N3aWtpLXNw
+ZWNpZmljIGNvbW1hbmRzIGZvciBjb252ZW5pZW5jZToKOzsgICAgICAgIGBlbWFjc3dpa2knCjs7
+ICAgICAgICBgZW1hY3N3aWtpLXBvc3QnCjs7IDIwMTAvMDIvMjQKOzsgICAgICAqIFBsZWFzZSBk
+b24ndCB1c2UgYEMteGAga2V5IHRvIGF2b2lkIGNvbmZsaWN0IHdpdGggRGVmYXVsdCBFbWFjcyBi
+aW5kaW5nLgo7OyAgICAgICAgIElmIHlvdSBuZWVkIHRoYXQsIHBsZWFzZSBjdXN0b21pemUgYHlh
+b2RkbXVzZS1tb2RlLW1hcGAsIHRoYW5rcyEKOzsKOzsgMjAxMC8wMi8xOQo7OyAgICAgICogQWRk
+IG5ldyBrZXkgYmluZGluZzogIEMteCBDLXYgKGB5YW9kZG11c2UtcmV2ZXJ0JykKOzsKOzsgMjAw
+OS8xMC8wOAo7OyAgICAgICogaW1lbnUgc3VwcG9ydC4KOzsKOzsgMjAwOS8wMy8yOQo7OyAgICAg
+ICogQWRkIGNvbW1hbmRzOgo7OyAgICAgICAgYHlhb2RkbXVzZS1icm93c2UtcGFnZS1kaWZmJwo7
+OyAgICAgICAgYHlhb2RkbXVzZS1icm93c2UtcGFnZS1kZWZhdWx0LWRpZmYnCjs7Cjs7IDIwMDkv
+MDMvMTMKOzsgICAgICAqIEp1c3QgYXNrIHN1bW1hcnkgb25jZSB3aGVuIHBvc3QgZnJvbSBkaXJl
+ZC4KOzsKOzsgMjAwOS8wMy8xMQo7OyAgICAgICogUmVmYWN0b3J5IGNvZGUuCjs7ICAgICAgKiBG
+aXggYnVncy4KOzsgICAgICAqIEZpeCBkb2MuCjs7ICAgICAgKiBIYW5kbGUgcmV0cmlldmUgZmFp
+bGVkIGNhc2Ugb2YgYHlhb2RkbXVzZS1nZXQtcGFnZScuCjs7Cjs7IDIwMDkvMDMvMDgKOzsgICAg
+ICAqIE1vZGlmaWVkIGB5YW9kZG11c2Utd2lraXMnLCBtYWtlIGNhcHRjaGEgc3RyaW5nIHBlciB3
+aWtpLgo7OyAgICAgICogSGlnaCBlZGl0IHN0YXR1cyBhdCBtb2RlLWxpbmUuCjs7ICAgICAgKiBG
+aXggZG9jLgo7Owo7OyAyMDA5LzAzLzA0Cjs7ICAgICAgKiBGaXggdGhlIGJ1ZyBvZiBgeWFvZGRt
+dXNlLXBvc3QtY2FsbGJhY2snLgo7Owo7OyAyMDA5LzAzLzAyCjs7ICAgICAgKiBSZWZhY3Rvcnkg
+Y29kZS4KOzsgICAgICAqIEFkZCBuZXcgY29tbWFuZHM6Cjs7ICAgICAgICBgeWFvZGRtdXNlLXBv
+c3Qtc2NyZWVuc2hvdCcKOzsgICAgICAgIGB5YW9kZG11c2UtcG9zdC1zY3JlZW5zaG90LWRlZmF1
+bHQnCjs7Cjs7IDIwMDkvMDIvMjcKOzsgICAgICAqIEltcHJvdmUgYHlhb2RkbXVzZS1wb3N0Jy4K
+OzsgICAgICAqIFdoZW4gZXhlY3V0ZSBjb21tYW5kcwo7OyAgICAgICBgeWFvZGRtdXNlLWJyb3dz
+ZS1wYWdlJyBvcgo7OyAgICAgICBgeWFvZGRtdXNlLWJyb3dzZS1wYWdlLWRlZmF1bHQnLCB3aWxs
+IHRyeQo7OyAgICAgICB0byB1c2UgYHlhb2RkbXVzZS1wYWdlbmFtZS1hdC1wb2ludCcgcGljay11
+cAo7OyAgICAgICBwYWdlIG5hbWUgZnJvbSBjdXJyZW50IGJ1ZmZlci4KOzsKOzsgMjAwOS8wMi8y
+NAo7OyAgICAgICogRml4IGB5YW9kZG11c2UtbW9kZScgbG9hZCBidWcuCjs7ICAgICAgKiBOZXcg
+Y29tbWFuZCBgeWFvZGRtdXNlLWluc2VydC1maWxlLWNvbnRlbnQnLgo7OyAgICAgICogVHJhbnNm
+b3JtIGltYWdlIHBhZ2UgZm9yIHZpZXcuCjs7ICAgICAgKiBOZXcgb3B0aW9uIGB5YW9kZG11c2Ut
+dHJhbnNmb3JtLWltYWdlJy4KOzsgICAgICAqIE5ldyBjb21tYW5kczoKOzsgICAgICAgIGB5YW9k
+ZG11c2UtdG9nZ2xlLWltYWdlLXN0YXR1cycKOzsgICAgICAgIGB5YW9kZG11c2Utc2F2ZS1hcycK
+OzsgICAgICAqIENvbW1hbmQgYHlhb2RkbXVzZS1mb2xsb3cnIGNhbiBwaWNrIHVwCjs7ICAgICAg
+ICBwYWdlIG5hbWUgZnJvbSBbW2ltYWdlOlBBR0VOQU1FXV0uCjs7ICAgICAgKiBGaXggZG9jLgo7
+Owo7OyAyMDA5LzAyLzIzCjs7ICAgICAgKiBOb3cgY2FuIHVwbG9hZCBwaWN0dXJlIG9yIGNvbXBy
+ZXNzIGZpbGUgdG8gV2lraSBkaXJlY3RseSwKOzsgICAgICAgIG5vdCBuZWVkIGJyb3dzZXIgYW55
+IG1vcmUuCjs7ICAgICAgKiBIaWdobGlnaHQgbmV3IHBhZ2UgZm9yIHdhcm5pbmcuCjs7ICAgICAg
+KiBOZXcgY29tbWFuZHMKOzsgICAgICAgIGB5YW9kZG11c2UtcmVkaXJlY3QnLgo7OyAgICAgICAg
+YHlhb2RkbXVzZS1kZWxldGUnLgo7OyAgICAgICogVXNlICJmbGV0IiB3cmFwICIoYmFzaWMtc2F2
+ZS1idWZmZXIpIi4KOzsgICAgICAqIEZpeCBkb2MuCjs7Cjs7IDIwMDkvMDIvMjIKOzsgICAgICAq
+IEFkZCAoc2V0LWJ1ZmZlci1tb2RpZmllZC1wIG5pbCkgbWFrZSBtb2RpZmljYXRpb24gZmxhZwo7
+OyAgICAgICAgd2l0aCBgbmlsJyBqdXN0IGFmdGVyIGdldHRpbmcgcGFnZSwgcHJvdGVjdCBkb3du
+bG9hZAo7OyAgICAgICAgY29udGVudC4KOzsgICAgICAgIFRoYW5rcyBydWJpa2l0Y2ggZm9yIHRo
+aXMgcGF0Y2guIDopCjs7ICAgICAgKiBSZWZhY3RvcnkgY29kZS4KOzsgICAgICAqIE5ldyBjb21t
+YW5kczoKOzsgICAgICAgIGB5YW9kZG11c2UtcG9zdC1kaXJlZC1kZWZhdWx0Jy4KOzsgICAgICAg
+IGB5YW9kZG11c2UtcG9zdC1maWxlLWRlZmF1bHQnLgo7OyAgICAgICogTmV3IG9wdGlvbnM6Cjs7
+ICAgICAgICBgeWFvZGRtdXNlLW5vdGlmeS1mdW5jdGlvbicuCjs7ICAgICAgICBgeWFvZGRtdXNl
+LWRpc3BsYXktYWZ0ZXItZ2V0Jy4KOzsgICAgICAqIEZpeCBkb2MuCjs7Cjs7IDIwMDkvMDIvMTkK
+OzsgICAgICAqIEFkZCBuZXcgY29tbWFuZCBgeWFvZGRtdXNlLWJyb3dzZS1wYWdlLWRlZmF1bHQn
+Lgo7Owo7OyAyMDA5LzAyLzE3Cjs7ICAgICAgKiBSZW1vdmUgdW5uZWNlc3NhcnkgY29tcGxldGlv
+biBuYW1lIGZvciBgeWFvZGRtdXNlLXBvc3QtbGlicmFyeScKOzsgICAgICAgIGFuZCBgeWFvZGRt
+dXNlLXBvc3QtbGlicmFyeS1kZWZhdWx0Jwo7OyAgICAgICogUGljayBmaWxlIG5hbWUgYXJvdW5k
+IHBvaW50IHdoZW4gdXNlCjs7ICAgICAgICBgeWFvZGRtdXNlLXBvc3QtbGlicmFyeScgYW5kIGB5
+YW9kZG11c2UtcG9zdC1saWJyYXJ5LWRlZmF1bHQnLgo7Owo7OyAyMDA5LzAyLzEzCjs7ICAgICAg
+KiBGaXggYnVnIG9mIGB5YW9kZG11c2UtdXBkYXRlLXBhZ2VuYW1lJy4KOzsKOzsgMjAwOS8wMi8x
+Mgo7OyAgICAgICogUmVtb3ZlIG9wdGlvbiBgeWFvZGRtdXNlLXN0YXJ0dXAtZ2V0LXBhZ2VuYW1l
+Jy4KOzsgICAgICAqIEFkZCBuZXcgY29tbWFuZCBgeWFvZGRtdXNlLXVwZGF0ZS1wYWdlbmFtZScu
+Cjs7ICAgICAgKiBBZGQgb3B0aW9uIGB1bmZvcmNlZCcgdG8gZnVuY3Rpb24gYHlhb2RkbXVzZS11
+cGRhdGUtcGFnZW5hbWUnLgo7OyAgICAgICogQWRkIG1pc3MgY29tbWFuZCBgeWFvZGRtdXNlLXRv
+Z2dsZS1taW5vcicuCjs7ICAgICAgKiBGaXggZG9jLgo7Owo7OyAyMDA5LzAyLzExCjs7ICAgICAg
+KiBSZW1lbWJlciBsYXN0IGBzdW1tYXJ5JyBzdHJpbmcgZm9yIGZhc3QgaW5wdXQuCjs7Cjs7IDIw
+MDkvMDEvMTkKOzsgICAgICAqIEFkZCBoaWdobGlnaHQgc3VwcG9ydCBmb3IgW1tpbWFnZTpJbWFn
+ZVBhZ2VdXS4KOzsKOzsgMjAwOS8wMS8xMgo7OyAgICAgICogSW1wcm92ZSB3aWtpIHN5bnRheCBo
+aWdobGlnaHQuCjs7ICAgICAgKiBBZGQgc3ludGF4IGhpZ2hsaWdodCBmb3IgYHRhYmxlcycgYW5k
+IGBkaWFsb2cnLgo7OyAgICAgICogRml4IHRoZSBidWcgb2YgYHlhb2RkbXVzZS1wYWdlbmFtZS1h
+dC1wb2ludCcuCjs7Cjs7IDIwMDkvMDEvMTEKOzsgICAgICAqIEFkZCBuZXcgZmVhdHVyZTogYnJv
+d3NlIHBhZ2UgYWZ0ZXIgcG9zdCBzdWNjZXNzZnVsCjs7ICAgICAgICBpZiBpIHR5cGUgIkMtdSIg
+YmVmb3JlIGNhbGwgcG9zdCBjb21tYW5kLgo7OyAgICAgICogTW9kaWZpZWQgKGtpbGwtYnVmZmVy
+KSB0byAoa2lsbC1idWZmZXIgKGN1cnJlbnQtYnVmZmVyKSkKOzsgICAgICAgIHRvIGNvbXBhdGli
+bGUgd2l0aCBFbWFjcyAyMi4KOzsgICAgICAqIEFkZCBoaWdobGlnaHQgZm9yIFt1cmwgdXJsLW5h
+bWVdIHN1cHBvcnQuCjs7ICAgICAgKiBBZGQgbmF2aWdhdGlvbiBmdW5jdGlvbnMuCjs7ICAgICAg
+KiBSZW1vdmUgYmxhbmsgZnJvbSBgeWFvZGRtdXNlLXVzZXJuYW1lJy4KOzsKOzsgMjAwOS8wMS8x
+MAo7OyAgICAgICogQWRkIG5ldyBjb21tYW5kIGB5YW9kZG11c2UtZm9sbG93JyBmb3IgZmlndXJl
+Cjs7ICAgICAgICBvdXQgd2hhdCBwYWdlIHdlIG5lZWQgdG8gdmlzaXQuCjs7ICAgICAgKiBBZGQg
+bmV3IG9wdGlvbiBgeWFvZGRtdXNlLWhpZ2hsaWdodC1lbGlzcC1wYWdlJwo7OyAgICAgICAgdG8g
+ZG8gYGVtYWNzLWxpc3AnIHN5bnRheCBoaWdobGlnaHQgd2hlbiBjdXJyZW50IHBhZ2UKOzsgICAg
+ICAgIGlzIGVsaXNwIGZpbGUuCjs7ICAgICAgICBUaGFua3MgImJlbm55IiBmb3IgdGhpcyBhZHZp
+Y2UhCjs7ICAgICAgKiBBZGQgbmV3IGNvbW1hbmQgYHlhb2RkbXVzZS1wb3N0LWxpYnJhcnktZGVm
+YXVsdCcKOzsgICAgICAgIHBvc3QgbGlicmFyeSB0byBkZWZhdWx0IHdpa2kuCjs7ICAgICAgKiBG
+aXggcG9zdCBidWcuCjs7Cjs7IDIwMDkvMDEvMTAKOzsgICAgICAqIEFkZCBuZXcgb3B0aW9uIGB5
+YW9kZG11c2UtYnJvd3NlLWZ1bmN0aW9uJyBmb3IgY3VzdG9taXplCjs7ICAgICAgICB5b3VyIG93
+biBhZHZhbmNlZCBicm93c2UgZnVuY3Rpb24uCjs7Cjs7IDIwMDkvMDEvMDkKOzsgICAgICAqIEZp
+eCByZWd1bGFyIGV4cHJlc3Npb24gZm9yIGtleXdvcmRzIGhpZ2hsaWdodC4KOzsKOzsgMjAwOS8w
+MS8wNgo7OyAgICAgICogRmlyc3QgcmVsZWFzZWQuCjs7Cgo7OzsgQWNrbm93bGVkZ2VtZW50czoK
+OzsKOzsgICAgICBBbGV4IFNjaHJvZWRlciAgPG1haWx0bzprZW5zYW5hdGFAZ21haWwuY29tPgo7
+OyAgICAgIHJ1YmlraXRjaCAgICAgICA8cnViaWtpdGNoQHJ1YnktbGFuZy5vcmc+Cjs7ICAgICAg
+ICAgICAgICBGb3IgY3JlYXRlIG9kZG11c2UuZWwKOzsKOzsgICAgICBydWJpa2l0Y2gKOzsgICAg
+ICAgICAgICAgIEZvciBwYXRjaC4KOzsgICAgICBiZW5ueSAoSVJDIG5pY2tuYW1lKQo7OyAgICAg
+ICAgICAgICAgRm9yIGFkdmljZXMuCjs7Cgo7OzsgVE9ETwo7Owo7OwoKOzs7IFJlcXVpcmUKKGV2
+YWwtd2hlbi1jb21waWxlIChyZXF1aXJlICdjbCkpCihyZXF1aXJlICdzZ21sLW1vZGUpCihyZXF1
+aXJlICdza2VsZXRvbikKKHJlcXVpcmUgJ3VybCkKKHJlcXVpcmUgJ3RoaW5nYXRwdCkKKHJlcXVp
+cmUgJ2ZpbmQtZnVuYykKKHJlcXVpcmUgJ2RpcmVkKQoKOzs7IENvZGU6Cgo7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7OzsgQ3VzdG9taXplIDs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+OwooZGVmZ3JvdXAgeWFvZGRtdXNlIG5pbAogICJZZXQgYW5vdGhlciBPZGRtdXNlIG1vZGUgZm9y
+IEVtYWNzLiIKICA6Z3JvdXAgJ2VkaXQpCgooZGVmY3VzdG9tIHlhb2RkbXVzZS1kaXJlY3Rvcnkg
+In4vLnlhb2RkbXVzZSIKICAiRGlyZWN0b3J5IHRvIHN0b3JhZ2Ugb2RkbXVzZSBwYWdlcy4iCiAg
+OnR5cGUgJ3N0cmluZwogIDpncm91cCAneWFvZGRtdXNlKQoKKGRlZmN1c3RvbSB5YW9kZG11c2Ut
+YXNzb2MtbW9kZSB0CiAgIldoZXRoZXIgYXNzb2MgZmlsZXMgaW4gYHlhb2RkbXVzZS1kaXJlY3Rv
+cnknIHdpdGggYHlhb2RkbXVzZS1tb2RlJy4KRGVmYXVsdCBpcyB0LiIKICA6dHlwZSAnYm9vbGVh
+bgogIDpzZXQgKGxhbWJkYSAoc3ltYm9sIHZhbHVlKQogICAgICAgICAoc2V0IHN5bWJvbCB2YWx1
+ZSkKICAgICAgICAgKGlmIHZhbHVlCiAgICAgICAgICAgICAoYWRkLXRvLWxpc3QgJ2F1dG8tbW9k
+ZS1hbGlzdAogICAgICAgICAgICAgICAgICAgICAgICAgIGAoLChleHBhbmQtZmlsZS1uYW1lIHlh
+b2RkbXVzZS1kaXJlY3RvcnkpIC4geWFvZGRtdXNlLW1vZGUpKQogICAgICAgICAgIChyZW1vdmUt
+aG9vayAnYXV0by1tb2RlLWFsaXN0CiAgICAgICAgICAgICAgICAgICAgICAgIGAoLChleHBhbmQt
+ZmlsZS1uYW1lIHlhb2RkbXVzZS1kaXJlY3RvcnkpIC4geWFvZGRtdXNlLW1vZGUpKSkpCiAgOmdy
+b3VwICd5YW9kZG11c2UpCgooZGVmY3VzdG9tIHlhb2RkbXVzZS13aWtpcwogICcoKCJFbWFjc1dp
+a2kiICJodHRwOi8vd3d3LmVtYWNzd2lraS5vcmcvZW1hY3MiIHV0Zi04ICJ1aWhuc2N1c2tjPTE7
+IikKICAgICgiQ29tbXVuaXR5V2lraSIgImh0dHA6Ly93d3cuY29tbXVuaXR5d2lraS5vcmcvY3ci
+IHV0Zi04ICJ1aWhuc2N1c2tjPTE7IikKICAgICgiUmF0cG9pc29uV2lraSIgImh0dHA6Ly9yYXRw
+b2lzb24ud3hjdmJuLm9yZy9jZ2ktYmluL3dpa2kucGwiIHV0Zi04ICJ1aWhuc2N1c2tjPTE7IikK
+ICAgICgiT2RkbXVzZVdpa2kiICJodHRwOi8vd3d3Lm9kZG11c2Uub3JnL2NnaS1iaW4vb2RkbXVz
+ZSIgdXRmLTggInVpaG5zY3Vza2M9MTsiKSkKICAiQWxpc3QgbWFwcGluZyB3aWtpIG5hbWVzIHRv
+IFVSTHMuCkZpcnN0IGFyZ3VtZW50IGlzIFdpa2kgbmFtZS4KU2Vjb25kIGFyZ3VtZW50IGlzIFdp
+a2kgdXJsLgpUaGlyZCBhcmd1bWVudCBpcyBjb2RpbmcgZm9yIFdpa2kuCkZvdXJ0aCBhcmd1bWVu
+dCBpcyBjYXB0Y2hhIHN0cmluZyBmb3IgZWRpdCBwcm90ZWN0ZWQuCgpZb3UgY2FuIGFkZCBuZXcg
+bGlzdCBhcyBmb3JtYXQgKFdpa2lOYW1lIFdpa2lVUkwgQ29kaW5nU3lzdGVtIENhcHRjaGFTdHJp
+bmcpLgpCdXQgZG9uJ3QgbW9kaWZpZWQgZGVmYXVsdCBlbGVtZW50cyBvZiBgeWFvZGRtdXNlLXdp
+a2lzJywgcHJvYmFibHkgY2F1c2VzIHRyb3VibGUhIgogIDp0eXBlICcocmVwZWF0IChsaXN0IChz
+dHJpbmcgOnRhZyAiV2lraSIpCiAgICAgICAgICAgICAgICAgICAgICAgKHN0cmluZyA6dGFnICJV
+UkwiKQogICAgICAgICAgICAgICAgICAgICAgIChzeW1ib2wgOnRhZyAiQ29kaW5nIFN5c3RlbSIp
+CiAgICAgICAgICAgICAgICAgICAgICAgKHN0cmluZyA6dGFnICJDYXB0Y2hhIikpKQogIDpncm91
+cCAneWFvZGRtdXNlKQoKKGRlZmN1c3RvbSB5YW9kZG11c2UtZGVmYXVsdC13aWtpICJFbWFjc1dp
+a2kiCiAgIlRoZSBkZWZhdWx0IHdpa2kgbmFtZSBmb3IgZWRpdC4KVGhpcyB2YWx1ZSBtdXN0IG1h
+dGNoIHRoZSBLRVkgdmFsdWUgb2YgYHlhb2RkbXVzZS13aWtpcycuClRoaXMgdmFsdWUgaXMgdXNl
+IGJ5IGZ1bmN0aW9uIGB5YW9kZG11c2UtZWRpdC1kZWZhdWx0Jy4iCiAgOnR5cGUgJ3N0cmluZwog
+IDpncm91cCAneWFvZGRtdXNlKQoKKGRlZmN1c3RvbSB5YW9kZG11c2UtdXNlcm5hbWUgdXNlci1m
+dWxsLW5hbWUKICAiVXNlcm5hbWUgdG8gdXNlIHdoZW4gcG9zdGluZy4KU2V0dGluZyBhIHVzZXJu
+YW1lIGlzIHRoZSBwb2xpdGUgdGhpbmcgdG8gZG8uIgogIDp0eXBlICdzdHJpbmcKICA6c2V0IChs
+YW1iZGEgKHN5bWJvbCB2YWx1ZSkKICAgICAgICAgOzsgUmVtb3ZlIGJsYW5rIGZyb20gdXNlciBu
+YW1lIGZvciB3aWtpIGxpbmsgbmF2aWdhdGlvbi4KICAgICAgICAgKHNldHEgdmFsdWUgKHJlcGxh
+Y2UtcmVnZXhwLWluLXN0cmluZyAiICIgIiIgdmFsdWUpKQogICAgICAgICAoc2V0IHN5bWJvbCB2
+YWx1ZSkpCiAgOmdyb3VwICd5YW9kZG11c2UpCgooZGVmY3VzdG9tIHlhb2RkbXVzZS1wYXNzd29y
+ZCAiIgogICJQYXNzd29yZCB0byB1c2Ugd2hlbiBwb3N0aW5nLgpZb3Ugb25seSBuZWVkIHRoaXMg
+aWYgeW91IHdhbnQgdG8gZWRpdCBsb2NrZWQgcGFnZXMgYW5kIHlvdQprbm93IGFuIGFkbWluaXN0
+cmF0b3IgcGFzc3dvcmQuIgogIDp0eXBlICdzdHJpbmcKICA6Z3JvdXAgJ3lhb2RkbXVzZSkKCihk
+ZWZjdXN0b20geWFvZGRtdXNlLXRyYW5zZm9ybS1pbWFnZSB0CiAgIldoZXRoZXIgdHJhbnNmb3Jt
+IGltYWdlIGNvbnRlbnQuCklmIG5vbi1uaWwsIHdpbGwgdHJhbnNmb3JtIGltYWdlIGNvbnRlbnQg
+YW5kIHZpZXcgaXQuCk90aGVyd2lzZSwgZG9uJ3QgdHJhbnNmb3JtIGltYWdlIGNvbnRlbnQuCkRl
+ZmF1bHQgaXMgdC4iCiAgOnR5cGUgJ2Jvb2xlYW4KICA6Z3JvdXAgJ3lhb2RkbXVzZSkKCihkZWZj
+dXN0b20geWFvZGRtdXNlLWRpc3BsYXktYWZ0ZXItZ2V0IHQKICAiV2hldGhlciBkaXNwbGF5IGB5
+YW9kZG11c2UtbW9kZScgYnVmZmVyIGFmdGVyIEdFVC4KTm9uLW5pbCBtZWFuIGRpc3BsYXkuCk5p
+bCBtZWFuIGRvbid0IGRpc3BsYXkuCkRlZmF1bHQgaXMgdC4iCiAgOnR5cGUgJ2Jvb2xlYW4KICA6
+Z3JvdXAgJ3lhb2RkbXVzZSkKCihkZWZjdXN0b20geWFvZGRtdXNlLWNsb3NlLWFmdGVyLXBvc3Qg
+bmlsCiAgIldoZXRoZXIgY2xvc2UgYHlhb2RkbXVzZS1tb2RlJyBidWZmZXIgYWZ0ZXIgUE9TVC4K
+Tm9uLW5pbCBtZWFuIGNsb3NlLgpOaWwgbWVhbiBkb24ndCBjbG9zZS4KRGVmYXVsdCBpcyB0LiIK
+ICA6dHlwZSAnYm9vbGVhbgogIDpncm91cCAneWFvZGRtdXNlKQoKKGRlZmN1c3RvbSB5YW9kZG11
+c2UtcG9zdC1kaXJlZC1jb25maXJtIHQKICAiV2hldGhlciBjb25maXJtYXRpb24gaXMgbmVlZGVk
+IHRvIHBvc3QgbWFyayBkaXJlZCBmaWxlcy4KTmlsIG1lYW5zIG5vIGNvbmZpcm1hdGlvbiBpcyBu
+ZWVkZWQuCklmIG5vbi1uaWwsIHdpbGwgbm90aWZ5IHlvdSBiZWZvcmUgcG9zdCBkaXJlZCBtYXJr
+IGZpbGVzLiIKICA6dHlwZSAnYm9vbGVhbgogIDpncm91cCAneWFvZGRtdXNlKQoKKGRlZmN1c3Rv
+bSB5YW9kZG11c2UtZWRpdC1wcm90ZWN0IHQKICAiVGhpcyBvcHRpb24gaXMgbWFrZSB1c2VyIGNh
+biBwb3N0IHdpa2kgcGFnZSB3aXRob3V0IHRleHQgY2FwdGNoYS4KU29tZSB3aWtpcywgc3VjaCBh
+cyBFbWFjc1dpa2ksIHVzZSBhIHRleHQgY2FwdGNoYQp0byBwcm90ZWN0IHBhZ2VzIGZyb20gYmVp
+bmcgZWRpdGVkLgpTbyBpZiB5b3UgZWRpdCB3aWtpIChzdWNoIGFzIEVtYWNzV2lraSksCnBsZWFz
+ZSBtYWtlIHN1cmUgdGhpcyBvcHRpb24gaXMgYG5vbi1uaWwnLiIKICA6dHlwZSAnYm9vbGVhbgog
+IDpncm91cCAneWFvZGRtdXNlKQoKKGRlZmN1c3RvbSB5YW9kZG11c2UtdXNlLWFsd2F5cy1taW5v
+ciBuaWwKICAiV2hlbiB0LCBzZXQgYWxsIHRoZSBtaW5vciBtb2RlIGJpdCB0byBhbGwgZWRpdGlv
+bnMuClRoaXMgY2FuIGJlIGNoYW5nZWQgZm9yIGVhY2ggZWRpdGlvbiB1c2luZyBgeWFvZGRtdXNl
+LXRvZ2dsZS1taW5vcicuIgogIDp0eXBlICdib29sZWFuCiAgOmdyb3VwICd5YW9kZG11c2UpCgoo
+ZGVmY3VzdG9tIHlhb2RkbXVzZS1icm93c2UtZnVuY3Rpb24gJ2Jyb3dzZS11cmwKICAiVGhlIGJy
+b3dzZSBmdW5jdGlvbiB1c2UgaW4gYHlhb2RkbXVzZS1oYW5kbGUtYnJvd3NlJy4KRGVmYXVsdCBp
+cyBmdW5jdGlvbiBgYnJvd3NlLXVybCcuIgogIDp0eXBlICdmdW5jdGlvbgogIDpncm91cCAneWFv
+ZGRtdXNlKQoKKGRlZmN1c3RvbSB5YW9kZG11c2Utbm90aWZ5LWZ1bmN0aW9uICd5YW9kZG11c2Ut
+bm90aWZ5LWRlZmF1bHQKICAiTm90aWZ5IGZ1bmN0aW9uIGZvciBnZXR0aW5nIGFuZCBwb3N0aW5n
+LgpJdCBhY2NlcHRzIG9uZSBhcmd1bWVudCwgdGhlIHN0cmluZyB0byBub3RpZnkuIgogIDp0eXBl
+ICdmdW5jdGlvbgogIDpncm91cCAneWFvZGRtdXNlKQoKKGRlZmN1c3RvbSB5YW9kZG11c2UtaGln
+aGxpZ2h0LWVsaXNwLXBhZ2UgdAogICJXaGV0aGVyIHVzZSBzeW50YXggaGlnaGxpZ2h0IGVsaXNw
+IHBhZ2UuCkRlZmF1bHQgaXMgdC4iCiAgOnR5cGUgJ2Jvb2xlYW4KICA6Z3JvdXAgJ3lhb2RkbXVz
+ZSkKCihkZWZjdXN0b20geWFvZGRtdXNlLXNjcmVlbnNob3QtcHJvZ3JhbSAiaW1wb3J0IgogICJU
+aGUgZGVmYXVsdCB0b29sIGZvciBzY3JlZW5zaG90LiIKICA6dHlwZSAnc3RyaW5nCiAgOmdyb3Vw
+ICd5YW9kZG11c2UpCgooZGVmY3VzdG9tIHlhb2RkbXVzZS1zY3JlZW5zaG90LWZpbGVuYW1lICIv
+dG1wL3lhb2RkbXVzZS1zY3JlZW5zaG90LnBuZyIKICAiVGhlIGRlZmF1bHQgZmlsZSBmb3Igc2F2
+ZSBzY3JlZW5zaG90LiIKICA6dHlwZSAnc3RyaW5nCiAgOmdyb3VwICd5YW9kZG11c2UpCgo7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsgRmFjZXMgOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7CihkZWZmYWNlIHlhb2RkbXVzZS10YWcKICAnKCh0ICg6aW5oZXJpdCAnZm9udC1sb2Nr
+LXByZXByb2Nlc3Nvci1mYWNlKSkKICAgICgoKGJhY2tncm91bmQgZGFyaykpICg6Zm9yZWdyb3Vu
+ZCAiR29sZCIpKSkKICAiSGlnaGxpZ2h0IHRhZy4iCiAgOmdyb3VwICd5YW9kZG11c2UpCgooZGVm
+ZmFjZSB5YW9kZG11c2UtbGluawogICcoKCgoYmFja2dyb3VuZCBkYXJrKSkgKDpmb3JlZ3JvdW5k
+ICJLaGFraSIpKQogICAgKHQgKDppbmhlcml0ICdsaW5rKSkpCiAgIkhpZ2hsaWdodCBsaW5rLiIK
+ICA6Z3JvdXAgJ3lhb2RkbXVzZSkKCihkZWZmYWNlIHlhb2RkbXVzZS11cmwKICAnKCgoKGJhY2tn
+cm91bmQgZGFyaykpICg6Zm9yZWdyb3VuZCAiR3JleTIwIikpCiAgICAodCAoOmluaGVyaXQgJ2xp
+bmsgOmZvcmVncm91bmQgdW5zcGVjaWZpZWQgOnVuZGVybGluZSBuaWwpKSkKICAiSGlnaGxpZ2h0
+IGxpbmsuIgogIDpncm91cCAneWFvZGRtdXNlKQoKKGRlZmZhY2UgeWFvZGRtdXNlLXVybC1uYW1l
+CiAgJygodCAoOmZvcmVncm91bmQgIk9yYW5nZSIpKSkKICAiSGlnaGxpZ2h0IGxpbmsuIgogIDpn
+cm91cCAneWFvZGRtdXNlKQoKKGRlZmZhY2UgeWFvZGRtdXNlLWRpYWxvZwogICcoKHQgKDpmb3Jl
+Z3JvdW5kICJQZXJ1IikpKQogICJIaWdobGlnaHQgZGlhbG9nLiIKICA6Z3JvdXAgJ3lhb2RkbXVz
+ZSkKCihkZWZmYWNlIHlhb2RkbXVzZS1saXNwLWtleXdvcmQKICAnKCh0ICg6Zm9yZWdyb3VuZCAi
+UGFsZUdyZWVuIikpKQogICJIaWdobGlnaHQgbGlzcCBrZXl3b3JkIGBMaXNwOicuIgogIDpncm91
+cCAneWFvZGRtdXNlKQoKKGRlZmZhY2UgeWFvZGRtdXNlLWxpc3AtZmlsZQogICcoKHQgKDpmb3Jl
+Z3JvdW5kICJHcmVlblllbGxvdyIpKSkKICAiSGlnaGxpZ2h0IGxpc3AgZmlsZS4iCiAgOmdyb3Vw
+ICd5YW9kZG11c2UpCgooZGVmZmFjZSB5YW9kZG11c2Utc291cmNlLWNvZGUKICAnKCh0ICg6aW5o
+ZXJpdCAnZml4ZWQtcGl0Y2gpKQogICAgKCgoYmFja2dyb3VuZCBkYXJrKSkgKDpmb3JlZ3JvdW5k
+ICJZZWxsb3ciKSkpCiAgIkhpZ2hsaWdodCBzb3VyY2UtY29kZS4iCiAgOmdyb3VwICd5YW9kZG11
+c2UpCgooZGVmZmFjZSB5YW9kZG11c2UtaW1hZ2UtbGluawogICcoKHQgKDpmb3JlZ3JvdW5kICJE
+YXJrUmVkIikpKQogICJIaWdobGlnaHQgaW1hZ2UtbGluay4iCiAgOmdyb3VwICd5YW9kZG11c2Up
+CgooZGVmZmFjZSB5YW9kZG11c2UtaW1hZ2UtbGluay1uYW1lCiAgJygodCAoOmZvcmVncm91bmQg
+IkNob2NvbGF0ZSIpKSkKICAiSGlnaGxpZ2h0IGltYWdlLWxpbmsgbmFtZS4iCiAgOmdyb3VwICd5
+YW9kZG11c2UpCgooZGVmZmFjZSB5YW9kZG11c2UtaGVhZGluZwogICcoKHQgKDpmb3JlZ3JvdW5k
+ICJHcmVlbiIpKSkKICAiSGlnaGxpZ2h0IGhlYWRpbmcuIgogIDpncm91cCAneWFvZGRtdXNlKQoK
+KGRlZmZhY2UgeWFvZGRtdXNlLXRhYmxlcwogICcoKHQgKDpmb3JlZ3JvdW5kICJBcXVhbWFyaW5l
+IikpKQogICJIaWdobGlnaHQgdGFibGVzLiIKICA6Z3JvdXAgJ3lhb2RkbXVzZSkKCihkZWZmYWNl
+IHlhb2RkbXVzZS1pbmRlbnQKICAnKCh0ICg6Zm9yZWdyb3VuZCAiVG9tYXRvIikpKQogICJIaWdo
+bGlnaHQgaW5kZW50LiIKICA6Z3JvdXAgJ3lhb2RkbXVzZSkKCihkZWZmYWNlIHlhb2RkbXVzZS1i
+b2xkCiAgJygodCAoOmZvcmVncm91bmQgIkRvZGdlckJsdWUiKSkpCiAgIkhpZ2hsaWdodCBib2xk
+LiIKICA6Z3JvdXAgJ3lhb2RkbXVzZSkKCihkZWZmYWNlIHlhb2RkbXVzZS11bmRlcmxpbmUKICAn
+KCh0ICg6Zm9yZWdyb3VuZCAiUHVycGxlIikpKQogICJIaWdobGlnaHQgdW5kZXJsaW5lLiIKICA6
+Z3JvdXAgJ3lhb2RkbXVzZSkKCihkZWZmYWNlIHlhb2RkbXVzZS1pdGFsaWMKICAnKCh0ICg6Zm9y
+ZWdyb3VuZCAiQnJvd24iKSkpCiAgIkhpZ2hsaWdodCBpdGFsaWMuIgogIDpncm91cCAneWFvZGRt
+dXNlKQoKKGRlZmZhY2UgeWFvZGRtdXNlLXNob3J0LWRhc2gKICAnKCh0ICg6Zm9yZWdyb3VuZCAi
+UGluazIiKSkpCiAgIkhpZ2hsaWdodCBzaG9ydCBkYXNoLiIKICA6Z3JvdXAgJ3lhb2RkbXVzZSkK
+CihkZWZmYWNlIHlhb2RkbXVzZS1sb25nLWRhc2gKICAnKCh0ICg6Zm9yZWdyb3VuZCAiTGF3bkdy
+ZWVuIikpKQogICJIaWdobGlnaHQgbG9uZyBkYXNoLiIKICA6Z3JvdXAgJ3lhb2RkbXVzZSkKCihk
+ZWZmYWNlIHlhb2RkbXVzZS1zZXBhcmF0ZQogICcoKHQgKDpmb3JlZ3JvdW5kICJEYXJrUmVkIikp
+KQogICJIaWdobGlnaHQgc2VwYXJhdGUuIgogIDpncm91cCAneWFvZGRtdXNlKQoKKGRlZmZhY2Ug
+eWFvZGRtdXNlLWxldmVsLTEKICAnKCh0ICg6Zm9yZWdyb3VuZCAiR3JleTEwMCIpKSkKICAiSGln
+aGxpZ2h0IGluZGVudCBsZXZlbCAxLiIKICA6Z3JvdXAgJ3lhb2RkbXVzZSkKCihkZWZmYWNlIHlh
+b2RkbXVzZS1sZXZlbC0yCiAgJygodCAoOmZvcmVncm91bmQgIkdyZXk3MCIpKSkKICAiSGlnaGxp
+Z2h0IGluZGVudCBsZXZlbCAyLiIKICA6Z3JvdXAgJ3lhb2RkbXVzZSkKCihkZWZmYWNlIHlhb2Rk
+bXVzZS1sZXZlbC0zCiAgJygodCAoOmZvcmVncm91bmQgIkdyZXk0MCIpKSkKICAiSGlnaGxpZ2h0
+IGluZGVudCBsZXZlbCAzLiIKICA6Z3JvdXAgJ3lhb2RkbXVzZSkKCihkZWZmYWNlIHlhb2RkbXVz
+ZS1uZXctcGFnZQogICcoKHQgKDpmb3JlZ3JvdW5kICJSZWQiIDpib2xkIHQpKSkKICAiV2Fybmlu
+ZyBuZXcgcGFnZS4iCiAgOmdyb3VwICd5YW9kZG11c2UpCgooZGVmZmFjZSB5YW9kZG11c2UtZWRp
+dC1zdGF0dXMtZmFjZQogICcoKCgoY2xhc3MgY29sb3IpIChiYWNrZ3JvdW5kIGRhcmspKQogICAg
+ICg6Zm9yZWdyb3VuZCAiR29sZCIpKSkKICAiRmFjZSBmb3IgaGlnaGxpZ2h0aW5nIHlhb2RkbXVz
+ZSBlZGl0IHN0YXR1cy4iCiAgOmdyb3VwICd5YW9kZG11c2UpCgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
+Ozs7Ozs7Ozs7OzsgVmFyaWFibGUgOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7CihkZWZ2
+YXIgeWFvZGRtdXNlLXdpa2luYW1lIG5pbAogICJUaGUgY3VycmVudCB3aWtpLgpNdXN0IG1hdGNo
+IGEga2V5IGZyb20gYHlhb2RkbXVzZS13aWtpcycuIikKKG1ha2UtdmFyaWFibGUtYnVmZmVyLWxv
+Y2FsICd5YW9kZG11c2Utd2lraW5hbWUpCgooZGVmdmFyIHlhb2RkbXVzZS1wYWdlbmFtZSBuaWwK
+ICAiUGFnZSBuYW1lIG9mIHRoZSBjdXJyZW50IGJ1ZmZlci4iKQoobWFrZS12YXJpYWJsZS1idWZm
+ZXItbG9jYWwgJ3lhb2RkbXVzZS1wYWdlbmFtZSkKCihkZWZ2YXIgeWFvZGRtdXNlLW1pbm9yIG5p
+bAogICJJcyB0aGlzIGVkaXRpbmcgYSBtaW5vciBjaGFuZ2UuIikKKG1ha2UtdmFyaWFibGUtYnVm
+ZmVyLWxvY2FsICd5YW9kZG11c2UtbWlub3IpCgooZGVmdmFyIHlhb2RkbXVzZS1lZGl0LXN0YXR1
+cy1zdHJpbmcgbmlsCiAgIlRoZSBlZGl0IHN0YXR1cyBhdCBtb2RlLWxpbmUuIikKKG1ha2UtdmFy
+aWFibGUtYnVmZmVyLWxvY2FsICd5YW9kZG11c2UtZWRpdC1zdGF0dXMpCgooZGVmdmFyIHlhb2Rk
+bXVzZS1yZXRyaWV2ZS1idWZmZXIgbmlsCiAgIlRoZSBkb3dubG9hZCBidWZmZXIgdXNlZCBieSBg
+dXJsLXJldHJpZXZlJy4iKQoobWFrZS12YXJpYWJsZS1idWZmZXItbG9jYWwgJ3lhb2RkbXVzZS1y
+ZXRyaWV2ZS1idWZmZXIpCgooZGVmdmFyIHlhb2RkbXVzZS1pbWFnZS1zdGF0dXMgbmlsCiAgIlRo
+ZSBzdGF0dXMgb2YgY3VycmVudCBwYWdlLgpUaGlzIHN0YXR1cyB3aWxsIHR1cm4gb24gd2hlbiB0
+cmFuc2Zvcm0gaW1hZ2UgY29udGVudC4KRGVmYXVsdCBpcyBuaWwuIikKKG1ha2UtdmFyaWFibGUt
+YnVmZmVyLWxvY2FsICd5YW9kZG11c2UtaW1hZ2Utc3RhdHVzKQoKKGRlZnZhciB5YW9kZG11c2Ut
+cGFnZXMtaGFzaCAobWFrZS1oYXNoLXRhYmxlIDp0ZXN0ICdlcXVhbCkKICAiVGhlIHdpa2ktbmFt
+ZSAvIHBhZ2VzIHBhaXJzLiIpCgooZGVmdmFyIHlhb2RkbXVzZS1sYXN0LXN1bW1hcnkgbmlsCiAg
+IlRoZSBsYXN0IHN1bW1hcnkgZm9yIGlucHV0LiIpCgooZGVmdmFyIHlhb2RkbXVzZS1hcmdzLWdl
+dAogICJhY3Rpb249YnJvd3NlO3Jhdz0xO2lkPSV0IgogICJDb21tYW5kIHRvIHVzZSBmb3IgcHVi
+bGlzaGluZyBwYWdlcy4KSXQgbXVzdCBwcmludCB0aGUgcGFnZSB0byBzdGRvdXQuCgoldCAgVVJM
+IGVuY29kZWQgcGFnZW5hbWUsIGVnLiBIb3dUbywgSG93X1RvLCBvciBIb3clMjBUbyIpCgooZGVm
+dmFyIHlhb2RkbXVzZS1hcmdzLWluZGV4CiAgImFjdGlvbj1pbmRleDtyYXc9MSIKICAiVVJMIGFy
+Z3VtZW50cyB0byB1c2UgZm9yIHB1Ymxpc2hpbmcgaW5kZXggcGFnZXMuIikKCihkZWZ2YXIgeWFv
+ZGRtdXNlLWFyZ3MtcG9zdAogIChjb25jYXQgInRpdGxlPSV0OyIKICAgICAgICAgICJzdW1tYXJ5
+PSVzOyIKICAgICAgICAgICJ1c2VybmFtZT0ldTsiCiAgICAgICAgICAicHdkPSVwOyIKICAgICAg
+ICAgICJyZWNlbnRfZWRpdD0lbTsiCiAgICAgICAgICAidGV4dD0leCIpCiAgIlVSTCBhcmd1bWVu
+dHMgdG8gdXNlIGZvciBwdWJsaXNoaW5nIHBhZ2VzLgoKJXQgIHBhZ2VuYW1lCiVzICBzdW1tYXJ5
+CiV1ICB1c2VybmFtZQolcCAgcGFzc3dvcmQKJXggIHRleHQiKQoKKGRlZnZhciB5YW9kZG11c2Ut
+cG9zdC1taW1lLWFsaXN0CiAgJygoIi5jc3MiIC4gInRleHQvY3NzIikKICAgICgiLnhtbCIgLiAi
+dGV4dC94bWwiKQogICAgKCIudGFyIiAuICJhcHBsaWNhdGlvbi94LXRhciIpCiAgICAoIi50YXIu
+Z3oiIC4gImFwcGxpY2F0aW9uL3gtZ3ppcCIpCiAgICAoIi5nemlwIiAuICJhcHBsaWNhdGlvbi94
+LWd6aXAtY29tcHJlc3NlZCIpCiAgICAoIi56aXAiIC4gImFwcGxpY2F0aW9uL3gtemlwLWNvbXBy
+ZXNzZWQiKQogICAgKCIuanBlZyIgLiAiaW1hZ2UvanBlZyIpCiAgICAoIi5wbmciICAuICJpbWFn
+ZS9wbmciKSkKICAiQW4gYWxpc3Qgb2YgZmlsZSBleHRlbnNpb25zIGFuZCBjb3JyZXNwb25kaW5n
+IE1JTUUgY29udGVudC10eXBlcy4iKQoKKGRlZnZhciB5YW9kZG11c2UtaW1lbnUtcmVnZXhwICJe
+XFwoPStcXClcXHMtKlxcKC4qP1xcKVxccy0qXFwxIgogICJBIHJlZ3VsYXIgZXhwcmVzc2lvbiBm
+b3IgaGVhZGluZ3MgdG8gYmUgYWRkZWQgdG8gYW4gaW5kZXggbWVudS4iKQoKCihkZWZ2YXIgeWFv
+ZGRtdXNlLW1vZGUtbWFwCiAgKGxldCAoKG1hcCAobWFrZS1zcGFyc2Uta2V5bWFwKSkpCiAgICA7
+OyBFZGl0LgogICAgKGRlZmluZS1rZXkgbWFwIChrYmQgIkMtYyBDLWUiKSAneWFvZGRtdXNlLWVk
+aXQtZGVmYXVsdCkKICAgIChkZWZpbmUta2V5IG1hcCAoa2JkICJDLWMgQy1TLWUiKSAneWFvZGRt
+dXNlLWVkaXQpCiAgICAoZGVmaW5lLWtleSBtYXAgKGtiZCAiQy1jIEMtbyIpICd5YW9kZG11c2Ut
+Zm9sbG93KQogICAgKGRlZmluZS1rZXkgbWFwIChrYmQgIkMtYyBDLXQiKSAnc2dtbC10YWcpCiAg
+ICA7OyBQb3N0LgogICAgKGRlZmluZS1rZXkgbWFwIChrYmQgIkMtYyBDLWMiKSAneWFvZGRtdXNl
+LXBvc3QtY3VycmVudC1idWZmZXIpCiAgICAoZGVmaW5lLWtleSBtYXAgKGtiZCAiQy1jIEMtUy1j
+IikgJ3lhb2RkbXVzZS1wb3N0LWJ1ZmZlcikKICAgIChkZWZpbmUta2V5IG1hcCAoa2JkICJDLWMg
+Qy1sIikgJ3lhb2RkbXVzZS1wb3N0LWxpYnJhcnktZGVmYXVsdCkKICAgIChkZWZpbmUta2V5IG1h
+cCAoa2JkICJDLWMgQy1TLWwiKSAneWFvZGRtdXNlLXBvc3QtbGlicmFyeSkKICAgIChkZWZpbmUt
+a2V5IG1hcCAoa2JkICJDLWMgQy1mIikgJ3lhb2RkbXVzZS1wb3N0LWZpbGUpCiAgICAoZGVmaW5l
+LWtleSBtYXAgKGtiZCAiQy1jIEMtUy1mIikgJ3lhb2RkbXVzZS1wb3N0LWZpbGUtZGVmYXVsdCkK
+ICAgIChkZWZpbmUta2V5IG1hcCAoa2JkICJDLWMgQy15IikgJ3lhb2RkbXVzZS1wb3N0LXNjcmVl
+bnNob3QpCiAgICAoZGVmaW5lLWtleSBtYXAgKGtiZCAiQy1jIEMtUy15IikgJ3lhb2RkbXVzZS1w
+b3N0LXNjcmVlbnNob3QtZGVmYXVsdCkKICAgIDs7IFZpZXcuCiAgICAoZGVmaW5lLWtleSBtYXAg
+KGtiZCAiQy1jIEMtdiIpICd5YW9kZG11c2UtYnJvd3NlLXBhZ2UtZGVmYXVsdCkKICAgIChkZWZp
+bmUta2V5IG1hcCAoa2JkICJDLWMgQy1TLXYiKSAneWFvZGRtdXNlLWJyb3dzZS1wYWdlKQogICAg
+KGRlZmluZS1rZXkgbWFwIChrYmQgIkMtYyBDLSciKSAneWFvZGRtdXNlLWJyb3dzZS1wYWdlLWRl
+ZmF1bHQtZGlmZikKICAgIChkZWZpbmUta2V5IG1hcCAoa2JkICJDLWMgQy1TLSciKSAneWFvZGRt
+dXNlLWJyb3dzZS1wYWdlLWRpZmYpCiAgICAoZGVmaW5lLWtleSBtYXAgKGtiZCAiQy1jIEMtcyIp
+ICd5YW9kZG11c2UtYnJvd3NlLWN1cnJlbnQtcGFnZSkKICAgIChkZWZpbmUta2V5IG1hcCAoa2Jk
+ICJDLWMgQy1yIikgJ3lhb2RkbXVzZS1yZXZlcnQpCiAgICA7OyBOYXZpZ2F0aW9uLgogICAgKGRl
+ZmluZS1rZXkgbWFwIChrYmQgIkMtYyBDLW4iKSAneWFvZGRtdXNlLW5hdmktbmV4dC1oZWFkaW5n
+KQogICAgKGRlZmluZS1rZXkgbWFwIChrYmQgIkMtYyBDLXAiKSAneWFvZGRtdXNlLW5hdmktcHJl
+di1oZWFkaW5nKQogICAgOzsgVXBkYXRlLgogICAgKGRlZmluZS1rZXkgbWFwIChrYmQgIkMtYyBD
+LWoiKSAneWFvZGRtdXNlLXVwZGF0ZS1wYWdlbmFtZSkKICAgIDs7IEluc2VydC4KICAgIChkZWZp
+bmUta2V5IG1hcCAoa2JkICJDLWMgQy1pIikgJ3lhb2RkbXVzZS1pbnNlcnQtcGFnZW5hbWUpCiAg
+ICAoZGVmaW5lLWtleSBtYXAgKGtiZCAiQy1jIEMteCIpICd5YW9kZG11c2UtaW5zZXJ0LWZpbGUt
+Y29udGVudCkKICAgIDs7IE1pc2MuCiAgICAoZGVmaW5lLWtleSBtYXAgKGtiZCAiQy1jIEMtdSIp
+ICd5YW9kZG11c2Uta2lsbC11cmwpCiAgICAoZGVmaW5lLWtleSBtYXAgKGtiZCAiQy1jIEMtbSIp
+IGB5YW9kZG11c2UtdG9nZ2xlLW1pbm9yKQogICAgKGRlZmluZS1rZXkgbWFwIChrYmQgIkMtYyBD
+LWQiKSAneWFvZGRtdXNlLWRlbGV0ZSkKICAgIChkZWZpbmUta2V5IG1hcCAoa2JkICJDLWMgQy1T
+LUQiKSAneWFvZGRtdXNlLXJlZGlyZWN0KQogICAgKGRlZmluZS1rZXkgbWFwIChrYmQgIkMtYyBD
+LVMtdCIpICd5YW9kZG11c2UtdG9nZ2xlLWltYWdlLXN0YXR1cykKICAgIChkZWZpbmUta2V5IG1h
+cCAoa2JkICJDLWMgQy13IikgJ3lhb2RkbXVzZS1zYXZlLWFzKQogICAgbWFwKQogICJLZXltYXAg
+dXNlZCBieSBgeWFvZGRtdXNlLW1vZGUnLiIpCgooZGVmdW4geWFvZGRtdXNlLWhpZ2hsaWdodC1r
+ZXl3b3JkcyAoKQogICJIaWdobGlnaHQga2V5d29yZHMuIgogIChmb250LWxvY2stYWRkLWtleXdv
+cmRzCiAgIG5pbAogICAnKCgiXFxgVGhpcyBwYWdlIGRvZXMgbm90IGV4aXN0LiokIiAuICd5YW9k
+ZG11c2UtbmV3LXBhZ2UpCiAgICAgKCI8XFwoLz9bYS16XStcXCk+IiAuICd5YW9kZG11c2UtdGFn
+KQogICAgICgiXj1cXHsyLFxcfVxcKFtePV0rXFwpPVxcezIsXFx9IiAxICd5YW9kZG11c2UtaGVh
+ZGluZykKICAgICAoIlxcW1xcW1xcKGltYWdlOlxcKVxcKFxcKFteXFxbXVxcfFteXFxdXVxcKStc
+XClcXF1cXF0iIDEgJ3lhb2RkbXVzZS1pbWFnZS1saW5rKQogICAgICgiXFxbXFxbXFwoaW1hZ2U6
+XFwpXFwoXFwoW15cXFtdXFx8W15cXF1dXFwpK1xcKVxcXVxcXSIgMiAneWFvZGRtdXNlLWltYWdl
+LWxpbmstbmFtZSkKICAgICAoIlxcW1xcKFxcKFteXFxbWzpibGFuazpdXVxcfFteXFxdWzpibGFu
+azpdXVxcKStcXClbWzpibGFuazpdXVxcKFxcKFteXFxbXVxcfFteXFxdXVxcKStcXClcXF0iIDEg
+J3lhb2RkbXVzZS11cmwpCiAgICAgKCJcXFtcXChcXChbXlxcW1s6Ymxhbms6XV1cXHxbXlxcXVs6
+Ymxhbms6XV1cXCkrXFwpW1s6Ymxhbms6XV1cXChcXChbXlxcW11cXHxbXlxcXV1cXCkrXFwpXFxd
+IiAzICd5YW9kZG11c2UtdXJsLW5hbWUpCiAgICAgOzsgKCJcXFtcXChcXChbXlxcW11cXHxbXlxc
+XV1cXCkrXFwpW1s6Ymxhbms6XV1cXChcXChbXlxcW11cXHxbXlxcXV1cXCkrXFwpXFxdIiAxICd5
+YW9kZG11c2UtdXJsKQogICAgIDs7ICgiXFxbXFwoXFwoW15cXFtdXFx8W15cXF1dXFwpK1xcKVtb
+OmJsYW5rOl1dXFwoXFwoW15cXFtdXFx8W15cXF1dXFwpK1xcKVxcXSIgMyAneWFvZGRtdXNlLXVy
+bC1uYW1lKSAgICAgCiAgICAgKCJcXDxbQS1aXHhjMC1ceGRlw4DDiMOMw5LDmcOBw4nDjcOTw5rD
+lsOcXStbw6DDqMOsw7LDucOhw6nDrcOzw7rDvMO2YS16XHhkZi1ceGZmXStcXChbw4DDiMOMw5LD
+mcOBw4nDjcOTw5rDlsOcQS1aXHhjMC1ceGRlXStbw6DDqMOsw7LDucOhw6nDrcOzw7rDvMO2YS16
+XHhkZi1ceGZmXSpcXCkrXFw+IiAuICd5YW9kZG11c2UtbGluaykKICAgICAoIlxcW1xcW1xcKFxc
+KFteXFxbXVxcfFteXFxdXVxcKStcXClcXF1cXF0iIDEgJ3lhb2RkbXVzZS1saW5rKQogICAgICgi
+XFxiXFwoTGlzcDpcXClcXChbXiBdK1xcLmVsXFwpXFxiIiAxICd5YW9kZG11c2UtbGlzcC1rZXl3
+b3JkKQogICAgICgiXFxiXFwoTGlzcDpcXClcXChbXiBdK1xcLmVsXFwpXFxiIiAyICd5YW9kZG11
+c2UtbGlzcC1maWxlKQogICAgICgiXlxcKHt7e1xcfH19fVxcfDs7O1xcKVxccy0iIDEgJ3lhb2Rk
+bXVzZS1zb3VyY2UtY29kZSkKICAgICAoIl5cXFtuZXc6P1xcKFteXFxbXVxcfFteXFxdXVxcKSpc
+XF0kIiAuICd5YW9kZG11c2UtZGlhbG9nKQogICAgICgifFxcezIsXFx9IiAuICd5YW9kZG11c2Ut
+dGFibGVzKQogICAgICgiXlxcKFs6XStcXClcXHMtIiAxICd5YW9kZG11c2UtaW5kZW50KQogICAg
+ICgiXFxzLVxcKC0tXFwpXFxzLSIgLiAneWFvZGRtdXNlLXNob3J0LWRhc2gpCiAgICAgKCJcXHMt
+XFwoLS0tXFwpXFxzLSIgLiAneWFvZGRtdXNlLWxvbmctZGFzaCkKICAgICAoIl4tLS0tJCIgLiAn
+eWFvZGRtdXNlLXNlcGFyYXRlKQogICAgICgiJydcXChbXiddK1xcKScnIiAxICd5YW9kZG11c2Ut
+Ym9sZCkKICAgICAoIlteXlxuXFwqXVtcXCpdK1xcKFteXFwqXStcXClbXFwqXSsiIDEgJ3lhb2Rk
+bXVzZS1ib2xkKQogICAgICgiXFxzLS8rXFwoW14vXStcXCkvK1xccy0iIDEgJ3lhb2RkbXVzZS1p
+dGFsaWMpCiAgICAgKCJcXHMtXytcXChbXl9dK1xcKV8rXFxzLSIgMSAneWFvZGRtdXNlLXVuZGVy
+bGluZSkKICAgICAoIl5cXChcXChbKiNdXFwpXFx7MVxcfVxcKVxccy0iIDEgJ3lhb2RkbXVzZS1s
+ZXZlbC0xKQogICAgICgiXlxcKFxcKFsqI11cXClcXHsyXFx9XFwpXFxzLSIgMSAneWFvZGRtdXNl
+LWxldmVsLTIpCiAgICAgKCJeXFwoXFwoWyojXVxcKVxcezNcXH1cXClcXHMtIiAxICd5YW9kZG11
+c2UtbGV2ZWwtMykKICAgICApKQogIChmb250LWxvY2stbW9kZSAxKSkKCihkZWZpbmUtZGVyaXZl
+ZC1tb2RlIHlhb2RkbXVzZS1tb2RlIHRleHQtbW9kZSAiWWFvZGRtdXNlIgogICJZZXQgYW5vdGhl
+ciBtb2RlIHRvIGVkaXQgT2RkbXVzZSB3aWtpIHBhZ2VzLiIKICA7OyBGYWNlIHNldHVwLgogICh5
+YW9kZG11c2UtaGlnaGxpZ2h0LWtleXdvcmRzKQogIDs7IExvY2FsIHZhcmlhYmxlIHNldHVwLgog
+IChzZXQgKG1ha2UtbG9jYWwtdmFyaWFibGUgJ3NnbWwtdGFnLWFsaXN0KQogICAgICAgYCgoImIi
+KSAoImNvZGUiKSAoImVtIikgKCJpIikgKCJzdHJvbmciKSAoIm5vd2lraSIpCiAgICAgICAgICgi
+cHJlIiBcbikgKCJ0dCIpICgidSIpKSkKICAoc2V0IChtYWtlLWxvY2FsLXZhcmlhYmxlICdza2Vs
+ZXRvbi10cmFuc2Zvcm1hdGlvbikgJ2lkZW50aXR5KQogIDs7IFdpa2kgYW5kIHBhZ2UgbmFtZSBz
+ZXR1cC4KICAoc2V0cSBpbWVudS1nZW5lcmljLWV4cHJlc3Npb24gKGxpc3QgKGxpc3QgbmlsIHlh
+b2RkbXVzZS1pbWVudS1yZWdleHAgMikpKQogIChhbmQgYnVmZmVyLWZpbGUtbmFtZQogICAgICAg
+OzsgU2V0dXAgd2lraSBuYW1lLgogICAgICAgKHNldHEgeWFvZGRtdXNlLXdpa2luYW1lCiAgICAg
+ICAgICAgICAoZmlsZS1uYW1lLW5vbmRpcmVjdG9yeQogICAgICAgICAgICAgIChzdWJzdHJpbmcg
+KGZpbGUtbmFtZS1kaXJlY3RvcnkgYnVmZmVyLWZpbGUtbmFtZSkgMCAtMSkpKQogICAgICAgOzsg
+U2V0dXAgcGFnZSBuYW1lLgogICAgICAgKHNldHEgeWFvZGRtdXNlLXBhZ2VuYW1lCiAgICAgICAg
+ICAgICAoZmlsZS1uYW1lLW5vbmRpcmVjdG9yeSBidWZmZXItZmlsZS1uYW1lKSkKICAgICAgIDs7
+IEluaXRpYWxpemUgb2RkbXVzZS1taW5vciBhY2NvcmRpbmcgdG8gYHlhb2RkbXVzZS11c2UtYWx3
+YXlzLW1pbm9yJwogICAgICAgKHNldHEgeWFvZGRtdXNlLW1pbm9yCiAgICAgICAgICAgICB5YW9k
+ZG11c2UtdXNlLWFsd2F5cy1taW5vcikpCiAgOzsgTG9hZCBlbWFjcy1saXNwLW1vZGUgc3ludGF4
+IGhpZ2hsaWdodCwKICA7OyBpZiBvcHRpb24gYHlhb2RkbXVzZS1oaWdobGlnaHQtZWxpc3AtcGFn
+ZScgaXMgdHVybiBvbgogIDs7IGFuZCBjdXJyZW50IHBhZ2UgaXMgZWxpc3AgZmlsZS4KICAod2hl
+biAoYW5kIHlhb2RkbXVzZS1oaWdobGlnaHQtZWxpc3AtcGFnZQogICAgICAgICAgICAgKHN0cmlu
+Zy1tYXRjaCAiXi4qXFwuZWwkIiB5YW9kZG11c2UtcGFnZW5hbWUpKQogICAgKHNldC1zeW50YXgt
+dGFibGUgZW1hY3MtbGlzcC1tb2RlLXN5bnRheC10YWJsZSkKICAgIChzZXRxIG1ham9yLW1vZGUg
+J2VtYWNzLWxpc3AtbW9kZSkKICAgIChsaXNwLW1vZGUtdmFyaWFibGVzKSkKICA7OyBMb2FkIGtl
+eW1hcC4KICAodXNlLWxvY2FsLW1hcCB5YW9kZG11c2UtbW9kZS1tYXApCiAgOzsgT3RoZXIgc2V0
+dXAuCiAgKGdvdG8tYWRkcmVzcykKICAoc2V0cSBpbmRlbnQtdGFicy1tb2RlIG5pbCkpCgo7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsgSW50ZXJhY3RpdmUgRnVuY3Rpb25zIDs7Ozs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OwoKOzs7IEVkaXQuCgo7OzsjIyNhdXRvbG9hZAooZGVmdW4g
+eWFvZGRtdXNlLWVkaXQgKCZvcHRpb25hbCB3aWtpbmFtZSBwYWdlbmFtZSBwcmVmaXgpCiAgIkVk
+aXQgYSBwYWdlIG9uIGEgd2lraS4KV0lLSU5BTUUgaXMgdGhlIG5hbWUgb2YgdGhlIHdpa2kgYXMg
+ZGVmaW5lZCBpbiBgeWFvZGRtdXNlLXdpa2lzJywKUEFHRU5BTUUgaXMgdGhlIHBhZ2VuYW1lIG9m
+IHRoZSBwYWdlIHlvdSB3YW50IHRvIGVkaXQuClVzZSBhIFBSRUZJWCBhcmd1bWVudCB0byBmb3Jj
+ZSBhIHJlbG9hZCBvZiB0aGUgcGFnZS4iCiAgKGludGVyYWN0aXZlKQogIDs7IFNldCB2YWx1ZSB3
+aXRoIGBwcmVmaXgnCiAgOzsgd2hlbiBgcHJlZml4JyBpcyBgbmlsJwogIDs7IGFuZCBgY3VycmVu
+dC1wcmVmaXgtYXJnJyBpcyBgbm9uLW5pbCcuCiAgKG9yIHByZWZpeCAoaWYgY3VycmVudC1wcmVm
+aXgtYXJnIChzZXRxIHByZWZpeCB0KSkpCiAgOzsgRWRpdCBwYWdlLgogICh5YW9kZG11c2UtZ2V0
+LXBhZ2VuYW1lIHdpa2luYW1lIHBhZ2VuYW1lCiAgICAgICAgICAgICAgICAgICAgICAgICAgKGlm
+IHByZWZpeAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAneWFvZGRtdXNlLWhhbmRsZS1n
+ZXQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICd5YW9kZG11c2UtaGFuZGxlLWdldC1vci1k
+aXNwbGF5KSkpCgo7OzsjIyNhdXRvbG9hZAooZGVmdW4geWFvZGRtdXNlLWVkaXQtZGVmYXVsdCAo
+cHJlZml4KQogICJFZGl0IGEgcGFnZSB3aXRoIGRlZmF1bHQgd2lraSBgeWFvZGRtdXNlLWRlZmF1
+bHQtd2lraScuClVzZSBhIFBSRUZJWCBhcmd1bWVudCB0byBmb3JjZSBhIHJlbG9hZCBvZiB0aGUg
+cGFnZS4iCiAgKGludGVyYWN0aXZlICJQIikKICAoeWFvZGRtdXNlLWVkaXQgeWFvZGRtdXNlLWRl
+ZmF1bHQtd2lraSBuaWwgcHJlZml4KSkKCihkZWZ1biB5YW9kZG11c2UtZm9sbG93ICgpCiAgIkZp
+Z3VyZSBvdXQgd2hhdCBwYWdlIHdlIG5lZWQgdG8gdmlzaXQgYW5kIGNhbGwgYHlhb2RkbXVzZS1l
+ZGl0JyBvbiBpdC4KRGVmYXVsdCwgdGhpcyB0cnkgdG8gcGljayB1cCBwYWdlIG5hbWUgYXJvdW5k
+IHBvaW50LgpZb3UgY2FuIHR5cGUgYEMtdScgYmVmb3JlIHRoaXMgY29tbWFuZCBtYWtlIGl0IHBy
+b21wdApwYWdlIG5hbWUgd2hlbiBjYW4ndCBmaW5kIHBhZ2UgbmFtZSBhcm91bmQgcG9pbnQuIgog
+IChpbnRlcmFjdGl2ZSkKICA7OyBHZXQgZm9sbG93IHBhZ2UuCiAgKGlmIGN1cnJlbnQtcHJlZml4
+LWFyZwogICAgICA7OyBSZWFkIHBhZ2UgZnJvbSB1c2VyLgogICAgICAoeWFvZGRtdXNlLWdldC1w
+YWdlbmFtZSB5YW9kZG11c2Utd2lraW5hbWUgbmlsICd5YW9kZG11c2UtaGFuZGxlLWZvbGxvdykK
+ICAgIDs7IE90aGVyd2lzZSB0cnkgZm9sbG93IHBhZ2UgYXJvdW5kIHBvaW50LgogICAgKGlmICh5
+YW9kZG11c2UtcGFnZW5hbWUtYXQtcG9pbnQpCiAgICAgICAgKHlhb2RkbXVzZS1nZXQtcGFnZSB5
+YW9kZG11c2Utd2lraW5hbWUgKHlhb2RkbXVzZS1wYWdlbmFtZS1hdC1wb2ludCkpCiAgICAgICht
+ZXNzYWdlICJObyB2YWxpZCBsaW5rIGFyb3VuZCBwb2ludC4iKSkpKQoKOzs7IFBvc3QKCjs7OyMj
+I2F1dG9sb2FkCihkZWZ1biB5YW9kZG11c2UtcG9zdC1idWZmZXIgKCZvcHRpb25hbCBwb3N0LWJ1
+ZmZlciBzdW1tYXJ5IHByZWZpeCkKICAiUG9zdCB0aGUgQlVGRkVSIHRvIHRoZSBjdXJyZW50IHdp
+a2kuClRoZSBjdXJyZW50IHdpa2kgaXMgdGFrZW4gZnJvbSBgeWFvZGRtdXNlLXdpa2knLgpUaGUg
+UE9TVC1CVUZGRVIgaXMgdGhlIGJ1ZmZlciB5b3Ugd2FudCBwb3N0LApEZWZhdWx0IHdpbGwgcmVh
+ZCBidWZmZXIgbmFtZSBpZiBQT1NULUJVRkZFUiBpcyB2b2lkLgpTVU1NQVJZIGlzIHN1bW1hcnkg
+bmFtZSBmb3IgcG9zdC4KSWYgUFJFRklYIGlzIG5vbi1uaWwsIHdpbGwgdmlldyBwYWdlIGFmdGVy
+IHBvc3Qgc3VjY2Vzc2Z1bC4iCiAgKGludGVyYWN0aXZlKQogIDs7IFJlYWQgYnVmZmVyIG5hbWUu
+CiAgKG9yIHBvc3QtYnVmZmVyCiAgICAgIChzZXRxIHBvc3QtYnVmZmVyIChyZWFkLWJ1ZmZlciAi
+QnVmZmVyIG5hbWU6ICIpKSkKICAoc2V0LWJ1ZmZlciBwb3N0LWJ1ZmZlcikKICA7OyBUcnkgdG8g
+c2F2ZSBmaWxlIGJlZm9yZSBwb3N0LgogICh3aGVuIGJ1ZmZlci1maWxlLW5hbWUKICAgIChmbGV0
+ICgobWVzc2FnZSAoJnJlc3QgYXJncykpKQogICAgICAoYmFzaWMtc2F2ZS1idWZmZXIpKSkKICA7
+OyBQb3N0IHBhZ2UuCiAgKHlhb2RkbXVzZS1wb3N0IHlhb2RkbXVzZS13aWtpbmFtZQogICAgICAg
+ICAgICAgICAgICB5YW9kZG11c2UtcGFnZW5hbWUKICAgICAgICAgICAgICAgICAgKGJ1ZmZlci1u
+YW1lKQogICAgICAgICAgICAgICAgICAoYnVmZmVyLXN0cmluZykKICAgICAgICAgICAgICAgICAg
+c3VtbWFyeQogICAgICAgICAgICAgICAgICBwcmVmaXgpKQoKOzs7IyMjYXV0b2xvYWQKKGRlZnVu
+IHlhb2RkbXVzZS1wb3N0LWN1cnJlbnQtYnVmZmVyIChwcmVmaXgpCiAgIlBvc3QgY3VycmVudCBi
+dWZmZXIgdG8gY3VycmVudCB3aWtpLgpUaGUgY3VycmVudCB3aWtpIGlzIHRha2VuIGZyb20gYHlh
+b2RkbXVzZS13aWtpJy4KVXNlIGEgUFJFRklYIGFyZ3VtZW50IHRvIGJyb3dzZSBwYWdlIGFmdGVy
+IHBvc3Qgc3VjY2Vzc2Z1bC4iCiAgKGludGVyYWN0aXZlICJQIikKICAoeWFvZGRtdXNlLXBvc3Qt
+YnVmZmVyIChjdXJyZW50LWJ1ZmZlcikgbmlsIHByZWZpeCkpCgo7OzsjIyNhdXRvbG9hZAooZGVm
+dW4geWFvZGRtdXNlLXBvc3QtZmlsZSAoJm9wdGlvbmFsIGZpbGVuYW1lIHdpa2luYW1lIHBhZ2Vu
+YW1lIHN1bW1hcnkgcHJlZml4KQogICJQb3N0IGZpbGUgdG8gY3VycmVudCB3aWtpLgpUaGUgY3Vy
+cmVudCB3aWtpIGlzIHRha2VuIGZyb20gYHlhb2RkbXVzZS13aWtpJy4KRklMRU5BTUUgaXMgZmls
+ZSBuYW1lIHlvdSB3YW50IHBvc3QuCldJS0lOQU1FIGlzIHdpa2kgbmFtZSBmb3IgcG9zdC4KUEFH
+RU5BTUUgaXMgcGFnZSBuYW1lIGZvciBwb3N0LgpTVU1NQVJZIGlzIHN1bW1hcnkgZm9yIHBvc3Qu
+CklmIFBSRUZJWCBpcyBub24tbmlsLCB3aWxsIHZpZXcgcGFnZSBhZnRlciBwb3N0IHN1Y2Nlc3Nm
+dWwuIgogIChpbnRlcmFjdGl2ZSkKICA7OyBSZWFkIGZpbGUuCiAgKHVubGVzcyBmaWxlbmFtZQog
+ICAgKHNldHEgZmlsZW5hbWUgKHJlYWQtZmlsZS1uYW1lICJGaWxlIG5hbWU6ICIpKSkKICA7OyBD
+aGVjayBmaWxlLgogIChpZiAoYW5kIChmaWxlLWV4aXN0cy1wIGZpbGVuYW1lKQogICAgICAgICAg
+IChub3QgKGZpbGUtZGlyZWN0b3J5LXAgZmlsZW5hbWUpKSkKICAgICAgOzsgUG9zdCBmaWxlLgog
+ICAgICAoeWFvZGRtdXNlLXBvc3Qgd2lraW5hbWUKICAgICAgICAgICAgICAgICAgICAgIHBhZ2Vu
+YW1lCiAgICAgICAgICAgICAgICAgICAgICAoZmlsZS1uYW1lLW5vbmRpcmVjdG9yeSBmaWxlbmFt
+ZSkKICAgICAgICAgICAgICAgICAgICAgICh5YW9kZG11c2UtZW5jb2RlLWZpbGUgZmlsZW5hbWUp
+CiAgICAgICAgICAgICAgICAgICAgICBzdW1tYXJ5CiAgICAgICAgICAgICAgICAgICAgICBwcmVm
+aXgpCiAgICA7OyBFcnJvciB3aGVuIGludmFsaWQgZmlsZSBuYW1lLgogICAgKG1lc3NhZ2UgIklu
+dmFsaWQgZmlsZSBuYW1lICVzIiBmaWxlbmFtZSkpKQoKOzs7IyMjYXV0b2xvYWQKKGRlZnVuIHlh
+b2RkbXVzZS1wb3N0LWZpbGUtZGVmYXVsdCAocHJlZml4KQogICJQb3N0IGZpbGUgdG8gZGVmYXVs
+dCB3aWtpLgpJZiBQUkVGSVggaXMgbm9uLW5pbCwgd2lsbCB2aWV3IHBhZ2UgYWZ0ZXIgcG9zdCBz
+dWNjZXNzZnVsLiIKICAoaW50ZXJhY3RpdmUgIlAiKQogICh5YW9kZG11c2UtcG9zdC1maWxlIG5p
+bCB5YW9kZG11c2UtZGVmYXVsdC13aWtpIG5pbCBuaWwgcHJlZml4KSkKCjs7OyMjI2F1dG9sb2Fk
+CihkZWZ1biB5YW9kZG11c2UtcG9zdC1saWJyYXJ5ICgmb3B0aW9uYWwgbGlicmFyeSB3aWtpbmFt
+ZSBwYWdlbmFtZSBzdW1tYXJ5IHByZWZpeCkKICAiUG9zdCBsaWJyYXJ5IHRvIGN1cnJlbnQgd2lr
+aS4KVGhlIGN1cnJlbnQgd2lraSBpcyB0YWtlbiBmcm9tIGB5YW9kZG11c2Utd2lraXMnLgpMSUJS
+QVJZIGlzIGxpYnJhcnkgbmFtZSB5b3Ugd2FudCBwb3N0LgpXSUtJTkFNRSBpcyB3aWtpIG5hbWUg
+Zm9yIHBvc3QuClBBR0VOQU1FIGlzIHBhZ2UgbmFtZSBmb3IgcG9zdC4KU1VNTUFSWSBpcyBzdW1t
+YXJ5IGZvciBwb3N0LgpJZiBQUkVGSVggaXMgbm9uLW5pbCwgd2lsbCB2aWV3IHBhZ2UgYWZ0ZXIg
+cG9zdCBzdWNjZXNzZnVsLiIKICAoaW50ZXJhY3RpdmUpCiAgOzsgR2V0IGxpYnJhcnkgbmFtZS4K
+ICAob3IgbGlicmFyeSAoc2V0cSBsaWJyYXJ5ICh5YW9kZG11c2UtZ2V0LWxpYnJhcnkpKSkKICA7
+OyBQb3N0IGxpYnJhcnkgdG8gd2lraS4KICAobGV0ICgoZmlsZW5hbWUgKGZpbmQtbGlicmFyeS1u
+YW1lIGxpYnJhcnkpKSkKICAgICh5YW9kZG11c2UtcG9zdC1maWxlIGZpbGVuYW1lIHdpa2luYW1l
+IHBhZ2VuYW1lIHN1bW1hcnkgcHJlZml4KSkpCgo7OzsjIyNhdXRvbG9hZAooZGVmdW4geWFvZGRt
+dXNlLXBvc3QtbGlicmFyeS1kZWZhdWx0IChwcmVmaXgpCiAgIlBvc3QgbGlicmFyeSB0byBkZWZh
+dWx0IHdpa2kuClVzZSBhIFBSRUZJWCBhcmd1bWVudCB0byBicm93c2UgcGFnZSBhZnRlciBwb3N0
+IHN1Y2Nlc3NmdWwuIgogIChpbnRlcmFjdGl2ZSAiUCIpCiAgKGxldCogKChsaWJyYXJ5ICh5YW9k
+ZG11c2UtZ2V0LWxpYnJhcnkpKQogICAgICAgICAoZmlsZW5hbWUgKGZpbmQtbGlicmFyeS1uYW1l
+IGxpYnJhcnkpKQogICAgICAgICAocGFnZW5hbWUgKGZpbGUtbmFtZS1ub25kaXJlY3RvcnkgZmls
+ZW5hbWUpKSkKICAgIDs7IFBvc3QgbGlicmFyeSB0byBkZWZhdWx0IHdpa2kuCiAgICAoeWFvZGRt
+dXNlLXBvc3QtZmlsZSBmaWxlbmFtZSB5YW9kZG11c2UtZGVmYXVsdC13aWtpIHBhZ2VuYW1lIG5p
+bCBwcmVmaXgpKSkKCjs7OyMjI2F1dG9sb2FkCihkZWZ1biB5YW9kZG11c2UtcG9zdC1kaXJlZCAo
+Jm9wdGlvbmFsIHdpa2luYW1lIHN1bW1hcnkgcHJlZml4KQogICJQb3N0IGRpcmVkIG1hcmtlZCBm
+aWxlcyB0byBjdXJyZW50IHdpa2kuClRoZSBjdXJyZW50IHdpa2kgaXMgdGFrZW4gZnJvbSBgeWFv
+ZGRtdXNlLXdpa2lzJy4KV0lLSU5BTUUgaXMgd2lraSBuYW1lIGZvciBwb3N0LgpTVU1NQVJZIGlz
+IHN1bW1hcnkgZm9yIHBvc3QuCklmIFBSRUZJWCBpcyBub24tbmlsLCB3aWxsIHZpZXcgcGFnZSBh
+ZnRlciBwb3N0IHN1Y2Nlc3NmdWwuIgogIChpbnRlcmFjdGl2ZSkKICAoaWYgKGVxIG1ham9yLW1v
+ZGUgJ2RpcmVkLW1vZGUpCiAgICAgIChpZiAob3IgKG5vdCB5YW9kZG11c2UtcG9zdC1kaXJlZC1j
+b25maXJtKQogICAgICAgICAgICAgICh5ZXMtb3Itbm8tcCAiRG8geW91IHdhbnQgcG9zdCBtYXJr
+ZWQgZmlsZXMgdG8gd2lraS4iKSkKICAgICAgICAgIChsZXQgKGZpbGVuYW1lIHBhZ2VuYW1lKQog
+ICAgICAgICAgICAob3Igc3VtbWFyeSAoc2V0cSBzdW1tYXJ5ICh5YW9kZG11c2UtcmVhZC1zdW1t
+YXJ5KSkpCiAgICAgICAgICAgIChkb2xpc3QgKGZpbGUgKGRpcmVkLWdldC1tYXJrZWQtZmlsZXMp
+KQogICAgICAgICAgICAgIChzZXRxIGZpbGVuYW1lIGZpbGUpCiAgICAgICAgICAgICAgKHNldHEg
+cGFnZW5hbWUgKGZpbGUtbmFtZS1ub25kaXJlY3RvcnkgZmlsZW5hbWUpKQogICAgICAgICAgICAg
+ICh5YW9kZG11c2UtcG9zdC1maWxlIGZpbGVuYW1lIHdpa2luYW1lIHBhZ2VuYW1lIHN1bW1hcnkg
+cHJlZml4KSkpKQogICAgKG1lc3NhZ2UgIlRoaXMgY29tbWFuZCBpbiBvbmx5IGZvciBgZGlyZWQt
+bW9kZScuIikpKQoKOzs7IyMjYXV0b2xvYWQKKGRlZnVuIHlhb2RkbXVzZS1wb3N0LWRpcmVkLWRl
+ZmF1bHQgKHByZWZpeCkKICAiUG9zdCBkaXJlZCBtYXJrZWQgZmlsZXMgdG8gZGVmYXVsdCB3aWtp
+LgpVc2UgYSBQUkVGSVggYXJndW1lbnQgdG8gYnJvd3NlIHBhZ2UgYWZ0ZXIgcG9zdCBzdWNjZXNz
+ZnVsLiIKICAoaW50ZXJhY3RpdmUgIlAiKQogICh5YW9kZG11c2UtcG9zdC1kaXJlZCB5YW9kZG11
+c2UtZGVmYXVsdC13aWtpIG5pbCBwcmVmaXgpKQoKOzs7IyMjYXV0b2xvYWQKKGRlZnVuIHlhb2Rk
+bXVzZS1wb3N0LXNjcmVlbnNob3QgKCZvcHRpb25hbCB3aWtpbmFtZSBzdW1tYXJ5IHByZWZpeCkK
+ICAiUG9zdCBzY3JlZW5zaG90IHRvIGN1cnJlbnQgd2lraS4KVGhlIGN1cnJlbnQgd2lraSBpcyB0
+YWtlbiBmcm9tIGB5YW9kZG11c2Utd2lraXMnLgpXSUtJTkFNRSBpcyB3aWtpIG5hbWUgZm9yIHBv
+c3QuClNVTU1BUlkgaXMgc3VtbWFyeSBmb3IgcG9zdC4KSWYgUFJFRklYIGlzIG5vbi1uaWwsIHdp
+bGwgdmlldyBwYWdlIGFmdGVyIHBvc3Qgc3VjY2Vzc2Z1bC4iCiAgKGludGVyYWN0aXZlKQogIDs7
+IENoZWNrIHNjcmVlbnNob3QgcHJvZ3JhbS4KICAoaWYgKGV4ZWN1dGFibGUtZmluZCB5YW9kZG11
+c2Utc2NyZWVuc2hvdC1wcm9ncmFtKQogICAgICAocHJvZ24KICAgICAgICA7OyBTY3JlZW5zaG90
+LgogICAgICAgIChtZXNzYWdlICJQbGVhc2UgdXNlIG1vdXNlIHNlbGVjdCByZWdpb24gZm9yIHNj
+cmVlbnNob3QuIikKICAgICAgICAoY2FsbC1wcm9jZXNzIHlhb2RkbXVzZS1zY3JlZW5zaG90LXBy
+b2dyYW0gbmlsIG5pbCBuaWwgeWFvZGRtdXNlLXNjcmVlbnNob3QtZmlsZW5hbWUpCiAgICAgICAg
+OzsgUG9zdCBzY3JlZW5zaG90LgogICAgICAgICh5YW9kZG11c2UtcG9zdC1maWxlIHlhb2RkbXVz
+ZS1zY3JlZW5zaG90LWZpbGVuYW1lIHdpa2luYW1lIG5pbCAiU2NyZWVuc2hvdCBieSB5YW9kZG11
+c2UuZWwiIHByZWZpeCkpCiAgICAobWVzc2FnZSAiUGxlYXNlIG1ha2Ugc3VyZSBoYXZlIGluc3Rh
+bGwgcHJvZ3JhbSAnJXMnLiIgeWFvZGRtdXNlLXNjcmVlbnNob3QtcHJvZ3JhbSkpKQoKOzs7IyMj
+YXV0b2xvYWQKKGRlZnVuIHlhb2RkbXVzZS1wb3N0LXNjcmVlbnNob3QtZGVmYXVsdCAocHJlZml4
+KQogICJQb3N0IHNjcmVlbnNob3QgdG8gZGVmYXVsdCB3aWtpLgpVc2UgYSBQUkVGSVggYXJndW1l
+bnQgdG8gYnJvd3NlIHBhZ2UgYWZ0ZXIgcG9zdCBzdWNjZXNzZnVsLiIKICAoaW50ZXJhY3RpdmUg
+IlAiKQogICh5YW9kZG11c2UtcG9zdC1zY3JlZW5zaG90IHlhb2RkbXVzZS1kZWZhdWx0LXdpa2kg
+bmlsIHByZWZpeCkpCgo7OzsgVmlldwoKKGRlZnVuIHlhb2RkbXVzZS1yZXZlcnQgKCkKICAiUmVs
+b2FkIGN1cnJlbnQgZWRpdCBwYWdlLiIKICAoaW50ZXJhY3RpdmUpCiAgKHlhb2RkbXVzZS1nZXQt
+cGFnZSB5YW9kZG11c2Utd2lraW5hbWUgeWFvZGRtdXNlLXBhZ2VuYW1lKSkKCjs7OyMjI2F1dG9s
+b2FkCihkZWZ1biB5YW9kZG11c2UtYnJvd3NlLXBhZ2UgKCZvcHRpb25hbCB3aWtpbmFtZSBwYWdl
+bmFtZSkKICAiQnJvd3NlIHNwZWNpYWwgcGFnZSBpbiB3aWtpLgpXSUtJTkFNRSBpcyB0aGUgbmFt
+ZSBvZiB0aGUgd2lraSBhcyBkZWZpbmVkIGluIGB5YW9kZG11c2Utd2lraXMnLApQQUdFTkFNRSBp
+cyB0aGUgcGFnZW5hbWUgb2YgdGhlIHBhZ2UgeW91IHdhbnQgdG8gZWRpdC4iCiAgKGludGVyYWN0
+aXZlKQogICh5YW9kZG11c2UtZ2V0LXBhZ2VuYW1lIHdpa2luYW1lIHBhZ2VuYW1lICd5YW9kZG11
+c2UtaGFuZGxlLWJyb3dzZSkpCgo7OzsjIyNhdXRvbG9hZAooZGVmdW4geWFvZGRtdXNlLWJyb3dz
+ZS1wYWdlLWRlZmF1bHQgKCkKICAiQnJvc2Ugc3BlY2lhbCBwYWdlIHdpdGggYHlhb2RkbXVzZS1k
+ZWZhdWx0LXdpa2knLiIKICAoaW50ZXJhY3RpdmUpCiAgKHlhb2RkbXVzZS1icm93c2UtcGFnZSB5
+YW9kZG11c2UtZGVmYXVsdC13aWtpKSkKCjs7OyMjI2F1dG9sb2FkCihkZWZ1biB5YW9kZG11c2Ut
+YnJvd3NlLXBhZ2UtZGlmZiAoJm9wdGlvbmFsIHdpa2luYW1lIHBhZ2VuYW1lKQogICJCcm93c2Ug
+c3BlY2lhbCBwYWdlIGRpZmYgaW4gd2lraS4KV0lLSU5BTUUgaXMgdGhlIG5hbWUgb2YgdGhlIHdp
+a2kgYXMgZGVmaW5lZCBpbiBgeWFvZGRtdXNlLXdpa2lzJywKUEFHRU5BTUUgaXMgdGhlIHBhZ2Vu
+YW1lIG9mIHRoZSBwYWdlIHlvdSB3YW50IHRvIGVkaXQuIgogIChpbnRlcmFjdGl2ZSkKICAoeWFv
+ZGRtdXNlLWdldC1wYWdlbmFtZSB3aWtpbmFtZSBwYWdlbmFtZSAneWFvZGRtdXNlLWhhbmRsZS1i
+cm93c2UtZGlmZikpCgo7OzsjIyNhdXRvbG9hZAooZGVmdW4geWFvZGRtdXNlLWJyb3dzZS1wYWdl
+LWRlZmF1bHQtZGlmZiAoKQogICJCcm93c2Ugc3BlY2lhbCBwYWdlIHdpdGggYHlhb2RkbXVzZS1k
+ZWZhdWx0LXdpa2knLiIKICAoaW50ZXJhY3RpdmUpCiAgKHlhb2RkbXVzZS1icm93c2UtcGFnZS1k
+aWZmIHlhb2RkbXVzZS1kZWZhdWx0LXdpa2kpKQoKKGRlZnVuIHlhb2RkbXVzZS1icm93c2UtY3Vy
+cmVudC1wYWdlICgpCiAgIkJyb3dzZSBjdXJyZW50IHBhZ2UuIgogIChpbnRlcmFjdGl2ZSkKICAo
+eWFvZGRtdXNlLWJyb3dzZS1wYWdlIHlhb2RkbXVzZS13aWtpbmFtZSB5YW9kZG11c2UtcGFnZW5h
+bWUpKQoKOzs7IE5hdmlnYXRpb24KCihkZWZ1biB5YW9kZG11c2UtbmF2aS1uZXh0LWhlYWRpbmcg
+KCkKICAiR290byBuZXh0IGhlYWRpbmcuIgogIChpbnRlcmFjdGl2ZSkKICAoaWYgKGJvbHApCiAg
+ICAgIChmb3J3YXJkLWNoYXIgKzEpKQogICh1bmxlc3MgKHJlLXNlYXJjaC1mb3J3YXJkICJePSsi
+IG5pbCB0KQogICAgKG1lc3NhZ2UgIlJlYWNoIGJvdHRvbSBoZWFkaW5nLiIpKQogIChtb3ZlLWJl
+Z2lubmluZy1vZi1saW5lIDEpKQoKKGRlZnVuIHlhb2RkbXVzZS1uYXZpLXByZXYtaGVhZGluZyAo
+KQogICJHb3RvIHByZXZpb3VzIGhlYWRpbmcuIgogIChpbnRlcmFjdGl2ZSkKICAobW92ZS1iZWdp
+bm5pbmctb2YtbGluZSAxKQogICh1bmxlc3MgKHJlLXNlYXJjaC1iYWNrd2FyZCAiXj0rIiBuaWwg
+dCkKICAgIChtZXNzYWdlICJSZWFjaCB0b3AgaGVhZGluZy4iKSkpCgo7OzsgTWlzYwoKKGRlZnVu
+IHlhb2RkbXVzZS1pbnNlcnQtcGFnZW5hbWUgKCZvcHRpb25hbCBwYWdlbmFtZSkKICAiSW5zZXJ0
+IGEgUEFHRU5BTUUgb2YgY3VycmVudCB3aWtpIHdpdGggY29tcGxldGlvbi4iCiAgKGludGVyYWN0
+aXZlKQogIDs7IEluc2VydCBwYWdlIG5hbWUuCiAgKHlhb2RkbXVzZS1nZXQtcGFnZW5hbWUgeWFv
+ZGRtdXNlLXdpa2luYW1lIHBhZ2VuYW1lICd5YW9kZG11c2UtaGFuZGxlLWluc2VydCkpCgooZGVm
+dW4geWFvZGRtdXNlLWluc2VydC1maWxlLWNvbnRlbnQgKGZpbGUpCiAgIkluc2VydCBGSUxFIGNv
+bnRlbnQuClRoaXMgZnVuY3Rpb24gd2lsbCBlbmNvZGUgc3BlY2lhbCBmaWxlIGNvbnRlbnQsIHN1
+Y2ggcGljdHVyZSBvciBjb21wcmVzcyBmaWxlLiIKICAoaW50ZXJhY3RpdmUgImZGaWxlOiAiKQog
+IChpbnNlcnQgKHlhb2RkbXVzZS1lbmNvZGUtZmlsZSBmaWxlKSkpCgooZGVmdW4geWFvZGRtdXNl
+LWtpbGwtdXJsICgpCiAgIk1ha2UgdGhlIFVSTCBvZiBjdXJyZW50IG9kZG11c2UgcGFnZSB0aGUg
+bGF0ZXN0IGtpbGwgaW4gdGhlIGtpbGwgcmluZy4iCiAgKGludGVyYWN0aXZlKQogIChraWxsLW5l
+dyAoeWFvZGRtdXNlLXVybCB5YW9kZG11c2Utd2lraW5hbWUgeWFvZGRtdXNlLXBhZ2VuYW1lKSkK
+ICAobWVzc2FnZSAiQ29weSBjdXJyZW50IHVybCAnJXMnIGluIHlhbmsiICh5YW9kZG11c2UtdXJs
+IHlhb2RkbXVzZS13aWtpbmFtZSB5YW9kZG11c2UtcGFnZW5hbWUpKSkKCihkZWZ1biB5YW9kZG11
+c2UtdXBkYXRlLXBhZ2VuYW1lICgmb3B0aW9uYWwgdW5mb3JjZWQpCiAgIlVwZGF0ZSBhbGwgcGFn
+ZSBuYW1lIG1hdGNoIGluIGB5YW9kZG11c2Utd2lraXMnLgpCeSBkZWZhdWx0LCB0aGlzIGZ1bmN0
+aW9uIHdpbGwgdXBkYXRlIHBhZ2UgbmFtZSBmb3JjaWJseS4KSWYgVU5GT1JDRUQgaXMgbm9uLW5p
+bCwganVzdCB1cGRhdGUgcGFnZSBuYW1lIHdoZW4gaGF2ZSBub3QgdXBkYXRlLiIKICAoaW50ZXJh
+Y3RpdmUpCiAgKHVubGVzcyAoYW5kIHVuZm9yY2VkCiAgICAgICAgICAgICAgICg+IChoYXNoLXRh
+YmxlLWNvdW50IHlhb2RkbXVzZS1wYWdlcy1oYXNoKSAwKSkKICAgIChkb2xpc3QgKHdpa2kgeWFv
+ZGRtdXNlLXdpa2lzKQogICAgICA7OyBGb3JjZSB1cGRhdGUgcGFnZSBuYW1lIGxpc3QuCiAgICAg
+ICh5YW9kZG11c2UtZ2V0LXBhZ2VuYW1lIChjYXIgd2lraSkgbmlsIG5pbCB0KSkpKQoKKGRlZnVu
+IHlhb2RkbXVzZS10b2dnbGUtbWlub3IgKCZvcHRpb25hbCBhcmcpCiAgIlRvZ2dsZSBtaW5vciBt
+b2RlIHN0YXRlLgpJZiBBUkcgaXMgbm9uLW5pbCwgYWx3YXlzIHR1cm4gb24uIgogIChpbnRlcmFj
+dGl2ZSkKICAobGV0ICgobnVtIChwcmVmaXgtbnVtZXJpYy12YWx1ZSBhcmcpKSkKICAgIChjb25k
+CiAgICAgKChvciAobm90IGFyZykgKGVxdWFsIG51bSAwKSkKICAgICAgKHNldHEgeWFvZGRtdXNl
+LW1pbm9yIChub3QgeWFvZGRtdXNlLW1pbm9yKSkpCiAgICAgKCg+IG51bSAwKSAoc2V0ICd5YW9k
+ZG11c2UtbWlub3IgdCkpCiAgICAgKCg8IG51bSAwKSAoc2V0ICd5YW9kZG11c2UtbWlub3Igbmls
+KSkpCiAgICA7OyBVcGRhdGUgZWRpdCBzdGF0dXMgYXQgbW9kZS1saW5lLgogICAgKHlhb2RkbXVz
+ZS11cGRhdGUtZWRpdC1zdGF0dXMpCiAgICA7OyBSZXR1cm4gZWRpdCBzdGF0dXMuCiAgICB5YW9k
+ZG11c2UtbWlub3IpKQoKKGRlZnVuIHlhb2RkbXVzZS1yZWRpcmVjdCAoKQogICJSZWRpcmVjdCBw
+YWdlLiIKICAoaW50ZXJhY3RpdmUpCiAgOzsgUmVkaXJlY3QgcGFnZS4KICAoeWFvZGRtdXNlLWdl
+dC1wYWdlbmFtZSB5YW9kZG11c2Utd2lraW5hbWUgbmlsICd5YW9kZG11c2UtaGFuZGxlLXJlZGly
+ZWN0KSkKCihkZWZ1biB5YW9kZG11c2UtZGVsZXRlICgpCiAgIkRlbGV0ZSBwYWdlLiIKICAoaW50
+ZXJhY3RpdmUpCiAgOzsgRGVsZXRlIHBhZ2UuCiAgKHlhb2RkbXVzZS1nZXQtcGFnZW5hbWUgeWFv
+ZGRtdXNlLXdpa2luYW1lIG5pbCAneWFvZGRtdXNlLWhhbmRsZS1kZWxldGUpKQoKKGRlZnVuIHlh
+b2RkbXVzZS10b2dnbGUtaW1hZ2Utc3RhdHVzICgpCiAgIlRvZ2dsZSBpbWFnZSBzdGF0dXMuCklm
+IGNvbnRlbnQgaXMgcmF3IHRleHQgZm9ybWF0LCB0cmFuc2Zvcm0gaXQgdG8gaW1hZ2UgZm9ybWF0
+LgpJZiBjb250ZW50IGlzIGltYWdlIGZvcm1hdCwgdHJhbnNmb3JtIGl0IHRvIHJhdyB0ZXh0IGZv
+cm1hdC4iCiAgKGludGVyYWN0aXZlKQogIChzYXZlLWV4Y3Vyc2lvbgogICAgOzsgVGVzdCB3aGV0
+aGVyIGlzIGltYWdlIGNvbnRlbnQuCiAgICAoaWYgKHN0cmluZy1tYXRjaCAiXFxgI0ZJTEUgaW1h
+Z2UvXFwocG5nXFx8anBlZ1xcKSQiCiAgICAgICAgICAgICAgICAgICAgICAoYnVmZmVyLXN1YnN0
+cmluZy1uby1wcm9wZXJ0aWVzIChnb3RvLWNoYXIgKHBvaW50LW1pbikpCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChsaW5lLWVuZC1wb3NpdGlv
+bikpKQogICAgICAgIChpZiB5YW9kZG11c2UtaW1hZ2Utc3RhdHVzCiAgICAgICAgICAgICh5YW9k
+ZG11c2UtdHVybi1vZmYtaW1hZ2Utc3RhdHVzKQogICAgICAgICAgKHlhb2RkbXVzZS10dXJuLW9u
+LWltYWdlLXN0YXR1cykpCiAgICAgIChtZXNzYWdlICJJbnZhbGlkIGltYWdlIGNvbnRlbnQuIikp
+KSkKCihkZWZ1biB5YW9kZG11c2Utc2F2ZS1hcyAoKQogICJTYXZlIGFzIGZpbGUuClRoaXMgZnVu
+Y3Rpb24gd2lsbCB0cnkgdG8gZW5jb2RlIHNwZWNpYWwgcGFnZSBjb250ZW50IGJlZm9yZSBzYXZl
+LgpzdWNoIGFzIHBpY3R1cmUgb3IgY29tcHJlc3MuIgogIChpbnRlcmFjdGl2ZSkKICAoc2F2ZS1l
+eGN1cnNpb24KICAgIChsZXQgKCh0ZXN0LXN0cmluZyAoYnVmZmVyLXN1YnN0cmluZy1uby1wcm9w
+ZXJ0aWVzCiAgICAgICAgICAgICAgICAgICAgICAgIChnb3RvLWNoYXIgKHBvaW50LW1pbikpCiAg
+ICAgICAgICAgICAgICAgICAgICAgIChsaW5lLWVuZC1wb3NpdGlvbikpKQogICAgICAgICAgKGRh
+dGEgKGJ1ZmZlci1zdWJzdHJpbmctbm8tcHJvcGVydGllcwogICAgICAgICAgICAgICAgIChwb2lu
+dC1taW4pCiAgICAgICAgICAgICAgICAgKHBvaW50LW1heCkpKQogICAgICAgICAgc3VmZml4KQog
+ICAgICAod2hlbiAoc3RyaW5nLW1hdGNoICJcXGAjRklMRSBcXChbXiBcbl0rXFwpJCIgdGVzdC1z
+dHJpbmcpCiAgICAgICAgKHNldHEgZGF0YSAoeWFvZGRtdXNlLWRlY29kZS1zdHJpbmcgZGF0YSkp
+CiAgICAgICAgKHNldHEgc3VmZml4IChjYXIgKHJhc3NvYyAobWF0Y2gtc3RyaW5nIDEgdGVzdC1z
+dHJpbmcpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB5YW9kZG11c2UtcG9zdC1t
+aW1lLWFsaXN0KSkpKQogICAgICAod2l0aC10ZW1wLWJ1ZmZlcgogICAgICAgIChpbnNlcnQgZGF0
+YSkKICAgICAgICAod3JpdGUtZmlsZSAocmVhZC1maWxlLW5hbWUgKGZvcm1hdCAiRmlsZTogKFN1
+ZmZpeDogJXMpICIgc3VmZml4KSkpKSkpKQoKOzs7IyMjYXV0b2xvYWQKKGRlZnVuIGVtYWNzd2lr
+aSAoJm9wdGlvbmFsIHBhZ2VuYW1lIHByZWZpeCkKICAiRWRpdCBhIHBhZ2Ugb24gdGhlIEVtYWNz
+V2lraS4KUEFHRU5BTUUgaXMgdGhlIHBhZ2VuYW1lIG9mIHRoZSBwYWdlIHlvdSB3YW50IHRvIGVk
+aXQuClVzZSBhIFBSRUZJWCBhcmd1bWVudCB0byBmb3JjZSBhIHJlbG9hZCBvZiB0aGUgcGFnZS4i
+CiAgKGludGVyYWN0aXZlKQogICh5YW9kZG11c2UtZWRpdCAiRW1hY3NXaWtpIiBwYWdlbmFtZSBw
+cmVmaXgpKQoKKGRlZnVuIGVtYWNzd2lraS1wb3N0ICgmb3B0aW9uYWwgcGFnZW5hbWUgc3VtbWFy
+eSBwcmVmaXgpCiAgIlBvc3QgZmlsZSB0byB0aGUgRW1hY3NXaWtpLgpQQUdFTkFNRSBpcyBwYWdl
+IG5hbWUgZm9yIHBvc3QsIHdob3NlIGRlZmF1bHQgaXMgYmFzZW5hbWUgb2YgY3VycmVudCBmaWxl
+bmFtZS4KU1VNTUFSWSBpcyBzdW1tYXJ5IGZvciBwb3N0LgpJZiBQUkVGSVggaXMgbm9uLW5pbCwg
+d2lsbCB2aWV3IHBhZ2UgYWZ0ZXIgcG9zdCBzdWNjZXNzZnVsLiAiCiAgKGludGVyYWN0aXZlKQog
+IChsZXQgKChmaWxlIChmaWxlLW5hbWUtbm9uZGlyZWN0b3J5IGJ1ZmZlci1maWxlLW5hbWUpKSkK
+ICAgICh5YW9kZG11c2UtcG9zdC1maWxlIGZpbGUgIkVtYWNzV2lraSIgKG9yIHBhZ2VuYW1lIGZp
+bGUpIHN1bW1hcnkgcHJlZml4KSkpCjs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OyBVdGls
+aXRpZXMgRnVuY3Rpb25zIDs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OwooZGVmdW4geWFv
+ZGRtdXNlLWdldC1wYWdlbmFtZSAod2lraW5hbWUgJm9wdGlvbmFsIHBhZ2VuYW1lIGhhbmRsZS1m
+dW5jdGlvbiBmb3JjZWQpCiAgIkdldCBwYWdlIG5hbWUgaW4gd2lraSBmb3IgY29tcGxldGluZy4K
+V0lLSU5BTUUgaXMgdGhlIG5hbWUgb2YgdGhlIHdpa2kgYXMgZGVmaW5lZCBpbiBgeWFvZGRtdXNl
+LXdpa2lzJywKUEFHRU5BTUUgaXMgcGFnZSBuYW1lLgpIQU5ETEUtRlVOQ1RJT04gaXMgZnVuY3Rp
+b24gaGFuZGxlIHBhZ2Ugd2l0aCBzcGVjaWFsIGFjdGlvbi4KCkJ5IGRlZmF1bHQsIHdvbid0IHVw
+ZGF0ZSBwYWdlIG5hbWUgd2hlbiBoYXZlIHVwZGF0ZWQsCnVubGVzcyBvcHRpb24gRk9SQ0VEIGlz
+IG5vbi1uaWwuIgogIDs7IFJlYWQgd2lraSBuYW1lIGlmIGB3aWtpbmFtZScgaXMgdm9pZC4KICAo
+b3Igd2lraW5hbWUgKHNldHEgd2lraW5hbWUgKHlhb2RkbXVzZS1yZWFkLXdpa2luYW1lKSkpCiAg
+OzsgQ3JlYXRlIHN0b3JhZ2UgZGlyZWN0b3J5LgogIChtYWtlLWRpcmVjdG9yeSAoY29uY2F0IHlh
+b2RkbXVzZS1kaXJlY3RvcnkgIi8iIHdpa2luYW1lKSB0KQogIDs7IEdldCBwYWdlIG5hbWUgb3Ig
+aGFuZGxlIHBhZ2UuCiAgKGlmIChhbmQgKHlhb2RkbXVzZS1nZXQtcGFnZW5hbWUtdGFibGUgd2lr
+aW5hbWUpCiAgICAgICAgICAgKG5vdCBmb3JjZWQpKQogICAgICA7OyBDYWxsIGZ1bmN0aW9uIGBo
+YW5kbGUtZnVuY3Rpb24nIGRpcmVjdGx5CiAgICAgIDs7IHdoZW4gaGF2ZSB1cGRhdGVkIHBhZ2Ug
+bmFtZSBhbmQgb3B0aW9uIGBmb3JjZWQnIGlzIG5pbC4KICAgICAgKHdoZW4gKGFuZCAoZmJvdW5k
+cCBoYW5kbGUtZnVuY3Rpb24pCiAgICAgICAgICAgICAgICAgaGFuZGxlLWZ1bmN0aW9uKQogICAg
+ICAgIChmdW5jYWxsIGhhbmRsZS1mdW5jdGlvbiB3aWtpbmFtZSBwYWdlbmFtZSkpCiAgICA7OyBP
+dGhlcndpc2UgZ2V0IHBhZ2UgbmFtZS4KICAgIChsZXQqICgodXJsICh5YW9kZG11c2UtZ2V0LXVy
+bCB3aWtpbmFtZSkpCiAgICAgICAgICAgKHVybC1yZXF1ZXN0LW1ldGhvZCAiR0VUIikKICAgICAg
+ICAgICAoY29kaW5nICh5YW9kZG11c2UtZ2V0LWNvZGluZyB3aWtpbmFtZSkpCiAgICAgICAgICAg
+cmV0cmlldmUtYnVmZmVyCiAgICAgICAgICAgcmV0cmlldmUtYnVmZmVyLW5hbWUpCiAgICAgIDs7
+IEluaXRpYWxpemUgdXJsIHJlcXVlc3QgcGFyYW1ldGVyLgogICAgICAoc2V0cSB1cmwgKHlhb2Rk
+bXVzZS1mb3JtYXQgeWFvZGRtdXNlLWFyZ3MtaW5kZXggY29kaW5nIHVybCkpCiAgICAgIDs7IEdl
+dCB1bmlxdWUgYnVmZmVyIGZvciBoYW5kbGUgaW5mb3JtYXRpb24uCiAgICAgIChzZXRxIHJldHJp
+ZXZlLWJ1ZmZlciAoeWFvZGRtdXNlLWdldC11bmlxdWUtYnVmZmVyKSkKICAgICAgKHNldHEgcmV0
+cmlldmUtYnVmZmVyLW5hbWUgKGJ1ZmZlci1uYW1lIHJldHJpZXZlLWJ1ZmZlcikpCiAgICAgIDs7
+IEdldCBwYWdlbmFtZS4KICAgICAgKHdpdGgtY3VycmVudC1idWZmZXIgKGdldC1idWZmZXIgcmV0
+cmlldmUtYnVmZmVyLW5hbWUpCiAgICAgICAgKHNldHEgeWFvZGRtdXNlLXJldHJpZXZlLWJ1ZmZl
+cgogICAgICAgICAgICAgICh1cmwtcmV0cmlldmUgdXJsCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAneWFvZGRtdXNlLWdldC1wYWdlbmFtZS1jYWxsYmFjawogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKGxpc3QgcmV0cmlldmUtYnVmZmVyLW5hbWUgY29kaW5nCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICB3aWtpbmFtZSBwYWdlbmFtZSBoYW5kbGUtZnVuY3Rpb24pKSkp
+KSkpCgooZGVmdW4geWFvZGRtdXNlLWdldC1wYWdlbmFtZS1jYWxsYmFjayAoJm9wdGlvbmFsIHJl
+ZGlyZWN0IHJldHJpZXZlLWJ1ZmZlci1uYW1lIGNvZGluZwogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHdpa2luYW1lIHBhZ2VuYW1lIGhhbmRsZS1mdW5j
+dGlvbikKICAiVGhlIGNhbGxiYWNrIGZ1bmN0aW9uIGZvciBgeWFvZGRtdXNlLWdldC1wYWdlbmFt
+ZScuClJFRElSRUNUIGlzIGRlZmF1bHQgYXJndW1lbnQgZm9yIGNoZWNrIHN0YXR1cy4KUkVUUklF
+VkUtQlVGRkVSLU5BTUUgaXMgbmFtZSBvZiByZXRyaWV2ZSBidWZmZXIuCkNPRElORyBpcyBjb2Rp
+bmcgc3lzdGVtIGZvciBkZWNvZGUuCldJS0lOQU1FIGlzIHdpa2kgbmFtZS4KUEFHRU5BTUUgaXMg
+cGFnZSBuYW1lLgpIQU5ETEUtRlVOQ1RJT04gaXMgZnVuY3Rpb24gdGhhdCBoYW5kbGUgZG93bmxv
+YWQgY29udGVudC4iCiAgKGxldCAodGFibGUpCiAgICA7OyBEZWNvZGUgcGFnZW5hbWUgaW5mb3Jt
+YXRpb24uCiAgICAoeWFvZGRtdXNlLXJldHJpZXZlLWRlY29kZSByZXRyaWV2ZS1idWZmZXItbmFt
+ZSBjb2RpbmcpCiAgICA7OyBVcGRhdGUgcGFnZW5hbWUgd2l0aCB3aWtpLgogICAgKHdpdGgtY3Vy
+cmVudC1idWZmZXIgKGdldC1idWZmZXIgcmV0cmlldmUtYnVmZmVyLW5hbWUpCiAgICAgIChzZXRx
+IHRhYmxlIChtYXBjYXIgJ2xpc3QgKHNwbGl0LXN0cmluZyAoYnVmZmVyLXN0cmluZykpKSkKICAg
+ICAgKHB1dGhhc2ggd2lraW5hbWUgdGFibGUgeWFvZGRtdXNlLXBhZ2VzLWhhc2gpCiAgICAgIChr
+aWxsLWJ1ZmZlciAoY3VycmVudC1idWZmZXIpKSAgICA7aW4gMjIsIG11c3QgaGF2ZSBhcmd1bWVu
+dCB3aXRoIGtpbGwtYnVmZmVyCiAgICAgICkKICAgIDs7IEFkZCBzcGVjaWFsIGFjdGlvbi4KICAg
+ICh3aGVuIChhbmQgKGZib3VuZHAgaGFuZGxlLWZ1bmN0aW9uKQogICAgICAgICAgICAgICBoYW5k
+bGUtZnVuY3Rpb24pCiAgICAgIChmdW5jYWxsIGhhbmRsZS1mdW5jdGlvbiB3aWtpbmFtZSBwYWdl
+bmFtZSkpKSkKCihkZWZ1biB5YW9kZG11c2UtZ2V0LXBhZ2UgKHdpa2luYW1lIHBhZ2VuYW1lKQog
+ICJHZXQgcGFnZS4KV0lLSU5BTUUgaXMgdGhlIG5hbWUgb2YgdGhlIHdpa2kgYXMgZGVmaW5lZCBp
+biBgeWFvZGRtdXNlLXdpa2lzJywKUEFHRU5BTUUgaXMgdGhlIHBhZ2VuYW1lIG9mIHRoZSBwYWdl
+IHlvdSB3YW50IHRvIGVkaXQuIgogIChsZXQqICgodXJsICh5YW9kZG11c2UtZ2V0LXVybCB3aWtp
+bmFtZSkpCiAgICAgICAgICh1cmwtcmVxdWVzdC1tZXRob2QgIkdFVCIpCiAgICAgICAgIChjb2Rp
+bmcgKHlhb2RkbXVzZS1nZXQtY29kaW5nIHdpa2luYW1lKSkKICAgICAgICAgKHlhb2RkbXVzZS13
+aWtpbmFtZSB3aWtpbmFtZSkKICAgICAgICAgKHlhb2RkbXVzZS1wYWdlbmFtZSBwYWdlbmFtZSkK
+ICAgICAgICAgcmV0cmlldmUtYnVmZmVyCiAgICAgICAgIHJldHJpZXZlLWJ1ZmZlci1uYW1lKQog
+ICAgOzsgSW5pdGlhbGl6ZSB1cmwgcmVxdWVzdCBwYXJhbWV0ZXIuCiAgICAoc2V0cSB1cmwgKHlh
+b2RkbXVzZS1mb3JtYXQgeWFvZGRtdXNlLWFyZ3MtZ2V0IGNvZGluZyB1cmwpKQogICAgOzsgR2V0
+IHVuaXF1ZSBidWZmZXIgZm9yIGhhbmRsZSBpbmZvcm1hdGlvbi4KICAgIChzZXRxIHJldHJpZXZl
+LWJ1ZmZlciAoeWFvZGRtdXNlLWdldC11bmlxdWUtYnVmZmVyKSkKICAgIChzZXRxIHJldHJpZXZl
+LWJ1ZmZlci1uYW1lIChidWZmZXItbmFtZSByZXRyaWV2ZS1idWZmZXIpKQogICAgOzsgR2V0IHBh
+Z2UuCiAgICAod2l0aC1jdXJyZW50LWJ1ZmZlciAoZ2V0LWJ1ZmZlciByZXRyaWV2ZS1idWZmZXIt
+bmFtZSkKICAgICAgKHNldHEgeWFvZGRtdXNlLXJldHJpZXZlLWJ1ZmZlcgogICAgICAgICAgICAo
+dXJsLXJldHJpZXZlIHVybAogICAgICAgICAgICAgICAgICAgICAgICAgICd5YW9kZG11c2UtZ2V0
+LXBhZ2UtY2FsbGJhY2sKICAgICAgICAgICAgICAgICAgICAgICAgICAobGlzdCByZXRyaWV2ZS1i
+dWZmZXItbmFtZSBjb2Rpbmcgd2lraW5hbWUgcGFnZW5hbWUpKSkpKSkKCihkZWZ1biB5YW9kZG11
+c2UtZ2V0LXBhZ2UtY2FsbGJhY2sgKCZvcHRpb25hbCByZWRpcmVjdCByZXRyaWV2ZS1idWZmZXIt
+bmFtZSBjb2Rpbmcgd2lraW5hbWUgcGFnZW5hbWUpCiAgIlRoZSBjYWxsYmFjayBmdW5jdGlvbiBm
+b3IgYHlhb2RkbXVzZS1nZXQtcGFnZScuClJFRElSRUNUIGlzIGRlZmF1bHQgYXJndW1lbnQgZm9y
+IGNoZWNrIHN0YXR1cy4KUkVUUklFVkUtQlVGRkVSLU5BTUUgaXMgbmFtZSBvZiByZXRyaWV2ZSBi
+dWZmZXIuCkNPRElORyBpcyBjb2Rpbmcgc3lzdGVtIGZvciBkZWNvZGUuCldJS0lOQU1FIGlzIHdp
+a2kgbmFtZSBmb3IgcG9zdC4KUEFHRU5BTUUgaXMgcGFnZSBuYW1lIGZvciBwb3N0LiIKICAoaWYg
+KGVxIChjYXIgcmVkaXJlY3QpICc6ZXJyb3IpCiAgICAgIDs7IEtpbGwgcmV0cmlldmUgYnVmZmVy
+IGFuZCBub3RpZnkgdXNlciB3aGVuIHJldHJpZXZlIGZhaWxlZC4KICAgICAgKHdpdGgtY3VycmVu
+dC1idWZmZXIgKGdldC1idWZmZXIgcmV0cmlldmUtYnVmZmVyLW5hbWUpCiAgICAgICAgKGZ1bmNh
+bGwgeWFvZGRtdXNlLW5vdGlmeS1mdW5jdGlvbgogICAgICAgICAgICAgICAgIChmb3JtYXQgIkdl
+dCBwYWdlICclcycgZnJvbSAnJXMnIGZhaWxlZC4iIHBhZ2VuYW1lIHdpa2luYW1lKSkKICAgICAg
+ICAoa2lsbC1idWZmZXIgcmV0cmlldmUtYnVmZmVyLW5hbWUpKQogICAgOzsgT3RoZXJ3aXNlIGRp
+c3BsYXkgZWRpdCBidWZmZXIuCiAgICAobGV0ICgocGFnZS1idWZmZXIgKGZpbmQtZmlsZS1ub3Nl
+bGVjdAogICAgICAgICAgICAgICAgICAgICAgICAoZm9ybWF0ICIlcy8lcy8lcyIgeWFvZGRtdXNl
+LWRpcmVjdG9yeSB3aWtpbmFtZSBwYWdlbmFtZSkpKQogICAgICAgICAgKHBhZ2UtYnVmZmVyLW5h
+bWUgKHlhb2RkbXVzZS1nZXQtcGFnZS1idWZmZXItbmFtZSB3aWtpbmFtZSBwYWdlbmFtZSkpKQog
+ICAgICA7OyBEZWNvZGUgcmV0cmlldmUgcGFnZSBpbmZvcm1hdGlvbi4KICAgICAgKHlhb2RkbXVz
+ZS1yZXRyaWV2ZS1kZWNvZGUgcmV0cmlldmUtYnVmZmVyLW5hbWUgY29kaW5nKQogICAgICA7OyBS
+ZWZyZXNoIHBhZ2UgY29udGVudC4KICAgICAgKHNldC1idWZmZXIgcGFnZS1idWZmZXIpCiAgICAg
+IDs7IFJlbmFtZS4KICAgICAgKHVubGVzcyAoZXF1YWwgcGFnZS1idWZmZXItbmFtZSAoYnVmZmVy
+LW5hbWUpKQogICAgICAgIChyZW5hbWUtYnVmZmVyIHBhZ2UtYnVmZmVyLW5hbWUpKQogICAgICA7
+OyBFcmFzZSBvcmlnaW5hbCBpbmZvcm1hdGlvbi4KICAgICAgKGVyYXNlLWJ1ZmZlcikKICAgICAg
+KGluc2VydAogICAgICAgKHdpdGgtY3VycmVudC1idWZmZXIgKGdldC1idWZmZXIgcmV0cmlldmUt
+YnVmZmVyLW5hbWUpCiAgICAgICAgIChwcm9nMQogICAgICAgICAgICAgKGJ1ZmZlci1zdHJpbmcp
+CiAgICAgICAgICAgKGtpbGwtYnVmZmVyIChjdXJyZW50LWJ1ZmZlcikpIDtpbiAyMiwgbXVzdCBo
+YXZlIGFyZ3VtZW50IHdpdGgga2lsbC1idWZmZXIKICAgICAgICAgICApKSkKICAgICAgOzsgTm90
+aWZ5IHVzZXIuCiAgICAgIChmdW5jYWxsIHlhb2RkbXVzZS1ub3RpZnktZnVuY3Rpb24KICAgICAg
+ICAgICAgICAgKGZvcm1hdCAiR2V0IHBhZ2UgJyVzJyBmb3JtICclcycgc3VjY2Vzc2Z1bC4iIHBh
+Z2VuYW1lIHdpa2luYW1lKSkKICAgICAgOzsgTWFrZSBzdXJlIGxvYWQgYHlhb2RkbXVzZS1tb2Rl
+JyBmaXJzdCwKICAgICAgOzsgb3RoZXJ3aXNlIGJ1ZmZlci1sb2NhbCB2YXJpYWJsZSB3aWxsIGJl
+IHJlc2V0LgogICAgICAoeWFvZGRtdXNlLW1vZGUpCiAgICAgIDs7IFVwZGF0ZSBlZGl0IHN0YXR1
+cyBhdCBtb2RlLWxpbmUuCiAgICAgICh5YW9kZG11c2UtdXBkYXRlLWVkaXQtc3RhdHVzKQogICAg
+ICA7OyBBZGp1c3QgcGFnZSBjb250ZW50LgogICAgICAoeWFvZGRtdXNlLXBhZ2UtY29udGVudC1h
+ZGp1c3QpCiAgICAgIDs7IFByb3RlY3QgZG93bmxvYWQgY29udGVudC4KICAgICAgKHNldC1idWZm
+ZXItbW9kaWZpZWQtcCBuaWwpCiAgICAgIDs7IFN3aXRjaCBvciBwb3B1cCBwYWdlLgogICAgICAo
+eWFvZGRtdXNlLWRpc3BsYXktcGFnZSBwYWdlLWJ1ZmZlci1uYW1lKSkpKQoKKGRlZnVuIHlhb2Rk
+bXVzZS1wYWdlLWNvbnRlbnQtYWRqdXN0ICgpCiAgIkFkanVzdCBwYWdlIGNvbnRlbnQuIgogIChn
+b3RvLWNoYXIgKHBvaW50LW1pbikpCiAgKHNhdmUtZXhjdXJzaW9uCiAgICAoY29uZCAoIDs7IElm
+IGdvdCBuZXcgcGFnZS4KICAgICAgICAgICAobG9va2luZy1hdCAiXFxgVGhpcyBwYWdlIGRvZXMg
+bm90IGV4aXN0IikKICAgICAgICAgICA7OyBBZGp1c3Qgc3RyaW5nIHdoZW4gZ290IG5ldyBwYWdl
+LgogICAgICAgICAgIChlcmFzZS1idWZmZXIpCiAgICAgICAgICAgKGluc2VydCAiVGhpcyBwYWdl
+IGRvZXMgbm90IGV4aXN0LCB5b3UgY2FuIGNyZWF0ZSBpdCBub3cuIDopIikpCiAgICAgICAgICAo
+IDs7IElmIGdvdCBpbWFnZSBwYWdlIGFuZCBvcHRpb24gYHlhb2RkbXVzZS10cmFuc2Zvcm0taW1h
+Z2UnIGlzIG5vbi1uaWwuCiAgICAgICAgICAgKGFuZCAobG9va2luZy1hdCAiXFxgI0ZJTEUgaW1h
+Z2UvXFwocG5nXFx8anBlZ1xcKSQiKQogICAgICAgICAgICAgICAgeWFvZGRtdXNlLXRyYW5zZm9y
+bS1pbWFnZSkKICAgICAgICAgICA7OyBUcmFuc2Zvcm0gaW1hZ2UgY29udGVudC4KICAgICAgICAg
+ICAoeWFvZGRtdXNlLXR1cm4tb24taW1hZ2Utc3RhdHVzKSkpKSkKCihkZWZ1biB5YW9kZG11c2Ut
+cG9zdCAod2lraW5hbWUgcGFnZW5hbWUgZGVmYXVsdC1wYWdlbmFtZSBwb3N0LXN0cmluZyBzdW1t
+YXJ5ICZvcHRpb25hbCBicm93c2UtcGFnZSkKICAiUG9zdGluZyBzdHJpbmcgdG8gd2lraS4KV0lL
+SU5BTUUgaXMgdGhlIG5hbWUgb2YgdGhlIHdpa2kgYXMgZGVmaW5lZCBpbiBgeWFvZGRtdXNlLXdp
+a2lzJywKUEFHRU5BTUUgaXMgdGhlIHBhZ2VuYW1lIG9mIHRoZSBwYWdlIHlvdSB3YW50IHRvIGVk
+aXQuCkRFRkFVTFQtUEFHRU5BTUUgaXMgZGVmYXVsdCBuYW1lIGZvciBwcm9tcHQsIGp1c3QgdXNl
+IHdoZW4gUEFHRU5BTUUgaXMgbmlsLgpQT1NULVNUUklORyBpcyB0aGUgc3RyaW5nIHlvdSB3YW50
+IHBvc3QuClNVTU1BUlkgaXMgc3VtbWFyeSBmb3IgcG9zdC4KSWYgQlJPV1NFLVBBR0UgaXMgbm9u
+LW5pbCwgd2lsbCBicm93c2UgcGFnZSBhZnRlciBwb3N0IHN1Y2Nlc3NmdWwuIgogIDs7IFJlYWQg
+d2lraSBuYW1lIHdoZW4gYHdpa2luYW1lJyBpcyBuaWwuCiAgKHVubGVzcyB3aWtpbmFtZQogICAg
+KHNldHEgd2lraW5hbWUgKHlhb2RkbXVzZS1yZWFkLXdpa2luYW1lKSkpCiAgOzsgUmVhZCBwYWdl
+IG5hbWUgd2hlbiBgcGFnZW5hbWUnIGlzIG5pbC4KICAodW5sZXNzIHBhZ2VuYW1lCiAgICAoc2V0
+cSBwYWdlbmFtZSAoeWFvZGRtdXNlLXJlYWQtcGFnZW5hbWUgd2lraW5hbWUpKSkKICA7OyBSZWFk
+IHN1bW1hcnkgd2hlbiBgc3VtbWFyeScgaXMgbmlsLgogICh1bmxlc3Mgc3VtbWFyeQogICAgKHNl
+dHEgc3VtbWFyeSAoeWFvZGRtdXNlLXJlYWQtc3VtbWFyeSkpKQogIDs7IElmIG9wdGlvbiBgYnJv
+d3NlLXBhZ2UnIG9yIGBjdXJyZW50LXByZWZpeC1hcmcnIGlzIG5vbi1uaWwsCiAgOzsgYnJvd3Nl
+IGNvcnJlc3BvbmRpbmcgcGFnZSBhZnRlciBwb3N0IHN1Y2Nlc3NmdWwuCiAgKHVubGVzcyBicm93
+c2UtcGFnZQogICAgKHNldHEgYnJvd3NlLXBhZ2UgY3VycmVudC1wcmVmaXgtYXJnKSkKICA7OyBQ
+b3N0LgogIChsZXQqICgodXJsICh5YW9kZG11c2UtZ2V0LXVybCB3aWtpbmFtZSkpCiAgICAgICAg
+ICh1cmwtcmVxdWVzdC1tZXRob2QgIlBPU1QiKQogICAgICAgICAodXJsLXJlcXVlc3QtZXh0cmEt
+aGVhZGVycwogICAgICAgICAgJygoIkNvbnRlbnQtdHlwZTogYXBwbGljYXRpb24veC13d3ctZm9y
+bS11cmxlbmNvZGVkOyIpKSkKICAgICAgICAgKHVybC1yZXF1ZXN0LWRhdGEKICAgICAgICAgICh5
+YW9kZG11c2UtZm9ybWF0ICh5YW9kZG11c2UtZ2V0LXBvc3QtYXJncyB3aWtpbmFtZSkKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICh5YW9kZG11c2UtZ2V0LWNvZGluZyB3aWtpbmFtZSkpKQog
+ICAgICAgICAoeWFvZGRtdXNlLW1pbm9yIChpZiB5YW9kZG11c2UtbWlub3IgIm9uIiAib2ZmIikp
+CiAgICAgICAgICh5YW9kZG11c2Utd2lraW5hbWUgd2lraW5hbWUpCiAgICAgICAgICh5YW9kZG11
+c2UtcGFnZW5hbWUgcGFnZW5hbWUpCiAgICAgICAgICh0ZXh0IHBvc3Qtc3RyaW5nKSkKICAgICh1
+cmwtcmV0cmlldmUgdXJsCiAgICAgICAgICAgICAgICAgICd5YW9kZG11c2UtcG9zdC1jYWxsYmFj
+awogICAgICAgICAgICAgICAgICAobGlzdCB3aWtpbmFtZSBwYWdlbmFtZSBicm93c2UtcGFnZSkp
+KSkKCihkZWZ1biB5YW9kZG11c2UtcG9zdC1jYWxsYmFjayAoJm9wdGlvbmFsIHJlZGlyZWN0IHdp
+a2luYW1lIHBhZ2VuYW1lIGJyb3dzZS1wYWdlKQogICJUaGUgY2FsbGJhY2sgZnVuY3Rpb24gZm9y
+IGB5YW9kZG11c2UtcG9zdCcuClJFRElSRUNUIGlzIGRlZmF1bHQgYXJndW1lbnQgZm9yIGNoZWNr
+IHN0YXR1cy4KV0lLSU5BTUUgaXMgd2lraSBuYW1lIGZvciBwb3N0LgpQQUdFTkFNRSBpcyBwYWdl
+IG5hbWUgZm9yIHBvc3QuCklmIEJST1dTRS1QQUdFIGlzIG5vbi1uaWwsIHdpbGwgYnJvd3NlIHBh
+Z2UgYWZ0ZXIgcG9zdCBzdWNjZXNzZnVsLiIKICAoaWYgKGVxIChjYXIgcmVkaXJlY3QpICc6cmVk
+aXJlY3QpCiAgICAgIChsZXQgKCh0YWJsZSAoeWFvZGRtdXNlLWdldC1wYWdlbmFtZS10YWJsZSB3
+aWtpbmFtZSkpKQogICAgICAgIDs7IFVwZGF0ZSBgcGFnZW5hbWUnIGluIGB5YW9kZG11c2UtcGFn
+ZXMtaGFzaCcKICAgICAgICA7OyBpZiBjYW4ndCBmaW5kIGluIGB5YW9kZG11c2UtcGFnZXMtaGFz
+aCcuCiAgICAgICAgKHVubGVzcyAoYXNzb2MgcGFnZW5hbWUgdGFibGUpCiAgICAgICAgICAoc2V0
+cSB0YWJsZSAoY29ucyAobGlzdCBwYWdlbmFtZSkgdGFibGUpKQogICAgICAgICAgKHB1dGhhc2gg
+d2lraW5hbWUgdGFibGUgeWFvZGRtdXNlLXBhZ2VzLWhhc2gpKQogICAgICAgIDs7IFdoZXRoZXIg
+Y2xvc2UgYnVmZmVyIGFmdGVyIHBvc3QuCiAgICAgICAgKGlmIHlhb2RkbXVzZS1jbG9zZS1hZnRl
+ci1wb3N0CiAgICAgICAgICAgIChraWxsLWJ1ZmZlciAoeWFvZGRtdXNlLWdldC1wYWdlLWJ1ZmZl
+ci1uYW1lIHdpa2luYW1lIHBhZ2VuYW1lKSkpCiAgICAgICAgKGZ1bmNhbGwgeWFvZGRtdXNlLW5v
+dGlmeS1mdW5jdGlvbgogICAgICAgICAgICAgICAgIChmb3JtYXQgIlBhZ2UgJyVzJyBwb3N0IHRv
+ICclcycgc3VjY2Vzc2Z1bC4iIHBhZ2VuYW1lIHdpa2luYW1lKSkKICAgICAgICA7OyBCcm93c2Ug
+cGFnZSBpZiBvcHRpb24gYGJyb3dzZS1wYWdlJyBpcyBgbm9uLW5pbCcuCiAgICAgICAgKGlmIGJy
+b3dzZS1wYWdlCiAgICAgICAgICAgIChmdW5jYWxsIHlhb2RkbXVzZS1icm93c2UtZnVuY3Rpb24g
+KHlhb2RkbXVzZS11cmwgd2lraW5hbWUgcGFnZW5hbWUpKSkpCiAgICA7OyBQb3N0IGZhaWxlZC4K
+ICAgIChmdW5jYWxsIHlhb2RkbXVzZS1ub3RpZnktZnVuY3Rpb24KICAgICAgICAgICAgIChmb3Jt
+YXQgIlBhZ2UgJyVzJyBwb3N0IHRvICclcycgZmFpbGVkLiIgcGFnZW5hbWUgd2lraW5hbWUpKSkp
+CgooZGVmdW4geWFvZGRtdXNlLWhhbmRsZS1nZXQgKCZvcHRpb25hbCB3aWtpbmFtZSBwYWdlbmFt
+ZSkKICAiVGhlIGhhbmRsZSBmdW5jdGlvbiBmb3IgZ2V0IHBhZ2UuCldJS0lOQU1FIGlzIHdpa2kg
+bmFtZSBmb3IgcG9zdC4KUEFHRU5BTUUgaXMgcGFnZSBuYW1lIGZvciBwb3N0LiIKICA7OyBSZWFk
+IHBhZ2UgbmFtZSB3aGVuIGBwYWdlbmFtZScgaXMgdm9pZC4KICAob3IgcGFnZW5hbWUgKHNldHEg
+cGFnZW5hbWUgKHlhb2RkbXVzZS1yZWFkLXBhZ2VuYW1lIHdpa2luYW1lKSkpCiAgOzsgR2V0IHBh
+Z2UuCiAgKHlhb2RkbXVzZS1nZXQtcGFnZSB3aWtpbmFtZSBwYWdlbmFtZSkpCgooZGVmdW4geWFv
+ZGRtdXNlLWhhbmRsZS1nZXQtb3ItZGlzcGxheSAoJm9wdGlvbmFsIHdpa2luYW1lIHBhZ2VuYW1l
+KQogICJUaGUgIGZ1bmN0aW9uIGZvciBnZXQgb3IgZGlzcGxheSBwYWdlLgpXSUtJTkFNRSBpcyB3
+aWtpIG5hbWUgZm9yIHBvc3QuClBBR0VOQU1FIGlzIHBhZ2UgbmFtZSBmb3IgcG9zdC4iCiAgOzsg
+UmVhZCBwYWdlIG5hbWUgd2hlbiBgcGFnZW5hbWUnIGlzIHZvaWQuCiAgKG9yIHBhZ2VuYW1lIChz
+ZXRxIHBhZ2VuYW1lICh5YW9kZG11c2UtcmVhZC1wYWdlbmFtZSB3aWtpbmFtZSkpKQogIDs7IEdl
+dCBvciBkaXNwbGF5IHBhZ2UuCiAgKGxldCAoKHBhZ2UtYnVmZmVyLW5hbWUgKHlhb2RkbXVzZS1n
+ZXQtcGFnZS1idWZmZXItbmFtZSB3aWtpbmFtZSBwYWdlbmFtZSkpKQogICAgKGlmIChnZXQtYnVm
+ZmVyIHBhZ2UtYnVmZmVyLW5hbWUpCiAgICAgICAgOzsgU3dpdGNoIHBhZ2UgYnVmZmVyIHdoZW4g
+aXQgaGF2ZSBleGlzdC4KICAgICAgICAoeWFvZGRtdXNlLWRpc3BsYXktcGFnZSBwYWdlLWJ1ZmZl
+ci1uYW1lKQogICAgICA7OyBPdGhlcndpc2UsIGdldCBwYWdlLgogICAgICAoeWFvZGRtdXNlLWdl
+dC1wYWdlIHdpa2luYW1lIHBhZ2VuYW1lKSkpKQoKKGRlZnVuIHlhb2RkbXVzZS1oYW5kbGUtZm9s
+bG93ICgmb3B0aW9uYWwgd2lraW5hbWUgcGFnZW5hbWUpCiAgIlRoZSBoYW5kbGUgZnVuY3Rpb24g
+Zm9yIGdldCBwYWdlIG5hbWUuCldJS0lOQU1FIGlzIHdpa2kgbmFtZSBmb3IgcG9zdC4KUEFHRU5B
+TUUgaXMgcGFnZSBuYW1lIGZvciBwb3N0LiIKICA7OyBSZWFkIHBhZ2UgbmFtZSB3aGVuIGBwYWdl
+bmFtZScgaXMgdm9pZC4KICAob3IgcGFnZW5hbWUgKHNldHEgcGFnZW5hbWUgKHlhb2RkbXVzZS1y
+ZWFkLXBhZ2VuYW1lIHdpa2luYW1lICJFZGl0IHBhZ2UiKSkpCiAgOzsgRm9sbG93IHBhZ2UuCiAg
+KHlhb2RkbXVzZS1nZXQtcGFnZSB3aWtpbmFtZSBwYWdlbmFtZSkpCgooZGVmdW4geWFvZGRtdXNl
+LWhhbmRsZS1icm93c2UgKCZvcHRpb25hbCB3aWtpbmFtZSBwYWdlbmFtZSkKICAiVGhlIGhhbmRs
+ZSBmdW5jdGlvbiBmb3IgYnJvd3NlIHBhZ2UuCldJS0lOQU1FIGlzIHdpa2kgbmFtZSBmb3IgcG9z
+dC4KUEFHRU5BTUUgaXMgcGFnZSBuYW1lIGZvciBwb3N0LiIKICA7OyBSZWFkIHBhZ2UgbmFtZSB3
+aGVuIGBwYWdlbmFtZScgaXMgdm9pZC4KICAob3IgcGFnZW5hbWUgKHNldHEgcGFnZW5hbWUgKHlh
+b2RkbXVzZS1yZWFkLXBhZ2VuYW1lIHdpa2luYW1lICJCcm93c2UgcGFnZSIpKSkKICA7OyBCcm9z
+ZSBwYWdlLgogIChmdW5jYWxsIHlhb2RkbXVzZS1icm93c2UtZnVuY3Rpb24gKHlhb2RkbXVzZS11
+cmwgd2lraW5hbWUgcGFnZW5hbWUpKSkKCihkZWZ1biB5YW9kZG11c2UtaGFuZGxlLWJyb3dzZS1k
+aWZmICgmb3B0aW9uYWwgd2lraW5hbWUgcGFnZW5hbWUpCiAgIlRoZSBoYW5kbGUgZnVuY3Rpb24g
+Zm9yIGJyb3dzZSBwYWdlIGRpZmYuCldJS0lOQU1FIGlzIHdpa2kgbmFtZSBmb3IgcG9zdC4KUEFH
+RU5BTUUgaXMgcGFnZSBuYW1lIGZvciBwb3N0LiIKICA7OyBSZWFkIHBhZ2UgbmFtZSB3aGVuIGBw
+YWdlbmFtZScgaXMgdm9pZC4KICAob3IgcGFnZW5hbWUgKHNldHEgcGFnZW5hbWUgKHlhb2RkbXVz
+ZS1yZWFkLXBhZ2VuYW1lIHdpa2luYW1lICJCcm93c2UgcGFnZSBkaWZmIikpKQogIDs7IEJyb3Nl
+IHBhZ2UuCiAgKGZ1bmNhbGwgeWFvZGRtdXNlLWJyb3dzZS1mdW5jdGlvbiAoeWFvZGRtdXNlLXVy
+bC1kaWZmIHdpa2luYW1lIHBhZ2VuYW1lKSkpCgooZGVmdW4geWFvZGRtdXNlLWhhbmRsZS1pbnNl
+cnQgKCZvcHRpb25hbCB3aWtpbmFtZSBwYWdlbmFtZSkKICAiVGhlIGhhbmRsZSBmdW5jdGlvbiBm
+b3IgaW5zZXJ0IHBhZ2UgbmFtZS4KV0lLSU5BTUUgaXMgd2lraSBuYW1lIGZvciBwb3N0LgpQQUdF
+TkFNRSBpcyBwYWdlIG5hbWUgZm9yIHBvc3QuIgogIDs7IFJlYWQgcGFnZSBuYW1lIHdoZW4gYHBh
+Z2VuYW1lJyBpcyB2b2lkLgogIChvciBwYWdlbmFtZSAoc2V0cSBwYWdlbmFtZSAoeWFvZGRtdXNl
+LXJlYWQtcGFnZW5hbWUgd2lraW5hbWUgIkluc2VydCBwYWdlIikpKQogIDs7IEluc2VydCBwYWdl
+IG5hbWUuCiAgKGluc2VydCBwYWdlbmFtZSkpCgooZGVmdW4geWFvZGRtdXNlLWhhbmRsZS1yZWRp
+cmVjdCAoJm9wdGlvbmFsIHdpa2luYW1lIHBhZ2VuYW1lKQogICJUaGUgaGFuZGxlIGZ1bmN0aW9u
+IGZvciByZWRpcmVjdCBwYWdlLgpXSUtJTkFNRSBpcyB3aWtpIG5hbWUgZm9yIHBvc3QuClBBR0VO
+QU1FIGlzIHBhZ2UgbmFtZSBmb3IgcG9zdC4iCiAgKGxldCogKCh0YWJsZSAoeWFvZGRtdXNlLWdl
+dC1wYWdlbmFtZS10YWJsZSB3aWtpbmFtZSkpCiAgICAgICAgIChyZWRpcmVjdC1mcm9tLXBhZ2Ug
+KHlhb2RkbXVzZS1yZWFkLXBhZ2VuYW1lIHdpa2luYW1lICJSZWRpcmVjdCBmcm9tIHBhZ2UiKSkK
+ICAgICAgICAgKHJlZGlyZWN0LXRvLXBhZ2UgKHlhb2RkbXVzZS1yZWFkLXBhZ2VuYW1lIHdpa2lu
+YW1lICJSZWRpcmVjdCB0byBwYWdlIikpCiAgICAgICAgIChyZWRpcmVjdC1zdHJpbmcgKGZvcm1h
+dCAiI1JFRElSRUNUIFtbJXNdXSIgcmVkaXJlY3QtdG8tcGFnZSkpCiAgICAgICAgIChyZWRpcmVj
+dC1zdW1tYXJ5IChmb3JtYXQgIlJlZGlyZWN0IHRvICVzIiByZWRpcmVjdC10by1wYWdlKSkpCiAg
+ICA7OyBNb2RpZmllZCBjdXJyZW50IGJ1ZmZlciBpZiBpdCBpcwogICAgOzsgYHlhb2RkbXVzZScg
+YnVmZmVyLgogICAgKHdoZW4geWFvZGRtdXNlLXBhZ2VuYW1lCiAgICAgIChlcmFzZS1idWZmZXIp
+CiAgICAgIChpbnNlcnQgcmVkaXJlY3Qtc3RyaW5nKSkKICAgIDs7IFJlZGlyZWN0LgogICAgKHlh
+b2RkbXVzZS1wb3N0IHdpa2luYW1lCiAgICAgICAgICAgICAgICAgICAgcmVkaXJlY3QtZnJvbS1w
+YWdlCiAgICAgICAgICAgICAgICAgICAgbmlsCiAgICAgICAgICAgICAgICAgICAgcmVkaXJlY3Qt
+c3RyaW5nCiAgICAgICAgICAgICAgICAgICAgcmVkaXJlY3Qtc3VtbWFyeQogICAgICAgICAgICAg
+ICAgICAgIGN1cnJlbnQtcHJlZml4LWFyZykpKQoKKGRlZnVuIHlhb2RkbXVzZS1oYW5kbGUtZGVs
+ZXRlICgmb3B0aW9uYWwgd2lraW5hbWUgcGFnZW5hbWUpCiAgIlRoZSBoYW5kbGUgZnVuY3Rpb24g
+Zm9yIGRlbGV0ZSBwYWdlLgpXSUtJTkFNRSBpcyB3aWtpIG5hbWUgZm9yIGRlbGV0ZS4KUEFHRU5B
+TUUgaXMgcGFnZSBuYW1lIGZvciBkZWxldGUuIgogIDs7IFJlYWQgcGFnZSBuYW1lIHdoZW4gYHBh
+Z2VuYW1lJyBpcyB2b2lkLgogIChvciBwYWdlbmFtZSAoc2V0cSBwYWdlbmFtZSAoeWFvZGRtdXNl
+LXJlYWQtcGFnZW5hbWUgd2lraW5hbWUgIkRlbGV0ZSBwYWdlIikpKQogIDs7IERlbGV0ZS4KICAo
+eWFvZGRtdXNlLXBvc3Qgd2lraW5hbWUKICAgICAgICAgICAgICAgICAgcGFnZW5hbWUKICAgICAg
+ICAgICAgICAgICAgbmlsCiAgICAgICAgICAgICAgICAgICJEZWxldGVkUGFnZSIKICAgICAgICAg
+ICAgICAgICAgIkRlbGV0ZWQiCiAgICAgICAgICAgICAgICAgIGN1cnJlbnQtcHJlZml4LWFyZykp
+CgooZGVmdW4geWFvZGRtdXNlLWRpc3BsYXktcGFnZSAocGFnZS1idWZmZXItbmFtZSkKICAiRGlz
+cGxheSBzcGVjaWFsIHBhZ2UgYnVmZmVyLgpQQUdFLUJVRkZFUi1OQU1FIGlzIGJ1ZmZlciBuYW1l
+IG9mIGRpc3BsYXkgcGFnZS4iCiAgOzsgRGlzcGxheSBwYWdlIHdoZW4gb3B0aW9uCiAgOzsgYHlh
+b2RkbXVzZS1kaXNwbGF5LWFmdGVyLWdldCcgaXMgbm9uLW5pbC4KICAod2hlbiB5YW9kZG11c2Ut
+ZGlzcGxheS1hZnRlci1nZXQKICAgIChzZXQtYnVmZmVyICh3aW5kb3ctYnVmZmVyKSkKICAgIChp
+ZiAoZXEgbWFqb3ItbW9kZSAneWFvZGRtdXNlLW1vZGUpCiAgICAgICAgOzsgU3dpdGNoIHRvIHJl
+dHJpZXZlIHBhZ2UgYnVmZmVyCiAgICAgICAgOzsgd2hlbiBjdXJyZW50IG1ham9yIG1vZGUgaXMg
+YHlhb2RkbXVzZS1tb2RlJy4KICAgICAgICAoc3dpdGNoLXRvLWJ1ZmZlciBwYWdlLWJ1ZmZlci1u
+YW1lKQogICAgICA7OyBQb3B1cCByZXRyaWV2ZSBwYWdlIGJ1ZmZlcgogICAgICA7OyB3aGVuIGN1
+cnJlbnQgbWFqb3IgbW9kZSBpcyBub3QgYHlhb2RkbXVzZS1tb2RlJy4KICAgICAgKHBvcC10by1i
+dWZmZXIgcGFnZS1idWZmZXItbmFtZSkpKSkKCihkZWZ1biB5YW9kZG11c2UtcmVhZC13aWtpbmFt
+ZSAoKQogICJSZWFkIHdpa2kgbmFtZSBmb3IgY29tcGxldGluZy4iCiAgKGNvbXBsZXRpbmctcmVh
+ZCAiV2lraSBuYW1lOiAiIHlhb2RkbXVzZS13aWtpcyBuaWwgdCkpCgooZGVmdW4geWFvZGRtdXNl
+LXJlYWQtcGFnZW5hbWUgKHdpa2luYW1lICZvcHRpb25hbCBwcm9tcHQpCiAgIlJlYWQgcGFnZSBu
+YW1lIG9mIFdJS0lOQU1FIGZvciBjb21wbGV0aW5nLgpCeSBkZWZhdWx0LCBkaXNwbGF5IFwiUGFn
+ZSBuYW1lXCIgYXMgcHJvbXB0CnVubGVzcyBvcHRpb24gUFJPTVBUIGlzIG5vbi1uaWwuIgogIChj
+b21wbGV0aW5nLXJlYWQgKGNvbmNhdCAob3IgcHJvbXB0ICJQYWdlIG5hbWUiKQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAoZm9ybWF0ICIgKCVzKTogIiAob3IgKHlhb2RkbXVzZS1wYWdlbmFt
+ZS1hdC1wb2ludCkgIiIpKSkKICAgICAgICAgICAgICAgICAgICh5YW9kZG11c2UtZ2V0LXBhZ2Vu
+YW1lLXRhYmxlIHdpa2luYW1lKQogICAgICAgICAgICAgICAgICAgbmlsIG5pbCBuaWwgbmlsCiAg
+ICAgICAgICAgICAgICAgICAoeWFvZGRtdXNlLXBhZ2VuYW1lLWF0LXBvaW50KSkpCgooZGVmdW4g
+eWFvZGRtdXNlLXJlYWQtc3VtbWFyeSAoKQogICJSZWFkIHN1bW1hcnkgZm9yIHBvc3QuIgogIChz
+ZXRxIHlhb2RkbXVzZS1sYXN0LXN1bW1hcnkKICAgICAgICAocmVhZC1zdHJpbmcgKGZvcm1hdCAi
+U3VtbWFyeSAoJXMpOiAiIChvciB5YW9kZG11c2UtbGFzdC1zdW1tYXJ5ICIiKSkKICAgICAgICAg
+ICAgICAgICAgICAgbmlsIG5pbCB5YW9kZG11c2UtbGFzdC1zdW1tYXJ5KSkpCgooZGVmdW4geWFv
+ZGRtdXNlLXVybCAod2lraW5hbWUgcGFnZW5hbWUpCiAgIkdldCB0aGUgVVJMIG9mIG9kZG11c2Ug
+d2lraS4KV0lLSU5BTUUgaXMgd2lraSBuYW1lIGZvciB2aWV3LgpQQUdFTkFNRSBpcyBwYWdlIG5h
+bWUgZm9yIHZpZXcuIgogIChvciAoaWdub3JlLWVycm9ycwogICAgICAgIChjb25jYXQgKHlhb2Rk
+bXVzZS1nZXQtdXJsIHdpa2luYW1lKSAiLyIgcGFnZW5hbWUpKQogICAgICAoZXJyb3IgKGZvcm1h
+dCAiSW52YWxpZCB3aWtpIG5hbWU6ICclcyciIHdpa2luYW1lKSkpKQoKKGRlZnVuIHlhb2RkbXVz
+ZS11cmwtZGlmZiAod2lraW5hbWUgcGFnZW5hbWUpCiAgIkdldCB0aGUgVVJMIG9mIG9kZG11c2Ug
+d2lraS4KV0lLSU5BTUUgaXMgd2lraSBuYW1lIGZvciB2aWV3LgpQQUdFTkFNRSBpcyBwYWdlIG5h
+bWUgZm9yIHZpZXcuIgogIChvciAoaWdub3JlLWVycm9ycwogICAgICAgIChjb25jYXQgKHlhb2Rk
+bXVzZS1nZXQtdXJsIHdpa2luYW1lKSAiLz9hY3Rpb249YnJvd3NlO2RpZmY9MjtpZD0iIHBhZ2Vu
+YW1lKSkKICAgICAgKGVycm9yIChmb3JtYXQgIkludmFsaWQgd2lraSBuYW1lOiAnJXMnIiB3aWtp
+bmFtZSkpKSkKCihkZWZ1biB5YW9kZG11c2UtZ2V0LXBhZ2VuYW1lLXRhYmxlICh3aWtpbmFtZSkK
+ICAiR2V0IHRhYmxlIGZyb20gYHlhb2RkbXVzZS1wYWdlcy1oYXNoJy4KV0lLSU5BTUUgaXMgd2lr
+aSBuYW1lIGZvciBwb3N0LiIKICAoZ2V0aGFzaCB3aWtpbmFtZSB5YW9kZG11c2UtcGFnZXMtaGFz
+aCkpCgooZGVmdW4geWFvZGRtdXNlLWdldC11cmwgKHdpa2luYW1lKQogICJHZXQgdXJsIGZyb20g
+YHlhb2RkbXVzZS13aWtpcycuCldJS0lOQU1FIGlzIHdpa2kgbmFtZSBmb3IgcG9zdC4iCiAgKGNh
+ZHIgKGFzc29jIHdpa2luYW1lIHlhb2RkbXVzZS13aWtpcykpKQoKKGRlZnVuIHlhb2RkbXVzZS1n
+ZXQtY29kaW5nICh3aWtpbmFtZSkKICAiR2V0IGNvZGluZyBmcm9tIGB5YW9kZG11c2Utd2lraXMn
+LgpXSUtJTkFNRSBpcyB3aWtpIG5hbWUgZm9yIHBvc3QuIgogIChjYWRkciAoYXNzb2Mgd2lraW5h
+bWUgeWFvZGRtdXNlLXdpa2lzKSkpCgooZGVmdW4geWFvZGRtdXNlLWdldC1wb3N0LWFyZ3MgKHdp
+a2luYW1lKQogICJSZXR1cm4gcG9zdCBhcmdzIGZvciBmdW5jdGlvbiBgeWFvZGRtdXNlLWZvcm1h
+dCcuClRoZSBXSUtJTkFNRSBpcyB3aWtpIG5hbWUgZm9yIHBvc3QuIgogIChpZiB5YW9kZG11c2Ut
+ZWRpdC1wcm90ZWN0CiAgICAgIDs7IEFkZCBDYXB0Y2hhIHN0cmluZyB3aGVuIG9wdGlvbgogICAg
+ICA7OyBgeWFvZGRtdXNlLWVkaXQtcHJvdGVjdCcgaXMgb24uCiAgICAgIChjb25jYXQgKGNhZGRk
+ciAoYXNzb2Mgd2lraW5hbWUgeWFvZGRtdXNlLXdpa2lzKSkgeWFvZGRtdXNlLWFyZ3MtcG9zdCkK
+ICAgIDs7IE90aGVyd2lzZSwganVzdCByZXR1cm4gYHlhb2RkbXVzZS1hcmdzLXBvc3QnLgogICAg
+eWFvZGRtdXNlLWFyZ3MtcG9zdCkpCgooZGVmdW4geWFvZGRtdXNlLWdldC1wYWdlLWJ1ZmZlci1u
+YW1lICh3aWtpbmFtZSBwYWdlbmFtZSkKICAiRnVuY3Rpb24gZG9jdW1lbnQuCldJS0lOQU1FIGlz
+IHdpa2kgbmFtZSBmb3IgcG9zdC4KUEFHRU5BTUUgaXMgcGFnZSBuYW1lIGZvciBwb3N0LiIKICAo
+Zm9ybWF0ICIlczolcyIgd2lraW5hbWUgcGFnZW5hbWUpKQoKKGRlZnVuIHlhb2RkbXVzZS1nZXQt
+dW5pcXVlLWJ1ZmZlciAoKQogICJHZXQgYSBidWZmZXIgZm9yIHRlbXBvcmFyeSBzdG9yYWdlIG9m
+IGRvd25sb2FkZWQgY29udGVudC4KVXNlcyBgY3VycmVudC10aW1lJyB0byBtYWtlIGJ1ZmZlciBu
+YW1lIHVuaXF1ZS4iCiAgKGxldCAodGltZS1ub3cgYnVmZmVyKQogICAgKHNldHEgdGltZS1ub3cg
+KGN1cnJlbnQtdGltZSkpCiAgICAoZ2V0LWJ1ZmZlci1jcmVhdGUKICAgICA7OyBMZWF2ZSBibGFu
+ayBhdCBmcm9udAogICAgIDs7IHRvIG1ha2UgdXNlciBjYW4ndCBtb2RpZmllZCBidWZmZXIuCiAg
+ICAgKGZvcm1hdCAiIColczwlcy0lcy0lcz4qIgogICAgICAgICAgICAgInlhb2RkbXVzZSIKICAg
+ICAgICAgICAgIChudGggMCB0aW1lLW5vdykgKG50aCAxIHRpbWUtbm93KSAobnRoIDIgdGltZS1u
+b3cpKSkpKQoKKGRlZnVuIHlhb2RkbXVzZS1nZXQtbGlicmFyeSAoKQogICJHZXQgbGlicmFyeSBu
+YW1lLiIKICAobGV0KiAoKGRpcnMgbG9hZC1wYXRoKQogICAgICAgICAoc3VmZml4ZXMgKGZpbmQt
+bGlicmFyeS1zdWZmaXhlcykpKQogICAgKGNvbXBsZXRpbmctcmVhZCAoZm9ybWF0ICJMaWJyYXJ5
+IG5hbWUgKCVzKTogIiAob3IgKHlhb2RkbXVzZS1yZWdpb24tb3ItdGhpbmcpICIiKSkKICAgICAg
+ICAgICAgICAgICAgICAgKHlhb2RkbXVzZS1nZXQtbGlicmFyeS1saXN0KQogICAgICAgICAgICAg
+ICAgICAgICBuaWwgbmlsIG5pbCBuaWwKICAgICAgICAgICAgICAgICAgICAgKHlhb2RkbXVzZS1y
+ZWdpb24tb3ItdGhpbmcpKSkpCgooZGVmdW4geWFvZGRtdXNlLXJlZ2lvbi1vci10aGluZyAoJm9w
+dGlvbmFsIHRoaW5nKQogICJSZXR1cm4gcmVnaW9uIG9yIHRoaW5nIGFyb3VuZCBwb2ludC4KSWYg
+YG1hcmstYWN0aXZlJywgcmV0dXJuIHJlZ2lvbi4KSWYgVEhJTkcgaXMgbm9uLW5pbCwgcmV0dXJu
+IFRISU5HIGFyb3VuZCBwb2ludDsKb3RoZXJ3aXNlIHJldHVybiBzeW1ib2wgYXJvdW5kIHBvaW50
+LiIKICAoaWYgKGFuZCBtYXJrLWFjdGl2ZSB0cmFuc2llbnQtbWFyay1tb2RlKQogICAgICAoYnVm
+ZmVyLXN1YnN0cmluZy1uby1wcm9wZXJ0aWVzIChyZWdpb24tYmVnaW5uaW5nKQogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIChyZWdpb24tZW5kKSkKICAgIChzZXRxIHRoaW5n
+IChvciB0aGluZyAnc3ltYm9sKSkKICAgIChpZ25vcmUtZXJyb3JzCiAgICAgIChzYXZlLWV4Y3Vy
+c2lvbgogICAgICAgIChidWZmZXItc3Vic3RyaW5nLW5vLXByb3BlcnRpZXMgKGJlZ2lubmluZy1v
+Zi10aGluZyB0aGluZykKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChl
+bmQtb2YtdGhpbmcgdGhpbmcpKSkpKSkKCihkZWZ1biB5YW9kZG11c2UtZ2V0LWxpYnJhcnktbGlz
+dCAoJm9wdGlvbmFsIGRpcnMgc3RyaW5nKQogICJEbyBjb21wbGV0aW9uIGZvciBmaWxlIG5hbWVz
+IHBhc3NlZCB0byBgbG9jYXRlLWZpbGUnLgpESVJTIGlzIGRpcmVjdG9yeSB0byBzZWFyY2ggcGF0
+aC4KU1RSSU5HIGlzIHN0cmluZyB0byBtYXRjaC4iCiAgOzsgVXNlIGBsb2FkLXBhdGgnIGFzIHBh
+dGggd2hlbiBpZ25vcmUgYGRpcnMnLgogIChvciBkaXJzIChzZXRxIGRpcnMgbG9hZC1wYXRoKSkK
+ICA7OyBJbml0IHdpdGggYmxhbmsgd2hlbiBpZ25vcmUgYHN0cmluZycuCiAgKG9yIHN0cmluZyAo
+c2V0cSBzdHJpbmcgIiIpKQogIDs7IEdldCBsaWJyYXJ5IGxpc3QuCiAgKGxldCAoKHN0cmluZy1k
+aXIgKGZpbGUtbmFtZS1kaXJlY3Rvcnkgc3RyaW5nKSkKICAgICAgICBuYW1lCiAgICAgICAgbmFt
+ZXMpCiAgICAoZG9saXN0IChkaXIgZGlycykKICAgICAgKHVubGVzcyBkaXIKICAgICAgICAoc2V0
+cSBkaXIgZGVmYXVsdC1kaXJlY3RvcnkpKQogICAgICAoaWYgc3RyaW5nLWRpcgogICAgICAgICAg
+KHNldHEgZGlyIChleHBhbmQtZmlsZS1uYW1lIHN0cmluZy1kaXIgZGlyKSkpCiAgICAgICh3aGVu
+IChmaWxlLWRpcmVjdG9yeS1wIGRpcikKICAgICAgICAoZG9saXN0IChmaWxlIChmaWxlLW5hbWUt
+YWxsLWNvbXBsZXRpb25zCiAgICAgICAgICAgICAgICAgICAgICAgKGZpbGUtbmFtZS1ub25kaXJl
+Y3Rvcnkgc3RyaW5nKSBkaXIpKQogICAgICAgICAgOzsgU3VmZml4ZXMgbWF0Y2ggYGxvYWQtZmls
+ZS1yZXAtc3VmZml4ZXMnLgogICAgICAgICAgKHNldHEgbmFtZSAoaWYgc3RyaW5nLWRpciAoY29u
+Y2F0IHN0cmluZy1kaXIgZmlsZSkgZmlsZSkpCiAgICAgICAgICAoaWYgKHN0cmluZy1tYXRjaCAo
+Zm9ybWF0ICJeLipcXC5lbCVzJCIgKHJlZ2V4cC1vcHQgbG9hZC1maWxlLXJlcC1zdWZmaXhlcykp
+IG5hbWUpCiAgICAgICAgICAgICAgKGFkZC10by1saXN0ICduYW1lcyBuYW1lKSkpKSkKICAgIG5h
+bWVzKSkKCihkZWZ1biB5YW9kZG11c2UtZ2V0LXN5bWJvbC1ub24tYmxhbmsgKCkKICAiUmV0dXJu
+IHN5bWJvbCBiZXR3ZWVuIGBibGFuaycuIgogIChzYXZlLWV4Y3Vyc2lvbgogICAgKGxldCAoc3Rh
+cnQgZW5kKQogICAgICAoc2VhcmNoLWJhY2t3YXJkLXJlZ2V4cCAiIFxcfF4iIG5pbCB0KQogICAg
+ICAoc2tpcC1jaGFycy1mb3J3YXJkICIgIikKICAgICAgKHNldHEgc3RhcnQgKHBvaW50KSkKICAg
+ICAgKHNlYXJjaC1mb3J3YXJkLXJlZ2V4cCAiIFxcfCQiIG5pbCB0KQogICAgICAoc2tpcC1jaGFy
+cy1iYWNrd2FyZCAiICIpCiAgICAgIChzZXRxIGVuZCAocG9pbnQpKQogICAgICAoaWYgKGFuZCBz
+dGFydAogICAgICAgICAgICAgICBlbmQKICAgICAgICAgICAgICAgKD49IGVuZCBzdGFydCkpCiAg
+ICAgICAgICAoYnVmZmVyLXN1YnN0cmluZy1uby1wcm9wZXJ0aWVzIHN0YXJ0IGVuZCkKICAgICAg
+ICBuaWwpKSkpCgooZGVmdW4geWFvZGRtdXNlLXBhZ2VuYW1lLWF0LXBvaW50ICgpCiAgIlBhZ2Ug
+bmFtZSBhdCBwb2ludC4iCiAgKGxldCogKChwYWdlbmFtZS13aWtpbmFtZSAod29yZC1hdC1wb2lu
+dCkpCiAgICAgICAgIChwYWdlbmFtZS1maWxlLWxpbmstbmFtZQogICAgICAgICAgKHlhb2RkbXVz
+ZS1nZXQtc3ltYm9sLW5vbi1ibGFuaykpKQogICAgKGNvbmQKICAgICA7OyBNYXRjaCBpbWFnZSBs
+aW5rLCBbW2ltYWdlOlBBR0VOQU1FXV0KICAgICAoKHlhb2RkbXVzZS1pbWFnZS1saW5rLXAgcGFn
+ZW5hbWUtZmlsZS1saW5rLW5hbWUpKQogICAgIDs7IE1hdGNoIGxpc3AgZmlsZSBsaW5rLCBMaXNw
+OlBBR0VOQU1FLmVsCiAgICAgKCh5YW9kZG11c2UtbGlzcC1maWxlLWxpbmstcCBwYWdlbmFtZS1m
+aWxlLWxpbmstbmFtZSkpCiAgICAgOzsgTWF0Y2ggV2lraSBuYW1lLgogICAgICgoeWFvZGRtdXNl
+LWN1cnJlbnQtZnJlZS1saW5rLWNvbnRlbnRzKSkKICAgICAoKHlhb2RkbXVzZS13aWtpbmFtZS1w
+IHBhZ2VuYW1lLXdpa2luYW1lKSkKICAgICA7OyBUcnkgcmV0dXJuIGN1cnJlbnQgcGFnZSBuYW1l
+LgogICAgICh0IHlhb2RkbXVzZS1wYWdlbmFtZSkpKSkKCihkZWZ1biB5YW9kZG11c2UtY3VycmVu
+dC1mcmVlLWxpbmstY29udGVudHMgKCkKICAiRnJlZSBsaW5rIGNvbnRlbnRzIGlmIHRoZSBwb2lu
+dCBpcyBiZXR3ZWVuIFtbIGFuZCBdXS4iCiAgKHNhdmUtZXhjdXJzaW9uCiAgICAobGV0KiAoKHBv
+cyAocG9pbnQpKQogICAgICAgICAgIChzdGFydCAoc2VhcmNoLWJhY2t3YXJkICJbWyIgbmlsIHQp
+KQogICAgICAgICAgIChlbmQgKHNlYXJjaC1mb3J3YXJkICJdXSIgbmlsIHQpKSkKICAgICAgKGFu
+ZCBzdGFydCBlbmQgKD49IGVuZCBwb3MpCiAgICAgICAgICAgKHJlcGxhY2UtcmVnZXhwLWluLXN0
+cmluZwogICAgICAgICAgICAiICIgIl8iCiAgICAgICAgICAgIChidWZmZXItc3Vic3RyaW5nICgr
+IHN0YXJ0IDIpICgtIGVuZCAyKSkpKSkpKQoKKGRlZnVuIHlhb2RkbXVzZS13aWtpbmFtZS1wIChz
+dHIpCiAgIldoZXRoZXIgUEFHRU5BTUUgaXMgV2lraU5hbWUgb3Igbm90LgpSZXR1cm4gV2lraW5h
+bWUgb3IgbmlsLgpTVFIgaXMgc3RyaW5nIGFyb3VuZCBwb2ludC4iCiAgKGxldCAoY2FzZS1mb2xk
+LXNlYXJjaCkKICAgIChpZiAoYW5kIHN0cgogICAgICAgICAgICAgKHN0cmluZy1tYXRjaCAoZm9y
+bWF0ICJeJXMkIiAiXFw8W0EtWlx4YzAtXHhkZV0rW2Etelx4ZGYtXHhmZl0rXFwoW0EtWlx4YzAt
+XHhkZV0rW2Etelx4ZGYtXHhmZl0qXFwpK1xcPiIpIHN0cikpCiAgICAgICAgc3RyCiAgICAgIG5p
+bCkpKQoKKGRlZnVuIHlhb2RkbXVzZS1saXNwLWZpbGUtbGluay1wIChzdHIpCiAgIklmIFNUUiBt
+YXRjaCBMaXNwOlBBR0VOQU1FLCByZXR1cm4gUEFHRU5BTUUuCk90aGVyd2lzZSByZXR1cm4gbmls
+LiIKICAobGV0IChjYXNlLWZvbGQtc2VhcmNoKQogICAgKGlmIChhbmQgc3RyCiAgICAgICAgICAg
+ICAoc3RyaW5nLW1hdGNoICJcXChMaXNwOlxcKVxcKFteIF0rXFwuZWxcXCkiIHN0cikpCiAgICAg
+ICAgKG1hdGNoLXN0cmluZyAyIHN0cikKICAgICAgbmlsKSkpCgooZGVmdW4geWFvZGRtdXNlLWlt
+YWdlLWxpbmstcCAoc3RyKQogICJJZiBTVFIgbWF0Y2ggW1tpbWFnZTpQQUdFTkFNRV1dLCByZXR1
+cm4gUEFHRU5BTUUuCk90aGVyd2lzZSByZXR1cm4gbmlsLiIKICAobGV0IChjYXNlLWZvbGQtc2Vh
+cmNoKQogICAgKGlmIChhbmQgc3RyCiAgICAgICAgICAgICAoc3RyaW5nLW1hdGNoICJcXFtcXFtp
+bWFnZTpcXChcXChbXlxcW11cXHxbXlxcXV1cXCkrXFwpXFxdXFxdIiBzdHIpKQogICAgICAgICht
+YXRjaC1zdHJpbmcgMSBzdHIpCiAgICAgIG5pbCkpKQoKKGRlZnVuIHlhb2RkbXVzZS1yZXRyaWV2
+ZS1kZWNvZGUgKHJldHJpZXZlLWJ1ZmZlci1uYW1lIGNvZGluZykKICAiRGVjb2RlIHRoZSBjb2Rp
+bmcgd2l0aCByZXRyaWV2ZSBwYWdlLgpSRVRSSUVWRS1CVUZGRVItTkFNRSBpcyBuYW1lIG9mIHJl
+dHJpZXZlIGJ1ZmZlci4KQ09ESU5HIGlzIGNvZGluZyBzeXN0ZW0gZm9yIGRlY29kZS4iCiAgKGRl
+Y2xhcmUgKHNwZWNpYWwgdXJsLWh0dHAtZW5kLW9mLWhlYWRlcnMpKQogICh3aXRoLWN1cnJlbnQt
+YnVmZmVyIChnZXQtYnVmZmVyIHJldHJpZXZlLWJ1ZmZlci1uYW1lKQogICAgKGluc2VydAogICAg
+ICh3aXRoLWN1cnJlbnQtYnVmZmVyIHlhb2RkbXVzZS1yZXRyaWV2ZS1idWZmZXIKICAgICAgIChz
+ZXQtYnVmZmVyLW11bHRpYnl0ZSB0KQogICAgICAgKGdvdG8tY2hhciAoMSsgdXJsLWh0dHAtZW5k
+LW9mLWhlYWRlcnMpKQogICAgICAgKGRlY29kZS1jb2RpbmctcmVnaW9uCiAgICAgICAgKHBvaW50
+KSAocG9pbnQtbWF4KQogICAgICAgIChjb2Rpbmctc3lzdGVtLWNoYW5nZS1lb2wtY29udmVyc2lv
+biBjb2RpbmcgJ2RvcykpCiAgICAgICAoYnVmZmVyLXN1YnN0cmluZyAocG9pbnQpIChwb2ludC1t
+YXgpKSkpCiAgICAoZ290by1jaGFyIChwb2ludC1taW4pKSkpCgooZGVmdW4geWFvZGRtdXNlLWZv
+cm1hdCAoYXJncyBjb2RpbmcgJm9wdGlvbmFsIHVybCkKICAiRm9ybWF0IGZsYWdzLgpTdWJzdGl0
+dXRlIG9kZG11c2UgZm9ybWF0IGZsYWdzIGFjY29yZGluZyB0byBgeWFvZGRtdXNlLXBhZ2VuYW1l
+JywKYHN1bW1hcnknLCBgeWFvZGRtdXNlLXVzZXJuYW1lJyxgeWFvZGRtdXNlLXBhc3N3b3JkJywg
+YHRleHQnCkVhY2ggQVJHUyBpcyB1cmwtZW5jb2RlZCB3aXRoIENPRElORy4KSWYgVVJMIGlzIGBu
+b24tbmlsJyByZXR1cm4gbmV3IHVybCBjb25jYXQgd2l0aCBBUkdTLiIKICAoZG9saXN0IChwYWly
+ICcoKCIldCIgLiB5YW9kZG11c2UtcGFnZW5hbWUpCiAgICAgICAgICAgICAgICAgICgiJXUiIC4g
+eWFvZGRtdXNlLXVzZXJuYW1lKQogICAgICAgICAgICAgICAgICAoIiVtIiAuIHlhb2RkbXVzZS1t
+aW5vcikKICAgICAgICAgICAgICAgICAgKCIlcCIgLiB5YW9kZG11c2UtcGFzc3dvcmQpCiAgICAg
+ICAgICAgICAgICAgICgiJXMiIC4gc3VtbWFyeSkKICAgICAgICAgICAgICAgICAgKCIleCIgLiB0
+ZXh0KQogICAgICAgICAgICAgICAgICApKQogICAgKHdoZW4gKGFuZCAoYm91bmRwIChjZHIgcGFp
+cikpIChzdHJpbmdwIChzeW1ib2wtdmFsdWUgKGNkciBwYWlyKSkpKQogICAgICAoc2V0cSBhcmdz
+CiAgICAgICAgICAgIChyZXBsYWNlLXJlZ2V4cC1pbi1zdHJpbmcKICAgICAgICAgICAgIChjYXIg
+cGFpcikKICAgICAgICAgICAgICh1cmwtaGV4aWZ5LXN0cmluZwogICAgICAgICAgICAgIChlbmNv
+ZGUtY29kaW5nLXN0cmluZyAoc3ltYm9sLXZhbHVlIChjZHIgcGFpcikpCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIGNvZGluZykpCiAgICAgICAgICAgICBhcmdzIHQgdCkpKSkK
+ICAoaWYgdXJsCiAgICAgIChjb25jYXQgdXJsICI/IiBhcmdzKQogICAgYXJncykpCgooZGVmdW4g
+eWFvZGRtdXNlLW5vdGlmeS1kZWZhdWx0IChtc2cpCiAgIkRlZmF1bHQgbm90aWZ5IGZ1bmN0aW9u
+IGZvciBzdHJpbmcgTVNHLiIKICAobWVzc2FnZSAiJXMiIG1zZykpCgooZGVmdW4geWFvZGRtdXNl
+LWVuY29kZS1maWxlIChmaWxlKQogICJFbmNvZGUgRklMRSBhbmQgcmV0dXJuIHJlc3VsdC4KSnVz
+dCBlbmNvZGUgZmlsZSB3aGVuIGl0J3Mgc3VmZml4IG1hdGNoIGB5YW9kZG11c2UtcG9zdC1taW1l
+LWFsaXN0Jy4iCiAgKGxldCogKChzdWZmaXggKHJlcGxhY2UtcmVnZXhwLWluLXN0cmluZyAiXlte
+Ll0rIiAiIiAoZmlsZS1uYW1lLW5vbmRpcmVjdG9yeSBmaWxlKSkpCiAgICAgICAgIChtaW1lLXR5
+cGUgKGNkciAoYXNzb2Mgc3VmZml4IHlhb2RkbXVzZS1wb3N0LW1pbWUtYWxpc3QpKSkpCiAgICAo
+aWYgKG9yIChzdHJpbmctZXF1YWwgc3VmZml4ICIiKQogICAgICAgICAgICAobm90IG1pbWUtdHlw
+ZSkpCiAgICAgICAgKHdpdGgtdGVtcC1idWZmZXIKICAgICAgICAgIChpbnNlcnQtZmlsZS1jb250
+ZW50cyBmaWxlKQogICAgICAgICAgKGJ1ZmZlci1zdHJpbmcpKQogICAgICAobGV0ICgoY29kaW5n
+LXN5c3RlbS1mb3ItcmVhZCAnYmluYXJ5KQogICAgICAgICAgICAoY29kaW5nLXN5c3RlbS1mb3It
+d3JpdGUgJ2JpbmFyeSkKICAgICAgICAgICAgZGVmYXVsdC1lbmFibGUtbXVsdGlieXRlLWNoYXJh
+Y3RlcnMpCiAgICAgICAgKGZvcm1hdCAiI0ZJTEUgJXNcbiVzXG4iCiAgICAgICAgICAgICAgICBt
+aW1lLXR5cGUKICAgICAgICAgICAgICAgIChiYXNlNjQtZW5jb2RlLXN0cmluZwogICAgICAgICAg
+ICAgICAgICh3aXRoLXRlbXAtYnVmZmVyCiAgICAgICAgICAgICAgICAgICAoaW5zZXJ0LWZpbGUt
+Y29udGVudHMgZmlsZSkKICAgICAgICAgICAgICAgICAgIChidWZmZXItc3RyaW5nKSkpKSkpKSkK
+CihkZWZ1biB5YW9kZG11c2UtZGVjb2RlLXN0cmluZyAoc3RyKQogICJEZWNvZGUgU1RSIGFuZCBy
+ZXR1cm4gcmVzdWx0LiIKICAod2l0aC10ZW1wLWJ1ZmZlcgogICAgKGluc2VydCBzdHIpCiAgICAo
+c3RyaW5nLW1ha2UtdW5pYnl0ZQogICAgIChiYXNlNjQtZGVjb2RlLXN0cmluZwogICAgICAoYnVm
+ZmVyLXN1YnN0cmluZy1uby1wcm9wZXJ0aWVzCiAgICAgICAocHJvZ24KICAgICAgICAgKGdvdG8t
+Y2hhciAocG9pbnQtbWluKSkKICAgICAgICAgKGZvcndhcmQtbGluZSArMSkgICAgICAgICAgICAg
+IDtza2lwIG1pbWUgdHlwZSBpbmZvcm1hdGlvbgogICAgICAgICAocG9pbnQpKQogICAgICAgKHBv
+aW50LW1heCkpKSkpKQoKKGRlZnVuIHlhb2RkbXVzZS10dXJuLW9uLWltYWdlLXN0YXR1cyAoKQog
+ICJUdXJuIG9uIGltYWdlIHN0YXRzLgpUcmFuc2Zvcm0gcmF3IHRleHQgZm9ybWF0IHRvIGltYWdl
+IGZvcm1hdC4iCiAgKHNhdmUtZXhjdXJzaW9uCiAgICAoaWYgeWFvZGRtdXNlLWltYWdlLXN0YXR1
+cwogICAgICAgIChtZXNzYWdlICJBbHJlYWR5IGltYWdlIHN0YXR1cy4iKQogICAgICAobGV0KiAo
+KGRhdGEgICAgICAgICAgICAgICAgICAgICAgO2dldCBwaWN0dXJlIGRhdGEKICAgICAgICAgICAg
+ICAoeWFvZGRtdXNlLWRlY29kZS1zdHJpbmcKICAgICAgICAgICAgICAgKGJ1ZmZlci1zdWJzdHJp
+bmctbm8tcHJvcGVydGllcwogICAgICAgICAgICAgICAgKHBvaW50LW1pbikKICAgICAgICAgICAg
+ICAgIChwb2ludC1tYXgpKSkpCiAgICAgICAgICAgICAoaW1hZ2UgKGNyZWF0ZS1pbWFnZSBkYXRh
+IG5pbCB0KSkgO2dlbmVyYXRlIGltYWdlCiAgICAgICAgICAgICAocHJvcHMgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgO2dlbmVyYXRlIHByb3BlcnRpZXMKICAgICAgICAgICAgICBgKGRpc3Bs
+YXkgLGltYWdlCiAgICAgICAgICAgICAgICAgICAgICAgIHlhbmstaGFuZGxlcgogICAgICAgICAg
+ICAgICAgICAgICAgICAoaW1hZ2UtZmlsZS15YW5rLWhhbmRsZXIgbmlsIHQpCiAgICAgICAgICAg
+ICAgICAgICAgICAgIGludGFuZ2libGUgLGltYWdlCiAgICAgICAgICAgICAgICAgICAgICAgIHJl
+YXItbm9uc3RpY2t5IChkaXNwbGF5IGludGFuZ2libGUpKSkpCiAgICAgICAgOzsgQWRkIHByb3Bl
+cnRpZXMuCiAgICAgICAgKGFkZC10ZXh0LXByb3BlcnRpZXMgKHBvaW50LW1pbikgKHBvaW50LW1h
+eCkgcHJvcHMpCiAgICAgICAgOzsgU2V0IGltYWdlIHN0YXR1cy4KICAgICAgICAoc2V0cSB5YW9k
+ZG11c2UtaW1hZ2Utc3RhdHVzIHQpKSkpKQoKKGRlZnVuIHlhb2RkbXVzZS10dXJuLW9mZi1pbWFn
+ZS1zdGF0dXMgKCkKICAiVHVybiBvZmYgaW1hZ2Ugc3RhdHVzLgpUcmFuc2Zvcm0gaW1hZ2UgZm9y
+bWF0IHRvIHJhdyB0ZXh0LiIKICAoc2F2ZS1leGN1cnNpb24KICAgIChpZiB5YW9kZG11c2UtaW1h
+Z2Utc3RhdHVzCiAgICAgICAgKGxldCogKChkYXRhIChidWZmZXItc3Vic3RyaW5nLW5vLXByb3Bl
+cnRpZXMKICAgICAgICAgICAgICAgICAgICAgIChwb2ludC1taW4pCiAgICAgICAgICAgICAgICAg
+ICAgICAocG9pbnQtbWF4KSkpKQogICAgICAgICAgOzsgRGVsZXRlIGltYWdlLgogICAgICAgICAg
+KGVyYXNlLWJ1ZmZlcikKICAgICAgICAgIDs7IEluc2VydCByYXcgdGV4dCBkYXRhLgogICAgICAg
+ICAgKGluc2VydCBkYXRhKQogICAgICAgICAgOzsgU2V0IGltYWdlIHN0YXR1cy4KICAgICAgICAg
+IChzZXRxIHlhb2RkbXVzZS1pbWFnZS1zdGF0dXMgbmlsKSkKICAgICAgKG1lc3NhZ2UgIkFscmVh
+ZHkgcmF3IHRleHQgc3RhdHVzLiIpKSkpCgooZGVmdW4geWFvZGRtdXNlLXVwZGF0ZS1lZGl0LXN0
+YXR1cyAoKQogICJVcGRhdGUgZWRpdCBzdGF0dXMgYXQgbW9kZS1saW5lLgpJZiBjdXJyZW50IGlz
+IG1ham9yIGVkaXRvciBtb2RlLCBkaXNwbGF5IFtNYWpvcl0gYXQgbW9kZS1saW5lLgpPdGhlcndp
+c2UgZGlzcGxheSBbTWlub3JdIGF0IG1vZGUtbGluZS4iCiAgOzsgQWRkIGB5YW9kZG11c2UtZWRp
+dC1zdGF0dXMnIHRvIG1vZGUtbGluZS4KICAodW5sZXNzIChtZW1iZXIgJ3lhb2RkbXVzZS1lZGl0
+LXN0YXR1cy1zdHJpbmcgbW9kZS1saW5lLWZvcm1hdCkKICAgIChzZXRxIG1vZGUtbGluZS1mb3Jt
+YXQgKGFwcGVuZCBtb2RlLWxpbmUtZm9ybWF0CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKGxpc3QgJ3lhb2RkbXVzZS1lZGl0LXN0YXR1cy1zdHJpbmcpKSkpCiAgOzsgVXBkYXRl
+IGB5YW9kZG11c2UtZWRpdC1zdGF0dXMnIGFsb25nIHdpdGggYHlhb2RkbXVzZS1taW5vcicuCiAg
+KHB1dCAneWFvZGRtdXNlLWVkaXQtc3RhdHVzLXN0cmluZyAncmlza3ktbG9jYWwtdmFyaWFibGUg
+dCkKICAoc2V0cSB5YW9kZG11c2UtZWRpdC1zdGF0dXMtc3RyaW5nIChwcm9wZXJ0aXplCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGlmIHlhb2RkbXVzZS1taW5vcgogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAocHJvZzEKICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJbTWlub3JdIgogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChtZXNzYWdlICJNaW5vciBlZGl0IG1vZGUu
+IikpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAocHJvZzEKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiW01ham9yXSIKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKG1lc3NhZ2UgIk1ham9yIGVkaXQgbW9k
+ZS4iKSkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgJ2ZhY2UgJ3lhb2Rk
+bXVzZS1lZGl0LXN0YXR1cy1mYWNlKSkKICA7OyBVcGRhdGUgbW9kZSBsaW5lLgogIChmb3JjZS1t
+b2RlLWxpbmUtdXBkYXRlKSkKCjs7OzsgQnVnIHJlcG9ydAooZGVmdmFyIHlhb2RkbXVzZS1tYWlu
+dGFpbmVyLW1haWwtYWRkcmVzcwogIChjb25jYXQgInJ1YmlraSIgInRjaEBydSIgImJ5LWxhbmcu
+b3JnIikpCihkZWZ2YXIgeWFvZGRtdXNlLWJ1Zy1yZXBvcnQtc2FsdXRhdGlvbgogICJEZXNjcmli
+ZSBidWcgYmVsb3csIHVzaW5nIGEgcHJlY2lzZSByZWNpcGUuCgpXaGVuIEkgZXhlY3V0ZWQgTS14
+IC4uLgoKSG93IHRvIHNlbmQgYSBidWcgcmVwb3J0OgogIDEpIEJlIHN1cmUgdG8gdXNlIHRoZSBM
+QVRFU1QgdmVyc2lvbiBvZiB5YW9kZG11c2UuZWwuCiAgMikgRW5hYmxlIGRlYnVnZ2VyLiBNLXgg
+dG9nZ2xlLWRlYnVnLW9uLWVycm9yIG9yIChzZXRxIGRlYnVnLW9uLWVycm9yIHQpCiAgMykgVXNl
+IExpc3AgdmVyc2lvbiBpbnN0ZWFkIG9mIGNvbXBpbGVkIG9uZTogKGxvYWQgXCJ5YW9kZG11c2Uu
+ZWxcIikKICA0KSBJZiB5b3UgZ290IGFuIGVycm9yLCBwbGVhc2UgcGFzdGUgKkJhY2t0cmFjZSog
+YnVmZmVyLgogIDUpIFR5cGUgQy1jIEMtYyB0byBzZW5kLgojIElmIHlvdSBhcmUgYSBKYXBhbmVz
+ZSwgcGxlYXNlIHdyaXRlIGluIEphcGFuZXNlOi0pIikKKGRlZnVuIHlhb2RkbXVzZS1zZW5kLWJ1
+Zy1yZXBvcnQgKCkKICAoaW50ZXJhY3RpdmUpCiAgKHJlcG9ydGVyLXN1Ym1pdC1idWctcmVwb3J0
+CiAgIHlhb2RkbXVzZS1tYWludGFpbmVyLW1haWwtYWRkcmVzcwogICAieWFvZGRtdXNlLmVsIgog
+ICAoYXByb3Bvcy1pbnRlcm5hbCAiXnlhb2RkbXVzZS0iICdib3VuZHApCiAgIG5pbCBuaWwKICAg
+eWFvZGRtdXNlLWJ1Zy1yZXBvcnQtc2FsdXRhdGlvbikpCgoocHJvdmlkZSAneWFvZGRtdXNlKQoK
+Ozs7IHlhb2RkbXVzZS5lbCBlbmRzIGhlcmUKCjs7OyBMb2NhbFdvcmRzOiAgeWFvZGRtdXNlIGVs
+IG9kZG11c2Ugd2lraXMgVGVzdFdpa2kgQ29tbXVuaXR5V2lraSBTdHVtcHdtV2lraQo7OzsgTG9j
+YWxXb3JkczogIFJhdHBvaXNvbldpa2kgT2RkbXVzZVdpa2kgdXNlcm5hbWUgUGFnZW5hbWUgc3Rk
+b3V0IHBhZ2VuYW1lIGVnCjs7OyBMb2NhbFdvcmRzOiAgSG93VG8gcHdkIHhjIHhkZSB4ZGYgeGZm
+IFdpa2lOYW1lIGJ1aWx0aW4gc2dtbCBub3dpa2kgcHJlIHR0Cjs7OyBMb2NhbFdvcmRzOiAgdWlo
+bnNjdXNrYyBzU3VtbWFyeSBjYWRkciB3d3cgdXJsZW5jb2RlZCB3aWtpbmFtZSBlb2wgYXJncyBw
+b3MKOzs7IExvY2FsV29yZHM6ICBjYXB0Y2hhIERvZGdlckJsdWUgTGF3bkdyZWVuIERhcmtSZWQg
+V2lraVVybCBub3NlbGVjdCBkaXJzIHN0cgo7OzsgTG9jYWxXb3JkczogIFBhbGVHcmVlbiBiZW5u
+eSBuYXZpIEltYWdlUGFnZSBHcmVlblllbGxvdyBudW0gc2NyZWVuc2hvdCBtc2cKOzs7IExvY2Fs
+V29yZHM6ICBjc3MgeG1sIGd6aXAganBlZyBEZWxldGVkUGFnZSBmRmlsZSBub25zdGlja3kgQ2Fw
+dGNoYVN0cmluZwo7OzsgTG9jYWxXb3JkczogIFdpa2lVUkwgQ29kaW5nU3lzdGVtCg==
