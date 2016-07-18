@@ -20,6 +20,8 @@ following aspects:
 * Dictionary and other settings can be saved to the file you're
       visiting and you can resume editing with restored settings.
 
+== Code ==
+
 You can download the Emacs Lisp file here:
 
 Lisp:speck.el
@@ -27,6 +29,22 @@ Lisp:speck.el
 The texinfo documentation can be downloaded on the following page:
 
 [[speck.texi.gz]]
-  
+
+== Setup on Windows, by example ==
+
+# Install Hunspell from [http://sourceforge.net/projects/ezwinports/files/ ezwinports] into: <code>C:\ezwinports</code>
+
+# Make sure that <code>C:\ezwinports\bin</code> is in <code>%PATH%</code>.
+
+# Download <code>es_ES.oxt</code> from the LibreOffice [http://extensions.libreoffice.org/extension-center/spanish-dictionaries extensions repository].
+
+# Rename <code>es_ES.oxt</code> to <code>es_ES.zip</code>, and unpack its contents into: <code>C:\ezwinports\share\hunspell</code>
+
+# Customize <code>speck-hunspell-program</code> to: <code>"C:\\ezwinports\\bin\\hunspell.exe"</code>
+
+# Customize <code>speck-hunspell-library-directory</code> to: <code>""</code>
+
+# Customize <code>speck-hunspell-dictionary-alist</code> to: <code>(("en" . "en_US") ("es" . "es_ES"))</code>
+
 ----
 CategorySpelling
