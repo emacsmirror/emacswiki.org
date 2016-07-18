@@ -8,6 +8,10 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== Having trouble editing elisp file (yaoddmuse.el) ==
+
+I tried to make an update to yaoddmuse.el, but I seem to have put it into a funny mode where it doesn't show the code in the page any more, just a link.  And I can't rollback because of the anti-spam regexps... :(
+
 ==Cannot find where file lives for change submission ==
 
 I would like to submit a change to the file found at https://www.emacswiki.org/emacs/perltidy.el, but I can't seem to figure out which repo to clone. Do I clone the emacs wiki repo or is there some other upstream repo to which I should submit my proposed changes?
