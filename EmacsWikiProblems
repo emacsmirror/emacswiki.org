@@ -8,9 +8,23 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
-== Having trouble editing elisp file (yaoddmuse.el) ==
+== Having trouble editing elisp file (solved) ==
 
 I tried to make an update to [[yaoddmuse.el]], but I seem to have put it into a funny mode where it doesn't show the code in the page any more, just a link.  And I can't rollback because of the anti-spam regexps... :(
+
+[new]
+I fixed this, hopefully. First, I changed the regular expression such that numbers that look like a date such as 20160718 are no longer considered to be starting a phone number. Then I did the following to preserve your changes and change the page from containing an uploaded file back to a regular text:
+
+# I downloaded the current version of yaoddmuse.el
+# I visited [[yaoddmuse.el]] again
+# clicked Edit this page
+# clicked Replace file with text
+# pasted the current copy I had downloaded
+# saved the page
+
+Thus, you should be good to go. :)
+
+-- Alex Schroeder
 
 ==Cannot find where file lives for change submission ==
 
