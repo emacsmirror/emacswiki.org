@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 14:28:37 2015 (-0800)
+;; Last-Updated: Tue Jul 19 15:57:56 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 3246
+;;     Update #: 3255
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -49,8 +49,10 @@
 ;;    `region-to-file', `resolve-file-name',
 ;;    `reversible-transpose-sexps', `revert-buffer-no-confirm',
 ;;    `selection-length', `switch-to-alternate-buffer',
-;;    `switch-to-alternate-buffer-other-window', `undo-repeat' (Emacs
-;;    24.3+), `view-X11-colors'.
+;;    `switch-to-alternate-buffer-other-window',
+;;    `to-indentation-repeat-backward',
+;;    `to-indentation-repeat-forward', `undo-repeat' (Emacs 24.3+),
+;;    `view-X11-colors'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -75,10 +77,11 @@
 ;;   (global-set-key [f5]             'revert-buffer-no-confirm) ; A la MS Windows
 ;;   (substitute-key-definition       'kill-buffer
 ;;                                    'kill-buffer-and-its-windows global-map)
-;;   (substitute-key-definition 'recenter 'recenter-top-bottom global-map)
-;;   (substitute-key-definition 'beginning-of-line 'beginning-of-line+ global-map)
-;;   (substitute-key-definition 'end-of-line 'end-of-line+ global-map)
-;;   (substitute-key-definition 'transpose-sexps 'reversible-transpose-sexps global-map)
+;;   (substitute-key-definition       'recenter 'recenter-top-bottom global-map)
+;;   (substitute-key-definition       'beginning-of-line 'beginning-of-line+ global-map)
+;;   (substitute-key-definition       'end-of-line 'end-of-line+ global-map)
+;;   (substitute-key-definition       'transpose-sexps 
+;;                                    'reversible-transpose-sexps global-map)
 ;;
 ;;   The first two of these are needed to remove the default remappings.
 ;;   (define-key visual-line-mode-map [remap move-beginning-of-line] nil)
@@ -87,6 +90,8 @@
 ;;   (define-key visual-line-mode-map [end]  'end-of-line+)
 ;;   (define-key visual-line-mode-map "\C-a" 'beginning-of-visual-line+)
 ;;   (define-key visual-line-mode-map "\C-e" 'end-of-visual-line+)
+;;   (global-set-key "\M-m"           'to-indentation-repeat-backward)
+;;   (global-set-key "\M-n"           'to-indentation-repeat-forward)
 ;;
 ;;   (global-set-key [remap previous-buffer] 'previous-buffer-repeat)
 ;;   (global-set-key [remap next-buffer]     'next-buffer-repeat)
@@ -96,6 +101,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/07/19 dadams
+;;     Added: to-indentation-repeat-backward, to-indentation-repeat-forward.
 ;; 2015/06/02 dadams
 ;;     Added: mark-line, narrow-to-line.
 ;; 2015/05/30 dadams
@@ -385,6 +392,28 @@ Returns the signed number of chars moved if /= ARG, else returns nil."
     (forward-char (if fwd-p (min max arg) (max max arg)))
     (and (< (abs max) (abs arg)) max)))
 
+;;;###autoload
+(defun to-indentation-repeat-backward ()
+  "Move to the first non-whitespace char on this line, or eol if none.
+If already there then do the same on the previous line."
+  (interactive "^")
+  (let ((opt  (point)))
+    (back-to-indentation)
+    (when (= opt (point))
+      (forward-line -1)
+      (back-to-indentation))))
+
+;;;###autoload
+(defun to-indentation-repeat-forward ()
+  "Move to the first non-whitespace char on this line, or eol if none.
+If already there do the same on the next line."
+  (interactive "^")
+  (let ((opt  (point)))
+    (back-to-indentation)
+    (when (= opt (point))
+      (forward-line 1)
+      (back-to-indentation))))
+              
 ;;;###autoload
 (defun end-of-line+ (&optional n)
   "Move cursor to end of current line or end of next line if repeated.
