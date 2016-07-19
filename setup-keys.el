@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan 24 08:30:19 2016 (-0800)
+;; Last-Updated: Tue Jul 19 16:07:57 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1306
+;;     Update #: 1317
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -75,6 +75,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/07/19 dadams
+;;     Bound M-m to to-indentation-repeat-backward and M-n to to-indentation-repeat-forward.
 ;; 2016/01/24 dadams
 ;;     Bound C-x 5 1 to tear-off-window.
 ;; 2015/06/30 dadams
@@ -365,6 +367,7 @@
                            ;; end-of-line+, goto-longest-line, kill-buffer-and-its-windows,
                            ;; mark-buffer-after-point, mark-buffer-before-point,
                            ;; recenter-top-bottom, region-to-buffer, region-to-file,
+                           ;; to-indentation-repeat-backward, to-indentation-repeat-forward,
                            ;; undo-repeat
 (require 'second-sel nil t) ;; (no error if not found): secondary-dwim, isearch-yank-secondary,
                             ;; yank-pop-commands, isearch-yank-secondary, set-secondary-start,
@@ -870,8 +873,8 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
     (global-set-key [S-next]  'swiss-move-line-down)))                        ; `S-next'
 
 ;; [up], [down], [left], [right] keys.
-(global-set-key [S-down] (lambda () (interactive) (scroll-up 1)))            ; `S-down'
-(global-set-key [S-up] (lambda () (interactive) (scroll-down 1)))            ; `S-up'
+(global-set-key [S-down] (lambda () (interactive) (scroll-up 1)))             ; `S-down'
+(global-set-key [S-up] (lambda () (interactive) (scroll-down 1)))             ; `S-up'
 ;;(global-set-key [M-up] (lookup-key esc-map "p")) ; Probably not defined.
 ;;(global-set-key [M-down] (lookup-key esc-map "n")) ; Probably not defined.
 ;;(global-set-key [M-left] (lookup-key esc-map "b")) ; Predefined.
@@ -879,6 +882,10 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 (global-set-key [C-M-home] 'beginning-of-defun)                               ; `C-M-home'
 (global-set-key [C-M-end] 'end-of-defun)                                      ; `C-M-end'
 
+(eval-after-load "misc-cmds"
+  '(progn
+    (global-set-key "\M-m" 'to-indentation-repeat-backward)                   ; `M-m'
+    (global-set-key "\M-n" 'to-indentation-repeat-forward)))                  ; `M-n'
 
 ;;;-----------REPLACEMENT BINDINGS------------------------------------
 
