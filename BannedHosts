@@ -18,3 +18,5 @@
 ^125\.63\.71\.54 # 2016-07-06 for creating lots of spam pages
 ^113\.210\.62\.18 # 2016-07-06 HowToNavigate
 ^163\.47\.140 # 2016-07-18 new spam pages
+^111\.125\.140 # 2016-07-19 spamming oddmuse.org
+^202\.91\.(6[456789]|[78][0-9]|9[012345]) # 2016-07-19 spamming oddmuse.org
