@@ -2,4 +2,6 @@ Apparently, our Indian spammer friends (IP numbers 163.47.140.*, 180.151.1.*, ..
 
 Also: [https://www.emacswiki.org/emacs?action=browse;diff=1;id=canon_printer_technical phone number spam without phone numbers]? I really don't understand this business model. These spammers are ripping off their customers _and_ vandalizing the wiki.
 
+My current policy: when I see spam in this group from a particular IP number, and knowing that these people get new IP numbers all the time, I use ##whois## to get the IP number range of their network and then I ban the entire network. I am reminded of the manual Chinese spam we had a few years ago. There, I also had to ban a lot of Chinese networks. Happily, these days are gone and thus I expect that these manual Indian spammers will also disappear sooner or later.
+
 -- Alex Schroeder
