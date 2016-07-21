@@ -16,3 +16,10 @@ I'm guessing he wants to host it from GitHub. Here's a copy I found: https://git
 
 -- [http://alexschroeder.ch/wiki/Emacs Alex Schroeder] 2016-07-21 14:39 UTC
 
+
+----
+
+OK. In that case, he probably needs to update the recipe for MELPA, to pull from there instead of here. At that point it would probably be good to delete the copy here.
+
+-- DrewAdams 2016-07-21 17:38 UTC
+
