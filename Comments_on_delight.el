@@ -23,3 +23,10 @@ OK. In that case, he probably needs to update the recipe for MELPA, to pull from
 
 -- DrewAdams 2016-07-21 17:38 UTC
 
+
+----
+
+Ah, discussion. Actually, I never put delight.el on MELPA at all -- someone else did that. I don't know how to undo it, and I shan't be maintaining this library on the Wiki any more, so MELPA's version would end up out of date. Better that people get the package from GNU ELPA than continue to unwittingly use an out-of-date version (even if right now both of them have v1.5). I suppose MELPA could get it from Savannah, but I'm pretty sure it would be better for MELPA to drop it completely? Unless someone has actually removed GNU ELPA from their package archive list, package.el would surely still find it when people go to install it.
+
+-- Phil S 2016-07-22 09:26 UTC
+
