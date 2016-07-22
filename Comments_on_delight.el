@@ -30,3 +30,10 @@ Ah, discussion. Actually, I never put delight.el on MELPA at all -- someone else
 
 -- Phil S 2016-07-22 09:26 UTC
 
+
+----
+
+I've updated https://www.emacswiki.org/emacs/DelightedModes with a direct link to the code in its new repository.
+
+-- Phil S 2016-07-22 09:28 UTC
+
