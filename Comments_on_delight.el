@@ -37,3 +37,10 @@ I've updated https://www.emacswiki.org/emacs/DelightedModes with a direct link t
 
 -- Phil S 2016-07-22 09:28 UTC
 
+
+----
+
+I've raised https://github.com/melpa/melpa/issues/4059 as well.
+
+-- Phil S 2016-07-22 09:43 UTC
+
