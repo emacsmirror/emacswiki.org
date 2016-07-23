@@ -1,27 +1,29 @@
 https://github.com/rnkn/fountain-mode
 
-Fountain Mode aims to be a full-featured screenwriting environment for GNU Emacs using the Fountain markup format. For more information on the Fountain markup format, visit http://fountain.io.
+Fountain Mode is a complete screenwriting environment for GNU Emacs
+using the Fountain markup format. For more information on the Fountain markup
+format, visit http://fountain.io.
 
 == Features ==
 
 * Support for Fountain 1.1 specification
-* WYSIWYG auto-align elements (display only, does not modify file contents) specific to script format, e.g. screenplay, stageplay or user-defined format
-* Export to HTML, LaTeX, Final Draft (FDX), Fountain, or user-defined formats
+* WYSIWYG auto-align elements (display only, does not modify file contents)
+  specific to script format, e.g. screenplay, stageplay or user-defined format
+* Export to HTML, LaTeX, Final Draft (FDX), or Fountain
 * Export to standalone document or snippet
-* Integration with outline to toggle/cycle visibility of sections and scenes
+* Integration with outline to fold/cycle visibility of sections and scenes
 * Integration with imenu (sections, scene headings, notes)
+* Intergration with auto-insert for title page metadata
 * Add/remove automatic continuation string to successively speaking characters
-* Navigation by section, scene, or character name
+* Navigation by section, scene, character name, or page
 * 3 levels of element syntax highlighting
+* Automatic loading for *.fountain files
 * Support for both official and legacy commenting (boneyard) syntax
 * Include or omit a title page
 * Emphasis (bold, italic, underlined text)
 * Toggle visibility of emphasis delimiters and syntax characters
-* Templates for inserting synopses, notes and metadata
-* Everything customizable
+* Everything is customizable
 
 == Installation ==
 
 Requires Emacs 24.4. The latest stable release of Fountain Mode is available via MELPA-stable.
-
-This page is probably not up to date. Check GitHub for everything else.
