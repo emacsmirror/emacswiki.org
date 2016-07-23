@@ -22,3 +22,4 @@
 ^202\.91\.(6[456789]|[78][0-9]|9[012345]) # 2016-07-19 spamming oddmuse.org
 ^67\.203\.20\.12[0-7] # 2016-07-22 spamming emacswiki.org
 ^103\.38\.17[6789] # 2016-07-22 spamming emacswiki.org
+^104\.219\.5[45] # 2016-07-22 spamming emacswiki.org
