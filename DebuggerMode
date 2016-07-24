@@ -1,3 +1,4 @@
+[[es:modo_debugger]]
 Debugger mode is the mode used in the BacktraceBuffer (buffer `*Backtrace*').  
 
 Use `C-h m' there to see descriptions of the important debugger keys, which include `c' (current [[sexp]]) `d' (single step), `e' (eval another sexp that you input), and `q' (quit). (`C-h m' always gives you information on the current mode, whatever it might be.)
