@@ -7,7 +7,7 @@ The ##patch## command is well documented, however, but mostly for an audience of
 And also DiffMode and [[Ediff]] are well documented for Emacs.
 
 * [http://www.gnu.org/software/emacs/manual/html_node/emacs/Diff-Mode.html Diff Mode section of the Emacs Manual]
-* [http://www.gnu.org/software/emacs/manual/html_node/ediff/ Emerge manual]
+* [http://www.gnu.org/software/emacs/manual/html_node/ediff/ Ediff manual]
  
 See also InstallingPackages
 
