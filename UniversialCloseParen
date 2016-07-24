@@ -160,3 +160,58 @@ Ah, I see.  I didn't really read through all that code and just assumed, you did
            (not (eq (char-syntax (char-before (1- pos))) ?\\))
            (insert (char-before pos)))
       (insert closing)))
+
+---------------
+
+This is a fork such that inserts as many "\" as there are before the matched paren, so "\ \[\((){{\ \ \ \{" is closed with "\ \ \ \}}}\)\ \ \]".\\
+You can use argument to enclose multiple opened parens.\\
+Now `close-quoted-open-paren' is `close-quoted-open-paren-right' and there is a new function `close-quoted-open-paren-left' which "open" "closed" parens, i.e. with cursor at "*" in "*\ \ \ \}}}\)\ \]" with `M-5 C-9' you get "*\ \[\({{\ \ \ \{\ \ \ \}}}\)\ \]".\\
+There is a new kind of function `close-all-open-paren-' that enclose all open paren in one direction.
+
+ (defun close-quoted-open-paren-right (args)
+     (interactive "P")
+     (setq args (or args 1))
+     (dotimes (k args)
+       (let (pos closing)
+         (with-syntax-table all-paren-syntax-table
+           (setq pos (save-excursion (up-list -1) (point)))
+           (setq closing (matching-paren (char-after pos))))
+         (message "The matched paren pos is %d" pos)
+         (while (eq (char-before pos) ?\\)
+           (insert "\\")
+           (setq pos (1- pos)))
+         (insert closing)))
+         t)
+
+    (defun close-quoted-open-paren-left (args)
+         (interactive "P")
+         (setq args (or args 1))
+         (dotimes (k args)
+           (let (pos closing (i 1))
+             (with-syntax-table all-paren-syntax-table
+               (setq pos (save-excursion (up-list 1) (point)))
+               (setq closing (matching-paren (char-before pos))))
+           (while (eq (char-before (- pos i)) ?\\)
+               (setq i (1+ i)))
+             (dotimes (j (1- i)) (insert "\\")) ;;insert after to count right
+             (insert closing)
+             (message "The matched paren pos is %d" (+ pos i))
+             (backward-char i)))
+             t)
+
+ (defun close-all-open-paren-right ()
+    (interactive)
+   (while  (ignore-errors (close-quoted-open-paren-right 1))))
+
+  (defun close-all-open-paren-left ()
+    (interactive)
+  (while  (ignore-errors (close-quoted-open-paren-left 1))))
+
+For me, the following is a reasonable key binding.
+
+  (global-set-key (kbd "C-9") 'close-quoted-open-paren-right)
+  (global-set-key (kbd "C-)") 'close-all-open-paren-right)
+  (global-set-key (kbd "C-8") 'close-quoted-open-paren-left)
+  (global-set-key (kbd "C-(") 'close-all-open-paren-left)
+
+-- brust
