@@ -275,6 +275,44 @@ With this, when you press `up' or `down` to the top/bottom of IBuffer, the curso
 
 -- kuanyui
 
+This is an improvement to use filtered groups. Now, the keys `up' and `down' do the same thing but they skip the headers of the filtered groups, and you can move through the headers with `left' and `right'.
+
+
+  (defun ibuffer-skip-headers (fun)
+    (funcall fun)
+    (if (not (looking-at-p "\\[.*\\]"))
+      t
+      (while (looking-at-p "\\[.*\\]")
+        (funcall fun))
+      nil))
+
+  (defun ibuffer-previous-line ()
+    (interactive) 
+    (if (> 5 (line-number-at-pos))
+        (progn (goto-line (- (line-number-at-pos (point-max)) 2)) nil)
+      (brust/ibuffer-skip-headers 'previous-line)))
+
+  (defun ibuffer-next-line ()
+    (interactive)
+    (if (< (- (line-number-at-pos (point-max)) 3) (line-number-at-pos))
+        (progn (goto-line 4) nil)
+      (brust/ibuffer-skip-headers 'next-line)))
+
+  (defun ibuffer-next-header ()
+    (interactive)
+   (while (ibuffer-next-line)))
+
+  (defun ibuffer-previous-header ()
+    (interactive)
+    (while (ibuffer-previous-line)))
+
+  (define-key ibuffer-mode-map (kbd "<up>") 'ibuffer-previous-line)
+  (define-key ibuffer-mode-map (kbd "<down>") 'ibuffer-next-line)
+  (define-key ibuffer-mode-map (kbd "<right>") 'ibuffer-previous-header)
+  (define-key ibuffer-mode-map (kbd "<left>") 'ibuffer-next-header)
+
+-- brust
+
 --------
 
 == Questions ==
