@@ -290,13 +290,13 @@ This is an improvement to use filtered groups. Now, the keys `up' and `down' do 
     (interactive) 
     (if (> 5 (line-number-at-pos))
         (progn (goto-line (- (line-number-at-pos (point-max)) 2)) nil)
-      (brust/ibuffer-skip-headers 'previous-line)))
+      (ibuffer-skip-headers 'previous-line)))
 
   (defun ibuffer-next-line ()
     (interactive)
     (if (< (- (line-number-at-pos (point-max)) 3) (line-number-at-pos))
         (progn (goto-line 4) nil)
-      (brust/ibuffer-skip-headers 'next-line)))
+      (ibuffer-skip-headers 'next-line)))
 
   (defun ibuffer-next-header ()
     (interactive)
