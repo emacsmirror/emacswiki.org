@@ -74,6 +74,10 @@ Add the following lines to your ~/.gtkrc-2.0:
 Be sure that that path exists, it may vary between distributions.
 After that, you should feel at home in most parts of Firefox.
 
+In recent versions of GNOME (3 or later) you need to use the gsettings tool to set the key theme to emacs.
+
+    gsettings set org.gnome.desktop.interface gtk-key-theme "Emacs"
+
 [new]
 Please feel free to save this as a file somewhere and replace the actual code here with a link.  I would have done so myself but I'm not sure where to put it - the Elisp area seems only for elisp.
 ----
