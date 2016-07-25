@@ -553,7 +553,6 @@ Add the below code to your .emacs file.  Call it w/ <code>M-x server-shutdown</c
   (kill-emacs)
   )
 </pre>
-
 == Color coding (multiple) emacs server instances ==
 
 You can start different emacs server instances w/ different color schemes (so you instantly know which one you're using).
@@ -689,3 +688,43 @@ ssh elpad@localhost
 elpad@somebox:~$ emacs-local/bin/emacsclient -s /tmp/emacs1007/elpad  elpad-elpa/
 ## starts emacs...
 }}}
+
+
+== FUBAR: Impossible to connect ==
+
+There is an unfortunate possibility when using the emacs server where the server can be stopped and then all visible frames closed (e.g server-force-delete + ssh disconnect). As far as I can tell, in this condition it becomes impossible to attach to your running emacs instance. This is a real bummer. As a workaround, you can set up a signal handler to restart the server. You can put the following into your emacs startup elisp:
+<pre>
+;; define function to restart the server
+(defun signal-restart-server ()
+  (interactive)
+  (message "Caught event %S" last-input-event)
+  (server-mode)
+  )
+
+;; add the binding to the special-event-map
+(define-key special-event-map [sigusr1] 'signal-restart-server)
+</pre>
+
+Once that code has been loaded, sending a USR1 to the emacs process will restart the server. You can now reconnect. Joy.
+
+<pre>
+doh@bummer ~/ $ emacsclient -nc
+emacsclient: can't find socket; have you started the server?
+To start the server in Emacs, type "M-x server-start".
+emacsclient: No socket or alternate editor.  Please use:
+
+	--socket-name
+	--server-file      (or environment variable EMACS_SERVER_FILE)
+	--alternate-editor (or environment variable ALTERNATE_EDITOR)
+
+doh@bummer ~/ $ ps auxw | grep emacs
+doh     5373  0.0  0.2 483844 28872 ?        Ssl  18:44   0:00 emacs --daemon
+
+doh@bummer ~/ $ kill -USR1 5373
+  ## Note: there is no feedback from the command line kill
+
+doh@bummer ~/ $ emacsclient -nc
+  ## Note: Joy!
+
+</pre>
+
