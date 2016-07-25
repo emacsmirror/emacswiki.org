@@ -24,5 +24,3 @@
 ^103\.38\.17[6789] # 2016-07-22 spamming emacswiki.org
 ^104\.219\.5[45] # 2016-07-22 spamming emacswiki.org
 ^162\.243\. # 2016-07-23 spamming emacswiki.org
-
-^88\.([0-9]|1[0-5])$ # 2016-07-25 DebuggerMode
