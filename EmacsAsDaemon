@@ -692,7 +692,7 @@ elpad@somebox:~$ emacs-local/bin/emacsclient -s /tmp/emacs1007/elpad  elpad-elpa
 
 == FUBAR: Impossible to connect ==
 
-There is an unfortunate possibility when using the emacs server where the server can be stopped and then all visible frames closed (e.g server-force-delete + ssh disconnect). As far as I can tell, in this condition it becomes impossible to attach to your running emacs instance. This is a real bummer. As a workaround, you can set up a signal handler to restart the server. You can put the following into your emacs startup elisp:
+There is an unfortunate possibility when using the emacs server where the server can be stopped and then all visible frames closed (e.g. server-force-delete + ssh disconnect). As far as I can tell, in this condition it becomes impossible to attach to your running emacs instance. This is a real bummer. As a workaround, you can set up a signal handler to restart the server. You can put the following into your emacs startup elisp:
 <pre>
 ;; define function to restart the server
 (defun signal-restart-server ()
