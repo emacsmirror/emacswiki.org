@@ -16,8 +16,8 @@ to rename a frame named ##OLD-NAME## to ##NEW-NAME##.
 == Setting the Frame Title and Icon Title ==
 
 The frame title is changed by changing the value of the variable
-`frame-title-format'. Likewise, the icon title can be changed with `icon-title-format'. They recognize the same special characters
-as variable `mode-line-format' [except that %c and %l constructs are ignored] :
+`frame-title-format'. Likewise, the icon title can be changed with `icon-title-format'.
+They recognize most of the same special characters as variable `mode-line-format'; see that variable for further details:
 
   A string is printed verbatim in the mode line except for %-constructs:
     (%-constructs are allowed when the string is the entire mode-line-format
@@ -28,10 +28,7 @@ as variable `mode-line-format' [except that %c and %l constructs are ignored] :
           %& is like %*, but ignore read-only-ness.
           % means buffer is read-only and * means it is modified.
           For a modified read-only buffer, %* gives % and %+ gives *.
-    %s -- print process status.   %l -- print the current line number.
-    %c -- print the current column number (this makes editing slower).
-          To make the column number update correctly in all cases,
-          `column-number-mode' must be non-nil.
+    %s -- print process status.
     %p -- print percent of buffer above top of window, or Top, Bot or All.
     %P -- print percent of buffer above bottom of window, perhaps plus Top,
           or print Bottom or All.
@@ -92,46 +89,13 @@ Feel free to add your titles here!
 
 === Discussion ===
 
-[new]
-By [[Kelvin Hu]]:
+By [[Kelvin Hu]] (edited by [[Reuben Thomas]]):
 
 Hi guys, I find a *almost perfect format*, as below:
 
     (setq frame-title-format
-      '("%S" (buffer-file-name "%f"
-                   (dired-directory dired-directory "%b"))))
-
-It is really a good format, I tried it and finally I have a new version as below:
-
-    (setq frame-title-format
-          '(buffer-file-name
-            "%f"
+          '(buffer-file-name "%f"
             (dired-directory dired-directory "%b")))
-
-or
-
-    (setq frame-title-format
-          '("%f" (dired-directory dired-directory "%b")))
-
-but I still do not know how they work (don't let me google, I have googled a lot), so could any one please explain it? Thanks very much.
-
-[new:DrewAdams:2012-06-28 14:24 UTC]
-See the Elisp manual, here: [[Manual:Frame Titles]]. It refers you to [[Manual:Mode Line Data]] for the details.  How did I find that in the manual?  `i' (`Info-index') in a manual is your friend.  -- DrewAdams
-[new:targzeta:2013-04-21 22:24 UTC]
-From `mode-line-format`:
-<pre>
-The value may be nil, a string, a symbol or a list.
-...
-A list whose car is a string or list is processed by processing each
-of the list elements recursively, as separate mode line constructs,
-and concatenating the results.
-...
-A list whose car is a symbol is processed by examining the symbol's
-value, and, if that value is non-nil, processing the cadr of the list
-recursively; and if that value is nil, processing the caddr of the
-list recursively.
-</pre>
-targzeta
 
 == Setting Xterm Window Titles from within Emacs ==
 
