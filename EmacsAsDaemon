@@ -728,3 +728,5 @@ doh@bummer ~/ $ emacsclient -nc
 
 </pre>
 
+NOTE: One other possible way to get the server restarted would be to connect to the process with gdb and then call some function to execute lisp code to restart the server. If anyone knows how to do that I would be very interested in learning how it is done.
+
