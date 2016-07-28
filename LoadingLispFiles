@@ -26,6 +26,15 @@ Note that when you start using files in the LoadPath, you may end up having to d
  (require 'load-directory)
  (load-directory "~/.emacs.d/my-lisp")
 
+This snippet loads all *.el files in a directory.
+
+    (defun load-directory (dir)
+      (let ((load-it (lambda (f)
+		       (load-file (concat (file-name-as-directory dir) f)))
+		     ))
+	(mapc load-it (directory-files dir nil "\\.el$"))))
+    (load-directory "~/bunch/of/lisp/")
+
 ----
 Here's how to do stuff only if a library successfully loads.  I use this in my .emacs all the time.  A typical use is: you want to load a library, and then bind some function from that library to a key.  But you don't want to attempt the binding if the library wasn't present, because that will throw an error, or something.  This is particularly handy when you use the same .emacs on different machines, not all of which have the same libraries available.
 
