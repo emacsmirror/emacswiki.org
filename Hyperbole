@@ -17,7 +17,7 @@ I would like to see a comparison between the various Information Management tool
 
 From RSW, author of GNU Hyperbole:
 
-People often ask us about the differences between Org mode and Hyperbole.  Although on the surface this comes up a lot, once you use both of these, you'll quickly see how different they are.  Because they are so different, it is likely that there will be some integration in the future.  You can use both together already with very little conflict.  Here is a contrast of the two, for those interest.
+People often ask us about the differences between Org mode and Hyperbole.  Although on the surface this comes up a lot, once you use both of these, you'll quickly see how different they are.  Because they are so different, it is likely that there will be some integration in the future.  You can use both together already with very little conflict.  Here is a contrast of the two, for those interested.
 
 * Org-mode is a major-mode that works on structured files built atop Emacs outlining mode.
 * Hyperbole is a system that spans across much of Emacs' functionality, providing quick access keys and hyperbuttons wherever needed.
