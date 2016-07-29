@@ -10,7 +10,7 @@ edited in the same way, with visual feedback as you type.
 Normal scenario of Iedit mode is like:
 
 * Highlight certain contents - by press C-;
-   All occurrences of a symbol, string or a rectangle in the buffer or a region
+   All occurrences of a symbol, string or a region in the buffer
    may be highlighted corresponding to current mark, point and prefix
    argument. Refer to the document of `iedit-mode' for details.
 
@@ -45,7 +45,7 @@ document of function `iedit-mode' (C-h f iedit-mode RET) for more details.
 
 -------------------
 I hope this package could be extend to support html paired tag real-time rename.
-
- 
+---
+It is already supported in the lastest version.
 ----
 CategorySearchAndReplace
