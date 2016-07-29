@@ -48,7 +48,7 @@ key, you can insert it into a buffer with C-q ESC.  It is a good idea
 not to choose strings that conflict with string the terminal already
 sends.  For me, "^[[[A" is F1, so I choose to prefix it with ESC but
 didn't feel comfortable with two ESC, since one does sometimes want to
-enter them by the numbers into emacs, so I put a "[" bewteen them.
+enter them by the numbers into emacs, so I put a "[" between them.
 
 
 ''[Why not use <tt>\e</tt> instead of the literal escape char?  That would avoid possible problems when transmitting the file over the network.]
@@ -63,7 +63,7 @@ does not see a difference between what you type and what keys insert
 as strings.
 
 I would also like to point out that using [(meta f1)] did not work
-excacly in emacs 21.3, but (kdb "M-<f1>") did.  It returns [M-F1].
+exactly in emacs 21.3, but (kdb "M-<f1>") did.  It returns [M-F1].
 There seems to be a slight incompatibility in between them.
 
 ----
