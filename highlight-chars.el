@@ -8,9 +8,9 @@
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:40:17 2015 (-0800)
+;; Last-Updated: Fri Jul 29 23:05:27 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 228
+;;     Update #: 231
 ;; URL: http://www.emacswiki.org/highlight-chars.el
 ;; Doc URL: http://www.emacswiki.org/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
@@ -629,8 +629,8 @@ Non-interactively:
 
 * CHARS is a possible value for `hc-other-chars', that is, a list of
   entries such as described above.
-* FACE is the highlighting face to use.
-* Non-nil OFFP non-nil means turn highlighing off."
+* FACE is the face to use (e.g., a symbol).
+* Non-nil OFFP non-nil means turn highlighting off."
   (interactive
    (let* ((prompt  (format "Chars to %shighlight: " (if current-prefix-arg "UN" "")))
           (chrs    (read-string prompt))
