@@ -2,7 +2,7 @@
 
 You can use `C-g' to cancel any action you have
 started. For some actions, you may need to repeat this. (If even
-this doesn't clear things up entirely, then try `C-]' or `M-x top-level'; that should do the trick.)
+this doesn't clear things up entirely, then try `##C-]##' or `M-x top-level'; that should do the trick.)
 
 '''Example 1:''' You start to enter a command, with `M-x some-command'. Before you enter it (with the <code>RET</code> key), you use `C-g' to cancel what you started.
 
@@ -38,9 +38,9 @@ Great, keyboard-escape-quit seems to work!  Don't forget to make escape cancel a
 
 === This kind of works in the terminal ===
 
-This comes close-ish to making escape behave like C-g in console emacs. I didn't test it in GUI emacs, but the above solutions seem to work for GUI emacs.
+This comes close-ish to making escape behave like `C-g' in console emacs. I didn't test it in GUI emacs, but the above solutions seem to work for GUI emacs.
 
-There's no perfect solution that includes allowing pressing escape to mean meta. So, in this code, escape behaves like meta if you type another key shortly after (within .2 seconds of) typing escape. If you type escape and then do nothing for .2 seconds, it fires off a C-g.
+There's no perfect solution that includes allowing pressing escape to mean meta. So, in this code, escape behaves like meta if you type another key shortly after (within .2 seconds of) typing escape. If you type escape and then do nothing for .2 seconds, it fires off a `C-g'.
 {{{
 
 ; normal-escape.el
@@ -86,7 +86,7 @@ There's no perfect solution that includes allowing pressing escape to mean meta.
 
 }}}
 
-One drawback, though, is that it messes up C-h C-k, making it think the key you typed was only escape. Does anyone know of a better way of putting the escape and the subsequent key back into effect than the following? Maybe a way that makes it not treat the escape separately?
+One drawback, though, is that it messes up `C-h C-k', making it think the key you typed was only escape. Does anyone know of a better way of putting the escape and the subsequent key back into effect than the following? Maybe a way that makes it not treat the escape separately?
 
 {{{
       (setq unread-command-events (cons event unread-command-events))   ; Puts subsequent key back into effect
