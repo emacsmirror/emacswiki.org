@@ -10,9 +10,9 @@ this doesn't clear things up entirely, then try `##C-]##' or `M-x top-level'; th
 
 
 == Mapping ESC to Cancel ==
-Many OperatingSystems and applications map the ESC key to Cancel, so CustomizingEmacs this way can increase EmacsNewbie comfort.
+Many OperatingSystems and applications map the `ESC' key to Cancel, so CustomizingEmacs this way can increase EmacsNewbie comfort.
 
-But ESC is mapped as another MetaKey by default, so this could cause trouble if you are already having MetaKeyProblems.
+But `ESC' is mapped as another MetaKey by default, so this could cause trouble if you are already having MetaKeyProblems.
 
 Here is some pseudo-code:
 {{{
