@@ -21,7 +21,7 @@ EmacsLisp source files have extension `##.el##'. Byte-compiled files have extens
 This can be a source of confusion. If you change a source file, but don't remember to byte-compile it again,
 then Emacs might load the out-of-date byte-compiled file instead of the newer source file. Emacs warns you about this, but you might miss the warning message.
 
-A good way to prevent this is to get in the habit of using command `byte-recompile-directory' to byte-compile all source files that are newer than their byte-compiled versions. This command will only byte-compile files that already have a byte-compiled version.
+A good way to prevent this is to get in the habit of using command `byte-recompile-directory' to byte-compile all source files that are newer than their byte-compiled versions. This command will only byte-compile files that already have a byte-compiled version unless you provide it with the flag ##0##.
 
 Here it is an example of Emacs-Lisp code using such a function:
 
