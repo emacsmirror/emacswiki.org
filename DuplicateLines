@@ -25,6 +25,8 @@ Duplicate line 1
 
 == Search and replace in Lisp that works ==
 
+See [https://debbugs.gnu.org/cgi/bugreport.cgi?bug=13032 bug #13032] for delete-duplicate-lines in core emacs.
+
 Here's some Lisp to find duplicate lines and keep only the first occurrence by starting each search and replace at the start of the last duplicate -- ##(goto-char start)##.
 
   (defun uniquify-all-lines-region (start end)
