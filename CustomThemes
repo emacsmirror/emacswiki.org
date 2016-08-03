@@ -29,7 +29,7 @@ and
 
 === Installation ===
 
-In order to use custom themes, their .el files have to reside in a directory contained in the custom-theme-load-path variable, which defaults to `~/.emacs.d'. If you want to put your themes in custom subdirectories in order not to pollute the `~/.emacs.d' folder, you can add them to the list with:
+In order to use custom themes, their .el files have to reside in a directory contained in the 'custom-theme-load-path' variable, which defaults to `~/.emacs.d'. If you want to put your themes in custom subdirectories in order not to pollute the `~/.emacs.d' folder, you can add them to the list with:
 
     (add-to-list 'custom-theme-load-path "<themefolder>")
 
