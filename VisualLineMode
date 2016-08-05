@@ -1,6 +1,4 @@
-Visual line mode is a new mode in Emacs 23 that is on by default. 
-[new] Actually, it is not "on" by default at all, you have to activate it.  It is available though.
-[new]  According to the ##NEWS## file,
+Visual Line mode is a LineWrap mode for Emacs that replaced LongLines.  According to the ##NEWS## file,
 
     Visual Line mode provides support for editing by visual lines.
     It turns on word-wrapping in the current buffer, and rebinds C-a, C-e,
@@ -13,7 +11,6 @@ To use the original behavior put the following in your .emacs:
 
     (setq line-move-visual nil)
 
-This mode will likely deprecate LongLines in a future version of Emacs.
 [new]
 But can you have visual-line-mode wrap at a given column and not just at the window border?  I like how longlines-mode keeps text at 80 columns or less.
 --BryanMurdock
@@ -58,10 +55,6 @@ The following code convinces visual-line-mode to wrap at a given column by expan
 [new]
 
 I used the code above from JamesWright very successfully for a few years, but now there is also [http://melpa.org/#/visual-fill-column visual-fill-column] which uses the fill-column setting to wrap lines in visual line mode. Seems to work really well, I started having trouble with line wrapping when I switched to working in a terminal, but it appears to be sorted out now with visual-fill-column. -- TomHFife
-
-[new]
-
-See also LineWrap.
 
 [new]
 I turned it on globally with `(global-visual-line-mode 1)' and it's really useful. But I also use iswitchb which shows the buffer list in multiple lines in the minibuffer if there are lots of open buffers. That's how I like it. The problem is visual line mode wraps lines in the minibuffer too which is not good, because it breaks the nice iswitchb display.
