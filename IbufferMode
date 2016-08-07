@@ -308,7 +308,7 @@ Moreover, the keys `up' and `down' do the same thing but they skip the names of 
     "Move forward ARG lines, wrapping around the list if necessary."
     (interactive "P")
     (or arg (setq arg 1))
-    (let (err1 err1)
+    (let (err1 err2)
       (while (> arg 0)
         (cl-decf arg)
         (setq err1 (ibuffer-advance-motion 1)
