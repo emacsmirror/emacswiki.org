@@ -30,6 +30,9 @@ Thus, you should be good to go. :)
 
 I'm unable to edit the [[CategoryTemplates]] page, because it contains a "phone-number" in one of it's links to a template package.
 
+[new]
+I changed the code such that the regular expressions on BannedRegexps no longer apply to URLs because URLs have their own set of (more restrictive) regular expressions on BannedContent. -- [[Alex Schroeder]]
+
 ==Cannot find where file lives for change submission (solved) ==
 
 I would like to submit a change to the file found at https://www.emacswiki.org/emacs/perltidy.el, but I can't seem to figure out which repo to clone. Do I clone the emacs wiki repo or is there some other upstream repo to which I should submit my proposed changes?
