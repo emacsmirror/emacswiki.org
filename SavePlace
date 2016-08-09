@@ -23,8 +23,9 @@ will restores emacs exit to nearly instantaneous.
 Note: for GNU Emacs 25 users, it is recommended to use the following
 setting:
 {{{
-(require 'saveplace)
-(save-place-mode 1)
+(save-place-mode 1) 
 }}}
+
+<code>saveplace</code> is auto-loaded by <code>save-place-mode</code>; you do not need to explicitly require it.
 ----
 SessionManagement CategoryPersistence
