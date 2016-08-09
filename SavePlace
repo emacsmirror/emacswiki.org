@@ -3,6 +3,17 @@ Purpose: When you visit a file, point goes to the last place where it was when y
 To use it, turn it on in the options menu - "Save place in files between Sessions".
 
 Alternatively, you could add the following to your InitFile:
+
+[h2]For GNU Emacs 25.1 and newer versions[/h2]
+
+{{{
+(save-place-mode 1) 
+}}}
+
+Note that <code>saveplace</code> is auto-loaded by <code>save-place-mode</code>. So you do not need to explicitly require it.
+
+[h2]For GNU Emacs 24.5 and older versions[/h2]
+
 {{{
 (require 'saveplace)
 (setq-default save-place t)
@@ -20,12 +31,5 @@ If emacs is slow to exit after enabling saveplace, you may be running afoul of s
 }}}
 will restores emacs exit to nearly instantaneous.
 
-Note: For GNU Emacs 25.1 and newer versions, <code>save-place-mode</code> needs to be enabled as follows:
-
-{{{
-(save-place-mode 1) 
-}}}
-
-<code>saveplace</code> is auto-loaded by <code>save-place-mode</code>; you do not need to explicitly require it.
 ----
 SessionManagement CategoryPersistence
