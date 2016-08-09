@@ -19,5 +19,12 @@ If emacs is slow to exit after enabling saveplace, you may be running afoul of s
 (setq save-place-forget-unreadable-files nil)
 }}}
 will restores emacs exit to nearly instantaneous.
+
+Note: for GNU Emacs 25 users, it is recommended to use the following
+setting:
+{{{
+(require 'saveplace)
+(save-place-mode 1)
+}}}
 ----
 SessionManagement CategoryPersistence
