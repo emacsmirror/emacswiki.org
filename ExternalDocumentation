@@ -44,6 +44,7 @@ convert any Python documentation, if based on "Sphinx", to emacs info files.
 
 To install:
 
+  $ cd ~/info
   $ wget https://github.com/politza/python-info/raw/master/python-2.7.6.info.gz
   $ install-info python-2.7.6.info.gz dir
 
@@ -87,3 +88,13 @@ To install documentation in .info format of GNU's standard C++ library (for stuf
 The URL in wget is one of the mirrors selected for geographic proximity. Select yours from http://gcc.gnu.org/mirrors.html
 
 GNU's standard C++ library page: http://gcc.gnu.org/libstdc++
+
+=== Book "Structure and Interpretation of Computer Programs" ===
+
+Most convenient way to install is via MELPA. For reference, the package page is: https://melpa.org/#/sicp
+
+Alternatively, for manual installation:
+
+  $ cd ~/info
+  $ wget https://github.com/webframp/sicp-info/raw/master/sicp.info
+  $ install-info sicp.info dir
