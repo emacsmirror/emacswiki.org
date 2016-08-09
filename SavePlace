@@ -20,12 +20,17 @@ Note that <code>saveplace</code> is auto-loaded by <code>save-place-mode</code>.
 }}}
 Note that using <code>setq</code> will not do because the variable is buffer-local.
 
-Your saved places are written to the file stored in the file specified by <code>save-place-file</code>. This defaults to <code>~/.emacs-places</code>. You may want to change it to keep your home directory uncluttered, for example:
+[h2]Options[/h2]
+
+Your saved places are written to the file stored in the file specified by <code>save-place-file</code>. This defaults to <code>~/.emacs.d/places</code> in newer emacs versions (25.1+) and to <code>~/.emacs-places</code> in older emacs versions. In the latter case, you might want to change it to keep your home directory uncluttered.
+
+For example:
 {{{
-(setq save-place-file "~/.emacs.d/saved-places")
+(setq save-place-file (locate-user-emacs-file "places" ".emacs-places"))
 }}}
 
-If emacs is slow to exit after enabling saveplace, you may be running afoul of save-place-forget-unreadable-files. On exit, it checks that every loaded file is readable before saving its buffer position - potentially very slow if you use NFS.  
+If emacs is slow to exit after enabling saveplace, you may be running afoul of <code>save-place-forget-unreadable-files</code>. On exit, it checks that every loaded file is readable before saving its buffer position - potentially very slow if you use NFS.  
+
 {{{
 (setq save-place-forget-unreadable-files nil)
 }}}
