@@ -21,7 +21,7 @@ If emacs is slow to exit after enabling saveplace, you may be running afoul of s
 will restores emacs exit to nearly instantaneous.
 
 Note: For GNU Emacs 25.1 and newer versions, <code>save-place-mode</code> needs to be enabled as follows:
-setting:
+
 {{{
 (save-place-mode 1) 
 }}}
