@@ -8,9 +8,9 @@
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Thu Dec 31 16:31:11 2015 (-0800)
+;; Last-Updated: Tue Aug  9 07:15:32 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 338
+;;     Update #: 339
 ;; URL: http://www.emacswiki.org/zoom-frm.el
 ;; Doc URL: http://emacswiki.org/SetFonts
 ;; Keywords: frames, extensions, convenience
@@ -400,8 +400,8 @@ Remember that you can also use `C-u' when you are done zooming."
                                    (?0      0)
                                    (t       arg)))))
         (message (if (eq step 0)
-                     "Reset to default size.  Use C-+/C-- to zoom in/out"
-                   "Use C-+/C-- to zoom in/out, C-0 to reset (unzoom)"))
+                     "Reset to default size.  Use C-x C-+/C-- to zoom in/out"
+                   "Use C-x C-+/C-- to zoom in/out, C-0 to reset (unzoom)"))
         (unless (eq step 'C-U-WAS-USED)
           (if (eq zoom-frame/buffer 'frame)
               (if (eq step 0)
