@@ -11,9 +11,9 @@
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Aug 10 12:27:32 2016 (-0700)
+;; Last-Updated: Wed Aug 10 12:33:54 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1945
+;;     Update #: 1947
 ;; URL: http://www.emacswiki.org/header2.el
 ;; Doc URL: http://emacswiki.org/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
@@ -977,8 +977,7 @@ Respects `make-box-comment-region-remove-comments'."
   (setq end-col  (if end-col (prefix-numeric-value end-col) fill-column))
   (if (not (and mark-active  (mark)  (> (region-end) (region-beginning))))
       (make-box-comment end-col)
-    (let ((selection    (buffer-substring start end))
-          (n-e-c-start  (nonempty-comment-start)))
+    (let ((selection    (buffer-substring start end)))
       (kill-region start end)
       (make-box-comment end-col)
       (insert
@@ -986,7 +985,7 @@ Respects `make-box-comment-region-remove-comments'."
                                  (concat "\n" (header-prefix-string))
                                  (if make-box-comment-region-replace-prefix-flag
                                      (replace-regexp-in-string 
-                                      (concat "^[ \t" n-e-c-start "]+[" n-e-c-start "]+")
+                                      (concat "^[ \t]*[" (nonempty-comment-start) "]*")
                                       ""
                                       selection)
                                    selection))))))
