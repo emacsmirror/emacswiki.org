@@ -11,9 +11,9 @@
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Aug 10 10:09:27 2016 (-0700)
+;; Last-Updated: Wed Aug 10 10:12:36 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1921
+;;     Update #: 1922
 ;; URL: http://www.emacswiki.org/header2.el
 ;; Doc URL: http://emacswiki.org/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
@@ -33,7 +33,8 @@
 ;; Commands (interactive functions) defined here:
 ;;
 ;;   `make-header', `make-revision', `make-divider',
-;;   `make-box-comment', `update-file-header'.
+;;   `make-box-comment', `make-box-comment-region',
+;;   `update-file-header'.
 ;;
 ;; Other functions defined here:
 ;;
