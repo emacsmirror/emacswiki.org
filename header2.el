@@ -11,9 +11,9 @@
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Aug 10 12:20:09 2016 (-0700)
+;; Last-Updated: Wed Aug 10 12:27:32 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1941
+;;     Update #: 1945
 ;; URL: http://www.emacswiki.org/header2.el
 ;; Doc URL: http://emacswiki.org/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
@@ -64,7 +64,7 @@
 ;;
 ;;   `header-copyright-notice', `header-date-format',
 ;;   `header-history-label', `header-max',
-;;   `make-box-comment-region-remove-comments-flag',
+;;   `make-box-comment-region-replace-prefix-flag',
 ;;   `make-header-hook'.
 ;;
 ;; Other variables defined here:
@@ -174,7 +174,7 @@
 ;;; Change Log:
 ;;
 ;; 2016/08/10 dadams
-;;     Added: make-box-comment-region, make-box-comment-region-remove-comments-flag
+;;     Added: make-box-comment-region, make-box-comment-region-replace-prefix-flag
 ;;            (suggestion from Stephen Barrett).
 ;;     make-divider, make-box-comment:
 ;;       Added prefix arg.  Better doc string.  Do not subtract 2 (dunno why it was done).
@@ -490,8 +490,8 @@ along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>."
   "*Text saying that this is free software"
   :type 'string :group 'Automatic-File-Header)
 
-(defcustom make-box-comment-region-remove-comments-flag nil
-  "Non-nil means remove any commented lines in region, before boxing it."
+(defcustom make-box-comment-region-replace-prefix-flag nil
+  "Non-nil means remove any comment prefix from lines, before boxing."
   :type 'boolean :group 'Automatic-File-Header)
  
 ;;; Internal variables -------------------------------------
@@ -984,7 +984,7 @@ Respects `make-box-comment-region-remove-comments'."
       (insert
        (replace-regexp-in-string "\n"
                                  (concat "\n" (header-prefix-string))
-                                 (if make-box-comment-region-remove-comments-flag
+                                 (if make-box-comment-region-replace-prefix-flag
                                      (replace-regexp-in-string 
                                       (concat "^[ \t" n-e-c-start "]+[" n-e-c-start "]+")
                                       ""
