@@ -13,7 +13,7 @@ has better exception handling support.
 
 NicFerrier's EmacsDb has a [https://github.com/nicferrier/emacs-db-pg backend] for PostgreSQL
 
-== libpq interface ==
+== emacs-module interface ==
 
 With emacs25's loadable modules, it's possible to use postgresql's
 client library directly.  This is more efficient than the pure elisp interface
