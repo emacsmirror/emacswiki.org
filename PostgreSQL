@@ -13,6 +13,14 @@ has better exception handling support.
 
 NicFerrier's EmacsDb has a [https://github.com/nicferrier/emacs-db-pg backend] for PostgreSQL
 
+== libpq interface ==
+
+With emacs25's loadable modules, it's possible to use postgresql's
+client library directly.  This is more efficient than the pure elisp interface
+and supports more features (SSL, out-of-band transfer of parameters, etc)
+
+There is a prototype implementation available here:
+https://github.com/anse1/emacs-libpq
 == Info Documentation ==
 
 You can convert Postgres' DocBook docs to Texinfo via docbook2X for
