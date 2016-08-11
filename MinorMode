@@ -1,15 +1,15 @@
-An Emacs buffer must be in exactly one [[major mode]]. It might also be in one or more '''[::minor mode]s''' that provide additional functionality.
+A '''[::minor mode]''' in Emacs is an optional editing mode that extends the functionality available in the underlying [[major mode]]. 
 
-A minor mode is often appropriate for use with more than one major mode. It sometimes adds functionality that is orthogonal to that provided by the major mode. For example, font-lock (minor) mode provides syntax-sensitive highlighting; it can be used with most major modes to provide appropriate highlighting (see EnablingFontLock).
+While a buffer in Emacs can have only one [[major mode]], it can have multiple '''[::minor mode]s''' simultaneously active. The same '''[::minor mode]''' can extend functionality to different [[major modes]]. For example, font-lock (minor) mode provides syntax-sensitive highlighting to many [[major modes]] (see EnablingFontLock).
 
-Most minor modes have a command that turns them on and off. For example:
+Some '''[::minor mode]s''' have a command that turns them on and off. For example:
 
 * `delete-selection-mode' -- see DeleteSelectionMode
 * `auto-fill-mode' -- see AutoFillMode
 * `font-lock-mode' -- see EnablingFontLock
 * `line-number-mode' -- see LineNumbers
 
-Some do not.  For example:
+Some '''[::minor mode]s''' do not have an on and off command. For example:
 
 * `adaptive-fill-mode'
 * `auto-hscroll-mode'
@@ -17,17 +17,18 @@ Some do not.  For example:
 * `shift-select-mode'
 * `ediff-word-mode' -- Part of EdiffMode
 
-Some modes do not have a single-point of entry, but set a variable for whether they are turned on, or should be disabled.
+Some '''[::minor mode]s''' do not have a single-point of entry but set a variable to indicate on or off. For example:
+ 
 * `isearch-mode'
 * `tramp-mode'
 
 == Defining minor modes ==
 
-The easiest way to define a minor mode is with the ##define-minor-mode## macro from ##easy-mmode.el##.
+The easy way to define a minor mode is with the ##define-minor-mode## macro from ##easy-mmode.el##.
 
 == Discussion ==
 
-How do I check whether a given minor mode is active?
+How to check if a minor mode is active?
 
 [new:DrewAdams:2009-02-25 15:08 UTC]
 Test the value of the mode variable. Example: ##(if delete-selection-mode ...)##
