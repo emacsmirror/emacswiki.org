@@ -16,7 +16,7 @@ NicFerrier's EmacsDb has a [https://github.com/nicferrier/emacs-db-pg backend] f
 == emacs-module interface ==
 
 With emacs25's loadable modules, it's possible to use postgresql's
-client library directly.  This is more efficient than the pure elisp interface
+client library directly.  This is more efficient (speedup > 4) than the pure elisp interface
 and supports more features (SSL, out-of-band transfer of parameters, etc)
 
 There is a prototype implementation available here:
