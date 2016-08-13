@@ -1,15 +1,15 @@
 A '''[::minor mode]''' in Emacs is an optional editing mode that extends the functionality available in the underlying [[major mode]]. 
 
-While a buffer in Emacs can have only one [[major mode]], it can have multiple '''[::minor mode]s''' simultaneously active. The same '''[::minor mode]''' can extend functionality to different [[major modes]]. For example, font-lock (minor) mode provides syntax-sensitive highlighting to many [[major modes]] (see EnablingFontLock).
+While a buffer in Emacs can have only one major mode, it can have multiple minor modes simultaneously active. The same minor mode can extend functionality to different major modes. For example, font-lock (minor) mode provides syntax-sensitive highlighting to many major modes (see EnablingFontLock).
 
-Some '''[::minor mode]s''' have a command that turns them on and off. For example:
+Some minor modes have a command that turns them on and off. For example:
 
 * `delete-selection-mode' -- see DeleteSelectionMode
 * `auto-fill-mode' -- see AutoFillMode
 * `font-lock-mode' -- see EnablingFontLock
 * `line-number-mode' -- see LineNumbers
 
-Some '''[::minor mode]s''' do not have an on and off command. For example:
+Some minor modes do not have an on and off command. For example:
 
 * `adaptive-fill-mode'
 * `auto-hscroll-mode'
@@ -17,7 +17,7 @@ Some '''[::minor mode]s''' do not have an on and off command. For example:
 * `shift-select-mode'
 * `ediff-word-mode' -- Part of EdiffMode
 
-Some '''[::minor mode]s''' do not have a single-point of entry but set a variable to indicate on or off. For example:
+Some minor modes do not have a single-point of entry but set a variable to indicate on or off. For example:
  
 * `isearch-mode'
 * `tramp-mode'
