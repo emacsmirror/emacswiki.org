@@ -83,5 +83,8 @@ If you are are deriving your new mode from something other than fundamental-mode
      (font-lock-add-keywords nil '(("[0-9]" . 'c3-face-1)))
     )
 
+
+By default, syntax highlighting will font lock quoted strings. If you don't want that to happen, add a 't as the last element in the font lock list, as shown in [http://emacs.stackexchange.com/questions/26263/what-code-is-font-locking-quoted-strings-in-my-custom-mode-buffer/26264#26264 this link.]
+
 ----
 CategoryCode
