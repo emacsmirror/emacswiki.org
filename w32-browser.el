@@ -8,9 +8,9 @@
 ;; Created: Thu Mar 11 13:40:52 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 16:26:03 2015 (-0800)
+;; Last-Updated: Sun Aug 14 14:33:34 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 238
+;;     Update #: 242
 ;; URL: http://www.emacswiki.org/w32-browser.el
 ;; Doc URL: http://emacswiki.org/MsShellExecute
 ;; Keywords: mouse, dired, w32, explorer
@@ -38,6 +38,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/08/14 dadams
+;;     dired-mouse-w32-browser*: No-op if event is not in a window.
 ;; 2012/03/10 dadams
 ;;     dired-w32-browse(-reuse-dir-buffer), w32explore:
 ;;       Use subst-char-in-string, not dired-replace-in-string or substitute.
@@ -118,15 +120,17 @@ If no application is associated with file, then `find-file'."
 If file is a directory or no application is associated with file, then
 `find-file' instead."
     (interactive "e")
-    (let (file)
-      (with-current-buffer (window-buffer (posn-window (event-end event)))
-        (save-excursion
-          (goto-char (posn-point (event-end event)))
-          (setq file (dired-get-filename nil t))))
-      (select-window (posn-window (event-end event)))
-      (if (file-directory-p file)
-          (find-file (file-name-sans-versions file t))
-        (w32-browser (file-name-sans-versions file t)))))
+    (let ((win  (posn-window (event-end event)))
+          file)
+      (when (windowp win)               ; E.g. press but move mouse out of any window.
+        (with-current-buffer (window-buffer win)
+          (save-excursion
+            (goto-char (posn-point (event-end event)))
+            (setq file (dired-get-filename nil t))))
+        (select-window (posn-window (event-end event)))
+        (if (file-directory-p file)
+            (find-file (file-name-sans-versions file t))
+          (w32-browser (file-name-sans-versions file t))))))
 
   (defun dired-w32-browser-reuse-dir-buffer ()
     "Like `dired-w32-browser', but reuse Dired buffers."
@@ -139,15 +143,17 @@ If file is a directory or no application is associated with file, then
   (defun dired-mouse-w32-browser-reuse-dir-buffer (event)
     "Like `dired-mouse-w32-browser', but reuse Dired buffers."
     (interactive "e")
-    (let (file)
-      (with-current-buffer (window-buffer (posn-window (event-end event)))
-        (save-excursion
-          (goto-char (posn-point (event-end event)))
-          (setq file (dired-get-filename nil t))))
-      (select-window (posn-window (event-end event)))
-      (if (file-directory-p file)
-          (find-alternate-file (file-name-sans-versions file t))
-        (w32-browser (file-name-sans-versions file t)))))
+    (let ((win  (posn-window (event-end event)))
+          file)
+      (when (windowp win)               ; E.g. press but move mouse out of any window.
+        (with-current-buffer (window-buffer win)
+          (save-excursion
+            (goto-char (posn-point (event-end event)))
+            (setq file (dired-get-filename nil t))))
+        (select-window (posn-window (event-end event)))
+        (if (file-directory-p file)
+            (find-alternate-file (file-name-sans-versions file t))
+          (w32-browser (file-name-sans-versions file t))))))
 
   (defun dired-multiple-w32-browser ()
     "Run default Windows applications associated with marked files."
