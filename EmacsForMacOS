@@ -148,7 +148,7 @@ ln -s /usr/local/Cellar/emacs/24.5/Emacs.app /Applications
 After installation, using the <tt>emacs</tt> command in the terminal or shell will run the <tt>-nw</tt> version of Emacs. If you want
 to run the Cocoa version using this command, you simply add a line to your <tt>.bash_profile</tt>.
 
-To instead use the Yamamoto Mitsuharu version of Emacs 24.5 (with more [https://github.com/railwaycat/emacs-mac-port/blob/master/README-mac mac-specific features]):
+To instead use the Yamamoto Mitsuharu version of Emacs 24.5 (with more [https://github.com/railwaycat/homebrew-emacsmacport/blob/master/README.md mac-specific features]):
 
 <pre>
 brew tap railwaycat/emacsmacport
