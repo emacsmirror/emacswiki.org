@@ -65,3 +65,18 @@ In case anyone else happens to have this problem, I was able to solve it by inst
 
 -- Anonymous 2013-12-17 16:07 UTC
 
+
+----
+
+I wanted to stop matlab-mode from starting a new line every time it sends a command to the shell so I changed line 5369 from
+
+`(concat command "\n")`
+to
+`(concat command "")`
+
+This seems to solve my problem but I'm wondering if there was a reason for the newline and removing it will come back and bite me later.
+
+-Nate
+
+-- Anonymous 2016-08-16 20:00 UTC
+
