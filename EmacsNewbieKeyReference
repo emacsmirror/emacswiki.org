@@ -61,9 +61,9 @@ See also: CancelingInEmacs.
 
 == Whitespace Edits ==
 
-* Indent current line: TAB
-* Shift a block of lines rigidly right or left: C-x TAB
-* Fill (justify) paragraph: `M-q;
+* Indent current line: `TAB'
+* Shift a block of lines rigidly right or left: `C-x TAB'
+* Fill (justify) paragraph: `M-q';
 * Add a new line after this one: `RET'
 * Open a new line before this one: `C-o'
 * Remove all but 1 empty line: `C-x C-o'
