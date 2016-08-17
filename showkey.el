@@ -8,9 +8,9 @@
 ;; Created: Sun Mar 22 16:24:39 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul  4 14:21:25 2016 (-0700)
+;; Last-Updated: Tue Aug 16 22:46:45 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 119
+;;     Update #: 123
 ;; URL: http://www.emacswiki.org/showkey.el
 ;; Doc URL: http://www.emacswiki.org/ShowKey
 ;; Keywords: help keys mouse
@@ -18,7 +18,7 @@
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `fit-frame'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -90,6 +90,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2016/08/16 dadams
+;;     showkey-log-frame-alist: Commented out font spec.
 ;; 2016/07/04 dadams
 ;;     showkey-log: Respect showkey-tooltip-key-only-flag too.
 ;; 2015/05/27 dadams
@@ -161,7 +163,8 @@ This is used by `showkey-log-mode'."
     (horizontal-scroll-bars)
     (vertical-scroll-bars . right)
     (background-color . "LightSteelBlue")
-    (font . "-*-Lucida Console-normal-r-*-*-12-*-*-*-c-*-iso8859-1")
+    ;; Choose whatever font you like.  This is what I use:
+    ;; (font . "-*-Lucida Console-normal-r-*-*-12-*-*-*-c-*-iso8859-1")
     )
   "Alist of frame parameters for the `*KEYS*' frame of `showkey-log-mode'."
   :type 'alist :group 'Show-Key)
