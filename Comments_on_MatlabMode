@@ -80,3 +80,16 @@ This seems to solve my problem but I'm wondering if there was a reason for the n
 
 -- Anonymous 2016-08-16 20:00 UTC
 
+
+----
+
+I did have to change a couple things to get shell completion working better (it completes in the middle of lines without adding empty lines now). The code is available here (https://gitlab.com/nchodosh/matlab-emacs). It also adds two functions:
+matlab-insert-breakpoint
+matlab-insert-condition-breakpoint
+
+which make it easy to add a breakpoint while editing a .m file
+
+-Nate
+
+-- Anonymous 2016-08-18 16:42 UTC
+
