@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 14:12:50 2015 (-0800)
+;; Last-Updated: Fri Aug 19 08:34:30 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1328
+;;     Update #: 1335
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -332,6 +332,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/08/19 dadams
+;;     isearchp-put-prop-on-region:
+;;       Set isearchp-property-prop, isearchp-property-type, isearchp-property-values, for next use of C-u.
 ;; 2015/11/08 dadams
 ;;     Added: isearchp-query-replace-zones-flag.
 ;;     Advise perform-replace so that it respects isearchp-query-replace-zones-flag.
@@ -1394,6 +1397,9 @@ commands and commands such as `isearchp-imenu*',
             (vals   (if (memq prop '(face font-lock-face))
                         (isearchp-read-face-names 'EMPTY-MEANS-NONE-P)
                       (isearchp-read-sexps 'ONLY-ONE-P))))
+       (setq isearchp-property-prop    prop
+             isearchp-property-type    'text
+             isearchp-property-values  (list prop vals))
        (list prop vals (region-beginning) (region-end)))))
   (with-silent-modifications
     (add-text-properties beg end (list property value))
