@@ -1385,6 +1385,8 @@ the recorded variable values for the bookmark's buffer.  You can
 also create variable-list bookmarks non-interactively, using function
 `bmkp-create-variable-list-bookmark'.
 
+
+[:zones.el]
 If you use library <tt>[[zones.el]]</tt> (see [[Zones]] and MultipleNarrowings), then you can move among multiple
 restrictions (narrowings) in a buffer.  The restrictions are
 stored in buffer-local variable `zz-izones'.  Command '''`bmkp-set-izones-bookmark'''' bookmarks this value
