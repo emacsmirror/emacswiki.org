@@ -5,7 +5,7 @@
 ----
 
 
-[:zones.el]
+
 == Tripping with Icicles ==
 
 Among the more useful [[multi-command]]s are those whose actions take
@@ -289,6 +289,7 @@ The '''`a'''' indicates that the command completes an [[autofile bookmark]] name
 * '''`icicle-search-xml-element-text-node''''  -- Search text() nodes of XML elements
 * '''`icicle-select-frame'''' ('''`C-x 5 o'''') -- Trip among [[frame]]s, by name
 * '''`icicle-select-window'''' ('''`C-0 C-x o'''') -- Trip among [[window]]s, by buffer name
+[:zones.el]
 * '''`icicle-select-zone'''' -- Select buffer zones as [[region]]
 
 
