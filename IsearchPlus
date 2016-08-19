@@ -368,7 +368,7 @@ multiple-buffer searches.  Library Highlight binds keys '''`M-s h h'''' and
 
 
 [:isearchp-toggle-complementing-domain]
-* You can search zones of text/overlays that have a given property, as described above, or you can search the ''complement'': the zones that do ''NOT'' have a given property.  You can toggle this search-domain complementing at any time during Isearch,
+* You can search zones of text/overlays that have a given property, as described above, or you can search the ''complement'': the zones that do ''NOT'' have a given property - the '''anti-zones'''.  You can toggle this search-domain complementing at any time during Isearch,
 using '''`##C-M-~##'''' (command `isearchp-toggle-complementing-domain').
 
 [:isearchp-dim-non-prop-zones-flag]
@@ -438,6 +438,13 @@ ignoring comments during Isearch, using '''`##C-M-;##'''' (command
 [:isearchp-zones-forward-regexp]
 [:isearchp-zones-backward]
 [:isearchp-zones-backward-regexp]
+[:isearchp-make-zones-invisible]
+[:isearchp-make-anti-zones-invisible]
+[:isearchp-make-zones-visible]
+[:isearchp-make-anti-zones-visible]
+[:isearchp-toggle-zones-invisible]
+[:isearchp-toggle-anti-zones-invisible]
+[:isearchp-toggle-zone/anti-zone-visibility]
 * If you use library '''<tt>[[zones.el]]</tt>''' (see '''[[Zones]]''') then you can
 search a set of [[buffer]] zones that are defined by their
 limits ([[marker]]s or numbers) -- like multiple [[region]]s, using
@@ -447,6 +454,8 @@ zone sets.  Library ##zones.el## gives you an easy, interactive
 way to define them.  A [[prefix argument]] to the commands that search a
 set of zones prompts you for a [[variable]] whose value is such a
 set.  By default the variable is `zz-izones'.
+
+* If you use library ##zones.el## then you can also make a set of zones or its complement (the set of anti-zones) invisible, so that you do not see it at all, including while searching.  The commands for this are '''`isearchp-make-zones-invisible'''', '''`isearchp-make-anti-zones-invisible'''', '''`isearchp-toggle-zones-invisible'''', '''`isearchp-toggle-anti-zones-invisible'''', and '''`isearchp-toggle-zone/anti-zone-visibility''''. 
 
 
 ----
