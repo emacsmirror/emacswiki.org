@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 19 11:05:43 2016 (-0700)
+;; Last-Updated: Fri Aug 19 14:00:26 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1383
+;;     Update #: 1390
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -101,6 +101,7 @@
 ;;    `isearchp-toggle-dimming-outside-search-area',
 ;;    `isearchp-toggle-ignoring-comments',
 ;;    `isearchp-toggle-hiding-comments',
+;;    `isearchp-toggle-zone/anti-zone-visibility',
 ;;    `isearchp-toggle-zones-invisible', `isearchp-zones-backward',
 ;;    `isearchp-zones-backward-regexp', `isearchp-zones-forward',
 ;;    `isearchp-zones-forward-regexp'.
@@ -249,10 +250,12 @@
 ;;
 ;;  * If you use library `zones.el' then you can make a set of zones,
 ;;    or their complement (the anti-zones), invisible (or visible, if
-;;    they are invisible) - commands `isearchp-make-zones-invisible',
+;;    they are invisible).  See commands
+;;    `isearchp-make-zones-invisible',
 ;;    `isearchp-make-anti-zones-invisible',
-;;    `isearchp-make-zones-visible',
 ;;    `isearchp-make-anti-zones-visible',
+;;    `isearchp-make-zones-visible',
+;;    `isearchp-toggle-zone/anti-zone-visibility',
 ;;    `isearchp-toggle-zones-invisible', and
 ;;    `isearchp-toggle-anti-zones-invisible'.
 ;;
@@ -357,7 +360,7 @@
 ;;            isearchp-make-anti-zones-invisible, isearchp-make-zones-visible,
 ;;            isearchp-make-anti-zones-visible, isearchp-toggle-zones-invisible,
 ;;            isearchp-toggle-anti-zones-invisible, isearchp-anti-zones-invisible-p,
-;;            isearchp-zones-invisible-p.
+;;            isearchp-zones-invisible-p, isearchp-toggle-zone/anti-zone-visibility.
 ;;     Soft-require zones.el.
 ;;     isearchp-put-prop-on-region:
 ;;       Set isearchp-property-prop, isearchp-property-type, isearchp-property-values, for next use of C-u.
@@ -2054,73 +2057,102 @@ Interactively, ZONES is the value of variable `zz-izones-var'."
 ;;;             (setq isearchp-last-prop+value (cons property value)))
         )))
 
-  (defun isearchp-make-zones-invisible (zones &optional no-error-p msgp)
+  (defun isearchp-make-zones-invisible (zones &optional onlyp no-error-p msgp)
     "Make ZONES invisible.
+With a prefix argument, also make anti-zones visible.
 Non-interactively:
+ Non-nil ONLYP means also make anti-zones visible.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
  Non-nil MSGP means echo the new state."
-    (interactive (list (isearchp-zone-limits-izones) nil t))
+    (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
     (unless (or no-error-p  zones) (error "No zones"))
     (isearchp-put-prop-on-zones 'invisible t zones)
     (setq isearchp-zones-invisible-p  t)
-    (when msgp (message "Zones are now INvisible")))
+    (when onlyp (isearchp-make-anti-zones-visible zones nil no-error-p msgp))
+    (when msgp (message (if onlyp
+                            "Only ANTI-zones are now visible"
+                          "Zones are now INvisible"))))
 
-  (defun isearchp-make-zones-visible (zones &optional no-error-p msgp)
+  (defun isearchp-make-zones-visible (zones &optional onlyp no-error-p msgp)
     "Make ZONES visible.
+With a prefix argument, also make anti-zones invisible.
 Non-interactively:
+ Non-nil ONLYP means also make anti-zones invisible.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
  Non-nil MSGP means echo the new state."
-    (interactive (list (isearchp-zone-limits-izones) nil t))
+    (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
     (unless (or no-error-p  zones) (error "No zones"))
     (isearchp-put-prop-on-zones 'invisible nil zones)
     (setq isearchp-zones-invisible-p  nil)
-    (when msgp (message "Zones are now VISIBLE")))
+    (when onlyp (isearchp-make-anti-zones-invisible zones nil no-error-p msgp))
+    (when msgp (message "%sones are now VISIBLE" (if onlyp "Only z" "Z"))))
 
-  (defun isearchp-toggle-zones-invisible (zones &optional no-error-p msgp)
+  (defun isearchp-toggle-zones-invisible (zones &optional onlyp no-error-p msgp)
     "Toggle visibility of ZONES.
+With a prefix argument, also toggle anti-zones the other way.
 Non-interactively:
+ Non-nil ONLYP means also toggle anti-zones the other way.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
  Non-nil MSGP means echo the new state."
-    (interactive (list (isearchp-zone-limits-izones) nil t))
+    (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
     (unless (or no-error-p  zones) (error "No zones"))
     (if isearchp-zones-invisible-p
-        (isearchp-make-zones-visible zones no-error-p msgp)
-      (isearchp-make-zones-invisible zones no-error-p msgp)))
+        (isearchp-make-zones-visible zones onlyp no-error-p msgp)
+      (isearchp-make-zones-invisible zones onlyp no-error-p msgp)))
 
-  (defun isearchp-make-anti-zones-invisible (zones &optional no-error-p msgp)
+  (defun isearchp-make-anti-zones-invisible (zones &optional onlyp no-error-p msgp)
     "Make the complement of (the union of) ZONES invisible.
+With a prefix argument, also make zones visible.
 Non-interactively:
+ Non-nil ONLYP means also make zones visible.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
  Non-nil MSGP means echo the new state."
-    (interactive (list (isearchp-zone-limits-izones) nil t))
+    (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
     (unless (or no-error-p  zones) (error "No zones"))
     (let ((anti-zones  (zz-zones-complement (zz-zone-union zones))))
       (isearchp-put-prop-on-zones 'invisible t anti-zones)
       (setq isearchp-anti-zones-invisible-p  t)
-      (when msgp (message "Anti-zones are now INvisible"))))
+      (when onlyp (isearchp-make-zones-visible zones nil no-error-p msgp))
+      (when msgp (message "Anti-zones are now INvisible%s" (if onlyp ", zones are visible" "")))))
 
-  (defun isearchp-make-anti-zones-visible (zones &optional no-error-p msgp)
+  (defun isearchp-make-anti-zones-visible (zones &optional onlyp no-error-p msgp)
     "Make the complement of (the union of) ZONES visible.
+With a prefix argument, also make zones invisible.
 Non-interactively:
+ Non-nil ONLYP means also make zones invisible.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
  Non-nil MSGP means echo the new state."
-    (interactive (list (isearchp-zone-limits-izones) nil t))
+    (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
     (unless (or no-error-p  zones) (error "No zones"))
     (let ((anti-zones  (zz-zones-complement (zz-zone-union zones))))
       (isearchp-put-prop-on-zones 'invisible nil anti-zones)
       (setq isearchp-anti-zones-invisible-p  nil)
-      (when msgp (message "Anti-zones are now VISIBLE"))))
+      (when onlyp (isearchp-make-zones-invisible zones nil no-error-p msgp))
+      (when msgp (message "Anti-zones are now VISIBLE%s" (if onlyp ", zones are invisible" "")))))
 
-  (defun isearchp-toggle-anti-zones-invisible (zones &optional no-error-p msgp)
+  (defun isearchp-toggle-anti-zones-invisible (zones &optional onlyp no-error-p msgp)
     "Toggle visibility of the complement of (the union of) ZONES.
+With a prefix argument, also toggle zones the other way.
 Non-interactively:
+ Non-nil ONLYP means also toggle zones the other way.
  Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
  Non-nil MSGP means echo the new state."
-    (interactive (list (isearchp-zone-limits-izones) nil t))
+    (interactive (list (isearchp-zone-limits-izones) current-prefix-arg nil t))
     (unless (or no-error-p  zones) (error "No zones"))
     (if isearchp-anti-zones-invisible-p
-        (isearchp-make-anti-zones-visible zones no-error-p msgp)
-      (isearchp-make-anti-zones-invisible zones no-error-p msgp)))
+        (isearchp-make-anti-zones-visible zones onlyp no-error-p msgp)
+      (isearchp-make-anti-zones-invisible zones onlyp no-error-p msgp)))
+
+  (defun isearchp-toggle-zone/anti-zone-visibility (zones &optional no-error-p msgp)
+    "Show only zones, if they are invisible.  Else show only anti-zones."
+    (interactive (list (isearchp-zone-limits-izones) nil t))
+    (unless (or no-error-p  zones) (error "No zones"))
+    (cond (isearchp-zones-invisible-p
+           (isearchp-make-zones-visible zones 'ONLY no-error-p)
+           (when msgp (message "Showing only ZONES now")))
+          (t
+           (isearchp-make-anti-zones-visible zones 'ONLY no-error-p)
+           (when msgp (message "Showing only ANTI-zones now")))))
 
   )
  
