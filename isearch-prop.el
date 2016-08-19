@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 19 08:34:30 2016 (-0700)
+;; Last-Updated: Fri Aug 19 11:05:43 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1335
+;;     Update #: 1383
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -55,7 +55,8 @@
 ;;
 ;;  (@> "Overview of Features")
 ;;  (@> "Macros")
-;;  (@> "Variables")
+;;  (@> "Options")
+;;  (@> "Internal Variables")
 ;;  (@> "Keys")
 ;;  (@> "General Search-Property Commands")
 ;;  (@> "General Non-Interactive Functions")
@@ -78,6 +79,9 @@
 ;;    `isearchp-imenu-non-interactive-function',
 ;;    `isearchp-lazy-highlights-forward',
 ;;    `isearchp-lazy-highlights-forward-regexp',
+;;    `isearchp-make-anti-zones-invisible',
+;;    `isearchp-make-anti-zones-visible',
+;;    `isearchp-make-zones-invisible', `isearchp-make-zones-visible',
 ;;    `isearchp-mark-lazy-highlights',
 ;;    `isearchp-narrow-to-lazy-highlights',
 ;;    `isearchp-narrow-to-matching-zones',
@@ -85,17 +89,19 @@
 ;;    `isearchp-previous-visible-thing', `isearchp-property-backward',
 ;;    `isearchp-property-backward-regexp',
 ;;    `isearchp-property-forward', `isearchp-property-forward-regexp',
-;;    `isearchp-put-prop-on-region',
+;;    `isearchp-put-prop-on-region', `isearchp-put-prop-on-zones',
 ;;    `isearchp-regexp-context-regexp-search',
 ;;    `isearchp-regexp-context-search',
 ;;    `isearchp-regexp-define-contexts',
 ;;    `isearchp-remove-all-properties', `isearchp-remove-dimming',
 ;;    `isearchp-remove-property', `isearchp-thing',
 ;;    `isearchp-thing-define-contexts', `isearchp-thing-regexp',
+;;    `isearchp-toggle-anti-zones-invisible',
 ;;    `isearchp-toggle-complementing-domain',
 ;;    `isearchp-toggle-dimming-outside-search-area',
 ;;    `isearchp-toggle-ignoring-comments',
-;;    `isearchp-toggle-hiding-comments', `isearchp-zones-backward',
+;;    `isearchp-toggle-hiding-comments',
+;;    `isearchp-toggle-zones-invisible', `isearchp-zones-backward',
 ;;    `isearchp-zones-backward-regexp', `isearchp-zones-forward',
 ;;    `isearchp-zones-forward-regexp'.
 ;;
@@ -135,12 +141,13 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `isearchp-dimmed-overlays', `isearchp-excluded-zones',
-;;    `isearchp-property-prop', `isearchp-property-prop-prefix',
-;;    `isearchp-property-type', `isearchp-property-values',
-;;    `isearchp-complement-domain-p', `isearchp-context-level',
-;;    `isearchp-filter-predicate-orig', `isearchp-last-thing-type',
-;;    `isearchp-zone-limits-function'.
+;;    `isearchp-anti-zones-invisible-p', `isearchp-dimmed-overlays',
+;;    `isearchp-excluded-zones', `isearchp-property-prop',
+;;    `isearchp-property-prop-prefix', `isearchp-property-type',
+;;    `isearchp-property-values', `isearchp-complement-domain-p',
+;;    `isearchp-context-level', `isearchp-filter-predicate-orig',
+;;    `isearchp-last-thing-type', `isearchp-zone-limits-function',
+;;    `isearchp-zones-invisible-p'.
 ;;
 ;;
 ;;  Keys bound in `isearch-mode-map' here:
@@ -235,6 +242,19 @@
 ;;    This gives you an interactive way to set up zones for
 ;;    text-property search (`C-t').  For property `face', empty input
 ;;    removes all faces from the region.
+;;
+;;  * If you use library `zones.el' then you can use command
+;;    `isearchp-put-prop-on-region' (outside of Isearch) to add a text
+;;    property to a set of zones.
+;;
+;;  * If you use library `zones.el' then you can make a set of zones,
+;;    or their complement (the anti-zones), invisible (or visible, if
+;;    they are invisible) - commands `isearchp-make-zones-invisible',
+;;    `isearchp-make-anti-zones-invisible',
+;;    `isearchp-make-zones-visible',
+;;    `isearchp-make-anti-zones-visible',
+;;    `isearchp-toggle-zones-invisible', and
+;;    `isearchp-toggle-anti-zones-invisible'.
 ;;
 ;;  * You can use command `isearchp-mark-lazy-highlights' to put
 ;;    property `isearchp-lazy-highlight' on the text that has lazy
@@ -333,6 +353,12 @@
 ;;; Change Log:
 ;;
 ;; 2016/08/19 dadams
+;;     Added: isearchp-put-prop-on-zones, isearchp-make-zones-invisible,
+;;            isearchp-make-anti-zones-invisible, isearchp-make-zones-visible,
+;;            isearchp-make-anti-zones-visible, isearchp-toggle-zones-invisible,
+;;            isearchp-toggle-anti-zones-invisible, isearchp-anti-zones-invisible-p,
+;;            isearchp-zones-invisible-p.
+;;     Soft-require zones.el.
 ;;     isearchp-put-prop-on-region:
 ;;       Set isearchp-property-prop, isearchp-property-type, isearchp-property-values, for next use of C-u.
 ;; 2015/11/08 dadams
@@ -534,6 +560,8 @@
   (require 'hexrgb nil t)) ;; (no error if not found): hexrgb-increment-value
 
 (require 'thingatpt+ nil t) ;; (no error if not found): tap-bounds-of-thing-at-point
+(require 'zones nil t) ;; (no error if not found):
+ ;; zz-izone-limits, zz-izones-var, zz-read-any-variable, zz-some, zz-zones-complement, zz-zone-union
 
 ;; Quiet the byte-compiler.
 (defvar isearchp-reg-beg) ;; In `isearch+.el'.
@@ -569,9 +597,9 @@ comments."
          (when isearchp-ignore-comments-flag (isearchp-hide/show-comments 'show ,ostart ,oend))
          ,result))))
  
-;;(@* "Variables")
+;;(@* "Options")
 
-;;; Variables ----------------------------------------------
+;;; Options ----------------------------------------------------------
 
 (defcustom isearchp-dimming-color (if (or (fboundp 'color-name-to-rgb)  (featurep 'hexrgb))
                                       -0.10
@@ -627,26 +655,18 @@ Used by `isearchp-hide/show-comments'."
 This has the effect that comments are ignored for searching."
   :type 'boolean :group 'isearch-plus)
 
-(defvar isearchp-dimmed-overlays () "Dimmed-text overlays for text not being searched.")
+(defcustom isearchp-query-replace-zones-flag nil
+  "Non-nil means limit query-replacing to the zones of `zz-izones-var'.
+This option has no effect if you do not use library `zones.el'."
+  :type 'boolean :group 'isearch-plus)
+ 
+;;(@* "Internal Variables")
 
-(defvar isearchp-excluded-zones ()
-  "Buffer zones currently excluded from Isearch.")
-(make-variable-buffer-local 'isearchp-excluded-zones)
+;;; Internal Variables -----------------------------------------------
 
-;;; $$$$$$ (defvar isearchp-last-prop+value nil "Last Isearch+ property added.")
-
-(defvar isearchp-property-type nil
-  "Last property type used for `isearchp-property-*' commands.
-Possible values are `text', `overlay', and nil, meaning both.")
-
-(defvar isearchp-property-prop nil
-  "Last property used for `isearchp-property-*' commands.")
-
-(defvar isearchp-property-values nil
-  "Last property values used for `isearchp-property-*' commands.")
-
-(defvar isearchp-property-prop-prefix "isearchp-"
-  "Prefix for Isearch property names.")
+(defvar isearchp-anti-zones-invisible-p nil
+  "Non-nil means the complement of `zz-izones-var' is currently invisible.")
+(make-variable-buffer-local 'isearchp-anti-zones-invisible-p)
 
 (defvar isearchp-complement-domain-p nil
   "Non-nil means complement the initial search candidates wrt the buffer.
@@ -665,20 +685,40 @@ or regexp.")
 context.  1 means use whatever matches the first subgroup of the
 regexp as the search context, and so on.")
 
+(defvar isearchp-dimmed-overlays () "Dimmed-text overlays for text not being searched.")
+
+(defvar isearchp-excluded-zones ()
+  "Buffer zones currently excluded from Isearch.")
+(make-variable-buffer-local 'isearchp-excluded-zones)
+
 (defvar isearchp-filter-predicate-orig nil
   "Original value of `isearch-filter-predicate'.")
+
+;;; $$$$$$ (defvar isearchp-last-prop+value nil "Last Isearch+ property added.")
 
 ;;; Same as `thgcmd-last-thing-type' in `thing-cmds.el'.
 (defvar isearchp-last-thing-type (if (boundp 'thgcmd-last-thing-type) thgcmd-last-thing-type 'sexp)
   "Type of thing last used by `isearchp-next-visible-thing' (or previous).")
 
+(defvar isearchp-property-prop nil
+  "Last property used for `isearchp-property-*' commands.")
+
+(defvar isearchp-property-prop-prefix "isearchp-"
+  "Prefix for Isearch property names.")
+
+(defvar isearchp-property-type nil
+  "Last property type used for `isearchp-property-*' commands.
+Possible values are `text', `overlay', and nil, meaning both.")
+
+(defvar isearchp-property-values nil
+  "Last property values used for `isearchp-property-*' commands.")
+
+(defvar isearchp-zones-invisible-p nil
+  "Non-nil means zones in `zz-izones-var' are currently invisible.")
+(make-variable-buffer-local 'isearchp-zones-invisible-p)
+
 (defvar isearchp-zone-limits-function 'isearchp-zone-limits-izones
   "Function used to return limits of current search zones.")
-
-(defcustom isearchp-query-replace-zones-flag nil
-  "Non-nil means limit query-replacing to the zones of `zz-izones-var'.
-This option has no effect if you do not use library `zones.el'."
-  :type 'boolean :group 'isearch-plus)
  
 ;;(@* "Keys")
 
@@ -1408,6 +1448,7 @@ commands and commands such as `isearchp-imenu*',
 ;;;             (setq isearchp-last-prop+value (cons property value)))
     ))
 
+
 ;; FIXME: If repeat `isearchp-lazy-highlights-forward' then no more dimming.
 (defun isearchp-lazy-highlights-forward (beg end &optional restartp)
   "Search lazy-highlight zones of text in the active region or the buffer.
@@ -1982,6 +2023,105 @@ ZONES is the list of zones to check for exclusion."
                                             (zone-pred)
                                             (orig-pred))))
       ad-do-it))
+
+  (defun isearchp-put-prop-on-zones (property value zones)
+    "Add text PROPERTY with VALUE to the text in each of the ZONES.
+Does `isearchp-put-prop-on-region' (which see) on each zone in ZONES.
+Interactively, ZONES is the value of variable `zz-izones-var'."
+    (interactive
+     (let ((zs  (isearchp-zone-limits-izones)))
+       (unless zs (error "No zones"))
+       (if (and current-prefix-arg  isearchp-property-prop  (car isearchp-property-values))
+           (list isearchp-property-prop isearchp-property-values zs)
+         (let* ((props  (and (or (not current-prefix-arg)  (not isearchp-property-prop))
+                             (mapcar #'(lambda (prop) (list (symbol-name prop)))
+                                     (isearchp-properties-in-buffer
+                                      (current-buffer) (point-min) (point-max) 'text))))
+                (prop   (intern (completing-read "Text property: " props nil nil nil
+                                                 'isearchp-property-history "face")))
+                (vals   (if (memq prop '(face font-lock-face))
+                            (isearchp-read-face-names 'EMPTY-MEANS-NONE-P)
+                          (isearchp-read-sexps 'ONLY-ONE-P))))
+           (setq isearchp-property-prop    prop
+                 isearchp-property-type    'text
+                 isearchp-property-values  (list prop vals))
+           (list prop vals zs)))))
+    (with-silent-modifications
+      (dolist (beg+end  zones)
+        (add-text-properties (nth 0 beg+end) (nth 1 beg+end) (list property value))
+        (isearchp-add/remove-dim-overlay (nth 0 beg+end) (nth 1 beg+end) nil)
+;;; $$$$$$    (when (string-match-p "\\`isearchp-" (symbol-name property))
+;;;             (setq isearchp-last-prop+value (cons property value)))
+        )))
+
+  (defun isearchp-make-zones-invisible (zones &optional no-error-p msgp)
+    "Make ZONES invisible.
+Non-interactively:
+ Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
+ Non-nil MSGP means echo the new state."
+    (interactive (list (isearchp-zone-limits-izones) nil t))
+    (unless (or no-error-p  zones) (error "No zones"))
+    (isearchp-put-prop-on-zones 'invisible t zones)
+    (setq isearchp-zones-invisible-p  t)
+    (when msgp (message "Zones are now INvisible")))
+
+  (defun isearchp-make-zones-visible (zones &optional no-error-p msgp)
+    "Make ZONES visible.
+Non-interactively:
+ Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
+ Non-nil MSGP means echo the new state."
+    (interactive (list (isearchp-zone-limits-izones) nil t))
+    (unless (or no-error-p  zones) (error "No zones"))
+    (isearchp-put-prop-on-zones 'invisible nil zones)
+    (setq isearchp-zones-invisible-p  nil)
+    (when msgp (message "Zones are now VISIBLE")))
+
+  (defun isearchp-toggle-zones-invisible (zones &optional no-error-p msgp)
+    "Toggle visibility of ZONES.
+Non-interactively:
+ Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
+ Non-nil MSGP means echo the new state."
+    (interactive (list (isearchp-zone-limits-izones) nil t))
+    (unless (or no-error-p  zones) (error "No zones"))
+    (if isearchp-zones-invisible-p
+        (isearchp-make-zones-visible zones no-error-p msgp)
+      (isearchp-make-zones-invisible zones no-error-p msgp)))
+
+  (defun isearchp-make-anti-zones-invisible (zones &optional no-error-p msgp)
+    "Make the complement of (the union of) ZONES invisible.
+Non-interactively:
+ Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
+ Non-nil MSGP means echo the new state."
+    (interactive (list (isearchp-zone-limits-izones) nil t))
+    (unless (or no-error-p  zones) (error "No zones"))
+    (let ((anti-zones  (zz-zones-complement (zz-zone-union zones))))
+      (isearchp-put-prop-on-zones 'invisible t anti-zones)
+      (setq isearchp-anti-zones-invisible-p  t)
+      (when msgp (message "Anti-zones are now INvisible"))))
+
+  (defun isearchp-make-anti-zones-visible (zones &optional no-error-p msgp)
+    "Make the complement of (the union of) ZONES visible.
+Non-interactively:
+ Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
+ Non-nil MSGP means echo the new state."
+    (interactive (list (isearchp-zone-limits-izones) nil t))
+    (unless (or no-error-p  zones) (error "No zones"))
+    (let ((anti-zones  (zz-zones-complement (zz-zone-union zones))))
+      (isearchp-put-prop-on-zones 'invisible nil anti-zones)
+      (setq isearchp-anti-zones-invisible-p  nil)
+      (when msgp (message "Anti-zones are now VISIBLE"))))
+
+  (defun isearchp-toggle-anti-zones-invisible (zones &optional no-error-p msgp)
+    "Toggle visibility of the complement of (the union of) ZONES.
+Non-interactively:
+ Non-nil NO-ERROR-P means do not raise an error if ZONES is empty.
+ Non-nil MSGP means echo the new state."
+    (interactive (list (isearchp-zone-limits-izones) nil t))
+    (unless (or no-error-p  zones) (error "No zones"))
+    (if isearchp-anti-zones-invisible-p
+        (isearchp-make-anti-zones-visible zones no-error-p msgp)
+      (isearchp-make-anti-zones-invisible zones no-error-p msgp)))
+
   )
  
 ;;(@* "Imenu Commands and Functions")
