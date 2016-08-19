@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb  9 09:26:40 2016 (-0800)
+;; Last-Updated: Fri Aug 19 14:25:13 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1724
+;;     Update #: 1725
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -212,6 +212,9 @@
 ;;
 ;;  * Search them (they are automatically coalesced first).  For this
 ;;    you need library `isearch-prop.el'.
+;;
+;;  * Make a set of zones or its complement (the anti-zones)
+;;    invisible.  For this you also need library `isearch-prop.el'.
 ;;
 ;;  * Highlight and unhighlight them.  For this you need library
 ;;    `highlight.el' or library `facemenu+.el' (different kinds of
