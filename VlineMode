@@ -24,7 +24,10 @@ to describe. -- MichaelWilson
 
 [new:JasonMilkins:2016-8-20 12:15 SGT]
 
-I've been looking at the various column highlighting modes and vline is very sluggish.  I seems to be working the entire buffer instead of just the visible screen
+I've been looking at the various column highlighting modes and vline is very sluggish.  
+I seems to be working the entire buffer instead of just the visible screen
+
+Drew's col-highlight is more performant.
 
 == Resolved ==
 
