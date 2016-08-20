@@ -29,6 +29,8 @@ I seems to be working the entire buffer instead of just the visible screen
 
 Drew's col-highlight is more performant.
 
+[[HighlightCurrentColumn]]
+
 == Resolved ==
 
 [new:DrewAdams:2008-10-16 21:41 UTC]
