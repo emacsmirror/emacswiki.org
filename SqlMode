@@ -142,6 +142,10 @@ And inspired by the above, I've written `sql-upcase-mode' (see SqlUpcase) which 
 
 -- Phil S.
 
+I wrote a minor mode, available on MELPA and MELPA Stable ( https://melpa.org/#/sqlup-mode and https://stable.melpa.org/#/sqlup-mode ), called `sqlup-mode', which also upcases SQL keywords as one types. 
+
+-- Aldric G.
+
 === Misaligned query results / Filtering the prompts from query output ===
 
 For PostgreSQL at least, this can be an annoyance. The following answer at EmacsStackExchange provides a solution:
