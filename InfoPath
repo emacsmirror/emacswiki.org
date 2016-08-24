@@ -123,7 +123,11 @@ Put this in the .emacs:
  (push "/home/user/info" Info-directory-list)
 
 
-Then create a 'dir'-file in that path:
+Then create a 'dir'-file in that path (/home/user/info): A dir file is the main file where all the info-file point to. To find the main dir file C-h i C-x C-f.
+
+The dir file in that path (/home/user/info) will the be merged with the main dir file when the directory (/home/user/info) is added to Info-directory-list.
+
+The dir file must have the following format. 
 
  This is the file .../home/user/dir, which contains the
  topmost node of the Info hierarchy, called (dir)Top.
@@ -140,6 +144,18 @@ Then create a 'dir'-file in that path:
  * elisp: (elisp).		Emacs elisp reference manual.
  * eintr: (eintr).		An Introduction to Programming in Emacs Lisp.
 
+
+You only have to modify the info file you wish to reference. For example if we want to add gdb
+
+ * gdb (gdb).                   Description of gdb.
+
+where, 
+- gdb is the name as you want is to appear in info. 
+- (gdb) is the file gdb.info or gdb.info.gz in the same directory between brackets. (in our case it would be /home/user/info/gdb.info)
+- [.] 
+- a descripion of the file
+- [.]
+
 Note: no ##--- end mark ---\n## at the end of the file was needed.
 
 Note: Above the line with 'File: dir...' there is a line with a unprintable char, which is showed by emacs as '^_', it is actually one byte (1f in hex), you can input hex-chars with the M-x hexl-mode.
@@ -152,9 +168,15 @@ Note: lines that begin with '*'-char have the following form:
 
 Here's what it means:
 
-* menu-name can be selected with the input 'mmenu-name' (use expansion)
+* menu-name can be selected with the input 'menu-name' (use expansion)
 
 * file-name is without the 'info.gz' suffix the file might have
+
+You can also generate a dir file in the following way. 
+In the shell go to the path where the info file is then run the command
+
+
+install-info YOURFILE.info.gz dir
 
 
 ----
