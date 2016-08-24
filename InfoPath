@@ -149,12 +149,6 @@ You only have to modify the info file you wish to reference. For example if we w
 
  * gdb (gdb).                   Description of gdb.
 
-where, 
-- gdb is the name as you want is to appear in info. 
-- (gdb) is the file gdb.info or gdb.info.gz in the same directory between brackets. (in our case it would be /home/user/info/gdb.info)
-- [.] 
-- a descripion of the file
-- [.]
 
 Note: no ##--- end mark ---\n## at the end of the file was needed.
 
@@ -162,9 +156,9 @@ Note: Above the line with 'File: dir...' there is a line with a unprintable char
 
 Note: C-h i mixes the different sub-group-menus into one single view, e.g. the group 'Emacs' in the above case.
 
-Note: lines that begin with '*'-char have the following form:
+Note: lines that begin with '*'-char have the following form (Notice the [.]):
 
- * menu-name: (file-name)     description
+ * menu-name: (file-name).     description.
 
 Here's what it means:
 
@@ -176,7 +170,8 @@ You can also generate a dir file in the following way.
 In the shell go to the path where the info file is then run the command
 
 
-install-info YOURFILE.info.gz dir
+
+  install-info YOURFILE.info.gz dir
 
 
 ----
