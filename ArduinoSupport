@@ -9,7 +9,7 @@ To compile sketches outside of the Arduino IDE, you will need to use [http://mjo
 
 Alternately, to use the Arduino IDE for compilation, but edit in Emacs, open the preferences in the IDE, and choose "Use External Editor".
 
-== Emacs + arudino.mk - Quickstart for Linux  ==
+== Emacs + arduino.mk - Quickstart for Linux  ==
 * Add yourself to dialout group (whatever group allows access to serial port).  You will probably need to kill off emacs and re-login to have this take effect.
 * Run regular arduino IDE and set up preferences to point to correct board type/serial port (arduino.mk reads this for automagically populating fields below) 
 * Install arduino-mk from your repository/github
