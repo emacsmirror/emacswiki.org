@@ -162,11 +162,11 @@ Note: lines that begin with '*'-char have the following form (Notice the [.]):
 
 Here's what it means:
 
-* menu-name can be selected with the input 'menu-name' (use expansion)
+* '''##menu-name##''' can be selected with the input `m menu-name' (`m' uses completion)
 
-* file-name is without the 'info.gz' suffix the file might have
+* '''##file-name##''' is without the ##info.gz## suffix the file might have
 
-You can also generate a dir file in the following way. 
+You can also generate a ##dir## file in the following way. 
 In the shell go to the path where the info file is then run the command
 
 
