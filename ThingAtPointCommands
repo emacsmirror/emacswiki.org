@@ -49,6 +49,30 @@ In TransientMarkMode, you can follow this with `mark-thing' to select successive
 of the same type, but to do that you must first use `C-x C-x' (`exchange-point-and-mark'): Using the bindings created by command `thgcmd-bind-keys', this becomes `##M-@ C-x C-x C-M-SPC##'.  This command has an alias: '''`select-thing-near-point''''. 
 
 
+[new:SameerDS:2016-08-25 18:39 UTC]
+Here's a variant of cycle-thing-region that iterates over `thing-types' until either it finds some thing near point, or the list is exhausted.
+
+  (defun cycle-thing-region-with-continue ()
+    "Select the first thing from `thing-types' found near point.
+ Successive uses select the next thing from the list to be found near point.
+ On each use, the command will iterate over the list until something is found.
+ This can be really slow when `thing-types' is long and so is the buffer."
+    (interactive)
+    (if (eq last-command this-command)
+        (goto-char thgcmd-thing-region-point)
+      (setq thgcmd-thing-region-index  0
+            thgcmd-thing-region-point   (point)))
+    (let ((success nil))
+      (if (= thgcmd-thing-region-index (length thing-types))
+          (setq thgcmd-thing-region-index 0))
+      (while (and (not success) (< thgcmd-thing-region-index (length thing-types)))
+        (setq thing (elt thing-types thgcmd-thing-region-index))
+        (setq thgcmd-thing-region-index  (1+ thgcmd-thing-region-index))
+        (setq success (thing-region thing))
+        (when success
+          (setq thgcmd-last-thing-type  (intern thing))
+          (message "%s" (capitalize
+                         (elt thing-types (1- thgcmd-thing-region-index))))))))
 
 
 
