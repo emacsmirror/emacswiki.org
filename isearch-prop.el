@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 19 14:00:26 2016 (-0700)
+;; Last-Updated: Sat Aug 27 09:23:08 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1390
+;;     Update #: 1405
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -355,6 +355,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/08/27 dadams
+;;     isearchp-thing(-regexp): Added optional arg MSGP (passed to isearchp-thing-define-contexts).
+;;     isearchp-thing-read-args: Return also nil for TRANSFORM-FN and non-nil for MSGP.
+;;     isearchp-thing-define-contexts: Use only (updated) *-thing-read-args in interactive spec.
 ;; 2016/08/19 dadams
 ;;     Added: isearchp-put-prop-on-zones, isearchp-make-zones-invisible,
 ;;            isearchp-make-anti-zones-invisible, isearchp-make-zones-visible,
@@ -2400,7 +2404,7 @@ Bound to `C-M-;' during Isearch."
 
 ;--------------
 
-(defun isearchp-thing (new thing beg end property &optional predicate transform-fn)
+(defun isearchp-thing (new thing beg end property &optional predicate transform-fn msgp)
   "Search within THING search contexts.
 That is, each zone of text searched is a THING.
 Enter the type of THING to search: `sexp', `sentence', `list',
@@ -2442,15 +2446,6 @@ predicate (if any).
 In either case, the search contexts are created as zones of text with
 text property `isearchp-thing-THING' of value (THING . PREDICATE).
 
-Non-interactively, if optional arg TRANSFORM-FN is non-nil then it is
-a function to apply to each thing plus its bounds, and which returns
-the actual target to search in place of THING.  Its argument is the
-same as the argument of PREDICATE.
-
-TRANSFORM-FN returns a replacement search context for the thing plus
-its bounds, in the same form: a cons (STRING START . END), where
-STRING is the search hit string and START and END are its bounds).
-
 NOTE:
 
 1. For best results, use also library `thingatpt+.el'.
@@ -2471,21 +2466,31 @@ NOTE:
    for a qualified THING.
 
 Non-interactively, these are the arguments:
- NEW:         Whether to define new search contexts or reuse contexts.
- THING:       The type of things to search.
- BEG and END: The search limits.
- PROPERTY:    Symbol `isearchp-thing-THING', where THING is the type.
- PREDICATE:   A predicate to filter search contexts."
+
+NEW:          Whether to define new search contexts or reuse contexts.
+THING:        The type of things to search.
+BEG and END:  The search limits.
+PROPERTY:     Symbol `isearchp-thing-THING', where THING is the type.
+PREDICATE:    A predicate to filter search contexts.
+TRANSFORM-FN: A function to apply to each thing plus its bounds.  It
+              returns the actual target to search in place of THING.
+              Its argument is the same as the argument of PREDICATE.
+
+              TRANSFORM-FN returns a replacement search context for
+              the thing plus its bounds, in the same form: a cons
+              (STRING START . END), where STRING is the search-hit
+              string and START and END are its bounds).
+MSGP:         Non-nil means show status/patience message."
   (interactive (cons (not current-prefix-arg) (isearchp-thing-read-args)))
   (when (or new
             (not (consp (car isearchp-property-values)))
             (not (equal (caar isearchp-property-values) thing))
             (not (eq isearchp-property-prop property))
             (not (isearchp-text-prop-present-p beg end property (cons thing predicate))))
-    (isearchp-thing-define-contexts thing beg end property predicate))
+    (isearchp-thing-define-contexts thing beg end property predicate nil msgp))
   (isearchp-property-forward '(4)))
 
-(defun isearchp-thing-regexp (new thing beg end property &optional predicate transform-fn)
+(defun isearchp-thing-regexp (new thing beg end property &optional predicate transform-fn msgp)
   "Regexp search within THING search contexts.
 Same as `isearchp-thing', but with regexp searching."
   (interactive (cons (not current-prefix-arg) (isearchp-thing-read-args)))
@@ -2494,14 +2499,14 @@ Same as `isearchp-thing', but with regexp searching."
             (not (equal (caar isearchp-property-values) thing))
             (not (eq isearchp-property-prop property))
             (not (isearchp-text-prop-present-p beg end property (cons thing predicate))))
-    (isearchp-thing-define-contexts thing beg end property predicate))
+    (isearchp-thing-define-contexts thing beg end property predicate nil msgp))
   (isearchp-property-forward-regexp '(4)))
 
 (defun isearchp-thing-define-contexts (thing beg end property &optional predicate transform-fn msgp)
   "Define search contexts for future thing searches.
 This command does not actually search the contexts.  For that, use
 `isearchp-thing(-regexp)' or `isearchp-property-forward'."
-  (interactive (append (isearchp-thing-read-args) (list nil t))) ; nil TRANSFORM, but t MSGP
+  (interactive (isearchp-thing-read-args))
   (when msgp (message "Scanning for thing: `%s'..." thing))
   (isearchp-thing-scan beg end thing property predicate transform-fn)
   (setq isearchp-property-prop    property
@@ -2510,12 +2515,14 @@ This command does not actually search the contexts.  For that, use
   (when msgp (message "Scanning for thing: `%s'...done" thing)))
 
 (defun isearchp-thing-read-args ()
-  "Read first five args for `isearchp-thing*'.
+  "Read and return arguments for `isearchp-thing*'.
 The list of args returned is:
  THING, the type of things to search
  BEG and END, the active region limits or the buffer limits
  PROPERTY, the symbol `isearchp-thing-THING'
  PREDICATE, a predicate to filter search contexts
+ TRANSFORM-FN (nil is returned always)
+ MSGP (non-nil is returned always)
 See `isearchp-thing' for a description of the prompting."
   (let* ((thng     (intern
                     (completing-read
@@ -2538,7 +2545,7 @@ See `isearchp-thing' for a description of the prompting."
                         "Predicate to filter search contexts: " nil read-expression-map t
                         (and (boundp 'function-name-history)  'function-name-history) "nil")
                      (cdar isearchp-property-values)))) ; Reuse last predicate.
-    (list thng beg end prop pred)))
+    (list thng beg end prop pred nil 'MSG)))
 
 (defun isearchp-thing-scan (beg end thing property &optional predicate transform-fn)
   "Scan buffer from BEG to END for things of type THING.
