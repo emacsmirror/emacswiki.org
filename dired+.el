@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat May 28 07:40:56 2016 (-0700)
+;; Last-Updated: Fri Aug 26 23:46:06 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 9553
+;;     Update #: 9598
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -653,6 +653,16 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/08/26 dadams
+;;     diredp-y-or-n-files-p: pop-to-buffer only when the buffer was created.
+;;                            Update wrt vanilla (scroll actions).
+;;     diredp-do-query-replace-regexp-recursive:
+;;       Call diredp-get-confirmation-recursive.
+;;       Use only diredp-get-files, not dired-get-marked-files.
+;;       Non-positive prefix arg means DELIMITED.
+;; 2016/08/08 dadams
+;;     diredp-menu-bar-mark-menu:
+;;       Added: dired-mark-files-containing-regexp, dired-mark-sexp, image-dired-mark-tagged-files, 
 ;; 2016/05/28 dadams
 ;;     diredp-mark-files-regexp-recursive: Use nil for dired-get-filename LOCALP arg.
 ;;     dired-mark-files-regexp: Corrected doc string: absolute filename matching by default.
@@ -3632,7 +3642,7 @@ If no one is selected, symmetric encryption will be performed.  "
     :help "Mark files whose contents matches regexp"))
 (define-key diredp-menu-bar-regexp-menu [mark]
   '(menu-item "Mark..." dired-mark-files-regexp
-    :help "Mark files matching regexp for future operations"))
+    :help "Mark files matching regexp"))
 
 
 ;; `Regexp' > `Here and Below' menu.
@@ -3698,6 +3708,16 @@ If no one is selected, symmetric encryption will be performed.  "
   (define-key diredp-menu-bar-mark-menu [mark-sexp] ; In `dired-x.el'.
     '(menu-item "Mark If..." dired-mark-sexp
       :help "Mark files for which specified condition is true")))
+(define-key diredp-menu-bar-mark-menu [image-dired-mark-tagged-files]
+  '(menu-item "Mark Image Files Tagged..." image-dired-mark-tagged-files
+    :enable (fboundp 'image-dired-mark-tagged-files)
+    :help "Mark image files whose image tags match regexp"))
+(define-key diredp-menu-bar-mark-menu [mark-cont]
+  '(menu-item "Mark Containing..." dired-mark-files-containing-regexp
+    :help "Mark files whose contents matches regexp"))
+(define-key diredp-menu-bar-mark-menu [mark]
+  '(menu-item "Mark..." dired-mark-files-regexp
+    :help "Mark files matching regexp"))
 (when (fboundp 'dired-mark-omitted)     ; In `dired-x.el'.
   (define-key diredp-menu-bar-mark-menu [mark-omitted]
     '(menu-item "Mark Omitted..." dired-mark-omitted
@@ -3752,7 +3772,7 @@ If no one is selected, symmetric encryption will be performed.  "
 ;; `Mark' > `Tagged' menu.
 ;;
 (when (require 'bookmark+ nil t)
-  (defvar diredp-mark-tags-menu (make-sparse-keymap "Tagged")
+  (defvar diredp-mark-tags-menu (make-sparse-keymap "Tagged (Autofiles)")
     "`Tags' submenu for Dired menu-bar `Mark' menu.")
   (define-key diredp-menu-bar-mark-menu [mark-tags] (cons "Tagged" diredp-mark-tags-menu))
 
@@ -4066,7 +4086,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "z"       'diredp-compress-this-file)            ; `z'
 (when (fboundp 'dired-show-file-type)
   (define-key dired-mode-map "_"      'dired-show-file-type))               ; `_' (underscore)
-(substitute-key-definition 'kill-line 'diredp-delete-this-file              ; `C-k', `delete'
+(substitute-key-definition 'kill-line 'diredp-delete-this-file              ; `C-k', `delete', `deleteline'
                            dired-mode-map (current-global-map))
 
 
@@ -5018,7 +5038,7 @@ marked files, then (unless DONT-ASKP is non-nil) this asks you whether
 to use the marked files in Dired buffers, as opposed to using all of
 the files in included directories.  To this y-or-n question you can
 hit `l' to see the list of files that will be included (using
-`diredp-list-files').  In that `'l' listing you can mouseover to see
+`diredp-list-files').  In that `l' listing you can mouseover to see
 image-file previews or use `RET' or `mouse-2' to visit files.
 
 \(Directories in `icicle-ignored-directories' are skipped, if you use
@@ -5157,38 +5177,43 @@ for which it returns non-nil."
                                           (and (eq ?\   (aref prompt (1- (length prompt))))
                                                "" " ")
                                           "(y or n; l to show file list) "))
-                    (while (let ((key  (let ((cursor-in-echo-area  t))
-                                         (when minibuffer-auto-raise
-                                           (raise-frame (window-frame (minibuffer-window))))
-                                         (if (fboundp 'read-key)
-                                             (read-key (propertize
-                                                        (if (memq answer '(recenter show))
-                                                            prompt
-                                                          (concat "Please answer y or n.  "
-                                                                  prompt))
-                                                        'face 'minibuffer-prompt))
-                                           (read-char-exclusive
-                                            (if (memq answer '(recenter show))
-                                                prompt
-                                              (concat "Please answer y or n.  " prompt)))))))
+                    (while (let* ((reprompt-actions  '(recenter scroll-up scroll-down
+                                                       scroll-other-window scroll-other-window-down))
+                                  (key               (let ((cursor-in-echo-area  t))
+                                                       (when minibuffer-auto-raise
+                                                         (raise-frame (window-frame (minibuffer-window))))
+                                                       (if (fboundp 'read-key)
+                                                           (read-key (propertize
+                                                                      (if (memq answer reprompt-actions)
+                                                                          prompt
+                                                                        (concat "Please answer y or n.  " prompt))
+                                                                      'face 'minibuffer-prompt))
+                                                         (read-char-exclusive
+                                                          (if (memq answer reprompt-actions)
+                                                              prompt
+                                                            (concat "Please answer y or n.  " prompt)))))))
                              (setq answer  (lookup-key query-replace-map (vector key) t))
                              (case answer
-                               ((skip act)  nil)
-                               (recenter    (recenter) t)
-                               (show        (diredp-list-files files nil list-buf predicate)
-                                            (setq list-was-shown  t)) ; Record showing it.
-                               (help        (message "Use `l' to show file list") (sit-for 1))
-                               ((exit-prefix quit) (signal 'quit nil) t)
-                               (t t)))
+                               ((skip  act)              nil)
+                               (recenter                 (recenter) t)
+                               (show                     (diredp-list-files files nil list-buf predicate)
+                                                         (setq list-was-shown  t)) ; Record showing it.
+                               (help                     (message "Use `l' to show file list") (sit-for 1))
+                               (scroll-up                (condition-case nil (scroll-up-command) (error nil)) t)
+                               (scroll-down              (condition-case nil (scroll-down-command) (error nil)) t)
+                               (scroll-other-window      (condition-case nil (scroll-other-window) (error nil)) t)
+                               (scroll-other-window-down (condition-case nil (scroll-other-window-down nil)
+                                                           (error nil)) t)
+                               ((exit-prefix  quit)      (signal 'quit nil) t)
+                               (t (or (not (eq key ?\e))  (progn (signal 'quit nil) t)))))
                       (ding)
                       (discard-input)))
-               (save-window-excursion (pop-to-buffer list-buf)
-                                      (condition-case nil ; Ignore error if user already deleted.
-                                          (if (one-window-p) (delete-frame) (delete-window))
-                                        (error nil))
-                                      (if list-was-shown
-                                          (bury-buffer list-buf)
-                                        (kill-buffer list-buf)))
+               (when (get-buffer list-buf)
+                 (save-window-excursion (pop-to-buffer list-buf)
+                                        (condition-case nil ; Ignore error if user already deleted.
+                                            (if (one-window-p) (delete-frame) (delete-window))
+                                          (error nil))
+                                        (if list-was-shown (bury-buffer list-buf) (kill-buffer list-buf))))
                (define-key query-replace-map "l" nil)))))
     (let ((ret  (eq answer 'act)))
       (unless noninteractive (message "%s %s" prompt (if ret "y" "n")))
@@ -5933,17 +5958,24 @@ this Dired buffer and all subdirs, recursively."
 
 (when (fboundp 'dired-do-isearch-regexp) ; Emacs 23+
   (defun diredp-do-isearch-recursive (&optional ignore-marks-p) ; Bound to `M-+ M-s a C-s'
-    "Isearch the marked files, including those in marked subdirs."
+    "Isearch the marked files, including those in marked subdirs.
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
     (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
     (multi-isearch-files (diredp-get-files ignore-marks-p)))
 
   (defun diredp-do-isearch-regexp-recursive (&optional ignore-marks-p) ; `M-+ M-s a C-M-s'
-    "Regexp-Isearch the marked files, including those in marked subdirs."
+    "Regexp-Isearch the marked files, including those in marked subdirs.
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively."
     (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
     (multi-isearch-files-regexp (diredp-get-files ignore-marks-p))))
 
 (defun diredp-do-search-recursive (regexp &optional ignore-marks-p) ; Bound to `M-+ A'
   "Regexp-search the marked files, including those in marked subdirs.
+With a prefix argument, ignore all marks - include all files in this
+Dired buffer and all subdirs, recursively.
+
 Stops when a match is found.
 To continue searching for the next match, use `\\[tags-loop-continue]'."
   (interactive (progn (diredp-get-confirmation-recursive)
@@ -5952,19 +5984,43 @@ To continue searching for the next match, use `\\[tags-loop-continue]'."
   (tags-search regexp '(diredp-get-files ignore-marks-p)))
 
 ;;;###autoload
-(defun diredp-do-query-replace-regexp-recursive (from to &optional ignore-marks-p)
+(defun diredp-do-query-replace-regexp-recursive (from to &optional arg)
                                         ; Bound to `M-+ Q'
-  "Do `query-replace-regexp' of FROM with TO, on all marked files.
-If you exit (\\[keyboard-quit], RET or q), you can resume the query replace
-with the command \\[tags-loop-continue]."
+  "Do `query-replace-regexp' on marked files, including in marked subdirs.
+Query-replace FROM with TO.
+
+Like `dired-do-query-replace', but act recursively on subdirs.
+The files included are those that are marked in the current Dired
+buffer, or all files in the directory if none are marked.  Marked
+subdirectories are handled recursively in the same way.
+
+With an (explicit) numeric prefix argument:
+
+* >= 0 means ignore all marks - include ALL files in this Dired buffer
+  and all subdirs, recursively.
+
+* <= 0 means replace only word-delimited matches.
+
+If you exit (`\\[keyboard-quit]', `RET' or `q'), you can resume the query replacement
+using `\\[tags-loop-continue]'."
   (interactive
-   (let ((common  (query-replace-read-args "Query replace regexp in marked files" t t)))
-     (list (nth 0 common) (nth 1 common) (nth 2 common))))
-  (dolist (file  (dired-get-marked-files nil nil #'dired-nondirectory-p))
-    (let ((buffer  (get-file-buffer file)))
-      (when (and buffer  (with-current-buffer buffer buffer-read-only))
-        (error "File `%s' is visited read-only" file))))
-  (tags-query-replace from to nil '(diredp-get-files ignore-marks-p)))
+   (progn
+     (diredp-get-confirmation-recursive)
+     (let ((common  (query-replace-read-args "Query replace regexp in marked files" t t)))
+       (list (nth 0 common)
+             (nth 1 common)
+             current-prefix-arg))))
+  (let* ((narg                  (and arg  (prefix-numeric-value arg)))
+         (delimited             (and narg  (<= narg 0)))
+         (ignore-marks-p        (and narg  (>= narg 0)))
+         (files                 (diredp-get-files ignore-marks-p))
+         (fit-frame-min-width   30)
+         (fit-frame-min-height  15))
+    (dolist (file  files)
+      (let ((buffer  (get-file-buffer file)))
+        (when (and buffer  (with-current-buffer buffer buffer-read-only))
+          (error "File `%s' is visited read-only" file))))
+    (tags-query-replace from to delimited `',files)))
 
 ;;;###autoload
 (defun diredp-do-grep-recursive (command-args &optional ignore-marks-p) ; Bound to `M+ M-g'
