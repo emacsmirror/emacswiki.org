@@ -26,14 +26,18 @@ NOTE: The validity of this section could change at any time when the repos get u
 First you need to clone and build the `wip-elisp' branch of the Guile repository.
 
 {{{
+$ mkdir -p $HOME/guile-emacs/guile
 $ mkdir ~/src
+
 $ cd ~/src
 $ git clone git://git.sv.gnu.org/guile.git
 $ cd guile
 $ git checkout wip-elisp
+
 $ ./autogen.sh
-$ ./configure
+$ ./configure --prefix=$HOME/guile-emacs/guile
 $ make
+$ make install
 }}}
 
 This requires all the usual Guile dependencies; see the README file in the repo. A recent version of libgc is best, like 7.4.2. Also recent versions of autotools components. Compilation will take very long, especially for the first few ".go" files. You then need to install this Guile build somewhere where it will be accessible during subsequent compilation of Emacs; you can set the installation root via the `--prefix' option to ./configure.
