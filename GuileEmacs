@@ -23,7 +23,20 @@ As of the end of GoogleSummerOfCode 2014, the Elisp engine of Emacs is fully rep
 
 NOTE: The validity of this section could change at any time when the repos get updates.
 
-First you need to clone and build the `wip' branch of [http://git.hcoop.net/?p=bpt/guile.git this Guile repository]. (Not wip-guile or so, just `wip'.) This requires all the usual Guile dependencies; see the README file in the repo. A recent version of libgc is best, like 7.4.2. Also recent versions of autotools components. Compilation will take very long, especially for the first few ".go" files. You then need to install this Guile build somewhere where it will be accessible during subsequent compilation of Emacs; you can set the installation root via the `--prefix' option to ./configure.
+First you need to clone and build the `wip-elisp' branch of the Guile repository.
+
+{{{
+$ mkdir ~/src
+$ cd ~/src
+$ git clone git://git.sv.gnu.org/guile.git
+$ cd guile
+$ git checkout wip-elisp
+$ ./autogen.sh
+$ ./configure
+$ make
+}}}
+
+This requires all the usual Guile dependencies; see the README file in the repo. A recent version of libgc is best, like 7.4.2. Also recent versions of autotools components. Compilation will take very long, especially for the first few ".go" files. You then need to install this Guile build somewhere where it will be accessible during subsequent compilation of Emacs; you can set the installation root via the `--prefix' option to ./configure.
 
 To make the Guile installation available to subsequent compilation processes, you will probably need to set or augment some environment variables like PATH, PKG_CONFIG_PATH, CPATH, and LIBRARY_PATH. If you just installed it in /usr/local then this is probably not necessary.
 
