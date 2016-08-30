@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Mon Jun 20 09:53:12 2016 (-0700)
+;; Last-Updated: Tue Aug 30 09:57:38 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 2268
+;;     Update #: 2271
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -239,6 +239,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/08/30 dadams
+;;     tap-string-match-p: Do NOT alias string-match-p, because that is a defsubst.
 ;; 2016/06/20 dadams
 ;;     tap-thing-at-point:
 ;;       Typo: convert result of funcall, not original THING, to string.  Thx to Tino Calancha.
@@ -483,11 +485,11 @@ of \"nearness\"."
 
 
 ;; Same as `icicle-string-match-p' in `icicles-fn.el'.
-(if (fboundp 'string-match-p)
-    (defalias 'tap-string-match-p 'string-match-p) ; Emacs 23+
-  (defun tap-string-match-p (regexp string &optional start)
-    "Like `string-match', but this saves and restores the match data."
-    (save-match-data (string-match regexp string start))))
+;; Do NOT alias `string-match-p', because that is a `defsubst'.
+;;
+(defun tap-string-match-p (regexp string &optional start)
+  "Like `string-match', but this saves and restores the match data."
+  (save-match-data (string-match regexp string start)))
 
 ;; Same as `bmkp-looking-at-p' (`bookmark+-bmu.el'), `icicle-looking-at-p' (`icicles-mcmd.el').
 ;; Do not `defalias' to Emacs `looking-at-p' because that is a `defsubst'.
