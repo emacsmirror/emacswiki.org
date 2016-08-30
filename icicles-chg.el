@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Jun 29 06:47:30 2016 (-0700)
+;; Last-Updated: Tue Aug 30 14:50:09 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 11630
+;;     Update #: 11632
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2249,6 +2249,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2016/08/30 dadams
+;;     icicle-string-match-p: Do NOT alias string-match-p, because that is a defsubst.
 ;; 2016/06/10 dadams
 ;;     icicle-maybe-sort-maybe-truncate:
 ;;       Call icicle-reversible-sort even if icicle-sort-comparer is nil.
@@ -4591,6 +4593,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2016/08/30 dadams
+;;     icicle-minibuffer-complete-and-exit:
+;;       If icicle-multi-completing-p then do not let RET prompt for confirmation.
 ;; 2016/06/10 dadams
 ;;     icicle-display-candidates-in-Completions:
 ;;       Respect icicle-reverse-sort-p even if icicle-sort-comparer is nil.
