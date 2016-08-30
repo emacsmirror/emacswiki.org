@@ -554,7 +554,7 @@ Thanks for letting me know about ''Icicles now provides file-name completion for
 </pre>
 
 [new]
-I'm used to [InteractivelyDoThings IDO]: fuzzy matching; list of matches in the minibuffer; cycling with arrow keys; narrowing as I type; ##RET## selects the foremost match. Everything is automatically "there" when I hit ##C-x C-f## to find a file or ##C-x C-b## to switch buffer. How do I get similar behavior in Icicles? -- [[112.84-48-193.nextgentel.com]] 
+I'm used to [InteractivelyDoThings IDO]: fuzzy matching; list of matches in the minibuffer; cycling with arrow keys; narrowing as I type; ##RET## selects the foremost match. Everything is automatically "there" when I hit ##C-x C-f## to find a file or ##C-x C-b## to switch buffer. How do I get similar behavior in Icicles? -- [[112a_84a_4a8_193.nextgentel.com]] 
 
 
 [:IdoAndIcicles]
@@ -1040,7 +1040,27 @@ After you define the contexts, you type text in the minibuffer to filter the con
 
 
 
+-------------------------------------------------
 
+
+
+[new:WolfgangPausch:2016-08-30 13:45 UTC]
+
+<pre>
+I am currently implementing support for managing javascript-includes (based on files in a workspace directory hierarchy) based on icicles.  I.e., I type some search string, icicles presents me a list of files that match, and based on the chosen file, I add the import to my source file (if needed).  I implemented this by passing a self-implemented action to icicle-locate-file-1.  Things are basically working, but there is one thing I regard as improvable: 
+
+When I have the case that there is exactly one match (which is quite common), then Icicles 
+1. asks me Locate: ---> this is perfectly ok, after all it needs that information
+2. asks "File (absolute): ", but does *not* preselect the (single) match it found
+3. I have to press "Tab" to select the match
+4. I have to press "Enter", then it prints the same path, but now with a final "Confirm"
+5. I have to press "Enter" again, to finally execute my action.
+
+Questions: Can I somehow (settings some variable?) make it preselect a / the only match without needing to type "Tab"?
+I understand the need to type "Enter" after "Tab", but why do I need it a second time?  Is there some way to circumvent that?
+
+Short: I ask me the question, wether I can make things more straightforward than typing (a) dom-prop (b) Enter (c) Tab (d) Enter (e) Enter although "dom-prop" already provides enough information to add the import "dojo/dom-prop" to my js file (based on my own lisp code).
+</pre>
 
 
 
