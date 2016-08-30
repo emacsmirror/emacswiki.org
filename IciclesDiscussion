@@ -1044,10 +1044,29 @@ After you define the contexts, you type text in the minibuffer to filter the con
 
 
 
-[new:WolfgangPausch:2016-08-30 13:45 UTC]
+
+
+
+-------------------------------------------------
+
+
+
+[:LatestEntry]
+Add new entries here.
+
 
 <pre>
+
+</pre>
+
+----
+<pre>
+
+</pre>
+[new:WolfgangPausch:2016-08-30 13:45 UTC]
+
 I am currently implementing support for managing javascript-includes (based on files in a workspace directory hierarchy) based on icicles.  I.e., I type some search string, icicles presents me a list of files that match, and based on the chosen file, I add the import to my source file (if needed).  I implemented this by passing a self-implemented action to icicle-locate-file-1.  Things are basically working, but there is one thing I regard as improvable: 
+
 
 When I have the case that there is exactly one match (which is quite common), then Icicles 
 1. asks me Locate: ---> this is perfectly ok, after all it needs that information
@@ -1060,17 +1079,8 @@ Questions: Can I somehow (settings some variable?) make it preselect a / the onl
 I understand the need to type "Enter" after "Tab", but why do I need it a second time?  Is there some way to circumvent that?
 
 Short: I ask me the question, wether I can make things more straightforward than typing (a) dom-prop (b) Enter (c) Tab (d) Enter (e) Enter although "dom-prop" already provides enough information to add the import "dojo/dom-prop" to my js file (based on my own lisp code).
-</pre>
 
 
-
-
--------------------------------------------------
-
-
-
-[:LatestEntry]
-Add new entries here.
 
 
 
