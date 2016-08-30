@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Jun 10 14:21:26 2016 (-0700)
+;; Last-Updated: Tue Aug 30 14:48:46 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 19765
+;;     Update #: 19766
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -608,9 +608,10 @@ Otherwise try to complete it."
           ((eq minibuffer-completion-confirm 'confirm-after-completion) ; Emacs 23+.
            ;; Similar to `confirm', but only if trying to exit immediately
            ;; after completing (this catches most minibuffer typos).
-           (if (not (memq last-cmd (and (boundp 'minibuffer-confirm-exit-commands)
-                                        (append icicle-confirm-exit-commands
-                                                minibuffer-confirm-exit-commands))))
+           (if (or icicle-multi-completing-p
+                   (not (memq last-cmd (and (boundp 'minibuffer-confirm-exit-commands)
+                                            (append icicle-confirm-exit-commands
+                                                    minibuffer-confirm-exit-commands)))))
                (icicle-exit-minibuffer)
              (minibuffer-message "Confirm")
              nil))
