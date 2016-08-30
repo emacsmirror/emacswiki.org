@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Jul  1 09:06:21 2016 (-0700)
+;; Last-Updated: Tue Aug 30 09:58:17 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 15157
+;;     Update #: 15158
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6572,11 +6572,11 @@ use `regexp-history'."
                      nil (or history  'regexp-history) default)))))
 
 ;; Same as `tap-string-match-p' in `thingatpt+.el'.
-(if (fboundp 'string-match-p)
-    (defalias 'icicle-string-match-p 'string-match-p) ; Emacs 23+
-  (defun icicle-string-match-p (regexp string &optional start)
-    "Like `string-match', but this saves and restores the match data."
-    (save-match-data (string-match regexp string start))))
+;; Do NOT alias `string-match-p', because that is a `defsubst'.
+;;
+(defun icicle-string-match-p (regexp string &optional start)
+  "Like `string-match', but this saves and restores the match data."
+  (save-match-data (string-match regexp string start)))
 
 (defun icicle-propertize (object &rest properties)
   "Like `propertize', but for all Emacs versions.
