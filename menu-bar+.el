@@ -128,6 +128,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/08/31 dadams
+;;     No longer soft-require cmds-menu.el for Emacs 20.
 ;; 2016/05/12 dadams
 ;;     menu-bar-doremi-menu: Added doremi-windows+.
 ;; 2015/12/06 dadams
@@ -416,7 +418,9 @@
 (require 'second-sel nil t) ;; (no error if not found):
                             ;; primary-to-secondary, secondary-to-primary, yank-secondary
 (require 'apropos+ nil t) ;; (no error if not found): apropos-user-options
-(require 'cmds-menu nil t) ;; (no error if not found): recent-cmds-menu
+
+(when (> emacs-major-version 20)
+  (require 'cmds-menu nil t)) ;; (no error if not found): recent-cmds-menu
 
 ;; To quiet the Emacs 20 byte compiler
 (defvar menu-bar-goto-menu)
