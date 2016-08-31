@@ -1069,16 +1069,43 @@ I am currently implementing support for managing javascript-includes (based on f
 
 
 When I have the case that there is exactly one match (which is quite common), then Icicles 
+
 1. asks me Locate: ---> this is perfectly ok, after all it needs that information
+
 2. asks "File (absolute): ", but does *not* preselect the (single) match it found
+
 3. I have to press "Tab" to select the match
+
 4. I have to press "Enter", then it prints the same path, but now with a final "Confirm"
+
 5. I have to press "Enter" again, to finally execute my action.
 
 Questions: Can I somehow (settings some variable?) make it preselect a / the only match without needing to type "Tab"?
 I understand the need to type "Enter" after "Tab", but why do I need it a second time?  Is there some way to circumvent that?
 
 Short: I ask me the question, wether I can make things more straightforward than typing (a) dom-prop (b) Enter (c) Tab (d) Enter (e) Enter although "dom-prop" already provides enough information to add the import "dojo/dom-prop" to my js file (based on my own lisp code).
+
+-- WolfgangPausch
+
+
+[new:DrewAdams:2016-08-31 16:47 UTC]
+
+1. If your version of Icicles still has `icicle-locate-file-1' then it is about 3 years old.  Please consider updating.  (Newer versions have `icicle-locate-file-of-content-1' instead.)
+
+2. Yes, I think the `icicle-locate*' commands should probably use strict, not lax, completion.  I've updated <tt>[[icicles-cmd1.el]]</tt>, to fix this for `icicle-locate-file-of-content-1' and `icicle-locate-file-no-search-1', thanks to your report.
+
+I'm not 100% sure that the fix I used won't introduce some other problems, but it seems OK so far. Please try the latest Icicles files - you should no longer need to confirm for the case you reported.
+
+Here is some additional background info, mainly for the case of ordinary file-name completion, which is *lax*, not strict (so it no longer applies to `icicle-locate-file*`).  You should not need to change anything, since I think I've fixed the behavior you reported, but this might help more generally.
+
+* Icicles cannot know that there is only one match until you tell it to match. Either you use a completion key (`TAB' or `S-TAB') or you turn on immediate incremental completion.  Maybe you did the latter?  IOW, set option `icicle-show-Completions-initially-flag' to non-`nil' or set option `icicle-incremental-completion' to a value that is neither nil nor t.
+
+* You can set option `icicle-top-level-when-sole-completion-flag' to non-`nil'.  That immediately accepts your input when there is only one matching candidate. Maybe this is what you meant by "preselect the single match"?  But you still have to tell Icicles to match (or else do what I mention in #2).
+
+It's better to correspond by email than here - this is not a great place for discussion.  Use `M-x icicle-send-bug-report' to open an email message to me about Icicles.
+
+Thanks for the report. Please update to the latest Icicles files. Let me know how it goes. -- DrewAdams
+
 
 
 
