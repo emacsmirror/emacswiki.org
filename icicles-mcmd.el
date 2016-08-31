@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Tue Aug 30 14:48:46 2016 (-0700)
+;; Last-Updated: Tue Aug 30 17:35:05 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 19766
+;;     Update #: 19769
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -608,10 +608,9 @@ Otherwise try to complete it."
           ((eq minibuffer-completion-confirm 'confirm-after-completion) ; Emacs 23+.
            ;; Similar to `confirm', but only if trying to exit immediately
            ;; after completing (this catches most minibuffer typos).
-           (if (or icicle-multi-completing-p
-                   (not (memq last-cmd (and (boundp 'minibuffer-confirm-exit-commands)
-                                            (append icicle-confirm-exit-commands
-                                                    minibuffer-confirm-exit-commands)))))
+           (if (not (memq last-cmd (and (boundp 'minibuffer-confirm-exit-commands)
+                                        (append icicle-confirm-exit-commands
+                                                minibuffer-confirm-exit-commands))))
                (icicle-exit-minibuffer)
              (minibuffer-message "Confirm")
              nil))
@@ -4773,17 +4772,19 @@ Otherwise, after expanding input:
 Optional arg INPUT is passed to `icicle-minibuffer-input-sans-dir'.
 This is essentially a `member' test, except for environment vars, for
 which the initial `$' is ignored."
-  (let* ((input-sans-dir  (icicle-minibuf-input-sans-dir input))
-         (env-var-name    (and (icicle-not-basic-prefix-completion-p)
-                               (> (length input-sans-dir) 0)
-                               (eq ?\$ (aref input-sans-dir 0))
-                               (substring input-sans-dir 1))))
+  (let* ((input-maybe-sans-dir  (if (icicle-file-name-input-p)
+                                    (icicle-minibuf-input-sans-dir input)
+                                  (or input  (icicle-input-from-minibuffer))))
+         (env-var-name          (and (icicle-not-basic-prefix-completion-p)
+                                     (> (length input-maybe-sans-dir) 0)
+                                     (eq ?\$ (aref input-maybe-sans-dir 0))
+                                     (substring input-maybe-sans-dir 1))))
     (unless (or icicle-last-completion-candidate  input)
       (setq icicle-completion-candidates  (funcall (if (eq icicle-current-completion-mode 'prefix)
                                                        #'icicle-prefix-candidates
                                                      #'icicle-apropos-candidates)
-                                                   input-sans-dir)))
-    (member (icicle-upcase-if-ignore-case (or env-var-name  input-sans-dir))
+                                                   input-maybe-sans-dir)))
+    (member (icicle-upcase-if-ignore-case (or env-var-name  input-maybe-sans-dir))
             (mapcar #'icicle-upcase-if-ignore-case icicle-completion-candidates))))
 
 (defun icicle-upcase-if-ignore-case (string)
