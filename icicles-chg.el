@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Aug 30 14:50:09 2016 (-0700)
+;; Last-Updated: Wed Aug 31 09:36:00 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 11632
+;;     Update #: 11637
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2016/08/31 dadams
+;;     icicle-locate-file-of-content-1, icicle-locate-file-no-search-1:
+;;       Use t, not (confirm-nonexistent-file-or-buffer), for REQUIRE-MATCH arg.
 ;; 2016/05/21 dadams
 ;;     icicle-pp-display-expression: Soft-require pp+.el and use pp-display-expression if available.
 ;;     icicle-pp-eval-expression: Return (car values).  Use icicle-read--expression (forgot).
@@ -4594,8 +4597,8 @@
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
 ;; 2016/08/30 dadams
-;;     icicle-minibuffer-complete-and-exit:
-;;       If icicle-multi-completing-p then do not let RET prompt for confirmation.
+;;     icicle-input-is-a-completion-p:
+;;       Do not remove directory part if not icicle-file-name-input-p (e.g. for abs file names).
 ;; 2016/06/10 dadams
 ;;     icicle-display-candidates-in-Completions:
 ;;       Respect icicle-reverse-sort-p even if icicle-sort-comparer is nil.
