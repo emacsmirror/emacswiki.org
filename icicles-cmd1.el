@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sat May 21 15:04:01 2016 (-0700)
+;; Last-Updated: Wed Aug 31 09:26:54 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 27473
+;;     Update #: 27476
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -19,8 +19,8 @@
 ;;
 ;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `cmds-menu', `cus-edit', `cus-face',
-;;   `cus-load', `cus-start', `cus-theme', `doremi', `easymenu',
+;;   `bookmark+-lit', `cl', `cus-edit', `cus-face', `cus-load',
+;;   `cus-start', `cus-theme', `doremi', `easymenu',
 ;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `flx',
 ;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `help+20',
 ;;   `hexrgb', `icicles-fn', `icicles-mcmd', `icicles-opt',
@@ -9347,7 +9347,7 @@ toggle this hiding using `\\[icicle-dispatch-C-x.]'."
   (icicle-define-command icicle-locate-file-of-content-1
     "Helper for `icicle-locate(-file-of-content(-no-symlinks))(-other-window)'." ; Doc string
     (lambda (fil) (funcall icicle-find-file-abs-action-fn fil)) ; FREE here: `icicle-find-file-abs-action-fn'.
-    prompt icicle-abs-file-candidates nil (confirm-nonexistent-file-or-buffer) nil ; `completing-read' args
+    prompt icicle-abs-file-candidates nil t nil ; `completing-read' args
     'file-name-history (if (eq major-mode 'dired-mode)
                            (condition-case nil ; E.g. error because not on file line (ignore)
                                (abbreviate-file-name (dired-get-file-for-visit))
