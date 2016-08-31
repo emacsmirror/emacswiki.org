@@ -70,6 +70,32 @@ This is a little function that is useful when editing several files that might f
           (revert-buffer t t t) )))
     (message "Refreshed open files.") )
 
+Here is a version Chris Stuart made for use after checking out a new branch on Git. It skips over any buffers with an asterisk in the name, so that you could add any other regex requirements to make a custom rule for which buffers to revert. If a file has been removed when moving to the new branch, it prompts whether to close the buffer.
+
+  (defun revert-all-buffers ()
+   "Iterate through the list of buffers and revert them, e.g. after a
+    new branch has been checked out."
+    (interactive)
+    (when (yes-or-no-p "Are you sure - any changes in open buffers will be lost! ")
+      (let ((frm1 (selected-frame)))
+        (make-frame)
+        (let ((frm2 (next-frame frm1)))
+          (select-frame frm2)
+          (make-frame-invisible)
+          (dolist (x (buffer-list))
+            (let ((test-buffer (buffer-name x)))
+              (when (not (string-match "\*" test-buffer))
+                (when (not (file-exists-p (buffer-file-name x)))
+                  (select-frame frm1)
+                  (when (yes-or-no-p (concat "File no longer exists (" (buffer-name x) "). Close buffer? "))
+                    (kill-buffer (buffer-name x)))
+                  (select-frame frm2))
+                (when (file-exists-p (buffer-file-name x))
+                  (switch-to-buffer (buffer-name x))
+                  (revert-buffer t t t)))))
+          (select-frame frm1)
+          (delete-frame frm2)))))
+
 == Reverting but keeping undo ==
 
 Current trunk [[http://git.savannah.gnu.org/cgit/emacs.git/commit/?id=eae9bee8c5613935fdbe96785344bb6f71dd5553|already does this]], including the 24.4 pretests.
