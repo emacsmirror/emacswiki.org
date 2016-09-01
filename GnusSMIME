@@ -287,7 +287,7 @@ Now in gnus the commands you should use are:
 
 I couldn't find an easy way to do this, so I wrote one. This works in any message-mode, not just Gnus. (I'm currently using notmuch).
 
-As written, it depends on a configured LDAP server to fetch certificates. That's how my employer works, and I assume how many other places that require S/MIME work.
+As written, it depends on a configured LDAP server to fetch certificates. That's how my employer works, and I assume how many other places that require S/MIME work. Set `smime-ldap-host-list' if you haven't already.
 
 {{{
 (defun neale/smime-encrypt ()
