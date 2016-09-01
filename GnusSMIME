@@ -283,5 +283,40 @@ Now in gnus the commands you should use are:
 --Uwe Brauer
 
 
+== Encrypting to all recipients ==
+
+I couldn't find an easy way to do this, so I wrote one. This works in any message-mode, not just Gnus. (I'm currently using notmuch).
+
+As written, it depends on a configured LDAP server to fetch certificates. That's how my employer works, and I assume how many other places that require S/MIME work.
+
+{{{
+(defun neale/smime-encrypt ()
+  "S/MIME encrypt to all recipients and yourself.
+
+Looks up everybody in LDAP to get their key first.
+"
+  (interactive)
+  (mml-unsecure-message)
+  (let* ((recips (mm-delete-duplicates (split-string (message-options-set-recipient) ", ")))
+	 (mycertbuf (smime-cert-by-ldap user-mail-address))
+	 (certbufs (mapcar 'smime-cert-by-ldap recips))
+	 (tags '()))
+    (dolist (certbuf certbufs)
+      (setq tags (cons (buffer-name certbuf) tags))
+      (setq tags (cons 'certfile tags)))
+    (save-excursion
+      (goto-char (point-min))
+      (cond ((re-search-forward
+	      (concat "^" (regexp-quote mail-header-separator) "\n") nil t)
+	     (goto-char (setq insert-loc (match-end 0)))
+	     (unless (looking-at "<#secure")
+	       (apply 'mml-insert-tag
+		      'secure
+		      'method "smime"
+		      'mode "encrypt"
+		      'certfile (buffer-name mycertbuf)
+		      tags)))))))
+}}}
+
 ----
 CategoryGnus GnusPGG EncryptingMail
