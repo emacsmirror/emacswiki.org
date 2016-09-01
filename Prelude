@@ -1,6 +1,6 @@
 *Prelude* has the goal to ease the initial Emacs setup process and to provide you with a much more powerful and productive experience than that you get out of the box. By using Emacs Prelude you're basically getting a "Get me out of the nasty _get to know Emacs enough to be able to use it_ process, I just want to use Emacs" card.
 
-Emacs Prelude is compatible ONLY with GNU Emacs 24.
+Emacs Prelude is compatible ONLY with GNU Emacs 24.4 and up.
 
 == Installation == 
 
