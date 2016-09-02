@@ -16,10 +16,9 @@ Install using the latest version of Emacs and its builtin package system. Start 
 
 Then:
 
-  M-x list-packages
-  C-s evil
+  M-x package-install RET evil
 
-The latest stable version is available from the [https://stable.melpa.org MELPA Stable] repository, the current development version from [[MELPA]]. Use the packaging system UI to install either of these by:
+The current development version is available from [[MELPA]]. The stable version is listed on [https://stable.melpa.org MELPA Stable] but cannot be installed due to an unavailable dependency. Use the packaging system UI to install either of these by:
 
 Moving cursor over package name.
 
