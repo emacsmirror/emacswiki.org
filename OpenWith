@@ -18,5 +18,48 @@ RunAssoc is a similar (alternative) utility.
 
 I've made a couple of improvements to this, you can find them on [https://bitbucket.org/jpkotta/openwith/overview bitbucket].  It opens things as if you double clicked them in Explorer on Windows, and wraps commands in nohup on Unix so launched processes will not exit if Emacs exits.
 
+[new]
+
+In order to get that to run without an error, I had to reformulate the main handler.  The style here is a bit ugly but it works.
+
+<pre>
+(defun openwith-file-handler (operation &rest args)
+  "Open file with external program, if an association is configured."
+  (let ((continue t))
+    (when (and openwith-mode (not (buffer-modified-p)) (zerop (buffer-size)))
+      (let ((assocs openwith-associations)
+	    (file (car args))
+	    oa)
+	;; do not use `dolist' here, since some packages (like cl)
+	;; temporarily unbind it
+	(while assocs
+	  (setq oa (car assocs)
+		assocs (cdr assocs))
+	  (when (save-match-data (string-match (car oa) file))
+	    (let ((params (mapcar (lambda (x) (if (eq x 'file) file x))
+				  (nth 2 oa))))
+	      (when (or (not openwith-confirm-invocation)
+			(y-or-n-p (format "%s %s? " (cadr oa)
+					  (mapconcat #'identity params " "))))
+		(if (eq system-type 'windows-nt)
+		    (openwith-open-windows file)
+		  (openwith-open-unix (cadr oa) params))
+		(kill-buffer nil)
+		(when (featurep 'recentf)
+		  (recentf-add-file file))
+		;; inhibit further actions
+		(progn (setq continue nil)
+		       (message "Opened %s in external program"
+				(file-name-nondirectory file)))))))))
+    (when continue
+      ;; when no association was found, relay the operation to other handlers
+      (let ((inhibit-file-name-handlers
+	     (cons 'openwith-file-handler
+		   (and (eq inhibit-file-name-operation operation)
+			inhibit-file-name-handlers)))
+	    (inhibit-file-name-operation operation))
+	(apply operation args)))))
+</pre>
+
 ----
 See also CategoryExternalUtilities
