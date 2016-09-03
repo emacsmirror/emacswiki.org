@@ -57,7 +57,7 @@ ERC extracts from the message its type, and runs a hook. As in the server messag
 
 CTCP hooks are divided into two groups:
 
-* those run on recieving a CTCP message (`erc-ctcp-query-<COMMAND>-hook'), and
+* those run on receiving a CTCP message (`erc-ctcp-query-<COMMAND>-hook'), and
 * those run on receiving a reply to one of our CTCP messages (`erc-ctcp-reply-<COMMAND>-hook').
 
 You can, of course, define your own hooks for CTCP messages. As stated in ErcTODO and ErcBbdb, it will soon be possible to send BBDB records to other ERC users.
