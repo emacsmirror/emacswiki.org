@@ -119,8 +119,17 @@ Even if you're not using these distros, you may find the build scripts useful to
 [http://www.gnu.org/software/guix GNU Guix] has a Guile-Emacs package:
 
 {{{
-guix package -i guile-emacs
+$ guix package -i guile-emacs
 }}}
+
+The Guix package uses a known-good commit for both Guile and Emacs. You can see which commits are being used by looking at the package scripts:
+
+{{{
+$ guix edit guile-emacs
+$ guix edit guile-for-guile-emacs
+}}}
+
+If you don't have Guix installed, you can view the [http://git.savannah.gnu.org/cgit/guix.git/tree/gnu/packages/emacs.scm#n222 guile-emacs package description] and the [http://git.savannah.gnu.org/cgit/guix.git/tree/gnu/packages/guile.scm#n231 guile-for-guile-emacs package description] in your browser.
 
 === Arch Linux ===
 
