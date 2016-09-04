@@ -82,7 +82,7 @@ make install
 time to compile Guile-Emacs. This is because Guile-Emacs has to
 compile every single Elisp file, it doesn't have the ability to dump a
 `temacs' like C Emacs does. It took me several hours on a fast,
-modern laptop in 2014. Also trees //will// die in the compilation.
+modern laptop in 2014.
 
 === Using your build ===
 
