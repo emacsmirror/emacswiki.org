@@ -22,6 +22,7 @@ How backups are operated in Emacs is configurable to some degree:
 
           find -name "*~" -print0 | xargs -0 rm
           find -name "*~" -exec rm {} \;
+          find -name "*~" -delete
 
 == Hiding backup files (MS Windows) ==
 
