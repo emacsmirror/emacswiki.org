@@ -2,6 +2,24 @@ You can get a GuileEmacs binary by compiling it yourself, or using a build scrip
 
 == Compiling from source ==
 
+=== Dependencies ===
+
+Dependencies - NicFerrier built on Ubuntu and needed everything from EmacsSnapshotAndDebian:
+
+{{{
+autoconf automake libtool texinfo build-essential xorg-dev libgtk2.0-dev libjpeg-dev libncurses5-dev libgif-dev libtiff-dev libm17n-dev libpng12-dev librsvg2-dev libotf-dev
+}}}
+
+as well as these:
+
+{{{
+flex libgmp-dev libunistring-dev libffi-dev libgc-dev libltdl-dev
+}}}
+
+See also the README file in the Guile repo. A recent version of libgc is best, like 7.4.2. Also recent versions of autotools components and gcc (4.7 is known to work).
+
+=== Compile Guile ===
+
 First you need to clone and build the `wip-elisp' branch of the Guile repository.
 
 {{{
@@ -19,49 +37,17 @@ $ make
 $ make install
 }}}
 
-This requires all the usual Guile dependencies; see the README file in the repo. A recent version of libgc is best, like 7.4.2. Also recent versions of autotools components. Compilation will take very long, especially for the first few ".go" files. You then need to install this Guile build somewhere where it will be accessible during subsequent compilation of Emacs; you can set the installation root via the `--prefix' option to ./configure.
+This requires all the usual Guile dependencies; see the README file in the repo.  Compilation is very slow, especially for the first few ".go" files. You then need to install this Guile build somewhere where it will be accessible during subsequent compilation of Emacs; you can set the installation root via the `--prefix' option to ./configure.
 
-To make the Guile installation available to subsequent compilation processes, you will probably need to set or augment some environment variables like PATH, PKG_CONFIG_PATH, CPATH, and LIBRARY_PATH. If you just installed it in /usr/local then this is probably not necessary.
+To make the Guile installation available to subsequent compilation processes, you will need to set or augment some environment variables like PATH, PKG_CONFIG_PATH, CPATH, and LIBRARY_PATH. If you just installed it in /usr/local then this is probably not necessary.
 
-Next you clone and build the `wip' branch of [http://git.hcoop.net/?p=bpt/emacs.git this Emacs repository]. This requires all the usual Emacs dependencies, though you can disable some features via the ./configure script. (Non-GTK didn't work for me so let me advise against disabling that.) You need a recent GCC version for this compilation, though 4.7 from Debian stable worked for me.
+=== Compile Emacs ===
 
-While building Emacs, you might need to run "make -k" several times if plain "make" fails. I also had to export LD_LIBRARY_PATH=/path/to/libguile during the build, and for launching the resulting emacs executable. /path/to/libguile is, for example, /usr/local/lib if you installed Guile in /usr/local.
+Next you clone and build the `wip' branch of [http://git.hcoop.net/?p=bpt/emacs.git this Emacs repository]. This requires all the usual Emacs dependencies, though you can disable some features via the ./configure script. (Non-GTK didn't work for me so let me advise against disabling that.)
 
-
-
-A transcript of a successful build of both Guile and Guile-Emacs on Ubuntu 14.04 can be found [http://pastebin.com/EekA6hN2 on pastebin].
-
-
-==== Installation script ====
-
-Dependencies - NicFerrier built on Ubuntu and needed everything from EmacsSnapshotAndDebian:
+While building Emacs, you might need to run "make -k" several times if plain "make" fails. I also had to export LD_LIBRARY_PATH=/path/to/libguile during the build, and for launching the resulting emacs executable.
 
 {{{
-autoconf automake libtool texinfo build-essential xorg-dev libgtk2.0-dev libjpeg-dev libncurses5-dev libgif-dev libtiff-dev libm17n-dev libpng12-dev librsvg2-dev libotf-dev
-}}}
-
-as well as these:
-
-{{{
-flex libgmp-dev libunistring-dev libffi-dev libgc-dev libltdl-dev
-}}}
-
-Here is a script to build guile and guile-emacs in your home directory:
-
-{{{
-# Make somewhere to put the source trees
-mkdir ~/source
-cd ~/source
-# Get bipt's guile
-git clone --depth 1 -b wip git://git.hcoop.net/git/bpt/guile.git
-# Make guile somewhere
-cd guile
-./autogen.sh
-./configure --prefix=$HOME/guile-emacs/guile
-make
-make install
-
-# Now Emacs
 cd ~/source
 git clone --depth 1 -b wip git://git.hcoop.net/git/bpt/emacs.git
 cd emacs
@@ -78,7 +64,9 @@ make
 make install
 }}}
 
-//Warning// it takes a //long// time to compile Guile and a //long//
+A transcript of a successful build of both Guile and Guile-Emacs on Ubuntu 14.04 can be found [http://pastebin.com/EekA6hN2 on pastebin].
+
+//Warning// it takes a //long//
 time to compile Guile-Emacs. This is because Guile-Emacs has to
 compile every single Elisp file, it doesn't have the ability to dump a
 `temacs' like C Emacs does. It took me several hours on a fast,
@@ -102,7 +90,6 @@ $HOME/guile-emacs/emacs -q
 might be worth doing.
 
 //Another warning// it takes a while to start.
-
 
 === Updating ===
 
