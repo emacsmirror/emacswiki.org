@@ -48,21 +48,25 @@ Next you clone and build the `wip' branch of [http://git.hcoop.net/?p=bpt/emacs.
 While building Emacs, you might need to run "make -k" several times if plain "make" fails. I also had to export LD_LIBRARY_PATH=/path/to/libguile during the build, and for launching the resulting emacs executable.
 
 {{{
-cd ~/source
+cd ~/src
 git clone --depth 1 -b wip git://git.hcoop.net/git/bpt/emacs.git
 cd emacs
+
 # These make Emacs' configure stuff find the stuff guile has left
 export ACLOCAL_PATH=$HOME/guile-emacs/guile/share/aclocal
 export PKG_CONFIG_PATH=$HOME/guile-emacs/guile/lib/pkgconfig
 export LD_RUN_PATH=$HOME/guile-emacs/guile/lib
 # ... and of course we need to tell Emacs about Guile binaries too...
 PATH=$HOME/guile-emacs/guile/bin:$PATH
+
 ./autogen.sh 
 # ... and build Emacs
 ./configure --prefix=$HOME/guile-emacs/emacs
 make
 make install
 }}}
+
+Note that there's a known bug with GCC 5 and Emacs trunk where gcc miscompiles the code. See [http://debbugs.gnu.org/cgi/bugreport.cgi?bug=24065 Emacs bug #24065]. You can work around this by -fno-builtin-malloc or using clang (e.g. `./configure CC=clang').
 
 A transcript of a successful build of both Guile and Guile-Emacs on Ubuntu 14.04 can be found [http://pastebin.com/EekA6hN2 on pastebin].
 
