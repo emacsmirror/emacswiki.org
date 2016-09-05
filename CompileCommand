@@ -1,3 +1,4 @@
+[[de:1]]
 The variable `compile-command' holds the default value for the `M-x
 compile' command.  The default value is "make -k" which is good enough
 for most projects, because you'll either have a Makefile, or you can
