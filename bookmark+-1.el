@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Jun 23 09:16:03 2016 (-0700)
+;; Last-Updated: Tue Sep  6 09:58:06 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7914
+;;     Update #: 7920
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -465,12 +465,12 @@
 ;;    `bmkp-position-pre-context', `bmkp-position-pre-context-region',
 ;;    `bmkp-printable-vars+vals', `bmkp-readable-p',
 ;;    `bmkp-read-bookmark-file-default',
-;;    `bmkp-read-bookmark-file-name', `bmkp-read-regexp',
-;;    `bmkp-read-tag-completing', `bmkp-read-tags',
-;;    `bmkp-read-tags-completing', `bmkp-read-variable',
-;;    `bmkp-read-variables-completing', `bmkp-record-visit',
-;;    `bmkp-refresh-latest-bookmark-list', `bmkp-refresh-menu-list',
-;;    `bmkp-refresh/rebuild-menu-list',
+;;    `bmkp-read-bookmark-file-name', `bmkp-read-from-whole-string',
+;;    `bmkp-read-regexp', `bmkp-read-tag-completing',
+;;    `bmkp-read-tags', `bmkp-read-tags-completing',
+;;    `bmkp-read-variable', `bmkp-read-variables-completing',
+;;    `bmkp-record-visit', `bmkp-refresh-latest-bookmark-list',
+;;    `bmkp-refresh-menu-list', `bmkp-refresh/rebuild-menu-list',
 ;;    `bmkp-regexp-filtered-annotation-alist-only',
 ;;    `bmkp-regexp-filtered-bookmark-name-alist-only',
 ;;    `bmkp-regexp-filtered-file-name-alist-only',
@@ -4349,6 +4349,20 @@ Non-interactively, non-nil MSG-P means display a status message."
                            "Autosaving of current bookmark file is now ON"
                          "Autosaving of current bookmark file is now OFF"))))
 
+;; Same as `read-from-whole-string' (called `thingatpt--read-from-whole-string' starting with Emacs 25)
+;; in library `thingatpt.el'.
+;;
+(defun bmkp-read-from-whole-string (string)
+  "Read a Lisp expression from STRING.
+Raise an error if the entire string was not used."
+  (let* ((read-data  (read-from-string string))
+	 (more-left (condition-case nil
+                        ;; The call to `ignore' suppresses a compiler warning.
+                        (progn (ignore (read-from-string (substring string (cdr read-data))))
+                               t)
+                      (end-of-file nil))))
+    (if more-left (error "Can't read whole string") (car read-data))))
+
 ;;;###autoload (autoload 'bmkp-make-function-bookmark "bookmark+")
 (defun bmkp-make-function-bookmark (bookmark-name function &optional msg-p) ; Bound globally to `C-x p c F'.
   "Create a bookmark that invokes FUNCTION when \"jumped\" to.
@@ -4367,7 +4381,7 @@ message."
                          (completing-read "Function: " obarray 'functionp))
                        'MSG)))
   (unless (or (functionp function)  (vectorp function))
-    (setq function (read-from-whole-string function))) ; Convert name to symbol.
+    (setq function (bmkp-read-from-whole-string function))) ; Convert name to symbol.
   (bookmark-store bookmark-name `((filename . ,bmkp-non-file-filename)
                                   (position . 0)
                                   (function . ,function)
@@ -9091,7 +9105,7 @@ MSGP non-nil means possibly interact with the user, showing messages."
       (cond ((or (functionp (setq fun bname)) ; Function from Lisp.
                  (vectorp fun)          ; Keyboard macro.
                  (functionp (setq fun  (condition-case nil ; Function name from user
-                                           (read-from-whole-string bname)
+                                           (bmkp-read-from-whole-string bname)
                                          (error nil)))))
              (let ((fun-bmk-name
                     (cond ((symbolp fun) (symbol-name fun)) ; Named function.  Use its name.
