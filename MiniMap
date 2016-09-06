@@ -196,3 +196,8 @@ Note: I use the VHDL-Mode from http://www.iis.ee.ethz.ch/~zimmi/emacs/vhdl-mode.
 ----
 CategoryWindows   CategoryDisplay
 [http://www.sublimetext.com/ Minimap] is a feature provided by the Sublime editor. It shows a smaller, 
+
+
+----
+
+I try to use this with auctex, but it doesn’t seem to work. It works in my other buffers – so there seem to be a package conflict here.
