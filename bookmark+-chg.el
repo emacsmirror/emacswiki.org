@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jun 24 09:40:06 2016 (-0700)
+;; Last-Updated: Tue Sep  6 09:59:26 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16071
+;;     Update #: 16075
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2016/09/06 dadams
+;;     Added: bmkp-read-from-whole-string.
+;;     bmkp-make-function-bookmark, bmkp-set-sequence-bookmark: Use bmkp-read-from-whole-string.
 ;; 2016/06/23 dadams
 ;;     bmkp-remove-all-tags, bmkp-add-tags, bmkp-set-tag-value, bmkp-remove-tags,
 ;;       bmkp-paste-(add|paste)-tags, bmkp-autofile-add-tags:
