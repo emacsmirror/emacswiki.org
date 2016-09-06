@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Tue Aug 30 09:57:38 2016 (-0700)
+;; Last-Updated: Tue Sep  6 10:19:12 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 2271
+;;     Update #: 2280
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -66,7 +66,8 @@
 ;;    `tap-non-nil-symbol-name-nearest-point',
 ;;    `tap-non-nil-symbol-nearest-point',
 ;;    `tap-number-at-point-decimal', `tap-number-at-point-hex',
-;;    `tap-number-nearest-point', `tap-region-or-word-at-point',
+;;    `tap-number-nearest-point', `tap-read-from-whole-string',
+;;    `tap-region-or-word-at-point',
 ;;    `tap-region-or-word-nearest-point',
 ;;    `tap-region-or-non-nil-symbol-name-nearest-point',
 ;;    `tap-sentence-nearest-point', `tap-sexp-at-point-with-bounds',
@@ -239,6 +240,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/09/06 dadams
+;;     Added: tap-read-from-whole-string.
+;;     tap-form-at-point(-with-bounds): Use tap-read-from-whole-string.
 ;; 2016/08/30 dadams
 ;;     tap-string-match-p: Do NOT alias string-match-p, because that is a defsubst.
 ;; 2016/06/20 dadams
@@ -483,6 +487,20 @@ of \"nearness\"."
  
 ;;; Utility Functions ------------------------------------------------
 
+
+;; Same as `read-from-whole-string' (called `thingatpt--read-from-whole-string' starting
+;; with Emacs 25) in library `thingatpt.el'.
+;;
+(defun tap-read-from-whole-string (string)
+  "Read a Lisp expression from STRING.
+Raise an error if the entire string was not used."
+  (let* ((read-data  (read-from-string string))
+	 (more-left (condition-case nil
+                        ;; The call to `ignore' suppresses a compiler warning.
+                        (progn (ignore (read-from-string (substring string (cdr read-data))))
+                               t)
+                      (end-of-file nil))))
+    (if more-left (error "Can't read whole string") (car read-data))))
 
 ;; Same as `icicle-string-match-p' in `icicles-fn.el'.
 ;; Do NOT alias `string-match-p', because that is a `defsubst'.
@@ -801,7 +819,7 @@ Optional args:
   (condition-case nil                   ; E.g. error if tries to read a dot (`.').
       (let* ((thing+bds  (tap-thing-at-point-with-bounds (or thing  'sexp) syntax-table))
              (bounds     (cdr thing+bds))
-             (sexp       (and bounds  (read-from-whole-string (car thing+bds)))))
+             (sexp       (and bounds  (tap-read-from-whole-string (car thing+bds)))))
         (and bounds  (or (not predicate)  (funcall predicate sexp))
              (cons sexp bounds)))
     (error nil)))
@@ -859,7 +877,8 @@ Optional args:
   PREDICATE is a predicate that the form must satisfy to qualify.
   SYNTAX-TABLE is a syntax table to use."
   (let ((form  (condition-case nil
-                   (read-from-whole-string (tap-thing-at-point (or thing  'sexp) syntax-table))
+                   (tap-read-from-whole-string (tap-thing-at-point (or thing  'sexp)
+                                                                   syntax-table))
                  (error nil))))
     (and (or (not predicate)  (funcall predicate form))
          form)))
