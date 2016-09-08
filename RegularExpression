@@ -150,7 +150,7 @@ the expression to get it executed).
 
  [-+[:digit:]]                     digit or + or - sign
  \(\+\|-\)?[0-9]+\(\.[0-9]+\)?     decimal number (-2 or 1.5 but not .2 or 1.)
- \(\w+\) +\1\>                     two consecutive, identical words
+ \<\(\w+\) +\1\>                     two consecutive, identical words
  \<[[:upper:]]\w*                  word starting with an uppercase letter
   +$                               trailing whitespaces (note the starting SPC)
  \w\{20,\}                         word with 20 letters or more
