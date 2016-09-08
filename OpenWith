@@ -30,6 +30,8 @@ RunAssoc is a similar (alternative) utility.  Here's how it can be set up to wor
 (advice-add 'helm-execute-selection-action :around #'helm-find-files-maybe-run-assoc)
 </pre>
 
+That's noted here because OpenWith is giving errors, even with further customizations (below).
+
 [new]
 
 I've made a couple of improvements to this, you can find them on [https://bitbucket.org/jpkotta/openwith/overview bitbucket].  It opens things as if you double clicked them in Explorer on Windows, and wraps commands in nohup on Unix so launched processes will not exit if Emacs exits.
