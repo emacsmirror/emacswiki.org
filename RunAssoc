@@ -26,6 +26,25 @@ Interesting, thanks !　I also found gnome-open, a command that seems to do what
 
 : For those who would rather not use GNOME, you can use your mailcap file to define associations and then use run-mailcap (or its aliases) to perform the action. This, I suspect is how ##browse-url -*## does it. It is an easier way to configure things than mucking about in the neutered gnome-control-center, imho.
 
-OpenWith is a good alternative that works from everywhere ([[FindFile]], [[Dired]], [[Sunrise_Commander]])
+OpenWith is an alternative that works from everywhere ([[FindFile]], [[Dired]], [[Sunrise_Commander]]).
+
+Here is how RunAssoc can be set up to work with helm-find-files:
+
+<pre>
+(require 'run-assoc)
+(setq associated-program-alist
+      '(("evince" "\\.pdf$")
+	("mplayer" "\\.mp3$")))
+
+(defun helm-find-files-maybe-run-assoc (orig-fun &rest args)
+  (let ((sel (helm-get-selection)))
+    (if (string-match (mapconcat (lambda (x) (second x)) associated-program-alist "\\|")
+		      (helm-get-selection))
+	(run-associated-program sel)
+      (apply orig-fun args))))
+     
+(advice-add 'helm-execute-selection-action :around #'helm-find-files-maybe-run-assoc)
+</pre>
+
 ----
 CategoryExternalUtilities
