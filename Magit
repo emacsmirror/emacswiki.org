@@ -1,7 +1,16 @@
-Magit is a front end, or "porcelain" for the [[Git]] version control system.
+Magit is an interface to the version control system [https://git-scm.com Git],
+implemented as an [https://www.gnu.org/software/emacs Emacs] package.
+Magit aspires to be a complete Git porcelain.  While we cannot (yet)
+claim that Magit wraps and improves upon each and every Git command,
+it is complete enough to allow even experienced Git users to perform
+almost all of their daily version control tasks directly from within
+Emacs.  While many fine Git clients exist, only Magit and Git itself
+deserve to be called porcelains.  [https://magit.vc/about.html (more)]
 
 * Homepage: https://magit.vc
 * Development: https://github.com/magit/magit
+
+https://magit.vc/img/shot/top.png
 
 == Crash course ==
 
@@ -18,7 +27,8 @@ Other handy keys:
 * ##F u## to do a git pull
 * try to press ##TAB##
 
-[:Screencasts]
+You might also want to read the [https://magit.vc/manual/magit/Getting-started.html official Getting-started guide].
+
 == Screencasts ==
 
 * [https://www.youtube.com/watch?v=vQO7F2Q9DwA Magit introduction and demonstration] (14:10)
@@ -31,17 +41,21 @@ Other handy keys:
 
 == Extensions ==
 
-Various packages exist which extend Magit.
+Various packages exist which extend Magit, including:
 
+* [https://github.com/justbur/evil-magit evil-magit] evil key bindings for Magit
 * [https://github.com/magit/magit-annex magit-annex] use ##git annex## within Magit
-* [https://github.com/magit/magit-filenotify magit-filenotify] refresh status buffer when git tree changes
-* [https://github.com/terranpro/magit-gerrit magit-gerrit] Magit plugin for Gerrit Code Review
-* [https://github.com/sigma/magit-gh-pulls magit-gh-pulls] Magit plugin for dealing with GitHub pull requests
+* [https://github.com/terranpro/magit-gerrit magit-gerrit] Magit extension for Gerrit Code Review
 * [https://github.com/jtatarik/magit-gitflow magit-gitflow] ## git flow## extension for Magit
-* [https://github.com/magit/magit-svn magit-svn] use Magit with git svn repositories
-* [https://github.com/magit/magit-tramp magit-tramp] Git method for Emacs Tramp
+* [https://github.com/sigma/magit-gh-pulls magit-gh-pulls] Magit extension for dealing with GitHub pull requests
+* [https://github.com/magit/magit-rockstar magit-rockstar] some small tools by the Magit maintainer
+* [https://github.com/magit/magit-stgit magit-stgit] StGit extension for Magit
+* [https://github.com/magit/magit-svn magit-svn] use Magit with ##git svn## repositories
+* [https://github.com/magit/magit-topgit magit-topgit] Topgit extension for Magit
 * [https://github.com/magit/orgit orgit] support for Org links to Magit buffers
-* [https://github.com/magit/org-magit org-magit] link to magit from org documents
+
+You can find even more extensions by searching for "magit" on
+https://melpa.org.  You might also want to search for "git".
 
 ----
 [[Git]] CategoryVersionControl
