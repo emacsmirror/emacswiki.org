@@ -12,7 +12,23 @@ Otherwise openwith will wreak havoc with your outbound email attachment workflow
 
 If you have problems making it work on MS Windows, have a look at [[Sunrise_Commander_Tips#ExternalApps | this tip]].
 
-RunAssoc is a similar (alternative) utility.
+RunAssoc is a similar (alternative) utility.  Here's how it can be set up to work with Helm:
+
+<pre>
+(require 'run-assoc)
+(setq associated-program-alist
+      '(("evince" "\\.pdf$")
+	("mplayer" "\\.mp3$")))
+
+(defun helm-find-files-maybe-run-assoc (orig-fun &rest args)
+  (let ((sel (helm-get-selection)))
+    (if (string-match (mapconcat (lambda (x) (second x)) associated-program-alist "\\|")
+		      (helm-get-selection))
+	(run-associated-program sel)
+      (apply orig-fun args))))
+     
+(advice-add 'helm-execute-selection-action :around #'helm-find-files-maybe-run-assoc)
+</pre>
 
 [new]
 
@@ -20,7 +36,7 @@ I've made a couple of improvements to this, you can find them on [https://bitbuc
 
 [new]
 
-In order to get that to run without an error, I had to reformulate the main handler.  The style here is a bit ugly but it works.
+In order to get that to run without an error, I had to reformulate the main handler.  The style here is a bit ugly but it works.  However, at the moment on recent (August 2016) GNU Emacs, this still triggers further errors with find-file.
 
 <pre>
 (defun openwith-file-handler (operation &rest args)
