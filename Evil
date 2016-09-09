@@ -74,6 +74,8 @@ A brief [https://bytebucket.org/lyro/evil/raw/default/doc/evil.pdf PDF manual] i
 
 * [https://github.com/cofi/evil-leader evil-leader]: Port of Vim's mapleader.
 
+* [https://github.com/GuiltyDolphin/evil-org evil-org]: Evil extensions for Org mode.
+
 * [https://github.com/antono/evil-rails evil-rails]: Port of rails.vim.
 
 * [https://github.com/redguardtoo/evil-nerd-commenter evil-nerd-commenter]: Port of Vim's [http://www.vim.org/scripts/script.php?script_id=1218 Nerd-Commenter]
