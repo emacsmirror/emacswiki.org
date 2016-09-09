@@ -2,7 +2,7 @@ OfflineIMAP is a popular IMAP mail synchroniser. A popular combination is [[Gnus
 
 * Home page: http://offlineimap.org/
 
-* Simple emacs interface: http://julien.danjou.info/software/offlineimap.el
+* Simple emacs interface: https://github.com/jd/offlineimap.el - in MELPA: http://melpa.org/#/offlineimap
 
 ==Encrypted auth info==
 As with [[GnusEncryptedAuthInfo]], it's possible to keep your email password encrypted. Take a look at /usr/share/offlineimap/offlineimap.conf for all remotepass/remotepasseval options. 
