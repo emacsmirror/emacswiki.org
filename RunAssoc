@@ -34,12 +34,15 @@ Here is how RunAssoc can be set up to work with helm-find-files:
 (require 'run-assoc)
 (setq associated-program-alist
       '(("evince" "\\.pdf$")
+        ;; etc.
 	("mplayer" "\\.mp3$")))
 
 (defun helm-find-files-maybe-run-assoc (orig-fun &rest args)
   (let ((sel (helm-get-selection)))
-    (if (string-match (mapconcat (lambda (x) (second x)) associated-program-alist "\\|")
-		      (helm-get-selection))
+    ;; NB, we only want to do this action if we're looking at the *helm find files* buffer
+    (if (and (string= helm-buffer "*helm find files*")
+	     (string-match (mapconcat (lambda (x) (second x)) associated-program-alist "\\|")
+			   (helm-get-selection)))
 	(run-associated-program sel)
       (apply orig-fun args))))
      
