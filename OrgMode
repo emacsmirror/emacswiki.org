@@ -109,7 +109,7 @@ If you publish external sources to org mode agenda files, you'll need to refresh
 
 * [http://repo.or.cz/w/org-mode.git?a=blob_plain;f=lisp/org-w3m.el;hb=HEAD GIT:org-w3m.el] -- Copy and paste from w3m buffer to [[OrgMode]].
 
-* [https://github.com/GuiltyDolphin/evil-org evil-org] provides integration with [[Evil]].
+* [https://github.com/GuiltyDolphin/org-evil org-evil] provides integration with [[Evil]].
 
 * [http://www.emacswiki.org/emacs/OrgMode-OSD Display Appointments Using OSD on Gnome]
 * [http://gitorious.org/bkuhn-small-hacks/org-mode/blobs/master/planner2org.plx A small Perl script that will convert data to orgmode] format from PlannerMode format.
