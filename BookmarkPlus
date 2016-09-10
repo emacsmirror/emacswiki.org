@@ -2055,6 +2055,7 @@ indicates whether the file is tagged. Here is a screenshot:
 
 
 
+[:TypeAwarefind-file]
 === A Type-Aware `find-file' ===
 
 [[user option|User option]] '''`bmkp-default-handlers-for-file-types'''' (see
