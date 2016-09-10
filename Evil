@@ -74,8 +74,6 @@ A brief [https://bytebucket.org/lyro/evil/raw/default/doc/evil.pdf PDF manual] i
 
 * [https://github.com/cofi/evil-leader evil-leader]: Port of Vim's mapleader.
 
-* [https://github.com/GuiltyDolphin/evil-org evil-org]: Evil extensions for Org mode.
-
 * [https://github.com/antono/evil-rails evil-rails]: Port of rails.vim.
 
 * [https://github.com/redguardtoo/evil-nerd-commenter evil-nerd-commenter]: Port of Vim's [http://www.vim.org/scripts/script.php?script_id=1218 Nerd-Commenter]
@@ -103,6 +101,8 @@ A brief [https://bytebucket.org/lyro/evil/raw/default/doc/evil.pdf PDF manual] i
 * [https://github.com/noctuid/evil-textobj-anyblock evil-textobj-anyblock]: Port of [https://github.com/rhysd/vim-textobj-anyblock vim-textobj-anyblock] that gives text objects for matching the closest of various types of blocks.
 
 * [https://github.com/noctuid/evil-textobj-word-column evil-textobj-word-column]: Port of vim's [https://github.com/coderifous/textobj-word-column.vim textobj-word-column] that gives text objects for acting on a column with width word or big WORD.
+
+* [https://github.com/GuiltyDolphin/org-evil org-evil]: Provides integration with [[OrgMode]].
 
 * [https://github.com/noctuid/vertigo.el vertigo]: Port of [https://github.com/prendradjaja/vim-vertigo vim-vertigo] that gives commands for jumping lines using the home row (instead of using something like 34j).
 == Bug tracker ==
