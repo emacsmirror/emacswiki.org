@@ -12,25 +12,7 @@ Otherwise openwith will wreak havoc with your outbound email attachment workflow
 
 If you have problems making it work on MS Windows, have a look at [[Sunrise_Commander_Tips#ExternalApps | this tip]].
 
-RunAssoc is a similar (alternative) utility.  Here's how it can be set up to work with Helm:
-
-<pre>
-(require 'run-assoc)
-(setq associated-program-alist
-      '(("evince" "\\.pdf$")
-	("mplayer" "\\.mp3$")))
-
-(defun helm-find-files-maybe-run-assoc (orig-fun &rest args)
-  (let ((sel (helm-get-selection)))
-    (if (string-match (mapconcat (lambda (x) (second x)) associated-program-alist "\\|")
-		      (helm-get-selection))
-	(run-associated-program sel)
-      (apply orig-fun args))))
-     
-(advice-add 'helm-execute-selection-action :around #'helm-find-files-maybe-run-assoc)
-</pre>
-
-That's noted here because OpenWith is giving errors, even with further customizations (below).
+RunAssoc is a similar (alternative) utility.  It can be set up to work with Helm; details after the jump. Note, RunAssoc is worth considering because OpenWith is giving errors, even with further customizations (below).
 
 [new]
 
