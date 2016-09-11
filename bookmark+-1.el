@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Sep 10 20:16:02 2016 (-0700)
+;; Last-Updated: Sat Sep 10 20:20:06 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7941
+;;     Update #: 7943
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4661,7 +4661,7 @@ BUFFER, if non-nil, is a buffer or a buffer name."
   (let ((nargs  0)
         (start  0))
     (save-match-data
-      (while (string-match "%\\([+ #-0]+\\)?\\([0-9]+\\)?\\([.][0-9]+\\)?[BsdXefgcS]"
+      (while (string-match "%\\([+ #-0]+\\)?\\([0-9]+\\)?\\([.][0-9]+\\)?[BsSdoxXefgc]"
                            bmkp-autoname-format
                            start)
         (setq nargs  (1+ nargs)
