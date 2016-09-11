@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Sep 10 19:27:48 2016 (-0700)
+;; Last-Updated: Sat Sep 10 20:16:02 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7928
+;;     Update #: 7941
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -4667,7 +4667,7 @@ BUFFER, if non-nil, is a buffer or a buffer name."
         (setq nargs  (1+ nargs)
               start  (match-end 0))))
     (bmkp-string-match-p
-     (apply #'format (bmkp-format-spec bmkp-autoname-format (format-spec-make ?B (regexp-quote buffer)))
+     (apply #'format (bmkp-format-spec bmkp-autoname-format `((?B . ,(regexp-quote buffer))))
             (make-list nargs ".*"))
      bookmark)))
 
@@ -4692,7 +4692,7 @@ flags `-' and `0'."
                     (val   (assq spec specification)))
                (if (not val)
                    ;; Ignore standard format chars that are not redefined by SPECIFICATION.
-                   (unless (memq (string-to-char (match-string 4)) '(?s ?d ?X ?e ?f ?g ?c ?S))
+                   (unless (memq (string-to-char (match-string 4)) '(?s ?S ?d ?o ?x ?X ?e ?f ?g ?c))
                      (error "Invalid format character: `%%%c'" spec))
                  (setq val  (cdr val))
                  (let ((text  (format (concat "%" num "s") val))) ; Pad result to desired length.
