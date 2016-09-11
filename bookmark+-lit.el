@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2016, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sat Jun 18 16:17:37 2016 (-0700)
+;; Last-Updated: Sat Sep 10 19:21:49 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 908
+;;     Update #: 910
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -1116,8 +1116,7 @@ Returns:
  or `bmkp-light-non-autonamed' otherwise."
   (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
   (or (bmkp-lighting-face bookmark)
-      (and bookmark  (if (bmkp-string-match-p (format bmkp-autoname-format ".*")
-                                              (bmkp-bookmark-name-from-record bookmark))
+      (and bookmark  (if (bmkp-autonamed-bookmark-p bookmark)
                          'bmkp-light-autonamed
                        'bmkp-light-non-autonamed))))
 
@@ -1131,8 +1130,7 @@ Returns:
  or the value of `bmkp-light-style-non-autonamed' otherwise."
   (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
   (or (bmkp-lighting-style bookmark)
-      (and bookmark  (if (bmkp-string-match-p (format bmkp-autoname-format ".*")
-                                              (bmkp-bookmark-name-from-record bookmark))
+      (and bookmark  (if (bmkp-autonamed-bookmark-p bookmark)
                          bmkp-light-style-autonamed
                        bmkp-light-style-non-autonamed))))
 
