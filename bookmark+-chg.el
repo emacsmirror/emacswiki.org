@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Sep  6 09:59:26 2016 (-0700)
+;; Last-Updated: Sat Sep 10 19:31:30 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16075
+;;     Update #: 16083
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2016/09/10 dadams
+;;     Added: bmkp-format-spec.
+;;     bmkp-autoname-format: Use %B in default value.  Update doc string, allowing %B.
+;;     bmkp-autonamed-bookmark-p: Added optional arg BUFFER.  Use bmkp-format-spec.
+;;     bmkp-autonamed-bookmark-for-buffer-p, bmkp-autonamed-this-buffer-bookmark-p:
+;;       Use bmkp-autonamed-bookmark-p.
 ;; 2016/09/06 dadams
 ;;     Added: bmkp-read-from-whole-string.
 ;;     bmkp-make-function-bookmark, bmkp-set-sequence-bookmark: Use bmkp-read-from-whole-string.
@@ -1919,6 +1925,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2016/09/10 dadams
+;;     bmkp-light-face, bmkp-light-style: Use bmkp-autonamed-bookmark-p.
 ;; 2016/06/18 dadams
 ;;     Protected use of fringe-bitmaps with boundp (should not be necessary though).
 ;; 2015/04/02 dadams
