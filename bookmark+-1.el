@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Sep  6 09:58:06 2016 (-0700)
+;; Last-Updated: Sat Sep 10 19:27:48 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7920
+;;     Update #: 7928
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -401,7 +401,7 @@
 ;;    `bmkp-file-this-dir-some-tags-regexp-alist-only',
 ;;    `bmkp-find-tag-default-as-regexp' (Emacs 22-24.2),
 ;;    `bmkp-flagged-bookmark-p', `bmkp-flagged-cp', `bmkp-float-time',
-;;    `bmkp-full-tag', `bmkp-function-alist-only',
+;;    `bmkp-format-spec', `bmkp-full-tag', `bmkp-function-alist-only',
 ;;    `bmkp-function-bookmark-p', `bmkp-get-autofile-bookmark',
 ;;    `bmkp-get-bookmark-in-alist', `bmkp-get-buffer-name',
 ;;    `bmkp-get-end-position', `bmkp-get-tag-value', `bmkp-get-tags',
@@ -812,9 +812,14 @@ The name returned should match the application of
   :type 'function :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-autoname-format "bookmark+")
-(defcustom bmkp-autoname-format (if (> emacs-major-version 21) "^[0-9]\\{9\\} %s" "^[0-9]+ %s")
+(defcustom bmkp-autoname-format (if (> emacs-major-version 21) "^[0-9]\\{9\\} %B" "^[0-9]+ %B")
   "*Format string to match an autonamed bookmark name.
-It must have a single `%s' to accept the buffer name."
+You can use `%B' instead of `%s' to accept the buffer name.  This has
+the advantage that commands and other functions that check for a
+buffer-specific bookmark can tell more accurately whether a bookmark
+name matches the given buffer.  This applies to functions such as
+`bmkp-autonamed-this-buffer-jump' and
+`bmkp-autonamed-this-buffer-bookmark-p'."
   :type 'string :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-autotemp-bookmark-predicates "bookmark+")
@@ -4645,19 +4650,64 @@ This sets variable `bmkp-nav-alist'."
   (message "Bookmark navigation list is now %s"
            (if (equal "any" type) "all bookmarks" (format "for type `%s'" type))))
 
-(defun bmkp-autonamed-bookmark-p (bookmark)
-  "Return non-nil if BOOKMARK is an autonamed bookmark.
-BOOKMARK is a bookmark name or a bookmark record."
+(defun bmkp-autonamed-bookmark-p (bookmark &optional buffer)
+  "Return non-nil if BOOKMARK is an autonamed bookmark for BUFFER.
+If BUFFER is nil then any buffer is OK. 
+BOOKMARK is a bookmark name or a bookmark record.
+BUFFER, if non-nil, is a buffer or a buffer name."
   (unless (stringp bookmark) (setq bookmark  (bmkp-bookmark-name-from-record bookmark)))
-  (bmkp-string-match-p (format bmkp-autoname-format ".*") bookmark))
+  (unless buffer  (setq buffer  (buffer-name)))
+  (when (bufferp buffer) (setq buffer (buffer-name buffer)))
+  (let ((nargs  0)
+        (start  0))
+    (save-match-data
+      (while (string-match "%\\([+ #-0]+\\)?\\([0-9]+\\)?\\([.][0-9]+\\)?[BsdXefgcS]"
+                           bmkp-autoname-format
+                           start)
+        (setq nargs  (1+ nargs)
+              start  (match-end 0))))
+    (bmkp-string-match-p
+     (apply #'format (bmkp-format-spec bmkp-autoname-format (format-spec-make ?B (regexp-quote buffer)))
+            (make-list nargs ".*"))
+     bookmark)))
+
+(defun bmkp-format-spec (format specification)
+  "Like `format-spec', but respect standard `format' %-sequences.
+%-sequences specified in SPECIFICATION are handled per `format-spec'
+Any standard `format' %-sequences not specified in SPECIFICATION are
+left as is.
+
+This is also more general than `format-spec', in that the full format
+of a %-sequence is supported: `%<flags><width><precision>character'.
+`format-spec' does not support precision>, and it supports only the
+flags `-' and `0'."
+  (with-temp-buffer
+    (insert format)
+    (goto-char (point-min))
+    (while (search-forward "%" nil t)
+      (cond ((eq (char-after) ?%) (delete-char 1)) ; Quoted percent sign.
+            ((looking-at "\\([+ #-0]+\\)?\\([0-9]+\\)?\\([.][0-9]+\\)?\\([a-zA-Z]\\)")
+             (let* ((num   (match-string 2))
+                    (spec  (string-to-char (match-string 4)))
+                    (val   (assq spec specification)))
+               (if (not val)
+                   ;; Ignore standard format chars that are not redefined by SPECIFICATION.
+                   (unless (memq (string-to-char (match-string 4)) '(?s ?d ?X ?e ?f ?g ?c ?S))
+                     (error "Invalid format character: `%%%c'" spec))
+                 (setq val  (cdr val))
+                 (let ((text  (format (concat "%" num "s") val))) ; Pad result to desired length.
+                   (insert-and-inherit text) ; Insert first, to preserve text properties.
+                   (delete-region (+ (match-beginning 0) (length text)) ; Delete specifier body.
+                                  (+ (match-end 0) (length text)))
+                   (delete-region (1- (match-beginning 0)) ; Delete percent sign.
+                                  (match-beginning 0))))))
+            (t (error "Invalid format string"))))
+    (buffer-string)))
 
 (defun bmkp-autonamed-this-buffer-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is an autonamed bookmark for this buffer."
   (unless (stringp bookmark) (setq bookmark  (bmkp-bookmark-name-from-record bookmark)))
-  ;; $$$$$$ This did not require the buffer name part to match:
-  ;;        (and (bmkp-autonamed-bookmark-p bookmark)  (bmkp-this-buffer-p bookmark)))
-  (and (bmkp-string-match-p (format bmkp-autoname-format (buffer-name)) bookmark)
-       (bmkp-this-buffer-p bookmark)))  ; Just to be sure.
+  (bmkp-autonamed-bookmark-p bookmark (buffer-name)))
 
 (defun bmkp-autonamed-bookmark-for-buffer-p (bookmark buffer-name)
   "Return non-nil if BOOKMARK is an autonamed bookmark for BUFFER.
@@ -4666,7 +4716,7 @@ BUFFER-NAME is a string matching the buffer-name part of an autoname.
 This does not check the `buffer-name' entry of BOOKMARK.  It checks
 only the buffer indicated by the bookmark name."
   (unless (stringp bookmark) (setq bookmark  (bmkp-bookmark-name-from-record bookmark)))
-  (bmkp-string-match-p (format bmkp-autoname-format (regexp-quote buffer-name)) bookmark))
+  (bmkp-autonamed-bookmark-p bookmark buffer-name))
 
 (defun bmkp-update-autonamed-bookmark (bookmark)
   "Update the name and position of the autonamed BOOKMARK at point.
