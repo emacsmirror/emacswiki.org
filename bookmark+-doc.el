@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun May  8 16:11:22 2016 (-0700)
+;; Last-Updated: Sat Sep 10 19:40:24 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 15071
+;;     Update #: 15075
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -3094,8 +3094,9 @@
 ;;
 ;;  `C-x p RET' creates a bookmark at point without prompting you for
 ;;  the name.  It is named using the current buffer name preceded by
-;;  the position in the buffer.  For example, the autonamed bookmark
-;;  in buffer `foo.el' at position 58356 is `000058356 foo.el'.
+;;  the position in the buffer.  For example, the default name of the
+;;  autonamed bookmark in buffer `foo.el' at position 58356 is
+;;  `000058356 foo.el'.
 ;;
 ;;  (You can customize the format of autonamed bookmarks using options
 ;;  `bmkp-autoname-bookmark-function' and `bmkp-autoname-format'.)
@@ -3111,11 +3112,11 @@
 ;;  updated to reflect the new location jumped to.  This is true for
 ;;  any bookmark.
 ;;
-;;  In the case of an autonamed bookmark, the bookmark name reflects
-;;  the recorded position when you create it.  And when you jump to
-;;  it, both the name and the recorded position are updated to reflect
-;;  the jump destination.  So jumping to an autonamed bookmark keeps
-;;  its persistent record in sync with the buffer location.
+;;  In the case of an autonamed bookmark, the bookmark name typically
+;;  reflects the recorded position when you create it.  And when you
+;;  jump to it, both the name and the recorded position are updated to
+;;  reflect the jump destination.  So jumping to an autonamed bookmark
+;;  keeps its persistent record in sync with the buffer location.
 ;;
 ;;  You will thus notice that the names of autonamed bookmarks can
 ;;  change as you visit them (e.g. cycling).  The bookmarks are
@@ -3140,7 +3141,7 @@
 ;;  bookmark at any given buffer position.
 ;;
 ;;  `C-x p RET' has a third use: With a prefix argument, it prompts
-;;  you to confirm the deletion of *all* autonamed bookmarks for the
+;;  you to confirm the deletion of *ALL* autonamed bookmarks for the
 ;;  current buffer.
 ;;
 ;;  (You can also use `C-x p delete' (that's the `delete' key), bound
@@ -3318,13 +3319,13 @@
 ;;  Option `bmkp-auto-idle-bookmark-mode-set-function' defines the
 ;;  bookmark-setting function.  By default, its value is
 ;;  `bmkp-set-autonamed-bookmark-at-line', which sets an autonamed
-;;  bookmark at (the beginning of) the current line.  You typically
-;;  want bookmarks that are created automatically to be autonamed,
-;;  both because the name is unimportant and because setting an
-;;  autonamed bookmark requires no interaction on your part.  But you
-;;  can use any setting function you like as the option value.  (You
-;;  can always rename an autonamed bookmark later, if you want to keep
-;;  it and give it a meaningful name.)
+;;  bookmark at (the beginning of) the current line.  If you want
+;;  bookmarks to be created automatically then you typically want them
+;;  to be autonamed, both because the name is unimportant and because
+;;  setting an autonamed bookmark requires no interaction on your
+;;  part.  But you can use any setting function you like as the option
+;;  value.  (You can always rename an autonamed bookmark later, if you
+;;  want to keep it and give it a meaningful name.)
 ;;
 ;;  Option `bmkp-auto-idle-bookmark-min-distance' is the minimum
 ;;  number of characters between automatic bookmark positions.  If the
