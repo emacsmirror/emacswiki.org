@@ -3445,7 +3445,7 @@ ordinary, persistent bookmark.
 
 '''`##C-x p RET##'''' creates a bookmark at [[point]] without prompting you for
 the name.  It is named using the current buffer name
-preceded by the position in the buffer.  For example, the
+preceded by the position in the buffer.  For example, the default name of the
 autonamed bookmark in buffer `##foo.el##' at position 58356 is
 `##000058356 foo.el##'.
 
@@ -3464,7 +3464,7 @@ jumping, the recorded position of the bookmark is automatically
 updated to reflect the new location jumped to.  This is true for
 any bookmark.
 
-In the case of an autonamed bookmark, the bookmark name reflects
+In the case of an autonamed bookmark, the bookmark name typically reflects
 the recorded position when you create it.  And when you jump to
 it, both the ''name and the recorded position are updated'' to reflect
 the jump destination.  So jumping to an autonamed bookmark keeps
@@ -3493,7 +3493,7 @@ easy deletion.  Because of this toggle behavior, there is at most
 one autonamed bookmark at any given buffer position.
 
 `##C-x p RET##' has a third use: With a [[prefix argument]], it prompts
-you to confirm the deletion of '''''all''''' autonamed bookmarks for the
+you to confirm the deletion of '''''ALL''''' autonamed bookmarks for the
 current buffer.
 
 (You can also use '''`C-x p delete'''' (that's the `delete' key), bound
@@ -3701,8 +3701,8 @@ buffer.
 
 Option '''`bmkp-auto-idle-bookmark-mode-set-function'''' defines the bookmark-setting function.  By
 default, its value is `bmkp-set-autonamed-bookmark-at-line', which sets an
-autonamed bookmark at (the beginning of) the current line.  You typically want
-bookmarks that are created automatically to be autonamed, both because the
+autonamed bookmark at (the beginning of) the current line.  If you want
+bookmarks to be created automatically then you typically want them to be autonamed, both because the
 name is unimportant and because setting an autonamed bookmark
 requires no interaction on your part.  But you can use any setting function you
 like as the option value.  (You can always rename an autonamed
