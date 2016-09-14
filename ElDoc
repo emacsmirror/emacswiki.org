@@ -13,7 +13,7 @@ ElDoc works for EmacsLisp and certain other language modes that implement suppor
 * SemanticBovinator -- tools using that system
 * TaclMode -- Tandem/NSK/Guardian
 * TalMode -- Tandem/NSK/Guardian
-* [https://bitbucket.org/ukaszg/org-eldoc Org-mode]
+* [http://orgmode.org/cgit.cgi/org-mode.git/log/contrib/lisp/org-eldoc.el Org-mode]
 
 ElDoc runs each element of the function arglist through a filter function stored in the <tt>eldoc-argument-case</tt> variable, which defaults to <tt>upcase</tt>. This is why the
 arguments are capitalized by default. [This only applies for
