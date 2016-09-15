@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Sep 15 09:40:44 2016 (-0700)
+;; Last-Updated: Thu Sep 15 10:40:10 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 9645
+;;     Update #: 9676
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -490,7 +490,7 @@
 ;;    `diredp-hide-details-propagate-flag' (Emacs 24.4+),
 ;;    `diredp-ignore-compressed-flag',
 ;;    `diredp-image-show-this-file-use-frame-flag' (Emacs 22+),
-;;    `diredp-prompt-for-bookmark-prefix-flag',
+;;    `diredp-max-frames', `diredp-prompt-for-bookmark-prefix-flag',
 ;;    `diredp-w32-local-drives', `diredp-wrap-around-flag'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -654,8 +654,12 @@
 ;;; Change Log:
 ;;
 ;; 2016/09/15 dadams
+;;     Added: diredp-max-frames.
 ;;     dired-do-find-marked-files: Pass non-nil ARG to dired-get-marked-files only if it is a cons.
-;;                                 Clarified doc string wrt prefix arg.  Thx to Tino Calancha.
+;;                                 Clarified doc string wrt prefix arg.
+;;     dired-simultaneous-find-file: Require confirmation if more files than diredp-max-frames.
+;;     diredp-do-find-marked-files-recursive: Clarified doc string wrt prefix arg.
+;;     Thx to Tino Calancha.
 ;; 2016/09/14 dadams
 ;;     diredp-dired-plus-description: Added entry for dired-hide-details-mode - ( key.
 ;; 2016/08/26 dadams
@@ -1739,6 +1743,15 @@ minimum window height, not necessarily the image scale (height).
 special-display buffer by your Emacs setup, then a nil value of this
 option has no effect.)"
   :type 'boolean :group 'Dired-Plus)
+
+;;;###autoload
+(defcustom diredp-max-frames 200
+  "*Max number of frames, for commands that find files in separate frames.
+These commands are `dired-do-find-marked-files' and
+`diredp-do-find-marked-files-recursive'.  See their descriptions for
+the circumstances in which they show the files in separate frames."
+  :type '(restricted-sexp :match-alternatives ((lambda (x) (and (wholenump x)  (not (zerop x))))))
+  :group 'Dired-Plus)
 
 ;;;###autoload
 (defcustom diredp-prompt-for-bookmark-prefix-flag nil
@@ -5955,7 +5968,13 @@ With (explicit) numeric prefix ARG >= 0, find the files but do not
 display them.
 
 With numeric prefix ARG <= 0, ignore all marks - include all files in
-this Dired buffer and all subdirs, recursively."
+this Dired buffer and all subdirs, recursively.
+
+Note that prefix-argument behavior is different for this command than
+for `dired-do-find-marked-files'.  In particular, a negative numeric
+prefix arg does not cause the files to be shown in separate frames.
+Only non-nil `pop-up-frames' (or equivalent configuration) causes
+the files to be shown in separate frames."
   (interactive (progn (diredp-get-confirmation-recursive)
                       (list current-prefix-arg)))
   (let ((narg  (prefix-numeric-value arg)))
@@ -8363,28 +8382,29 @@ first.  To show only the marked files, type `\\[delete-other-windows]' first."
 ;;
 (defun dired-simultaneous-find-file (file-list option)
   "Visit all files in list FILE-LIST and display them simultaneously.
+With non-nil OPTION >= 0, the files are found (visited) but not shown.
 
-With non-nil OPTION >= 0, the files are found but not selected.
+If `pop-up-frames' is non-nil or if OPTION < 0, use a separate frame
+for each file.  (See also option `diredp-max-frames'.)
 
-If `pop-up-frames' is non-nil or OPTION < 0, use a separate frame
-for each file.
-
-Otherwise, the current window is split across all files in
-FILE-LIST, as evenly as possible.  Remaining lines go to the
-bottom-most window.  The number of files that can be displayed
-this way is restricted by the height of the current window and
-the variable `window-min-height'."
-  ;; This is not interactive because it is usually too clumsy to
-  ;; specify FILE-LIST interactively unless via dired.
+Otherwise, the current window is split across all files in FILE-LIST,
+as evenly as possible.  Remaining lines go to the bottom-most window.
+The number of files that can be displayed this way is restricted by
+the height of the current window and the value of variable
+`window-min-height'."
+  ;; This is not interactive because it is usually too clumsy to specify FILE-LIST interactively unless via dired.
   (let (size)
     (cond ((and option  (natnump option))
            (while file-list (find-file-noselect (car file-list)) (pop file-list)))
           ((or pop-up-frames  option)
-           (while file-list (find-file-other-frame (car file-list)) (pop file-list)))
+           (let ((nb-files  (length file-list)))
+             (when (and (> nb-files diredp-max-frames)
+                        (not (y-or-n-p (format "Really show %d files in separate frames? " nb-files))))
+               (error "OK, canceled"))
+             (while file-list (find-file-other-frame (car file-list)) (pop file-list))))
           (t
            (setq size  (/ (window-height) (length file-list)))
-           (when (> window-min-height size)
-             (error "Too many files to visit simultaneously.  Try C-u prefix."))
+           (when (> window-min-height size) (error "Too many files to show simultaneously"))
            (find-file (car file-list))
            (pop file-list)
            (while file-list
