@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep 14 11:02:58 2016 (-0700)
+;; Last-Updated: Thu Sep 15 09:40:44 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 9604
+;;     Update #: 9645
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -653,6 +653,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/09/15 dadams
+;;     dired-do-find-marked-files: Pass non-nil ARG to dired-get-marked-files only if it is a cons.
+;;                                 Clarified doc string wrt prefix arg.  Thx to Tino Calancha.
 ;; 2016/09/14 dadams
 ;;     diredp-dired-plus-description: Added entry for dired-hide-details-mode - ( key.
 ;; 2016/08/26 dadams
@@ -8318,25 +8321,39 @@ Non-interactively:
 ;;;###autoload
 (defun dired-do-find-marked-files (&optional arg) ; Bound to `F'
   "Find marked files, displaying all of them simultaneously.
-With a prefix ARG >= 0, just find the files but do not show them.
+With no prefix argument:
 
-If no prefix ARG, and variable `pop-up-frames' is non-nil, or
-if prefix ARG < 0, then each file is displayed in a separate frame.
+* If `pop-up-frames' is nil then split the current window across all
+  marked files, as evenly as possible.  Remaining lines go to the
+  bottom-most window.  The number of files that can be displayed this
+  way is restricted by the height of the current window and
+  `window-min-height'.
 
-Otherwise (no prefix ARG and nil `pop-up-frames'), the current window
-is split across all marked files, as evenly as possible.  Remaining
-lines go to the bottom-most window.  The number of files that can be
-displayed this way is restricted by the height of the current window
-and `window-min-height'.
+* If `pop-up-frames' is non-nil then show each marked file in a
+  separate frame (not window).
 
-Otherwise, a prefix arg behaves according to the ARG argument of
-`dired-get-marked-files'.  In particular, `C-u C-u' operates on all
-files in the Dired buffer.
+With a prefix argument:
 
-To keep the Dired buffer displayed, type \\[split-window-vertically] first.
-To display just the marked files, type \\[delete-other-windows] first."
+* One or more plain `C-u' behaves as for `dired-get-marked-files'.
+  In particular, `C-u C-u' means ignore any markings and operate on
+  ALL files and directories (except `.' and `..') in the Dired buffer.
+
+* A numeric prefix arg >= 0 means just find (visit) the marked files -
+  do not show them.
+
+* A numeric prefix arg < 0 means show each marked file in a separate
+  frame (not window).  (This is the same behavior as no prefix arg
+  with non-nil `pop-up-frames'.)
+
+Note that a numeric prefix argument acts differently with this command
+than it does with other `dired-do-*' commands: it does NOT act on the
+next or previous (abs ARG) files, ignoring markings.
+
+To keep the Dired buffer displayed, split the window (e.g., `C-x 2')
+first.  To show only the marked files, type `\\[delete-other-windows]' first."
   (interactive "P")
-  (dired-simultaneous-find-file (dired-get-marked-files nil arg) (and arg  (prefix-numeric-value arg))))
+  (dired-simultaneous-find-file (dired-get-marked-files nil (and (consp arg)  arg))
+                                (and arg  (prefix-numeric-value arg))))
 
 
 ;; REPLACE ORIGINAL in `dired-x.el'.
