@@ -202,6 +202,8 @@ this is recommended.
 
 === MacOSX ===
 
+If you are having problems using option as meta in the Terminal app, look in preferences, navigate to keyboard options (exactly where it is depends on OSX version), look for a checkbox "Use Option as Meta key", check it, open a new Terminal, and voilà!
+
 The Apple X11 server application has the meta at the *Option* button,
 which is caught by the application itself for various purposes, and
 never passes on to the X11 client.  Disabling <code>Enable key
