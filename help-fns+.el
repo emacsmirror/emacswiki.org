@@ -8,9 +8,9 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 15 06:42:44 2015 (-0800)
+;; Last-Updated: Sat Sep 17 11:17:48 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 2167
+;;     Update #: 2222
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -117,6 +117,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/09/17 dadams
+;;     describe-function: Fix Emacs bug #24221: let FUNCTION be anonymous.
 ;; 2015/12/15 dadams
 ;;     describe-file: Remove `' around file name in title.
 ;; 2015/09/09 dadams
@@ -965,11 +967,13 @@ have their own back/forward buttons."
 ;; 1. Preferred candidate is `symbol-nearest-point'.
 ;; 2. With a prefix argument, candidates are commands only.
 ;; 3. No no-function message if not called interactively.
+;; 4. Works for anonymous functions too: lambda forms and byte-compiled functions. (Fixes Emacs bug #24221.)
 ;;
 (defun describe-function (function &optional commandp)
   "Display the full documentation of FUNCTION (a symbol).
 FUNCTION names an Emacs Lisp function, possibly a user command.
-With a prefix argument, candidates are commands (interactive) only.
+With a prefix argument, candidates are only commands (interactive).
+
 Default candidate is: preferably the `symbol-nearest-point', or else
 the innermost function call surrounding point
 \(`function-called-at-point').
@@ -988,37 +992,39 @@ Return the description that was displayed, as a string."
      (setq val  (completing-read prompt obarray (if current-prefix-arg 'commandp 'fboundp) t nil nil
                                  (and (if current-prefix-arg (commandp fn) (fboundp fn))  (symbol-name fn))))
      (list (if (equal val "") fn (intern val)) current-prefix-arg)))
-  (if (or (not function)  (not (fboundp (intern-soft function))))
-      (when (if (or (> emacs-major-version 23) ; Emacs 23.1 `called-interactively' accepts no arg.
-                    (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
-                (called-interactively-p 'interactive)
-              (interactive-p))
-        (if (not function)
-            (message "You did not specify a defined function")
-          (message "`%s' is not a defined function" function)))
-    (unless (or (not commandp)  (commandp function))
-      (error "Not a defined Emacs command (interactive function): `%s'" function))
-    ;;$$$  (unless (fboundp function) (error "Not a defined Emacs function: `%s'" function))
-    (help-setup-xref (list #'describe-function function)
-                     (if (or (> emacs-major-version 23)
-                             (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
-                         (called-interactively-p 'interactive)
-                       (interactive-p)))
-    (save-excursion
-      (if (fboundp 'with-help-window)
-          (with-help-window  (help-buffer) ; Emacs 24.4 needs this - see Emacs bug #17109.
-            (prin1 function)
-            ;; Use " is " instead of ": " so it is easier to get the function name using `forward-sexp'.
-            (princ " is ")
-            (describe-function-1 function)
-            (with-current-buffer standard-output (buffer-string))) ; Return help text.
-        (with-output-to-temp-buffer (help-buffer)
-          (prin1 function)
-          ;; Use " is " instead of ": " so it is easier to get the function name using `forward-sexp'.
-          (princ " is ")
-          (describe-function-1 function)
-          (print-help-return-message)
-          (with-current-buffer standard-output (buffer-string))))))) ; Return help text.
+  (let* ((interactivep  (if (or (> emacs-major-version 23) ; Emacs 23.1 `called-interactively' accepts no arg.
+                                (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+                            (called-interactively-p 'interactive)
+                          (interactive-p)))
+         (err/msg-fn    (if interactivep #'message #'error))
+         (fn/cmd-txt    (if commandp 'command 'function)))
+    (if (and interactivep  (not function))
+        (funcall err/msg-fn "You did not specify a function symbol") ; Avoid "Not a defined function: `nil'".
+      (if (not (if commandp
+                   (commandp function)
+                 (or (functionp function) ; Allow anonymous functions (Emacs bug #24221).
+                     (and function  (fboundp (intern-soft function)))))) ; Allow macros and special forms.
+          (funcall err/msg-fn "Not a defined %s: `%S'" fn/cmd-txt function)
+        (help-setup-xref (list #'describe-function function)
+                         (if (or (> emacs-major-version 23) ; Emacs 23.1 `called-interactively' accepts no arg.
+                                 (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+                             (called-interactively-p 'interactive)
+                           (interactive-p)))
+        (save-excursion
+          (if (fboundp 'with-help-window)
+              (with-help-window  (help-buffer) ; Emacs 24.4 needs this - see Emacs bug #17109.
+                (prin1 function)
+                ;; Use " is " instead of ": " so it is easier to get the function name using `forward-sexp'.
+                (princ " is ")
+                (describe-function-1 function)
+                (with-current-buffer standard-output (buffer-string))) ; Return help text.
+            (with-output-to-temp-buffer (help-buffer)
+              (prin1 function)
+              ;; Use " is " instead of ": " so it is easier to get the function name using `forward-sexp'.
+              (princ " is ")
+              (describe-function-1 function)
+              (print-help-return-message)
+              (with-current-buffer standard-output (buffer-string))))))))) ; Return help text.
 
 
 
