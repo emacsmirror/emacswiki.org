@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu May 12 17:16:02 2016 (-0700)
+;; Last-Updated: Sun Sep 18 10:21:34 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 3737
+;;     Update #: 3746
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -18,11 +18,11 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `cmds-menu', `fit-frame',
-;;   `frame-fns', `help+20', `info', `info+20', `menu-bar',
-;;   `misc-cmds', `misc-fns', `naked', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos+', `avoid', `fit-frame', `frame-fns',
+;;   `help+20', `info', `info+20', `menu-bar', `misc-cmds',
+;;   `misc-fns', `naked', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -128,6 +128,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/09/18 dadams
+;;     Applied renaming of secondary-dwim to secondary-yank|select|move|swap.
 ;; 2016/08/31 dadams
 ;;     No longer soft-require cmds-menu.el for Emacs 20.
 ;; 2016/05/12 dadams
@@ -839,39 +841,51 @@ submenu of the \"Help\" menu."))
                   (cdr yank-menu)
                 kill-ring))))
   'copy)
-(when (fboundp 'secondary-dwim)
-  (define-key-after menu-bar-edit-menu [secondary-dwim] ; In `second-sel.el'
-    '(menu-item "Paste Secondary" secondary-dwim
+(when (or (fboundp 'secondary-yank|select|move|swap)  (fboundp 'secondary-dwim))
+
+  (define-key-after menu-bar-edit-menu [secondary-yank|select|move|swap] ; In `second-sel.el'
+    `(menu-item "Paste Secondary" ,(if (fboundp 'secondary-yank|select|move|swap)
+                                       'secondary-yank|select|move|swap
+                                       'secondary-dwim)
       :help "Paste (yank) secondary selection."
       :enable (and (not buffer-read-only)
                (fboundp 'x-get-selection)
                (condition-case nil              ; Ignore - Emacs 21 raises error internally.
                    (x-get-selection 'SECONDARY)
                  (error nil)))
-      :keys "\\[secondary-dwim]")
+      :keys ,(if (fboundp 'secondary-yank|select|move|swap)
+                 "\\[secondary-yank|select|move|swap]"
+                 "\\[secondary-dwim]"))
     'paste)
   (define-key-after menu-bar-edit-menu [primary-to-secondary] ; In `second-sel.el'
-    '(menu-item "Move Secondary to Region" primary-to-secondary
+    `(menu-item "Move Secondary to Region" primary-to-secondary
       :help "Make the region in the current buffer into the secondary selection."
-      :enable (menu-barp-nonempty-region-p) :keys "C-1 \\[secondary-dwim]")
-    'secondary-dwim)
+      :enable (menu-barp-nonempty-region-p)
+      :keys ,(if (fboundp 'secondary-yank|select|move|swap)
+                 "C-1 \\[secondary-yank|select|move|swap]"
+                 "C-1 \\[secondary-dwim]"))
+    'secondary-yank|select|move|swap)
   (define-key-after menu-bar-edit-menu [secondary-swap-region] ; In `second-sel.el'
-    '(menu-item "Swap Region and Secondary" secondary-swap-region
+    `(menu-item "Swap Region and Secondary" secondary-swap-region
       :help "Make region into secondary selection, and vice versa."
       :enable (and (fboundp 'x-get-selection)
                (condition-case nil              ; Ignore - Emacs 21 raises error internally.
                    (x-get-selection 'SECONDARY)
                  (error nil)))
-      :keys "C-- \\[secondary-dwim]")
+      :keys ,(if (fboundp 'secondary-yank|select|move|swap)
+                 "C-- \\[secondary-yank|select|move|swap]"
+                 "C-- \\[secondary-dwim]"))
     'primary-to-secondary)
   (define-key-after menu-bar-edit-menu [secondary-to-primary] ; In `second-sel.el'
-    '(menu-item "Select Secondary as Region" secondary-to-primary
+    `(menu-item "Select Secondary as Region" secondary-to-primary
       :help "Go to the secondary selection and select it as the active region."
       :enable (and (fboundp 'x-get-selection)
                (condition-case nil              ; Ignore - Emacs 21 raises error internally.
                    (x-get-selection 'SECONDARY)
                  (error nil)))
-      :keys "C-0 \\[secondary-dwim]")
+      :keys ,(if (fboundp 'secondary-yank|select|move|swap)
+                 "C-0 \\[secondary-yank|select|move|swap]"
+                 "C-0 \\[secondary-dwim]"))
     'secondary-swap-region))
 
 (defvar yank-menu (cons "Select Yank" nil))
