@@ -8,19 +8,19 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 19 16:07:57 2016 (-0700)
+;; Last-Updated: Sun Sep 18 10:20:56 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1317
+;;     Update #: 1322
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `cmds-menu', `cus-theme',
-;;   `doremi', `doremi-cmd', `doremi-frm', `easymenu', `eyedropper',
-;;   `faces', `faces+', `fit-frame', `frame-cmds', `frame-fns',
-;;   `help+20', `hexrgb', `highlight', `info', `info+20', `isearch+',
+;;   `apropos', `apropos+', `avoid', `cus-theme', `doremi',
+;;   `doremi-cmd', `doremi-frm', `easymenu', `eyedropper', `faces',
+;;   `faces+', `fit-frame', `frame-cmds', `frame-fns', `help+20',
+;;   `hexrgb', `highlight', `info', `info+20', `isearch+',
 ;;   `iso-transl', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
 ;;   `mouse', `mouse+', `mwheel', `naked', `pp', `pp+', `replace+',
 ;;   `ring', `second-sel', `strings', `thingatpt', `thingatpt+',
@@ -75,6 +75,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/09/18 dadams
+;;     Applied renaming of secondary-dwim to secondary-yank|select|move|swap.
 ;; 2016/07/19 dadams
 ;;     Bound M-m to to-indentation-repeat-backward and M-n to to-indentation-repeat-forward.
 ;; 2016/01/24 dadams
@@ -369,8 +371,9 @@
                            ;; recenter-top-bottom, region-to-buffer, region-to-file,
                            ;; to-indentation-repeat-backward, to-indentation-repeat-forward,
                            ;; undo-repeat
-(require 'second-sel nil t) ;; (no error if not found): secondary-dwim, isearch-yank-secondary,
-                            ;; yank-pop-commands, isearch-yank-secondary, set-secondary-start,
+(require 'second-sel nil t) ;; (no error if not found): secondary-yank|select|move|swap,
+                            ;; isearch-yank-secondary, yank-pop-commands,
+                            ;; isearch-yank-secondary, set-secondary-start,
                             ;; secondary-save-then-kill
 (require 'pp+ nil t) ;; (no error if not found): pp-eval-expression
 (require 'fit-frame nil t) ;; (no error if not found):
@@ -451,7 +454,9 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 
 (eval-after-load "second-sel"
   '(progn
-    (global-set-key (kbd "C-M-y")               'secondary-dwim)                 ; `C-M-y'
+    (global-set-key (kbd "C-M-y")  (if (fboundp 'secondary-yank|select|move|swap)
+                                       'secondary-yank|select|move|swap
+                                     'secondary-dwim))                           ; `C-M-y'
     (define-key esc-map "y"                     'yank-pop-commands)              ; `M-y'
     (define-key isearch-mode-map (kbd "C-M-y")  'isearch-yank-secondary)         ; `C-M-y'
     (global-set-key (kbd "C-x C-M-SPC")         'set-secondary-start)            ;`C-x C-M-SPC'
