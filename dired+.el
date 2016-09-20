@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Sep 15 10:40:10 2016 (-0700)
+;; Last-Updated: Tue Sep 20 15:23:11 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 9676
+;;     Update #: 9685
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -653,6 +653,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/09/20 dadams
+;;     Emacs 25.1: Bind M-z to dired-do-compress-to (replaces c).  (Emacs bug #24484.)
+;;                 diredp-menu-bar-operate-menu: Added item: Compress to (dired-do-compress-to).
 ;; 2016/09/15 dadams
 ;;     Added: diredp-max-frames.
 ;;     dired-do-find-marked-files: Pass non-nil ARG to dired-get-marked-files only if it is a cons.
@@ -3203,6 +3206,10 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-operate-menu [command]
   '(menu-item "Shell Command..." dired-do-shell-command
     :help "Run a shell command on each marked file"))
+(when (fboundp 'dired-do-compress-to)
+  (define-key diredp-menu-bar-operate-menu [compress-to]
+    '(menu-item "Compress to..." dired-do-compress-to
+      :help "Compress marked files and dirs together, in the same archive")))
 (define-key diredp-menu-bar-operate-menu [compress]
   '(menu-item "Compress/Uncompress" dired-do-compress :help "Compress/uncompress marked files"))
 (define-key diredp-menu-bar-operate-menu [diredp-do-apply-function]
@@ -4066,6 +4073,13 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "Tu~+"    'diredp-unmark-files-tagged-none)     ; `T u ~ +'
 ;; $$$$$$ (define-key dired-mode-map [(control ?+)] 'diredp-do-tag)
 ;; $$$$$$ (define-key dired-mode-map [(control ?-)] 'diredp-do-untag)
+
+
+;; Vanilla Emacs binds `c' to `dired-do-compress-to'.  Use `M-z' instead'.
+;; (`dired-sort-menu.el' binds `c' to `dired-sort-menu-toggle-ignore-case'.)
+;;
+(when (fboundp 'dired-do-compress-to) ; Emacs 25+
+  (define-key dired-mode-map (kbd "M-z") 'dired-do-compress-to))
 
 
 ;; Commands for operating on the current line's file.  When possible,
