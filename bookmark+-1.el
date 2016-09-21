@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Sep 10 20:20:06 2016 (-0700)
+;; Last-Updated: Wed Sep 21 10:28:09 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7943
+;;     Update #: 7967
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -313,6 +313,7 @@
 ;;    `bmkp-count-multi-mods-as-one-flag', `bmkp-crosshairs-flag',
 ;;    `bmkp-default-bookmark-name',
 ;;    `bmkp-default-handlers-for-file-types',
+;;    `bmkp-desktop-default-directory',
 ;;    `bmkp-desktop-jump-save-before-flag.',
 ;;    `bmkp-desktop-no-save-vars',
 ;;    `bmkp-guess-default-handler-for-file-flag',
@@ -967,6 +968,12 @@ in the default handler.  For that it uses `dired-guess-default' and
           regexp :value-type
           (sexp :tag "Shell command (string) or Emacs function (symbol or lambda form)"))
   :group 'bookmark-plus)
+
+;;;###autoload (autoload 'bmkp-desktop-default-directory "bookmark+")
+(defcustom bmkp-desktop-default-directory nil
+  "*Default directory used when reading the name of a desktop file.
+If nil then use the current directory (value of `default-directory')."
+  :type 'directory :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-desktop-jump-save-before-flag "bookmark+")
 (defcustom bmkp-desktop-jump-save-before-flag nil
@@ -8760,18 +8767,17 @@ the display of proxy candidates."
                                                                              bmk 'desktop-file))
                                                                           (bmkp-desktop-alist-only))))
                 (icicle-unpropertize-completion-result-flag  t))
-            (list (read-file-name (if current-prefix-arg
-                                      "Use existing desktop file: "
-                                    "Save desktop in file: ")
-                                  nil (if (boundp 'desktop-base-file-name)
-                                          desktop-base-file-name
-                                        desktop-basefilename) ; Emacs < 22 name.
-                                  current-prefix-arg)
+            (list (read-file-name
+                   (if current-prefix-arg "Use existing desktop file: " "Save desktop in file: ")
+                   bmkp-desktop-default-directory
+                   (if (boundp 'desktop-base-file-name) desktop-base-file-name desktop-basefilename)
+                   current-prefix-arg)
                   current-prefix-arg))))
-  (set-text-properties 0 (length desktop-file) nil desktop-file)
-  (unless (file-name-absolute-p desktop-file) (setq desktop-file  (expand-file-name desktop-file)))
   (unless (or nosavep  (condition-case nil (require 'desktop nil t) (error nil)))
     (error "You must have library `desktop.el' to use this command"))
+  (unless (file-name-absolute-p desktop-file)
+    (setq desktop-file  (expand-file-name desktop-file bmkp-desktop-default-directory)))
+  (set-text-properties 0 (length desktop-file) nil desktop-file)
   (if nosavep
       (unless (bmkp-desktop-file-p desktop-file) (error "Not a desktop file: `%s'" desktop-file))
     (bmkp-desktop-save desktop-file))
@@ -8790,12 +8796,17 @@ the display of proxy candidates."
                                                   desktop-globals-to-save)))
     (cond ((< emacs-major-version 22)   ; Emacs 22 introduced `RELEASE' (locking).
            (desktop-save desktop-dir))
-          ((or (< emacs-major-version 24)
-               (and (= emacs-major-version 24)  (< emacs-minor-version 4)))
+          ((or (< emacs-major-version 24) (and (= emacs-major-version 24)  (< emacs-minor-version 4)))
            (desktop-save desktop-dir 'RELEASE))
           (t                            ; Emacs 24.4 introduced `AUTOSAVE'.
            (desktop-save desktop-dir 'RELEASE 'AUTOSAVE)))
     (message "Desktop saved in `%s'" desktop-file)))
+
+(unless (fboundp 'desktop-full-file-name) ; Emacs < 22.  (This is the vanilla definition.)
+  (defun desktop-full-file-name (&optional dirname)
+    "Return the full name of the desktop file in DIRNAME.
+DIRNAME omitted or nil means use `desktop-dirname'."
+    (expand-file-name desktop-basefilename (or dirname  desktop-dirname))))
 
 (defun bmkp-desktop-save-as-last ()
   "Save desktop to the file that is the value of `bmkp-desktop-current-file'.
@@ -8861,12 +8872,16 @@ BOOKMARK is a bookmark name or a bookmark record."
 Kill the desktop as specified by variables `desktop-save-mode' and
  `desktop-save' (starting with Emacs 22).
 Clear the desktop and load DESKTOP-FILE."
-  (interactive (list (let ((icicle-unpropertize-completion-result-flag  t))
-                       (read-file-name "Change to desktop file: "))))
-  (set-text-properties 0 (length desktop-file) nil desktop-file)
-  (unless (file-name-absolute-p desktop-file) (setq desktop-file  (expand-file-name desktop-file)))
+  (interactive
+   (progn (unless (condition-case nil (require 'desktop nil t) (error nil))
+            (error "You must have library `desktop.el' to use this command"))
+          (list (let ((icicle-unpropertize-completion-result-flag  t))
+                  (read-file-name "Change to desktop file: " bmkp-desktop-default-directory)))))
   (unless (condition-case nil (require 'desktop nil t) (error nil))
     (error "You must have library `desktop.el' to use this command"))
+  (unless (file-name-absolute-p desktop-file)
+    (setq desktop-file  (expand-file-name desktop-file bmkp-desktop-default-directory)))
+  (set-text-properties 0 (length desktop-file) nil desktop-file)
   (let ((desktop-basefilename     (file-name-nondirectory desktop-file)) ; Emacs < 22
         (desktop-base-file-name   (file-name-nondirectory desktop-file)) ; Emacs 23+
         (desktop-dir              (file-name-directory desktop-file))
@@ -8907,7 +8922,8 @@ This function does nothing in Emacs versions prior to Emacs 22."
   "Load desktop-file FILE, then run `desktop-after-read-hook'.
 Return t if FILE was loaded, nil otherwise."
   (interactive)
-  (unless (file-name-absolute-p file) (setq file  (expand-file-name file))) ; Shouldn't happen.
+  (unless (file-name-absolute-p file) ; Should never happen.
+    (setq file  (expand-file-name file bmkp-desktop-default-directory)))
   (setq desktop-dirname  (file-name-directory file))
   (if (not (file-readable-p file))
       nil                               ; Return nil, meaning not loaded.
@@ -8945,9 +8961,9 @@ Return t if FILE was loaded, nil otherwise."
 Release the lock file in that desktop's directory.
 \(This means that if you currently have locked a different desktop
 in the same directory, then you will need to relock it.)"
-  (interactive (let ((alist  (bmkp-desktop-alist-only)))
-                 (list (bmkp-read-bookmark-for-type "desktop" alist nil nil 'bmkp-desktop-history
-                                                    "Delete "))))
+  (interactive
+   (let ((alist  (bmkp-desktop-alist-only)))
+     (list (bmkp-read-bookmark-for-type "desktop" alist nil nil 'bmkp-desktop-history "Delete "))))
   (let ((desktop-file  (bookmark-prop-get bookmark-name 'desktop-file)))
     (unless desktop-file (error "Not a desktop-bookmark: `%s'" bookmark-name))
     ;; Release the desktop lock file in the same directory as DESKTOP-FILE.
