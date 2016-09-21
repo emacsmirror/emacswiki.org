@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Sep 10 19:31:30 2016 (-0700)
+;; Last-Updated: Wed Sep 21 10:33:40 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16083
+;;     Update #: 16089
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2016/09/21 dadams
+;;     Added: bmkp-desktop-default-directory.
+;;     Added: desktop-full-file-name, for Emacs < 22.
+;;     bmkp-set-desktop-bookmark, bmkp-desktop-change-dir, bmkp-desktop-read:
+;;       Use bmkp-desktop-default-directory when reading or expanding file name.
+;;     bmkp-desktop-change-dir: Error in interactive spec too, if cannot load desktop.el.
 ;; 2016/09/10 dadams
 ;;     Added: bmkp-format-spec.
 ;;     bmkp-autoname-format: Use %B in default value.  Update doc string, allowing %B.
