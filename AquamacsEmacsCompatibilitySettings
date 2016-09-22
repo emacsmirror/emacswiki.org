@@ -25,11 +25,15 @@ Please go through the support channels [http://aquamacs.org/support.shtml] if yo
    (define-key osx-key-mode-map "\C-z" 'suspend-emacs))
 
  (setq
-         ns-command-modifier 'meta         ; Apple/Command key is Meta
+        ns-command-modifier 'meta         ; Apple/Command key is Meta
  	ns-alternate-modifier nil         ; Option is the Mac Option key
  	ns-use-mac-modifier-symbols  nil  ; display standard Emacs (and not standard Mac) modifier symbols)
  	)
  
+ ;; exchanging clipboard content with other applications
+
+ (setq select-enable-clipboard t)
+
  ;; Persistency and modes:
  (setq
   	aquamacs-scratch-file nil                        ; do not save scratch file across sessions
@@ -50,15 +54,15 @@ Please go through the support channels [http://aquamacs.org/support.shtml] if yo
  ;; Appearance
  
  (aquamacs-autoface-mode -1)                                ; no mode-specific faces, everything in Monaco
- ;(set-face-attribute 'mode-line nil :inherit 'unspecified) ; show modeline in Monaco
- ;(set-face-attribute 'echo-area nil :family 'unspecified)  ; show echo area in Monaco
+ (set-face-attribute 'mode-line nil :inherit 'unspecified) ; show modeline in Monaco
+ (set-face-attribute 'echo-area nil :family 'unspecified)  ; show echo area in Monaco
  
  
  ;; Editing
  
- ; (global-smart-spacing-mode -1)  ; not on by default
- ; (remove-hook 'text-mode-hook 'smart-spacing-mode)   ; do not use smart spacing in text modes
+ (global-smart-spacing-mode -1)  ; not on by default
+ (remove-hook 'text-mode-hook 'smart-spacing-mode)   ; do not use smart spacing in text modes
  ; (global-visual-line-mode -1)  ; turn off Emacs 23 visual line
- ; (cua-mode nil)
+ ; (cua-mode nil) ; it's now on by default in Emacs
  ; (transient-mark-mode nil)  ; (must switch off CUA mode as well for this to work)
  
