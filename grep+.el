@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Feb 12 06:31:37 2016 (-0800)
+;; Last-Updated: Thu Sep 22 15:20:14 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 682
+;;     Update #: 710
 ;; URL: http://www.emacswiki.org/grep+.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes, compile
@@ -101,6 +101,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/09/22 dadams
+;;     grep-regexp-alist: Not needed for Emacs 25+.
 ;; 2016/02/12 dadams
 ;;     Added commands to Grep menu-bar menu.
 ;; 2016/02/11 dadams
@@ -490,41 +492,44 @@ between /* and */."
 ;;; REPLACE ORIGINAL `grep-regexp-alist' defined in `grep.el'.
 ;;;
 ;;; Use mouseover on whole line.  Same as original, except for this.
+;;;
 (unless (featurep 'grep+)
-  (setq grep-regexp-alist
-        '(;; Rule to match column numbers is commented out since no known grep produces them
-          ;; ("^\\(.+?\\)\\(:[ \t]*\\)\\([1-9][0-9]*\\)\\2\\(?:\\([1-9][0-9]*\\)\
-          ;;\\(?:-\\([1-9][0-9]*\\)\\)?\\2\\)?"
-          ;;  1 3 (4 . 5))
+  (when (< emacs-major-version 25)
+    (setq grep-regexp-alist
+          `(
+            ;; Use as tight a regexp as possible to try to handle weird file names (with colons) as well as
+            ;; possible.  E.g. use [1-9][0-9]* rather than [0-9]+ so as to accept ":034:" in file names.
+            ("^\\(.+?\\)\\(:[ \t]*\\)\\([1-9][0-9]*\\)\\2.*" ; Appended `.*'
+              1 3
+              ;; Calculate column positions (col . end-col) of first grep match on a line
+              ((lambda ()
+                 (when grep-highlight-matches
+                   (let* ((beg   (match-end 0))
+                          (end   (save-excursion (goto-char beg) (line-end-position)))
+                          (mbeg  (text-property-any beg end 'font-lock-face ,(if (boundp 'grep-match-face)
+                                                                                 grep-match-face
+                                                                                 'match))))
+                     (and mbeg (- mbeg beg)))))
+               .
+               (lambda ()
+                 (when grep-highlight-matches
+                   (let* ((beg   (match-end 0))
+                          (end   (save-excursion (goto-char beg) (line-end-position)))
+                          (mbeg  (text-property-any beg end 'font-lock-face ,(if (boundp 'grep-match-face)
+                                                                                 grep-match-face
+                                                                                 'match)))
+                          (mend  (and mbeg (next-single-property-change mbeg 'font-lock-face nil end))))
+                     (and mend (- mend beg))))))
+              nil
+              nil) ; DREW ADAMS changed HIGHLIGHT to nil, to highlight whole match.
+            ("^Binary file \\(.+\\) matches$" 1 nil nil 0 1)))))
 
-          ;; use as tight a regexp as possible to try to handle weird file names (with colons) as well as
-          ;; possible.  E.g. use [1-9][0-9]* rather than [0-9]+ so as to accept ":034:" in file names.
-          ("^\\(.+?\\)\\(:[ \t]*\\)\\([1-9][0-9]*\\)\\2.*" ; DREW ADAMS appended `.*'
-           1 3
-           ;; Calculate column positions (col . end-col) of first grep match on a line
-           ((lambda ()
-              (when grep-highlight-matches
-                (let* ((beg   (match-end 0))
-                       (end   (save-excursion (goto-char beg) (line-end-position)))
-                       (mbeg  (text-property-any beg end 'font-lock-face 'match)))
-                  (and mbeg (- mbeg beg)))))
-            .
-            (lambda ()
-              (when grep-highlight-matches
-                (let* ((beg   (match-end 0))
-                       (end   (save-excursion (goto-char beg) (line-end-position)))
-                       (mbeg  (text-property-any beg end 'font-lock-face 'match))
-                       (mend  (and mbeg (next-single-property-change mbeg 'font-lock-face nil end))))
-                  (and mend (- mend beg))))))
-           nil
-           nil) ; DREW ADAMS changed HIGHLIGHT to nil, to highlight whole match.
-          ("^Binary file \\(.+\\) matches$" 1 nil nil 0 1))))
 
 
-
-;;; REPLACE ORIGINAL `grep-regexp-alist' defined in `grep.el'.
+;;; REPLACE ORIGINAL `grep-mode-font-lock-keywords' defined in `grep.el'.
 ;;;
 ;;; Use mouseover on whole line.  Same as original, except for this.
+;;;
 (unless (featurep 'grep+)
   (setq grep-mode-font-lock-keywords
         (if (> emacs-major-version 23)
