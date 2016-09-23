@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Sep 22 15:20:14 2016 (-0700)
+;; Last-Updated: Fri Sep 23 15:15:10 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 710
+;;     Update #: 714
 ;; URL: http://www.emacswiki.org/grep+.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes, compile
@@ -80,7 +80,7 @@
 ;;  ***** NOTE: The following variables defined in `grep.el'
 ;;              have been REDEFINED HERE:
 ;;
-;;  `grep-mode-font-lock-keywords', `grep-regexp-alist'
+;;  `grep-mode-font-lock-keywords', `grep-regexp-alist' (Emacs < 24)
 ;;    - Mouse-over the whole line.
 ;;
 ;;
@@ -101,6 +101,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/09/23 dadams
+;;     grep-regexp-alist: Also inappropriate for Emacs 24.
 ;; 2016/09/22 dadams
 ;;     grep-regexp-alist: Not needed for Emacs 25+.
 ;; 2016/02/12 dadams
@@ -494,7 +496,7 @@ between /* and */."
 ;;; Use mouseover on whole line.  Same as original, except for this.
 ;;;
 (unless (featurep 'grep+)
-  (when (< emacs-major-version 25)
+  (when (< emacs-major-version 24)
     (setq grep-regexp-alist
           `(
             ;; Use as tight a regexp as possible to try to handle weird file names (with colons) as well as
