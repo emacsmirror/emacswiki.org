@@ -24,3 +24,10 @@ find -name "#*#" -delete
 
 -- Stevko 2015-08-29 09:00 UTC
 
+
+----
+
+Is it possible to keep the auto-save functionality while not getting an auto-save file after confirming that a buffer with unsaved changes should not be saved on exiting emacs?
+
+-- Kurt 2016-09-28 14:58 UTC
+
