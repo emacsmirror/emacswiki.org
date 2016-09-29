@@ -18,6 +18,10 @@ How does GNU Emacs-21.3 support sticky modifier keys?  Can't find it in my copy.
 
 Lisp:sticky.el enables sticky shift by another sticky key (semicolon and so on). -- [[rubikitch]]
 
+  S-M-: (with-temp-buffer (url-insert-file-contents "http://www.emacswiki.org/emacs/download/sticky.el") (eval-buffer))
+  (use-sticky-key ?\; sticky-alist:en)
+  
+
 [new]
 On Windows, I found a way to set <lwindow>, <rwindow> and <apps> as sticky modifiers, without OS settings:
 
