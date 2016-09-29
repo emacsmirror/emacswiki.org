@@ -6,9 +6,14 @@ Lisp:font-lock-color-test.el
 
 This file contains Chongs suggestion and a test of the contrast they gives.
 I have also added my own suggestions.
-To see those suggestions, load the file and do
+To see those suggestions, load the file and enable font-colors
 
-  M-x test-font-lock-colors
+  S-M-: (with-temp-buffer (url-insert-file-contents "https://www.emacswiki.org/emacs/download/font-lock-color-test.el") (eval-buffer))
+  M-x flct-show-colors-suggestions
+
+To reset, eval following code:
+
+  S-M-: (progn (flct-use-suggestion "lennart1") (sit-for 2) (flct-use-suggestion "chong") (sit-for 2) (flct-reset-faces-default-colors))
 
 You are welcome to add your own suggestions to this file.
 
