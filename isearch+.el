@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Sep 30 09:09:15 2016 (-0700)
+;; Last-Updated: Fri Sep 30 10:58:14 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 4293
+;;     Update #: 4295
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -656,6 +656,7 @@
 ;; 2016/09/30 dadams
 ;;     Added: isearch-unread-key-sequence (vanilla def from Emacs 24.3).  (They removed it from Emacs 24.4+.)
 ;;     Changed guard of *-init-edit, *-update-edit-init-commands, *-initiate-edit-commands to just > Emacs 21.
+;;     isearchp-initiate-edit-commands: Unbind isearchp-init-edit first, to take care of deletions too.
 ;; 2016/07/04 dadams
 ;;     isearchp-replace-on-demand: Doubled backslashes in doc string.
 ;;     isearch-lazy-highlight-update: lazy-highlight, not variable lazy-highlight-face. Thx to Tino Calancha.
@@ -1348,8 +1349,9 @@ move point to the left, possibly deleting text along the way.
 Set this to `nil' if you always want all such commands to exit Isearch
 and act on the buffer text."
     :set #'(lambda (sym defs)
+             (substitute-key-definition 'isearchp-init-edit nil isearch-mode-map) ; Get rid of any old ones.
              (custom-set-default sym defs)
-             (isearchp-update-edit-init-commands))
+             (isearchp-update-edit-init-commands)) ; Apply the current ones.
     :type '(repeat (restricted-sexp :tag "Command"
                     ;; Use `symbolp' instead of `functionp' or `fboundp', in
                     ;; case the library defining the function is not loaded.
