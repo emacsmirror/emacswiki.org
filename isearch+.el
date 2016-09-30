@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul  4 08:05:45 2016 (-0700)
+;; Last-Updated: Fri Sep 30 09:09:15 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 4276
+;;     Update #: 4293
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -653,9 +653,12 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/09/30 dadams
+;;     Added: isearch-unread-key-sequence (vanilla def from Emacs 24.3).  (They removed it from Emacs 24.4+.)
+;;     Changed guard of *-init-edit, *-update-edit-init-commands, *-initiate-edit-commands to just > Emacs 21.
 ;; 2016/07/04 dadams
 ;;     isearchp-replace-on-demand: Doubled backslashes in doc string.
-;;     isearch-lazy-highlight-update: Use lazy-highlight, not variable lazy-highlight-face.  Thx to Tino Calancha.
+;;     isearch-lazy-highlight-update: lazy-highlight, not variable lazy-highlight-face. Thx to Tino Calancha.
 ;; 2016/02/27 dadams
 ;;     Temporarily remove soft-require of character-fold+.el.
 ;;     Updated for Emacs 25 isearch.el changes:
@@ -698,7 +701,8 @@
 ;;                    Removed LOCAL arg for add-hook.
 ;;      isearch--describe-word-mode: Do not redefine for Emacs 25+.
 ;;      isearch-message-prefix: For Emacs 25: Use isearch--describe-regexp-mode.  Handle multi-file too.
-;;      Removed Emacs 25 advertised bindings for isearch-toggle-case-fold, isearch-toggle-regexp, isearch-edit-string.
+;;      Removed Emacs 25 advertised bindings for isearch-toggle-case-fold, isearch-toggle-regexp,
+;;        isearch-edit-string.
 ;; 2015/11/23 dadams
 ;;     Added: isearchp-remove-failed-part-or-last-char.  Bound to C-backspace.
 ;;     Renamed isearchp-if-empty-prefer-resuming-with-last to isearchp-resume-with-last-when-empty-flag, and
@@ -1281,13 +1285,24 @@ and just using `M-k' to turn `isearchp-drop-mismatch' off temporarily
 when needed."
   :type 'boolean :group 'isearch-plus)
 
-(when (fboundp 'isearch-unread-key-sequence) ; Emacs 22+
+(when (> emacs-major-version 21)        ; Emacs 22+
+
+  ;; Emacs 24.4 removed this.  This is the original definition (from Emacs 24.3).
+  ;;
+  (unless (fboundp 'isearch-unread-key-sequence)
+    (defun isearch-unread-key-sequence (keylist)
+      "Unread the given key-sequence KEYLIST.
+Scroll-bar or mode-line events are processed appropriately."
+      (cancel-kbd-macro-events)
+      (apply 'isearch-unread keylist)
+      (when (and (> (length keylist) 1)  (symbolp (car keylist))  (listp (cadr keylist))
+                 (not (numberp (posn-point (event-start (cadr keylist))))))
+        (pop unread-command-events))))
 
   (defun isearchp-init-edit (&rest ignored)
     "Invoke current key sequence, but after calling `isearch-edit-string'."
     (interactive)
-    (isearch-unread-key-sequence
-     (listify-key-sequence (this-command-keys)))
+    (isearch-unread-key-sequence (listify-key-sequence (this-command-keys)))
     (isearch-edit-string))
 
   (defun isearchp-update-edit-init-commands ()
@@ -1569,7 +1584,7 @@ suspended."
                         (isearch-new-message                 isearch-message)
                         (isearch-new-forward                 isearch-forward)
                         (isearch-new-regexp-function         isearch-regexp-function)
-                        (isearch-new-word                    (if (boundp 'isearch-word) ; For backward compatibility
+                        (isearch-new-word                    (if (boundp 'isearch-word) ; Backward compat.
                                                                  isearch-word
                                                                isearch-regexp-function))
                         (isearch-new-case-fold               isearch-case-fold-search)
@@ -1586,7 +1601,8 @@ suspended."
                                                                   multi-isearch-file-list))
                         (multi-isearch-buffer-list-new       (and (boundp 'multi-isearch-buffer-list)
                                                                   multi-isearch-buffer-list))
-                        (multi-isearch-next-buffer-function  (and (boundp 'multi-isearch-next-buffer-current-function)
+                        (multi-isearch-next-buffer-function  (and (boundp
+                                                                   'multi-isearch-next-buffer-current-function)
                                                                   multi-isearch-next-buffer-current-function))
                         (multi-isearch-current-buffer-new    (and (boundp 'multi-isearch-current-buffer)
                                                                   multi-isearch-current-buffer))
@@ -1648,7 +1664,8 @@ suspended."
                         (isearch-message nil t))
                       ;; Set point at the start (end) of old match if forward (backward), so after exiting
                       ;; minibuffer isearch resumes at the start (end) of this match and can find it again.
-                      (when (and old-other-end  (eq old-point (point))  (eq isearch-forward isearch-new-forward)
+                      (when (and old-other-end  (eq old-point (point))
+                                 (eq isearch-forward isearch-new-forward)
                                  (not (eq last-command 'isearchp-act-on-demand)))
                         (goto-char old-other-end)))
                     ;; Empty `isearch-string' means use default.
@@ -2439,7 +2456,7 @@ At the end, run `isearch-update-post-hook' and lazy-highlight again."
                                          (pos-visible-in-window-group-p nil nil t)
                                        (pos-visible-in-window-p nil nil t)))
                     (or (not visible-p)
-                        ;; When point is not visible because of hscroll, `pos-visible-in-window(-group)-p' returns
+                        ;; When point not visible because of hscroll, `pos-visible-in-window(-group)-p' returns
                         ;; non-nil, but the X coordinate it returns is 1 pixel beyond the last visible one.
                         (< (car visible-p) (window-body-width nil t))))
             (set-window-hscroll (selected-window) current-scroll))))
@@ -2462,7 +2479,7 @@ At the end, run `isearch-update-post-hook' and lazy-highlight again."
     ;; Prevent point moving to end of composition when part of it has just been searched.
     (when (boundp 'disable-point-adjustment) (setq disable-point-adjustment  t))
     (run-hooks 'isearch-update-post-hook)
-    (when (and (boundp 'isearch-lazy-highlight)  isearch-lazy-highlight) ; Before Emacs 25 this was before post hook.
+    (when (and (boundp 'isearch-lazy-highlight)  isearch-lazy-highlight) ; < Emacs 25: was before post hook.
       (isearch-lazy-highlight-new-loop))))
 
 (defun isearchp-barf-if-use-minibuffer ()
@@ -3675,9 +3692,10 @@ Attempt to do the search exactly the way the pending Isearch would."
                               nomore   t)
                       (setq isearch-lazy-highlight-wrapped  t)
                       (if isearch-lazy-highlight-forward
-                          (progn (setq isearch-lazy-highlight-end  (if (fboundp 'window-group-start) ; Emacs 25+
-                                                                       (window-group-start)
-                                                                     (window-start)))
+                          (progn (setq isearch-lazy-highlight-end
+                                       (if (fboundp 'window-group-start) ; Emacs 25+
+                                           (window-group-start)
+                                         (window-start)))
                                  (goto-char
                                   (max (or isearch-lazy-highlight-start-limit  isearchp-reg-beg  (point-min))
                                        (if (fboundp 'window-group-start) ; Emacs 25+
