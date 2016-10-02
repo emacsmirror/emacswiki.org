@@ -1,0 +1,6 @@
+Most Linux distributions carry a version of Emacs.
+
+In case the version coming with your Linux distribution is outdated, you might want to build from source.
+
+If you would not like to build from source, you can use the Emacs [AppImage](http://appimage.org/) provided at
+https://github.com/probonopd/Emacs.AppImage. To use it, simply download it, set the executable bit (e.g., using the GUI or chmod a+x), and execute it.
