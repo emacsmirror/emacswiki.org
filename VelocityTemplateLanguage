@@ -1,6 +1,6 @@
 Velocity is a template engine. See http://velocity.apache.org/
 
-It usually carries the extension .vm
+It usually carries the extension .vm, or .vhtml.
 
 ==Mode to edit Velocity files in Emacs==
 
