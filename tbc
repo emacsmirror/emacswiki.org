@@ -2,6 +2,12 @@ I'm Tim Chambers 1E4AF729D5CEFFD0. I love GnuEmacs. My initials are tbc. I'm an 
 
 == Blog ==
 
+''03 Oct 16''
+
+Haven't made it to a meetup yet. Halfway through HRS' Org-mode talk (YouTube). Googled emacs philosophy today. Discovered Emacs is Dead. Also thinking about ViAndEmacs. What I want to do is explain what ''I'' mean by Emacs as an operating system. I sympathize with HRS, but my take is a little different. Pondering...
+
+I no longer know what I meant by "library changes" in my contributions section below, and part of the URL set off the spam detector. This is just to remind me that I once cared.
+
 ''15 Jun 16''
 
 [http://lists.gnu.org/archive/html/emacs-diffs/2016-06/msg00115.html My first Emacs commit]!
@@ -21,10 +27,6 @@ Also, I joined the [https://plus.google.com/communities/101818454981911211159 Ch
 ''19 Oct 13'' EasyPG rocks!
 
 == My Contributions to EmacsWiki, Chronologically ==
-
-* [EmacsWiki:action=rc;rcuseronly=tbc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;days=28;all=1;showedit=1 Library changes in the last 28 days]
-
-* [EmacsWiki:action=rc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;from=1117497600;showedit=1;rcuseronly=tbcAll Library changes]
 
 * [EmacsWiki:action=rc;rcuseronly=tbc This week's wiki contributions]
 
