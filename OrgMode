@@ -55,9 +55,16 @@ You can *publish to HTML* using `C-c C-e h', or you can use BhlMode for LaTeX or
   websites composed of all the files within a project (including
   OrgMode files, images, and source code, if desired).
 
+
 === new exporter/publish framework ===
 * [http://orgmode.org/worg/exporters/ox-overview.html The New Org-mode Exporter Framework] - ''As of release 8.0, Org-mode has transitioned to a new export framework, authored primarily (entirely?) by Nicolas Goaziou…''
 * For instructions on how to upgrade from the previous Org-mode exporter, see the [http://orgmode.org/worg/org-8.0.html upgrade guide.]
+
+== Themes for HTML output ==
+
+Obviously, default HTML output does not look nice at all. Here are some themes you can use:
+
+* https://github.com/thi-ng/org-spec – which is basically [[https://github.com/thi-ng/org-spec/blob/master/css/style.css just one css file]]. No external dependencies, [[http://demo.thi.ng/org-spec/ looks great]].
 
 
 [:conflicts]
