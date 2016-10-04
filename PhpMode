@@ -32,7 +32,7 @@ Auto-completes PHP functions and handles indentation both Sourceforge php-mode a
 
 * Which is better?
 
-(2010-May-26) After comparing the php-mode that comes with nxhtml vs php-mode-improved vs php-mode-new (included in Mewde Project), I found the following:
+(2010-05-26) After comparing the php-mode that comes with nxhtml vs php-mode-improved vs php-mode-new (included in Mewde Project), I found the following:
 
 ** *nXHTML variant*: Most up-to-date.  Plenty of bug fixes.
 ** *Mewde variant*: Includes a template menu that might be useful for new PHP programmers or could even serve as a quick reference.  Also includes helper menu for PHPDocumentor, etc.
