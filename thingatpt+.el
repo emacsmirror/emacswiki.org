@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Tue Sep  6 10:19:12 2016 (-0700)
+;; Last-Updated: Tue Oct  4 06:40:25 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 2280
+;;     Update #: 2281
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -1576,7 +1576,7 @@ another way, not by setting these properties."
 
   ;; These are not set in `thingatpt.el', but a function for the THING is defined there.
   (put 'list   'thing-at-point           'tap-list-at-point)
-  (put 'number 'thing-at-point           'number-at-point)
+  (put 'number 'thing-at-point           'number-at-point) ; In vanilla after 2012-10-12.
   (put 'number 'bounds-of-thing-at-point 'tap-bounds-of-number-at-point)
   t)                                    ; Return non-nil so can use with `and' etc.
 
