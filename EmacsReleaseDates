@@ -1,8 +1,12 @@
 Here's an incomplete list of [[GnuEmacs|GNU Emacs]] releases. See also the [http://www.jwz.org/doc/emacs-timeline.html Emacs Timeline] by JamieZawinski, and EmacsHistory for more information.
 
 ||*Version*||*Release*||
-|| 18               || 1987 ||
-|| 19               || 1994 ||
+|| 16.56           || 1985-07-15 ||
+|| 17.36           || 1985-12-20 ||
+|| 18.24           || 1986-10-02 ||
+|| 18.59           || 1992-10-31 ||
+|| 19.28           || 1994-11-01 ||
+|| 19.34           || 1996-08-22 ||
 || 20.1            || 1997-09-15 ||
 || 20.2            || 1997-09-20 ||
 || 20.3            || 1998-08-19 ||
