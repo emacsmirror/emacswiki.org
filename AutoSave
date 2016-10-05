@@ -36,14 +36,9 @@ If placing your temp files in /tmp (in Linux) you will <b>not</b> be able to rec
 
 * To delete all auto-save files in the current directory, use `<tt>#</tt>' in [[Dired]] to mark the files, then `x' to delete them.
 
-* To ''recursively'' delete all auto-save files under the current directory, run:
+* To recursively print and delete all auto-save files under the current directory, run:
 
-          find . -name "#*#" | xargs rm
-
-:: If the file names contain whitespace, it is necessary to use one of:
-
-          find . -name "#*#" -print0 | xargs -0 rm
-          find . -name "#*#" -exec rm {} \;
+    find -name "#*#" -print -delete
 
 == Interlock symlinks and auto-save files ==
 
