@@ -24,7 +24,7 @@
 ;;
 ;; Author: David Andersson <l.david.andersson(at)sverige.nu>
 ;; Created: 2006-06-30
-;; Version: 0.2
+;; Version: 0.3
 ;;
 ;;; Commentary:
 ;;
@@ -147,7 +147,7 @@ the last number is used again in further repeated invocations.
   `(if (acc-save-mult ,multiplier ',command)
        (defadvice ,command (before accelerate activate)
 	 "Accelerated when auto-repeated. See `accelerate'"
-	 (if (interactive-p)
+	 (if (called-interactively-p 'any)
 	     (ad-set-arg 0 (acc-pump-arg (ad-get-arg 0) ',command))))
      ;; else
      (acc-remove-advice ',command 'before 'accelerate)))
