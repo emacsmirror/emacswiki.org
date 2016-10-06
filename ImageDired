@@ -6,7 +6,7 @@ The code is here:
 
 : GIT:image-dired.el
 
-You can read more about Image-Dired in the Emacs Manual -  http://www.gnu.org/software/emacs/manual/html_node/emacs/Image_002dDired.html. For more background and basic usage, reading the Commentary section in image-dired.el is strongly recommended.
+You can read more about [https://www.gnu.org/software/emacs/manual/html_node/emacs/Image_002dDired.html Image-Dired in the Emacs Manual]. For more background and basic usage, reading the Commentary section in ##image-dired.el## is strongly recommended.
 
 See also [[BookmarkPlus#BookmarkTags|Bookmark Tags]], for another way to tag image files, view tag listings, etc.
 
