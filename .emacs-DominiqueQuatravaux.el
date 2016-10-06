@@ -1,9 +1,9 @@
 ;;; -*- emacs-lisp -*-
-;; .emacs, fichier de configuration d'emacs de Dom - $Revision: 1.284 $
+;; .emacs, fichier de configuration d'emacs de Dom
 ;;
 ;; MODE D'EMPLOI
 ;;
-;; Normalement, ce .emacs fonctionne tel quel sur toute installation fraîche
+;; Ce .emacs ambitionne de fonctionner tel quel sur toute installation fraîche
 ;; d'Emacs 23 ou ultérieur.
 ;;
 ;; Ce .emacs fonctionne main dans la main avec la fonction "Customize" d'Emacs,
@@ -160,7 +160,7 @@ fichiers temporaires, etc.")
 (pointemacs-personnalise '(Info-default-directory-list
     (remove-duplicates
      (mapcar 'directory-file-name
-             (append '("/usr/share/info" "/opt/local/share/info")
+             (append '("/usr/share/info")
                      Info-default-directory-list
                      (list (expand-file-name "~/lib/info")
                            (concat pointemacs-repertoire-lib "/magit"))))
@@ -172,6 +172,7 @@ fichiers temporaires, etc.")
 ;; qui est donc généralement FUBAR à ce stade. Le mieux est de recommencer de
 ;; zéro en invoquant un login shell pour connaître le «vrai» path:
 (when (eq system-type 'darwin)
+  (setenv "LANG" "fr_CH.utf-8")
   (let ((path-d-apres-le-shell
          (shell-command-to-string
 	  "env PATH= $SHELL -l -c 'echo -n \"$PATH\"'")))
@@ -194,7 +195,9 @@ fichiers temporaires, etc.")
   (dolist (archive-supplementaire
            '(("melpa" . "http://melpa.milkbox.net/packages/")
              ;; http://user42.tuxfamily.org/elpa/index.html
-             ("user42" . "http://download.tuxfamily.org/user42/elpa/packages/")))
+             ("user42" . "http://download.tuxfamily.org/user42/elpa/packages/")
+             ;; https://marmalade-repo.org/#download
+             ("marmalade" . "http://marmalade-repo.org/packages/")))
            (add-to-list 'package-archives archive-supplementaire t)))
 (when (require-faible 'url) (require-faible 'auto-install))
 (when (require-faible 'el-get) (el-get 'sync))
@@ -271,7 +274,9 @@ fichiers temporaires, etc.")
 (when (require-faible 'iso-transl)
   (let ((combinaisons           
          '(("->" . [?→]) ("=>" . [?⇒]) ("<-" . [?←])
-           (":)" . [?☺]) (":)" . [?☹]))))
+           ("tm" . [?™]) ("TM" . [?™])
+           (":)" . [?☺]) (":(" . [?☹]) (",/" . [?✓]) (",x" . [?✗])
+           ("/!" . [?⚠]) ("O!" . [?💡]) (".." . [?…]))))
     (dolist (combinaison combinaisons)
       (let* ((touches (car combinaison))
              (valeur (cdr combinaison))
@@ -312,6 +317,7 @@ fichiers temporaires, etc.")
 (defadvice desktop-change-dir (after pointemacs-save-mode activate)
   "Activation à la demande de desktop-save-mode."
   (desktop-save-mode 1))
+(pointemacs-personnalise '(desktop-files-not-to-save "^$"))
 
 ;; Liste File -> Open Recent..., commune à tous les desktops.
 (when (require-faible 'recentf)
@@ -381,7 +387,9 @@ fichiers temporaires, etc.")
 ;; déjà présentes au démarrage dans auto-mode-alist, interpreter-mode-alist etc)
 (aput 'auto-mode-alist "^/tmp/mutt" 'mail-mode)
 (aput 'auto-mode-alist "akefile" 'makefile-mode)
+(aput 'auto-mode-alist "Dockerfile" 'dockerfile-mode)
 (aput 'auto-mode-alist "TODO" 'text-mode)  ;; Todoo suxx
+(aput 'auto-mode-alist "DefaultKeyBinding.dict" 'text-mode)
 (dolist (suffixes-et-mode
   '((("ml" "mli" "mly" "mll" "mlp") caml-mode)
     (("m") 'objc-mode) (("p") pascal-mode)
@@ -414,19 +422,11 @@ fichiers temporaires, etc.")
   (pointemacs-personnalise `(backup-directory-alist
                              (list (cons "." ,rep-fichiers-secours)))))
 
-;; Le fait de ne pas utiliser /bin/sh pour lancer des commandes "toutes faites"
-;; est un choix, disons... discutable de la part d'Emacs (quid d'un shell qui
-;; rame au démarrage comme zsh, ou d'un shell non compatible Bourne qui va
-;; se prendre les pieds dans le tapis au moindre caractère spécial ?)
-(setq shell-file-name "/bin/sh")
-(setq tex-shell-file-name "/bin/sh")
-
-(defadvice shell (around pointemacs-shell-interactif activate)
-  (let (explicit-shell-file-name)
-    (when (not (and (boundp 'default-directory) default-directory
-                    (file-remote-p default-directory)))
-      (setq explicit-shell-file-name "/opt/local/bin/bash"))
-    ad-do-it))
+;; On lance les commandes avec /bin/sh...
+(pointemacs-personnalise '(shell-file-name "/bin/sh")
+                         '(tex-shell-file-name "/bin/sh")
+                         ;; mais M-x shell utilise /bin/bash
+                         '(explicit-shell-file-name "/bin/bash"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
       (pointemacs-progression "Personnalisation générale de l'édition de texte")
@@ -708,13 +708,24 @@ Au lieu d'effacer tout le répertoire précédent, efface seulement le slash"
 (pointemacs-progression "IBuffer") ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (when (require-faible 'ibuffer)
   (global-set-key (kbd "C-x C-b") 'ibuffer)
-  (and (require-faible 'ibuffer-projectile)
-       (ibuffer-projectile-set-filter-groups)))
+  (when (require-faible 'ibuffer-projectile)
+    (add-hook 'ibuffer-hook
+              (lambda ()
+                (ibuffer-projectile-set-filter-groups)
+                (unless (eq ibuffer-sorting-mode 'alphabetic)
+                  (ibuffer-do-sort-by-alphabetic))))))
 
 (pointemacs-progression "Recherche dans le code source") ;;;;;;;;;;;;;;
 
-(pointemacs-personnalise '(grep-program "zgrep"))
+(pointemacs-personnalise '(grep-program "zgrep")
+                         '(ag-highlight-search t))
 (require-faible 'grep-domq)
+(defadvice wgrep-commit-buffer (around pointemacs-sauve-si-frais activate)
+  "Sauvegarde le buffer à la fin de wgrep, si il n'était pas modifié avant."
+  (if (buffer-modified-p (ad-get-arg 0))
+      ad-do-it
+    ad-do-it
+    (with-current-buffer buffer (basic-save-buffer))))
 
 (pointemacs-progression "Contrôle de versions") ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -827,8 +838,6 @@ L'information est reprise dans le buffer magit; un rebase-todo ouvert
 à contretemps (ex : rebase terminé) est source de confusions."
   (kill-buffer))
 
-(add-hook 'git-rebase-mode-hook 'pointemacs-git-rebase-mode-hook)
-
 (pointemacs-progression "Débogueurs") ;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Configuration de GUD, le débogueur multi-langages d'Emacs
@@ -907,8 +916,10 @@ Pour quitter une sous-session du débogueur en erreur (par exemple si on a tapé
   (if kprinter (pointemacs-personnalise `(lpr-command ,kprinter))))
 
 ;; Dired (gestionnaire de fichiers)
-(setq dired-shell-have-gnutar "tar")
-(add-hook 'dired-mode-hook (lambda () (setq dired-omit-files-p t)) t)
+(pointemacs-personnalise 
+ '(dired-guess-shell-gnutar "tar")
+ '(dired-omit-size-limit nil))
+(add-hook 'dired-mode-hook (lambda () (require 'dired-x)))
 
 ;; Wanderlust: client IMAP et SMTP
 (when (boundp 'mail-user-agent) (setq mail-user-agent 'wl-user-agent))
