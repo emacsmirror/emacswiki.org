@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Sun Jun 12 15:54:10 2016 (-0700)
+;; Last-Updated: Fri Oct  7 16:38:32 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1858
+;;     Update #: 1859
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -19,14 +19,13 @@
 ;;
 ;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `cmds-menu', `cus-theme',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-opt',
-;;   `info', `info+20', `kmacro', `levenshtein', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `package', `pp',
-;;   `pp+', `regexp-opt', `second-sel', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `bookmark+-lit', `cl', `cus-theme', `el-swank-fuzzy', `ffap',
+;;   `ffap-', `fit-frame', `frame-fns', `fuzzy', `fuzzy-match',
+;;   `help+20', `hexrgb', `icicles-opt', `info', `info+20', `kmacro',
+;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `naked', `package', `pp', `pp+', `regexp-opt', `second-sel',
+;;   `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1176,7 +1175,7 @@ indents the current line.")
 (unless icicle-read-expression-map
   (let ((map  (make-sparse-keymap)))
     (define-key map (icicle-kbd "C-M-i")   'lisp-indent-line) ; `ESC TAB', `C-M-i'
-    (define-key map (icicle-kbd "C-i")     'lisp-complete-symbol) ; `C-i', `TAB'
+    (define-key map (icicle-kbd "C-i")     'icicle-lisp-complete-symbol) ; `C-i', `TAB'
     (define-key map (icicle-kbd "ESC tab") 'lisp-indent-line) ; `ESC tab'
     (define-key map (icicle-kbd "C-M-x")   'eval-defun) ; `ESC C-x', `C-M-x'
     (define-key map (icicle-kbd "C-M-q")   (if (fboundp 'indent-pp-sexp) ; `ESC C-q', `C-M-q'
