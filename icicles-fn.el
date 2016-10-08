@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Tue Aug 30 09:58:17 2016 (-0700)
+;; Last-Updated: Fri Oct  7 16:53:37 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 15158
+;;     Update #: 15166
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -19,14 +19,14 @@
 ;;
 ;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `cmds-menu', `cus-theme',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `flx',
-;;   `frame-fns', `fuzzy', `fuzzy-match', `help+20', `hexrgb',
-;;   `icicles-opt', `icicles-var', `info', `info+20', `kmacro',
-;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `package', `pp', `pp+', `regexp-opt', `second-sel',
-;;   `strings', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `bookmark+-lit', `cl', `cus-theme', `el-swank-fuzzy', `ffap',
+;;   `ffap-', `fit-frame', `flx', `frame-fns', `fuzzy',
+;;   `fuzzy-match', `help+20', `hexrgb', `icicles-opt',
+;;   `icicles-var', `info', `info+20', `kmacro', `levenshtein',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
+;;   `package', `pp', `pp+', `regexp-opt', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -342,7 +342,8 @@
 ;;              been REDEFINED HERE:
 ;;
 ;;    `choose-completion-string'  - Don't exit minibuffer after
-;;                                  `lisp-complete-symbol' completion.
+;;                                  `(icicle-)-lisp-complete-symbol'
+;;                                  completion.
 ;;    `completion-setup-function' - 1. Put faces on inserted strings.
 ;;                                  2. Help on help.
 ;;    `minibuffer-default-add-completions' - Respect Icicles filters.
@@ -596,7 +597,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 ;; REPLACE ORIGINAL `choose-completion-string' in `simple.el',
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Don't exit minibuffer if this is just a `lisp-complete-symbol' completion.
+;; Don't exit minibuffer if this is just `(icicle-)lisp-complete-symbol' completion.
 ;; Go to point-max before insert choice.  Respect `icicle-dir-candidate-can-exit-p'.
 ;;
 ;; Free variable `completion-reference-buffer' is defined in `simple.el'.
@@ -615,7 +616,7 @@ the following is true:
    - it is reading a file name, CHOICE is a directory, and
      `icicle-dir-candidate-can-exit-p' is nil
    - `completion-no-auto-exit' is non-nil
-   - this is just a `lisp-complete-symbol' completion."
+   - this is just `(icicle-)lisp-complete-symbol' completion."
          (let* ((buffer  (or buffer  completion-reference-buffer))
                 (mini-p  (minibufferp buffer)))
            ;; If BUFFER is a minibuffer, barf unless it's currently active.
@@ -643,12 +644,13 @@ the following is true:
                ;; Update point in the window that BUFFER is showing in.
                (let ((window  (get-buffer-window buffer 0))) (set-window-point window (point)))
                ;; If completing for the minibuffer, exit it with this choice,
-               ;; unless this was a `lisp-complete-symbol' completion.
+               ;; unless this was `(icicle-)lisp-complete-symbol' completion.
                (and (not completion-no-auto-exit)
                     (equal buffer (window-buffer (minibuffer-window)))
                     (or minibuffer-completion-table
                         (and icicle-mode  (or icicle-extra-candidates  icicle-proxy-candidates)))
-                    (not (eq 'lisp-complete-symbol icicle-cmd-calling-for-completion))
+                    (not (memq icicle-cmd-calling-for-completion
+                               '(icicle-lisp-complete-symbol lisp-complete-symbol)))
                     ;; Exit the minibuffer if `icicle-dir-candidate-can-exit-p',
                     ;; or not reading a file name, or chosen file is not a directory.
                     (if (or icicle-dir-candidate-can-exit-p
@@ -670,7 +672,7 @@ the following is true:
    - it is reading a file name, CHOICE is a directory, and
      `icicle-dir-candidate-can-exit-p' is nil
    - `completion-no-auto-exit' is non-nil
-   - this is just a `lisp-complete-symbol' completion."
+   - this is just `(icicle-)lisp-complete-symbol' completion."
          (let* ((buffer  (or buffer  completion-reference-buffer))
                 (mini-p  (minibufferp buffer)))
            ;; If BUFFER is a minibuffer, barf unless it's currently active.
@@ -695,12 +697,13 @@ the following is true:
                ;; Update point in the window that BUFFER is showing in.
                (let ((window  (get-buffer-window buffer 0))) (set-window-point window (point)))
                ;; If completing for the minibuffer, exit it with this choice,
-               ;; unless this was a `lisp-complete-symbol' completion.
+               ;; unless this was `(icicle-)lisp-complete-symbol' completion.
                (and (not completion-no-auto-exit)
                     (minibufferp buffer)
                     (or minibuffer-completion-table
                         (and icicle-mode  (or icicle-extra-candidates  icicle-proxy-candidates)))
-                    (not (eq 'lisp-complete-symbol icicle-cmd-calling-for-completion))
+                    (not (memq icicle-cmd-calling-for-completion
+                               '(icicle-lisp-complete-symbol lisp-complete-symbol)))
                     ;; Exit the minibuffer if `icicle-dir-candidate-can-exit-p',
                     ;; or not reading a file name, or chosen file is not a directory.
                     (if (or icicle-dir-candidate-can-exit-p
@@ -724,7 +727,7 @@ If BUFFER is the minibuffer, then exit the minibuffer, unless one of
    - it is reading a file name, CHOICE is a directory, and
      `icicle-dir-candidate-can-exit-p' is nil
    - `completion-no-auto-exit' is non-nil
-   - this is just a `lisp-complete-symbol' completion."
+   - this is just `(icicle-)lisp-complete-symbol' completion."
          (unless (consp base-position)  ; Older code may pass BASE-SIZE instead of BASE-POSITION.  Ignore it.
            ;; No, do not display this message.
            ;; (message "Obsolete BASE-SIZE argument passed to `choose-completion-string'")
@@ -765,12 +768,13 @@ If BUFFER is the minibuffer, then exit the minibuffer, unless one of
                ;; Update point in the window where BUFFER is showing.
                (let ((window  (get-buffer-window buffer t))) (set-window-point window (point)))
                ;; If completing for the minibuffer, exit it with this choice,
-               ;; unless this was a `lisp-complete-symbol' completion.
+               ;; unless this was `(icicle-)lisp-complete-symbol' completion.
                (and (not completion-no-auto-exit)
                     (minibufferp buffer)
                     (or minibuffer-completion-table
                         (and icicle-mode  (or icicle-extra-candidates  icicle-proxy-candidates)))
-                    (not (eq 'lisp-complete-symbol icicle-cmd-calling-for-completion))
+                    (not (memq icicle-cmd-calling-for-completion
+                               '(icicle-lisp-complete-symbol lisp-complete-symbol)))
                     ;; Exit the minibuffer if `icicle-dir-candidate-can-exit-p',
                     ;; or not reading a file name, or chosen file is not a directory.
                     (let* ((result  (buffer-substring (field-beginning) (point)))
@@ -798,7 +802,7 @@ the following is true:
    - it is reading a file name, CHOICE is a directory, and
      `icicle-dir-candidate-can-exit-p' is nil
    - `completion-no-auto-exit' is non-nil
-   - this is just a `lisp-complete-symbol' completion."
+   - this is just `(icicle-)lisp-complete-symbol' completion."
          (let* ((buffer  (or buffer  completion-reference-buffer))
                 (mini-p  (save-match-data (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
                                                         (buffer-name buffer)))))
@@ -818,12 +822,13 @@ the following is true:
              ;; Update point in the window that BUFFER is showing in.
              (let ((window  (get-buffer-window buffer 0))) (set-window-point window (point)))
              ;; If completing for the minibuffer, exit it with this choice,
-             ;; unless this was a `lisp-complete-symbol' completion.
+             ;; unless this was `(icicle-)lisp-complete-symbol' completion.
              (and (not completion-no-auto-exit)
                   (equal buffer (window-buffer (minibuffer-window)))
                   (or minibuffer-completion-table
                       (and icicle-mode  (or icicle-extra-candidates  icicle-proxy-candidates)))
-                  (not (eq 'lisp-complete-symbol icicle-cmd-calling-for-completion))
+                  (not (memq icicle-cmd-calling-for-completion
+                               '(icicle-lisp-complete-symbol lisp-complete-symbol)))
                   ;; Exit the minibuffer if `icicle-dir-candidate-can-exit-p',
                   ;; or not reading a file name, or chosen file is not a directory.
                   (if (or icicle-dir-candidate-can-exit-p
@@ -845,7 +850,7 @@ the following is true:
     - it is reading a file name, CHOICE is a directory, and
       `icicle-dir-candidate-can-exit-p' is nil
     - `completion-no-auto-exit' is non-nil
-    - this is just a `lisp-complete-symbol' completion."
+    - this is just `(icicle-)lisp-complete-symbol' completion."
          (let* ((buffer  (or buffer  completion-reference-buffer))
                 (mini-p  (save-match-data (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
                                                         (buffer-name buffer)))))
@@ -864,12 +869,13 @@ the following is true:
            ;; Update point in the window that BUFFER is showing in.
            (let ((window  (get-buffer-window buffer 0))) (set-window-point window (point)))
            ;; If completing for the minibuffer, exit it with this choice,
-           ;; unless this was a `lisp-complete-symbol' completion.
+           ;; unless this was `(icicle-)lisp-complete-symbol' completion.
            (and (not completion-no-auto-exit)
                 (equal buffer (window-buffer (minibuffer-window)))
                 (or minibuffer-completion-table
                     (and icicle-mode  (or icicle-extra-candidates  icicle-proxy-candidates)))
-                (not (eq 'lisp-complete-symbol icicle-cmd-calling-for-completion))
+                (not (memq icicle-cmd-calling-for-completion
+                               '(icicle-lisp-complete-symbol lisp-complete-symbol)))
                 ;; Exit the minibuffer if `icicle-dir-candidate-can-exit-p',
                 ;; or not reading a file name, or chosen file is not a directory.
                 (if (or icicle-dir-candidate-can-exit-p
