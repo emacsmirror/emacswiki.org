@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Aug 31 09:36:00 2016 (-0700)
+;; Last-Updated: Fri Oct  7 17:04:09 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 11637
+;;     Update #: 11642
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2016/10/07 dadams
+;;     icicle-dabbrev-completion, icicle-lisp-complete-symbol:
+;;       Use icicle-msg-maybe-in-minibuffer, not message.
 ;; 2016/08/31 dadams
 ;;     icicle-locate-file-of-content-1, icicle-locate-file-no-search-1:
 ;;       Use t, not (confirm-nonexistent-file-or-buffer), for REQUIRE-MATCH arg.
@@ -2252,6 +2255,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2016/10/07 dadams
+;;     icicle-choose-completion-string:
+;;       Check icicle-lisp-complete-symbol too, not just lisp-complete-symbol.
 ;; 2016/08/30 dadams
 ;;     icicle-string-match-p: Do NOT alias string-match-p, because that is a defsubst.
 ;; 2016/06/10 dadams
@@ -8654,6 +8660,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2016/10/07 dadams
+;;     icicle-read-expression-map: Bind icicle-lisp-complete-symbol, not alias lisp-complete-symbol.
 ;; 2016/06/12 dadams
 ;;     Added: icicle-auto-complete-key-idle-timer.
 ;; 2016/03/27 dadams
