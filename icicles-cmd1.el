@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Aug 31 09:39:14 2016 (-0700)
+;; Last-Updated: Fri Oct  7 17:05:23 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 27480
+;;     Update #: 27486
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1471,7 +1471,7 @@ if there is a suitable one already."
       ((and (not (string-equal init ""))
             (not (string-equal (downcase init) (downcase abbrev)))
             (<= (length (all-completions init my-obarray)) 1))
-       (message "Completed (no other completions)")
+       (icicle-msg-maybe-in-minibuffer "Completed (no other completions)")
        (if (< emacs-major-version 21)
            (dabbrev--substitute-expansion nil abbrev init)
          (dabbrev--substitute-expansion nil abbrev init nil))
@@ -2297,7 +2297,7 @@ considered."
     (setq end  (+ beg (length new)))
     (if (and (not (string= new ""))  (not (string= (downcase new) (downcase pattern)))
              (< (length (all-completions new obarray)) 2))
-        (message "Completed (no other completions)")
+        (icicle-msg-maybe-in-minibuffer "Completed (no other completions)")
       ;; Use minibuffer to choose a completion.
       (let* ((enable-recursive-minibuffers                (active-minibuffer-window))
              (icicle-top-level-when-sole-completion-flag  t)
