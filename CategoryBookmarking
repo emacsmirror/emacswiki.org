@@ -12,6 +12,7 @@ Click the heading to search for all wiki pages with this category.
 * [[Icicles - Bookmark Enhancements]] -- tag files; search bookmarked text; jump to type-specific bookmarks ([[multi-command]]s); filter; jump to bookmarks on-the-fly when you use a file or directory access command
 * VisibleBookmarks -- highlighted, buffer-local bookmarks (##bm.el##)
 * <tt>[[wuxch-bookmark.el]]</tt> -- extends [[Bookmark+]] and VisibleBookmarks
+* <tt>[[spin-markers.el]]</tt> -- spin around a small set of markers
 
 
 
