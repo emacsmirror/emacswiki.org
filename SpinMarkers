@@ -1,0 +1,30 @@
+== Some markers for the work at hand ==
+
+As a challange to myself on my journey of learning elisp, I
+implemented something that I have not found so far. A way to quickly
+set some markers (called bookmarks in some editors) in a buffer or
+two. Probably temporary for the work at hand. Does not need to persist
+between emacs sessions.
+
+Emacs bookmarks and registers are excellent and featureful things for
+saving locations to jump back to. Sometimes you just want to jump
+around in the current buffer. For that, not many features are
+required.
+
+== Features ==
+
+* Add a marker with `spin-marker-add' based on current position of
+  point. Remove it with the same function prefixed with non-nil
+  argument.
+
+* Jump to the next marker with `spin-marker-jump-next'. Markers in
+  buffers that no longer exist are automatically removed as you jump.
+
+* That's it.
+
+== Code ==
+
+Get the lisp for this at Lisp:spin-markers.el. Put it in a location
+that is also in you [[LoadPath]]. See the simple configuration
+required in the commentary. Find some really quick key-bindings for
+the two functions necessary.
