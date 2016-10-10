@@ -168,7 +168,7 @@ You can bookmark [[Info]] nodes.  As an alternative, you can use [[Info+]] to cr
 * GraphicalBookmarkJump
 * VisibleBookmarks Visible, buffer-local bookmarks (library ##bm.el##)
 * <tt>[[wuxch-bookmark.el]]</tt> -- Extends [[#BookmarkPlus]] and VisibleBookmarks
-* SpinMarkers -- spin around some markers in a buffer or two. A non-persistant alternative to bookmarks or registers.
+* Lisp:spin-markers.el (SpinMarkers) -- spin around some markers in a buffer or two. A non-persistant alternative to bookmarks or registers.
 
 ----
 CategoryBookmarking
