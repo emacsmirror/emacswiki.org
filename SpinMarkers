@@ -25,6 +25,6 @@ required.
 == Code ==
 
 Get the lisp for this at Lisp:spin-markers.el. Put it in a location
-that is also in you [[LoadPath]]. See the simple configuration
+that is also in your [[LoadPath]]. See the simple configuration
 required in the commentary. Find some really quick key-bindings for
 the two functions necessary.
