@@ -1,8 +1,12 @@
 ==Packages at Melpa==
 
-* emacsshot.  Find a function for taking a screenshot of Emacs from within Emacs at https://github.com/marcowahl/emacsshot.
+* rope-read-mode.  A mode for genuine bidirectional reading of text by reversing every other line in the visible buffer part.  Get it with M-x package-install rope-read-mode.  For the code see https://github.com/marcowahl/rope-read-mode.  I actually use rope read sometimes.
 
-* rope-read-mode.  A mode for genuine bidirectional reading of text by reversing every other line in the visible buffer part.  This mode depends on program 'convert' of the Image Magick-suite.  Get the latest version at https://github.com/marcowahl/rope-read-mode.
+* emacsshot.  Take a screenshot of Emacs from within Emacs.  Get it with M-x package-install emacsshot.  For the code see https://github.com/marcowahl/emacsshot.
+
+== Activity ==
+
+* 2016-10 Feature request for Emacs posted: Local variables list at beginning of a file to allow http://lists.gnu.org/archive/html/bug-gnu-emacs/2016-10/msg00307.html
 
 == Externalized Brain ==
 
@@ -28,5 +32,7 @@ like w3.  ;-) -- MarcoWahl
 ==Meta==
 
 I use Emacs.
+
+[2016-10-11 Tue 16:22] Still alive.
 
 CategoryHomepage
