@@ -44,6 +44,25 @@ Flymake's author is PavelKobiakov
 
 == Hints And Questions ==
 
+=== Long Checks ===
+
+Flymake doesn't interrupt itself if you change the buffer while it's checking.  I use the following to get around it:
+
+  (defun interrupting-flymake-start-syntax-check (base-function)
+    (when (and (boundp 'flymake-syntax-check-process) (process-live-p flymake-syntax-check-process))
+      (setq flymake-check-was-interrupted t)
+      (flymake-kill-process flymake-syntax-check-process))
+    (funcall base-function)
+    (let ((proc (car flymake-processes)))
+      (set-process-query-on-exit-flag proc nil)
+      (set (make-local-variable 'flymake-syntax-check-process) proc)
+      (setq flymake-check-was-interrupted t)
+      (setq flymake-is-running nil)))
+
+
+  (advice-add 'flymake-start-syntax-check :around #'interrupting-flymake-start-syntax-check)
+
+--DaveAbrahams
 
 === Ada ===
 
