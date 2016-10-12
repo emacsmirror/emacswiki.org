@@ -16,3 +16,10 @@ Perhaps the default diredp-compressed-extensions today should also have "xz" and
 
 -- [https://www.topbug.net xuhdev] 2016-10-12 04:45 UTC
 
+
+----
+
+@[[xuhdev]]: I don't see why, a priori.  But if you provide (good) reasons then I'll consider them. (You can of course customize the value.) Here are lists of possible compressed-file extensions: https://en.wikipedia.org/wiki/List_of_archive_formats.
+
+-- DrewAdams 2016-10-12 13:37 UTC
+
