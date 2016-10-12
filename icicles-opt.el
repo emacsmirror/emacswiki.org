@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Tue Jun 14 10:52:58 2016 (-0700)
+;; Last-Updated: Wed Oct 12 13:41:12 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 6153
+;;     Update #: 6158
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -19,13 +19,13 @@
 ;;
 ;;   `apropos', `apropos+', `avoid', `bookmark', `bookmark+',
 ;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `cmds-menu', `cus-theme',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `info', `info+20',
-;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `naked', `package', `pp', `pp+', `regexp-opt',
-;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `bookmark+-lit', `cl', `cus-theme', `el-swank-fuzzy', `ffap',
+;;   `ffap-', `fit-frame', `frame-fns', `fuzzy', `fuzzy-match',
+;;   `help+20', `hexrgb', `info', `info+20', `kmacro', `levenshtein',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
+;;   `package', `pp', `pp+', `regexp-opt', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2927,6 +2927,9 @@ See also option `icicle-buffer-skip-functions'."
     ,@(if (> emacs-major-version 23) '(comint-completion-at-point) '(comint-dynamic-complete))
     comint-dynamic-complete-filename comint-replace-by-expanded-filename
     complete
+
+    ;; This is to work around Emacs bug #24676.
+    ,@(and (fboundp 'completion-pcm--all-completions) '(completion-pcm--all-completions))
 
     ;; Uncomment `dired-read-shell-command' and `read-shell-command' if you want Icicles completion for
     ;; shell commands.  See http://www.emacswiki.org/Icicles_-_Shell-Command_Enhancements.
