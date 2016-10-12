@@ -23,3 +23,14 @@ Perhaps the default diredp-compressed-extensions today should also have "xz" and
 
 -- DrewAdams 2016-10-12 13:37 UTC
 
+
+----
+
+@[[DrewAdams]] because the xz format is pretty ubiquitous now. Quoted from [[https://en.m.wikipedia.org/wiki/XZ_Utils Wikipedia XZ utils]]:
+
+{{A number of Linux distributions, including Fedora, Slackware, Ubuntu, Debian, and Arch Linux,[4] use xz for compressing their software packages. The GNU FTP archive also uses xz.}}
+
+Even Linux has switched their public download format to xz (check out the download link on [[https://www.kernel.org/ their web page]]) At least, I think, xz should be added as it is quite common now.
+
+-- [https://www.topbug.net xuhdev] 2016-10-12 17:27 UTC
+
