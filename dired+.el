@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Sep 20 15:23:11 2016 (-0700)
+;; Last-Updated: Wed Oct 12 13:59:42 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 9685
+;;     Update #: 9688
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -653,6 +653,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/10/12 dadams
+;;     diredp-compressed-extensions: Added extensions .xz and .lzma.  Thx to xuhdev (https://www.topbug.net/).
 ;; 2016/09/20 dadams
 ;;     Emacs 25.1: Bind M-z to dired-do-compress-to (replaces c).  (Emacs bug #24484.)
 ;;                 diredp-menu-bar-operate-menu: Added item: Compress to (dired-do-compress-to).
@@ -1647,7 +1649,8 @@ It also has no effect for Emacs versions prior to Emacs 22."
   :type 'boolean :group 'Dired-Plus)
 
 ;;;###autoload
-(defcustom diredp-compressed-extensions '(".tar" ".taz" ".tgz" ".arj" ".lzh" ".zip" ".z" ".Z" ".gz" ".bz2")
+(defcustom diredp-compressed-extensions '(".tar" ".taz" ".tgz" ".arj" ".lzh"
+                                          ".lzma" ".xz" ".zip" ".z" ".Z" ".gz" ".bz2")
   "*List of compressed-file extensions, for highlighting."
   :type '(repeat string) :group 'Dired-Plus)
 
@@ -6264,7 +6267,7 @@ Dired buffer and all subdirs, recursively."
 ;;;###autoload
 (defun diredp-do-apply-function-recursive (function &optional arg) ; Bound to `M-+ @'
   "Apply FUNCTION to the marked files.
-Like `diredp-do-apply-function' bit act recursively on subdirs.
+Like `diredp-do-apply-function' but act recursively on subdirs.
 
 The files acted on are those that are marked in the current Dired
 buffer, or all files in the directory if none are marked.  Marked
