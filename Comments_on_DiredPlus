@@ -9,3 +9,10 @@ Anonymous: Please define "set up Dired+ for use.
 
 -- DrewAdams 2015-01-29 23:22 UTC
 
+
+----
+
+Perhaps the default diredp-compressed-extensions today should also have "xz" and "lzma"?
+
+-- [https://www.topbug.net xuhdev] 2016-10-12 04:45 UTC
+
