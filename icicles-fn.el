@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Oct  7 16:53:37 2016 (-0700)
+;; Last-Updated: Wed Oct 12 13:45:07 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 15166
+;;     Update #: 15177
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -104,6 +104,7 @@
 ;;    `icicle-completing-read-multiple',
 ;;    `icicle-completing-read-history',
 ;;    `icicle-completion-all-completions',
+;;    `icicle-completion-pcm--all-completions',
 ;;    `icicle-completion-setup-function',
 ;;    `icicle-completion--embedded-envvar-table',
 ;;    `icicle-completion-try-completion', `icicle-create-thumb',
@@ -194,6 +195,7 @@
 ;;    `icicle-ORIG-choose-completion-string',
 ;;    `icicle-ORIG-completing-read',
 ;;    `icicle-ORIG-completing-read-multiple',
+;;    `icicle-ORIG-completion-pcm--all-completions',
 ;;    `icicle-ORIG-completion-setup-function',
 ;;    `icicle-ORIG-dired-smart-shell-command',
 ;;    `icicle-ORIG-display-completion-list',
@@ -6625,6 +6627,42 @@ Otherwise remove only Icicles internal text properties:
         (dolist (entry  icicle-candidate-properties-alist)
           (put-text-property 0 len (car (cadr entry)) nil string)))))
   string)
+
+
+;; REPLACE ORIGINAL `completion-pcm--all-completions' defined in `minibuffer.el',
+;; saving it for restoration when you toggle `icicle-mode'.
+;;
+;; $$$$$$ Filed Emacs BUG #24676.  Vanilla `completion-pcm--all-completions' reverses the candidate order.
+;;
+(when (fboundp 'completion-pcm--all-completions)
+
+  (unless (fboundp 'icicle-ORIG-completion-pcm--all-completions)
+    (defalias 'icicle-ORIG-completion-pcm--all-completions
+        (symbol-function 'completion-pcm--all-completions)))
+
+  (defun icicle-completion-pcm--all-completions (prefix pattern table pred)
+    "Find all completions for PATTERN in TABLE obeying PRED.
+PATTERN is as returned by `completion-pcm--string->pattern'."
+    ;; (cl-assert (= (car (completion-boundaries prefix table pred ""))
+    ;;            (length prefix)))
+    ;; Find an initial list of possible completions.
+    (if (completion-pcm--pattern-trivial-p pattern)
+        ;; Minibuffer contains no delimiters -- simple case!
+        (all-completions (concat prefix (car pattern)) table pred)
+      ;; Use `all-completions' to do an initial cull.  This is a big win, since `all-completions' is written in C!
+      (let* (;; Convert search pattern to a standard regular expression.
+             (regex                   (completion-pcm--pattern->regex pattern))
+             (case-fold-search        completion-ignore-case)
+             (completion-regexp-list  (cons regex completion-regexp-list))
+             (compl                   (all-completions (concat prefix
+                                                               (if (stringp (car pattern)) (car pattern) ""))
+                                                       table pred)))
+        (if (not (functionp table))     ; The internal functions already obeyed completion-regexp-list.
+            compl
+          (let ((poss  ()))
+            (dolist (c  compl)
+              (when (icicle-string-match-p regex c) (push c poss)))
+            (nreverse poss)))))))
 
 ;; $$$$$$ Filed Emacs BUG #8795.  They added a non-optional arg, METADATA (with no doc).
 ;;
