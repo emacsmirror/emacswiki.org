@@ -2,7 +2,7 @@ There are several modes to help you track the time spent on various activities a
 
 * TimeClock - part of emacs
 * Extensions to TimeClock: Lisp:timeclock-x.el
-* Groups:timelog.el - written by Thomas Gehrlein (posted on gnu.emacs.sources)
+* [s]Groups:timelog.el - written by Thomas Gehrlein (posted on gnu.emacs.sources)[/s] -- Search result is missing
 * WorklogMode - another mode by KaiGrossjohann
 * Alan Shutko's [http://web.springies.com/~ats/emacs/project.el|project.el]
 * [s][http://github.com/chrisdone/emacsworktracker/|worktracker.el] - timeclock-alike with helpful ido prompts and emphasis on hitting quick keys for dealing with being interrupted. -- ChrisDone[/s] -- Github page is missing 2016-10-16
