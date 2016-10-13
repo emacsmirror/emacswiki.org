@@ -42,4 +42,4 @@ Then add those lines to your ~/.emacs init file:
  (setq imaxima-use-maxima-mode-flag t)
  (add-to-list 'auto-mode-alist '("\\.ma[cx]" . maxima-mode))
 
-and M-x imaxima .
+and M-x imaxima (and not maxima) in order to get the beautiful LaTeXed maths.
