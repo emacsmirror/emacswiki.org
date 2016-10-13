@@ -25,10 +25,15 @@ Then M-x imaxima.
 http://maxima.sourceforge.net/i/imaxima.png
 
 = Maxima on OS/X =
-One way is to use homebrew (in addition to the Maxima and WxMaxima Applications which work fine:
+One easy way is to use homebrew (in addition to the Maxima and WxMaxima Applications which are working very well):
+
  brew update
  brew install homebrew/science/maxima
-Then 
+
+Gnuplot will be installed too with other packages.
+
+Then add those lines to your ~/.emacs init file:
+
  (add-to-list 'load-path "/usr/local/Cellar/maxima/5.37.2/share/maxima/5.37.2/emacs")
  (autoload 'maxima-mode "maxima" "Maxima mode" t)
  (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
@@ -36,4 +41,5 @@ Then
  (autoload 'imath-mode "imath" "Imath mode for math formula input" t)
  (setq imaxima-use-maxima-mode-flag t)
  (add-to-list 'auto-mode-alist '("\\.ma[cx]" . maxima-mode))
-and M-x imaxima
+
+and M-x imaxima .
