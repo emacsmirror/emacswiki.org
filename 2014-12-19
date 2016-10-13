@@ -6,7 +6,7 @@ There are many things that still don't work:
 # git integration (some issues regarding a cleanup that was planned)
 # backup (due to permission issues which I haven't been able to look into)
 # frequent outages (the page comes up empty) -- I'm not sure what is happening, here: processes crashing? taking too long?
-# broken reloads after editing a page (but trying again [[http://www.followthesteps.net/dvla-contact-number/|solves the problem]])
+# broken reloads after editing a page (but trying again solves the problem)
 # we lost foreign language support (at the top it will always say SiteMap even if your browser preferences are for a different language)
 
 And there are probably many more. I haven't looked at the ElispArea, RSS feeds, all the cron jobs, etc. Yikes!
