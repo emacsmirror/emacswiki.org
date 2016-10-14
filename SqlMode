@@ -154,6 +154,24 @@ http://emacs.stackexchange.com/a/18403/454
 
 -- Phil S.
 
+Alternatively https://www.reddit.com/r/emacs/comments/579lvs/work_around_newline_issue_in_sqlpostgres/ indicates that you can avoid this issue with the psql command:
+
+ \set echo queries
+
+Reddit user freesteph writes "This will cause PSQL to output all queries before executing them, which means you get a better idea of what your results are, and the new line problems goes away."
+
+This could be set persistently in your ##.psqlrc## file, or else using ##sql-login-hook##:
+
+ (add-hook 'sql-login-hook 'my-sql-login-hook)
+ (defun my-sql-login-hook ()
+   "Custom SQL log-in behaviours. See `sql-login-hook'."
+   ;; n.b. If you are looking for a response and need to parse the
+   ;; response, use `sql-redirect-value' instead of `comint-send-string'.
+   (when (eq sql-product 'postgres)
+     (let ((proc (get-buffer-process (current-buffer))))
+       ;; Prevent the psql prompt causing output alignment issues.
+       (comint-send-string proc "\\set echo queries\n"))))
+
 == Emacs 19 ==
 
 If you are using GNU Emacs 19.34, you will need two additional things:
