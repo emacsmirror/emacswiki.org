@@ -1,6 +1,8 @@
 [[es:ModoDerivado]]
 Instead of writing a new MajorMode from scratch, you should derive your new mode from an existing mode.  Deriving a new mode from fundamental mode (which does basically nothing) is better than writing a new mode from scratch.  (Unless you know what you are doing, of course.)
 
+It may be useful to refer to [https://www.gnu.org/software/emacs/manual/html_node/elisp/Derived-Modes.html the GNU documentation on derived modes].
+
 Here's an example of how to translate a very simple GenericMode code sample into a DerivedMode code sample.  This would be the way to go if you think that GenericMode is too limiting for your needs.
 
 Old GenericMode code:
@@ -15,7 +17,7 @@ Old GenericMode code:
 
 New DerivedMode code:
 
-  (defvar mydsl-events
+  (defvar mydsl-constants
     '("reservedword1"
       "reservedword2"))
   
@@ -32,18 +34,16 @@ New DerivedMode code:
   ;; you were very close
   (defvar mydsl-font-lock-defaults
     `((
-       ;; stuff between "
+       ;; stuff between double quotes
        ("\"\\.\\*\\?" . font-lock-string-face)
        ;; ; : , ; { } =>  @ $ = are all special elements
        (":\\|,\\|;\\|{\\|}\\|=>\\|@\\|$\\|=" . font-lock-keyword-face)
        ( ,(regexp-opt mydsl-keywords 'words) . font-lock-builtin-face)
-       ( ,(regexp-opt mydsl-events 'words) . font-lock-constant-face)
+       ( ,(regexp-opt mydsl-constants 'words) . font-lock-constant-face)
        )))
   
   (define-derived-mode mydsl-mode fundamental-mode "MYDSL script"
-    "MYDSL mode is a major mode for editing MYDSL  files"
-  
-  
+    "MYDSL mode is a major mode for editing MYDSL files"
     ;; you again used quote when you had '((mydsl-hilite))
     ;; I just updated the variable to have the proper nesting (as noted above)
     ;; and use the value directly here
@@ -62,7 +62,9 @@ New DerivedMode code:
   
     (modify-syntax-entry ?# "< b" mydsl-mode-syntax-table)
     (modify-syntax-entry ?\n "> b" mydsl-mode-syntax-table)
-    ;;A gnu-correct program will have some sort of hook call here.
+
+    ;; Note that there's no need to manually call `mydsl-mode-hook'; `define-derived-mode'
+    ;; will define `mydsl-mode' to call it properly right before it exits
     )
   
   (provide 'mydsl-mode)
@@ -75,7 +77,7 @@ If you are are deriving your new mode from something other than fundamental-mode
       '((t (:foreground "#FF0000")))
       "red")
     
-     ;;; c3-mode 
+    ;; c3-mode 
     (define-derived-mode c3-mode sgml-mode 
      "c3-mode" 
      "A variant of SGML mode. Numbers appear in red."
