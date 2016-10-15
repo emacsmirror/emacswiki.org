@@ -62,7 +62,7 @@ New DerivedMode code:
   
     (modify-syntax-entry ?# "< b" mydsl-mode-syntax-table)
     (modify-syntax-entry ?\n "> b" mydsl-mode-syntax-table)
-
+  
     ;; Note that there's no need to manually call `mydsl-mode-hook'; `define-derived-mode'
     ;; will define `mydsl-mode' to call it properly right before it exits
     )
