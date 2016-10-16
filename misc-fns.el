@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 29 14:48:39 2016 (-0700)
+;; Last-Updated: Sun Oct 16 15:19:51 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 662
+;;     Update #: 666
 ;; URL: http://www.emacswiki.org/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -41,19 +41,22 @@
 ;;
 ;;  Functions defined here:
 ;;
-;;    `another-buffer', `color-named-at', `current-line',
-;;    `display-in-mode-line', `do-files', `flatten', `fontify-buffer',
-;;    `interesting-buffer-p', `live-buffer-name',
+;;    `all-apply-p', `another-buffer', `color-named-at',
+;;    `current-line', `display-in-mode-line', `do-files', `flatten',
+;;    `fontify-buffer', `interesting-buffer-p', `live-buffer-name',
 ;;    `make-transient-mark-mode-buffer-local', `mode-ancestors',
 ;;    `mode-symbol-p', `mod-signed', `notify-user-of-mode',
 ;;    `read-mode-name', `region-or-buffer-limits', `signum',
-;;    `string-after-p', `string-before-p', `undefine-keys-bound-to',
-;;    `undefine-killer-commands', `unique-name'.
+;;    `some-apply-p' `string-after-p', `string-before-p',
+;;    `undefine-keys-bound-to', `undefine-killer-commands',
+;;    `unique-name'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2016/10/16 dadams
+;;     Added: all-apply-p, some-apply-p.
 ;; 2016/05/19 dadams
 ;;     Added: mode-symbol-p, read-mode-name.
 ;; 2015/12/31 dadams
@@ -641,6 +644,43 @@ This is more efficient that `looking-back' for this use case."
   (let ((start  (- (point) (length chars))))
     (and (>= start (point-min))
          (string= chars (buffer-substring-no-properties start (point))))))
+
+(defun all-apply-p (predicates &optional arguments)
+  "Invoke PREDICATES in order, passing ARGUMENTS, until one returns nil.
+If none returns nil then return the value returned by the last one.
+
+PREDICATES can also be a single predicate, in which case it acts the
+same as a singleton list of that predicate.
+
+This is like `run-hook-with-args-until-failure', except that that
+function accepts a hook variable whose value is PREDICATES as its
+first argument."
+  (when (functionp predicates) (setq predicates  (list predicates)))
+  (let ((ret  t))
+    (catch 'all-apply-p
+      (dolist (pred  predicates)
+        (setq ret  (apply pred arguments))
+        (unless ret (throw 'all-apply-p nil)))
+      ret)))
+
+(defun some-apply-p (predicates &optional arguments)
+  "Invoke PREDICATES in order, passing ARGUMENTS, until one returns non-nil.
+If none returns non-nil then return the value returned by last one.
+
+PREDICATES can also be a single predicate, in which case it acts the
+same as a singleton list of that predicate.
+
+This is like `run-hook-with-args-until-success', except that that
+function accepts a hook variable whose value is PREDICATES as its
+first argument."
+  (when (functionp predicates) (setq predicates  (list predicates)))
+  (let ((ret  nil))
+    (catch 'some-apply-p
+      (dolist (pred  predicates)
+        (setq ret  (apply pred arguments))
+        (when ret (throw 'some-apply-p ret)))
+      ret)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; misc-fns.el ends here
