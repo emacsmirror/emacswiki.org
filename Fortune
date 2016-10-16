@@ -1,3 +1,5 @@
+== fortune.el library ==
+
 fortune.el is a fortune frontend for Emacs. It is bundled with Emacs.
 
 To load put the following in .emacs file:
@@ -32,6 +34,21 @@ To insert a fortune in your signature use this function:
 Automaticly insert a new signature every time you write a new mail:
 
   (add-hook 'message-signature-setup-hook 'fortune-to-signature)
+
+== fortune shell command ==
+
+Alternatively, you might just want to call the external ##fortune## as a shell command.
+
+For example, to set your initial scratch buffer message:
+
+ ;; Supply a random fortune cookie as the *scratch* message.
+ (when (executable-find "fortune")
+   (setq initial-scratch-message
+         (with-temp-buffer
+           (shell-command "fortune" t)
+           (let ((comment-start ";;"))
+             (comment-region (point-min) (point-max)))
+           (concat (buffer-string) "\n"))))
 
 ----
 CategoryMailAddons
