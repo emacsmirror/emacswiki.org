@@ -171,7 +171,8 @@ This could be set persistently in your ##.psqlrc## file, or else using ##sql-log
    ;; response, use `sql-redirect-value' instead of `comint-send-string'.
    (when (eq sql-product 'postgres)
      (let ((proc (get-buffer-process (current-buffer))))
-       ;; Prevent the psql prompt causing output alignment issues.
+       ;; Output each query before executing it. (n.b. this also avoids
+       ;; the psql prompt breaking the alignment of query results.)
        (comint-send-string proc "\\set ECHO queries\n"))))
 
 == Emacs 19 ==
