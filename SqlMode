@@ -172,7 +172,7 @@ This could be set persistently in your ##.psqlrc## file, or else using ##sql-log
    (when (eq sql-product 'postgres)
      (let ((proc (get-buffer-process (current-buffer))))
        ;; Prevent the psql prompt causing output alignment issues.
-       (comint-send-string proc "\\set echo queries\n"))))
+       (comint-send-string proc "\\set ECHO queries\n"))))
 
 == Emacs 19 ==
 
