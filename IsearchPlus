@@ -135,11 +135,16 @@ set.  By default the variable is `zz-izones'.
 
 
 
+
+
+
 ----
 
 == isearch+.el Features ==
 
 These are the main '''<tt>[[isearch+.el]]</tt>''' features:
+
+* You can dynamically add and remove any number of filter predicates while searching.  You can search for things that are near other things, for instance.  See '''DynamicIsearchFiltering'''.
 
 * Case-sensitivity is indicated in the [[mode line]] minor-mode lighter: '''`ISEARCH'''' for case-insensitive; '''`Isearch'''' for case-sensitive.
 
