@@ -24,9 +24,6 @@ for Emacs 24.3 and later.  You can use '''`C-x n'''' (command '''`isearchp-toggl
 * If you use library ModeLinePosition (<tt>[[modeline-posn.el]]</tt> then not only can you restrict Isearch to the active region but you can keep that restriction when you invoke a query-replacement command from Isearch (e.g. `##M-%##' from Isearch, to use `query-replace'). The main job of that library is to show information about the active region in the [[mode line]].  And whenever you invoke a replacement command or Isearch for the active region, that region information is highlighted specially. See ModeLinePosition for screenshots and more info.
 
 
-[:isearchp-toggle-symmetric-char-fold]
-* If you also use library '''[[CharacterFold+]]''' then you can use
-'''`##M-s =##'''' (command `isearchp-toggle-symmetric-char-fold') to toggle whether character folding is ''symmetric''.
 
 
 [:isearchp-set-region-flag]
@@ -329,6 +326,12 @@ in particular for [[#isearchp-toggle-symmetric-char-fold|symmetric character fol
 * You can, by default, select text with the mouse, then hit `C-s'
 etc. to search for it.  This is controlled by [[user option]] '''`isearchp-mouse-2-flag''''.
 
+
+
+[:isearchp-toggle-symmetric-char-fold]
+* If you also use library [[CharacterFold+]] then you can use
+'''`##M-s =##'''' (command `isearchp-toggle-symmetric-char-fold') to toggle whether character folding is ''symmetric''.
+''This feature is not available now, since vanilla Emacs changed the way vanilla file ##character-fold.el## works.''
 
 
 
