@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 16 21:15:57 2016 (-0700)
+;; Last-Updated: Sun Oct 16 22:12:03 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 4493
+;;     Update #: 4504
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -323,16 +323,43 @@
 ;;
 ;;    - `M-? n' (`isearchp-defun-filter-predicate') names the current
 ;;      suite of filter predicates, creating a named predicate that
-;;      does the same thing.  With a prefix arg it can also set or
+;;      does the same thing.  (You can use that name with `M-? -' to
+;;      remove that predicate.)  With a prefix arg it can also set or
 ;;      save (i.e., do what `M-? !' or `M-? s' does).
 ;;
-;;    - `M-? M-h' (`isearchp-show-filters') echos the current suite of
-;;      filter predicates (advice and original, advised predicate).
+;;    - `M-? M-h' (`isearchp-show-filters') echoes the current suite
+;;      of filter predicates (advice and original, unadvised
+;;      predicate).
 ;;
 ;;    - `M-? @', `M-? <', and `M-? >' (`isearchp-near',
 ;;      `isearchp-near-before', and `isearchp-near-after') constrain
 ;;      searching to be within a given distance of (near) another
 ;;      search pattern.
+;;
+;;    When you use one of the commands that adds a filter predicate as
+;;    advice to `isearch-filter-predicate' you can be prompted for two
+;;    things: (1) a name for the predicate and (2) text to add to the
+;;    Isearch prompt as a reminder of filtering.  Two user options
+;;    control this prompting:
+;;
+;;    - `isearchp-prompt-for-filter-name' says whether to prompt you
+;;      always, never, or only when the predicate that you provide is
+;;      not a symbol (it is a lambda form).  The last of these is the
+;;      default behavior.  If you are prompted and provide a name, you
+;;      can use that name with `M-? -' to remove that predicate.
+;;
+;;    - `isearchp-prompt-for-isearch-prompt-prefix' says whether to
+;;      prompt you for a prefix to add to the Isearch prompt.  You are
+;;      prompted by default, but if you don't care to see such a
+;;      prompt prefix and you don't want to be bothered by it, you can
+;;      customize this to skip prompting.
+;;
+;;    In addition, whatever the value of these options, when you add a
+;;    filter predicate you can override the option values by using a
+;;    prefix argument.  A non-positive prefix arg overrides the option
+;;    for name prompting, and a non-negative prefix arg overrides the
+;;    option for prompt-prefix prompting.  (So zero, e.g., `M-0',
+;;    overrides both.)
 ;;
 ;;  * Case-sensitivity is indicated in the mode line minor-mode
 ;;    lighter: `ISEARCH' for case-insensitive; `Isearch' for
