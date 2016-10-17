@@ -447,7 +447,7 @@ ignoring comments during Isearch, using '''`##C-M-;##'''' (command
 [:isearchp-make-anti-zones-visible]
 [:isearchp-toggle-zones-invisible]
 [:isearchp-toggle-anti-zones-invisible]
-[:isearchp-toggle-zone/anti-zone-visibility]
+[:isearchp-toggle-zone-anti-zone-visibility]
 * If you use library '''<tt>[[zones.el]]</tt>''' (see '''[[Zones]]''') then you can
 search a set of [[buffer]] zones that are defined by their
 limits ([[marker]]s or numbers) -- like multiple [[region]]s, using
