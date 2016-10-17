@@ -154,7 +154,7 @@ http://emacs.stackexchange.com/a/18403/454
 
 -- Phil S.
 
-Alternatively https://www.reddit.com/r/emacs/comments/579lvs/work_around_newline_issue_in_sqlpostgres/ indicates that you can avoid this issue with the psql command:
+Alternatively https://www.reddit.com/r/emacs/comments/579lvs/work_around_newline_issue_in_sqlpostgres/ points out that you can circumvent this issue by telling psql to echo each query before displaying its results, as this additionally causes it to output the necessary newline ahead of the results. To do this, issue the following psql command:
 
  \set ECHO queries
 
