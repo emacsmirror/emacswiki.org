@@ -156,7 +156,9 @@ http://emacs.stackexchange.com/a/18403/454
 
 Alternatively https://www.reddit.com/r/emacs/comments/579lvs/work_around_newline_issue_in_sqlpostgres/ indicates that you can avoid this issue with the psql command:
 
- \set echo queries
+ \set ECHO queries
+
+(n.b. Contrary to the reddit post, it appears important (at least for some postgres versions) for ##ECHO## to be upper-case.)
 
 Reddit user freesteph writes "This will cause PSQL to output all queries before executing them, which means you get a better idea of what your results are, and the new line problems goes away."
 
