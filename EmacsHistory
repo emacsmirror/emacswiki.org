@@ -61,7 +61,7 @@ Beginning with version 21, GNU Emacs was able to display inline images, so
 it was possible to display a splash image when
 starting-up. For the story behind the creation of the GNU Emacs logo, see [http://www.ee.ryerson.ca/~elf/emacs/logo/]
 
-There is also an [http://www.softwarepreservation.org/projects/LISP/index.html#Emacs_Lisp_ Emacs Lisp section at the "History of Lisp" project page].
+There is also an [http://www.softwarepreservation.org/projects/LISP/embedded/#Emacs_Lisp_ Emacs Lisp section at the "History of Lisp" project page].
 
 EmacsGrepAndUnix contains a detailed (30 page) description of Emacs's early years and the resulting politicization around free and proprietary software.
 
