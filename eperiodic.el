@@ -1,4 +1,4 @@
-;;; eperiodic.el --- periodic table for Emacs
+;;; eperiodic.el --- periodic table for Emacs -*- lexical-binding: t -*-
 
 ;;; Copyright (C) 2002, 2003, 2004 Matthew P. Hodges
 
@@ -16,20 +16,23 @@
 ;; General Public License for more details.
 
 ;;; Commentary:
-;;
+
 ;; Package to display a periodic table in Emacs.
-;;
+
 ;; The data were mostly derived from the GPeriodic package, available
 ;; from <http://gperiodic.seul.org/>. Thanks are due to Kyle R. Burton
 ;; <mortis@voicenet.com> for making available the raw data needed for
 ;; this package.
+
+;; Updated 2016-09-25 for GNU Emacs 24+ compatibility by Mark Oteiza
+;; <mvoteiza@udel.edu>
 
 ;;; Code:
 
 (defconst eperiodic-version "2.0.0"
   "Version number of this package.")
 
-(require 'cl)
+(eval-when-compile (require 'cl))
 
 ;; Customizable variables
 
@@ -4139,21 +4142,22 @@ Each car is an atomic number and each cdr a list of isotope properties
    ((fboundp 'line-end-position) 'line-end-position)
    ((fboundp 'point-at-eol) 'point-at-eol)))
 
-(cond
- ;; Emacs 21
- ((fboundp 'replace-regexp-in-string)
-  (defalias 'eperiodic-replace-regexp-in-string 'replace-regexp-in-string))
- ;; Emacs 20
- ((and (require 'dired)
-       (fboundp 'dired-replace-in-string))
-  (defalias 'eperiodic-replace-regexp-in-string 'dired-replace-in-string))
- ;; XEmacs
- ((fboundp 'replace-in-string)
-  (defun eperiodic-replace-regexp-in-string (regexp rep string)
-    (replace-in-string string regexp rep)))
- ;; Bail out
- (t
-  (error "No replace in string function found")))
+(eval-and-compile
+  (cond
+   ;; Emacs 21
+   ((fboundp 'replace-regexp-in-string)
+    (defalias 'eperiodic-replace-regexp-in-string 'replace-regexp-in-string))
+   ;; Emacs 20
+   ((and (require 'dired)
+         (fboundp 'dired-replace-in-string))
+    (defalias 'eperiodic-replace-regexp-in-string 'dired-replace-in-string))
+   ;; XEmacs
+   ((fboundp 'replace-in-string)
+    (defun eperiodic-replace-regexp-in-string (regexp rep string)
+      (replace-in-string string regexp rep)))
+   ;; Bail out
+   (t
+    (error "No replace in string function found"))))
 
 ;; Entry points
 
@@ -4192,19 +4196,18 @@ Any previous buffer contents are deleted."
     (let ((list (cadr (assoc eperiodic-display-type
                              eperiodic-display-block-orders)))
           end start)
-      (mapcar (lambda (elt)
-                (setq start (nth 1 (assoc (symbol-name elt) eperiodic-group-ranges))
-                      end (nth 2 (assoc (symbol-name elt) eperiodic-group-ranges)))
-                (loop for i from start to end
-                      do
-                      (if (equal elt 'f)
-                          (insert (make-string display-width ?\ ))
-                        (insert (format (format "%%-%dd" display-width) i)))
-                      (add-text-properties (point)
-                                           (- (point) display-width)
-                                           '(face eperiodic-group-number-face))
-                      (insert (make-string separation ?\ ))))
-              list)
+      (dolist (elt list)
+        (setq start (nth 1 (assoc (symbol-name elt) eperiodic-group-ranges))
+              end (nth 2 (assoc (symbol-name elt) eperiodic-group-ranges)))
+        (loop for i from start to end
+              do
+              (if (equal elt 'f)
+                  (insert (make-string display-width ?\ ))
+                (insert (format (format "%%-%dd" display-width) i)))
+              (add-text-properties (point)
+                                   (- (point) display-width)
+                                   '(face eperiodic-group-number-face))
+              (insert (make-string separation ?\ ))))
       (insert "\n\n"))
     ;; Loop over display order
     (while order
@@ -4354,16 +4357,14 @@ the current buffer. Properties specified in
   ;; Insert other properties
   (let ((properties (copy-alist eperiodic-printed-properties)))
     ;; Remove unwanted properties
-    (mapcar (lambda (elt)
-              (setq properties (delete elt properties)))
-            eperiodic-ignored-properties)
-    (mapcar (lambda (property)
-              (insert
-               (format " %-25s %-25s %-s\n"
-                       (eperiodic-format-symbol property)
-                       (eperiodic-get-element-property z property)
-                       (eperiodic-get-property-unit property))))
-            properties)))
+    (dolist (elt eperiodic-ignored-properties)
+      (setq properties (delete elt properties)))
+    (dolist (property properties)
+      (insert
+       (format " %-25s %-25s %-s\n"
+               (eperiodic-format-symbol property)
+               (eperiodic-get-element-property z property)
+               (eperiodic-get-property-unit property))))))
 
 (defun eperiodic-insert-isotope-info (z)
   "Insert isotope data for the element with atomic number Z.
@@ -4378,11 +4379,10 @@ current buffer."
                      (eperiodic-line-end-position)
                      'face 'eperiodic-header-face)
   (insert "\n\n")
-  (mapcar (lambda (property)
-            (insert
-             (format " %-25s"
-                     (eperiodic-format-symbol property))))
-          eperiodic-isotope-properties)
+  (dolist (property eperiodic-isotope-properties)
+    (insert
+     (format " %-25s"
+             (eperiodic-format-symbol property))))
   (insert "\n\n")
   ;; Data
   (let ((data (cdr (assoc z eperiodic-isotope-data))))
@@ -4711,7 +4711,7 @@ symbol 'key', in which case insert key elements."
     (let ((year (eperiodic-get-element-property arg 'discovery-date)))
       (cond
        ((string-match "\\(^[0-9]+\\) " year)
-        (setq year (string-to-int (match-string 1 year)))
+        (setq year (string-to-number (match-string 1 year)))
         (cond
          ((= year eperiodic-current-year)
           'eperiodic-discovered-during-face)
@@ -5063,7 +5063,6 @@ will be meaningful to `string-to-number'."
   "Menu to use for `eperiodic-mode'.")
 
 (when (fboundp 'easy-menu-define)
-
   (easy-menu-define eperiodic-menu eperiodic-mode-map "Eperiodic Menu"
     '("Eperiodic"
       ["Next Element"             eperiodic-next-element t]
@@ -5102,7 +5101,8 @@ the cursor position.
   (when (and (fboundp 'easy-menu-add)
              eperiodic-menu)
     (easy-menu-add eperiodic-menu))
-  (make-local-hook 'post-command-hook)
+  (when (fboundp 'make-local-hook)
+    (make-local-hook 'post-command-hook))
   (add-hook 'post-command-hook 'eperiodic-update-element-info t t)
   (run-hooks 'eperiodic-mode-hook))
 
