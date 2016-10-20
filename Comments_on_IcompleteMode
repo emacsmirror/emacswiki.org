@@ -27,3 +27,18 @@ I'll aim to come back in a while to fill some content in, but I haven't yet figu
 
 -- JeremyMoore 2016-10-20 13:54 UTC
 
+
+----
+
+1. I added mention of selecting completion candidates. Feel free to add more description of Icomplete mode.
+
+2. `(icomplete-mode 99)' ''is'' how to turn it on. That's what `define-minor-mode' provides.  I changed 99 to 1, so as not to suggest that 99 is special - but neither is 1.
+
+3. Yes, it is unfortunate (IMHO) that `##C-.##' and `##C-,##' are used by Icomplete mode.  But I would probably say the same thing about any keys taken by it.  [Icomplete+] fixes that, as mentioned, by providing cycling as a separate mode.
+
+4. In general, adding candidate selection/cycling to Icomplete mode makes it a poor-man's [[IdoMode | Ido]].  (IMHO, Icomplete is most useful as a preview, not as a means of choosing a candidate.)
+
+5. IswitchB still works fine, BTW.
+
+-- DrewAdams 2016-10-20 14:41 UTC
+
