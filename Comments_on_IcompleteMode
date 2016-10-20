@@ -9,3 +9,21 @@ What's out-of-date about it? I use Emacs 24.5 daily with Icomplete mode (and Ema
 
 -- DrewAdams 2016-10-08 21:21 UTC
 
+
+----
+
+Sorry, that wasn't very helpful of me.
+
+A lot of this page seems to date back to the days when icomplete showed a list of possible completions but provided no way to interact with that list. There's very little here about the versions which support cycling and completion with `C-j'. I gather from the mailing list archives that it should be usable as an iswitchb replacement, so I came here hoping for some tips on making it more iswitchb-like. However, at the moment there's no hint that icomplete even applies to buffer- and file-name completion.
+
+Looking at the page again, I would rather say it's out of date due to being incomplete instead of inaccurate. I do question these bits though:
+* "Icomplete mode provides an incremental MiniBuffer Completion preview." - I think that's a good description of the original behaviour, but 'preview' doesn't really cover it any more.
+* "so you can see how to complete a command" - It's gotten more generic than that.
+* "(icomplete-mode 99)" - Who knows how long ago that was necessary, it just uses define-minor-mode now.
+* "does not actually perform any completion of your input" - I would argue that going `C-. C-. C-. C-j' is performing completion.
+* "The default key bindings for cycling take away useful minibuffer keys". Is that still a concern now that the default bindings are `C-.' and `C-,'?
+
+I'll aim to come back in a while to fill some content in, but I haven't yet figured out a sane way to use the mode.
+
+-- JeremyMoore 2016-10-20 13:54 UTC
+
