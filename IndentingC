@@ -398,7 +398,7 @@ Not what I want! Does any have the magic code to do the right thing with C++ as 
 
 -----------------
 [new]
-Google's C/C++ style: http://google-styleguide.googlecode.com/svn/trunk/google-c-style.el
+Google's C/C++ style: https://github.com/google/styleguide/blob/gh-pages/google-c-style.el
 
 ----
 Another solution is to use clang-format:
