@@ -2,12 +2,11 @@
 
 Icomplete mode provides an incremental MiniBuffer [[Completion]] ''preview'': As you type in the minibuffer, a list of matching commands is echoed there so you can see how to complete a command. If no known commands match the input so far, "<code>(No match)</code>" is echoed.
 
+You can also select one of the completion candidates.  See `C-h f icomplete-mode` for more details.
+
 Use command `icomplete-mode' to toggle icomplete mode on/off. To turn on the mode in your Emacs init file, do this:
 
     (icomplete-mode 99)
-
-Note that Icomplete mode does not actually perform any completion of your input; it merely gives you a ''preview'' of the possible completions.
-
 
 
 
