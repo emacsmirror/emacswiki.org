@@ -10,7 +10,7 @@ This could use a bit more explanation:
       (dolist (o (overlays-in beg end))
         (when (margin-overlay-p o)
           (delete-overlay o)))
-
+      
       (goto-char beg)
       (while (> end (point))
         (let ((start-of-line (line-beginning-position))
