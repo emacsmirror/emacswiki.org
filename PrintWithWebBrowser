@@ -1,15 +1,17 @@
-<code>htmlfontify.el</code> can make an html view of any buffer in Emacs. 
+<code>M-x htmlfontify-buffer</code> can make an HTML view of any buffer in Emacs. Open the HTML using your browser and print it from there---or use the browser to print the file to a PDF file.
+
+== hfyview ==
+
 Emacs has a command (<code>browse-url-of-file</code>) to send any html file to the selected web browser.
 
 Adding these two things together you suddenly have a way to get a snapshot of the buffer's view in your web browser.
 And - finally - if you can print from your web browser, then this gives a simple way to preview and print (with colors) from Emacs.
 
 I implemented this in <code>hfyview.el.</code>
-Beside printing a buffer it can print a window or frame, see the example at
-http://ourcomments.org/Emacs/nXhtml/doc/htmlfontify-example.html.
+Beside printing a buffer it can print a window or frame.
 If you want to it can also add a Quick Print entry in the File menu.
 
-To easily distribute <code>htmlfontify.el + hfyview.el</code> I have put them in [NxhtmlMode nXthml].
+Both <code>htmlfontify.el + hfyview.el</code> are part of [NxhtmlMode nXthml], which is part of Emacs.
 
 [new]
 [question]
