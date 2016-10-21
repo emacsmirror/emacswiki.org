@@ -73,6 +73,10 @@ However, GlobalTextScaleMode can be quite helpful when you are simplying draggin
       (with-current-buffer buffer
         ad-do-it)))
 
+= Another very easy, already packaged alternative =  
+
+There is a package called `default-text-scale` available on MELPA. You can also find it on GitHub: https://github.com/purcell/default-text-scale
+
 
 ----
 [[SetFonts#ChangingFontSize]]
