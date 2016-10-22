@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 12 13:59:42 2016 (-0700)
+;; Last-Updated: Sat Oct 22 09:17:29 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 9688
+;;     Update #: 9692
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -10591,6 +10591,9 @@ Internet access)")))
     "\\<dired-mode-map>\
               Dired+ Features
               ---------------
+
+To see or customize the  Dired+ options or faces, use
+`M-x customize-option diredp TAB' or `M-x customize-face diredp TAB'.
 
 Most keys listed here are in addition to those for vanilla Dired.
 
