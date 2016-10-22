@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 16 22:12:03 2016 (-0700)
+;; Last-Updated: Sat Oct 22 15:44:26 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 4504
+;;     Update #: 4524
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -18,7 +18,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,8 +119,9 @@
 ;;    24.3+), `isearchp-drop-mismatch',
 ;;    `isearchp-drop-mismatch-regexp-flag',
 ;;    `isearchp-initiate-edit-commands' (Emacs 22+),
-;;    `isearchp-mouse-2-flag', `isearchp-on-demand-action-function'
-;;    (Emacs 22+), `isearchp-prompt-for-filter-name' (Emacs 24.3+),
+;;    `isearchp-mouse-2-flag', `isearchp-movement-unit-alist' (Emacs
+;;    24.3+), `isearchp-on-demand-action-function' (Emacs 22+),
+;;    `isearchp-prompt-for-filter-name' (Emacs 24.3+),
 ;;    `isearchp-regexp-quote-yank-flag',
 ;;    `isearchp-repeat-search-if-fail-flag' (Emacs 22+),
 ;;    `isearchp-restrict-to-region-flag' (Emacs 24.3+),
@@ -142,11 +145,12 @@
 ;;    `isearchp-filters-message' (Emacs 24.3+),
 ;;    `isearchp-highlight-lighter', `isearchp-message-prefix',
 ;;    `isearchp-message-suffix', `isearchp-near-after-predicate'
-;;    (Emacs 24.3+), `isearchp-near-before-predicate'
-;;    (Emacs 24.3+), `isearchp-near-predicate' (Emacs 24.3+),
-;;    `isearchp-not-pred' (Emacs 24.3+), `isearchp-read-face-names',
+;;    (Emacs 24.3+), `isearchp-near-before-predicate' (Emacs 24.3+),
+;;    `isearchp-near-predicate' (Emacs 24.3+), `isearchp-not-pred'
+;;    (Emacs 24.3+), `isearchp-read-face-names',
 ;;    `isearchp-read-face-names--read', `isearchp-read-filter-name'
-;;    (Emacs 24.3+), `isearchp-read-near-args' (Emacs 24.3+),
+;;    (Emacs 24.3+), `isearchp-read-measure' (Emacs 24.3+),
+;;    `isearchp-read-near-args' (Emacs 24.3+),
 ;;    `isearchp-read-predicate' (Emacs 24.3+),
 ;;    `isearchp-read-prompt-prefix' (Emacs 24.3+),
 ;;    `isearchp-read-sexps', `isearchp-remove-duplicates',
@@ -334,7 +338,15 @@
 ;;    - `M-? @', `M-? <', and `M-? >' (`isearchp-near',
 ;;      `isearchp-near-before', and `isearchp-near-after') constrain
 ;;      searching to be within a given distance of (near) another
-;;      search pattern.
+;;      search pattern.  For example, you can limit search hits to
+;;      those whose end (or beginning, if searching backward) is
+;;      within, say, 4 words of another search pattern.  You are
+;;      prompted for the search pattern for the nearby text, the
+;;      "near" distance, and the unit of distance measurement
+;;      (default: characters).  You can define the list of acceptable
+;;      units by customizing option `isearchp-movement-unit-alist'.
+;;      The default option value includes units character, word, sexp,
+;;      list, and sentence.
 ;;
 ;;    When you use one of the commands that adds a filter predicate as
 ;;    advice to `isearch-filter-predicate' you can be prompted for two
@@ -753,6 +765,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/10/22 dadams
+;;     Added: isearchp-movement-unit-alist, isearchp-read-measure.
+;;     isearchp-read-near-args: Use isearchp-read-measure.
+;;     isearchp-near-(before|after)-predicate: DISTANCE is now a cons from isearchp-read-measure.
 ;; 2016/10/16 dadams
 ;;     New feature: adding filter predicates on the fly.
 ;;       Added:
@@ -1492,6 +1508,26 @@ and act on the buffer text."
     "*Non-nil means isearching deactivates the region.
 See also option `isearchp-restrict-to-region-flag'."
     :type 'boolean :group 'isearch-plus)
+
+  (defcustom isearchp-movement-unit-alist '((?w . forward-word)
+                                            (?x . forward-sexp)
+                                            (?l . forward-list)
+                                            (?s . forward-sentence)
+                                            (?c . forward-char))
+    "Alist of unit characters and associated forward movement functions.
+Each entry is a cons (CHARACTER . FORWARD-THING-FUNCTION), where:
+
+* CHARACTER stands for the unit of forward movement specified by
+  FORWARD-THING-FUNCTION.
+
+* FORWARD-THING-FUNCTION must accept an integer argument NUM and move
+  point forward by NUM units.
+
+For example, `(?w . forward-word)' says that if you specify unit `w'
+for an `isearchp-near-*' command then it looks within a given number
+of words."
+    :type '(repeat (cons character function))
+    :group 'isearch-plus)
 
   (defcustom isearchp-prompt-for-filter-name 'non-symbol
     "Whether and when to prompt yout for a name for a filter predicate.
@@ -4227,12 +4263,36 @@ REGEXP-PROMPT is the prompt to read the regexp for the nearby text."
           pat
           dist)
       (with-isearch-suspended (setq pat   (read-regexp regexp-prompt)
-                                    dist  (read-number "Distance: ")))
+                                    dist  (isearchp-read-measure)))
       (list pat
             dist
             (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
             (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
             t)))
+
+  (defun isearchp-read-measure ()
+    "Read a number, then read a unit name.
+Only the first character of the unit name you type is used.
+The default is `c', meaning the given number of characters.
+
+The other characters recognized are those of option
+`isearchp-movement-unit-alist'.
+
+Returns a cons (NUMBER . FORWARD-THING-FUNCTION), where NUMBER is the
+number of units to move and FORWARD-THING-FUNCTION is a function that
+moves one unit forward."
+    (cons (read-number "Distance: ")
+          (let ((input  (read-from-minibuffer "Unit: " nil nil 'READ nil "c")))
+            (if (functionp input)
+                input
+              (setq input (elt (symbol-name input) 0))
+              (while (not (or (assq input isearchp-movement-unit-alist)
+                              (functionp input)))
+                (setq input  (read-from-minibuffer "Unit: " nil nil 'READ nil "c"))
+                (unless (functionp input) (setq input  (elt (symbol-name input) 0))))
+              (if (functionp input)
+                  input
+                (cdr (assq input isearchp-movement-unit-alist)))))))
   
   (defun isearchp-near-predicate (pattern distance)
     "Return a predicate that tests if PATTERN is within DISTANCE.
@@ -4247,22 +4307,36 @@ after the search hit, within DISTANCE characters."
          (save-match-data (re-search-forward  ,pattern (min (point-max) (+ end ,distance)) t))))))
 
   (defun isearchp-near-before-predicate (pattern distance)
-    "Return a predicate that tests if PATTERN precedes within DISTANCE.
+    "Return a predicate that tests if PATTERN precedes hit within DISTANCE.
 The predicate returns non-nil if PATTERN is found before the search
-hit, within DISTANCE characters."
-    `(lambda (beg end)
+hit, within DISTANCE.
+
+DISTANCE is a cons returned by function `isearchp-read-measure'."
+    `(lambda (beg _)
       (save-excursion
         (goto-char beg)
-        (save-match-data (re-search-backward ,pattern (max (point-min) (- beg ,distance)) t)))))
+        (let ((dist     ,(car distance))
+              (unit-fn  ',(cdr distance))
+              unit-pos)
+          (save-excursion (condition-case nil (funcall unit-fn (- dist)) (error nil))
+                          (setq unit-pos  (point)))
+          (save-match-data (re-search-backward ,pattern (max (point-min) unit-pos) t))))))
 
   (defun isearchp-near-after-predicate (pattern distance)
-    "Return a predicate that tests if PATTERN succeeds within DISTANCE.
+    "Return a predicate that tests if PATTERN succeeds hit within DISTANCE.
 The predicate returns non-nil if PATTERN is found after the search
-hit, within DISTANCE characters."
-    `(lambda (beg end)
+hit, within DISTANCE.
+
+DISTANCE is a cons returned by function `isearchp-read-measure'."
+    `(lambda (_ end)
       (save-excursion
         (goto-char end)
-        (save-match-data (re-search-forward ,pattern (min (point-max) (+ end ,distance)) t)))))
+        (let ((dist     ,(car distance))
+              (unit-fn  ',(cdr distance))
+              unit-pos)
+          (save-excursion (condition-case nil (funcall unit-fn dist) (error nil))
+                          (setq unit-pos  (point)))
+          (save-match-data (re-search-forward ,pattern (min (point-max) unit-pos) t))))))
 
   )
 
