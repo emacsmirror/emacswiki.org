@@ -1,7 +1,7 @@
 Debugger mode is the mode used in the BacktraceBuffer (buffer `*Backtrace*').  
 
 Use `C-h m' there to see descriptions of the important debugger keys, which include the following:
-; `c': current [[sexp]]
+; `c': continue
 ; `d': single step
 ; `e': eval another sexp that you input
 ; `q': quit
