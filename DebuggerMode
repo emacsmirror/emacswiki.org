@@ -1,6 +1,12 @@
 Debugger mode is the mode used in the BacktraceBuffer (buffer `*Backtrace*').  
 
-Use `C-h m' there to see descriptions of the important debugger keys, which include `c' (current [[sexp]]) `d' (single step), `e' (eval another sexp that you input), and `q' (quit). (`C-h m' always gives you information on the current mode, whatever it might be.)
+Use `C-h m' there to see descriptions of the important debugger keys, which include the following:
+; `c': current [[sexp]]
+; `d': single step
+; `e': eval another sexp that you input
+; `q': quit
+
+`C-h m' always gives you information on the current mode, whatever it might be!
 
 * You can use `M-x debug-on-entry' to
 put breakpoints at the start of functions, and `M-x cancel-debug-on-entry' to remove them. 
