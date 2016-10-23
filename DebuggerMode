@@ -1,9 +1,13 @@
 Debugger mode is the mode used in the BacktraceBuffer (buffer `*Backtrace*').  
+It shows the "frames" of your execution stack.
+A line starts with ‘*’ if exiting that frame will call the debugger.
 
 Use `C-h m' there to see descriptions of the important debugger keys, which include the following:
 ; `b': break point -- place an asterisk (##*##) on a stack frame
-; `c': continue -- if there are stack frames below the current one marked with an asterisk (##*##), then this is basically a "up"
+; `u': remove break point
+; `c': continue
 ; `d': single step
+; `j': keep existing frames until you reach the current frame
 ; `e': eval another sexp that you input
 ; `q': quit
 
