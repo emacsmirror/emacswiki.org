@@ -26,6 +26,7 @@ Where to get it:
 *** Includes development snapshot, pretests, and release builds.
 *** Supports JPEG, GIF, PNG, TIFF, SVG, and XML2.
 *** Compiled with optimization.
+*** Also available as a [https://chocolatey.org/packages/emacs64 Chocolatey package].
 
 ** **2014-11-08** **emacs-bin** Binary distributions of GNU Emacs. https://sourceforge.net/projects/emacs-bin
 
