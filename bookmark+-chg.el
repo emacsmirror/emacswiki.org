@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Sep 21 10:33:40 2016 (-0700)
+;; Last-Updated: Tue Oct 25 09:38:00 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16089
+;;     Update #: 16103
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1931,6 +1931,16 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2016/10/25 dadams
+;;     Added: Faces bmkp-light-autonamed-region, bmkp-light-non-autonamed-region.
+;;            Options bmkp-light-style-autonamed-region, bmkp-light-style-non-autonamed-region.
+;;     bmkp-light-styles-alist: Added Region style.
+;;     bmkp-make/move-overlay-of-style:
+;;       Added required arg BOOKMARK.  Put overlay on region if region bookmark.
+;;     bmkp-light-bookmark, bmkp-light-bookmarks:
+;;       Include newly added bookmark arg in calls to bmkp-make/move-overlay-of-style.
+;;     bmkp-light-face: Use face bmkp-light(-non)-autonamed-region for region bookmarks.
+;;     bmkp-light-style: Use style bmkp-light-style(-non)-autonamed-region for region bookmarks.
 ;; 2016/09/10 dadams
 ;;     bmkp-light-face, bmkp-light-style: Use bmkp-autonamed-bookmark-p.
 ;; 2016/06/18 dadams
