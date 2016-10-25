@@ -3781,6 +3781,7 @@ By default, autonamed bookmarks are highlighted differently from
 non-autonamed bookmarks.  Bookmark highlighting uses a '''style''' and a
 '''face'''.  The available styles are these:
 
+* `Region'              -- Highlight the [[region]], if a region bookmark
 * `Line'                -- Highlight line of the bookmark position
 * `Position'            -- Highlight character at bookmark position
 * `##Line Beginning##'      -- Highlight first character on line
@@ -3793,18 +3794,22 @@ You can customize the default styles and faces to use for
 autonamed and non-autonamed bookmarks.  You can also customize the
 fringe bitmaps to use.
 
-* `bmkp-light-autonamed'           (face)
-* `bmkp-light-non-autonamed'       (face)
-* `bmkp-light-style-autonamed'     (option)
-* `bmkp-light-style-non-autonamed' (option)
-* `bmkp-light-left-fringe-bitmap'  (option)
+* `bmkp-light-autonamed'                  (face)
+* `bmkp-light-non-autonamed'              (face)
+* `bmkp-light-autonamed-region'           (face)
+* `bmkp-light-non-autonamed-region'       (face)
+* `bmkp-light-style-autonamed'            (option)
+* `bmkp-light-style-non-autonamed'        (option)
+* `bmkp-light-style-autonamed-region'     (option)
+* `bmkp-light-style-non-autonamed-region' (option)
+* `bmkp-light-left-fringe-bitmap'         (option)
 * `bmkp-light-right-fringe-bitmap' (option)
 
-Note: A position or line highlight acts more or less like an Emacs
+Note: A region, position, or line highlight acts more or less like an Emacs
 marker: it moves with the surrounding text.  As you edit the text
 in the buffer, the highlighted location can thus become out of
 sync with the recorded position.  This is normal.  When you jump
-to the bookmark its highlight is automatically repositioned to the
+to the bookmark, its highlight is automatically repositioned to the
 recorded location, possibly adjusted according to the the
 surrounding context.
 
