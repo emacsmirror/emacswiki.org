@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Sep 10 19:40:24 2016 (-0700)
+;; Last-Updated: Tue Oct 25 09:17:58 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 15075
+;;     Update #: 15081
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -3380,6 +3380,7 @@
 ;;  non-autonamed bookmarks.  Bookmark highlighting uses a style and a
 ;;  face.  The available styles are these:
 ;;
+;;  * Region              - Highlight the region, if a region bookmark
 ;;  * Line                - Highlight line of the bookmark position
 ;;  * Position            - Highlight character at bookmark position
 ;;  * Line Beginning      - Highlight first character on line
@@ -3392,19 +3393,23 @@
 ;;  autonamed and non-autonamed bookmarks.  You can also customize the
 ;;  fringe bitmaps to use.
 ;;
-;;  * `bmkp-light-autonamed'           (face)
-;;  * `bmkp-light-non-autonamed'       (face)
-;;  * `bmkp-light-style-autonamed'     (option)
-;;  * `bmkp-light-style-non-autonamed' (option)
-;;  * `bmkp-light-left-fringe-bitmap'  (option)
-;;  * `bmkp-light-right-fringe-bitmap' (option)
+;;  * `bmkp-light-autonamed'                  (face)
+;;  * `bmkp-light-non-autonamed'              (face)
+;;  * `bmkp-light-autonamed-region'           (face)
+;;  * `bmkp-light-non-autonamed-region'       (face)
+;;  * `bmkp-light-style-autonamed'            (option)
+;;  * `bmkp-light-style-non-autonamed'        (option)
+;;  * `bmkp-light-style-autonamed-region'     (option)
+;;  * `bmkp-light-style-non-autonamed-region' (option)
+;;  * `bmkp-light-left-fringe-bitmap'         (option)
+;;  * `bmkp-light-right-fringe-bitmap'        (option)
 ;;
-;;  Note: A position or line highlight acts more or less like an Emacs
-;;  marker: it moves with the surrounding text.  As you edit the text
-;;  in the buffer, the highlighted location can thus become out of
-;;  sync with the recorded position.  This is normal.  When you jump
-;;  to the bookmark its highlight is automatically repositioned to the
-;;  recorded location, possibly adjusted according to the the
+;;  Note: A region, position, or line highlight acts more or less like
+;;  an Emacs marker: it moves with the surrounding text.  As you edit
+;;  the text in the buffer, the highlighted location can thus become
+;;  out of sync with the recorded position.  This is normal.  When you
+;;  jump to the bookmark, its highlight is automatically repositioned
+;;  to the recorded location, possibly adjusted according to the the
 ;;  surrounding context.
 ;;
 ;;  In addition to the default highlighting, which you can customize,
