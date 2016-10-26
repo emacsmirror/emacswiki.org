@@ -166,13 +166,10 @@ See also [http://www.emacswiki.org/cgi-bin/wiki/buffer-move.el buffer-move.el] w
 
 == Switching between windows ==
 
-If switching through windows rapidly would be useful...
+Rapidly navigate windows with S + arrow keys. Simply enable
 
 <pre>
-(global-set-key [s-left] 'windmove-left) 
-(global-set-key [s-right] 'windmove-right) 
-(global-set-key [s-up] 'windmove-up) 
-(global-set-key [s-down] 'windmove-down)
+(windmove-default-keybindings)
 </pre>
 
 See also:
