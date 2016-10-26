@@ -38,7 +38,7 @@ GNU Emacs 24.5.1 (x86_64-apple-darwin13.4.0, NS apple-appkit-1265.21)
 # this is OK
 LINK=$(echo $PROFILE | awk -F\; '{print $2}' | sed 's/\ /\-/g' | sed 's/"//g' | sed 's/^/cdi-profile-/g')
 
-# quoting the above throws off the parser
+# quoting the above throws off the mode
 # in particular, final " causes following commands to be treated as strings
 LINK="$(echo $PROFILE | awk -F\; '{print $2}' | sed 's/\ /\-/g' | sed 's/"//g' | sed 's/^/cdi-profile-/g')"
 }}}
