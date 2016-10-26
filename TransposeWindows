@@ -1,8 +1,18 @@
-When working with multiple windows it can be annoying if they get out of order.
+There are multiple solutions to transpose windows within a frame.
 
-If you have 2 windows and want to swap the top buffer with the bottom, you could use the sequence of seven keys, `C-x 0 C-x 4 b'.  More likely you are in the bottom buffer and want to be on top.  In that case, use `C-x 0 C-x 2 C-x b RET'. (Note that these don't handle the case where the window is split ''vertically'' instead of horizontally.)
+=== Via existing commands ===
 
-Alternatively, a simple function could be written in Lisp and assigned to a single key sequence.  This is a slight rewrite of an original written by ThomasBellman.
+To swap the top and bottom buffer when two windows are open, use a sequence of seven keys, `C-x 0 C-x 4 b'. More likely you are in the bottom buffer and want to be on top.  In that case, use `C-x 0 C-x 2 C-x b RET'.
+
+=== Via buffer-move ===
+
+Available [http://melpa.org/#/buffer-move within MELPA] and [https://github.com/lukhas/buffer-move GitHub].
+
+<code>M-x package-install buffer-move</code>
+
+Swap the current buffer position with its adjacent top, bottom, left, or right buffer.
+
+=== Via Thomas Bellman's solution ===
 
  (defun transpose-windows (arg)
    "Transpose the buffers shown in two windows."
@@ -18,8 +28,7 @@ Alternatively, a simple function could be written in Lisp and assigned to a sing
 
  (define-key ctl-x-4-map (kbd "t") 'transpose-windows)
 
-And because diversity is a good thing, here is Stephen Gildea's
-version of the same:
+=== Via Stephen Gildea's rendition of the same ===
 
  (defun swap-window-positions ()         ; Stephen Gildea
    "*Swap the positions of this window and the next one."
@@ -39,7 +48,7 @@ version of the same:
        (set-window-start (selected-window) other-window-start))
      (select-window other-window)))
 
-Here is a simpler function:
+Simplified to,
 
  (defun transpose-windows ()
    "Transpose two windows.  If more or less than two windows are visible, error."
@@ -53,6 +62,8 @@ Here is a simpler function:
           (w2b (window-buffer w2)))
      (set-window-buffer w1 w2b)
      (set-window-buffer w2 w1b)))
+
+=== Via Chris Webber's solution ===
 
 ChrisWebber provides a similar function, but this one allows you to select which two you want to swap (perhaps if you have 3 or more windows open)
 
@@ -83,8 +94,11 @@ ChrisWebber provides a similar function, but this one allows you to select which
 
  (global-set-key (kbd "C-c p") 'swap-buffers-in-windows)
 
+=== Via Robert Bost's solution ===
+
 Yet another window-altering function by Robert Bost slightly based on Steve Yegge's swap-windows and further modified by Collin Doering and others. This one will handle > 1 windows.  
 It also accepts a prefix argument which rotates the other direction. Additionally given a numeric prefix argument n, it will rotate the windows n times; if the numeric argument is negative rotates |n| times in the other direction.
+
 {{{
 (defun rotate-windows (arg)
   "Rotate your windows; use the prefix argument to rotate the other direction"
