@@ -164,20 +164,13 @@ See also [http://www.emacswiki.org/cgi-bin/wiki/buffer-move.el buffer-move.el] w
 
 
 
-== Switching between windows ==
 
-Rapidly navigate windows with S + arrow keys. Simply enable
 
-<pre>
-(windmove-default-keybindings)
-</pre>
 
-See also:
-* Lisp:win-switch.el
-* WindowNavigation
-* WindMove
 
-----
+
+
+
 
 
 == Discussion ==
