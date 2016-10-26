@@ -7,7 +7,7 @@ To swap the top and bottom windows when two windows are open, use a sequence of 
 === Via buffer-move ===
 
 Available [http://melpa.org/#/buffer-move within MELPA] and [https://github.com/lukhas/buffer-move GitHub]. 
-Swap the current window position with its adjacent top, bottom, left, or right window.
+Swap the current buffer with its adjacent top, bottom, left, or right buffer.
 
     M-x package-install buffer-move
 
