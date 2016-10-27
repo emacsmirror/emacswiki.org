@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Sep 21 10:28:09 2016 (-0700)
+;; Last-Updated: Thu Oct 27 09:25:11 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 7967
+;;     Update #: 7968
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
@@ -8418,7 +8418,7 @@ This is text that precedes the bookmark's `end-position'."
   "Return the text following the region end, EREG.
 Return at most `bmkp-region-search-size' chars.
 This is text that follows the bookmark's `end-position'."
-  (buffer-substring-no-properties ereg (+ ereg (min bmkp-region-search-size (- (point-max) (point))))))
+  (buffer-substring-no-properties ereg (+ ereg (min bmkp-region-search-size (- (point-max) ereg)))))
 
 (defun bmkp-position-after-whitespace (position)
   "Move forward from POSITION, skipping over whitespace.  Return point."
