@@ -1,0 +1,4 @@
+The exec-path options do not work on OSX versions greater than 10.7. Need another magic option.
+
+-- buchs 2016-10-27 14:25 UTC
+
