@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Oct 25 09:38:00 2016 (-0700)
+;; Last-Updated: Thu Oct 27 09:26:18 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 16103
+;;     Update #: 16104
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2016/10/27 dadams
+;;     bmkp-end-position-post-context: Typo: (point) -> ereg.
 ;; 2016/09/21 dadams
 ;;     Added: bmkp-desktop-default-directory.
 ;;     Added: desktop-full-file-name, for Emacs < 22.
