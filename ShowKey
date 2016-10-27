@@ -26,6 +26,10 @@ the logging frame.  (It is not used for `showkey-tooltip-mode'.)
 restart logging, that is, erase the log and start it over.  For example, if you add the `RET' key to it (`?\r') then each time it is pressed the log is restarted from scratch.  By default, the list is empty.  (It
 is not used for `showkey-tooltip-mode'.)
 
+* '''`showkey-tooltip-timeout'''' is the number of seconds to show the tooltip, before hiding it.  (It is also hidden upon any user event, such as hitting another key.)
+
+
+
 ----
 
 CategoryHelp CategoryAccessibility CategoryKeys CategoryMouse CategoryEducation 
