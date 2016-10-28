@@ -8,7 +8,7 @@ This example is for zsh
 
 .zshrc:
 
-  if [ $EMACS ]; then
+  if [ $INSIDE_EMACS ]; then
     # Emit the PWD in the prompt, taking care that it doesn't
     # get truncated.
     prompt='%30000<<|Pr0mPT|%0d|[%n@%m]%~%# '
