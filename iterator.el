@@ -1,3 +1,5 @@
+DeletedPage
+
 ;;; iterator.el --- A library to create and use elisp iterators objects.
 
 ;; Copyright (C) 2008, 2009, 2010 Thierry Volpiatto, all rights reserved.
