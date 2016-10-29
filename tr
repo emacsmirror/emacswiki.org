@@ -10,17 +10,18 @@ than TO, then the excess characters are deleted.
 \(tr \"abcdefg\" \"abcd\" \"ABC\"\) => \"ABCefg\""
   (dotimes (i (length str))
     (let* ((c1 (aref str i))
-	   (pos (progn
-		  (string-match (char-to-string c1) from)
-		  (match-beginning 0)))
+	   (pos (string-match (regexp-quote (char-to-string c1)) from))
 	   (c2 (ignore-errors
 		 (aref to pos))))
       (when pos
-	(aset str pos (or c2 0)))))
+	(aset str i (or c2 0)))))
   (replace-regexp-in-string "\000" "" str))
 }}}
 
 [new]
 The above code does not work for me so I wrote a new function ourcomments-tr and added that to [NxhtmlMode nXhtml].
+
+[new]
+Code modified and should work now.
 ----
 ElispCookbook
