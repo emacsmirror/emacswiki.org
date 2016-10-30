@@ -47,7 +47,7 @@ Here are some of the things you can do, using this feature:
 
 
 
-The following commands are available with '''[::Isearch+]''', all on prefix key '''`##M-?##'''':
+The following commands are available with '''[[Isearch+]]''', all on prefix key '''`##M-?##'''':
 
 * '''`##M-? &##'''' (`isearchp-add-filter-predicate') adds a filter predicate, ''AND''-ing it as an additional `:after-while' filter.
 
