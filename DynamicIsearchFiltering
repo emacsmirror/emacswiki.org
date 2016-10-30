@@ -20,10 +20,10 @@ Here are some of the things you can do, using this feature:
 
 ** color name or #RGB
 ** comment
-** defun (aka top-level sexp)
-** sexp
-** symbol
-** Lisp variable
+** defun (any top-level sexp)
+** [[sexp]]
+** [[symbol]]
+** Lisp [[variable]]
 ** email address
 ** file name
 ** URL
