@@ -14,9 +14,9 @@ Here are some of the things you can do, using dynamic filtering:
 * Search in a progressive way, using multiple simple search patterns instead of a single complicated pattern.  The previous example is also an example of this:
 ## Search for lines: `##C-M-s .+##'.
 ## Refine that search to matches for `cat': `##M-? % cat##'.
-## Do the same for `dog', and then `turtle' (`##M-? % dog##', `##M-? % turtle##').
+## Do the same for `dog', and then `turtle' (`##M-? % dog##', then `##M-? % turtle##').
 
-* Search for stuff within contexts that correspond to a type of THING. Examples of context type:
+* Search for stuff within contexts that correspond to a type of THING. You can add to the list of context types, using option '''`isearchp-filter-predicates-alist''''.  When prompted to enter a filter predicate you can use completion against the predicates named in that list (e.g. `in-comment', `in-file-name'). Examples of context type:
 
 ** color name or #RGB
 ** comment
@@ -36,7 +36,7 @@ Here are some of the things you can do, using dynamic filtering:
 ** page
 ** word
 
-* Search for something that is **near** something else -- within a given number of characters, words, lists, or sentences (you can add to this list of distance units).  You specify the nearness.  You can also constrain the nearby pattern to be only before or only after the search hit.
+* Search for something that is **near** something else -- within a given number of characters, words, lists, or sentences (you can add to this list of distance units, using option '''`isearchp-movement-unit-alist'''').  You specify the nearness.  You can also constrain the nearby pattern to be only before or only after the search hit.
 
 * Search for stuff in the union of given contexts. Example: search for text that is near `cat' or near `dog'.
 
@@ -49,11 +49,11 @@ Here are some of the things you can do, using dynamic filtering:
 
 The following commands are available with '''[[Isearch+]]''', all on prefix key '''`##M-?##'''':
 
-* '''`##M-? &##'''' (`isearchp-add-filter-predicate') adds a filter predicate, ''AND''-ing it as an additional `:after-while' filter.
+* '''`##M-? &##'''' (`isearchp-add-filter-predicate') adds a filter predicate, ''AND''-ing it as an additional `##:after-while##' filter.
 
-* '''`##M-? |##'''' (`isearchp-or-filter-predicate') adds a filter predicate, ''OR''-ing it as an additional `:before-until' filter.
+* '''`##M-? |##'''' (`isearchp-or-filter-predicate') adds a filter predicate, ''OR''-ing it as an additional `##:before-until##' filter.
 
-* '''`##M-? ~##'''' (`isearchp-complement-filter') ''complements'' the current filter.  It either adds an `:around' filter that complements or it removes an existing top-level complementing filter.
+* '''`##M-? ~##'''' (`isearchp-complement-filter') ''complements'' the current filter.  It either adds an `##:around##' filter that complements or it removes an existing top-level complementing filter.
 
 * '''`##M-? -##'''' (`isearchp-remove-filter-predicate') ''removes'' the last added filter predicate.
 
