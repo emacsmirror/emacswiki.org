@@ -5,9 +5,9 @@ The predicate that is the value of '''`isearch-filter-predicate'''' is
 
 This lets you search only given zones of text, where those zones can be defined on the fly in complex ways that are easy to specify.
 
-This is different from the feature provided by companion Isearch+ library '''<tt>[[isearch-prop.el]]</tt>''', which also lets you constrain search to zones of text.  When you use that library you first define the zones, and then search is limited to them.  With dynamic filtering, search is not limited to certain zones ahead of time. Instead, after a search hit is found the filters are applied to see if it should be retained as a search hit. This is ''a posteriori'' filtering, whereas '''<tt>[[isearch-prop.el]]</tt>''' uses ''a priori'' filtering. Each has its advantages.
+This is different from the feature provided by companion '''Isearch+''' library '''<tt>[[isearch-prop.el]]</tt>''', which also lets you constrain search to zones of text.  When you use that library you ''first define the zones'', and then search is limited to them.  ''With dynamic filtering, search is not limited to certain zones ahead of time.'' Instead, after a search hit is found the filters are applied to see if it should be retained as a search hit. This is ''a posteriori'' filtering, whereas '''<tt>[[isearch-prop.el]]</tt>''' uses ''a priori'' filtering. Each has its advantages.
 
-Here are some of the things you can do, using this feature:
+Here are some of the things you can do, using dynamic filtering:
 
 * Search for a number of things at the same time, in any order.  Example: `cat', `dog', and `turtle', ''in any order'', within the same context (e.g. within a line).
 
@@ -16,7 +16,7 @@ Here are some of the things you can do, using this feature:
 ## Refine that search to matches for `cat': `##M-? % cat##'.
 ## Do the same for `dog', and then `turtle' (`##M-? % dog##', `##M-? % turtle##').
 
-* Search for stuff within contexts, which can correspond to a type of THING. Examples of context type:
+* Search for stuff within contexts that correspond to a type of THING. Examples of context type:
 
 ** color name or #RGB
 ** comment
