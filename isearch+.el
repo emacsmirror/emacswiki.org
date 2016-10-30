@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct 22 15:44:26 2016 (-0700)
+;; Last-Updated: Sun Oct 30 14:01:53 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 4524
+;;     Update #: 4776
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -18,7 +18,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
+;;   `cl-lib', `color', `frame-fns', `gv', `help-fns',
 ;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+', `zones'.
 ;;
@@ -78,6 +79,7 @@
 ;;
 ;;    `isearchp-act-on-demand' (Emacs 22+),
 ;;    `isearchp-add-filter-predicate' (Emacs 24.3+),
+;;    `isearchp-add-regexp-filter-predicate' (Emacs 24.3+),
 ;;    `isearchp-append-register', `isearch-char-by-name' (Emacs
 ;;    23-24.3), `isearchp-complement-filter' (Emacs 24.3+),
 ;;    `isearchp-complete', `isearchp-cycle-mismatch-removal',
@@ -97,6 +99,7 @@
 ;;    `isearchp-set-filter-predicate' (Emacs 24.3+),
 ;;    `isearchp-set-region-around-search-target',
 ;;    `isearchp-show-filters' (Emacs 24.3+),
+;;    `isearchp-toggle-auto-save-filter-predicate' (Emacs 24.3+),
 ;;    `isearchp-toggle-lazy-highlight-cleanup' (Emacs 22+),
 ;;    `isearchp-toggle-lazy-highlighting' (Emacs 22+),
 ;;    `isearchp-toggle-literal-replacement' (Emacs 22+),
@@ -115,9 +118,11 @@
 ;;
 ;;  User options defined here:
 ;;
+;;    `isearchp-auto-save-filter-predicate-flag' (Emacs 22+),
 ;;    `isearchp-case-fold', `isearchp-deactivate-region-flag' (Emacs
 ;;    24.3+), `isearchp-drop-mismatch',
 ;;    `isearchp-drop-mismatch-regexp-flag',
+;;    `isearchp-filter-predicates-alist' (Emacs 24.3+),
 ;;    `isearchp-initiate-edit-commands' (Emacs 22+),
 ;;    `isearchp-mouse-2-flag', `isearchp-movement-unit-alist' (Emacs
 ;;    24.3+), `isearchp-on-demand-action-function' (Emacs 22+),
@@ -140,12 +145,32 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
+;;    `isearchp-add-filter-predicate-1' (Emacs 24.3+),
 ;;    `isearchp-barf-if-use-minibuffer',
 ;;    `isearchp-complete-past-string', `isearchp-fail-pos',
 ;;    `isearchp-filters-message' (Emacs 24.3+),
-;;    `isearchp-highlight-lighter', `isearchp-message-prefix',
-;;    `isearchp-message-suffix', `isearchp-near-after-predicate'
-;;    (Emacs 24.3+), `isearchp-near-before-predicate' (Emacs 24.3+),
+;;    `isearchp-highlight-lighter', `isearchp-in-color-p' (Emacs
+;;    24.3+), `isearchp-in-comment-p' (Emacs 24.3+),
+;;    `isearchp-in-comment-or-delim-p' (Emacs 24.3+),
+;;    `isearchp-in-decimal-number-p' (Emacs 24.3+),
+;;    `isearchp-in-defun-p' (Emacs 24.3+),
+;;    `isearchp-in-email-address-p' (Emacs 24.3+),
+;;    `isearchp-in-file-name-p' (Emacs 24.3+),
+;;    `isearchp-in-file-or-url-p' (Emacs 24.3+),
+;;    `isearchp-in-hex-number-p' (Emacs 24.3+), `isearchp-in-line-p'
+;;    (Emacs 24.3+), `isearchp-in-lisp-variable-p' (Emacs 24.3+),
+;;    `isearchp-in-list-p' (Emacs 24.3+), `isearchp-in-number-p'
+;;    (Emacs 24.3+), `isearchp-in-page-p' (Emacs 24.3+),
+;;    `isearchp-in-paragraph-p' (Emacs 24.3+),
+;;    `isearchp-in-sentence-p' (Emacs 24.3+), `isearchp-in-sexp-p'
+;;    (Emacs 24.3+), `isearchp-in-string-or-comment-p' (Emacs 24.3+),
+;;    `isearchp-in-string-p' (Emacs 24.3+), `isearchp-in-symbol-p'
+;;    (Emacs 24.3+), `isearchp-in-url-p' (Emacs 24.3+),
+;;    `isearchp-in-word-p' (Emacs 24.3+),
+;;    `isearchp-match-regexp-filter-predicate' (Emacs 24.3+),
+;;    `isearchp-message-prefix', `isearchp-message-suffix',
+;;    `isearchp-near-after-predicate' (Emacs 24.3+),
+;;    `isearchp-near-before-predicate' (Emacs 24.3+),
 ;;    `isearchp-near-predicate' (Emacs 24.3+), `isearchp-not-pred'
 ;;    (Emacs 24.3+), `isearchp-read-face-names',
 ;;    `isearchp-read-face-names--read', `isearchp-read-filter-name'
@@ -153,6 +178,7 @@
 ;;    `isearchp-read-near-args' (Emacs 24.3+),
 ;;    `isearchp-read-predicate' (Emacs 24.3+),
 ;;    `isearchp-read-prompt-prefix' (Emacs 24.3+),
+;;    `isearchp-read-regexp-during-search' (Emacs 24.3+),
 ;;    `isearchp-read-sexps', `isearchp-remove-duplicates',
 ;;    `isearchp-remove-mismatch', `isearchp-repeat-command',
 ;;    `isearchp-repeat-search-if-fail' (Emacs 22+),
@@ -200,8 +226,8 @@
 ;;  `isearch-message'     - Highlight failed part of search string in
 ;;                          echo area, in face `isearch-fail'.
 ;;  `isearch-message-prefix' - Highlight prompt keywords: wrapped,
-;;                          regexp, word, multi.
-;;                          Reverse the order of the filter prefixes.
+;;                          regexp, word, multi.  Highlight filter
+;;                          prefixes, and reverse their order.
 ;;  `isearch-mouse-2'     - Respect `isearchp-mouse-2-flag'(Emacs 21+)
 ;;  `isearch-search'      - Can limit to active region (Emacs 24.3+)
 ;;  `isearch-repeat'      - Can limit to active region (Emacs 24.3+)
@@ -293,6 +319,7 @@
 ;;  * Dynamic search filtering (starting with Emacs 24.3).  You can
 ;;    add and remove any number of search filters while searching
 ;;    incrementally.
+;;    See https://www.emacswiki.org/emacs/DynamicIsearchFiltering.
 ;;
 ;;    The predicate that is the value of `isearch-filter-predicate' is
 ;;    advised by additional predicates that you add, creating a
@@ -302,6 +329,9 @@
 ;;
 ;;    - `M-? &' (`isearchp-add-filter-predicate') adds a filter
 ;;      predicate, AND-ing it as an additional `:after-while' filter.
+;;
+;;    - `M-? %' (`isearchp-add-regexp-filter-predicate') adds a filter
+;;      predicate that requires search hits to match a given regexp.
 ;;
 ;;    - `M-? |' (`isearchp-or-filter-predicate') adds a filter
 ;;      predicate, OR-ing it as an additional `:before-until' filter.
@@ -324,6 +354,11 @@
 ;;      filter-predicate suite for subsequent searches.  Unless you
 ;;      save it, the next Isearch starts out from scratch, using the
 ;;      default value of `isearch-filter-predicate'.
+;;
+;;    - `M-? S' (`isearchp-toggle-auto-save-filter-predicate')
+;;      toggles option `isearchp-auto-save-filter-predicate-flag',
+;;      which provides automatic filter-predicate saving (so no need
+;;      to use `M-? s').
 ;;
 ;;    - `M-? n' (`isearchp-defun-filter-predicate') names the current
 ;;      suite of filter predicates, creating a named predicate that
@@ -360,7 +395,7 @@
 ;;      default behavior.  If you are prompted and provide a name, you
 ;;      can use that name with `M-? -' to remove that predicate.
 ;;
-;;    - `isearchp-prompt-for-isearch-prompt-prefix' says whether to
+;;    - `isearchp-prompt-for-prompt-prefix-flag' says whether to
 ;;      prompt you for a prefix to add to the Isearch prompt.  You are
 ;;      prompted by default, but if you don't care to see such a
 ;;      prompt prefix and you don't want to be bothered by it, you can
@@ -765,6 +800,30 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/10/30 dadams
+;;     Added: Faces: isearchp-prompt-filter-prefix, isearchp-prompt-filter-prefix-auto-save.  Other:
+;;       isearchp-add-regexp-filter-predicate, isearchp-toggle-auto-save-filter-predicate,
+;;       isearchp-auto-save-filter-predicate-flag, isearchp-filter-predicates-alist, isearchp-in-color-p,
+;;       isearchp-in-comment-p, isearchp-in-comment-or-delim-p, isearchp-in-decimal-number-p,
+;;       isearchp-in-defun-p, isearchp-in-email-address-p, isearchp-in-file-name-p, isearchp-in-file-or-url-p,
+;;       isearchp-in-hex-number-p, isearchp-in-line-p, isearchp-in-lisp-variable-p, isearchp-in-list-p,
+;;       isearchp-in-number-p, isearchp-in-page-p, isearchp-in-paragraph-p, isearchp-in-sentence-p,
+;;       isearchp-in-sexp-p, isearchp-in-string-or-comment-p, isearchp-in-string-p, isearchp-in-symbol-p,
+;;       isearchp-in-url-p, isearchp-in-word-p, isearchp-add-filter-predicate-1,
+;;       isearchp-read-regexp-during-search, isearchp-match-regexp-filter-predicate.
+;;     Renamed: isearchp-prompt-for-isearch-prompt-prefix to isearchp-prompt-for-prompt-prefix-flag.
+;;     Require thingatpt.el, soft-require thingatpt+.el (Emacs 24.3+).
+;;     isearch-done: Set isearchp-saved-filter-predicate or isearch-filter-predicate.
+;;     isearch-message: Change regexp from " +$" to "\\`[ \t]+\\'" (not important).
+;;     isearch-message-prefix (Emacs 24.3+): Highlight filter prefixes, per *-auto-save-filter-predicate-flag.
+;;     Bound isearchp-add-regexp-filter-predicate to M-? %.
+;;     Bound isearchp-toggle-auto-save-filter-predicate to M-? S.
+;;     isearchp-(add|or)-filter-predicate: Use isearchp-add-filter-predicate-1.
+;;     isearchp-add-filter-predicate-1:
+;;       Handle all isearchp-filter-predicates-alist formats for PREDICATE.
+;;       Moved non-highlighting of empty or whitespace prefix here, from isearchp-read-prompt-prefix.
+;;     isearchp-read-prompt-prefix: Move adding comma and space to callers.
+;;     isearchp-read-predicate: Use completing-read prompt w/ isearchp-filter-predicates-alist.
 ;; 2016/10/22 dadams
 ;;     Added: isearchp-movement-unit-alist, isearchp-read-measure.
 ;;     isearchp-read-near-args: Use isearchp-read-measure.
@@ -1003,7 +1062,7 @@
 ;; 2013/05/31 dadams
 ;;     Require cl.el at compile time, for case.
 ;; 2013/05/13 dadams
-;;     isearchp-highlight-lighter: Use face isearchp-wrapped only if defined (Emacs 22+). 
+;;     isearchp-highlight-lighter: Use face isearchp-wrapped only if defined (Emacs 22+).
 ;; 2013/04/10 dadams
 ;;     Define with-isearch-suspended for Emacs 24.3 too.  Apparently it did not make it into the release.
 ;; 2013/03/30 dadams
@@ -1222,6 +1281,20 @@
 
 (when (> emacs-major-version 22) (require 'isearch-prop nil t)) ;; (no error if not found)
 
+
+;; Library `thingatpt+.el' greatly improves the behavior provided by `thingatpt.el'.
+;; You can use only the latter, if you want, but be aware that its behavior is bugged.
+;;
+(when (or (> emacs-major-version 24)    ; Emacs 24.3+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+
+  (require 'thingatpt)
+  (require 'thingatpt+ nil t)
+
+  )
+
+
+
 ;;; $$$$$$ TEMPORARILY REMOVE THIS.  They changed the Emacs 25 `character-fold.el' code,
 ;;;        and `character-fold+.el' has not yet been updated accordingly.
 ;;; $$$$$$ (when (> emacs-major-version 24) (require 'character-fold+ nil t)) ;; (no error if not found)
@@ -1272,12 +1345,14 @@
 (defvar isearch-start-hscroll)           ; In `isearch.el'.
 (defvar isearch-within-brackets)         ; In `isearch.el'.
 (defvar isearch-wrap-function)           ; In `isearch.el'.
+(defvar isearchp-auto-save-filter-predicate-flag) ; Here (Emacs 24.3+).
 (defvar isearchp-deactivate-region-flag) ; Here (Emacs 24.3+).
+(defvar isearchp-filter-predicates-alist) ; Here (Emacs 24.3+).
 (defvar isearchp-initiate-edit-commands) ; Here (Emacs 22+).
 (defvar isearchp-nomodify-action-hook)   ; Here (Emacs 22+).
 (defvar isearchp-on-demand-action-function) ; Here (Emacs 22+).
 (defvar isearchp-prompt-for-filter-name) ; Here (Emacs 24.3+).
-(defvar isearchp-prompt-for-isearch-prompt-prefix) ; Here (Emacs 24.3+).
+(defvar isearchp-prompt-for-prompt-prefix-flag) ; Here (Emacs 24.3+).
 (defvar isearchp-replacement)            ; Here (Emacs 22+).
 (defvar isearchp-repeat-search-if-fail-flag) ; Here (Emacs 22+).
 (defvar isearchp--repeat-search-if-fail-repeated) ; Here (Emacs 22+).
@@ -1325,11 +1400,13 @@ Don't forget to mention your Emacs and library versions."))
         (t :background "gray"))
     "*Face for highlighting failed part in Isearch echo-area message."
     :group 'isearch-plus)
+
   (defface isearchp-multi
       '((((class color) (min-colors 8)) (:foreground "DarkViolet"))
         (t :underline t))
     "*Face for highlighting multi-buffer indicator in Isearch echo-area message."
     :group 'isearch-plus)
+
   (defface isearchp-overwrapped
       `((((class color) (min-colors 88))
          ,(if (> emacs-major-version 23)
@@ -1338,21 +1415,43 @@ Don't forget to mention your Emacs and library versions."))
         (t :overline t))
     "*Face for highlighting overwrapped search."
     :group 'isearch-plus)
+
   (defface isearchp-regexp
       '((((class color) (min-colors 8)) (:foreground "Firebrick"))
         (t :underline t))
     "*Face for highlighting regexp-search indicator in Isearch echo-area message."
     :group 'isearch-plus)
+
   (defface isearchp-word
       '((((class color) (min-colors 8)) (:foreground "DarkGreen"))
         (t :underline t))
     "*Face for highlighting word-search indicator in Isearch echo-area message."
     :group 'isearch-plus)
+
   (defface isearchp-wrapped
       '((((class color) (min-colors 88)) (:overline "Blue"))
         (t :overline t))
     "*Face for highlighting wrapped search."
     :group 'isearch-plus)
+  )
+
+(when (or (> emacs-major-version 24)    ; Emacs 24.3+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+
+  (defface isearchp-prompt-filter-prefix
+      '((((class color) (min-colors 88)) (:inherit font-lock-doc-face))
+        (t :foreground "gray"))
+    "*Face for Isearch prompt filter prefix when not autosaving."
+    :group 'isearch-plus)
+
+  (defface isearchp-prompt-filter-prefix-auto-save
+      '((((class color) (min-colors 88)) (:inherit font-lock-constant-face))
+        (t :foreground "gray"))
+    "*Face for Isearch prompt filter prefix when autosaving.
+Like `isearchp-prompt-filter-prefix', but used only when
+`isearchp-auto-save-filter-predicate-flag' is non-nil."
+    :group 'isearch-plus)
+
   )
 
 (defcustom isearchp-case-fold nil
@@ -1504,10 +1603,70 @@ and act on the buffer text."
 (when (or (> emacs-major-version 24)    ; Emacs 24.3+
           (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
 
+  (defcustom isearchp-auto-save-filter-predicate-flag nil
+    "Non-nil means automatically apply `\\[isearchp-save-filter-predicate]'.
+Changes to `isearch-filter-predicate' are automatically saved when you
+exit Isearch'."
+    :type 'boolean :group 'isearch-plus)
+
   (defcustom isearchp-deactivate-region-flag t
     "*Non-nil means isearching deactivates the region.
 See also option `isearchp-restrict-to-region-flag'."
     :type 'boolean :group 'isearch-plus)
+
+  (defcustom isearchp-filter-predicates-alist
+    `(
+      ("in-color"             isearchp-in-color-p             "(COLOR)")
+      ("in-comment"           isearchp-in-comment-p           "(COMT)")
+      ("in-comment+"          isearchp-in-comment-or-delim-p  "(;COMT)")
+      ("in-defun"             isearchp-in-defun-p             "(DEFUN)")
+      ("in-email-address"     isearchp-in-email-address-p     "(EMAIL)")
+      ("in-file-name"         isearchp-in-file-name-p         "(FILE)")
+      ("in-file-or-url"       isearchp-in-file-or-url-p       "(FILE|URL)")
+      ("in-line"              isearchp-in-line-p              "(LINE)")
+      ("in-list"              isearchp-in-list-p              "(LIST)")
+      ("in-number"            isearchp-in-number-p            "(NUM)")
+      ("in-page"              isearchp-in-page-p              "(PAGE)")
+      ("in-paragraph"         isearchp-in-paragraph-p         "(PARA)")
+      ("in-sentence"          isearchp-in-sentence-p          "(SENT)")
+      ("in-sexp"              isearchp-in-sexp-p              "(SEXP)")
+      ("in-string-or-comment" isearchp-in-string-or-comment-p "(STRG|COMT)")
+      ("in-string"            isearchp-in-string-p            "(STRING)")
+      ("in-symbol"            isearchp-in-symbol-p            "(SYMB)")
+      ("in-url"               isearchp-in-url-p               "(URL)")
+      ("in-lisp-var"          isearchp-in-lisp-variable-p     "(VAR)")
+      ("in-word"              isearchp-in-word-p              "(WORD)")
+      ,@(and (featurep 'thingatpt+)
+             '(
+               ("in-decimal-number"    isearchp-in-decimal-number-p    "(NUM-10)")
+               ("in-hex-number"        isearchp-in-hex-number-p        "(HEX)")
+               ))
+      )
+    "Alist of filter predicates to choose from.
+
+Each entry has one of these forms, where NAME and PREFIX are strings
+and PREDICATE is a predicate symbol or a lambda form suitable as a value of
+`isearch-filter-predicate'.
+
+* (NAME PREDICATE PREFIX)
+* (PREDICATE PREFIX)
+* (PREDICATE)
+
+NAME is a (typically) short name for PREDICATE.  You can use it, for
+example, to remove PREDICATE from `isearch-filter-predicate', using
+`M-? -'."
+    :type '(repeat
+            (choice
+             (list
+              (string :tag "Name (abbreviation)")
+              (restricted-sexp :match-alternatives (functionp) :tag "Predicate")
+              (string :tag "Prompt prefix"))
+             (list
+              (restricted-sexp :match-alternatives (functionp) :tag "Predicate")
+              (string :tag "Prompt prefix"))
+             (list
+              (restricted-sexp :match-alternatives (functionp) :tag "Predicate"))))
+    :group 'isearch-plus)
 
   (defcustom isearchp-movement-unit-alist '((?w . forward-word)
                                             (?x . forward-sexp)
@@ -1530,7 +1689,7 @@ of words."
     :group 'isearch-plus)
 
   (defcustom isearchp-prompt-for-filter-name 'non-symbol
-    "Whether and when to prompt yout for a name for a filter predicate.
+    "Whether and when to prompt you for a name for a filter predicate.
 You can reverse the behavior by using a non-positive prefix arg: If
 you would normally be prompted then you are not prompted, and vice
 versa."
@@ -1540,7 +1699,7 @@ versa."
             (const :tag "Prompt if non-symbol (e.g. anonymous (lambda))" non-symbol))
     :group 'isearch-plus)
 
-  (defcustom isearchp-prompt-for-isearch-prompt-prefix t
+  (defcustom isearchp-prompt-for-prompt-prefix-flag t
     "Whether to prompt you for a prefix for the Isearch prompt.
 You can reverse the behavior by using a non-negative prefix arg: If
 you would normally be prompted then you are not prompted, and vice
@@ -2202,6 +2361,19 @@ Toggles between nil and the last non-nil value."
 (when (or (> emacs-major-version 24)    ; Emacs 24.3+
           (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
 
+  (defun isearchp-toggle-auto-save-filter-predicate () ; Bound to `M-? S' in `isearch-mode-map'.
+    "Toggle `isearchp-auto-save-filter-predicate-flag'.
+If turning it on, save now.  Note that turning it off does not reset
+`isearch-filter-predicate'.  Use \\<isearch-mode-map>`\\[isearchp-reset-filter-predicate]' to do that."
+    (interactive)
+    (setq isearchp-auto-save-filter-predicate-flag  (not isearchp-auto-save-filter-predicate-flag))
+    (when isearchp-auto-save-filter-predicate-flag
+      (setq isearchp-saved-filter-predicate  isearch-filter-predicate))
+    (message "Automatic saving of filter-predicate changes is now %s"
+             (if isearchp-auto-save-filter-predicate-flag 'ON 'OFF))
+    (sit-for 1)
+    (isearch-update))
+
   (defun isearchp-toggle-region-restriction () ; Bound to `C-x n' in `isearch-mode-map'.
     "Toggle option `isearchp-restrict-to-region-flag'."
     (interactive)
@@ -2354,7 +2526,7 @@ If first char entered is \\[isearch-yank-word], then do word search instead."
                      (isearch-within-brackets       isearch-within-brackets)
             ;;; Do not bind this.  We want isearch-search, below, to set it.
             ;;; And the old value won't matter after that.
-            ;;;	     (isearch-other-end             isearch-other-end)
+            ;;;      (isearch-other-end             isearch-other-end)
             ;;; Perhaps some of these other variables should be bound for a
             ;;; shorter period, ending before the next isearch-search.
             ;;; But there doesn't seem to be a real bug, so let's not risk it now.
@@ -2465,21 +2637,21 @@ With a numeric prefix arg, append that many copies of the character."
 You can repeat this by hitting the last key again..."
     (interactive)
     (require 'repeat nil t)
-    (isearchp-repeat-command 'isearch-yank-char)) 
+    (isearchp-repeat-command 'isearch-yank-char))
 
   (defun isearchp-yank-word-or-char ()  ; Bound to `C-w' and `C-y C-w' in `isearch-mode-map'.
     "Yank next word or character from buffer onto search string.
 You can repeat this by hitting the last key again..."
     (interactive)
     (require 'repeat nil t)
-    (isearchp-repeat-command 'isearch-yank-word-or-char)) 
+    (isearchp-repeat-command 'isearch-yank-word-or-char))
 
   (defun isearchp-yank-line ()          ; Bound to `C-y C-e' in `isearch-mode-map'.
     "Yank text from buffer up to end of line onto search string.
 You can repeat this by hitting the last key again..."
     (interactive)
     (require 'repeat nil t)
-    (isearchp-repeat-command 'isearch-yank-line)) 
+    (isearchp-repeat-command 'isearch-yank-line))
 
   (defun isearchp-yank-symbol-or-char-1 ()
     "Helper for `isearchp-yank-symbol-or-char'.
@@ -2827,7 +2999,7 @@ A `SPC' char normally matches all whitespace defined by variable
 `isearch-lax-whitespace' and `isearch-regexp-lax-whitespace'.
 
 Commands that Require Library `isearch-prop.el'
------------------------------------------------ 
+-----------------------------------------------
 
 \\[isearchp-property-forward]\t- search for a character (overlay or text) property
 \\[isearchp-property-forward-regexp]\t- regexp-search for a character (overlay or text) property
@@ -2922,7 +3094,7 @@ search instead.
 With a negative prefix arg, do a regexp incremental search across
 multiple buffers (Emacs 23+):
  * If the prefix arg is `-' (from `M--') then you are prompted for the
-   list of buffers. 
+   list of buffers.
  * Otherwise, (e.g. `M-- 2'), you are prompted for a regexp that
    matches the names of the buffers to be searched.
 
@@ -3086,8 +3258,13 @@ Non-nil argument REGEXP-FUNCTION:
           (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
 
   (defadvice isearch-done (after isearchp-restore/update-filter-pred activate)
-    "Set `isearch-filter-predicate' to `isearchp-saved-filter-predicate'."
-    (setq isearch-filter-predicate  isearchp-saved-filter-predicate))
+    "Reset `isearch-filter-predicate' or `isearchp-saved-filter-predicate'.
+If `isearchp-auto-save-filter-predicate-flag' is non-nil then set
+`isearchp-saved-filter-predicate' to the current value of
+`isearch-filter-predicate'.  Otherwise, do the opposite."
+    (if isearchp-auto-save-filter-predicate-flag
+        (setq isearchp-saved-filter-predicate  isearch-filter-predicate)
+      (setq isearch-filter-predicate  isearchp-saved-filter-predicate)))
 
   )
 
@@ -3300,7 +3477,7 @@ With a numeric prefix arg, append that many copies of CHAR."
       (when fail-pos
         (setq msg  (copy-sequence msg))
         (add-text-properties fail-pos (length msg) '(face isearch-fail) msg)
-        (when (string-match " +$" msg)  ; Highlight trailing whitespace
+        (when (string-match "\\`[ \t]+\\'" msg) ; Highlight trailing whitespace
           (add-text-properties (match-beginning 0) (match-end 0) '(face trailing-whitespace) msg)))
       (setq msg  (concat (isearch-message-prefix c-q-hack ellipsis isearch-nonincremental)
                          msg
@@ -3413,42 +3590,51 @@ If SPACE-BEFORE is non-nil,  put a space before, instead of after it."
                                     (error nil)))
     ;; If currently failing, display no ellipsis.
     (unless isearch-success (setq ellipsis  nil))
-    (let ((mm  (concat (and (not isearch-success)  (propertize "failing " 'face 'minibuffer-prompt))
-                       (and isearch-adjusted  (propertize "pending " 'face 'minibuffer-prompt))
-                       (and isearch-wrapped
-                            (not isearch-wrap-function)
-                            (if isearch-forward (> (point) isearch-opoint) (< (point) isearch-opoint))
-                            (propertize "over" 'face 'isearchp-overwrapped))
-                       (and isearch-wrapped  (propertize "wrapped " 'face 'isearchp-wrapped))
-                       (when (fboundp 'advice-function-mapc) ; Emacs 24.4+
-                         (let ((prefix  ""))
-                           (advice-function-mapc (lambda (_ props)
-                                                   (let ((np  (cdr (assq 'isearch-message-prefix props))))
-                                                     (when np (setq prefix  (concat prefix np)))))
-                                                 isearch-filter-predicate)
-                           prefix))
-                       (if (> emacs-major-version 24)
-                           (isearch--describe-regexp-mode isearch-regexp-function)
-                         (isearch--describe-word-mode isearch-regexp-function))
-                       (let ((multi  (propertize "multi " 'face 'isearchp-multi)))
-                         (if (> emacs-major-version 24)
-                             (cond (multi-isearch-file-list   (concat multi "file "))
-                                   (multi-isearch-buffer-list (concat multi "buffer "))
-                                   (t                         ""))
-                           (concat (and isearch-regexp  (propertize "regexp " 'face 'isearchp-regexp))
-                                   (and multi-isearch-next-buffer-current-function   multi))))
-                       (and isearch-message-prefix-add
-                            (propertize isearch-message-prefix-add 'face 'minibuffer-prompt))
-                       (propertize (if nonincremental "search" "I-search") 'face 'minibuffer-prompt)
-                       (and (not isearch-forward)  (propertize " backward" 'face 'minibuffer-prompt))
-                       (propertize (if current-input-method
-                                       ;; Input methods for RTL languages use RTL chars for their
-                                       ;; title.  That messes up display of search text after prompt.
-                                       (bidi-string-mark-left-to-right
-                                        (concat " [" current-input-method-title "]: "))
-                                     ": ")
-                                   'face 'minibuffer-prompt))))
-      (concat (upcase (substring mm 0 1)) (substring mm 1))))
+    (let ((mmm  (concat (and (not isearch-success)  (propertize "failing " 'face 'minibuffer-prompt))
+                        (and isearch-adjusted  (propertize "pending " 'face 'minibuffer-prompt))
+                        (and isearch-wrapped
+                             (not isearch-wrap-function)
+                             (if isearch-forward (> (point) isearch-opoint) (< (point) isearch-opoint))
+                             (propertize "over" 'face 'isearchp-overwrapped))
+                        (and isearch-wrapped  (propertize "wrapped " 'face 'isearchp-wrapped))
+                        (and (fboundp 'advice-function-mapc) ; Emacs 24.4+
+                             (let ((prefix  ""))
+                               (advice-function-mapc (lambda (_ props)
+                                                       (let ((np  (cdr (assq 'isearch-message-prefix props))))
+                                                         (when np (setq prefix  (concat prefix np)))))
+                                                     isearch-filter-predicate)
+                               (propertize prefix 'face (if isearchp-auto-save-filter-predicate-flag
+                                                            'isearchp-prompt-filter-prefix-auto-save
+                                                          'isearchp-prompt-filter-prefix))))
+                        (if (> emacs-major-version 24)
+                            (isearch--describe-regexp-mode isearch-regexp-function)
+                          (isearch--describe-word-mode isearch-regexp-function))
+                        (let ((multi  (propertize "multi " 'face 'isearchp-multi)))
+                          (if (> emacs-major-version 24)
+                              (cond (multi-isearch-file-list   (concat multi "file "))
+                                    (multi-isearch-buffer-list (concat multi "buffer "))
+                                    (t                         ""))
+                            (concat (and isearch-regexp  (propertize "regexp " 'face 'isearchp-regexp))
+                                    (and multi-isearch-next-buffer-current-function  multi))))
+                        (and isearch-message-prefix-add
+                             (propertize isearch-message-prefix-add 'face 'minibuffer-prompt))
+
+                        (propertize (if nonincremental "search" "I-search") 'face 'minibuffer-prompt)
+                        (and (not isearch-forward)  (propertize " backward" 'face 'minibuffer-prompt))
+                        (propertize (if current-input-method
+                                        ;; Input methods for RTL languages use RTL chars for their
+                                        ;; title.  That messes up display of search text after prompt.
+                                        (bidi-string-mark-left-to-right
+                                         (concat " [" current-input-method-title "]: "))
+                                      ": ")
+                                    'face 'minibuffer-prompt))))
+
+      ;; This is an ugly hack for what seems to be an Emacs bug (?).  Without re-propertizing the face
+      ;; on the first character, it is lost, apparently because of the use of `isearchp-read-prompt-prefix'
+      ;; within `with-isearch-suspended', in `isearchp-add-filter-predicate-1'.  I haven't isolated the bug,
+      ;; hence this hack.
+      (let ((face  (get-text-property 0 'face mmm)))
+        (concat (propertize (upcase (substring mmm 0 1)) 'face face) (substring mmm 1)))))
 
   )
 
@@ -3611,7 +3797,7 @@ Bound to `C-M-`' during Isearch."
     (message "Lazy highlighting is now %s" (if isearch-lazy-highlight 'ON 'OFF))
     (sit-for 1)
     (isearch-update))
-    
+
   (define-key isearch-mode-map (kbd "M-s h L") 'isearchp-toggle-lazy-highlighting)
 
   )
@@ -3776,7 +3962,7 @@ You need library `character-fold+.el' for this command."
   ;;
   (defun isearch-search ()
     "Search using the current search string."
-    (when (< emacs-major-version 25)    ; $$$$$$ Should this message invocation be removed altogether?
+    (when (< emacs-major-version 25) ; $$$$$$ Should this message invocation be removed altogether?
       (if (and (boundp 'isearch-message-function)  isearch-message-function)
           (funcall isearch-message-function nil t)
         (isearch-message nil t)))
@@ -3834,44 +4020,44 @@ You need library `character-fold+.el' for this command."
   (defun isearch-lazy-highlight-search ()
     "Search ahead for the next or previous match, for lazy highlighting.
 Attempt to do the search exactly the way the pending Isearch would."
-  (condition-case nil
-      (let ((case-fold-search               isearch-lazy-highlight-case-fold-search)
-            (isearch-regexp                 isearch-lazy-highlight-regexp)
-            (isearch-regexp-function        isearch-lazy-highlight-regexp-function)
-            (isearch-lax-whitespace         isearch-lazy-highlight-lax-whitespace)
-            (isearch-regexp-lax-whitespace  isearch-lazy-highlight-regexp-lax-whitespace)
-            (isearch-forward                isearch-lazy-highlight-forward)
-            (search-invisible               nil) ; Do not match invisible text.
-            (retry                          t)
-            (success                        nil)
-            (bound
-             (if isearch-lazy-highlight-forward
-                 (min (or isearch-lazy-highlight-end-limit  isearchp-reg-end  (point-max))
+    (condition-case nil
+        (let ((case-fold-search               isearch-lazy-highlight-case-fold-search)
+              (isearch-regexp                 isearch-lazy-highlight-regexp)
+              (isearch-regexp-function        isearch-lazy-highlight-regexp-function)
+              (isearch-lax-whitespace         isearch-lazy-highlight-lax-whitespace)
+              (isearch-regexp-lax-whitespace  isearch-lazy-highlight-regexp-lax-whitespace)
+              (isearch-forward                isearch-lazy-highlight-forward)
+              (search-invisible               nil) ; Do not match invisible text.
+              (retry                          t)
+              (success                        nil)
+              (bound
+               (if isearch-lazy-highlight-forward
+                   (min (or isearch-lazy-highlight-end-limit  isearchp-reg-end  (point-max))
+                        (if isearch-lazy-highlight-wrapped
+                            ;; Extend bound to match whole string at point
+                            (+ isearch-lazy-highlight-start (1- (length isearch-lazy-highlight-last-string)))
+                          (if lazy-highlight-max-at-a-time
+                              (if (fboundp 'window-group-end)
+                                  (window-group-end) ; Emacs 25+
+                                (window-end))
+                            (point-max))))
+                 (max (or isearch-lazy-highlight-start-limit  isearchp-reg-beg  (point-min))
                       (if isearch-lazy-highlight-wrapped
                           ;; Extend bound to match whole string at point
-                          (+ isearch-lazy-highlight-start (1- (length isearch-lazy-highlight-last-string)))
+                          (- isearch-lazy-highlight-end (1- (length isearch-lazy-highlight-last-string)))
                         (if lazy-highlight-max-at-a-time
-                            (if (fboundp 'window-group-end)
-                                (window-group-end) ; Emacs 25+
-                              (window-end))
-                          (point-max))))
-               (max (or isearch-lazy-highlight-start-limit  isearchp-reg-beg  (point-min))
-                    (if isearch-lazy-highlight-wrapped
-                        ;; Extend bound to match whole string at point
-                        (- isearch-lazy-highlight-end (1- (length isearch-lazy-highlight-last-string)))
-                      (if lazy-highlight-max-at-a-time
-                          (if (fboundp 'window-group-start)
-                              (window-group-start) ; Emacs 25+
-                            (window-start))
-                        (point-max)))))))
-        (while retry           ; Use a loop, like in `isearch-search'.
-          (setq success  (isearch-search-string isearch-lazy-highlight-last-string bound t))
-          ;; Clear RETRY unless the search predicate says to skip this search hit.
-          (when (or (not success)
-                    (= (point) bound) ; like (bobp) (eobp) in `isearch-search'.
-                    (= (match-beginning 0) (match-end 0))
-                    (funcall isearch-filter-predicate (match-beginning 0) (match-end 0)))
-                (setq retry  nil)))
+                            (if (fboundp 'window-group-start)
+                                (window-group-start) ; Emacs 25+
+                              (window-start))
+                          (point-max)))))))
+          (while retry         ; Use a loop, like in `isearch-search'.
+            (setq success  (isearch-search-string isearch-lazy-highlight-last-string bound t))
+            ;; Clear RETRY unless the search predicate says to skip this search hit.
+            (when (or (not success)
+                      (= (point) bound) ; like (bobp) (eobp) in `isearch-search'.
+                      (= (match-beginning 0) (match-end 0))
+                      (funcall isearch-filter-predicate (match-beginning 0) (match-end 0)))
+              (setq retry  nil)))
           success)
       (error nil)))
 
@@ -3932,13 +4118,13 @@ Attempt to do the search exactly the way the pending Isearch would."
                           (overlay-put ov 'priority 1000)
                           (overlay-put ov 'face 'lazy-highlight)
                           ))
-                          ;;; (overlay-put ov 'window (selected-window)))) ; Emacs 25+ commented this out.
+;;;                       (overlay-put ov 'window (selected-window)))) ; Emacs 25+ commented this out.
                       ;; Remember current point for next call of `isearch-lazy-highlight-update' when
                       ;; `lazy-highlight-max-at-a-time' is too small.
                       (if isearch-lazy-highlight-forward
                           (setq isearch-lazy-highlight-end  (point))
                         (setq isearch-lazy-highlight-start  (point)))))
-                  (unless found         ; Not found or zero-length match at the search bound
+                  (unless found ; Not found or zero-length match at the search bound
                     (if isearch-lazy-highlight-wrapped
                         (setq looping  nil
                               nomore   t)
@@ -3972,26 +4158,8 @@ Attempt to do the search exactly the way the pending Isearch would."
 (when (or (> emacs-major-version 24)    ; Emacs 24.3+
           (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
 
-  (defun isearchp-read-predicate (&optional prompt)
-    "Read and return a predicate usable as `isearch-filter-predicate'.
-You type a predicate suitable as `isearch-filter-predicate'.  It can
-be a function symbol, a lambda-form, or a byte-compiled function."
-    (let ((isearchp-resume-with-last-when-empty-flag  nil)
-          pred)
-      (unless prompt  (setq prompt  "Predicate: "))
-      (with-isearch-suspended
-        (while (or (not pred)
-                   (and (not (functionp pred))
-                        (not (advice-function-member-p pred isearch-filter-predicate))))
-          (setq pred  (condition-case nil
-                          (if (fboundp 'read--expression) (read--expression prompt) (read-minibuffer prompt))
-                        (error nil)))
-          (unless (or (functionp pred)  (advice-function-member-p pred isearch-filter-predicate))
-            (message "Not a function: `%S'" pred) (sit-for 1))))
-      pred))
-
   (defun isearchp-add-filter-predicate (predicate ; `M-? +'
-                                        &optional read-filter-name-p read-msg-prefix-p msgp) ; `M-? +'
+                                        &optional read-filter-name-p read-msg-prefix-p msgp)
     "Read a PREDICATE and add it to `isearch-filter-predicate'.
 PREDICATE can be a function symbol or a lambda form, but it must be
 suitable as `isearch-filter-predicate'.
@@ -4002,29 +4170,15 @@ are prompted if PREDICATE is a non-symbol, such as a lambda form.
 Using a non-positive prefix arg here reverses the behavior: If you
 would normally be prompted then you are not prompted, and vice versa.
 
-Option `isearchp-prompt-for-isearch-prompt-prefix' controls whether
-you are prompted to for prefix text to prepend to the Isearch prompt.
-The default option value means you are prompted.  Using a non-negative
+Option `isearchp-prompt-for-prompt-prefix-flag' controls whether you
+are prompted to for prefix text to prepend to the Isearch prompt.  The
+default option value means you are prompted.  Using a non-negative
 prefix arg here means you are not prompted."
     (interactive (list (isearchp-read-predicate "Add filter predicate: ")
                        (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
                        (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                        t))
-    (add-function :after-while isearch-filter-predicate predicate
-                  (append (and (case isearchp-prompt-for-filter-name
-                                 (always      (not read-filter-name-p))
-                                 (non-symbol  (if (not (symbolp predicate))
-                                                  (not read-filter-name-p)
-                                                read-filter-name-p))
-                                 (t           (not read-filter-name-p)))
-                               `((name . ,(isearchp-read-filter-name))))
-                          (and (if isearchp-prompt-for-isearch-prompt-prefix
-                                   (not read-msg-prefix-p)
-                                 read-msg-prefix-p)
-                               ;; Do not let empty prefix get highlighted.
-                               (let ((prefix  (isearchp-read-prompt-prefix)))
-                                 (and (> (length prefix) 0)  `((isearch-message-prefix . ,prefix)))))))
-    (when msgp (isearchp-filters-message)))
+    (isearchp-add-filter-predicate-1 :after-while predicate read-filter-name-p read-msg-prefix-p msgp))
 
   (defun isearchp-or-filter-predicate (predicate ;  `M-? |'
                                        &optional read-filter-name-p read-msg-prefix-p msgp)
@@ -4033,62 +4187,68 @@ prefix arg here means you are not prompted."
 either its previous test or the predicate you enter.  The latter is
 tested first.
 
-PREDICATE can be a function symbol or a lambda form, but it must be
-suitable as `isearch-filter-predicate'.
-
-Option `isearchp-prompt-for-filter-name' controls whether you are
-prompted to name the predicate.  The default option value means you
-are prompted if PREDICATE is a non-symbol, such as a lambda form.
-Using a non-positive prefix arg here reverses the behavior: If you
-would normally be prompted then you are not prompted, and vice versa.
-
-Option `isearchp-prompt-for-isearch-prompt-prefix' controls whether
-you are prompted to for prefix text to prepend to the Isearch prompt.
-The default option value means you are prompted.  Using a non-negative
-prefix arg here means you are not prompted."
+See `isearchp-add-filter-predicate' for descriptions of the args."
     (interactive (list (isearchp-read-predicate "Filter predicate to `or' with current: ")
                        (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
                        (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                        t))
-    (add-function :before-until isearch-filter-predicate predicate
-                  (append (and (case isearchp-prompt-for-filter-name
-                                 (always      (not read-filter-name-p))
-                                 (non-symbol  (if (not (symbolp predicate))
-                                                  (not read-filter-name-p)
-                                                read-filter-name-p))
-                                 (t           (not read-filter-name-p)))
-                               `((name . ,(isearchp-read-filter-name))))
-                          (and (if isearchp-prompt-for-isearch-prompt-prefix
-                                   (not read-msg-prefix-p)
-                                 read-msg-prefix-p)
-                               ;; Do not let empty prefix get highlighted.
-                               (let ((prefix  (isearchp-read-prompt-prefix)))
-                                 (and (> (length prefix) 0)  `((isearch-message-prefix . ,prefix)))))))
-    (when msgp (isearchp-filters-message)))
+    (isearchp-add-filter-predicate-1 :before-until predicate read-filter-name-p read-msg-prefix-p msgp))
 
-  (defun isearchp-filters-message ()
-    "Show current filters, in a message.
-These are the filters added dynamically, plus the initial one (advised)."
-    (let ((preds  ()))
-      (advice-function-mapc (lambda (pred props)
-                              (push (cond ((cdr (assq 'name props)))
-                                          ((symbolp pred) (symbol-name pred))
-                                          (t (format "%s" pred))) ; Should not be needed.
-                                    preds))
-                            isearch-filter-predicate)
-      (when preds
-        (let ((opred  (advice--cd*r isearch-filter-predicate)))
-          (setq opred  (if (symbolp opred) (symbol-name opred) (format "%s" opred)))
-          (push opred preds)))
-      (when preds (message "Filters: `%s'  [use `M-? s' to save, `M-? n' to name]"
-                           (mapconcat 'identity (nreverse preds) "', `")))))
+  (defun isearchp-add-regexp-filter-predicate (regexp ; `M-? %'
+                                               &optional read-filter-name-p read-msg-prefix-p msgp)
+    "Add a predicate that matches REGEXP against the current search hit.
+The predicate is added to `isearch-filter-predicate'.
+
+See `isearchp-add-filter-predicate' for descriptions of the args
+other than REGEXP."
+    (interactive (list (isearchp-read-regexp-during-search "Regexp (for predicate): ")
+                       (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                       (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
+                       t))
+    (isearchp-add-filter-predicate-1 :after-while (isearchp-match-regexp-filter-predicate regexp)
+                                     read-filter-name-p read-msg-prefix-p msgp))
+
+  (defun isearchp-add-filter-predicate-1 (where predicate read-filter-name-p read-msg-prefix-p msgp)
+    "Helper for `isearchp-add-filter-predicate' and similar commands.
+WHERE is passed to `add-function'.
+See `isearchp-add-filter-predicate' for descriptions of other args."
+    (let ((pred   predicate)
+          (name   nil)
+          (prfix  nil))
+      (when (and (consp pred)  (not (eq 'lambda (car pred))))
+        (if (stringp (car pred))
+            (setq name   (nth 0 pred)
+                  prfix  (nth 2 pred)
+                  pred   (nth 1 pred))
+          (if (cadr pred)
+              (setq prfix  (nth 1 pred)
+                    pred   (nth 0 pred))
+            (setq pred  (nth 0 pred)))))
+      (add-function where isearch-filter-predicate pred
+                    (append (and (or name  (case isearchp-prompt-for-filter-name
+                                             (always      (not read-filter-name-p))
+                                             (non-symbol  (if (not (symbolp predicate))
+                                                              (not read-filter-name-p)
+                                                            read-filter-name-p))
+                                             (t           (not read-filter-name-p))))
+                                 `((name . ,(or name  (isearchp-read-filter-name)))))
+                            (and (or prfix  (if isearchp-prompt-for-prompt-prefix-flag
+                                                (not read-msg-prefix-p)
+                                              read-msg-prefix-p))
+                                 ;; Do not let empty or whitespace prefix get highlighted.
+                                 (let ((prefix  (or prfix  (isearchp-read-prompt-prefix))))
+                                   (unless (or (= 0 (length prefix))
+                                               (string-match-p "\\`[ \t]+\\'" prefix))
+                                     (setq prefix  (concat prefix ", "))) ; Add a comma and a space.
+                                   (and (> (length prefix) 0)  `((isearch-message-prefix . ,prefix)))))))
+      (when msgp (isearchp-filters-message))))
 
   (defun isearchp-read-filter-name ()
     "Read a name for predicate being added."
     (let ((isearchp-resume-with-last-when-empty-flag  nil)
           name)
       (with-isearch-suspended (setq name  (read-string "Name this predicate: ")))
-      (let ((oname  nil))               ; Ensure neither (1) empty name mor (2) pre-existing name.
+      (let ((oname  nil)) ; Ensure neither (1) empty name mor (2) pre-existing name.
         (while (catch 'isearchp-read-filter-name
                  (when (= 0 (length name)) (throw 'isearchp-read-filter-name ""))
                  (advice-function-mapc (lambda (pred props)
@@ -4107,9 +4267,72 @@ These are the filters added dynamically, plus the initial one (advised)."
     (let ((isearchp-resume-with-last-when-empty-flag  nil)
           prefix)
       (with-isearch-suspended (setq prefix  (read-string "Add Isearch prompt text: ")))
-      (unless (or (= 0 (length prefix))  (string-match-p "\s- \\'" prefix))
-        (setq prefix  (concat prefix ", "))) ; Add a comma and a space.
       prefix))
+
+  (defun isearchp-filters-message ()
+    "Show current filters, in a message.
+These are the filters added dynamically, plus the initial one (advised)."
+    (let ((preds  ()))
+      (advice-function-mapc (lambda (pred props)
+                              (push (cond ((cdr (assq 'name props)))
+                                          ((symbolp pred) (symbol-name pred))
+                                          (t (format "%s" pred))) ; Should not be needed.
+                                    preds))
+                            isearch-filter-predicate)
+      (when preds
+        (let ((opred  (advice--cd*r isearch-filter-predicate)))
+          (setq opred  (if (symbolp opred) (symbol-name opred) (format "%s" opred)))
+          (push opred preds)))
+      (when preds (message "Filters: `%s'  [use `M-? s' to save, `M-? n' to name]"
+                           (mapconcat 'identity (nreverse preds) "', `")))))
+
+  (defun isearchp-read-predicate (&optional prompt)
+    "Read and return a predicate usable as `isearch-filter-predicate'.
+You type a predicate suitable as `isearch-filter-predicate'.  It can
+be a function symbol, a lambda-form, or a byte-compiled function.
+
+Completion is available against the predicates and short names in the
+entries in option `isearchp-filter-predicates-alist', but you can
+enter any other predicate instead (completion is lax).
+
+If you do pick one of the predicates or short names provided by
+`isearchp-filter-predicates-alist' then you are never prompted for a
+short name or a prompt prefix.
+
+The value returned is the predicate read, if it is not from
+`isearchp-filter-predicates-alist'.  Otherwise, it is the
+corresponding entry in `isearchp-filter-predicates-alist'."
+    (let ((isearchp-resume-with-last-when-empty-flag  nil)
+          input choice pred result)
+      (unless prompt  (setq prompt  "Predicate: "))
+      (with-isearch-suspended
+        (while (or (not pred)
+                   (and (not (functionp pred))
+                        (not (advice-function-member-p pred isearch-filter-predicate))))
+          (setq input   (completing-read prompt isearchp-filter-predicates-alist nil nil nil
+                                         'isearchp-predicate-history)
+                choice  (assoc input isearchp-filter-predicates-alist)
+                choice  (or choice  (assoc (intern input) isearchp-filter-predicates-alist)))
+          (setq result  (or choice  (intern input))
+                pred    (if choice
+                            (if (= 3 (length choice)) (nth 1 choice) (nth 0 choice))
+                          result))
+          (unless (or (functionp pred)  (advice-function-member-p pred isearch-filter-predicate))
+            (message "Not a function: `%S'" pred) (sit-for 1))))
+      result))
+
+  (defun isearchp-read-regexp-during-search (&optional prompt)
+    "Read and return a regexp, during Isearch, prompting with PROMPT."
+    (let ((isearchp-resume-with-last-when-empty-flag  nil)
+          regexp)
+      (unless prompt  (setq prompt  "Regexp: "))
+      (with-isearch-suspended (setq regexp  (read-regexp prompt)))
+      regexp))
+
+  (defun isearchp-match-regexp-filter-predicate (regexp)
+    "Return a predicate that matches REGEXP against the current search hit.
+The predicate is suitable for `isearch-filter-predicate'"
+    `(lambda (beg end) (save-match-data (string-match-p ,regexp (buffer-substring beg end)))))
 
   (defun isearchp-remove-filter-predicate (predicate &optional msgp) ; `M-? -'
     "Remove PREDICATE from `isearch-filter-predicate'."
@@ -4206,7 +4429,7 @@ subsequent searches (as if you had also used `\\[isearchp-save-filter-predicate]
     "Save the current filter predicate for subsequent searches."
     (interactive "p")
     (setq isearchp-saved-filter-predicate  isearch-filter-predicate)
-    (when msgp (message "Current filter predicate saved for next Isearch")))
+    (when msgp (message "Current filter predicate SAVED for next Isearch")))
 
   (defun isearchp-reset-filter-predicate (&optional msgp) ; `M-? 0'
     "Reset `isearch-filter-predicate' to its default value.
@@ -4214,7 +4437,7 @@ By default, this is `isearch-filter-visible'."
     (interactive "p")
     (setq isearch-filter-predicate         #'isearch-filter-visible
           isearchp-saved-filter-predicate  isearch-filter-predicate)
-    (when msgp (message "`isearch-filter-predicate' is reset to default: %s" isearch-filter-predicate)))
+    (when msgp (message "`isearch-filter-predicate' is RESET to default: %s" isearch-filter-predicate)))
 
   (defun isearchp-near (pattern distance &optional read-filter-name-p read-msg-prefix-p msgp) ; `M-? @'
     "Add Isearch predicate to match PATTERN within DISTANCE of search hit.
@@ -4232,9 +4455,9 @@ are prompted if PREDICATE is a non-symbol, such as a lambda form.
 Using a non-positive prefix arg here reverses the behavior: If you
 would normally be prompted then you are not prompted, and vice versa.
 
-Option `isearchp-prompt-for-isearch-prompt-prefix' controls whether
-you are prompted to for prefix text to prepend to the Isearch prompt.
-The default option value means you are prompted.  Using a non-negative
+Option `isearchp-prompt-for-prompt-prefix-flag' controls whether you
+are prompted to for prefix text to prepend to the Isearch prompt.  The
+default option value means you are prompted.  Using a non-negative
 prefix arg here means you are not prompted."
     (interactive (isearchp-read-near-args "Near regexp: "))
     (isearchp-add-filter-predicate
@@ -4293,18 +4516,18 @@ moves one unit forward."
               (if (functionp input)
                   input
                 (cdr (assq input isearchp-movement-unit-alist)))))))
-  
+
   (defun isearchp-near-predicate (pattern distance)
     "Return a predicate that tests if PATTERN is within DISTANCE.
 The predicate returns non-nil if PATTERN is found either before or
 after the search hit, within DISTANCE characters."
     `(lambda (beg end)
-      (or (save-excursion
-            (goto-char beg)
-            (save-match-data (re-search-backward ,pattern (max (point-min) (- beg ,distance)) t)))
-       (save-excursion
-         (goto-char end)
-         (save-match-data (re-search-forward  ,pattern (min (point-max) (+ end ,distance)) t))))))
+       (or (save-excursion
+             (goto-char beg)
+             (save-match-data (re-search-backward ,pattern (max (point-min) (- beg ,distance)) t)))
+           (save-excursion
+             (goto-char end)
+             (save-match-data (re-search-forward  ,pattern (min (point-max) (+ end ,distance)) t))))))
 
   (defun isearchp-near-before-predicate (pattern distance)
     "Return a predicate that tests if PATTERN precedes hit within DISTANCE.
@@ -4313,14 +4536,14 @@ hit, within DISTANCE.
 
 DISTANCE is a cons returned by function `isearchp-read-measure'."
     `(lambda (beg _)
-      (save-excursion
-        (goto-char beg)
-        (let ((dist     ,(car distance))
-              (unit-fn  ',(cdr distance))
-              unit-pos)
-          (save-excursion (condition-case nil (funcall unit-fn (- dist)) (error nil))
-                          (setq unit-pos  (point)))
-          (save-match-data (re-search-backward ,pattern (max (point-min) unit-pos) t))))))
+       (save-excursion
+         (goto-char beg)
+         (let ((dist     ,(car distance))
+               (unit-fn  ',(cdr distance))
+               unit-pos)
+           (save-excursion (condition-case nil (funcall unit-fn (- dist)) (error nil))
+                           (setq unit-pos  (point)))
+           (save-match-data (re-search-backward ,pattern (max (point-min) unit-pos) t))))))
 
   (defun isearchp-near-after-predicate (pattern distance)
     "Return a predicate that tests if PATTERN succeeds hit within DISTANCE.
@@ -4329,14 +4552,222 @@ hit, within DISTANCE.
 
 DISTANCE is a cons returned by function `isearchp-read-measure'."
     `(lambda (_ end)
+       (save-excursion
+         (goto-char end)
+         (let ((dist     ,(car distance))
+               (unit-fn  ',(cdr distance))
+               unit-pos)
+           (save-excursion (condition-case nil (funcall unit-fn dist) (error nil))
+                           (setq unit-pos  (point)))
+           (save-match-data (re-search-forward ,pattern (min (point-max) unit-pos) t))))))
+
+  (defun isearchp-in-comment-p (beg end)
+    "Return t if all chars in the search hit are in the same comment.
+\(The comment delimiters are not considered to be in the comment.)
+BEG and END are the search-hit limits."
+    (let ((result  t)
+          (pos     beg))
       (save-excursion
-        (goto-char end)
-        (let ((dist     ,(car distance))
-              (unit-fn  ',(cdr distance))
-              unit-pos)
-          (save-excursion (condition-case nil (funcall unit-fn dist) (error nil))
-                          (setq unit-pos  (point)))
-          (save-match-data (re-search-forward ,pattern (min (point-max) unit-pos) t))))))
+        (goto-char pos)
+        (setq result  (catch 'isearchp-in-comment-p
+                        (while (<= pos end)
+                          (unless (nth 4 (syntax-ppss pos))
+                            (throw 'isearchp-in-comment-p nil))
+                          (setq pos  (1+ pos)))
+                        t)))))
+
+  (defun isearchp-in-comment-or-delim-p (beg end)
+    "Like `isearchp-in-comment-p', plus `comment-start' and `comment-end'.
+BEG and END are the search-hit limits."
+    (let ((result  t)
+          (pos     beg))
+      (save-excursion
+        (goto-char pos)
+        (setq result  (catch 'isearchp-in-comment-or-delim-p
+                        (while (<= pos end)
+                          (unless (or (nth 4 (syntax-ppss pos))
+                                      (and comment-start-skip  (looking-at comment-start-skip)))
+                                      ;;; (and comment-end-skip  (looking-at comment-end-skip))
+                            (throw 'isearchp-in-comment-or-delim-p nil))
+                          (setq pos  (1+ pos)))
+                        t)))))
+
+  (defun isearchp-in-string-p (beg end)
+    "Return t if all chars in the search hit are in the same string.
+\(The string delimiters are not considered to be in the string.)
+BEG and END are the search-hit limits."
+    (let ((result  t)
+          (pos     beg))
+      (save-excursion
+        (goto-char pos)
+        (setq result  (catch 'isearchp-in-string-p
+                        (while (<= pos end)
+                          (unless (nth 3 (syntax-ppss pos))
+                            (throw 'isearchp-in-string-p nil))
+                          (setq pos  (1+ pos)))
+                        t)))))
+
+  (defun isearchp-in-string-or-comment-p (beg end)
+    "Return t if all chars in the search hit are in a string or in a comment.
+\(The string and comment delimiters are not considered to be in the
+string or comment, respectively.)
+BEG and END are the search-hit limits."
+    (let ((result  t)
+          (pos     beg))
+      (save-excursion
+        (goto-char pos)
+        (setq result  (catch 'isearchp-in-string-or-comment-p
+                        (while (<= pos end)
+                          (unless (nth 8 (syntax-ppss pos))
+                            (throw 'isearchp-in-string-or-comment-p nil))
+                          (setq pos  (1+ pos)))
+                        t)))))
+
+  (defun isearchp-in-file-or-url-p (beg end)
+    "Return t if all chars in the search hit are in the same URL.
+\(This is quite lax; it uses `ffap-guesser'.)
+BEG and END are the search-hit limits."
+    (require 'ffap)
+    (let ((result  t)
+          (pos     beg))
+      (save-excursion
+        (goto-char pos)
+        (setq result  (catch 'isearchp-in-file-or-url-p
+                        (while (<= pos end)
+                          (unless (save-match-data (ffap-guesser))
+                            (throw 'isearchp-in-file-or-url-p nil))
+                          (setq pos  (1+ pos)))
+                        t)))))
+
+  (defun isearchp-in-list-p (beg end)
+    "Return t if all chars in the search hit are in the same list.
+BEG and END are the search-hit limits."
+    (let ((result  t)
+          (pos     beg))
+      (save-excursion
+        (goto-char pos)
+        (setq result  (catch 'isearchp-in-list-p
+                        (while (<= pos end)
+                          (when (= 0 (nth 0 (syntax-ppss pos)))
+                            (throw 'isearchp-in-list-p nil))
+                          (setq pos  (1+ pos)))
+                        t)))))
+
+  (defun isearchp-in-lisp-variable-p (__%$_BEG_+-*&__ __%$_END_+-*&__)
+    "Return t if all chars in the search hit are in the same Lisp variable.
+BEG and END are the search-hit limits."
+    ;; Just ignore the arguments, as variables (dumb, ugly hack, but good enough).
+    (save-excursion
+      (goto-char __%$_BEG_+-*&__)
+      (catch 'isearchp-in-lisp-variable-p
+        (while (<= __%$_BEG_+-*&__ __%$_END_+-*&__)
+          (unless (and (symbolp (variable-at-point))
+                       (not (memq (variable-at-point) '(__%$_BEG_+-*&__ __%$_END_+-*&__))))
+            (throw 'isearchp-in-lisp-variable-p nil))
+          (setq __%$_BEG_+-*&__  (1+ __%$_BEG_+-*&__)))
+        t)))
+
+  (defun isearchp-in-list-p (beg end)
+    "Return t if all chars in the search hit are in the same list.
+BEG and END are the search-hit limits."
+    (let ((result  t)
+          (pos     beg))
+      (save-excursion
+        (goto-char pos)
+        (setq result  (catch 'isearchp-in-list-p
+                        (while (<= pos end)
+                          (when (= 0 (nth 0 (syntax-ppss pos)))
+                            (throw 'isearchp-in-list-p nil))
+                          (setq pos  (1+ pos)))
+                        t)))))
+
+  (defun isearchp-in-thing-p (thing beg end)
+    "Return t if chars from BEG through END are in the same THING."
+    (require 'thingatpt+ nil t)
+    (let ((thg-fn  (if (fboundp 'tap-bounds-of-thing-at-point) ; In `thingatpt+.el'.
+                       'tap-bounds-of-thing-at-point
+                     'bounds-of-thing-at-point))
+          bounds)
+      (save-excursion (goto-char beg)
+                      (setq bounds  (save-match-data (funcall thg-fn thing)))
+                      (and bounds  (<= end (cdr bounds))))))
+
+  (defun isearchp-in-color-p (beg end)
+    "Return t if all chars in the search hit are in the same color name.
+Such a name is any that satisfies `color-defined-p', which includes
+`#' followed by RGB triples.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'color beg end))
+
+  (defun isearchp-in-email-address-p (beg end)
+    "Return t if all chars in the search hit are in the same email address.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'email beg end))
+
+  (defun isearchp-in-url-p (beg end)
+    "Return t if all chars in the search hit are in the same URL.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'url beg end))
+
+  (defun isearchp-in-file-name-p (beg end)
+    "Return t if all chars in the search hit are in the same file name.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'filename beg end))
+
+  (defun isearchp-in-defun-p (beg end)
+    "Return t if all chars in the search hit are in the same defun.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'defun beg end))
+
+  (defun isearchp-in-sentence-p (beg end)
+    "Return t if all chars in the search hit are in the same sentence.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'sentence beg end))
+
+  (defun isearchp-in-paragraph-p (beg end)
+    "Return t if all chars in the search hit are in the same paragraph.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'paragraph beg end))
+
+  (defun isearchp-in-line-p (beg end)
+    "Return t if all chars in the search hit are in the same line.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'line beg end))
+
+  (defun isearchp-in-page-p (beg end)
+    "Return t if all chars in the search hit are in the same page.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'page beg end))
+
+  (defun isearchp-in-sexp-p (beg end)
+    "Return t if all chars in the search hit are in the same sexp.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'sexp beg end))
+
+  (defun isearchp-in-symbol-p (beg end)
+    "Return t if all chars in the search hit are in the same symbol.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'symbol beg end))
+
+  (defun isearchp-in-word-p (beg end)
+    "Return t if all chars in the search hit are in the same word.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'word beg end))
+
+  (defun isearchp-in-number-p (beg end)
+    "Return t if all chars in the search hit are in the same number.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'number beg end))
+
+  (defun isearchp-in-decimal-number-p (beg end)
+    "Return t if all chars in the search hit are in the same number.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'decimal-number beg end))
+
+  (defun isearchp-in-hex-number-p (beg end)
+    "Return t if all search-hit chars are in the same hexadecimal number.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'hex-number beg end))
 
   )
 
@@ -4575,15 +5006,18 @@ Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
   (define-key minibuffer-local-isearch-map "\C-x8\r" 'insert-char))
 
 ;; Dynamic addition of filter predicates.
-(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+(when (or (> emacs-major-version 24)    ; Emacs 24.3+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
 
   (define-key isearch-mode-map (kbd "M-?")      nil) ; Put predicate commands on prefix `M-?'.
   (define-key isearch-mode-map (kbd "M-? &")    'isearchp-add-filter-predicate) ; `M-? &'
+  (define-key isearch-mode-map (kbd "M-? %")    'isearchp-add-regexp-filter-predicate) ; `M-? %'
   (define-key isearch-mode-map (kbd "M-? |")    'isearchp-or-filter-predicate) ; `M-? |'
   (define-key isearch-mode-map (kbd "M-? -")    'isearchp-remove-filter-predicate) ; `M-? -'
   (define-key isearch-mode-map (kbd "M-? ~")    'isearchp-complement-filter) ; `M-? ~'
   (define-key isearch-mode-map (kbd "M-? !")    'isearchp-set-filter-predicate) ; `M-? !'
   (define-key isearch-mode-map (kbd "M-? s")    'isearchp-save-filter-predicate) ; `M-? s'
+  (define-key isearch-mode-map (kbd "M-? S")    'isearchp-toggle-auto-save-filter-predicate) ; `M-? S'
   (define-key isearch-mode-map (kbd "M-? n")    'isearchp-defun-filter-predicate) ; `M-? n'
   (define-key isearch-mode-map (kbd "M-? 0")    'isearchp-reset-filter-predicate) ; `M-? 0'
   (define-key isearch-mode-map (kbd "M-? <")    'isearchp-near-before) ; `M-? <'
