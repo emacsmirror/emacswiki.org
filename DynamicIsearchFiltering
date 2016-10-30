@@ -38,9 +38,13 @@ Here are some of the things you can do, using this feature:
 
 * Search for something that is **near** something else -- within a given number of characters, words, lists, or sentences (you can add to this list of distance units).  You specify the nearness.  You can also constrain the nearby pattern to be only before or only after the search hit.
 
-* Search for stuff in the union of given contexts. Example: search for `cat' or `dog'.
+* Search for stuff in the union of given contexts. Example: search for text that is near `cat' or near `dog'.
 
-* Search for stuff '''outside''' contexts: Use the complement of any set of contexts as the search space.
+* Search for stuff '''outside''' contexts: Use the complement of any set of contexts as the search space. Example: search for text that is not near `cat' and not near `dog'.
+
+
+
+
 
 
 The following commands are available with '''[::Isearch+]''', all on prefix key '''`##M-?##'''':
