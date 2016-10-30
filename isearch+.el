@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 30 14:01:53 2016 (-0700)
+;; Last-Updated: Sun Oct 30 14:50:58 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 4776
+;;     Update #: 4785
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -824,6 +824,7 @@
 ;;       Moved non-highlighting of empty or whitespace prefix here, from isearchp-read-prompt-prefix.
 ;;     isearchp-read-prompt-prefix: Move adding comma and space to callers.
 ;;     isearchp-read-predicate: Use completing-read prompt w/ isearchp-filter-predicates-alist.
+;;     isearchp-near-predicate: Updated for feature of specifying units (forgot to do it).
 ;; 2016/10/22 dadams
 ;;     Added: isearchp-movement-unit-alist, isearchp-read-measure.
 ;;     isearchp-read-near-args: Use isearchp-read-measure.
@@ -4442,9 +4443,13 @@ By default, this is `isearch-filter-visible'."
   (defun isearchp-near (pattern distance &optional read-filter-name-p read-msg-prefix-p msgp) ; `M-? @'
     "Add Isearch predicate to match PATTERN within DISTANCE of search hit.
 Matching can be either before or after the search hit.
-PATTERN is a regexp.  DISTANCE is measured in characters.
-
 You are prompted for the PATTERN and DISTANCE.
+
+* PATTERN is a regexp.
+
+* DISTANCE is measured in the units you specify (default: `c', meaning
+  characters).  The available measurement units are defined by user
+  option `isearchp-movement-unit-alist'.
 
 You might also be prompted for a predicate name or an Isearch prompt
 prefix, as follows:
@@ -4465,16 +4470,16 @@ prefix arg here means you are not prompted."
 
   (defun isearchp-near-before (pattern distance &optional read-filter-name-p read-msg-prefix-p msgp) ; `M-? <'
     "Add Isearch predicate to match PATTERN within DISTANCE before search hit.
-PATTERN is a regexp.  DISTANCE is measured in characters.
-For the prompting behavior and how to control it, see `isearchp-near'."
+See `isearchp-near' for the args and the prompting behavior (and how
+to control it)."
     (interactive (isearchp-read-near-args "Near-before regexp: "))
     (isearchp-add-filter-predicate
      (isearchp-near-before-predicate pattern distance) read-filter-name-p read-msg-prefix-p msgp))
 
   (defun isearchp-near-after (pattern distance &optional read-filter-name-p read-msg-prefix-p msgp) ; `M-? >'
     "Add Isearch predicate to match PATTERN within DISTANCE after search hit.
-PATTERN is a regexp.  DISTANCE is measured in characters.
-For the prompting behavior and how to control it, see `isearchp-near'."
+See `isearchp-near' for the args and the prompting behavior (and how
+to control it)."
     (interactive (isearchp-read-near-args "Near-after regexp: "))
     (isearchp-add-filter-predicate
      (isearchp-near-after-predicate pattern distance) read-filter-name-p read-msg-prefix-p msgp))
@@ -4520,14 +4525,26 @@ moves one unit forward."
   (defun isearchp-near-predicate (pattern distance)
     "Return a predicate that tests if PATTERN is within DISTANCE.
 The predicate returns non-nil if PATTERN is found either before or
-after the search hit, within DISTANCE characters."
+after the search hit, within DISTANCE.
+
+DISTANCE is a cons returned by function `isearchp-read-measure'."
     `(lambda (beg end)
        (or (save-excursion
              (goto-char beg)
-             (save-match-data (re-search-backward ,pattern (max (point-min) (- beg ,distance)) t)))
+             (let ((dist     ,(car distance))
+                   (unit-fn  ',(cdr distance))
+                   unit-pos)
+               (save-excursion (condition-case nil (funcall unit-fn (- dist)) (error nil))
+                               (setq unit-pos  (point)))
+               (save-match-data (re-search-backward ,pattern (max (point-min) unit-pos) t))))
            (save-excursion
              (goto-char end)
-             (save-match-data (re-search-forward  ,pattern (min (point-max) (+ end ,distance)) t))))))
+             (let ((dist     ,(car distance))
+                   (unit-fn  ',(cdr distance))
+                   unit-pos)
+               (save-excursion (condition-case nil (funcall unit-fn dist) (error nil))
+                               (setq unit-pos  (point)))
+               (save-match-data (re-search-forward ,pattern (min (point-max) unit-pos) t)))))))
 
   (defun isearchp-near-before-predicate (pattern distance)
     "Return a predicate that tests if PATTERN precedes hit within DISTANCE.
