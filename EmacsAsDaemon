@@ -387,6 +387,10 @@ I get weird some weird gui-related errors with the above script.  Using Spacemac
 [new]
 This apparently stops working with systemd 219, see https://emacs.stackexchange.com/questions/9390/emacsclient-cant-open-display-0
 
+
+[new]
+To prevent emacs from hindering shutdown when sudo-edit was used I had to add "emacsclient -e "(kill-emacs)"" to /etc/gdm/PostSession/Default
+
 == Stopping the Emacs Daemon ==
 
 The simplest way to stop the emacs daemon from within emacs is to use the <code>kill-emacs</code> or <code>save-buffers-kill-emacs</code> commands.
