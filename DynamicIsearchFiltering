@@ -11,7 +11,10 @@ Here are some of the things you can do, using this feature:
 
 * Search for a number of things at the same time, in any order.  Example: `cat', `dog', and `turtle', ''in any order'', within the same context (e.g. within a line).
 
-* Search in a progressive way, using multiple simple search patterns instead of a single complicated pattern.  The previous example is also an example of this: (1) Search for lines: `C-M-s .+'. (2) Refine that search to matches for `cat': `M-? % cat'. (3) Do the same for `dog', and then `turtle' (`M-? % dog', `M-? % turtle').
+* Search in a progressive way, using multiple simple search patterns instead of a single complicated pattern.  The previous example is also an example of this:
+## Search for lines: `##C-M-s .+##'.
+## Refine that search to matches for `cat': `##M-? % cat##'.
+## Do the same for `dog', and then `turtle' (`##M-? % dog##', `##M-? % turtle##').
 
 * Search for stuff within contexts, which can correspond to a type of THING. Examples of context type:
 
