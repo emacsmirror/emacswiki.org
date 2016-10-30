@@ -63,7 +63,7 @@ The following commands are available with '''[[Isearch+]]''', all on prefix key 
 
 * '''`##M-? S##'''' (`isearchp-toggle-auto-save-filter-predicate') toggles automatic saving of the current filter-predicate suite, so that it is used for subsequent searches.  (To remove saved predicates, use `##M-? 0##'.)  This command simply toggles option '''`isearchp-auto-save-filter-predicate-flag''''.
 
-* '''`##M-? 0##'''' (`isearchp-reset-filter-predicate') ''resets'' `isearch-filter-predicate' to its original (default) value.
+* '''`##M-? 0##'''' (`isearchp-reset-filter-predicate') ''resets'' `isearch-filter-predicate' to its original (default) value (which is typically `isearch-filter-visible').
 
 * '''`##M-? n##'''' (`isearchp-defun-filter-predicate') ''names'' the current suite of filter predicates, creating a named predicate that does the same thing.  (You can use that name with `##M-? -##' to remove that predicate.)  With a prefix arg it can also set or save (i.e., do what `##M-? !##' or `##M-? s##' does).
 
