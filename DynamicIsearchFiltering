@@ -5,9 +5,9 @@ The predicate that is the value of '''`isearch-filter-predicate'''' is
 
 This lets you search only given zones of text, where those zones can be defined on the fly in complex ways that are easy to specify.
 
-This is different from the feature provided by companion '''Isearch+''' library '''<tt>[[isearch-prop.el]]</tt>''', which also lets you constrain search to zones of text.  When you use that library you ''first define the zones'', and then search is limited to them.  ''With dynamic filtering, search is not limited to certain zones ahead of time.'' Instead, after a search hit is found the filters are applied to see if it should be retained as a search hit. This is ''a posteriori'' filtering, whereas '''<tt>[[isearch-prop.el]]</tt>''' uses ''a priori'' filtering. Each has its advantages.
+: '''Note:''' This is different from the feature provided by companion '''Isearch+''' library '''<tt>[[isearch-prop.el]]</tt>''', which also lets you constrain search to zones of text.  When you use that library you ''first define the zones'', and then search is limited to them.  ''With dynamic filtering, search is not limited to certain zones ahead of time.'' Instead, after a search hit is found the filters are applied to see if it should be retained as a search hit. This is ''a posteriori'' filtering, whereas '''<tt>[[isearch-prop.el]]</tt>''' uses ''a priori'' filtering. Each has its advantages.
 
-Here are some of the things you can do, using dynamic filtering:
+Here are some of the things you can do using dynamic filtering:
 
 * Search for a number of things at the same time, in any order.  Example: `cat', `dog', and `turtle', ''in any order'', within the same context (e.g. within a line).
 
@@ -59,9 +59,11 @@ The following commands are available with '''[[Isearch+]]''', all on prefix key 
 
 * '''`##M-? !##'''' (`isearchp-set-filter-predicate') ''sets'' the overall filter predicate (advised `isearch-filter-predicate') to a single predicate.
 
-* '''`##M-? 0##'''' (`isearchp-reset-filter-predicate') ''resets'' `isearch-filter-predicate' to its original (default) value.
+* '''`##M-? s##'''' (`isearchp-save-filter-predicate') ''saves'' the current filter-predicate suite, for subsequent searches.  Unless you save it (and unless auto-saving is turned on), the next Isearch starts out from scratch, using the default value of `isearch-filter-predicate'.  (To remove saved predicates, use `##M-? 0##'.)
 
-* '''`##M-? s##'''' (`isearchp-save-filter-predicate') ''saves'' the current filter-predicate suite for subsequent searches.  Unless you save it, the next Isearch starts out from scratch, using the default value of `isearch-filter-predicate'.
+* '''`##M-? S##'''' (`isearchp-toggle-auto-save-filter-predicate') toggles automatic saving of the current filter-predicate suite, so that it is used for subsequent searches.  (To remove saved predicates, use `##M-? 0##'.)  This command simply toggles option '''`isearchp-auto-save-filter-predicate-flag''''.
+
+* '''`##M-? 0##'''' (`isearchp-reset-filter-predicate') ''resets'' `isearch-filter-predicate' to its original (default) value.
 
 * '''`##M-? n##'''' (`isearchp-defun-filter-predicate') ''names'' the current suite of filter predicates, creating a named predicate that does the same thing.  (You can use that name with `##M-? -##' to remove that predicate.)  With a prefix arg it can also set or save (i.e., do what `##M-? !##' or `##M-? s##' does).
 
