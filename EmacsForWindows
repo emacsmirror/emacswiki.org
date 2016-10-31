@@ -1,6 +1,10 @@
-The official MS-Windows port homepage from gnu.org is
-http://www.gnu.org/software/emacs/windows/ntemacs.html .
-Many issues concerning Emacs and MS-Windows are treated there.
+Download:
+
+* http://ftpmirror.gnu.org/emacs/windows/
+
+
+The [http://www.gnu.org/software/emacs/windows/ntemacs.html official MS-Windows port homepage]
+treats many issues concerning Emacs and MS-Windows.
 The page has also links to the precompiled binaries for MS-Windows of the current Emacs or earlier versions. 
 
 If you want precompiled binaries for the latest Emacses (version 24.4 is officially released stable), please see CategoryWThirtyTwo.
