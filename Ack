@@ -2,8 +2,9 @@
 
 There are several GrepMode-like interfaces for Ack:
 
-* [http://www.shellarchive.co.uk/content/emacs.html ack.el(link dead)]
 * [https://github.com/leoliu/ack-el ack.el and pcmpl-ack.el]
+** distributed via [http://elpa.gnu.org/ GNU ELPA]
+** run <code>M-x list-packages</code> in Emacs. (This requires Emacs version 24.1 or higher.)
 * [http://rooijan.za.net/code/emacs-lisp/ack-el Another ack.el]
 * FullAck
 * [https://github.com/jhelwig/ack-and-a-half ack-and-a-half] -- a merger of FullAck and ack.el that didn't credit either of the original authors and violated the GPL by being released under an incompatible license. The repository has since been removed.
