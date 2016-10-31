@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 30 14:50:58 2016 (-0700)
+;; Last-Updated: Mon Oct 31 08:29:20 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 4785
+;;     Update #: 4817
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: help, matching, internal, local
@@ -192,6 +192,7 @@
 ;;
 ;;  Internal variables defined here:
 ;;
+;;    `isearchp-filter-map' (Emacs 24.3+),
 ;;    `isearchp-last-non-nil-invisible',
 ;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
 ;;    `isearchp-nomodify-action-hook' (Emacs 22+),
@@ -277,7 +278,6 @@
 ;;    `C-y C-w'    `isearchp-yank-word-or-char' (Emacs 22+)
 ;;    `C-y C-y'    `isearch-yank-kill'
 ;;    `C-y M-y'    `isearch-yank-pop' (Emacs 24+)
-;;    `C-z'        `isearchp-yank-char' (Emacs 22+)
 ;;    `M-c'        `isearch-toggle-case-fold'
 ;;    `M-e'        `isearch-edit-string'
 ;;    `M-g'        `isearchp-retrieve-last-quit-search'
@@ -325,52 +325,54 @@
 ;;    advised by additional predicates that you add, creating a
 ;;    complex suite of predicates that act together.
 ;;
-;;    These commands are available, all on prefix key `M-?':
+;;    These filtering commands are available during Isearch.  They are
+;;    all on prefix key `C-z', by default.  (They are on prefix keymap
+;;    `isearchp-filter-map', which you can bind to any key in
+;;    `isearch-mode-map'.)
 ;;
-;;    - `M-? &' (`isearchp-add-filter-predicate') adds a filter
+;;    - `C-z &' (`isearchp-add-filter-predicate') adds a filter
 ;;      predicate, AND-ing it as an additional `:after-while' filter.
 ;;
-;;    - `M-? %' (`isearchp-add-regexp-filter-predicate') adds a filter
+;;    - `C-z %' (`isearchp-add-regexp-filter-predicate') adds a filter
 ;;      predicate that requires search hits to match a given regexp.
 ;;
-;;    - `M-? |' (`isearchp-or-filter-predicate') adds a filter
+;;    - `C-z |' (`isearchp-or-filter-predicate') adds a filter
 ;;      predicate, OR-ing it as an additional `:before-until' filter.
 ;;
-;;    - `M-? ~' (`isearchp-complement-filter') complements the current
+;;    - `C-z ~' (`isearchp-complement-filter') complements the current
 ;;      filter.  It either adds an `:around' filter that complements
 ;;      or it removes an existing top-level complementing filter.
 ;;
-;;    - `M-? -' (`isearchp-remove-filter-predicate') removes the last
+;;    - `C-z -' (`isearchp-remove-filter-predicate') removes the last
 ;;      added filter predicate.
 ;;
-;;    - `M-? !' (`isearchp-set-filter-predicate') sets the overall
+;;    - `C-z !' (`isearchp-set-filter-predicate') sets the overall
 ;;      filter predicate (advised `isearch-filter-predicate') to a
 ;;      single predicate.
 ;;
-;;    - `M-? 0' (`isearchp-reset-filter-predicate') resets
+;;    - `C-z 0' (`isearchp-reset-filter-predicate') resets
 ;;      `isearch-filter-predicate' to its original (default) value.
 ;;
-;;    - `M-? s' (`isearchp-save-filter-predicate') saves the current
+;;    - `C-z s' (`isearchp-save-filter-predicate') saves the current
 ;;      filter-predicate suite for subsequent searches.  Unless you
 ;;      save it, the next Isearch starts out from scratch, using the
 ;;      default value of `isearch-filter-predicate'.
 ;;
-;;    - `M-? S' (`isearchp-toggle-auto-save-filter-predicate')
-;;      toggles option `isearchp-auto-save-filter-predicate-flag',
-;;      which provides automatic filter-predicate saving (so no need
-;;      to use `M-? s').
+;;    - `C-z S' (uppercase `s')
+;;      (`isearchp-toggle-auto-save-filter-predicate') toggles option
+;;      `isearchp-auto-save-filter-predicate-flag', which provides
+;;      automatic filter-predicate saving (so no need to use `C-z s').
 ;;
-;;    - `M-? n' (`isearchp-defun-filter-predicate') names the current
+;;    - `C-z n' (`isearchp-defun-filter-predicate') names the current
 ;;      suite of filter predicates, creating a named predicate that
-;;      does the same thing.  (You can use that name with `M-? -' to
+;;      does the same thing.  (You can use that name with `C-z -' to
 ;;      remove that predicate.)  With a prefix arg it can also set or
-;;      save (i.e., do what `M-? !' or `M-? s' does).
+;;      save (i.e., do what `C-z !' or `C-z s' does).
 ;;
-;;    - `M-? M-h' (`isearchp-show-filters') echoes the current suite
-;;      of filter predicates (advice and original, unadvised
-;;      predicate).
+;;    - `C-z ?' (`isearchp-show-filters') echoes the current suite of
+;;      filter predicates (advice and original, unadvised predicate).
 ;;
-;;    - `M-? @', `M-? <', and `M-? >' (`isearchp-near',
+;;    - `C-z @', `C-z <', and `C-z >' (`isearchp-near',
 ;;      `isearchp-near-before', and `isearchp-near-after') constrain
 ;;      searching to be within a given distance of (near) another
 ;;      search pattern.  For example, you can limit search hits to
@@ -393,7 +395,7 @@
 ;;      always, never, or only when the predicate that you provide is
 ;;      not a symbol (it is a lambda form).  The last of these is the
 ;;      default behavior.  If you are prompted and provide a name, you
-;;      can use that name with `M-? -' to remove that predicate.
+;;      can use that name with `C-z -' to remove that predicate.
 ;;
 ;;    - `isearchp-prompt-for-prompt-prefix-flag' says whether to
 ;;      prompt you for a prefix to add to the Isearch prompt.  You are
@@ -580,8 +582,8 @@
 ;;  * `C-M-y' (`isearch-yank-secondary') yanks the secondary selection
 ;;    into the search string, if you also use library `second-sel.el'.
 ;;
-;;  * `C-z' (`isearchp-yank-char') yanks successive characters onto
-;;    the search string.  This command is also bound to `C-y C-c'.
+;;  * `C-y C-c' (`isearchp-yank-char') yanks successive characters
+;;    onto the search string.
 ;;
 ;;  * `C-_' (`isearchp-yank-symbol-or-char') yanks successive symbols
 ;;    (or words or subwords or chars) into the search string.
@@ -800,6 +802,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/10/31 dadams
+;;     Added: isearchp-filter-map, and bound it to C-z.  Moved all dynamic filtering keys to it.
+;;     Changed binding of isearchp-show-filters from M-h to h (from M-? h to C-z h).
 ;; 2016/10/30 dadams
 ;;     Added: Faces: isearchp-prompt-filter-prefix, isearchp-prompt-filter-prefix-auto-save.  Other:
 ;;       isearchp-add-regexp-filter-predicate, isearchp-toggle-auto-save-filter-predicate,
@@ -1348,6 +1353,7 @@
 (defvar isearch-wrap-function)           ; In `isearch.el'.
 (defvar isearchp-auto-save-filter-predicate-flag) ; Here (Emacs 24.3+).
 (defvar isearchp-deactivate-region-flag) ; Here (Emacs 24.3+).
+(defvar isearchp-filter-map)             ; Here (Emacs 24.3+).
 (defvar isearchp-filter-predicates-alist) ; Here (Emacs 24.3+).
 (defvar isearchp-initiate-edit-commands) ; Here (Emacs 22+).
 (defvar isearchp-nomodify-action-hook)   ; Here (Emacs 22+).
@@ -1465,6 +1471,32 @@ t     means search is never  case sensitive
           (const :tag "Respect option `search-upper-case'"  t)
           (const :tag "Case insensitive"                    yes))
   :group 'isearch-plus)
+
+;; Dynamic search filtering.
+(when (or (> emacs-major-version 24)    ; Emacs 24.3+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+
+  (defvar isearchp-filter-map nil "Keymap containing bindings for dynamic Isearch filtering commands.")
+
+  (define-prefix-command 'isearchp-filter-map)
+  (define-key isearch-mode-map (kbd "C-z") isearchp-filter-map) ; Put filtering commands on prefix `C-z'.
+
+  (define-key isearchp-filter-map (kbd "&")  'isearchp-add-filter-predicate)                  ; `C-z &'
+  (define-key isearchp-filter-map (kbd "%")  'isearchp-add-regexp-filter-predicate)           ; `C-z %'
+  (define-key isearchp-filter-map (kbd "|")  'isearchp-or-filter-predicate)                   ; `C-z |'
+  (define-key isearchp-filter-map (kbd "-")  'isearchp-remove-filter-predicate)               ; `C-z -'
+  (define-key isearchp-filter-map (kbd "~")  'isearchp-complement-filter)                     ; `C-z ~'
+  (define-key isearchp-filter-map (kbd "!")  'isearchp-set-filter-predicate)                  ; `C-z !'
+  (define-key isearchp-filter-map (kbd "s")  'isearchp-save-filter-predicate)                 ; `C-z s'
+  (define-key isearchp-filter-map (kbd "S")  'isearchp-toggle-auto-save-filter-predicate)     ; `C-z S'
+  (define-key isearchp-filter-map (kbd "n")  'isearchp-defun-filter-predicate)                ; `C-z n'
+  (define-key isearchp-filter-map (kbd "0")  'isearchp-reset-filter-predicate)                ; `C-z 0'
+  (define-key isearchp-filter-map (kbd "<")  'isearchp-near-before)                           ; `C-z <'
+  (define-key isearchp-filter-map (kbd ">")  'isearchp-near-after)                            ; `C-z >'
+  (define-key isearchp-filter-map (kbd "@")  'isearchp-near)                                  ; `C-z @'
+  (define-key isearchp-filter-map (kbd "?")  'isearchp-show-filters)                          ; `C-z ?'
+
+  )
 
 (unless (boundp 'isearch-update-post-hook)
   (defvar isearch-update-post-hook ()
@@ -1655,7 +1687,7 @@ and PREDICATE is a predicate symbol or a lambda form suitable as a value of
 
 NAME is a (typically) short name for PREDICATE.  You can use it, for
 example, to remove PREDICATE from `isearch-filter-predicate', using
-`M-? -'."
+`C-z -'."
     :type '(repeat
             (choice
              (list
@@ -2362,7 +2394,7 @@ Toggles between nil and the last non-nil value."
 (when (or (> emacs-major-version 24)    ; Emacs 24.3+
           (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
 
-  (defun isearchp-toggle-auto-save-filter-predicate () ; Bound to `M-? S' in `isearch-mode-map'.
+  (defun isearchp-toggle-auto-save-filter-predicate () ; Bound to `C-z S' in `isearch-mode-map'.
     "Toggle `isearchp-auto-save-filter-predicate-flag'.
 If turning it on, save now.  Note that turning it off does not reset
 `isearch-filter-predicate'.  Use \\<isearch-mode-map>`\\[isearchp-reset-filter-predicate]' to do that."
@@ -2633,7 +2665,7 @@ With a numeric prefix arg, append that many copies of the character."
   )
 
 (when (fboundp 'isearch-yank-internal)  ; Emacs 22+
-  (defun isearchp-yank-char ()          ; Bound to `C-z' and `C-y C-c' in `isearch-mode-map'.
+  (defun isearchp-yank-char ()          ; Bound to `C-y C-c' in `isearch-mode-map'.
     "Yank next character from buffer onto search string.
 You can repeat this by hitting the last key again..."
     (interactive)
@@ -4159,7 +4191,7 @@ Attempt to do the search exactly the way the pending Isearch would."
 (when (or (> emacs-major-version 24)    ; Emacs 24.3+
           (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
 
-  (defun isearchp-add-filter-predicate (predicate ; `M-? +'
+  (defun isearchp-add-filter-predicate (predicate ; `C-z +'
                                         &optional read-filter-name-p read-msg-prefix-p msgp)
     "Read a PREDICATE and add it to `isearch-filter-predicate'.
 PREDICATE can be a function symbol or a lambda form, but it must be
@@ -4181,7 +4213,7 @@ prefix arg here means you are not prompted."
                        t))
     (isearchp-add-filter-predicate-1 :after-while predicate read-filter-name-p read-msg-prefix-p msgp))
 
-  (defun isearchp-or-filter-predicate (predicate ;  `M-? |'
+  (defun isearchp-or-filter-predicate (predicate ;  `C-z |'
                                        &optional read-filter-name-p read-msg-prefix-p msgp)
     "Read a PREDICATE and combine with the current one, using `or'.
 `isearch-filter-predicate' is updated to return non-nil according to
@@ -4195,7 +4227,7 @@ See `isearchp-add-filter-predicate' for descriptions of the args."
                        t))
     (isearchp-add-filter-predicate-1 :before-until predicate read-filter-name-p read-msg-prefix-p msgp))
 
-  (defun isearchp-add-regexp-filter-predicate (regexp ; `M-? %'
+  (defun isearchp-add-regexp-filter-predicate (regexp ; `C-z %'
                                                &optional read-filter-name-p read-msg-prefix-p msgp)
     "Add a predicate that matches REGEXP against the current search hit.
 The predicate is added to `isearch-filter-predicate'.
@@ -4284,7 +4316,8 @@ These are the filters added dynamically, plus the initial one (advised)."
         (let ((opred  (advice--cd*r isearch-filter-predicate)))
           (setq opred  (if (symbolp opred) (symbol-name opred) (format "%s" opred)))
           (push opred preds)))
-      (when preds (message "Filters: `%s'  [use `M-? s' to save, `M-? n' to name]"
+      (when preds (message (substitute-command-keys "Filters: `%s'  [use \\<isearch-mode-map>`\
+\\[isearchp-save-filter-predicate]' to save, `\\[isearchp-defun-filter-predicate]' to name]")
                            (mapconcat 'identity (nreverse preds) "', `")))))
 
   (defun isearchp-read-predicate (&optional prompt)
@@ -4335,7 +4368,7 @@ corresponding entry in `isearchp-filter-predicates-alist'."
 The predicate is suitable for `isearch-filter-predicate'"
     `(lambda (beg end) (save-match-data (string-match-p ,regexp (buffer-substring beg end)))))
 
-  (defun isearchp-remove-filter-predicate (predicate &optional msgp) ; `M-? -'
+  (defun isearchp-remove-filter-predicate (predicate &optional msgp) ; `C-z -'
     "Remove PREDICATE from `isearch-filter-predicate'."
     (interactive (let ((isearchp-resume-with-last-when-empty-flag  nil)
                        (preds                                      ())
@@ -4352,7 +4385,7 @@ The predicate is suitable for `isearch-filter-predicate'"
     (remove-function isearch-filter-predicate predicate)
     (when msgp (isearchp-filters-message)))
 
-  (defun isearchp-complement-filter (&optional msgp) ; `M-? ~'
+  (defun isearchp-complement-filter (&optional msgp) ; `C-z ~'
     "Complement the current Isearch predicate."
     (interactive "p")
     (let ((preds  ())
@@ -4367,19 +4400,22 @@ The predicate is suitable for `isearch-filter-predicate'"
             already-complementing-p  (equal "not" (car preds)))
       (cond (already-complementing-p
              (isearchp-remove-filter-predicate "not") ; Just turn off complementing current.
-             (when msgp (message "No longer complementing: %s  [use `M-? s' to save, `M-? n' to name]"
+             (when msgp (message (substitute-command-keys "No longer complementing: %s  \
+[use \\<isearch-mode-map>`\\[isearchp-save-filter-predicate]' to save, \
+`\\[isearchp-defun-filter-predicate]' to name]")
                                  (mapconcat 'identity (cdr preds) ", "))))
             (t
              (add-function :around isearch-filter-predicate 'isearchp-not-pred
                            '((name . "not") (isearch-message-prefix . "NOT ")))
-             (when msgp (message "NOT: %s  [use `M-? s' to save, `M-? n' to name]"
+             (when msgp (message (substitute-command-keys "NOT: %s  [use \\<isearch-mode-map>`\
+\\[isearchp-save-filter-predicate]' to save, `\\[isearchp-defun-filter-predicate]' to name]")
                                  (mapconcat 'identity preds ", ")))))))
 
   (defun isearchp-not-pred (filter-predicate beg end)
     "Return non-nil if calling FILTER-PREDICATE on BEG and END returns nil."
     (not (funcall filter-predicate beg end)))
 
-  (defun isearchp-show-filters (&optional msgp) ; `M-? M-h'
+  (defun isearchp-show-filters (&optional msgp) ; `C-z ?'
     "Print a message listing the current filter predicates."
     (interactive "p")
     (let ((preds  ()))
@@ -4391,7 +4427,7 @@ The predicate is suitable for `isearch-filter-predicate'"
                             isearch-filter-predicate)
       (when msgp (message "Filters: `%s'" (mapconcat 'identity (nreverse preds) "', `")))))
 
-  (defun isearchp-set-filter-predicate (predicate &optional msgp) ; `M-? !'
+  (defun isearchp-set-filter-predicate (predicate &optional msgp) ; `C-z !'
     "Set `isearch-filter-predicate' to PREDICATE.
 You can use `\\[isearchp-reset-filter-predicate]' (\\<isearch-mode-map>`\\[isearchp-reset-filter-predicate]' \
 during
@@ -4400,7 +4436,7 @@ Isearch) to reset it to the default value."
     (setq isearch-filter-predicate  predicate)
     (when msgp (isearchp-filters-message)))
 
-  (defun isearchp-defun-filter-predicate (function-symbol &optional set-p save-p msgp) ; `M-? n'
+  (defun isearchp-defun-filter-predicate (function-symbol &optional set-p save-p msgp) ; `C-z n'
     "Name the current filter predicate: Define a named function for it.
 With a non-positive prefix arg, set the current filter predicate to
 the named function (as if you had also used \\<isearch-mode-map>`\\[isearchp-set-filter-predicate]').  (This \
@@ -4426,13 +4462,13 @@ subsequent searches (as if you had also used `\\[isearchp-save-filter-predicate]
     (when save-p (isearchp-save-filter-predicate))
     (when msgp (message "Filter predicate `%S' defined%s" function-symbol (if save-p " and saved" ""))))
 
-  (defun isearchp-save-filter-predicate (&optional msgp) ; `M-? s'
+  (defun isearchp-save-filter-predicate (&optional msgp) ; `C-z s'
     "Save the current filter predicate for subsequent searches."
     (interactive "p")
     (setq isearchp-saved-filter-predicate  isearch-filter-predicate)
     (when msgp (message "Current filter predicate SAVED for next Isearch")))
 
-  (defun isearchp-reset-filter-predicate (&optional msgp) ; `M-? 0'
+  (defun isearchp-reset-filter-predicate (&optional msgp) ; `C-z 0'
     "Reset `isearch-filter-predicate' to its default value.
 By default, this is `isearch-filter-visible'."
     (interactive "p")
@@ -4440,7 +4476,7 @@ By default, this is `isearch-filter-visible'."
           isearchp-saved-filter-predicate  isearch-filter-predicate)
     (when msgp (message "`isearch-filter-predicate' is RESET to default: %s" isearch-filter-predicate)))
 
-  (defun isearchp-near (pattern distance &optional read-filter-name-p read-msg-prefix-p msgp) ; `M-? @'
+  (defun isearchp-near (pattern distance &optional read-filter-name-p read-msg-prefix-p msgp) ; `C-z @'
     "Add Isearch predicate to match PATTERN within DISTANCE of search hit.
 Matching can be either before or after the search hit.
 You are prompted for the PATTERN and DISTANCE.
@@ -4468,7 +4504,7 @@ prefix arg here means you are not prompted."
     (isearchp-add-filter-predicate
      (isearchp-near-predicate pattern distance) read-filter-name-p read-msg-prefix-p msgp))
 
-  (defun isearchp-near-before (pattern distance &optional read-filter-name-p read-msg-prefix-p msgp) ; `M-? <'
+  (defun isearchp-near-before (pattern distance &optional read-filter-name-p read-msg-prefix-p msgp) ; `C-z <'
     "Add Isearch predicate to match PATTERN within DISTANCE before search hit.
 See `isearchp-near' for the args and the prompting behavior (and how
 to control it)."
@@ -4476,7 +4512,7 @@ to control it)."
     (isearchp-add-filter-predicate
      (isearchp-near-before-predicate pattern distance) read-filter-name-p read-msg-prefix-p msgp))
 
-  (defun isearchp-near-after (pattern distance &optional read-filter-name-p read-msg-prefix-p msgp) ; `M-? >'
+  (defun isearchp-near-after (pattern distance &optional read-filter-name-p read-msg-prefix-p msgp) ; `C-z >'
     "Add Isearch predicate to match PATTERN within DISTANCE after search hit.
 See `isearchp-near' for the args and the prompting behavior (and how
 to control it)."
@@ -4967,7 +5003,6 @@ Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
 (define-key isearch-mode-map [(meta ?s) (meta ? )] 'isearchp-toggle-set-region)
 (define-key isearch-mode-map "\M-w"               'isearchp-kill-ring-save)
 (when (fboundp 'isearch-yank-internal)
-  (define-key isearch-mode-map "\C-z"             'isearchp-yank-char)
   (define-key isearch-mode-map "\C-_"             'isearchp-yank-symbol-or-char)
   (define-key isearch-mode-map [(control ?\()]    'isearchp-yank-sexp-symbol-or-char))
 (when (and (fboundp 'goto-longest-line)  window-system) ; Defined in `misc-cmds.el'
@@ -5021,28 +5056,6 @@ Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
   (define-key minibuffer-local-isearch-map [C-M-tab] 'isearch-complete-edit))
 (when (> emacs-major-version 22)
   (define-key minibuffer-local-isearch-map "\C-x8\r" 'insert-char))
-
-;; Dynamic addition of filter predicates.
-(when (or (> emacs-major-version 24)    ; Emacs 24.3+
-          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
-
-  (define-key isearch-mode-map (kbd "M-?")      nil) ; Put predicate commands on prefix `M-?'.
-  (define-key isearch-mode-map (kbd "M-? &")    'isearchp-add-filter-predicate) ; `M-? &'
-  (define-key isearch-mode-map (kbd "M-? %")    'isearchp-add-regexp-filter-predicate) ; `M-? %'
-  (define-key isearch-mode-map (kbd "M-? |")    'isearchp-or-filter-predicate) ; `M-? |'
-  (define-key isearch-mode-map (kbd "M-? -")    'isearchp-remove-filter-predicate) ; `M-? -'
-  (define-key isearch-mode-map (kbd "M-? ~")    'isearchp-complement-filter) ; `M-? ~'
-  (define-key isearch-mode-map (kbd "M-? !")    'isearchp-set-filter-predicate) ; `M-? !'
-  (define-key isearch-mode-map (kbd "M-? s")    'isearchp-save-filter-predicate) ; `M-? s'
-  (define-key isearch-mode-map (kbd "M-? S")    'isearchp-toggle-auto-save-filter-predicate) ; `M-? S'
-  (define-key isearch-mode-map (kbd "M-? n")    'isearchp-defun-filter-predicate) ; `M-? n'
-  (define-key isearch-mode-map (kbd "M-? 0")    'isearchp-reset-filter-predicate) ; `M-? 0'
-  (define-key isearch-mode-map (kbd "M-? <")    'isearchp-near-before) ; `M-? <'
-  (define-key isearch-mode-map (kbd "M-? >")    'isearchp-near-after) ; `M-? >'
-  (define-key isearch-mode-map (kbd "M-? @")    'isearchp-near) ; `M-? @'
-  (define-key isearch-mode-map (kbd "M-? M-h")  'isearchp-show-filters) ; `M-? M-h'
-
-  )
 
 (defun isearchp-set-region ()
   "Set the region around the search target, if `isearchp-set-region-flag'.
