@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul  2 13:42:46 2016 (-0700)
+;; Last-Updated: Mon Oct 31 07:28:17 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 5710
+;;     Update #: 5715
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -192,7 +192,7 @@
 ;;      `Info-fontify-quotations-flag' are non-`nil'.
 ;;
 ;;    - Emphasized text, that is, text enclosed in underscore
-;;      characters, like this: _this is emphasized text_ is
+;;      characters, like this: _this is emphasized text_, is
 ;;      highlighted if `Info-fontify-emphasis-flag' is non-`nil'.
 ;;      (But if internal variable `info-fontify-emphasis' is `nil'
 ;;      then there is no such highlighting, and that option has no
@@ -323,6 +323,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/10/31 dadams
+;;     info-quotation-regexp: Typo: misplaced curly double-quote.  Thx to Don March.
 ;; 2016/07/02 dadams
 ;;     Added: Info-toggle-fontify-emphasis, Info-breadcrumbs-in-header-flag, Info-emphasis-regexp,
 ;;            Info-fontify-emphasis-flag, info-fontify-emphasis, and face info-emphasis.
@@ -1131,8 +1133,8 @@ If nil then emphasis is never fontified, regardless of that flag.")
   (concat
    "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
    "`\\(?:[^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"      ; `...'
-   "‘\\(?:[^’]\\|\\\\\\(.\\|[\n]\\)\\)*’”\\|"     ; ‘...’
-   "\“\\(?:[^”]\\|\\\\\\(.\\|[\n]\\)\\)*"         ; “...”
+   "‘\\(?:[^’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|"      ; ‘...’
+   "\“\\(?:[^”]\\|\\\\\\(.\\|[\n]\\)\\)*”"        ; “...”
    )
   "Regexp to match `...', ‘...’, “...”, \"...\", or just '.
 If ... contains \" or ' then that character must be backslashed.")
