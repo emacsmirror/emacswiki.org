@@ -17,7 +17,7 @@ In an alist, you can "overwrite" associations by adding a new cons cell to the f
  ((key3 . value4)
   (key1 . value1)
   (key2 . value2)
-  (key3 . value3))
+  (key3 . value3)) ; key3 associated to value4
 
 In a plist each key will be distinct, since the routines `put' and `plist-put' search and destroy existing key-value pairs.  The order of the key-value pairs does not matter.  The distinct quality can make them slower than an alist.
 
