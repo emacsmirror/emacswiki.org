@@ -8,11 +8,12 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 31 08:29:20 2016 (-0700)
+;; Last-Updated: Mon Oct 31 08:38:14 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 4817
+;;     Update #: 4820
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
+;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
@@ -325,10 +326,10 @@
 ;;    advised by additional predicates that you add, creating a
 ;;    complex suite of predicates that act together.
 ;;
-;;    These filtering commands are available during Isearch.  They are
-;;    all on prefix key `C-z', by default.  (They are on prefix keymap
-;;    `isearchp-filter-map', which you can bind to any key in
-;;    `isearch-mode-map'.)
+;;    The following filtering commands are available during Isearch.
+;;    They are all on prefix key `C-z', by default.  (They are on
+;;    prefix keymap `isearchp-filter-map', which you can bind to any
+;;    key in `isearch-mode-map'.)
 ;;
 ;;    - `C-z &' (`isearchp-add-filter-predicate') adds a filter
 ;;      predicate, AND-ing it as an additional `:after-while' filter.
