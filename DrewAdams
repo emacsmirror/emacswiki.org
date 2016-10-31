@@ -301,7 +301,7 @@ Here are some screenshots of my Emacs.
 
 * [EmacsWiki:action=rc;rcuseronly=DrewAdams;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;days=28;all=1;showedit=1 Library changes in the last 28 days]
 
-* [EmacsWiki:action=rc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;from=1117497600;showedit=1;rcuseronly=DrewAdams All Library changes]
+* [EmacsWiki:action=rc;match=%5C.%28el%7Ctar%29%28%5C.gz%29%3F%24;from=-;showedit=1;rcuseronly=DrewAdams All Library changes]
 
 * [EmacsWiki:action=rc;rcuseronly=DrewAdams This week's wiki contributions]
 
@@ -826,9 +826,34 @@ Thank you for your generosity,
 [new:DrewAdams:2014-09-15 00:41 UTC]
 Thanks for the suggestion, Adrián.  I've implemented something similar and fixed a couple of bugs (the whitespace-collapsing code was completely wrong).  Should be OK now.  Thx -- DrewAdams
 
-
-
 ----
+
+[new:DonMarch:2016-10-31 07:56 UTC]
+
+Hi Drew. Thanks for welcoming me to the wiki (six years ago!) and for your Emacs libraries.
+
+In the latest version of info+.el (#5710), I think there is a misplaced curly double quote in the curly single quote portion of `info-quotation-regexp'.
+
+<pre>
+--- info+.el    2016-10-31
++++ info+-don.el        2016-10-31
+@@ -1131,8 +1131,8 @@
+(concat
+ "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
+ "`\\(?:[^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"      ; `...'
+ -   "‘\\(?:[^’]\\|\\\\\\(.\\|[\n]\\)\\)*’”\\|"     ; ‘...’
+ -   "\“\\(?:[^”]\\|\\\\\\(.\\|[\n]\\)\\)*"         ; “...”
+ +   "‘\\(?:[^’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|"     ; ‘...’
+ +   "\“\\(?:[^”]\\|\\\\\\(.\\|[\n]\\)\\)*”"         ; “...”
+ )
+"Regexp to match `...', ‘...’, “...”, \"...\", or just '.
+ If ... contains \" or ' then that character must be backslashed.")
+</pre>
+
+So I thought, "I know, I'll submit a patch for the regular expression."  But then I had two problems, because evidently the wiki software does a regexp to prevent spam and it catches things that look like phone numbers.  In your "All Library changes" link in the "my contributions" section you had a link that included "from=[epoch-time];" where the time was for Tue, 31 May 2005 00:00:00 GMT.  I had to edit that before I could save this edit; I replaced it with something that seems like it still shows everything, but it labels the results page as "updates from 1970."  Maybe you can figure out a way to fix it.
+
+Thanks -- DonMarch
+
 
 ------
 CategoryHomepage
