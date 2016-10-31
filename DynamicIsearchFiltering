@@ -13,8 +13,8 @@ Here are some of the things you can do using dynamic filtering:
 
 * Search in a progressive way, using multiple simple search patterns instead of a single complicated pattern.  The previous example is also an example of this:
 ## Search for lines: `##C-M-s .+##'.
-## Refine that search to matches for `cat': `##M-? % cat##'.
-## Do the same for `dog', and then `turtle' (`##M-? % dog##', then `##M-? % turtle##').
+## Refine that search to matches for `cat': `##C-z % cat##'.
+## Do the same for `dog', and then `turtle' (`##C-z % dog##', then `##C-z % turtle##').
 
 * Search for stuff within contexts that correspond to a type of THING. You can add to the list of context types, using option '''`isearchp-filter-predicates-alist''''.  When prompted to enter a filter predicate you can use completion against the predicates named in that list (e.g. `in-comment', `in-file-name'). Examples of context type:
 
@@ -47,40 +47,42 @@ Here are some of the things you can do using dynamic filtering:
 
 
 
-The following commands are available with '''[[Isearch+]]''', all on prefix key '''`##M-?##'''':
+The following commands are available during Isearch.  They are all on prefix key '''`##C-z##'''', by default.  (They are on
+prefix keymap '''`isearchp-filter-map'''', which you can bind to any
+key in `isearch-mode-map'.)
 
-* '''`##M-? &##'''' (`isearchp-add-filter-predicate') adds a filter predicate, ''AND''-ing it as an additional `##:after-while##' filter.
+* '''`##C-z &##'''' (`isearchp-add-filter-predicate') adds a filter predicate, ''AND''-ing it as an additional `##:after-while##' filter.
 
-* '''`##M-? |##'''' (`isearchp-or-filter-predicate') adds a filter predicate, ''OR''-ing it as an additional `##:before-until##' filter.
+* '''`##C-z |##'''' (`isearchp-or-filter-predicate') adds a filter predicate, ''OR''-ing it as an additional `##:before-until##' filter.
 
-* '''`##M-? ~##'''' (`isearchp-complement-filter') ''complements'' the current filter.  It either adds an `##:around##' filter that complements or it removes an existing top-level complementing filter.
+* '''`##C-z ~##'''' (`isearchp-complement-filter') ''complements'' the current filter.  It either adds an `##:around##' filter that complements or it removes an existing top-level complementing filter.
 
-* '''`##M-? -##'''' (`isearchp-remove-filter-predicate') ''removes'' the last added filter predicate.
+* '''`##C-z -##'''' (`isearchp-remove-filter-predicate') ''removes'' the last added filter predicate.
 
-* '''`##M-? !##'''' (`isearchp-set-filter-predicate') ''sets'' the overall filter predicate (advised `isearch-filter-predicate') to a single predicate.
+* '''`##C-z !##'''' (`isearchp-set-filter-predicate') ''sets'' the overall filter predicate (advised `isearch-filter-predicate') to a single predicate.
 
-* '''`##M-? s##'''' (`isearchp-save-filter-predicate') ''saves'' the current filter-predicate suite, for subsequent searches.  Unless you save it (and unless auto-saving is turned on), the next Isearch starts out from scratch, using the default value of `isearch-filter-predicate'.  (To remove saved predicates, use `##M-? 0##'.)
+* '''`##C-z s##'''' (`isearchp-save-filter-predicate') ''saves'' the current filter-predicate suite, for subsequent searches.  Unless you save it (and unless auto-saving is turned on), the next Isearch starts out from scratch, using the default value of `isearch-filter-predicate'.  (To remove saved predicates, use `##C-z 0##'.)
 
-* '''`##M-? S##'''' (`isearchp-toggle-auto-save-filter-predicate') toggles automatic saving of the current filter-predicate suite, so that it is used for subsequent searches.  (To remove saved predicates, use `##M-? 0##'.)  This command simply toggles option '''`isearchp-auto-save-filter-predicate-flag''''.
+* '''`##C-z S##'''' (`isearchp-toggle-auto-save-filter-predicate') toggles automatic saving of the current filter-predicate suite, so that it is used for subsequent searches.  (To remove saved predicates, use `##C-z 0##'.)  This command simply toggles option '''`isearchp-auto-save-filter-predicate-flag''''.
 
-* '''`##M-? 0##'''' (`isearchp-reset-filter-predicate') ''resets'' `isearch-filter-predicate' to its original (default) value (which is typically `isearch-filter-visible').
+* '''`##C-z 0##'''' (`isearchp-reset-filter-predicate') ''resets'' `isearch-filter-predicate' to its original (default) value (which is typically `isearch-filter-visible').
 
-* '''`##M-? n##'''' (`isearchp-defun-filter-predicate') ''names'' the current suite of filter predicates, creating a named predicate that does the same thing.  (You can use that name with `##M-? -##' to remove that predicate.)  With a prefix arg it can also set or save (i.e., do what `##M-? !##' or `##M-? s##' does).
+* '''`##C-z n##'''' (`isearchp-defun-filter-predicate') ''names'' the current suite of filter predicates, creating a named predicate that does the same thing.  (You can use that name with `##C-z -##' to remove that predicate.)  With a prefix arg it can also set or save (i.e., do what `##C-z !##' or `##C-z s##' does).
 
-* '''`##M-? M-h##'''' (`isearchp-show-filters') echoes the current suite of filter predicates (advice and original, unadvised predicate).
+* '''`##C-z ?##'''' (`isearchp-show-filters') echoes the current suite of filter predicates (advice and original, unadvised predicate).
 
-* '''`##M-? @##'''', '''`##M-? <##'''', and '''`##M-? >##'''' (`isearchp-near', `isearchp-near-before', and `isearchp-near-after') constrain searching to be within a given distance of ''near'') another search pattern.  For example, you can limit search hits to those whose end (or beginning, if searching backward) is within, say, 4 words of another search pattern.  You are prompted for the search pattern for the nearby text, the
+* '''`##C-z @##'''', '''`##C-z <##'''', and '''`##C-z >##'''' (`isearchp-near', `isearchp-near-before', and `isearchp-near-after') constrain searching to be within a given distance of ''near'') another search pattern.  For example, you can limit search hits to those whose end (or beginning, if searching backward) is within, say, 4 words of another search pattern.  You are prompted for the search pattern for the nearby text, the
 "near" distance, and the unit of distance measurement (default: characters).  You can define the list of acceptable
 units by customizing option '''`isearchp-movement-unit-alist''''.
 The default option value includes units character, word, [[sexp]],
 list, and sentence.
 
 
-You are prompted for the pattern and the distance.  You can also use functions `isearch-near-predicate', `isearchp-near-before-predicate', and `isearchp-near-before-predicate' to define your own nearness predicates, which incorporate particular patterns and distances.  You can then simply add such a predicate using `##M-? &##' (no prompting for pattern or distance).
+You are prompted for the pattern and the distance.  You can also use functions `isearch-near-predicate', `isearchp-near-before-predicate', and `isearchp-near-before-predicate' to define your own nearness predicates, which incorporate particular patterns and distances.  You can then simply add such a predicate using `##C-z &##' (no prompting for pattern or distance).
 
 When you use one of the commands that adds a filter predicate as advice to `isearch-filter-predicate' you can be prompted for two things: (1) a name for the predicate and (2) text to add to the Isearch prompt as a reminder of filtering.  Two user options control this prompting:
 
-* '''`isearchp-prompt-for-filter-name'''' says whether to prompt you always, never, or only when the predicate that you provide is not a symbol (it is a lambda form).  The last of these is the default behavior.  If you are prompted and provide a name, you can use that name with `##M-? -##' to remove that predicate.
+* '''`isearchp-prompt-for-filter-name'''' says whether to prompt you always, never, or only when the predicate that you provide is not a symbol (it is a lambda form).  The last of these is the default behavior.  If you are prompted and provide a name, you can use that name with `##C-z -##' to remove that predicate.
 
 * '''`isearchp-prompt-for-prompt-prefix-flag'''' says whether to prompt you for a prefix to add to the Isearch prompt. You are prompted by default, but if you don't care to see such a prompt prefix and you don't want to be bothered by it, you can customize this to skip prompting.
 
