@@ -321,6 +321,41 @@ Here are some screenshots of my Emacs.
 
 ----
 
+[new:DonMarch:2016-10-31 07:56 UTC]
+
+Hi Drew. Thanks for welcoming me to the wiki (six years ago!) and for your Emacs libraries.
+
+In the latest version of info+.el (#5710), I think there is a misplaced curly double quote in the curly single quote portion of `info-quotation-regexp'.
+
+<pre>
+--- info+.el    2016-10-31
++++ info+-don.el        2016-10-31
+@@ -1131,8 +1131,8 @@
+(concat
+ "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
+ "`\\(?:[^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"      ; `...'
+ -   "‘\\(?:[^’]\\|\\\\\\(.\\|[\n]\\)\\)*’”\\|"     ; ‘...’
+ -   "\“\\(?:[^”]\\|\\\\\\(.\\|[\n]\\)\\)*"         ; “...”
+ +   "‘\\(?:[^’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|"     ; ‘...’
+ +   "\“\\(?:[^”]\\|\\\\\\(.\\|[\n]\\)\\)*”"         ; “...”
+ )
+"Regexp to match `...', ‘...’, “...”, \"...\", or just '.
+ If ... contains \" or ' then that character must be backslashed.")
+</pre>
+
+So I thought, "I know, I'll submit a patch for the regular expression."  But then I had two problems, because evidently the wiki software does a regexp to prevent spam and it catches things that look like phone numbers.  In your "All Library changes" link in the "my contributions" section you had a link that included "from=[epoch-time];" where the time was for Tue, 31 May 2005 00:00:00 GMT.  I had to edit that before I could save this edit; I replaced it with something that seems like it still shows everything, but it labels the results page as "updates from 1970."  Maybe you can figure out a way to fix it.
+
+Thanks -- DonMarch
+
+[new:DrewAdams:2016-10-31 14:33 UTC]
+Good catch; thanks, Don. The typo is fixed now. And I was able to save the page, even with the date that was interpreted as a phone number.
+
+Thx - DrewAdams
+
+
+------
+
+
 [new:tbc:2016-06-15 19:54 UTC]
 ICYMI. I'd like to buy you a Duvel. See conversation on my user page. And now I know what that is. :) Seen at a local brewpub: [img]https://goo.gl/photos/puN9gMGdpcD2k1YL8[/img] ''— [[tbc]]''
 
@@ -828,31 +863,6 @@ Thanks for the suggestion, Adrián.  I've implemented something similar and fixe
 
 ----
 
-[new:DonMarch:2016-10-31 07:56 UTC]
-
-Hi Drew. Thanks for welcoming me to the wiki (six years ago!) and for your Emacs libraries.
-
-In the latest version of info+.el (#5710), I think there is a misplaced curly double quote in the curly single quote portion of `info-quotation-regexp'.
-
-<pre>
---- info+.el    2016-10-31
-+++ info+-don.el        2016-10-31
-@@ -1131,8 +1131,8 @@
-(concat
- "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
- "`\\(?:[^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"      ; `...'
- -   "‘\\(?:[^’]\\|\\\\\\(.\\|[\n]\\)\\)*’”\\|"     ; ‘...’
- -   "\“\\(?:[^”]\\|\\\\\\(.\\|[\n]\\)\\)*"         ; “...”
- +   "‘\\(?:[^’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|"     ; ‘...’
- +   "\“\\(?:[^”]\\|\\\\\\(.\\|[\n]\\)\\)*”"         ; “...”
- )
-"Regexp to match `...', ‘...’, “...”, \"...\", or just '.
- If ... contains \" or ' then that character must be backslashed.")
-</pre>
-
-So I thought, "I know, I'll submit a patch for the regular expression."  But then I had two problems, because evidently the wiki software does a regexp to prevent spam and it catches things that look like phone numbers.  In your "All Library changes" link in the "my contributions" section you had a link that included "from=[epoch-time];" where the time was for Tue, 31 May 2005 00:00:00 GMT.  I had to edit that before I could save this edit; I replaced it with something that seems like it still shows everything, but it labels the results page as "updates from 1970."  Maybe you can figure out a way to fix it.
-
-Thanks -- DonMarch
 
 
 ------
