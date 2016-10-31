@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 31 08:38:14 2016 (-0700)
+;; Last-Updated: Mon Oct 31 10:59:57 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 4820
+;;     Update #: 4826
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,8 +19,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
-;;   `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
 ;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+', `zones'.
 ;;
@@ -4317,9 +4316,13 @@ These are the filters added dynamically, plus the initial one (advised)."
         (let ((opred  (advice--cd*r isearch-filter-predicate)))
           (setq opred  (if (symbolp opred) (symbol-name opred) (format "%s" opred)))
           (push opred preds)))
-      (when preds (message (substitute-command-keys "Filters: `%s'  [use \\<isearch-mode-map>`\
-\\[isearchp-save-filter-predicate]' to save, `\\[isearchp-defun-filter-predicate]' to name]")
-                           (mapconcat 'identity (nreverse preds) "', `")))))
+      (when preds (message "Filters: %s"
+                           (if preds
+                               (substitute-command-keys (format "`%s'  [use \\<isearch-mode-map>`\
+\\[isearchp-save-filter-predicate]' to save, `\\[isearchp-defun-filter-predicate]' to name]"
+                                                                (mapconcat 'identity (nreverse preds) "', `")))
+                             'None)))))
+
 
   (defun isearchp-read-predicate (&optional prompt)
     "Read and return a predicate usable as `isearch-filter-predicate'.
@@ -4402,7 +4405,7 @@ The predicate is suitable for `isearch-filter-predicate'"
       (cond (already-complementing-p
              (isearchp-remove-filter-predicate "not") ; Just turn off complementing current.
              (when msgp (message (substitute-command-keys "No longer complementing: %s  \
-[use \\<isearch-mode-map>`\\[isearchp-save-filter-predicate]' to save, \
+\[use \\<isearch-mode-map>`\\[isearchp-save-filter-predicate]' to save, \
 `\\[isearchp-defun-filter-predicate]' to name]")
                                  (mapconcat 'identity (cdr preds) ", "))))
             (t
@@ -4426,7 +4429,9 @@ The predicate is suitable for `isearch-filter-predicate'"
                                           (t (format "%s" pred))) ; Should not be needed.
                                     preds))
                             isearch-filter-predicate)
-      (when msgp (message "Filters: `%s'" (mapconcat 'identity (nreverse preds) "', `")))))
+      (when msgp (message "Filters: %s" (if preds
+                                            (format "`%s'" (mapconcat 'identity (nreverse preds) "', `"))
+                                          'None)))))
 
   (defun isearchp-set-filter-predicate (predicate &optional msgp) ; `C-z !'
     "Set `isearch-filter-predicate' to PREDICATE.
