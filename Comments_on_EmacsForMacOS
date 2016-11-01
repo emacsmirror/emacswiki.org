@@ -7,3 +7,20 @@ Thorsten
 
 -- [http://www.kreutz-edv-consulting.de tkreutz] 2015-09-03 17:38 UTC
 
+
+----
+
+Regarding Homebrew, I prefer this variant:
+<pre>
+brew install railwaycat/emacsmacport/emacs-mac --with-gnutls --with-imagemagick --with-official-icon --with-xml2
+</pre>
+
+Here is why:
+
+* TLS support is important for Gnus and IRC
+* Image Magick is important to view and edit images
+* XML is important for parsing documents
+* I like the official icon and don't need to distinguish between this Emacs and any other "official" Emacs
+
+-- AlexSchroeder 2016-11-01 16:54 UTC
+
