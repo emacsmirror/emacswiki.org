@@ -13,6 +13,9 @@ Note that this page is not about EmacsWikiMode.
 Cannot edit [[GoodFonts]]. Ostensibly because of all the numbers :\
 I visit EmacsWiki maybe once a year: my additions are in [[NealePickett]] under "Variable Pitch", if someone would like to paste it in after the page can be edited. -- [[NealePickett]] 2016-11-01
 
+[new]
+I looked at the ##spammer.log## file linked to from the WikiSpam page, listing the current "foiled" attempts at spamming the wiki. It lists time stamp, IP number, page name, and a message mentioning the regular expression triggered and the text matched. A quick review for the last month shows that all the "foiled" edits were probably legitimate edit attempts! Clearly, the false positives are a problem and I have therefore commented the [[BannedRegexps|problematic regular expressions]]. I hope this resolves the isse. :) -- Alex Schroeder
+
 == Having trouble editing elisp file (solved) ==
 
 I tried to make an update to [[yaoddmuse.el]], but I seem to have put it into a funny mode where it doesn't show the code in the page any more, just a link.  And I can't rollback because of the anti-spam regexps... :(
