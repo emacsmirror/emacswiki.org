@@ -12,6 +12,35 @@ Ever since GNU Emacs 20.1 came out, I use Emacs.  Before that I preferred XEmacs
 * .emacs: http://woozle.org/~neale/src/dotfiles/init.el
 * I wrote a Wiki of my own in ObjectiveCaml: http://wiki.woozle.org/GikiWiki
 
+=== Variable Pitch (aka Proportional Spacing) ===
+
+Plan 9's "Acme" editor does proportional spacing on fonts.
+After a few years I realized it's actually kind of nice,
+so when it was time to come back to Emacs, I set up the following.
+
+There are occasionally things that really need monospacing,
+notably a lot of command-line programs.
+You can toggle between variable and fixed pitch with "C-c m".
+
+{{{
+;;; If you don't have "Roboto Mono" and "Roboto", try:
+;;;   * "Ubuntu Mono" and "Ubuntu"
+;;;   * "DejaVu Sans Mono" and "DejaVu Sans"
+;;;
+(set-face-attribute 'default nil :family "Roboto Mono" :height 110)
+(set-face-attribute 'variable-pitch nil :family "Roboto" :weight 'regular)
+(set-face-attribute 'mode-line nil :inherit 'variable-pitch)
+
+(setq neale/not-variable-modes '(calendar-mode))
+(defun neale/probably-variable-pitch ()
+  (unless (member major-mode neale/not-variable-modes)
+    (variable-pitch-mode 1)))
+(add-hook 'after-change-major-mode-hook 'neale/probably-variable-pitch)
+
+(global-set-key (kbd "C-c m") 'variable-pitch-mode)
+}}}
+
+
 ----
 [new]
 Welcome to the wiki!  Do you hang out on #wiki?  -- AlexSchroeder
