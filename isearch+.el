@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 31 10:59:57 2016 (-0700)
+;; Last-Updated: Tue Nov  1 15:19:08 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 4826
+;;     Update #: 4862
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -743,7 +743,7 @@
 ;;      line following that one in the buffer.  As usual, `C-g' puts
 ;;      you back where you started.  This binding is made only if you
 ;;      also use `misc-cmds.el'.
-;;    - `C-h' provides help on Isearch while searsching.  This library
+;;    - `C-h' provides help on Isearch while searching.  This library
 ;;      also redefines `isearch-mode-help' so that it lists all
 ;;      Isearch bindings and ends Isearch properly.
 ;;
@@ -802,6 +802,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/11/01 dadams
+;;     isearchp-complement-filter: Include original predicate in message.
+;;     isearch-forward doc string: Mention more options.
+;;                                 Add ZERO WIDTH SPACE to get doc link for isearchp-prompt-for-filter-name.
 ;; 2016/10/31 dadams
 ;;     Added: isearchp-filter-map, and bound it to C-z.  Moved all dynamic filtering keys to it.
 ;;     Changed binding of isearchp-show-filters from M-h to h (from M-? h to C-z h).
@@ -2955,20 +2959,29 @@ The following non-printing keys are bound in `isearch-mode-map'.
 
 Options
 -------
+`isearchp-auto-save-filter-predicate-flag'\t- autosave predicates?
 `isearchp-case-fold'\t\t\t- search is case sensitive?
+`isearchp-deactivate-region-flag'\t- search deactivates region?
 `isearchp-dim-outside-search-area-flag' [*] - dim non-search zones?
 `isearchp-dimming-color' [*]\t\t- color for non-search zones
-`isearchp-set-region-flag'\t\t- select last search target?
-`isearchp-restrict-to-region-flag'\t- restrict search to region?
-`isearchp-deactivate-region-flag'\t- search deactivates region?
-`isearchp-ignore-comments-flag' [*]\t- ignore THINGs in comments?
-`isearchp-hide-whitespace-before-comment-flag' [*] - precomment space?
-`isearchp-mouse-2-flag'\t\t- `mouse-2' anywhere yanks selection?
-`isearchp-regexp-quote-yank-flag'\t- regexp-quote yanked text?
-`isearchp-toggle-option-flag'\t\t- toggle options too?
 `isearchp-drop-mismatch'\t- handling input after search mismatch
 `isearchp-drop-mismatch-regexp-flag'\t- regexp search drop mismatch?
+`isearchp-filter-predicates-alist'\t- filter predicates to choose
+`isearchp-ignore-comments-flag' [*]\t- ignore THINGs in comments?
+`isearchp-hide-whitespace-before-comment-flag' [*] - precomment space?
 `isearchp-initiate-edit-commands'\t- keys that edit, not exit
+`isearchp-mouse-2-flag'\t\t- `mouse-2' anywhere yanks selection?
+`isearchp-movement-unit-alist'\t- units and their movement functions
+`isearchp-on-demand-action-function'\t- on-demand action function​
+`isearchp-prompt-for-filter-name'\t- when to ask for filter name
+`isearchp-prompt-for-prompt-prefix-flag'\t- prompt for prefix?
+`isearchp-regexp-quote-yank-flag'\t- regexp-quote yanked text?
+`isearchp-repeat-search-if-fail-flag'\t- restart search from limit?
+`isearchp-restrict-to-region-flag'\t- restrict search to region?
+`isearchp-resume-with-last-when-empty-flag'\t- resume last search?
+`isearchp-ring-bell-function'\t- ring-bell function during search
+`isearchp-set-region-flag'\t\t- select last search target?
+`isearchp-toggle-option-flag'\t\t- toggle options too?
 
  [*] Requires library `isearch-prop.el'.
 
@@ -4400,6 +4413,9 @@ The predicate is suitable for `isearch-filter-predicate'"
                                           (t (format "%s" pred))) ; Should not be needed.
                                     preds))
                             isearch-filter-predicate)
+      (let ((opred  (if preds (advice--cd*r isearch-filter-predicate) isearch-filter-predicate)))
+        (setq opred  (if (symbolp opred) (symbol-name opred) (format "%s" opred)))
+        (push opred preds))
       (setq preds                    (nreverse preds)
             already-complementing-p  (equal "not" (car preds)))
       (cond (already-complementing-p
@@ -4646,7 +4662,7 @@ BEG and END are the search-hit limits."
                         (while (<= pos end)
                           (unless (or (nth 4 (syntax-ppss pos))
                                       (and comment-start-skip  (looking-at comment-start-skip)))
-                                      ;;; (and comment-end-skip  (looking-at comment-end-skip))
+;;; (and comment-end-skip  (looking-at comment-end-skip))
                             (throw 'isearchp-in-comment-or-delim-p nil))
                           (setq pos  (1+ pos)))
                         t)))))
