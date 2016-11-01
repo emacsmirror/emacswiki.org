@@ -155,6 +155,11 @@ brew tap railwaycat/emacsmacport
 brew install emacs-mac
 </pre>
 
+and finally link it to your Applications folder:
+<pre>
+brew linkapps emacs-mac
+</pre>
+
 === MacPorts ===
 
 !MacPorts [http://www.macports.org/ http://www.macports.org/] is another means of installing Emacs on OS X 
