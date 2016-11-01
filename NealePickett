@@ -6,11 +6,9 @@ Later on, I began using EmacsIRCClient, then CalendarMode with AppointmentMode, 
 
 Ever since GNU Emacs 20.1 came out, I use Emacs.  Before that I preferred XEmacs.
 
-== Stuff I've Made ==
+== Edits that didn't make it into the wiki ==
 
-* homepage: http://woozle.org/~neale/
-* .emacs: http://woozle.org/~neale/src/dotfiles/init.el
-* I wrote a Wiki of my own in ObjectiveCaml: http://wiki.woozle.org/GikiWiki
+Here's some stuff I meant to add but couldn't get in for one reason or another:
 
 === Variable Pitch (aka Proportional Spacing) ===
 
