@@ -38,6 +38,8 @@ You can toggle between variable and fixed pitch with "C-c m".
 (global-set-key (kbd "C-c m") 'variable-pitch-mode)
 }}}
 
+http://i.imgur.com/BEsgDbj.png
+
 
 ----
 [new]
