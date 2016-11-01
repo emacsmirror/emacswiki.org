@@ -8,6 +8,11 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== Spam-Regex still problematic ==
+
+Cannot edit [[GoodFonts]]. Ostensibly because of all the numbers :\
+I visit EmacsWiki maybe once a year: my additions are in [[NealePickett]] under "Variable Pitch", if someone would like to paste it in after the page can be edited. -- [[NealePickett]] 2016-11-01
+
 == Having trouble editing elisp file (solved) ==
 
 I tried to make an update to [[yaoddmuse.el]], but I seem to have put it into a funny mode where it doesn't show the code in the page any more, just a link.  And I can't rollback because of the anti-spam regexps... :(
@@ -32,6 +37,8 @@ I'm unable to edit the [[CategoryTemplates]] page, because it contains a "phone-
 
 [new]
 I changed the code such that the regular expressions on BannedRegexps no longer apply to URLs because URLs have their own set of (more restrictive) regular expressions on BannedContent. -- [[Alex Schroeder]]
+
+
 
 ==Cannot find where file lives for change submission (solved) ==
 
