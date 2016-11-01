@@ -15,6 +15,7 @@ Here's some stuff I meant to add but couldn't get in for one reason or another:
 Plan 9's "Acme" editor does proportional spacing on fonts.
 After a few years I realized it's actually kind of nice,
 so when it was time to come back to Emacs, I set up the following.
+
 There are very few editors that can handle proportional-spaced fonts.
 Notably, vim claims the concept is so foreign that it will probably never support it.
 
