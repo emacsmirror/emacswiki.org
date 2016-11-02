@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jul 19 15:57:56 2016 (-0700)
+;; Last-Updated: Wed Nov  2 11:09:25 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 3255
+;;     Update #: 3270
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -508,7 +508,7 @@ This is the similar to `beginning-of-visual-line', but:
 
 ;;;###autoload
 (defun reversible-transpose-sexps (arg)
-  "Reversible and repeatable `transpose-sexp'.
+  "Reversible and repeatable `transpose-sexps'.
 Like `transpose-sexps', but:
  1. Leaves point after the moved sexp.
  2. When repeated, a negative prefix arg flips the direction."
@@ -516,8 +516,8 @@ Like `transpose-sexps', but:
   (when (eq last-command 'rev-transp-sexps-back) (setq arg  (- arg)))
   (transpose-sexps arg)
   (unless (natnump arg)
-    (when (or (> emacs-major-version 24)
-              (and (= emacs-major-version 24)  (> emacs-minor-version 3))) ; Emacs 24.4+
+    (when (or (> emacs-major-version 24) ; Emacs 24.4+
+              (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
       (backward-sexp (abs arg))
       (skip-syntax-backward " ."))
     (setq this-command 'rev-transp-sexps-back)))
