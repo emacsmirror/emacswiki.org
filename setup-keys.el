@@ -8,16 +8,16 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 18 10:20:56 2016 (-0700)
+;; Last-Updated: Wed Nov  2 13:28:45 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 1322
+;;     Update #: 1331
 ;; URL: http://www.emacswiki.org/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `cus-theme', `doremi',
+;;   `apropos', `apropos+', `avoid', `cl', `cus-theme', `doremi',
 ;;   `doremi-cmd', `doremi-frm', `easymenu', `eyedropper', `faces',
 ;;   `faces+', `fit-frame', `frame-cmds', `frame-fns', `help+20',
 ;;   `hexrgb', `highlight', `info', `info+20', `isearch+',
@@ -61,7 +61,7 @@
 ;;    `sub-*-of-line', `sub-delete-windows-for',
 ;;    `sub-kill-buffer-and-its-windows', `sub-pp-evals',
 ;;    `sub-query-replace-w-options', `sub-quit-window-delete',
-;;    `sub-recenter-top-bottom'.
+;;    `sub-recenter-top-bottom', `sub-transpose-sexps'.
 ;;
 ;;  Other variables defined here:
 ;;
@@ -75,6 +75,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/11/02 dadams
+;;     Added: sub-transpose-sexps.
+;;     Remap transpose-sexps to reversible-transpose-sexps, if sub-transpose-sexps.
 ;; 2016/09/18 dadams
 ;;     Applied renaming of secondary-dwim to secondary-yank|select|move|swap.
 ;; 2016/07/19 dadams
@@ -900,9 +903,9 @@ This applies to `move-to-(beginning|end)-of-line', if defined, or to
 `(beginning|end)-of-line', otherwise.
 This has no effect unless you use library `misc-cmds.el'.")
 
-(defvar sub-recenter-top-bottom t
-  "*Non-nil means remap `recenter' to `sub-recenter-top-bottom' globally.
-This has no effect unless you use library `misc-cmds.el'.")
+(defvar sub-delete-windows-for t
+  "*Non-nil means remap `delete-window' to `delete-windows-for' globally.
+This has no effect unless you use library `frame-cmds.el'.")
 
 (defvar sub-kill-buffer-and-its-windows t
   "*Non-nil means remap `kill-buffer' to `kill-buffer-and-its-windows' globally.
@@ -923,9 +926,13 @@ This has no effect unless you use library `replace+.el'.")
 This has no effect unless you use library `misc-cmds.el' and Emacs
 24.4 or later.")
 
-(defvar sub-delete-windows-for t
-  "*Non-nil means remap `delete-window' to `delete-windows-for' globally.
-This has no effect unless you use library `frame-cmds.el'.")
+(defvar sub-recenter-top-bottom t
+  "*Non-nil means remap `recenter' to `sub-recenter-top-bottom' globally.
+This has no effect unless you use library `misc-cmds.el'.")
+
+(defvar sub-transpose-sexps t
+  "*Non-nil means remap `transpose-sexps' to `reversible-transpose-sexps'.
+This has no effect unless you use library `misc-cmds.el'.")
 
 
 ;;; Do these all *after* load `menu-bar+.el', since that sets original bindings.
@@ -962,7 +969,9 @@ This has no effect unless you use library `frame-cmds.el'.")
         (define-key visual-line-mode-map "\C-a" 'beginning-of-visual-line+)
         (define-key visual-line-mode-map "\C-e" 'end-of-visual-line+)))
     (when sub-recenter-top-bottom
-      (remap-command 'recenter 'recenter-top-bottom global-map))))
+      (remap-command 'recenter 'recenter-top-bottom global-map))
+    (when sub-transpose-sexps
+      (remap-command 'transpose-sexps 'reversible-transpose-sexps global-map))))
 (eval-after-load "misc-cmds"
   '(when sub-quit-window-delete
     (remap-command 'quit-window 'quit-window-delete global-map)))
