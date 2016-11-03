@@ -1,146 +1,27 @@
 This is about installing Emacs into an Android device. See GoogleAndroid for tips about using Emacs to develop Android applications.
 
-== Introduction: ways to run Emacs on Android devices ==
-Some of them are hypothetical.
-
-If programming is considered on the tablet/phone then a full linux in a chroot jail makes sense for accessing compilers, libraries etc. Lil' Debi can help you to install Debian (https://play.google.com/store/apps/details?id=info.guardianproject.lildebi). Afterwards you might want to consider recompiling Emacs to get the latest version or installing it from the official repositories. The git clone of Emacs compiled for me, the latest archives failed however. In case you cannot start Debian, you might want to check the path settings of it. It was completely misconfigured for me.
+==Ways to run Emacs on Android devices==
 
 ===Native port (installable Android application)===
-A native on Android, without requiring root or special setup, can be installed in the [https://termux.com Termux] terminal emulator application, available from Google Play and F-Droid. Run 'apt update && apt install emacs' to get a full emacs installation.
+A native Emacs on Android, without requiring root or special setup, can be installed in the [https://termux.com Termux] terminal emulator application by executing:
 
-===Keep Android, install Linux and Emacs in a jail, run Emacs from an Android shell client===
+[code]apt update && apt install emacs[/code]
+
+===Run Linux inside a jail===
 ====GNU/Linux in a chroot jail (requires root)====
 For a Linux and Emacs environment in a chrooted loopback filesystem on a rooted tablet, see [http://www.carcosa.net/jason/blog/2012/Jul/19 Running Emacs on an Android tablet]. Android apps such as ConnectBot shell client and Hacker's Keyboard (including Ctrl, etc. keys) can be used with Emacs in this way.
 
-====GNU/Linux in a ptrace-based container (doesn't require root!)====
-As for a rooted Android, it has been long known that it is possible to install a GNU/Linux distro into a chroot (as described above).
+====GNU/Linux in a ptrace-based container (does not require root)====
+Besides running Emacs inside a true chroot, it's also possible to get a running Emacs from a ready GNU/Linux distro package in an unrooted Android -- as a faster solution compared to the native app option, which would require some work on adapting and recompiling Emacs against the Android environment.
 
-But it's also interesting to get a running Emacs from a ready GNU/Linux distro package in an unrooted Android -- as a faster solution compared to the native app option, which would require some work on adapting and recompiling Emacs against the Android environment.
+This is possible with the [https://play.google.com/store/apps/details?id=champion.gnuroot GNURoot app]. It allows to use a GNU/Linux distribution like Debian in an unrooted Android.
 
-And it's possible with the GNURoot app (with GNURoot Wheezy, for example)! It allows to use a GNU/Linux distro like Debian in an unrooted Android. There I could start Emacs, as well as ssh to my computers, and hopefully I'll be able to use TRAMP, too. (I haven't yet tried this out.)
-
-The GNURoot app does all this by means of a [http://unix.stackexchange.com/a/9188/4319 "PTRACE container"] implemented by [http://proot.me/ "proot"]: interception of syscalls and "emulating" what should be done in the different Android and unprivileged environment. (Redirecting paths, faking the root user privileges, etc.)
-
-[https://groups.google.com/d/msg/proot_me/h3rDV8na9kc/4mSCyOsX28UJ It was a while ago when I learned about such projects].
+The GNURoot app does all this by means of a [http://unix.stackexchange.com/a/9188/4319 PTRACE container] implemented by [http://proot.me/ proot]: interception of syscalls and "emulating" what should be done in the different Android and unprivileged environment (redirecting paths, faking the root user privileges, etc.).
 
 It's a pity that [https://github.com/corbinlc/gnuroot the source code for GNURoot] seems not to be well documented, so it's not easy to start hacking with it right away or at least learn how all the things have been compiled and put together from source.
 
-===Remove Android, install another GNU/Linux, install Emacs there===
-This is known to work, but you need to get root access to your tablet and remove Android.
-See below for some experiences with particular tablets.
+===Don't run Emacs, use a SSH client to connect to a server which runs Emacs===
+This is by far the easiest and fastest way. It does not require uninstalling Android, and Emacs will run at normal speed. You could also use VNC if you need graphics.
 
-===Don't run Emacs, just use a SSH client to connect to a server which runs Emacs===
-This is by far the easiest and fastest way. It does not require uninstalling Android, and Emacs will run at normal speed.
-
-You could also use VNC if you need graphics.
-===Or even use another editor, and simulate Emacs behavior there===
-There are libre editors which can be extended to use Emacs key bindings, for instance:
-* Terminal IDE: https://play.google.com/store/apps/details?id=com.spartacusrex.spartacuside&hl=en
-
-==Installing Debian/Ubuntu and Emacs on G1/G2 phone==
-
-There is a lot of online information for hacking HTC mobile phones on the [http://www.xda-developers.com/ xda-developers website].
-This includes the G1 and G2 google phones.
-One of these hacks is to get a full distribution such as Debian or Ubuntu running, on which you can then install Emacs :)
-
-Check out the [http://wiki.xda-developers.com/index.php?pagename=HTC_Dream wiki] to get an overview of hacking the G1, and how to flash the ROM etc.
-
-First you need to [http://forum.xda-developers.com/showthread.php?t=442480 root] your phone.
-
-Then you can update your ROM to a newer version. There are lots of different ROM updates available [http://www.androidspin.com/ here]. I recommend installing [http://jf.odiness.com/ JesusFreke's ROMs] initially, and then upgrading to the latest stable cyanogen ROM. If you make an ext2/3 partition on your SD card, then when you install the [http://www.cyanogenmod.com/downloads cyanogen ROM] it will apply Apps2SD which allows you to install many more apps than normal. I also recommend using [http://forum.xda-developers.com/showthread.php?t=523558 cyanogen's recovery image] (which allows you to easily backup your phone).
-You will also need to install the latest radio image available [http://www.htc.com/www/support/android/adp.html here].
-
-Read how to install new images and updates [http://wiki.xda-developers.com/index.php?pagename=HTC_Dream_overview_and_useful_information#Updatingx20.thex20.ROM here].
-
-Then have a look at these simple [http://www.androidfanatic.com/cms/community-forums.html?func=view&catid=9&id=2248 instructions] on installing Debian (Note: you may need to alter the installer.sh script as mentioned in post #3566 [http://www.androidfanatic.com/cms/community-forums.html?func=view&amp;catid=9&amp;id=2248&amp;start=60#3566 here]).
-
-If you like it a little less "simple" and more solid, I'd rather recommend Bayle Shank's instructions on installing debian into an ext partition by hand [http://bayleshanks.com/wiki.pl?tips-computer-android-g1 here], as parts of that installer are really bogus. In that case you'll also have to enable compcache by hand, which Bayle Shank's script doesn't do, so you just paste his script into the "custom_shells" section of the user.conf obtained from [http://forum.xda-developers.com/showthread.php?t=542899]. Also you might want to use a non-root user for your emacs work, in that case [http://android-dls.com/wiki/index.php?title=Debian_on_G1#Sockets_for_non-root_users:] will help. -- TauPan
-
-Once you have Debian installed you can just "apt-get emacs" to install emacs 22.
-
-To install Ubuntu instead, see [http://xdatap1.wordpress.com/2009/05/03/jaunty-under-android/ here].  He provides downloads for prebuilt Jaunty (9.04) images which makes it very easy to set up.  Again it's a simple matter to install emacs via apt-get.
-
-I strongly recommend using [http://code.google.com/p/connectbot/ ConnectBot] in local mode as the terminal emulator, since it preserves the running terminal session even when you switch away to other apps and back, and also has some extremely convenient keybindings and many other great features -- AdamSpiers
-
-Here are some [http://article.gmane.org/gmane.emacs.orgmode/17033 useful thoughts on reducing emacs' footprint] for low-powered devices.
-
-== Using emacs for making calls and sending texts ==
-
-To access the android api from emacs you need to first install the android scripting environment which you can get [http://code.google.com/p/android-scripting/downloads/list here] (see [http://www.brighthub.com/mobile/google-android/articles/37151.aspx here] for how to install apk files).
-Then get it working in your Debian installation: see [http://forum.xda-developers.com/showthread.php?p=3957997#post3957997 here]
-
-=== Making phone calls ===
-With this recipe you can make phone calls from your [BbdbMode bbdb buffer]:
-# Make sure you have the android scripting environment installed and working in your Debian installation (see previously mentioned links)
-# Save the following python code to 'dialnumber.py' and save it to '/root/android/' in your Debian installation (you will need to create this directory):
-
-    #!/usr/bin/env python
-
-    import android
-    import sys
-    droid = android.Android()
-    droid.callNumber(sys.argv[1])
-# You can now use the following function from the bbdb buffer to call the phone number of the record at point (but you must have an ASE shell terminal running on Android):
-
-    (defun joebloggs/bbdb-android-dial (phone force-area-code)
-      "Dial the number at point.
-    If the point is at the beginning of a record, dial the first
-    phone number.  Does not dial the extension.  Does not apply the
-    transformations from bbdb-dial-local-prefix-alist if a prefix arg
-    is given."
-      (interactive (list (bbdb-current-field)
-                 current-prefix-arg))
-      (if (eq (car-safe phone) 'name)
-          (setq phone (car (bbdb-record-phones (bbdb-current-record)))))
-      (if (eq (car-safe phone) 'phone)
-          (setq phone (car (cdr phone))))
-      (or (vectorp phone) (error "not on a phone field"))
-
-      (let* ((number (bbdb-phone-string phone)) shortnumber)
-        (when (not force-area-code)
-          (let ((alist bbdb-dial-local-prefix-alist))
-        (while alist
-          (if (string-match (concat "^" (eval (caar alist))) number)
-              (setq shortnumber (concat (car (cdar alist))
-                        (substring number (match-end 0)))
-                alist nil))
-          (setq alist (cdr alist)))))
-
-        ;; cut off the extension
-        (if (string-match "x[0-9]+$" number)
-        (setq number (substring number 0 (match-beginning 0))))
-
-        ;; This is terrifically Americanized...
-        ;; Leading 0 => local number (?)
-        (if (and (not shortnumber) bbdb-dial-local-prefix
-             (string-match "^0" number))
-        (setq number (concat bbdb-dial-local-prefix number)))
-
-        ;; Leading + => long distance/international number
-        (if (and (not shortnumber) bbdb-dial-long-distance-prefix
-             (string-match "^\+" number))
-        (setq number (concat bbdb-dial-long-distance-prefix " "
-                     (substring number 1))))
-
-        ;; use the short number if it's available
-        (setq number (or shortnumber number))
-        (if (not bbdb-silent-running)
-        (message "Dialing %s" number))
-        (shell-command (concat "export AP_PORT=$(netstat -napt|sed -n 's/^tcp.*127.0.0.1:\\([0-9]*\\).*LISTEN.*ase$/\\1/gp');/root/android/dialnumber.py " number))))
-
-=== Sending SMS text messages ===
-With this recipe you can send text messages from emacs:
-# Make sure you have the android scripting environment installed and working in your Debian installation (see previously mentioned links)
-# Save the following python code to 'sendtext.py' and save it to '/root/android/' in your Debian installation:
-
-    #!/usr/bin/env python
-
-    import android
-    import sys
-    droid = android.Android()
-    droid.sendTextMessage(sys.argv[1], sys.argv[2])
-
-# install Lisp:sms.el and read the instructions
-# if you want to use your [CategoryBbdb BBDB] with [[sms.el]] install Lisp:bbdb-sms.el and read the instructions
 ----
 CategoryPorts
