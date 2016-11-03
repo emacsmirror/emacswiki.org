@@ -53,6 +53,8 @@ key in `isearch-mode-map'.)
 
 * '''`##C-z &##'''' (`isearchp-add-filter-predicate') adds a filter predicate, ''AND''-ing it as an additional `##:after-while##' filter.
 
+* '''`##C-z %##'''' (`isearchp-add-regexp-filter-predicate') adds a filter predicate that requires search hits to match a given [[regexp]].
+
 * '''`##C-z |##'''' (`isearchp-or-filter-predicate') adds a filter predicate, ''OR''-ing it as an additional `##:before-until##' filter.
 
 * '''`##C-z ~##'''' (`isearchp-complement-filter') ''complements'' the current filter.  It either adds an `##:around##' filter that complements or it removes an existing top-level complementing filter.
