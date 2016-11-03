@@ -63,11 +63,11 @@ key in `isearch-mode-map'.)
 
 * '''`##C-z !##'''' (`isearchp-set-filter-predicate') ''sets'' the overall filter predicate (advised `isearch-filter-predicate') to a single predicate.
 
+* '''`##C-z 0##'''' (`isearchp-reset-filter-predicate') ''resets'' `isearch-filter-predicate' to its original (default) value (which is typically `isearch-filter-visible').
+
 * '''`##C-z s##'''' (`isearchp-save-filter-predicate') ''saves'' the current filter-predicate suite, for subsequent searches.  Unless you save it (and unless auto-saving is turned on), the next Isearch starts out from scratch, using the default value of `isearch-filter-predicate'.  (To remove saved predicates, use `##C-z 0##'.)
 
 * '''`##C-z S##'''' (`isearchp-toggle-auto-save-filter-predicate') toggles automatic saving of the current filter-predicate suite, so that it is used for subsequent searches.  (To remove saved predicates, use `##C-z 0##'.)  This command simply toggles option '''`isearchp-auto-save-filter-predicate-flag''''.
-
-* '''`##C-z 0##'''' (`isearchp-reset-filter-predicate') ''resets'' `isearch-filter-predicate' to its original (default) value (which is typically `isearch-filter-visible').
 
 * '''`##C-z n##'''' (`isearchp-defun-filter-predicate') ''names'' the current suite of filter predicates, creating a named predicate that does the same thing.  (You can use that name with `##C-z -##' to remove that predicate.)  With a prefix arg it can also set or save (i.e., do what `##C-z !##' or `##C-z s##' does).
 
