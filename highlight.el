@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun 17 06:16:49 2016 (-0700)
+;; Last-Updated: Thu Nov  3 13:48:59 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 3994
+;;     Update #: 3996
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -18,10 +18,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `cmds-menu', `easymenu',
-;;   `fit-frame', `frame-fns', `help+20', `info', `info+20',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
-;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
+;;   `apropos', `apropos+', `avoid', `easymenu', `fit-frame',
+;;   `frame-fns', `help+20', `info', `info+20', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `second-sel',
+;;   `strings', `thingatpt', `thingatpt+', `unaccent',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -746,6 +746,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/11/03 dadams
+;;     hlt-(un)highlight-symbol: Removed unused args START and END.
 ;; 2015/12/04 dadams
 ;;     Added: hlt-highlight-lines.
 ;; 2016/08/16 dadams
@@ -2209,7 +2211,7 @@ Other arguments:
                               (if mbufs (format " in `%s'"  buf) ""))))))))
 
 ;;;###autoload
-(defun hlt-highlight-symbol (symbol &optional start end all-buffers-p)
+(defun hlt-highlight-symbol (symbol &optional all-buffers-p)
   "Highlight occurrences of SYMBOL.
 The symbol at point is used by default, or the symbol under the mouse
 pointer if the command is invoked using the mouse.
@@ -2224,7 +2226,7 @@ highlighting on the same occurrences.)"
        (mouse-set-point last-nonmenu-event))
      (let ((symb  (symbol-at-point)))
        (unless symb (error "No symbol %s" (if (listp last-nonmenu-event) "under mouse pointer" "at point")))
-       (list symb nil nil current-prefix-arg))))
+       (list symb current-prefix-arg))))
   (let ((hlt-auto-faces-flag  t)
         (regexp               (format (if (> emacs-major-version 21) "\\_<%s\\_>" "%s") symbol))
         (bufs                 (if all-buffers-p
@@ -2241,7 +2243,7 @@ highlighting on the same occurrences.)"
       (setq first-buf-p  nil))))
 
 ;;;###autoload
-(defun hlt-unhighlight-symbol (symbol &optional start end all-buffers-p)
+(defun hlt-unhighlight-symbol (symbol &optional all-buffers-p)
   "Unhighlight occurrences of SYMBOL.
 The symbol at point is used by default, or the symbol under the mouse
 pointer if the command is invoked using the mouse.
@@ -2254,7 +2256,7 @@ With a prefix arg, use all buffers that are visible or iconified."
        (mouse-set-point last-nonmenu-event))
      (let ((symb  (symbol-at-point)))
        (unless symb (error "No symbol %s" (if (listp last-nonmenu-event) "under mouse pointer" "at point")))
-       (list symb nil nil current-prefix-arg))))
+       (list symb current-prefix-arg))))
   (let ((hlt-auto-faces-flag  t)
         (regexp               (format (if (> emacs-major-version 21) "\\_<%s\\_>" "%s") symbol))
         (bufs                 (if all-buffers-p
