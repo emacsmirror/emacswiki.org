@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Tue Oct  4 06:40:25 2016 (-0700)
+;; Last-Updated: Fri Nov  4 13:05:37 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 2281
+;;     Update #: 2288
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -240,6 +240,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/11/04 dadams
+;;     tap-thing-at-point: Added optional arg NO-PROPERTIES, per Emacs 24.4+.
 ;; 2016/09/06 dadams
 ;;     Added: tap-read-from-whole-string.
 ;;     tap-form-at-point(-with-bounds): Use tap-read-from-whole-string.
@@ -644,14 +646,15 @@ Optional arg SYNTAX-TABLE is a syntax table to use."
 ;; 1. Add optional argument SYNTAX-TABLE.
 ;; 2. Check first the symbol property `tap-thing-at-point'.
 ;;
-(defun tap-thing-at-point (thing &optional syntax-table)
+(defun tap-thing-at-point (thing &optional no-properties syntax-table)
   "Return the THING at point as a string.
 If no THING is present at point then return nil.
 
 THING is an Emacs Lisp symbol that specifies a type of syntactic
-entity.  THING examples include `word', `sentence', `defun'.  See the
-commentary of library `thingatpt.el' for how to define a symbol as a
-valid THING.
+entity.  THING examples include `symbol', `list', `sexp', `defun',
+`filename', `url', `email', `word', `sentence', `whitespace', `line',
+`number', and `page'.  See the commentary of library `thingatpt.el'
+for how to define a symbol as a valid THING.
 
 If THING has property `thing-at-point' then the property value should
 be a function.  The function is called with no arguments.  If the
@@ -659,17 +662,22 @@ return value of that function is a string or nil then that value is
 returned by this function also.  Otherwise, that value is converted to
 a string and returned.
 
+Optional arg NO-PROPERTIES means that if a string is to be returned
+then it is first stripped of any text properties.
+
 Optional arg SYNTAX-TABLE is a syntax table to use."
-  (let ((thing-fn  (or (get thing 'tap-thing-at-point)  (get thing 'thing-at-point))))
-    (if thing-fn
-        (let* ((opoint  (point))
-               (thg     (prog1 (funcall thing-fn)
-                          (constrain-to-field nil opoint))))
-          (if (stringp thg)
-              thg
-            (and thg  (format "%s" thg))))
-      (let ((bounds  (tap-bounds-of-thing-at-point thing syntax-table)))
-        (and bounds  (buffer-substring (car bounds) (cdr bounds)))))))
+  (let* ((thing-fn  (or (get thing 'tap-thing-at-point)  (get thing 'thing-at-point)))
+         (text      (if thing-fn
+                        (let* ((opoint  (point))
+                               (thg     (prog1 (funcall thing-fn)
+                                          (constrain-to-field nil opoint))))
+                          (if (stringp thg)
+                              thg
+                            (and thg  (format "%s" thg))))
+                      (let ((bounds  (tap-bounds-of-thing-at-point thing syntax-table)))
+                        (and bounds  (buffer-substring (car bounds) (cdr bounds)))))))
+    (when (and text  no-properties) (set-text-properties 0 (length text) nil text))
+    text))
 
 (defun tap-thing-nearest-point-with-bounds (thing &optional syntax-table)
   "Return the THING nearest point, plus its bounds: (THING START . END).
