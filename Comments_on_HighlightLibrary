@@ -15,3 +15,10 @@ With a prefix arg it prompts you for the highlighting face to use. Use `C-h f hl
 
 -- DrewAdams 2016-06-01 16:16 UTC
 
+
+----
+
+With emacs 24.5.1, I found I had to set hlt-use-overlays-flag to nil to get any highlighting.  Based on the discussion that's faster as well, perhaps this should be the default?
+
+-- MarkPurtill 2016-11-04 17:23 UTC
+
