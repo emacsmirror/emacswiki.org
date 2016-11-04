@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Fri Nov  4 13:05:37 2016 (-0700)
+;; Last-Updated: Fri Nov  4 13:10:07 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 2288
+;;     Update #: 2293
 ;; URL: http://www.emacswiki.org/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
@@ -242,6 +242,8 @@
 ;;
 ;; 2016/11/04 dadams
 ;;     tap-thing-at-point: Added optional arg NO-PROPERTIES, per Emacs 24.4+.
+;;     tap-form-at-point, tap-non-nil-symbol-name-at-point:
+;;       Use nil for optional arg NO-PROPERTIES in call to tap-thing-at-point.
 ;; 2016/09/06 dadams
 ;;     Added: tap-read-from-whole-string.
 ;;     tap-form-at-point(-with-bounds): Use tap-read-from-whole-string.
@@ -885,8 +887,8 @@ Optional args:
   PREDICATE is a predicate that the form must satisfy to qualify.
   SYNTAX-TABLE is a syntax table to use."
   (let ((form  (condition-case nil
-                   (tap-read-from-whole-string (tap-thing-at-point (or thing  'sexp)
-                                                                   syntax-table))
+                   (tap-read-from-whole-string
+                    (tap-thing-at-point (or thing  'sexp) nil syntax-table))
                  (error nil))))
     (and (or (not predicate)  (funcall predicate form))
          form)))
@@ -1300,7 +1302,7 @@ See `tap-list-contents-at-point'.
 
 (defun tap-non-nil-symbol-name-at-point ()
   "String naming a non-nil Emacs Lisp symbol at point, or nil if none."
-  (let ((name  (tap-thing-at-point 'symbol emacs-lisp-mode-syntax-table)))
+  (let ((name  (tap-thing-at-point 'symbol nil emacs-lisp-mode-syntax-table)))
     (and (not (equal "nil" name))  name)))
 
 
