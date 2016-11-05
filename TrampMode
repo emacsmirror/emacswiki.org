@@ -179,6 +179,12 @@ My system (NixOS) recently made fancy coloured prompts the default. An ANSI esca
 
 See also http://comments.gmane.org/gmane.emacs.tramp/6996.
 
+=== Tramp hangs #7: Debian bug in Emacs 24.5 ===
+
+If you're using Emacs 24.5 on Debian/Ubuntu, you may encounter Debian bug #810640 : https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=810640
+
+Problem solved in Emacs 25.
+
 == Tips and tricks ==
 
 [:AdHocMultiHops]
