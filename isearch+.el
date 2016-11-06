@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov  1 15:19:08 2016 (-0700)
+;; Last-Updated: Sun Nov  6 09:33:54 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4862
+;;     Update #: 4872
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -4262,11 +4262,11 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
           (name   nil)
           (prfix  nil))
       (when (and (consp pred)  (not (eq 'lambda (car pred))))
-        (if (stringp (car pred))
+        (if (stringp (nth 0 pred))
             (setq name   (nth 0 pred)
                   prfix  (nth 2 pred)
                   pred   (nth 1 pred))
-          (if (cadr pred)
+          (if (nth 1 pred)
               (setq prfix  (nth 1 pred)
                     pred   (nth 0 pred))
             (setq pred  (nth 0 pred)))))
