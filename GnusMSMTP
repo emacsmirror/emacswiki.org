@@ -23,7 +23,6 @@ Your typical <tt>msmtprc.txt</tt> file would look like this.  Note <tt>msmtp Ã¢Â
 account anderson
 host smtp.gmail.com
 tls on
-tls_certcheck off
 auth on
 user sivaram.notthere@gmail.com
 password XXXXXXX
@@ -34,7 +33,6 @@ logfile c:\msmtplog.txt
 account neo
 host smtp.gmail.com
 tls on
-tls_certcheck off
 auth on
 user sivaram.anotherguy@gmail.com
 password XXXXXXX
@@ -119,14 +117,12 @@ Thanks to ssSslang on <b>gnu.emacs.gnus</b> who requested for <tt>message-sendma
 ##################
 defaults
 tls on
-tls_certcheck off
 tls_starttls on
 
 account default
 host smtp.gmail.com
 domain smtp.gmail.com
 tls on
-tls_certcheck off
 tls_starttls on
 auth on
 user USER@gmail.com
@@ -138,7 +134,6 @@ logfile /home/USER/msmtplog.txt
 </pre>
 msmtp complains about the 'default' account settings, so if you receive a generic error while running with emacs; go to the command-line and if see if you receive more verbose error messages.  Also, recheck your rc file.
 
-[18/12/2013]: You really shouldn't disable the check for the server certificate (`tls_certcheck')
 
 <pre>
 Above configuration tested with:
