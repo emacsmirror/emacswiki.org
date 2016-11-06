@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov  6 11:02:22 2016 (-0800)
+;; Last-Updated: Sun Nov  6 11:46:31 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4878
+;;     Update #: 4899
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,7 +19,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
+;;   `cl-lib', `color', `frame-fns', `gv', `help-fns',
 ;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+', `zones'.
 ;;
@@ -353,6 +354,11 @@
 ;;    - `C-z 0' (`isearchp-reset-filter-predicate') resets
 ;;      `isearch-filter-predicate' to its original (default) value.
 ;;
+;;    - `C-z p' (`isearchp-toggle-showing-filter-prompt-prefixes')
+;;      toggles option `isearchp-show-filter-prompt-prefixes-flag',
+;;      which controls whether to show filter prefixes in the Isearch
+;;      prompt.
+;;
 ;;    - `C-z s' (`isearchp-save-filter-predicate') saves the current
 ;;      filter-predicate suite for subsequent searches.  Unless you
 ;;      save it, the next Isearch starts out from scratch, using the
@@ -409,6 +415,10 @@
 ;;    for name prompting, and a non-negative prefix arg overrides the
 ;;    option for prompt-prefix prompting.  (So zero, e.g., `M-0',
 ;;    overrides both.)
+;;
+;;    Option `isearchp-show-filter-prompt-prefixes-flag' controls
+;;    whether prefixes for filters are added to the Isearch prompt.
+;;    You can toggle this option during search using `C-z p'.
 ;;
 ;;  * Case-sensitivity is indicated in the mode line minor-mode
 ;;    lighter: `ISEARCH' for case-insensitive; `Isearch' for
@@ -804,6 +814,10 @@
 ;;
 ;; 2016/11/06 dadams
 ;;     Added redefinition of isearch-query-replace: Keep advised filter predicate while query-replacing.
+;;     Added: isearchp-show-filter-prompt-prefixes-flag, isearchp-toggle-showing-filter-prompt-prefixes.
+;;            Bound isearchp-toggle-showing-filter-prompt-prefixes to C-z p.
+;;     isearch-message-prefix, isearchp-add-filter-predicate-1:
+;;       Respect isearchp-show-filter-prompt-prefixes-flag.
 ;; 2016/11/01 dadams
 ;;     isearchp-complement-filter: Include original predicate in message.
 ;;     isearch-forward doc string: Mention more options.
@@ -1370,6 +1384,7 @@
 (defvar isearchp-repeat-search-if-fail-flag) ; Here (Emacs 22+).
 (defvar isearchp--repeat-search-if-fail-repeated) ; Here (Emacs 22+).
 (defvar isearchp-restrict-to-region-flag) ; Here (Emacs 24.3+).
+(defvar isearchp-show-filter-prompt-prefixes-flag) ; Here (Emacs 24.3+).
 (defvar last-repeatable-command)         ; In `repeat.el'.
 (defvar lazy-highlight-cleanup)         ; In `isearch.el' (Emacs 22+).
 (defvar lazy-highlight-interval)         ; In `isearch.el' (Emacs 24+).
@@ -1493,6 +1508,7 @@ t     means search is never  case sensitive
   (define-key isearchp-filter-map (kbd "-")  'isearchp-remove-filter-predicate)               ; `C-z -'
   (define-key isearchp-filter-map (kbd "~")  'isearchp-complement-filter)                     ; `C-z ~'
   (define-key isearchp-filter-map (kbd "!")  'isearchp-set-filter-predicate)                  ; `C-z !'
+  (define-key isearchp-filter-map (kbd "p")  'isearchp-toggle-showing-filter-prompt-prefixes) ; `C-z p'
   (define-key isearchp-filter-map (kbd "s")  'isearchp-save-filter-predicate)                 ; `C-z s'
   (define-key isearchp-filter-map (kbd "S")  'isearchp-toggle-auto-save-filter-predicate)     ; `C-z S'
   (define-key isearchp-filter-map (kbd "n")  'isearchp-defun-filter-predicate)                ; `C-z n'
@@ -1649,7 +1665,7 @@ exit Isearch'."
     :type 'boolean :group 'isearch-plus)
 
   (defcustom isearchp-deactivate-region-flag t
-    "*Non-nil means isearching deactivates the region.
+    "Non-nil means isearching deactivates the region.
 See also option `isearchp-restrict-to-region-flag'."
     :type 'boolean :group 'isearch-plus)
 
@@ -1746,8 +1762,12 @@ versa."
     :type 'boolean :group 'isearch-plus)
 
   (defcustom isearchp-restrict-to-region-flag t
-    "*Non-nil means restrict isearching to the active region.
+    "Non-nil means restrict isearching to the active region.
 See also option `isearchp-deactivate-region-flag'."
+    :type 'boolean :group 'isearch-plus)
+
+  (defcustom isearchp-show-filter-prompt-prefixes-flag t
+    "Whether to show prefixes for filters in the Isearch prompt."
     :type 'boolean :group 'isearch-plus)
 
   )
@@ -2410,6 +2430,15 @@ If turning it on, save now.  Note that turning it off does not reset
       (setq isearchp-saved-filter-predicate  isearch-filter-predicate))
     (message "Automatic saving of filter-predicate changes is now %s"
              (if isearchp-auto-save-filter-predicate-flag 'ON 'OFF))
+    (sit-for 1)
+    (isearch-update))
+
+  (defun isearchp-toggle-showing-filter-prompt-prefixes () ; Bound to `C-z p' in `isearch-mode-map'.
+    "Toggle `isearchp-show-filter-prompt-prefixes-flag'."
+    (interactive)
+    (setq isearchp-show-filter-prompt-prefixes-flag  (not isearchp-show-filter-prompt-prefixes-flag))
+    (message "Showing filter-predicate prefixes in prompt is now %s"
+             (if isearchp-show-filter-prompt-prefixes-flag 'ON 'OFF))
     (sit-for 1)
     (isearch-update))
 
@@ -3722,6 +3751,7 @@ If SPACE-BEFORE is non-nil,  put a space before, instead of after it."
                              (propertize "over" 'face 'isearchp-overwrapped))
                         (and isearch-wrapped  (propertize "wrapped " 'face 'isearchp-wrapped))
                         (and (fboundp 'advice-function-mapc) ; Emacs 24.4+
+                             isearchp-show-filter-prompt-prefixes-flag
                              (let ((prefix  ""))
                                (advice-function-mapc (lambda (_ props)
                                                        (let ((np  (cdr (assq 'isearch-message-prefix props))))
@@ -4295,9 +4325,11 @@ Using a non-positive prefix arg here reverses the behavior: If you
 would normally be prompted then you are not prompted, and vice versa.
 
 Option `isearchp-prompt-for-prompt-prefix-flag' controls whether you
-are prompted to for prefix text to prepend to the Isearch prompt.  The
-default option value means you are prompted.  Using a non-negative
-prefix arg here means you are not prompted."
+are prompted for prefix text to prepend to the Isearch prompt.  (But
+if `isearchp-show-filter-prompt-prefixes-flag' is nil then you are not
+prompted - this has no effect.)  The default option value means you
+are prompted.  Using a non-negative prefix arg here means you are not
+prompted."
     (interactive (list (isearchp-read-predicate "Add filter predicate: ")
                        (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
                        (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
@@ -4356,7 +4388,8 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
                                                             read-filter-name-p))
                                              (t           (not read-filter-name-p))))
                                  `((name . ,(or name  (isearchp-read-filter-name)))))
-                            (and (or prfix  (if isearchp-prompt-for-prompt-prefix-flag
+                            (and isearchp-show-filter-prompt-prefixes-flag
+                                 (or prfix  (if isearchp-prompt-for-prompt-prefix-flag
                                                 (not read-msg-prefix-p)
                                               read-msg-prefix-p))
                                  ;; Do not let empty or whitespace prefix get highlighted.
@@ -4588,18 +4621,7 @@ You are prompted for the PATTERN and DISTANCE.
   option `isearchp-movement-unit-alist'.
 
 You might also be prompted for a predicate name or an Isearch prompt
-prefix, as follows:
-
-Option `isearchp-prompt-for-filter-name' controls whether you are
-prompted to name the predicate.  The default option value means you
-are prompted if PREDICATE is a non-symbol, such as a lambda form.
-Using a non-positive prefix arg here reverses the behavior: If you
-would normally be prompted then you are not prompted, and vice versa.
-
-Option `isearchp-prompt-for-prompt-prefix-flag' controls whether you
-are prompted to for prefix text to prepend to the Isearch prompt.  The
-default option value means you are prompted.  Using a non-negative
-prefix arg here means you are not prompted."
+prefix - see `isearchp-add-filter-predicate'."
     (interactive (isearchp-read-near-args "Near regexp: "))
     (isearchp-add-filter-predicate
      (isearchp-near-predicate pattern distance) read-filter-name-p read-msg-prefix-p msgp))
