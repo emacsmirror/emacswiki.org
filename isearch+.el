@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov  6 09:33:54 2016 (-0800)
+;; Last-Updated: Sun Nov  6 11:02:22 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4872
+;;     Update #: 4878
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -802,6 +802,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/11/06 dadams
+;;     Added redefinition of isearch-query-replace: Keep advised filter predicate while query-replacing.
 ;; 2016/11/01 dadams
 ;;     isearchp-complement-filter: Include original predicate in message.
 ;;     isearch-forward doc string: Mention more options.
@@ -2802,6 +2804,82 @@ not necessarily fontify the whole buffer."
 
   )
 
+(when (or (> emacs-major-version 24)    ; Emacs 24.3+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+
+  ;; REPLACE ORIGINAL in `isearch.el'.
+  ;;
+  ;; Keep any advice of `isearch-filter-predicate'.  But keep it only for the duration of query-replacing,
+  ;; unless `isearchp-auto-save-filter-predicate-flag' is non-nil.
+  ;;
+  (defun isearch-query-replace (&optional arg regexp-flag)
+    "Start `query-replace' with string to replace from last search string.
+The ARG (prefix arg if interactive), if non-nil, means replace
+only matches surrounded by word boundaries.  A negative prefix
+arg means replace backward.  Note that using the prefix arg
+is possible only when `isearch-allow-scroll' is non-nil or
+`isearch-allow-prefix' is non-nil, and it doesn't always provide the
+correct matches for `query-replace', so the preferred way to run word
+replacements from Isearch is `M-s w ... M-%'."
+    (interactive "P")
+    (barf-if-buffer-read-only)
+    (when regexp-flag (setq isearch-regexp  t))
+    (let ((orig-auto-save-filter  isearchp-auto-save-filter-predicate-flag))
+      (unwind-protect
+           (let ((isearch-filter-predicate         isearch-filter-predicate)
+                 (isearchp-saved-filter-predicate  isearch-filter-predicate))
+             (unless orig-auto-save-filter (isearchp-toggle-auto-save-filter-predicate))
+             (let ((case-fold-search                isearch-case-fold-search)
+                   ;; Bind `search-upper-case' to nil, to prevent calling `isearch-no-upper-case-p'
+                   ;; in `perform-replace'.
+                   (search-upper-case               nil)
+                   (search-invisible                isearch-invisible)
+                   (replace-lax-whitespace          isearch-lax-whitespace)
+                   (replace-regexp-lax-whitespace   isearch-regexp-lax-whitespace)
+                   (delimited                       (and arg  (not (eq arg '-))))
+                   (backward                                  (and arg  (eq arg '-)))
+                   ;; Bind `isearch-recursive-edit' to nil, to prevent calling `exit-recursive-edit' in
+                   ;; `isearch-done' that terminates the execution of this command when
+                   ;; `isearch-recursive-edit' is non-nil.
+                   ;; We call `exit-recursive-edit' explicitly at the end, below.
+                   (isearch-recursive-edit          nil))
+               (isearch-done nil t)
+               (isearch-clean-overlays)
+               (when (and isearch-other-end
+                          (if backward (> isearch-other-end (point)) (< isearch-other-end (point)))
+                          (not (and transient-mark-mode mark-active
+                                    (if backward (> (mark) (point)) (< (mark) (point))))))
+                 (goto-char isearch-other-end))
+               (set query-replace-from-history-variable
+                    (cons isearch-string (symbol-value query-replace-from-history-variable)))
+               (perform-replace
+                isearch-string
+                (query-replace-read-to
+                 isearch-string
+                 (concat "Query replace"
+                         (and (or delimited  isearch-word)
+                              (let* ((symbol  (or delimited  isearch-word))
+                                     (string  (and symbol  (symbolp symbol)
+                                                   (get symbol 'isearch-message-prefix))))
+                                (if (stringp string)
+                                    (replace-regexp-in-string ; Move space from end to beginning.
+                                     "\\(.*\\) \\'" " \\1" string)
+                                  " word")))
+                         (and isearch-regexp  " regexp")
+                         (and backward  " backward")
+                         (and transient-mark-mode mark-active)  " in region")
+                 isearch-regexp)
+                t isearch-regexp (or delimited  isearch-word) nil nil
+                (and transient-mark-mode  mark-active  (region-beginning))
+                (and transient-mark-mode  mark-active  (region-end))
+                backward))
+             (and isearch-recursive-edit  (exit-recursive-edit)))
+        (when (and isearchp-auto-save-filter-predicate-flag  (not orig-auto-save-filter))
+          (setq isearchp-auto-save-filter-predicate-flag  nil)
+          (isearch-done)
+          (isearch-clean-overlays)))))
+
+  )
 
 ;;; $$$$$$ No longer used.  `M-e' puts point at this position automatically.
 ;;;   (defun isearchp-goto-success-end ()   ; `M-e' in `minibuffer-local-isearch-map'.
