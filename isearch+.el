@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov  6 11:46:31 2016 (-0800)
+;; Last-Updated: Sun Nov  6 14:19:40 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4899
+;;     Update #: 4928
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -818,6 +818,9 @@
 ;;            Bound isearchp-toggle-showing-filter-prompt-prefixes to C-z p.
 ;;     isearch-message-prefix, isearchp-add-filter-predicate-1:
 ;;       Respect isearchp-show-filter-prompt-prefixes-flag.
+;;     isearchp-filter-predicates-alist:
+;;       Changed to use [...] as NAME and PREFIX, for in- entries.  E.g., [#09] instead of in-decimal-number.
+;;     isearchp-read-predicate: Remove isearchp- from annotations, for brevity.
 ;; 2016/11/01 dadams
 ;;     isearchp-complement-filter: Include original predicate in message.
 ;;     isearch-forward doc string: Mention more options.
@@ -1671,35 +1674,34 @@ See also option `isearchp-restrict-to-region-flag'."
 
   (defcustom isearchp-filter-predicates-alist
     `(
-      ("in-color"             isearchp-in-color-p             "(COLOR)")
-      ("in-comment"           isearchp-in-comment-p           "(COMT)")
-      ("in-comment+"          isearchp-in-comment-or-delim-p  "(;COMT)")
-      ("in-defun"             isearchp-in-defun-p             "(DEFUN)")
-      ("in-email-address"     isearchp-in-email-address-p     "(EMAIL)")
-      ("in-file-name"         isearchp-in-file-name-p         "(FILE)")
-      ("in-file-or-url"       isearchp-in-file-or-url-p       "(FILE|URL)")
-      ("in-line"              isearchp-in-line-p              "(LINE)")
-      ("in-list"              isearchp-in-list-p              "(LIST)")
-      ("in-number"            isearchp-in-number-p            "(NUM)")
-      ("in-page"              isearchp-in-page-p              "(PAGE)")
-      ("in-paragraph"         isearchp-in-paragraph-p         "(PARA)")
-      ("in-sentence"          isearchp-in-sentence-p          "(SENT)")
-      ("in-sexp"              isearchp-in-sexp-p              "(SEXP)")
-      ("in-string-or-comment" isearchp-in-string-or-comment-p "(STRG|COMT)")
-      ("in-string"            isearchp-in-string-p            "(STRING)")
-      ("in-symbol"            isearchp-in-symbol-p            "(SYMB)")
-      ("in-url"               isearchp-in-url-p               "(URL)")
-      ("in-lisp-var"          isearchp-in-lisp-variable-p     "(VAR)")
-      ("in-word"              isearchp-in-word-p              "(WORD)")
+      ("[color]"      isearchp-in-color-p             "[COLOR]")
+      ("[;]"          isearchp-in-comment-p           "[;]")
+      ("[;+]"         isearchp-in-comment-or-delim-p  "[;+]")
+      ("[defun]"      isearchp-in-defun-p             "[DEFUN]")
+      ("[email]"      isearchp-in-email-address-p     "[EMAIL]")
+      ("[file]"       isearchp-in-file-name-p         "[FILE]")
+      ("[file|url])"  isearchp-in-file-or-url-p       "[FILE|URL])")
+      ("[line]"       isearchp-in-line-p              "[LINE]")
+      ("[()]"         isearchp-in-list-p              "[()]")
+      ("[#]"          isearchp-in-number-p            "[#]")
+      ("[page]"       isearchp-in-page-p              "[PAGE]")
+      ("[para]"       isearchp-in-paragraph-p         "[PARA]")
+      ("[sent]"       isearchp-in-sentence-p          "[SENT]")
+      ("[sexp]"       isearchp-in-sexp-p              "[SEXP]")
+      ("[\"|;]"       isearchp-in-string-or-comment-p "[\"|;]")
+      ("[\"]"         isearchp-in-string-p            "[\"]")
+      ("[symb]"       isearchp-in-symbol-p            "[SYMB]")
+      ("[url]"        isearchp-in-url-p               "[URL]")
+      ("[var]"        isearchp-in-lisp-variable-p     "[VAR]")
+      ("[word]"       isearchp-in-word-p              "[WORD]")
       ,@(and (featurep 'thingatpt+)
              '(
-               ("in-decimal-number"    isearchp-in-decimal-number-p    "(NUM-10)")
-               ("in-hex-number"        isearchp-in-hex-number-p        "(HEX)")
+               ("[#09]" isearchp-in-decimal-number-p  "[#09]")
+               ("[#0F]" isearchp-in-hex-number-p      "[#0F]")
                ))
       )
     "Alist of filter predicates to choose from.
-
-Each entry has one of these forms, where NAME and PREFIX are strings
+Each entry has one of these forms, where NAME and PREFIX are strings,
 and PREDICATE is a predicate symbol or a lambda form suitable as a value of
 `isearch-filter-predicate'.
 
@@ -1707,9 +1709,15 @@ and PREDICATE is a predicate symbol or a lambda form suitable as a value of
 * (PREDICATE PREFIX)
 * (PREDICATE)
 
-NAME is a (typically) short name for PREDICATE.  You can use it, for
+NAME is typically a short name for PREDICATE.  You can use it, for
 example, to remove PREDICATE from `isearch-filter-predicate', using
-`C-z -'."
+`C-z -'.
+
+The alist is also used for completion when you are prompted to add a
+filter predicate.  If NAME is present for an entry then it is the
+completion candidate, and PREDICATE is shown next to it as an
+annotation in buffer `*Completions*'.  If NAME is not present then
+PREDICATE is the candidate."
     :type '(repeat
             (choice
              (list
@@ -4457,14 +4465,27 @@ Completion is available against the predicates and short names in the
 entries in option `isearchp-filter-predicates-alist', but you can
 enter any other predicate instead (completion is lax).
 
+For `isearchp-filter-predicates-alist' entries that include short
+names, the associated predicates are shown as annotations next to the
+short names in buffer `*Completions*'.
+
 If you do pick one of the predicates or short names provided by
 `isearchp-filter-predicates-alist' then you are never prompted for a
-short name or a prompt prefix.
+short name or a prompt prefix for it.
 
 The value returned is the predicate read, if it is not from
 `isearchp-filter-predicates-alist'.  Otherwise, it is the
 corresponding entry in `isearchp-filter-predicates-alist'."
     (let ((isearchp-resume-with-last-when-empty-flag  nil)
+          (completion-extra-properties
+           '(:annotation-function
+             (lambda (cand)
+               (let* ((full  (assoc cand isearchp-filter-predicates-alist))
+                      (pred  (nth 1 full)))
+                 (save-match-data
+                   (when (and pred  (string-match "\\`isearchp-" (symbol-name pred)))
+                     (setq pred  (substring (symbol-name pred) (match-end 0)))))
+                 (and pred  (format " %s" pred))))))
           input choice pred result)
       (unless prompt  (setq prompt  "Predicate: "))
       (with-isearch-suspended
