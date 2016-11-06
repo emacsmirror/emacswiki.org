@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov  6 14:19:40 2016 (-0800)
+;; Last-Updated: Sun Nov  6 14:59:38 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4928
+;;     Update #: 4958
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -149,7 +149,6 @@
 ;;    `isearchp-add-filter-predicate-1' (Emacs 24.3+),
 ;;    `isearchp-barf-if-use-minibuffer',
 ;;    `isearchp-complete-past-string', `isearchp-fail-pos',
-;;    `isearchp-filters-message' (Emacs 24.3+),
 ;;    `isearchp-highlight-lighter', `isearchp-in-color-p' (Emacs
 ;;    24.3+), `isearchp-in-comment-p' (Emacs 24.3+),
 ;;    `isearchp-in-comment-or-delim-p' (Emacs 24.3+),
@@ -816,11 +815,16 @@
 ;;     Added redefinition of isearch-query-replace: Keep advised filter predicate while query-replacing.
 ;;     Added: isearchp-show-filter-prompt-prefixes-flag, isearchp-toggle-showing-filter-prompt-prefixes.
 ;;            Bound isearchp-toggle-showing-filter-prompt-prefixes to C-z p.
+;;     Removed: isearchp-filters-message.
 ;;     isearch-message-prefix, isearchp-add-filter-predicate-1:
 ;;       Respect isearchp-show-filter-prompt-prefixes-flag.
 ;;     isearchp-filter-predicates-alist:
 ;;       Changed to use [...] as NAME and PREFIX, for in- entries.  E.g., [#09] instead of in-decimal-number.
 ;;     isearchp-read-predicate: Remove isearchp- from annotations, for brevity.
+;;     isearchp-show-filters: Removed MSGP arg.  Include orig filter.  Use `' only if name contains whitespace.
+;;     isearchp-add-filter-predicate-1, isearchp-remove-filter-predicate, isearchp-set-filter-predicate:
+;;       Use isearchp-show-filters, not isearchp-filters-message (removed).
+;;     isearchp-remove-filter-predicate: Forgot MSGP in interactive spec.
 ;; 2016/11/01 dadams
 ;;     isearchp-complement-filter: Include original predicate in message.
 ;;     isearch-forward doc string: Mention more options.
@@ -4406,7 +4410,7 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
                                                (string-match-p "\\`[ \t]+\\'" prefix))
                                      (setq prefix  (concat prefix ", "))) ; Add a comma and a space.
                                    (and (> (length prefix) 0)  `((isearch-message-prefix . ,prefix)))))))
-      (when msgp (isearchp-filters-message))))
+      (when msgp (isearchp-show-filters))))
 
   (defun isearchp-read-filter-name ()
     "Read a name for predicate being added."
@@ -4433,28 +4437,6 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
           prefix)
       (with-isearch-suspended (setq prefix  (read-string "Add Isearch prompt text: ")))
       prefix))
-
-  (defun isearchp-filters-message ()
-    "Show current filters, in a message.
-These are the filters added dynamically, plus the initial one (advised)."
-    (let ((preds  ()))
-      (advice-function-mapc (lambda (pred props)
-                              (push (cond ((cdr (assq 'name props)))
-                                          ((symbolp pred) (symbol-name pred))
-                                          (t (format "%s" pred))) ; Should not be needed.
-                                    preds))
-                            isearch-filter-predicate)
-      (when preds
-        (let ((opred  (advice--cd*r isearch-filter-predicate)))
-          (setq opred  (if (symbolp opred) (symbol-name opred) (format "%s" opred)))
-          (push opred preds)))
-      (when preds (message "Filters: %s"
-                           (if preds
-                               (substitute-command-keys (format "`%s'  [use \\<isearch-mode-map>`\
-\\[isearchp-save-filter-predicate]' to save, `\\[isearchp-defun-filter-predicate]' to name]"
-                                                                (mapconcat 'identity (nreverse preds) "', `")))
-                             'None)))))
-
 
   (defun isearchp-read-predicate (&optional prompt)
     "Read and return a predicate usable as `isearch-filter-predicate'.
@@ -4530,9 +4512,9 @@ The predicate is suitable for `isearch-filter-predicate'"
                                          isearch-filter-predicate)
                    (with-isearch-suspended
                      (setq name  (completing-read "Remove filter predicate: " preds nil t)))
-                   (list name)))
+                   (list name t)))
     (remove-function isearch-filter-predicate predicate)
-    (when msgp (isearchp-filters-message)))
+    (when msgp (isearchp-show-filters)))
 
   (defun isearchp-complement-filter (&optional msgp) ; `C-z ~'
     "Complement the current Isearch predicate."
@@ -4567,9 +4549,9 @@ The predicate is suitable for `isearch-filter-predicate'"
     "Return non-nil if calling FILTER-PREDICATE on BEG and END returns nil."
     (not (funcall filter-predicate beg end)))
 
-  (defun isearchp-show-filters (&optional msgp) ; `C-z ?'
+  (defun isearchp-show-filters () ; `C-z ?'
     "Print a message listing the current filter predicates."
-    (interactive "p")
+    (interactive)
     (let ((preds  ()))
       (advice-function-mapc (lambda (pred props)
                               (push (cond ((cdr (assq 'name props)))
@@ -4577,9 +4559,17 @@ The predicate is suitable for `isearch-filter-predicate'"
                                           (t (format "%s" pred))) ; Should not be needed.
                                     preds))
                             isearch-filter-predicate)
-      (when msgp (message "Filters: %s" (if preds
-                                            (format "`%s'" (mapconcat 'identity (nreverse preds) "', `"))
-                                          'None)))))
+      (let ((opred  (advice--cd*r isearch-filter-predicate)))
+        (setq opred  (if (symbolp opred) (symbol-name opred) (format "%s" opred)))
+        (push opred preds))
+      (message (if preds
+                   (format "Filters: %s" (mapconcat (lambda (pred)
+                                                      (if (string-match-p "[ \t]" pred)
+                                                          (format "`%s'" pred)
+                                                        pred))
+                                                    (nreverse preds)
+                                                    ", "))
+                 "NO filters"))))
 
   (defun isearchp-set-filter-predicate (predicate &optional msgp) ; `C-z !'
     "Set `isearch-filter-predicate' to PREDICATE.
@@ -4588,7 +4578,7 @@ during
 Isearch) to reset it to the default value."
     (interactive (list (isearchp-read-predicate "Set filter predicate: ") t))
     (setq isearch-filter-predicate  predicate)
-    (when msgp (isearchp-filters-message)))
+    (when msgp (isearchp-show-filters)))
 
   (defun isearchp-defun-filter-predicate (function-symbol &optional set-p save-p msgp) ; `C-z n'
     "Name the current filter predicate: Define a named function for it.
