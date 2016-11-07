@@ -7,9 +7,9 @@ Development of JDEE is by all appearances slow. JDEE 2.4.1 was released in May, 
 Project site: https://github.com/jdee-emacs/jdee
 
 ==Download==
-As of JDEE version 2.4.1, JDEE works with CEDET that comes with Emacs 24.3 release (and is known to work with Emacs 23.4 or later).
+JDEE is available from MELPA.
 
-If you download the binary at http://sourceforge.net/projects/jdee/files/jdee/2.4.1/ there is no other dependency to mention.
+As of JDEE version 2.4.1, JDEE works with CEDET that comes with Emacs 24.3 release (and is known to work with Emacs 23.4 or later).
 
 Project repo: https://github.com/jdee-emacs/jdee
 
@@ -19,8 +19,6 @@ Project repo: https://github.com/jdee-emacs/jdee
 Create an issue at Github: https://github.com/jdee-emacs/jdee/issues
 
 * JDEE does not scale well when opening many Java files. Try 'emacs `find . -name "*.java"`' on a mere 50 Java files and you'll observe each Java file take progressively longer to load. Much more than 50 and you'll reach intolerable latencies starting Emacs. When I disable JDEE and open the same source code files in stock java-mode, Emacs initializes in a flash (tracked as https://sourceforge.net/p/jdee/bugs/31/)
-
-* I did not find JDEE in ELPA, MELPA, nor Marmalade. Why not add it to one of those?
 
 == Features ==
 === Core ===
@@ -78,6 +76,8 @@ Link to your success stories here!
 == Installation notes ==
 
 ===Latest===
+JDEE is available in MELPA.
+
 As of 2013-06-14, Emacs 24.3 and JDEE 2.4.1 are latest releases. This JDEE release will work with Emacs 23.4 or later. See Download section above to obtain JDEE.
 
 Next all you need in your init file is something like:
@@ -350,7 +350,6 @@ The website says: "Nearly all the JDEE problems that I have seen are caused by f
 == Alternatives ==
 
 === malabar-mode ===
-
 [http://github.com/espenhw/malabar-mode malabar-mode] is an effort to create a better Java mode for Emacs.
 
 === Eclim ===
