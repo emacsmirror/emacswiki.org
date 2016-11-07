@@ -207,6 +207,17 @@ You can use the following code to clean the cache of tramp entries when emacs qu
 }}}
 ---JoeBloggs
 
+=== Tramp overwrites /dev/null causing many problems ===
+
+If your shell history is full, and you use tramp a lot, it sometimes overwrites /dev/null which causes lots of problems.
+See here: https://groups.google.com/forum/#!topic/gnu.emacs.bug/1wJG_qVU_K4
+To fix it run the following shell commands: 
+{{{
+sudo rm /dev/null 
+sudo mknod /dev/null c 1 3
+sudo chmod 666 /dev/null
+}}}
+---JoeBloggs
 == Tips and tricks ==
 
 [:AdHocMultiHops]
