@@ -205,6 +205,7 @@ You can use the following code to clean the cache of tramp entries when emacs qu
     (ido-remove-tramp-from-cache)
     (ido-save-history))
 }}}
+---JoeBloggs
 
 == Tips and tricks ==
 
