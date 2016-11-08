@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct 22 09:17:29 2016 (-0700)
+;; Last-Updated: Tue Nov  8 10:24:32 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 9692
+;;     Update #: 9693
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -5288,8 +5288,6 @@ A prefix arg specifies files to use instead of the marked files:
  * C-u C-u C-u: All files and directories, except `.' and `..'
  * C-u C-u C-u C-u: All files and directories, including `.' and `..'
  * Any other prefix arg: The current line's file only.
-
-\(Note that a prefix arg acts
 
 You can use `RET' or `mouse-2' to visit any of the files.
 If `tooltip-mode' is on then moving the mouse over image-file names
