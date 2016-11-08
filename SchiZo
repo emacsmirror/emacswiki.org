@@ -1,3 +1,43 @@
- - [https://hubschizo-schizo.rhcloud.com/channel/schizo HubZilla]
- - [http://www.inventati.org/noviglob/ Emacs + org-mode]
- - [http://127.0.0.1:43110/15Aj7PkCPHfCHqNFUnEMoKBDwqHAJ7b9Q6/ Emacs + org-mode on ZeroNet]
+*alcuni miei siti*
+
+* [https://hubschizo-schizo.rhcloud.com/channel/schizo HubZilla]
+
+* [http://www.inventati.org/noviglob/ Emacs + org-mode]
+
+* [http://127.0.0.1:43110/15Aj7PkCPHfCHqNFUnEMoKBDwqHAJ7b9Q6/ Emacs + org-mode on ZeroNet]
+
+*il mio stupido script per pubblicare direttamente su HubZilla attraverso Emacs*
+[code]
+;
+; hubemacszilla.el
+;
+; uso:
+;
+; si carica lo script con un M-x "load-file"
+; in questo modo viene resa disponibile la funzione "hubzilla-post"
+;
+; una volta composto il messaggio
+; si fa un bel M-w nel nome del canale sul quale postare,
+; uno nel titolo,
+; uno nella riga delle categorie
+; e uno in tutta la regione del corpo 
+; (in quest'ordine, perchè è quest'ordine che poi si utilizza per la lettura del kill-ring)
+;
+; a questo punto un M-x "hubzilla-post" pubblica il messaggio nel canale
+
+(require 'url)
+(provide 'hubzilla-post)
+(defun hubzilla-post ()
+(interactive)
+(setq hubzilla-username "email login")
+(setq hubzilla-password "password")
+(setq hubzilla-url "https://server/api/statuses/update.xml")
+(setq canale (substring-no-properties (nth 3 kill-ring)))
+(setq titolo (substring-no-properties (nth 2 kill-ring)))
+(setq categorie (substring-no-properties (nth 1 kill-ring)))
+(setq messaggio (substring-no-properties (nth 0 kill-ring)))
+(shell-command
+(format "curl -u \"%s:%s\" -d source=emacs -d \"channel=%s\" -d \"title=%s\" -d \"category=%s\" -d \"status=%s\" %s" hubzilla-username hubzilla-password canale titolo categorie (url-hexify-string messaggio) hubzilla-url)
+)
+)
+[/code]
