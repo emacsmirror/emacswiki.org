@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov  6 14:59:38 2016 (-0800)
+;; Last-Updated: Wed Nov  9 11:38:16 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4958
+;;     Update #: 4968
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,8 +19,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
-;;   `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
 ;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+', `zones'.
 ;;
@@ -811,6 +810,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/11/09 dadams
+;;     isearchp-add(-regexp)-filter-predicate(-1), isearchp-or-filter-predicate, isearchp-near*:
+;;         Rename READ-* args to FLIP-READ-*.
+;;     isearchp-read-near-args: Provide a default prompt.
 ;; 2016/11/06 dadams
 ;;     Added redefinition of isearch-query-replace: Keep advised filter predicate while query-replacing.
 ;;     Added: isearchp-show-filter-prompt-prefixes-flag, isearchp-toggle-showing-filter-prompt-prefixes.
@@ -821,7 +824,8 @@
 ;;     isearchp-filter-predicates-alist:
 ;;       Changed to use [...] as NAME and PREFIX, for in- entries.  E.g., [#09] instead of in-decimal-number.
 ;;     isearchp-read-predicate: Remove isearchp- from annotations, for brevity.
-;;     isearchp-show-filters: Removed MSGP arg.  Include orig filter.  Use `' only if name contains whitespace.
+;;     isearchp-show-filters:
+;;       Removed MSGP arg.  Include orig filter.  Use `' only if name has whitespace.  Removed keys reminder.
 ;;     isearchp-add-filter-predicate-1, isearchp-remove-filter-predicate, isearchp-set-filter-predicate:
 ;;       Use isearchp-show-filters, not isearchp-filters-message (removed).
 ;;     isearchp-remove-filter-predicate: Forgot MSGP in interactive spec.
@@ -4325,7 +4329,7 @@ Attempt to do the search exactly the way the pending Isearch would."
           (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
 
   (defun isearchp-add-filter-predicate (predicate ; `C-z +'
-                                        &optional read-filter-name-p read-msg-prefix-p msgp)
+                                        &optional flip-read-name-p flip-read-prefix-p msgp)
     "Read a PREDICATE and add it to `isearch-filter-predicate'.
 PREDICATE can be a function symbol or a lambda form, but it must be
 suitable as `isearch-filter-predicate'.
@@ -4346,10 +4350,10 @@ prompted."
                        (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
                        (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                        t))
-    (isearchp-add-filter-predicate-1 :after-while predicate read-filter-name-p read-msg-prefix-p msgp))
+    (isearchp-add-filter-predicate-1 :after-while predicate flip-read-name-p flip-read-prefix-p msgp))
 
   (defun isearchp-or-filter-predicate (predicate ;  `C-z |'
-                                       &optional read-filter-name-p read-msg-prefix-p msgp)
+                                       &optional flip-read-name-p flip-read-prefix-p msgp)
     "Read a PREDICATE and combine with the current one, using `or'.
 `isearch-filter-predicate' is updated to return non-nil according to
 either its previous test or the predicate you enter.  The latter is
@@ -4360,10 +4364,10 @@ See `isearchp-add-filter-predicate' for descriptions of the args."
                        (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
                        (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                        t))
-    (isearchp-add-filter-predicate-1 :before-until predicate read-filter-name-p read-msg-prefix-p msgp))
+    (isearchp-add-filter-predicate-1 :before-until predicate flip-read-name-p flip-read-prefix-p msgp))
 
   (defun isearchp-add-regexp-filter-predicate (regexp ; `C-z %'
-                                               &optional read-filter-name-p read-msg-prefix-p msgp)
+                                               &optional flip-read-name-p flip-read-prefix-p msgp)
     "Add a predicate that matches REGEXP against the current search hit.
 The predicate is added to `isearch-filter-predicate'.
 
@@ -4374,9 +4378,9 @@ other than REGEXP."
                        (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                        t))
     (isearchp-add-filter-predicate-1 :after-while (isearchp-match-regexp-filter-predicate regexp)
-                                     read-filter-name-p read-msg-prefix-p msgp))
+                                     flip-read-name-p flip-read-prefix-p msgp))
 
-  (defun isearchp-add-filter-predicate-1 (where predicate read-filter-name-p read-msg-prefix-p msgp)
+  (defun isearchp-add-filter-predicate-1 (where predicate flip-read-name-p flip-read-prefix-p msgp)
     "Helper for `isearchp-add-filter-predicate' and similar commands.
 WHERE is passed to `add-function'.
 See `isearchp-add-filter-predicate' for descriptions of other args."
@@ -4394,16 +4398,16 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
             (setq pred  (nth 0 pred)))))
       (add-function where isearch-filter-predicate pred
                     (append (and (or name  (case isearchp-prompt-for-filter-name
-                                             (always      (not read-filter-name-p))
+                                             (always      (not flip-read-name-p))
                                              (non-symbol  (if (not (symbolp predicate))
-                                                              (not read-filter-name-p)
-                                                            read-filter-name-p))
-                                             (t           (not read-filter-name-p))))
+                                                              (not flip-read-name-p)
+                                                            flip-read-name-p))
+                                             (t           (not flip-read-name-p))))
                                  `((name . ,(or name  (isearchp-read-filter-name)))))
                             (and isearchp-show-filter-prompt-prefixes-flag
                                  (or prfix  (if isearchp-prompt-for-prompt-prefix-flag
-                                                (not read-msg-prefix-p)
-                                              read-msg-prefix-p))
+                                                (not flip-read-prefix-p)
+                                              flip-read-prefix-p))
                                  ;; Do not let empty or whitespace prefix get highlighted.
                                  (let ((prefix  (or prfix  (isearchp-read-prompt-prefix))))
                                    (unless (or (= 0 (length prefix))
@@ -4620,7 +4624,7 @@ By default, this is `isearch-filter-visible'."
           isearchp-saved-filter-predicate  isearch-filter-predicate)
     (when msgp (message "`isearch-filter-predicate' is RESET to default: %s" isearch-filter-predicate)))
 
-  (defun isearchp-near (pattern distance &optional read-filter-name-p read-msg-prefix-p msgp) ; `C-z @'
+  (defun isearchp-near (pattern distance &optional flip-read-name-p flip-read-prefix-p msgp) ; `C-z @'
     "Add Isearch predicate to match PATTERN within DISTANCE of search hit.
 Matching can be either before or after the search hit.
 You are prompted for the PATTERN and DISTANCE.
@@ -4635,23 +4639,23 @@ You might also be prompted for a predicate name or an Isearch prompt
 prefix - see `isearchp-add-filter-predicate'."
     (interactive (isearchp-read-near-args "Near regexp: "))
     (isearchp-add-filter-predicate
-     (isearchp-near-predicate pattern distance) read-filter-name-p read-msg-prefix-p msgp))
+     (isearchp-near-predicate pattern distance) flip-read-name-p flip-read-prefix-p msgp))
 
-  (defun isearchp-near-before (pattern distance &optional read-filter-name-p read-msg-prefix-p msgp) ; `C-z <'
+  (defun isearchp-near-before (pattern distance &optional flip-read-name-p flip-read-prefix-p msgp) ; `C-z <'
     "Add Isearch predicate to match PATTERN within DISTANCE before search hit.
 See `isearchp-near' for the args and the prompting behavior (and how
 to control it)."
     (interactive (isearchp-read-near-args "Near-before regexp: "))
     (isearchp-add-filter-predicate
-     (isearchp-near-before-predicate pattern distance) read-filter-name-p read-msg-prefix-p msgp))
+     (isearchp-near-before-predicate pattern distance) flip-read-name-p flip-read-prefix-p msgp))
 
-  (defun isearchp-near-after (pattern distance &optional read-filter-name-p read-msg-prefix-p msgp) ; `C-z >'
+  (defun isearchp-near-after (pattern distance &optional flip-read-name-p flip-read-prefix-p msgp) ; `C-z >'
     "Add Isearch predicate to match PATTERN within DISTANCE after search hit.
 See `isearchp-near' for the args and the prompting behavior (and how
 to control it)."
     (interactive (isearchp-read-near-args "Near-after regexp: "))
     (isearchp-add-filter-predicate
-     (isearchp-near-after-predicate pattern distance) read-filter-name-p read-msg-prefix-p msgp))
+     (isearchp-near-after-predicate pattern distance) flip-read-name-p flip-read-prefix-p msgp))
 
   (defun isearchp-read-near-args (&optional regexp-prompt)
     "Read arguments for `isearchp-near*' commands.
@@ -4659,7 +4663,7 @@ REGEXP-PROMPT is the prompt to read the regexp for the nearby text."
     (let ((isearchp-resume-with-last-when-empty-flag  nil)
           pat
           dist)
-      (with-isearch-suspended (setq pat   (read-regexp regexp-prompt)
+      (with-isearch-suspended (setq pat   (read-regexp (or regexp-prompt  "Regexp: "))
                                     dist  (isearchp-read-measure)))
       (list pat
             dist
