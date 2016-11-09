@@ -52,8 +52,6 @@ Features(svn version):
 
 * Fast running of rails rake with autocomplete
 
-See more features in http://dima-exe.ru/rails-on-emacs
-
 There are a bunch of forks of emacs-rails on [http://github.com github]. Starting at http://github.com/tomtt/emacs-rails/tree/master (see "Network" for other forks). I'm currently using and committing to http://github.com/remvee/emacs-rails/tree/master -- JoostDiepenmaat
 
 emacs-rails relies on [http://www.kazmier.com/computer/snippet.el snippet.el] and [http://www.webweavertech.com/ovidiu/emacs/find-recursive.txt find-recursive.txt] (which is actually an elisp source file :P) -- JonathanSimms
