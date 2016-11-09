@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Aug 27 09:23:08 2016 (-0700)
+;; Last-Updated: Wed Nov  9 15:23:47 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 1405
+;;     Update #: 1407
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -2232,8 +2232,8 @@ See `isearchp-imenu' for more information."
 
 (defun isearchp-imenu-1 (&optional predicate submenu-fn regexp-p)
   "Helper for `isearchp-imenu*' commands.
-Non-nil PREDICATE means act on only the hits for it holds.  It is a
-Boolean function that takes these args:
+Non-nil PREDICATE means act on only the hits for which it holds.  It
+is a Boolean function that takes these args:
   - the search-context string
   - a marker at the end of the search-context
 SUBMENU-FN is a function to apply to the list of Imenu submenus to
