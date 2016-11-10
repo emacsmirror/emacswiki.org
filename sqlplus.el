@@ -7,6 +7,7 @@
 ;; Created: 25 Nov 2007
 ;; Version 0.9.1
 ;; Keywords: sql sqlplus oracle plsql
+;; Package-Version: 20141009.1439
 
 ;; GNU Emacs is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published
@@ -4337,20 +4338,6 @@ buffer."
 (setq recentf-exclude (cons (concat "^" (regexp-quote (file-name-as-directory temporary-file-directory)))
 			    (when (boundp 'recentf-exclude)
 			      recentf-exclude)))
-
-(when (fboundp 'ide-register-persistent-var)
-  (funcall (symbol-function 'ide-register-persistent-var) 'sqlplus-connect-strings-alist
-			       ;; save proc
-			       (lambda (alist)
-				 (mapcar (lambda (pair)
-					   (if sqlplus-save-passwords
-					       pair
-					     (cons (car pair) nil)))
-					 alist))
-			       ;; load proc
-			       (lambda (alist)
-				 (setq sqlplus-connect-string-history (mapcar (lambda (pair) (car pair)) alist))
-				 alist)))
 
 (defun get-all-dirs (root-dir)
   (let ((list-to-see (list root-dir))
