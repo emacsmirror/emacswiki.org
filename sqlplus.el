@@ -7,7 +7,6 @@
 ;; Created: 25 Nov 2007
 ;; Version 0.9.1
 ;; Keywords: sql sqlplus oracle plsql
-;; Package-Version: 20141009.1439
 
 ;; GNU Emacs is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published
