@@ -351,6 +351,15 @@ It should look like this:
 
 Restart Gnus. With ##G G## in the *Groups* buffer, you search for mails in the current group. Note that this not work in virtual groups. If you want to search on all your mails, you should add the folder 'All Mail'.
 
+Add the following to .gnus.el to enable the same search syntax that Gmail supports (https://support.google.com/mail/answer/7190?hl=en):
+
+<pre>
+(add-to-list 'nnir-imap-search-arguments '("gmail" . "X-GM-RAW"))
+(setq nnir-imap-default-search-key "gmail")
+</pre>
+
+This is especially useful for restricting search to particular dates (e.g. "before:2016/11/1", "after:2016/11/5"), finding attachments (e.g. "has:attachment", "filename:pdf"), matching messages *without* a term (e.g. "-foo"), or with a particular state (e.g. "is:starred", "is:important", "is:unread").
+
 ===Contact autocompletion===
 When you compose a message in Gmail, you type the first letters, and a list open ups with the contacts whose name matches what you wrote. How can you manage your contacts and do autocompletion in Gnus?
 
