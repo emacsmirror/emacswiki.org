@@ -4,7 +4,7 @@ Lisp:sqlplus.el
 
 Available on MELPA!
 
-Facilitates interaction with Oracle via SQL*Plus (GNU Emacs 22 only).
+Facilitates interaction with Oracle via SQL*Plus.
 Moreover, this package complements Lisp:plsql.el (Kahlil Hodgson) 
 upon convenient compilation of PL/SQL source files.
 
