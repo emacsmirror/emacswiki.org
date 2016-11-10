@@ -233,12 +233,6 @@ Session file name has format '<connect-string>.sqp'"
   :tag "SQL*Plus History Dir"
   :type '(choice directory (const nil)))
 
-(defcustom sqlplus-save-passwords nil
-  "Non-nil means save passwords between Emacs sessions. (Not implemented yet)."
-  :group 'sqlplus
-  :tag "SQL*Plus Save Passwords"
-  :type '(boolean))
-
 (defcustom sqlplus-pagesize 200
   "Approximate number of records in query results.
 If result has more rows, it will be cutted and terminated with '. . .' line."
