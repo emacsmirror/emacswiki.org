@@ -351,7 +351,7 @@ It should look like this:
 
 Restart Gnus. With ##G G## in the *Groups* buffer, you search for mails in the current group. Note that this not work in virtual groups. If you want to search on all your mails, you should add the folder 'All Mail'.
 
-Add the following to .gnus.el to enable the same search syntax that Gmail supports (https://support.google.com/mail/answer/7190?hl=en):
+Add the following to .gnus.el to enable the [https://support.google.com/mail/answer/7190?hl=en same search syntax that Gmail supports]:
 
 <pre>
 (add-to-list 'nnir-imap-search-arguments '("gmail" . "X-GM-RAW"))
