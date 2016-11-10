@@ -16,6 +16,10 @@ To learn about regexps, see RegularExpression.
 
 
 
+
+
+
+
 [:StdIsearchKeys]
 == Standard Isearch Keys ==
 You can define your own keymap to extend Isearch with some other key bindings (see [[#MoreIsearchKeys]], below), but Isearch already comes with these handy keybindings (and more):
@@ -45,6 +49,9 @@ You can define your own keymap to extend Isearch with some other key bindings (s
 
 
 
+
+
+
 [:MoreIsearchKeys]
 == More Isearch Keys: Adding Key Bindings ==
 
@@ -53,13 +60,56 @@ You can define your own keymap to extend Isearch with some other key bindings (s
 * [[Isearch+]] adds the following bindings.
 ** '''`C-h'''' provides help on Isearch while isearching.  It also redefines `isearch-mode-help' so that it lists ''all'' Isearch bindings and ends Isearch properly
 ** '''`##C-+##’''' toggles searching through invisible text.
-** '''`M-s w'''' toggles whole-word search.
 ** '''`C-SPC'''' toggles setting the [[region]] around the last found occurrence.  It adds a function to `isearch-mode-end-hook' that respects the state of this toggle.
 ** '''`##C-`##'''' toggles quoting (escaping) of [[regexp]] special characters.
-** '''`C-c'''' toggles case-sensitivity while isearching. (Standard binding `M-c'.)
+** '''`##C-M-;##'''' toggles option `isearchp-ignore-comments-flag', which controls ignoring text in comments.
+** '''`##C-M-~##'''' toggles searching the complements of the normal search contexts.
+** '''`##C-M-`##'''' toggles escaping of regexp special chars in replacement text.
+** '''`##C-M-D##'''' (aka `##C-M-S-d##') toggles option `isearchp-dim-outside-search-area-flag', which controls dimming of the text that is outside the search area.
+** '''`##C-M-l##'''' removes failed part of search string, if any.
+** '''`##C-M-t##'''' regexp-searches within propertized (or overlay) zones.
+** '''`##C-M-y##'''' yanks from [[secondary selection]] ring.
+
 ** '''`##C-_##'''' yanks successive [[symbol]]s into the search string.
 ** '''`##C-(##'''' yanks successive [[sexp]]s into the search string.
 ** '''`C-j'''' lets you edit the search string. It also provides other options, like changing to ''word search'' (`C-w' as first char) or ''non-incremental search'' (RET). (Standard binding `M-e'.)
+** '''`C-x r g'''' yanks contents of a register.
+** '''`C-y C-2'''' yanks from [[secondary selection]] ring.
+** '''`##C-y C-c##'''' yanks next char. Repeatable with `C-c'.
+** '''`##C-y C-e##'''' yanks rest of line. Repeatable with `C-e'.
+** '''`##C-y C-w##'''' yanks next char or word. Repeatable with `C-w'.
+** '''`##C-y C-y##'''' yanks from [[kill-ring]].
+** '''`##C-y C-_##'''' yanks yanks char, subword, word, or symbol. Repeatable with `##C-_##'.
+** '''`##C-y C-(##'''' yanks [[sexp]], char, subword, word, or symbol. Repeatable with `##C-(##'.
+** '''`##C-y M-g##'''' (same as `M-g') inserts the last successful search string from when you hit `C-g' during Isearch.
+** '''`##C-y M-y##'''' (same as `M-y')
+** '''##C-z !##'''' sets the value of `isearch-filter-predicate'.
+** '''##C-z &##'''' adds a given predicate to `isearch-filter-predicate'.
+** '''##C-z %##'''' adds a filter predicate that matches a given regexp against the current search hit.
+** '''##C-z -##'''' removes a given predicate.
+** '''##C-z 0##'''' resets `isearch-filter-predicate' to saved/default value.
+** '''##C-z |##'''' combines the current filter with a given filter, using `or'.
+** '''##C-z ~##'''' complements the current filter (`not').
+** '''##C-z @##''''  adds a predicate to match a given pattern within a given distance of the search hit.
+** '''##C-z <##'''' adds a predicate to match a given pattern within a given distance before the search hit.
+** '''##C-z >##'''' adds a predicate to match a given pattern within a given distance after the search hit.
+** '''##C-z ?##'''' echoes the current filter predicates.
+** '''##C-z n##'''' names the current filter predicate, ##defun##ing it.
+** '''##C-z p##'''' toggles option `isearchp-show-filter-prompt-prefixes-flag', which controls whether to prompt for prompt prefixes when adding filters.
+** '''##C-z s##'''' saves the current filter predicate for subsequent searches.
+** '''##C-z S##'''' toggles automatically saving current filters for subsequent searchs (option `isearchp-auto-save-filter-predicate-flag').
+
+** '''`##M-:##'''' reads a Lisp sexp, evaluates it, and appends the value to the search string.
+** '''`##M-;##'''' toggles hiding/showing of comments.
+** '''`M-g'''' inserts the last successful search string from when you hit `C-g' during Isearch.
+** '''`M-k'''' cycles option `isearchp-drop-mismatch', which controls how a search-string mismatch is handled.
+** '''`M-s h l'''' toggles `lazy-highlight-cleanup'.
+** '''`M-s h L'''' toggles option `isearch-lazy-highlight'.
+** '''`M-s i'''' toggles searching invisible text, either temporarily or not, depending on option `isearchp-toggle-option-flag' (a prefix arg flips the option behavior).
+** '''`M-s v'''' toggles option `isearchp-toggle-option-flag', which controls whether toggling behaviors applies beyond the current search.
+** '''`M-s M-k'''' toggles option `isearchp-repeat-search-if-fail-flag', which controls whether to restart search from search limit.
+** '''`M-s M-SPC'''' toggles option `isearchp-set-region-flag', which controls setting the [[region]] around the search target.
+** '''`M-w'''' copies the current search string to the kill ring.
 
 * Make `C-h' in Isearch provide help on Isearch.  See IncrementalSearchHelp. This is also done by [[Isearch+]] (see above).
 
