@@ -53,7 +53,7 @@ You can define your own keymap to extend Isearch with some other key bindings (s
 * [[Isearch+]] adds the following bindings.
 ** '''`C-h'''' provides help on Isearch while isearching.  It also redefines `isearch-mode-help' so that it lists ''all'' Isearch bindings and ends Isearch properly
 ** '''`##C-+##’''' toggles searching through invisible text.
-** '''`M-w'''' toggles whole-word search.
+** '''`M-s w'''' toggles whole-word search.
 ** '''`C-SPC'''' toggles setting the [[region]] around the last found occurrence.  It adds a function to `isearch-mode-end-hook' that respects the state of this toggle.
 ** '''`##C-`##'''' toggles quoting (escaping) of [[regexp]] special characters.
 ** '''`C-c'''' toggles case-sensitivity while isearching. (Standard binding `M-c'.)
