@@ -3144,7 +3144,7 @@ create output buffer but dont show it, DONT-CREATE-OUTPUT-BUFFER
         (set-marker chunk-end-pos nil)
         (set-marker prompt-found nil)))))
 
-(defadvice switch-to-buffer (around switch-to-buffer-around-advice (buffer-or-name &optional norecord))
+(defadvice switch-to-buffer (around switch-to-buffer-around-advice (buffer-or-name &optional norecord force-same-window))
   ad-do-it
   (when (and sqlplus-connect-string
 	     (eq major-mode 'sqlplus-mode))
