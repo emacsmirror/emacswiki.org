@@ -267,6 +267,8 @@ Here is a simple function to show the current path in the echo area:
 
 Barely tested, improvements welcome. -- EmilioLopes
 
+You can use which-func-mode to show this info in the modeline, you just have to use (add-hook 'which-func-functions 'nxml-where) to tie the two together. -- Zoltan Ivanfi
+
 == False-positive validation errors ==
 
 Labels and inputs in forms are incorrectly flagged as invalid.  In this valid sample document, the label and input will be considered errors:
