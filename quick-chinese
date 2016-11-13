@@ -1,0 +1,24 @@
+==What is quick-chinese ?==
+[http://sanskrit-db.de/blog/pages-output/quick-chinese/ quick-chinese] is a popup dictionary minor-mode for emacs inspired by [http://www.perapera.org/ Perapera]. It uses the CC-licensed [https://www.mdbg.net/ mdbg-dictionary] as source for the entries.
+It is written 100% in emacs-lisp and runs without auxiliary software.
+
+==Install==
+* You can download a tarball [http://sanskrit-db.de/files/quick-chinese-0.0.1.tar.bz2 here]. 
+: Just untar it to a folder on your elisp-path, for example: 
+:: tar xfj quick-chinese-0.0.1.tar.bz2 -C ~/.emacs.d/elpa
+: add the following to ~/.emacs :
+{{{
+(require 'quick-chinese)
+(global-set-key (kbd "<f11>") 'quick-chinese-mode)
+}}}
+* You can find quick-chinese.el [https://www.emacswiki.org/emacs/download/quick-chinese.el here] but be aware that this alone is not working, you will need the tarball from above with the data-files as well. 
+==Usage==
+: quick-chinese is a very simple affair. 
+: After pressing F11 (or whatever key you decided to bind it to, or alternatively run the command 'quick-chinese-mode') Just move the cursor over a hanzi you want to get the meaning, it will automaticly popup in a small buffer at the bottom of the screen. Since automaticly always the longest word is choosen, you can select the words you want in order to narrow down the search. 
+In order to turn it off, just press F11 again or run the command 'quick-chinese-mode' again. 
+==Bugs==
+quick-chinese might not work when you already have a window showing something else below the current window. In order to get rid of this problem, make sure that the window you wish to use quick-chinese on is the most bottom one. 
+==Screenshot==
+[[image:quick-chinese.png]]
+
+
