@@ -150,11 +150,11 @@ on GitHub.
 
 Once installed with the other Emacs info files, it may be viewed from
 within Emacs or with the command-line 'info' utility. As it has a
-TexInfo source file, it is also available as a Gnu-like typeset manual
+!TexInfo source file, it is also available as a Gnu-like typeset manual
 and several other formats.
 
 This manual is *not* authorized by the author of 'markdown-mode',
-Jason Blevins. It is based upon the program's documentation and is
+Jason Blevins. It is based upon his program's documentation and is
 current with version 2.1 (and pending features of version 2.2).
 
 ----
