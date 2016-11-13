@@ -13,7 +13,7 @@ There are two ways to generate an Imenu menu (index):
 
 For a source-code buffer the locations to index are typically definitions of functions, variables, and so on.  For a text or markup buffer (e.g. LaTeX) the locations might be section headings.  You can use an EmacsLisp [[marker]] as a target destination, so that targets need not be limited to the current buffer.
 
-See Manual:Imenu.
+See Manual:Imenu in the Emacs manual.
 
 == Imenu from a Menu ==
 
