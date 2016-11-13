@@ -285,5 +285,13 @@ Now put this in your init file:
 
 Note:  I have used the new syntax for advice.  If you don't have the latest emacs you may need to change this to the old syntax.
 [[Bernard Hurley]]
+
+== Skipping flyspell on specific region ==
+This is useful for code block in org files, but any region with clear delimiters can be skipped
+
+  (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
+
+- [[chedi]] -
+
 ----
-CategoryModes | CategorySpelling
+CategoryModes | CategorySpelling ==
