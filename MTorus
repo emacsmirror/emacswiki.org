@@ -22,7 +22,7 @@ Thus now you have 2 dimensional navigation:
 * in the one direction you switch buffers cyclically in the current ring
 * in the other direction you switch rings cyclically in the current torus
 
-The project page is at http://mtorus.berlios.de/
+The project page is at [https://sourceforge.net/projects/mtorus.berlios/ SourceForge] now.
 
 ----
 
@@ -38,18 +38,9 @@ All text hereafter only refers to the current, advanced version.
 :: yes, Sebastian wrote most of this page. I still use my own version and I don't know whether Sebastian is still using his or working on it -- StefanKamphausen
 == Obtaining MTorus ==
 
-MTorus is available via berlios.de CVS, use
+MTorus is available via [https://sourceforge.net/projects/mtorus.berlios/files/mtorus.el/download sourceforge.net].
 
-    cvs -z3 -d:pserver:anonymous@cvs.mtorus.berlios.de:/cvsroot/mtorus co mtorus
-
-to obtain your version.
-
-For those who rather stick to GnuArch use
-
-    tla register-archive hroptatyr@users.berlios.de--mtorus http://mtorus.berlios.de/archive/
-    tla get -A hroptatyr@users.berlios.de--mtorus mtorus--dev--1.0 mtorus
-
-Note that current CVS/arch contains a very alpha version of mtorus.
+Note that repository contains a very alpha version of mtorus.
 Both StefanKamphausen and me (SebastianFreundt) have very little spare time to fiddle around with it.
 
 ----
