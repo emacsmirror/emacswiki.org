@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon May 23 14:46:08 2016 (-0700)
+;; Last-Updated: Mon Nov 14 13:49:01 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 381
+;;     Update #: 418
 ;; URL: http://www.emacswiki.org/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -30,16 +30,16 @@
 ;;
 ;;   * You can optionally show the result of pretty-printing in a
 ;;     tooltip at point, by customizing option `pp-max-tooltip-size'
-;;     (Emacs 24.4+).
+;;     (Emacs 24+).
 ;;
 ;;   * You can use a zero prefix argument (e.g. `M-o') with
 ;;     `pp-eval-last-sexp' (`C-x C-e') or `pp-eval-expression', to
 ;;     swap the use of a tooltip defined by option
-;;     `pp-max-tooltip-size'.
+;;     `pp-max-tooltip-size'.  (Emacs 24+)
 ;;
 ;;   * There are additional commands that are versions of
 ;;     `pp-eval-last-sexp' and `pp-eval-expression' that always or
-;;     never use a tooltip.
+;;     never use a tooltip.  (Emacs 24+)
 ;;
 ;;   * Pretty-printing respects options
 ;;     `pp-eval-expression-print-length' and
@@ -56,13 +56,14 @@
 ;;
 ;;      - With no prefix argument, option `pp-max-tooltip-size' is
 ;;        respected. If a tooltip is not used then if the value fits
-;;        on one line (frame width) it is shown in the echo
-;;        area. Otherwise, it is shown in buffer *Pp Eval Output*'.
+;;        on one line (frame width) it is shown in the echo area.
+;;        Otherwise, it is shown in buffer *Pp Eval Output*'.  (Emacs
+;;        24+)
 ;;
 ;;      - With a zero prefix arg, the use of a tooltip according to
 ;;        `pp-max-tooltip-size' is swapped: if that option is `nil'
 ;;        then a tooltip is used, and if non-`nil' a tooltip is not
-;;        used.
+;;        used.  (Emacs 24+)
 ;;
 ;;      - With non-zero prefix argument, the value is inserted into
 ;;        the current buffer at point. With a negative prefix arg, if
@@ -73,12 +74,8 @@
 ;;        `pp-read-expression-map', which is like
 ;;        `read-expression-map' but with some Emacs-Lisp key bindings.
 ;;
-;;      - With a prefix arg, the value is inserted into the current
-;;        buffer at point.  With a negative prefix arg, if the value
-;;        is a string, then it is inserted without being enclosed in
-;;        double-quotes (`"').
-;;
-;;   * Command `pp-eval-last-sexp' is enhanced in these ways:
+;;   * Command `pp-eval-last-sexp' is enhanced in these ways (Emacs
+;;     24+):
 ;;
 ;;      - With a zero prefix arg, the use of a tooltip according to
 ;;        `pp-max-tooltip-size' is swapped: if that option is `nil'
@@ -93,7 +90,7 @@
 ;;     `pp-max-tooltip-size'): `pp-eval-expression-with-tooltip',
 ;;     `pp-eval-expression-without-tooltip',
 ;;     `pp-eval-last-sexp-with-tooltip', and
-;;     `pp-eval-last-sexp-without-tooltip' (Emacs 24.4+).
+;;     `pp-eval-last-sexp-without-tooltip' (Emacs 24+).
 ;;
 ;; 
 ;;
@@ -114,14 +111,15 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `pp-eval-expression-with-tooltip',
-;;    `pp-eval-expression-without-tooltip',
-;;    `pp-eval-last-sexp-with-tooltip',
-;;    `pp-eval-last-sexp-without-tooltip'.
+;;    `pp-eval-expression-with-tooltip' (Emacs 24+),
+;;    `pp-eval-expression-without-tooltip' (Emacs 24+),
+;;    `pp-eval-last-sexp-with-tooltip' (Emacs 24+),
+;;    `pp-eval-last-sexp-without-tooltip' (Emacs 24+).
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `pp-expression-size', `pp-show-tooltip', `pp-tooltip-show'.
+;;    `pp-expression-size', `pp-read--expression' (Emacs 24.4+),
+;;    `pp-show-tooltip' (Emacs 24+), `pp-tooltip-show' (Emacs 24+).
 ;;
 ;;  Variables defined here:
 ;;
@@ -132,12 +130,17 @@
 ;;              been REDEFINED HERE:
 ;;
 ;;    `pp-display-expression', `pp-eval-expression',
-;;    `pp-eval-last-sexp'.
+;;    `pp-eval-last-sexp' (Emacs 23+).
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2016/11/14 dadams
+;;     pp-max-tooltip-size: Mention in doc that if point is off-screen then tooltip not used.
+;;     pp-display-expression: If point is off-screen then do not try to use tooltip.
+;; 2016/05/30 dadams
+;;     pp-eval-last-sexp: Do not define for Emacs < 23.
 ;; 2016/05/21 dadams
 ;;     Added: pp-max-tooltip-size, face pp-tooltip, pp-show-tooltip,
 ;;            pp-tooltip-show, pp-expression-size, pp-eval-expression-with(out)-tooltip,
@@ -218,6 +221,7 @@
 (defvar tooltip-hide-delay)             ; Emacs 22+
 (defvar tooltip-x-offset)               ; Emacs 22+
 (defvar tooltip-y-offset)               ; Emacs 22+
+(defvar x-max-tooltip-size)             ; Emacs 22+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -277,7 +281,12 @@ The value can be:
 
 * nil, meaning never use a tooltip.
 
-* t, meaning use a tooltip but clip the value to `x-max-tooltip-size'."
+* t, meaning use a tooltip but clip the value to `x-max-tooltip-size'.
+
+Note: Regardless of the option value, a tooltip is not used if point
+is off-screen when pretty-printing is called for.  This can happen,
+for instance, if pretty-printing the result of evaluating an
+expression that moves point off-screen."
     :type `(choice
             (const :tag "Do not use a tooltip" nil)
             (const :tag "Always use a tooltip, and clip value if too big" t)
@@ -490,9 +499,10 @@ Emacs-Lisp mode completion and indentation bindings are in effect."
 ;;    `pp-max-tooltip-size', and `eval-expression-debug-on-error'.
 ;; 5. Adjusted to work in different Emacs releases.
 ;;
-;;;###autoload
-(defun pp-eval-last-sexp (insert-value &optional swap-tooltip)
-  "Run `pp-eval-expression' on sexp before point.
+(when (fboundp 'pp-last-sexp)           ; Emacs 23+
+
+  (defun pp-eval-last-sexp (insert-value &optional swap-tooltip)
+    "Run `pp-eval-expression' on sexp before point.
 With a zero prefix arg, this swaps the use of a tooltip according to
  `pp-max-tooltip-size': if that option is nil then a tooltip is used,
  and if non-nil a tooltip is not used.
@@ -511,15 +521,16 @@ Non-interactively:
 This command respects user options `pp-eval-expression-print-length',
 `pp-eval-expression-print-level', `pp-max-tooltip-size', and
 `eval-expression-debug-on-error'."
-  (interactive (list current-prefix-arg 
-                     (zerop (prefix-numeric-value current-prefix-arg))))
-  (if swap-tooltip
-      (if (not pp-max-tooltip-size)
-          (pp-eval-last-sexp-with-tooltip nil)
-        (pp-eval-last-sexp-without-tooltip nil))
-    (if insert-value
-        (insert (pp-to-string (eval (pp-last-sexp) lexical-binding)))
-      (pp-eval-expression (pp-last-sexp)))))
+    (interactive (list current-prefix-arg 
+                       (zerop (prefix-numeric-value current-prefix-arg))))
+    (if swap-tooltip
+        (if (not pp-max-tooltip-size)
+            (pp-eval-last-sexp-with-tooltip nil)
+          (pp-eval-last-sexp-without-tooltip nil))
+      (if insert-value
+          (insert (pp-to-string (eval (pp-last-sexp) lexical-binding)))
+        (pp-eval-expression (pp-last-sexp)))))
+  )
 
 
 ;; REPLACES ORIGINAL in `pp.el':
@@ -542,29 +553,29 @@ Else show it in buffer OUT-BUFFER-NAME."
          (use-tooltip  (or use-tooltip  (and sexp-size
                                              (<= (car sexp-size) (car pp-max-tooltip-size))
                                              (<= (cdr sexp-size) (cdr pp-max-tooltip-size))))))
-    (if use-tooltip
+    (if (and use-tooltip  (posn-at-point)) ; Ensure that point is on-screen now.
         (progn (pp-show-tooltip expression) (message nil))
       (let* ((old-show-function  temp-buffer-show-function)
              (temp-buffer-show-function
               `(lambda (buf)
-                 (with-current-buffer buf
-                   (goto-char (point-min))
-                   (end-of-line 1)
-                   (if (or (< (1+ (point)) (point-max))
-                           (>= (- (point) (point-min)) (frame-width)))
-                       (let ((temp-buffer-show-function  ',old-show-function)
-                             (old-selected               (selected-window))
-                             (window                     (display-buffer buf)))
-                         (goto-char (point-min)) ; Expected by some hooks ...
-                         (make-frame-visible (window-frame window))
-                         (unwind-protect
-                              (progn (select-window window)
-                                     (run-hooks 'temp-buffer-show-hook))
-                           (when (window-live-p old-selected)
-                             (select-window old-selected))
-                           (message "Evaluating...done.  See buffer `%s'."
-                                    out-buffer-name)))
-                     (message "%s" (buffer-substring (point-min) (point))))))))
+                (with-current-buffer buf
+                  (goto-char (point-min))
+                  (end-of-line 1)
+                  (if (or (< (1+ (point)) (point-max))
+                          (>= (- (point) (point-min)) (frame-width)))
+                      (let ((temp-buffer-show-function  ',old-show-function)
+                            (old-selected               (selected-window))
+                            (window                     (display-buffer buf)))
+                        (goto-char (point-min)) ; Expected by some hooks ...
+                        (make-frame-visible (window-frame window))
+                        (unwind-protect
+                             (progn (select-window window)
+                                    (run-hooks 'temp-buffer-show-hook))
+                          (when (window-live-p old-selected)
+                            (select-window old-selected))
+                          (message "Evaluating...done.  See buffer `%s'."
+                                   out-buffer-name)))
+                    (message "%s" (buffer-substring (point-min) (point))))))))
         (with-output-to-temp-buffer out-buffer-name
           (pp expression)
           (with-current-buffer standard-output
