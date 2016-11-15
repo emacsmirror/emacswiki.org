@@ -7,19 +7,19 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Jun 24 09:46:13 2016 (-0700)
+;; Last-Updated: Mon Nov 14 16:33:22 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 3769
+;;     Update #: 3788
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
-;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
+;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `bookmark', `cmds-menu',
-;;   `fit-frame', `frame-fns', `help+20', `info', `info+20',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp',
+;;   `apropos', `apropos+', `avoid', `bookmark', `fit-frame',
+;;   `frame-fns', `help+20', `info', `info+20', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp',
 ;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
@@ -133,6 +133,7 @@
 ;;    `bmkp-bmenu-mark-bookmarks-tagged-some',
 ;;    `bmkp-bmenu-mark-desktop-bookmarks',
 ;;    `bmkp-bmenu-mark-dired-bookmarks',
+;;    `bmkp-bmenu-mark-eww-bookmarks',
 ;;    `bmkp-bmenu-mark-file-bookmarks',
 ;;    `bmkp-bmenu-mark-function-bookmarks',
 ;;    `bmkp-bmenu-mark-gnus-bookmarks',
@@ -173,6 +174,7 @@
 ;;    `bmkp-bmenu-show-only-bookmark-list-bookmarks',
 ;;    `bmkp-bmenu-show-only-desktop-bookmarks',
 ;;    `bmkp-bmenu-show-only-dired-bookmarks',
+;;    `bmkp-bmenu-show-only-eww-bookmarks',
 ;;    `bmkp-bmenu-show-only-file-bookmarks',
 ;;    `bmkp-bmenu-show-only-function-bookmarks',
 ;;    `bmkp-bmenu-show-only-gnus-bookmarks',
@@ -959,7 +961,7 @@ Non-interactively:
          (was-unmarked-p  nil))
     ;; Put full bookmark on BNAME as property `bmkp-full-record'.
     (put-text-property 0 (length bname) 'bmkp-full-record bmk bname)
-    ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
+    ;; This is the same as `add-to-list' with `eq' (not available for Emacs 20-21).
     (unless (memq bname bmkp-bmenu-marked-bookmarks)
       (setq bmkp-bmenu-marked-bookmarks  (cons bname bmkp-bmenu-marked-bookmarks)
             was-unmarked-p               t))
@@ -1047,7 +1049,7 @@ the deletions."
   (when (bookmark-bmenu-bookmark)       ; Should never be nil, but just to be safe.
     (setq bmkp-bmenu-marked-bookmarks  (bmkp-delete-bookmark-name-from-list
                                         (bookmark-bmenu-bookmark) bmkp-bmenu-marked-bookmarks))
-    ;; This is the same as `add-to-list' with `EQ' (not available for Emacs 20-21).
+    ;; This is the same as `add-to-list' with `eq' (not available for Emacs 20-21).
     (let ((bmk  (bmkp-bookmark-record-from-name (bookmark-bmenu-bookmark))))
       (unless (memq bmk bmkp-flagged-bookmarks)
         (setq bmkp-flagged-bookmarks  (cons bmk bmkp-flagged-bookmarks)))))
@@ -1233,8 +1235,7 @@ See `bookmark-bmenu-list' for the description of FILTEREDP.
 Reset `bmkp-modified-bookmarks' and `bmkp-flagged-bookmarks'.
 Non-nil RESET-P means reset `bmkp-bmenu-marked-bookmarks' also.
 Non-nil INTERACTIVEP means `bookmark-bmenu-list' was called
- interactively, so pop to the bookmark list and communicate the sort
- order."
+ interactively, so pop to bookmark list and communicate sort order."
   (setq bmkp-modified-bookmarks  ()
         bmkp-flagged-bookmarks   ())
   (when reset-p (setq bmkp-bmenu-marked-bookmarks  ()))
@@ -1710,6 +1711,7 @@ Hide/Show (`*Bookmark List*')
 
 \\[bmkp-bmenu-show-only-non-file-bookmarks]\t- Show only non-file (i.e. buffer) bookmarks
 \\[bmkp-bmenu-show-only-dired-bookmarks]\t- Show only Dired bookmarks
+\\[bmkp-bmenu-show-only-eww-bookmarks]\t- Show only EWW (URL) bookmarks
 \\[bmkp-bmenu-show-only-file-bookmarks]\t- Show only file & directory bookmarks (`C-u': local only)
 \\[bmkp-bmenu-show-only-gnus-bookmarks]\t- Show only Gnus bookmarks
 \\[bmkp-bmenu-show-only-info-bookmarks]\t- Show only Info bookmarks
@@ -2137,23 +2139,24 @@ for confirmation."
 ;; `bmkp-bmenu-show-only-autonamed-bookmarks',
 ;; `bmkp-bmenu-show-only-non-file-bookmarks',
 ;; `bmkp-bmenu-show-only-dired-bookmarks',
+;; `bmkp-bmenu-show-only-eww-bookmarks',
 ;; `bmkp-bmenu-show-only-function-bookmarks',
 ;; `bmkp-bmenu-show-only-gnus-bookmarks',
 ;; `bmkp-bmenu-show-only-icicles-search-hits-bookmarks',
 ;; `bmkp-bmenu-show-only-image-bookmarks',
 ;; `bmkp-bmenu-show-only-info-bookmarks',
-;; `bmkp-bmenu-show-only-desktop-bookmarks', 
+;; `bmkp-bmenu-show-only-desktop-bookmarks',
 ;; `bmkp-bmenu-show-only-man-bookmarks',
 ;; `bmkp-bmenu-show-only-region-bookmarks',
-;; `bmkp-bmenu-show-only-tagged-bookmarks', 
+;; `bmkp-bmenu-show-only-tagged-bookmarks',
 ;; `bmkp-bmenu-show-only-untagged-bookmarks',
 ;; `bmkp-bmenu-show-only-url-bookmarks',
 ;; `bmkp-bmenu-show-only-variable-list-bookmarks',
-;; `bmkp-bmenu-show-only-snippet-bookmarks', 
+;; `bmkp-bmenu-show-only-snippet-bookmarks',
 ;; `bmkp-bmenu-show-only-w3m-bookmarks',
 ;; `bmkp-bmenu-show-only-temporary-bookmarks',
 ;; `bmkp-bmenu-show-only-bookmark-file-bookmarks',
-;; `bmkp-bmenu-show-only-bookmark-list-bookmarks', 
+;; `bmkp-bmenu-show-only-bookmark-list-bookmarks',
 
 
 ;; The simple ones are defined using macro `bmkp-define-show-only-command'.
@@ -2161,6 +2164,7 @@ for confirmation."
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-autonamed-bookmarks "bookmark+")
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-non-file-bookmarks "bookmark+")
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-dired-bookmarks "bookmark+")
+;;;###autoload (autoload 'bmkp-bmenu-show-only-eww-bookmarks "bookmark+")
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-function-bookmarks "bookmark+")
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-gnus-bookmarks "bookmark+")
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-icicles-search-hits-bookmarks "bookmark+")
@@ -2212,8 +2216,10 @@ for confirmation."
                                bmkp-variable-list-alist-only)                                 ; `V S'
 (bmkp-define-show-only-command snippet "Display (only) the snippet bookmarks."
                                bmkp-snippet-alist-only)                                       ; `w S'
+(bmkp-define-show-only-command eww "Display (only) the EWW URL bookmarks."
+                               bmkp-eww-alist-only)                                           ; `W E S'
 (bmkp-define-show-only-command w3m "Display (only) the W3M URL bookmarks."
-                               bmkp-w3m-alist-only)                                           ; `W S'
+                               bmkp-w3m-alist-only)                                           ; `W 3 S'
 (bmkp-define-show-only-command temporary "Display (only) the temporary bookmarks."
                                bmkp-temporary-alist-only)                                     ; `X S'
 (bmkp-define-show-only-command bookmark-file "Display (only) the bookmark-file bookmarks."
@@ -2716,6 +2722,12 @@ name must have."
   (interactive)
   (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-dired-bookmark-p))
 
+;;;###autoload (autoload 'bmkp-bmenu-mark-eww-bookmarks "bookmark+")
+(defun bmkp-bmenu-mark-eww-bookmarks () ; Bound to `W E M' in bookmark list
+  "Mark EWW (URL) bookmarks."
+  (interactive)
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-eww-bookmark-p))
+
 ;;;###autoload (autoload 'bmkp-bmenu-mark-file-bookmarks "bookmark+")
 (defun bmkp-bmenu-mark-file-bookmarks (arg) ; Bound to `F M' in bookmark list
   "Mark file bookmarks.
@@ -2829,7 +2841,7 @@ If FILE is non-nil, set `bmkp-last-specific-file' to it."
   (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-url-bookmark-p))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-w3m-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-w3m-bookmarks () ; Bound to `W M' in bookmark list
+(defun bmkp-bmenu-mark-w3m-bookmarks () ; Bound to `W 3 M' in bookmark list
   "Mark W3M (URL) bookmarks."
   (interactive)
   (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-w3m-bookmark-p))
@@ -5046,10 +5058,18 @@ When two bookmarks are not comparable this way, compare them by
 bookmark name.")
 
 ;; $$$$$$ Not used now.
-;; (bmkp-define-sort-command               ; Bound to `s w' in bookmark list
-;;  "by w3m url"                           ; `bmkp-bmenu-sort-by-w3m-url'
+;; (bmkp-define-sort-command               ; Bound to `s w 3' in bookmark list
+;;  "by W3M url"                           ; `bmkp-bmenu-sort-by-w3m-url'
 ;;  ((bmkp-w3m-cp) bmkp-alpha-p)
 ;;  "Sort W3M bookmarks alphabetically by their URL/filename.
+;; When two bookmarks are not comparable this way, compare them by
+;; bookmark name.")
+
+;; $$$$$$ Not used now.
+;; (bmkp-define-sort-command               ; Bound to `s w e' in bookmark list
+;;  "by EWW url"                           ; `bmkp-bmenu-sort-by-w3m-url'
+;;  ((bmkp-eww-cp) bmkp-alpha-p)
+;;  "Sort EWW bookmarks alphabetically by their URL/filename.
 ;; When two bookmarks are not comparable this way, compare them by
 ;; bookmark name.")
 
@@ -5457,7 +5477,9 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "st"                   'bmkp-bmenu-sort-tagged-before-untagged)
 (define-key bookmark-bmenu-mode-map "su"                   'bmkp-bmenu-sort-by-url)
 (define-key bookmark-bmenu-mode-map "sv"                   'bmkp-bmenu-sort-by-bookmark-visit-frequency)
-;; ;; (define-key bookmark-bmenu-mode-map "sw"                   'bmkp-bmenu-sort-by-w3m-url)
+;; ;; (define-key bookmark-bmenu-mode-map "sw"                    nil) ; For Emacs20
+;; ;; (define-key bookmark-bmenu-mode-map "swe"                   'bmkp-bmenu-sort-by-eww-url)
+;; ;; (define-key bookmark-bmenu-mode-map "sw3"                   'bmkp-bmenu-sort-by-w3m-url)
 (when (> emacs-major-version 22)        ; Emacs 23+
  (define-key bookmark-bmenu-mode-map (kbd "M-s a C-s")     'bmkp-bmenu-isearch-marked-bookmarks)
  (define-key bookmark-bmenu-mode-map (kbd "M-s a M-C-s")   'bmkp-bmenu-isearch-marked-bookmarks-regexp))
@@ -5507,9 +5529,12 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "VM"                   'bmkp-bmenu-mark-variable-list-bookmarks)
 (define-key bookmark-bmenu-mode-map "VS"                   'bmkp-bmenu-show-only-variable-list-bookmarks)
 (define-key bookmark-bmenu-mode-map "\M-o"                 'bmkp-bmenu-w32-jump-to-marked)
-(define-key bookmark-bmenu-mode-map "W"                    nil) ; For Emacs 20
-(define-key bookmark-bmenu-mode-map "WM"                   'bmkp-bmenu-mark-w3m-bookmarks)
-(define-key bookmark-bmenu-mode-map "WS"                   'bmkp-bmenu-show-only-w3m-bookmarks)
+(define-key bookmark-bmenu-mode-map "W3"                   nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "W3M"                  'bmkp-bmenu-mark-w3m-bookmarks)
+(define-key bookmark-bmenu-mode-map "W3S"                  'bmkp-bmenu-show-only-w3m-bookmarks)
+(define-key bookmark-bmenu-mode-map "WE"                   nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "WEM"                  'bmkp-bmenu-mark-eww-bookmarks)
+(define-key bookmark-bmenu-mode-map "WES"                  'bmkp-bmenu-show-only-eww-bookmarks)
 (define-key bookmark-bmenu-mode-map "w"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "wM"                   'bmkp-bmenu-mark-snippet-bookmarks)
 (define-key bookmark-bmenu-mode-map "wS"                   'bmkp-bmenu-show-only-snippet-bookmarks)
@@ -6063,6 +6088,9 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-w3m-bookmarks]
   '(menu-item "W3M URLs" bmkp-bmenu-show-only-w3m-bookmarks
     :help "Display (only) the W3M URL bookmarks"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-eww-bookmarks]
+  '(menu-item "EWW URLs" bmkp-bmenu-show-only-eww-bookmarks
+    :help "Display (only) the EWW URL bookmarks"))
 (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-url-bookmarks]
   '(menu-item "URLs" bmkp-bmenu-show-only-url-bookmarks
     :help "Display (only) the URL bookmarks"))
@@ -6225,6 +6253,8 @@ are marked or ALLP is non-nil."
 
 (define-key bmkp-bmenu-mark-types-menu [bmkp-bmenu-mark-w3m-bookmarks]
   '(menu-item "W3M URLs" bmkp-bmenu-mark-w3m-bookmarks :help "Mark W3M URL bookmarks"))
+(define-key bmkp-bmenu-mark-types-menu [bmkp-bmenu-mark-eww-bookmarks]
+  '(menu-item "EWW URLs" bmkp-bmenu-mark-eww-bookmarks :help "Mark Eww URL bookmarks"))
 (define-key bmkp-bmenu-mark-types-menu [bmkp-bmenu-mark-url-bookmarks]
   '(menu-item "URLs" bmkp-bmenu-mark-url-bookmarks :help "Mark URL bookmarks"))
 (define-key bmkp-bmenu-mark-types-menu [bmkp-bmenu-mark-variable-list-bookmarks]
