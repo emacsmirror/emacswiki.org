@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Nov 14 16:51:26 2016 (-0800)
+;; Last-Updated: Tue Nov 15 07:20:31 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 16133
+;;     Update #: 16146
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2016/11/15 dadams
+;;     bmkp-*eww-*, bookmark-set, bmkp-this-buffer-p, bmkp-url-bookmark-p, bmkp-url-target-set,
+;;       bmkp-bookmark-description: Ensure that EWW code is only for Emacs 25+.
 ;; 2016/11/14 dadams
 ;;     Added: bmkp-eww-jump, bmkp-eww-jump-other-window, bmkp-eww-alist-only, bmkp-eww-bookmark-p,
 ;;            bmkp-eww-cp, bmkp-jump-eww, bmkp-make-eww-record, bmkp-eww-history.
@@ -1227,6 +1230,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2016/11/15 dadams
+;;     bmkp-*eww-*: Ensure that EWW code is only for Emacs 25+.
 ;; 2016/11/14 dadams
 ;;     Added: bmkp-bmenu-mark-eww-bookmarks, bmkp-bmenu-show-only-eww-bookmarks.
 ;;     bookmark-bmenu-mode: Added EWW to doc.
@@ -1819,6 +1824,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2016/11/15 dadams
+;;     bmkp-eww-jump(-other-window): Ensure that EWW code is only for Emacs 25+.
 ;; 2016/11/14 dadams
 ;;     Added bindings for bmkp-eww-jump(-other-window), including in eww-mode-map.
 ;;     Bind bmkp-delete-bookmarks to kill-line keys (C-x p C-k, C-x p deleteline).
