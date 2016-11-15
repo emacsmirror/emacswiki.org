@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Mon Nov 14 16:07:10 2016 (-0800)
+;; Last-Updated: Tue Nov 15 07:01:19 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 760
+;;     Update #: 764
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -411,8 +411,11 @@ Each value of the list is a prefix key bound to keymap
 (define-key bmkp-jump-other-window-map "B"    'bmkp-bookmark-list-jump)     ; SAME COMMAND: `C-x 4 j B'
 (define-key bmkp-jump-map              "d"    'bmkp-dired-jump)                             ; `C-x j d'
 (define-key bmkp-jump-other-window-map "d"    'bmkp-dired-jump-other-window)              ; `C-x 4 j d'
-(define-key bmkp-jump-map              "e"    'bmkp-eww-jump)                               ; `C-x j e'
-(define-key bmkp-jump-other-window-map "e"    'bmkp-eww-jump-other-window)                ; `C-x 4 j e'
+
+(when (fboundp 'bmkp-eww-jump)          ; Emacs 25+
+  (define-key bmkp-jump-map              "e"   'bmkp-eww-jump)                              ; `C-x j e'
+  (define-key bmkp-jump-other-window-map "e"   'bmkp-eww-jump-other-window)               ; `C-x 4 j e'
+  )
 (define-key bmkp-jump-map              "f"    'bmkp-file-jump)                              ; `C-x j f'
 (define-key bmkp-jump-other-window-map "f"    'bmkp-file-jump-other-window)               ; `C-x 4 j f'
 (define-key bmkp-jump-map              "\C-f" 'bmkp-find-file)                            ; `C-x j C-f'
@@ -583,9 +586,10 @@ Each value of the list is a prefix key bound to keymap
                        '(menu-item "Jump to a Dired Bookmark" bmkp-dired-jump
                          :help "Jump to a bookmarked Dired buffer")))))))
 
-(add-hook 'eww-mode-hook
-          (lambda () (unless (lookup-key eww-mode-map "j")
-                       (define-key eww-mode-map "j" 'bmkp-eww-jump))))
+(when (fboundp 'bmkp-eww-jump)          ; Emacs 25+
+  (add-hook 'eww-mode-hook
+            (lambda () (unless (lookup-key eww-mode-map "j")
+                         (define-key eww-mode-map "j" 'bmkp-eww-jump)))))
 
 (add-hook 'gnus-summary-mode-hook
           (lambda () (unless (lookup-key gnus-summary-mode-map "j")
