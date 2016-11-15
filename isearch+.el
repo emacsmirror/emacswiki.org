@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Nov  9 11:38:16 2016 (-0800)
+;; Last-Updated: Tue Nov 15 11:15:27 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4968
+;;     Update #: 4971
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,7 +19,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
+;;   `cl-lib', `color', `frame-fns', `gv', `help-fns',
 ;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+', `zones'.
 ;;
@@ -810,6 +811,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/11/15 dadams
+;;     isearchp-read-predicate: If input was not a completion choice then Lisp-read it (e.g. lambda form).
 ;; 2016/11/09 dadams
 ;;     isearchp-add(-regexp)-filter-predicate(-1), isearchp-or-filter-predicate, isearchp-near*:
 ;;         Rename READ-* args to FLIP-READ-*.
@@ -4482,7 +4485,7 @@ corresponding entry in `isearchp-filter-predicates-alist'."
                                          'isearchp-predicate-history)
                 choice  (assoc input isearchp-filter-predicates-alist)
                 choice  (or choice  (assoc (intern input) isearchp-filter-predicates-alist)))
-          (setq result  (or choice  (intern input))
+          (setq result  (or choice  (read input)) ; E.g., input was a lambda form.
                 pred    (if choice
                             (if (= 3 (length choice)) (nth 1 choice) (nth 0 choice))
                           result))
@@ -4494,8 +4497,7 @@ corresponding entry in `isearchp-filter-predicates-alist'."
     "Read and return a regexp, during Isearch, prompting with PROMPT."
     (let ((isearchp-resume-with-last-when-empty-flag  nil)
           regexp)
-      (unless prompt  (setq prompt  "Regexp: "))
-      (with-isearch-suspended (setq regexp  (read-regexp prompt)))
+      (with-isearch-suspended (setq regexp  (read-regexp (or prompt  "Regexp: "))))
       regexp))
 
   (defun isearchp-match-regexp-filter-predicate (regexp)
