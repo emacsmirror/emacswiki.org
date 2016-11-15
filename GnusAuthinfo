@@ -55,6 +55,8 @@ You can use different authinfo files for different server methods. For example u
 
 <code>smtpmail-auth-credentials</code> for setting the smtpmail authinfo file
 
+This is deprecated as of 24.1, ~/.authinfo (or ~/.authinfo.gpg) is used by default, see variable <code>auth-sources</code>.
+
 == Connecting to another Box on an Exchange Server ==
 
 Using the nnimap backend you can connect to another box by giving the domain, username and boxname explicitly:
