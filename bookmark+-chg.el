@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Oct 27 09:26:18 2016 (-0700)
+;; Last-Updated: Mon Nov 14 16:51:26 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 16104
+;;     Update #: 16133
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2016/11/14 dadams
+;;     Added: bmkp-eww-jump, bmkp-eww-jump-other-window, bmkp-eww-alist-only, bmkp-eww-bookmark-p,
+;;            bmkp-eww-cp, bmkp-jump-eww, bmkp-make-eww-record, bmkp-eww-history.
+;;     bmkp-non-file-filename: Added EWW entry.
+;;     bookmark-set, bmkp-this-buffer-p, bmkp-url-bookmark-p, bmkp-url-target-set,
+;;       bmkp-bookmark-description: Support eww-mode.
+;;     bmkp-url-jump(-other-window): Just use bmkp-url-alist-only.
 ;; 2016/10/27 dadams
 ;;     bmkp-end-position-post-context: Typo: (point) -> ereg.
 ;; 2016/09/21 dadams
@@ -1220,6 +1227,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2016/11/14 dadams
+;;     Added: bmkp-bmenu-mark-eww-bookmarks, bmkp-bmenu-show-only-eww-bookmarks.
+;;     bookmark-bmenu-mode: Added EWW to doc.
+;;     Bound bmkp-bmenu-mark-eww-bookmarks to WEM, bmkp-bmenu-show-only-eww-bookmarks to WES.
+;;     Change bmkp-bmenu-mark-w3m-bookmarks to W3M, bmkp-bmenu-show-only-w3m-bookmarks binding to W3S.
+;;     bmkp-bmenu-mark-types-menu, bmkp-bmenu-show-types-menu: Support EWW.
 ;; 2016/06/24 dadams
 ;;     bookmark-bmenu-execute-deletions: Delete bookmark on the current line if none flagged/marked.
 ;; 2016/06/23 dadams
@@ -1806,6 +1819,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2016/11/14 dadams
+;;     Added bindings for bmkp-eww-jump(-other-window), including in eww-mode-map.
+;;     Bind bmkp-delete-bookmarks to kill-line keys (C-x p C-k, C-x p deleteline).
 ;; 2016/06/24 dadams
 ;;     Added bmkp-delete-bookmarks binding for <deletechar> and <kp-delete>.
 ;; 2016/05/15 dadams
@@ -1933,6 +1949,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2016/11/14 dadams
+;;     
 ;; 2016/10/25 dadams
 ;;     Added: Faces bmkp-light-autonamed-region, bmkp-light-non-autonamed-region.
 ;;            Options bmkp-light-style-autonamed-region, bmkp-light-style-non-autonamed-region.
@@ -2059,6 +2077,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2016/11/14 dadams
+;;     Version 2016.11.14.  Added support for EWW bookmarks.  Thx to charles@aurox.ch.
 ;; 2015/02/22 dadams
 ;;     Version 2015.02.22.
 ;; 2015/02/08 dadams
