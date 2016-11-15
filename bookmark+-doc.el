@@ -6,13 +6,13 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Oct 25 09:17:58 2016 (-0700)
+;; Last-Updated: Mon Nov 14 15:56:32 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 15081
+;;     Update #: 15084
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
-;;           info, url, w3m, gnus
+;;           info, url, eww, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
@@ -551,9 +551,10 @@
 ;;
 ;;     In addition to keys on Bookmark+ keymaps, Bookmark+ binds some
 ;;     mode-specific bookmarking commands in some other modes: Occur,
-;;     Compilation (including Grep), Buffer-menu, Gnus, Info, Man,
-;;     Woman, W3M, and Dired (if you use library `Dired+').  These
-;;     keys let you set or jump to bookmarks specific to the modes.
+;;     Compilation (including Grep), Buffer-menu, EWW, Gnus, Info,
+;;     Man, Woman, W3M, and Dired (if you use library `Dired+').
+;;     These keys let you set or jump to bookmarks specific to the
+;;     modes.
 ;;
 ;;  * Helpful help.
 ;;
