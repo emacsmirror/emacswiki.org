@@ -8,7 +8,12 @@ http://jblevins.org/projects/markdown-mode/rev-2-1
 
 Debian have `elpa-markdown-mode' package.
 
-== Customization ==
+On Mac OSX Unix (and [http://brew.sh homebrew] installed), type
+<pre>
+$ brew install homebrew/emacs/markdown-mode
+</pre>
+
+== Checking Parenthesis ==
 
 It can be useful to enforce certain static constraints on Markdown files; for example, the heavy use of brackets and parentheses in link syntax mean it is easy to omit a closing parentheses, especially if one is linking something inside a natural language digression (where one will have 2 or more closing parentheses). Balance can be checked with [[DebuggingParentheses|'check-parens']], and it can be automatically invoked after file saves with the usual hooks, eg.
 
@@ -36,7 +41,7 @@ Useful markdown-specific editing features:
 
 == HTML 5 and UTF-8 ==
 
-Assuming you are using the Perl script `markdown` which is called without a filename, and assuming you write all your files using UTF-8, then this is for you:
+Assuming you are using the Perl script `markdown' which is called without a filename, and assuming you write all your files using UTF-8, then this is for you:
 
 {{{
 (eval-after-load "markdown-mode"
@@ -142,20 +147,28 @@ When I'm done writing a chapter, the text gets copied over to a LaTeX document. 
 	      (t (goto-char skip-to)))))))
 }}}
 
-== Emacs/Info-Format Manual ==
+== Emacs/Info-format Manual ==
 
-You may download an alternative info-format manual for 'markdown-mode'
+You may download an alternative info-format manual for `markdown-mode'
 from [https://github.com/daniel-birket/markdown-mode-texinfo markdown-mode-texinfo] 
 on GitHub.
 
 Once installed with the other Emacs info files, it may be viewed from
-within Emacs or with the command-line 'info' utility. As it has a
-!TexInfo source file, it is also available as a Gnu-like typeset manual
-and several other formats.
+within Emacs or with the command-line `info' utility. As it has a
+!TexInfo source file, it is also available as a typeset PDF and other formats.
 
-This manual is *not* authorized by the author of 'markdown-mode',
+This manual is *not* authorized by the author of `markdown-mode',
 Jason Blevins. It is based upon his program's documentation and is
-current with version 2.1 (and pending features of version 2.2).
+current with version 2.1 (and pending features of version 2.2 as noted).
 
-----
-MarkupModes
+== Check Markdown with Flycheck ==
+
+You may check syntax in a markdown-mode buffer with [https://www.emacswiki.org/emacs/Flycheck Flycheck]
+after installing the ruby gem `mdl' ([https://github.com/mivok/markdownlint markdown lint]).
+
+== Related Pages ==
+List of [MarkupModes Markup Modes]
+
+[MarkdownPreviewMode Markdown Preview Mode]
+
+[https://www.emacswiki.org/emacs/Comments_on_MarkdownMode Comments on markdown-mode]
