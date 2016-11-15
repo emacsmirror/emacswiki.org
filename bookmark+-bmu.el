@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Nov 14 16:33:22 2016 (-0800)
+;; Last-Updated: Mon Nov 14 17:52:24 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 3788
+;;     Update #: 3790
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -455,6 +455,7 @@ Elements of ALIST that are not conses are ignored."
 (defvar bmkp-count-multi-mods-as-one-flag) ; In `bookmark+-1.el'.
 (defvar bmkp-current-bookmark-file)     ; In `bookmark+-1.el'.
 (defvar bmkp-edit-bookmark-orig-record) ; In `bookmark+-1.el'.
+(defvar icicle-candidate-properties-alist) ; In `icicles-var.el'.
 (defvar bmkp-incremental-filter-delay)  ; In `bookmark+-1.el'.
 (defvar bmkp-edit-bookmark-records-number) ; In `bookmark+-1.el'.
 (defvar bmkp-last-bookmark-file)        ; In `bookmark+-1.el'.
@@ -5529,6 +5530,7 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "VM"                   'bmkp-bmenu-mark-variable-list-bookmarks)
 (define-key bookmark-bmenu-mode-map "VS"                   'bmkp-bmenu-show-only-variable-list-bookmarks)
 (define-key bookmark-bmenu-mode-map "\M-o"                 'bmkp-bmenu-w32-jump-to-marked)
+(define-key bookmark-bmenu-mode-map "W"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "W3"                   nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "W3M"                  'bmkp-bmenu-mark-w3m-bookmarks)
 (define-key bookmark-bmenu-mode-map "W3S"                  'bmkp-bmenu-show-only-w3m-bookmarks)
