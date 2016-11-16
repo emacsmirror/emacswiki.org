@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 15 17:05:00 2016 (-0800)
+;; Last-Updated: Tue Nov 15 19:07:31 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4986
+;;     Update #: 4987
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -357,6 +357,12 @@
 ;;    - `C-z c' (`isearchp-columns') adds a filter predicate that
 ;;      limits search between two columns (or before/after a column).
 ;;
+;;    - `C-z n' (`isearchp-defun-filter-predicate') names the current
+;;      suite of filter predicates, creating a named predicate that
+;;      does the same thing.  (You can use that name with `C-z -' to
+;;      remove that predicate.)  With a prefix arg it can also set or
+;;      save (i.e., do what `C-z !' or `C-z s' does).
+;;
 ;;    - `C-z p' (`isearchp-toggle-showing-filter-prompt-prefixes')
 ;;      toggles option `isearchp-show-filter-prompt-prefixes-flag',
 ;;      which controls whether to show filter prefixes in the Isearch
@@ -371,12 +377,6 @@
 ;;      (`isearchp-toggle-auto-save-filter-predicate') toggles option
 ;;      `isearchp-auto-save-filter-predicate-flag', which provides
 ;;      automatic filter-predicate saving (so no need to use `C-z s').
-;;
-;;    - `C-z n' (`isearchp-defun-filter-predicate') names the current
-;;      suite of filter predicates, creating a named predicate that
-;;      does the same thing.  (You can use that name with `C-z -' to
-;;      remove that predicate.)  With a prefix arg it can also set or
-;;      save (i.e., do what `C-z !' or `C-z s' does).
 ;;
 ;;    - `C-z ?' (`isearchp-show-filters') echoes the current suite of
 ;;      filter predicates (advice and original, unadvised predicate).
