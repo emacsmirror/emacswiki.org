@@ -11,6 +11,9 @@ This lets you search only given zones of text, where those zones can be defined 
 : You can use the dynamic filtering described here at the same time as the zone-constraining provided by '''<tt>[[isearch-prop.el]]</tt>''' - you can ''use them together''.
 ----
 
+
+== What You Can Do ==
+
 Here are some of the things you can do using dynamic filtering:
 
 * Search for a number of things at the same time, in any order.  Example: `cat', `dog', and `turtle', ''in any order'', within the same context (e.g. within a line).
@@ -49,7 +52,7 @@ Here are some of the things you can do using dynamic filtering:
 
 
 
-
+== Filtering Commands Available During Search ==
 
 The following commands are available during Isearch.  They are all on prefix key '''`##C-z##'''', by default.  (They are on
 prefix keymap '''`isearchp-filter-map'''', which you can bind to any
