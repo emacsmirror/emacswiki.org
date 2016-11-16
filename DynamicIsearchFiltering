@@ -12,6 +12,14 @@ This lets you search only given zones of text, where those zones can be defined 
 ----
 
 
+
+
+
+
+
+
+
+
 == What You Can Do ==
 
 Here are some of the things you can do using dynamic filtering:
@@ -52,6 +60,13 @@ Here are some of the things you can do using dynamic filtering:
 
 
 
+
+
+
+
+
+
+
 == Filtering Commands Available During Search ==
 
 The following commands are available during Isearch.  They are all on prefix key '''`##C-z##'''', by default.  (They are on
@@ -72,11 +87,16 @@ key in `isearch-mode-map'.)
 
 * '''`##C-z 0##'''' (`isearchp-reset-filter-predicate') ''resets'' `isearch-filter-predicate' to its original (default) value (which is typically `isearch-filter-visible').
 
-* '''`##C-z s##'''' (`isearchp-save-filter-predicate') ''saves'' the current filter-predicate suite, for subsequent searches.  Unless you save it (and unless auto-saving is turned on), the next Isearch starts out from scratch, using the default value of `isearch-filter-predicate'.  (To remove saved predicates, use `##C-z 0##'.)
+* '''`C-z c'''' (`isearchp-columns') adds a filter predicate that limits search between two columns (or before/after a column).
 
-* '''`##C-z S##'''' (`isearchp-toggle-auto-save-filter-predicate') toggles automatic saving of the current filter-predicate suite, so that it is used for subsequent searches.  (To remove saved predicates, use `##C-z 0##'.)  This command simply toggles option '''`isearchp-auto-save-filter-predicate-flag''''.
+* '''`C-z n'''' (`isearchp-defun-filter-predicate') ''names'' the current suite of filter predicates, creating a named predicate that does the same thing.  (You can use that name with `##C-z -##' to remove that predicate.)  With a prefix arg it can also set or save (i.e., do what `##C-z !##' or `C-z s' does).
 
-* '''`##C-z n##'''' (`isearchp-defun-filter-predicate') ''names'' the current suite of filter predicates, creating a named predicate that does the same thing.  (You can use that name with `##C-z -##' to remove that predicate.)  With a prefix arg it can also set or save (i.e., do what `##C-z !##' or `##C-z s##' does).
+* '''`C-z p'''' (`isearchp-toggle-showing-filter-prompt-prefixes') toggles option '''`isearchp-show-filter-prompt-prefixes-flag'''', which controls whether to show filter prefixes in the Isearch prompt.
+
+* '''`C-z s'''' (`isearchp-save-filter-predicate') ''saves'' the current filter-predicate suite, for subsequent searches.  Unless you save it (and unless auto-saving is turned on), the next Isearch starts out from scratch, using the default value of `isearch-filter-predicate'.  (To remove saved predicates, use `##C-z 0##'.)
+
+* '''`C-z S'''' (`isearchp-toggle-auto-save-filter-predicate') toggles automatic saving of the current filter-predicate suite, so that it is used for subsequent searches.  (To remove saved predicates, use `##C-z 0##'.)  This command simply toggles option '''`isearchp-auto-save-filter-predicate-flag''''.
+
 
 * '''`##C-z ?##'''' (`isearchp-show-filters') echoes the current suite of filter predicates (advice and original, unadvised predicate).
 
@@ -96,6 +116,14 @@ When you use one of the commands that adds a filter predicate as advice to `isea
 * '''`isearchp-prompt-for-prompt-prefix-flag'''' says whether to prompt you for a prefix to add to the Isearch prompt. You are prompted by default, but if you don't care to see such a prompt prefix and you don't want to be bothered by it, you can customize this to skip prompting.
 
 In addition, whatever the value of these options, when you add a filter predicate you can override the option values by using a [[prefix argument]].  A non-positive prefix arg overrides the option for name prompting, and a non-negative prefix arg overrides the option for prompt-prefix prompting.  (So zero, e.g., `M-0', overrides both.)
+
+Option '''`isearchp-show-filter-prompt-prefixes-flag'''' controls
+whether prefixes for filters are added to the Isearch prompt.
+You can toggle this option during search using `C-z p'.
+
+
+
+
 
 
 
