@@ -174,8 +174,8 @@ When I'm done writing a chapter, the text gets copied over to a LaTeX document. 
 }}}
 
 == Related Pages ==
-List of [MarkupModes Markup Modes]
-
 [MarkdownPreviewMode Markdown Preview Mode]
 
-[https://www.emacswiki.org/emacs/Comments_on_MarkdownMode Comments on markdown-mode]
+----
+MarkupModes
+CategoryModes
