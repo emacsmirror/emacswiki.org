@@ -247,5 +247,8 @@ Is this a real bug? or is there any better solution? -- SeungcheolJung
 
 Which fixed that problem, but things still seem slow
 
+[new]
+Is there a way to guarantee that the top-left of the pop-up is next to the cursor? When the height of the pop-up exceeds the height of the display, the top is cut off; it's much less useful seeing the middle of a pop-up (e.g. for documentation) than the top.
+
 ----
 CategoryWindows CategoryFrames
