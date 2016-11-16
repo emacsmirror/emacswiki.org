@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Nov 15 07:20:31 2016 (-0800)
+;; Last-Updated: Wed Nov 16 08:54:23 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 16146
+;;     Update #: 16147
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -2085,7 +2085,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
 ;; 2016/11/14 dadams
-;;     Version 2016.11.14.  Added support for EWW bookmarks.  Thx to charles@aurox.ch.
+;;     Version 2016.11.14.  Added support for EWW bookmarks.  Thx to charles at aurox.ch.
 ;; 2015/02/22 dadams
 ;;     Version 2015.02.22.
 ;; 2015/02/08 dadams
