@@ -37,6 +37,7 @@ I'm writing articles about Emacs and Lisp in Japanese.
 * [http://qiita.com/tadsan/items/df73c711f921708facdc show-trailing-whitespaceは便利だが、見栄えが悪いこともある - Qiita]
 * [http://qiita.com/tadsan/items/a67b28dd02bf819f3f4e Emacsで絵文字を表示する - Qiita]
 * [http://qiita.com/tadsan/items/55c4e5a5ecdb19474de4 MySQLなどのSQLが書かれたファイルを編集する - Qiita]
+* [http://qiita.com/tadsan/items/4ad2e5e3114fff172b6a ふつうのエディタっぽく、名前をつけずに新規作成 - Qiita]
 * [http://qiita.com/tadsan/items/6aea9d6143f722900260 ファイルパスによってインデントを変更する - Qiita]
 * [http://qiita.com/tadsan/items/4ed132f5d4372447090f Emacsでもアスキーアートが読める - Qiita]
 * [http://qiita.com/tadsan/items/1c63624156c4620da164 image-modeでぬるぬるスクロール - Qiita]
@@ -47,11 +48,12 @@ I'm writing articles about Emacs and Lisp in Japanese.
 * [http://qiita.com/tadsan/items/20c0325520cb86cfb230 TRAMP経由かどうか判定する - Qiita]
 * [http://qiita.com/tadsan/items/9cc262e1772edb630dd9 物覚えが悪いから同時に押す - Qiita]
 * [http://qiita.com/tadsan/items/3d4c5d14850cff7fbcb5 起動直後になんかする。recentfとかね - Qiita]
-* [http://qiita.com/tadsan/items/7933bdc5ffa3e423cd9b 新規ファイルにテンプレ挿入する(めんどくさくない版) - Qiita]
 * [http://qiita.com/tadsan/items/6aea9d6143f722900260 ファイルパスによってインデントを変更する - Qiita]
+* [http://qiita.com/tadsan/items/2a0e141a7c0d5fad987f カレントディレクトリが変になったときに戻す - Qiita]
 * [http://qiita.com/tadsan/items/ab3c3b594b5bf6203f02 auto-complete環境で補完の大文字小文字を区別する - Qiita]
 * [http://qiita.com/tadsan/items/3d3f5d8c6ec24c324963 ぼくの.emacs 2014 - Qiita]
 * [http://qiita.com/tadsan/items/c4a80f46623ea266f5c5 ぼくの.emacs 2013 - Qiita]
+* [http://inside.pixiv.net/entry/2014/12/19/230810 pixiv-novel-modeを作った | pixiv inside]
 
 === Emacs Lisp ===
 
