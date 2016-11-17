@@ -42,6 +42,8 @@ There is a semi-regular [[EmacsChannel#IRC_Client_Stats|client count]] on the Em
 
 == Emacs IRC Client Recommendations ==
 
+Note: There is a semi-regular [[EmacsChannel#IRC_Client_Stats|client count]] on the EmacsChannel.
+
 I used ERC and switched to [[rcirc]] in 2005. -- AlexSchroeder
 
 I use ERC (EmacsIRCClient) too:
