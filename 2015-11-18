@@ -1,0 +1,19 @@
+It’s time for the irregular EmacsChannel ChatClient test again!
+
+|| 187 || 21.3% || irssi            ||
+|| 133 || 15.2% || znc              ||
+|| 132 || 15.1% || weechat          ||
+||  79 ||  9.0% || erc              ||
+||  63 ||  7.2% || irccloud         ||
+||  45 ||  5.1% || xchat            ||
+||  35 ||  4.0% || hexchat          ||
+||  27 ||  3.0% || textual          ||
+||  25 ||  2.8% || quassel          ||
+||  23 ||  2.6% || rcirc            ||
+||  23 ||  2.6% || circe:           ||
+||  13 ||  1.4% || purple           ||
+||  11 ||  1.2% || limechat         ||
+||  78 ||  8.9% || other IRC clients ||
+|| 874 ||       || total            ||
+
+Previous issues: [[2014-11-05]]
