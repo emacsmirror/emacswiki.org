@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Nov  9 15:23:47 2016 (-0800)
+;; Last-Updated: Thu Nov 17 11:03:05 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 1407
+;;     Update #: 1411
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -355,6 +355,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/11/17 dadams
+;;     isearchp-add/remove-dim-overlay: Ensure that OBEG and OEND are numbers before using them.
 ;; 2016/08/27 dadams
 ;;     isearchp-thing(-regexp): Added optional arg MSGP (passed to isearchp-thing-define-contexts).
 ;;     isearchp-thing-read-args: Return also nil for TRANSFORM-FN and non-nil for MSGP.
@@ -1855,7 +1857,7 @@ it begins before END and it ends after BEG."
            (dolist (dim-ov  isearchp-dimmed-overlays)
              (setq obeg  (overlay-start dim-ov)
                    oend  (overlay-end   dim-ov))
-             (when (and (< beg oend)  (< obeg end))
+             (when (and obeg  oend  (< beg oend)  (< obeg end))
                (delete-overlay dim-ov)
                (setq isearchp-dimmed-overlays  (delete dim-ov isearchp-dimmed-overlays))))))))
 
