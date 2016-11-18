@@ -8,9 +8,9 @@
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 16:22:02 2015 (-0800)
+;; Last-Updated: Fri Nov 18 14:14:07 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 265
+;;     Update #: 284
 ;; URL: http://www.emacswiki.org/ucs-cmds.el
 ;; Doc URL: http://www.emacswiki.org/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
@@ -24,29 +24,31 @@
 ;;
 ;;; Commentary:
 ;;
-;;  This library defines a macro, `ucsc-make-commands', and two
-;;  commands:
+;;  This library defines three commands:
 ;;
 ;;  * `ucsc-define-char-insert-cmd' - Define a command to insert a
 ;;                                    Unicode character.
 ;;
+;;  * `ucsc-make-commands' - Define such commands for all Unicode
+;;                           chars whose names match a regexp.
+;;
 ;;  * `ucsc-insert' - Insert a Unicode character and possibly define a
 ;;                    command to insert it.
 ;;
-;;  You can use `ucsc-make-commands' or `ucsc-define-char-insert-cmd'
-;;  in Emacs-Lisp code (such as in your init file) to define
-;;  character-inserting commands.  In all cases:
+;;  You can also use `ucsc-define-char-insert-cmd' or
+;;  `ucsc-make-commands' in Emacs-Lisp code (such as in your init
+;;  file) to define character-inserting commands.  In all cases:
 ;;
 ;;  * The names of the character-inserting commands created are the
 ;;    same as the char names, except that they are lowercase and any
 ;;    `SPC' chars in the character name are replaced by hyphens (`-').
 ;;
-;;  * You can use a numeric prefix argument with the command, to
-;;    insert multiple copies of the given character.
+;;  * You can use a numeric prefix argument with a character-inserting
+;;    command to insert multiple copies of the given character.
 ;;
-;;  The commands are tailor-made to insert a given Unicode character.
-;;  You can bind such a command to a key sequence, effectively adding
-;;  Unicode characters to your keyboard.
+;;  The character-inserting commands are tailor-made to insert a given
+;;  Unicode character.  You can bind such a command to a key sequence,
+;;  effectively adding Unicode characters to your keyboard.
 ;;
 ;;  Command `ucsc-insert' is a replacement for vanilla command
 ;;  `insert-char' (called `ucs-insert' prior to Emacs 24), which Emacs
@@ -79,8 +81,9 @@
 ;;  these commands, like `insert-char', can be a bit slow if you use
 ;;  completion, because there are many, *MANY* completion candidates.
 ;;
-;;  You can use macro `ucsc-make-commands' to quickly create a whole
-;;  set of such commands for characters whose names are similar.
+;;  You can use `ucsc-make-commands' to quickly create a whole set of
+;;  such commands for characters whose names are similar.  The list of
+;;  commands (symbols) is returned.
 ;;
 ;;  You provide a regexp as the argument to `ucsc-make-commands'.  It
 ;;  is matched against all Unicode character names (in `ucs-names').
@@ -130,18 +133,17 @@
 ;;  immediately what the names represent: WYSIWYG.
 ;;
 ;;
-;;  Macros defined here:
-;;
-;;    `ucsc-make-commands'.
-;;
 ;;  Commands defined here:
 ;;
-;;    `ucsc-define-char-insert-cmd', `ucsc-insert'.
+;;    `ucsc-define-char-insert-cmd', `ucsc-insert',
+;;    `ucsc-make-commands'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2016/11/18 dadams
+;;     ucsc-make-commands: Changed from a macro to a command that returns the commands.
 ;; 2015/01/11 dadams
 ;;     Added: ucsc-define-char-insert-cmd.  Use it in ucsc-make-commands and ucsc-insert.
 ;;     ucsc-make-commands, ucsc-insert: Ensure non-nil ARG for non-interactive use.
@@ -274,7 +276,7 @@ command creation."
     (when create-cmd-p (ucsc-define-char-insert-cmd character msgp))))
 
 ;;;###autoload
-(defmacro ucsc-make-commands (regexp)
+(defun ucsc-make-commands (regexp &optional msgp)
   "Create commands to insert Unicode characters whose names match REGEXP.
 Letter case is ignored for matching.
 
@@ -284,10 +286,16 @@ number of commands created.
 
 The commands created have the same names as the chars they insert,
 except that `SPC' chars in the character names are replaced by
-hyphens (`-'), and the command names are lowercase."
-  (dolist (name.code  (ucs-names))
-    (when (let ((case-fold-search  t)) (string-match (upcase regexp) (car name.code)))
-      (ucsc-define-char-insert-cmd (cdr name.code)))))
+hyphens (`-'), and the command names are lowercase.
+
+Return the commands created, as a list of symbols."
+  (interactive (list (read-regexp "Regexp: ") t))
+  (let ((cmds  ()))
+    (dolist (name.code  (ucs-names))
+      (when (let ((case-fold-search  t)) (string-match (upcase regexp) (car name.code)))
+        (push (ucsc-define-char-insert-cmd (cdr name.code)) cmds)))
+    (when msgp (message "Created commands: %s" cmds))
+    cmds))
 
 ;;;;;;;;;;;;;;;
 
