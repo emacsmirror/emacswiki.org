@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Oct  7 17:05:23 2016 (-0700)
+;; Last-Updated: Fri Nov 18 15:51:05 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 27486
+;;     Update #: 27490
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -627,6 +627,8 @@
 (defvar ess-current-process-name)       ; In `ess-inf.el'
 (defvar ess-mode-syntax-table)          ; In `ess-cust.el'
 (defvar ess-use-R-completion)           ; In `ess-cust.el'
+(defvar eww-current-title)              ; In `eww.el'
+(defvar eww-data)                       ; In `eww.el'
 (defvar file-cache-alist)               ; In `filecache.el'
 (defvar filesets-data)                  ; In `filesets.el'
 (defvar find-tag-default-function)      ; In `etags.el'
@@ -5186,7 +5188,12 @@ instead of those for the current buffer."
            (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
            (let* ((record   (bookmark-make-record))
                   (defname  (or (and (stringp (car record))  (car record))
-                                (cond ((eq major-mode 'w3m-mode) w3m-current-title)
+                                (cond ((and (eq major-mode 'eww-mode)
+                                            (fboundp 'bmkp-make-eww-record)
+                                            (if (boundp 'eww-data) ; Emacs 25+
+                                                (plist-get eww-data :title)
+                                              (and (boundp 'eww-current-title)  eww-current-title))))
+                                      ((eq major-mode 'w3m-mode) w3m-current-title)
                                       ((eq major-mode 'gnus-summary-mode)
                                        (elt (gnus-summary-article-header) 1))
                                       ((memq major-mode '(Man-mode woman-mode))
