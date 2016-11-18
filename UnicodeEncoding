@@ -8,15 +8,21 @@ Starting with GNU Emacs 23, there is relatively complete Unicode support.  See t
 [:ucs-cmds.el]
 * You can define a command that inserts a ''single'' Unicode character, and then bind it to a [[key]], effectively adding that character to your keyboard.  Library '''<tt>[[ucs-cmds.el]]</tt>''' provides:
 
-** Command '''`ucsc-insert'''', a replacement for `insert-char' (`ucs-insert' for Emacs before version 24) --- bind it to `C-x 8 RET'.  It does the same thing, except that with a negative [[prefix argument]] (for which `ucs-insert' does nothing) it automatically creates such a command.
-** Macro '''`ucs-make-commands'''', which defines a whole set of such commands.  You pass it a [[regexp]], which is
-matched against all Unicode character names (in `ucs-names').
-An insertion command is created for each of the characters whose name matches.
+** Command '''`ucsc-define-char-insert-cmd'''', which defines a command that inserts a given Unicode character, given the character name or code point.
 
-:: In both cases, the commands created have the same names as the characters they
+** Command '''`ucs-make-commands'''', which defines a whole set of such character-inserting commands.  You pass it a [[regexp]], which is
+matched against all Unicode character names (in `ucs-names').
+It creates an insertion command for each of the characters whose name matches.
+
+** Command '''`ucsc-insert'''', a replacement for `insert-char' (`ucs-insert' for Emacs before version 24) --- bind it to `C-x 8 RET'.  It does the same thing, except that with a negative [[prefix argument]] (for which `ucs-insert' does nothing) it automatically creates such a command.
+
+: The character-inserting commands created have the same names as the characters they
 insert, except that `SPC' characters in the character names are
 replaced by hyphens (`##-##'), and the command names are lowercase,
 not uppercase like the character names.
+
+: You can use a numeric [[prefix argument]] with any of the character-inserting
+commands to insert multiple copies of the given character.
 
 === Input Characters Using an Input Method ===
 
