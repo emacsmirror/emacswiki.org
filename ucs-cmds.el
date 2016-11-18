@@ -1,16 +1,16 @@
-;;; ucs-cmds.el --- Macro to create commands that insert Unicode chars.
+;;; ucs-cmds.el --- Commands to create commands that insert Unicode chars.
 ;;
 ;; Filename: ucs-cmds.el
-;; Description: Macro to create commands that insert Unicode chars.
+;; Description: Commands to create commands that insert Unicode chars.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2011-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 18 14:14:07 2016 (-0800)
+;; Last-Updated: Fri Nov 18 14:25:10 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 284
+;;     Update #: 290
 ;; URL: http://www.emacswiki.org/ucs-cmds.el
 ;; Doc URL: http://www.emacswiki.org/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
@@ -37,7 +37,7 @@
 ;;
 ;;  You can also use `ucsc-define-char-insert-cmd' or
 ;;  `ucsc-make-commands' in Emacs-Lisp code (such as in your init
-;;  file) to define character-inserting commands.  In all cases:
+;;  file) to define character-inserting commands.
 ;;
 ;;  * The names of the character-inserting commands created are the
 ;;    same as the char names, except that they are lowercase and any
