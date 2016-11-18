@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Nov 15 06:49:23 2016 (-0800)
+;; Last-Updated: Fri Nov 18 13:20:21 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 8054
+;;     Update #: 8057
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -7073,16 +7073,16 @@ B1 and B2 are full bookmarks (records) or bookmark names.
 If either is a record then it need not belong to `bookmark-alist'."
     (setq b1  (bookmark-get-bookmark b1)
           b2  (bookmark-get-bookmark b2))
-    (let ((w1  (bmkp-w3m-bookmark-p b1))
-          (w2  (bmkp-w3m-bookmark-p b2)))
-      (cond ((and w1 w2)
-             (setq w1  (bookmark-get-filename b1)
-                   w2  (bookmark-get-filename b2))
-             (cond ((string-lessp w1 w2)  '(t))
-                   ((string-lessp w2 w1)  '(nil))
+    (let ((e1  (bmkp-eww-bookmark-p b1))
+          (e2  (bmkp-eww-bookmark-p b2)))
+      (cond ((and e1 e2)
+             (setq e1  (bookmark-get-filename b1)
+                   e2  (bookmark-get-filename b2))
+             (cond ((string-lessp e1 e2)  '(t))
+                   ((string-lessp e2 e1)  '(nil))
                    (t                     nil)))
-            (w1                           '(t))
-            (w2                           '(nil))
+            (e1                           '(t))
+            (e2                           '(nil))
             (t                            nil))))
 
   )
@@ -9444,8 +9444,8 @@ BOOKMARK is a bookmark name or a bookmark record."
   (defun bmkp-make-eww-record ()
     "Make a record for EWW buffers."
     (require 'eww)
-    (let ((eww-title (plist-get eww-data :title))
-          (eww-url (eww-current-url)))
+    (let ((eww-title  (plist-get eww-data :title))
+          (eww-url    (eww-current-url)))
       `(,eww-title
         ,@(bookmark-make-record-default 'NO-FILE)
         (location . ,eww-url)
