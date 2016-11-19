@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Nov 15 06:59:32 2016 (-0800)
+;; Last-Updated: Fri Nov 18 15:58:05 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 3811
+;;     Update #: 3812
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2219,7 +2219,7 @@ for confirmation."
                                bmkp-variable-list-alist-only)                                 ; `V S'
 (bmkp-define-show-only-command snippet "Display (only) the snippet bookmarks."
                                bmkp-snippet-alist-only)                                       ; `w S'
-(when (> emacs-major-version 24)
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
   (bmkp-define-show-only-command eww "Display (only) the EWW URL bookmarks."
                                  bmkp-eww-alist-only))                                        ; `W E S'
 (bmkp-define-show-only-command w3m "Display (only) the W3M URL bookmarks."
