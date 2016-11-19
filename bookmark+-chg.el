@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Nov 18 13:21:12 2016 (-0800)
+;; Last-Updated: Fri Nov 18 16:18:58 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 16148
+;;     Update #: 16159
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,6 +147,11 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2016/11/18 dadams
+;;     Support Emacs 24.[45] too.
+;;     bookmark-set, bmkp-this-buffer-p, bmkp-make-eww-record: Update for Emacs 24.[45].
+;;     bmkp-edit-bookmark-name-and-location: Add support for EWW.
+;;     bmkp-jump-eww: Create buffer *eww* if it does not exist.
+;;     bmkp-crosshairs-highlight: Respect bmkp-crosshairs-highlight (not really needed).
 ;;     bmkp-eww-cp: typos: w3m -> eww.
 ;; 2016/11/15 dadams
 ;;     bmkp-*eww-*, bookmark-set, bmkp-this-buffer-p, bmkp-url-bookmark-p, bmkp-url-target-set,
@@ -1232,6 +1237,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2016/11/18 dadams
+;;     Support Emacs 24.[45] too.
 ;; 2016/11/15 dadams
 ;;     bmkp-*eww-*: Ensure that EWW code is only for Emacs 25+.
 ;; 2016/11/14 dadams
