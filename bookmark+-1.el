@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Nov 18 13:20:21 2016 (-0800)
+;; Last-Updated: Fri Nov 18 16:16:02 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 8057
+;;     Update #: 8082
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -154,8 +154,8 @@
 ;;    `bmkp-edit-bookmark-record', `bmkp-edit-bookmark-record-send',
 ;;    `bmkp-edit-bookmark-records-send', `bmkp-edit-tags',
 ;;    `bmkp-edit-tags-send', `bmkp-edit-this-annotation',
-;;    `bmkp-empty-file', `bmkp-eww-jump' (Emacs 25+),
-;;    `bmkp-eww-jump-other-window' (Emacs 25+),
+;;    `bmkp-empty-file', `bmkp-eww-jump' (Emacs 24.4+),
+;;    `bmkp-eww-jump-other-window' (Emacs 24.4+),
 ;;    `bmkp-file-target-set', `bmkp-file-all-tags-jump',
 ;;    `bmkp-file-all-tags-jump-other-window',
 ;;    `bmkp-file-all-tags-regexp-jump',
@@ -384,8 +384,8 @@
 ;;    `bmkp-edit-bookmark-records-mode', `bmkp-edit-tags-mode',
 ;;    `bmkp-end-position-post-context',
 ;;    `bmkp-end-position-pre-context', `bmkp-every',
-;;    `bmkp-eww-alist-only' (Emacs 25+), `bmkp-eww-bookmark-p' (Emacs
-;;    25+), `bmkp-w3m-cp', `bmkp-file-alist-only',
+;;    `bmkp-eww-alist-only' (Emacs 24.4+), `bmkp-eww-bookmark-p'
+;;    (Emacs 24.4+), `bmkp-w3m-cp', `bmkp-file-alist-only',
 ;;    `bmkp-file-all-tags-alist-only',
 ;;    `bmkp-file-all-tags-regexp-alist-only', `bmkp-file-alpha-cp',
 ;;    `bmkp-file-attribute-0-cp', `bmkp-file-attribute-1-cp',
@@ -441,7 +441,7 @@
 ;;    `bmkp-local-file-updated-more-recently-cp',
 ;;    `bmkp-make-bookmark-file-record',
 ;;    `bmkp-make-bookmark-list-record', `bmkp-make-desktop-record',
-;;    `bmkp-make-dired-record', `bmkp-make-eww-record' (Emacs 25+),
+;;    `bmkp-make-dired-record', `bmkp-make-eww-record' (Emacs 24.4+),
 ;;    `bmkp-make-gnus-record', `bmkp-make-icicle-search-hits-record',
 ;;    `bmkp-make-man-record', `bmkp-make-plain-predicate',
 ;;    `bmkp-make-record-for-target-file', `bmkp-make-sequence-record',
@@ -531,7 +531,7 @@
 ;;    `bmkp-dired-history', `bmkp-edit-bookmark-record-mode-map',
 ;;    `bmkp-edit-bookmark-records-mode-map',
 ;;    `bmkp-edit-bookmark-records-number', `bmkp-edit-tags-mode-map',
-;;    `bmkp-eww-history' (Emacs 25+), `bmkp-file-bookmark-handlers',
+;;    `bmkp-eww-history' (Emacs 24.4+), `bmkp-file-bookmark-handlers',
 ;;    `bmkp-file-history', `bmkp-gnus-history',
 ;;    `bmkp-icicles-search-hits-retrieve-more', `bmkp-image-history',
 ;;    `bmkp-info-history', `bmkp-isearch-bookmarks' (Emacs 23+),
@@ -729,6 +729,8 @@
 (defvar dired-directory)                ; In `dired.el'
 (defvar dired-guess-shell-case-fold-search) ; In `dired-x.el'
 (defvar dired-subdir-alist)             ; In `dired.el'
+(defvar eww-current-title)              ; In `eww.el' (Emacs 24)
+(defvar eww-current-url)              ; In `eww.el' (Emacs 24)
 (defvar eww-data)                       ; In `eww.el' (Emacs 25+)
 (defvar gnus-article-current)           ; In `gnus-sum.el'
 (defvar icicle-candidate-properties-alist) ; In `icicles-var.el'
@@ -844,7 +846,7 @@ These are the predefined type predicates:
 `bmkp-bookmark-file-bookmark-p', `bmkp-bookmark-list-bookmark-p',
 `bmkp-desktop-bookmark-p', `bmkp-dired-bookmark-p',
 `bmkp-dired-this-dir-bookmark-p', `bmkp-dired-wildcards-bookmark-p',
-`bmkp-eww-bookmark-p' (Emacs 25+), `bmkp-file-bookmark-p',
+`bmkp-eww-bookmark-p' (Emacs 24.4+), `bmkp-file-bookmark-p',
 `bmkp-file-remote-p', `bmkp-file-this-dir-bookmark-p',
 `bmkp-flagged-bookmark-p', `bmkp-function-bookmark-p',
 `bmkp-gnus-bookmark-p', `bmkp-icicles-search-hits-bookmark-p',
@@ -1373,7 +1375,8 @@ Used after `after-save-hook'."
                                        ("dired"            . bmkp-dired-history)
                                        ("dired-this-dir"   . bmkp-dired-history)
                                        ,@(and
-                                          (> emacs-major-version 24)
+                                          (or (> emacs-major-version 24)
+                                              (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
                                           `(("eww"         . bmkp-eww-history)))
                                        ("file"             . bmkp-file-history)
                                        ("file-this-dir"    . bmkp-file-history)
@@ -1400,7 +1403,7 @@ Keys are bookmark type names.  Values are corresponding history variables.")
 (defvar bmkp-bookmark-list-history ()    "History for bookmark-list bookmarks.")
 (defvar bmkp-desktop-history ()          "History for desktop bookmarks.")
 (defvar bmkp-dired-history ()            "History for Dired bookmarks.")
-(when (> emacs-major-version 24)
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
   (defvar bmkp-eww-history ()            "History for EWW bookmarks."))
 (defvar bmkp-file-history ()             "History for file bookmarks.")
 (defvar bmkp-gnus-history ()             "History for Gnus bookmarks.")
@@ -2240,7 +2243,7 @@ property.  Point is irrelevant and unaffected."
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
 ;;  1. Use `bookmark-make-record'.
-;;  2. Use special default prompts for active region, W3M, and Gnus.
+;;  2. Use special default prompts for active region, EWW, W3M, and Gnus.
 ;;  3. Use function `bmkp-new-bookmark-default-names', in addition to the name that
 ;;     `bookmark-make-record' comes up with, as the list of default values.
 ;;  4. Use `bmkp-completing-read-lax', choosing from current buffer's bookmarks.
@@ -2339,8 +2342,11 @@ refresh/rebuild the bookmark-list display."
            (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
            (setq bookmark-current-buffer  (current-buffer)))
          (let* ((record   (bookmark-make-record))
-                (defname  (cond ((and (eq major-mode 'eww-mode)  (boundp 'eww-data)) ; Emacs 25+
-                                 (plist-get eww-data :title))
+                (defname  (cond ((and (eq major-mode 'eww-mode)
+                                      (fboundp 'bmkp-make-eww-record)
+                                      (if (boundp 'eww-data) ; Emacs 25+
+                                          (plist-get eww-data :title)
+                                        (and (boundp 'eww-current-title)  eww-current-title))))
                                 ((eq major-mode 'w3m-mode) w3m-current-title)
                                 ((eq major-mode 'gnus-summary-mode) (elt (gnus-summary-article-header) 1))
                                 ((memq major-mode '(Man-mode woman-mode))
@@ -3857,29 +3863,28 @@ With a prefix arg, edit the complete bookmark record (the
            (new-bmk-name                                (bmkp-completing-read-lax
                                                          "New bookmark name" bmk-name))
            (icicle-unpropertize-completion-result-flag  t) ; For `read-file-name'.
-           (new-location                                (cond (bmk-location
-                                                               (if bmk-urlp
-                                                                   (if (and (featurep 'w3m)
-                                                                            (bmkp-w3m-bookmark-p bmk-name))
-                                                                       (w3m-input-url "New url: "
-                                                                                      bmk-location)
-                                                                     (require 'ffap)
-                                                                     (ffap-read-file-or-url "New url: "
-                                                                                            bmk-location))
-                                                                 (read-string "New location: ")))
-                                                              (bmk-filename
-                                                               (if (and (featurep 'w3m)
-                                                                        (bmkp-w3m-bookmark-p bmk-name))
-                                                                   (w3m-input-url "New url: " bmk-filename)
-                                                                 (read-file-name
-                                                                  "New file name (location): "
-                                                                  (and bmk-filename
-                                                                       (file-name-directory  bmk-filename))
-                                                                  bmk-filename)))
-                                                              (bmk-buffname
-                                                               (read-buffer "New location: " bmk-buffname))
-                                                              (t ; No current location.
-                                                               (read-string "New location: "))))
+           (new-location
+            (cond (bmk-location
+                   (cond ((not bmk-urlp) (read-string "New location: "))
+                         ((and (featurep 'w3m)  (bmkp-w3m-bookmark-p bmk-name))
+                          (w3m-input-url "New URL: " bmk-location))
+                         ((and (featurep 'eww)  (bmkp-eww-bookmark-p bmk-name))
+                          (read-string "New URL: "))
+                         ((require 'ffap) (ffap-read-file-or-url "New URL: " bmk-location))
+                         (t (read-string "New location: "))))
+                  (bmk-filename
+                   (if (and (featurep 'w3m)
+                            (bmkp-w3m-bookmark-p bmk-name))
+                       (w3m-input-url "New url: " bmk-filename)
+                     (read-file-name
+                      "New file name (location): "
+                      (and bmk-filename
+                           (file-name-directory  bmk-filename))
+                      bmk-filename)))
+                  (bmk-buffname
+                   (read-buffer "New location: " bmk-buffname))
+                  (t                    ; No current location.
+                   (read-string "New location: "))))
            ;; $$$$$$ Should we change a W3M bookmark that uses `filename' to use `location' instead?
            (changed-bmk-name-p                          (and (not (equal new-bmk-name ""))
                                                              (not (equal new-bmk-name bmk-name))))
@@ -3891,7 +3896,10 @@ With a prefix arg, edit the complete bookmark record (the
                                                              (not (equal new-location bmk-filename))))
            (changed-buffname-p                          (and bmk-buffname
                                                              (not (equal new-location ""))
-                                                             (not (equal new-location bmk-buffname)))))
+                                                             (not (equal new-location bmk-buffname))
+                                                             ;; EWW bookmark should have buffer name `*eww*'.
+                                                             (or (not (featurep 'eww))
+                                                                 (not (bmkp-eww-bookmark-p bmk-name))))))
       (when (or changed-bmk-name-p  changed-location-p  changed-filename-p  changed-buffname-p)
         (when changed-bmk-name-p (bookmark-rename bmk-name new-bmk-name 'BATCHP))
         (when changed-location-p (bookmark-prop-set new-bmk-name 'location new-location))
@@ -4589,11 +4597,14 @@ non-nil, require confirmation if the file already exists."
 
 ;;;###autoload (autoload 'bmkp-crosshairs-highlight "bookmark+")
 (defun bmkp-crosshairs-highlight ()     ; Not bound
-  "Call `crosshairs-highlight', unless the region is active.
+  "Highlight point with crosshairs temporarily.
+Do not highlight if either the region is active or
+`bmkp-crosshairs-flag' is nil.
+
 You can add this to hook `bookmark-after-jump-hook'.
 You need library `crosshairs.el' to use this command."
   (interactive)
-  (when (> emacs-major-version 21)      ; No-op for Emacs 20-21.
+  (when (and bmkp-crosshairs-flag  (> emacs-major-version 21)) ; No-op for Emacs 20-21.
     (unless (condition-case nil (require 'crosshairs nil t) (error nil))
       (error "You need library `crosshairs.el' to use this command"))
     (unless mark-active
@@ -5519,7 +5530,7 @@ If it is a record then it need not belong to `bookmark-alist'."
        (let ((file  (bookmark-get-filename bookmark)))
          (and (stringp file)  (bmkp-string-match-p (regexp-quote "*") file)))))
 
-(when (> emacs-major-version 24)
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
   (defun bmkp-eww-bookmark-p (bookmark)
     "Return non-nil if BOOKMARK is an EWW bookmark.
@@ -5775,9 +5786,11 @@ If it is a record then it need not belong to `bookmark-alist'."
          (or (and (not this-file)  (not bmk-file)  (equal (bmkp-get-buffer-name bookmark) (buffer-name)))
              (and this-file  bmk-file  (bmkp-same-file-p this-file bmk-file))))
        ;; If the buffer to check is from EWW (it is `*eww*'), the buffer URL must match the bookmark URL.
-       (and (fboundp 'eww-current-url)  ; Emacs 25+
-            (or (not (eq major-mode 'eww-mode))
-                (equal (eww-current-url) (bookmark-location bookmark))))
+       (or (not (eq major-mode 'eww-mode))
+           (equal (bookmark-location bookmark)
+                  (if (fboundp 'eww-current-url)
+                      (eww-current-url) ; Emacs 25+
+                    (and (boundp 'eww-current-url)  eww-current-url))))
        (not (bmkp-desktop-bookmark-p        bookmark))
        (not (bmkp-bookmark-file-bookmark-p  bookmark))
        (not (bmkp-sequence-bookmark-p       bookmark))
@@ -5826,7 +5839,7 @@ If it is a record then it need not belong to `bookmark-alist'."
 
 (defun bmkp-url-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a URL bookmark.
-This means that it satifies `bmkp-eww-bookmark-p' (Emacs 25+),
+This means that it satifies `bmkp-eww-bookmark-p' (Emacs 24.4+),
 `bmkp-w3m-bookmark-p', or `bmkp-url-browse-bookmark-p'.
 
 BOOKMARK is a bookmark name or a bookmark record.
@@ -5988,7 +6001,7 @@ A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-dired-wildcards-bookmark-p bookmark-alist))
 
-(when (fboundp 'bmkp-eww-bookmark-p)    ; Emacs 25+
+(when (fboundp 'bmkp-eww-bookmark-p)    ; Emacs 24.4+
 
   (defun bmkp-eww-alist-only ()
     "`bookmark-alist', filtered to retain only EWW bookmarks.
@@ -7058,7 +7071,7 @@ If either is a record then it need not belong to `bookmark-alist'."
           (t                            nil)))) ; Neither buffer exists
 
 ;; Not used now.
-(when (> emacs-major-version 24)
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
   (defun bmkp-eww-cp (b1 b2)
     "True if bookmark B1 sorts as an EWW URL bookmark before B2.
@@ -7526,7 +7539,7 @@ Non-interactively:
            'MSG)))
   (unless name/prefix (setq name/prefix  ""))
   (let ((bookmark-make-record-function  (cond ((and (eq major-mode 'eww-mode)
-                                                    (fboundp 'bmkp-make-eww-record)) ; Emacs 25+
+                                                    (fboundp 'bmkp-make-eww-record)) ; Emacs 24.4+
                                                'bmkp-make-eww-record)
                                               ((eq major-mode 'w3m-mode) 'bmkp-make-w3m-record)
                                               (t `(lambda () (bmkp-make-url-browse-record ',url)))))
@@ -8272,7 +8285,7 @@ the file is an image file then the description includes the following:
         (info-p           (bmkp-info-bookmark-p bookmark))
         (man-p            (bmkp-man-bookmark-p bookmark))
         (url-p            (bmkp-url-bookmark-p bookmark))
-        (eww-p            (and (fboundp 'bmkp-eww-bookmark-p)  (bmkp-eww-bookmark-p bookmark))) ; Emacs 25+
+        (eww-p            (and (fboundp 'bmkp-eww-bookmark-p)  (bmkp-eww-bookmark-p bookmark))) ; Emacs 24.4+
         (w3m-p            (bmkp-w3m-bookmark-p bookmark))
         (temp-p           (bmkp-temporary-bookmark-p bookmark))
         (annot            (bookmark-get-annotation bookmark))
@@ -8319,7 +8332,7 @@ the file is an image file then the description includes the following:
                    (info-p           (and file  (format "Info node:\t\t(%s) %s\n"
                                                         (file-name-nondirectory file)
                                                         (bookmark-prop-get bookmark 'info-node))))
-                   (eww-p            (and file  (format "EWW URL:\t\t%s\n" file))) ; Emacs 25+
+                   (eww-p            (and file  (format "EWW URL:\t\t%s\n" file))) ; Emacs 24.4+
                    (w3m-p            (and file  (format "W3m URL:\t\t%s\n" file)))
                    (url-p            (format "URL:\t\t\t%s\n" location))
                    (desktop-p        (format "Desktop file:\t\t%s\n"
@@ -9439,13 +9452,13 @@ BOOKMARK is a bookmark name or a bookmark record."
     (browse-url url)))
 
 ;; EWW support
-(when (boundp 'eww-data)                ; Emacs 25+
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
   (defun bmkp-make-eww-record ()
     "Make a record for EWW buffers."
     (require 'eww)
-    (let ((eww-title  (plist-get eww-data :title))
-          (eww-url    (eww-current-url)))
+    (let ((eww-title  (if (boundp 'eww-data) (plist-get eww-data :title) eww-current-title))
+          (eww-url    (if (fboundp 'eww-current-url) (eww-current-url) eww-current-url)))
       `(,eww-title
         ,@(bookmark-make-record-default 'NO-FILE)
         (location . ,eww-url)
@@ -9459,7 +9472,9 @@ BOOKMARK is a bookmark name or a bookmark record."
 BOOKMARK is a bookmark name or a bookmark record."
     (require 'eww)
     (eww (bookmark-location bookmark))
-    (with-current-buffer "*eww*" (while (= (count-lines (point-min) (point-max)) 1) (sit-for 1)))
+    ;; Wait until buffer has real content.
+    (with-current-buffer (get-buffer-create "*eww*") (while (= (count-lines (point-min) (point-max)) 1)
+                                                       (sit-for 1)))
     (bookmark-default-handler
      `("" (buffer . ,(buffer-name (current-buffer))) . ,(bmkp-bookmark-data-from-record bookmark))))
 
@@ -9907,7 +9922,7 @@ for info about using a prefix argument."
            current-prefix-arg)))
   (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window flip-use-region-p))
 
-(when (fboundp 'bmkp-eww-alist-only)    ; Emacs 25+
+(when (fboundp 'bmkp-eww-alist-only)    ; Emacs 24.4+
 
   ;; ;;;###autoload (autoload 'bmkp-eww-jump "bookmark+")
   (defun bmkp-eww-jump (bookmark-name &optional flip-use-region-p) ; `C-x j e'
