@@ -1,22 +1,5 @@
-DeletedPage
+Jambunathan K is an Emacs user.  He has authored the following Emacs lisp libraries.  
 
-I am the author of  Orgmode's OpenDocumentText Exporter.   I no longer contribute to Emacs or participate actively in the mailing lists.  However, I continue to improve the exporter in my own personal repository.  See [[http://cauvery.nfshost.com/wiki.pl/ODT_Exporter ODT Expoter]] for more information.  If you want to report a bug in the exporter or request a specific feature, don't hesitate to leave a note here.  I will try my best to help you.  That said, it is very likely that you will find an answer to your question in [[http://cauvery.nfshost.com/wiki.pl/ODT_Exporter_FAQ List of FAQs]].
+1. [[http://orgmode.org/w/?p=org-mode.git;a=blob_plain;f=lisp/ox-odt.el  Org-mode's OpenDocumentTextExporter]]
+1. [[https://github.com/kjambunathan/fontmenu Font Menu]]: Examine how a text is rendered in different fonts, in your Emacs.
 
-As a [[Friend of Emacs]], I run a gifting program.  See [[http://permalink.gmane.org/gmane.emacs.devel/170713 Personal gift - INR 10,000  (Ten Thousand) - to new contributors]] for more information.
-
-= NEWS =
-
-* ##org-odt-20140713.tar##:  JabRef export should be super-fast now.  Remember to upgrade your JabRef Chicago plugin from ##package-user-dir## (i.e., from ##~/.emacs.d/elpa/org-odt-20140713/JabRef##) and read the ##Commentary## section of ##ox-jabref.el##.
-----
-
-= User Questions =
-
-* [[http://stackoverflow.com/questions/24434854/emacs-org-odt-export-as-odf-and-open-odt-outside-emacs How do I open an Org exported ODT file using LibreOffice]]?
-** Assuming that your are on a Linux system, use this ##(setcdr (assq 'system org-file-apps-defaults-gnu ) "xdg-open %s")##.  
-
-* Is it possible to modify exporter to use superscripts as references like[sup]1[/sup] that rather than like this[1]?
-** See [[http://cauvery.nfshost.com/wiki.pl/ODT_Exporter_FAQ List of FAQs]].  Is that what you are looking for? Please acknowledge.
-*** I think that is what I'm looking for, but that page says, ##"Citation references use a style named OrgCite. Modify this style to use Subscript. Then follow the procedure outline under"##, but I do not see ##"OrgCite"## under the ##"Styles and Formatting"## menu. 
-
-**** Check your ##*Messages*## buffer and see where from the Styles file is picked from.  It should come from the ELPA directory for ##org-odt##.  If the style file is coming from wrong directory, then you need to fix up ##org-odt-data-dir## (as outlined in my personal wiki page).  
-***** Got it. I was using a stale styles.xml, not your version, hence the missing ##OrgCite##. THANK YOU!
