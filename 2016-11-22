@@ -1,0 +1,11 @@
+[new:AaronHawley:2016-11-22 13:56 UTC]
+Looks like the InterWiki links at MediaWiki don't work anymore.
+
+https://www.mediawiki.org/w/api.php?action=query&meta=siteinfo&siprop=interwikimap
+
+We'll need to
+
+# Notify MediaWiki that the InterWiki prefix is now ##https://www.emacswiki.org/emacs/##
+# Add redirects to support the old link format of ##http://www.emacswiki.org/cgi-bin/wiki.pl?##
+
+-- AaronHawley
