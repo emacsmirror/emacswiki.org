@@ -1,5 +1,5 @@
 Jambunathan K is an Emacs user.  He has authored the following Emacs lisp libraries.  
 
-1. [[http://orgmode.org/w/?p=org-mode.git;a=blob_plain;f=lisp/ox-odt.el  Org-mode's OpenDocumentTextExporter]]
-1. [[https://github.com/kjambunathan/fontmenu Font Menu]]: Examine how a text is rendered in different fonts, in your Emacs.
+# [[http://orgmode.org/w/?p=org-mode.git;a=blob_plain;f=lisp/ox-odt.el  ox-odt.el]]:  Export Org mode files to LibreOffice's OpenDoucmentText
+# [[https://github.com/kjambunathan/fontmenu fontmenu.el]]: Examine how a text is rendered in different fonts
 
