@@ -1,4 +1,4 @@
-##Jambunathan K## is an Emacs user.  He has authored the following Emacs lisp libraries.  
+`Jambunathan K' is an Emacs user.  He has authored the following Emacs lisp libraries.  
 
 # [[http://orgmode.org/w/?p=org-mode.git;a=blob_plain;f=lisp/ox-odt.el  ox-odt.el]]:  //Export Org mode files to LibreOffice's OpenDoucmentText//
 # [[https://github.com/kjambunathan/fontmenu fontmenu.el]]: //Examine how a text is rendered in different fonts//
