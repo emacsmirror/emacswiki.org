@@ -9,3 +9,19 @@ We'll need to
 # Add redirects to support the old link format of ##http://www.emacswiki.org/cgi-bin/wiki.pl?##
 
 -- AaronHawley
+
+[new:AlexSchroeder:2016-11-23 11:40 UTC]
+No, we actually have tons of redirects for old URLs and this one just slipped through the cracks.
+I've fixed it, hopefully. :)
+
+The relevant nginx config:
+
+{{{
+rewrite "^/(?:cgi-bin/)?(?:emacs(?:-[a-z][a-z])+|emacs\.pl|wiki|wiki\.pl)/(.*)" "/emacs/$1" permanent;
+rewrite "^/cgi-bin/wiki.pl"     "/emacs" permanent; # https://www.emacswiki.org/emacs/2016-11-22
+rewrite "^/cgi-bin/emacs/(.*)"  "/emacs/$1" permanent;
+}}}
+
+Thanks for reporting little details such as this one!
+
+-- [[Alex Schroeder]]
