@@ -1,0 +1,5 @@
+You can use the [https://melpa.org/#/language-detection language-detection package] (available on [[MELPA]]) to activate automatic syntax highlighting of code snippets in <pre> tags while browsing the web with eww.
+
+* https://github.com/andreasjansson/language-detection.el#eww-syntax-highlighting
+
+[[CategoryWebBrowser]]
