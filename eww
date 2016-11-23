@@ -9,6 +9,7 @@ You may also need to install TLS certificates, as explained in Magnus’ article
 
 == EWW AddOns ==
 * [[eww-lnum]] -- A Conkeror-style "follow numeric link shortcuts" extension for eww.
+* [[eww-syntax-highlighting]] -- Automatic syntax highlighting of code snippets in eww.
 
 == Other Elisp-based Web Browsers ==
 * [[emacs-w3m]]
