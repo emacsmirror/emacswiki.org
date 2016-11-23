@@ -8,6 +8,8 @@ Make sure that libxml2 and GnuTLS are installed and that the executables and DLL
 You may also need to install TLS certificates, as explained in Magnus’ article [http://xn--9dbdkw.se/diary/how_to_enable_GnuTLS_for_Emacs_24_on_Windows/index.en.html “how to enable GnuTLS for Emacs 24 on Windows”].
 
 == EWW AddOns ==
+
+* [[Bookmark+]] -- More bookmarking possibilities for EWW.
 * [[eww-lnum]] -- A Conkeror-style "follow numeric link shortcuts" extension for eww.
 * [[eww-syntax-highlighting]] -- Automatic syntax highlighting of code snippets in eww.
 
