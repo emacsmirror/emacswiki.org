@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Tue Nov 15 07:01:19 2016 (-0800)
+;; Last-Updated: Wed Nov 23 11:08:57 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 764
+;;     Update #: 769
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -247,9 +247,10 @@ Each value of the list is a prefix key bound to keymap
 ;; (not `bmkp-next-bookmark-this-file/buffer-repeat') to a key such as [f2].
 ;;
 (when (> emacs-major-version 21)
-  (define-key bookmark-map [down]       'bmkp-next-bookmark-this-file/buffer-repeat) ; `C-x p down'
   (define-key bookmark-map "n"          'bmkp-next-bookmark-this-file/buffer-repeat) ; `C-x p n'
   (define-key bookmark-map "\C-n"       'bmkp-next-bookmark-this-file/buffer-repeat) ; `C-x p C-n'
+  (define-key bookmark-map [down]       'bmkp-next-bookmark-this-file/buffer-repeat) ; `C-x p down'
+  (put 'bmkp-next-bookmark-this-file/buffer-repeat :advertised-binding (kbd "C-x p <down>"))
 
   ;; This requires the fix for Emacs bug #6256, which is in Emacs 23.3 (presumably).
   ;; For older Emacs versions you can bind the wheel event to `bmkp-next-bookmark-this-file/buffer'
@@ -259,9 +260,10 @@ Each value of the list is a prefix key bound to keymap
                  (and (= emacs-major-version 23)  (> emacs-minor-version 2))))
     (define-key bookmark-map (vector (list mouse-wheel-up-event))
       'bmkp-next-bookmark-this-file/buffer-repeat))                            ; `C-x p mouse-wheel-up'
-  (define-key bookmark-map [up]         'bmkp-previous-bookmark-this-file/buffer-repeat) ; `C-x p up'
   (define-key bookmark-map "p"          'bmkp-previous-bookmark-this-file/buffer-repeat) ; `C-x p p'
   (define-key bookmark-map "\C-p"       'bmkp-previous-bookmark-this-file/buffer-repeat) ; `C-x p C-p'
+  (define-key bookmark-map [up]         'bmkp-previous-bookmark-this-file/buffer-repeat) ; `C-x p up'
+  (put 'bmkp-previous-bookmark-this-file/buffer-repeat :advertised-binding (kbd "C-x p <up>"))
 
   ;; This requires the fix for Emacs bug #6256, which is in Emacs 23.3 (presumably).
   ;; For older Emacs versions you can bind the wheel event to `bmkp-previous-bookmark-this-file/buffer'
@@ -271,12 +273,14 @@ Each value of the list is a prefix key bound to keymap
                  (and (= emacs-major-version 23)  (> emacs-minor-version 2))))
     (define-key bookmark-map (vector (list mouse-wheel-down-event))
       'bmkp-previous-bookmark-this-file/buffer-repeat))                      ; `C-x p mouse-wheel-down'
-  (define-key bookmark-map [right]      'bmkp-next-bookmark-repeat)                  ; `C-x p right'
   (define-key bookmark-map "f"          'bmkp-next-bookmark-repeat)                  ; `C-x p f'
   (define-key bookmark-map "\C-f"       'bmkp-next-bookmark-repeat)                  ; `C-x p C-f'
-  (define-key bookmark-map [left]       'bmkp-previous-bookmark-repeat)              ; `C-x p left'
+  (define-key bookmark-map [right]      'bmkp-next-bookmark-repeat)                  ; `C-x p right'
+  (put 'bmkp-next-bookmark-repeat :advertised-binding (kbd "C-x p <right>"))
   (define-key bookmark-map "b"          'bmkp-previous-bookmark-repeat)              ; `C-x p b'
   (define-key bookmark-map "\C-b"       'bmkp-previous-bookmark-repeat)              ; `C-x p C-b'
+  (define-key bookmark-map [left]       'bmkp-previous-bookmark-repeat)              ; `C-x p left'
+  (put 'bmkp-previous-bookmark-repeat :advertised-binding (kbd "C-x p <left>"))
   (define-key bookmark-map [next]       'bmkp-next-bookmark-w32-repeat)              ; `C-x p next'
   (define-key bookmark-map [prior]      'bmkp-previous-bookmark-w32-repeat)          ; `C-x p prior'
   (when (featurep 'bookmark+-lit)
