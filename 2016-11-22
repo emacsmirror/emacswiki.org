@@ -22,6 +22,10 @@ rewrite "^/cgi-bin/wiki.pl"     "/emacs" permanent; # https://www.emacswiki.org/
 rewrite "^/cgi-bin/emacs/(.*)"  "/emacs/$1" permanent;
 }}}
 
+Test:
+
+* http://www.emacswiki.org/cgi-bin/wiki.pl?2016-11-22
+
 Thanks for reporting little details such as this one!
 
 -- [[Alex Schroeder]]
