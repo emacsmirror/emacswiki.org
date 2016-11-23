@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Nov 18 16:18:58 2016 (-0800)
+;; Last-Updated: Wed Nov 23 11:51:14 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 16159
+;;     Update #: 16162
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1237,6 +1237,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2016/11/23 dadams
+;;     bookmark-bmenu-mode: Doc string cleanup.
 ;; 2016/11/18 dadams
 ;;     Support Emacs 24.[45] too.
 ;; 2016/11/15 dadams
@@ -1833,6 +1835,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2016/11/23 dadams
+;;     Put :advertised-binding on several keys.
 ;; 2016/11/15 dadams
 ;;     bmkp-eww-jump(-other-window): Ensure that EWW code is only for Emacs 25+.
 ;; 2016/11/14 dadams
