@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Nov 14 15:56:32 2016 (-0800)
+;; Last-Updated: Wed Nov 23 17:58:12 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 15084
+;;     Update #: 15111
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -127,7 +127,8 @@
 ;;    (@> "Different Types of Jump Commands")
 ;;    (@> "Bookmark Annotations")
 ;;    (@> "Bookmark Tags")
-;;    (@> "Bookmark Tags Can Have Values")
+;;      (@> "Bookmark Tags Can Have Values")
+;;      (@> "Hierarchical Structures of Bookmarks?")
 ;;    (@> "Function, Sequence, and Variable-List Bookmarks")
 ;;    (@> "Editing Bookmarks")
 ;;      (@> "Bookmark Records: What A Bookmark Looks Like")
@@ -1126,9 +1127,10 @@
 ;;  * (@> "Bookmarking the Marked Files in Dired")
 ;;  * (@> "Opening Bookmarks Using Windows File Associations")
 ;;  * (@> "Tag Commands and Keys")
- 
+;;
+;;
 ;;(@* "Bookmark Tags Can Have Values")
-;;  ** Bookmark Tags Can Have Values **
+;;  *** Bookmark Tags Can Have Values ***
 ;;
 ;;  Bookmark tags are simply names (strings) when you create them.
 ;;  Nearly all of the predefined operations that use tags use these
@@ -1181,6 +1183,67 @@
 ;;  You can use this tag to invoke functions that are specific to
 ;;  individual bookmarks; bookmarks can thus have their own, extra
 ;;  jump functions.
+;;
+;;
+;;(@* "Hierarchical Structures of Bookmarks?")
+;;  *** Hierarchical Structures of Bookmarks? ***
+;;
+;;  You can use tags to organize sets of bookmarks in various ways.
+;;  But what about a simple, hierarchical (tree-shaped) structure like
+;;  the one that you use for bookmarks in a web browser?  You can get
+;;  a similar effect with Bookmark+ by just using a tag-naming
+;;  convention such as this:
+;;
+;;  vacation/
+;;  vacation/2017/
+;;  vacation/2017/winter/
+;;  vacation/2017/winter/photos/
+;;  vacation/2017/summer/
+;;  vacation/2017/summer/photos/
+;;  vacation/2018/
+;;  ...
+;;
+;;  You need not tag any bookmarks with any particular part of such a
+;;  pseudo-hierarchy.  For example, you might tag some bookmarks with
+;;  vacation/2017/winter/ and some with vacation/2017/winter/photos/,
+;;  without bothering to have any that are tagged with just vacation/
+;;  or just vacation/2017/.
+;;
+;;  You are not limited to a single tree.  You can have a tag such as
+;;  vacation/2017/winter/ and a tag such as work/projects/2017/alpha/,
+;;  without any need for those to have a common ancestor.
+;;
+;;  How can you use such a tagging scheme?
+;;
+;;  When you jump to a bookmark using a command that asks for tags,
+;;  such as `C-x j t +' (`bmkp-some-tags-jump'), you can use
+;;  completion.  So you can, for example, type `vac TAB' to show all
+;;  of your vacation tags (in `*Completions*'), and drill down,
+;;  completing more, to pick whichever particular vacation tag you're
+;;  interested in.  This is similar to traversing a web-browser
+;;  tree-like bookmarks menu.  But jump commands that use tags let you
+;;  match any number of tags at the same time, not just one.
+;;
+;;  Completion against the set of existing tags is also available when
+;;  you add tags to a bookmark.  And if option
+;;  `bmkp-prompt-for-tags-flag' is non-`nil' then you are prompted to
+;;  add tags whenever you create or update a bookmark.  But unlike the
+;;  case for web-browser bookmark creation, classifying a bookmark
+;;  when you create it or update it is optional.  You can always add
+;;  tags later, or not at all.
+;;
+;;  Such a purely conventional, pseudo-hierarchy might sound like a
+;;  silly hack, but it is at least as quick to use as is adding a
+;;  bookmark to your tree of browser bookmarks.  And it is more
+;;  useful, because the organization is more flexible and you can have
+;;  multiple, independent hierarchies.
+;;
+;;  The tagging scheme just described can help you keep track of
+;;  things, even though it is very simple.  There is nothing special
+;;  about it.  You might come up with other conventions for
+;;  classifying tags, which you find more convenient or more powerful.
+;;  And remember that tags can be more than just names.  They give you
+;;  the full power of Lisp values - do with them whatever you like.
  
 ;;(@* "Function, Sequence, and Variable-List Bookmarks")
 ;;  ** Function, Sequence, and Variable-List Bookmarks **
