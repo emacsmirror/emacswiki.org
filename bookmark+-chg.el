@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Nov 23 11:51:14 2016 (-0800)
+;; Last-Updated: Wed Nov 23 18:45:04 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 16162
+;;     Update #: 16176
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2016/11/23 dadams
+;;     bookmark-save, bookmark-write-file, bookmark-load, bmkp-empty-file, bmkp-tags-in-bookmark-file,
+;;       bmkp-list-defuns-in-commands-file, bmkp-set-bookmark-file-bookmark, bmkp-desktop-read:
+;;         Raise an error if we have a directory, not a file.
 ;; 2016/11/18 dadams
 ;;     Support Emacs 24.[45] too.
 ;;     bookmark-set, bmkp-this-buffer-p, bmkp-make-eww-record: Update for Emacs 24.[45].
@@ -1239,6 +1243,9 @@
 ;;
 ;; 2016/11/23 dadams
 ;;     bookmark-bmenu-mode: Doc string cleanup.
+;;     bookmark-bmenu-list, bmkp-bmenu-copy-marked-to-bookmark-file:
+;;       Raise an error if we have a directory, not a file.
+;;     bmkp-bmenu-create-bookmark-file-from-marked: Ensure that FILE is not a directory.
 ;; 2016/11/18 dadams
 ;;     Support Emacs 24.[45] too.
 ;; 2016/11/15 dadams
