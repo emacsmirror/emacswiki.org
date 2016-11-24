@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Nov 18 16:16:02 2016 (-0800)
+;; Last-Updated: Wed Nov 23 18:24:53 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 8082
+;;     Update #: 8093
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -3027,6 +3027,7 @@ If called from Lisp:
                ((and parg  (not file))        (bmkp-read-bookmark-file-name
                                                "File to save bookmarks in: " nil
                                                (bmkp-read-bookmark-file-default))))))
+    (when (file-directory-p file-to-save) (error "`%s' is a directory, not a file" file-to-save))
     (when (and bmkp-last-as-first-bookmark-file
                bookmark-save-flag)      ; nil if temporary bookmarking mode.
       (customize-save-variable 'bmkp-last-as-first-bookmark-file file-to-save))
@@ -3074,6 +3075,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
                            (not bmkp-propertize-bookmark-names-flag)))
         (existing-buf  (get-file-buffer file))
         bname fname last-fname start end)
+    (when (file-directory-p file) (error "`%s' is a directory, not a file" file))
     (message msg file)
     (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
       (goto-char (point-min))
@@ -3303,6 +3305,7 @@ bookmark files that were created using the bookmark functions."
     (bookmark-save))
   ;; Load.
   (setq file  (abbreviate-file-name (expand-file-name file)))
+  (when (file-directory-p file) (error "`%s' is a directory, not a file" file))
   (unless (file-readable-p file) (error "Cannot read bookmark file `%s'" file))
   (unless batchp (message "Loading bookmarks from `%s'..." file))
   (let ((existing-buf  (get-file-buffer file)))
@@ -4585,6 +4588,7 @@ non-nil, require confirmation if the file already exists."
                        (read-file-name "Create empty bookmark file: " "~/"))
                      t))
   (setq file  (expand-file-name file))
+  (when (file-directory-p file) (error "`%s' is a directory, not a file" file))
   (bookmark-maybe-load-default-file)
   (when (and confirmp  (file-exists-p file)
              (not (y-or-n-p (format "CONFIRM: Empty the existing file `%s'? " file))))
@@ -5173,6 +5177,7 @@ If FILE does not name a valid, bookmark file then nil is returned.
 Non-nil NAMES-ONLY-P means return a list of only the tag names.
 Otherwise, return an alist of the full tags."
   (setq file  (expand-file-name file))
+  (when (file-directory-p file) (error "`%s' is a directory, not a file" file))
   (let ((bookmark-save-flag  nil)       ; Just to play safe.
         (bmk-alist           ())
         (tags                ())
@@ -8426,6 +8431,8 @@ If it is a record then it need not belong to `bookmark-alist'."
 Typically, these are all commands."
   (interactive)
   (when (and bmkp-bmenu-commands-file  (file-readable-p bmkp-bmenu-commands-file))
+    (when (file-directory-p bmkp-bmenu-commands-file)
+      (error "`%s' is a directory, not a file" bmkp-bmenu-commands-file))
     (let ((fns  ())
           (buf  (let ((enable-local-variables  nil))
                   (find-file-noselect bmkp-bmenu-commands-file))))
@@ -8736,6 +8743,7 @@ Non-interactively, non-nil MSG-P means display a status message."
                                          'confirm)) ; Non-existing file is OK, but must confirm.
          'MSG))
   (setq file  (expand-file-name file))
+  (when (file-directory-p file) (error "`%s' is a directory, not a file" file))
   (unless (file-readable-p file) (error "Unreadable bookmark file `%s'" file))
   (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
     (goto-char (point-min))
@@ -9012,6 +9020,7 @@ Return t if FILE was loaded, nil otherwise."
   (interactive)
   (unless (file-name-absolute-p file) ; Should never happen.
     (setq file  (expand-file-name file bmkp-desktop-default-directory)))
+  (when (file-directory-p file) (error "`%s' is a directory, not a file" file))
   (setq desktop-dirname  (file-name-directory file))
   (if (not (file-readable-p file))
       nil                               ; Return nil, meaning not loaded.
