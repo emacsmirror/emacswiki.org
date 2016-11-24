@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Nov 23 11:43:21 2016 (-0800)
+;; Last-Updated: Wed Nov 23 18:40:34 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 3870
+;;     Update #: 3877
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -737,8 +737,7 @@ was the last time you used it."
 (defcustom bmkp-bmenu-image-bookmark-icon-file
   (and (fboundp 'display-images-p)  (display-images-p)
        (let ((bmk-img    (convert-standard-filename "~/.emacs-bmk-bmenu-image-file-icon.png"))
-             (emacs-img  (convert-standard-filename
-                          (concat data-directory "images/gnus/exit-gnus.xpm"))))
+             (emacs-img  (convert-standard-filename (concat data-directory "images/gnus/exit-gnus.xpm"))))
          (or (and (file-readable-p bmk-img)    bmk-img)
              (and (file-readable-p emacs-img)  emacs-img))))
   "*Iconic image file to show next to image-file bookmarks.
@@ -1153,6 +1152,8 @@ Non-interactively:
   (when msg-p (message "Gathering bookmarks to display..."))
   (when (and bmkp-bmenu-first-time-p  bmkp-bmenu-commands-file
              (file-readable-p bmkp-bmenu-commands-file))
+    (when (file-directory-p bmkp-bmenu-commands-file)
+      (error "`%s' is a directory, not a file" bmkp-bmenu-commands-file))
     (with-current-buffer (let ((enable-local-variables  ())
                                (emacs-lisp-mode-hook    nil))
                            (find-file-noselect bmkp-bmenu-commands-file))
@@ -1161,6 +1162,8 @@ Non-interactively:
       (kill-buffer (current-buffer))))
   (cond ((and bmkp-bmenu-first-time-p  bmkp-bmenu-state-file ; Restore from state file.
               (file-readable-p bmkp-bmenu-state-file))
+         (when (file-directory-p bmkp-bmenu-state-file)
+           (error "`%s' is a directory, not a file" bmkp-bmenu-state-file))
          (let ((state  ()))
            (with-current-buffer (let ((enable-local-variables  nil)
                                       (emacs-lisp-mode-hook    nil))
@@ -3107,6 +3110,7 @@ Non-interactively:
          (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
          (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))))
   (bmkp-bmenu-barf-if-not-in-menu-list)
+  (when (file-directory-p file) (error "`%s' is a directory, not a file" file))
   (when (and (not (file-readable-p file))
              (not batchp)
              (not (y-or-n-p (format "Copy to NEW, EMPTY bookmark file `%s'? " file))))
@@ -3119,7 +3123,7 @@ Non-interactively:
           (bookmark-alist-modification-count  bookmark-alist-modification-count))
       (when (and (not (zerop bookmark-alist-modification-count)) ; Unsaved changes.
                  (yes-or-no-p "Unsaved changes.  Save bookmarks before copying? "))
-        (bookmark-save))      
+        (bookmark-save))
       (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect file))
         (goto-char (point-min))
         (if (file-exists-p file)
@@ -3181,6 +3185,7 @@ confirm moving to new, empty file if no existing file."
          (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (when (and (file-readable-p file)
+             (not (file-directory-p file))
              (not batchp)
              (not (y-or-n-p (format "File `%s' already exists.  Overwrite? " file))))
     (error "OK - canceled"))
