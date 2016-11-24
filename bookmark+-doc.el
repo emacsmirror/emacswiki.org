@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Nov 23 17:58:12 2016 (-0800)
+;; Last-Updated: Wed Nov 23 20:27:45 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 15111
+;;     Update #: 15133
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -3162,9 +3162,6 @@
 ;;  autonamed bookmark in buffer `foo.el' at position 58356 is
 ;;  `000058356 foo.el'.
 ;;
-;;  (You can customize the format of autonamed bookmarks using options
-;;  `bmkp-autoname-bookmark-function' and `bmkp-autoname-format'.)
-;;
 ;;  When you jump to any bookmark, the actual destination can differ
 ;;  from the recorded position, because the buffer text might have
 ;;  changed.  In that case, the position you jump to has been
@@ -3233,6 +3230,41 @@
 ;;              'bmkp-delete-autonamed-this-buffer-no-confirm)
 ;;    (add-hook 'kill-emacs-hook
 ;;              'bmkp-delete-autonamed-no-confirm)
+;;
+;;  You can customize the format of autonamed bookmarks using options
+;;  `bmkp-autoname-bookmark-function' and `bmkp-autoname-format'.
+;;
+;;  For example, if you want autonamed bookmarks to show the line and
+;;  column numbers, in the form `L<num>,C<num> <buffer>', where <num>
+;;  is a sequence of decimal digits and <buffer> is the buffer name,
+;;  then you can use a function such as this as the value of
+;;  `bmkp-autoname-bookmark-function':
+;;
+;;    (defun my-auto-l+c-name (position)
+;;      "Return a name for POSITION that uses line & column numbers."
+;;      (let ((line  (line-number-at-pos position))
+;;            (col   (save-excursion
+;;                     (goto-char position) (current-column))))
+;;        (format "L%d,C%d %s" col line (buffer-name))))
+;;
+;;  To enable Bookmark+ to recognize such bookmarks as autonamed, you
+;;  would then set `bmkp-autoname-format' to the format specification
+;;  "^L[0-9]+,C[0-9]+ %B", to match their names.  Here, the `%B' is a
+;;  Bookmark+ format specifier that corresponds to the buffer name.
+;;
+;;  Recognizing the buffer name in an autonamed bookmark is important
+;;  or commands that act only on autonamed bookmarks for a specific
+;;  buffer.  That includes commands `bmkp-autonamed-this-buffer-jump'
+;;  and `bmkp-delete-all-autonamed-for-this-buffer'.
+;;
+;;  You use the special format specifier `%B' for the buffer name,
+;;  instead of just `%s', because the format can have multiple `%'
+;;  sequences, and the buffer name could be anywhere in the bookmark
+;;  name.  Depending on the buffer, the buffer name could thus be
+;;  confused with other text in the bookmark name, unless you use `%B'
+;;  to show where it is.  You can use just `%s' for it if there is no
+;;  risk of ambiguity.  (Use `%s' in `bmkp-autoname-bookmark-function'
+;;  to insert the buffer name.)
  
 ;;(@* "Temporary Bookmarks")
 ;;  ** Temporary Bookmarks **
