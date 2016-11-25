@@ -219,7 +219,7 @@ Start Emacs. Start Gnus with M-x gnus. If you don’t see the INBOX group, press
 See the section with the IMAP configuration for the required settings to configure SMTP.
 
 ====Storing sent mail in the server====
-Mails will automatically be stored in the [Gmail]Sent Mail folder if you configured Gnus to send mail using Gmail's SMTP server as detailed in the IMAP configuration section.
+Mails will automatically be stored in the proper "[Gmail]/Sent Mail" folder if you configured Gnus to send mail using Gmail's SMTP server as detailed in the IMAP configuration section.
 
 ==Usage==
 ===Archiving mails===
