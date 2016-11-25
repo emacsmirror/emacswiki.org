@@ -25,7 +25,8 @@ Now put the following in your ##~/.gnus## file:
 	       (nnimap-server-port "imaps")
 	       (nnimap-stream ssl)))
 
-(setq smtpmail-smtp-service 587
+(setq smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587
       gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 }}}
 
@@ -63,7 +64,8 @@ Alternatively, you can configure Gmail IMAP as a secondary select method for Gnu
                                   (nnimap-server-port "imaps")
                                   (nnimap-stream ssl)))
 
-(setq smtpmail-smtp-service 587
+(setq smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587
       gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
 </pre>
 
@@ -228,34 +230,11 @@ Start Emacs. Start Gnus with M-x gnus. If you don’t see the INBOX group, press
 See the section with the IMAP configuration for the required settings to configure SMTP.
 
 ====Storing sent mail in the server====
-By default, the mail you send from Gnus is not copied to the Gmail server, so if you open the folder "Sent mail", you won't see it. You will only see mail sent from the web interface.
-
-TODO: how to store sent mail in the server?  (See below.)
-
-A workaround can be CCing yourself whenever you send a mail. With this approach you'll get a copy which is reflected on the server as well. Moreover, you'll be the sender of these copies which makes it easy to define a view including only these messages. To use this solution, write this into your .gnus.el file:
-<pre>
-(setq gnus-posting-styles
-      '((".*"
-	 ("CC" "username@gmail.com")
-         (address "username@gmail.com"))))
-</pre>
-
-NOTE: The above setting messes up CC field when you are sending wide reply. All contacts in CC are removed and replaced with your given address in the CC field. A better way is to set ##gnus-message-archive-group## to the sent items group,
-{{{
-(setq gnus-message-archive-group
-      '((".*" "nnimap+myserver:Sent Items")))
-}}}
-
-Actually, the problem seems to be solved *if* you send mail via gmail's smtp server - at their "Recommended IMAP client settings" they say:
-
-"Do NOT save sent messages on the server. If your client is sending mail through Gmail's SMTP server, your sent messages will be automatically copied to the [Gmail]/Sent Mail folder."
-
-
-
+Mails will automatically be stored in the [Gmail]Sent Mail folder if you configured Gnus to send mail using Gmail's SMTP server as detailed in the IMAP configuration section.
 
 ==Usage==
 ===Archiving mails===
-What is the equivalent Gnus command to the „Archive“ button? (Remove from „Inbox“ and stay in „All mail“)
+What is the equivalent Gnus command to the "Archive" button? (Remove from "Inbox" and stay in "All mail")
 
 [new:IainDalton:2008-09-07 04:28 UTC]
 Remove the "Inbox" tag by deleting from the "INBOX" folder with ##B DEL##.
