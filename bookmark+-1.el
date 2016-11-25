@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Nov 23 18:24:53 2016 (-0800)
+;; Last-Updated: Fri Nov 25 09:23:10 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 8093
+;;     Update #: 8101
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -569,8 +569,8 @@
 ;;  ***** NOTE: The following user options defined in `bookmark.el'
 ;;              have been REDEFINED HERE:
 ;;
-;;    `bookmark-automatically-show-annotations',
-;;    `bookmark-version-control'.
+;;    `bookmark-automatically-show-annotations', `bookmark-sort-flag'
+;;    (document non-use), `bookmark-version-control'.
 ;;
 ;;
 ;;  ***** NOTE: The following non-interactive functions defined in
@@ -1806,6 +1806,13 @@ See `bookmark-jump-other-window'."
 ;;(@* "Core Replacements (`bookmark-*' except `bookmark-bmenu-*')")
 ;;; Core Replacements (`bookmark-*' except `bookmark-bmenu-*') -------
 
+
+
+;; REPLACES DOCUMENTATION of ORIGINAL in `bookmark.el'.
+;;
+;; Doc now just says that this option is ignored by Bookmark+.
+(put 'bookmark-sort-flag 'variable-documentation
+     "Ignored by Bookmark+, which uses option `bmkp-sort-comparer' instead.")
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -4419,8 +4426,7 @@ message."
                        'MSG)))
   (unless (or (functionp function)  (vectorp function))
     (setq function (bmkp-read-from-whole-string function))) ; Convert name to symbol.
-  (bookmark-store bookmark-name `((filename . ,bmkp-non-file-filename)
-                                  (position . 0)
+  (bookmark-store bookmark-name `(,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT 0 nil 'NO-REGION)
                                   (function . ,function)
                                   (handler  . bmkp-jump-function))
                   nil nil (not msg-p))
@@ -9311,8 +9317,7 @@ MSGP non-nil means possibly interact with the user, showing messages."
   "Create and return a sequence bookmark record.
 BOOKMARK-NAMES is a list of names of the bookmarks to be invoked in
 sequence."
-  (let ((record  `(,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT nil nil 'NO-REGION)
-                   (filename . ,bmkp-non-file-filename)
+  (let ((record  `(,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT 0 nil 'NO-REGION)
                    (sequence . ,bookmark-names)
                    (handler  . bmkp-jump-sequence))))
     record))
