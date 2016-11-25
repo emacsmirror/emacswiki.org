@@ -359,7 +359,7 @@ You can emulate this Gmail feature with the variable `gnus-posting-styles', whic
 See the info node on that variable, you could easily automatically add this from a list.
 
 ===Chat===
-Gmail used to provide interface to their chat service using XMPP, but such support was dropped somewhere around 2013.
+Gmail used to provide an interface to their chat service using XMPP, but such support was dropped somewhere around 2013.
 
 ===How do actions sync in IMAP?===
 From [http://mail.google.com/support/bin/answer.py?answer=77657 Gmail Help]
