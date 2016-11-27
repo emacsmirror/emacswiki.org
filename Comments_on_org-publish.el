@@ -4,3 +4,12 @@ I tried to download org-publish.el and add it to the load path. When exporting e
 
 -- [https://www.emacswiki.org/emacs/WENGChenyang WENGChenyang] 2016-11-27 13:52 UTC
 
+
+----
+
+I am using gnu emacs 24.5. But I can not find the org-publish.el file in my emacs distribution. Instead, there is ox-publish.el, which is written by the author of org-publish.el, David O'Toole.
+
+I tried to download org-publish.el and add it to the load path. When exporting emacs reported an error. It seems that the *org-export-as-html* function is undefined, neither in org.el nor in org-publish.el
+
+-- [https://www.emacswiki.org/emacs/WENGChenyang WENGChenyang] 2016-11-27 13:53 UTC
+
