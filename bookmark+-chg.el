@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Nov 23 18:45:04 2016 (-0800)
+;; Last-Updated: Sun Nov 27 17:29:29 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 16176
+;;     Update #: 16180
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -135,7 +135,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://dto.freeshell.org/notebook/Linkd.html.
+;;  http://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "CHANGE LOG FOR `bookmark+-1.el'")
 ;;  (@> "CHANGE LOG FOR `bookmark+-bmu.el'")
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2016/11/25 dadams
+;;     bmkp-make-function-bookmark: Added bookmark-make-record-default, to include creation date.
+;;     bmkp-make-sequence-record: Use 0 as position, in record.
+;;     bookmark-sort-flag: Replace doc string with mention that it is not used.
 ;; 2016/11/23 dadams
 ;;     bookmark-save, bookmark-write-file, bookmark-load, bmkp-empty-file, bmkp-tags-in-bookmark-file,
 ;;       bmkp-list-defuns-in-commands-file, bmkp-set-bookmark-file-bookmark, bmkp-desktop-read:
