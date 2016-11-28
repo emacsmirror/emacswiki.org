@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May 15 09:57:39 2016 (-0700)
+;; Last-Updated: Mon Nov 28 14:27:03 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 1202
+;;     Update #: 1205
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -22,14 +22,14 @@
 ;;
 ;;   `apropos', `apropos+', `autofit-frame', `avoid', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cmds-menu', `dired', `dired+', `dired-aux',
-;;   `dired-x', `easymenu', `ffap', `find-dired', `fit-frame',
-;;   `frame-fns', `help+20', `highlight', `image-dired',
-;;   `image-file', `info', `info+20', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `naked', `pp', `pp+', `second-sel',
-;;   `strings', `subr-21', `thingatpt', `thingatpt+', `time-date',
-;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `bookmark+-lit', `dired', `dired+', `dired-aux', `dired-x',
+;;   `easymenu', `ffap', `find-dired', `fit-frame', `frame-fns',
+;;   `help+20', `highlight', `image-dired', `image-file', `info',
+;;   `info+20', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `naked', `pp', `pp+', `second-sel', `strings', `subr-21',
+;;   `thingatpt', `thingatpt+', `time-date', `unaccent',
+;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -446,10 +446,10 @@ When both optional args are non-nil, the `find' command run is this:
 ;;    `dired-regexp-history' and `find-diredp-default-fn'.
 ;;
 ;;;###autoload
-(defun find-name-dired (dir pattern &optional depth-limits excluded-paths)
-  "Search directory DIR recursively for files matching globbing PATTERN,
-and run `dired' on those files.  PATTERN may use shell wildcards, and
-it need not be quoted.  It is not an Emacs regexp.
+(defun find-name-dired (directory pattern &optional depth-limits excluded-paths)
+  "Run `dired' on all files under DIRECTORY that match globbing PATTERN.
+PATTERN can use shell wildcards, and it need not be quoted.  It is not
+an Emacs regexp.
 
 By default, the command run (after changing into DIR) is essentially
 this, where LS-SWITCHES is `(car find-ls-option)':
@@ -476,7 +476,7 @@ When both optional args are non-nil, the `find' command run is this:
              (read-file-name "Find-name (directory): " nil "" t))
            (read-from-minibuffer "Find-name (filename wildcard): " nil
                                  nil nil 'dired-regexp-history default t))))
-  (find-dired dir (concat (if (boundp 'find-name-arg) find-name-arg "-name") " " (shell-quote-argument pattern))
+  (find-dired directory (concat (if (boundp 'find-name-arg) find-name-arg "-name") " " (shell-quote-argument pattern))
               depth-limits excluded-paths))
 
 
