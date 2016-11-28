@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Mon Nov 14 13:55:21 2016 (-0800)
+;; Last-Updated: Sun Nov 27 17:26:27 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 198
+;;     Update #: 200
 ;; URL: http://www.emacswiki.org/bookmark+-mac.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -85,7 +85,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://dto.freeshell.org/notebook/Linkd.html.
+;;  http://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Things Defined Here")
 ;;  (@> "Functions")
