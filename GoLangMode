@@ -7,5 +7,35 @@ Getting a mode for Go and an intro on how to use it:
 * [http://dominik.honnef.co/posts/2013/03/writing_go_in_emacs/ Writing Go in EmacsWriting Go in Emacs] by Dominik Honnef
 * [https://github.com/dominikh/go-mode.el go-mode.el] by Dominik Honnef, on GitHub
 
+go-mode covers the basic features you need for working with the Go code but adds some extended things like imports managing or interacting with play.golang.org. Also you could find useful add the feautures noted below.
+
+== Code autocompletion ==
+
+* With company-mode: ''company-go''
+* With autocomplete-mode: ''go-autocomplete''
+* Standalone completion: ''go-complete''
+
+You would like [https://github.com/nsf/gocode gocode] utility for autocompletion.
+
+== Code analysis and refactoring ==
+
+* ''go-guru'' mode + [https://godoc.org/golang.org/x/tools/cmd/guru guru] utility.
+* [https://github.com/emacsmirror/godoctor godoctor.el] + [http://gorefactor.org/ godoctor] utility.
+
+== Errors checking ==
+
+* [https://github.com/favadi/flycheck-gometalinter flycheck-gometalinter]
+
+== Playground ==
+
+go-mode can ability to interact with play.golang.org but there are nice modes that setup comfortable local playground.
+
+* [https://github.com/grafov/go-playground go-playground]
+* [https://github.com/shosti/go-scratch.el go-scratch]
+
+== Code snippets ==
+
+There are several repos with Go snippets for use with ''yasnippet''.
+
 ----
 ProgrammingModes
