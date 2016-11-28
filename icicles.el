@@ -8,9 +8,9 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2016.06.12
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 12 18:03:01 2016 (-0700)
+;; Last-Updated: Sun Nov 27 17:33:19 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 23704
+;;     Update #: 23705
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -22,19 +22,19 @@
 ;;   `advice', `advice-preload', `apropos', `apropos+',
 ;;   `apropos-fn+var', `autofit-frame', `avoid', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `cmds-menu', `cus-edit', `cus-face',
-;;   `cus-load', `cus-start', `cus-theme', `dired', `dired+',
-;;   `dired-aux', `dired-x', `doremi', `easymenu', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fit-frame', `flx', `frame-cmds', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `highlight',
-;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
-;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
-;;   `image-dired', `image-file', `info', `info+20', `kmacro',
-;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mouse3', `mwheel', `naked', `package', `pp', `pp+',
-;;   `regexp-opt', `ring', `second-sel', `strings', `subr-21',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `bookmark+-lit', `cl', `cus-edit', `cus-face', `cus-load',
+;;   `cus-start', `cus-theme', `dired', `dired+', `dired-aux',
+;;   `dired-x', `doremi', `easymenu', `el-swank-fuzzy', `ffap',
+;;   `ffap-', `fit-frame', `flx', `frame-cmds', `frame-fns', `fuzzy',
+;;   `fuzzy-match', `help+20', `hexrgb', `highlight', `icicles-cmd1',
+;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
+;;   `icicles-mode', `icicles-opt', `icicles-var', `image-dired',
+;;   `image-file', `info', `info+20', `kmacro', `levenshtein',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse3',
+;;   `mwheel', `naked', `package', `pp', `pp+', `regexp-opt', `ring',
+;;   `second-sel', `strings', `subr-21', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -83,7 +83,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://dto.freeshell.org/notebook/Linkd.html.
+;;  http://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Things Defined in Icicles")
 ;;  (@> "Miscellaneous")
