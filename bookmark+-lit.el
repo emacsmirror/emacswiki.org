@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2016, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Tue Oct 25 09:37:05 2016 (-0700)
+;; Last-Updated: Sun Nov 27 17:28:01 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 922
+;;     Update #: 924
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -69,7 +69,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://dto.freeshell.org/notebook/Linkd.html.
+;;  http://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Things Defined Here")
 ;;  (@> "Faces (Customizable)")
