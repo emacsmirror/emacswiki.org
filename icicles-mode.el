@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sun Mar 27 14:37:48 2016 (-0700)
+;; Last-Updated: Sun Nov 27 17:45:27 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 10267
+;;     Update #: 10268
 ;; URL: http://www.emacswiki.org/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -20,19 +20,18 @@
 ;;   `advice', `advice-preload', `apropos', `apropos+',
 ;;   `apropos-fn+var', `autofit-frame', `avoid', `bookmark',
 ;;   `bookmark+', `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
-;;   `bookmark+-lit', `cl', `cmds-menu', `cus-edit', `cus-face',
-;;   `cus-load', `cus-start', `cus-theme', `dired', `dired+',
-;;   `dired-aux', `dired-x', `doremi', `easymenu', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fit-frame', `flx', `frame-cmds', `frame-fns',
-;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `highlight',
-;;   `icicles-cmd1', `icicles-cmd2', `icicles-fn', `icicles-mcmd',
-;;   `icicles-opt', `icicles-var', `image-dired', `image-file',
-;;   `info', `info+20', `kmacro', `levenshtein', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse3', `mwheel',
-;;   `naked', `package', `pp', `pp+', `regexp-opt', `ring',
-;;   `second-sel', `strings', `subr-21', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `bookmark+-lit', `cl', `cus-edit', `cus-face', `cus-load',
+;;   `cus-start', `cus-theme', `dired', `dired+', `dired-aux',
+;;   `dired-x', `doremi', `easymenu', `el-swank-fuzzy', `ffap',
+;;   `ffap-', `fit-frame', `flx', `frame-cmds', `frame-fns', `fuzzy',
+;;   `fuzzy-match', `help+20', `hexrgb', `highlight', `icicles-cmd1',
+;;   `icicles-cmd2', `icicles-fn', `icicles-mcmd', `icicles-opt',
+;;   `icicles-var', `image-dired', `image-file', `info', `info+20',
+;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `mouse3', `mwheel', `naked', `package', `pp', `pp+',
+;;   `regexp-opt', `ring', `second-sel', `strings', `subr-21',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -116,7 +115,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://dto.freeshell.org/notebook/Linkd.html.
+;;  http://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "User Options (alphabetical)")
 ;;  (@> "Internal variables (alphabetical)")
