@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Nov 25 09:23:10 2016 (-0800)
+;; Last-Updated: Sun Nov 27 17:23:02 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 8101
+;;     Update #: 8104
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -65,7 +65,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://dto.freeshell.org/notebook/Linkd.html.
+;;  http://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Things Defined Here")
 ;;  (@> "User Options (Customizable)")
@@ -2337,8 +2337,14 @@ Use `\\[bookmark-delete]' to remove bookmarks (you give it a name, and it remove
 only the first instance of a bookmark with that name from the list of
 bookmarks).
 
-From Lisp code, non-nil optional arg NO-REFRESH-P means do not
-refresh/rebuild the bookmark-list display."
+From Lisp code:
+
+* Non-nil INTERACTIVEP means the user can be prompted for
+  confirmation, tags, etc., and it is used for the call to
+  `bookmark-store'.
+
+* Non-nil NO-REFRESH-P is also passed to `bookmark-store'.  It means
+  do not refresh/rebuild the bookmark-list display."
   (interactive (list nil current-prefix-arg t))
   (unwind-protect
        (progn
