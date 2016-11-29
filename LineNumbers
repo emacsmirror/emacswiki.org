@@ -196,7 +196,7 @@ Here's an approach based on the previous suggestion of using `linum-before-numbe
    (propertize (format my-linum-format-string line-number) 'face 'linum))
 
 [new]
-Here's a better approach. Every buffer has it's own format variable and the separator use the mode-line face.
+Here's a better approach. Every buffer has its own format variable and the separator use the mode-line face.
 
 {{{
 (unless window-system
