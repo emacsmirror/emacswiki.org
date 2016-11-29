@@ -19,3 +19,10 @@ to compile it, you might want to do something like to suppress warnings, since w
 
 -- whiskey-tango-foxtrot 2013-10-29 18:17 UTC
 
+
+----
+
+I installed this package and it works as intended, but I keep getting an initialization error saying it cannot open load file, no such file or directory, simpleclip, even though I can see simpleclip with M-x.. potential bug?
+
+-- [http://x@x.com x] 2016-11-29 20:49 UTC
+
