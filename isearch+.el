@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 27 17:53:30 2016 (-0800)
+;; Last-Updated: Tue Nov 29 09:12:37 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4991
+;;     Update #: 4993
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,7 +19,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
+;;   `cl-lib', `color', `frame-fns', `gv', `help-fns',
 ;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+', `zones'.
 ;;
@@ -814,6 +815,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/11/29 dadams
+;;     isearchp-add-filter-predicate-1: Typo: non-symbol if PRED, not PREDICATE, is not symbolp.
 ;; 2016/11/15 dadams
 ;;     Added: isearchp-columns, isearchp-columns-p.
 ;;     isearchp-read-predicate: If input was not a completion choice then Lisp-read it (e.g. lambda form).
@@ -4409,7 +4412,7 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
       (add-function where isearch-filter-predicate pred
                     (append (and (or name  (case isearchp-prompt-for-filter-name
                                              (always      (not flip-read-name-p))
-                                             (non-symbol  (if (not (symbolp predicate))
+                                             (non-symbol  (if (not (symbolp pred))
                                                               (not flip-read-name-p)
                                                             flip-read-name-p))
                                              (t           (not flip-read-name-p))))
