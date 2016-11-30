@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 29 16:59:34 2016 (-0800)
+;; Last-Updated: Tue Nov 29 19:38:07 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5063
+;;     Update #: 5093
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -79,29 +79,29 @@
 ;;  Commands defined here:
 ;;
 ;;    `isearchp-act-on-demand' (Emacs 22+),
-;;    `isearchp-add-filter-predicate' (Emacs 24.3+),
-;;    `isearchp-add-regexp-filter-predicate' (Emacs 24.3+),
+;;    `isearchp-add-filter-predicate' (Emacs 24.4+),
+;;    `isearchp-add-regexp-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-append-register', `isearch-char-by-name' (Emacs
-;;    23-24.3), `isearchp-columns' (Emacs 24.3+),
-;;    `isearchp-complement-filter' (Emacs 24.3+), `isearchp-complete',
+;;    23-24.3), `isearchp-columns' (Emacs 24.4+),
+;;    `isearchp-complement-filter' (Emacs 24.4+), `isearchp-complete',
 ;;    `isearchp-cycle-mismatch-removal',
-;;    `isearchp-defun-filter-predicate' (Emacs 24.3+),
+;;    `isearchp-defun-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-eval-sexp-and-insert' (Emacs 22+),
 ;;    `isearchp-fontify-buffer-now', `isearchp-init-edit',
-;;    `isearchp-near' (Emacs 24.3+), `isearchp-near-after' (Emacs
-;;    24.3+), `isearchp-near-before' (Emacs 24.3+),
+;;    `isearchp-near' (Emacs 24.4+), `isearchp-near-after' (Emacs
+;;    24.4+), `isearchp-near-before' (Emacs 24.4+),
 ;;    `isearchp-open-recursive-edit' (Emacs 22+),
-;;    `isearchp-or-filter-predicate' (Emacs 24.3+),
+;;    `isearchp-or-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-remove-failed-part' (Emacs 22+),
 ;;    `isearchp-remove-failed-part-or-last-char' (Emacs 22+),
-;;    `isearchp-remove-filter-predicate' (Emacs 24.3+),
-;;    `isearchp-reset-filter-predicate' (Emacs 24.3+),
+;;    `isearchp-remove-filter-predicate' (Emacs 24.4+),
+;;    `isearchp-reset-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-retrieve-last-quit-search',
-;;    `isearchp-save-filter-predicate' (Emacs 24.3+),
-;;    `isearchp-set-filter-predicate' (Emacs 24.3+),
+;;    `isearchp-save-filter-predicate' (Emacs 24.4+),
+;;    `isearchp-set-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-set-region-around-search-target',
-;;    `isearchp-show-filters' (Emacs 24.3+),
-;;    `isearchp-toggle-auto-save-filter-predicate' (Emacs 24.3+),
+;;    `isearchp-show-filters' (Emacs 24.4+),
+;;    `isearchp-toggle-auto-save-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-toggle-lazy-highlight-cleanup' (Emacs 22+),
 ;;    `isearchp-toggle-lazy-highlighting' (Emacs 22+),
 ;;    `isearchp-toggle-literal-replacement' (Emacs 22+),
@@ -124,18 +124,18 @@
 ;;    `isearchp-case-fold', `isearchp-deactivate-region-flag' (Emacs
 ;;    24.3+), `isearchp-drop-mismatch',
 ;;    `isearchp-drop-mismatch-regexp-flag',
-;;    `isearchp-filter-predicates-alist' (Emacs 24.3+),
+;;    `isearchp-filter-predicates-alist' (Emacs 24.4+),
 ;;    `isearchp-initiate-edit-commands' (Emacs 22+),
 ;;    `isearchp-mouse-2-flag', `isearchp-movement-unit-alist' (Emacs
-;;    24.3+), `isearchp-on-demand-action-function' (Emacs 22+),
-;;    `isearchp-prompt-for-filter-name' (Emacs 24.3+),
+;;    24.4+), `isearchp-on-demand-action-function' (Emacs 22+),
+;;    `isearchp-prompt-for-filter-name' (Emacs 24.4+),
 ;;    `isearchp-regexp-quote-yank-flag',
 ;;    `isearchp-repeat-search-if-fail-flag' (Emacs 22+),
 ;;    `isearchp-restrict-to-region-flag' (Emacs 24.3+),
 ;;    `isearchp-resume-with-last-when-empty-flag' (Emacs 22+),
 ;;    `isearchp-ring-bell-function', `isearchp-set-region-flag',
 ;;    `isearchp-toggle-option-flag',
-;;    `isearchp-update-filter-predicates-alist-flag' (Emacs 24.3+).
+;;    `isearchp-update-filter-predicates-alist-flag' (Emacs 24.4+).
 ;;
 ;;  Faces defined here:
 ;;
@@ -148,40 +148,40 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `isearchp-add-filter-predicate-1' (Emacs 24.3+),
+;;    `isearchp-add-filter-predicate-1' (Emacs 24.4+),
 ;;    `isearchp-assoc-delete-all', `isearchp-barf-if-use-minibuffer',
-;;    `isearchp-columns-p' (Emacs 24.3+),
+;;    `isearchp-columns-p' (Emacs 24.4+),
 ;;    `isearchp-complete-past-string', `isearchp-fail-pos',
 ;;    `isearchp-highlight-lighter', `isearchp-in-color-p' (Emacs
-;;    24.3+), `isearchp-in-comment-p' (Emacs 24.3+),
-;;    `isearchp-in-comment-or-delim-p' (Emacs 24.3+),
-;;    `isearchp-in-decimal-number-p' (Emacs 24.3+),
-;;    `isearchp-in-defun-p' (Emacs 24.3+),
-;;    `isearchp-in-email-address-p' (Emacs 24.3+),
-;;    `isearchp-in-file-name-p' (Emacs 24.3+),
-;;    `isearchp-in-file-or-url-p' (Emacs 24.3+),
-;;    `isearchp-in-hex-number-p' (Emacs 24.3+), `isearchp-in-line-p'
-;;    (Emacs 24.3+), `isearchp-in-lisp-variable-p' (Emacs 24.3+),
-;;    `isearchp-in-list-p' (Emacs 24.3+), `isearchp-in-number-p'
-;;    (Emacs 24.3+), `isearchp-in-page-p' (Emacs 24.3+),
-;;    `isearchp-in-paragraph-p' (Emacs 24.3+),
-;;    `isearchp-in-sentence-p' (Emacs 24.3+), `isearchp-in-sexp-p'
-;;    (Emacs 24.3+), `isearchp-in-string-or-comment-p' (Emacs 24.3+),
-;;    `isearchp-in-string-p' (Emacs 24.3+), `isearchp-in-symbol-p'
-;;    (Emacs 24.3+), `isearchp-in-url-p' (Emacs 24.3+),
-;;    `isearchp-in-word-p' (Emacs 24.3+),
-;;    `isearchp-match-regexp-filter-predicate' (Emacs 24.3+),
+;;    24.4+), `isearchp-in-comment-p' (Emacs 24.4+),
+;;    `isearchp-in-comment-or-delim-p' (Emacs 24.4+),
+;;    `isearchp-in-decimal-number-p' (Emacs 24.4+),
+;;    `isearchp-in-defun-p' (Emacs 24.4+),
+;;    `isearchp-in-email-address-p' (Emacs 24.4+),
+;;    `isearchp-in-file-name-p' (Emacs 24.4+),
+;;    `isearchp-in-file-or-url-p' (Emacs 24.4+),
+;;    `isearchp-in-hex-number-p' (Emacs 24.4+), `isearchp-in-line-p'
+;;    (Emacs 24.4+), `isearchp-in-lisp-variable-p' (Emacs 24.4+),
+;;    `isearchp-in-list-p' (Emacs 24.4+), `isearchp-in-number-p'
+;;    (Emacs 24.4+), `isearchp-in-page-p' (Emacs 24.4+),
+;;    `isearchp-in-paragraph-p' (Emacs 24.4+),
+;;    `isearchp-in-sentence-p' (Emacs 24.4+), `isearchp-in-sexp-p'
+;;    (Emacs 24.4+), `isearchp-in-string-or-comment-p' (Emacs 24.4+),
+;;    `isearchp-in-string-p' (Emacs 24.4+), `isearchp-in-symbol-p'
+;;    (Emacs 24.4+), `isearchp-in-url-p' (Emacs 24.4+),
+;;    `isearchp-in-word-p' (Emacs 24.4+),
+;;    `isearchp-match-regexp-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-message-prefix', `isearchp-message-suffix',
-;;    `isearchp-near-after-predicate' (Emacs 24.3+),
-;;    `isearchp-near-before-predicate' (Emacs 24.3+),
-;;    `isearchp-near-predicate' (Emacs 24.3+), `isearchp-not-pred'
-;;    (Emacs 24.3+), `isearchp-read-face-names',
+;;    `isearchp-near-after-predicate' (Emacs 24.4+),
+;;    `isearchp-near-before-predicate' (Emacs 24.4+),
+;;    `isearchp-near-predicate' (Emacs 24.4+), `isearchp-not-pred'
+;;    (Emacs 24.4+), `isearchp-read-face-names',
 ;;    `isearchp-read-face-names--read', `isearchp-read-filter-name'
-;;    (Emacs 24.3+), `isearchp-read-measure' (Emacs 24.3+),
-;;    `isearchp-read-near-args' (Emacs 24.3+),
-;;    `isearchp-read-predicate' (Emacs 24.3+),
-;;    `isearchp-read-prompt-prefix' (Emacs 24.3+),
-;;    `isearchp-read-regexp-during-search' (Emacs 24.3+),
+;;    (Emacs 24.4+), `isearchp-read-measure' (Emacs 24.4+),
+;;    `isearchp-read-near-args' (Emacs 24.4+),
+;;    `isearchp-read-predicate' (Emacs 24.4+),
+;;    `isearchp-read-prompt-prefix' (Emacs 24.4+),
+;;    `isearchp-read-regexp-during-search' (Emacs 24.4+),
 ;;    `isearchp-read-sexps', `isearchp-remove-duplicates',
 ;;    `isearchp-remove-mismatch', `isearchp-repeat-command',
 ;;    `isearchp-repeat-search-if-fail' (Emacs 22+),
@@ -195,8 +195,8 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `isearchp-current-filter-preds-alist' (Emacs 24.3+),
-;;    `isearchp-filter-map' (Emacs 24.3+),
+;;    `isearchp-current-filter-preds-alist' (Emacs 24.4+),
+;;    `isearchp-filter-map' (Emacs 24.4+),
 ;;    `isearchp-last-non-nil-invisible',
 ;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
 ;;    `isearchp-nomodify-action-hook' (Emacs 22+),
@@ -205,9 +205,9 @@
 ;;    `isearchp-reg-beg', `isearchp-reg-end',
 ;;    `isearchp-replace-literally' (Emacs 22+), `isearchp-replacement'
 ;;    (Emacs 22+), `isearchp--replacing-on-demand' (Emacs 22+),
-;;    `isearchp-saved-filter-predicate' (Emacs 24.3+),
+;;    `isearchp-saved-filter-predicate' (Emacs 24.4+),
 ;;    `isearch-update-post-hook' (Emacs 20-21),
-;;    `isearchp-user-entered-new-filter-p' (Emacs 24.3+),
+;;    `isearchp-user-entered-new-filter-p' (Emacs 24.4+),
 ;;    `isearchp-win-pt-line'.
 ;;
 ;;
@@ -844,6 +844,7 @@
 ;;     isearchp-remove-filter-predicate:
 ;;       Correctly handle case where PREDICATE is not a name (string).
 ;;       Update isearchp-current-filter-preds-alist and possibly isearchp-filter-predicates-alist.
+;;     Dynamic filter stuff requires Emacs 24.4+, not 24.3+.
 ;; 2016/11/15 dadams
 ;;     Added: isearchp-columns, isearchp-columns-p.
 ;;     isearchp-read-predicate: If input was not a completion choice then Lisp-read it (e.g. lambda form).
@@ -888,7 +889,7 @@
 ;;     Require thingatpt.el, soft-require thingatpt+.el (Emacs 24.3+).
 ;;     isearch-done: Set isearchp-saved-filter-predicate or isearch-filter-predicate.
 ;;     isearch-message: Change regexp from " +$" to "\\`[ \t]+\\'" (not important).
-;;     isearch-message-prefix (Emacs 24.3+): Highlight filter prefixes, per *-auto-save-filter-predicate-flag.
+;;     isearch-message-prefix (Emacs 24.4+): Highlight filter prefixes, per *-auto-save-filter-predicate-flag.
 ;;     Bound isearchp-add-regexp-filter-predicate to M-? %.
 ;;     Bound isearchp-toggle-auto-save-filter-predicate to M-? S.
 ;;     isearchp-(add|or)-filter-predicate: Use isearchp-add-filter-predicate-1.
@@ -1359,8 +1360,8 @@
 ;; Library `thingatpt+.el' greatly improves the behavior provided by `thingatpt.el'.
 ;; You can use only the latter, if you want, but be aware that its behavior is bugged.
 ;;
-(when (or (> emacs-major-version 24)    ; Emacs 24.3+
-          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
   (require 'thingatpt)
   (require 'thingatpt+ nil t)
@@ -1415,24 +1416,28 @@
 (defvar isearch-original-minibuffer-message-timeout) ; In `isearch.el'.
 (defvar isearch-push-state-function)     ; In `isearch.el'.
 (defvar isearch-regexp-function)         ; In `isearch.el' (Emacs 25+).
+(defvar isearch-regexp-lax-whitespace)   ; In `isearch.el' (Emacs 24.3+).
 (defvar isearch--saved-overriding-local-map) ; In `isearch.el'.
 (defvar isearch-start-hscroll)           ; In `isearch.el'.
 (defvar isearch-within-brackets)         ; In `isearch.el'.
 (defvar isearch-wrap-function)           ; In `isearch.el'.
-(defvar isearchp-auto-save-filter-predicate-flag) ; Here (Emacs 24.3+).
+(defvar isearchp-auto-save-filter-predicate-flag) ; Here (Emacs 24.4+).
+(defvar isearchp-current-filter-preds-alist) ; Here (Emacs 24.4+).
 (defvar isearchp-deactivate-region-flag) ; Here (Emacs 24.3+).
-(defvar isearchp-filter-map)             ; Here (Emacs 24.3+).
-(defvar isearchp-filter-predicates-alist) ; Here (Emacs 24.3+).
+(defvar isearchp-filter-map)             ; Here (Emacs 24.4+).
+(defvar isearchp-filter-predicates-alist) ; Here (Emacs 24.4+).
 (defvar isearchp-initiate-edit-commands) ; Here (Emacs 22+).
+(defvar isearchp-movement-unit-alist) ; Here (Emacs 24.4+).
 (defvar isearchp-nomodify-action-hook)   ; Here (Emacs 22+).
 (defvar isearchp-on-demand-action-function) ; Here (Emacs 22+).
-(defvar isearchp-prompt-for-filter-name) ; Here (Emacs 24.3+).
-(defvar isearchp-prompt-for-prompt-prefix-flag) ; Here (Emacs 24.3+).
+(defvar isearchp-prompt-for-filter-name) ; Here (Emacs 24.4+).
+(defvar isearchp-prompt-for-prompt-prefix-flag) ; Here (Emacs 24.4+).
 (defvar isearchp-replacement)            ; Here (Emacs 22+).
 (defvar isearchp-repeat-search-if-fail-flag) ; Here (Emacs 22+).
 (defvar isearchp--repeat-search-if-fail-repeated) ; Here (Emacs 22+).
 (defvar isearchp-restrict-to-region-flag) ; Here (Emacs 24.3+).
-(defvar isearchp-show-filter-prompt-prefixes-flag) ; Here (Emacs 24.3+).
+(defvar isearchp-show-filter-prompt-prefixes-flag) ; Here (Emacs 24.4+).
+(defvar isearchp-update-filter-predicates-alist-flag) ; Here (Emacs 24.4+).
 (defvar last-repeatable-command)         ; In `repeat.el'.
 (defvar lazy-highlight-cleanup)         ; In `isearch.el' (Emacs 22+).
 (defvar lazy-highlight-interval)         ; In `isearch.el' (Emacs 24+).
@@ -1512,8 +1517,8 @@ Don't forget to mention your Emacs and library versions."))
   )
 
 ;; Dynamic search filtering.
-(when (or (> emacs-major-version 24)    ; Emacs 24.3+
-          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
   (defface isearchp-prompt-filter-prefix
       '((((class color) (min-colors 88)) (:inherit font-lock-doc-face))
@@ -1543,8 +1548,8 @@ t     means search is never  case sensitive
   :group 'isearch-plus)
 
 ;; Dynamic search filtering.
-(when (or (> emacs-major-version 24)    ; Emacs 24.3+
-          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
   (defvar isearchp-filter-map nil "Keymap containing bindings for dynamic Isearch filtering commands.")
 
@@ -1705,8 +1710,8 @@ and act on the buffer text."
 
   )
 
-(when (or (> emacs-major-version 24)    ; Emacs 24.3+
-          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
   (defcustom isearchp-deactivate-region-flag t
     "Non-nil means isearching deactivates the region.
@@ -1722,8 +1727,8 @@ See also option `isearchp-deactivate-region-flag'."
 
 
 ;; Dynamic search filtering.
-(when (or (> emacs-major-version 24)    ; Emacs 24.3+
-          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
   (defcustom isearchp-auto-save-filter-predicate-flag nil
     "Non-nil means automatically apply `\\[isearchp-save-filter-predicate]'.
@@ -2010,8 +2015,9 @@ to `C-M-`' during Isearch.")
 
   )
 
-(when (or (> emacs-major-version 24)    ; Emacs 24.3+
-          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+;; Dynamic search filtering.
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
   (defvar isearchp-user-entered-new-filter-p nil
     "Non-nil means user entered a new filter predicate.
@@ -2497,8 +2503,9 @@ Toggles between nil and the last non-nil value."
   (sit-for 1)
   (isearch-update))
 
-(when (or (> emacs-major-version 24)    ; Emacs 24.3+
-          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+;; Dynamic search filtering.
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
   (defun isearchp-toggle-auto-save-filter-predicate () ; Bound to `C-z S' in `isearch-mode-map'.
     "Toggle `isearchp-auto-save-filter-predicate-flag'.
@@ -3169,6 +3176,7 @@ Options
 `isearchp-ring-bell-function'\t- ring-bell function during search
 `isearchp-set-region-flag'\t\t- select last search target?
 `isearchp-toggle-option-flag'\t\t- toggle options too?
+`isearchp-update-filter-predicates-alist-flag'\t- update completions?
 
  [*] Requires library `isearch-prop.el'.
 
@@ -3487,8 +3495,9 @@ Non-nil argument REGEXP-FUNCTION:
   "Reset `ring-bell-function' to `isearchp-orig-ring-bell-fn'."
   (setq ring-bell-function  isearchp-orig-ring-bell-fn))
 
-(when (or (> emacs-major-version 24)    ; Emacs 24.3+
-          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+;; Dynamic search filtering.
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
   (defadvice isearch-done (after isearchp-restore/update-filter-pred activate)
     "Reset `isearch-filter-predicate' or `isearchp-saved-filter-predicate'.
@@ -3811,8 +3820,7 @@ If SPACE-BEFORE is non-nil,  put a space before, instead of after it."
 ;; 1. Highlight message according to search characteristics.
 ;; 2. Reverse the order of the filter prefixes.
 ;;
-(when (and (> emacs-major-version 23)   ; Emacs 24.3+
-           (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2))))
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
 
   (defun isearch-message-prefix (&optional ellipsis nonincremental)
     ;; If about to search, and previous search regexp was invalid, check that it still is.
@@ -4387,10 +4395,9 @@ Attempt to do the search exactly the way the pending Isearch would."
   )
 
 
-;;; Support for dynamic addition of filter predicates.
-;;;
-(when (or (> emacs-major-version 24)    ; Emacs 24.3+
-          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+;; Dynamic search filtering.
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
   (defun isearchp-add-filter-predicate (predicate ; `C-z +'
                                         &optional flip-read-name-p flip-read-prefix-p msgp)
