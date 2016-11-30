@@ -121,6 +121,17 @@ Option '''`isearchp-show-filter-prompt-prefixes-flag'''' controls
 whether prefixes for filters are added to the Isearch prompt.
 You can toggle this option during search using `C-z p'.
 
+User option '''`isearchp-filter-predicates-alist'''' contains filter
+predicates that are available as completion candidates whenever
+you are prompted for one.  See its documentation for details.
+
+Filter predicates that you add dynamically are added as
+completion candidates for the current Emacs session.  If option
+'''`isearchp-update-filter-predicates-alist-flag'''' is non-`nil' then
+they are also added to `isearchp-filter-predicates-alist'.  That
+updated option value is ''NOT'' saved, however.  If you want to save
+your additions to it for future Emacs sessions sessions then use
+`M-x customize-option isearchp-filter-predicates-alist'.
 
 
 
