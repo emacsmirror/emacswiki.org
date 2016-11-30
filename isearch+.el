@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 29 19:38:07 2016 (-0800)
+;; Last-Updated: Wed Nov 30 08:22:40 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5093
+;;     Update #: 5101
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,8 +19,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
-;;   `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
 ;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+', `zones'.
 ;;
@@ -197,6 +196,7 @@
 ;;
 ;;    `isearchp-current-filter-preds-alist' (Emacs 24.4+),
 ;;    `isearchp-filter-map' (Emacs 24.4+),
+;;    `isearchp-in-lazy-highlight-update-p' (Emacs 24.3+),
 ;;    `isearchp-last-non-nil-invisible',
 ;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
 ;;    `isearchp-nomodify-action-hook' (Emacs 22+),
@@ -831,6 +831,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/11/30 dadams
+;;     Added: isearchp-in-lazy-highlight-update-p.
 ;; 2016/11/29 dadams
 ;;     Added: isearchp-assoc-delete-all, isearchp-current-filter-preds-alist,
 ;;            isearchp-update-filter-predicates-alist-flag, isearchp-user-entered-new-filter-p.
@@ -1427,6 +1429,7 @@
 (defvar isearchp-filter-map)             ; Here (Emacs 24.4+).
 (defvar isearchp-filter-predicates-alist) ; Here (Emacs 24.4+).
 (defvar isearchp-initiate-edit-commands) ; Here (Emacs 22+).
+(defvar isearchp-in-lazy-highlight-update-p) ; Here (Emacs 24.3+).
 (defvar isearchp-movement-unit-alist) ; Here (Emacs 24.4+).
 (defvar isearchp-nomodify-action-hook)   ; Here (Emacs 22+).
 (defvar isearchp-on-demand-action-function) ; Here (Emacs 22+).
@@ -4304,15 +4307,21 @@ Attempt to do the search exactly the way the pending Isearch would."
       (error nil)))
 
 
+  (defvar isearchp-in-lazy-highlight-update-p nil
+    "Non-nil means `isearch-lazy-highlight-update' is processing.")
+
+
   ;; REPLACE ORIGINAL in `isearch.el'.
   ;;
   ;; 1. Use `isearchp-reg-(beg|end)', not point-min|max.
   ;; 2. Fixes Emacs bug #21092, at least for nil `lazy-highlight-max-at-a-time'.
+  ;; 3. Binds `isearchp-in-lazy-highlight-update-p', as a convenience (e.g., for filter predicates).
   ;;
   (defun isearch-lazy-highlight-update ()
     "Update highlighting of other matches for current search."
-    (let ((max      lazy-highlight-max-at-a-time)
-          (looping  t)
+    (let ((max                                  lazy-highlight-max-at-a-time)
+          (looping                              t)
+          (isearchp-in-lazy-highlight-update-p  t)
           nomore)
       (with-local-quit
         (save-selected-window
