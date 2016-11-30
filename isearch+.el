@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Nov 29 09:12:37 2016 (-0800)
+;; Last-Updated: Tue Nov 29 16:59:34 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4993
+;;     Update #: 5063
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -134,7 +134,8 @@
 ;;    `isearchp-restrict-to-region-flag' (Emacs 24.3+),
 ;;    `isearchp-resume-with-last-when-empty-flag' (Emacs 22+),
 ;;    `isearchp-ring-bell-function', `isearchp-set-region-flag',
-;;    `isearchp-toggle-option-flag'.
+;;    `isearchp-toggle-option-flag',
+;;    `isearchp-update-filter-predicates-alist-flag' (Emacs 24.3+).
 ;;
 ;;  Faces defined here:
 ;;
@@ -148,8 +149,9 @@
 ;;  Non-interactive functions defined here:
 ;;
 ;;    `isearchp-add-filter-predicate-1' (Emacs 24.3+),
-;;    `isearchp-barf-if-use-minibuffer', `isearchp-columns-p' (Emacs
-;;    24.3+), `isearchp-complete-past-string', `isearchp-fail-pos',
+;;    `isearchp-assoc-delete-all', `isearchp-barf-if-use-minibuffer',
+;;    `isearchp-columns-p' (Emacs 24.3+),
+;;    `isearchp-complete-past-string', `isearchp-fail-pos',
 ;;    `isearchp-highlight-lighter', `isearchp-in-color-p' (Emacs
 ;;    24.3+), `isearchp-in-comment-p' (Emacs 24.3+),
 ;;    `isearchp-in-comment-or-delim-p' (Emacs 24.3+),
@@ -193,6 +195,7 @@
 ;;
 ;;  Internal variables defined here:
 ;;
+;;    `isearchp-current-filter-preds-alist' (Emacs 24.3+),
 ;;    `isearchp-filter-map' (Emacs 24.3+),
 ;;    `isearchp-last-non-nil-invisible',
 ;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
@@ -203,8 +206,9 @@
 ;;    `isearchp-replace-literally' (Emacs 22+), `isearchp-replacement'
 ;;    (Emacs 22+), `isearchp--replacing-on-demand' (Emacs 22+),
 ;;    `isearchp-saved-filter-predicate' (Emacs 24.3+),
-;;    `isearchp-win-pt-line', `isearch-update-post-hook' (Emacs
-;;    20-21).
+;;    `isearch-update-post-hook' (Emacs 20-21),
+;;    `isearchp-user-entered-new-filter-p' (Emacs 24.3+),
+;;    `isearchp-win-pt-line'.
 ;;
 ;;
 ;;  ***** NOTE: The following macros and functions defined in
@@ -422,6 +426,18 @@
 ;;    Option `isearchp-show-filter-prompt-prefixes-flag' controls
 ;;    whether prefixes for filters are added to the Isearch prompt.
 ;;    You can toggle this option during search using `C-z p'.
+;;
+;;    User option `isearchp-filter-predicates-alist' contains filter
+;;    predicates that are available as completion candidates whenever
+;;    you are prompted for one.  See its documentation for details.
+;;
+;;    Filter predicates that you add dynamically are added as
+;;    completion candidates for the current Emacs session.  If option
+;;    `isearchp-update-filter-predicates-alist-flag' is non-`nil' then
+;;    they are also added to `isearchp-filter-predicates-alist'.  That
+;;    updated option value is NOT saved, however.  If you want to save
+;;    your additions to it for future Emacs sessions sessions then use
+;;    `M-x customize-option isearchp-filter-predicates-alist'.
 ;;
 ;;  * Case-sensitivity is indicated in the mode line minor-mode
 ;;    lighter: `ISEARCH' for case-insensitive; `Isearch' for
@@ -816,7 +832,18 @@
 ;;(@* "Change log")
 ;;
 ;; 2016/11/29 dadams
-;;     isearchp-add-filter-predicate-1: Typo: non-symbol if PRED, not PREDICATE, is not symbolp.
+;;     Added: isearchp-assoc-delete-all, isearchp-current-filter-preds-alist,
+;;            isearchp-update-filter-predicates-alist-flag, isearchp-user-entered-new-filter-p.
+;;     isearchp-filter-predicates-alist: Added set:, to synchronize isearchp-current-filter-preds-alist.
+;;     isearchp-add-filter-predicate-1:
+;;       Typo: non-symbol if PRED, not PREDICATE, is not symbolp.
+;;       Update isearchp-current-filter-preds-alist and possibly isearchp-filter-predicates-alist.
+;;     isearchp-read-predicate:
+;;       Complete against isearchp-current-filter-preds-alist, not isearchp-filter-predicates-alist.
+;;       Set isearchp-user-entered-new-filter-p if user entered a new predicate.
+;;     isearchp-remove-filter-predicate:
+;;       Correctly handle case where PREDICATE is not a name (string).
+;;       Update isearchp-current-filter-preds-alist and possibly isearchp-filter-predicates-alist.
 ;; 2016/11/15 dadams
 ;;     Added: isearchp-columns, isearchp-columns-p.
 ;;     isearchp-read-predicate: If input was not a completion choice then Lisp-read it (e.g. lambda form).
@@ -1678,6 +1705,22 @@ and act on the buffer text."
 
   )
 
+(when (or (> emacs-major-version 24)    ; Emacs 24.3+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+
+  (defcustom isearchp-deactivate-region-flag t
+    "Non-nil means isearching deactivates the region.
+See also option `isearchp-restrict-to-region-flag'."
+    :type 'boolean :group 'isearch-plus)
+
+  (defcustom isearchp-restrict-to-region-flag t
+    "Non-nil means restrict isearching to the active region.
+See also option `isearchp-deactivate-region-flag'."
+    :type 'boolean :group 'isearch-plus)
+
+  )
+
+
 ;; Dynamic search filtering.
 (when (or (> emacs-major-version 24)    ; Emacs 24.3+
           (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
@@ -1686,11 +1729,6 @@ and act on the buffer text."
     "Non-nil means automatically apply `\\[isearchp-save-filter-predicate]'.
 Changes to `isearch-filter-predicate' are automatically saved when you
 exit Isearch'."
-    :type 'boolean :group 'isearch-plus)
-
-  (defcustom isearchp-deactivate-region-flag t
-    "Non-nil means isearching deactivates the region.
-See also option `isearchp-restrict-to-region-flag'."
     :type 'boolean :group 'isearch-plus)
 
   (defcustom isearchp-filter-predicates-alist
@@ -1750,7 +1788,10 @@ PREDICATE is the candidate."
               (string :tag "Prompt prefix"))
              (list
               (restricted-sexp :match-alternatives (functionp) :tag "Predicate"))))
-    :group 'isearch-plus)
+    :group 'isearch-plus
+    :set (lambda (sym defs)            ; Synchronize the associated defvar.
+           (custom-set-default sym defs)
+           (setq isearchp-current-filter-preds-alist  isearchp-filter-predicates-alist)))
 
   (defcustom isearchp-movement-unit-alist '((?w . forward-word)
                                             (?x . forward-sexp)
@@ -1790,13 +1831,15 @@ you would normally be prompted then you are not prompted, and vice
 versa."
     :type 'boolean :group 'isearch-plus)
 
-  (defcustom isearchp-restrict-to-region-flag t
-    "Non-nil means restrict isearching to the active region.
-See also option `isearchp-deactivate-region-flag'."
-    :type 'boolean :group 'isearch-plus)
-
   (defcustom isearchp-show-filter-prompt-prefixes-flag t
     "Whether to show prefixes for filters in the Isearch prompt."
+    :type 'boolean :group 'isearch-plus)
+
+  (defcustom isearchp-update-filter-predicates-alist-flag nil
+    "Non-nil means filter changes affect `isearchp-filter-predicates-alist'.
+When you add filters dynamically, or you remove filters that you have
+added dynamically, option `isearchp-filter-predicates-alist' is
+updated to reflect those changes."
     :type 'boolean :group 'isearch-plus)
 
   )
@@ -1898,6 +1941,7 @@ option.  Currently this means `M-s i' (`isearch-toggle-invisible') and
 `M-c' (`isearch-toggle-case-fold')."
   :type 'boolean :group 'isearch-plus)
 
+
 (defvar isearchp-last-non-nil-case-fold (or isearchp-case-fold  t)
   "Last non-nil value of option `isearchp-case-fold'.")
 
@@ -1968,6 +2012,13 @@ to `C-M-`' during Isearch.")
 
 (when (or (> emacs-major-version 24)    ; Emacs 24.3+
           (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+
+  (defvar isearchp-user-entered-new-filter-p nil
+    "Non-nil means user entered a new filter predicate.
+This means we need to update `isearchp-current-filter-preds-alist'.")
+
+  (defvar isearchp-current-filter-preds-alist isearchp-filter-predicates-alist
+    "`isearchp-filter-predicates-alist', plus predicates added by input.")
 
   (defvar isearchp-saved-filter-predicate isearch-filter-predicate
     "Value to which `isearch-filter-predicate' is set in `isearch-done'.")
@@ -4397,17 +4448,17 @@ other than REGEXP."
     "Helper for `isearchp-add-filter-predicate' and similar commands.
 WHERE is passed to `add-function'.
 See `isearchp-add-filter-predicate' for descriptions of other args."
-    (let ((pred   predicate)
-          (name   nil)
-          (prfix  nil))
+    (let ((pred    predicate)
+          (name    nil)
+          (prefix  nil))
       (when (and (consp pred)  (not (eq 'lambda (car pred))))
         (if (stringp (nth 0 pred))
-            (setq name   (nth 0 pred)
-                  prfix  (nth 2 pred)
-                  pred   (nth 1 pred))
+            (setq name    (nth 0 pred)
+                  prefix  (nth 2 pred)
+                  pred    (nth 1 pred))
           (if (nth 1 pred)
-              (setq prfix  (nth 1 pred)
-                    pred   (nth 0 pred))
+              (setq prefix  (nth 1 pred)
+                    pred    (nth 0 pred))
             (setq pred  (nth 0 pred)))))
       (add-function where isearch-filter-predicate pred
                     (append (and (or name  (case isearchp-prompt-for-filter-name
@@ -4416,17 +4467,25 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
                                                               (not flip-read-name-p)
                                                             flip-read-name-p))
                                              (t           (not flip-read-name-p))))
-                                 `((name . ,(or name  (isearchp-read-filter-name)))))
+                                 `((name . ,(setq name  (or name  (isearchp-read-filter-name))))))
                             (and isearchp-show-filter-prompt-prefixes-flag
-                                 (or prfix  (if isearchp-prompt-for-prompt-prefix-flag
-                                                (not flip-read-prefix-p)
-                                              flip-read-prefix-p))
+                                 (or prefix  (if isearchp-prompt-for-prompt-prefix-flag
+                                                 (not flip-read-prefix-p)
+                                               flip-read-prefix-p))
                                  ;; Do not let empty or whitespace prefix get highlighted.
-                                 (let ((prefix  (or prfix  (isearchp-read-prompt-prefix))))
-                                   (unless (or (= 0 (length prefix))
-                                               (string-match-p "\\`[ \t]+\\'" prefix))
-                                     (setq prefix  (concat prefix ", "))) ; Add a comma and a space.
-                                   (and (> (length prefix) 0)  `((isearch-message-prefix . ,prefix)))))))
+                                 (let ((prfix+  (setq prefix  (or prefix  (isearchp-read-prompt-prefix)))))
+                                   (unless (or (= 0 (length prfix+))
+                                               (string-match-p "\\`[ \t]+\\'" prfix+))
+                                     (setq prfix+  (concat prfix+ ", "))) ; Add a comma and a space.
+                                   (and (> (length prfix+) 0)  `((isearch-message-prefix . ,prfix+)))))))
+      ;; Update `isearchp-current-filter-preds-alist' and possibly `isearchp-filter-predicates-alist'.
+      (when isearchp-user-entered-new-filter-p
+        (add-to-list 'isearchp-current-filter-preds-alist
+                     (if name (list name pred prefix) (if prefix (list pred prefix) (list pred)))
+                     :APPEND)
+        (when isearchp-update-filter-predicates-alist-flag
+          (customize-set-value 'isearchp-filter-predicates-alist isearchp-current-filter-preds-alist)
+          (setq isearchp-current-filter-preds-alist  ())))
       (when msgp (isearchp-show-filters))))
 
   (defun isearchp-read-filter-name ()
@@ -4461,25 +4520,29 @@ You type a predicate suitable as `isearch-filter-predicate'.  It can
 be a function symbol, a lambda-form, or a byte-compiled function.
 
 Completion is available against the predicates and short names in the
-entries in option `isearchp-filter-predicates-alist', but you can
-enter any other predicate instead (completion is lax).
+entries in option `isearchp-filter-predicates-alist', plus any such
+that you have added during Isearch.  This completion is available, but
+you can also enter any other predicate, instead of one of the
+completion candidates.  (Completion is lax).
 
-For `isearchp-filter-predicates-alist' entries that include short
-names, the associated predicates are shown as annotations next to the
-short names in buffer `*Completions*'.
+For `isearchp-filter-predicates-alist' entries (and those added
+dynamically) that include short names, the associated predicates are
+shown as annotations next to the short names in buffer
+`*Completions*'.
 
-If you do pick one of the predicates or short names provided by
-`isearchp-filter-predicates-alist' then you are never prompted for a
-short name or a prompt prefix for it.
+If you do pick one of the predicates or short names provided as a
+completion candidate then you are never prompted for a short name or a
+prompt prefix for it.
 
-The value returned is the predicate read, if it is not from
-`isearchp-filter-predicates-alist'.  Otherwise, it is the
-corresponding entry in `isearchp-filter-predicates-alist'."
+The value returned is the predicate read, if it is not one of the
+completion candidates.  Otherwise, it is the corresponding full
+completion-candidate entry (in the possibly augmented
+`isearchp-filter-predicates-alist')."
     (let ((isearchp-resume-with-last-when-empty-flag  nil)
           (completion-extra-properties
            '(:annotation-function
              (lambda (cand)
-               (let* ((full  (assoc cand isearchp-filter-predicates-alist))
+               (let* ((full  (assoc cand isearchp-current-filter-preds-alist))
                       (pred  (nth 1 full)))
                  (save-match-data
                    (when (and pred  (string-match "\\`isearchp-" (symbol-name pred)))
@@ -4491,16 +4554,17 @@ corresponding entry in `isearchp-filter-predicates-alist'."
         (while (or (not pred)
                    (and (not (functionp pred))
                         (not (advice-function-member-p pred isearch-filter-predicate))))
-          (setq input   (completing-read prompt isearchp-filter-predicates-alist nil nil nil
+          (setq input   (completing-read prompt isearchp-current-filter-preds-alist nil nil nil
                                          'isearchp-predicate-history)
-                choice  (assoc input isearchp-filter-predicates-alist)
-                choice  (or choice  (assoc (intern input) isearchp-filter-predicates-alist)))
+                choice  (assoc input isearchp-current-filter-preds-alist)
+                choice  (or choice  (assoc (intern input) isearchp-current-filter-preds-alist)))
           (setq result  (or choice  (read input)) ; E.g., input was a lambda form.
                 pred    (if choice
                             (if (= 3 (length choice)) (nth 1 choice) (nth 0 choice))
                           result))
           (unless (or (functionp pred)  (advice-function-member-p pred isearch-filter-predicate))
-            (message "Not a function: `%S'" pred) (sit-for 1))))
+            (message "Not a function: `%S'" pred) (sit-for 1))
+          (setq isearchp-user-entered-new-filter-p  (not choice))))
       result))
 
   (defun isearchp-read-regexp-during-search (&optional prompt)
@@ -4516,20 +4580,37 @@ The predicate is suitable for `isearch-filter-predicate'"
     `(lambda (beg end) (save-match-data (string-match-p ,regexp (buffer-substring beg end)))))
 
   (defun isearchp-remove-filter-predicate (predicate &optional msgp) ; `C-z -'
-    "Remove PREDICATE from `isearch-filter-predicate'."
-    (interactive (let ((isearchp-resume-with-last-when-empty-flag  nil)
-                       (preds                                      ())
+    "Remove PREDICATE from `isearch-filter-predicate'.
+PREDICATE is passed to `remove-function'.  It can be a function or its
+associated `name'."
+    (interactive (let ((preds                                      ())
+                       (isearchp-resume-with-last-when-empty-flag  nil)
                        name)
                    (advice-function-mapc (lambda (pred props)
                                            (push (cond ((cdr (assq 'name props)))
-                                                       ((symbolp pred) (symbol-name pred))
-                                                       (t (format "%s" pred))) ; Should not be needed.
+                                                       ((symbolp pred) (list (symbol-name pred)))
+                                                       (t (list (format "%s" pred)))) ; Should not be needed.
                                                  preds))
                                          isearch-filter-predicate)
                    (with-isearch-suspended
                      (setq name  (completing-read "Remove filter predicate: " preds nil t)))
                    (list name t)))
-    (remove-function isearch-filter-predicate predicate)
+    ;; FUNCTION arg to `remove-function' can be a string that is a `name' property value,
+    ;; or it can be a function, e.g., a symbol.
+    (remove-function isearch-filter-predicate
+                     (let ((oname  nil))
+                       (catch 'isearchp-remove-filter-predicate
+                         (advice-function-mapc (lambda (pred props)
+                                                 (when (equal predicate
+                                                              (setq oname  (cdr (assq 'name props))))
+                                                   (throw 'isearchp-remove-filter-predicate oname)))
+                                               isearch-filter-predicate)
+                         (setq predicate  (intern predicate)))))
+    ;; Update `isearchp-current-filter-preds-alist' and possibly `isearchp-filter-predicates-alist'.
+    (isearchp-assoc-delete-all predicate isearchp-current-filter-preds-alist)
+    (when isearchp-update-filter-predicates-alist-flag
+      (customize-set-value 'isearchp-filter-predicates-alist isearchp-current-filter-preds-alist)
+      (setq isearchp-current-filter-preds-alist  ()))
     (when msgp (isearchp-show-filters)))
 
   (defun isearchp-complement-filter (&optional msgp) ; `C-z ~'
@@ -5008,6 +5089,7 @@ BEG and END are the search-hit limits."
 
 ;; Miscellaneous
 ;;
+
 (defun isearchp-read-face-names  (&optional empty-means-none-p only-one-p)
   "Read face names with completion, and return a list of their symbols.
 If user hits `RET' with empty input immediately, then include all
@@ -5123,6 +5205,19 @@ Test using `equal' by default, or `eq' if optional USE-EQ is non-nil."
   (let ((repeat-message-function  'ignore))
     (setq last-repeatable-command  command)
     (repeat nil)))
+
+(defun isearchp-assoc-delete-all (key alist)
+  "Delete from ALIST all elements whose car is `equal' to KEY.
+Return the modified alist.
+Elements of ALIST that are not conses are ignored."
+  (while (and (consp (car alist)) (equal (car (car alist)) key))  (setq alist  (cdr alist)))
+  (let ((tail  alist)
+        tail-cdr)
+    (while (setq tail-cdr  (cdr tail))
+      (if (and (consp (car tail-cdr))  (equal (car (car tail-cdr)) key))
+          (setcdr tail (cdr tail-cdr))
+        (setq tail  tail-cdr))))
+  alist)
  
 ;;(@* "Keys and Hooks")
 
