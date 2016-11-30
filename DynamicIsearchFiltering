@@ -109,7 +109,11 @@ list, and sentence.
 
 You are prompted for the pattern and the distance.  You can also use functions `isearch-near-predicate', `isearchp-near-before-predicate', and `isearchp-near-before-predicate' to define your own nearness predicates, which incorporate particular patterns and distances.  You can then simply add such a predicate using `##C-z &##' (no prompting for pattern or distance).
 
-When you use one of the commands that adds a filter predicate as advice to `isearch-filter-predicate' you can be prompted for two things: (1) a name for the predicate and (2) text to add to the Isearch prompt as a reminder of filtering.  Two user options control this prompting:
+When you use one of the commands that adds a filter predicate as advice to `isearch-filter-predicate' you can be prompted for two things: (1) a short name for the predicate and (2) text to add to the Isearch prompt as a reminder of filtering.  The optional
+short name is a convenience for referring to the predicate - for
+adding it again or removing it, for example.
+
+Two user options control this prompting:
 
 * '''`isearchp-prompt-for-filter-name'''' says whether to prompt you always, never, or only when the predicate that you provide is not a symbol (it is a lambda form).  The last of these is the default behavior.  If you are prompted and provide a name, you can use that name with `##C-z -##' to remove that predicate.
 
