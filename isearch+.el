@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Nov 30 08:22:40 2016 (-0800)
+;; Last-Updated: Wed Nov 30 08:54:48 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5101
+;;     Update #: 5104
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -321,7 +321,7 @@
 ;;
 ;;; Overview of Features ---------------------------------------------
 ;;
-;;  * Dynamic search filtering (starting with Emacs 24.3).  You can
+;;  * Dynamic search filtering (starting with Emacs 24.4).  You can
 ;;    add and remove any number of search filters while searching
 ;;    incrementally.
 ;;    See https://www.emacswiki.org/emacs/DynamicIsearchFiltering.
@@ -833,6 +833,7 @@
 ;;
 ;; 2016/11/30 dadams
 ;;     Added: isearchp-in-lazy-highlight-update-p.
+;;     isearch-query-replace is for Emacs 24.4+, not 24.3+.
 ;; 2016/11/29 dadams
 ;;     Added: isearchp-assoc-delete-all, isearchp-current-filter-preds-alist,
 ;;            isearchp-update-filter-predicates-alist-flag, isearchp-user-entered-new-filter-p.
@@ -2923,8 +2924,8 @@ not necessarily fontify the whole buffer."
 
   )
 
-(when (or (> emacs-major-version 24)    ; Emacs 24.3+
-          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
   ;; REPLACE ORIGINAL in `isearch.el'.
   ;;
