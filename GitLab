@@ -5,3 +5,5 @@ See [[Git]] for more about Emacs support for git.
 [https://github.com/nlamirault/emacs-gitlab emacs-gitlab] is a GitLab client for Emacs.
 
 [https://github.com/sshaw/git-link git-link] Get the GitHub/Bitbucket/[[GitLab]]/… URL for a buffer location
+
+[https://github.com/sshaw/copy-as-format copy-as-format] Copy buffer locations as GitHub/Slack/JIRA/[[GitLab]]... formatted code
