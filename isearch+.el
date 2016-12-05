@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Dec  4 22:27:59 2016 (-0800)
+;; Last-Updated: Mon Dec  5 08:12:25 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5152
+;;     Update #: 5154
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,8 +19,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `frame-fns', `misc-cmds', `misc-fns', `strings',
-;;   `thingatpt', `thingatpt+'.
+;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -352,7 +353,7 @@
 ;;        (unless isearchp-in-lazy-highlight-update-p (crosshairs))
 ;;        t)  ; Return non-nil always - no real filtering.
 ;;
-;;    The side-effect producing call to function `crosshairs' is
+;;    The side-effect-producing call to function `crosshairs' is
 ;;    guarded by variable `isearchp-in-lazy-highlight-update-p' here,
 ;;    so that it is invoked only when the cursor is moved to a search
 ;;    hit, not also when lazy highlighting is performed.  (Filtering
@@ -429,6 +430,13 @@
 ;;      The default option value includes units character, word, sexp,
 ;;      list, and sentence.
 ;;
+;;      You can also use functions `isearch-near-predicate',
+;;      `isearchp-near-before-predicate', and
+;;      `isearchp-near-before-predicate' to define your own nearness
+;;      predicates, which incorporate particular patterns and
+;;      distances. You can then simply add such a predicate using `C-z
+;;      &' (no prompting for pattern or distance).
+;;
 ;;    When you use one of the commands that adds a filter predicate as
 ;;    advice to `isearch-filter-predicate' you can be prompted for two
 ;;    things: (1) a short name for the predicate and (2) text to add
@@ -473,7 +481,7 @@
 ;;    your additions to it for future Emacs sessions sessions then use
 ;;    `M-x customize-option isearchp-filter-predicates-alist'.
 ;;
-;;    If option `isearchp-lazy-dim-filter-failures-flag' is non-nil
+;;    If option `isearchp-lazy-dim-filter-failures-flag' is non-`nil'
 ;;    then search hits that are skipped because they are removed by
 ;;    filtering are nevertheless lazy-highlighted, but using a face
 ;;    that dims the background.  You can toggle this highlighting of
@@ -3252,7 +3260,7 @@ Options
 `isearchp-initiate-edit-commands'\t- keys that edit, not exit
 `isearchp-mouse-2-flag'\t\t- `mouse-2' anywhere yanks selection?
 `isearchp-movement-unit-alist'\t- units and their movement functions
-`isearchp-on-demand-action-function'\t- on-demand action functionâ€‹
+`isearchp-on-demand-action-function'\t- on-demand action function​
 `isearchp-prompt-for-filter-name'\t- when to ask for filter name
 `isearchp-prompt-for-prompt-prefix-flag'\t- prompt for prefix?
 `isearchp-regexp-quote-yank-flag'\t- regexp-quote yanked text?
