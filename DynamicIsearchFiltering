@@ -1,4 +1,4 @@
-This page is about using '''[[Isearch+]]''', that is,  library '''<tt>[[isearch+.el]]</tt>''', to dynamically add and remove any number of Isearch filter predicates while searching incrementally.  This Isearch+ feature is available starting with Emacs 24.3.
+This page is about using '''[[Isearch+]]''', that is,  library '''<tt>[[isearch+.el]]</tt>''', to dynamically add and remove any number of Isearch filter predicates while searching incrementally.  This Isearch+ feature is available starting with Emacs 24.4.
 
 The predicate that is the value of '''`isearch-filter-predicate'''' is
 ''advised'' by additional predicates that you add, creating a complex ''suite of predicates that act together''.
@@ -42,7 +42,7 @@ highlights the current column and line using crosshairs.)
        (unless isearchp-in-lazy-highlight-update-p (crosshairs))
        t)  ; Return non-nil always - no real filtering.
 
-The side-effect producing call to function `crosshairs' is
+The side-effect-producing call to function `crosshairs' is
 guarded by variable `isearchp-in-lazy-highlight-update-p' here,
 so that it is invoked only when the cursor is moved to a search
 hit, not also when lazy highlighting is performed.  (Filtering
@@ -145,9 +145,7 @@ key in `isearch-mode-map'.)
 units by customizing option '''`isearchp-movement-unit-alist''''.
 The default option value includes units character, word, [[sexp]],
 list, and sentence.
-
-
-You are prompted for the pattern and the distance.  You can also use functions `isearch-near-predicate', `isearchp-near-before-predicate', and `isearchp-near-before-predicate' to define your own nearness predicates, which incorporate particular patterns and distances.  You can then simply add such a predicate using `##C-z &##' (no prompting for pattern or distance).
+You can also use functions `isearch-near-predicate', `isearchp-near-before-predicate', and `isearchp-near-before-predicate' to define your own nearness predicates, which incorporate particular patterns and distances.  You can then simply add such a predicate using `##C-z &##' (no prompting for pattern or distance).
 
 When you use one of the commands that adds a filter predicate as advice to `isearch-filter-predicate' you can be prompted for two things: (1) a short name for the predicate and (2) text to add to the Isearch prompt as a reminder of filtering.  The optional
 short name is a convenience for referring to the predicate - for
@@ -177,7 +175,20 @@ updated option value is ''NOT'' saved, however.  If you want to save
 your additions to it for future Emacs sessions sessions then use
 `M-x customize-option isearchp-filter-predicates-alist'.
 
+If option '''`isearchp-lazy-dim-filter-failures-flag'''' is non-`nil'
+then search hits that are skipped because they are removed by
+filtering are nevertheless lazy-highlighted, but using a face
+that ''dims the background''.  You can toggle this highlighting of
+filter-failure search hits using '''`M-s h d'''' (command
+`isearchp-toggle-dimming-filter-failures').
 
+The dimming face for this is hard-coded as having background
+color #9abfca, unless you also use library '''<tt>[[isearch-prop.el]]</tt>'''
+(recommended).  If you use ##isearch-prop.el## then you can
+control the dimming color using option '''`isearchp-dimming-color''''.
+It specifies a given background color to use always, or it
+specifies that the current background color is to be dimmed a
+given amount.
 
 
 
