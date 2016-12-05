@@ -1,4 +1,4 @@
-This page is about using '''[[Isearch+]]''', that is,  library '''<tt>[[isearch+.el]]</tt>''', to dynamically add and remove any number of Isearch filter predicates while searching incrementally.  This Isearch+ feature is available starting with Emacs 24.4.
+This page is about using '''[[Isearch+]]''', that is,  library '''<tt>[[isearch+.el]]</tt>''', to dynamically add and remove any number of Isearch filter predicates (aka search ''filters'') while searching incrementally.  This Isearch+ feature is available starting with Emacs 24.4.
 
 The predicate that is the value of '''`isearch-filter-predicate'''' is
 ''advised'' by additional predicates that you add, creating a complex ''suite of predicates that act together''.
@@ -29,8 +29,51 @@ These values are the beginning and ending positions of a search
 hit.  If the return value of the function is `nil' then the search
 hit is excluded from searching; otherwise it is included.
 
-A filter predicate can perform side effects, if you like.
-Only the return value is used by Isearch.  For example, if you
+The value of standard variable (but not a user option) '''`isearch-filter-predicate'''' is the filter predicate used by Isearch.  By default, the value is predicate `isearch-filter-visible', which returns non-`nil' for any search hit that is visible (not rendered invisible by a text property, overlay property, etc.)
+
+
+
+
+
+
+
+=== Using Filter Predicates Easily ===
+
+If you search the Emacs Lisp source code, you will find only two uses, so far, of variable `isearch-filter-predicate', even though such filtering has been around since Emacs 23.  It's hardly ever used.  Why?  
+
+Because it's not so easy to use, out of the box.  And it's not thought of as a ''way to refine'' searches, but rather as a way to ''wall off'' certain areas from searching.
+
+Yes, those are in fact the same thing, but I don't think people think this way . . . because Isearch does not make it particularly easy to use filters.  ''Isearch+ tries to do that, to let you refine searches by adding filters incrementally.''
+
+The idea is simple: Isearch+ defines some keys that prompt you for a filter.  You can enter any filter predicates at the prompts.  There are also some predefined predicates that you can choose from, using completion.  You can combine predicates using AND, OR, and NOT.
+
+
+
+
+
+
+
+=== A Filter Predicate Can Help You Search ===
+
+A filter predicate does essentially the same thing as the search pattern that you type at the Isearch prompt. Each restricts the search space (the buffer text) to certain zones: those that satisfy the predicate and those that match the search pattern.
+
+But a predicate can be much more general than is the predefined pattern-matching provided by Emacs Isearch.
+
+Suppose that you want to find lines of text that contain `cat', `dog', and `turtle'.  There is no *simple* search pattern that lets you do this.  A [[regexp]] would need to explicitly express each possible order, and there are 6 of them - not so simple.
+
+But a predicate can just check each line for `cat' AND check for `dog' AND check for `turtle'.  It is usually much easier to combine simple patterns than it is to come up with a complex pattern that does the same thing.  And the way to combine patterns in Emacs Isearch is to use one or more filter predicates.
+
+
+
+
+
+
+
+
+=== A Filter Predicate Can Perform Side Effects ===
+
+A filter predicate can even perform side effects, if you like.
+Only the ''return value'' is used by Isearch.  For example, if you
 wanted to more easily see the cursor position each time search
 stops at a search hit, you could use something like this as a
 filter predicate.  (This requires library `crosshairs.el', which
@@ -50,9 +93,6 @@ applies also to lazy highlighting: it filters out search hits
 that are not being used.  But in this case no real filtering is
 done, and there is no need to show crosshairs moving across the
 buffer during lazy highlighting.)
-
-
-
 
 
 
