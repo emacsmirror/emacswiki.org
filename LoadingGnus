@@ -18,7 +18,7 @@ loaded by Gnus -- not MessageMode.
 
 As to the Info files, I put them in ~/info.  I edited ~/info/dir a
 long time ago to include pointers to Gnus Info files.  In my
-~/.bash_profile I prefend ~/info to the InfoPath environment variable.
+~/.bash_profile I prepend ~/info to the InfoPath environment variable.
 
 ----
 CategoryGnus
