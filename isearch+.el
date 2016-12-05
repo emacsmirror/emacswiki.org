@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Nov 30 09:27:53 2016 (-0800)
+;; Last-Updated: Sun Dec  4 22:27:59 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5116
+;;     Update #: 5152
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,9 +19,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
-;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
-;;   `thingatpt', `thingatpt+', `zones'.
+;;   `avoid', `cl', `frame-fns', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -101,6 +100,7 @@
 ;;    `isearchp-set-region-around-search-target',
 ;;    `isearchp-show-filters' (Emacs 24.4+),
 ;;    `isearchp-toggle-auto-save-filter-predicate' (Emacs 24.4+),
+;;    `isearchp-toggle-dimming-filter-failures' (Emacs 24.4+),
 ;;    `isearchp-toggle-lazy-highlight-cleanup' (Emacs 22+),
 ;;    `isearchp-toggle-lazy-highlighting' (Emacs 22+),
 ;;    `isearchp-toggle-literal-replacement' (Emacs 22+),
@@ -125,6 +125,7 @@
 ;;    `isearchp-drop-mismatch-regexp-flag',
 ;;    `isearchp-filter-predicates-alist' (Emacs 24.4+),
 ;;    `isearchp-initiate-edit-commands' (Emacs 22+),
+;;    `isearchp-lazy-dim-filter-failures-flag' (Emacs 24.4+),
 ;;    `isearchp-mouse-2-flag', `isearchp-movement-unit-alist' (Emacs
 ;;    24.4+), `isearchp-on-demand-action-function' (Emacs 22+),
 ;;    `isearchp-prompt-for-filter-name' (Emacs 24.4+),
@@ -199,6 +200,7 @@
 ;;    `isearchp-in-lazy-highlight-update-p' (Emacs 24.3+),
 ;;    `isearchp-last-non-nil-invisible',
 ;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
+;;    `isearchp-lazy-highlight-face' (Emacs 24.4+),
 ;;    `isearchp-nomodify-action-hook' (Emacs 22+),
 ;;    `isearchp-noprompt-action-function',
 ;;    `isearchp-orig-ring-bell-fn', `isearchp-pref-arg',
@@ -470,6 +472,21 @@
 ;;    updated option value is NOT saved, however.  If you want to save
 ;;    your additions to it for future Emacs sessions sessions then use
 ;;    `M-x customize-option isearchp-filter-predicates-alist'.
+;;
+;;    If option `isearchp-lazy-dim-filter-failures-flag' is non-nil
+;;    then search hits that are skipped because they are removed by
+;;    filtering are nevertheless lazy-highlighted, but using a face
+;;    that dims the background.  You can toggle this highlighting of
+;;    filter-failure search hits using `M-s h d' (command
+;;    `isearchp-toggle-dimming-filter-failures').
+;;
+;;    The dimming face for this is hard-coded as having background
+;;    color #9abfca, unless you also use library `isearch-prop.el'
+;;    (recommended).  If you use `isearch-prop.el' then you can
+;;    control the dimming color using option `isearchp-dimming-color'.
+;;    It specifies a given background color to use always, or it
+;;    specifies that the current background color is to be dimmed a
+;;    given amount.
 ;;
 ;;  * Case-sensitivity is indicated in the mode line minor-mode
 ;;    lighter: `ISEARCH' for case-insensitive; `Isearch' for
@@ -863,6 +880,12 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/12/04 dadams
+;;     Added: isearchp-lazy-dim-filter-failures-flag, isearchp-lazy-highlight-face,
+;;            isearchp-toggle-dimming-filter-failures (bound to M-s h d).
+;;     isearch-lazy-highlight-search: Clear RETRY if isearchp-lazy-dim-filter-failures-flag.
+;;                                    Set isearchp-lazy-highlight-face according to filter success.
+;;     isearch-lazy-highlight-update: Use isearchp-lazy-highlight-face, not just face lazy-highlight.
 ;; 2016/11/30 dadams
 ;;     Added: isearchp-in-lazy-highlight-update-p.
 ;;     isearch-query-replace is for Emacs 24.4+, not 24.3+.
@@ -1609,6 +1632,11 @@ t     means search is never  case sensitive
   (define-key isearchp-filter-map (kbd "@")  'isearchp-near)                                  ; `C-z @'
   (define-key isearchp-filter-map (kbd "?")  'isearchp-show-filters)                          ; `C-z ?'
 
+  (define-key isearch-mode-map (kbd "M-s h d") 'isearchp-toggle-dimming-filter-failures)      ; `M-s h d'
+
+  (defvar isearchp-lazy-highlight-face 'lazy-highlight
+    "Face currently used for lazy-highlighting.")
+
   )
 
 (unless (boundp 'isearch-update-post-hook)
@@ -1833,6 +1861,11 @@ PREDICATE is the candidate."
     :set (lambda (sym defs)            ; Synchronize the associated defvar.
            (custom-set-default sym defs)
            (setq isearchp-current-filter-preds-alist  isearchp-filter-predicates-alist)))
+
+  (defcustom isearchp-lazy-dim-filter-failures-flag t
+  "Non-nil means lazy-highlight filter failures with a dim background.
+A nil value means do not lazy-highlight filter failures at all."
+    :type 'boolean :group 'isearch-plus)
 
   (defcustom isearchp-movement-unit-alist '((?w . forward-word)
                                             (?x . forward-sexp)
@@ -2556,6 +2589,18 @@ If turning it on, save now.  Note that turning it off does not reset
     (sit-for 1)
     (isearch-update))
 
+  (defun isearchp-toggle-dimming-filter-failures () ; Bound to `M-s h d' in `isearch-mode-map'.
+    "Toggle option `isearchp-lazy-dim-filter-failures-flag'."
+    (interactive)
+    (customize-set-value 'isearchp-lazy-dim-filter-failures-flag
+                         (not isearchp-lazy-dim-filter-failures-flag))
+    (message "Lazy filter-failure highlighting is now %s"
+             (if isearchp-lazy-dim-filter-failures-flag 'ON 'OFF))
+    (sit-for 1)
+    (setq isearch-lazy-highlight-last-string  nil) ; To force `isearch-lazy-highlight-new-loop' to act.
+    (isearch-lazy-highlight-new-loop)
+    (isearch-update))
+
   (defun isearchp-toggle-showing-filter-prompt-prefixes () ; Bound to `C-z p' in `isearch-mode-map'.
     "Toggle `isearchp-show-filter-prompt-prefixes-flag'."
     (interactive)
@@ -3166,6 +3211,11 @@ At the end, run `isearch-update-post-hook' and lazy-highlight again."
 ;;
 ;; 2. Add Isearch+ stuff to doc string.
 ;;
+;; NOTE: There is a zero-width space at the end of the doc-string line for
+;;       `isearchp-on-demand-action-function'.  This is so that the option on the following line is not
+;;       considered by `C-h f' to be a function, due to the keyword "function" at the end of the previous line.
+;;       This makes `ediff' in old Emacs versions barf, so work around it, if you must compare nearby.
+;;
 (defun isearch-forward (&optional arg no-recursive-edit)
   "\
 Search forward incrementally - Isearch+ version.
@@ -3202,7 +3252,7 @@ Options
 `isearchp-initiate-edit-commands'\t- keys that edit, not exit
 `isearchp-mouse-2-flag'\t\t- `mouse-2' anywhere yanks selection?
 `isearchp-movement-unit-alist'\t- units and their movement functions
-`isearchp-on-demand-action-function'\t- on-demand action function​
+`isearchp-on-demand-action-function'\t- on-demand action functionâ€‹
 `isearchp-prompt-for-filter-name'\t- when to ask for filter name
 `isearchp-prompt-for-prompt-prefix-flag'\t- prompt for prefix?
 `isearchp-regexp-quote-yank-flag'\t- regexp-quote yanked text?
@@ -4240,7 +4290,7 @@ You need library `character-fold+.el' for this command."
   ;;
   (defun isearch-search ()
     "Search using the current search string."
-    (when (< emacs-major-version 25) ; $$$$$$ Should this message invocation be removed altogether?
+    (when (< emacs-major-version 25)    ; $$$$$$ Should this message invocation be removed altogether?
       (if (and (boundp 'isearch-message-function)  isearch-message-function)
           (funcall isearch-message-function nil t)
         (isearch-message nil t)))
@@ -4308,6 +4358,10 @@ Attempt to do the search exactly the way the pending Isearch would."
               (search-invisible               nil) ; Do not match invisible text.
               (retry                          t)
               (success                        nil)
+              (dim-face                       (if (fboundp 'isearchp-dim-face-spec) ; In `isearch-prop.el'.
+                                                  (let ((isearchp-dim-outside-search-area-flag  t))
+                                                    (isearchp-dim-face-spec))
+                                                '(:background "#9abfca")))
               (bound
                (if isearch-lazy-highlight-forward
                    (min (or isearch-lazy-highlight-end-limit  isearchp-reg-end  (point-max))
@@ -4328,17 +4382,24 @@ Attempt to do the search exactly the way the pending Isearch would."
                                 (window-group-start) ; Emacs 25+
                               (window-start))
                           (point-max)))))))
-          (while retry         ; Use a loop, like in `isearch-search'.
+          (while retry                  ; Use a loop, like in `isearch-search'.
             (setq success  (isearch-search-string isearch-lazy-highlight-last-string bound t))
-            ;; Clear RETRY unless the search predicate says to skip this search hit.
-            (when (or (not success)
-                      (= (point) bound) ; like (bobp) (eobp) in `isearch-search'.
-                      (= (match-beginning 0) (match-end 0))
-                      (funcall isearch-filter-predicate (match-beginning 0) (match-end 0)))
-              (setq retry  nil)))
+            (let (filter-OK)
+              ;; Clear RETRY, if `isearchp-lazy-dim-filter-failures-flag' is non-nil or if no search hit.
+              (when (or isearchp-lazy-dim-filter-failures-flag
+                        (not success)
+                        (= (point) bound) ; like (bobp) (eobp) in `isearch-search'.
+                        (= (match-beginning 0) (match-end 0)))
+                (setq retry  nil))
+              ;; Check filter predicate.  If `isearchp-lazy-dim-filter-failures-flag' is non-nil
+              ;; then set face according to filter success.  Otherwise, clear RETRY if filter succeeded. 
+              (setq filter-OK  (funcall isearch-filter-predicate (match-beginning 0) (match-end 0)))
+              (if isearchp-lazy-dim-filter-failures-flag
+                  (setq isearchp-lazy-highlight-face  (if filter-OK lazy-highlight-face dim-face))
+                (setq isearchp-lazy-highlight-face  lazy-highlight-face)
+                (when filter-OK (setq retry  nil)))))
           success)
       (error nil)))
-
 
   (defvar isearchp-in-lazy-highlight-update-p nil
     "Non-nil means `isearch-lazy-highlight-update' is processing.")
@@ -4400,15 +4461,14 @@ Attempt to do the search exactly the way the pending Isearch would."
                           (push ov isearch-lazy-highlight-overlays)
                           ;; 1000 is higher than ediff's 100+, but lower than isearch main overlay's 1001
                           (overlay-put ov 'priority 1000)
-                          (overlay-put ov 'face 'lazy-highlight)
-                          ))
+                          (overlay-put ov 'face isearchp-lazy-highlight-face)))
 ;;;                       (overlay-put ov 'window (selected-window)))) ; Emacs 25+ commented this out.
                       ;; Remember current point for next call of `isearch-lazy-highlight-update' when
                       ;; `lazy-highlight-max-at-a-time' is too small.
                       (if isearch-lazy-highlight-forward
                           (setq isearch-lazy-highlight-end  (point))
                         (setq isearch-lazy-highlight-start  (point)))))
-                  (unless found ; Not found or zero-length match at the search bound
+                  (unless found         ; Not found or zero-length match at the search bound
                     (if isearch-lazy-highlight-wrapped
                         (setq looping  nil
                               nomore   t)
