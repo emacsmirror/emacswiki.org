@@ -43,16 +43,9 @@ You can also edit local files as root with either of the following (note the dou
     C-x C-f /su::/etc/hosts
     C-x C-f /sudo::/etc/hosts
 
-Also,
+Windows with Cygwin tools installed, assuming no password is required:
 
-{{{
-<fsbot> [5] emacs syntax: /<user>@<host>:/path/to/file or
-	/<protocol>:<user>@<host>:/path/to/file,
-<fsbot> [6] xemacs syntax: /[<protocol>/<user>@<host>]/path/to/file or
-	/<user>@<host>]/path/to/file,
-<fsbot> [7] /su::/etc/hosts to edit /etc/hosts as root,
-<fsbot> [8] note double : when using su to be root
-}}}
+    (setq tramp-default-method "sshx")
 
 == Troubleshooting ==
 
