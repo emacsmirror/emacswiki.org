@@ -141,7 +141,7 @@ fichiers temporaires, etc.")
                    (list pointemacs-repertoire-lib)
                    (mapcar (lambda (subdir)
                              (concat pointemacs-repertoire-lib "/" subdir))
-                           (list emacs-version "magit" "el-get/el-get"
+                           (list emacs-version "el-get/el-get"
                                  "sgml-edit"))
                    '("/usr/local/share/emacs/site-lisp"
                      "/usr/share/doc/git-core/contrib/emacs"
@@ -162,8 +162,7 @@ fichiers temporaires, etc.")
      (mapcar 'directory-file-name
              (append '("/usr/share/info")
                      Info-default-directory-list
-                     (list (expand-file-name "~/lib/info")
-                           (concat pointemacs-repertoire-lib "/magit"))))
+                     (list (expand-file-name "~/lib/info"))))
      :test 'equal :from-end t)))
 
 ;; Sous Mac OS X Leopard, Emacs ne reçoit aucun environnement utile au démarrage
@@ -293,6 +292,8 @@ fichiers temporaires, etc.")
   ;; Control-crochet fermant sur claviers AZERTY et QWERTZ (suisse):
   (global-set-key [C-S-268632091] 'abort-recursive-edit)
   (global-set-key [C-S-268632093] 'abort-recursive-edit)
+  ;; Control-x Shift-N remplace C-x ` (touche morte) :
+  (global-set-key (kbd "C-x N") 'next-error)
   ;; ⌘ de droite = touche Compose, comme dans Karabiner:
   (define-key key-translation-map (kbd "C-<f13>") iso-transl-ctl-x-8-map))
 
@@ -444,8 +445,8 @@ fichiers temporaires, etc.")
            (require-faible 'color-theme-domq))
   (color-theme-domq))
 
-;; Fenêtre juste assez large pour deux fichiers en 80 colonnes + git-gutter+
-(when (and window-system (string-match "^:" (getenv "DISPLAY")))
+;; Fenêtre juste assez large pour deux fichiers en 80 colonnes + diff-hl
+(when (and window-system (string-match "^[/:]" (getenv "DISPLAY")))
   (aput 'initial-frame-alist 'width 166)
   (aput 'initial-frame-alist 'height 60))
 ;; Vu sur emacswiki.org :
@@ -771,7 +772,7 @@ système n'est pas utilisable."
 (defun pointemacs-vc-next-action (amend)
   "C-x v v amélioré pour git.
 \\[universal-argument] \\[vc-next-action] effectue un \"git commit --amend\".
-Si l'index contient des modifications, appelle `git-gutter+-commit' (ce qui va
+Si l'index contient des modifications, appelle `magit-commit' (ce qui va
 bien après avoir fait \\[git-gutter+-stage-hunks])."
   (interactive "P")
   (with-current-buffer (current-buffer)
@@ -780,16 +781,16 @@ bien après avoir fait \\[git-gutter+-stage-hunks])."
     (cond
      ((not (eq 'GIT (vc-backend buffer-file-name)))
       (vc-next-action amend))  ;; Keep C-U semantics of other VC system
-     ((and (fboundp 'git-gutter+-commit)
+     ((and (fboundp 'magit-commit)
            ;; http://stackoverflow.com/questions/2657935
            (= 1 (vc-git-command nil 1 nil
                                 "diff-index" "--quiet" "--cached" "HEAD")))
-      (git-gutter+-commit))
+      (magit-commit))
      ((and amend buffer-file-name)
       (message "Checking in %s (amend)...done" buffer-file-name)
       (vc-git-command nil 0 buffer-file-name
                       "commit" "--amend" "-C" "HEAD" "--")
-      (when (fboundp 'git-gutter+-refresh) (git-gutter+-refresh)))
+      (when (fboundp 'git-gutter) (git-gutter)))
      (t
       (vc-next-action nil)))))
 
@@ -825,18 +826,26 @@ bien après avoir fait \\[git-gutter+-stage-hunks])."
 ;; Pas de marqueur "MRev" dans la barre d'état :
 (pointemacs-personnalise '(magit-auto-revert-mode-lighter nil))
 
-;; git-gutter+ (https://github.com/nonsequitur/git-gutter-plus)
-(when (fboundp 'global-git-gutter+-mode)
-  (global-git-gutter+-mode t)
-  (global-set-key (kbd "C-x v n") 'git-gutter+-next-hunk)
-  (global-set-key (kbd "C-x v p") 'git-gutter+-previous-hunk)
-  (global-set-key (kbd "C-x v h") 'git-gutter+-stage-hunks))
-
-(defadvice git-rebase-server-edit (after pointemacs-ferme activate)
-  "Ferme le buffer de git-rebase-todo une fois édité.
-L'information est reprise dans le buffer magit; un rebase-todo ouvert
-à contretemps (ex : rebase terminé) est source de confusions."
-  (kill-buffer))
+;; git-gutter (https://github.com/jisaacks/GitGutter)
+(when (require-faible 'git-gutter)
+  (global-git-gutter-mode t)
+  (global-set-key (kbd "C-x v n") 'git-gutter:next-hunk)
+  (global-set-key (kbd "C-x v p") 'git-gutter:previous-hunk)
+  (defun pointemacs-stage-hunks-dans-la-region ()
+    "git add -p sur tous les morceaux (hunks) entre point et marque"
+    (interactive)
+    (let ((git-gutter:ask-p))
+      (if (not (region-active-p))
+          (git-gutter:stage-hunk)
+        (save-excursion
+          (and (> (point) (mark)) (exchange-point-and-mark))
+          (cl-loop with mark = (mark)
+                   while (let ((prev-point (point)))
+                           (git-gutter:next-hunk 1)
+                           (and (< (point) mark)
+                                (> (point) prev-point)))
+                   do (git-gutter:stage-hunk))))))
+  (global-set-key (kbd "C-x v h") 'pointemacs-stage-hunks-dans-la-region))
 
 (pointemacs-progression "Débogueurs") ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -877,6 +886,13 @@ L'information est reprise dans le buffer magit; un rebase-todo ouvert
   "Correction de bug : lecture des chaînes MI avec un en-tête."
   (when (string-match "^\"" (ad-get-arg 0))
     (ad-set-arg 0 (concat "_header=" (ad-get-arg 0)))))
+
+(add-hook 'compilation-filter-hook 'inf-ruby-auto-enter)
+(eval-after-load "compile" '(progn
+  (add-to-list 'compilation-error-regexp-alist 'ruby-trace)
+  ;; Cf. perl5db.pl lignes 5611 et 5625-5627
+  (aput 'compilation-error-regexp-alist-alist 'ruby-trace '("^#0:\\([^:]*\\):\\([0-9]*\\):"
+                                                            1 2))))
 
 ;; Débogueur interne d'Emacs
 (defun pointemacs-reaffiche-debogueur ()
@@ -931,6 +947,14 @@ Pour quitter une sous-session du débogueur en erreur (par exemple si on a tapé
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 (pointemacs-progression "Tramp") ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(dolist (exported '("GIT_AUTHOR_NAME" "GIT_AUTHOR_EMAIL"))
+  (let ((quoted (shell-quote-argument (getenv exported))))
+    (setq tramp-remote-process-environment
+          (setenv-internal tramp-remote-process-environment exported quoted t))
+    (eval-after-load "magit"
+      '(setq magit-tramp-process-environment
+             (setenv-internal magit-tramp-process-environment exported quoted t)))))
 
 ;; Tramp + docker, yow! /docker:drunk_bardeen:/etc/passwd
 (aput 'tramp-methods "docker" '(
