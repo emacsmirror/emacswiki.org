@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun May  8 08:43:38 2016 (-0700)
+;; Last-Updated: Fri Dec  9 07:05:32 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 1824
+;;     Update #: 1827
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -18,12 +18,12 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `cmds-menu', `easymenu',
-;;   `fit-frame', `frame-cmds', `frame-fns', `help+20', `highlight',
-;;   `info', `info+20', `isearch+', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `naked', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos+', `avoid', `cl', `easymenu', `fit-frame',
+;;   `frame-cmds', `frame-fns', `help+20', `highlight', `info',
+;;   `info+20', `isearch+', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `naked', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -137,6 +137,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/09 dadams
+;;     x-get-selection -> gui-get-selection for Emacs 25+.
 ;; 2016/05/08 dadams
 ;;     query-replace-read-from: Use query-replace-compile-replacement, like vanilla.  Thx to Tino Calancha.
 ;; 2015/07/23 dadams
@@ -542,7 +544,9 @@ The possible strings are, in order:
   (let ((selection   (usable-region t))
         (second-sel  (and  (or (not search/replace-region-as-default-flag)  (not (usable-region t)))
                            search/replace-2nd-sel-as-default-flag
-                           (x-get-selection 'SECONDARY))))
+                           (if (fboundp 'gui-get-selection)
+                               (gui-get-selection 'SECONDARY) ; Emacs 25.1+.
+                             (x-get-selection 'SECONDARY)))))
     (when second-sel (set-text-properties 0 (length second-sel) () second-sel))
     (if (> emacs-major-version 22)
         (delq nil (list selection
