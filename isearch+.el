@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Dec  5 08:12:25 2016 (-0800)
+;; Last-Updated: Fri Dec  9 12:46:14 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5154
+;;     Update #: 5182
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -191,8 +191,8 @@
 ;;    `isearchp-replace-multiple' (Emacs 22+),
 ;;    `isearchp-replace-on-demand' (Emacs 22+),
 ;;    `isearchp-reset-noprompt-action-fn', `isearchp-set-region',
-;;    `isearchp-set-sel-and-yank',
-;;    `isearchp-update-edit-init-commands' (Emacs 22+).
+;;    `isearchp-set-sel-and-yank', `isearchp-show-hit-w-crosshairs'
+;;    (Emacs 24.4+), `isearchp-update-edit-init-commands' (Emacs 22+).
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -324,10 +324,11 @@
 ;;
 ;;; Overview of Features ---------------------------------------------
 ;;
-;;  * Dynamic search filtering (starting with Emacs 24.4).  You can
-;;    add and remove any number of search filters while searching
-;;    incrementally.
-;;    See https://www.emacswiki.org/emacs/DynamicIsearchFiltering.
+;;  * Dynamic search filtering (starting with Emacs 24.4).
+;;
+;;    You can add and remove any number of search filters while
+;;    searching incrementally.  See
+;;    https://www.emacswiki.org/emacs/DynamicIsearchFiltering.
 ;;
 ;;    The predicate that is the value of `isearch-filter-predicate' is
 ;;    advised by additional predicates that you add, creating a
@@ -339,11 +340,57 @@
 ;;    hit.  If the return value of the function is `nil' then the
 ;;    search hit is excluded from searching; otherwise it is included.
 ;;
-;;    A filter predicate can perform side effects, if you like.  Only
-;;    the return value is used by Isearch.  For example, if you wanted
-;;    to more easily see the cursor position each time search stops at
-;;    a search hit, you could use something like this as a filter
-;;    predicate.  (This requires library `crosshairs.el', which
+;;    The value of standard variable (but not a user option)
+;;    `isearch-filter-predicate' is the filter predicate used by
+;;    Isearch.  By default, the value is predicate
+;;    `isearch-filter-visible', which returns non-`nil' for any search
+;;    hit that is visible (not rendered invisible by a text property,
+;;    overlay property, etc.)
+;;
+;;    If you search the Emacs Lisp source code, you will find only two
+;;    uses, so far, of variable `isearch-filter-predicate', even
+;;    though such filtering has been around since Emacs 23.  It’s
+;;    hardly ever used.  Why?
+;;
+;;    Because it’s not so easy to use, out of the box.  And it’s not
+;;    thought of as a way to *refine* searches, but rather as a way to
+;;    *wall off* certain areas from searching.
+;;
+;;    Yes, those are in fact the same thing, but I don’t think people
+;;    think this way ... because Isearch does not make it particularly
+;;    easy to use filters.  Isearch+ tries to do that, to let you
+;;    refine searches by adding filters incrementally.
+;;
+;;    The idea is simple: Isearch+ defines some keys that prompt you
+;;    for a filter.  You can enter any filter predicates at the
+;;    prompts.  There are also some predefined predicates that you can
+;;    choose from, using completion.  You can combine predicates using
+;;    AND, OR, and NOT.
+;;
+;;    A filter predicate does essentially the same thing as the search
+;;    pattern that you type at the Isearch prompt.  Each restricts the
+;;    search space (the buffer text) to certain zones: those that
+;;    satisfy the predicate and those that match the search pattern.
+;;
+;;    But a predicate can be much more general than is the predefined
+;;    pattern-matching provided by Emacs Isearch.  Suppose that you
+;;    want to find lines of text that contain `cat', `dog', and
+;;    `turtle'.  There is no simple search pattern that lets you do
+;;    this.  A regexp would need to explicitly express each possible
+;;    order, and there are 6 of them - not so simple.
+;;
+;;    But a predicate can just check each line for `cat' AND check for
+;;    `dog' AND check for `turtle'.  It is usually much easier to
+;;    combine simple patterns than it is to come up with a complex
+;;    pattern that does the same thing.  And the way to combine
+;;    patterns in Emacs Isearch is to use one or more filter
+;;    predicates.
+;;
+;;    A filter predicate can even perform side effects, if you like.
+;;    Only the return value is used by Isearch.  For example, if you
+;;    wanted to more easily see the cursor position each time search
+;;    stops at a search hit, you could use something like this as a
+;;    filter predicate.  (This requires library `crosshairs.el', which
 ;;    highlights the current column and line using crosshairs.)
 ;;
 ;;      (lambda (beg end)
@@ -888,6 +935,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/12/09 dadams
+;;     Added: isearchp-show-hit-w-crosshairs.
+;;     isearchp-filter-predicates-alist: Added crosshairs.  Allow value to be just (NAME PREDICATE).
+;;     isearchp-read-predicate: Allow value to be just (NAME PREDICATE).
+;;     isearchp-add-filter-predicate-1: Unless isearchp-user-entered-new-filter-p, set prefix to empty string.
 ;; 2016/12/04 dadams
 ;;     Added: isearchp-lazy-dim-filter-failures-flag, isearchp-lazy-highlight-face,
 ;;            isearchp-toggle-dimming-filter-failures (bound to M-s h d).
@@ -1831,10 +1883,10 @@ exit Isearch'."
       ("[var]"        isearchp-in-lisp-variable-p     "[VAR]")
       ("[word]"       isearchp-in-word-p              "[WORD]")
       ,@(and (featurep 'thingatpt+)
-             '(
-               ("[#09]" isearchp-in-decimal-number-p  "[#09]")
-               ("[#0F]" isearchp-in-hex-number-p      "[#0F]")
-               ))
+             '(("[#09]" isearchp-in-decimal-number-p  "[#09]")
+               ("[#0F]" isearchp-in-hex-number-p      "[#0F]")))
+      ,@(and (featurep 'crosshairs)
+             '(("crosshairs" isearchp-show-hit-w-crosshairs)))
       )
     "Alist of filter predicates to choose from.
 Each entry has one of these forms, where NAME and PREFIX are strings,
@@ -1842,6 +1894,7 @@ and PREDICATE is a predicate symbol or a lambda form suitable as a value of
 `isearch-filter-predicate'.
 
 * (NAME PREDICATE PREFIX)
+* (NAME PREDICATE)
 * (PREDICATE PREFIX)
 * (PREDICATE)
 
@@ -1856,22 +1909,25 @@ annotation in buffer `*Completions*'.  If NAME is not present then
 PREDICATE is the candidate."
     :type '(repeat
             (choice
-             (list
-              (string :tag "Name (abbreviation)")
-              (restricted-sexp :match-alternatives (functionp) :tag "Predicate")
+             (list :tag "Short name, predicate, prompt prefix"
+              (string :tag "Short name")
+              (restricted-sexp :match-alternatives (functionp) :tag "Predicate (Lisp sexp)")
               (string :tag "Prompt prefix"))
-             (list
-              (restricted-sexp :match-alternatives (functionp) :tag "Predicate")
+             (list :tag "Short name, predicate"
+              (string :tag "Short name")
+              (restricted-sexp :match-alternatives (functionp) :tag "Predicate (Lisp sexp)"))
+             (list :tag "Predicate, prompt prefix"
+              (restricted-sexp :match-alternatives (functionp) :tag "Predicate (Lisp sexp)")
               (string :tag "Prompt prefix"))
-             (list
-              (restricted-sexp :match-alternatives (functionp) :tag "Predicate"))))
+             (list :tag "Predicate"
+              (restricted-sexp :match-alternatives (functionp) :tag "Predicate (Lisp sexp)"))))
     :group 'isearch-plus
     :set (lambda (sym defs)            ; Synchronize the associated defvar.
            (custom-set-default sym defs)
            (setq isearchp-current-filter-preds-alist  isearchp-filter-predicates-alist)))
 
   (defcustom isearchp-lazy-dim-filter-failures-flag t
-  "Non-nil means lazy-highlight filter failures with a dim background.
+    "Non-nil means lazy-highlight filter failures with a dim background.
 A nil value means do not lazy-highlight filter failures at all."
     :type 'boolean :group 'isearch-plus)
 
@@ -4569,13 +4625,13 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
           (name    nil)
           (prefix  nil))
       (when (and (consp pred)  (not (eq 'lambda (car pred))))
-        (if (stringp (nth 0 pred))
+        (if (stringp (nth 0 pred))      ; (NAME PREDICATE [PREFIX])
             (setq name    (nth 0 pred)
                   prefix  (nth 2 pred)
                   pred    (nth 1 pred))
           (if (nth 1 pred)
-              (setq prefix  (nth 1 pred)
-                    pred    (nth 0 pred))
+              (setq prefix  (nth 1 pred) ; (PREDICATE PREFIX)
+                    pred    (nth 0 pred)) ; (PREDICATE)
             (setq pred  (nth 0 pred)))))
       (add-function where isearch-filter-predicate pred
                     (append (and (or name  (case isearchp-prompt-for-filter-name
@@ -4590,11 +4646,15 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
                                                  (not flip-read-prefix-p)
                                                flip-read-prefix-p))
                                  ;; Do not let empty or whitespace prefix get highlighted.
-                                 (let ((prfix+  (setq prefix  (or prefix  (isearchp-read-prompt-prefix)))))
+                                 (let ((prfix+  (setq prefix  (or prefix
+                                                                  (if isearchp-user-entered-new-filter-p
+                                                                      (isearchp-read-prompt-prefix)
+                                                                    "")))))
                                    (unless (or (= 0 (length prfix+))
                                                (string-match-p "\\`[ \t]+\\'" prfix+))
                                      (setq prfix+  (concat prfix+ ", "))) ; Add a comma and a space.
-                                   (and (> (length prfix+) 0)  `((isearch-message-prefix . ,prfix+)))))))
+                                   (and (> (length prfix+) 0)
+                                        `((isearch-message-prefix . ,prfix+)))))))
       ;; Update `isearchp-current-filter-preds-alist' and possibly `isearchp-filter-predicates-alist'.
       (when isearchp-user-entered-new-filter-p
         (add-to-list 'isearchp-current-filter-preds-alist
@@ -4677,7 +4737,9 @@ completion-candidate entry (in the possibly augmented
                 choice  (or choice  (assoc (intern input) isearchp-current-filter-preds-alist)))
           (setq result  (or choice  (read input)) ; E.g., input was a lambda form.
                 pred    (if choice
-                            (if (= 3 (length choice)) (nth 1 choice) (nth 0 choice))
+                            (if (stringp (nth 0 choice)) ; (NAME PREDICATE [PREFIX])
+                                (nth 1 choice)
+                              (nth 0 choice)) ; (PREDICATE [PREFIX])
                           result))
           (unless (or (functionp pred)  (advice-function-member-p pred isearch-filter-predicate))
             (message "Not a function: `%S'" pred) (sit-for 1))
@@ -4990,6 +5052,21 @@ prefix - see `isearchp-add-filter-predicate'."
     `(lambda (beg end)
        (and (>= (save-excursion (goto-char beg) (current-column)) ,min)
             (<= (save-excursion (goto-char end) (current-column)) ,max))))
+
+  (defun isearchp-show-hit-w-crosshairs (beg end)
+    "Show the current search hit using crosshairs, at END.
+END is the end of the search hit (farthest position, in the search
+direction).
+
+This is a *pseudo* filter predicate: it always returns t.
+
+This function requires library `crosshairs.el'."
+    (unless (require 'crosshairs nil t)
+      (error "`isearchp-show-hit-w-crosshairs' requires library `crosshairs.el'"))
+    (save-excursion (goto-char end))
+    ;; Avoid calling `crosshairs' when inside `isearch-lazy-highlight-search'.
+    (unless isearchp-in-lazy-highlight-update-p (crosshairs))
+    t)
 
   (defun isearchp-in-comment-p (beg end)
     "Return t if all chars in the search hit are in the same comment.
