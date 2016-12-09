@@ -9,9 +9,9 @@
 ;; Created: Wed Nov 22 14:57:17 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 16:28:46 2015 (-0800)
+;; Last-Updated: Fri Dec  9 06:55:33 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 190
+;;     Update #: 192
 ;; URL: http://www.emacswiki.org/wimpy-del.el
 ;; Keywords: region, cut, kill, copy
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -53,6 +53,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/09 dadams
+;;     clipboard-kill-region-wimpy: Emacs 25 renamed x-select-enable-clipboard to gui-select-enable-clipboard.
 ;; 2014/07/15 dadams
 ;;     kill-region-wimpy: Let mode-line-pos.el highlight region specially in mode line.
 ;;                        Added optional arg MSGP.
@@ -157,7 +159,8 @@ If the previous command was a completion, just remove the completion.
 
 Else, if the region is > `wimpy-delete-size', you must confirm the kill."
   (interactive "r")
-  (let ((x-select-enable-clipboard  t))
+  (let ((gui-select-enable-clipboard  t)
+        (x-select-enable-clipboard    t))
     (kill-region-wimpy beg end)))
 
 ;;; For use in menu-bar.
