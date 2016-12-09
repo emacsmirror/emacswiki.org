@@ -76,7 +76,7 @@ A filter predicate can even perform side effects, if you like.
 Only the ''return value'' is used by Isearch.  For example, if you
 wanted to more easily see the cursor position each time search
 stops at a search hit, you could use something like this as a
-filter predicate.  (This requires library `crosshairs.el', which
+filter predicate.  (This requires library '''<tt>[[crosshairs.el]]</tt>''', which
 highlights the current column and line using crosshairs.)
 
     (lambda (beg end)
