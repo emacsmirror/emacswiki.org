@@ -8,9 +8,9 @@
 ;; Created: Fri Jun 28 14:47:12 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 15:30:47 2015 (-0800)
+;; Last-Updated: Fri Dec  9 07:05:50 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 599
+;;     Update #: 603
 ;; URL: http://www.emacswiki.org/mouse+.el
 ;; Doc URL: http://emacswiki.org/MousePlus
 ;; Keywords: mouse
@@ -109,6 +109,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/09 dadams
+;;     mouse-yank-secondary: x-get-selection -> gui-get-selection for Emacs 25+.
 ;; 2015/11/22 dadams
 ;;     mouse-drag-region: Corrected test for mouse-drag-track call to Emacs 25+.
 ;;     Removed lexical-binding declaration to file.
@@ -491,7 +493,9 @@ If command `yank-secondary' is defined (see library `second-sel.el'),
   (or mouse-yank-at-point (mouse-set-point click))
   (setq mouse-selection-click-count  0)
   (if (not (fboundp 'yank-secondary))
-      (let ((secondary  (x-get-selection 'SECONDARY)))
+      (let ((secondary  (if (fboundp 'gui-get-selection) ; Emacs 25.1+.
+                            (gui-get-selection 'SECONDARY)
+                          (x-get-selection 'SECONDARY))))
         (unless secondary (error "No secondary selection"))
         (funcall (if (fboundp 'insert-for-yank) 'insert-for-yank 'insert) secondary))
     (setq this-command  'yank-secondary)
