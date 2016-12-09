@@ -8,9 +8,9 @@
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 18 10:25:31 2016 (-0700)
+;; Last-Updated: Fri Dec  9 07:09:00 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 578
+;;     Update #: 584
 ;; URL: http://www.emacswiki.org/second-sel.el
 ;; Doc URL: http://emacswiki.org/SecondarySelection
 ;; Keywords: region, selection, yank, paste, edit
@@ -101,6 +101,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/09 dadams
+;;     yank-secondary, secondary-swap-region, secondary-to-primary:
+;;       x-get-selection -> gui-get-selection for Emacs 25+.
 ;; 2016/09/18 dadams
 ;;     Renamed secondary-dwim to secondary-yank|select|move|swap.  Aliased old name as obsolete.
 ;; 2013/10/16 dadams
@@ -289,7 +292,9 @@ selection yanked."
                   (current-secondary-selection (cond ((consp arg) 0)
                                                      ((eq arg '-) -2)
                                                      (t (1- arg))))
-                (x-get-selection 'SECONDARY))))
+                (if (fboundp 'gui-get-selection)
+                    (gui-get-selection 'SECONDARY) ; Emacs 25.1+.
+                  (x-get-selection 'SECONDARY)))))
     (unless sel (error "No secondary selection"))
     (funcall (if (fboundp 'insert-for-yank) 'insert-for-yank 'insert) sel))
   (when (consp arg)
@@ -336,7 +341,9 @@ Pop to the buffer that has the secondary selection, and change it to
 the region.  Leave behind the secondary selection in place of the
 original buffer's region."
   (interactive "r")
-  (let ((osecondary  (x-get-selection 'SECONDARY))
+  (let ((osecondary  (if (fboundp 'gui-get-selection)
+                         (gui-get-selection 'SECONDARY) ; Emacs 25.1+.
+                       (x-get-selection 'SECONDARY)))
         osec-buf osec-start osec-end)
     (unless (and osecondary (overlayp mouse-secondary-overlay))
       (error "No secondary selection"))
@@ -371,7 +378,9 @@ original buffer's region."
   "Convert the secondary selection into the active region.
 Select the secondary selection and pop to its buffer."
   (interactive)
-  (let ((secondary  (x-get-selection 'SECONDARY)))
+  (let ((secondary  (if (fboundp 'gui-get-selection)
+                        (gui-get-selection 'SECONDARY) ; Emacs 25.1+.
+                      (x-get-selection 'SECONDARY))))
     (unless (and secondary (overlayp mouse-secondary-overlay))
       (error "No secondary selection"))
     (x-set-selection 'PRIMARY secondary))
