@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Sep 18 10:21:34 2016 (-0700)
+;; Last-Updated: Fri Dec  9 07:36:12 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 3746
+;;     Update #: 3755
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -128,6 +128,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/09 dadams
+;;     Updated for Emacs 25: x-get-selection -> gui-get-selection,
+;;                           x-select-enable-clipboard -> select-enable-clipboard.
 ;; 2016/09/18 dadams
 ;;     Applied renaming of secondary-dwim to secondary-yank|select|move|swap.
 ;; 2016/08/31 dadams
@@ -429,6 +432,7 @@
 (defvar menu-bar-last-search-type)
 (defvar menu-bar-select-buffer-function)
 (unless (> emacs-major-version 23) (defvar menu-barp-select-buffer-function))
+(defvar select-enable-clipboard)
 
 ;;;;;;;;;;;;;;;;;;;;
 
@@ -830,13 +834,19 @@ submenu of the \"Help\" menu."))
 
 ;; Use `x-get-selection', not `x-selection-exists-p', because of Emacs bugs on Windows etc.
 ;; See thread "x-selection-exists-p  vs  x-get-selection", emacs-devel@gnu.org, 2008-05-04.
+;;
+;; And Emacs 25 renamed `x-'...
 (define-key-after menu-bar-edit-menu [paste]
   '(menu-item "Paste" yank
     :help "Paste (yank) text most recently cut/copied"
     :enable (and (not buffer-read-only)
-             (or (and (fboundp 'x-get-selection)
-                  x-select-enable-clipboard
-                  (x-get-selection 'CLIPBOARD))
+             (or
+              (and (fboundp 'gui-get-selection) ; Emacs 25.1+
+               select-enable-clipboard
+               (gui-get-selection 'CLIPBOARD))
+              (and (fboundp 'x-get-selection)
+               x-select-enable-clipboard
+               (x-get-selection 'CLIPBOARD))
               (if (featurep 'ns)        ; Like `paste-from-menu'
                   (cdr yank-menu)
                 kill-ring))))
@@ -848,10 +858,15 @@ submenu of the \"Help\" menu."))
                                        'secondary-yank|select|move|swap
                                        'secondary-dwim)
       :help "Paste (yank) secondary selection."
-      :enable (and (not buffer-read-only)
-               (fboundp 'x-get-selection)
-               (condition-case nil              ; Ignore - Emacs 21 raises error internally.
-                   (x-get-selection 'SECONDARY)
+      :enable (and
+               (not buffer-read-only)
+               (or
+                (fboundp 'gui-get-selection) ; Emacs 25.1+
+                (fboundp 'x-get-selection))
+               (condition-case nil      ; Ignore - Emacs 21 raises error internally.
+                   (if (fboundp 'gui-get-selection) ; Emacs 25.1+
+                       (gui-get-selection 'SECONDARY)
+                     (x-get-selection 'SECONDARY))
                  (error nil)))
       :keys ,(if (fboundp 'secondary-yank|select|move|swap)
                  "\\[secondary-yank|select|move|swap]"
@@ -868,9 +883,14 @@ submenu of the \"Help\" menu."))
   (define-key-after menu-bar-edit-menu [secondary-swap-region] ; In `second-sel.el'
     `(menu-item "Swap Region and Secondary" secondary-swap-region
       :help "Make region into secondary selection, and vice versa."
-      :enable (and (fboundp 'x-get-selection)
-               (condition-case nil              ; Ignore - Emacs 21 raises error internally.
-                   (x-get-selection 'SECONDARY)
+      :enable (and
+               (or
+                (fboundp 'gui-get-selection) ; Emacs 25.1+
+                (fboundp 'x-get-selection))
+               (condition-case nil      ; Ignore - Emacs 21 raises error internally.
+                   (if (fboundp 'gui-get-selection) ; Emacs 25.1+
+                       (gui-get-selection 'SECONDARY)
+                     (x-get-selection 'SECONDARY))
                  (error nil)))
       :keys ,(if (fboundp 'secondary-yank|select|move|swap)
                  "C-- \\[secondary-yank|select|move|swap]"
@@ -879,9 +899,13 @@ submenu of the \"Help\" menu."))
   (define-key-after menu-bar-edit-menu [secondary-to-primary] ; In `second-sel.el'
     `(menu-item "Select Secondary as Region" secondary-to-primary
       :help "Go to the secondary selection and select it as the active region."
-      :enable (and (fboundp 'x-get-selection)
-               (condition-case nil              ; Ignore - Emacs 21 raises error internally.
-                   (x-get-selection 'SECONDARY)
+      :enable (and (or
+                    (fboundp 'gui-get-selection) ; Emacs 25.1+
+                    (fboundp 'x-get-selection))
+               (condition-case nil      ; Ignore - Emacs 21 raises error internally.
+                   (if (fboundp 'gui-get-selection) ; Emacs 25.1+
+                       (gui-get-selection 'SECONDARY)
+                     (x-get-selection 'SECONDARY))
                  (error nil)))
       :keys ,(if (fboundp 'secondary-yank|select|move|swap)
                  "C-0 \\[secondary-yank|select|move|swap]"
