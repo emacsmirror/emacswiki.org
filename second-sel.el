@@ -8,9 +8,9 @@
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 10 08:08:54 2016 (-0800)
+;; Last-Updated: Sat Dec 10 08:22:23 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 597
+;;     Update #: 599
 ;; URL: http://www.emacswiki.org/second-sel.el
 ;; Doc URL: http://emacswiki.org/SecondarySelection
 ;; Keywords: region, selection, yank, paste, edit
@@ -105,6 +105,7 @@
 ;;     primary-to-secondary, secondary-swap-region, secondary-to-primary, mouse-drag-secondary,
 ;;       set-secondary-start, secondary-save-then-kill-1:
 ;;         x-set-selection -> gui-set-selection for Emacs 25+.
+;;     Added WHEN arg to make-obsolete (required, starting with Emacs 23).
 ;; 2016/12/09 dadams
 ;;     yank-secondary, secondary-swap-region, secondary-to-primary:
 ;;       x-get-selection -> gui-get-selection for Emacs 25+.
@@ -242,7 +243,9 @@ the value of the mark and point; it is guaranteed that START <= END.
 Normally set from the UNDO element of a yank-handler; see `insert-for-yank'."))
 
 (defalias 'secondary-dwim 'secondary-yank|select|move|swap)
-(make-obsolete 'secondary-dwim 'secondary-yank|select|move|swap)
+(if (< emacs-major-version 22)
+    (make-obsolete 'secondary-dwim 'secondary-yank|select|move|swap)
+  (make-obsolete 'secondary-dwim 'secondary-yank|select|move|swap "2016/09/18"))
 ;;;###autoload
 (defun secondary-yank|select|move|swap (arg)   ; Suggested binding: `C-M-y'
   "Yank the secondary selection.  With a prefix arg, interact with region.
