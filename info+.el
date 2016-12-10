@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 27 17:50:34 2016 (-0800)
+;; Last-Updated: Sat Dec 10 08:39:39 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5717
+;;     Update #: 5720
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -323,6 +323,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/10 dadams
+;;     Use string as 3rd arg to make-obsolete.
 ;; 2016/10/31 dadams
 ;;     info-quotation-regexp: Typo: misplaced curly double-quote.  Thx to Don March.
 ;; 2016/07/02 dadams
@@ -1209,7 +1211,7 @@ line from non-nil `Info-use-header-line'."
                       (if Info-breadcrumbs-in-header-flag "ON" "OFF"))))
 
 (defalias 'Info-toggle-breadcrumbs-in-header-line 'Info-toggle-breadcrumbs-in-header)
-(make-obsolete 'Info-toggle-breadcrumbs-in-header-line 'Info-toggle-breadcrumbs-in-header nil)
+(make-obsolete 'Info-toggle-breadcrumbs-in-header-line 'Info-toggle-breadcrumbs-in-header "2014/03/04")
 
 
 ;;;###autoload (autoload 'Info-toggle-fontify-emphasis "info+")
