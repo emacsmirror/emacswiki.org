@@ -23,6 +23,10 @@ Tip: I find setting a colored underline face less in-your-face than a colored
 background for the visible marks - especially if you're displaying all marks on 
 the mark ring.
 
+[new]
+Tip: I wanted the opposite: so that paren highlights do not override region marking (aka selecting). -- [[NovadeViator]]
+
+  (setq show-paren-priority -1)
 
 
 == See Also ==
