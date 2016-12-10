@@ -1,4 +1,3 @@
-[[de:Tmor]]
 The '''[::minibuffer]''' is a special [[buffer]] for entering [[command]]s or input arguments to commands.  It appears either in a separate, standalone [[frame]] or at the bottom of each frame. 
 
 Sometimes, the area where you input commands is used to display informative messages without requesting input (i.e., not just a prompt).  When this area is used this way, it is called the '''EchoArea''', not the minibuffer.
