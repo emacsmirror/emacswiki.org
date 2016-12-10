@@ -8,9 +8,9 @@
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec  9 07:09:00 2016 (-0800)
+;; Last-Updated: Sat Dec 10 08:08:54 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 584
+;;     Update #: 597
 ;; URL: http://www.emacswiki.org/second-sel.el
 ;; Doc URL: http://emacswiki.org/SecondarySelection
 ;; Keywords: region, selection, yank, paste, edit
@@ -101,6 +101,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/10 dadams
+;;     primary-to-secondary, secondary-swap-region, secondary-to-primary, mouse-drag-secondary,
+;;       set-secondary-start, secondary-save-then-kill-1:
+;;         x-set-selection -> gui-set-selection for Emacs 25+.
 ;; 2016/12/09 dadams
 ;;     yank-secondary, secondary-swap-region, secondary-to-primary:
 ;;       x-get-selection -> gui-get-selection for Emacs 25+.
@@ -330,7 +334,9 @@ Deactivate the region.  Do not move the cursor."
                   (filter-buffer-substring beg end)
                 (buffer-substring beg end))))
     (add-secondary-to-ring sel)
-    (x-set-selection 'SECONDARY sel))
+    (if (fboundp 'gui-set-selection)
+        (gui-set-selection 'SECONDARY sel) ; Emacs 25.1+.
+      (x-set-selection 'SECONDARY sel)))
   (when (> beg end) (exchange-point-and-mark))
   (setq mark-active  nil))
 
@@ -361,10 +367,14 @@ original buffer's region."
                     (filter-buffer-substring beg end)
                   (buffer-substring beg end))))
       (add-secondary-to-ring sel)
-      (x-set-selection 'SECONDARY sel))
+      (if (fboundp 'gui-set-selection)
+          (gui-set-selection 'SECONDARY sel) ; Emacs 25.1+.
+        (x-set-selection 'SECONDARY sel)))
     (setq mark-active  nil)
     ;; Make original secondary selection into region and pop to it.
-    (x-set-selection 'PRIMARY osecondary)
+    (if (fboundp 'gui-set-selection)
+        (gui-set-selection 'PRIMARY osecondary) ; Emacs 25.1+.
+      (x-set-selection 'PRIMARY osecondary))
     (pop-to-buffer osec-buf)
     ;;  ; Shouldn't need to set frame focus, but we apparently must, in Windows at least.
     (select-window (get-buffer-window (current-buffer)))
@@ -383,7 +393,9 @@ Select the secondary selection and pop to its buffer."
                       (x-get-selection 'SECONDARY))))
     (unless (and secondary (overlayp mouse-secondary-overlay))
       (error "No secondary selection"))
-    (x-set-selection 'PRIMARY secondary))
+    (if (fboundp 'gui-set-selection)
+        (gui-set-selection 'PRIMARY secondary) ; Emacs 25.1+.
+      (x-set-selection 'PRIMARY secondary)))
   (pop-to-buffer (overlay-buffer mouse-secondary-overlay))
   ;;  ; Shouldn't need to set frame focus, but we apparently must, in Windows at least.
   (select-window (get-buffer-window (current-buffer)))
@@ -532,9 +544,15 @@ With prefix arg, rotate that many kills forward or backward."
       (and (overlayp mouse-secondary-overlay)
            (overlay-buffer mouse-secondary-overlay)
            (add-secondary-to-ring
-            (x-set-selection 'SECONDARY
-                             (buffer-substring (overlay-start mouse-secondary-overlay)
-                                               (overlay-end   mouse-secondary-overlay)))))
+            (if (fboundp 'gui-set-selection)
+                (gui-set-selection      ; Emacs 25.1+.
+                 'SECONDARY
+                 (buffer-substring (overlay-start mouse-secondary-overlay)
+                                   (overlay-end   mouse-secondary-overlay)))
+              (x-set-selection
+               'SECONDARY
+               (buffer-substring (overlay-start mouse-secondary-overlay)
+                                 (overlay-end   mouse-secondary-overlay))))))
     (when (interactive-p) (second-sel-msg))))
 
 
@@ -575,7 +593,7 @@ RING defaults to `kill-ring'."
   (undo-boundary))
 
 ;;;###autoload
-(defun set-secondary-start (&optional msgp)           ; Suggested binding: `C-x C-M-SPC'
+(defun set-secondary-start (&optional msgp) ; Suggested binding: `C-x C-M-SPC'
   "Set start of the secondary selection at point.
 Interactively, or with non-nil optional arg MSGP, display a message."
   (interactive "p")
@@ -586,7 +604,9 @@ Interactively, or with non-nil optional arg MSGP, display a message."
       (move-overlay mouse-secondary-overlay (point) (point) (current-buffer))
     (setq mouse-secondary-overlay  (make-overlay (point) (point) (current-buffer)))
     (overlay-put mouse-secondary-overlay 'face 'secondary-selection))
-  (x-set-selection 'SECONDARY nil)
+  (if (fboundp 'gui-set-selection)
+      (gui-set-selection 'SECONDARY nil) ; Emacs 25.1+.
+    (x-set-selection 'SECONDARY nil))
   (when msgp (second-sel-msg)))
 
 
@@ -703,7 +723,9 @@ Interactively, or with non-nil optional arg MSGP, display a message."
       (when (overlay-buffer mouse-secondary-overlay)
         (let ((str  (buffer-substring (overlay-start mouse-secondary-overlay)
                                       (overlay-end   mouse-secondary-overlay))))
-          (when (> (length str) 0) (x-set-selection 'SECONDARY str)))))))
+          (when (> (length str) 0) (if (fboundp 'gui-set-selection)
+                                       (gui-set-selection 'SECONDARY str) ; Emacs 25.1+.
+                                     (x-set-selection 'SECONDARY str))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
