@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec  9 12:46:14 2016 (-0800)
+;; Last-Updated: Sat Dec 10 08:51:15 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5182
+;;     Update #: 5187
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -935,6 +935,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/12/10 dadams
+;;     isearchp-set-sel-and-yank: x-set-selection -> gui-set-selection for Emacs 25+.
 ;; 2016/12/09 dadams
 ;;     Added: isearchp-show-hit-w-crosshairs.
 ;;     isearchp-filter-predicates-alist: Added crosshairs.  Allow value to be just (NAME PREDICATE).
@@ -3786,7 +3788,11 @@ outside of Isearch."
 (defun isearchp-set-sel-and-yank ()
   "Set X selection and yank it into echo area."
   (when (mark)
-    (x-set-selection 'PRIMARY (buffer-substring-no-properties (region-beginning) (region-end)))
+    (if (fboundp 'gui-set-selection)
+        (gui-set-selection
+         'PRIMARY (buffer-substring-no-properties (region-beginning) (region-end))) ; Emacs 25.1+.
+      (x-set-selection
+       'PRIMARY (buffer-substring-no-properties (region-beginning) (region-end))))
     (deactivate-mark)
     (isearch-yank-x-selection)))
 
