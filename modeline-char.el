@@ -10,7 +10,7 @@
 ;; Package-Requires: ()
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 159
+;;     Update #: 162
 ;; URL: http://www.emacswiki.org/modeline-char.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLineCharacterInfo
 ;; Keywords: mode-line, character
@@ -80,6 +80,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/10 dadams
+;;     mlc-copy-char-to-second-sel: x-set-selection -> gui-set-selection for Emacs 25+.
 ;; 2015/07/10 dadams
 ;;     Created.
 ;;
@@ -171,7 +173,9 @@ If you have library `second-sel.el' then this also copies it to the
 `secondary-selection-ring'."
   (let* ((char  (char-after position))
          (strg  (string char)))
-    (x-set-selection 'SECONDARY strg)
+    (if (fboundp 'gui-set-selection)
+        (gui-set-selection 'SECONDARY strg) ; Emacs 25.1+.
+      (x-set-selection 'SECONDARY strg))
     (if mouse-secondary-overlay
         (move-overlay mouse-secondary-overlay position (1+ position) (current-buffer))
       (setq mouse-secondary-overlay  (make-overlay position (1+ position) (current-buffer)))
