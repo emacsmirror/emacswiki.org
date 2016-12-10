@@ -57,6 +57,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/10 dadams
+;;     Added WHEN arg to make-obsolete (required, starting with Emacs 23).
 ;; 2014/02/21 dadams
 ;;     savehist-autosave-interval: Correct :type per Emacs 24 (can be nil).
 ;;     savehist-mode: Treat ARG like define-minor-mode would (e.g. for Lisp).
@@ -316,7 +318,10 @@ Do NOT call this from new code.  Use (savehist-mode 1) instead."
                 ;; Collect VAR, i.e. (nth form 1).
                 (push (nth 1 form) vars))
               vars)))))
-(make-obsolete 'savehist-load 'savehist-mode)
+
+(if (< emacs-major-version 22)
+    (make-obsolete 'savehist-load 'savehist-mode)
+  (make-obsolete 'savehist-load 'savehist-mode "WHEN?"))
 
 (defun savehist-install ()
   "Hook savehist into Emacs.
