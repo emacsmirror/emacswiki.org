@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 10 08:51:15 2016 (-0800)
+;; Last-Updated: Sat Dec 10 10:18:49 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5187
+;;     Update #: 5202
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,7 +19,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
+;;   `cl-lib', `color', `frame-fns', `gv', `help-fns',
 ;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+', `zones'.
 ;;
@@ -518,7 +519,42 @@
 ;;
 ;;    User option `isearchp-filter-predicates-alist' contains filter
 ;;    predicates that are available as completion candidates whenever
-;;    you are prompted for one.  See its documentation for details.
+;;    you are prompted for one.  This is an important option.  The
+;;    alist entries can be of several forms, which affect the behavior
+;;    differently.
+;;
+;;    In particular, instead of choosing a filter predicate as a
+;;    completion candidate, you can choose a function that creates and
+;;    returns a filter predicate, after prompting you for some more
+;;    information.
+;;
+;;    This is the case, for example, for function
+;;    `isearchp-near-before-predicate'.  It is used in the predefined
+;;    alist entry `("near<..."  isearchp-near-before-predicate)',
+;;    which associates the short name `near<...', as a completion
+;;    candidate, with the function.
+;;
+;;    When you choose this candidate, function
+;;    `isearchp-near-before-predicate' prompts you for another pattern
+;;    for Isearch to match, a max number of units of nearness, and
+;;    which units to measure with.  It constructs and returns a
+;;    predicate that checks those match parameters.  As usual, you can
+;;    be prompted for a short name and an Isearch prompt prefix to
+;;    associate with the newly defined predicate, so that you can
+;;    easily choose it again (no prompting).
+;;
+;;    For the completion candidates that are predefined, this
+;;    naming convention is used:
+;;
+;;    * Bracketed names (`[...]') stand for predicates that check that
+;;      the search hit is within something.  For example, name `[;]'
+;;      tests whether it is inside a comment.
+;;
+;;    * Names that end in `...' indicate candidates that prompt you
+;;      for more information.  These names represent, not filter
+;;      predicates, but functions that return filter predicates.  For
+;;      example, `near<...' stands for function
+;;      `isearchp-near-before-predicate' (see above).
 ;;
 ;;    Filter predicates that you add dynamically are added as
 ;;    completion candidates for the current Emacs session.  If option
@@ -936,6 +972,10 @@
 ;;(@* "Change log")
 ;;
 ;; 2016/12/10 dadams
+;;     isearchp-filter-predicates-alist: Added near* entries.  Updated doc for pred-creating entries.
+;;     isearchp-add-filter-predicate-1: Corrected isearchp-prompt-for-filter-name handling: added nil case.
+;;     isearchp-near-(before|after)-predicate:
+;;       Made args optional - initialized with isearchp-read-near-args.  Put prop isearchp-part-pred on them.
 ;;     isearchp-set-sel-and-yank: x-set-selection -> gui-set-selection for Emacs 25+.
 ;; 2016/12/09 dadams
 ;;     Added: isearchp-show-hit-w-crosshairs.
@@ -1889,26 +1929,42 @@ exit Isearch'."
                ("[#0F]" isearchp-in-hex-number-p      "[#0F]")))
       ,@(and (featurep 'crosshairs)
              '(("crosshairs" isearchp-show-hit-w-crosshairs)))
+      ("near<..."     isearchp-near-before-predicate)
+      ("near>..."     isearchp-near-after-predicate)
       )
     "Alist of filter predicates to choose from.
 Each entry has one of these forms, where NAME and PREFIX are strings,
-and PREDICATE is a predicate symbol or a lambda form suitable as a value of
+and FUNCTION is a predicate symbol or a lambda form suitable as a value of
 `isearch-filter-predicate'.
 
-* (NAME PREDICATE PREFIX)
-* (NAME PREDICATE)
-* (PREDICATE PREFIX)
-* (PREDICATE)
+* (NAME FUNCTION PREFIX)
+* (NAME FUNCTION)
+* (FUNCTION PREFIX)
+* (FUNCTION)
 
-NAME is typically a short name for PREDICATE.  You can use it, for
-example, to remove PREDICATE from `isearch-filter-predicate', using
+NAME is typically a short name for FUNCTION.  You can use it, for
+example, to remove FUNCTION from `isearch-filter-predicate', using
 `C-z -'.
 
-The alist is also used for completion when you are prompted to add a
-filter predicate.  If NAME is present for an entry then it is the
-completion candidate, and PREDICATE is shown next to it as an
-annotation in buffer `*Completions*'.  If NAME is not present then
-PREDICATE is the candidate."
+FUNCTION can also be a function symbol that is invoked with no
+arguments, and that then returns a predicate suitable for
+`isearch-filter-predicate'.  The use case here is to let you choose a
+function that prompts you for some additional information, which it
+uses to build a predicate.  In this case, symbol FUNCTION must have a
+non-nil `isearchp-part-pred' symbol-property value.
+
+Function `isearchp-near-before-predicate' is an example of this is
+kind of indirection: when you choose it, it prompts you for another
+pattern for Isearch to match, a max number of units of nearness, and
+which units to measure with.
+
+The alist is used for completion when you are prompted to add a filter
+predicate.  If NAME is present for an entry then it is the completion
+candidate that your input must match, and FUNCTION is shown next to it
+as an annotation in buffer `*Completions*'.  If NAME is not present
+then FUNCTION itself is the candidate.
+
+See function `isearchp-read-predicate' for more information."
     :type '(repeat
             (choice
              (list :tag "Short name, predicate, prompt prefix"
@@ -1959,9 +2015,9 @@ You can reverse the behavior by using a non-positive prefix arg: If
 you would normally be prompted then you are not prompted, and vice
 versa."
     :type '(choice
-            (const :tag "Do not prompt"                                  nil)
-            (const :tag "Prompt always"                                  always)
-            (const :tag "Prompt if non-symbol (e.g. anonymous (lambda))" non-symbol))
+            (const :tag "Do not prompt"                              nil)
+            (const :tag "Prompt always"                              always)
+            (const :tag "Prompt if non-symbol (e.g. anonymous (lambda))"  non-symbol))
     :group 'isearch-plus)
 
   (defcustom isearchp-prompt-for-prompt-prefix-flag t
@@ -4636,7 +4692,7 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
                   prefix  (nth 2 pred)
                   pred    (nth 1 pred))
           (if (nth 1 pred)
-              (setq prefix  (nth 1 pred) ; (PREDICATE PREFIX)
+              (setq prefix  (nth 1 pred)  ; (PREDICATE PREFIX)
                     pred    (nth 0 pred)) ; (PREDICATE)
             (setq pred  (nth 0 pred)))))
       (add-function where isearch-filter-predicate pred
@@ -4645,6 +4701,7 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
                                              (non-symbol  (if (not (symbolp pred))
                                                               (not flip-read-name-p)
                                                             flip-read-name-p))
+                                             ((nil)       flip-read-name-p)
                                              (t           (not flip-read-name-p))))
                                  `((name . ,(setq name  (or name  (isearchp-read-filter-name))))))
                             (and isearchp-show-filter-prompt-prefixes-flag
@@ -4997,12 +5054,19 @@ DISTANCE is a cons returned by function `isearchp-read-measure'."
                                (setq unit-pos  (point)))
                (save-match-data (re-search-forward ,pattern (min (point-max) unit-pos) t)))))))
 
-  (defun isearchp-near-before-predicate (pattern distance)
+
+  (put 'isearchp-near-before-predicate 'isearchp-part-pred t)
+  (defun isearchp-near-before-predicate (&optional pattern distance)
     "Return a predicate that tests if PATTERN precedes hit within DISTANCE.
+If PATTERN or DISTANCE is nil then you are prompted for them both.
 The predicate returns non-nil if PATTERN is found before the search
 hit, within DISTANCE.
 
 DISTANCE is a cons returned by function `isearchp-read-measure'."
+    (unless (and pattern  distance)
+      (let ((all  (isearchp-read-near-args "Near-before regexp: ")))
+        (setq pattern   (nth 0 all)
+              distance  (nth 1 all))))
     `(lambda (beg _)
        (save-excursion
          (goto-char beg)
@@ -5013,12 +5077,19 @@ DISTANCE is a cons returned by function `isearchp-read-measure'."
                            (setq unit-pos  (point)))
            (save-match-data (re-search-backward ,pattern (max (point-min) unit-pos) t))))))
 
-  (defun isearchp-near-after-predicate (pattern distance)
+
+  (put 'isearchp-near-after-predicate 'isearchp-part-pred t)
+  (defun isearchp-near-after-predicate (&optional pattern distance)
     "Return a predicate that tests if PATTERN succeeds hit within DISTANCE.
+If PATTERN or DISTANCE is nil then you are prompted for them both.
 The predicate returns non-nil if PATTERN is found after the search
 hit, within DISTANCE.
 
 DISTANCE is a cons returned by function `isearchp-read-measure'."
+    (unless (and pattern  distance)
+      (let ((all  (isearchp-read-near-args "Near-after regexp: ")))
+        (setq pattern   (nth 0 all)
+              distance  (nth 1 all))))
     `(lambda (_ end)
        (save-excursion
          (goto-char end)
