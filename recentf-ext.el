@@ -103,7 +103,7 @@
 (eval-when-compile (require 'cl))
 (defgroup recentf-ext nil
   "recentf-ext"
-  :group 'emacs)
+  :group 'files)
 (require 'recentf)
 
 (recentf-mode 1)
