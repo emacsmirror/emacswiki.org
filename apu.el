@@ -8,9 +8,9 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 12:13:07 2015 (-0800)
+;; Last-Updated: Sat Dec 10 08:44:18 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 722
+;;     Update #: 724
 ;; URL: http://www.emacswiki.org/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
@@ -120,6 +120,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/10 dadams
+;;     apu-copy-char-to-second-sel: x-set-selection -> gui-set-selection for Emacs 25+.
 ;; 2015/06/21 dadams
 ;;     Added: apu--patterns-not, apu-add-to-pats+bufs, apu-buf-name-for-matching, apu-chars-narrow-1,
 ;;            apu-delete-if, apu-remove-if.
@@ -541,7 +543,9 @@ If you have library `second-sel.el' then this also copies it to the
 `secondary-selection-ring'."
   (let* ((char  (char-after position))
          (strg  (string char)))
-    (x-set-selection 'SECONDARY strg)
+    (if (fboundp 'gui-set-selection)
+        (gui-set-selection 'SECONDARY strg) ; Emacs 25.1+.
+      (x-set-selection 'SECONDARY strg))
     (if mouse-secondary-overlay
         (move-overlay mouse-secondary-overlay position (1+ position) (current-buffer))
       (setq mouse-secondary-overlay  (make-overlay position (1+ position) (current-buffer)))
