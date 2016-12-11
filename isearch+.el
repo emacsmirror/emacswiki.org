@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 10 18:08:59 2016 (-0800)
+;; Last-Updated: Sat Dec 10 18:14:34 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5245
+;;     Update #: 5250
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -1648,9 +1648,30 @@ Don't forget to mention your Emacs and library versions."))
 
 ;; Needed only for Emacs < 22.
 ;;
-(defvar isearch-error nil "Error message for failed search.")
-(defvar isearch-face (if (facep 'isearch) 'isearch 'region)
-  "Face used to highlight Isearch search hit.")
+
+(when (< emacs-major-version 22)
+
+  ;; From vanilla Emacs 24.5
+  (defface isearch
+      '((((class color) (min-colors 88) (background light))
+         ;; The background must not be too dark, for that means
+         ;; the character is hard to see when the cursor is there.
+         (:background "magenta3" :foreground "lightskyblue1"))
+        (((class color) (min-colors 88) (background dark))
+         (:background "palevioletred2" :foreground "brown4"))
+        (((class color) (min-colors 16))
+         (:background "magenta4" :foreground "cyan1"))
+        (((class color) (min-colors 8))
+         (:background "magenta4" :foreground "cyan1"))
+        (t (:inverse-video t)))
+    "Face used to highlight Isearch search hit."
+    :group 'isearch :group 'basic-faces)
+
+  (defvar isearch-face 'isearch "Face used to highlight Isearch search hit.")
+
+  (defvar isearch-error nil "Error message for failed search.")
+
+  )
 
 (when (> emacs-major-version 21)        ; Emacs 22+
 
