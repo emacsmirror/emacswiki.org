@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 10 15:43:19 2016 (-0800)
+;; Last-Updated: Sat Dec 10 18:08:59 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5238
+;;     Update #: 5245
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,8 +19,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
-;;   `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
 ;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+', `zones'.
 ;;
@@ -212,8 +211,9 @@
 ;;    `isearchp-noprompt-action-function',
 ;;    `isearchp-orig-ring-bell-fn', `isearchp-pref-arg',
 ;;    `isearchp-reg-beg', `isearchp-reg-end',
-;;    `isearchp-replace-literally' (Emacs 22+), `isearchp-replacement'
-;;    (Emacs 22+), `isearchp--replacing-on-demand' (Emacs 22+),
+;;    `isearchp-regexp-level-overlays', `isearchp-replace-literally'
+;;    (Emacs 22+), `isearchp-replacement' (Emacs 22+),
+;;    `isearchp--replacing-on-demand' (Emacs 22+),
 ;;    `isearchp-saved-filter-predicate' (Emacs 24.4+),
 ;;    `isearch-update-post-hook' (Emacs 20-21),
 ;;    `isearchp-user-entered-new-filter-p' (Emacs 24.4+),
@@ -983,8 +983,8 @@
 ;;(@* "Change log")
 ;;
 ;; 2016/12/10 dadams
-;;     Added: isearchp-regexp-level-[1-8], isearchp-highlight-regexp-group-levels-flag, redefinition of
-;;            isearch-highlight (handles regexp-group matching).
+;;     Added: isearchp-regexp-level-[1-8], redefinition of isearch-highlight (handles regexp-group matching),
+;;            isearchp-regexp-level-overlays, isearchp-highlight-regexp-group-levels-flag.
 ;;     Added for Emacs < 22: isearch-face, isearch-error.
 ;;     isearchp-remove-mismatch, isearch-abort: Use (< emacs-major-version 22), not (boundp 'isearch-error).
 ;;     isearch-abort: For Emacs < 22, test isearch-invalid-regexp at the outset too.
@@ -1646,6 +1646,12 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "http://www.emacswiki.org/IsearchPlus")
   :link '(emacs-commentary-link :tag "Commentary" "isearch+"))
 
+;; Needed only for Emacs < 22.
+;;
+(defvar isearch-error nil "Error message for failed search.")
+(defvar isearch-face (if (facep 'isearch) 'isearch 'region)
+  "Face used to highlight Isearch search hit.")
+
 (when (> emacs-major-version 21)        ; Emacs 22+
 
   (defface isearch-fail
@@ -1872,12 +1878,6 @@ t     means search is never  case sensitive
           (const :tag "Respect option `search-upper-case'"  t)
           (const :tag "Case insensitive"                    yes))
   :group 'isearch-plus)
-
-
-;; Needed only for Emacs < 22.
-;;
-(defvar isearch-error nil "Error message for failed search.")
-(defvar isearch-face 'isearch "Face used to highlight Isearch search hit.")
 
 
 ;; Dynamic search filtering.
@@ -2365,6 +2365,9 @@ Set when Isearch is started.")
   "End of the nonempty active region or nil.
 If `isearchp-restrict-to-region-flag' then the former.
 Set when Isearch is started.")
+
+(defvar isearchp-regexp-level-overlays nil
+  "Overlays used to highlight context levels other than the top level.")
 
 (when (> emacs-major-version 21)
 
