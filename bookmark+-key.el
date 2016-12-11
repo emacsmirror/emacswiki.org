@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Wed Nov 23 11:08:57 2016 (-0800)
+;; Last-Updated: Sun Dec 11 16:02:10 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 769
+;;     Update #: 779
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -183,9 +183,10 @@ Each value of the list is a prefix key bound to keymap
 (defvar bmkp-bmenu-toggle-menu)         ; In `bookmark+-bmu.el'.
 (defvar bmkp-crosshairs-flag)           ; In `bookmark+-1.el'.
 (defvar bmkp-prompt-for-tags-flag)      ; In `bookmark+-1.el'.
+(defvar bmkp-replace-eww-keys-flag)     ; In `bookmark+-1.el' (Emacs 24.4+).
 (defvar bmkp-save-new-location-flag)    ; In `bookmark+-1.el'.
 (defvar diredp-bookmark-menu)           ; In `dired+.el'.
-(defvar eww-mode-map)                   ; In `eww.el' (Emacs 25+).
+(defvar eww-mode-map)                   ; In `eww.el' (Emacs 24.4+).
 (defvar gnus-summary-mode-map)          ; In `gnus-sum.el'.
 (defvar Info-mode-map)                  ; In `info.el'.
 (defvar Info-mode-menu)                 ; In `info.el'.
@@ -416,7 +417,15 @@ Each value of the list is a prefix key bound to keymap
 (define-key bmkp-jump-map              "d"    'bmkp-dired-jump)                             ; `C-x j d'
 (define-key bmkp-jump-other-window-map "d"    'bmkp-dired-jump-other-window)              ; `C-x 4 j d'
 
-(when (fboundp 'bmkp-eww-jump)          ; Emacs 25+
+(eval-after-load "eww"
+  '(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+    (when bmkp-replace-EWW-keys-flag
+      (bmkp-remap 'eww-add-bookmark       'bookmark-set               eww-mode-map)
+      (bmkp-remap 'eww-list-bookmarks     'bookmark-bmenu-list        eww-mode-map)
+      (bmkp-remap 'eww-next-bookmark      'bmkp-previous-url-bookmark eww-mode-map)
+      (bmkp-remap 'eww-previous-bookmark  'bmkp-previous-url-bookmark eww-mode-map))))
+
+(when (fboundp 'bmkp-eww-jump)          ; Emacs 24.4+
   (define-key bmkp-jump-map              "e"   'bmkp-eww-jump)                              ; `C-x j e'
   (define-key bmkp-jump-other-window-map "e"   'bmkp-eww-jump-other-window)               ; `C-x 4 j e'
   )
@@ -590,7 +599,7 @@ Each value of the list is a prefix key bound to keymap
                        '(menu-item "Jump to a Dired Bookmark" bmkp-dired-jump
                          :help "Jump to a bookmarked Dired buffer")))))))
 
-(when (fboundp 'bmkp-eww-jump)          ; Emacs 25+
+(when (fboundp 'bmkp-eww-jump)          ; Emacs 24.4+
   (add-hook 'eww-mode-hook
             (lambda () (unless (lookup-key eww-mode-map "j")
                          (define-key eww-mode-map "j" 'bmkp-eww-jump)))))
