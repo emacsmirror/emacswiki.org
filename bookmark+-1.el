@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Nov 27 17:23:02 2016 (-0800)
+;; Last-Updated: Sun Dec 11 15:59:03 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 8104
+;;     Update #: 8119
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -119,10 +119,10 @@
 ;;    `bmkp-bookmark-set-confirm-overwrite',
 ;;    `bmkp-choose-navlist-from-bookmark-list',
 ;;    `bmkp-choose-navlist-of-type', `bmkp-compilation-target-set',
-;;    `bmkp-compilation-target-set-all', `bmkp-copy-tags',
-;;    `bmkp-crosshairs-highlight', `bmkp-cycle',
-;;    `bmkp-cycle-autonamed', `bmkp-cycle-autonamed-other-window',
-;;    `bmkp-cycle-bookmark-list',
+;;    `bmkp-compilation-target-set-all', `bmkp-convert-eww-bookmarks'
+;;    (Emacs 24.4+), `bmkp-copy-tags', `bmkp-crosshairs-highlight',
+;;    `bmkp-cycle', `bmkp-cycle-autonamed',
+;;    `bmkp-cycle-autonamed-other-window', `bmkp-cycle-bookmark-list',
 ;;    `bmkp-cycle-bookmark-list-other-window', `bmkp-cycle-desktop',
 ;;    `bmkp-cycle-dired', `bmkp-cycle-dired-other-window',
 ;;    `bmkp-cycle-file', `bmkp-cycle-file-other-window',
@@ -323,7 +323,8 @@
 ;;    `bmkp-menu-popup-max-length', `bmkp-new-bookmark-default-names',
 ;;    `bmkp-other-window-pop-to-flag', `bmkp-prompt-for-tags-flag',
 ;;    `bmkp-properties-to-keep', `bmkp-read-bookmark-file-hook',
-;;    `bmkp-region-search-size', `bmkp-save-new-location-flag',
+;;    `bmkp-region-search-size', `bmkp-replace-eww-keys-flag' (Emacs
+;;    24.4+), `bmkp-save-new-location-flag',
 ;;    `bmkp-sequence-jump-display-function',
 ;;    `bmkp-show-end-of-region-flag', `bmkp-sort-comparer',
 ;;    `bmkp-su-or-sudo-regexp', `bmkp-tags-for-completion',
@@ -730,7 +731,7 @@
 (defvar dired-guess-shell-case-fold-search) ; In `dired-x.el'
 (defvar dired-subdir-alist)             ; In `dired.el'
 (defvar eww-current-title)              ; In `eww.el' (Emacs 24)
-(defvar eww-current-url)              ; In `eww.el' (Emacs 24)
+(defvar eww-current-url)                ; In `eww.el' (Emacs 24)
 (defvar eww-data)                       ; In `eww.el' (Emacs 25+)
 (defvar gnus-article-current)           ; In `gnus-sum.el'
 (defvar icicle-candidate-properties-alist) ; In `icicles-var.el'
@@ -1126,6 +1127,14 @@ updated (overwritten), with the exception of those listed here."
 (defcustom bmkp-region-search-size 40
   "*Same as `bookmark-search-size', but specialized for bookmark regions."
   :type 'integer :group 'bookmark-plus)
+
+;; EWW support
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+  (defcustom bmkp-replace-eww-keys-flag t
+    "Non-nil means replace EWW bookmarking keys and menus with Bookmark+ ones.
+If you change the value of this option then you must restart Emacs for
+it to take effect."
+    :type 'boolean :group 'bookmark-plus))
 
 ;;;###autoload (autoload 'bmkp-save-new-location-flag "bookmark+")
 (defcustom bmkp-save-new-location-flag t
@@ -9497,6 +9506,58 @@ BOOKMARK is a bookmark name or a bookmark record."
                                                        (sit-for 1)))
     (bookmark-default-handler
      `("" (buffer . ,(buffer-name (current-buffer))) . ,(bmkp-bookmark-data-from-record bookmark))))
+
+  ;; You can use this to convert existing EWW bookmarks to Bookmark+ bookmarks.
+  ;;
+  (defun bmkp-convert-eww-bookmarks (eww-file bmk-file &optional msgp)
+    "Add bookmarks from EWW-FILE to BMK-FILE.
+EWW-FILE is a file of \"bookmarks\" created by EWW, which are not
+compatible with Emacs bookmarks.  EWW-FILE is not modified.
+
+BMK-FILE is a Bookmark+ bookmarks file, which is an ordinary Emacs
+bookmarks file (possibly with Bookmark+-specific bookmarks).
+
+If BMK-FILE exists then it is updated to include the converted
+bookmarks.  If it does not exist then it is created."
+    (interactive
+     (let* ((std-default  (bmkp-default-bookmark-file))
+            (default      (if (bmkp-same-file-p bmkp-current-bookmark-file bmkp-last-bookmark-file)
+                              (if (bmkp-same-file-p bmkp-current-bookmark-file std-default)
+                                  bookmark-default-file
+                                std-default)
+                            bmkp-last-bookmark-file)))
+       (list (bmkp-read-bookmark-file-name "EWW bookmark file: "
+                                           nil
+                                           (expand-file-name "eww-bookmarks" user-emacs-directory)
+                                           t)
+             (bmkp-read-bookmark-file-name "Emacs bookmark file to update: "
+                                           (or (file-name-directory default)  "~/")
+                                           (if (bmkp-same-file-p bmkp-current-bookmark-file
+                                                                 bmkp-last-bookmark-file)
+                                               (bmkp-default-bookmark-file)
+                                             bmkp-last-bookmark-file))
+             t)))
+    (when (file-directory-p eww-file) (error "`%s' is a directory, not a file" eww-file))
+    (unless (file-readable-p eww-file) (error "Cannot read bookmark file `%s'" eww-file))
+    (when (file-directory-p bmk-file) (error "`%s' is a directory, not a file" bmk-file))
+    (unless (file-readable-p bmk-file) (bmkp-empty-file bmk-file)) ; Create empty bookmark file.
+    (with-temp-buffer
+      (insert-file-contents eww-file)
+      (let ((bookmark-alist  ())
+            url title created bmk)
+        (dolist (ebmk  (read (current-buffer)))
+          (setq url      (plist-get ebmk :url)
+                title    (plist-get ebmk :title)
+                created  (date-to-time (plist-get ebmk :time))
+                bmk      `(,title
+                           ,@(bookmark-make-record-default 'NO-FILE)
+                           (location . ,url)
+                           (handler . bmkp-jump-eww)))
+          (let ((buf-cell  (assq 'buffer-name bmk))) (setcdr buf-cell "*eww*"))
+          (let ((created-cell  (assq 'created bmk))) (setcdr created-cell created))
+          (push bmk bookmark-alist))
+        (bookmark-write-file bmk-file 'ADD)))
+    (when msgp (message "Wrote Bookmark file `%s'" bmk-file)))
 
   )
 
