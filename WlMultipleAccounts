@@ -121,6 +121,49 @@ This is an example where you have a single inbox, but want to select an identity
          ("Organization" . "Ratepayers Association"))))
 }}}
 
+== PGP encryption settings per account ==
+
+<code>wl-template-alist</code> can also be used to configure per-account encryption settings. For example, you might want to automatically encrypt all email that's sent from a particular account. 
+
+The <code>wl-template-alist</code> contains template names followed by a list of actions. Each action can be a cons cell that matches a mail headers (such as <code>(wl-from . "Me <chairman@example.org>")</code> in the example above), or it can be a function reference. This  function is run when the template is selected (manually, via <code>C-c C-j</code>, or automatically via <code>wl-draft-config-alist</code>).
+
+By adding functions that set the encryption settings for each template, encryption can be set up automatically per account:
+
+{{{(setq wl-template-alist
+      '(("gmail"
+         (wl-from . "Gmail account <myname@gmail.com>")
+         (wl-smtp-posting-user . "myname@gmail.com")
+         (wl-smtp-posting-server . "smtp.gmail.com")
+         (wl-smtp-authenticate-type ."plain")
+         (wl-smtp-connection-type . 'starttls)
+         (wl-smtp-posting-port . 587)
+         (wl-local-domain . "gmail.com")
+         (wl-message-id-domain . "smtp.gmail.com")
+         ("From" . wl-from)
+         ("Fcc" . nil)
+         ;; Disable encryption (when switching between accounts)
+         (lambda () (mime-edit-set-encrypt nil))
+         )
+        ("encrypted"
+         (wl-from . "Encrypted account <myname@encrypted.com>")
+         (wl-smtp-posting-user . "myname@encrypted.com")
+         (wl-smtp-posting-server . "smtp.encrypted.com")
+         (wl-smtp-authenticate-type ."plain")
+         (wl-smtp-connection-type . 'starttls)
+         (wl-smtp-posting-port . 587)
+         (wl-local-domain . "mail.encrypted.com")
+         (wl-message-id-domain . "encrypted.com")
+         ("From" . wl-from)
+         ("Fcc" . "%Sent:\"myname@encrypted.com\"/clear@mail.encrypted.com")
+         ;; Auto-encrypt this account and add our own key ID to
+         ;; recipient list otherwise we can't view the message
+         (lambda () 
+           (mime-edit-set-encrypt 't)
+           (setq mime-edit-pgp-encrypt-to-self 't))
+         )
+        ))
+}}}
+
 == Dispose (delete) method list ==
 
 {{{;; How messages with disposal mark ("d") are to be handled.
