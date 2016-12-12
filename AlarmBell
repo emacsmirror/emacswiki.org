@@ -38,7 +38,7 @@ If ##(setq visible-bell t)## doesn't work for you, you can use a different visua
                                (set-face-background 'default "DodgerBlue")
                                (set-face-foreground 'default "black")))
 
-
+But this will not flash. Instead the screen will stay blue.
 
 
 
