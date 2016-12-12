@@ -17,6 +17,18 @@ And you can always use `defadvice' (see AdvisingFunctions) to modify a command, 
              (y-or-n-p (&rest args) t))
         ad-do-it))
 
+
+
+On modern emacs versions with lexical scoping, avoiding flet:
+
+  (cl-flet ((always-yes (&rest _) t))
+    (defun no-confirm (fun &rest args)
+      "Apply FUN to ARGS, skipping user confirmations."
+      (cl-letf (((symbol-function 'y-or-n-p) #'always-yes)
+                ((symbol-function 'yes-or-no-p) #'always-yes))
+         (apply fun args))))
+
+
 Or you can predefine the answers for yes-or-no-p so you can select them with M-p.
 
     (mapcar (lambda (elt) (add-to-list 'yes-or-no-p-history elt))
@@ -38,16 +50,6 @@ function as an alias for `yes-or-no-p'.
       nil))
   
     (defalias 'yes-or-no-p 'my-yes-or-mumble-p)
-
-
-On modern emacs versions with lexical scoping:
-
-(cl-flet ((always-yes (&rest _) t))
-  (defun my-no-confirm (fun &rest args)
-    "Apply FUN to ARGS, skipping user confirmations."
-    (cl-letf (((symbol-function 'y-or-n-p) #'always-yes))
-       (apply fun args))))
-
 
 Other possibilities:
 
