@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Nov 27 17:29:29 2016 (-0800)
+;; Last-Updated: Sun Dec 11 16:02:20 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 16180
+;;     Update #: 16184
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2016/12/11 dadams
+;;     Added: bmkp-convert-eww-bookmarks, bmkp-replace-eww-keys-flag.
 ;; 2016/11/25 dadams
 ;;     bmkp-make-function-bookmark: Added bookmark-make-record-default, to include creation date.
 ;;     bmkp-make-sequence-record: Use 0 as position, in record.
@@ -1846,6 +1848,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2016/12/11 dadams
+;;     Remap EWW keys to bmkp- keys.
 ;; 2016/11/23 dadams
 ;;     Put :advertised-binding on several keys.
 ;; 2016/11/15 dadams
