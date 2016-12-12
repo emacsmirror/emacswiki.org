@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 10 08:39:39 2016 (-0800)
+;; Last-Updated: Sun Dec 11 21:01:58 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5720
+;;     Update #: 5728
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -323,6 +323,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/11 dadams
+;;     Added defvars for isearch(-regexp)-lax-whitespace for Emacs 24.1 and 24.2.
 ;; 2016/12/10 dadams
 ;;     Use string as 3rd arg to make-obsolete.
 ;; 2016/10/31 dadams
@@ -3591,6 +3593,27 @@ Syntax class:\\|User Option:\\|Variable:\\)\\(.*\\)\\([\n]          \\(.*\\)\\)*
 ;; Use `Info-isearch-search-p', not var `Info-isearch-search'.
 ;;
 (when (> emacs-major-version 23)        ; Emacs 24+
+
+  (unless (boundp 'isearch-lax-whitespace) ; Emacs 24.1, 24.2.
+    
+    (defvar isearch-lax-whitespace t
+      "If non-nil, a space will match a sequence of whitespace chars.
+When you enter a space or spaces in ordinary incremental search, it
+will match any sequence matched by the regexp defined by the variable
+`search-whitespace-regexp'.  If the value is nil, each space you type
+matches literally, against one space.  You can toggle the value of this
+variable by the command `isearch-toggle-lax-whitespace'.")
+
+    (defvar isearch-regexp-lax-whitespace nil
+      "If non-nil, a space will match a sequence of whitespace chars.
+When you enter a space or spaces in regexp incremental search, it
+will match any sequence matched by the regexp defined by the variable
+`search-whitespace-regexp'.  If the value is nil, each space you type
+matches literally, against one space.  You can toggle the value of this
+variable by the command `isearch-toggle-lax-whitespace'.")
+
+    )
+
   (defun Info-isearch-search () ; Use `Info-isearch-search-p', not var `Info-isearch-search'.
     (if (Info-isearch-search-p)
         (lambda (string &optional bound noerror count)
@@ -3609,10 +3632,13 @@ Syntax class:\\|User Option:\\|Variable:\\)\\(.*\\)\\([\n]          \\(.*\\)\\)*
                                (t (regexp-quote string)))
                          bound noerror count (unless isearch-forward 'backward)))
           (point))
-      (isearch-search-fun-default))))
+      (isearch-search-fun-default)))
+
+  )
 
 
 ;; REPLACES ORIGINAL in `info.el':
+;;
 ;; 1. Fit frame if `one-window-p'.
 ;; 2. Highlight the found regexp if `search-highlight'.
 ;; 3. Respect restriction to active region.
