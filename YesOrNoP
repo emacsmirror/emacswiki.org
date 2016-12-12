@@ -39,6 +39,16 @@ function as an alias for `yes-or-no-p'.
   
     (defalias 'yes-or-no-p 'my-yes-or-mumble-p)
 
+
+On modern emacs versions with lexical scoping:
+
+(cl-flet ((always-yes (&rest _) t))
+  (defun my-no-confirm (fun &rest args)
+    "Apply FUN to ARGS, skipping user confirmations."
+    (cl-letf (((symbol-function 'y-or-n-p) #'always-yes))
+       (apply fun args))))
+
+
 Other possibilities:
 
 * QuickYes -- add shortcuts <code>M-y</code> and <code>M-n</code>
