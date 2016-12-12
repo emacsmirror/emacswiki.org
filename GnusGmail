@@ -244,7 +244,7 @@ See the next section ([[#Expiring mails]]) for a more powerful way to delete ema
 [:Expiring mails]
 ===Expiring mails===
 
-The Gnus way to delete emails would be to expire them. By default, a email marked as expired gets hidden from the view (it is considered read) for 7 days before being deleted. With the way the delete action is implemented in Gmail, this means that after 7 days, the expired messages are archived and kept *forever*. If, like me, the idea of leaving all your trash accumulating in your backyard doesn't sound too appealing, the following options can be useful:
+The Gnus way to delete mails would be to expire them. By default, a mail marked as expired gets hidden from the view (it is considered read) for 7 days before being deleted. With the way the delete action is implemented in Gmail, this means that after 7 days, the expired messages are archived and kept *forever*. If, like me, the idea of leaving all your trash accumulating in your backyard doesn't sound too appealing, the following options can be useful:
 
 # nnmail-expiry-target: To tell the expiry process where to move the expired messages to. I set this to Gmail's trash, such as: <code>(setq nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")</code>.
 # nnmail-expiry-wait: This can be used to configure how long you'd like the expired messages to stick around. Since Gmail is already keeping the messages moved to its trash folder for 30 days, I set this to immediate: <code>(setq nnmail-expiry-wait 'immediate)</code>
