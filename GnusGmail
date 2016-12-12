@@ -41,6 +41,7 @@ This page describes how to configure Gnus to read and send mails from your gmail
 
 ----
 
+[:Configuration]
 ==Configuration==
 ===Accessing Gmail via IMAP===
 
@@ -51,7 +52,9 @@ Alternatively, you can configure Gmail IMAP as a secondary select method for Gnu
 (add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
                                   (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
                                   (nnimap-server-port "imaps")
-                                  (nnimap-stream ssl)))
+                                  (nnimap-stream ssl)
+                                  (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")  ; Move expired messages to Gmail's trash.
+                                  (nnmail-expiry-wait immediate))) ; Mails marked as expired can be processed immediately.
 
 (setq smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587
@@ -229,12 +232,24 @@ What is the equivalent Gnus command to the "Archive" button? (Remove from "Inbox
 Remove the "Inbox" tag by deleting from the "INBOX" folder with ##B DEL##.
 
 ===Deleting mails===
-How can you delete a mail in Gnus so that it disappears from your Inbox in gmail and goes to Trash?
+How can you delete a mail in Gnus so that it disappears from your Inbox in Gmail and goes to Trash?
 
 [new]
 ##B m## does ##gnus-summary-move-article##.  Invoke it, then type "[Gmail]/Trash".  In Gmail terms, this will remove the "Inbox" label and apply the "Trash" label.  Messages in the trash don't show up in other folders, even though they may have other labels. The Gmail server automatically purges the emails which have been in the "Trash" folder for more than 30 days.
 
 If you do not want to wait for the 30 days and want to immediately delete a message, it must first be moved to the Trash folder (or be in the Spam folder). Then, after opening the Trash or Spam folder, you can delete the message using ##B DEL## (##gnus-summary-delete-article##). Using the ##gnus-summary-delete-article## function from any other folder than Trash or Spam will strip the message of that label rather than deleting the message permanently.
+
+See the next section ([[#Expiring mails]]) for a more powerful way to delete emails.
+
+[:Expiring mails]
+===Expiring mails===
+
+The Gnus way to delete emails would be to expire them. By default, a email marked as expired gets hidden from the view (it is considered read) for 7 days before being deleted. With the way the delete action is implemented in Gmail, this means that after 7 days, the expired messages are archived and kept *forever*. If, like me, the idea of leaving all your trash accumulating in your backyard doesn't sound too appealing, the following options can be useful:
+
+# nnmail-expiry-target: To tell the expiry process where to move the expired messages to. I set this to Gmail's trash, such as: <code>(setq nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")</code>.
+# nnmail-expiry-wait: This can be used to configure how long you'd like the expired messages to stick around. Since Gmail is already keeping the messages moved to its trash folder for 30 days, I set this to immediate: <code>(setq nnmail-expiry-wait 'immediate)</code>
+
+If you copied your basic configuration from the [[#Configuration]] section, it should already be configured that way for you.
 
 ===Catching up===
 If you are seeing some mails in Gnus, and then you delete them in Gmail's web interface, how can make them also disappear from the Gnus view?
