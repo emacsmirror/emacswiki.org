@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 10 18:14:34 2016 (-0800)
+;; Last-Updated: Sun Dec 11 19:47:25 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5250
+;;     Update #: 5255
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -982,6 +982,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;;
+;; 2016/12/11 dadams
+;;     Predefine isearch-face for all Emacs versions < 24.
 ;; 2016/12/10 dadams
 ;;     Added: isearchp-regexp-level-[1-8], redefinition of isearch-highlight (handles regexp-group matching),
 ;;            isearchp-regexp-level-overlays, isearchp-highlight-regexp-group-levels-flag.
@@ -1667,11 +1670,12 @@ Don't forget to mention your Emacs and library versions."))
     "Face used to highlight Isearch search hit."
     :group 'isearch :group 'basic-faces)
 
-  (defvar isearch-face 'isearch "Face used to highlight Isearch search hit.")
-
   (defvar isearch-error nil "Error message for failed search.")
 
   )
+
+(when (< emacs-major-version 24)
+  (defvar isearch-face 'isearch "Face used to highlight Isearch search hit."))
 
 (when (> emacs-major-version 21)        ; Emacs 22+
 
