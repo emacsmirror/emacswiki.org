@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Dec 11 21:01:58 2016 (-0800)
+;; Last-Updated: Tue Dec 13 06:48:33 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5728
+;;     Update #: 5735
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -323,6 +323,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/13 dadams
+;;     Removed obsolete face aliases: info-menu-5, Info-title-*-face.
 ;; 2016/12/11 dadams
 ;;     Added defvars for isearch(-regexp)-lax-whitespace for Emacs 24.1 and 24.2.
 ;; 2016/12/10 dadams
@@ -860,33 +862,25 @@ Don't forget to mention your Emacs and library versions."))
     '((((type tty pc) (class color) (background dark))  :foreground "yellow" :weight bold)
       (((type tty pc) (class color) (background light)) :foreground "brown"  :weight bold))
   "*Face for info titles at level 1."
-  :group (if (facep 'info-title-1) 'info 'Info-Plus))
-;; backward-compatibility alias
-(put 'Info-title-1-face 'face-alias 'info-title-1)
+  :group 'info)
 
 ;;;###autoload
 (defface info-title-2
     '((((type tty pc) (class color)) :foreground "lightblue" :weight bold))
   "*Face for info titles at level 2."
-  :group (if (facep 'info-title-1) 'info 'Info-Plus))
-;; backward-compatibility alias
-(put 'Info-title-2-face 'face-alias 'info-title-2)
+  :group 'info)
 
 ;;;###autoload
 (defface info-title-3
     '((((type tty pc) (class color)) :weight bold))
   "*Face for info titles at level 3."
-  :group (if (facep 'info-title-1) 'info 'Info-Plus))
-;; backward-compatibility alias
-(put 'Info-title-3-face 'face-alias 'info-title-3)
+  :group 'info)
 
 ;;;###autoload
 (defface info-title-4
     '((((type tty pc) (class color)) :weight bold))
   "*Face for info titles at level 4."
-  :group (if (facep 'info-title-1) 'info 'Info-Plus))
-;; backward-compatibility alias
-(put 'Info-title-4-face 'face-alias 'info-title-4)
+  :group 'info)
 
 ;;; Faces for highlighting reference items
 ;;;###autoload
@@ -2490,10 +2484,10 @@ If key's command cannot be found by looking in indexes, then
                       (= (string-width (match-string 1))
                          (string-width (match-string 2))))
             (let* ((c     (preceding-char))
-                   (face  (cond ((= c ?*) 'Info-title-1-face)
-                                ((= c ?=) 'Info-title-2-face)
-                                ((= c ?-) 'Info-title-3-face)
-                                (t        'Info-title-4-face))))
+                   (face  (cond ((= c ?*) 'info-title-1)
+                                ((= c ?=) 'info-title-2)
+                                ((= c ?-) 'info-title-3)
+                                (t        'info-title-4))))
               (put-text-property (match-beginning 1) (match-end 1)
                                  'font-lock-face face))
             ;; This is a serious problem for trying to handle multiple
@@ -2652,7 +2646,7 @@ If key's command cannot be found by looking in indexes, then
                   (setq n  (1+ n))
                   (if (and (<= n 9)  (zerop (% n 3))) ; visual aids to help with 1-9 keys
                       (put-text-property (match-beginning 0) (1+ (match-beginning 0))
-                                         'font-lock-face 'info-menu-5)))
+                                         'font-lock-face 'info-menu-star)))
                 (when not-fontified-p
                   (add-text-properties
                    (match-beginning 1) (match-end 1)
@@ -2859,10 +2853,10 @@ If key's command cannot be found by looking in indexes, then
                       ;; text.  A typical counter example is when a continuation "..." is alone on a line.
                       (= (string-width (match-string 1)) (string-width (match-string 2))))
             (let* ((c     (preceding-char))
-                   (face  (cond ((= c ?*) 'Info-title-1-face)
-                                ((= c ?=) 'Info-title-2-face)
-                                ((= c ?-) 'Info-title-3-face)
-                                (t        'Info-title-4-face))))
+                   (face  (cond ((= c ?*) 'info-title-1)
+                                ((= c ?=) 'info-title-2)
+                                ((= c ?-) 'info-title-3)
+                                (t        'info-title-4))))
               (put-text-property (match-beginning 1) (match-end 1)
                                  'font-lock-face face))
             ;; This is a serious problem for trying to handle multiple
@@ -3010,7 +3004,7 @@ If key's command cannot be found by looking in indexes, then
                   (setq n  (1+ n))
                   (if (and (<= n 9)  (zerop (% n 3))) ; visual aids to help with 1-9 keys
                       (put-text-property (match-beginning 0) (1+ (match-beginning 0))
-                                         'font-lock-face 'info-menu-5)))
+                                         'font-lock-face 'info-menu-star)))
                 (when not-fontified-p
                   (add-text-properties
                    (match-beginning 1) (match-end 1)
@@ -3217,10 +3211,10 @@ If key's command cannot be found by looking in indexes, then
                       ;; the text.  A typical counter example is when a continuation "..." is alone on a line.
                       (= (string-width (match-string 1)) (string-width (match-string 2))))
             (let* ((c     (preceding-char))
-                   (face  (cond ((= c ?*) 'Info-title-1-face)
-                                ((= c ?=) 'Info-title-2-face)
-                                ((= c ?-) 'Info-title-3-face)
-                                (t        'Info-title-4-face))))
+                   (face  (cond ((= c ?*) 'info-title-1)
+                                ((= c ?=) 'info-title-2)
+                                ((= c ?-) 'info-title-3)
+                                (t        'info-title-4))))
               (put-text-property (match-beginning 1) (match-end 1)
                                  'font-lock-face face))
             ;; This is a serious problem for trying to handle multiple
@@ -3366,7 +3360,7 @@ If key's command cannot be found by looking in indexes, then
                   (setq n  (1+ n))
                   (when (and (<= n 9)  (zerop (% n 3))) ; visual aids to help with 1-9 keys
                     (put-text-property (match-beginning 0) (1+ (match-beginning 0))
-                                       'font-lock-face 'info-menu-5)))
+                                       'font-lock-face 'info-menu-star)))
                 (when not-fontified-p
                   (add-text-properties (match-beginning 1) (match-end 1)
                                        (list 'help-echo (if (and (match-end 3)
@@ -4013,7 +4007,7 @@ currently visited manuals."
   "Insert node name as header."
   ;; `infop-node-name' is free here - bound in `Info-merge-subnodes'.
   (insert (if (fboundp 'concat-w-faces)
-              (concat-w-faces (list 'Info-title-1-face infop-node-name)) ; FREE: INFOP-NODE-NAME
+              (concat-w-faces (list 'info-title-1 infop-node-name)) ; FREE: INFOP-NODE-NAME
             infop-node-name)
           "\n")
   (goto-char (point-min))
