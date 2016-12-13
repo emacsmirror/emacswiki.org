@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 13 07:47:37 2016 (-0800)
+;; Last-Updated: Tue Dec 13 14:32:57 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5340
+;;     Update #: 5343
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -1039,6 +1039,8 @@
 ;;(@* "Change log")
 ;;
 ;;
+;; 2016/12/13 dadams
+;;     isearchp-complement-filter: Reverse the dimming.
 ;; 2016/12/12 dadams
 ;;     Added: isearchp-toggle-highlighting-regexp-groups.  Bound to M-s h R.
 ;;     Bound isearchp-yank-line to M-s C-e (replacing isearch-yank-line).
@@ -5191,6 +5193,10 @@ associated `name'."
         (push opred preds))
       (setq preds                    (nreverse preds)
             already-complementing-p  (equal "not" (car preds)))
+      (when isearchp-lazy-dim-filter-failures-flag
+        (setq isearch-lazy-highlight-last-string  nil) ; To force `isearch-lazy-highlight-new-loop' to act.
+        (isearch-lazy-highlight-new-loop)
+        (isearch-update))
       (cond (already-complementing-p
              (isearchp-remove-filter-predicate "not") ; Just turn off complementing current.
              (when msgp (message (substitute-command-keys "No longer complementing: %s  \
