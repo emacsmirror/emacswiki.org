@@ -32,17 +32,22 @@ instead, put the following in your [[InitFile|init file]]:
 
 If ##(setq visible-bell t)## doesn't work for you, you can use a different visual indicator: 
 
-    ;; quiet, please! No dinging!
-    (setq visible-bell nil)
-    (setq ring-bell-function (lambda ()
-                               (set-face-background 'default "DodgerBlue")
-                               (set-face-foreground 'default "black")))
+{{{
+(setq lexical-binding t
+      visible-bell nil
+      ring-bell-function 'asc:flash-background)
+(defun asc:flash-background ()
+  (let ((fg (face-foreground 'default))
+	(bg (face-background 'default)))
+    (set-face-background 'default "DodgerBlue")
+    (set-face-foreground 'default "black")
+    (run-with-idle-timer
+     1 nil (lambda ()
+	     (set-face-background 'default bg)
+	     (set-face-foreground 'default fg)))))
+}}}
 
-But this will not flash. Instead the screen will stay blue.
-
-
-
-
+This uses a timer to turn the colors back to what they were.
 
 == Turn off alarms completely ==
 
