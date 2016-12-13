@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Dec 12 10:07:31 2016 (-0800)
+;; Last-Updated: Tue Dec 13 07:47:37 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5334
+;;     Update #: 5340
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,8 +19,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
-;;   `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
 ;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+', `zones'.
 ;;
@@ -647,7 +646,9 @@
 ;;
 ;;  * Optional highlighting of the first eight regexp-group levels,
 ;;    controlled by option
-;;    `isearchp-highlight-regexp-group-levels-flag'.
+;;    `isearchp-highlight-regexp-group-levels-flag'.  You can toggle
+;;    the value using `M-s h R' (command
+;;    `isearchp-toggle-highlighting-regexp-groups.') during Isearch.
 ;;
 ;;  * Whether search is literal or regexp is indicated in the mode
 ;;    line minor-mode lighter: `R*SEARCH' or `R*search', for regexp.
@@ -2297,7 +2298,9 @@ updated to reflect those changes."
 
 ;;;###autoload
 (defcustom isearchp-highlight-regexp-group-levels-flag t
-  "*Non-nil means highlight 1-8 regexp group levels, within search hit."
+  "*Non-nil means highlight 1-8 regexp group levels, within search hit.
+You can toggle this value using \\<isearch-mode-map>`\\[isearchp-toggle-highlighting-regexp-groups]' \
+during Isearch."
   :type 'boolean :group 'isearch-plus)
 
 ;;;###autoload
