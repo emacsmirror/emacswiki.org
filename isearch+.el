@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 13 14:32:57 2016 (-0800)
+;; Last-Updated: Tue Dec 13 19:59:25 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5343
+;;     Update #: 5361
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,7 +19,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
+;;   `cl-lib', `color', `frame-fns', `gv', `help-fns',
 ;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+', `zones'.
 ;;
@@ -189,7 +190,8 @@
 ;;    `isearchp-read-predicate' (Emacs 24.4+),
 ;;    `isearchp-read-prompt-prefix' (Emacs 24.4+),
 ;;    `isearchp-read-regexp-during-search' (Emacs 24.4+),
-;;    `isearchp-read-sexps', `isearchp-remove-duplicates',
+;;    `isearchp-read-sexps', `isearchp-redo-lazy-highlighting' (Emacs
+;;    24.4+), `isearchp-remove-duplicates',
 ;;    `isearchp-remove-mismatch', `isearchp-repeat-command',
 ;;    `isearchp-repeat-search-if-fail' (Emacs 22+),
 ;;    `isearchp-replace-fixed-case-p' (Emacs 22+),
@@ -1040,7 +1042,10 @@
 ;;
 ;;
 ;; 2016/12/13 dadams
-;;     isearchp-complement-filter: Reverse the dimming.
+;;     Added: isearchp-redo-lazy-highlighting.
+;;     isearchp-toggle-dimming-filter-failures, isearchp-add-filter-predicate-1,
+;;       isearchp-remove-filter-predicate, isearchp-complement-filter, isearchp-(re)set-filter-predicate:
+;;         Use isearchp-redo-lazy-highlighting.
 ;; 2016/12/12 dadams
 ;;     Added: isearchp-toggle-highlighting-regexp-groups.  Bound to M-s h R.
 ;;     Bound isearchp-yank-line to M-s C-e (replacing isearch-yank-line).
@@ -2987,6 +2992,10 @@ If turning it on, save now.  Note that turning it off does not reset
     (message "Lazy filter-failure highlighting is now %s"
              (if isearchp-lazy-dim-filter-failures-flag 'ON 'OFF))
     (sit-for 1)
+    (isearchp-redo-lazy-highlighting))
+
+  (defun isearchp-redo-lazy-highlighting ()
+    "Redisplay lazy highlighting."
     (setq isearch-lazy-highlight-last-string  nil) ; To force `isearch-lazy-highlight-new-loop' to act.
     (isearch-lazy-highlight-new-loop)
     (isearch-update))
@@ -5048,6 +5057,7 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
         (when isearchp-update-filter-predicates-alist-flag
           (customize-set-value 'isearchp-filter-predicates-alist isearchp-current-filter-preds-alist)
           (setq isearchp-current-filter-preds-alist  ())))
+      (isearchp-redo-lazy-highlighting)
       (when msgp (isearchp-show-filters))))
 
   (defun isearchp-read-filter-name ()
@@ -5175,6 +5185,7 @@ associated `name'."
     (when isearchp-update-filter-predicates-alist-flag
       (customize-set-value 'isearchp-filter-predicates-alist isearchp-current-filter-preds-alist)
       (setq isearchp-current-filter-preds-alist  ()))
+    (isearchp-redo-lazy-highlighting)
     (when msgp (isearchp-show-filters)))
 
   (defun isearchp-complement-filter (&optional msgp) ; `C-z ~'
@@ -5193,12 +5204,9 @@ associated `name'."
         (push opred preds))
       (setq preds                    (nreverse preds)
             already-complementing-p  (equal "not" (car preds)))
-      (when isearchp-lazy-dim-filter-failures-flag
-        (setq isearch-lazy-highlight-last-string  nil) ; To force `isearch-lazy-highlight-new-loop' to act.
-        (isearch-lazy-highlight-new-loop)
-        (isearch-update))
       (cond (already-complementing-p
              (isearchp-remove-filter-predicate "not") ; Just turn off complementing current.
+             (isearchp-redo-lazy-highlighting)
              (when msgp (message (substitute-command-keys "No longer complementing: %s  \
 \[use \\<isearch-mode-map>`\\[isearchp-save-filter-predicate]' to save, \
 `\\[isearchp-defun-filter-predicate]' to name]")
@@ -5206,6 +5214,7 @@ associated `name'."
             (t
              (add-function :around isearch-filter-predicate 'isearchp-not-pred
                            '((name . "not") (isearch-message-prefix . "NOT ")))
+             (isearchp-redo-lazy-highlighting)
              (when msgp (message (substitute-command-keys "NOT: %s  [use \\<isearch-mode-map>`\
 \\[isearchp-save-filter-predicate]' to save, `\\[isearchp-defun-filter-predicate]' to name]")
                                  (mapconcat 'identity preds ", ")))))))
@@ -5243,6 +5252,7 @@ during
 Isearch) to reset it to the default value."
     (interactive (list (isearchp-read-predicate "Set filter predicate: ") t))
     (setq isearch-filter-predicate  predicate)
+    (isearchp-redo-lazy-highlighting)
     (when msgp (isearchp-show-filters)))
 
   (defun isearchp-defun-filter-predicate (function-symbol &optional set-p save-p msgp) ; `C-z n'
@@ -5283,6 +5293,7 @@ By default, this is `isearch-filter-visible'."
     (interactive "p")
     (setq isearch-filter-predicate         #'isearch-filter-visible
           isearchp-saved-filter-predicate  isearch-filter-predicate)
+    (isearchp-redo-lazy-highlighting)
     (when msgp (message "`isearch-filter-predicate' is RESET to default: %s" isearch-filter-predicate)))
 
   (defun isearchp-near (pattern distance &optional flip-read-name-p flip-read-prefix-p msgp) ; `C-z @'
