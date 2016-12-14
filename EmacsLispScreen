@@ -47,6 +47,7 @@ Key features of %%ElScreen%% are:
 
 Following emacs variants are confirmed to run %%ElScreen%%:
 
+* GNU Emacs 25.1
 * GNU Emacs 23.0.92
 * GNU Emacs 22.0.50 (including Meadow 3.00-dev)
 * GNU Emacs 21.4
@@ -132,6 +133,8 @@ V. Oleynik).
  
  (eval-after-load "elscreen"
    '(add-hook 'elscreen-screen-update-hook 'elscreen-frame-title-update))
+
+In emacs 25.1, get-alist does not exist. alist-get does the same thing.
 
 === How to give each screen its own buffer-list ===
 
