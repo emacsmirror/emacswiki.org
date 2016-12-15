@@ -1,6 +1,6 @@
 [[image/right:EvilLogo]]
 
-'''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to [[Vimpulse]] and [VimMode vim-mode]. Its [https://bitbucket.org/lyro/evil/wiki/Home home page].
+'''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to the now-obsolete [[Vimpulse]] and [VimMode vim-mode]. Its [https://bitbucket.org/lyro/evil/wiki/Home home page].
 
 Current stable version: **1.2.12**
 
