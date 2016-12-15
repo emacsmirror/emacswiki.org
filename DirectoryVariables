@@ -32,7 +32,7 @@ Note that values are not evaluated. However, as in the <code>haskell-mode</code>
 
 == Notation ==
 
-Sometimes you'll see examples of .dir-locals.el files using fewer dots and parentheses, and the difference (or indeed equivalence) between the different ways of formatting them might be confusing, so you may wish to read the following page of the manual:
+Sometimes you'll see examples of .dir-locals.el files using fewer dots and parentheses, and the difference (or indeed equivalence) between the different ways of formatting them might be confusing, so you may wish to read the [[Manual:Dotted Pair Notation]] page of the manual:
 
     (info "(elisp) Dotted Pair Notation")
 
