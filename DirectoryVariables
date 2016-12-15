@@ -30,6 +30,16 @@ Here's an example of a `.dir-locals.el' file:
 
 Note that values are not evaluated. However, as in the <code>haskell-mode</code> instance above, you can use the special <code>eval</code> pseudo-variable to evaluate arbitrary code. Remember that when you do this you are no longer dealing with buffer-local variables, but simply evaluating elisp in the current context! e.g.: <code>(eval . (setq foo "bar"))</code> would only set a buffer-local value for <code>foo</code> if that variable was /automatically/ buffer-local.
 
+== Notation ==
+
+Sometimes you'll see examples of .dir-locals.el files using fewer dots and parentheses, and the difference (or indeed equivalence) between the different ways of formatting them might be confusing, so you may wish to read the following page of the manual:
+
+    (info "(elisp) Dotted Pair Notation")
+
+Note that the `add-dir-local-variable' command updates the file using non-dotted notation.
+
+== Without a .dir-locals.el file ==
+
 You can also configure directory local variables purely in elisp (i.e. /without/ using a .dir-local.el file). The following example uses [[TrampMode]] paths, and therefore requires directory variable support for remote files to have been enabled (see below).
 
     (dir-locals-set-class-variables
@@ -49,7 +59,7 @@ You can also configure directory local variables purely in elisp (i.e. /without/
     (dir-locals-set-directory-class
      "/scpc:(user)@(host):/home/(user)/Plone/zinstance/" 'plone-instance)
 
-----
+== Change log ==
 
 As of Emacs 24:
 
@@ -69,8 +79,6 @@ As of Emacs 24.3:
 * You can set the variable `enable-remote-dir-locals' to apply such
 values on remote files. (If you're using an earlier version of Emacs,
 see below.)
-
-----
 
 == Remote files (via Tramp) ==
 
