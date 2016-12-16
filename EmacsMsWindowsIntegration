@@ -9,16 +9,16 @@ Put the Emacs `bin' folder in the Windows ##PATH## environment variable (right-c
 
 Use this code for a desktop/task-bar shortcut:
 {{{
-emacsclientw.exe -na runemacs.exe -c ""
+emacsclientw.exe -na "" -c
 }}}
 
 This shortcut starts Emacs from scratch if it's not running, and opens a new frame if it is.
 
-The ##-c## is key: without it, you have to pass a file to open (even if it's ##""##, which does work but is uglier) or else emacsclient will exit with an error.
+The ##-c## is key: without it, you have to pass a file to open or else emacsclient will exit with an error.
 (Right-click on desktop, New Shortcut, etc., then drag the shortcut into the Quick-Launch bar if you want.)
 
   -n means no wait - don't wait for the server to return
-  -a EDITOR specifies to the emacsclientw.exe which editor to run if emacs.exe is not already running
+  -a EDITOR specifies to the emacsclientw.exe which editor to run if emacs.exe is not running. An empty string starts a new server if needed
   -c tells emacs to create a new frame instead of trying to use the existing frame
 
 Milouse, 2013/03/08: on Windows XP and Gnu/Emacs 24.2, I have to use the following shortcut to have things working as expected with a non integrated Emacs (just unziped version somewhere in my computer) [If you don't want to or can't add the emacs path to %PATH% as described above -- garyo] :
