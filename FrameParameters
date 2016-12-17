@@ -13,7 +13,7 @@ other ways to change the frame colors.
 
 Depending on your version of Emacs, variables and faces can be local to a frame in Emacs.
 
-Use `make-variable-frame-local' to make a variable frame-local. This essentially creates a frame parameter for the variable. XEmacs does not have frame-local variables.
+Use `make-variable-frame-local' to make a variable frame-local. This essentially creates a frame parameter for the variable. XEmacs does not have frame-local variables.  GNU Emacs has deprecated them since version 22.3.
 
 [[Faces]] can be local to a frame in both Emacs and XEmacs.
 
