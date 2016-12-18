@@ -148,9 +148,11 @@ These are the main '''<tt>[[isearch+.el]]</tt>''' features:
 
 * Case-sensitivity is indicated in the [[mode line]] minor-mode lighter: '''`ISEARCH'''' for case-insensitive; '''`Isearch'''' for case-sensitive.
 
-* Optional highlighting of the first eight [[regexp]]-group levels,
+* Optional highlighting of the first eight [[regexp]]-group levels in the current search hit,
 controlled by option
-'''`isearchp-highlight-regexp-group-levels-flag''''.  This is the effect:
+'''`isearchp-highlight-regexp-group-levels-flag''''.  For
+lazy-highlighting of other search hits, the odd groups are
+highlighted differently from the even groups.  This is the effect for the current search hit:
 
 :: [[image:IciclesSearchContextLevelsScreenshot]]
 
