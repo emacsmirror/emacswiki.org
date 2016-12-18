@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 13 19:59:25 2016 (-0800)
+;; Last-Updated: Sat Dec 17 20:28:11 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5361
+;;     Update #: 5400
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,8 +19,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
-;;   `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
 ;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+', `zones'.
 ;;
@@ -143,12 +142,13 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `isearch-fail', `isearchp-multi', `isearchp-overwrapped',
-;;    `isearchp-regexp', `isearchp-regexp-level-1',
-;;    `isearchp-regexp-level-2', `isearchp-regexp-level-3',
-;;    `isearchp-regexp-level-4', `isearchp-regexp-level-5',
-;;    `isearchp-regexp-level-6', `isearchp-regexp-level-7',
-;;    `isearchp-regexp-level-8', `isearchp-word', `isearchp-wrapped'.
+;;    `isearch-fail', `isearchp-lazy-odd-regexp-groups' (Emacs 24.3+),
+;;    `isearchp-multi', `isearchp-overwrapped', `isearchp-regexp',
+;;    `isearchp-regexp-level-1', `isearchp-regexp-level-2',
+;;    `isearchp-regexp-level-3', `isearchp-regexp-level-4',
+;;    `isearchp-regexp-level-5', `isearchp-regexp-level-6',
+;;    `isearchp-regexp-level-7', `isearchp-regexp-level-8',
+;;    `isearchp-word', `isearchp-wrapped'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -183,7 +183,7 @@
 ;;    `isearchp-near-after-predicate' (Emacs 24.4+),
 ;;    `isearchp-near-before-predicate' (Emacs 24.4+),
 ;;    `isearchp-near-predicate' (Emacs 24.4+), `isearchp-not-pred'
-;;    (Emacs 24.4+), `isearchp-read-face-names',
+;;    (Emacs 24.4+), `isearchp-oddp', `isearchp-read-face-names',
 ;;    `isearchp-read-face-names--read', `isearchp-read-filter-name'
 ;;    (Emacs 24.4+), `isearchp-read-measure' (Emacs 24.4+),
 ;;    `isearchp-read-near-args' (Emacs 24.4+),
@@ -210,6 +210,7 @@
 ;;    `isearchp-last-non-nil-invisible',
 ;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
 ;;    `isearchp-lazy-highlight-face' (Emacs 24.4+),
+;;    `isearchp-lazy-regexp-level-overlays' (Emacs 24.3+),
 ;;    `isearchp-nomodify-action-hook' (Emacs 22+),
 ;;    `isearchp-noprompt-action-function',
 ;;    `isearchp-orig-ring-bell-fn', `isearchp-pref-arg',
@@ -239,6 +240,7 @@
 ;;  `isearch-forward', `isearch-forward-regexp' -
 ;;                          Prefix arg can  `multi-isearch-buffers'.
 ;;  `isearch-highlight'   - Highlight also regexp-group levels.
+;;  `lazy-highlight-cleanup' - Delete lazy regexp overlays. (24.3+)
 ;;  `isearch-lazy-highlight-search' - Can limit to region (24.3+)
 ;;  `isearch-lazy-highlight-update' - Can limit to region (24.3+)
 ;;  `isearch-mode'        - Save cursor position relative to window.
@@ -646,11 +648,13 @@
 ;;    lighter: `ISEARCH' for case-insensitive; `Isearch' for
 ;;    case-sensitive.
 ;;
-;;  * Optional highlighting of the first eight regexp-group levels,
-;;    controlled by option
-;;    `isearchp-highlight-regexp-group-levels-flag'.  You can toggle
+;;  * Optional highlighting of the first eight regexp-group levels in
+;;    the current search hit, controlled by option
+;;    `isearchp-highlight-regexp-group-levels-flag'.  For
+;;    lazy-highlighting of other search hits, the odd groups are
+;;    highlighted differently from the even groups.  You can toggle
 ;;    the value using `M-s h R' (command
-;;    `isearchp-toggle-highlighting-regexp-groups.') during Isearch.
+;;    `isearchp-toggle-highlighting-regexp-groups.')  during Isearch.
 ;;
 ;;  * Whether search is literal or regexp is indicated in the mode
 ;;    line minor-mode lighter: `R*SEARCH' or `R*search', for regexp.
@@ -1041,6 +1045,13 @@
 ;;(@* "Change log")
 ;;
 ;;
+;; 2016/12/17 dadams
+;;     Added: isearchp-lazy-odd-regexp-groups, isearchp-oddp, isearchp-lazy-regexp-level-overlays.
+;;     Added redefinition of lazy-highlight-cleanup.
+;;     isearchp-lazy-highlight-face: Use for Emacs 24.3 too.
+;;     isearchp-toggle-highlighting-regexp-groups:
+;;       Delete isearchp-regexp-level-overlays too, and call isearchp-redo-lazy-highlighting.
+;;     isearch-lazy-highlight-update: Highlight odd regexp groups with face isearchp-lazy-odd-regexp-groups.
 ;; 2016/12/13 dadams
 ;;     Added: isearchp-redo-lazy-highlighting.
 ;;     isearchp-toggle-dimming-filter-failures, isearchp-add-filter-predicate-1,
@@ -1790,6 +1801,27 @@ Don't forget to mention your Emacs and library versions."))
     :group 'isearch-plus)
   )
 
+(when (or (> emacs-major-version 24)    ; Emacs 24.3+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+
+  (defface isearchp-lazy-odd-regexp-groups
+      `((((background dark))
+         (:background "paleturquoise3"))
+        (t (:background "paleturquoise2")))
+    "*Face used to lazy-highlight odd subgroups of your search context.
+This highlighting is done during regexp searching whenever
+`isearchp-highlight-regexp-group-levels-flag' is non-nil."
+    :group 'isearch-plus :group 'faces)
+
+  (defvar isearchp-lazy-highlight-face 'lazy-highlight
+    "Face currently used for lazy-highlighting.")
+
+  (defvar isearchp-lazy-regexp-level-overlays nil
+    "Overlays used to lazy-highlight odd subgroups of your search context.")
+
+  )
+
+
 
 ;; Regexp group highlighting.
 ;;
@@ -1998,9 +2030,6 @@ t     means search is never  case sensitive
   (define-key isearchp-filter-map (kbd "?")  'isearchp-show-filters)                          ; `C-z ?'
 
   (define-key isearch-mode-map (kbd "M-s h d") 'isearchp-toggle-dimming-filter-failures)      ; `M-s h d'
-
-  (defvar isearchp-lazy-highlight-face 'lazy-highlight
-    "Face currently used for lazy-highlighting.")
 
   )
 
@@ -4582,6 +4611,10 @@ Bound to `C-M-`' during Isearch."
   (interactive)
   (customize-set-value 'isearchp-highlight-regexp-group-levels-flag
                        (not isearchp-highlight-regexp-group-levels-flag))
+  (while isearchp-regexp-level-overlays
+    (delete-overlay (car isearchp-regexp-level-overlays))
+    (setq isearchp-regexp-level-overlays  (cdr isearchp-regexp-level-overlays)))
+  (isearchp-redo-lazy-highlighting)
   (message "Highlighting of regexp-group matches is now %s"
            (if isearchp-highlight-regexp-group-levels-flag 'ON 'OFF))
   (sit-for 1)
@@ -4733,7 +4766,7 @@ You need library `character-fold+.el' for this command."
   )
 
 
-;;; Support for limiting search to active region.
+;;; Support for limiting search to active region and other things.
 ;;;
 (when (or (> emacs-major-version 24)    ; Emacs 24.3+
           (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
@@ -4747,7 +4780,7 @@ You need library `character-fold+.el' for this command."
   ;;
   (defun isearch-search ()
     "Search using the current search string."
-    (when (< emacs-major-version 25)    ; $$$$$$ Should this message invocation be removed altogether?
+    (when (< emacs-major-version 25) ; $$$$$$ Should this message invocation be removed altogether?
       (if (and (boundp 'isearch-message-function)  isearch-message-function)
           (funcall isearch-message-function nil t)
         (isearch-message nil t)))
@@ -4839,7 +4872,7 @@ Attempt to do the search exactly the way the pending Isearch would."
                                 (window-group-start) ; Emacs 25+
                               (window-start))
                           (point-max)))))))
-          (while retry                  ; Use a loop, like in `isearch-search'.
+          (while retry         ; Use a loop, like in `isearch-search'.
             (setq success  (isearch-search-string isearch-lazy-highlight-last-string bound t))
             (let (filter-OK)
               ;; Clear RETRY, if `isearchp-lazy-dim-filter-failures-flag' is non-nil or if no search hit.
@@ -4867,6 +4900,7 @@ Attempt to do the search exactly the way the pending Isearch would."
   ;; 1. Use `isearchp-reg-(beg|end)', not point-min|max.
   ;; 2. Fixes Emacs bug #21092, at least for nil `lazy-highlight-max-at-a-time'.
   ;; 3. Binds `isearchp-in-lazy-highlight-update-p', as a convenience (e.g., for filter predicates).
+  ;; 4. Lazy-highlights odd regexp groups using face `isearchp-lazy-odd-regexp-groups'.
   ;;
   (defun isearch-lazy-highlight-update ()
     "Update highlighting of other matches for current search."
@@ -4914,18 +4948,37 @@ Attempt to do the search exactly the way the pending Isearch would."
                                           (point-min))))
                                 (setq found  nil)
                               (forward-char -1)))
-                        (let ((ov  (make-overlay mb me))) ; Non-zero-length match
-                          (push ov isearch-lazy-highlight-overlays)
-                          ;; 1000 is higher than ediff's 100+, but lower than isearch main overlay's 1001
-                          (overlay-put ov 'priority 1000)
-                          (overlay-put ov 'face isearchp-lazy-highlight-face)))
+                        (if isearchp-highlight-regexp-group-levels-flag
+                            (save-match-data
+                              (let ((level         1)
+                                    (ise-priority  1000))
+                                (save-excursion
+                                  (goto-char mb)
+                                  (when (looking-at isearch-string)
+                                    (condition-case nil
+                                        (while (not (equal (match-beginning level) (match-end level)))
+                                          (unless (equal (match-beginning level) (match-end level))
+                                            (let ((ov  (make-overlay (match-beginning level) (match-end level))))
+                                              (push ov isearchp-lazy-regexp-level-overlays)
+                                              (overlay-put ov 'priority 1000)
+                                              (overlay-put ov 'face
+                                                           (if (isearchp-oddp level)
+                                                               'isearchp-lazy-odd-regexp-groups
+                                                             isearchp-lazy-highlight-face))))
+                                          (setq level  (+ level 1)))
+                                      (error nil))))))
+                          (let ((ov  (make-overlay mb me))) ; Non-zero-length match
+                            (push ov isearch-lazy-highlight-overlays)
+                            ;; 1000 is higher than ediff's 100+, but lower than isearch main overlay's 1001
+                            (overlay-put ov 'priority 1000)
+                            (overlay-put ov 'face isearchp-lazy-highlight-face))))
 ;;;                       (overlay-put ov 'window (selected-window)))) ; Emacs 25+ commented this out.
                       ;; Remember current point for next call of `isearch-lazy-highlight-update' when
                       ;; `lazy-highlight-max-at-a-time' is too small.
                       (if isearch-lazy-highlight-forward
                           (setq isearch-lazy-highlight-end  (point))
                         (setq isearch-lazy-highlight-start  (point)))))
-                  (unless found         ; Not found or zero-length match at the search bound
+                  (unless found ; Not found or zero-length match at the search bound
                     (if isearch-lazy-highlight-wrapped
                         (setq looping  nil
                               nomore   t)
@@ -4950,6 +5003,30 @@ Attempt to do the search exactly the way the pending Isearch would."
               (unless nomore
                 (setq isearch-lazy-highlight-timer  (run-at-time lazy-highlight-interval nil
                                                                  'isearch-lazy-highlight-update)))))))))
+
+
+
+  ;; REPLACE ORIGINAL in `isearch.el'.
+  ;;
+  ;; Delete also `isearchp-lazy-regexp-level-overlays'.
+  ;;
+  (defun lazy-highlight-cleanup (&optional force)
+    "Stop lazy highlighting and remove extra highlighting from current buffer.
+FORCE non-nil means do it whether or not `lazy-highlight-cleanup'
+is nil.  This function is called when exiting an incremental search if
+`lazy-highlight-cleanup' is non-nil."
+    (interactive '(t))
+    (when (or force lazy-highlight-cleanup)
+      (while isearch-lazy-highlight-overlays
+        (delete-overlay (car isearch-lazy-highlight-overlays))
+        (setq isearch-lazy-highlight-overlays
+              (cdr isearch-lazy-highlight-overlays)))
+      (while isearchp-lazy-regexp-level-overlays
+        (delete-overlay (car isearchp-lazy-regexp-level-overlays))
+        (setq isearchp-lazy-regexp-level-overlays  (cdr isearchp-lazy-regexp-level-overlays))))
+    (when isearch-lazy-highlight-timer
+      (cancel-timer isearch-lazy-highlight-timer)
+      (setq isearch-lazy-highlight-timer nil)))
 
   )
 
@@ -5826,6 +5903,12 @@ Elements of ALIST that are not conses are ignored."
           (setcdr tail (cdr tail-cdr))
         (setq tail  tail-cdr))))
   alist)
+
+;; Same as `cl-oddp'.
+;;
+(defun isearchp-oddp (integer)
+  "Return t if INTEGER is odd."
+  (eq (logand integer 1) 1))
  
 ;;(@* "Keys and Hooks")
 
