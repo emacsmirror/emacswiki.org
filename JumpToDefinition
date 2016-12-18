@@ -6,6 +6,10 @@ ImenuMode scans the buffer using RegularExpressions specific to the buffer's mod
 You can then jump to any match using the resulting menu.
 Typically this is used to scan source code for definitions of functions, etc.
 
+== Dumb Jump ==
+
+[https://github.com/jacktasia/dumb-jump Dumb Jump] is an Emacs "jump to definition" package with support for multiple programming languages that favors "just working". It can use [https://github.com/ggreer/the_silver_searcher The Silver Searcher], [https://github.com/BurntSushi/ripgrep ripgrep], or grep to find potential definitions of a function or variable under point. No TAGS file required. Also supports jump preview and selection via a tooltip.
+
 == SemanticDB ==
 
 For buffers scanned by SemanticBovinator, I use the following code to jump to the definition of the symbol at point:
@@ -43,7 +47,3 @@ See also `my-jump-to-function' on my person-page, which uses ido completion with
 -- SeanO
 
 Semantic now contains <code>semantic-ia-fast-jump</code> in CVS, which also does this.  -- [[nschum]]
-
-== Dumb Jump ==
-
-[https://github.com/jacktasia/dumb-jump Dumb Jump] is an Emacs "jump to definition" package with support for multiple programming languages that favors "just working". It uses [https://github.com/ggreer/the_silver_searcher The Silver Searcher] (and falls back to grep) to find potential definitions of a function or variable under point.
