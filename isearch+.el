@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 17 23:18:44 2016 (-0800)
+;; Last-Updated: Sat Dec 17 23:26:06 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5464
+;;     Update #: 5466
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -1054,7 +1054,7 @@
 ;;     isearchp-highlight-regexp-group-levels-flag, isearchp-toggle-highlighting-regexp-groups:
 ;;       For Emacs 24.4+ only.
 ;;     isearchp-lazy-highlight-face, isearchp-redo-lazy-highlighting: For Emacs 22+ now.
-;;     isearch-highlight: Regexp highlighting is only for Emacs 24.4+.
+;;     isearch(-de)-highlight: Regexp highlighting is only for Emacs 24.4+.
 ;;     isearch-lazy-highlight-search: Protect isearchp-lazy-dim-filter-failures-flag, for Emacs 24.4+.
 ;;     isearch-lazy-highlight-update: Protect isearchp-highlight-regexp-group-levels-flag, for Emacs 24.4+.
 ;;     isearchp-toggle-highlighting-regexp-groups:
@@ -3587,9 +3587,10 @@ replacements from Isearch is `M-s w ... M-%'."
 (defun isearch-dehighlight (&rest __)
   "Delete `isearch-overlay' and overlays in `isearchp-regexp-level-overlays'."
   (when isearch-overlay (delete-overlay isearch-overlay))
-  (while isearchp-regexp-level-overlays
-    (delete-overlay (car isearchp-regexp-level-overlays))
-    (setq isearchp-regexp-level-overlays  (cdr isearchp-regexp-level-overlays))))
+  (when (boundp 'isearchp-regexp-level-overlays)
+    (while isearchp-regexp-level-overlays
+      (delete-overlay (car isearchp-regexp-level-overlays))
+      (setq isearchp-regexp-level-overlays  (cdr isearchp-regexp-level-overlays)))))
 
 
 ;; ADVISE `isearch-update' to run `isearch-update-post-hook', in Emacs 20-21.
