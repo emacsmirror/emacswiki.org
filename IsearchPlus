@@ -152,7 +152,10 @@ These are the main '''<tt>[[isearch+.el]]</tt>''' features:
 controlled by option
 '''`isearchp-highlight-regexp-group-levels-flag''''.  For
 lazy-highlighting of other search hits, the odd groups are
-highlighted differently from the even groups.  This is the effect for the current search hit:
+highlighted differently from the even groups.  This is the effect for a search hit for regexp 
+##(##'''##\(##'''##[-a-z*]+##'''##\)##'''## *##'''##\(##'''##(##'''##\(##'''##([-a-z]+ *##'''##\(##'''##[^)]*##'''##\)##'''##)##'''##\)##'''##)##'''##\)##'''##.*##
+:
+
 
 :: [[image:IciclesSearchContextLevelsScreenshot]]
 
