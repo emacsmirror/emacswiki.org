@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 17 20:54:27 2016 (-0800)
+;; Last-Updated: Sat Dec 17 23:18:44 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5403
+;;     Update #: 5464
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -126,7 +126,7 @@
 ;;    24.3+), `isearchp-drop-mismatch',
 ;;    `isearchp-drop-mismatch-regexp-flag',
 ;;    `isearchp-filter-predicates-alist' (Emacs 24.4+),
-;;    `isearchp-highlight-regexp-group-levels-flag',
+;;    `isearchp-highlight-regexp-group-levels-flag' (Emacs 24.4+),
 ;;    `isearchp-initiate-edit-commands' (Emacs 22+),
 ;;    `isearchp-lazy-dim-filter-failures-flag' (Emacs 24.4+),
 ;;    `isearchp-mouse-2-flag', `isearchp-movement-unit-alist' (Emacs
@@ -142,13 +142,17 @@
 ;;
 ;;  Faces defined here:
 ;;
-;;    `isearch-fail', `isearchp-lazy-odd-regexp-groups' (Emacs 24.3+),
+;;    `isearch-fail', `isearchp-lazy-odd-regexp-groups' (Emacs 24.4+),
 ;;    `isearchp-multi', `isearchp-overwrapped', `isearchp-regexp',
-;;    `isearchp-regexp-level-1', `isearchp-regexp-level-2',
-;;    `isearchp-regexp-level-3', `isearchp-regexp-level-4',
-;;    `isearchp-regexp-level-5', `isearchp-regexp-level-6',
-;;    `isearchp-regexp-level-7', `isearchp-regexp-level-8',
-;;    `isearchp-word', `isearchp-wrapped'.
+;;    `isearchp-regexp-level-1' (Emacs 24.4+),
+;;    `isearchp-regexp-level-2' (Emacs 24.4+),
+;;    `isearchp-regexp-level-3' (Emacs 24.4+),
+;;    `isearchp-regexp-level-4' (Emacs 24.4+),
+;;    `isearchp-regexp-level-5' (Emacs 24.4+),
+;;    `isearchp-regexp-level-6' (Emacs 24.4+),
+;;    `isearchp-regexp-level-7' (Emacs 24.4+),
+;;    `isearchp-regexp-level-8' (Emacs 24.4+), `isearchp-word',
+;;    `isearchp-wrapped'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -191,10 +195,9 @@
 ;;    `isearchp-read-prompt-prefix' (Emacs 24.4+),
 ;;    `isearchp-read-regexp-during-search' (Emacs 24.4+),
 ;;    `isearchp-read-sexps', `isearchp-redo-lazy-highlighting' (Emacs
-;;    24.3+), `isearchp-remove-duplicates',
-;;    `isearchp-remove-mismatch', `isearchp-repeat-command',
-;;    `isearchp-repeat-search-if-fail' (Emacs 22+),
-;;    `isearchp-replace-fixed-case-p' (Emacs 22+),
+;;    24.4+), `isearchp-remove-duplicates', `isearchp-remove-mismatch',
+;;    `isearchp-repeat-command', `isearchp-repeat-search-if-fail'
+;;    (Emacs 22+), `isearchp-replace-fixed-case-p' (Emacs 22+),
 ;;    `isearchp-replace-match' (Emacs 22+),
 ;;    `isearchp-replace-multiple' (Emacs 22+),
 ;;    `isearchp-replace-on-demand' (Emacs 22+),
@@ -209,15 +212,15 @@
 ;;    `isearchp-in-lazy-highlight-update-p' (Emacs 24.3+),
 ;;    `isearchp-last-non-nil-invisible',
 ;;    `isearchp-last-quit-regexp-search', `isearchp-last-quit-search',
-;;    `isearchp-lazy-highlight-face' (Emacs 24.4+),
-;;    `isearchp-lazy-regexp-level-overlays' (Emacs 24.3+),
+;;    `isearchp-lazy-highlight-face' (Emacs 22+),
+;;    `isearchp-lazy-regexp-level-overlays' (Emacs 24.4+),
 ;;    `isearchp-nomodify-action-hook' (Emacs 22+),
 ;;    `isearchp-noprompt-action-function',
 ;;    `isearchp-orig-ring-bell-fn', `isearchp-pref-arg',
 ;;    `isearchp-reg-beg', `isearchp-reg-end',
-;;    `isearchp-regexp-level-overlays', `isearchp-replace-literally'
-;;    (Emacs 22+), `isearchp-replacement' (Emacs 22+),
-;;    `isearchp--replacing-on-demand' (Emacs 22+),
+;;    `isearchp-regexp-level-overlays' (Emacs 24.4+),
+;;    `isearchp-replace-literally' (Emacs 22+), `isearchp-replacement'
+;;    (Emacs 22+), `isearchp--replacing-on-demand' (Emacs 22+),
 ;;    `isearchp-saved-filter-predicate' (Emacs 24.4+),
 ;;    `isearch-update-post-hook' (Emacs 20-21),
 ;;    `isearchp-user-entered-new-filter-p' (Emacs 24.4+),
@@ -240,7 +243,7 @@
 ;;  `isearch-forward', `isearch-forward-regexp' -
 ;;                          Prefix arg can  `multi-isearch-buffers'.
 ;;  `isearch-highlight'   - Highlight also regexp-group levels.
-;;  `lazy-highlight-cleanup' - Delete lazy regexp overlays. (24.3+)
+;;  `lazy-highlight-cleanup' - Delete lazy regexp overlays. (24.4+)
 ;;  `isearch-lazy-highlight-search' - Can limit to region (24.3+)
 ;;  `isearch-lazy-highlight-update' - Can limit to region (24.3+)
 ;;  `isearch-mode'        - Save cursor position relative to window.
@@ -1048,7 +1051,12 @@
 ;; 2016/12/17 dadams
 ;;     Added: isearchp-lazy-odd-regexp-groups, isearchp-oddp, isearchp-lazy-regexp-level-overlays.
 ;;     Added redefinition of lazy-highlight-cleanup.
-;;     isearchp-lazy-highlight-face, isearchp-redo-lazy-highlighting: Use for Emacs 24.3 too.
+;;     isearchp-highlight-regexp-group-levels-flag, isearchp-toggle-highlighting-regexp-groups:
+;;       For Emacs 24.4+ only.
+;;     isearchp-lazy-highlight-face, isearchp-redo-lazy-highlighting: For Emacs 22+ now.
+;;     isearch-highlight: Regexp highlighting is only for Emacs 24.4+.
+;;     isearch-lazy-highlight-search: Protect isearchp-lazy-dim-filter-failures-flag, for Emacs 24.4+.
+;;     isearch-lazy-highlight-update: Protect isearchp-highlight-regexp-group-levels-flag, for Emacs 24.4+.
 ;;     isearchp-toggle-highlighting-regexp-groups:
 ;;       Delete isearchp-regexp-level-overlays too, and call isearchp-redo-lazy-highlighting.
 ;;     isearch-lazy-highlight-update: Highlight odd regexp groups with face isearchp-lazy-odd-regexp-groups.
@@ -1696,7 +1704,7 @@
 (defvar isearchp-show-filter-prompt-prefixes-flag) ; Here (Emacs 24.4+).
 (defvar isearchp-update-filter-predicates-alist-flag) ; Here (Emacs 24.4+).
 (defvar last-repeatable-command)         ; In `repeat.el'.
-(defvar lazy-highlight-cleanup)         ; In `isearch.el' (Emacs 22+).
+(defvar lazy-highlight-cleanup)          ; In `isearch.el' (Emacs 22+).
 (defvar lazy-highlight-interval)         ; In `isearch.el' (Emacs 24+).
 (defvar lazy-highlight-max-at-a-time)    ; In `isearch.el' (Emacs 24+).
 (defvar minibuffer-message-timeout)      ; In Emacs C code.
@@ -1801,8 +1809,155 @@ Don't forget to mention your Emacs and library versions."))
     :group 'isearch-plus)
   )
 
-(when (or (> emacs-major-version 24)    ; Emacs 24.3+
-          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+
+;; Regexp group highlighting.
+;;
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+
+  (defface isearchp-regexp-level-1
+      (if (and (facep 'icicle-search-context-level-1) ; In `icicles-face.el'
+               (> emacs-major-version 21))
+          '((t (:inherit icicle-search-context-level-1)))
+        (let ((context-bg  (face-background isearch-face)))
+          `((((background dark))
+             (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                               (hexrgb-increment-saturation
+                                (hexrgb-increment-hue context-bg 0.80) 0.10)
+                               "#071F473A0000"))) ; a dark green
+            (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                                 (hexrgb-increment-saturation
+                                  (hexrgb-increment-hue context-bg 0.80) 0.10)
+                                 "#FA6CC847FFFF")))))) ; a light magenta
+    "*Face used to highlight subgroup level 1 of your search context.
+This highlighting is done during regexp searching whenever
+`isearchp-highlight-regexp-group-levels-flag' is non-nil."
+    :group 'isearch-plus :group 'faces)
+
+  (defface isearchp-regexp-level-2
+      (if (and (facep 'icicle-search-context-level-2) ; In `icicles-face.el'
+               (> emacs-major-version 21))
+          '((t (:inherit icicle-search-context-level-2)))
+        (let ((context-bg  (face-background isearch-face)))
+          `((((background dark))
+             (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                               (hexrgb-increment-saturation
+                                (hexrgb-increment-hue context-bg 0.40) 0.10)
+                               "#507400002839"))) ; a dark red
+            (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                                 (hexrgb-increment-saturation
+                                  (hexrgb-increment-hue context-bg 0.40) 0.10)
+                                 "#C847FFFFE423")))))) ; a light cyan
+    "*Face used to highlight subgroup level 2 of your search context.
+This highlighting is done during regexp searching whenever
+`isearchp-highlight-regexp-group-levels-flag' is non-nil."
+    :group 'isearch-plus :group 'faces)
+
+  (defface isearchp-regexp-level-3
+      (if (and (facep 'icicle-search-context-level-3) ; In `icicles-face.el'
+               (> emacs-major-version 21))
+          '((t (:inherit icicle-search-context-level-3)))
+        (let ((context-bg  (face-background isearch-face)))
+          `((((background dark))
+             (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                               (hexrgb-increment-saturation
+                                (hexrgb-increment-hue context-bg 0.60) 0.10)
+                               "#4517305D0000"))) ; a dark brown
+            (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                                 (hexrgb-increment-saturation
+                                  (hexrgb-increment-hue context-bg 0.60) 0.10)
+                                 "#C847D8FEFFFF")))))) ; a light blue
+    "*Face used to highlight subgroup level 3 of your search context.
+This highlighting is done during regexp searching whenever
+`isearchp-highlight-regexp-group-levels-flag' is non-nil."
+    :group 'isearch-plus :group 'faces)
+
+  (defface isearchp-regexp-level-4
+      (if (and (facep 'icicle-search-context-level-4) ; In `icicles-face.el'
+               (> emacs-major-version 21))
+          '((t (:inherit icicle-search-context-level-4)))
+        (let ((context-bg  (face-background isearch-face)))
+          `((((background dark))
+             (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                               (hexrgb-increment-saturation
+                                (hexrgb-increment-hue context-bg 0.20) 0.10)
+                               "#176900004E0A"))) ; a dark blue
+            (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                                 (hexrgb-increment-saturation
+                                  (hexrgb-increment-hue context-bg 0.20) 0.10)
+                                 "#EF47FFFFC847")))))) ; a light yellow
+    "*Face used to highlight subgroup level 4 of your search context.
+This highlighting is done during regexp searching whenever
+`isearchp-highlight-regexp-group-levels-flag' is non-nil."
+    :group 'isearch-plus :group 'faces)
+
+  (defface isearchp-regexp-level-5
+      (if (and (facep 'icicle-search-context-level-5) ; In `icicles-face.el'
+               (> emacs-major-version 21))
+          '((t (:inherit icicle-search-context-level-5)))
+        (let ((context-bg  (face-background isearch-face)))
+          `((((background dark))
+             (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                               (hexrgb-increment-hue context-bg 0.80)
+                               "#04602BC00000"))) ; a very dark green
+            (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                                 (hexrgb-increment-hue context-bg 0.80)
+                                 "#FCFCE1E1FFFF")))))) ; a light magenta
+    "*Face used to highlight subgroup level 5 of your search context.
+This highlighting is done during regexp searching whenever
+`isearchp-highlight-regexp-group-levels-flag' is non-nil."
+    :group 'isearch-plus :group 'faces)
+
+  (defface isearchp-regexp-level-6
+      (if (and (facep 'icicle-search-context-level-6) ; In `icicles-face.el'
+               (> emacs-major-version 21))
+          '((t (:inherit icicle-search-context-level-6)))
+        (let ((context-bg  (face-background isearch-face)))
+          `((((background dark))
+             (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                               (hexrgb-increment-hue context-bg 0.40)
+                               "#32F200001979"))) ; a very dark red
+            (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                                 (hexrgb-increment-hue context-bg 0.40)
+                                 "#E1E1FFFFF0F0")))))) ; a light cyan
+    "*Face used to highlight subgroup level 6 of your search context.
+This highlighting is done during regexp searching whenever
+`isearchp-highlight-regexp-group-levels-flag' is non-nil."
+    :group 'isearch-plus :group 'faces)
+
+  (defface isearchp-regexp-level-7
+      (if (and (facep 'icicle-search-context-level-7) ; In `icicles-face.el'
+               (> emacs-major-version 21))
+          '((t (:inherit icicle-search-context-level-7)))
+        (let ((context-bg  (face-background isearch-face)))
+          `((((background dark))
+             (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                               (hexrgb-increment-hue context-bg 0.60)
+                               "#316B22970000"))) ; a very dark brown
+            (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                                 (hexrgb-increment-hue context-bg 0.60)
+                                 "#E1E1EAEAFFFF")))))) ; a light blue
+    "*Face used to highlight subgroup level 7 of your search context.
+This highlighting is done during regexp searching whenever
+`isearchp-highlight-regexp-group-levels-flag' is non-nil."
+    :group 'isearch-plus :group 'faces)
+
+  (defface isearchp-regexp-level-8
+      (if (and (facep 'icicle-search-context-level-8) ; In `icicles-face.el'
+               (> emacs-major-version 21))
+          '((t (:inherit icicle-search-context-level-8)))
+        (let ((context-bg  (face-background isearch-face)))
+          `((((background dark))
+             (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                               (hexrgb-increment-hue context-bg 0.20)
+                               "#12EC00003F0E"))) ; a very dark blue
+            (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
+                                 (hexrgb-increment-hue context-bg 0.20)
+                                 "#F6F5FFFFE1E1")))))) ; a light yellow
+    "*Face used to highlight subgroup level 8 of your search context.
+This highlighting is done during regexp searching whenever
+`isearchp-highlight-regexp-group-levels-flag' is non-nil."
+    :group 'isearch-plus :group 'faces)
 
   (defface isearchp-lazy-odd-regexp-groups
       `((((background dark))
@@ -1813,161 +1968,10 @@ This highlighting is done during regexp searching whenever
 `isearchp-highlight-regexp-group-levels-flag' is non-nil."
     :group 'isearch-plus :group 'faces)
 
-  (defvar isearchp-lazy-highlight-face 'lazy-highlight
-    "Face currently used for lazy-highlighting.")
-
   (defvar isearchp-lazy-regexp-level-overlays nil
     "Overlays used to lazy-highlight odd subgroups of your search context.")
 
   )
-
-
-
-;; Regexp group highlighting.
-;;
-(defface isearchp-regexp-level-1
-    (if (and (facep 'icicle-search-context-level-1) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-1)))
-      (let ((context-bg  (face-background isearch-face)))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-saturation
-                              (hexrgb-increment-hue context-bg 0.80) 0.10)
-                             "#071F473A0000"))) ; a dark green
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-saturation
-                                (hexrgb-increment-hue context-bg 0.80) 0.10)
-                               "#FA6CC847FFFF")))))) ; a light magenta
-  "*Face used to highlight subgroup level 1 of your search context.
-This highlighting is done during regexp searching whenever
-`isearchp-highlight-regexp-group-levels-flag' is non-nil."
-  :group 'isearch-plus :group 'faces)
-
-(defface isearchp-regexp-level-2
-    (if (and (facep 'icicle-search-context-level-2) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-2)))
-      (let ((context-bg  (face-background isearch-face)))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-saturation
-                              (hexrgb-increment-hue context-bg 0.40) 0.10)
-                             "#507400002839"))) ; a dark red
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-saturation
-                                (hexrgb-increment-hue context-bg 0.40) 0.10)
-                               "#C847FFFFE423")))))) ; a light cyan
-  "*Face used to highlight subgroup level 2 of your search context.
-This highlighting is done during regexp searching whenever
-`isearchp-highlight-regexp-group-levels-flag' is non-nil."
-  :group 'isearch-plus :group 'faces)
-
-(defface isearchp-regexp-level-3
-    (if (and (facep 'icicle-search-context-level-3) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-3)))
-      (let ((context-bg  (face-background isearch-face)))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-saturation
-                              (hexrgb-increment-hue context-bg 0.60) 0.10)
-                             "#4517305D0000"))) ; a dark brown
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-saturation
-                                (hexrgb-increment-hue context-bg 0.60) 0.10)
-                               "#C847D8FEFFFF")))))) ; a light blue
-  "*Face used to highlight subgroup level 3 of your search context.
-This highlighting is done during regexp searching whenever
-`isearchp-highlight-regexp-group-levels-flag' is non-nil."
-  :group 'isearch-plus :group 'faces)
-
-(defface isearchp-regexp-level-4
-    (if (and (facep 'icicle-search-context-level-4) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-4)))
-      (let ((context-bg  (face-background isearch-face)))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-saturation
-                              (hexrgb-increment-hue context-bg 0.20) 0.10)
-                             "#176900004E0A"))) ; a dark blue
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-saturation
-                                (hexrgb-increment-hue context-bg 0.20) 0.10)
-                               "#EF47FFFFC847")))))) ; a light yellow
-  "*Face used to highlight subgroup level 4 of your search context.
-This highlighting is done during regexp searching whenever
-`isearchp-highlight-regexp-group-levels-flag' is non-nil."
-  :group 'isearch-plus :group 'faces)
-
-(defface isearchp-regexp-level-5
-    (if (and (facep 'icicle-search-context-level-5) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-5)))
-      (let ((context-bg  (face-background isearch-face)))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-hue context-bg 0.80)
-                             "#04602BC00000"))) ; a very dark green
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-hue context-bg 0.80)
-                               "#FCFCE1E1FFFF")))))) ; a light magenta
-  "*Face used to highlight subgroup level 5 of your search context.
-This highlighting is done during regexp searching whenever
-`isearchp-highlight-regexp-group-levels-flag' is non-nil."
-  :group 'isearch-plus :group 'faces)
-
-(defface isearchp-regexp-level-6
-    (if (and (facep 'icicle-search-context-level-6) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-6)))
-      (let ((context-bg  (face-background isearch-face)))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-hue context-bg 0.40)
-                             "#32F200001979"))) ; a very dark red
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-hue context-bg 0.40)
-                               "#E1E1FFFFF0F0")))))) ; a light cyan
-  "*Face used to highlight subgroup level 6 of your search context.
-This highlighting is done during regexp searching whenever
-`isearchp-highlight-regexp-group-levels-flag' is non-nil."
-  :group 'isearch-plus :group 'faces)
-
-(defface isearchp-regexp-level-7
-    (if (and (facep 'icicle-search-context-level-7) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-7)))
-      (let ((context-bg  (face-background isearch-face)))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-hue context-bg 0.60)
-                             "#316B22970000"))) ; a very dark brown
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-hue context-bg 0.60)
-                               "#E1E1EAEAFFFF")))))) ; a light blue
-  "*Face used to highlight subgroup level 7 of your search context.
-This highlighting is done during regexp searching whenever
-`isearchp-highlight-regexp-group-levels-flag' is non-nil."
-  :group 'isearch-plus :group 'faces)
-
-(defface isearchp-regexp-level-8
-    (if (and (facep 'icicle-search-context-level-8) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-8)))
-      (let ((context-bg  (face-background isearch-face)))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-hue context-bg 0.20)
-                             "#12EC00003F0E"))) ; a very dark blue
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-hue context-bg 0.20)
-                               "#F6F5FFFFE1E1")))))) ; a light yellow
-  "*Face used to highlight subgroup level 8 of your search context.
-This highlighting is done during regexp searching whenever
-`isearchp-highlight-regexp-group-levels-flag' is non-nil."
-  :group 'isearch-plus :group 'faces)
 
 
 ;; Dynamic search filtering.
@@ -2185,6 +2189,7 @@ See also option `isearchp-deactivate-region-flag'."
 
 
 ;; Dynamic search filtering.
+;;
 (when (or (> emacs-major-version 24)    ; Emacs 24.4+
           (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
@@ -2330,14 +2335,20 @@ added dynamically, option `isearchp-filter-predicates-alist' is
 updated to reflect those changes."
     :type 'boolean :group 'isearch-plus)
 
-  )
+)
 
-;;;###autoload
-(defcustom isearchp-highlight-regexp-group-levels-flag t
-  "*Non-nil means highlight 1-8 regexp group levels, within search hit.
+;; Regexp group highlighting.
+;;
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+
+  (defcustom isearchp-highlight-regexp-group-levels-flag t
+    "*Non-nil means highlight 1-8 regexp group levels, within search hit.
 You can toggle this value using \\<isearch-mode-map>`\\[isearchp-toggle-highlighting-regexp-groups]' \
 during Isearch."
-  :type 'boolean :group 'isearch-plus)
+    :type 'boolean :group 'isearch-plus)
+
+  )
 
 ;;;###autoload
 (defcustom isearchp-mouse-2-flag t
@@ -2488,8 +2499,13 @@ Set when Isearch is started.")
 If `isearchp-restrict-to-region-flag' then the former.
 Set when Isearch is started.")
 
-(defvar isearchp-regexp-level-overlays nil
-  "Overlays used to highlight context levels other than the top level.")
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+
+  (defvar isearchp-regexp-level-overlays nil
+    "Overlays used to highlight context levels other than the top level.")
+
+  )
 
 (when (> emacs-major-version 21)
 
@@ -3532,10 +3548,13 @@ replacements from Isearch is `M-s w ... M-%'."
       ;; 1001 is higher than lazy's 1000 and ediff's 100+
       (overlay-put isearch-overlay 'priority 1001)
       (overlay-put isearch-overlay 'face isearch-face))
-    (when (and isearch-regexp
+
+    ;; Regexp-group highlighting - Emacs 24.4+.
+    (when (and (boundp 'isearchp-highlight-regexp-group-levels-flag)
+               isearchp-highlight-regexp-group-levels-flag
+               isearch-regexp
                isearch-success
-               (if (< emacs-major-version 22) (not isearch-invalid-regexp) (not isearch-error))
-               isearchp-highlight-regexp-group-levels-flag)
+               (not isearch-error))
       (while isearchp-regexp-level-overlays
         (delete-overlay (car isearchp-regexp-level-overlays))
         (setq isearchp-regexp-level-overlays  (cdr isearchp-regexp-level-overlays)))
@@ -4449,6 +4468,7 @@ If SPACE-BEFORE is non-nil,  put a space before, instead of after it."
 
 
 ;;; Replacement on demand.  Emacs 22+
+;;;
 (when (> emacs-major-version 21)
 
   (defvar isearchp--replacing-on-demand nil
@@ -4573,8 +4593,18 @@ Bound to `C-M-`' during Isearch."
 
   )
 
-
+;; Basic lazy highlighting.
+;;
 (when (boundp 'isearch-lazy-highlight)  ; Emacs 22+
+
+  (defvar isearchp-lazy-highlight-face 'lazy-highlight
+    "Face currently used for lazy-highlighting.")
+
+  (defun isearchp-redo-lazy-highlighting ()
+    "Redisplay lazy highlighting."
+    (setq isearch-lazy-highlight-last-string  nil) ; To force `isearch-lazy-highlight-new-loop' to act.
+    (isearch-lazy-highlight-new-loop)
+    (isearch-update))
 
   (defun isearchp-toggle-lazy-highlight-cleanup () ; Bound to `M-s h l' in `isearch-mode-map'.
     "Toggle `lazy-highlight-cleanup'."
@@ -4599,20 +4629,51 @@ Bound to `C-M-`' during Isearch."
 
   )
 
-;;;###autoload
-(defun isearchp-toggle-highlighting-regexp-groups () ; Bound to `M-s h R' in `isearch-mode-map'.
-  "Toggle option `isearchp-highlight-regexp-group-levels-flag'."
-  (interactive)
-  (customize-set-value 'isearchp-highlight-regexp-group-levels-flag
-                       (not isearchp-highlight-regexp-group-levels-flag))
-  (while isearchp-regexp-level-overlays
-    (delete-overlay (car isearchp-regexp-level-overlays))
-    (setq isearchp-regexp-level-overlays  (cdr isearchp-regexp-level-overlays)))
-  (isearchp-redo-lazy-highlighting)
-  (message "Highlighting of regexp-group matches is now %s"
-           (if isearchp-highlight-regexp-group-levels-flag 'ON 'OFF))
-  (sit-for 1)
-  (isearch-update))
+
+;; Regexp group highlighting.
+;;
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+
+  (defun isearchp-toggle-highlighting-regexp-groups () ; Bound to `M-s h R' in `isearch-mode-map'.
+    "Toggle option `isearchp-highlight-regexp-group-levels-flag'."
+    (interactive)
+    (customize-set-value 'isearchp-highlight-regexp-group-levels-flag
+                         (not isearchp-highlight-regexp-group-levels-flag))
+    (while isearchp-regexp-level-overlays
+      (delete-overlay (car isearchp-regexp-level-overlays))
+      (setq isearchp-regexp-level-overlays  (cdr isearchp-regexp-level-overlays)))
+    (isearchp-redo-lazy-highlighting)
+    (message "Highlighting of regexp-group matches is now %s"
+             (if isearchp-highlight-regexp-group-levels-flag 'ON 'OFF))
+    (sit-for 1)
+    (isearch-update))
+
+
+  ;; REPLACE ORIGINAL in `isearch.el'.
+  ;;
+  ;; Delete also `isearchp-lazy-regexp-level-overlays'.
+  ;;
+  (defun lazy-highlight-cleanup (&optional force)
+    "Stop lazy highlighting and remove extra highlighting from current buffer.
+FORCE non-nil means do it whether or not `lazy-highlight-cleanup'
+is nil.  This function is called when exiting an incremental search if
+`lazy-highlight-cleanup' is non-nil."
+    (interactive '(t))
+    (when (or force lazy-highlight-cleanup)
+      (while isearch-lazy-highlight-overlays
+        (delete-overlay (car isearch-lazy-highlight-overlays))
+        (setq isearch-lazy-highlight-overlays
+              (cdr isearch-lazy-highlight-overlays)))
+      (when (boundp 'isearchp-lazy-regexp-level-overlays) ; Emacs 24.4+
+        (while isearchp-lazy-regexp-level-overlays
+          (delete-overlay (car isearchp-lazy-regexp-level-overlays))
+          (setq isearchp-lazy-regexp-level-overlays  (cdr isearchp-lazy-regexp-level-overlays)))))
+    (when isearch-lazy-highlight-timer
+      (cancel-timer isearch-lazy-highlight-timer)
+      (setq isearch-lazy-highlight-timer nil)))
+
+  )
 
 
 (when (featurep 'character-fold+)
@@ -4870,7 +4931,8 @@ Attempt to do the search exactly the way the pending Isearch would."
             (setq success  (isearch-search-string isearch-lazy-highlight-last-string bound t))
             (let (filter-OK)
               ;; Clear RETRY, if `isearchp-lazy-dim-filter-failures-flag' is non-nil or if no search hit.
-              (when (or isearchp-lazy-dim-filter-failures-flag
+              (when (or (and (boundp 'isearchp-lazy-dim-filter-failures-flag)
+                             isearchp-lazy-dim-filter-failures-flag)
                         (not success)
                         (= (point) bound) ; like (bobp) (eobp) in `isearch-search'.
                         (= (match-beginning 0) (match-end 0)))
@@ -4878,7 +4940,8 @@ Attempt to do the search exactly the way the pending Isearch would."
               ;; Check filter predicate.  If `isearchp-lazy-dim-filter-failures-flag' is non-nil
               ;; then set face according to filter success.  Otherwise, clear RETRY if filter succeeded. 
               (setq filter-OK  (funcall isearch-filter-predicate (match-beginning 0) (match-end 0)))
-              (if isearchp-lazy-dim-filter-failures-flag
+              (if (and (boundp 'isearchp-lazy-dim-filter-failures-flag)
+                       isearchp-lazy-dim-filter-failures-flag)
                   (setq isearchp-lazy-highlight-face  (if filter-OK lazy-highlight-face dim-face))
                 (setq isearchp-lazy-highlight-face  lazy-highlight-face)
                 (when filter-OK (setq retry  nil)))))
@@ -4942,7 +5005,8 @@ Attempt to do the search exactly the way the pending Isearch would."
                                           (point-min))))
                                 (setq found  nil)
                               (forward-char -1)))
-                        (if isearchp-highlight-regexp-group-levels-flag
+                        (if (and (boundp 'isearchp-highlight-regexp-group-levels-flag) ; Emacs 24.4+
+                                 isearchp-highlight-regexp-group-levels-flag)
                             (save-match-data
                               (let ((level         1)
                                     (ise-priority  1000))
@@ -4997,36 +5061,6 @@ Attempt to do the search exactly the way the pending Isearch would."
               (unless nomore
                 (setq isearch-lazy-highlight-timer  (run-at-time lazy-highlight-interval nil
                                                                  'isearch-lazy-highlight-update)))))))))
-
-
-
-  ;; REPLACE ORIGINAL in `isearch.el'.
-  ;;
-  ;; Delete also `isearchp-lazy-regexp-level-overlays'.
-  ;;
-  (defun lazy-highlight-cleanup (&optional force)
-    "Stop lazy highlighting and remove extra highlighting from current buffer.
-FORCE non-nil means do it whether or not `lazy-highlight-cleanup'
-is nil.  This function is called when exiting an incremental search if
-`lazy-highlight-cleanup' is non-nil."
-    (interactive '(t))
-    (when (or force lazy-highlight-cleanup)
-      (while isearch-lazy-highlight-overlays
-        (delete-overlay (car isearch-lazy-highlight-overlays))
-        (setq isearch-lazy-highlight-overlays
-              (cdr isearch-lazy-highlight-overlays)))
-      (while isearchp-lazy-regexp-level-overlays
-        (delete-overlay (car isearchp-lazy-regexp-level-overlays))
-        (setq isearchp-lazy-regexp-level-overlays  (cdr isearchp-lazy-regexp-level-overlays))))
-    (when isearch-lazy-highlight-timer
-      (cancel-timer isearch-lazy-highlight-timer)
-      (setq isearch-lazy-highlight-timer nil)))
-
-  (defun isearchp-redo-lazy-highlighting ()
-    "Redisplay lazy highlighting."
-    (setq isearch-lazy-highlight-last-string  nil) ; To force `isearch-lazy-highlight-new-loop' to act.
-    (isearch-lazy-highlight-new-loop)
-    (isearch-update))
 
   )
 
