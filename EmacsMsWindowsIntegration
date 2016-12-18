@@ -28,6 +28,37 @@ C:\Path\To\emacsclientw.exe --alternate-editor="C:\Path\To\runemacs.exe" -c
 
 And, more important thing: you have to put the ##(server-start)## declaration in your init.el file, otherwise the shortcut will keep creating new and disconnected instance of emacs.
 
+== Windows 10/Emacs 25-* ==
+= Run Emacs server at windows startup & create shortcut to Emacs client =
+
+In your Emacs/bin directory (where your Emacs binaries are) create a shortcut to ##runemacs.exe##. You may right-click on file ##runemacs.exe## and choose ##send-to desktop (create shortcut)##.
+
+Right click on newly created shortcut and choose ##Properties##. 
+In ##Target## put following: ##"X:\path\to\emacs\bin\runemacs.exe" --daemon## , X:\path\to\emacs is your drive letter and path where emacs resides on your harddrive. Close the properties dialog. 
+
+Press ##Win+r## to open Run dialog and type ##shell:startup##.
+
+Copy your newly created link to Emacs server into opened directory. Emacs will start up automatically next time you start the system. Double click on the shortcut to start Emacs server now if it is not already running.
+
+In your Emacs/bin directory, create a new shortcut file to ##emacsclientw.exe##.
+Open Properties for newly created shortcut and in ##Target## type: 
+##X:\path\to\emacs\bin\emacsclientw.exe -na "X:\path\to\emacs\bin\emacsclientw.exe" -c -n##
+In ##Open in## field, type ##%Documents%## or whatever your choice for default directory is.
+Close the ##Properties## dialog and rename your shortcut to just: ##emacs##
+Drag your newly created shortcut to your startbar, or desktop or wherever you wish to have it.
+
+OBS: No need to edit your .emacs file and add server line to it.
+
+== Send-To Context Menu ==
+Press ##Win+r## and in Run dialog type ##shell:sendto##. Copy your newly created shortcut to emacs client to folder that just opened. This will create an entry in ##send to## context menu so you can right click on any document and choose to open it in Emacs.
+
+== Debug Version ==
+Sometimes it is usefull to be able to start up default autonomous copy of Emacs (not client/server), for example if you play with your config file.
+
+Create a new shortcut to "emacs.exe".
+Right click newly created shortcut and choose properties.
+In ##target## field type: ##"C:\Program Files\emacs\bin\emacs.exe" --debug-init##
+Close properties dialog.
 
 == Create File Associations ==
 
