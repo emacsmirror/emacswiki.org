@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 17 23:51:04 2016 (-0800)
+;; Last-Updated: Sun Dec 18 13:11:35 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5467
+;;     Update #: 5474
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,7 +19,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
+;;   `cl-lib', `color', `frame-fns', `gv', `help-fns',
 ;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+', `zones'.
 ;;
@@ -1048,6 +1049,8 @@
 ;;(@* "Change log")
 ;;
 ;;
+;; 2016/12/18 dadams
+;;     isearch-lazy-highlight-update: Do not try to highlight regexp groups if there are none.
 ;; 2016/12/17 dadams
 ;;     Added: isearchp-lazy-odd-regexp-groups, isearchp-oddp, isearchp-lazy-regexp-level-overlays.
 ;;     Added redefinition of lazy-highlight-cleanup.
@@ -5007,7 +5010,9 @@ Attempt to do the search exactly the way the pending Isearch would."
                                 (setq found  nil)
                               (forward-char -1)))
                         (if (and (boundp 'isearchp-highlight-regexp-group-levels-flag) ; Emacs 24.4+
-                                 isearchp-highlight-regexp-group-levels-flag)
+                                 isearchp-highlight-regexp-group-levels-flag
+                                 isearch-regexp
+                                 (> (regexp-opt-depth isearch-string) 0))
                             (save-match-data
                               (let ((level         1)
                                     (ise-priority  1000))
