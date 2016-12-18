@@ -220,6 +220,16 @@ out a complex regexp, to see what it is actually matching.
 Command '''`hlt-unhighlight-regexp-groups-region'''' unhighlights such
 highlighting.
 
+This image shows the effect for the regexp 
+##(##'''##\(##'''##[-a-z*]+##'''##\)##'''## *##'''##\(##'''##(##'''##\(##'''##([-a-z]+ *##'''##\(##'''##[^)]*##'''##\)##'''##)##'''##\)##'''##)##'''##\)##'''##.*##
+:
+
+[[image:IciclesSearchContextLevelsScreenshot]]
+
+
+
+
+
 
 [:hlt-highlight-all-prop]
 [:hlt-highlight-property-with-value]
