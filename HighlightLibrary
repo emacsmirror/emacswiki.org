@@ -202,11 +202,23 @@ Command '''`hlt-eraser'''' lets you delete highlighting by dragging the
 mouse.  However, its behavior is quite different for overlays and
 text properties, and it is perhaps different from you expect.    If
 option '''`hlt-use-overlays-flag'''' is not '''`only'''' then it removes
-text-property highlighting for '''''*ALL*''''' faces (not just highlighting faces).
+text-property highlighting for '''*ALL*''' faces (not just highlighting faces).
 
 A [[prefix argument|prefix arg]] for `hlt-highlighter' and `hlt-eraser' acts the same as for `hlt-next-face': it lets you choose the face to use.  It has no effect for `hlt-eraser' unless `hlt-use-overlays-flag' is `only', in which case it erases the ##N##th face in
 `hlt-auto-face-backgrounds', where ##N## is the prefix arg.
 
+
+
+[:hlt-highlight-regexp-groups-region]
+[:hlt-unhighlight-regexp-groups-region]
+Command '''`hlt-highlight-regexp-groups-region'''', like command
+`hlt-highlight-regexp-region', highlights regexp matches.  But
+unlike the latter, it ''highlights the regexp groups'' (up to 8
+levels) using different faces - faces '''`hlt-regexp-level-1'''' through
+'''`hlt-regexp-level-8''''.  Use it, for example, when you are trying
+out a complex regexp, to see what it is actually matching.
+Command '''`hlt-unhighlight-regexp-groups-region'''' unhighlights such
+highlighting.
 
 
 [:hlt-highlight-all-prop]
