@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 17 20:28:11 2016 (-0800)
+;; Last-Updated: Sat Dec 17 20:54:27 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5400
+;;     Update #: 5403
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -191,7 +191,7 @@
 ;;    `isearchp-read-prompt-prefix' (Emacs 24.4+),
 ;;    `isearchp-read-regexp-during-search' (Emacs 24.4+),
 ;;    `isearchp-read-sexps', `isearchp-redo-lazy-highlighting' (Emacs
-;;    24.4+), `isearchp-remove-duplicates',
+;;    24.3+), `isearchp-remove-duplicates',
 ;;    `isearchp-remove-mismatch', `isearchp-repeat-command',
 ;;    `isearchp-repeat-search-if-fail' (Emacs 22+),
 ;;    `isearchp-replace-fixed-case-p' (Emacs 22+),
@@ -1048,7 +1048,7 @@
 ;; 2016/12/17 dadams
 ;;     Added: isearchp-lazy-odd-regexp-groups, isearchp-oddp, isearchp-lazy-regexp-level-overlays.
 ;;     Added redefinition of lazy-highlight-cleanup.
-;;     isearchp-lazy-highlight-face: Use for Emacs 24.3 too.
+;;     isearchp-lazy-highlight-face, isearchp-redo-lazy-highlighting: Use for Emacs 24.3 too.
 ;;     isearchp-toggle-highlighting-regexp-groups:
 ;;       Delete isearchp-regexp-level-overlays too, and call isearchp-redo-lazy-highlighting.
 ;;     isearch-lazy-highlight-update: Highlight odd regexp groups with face isearchp-lazy-odd-regexp-groups.
@@ -3022,12 +3022,6 @@ If turning it on, save now.  Note that turning it off does not reset
              (if isearchp-lazy-dim-filter-failures-flag 'ON 'OFF))
     (sit-for 1)
     (isearchp-redo-lazy-highlighting))
-
-  (defun isearchp-redo-lazy-highlighting ()
-    "Redisplay lazy highlighting."
-    (setq isearch-lazy-highlight-last-string  nil) ; To force `isearch-lazy-highlight-new-loop' to act.
-    (isearch-lazy-highlight-new-loop)
-    (isearch-update))
 
   (defun isearchp-toggle-showing-filter-prompt-prefixes () ; Bound to `C-z p' in `isearch-mode-map'.
     "Toggle `isearchp-show-filter-prompt-prefixes-flag'."
@@ -5027,6 +5021,12 @@ is nil.  This function is called when exiting an incremental search if
     (when isearch-lazy-highlight-timer
       (cancel-timer isearch-lazy-highlight-timer)
       (setq isearch-lazy-highlight-timer nil)))
+
+  (defun isearchp-redo-lazy-highlighting ()
+    "Redisplay lazy highlighting."
+    (setq isearch-lazy-highlight-last-string  nil) ; To force `isearch-lazy-highlight-new-loop' to act.
+    (isearch-lazy-highlight-new-loop)
+    (isearch-update))
 
   )
 
