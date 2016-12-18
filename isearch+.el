@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 17 23:26:06 2016 (-0800)
+;; Last-Updated: Sat Dec 17 23:51:04 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5466
+;;     Update #: 5467
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -1961,8 +1961,8 @@ This highlighting is done during regexp searching whenever
 
   (defface isearchp-lazy-odd-regexp-groups
       `((((background dark))
-         (:background "paleturquoise3"))
-        (t (:background "paleturquoise2")))
+         (:background "paleturquoise2"))
+        (t (:background "paleturquoise3")))
     "*Face used to lazy-highlight odd subgroups of your search context.
 This highlighting is done during regexp searching whenever
 `isearchp-highlight-regexp-group-levels-flag' is non-nil."
