@@ -57,7 +57,7 @@ Sometimes it is useful to be able to start up default autonomous copy of Emacs (
 
 Create a new shortcut to "emacs.exe".
 Right click newly created shortcut and choose properties.
-In ##target## field type: ##"C:\Program Files\emacs\bin\emacs.exe" --debug-init##
+In ##target## field type: ##"X:\path\to\emacs\bin\emacs.exe" --debug-init##
 Close properties dialog.
 
 == Create File Associations ==
