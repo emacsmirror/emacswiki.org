@@ -66,3 +66,12 @@ Again, macros can be useful.
 }}}
 -- hajovonta 2016-03-23 21:15 UTC
 
+
+----
+
+This page still seems like a nightmare. It should be discussing scope and extent but fails to mention extent explicity. A variable's extent is what is affected by dynamic vs. lexical binding.
+
+See https://www.emacswiki.org/emacs/DynamicBindingVsLexicalBinding
+
+-- Anonymous 2016-12-19 19:41 UTC
+
