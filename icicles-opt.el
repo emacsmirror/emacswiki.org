@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Wed Dec 21 09:58:28 2016 (-0800)
+;; Last-Updated: Wed Dec 21 10:07:28 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 6163
+;;     Update #: 6166
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -245,7 +245,8 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `icicle-current-TAB-method', `icicle-delete-candidate-object'.
+;;    `icicle-current-TAB-method', `icicle-delete-candidate-object',
+;;    `icicle-ffap-max-region-size'.
 ;;
 ;;  For descriptions of changes to this file, see `icicles-chg.el'.
 ;;
@@ -4857,6 +4858,11 @@ If SYNTAX-TABLE is a syntax table, use it for the duration."
     (if (and (syntax-table-p syntax-table)  (fboundp 'with-syntax-table)) ; Emacs 21+.
         (with-syntax-table syntax-table (thing-at-point thing))
       (thing-at-point thing))))         ; Ignore any SYNTAX-TABLE arg for Emacs 20, for vanilla.
+
+(defvar icicle-ffap-max-region-size 1024 ; See also Emacs bug #25243.
+  "Max size of active region used to obtain file-name defaults.
+An active region larger than this many characters prevents
+`icicle-ffap-guesser' from calling `ffap-guesser'.")
 
 (defun icicle-ffap-guesser ()
   "`ffap-guesser', but deactivate a large active region first."
