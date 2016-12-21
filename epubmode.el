@@ -1,5 +1,3 @@
-[[es:epubmode]]
-[[es:epubmode]]
 ;;; epub-mode.el --- Minor mode for reading epub e-books in Emacs
 
 ;; Copyright (C) 2011 Jayson Williams
