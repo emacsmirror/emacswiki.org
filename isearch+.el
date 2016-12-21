@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Dec 18 13:11:35 2016 (-0800)
+;; Last-Updated: Wed Dec 21 10:20:52 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5474
+;;     Update #: 5488
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,8 +19,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
-;;   `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
 ;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+', `zones'.
 ;;
@@ -165,6 +164,7 @@
 ;;    `isearchp-assoc-delete-all', `isearchp-barf-if-use-minibuffer',
 ;;    `isearchp-columns-p' (Emacs 24.4+),
 ;;    `isearchp-complete-past-string', `isearchp-fail-pos',
+;;    `isearchp-ffap-guesser' (Emacs 24.4+),
 ;;    `isearchp-highlight-lighter', `isearchp-in-color-p' (Emacs
 ;;    24.4+), `isearchp-in-comment-p' (Emacs 24.4+),
 ;;    `isearchp-in-comment-or-delim-p' (Emacs 24.4+),
@@ -196,9 +196,10 @@
 ;;    `isearchp-read-prompt-prefix' (Emacs 24.4+),
 ;;    `isearchp-read-regexp-during-search' (Emacs 24.4+),
 ;;    `isearchp-read-sexps', `isearchp-redo-lazy-highlighting' (Emacs
-;;    24.4+), `isearchp-remove-duplicates', `isearchp-remove-mismatch',
-;;    `isearchp-repeat-command', `isearchp-repeat-search-if-fail'
-;;    (Emacs 22+), `isearchp-replace-fixed-case-p' (Emacs 22+),
+;;    24.4+), `isearchp-remove-duplicates',
+;;    `isearchp-remove-mismatch', `isearchp-repeat-command',
+;;    `isearchp-repeat-search-if-fail' (Emacs 22+),
+;;    `isearchp-replace-fixed-case-p' (Emacs 22+),
 ;;    `isearchp-replace-match' (Emacs 22+),
 ;;    `isearchp-replace-multiple' (Emacs 22+),
 ;;    `isearchp-replace-on-demand' (Emacs 22+),
@@ -209,6 +210,7 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `isearchp-current-filter-preds-alist' (Emacs 24.4+),
+;;    `isearchp-ffap-max-region-size' (Emacs 24.4+),
 ;;    `isearchp-filter-map' (Emacs 24.4+),
 ;;    `isearchp-in-lazy-highlight-update-p' (Emacs 24.3+),
 ;;    `isearchp-last-non-nil-invisible',
@@ -1048,7 +1050,9 @@
 ;;
 ;;(@* "Change log")
 ;;
-;;
+;; 2016/12/21 dadams
+;;     Added: isearchp-ffap-max-region-size, isearchp-ffap-guesser.
+;;     isearchp-in-file-or-url-p: Use isearchp-ffap-guesser, not ffap-guesser.
 ;; 2016/12/18 dadams
 ;;     isearch-lazy-highlight-update: Do not try to highlight regexp groups if there are none.
 ;; 2016/12/17 dadams
@@ -5140,7 +5144,7 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
                   prefix  (nth 2 pred)
                   pred    (nth 1 pred))
           (if (nth 1 pred)
-              (setq prefix  (nth 1 pred)  ; (PREDICATE PREFIX)
+              (setq prefix  (nth 1 pred) ; (PREDICATE PREFIX)
                     pred    (nth 0 pred)) ; (PREDICATE)
             (setq pred  (nth 0 pred)))))
       (add-function where isearch-filter-predicate pred
@@ -5182,7 +5186,7 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
     (let ((isearchp-resume-with-last-when-empty-flag  nil)
           name)
       (with-isearch-suspended (setq name  (read-string "Name this predicate: ")))
-      (let ((oname  nil)) ; Ensure neither (1) empty name mor (2) pre-existing name.
+      (let ((oname  nil))               ; Ensure neither (1) empty name mor (2) pre-existing name.
         (while (catch 'isearchp-read-filter-name
                  (when (= 0 (length name)) (throw 'isearchp-read-filter-name ""))
                  (advice-function-mapc (lambda (pred props)
@@ -5491,22 +5495,22 @@ after the search hit, within DISTANCE.
 
 DISTANCE is a cons returned by function `isearchp-read-measure'."
     `(lambda (beg end)
-       (or (save-excursion
-             (goto-char beg)
-             (let ((dist     ,(car distance))
-                   (unit-fn  ',(cdr distance))
-                   unit-pos)
-               (save-excursion (condition-case nil (funcall unit-fn (- dist)) (error nil))
-                               (setq unit-pos  (point)))
-               (save-match-data (re-search-backward ,pattern (max (point-min) unit-pos) t))))
-           (save-excursion
-             (goto-char end)
-             (let ((dist     ,(car distance))
-                   (unit-fn  ',(cdr distance))
-                   unit-pos)
-               (save-excursion (condition-case nil (funcall unit-fn dist) (error nil))
-                               (setq unit-pos  (point)))
-               (save-match-data (re-search-forward ,pattern (min (point-max) unit-pos) t)))))))
+      (or (save-excursion
+            (goto-char beg)
+            (let ((dist     ,(car distance))
+                  (unit-fn  ',(cdr distance))
+                  unit-pos)
+              (save-excursion (condition-case nil (funcall unit-fn (- dist)) (error nil))
+                              (setq unit-pos  (point)))
+              (save-match-data (re-search-backward ,pattern (max (point-min) unit-pos) t))))
+       (save-excursion
+         (goto-char end)
+         (let ((dist     ,(car distance))
+               (unit-fn  ',(cdr distance))
+               unit-pos)
+           (save-excursion (condition-case nil (funcall unit-fn dist) (error nil))
+                           (setq unit-pos  (point)))
+           (save-match-data (re-search-forward ,pattern (min (point-max) unit-pos) t)))))))
 
 
   (put 'isearchp-near-before-predicate 'isearchp-part-pred t)
@@ -5522,14 +5526,14 @@ DISTANCE is a cons returned by function `isearchp-read-measure'."
         (setq pattern   (nth 0 all)
               distance  (nth 1 all))))
     `(lambda (beg _)
-       (save-excursion
-         (goto-char beg)
-         (let ((dist     ,(car distance))
-               (unit-fn  ',(cdr distance))
-               unit-pos)
-           (save-excursion (condition-case nil (funcall unit-fn (- dist)) (error nil))
-                           (setq unit-pos  (point)))
-           (save-match-data (re-search-backward ,pattern (max (point-min) unit-pos) t))))))
+      (save-excursion
+        (goto-char beg)
+        (let ((dist     ,(car distance))
+              (unit-fn  ',(cdr distance))
+              unit-pos)
+          (save-excursion (condition-case nil (funcall unit-fn (- dist)) (error nil))
+                          (setq unit-pos  (point)))
+          (save-match-data (re-search-backward ,pattern (max (point-min) unit-pos) t))))))
 
 
   (put 'isearchp-near-after-predicate 'isearchp-part-pred t)
@@ -5545,14 +5549,14 @@ DISTANCE is a cons returned by function `isearchp-read-measure'."
         (setq pattern   (nth 0 all)
               distance  (nth 1 all))))
     `(lambda (_ end)
-       (save-excursion
-         (goto-char end)
-         (let ((dist     ,(car distance))
-               (unit-fn  ',(cdr distance))
-               unit-pos)
-           (save-excursion (condition-case nil (funcall unit-fn dist) (error nil))
-                           (setq unit-pos  (point)))
-           (save-match-data (re-search-forward ,pattern (min (point-max) unit-pos) t))))))
+      (save-excursion
+        (goto-char end)
+        (let ((dist     ,(car distance))
+              (unit-fn  ',(cdr distance))
+              unit-pos)
+          (save-excursion (condition-case nil (funcall unit-fn dist) (error nil))
+                          (setq unit-pos  (point)))
+          (save-match-data (re-search-forward ,pattern (min (point-max) unit-pos) t))))))
 
   (defun isearchp-columns (min max &optional flip-read-name-p flip-read-prefix-p msgp) ; `C-z c'
     "Add a predicate that restrict searching between two columns (inclusive).
@@ -5581,8 +5585,8 @@ prefix - see `isearchp-add-filter-predicate'."
   (defun isearchp-columns-p (min max)
     "Return t if all chars in search hit are between columns MIN and MAX."
     `(lambda (beg end)
-       (and (>= (save-excursion (goto-char beg) (current-column)) ,min)
-            (<= (save-excursion (goto-char end) (current-column)) ,max))))
+      (and (>= (save-excursion (goto-char beg) (current-column)) ,min)
+       (<= (save-excursion (goto-char end) (current-column)) ,max))))
 
   (defun isearchp-show-hit-w-crosshairs (beg end)
     "Show the current search hit using crosshairs, at END.
@@ -5664,9 +5668,21 @@ BEG and END are the search-hit limits."
                           (setq pos  (1+ pos)))
                         t)))))
 
+  (defvar isearchp-ffap-max-region-size 1024 ; See also Emacs bug #25243.
+    "Max size of active region used to obtain file-name defaults.
+An active region larger than this many characters prevents
+`isearchp-ffap-guesser' from calling `ffap-guesser'.")
+
+  (defun isearchp-ffap-guesser ()
+    "`ffap-guesser', but deactivate a large active region first."
+    (and (require 'ffap nil t)
+         ;; Prevent using a large active region to guess ffap: Emacs bug #25243.
+         (let ((mark-active  (and mark-active  (< (buffer-size) isearchp-ffap-max-region-size))))
+           (ffap-guesser))))
+
   (defun isearchp-in-file-or-url-p (beg end)
     "Return t if all chars in the search hit are in the same URL.
-\(This is quite lax; it uses `ffap-guesser'.)
+\(This is quite lax; it uses `isearchp-ffap-guesser'.)
 BEG and END are the search-hit limits."
     (require 'ffap)
     (let ((result  t)
@@ -5675,7 +5691,7 @@ BEG and END are the search-hit limits."
         (goto-char pos)
         (setq result  (catch 'isearchp-in-file-or-url-p
                         (while (<= pos end)
-                          (unless (save-match-data (ffap-guesser))
+                          (unless (save-match-data (isearchp-ffap-guesser))
                             (throw 'isearchp-in-file-or-url-p nil))
                           (setq pos  (1+ pos)))
                         t)))))
