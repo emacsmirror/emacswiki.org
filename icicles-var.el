@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Wed Dec 21 08:35:22 2016 (-0800)
+;; Last-Updated: Wed Dec 21 09:24:13 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 1864
+;;     Update #: 1865
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -594,7 +594,7 @@ Do not set or bind this.  This is bound only by `completing-read'.")
 
 (defvar icicle-ffap-max-region-size 1024 ; See also Emacs bug #25243.
   "Max size of active region used to obtain file-name defaults.
-An active region larger than this many characters is prevents Icicles
+An active region larger than this many characters prevents Icicles
 from calling `ffap-guesser'.")
 
 (when (> emacs-major-version 23)
