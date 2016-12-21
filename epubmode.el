@@ -35,7 +35,7 @@
 ;; To use epubmode do:
 ;; M-x get_epub
 
-;; Ener the path to the epub document, and epub mode will open a text
+;; Enter the path to the epub document, and epub mode will open a text
 ;; version of the document in Emacs
 
 (defun get_epub (epub_file)
