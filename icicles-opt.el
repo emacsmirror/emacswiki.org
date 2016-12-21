@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Nov 27 17:46:25 2016 (-0800)
+;; Last-Updated: Wed Dec 21 09:58:28 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 6159
+;;     Update #: 6163
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -239,8 +239,9 @@
 ;;    `icicle-bind-top-level-commands',
 ;;    `icicle-buffer-sort-*...*-last', `icicle-color-defined-p' (Emacs
 ;;    22+), `icicle-compute-shell-command-candidates',
-;;    `icicle-edmacro-parse-keys', `icicle-kbd', `icicle-remap',
-;;    `icicle-thing-at-point', `icicle-widgetp'.
+;;    `icicle-edmacro-parse-keys', `icicle-ffap-guesser',
+;;    `icicle-kbd', `icicle-remap', `icicle-thing-at-point',
+;;    `icicle-widgetp'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -4857,6 +4858,13 @@ If SYNTAX-TABLE is a syntax table, use it for the duration."
         (with-syntax-table syntax-table (thing-at-point thing))
       (thing-at-point thing))))         ; Ignore any SYNTAX-TABLE arg for Emacs 20, for vanilla.
 
+(defun icicle-ffap-guesser ()
+  "`ffap-guesser', but deactivate a large active region first."
+  (and (require 'ffap nil t)
+       ;; Prevent using a large active region to guess ffap: Emacs bug #25243.
+       (let ((mark-active  (and mark-active  (< (buffer-size) icicle-ffap-max-region-size))))
+         (ffap-guesser))))
+
 (defcustom icicle-thing-at-point-functions
   (progn (or (require 'ffap- nil t)  (require 'ffap nil t)) ; Try `ffap-.el' first.
          (cons
@@ -4871,7 +4879,7 @@ If SYNTAX-TABLE is a syntax table, use it for the duration."
                    '((lambda () (list-nearest-point-as-string 2))))
             ,@(and (fboundp 'list-nearest-point-as-string)
                    '((lambda () (list-nearest-point-as-string 3))))
-            ,@(and (fboundp 'ffap-guesser)  '(ffap-guesser))
+            ,@(and (fboundp 'ffap-guesser)  '(icicle-ffap-guesser))
             thing-at-point-url-at-point)
           'forward-word))
   "*Functions that return a string at or near point, or else nil.
