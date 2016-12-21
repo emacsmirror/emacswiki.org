@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Nov 27 17:34:44 2016 (-0800)
+;; Last-Updated: Wed Dec 21 10:08:16 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 11652
+;;     Update #: 11662
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2257,6 +2257,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2016/12/21 dadams
+;;     icicle-read-file-name: Use icicle-ffap-guesser, not ffap-guesser.  Thx to Tino Calancha.
 ;; 2016/10/12 dadams
 ;;     Added: icicle-completion-pcm--all-completions and icicle-ORIG-completion-pcm--all-completions
 ;;            (workaround for Emacs bug #24676).
@@ -7714,6 +7716,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2016/12/21 dadams
+;;     Added: icicle-ffap-max-region-size, icicle-ffap-guesser.
+;;     icicle-thing-at-point-functions: Use icicle-ffap-guesser, not ffap-guesser.
 ;; 2016/10/12 dadams
 ;;     icicle-functions-to-redefine: Added completion-pcm--all-completions (fix for Emacs bug #24676).
 ;; 2016/06/12 dadams
@@ -9140,6 +9145,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2016/12/21 dadams
+;;     Version 2016.12.21.
 ;; 2016/06/12 dadams
 ;;     Version 2016.06.12.
 ;; 2016/03/04 dadams
