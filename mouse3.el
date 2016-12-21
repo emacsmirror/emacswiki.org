@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 15:31:55 2015 (-0800)
+;; Last-Updated: Wed Dec 21 10:27:18 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 1747
+;;     Update #: 1758
 ;; URL: http://www.emacswiki.org/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -280,14 +280,15 @@
 ;;   `mouse3-dired-set-to-toggle-marks',
 ;;   `mouse3-dired-this-file-marked-p',
 ;;   `mouse3-dired-this-file-unmarked-p',
-;;   `mouse3-dired-toggle-marks-in-region', `mouse3-file-or-dir',
-;;   `mouse3-nonempty-region-p', `mouse3-region-popup-choice',
-;;   `mouse3-region-popup-choice-1',
+;;   `mouse3-dired-toggle-marks-in-region', `mouse3-ffap-guesser',
+;;   `mouse3-file-or-dir', `mouse3-nonempty-region-p',
+;;   `mouse3-region-popup-choice', `mouse3-region-popup-choice-1',
 ;;   `mouse3-region-popup-custom-entries',
 ;;   `mouse3-second-click-command'.
 ;;
 ;; Internal variables defined here:
 ;;
+;;   `mouse3-ffap-max-region-size',
 ;;   `mouse3-noregion-popup-misc-submenu',
 ;;   `mouse3-region-popup-change-text-submenu',
 ;;   `mouse3-region-popup-check-convert-submenu',
@@ -312,6 +313,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/21 dadams
+;;     Added: mouse3-ffap-max-region-size, mouse3-ffap-guesser.
+;;     mouse3-file-or-dir, mouse3-noregion-popup-misc-submenu: Use mouse3-ffap-guesser, not ffap-guesser.
 ;; 2014/07/21 dadams
 ;;     mouse3-region-popup-x-popup-panes:
 ;;       Added items: String (Insert), Numbers (insert), Rectangular Region.
@@ -466,9 +470,21 @@ Assumes that there is a file or dir name at that position."
   (interactive)
   (mouse3-dired 'OTHER-WINDOW))
 
+(defvar mouse3-ffap-max-region-size 1024 ; See also Emacs bug #25243.
+  "Max size of active region used to obtain file-name defaults.
+An active region larger than this many characters prevents
+`mouse3-ffap-guesser' from calling `ffap-guesser'.")
+
+(defun mouse3-ffap-guesser ()
+  "`ffap-guesser', but deactivate a large active region first."
+  (and (require 'ffap nil t)
+       ;; Prevent using a large active region to guess ffap: Emacs bug #25243.
+       (let ((mark-active  (and mark-active  (< (buffer-size) mouse3-ffap-max-region-size))))
+         (ffap-guesser))))
+
 (defun mouse3-file-or-dir ()
   "Return file or dir name at point.  Raise error if none."
-  (let ((guess  (ffap-guesser)))
+  (let ((guess  (mouse3-ffap-guesser)))
     (unless (and guess  (or (ffap-file-remote-p guess)
                             (file-directory-p (abbreviate-file-name (expand-file-name guess)))
                             (file-regular-p guess)))
@@ -1312,7 +1328,8 @@ restore it by yanking."
                                                                  (interactive)
                                                                  (save-excursion
                                                                    (mouse-set-point last-nonmenu-event)
-                                                                   (find-file-other-window (ffap-guesser))))
+                                                                   (find-file-other-window
+                                                                    (mouse3-ffap-guesser))))
         :enable (condition-case nil (mouse3-file-or-dir) (error nil)))
        (dired menu-item "Dired" mouse3-dired
         :enable (condition-case nil (mouse3-file-or-dir) (error nil)))
@@ -1323,7 +1340,7 @@ restore it by yanking."
                                                   (interactive)
                                                   (save-excursion
                                                     (mouse-set-point last-nonmenu-event)
-                                                    (describe-file (ffap-guesser))))
+                                                    (describe-file (mouse3-ffap-guesser))))
         :enable (condition-case nil (mouse3-file-or-dir) (error nil))
         :visible (fboundp 'describe-file)) ; Defined in `help-fns+.el'.
        (describe-function menu-item "Describe Function" (lambda ()
