@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2016.06.12
+;; Version: 2016.12.21
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 27 17:33:19 2016 (-0800)
+;; Last-Updated: Wed Dec 21 08:59:23 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 23705
+;;     Update #: 23708
 ;; URL: http://www.emacswiki.org/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -1460,9 +1460,9 @@
 ;;    `icicle-extra-candidates-dir-insert-p',
 ;;    `icicle-face-name-history', `icicle-face-remapping-Completions',
 ;;    `icicle-face-remapping-region', `icicle-fancy-candidates-p',
-;;    `icicle-fancy-cands-internal-p', `icicle-file-menu-map',
-;;    `icicle-file-name-completion-table', `icicle-files',
-;;    `icicle-file-sort-first-time-p',
+;;    `icicle-fancy-cands-internal-p', `icicle-ffap-max-region-size',
+;;    `icicle-file-menu-map', `icicle-file-name-completion-table',
+;;    `icicle-files', `icicle-file-sort-first-time-p',
 ;;    `icicle-filtered-default-value',
 ;;    `icicle-find-file-abs-action-fn', `icicle-find-file-action-fn',
 ;;    `icicle-font-name-history', `icicle-frame-alist',
