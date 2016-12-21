@@ -8,9 +8,9 @@
 ;; Created: Wed Feb 08 10:47:56 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:12:17 2015 (-0800)
+;; Last-Updated: Wed Dec 21 09:38:43 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 118
+;;     Update #: 127
 ;; URL: http://www.emacswiki.org/ffap-.el
 ;; Doc URL: http://emacswiki.org/FindFileAtPoint
 ;; Keywords: files, hypermedia, matching, mouse, convenience
@@ -62,6 +62,10 @@
 ;;
 ;;    `ffap-inhibit-ffap-here'.
 ;;
+;;  Internal variables defined here:
+;;
+;;    `ffap-max-region-size'.
+;;
 ;;
 ;;  ***** NOTE: The following variables defined in `ffap.el' have
 ;;              been REDEFINED HERE:
@@ -85,6 +89,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/21 dadams
+;;     Added: ffap-max-region-size.
+;;     ffap-guesser: Deactivate region if larger than ffap-max-region-size.
 ;; 2011/01/04 dadams
 ;;     Added autoload cookies for defcustom.
 ;; 2006/12/29 dadams
@@ -146,6 +153,11 @@ For example, `ffap' then acts simply as `find-file' (or, more
 precisely, as `ffap-file-finder')."
   :type 'boolean :group 'ffap)
 
+(defvar ffap-max-region-size 1024       ; See also Emacs bug #25243.
+  "Max size of active region used to obtain file-name defaults.
+An active region larger than this many characters prevents
+`ffap-guesser' using it to obtain a file-name guess.")
+
 ;; Get the rest of the code, then redefine some functions.
 (require 'ffap)
 
@@ -159,20 +171,24 @@ precisely, as `ffap-file-finder')."
 
 
 ;;; REPLACE ORIGINAL `ffap-guesser' defined in `ffap.el'.
-;;; Return nil if `ffap-inhibit-ffap-flag' is non-nil.
+;;;
+;;; 1. Return nil if `ffap-inhibit-ffap-flag' is non-nil.
+;;; 2. Deactivate a large active region first.  Emacs bug #25243.
 ;;;
 (defun ffap-guesser nil
   "Return file or URL or nil, guessed from text around point."
   (and (not ffap-inhibit-ffap-flag)
-       (or (and ffap-url-regexp
-                (ffap-fixup-url (or (ffap-url-at-point)
-                                    (ffap-gopher-at-point))))
-           (ffap-file-at-point)         ; may yield url!
-           (ffap-fixup-machine (ffap-machine-at-point)))))
+       (let ((mark-active  (and mark-active
+                                (< (buffer-size) ffap-max-region-size))))
+         (or (and ffap-url-regexp
+                  (ffap-fixup-url (or (ffap-url-at-point)
+                                      (ffap-gopher-at-point))))
+             (ffap-file-at-point)       ; may yield url!
+             (ffap-fixup-machine (ffap-machine-at-point))))))
 
 
 
-;;; REPLACE ORIGINAL `ffap-guesser' defined in `ffap.el'.
+;;; REPLACE ORIGINAL defined in `ffap.el'.
 ;;; Bug fix.  It comes from the Emacs 21 code.
 ;;;
 (when (= emacs-major-version 20)
