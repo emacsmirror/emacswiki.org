@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Dec 11 15:59:03 2016 (-0800)
+;; Last-Updated: Wed Dec 21 09:35:50 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 8119
+;;     Update #: 8143
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -156,7 +156,8 @@
 ;;    `bmkp-edit-tags-send', `bmkp-edit-this-annotation',
 ;;    `bmkp-empty-file', `bmkp-eww-jump' (Emacs 24.4+),
 ;;    `bmkp-eww-jump-other-window' (Emacs 24.4+),
-;;    `bmkp-file-target-set', `bmkp-file-all-tags-jump',
+;;    `bmkp-ffap-max-region-size', `bmkp-file-target-set',
+;;    `bmkp-file-all-tags-jump',
 ;;    `bmkp-file-all-tags-jump-other-window',
 ;;    `bmkp-file-all-tags-regexp-jump',
 ;;    `bmkp-file-all-tags-regexp-jump-other-window', `bmkp-file-jump',
@@ -386,8 +387,8 @@
 ;;    `bmkp-end-position-post-context',
 ;;    `bmkp-end-position-pre-context', `bmkp-every',
 ;;    `bmkp-eww-alist-only' (Emacs 24.4+), `bmkp-eww-bookmark-p'
-;;    (Emacs 24.4+), `bmkp-w3m-cp', `bmkp-file-alist-only',
-;;    `bmkp-file-all-tags-alist-only',
+;;    (Emacs 24.4+), `bmkp-eww-cp', `bmkp-ffap-guesser',
+;;    `bmkp-file-alist-only', `bmkp-file-all-tags-alist-only',
 ;;    `bmkp-file-all-tags-regexp-alist-only', `bmkp-file-alpha-cp',
 ;;    `bmkp-file-attribute-0-cp', `bmkp-file-attribute-1-cp',
 ;;    `bmkp-file-attribute-2-cp', `bmkp-file-attribute-3-cp',
@@ -1494,6 +1495,11 @@ customizations.")
 
 (defvar bmkp-edit-bookmark-orig-record nil
   "Record of bookmark being edited.")
+
+(defvar bmkp-ffap-max-region-size 1024 ; See also Emacs bug #25243.
+  "Max size of active region used to obtain file-name defaults.
+An active region larger than this many characters prevents
+`bmkp-ffap-guesser' from calling `ffap-guesser'.")
 
 (defvar bmkp-file-bookmark-handlers '(bmkp-jump-dired image-bookmark-jump)
   "List of functions that handle file or directory bookmarks.
@@ -7624,7 +7630,7 @@ Non-interactively:
      (list (read-file-name "File: " nil
                            (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
                                    (run-hook-with-args-until-success 'file-name-at-point-functions)
-                                 (and (require 'ffap nil t)  (ffap-guesser)))
+                                 (bmkp-ffap-guesser))
                                (bmkp-thing-at-point 'filename)
                                (buffer-file-name)))
            prefix-only
@@ -7736,8 +7742,7 @@ Non-interactively:
                                      def)
                                  (when (setq def  (buffer-file-name)) (push def deflts))
                                  (when (setq def  (bmkp-thing-at-point 'filename)) (push def deflts))
-                                 (when (setq def  (and (require 'ffap nil t)  (ffap-guesser)))
-                                   (push def deflts))
+                                 (when (setq def  (bmkp-ffap-guesser)) (push def deflts))
                                  (when (and (boundp 'file-name-at-point-functions)
                                             (setq def  (run-hook-with-args-until-success
                                                         'file-name-at-point-functions)))
@@ -7745,7 +7750,7 @@ Non-interactively:
                                  deflts)
                              (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
                                      (run-hook-with-args-until-success 'file-name-at-point-functions)
-                                   (and (require 'ffap nil t)  (ffap-guesser)))
+                                   (bmkp-ffap-guesser))
                                  (bmkp-thing-at-point 'filename)
                                  (buffer-file-name)))))
          nil
@@ -7827,7 +7832,7 @@ Non-interactively:
            (read-file-name "File: " nil
                            (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
                                    (run-hook-with-args-until-success 'file-name-at-point-functions)
-                                 (and (require 'ffap nil t)  (ffap-guesser)))
+                                 (bmkp-ffap-guesser))
                                (bmkp-thing-at-point 'filename)
                                (buffer-file-name))))
          (bmkp-read-tags-completing nil nil (and current-prefix-arg
@@ -7884,7 +7889,7 @@ Non-interactively:
                               "File: " nil
                               (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
                                       (run-hook-with-args-until-success 'file-name-at-point-functions)
-                                    (and (require 'ffap nil t)  (ffap-guesser)))
+                                    (bmkp-ffap-guesser))
                                   (bmkp-thing-at-point 'filename)
                                   (buffer-file-name))
                               t nil (lambda (ff) ; PREDICATE - only for Emacs 22+.
@@ -7895,10 +7900,9 @@ Non-interactively:
                                                        (when (not (member tag btgs))
                                                          (throw 'bmkp-autofile-remove-tags-pred nil)))
                                                      t)))))
-                           (error (read-file-name "File: " nil
-                                                  (or (and (require 'ffap nil t)  (ffap-guesser))
-                                                      (bmkp-thing-at-point 'filename)
-                                                      (buffer-file-name)))))))
+                           (error (read-file-name "File: " nil (or (bmkp-ffap-guesser)
+                                                                   (bmkp-thing-at-point 'filename)
+                                                                   (buffer-file-name)))))))
      (list fil tgs nil pref nil 'MSG)))
   (bmkp-remove-tags (bmkp-autofile-set file dir prefix no-update-p) tags no-update-p msg-p))
 
@@ -12285,6 +12289,12 @@ See command `bmkp-store-org-link'."
     "Reset `bmkp-store-org-link-checking-p' to nil."
     (setq bmkp-store-org-link-checking-p  nil)))
 
+(defun bmkp-ffap-guesser ()
+  "`ffap-guesser', but deactivate a large active region first."
+  (and (require 'ffap nil t)
+       ;; Prevent using a large active region to guess ffap: Emacs bug #25243.
+       (let ((mark-active  (and mark-active  (< (buffer-size) bmkp-ffap-max-region-size))))
+         (ffap-guesser))))
 
 ;; Same as `icicle-thing-at-point'.
 (defun bmkp-thing-at-point (thing &optional syntax-table)
