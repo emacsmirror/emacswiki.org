@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Nov 27 17:42:12 2016 (-0800)
+;; Last-Updated: Wed Dec 21 08:57:42 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 15178
+;;     Update #: 15183
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1552,10 +1552,10 @@ and `read-file-name-function'."
 
               (fap
                (if (and (eq major-mode 'dired-mode)  (fboundp 'dired-get-file-for-visit))
-                   (condition-case nil
-                       (abbreviate-file-name (dired-get-file-for-visit))
-                     (error nil))
-                 (and ffap-available-p  (ffap-guesser))))
+                   (condition-case nil (abbreviate-file-name (dired-get-file-for-visit)) (error nil))
+                 (and ffap-available-p  ; Prevent using a large active region to guess ffap: Emacs bug #25243.
+                      (let ((mark-active  (and mark-active  (< (buffer-size) icicle-ffap-max-region-size))))
+                        (ffap-guesser)))))
               (icicle-proxy-candidates
                (append
                 (and icicle-add-proxy-candidates-flag  (not icicle-exclude-default-proxies)
@@ -4279,7 +4279,8 @@ Returns, e.g., \"a[^b]*b[^c]*c[^d]*d\" for input string \"abcd\"."
                      (concat "[^" (string ch) "]*" (regexp-quote (string ch)))
                    (setq first  nil)
                    (regexp-quote (string ch))))
-               string "")))
+               string
+               "")))
 
 (defun icicle-levenshtein-strict-match (s1 s2)
   "String S1 is within `icicle-levenshtein-distance' of string S2.
