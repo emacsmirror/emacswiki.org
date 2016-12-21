@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Dec 11 16:02:20 2016 (-0800)
+;; Last-Updated: Wed Dec 21 09:41:51 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 16184
+;;     Update #: 16191
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2016/12/21 dadams
+;;     Added: bmkp-ffap-max-region-size, bmkp-ffap-guesser.
+;;     bmkp-file-target-set, bmkp-autofile-set, bmkp-autofile-(add|remove)-tags:
+;;       Use bmkp-ffap-guesser.bmkp-ffap-guesser, not ffap-guesser.
 ;; 2016/12/11 dadams
 ;;     Added: bmkp-convert-eww-bookmarks, bmkp-replace-eww-keys-flag.
 ;; 2016/11/25 dadams
