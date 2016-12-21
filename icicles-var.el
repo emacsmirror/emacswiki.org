@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Wed Dec 21 09:48:10 2016 (-0800)
+;; Last-Updated: Wed Dec 21 10:06:54 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 1866
+;;     Update #: 1868
 ;; URL: http://www.emacswiki.org/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -82,7 +82,7 @@
 ;;    `icicle-extra-candidates-dir-insert-p',
 ;;    `icicle-face-name-history', `icicle-face-remapping-Completions',
 ;;    `icicle-face-remapping-region', `icicle-fancy-candidates-p',
-;;    `icicle-fancy-cands-internal-p', `icicle-ffap-max-region-size',
+;;    `icicle-fancy-cands-internal-p',
 ;;    `icicle-file-name-completion-table' (Emacs 24+),
 ;;    `icicle-file-sort-first-time-p',
 ;;    `icicle-filtered-default-value', `icicle-font-name-history',
@@ -591,11 +591,6 @@ can be costly.")
 (defvar icicle-fancy-cands-internal-p nil
   "Same as `icicle-fancy-candidates-p', but for internal use only.
 Do not set or bind this.  This is bound only by `completing-read'.")
-
-(defvar icicle-ffap-max-region-size 1024 ; See also Emacs bug #25243.
-  "Max size of active region used to obtain file-name defaults.
-An active region larger than this many characters prevents
-`icicle-ffap-guesser' from calling `ffap-guesser'.")
 
 (when (> emacs-major-version 23)
   (defvar icicle-file-name-completion-table
