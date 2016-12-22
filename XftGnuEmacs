@@ -143,6 +143,26 @@ your InitFile.
     (set-fontset-font (frame-parameter nil 'font)
       'han '("cwTeXHeiBold" . "unicode-bmp"))
 
+=== Emacs menubar on X11 with Xt ===
+
+To set the font of the menubar when the GUI was compiled using the X toolkit (Xt) intrinsics (such as an Athena (Xaw) variant or Motif, for example, rather than GTK+ or Qt), the resource `emacs.pane.menubar.font` can be used.  Set it using a FontConfig pattern if Emacs was compiled with Xft, otherwise use an Xfs fontspec:
+
+  ! Xft:
+  emacs.pane.menubar.font: PragmataPro 9
+  
+  ! Xfs:
+  emacs.pane.menubar.font: -*-anonymous pro-medium-r-*-9-*
+
+Remember to run `xrdb -merge ~/.Xresources` after editing the file to have the X server refresh its resource database.  You may need to quit and re-start Emacs for the changes to take effect.
+
+The `editres` program that comes with Xorg can be used to determine the appropriate resource and dynamically set its value even while Emacs is running.
+
+The `xfontsel` program can be used to determine a proper Xfs fontspec for a given font (note that a suffix of multiple `-*` attribute wildcards can be flattened into a single wildcard, as shown above).
+
+See the `FcPatternFormat(3)` manpage for a description of FontConfig patterns.
+
+
+
 == Fixed problems ==
 
 === FreeBSD support 
