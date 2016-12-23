@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2016, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Dec 21 10:08:16 2016 (-0800)
+;; Last-Updated: Fri Dec 23 15:57:37 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 11662
+;;     Update #: 11665
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1176,6 +1176,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2016/12/23 dadams
+;;     Accommodate renaming of palette-mode-map to palette-menu.
 ;; 2016/06/29 dadams
 ;;     icicle-search: Escaped a few backslashes in doc string.  Thx to Tino Calancha.
 ;; 2016/06/12 dadams
