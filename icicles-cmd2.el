@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Nov 27 17:38:21 2016 (-0800)
+;; Last-Updated: Fri Dec 23 14:56:30 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 7397
+;;     Update #: 7401
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2078,8 +2078,10 @@ Non-nil MSGP means echo the chosen color name."
     (prog1 palette-current-color
       (when msgp (message "Palette color (RGB) is now `%s'" palette-current-color))))
 
-  (define-key palette-mode-map (icicle-kbd "c")     'icicle-pick-color-by-name)
-  (define-key palette-mode-map (icicle-kbd "\M-c")  'icicle-pick-color-by-name)
+  (defvar palette-mode-map) (defvar palette-menu) ; Former was renamed to latter.
+  (let ((map  (if (boundp 'palette-menu) palette-menu palette-mode-map)))
+    (define-key map (icicle-kbd "c")     'icicle-pick-color-by-name)
+    (define-key map (icicle-kbd "\M-c")  'icicle-pick-color-by-name))
   (define-key palette-popup-map [pick-color-by-name] ; Use same name as in `palette.el'.
     `(menu-item "Choose Color By Name" icicle-pick-color-by-name
       :help "Set the current color to a color you name"))
