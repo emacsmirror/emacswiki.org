@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Dec 19 06:42:35 2016 (-0800)
+;; Last-Updated: Fri Dec 23 15:53:00 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 4047
+;;     Update #: 4085
 ;; URL: http://www.emacswiki.org/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -141,8 +141,8 @@
 ;;    `hlt-nonempty-region-p', `hlt-props-to-copy/yank',
 ;;    `hlt-read-bg/face-name', `hlt-read-props-completing',
 ;;    `hlt-region-or-buffer-limits', `hlt-remove-if-not',
-;;    `hlt-set-intersection', `hlt-set-union', `hlt-subplist',
-;;    `hlt-tty-colors', `hlt-unhighlight-for-overlay'.
+;;    `hlt-set-intersection', `hlt-set-union', `hlt-string-match-p',
+;;    `hlt-subplist', `hlt-tty-colors', `hlt-unhighlight-for-overlay'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -761,6 +761,12 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/12/23 dadams
+;;     Added: hlt-string-match-p.
+;;     Faces hlt-regexp-level-*: Do not inherit.
+;;     hlt-highlight-region: If FACE is hlt-regexp-level-* then do not update hlt-last-face.
+;;     hlt-highlight-regexp-groups:
+;;       Highlight non-group parts using hlt-last-face.  Use increasing overlay priorities.
 ;; 2016/12/19 dadams
 ;;     hlt-regexp-level-*: Use default background, not isearch-face (typo), as base for hexrgb changes.
 ;;                         Fix :group (typo).
@@ -1193,131 +1199,43 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "http://www.emacswiki.org/HighLight")
   :link '(emacs-commentary-link :tag "Commentary" "highlight"))
 
-(defface hlt-regexp-level-1
-    (if (and (facep 'icicle-search-context-level-1) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-1)))
-      (let ((context-bg  (or (face-background 'default)  "White")))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-saturation
-                              (hexrgb-increment-hue context-bg 0.80) 0.10)
-                             "#071F473A0000"))) ; a dark green
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-saturation
-                                (hexrgb-increment-hue context-bg 0.80) 0.10)
-                               "#FA6CC847FFFF")))))) ; a light magenta
+(defface hlt-regexp-level-1 '((((background dark)) (:background "#071F473A0000")) ; a dark green
+                              (t (:background "#FA6CC847FFFF"))) ; a light magenta
   "*Face used to highlight subgroup level 1 of a regexp match."
   :group 'highlight :group 'faces)
 
-(defface hlt-regexp-level-2
-    (if (and (facep 'icicle-search-context-level-2) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-2)))
-      (let ((context-bg  (or (face-background 'default)  "White")))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-saturation
-                              (hexrgb-increment-hue context-bg 0.40) 0.10)
-                             "#507400002839"))) ; a dark red
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-saturation
-                                (hexrgb-increment-hue context-bg 0.40) 0.10)
-                               "#C847FFFFE423")))))) ; a light cyan
+(defface hlt-regexp-level-2 '((((background dark)) (:background "#507400002839")) ; a dark red
+                              (t (:background "#C847FFFFE423"))) ; a light cyan
   "*Face used to highlight subgroup level 2 of a regexp match."
   :group 'highlight :group 'faces)
 
-(defface hlt-regexp-level-3
-    (if (and (facep 'icicle-search-context-level-3) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-3)))
-      (let ((context-bg  (or (face-background 'default)  "White")))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-saturation
-                              (hexrgb-increment-hue context-bg 0.60) 0.10)
-                             "#4517305D0000"))) ; a dark brown
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-saturation
-                                (hexrgb-increment-hue context-bg 0.60) 0.10)
-                               "#C847D8FEFFFF")))))) ; a light blue
+(defface hlt-regexp-level-3 '((((background dark)) (:background "#4517305D0000")) ; a dark brown
+                              (t (:background "#C847D8FEFFFF"))) ; a light blue
   "*Face used to highlight subgroup level 3 of a regexp match."
   :group 'highlight :group 'faces)
 
-(defface hlt-regexp-level-4
-    (if (and (facep 'icicle-search-context-level-4) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-4)))
-      (let ((context-bg  (or (face-background 'default)  "White")))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-saturation
-                              (hexrgb-increment-hue context-bg 0.20) 0.10)
-                             "#176900004E0A"))) ; a dark blue
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-saturation
-                                (hexrgb-increment-hue context-bg 0.20) 0.10)
-                               "#EF47FFFFC847")))))) ; a light yellow
+(defface hlt-regexp-level-4 '((((background dark)) (:background "#176900004E0A")) ; a dark blue
+                              (t (:background "#EF47FFFFC847"))) ; a light yellow
   "*Face used to highlight subgroup level 4 of a regexp match."
   :group 'highlight :group 'faces)
 
-(defface hlt-regexp-level-5
-    (if (and (facep 'icicle-search-context-level-5) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-5)))
-      (let ((context-bg  (or (face-background 'default)  "White")))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-hue context-bg 0.80)
-                             "#04602BC00000"))) ; a very dark green
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-hue context-bg 0.80)
-                               "#FCFCE1E1FFFF")))))) ; a light magenta
+(defface hlt-regexp-level-5 '((((background dark)) (:background "#04602BC00000")) ; a very dark green
+                              (t (:background "#FCFCE1E1FFFF"))) ; a light magenta
   "*Face used to highlight subgroup level 5 of a regexp match."
   :group 'highlight :group 'faces)
 
-(defface hlt-regexp-level-6
-    (if (and (facep 'icicle-search-context-level-6) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-6)))
-      (let ((context-bg  (or (face-background 'default)  "White")))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-hue context-bg 0.40)
-                             "#32F200001979"))) ; a very dark red
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-hue context-bg 0.40)
-                               "#E1E1FFFFF0F0")))))) ; a light cyan
+(defface hlt-regexp-level-6 '((((background dark)) (:background "#32F200001979")) ; a very dark red
+                              (t (:background "#E1E1FFFFF0F0"))) ; a light cyan
   "*Face used to highlight subgroup level 6 of a regexp match."
   :group 'highlight :group 'faces)
 
-(defface hlt-regexp-level-7
-    (if (and (facep 'icicle-search-context-level-7) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-7)))
-      (let ((context-bg  (or (face-background 'default)  "White")))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-hue context-bg 0.60)
-                             "#316B22970000"))) ; a very dark brown
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-hue context-bg 0.60)
-                               "#E1E1EAEAFFFF")))))) ; a light blue
+(defface hlt-regexp-level-7 '((((background dark)) (:background "#316B22970000")) ; a very dark brown
+                              (t (:background "#E1E1EAEAFFFF"))) ; a light blue
   "*Face used to highlight subgroup level 7 of a regexp match."
   :group 'highlight :group 'faces)
 
-(defface hlt-regexp-level-8
-    (if (and (facep 'icicle-search-context-level-8) ; In `icicles-face.el'
-             (> emacs-major-version 21))
-        '((t (:inherit icicle-search-context-level-8)))
-      (let ((context-bg  (or (face-background 'default)  "White")))
-        `((((background dark))
-           (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                             (hexrgb-increment-hue context-bg 0.20)
-                             "#12EC00003F0E"))) ; a very dark blue
-          (t (:background ,(if (fboundp 'hexrgb-increment-saturation)
-                               (hexrgb-increment-hue context-bg 0.20)
-                               "#F6F5FFFFE1E1")))))) ; a light yellow
+(defface hlt-regexp-level-8 '((((background dark)) (:background "#12EC00003F0E")) ; a very dark blue
+                              (t (:background "#F6F5FFFFE1E1"))) ; a light yellow
   "*Face used to highlight subgroup level 8 of a regexp match."
   :group 'highlight :group 'faces)
 
@@ -1889,7 +1807,10 @@ Optional 6th arg BUFFERS is the list of buffers to highlight.
         ;; Do nothing if START or END is a marker for a different buffer.
         (when (and (or (not (markerp start))  (eq buf (marker-buffer start)))
                    (or (not (markerp end))    (eq buf (marker-buffer end))))
-          (if face (setq hlt-last-face  face) (setq face  hlt-last-face))
+          (if (not face)
+              (setq face  hlt-last-face)
+            (unless (and (symbolp face)  (hlt-string-match-p "^hlt-regexp-level-" (symbol-name face)))
+              (setq hlt-last-face  face)))
           (when (and msgp  (or (hlt-nonempty-region-p)  mousep))
             (message "Highlighting%s..." (if mbufs (format " in `%s'"  buf) "")))
           (let ((read-only                           buffer-read-only)
@@ -2165,8 +2086,11 @@ unhighlights the matches."
   "Like `hlt-highlight-regexp-region', but highlight regexp groups.
 Highlight regular expression REGEXP in region/buffer.
 Use the region if active, or the buffer otherwise.
+
 Up to 8 group levels are highlighted, using faces `hlt-regexp-level-1'
-through `hlt-regexp-level-8'.
+through `hlt-regexp-level-8'.  The current default highlighting face
+is used to highlight the non-group matches. You can change the default
+face using command `hlt-choose-default-face'.
 
 Optional args START and END are the limits of the area to act on.
   They default to the region limits.
@@ -2275,18 +2199,22 @@ really want to highlight up to %d chars?  "
 
 (defun hlt-highlight-regexp-groups (regexp msgp mousep)
   "Highlight the regexp groups in the matched text according to REGEXP.
+Highlight non-group parts of the match using `hlt-last-face'.
 Uses match data for the existing match."
-  (let ((level       1)
-        (max-levels  (min (regexp-opt-depth regexp) 8)))
+  (let ((level                  1)
+        (hlt-overlays-priority  hlt-overlays-priority)
+        (max-levels             (min (regexp-opt-depth regexp) 8)))
     (save-excursion
       (condition-case nil
-          (while (<= level max-levels)
-            (unless (equal (match-beginning level) (match-end level))
-              (let ((hlt-auto-faces-flag  nil))
+          (let ((hlt-auto-faces-flag  nil))
+            (hlt-highlight-region (match-beginning 0) (match-end 0) hlt-last-face msgp mousep)
+            (while (<= level max-levels)
+              (unless (equal (match-beginning level) (match-end level))
+                (setq hlt-overlays-priority  (1+ hlt-overlays-priority))
                 (hlt-highlight-region (match-beginning level) (match-end level)
                                       (intern (concat "hlt-regexp-level-" (number-to-string level)))
-                                      msgp mousep)))
-            (setq level  (1+ level)))
+                                      msgp mousep))
+              (setq level  (1+ level))))
         (error nil)))))
 
 ;;;###autoload
@@ -3347,6 +3275,13 @@ Non-interactively, FACE = nil means unhighlight all faces."
 ;;(@* "General and Utility Functions")
 
 ;;; General and Utility Functions
+
+;; Same as `tap-string-match-p' in `thingatpt+.el' and  `bmkp-string-match-p' in `bookmark+-bmu.el'.
+(if (fboundp 'string-match-p)
+    (defalias 'hlt-string-match-p 'string-match-p) ; Emacs 23+
+  (defun hlt-string-match-p (regexp string &optional start)
+    "Like `string-match', but this saves and restores the match data."
+    (save-match-data (string-match regexp string start))))
 
 ;; Similar to `region-or-buffer-limits' in `misc-fns.el', but takes arg BUFFERS.
 (defun hlt-region-or-buffer-limits (&optional buffer)
