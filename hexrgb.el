@@ -8,9 +8,9 @@
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:38:04 2015 (-0800)
+;; Last-Updated: Fri Dec 23 09:40:48 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 986
+;;     Update #: 989
 ;; URL: http://www.emacswiki.org/hexrgb.el
 ;; Doc URL: http://www.emacswiki.org/SetColor
 ;; Doc URL: http://emacswiki.org/ColorPalette
@@ -54,8 +54,10 @@
 ;;  Commands defined here:
 ;;
 ;;    `hexrgb-blue', `hexrgb-complement', `hexrgb-green',
-;;    `hexrgb-hue', `hexrgb-read-color', `hexrgb-red',
-;;    `hexrgb-saturation', `hexrgb-value'.
+;;    `hexrgb-hue', `hexrgb-hue-complement', `hexrgb-read-color',
+;;    `hexrgb-red', `hexrgb-saturation',
+;;    `hexrgb-saturation-complement', `hexrgb-value',
+;;    `hexrgb-value-complement'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -89,6 +91,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/22 dadams
+;;     Added: hexrgb-hue-complement, hexrgb-saturation-complement, hexrgb-value-complement.
 ;; 2015/07/08 dadams
 ;;     hexrgb-color-name-to-hex, hexrgb-increment-(hue|saturation|value):
 ;;       Raise error if x-color-values returns nil (probably from "unspecified-[bf]g").
@@ -417,6 +421,60 @@ with the complement."
         (blue   (hexrgb-blue color)))
     (setq color  (hexrgb-rgb-to-hex (- 1.0 red) (- 1.0 green) (- 1.0 blue))))
   (when msg-p (message "Complement: `%s'" color))
+  color)
+
+;;;###autoload
+(defun hexrgb-hue-complement (color &optional msg-p)
+  "Return the color that is the hue complement of COLOR.
+Saturation and value are not changed from those of COLOR.
+
+Non-interactively, non-nil optional arg MSG-P means show a message
+with the complement."
+  (interactive (list (hexrgb-read-color) t))
+  (setq color  (hexrgb-color-name-to-hex color))
+  (let* ((old-hue  (hexrgb-hue color))
+         (new-hue  (+ 0.5 old-hue))
+         (sat      (hexrgb-saturation color))
+         (val      (hexrgb-value color)))
+    (when (> new-hue 1.0) (setq new-hue  (1- new-hue)))
+    (setq color  (hexrgb-hsv-to-hex new-hue sat val)))
+  (when msg-p (message "Hue complement: `%s'" color))
+  color)
+
+;;;###autoload
+(defun hexrgb-saturation-complement (color &optional msg-p)
+  "Return the color that is the saturation complement of COLOR.
+Hue and value are not changed from those of COLOR.
+
+Non-interactively, non-nil optional arg MSG-P means show a message
+with the complement."
+  (interactive (list (hexrgb-read-color) t))
+  (setq color  (hexrgb-color-name-to-hex color))
+  (let* ((hue      (hexrgb-hue color))
+         (old-sat  (hexrgb-saturation color))
+         (new-sat  (+ 0.5 old-sat))
+         (val      (hexrgb-value color)))
+    (when (> new-sat 1.0) (setq new-sat  (1- new-sat)))
+    (setq color  (hexrgb-hsv-to-hex hue new-sat val)))
+  (when msg-p (message "Saturation complement: `%s'" color))
+  color)
+
+;;;###autoload
+(defun hexrgb-value-complement (color &optional msg-p)
+  "Return the color that is the value complement of COLOR.
+Hue and saturation are not changed from those of COLOR.
+
+Non-interactively, non-nil optional arg MSG-P means show a message
+with the complement."
+  (interactive (list (hexrgb-read-color) t))
+  (setq color  (hexrgb-color-name-to-hex color))
+  (let* ((hue      (hexrgb-hue color))
+         (sat      (hexrgb-saturation color))
+         (old-val  (hexrgb-value color))
+         (new-val  (+ 0.5 old-val)))
+    (when (> new-val 1.0) (setq new-val  (1- new-val)))
+    (setq color  (hexrgb-hsv-to-hex hue sat new-val)))
+  (when msg-p (message "Value complement: `%s'" color))
   color)
 
 ;;;###autoload
