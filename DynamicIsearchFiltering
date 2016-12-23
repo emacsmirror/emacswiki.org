@@ -94,6 +94,12 @@ that are not being used.  But in this case no real filtering is
 done, and there is no need to show crosshairs moving across the
 buffer during lazy highlighting.)
 
+(You can choose that crosshairs-showing filter predicate by the
+name `crosshairs' when prompted for a predicate.  It corresponds
+to predicate `isearchp-show-hit-w-crosshairs'.)
+
+
+
 
 
 
