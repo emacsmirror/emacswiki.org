@@ -2,6 +2,14 @@ WikiPedia:TypeScript
 
 Emacs has been mentioned as "providing support" for TypeScript.
 
+As of 2016-12-23 there are packages available via melpa-stable and marmalade.
+
+  tide               2.0.2         new        melpa-s... Typescript Interactive Development Environment
+  typescript-mode    0.1           new        melpa-s... Major mode for editing typescript
+
+  tss                0.6.0         available  melpa-s... provide a interface for auto-complete.el/flymake.el on typescript-mode.
+  typescript         0.1.1         available  marmalade  Major mode for editing typescript
+
 There are two (related?) highlight modes for TypeScript:
 * [http://blogs.msdn.com/b/interoperability/archive/2012/10/01/sublime-text-vi-emacs-typescript-enabled.aspx typescript_support_for_emacs.zip] (blogs.msdn.com)
 * [https://github.com/mattdeboard/dotfiles-emacs/blob/master/typescript-mode/typescript-mode.el typescript-mode.el] (mattdeboard @ github)
