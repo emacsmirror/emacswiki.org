@@ -8,9 +8,9 @@
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Thu Dec 31 15:50:56 2015 (-0800)
+;; Last-Updated: Fri Dec 23 12:07:01 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 797
+;;     Update #: 909
 ;; URL: http://www.emacswiki.org/palette.el
 ;; Doc URL: http://emacswiki.org/ColorPalette
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
@@ -66,11 +66,13 @@
 ;;   - `c', `M-c' picks a color by name or RGB hex string
 ;;   - `M-h' picks a color by HSV components (decimal)
 ;;   - `M-r' picks a color by RGB components (decimal)
-;;   - `~' picks the complement of the current color
+;;   - `~~' picks the complement of the current color
+;;   - `~h', `~s', `~v' pick the hue, saturation, and value complement
 ;;   - `r', `g', `b', `h', `s', `v' decreases the red, green, blue,
 ;;     hue, saturation, value  component of the current color,
 ;;     respectively; `R', `G', `B', `H', `S', `V' increases the
 ;;     component
+;;   - `C-M-h', `C-M-s', `C-M-v' set the hue, saturation, and value
 ;;   - `q' quits the palette
 ;;   - `C-l' refreshes the palette: use if you have a display problem
 ;;   - `C-h m' provides info on Color Palette mode
@@ -269,21 +271,26 @@
 ;;    `palette-increase-green', `palette-increase-hue',
 ;;    `palette-increase-red', `palette-increase-saturation',
 ;;    `palette-increase-value', `palette-left', `palette-left+pick',
-;;    `palette-list-colors-nearest',
+;;    `palette-list-colors-nearest', `palette-menu',
 ;;    `palette-pick-background-at-mouse',
 ;;    `palette-pick-background-at-point', `palette-pick-color-by-hsv',
 ;;    `palette-pick-color-by-name', `palette-pick-color-by-rgb',
 ;;    `palette-pick-color-complement',
+;;    `palette-pick-color-hue-complement',
+;;    `palette-pick-color-saturation-complement',
+;;    `palette-pick-color-value-complement',
 ;;    `palette-pick-foreground-at-mouse',
-;;    `palette-pick-foreground-at-point', `palette-popup-menu',
-;;    `palette-quit', `palette-read-color', `palette-refresh',
+;;    `palette-pick-foreground-at-point', `palette-quit',
+;;    `palette-read-color', `palette-refresh',
 ;;    `palette-restore-old-color', `palette-rgb-info',
 ;;    `palette-right', `palette-right+pick', `palette-save-new-color',
-;;    `palette-swap-last-color', `palette-swatch',
-;;    `palette-toggle-cursor-color', `palette-toggle-verbose',
-;;    `palette-up', `palette-up+pick', `palette-where-is-color',
-;;    `pick-background-color', `pick-foreground-color', `rgb',
-;;    `toggle-palette-cursor-color', `toggle-palette-verbose'.
+;;    `palette-set-hsv', `palette-set-hue', `palette-set-saturation',
+;;    `palette-set-value', `palette-swap-last-color',
+;;    `palette-swatch', `palette-toggle-cursor-color',
+;;    `palette-toggle-verbose', `palette-up', `palette-up+pick',
+;;    `palette-where-is-color', `pick-background-color',
+;;    `pick-foreground-color', `rgb', `toggle-palette-cursor-color',
+;;    `toggle-palette-verbose'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -298,10 +305,11 @@
 ;;    `eyedrop-last-picked-color', `eyedrop-picked-background',
 ;;    `eyedrop-picked-foreground', `palette-action',
 ;;    `palette-current-color', `palette-last-color',
-;;    `palette-last-picked-color', `palette-mode-map',
+;;    `palette-last-picked-color', `palette-menu',
+;;    `palette-menu-complement', `palette-menu-set',
+;;    `palette-menu-increase-decrease', `palette-mode-map',
 ;;    `palette-old-color', `palette-picked-background',
-;;    `palette-picked-foreground', `palette-popup-map',
-;;    `palette-saved-blink-cursor-mode'.
+;;    `palette-picked-foreground', `palette-saved-blink-cursor-mode'.
 ;;
 ;;  Do NOT try to use this library without a window manager.
 ;;  That is, do not try to use this with `emacs -nw'.
@@ -313,6 +321,18 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/23 dadams
+;;     Added:
+;;       palette-menu-complement, palette-menu-increase-decrease, palette-menu-set,
+;;       palette-pick-color-hue-complement, palette-pick-color-saturation-complement,
+;;       palette-pick-color-vaule-complement, palette-set-hue, palette-set-saturation,
+;;       palette-set-saturation, palette-set-hsv (alias).
+;;     Renamed: palette-popup-menu (cmd) and palette-popup-map (keymap) to palette-menu.
+;;     palette-mode-map:
+;;       Added submenus palette-menu-complement, palette-menu-increase-decrease,
+;;       palette-menu-set.  Moved complement and inc/dec to those submenus.
+;;     Key bindings: palette-pick-color(-*)-complement, palette-set-(hue|saturation|value).
+;;     palette-toggle-cursor-color: Update frame parameters when change to enhanced also.
 ;; 2015/05/09 dadams
 ;;     palette-(foreground|background)-at-point: Add let clause for unspecified-(fg|bg).
 ;;     palette-list-colors-nearest: Require misc-cmds.el and raise error if not Emacs 24+.
@@ -629,55 +649,71 @@ this saved value when you exit or quit the palette.
 The saved value is updated when `palette' is called and whenever the
 user updates `blink-cursor-mode'.")
 
-(defvar palette-popup-map nil "Keymap for `palette-mode' popup menu.")
+(defvar palette-menu nil "Keymap for `palette-mode' popup menu.")
+(defvar palette-menu-increase-decrease nil
+  "Keymap for `Increase/Decrease' submap of `palette-mode' popup menu.")
+(defvar palette-menu-complement nil
+  "Keymap for `Complement' submap of `palette-mode' popup menu.")
+(defvar palette-menu-set nil "Keymap for `Set' submap of `palette-mode' popup menu.")
+
 (defvar palette-mode-map nil "Keymap for `palette-mode'.")
 (unless palette-mode-map
-  (let ((map        (make-sparse-keymap "Color Palette"))
-        (popup-map  (make-sparse-keymap "Color Palette Menu")))
+  (let ((map           (make-sparse-keymap "Color Palette"))
+        (menu          (make-sparse-keymap "Color Palette Menu"))
+        (menu-inc/dec  (make-sparse-keymap "Increase/Decrease Component"))
+        (menu-compl    (make-sparse-keymap "Complement"))
+        (menu-set      (make-sparse-keymap "Set Component")))
+
     (define-key map [down-mouse-1] 'ignore)
     (define-key map [drag-mouse-1] 'ignore)
     (define-key map [mouse-1]      'palette-background-at-mouse)
     (define-key map [down-mouse-2] 'ignore)
     (define-key map [drag-mouse-2] 'ignore)
     (define-key map [mouse-2]      'palette-pick-background-at-mouse)
-    (define-key map [down-mouse-3] 'palette-popup-menu)
+    (define-key map [down-mouse-3] 'palette-menu)
     (define-key map [mouse-3]      'ignore)
-    (define-key map "?"    'palette-background-at-point)
+    (define-key map "?"       'palette-background-at-point)
     (when (fboundp 'list-colors-nearest) ; Library `misc-cmds.el', Emacs 24+.
       (define-key map [(control ?\?)] 'palette-list-colors-nearest))
-    (define-key map "."    'palette-current-color)
-    (define-key map "~"    'palette-pick-color-complement)
-    (define-key map "B"    'palette-increase-blue) ; B, b = blue
-    (define-key map "b"    'palette-decrease-blue)
-    (define-key map "c"    'palette-pick-color-by-name)
-    (define-key map "e"    'palette-toggle-cursor-color) ; e = enhanced cursor color
-    (define-key map "f"    'palette-toggle-verbose) ; f = frequent feedback
-    (define-key map "G"    'palette-increase-green) ;G, g = green
-    (define-key map "g"    'palette-decrease-green)
-    (define-key map "H"    'palette-increase-hue) ; H, h = hue
-    (define-key map "h"    'palette-decrease-hue)
-    (define-key map "l"    'palette-swap-last-color)   ; l = last
-    (define-key map "n"    'palette-save-new-color)    ; n = new
-    (define-key map "o"    'palette-restore-old-color) ; o = old
-    (define-key map "q"    'palette-quit)              ; q = quit
-    (define-key map "R"    'palette-increase-red)      ; R, r = red
-    (define-key map "r"    'palette-decrease-red)
-    (define-key map "S"    'palette-increase-saturation) ; S, s = saturation
-    (define-key map "s"    'palette-decrease-saturation)
-    (define-key map "u"    'palette-swap-last-color) ; u = undo
-    (define-key map "V"    'palette-increase-value)  ; V ,v = value
-    (define-key map "v"    'palette-decrease-value)
-    (define-key map "w"    'palette-where-is-color) ; w = where is it?
-    (define-key map "x"    'palette-exit)           ; x = exit
-    (define-key map "\C-hm" 'palette-help)
-    (define-key map "\C-l" 'palette-refresh)
-    (define-key map "\r"   'palette-pick-background-at-point)
-    (define-key map "\C-o" 'palette-restore-old-color)  ; o = old
-    (define-key map "\C-s" 'palette-save-new-color)     ; s = save
-    (define-key map "\M-c" 'palette-pick-color-by-name) ; c = color
-    (define-key map "\M-h" 'palette-pick-color-by-hsv)  ; h = HSV
-    (define-key map "\M-r" 'palette-pick-color-by-rgb)  ; r = RGB
-    (define-key map "\M-w" 'palette-current-rgb-to-kill-ring)
+    (define-key map "."       'palette-current-color)
+    (define-key map "~~"      'palette-pick-color-complement)
+    (define-key map "~h"      'palette-pick-color-hue-complement)
+    (define-key map "~s"      'palette-pick-color-saturation-complement)
+    (define-key map "~v"      'palette-pick-color-value-complement)
+    (define-key map "B"       'palette-increase-blue) ; B, b = blue
+    (define-key map "b"       'palette-decrease-blue)
+    (define-key map "c"       'palette-pick-color-by-name)
+    (define-key map "e"       'palette-toggle-cursor-color) ; e = enhanced cursor color
+    (define-key map "f"       'palette-toggle-verbose) ; f = frequent feedback
+    (define-key map "G"       'palette-increase-green) ;G, g = green
+    (define-key map "g"       'palette-decrease-green)
+    (define-key map "H"       'palette-increase-hue) ; H, h = hue
+    (define-key map "h"       'palette-decrease-hue)
+    (define-key map "l"       'palette-swap-last-color)   ; l = last
+    (define-key map "n"       'palette-save-new-color)    ; n = new
+    (define-key map "o"       'palette-restore-old-color) ; o = old
+    (define-key map "q"       'palette-quit)              ; q = quit
+    (define-key map "R"       'palette-increase-red)      ; R, r = red
+    (define-key map "r"       'palette-decrease-red)
+    (define-key map "S"       'palette-increase-saturation) ; S, s = saturation
+    (define-key map "s"       'palette-decrease-saturation)
+    (define-key map "u"       'palette-swap-last-color) ; u = undo
+    (define-key map "V"       'palette-increase-value)  ; V ,v = value
+    (define-key map "v"       'palette-decrease-value)
+    (define-key map "w"       'palette-where-is-color) ; w = where is it?
+    (define-key map "x"       'palette-exit)           ; x = exit
+    (define-key map "\C-hm"   'palette-help)
+    (define-key map "\C-l"    'palette-refresh)
+    (define-key map "\r"      'palette-pick-background-at-point)
+    (define-key map "\C-o"    'palette-restore-old-color)  ; o = old
+    (define-key map "\C-s"    'palette-save-new-color)     ; s = save
+    (define-key map "\M-c"    'palette-pick-color-by-name) ; c = color
+    (define-key map "\M-h"    'palette-pick-color-by-hsv)  ; h = HSV
+    (define-key map "\M-r"    'palette-pick-color-by-rgb)  ; r = RGB
+    (define-key map "\M-w"    'palette-current-rgb-to-kill-ring)
+    (define-key map "\C-\M-h" 'palette-set-hue)
+    (define-key map "\C-\M-s" 'palette-set-saturation)
+    (define-key map "\C-\M-v" 'palette-set-value)
     (define-key map [(shift control f)] 'palette-right+pick)
     (define-key map [(shift right)]     'palette-right+pick)
     (define-key map [(shift control b)] 'palette-left+pick)
@@ -687,99 +723,131 @@ user updates `blink-cursor-mode'.")
     (define-key map [(shift control p)] 'palette-up+pick)
     (define-key map [(shift up)]        'palette-up+pick)
 
-    (define-key popup-map [current-rgb-to-kill-ring]
+    (define-key menu [refresh]
+      '(menu-item "Refresh" palette-refresh
+        :help "Refresh the color palette"))
+    (define-key menu [exit]
+      '(menu-item "Exit (Update Action)" palette-exit
+        :help "Exit the color palette with exit action, if defined."))
+    (define-key menu [quit]
+      '(menu-item "Quit (Cancel)" palette-quit
+        :help "Quit the color palette without any exit action."))
+    (define-key menu [separator-5] '(menu-item "--"))
+
+    (define-key menu [current-rgb-to-kill-ring]
       '(menu-item "Copy Current Color as Kill" palette-current-rgb-to-kill-ring
         :help "Copy color as RGB hex string, respecting `palette-hex-rgb-digits'"))
-    (define-key popup-map [current-color]
+    (define-key menu [current-color]
       '(menu-item "Current Color Info" palette-current-color
         :help "Return the current color and show info about it"))
-    (define-key popup-map [bg-at-point]
+    (define-key menu [bg-at-point]
       '(menu-item "Color at Cursor" palette-background-at-point
         :help "Return the background color under the text cursor"))
     (when (fboundp 'list-colors-nearest) ; Library `misc-cmds.el', Emacs 24+.
-      (define-key popup-map [list-colors-nearest]
+      (define-key menu [list-colors-nearest]
         '(menu-item "List Nearest Colors" palette-list-colors-nearest
           :help "List the colors nearest the color under the text cursor")))
-    (define-key popup-map [separator-1] '(menu-item "--"))
-    (define-key popup-map [pick-color-by-name]
+    (define-key menu [separator-4] '(menu-item "--"))
+
+    (define-key menu [pick-color-by-name]
       `(menu-item "Choose Color By Name" palette-pick-color-by-name
                   :help "Set the current color to a color you name"))
-    (define-key popup-map [pick-color-by-hsv]
+    (define-key menu [pick-color-by-hsv]
       '(menu-item "Choose Color By HSV" palette-pick-color-by-hsv
         :help "Set the current color by providing hue, saturation, and value"))
-    (define-key popup-map [pick-color-by-rgb]
+    (define-key menu [pick-color-by-rgb]
       '(menu-item "Choose Color By RGB" palette-pick-color-by-rgb
         :help "Set the current color by providing red, green, and blue components"))
-    (define-key popup-map [separator-2] '(menu-item "--"))
-    (define-key popup-map [swap-last-color]
+    (define-key menu [separator-3] '(menu-item "--"))
+
+    (define-key menu [swap-last-color]
       '(menu-item "Swap Last Color (Undo)" palette-swap-last-color
         :help "Swap the last color and the current color"))
-    (define-key popup-map [save-new-color]
+    (define-key menu [save-new-color]
       '(menu-item "Save Current Color" palette-save-new-color
         :help "Save the current color as the old (original) color"))
-    (define-key popup-map [restore-old-color]
+    (define-key menu [restore-old-color]
       '(menu-item "Restore Old Color" palette-restore-old-color
         :help "Restore the old (original) color as the current color"))
-    (define-key popup-map [separator-3] '(menu-item "--"))
-    (define-key popup-map [complement]
-      '(menu-item "Complement" palette-pick-color-complement
-        :help "Set the current color to its complement."))
-    (define-key popup-map [increase-red]
-      '(menu-item "Increase Red" palette-increase-red
-        :help "Increase the red component of the current color by ARG/100"))
-    (define-key popup-map [decrease-red]
-      '(menu-item "  Decrease Red" palette-decrease-red
-        :help "Decrease the red component of the current color by ARG/100"))
-    (define-key popup-map [increase-green]
-      '(menu-item "Increase Green" palette-increase-green
-        :help "Increase the green component of the current color by ARG/100"))
-    (define-key popup-map [decrease-green]
-      '(menu-item "  Decrease Green" palette-decrease-green
-        :help "Decrease the green component of the current color by ARG/100"))
-    (define-key popup-map [increase-blue]
-      '(menu-item "Increase Blue" palette-increase-blue
-        :help "Increase the blue component of the current color by ARG/100"))
-    (define-key popup-map [decrease-blue]
-      '(menu-item "  Decrease Blue" palette-decrease-blue
-        :help "Decrease the blue component of the current color by ARG/100"))
-    (define-key popup-map [increase-hue]
-      '(menu-item "Increase Hue" palette-increase-hue
-        :help "Increase the hue component of the current color by ARG/100"))
-    (define-key popup-map [decrease-hue]
-      '(menu-item "  Decrease Hue" palette-decrease-hue
-        :help "Decrease the hue component of the current color by ARG/100"))
-    (define-key popup-map [increase-saturation]
-      '(menu-item "Increase Saturation" palette-increase-saturation
-        :help "Increase the saturation component of the current color by ARG/100"))
-    (define-key popup-map [decrease-saturation]
-      '(menu-item "  Decrease Saturation" palette-decrease-saturation
-        :help "Decrease the saturation component of the current color by ARG/100"))
-    (define-key popup-map [increase-value]
-      '(menu-item "Increase Value" palette-increase-value
-        :help "Increase the value component of the current color by ARG/100"))
-    (define-key popup-map [decrease-value]
-      '(menu-item "  Decrease Value" palette-decrease-value
-        :help "Decrease the value component of the current color by ARG/100"))
-    (define-key popup-map [separator-4] '(menu-item "--"))
-    (define-key popup-map [toggle-verbose]
+    (define-key menu [toggle-verbose]
       '(menu-item "Toggle Frequent Feedback" palette-toggle-verbose
         :help "Toggle using frequent color info feedback (`palette-toggle-verbose-flag')"))
-    (define-key popup-map [toggle-cursor-color]
+    (define-key menu [toggle-cursor-color]
       '(menu-item "Toggle Enhanced Cursor Color" palette-toggle-cursor-color
         :help "Toggle updating the cursor color so the cursor stands out \
 \(`palette-update-cursor-color-flag')"))
-    (define-key popup-map [refresh]
-      '(menu-item "Refresh" palette-refresh
-        :help "Refresh the color palette"))
-    (define-key popup-map [exit]
-      '(menu-item "Exit (Update Action)" palette-exit
-        :help "Exit the color palette with exit action, if defined."))
-    (define-key popup-map [quit]
-      '(menu-item "Quit (Cancel)" palette-quit
-        :help "Quit the color palette without any exit action."))
+    (define-key menu [separator-2] '(menu-item "--"))
 
-    (setq palette-mode-map   map
-          palette-popup-map  popup-map)))
+    (define-key menu-set [set-value]
+      '(menu-item "Set Value" palette-set-value
+        :help "Set the value (brightness) of the current color."))
+    (define-key menu-set [set-saturation]
+      '(menu-item "Set Saturation" palette-set-saturation
+        :help "Set the saturation of the current color."))
+    (define-key menu-set [set-hue]
+      '(menu-item "Set Hue" palette-set-hue :help "Set the hue of the current color."))
+
+    (define-key menu-inc/dec [decrease-red]
+      '(menu-item "  Decrease Red" palette-decrease-red
+        :help "Decrease the red component of the current color by ARG/100"))
+    (define-key menu-inc/dec [increase-red]
+      '(menu-item "Increase Red" palette-increase-red
+        :help "Increase the red component of the current color by ARG/100"))
+    (define-key menu-inc/dec [decrease-green]
+      '(menu-item "  Decrease Green" palette-decrease-green
+        :help "Decrease the green component of the current color by ARG/100"))
+    (define-key menu-inc/dec [increase-green]
+      '(menu-item "Increase Green" palette-increase-green
+        :help "Increase the green component of the current color by ARG/100"))
+    (define-key menu-inc/dec [decrease-blue]
+      '(menu-item "  Decrease Blue" palette-decrease-blue
+        :help "Decrease the blue component of the current color by ARG/100"))
+    (define-key menu-inc/dec [increase-blue]
+      '(menu-item "Increase Blue" palette-increase-blue
+        :help "Increase the blue component of the current color by ARG/100"))
+    (define-key menu-inc/dec [separator-1] '(menu-item "--"))
+
+    (define-key menu-inc/dec [decrease-hue]
+      '(menu-item "  Decrease Hue" palette-decrease-hue
+        :help "Decrease the hue component of the current color by ARG/100"))
+    (define-key menu-inc/dec [increase-hue]
+      '(menu-item "Increase Hue" palette-increase-hue
+        :help "Increase the hue component of the current color by ARG/100"))
+    (define-key menu-inc/dec [decrease-saturation]
+      '(menu-item "  Decrease Saturation" palette-decrease-saturation
+        :help "Decrease the saturation component of the current color by ARG/100"))
+    (define-key menu-inc/dec [increase-saturation]
+      '(menu-item "Increase Saturation" palette-increase-saturation
+        :help "Increase the saturation component of the current color by ARG/100"))
+    (define-key menu-inc/dec [decrease-value]
+      '(menu-item "  Decrease Value" palette-decrease-value
+        :help "Decrease the value component of the current color by ARG/100"))
+    (define-key menu-inc/dec [increase-value]
+      '(menu-item "Increase Value" palette-increase-value
+        :help "Increase the value component of the current color by ARG/100"))
+
+    (define-key menu-compl [complement-value]
+      '(menu-item "Complement Value" palette-pick-color-value-complement
+        :help "Set the current color to its value (brightness) complement."))
+    (define-key menu-compl [complement-saturation]
+      '(menu-item "Complement Saturation" palette-pick-color-saturation-complement
+        :help "Set the current color to its saturation complement."))
+    (define-key menu-compl [complement-hue]
+      '(menu-item "Complement Hue" palette-pick-color-hue-complement
+        :help "Set the current color to its hue complement."))
+    (define-key menu-compl [complement]
+      '(menu-item "Complement Color" palette-pick-color-complement
+        :help "Set the current color to its complement."))
+
+    (define-key menu [set-menu]
+      `(menu-item "Set Component" ,menu-set :help "Set a single color component"))
+    (define-key menu [inc/dec-menu]
+      `(menu-item "Increase/Decrease Component" ,menu-inc/dec
+                  :help "Increase or Decrease a single color component"))
+    (define-key menu [complement-menu]
+      `(menu-item "Complement" ,menu-compl :help "Complement a color or color component"))
+    (setq palette-mode-map  map
+          palette-menu      menu)))
 
 (substitute-key-definition 'forward-char 'palette-right palette-mode-map global-map)
 (substitute-key-definition 'backward-char 'palette-left palette-mode-map global-map)
@@ -1051,11 +1119,11 @@ No update is made if we are in the palette."
     (setq palette-saved-blink-cursor-mode  blink-cursor-mode)))
 
 ;;;###autoload
-(defun palette-popup-menu (event)       ; Bound to `mouse-3'.
+(defun palette-menu (event)       ; Bound to `mouse-3'.
   "Display a popup menu of palette commands.
 EVENT is a mouse event."
   (interactive "e")
-  (popup-menu palette-popup-map))
+  (popup-menu palette-menu))
 
 ;;;###autoload
 (defun palette-help ()                  ; Bound to `C-h m'.
@@ -1439,6 +1507,8 @@ Each component is from 0.0 to 1.0 inclusive."
 ;;;###autoload
 (defalias 'hsv 'palette-pick-color-by-hsv)
 ;;;###autoload
+(defalias 'palette-set-hsv 'palette-pick-color-by-hsv)
+;;;###autoload
 (defun palette-pick-color-by-hsv (hue saturation value) ; Bound to `M-h'.
   "Set the current color by providing HUE, SATURATION, and VALUE.
 Each component is from 0.0 to 1.0 inclusive."
@@ -1452,14 +1522,99 @@ Each component is from 0.0 to 1.0 inclusive."
   palette-current-color)
 
 ;;;###autoload
+(defun palette-set-hue (hue)            ; Bound to `C-M-h'.
+  "Set the current color by providing the HUE (0.0 to 1.0)."
+  (interactive (list (read-number "New hue (0.0 to 1.0): "
+                                  (hexrgb-hue palette-current-color))))
+  (setq palette-last-color  palette-current-color)
+  (save-selected-window
+    (let ((sat  (hexrgb-saturation palette-current-color))
+          (val  (hexrgb-value palette-current-color)))
+      (palette-set-current-color (hexrgb-hsv-to-hex hue sat val))
+      (palette-where-is-color palette-current-color)
+      (palette-brightness-scale)
+      (palette-swatch)))
+  palette-current-color)
+
+;;;###autoload
+(defun palette-set-saturation (saturation) ; Bound to `C-M-s'.
+  "Set the current color by providing the SATURATION (0.0 to 1.0)."
+  (interactive (list (read-number "New saturation (0.0 to 1.0): "
+                                  (hexrgb-saturation palette-current-color))))
+  (setq palette-last-color  palette-current-color)
+  (save-selected-window
+    (let ((hue  (hexrgb-hue palette-current-color))
+          (val  (hexrgb-value palette-current-color)))
+      (palette-set-current-color (hexrgb-hsv-to-hex hue saturation val))
+      (palette-where-is-color palette-current-color)
+      (palette-brightness-scale)
+      (palette-swatch)))
+  palette-current-color)
+
+;;;###autoload
+(defun palette-set-value (value)        ; Bound to `C-M-v'.
+  "Set the current color by providing the VALUE (0.0 to 1.0)."
+  (interactive (list (read-number "New value (0.0 to 1.0): "
+                                  (hexrgb-value palette-current-color))))
+  (setq palette-last-color  palette-current-color)
+  (save-selected-window
+    (let ((hue  (hexrgb-hue palette-current-color))
+          (sat  (hexrgb-saturation palette-current-color)))
+      (palette-set-current-color (hexrgb-hsv-to-hex hue sat value))
+      (palette-where-is-color palette-current-color)
+      (palette-brightness-scale)
+      (palette-swatch)))
+  palette-current-color)
+
+;;;###autoload
 (defalias 'complement 'palette-pick-color-complement)
 ;;;###autoload
-(defun palette-pick-color-complement () ; Bound to `~'.
+(defun palette-pick-color-complement () ; Bound to `~~'.
   "Set the current palette color to its complement."
   (interactive)
   (setq palette-last-color  palette-current-color)
   (save-selected-window
     (palette-set-current-color (hexrgb-complement palette-current-color))
+    (palette-where-is-color palette-current-color)
+    (palette-brightness-scale)
+    (palette-swatch))
+  palette-current-color)
+
+;;;###autoload
+(defun palette-pick-color-hue-complement () ; Bound to `~h'.
+  "Set the current palette color to its hue complement.
+Saturation and value are not changed."
+  (interactive)
+  (setq palette-last-color  palette-current-color)
+  (save-selected-window
+    (palette-set-current-color (hexrgb-hue-complement palette-current-color))
+    (palette-where-is-color palette-current-color)
+    (palette-brightness-scale)
+    (palette-swatch))
+  palette-current-color)
+
+;;;###autoload
+(defun palette-pick-color-saturation-complement () ; Bound to `~s'.
+  "Set the current palette color to its saturation complement.
+Hue and value are not changed."
+  (interactive)
+  (setq palette-last-color  palette-current-color)
+  (save-selected-window
+    (palette-set-current-color (hexrgb-saturation-complement
+                                palette-current-color))
+    (palette-where-is-color palette-current-color)
+    (palette-brightness-scale)
+    (palette-swatch))
+  palette-current-color)
+
+;;;###autoload
+(defun palette-pick-color-value-complement () ; Bound to `~v'.
+  "Set the current palette color to its value complement.
+Hue and saturation are not changed."
+  (interactive)
+  (setq palette-last-color  palette-current-color)
+  (save-selected-window
+    (palette-set-current-color (hexrgb-value-complement palette-current-color))
     (palette-where-is-color palette-current-color)
     (palette-brightness-scale)
     (palette-swatch))
@@ -1848,7 +2003,11 @@ This toggles option `palette-toggle-verbose-flag'."
 This toggles option `palette-update-cursor-color-flag'."
   (interactive)
   (setq palette-update-cursor-color-flag  (not palette-update-cursor-color-flag))
-  (unless palette-update-cursor-color-flag
+  (if palette-update-cursor-color-flag
+      (let ((col  (palette-complement-or-alternative palette-current-color)))
+        (modify-frame-parameters (selected-frame) `(,(cons 'foreground-color col)
+                                                     ,(cons 'cursor-color col)
+                                                     ,(cons 'mouse-color col))))
     (modify-frame-parameters
      (selected-frame)
      '((foreground-color . "Black") (cursor-color . "Black") (mouse-color . "Black"))))
@@ -2103,8 +2262,10 @@ informative message."
           (when msg-p (redisplay t)))))))
 
 (defun palette-complement-or-alternative (color &optional alternative)
-  "Complement of COLOR, or ALTERNATIVE if COLOR is its own complement.
-The default ALTERNATIVE color is Red."
+  "Return complement of COLOR or ALTERNATIVE (default Red).
+Return ALTERNATIVE if value component of COLOR is approximately its
+own complement or its saturation is less than 0.2.  The default
+ALTERNATIVE color is Red or Cyan, depending on the current hue."
   (let ((hue  (hexrgb-hue color)))
     (setq alternative  (or alternative (if (or (hexrgb-approx-equal hue 1.0 0.2)
                                                (hexrgb-approx-equal hue 0.0 0.0 0.1))
