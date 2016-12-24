@@ -57,9 +57,16 @@ With a prefix argument (`C-u'), these commands also display the palette.
 
 Again (it's worth repeating), if you load library '''<tt>[[facemenu+.el]]</tt>''', then you can access the color palette for any face you see used in an Emacs buffer, just by pointing to it (`C-mouse-2') -- the '''Text Properties''' popup menu is enhanced to give you access to the palette and the eyedropper. See '''FaceMenuPlus'''.
 
+
+
+
 == Use with Crosshairs ==
 
 I recommend that you also use library '''<tt>[[crosshairs.el]]</tt>''' (see '''[[CrosshairHighlighting|Crosshair Highlighting]]'''), so that you can turn on `crosshairs-mode' (using the suggested key binding of '''`##C-+##'''').  That makes the location of the cursor much more visible, which really helps since it is necessarily very small for the palette.
+
+: [[image:ColorPaletteWithCrosshairs]]
+
+
 
 == Use with Icicles ==
 
