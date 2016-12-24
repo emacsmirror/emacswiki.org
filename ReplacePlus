@@ -60,8 +60,17 @@ Library <tt>[[replace+.el]]</tt> does not redefine either of the standard query-
 
 * Defaulting is as described [[#DefaultValue|above]].
 
+* If you also use library '''<tt>[[isearch+.el]]</tt>''' then non-`nil' option '''`isearchp-highlight-regexp-group-levels-flag'''' means that `query-replace-regexp' ('''`##C-M-%##'''') highlights the match of each regexp group differently.  For
+lazy-highlighting of other search hits, the odd groups are
+highlighted differently from the even groups.  This is the effect for a search hit for regexp 
+##(##'''##\(##'''##[-a-z*]+##'''##\)##'''## *##'''##\(##'''##(##'''##\(##'''##([-a-z]+ *##'''##\(##'''##[^)]*##'''##\)##'''##)##'''##\)##'''##)##'''##\)##'''##.*##
+:
 
-'''See Also: IsearchPlus''' for more information on option `isearchp-set-region-flag' and command 
+:: [[image:IciclesSearchContextLevelsScreenshot]]
+
+
+
+'''See Also: IsearchPlus''' for more information about options `isearchp-set-region-flag' and `isearchp-highlight-regexp-group-levels-flag' and command 
 `set-region-around-search-target'.
 
 
