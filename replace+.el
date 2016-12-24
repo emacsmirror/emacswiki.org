@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec  9 07:05:32 2016 (-0800)
+;; Last-Updated: Sat Dec 24 12:51:23 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 1827
+;;     Update #: 1854
 ;; URL: http://www.emacswiki.org/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -109,6 +109,10 @@
 ;;                        1. Allow DEFAULTS to be a list of strings.
 ;;                        2. Prepend DEFAULTS to the vanilla defaults.
 ;;
+;;    `replace-highlight' (Emacs 24.4+) - Highlight regexp groups, per
+;;                      `isearchp-highlight-regexp-group-levels-flag'.
+;;    `replace-dehighlight' (Emacs 24.4+) - Dehighlight regexp groups.
+;;
 ;;
 ;;  This file should be loaded after loading the standard GNU file
 ;;  `replace.el'.  So, in your `~/.emacs' file, do this:
@@ -137,6 +141,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/24 dadams
+;;    Support highlighting of regexp groups (option isearchp-highlight-regexp-group-levels-flag):
+;;      Added redefinitions of replace-highlight and replace-dehighlight.
 ;; 2016/12/09 dadams
 ;;     x-get-selection -> gui-get-selection for Emacs 25+.
 ;; 2016/05/08 dadams
@@ -347,13 +354,21 @@
 (require 'fit-frame nil t) ;; (no error if not found): fit-frame
 (require 'highlight nil t) ;; (no error if not found): hlt-highlight-regexp-region
 (require 'isearch+ nil t) ;; (no error if not found):
+                          ;; isearchp-highlight-regexp-group-levels-flag, isearchp-regexp-level-overlays,
                           ;; isearchp-set-region-around-search-target, isearchp-set-region-flag
 (require 'menu-bar+ nil t) ;; menu-bar-options-menu, menu-bar-search-replace-menu
 
 ;; Quiet the byte compiler.
+(defvar isearchp-highlight-regexp-group-levels-flag) ; In `isearch+.el' (Emacs 24.4+).
+(defvar isearch-lazy-highlight-last-string) ; Emacs 22+.
+(defvar isearchp-regexp-level-overlays) ; In `isearch+.el' (Emacs 24.4+).
+(defvar lazy-highlight-cleanup)         ; Emacs 22+.
 (defvar minibuffer-prompt-properties)   ; Emacs 22+.
 (defvar occur-collect-regexp-history)   ; In `replace.el' (Emacs 24+).
 (defvar query-replace-defaults)         ; In `replace.el' (Emacs 22+).
+(defvar query-replace-lazy-highlight)   ; In `replace.el' (Emacs 22+).
+(defvar replace-lax-whitespace)         ; In `replace.el' (Emacs 24.3+).
+(defvar replace-regexp-lax-whitespace)  ; In `replace.el' (Emacs 24.3+).
 
 ;;;;;;;;;;;;;;;;;;;;;
 
@@ -1066,6 +1081,80 @@ the last replacement regexp."
       (if (equal input "")
           (or (car defaults)  input)
         (prog1 input (add-to-history 'regexp-history input))))))
+
+
+(when (boundp 'isearchp-highlight-regexp-group-levels-flag) ; In `isearch+.el', Emacs 24.4+.
+
+
+  ;; REPLACE ORIGINAL in `replace.el'
+  ;;
+  ;; Highlight regexp groups also, if `isearchp-highlight-regexp-group-levels-flag' is non-nil.
+  ;;
+  (defun replace-highlight (match-beg match-end range-beg range-end
+                            search-string regexp-flag delimited-flag
+                            case-fold-search backward)
+    "Highlight current search hit.   Lazy-highlight other search hits.
+If option `isearchp-highlight-regexp-group-levels-flag' is non-nil,
+then highlight each regexp group differently."
+    (when query-replace-highlight
+      (if replace-overlay
+          (move-overlay replace-overlay match-beg match-end (current-buffer))
+        (setq replace-overlay (make-overlay match-beg match-end))
+        (overlay-put replace-overlay 'priority 1001) ;higher than lazy overlays
+        (overlay-put replace-overlay 'face 'query-replace)))
+    (when isearchp-highlight-regexp-group-levels-flag
+      (while isearchp-regexp-level-overlays
+        (delete-overlay (car isearchp-regexp-level-overlays))
+        (setq isearchp-regexp-level-overlays  (cdr isearchp-regexp-level-overlays)))
+      ;; Highlight each regexp group differently.
+      (save-match-data
+        (let ((level         1)
+              (max-levels    (min (regexp-opt-depth search-string) 8))
+              (rep-priority  (or (overlay-get replace-overlay 'priority) ; `replace-overlay' is 1001.
+                                 1001)))
+          (save-excursion
+            (goto-char match-beg)
+            (when (looking-at search-string)
+              (condition-case nil
+                  (while (<= level max-levels)
+                    (unless (equal (match-beginning level) (match-end level))
+                      (let ((ov  (make-overlay (match-beginning level) (match-end level))))
+                        (push ov isearchp-regexp-level-overlays)
+                        (overlay-put ov 'priority (+ rep-priority 200 level))
+                        (overlay-put ov 'face (intern (concat "isearchp-regexp-level-"
+                                                              (number-to-string level))))))
+                    (setq level  (1+ level)))
+                (error nil)))))))
+    (when query-replace-lazy-highlight
+      (let ((isearch-string                 search-string)
+            (isearch-regexp                 regexp-flag)
+            (isearch-word                   delimited-flag)
+            (isearch-lax-whitespace         replace-lax-whitespace)
+            (isearch-regexp-lax-whitespace  replace-regexp-lax-whitespace)
+            (isearch-case-fold-search       case-fold-search)
+            (isearch-forward                (not backward))
+            (isearch-other-end              match-beg)
+            (isearch-error                  nil))
+        (isearch-lazy-highlight-new-loop range-beg range-end))))
+
+
+  ;; REPLACE ORIGINAL in `replace.el'
+  ;;
+  ;; Dehighlight regexp groups also, if any.
+  ;;
+  (defun replace-dehighlight ()
+    "Remove search-hit highlighting."
+    (when replace-overlay (delete-overlay replace-overlay))
+    (when (boundp 'isearchp-regexp-level-overlays)
+      (while isearchp-regexp-level-overlays
+        (delete-overlay (car isearchp-regexp-level-overlays))
+        (setq isearchp-regexp-level-overlays  (cdr isearchp-regexp-level-overlays))))
+    (when query-replace-lazy-highlight
+      (lazy-highlight-cleanup lazy-highlight-cleanup)
+      (setq isearch-lazy-highlight-last-string  nil))
+    (isearch-clean-overlays));; Close overlays opened by `isearch-range-invisible' in `perform-replace'.
+
+  )
 
 
 
