@@ -152,7 +152,9 @@ These are the main '''<tt>[[isearch+.el]]</tt>''' features:
 controlled by option
 '''`isearchp-highlight-regexp-group-levels-flag''''.  For
 lazy-highlighting of other search hits, the odd groups are
-highlighted differently from the even groups.  This is the effect for a search hit for regexp 
+highlighted differently from the even groups.  The same highlighting is available for `query-replace-regexp' ('''`##C-M-%##'''), if you also use library '''<tt>[[replace+.el]]</tt>''' -- see '''ReplacePlus'''.
+
+: This is the effect for a search hit for regexp 
 ##(##'''##\(##'''##[-a-z*]+##'''##\)##'''## *##'''##\(##'''##(##'''##\(##'''##([-a-z]+ *##'''##\(##'''##[^)]*##'''##\)##'''##)##'''##\)##'''##)##'''##\)##'''##.*##
 :
 
