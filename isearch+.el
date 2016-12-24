@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 23 16:01:31 2016 (-0800)
+;; Last-Updated: Sat Dec 24 12:55:41 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5504
+;;     Update #: 5508
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,9 +19,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
-;;   `hexrgb', `isearch-prop', `macroexp', `misc-cmds', `misc-fns',
-;;   `strings', `thingatpt', `thingatpt+', `zones'.
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
+;;   `cl-lib', `color', `frame-fns', `gv', `help-fns', `hexrgb',
+;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1054,6 +1055,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/12/24 dadams
+;;     isearch-lazy-highlight-update (needed for query-replace-regexp, in replace+.el):
+;;       Use isearch-lazy-highlight-regexp,      not isearch-regexp.
+;;       Use isearch-lazy-highlight-last-string, not isearch-string.
 ;; 2016/12/23 dadams
 ;;     Soft-require hexrgb.el.
 ;;     isearchp-regexp-level-*: If hexrgb.el is available, inherit from hlt-regexp-level-*.
@@ -4960,14 +4965,14 @@ Attempt to do the search exactly the way the pending Isearch would."
                               (forward-char -1)))
                         (if (and (boundp 'isearchp-highlight-regexp-group-levels-flag) ; Emacs 24.4+
                                  isearchp-highlight-regexp-group-levels-flag
-                                 isearch-regexp
-                                 (> (regexp-opt-depth isearch-string) 0))
+                                 isearch-lazy-highlight-regexp
+                                 (> (regexp-opt-depth isearch-lazy-highlight-last-string) 0))
                             (save-match-data
                               (let ((level         1)
                                     (ise-priority  1000))
                                 (save-excursion
                                   (goto-char mb)
-                                  (when (looking-at isearch-string)
+                                  (when (looking-at isearch-lazy-highlight-last-string)
                                     (condition-case nil
                                         (while (not (equal (match-beginning level) (match-end level)))
                                           (unless (equal (match-beginning level) (match-end level))
