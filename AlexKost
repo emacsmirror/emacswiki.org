@@ -10,8 +10,7 @@ I've been [s]using[/s] living in Emacs since May, 2012.  I can be found on [[Ema
 * [https://github.com/alezost/alect-themes alect-themes] -- The only
   color themes I can bear.
 
-* [http://git.savannah.gnu.org/cgit/guix.git/tree/emacs guix.el]
-  (a part of Guix since v0.8) -- Interface for
+* [https://github.com/alezost/guix.el Emacs-Guix] -- Interface for
   [http://www.gnu.org/software/guix/ GNU Guix package manager]
 
 * [https://github.com/alezost/aurel aurel] -- A package to search, vote for
