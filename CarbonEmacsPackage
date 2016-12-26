@@ -1,5 +1,5 @@
-This is one of the EmacsForMacOS options you have, also known as [::CarbonEmacs].
-It contains Emacs CVS using Carbon and comes bundled with many packages.
+This was an EmacsForMacOS options, also known as [::CarbonEmacs].
+It contains Emacs CVS using Carbon and comes bundled with many packages.  It is no longer supported.
 
 * SeijiZenitani's page in [http://th.nao.ac.jp/MEMBER/zenitani/emacs-j.html Japanese], [http://th.nao.ac.jp/MEMBER/zenitani/emacs-e.html English]
 * [http://groups.google.com/group/carbon-emacs?hl=en Carbon Emacs User Group]
