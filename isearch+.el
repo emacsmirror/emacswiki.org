@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 24 12:55:41 2016 (-0800)
+;; Last-Updated: Tue Dec 27 13:01:50 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5508
+;;     Update #: 5511
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -1055,6 +1055,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/12/27 dadams
+;;     isearchp-read-predicate:
+;;       Handle a function symbol that has prop isearchp-part-pred.  Forgot to update this on 12/10.
 ;; 2016/12/24 dadams
 ;;     isearch-lazy-highlight-update (needed for query-replace-regexp, in replace+.el):
 ;;       Use isearch-lazy-highlight-regexp,      not isearch-regexp.
@@ -5094,7 +5097,7 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
                   prefix  (nth 2 pred)
                   pred    (nth 1 pred))
           (if (nth 1 pred)
-              (setq prefix  (nth 1 pred) ; (PREDICATE PREFIX)
+              (setq prefix  (nth 1 pred)  ; (PREDICATE PREFIX)
                     pred    (nth 0 pred)) ; (PREDICATE)
             (setq pred  (nth 0 pred)))))
       (add-function where isearch-filter-predicate pred
@@ -5136,7 +5139,7 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
     (let ((isearchp-resume-with-last-when-empty-flag  nil)
           name)
       (with-isearch-suspended (setq name  (read-string "Name this predicate: ")))
-      (let ((oname  nil))               ; Ensure neither (1) empty name mor (2) pre-existing name.
+      (let ((oname  nil)) ; Ensure neither (1) empty name mor (2) pre-existing name.
         (while (catch 'isearchp-read-filter-name
                  (when (= 0 (length name)) (throw 'isearchp-read-filter-name ""))
                  (advice-function-mapc (lambda (pred props)
@@ -5158,29 +5161,47 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
       prefix))
 
   (defun isearchp-read-predicate (&optional prompt)
-    "Read and return a predicate usable as `isearch-filter-predicate'.
-You type a predicate suitable as `isearch-filter-predicate'.  It can
-be a function symbol, a lambda-form, or a byte-compiled function.
+    "Read a predicate usable as `isearch-filter-predicate'.
+You can input a short NAME or FUNCTION that is the first element of an
+`isearchp-filter-predicates-alist' entry.
 
-Completion is available against the predicates and short names in the
-entries in option `isearchp-filter-predicates-alist', plus any such
-that you have added during Isearch.  This completion is available, but
-you can also enter any other predicate, instead of one of the
-completion candidates.  (Completion is lax).
+Completion is available for those short names and functions, plus any
+such that you have added during Isearch (using \\<isearch-mode-map>`\
+\\[isearchp-add-filter-predicate]', for example).
 
-For `isearchp-filter-predicates-alist' entries (and those added
+This completion is available, but you can enter any predicate suitable
+as `isearch-filter-predicate', instead of one of the completion
+candidates.  (In other words, completion is lax.)  You can enter the
+predicate as a symbol or a lambda-form.
+
+For `isearchp-filter-predicates-alist' entries (and any added
 dynamically) that include short names, the associated predicates are
 shown as annotations next to the short names in buffer
-`*Completions*'.
+`*Completions*'.  (If the predicate name starts with `isearchp-', this
+prefix is removed from the annotation, for brevity.)
 
-If you do pick one of the predicates or short names provided as a
-completion candidate then you are never prompted for a short name or a
-prompt prefix for it.
+If you choose one of the functions or short names provided as a
+completion candidate then you are not prompted subsequently for either
+a short name or a prompt prefix to associate with it.  Otherwise, you
+might be.
 
-The value returned is the predicate read, if it is not one of the
-completion candidates.  Otherwise, it is the corresponding full
-completion-candidate entry (in the possibly augmented
-`isearchp-filter-predicates-alist')."
+If you choose a completion candidate that does not name a function
+symbol that has property `isearchp-part-pred', then the corresponding
+full completion-candidate entry is the value returned by
+`isearchp-read-predicate'.
+
+For example, if you choose candidate `[url]' then the value returned
+is the 3-element list `(\"[url]\" isearchp-in-url-p \"[URL]\")', where
+the filter predicate is `isearchp-in-url-p', its short name is
+`[url]', and the prompt prefix for it is `[URL]'.
+
+If you choose a candidate that names a function symbol that has
+property `isearchp-part-pred', then that function is invoked with no
+arguments, and the filter predicate it returns is the value returned
+by `isearchp-read-predicate'.
+
+If you do not choose a completion candidate then the value returned by
+`isearchp-read-predicate' is the predicate that you entered."
     (let ((isearchp-resume-with-last-when-empty-flag  nil)
           (completion-extra-properties
            '(:annotation-function
@@ -5201,14 +5222,18 @@ completion-candidate entry (in the possibly augmented
                                          'isearchp-predicate-history)
                 choice  (assoc input isearchp-current-filter-preds-alist)
                 choice  (or choice  (assoc (intern input) isearchp-current-filter-preds-alist)))
-          (setq result  (or choice  (read input)) ; E.g., input was a lambda form.
+          (setq result  (or choice  (read input)) ; For example, input was a lambda form.
                 pred    (if choice
-                            (if (stringp (nth 0 choice)) ; (NAME PREDICATE [PREFIX])
+                            (if (stringp (nth 0 choice)) ; (NAME FUNCTION [PREFIX])
                                 (nth 1 choice)
-                              (nth 0 choice)) ; (PREDICATE [PREFIX])
+                              (nth 0 choice)) ; (FUNCTION [PREFIX])
                           result))
           (unless (or (functionp pred)  (advice-function-member-p pred isearch-filter-predicate))
             (message "Not a function: `%S'" pred) (sit-for 1))
+          (when (and (symbolp pred)  (get pred 'isearchp-part-pred))
+            (setq pred    (funcall pred)
+                  result  pred
+                  choice  nil))
           (setq isearchp-user-entered-new-filter-p  (not choice))))
       result))
 
@@ -5445,22 +5470,22 @@ after the search hit, within DISTANCE.
 
 DISTANCE is a cons returned by function `isearchp-read-measure'."
     `(lambda (beg end)
-      (or (save-excursion
-            (goto-char beg)
-            (let ((dist     ,(car distance))
-                  (unit-fn  ',(cdr distance))
-                  unit-pos)
-              (save-excursion (condition-case nil (funcall unit-fn (- dist)) (error nil))
-                              (setq unit-pos  (point)))
-              (save-match-data (re-search-backward ,pattern (max (point-min) unit-pos) t))))
-       (save-excursion
-         (goto-char end)
-         (let ((dist     ,(car distance))
-               (unit-fn  ',(cdr distance))
-               unit-pos)
-           (save-excursion (condition-case nil (funcall unit-fn dist) (error nil))
-                           (setq unit-pos  (point)))
-           (save-match-data (re-search-forward ,pattern (min (point-max) unit-pos) t)))))))
+       (or (save-excursion
+             (goto-char beg)
+             (let ((dist     ,(car distance))
+                   (unit-fn  ',(cdr distance))
+                   unit-pos)
+               (save-excursion (condition-case nil (funcall unit-fn (- dist)) (error nil))
+                               (setq unit-pos  (point)))
+               (save-match-data (re-search-backward ,pattern (max (point-min) unit-pos) t))))
+           (save-excursion
+             (goto-char end)
+             (let ((dist     ,(car distance))
+                   (unit-fn  ',(cdr distance))
+                   unit-pos)
+               (save-excursion (condition-case nil (funcall unit-fn dist) (error nil))
+                               (setq unit-pos  (point)))
+               (save-match-data (re-search-forward ,pattern (min (point-max) unit-pos) t)))))))
 
 
   (put 'isearchp-near-before-predicate 'isearchp-part-pred t)
@@ -5476,14 +5501,14 @@ DISTANCE is a cons returned by function `isearchp-read-measure'."
         (setq pattern   (nth 0 all)
               distance  (nth 1 all))))
     `(lambda (beg _)
-      (save-excursion
-        (goto-char beg)
-        (let ((dist     ,(car distance))
-              (unit-fn  ',(cdr distance))
-              unit-pos)
-          (save-excursion (condition-case nil (funcall unit-fn (- dist)) (error nil))
-                          (setq unit-pos  (point)))
-          (save-match-data (re-search-backward ,pattern (max (point-min) unit-pos) t))))))
+       (save-excursion
+         (goto-char beg)
+         (let ((dist     ,(car distance))
+               (unit-fn  ',(cdr distance))
+               unit-pos)
+           (save-excursion (condition-case nil (funcall unit-fn (- dist)) (error nil))
+                           (setq unit-pos  (point)))
+           (save-match-data (re-search-backward ,pattern (max (point-min) unit-pos) t))))))
 
 
   (put 'isearchp-near-after-predicate 'isearchp-part-pred t)
@@ -5499,14 +5524,14 @@ DISTANCE is a cons returned by function `isearchp-read-measure'."
         (setq pattern   (nth 0 all)
               distance  (nth 1 all))))
     `(lambda (_ end)
-      (save-excursion
-        (goto-char end)
-        (let ((dist     ,(car distance))
-              (unit-fn  ',(cdr distance))
-              unit-pos)
-          (save-excursion (condition-case nil (funcall unit-fn dist) (error nil))
-                          (setq unit-pos  (point)))
-          (save-match-data (re-search-forward ,pattern (min (point-max) unit-pos) t))))))
+       (save-excursion
+         (goto-char end)
+         (let ((dist     ,(car distance))
+               (unit-fn  ',(cdr distance))
+               unit-pos)
+           (save-excursion (condition-case nil (funcall unit-fn dist) (error nil))
+                           (setq unit-pos  (point)))
+           (save-match-data (re-search-forward ,pattern (min (point-max) unit-pos) t))))))
 
   (defun isearchp-columns (min max &optional flip-read-name-p flip-read-prefix-p msgp) ; `C-z c'
     "Add a predicate that restrict searching between two columns (inclusive).
@@ -5535,8 +5560,8 @@ prefix - see `isearchp-add-filter-predicate'."
   (defun isearchp-columns-p (min max)
     "Return t if all chars in search hit are between columns MIN and MAX."
     `(lambda (beg end)
-      (and (>= (save-excursion (goto-char beg) (current-column)) ,min)
-       (<= (save-excursion (goto-char end) (current-column)) ,max))))
+       (and (>= (save-excursion (goto-char beg) (current-column)) ,min)
+            (<= (save-excursion (goto-char end) (current-column)) ,max))))
 
   (defun isearchp-show-hit-w-crosshairs (beg end)
     "Show the current search hit using crosshairs, at END.
