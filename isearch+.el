@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 27 13:45:37 2016 (-0800)
+;; Last-Updated: Tue Dec 27 14:18:06 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5543
+;;     Update #: 5557
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -503,12 +503,19 @@
 ;;    - `C-z %' (`isearchp-add-regexp-filter-predicate') adds a filter
 ;;      predicate that requires search hits to match a given regexp.
 ;;
-;;    - `C-z |' (`isearchp-or-filter-predicate') adds a filter
+;;    - `C-z ||' (`isearchp-or-filter-predicate') adds a filter
 ;;      predicate, OR-ing it as an additional `:before-until' filter.
 ;;
-;;    - `C-z ~' (`isearchp-complement-filter') complements the current
+;;    - `C-z |1' (`isearchp-or-last-filter') replaces the last-added
+;;      filter by its disjunction with another predicate, which you
+;;      specify.
+;;
+;;    - `C-z ~~' (`isearchp-complement-filter') complements the current
 ;;      filter.  It either adds an `:around' filter that complements
 ;;      or it removes an existing top-level complementing filter.
+;;
+;;    - `C-z ~1' (`isearchp-negate-last-filter') replaces the
+;;      last-added filter by its complement.
 ;;
 ;;    - `C-z -' (`isearchp-remove-filter-predicate') removes the last
 ;;      added filter predicate.
@@ -566,6 +573,25 @@
 ;;      predicates, which incorporate particular patterns and
 ;;      distances. You can then simply add such a predicate using `C-z
 ;;      &' (no prompting for pattern or distance).
+;;
+;;    Typically you add (`C-z &', `C-z %', etc.) a filter predicate to
+;;    those already active, or you remove one (`C-z -').  Adding is
+;;    implicitly an AND operation: the list of current predicates must
+;;    all be satisfied.  You can also OR a predicate against either
+;;    the entire ANDed list of predicates (`C-z ||') or against only
+;;    the last-added one (`C-z |1').  And you can complement either
+;;    the entire ANDed list (`C-z ~~') or just the last-added
+;;    predicate (`C-z ~1').
+;;
+;;    This ORing and NOTing, together with adding and removing
+;;    predicates in a given order (implicitly ANDing them), gives you
+;;    complete Boolean combination flexibility.
+;;
+;;    The list of filter predicates is always a conjunction.  But you
+;;    can use, as any of the conjuncts, a predicate that implements a
+;;    disjunction or a negation.  Or you can replace the entire list
+;;    by a single predicate that implements a disjunction or a
+;;    negation.
 ;;
 ;;    When you use one of the commands that adds a filter predicate as
 ;;    advice to `isearch-filter-predicate' you can be prompted for two
