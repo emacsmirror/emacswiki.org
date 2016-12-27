@@ -370,7 +370,7 @@ That can be converted to advice, to make it more seamless.
   (ad-activate 'ibuffer)
 
 [new]
-This will cause an error if you ever enter ibuffer from the minibuffer. Ibuffer complains about "No buffer with name  \*Minibuf-1\*". Here's my fix:
+This will cause an error if you ever enter ibuffer from the minibuffer. Ibuffer complains about "No buffer with name  *Minibuf-1*". Here's my fix:
 
   (defadvice ibuffer (around ibuffer-point-to-most-recent) ()
              "Open ibuffer with cursor pointed to most recent (non-minibuffer) buffer name"
