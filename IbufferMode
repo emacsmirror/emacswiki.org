@@ -369,6 +369,20 @@ That can be converted to advice, to make it more seamless.
       (ibuffer-jump-to-buffer recent-buffer-name)))
   (ad-activate 'ibuffer)
 
+[new]
+This will cause an error if you ever enter ibuffer from the minibuffer. Ibuffer complains about "No buffer named " *Minibuf-1*". Here's my fix:
+
+  (defadvice ibuffer (around ibuffer-point-to-most-recent) ()
+             "Open ibuffer with cursor pointed to most recent (non-minibuffer) buffer name"
+             (let ((recent-buffer-name
+                    (if (minibufferp (buffer-name))
+                        (buffer-name
+                         (window-buffer (minibuffer-selected-window)))
+                      (buffer-name (other-buffer)))))
+               ad-do-it
+               (ibuffer-jump-to-buffer recent-buffer-name)))
+  (ad-activate 'ibuffer)
+
 ----
 
 [new]
