@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 27 13:01:50 2016 (-0800)
+;; Last-Updated: Tue Dec 27 13:45:37 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5511
+;;     Update #: 5543
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -90,8 +90,10 @@
 ;;    `isearchp-fontify-buffer-now', `isearchp-init-edit',
 ;;    `isearchp-near' (Emacs 24.4+), `isearchp-near-after' (Emacs
 ;;    24.4+), `isearchp-near-before' (Emacs 24.4+),
+;;    `isearchp-negate-last-filter' (Emacs 24.4+),
 ;;    `isearchp-open-recursive-edit' (Emacs 22+),
 ;;    `isearchp-or-filter-predicate' (Emacs 24.4+),
+;;    `isearchp-or-last-filter' (Emacs 24.4+),
 ;;    `isearchp-remove-failed-part' (Emacs 22+),
 ;;    `isearchp-remove-failed-part-or-last-char' (Emacs 22+),
 ;;    `isearchp-remove-filter-predicate' (Emacs 24.4+),
@@ -189,7 +191,9 @@
 ;;    `isearchp-near-after-predicate' (Emacs 24.4+),
 ;;    `isearchp-near-before-predicate' (Emacs 24.4+),
 ;;    `isearchp-near-predicate' (Emacs 24.4+), `isearchp-not-pred'
-;;    (Emacs 24.4+), `isearchp-oddp', `isearchp-read-face-names',
+;;    (Emacs 24.4+), `isearchp-not-predicate' (Emacs 24.4+),
+;;    `isearchp-oddp', `isearchp-or-predicates' (Emacs 24.4+),
+;;    `isearchp-or-preds' (Emacs 24.4+), `isearchp-read-face-names',
 ;;    `isearchp-read-face-names--read', `isearchp-read-filter-name'
 ;;    (Emacs 24.4+), `isearchp-read-measure' (Emacs 24.4+),
 ;;    `isearchp-read-near-args' (Emacs 24.4+),
@@ -332,8 +336,10 @@
 ;;    `C-z S'      `isearchp-toggle-auto-save-filter-predicate'
 ;;                 (Emacs 24.4+)
 ;;    `C-z s'      `isearchp-save-filter-predicate' (Emacs 24.4+)
-;;    `C-z |'      `isearchp-or-filter-predicate' (Emacs 24.4+)
-;;    `C-z ~'      `isearchp-complement-filter' (Emacs 24.4+)
+;;    `C-z ||'     `isearchp-or-filter-predicate' (Emacs 24.4+)
+;;    `C-z |1'     `isearchp-or-last-filter' (Emacs 24.4+)
+;;    `C-z ~~'     `isearchp-complement-filter' (Emacs 24.4+)
+;;    `C-z ~1'     `isearchp-negate-last-filter' (Emacs 24.4+)
 ;;    `C-M-;'      `isearchp-toggle-ignoring-comments' (Emacs 23+)
 ;;                 (`isearch-prop.el')
 ;;    `C-M-`'      `isearchp-toggle-literal-replacement' (Emacs 22+)
@@ -618,6 +624,10 @@
 ;;    be prompted for a short name and an Isearch prompt prefix to
 ;;    associate with the newly defined predicate, so that you can
 ;;    easily choose it again (no prompting).
+;;
+;;    Similarly, candidate `not...' prompts you for a predicate to
+;;    negate, and candidate `or...' prompts you for two predicates to
+;;    combine using `or'.
 ;;
 ;;    For the completion candidates that are predefined, this
 ;;    naming convention is used:
@@ -1056,8 +1066,11 @@
 ;;(@* "Change log")
 ;;
 ;; 2016/12/27 dadams
+;;     Added: isearchp-or-last-filter, isearchp-or-predicates, isearchp-or-preds,
+;;            isearchp-negate-last-filter, isearchp-not-predicate.
 ;;     isearchp-read-predicate:
 ;;       Handle a function symbol that has prop isearchp-part-pred.  Forgot to update this on 12/10.
+;;     isearchp-regexp-level-1: Typo - missing quote.
 ;; 2016/12/24 dadams
 ;;     isearch-lazy-highlight-update (needed for query-replace-regexp, in replace+.el):
 ;;       Use isearch-lazy-highlight-regexp,      not isearch-regexp.
@@ -1842,8 +1855,8 @@ Don't forget to mention your Emacs and library versions."))
   (defface isearchp-regexp-level-1 (if (and (facep 'hlt-regexp-level-1) ; In `hexrgb.el'
                                             (> emacs-major-version 21))
                                        '((t (:inherit hlt-regexp-level-1)))
-                                     ((((background dark)) (:background "#071F473A0000")) ; a dark green
-                                      (t (:background "#FA6CC847FFFF")))) ; a light magenta
+                                     '((((background dark)) (:background "#071F473A0000")) ; a dark green
+                                       (t (:background "#FA6CC847FFFF")))) ; a light magenta
     "*Face used to highlight subgroup level 1 of your search context.
 This highlighting is done during regexp searching whenever
 `isearchp-highlight-regexp-group-levels-flag' is non-nil."
@@ -1978,9 +1991,11 @@ t     means search is never  case sensitive
 
   (define-key isearchp-filter-map (kbd "&")  'isearchp-add-filter-predicate)                  ; `C-z &'
   (define-key isearchp-filter-map (kbd "%")  'isearchp-add-regexp-filter-predicate)           ; `C-z %'
-  (define-key isearchp-filter-map (kbd "|")  'isearchp-or-filter-predicate)                   ; `C-z |'
   (define-key isearchp-filter-map (kbd "-")  'isearchp-remove-filter-predicate)               ; `C-z -'
-  (define-key isearchp-filter-map (kbd "~")  'isearchp-complement-filter)                     ; `C-z ~'
+  (define-key isearchp-filter-map (kbd "||") 'isearchp-or-filter-predicate)                   ; `C-z ||'
+  (define-key isearchp-filter-map (kbd "|1") 'isearchp-or-last-filter)                        ; `C-z |1'
+  (define-key isearchp-filter-map (kbd "~~") 'isearchp-complement-filter)                     ; `C-z ~~'
+  (define-key isearchp-filter-map (kbd "~1") 'isearchp-negate-last-filter)                    ; `C-z ~1'
   (define-key isearchp-filter-map (kbd "!")  'isearchp-set-filter-predicate)                  ; `C-z !'
   (define-key isearchp-filter-map (kbd "c")  'isearchp-columns)                               ; `C-z c'
   (define-key isearchp-filter-map (kbd "p")  'isearchp-toggle-showing-filter-prompt-prefixes) ; `C-z p'
@@ -2188,6 +2203,8 @@ exit Isearch'."
              '(("crosshairs" isearchp-show-hit-w-crosshairs)))
       ("near<..."     isearchp-near-before-predicate)
       ("near>..."     isearchp-near-after-predicate)
+      ("not..."       isearchp-not-predicate)
+      ("or..."        isearchp-or-predicates)
       )
     "Alist of filter predicates to choose from.
 Each entry has one of these forms, where NAME and PREFIX are strings,
@@ -5056,7 +5073,7 @@ prompted."
                        t))
     (isearchp-add-filter-predicate-1 :after-while predicate flip-read-name-p flip-read-prefix-p msgp))
 
-  (defun isearchp-or-filter-predicate (predicate ;  `C-z |'
+  (defun isearchp-or-filter-predicate (predicate ;  `C-z ||'
                                        &optional flip-read-name-p flip-read-prefix-p msgp)
     "Read a PREDICATE and combine with the current one, using `or'.
 `isearch-filter-predicate' is updated to return non-nil according to
@@ -5069,6 +5086,43 @@ See `isearchp-add-filter-predicate' for descriptions of the args."
                        (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                        t))
     (isearchp-add-filter-predicate-1 :before-until predicate flip-read-name-p flip-read-prefix-p msgp))
+
+  (defun isearchp-or-last-filter (predicate ;  `C-z |1'
+                                  &optional flip-read-name-p flip-read-prefix-p msgp)
+    "Read a PREDICATE and combine with the last-added filter, using `or'.
+The last-added filter predicate is replaced with a predicate that
+`or's it with the predicate that you enter.
+
+See `isearchp-add-filter-predicate' for descriptions of the args."
+    (interactive (list (isearchp-read-predicate
+                        (format "Filter predicate to `or' with `%s': "
+                                (if (advice--p isearch-filter-predicate)
+                                    (advice--car isearch-filter-predicate)
+                                  isearch-filter-predicate)))
+                       (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                       (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
+                       t))
+    (cond ((advice--p isearch-filter-predicate)
+           (let ((last  (advice--car isearch-filter-predicate)))
+             (remove-function isearch-filter-predicate last)
+             (isearchp-add-filter-predicate-1 :after-while
+                                              `(lambda (bg nd) (isearchp-or-preds ',predicate ',last bg nd))
+                                              flip-read-name-p flip-read-prefix-p msgp)))
+          (t
+           (isearchp-add-filter-predicate-1 :before-until predicate flip-read-name-p flip-read-prefix-p msgp)))
+    (when msgp (isearchp-show-filters)))
+
+  (defun isearchp-or-preds (pred1 pred2 beg end)
+    "Return non-nil if calling PRED1 or PRED2 on BEG and END returns non-nil."
+    (or (funcall pred1 beg end)  (funcall pred2 beg end)))
+
+  (put 'isearchp-or-predicates 'isearchp-part-pred t)
+  (defun isearchp-or-predicates (&optional pred1 pred2)
+    "Read two predicates and return a predicate that is their disjunction."
+    (unless (and pred1 pred2)
+      (setq pred1  (isearchp-read-predicate "First filter predicate: ")
+            pred2  (isearchp-read-predicate "Second filter predicate: ")))
+    `(lambda (beg end) (isearchp-or-preds ',pred1 ',pred2 beg end)))
 
   (defun isearchp-add-regexp-filter-predicate (regexp ; `C-z %'
                                                &optional flip-read-name-p flip-read-prefix-p msgp)
@@ -5284,7 +5338,7 @@ associated `name'."
     (isearchp-redo-lazy-highlighting)
     (when msgp (isearchp-show-filters)))
 
-  (defun isearchp-complement-filter (&optional msgp) ; `C-z ~'
+  (defun isearchp-complement-filter (&optional msgp) ; `C-z ~~'
     "Complement the current Isearch predicate."
     (interactive "p")
     (let ((preds  ())
@@ -5315,9 +5369,28 @@ associated `name'."
 \\[isearchp-save-filter-predicate]' to save, `\\[isearchp-defun-filter-predicate]' to name]")
                                  (mapconcat 'identity preds ", ")))))))
 
+  (defun isearchp-negate-last-filter (&optional msgp) ;  `C-z ~1'
+    "Replace the last-added filter predicate with its negation."
+    (interactive "p")
+    (cond ((advice--p isearch-filter-predicate)
+           (let ((last  (advice--car isearch-filter-predicate)))
+             (remove-function isearch-filter-predicate last)
+             (add-function :after-while isearch-filter-predicate
+                           `(lambda (bg nd) (isearchp-not-pred ',last bg nd)))))
+          (t
+           (add-function :around isearch-filter-predicate 'isearchp-not-pred
+                         '((name . "not") (isearch-message-prefix . "NOT ")))))
+    (when msgp (isearchp-show-filters)))
+
   (defun isearchp-not-pred (filter-predicate beg end)
     "Return non-nil if calling FILTER-PREDICATE on BEG and END returns nil."
     (not (funcall filter-predicate beg end)))
+
+  (put 'isearchp-not-predicate 'isearchp-part-pred t)
+  (defun isearchp-not-predicate (&optional predicate)
+    "Read a PREDICATE and return a predicate that is its complement."
+    (unless predicate (setq predicate  (isearchp-read-predicate "Filter predicate to negate: ")))
+    `(lambda (beg end) (isearchp-not-pred ',predicate beg end)))
 
   (defun isearchp-show-filters ()       ; `C-z ?'
     "Print a message listing the current filter predicates."
