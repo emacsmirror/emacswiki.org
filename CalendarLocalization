@@ -171,6 +171,10 @@ See [https://github.com/unhammer/calendar-norway.el calendar-norway.el]
 
 == Localized National Holidays ==
 
+=== Bulgarian ===
+
+Available on Github: https://github.com/dimitern/bulgarian-holidays.el
+
 === Chinese ===
 
 Localized, national holidays, lunar/solar term based holidays, highlight holidays based on priority, show horoscope/zodiac info, etc.
