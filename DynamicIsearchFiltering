@@ -163,9 +163,14 @@ key in `isearch-mode-map'.)
 
 * '''`##C-z %##'''' (`isearchp-add-regexp-filter-predicate') adds a filter predicate that requires search hits to match a given [[regexp]].
 
-* '''`##C-z |##'''' (`isearchp-or-filter-predicate') adds a filter predicate, ''OR''-ing it as an additional `##:before-until##' filter.
+* '''`##C-z ||##'''' (`isearchp-or-filter-predicate') adds a filter predicate, ''OR''-ing it as an additional `##:before-until##' filter.
 
-* '''`##C-z ~##'''' (`isearchp-complement-filter') ''complements'' the current filter.  It either adds an `##:around##' filter that complements or it removes an existing top-level complementing filter.
+* '''`##C-z |1##'''' (`isearchp-or-last-filter') replaces the ''last-added'' filter by its disjunction with another predicate, which you specify.
+
+* '''`##C-z ~~##'''' (`isearchp-complement-filter') ''complements'' the current filter.  It either adds an `##:around##' filter that complements or it removes an existing top-level complementing filter.
+
+* '''##`C-z ~1##'''' (`isearchp-negate-last-filter') replaces the
+''last-added'' filter by its complement.
 
 * '''`##C-z -##'''' (`isearchp-remove-filter-predicate') ''removes'' the last added filter predicate.
 
@@ -192,6 +197,25 @@ units by customizing option '''`isearchp-movement-unit-alist''''.
 The default option value includes units character, word, [[sexp]],
 list, and sentence.
 You can also use functions `isearch-near-predicate', `isearchp-near-before-predicate', and `isearchp-near-before-predicate' to define your own nearness predicates, which incorporate particular patterns and distances.  You can then simply add such a predicate using `##C-z &##' (no prompting for pattern or distance).
+
+Typically you add (`##C-z &##', `##C-z %##', etc.) a filter predicate to
+those already active, or you remove one (`##C-z -##').  Adding is
+implicitly an ''AND'' operation: the list of current predicates
+must all be satisfied.  You can also ''OR'' a predicate against
+either the entire ''AND''ed list of predicates (`##C-z ||##') or
+against only the last-added one (`##C-z |1##').  And you can
+complement either the entire ''AND''ed list (`##C-z ~~##') or just the
+last-added predicate (`##C-z ~1##').
+
+This ''OR''ing and ''NOT''ing, together with adding and removing
+predicates in a given order (implicitly ''AND''ing them), gives
+you complete Boolean combination flexibility.
+
+The list of filter predicates is always a conjunction.  But you
+can use, as any of the conjuncts, a predicate that implements a
+disjunction or a negation.  Or you can replace the entire list
+by a single predicate that implements a disjunction or a
+negation.
 
 When you use one of the commands that adds a filter predicate as advice to `isearch-filter-predicate' you can be prompted for two things: (1) a short name for the predicate and (2) text to add to the Isearch prompt as a reminder of filtering.  The optional
 short name is a convenience for referring to the predicate - for
