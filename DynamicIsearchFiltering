@@ -235,6 +235,10 @@ usual, you can be prompted for a short name and an Isearch
 prompt prefix to associate with the newly defined predicate, so
 that you can easily choose it again (no prompting).
 
+Similarly, candidate `##not...##' prompts you for a predicate to
+negate, and candidate `##or...##' prompts you for two predicates to combine
+using `or'.
+
 For the completion candidates that are predefined, this
 naming convention is used:
 
