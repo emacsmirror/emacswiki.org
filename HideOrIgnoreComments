@@ -8,9 +8,16 @@ This page is about library '''<tt>[[hide-comnt.el]]</tt>''' and related features
 
 * Command '''`hide/show-comments-toggle'''' -- Toggles hiding/showing in the active region, or the whole buffer if the region is inactive.
 
-* EmacsLisp [[macro]] '''`with-comments-hidden'''' --  Temporarily hides comments while it executes a body of code.  You do not see the commented text disappear and reappear -- it is effectively just ignored while processing the body.  The macro uses `hide/show-comments' to hide the comments.
+* EmacsLisp [[macro]] '''`with-comments-hidden'''' --  Temporarily hides comments while it executes a body of code.  You do not see the commented text disappear and reappear -- it is effectively just '''ignored''' while processing the body.  The macro uses `hide/show-comments' to hide the comments.
 
-* [[user option]] '''`ignore-comments-flag'''' -- If `nil', then `with-comments-hidden' does not ignore comments.
+* [[user options]]:
+
+** '''`hide-whitespace-before-comment-flag'''' -- If non-`nil' then whitespace preceding a comment is hidden.  Empty lines (newline chars) are not hidden, however.
+
+** '''`ignore-comments-flag'''' -- If `nil' then `with-comments-hidden' does not ignore comments.
+
+** '''`show-invisible-comments-shows-all'''' -- If non-`nil' then showing comments after hiding them shows **all** text that was invisible, however it was made so.  The default is `nil': make visible only text that was made invisible by `hide/show-comments'.
+
 
 
 == Features that Use `hide-comnt.el' ==
@@ -25,35 +32,16 @@ This page is about library '''<tt>[[hide-comnt.el]]</tt>''' and related features
 
 ** Commands '''`icicle-next-visible-thing'''' and '''`icicle-previous-visible-thing'''' are similar to `next-visible-thing' and `previous-visible-thing' from <tt>[[thing-cmds.el]]</tt>.
 
+
+
+
+
+
+
 == Comments ==
 
 [new]
 Added an ELPA package of this library for download here: http://www.wisdomandwonder.com/link/6390/hide-or-ignore-comments-elpa-package -- GrantRettke
-
-----
-[new]
-Noticed that it does not quite work for Ruby files, attaching a screenshot that illustrates the problem. Any idea? -- [[gnufied]]
-
-https://www.evernote.com/shard/s13/sh/ecabe782-7d9c-4c91-82bb-d0e188bce2ae/612c3c34f97effefa5b02f267f0ad56d
-
-[new:DrewAdams:2013-01-18 07:02 UTC]
-That screenshot does not show up, for me anyway.  Please post the screenshot to %%EmacsWiki%%, e.g., here (click the `##?##' link, then upload your image to that page):
-
-: [[image:RubyHideCommentsProblem]]
-
-But I doubt that an image will be enough to help me understand the problem (and I know little about Ruby).  You will likely need to investigate a bit further what happens, perhaps using the Lisp debugger. IOW, for me, at least, to be able to help you, you will need to provide more info.  -- DrewAdams
-
-[new]
-The problem with Ruby is that to get good results you also need to hide any spaces that preceed the comment, or they end up as whitespace before whatever is after the comment.
-
-So you can add this line as the first line inside the loop in <tt>hide/show-comments</tt>
-
-    (while (= (char-before cbeg) ? ) (setq cbeg (1- cbeg)))
-
-Have a look at https://gist.github.com/8809677 for a modified version.
-
-[new:DrewAdams:2014-02-06 18:34 UTC]
-That and another (worse) bug should be fixed now.  Please try the latest version: <tt>[[hide-comnt.el]]</tt>.  Thx -- DrewAdams
 
 ----
 
