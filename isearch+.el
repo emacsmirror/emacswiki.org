@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 27 18:56:21 2016 (-0800)
+;; Last-Updated: Tue Dec 27 19:02:16 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5571
+;;     Update #: 5572
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -509,7 +509,7 @@
 ;;      really just `C-z %', but `.*' is added to each side of the
 ;;      regexp you enter.  You can use this multiple times when regexp
 ;;      searching for full lines with `.+', to find the lines that
-;;      contain multiple regexp matches in any order.)
+;;      contain multiple regexp matches in any order.
 ;;
 ;;    - `C-z ||' (`isearchp-or-filter-predicate') adds a filter
 ;;      predicate, OR-ing it as an additional `:before-until' filter.
