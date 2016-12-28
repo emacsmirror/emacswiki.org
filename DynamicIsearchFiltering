@@ -270,7 +270,8 @@ naming convention is used:
 
 * Bracketed names ('''`##[...]##'''') stand for predicates that check that
 the search hit is within something.  For example, name `##[;]##'
-tests whether it is inside a comment (`##;##' is the EmacsLisp comment-start character).
+tests whether it is inside a comment (`##;##' is the EmacsLisp comment-start character), and name `##[defun]##' tests whether it
+is inside a defun.
 
 * Names that end in '''`##...##'''' indicate candidates that prompt you
 for more information.  These names represent, not filter
