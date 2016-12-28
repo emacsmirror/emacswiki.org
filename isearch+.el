@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 27 14:18:06 2016 (-0800)
+;; Last-Updated: Tue Dec 27 18:56:21 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5557
+;;     Update #: 5571
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,10 +19,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
-;;   `cl-lib', `color', `frame-fns', `gv', `help-fns', `hexrgb',
-;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
-;;   `thingatpt', `thingatpt+', `zones'.
+;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `hexrgb', `isearch-prop', `macroexp', `misc-cmds', `misc-fns',
+;;   `strings', `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -80,6 +79,7 @@
 ;;
 ;;    `isearchp-act-on-demand' (Emacs 22+),
 ;;    `isearchp-add-filter-predicate' (Emacs 24.4+),
+;;    `isearchp-add-inline-regexp-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-add-regexp-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-append-register', `isearch-char-by-name' (Emacs
 ;;    23-24.3), `isearchp-columns' (Emacs 24.4+),
@@ -322,6 +322,8 @@
 ;;    `C-z !'      `isearchp-set-filter-predicate' (Emacs 24.4+)
 ;;    `C-z %'      `isearchp-add-regexp-filter-predicate'
 ;;                 (Emacs 24.4+)
+;;    `C-z .'      `isearchp-add-inline-regexp-filter-predicate'
+;;                 (Emacs 24.4+)
 ;;    `C-z &'      `isearchp-add-filter-predicate' (Emacs 24.4+)
 ;;    `C-z -'      `isearchp-remove-filter-predicate' (Emacs 24.4+)
 ;;    `C-z 0'      `isearchp-reset-filter-predicate' (Emacs 24.4+)
@@ -502,6 +504,12 @@
 ;;
 ;;    - `C-z %' (`isearchp-add-regexp-filter-predicate') adds a filter
 ;;      predicate that requires search hits to match a given regexp.
+;;
+;;    - `C-z .' (`isearchp-add-inline-regexp-filter-predicate') is
+;;      really just `C-z %', but `.*' is added to each side of the
+;;      regexp you enter.  You can use this multiple times when regexp
+;;      searching for full lines with `.+', to find the lines that
+;;      contain multiple regexp matches in any order.)
 ;;
 ;;    - `C-z ||' (`isearchp-or-filter-predicate') adds a filter
 ;;      predicate, OR-ing it as an additional `:before-until' filter.
@@ -1093,7 +1101,7 @@
 ;;
 ;; 2016/12/27 dadams
 ;;     Added: isearchp-or-last-filter, isearchp-or-predicates, isearchp-or-preds,
-;;            isearchp-negate-last-filter, isearchp-not-predicate.
+;;            isearchp-negate-last-filter, isearchp-not-predicate, isearchp-add-inline-regexp-filter-predicate.
 ;;     isearchp-read-predicate:
 ;;       Handle a function symbol that has prop isearchp-part-pred.  Forgot to update this on 12/10.
 ;;     isearchp-regexp-level-1: Typo - missing quote.
@@ -2017,6 +2025,7 @@ t     means search is never  case sensitive
 
   (define-key isearchp-filter-map (kbd "&")  'isearchp-add-filter-predicate)                  ; `C-z &'
   (define-key isearchp-filter-map (kbd "%")  'isearchp-add-regexp-filter-predicate)           ; `C-z %'
+  (define-key isearchp-filter-map (kbd ".")  'isearchp-add-inline-regexp-filter-predicate)    ; `C-z .'
   (define-key isearchp-filter-map (kbd "-")  'isearchp-remove-filter-predicate)               ; `C-z -'
   (define-key isearchp-filter-map (kbd "||") 'isearchp-or-filter-predicate)                   ; `C-z ||'
   (define-key isearchp-filter-map (kbd "|1") 'isearchp-or-last-filter)                        ; `C-z |1'
@@ -5161,6 +5170,26 @@ other than REGEXP."
                        (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
                        (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                        t))
+    (isearchp-add-filter-predicate-1 :after-while (isearchp-match-regexp-filter-predicate regexp)
+                                     flip-read-name-p flip-read-prefix-p msgp))
+
+  (defun isearchp-add-inline-regexp-filter-predicate (regexp ; `C-z .'
+                                                      &optional flip-read-name-p flip-read-prefix-p msgp)
+    "Add a predicate that matches `.*REGEXP.*' against the search hit.
+The predicate is added to `isearch-filter-predicate'.
+
+This just provides a shorthand way of entering a full-line regexp
+for `C-z \\<isearchp-filter-map>\\[isearchp-add-regexp-filter-predicate]'.  Use this when regexp-searching \
+for full lines
+with regexp `.+'.
+
+See `isearchp-add-filter-predicate' for descriptions of the args
+other than REGEXP."
+    (interactive (list (isearchp-read-regexp-during-search "Inline regexp (for predicate): ")
+                       (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
+                       (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
+                       t))
+    (setq regexp  (concat ".*" regexp ".*"))
     (isearchp-add-filter-predicate-1 :after-while (isearchp-match-regexp-filter-predicate regexp)
                                      flip-read-name-p flip-read-prefix-p msgp))
 
