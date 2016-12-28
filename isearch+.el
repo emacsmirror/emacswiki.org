@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 27 20:12:29 2016 (-0800)
+;; Last-Updated: Tue Dec 27 20:43:10 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5574
+;;     Update #: 5577
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -1106,6 +1106,7 @@
 ;;            isearchp-negate-last-filter, isearchp-not-predicate, isearchp-add-inline-regexp-filter-predicate.
 ;;     isearchp-read-predicate:
 ;;       Handle a function symbol that has prop isearchp-part-pred.  Forgot to update this on 12/10.
+;;     isearchp-defun-filter-predicate: Test existing name and fboundp before interning.  Add to preds alist.
 ;;     isearchp-regexp-level-1: Typo - missing quote.
 ;; 2016/12/24 dadams
 ;;     isearch-lazy-highlight-update (needed for query-replace-regexp, in replace+.el):
@@ -5492,12 +5493,11 @@ With a non-negative prefix arg, save the current filter predicate for
 subsequent searches (as if you had also used `\\[isearchp-save-filter-predicate]')."
     (interactive (let ((isearchp-resume-with-last-when-empty-flag  nil)
                        fsymb)
-                   (with-isearch-suspended
-                     (setq fsymb  (intern (read-string "Name current filter predicate: "))))
-                   (while (and (intern-soft fsymb)
-                               (not (y-or-n-p (format "`%s' exists.  Redefine? " fsymb))))
-                     (with-isearch-suspended
-                       (setq fsymb  (intern (read-string "Name current filter predicate: ")))))
+                   (with-isearch-suspended (setq fsymb  (read-string "Name current filter predicate: ")))
+                   (while (and (fboundp (intern-soft fsymb))
+                               (not (y-or-n-p (format "Function `%s' exists.  Redefine? " fsymb))))
+                     (with-isearch-suspended (setq fsymb  (read-string "Name current filter predicate: "))))
+                   (setq fsymb  (intern fsymb))
                    (list fsymb
                          (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
                          (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
@@ -5505,6 +5505,10 @@ subsequent searches (as if you had also used `\\[isearchp-save-filter-predicate]
     (fset function-symbol isearch-filter-predicate)
     (when set-p  (isearchp-set-filter-predicate function-symbol))
     (when save-p (isearchp-save-filter-predicate))
+    (add-to-list 'isearchp-current-filter-preds-alist (list function-symbol) :APPEND)
+    (when isearchp-update-filter-predicates-alist-flag
+      (customize-set-value 'isearchp-filter-predicates-alist isearchp-current-filter-preds-alist)
+      (setq isearchp-current-filter-preds-alist  ()))
     (when msgp (message "Filter predicate `%S' defined%s" function-symbol (if save-p " and saved" ""))))
 
   (defun isearchp-save-filter-predicate (&optional msgp) ; `C-z s'
