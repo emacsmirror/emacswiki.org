@@ -114,8 +114,8 @@ Here are some of the things you can do using dynamic filtering:
 
 * Search in a progressive way, using multiple simple search patterns instead of a single complicated pattern.  The previous example is also an example of this:
 ## Search for lines: `##C-M-s .+##'.
-## Refine that search to matches for `cat': `##C-z % cat##'.
-## Do the same for `dog', and then `turtle' (`##C-z % dog##', then `##C-z % turtle##').
+## Refine that search to lines that contain a match for `cat': `##C-z . cat##'.
+## Do the same for `dog', and then `turtle' (`##C-z . dog##', then `##C-z . turtle##').
 
 * Search for stuff within contexts that correspond to a type of THING. You can add to the list of context types, using option '''`isearchp-filter-predicates-alist''''.  When prompted to enter a filter predicate you can use completion against the predicates named in that list (e.g. `in-comment', `in-file-name'). Examples of context type:
 
@@ -162,6 +162,8 @@ key in `isearch-mode-map'.)
 * '''`##C-z &##'''' (`isearchp-add-filter-predicate') adds a filter predicate, ''AND''-ing it as an additional `##:after-while##' filter.
 
 * '''`##C-z %##'''' (`isearchp-add-regexp-filter-predicate') adds a filter predicate that requires search hits to match a given [[regexp]].
+
+* '''`##C-z .##'''' (`isearchp-add-inline-regexp-filter-predicate') is really just `##C-z %##', but `##.*##' is added to each side of the regexp you enter.  You can use this multiple times when regexp searching for full lines with `##.+##', to find the lines that contain multiple regexp matches in any order.
 
 * '''`##C-z ||##'''' (`isearchp-or-filter-predicate') adds a filter predicate, ''OR''-ing it as an additional `##:before-until##' filter.
 
