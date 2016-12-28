@@ -11,9 +11,15 @@ See [https://github.com/grafov] for my programming works.
 
 [https://github.com/keyboard-ergonomics/keymacs] It is experiment how to make ergonomic layout for Emacs on default keyboard. Instead of change keybindings in Emacs I reprogrammed a keyboard layout.
 
-== Playground mode for Go language ==
+== My packages in MELPA ==
 
-[https://github.com/grafov/go-playground] This mode offers functionality similar to play.golang.org but inside Emacs.
+=== go-playground ===
+
+[https://github.com/grafov/go-playground] This mode for Go programming language offers functionality similar to play.golang.org but inside Emacs.
+
+=== rust-playground ===
+
+[https://github.com/grafov/rust-playground] It is like go-playground but for Rust programming language :)
 
 == Contacts ==
 
