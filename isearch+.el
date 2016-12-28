@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 27 20:43:10 2016 (-0800)
+;; Last-Updated: Tue Dec 27 21:00:05 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5577
+;;     Update #: 5580
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -540,9 +540,18 @@
 ;;
 ;;    - `C-z n' (`isearchp-defun-filter-predicate') names the current
 ;;      suite of filter predicates, creating a named predicate that
-;;      does the same thing.  (You can use that name with `C-z -' to
-;;      remove that predicate.)  With a prefix arg it can also set or
+;;      does the same thing.  With a prefix arg it can also set or
 ;;      save (i.e., do what `C-z !' or `C-z s' does).
+;;
+;;      You can use that name with `C-z -' to remove that predicate.
+;;      You can also use it to create a custom Isearch command that
+;;      uses it for filtering.  For example:
+;;
+;;        (defun foo ()
+;;          "Isearch with filter predicate `my-filter-pred'."
+;;          (interactive)
+;;          (let ((isearch-filter-predicate  'my-filter-pred))
+;;            (isearch-forward)))
 ;;
 ;;    - `C-z p' (`isearchp-toggle-showing-filter-prompt-prefixes')
 ;;      toggles option `isearchp-show-filter-prompt-prefixes-flag',
