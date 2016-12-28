@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 27 19:02:16 2016 (-0800)
+;; Last-Updated: Tue Dec 27 20:12:29 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5572
+;;     Update #: 5574
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -668,7 +668,9 @@
 ;;
 ;;    * Bracketed names (`[...]') stand for predicates that check that
 ;;      the search hit is within something.  For example, name `[;]'
-;;      tests whether it is inside a comment.
+;;      tests whether it is inside a comment (`;' is the Emacs-Lisp
+;;      comment-start character), and name `[defun]' tests whether it
+;;      is inside a defun.
 ;;
 ;;    * Names that end in `...' indicate candidates that prompt you
 ;;      for more information.  These names represent, not filter
