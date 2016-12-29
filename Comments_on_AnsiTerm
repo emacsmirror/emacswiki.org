@@ -49,3 +49,12 @@ For the unreadable blue directory color on tango theme, I changed the "*ansi-ter
 
 -- BozhidarBatsov 2013-01-29 21:53 UTC
 
+
+----
+
+This is expected to be announced as obsolete in the NEWS file for Emacs 24.4.  In the context of this paragraph, what does the word "this" mean?  
+
+The previous sentence seems to have the subject "ansi-term and term", but I assume (possibly incorrectly) that "terminal-emulator" is the subject intended to be used by the word "this".  Is this correct?
+
+-- [http://davidron.com davidron] 2016-12-29 18:56 UTC
+
