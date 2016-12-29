@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Dec 27 21:00:05 2016 (-0800)
+;; Last-Updated: Thu Dec 29 10:04:04 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5580
+;;     Update #: 5624
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,9 +19,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
-;;   `hexrgb', `isearch-prop', `macroexp', `misc-cmds', `misc-fns',
-;;   `strings', `thingatpt', `thingatpt+', `zones'.
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
+;;   `cl-lib', `color', `frame-fns', `gv', `help-fns', `hexrgb',
+;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -166,8 +167,10 @@
 ;;    `isearchp-add-filter-predicate-1' (Emacs 24.4+),
 ;;    `isearchp-assoc-delete-all', `isearchp-barf-if-use-minibuffer',
 ;;    `isearchp-columns-p' (Emacs 24.4+),
-;;    `isearchp-complete-past-string', `isearchp-fail-pos',
-;;    `isearchp-ffap-guesser' (Emacs 24.4+),
+;;    `isearchp-complete-past-string',
+;;    `isearchp-current-filter-predicates' (Emacs 24.4+),
+;;    `isearchp-fail-pos', `isearchp-ffap-guesser' (Emacs 24.4+),
+;;    `isearchp-first-isearch-advice' (Emacs 24.4+),
 ;;    `isearchp-highlight-lighter', `isearchp-in-color-p' (Emacs
 ;;    24.4+), `isearchp-in-comment-p' (Emacs 24.4+),
 ;;    `isearchp-in-comment-or-delim-p' (Emacs 24.4+),
@@ -186,6 +189,7 @@
 ;;    `isearchp-in-string-p' (Emacs 24.4+), `isearchp-in-symbol-p'
 ;;    (Emacs 24.4+), `isearchp-in-url-p' (Emacs 24.4+),
 ;;    `isearchp-in-word-p' (Emacs 24.4+),
+;;    `isearchp-last-isearch-advice' (Emacs 24.4+),
 ;;    `isearchp-match-regexp-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-message-prefix', `isearchp-message-suffix',
 ;;    `isearchp-near-after-predicate' (Emacs 24.4+),
@@ -525,8 +529,9 @@
 ;;    - `C-z ~1' (`isearchp-negate-last-filter') replaces the
 ;;      last-added filter by its complement.
 ;;
-;;    - `C-z -' (`isearchp-remove-filter-predicate') removes the last
-;;      added filter predicate.
+;;    - `C-z -' (`isearchp-remove-filter-predicate') removes a filter
+;;      predicate that you specify, using completion.  The last-added
+;;      is the default - retrieve it using `M-n'.
 ;;
 ;;    - `C-z !' (`isearchp-set-filter-predicate') sets the overall
 ;;      filter predicate (advised `isearch-filter-predicate') to a
@@ -1110,6 +1115,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/12/29 dadams
+;;     Added: isearchp-current-filter-predicates, isearchp-first-isearch-advice, isearchp-last-isearch-advice.
+;;       Use them in isearchp-or-last-filter, isearchp-remove-filter-predicate, isearchp-complement-filter,
+;;       isearchp-negate-last-filter, isearchp-show-filters.
+;;     isearchp-remove-filter-predicate: Make the default for completion be the last-added predicate.
 ;; 2016/12/27 dadams
 ;;     Added: isearchp-or-last-filter, isearchp-or-predicates, isearchp-or-preds,
 ;;            isearchp-negate-last-filter, isearchp-not-predicate, isearchp-add-inline-regexp-filter-predicate.
@@ -5096,6 +5106,31 @@ Attempt to do the search exactly the way the pending Isearch would."
 (when (or (> emacs-major-version 24)    ; Emacs 24.4+
           (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
+  ;; Helper functions.
+  (defun isearchp-last-isearch-advice ()
+    "Return the last advice applied to `isearch-filter-predicate'.
+Raise an error if `isearch-filter-predicate' is not advised."
+    (advice--car isearch-filter-predicate))
+
+  (defun isearchp-first-isearch-advice ()
+    "Return the first advice applied to `isearch-filter-predicate'.
+Raise an error if `isearch-filter-predicate' is not advised."
+    (advice--cd*r isearch-filter-predicate))
+
+  (defun isearchp-current-filter-predicates ()
+    "Return a list of the current filter predicates.
+Each is an advice of `isearch-filter-predicate'."
+    (let ((predicates  ()))
+      (advice-function-mapc (lambda (pred props)
+                              (push (cond ((cdr (assq 'name props)))
+                                          ((symbolp pred) (symbol-name pred))
+                                          (t (format "%s" pred))) ; Should not be needed.
+                                    predicates))
+                            isearch-filter-predicate)
+      predicates))
+
+  ;;---
+
   (defun isearchp-add-filter-predicate (predicate ; `C-z +'
                                         &optional flip-read-name-p flip-read-prefix-p msgp)
     "Read a PREDICATE and add it to `isearch-filter-predicate'.
@@ -5141,16 +5176,15 @@ The last-added filter predicate is replaced with a predicate that
 `or's it with the predicate that you enter.
 
 See `isearchp-add-filter-predicate' for descriptions of the args."
-    (interactive (list (isearchp-read-predicate
-                        (format "Filter predicate to `or' with `%s': "
-                                (if (advice--p isearch-filter-predicate)
-                                    (advice--car isearch-filter-predicate)
-                                  isearch-filter-predicate)))
+    (interactive (list (isearchp-read-predicate (format "Filter predicate to `or' with `%s': "
+                                                        (if (advice--p isearch-filter-predicate)
+                                                            (isearchp-last-isearch-advice)
+                                                          isearch-filter-predicate)))
                        (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
                        (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                        t))
     (cond ((advice--p isearch-filter-predicate)
-           (let ((last  (advice--car isearch-filter-predicate)))
+           (let ((last  (isearchp-last-isearch-advice)))
              (remove-function isearch-filter-predicate last)
              (isearchp-add-filter-predicate-1 :after-while
                                               `(lambda (bg nd) (isearchp-or-preds ',predicate ',last bg nd))
@@ -5371,20 +5405,16 @@ The predicate is suitable for `isearch-filter-predicate'"
     `(lambda (beg end) (save-match-data (string-match-p ,regexp (buffer-substring beg end)))))
 
   (defun isearchp-remove-filter-predicate (predicate &optional msgp) ; `C-z -'
-    "Remove PREDICATE from `isearch-filter-predicate'.
+    "Remove PREDICATE from `isearch-filter-predicate' (default: last-added).
 PREDICATE is passed to `remove-function'.  It can be a function or its
 associated `name'."
-    (interactive (let ((preds                                      ())
-                       (isearchp-resume-with-last-when-empty-flag  nil)
+    (interactive (let ((isearchp-resume-with-last-when-empty-flag  nil)
+                       (preds                                      (isearchp-current-filter-predicates))
                        name)
-                   (advice-function-mapc (lambda (pred props)
-                                           (push (cond ((cdr (assq 'name props)))
-                                                       ((symbolp pred) (list (symbol-name pred)))
-                                                       (t (list (format "%s" pred)))) ; Should not be needed.
-                                                 preds))
-                                         isearch-filter-predicate)
                    (with-isearch-suspended
-                     (setq name  (completing-read "Remove filter predicate: " preds nil t)))
+                     (setq name  (completing-read "Remove filter predicate: " preds nil t nil nil
+                                                  (and (advice--p isearch-filter-predicate)
+                                                       (isearchp-last-isearch-advice)))))
                    (list name t)))
     ;; FUNCTION arg to `remove-function' can be a string that is a `name' property value,
     ;; or it can be a function, e.g., a symbol.
@@ -5408,15 +5438,9 @@ associated `name'."
   (defun isearchp-complement-filter (&optional msgp) ; `C-z ~~'
     "Complement the current Isearch predicate."
     (interactive "p")
-    (let ((preds  ())
+    (let ((preds  (isearchp-current-filter-predicates))
           already-complementing-p)
-      (advice-function-mapc (lambda (pred props)
-                              (push (cond ((cdr (assq 'name props)))
-                                          ((symbolp pred) (symbol-name pred))
-                                          (t (format "%s" pred))) ; Should not be needed.
-                                    preds))
-                            isearch-filter-predicate)
-      (let ((opred  (if preds (advice--cd*r isearch-filter-predicate) isearch-filter-predicate)))
+      (let ((opred  (if preds (isearchp-first-isearch-advice) isearch-filter-predicate)))
         (setq opred  (if (symbolp opred) (symbol-name opred) (format "%s" opred)))
         (push opred preds))
       (setq preds                    (nreverse preds)
@@ -5440,10 +5464,9 @@ associated `name'."
     "Replace the last-added filter predicate with its negation."
     (interactive "p")
     (cond ((advice--p isearch-filter-predicate)
-           (let ((last  (advice--car isearch-filter-predicate)))
+           (let ((last  (isearchp-last-isearch-advice)))
              (remove-function isearch-filter-predicate last)
-             (add-function :after-while isearch-filter-predicate
-                           `(lambda (bg nd) (isearchp-not-pred ',last bg nd)))))
+             (add-function :after-while isearch-filter-predicate `(lambda (bg nd) (isearchp-not-pred ',last bg nd)))))
           (t
            (add-function :around isearch-filter-predicate 'isearchp-not-pred
                          '((name . "not") (isearch-message-prefix . "NOT ")))))
@@ -5462,14 +5485,8 @@ associated `name'."
   (defun isearchp-show-filters ()       ; `C-z ?'
     "Print a message listing the current filter predicates."
     (interactive)
-    (let ((preds  ()))
-      (advice-function-mapc (lambda (pred props)
-                              (push (cond ((cdr (assq 'name props)))
-                                          ((symbolp pred) (symbol-name pred))
-                                          (t (format "%s" pred))) ; Should not be needed.
-                                    preds))
-                            isearch-filter-predicate)
-      (let ((opred  (advice--cd*r isearch-filter-predicate)))
+    (let ((preds  (isearchp-current-filter-predicates)))
+      (let ((opred  (isearchp-first-isearch-advice)))
         (setq opred  (if (symbolp opred) (symbol-name opred) (format "%s" opred)))
         (push opred preds))
       (message (if preds
