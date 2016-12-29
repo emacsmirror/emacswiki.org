@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 29 10:04:04 2016 (-0800)
+;; Last-Updated: Thu Dec 29 15:47:26 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5624
+;;     Update #: 5647
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -82,10 +82,11 @@
 ;;    `isearchp-add-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-add-inline-regexp-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-add-regexp-filter-predicate' (Emacs 24.4+),
-;;    `isearchp-append-register', `isearch-char-by-name' (Emacs
-;;    23-24.3), `isearchp-columns' (Emacs 24.4+),
-;;    `isearchp-complement-filter' (Emacs 24.4+), `isearchp-complete',
-;;    `isearchp-cycle-mismatch-removal',
+;;    `isearchp-append-register',
+;;    `isearchp-bookmark-current-filter-predicate' (Emacs 24.4+),
+;;    `isearch-char-by-name' (Emacs 23-24.3), `isearchp-columns'
+;;    (Emacs 24.4+), `isearchp-complement-filter' (Emacs 24.4+),
+;;    `isearchp-complete', `isearchp-cycle-mismatch-removal',
 ;;    `isearchp-defun-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-eval-sexp-and-insert' (Emacs 22+),
 ;;    `isearchp-fontify-buffer-now', `isearchp-init-edit',
@@ -170,6 +171,8 @@
 ;;    `isearchp-complete-past-string',
 ;;    `isearchp-current-filter-predicates' (Emacs 24.4+),
 ;;    `isearchp-fail-pos', `isearchp-ffap-guesser' (Emacs 24.4+),
+;;    `isearchp-filter-bookmark-alist-only' (Emacs 24.4+),
+;;    `isearchp-filter-bookmark-p' (Emacs 24.4+),
 ;;    `isearchp-first-isearch-advice' (Emacs 24.4+),
 ;;    `isearchp-highlight-lighter', `isearchp-in-color-p' (Emacs
 ;;    24.4+), `isearchp-in-comment-p' (Emacs 24.4+),
@@ -335,6 +338,8 @@
 ;;    `C-z >'      `isearchp-near-after' (Emacs 24.4+)
 ;;    `C-z ?'      `isearchp-show-filters' (Emacs 24.4+)
 ;;    `C-z @'      `isearchp-near' (Emacs 24.4+)
+;;    `C-z b'      `isearchp-bookmark-current-filter-predicate' (Emacs
+;;                 24.4+ and requires library Bookmark+)
 ;;    `C-z c'      `isearchp-columns' (Emacs 24.4+)
 ;;    `C-z n'      `isearchp-defun-filter-predicate' (Emacs 24.4+)
 ;;    `C-z p'      `isearchp-toggle-showing-filter-prompt-prefixes'
@@ -539,6 +544,11 @@
 ;;
 ;;    - `C-z 0' (`isearchp-reset-filter-predicate') resets
 ;;      `isearch-filter-predicate' to its original (default) value.
+;;
+;;    - `C-z b' (`isearchp-bookmark-current-filter-predicate')
+;;      bookmarks the current value of `isearch-filter-predicate',
+;;      persisting it for reuse in future Emacs sessions.  You need
+;;      library Bookmark+ to be able to use this.
 ;;
 ;;    - `C-z c' (`isearchp-columns') adds a filter predicate that
 ;;      limits search between two columns (or before/after a column).
@@ -1119,6 +1129,9 @@
 ;;     Added: isearchp-current-filter-predicates, isearchp-first-isearch-advice, isearchp-last-isearch-advice.
 ;;       Use them in isearchp-or-last-filter, isearchp-remove-filter-predicate, isearchp-complement-filter,
 ;;       isearchp-negate-last-filter, isearchp-show-filters.
+;;     Added: isearchp-filter-bookmark-alist-only, isearchp-filter-bookmark-p,
+;;            isearchp-bookmark-current-filter-predicate (bound to C-z b).
+;;     isearchp-read-predicate: Handle also filter bookmarks.
 ;;     isearchp-remove-filter-predicate: Make the default for completion be the last-added predicate.
 ;; 2016/12/27 dadams
 ;;     Added: isearchp-or-last-filter, isearchp-or-predicates, isearchp-or-preds,
@@ -2054,6 +2067,8 @@ t     means search is never  case sensitive
   (define-key isearchp-filter-map (kbd "~~") 'isearchp-complement-filter)                     ; `C-z ~~'
   (define-key isearchp-filter-map (kbd "~1") 'isearchp-negate-last-filter)                    ; `C-z ~1'
   (define-key isearchp-filter-map (kbd "!")  'isearchp-set-filter-predicate)                  ; `C-z !'
+  (when (featurep 'bookmark+)
+    (define-key isearchp-filter-map (kbd "b")  'isearchp-bookmark-current-filter-predicate))  ; `C-z b'
   (define-key isearchp-filter-map (kbd "c")  'isearchp-columns)                               ; `C-z c'
   (define-key isearchp-filter-map (kbd "p")  'isearchp-toggle-showing-filter-prompt-prefixes) ; `C-z p'
   (define-key isearchp-filter-map (kbd "s")  'isearchp-save-filter-predicate)                 ; `C-z s'
@@ -2264,9 +2279,14 @@ exit Isearch'."
       ("or..."        isearchp-or-predicates)
       )
     "Alist of filter predicates to choose from.
-Each entry has one of these forms, where NAME and PREFIX are strings,
-and FUNCTION is a predicate symbol or a lambda form suitable as a value of
-`isearch-filter-predicate'.
+
+\(If you use library Bookmark+ then you can also choose a
+filter-predicate bookmark.  Those are not included as entries in this
+alist.)
+
+Each alist entry has one of these forms, where NAME and PREFIX are
+strings, and FUNCTION is a predicate symbol or a lambda form suitable as a
+value of `isearch-filter-predicate'.
 
 * (NAME FUNCTION PREFIX)
 * (NAME FUNCTION)
@@ -2369,7 +2389,7 @@ added dynamically, option `isearchp-filter-predicates-alist' is
 updated to reflect those changes."
     :type 'boolean :group 'isearch-plus)
 
-)
+  )
 
 ;; Regexp group highlighting.
 ;;
@@ -5320,9 +5340,14 @@ See `isearchp-add-filter-predicate' for descriptions of other args."
 You can input a short NAME or FUNCTION that is the first element of an
 `isearchp-filter-predicates-alist' entry.
 
+If you use library `Bookmark+' then you can alternatively input the
+name of an Isearch filter bookmark.  Filter bookmarks give you an easy
+way to persist Isearch filters.
+
 Completion is available for those short names and functions, plus any
 such that you have added during Isearch (using \\<isearch-mode-map>`\
-\\[isearchp-add-filter-predicate]', for example).
+\\[isearchp-add-filter-predicate]', for example).  If you use
+`Bookmark+' then completion also applies to filter-bookmark names.
 
 This completion is available, but you can enter any predicate suitable
 as `isearch-filter-predicate', instead of one of the completion
@@ -5342,7 +5367,7 @@ might be.
 
 If you choose a completion candidate that does not name a function
 symbol that has property `isearchp-part-pred', then the corresponding
-full completion-candidate entry is the value returned by
+full completion-candidate entry is returned by
 `isearchp-read-predicate'.
 
 For example, if you choose candidate `[url]' then the value returned
@@ -5358,29 +5383,31 @@ by `isearchp-read-predicate'.
 If you do not choose a completion candidate then the value returned by
 `isearchp-read-predicate' is the predicate that you entered."
     (let ((isearchp-resume-with-last-when-empty-flag  nil)
+          (filter-alist                               (append isearchp-current-filter-preds-alist
+                                                              (isearchp-filter-bookmark-alist-only)))
           (completion-extra-properties
            '(:annotation-function
              (lambda (cand)
                (let* ((full  (assoc cand isearchp-current-filter-preds-alist))
-                      (pred  (nth 1 full)))
+                      (prd   (nth 1 full)))
                  (save-match-data
-                   (when (and pred  (string-match "\\`isearchp-" (symbol-name pred)))
-                     (setq pred  (substring (symbol-name pred) (match-end 0)))))
-                 (and pred  (format " %s" pred))))))
+                   (when (and prd  (string-match "\\`isearchp-" (symbol-name prd)))
+                     (setq prd  (substring (symbol-name prd) (match-end 0)))))
+                 (and prd  (format " %s" prd))))))
           input choice pred result)
       (unless prompt  (setq prompt  "Predicate: "))
       (with-isearch-suspended
         (while (or (not pred)
                    (and (not (functionp pred))
                         (not (advice-function-member-p pred isearch-filter-predicate))))
-          (setq input   (completing-read prompt isearchp-current-filter-preds-alist nil nil nil
-                                         'isearchp-predicate-history)
-                choice  (assoc input isearchp-current-filter-preds-alist)
-                choice  (or choice  (assoc (intern input) isearchp-current-filter-preds-alist)))
+          (setq input   (completing-read prompt filter-alist nil nil nil 'isearchp-predicate-history)
+                choice  (assoc input filter-alist)
+                choice  (or choice  (assoc (intern input) filter-alist)))
           (setq result  (or choice  (read input)) ; For example, input was a lambda form.
                 pred    (if choice
-                            (if (stringp (nth 0 choice)) ; (NAME FUNCTION [PREFIX])
-                                (nth 1 choice)
+                            (if (stringp (nth 0 choice)) ; (NAME FUNCTION [PREFIX]) or BOOKMARK
+                                (or (setq result  (cdr (assq 'isearchp-filter choice))) ; A bookmark.
+                                    (nth 1 choice))
                               (nth 0 choice)) ; (FUNCTION [PREFIX])
                           result))
           (unless (or (functionp pred)  (advice-function-member-p pred isearch-filter-predicate))
@@ -5961,7 +5988,50 @@ BEG and END are the search-hit limits."
 BEG and END are the search-hit limits."
     (isearchp-in-thing-p 'hex-number beg end))
 
+
+  (when (featurep 'bookmark+)
+
+    (defun isearchp-filter-bookmark-p (bookmark)
+      "Return non-nil if BOOKMARK is an Isearch filter bookmark.
+BOOKMARK is a bookmark name or a bookmark record.
+If it is a record then it need not belong to `bookmark-alist'."
+      (bookmark-prop-get bookmark 'isearchp-filter))
+
+    (defun isearchp-filter-bookmark-alist-only ()
+      "`bookmark-alist', filtered to retain only Isearch filter bookmarks.
+A new list is returned (no side effects)."
+      (bookmark-maybe-load-default-file)
+      (bmkp-remove-if-not #'isearchp-filter-bookmark-p bookmark-alist))
+
+    (defun isearchp-bookmark-current-filter-predicate (bookmark-name &optional msgp) ; `C-z b'
+      "Bookmark the current filter predicate.
+The bookmark created is an Isearch filter bookmark.
+You need library `bookmark+.el' for this."
+      (interactive
+       (let (bname)
+         (unless (require 'bookmark+ nil t) (error "You need library `bookmark+.el' for this command"))
+         (with-isearch-suspended
+           (setq bname  (bmkp-completing-read-lax
+                         "Bookmark name (and filter name)" nil
+                         (bmkp-remove-if-not #'isearchp-filter-bookmark-p bookmark-alist))))
+         (list bname t)))
+      (bookmark-maybe-load-default-file)
+      (let ((bmk  `(,bookmark-name
+                    ,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT)
+                    (isearchp-filter . ,isearch-filter-predicate)
+                    (handler . ignore)))) ; Cannot invoke bookmark.  It just records data.
+        (push bmk bookmark-alist)
+        (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))
+        (when (bookmark-time-to-save-p) (bookmark-save))
+        (setq bookmark-current-bookmark bookmark-name)
+        (bookmark-bmenu-surreptitiously-rebuild-list)
+        (when msgp (message "Bookmarked current filter as bookmark `%s'" bookmark-name))
+        bmk))
+
+    )
+
   )
+
 
 ;; Miscellaneous
 ;;
