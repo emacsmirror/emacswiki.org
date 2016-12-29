@@ -174,7 +174,7 @@ key in `isearch-mode-map'.)
 * '''##`C-z ~1##'''' (`isearchp-negate-last-filter') replaces the
 ''last-added'' filter by its complement.
 
-* '''`##C-z -##'''' (`isearchp-remove-filter-predicate') ''removes'' the last added filter predicate.
+* '''`##C-z -##'''' (`isearchp-remove-filter-predicate') ''removes'' a filter predicate that you specify, using completion.  The last-added is the default -- retrieve it using `M-n'.
 
 * '''`##C-z !##'''' (`isearchp-set-filter-predicate') ''sets'' the overall filter predicate (advised `isearch-filter-predicate') to a single predicate.
 
