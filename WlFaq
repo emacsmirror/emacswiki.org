@@ -483,7 +483,7 @@ variable `elmo-multi-divide-number' to an appropriate value.
 (setq elmo-multi-divide-number 1000000)
 }}}
 
-It may also be that your <code>elmo-network-session-idle-timeout</code> is set too small; try commenting it or setting it to nil.
+It may also be that your <code>elmo-network-session-idle-timeout</code> is set too small. Try setting it to nil.
 
 == WL hangs when I wake from hibernation ==
 
