@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 20 18:50:41 2016 (-0800)
+;; Last-Updated: Wed Dec 28 21:57:45 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 9709
+;;     Update #: 9711
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -653,6 +653,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/28 dadams
+;;     dired-mark-files-regexp: Corrected prompt string for Mark/UNmark.  Thx to Tino Calancha.
 ;; 2016/11/20 dadams
 ;;     diredp-menu-bar-operate-search-menu: Added dired-do-find-regexp and dired-do-find-regexp-and-replace.
 ;;     Bind dired-do-search to M-a and dired-do-query(-replace)-regexp to M-q.
@@ -9261,8 +9263,7 @@ REGEXP is added to `regexp-search-ring', for regexp search."
           (C-u      (and (consp raw)  (= 4 (car raw))))
           (C-u-C-u  (and (consp raw)  (= 16 (car raw))))
           (num      (and raw  (prefix-numeric-value raw))))
-     (list (dired-read-regexp (concat (if raw "UNmark" "Mark")
-                                      " files (regexp): "))
+     (list (dired-read-regexp (concat (if (or (consp raw)  (zerop num)) "UNmark" "Mark") " files (regexp): "))
            (and raw  (or C-u  C-u-C-u  (zerop num))  ?\040)
            (cond ((or (not raw)  C-u)  nil) ; none, `C-u' 
                  ((> num 0)            t) ; `M-+', `C-u C-u'
