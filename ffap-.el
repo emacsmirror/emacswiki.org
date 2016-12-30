@@ -8,9 +8,9 @@
 ;; Created: Wed Feb 08 10:47:56 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Dec 21 09:38:43 2016 (-0800)
+;; Last-Updated: Thu Dec 29 22:56:35 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 127
+;;     Update #: 129
 ;; URL: http://www.emacswiki.org/ffap-.el
 ;; Doc URL: http://emacswiki.org/FindFileAtPoint
 ;; Keywords: files, hypermedia, matching, mouse, convenience
@@ -64,7 +64,7 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `ffap-max-region-size'.
+;;    `ffap-max-region-length'.
 ;;
 ;;
 ;;  ***** NOTE: The following variables defined in `ffap.el' have
@@ -89,6 +89,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/12/29 dadams
+;;     Renamed ffap-max-region-size to ffap-max-region-length, per bug #25243.
 ;; 2016/12/21 dadams
 ;;     Added: ffap-max-region-size.
 ;;     ffap-guesser: Deactivate region if larger than ffap-max-region-size.
@@ -153,7 +155,7 @@ For example, `ffap' then acts simply as `find-file' (or, more
 precisely, as `ffap-file-finder')."
   :type 'boolean :group 'ffap)
 
-(defvar ffap-max-region-size 1024       ; See also Emacs bug #25243.
+(defvar ffap-max-region-length 1024       ; See also Emacs bug #25243.
   "Max size of active region used to obtain file-name defaults.
 An active region larger than this many characters prevents
 `ffap-guesser' using it to obtain a file-name guess.")
@@ -179,7 +181,7 @@ An active region larger than this many characters prevents
   "Return file or URL or nil, guessed from text around point."
   (and (not ffap-inhibit-ffap-flag)
        (let ((mark-active  (and mark-active
-                                (< (buffer-size) ffap-max-region-size))))
+                                (< (buffer-size) ffap-max-region-length))))
          (or (and ffap-url-regexp
                   (ffap-fixup-url (or (ffap-url-at-point)
                                       (ffap-gopher-at-point))))
