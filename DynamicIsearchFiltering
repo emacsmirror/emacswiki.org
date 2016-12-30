@@ -182,7 +182,7 @@ key in `isearch-mode-map'.)
 
 * '''`C-z c'''' (`isearchp-columns') adds a filter predicate that limits search between two columns (or before/after a column).
 
-* '''`C-z n'''' (`isearchp-defun-filter-predicate') ''names'' the current suite of filter predicates, creating a named predicate that does the same thing.  With a prefix arg it can also set or save (i.e., do what `##C-z !##' or `C-z s' does).
+* '''`C-z n'''' (`isearchp-defun-filter-predicate') ''names'' the current suite of filter predicates, creating a named predicate that does the same thing.  With a prefix arg it can also set or keep it (for this Emacs session) - that is, do what `##C-z !##' or `C-z s' does.
 You can use that name with `##C-z -##' to remove that predicate.  You can also use it to create a custom Isearch command that
 uses it for filtering.  For example:
 
@@ -196,10 +196,10 @@ uses it for filtering.  For example:
 
 * '''`C-z p'''' (`isearchp-toggle-showing-filter-prompt-prefixes') toggles option '''`isearchp-show-filter-prompt-prefixes-flag'''', which controls whether to show filter prefixes in the Isearch prompt.
 
-* '''`C-z s'''' (`isearchp-save-filter-predicate') ''saves'' the current filter-predicate suite, for subsequent searches.  Unless you save it (and unless auto-saving is turned on), the next Isearch starts out from scratch, using the default value of `isearch-filter-predicate'.  (To remove saved predicates, use `##C-z 0##'.)
+* '''`C-z s'''' (`isearchp-keep-filter-predicate') keeps the current filter-predicate suite for subsequent searches (in this Emacs session only).  Unless you do this (and unless auto-keeping is turned on), the next Isearch starts out from scratch, using the default value of `isearch-filter-predicate'.  (To remove the kept predicate suite, use `##C-z 0##'.)
 
-* '''`C-z S'''' (`isearchp-toggle-auto-save-filter-predicate') toggles automatic saving of the current filter-predicate suite, so that it is used for subsequent searches.  (To remove saved predicates, use `##C-z 0##'.)  This command simply toggles option '''`isearchp-auto-save-filter-predicate-flag''''.
-
+* '''`C-z S'''' (`isearchp-toggle-auto-keep-filter-predicate') toggles option '''`isearchp-auto-keep-filter-predicate-flag'''', which automatically keeps the current filter-predicate suite, so that it is used for subsequent searches (so no need to use
+`C-z s').  (To remove a kept predicate suite, use `##C-z 0##'.)
 
 * '''`##C-z ?##'''' (`isearchp-show-filters') echoes the current suite of filter predicates (advice and original, unadvised predicate).
 
@@ -293,8 +293,8 @@ Filter predicates that you add dynamically are added as
 completion candidates for the current Emacs session.  If option
 '''`isearchp-update-filter-predicates-alist-flag'''' is non-`nil' then
 they are also added to `isearchp-filter-predicates-alist'.  That
-updated option value is ''NOT'' saved, however.  If you want to save
-your additions to it for future Emacs sessions sessions then use
+updated option value is ''NOT SAVED'', however.  If you want to save
+your additions to it for future Emacs sessions then use
 `M-x customize-option isearchp-filter-predicates-alist'.
 
 If option '''`isearchp-lazy-dim-filter-failures-flag'''' is non-`nil'
