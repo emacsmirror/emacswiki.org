@@ -29,6 +29,7 @@ These values are the beginning and ending positions of a search
 hit.  If the return value of the function is `nil' then the search
 hit is excluded from searching; otherwise it is included.
 
+[:isearch-filter-predicate]
 The value of standard variable (but not a user option) '''`isearch-filter-predicate'''' is the filter predicate used by Isearch.  By default, the value is predicate `isearch-filter-visible', which returns non-`nil' for any search hit that is visible (not rendered invisible by a text property, overlay property, etc.)
 
 
@@ -117,6 +118,7 @@ Here are some of the things you can do using dynamic filtering:
 ## Refine that search to lines that contain a match for `cat': `##C-z . cat##'.
 ## Do the same for `dog', and then `turtle' (`##C-z . dog##', then `##C-z . turtle##').
 
+[:isearchp-filter-predicates-alist]
 * Search for stuff within contexts that correspond to a type of THING. You can add to the list of context types, using option '''`isearchp-filter-predicates-alist''''.  When prompted to enter a filter predicate you can use completion against the predicates named in that list (e.g. `in-comment', `in-file-name'). Examples of context type:
 
 ** color name or #RGB
@@ -137,6 +139,7 @@ Here are some of the things you can do using dynamic filtering:
 ** page
 ** word
 
+[:isearchp-movement-unit-alist]
 * Search for something that is **near** something else -- within a given number of characters, words, lists, or sentences (you can add to this list of distance units, using option '''`isearchp-movement-unit-alist'''').  You specify the nearness.  You can also constrain the nearby pattern to be only before or only after the search hit.
 
 * Search for stuff in the union of given contexts. Example: search for text that is near `cat' or near `dog'.
@@ -159,29 +162,41 @@ The following commands are available during Isearch.  They are all on prefix key
 prefix keymap '''`isearchp-filter-map'''', which you can bind to any
 key in `isearch-mode-map'.)
 
+[:isearchp-add-filter-predicate]
 * '''`##C-z &##'''' (`isearchp-add-filter-predicate') adds a filter predicate, ''AND''-ing it as an additional `##:after-while##' filter.
 
+[:isearchp-add-regexp-filter-predicate]
 * '''`##C-z %##'''' (`isearchp-add-regexp-filter-predicate') adds a filter predicate that requires search hits to match a given [[regexp]].
 
+[:isearchp-add-inline-regexp-filter-predicate]
 * '''`##C-z .##'''' (`isearchp-add-inline-regexp-filter-predicate') is really just `##C-z %##', but `##.*##' is added to each side of the regexp you enter.  You can use this multiple times when regexp searching for full lines with `##.+##', to find the lines that contain multiple regexp matches in any order.
 
+[:isearchp-or-filter-predicate]
 * '''`##C-z ||##'''' (`isearchp-or-filter-predicate') adds a filter predicate, ''OR''-ing it as an additional `##:before-until##' filter.
 
+[:isearchp-or-last-filter]
 * '''`##C-z |1##'''' (`isearchp-or-last-filter') replaces the ''last-added'' filter by its disjunction with another predicate, which you specify.
 
+[:isearchp-complement-filter]
 * '''`##C-z ~~##'''' (`isearchp-complement-filter') ''complements'' the current filter.  It either adds an `##:around##' filter that complements or it removes an existing top-level complementing filter.
 
+[:isearchp-negate-last-filter]
 * '''##`C-z ~1##'''' (`isearchp-negate-last-filter') replaces the
 ''last-added'' filter by its complement.
 
+[:isearchp-remove-filter-predicate]
 * '''`##C-z -##'''' (`isearchp-remove-filter-predicate') ''removes'' a filter predicate that you specify, using completion.  The last-added is the default -- retrieve it using `M-n'.
 
+[:isearchp-set-filter-predicate]
 * '''`##C-z !##'''' (`isearchp-set-filter-predicate') ''sets'' the overall filter predicate (advised `isearch-filter-predicate') to a single predicate.
 
-* '''`##C-z 0##'''' (`isearchp-reset-filter-predicate') ''resets'' `isearch-filter-predicate' to its original (default) value (which is typically `isearch-filter-visible').
+[:isearchp-reset-filter-predicate]
+* '''`##C-z 0##'''' -- zero, not letter `O' -- (`isearchp-reset-filter-predicate') ''resets'' `isearch-filter-predicate' to its original (default) value (which is typically `isearch-filter-visible').
 
+[:isearchp-columns]
 * '''`C-z c'''' (`isearchp-columns') adds a filter predicate that limits search between two columns (or before/after a column).
 
+[:isearchp-defun-filter-predicate]
 * '''`C-z n'''' (`isearchp-defun-filter-predicate') ''names'' the current suite of filter predicates, creating a named predicate that does the same thing.  With a prefix arg it can also set or keep it (for this Emacs session) - that is, do what `##C-z !##' or `C-z s' does.
 You can use that name with `##C-z -##' to remove that predicate.  You can also use it to create a custom Isearch command that
 uses it for filtering.  For example:
@@ -194,15 +209,24 @@ uses it for filtering.  For example:
              (isearch-forward)))
 }}} 
 
+[:isearchp-toggle-showing-filter-prompt-prefixes]
 * '''`C-z p'''' (`isearchp-toggle-showing-filter-prompt-prefixes') toggles option '''`isearchp-show-filter-prompt-prefixes-flag'''', which controls whether to show filter prefixes in the Isearch prompt.
 
+[:isearchp-keep-filter-predicate]
 * '''`C-z s'''' (`isearchp-keep-filter-predicate') keeps the current filter-predicate suite for subsequent searches (in this Emacs session only).  Unless you do this (and unless auto-keeping is turned on), the next Isearch starts out from scratch, using the default value of `isearch-filter-predicate'.  (To remove the kept predicate suite, use `##C-z 0##'.)
 
+[:isearchp-toggle-auto-keep-filter-predicate]
+[:isearchp-auto-keep-filter-predicate-flag]
 * '''`C-z S'''' (`isearchp-toggle-auto-keep-filter-predicate') toggles option '''`isearchp-auto-keep-filter-predicate-flag'''', which automatically keeps the current filter-predicate suite, so that it is used for subsequent searches (so no need to use
 `C-z s').  (To remove a kept predicate suite, use `##C-z 0##'.)
 
+[:isearchp-show-filters]
 * '''`##C-z ?##'''' (`isearchp-show-filters') echoes the current suite of filter predicates (advice and original, unadvised predicate).
 
+[:isearchp-near]
+[:isearchp-near-before]
+[:isearchp-near-after]
+[:isearchp-movement-unit-alist]
 * '''`##C-z @##'''', '''`##C-z <##'''', and '''`##C-z >##'''' (`isearchp-near', `isearchp-near-before', and `isearchp-near-after') constrain searching to be within a given distance of ''near'') another search pattern.  For example, you can limit search hits to those whose end (or beginning, if searching backward) is within, say, 4 words of another search pattern.  You are prompted for the search pattern for the nearby text, the
 "near" distance, and the unit of distance measurement (default: characters).  You can define the list of acceptable
 units by customizing option '''`isearchp-movement-unit-alist''''.
@@ -235,16 +259,20 @@ adding it again or removing it, for example.
 
 Two user options control this prompting:
 
+[:isearchp-prompt-for-filter-name]
 * '''`isearchp-prompt-for-filter-name'''' says whether to prompt you always, never, or only when the predicate that you provide is not a symbol (it is a lambda form).  The last of these is the default behavior.  If you are prompted and provide a name, you can use that name with `##C-z -##' to remove that predicate.
 
+[:isearchp-prompt-for-prompt-prefix-flag]
 * '''`isearchp-prompt-for-prompt-prefix-flag'''' says whether to prompt you for a prefix to add to the Isearch prompt. You are prompted by default, but if you don't care to see such a prompt prefix and you don't want to be bothered by it, you can customize this to skip prompting.
 
 In addition, whatever the value of these options, when you add a filter predicate you can override the option values by using a [[prefix argument]].  A non-positive prefix arg overrides the option for name prompting, and a non-negative prefix arg overrides the option for prompt-prefix prompting.  (So zero, e.g., `M-0', overrides both.)
 
+[:isearchp-show-filter-prompt-prefixes-flag]
 Option '''`isearchp-show-filter-prompt-prefixes-flag'''' controls
 whether prefixes for filters are added to the Isearch prompt.
 You can toggle this option during search using `C-z p'.
 
+[:isearchp-filter-predicates-alist]
 User option '''`isearchp-filter-predicates-alist'''' contains filter
 predicates that are available as completion candidates whenever
 you are prompted for one.  This is an important option.  The
@@ -289,6 +317,7 @@ predicates, but functions that return filter predicates.  For
 example, `##near<...##' stands for function
 `isearchp-near-before-predicate' (see above).
 
+[:`isearchp-update-filter-predicates-alist-flag]
 Filter predicates that you add dynamically are added as
 completion candidates for the current Emacs session.  If option
 '''`isearchp-update-filter-predicates-alist-flag'''' is non-`nil' then
@@ -297,6 +326,7 @@ updated option value is ''NOT SAVED'', however.  If you want to save
 your additions to it for future Emacs sessions then use
 `M-x customize-option isearchp-filter-predicates-alist'.
 
+[:isearchp-lazy-dim-filter-failures-flag]
 If option '''`isearchp-lazy-dim-filter-failures-flag'''' is non-`nil'
 then search hits that are skipped because they are removed by
 filtering are nevertheless lazy-highlighted, but using a face
@@ -304,6 +334,7 @@ that ''dims the background''.  You can toggle this highlighting of
 filter-failure search hits using '''`M-s h d'''' (command
 `isearchp-toggle-dimming-filter-failures').
 
+[:isearchp-dimming-color]
 The dimming face for this is hard-coded as having background
 color #9abfca, unless you also use library '''<tt>[[isearch-prop.el]]</tt>'''
 (recommended).  If you use ##isearch-prop.el## then you can
