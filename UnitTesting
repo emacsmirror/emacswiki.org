@@ -56,7 +56,7 @@ PhilHagelberg describes a BDD framework with expectations-like syntax. [http://t
 
 '''[[Emtest]]''' is a modular, extensible testing framework. It supersedes [http://panix.com/~tehom/my-code/regress.el regress.el], also by [TomBreton Tom Breton]. It lives in [http://savannah.nongnu.org/git/?group=emtest a git repo] on Savannah.
 
-'''[http://www.wanglianghome.org/svn/test/test.el test.el]''' is developed for testing operations on a buffer (but can also be used to test operations unrelated to buffers). [http://www.wanglianghome.org/images/test.png Screenshot].
+'''[https://svn.wanglianghome.org/test/test.el test.el]''' is developed for testing operations on a buffer (but can also be used to test operations unrelated to buffers). [https://static.wanglianghome.org/images/test.png Screenshot].
 
 '''[[Lisp:unit-test.el|unit-test.el]]''' by MarkTriggs reports the pass/fail status of your unit tests (in any language). You need to define a function that runs your unit tests and returns non-##nil## if they pass. Depending on the output, it will display green or red "light" graphic icon (##xpm##) on the Emacs window mode line.
 == Without a framework ==
