@@ -16,7 +16,7 @@ The details above can be got by
 3.	msmtp â-version at the command prompt 
 </pre>
 
-Your typical <tt>msmtprc.txt</tt> file would look like this.  Note <tt>msmtp â-version </tt> will also tell you where <tt>msmtp</tt> looks for the configuration file. 
+Your typical <tt>msmtprc.txt</tt> file would look like this.  Note <tt>msmtp --version</tt> will also tell you where <tt>msmtp</tt> looks for the configuration file. 
 
 <pre>
 ########################
