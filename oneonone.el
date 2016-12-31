@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Thu Dec 31 15:46:34 2015 (-0800)
+;; Last-Updated: Fri Dec 30 21:36:40 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 3087
+;;     Update #: 3091
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -298,6 +298,8 @@
  
 ;;; Change Log:
 ;;
+;; 2016/12/30 dadams
+;;     y-or-n-p: Return to Isearch color if searching.
 ;; 2015/08/21 dadams
 ;;     1on1-display-*Completions*-frame: Use icicle-mru-window-for-buffer (Emacs 24+).
 ;; 2015/08/20 dadams
@@ -1825,7 +1827,9 @@ Also accepts SPC to mean yes, or DEL to mean no."
     (let ((result  (1on1-ORIG-y-or-n-p prompt)))
       (when (and 1on1-fit-minibuffer-frame-flag  (> emacs-major-version 20))
         (1on1-reset-minibuffer-frame))  ; Restore frame.
-      (1on1-color-minibuffer-frame-on-exit)
+      (if isearch-mode
+          (1on1-color-isearch-minibuffer-frame) ; Return to Isearch color.
+        (1on1-color-minibuffer-frame-on-exit))
       result))
 
 
