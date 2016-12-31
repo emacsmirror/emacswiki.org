@@ -13,7 +13,7 @@ The details above can be got by
 <pre>
 1.	M-x gnus-version in Emacs 
 2.	M-x emacs-version in emacs 
-3.	msmtp â-version at the command prompt 
+3.	msmtp --version at the command prompt 
 </pre>
 
 Your typical <tt>msmtprc.txt</tt> file would look like this.  Note <tt>msmtp --version</tt> will also tell you where <tt>msmtp</tt> looks for the configuration file. 
