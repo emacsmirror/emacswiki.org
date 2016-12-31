@@ -4,12 +4,12 @@
 ;; Description: Bookmark+ code for the `*Bookmark List*' (bmenu).
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Nov 27 17:25:14 2016 (-0800)
+;; Last-Updated: Sat Dec 31 11:54:27 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 3878
+;;     Update #: 3894
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -143,6 +143,7 @@
 ;;    `bmkp-bmenu-mark-lighted-bookmarks',
 ;;    `bmkp-bmenu-mark-man-bookmarks',
 ;;    `bmkp-bmenu-mark-non-file-bookmarks',
+;;    `bmkp-bmenu-mark-non-invokable-bookmarks',
 ;;    `bmkp-bmenu-mark-orphaned-local-file-bookmarks',
 ;;    `bmkp-bmenu-mark-region-bookmarks',
 ;;    `bmkp-bmenu-mark-snippet-bookmarks',
@@ -183,6 +184,7 @@
 ;;    `bmkp-bmenu-show-only-info-bookmarks',
 ;;    `bmkp-bmenu-show-only-man-bookmarks',
 ;;    `bmkp-bmenu-show-only-non-file-bookmarks',
+;;    `bmkp-bmenu-show-only-non-invokable-bookmarks',
 ;;    `bmkp-bmenu-show-only-omitted-bookmarks',
 ;;    `bmkp-bmenu-show-only-orphaned-local-file-bookmarks',
 ;;    `bmkp-bmenu-show-only-region-bookmarks',
@@ -1560,6 +1562,7 @@ Mark/Unmark Bookmarks
 \\[bmkp-bmenu-mark-gnus-bookmarks]\t- Mark Gnus bookmarks
 \\[bmkp-bmenu-mark-info-bookmarks]\t- Mark Info bookmarks
 \\[bmkp-bmenu-mark-icicles-search-hits-bookmarks]\t- Mark Icicles search-hits bookmarks
+\\[bmkp-bmenu-mark-non-invokable-bookmarks]\t- Mark non-invokable bookmarks
 \\[bmkp-bmenu-mark-image-bookmarks]\t- Mark image-file bookmarks
 \\[bmkp-bmenu-mark-desktop-bookmarks]\t- Mark desktop bookmarks
 \\[bmkp-bmenu-mark-man-bookmarks]\t- Mark `man' page bookmarks (that's `M' twice, not Meta-M)
@@ -1730,6 +1733,7 @@ Hide/Show (`*Bookmark List*')
 \\[bmkp-bmenu-show-only-gnus-bookmarks]\t- Show only Gnus bookmarks
 \\[bmkp-bmenu-show-only-info-bookmarks]\t- Show only Info bookmarks
 \\[bmkp-bmenu-show-only-icicles-search-hits-bookmarks]\t- Show only Icicles search-hits bookmarks
+\\[bmkp-bmenu-show-only-non-invokable-bookmarks]\t- Show only non-invokable bookmarks
 \\[bmkp-bmenu-show-only-image-bookmarks]\t- Show only image-file bookmarks
 \\[bmkp-bmenu-show-only-orphaned-local-file-bookmarks]\t- Show only orphaned local file \
 bookmarks (`C-u': remote also)
@@ -2157,6 +2161,7 @@ for confirmation."
 ;; `bmkp-bmenu-show-only-function-bookmarks',
 ;; `bmkp-bmenu-show-only-gnus-bookmarks',
 ;; `bmkp-bmenu-show-only-icicles-search-hits-bookmarks',
+;; `bmkp-bmenu-show-only-non-invokable-bookmarks',
 ;; `bmkp-bmenu-show-only-image-bookmarks',
 ;; `bmkp-bmenu-show-only-info-bookmarks',
 ;; `bmkp-bmenu-show-only-desktop-bookmarks',
@@ -2184,6 +2189,7 @@ for confirmation."
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-function-bookmarks "bookmark+")
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-gnus-bookmarks "bookmark+")
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-icicles-search-hits-bookmarks "bookmark+")
+;;;###autoload (autoload 'bmkp-bmenu-show-only-non-invokable-bookmarks "bookmark+")
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-image-bookmarks "bookmark+")
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-info-bookmarks "bookmark+")
 ;;;###autoload (autoload 'bmkp-bmenu-show-only-desktop-bookmarks "bookmark+")
@@ -2804,6 +2810,12 @@ With a prefix argument, do not mark remote files or directories."
   "Mark non-file bookmarks."
   (interactive)
   (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-non-file-bookmark-p))
+
+;;;###autoload (autoload 'bmkp-bmenu-mark-non-invokable-bookmarks "bookmark+")
+(defun bmkp-bmenu-mark-non-invokable-bookmarks () ; Bound to `n M' in bookmark list
+  "Mark non-invokable bookmarks."
+  (interactive)
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-non-invokable-bookmark-p))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-orphaned-local-file-bookmarks "bookmark+")
 (defun bmkp-bmenu-mark-orphaned-local-file-bookmarks (arg) ; Bound to `O M' in bookmark list
@@ -4276,7 +4288,7 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
             (put-text-property 0 (1- (length variable-list)) 'face 'bmkp-variable-list variable-list)
             (put-text-property 0 (1- (length function))      'face 'bmkp-function      function)
             (put-text-property 0 (1- (length no-jump))       'face 'bmkp-no-jump       no-jump)
-            (put-text-property 0 (1- (length bad))           'face 'bmkp-bad-bookmark bad)
+            (put-text-property 0 (1- (length bad))           'face 'bmkp-bad-bookmark  bad)
             (insert "Legend for Bookmark Types\n-------------------------\n\n")
             (when (and (fboundp 'display-images-p)  (display-images-p)
                        bmkp-bmenu-image-bookmark-icon-file
@@ -4787,6 +4799,9 @@ Return the propertized string (the bookmark name)."
             (append (bmkp-face-prop 'bmkp-bookmark-file)
                     '(mouse-face highlight follow-link t
                       help-echo "mouse-2: Load this bookmark's bookmark file")))
+           ((bmkp-non-invokable-bookmark-p bookmark)                           ; Non-invokable bookmark
+            (append (bmkp-face-prop 'bmkp-no-jump)
+                    '(help-echo "You CANNOT JUMP to this bookmark")))
            ((bmkp-icicles-search-hits-bookmark-p bookmark)               ; Icicles search hits bookmark
             (append (bmkp-face-prop 'bmkp-no-jump)
                     '(help-echo "You can use this only during Icicles search, NOT HERE")))
@@ -5461,6 +5476,9 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "MM"                   'bmkp-bmenu-mark-man-bookmarks)
 (define-key bookmark-bmenu-mode-map "MS"                   'bmkp-bmenu-show-only-man-bookmarks)
 (define-key bookmark-bmenu-mode-map "\M-m"                 'bmkp-bmenu-mark-all)
+(define-key bookmark-bmenu-mode-map "n"                    nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "nM"                   'bmkp-bmenu-mark-non-invokable-bookmarks)
+(define-key bookmark-bmenu-mode-map "nS"                   'bmkp-bmenu-show-only-non-invokable-bookmarks)
 (define-key bookmark-bmenu-mode-map "O"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "OM"                 'bmkp-bmenu-mark-orphaned-local-file-bookmarks)
 (define-key bookmark-bmenu-mode-map "OS"                'bmkp-bmenu-show-only-orphaned-local-file-bookmarks)
@@ -6152,6 +6170,9 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-orphaned-local-file-bookmarks]
   '(menu-item "Orphaned Local Files" bmkp-bmenu-show-only-orphaned-local-file-bookmarks
     :help "Display (only) orphaned local-file bookmarks (`C-u': show remote also)"))
+(define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-non-invokable-bookmarks]
+  '(menu-item "Non-Invokable" bmkp-bmenu-show-only-non-invokable-bookmarks
+    :help "Display (only) the non-invokable bookmarks"))
 (define-key bmkp-bmenu-show-types-menu [bmkp-bmenu-show-only-non-file-bookmarks]
   '(menu-item "Non-Files (Buffers)" bmkp-bmenu-show-only-non-file-bookmarks
     :help "Display (only) the non-file bookmarks"))
@@ -6307,6 +6328,9 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-mark-types-menu [bmkp-bmenu-mark-orphaned-local-file-bookmarks]
   '(menu-item "Orphaned Local Files" bmkp-bmenu-mark-orphaned-local-file-bookmarks
     :help "Mark orphaned local-file bookmarks (`C-u': remote also)"))
+(define-key bmkp-bmenu-mark-types-menu [bmkp-bmenu-mark-non-invokable-bookmarks]
+  '(menu-item "Non-Invokable" bmkp-bmenu-mark-non-invokable-bookmarks
+    :help "Mark non-invokable bookmarks"))
 (define-key bmkp-bmenu-mark-types-menu [bmkp-bmenu-mark-non-file-bookmarks]
   '(menu-item "Non-Files (Buffers)" bmkp-bmenu-mark-non-file-bookmarks
     :help "Mark non-file bookmarks"))
