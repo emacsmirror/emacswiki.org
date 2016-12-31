@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 30 16:43:22 2016 (-0800)
+;; Last-Updated: Sat Dec 31 12:33:14 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5708
+;;     Update #: 5711
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -1131,6 +1131,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2016/12/31 dadams
+;;     isearchp-bookmark-current-filter-predicate: Added filter-description field.
 ;; 2016/12/30 dadams
 ;;     Added: isearchp-filters-description.
 ;;     Renamed: isearchp-save-filter-predicate to isearchp-keep-filter-predicate,
@@ -6121,6 +6123,7 @@ You need library `bookmark+.el' for this."
       (let ((bmk  `(,bookmark-name
                     ,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT)
                     (isearchp-filter . ,isearch-filter-predicate)
+                    (filter-description . ,(isearchp-filters-description))
                     (handler . ignore)))) ; Cannot invoke bookmark.  It just records data.
         (push bmk bookmark-alist)
         (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))
