@@ -317,7 +317,7 @@ predicates, but functions that return filter predicates.  For
 example, `##near<...##' stands for function
 `isearchp-near-before-predicate' (see above).
 
-[:`isearchp-update-filter-predicates-alist-flag]
+[:isearchp-update-filter-predicates-alist-flag]
 Filter predicates that you add dynamically are added as
 completion candidates for the current Emacs session.  If option
 '''`isearchp-update-filter-predicates-alist-flag'''' is non-`nil' then
@@ -325,6 +325,12 @@ they are also added to `isearchp-filter-predicates-alist'.  That
 updated option value is ''NOT SAVED'', however.  If you want to save
 your additions to it for future Emacs sessions then use
 `M-x customize-option isearchp-filter-predicates-alist'.
+
+[:isearchp-reset-filter-preds-alist]
+You can use command '''`isearchp-reset-filter-preds-alist'''' (not bound) to reset the filter predicates available for completion
+to those in option `isearchp-filter-predicates-alist'.  A prefix
+arg with `C-z 0' also resets this, along with resetting to the
+unadvised value of `isearch-filter-predicate'.
 
 [:isearchp-lazy-dim-filter-failures-flag]
 If option '''`isearchp-lazy-dim-filter-failures-flag'''' is non-`nil'
