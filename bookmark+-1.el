@@ -4,12 +4,12 @@
 ;; Description: First part of package Bookmark+.
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Dec 21 09:35:50 2016 (-0800)
+;; Last-Updated: Sat Dec 31 12:28:06 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 8143
+;;     Update #: 8162
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -458,7 +458,8 @@
 ;;    `bmkp-new-bookmark-default-names',
 ;;    `bmkp-non-autonamed-alist-only', `bmkp-non-dir-file-alist-only',
 ;;    `bmkp-non-dir-file-bookmark-p', `bmkp-non-file-alist-only',
-;;    `bmkp-non-file-bookmark-p',
+;;    `bmkp-non-file-bookmark-p', `bmkp-non-invokable-alist-only',
+;;    `bmkp-non-invokable-bookmark-p',
 ;;    `bmkp-not-near-other-auto-idle-bmks', `bmkp-omitted-alist-only',
 ;;    `bmkp-orphaned-file-alist-only',
 ;;    `bmkp-orphaned-file-bookmark-p',
@@ -858,8 +859,8 @@ These are the predefined type predicates:
 `bmkp-local-non-dir-file-bookmark-p', `bmkp-man-bookmark-p',
 `bmkp-marked-bookmark-p', `bmkp-modified-bookmark-p',
 `bmkp-navlist-bookmark-p', `bmkp-non-dir-file-bookmark-p',
-`bmkp-non-file-bookmark-p', `bmkp-omitted-bookmark-p',
-`bmkp-orphaned-file-bookmark-p',
+`bmkp-non-file-bookmark-p', `bmkp-non-invokable-bookmark-p',
+`bmkp-omitted-bookmark-p', `bmkp-orphaned-file-bookmark-p',
 `bmkp-orphaned-local-file-bookmark-p',
 `bmkp-orphaned-remote-file-bookmark-p', `bmkp-region-bookmark-p',
 `bmkp-remote-file-bookmark-p', `bmkp-remote-non-dir-file-bookmark-p',
@@ -5618,7 +5619,10 @@ If it is a record then it need not belong to `bookmark-alist'."
 
 (defun bmkp-icicles-search-hits-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK records a list of Icicles search hits.
-BOOKMARK is a bookmark name or a bookmark record."
+BOOKMARK is a bookmark name or a bookmark record.
+
+An Icicles search-hits bookmark is shown in the bookmark-list display
+with face `bmkp-no-jump', because you cannot jump to it from there."
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (eq (bookmark-get-handler bookmark) 'bmkp-jump-icicle-search-hits))
 
@@ -5711,6 +5715,16 @@ If it is a record then it need not belong to `bookmark-alist'."
              ;; Ensure not remote before calling `file-exists-p'.  (Do not prompt for password.)
              (and (not (bmkp-file-remote-p filename))  (not (file-exists-p filename))))
          (not (bookmark-get-handler bookmark)))))
+
+(defun bmkp-non-invokable-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is a non-invokable bookmark.
+That is, jumping to it has no effect, because its handler is `ignore'.
+BOOKMARK is a bookmark name or a bookmark record.
+If it is a record then it need not belong to `bookmark-alist'.
+
+A non-invokable bookmark is shown in the bookmark-list display with
+face `bmkp-no-jump', because you cannot jump to it."
+  (eq (bookmark-get-handler bookmark) 'ignore))
 
 (defun bmkp-orphaned-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is an orphaned file or directory bookmark.
@@ -6231,6 +6245,12 @@ A new list is returned (no side effects)."
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-non-file-bookmark-p bookmark-alist))
+
+(defun bmkp-non-invokable-alist-only ()
+  "`bookmark-alist', filtered to retain only non-invokable bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-non-invokable-bookmark-p bookmark-alist))
 
 (defun bmkp-orphaned-file-alist-only ()
   "`bookmark-alist', filtered to retain only orphaned file bookmarks."
@@ -8307,6 +8327,7 @@ the file is an image file then the description includes the following:
         (function-p       (bmkp-function-bookmark-p bookmark))
         (variable-list-p  (bmkp-variable-list-bookmark-p bookmark))
         (search-hits-p    (bmkp-icicles-search-hits-bookmark-p bookmark))
+        (non-invokable-p  (bmkp-non-invokable-bookmark-p bookmark))
         (desktop-p        (bmkp-desktop-bookmark-p bookmark))
         (bookmark-file-p  (bmkp-bookmark-file-bookmark-p bookmark))
         (snippet-p        (bmkp-snippet-bookmark-p bookmark))
@@ -8351,6 +8372,11 @@ the file is an image file then the description includes the following:
                                                             hit-copy))
                                                         (bookmark-prop-get bookmark 'hits)
                                                         "\n\t")))
+                   (non-invokable-p  (format "Non-invokable:\n\n%s"
+                                             (let ((desc  (bookmark-prop-get bookmark 'filter-description)))
+                                               (if desc
+                                                   (format "Isearch filter:\n%s\n" desc)
+                                                 ""))))
                    (gnus-p           (format "Gnus, group:\t\t%s, article: %s, message-id: %s\n"
                                              (bookmark-prop-get bookmark 'group)
                                              (bookmark-prop-get bookmark 'article)
