@@ -1,7 +1,7 @@
 Don't confuse the program <code>msmtp</code> with the ability to use [[MultipleSMTPAccounts]] in Gnus.
 
 == Basic Setup ==
-Hereâs a quick and short description of setting Gnus and <tt>msmtp</tt> to work with Gmail. This should work with the following software on Windows and *nix platform. The examples here are shown for the Microsoft Windows versions of the software but should work with just the path changes on *nix platforms.
+Here's a quick and short description of setting Gnus and <tt>msmtp</tt> to work with Gmail. This should work with the following software on Windows and *nix platform. The examples here are shown for the Microsoft Windows versions of the software but should work with just the path changes on *nix platforms.
 
 <pre>
 No Gnus v0.6 or higher
@@ -57,7 +57,7 @@ A close reading of the msmtp documentation and the definition of
 message-send-mail-with-sendmail in message.el will reveal how this works.
 --taltman
 
-Now, weâd like to use Gnus to send email through <tt>msmtp</tt>. Add the following lines to the <tt>.gnus.el</tt> file. 
+Now, we'd like to use Gnus to send email through <tt>msmtp</tt>. Add the following lines to the <tt>.gnus.el</tt> file. 
 
 <pre>
 ;; with Emacs 23.1, you have to set this explicitly (in MS Windows)
@@ -85,7 +85,7 @@ In the example above, we have used only 1 of the email accounts.
 Gnus allows you to post using different accounts, which can be
 accomplished with [[PostingStyles]].
 
-To use [[PostingStyles]] in Gnus with <tt>msmtp</tt>, hereâs an example of how itâs done
+To use [[PostingStyles]] in Gnus with <tt>msmtp</tt>, here's an example of how it's done
 
 <pre>
 (setq gnus-parameters
