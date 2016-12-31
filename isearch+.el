@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 31 12:33:14 2016 (-0800)
+;; Last-Updated: Sat Dec 31 14:37:24 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5711
+;;     Update #: 5720
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -101,6 +101,7 @@
 ;;    `isearchp-remove-failed-part-or-last-char' (Emacs 22+),
 ;;    `isearchp-remove-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-reset-filter-predicate' (Emacs 24.4+),
+;;    `isearchp-reset-filter-preds-alist' (Emacs 24.4+),
 ;;    `isearchp-retrieve-last-quit-search',
 ;;    `isearchp-set-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-set-region-around-search-target',
@@ -716,6 +717,12 @@
 ;;    your additions to it for future Emacs sessions then use
 ;;    `M-x customize-option isearchp-filter-predicates-alist'.
 ;;
+;;    You can use command `isearchp-reset-filter-preds-alist' (not
+;;    bound) to reset the filter predicates available for completion
+;;    to those in option `isearchp-filter-predicates-alist'.  A prefix
+;;    arg with `C-z 0' also resets this, along with resetting to the
+;;    unadvised value of `isearch-filter-predicate'.
+;;
 ;;    If option `isearchp-lazy-dim-filter-failures-flag' is non-`nil'
 ;;    then search hits that are skipped because they are removed by
 ;;    filtering are nevertheless lazy-highlighted, but using a face
@@ -1132,7 +1139,9 @@
 ;;(@* "Change log")
 ;;
 ;; 2016/12/31 dadams
+;;     Added: isearchp-reset-filter-preds-alist (not bound).
 ;;     isearchp-bookmark-current-filter-predicate: Added filter-description field.
+;;     isearchp-reset-filter-predicate: Prefix arg also resets isearchp-current-filter-preds-alist.
 ;; 2016/12/30 dadams
 ;;     Added: isearchp-filters-description.
 ;;     Renamed: isearchp-save-filter-predicate to isearchp-keep-filter-predicate,
@@ -5609,7 +5618,7 @@ associated `name'."
 
   (defun isearchp-set-filter-predicate (predicate &optional msgp) ; `C-z !'
     "Set `isearch-filter-predicate' to PREDICATE.
-You can use `\\[isearchp-reset-filter-predicate]' (\\<isearch-mode-map>`\\[isearchp-reset-filter-predicate]' \
+You can use `isearchp-reset-filter-predicate' (\\<isearch-mode-map>`\\[isearchp-reset-filter-predicate]' \
 during
 Isearch) to reset it to the default value."
     (interactive (list (isearchp-read-predicate "Set filter predicate: ") t))
@@ -5674,14 +5683,30 @@ This does not save the predicate persistently."
     (setq isearchp-kept-filter-predicate  isearch-filter-predicate)
     (when msgp (message "Current filter predicate KEPT for next Isearch")))
 
-  (defun isearchp-reset-filter-predicate (&optional msgp) ; `C-z 0'
+  (defun isearchp-reset-filter-predicate (&optional alist-also-p msgp) ; `C-z 0'
     "Reset `isearch-filter-predicate' to its default value.
-By default, this is `isearch-filter-visible'."
-    (interactive "p")
+By default, this is `isearch-filter-visible'.
+With a prefix arg, also reset the alist of filter predicates,
+`isearchp-current-filter-preds-alist'."
+    (interactive "P\np")
     (setq isearch-filter-predicate        #'isearch-filter-visible
           isearchp-kept-filter-predicate  isearch-filter-predicate)
+    (when alist-also-p
+      (setq isearchp-current-filter-preds-alist  isearchp-filter-predicates-alist))
     (isearchp-redo-lazy-highlighting)
-    (when msgp (message "`isearch-filter-predicate' is RESET to default: %s" isearch-filter-predicate)))
+    (when msgp
+      (if alist-also-p
+          (message "`isearch-filter-predicate' and `isearchp-current-filter-preds-alist' RESET")
+        (message "`isearch-filter-predicate' is RESET to default: %s" isearch-filter-predicate))))
+
+  (defun isearchp-reset-filter-preds-alist (&optional msgp) ; Not bound.
+    "Reset current filter predicates alist to saved value.
+This means reset `isearchp-current-filter-preds-alist', which is used
+for completion, to the value of `isearchp-filter-predicates-alist',
+removing any filters you have added while searching."
+    (interactive "p")
+    (setq isearchp-current-filter-preds-alist  isearchp-filter-predicates-alist)
+    (when msgp (message "`isearchp-current-filter-preds-alist' is RESET")))
 
   (defun isearchp-near (pattern distance &optional flip-read-name-p flip-read-prefix-p msgp) ; `C-z @'
     "Add Isearch predicate to match PATTERN within DISTANCE of search hit.
