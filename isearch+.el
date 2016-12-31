@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 30 16:27:56 2016 (-0800)
+;; Last-Updated: Fri Dec 30 16:43:22 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5704
+;;     Update #: 5708
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -1139,6 +1139,8 @@
 ;;              isearchp-prompt-filter-prefix-auto-save to isearchp-prompt-filter-prefix-auto-keep,
 ;;              isearchp-saved-filter-predicate to isearchp-kept-filter-predicate.
 ;;     Added redefinition of isearch-pre-command-hook and isearch-scroll property (fix for Emacs bug #25302).
+;;     isearchp-defun-filter-predicate:
+;;       Now C-u persists; C-u C-u persists and keeps current.  Combined args SET-P and KEEP-P as arg ACTION.
 ;;     isearchp-read-predicate: Fix bug introduced yesterday, for (NAME FUNCTION) case.
 ;;     isearchp-show-filters: Use isearchp-filters-description.
 ;; 2016/12/29 dadams
@@ -5613,34 +5615,55 @@ Isearch) to reset it to the default value."
     (isearchp-redo-lazy-highlighting)
     (when msgp (isearchp-show-filters)))
 
-  (defun isearchp-defun-filter-predicate (function-symbol &optional set-p keep-p msgp) ; `C-z n'
+  (defun isearchp-defun-filter-predicate (function-symbol &optional action msgp) ; `C-z n'
     "Name the current filter predicate: Define a named function for it.
+With a plain prefix arg (`C-u'), set the current filter predicate to
+the function, and save the function definition persistently.  With a
+double plain prefix arg (`C-u C-u'), do the same but also keep the
+filter current for subsequent searches.  In both cases you are
+prompted for the file to save it in.  The definition is appended to
+any existing file contents.
+
 With a non-positive prefix arg, set the current filter predicate to
-the named function (as if you had also used \\<isearch-mode-map>`\\[isearchp-set-filter-predicate]').  (This \
-can make
-it easier to remove, if you have not otherwise assigned a name to it.)
+the named function (as if you had also used `\\[isearchp-set-filter-predicate]'), so you can refer
+to it by name.
 
 With a non-negative prefix arg, keep the current filter predicate for
 subsequent searches (as if you had also used `\\[isearchp-keep-filter-predicate]')."
-    (interactive (let ((isearchp-resume-with-last-when-empty-flag  nil)
-                       fsymb)
-                   (with-isearch-suspended (setq fsymb  (read-string "Name current filter predicate: ")))
-                   (while (and (fboundp (intern-soft fsymb))
-                               (not (y-or-n-p (format "Function `%s' exists.  Redefine? " fsymb))))
-                     (with-isearch-suspended (setq fsymb  (read-string "Name current filter predicate: "))))
-                   (setq fsymb  (intern fsymb))
-                   (list fsymb
-                         (and current-prefix-arg  (<= (prefix-numeric-value current-prefix-arg) 0))
-                         (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
-                         t)))
-    (fset function-symbol isearch-filter-predicate)
-    (when set-p  (isearchp-set-filter-predicate function-symbol))
-    (when keep-p (isearchp-keep-filter-predicate))
-    (add-to-list 'isearchp-current-filter-preds-alist (list function-symbol) :APPEND)
-    (when isearchp-update-filter-predicates-alist-flag
-      (customize-set-value 'isearchp-filter-predicates-alist isearchp-current-filter-preds-alist)
-      (setq isearchp-current-filter-preds-alist  ()))
-    (when msgp (message "Filter predicate `%S' defined%s" function-symbol (if keep-p " and kept" ""))))
+    (interactive
+     (let ((isearchp-resume-with-last-when-empty-flag  nil)
+           fsymb)
+       (with-isearch-suspended (setq fsymb  (read-string "Function name for current filter predicate: ")))
+       (while (and (fboundp (intern-soft fsymb))
+                   (not (y-or-n-p (format "Function `%s' exists.  Redefine? " fsymb))))
+         (with-isearch-suspended (setq fsymb  (read-string "Name current filter predicate: "))))
+       (setq fsymb  (intern fsymb))
+       (list fsymb current-prefix-arg t)))
+    (defalias function-symbol isearch-filter-predicate)
+    (let* ((write-p  (consp action))
+           (set-p    (or write-p  (and action  (<= (prefix-numeric-value action) 0))))
+           (keep-p   (if write-p
+                         (> (car action) 4)
+                       (and action  (>= (prefix-numeric-value action) 0))))
+           file)
+      (when write-p
+        (with-isearch-suspended (setq file  (read-file-name "Append filter to file: ")))
+        (write-region (format "(defalias '%S %S %S)\n"
+                              function-symbol isearch-filter-predicate (isearchp-filters-description))
+                      nil file 'APPEND nil nil 'CONFIRM-IF-EXISTS))
+      (when set-p (isearchp-set-filter-predicate function-symbol))
+      (when keep-p (isearchp-keep-filter-predicate))
+      (add-to-list 'isearchp-current-filter-preds-alist (list function-symbol) :APPEND)
+      (when isearchp-update-filter-predicates-alist-flag
+        (customize-set-value 'isearchp-filter-predicates-alist isearchp-current-filter-preds-alist)
+        (setq isearchp-current-filter-preds-alist  ()))
+      (when msgp (message "Filter predicate `%S' defined%s" function-symbol
+                          (cond ((and write-p  keep-p) (format ", set, kept current, and saved to file `%s'" file))
+                                (write-p               (format ", set and saved to file `%s'" file))
+                                ((and set-p  keep-p)           ", set, and kept")
+                                (set-p                         " and set")
+                                (keep-p                        " and kept")
+                                (t ""))))))
 
   (defun isearchp-keep-filter-predicate (&optional msgp) ; `C-z s'
     "Keep current filter predicate for subsequent searches in this session.
