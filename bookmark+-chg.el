@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Dec 21 09:41:51 2016 (-0800)
+;; Last-Updated: Sat Dec 31 12:03:09 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 16191
+;;     Update #: 16199
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2016/12/31 dadams
+;;     Added: bmkp-non-invokable-bookmark-p, bmkp-non-invokable-alist-only.
+;;     bmkp-bookmark-description: Include non-invokable.
 ;; 2016/12/21 dadams
 ;;     Added: bmkp-ffap-max-region-size, bmkp-ffap-guesser.
 ;;     bmkp-file-target-set, bmkp-autofile-set, bmkp-autofile-(add|remove)-tags:
@@ -1251,6 +1254,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2016/12/31 dadams
+;;     Added: bmkp-bmenu-mark-non-invokable-bookmarks, bmkp-bmenu-show-only-non-invokable-bookmarks.
+;;       Bound them to nM and nS.  Added them to menus bmkp-bmenu-(mark|show)-types-menu.
+;;     bookmark-bmenu-mode: Include non-invokable bookmarks in doc string.
+;;     bmkp-bmenu-propertize-item: Handle non-invokable bookmarks.
 ;; 2016/11/23 dadams
 ;;     bookmark-bmenu-mode: Doc string cleanup.
 ;;     bookmark-bmenu-list, bmkp-bmenu-copy-marked-to-bookmark-file:
