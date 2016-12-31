@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec 30 15:18:06 2016 (-0800)
+;; Last-Updated: Fri Dec 30 16:27:56 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 5698
+;;     Update #: 5704
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,9 +19,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
-;;   `hexrgb', `isearch-prop', `macroexp', `misc-cmds', `misc-fns',
-;;   `strings', `thingatpt', `thingatpt+', `zones'.
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
+;;   `cl-lib', `color', `frame-fns', `gv', `help-fns', `hexrgb',
+;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -172,6 +173,7 @@
 ;;    `isearchp-fail-pos', `isearchp-ffap-guesser' (Emacs 24.4+),
 ;;    `isearchp-filter-bookmark-alist-only' (Emacs 24.4+),
 ;;    `isearchp-filter-bookmark-p' (Emacs 24.4+),
+;;    `isearchp-filters-description' (Emacs 24.4+),
 ;;    `isearchp-first-isearch-advice' (Emacs 24.4+),
 ;;    `isearchp-highlight-lighter', `isearchp-in-color-p' (Emacs
 ;;    24.4+), `isearchp-in-comment-p' (Emacs 24.4+),
@@ -1130,12 +1132,15 @@
 ;;(@* "Change log")
 ;;
 ;; 2016/12/30 dadams
+;;     Added: isearchp-filters-description.
 ;;     Renamed: isearchp-save-filter-predicate to isearchp-keep-filter-predicate,
 ;;              isearchp-auto-save-filter-predicate-flag to isearchp-auto-keep-filter-predicate-flag,
 ;;              isearchp-toggle-auto-save-filter-predicate to isearchp-toggle-auto-keep-filter-predicate,
 ;;              isearchp-prompt-filter-prefix-auto-save to isearchp-prompt-filter-prefix-auto-keep,
 ;;              isearchp-saved-filter-predicate to isearchp-kept-filter-predicate.
 ;;     Added redefinition of isearch-pre-command-hook and isearch-scroll property (fix for Emacs bug #25302).
+;;     isearchp-read-predicate: Fix bug introduced yesterday, for (NAME FUNCTION) case.
+;;     isearchp-show-filters: Use isearchp-filters-description.
 ;; 2016/12/29 dadams
 ;;     Added: isearchp-current-filter-predicates, isearchp-first-isearch-advice, isearchp-last-isearch-advice.
 ;;       Use them in isearchp-or-last-filter, isearchp-remove-filter-predicate, isearchp-complement-filter,
@@ -5472,9 +5477,11 @@ If you do not choose a completion candidate then the value returned by
                 choice  (or choice  (assoc (intern input) filter-alist)))
           (setq result  (or choice  (read input)) ; For example, input was a lambda form.
                 pred    (if choice
-                            (if (stringp (nth 0 choice)) ; (NAME FUNCTION [PREFIX]) or BOOKMARK
-                                (or (setq result  (cdr (assq 'isearchp-filter choice))) ; A bookmark.
-                                    (nth 1 choice))
+                            (if (stringp (nth 0 choice))
+                                (let ((bmk-filt  (cdr (assq 'isearchp-filter choice))))
+                                  (if bmk-filt
+                                      (setq result  bmk-filt) ; BOOKMARK
+                                    (nth 1 choice))) ; (NAME FUNCTION [PREFIX])
                               (nth 0 choice)) ; (FUNCTION [PREFIX])
                           result))
           (unless (or (functionp pred)  (advice-function-member-p pred isearch-filter-predicate))
@@ -5576,21 +5583,25 @@ associated `name'."
     (unless predicate (setq predicate  (isearchp-read-predicate "Filter predicate to negate: ")))
     `(lambda (beg end) (isearchp-not-pred ',predicate beg end)))
 
-  (defun isearchp-show-filters ()       ; `C-z ?'
-    "Print a message listing the current filter predicates."
-    (interactive)
+  (defun isearchp-filters-description ()
+    "Description that lists the current filter predicates."
     (let ((preds  (isearchp-current-filter-predicates)))
       (let ((opred  (isearchp-first-isearch-advice)))
         (setq opred  (if (symbolp opred) (symbol-name opred) (format "%s" opred)))
         (push opred preds))
-      (message (if preds
-                   (format "Filters: %s" (mapconcat (lambda (pred)
-                                                      (if (string-match-p "[ \t]" pred)
-                                                          (format "`%s'" pred)
-                                                        pred))
-                                                    (nreverse preds)
-                                                    ", "))
-                 "NO filters"))))
+      (if preds
+          (format "Filters: %s" (mapconcat (lambda (pred)
+                                             (if (string-match-p "[ \t]" pred)
+                                                 (format "`%s'" pred)
+                                               pred))
+                                           (nreverse preds)
+                                           ", "))
+        "NO filters")))
+
+  (defun isearchp-show-filters ()       ; `C-z ?'
+    "Print a message listing the current filter predicates."
+    (interactive)
+    (message (isearchp-filters-description)))
 
   (defun isearchp-set-filter-predicate (predicate &optional msgp) ; `C-z !'
     "Set `isearch-filter-predicate' to PREDICATE.
