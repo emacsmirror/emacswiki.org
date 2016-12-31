@@ -4,11 +4,11 @@
 ;; Description: Documentation for package Bookmark+
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Nov 27 17:19:46 2016 (-0800)
+;; Last-Updated: Sat Dec 31 13:59:50 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 15134
+;;     Update #: 15180
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -129,7 +129,8 @@
 ;;    (@> "Bookmark Tags")
 ;;      (@> "Bookmark Tags Can Have Values")
 ;;      (@> "Hierarchical Structures of Bookmarks?")
-;;    (@> "Function, Sequence, and Variable-List Bookmarks")
+;;    (@> "Function, Sequence, Variable-List,... Bookmarks")
+;;      (@> "Little Persistent Named Nothings")
 ;;    (@> "Editing Bookmarks")
 ;;      (@> "Bookmark Records: What A Bookmark Looks Like")
 ;;    (@> "Bookmark-List Views - Saving and Restoring State")
@@ -1245,8 +1246,8 @@
 ;;  And remember that tags can be more than just names.  They give you
 ;;  the full power of Lisp values - do with them whatever you like.
  
-;;(@* "Function, Sequence, and Variable-List Bookmarks")
-;;  ** Function, Sequence, and Variable-List Bookmarks **
+;;(@* "Function, Sequence, Variable-List,... Bookmarks")
+;;  ** Function, Sequence, Variable-List,... Bookmarks **
 ;;
 ;;  Bookmarks are typically thought of only as recorded locations.
 ;;  Invoking a bookmark, called "jumping" to it, traditionally means
@@ -1357,6 +1358,74 @@
 ;;  `bmkp-set-izones-bookmark' bookmarks this value for the current
 ;;  buffer.  Jumping to such a bookmark restores the saved ring/stack
 ;;  of restrictions.
+;;
+;;
+;;(@* "Little Persistent Named Nothings")
+;;  *** Little Persistent Named Nothings ***
+;;
+;;  OK, so a bookmark need not "go" anywhere.  Function, sequence,
+;;  variable-list, and some other kinds of bookmarks have no real
+;;  "location" to move to or restore.  But the bookmarks talked about
+;;  so far at least have an associated action: you can "jump" to them,
+;;  even if "jump" can mean a arbitrary action that might have nothing
+;;  to do with reaching a destination.
+;;
+;;  You can also have a *non-invokable* bookmark, that is, one that
+;;  you cannot jump to.  This is a bookmark whose handler is the
+;;  function `ignore', which does nothing.
+;;
+;;  What's the point of that?  To record something persistently,
+;;  without needing to manage the file(s) you record it in, and to be
+;;  able to access that something by name.
+;;
+;;  As an example, library Isearch+ provides one such use case.  It
+;;  lets you interactively add, modify, and remove Isearch filter
+;;  predicates on the fly, providing more power and flexibility in
+;;  searching.
+;;
+;;  (A filter predicate is a function that accepts the current
+;;  search-hit limits as arguments.  If it returns `nil' then that
+;;  search hit is excluded from searching; otherwise it is included.)
+;;
+;;  You can also, on the fly, encapsulate the current suite of filter
+;;  predicates as a new filter predicate.  That is, you can manipulate
+;;  a complex sequence of filters as a single predicate, using a
+;;  simple name.  And you can save the definition of that new
+;;  predicate in a file, so you can use it again in future Emacs
+;;  sessions.
+;;
+;;  Alternatively, you can just bookmark the search predicate.  The
+;;  data saved in the bookmark is the suite of filters that is the
+;;  advised value of `isearch-filter-predicate' at the time of
+;;  bookmarking.
+;;
+;;  Then, in a future Emacs session, while Isearching you can hit a
+;;  key and enter the bookmark name (with completion), to apply that
+;;  suite of filters again.
+;;
+;;  Bookmarking is easier than defining a new predicate and bothering
+;;  with a file to save it in.  This is the kind of thing that
+;;  bookmarks are for: persistently saving named bits of data for
+;;  later retrieval by name.
+;;
+;;  Because the saved data in this case (the filter definition) has no
+;;  use outside the context of searching, there is no way to invoke it
+;;  - no jump action.  Its handler is `ignore'.
+;;
+;;  You can apply all Bookmark+ features to non-invokable bookmarks:
+;;  sort, edit, tag - whatever.  Use Bookmark+ to organize them, even
+;;  if you cannot invoke them.
+;;
+;;  Non-invokable bookmarks are shown using face `bmkp-no-jump' in the
+;;  bookmark-list display.
+;;
+;;  It is also possible for a bookmark to have a handler other than
+;;  `ignore', so that it is invokable, but that its jump action is
+;;  appropriate only in certain contexts.  This is the case, for
+;;  instance, for an Icicles search-hits bookmark.  You cannot invoke
+;;  it outside the context of Icicles searching.  For this reason,
+;;  these bookmarks are also shown with face `bmkp-no-jump' in the
+;;  bookmark-list display.
  
 ;;(@* "Editing Bookmarks")
 ;;  ** Editing Bookmarks **
@@ -2718,7 +2787,7 @@
 ;;
 ;;  One use for this feature is to hide the component bookmarks that
 ;;  make up a sequence bookmark (see
-;;  (@> "Function, Sequence, and Variable-List Bookmarks")).  The
+;;  (@> "Function, Sequence, Variable-List,... Bookmarks")).  The
 ;;  default behavior when you create a sequence bookmark is in fact to
 ;;  omit its component bookmarks from the displayed list.
 ;;
