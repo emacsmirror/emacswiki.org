@@ -56,6 +56,17 @@ After this, `M-x visit-tags-table RET' and `M-x tags-search RET' are your
 friends.  Also take a look at
 [Groups:sure-tags.el&selm=199707312315.QAA06142%40hiro.zanshin.com sure-tags.el]
 
+In Emacs 25.1+, it seems that find-tag has been replaced by xref-find-definitions. So I had to do this instead to get the above trick to work:
+
+<pre>
+   (defadvice xref-find-definitions (before c-tag-file activate)
+   "Automatically create tags file."
+   (let ((tag-file (concat default-directory "TAGS")))
+     (unless (file-exists-p tag-file)
+       (shell-command "etags *.[ch] -o TAGS 2>/dev/null"))
+     (visit-tags-table tag-file)))
+</pre>
+
 [new]
 ##sure-tags.el## works pretty well, but I've noticed that it doesn't work 
 properly with those filesystems in which space characters are allowed 
