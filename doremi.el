@@ -4,13 +4,13 @@
 ;; Description: Incremental change using arrow keys or mouse wheel.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2017, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:00:44 2015 (-0800)
+;; Last-Updated: Sun Jan  1 09:25:07 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1628
+;;     Update #: 1629
 ;; URL: http://www.emacswiki.org/doremi.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat, higher-order
