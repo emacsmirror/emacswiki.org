@@ -4,13 +4,13 @@
 ;; Description:  Zones of text - like multiple regions
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2010-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2017, Drew Adams, all rights reserved.
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 27 18:03:26 2016 (-0800)
+;; Last-Updated: Sun Jan  1 12:02:07 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1727
+;;     Update #: 1728
 ;; URL: http://www.emacswiki.org/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
