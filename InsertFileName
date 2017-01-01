@@ -58,6 +58,8 @@ Here's a summary of the above,
 
 Based on a [http://rlazo.org/blog/entry/2008/sep/13/insert-a-path-into-the-current-buffer/ blog post]  by RodrigoLazo.
 
+Link (site) appears dead, so I can't comment there: but isn't "file-relative-name" without a directory argument equivalent to file-name-nondirectory?  That one's faster, even though it doesn't really matter here.
+
 To replace the file at point, you can use the following extension of FindFileAtPoint.
 
   (autoload 'ffap-guesser "ffap")
