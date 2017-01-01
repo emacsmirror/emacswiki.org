@@ -4,13 +4,13 @@
 ;; Description: Progressively reveal text after the cursor.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2014-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2014-2017, Drew Adams, all rights reserved.
 ;; Created: Fri May 16 07:28:05 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 15:55:46 2015 (-0800)
+;; Last-Updated: Sun Jan  1 11:23:04 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 28
+;;     Update #: 29
 ;; URL: http://www.emacswiki.org/reveal-next.el
 ;; Doc URL: http://www.emacswiki.org/RevealNextTextMode
 ;; Keywords: hide show invisible learning
