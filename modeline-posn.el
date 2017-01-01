@@ -4,13 +4,13 @@
 ;; Description: Set up `mode-line-position'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2017, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jan 12 06:53:15 2016 (-0800)
+;; Last-Updated: Sun Jan  1 10:57:51 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 815
+;;     Update #: 816
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
