@@ -4,13 +4,13 @@
 ;; Description: Search text-property or overlay-property contexts.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2011-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2017, Drew Adams, all rights reserved.
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 27 17:57:12 2016 (-0800)
+;; Last-Updated: Sun Jan  1 10:36:15 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1412
+;;     Update #: 1413
 ;; URL: http://www.emacswiki.org/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
