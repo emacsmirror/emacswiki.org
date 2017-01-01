@@ -5,13 +5,13 @@
 ;; Author: Miles Bader <miles@gnu.org>
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2009, Miles Bader, all rights reserved.
-;; Copyright (C) 2009-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2009-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 27 20:32:14 2009 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:01:45 2015 (-0800)
+;; Last-Updated: Sun Jan  1 09:27:54 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 123
+;;     Update #: 124
 ;; URL: http://www.emacswiki.org/echo-bell.el
 ;; Keywords: echo area, bell, ding
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
