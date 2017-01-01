@@ -56,7 +56,7 @@ After this, `M-x visit-tags-table RET' and `M-x tags-search RET' are your
 friends.  Also take a look at
 [Groups:sure-tags.el&selm=199707312315.QAA06142%40hiro.zanshin.com sure-tags.el]
 
-In Emacs 25.1+, it seems that find-tag has been replaced by `xref-find-definitions'. So I had to do this instead to get the above trick to work:
+In Emacs 25.1+, it seems that `find-tag' has been replaced by `xref-find-definitions'. So I had to do this instead to get the above trick to work:
 
 <pre>
    (defadvice xref-find-definitions (before c-tag-file activate)
