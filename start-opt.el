@@ -4,13 +4,13 @@
 ;; Description: Customizations to be done at the end of startup.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2017, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Mar 16 10:39:53 2016 (-0700)
+;; Last-Updated: Sun Jan  1 11:37:48 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 2003
+;;     Update #: 2005
 ;; URL: http://www.emacswiki.org/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -18,7 +18,7 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos+', `autofit-frame', `avoid', `chistory',
-;;   `cmds-menu', `cus-theme', `doremi', `doremi-cmd', `doremi-frm',
+;;   `cl', `cus-theme', `doremi', `doremi-cmd', `doremi-frm',
 ;;   `easymenu', `eyedropper', `faces', `faces+', `fit-frame',
 ;;   `frame-cmds', `frame-fns', `header2', `help+20', `hexrgb',
 ;;   `highlight', `info', `info+20', `isearch+', `iso-transl',
