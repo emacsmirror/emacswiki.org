@@ -4,13 +4,13 @@
 ;; Description: Non-interactive frame and window functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:15:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:28:06 2015 (-0800)
+;; Last-Updated: Sun Jan  1 09:53:35 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 228
+;;     Update #: 229
 ;; URL: http://www.emacswiki.org/frame-fns.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Keywords: internal, extensions, local, frames
