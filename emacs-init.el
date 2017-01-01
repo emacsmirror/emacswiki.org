@@ -4,13 +4,13 @@
 ;; Description: Emacs init file for use with libraries from Drew Adams
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 15:54:33 1995
 ;; Version: 0
 ;; Package-Requires: ((start "0"))
-;; Last-Updated: Thu Dec 31 13:03:47 2015 (-0800)
+;; Last-Updated: Sun Jan  1 09:30:07 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 2182
+;;     Update #: 2183
 ;; URL: http://www.emacswiki.org/emacs-init.el
 ;; Keywords: init, .emacs, _emacs, dotemacs
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -22,10 +22,10 @@
 ;;   `backquote', `bookmark', `bookmark+', `bookmark+-1',
 ;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit',
 ;;   `browse-kill-ring', `browse-kill-ring+', `buff-menu+',
-;;   `chistory', `cl', `cmds-menu', `color-moccur', `comint',
-;;   `compile', `compile+20', `compile-20', `cus-edit', `cus-edit+',
-;;   `cus-face', `cus-load', `cus-start', `cus-theme', `custom',
-;;   `cygwin-mount', `dired', `dired+', `dired-aux', `dired-details',
+;;   `chistory', `cl', `color-moccur', `comint', `compile',
+;;   `compile+20', `compile-20', `cus-edit', `cus-edit+', `cus-face',
+;;   `cus-load', `cus-start', `cus-theme', `custom', `cygwin-mount',
+;;   `dired', `dired+', `dired-aux', `dired-details',
 ;;   `dired-details+', `dired-sort-menu', `dired-sort-menu+',
 ;;   `dired-x', `doremi', `doremi-cmd', `doremi-frm', `easymenu',
 ;;   `ediff', `ediff+', `ediff-diff', `ediff-help', `ediff-init',
