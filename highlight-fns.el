@@ -4,13 +4,13 @@
 ;; Description: Highlight called Lisp functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2013-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2013-2017, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 17 13:59:36 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:41:43 2015 (-0800)
+;; Last-Updated: Sun Jan  1 10:12:20 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 51
+;;     Update #: 52
 ;; URL: http://www.emacswiki.org/highlight-fns.el
 ;; Doc URL: http://emacswiki.org/HighlightLispFunctions
 ;; Keywords: highlight, lisp, functions
