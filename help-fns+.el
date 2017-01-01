@@ -4,13 +4,13 @@
 ;; Description: Extensions to `help-fns.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Sep 17 11:17:48 2016 (-0700)
+;; Last-Updated: Sun Jan  1 10:01:21 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 2222
+;;     Update #: 2225
 ;; URL: http://www.emacswiki.org/help-fns+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
@@ -2090,13 +2090,14 @@ file local variable.\n")
 
   (defun describe-variable (variable &optional buffer frame optionp)
     "Display the full documentation of VARIABLE (a symbol).
-VARIABLE names an Emacs Lisp variable, possibly a user option.
 With a prefix argument, candidates are user variables (options) only.
 Default candidate is the `symbol-nearest-point'.
 Return the documentation, as a string.
-If VARIABLE has a buffer-local value in BUFFER or FRAME
-\(default to the current buffer and current frame),
-it is displayed along with the global value."
+
+VARIABLE names an Emacs Lisp variable, possibly a user option.
+If VARIABLE has a buffer-local value in BUFFER or FRAME (default to
+the current buffer and current frame) then it is displayed, along with
+the global value."
     (interactive
      (let ((symb                          (or (and (fboundp 'symbol-nearest-point)  (symbol-nearest-point))
                                               (variable-at-point)))
