@@ -4,13 +4,13 @@
 ;; Description: In the mode-line, show the value of the character after point.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2015-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2015-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Jul  7 10:52:36 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 162
+;;     Update #: 163
 ;; URL: http://www.emacswiki.org/modeline-char.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLineCharacterInfo
 ;; Keywords: mode-line, character
