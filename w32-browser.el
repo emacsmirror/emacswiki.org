@@ -4,13 +4,13 @@
 ;; Description: Run Windows application associated with a file.
 ;; Author: Emacs Wiki, Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2017, Drew Adams, all rights reserved.
 ;; Created: Thu Mar 11 13:40:52 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 14 14:33:34 2016 (-0700)
+;; Last-Updated: Sun Jan  1 11:56:53 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 242
+;;     Update #: 243
 ;; URL: http://www.emacswiki.org/w32-browser.el
 ;; Doc URL: http://emacswiki.org/MsShellExecute
 ;; Keywords: mouse, dired, w32, explorer
