@@ -4,13 +4,13 @@
 ;; Description: Extensions to `isearch.el' (incremental search).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 31 14:37:24 2016 (-0800)
+;; Last-Updated: Sun Jan  1 10:34:38 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 5720
+;;     Update #: 5721
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,10 +19,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
-;;   `cl-lib', `color', `frame-fns', `gv', `help-fns', `hexrgb',
-;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
-;;   `thingatpt', `thingatpt+', `zones'.
+;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `hexrgb', `isearch-prop', `macroexp', `misc-cmds', `misc-fns',
+;;   `strings', `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
