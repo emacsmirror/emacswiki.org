@@ -4,13 +4,13 @@
 ;; Description: Frame configuration that uses one frame per window.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Fri Dec 30 21:36:40 2016 (-0800)
+;; Last-Updated: Sun Jan  1 11:06:58 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3091
+;;     Update #: 3092
 ;; URL: http://www.emacswiki.org/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
