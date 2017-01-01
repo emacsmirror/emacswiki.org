@@ -4,13 +4,13 @@
 ;; Description: Extensions to `imenu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2017, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 14:07:08 2015 (-0800)
+;; Last-Updated: Sun Jan  1 10:31:35 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1043
+;;     Update #: 1044
 ;; URL: http://www.emacswiki.org/imenu+.el
 ;; Doc URL: http://emacswiki.org/ImenuMode
 ;; Keywords: tools, menus
