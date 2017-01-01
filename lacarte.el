@@ -4,13 +4,13 @@
 ;; Description: Execute menu items as commands, with completion.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 27 17:59:16 2016 (-0800)
+;; Last-Updated: Sun Jan  1 10:38:34 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 925
+;;     Update #: 926
 ;; URL: http://www.emacswiki.org/lacarte.el
 ;; Doc URL: http://www.emacswiki.org/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
