@@ -4,11 +4,11 @@
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Jun 14 10:56:05 2016 (-0700)
+;; Last-Updated: Sun Jan  1 10:23:48 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 29954
+;;     Update #: 29956
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6684,7 +6684,8 @@
 ;;
 ;;  See Also:
 ;;
-;;  * (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere") for more information about this topic.
+;;  * (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere")
+;;    for more information about this topic.
 ;;  * (@> "Customization and General Tips") for general tips about
 ;;    using Icicles.  Many of those tips apply also to file-name and
 ;;    directory-name completion.
