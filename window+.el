@@ -4,13 +4,13 @@
 ;; Description: Extensions to `window.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 25 14:22:13 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 16:29:25 2015 (-0800)
+;; Last-Updated: Sun Jan  1 12:00:53 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 214
+;;     Update #: 215
 ;; URL: http://www.emacswiki.org/window%2b.el
 ;; Doc URL: http://emacswiki.org/Delete_Frames_Easily_-_But_Not_Too_Easily
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
