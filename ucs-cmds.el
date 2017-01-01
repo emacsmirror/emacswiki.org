@@ -4,13 +4,13 @@
 ;; Description: Commands to create commands that insert Unicode chars.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2011-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Oct  4 07:32:20 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 18 14:25:10 2016 (-0800)
+;; Last-Updated: Sun Jan  1 11:51:34 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 290
+;;     Update #: 291
 ;; URL: http://www.emacswiki.org/ucs-cmds.el
 ;; Doc URL: http://www.emacswiki.org/UnicodeEncoding
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
