@@ -4,13 +4,13 @@
 ;; Description: Enhancements to library `dired-details+.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 13:33:01 2005
 ;; Version: 0
 ;; Package-Requires: ((dired-details "0"))
-;; Last-Updated: Thu Dec 31 12:55:55 2015 (-0800)
+;; Last-Updated: Sun Jan  1 09:20:36 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 227
+;;     Update #: 229
 ;; URL: http://www.emacswiki.org/dired-details+.el
 ;; Doc URL: http://www.emacswiki.org/DiredDetails
 ;; Keywords: dired, frames
