@@ -5,13 +5,13 @@
 ;; Author: Francis J. Wright, Simon Marshal, Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000 Francis J. Wright
-;; Copyright (C) 2012-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2012-2017, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 26 07:06:14 2012 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:25:35 2015 (-0800)
+;; Last-Updated: Sun Jan  1 09:51:04 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 212
+;;     Update #: 213
 ;; URL: http://www.emacswiki.org/font-lock-menus.el
 ;; Doc URL:
 ;; Keywords: font, highlighting, syntax, decoration
