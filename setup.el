@@ -4,13 +4,13 @@
 ;; Description: Startup assignments: hooks etc.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 16:01:57 2015 (-0800)
+;; Last-Updated: Sun Jan  1 11:32:24 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 796
+;;     Update #: 797
 ;; URL: http://www.emacswiki.org/setup.el
 ;; Keywords: internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
