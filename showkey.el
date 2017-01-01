@@ -4,13 +4,13 @@
 ;; Description: Show keys as you use them.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2014-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2014-2017, Drew Adams, all rights reserved.
 ;; Created: Sun Mar 22 16:24:39 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Oct 27 06:54:35 2016 (-0700)
+;; Last-Updated: Sun Jan  1 11:34:31 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 135
+;;     Update #: 136
 ;; URL: http://www.emacswiki.org/showkey.el
 ;; Doc URL: http://www.emacswiki.org/ShowKey
 ;; Keywords: help keys mouse
