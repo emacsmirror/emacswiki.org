@@ -4,12 +4,12 @@
 ;; Description: Extensions to `sort.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Thu Apr 18 10:16:50 1996
 ;; Version: 20.0
-;; Last-Updated: Thu Dec 31 16:07:00 2015 (-0800)
+;; Last-Updated: Sun Jan  1 11:36:54 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 98
+;;     Update #: 99
 ;; URL: http://www.emacswiki.org/sort%2b.el
 ;; Keywords: unix, tools, sorting
 ;; Compatibility: GNU Emacs 20.x
