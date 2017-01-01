@@ -4,13 +4,13 @@
 ;; Description: Miscellaneous non-interactive functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 16 15:19:51 2016 (-0700)
+;; Last-Updated: Sun Jan  1 10:52:38 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 666
+;;     Update #: 667
 ;; URL: http://www.emacswiki.org/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
