@@ -4,13 +4,13 @@
 ;; Description: Color palette useful with RGB, HSV, and color names
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2017, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Sat Dec 24 13:27:49 2016 (-0800)
+;; Last-Updated: Sun Jan  1 11:11:15 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 916
+;;     Update #: 917
 ;; URL: http://www.emacswiki.org/palette.el
 ;; Doc URL: http://emacswiki.org/ColorPalette
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
@@ -18,8 +18,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `frame-fns', `hexrgb', `misc-cmds', `misc-fns',
-;;   `strings', `thingatpt', `thingatpt+'.
+;;   `avoid', `col-highlight', `crosshairs', `frame-fns', `hexrgb',
+;;   `hl-line', `hl-line+', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+', `vline'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
