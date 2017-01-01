@@ -124,7 +124,7 @@
     ;; We have the old custom-library, hack around it!
     (defmacro defgroup (&rest args)
       nil)
-    (defmacro defcustom (var value doc &rest args) 
+    (defmacro defcustom (var value doc &rest args)
       (` (defvar (, var) (, value) (, doc))))
     (defmacro defface (face value doc &rest stuff)
       `(make-face ,face))))
@@ -915,6 +915,7 @@ corresponding source file."
   (interactive "P")
   (htmlize-many-files (dired-get-marked-files nil arg) target-directory))
 
+(provide 'htmlize)
 (provide 'mkhtml-htmlize)
 
 ;;; mkhtml-htmlize.el ends here
