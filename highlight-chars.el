@@ -4,13 +4,13 @@
 ;; Description: Highlight specified sets of characters, including whitespace.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul 29 23:05:27 2016 (-0700)
+;; Last-Updated: Sun Jan  1 10:11:26 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 231
+;;     Update #: 232
 ;; URL: http://www.emacswiki.org/highlight-chars.el
 ;; Doc URL: http://www.emacswiki.org/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
