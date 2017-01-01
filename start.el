@@ -4,13 +4,13 @@
 ;; Description: Main Emacs startup file: require/autoload other files.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2017, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul  1 09:41:03 2016 (-0700)
+;; Last-Updated: Sun Jan  1 11:38:36 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3063
+;;     Update #: 3064
 ;; URL: http://www.emacswiki.org/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -21,10 +21,10 @@
 ;;   `autofit-frame', `avoid', `bookmark', `bookmark+',
 ;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-key',
 ;;   `bookmark+-lit', `browse-kill-ring', `browse-kill-ring+',
-;;   `buff-menu+', `cl', `cmds-menu', `color-moccur', `compile',
-;;   `compile+20', `compile-20', `cus-edit', `cus-edit+', `cus-face',
-;;   `cus-load', `cus-start', `cus-theme', `custom', `dired',
-;;   `dired+', `dired-aux', `dired-details', `dired-details+',
+;;   `buff-menu+', `cl', `color-moccur', `compile', `compile+20',
+;;   `compile-20', `cus-edit', `cus-edit+', `cus-face', `cus-load',
+;;   `cus-start', `cus-theme', `custom', `dired', `dired+',
+;;   `dired-aux', `dired-details', `dired-details+',
 ;;   `dired-sort-menu', `dired-sort-menu+', `dired-x', `doremi',
 ;;   `doremi-cmd', `doremi-frm', `easymenu', `ediff', `ediff+',
 ;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
