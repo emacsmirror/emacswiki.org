@@ -4,13 +4,13 @@
 ;; Description: Enhancements of standard library `ls-lisp.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2008-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2008-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 29 10:54:37 2008 (Pacific Standard Time)
 ;; Version: 0
 ;; Package-Requires: ((files+ "0"))
-;; Last-Updated: Thu Dec 31 14:20:32 2015 (-0800)
+;; Last-Updated: Sun Jan  1 10:43:26 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 240
+;;     Update #: 242
 ;; URL: http://www.emacswiki.org/ls-lisp+.el
 ;; Doc URL: http://emacswiki.org/LsLisp
 ;; Keywords: internal, extensions, local, files, dired
