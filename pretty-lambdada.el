@@ -6,13 +6,13 @@
 ;;         See http://www.emacswiki.org/emacs/PrettyLambda for the original
 ;;         code snippet and its history.
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2009-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2009-2017, Drew Adams, all rights reserved.
 ;; Created: Sun Jun 14 11:07:04 2009 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 15:53:26 2015 (-0800)
+;; Last-Updated: Sun Jan  1 11:19:47 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 153
+;;     Update #: 154
 ;; URL: http://www.emacswiki.org/pretty-lambdada.el
 ;; Doc URL: http://www.emacswiki.org/PrettyLambda
 ;; Keywords: convenience display
