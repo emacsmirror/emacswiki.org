@@ -4,13 +4,13 @@
 ;; Description: Incrementally adjust face attributes and frame parameters.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2017, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0") (faces+ "0") (frame-fns "0") (hexrgb "0"))
-;; Last-Updated: Thu Dec 31 12:59:08 2015 (-0800)
+;; Last-Updated: Sun Jan  1 09:23:16 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3069
+;;     Update #: 3070
 ;; URL: http://www.emacswiki.org/doremi-frm.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
