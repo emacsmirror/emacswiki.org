@@ -4,13 +4,13 @@
 ;; Description: Enhancements to Ediff
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2017, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 26 11:14:34 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:02:41 2015 (-0800)
+;; Last-Updated: Sun Jan  1 09:28:37 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 128
+;;     Update #: 129
 ;; URL: http://www.emacswiki.org/ediff+.el
 ;; Doc URL: http://emacswiki.org/EdiffMode
 ;; Keywords: comparing, merging, patching, version control
