@@ -4,13 +4,13 @@
 ;; Description: Extensions to `find-dired.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 18 10:17:13 2000
 ;; Version: 20.0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:16:44 2015 (-0800)
+;; Last-Updated: Sun Jan  1 09:45:35 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 43
+;;     Update #: 44
 ;; URL: http://www.emacswiki.org/find-dired-.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
