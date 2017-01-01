@@ -4,13 +4,13 @@
 ;; Description: Extensions to `help.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Dec 31 13:33:54 2015 (-0800)
+;; Last-Updated: Sun Jan  1 09:58:26 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 2187
+;;     Update #: 2188
 ;; URL: http://www.emacswiki.org/help+.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
@@ -18,9 +18,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `fit-frame', `frame-fns', `help-macro',
-;;   `help-macro+', `info', `info+20', `misc-fns', `naked',
-;;   `strings', `thingatpt', `thingatpt+'.
+;;   `avoid', `backquote', `fit-frame', `frame-fns', `help-fns',
+;;   `help-macro', `help-macro+', `info', `info+', `misc-fns',
+;;   `naked', `strings', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
