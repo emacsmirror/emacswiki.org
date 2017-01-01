@@ -4,13 +4,13 @@
 ;; Description: Extensions to Dired.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Dec 28 21:57:45 2016 (-0800)
+;; Last-Updated: Sun Jan  1 08:41:49 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 9711
+;;     Update #: 9714
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -653,6 +653,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/01/01 dadams
+;;     dired-mark-files-regexp: Fix to prompt for no prefix arg.
 ;; 2016/12/28 dadams
 ;;     dired-mark-files-regexp: Corrected prompt string for Mark/UNmark.  Thx to Tino Calancha.
 ;; 2016/11/20 dadams
@@ -9263,7 +9265,10 @@ REGEXP is added to `regexp-search-ring', for regexp search."
           (C-u      (and (consp raw)  (= 4 (car raw))))
           (C-u-C-u  (and (consp raw)  (= 16 (car raw))))
           (num      (and raw  (prefix-numeric-value raw))))
-     (list (dired-read-regexp (concat (if (or (consp raw)  (zerop num)) "UNmark" "Mark") " files (regexp): "))
+     (list (dired-read-regexp (concat (if (or (consp raw)  (and num  (zerop num)))
+                                          "UNmark"
+                                        "Mark")
+                                      " files (regexp): "))
            (and raw  (or C-u  C-u-C-u  (zerop num))  ?\040)
            (cond ((or (not raw)  C-u)  nil) ; none, `C-u' 
                  ((> num 0)            t) ; `M-+', `C-u C-u'
