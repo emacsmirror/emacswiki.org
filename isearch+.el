@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 23:35:56 2017 (-0800)
+;; Last-Updated: Sun Jan  1 23:42:13 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 5727
+;;     Update #: 5728
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -507,9 +507,10 @@
 ;;    to predicate `isearchp-show-hit-w-crosshairs'.)
 ;;
 ;;    The following filtering commands are available during Isearch.
-;;    They are all on prefix key `C-z', by default.  (They are on
+;;    They are all on prefix key `C-z', by default.  They are on
 ;;    prefix keymap `isearchp-filter-map', which you can bind to any
-;;    key in `isearch-mode-map'.)
+;;    key in `isearch-mode-map'.  If you forget a `C-z' key, you can
+;;    use `C-z C-h' while searching to show them all.
 ;;
 ;;    - `C-z &' (`isearchp-add-filter-predicate') adds a filter
 ;;      predicate, AND-ing it as an additional `:after-while' filter.
