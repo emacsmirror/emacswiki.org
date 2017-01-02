@@ -4,12 +4,12 @@
 ;; Description: Set various calendar, diary etc. options.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Wed Nov 15 12:47:13 1995
 ;; Version: 0
-;; Last-Updated: Thu Dec 31 12:29:08 2015 (-0800)
+;; Last-Updated: Sat Dec 24 17:01:51 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 124
+;;     Update #: 125
 ;; URL: http://www.emacswiki.org/cal-opts.el
 ;; Keywords: calendar, local
 ;; Compatibility: GNU Emacs 20.x
