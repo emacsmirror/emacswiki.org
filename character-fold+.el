@@ -4,7 +4,7 @@
 ;; Description: Extensions to `character-fold.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2015-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2015-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Nov 27 09:12:01 2015 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
