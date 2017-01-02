@@ -1,4 +1,36 @@
 [[es:BBDBV3-Wl-es]]
+
+[new:PascalHaakmat:2017-01-02 19:07 UTC]
+
+Since July 2016 bbdb 3 has integrated support for Wanderlust which seems to mostly supersede this package. It can be enabled using:
+
+<pre>
+(require 'bbdb) 
+(bbdb-initialize 'wl)
+(bbdb-mua-auto-update-init 'wl)
+</pre>
+
+The default binding to complete addresses is <code>M-<tab></code> or <code>M-;</code>. To use a single TAB I use the following Elisp:
+
+<pre>
+(defun my-bbdb-complete-mail ()
+  "If on a header field, calls `bbdb-complete-mail' to complete the name."
+  (interactive)
+  (when (< (point)
+           (save-excursion
+             (goto-char (point-min))
+             (search-forward (concat "\n" mail-header-separator "\n") nil 0)
+             (point)))
+    (bbdb-complete-mail)))
+
+;; Use TAB to complete names
+(add-hook 'wl-mail-setup-hook
+          (function
+           (lambda ()
+             (define-key (current-local-map) (kbd "<tab>") 'my-bbdb-complete-mail))))
+</pre>
+
+
 = BBBDBV3-Wl =
 
 BBDBV3-Wl integrates BBDB in its third version into WanderLust. 
