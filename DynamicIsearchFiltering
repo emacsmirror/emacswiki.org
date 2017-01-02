@@ -158,9 +158,10 @@ Here are some of the things you can do using dynamic filtering:
 
 == Filtering Commands Available During Search ==
 
-The following commands are available during Isearch.  They are all on prefix key '''`##C-z##'''', by default.  (They are on
+The following commands are available during Isearch.  They are all on prefix key '''`##C-z##'''', by default.  They are on
 prefix keymap '''`isearchp-filter-map'''', which you can bind to any
-key in `isearch-mode-map'.)
+key in `isearch-mode-map'.  If you forget a `C-z' key, you can
+use '''`C-z C-h'''' while searching to show them all.
 
 [:isearchp-add-filter-predicate]
 * '''`##C-z &##'''' (`isearchp-add-filter-predicate') adds a filter predicate, ''AND''-ing it as an additional `##:after-while##' filter.
