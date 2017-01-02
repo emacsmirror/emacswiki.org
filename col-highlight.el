@@ -4,13 +4,13 @@
 ;; Description: Highlight the current column.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 11:06:35 2006
 ;; Version: 0
 ;; Package-Requires: ((vline "0"))
-;; Last-Updated: Thu Dec 31 12:38:25 2015 (-0800)
+;; Last-Updated: Sat Dec 24 17:06:48 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 429
+;;     Update #: 431
 ;; URL: http://www.emacswiki.org/col-highlight.el
 ;; Doc URL: http://emacswiki.org/emacs/HighlightCurrentColumn
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
