@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:34:38 2017 (-0800)
+;; Last-Updated: Sun Jan  1 23:35:56 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 5721
+;;     Update #: 5727
 ;; URL: http://www.emacswiki.org/isearch+.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,9 +19,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
-;;   `hexrgb', `isearch-prop', `macroexp', `misc-cmds', `misc-fns',
-;;   `strings', `thingatpt', `thingatpt+', `zones'.
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
+;;   `cl-lib', `color', `frame-fns', `gv', `help-fns', `hexrgb',
+;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -87,6 +88,7 @@
 ;;    (Emacs 24.4+), `isearchp-complement-filter' (Emacs 24.4+),
 ;;    `isearchp-complete', `isearchp-cycle-mismatch-removal',
 ;;    `isearchp-defun-filter-predicate' (Emacs 24.4+),
+;;    `isearchp-describe-prefix-bindings',
 ;;    `isearchp-eval-sexp-and-insert' (Emacs 22+),
 ;;    `isearchp-fontify-buffer-now', `isearchp-init-edit',
 ;;    `isearchp-keep-filter-predicate' (Emacs 24.4+), `isearchp-near'
@@ -1137,6 +1139,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2017/01/01 dadams
+;;     Added: isearchp-describe-prefix-bindings, bound to C-z C-h.
 ;; 2016/12/31 dadams
 ;;     Added: isearchp-reset-filter-preds-alist (not bound).
 ;;     isearchp-bookmark-current-filter-predicate: Added filter-description field.
@@ -2086,29 +2090,30 @@ t     means search is never  case sensitive
   (define-prefix-command 'isearchp-filter-map)
   (define-key isearch-mode-map (kbd "C-z") isearchp-filter-map) ; Put filtering commands on prefix `C-z'.
 
-  (define-key isearchp-filter-map (kbd "&")  'isearchp-add-filter-predicate)                  ; `C-z &'
-  (define-key isearchp-filter-map (kbd "%")  'isearchp-add-regexp-filter-predicate)           ; `C-z %'
-  (define-key isearchp-filter-map (kbd ".")  'isearchp-add-inline-regexp-filter-predicate)    ; `C-z .'
-  (define-key isearchp-filter-map (kbd "-")  'isearchp-remove-filter-predicate)               ; `C-z -'
-  (define-key isearchp-filter-map (kbd "||") 'isearchp-or-filter-predicate)                   ; `C-z ||'
-  (define-key isearchp-filter-map (kbd "|1") 'isearchp-or-last-filter)                        ; `C-z |1'
-  (define-key isearchp-filter-map (kbd "~~") 'isearchp-complement-filter)                     ; `C-z ~~'
-  (define-key isearchp-filter-map (kbd "~1") 'isearchp-negate-last-filter)                    ; `C-z ~1'
-  (define-key isearchp-filter-map (kbd "!")  'isearchp-set-filter-predicate)                  ; `C-z !'
+  (define-key isearchp-filter-map (kbd "C-h")  'isearchp-describe-prefix-bindings)              ; `C-z C-h'
+  (define-key isearchp-filter-map (kbd "&")    'isearchp-add-filter-predicate)                  ; `C-z &'
+  (define-key isearchp-filter-map (kbd "%")    'isearchp-add-regexp-filter-predicate)           ; `C-z %'
+  (define-key isearchp-filter-map (kbd ".")    'isearchp-add-inline-regexp-filter-predicate)    ; `C-z .'
+  (define-key isearchp-filter-map (kbd "-")    'isearchp-remove-filter-predicate)               ; `C-z -'
+  (define-key isearchp-filter-map (kbd "||")   'isearchp-or-filter-predicate)                   ; `C-z ||'
+  (define-key isearchp-filter-map (kbd "|1")   'isearchp-or-last-filter)                        ; `C-z |1'
+  (define-key isearchp-filter-map (kbd "~~")   'isearchp-complement-filter)                     ; `C-z ~~'
+  (define-key isearchp-filter-map (kbd "~1")   'isearchp-negate-last-filter)                    ; `C-z ~1'
+  (define-key isearchp-filter-map (kbd "!")    'isearchp-set-filter-predicate)                  ; `C-z !'
   (when (featurep 'bookmark+)
-    (define-key isearchp-filter-map (kbd "b")  'isearchp-bookmark-current-filter-predicate))  ; `C-z b'
-  (define-key isearchp-filter-map (kbd "c")  'isearchp-columns)                               ; `C-z c'
-  (define-key isearchp-filter-map (kbd "p")  'isearchp-toggle-showing-filter-prompt-prefixes) ; `C-z p'
-  (define-key isearchp-filter-map (kbd "s")  'isearchp-keep-filter-predicate)                 ; `C-z s'
-  (define-key isearchp-filter-map (kbd "S")  'isearchp-toggle-auto-keep-filter-predicate)     ; `C-z S'
-  (define-key isearchp-filter-map (kbd "n")  'isearchp-defun-filter-predicate)                ; `C-z n'
-  (define-key isearchp-filter-map (kbd "0")  'isearchp-reset-filter-predicate)                ; `C-z 0'
-  (define-key isearchp-filter-map (kbd "<")  'isearchp-near-before)                           ; `C-z <'
-  (define-key isearchp-filter-map (kbd ">")  'isearchp-near-after)                            ; `C-z >'
-  (define-key isearchp-filter-map (kbd "@")  'isearchp-near)                                  ; `C-z @'
-  (define-key isearchp-filter-map (kbd "?")  'isearchp-show-filters)                          ; `C-z ?'
+    (define-key isearchp-filter-map (kbd "b")  'isearchp-bookmark-current-filter-predicate))    ; `C-z b'
+  (define-key isearchp-filter-map (kbd "c")    'isearchp-columns)                               ; `C-z c'
+  (define-key isearchp-filter-map (kbd "p")    'isearchp-toggle-showing-filter-prompt-prefixes) ; `C-z p'
+  (define-key isearchp-filter-map (kbd "s")    'isearchp-keep-filter-predicate)                 ; `C-z s'
+  (define-key isearchp-filter-map (kbd "S")    'isearchp-toggle-auto-keep-filter-predicate)     ; `C-z S'
+  (define-key isearchp-filter-map (kbd "n")    'isearchp-defun-filter-predicate)                ; `C-z n'
+  (define-key isearchp-filter-map (kbd "0")    'isearchp-reset-filter-predicate)                ; `C-z 0'
+  (define-key isearchp-filter-map (kbd "<")    'isearchp-near-before)                           ; `C-z <'
+  (define-key isearchp-filter-map (kbd ">")    'isearchp-near-after)                            ; `C-z >'
+  (define-key isearchp-filter-map (kbd "@")    'isearchp-near)                                  ; `C-z @'
+  (define-key isearchp-filter-map (kbd "?")    'isearchp-show-filters)                          ; `C-z ?'
 
-  (define-key isearch-mode-map (kbd "M-s h d") 'isearchp-toggle-dimming-filter-failures)      ; `M-s h d'
+  (define-key isearch-mode-map (kbd "M-s h d") 'isearchp-toggle-dimming-filter-failures)        ; `M-s h d'
 
   )
 
@@ -3597,6 +3602,16 @@ replacements from Isearch is `M-s w ... M-%'."
           (isearch-clean-overlays)))))
 
   )
+
+;; If you use a separate `*Help*' frame then `describe-prefix-bindings' (on MS Windows) during Isearch loses the
+;; focus to that newly created frame.
+;;
+(defun isearchp-describe-prefix-bindings ()
+  "Same as `describe-prefix-bindings', but keep the same frame focused."
+  (interactive)
+  (save-selected-window (describe-prefix-bindings)))
+
+
 
 ;;; $$$$$$ No longer used.  `M-e' puts point at this position automatically.
 ;;;   (defun isearchp-goto-success-end ()   ; `M-e' in `minibuffer-local-isearch-map'.
