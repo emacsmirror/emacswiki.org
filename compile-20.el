@@ -4,12 +4,12 @@
 ;; Description: Extensions to `compile.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2015, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2017, Drew Adams, all rights reserved.
 ;; Created: Thu Sep  2 13:39:51 1999
 ;; Version: 0
-;; Last-Updated: Thu Jan  1 10:30:25 2015 (-0800)
+;; Last-Updated: Sat Dec 24 17:08:20 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 195
+;;     Update #: 197
 ;; URL: http://www.emacswiki.org/compile-20.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes
