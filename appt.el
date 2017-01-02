@@ -6,12 +6,12 @@
 ;;      Drew Adams
 ;; Maintainer: Drew Adams 
 ;; Copyright (C) 1989, 1990, 1994, 1998 Free Software Foundation, Inc.
-;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Thu Aug  3 18:14:22 1995
 ;; Version: 0
-;; Last-Updated: Thu Dec 31 12:04:41 2015 (-0800)
+;; Last-Updated: Sat Dec 24 16:55:31 2016 (-0800)
 ;;           By: dradams
-;;     Update #: 691
+;;     Update #: 692
 ;; URL: http://www.emacswiki.org/appt.el
 ;; Keywords: calendar, local
 ;; Compatibility: GNU Emacs 20.x
