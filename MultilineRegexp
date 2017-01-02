@@ -1,4 +1,3 @@
-[[de:tyuy]]
 A word of warning before we start: Multi-line regular expressions rarely work as expected for FontLock.  Why is that, you ask?  Emacs basically knows which line you are editing, and font-lock works on these lines you are editing.  Multi-line regular expressions would require Emacs to skip backwards multiple lines and see if any of the multi-line regular expression match.  That either involves a lot of matching, unsolved questions (skip back to where -- the beginning of the buffer in the worst case), or caching.  So while multi-line regular expressions work fine when loading a file, font-lock can get confused when you edit the lines containing the beginning or the end of the expression.  See MultilineFontLock.
 
 With that out of the way, back to basics:
