@@ -4,11 +4,11 @@
 ;; Description: Bookmark+ key and menu bindings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2010-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Sun Dec 11 16:02:10 2016 (-0800)
+;; Last-Updated: Mon Jan  2 08:57:29 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 779
+;;     Update #: 781
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -419,7 +419,7 @@ Each value of the list is a prefix key bound to keymap
 
 (eval-after-load "eww"
   '(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
-    (when bmkp-replace-EWW-keys-flag
+    (when bmkp-replace-eww-keys-flag
       (bmkp-remap 'eww-add-bookmark       'bookmark-set               eww-mode-map)
       (bmkp-remap 'eww-list-bookmarks     'bookmark-bmenu-list        eww-mode-map)
       (bmkp-remap 'eww-next-bookmark      'bmkp-previous-url-bookmark eww-mode-map)
