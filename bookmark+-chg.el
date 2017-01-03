@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jan  2 20:05:09 2017 (-0800)
+;; Last-Updated: Tue Jan  3 14:10:11 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 16206
+;;     Update #: 16208
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2017/01/03 dadams
+;;     bookmark-location: Corrected doc string to reflect code: buffer before file.
 ;; 2016/12/31 dadams
 ;;     Added: bmkp-non-invokable-bookmark-p, bmkp-non-invokable-alist-only.
 ;;     bmkp-bookmark-description: Include non-invokable.
