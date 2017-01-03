@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Dec 31 13:59:50 2016 (-0800)
+;; Last-Updated: Mon Jan  2 20:12:45 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 15180
+;;     Update #: 15183
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -3765,11 +3765,13 @@
 ;;
 ;;  You can use the standard Org command `org-store-link' (`C-c l') in
 ;;  buffer `*Bookmark List*' to store a link to the bookmark at point.
+;;  (This is also item `Store Org Link' in the mouse-3 popup menu.)
 ;;
 ;;  Outside buffer `*Bookmark List*' you can use command
 ;;  `bmkp-store-org-link' to store a link to any bookmark.  You are
 ;;  prompted for the bookmark name.  You can even enter the name of a
-;;  bookmark that does not yet exist.
+;;  bookmark that does not yet exist.  (This is also item `Store Org
+;;  Link To...' on menu `Bookmarks'.)
 ;;
 ;;  If you use a numeric prefix arg with either command then the
 ;;  bookmark link stored will be for jumping to the bookmark in the
