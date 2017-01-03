@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Dec 31 12:28:06 2016 (-0800)
+;; Last-Updated: Tue Jan  3 14:08:44 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 8162
+;;     Update #: 8165
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2875,14 +2875,14 @@ candidate."
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'.
 
-Look first for property `location', then for property `filename', then
-for property `buffer-name'.  Return the first such property found, or
-\"-- Unknown location --\" if none is found."
+Look first for property `location', then for property `buffer-name' or
+`buffer', then for property `filename'.  Return the first such
+property found, or \"-- Unknown location --\" if none is found."
   (bookmark-maybe-load-default-file)
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (or (bookmark-prop-get bookmark 'location)
-      (bmkp-get-buffer-name bookmark)
-      (bookmark-prop-get bookmark 'buffer)
+      (bmkp-get-buffer-name bookmark)   ; Property `buffer-name'.
+      (bookmark-prop-get bookmark 'buffer) ; Property `buffer'.
       (bookmark-get-filename bookmark)
       "-- Unknown location --"))
 
