@@ -15,7 +15,6 @@
 ;;; Code:
 
 (require 'shell)
-(provide 'background)
 
 ;; define global variables
 (defvar background-minibuffer-map (make-sparse-keymap)
@@ -365,5 +364,7 @@ argument suggests a job number, which is useful to store output."
 		    (< (setq index (1+ index)) background-history-size)))
 	      (setq background-history-vector new-vector)))))
        (aset background-history-vector background-history-size command)))))
+
+(provide 'background)
 
 ;;; background.el ends here
