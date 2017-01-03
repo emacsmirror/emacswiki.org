@@ -288,7 +288,7 @@ One reason why there should not be literal tabs inside strings - use \t
 * [EmacsWiki:EmacsScreen escreen] is handy to either temporarily switch tasks or temporarily open a new buffer.  Gives you a new frame and doesn't mess with anything in the other frame.  The advantage over `C-x 5 2' is that it also doesn't screw up your window layout on your desktop. -- LathI
 * Here's how my Emacs helps me fight procrastination: [http://blog.danieljanus.pl/blog/2008/12/18/fighting-procrastination/] -- DanielJanus
 * Search Google and Wikipedia with BrowseAproposURL.
-* If you despise long-pressing C-f/C-b for moving to a particular position in a long line, you can use binary navigation: you repeatedly decide whether you go either right or left from `point'. The first time you jump, you jump to the midpoint between `point' and the beginning (jump left), or end (jump right) of the line. Subsequent jumps move `point' by half the distance of the last jump, either in left or right direction. I bind jump left to M-j and jump right to M-k (although this overrides existing bindings):
+* (Update January 2017: binary line navigation is now available as a minor-mode package on melpa [https://github.com/mgrachten/bln-mode]) If you despise long-pressing C-f/C-b for moving to a particular position in a long line, you can use binary navigation: you repeatedly decide whether you go either right or left from `point'. The first time you jump, you jump to the midpoint between `point' and the beginning (jump left), or end (jump right) of the line. Subsequent jumps move `point' by half the distance of the last jump, either in left or right direction. I bind jump left to M-j and jump right to M-k (although this overrides existing bindings):
 
 <pre>
 (lexical-let ((beg -1)
