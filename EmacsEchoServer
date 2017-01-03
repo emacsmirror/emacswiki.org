@@ -52,7 +52,7 @@ For Emacs22 or later (requires server-socket).
   
   (defun echo-server-sentinel (proc msg)
    (when (string= msg "connection broken by remote peer\n")
-    (setq echo-servers-clients (assq-delete-all proc echo-server-clients))
+    (setq echo-server-clients (assq-delete-all proc echo-server-clients))
     (echo-server-log (format "client %s has quit" proc))))
   
   ;;from server.el
