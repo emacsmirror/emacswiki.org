@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Mon Jan  2 08:57:29 2017 (-0800)
+;; Last-Updated: Mon Jan  2 20:05:27 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 781
+;;     Update #: 785
 ;; URL: http://www.emacswiki.org/bookmark+-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -693,9 +693,14 @@ Each value of the list is a prefix key bound to keymap
   '(menu-item "Insert Bookmark Location..." bookmark-locate ; Alias for `bookmark-insert-location'.
     :help "Insert a bookmark's file or buffer name")
   'insert)
+(when (fboundp 'advice-add)             ; Emacs 24.4+.
+  (define-key-after menu-bar-bookmark-map [bmkp-store-org-link]
+    '(menu-item "Store Org Link To..." bmkp-store-org-link
+      :help "Store a link to a bookmark for insertion in an Org-mode buffer")
+    'locate))
 
 (define-key-after menu-bar-bookmark-map [separator-3] '("--") ;-------------------------------------
-                  'locate)
+                  (if (fboundp 'advice-add) 'bmkp-store-org-link 'locate))
 (define-key-after menu-bar-bookmark-map [save]
   '(menu-item "Save Bookmarks" bookmark-save :help "Save currently defined bookmarks")
   'separator-3)
