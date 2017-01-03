@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Dec 31 11:54:27 2016 (-0800)
+;; Last-Updated: Mon Jan  2 20:00:31 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3894
+;;     Update #: 3908
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -6465,6 +6465,8 @@ are marked or ALLP is non-nil."
 
                                     "--" ; ----------------------------------------------------
                                     ["Toggle Temporary/Savable" bmkp-bmenu-toggle-temporary]
+                                    ,@(and (fboundp 'org-add-link-type)
+                                           '(["Store Org Link" org-store-link]))
                                     ["Rename or Relocate..." bmkp-bmenu-edit-bookmark-name-and-location]
                                     ["Edit Internal Record (Lisp)..." bmkp-bmenu-edit-bookmark-record]
                                     ["Show Annotation" bookmark-bmenu-show-annotation
