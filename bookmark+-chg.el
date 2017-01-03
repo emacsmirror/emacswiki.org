@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jan  2 09:10:27 2017 (-0800)
+;; Last-Updated: Mon Jan  2 20:05:09 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 16201
+;;     Update #: 16206
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1254,6 +1254,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2017/01/02 dadams
+;;     bmkp-bmenu-mouse-3-menu: Added menu item Store Org Link.
 ;; 2016/12/31 dadams
 ;;     Added: bmkp-bmenu-mark-non-invokable-bookmarks, bmkp-bmenu-show-only-non-invokable-bookmarks.
 ;;       Bound them to nM and nS.  Added them to menus bmkp-bmenu-(mark|show)-types-menu.
@@ -1861,6 +1863,7 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
 ;; 2017/01/02 dadams
+;;     menu-bar-bookmark-map: Added menu item Store Org Link To....
 ;;     Typo: bmkp-replace-EWW-keys-flag -> bmkp-replace-eww-keys-flag.
 ;; 2016/12/11 dadams
 ;;     Remap EWW keys to bmkp- keys.
