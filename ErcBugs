@@ -89,6 +89,7 @@ things up and commit this to ErcDevelopment as soon as possible. -- DianeMurray 
 * Improved "/me" support: it would be nice if ERC converted "/me's" into, e.g. "e1f's"; so "/me's" could be aliased to "/me" with "'s" appended.
 * When restoring a session to a server where identifying to NickServ is part of the process, erc should wait for successful NickServ negotiation before attempting to join channels.  Presently the previous channels are joined before NickServ identification even begins, much less completes.  This can lead to the user being rejected to join certain channels that require negotiation to complete first.
 * It should be easy to save (via a command such as a modified C-c C-l) all active ERC buffers without having to visit each one in turn.  The extreme of automatically saving the buffers with every new message can create too much overhead, so it should be possible for the user to save all active ERC buffers on demand, or alternatively to batch the save-to-disk operation on a periodic basis.
+* Loudness.  Where erc fools list is digital, on the list, off the list, erc-loudness would be an incremented scale.  So the less loud someone is, the more faded to background their text is.  The more loud someone is, the more pronounced from background their text is.  User can perform a +loudness or -loudness on anyone much like they might using ignore/fools/pals.
 
 == Message Handling ==
 * We need a way to let the user to configure where and how /MSGs, /NOTICEs, DCC requests, CTCP requests, internal ERC warnings and errors, etc. should appear.
