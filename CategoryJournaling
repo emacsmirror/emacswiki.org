@@ -28,7 +28,7 @@ or a similar website that gets updated frequently.
 Other packages that can be used with Emacs effortlessly, eg. because they
 depend on plain text.
 
-* [[http://www.blosxom.com|Bloxsom]] is a web cgi that allows you to journal with normal flat files.  Each journal entry is a unique file. 
+* [[http://blosxom.sourceforge.net/|Bloxsom]] is a web cgi that allows you to journal with normal flat files.  Each journal entry is a unique file. 
 
 == Using an API ==
 
