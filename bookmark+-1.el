@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Jan  3 14:08:44 2017 (-0800)
+;; Last-Updated: Wed Jan  4 15:07:53 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 8165
+;;     Update #: 8166
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1069,7 +1069,7 @@ If an integer, then use a menu only if there are fewer bookmark
 `bmkp-default-bookmark-name'.)
 
 The option value is a list of functions that do not require an
-argument and return a string (or nil).  They are invoked in order to
+argument and return a string (or nil).  They are invoked, in order, to
 produce the default names.
 
 The following names are also provided, after the names described
