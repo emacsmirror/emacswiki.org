@@ -1,5 +1,5 @@
 ;;; lispxmp.el --- Automagic emacs lisp code annotation
-;; $Id: lispxmp.el,v 1.34 2010/05/06 01:28:32 rubikitch Exp $
+;; $Id: lispxmp.el,v 1.35 2013/12/09 07:29:05 rubikitch Exp rubikitch $
 
 ;; Copyright (C) 2009, 2010  rubikitch
 
@@ -34,9 +34,9 @@
 ;;   (* i 4)  ; =>
 ;; )
 ;; ====
-;; 
+;;
 ;; produces
-;; 
+;;
 ;; ====
 ;; 1 ; => 1
 ;; (+ 3 4) ; => 7
@@ -108,6 +108,9 @@
 ;;; History:
 
 ;; $Log: lispxmp.el,v $
+;; Revision 1.35  2013/12/09 07:29:05  rubikitch
+;; New command `lispxmp-or-newxmp'
+;;
 ;; Revision 1.34  2010/05/06 01:28:32  rubikitch
 ;; pass pp reexecute #2
 ;;
@@ -215,10 +218,11 @@
 
 ;;; Code:
 
-(defvar lispxmp-version "$Id: lispxmp.el,v 1.34 2010/05/06 01:28:32 rubikitch Exp $")
+(defvar lispxmp-version "$Id: lispxmp.el,v 1.35 2013/12/09 07:29:05 rubikitch Exp rubikitch $")
 (require 'cl)
 (require 'newcomment)
 (require 'pp)
+(require 'newxmp nil t)
 (eval-when-compile (require 'paredit nil t))
 (defgroup lispxmp nil
   "lispxmp"
@@ -229,11 +233,13 @@
 
 Need paredit.el.
 http://mumble.net/~campbell/emacs/paredit.el"
-  :type 'boolean  
+  :type 'boolean
   :group 'lispxmp)
 
 (defvar lispxmp-temp-buffer " *lispxmp tmp*")
 (defvar lispxmp-results nil)
+
+;;;###autoload
 (defun lispxmp ()
   "Annotate value of lines containing `; =>' ."
   (interactive)
@@ -258,7 +264,7 @@ http://mumble.net/~campbell/emacs/paredit.el"
   (setq lispxmp-results nil)
   (with-current-buffer (get-buffer-create lispxmp-temp-buffer)
     (buffer-disable-undo)
-    (erase-buffer) 
+    (erase-buffer)
     (let (emacs-lisp-mode-hook after-change-major-mode-hook) (emacs-lisp-mode))
     (insert-buffer-substring buf)
     (goto-char (point-max))
@@ -339,7 +345,7 @@ http://mumble.net/~campbell/emacs/paredit.el"
           (while (search-forward "#(\"" nil t)
             (forward-char -1)
             (paredit-raise-sexp)
-            (delete-backward-char 1)
+            (delete-char -1)
             (forward-sexp 1))))
       (save-excursion
         (if (eq print-func 'prin1-to-string)
@@ -354,7 +360,7 @@ http://mumble.net/~campbell/emacs/paredit.el"
                              (concat (make-string semicolons-len ?\;)  "    ")))
           ;; delete last newline
           (goto-char (point-max))
-          (and (bolp) (delete-backward-char 1))))
+          (and (bolp) (delete-char -1))))
       (buffer-string))))
 
 (defun lispxmp-create-annotations (buf results)
@@ -388,6 +394,11 @@ http://mumble.net/~campbell/emacs/paredit.el"
        ad-do-it)))
 (lispxmp-comment-advice comment-dwim)
 (lispxmp-comment-advice paredit-comment-dwim)
+
+(defun lispxmp-or-newxmp (arg)
+  (interactive "P")
+  (setq current-prefix-arg nil)
+  (call-interactively (if arg 'newxmp 'lispxmp)))
 
 ;;;; Bug report
 (defvar lispxmp-maintainer-mail-address
