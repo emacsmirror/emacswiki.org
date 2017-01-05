@@ -1,8 +1,8 @@
-'''Key-chord''' lets you bind commands to combination of key-strokes.
+'''Key-chord''' lets you bind commands to combinations of key-strokes.
 Here a "key chord" means two keys pressed simultaneously,
 or a single key quickly pressed twice. (*)
 
-The same keys used by their own (or with other keys not defined
+The same keys used on their own (or with other keys not defined
 as key chords) retain their original command bindings.
 
 There are some info and examples in the elisp-file: Lisp:key-chord.el
