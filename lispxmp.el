@@ -1,5 +1,5 @@
 ;;; lispxmp.el --- Automagic emacs lisp code annotation
-;; $Id: lispxmp.el,v 1.35 2013/12/09 07:29:05 rubikitch Exp rubikitch $
+;; $Id: lispxmp.el,v 1.36 2017/01/05 04:47:46 rubikitch Exp $
 
 ;; Copyright (C) 2009, 2010  rubikitch
 
@@ -108,6 +108,9 @@
 ;;; History:
 
 ;; $Log: lispxmp.el,v $
+;; Revision 1.36  2017/01/05 04:47:46  rubikitch
+;; add autoload for `lispxmp' / erase warnings
+;;
 ;; Revision 1.35  2013/12/09 07:29:05  rubikitch
 ;; New command `lispxmp-or-newxmp'
 ;;
@@ -218,7 +221,7 @@
 
 ;;; Code:
 
-(defvar lispxmp-version "$Id: lispxmp.el,v 1.35 2013/12/09 07:29:05 rubikitch Exp rubikitch $")
+(defvar lispxmp-version "$Id: lispxmp.el,v 1.36 2017/01/05 04:47:46 rubikitch Exp $")
 (require 'cl)
 (require 'newcomment)
 (require 'pp)
