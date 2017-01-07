@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Jan  2 20:00:31 2017 (-0800)
+;; Last-Updated: Sat Jan  7 08:25:40 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3908
+;;     Update #: 3915
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -449,15 +449,12 @@ Elements of ALIST that are not conses are ignored."
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Quiet the byte-compiler
-(defvar dired-re-mark)                  ; In `dired.el'.
-(defvar tramp-file-name-regexp)         ; In `tramp.el'.
-
+(defvar bookmark-file-coding-system)    ; In `bookmark.el' (Emacs 25.2+)
 (defvar bmkp-bmenu-highlight-menu)      ; Defined in this file (conditionally).
 (defvar bmkp-copied-tags)               ; In `bookmark+-1.el'.
 (defvar bmkp-count-multi-mods-as-one-flag) ; In `bookmark+-1.el'.
 (defvar bmkp-current-bookmark-file)     ; In `bookmark+-1.el'.
 (defvar bmkp-edit-bookmark-orig-record) ; In `bookmark+-1.el'.
-(defvar icicle-candidate-properties-alist) ; In `icicles-var.el'.
 (defvar bmkp-incremental-filter-delay)  ; In `bookmark+-1.el'.
 (defvar bmkp-edit-bookmark-records-number) ; In `bookmark+-1.el'.
 (defvar bmkp-last-bookmark-file)        ; In `bookmark+-1.el'.
@@ -470,9 +467,13 @@ Elements of ALIST that are not conses are ignored."
 (defvar bmkp-reverse-sort-p)            ; In `bookmark+-1.el'.
 (defvar bmkp-sort-comparer)             ; In `bookmark+-1.el'.
 (defvar bmkp-sorted-alist)              ; In `bookmark+-1.el'.
+(defvar bmkp-sort-orders-alist)         ; Here.
 (defvar bmkp-su-or-sudo-regexp)         ; In `bookmark+-1.el'.
 (defvar bmkp-temporary-bookmarking-mode) ; In `bookmark+-1.el'.
+(defvar dired-re-mark)                  ; In `dired.el'.
+(defvar icicle-candidate-properties-alist) ; In `icicles-var.el'.
 (defvar minibuffer-prompt-properties)   ; Emacs 22+.
+(defvar tramp-file-name-regexp)         ; In `tramp.el'.
 
  
 ;;(@* "Utility Functions")
@@ -3127,7 +3128,7 @@ Non-interactively:
              (not batchp)
              (not (y-or-n-p (format "Copy to NEW, EMPTY bookmark file `%s'? " file))))
     (error "OK - canceled"))
-  (let ((bookmark-save-flag  nil) ; Inhibit auto-saving for the duration.
+  (let ((bookmark-save-flag  nil)       ; Inhibit auto-saving for the duration.
         imported)
     (let ((marked-bmks                        (bmkp-sort-omit
                                                (bmkp-bmenu-marked-or-this-or-all nil include-omitted-p)))
@@ -3141,7 +3142,9 @@ Non-interactively:
         (if (file-exists-p file)
             (bookmark-maybe-upgrade-file-format)
           (delete-region (point-min) (point-max)) ; In case a find-file hook inserted a header etc.
-          (bookmark-insert-file-format-version-stamp) ; Insert timestamp and an empty bookmark list.
+          (if (boundp 'bookmark-file-coding-system) ; Insert timestamp and an empty bookmark list.
+              (bookmark-insert-file-format-version-stamp bookmark-file-coding-system) ; Emacs 25.2+
+            (bookmark-insert-file-format-version-stamp))
           (insert "(\n)"))
         (let ((blist  (bookmark-alist-from-buffer)))
           (unless (listp blist) (error "Invalid bookmark list in file `%s'" file))
