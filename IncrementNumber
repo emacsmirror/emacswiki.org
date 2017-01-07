@@ -126,6 +126,42 @@ Another variation using vim-like keybindings:
 
 ----
 
+This yank-increment function acts like the regular yank function but increments the first integer
+found in the yanked string before inserting it.  It also updates the string in the kill ring
+so that successive yank-increments have increasing values.
+
+It is good for adding printf debugging like this:
+<pre>
+  fprintf(stderr, "MyClass::myFunction() 1\n");
+  functionThatMayHang();
+  fprintf(stderr, "MyClass::myFunction() 2\n");
+  otherSuspiciousFunction();
+  fprintf(stderr, "MyClass::myFunction() 3\n");
+</pre>
+
+<pre>
+(defun dlh-increment-string (string)
+  (setq start (string-match "\\([0-9]+\\)" string))
+  (setq end (match-end 0))
+  (setq number (string-to-number (substring string start end)))
+  (setq new-num-string (number-to-string (+ 1 number)))
+  (concat
+   (substring string 0 start)
+   new-num-string
+   (substring string end)))
+
+(defun dlh-yank-increment ()
+  "Yank text, incrementing the first integer found in it."
+  (interactive "*")
+  (setq new-text (dlh-increment-string (current-kill 0)))
+  (insert-for-yank new-text)
+  (kill-new new-text t))
+
+(global-set-key (kbd "C-c C-y") 'dlh-yank-increment)
+</pre>
+
+----
+
 A package that supports Vim-like incrementing and decrementing is [https://github.com/cofi/evil-numbers evil-numbers], it supports binary, octal, hex and decimal numbers.
 
 ----
