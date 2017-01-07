@@ -17,6 +17,13 @@ or
     (setq european-calendar-style 't)
 
 == Localized Day and Month Names ==
+=== Bulgarian ===
+
+      (setq calendar-week-start-day 1
+            calendar-day-name-array ["Неделя" "Понеделник" "Вторник" "Сряда" "Четвъртък" "Петък" "Събота"]
+            calendar-month-name-array ["Януари" "Февруари" "Март" "Април" "Май" 
+				       "Юни" "Юли" "Август" "Септември"
+				       "Октомври" "Ноември" "Декември"])
 
 === Catalan ===
 Unfortunately, if you use the long day names, their 2-letter abbreviation will always be "di" :-)
