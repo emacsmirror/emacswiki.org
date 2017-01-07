@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Jan  4 15:07:53 2017 (-0800)
+;; Last-Updated: Sat Jan  7 08:40:58 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 8166
+;;     Update #: 8176
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -716,6 +716,7 @@
 (defvar bmkp-global-auto-idle-bookmark-mode) ; Here, via `define-globalized-minor-mode'
 (defvar bookmark-current-point)         ; In `bookmark.el', but not in Emacs 23+
 (defvar bookmark-edit-annotation-text-func) ; In `bookmark.el'
+(defvar bookmark-file-coding-system)    ; In `bookmark.el' (Emacs 25.2+)
 (defvar bookmark-read-annotation-text-func) ; In `bookmark.el', but not in Emacs 23+
 (defvar bookmark-make-record-function)  ; In `bookmark.el'
 (defvar desktop-basefilename)           ; In `desktop.el' (Emacs < 22)
@@ -3098,6 +3099,9 @@ default, \"Saving bookmarks to file `%s'...\".  The string must
 contain a `%s' construct, so that it can be passed along with FILE to
 `format'.  At the end, \"done\" is appended to the message."
   (let ((msg           (or alt-msg "Saving bookmarks to file `%s'..."))
+        (coding-system-for-write  (if (boundp 'bookmark-file-coding-system) ; Emacs 25.2+.
+                                      (or coding-system-for-write  bookmark-file-coding-system  'utf-8-emacs)
+                                    coding-system-for-write))
         (print-length  nil)
         (print-level   nil)
         (rem-all-p     (or (not (> emacs-major-version 20)) ; Cannot do `(not (boundp 'print-circle))'.
@@ -3111,7 +3115,9 @@ contain a `%s' construct, so that it can be passed along with FILE to
       (if (file-exists-p file)
           (bookmark-maybe-upgrade-file-format)
         (delete-region (point-min) (point-max)) ; In case a find-file hook inserted a header, etc.
-        (bookmark-insert-file-format-version-stamp)
+        (if (boundp 'bookmark-file-coding-system)
+            (bookmark-insert-file-format-version-stamp bookmark-file-coding-system) ; Emacs 25.2+
+          (bookmark-insert-file-format-version-stamp))
         (insert "(\n)"))
       (setq start  (or (save-excursion (goto-char (point-min))
                                        (search-forward (concat bookmark-end-of-version-stamp-marker "(")
@@ -3126,10 +3132,10 @@ contain a `%s' construct, so that it can be passed along with FILE to
         (unless (bmkp-temporary-bookmark-p bmk)
           (setq bname  (car bmk)
                 fname  (bookmark-get-filename bmk))
-          (cond (rem-all-p ; Remove text properties from bookmark name and file name.
+          (cond (rem-all-p              ; Remove text properties from bookmark name and file name.
                  (set-text-properties 0 (length bname) () bname)
                  (when fname (set-text-properties 0 (length fname) () fname)))
-                (t ; Remove property `face' and any Icicles internal properties.
+                (t                      ; Remove property `face' and any Icicles internal properties.
                  (remove-text-properties
                   0 (length bname) '(face                     nil
                                      display                  nil
@@ -3181,6 +3187,8 @@ contain a `%s' construct, so that it can be passed along with FILE to
                             (display-warning 'bookmark-plus msg)
                           (message msg)
                           (sit-for 4)))))
+        (when (boundp 'bookmark-file-coding-system) ; Emacs 25.2+
+          (setq bookmark-file-coding-system  coding-system-for-write))
         (unless existing-buf (kill-buffer (current-buffer)))
         (run-hook-with-args 'bmkp-write-bookmark-file-hook file)
         (unless errorp (message (concat msg "done") file))))))
@@ -3364,6 +3372,8 @@ bookmark files that were created using the bookmark functions."
                (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))))
         (setq bookmarks-already-loaded  t ; Systematically, whenever any file is loaded.
               bmkp-sorted-alist         (bmkp-sort-omit bookmark-alist))
+        (when (boundp 'bookmark-file-coding-system) ; Emacs 25.2+
+          (setq bookmark-file-coding-system  buffer-file-coding-system))
         (run-hook-with-args 'bmkp-read-bookmark-file-hook blist file))
       (unless (eq existing-buf (current-buffer)) (kill-buffer (current-buffer)))))
   (unless batchp                        ; If appropriate, *CALLER* MUST refresh/rebuild, if BATCHP.
@@ -12076,7 +12086,9 @@ Don't forget to mention your Emacs and library versions."))
                      (with-current-buffer (let ((enable-local-variables  ())) (find-file-noselect new-file))
                        (goto-char (point-min))
                        (delete-region (point-min) (point-max)) ; In case a find-file hook inserted a header.
-                       (bookmark-insert-file-format-version-stamp)
+                       (if (boundp 'bookmark-file-coding-system) ; Emacs 25.2+
+                           (bookmark-insert-file-format-version-stamp bookmark-file-coding-system)
+                         (bookmark-insert-file-format-version-stamp))
                        (insert "(\n)"))
                      (bmkp-empty-file new-file)
                      (bookmark-load new-file t 'nosave) ; Saving was done just above.
