@@ -307,6 +307,9 @@ Here is my calendar configuration. -- [[rubikitch]]
 </pre>
 
 === Russian ===
+
+The full package with regional holidays see at [https://github.com/grafov/russian-holidays russian-holidays.el].
+
 <pre>
 (setq calendar-holidays
       `(
