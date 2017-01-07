@@ -2,7 +2,7 @@ The directory ##~/.emacs.d/## is a standard location for '''additional per-user 
 
 Starting with Emacs 22, if ##~/.emacs## does not exist, Emacs will try ##~/.emacs.d/init.el## and ##~/.emacs.d/init.elc##. You can also put the shell init file ##.emacs_SHELL## under ##~/.emacs.d##.
 
-Starting with Emacs 23, the variable ##user-emacs-directory## holds the location of ##.emacs.d##. On '''Windows''', the location depends on the ##HOME## environment variable: if set to ##C:\##, then ##.emacs## is located at ##C:\.emacs## and ##.emacs.d## at ##C:\.emacs.d##.  On Windows 7 the default is C:\Users\epich\AppData\Roaming\.emacs and .emacs.d .
+Starting with Emacs 23, the variable ##user-emacs-directory## holds the location of ##.emacs.d##. On '''Windows''', the location depends on the ##HOME## environment variable: if set to ##C:\##, then ##.emacs## is located at ##C:\.emacs## and ##.emacs.d## at ##C:\.emacs.d##.  On Windows 7 the default is C:\Users\epich\AppData\Roaming\.emacs and .emacs.d where '''epich''' is your username.
 
 The user directory itself is not part of ##load-path##, and since it contains other things than libraries, you should leave it at that. Instead, you should install packages in a dedicated sub-directory (e.g., ##~/.emacs.d/elisp##) and [[LoadPath#AddSubDirectories|add that]] to the ##load-path## instead.
 
