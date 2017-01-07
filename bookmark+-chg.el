@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jan  3 14:10:11 2017 (-0800)
+;; Last-Updated: Sat Jan  7 08:49:13 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 16208
+;;     Update #: 16220
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2017/01/07 dadams
+;;     bookmark-write-file, bookmark-load, bmkp-temporary-bookmarking-mode:
+;;       Use bookmark-file-coding-system (Emacs bug #25365).
 ;; 2017/01/03 dadams
 ;;     bookmark-location: Corrected doc string to reflect code: buffer before file.
 ;; 2016/12/31 dadams
@@ -1256,6 +1259,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2017/01/07 dadams
+;;     bmkp-bmenu-copy-marked-to-bookmark-file: Use bookmark-file-coding-system (Emacs bug #25365).
 ;; 2017/01/02 dadams
 ;;     bmkp-bmenu-mouse-3-menu: Added menu item Store Org Link.
 ;; 2016/12/31 dadams
