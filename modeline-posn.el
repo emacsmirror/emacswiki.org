@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jan  7 22:36:04 2017 (-0800)
+;; Last-Updated: Sun Jan  8 07:19:13 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 821
+;;     Update #: 825
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -190,6 +190,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/01/08 dadams
+;;     modelinepos-style: Simplified. 
 ;; 2017/01/07 dadams
 ;;     modelinepos-style: Added style # bytes.
 ;; 2014/07/21 dadams
@@ -325,17 +327,12 @@ Value `chars+lines' means print the number of characters and lines or,
 if a rectangle command is invoked, the number of rows and columns.
 
 In general, the value is a format string followed by however many
-sexps the strings expects as arguments."
+sexps the string expects as arguments."
   :type '(choice
           (const :tag "Characters: \"_ chars\""
            (" %d chars" (abs (- (mark t) (point)))))
           (const :tag "Bytes: \"_ bytes\""
-           (" %d bytes" (let* ((use-empty-active-region  modelinepos-empty-region-flag)
-                               (strg                     (if (use-region-p)
-                                                             (buffer-substring-no-properties
-                                                              (region-beginning) (region-end))
-                                                           "")))
-                          (string-bytes strg))))
+           (" %d bytes" (string-bytes (buffer-substring-no-propertiesw (region-beginning) (region-end)))))
           (const :tag "Chars & Lines: \"_ ch, _ l\" or Rows & Columns: \"_ rows, _ cols\""
            ((if modelinepos-rect-p " %d rows, %d cols" " %d ch, %d l")
             (if modelinepos-rect-p
