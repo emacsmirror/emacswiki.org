@@ -14,17 +14,17 @@ The following extensions are provided by library ##modeline-posn.el##:
 '''For #2:''' When the region is active, the mode line displays some
 information that you can customize --- see option
 '''`modelinepos-style''''.  Customization choices for this include: (a)
-the number of chars, (b) the number of chars and number of lines,
-and (c) anything else you might want.  Choice (b) is the default.
+the number of chars, (b) the number of bytes, (c) the number of chars and number of lines,
+and (d) anything else you might want.  Choice (c) is the default.
 
-For (c), you provide a `format' expression as separate components:
+For (d), you provide a `format' expression as separate components:
 the format string and the sexp arguments to be evaluated and
 plugged into the string.  The number of sexp args depends on the
 format string that you use: one for each '''`##%##'''' construct.
 
-Choice (c) is provided so that you can choose alternative
+Choice (d) is provided so that you can choose alternative
 formatting styles.  For example, instead of '''`## 256 ch, 13 l##'''', you
-could show '''`## (256 chars, 13 lines)##''''.  But (c) can really show
+could show '''`## (256 chars, 13 lines)##''''.  But (d) can really show
 information at all.  It need not have anything to do with the
 region, but it is nevertheless shown when the region is active.
 
