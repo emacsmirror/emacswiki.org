@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:57:51 2017 (-0800)
+;; Last-Updated: Sat Jan  7 22:12:27 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 816
+;;     Update #: 819
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -42,17 +42,17 @@
 ;;  For #2: When the region is active, the mode line displays some
 ;;  information that you can customize - see option
 ;;  `modelinepos-style'.  Customization choices for this include (a)
-;;  the number of chars, (b) the number of chars and number of lines
-;;  (or the number of rows and number of columns, if a rectangle is
-;;  selected), and (c) anything else you might want.  Choice (b) is
-;;  the default.
+;;  the number of chars, (b) the number of bytes, (c) the number of
+;;  chars and number of lines (or the number of rows and number of
+;;  columns, if a rectangle is selected), and (d) anything else you
+;;  might want.  Choice (c) is the default.
 ;;
-;;  For (c), you provide a `format' expression as separate components:
+;;  For (d), you provide a `format' expression as separate components:
 ;;  the format string and the sexp arguments to be evaluated and
 ;;  plugged into the string.  The number of sexp args depends on the
 ;;  format string that you use: one for each `%' construct.
 ;;
-;;  Choice (c) is provided so that you can choose alternative
+;;  Choice (d) is provided so that you can choose alternative
 ;;  formatting styles.  For example, instead of ` 256 ch, 13 l', you
 ;;  could show ` (256 chars, 13 lines)'.  But (c) can really show
 ;;  information at all.  It need not have anything to do with the
@@ -190,6 +190,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/01/07 dadams
+;;     modelinepos-style: Added style # bytes.
 ;; 2014/07/21 dadams
 ;;     Added: modelinepos-rect-p, cua-rectangle-mark-mode, rectangle-number-lines, rectangle-mark-mode,
 ;;            string-insert-rectangle, string-rectangle.
@@ -327,6 +329,12 @@ sexps the strings expects as arguments."
   :type '(choice
           (const :tag "Characters: \"_ chars\""
            (" %d chars" (abs (- (mark t) (point)))))
+          (const :tag "Bytes: \"_ bytes\""
+           (" %d bytes" (let* ((use-empty-active-region  modelinepos-empty-region-flag)
+                               (strg                     (and (use-region-p)
+                                                              (buffer-substring-no-properties
+                                                               (region-beginning) (region-end)))))
+                          (string-bytes strg))))
           (const :tag "Chars & Lines: \"_ ch, _ l\" or Rows & Columns: \"_ rows, _ cols\""
            ((if modelinepos-rect-p " %d rows, %d cols" " %d ch, %d l")
             (if modelinepos-rect-p
