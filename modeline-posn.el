@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jan  7 22:19:23 2017 (-0800)
+;; Last-Updated: Sat Jan  7 22:36:04 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 820
+;;     Update #: 821
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -331,9 +331,10 @@ sexps the strings expects as arguments."
            (" %d chars" (abs (- (mark t) (point)))))
           (const :tag "Bytes: \"_ bytes\""
            (" %d bytes" (let* ((use-empty-active-region  modelinepos-empty-region-flag)
-                               (strg                     (and (use-region-p)
-                                                              (buffer-substring-no-properties
-                                                               (region-beginning) (region-end)))))
+                               (strg                     (if (use-region-p)
+                                                             (buffer-substring-no-properties
+                                                              (region-beginning) (region-end))
+                                                           "")))
                           (string-bytes strg))))
           (const :tag "Chars & Lines: \"_ ch, _ l\" or Rows & Columns: \"_ rows, _ cols\""
            ((if modelinepos-rect-p " %d rows, %d cols" " %d ch, %d l")
