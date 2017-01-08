@@ -20,4 +20,3 @@ There seem to be eight(!) different ways of building GNU Emacs on Windows; this 
 
 For completeness, I'll mention <nowiki>BuildingTwentyOneThreeCygwinMingw, BuildingTwentyOneThreeCygwinMsvc, BuildingCvsCygwinMingw, and BuildingCvsCygwinMsvc</nowiki>, none of which are applicable, since non-Cygwin toolchains cannot create Cygwin binaries.
 
-[[http://ourcomments.org/Emacs/w32-build-emacs.html Here]] is a page that seems to address many of the same issues.  Your Correspondent hasn't read it closely though.
