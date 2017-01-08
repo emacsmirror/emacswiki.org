@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jan  7 22:12:27 2017 (-0800)
+;; Last-Updated: Sat Jan  7 22:19:23 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 819
+;;     Update #: 820
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -54,7 +54,7 @@
 ;;
 ;;  Choice (d) is provided so that you can choose alternative
 ;;  formatting styles.  For example, instead of ` 256 ch, 13 l', you
-;;  could show ` (256 chars, 13 lines)'.  But (c) can really show
+;;  could show ` (256 chars, 13 lines)'.  But (d) can really show
 ;;  information at all.  It need not have anything to do with the
 ;;  region, but it is nevertheless shown when the region is active.
 ;;
