@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jan  8 17:44:53 2017 (-0800)
+;; Last-Updated: Sun Jan  8 21:13:06 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 8198
+;;     Update #: 8204
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1758,7 +1758,8 @@ BOOKMARK is a bookmark name or a bookmark record."
     (let* ((file       (bookmark-prop-get bookmark 'filename))
            (info-node  (bookmark-prop-get bookmark 'info-node))
            (buf        (save-window-excursion ; VANILLA EMACS FIXME: doesn't work with frames!
-                         (Info-find-node file info-node) (current-buffer))))
+                         (Info-find-node file info-node)
+                         (current-buffer))))
       ;; Use `bookmark-default-handler' to move to appropriate location within Info node.
       (bookmark-default-handler
        `("" (buffer . ,buf) . ,(bmkp-bookmark-data-from-record bookmark)))))
@@ -2766,7 +2767,7 @@ Otherwise, call `bmkp-goto-position' to go to the recorded position."
              (unless (or (and buf  (get-buffer buf))
                          (and bufname  (get-buffer bufname)  (not (string= buf bufname))))
                (signal 'bookmark-error-no-filename (list 'stringp file))))
-           (set-buffer (or buf bufname))
+           (set-buffer (or buf  bufname))
            (when bmkp-jump-display-function
              (save-current-buffer (funcall bmkp-jump-display-function (current-buffer)))
              (raise-frame))
@@ -2883,7 +2884,7 @@ found, or \"-- Unknown location --\" if none is found."
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (or (bookmark-prop-get bookmark 'location)
       (bmkp-get-buffer-name bookmark)   ; Entry `buffer-name'.
-      (bookmark-prop-get bookmark 'buffer) ; Entry `buffer' (OLD?).
+      (bookmark-prop-get bookmark 'buffer) ; Entry `buffer'.
       (bookmark-get-filename bookmark)
       "-- Unknown location --"))
 
@@ -8693,7 +8694,7 @@ name, recorded position, and the context strings for the position."
     (unless (or (and buf  (get-buffer buf))
                 (and bufname  (get-buffer bufname)  (not (string= buf bufname))))
       (signal 'file-error `("Jumping to bookmark" "No such file or directory" ,file))))
-  (set-buffer (or buf bufname))
+  (set-buffer (or buf  bufname))
   (when bmkp-jump-display-function
     (save-current-buffer (funcall bmkp-jump-display-function (current-buffer))))
   (setq deactivate-mark  t)
@@ -9545,7 +9546,7 @@ BOOKMARK is a bookmark name or a bookmark record."
     (with-current-buffer (get-buffer-create "*eww*") (while (= (count-lines (point-min) (point-max)) 1)
                                                        (sit-for 1)))
     (bookmark-default-handler
-     `("" (buffer . ,(buffer-name (current-buffer))) . ,(bmkp-bookmark-data-from-record bookmark))))
+     `("" (buffer . ,(buffer-name)) . ,(bmkp-bookmark-data-from-record bookmark))))
 
   ;; You can use this to convert existing EWW bookmarks to Bookmark+ bookmarks.
   ;;
@@ -9639,7 +9640,7 @@ bookmarks.  If it does not exist then it is created."
   (w3m-browse-url (bookmark-location bookmark))
   (with-current-buffer "*w3m*" (while (eq (point-min) (point-max)) (sit-for 1)))
   (bookmark-default-handler
-   `("" (buffer . ,(buffer-name (current-buffer))) . ,(bmkp-bookmark-data-from-record bookmark))))
+   `("" (buffer . ,(buffer-name)) . ,(bmkp-bookmark-data-from-record bookmark))))
 
 (defalias 'bmkext-jump-w3m 'bmkp-jump-w3m)
 (defun bmkp-jump-w3m (bookmark)
