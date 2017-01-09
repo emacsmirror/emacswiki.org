@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2017, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sat Dec 24 17:00:19 2016 (-0800)
+;; Last-Updated: Sun Jan  8 18:06:51 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 925
+;;     Update #: 950
 ;; URL: http://www.emacswiki.org/bookmark+-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
@@ -467,8 +467,9 @@ This option is not used for Emacs versions before Emacs 22."
 
 ;;;###autoload (autoload 'bmkp-bmenu-set-lighting "bookmark+")
 (defun bmkp-bmenu-set-lighting (style face when &optional msgp) ; `H +' in bookmark list
-  "Set the `lighting' property for this line's bookmark.
-You are prompted for the highlight style, face, and condition (when)."
+  "Set the `lighting' entry for this line's bookmark.
+You are prompted for the highlight STYLE, FACE, and condition (WHEN)
+that make up the property-list value of the `lighting' entry."
   (interactive
    (let* ((bmk        (bookmark-bmenu-bookmark))
           (bmk-style  (bmkp-lighting-style bmk))
@@ -484,8 +485,8 @@ You are prompted for the highlight style, face, and condition (when)."
 
 ;;;###autoload (autoload 'bmkp-bmenu-set-lighting-for-marked "bookmark+")
 (defun bmkp-bmenu-set-lighting-for-marked (style face when &optional msgp) ; `H > +' in bookmark list
-  "Set the `lighting' property for the marked bookmarks.
-You are prompted for the highlight style, face, and condition (when)."
+  "Set the `lighting' entry for the marked bookmarks.
+You are prompted for the highlight STYLE, FACE, and condition (WHEN)."
   (interactive (append (bmkp-read-set-lighting-args) '(MSG)))
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (when msgp (message "Setting highlighting..."))
@@ -688,13 +689,16 @@ last non-nil value if nil."
                                         
 ;;;###autoload (autoload 'bmkp-set-lighting-for-bookmark "bookmark+")
 (defun bmkp-set-lighting-for-bookmark (bookmark-name style face when &optional msgp light-now-p)
-  "Set the `lighting' property for bookmark BOOKMARK-NAME.
-You are prompted for the bookmark, highlight style, face, and condition.
+  "Set the `lighting' entry for bookmark BOOKMARK-NAME.
+You are prompted for the bookmark, highlight STYLE, FACE, and
+condition (WHEN) that make up the property-list value of the
+`lighting' entry.
+
 With a prefix argument, do not highlight now.
 
 Non-interactively:
-STYLE, FACE, and WHEN are as for a bookmark's `lighting' property
- entries, or nil if no such entry.
+STYLE, FACE, and WHEN are as for a bookmark's `lighting' entry
+  properties, or nil if no such property.
 Non-nil MSGP means display a highlighting progress message.
 Non-nil LIGHT-NOW-P means apply the highlighting now."
   (interactive
@@ -721,13 +725,13 @@ Non-nil LIGHT-NOW-P means apply the highlighting now."
 
 ;;;###autoload (autoload 'bmkp-set-lighting-for-buffer "bookmark+")
 (defun bmkp-set-lighting-for-buffer (buffer style face when &optional msgp light-now-p)
-  "Set the `lighting' property for each of the bookmarks for BUFFER.
-You are prompted for the highlight style, face, and condition (when).
+  "Set the `lighting' entry for each of the bookmarks for BUFFER.
+You are prompted for the highlight STYLE, FACE, and condition (WHEN).
 With a prefix argument, do not highlight now.
 
 Non-interactively:
-STYLE, FACE, and WHEN are as for a bookmark's `lighting' property
- entries, or nil if no such entry.
+STYLE, FACE, and WHEN are as for a bookmark's `lighting' entry
+  properties, or nil if no such property.
 Non-nil MSGP means display a highlighting progress message.
 Non-nil LIGHT-NOW-P means apply the highlighting now."
   (interactive (append (list (bmkp-completing-read-buffer-name))
@@ -739,22 +743,22 @@ Non-nil LIGHT-NOW-P means apply the highlighting now."
 
 ;;;###autoload (autoload 'bmkp-set-lighting-for-this-buffer "bookmark+")
 (defun bmkp-set-lighting-for-this-buffer (style face when &optional msgp light-now-p)
-  "Set the `lighting' property for each of the bookmarks for this buffer.
-You are prompted for the highlight style, face, and condition (when).
+  "Set the `lighting' entry for each of the bookmarks for this buffer.
+You are prompted for the highlight STYLE, FACE, and condition (WHEN).
 With a prefix argument, do not highlight now.
 
 Non-interactively:
-STYLE, FACE, and WHEN are as for a bookmark's `lighting' property
- entries, or nil if no such entry.
+STYLE, FACE, and WHEN are as for a bookmark's `lighting' entry
+  properties, or nil if no such property.
 Non-nil MSGP means display a highlighting progress message.
 Non-nil LIGHT-NOW-P means apply the highlighting now."
   (interactive (append (bmkp-read-set-lighting-args) (list 'MSGP (not current-prefix-arg))))
   (bmkp-set-lighting-for-bookmarks (bmkp-this-buffer-alist-only) style face when msgp light-now-p))
 
 (defun bmkp-set-lighting-for-bookmarks (alist style face when &optional msgp light-now-p)
-  "Set the `lighting' property for each of the bookmarks in ALIST.
-STYLE, FACE, and WHEN are as for a bookmark's `lighting' property
- entries, or nil if no such entry.
+  "Set the `lighting' entry for each of the bookmarks in ALIST.
+STYLE, FACE, and WHEN are as for a bookmark's `lighting' entry
+  properties, or nil if no such property.
 Non-nil MSGP means display a highlighting progress message.
 Non-nil LIGHT-NOW-P means apply the highlighting now."
   (when msgp (message "Setting highlighting..."))
@@ -1134,7 +1138,7 @@ See `bmkp-next-lighted-this-buffer-repeat'."
 BOOKMARK is a bookmark name or a bookmark record.
 Returns:
  nil if BOOKMARK is not a valid bookmark;
- the `:face' specified by BOOKMARK's `lighting' property, if any;
+ the `:face', if any, specified by BOOKMARK's `lighting' entry;
  `bmkp-light-autonamed-region' if an autonamed region bookmark;
  `bmkp-light-non-autonamed-region' if a non-autonamed region bookmark;
  `bmkp-light-autonamed' if an autonamed non-region bookmark;
@@ -1154,7 +1158,7 @@ Returns:
 BOOKMARK is a bookmark name or a bookmark record.
 Returns:
  * nil if BOOKMARK is not a valid bookmark;
- * the `:style' specified by BOOKMARK's `lighting' property, if any;
+ * the `:style', if any, specified by BOOKMARK's `lighting' entry;
  * the value of `bmkp-light-style-autonamed-region' if autonamed and
      recording a region
  * the value of `bmkp-light-style-non-autonamed-region' if autonamed
@@ -1225,7 +1229,8 @@ ATTRIBUTE is `:style' or `:face'."
 
 (defun bmkp-get-lighting (bookmark)
   "Return the `lighting' property list for BOOKMARK.
-This is the cdr of the `lighting' entry (i.e. with `lighting' removed).
+This is the cdr of the `lighting' entry (i.e. the rest of the entry,
+  with `lighting' removed).
 BOOKMARK is a bookmark name or a bookmark record."
   (bookmark-prop-get bookmark 'lighting))
 
