@@ -230,7 +230,7 @@ Yet another way to do it. It cycles only through the normal text buffers (i.e., 
 
 = buffer-flip =
 
-* Packaged on melpa
+* Packaged on melpa from https://github.com/killdash9/buffer-flip.el
 
 [https://github.com/killdash9/buffer-flip.el buffer-flip] lets you flip through emacs buffers Alt-Tab style with an emphasis on minimizing keystrokes.
 
