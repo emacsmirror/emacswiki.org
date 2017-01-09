@@ -12,11 +12,7 @@ Emacs does not see "control down" and "control up" events, so it must use a comp
 * [[buffer-stack.el]] packaged from this wiki to melpa and marmalade
 * Unchanged since creation in 2010.
 
-This is mainly supported on [[XEmacs]], but works in
-GnuEmacs too.
-
-If you have used "Alt-Tab" in Windows, you know the basic principle behind this
-buffer model. Your buffers are in a stack, with the most recent on top. When
+Your buffers are in a stack, with the most recent on top. When
 you want a new buffer, you scan through them until you find the one you want,
 and then it goes on top of the stack.
 
@@ -27,11 +23,7 @@ Features:
 * When moving through the stack it can show you your position.
 * You can bury buffers while moving through the stack.
 * Uses custom: easy to configure.
-* AdrianKubala would be happy to add your favorite feature. :)
-
-LeWang
-* The download link above isn't working, so I've uploaded my version of it to the wiki: Lisp:buffer-stack.el.
-* I've also uploaded my supplemental library Lisp:buffer-stack-suppl.el for only switching amongst buffers of the current major-mode.
+* supplemental library Lisp:buffer-stack-suppl.el for only switching amongst buffers of the current major-mode.
 * Here is a snipplet of my emacs.el.  I use f9-f10-f11 for same major-mode switching and *shift* commands for switching amongst all buffers.
 
 <pre>
