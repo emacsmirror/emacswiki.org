@@ -32,6 +32,7 @@ But before doing anything, perhaps my question above needs to be answered: just 
 	
 * Author: AdrianKubala
 * URL: http://www.sixfingeredman.net/proj/xemacs/buffer-stack.el
+* On melpa and marmalade
 
 This is mainly supported on [[XEmacs]], but works in
 GnuEmacs too.
