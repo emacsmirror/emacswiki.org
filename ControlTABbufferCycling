@@ -85,6 +85,7 @@ LeWang
 
 * Author: Igor Bukanov
 * URL: http://www.mir2.org/igor/emacs/pc-bufsw.html
+* Packaged on melpa
 
 A fast way to switch buffers working like Ctrl-Tab in Windows
 applications.
