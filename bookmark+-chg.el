@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jan  7 08:49:13 2017 (-0800)
+;; Last-Updated: Sun Jan  8 18:10:18 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 16220
+;;     Update #: 16225
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2017/01/08 dadams
+;;     Use the term "entry", not "property" everywhere, for bookmark entries (fields).
 ;; 2017/01/07 dadams
 ;;     bookmark-write-file, bookmark-load, bmkp-temporary-bookmarking-mode:
 ;;       Use bookmark-file-coding-system (Emacs bug #25365).
@@ -1259,6 +1261,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2017/01/08 dadams
+;;     Use the term "entry", not "property" everywhere, for bookmark entries (fields).
 ;; 2017/01/07 dadams
 ;;     bmkp-bmenu-copy-marked-to-bookmark-file: Use bookmark-file-coding-system (Emacs bug #25365).
 ;; 2017/01/02 dadams
@@ -2008,8 +2012,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
-;; 2016/11/14 dadams
-;;     
+;; 2017/01/08 dadams
+;;     Use the term "entry", not "property" everywhere, for bookmark entries (fields).
 ;; 2016/10/25 dadams
 ;;     Added: Faces bmkp-light-autonamed-region, bmkp-light-non-autonamed-region.
 ;;            Options bmkp-light-style-autonamed-region, bmkp-light-style-non-autonamed-region.
