@@ -343,10 +343,11 @@ This is a combination of some features of swbuff-x, which is a modification to s
 
 I really liked the nicely layouted and composed buffer-selection buffer of bs.  However, also fast switching buffers with one key-stroke and showing a temporary buffer with a buffer list (with hide timeout) a la swbuff is nice.  So I combined both's advantages.
 
-= Ido buffer switching with Control-Tab =
+= Ido buffer switching =
 
-[NxhtmlMode nXhtml] combines [InteractivelyDoThings ido-mode] buffer switching with Control-Tab buffer cycling.
-You may also use the arrow keys in the MiniBuffer.
+* Built-in to emacs
+
+[InteractivelyDoThings ido-mode] provides the function ido-switch-buffer, allows you to cycle or match using intuitive methods like substring match among the most recent buffers. 
 
 = iflipb =
 
