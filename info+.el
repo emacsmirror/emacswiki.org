@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:32:33 2017 (-0800)
+;; Last-Updated: Mon Jan  9 12:40:31 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 5736
+;;     Update #: 5750
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -323,6 +323,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/01/09 dadams
+;;     Info-find-emacs-command-nodes: Updated for handle LINE-NUMBER (Emacs 24.5+).
 ;; 2016/12/13 dadams
 ;;     Removed obsolete face aliases: info-menu-5, Info-title-*-face.
 ;; 2016/12/11 dadams
@@ -2194,12 +2196,18 @@ If `Info-breadcrumbs-in-mode-line-mode' is non-nil, insert breadcrumbs."
 The `info-file' property of COMMAND says which Info manual to search.
 If COMMAND has no property, the variable `Info-file-list-for-emacs'
 defines heuristics for which Info manual to try.
+
 The locations are of the format used in variable `Info-history', that
-is, (FILENAME NODENAME BUFFERPOS\)."
-  (let ((where     ())
-        (cmd-desc  (concat "^\\* +" (regexp-quote (symbol-name command))
-                           "\\( <[0-9]+>\\)?:\\s *\\(.*\\)\\.$"))
-        (info-file "emacs"))            ;default
+is, (FILENAME NODENAME BUFFERPOS\), where BUFFERPOS is the line number
+of the first element of the returned list (which is treated specially
+in `Info-goto-emacs-command-node'), and 0 for the other elements of
+the list."
+  (let ((where      ())
+        (cmd-desc   (concat "^\\* +" (regexp-quote (symbol-name command))
+                            "\\( <[0-9]+>\\)?:\\s *\\(.*\\)\\."
+                            "\\(?:[ \t\n]+(line +\\([0-9]+\\))\\)?"))
+        (info-file  "emacs")            ;default
+        line-number)
     ;; Determine which info file this command is documented in.
     (if (get command 'info-file)
         (setq info-file  (get command 'info-file))
@@ -2207,10 +2215,11 @@ is, (FILENAME NODENAME BUFFERPOS\)."
       ;; various prefixes that we know.
       (let ((file-list  Info-file-list-for-emacs))
         (while file-list
-          (let* ((elt     (car file-list))
-                 (name    (if (consp elt) (car elt) elt))
-                 (file    (if (consp elt) (cdr elt) elt))
-                 (regexp  (concat "\\`" (regexp-quote name) "\\(\\'\\|-\\)")))
+          (let* ((elt               (car file-list))
+                 (name              (if (consp elt) (car elt) elt))
+                 (file              (if (consp elt) (cdr elt) elt))
+                 (case-fold-search  nil)
+                 (regexp            (concat "\\`" (regexp-quote name) "\\(\\'\\|-\\)")))
             (if (string-match regexp (symbol-name command))
                 (setq info-file  file
                       file-list  ()))
@@ -2232,14 +2241,17 @@ is, (FILENAME NODENAME BUFFERPOS\)."
             node
             (nodes              (Info-index-nodes)))
         (Info-goto-node (car nodes))
-        (while
-            (progn (goto-char (point-min))
-                   (while (re-search-forward cmd-desc nil t)
-                     (setq where  (cons (list Info-current-file (match-string-no-properties 2) 0) where)))
-                   (and (setq nodes  (cdr nodes)
-                              node   (car nodes))))
+        (while (progn (goto-char (point-min))
+                      (while (re-search-forward cmd-desc nil t)
+                        (setq where        (cons (list Info-current-file (match-string-no-properties 2) 0)
+                                                 where)
+                              line-number  (and (match-beginning 3)  (string-to-number (match-string 3)))))
+                      (and (setq nodes  (cdr nodes)
+                                 node   (car nodes))))
           (Info-goto-node node)))
-      where)))
+      (if (and line-number  where)
+          (cons (list (nth 0 (car where)) (nth 1 (car where)) line-number) (cdr where))
+        where))))
 
 
 ;; REPLACES ORIGINAL in `info.el':
