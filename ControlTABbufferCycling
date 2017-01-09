@@ -7,11 +7,10 @@ Emacs does not see "control down" and "control up" events, so it must use a comp
 ----
 
 [:BufferStack]
-= Buffer Stack =
+= [[buffer-stack.el]] =
 	
-* Author: AdrianKubala
-* URL: http://www.sixfingeredman.net/proj/xemacs/buffer-stack.el
 * On melpa and marmalade
+* Repository is this wiki, unchanged since creation in 2010.
 
 This is mainly supported on [[XEmacs]], but works in
 GnuEmacs too.
