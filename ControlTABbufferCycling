@@ -1,29 +1,8 @@
-This page is about buffer-cycling methods that are akin to the `Alt-Tab' cycling of MS Windows. 
+This page is about buffer-cycling methods that are akin to the `Alt-Tab' cycling of MS Windows. Control-tab meaning the single app equivalent. 
 
-[new:DrewAdams:2005-10-21 15:07 UTC]
-Perhaps someone could explain just what that means? Does it mean simply showing the next buffer each time some key is pressed? Does it mean also that the "next" buffer is the next most recently used one?
+C-tab cycling means cycling back and forth your buffer list with Tab and Shift-Tab while keeping Control down.  As soon as you release Control, the currently selected buffer becomes your current one, whilst your previous one becomes your most recently used one.  As long as you keep Control down, you are in a sort of "cycling mode".  
 
-Assuming it means these things, I've added [[Icicles]] to the list. If that's not what's meant, feel free to remove it from the list. In either case, it would be good to get a sentence or two explaining what is meant (that is, what "this page is about"). -- DrewAdams
-
-[new] 
-@DrewAdams:  C-tab cycling means cycling back and forth your buffer list with Tab and Shift-Tab while keeping Control down.  As soon as you release Control, the currently selected buffer becomes your current one, whilst your previous one becomes your most recently used one.  As long as you keep Control down, you are in a sort of "cycling mode".  I don't think such behavior can be achieved in Emacs which sees only isolated C-tab and C-S-tab events, unless some external application tells it when Control has been been released.  That's the reason every package in this page fails to achieve such behavior in a consistent manner.  I'm writing such external application, Python-based, Linux-only at the moment, since I lack a MS Windows box.  If you wish to help, let me know.  -- RaffaeleRicciardi
-
-[new] 
-I looks like we've got information duplication: see SwitchingBuffers
-Shouldn't these pages be merged?  CategoryBufferSwitching describes SwitchingBuffers as ''a discussion/comparison of the various packages.''
- -- StefanKamphausen
-
-[new]
-Please merge them and give the code fragments pages on their own. -- LennartBorgman
-
-[new:DrewAdams:2008-04-04 18:43 UTC]
-Please do not just merge them. Restructure them if you like, and add cross references and remove redundancy as needed, but each is already plenty long.
-
-But before doing anything, perhaps my question above needs to be answered: just what was this page for? The page title suggests something to do with Control and ALT, but most of the content here is not about that. -- DrewAdams
-
-[new]
-@DrewAdams - In MS Windows, Alt-TAB cycles between apps' open windows, while Ctrl-TAB does the same **within** compliant apps that are capable of opening multiple "windows" (frames). Not sure of the cycle-order, not that relevant since it just whizzes through them all, user just stops when he gets to the one he wants.
---HansBKK
+Emacs does not see "control down" and "control up" events, so it must use a complete keypress to enter into the "cycling mode", unless some external application tells it when Control has been been released (no one has posted code to do that yet afaik). 
 
 ----
 
