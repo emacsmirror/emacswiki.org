@@ -326,6 +326,8 @@ There are also several [[user option]]s that control the behavior.  For example,
 [:swbuff]
 = SwBuff and SwBuff-x =
 
+* Packaged on melpa
+
 With swbuff and swbuff-x together you can easily get a buffer switching that behaves like Alt-Tab in windows. An important addition by swbuff-x is that it reorders the buffers in the same way as Alt-Tab does.
 
 For more info see SwBuff.
@@ -333,6 +335,7 @@ For more info see SwBuff.
 [:Cycbuf]
 = Cycbuf =
 
+* Packaged on melpa and marmalade
 * Author: Martin Pohlack
 * URL: https://github.com/martinp26/cycbuf
 
@@ -347,9 +350,13 @@ You may also use the arrow keys in the MiniBuffer.
 
 = iflipb =
 
+* Packaged on melpa
+
 [[iflipb]] is a lightweight and no-nonsense way of flipping through the most recently used buffers.
 
 = mybuffers =
+
+* Not packaged
 
 Yet another way to do it. It cycles only through the normal text buffers (i.e., excludes special buffers) and visits the most recently used first.
 
@@ -357,9 +364,15 @@ Yet another way to do it. It cycles only through the normal text buffers (i.e., 
 * Code: Lisp:mybuffers.el
 
 = buffcycle =
+
+* Not packaged
+
 [https://github.com/troydm/emacs-stuff/blob/master/buffcycle.el buffcycle.el] is a simple Control-Tab way to switch only between file buffers
 
 = buffer-flip =
+
+* Packaged on melpa
+
 [https://github.com/killdash9/buffer-flip.el buffer-flip] lets you flip through emacs buffers Alt-Tab style with an emphasis on minimizing keystrokes.
 
 ---- 
