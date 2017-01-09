@@ -185,7 +185,7 @@ I use Linux, and so the Windows key isn't generally used.  I've gone through and
 [:Stesla]
 = Stesla =
 
-Cycles back and forward through `buffer-list', excluding certain buffers. Also has an example of binding C-TAB and C-M-TAB in the GNU/Linux console.
+Cycles back and forward through `(buffer-list)', excluding certain buffers. Also has an example of binding C-TAB and C-M-TAB in the GNU/Linux console.
 
 {{{
  ;; Support functions for `stesla-rotate-buffers'.  From the EmacsWiki.
