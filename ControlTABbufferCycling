@@ -209,7 +209,7 @@ I really liked the nicely layouted and composed buffer-selection buffer of bs.  
 
 = iflipb =
 
-* Packaged on melpa
+* Packaged on melpa via https://github.com/jrosdahl/iflipb
 
 [[iflipb]] is a lightweight and no-nonsense way of flipping through the most recently used buffers.
 
