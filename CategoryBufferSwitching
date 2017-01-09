@@ -1,6 +1,7 @@
 This page is about different libraries and ways to ''switch buffers''. As always, you can click the title heading to list all pages related to buffer switching.
 
-* SwitchingBuffers -- Start here for a discussion comparing the various packages.
+* SwitchingBuffers -- Discussion comparing the various packages.
+* [[ControlTABbufferCycling]] -- methods which use or are similar to a most recently used stack of buffers, like MS Windows alt-tab
 
 The following are specific tricks and packages for buffer switching.
 
@@ -11,7 +12,6 @@ The following are specific tricks and packages for buffer switching.
 * [[BufferRing]] -- simpler MTorus like rings
 * BufferSelection -- %%BufferMenu%% alternative
 * CategorizingInformationManager -- `ee-buffers' for buffer switching
-* [[ControlTABbufferCycling]] -- emulates application switching on MS Windows for buffers in Emacs
 * [[cOpenRelational]] -- keeping in touch between header file and source file for C or C++
 * CycleBuffer -- switch to next/previous significant buffer
 * DoReMi -- `doremi-buffers' (`C-x t b'): cycle among buffers
