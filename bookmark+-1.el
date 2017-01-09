@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jan  7 08:40:58 2017 (-0800)
+;; Last-Updated: Sun Jan  8 17:44:53 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 8176
+;;     Update #: 8198
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1786,7 +1786,7 @@ to FUNCTION, which is then used instead of `bookmark-default-handler'.
 FUNCTION must accept the same arguments as `bookmark-default-handler'.")
 
   (defun bookmark-prop-get (bookmark prop)
-    "Return property PROP of BOOKMARK, or nil if no such property.
+    "Return entry (property) PROP of BOOKMARK, or nil if no such entry.
 BOOKMARK is a bookmark name or a bookmark record."
     (cdr (assq prop (bmkp-bookmark-data-from-record bookmark))))
 
@@ -2555,7 +2555,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 ;; 4. Add BOOKMARK to `bmkp-modified-bookmarks'.
 ;;
 (defun bookmark-prop-set (bookmark prop val)
-  "Set the property PROP of BOOKMARK to VAL.
+  "Set the entry (property) PROP of BOOKMARK to VAL.
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (let* ((bmk   (bookmark-get-bookmark bookmark))
@@ -2630,7 +2630,7 @@ See `bookmark-jump', in particular for info about using a prefix arg."
 ;;
 ;; 1. Invoke MS Windows `Open' action if `bmkp-use-w32-browser-p' and if `w32-browser' is defined.
 ;;
-;; 2. Favor property `file-handler' over `handler'.  If the former is available, apply it to the file.
+;; 2. Favor entry `file-handler' over entry `handler'.  If the former is available, apply it to the file.
 ;;
 ;; 3. If BOOKMARK has its own handler but that is not a defined function, then use the default handler.
 ;;    This lets Emacs 22, for instance, handle Emacs 23+ image bookmarks.
@@ -2651,7 +2651,7 @@ More precisely:
   Else, if BOOKMARK has both `file-handler' and `filename' entries
   then apply the former to the latter.
 
-  Else, if BOOKMARK has a `handler' property that is a defined
+  Else, if BOOKMARK has a `handler' entry whose value is a defined
   function then apply it to BOOKMARK.
 
   Else, apply the default bookmark handler,
@@ -2714,7 +2714,7 @@ is handled as follows:
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; 1. Support regions, buffer names, and property `file-handler'.
+;; 1. Support regions, buffer names, and entry `file-handler'.
 ;; 2. Handle MS Windows `Open' command if `bmkp-use-w32-browser-p' and if `w32-browser' is defined.
 ;;
 (defun bookmark-default-handler (bookmark)
@@ -2728,8 +2728,8 @@ If `bmkp-use-w32-browser-p' is non-nil and function `w32-browser' is
 defined, then call `w32-browser'.  That is, use the default MS Windows
 application for the bookmarked file.
 
-If BOOKMARK has properties `file-handler' and `filename', then apply
-the value of the former to the latter.
+If BOOKMARK has entries `file-handler' and `filename', then apply the
+value of the former to the latter.
 
 If BOOKMARK is an old-style Info bookmark, then go to the Info node.
 
@@ -2876,14 +2876,14 @@ candidate."
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'.
 
-Look first for property `location', then for property `buffer-name' or
-`buffer', then for property `filename'.  Return the first such
-property found, or \"-- Unknown location --\" if none is found."
+Look first for entry `location', then for entry `buffer-name' or
+`buffer', then for entry `filename'.  Return the first such entry
+found, or \"-- Unknown location --\" if none is found."
   (bookmark-maybe-load-default-file)
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (or (bookmark-prop-get bookmark 'location)
-      (bmkp-get-buffer-name bookmark)   ; Property `buffer-name'.
-      (bookmark-prop-get bookmark 'buffer) ; Property `buffer'.
+      (bmkp-get-buffer-name bookmark)   ; Entry `buffer-name'.
+      (bookmark-prop-get bookmark 'buffer) ; Entry `buffer' (OLD?).
       (bookmark-get-filename bookmark)
       "-- Unknown location --"))
 
@@ -3084,7 +3084,7 @@ If called from Lisp:
 ;;
 (defun bookmark-write-file (file &optional add alt-msg)
   "Write `bookmark-alist' to FILE.
-Bookmarks that have a non-nil `bmkp-temp' property are not saved.
+Bookmarks that have a non-nil `bmkp-temp' entry are not saved.
 They are removed from the bookmark file, but not from the current
 bookmark list.
 
@@ -5819,7 +5819,7 @@ If it is a record then it need not belong to `bookmark-alist'."
 
 (defun bmkp-temporary-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is temporary.
-This means that it has a non-nil `bmkp-temp' property.
+This means that it has a non-nil `bmkp-temp' entry.
 BOOKMARK is a bookmark name or a bookmark record.
 If it is a record then it need not belong to `bookmark-alist'."
   (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
@@ -6757,12 +6757,12 @@ predicate."
 ;;  *** Bookmark Entry Access Functions ***
 
 (defun bmkp-get-buffer-name (bookmark)
-  "Return the `buffer-name' value for BOOKMARK.
+  "Return the `buffer-name' entry for BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record."
   (bookmark-prop-get bookmark 'buffer-name))
 
 (defun bmkp-get-end-position (bookmark)
-  "Return the `end-position' value for BOOKMARK.
+  "Return the `end-position' entry for BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record."
   (bookmark-prop-get bookmark 'end-position))
 
@@ -7807,12 +7807,12 @@ Non-interactively:
 The bookmark name is the non-directory part of FILE, but if PREFIX is
 non-nil then it is PREFIX prepended to the non-directory part of FILE.
 
-The directory part of property `filename' is the directory part of
-FILE, if FILE is absolute.  Otherwise, it is DIR, if non-nil, or
+The directory part of entry `filename' is the directory part of FILE,
+if FILE is absolute.  Otherwise, it is DIR, if non-nil, or
 `default-directory' otherwise.
 
-FILE and the `filename' property of the bookmark returned are the
-same, except possibly for their directory parts (see previous)."
+FILE and the `filename' entry of the bookmark returned are the same,
+except possibly for their directory parts (see previous)."
   (let* ((fname       (file-name-nondirectory file))
          (bname       (if prefix (concat prefix fname) fname))
          (dir-to-use  (if (file-name-absolute-p file)
@@ -8033,8 +8033,8 @@ The value is based on `bmkp-default-handlers-for-file-types'."
 (defun bmkp-sound-jump (bookmark)
   "Handler for sound files: play the sound file that is BOOKMARK's file.
 This is deprecated.  It is kept only for old bookmarks that already
-use this as the `handler' property.  New sound bookmarks use
-`play-sound-file' as property `file-handler'."
+use this as the `handler' entry.  New sound bookmarks use
+`play-sound-file' as entry `file-handler'."
   (play-sound-file (bookmark-get-filename bookmark)))
 
 (when (> emacs-major-version 21)
@@ -9892,7 +9892,7 @@ bookmark types (see `bmkp-types-alist').
 
 Completion is lax, so you can also enter the name of a bookmark
 `handler' or `file-handler' function, without completion.  Bookmarks
-with that property value are then the jump candidates."
+with that entry value are then the jump candidates."
   (interactive
    (let* ((completion-ignore-case                      t)
           (type-cands                                  bmkp-types-alist)
@@ -9937,7 +9937,7 @@ with that property value are then the jump candidates."
 (defun bmkp-handler-pred (type)
   "Return a bookmark predicate that tests bookmarks with handler TYPE.
 More precisely, the predicate returns non-nil if TYPE is either the
-bookmark's `handler' or `file-handler' property value."
+bookmark's `handler' or `file-handler' entry value."
   `(lambda (bmk)
     (member ',type `(,(bookmark-prop-get bmk 'file-handler) ,(bookmark-get-handler bmk)))))
 
