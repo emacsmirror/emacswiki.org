@@ -299,6 +299,8 @@ I use Linux, and so the Windows key isn't generally used.  I've gone through and
 [:Icicles]
 = Icicles =
 
+* Packaged on melpa
+
 Command `icicle-buffer' (bound by default to `C-x b') in '''[[Icicles]]''' lets you use `C-next' and `C-prior' to cycle among your buffers. As the key is pressed, the next buffer appears. 
 
 * Positive [[prefix argument]]: only file buffers are candidates.
