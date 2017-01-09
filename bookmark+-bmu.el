@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Jan  7 08:25:40 2017 (-0800)
+;; Last-Updated: Sun Jan  8 17:47:24 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3915
+;;     Update #: 3916
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -4257,7 +4257,7 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
                 (remote           "Remote file/directory or Dired buffer (could have wildcards)\n")
                 (sudo             "Remote accessed by `su' or `sudo'\n")
                 (local-dir        "Local directory or Dired buffer (could have wildcards)\n")
-                (file-handler     "Bookmark with property `file-handler'\n")
+                (file-handler     "Bookmark with entry `file-handler'\n")
                 (bookmark-list    "*Bookmark List*\n")
                 (bookmark-file    "Bookmark file\n")
                 (snippet          "Snippet\n")
