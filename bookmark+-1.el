@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Jan 10 11:26:35 2017 (-0800)
+;; Last-Updated: Tue Jan 10 14:28:05 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 8222
+;;     Update #: 8230
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -428,7 +428,8 @@
 ;;    `bmkp-jump-icicle-search-hits', `bmkp-jump-man',
 ;;    `bmkp-jump-sequence', `bmkp-jump-snippet',
 ;;    `bmkp-jump-url-browse', `bmkp-jump-variable-list',
-;;    `bmkp-jump-w3m', `bmkp-jump-w3m-new-session',
+;;    `bmkp-jump-w3m', `bmkp-jump-w3m-new-buffer',
+;;    `bmkp-jump-w3m-new-session', `bmkp-jump-w3m-only-one-buffer',
 ;;    `bmkp-jump-w3m-only-one-tab', `bmkp-jump-woman',
 ;;    `bmkp-last-specific-buffer-alist-only',
 ;;    `bmkp-last-specific-buffer-p',
@@ -9625,27 +9626,27 @@ bookmarks.  If it does not exist then it is created."
   (let ((len  (length (w3m-list-buffers 'nosort))))
     (if (= len 0)  "*w3m*"  (format "*w3m*<%d>" (1+ len)))))
 
-(defun bmkp-jump-w3m-new-session (bookmark)
-  "Jump to W3M bookmark BOOKMARK, setting a new tab."
+(defalias 'bmkp-jump-w3m-new-session 'bmkp-jump-w3m-new-buffer)
+(defun bmkp-jump-w3m-new-buffer (bookmark)
+  "Jump to W3M bookmark BOOKMARK in a new buffer (in a new W3M tab)."
   (require 'w3m)
   (let ((buf   (bmkp-w3m-set-new-buffer-name)))
     (w3m-browse-url (bookmark-location bookmark) 'newsession)
     (while (not (get-buffer buf)) (sit-for 1)) ; Be sure we have the W3M buffer.
-    (with-current-buffer buf
+    (with-current-buffer (get-buffer-create buf)
       (goto-char (point-min))
       ;; Wait until data arrives in buffer, before setting region.
       (while (eq (line-beginning-position) (line-end-position)) (sit-for 1)))
-    (bookmark-default-handler
-     `("" (buffer . ,buf) . ,(bmkp-bookmark-data-from-record bookmark)))))
+    (bookmark-default-handler `("" (buffer . ,buf) . ,(bmkp-bookmark-data-from-record bookmark)))))
 
-(defun bmkp-jump-w3m-only-one-tab (bookmark)
+(defalias 'bmkp-jump-w3m-only-one-tab 'bmkp-jump-w3m-only-one-buffer)
+(defun bmkp-jump-w3m-only-one-buffer (bookmark)
   "Close all W3M sessions and jump to BOOKMARK in a new W3M buffer."
   (require 'w3m)
   (w3m-quit 'force)                     ; Be sure we start with an empty W3M buffer.
   (w3m-browse-url (bookmark-location bookmark))
-  (with-current-buffer "*w3m*" (while (eq (point-min) (point-max)) (sit-for 1)))
-  (bookmark-default-handler
-   `("" (buffer . ,(buffer-name)) . ,(bmkp-bookmark-data-from-record bookmark))))
+  (with-current-buffer (get-buffer-create "*w3m*") (while (eq (point-min) (point-max)) (sit-for 1)))
+  (bookmark-default-handler `("" (buffer . "*w3m*") . ,(bmkp-bookmark-data-from-record bookmark))))
 
 (defalias 'bmkext-jump-w3m 'bmkp-jump-w3m)
 (defun bmkp-jump-w3m (bookmark)
@@ -9654,8 +9655,8 @@ BOOKMARK is a bookmark name or a bookmark record.
 Use multi-tabs in W3M if `bmkp-w3m-allow-multi-tabs-flag' is non-nil."
   (require 'w3m)
   (if bmkp-w3m-allow-multi-tabs-flag
-      (bmkp-jump-w3m-new-session bookmark)
-    (bmkp-jump-w3m-only-one-tab bookmark)))
+      (bmkp-jump-w3m-new-buffer bookmark)
+    (bmkp-jump-w3m-only-one-buffer bookmark)))
 
 
 ;; GNUS support for Emacs < 24.  More or less the same as `gnus-summary-bookmark-make-record' in Emacs 24+.
