@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jan  8 18:10:18 2017 (-0800)
+;; Last-Updated: Tue Jan 10 11:32:20 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 16225
+;;     Update #: 16229
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,11 +146,14 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2017/01/10 dadams
+;;     bookmark-write-file:
+;;       Updated per latest fix for bug #25365: insert version stamp after writing bmks.  UNTESTED.
 ;; 2017/01/08 dadams
 ;;     Use the term "entry", not "property" everywhere, for bookmark entries (fields).
 ;; 2017/01/07 dadams
 ;;     bookmark-write-file, bookmark-load, bmkp-temporary-bookmarking-mode:
-;;       Use bookmark-file-coding-system (Emacs bug #25365).
+;;       Use bookmark-file-coding-system (Emacs bug #25365).  UNTESTED.
 ;; 2017/01/03 dadams
 ;;     bookmark-location: Corrected doc string to reflect code: buffer before file.
 ;; 2016/12/31 dadams
