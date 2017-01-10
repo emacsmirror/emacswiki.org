@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jan  8 21:13:06 2017 (-0800)
+;; Last-Updated: Tue Jan 10 11:26:35 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 8204
+;;     Update #: 8222
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -3099,15 +3099,15 @@ Non-nil ALT-MSG is a message format string to use in place of the
 default, \"Saving bookmarks to file `%s'...\".  The string must
 contain a `%s' construct, so that it can be passed along with FILE to
 `format'.  At the end, \"done\" is appended to the message."
-  (let ((msg           (or alt-msg "Saving bookmarks to file `%s'..."))
+  (let ((msg                      (or alt-msg "Saving bookmarks to file `%s'..."))
         (coding-system-for-write  (if (boundp 'bookmark-file-coding-system) ; Emacs 25.2+.
                                       (or coding-system-for-write  bookmark-file-coding-system  'utf-8-emacs)
                                     coding-system-for-write))
-        (print-length  nil)
-        (print-level   nil)
-        (rem-all-p     (or (not (> emacs-major-version 20)) ; Cannot do `(not (boundp 'print-circle))'.
-                           (not bmkp-propertize-bookmark-names-flag)))
-        (existing-buf  (get-file-buffer file))
+        (print-length             nil)
+        (print-level              nil)
+        (rem-all-p                (or (not (> emacs-major-version 20)) ; Cannot: (not (boundp 'print-circle)).
+                                      (not bmkp-propertize-bookmark-names-flag)))
+        (existing-buf             (get-file-buffer file))
         bname fname last-fname start end)
     (when (file-directory-p file) (error "`%s' is a directory, not a file" file))
     (message msg file)
@@ -3116,8 +3116,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
       (if (file-exists-p file)
           (bookmark-maybe-upgrade-file-format)
         (delete-region (point-min) (point-max)) ; In case a find-file hook inserted a header, etc.
-        (if (boundp 'bookmark-file-coding-system)
-            (bookmark-insert-file-format-version-stamp bookmark-file-coding-system) ; Emacs 25.2+
+        (unless (boundp 'bookmark-file-coding-system) ; Emacs < 25.2.
           (bookmark-insert-file-format-version-stamp))
         (insert "(\n)"))
       (setq start  (or (save-excursion (goto-char (point-min))
@@ -3137,18 +3136,17 @@ contain a `%s' construct, so that it can be passed along with FILE to
                  (set-text-properties 0 (length bname) () bname)
                  (when fname (set-text-properties 0 (length fname) () fname)))
                 (t                      ; Remove property `face' and any Icicles internal properties.
-                 (remove-text-properties
-                  0 (length bname) '(face                     nil
-                                     display                  nil
-                                     help-echo                nil
-                                     rear-nonsticky           nil
-                                     icicle-fancy-candidates  nil
-                                     icicle-mode-line-help    nil
-                                     icicle-special-candidate nil
-                                     icicle-user-plain-dot    nil
-                                     icicle-whole-candidate   nil
-                                     invisible                nil)
-                  bname)
+                 (remove-text-properties 0 (length bname) '(face                     nil
+                                                            display                  nil
+                                                            help-echo                nil
+                                                            rear-nonsticky           nil
+                                                            icicle-fancy-candidates  nil
+                                                            icicle-mode-line-help    nil
+                                                            icicle-special-candidate nil
+                                                            icicle-user-plain-dot    nil
+                                                            icicle-whole-candidate   nil
+                                                            invisible                nil)
+                                         bname)
                  (when (boundp 'icicle-candidate-properties-alist) ; Multi-completion indexes + text props.
                    (dolist (entry  icicle-candidate-properties-alist)
                      (put-text-property 0 (length bname) (car (cadr entry)) nil bname)))))
@@ -3172,6 +3170,13 @@ contain a `%s' construct, so that it can be passed along with FILE to
                                                    (cdr prop) " ")
                           ")\n")))
               (insert " )\n")))))
+      (when (boundp 'bookmark-file-coding-system) ; Emacs 25.2+.  See bug #25365
+        ;; Make sure specified encoding can encode the bookmarks.  If not, suggest utf-8-emacs as default.
+        (with-coding-priority '(utf-8-emacs)
+          (setq coding-system-for-write  (select-safe-coding-system (point-min) (point-max)
+                                                                    (list t coding-system-for-write))))
+        (goto-char (point-min))
+        (bookmark-insert-file-format-version-stamp coding-system-for-write))
       (let ((version-control        (case bookmark-version-control
                                       ((nil)      nil)
                                       (never      'never)
