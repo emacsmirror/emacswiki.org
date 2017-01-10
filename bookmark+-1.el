@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Jan 10 14:28:05 2017 (-0800)
+;; Last-Updated: Tue Jan 10 16:00:13 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 8230
+;;     Update #: 8258
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -318,14 +318,15 @@
 ;;    `bmkp-desktop-default-directory',
 ;;    `bmkp-desktop-jump-save-before-flag.',
 ;;    `bmkp-desktop-no-save-vars',
+;;    `bmkp-eww-allow-multiple-buffers-flag' (Emacs 24.4+),
+;;    `bmkp-eww-replace-keys-flag' (Emacs 24.4+),
 ;;    `bmkp-guess-default-handler-for-file-flag',
 ;;    `bmkp-handle-region-function', `bmkp-incremental-filter-delay',
 ;;    `bmkp-last-as-first-bookmark-file',
 ;;    `bmkp-menu-popup-max-length', `bmkp-new-bookmark-default-names',
 ;;    `bmkp-other-window-pop-to-flag', `bmkp-prompt-for-tags-flag',
 ;;    `bmkp-properties-to-keep', `bmkp-read-bookmark-file-hook',
-;;    `bmkp-region-search-size', `bmkp-replace-eww-keys-flag' (Emacs
-;;    24.4+), `bmkp-save-new-location-flag',
+;;    `bmkp-region-search-size', `bmkp-save-new-location-flag',
 ;;    `bmkp-sequence-jump-display-function',
 ;;    `bmkp-show-end-of-region-flag', `bmkp-sort-comparer',
 ;;    `bmkp-su-or-sudo-regexp', `bmkp-tags-for-completion',
@@ -333,7 +334,7 @@
 ;;    `bmkp-temporary-bookmarking-mode-hook',
 ;;    `bmkp-temporary-bookmarking-mode-lighter',
 ;;    `bmkp-this-file/buffer-cycle-sort-comparer', `bmkp-use-region',
-;;    `bmkp-w3m-allow-multi-tabs-flag',
+;;    `bmkp-w3m-allow-multiple-buffers-flag',
 ;;    `bmkp-write-bookmark-file-hook'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -429,8 +430,8 @@
 ;;    `bmkp-jump-sequence', `bmkp-jump-snippet',
 ;;    `bmkp-jump-url-browse', `bmkp-jump-variable-list',
 ;;    `bmkp-jump-w3m', `bmkp-jump-w3m-new-buffer',
-;;    `bmkp-jump-w3m-new-session', `bmkp-jump-w3m-only-one-buffer',
-;;    `bmkp-jump-w3m-only-one-tab', `bmkp-jump-woman',
+;;    `bmkp-jump-w3m-new-buffer', `bmkp-jump-w3m-only-one-buffer',
+;;    `bmkp-jump-w3m-only-one-buffer', `bmkp-jump-woman',
 ;;    `bmkp-last-specific-buffer-alist-only',
 ;;    `bmkp-last-specific-buffer-p',
 ;;    `bmkp-last-specific-file-alist-only',
@@ -712,6 +713,8 @@
 (defvar bmkp-edit-bookmark-record-mode-map) ; Here, via `define-derived-mode'
 (defvar bmkp-edit-bookmark-records-mode-map) ; Here, via `define-derived-mode'
 (defvar bmkp-edit-tags-mode-map)        ; Here, via `define-derived-mode'
+(defvar bmkp-eww-allow-multiple-buffers-flag) ; Here (Emacs 24.4+)
+(defvar bmkp-eww-replace-keys-flag)     ; Here (Emacs 24.4+)
 (defvar bmkp-light-priorities)          ; In `bookmark+-lit.el'
 (defvar bmkp-temporary-bookmarking-mode) ;  Here
 (defvar bmkp-global-auto-idle-bookmark-mode) ; Here, via `define-globalized-minor-mode'
@@ -1001,6 +1004,24 @@ They are removed from `desktop-globals-to-save' for the duration of
 the save (only)."
   :type '(repeat (variable :tag "Variable")) :group 'bookmark-plus)
 
+;; EWW support
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+
+  (defcustom bmkp-eww-allow-multiple-buffers-flag t
+    "*Non-nil means jump to an EWW bookmark in a new buffer."
+    :type 'boolean :group 'bookmark-plus)
+
+;; We do not use `define-obsolete-function-alias' so that byte-compilation in older Emacs
+;; works for newer Emacs too.
+  (defalias 'bmkp-replace-eww-keys-flag 'bmkp-eww-replace-keys-flag)
+  (make-obsolete 'bmkp-replace-eww-keys-flag 'bmkp-eww-replace-keys-flag "2017-01-10")
+  (defcustom bmkp-eww-replace-keys-flag t
+    "Non-nil means replace EWW bookmarking keys and menus with Bookmark+ ones.
+If you change the value of this option then you must restart Emacs for
+it to take effect."
+    :type 'boolean :group 'bookmark-plus)
+  )
+
 ;;;###autoload (autoload 'bmkp-annotation-modes-inherit-from "bookmark+")
 (defcustom bmkp-annotation-modes-inherit-from (if (fboundp 'org-mode) 'org-mode 'text-mode)
   "Symbol for mode that bookmark annotation modes are to inherit from.
@@ -1131,14 +1152,6 @@ updated (overwritten), with the exception of those listed here."
 (defcustom bmkp-region-search-size 40
   "*Same as `bookmark-search-size', but specialized for bookmark regions."
   :type 'integer :group 'bookmark-plus)
-
-;; EWW support
-(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
-  (defcustom bmkp-replace-eww-keys-flag t
-    "Non-nil means replace EWW bookmarking keys and menus with Bookmark+ ones.
-If you change the value of this option then you must restart Emacs for
-it to take effect."
-    :type 'boolean :group 'bookmark-plus))
 
 ;;;###autoload (autoload 'bmkp-save-new-location-flag "bookmark+")
 (defcustom bmkp-save-new-location-flag t
@@ -1362,9 +1375,13 @@ is enabled.  Set this to nil or \"\" if you do not want any lighter."
           (const :tag "Activate bookmark region even during cycling"      cycling-too))
   :group 'bookmark-plus)
 
-;;;###autoload (autoload 'bmkp-w3m-allow-multi-tabs-flag "bookmark+")
-(defcustom bmkp-w3m-allow-multi-tabs-flag t
-  "*Non-nil means jump to W3M bookmarks in a new session."
+;; We do not use `define-obsolete-function-alias' so that byte-compilation in older Emacs
+;; works for newer Emacs too.
+;;;###autoload (autoload 'bmkp-w3m-allow-multiple-buffers-flag "bookmark+")
+(defalias 'bmkp-w3m-allow-multi-tabs-flag 'bmkp-w3m-allow-multiple-buffers-flag)
+(make-obsolete 'bmkp-w3m-allow-multi-tabs-flag 'bmkp-w3m-allow-multiple-buffers-flag)
+(defcustom bmkp-w3m-allow-multiple-buffers-flag t
+  "*Non-nil means jump to a W3M bookmark in a new buffer."
   :type 'boolean :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-write-bookmark-file-hook "bookmark+")
@@ -9543,16 +9560,40 @@ BOOKMARK is a bookmark name or a bookmark record."
   (add-hook 'eww-mode-hook (lambda () (set (make-local-variable 'bookmark-make-record-function)
                                            'bmkp-make-eww-record)))
 
+  (defun bmkp-eww-set-new-buffer-name ()
+    "Return a new EWW buffer name, using a count of live EWW buffers."
+    (let* ((count  0))
+      (dolist (buffer  (buffer-list))
+        (with-current-buffer buffer (when (derived-mode-p 'eww-mode) (setq count  (1+ count)))))
+      (if (= count 0) "*eww*" (format "*eww*<%d>" (1+ count)))))
+
+  (defun bmkp-jump-eww-new-buffer (bookmark)
+    "Jump to EWW bookmark BOOKMARK in a new EWW buffer."
+    (require 'eww)
+    (let ((buf  (bmkp-eww-set-new-buffer-name)))
+      (with-current-buffer (get-buffer-create buf)
+        (eww-mode)
+        (eww (bookmark-location bookmark))
+        (while (= (count-lines (point-min) (point-max)) 1) (sit-for 1))) ; Wait until buffer has real content.
+      (pop-to-buffer-same-window buf)
+      (bookmark-default-handler `("" (buffer . ,buf) . ,(bmkp-bookmark-data-from-record bookmark)))))
+
+  (defun bmkp-jump-eww-only-one-buffer (bookmark)
+    "Jump to EWW bookmark BOOKMARK in buffer *eww*."
+    (require 'eww)
+    (eww (bookmark-location bookmark))
+    ;; Wait until buffer has real content.
+    (with-current-buffer (get-buffer-create "*eww*")
+      (while (= (count-lines (point-min) (point-max)) 1) (sit-for 1)))
+    (bookmark-default-handler `("" (buffer . "*eww*") . ,(bmkp-bookmark-data-from-record bookmark))))
+
   (defun bmkp-jump-eww (bookmark)
     "Handler function for record returned by `bmkp-make-eww-record'.
 BOOKMARK is a bookmark name or a bookmark record."
     (require 'eww)
-    (eww (bookmark-location bookmark))
-    ;; Wait until buffer has real content.
-    (with-current-buffer (get-buffer-create "*eww*") (while (= (count-lines (point-min) (point-max)) 1)
-                                                       (sit-for 1)))
-    (bookmark-default-handler
-     `("" (buffer . ,(buffer-name)) . ,(bmkp-bookmark-data-from-record bookmark))))
+    (if bmkp-eww-allow-multiple-buffers-flag
+        (bmkp-jump-eww-new-buffer bookmark)
+      (bmkp-jump-eww-only-one-buffer bookmark)))
 
   ;; You can use this to convert existing EWW bookmarks to Bookmark+ bookmarks.
   ;;
@@ -9652,9 +9693,10 @@ bookmarks.  If it does not exist then it is created."
 (defun bmkp-jump-w3m (bookmark)
   "Handler function for record returned by `bmkp-make-w3m-record'.
 BOOKMARK is a bookmark name or a bookmark record.
-Use multi-tabs in W3M if `bmkp-w3m-allow-multi-tabs-flag' is non-nil."
+Use a new buffer (tab) if `bmkp-w3m-allow-multiple-buffers-flag' is
+non-nil."
   (require 'w3m)
-  (if bmkp-w3m-allow-multi-tabs-flag
+  (if bmkp-w3m-allow-multiple-buffers-flag
       (bmkp-jump-w3m-new-buffer bookmark)
     (bmkp-jump-w3m-only-one-buffer bookmark)))
 
