@@ -1,7 +1,7 @@
 ;;; lispxmp.el --- Automagic emacs lisp code annotation
-;; $Id: lispxmp.el,v 1.36 2017/01/05 04:47:46 rubikitch Exp $
+;; $Id: lispxmp.el,v 1.37 2017/01/10 23:11:59 rubikitch Exp $
 
-;; Copyright (C) 2009, 2010  rubikitch
+;; Copyright (C) 2009, 2010, 2013, 2017  rubikitch
 
 ;; Author: rubikitch <rubikitch@ruby-lang.org>
 ;; Keywords: lisp, convenience
@@ -108,6 +108,9 @@
 ;;; History:
 
 ;; $Log: lispxmp.el,v $
+;; Revision 1.37  2017/01/10 23:11:59  rubikitch
+;; Fix multi-line annotation bug
+;;
 ;; Revision 1.36  2017/01/05 04:47:46  rubikitch
 ;; add autoload for `lispxmp' / erase warnings
 ;;
@@ -221,7 +224,7 @@
 
 ;;; Code:
 
-(defvar lispxmp-version "$Id: lispxmp.el,v 1.36 2017/01/05 04:47:46 rubikitch Exp $")
+(defvar lispxmp-version "$Id: lispxmp.el,v 1.37 2017/01/10 23:11:59 rubikitch Exp $")
 (require 'cl)
 (require 'newcomment)
 (require 'pp)
@@ -359,8 +362,10 @@ http://mumble.net/~campbell/emacs/paredit.el"
           (goto-char 1)
           (forward-line 1)
           (unless (eobp)
-            (string-rectangle (point) (point-max)
-                             (concat (make-string semicolons-len ?\;)  "    ")))
+            (string-rectangle
+             (point)
+             (progn (goto-char (point-max)) (forward-line -1) (point))
+             (concat (make-string semicolons-len ?\;)  "    ")))
           ;; delete last newline
           (goto-char (point-max))
           (and (bolp) (delete-char -1))))
