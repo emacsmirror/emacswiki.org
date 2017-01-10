@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jan 10 11:32:20 2017 (-0800)
+;; Last-Updated: Tue Jan 10 14:39:44 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 16229
+;;     Update #: 16234
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -148,6 +148,9 @@
 ;;
 ;; 2017/01/10 dadams
 ;;     bookmark-write-file:
+;;       Renamed: bmkp-jump-w3m-new-session  to bmkp-jump-w3m-new-buffer,
+;;                bmkp-jump-w3m-only-one-tab to bmkp-jump-w3m-only-one-buffer.  Keep old as aliases.
+;;       bmkp-jump-w3m-new-buffer, bmkp-jump-w3m-only-one-buffer: Use get-buffer-create, just in case.
 ;;       Updated per latest fix for bug #25365: insert version stamp after writing bmks.  UNTESTED.
 ;; 2017/01/08 dadams
 ;;     Use the term "entry", not "property" everywhere, for bookmark entries (fields).
