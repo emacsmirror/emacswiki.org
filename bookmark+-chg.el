@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jan 10 14:39:44 2017 (-0800)
+;; Last-Updated: Tue Jan 10 16:03:02 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 16234
+;;     Update #: 16244
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,10 +147,16 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2017/01/10 dadams
+;;     Added:
+;;       bmkp-eww-allow-multiple-buffers-flag, bmkp-eww-set-new-buffer-name, bmkp-jump-eww-new-buffer,
+;;       bmkp-jump-eww-only-one-buffer.
+;;     Renamed: bmkp-replace-eww-keys-flag     to bmkp-eww-replace-keys-flag,
+;;              bmkp-w3m-allow-multi-tabs-flag to bmkp-w3m-allow-multiple-buffers-flag,
+;;              bmkp-jump-w3m-new-session      to bmkp-jump-w3m-new-buffer,
+;;              bmkp-jump-w3m-only-one-tab     to bmkp-jump-w3m-only-one-buffer.  Keep old as aliases.
+;;     bmkp-jump-eww: Dispatch to bmkp-jump-eww-(new|only-one)-buffer
+;;     bmkp-jump-w3m-new-buffer, bmkp-jump-w3m-only-one-buffer: Use get-buffer-create, just in case.
 ;;     bookmark-write-file:
-;;       Renamed: bmkp-jump-w3m-new-session  to bmkp-jump-w3m-new-buffer,
-;;                bmkp-jump-w3m-only-one-tab to bmkp-jump-w3m-only-one-buffer.  Keep old as aliases.
-;;       bmkp-jump-w3m-new-buffer, bmkp-jump-w3m-only-one-buffer: Use get-buffer-create, just in case.
 ;;       Updated per latest fix for bug #25365: insert version stamp after writing bmks.  UNTESTED.
 ;; 2017/01/08 dadams
 ;;     Use the term "entry", not "property" everywhere, for bookmark entries (fields).
@@ -1267,6 +1273,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2017/01/10 dadams
+;;     Renamed bmkp-toggle-allow-multi-tabs-for-w3m to bmkp-toggle-w3m-allow-multiple-buffers.
+;;     bmkp-bmenu-toggle-menu: Added bmkp-toggle-eww-allow-multiple-buffers.
 ;; 2017/01/08 dadams
 ;;     Use the term "entry", not "property" everywhere, for bookmark entries (fields).
 ;; 2017/01/07 dadams
@@ -1879,6 +1888,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2017/01/10 dadams
+;;     Applied renaming: bmkp-replace-eww-keys-flag to bmkp-eww-replace-keys-flag.
 ;; 2017/01/02 dadams
 ;;     menu-bar-bookmark-map: Added menu item Store Org Link To....
 ;;     Typo: bmkp-replace-EWW-keys-flag -> bmkp-replace-eww-keys-flag.
