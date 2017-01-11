@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Jan  8 17:47:24 2017 (-0800)
+;; Last-Updated: Tue Jan 10 16:06:27 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3916
+;;     Update #: 3922
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -5822,11 +5822,18 @@ are marked or ALLP is non-nil."
                              :visible (> emacs-major-version 20)))
 
 (define-key bmkp-bmenu-toggle-menu [sep4] '("--")) ; ------------ Jumping-behavior stuff
-(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-allow-multi-tabs-for-w3m]
-  (bmkp-menu-bar-make-toggle bmkp-toggle-allow-multi-tabs-for-w3m bmkp-w3m-allow-multi-tabs-flag
-                             "Using Multi-Tabs for W3M"
-                             "Using multi-tabs when jumping to a W3M bookmark is now %s"
-                             "Toggle the value of option `bmkp-w3m-allow-multi-tabs-flag'"))
+(define-key bmkp-bmenu-toggle-menu [bmkp-toggle-w3m-allow-multiple-buffers]
+  (bmkp-menu-bar-make-toggle bmkp-toggle-w3m-allow-multiple-buffers bmkp-w3m-allow-multiple-buffers-flag
+                             "Using Multiple Buffers for W3M"
+                             "Using a new buffer when jumping to a W3M bookmark is now %s"
+                             "Toggle the value of option `bmkp-w3m-allow-multiple-buffers-flag'"))
+(when (boundp 'bmkp-eww-allow-multiple-buffers-flag) ; Emacs 24.4+
+  (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-eww-allow-multiple-buffers]
+    (bmkp-menu-bar-make-toggle bmkp-toggle-eww-allow-multiple-buffers bmkp-eww-allow-multiple-buffers-flag
+                               "Using Multiple Buffers for EWW"
+                               "Using a new buffer when jumping to an EWW bookmark is now %s"
+                               "Toggle the value of option `bmkp-eww-allow-multiple-buffers-flag'"))
+  )
 (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-showing-region-end]
   (bmkp-menu-bar-make-toggle bmkp-toggle-showing-region-end bmkp-show-end-of-region-flag
                              "Showing Region End"
