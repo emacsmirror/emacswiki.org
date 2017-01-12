@@ -19,8 +19,8 @@ packages from CRAN.  I have a script called
 If you don't know how to run that inside R,  then I'd suggest that should be your first homework assignment. (Either paste the whole program into an open R
 session or read ?source inside R.) 
 
-2. Install the newest version of Professor Goulet's Emacs modified for
-Windows or Macintosh. His page is http://vgoulet.act.ulaval.ca/en/ressources/emacs/. It has ESS (Emacs
+2. Install the newest version of Professor Goulet's Emacs Modified for
+[https://vigou3.github.io/emacs-modified-windows/ Windows] or [https://vigou3.github.io/emacs-modified-macos/ macOS]. It has ESS (Emacs
 Speaks Statistics) setup inside there, along with 
 other handy Emacs addons.  Professor Goulet's effort to package all of
 that amazes me.
