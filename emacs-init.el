@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 15:54:33 1995
 ;; Version: 0
 ;; Package-Requires: ((start "0"))
-;; Last-Updated: Sun Jan  1 09:30:07 2017 (-0800)
+;; Last-Updated: Thu Jan 12 08:39:52 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 2183
+;;     Update #: 2185
 ;; URL: http://www.emacswiki.org/emacs-init.el
 ;; Keywords: init, .emacs, _emacs, dotemacs
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -474,7 +474,7 @@
 (put 'capitalize-region         'disabled nil) ;   "     "
 (put 'dired-find-alternate-file 'disabled nil)
 (auto-compression-mode 1)               ; Auto decompress compressed files.
-(setq delete-selection-mode t)          ; Use delete-selection mode.
+(delete-selection-mode t)               ; Use delete-selection mode.
 (setq message-log-max 2000)
 
 (defvar mouse-1-click-follows-link)     ; Quiet the byte-compiler.
@@ -668,7 +668,7 @@
 ;;;    searching (`C-s') toggles case-sensitivity.
 ;;;    To inhibit this, do (setq-default case-fold-search t).
 ;;; 3. DEL (backspace) removes the current selection, and typing replaces it.
-;;;    To inhibit this, do (delete-selection-mode nil).
+;;;    To inhibit this, do (delete-selection-mode -1).
 ;;; 4. Coloring (font-locking) is the default in all buffers.
 ;;;    To inhibit this, do (global-font-lock-mode nil)
 ;;; 5. Indenting uses only spaces, not TABs.
