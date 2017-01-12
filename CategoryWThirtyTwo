@@ -30,7 +30,7 @@ Where to get it:
 
 ** **2014-11-08** **emacs-bin** Binary distributions of GNU Emacs. https://sourceforge.net/projects/emacs-bin
 
-** **2017-01-11** **Emacs for Windows Modified** (https://vigou3.github.io/emacs-modified-windows/) -- Emacs 25.1-2 with a few modifications, most notably an installer, AUCTeX, ESS and image libraries.
+** **2017-01-11** **Emacs Modified for Windows** (https://vigou3.github.io/emacs-modified-windows/) -- Emacs 25.1-2 with a few modifications, most notably an installer, AUCTeX, ESS and image libraries.
 
 ** **2012-08-25** **ntemacs** -- http://ntemacs.sourceforge.net/ -- **Emacs bzr for w32** [24.2.50.1]
 *** Clean, optimized w32 build of latest Emacs development trunk (Bazaar).
