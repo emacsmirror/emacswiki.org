@@ -9,9 +9,9 @@
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:08:24 2017 (-0800)
+;; Last-Updated: Thu Jan 12 08:47:01 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 498
+;;     Update #: 506
 ;; URL: http://www.emacswiki.org/delsel.el
 ;; Doc URL: http://emacswiki.org/DeleteSelectionMode
 ;; Keywords: abbrev, emulations, local, convenience
@@ -90,6 +90,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/01/12 dadams
+;;     delete-selection-mode:
+;;       Corrected doc string per Emacs bug #25428.
+;;       For Emacs 20: change behavior to agree with later versions (nil means enable).
 ;; 2016/01/02 dadams
 ;;     delete-selection-mode: For Emacs 24.4+, do not turn on transient-mark-mode.
 ;; 2014/07/23 dadams
@@ -211,8 +215,11 @@
        (eval '(define-minor-mode delete-selection-mode
                "Toggle Delete Selection mode.
 With prefix argument ARG, enable Delete Selection mode if ARG is
-positive.  If called from Lisp, enable the mode if ARG is omitted or
-nil.
+positive, and disable it otherwise.
+
+If called from Lisp: Toggle the mode if ARG is `toggle'; disable it if
+ARG is a non-positive integer; and enable it otherwise (including if
+ARG is omitted, nil, or a positive integer).
 
 When Delete Selection mode is enabled, typed text replaces the
 selection if the selection is active, and DEL deletes the selection.
@@ -229,8 +236,11 @@ Otherwise, typed text is just inserted at point, as usual."
        (eval '(define-minor-mode delete-selection-mode
                "Toggle Delete Selection mode.
 With prefix argument ARG, enable Delete Selection mode if ARG is
-positive.  If called from Lisp, enable the mode if ARG is omitted or
-nil.
+positive, and disable it otherwise.
+
+If called from Lisp: Toggle the mode if ARG is `toggle'; disable it if
+ARG is a non-positive integer; and enable it otherwise (including if
+ARG is omitted, nil, or a positive integer).
 
 When Delete Selection mode is enabled, Transient Mark mode is also
 enabled, typed text replaces the selection if the selection is active,
@@ -249,17 +259,21 @@ at point, as usual."
       (t (defun delete-selection-mode (&optional arg)
            "Toggle Delete Selection mode.
 With prefix argument ARG, enable Delete Selection mode if ARG is
-positive.  If called from Lisp, enable the mode if ARG is omitted or
-nil.
+positive, and disable it otherwise.
+
+If called from Lisp: Toggle the mode if ARG is `toggle'; disable it if
+ARG is a non-positive integer; and enable it otherwise (including if
+ARG is omitted, nil, or a positive integer).
 
 When Delete Selection mode is enabled, Transient Mark mode is also
 enabled, typed text replaces the selection if the selection is active,
 and DEL deletes the selection.  Otherwise, typed text is inserted at
 point, as usual."
-           (interactive "P")
-           (setq delete-selection-mode  (if arg
-                                            (> (prefix-numeric-value arg) 0)
-                                          (not delete-selection-mode)))
+           (interactive (or current-prefix-arg  'toggle))
+           (setq delete-selection-mode  (if (eq arg 'toggle)
+                                            (not delete-selection-mode)
+                                          ;; A nil argument means ON now.
+                                          (> (prefix-numeric-value arg) 0)))
            (force-mode-line-update)
            (if (not delete-selection-mode)
                (remove-hook 'pre-command-hook 'delete-selection-pre-hook)
