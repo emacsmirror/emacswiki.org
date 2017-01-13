@@ -118,7 +118,7 @@ or to support other human languages and compatibility issues between other Emacs
 * I wish I could write Arabic in Emacs
 ** And I wish I could write Hebrew (go BiDi), with vowel points.
 
-* Emacs ought to be fully internationalized, with multi-lingual tool-bar, help, fn-descriptions etc.  At least, it ought to move away from the use of purely US-American terms to International (ie., British/Commonwealth) English (US-English always irritates me a lot).
+* Emacs ought to be fully internationalized, with multi-lingual tool-bar, help, fn-descriptions etc.  At least, it ought to move away from the use of purely US-American terms to International (ie., British/Commonwealth) English.
 
 == Editing Wishes ==
 
