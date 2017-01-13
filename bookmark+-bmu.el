@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Jan 10 16:06:27 2017 (-0800)
+;; Last-Updated: Fri Jan 13 13:10:05 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3922
+;;     Update #: 3923
 ;; URL: http://www.emacswiki.org/bookmark+-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2813,7 +2813,7 @@ With a prefix argument, do not mark remote files or directories."
   (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-non-file-bookmark-p))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-non-invokable-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-non-invokable-bookmarks () ; Bound to `n M' in bookmark list
+(defun bmkp-bmenu-mark-non-invokable-bookmarks () ; Bound to `N M' in bookmark list
   "Mark non-invokable bookmarks."
   (interactive)
   (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-non-invokable-bookmark-p))
@@ -5479,9 +5479,9 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "MM"                   'bmkp-bmenu-mark-man-bookmarks)
 (define-key bookmark-bmenu-mode-map "MS"                   'bmkp-bmenu-show-only-man-bookmarks)
 (define-key bookmark-bmenu-mode-map "\M-m"                 'bmkp-bmenu-mark-all)
-(define-key bookmark-bmenu-mode-map "n"                    nil) ; For Emacs 20
-(define-key bookmark-bmenu-mode-map "nM"                   'bmkp-bmenu-mark-non-invokable-bookmarks)
-(define-key bookmark-bmenu-mode-map "nS"                   'bmkp-bmenu-show-only-non-invokable-bookmarks)
+(define-key bookmark-bmenu-mode-map "N"                    nil) ; For Emacs 20
+(define-key bookmark-bmenu-mode-map "NM"                   'bmkp-bmenu-mark-non-invokable-bookmarks)
+(define-key bookmark-bmenu-mode-map "NS"                   'bmkp-bmenu-show-only-non-invokable-bookmarks)
 (define-key bookmark-bmenu-mode-map "O"                    nil) ; For Emacs 20
 (define-key bookmark-bmenu-mode-map "OM"                 'bmkp-bmenu-mark-orphaned-local-file-bookmarks)
 (define-key bookmark-bmenu-mode-map "OS"                'bmkp-bmenu-show-only-orphaned-local-file-bookmarks)
