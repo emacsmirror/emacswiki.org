@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Sun Jan  1 10:21:00 2017 (-0800)
+;; Last-Updated: Fri Jan 13 15:48:53 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 7402
+;;     Update #: 7403
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -9172,7 +9172,8 @@ minor mode is turned on."
            (this-event                              (and (not (equal [] this-c-k-vector))
                                                          (elt this-c-k-vector 0))))
       ;; Prevent `down-mouse-1' etc. from auto-completing.
-      (unless (or (not this-event)
+      (unless (or (functionp (key-binding this-c-k-vector))
+                  (not this-event)
                   (mouse-movement-p this-event)
                   ;; This is `mouse-event-p', which is not defined for Emacs 22.
                   (memq (event-basic-type this-event) '(mouse-1 mouse-2 mouse-3 mouse-movement)))
