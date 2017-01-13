@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:51:35 2017 (-0800)
+;; Last-Updated: Fri Jan 13 09:06:25 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3271
+;;     Update #: 3283
 ;; URL: http://www.emacswiki.org/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -48,7 +48,8 @@
 ;;    `recenter-top-bottom-2', `region-length', `region-to-buffer',
 ;;    `region-to-file', `resolve-file-name',
 ;;    `reversible-transpose-sexps', `revert-buffer-no-confirm',
-;;    `selection-length', `switch-to-alternate-buffer',
+;;    `selection-length', `split-para-at-sentence-ends' (Emacs 21+),
+;;    `split-para-mode' (Emacs 21+), `switch-to-alternate-buffer',
 ;;    `switch-to-alternate-buffer-other-window',
 ;;    `to-indentation-repeat-backward',
 ;;    `to-indentation-repeat-forward', `undo-repeat' (Emacs 24.3+),
@@ -101,6 +102,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/01/13 dadams
+;;     Added: split-para-at-sentence-ends, split-para-mode.
 ;; 2016/07/19 dadams
 ;;     Added: to-indentation-repeat-backward, to-indentation-repeat-forward.
 ;; 2015/06/02 dadams
@@ -549,6 +552,43 @@ tab stop.  If NTH is negative then indent negatively (outdent)."
     (let ((tabstop  (nth (mod (1- (abs nth)) (length tab-stop-list))
                          tab-stop-list)))
       (indent-rigidly start end (if (natnump nth) tabstop (- tabstop))))))
+
+(when (fboundp 'define-minor-mode)      ; Emacs 21+
+
+  (defun split-para-at-sentence-ends ()
+    "Split current paragraph into lines with one sentence each.
+Then turn off `auto-fill-mode'."
+    (interactive)
+    (let ((mode  major-mode))
+      (unwind-protect
+           (progn (text-mode)
+                  (save-excursion
+                    (let ((emacs-lisp-docstring-fill-column  t)
+                          (fill-column                       (point-max)))
+                      (fill-paragraph nil)) ; Emacs 21-22 requires the arg.
+                    (let ((bop  (copy-marker (progn (backward-paragraph) (point))))
+                          (eop  (copy-marker (progn (forward-paragraph)  (point)))))
+                      (goto-char bop)
+                      (while (< (point) eop)
+                        (forward-sentence)
+                        (forward-whitespace 1)
+                        (unless (>= (point) eop)
+                          (delete-horizontal-space)
+                          (insert "\n"))))))
+        (funcall mode)))
+    (auto-fill-mode -1))
+
+  ;; `define-minor-mode' is not defined in Emacs 20, so to be able to byte-compile this
+  ;; file in Emacs 20, prohibit byte-compiling the `define-minor-mode' call.
+  (eval '(define-minor-mode split-para-mode 
+          "Toggle between a filled paragraph and one split into sentences."
+          nil nil nil
+          (if (not split-para-mode)
+              (split-para-at-sentence-ends)
+            (auto-fill-mode 1)
+            (fill-paragraph nil))))     ; Emacs 21-22 requires the arg.
+
+  )
 
 ;;;###autoload
 (defun delete-extra-windows-for-buffer ()
