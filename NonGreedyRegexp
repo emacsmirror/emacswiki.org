@@ -1,6 +1,6 @@
-##*?##,  ##+?##, and ##??## are non-greedy versions of ##*##,  ##+##, and ##?## and have been available since Emacs 21.1, released in 2001.
+The forms ##*?##,  ##+?##, and ##??## provide non-greedy versions of ##*##,  ##+##, and ##?## and have been available since Emacs 21.1, released in 2001.
 
-== Hack for ancient emacsen ==
+== Emulation with ancient emacsen ==
 
 In Emacs 21.1 and later versions Perl-like non-greedy syntax (.*?) has
 been implemented.
