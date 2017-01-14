@@ -1,3 +1,11 @@
+##*?##,  ##+?##, and ##??## are non-greedy versions of ##*##,  ##+##, and ##?## and have been available since Emacs 21.1, released in 2001.
+
+== Hack for ancient emacsen ==
+
+In Emacs 21.1 and later versions Perl-like non-greedy syntax (.*?) has
+been implemented.
+
+
 Howto get "minimal matching" on a particular <code>\\(.*\\)</code> sub expression, ie. howto write a non-greedy regular expressions as in Perl <code>(.*?)</code>:
 
  \\(\\|.\\)*
@@ -7,8 +15,6 @@ most backtracking implementations will do the above match non-greedily,
 just as <code>(.*?)</code> would.
 The above hack works in Emacs versions earlier than 21.1. 
 
-In Emacs 21.1 and later versions Perl-like non-greedy syntax (.*?) has
-been implemented.
 
 In either case the * and + special characters can be used to create a
 non-greedy regexp. 
