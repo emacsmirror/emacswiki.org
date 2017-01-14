@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  8 07:19:13 2017 (-0800)
+;; Last-Updated: Sat Jan 14 15:57:38 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 825
+;;     Update #: 828
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -190,6 +190,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/01/14 dadams
+;;     Added vacuous defvars for isearchp-reg-end, isearchp-restrict-to-region-flag.
 ;; 2017/01/08 dadams
 ;;     modelinepos-style: Simplified. 
 ;; 2017/01/07 dadams
@@ -255,6 +257,8 @@
 ;; Quiet the byte-compiler.
 
 (defvar isearchp-reg-beg)                 ; In `isearch+.el'
+(defvar isearchp-reg-end)                 ; In `isearch+.el'
+(defvar isearchp-restrict-to-region-flag) ; In `isearch+.el'
 (defvar rectangle--string-preview-window) ; In `rect.el' for Emacs 24.4+
 (defvar use-empty-active-region)          ; In `simple.el' for Emacs 23+
 
