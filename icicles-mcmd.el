@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Jan  1 10:27:18 2017 (-0800)
+;; Last-Updated: Sun Jan 15 14:30:28 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 19771
+;;     Update #: 19779
 ;; URL: http://www.emacswiki.org/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -9216,12 +9216,13 @@ it is the only frame or a standalone minibuffer frame."
   (when buffer                          ; Do nothing if null BUFFER.
     ;; Avoid error message "Attempt to delete minibuffer or sole ordinary window".
     (let* ((this-buffer-frames  (icicle-frames-on buffer t))
-           (this-frame          (car this-buffer-frames)))
+           (this-frame          (car this-buffer-frames))
+           mini-param)
       (unless (and this-frame
                    (frame-visible-p this-frame)
                    (null (cdr this-buffer-frames)) ; Only one frame shows BUFFER.
-                   (eq (cdr (assoc 'minibuffer (frame-parameters this-frame)))
-                       (active-minibuffer-window)) ; Has an active minibuffer.
+                   (setq mini-param  (cdr (assoc 'minibuffer (frame-parameters this-frame)))) ; Has mini param.
+                   (eq mini-param (active-minibuffer-window)) ; Has an active minibuffer.
                    (save-window-excursion
                      (select-frame this-frame)
                      (one-window-p t 'SELECTED-FRAME-ONLY))) ; Only one window.
