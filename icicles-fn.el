@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Jan  1 10:25:43 2017 (-0800)
+;; Last-Updated: Sun Jan 15 10:52:57 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 15192
+;;     Update #: 15222
 ;; URL: http://www.emacswiki.org/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -807,8 +807,7 @@ the following is true:
    - `completion-no-auto-exit' is non-nil
    - this is just `(icicle-)lisp-complete-symbol' completion."
          (let* ((buffer  (or buffer  completion-reference-buffer))
-                (mini-p  (save-match-data (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
-                                                        (buffer-name buffer)))))
+                (mini-p  (icicle-string-match-p "\\` \\*Minibuf-[0-9]+\\*\\'" (buffer-name buffer))))
            ;; If BUFFER is a minibuffer, barf unless it's currently active.
            (if (and mini-p  (or (not (active-minibuffer-window))
                                 (not (equal buffer (window-buffer (active-minibuffer-window))))))
@@ -855,8 +854,7 @@ the following is true:
     - `completion-no-auto-exit' is non-nil
     - this is just `(icicle-)lisp-complete-symbol' completion."
          (let* ((buffer  (or buffer  completion-reference-buffer))
-                (mini-p  (save-match-data (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
-                                                        (buffer-name buffer)))))
+                (mini-p  (icicle-string-match-p "\\` \\*Minibuf-[0-9]+\\*\\'" (buffer-name buffer))))
            ;; If BUFFER is a minibuffer, barf unless it's currently active.
            (when (and mini-p  (or (not (active-minibuffer-window))
                                   (not (equal buffer (window-buffer (active-minibuffer-window))))))
@@ -928,8 +926,7 @@ so it is called after completion-list buffer text is written."
                        (with-current-buffer mainbuf
                          (save-excursion (skip-chars-backward "^/")
                                          (- (point) (icicle-minibuffer-prompt-end)))))
-                      ((save-match-data (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
-                                                      (buffer-name mainbuf)))
+                      ((icicle-string-match-p "\\` \\*Minibuf-[0-9]+\\*\\'" (buffer-name mainbuf))
                        ;; Otherwise, in minibuffer, the whole input is being completed.
                        0))))))))
 
@@ -1580,9 +1577,9 @@ and `read-file-name-function'."
          (setq result  (icicle-read-file-name-1 prompt dir default-filename
                                                 require-match initial-input predicate history))
          (when ffap-available-p
-           (cond ((save-match-data (string-match "*point file name\\*$" result))
+           (cond ((icicle-string-match-p "*point file name\\*$" result)
                   (setq result  fap))
-                 ((save-match-data (string-match "*mouse-2 file name\\*$" result))
+                 ((icicle-string-match-p "*mouse-2 file name\\*$" result)
                   (setq result  (progn (let ((e  (read-event "Click `mouse-2' on file name")))
                                          (read-event) ; Get rid of mouse up event.
                                          (save-excursion
@@ -2184,7 +2181,7 @@ impossible to know which concrete types a value must match."
     (let ((var-type  (icicle-get-safe variable 'custom-type)))
       (dolist (type types)
         (when (if (stringp type)
-                  (save-match-data (string-match type (format "%s" (format "%S" var-type))))
+                  (icicle-string-match-p type (format "%s" (format "%S" var-type)))
                 (equal var-type type))
           (throw 'icicle-type-matches t))))
     nil))
@@ -2195,13 +2192,11 @@ impossible to know which concrete types a value must match."
     (let ((var-type  (icicle-get-safe variable 'custom-type)))
       (dolist (type types)
         (while var-type
-          (when (or (and (stringp type)
-                         (save-match-data (string-match type (format "%s" (format "%S" var-type)))))
+          (when (or (and (stringp type)  (icicle-string-match-p type (format "%s" (format "%S" var-type))))
                     (equal type var-type))
             (throw 'icicle-type-inherits t))
           (when (consp var-type) (setq var-type  (car var-type)))
-          (when (or (and (stringp type)
-                         (save-match-data (string-match type (format "%s" (format "%S" var-type)))))
+          (when (or (and (stringp type)  (icicle-string-match-p type (format "%s" (format "%S" var-type))))
                     (equal type var-type))
             (throw 'icicle-type-inherits t))
           (setq var-type  (car (icicle-get-safe var-type 'widget-type))))
@@ -2495,8 +2490,7 @@ candidate `*point face name*' to use the face at point."
                                                'face-name-history
                                              'icicle-face-name-history)))))
            (let ((proxy  (car (member face icicle-proxy-candidates))))
-             (cond ((save-match-data (string-match "*point face name\\*$" face))
-                    (eyedrop-face-at-point))
+             (cond ((icicle-string-match-p "*point face name\\*$" face) (eyedrop-face-at-point))
                    (proxy (symbol-value (intern (substring proxy 1 (1- (length proxy))))))
                    (t (intern face)))))))
 
@@ -2544,8 +2538,7 @@ candidate `*point face name*' to use the face at point."
                                             'icicle-face-name-history)
                                           def)))))
            (let ((proxy  (car (member face icicle-proxy-candidates))))
-             (cond ((save-match-data (string-match "*point face name\\*$" face))
-                    (eyedrop-face-at-point))
+             (cond ((icicle-string-match-p "*point face name\\*$" face) (eyedrop-face-at-point))
                    (proxy (symbol-value (intern (substring proxy 1 (1- (length proxy))))))
                    (t (intern face)))))))
 
@@ -3807,11 +3800,9 @@ INPUT is a string.  Each candidate is a string."
                                            #'icicle-case-string-less-p)
                                    (FM-all-fuzzy-matches input candidates)))))
         (let ((icicle-extra-candidates
-               (icicle-remove-if-not
-                (lambda (cand) (save-match-data (string-match input cand))) icicle-extra-candidates))
+               (icicle-remove-if-not (lambda (cand) (icicle-string-match-p input cand)) icicle-extra-candidates))
               (icicle-proxy-candidates
-               (icicle-remove-if-not
-                (lambda (cand) (save-match-data (string-match input cand))) icicle-proxy-candidates))
+               (icicle-remove-if-not (lambda (cand) (icicle-string-match-p input cand)) icicle-proxy-candidates))
               (filtered-candidates
                (icicle-transform-candidates
                 (append icicle-extra-candidates icicle-proxy-candidates
@@ -3852,13 +3843,11 @@ over all candidates."
                                         (and icicle-buffer-name-input-p ; Used only by Emacs < 23.2.
                                              icicle-buffer-ignore-space-prefix-flag))))
              (icicle-extra-candidates
-              (icicle-remove-if-not
-               (lambda (cand) (save-match-data (string-match (concat "^" (regexp-quote input)) cand)))
-               icicle-extra-candidates))
+              (icicle-remove-if-not (lambda (cand) (icicle-string-match-p (concat "^" (regexp-quote input)) cand))
+                                    icicle-extra-candidates))
              (icicle-proxy-candidates
-              (icicle-remove-if-not
-               (lambda (cand) (save-match-data (string-match (concat "^" (regexp-quote input)) cand)))
-               icicle-proxy-candidates))
+              (icicle-remove-if-not (lambda (cand) (icicle-string-match-p (concat "^" (regexp-quote input)) cand))
+                                    icicle-proxy-candidates))
              (filtered-candidates
               (icicle-transform-candidates
                (append icicle-extra-candidates icicle-proxy-candidates
@@ -3918,12 +3907,12 @@ over all candidates."
                (icicle-extra-candidates
                 (let ((relname  (file-name-nondirectory input)))
                   (icicle-remove-if-not
-                   (lambda (cand) (save-match-data (string-match (concat "^" (regexp-quote relname)) cand)))
+                   (lambda (cand) (icicle-string-match-p (concat "^" (regexp-quote relname)) cand))
                    icicle-extra-candidates)))
                (icicle-proxy-candidates
                 (let ((relname  (file-name-nondirectory input)))
                   (icicle-remove-if-not
-                   (lambda (cand) (save-match-data (string-match (concat "^" (regexp-quote relname)) cand)))
+                   (lambda (cand) (icicle-string-match-p (concat "^" (regexp-quote relname)) cand))
                    icicle-proxy-candidates)))
                (filtered-candidates
                 (icicle-transform-candidates
@@ -3960,7 +3949,7 @@ over all candidates."
 
                        ;; If common prefix matches an empty directory, use that dir as the sole completion.
                        (when (and (stringp common-prefix)
-                                  (save-match-data (string-match "/\\.$" common-prefix))) ; Matches /., /..
+                                  (icicle-string-match-p "/\\.$" common-prefix)) ; Matches /., /..
                          (setq common-prefix  (substring common-prefix 0 (- (length common-prefix) 2))))
                        (if icicle-must-pass-after-match-predicate
                            (icicle-expanded-common-match input filtered-candidates)
@@ -4047,11 +4036,9 @@ over all candidates."
                                           (and icicle-buffer-name-input-p ; Used only by Emacs < 23.2.
                                                icicle-buffer-ignore-space-prefix-flag))))
                (icicle-extra-candidates
-                (icicle-remove-if-not
-                 (lambda (cand) (save-match-data (string-match input cand))) icicle-extra-candidates))
+                (icicle-remove-if-not (lambda (cand) (icicle-string-match-p input cand)) icicle-extra-candidates))
                (icicle-proxy-candidates
-                (icicle-remove-if-not
-                 (lambda (cand) (save-match-data (string-match input cand))) icicle-proxy-candidates))
+                (icicle-remove-if-not (lambda (cand) (icicle-string-match-p input cand)) icicle-proxy-candidates))
                (filtered-candidates
                 (icicle-transform-candidates
                  (append icicle-extra-candidates icicle-proxy-candidates
@@ -4102,13 +4089,9 @@ over all candidates."
                     (icicle-all-completions input minibuffer-completion-table pred)
                   (icicle-all-completions "" minibuffer-completion-table pred)))
                (icicle-extra-candidates
-                (icicle-remove-if-not
-                 (lambda (cand) (save-match-data (string-match input cand)))
-                 icicle-extra-candidates))
+                (icicle-remove-if-not (lambda (cand) (icicle-string-match-p input cand)) icicle-extra-candidates))
                (icicle-proxy-candidates
-                (icicle-remove-if-not
-                 (lambda (cand) (save-match-data (string-match input cand)))
-                 icicle-proxy-candidates))
+                (icicle-remove-if-not (lambda (cand) (icicle-string-match-p input cand)) icicle-proxy-candidates))
                (filtered-candidates
                 (icicle-transform-candidates
                  (append icicle-extra-candidates icicle-proxy-candidates
@@ -5048,10 +5031,9 @@ See also variable `icicle-must-pass-after-match-predicate', which is
 similar to `icicle-must-pass-predicate' but is used after filtering
 using the user input."
   (and (not (string= "" candidate))     ; Filter out empty strings.
-       (or (not icicle-must-match-regexp)
-           (save-match-data (string-match icicle-must-match-regexp candidate)))
+       (or (not icicle-must-match-regexp)  (icicle-string-match-p icicle-must-match-regexp candidate))
        (or (not icicle-must-not-match-regexp)
-           (not (save-match-data (string-match icicle-must-not-match-regexp candidate))))
+           (not (icicle-string-match-p icicle-must-not-match-regexp candidate)))
        (or (not icicle-must-pass-predicate)  (funcall icicle-must-pass-predicate candidate))
        candidate))
 
@@ -7312,8 +7294,8 @@ The special key representation \"..\" is, however, less than all other
 keys, including prefix keys."
   (let* ((prefix-string           (concat icicle-complete-keys-separator "\\.\\.\\.$"))
          (parent-string           "..")
-         (s1-prefix-p             (save-match-data (string-match prefix-string s1)))
-         (s2-prefix-p             (save-match-data (string-match prefix-string s2)))
+         (s1-prefix-p             (icicle-string-match-p prefix-string s1))
+         (s2-prefix-p             (icicle-string-match-p prefix-string s2))
          (completion-ignore-case  t))
     (and (not (string= parent-string s2))
          (or (string= parent-string s1)
@@ -7394,10 +7376,10 @@ Return nil if S2 is a proxy candidate and S1 is not.
 Otherwise, return non-nil if S1 is `string-lessp' S2."
   (let ((s1-proxy-p  (or (member s1 icicle-proxy-candidates)
                          (and icicle-proxy-candidate-regexp
-                              (save-match-data (string-match icicle-proxy-candidate-regexp s1)))))
+                              (icicle-string-match-p icicle-proxy-candidate-regexp s1))))
         (s2-proxy-p  (or (member s2 icicle-proxy-candidates)
                          (and icicle-proxy-candidate-regexp
-                              (save-match-data (string-match icicle-proxy-candidate-regexp s2))))))
+                              (icicle-string-match-p icicle-proxy-candidate-regexp s2)))))
     (or (and (not s1-proxy-p)  (not s2-proxy-p)  (icicle-case-string-less-p s1 s2))
         (and s1-proxy-p  (not s2-proxy-p))
         (and s1-proxy-p  s2-proxy-p  (icicle-case-string-less-p s1 s2)))))
