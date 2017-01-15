@@ -74,7 +74,10 @@ Every time I edit a file and then discard the changes emacs saves a ~/#filename#
 === Running save-buffer automatically ===
 
 [new:calinb:2017-01-15 06:02 UTC]
-This is now an optional feature in emacs. It is controlled through `auto-save-visited-file-name`. Can we delete the hacks below? They misled me and will probably mislead others. (Through no fault of the authors, obviously.)
+This is now an optional feature in emacs. It is controlled through `auto-save-visited-file-name'. Can we delete the hacks below? They misled me and will probably mislead others. (Through no fault of the authors, obviously.)
+
+[new:DrewAdams:2017-01-15 18:56 UTC]
+: No, we should ''not'' delete them.  Not everyone uses the release of Emacs that has this as an optional feature.  There are users of this site who use GnuEmacs releases going back to at least Emacs 20, not to mention those who use XEmacs.  We can delete or correct text that is incorrect.  And it is good that you added mention of this new feature.  And you can edit any of the text here to help people not to be misled as you were.  But the info that applies to older releases should remain, as it could presumably help someone. -- DrewAdams
 
 ----
 
