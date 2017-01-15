@@ -73,6 +73,11 @@ Every time I edit a file and then discard the changes emacs saves a ~/#filename#
 
 === Running save-buffer automatically ===
 
+[new:calinb:2017-01-15 06:02 UTC]
+This is now an optional feature in emacs. It is controlled through `auto-save-visited-file-name`. Can we delete the hacks below? They misled me and will probably mislead others. (Through no fault of the authors, obviously.)
+
+----
+
 All these new-fangled IDEs tout that they automatically save your files for you. I think this would be cool to try out (my c-x c-s muscles get tired sometimes). You can set auto-save-visited-file-name to a non-nil value and emacs auto-save will save your work in the file you are working on instead of a separate file, but then the buffer is considered out of date and you can't continue editing without an annoying warning message. Is there a way around this? -- BryanMurdock
 
 [new]
