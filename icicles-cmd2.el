@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Fri Jan 13 15:48:53 2017 (-0800)
+;; Last-Updated: Mon Jan 16 11:32:22 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 7403
+;;     Update #: 7406
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -8909,19 +8909,24 @@ Each is a vector."
            (progn
              (icicle-keys+cmds-w-prefix prefix)
              (unless icicle-complete-keys-alist (icicle-user-error "No keys for prefix `%s'" prefix))
-             (let* ((icicle-this-cmd-keys ; For error report - e.g. mouse command.
-                     (this-command-keys-vector)) ; Free var in `icicle-complete-keys-action'.
-                    (icicle-key-prefix-description
-                     (icicle-key-description prefix nil icicle-key-descriptions-use-<>-flag))
-                    (prompt  (concat "Complete keys"
-                                     (and (not (string= "" icicle-key-prefix-description))
-                                          (concat " " icicle-key-prefix-description))
-                                     ": ")))
-               (put-text-property 0 1 'icicle-fancy-candidates t prompt)
-               (icicle-complete-keys-action
-                (completing-read prompt icicle-complete-keys-alist nil t nil nil
-                                 ;;$$ (if (equal [] prefix) nil "\\.\\.")
-                                 ))))
+             ;; Do nothing if the only completion is pseudo-completion `..'.  In particular, this
+             ;; prevents (most)  unwanted automatic completion for `icicle-auto-complete-keys-mode'.
+             ;; For example, when you use `C-x C-c' to quit, and Emacs prompts you for each unsaved buffer.
+             ;; There should be no attempt at completion when you hit `n' etc. to reply to the prompt.
+             (unless (equal icicle-complete-keys-alist '((\.\.)))
+               (let* ((icicle-this-cmd-keys ; For error report - e.g. mouse command.
+                       (this-command-keys-vector)) ; Free var in `icicle-complete-keys-action'.
+                      (icicle-key-prefix-description
+                       (icicle-key-description prefix nil icicle-key-descriptions-use-<>-flag))
+                      (prompt  (concat "Complete keys"
+                                       (and (not (string= "" icicle-key-prefix-description))
+                                            (concat " " icicle-key-prefix-description))
+                                       ": ")))
+                 (put-text-property 0 1 'icicle-fancy-candidates t prompt)
+                 (icicle-complete-keys-action
+                  (completing-read prompt icicle-complete-keys-alist nil t nil nil
+                                   ;;$$ (if (equal [] prefix) nil "\\.\\.")
+                                   )))))
         (dolist (cand  icicle-complete-keys-alist)
           (put (car cand) 'icicle-special-candidate nil))))) ; Reset the property.
 
