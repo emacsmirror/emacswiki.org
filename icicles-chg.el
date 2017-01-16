@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jan 15 14:32:28 2017 (-0800)
+;; Last-Updated: Mon Jan 16 11:34:10 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 11669
+;;     Update #: 11672
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1176,6 +1176,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2017/01/16 dadams
+;;     icicle-complete-keys-1: Do not complete if the only (pseudo-)completion is `..'.
 ;; 2017/01/13 dadams
 ;;     icicle-auto-complete-key: Do not complete if this-command-keys-vector is bound to a function.
 ;; 2016/12/23 dadams
