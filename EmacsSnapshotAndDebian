@@ -38,7 +38,7 @@ The following packages are available through apt-get/aptitude and might need to 
 * libgif-dev
 * libtiff-dev
 * libm17n-dev
-* libpng12-dev # This is old - I've been building with libpng16-16
+* libpng12-dev or newer (e.g. libpng-dev in Debian SID is as of 2016-01-16 at version 1.6.26 and works)
 * librsvg2-dev
 * libotf-dev
 * libgnutls-dev
