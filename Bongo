@@ -26,7 +26,7 @@ Bongo currently comes with backends for VLC, mpg321, ogg123, speexdec, Ti''''''M
    :extra-program-arguments '("--quiet")
    :matcher '(local-file "mid" "midi" "mod" "rcp" "r36" "g18" "g36"))
 
-Of course, it is also possible to add your own complex backends with support for interactive operations like seeking.  For example, see BongoMPlayer.
+Of course, it is also possible to add your own complex backends with support for interactive operations like seeking.
 
 There is a collection of nifty hacks at BongoHacks.
 
