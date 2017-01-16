@@ -111,6 +111,11 @@ How can I permanently set the visual line wrap, as in the code above but without
 
 -- [[Anonymous]]
 
+To set the VisualLineMode on a file by file basis using emacs local variables, try:
+
+    #  local variables:
+    #    eval: (visual-line-mode t)
+
 ----
 CategoryEditing
 CategoryFilling
