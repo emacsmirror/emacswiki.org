@@ -8,9 +8,9 @@
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:10:37 2017 (-0800)
+;; Last-Updated: Mon Jan 16 10:14:49 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 219
+;;     Update #: 227
 ;; URL: http://www.emacswiki.org/hide-comnt.el
 ;; Doc URL: http://www.emacswiki.org/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
@@ -72,6 +72,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/01/16 dadams
+;;     hide/show-comments-1: ((add-to|remove-from)-invisibility-spec 'hide-comment).
+;;     See https://github.com/syl20bnr/spacemacs/issues/8123.
 ;; 2016/12/27 dadams
 ;;     Added: show-invisible-comments-shows-all.
 ;;     hide/show-comments(-1): Respect show-invisible-comments-shows-all.
@@ -237,6 +240,9 @@ it needs `comment-search-forward'."
 (defun hide/show-comments-1 (hide/show start end)
   "Helper for `hide/show-comments'."
   (let (cbeg cend)
+    (if (eq 'hide hide/show)
+        (add-to-invisibility-spec 'hide-comment)
+      (remove-from-invisibility-spec 'hide-comment))
     (save-excursion
       (goto-char start)
       (while (and (< start end)  (save-excursion
