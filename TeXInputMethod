@@ -10,9 +10,12 @@ Here is an example. You need to bind the "current" package before calling `quail
 You can add more rules to this function call.
 
 {{{
-(let ((quail-current-package (assoc "TeX" quail-package-alist)))
-  (quail-define-rules ((append . t))
-		      ("^\\alpha" ?ᵅ)))
+(with-temp-buffer
+  (activate-input-method "TeX") ;; the input method has to be triggered for `quail-package-alist' to be non-nil
+  (let ((quail-current-package (assoc "TeX" quail-package-alist)))
+   (quail-define-rules ((append . t))
+                       ("^\\alpha" ?ᵅ))))
+
 }}}
 
 == An alternative to the TeX input method==
