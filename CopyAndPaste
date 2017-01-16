@@ -56,7 +56,7 @@ More specifically, for copy&paste, there are only two commands:
 
 ==== cliphist ====
 
-Read clipboard history from clipboard managers (Parcellite on Linux and Flycut on OS X).
+Read clipboard history from clipboard managers (Parcellite, ClipIt at Linux and Flycut at Mac).
 https://github.com/redguardtoo/cliphist
 
 ==== datclip ====
