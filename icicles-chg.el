@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Jan 16 11:34:10 2017 (-0800)
+;; Last-Updated: Tue Jan 17 09:01:34 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 11672
+;;     Update #: 11680
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1176,6 +1176,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2017/01/17 dadams
+;;     icicle-complete-keys-1: Added optional arg NO-ERROR = do not raise error if no completions.
+;;                             Do nothing if icicle-complete-keys-alist is empty.
+;;     icicle-keys+cmds-w-prefix: Do not add `..' candidate if there are no others.
+;;     icicle-auto-complete-key: Pass NO-ERROR arg to icicle-complete-keys-1.
 ;; 2017/01/16 dadams
 ;;     icicle-complete-keys-1: Do not complete if the only (pseudo-)completion is `..'.
 ;; 2017/01/13 dadams
