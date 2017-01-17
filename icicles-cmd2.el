@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Mon Jan 16 11:32:22 2017 (-0800)
+;; Last-Updated: Tue Jan 17 09:09:56 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 7406
+;;     Update #: 7417
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -444,6 +444,7 @@
 (defvar eyedrop-picked-background)      ; In `eyedrop.el' or `palette.el'
 (defvar eyedrop-picked-foreground)      ; In `eyedrop.el' or `palette.el'
 (defvar hlt-act-on-any-face-flag)       ; In `highlight.el'
+(defvar icicle-auto-complete-keys-mode-hook) ; Here (Emacs 22+)
 (defvar icicle-complete-keys-ignored-prefix-keys) ; In `icicles-var.el' (Emacs 22+)
 (defvar icicle-complete-keys-self-insert-ranges) ; In `icicles-var.el' (Emacs 22+)
 (defvar icicle-face-completing-p)       ; Here
@@ -8900,20 +8901,21 @@ Each is a vector."
   ;;       This means that if you change which face is to be used then that will not be reflected in
   ;;       the same Emacs session.  (But if the face itself has its properties changed (e.g. customized)
   ;;       then the change will be reflected in the same session.)
-  (defun icicle-complete-keys-1 (prefix) ; PREFIX is a free var in `icicle-complete-keys-action'.
-    "Complete a key sequence for prefix key PREFIX (a vector)."
+  ;;
+  ;; PREFIX is a free var in `icicle-complete-keys-action'.
+  (defun icicle-complete-keys-1 (prefix &optional no-error)
+    "Complete a key sequence for prefix key PREFIX (a vector).
+Non-nil optional arg NO-ERROR means do not raise an error if no
+completions are found for PREFIX."
     ;; `icicle-orig-extra-cands' is free in `icicle-complete-keys-action'.
     (let ((icicle-orig-extra-cands  icicle-extra-candidates)
           (icicle-key-prefix        prefix))
       (unwind-protect
            (progn
              (icicle-keys+cmds-w-prefix prefix)
-             (unless icicle-complete-keys-alist (icicle-user-error "No keys for prefix `%s'" prefix))
-             ;; Do nothing if the only completion is pseudo-completion `..'.  In particular, this
-             ;; prevents (most)  unwanted automatic completion for `icicle-auto-complete-keys-mode'.
-             ;; For example, when you use `C-x C-c' to quit, and Emacs prompts you for each unsaved buffer.
-             ;; There should be no attempt at completion when you hit `n' etc. to reply to the prompt.
-             (unless (equal icicle-complete-keys-alist '((\.\.)))
+             (unless (or icicle-complete-keys-alist  no-error) (icicle-user-error "No keys for prefix `%s'"
+                                                                                  prefix))
+             (when icicle-complete-keys-alist
                (let* ((icicle-this-cmd-keys ; For error report - e.g. mouse command.
                        (this-command-keys-vector)) ; Free var in `icicle-complete-keys-action'.
                       (icicle-key-prefix-description
@@ -8990,7 +8992,7 @@ Each is a vector."
         (setq prefix-map  (lookup-key icicle-active-map prefix))
         ;; NOTE: `icicle-add-key+cmd' uses `icicle-key-prefix-2' and `icicle-active-map' as free vars.
         (when (keymapp prefix-map) (map-keymap #'icicle-add-key+cmd prefix-map)))
-      (unless (equal [] prefix)
+      (unless (or (equal [] prefix)  (null icicle-complete-keys-alist))
         (push (list (intern (propertize ".." 'face 'icicle-multi-command-completion)))
               icicle-complete-keys-alist))
       ;; Delete duplicates.  Shadowing of bindings can produce dups.  E.g., `ESC' can be in submaps of
@@ -9182,7 +9184,7 @@ minor mode is turned on."
                   (mouse-movement-p this-event)
                   ;; This is `mouse-event-p', which is not defined for Emacs 22.
                   (memq (event-basic-type this-event) '(mouse-1 mouse-2 mouse-3 mouse-movement)))
-        (icicle-complete-keys-1 this-c-k-vector)
+        (icicle-complete-keys-1 this-c-k-vector 'NO-ERROR)
         (clear-this-command-keys))))
 
   )
