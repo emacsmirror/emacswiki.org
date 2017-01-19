@@ -1,0 +1,4 @@
+Maybe you could add [^0-9IO] (or word boundaries?) around the phone number regexp to prevent it from matching dates and number sequences in URLs?  Those seem to be most common false positives.
+
+-- npostavs 2017-01-19 16:14 UTC
+
