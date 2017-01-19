@@ -6,7 +6,9 @@ Then you might want to use the little lisp library below to convert between OrgM
 [http://freemind.sourceforge.net FreeMind mindmapping]
 files.
 
-(It used to be a part of [[nXhtml]], but now it is included in OrgMode and Emacs.)
+It used to be a part of [[nXhtml]], but now it is included in OrgMode and Emacs. Load it with:
+
+  (require 'ox-freemind.el)
 
 ----
 
