@@ -49,5 +49,15 @@ To ssh to a system to run commands and also edit remote files use https://github
 
 [[image:OutputZz]]
 
+== neale-ssh.el ==
+
+I previously worked at a major Linux distribution provider, and found myself frequently hopping through multiple hosts to get to a destination. The existing SSH solutions were unwieldy for me: tab completion and reliance on TRAMP made things unbearably slow. So I wrote my own.
+
+It's mostly just a slim interface to comint-mode. It doesn't try to do dirtrack, and it knows how to parse your `known-hosts` file.
+
+It's not for everyone, but if you're the right kind of weird, you may enjoy https://github.com/nealey/neale-ssh.el.
+
+
+
 ----
 CategoryExternalUtilities
