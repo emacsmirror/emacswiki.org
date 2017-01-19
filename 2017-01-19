@@ -1,4 +1,4 @@
 [new:AlexSchroeder:2017-01-19 07:17 UTC]
-Looks like the phone number spammers are back. Oh well. I've reinstated the regular expressions I've used in the past.
+Looks like the phone number spammers are back. Oh well. I've reinstated the regular expressions I've used in the past to block any edits to pages that look like they might contain a phone number. I know that there quite a number of false positives whenever this shield's up, but it looks like the easiest solution for the moment.
 
 -- AlexSchroeder
