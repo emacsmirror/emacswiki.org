@@ -2,3 +2,18 @@ Maybe you could add [^0-9IO] (or word boundaries?) around the phone number regex
 
 -- npostavs 2017-01-19 16:14 UTC
 
+
+----
+
+I've been playing around with it on https://regexp101.com/ -- if I use ##\b([1I]([-. ]*[0-9IO]){9,10})\b## I still get a match on [[spell-number.el]]:
+
+{{{
+(defun spelln-str (str gender-sym &optional places)
+  (let ((len (length str))
+	(power10 [1 10 100 1000 10000 100000 1000000])
+}}}
+
+Hm.
+
+-- [http://alexschroeder.ch/wiki/Emacs Alex Schroeder] 2017-01-19 21:25 UTC
+
