@@ -10,10 +10,14 @@ I've been playing around with it on https://regexp101.com/ -- if I use ##\b([1I]
 {{{
 (defun spelln-str (str gender-sym &optional places)
   (let ((len (length str))
-	(power10 [1 10 100 1000 10000 100000 1000000])
+	(power10 [1 10 100 ; etc, up to 1000000, removing triggering text so I can edit this page
+                  ])
 }}}
 
 Hm.
 
 -- [http://alexschroeder.ch/wiki/Emacs Alex Schroeder] 2017-01-19 21:25 UTC
 
+All the spammer phone numbers seem to start with 1 8xx, maybe ##\b([1I][-. ]*8([-. ]*[0-9IO]){8,9})\b##?
+
+-- npostavs
