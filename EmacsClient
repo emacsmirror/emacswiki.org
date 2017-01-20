@@ -47,12 +47,12 @@ The -a option specifies a fallback program to run if the emacs server is not fou
 
 [new]
 To address: "The first line suppresses command line output, but if anyone knows a quick and easy trick to prevent the batch file from popping a command window in the process, that'd be nice."
-[new]
 
 <pre>
 @echo off
 start "" "%~dp0emacsclientw.exe" --alternate-editor="" -n %*
 </pre>
+[new]
 
 Pro tip: Under Windows Vista/7 with your emacs directory in "Program Files", do *NOT* use Emacs itself to create or edit the batch file. Windows creates a "Virtual Store" in the environment of the current user when it sees an executable messing with it's own directory under "Program Files". This could cause some confusing problems.
 
