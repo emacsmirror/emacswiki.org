@@ -183,10 +183,10 @@ The following will group the tabs by the git repository that the file is in.  Al
     ((string= dir "/") "no-git")
     ((file-exists-p (concat dir "/.git")) dir)
     (t (find-git-dir (directory-file-name (file-name-directory dir))))))
- (defun git-tabbar-buffer-groups (buf)
+ (defun git-tabbar-buffer-groups ()
    "Groups tabs in tabbar-mode by the git repository they are in."
    (list 
-    (find-git-dir (buffer-file-name (get-buffer buf)))))
+    (find-git-dir (buffer-file-name (current-buffer)))))
  (setq tabbar-buffer-groups-function 'git-tabbar-buffer-groups)
 
 === Sort tabbar buffers by name ===
@@ -254,7 +254,7 @@ snippet to the .emacs file:
  ;; 2- in my emacs 23, I had to remove the "b" from "lambda (b)"
  (when (require 'tabbar nil t)
    (setq tabbar-buffer-groups-function
-         (lambda (b) (list "All Buffers")))
+         (lambda () (list "All Buffers")))
    (setq tabbar-buffer-list-function
          (lambda ()
            (remove-if
@@ -608,7 +608,7 @@ like the re-ordering, which is what led me to tabbar...
 For emacs 23.1 I have to changed above codes to get list all buffers as one group:
 
  (setq tabbar-buffer-groups-function
-           (lambda (b)     ;; b added here. I don't know why
+           (lambda ()
             (list "All")))
 
 - dixiecko
