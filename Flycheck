@@ -19,12 +19,14 @@ npm install jslinter -g
 <pre>
 (require 'json)
 (require 'flycheck)
-(defun parse-jslinter-warning (warning)
+(defun my-parse-jslinter-warning (warning)
   (flycheck-error-new
    :line (1+ (cdr (assoc 'line warning)))
    :column (1+ (cdr (assoc 'column warning)))
    :message (cdr (assoc 'message warning))
-   :level 'error))
+   :level 'error
+   :buffer (current-buffer)
+   :checker 'javascript-jslinter))
 (defun jslinter-error-parser (output checker buffer)
   (mapcar 'parse-jslinter-warning
           (cdr (assoc 'warnings (aref (json-read-from-string output) 0)))))
