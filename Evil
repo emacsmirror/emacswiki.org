@@ -1,6 +1,6 @@
 [[image/right:EvilLogo]]
 
-'''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to the now-obsolete [[Vimpulse]] and [VimMode vim-mode]. Its [https://bitbucket.org/lyro/evil/wiki/Home home page].
+'''Evil''' is an '''e'''xtensible '''vi''' '''l'''ayer for Emacs. It provides Vim features like Visual selection and text objects, and is the successor to the now-obsolete [[Vimpulse]] and [VimMode vim-mode]. Its [https://github.com/emacs-evil/evil home page].
 
 Current stable version: **1.2.12**
 
@@ -46,11 +46,11 @@ Evil can be alternatively downloaded and installed with:
 
 ==Install from source==
 
-Evil lives in a Mercurial repository. To download Evil, do:
+Evil lives in a Git repository. To download Evil, do:
 
-    hg clone https://bitbucket.org/lyro/evil
+    git clone https://github.com/emacs-evil/evil
 
-If you don't have Mercurial, just head over to [https://bitbucket.org/lyro/evil/downloads Bitbucket] and click the ''"Download master as tar.gz"'' link (extract with ##tar -xzf master.tar.gz##).
+If you don't have Git, follow [https://github.com/emacs-evil/evil/archive/master.tar.gz this] link to download snapshot of master (extract with ##tar -xzf master.tar.gz##).
 
 Move Evil to ##~/.emacs.d/evil## (or somewhere else in your ##load-path##). Then add the following lines to ##~/.emacs##:
 
@@ -107,7 +107,7 @@ A brief [https://bytebucket.org/lyro/evil/raw/default/doc/evil.pdf PDF manual] i
 * [https://github.com/noctuid/vertigo.el vertigo]: Port of [https://github.com/prendradjaja/vim-vertigo vim-vertigo] that gives commands for jumping lines using the home row (instead of using something like 34j).
 == Bug tracker ==
 
-If you have bug reports or suggestions, please submit them at the [https://bitbucket.org/lyro/evil BitBucket bug tracker] (open for all).
+If you have bug reports or suggestions, please submit them at the [https://github.com/emacs-evil/evil/issues Bug tracker] (open for all).
 
 == Managing keymaps ==
 
@@ -141,7 +141,7 @@ It is common for Emacs modes like Buffer Menu, Ediff, and others to define key b
    (my-move-key evil-motion-state-map evil-normal-state-map " ")
 
 === Key Translations (simple) ===
-Key Translations are another useful Emacs feature which allows one Key Sequence to translate to another prior to Emacs' process of Key Lookup in the active keymaps.  One limitation is [https://bitbucket.org/lyro/evil/issue/177/key-translation-map-not-honored-in-evil-o an Evil bug] that prevents Key Translations taking effect in the operator state.
+Key Translations are another useful Emacs feature which allows one Key Sequence to translate to another prior to Emacs' process of Key Lookup in the active keymaps.  One limitation is [https://github.com/emacs-evil/evil/issues/177 an Evil bug] that prevents Key Translations taking effect in the operator state.
 
 An example of defining a Key Translation: You could translate ch to C-h and cx to C-x.  To do this, make c a Prefix Key so as Key Lookup does not end on the c input alone.
 
