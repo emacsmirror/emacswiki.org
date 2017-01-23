@@ -230,7 +230,7 @@ open -a /Applications/Emacs.app <file-name>
 
 As above but for when Emacs.app has been installed via MacPorts.
 <pre>
-open -a /Applications/MacPorts?Emacs.app <file-name> 
+open -a /Applications/MacPorts/Emacs.app <file-name> 
 </pre>
 
 === Call Emacs from other programs ===
