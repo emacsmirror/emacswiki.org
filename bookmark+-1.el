@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Jan 10 16:00:13 2017 (-0800)
+;; Last-Updated: Mon Jan 23 09:20:01 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 8258
+;;     Update #: 8261
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -388,8 +388,9 @@
 ;;    `bmkp-end-position-post-context',
 ;;    `bmkp-end-position-pre-context', `bmkp-every',
 ;;    `bmkp-eww-alist-only' (Emacs 24.4+), `bmkp-eww-bookmark-p'
-;;    (Emacs 24.4+), `bmkp-eww-cp', `bmkp-ffap-guesser',
-;;    `bmkp-file-alist-only', `bmkp-file-all-tags-alist-only',
+;;    (Emacs 24.4+), `bmkp-eww-cp', `bmkp-eww-set-new-buffer-name'
+;;    (Emacs 24.4+), `bmkp-ffap-guesser', `bmkp-file-alist-only',
+;;    `bmkp-file-all-tags-alist-only',
 ;;    `bmkp-file-all-tags-regexp-alist-only', `bmkp-file-alpha-cp',
 ;;    `bmkp-file-attribute-0-cp', `bmkp-file-attribute-1-cp',
 ;;    `bmkp-file-attribute-2-cp', `bmkp-file-attribute-3-cp',
@@ -425,7 +426,9 @@
 ;;    `bmkp-isearch-next-bookmark-buffer' (Emacs 23+), `bmkp-jump-1',
 ;;    `bmkp-jump-bookmark-file', `bmkp-jump-bookmark-list',
 ;;    `bmkp-jump-desktop', `bmkp-jump-dired', `bmkp-jump-eww' (Emacs
-;;    25+), `bmkp-jump-function', `bmkp-jump-gnus',
+;;    25+), `bmkp-jump-eww-new-buffer' (Emacs 25+),
+;;    `bmkp-jump-eww-only-one-buffer' (Emacs 25+),
+;;    `bmkp-jump-function', `bmkp-jump-gnus',
 ;;    `bmkp-jump-icicle-search-hits', `bmkp-jump-man',
 ;;    `bmkp-jump-sequence', `bmkp-jump-snippet',
 ;;    `bmkp-jump-url-browse', `bmkp-jump-variable-list',
