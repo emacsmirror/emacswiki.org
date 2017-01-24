@@ -177,17 +177,19 @@ http://www.ficml.org/jemimap/wordpress/2004/10/11/tabbar/.
 The following will group the tabs by the git repository that the file is in.  All files that are not in a git repository will be grouped together, and all buffers that do not have a file will be grouped together.
 
  (defun find-git-dir (dir)
-   "Search up the directory tree looking for a .git folder."
-   (cond 
-    ((not dir) "process")
-    ((string= dir "/") "no-git")
-    ((file-exists-p (concat dir "/.git")) dir)
-    (t (find-git-dir (directory-file-name (file-name-directory dir))))))
- (defun git-tabbar-buffer-groups ()
-   "Groups tabs in tabbar-mode by the git repository they are in."
-   (list 
-    (find-git-dir (buffer-file-name (current-buffer)))))
- (setq tabbar-buffer-groups-function 'git-tabbar-buffer-groups)
+  "Search up the directory tree looking for a .git folder."
+  (cond
+   ((eq major-mode 'dired-mode) "Dired")
+   ((not dir) "process")
+   ((string= dir "/") "no-git")
+   ((file-exists-p (concat dir "/.git")) dir)
+   (t (find-git-dir (directory-file-name (file-name-directory dir))))))
+(defun git-tabbar-buffer-groups ()
+  "Groups tabs in tabbar-mode by the git repository they are in."
+  (list
+   (find-git-dir (buffer-file-name (current-buffer)))))
+(setq tabbar-buffer-groups-function 'git-tabbar-buffer-groups)
+
 
 === Sort tabbar buffers by name ===
 
