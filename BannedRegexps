@@ -23,7 +23,7 @@
 # ([1I]([_ ]*[0-9IO]){9,10}) # 2016-08-27 phone numbers usually means spam
 # ([1I]([ ()]*[0-9IO]){9,10}) # 2016-08-27 phone numbers usually means spam
 # All the spammer phone numbers seem to start with 1 8xx
-([1I]([-. ]*8[-. ]*[0-9IO]){8,9}) # 2017-01-24 phone numbers usually means spam
-([1I]([, ]*8[, ]*[0-9IO]){8,9}) # 2017-01-24 phone numbers usually means spam
-([1I]([_ ]*8[_ ]*[0-9IO]){8,9}) # 2017-01-24 phone numbers usually means spam
-([1I]([ ()]*8[ ()]*[0-9IO]){8,9}) # 2017-01-24 phone numbers usually means spam
+([1I][-. ]*8([-. ]*[0-9IO]){8,9}) # 2017-01-24 phone numbers usually means spam
+([1I][, ]*8([, ]*[0-9IO]){8,9}) # 2017-01-24 phone numbers usually means spam
+([1I][_ ]*8([_ ]*[0-9IO]){8,9}) # 2017-01-24 phone numbers usually means spam
+([1I][ ()]*8([ ()]*[0-9IO]){8,9}) # 2017-01-24 phone numbers usually means spam
