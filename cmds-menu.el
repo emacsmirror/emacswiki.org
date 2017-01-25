@@ -8,9 +8,9 @@
 ;; Created: Sat Oct 19 12:56:51 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 24 17:06:06 2016 (-0800)
+;; Last-Updated: Tue Jan 24 18:23:40 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 78
+;;     Update #: 83
 ;; URL: http://www.emacswiki.org/cmds-menu.el
 ;; Doc URL:
 ;; Keywords: convenience, command, menu
@@ -62,6 +62,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/01/24 dadams
+;;     recent-cmds-menu-bar-update: caddr -> car of cddr.
 ;; 2016/08/30 dadams
 ;;     Added: recent-cmds-menu-mode.  Removed Emacs 20 support.
 ;; 2013/11/02 dadams
@@ -143,7 +145,8 @@ If this is nil then show command names in full."
                      (push (nconc (list (intern (concat "recent-" (car cmd-info))) 'menu-item (car cmd-info)
                                         `(lambda () (interactive) (call-interactively ',(cadr cmd-info)))
                                         (cons nil nil))
-                                  (and (caddr cmd-info)  (list :keys (key-description (caddr cmd-info)))))
+                                  (and (car (cddr cmd-info))
+                                       (list :keys (key-description (car (cddr cmd-info))))))
                            menu))
                    menu)))
 	 (setcdr recent-cmds-menu recent-menu))))
