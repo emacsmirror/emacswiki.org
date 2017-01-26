@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Jan  1 10:19:46 2017 (-0800)
+;; Last-Updated: Thu Jan 26 08:51:57 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 27493
+;;     Update #: 27500
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4927,7 +4927,7 @@ This command needs library `doremi.el'." ; Doc string
     (let ((sym                                     (intern opt))
           ;; Restore this before we read number, since that might use completion.
           (icicle-must-pass-after-match-predicate  icicle-orig-must-pass-after-match-pred))
-      (icicle-doremi-increment-variable+ sym (icicle-read-number "Increment (amount): ") t)
+      (icicle-doremi-increment-variable+ sym (icicle-read-number "Increment (amount): "))
       (message "`%s' is now `%s'" opt (icicle-propertize (eval sym) 'face 'icicle-msg-emphasis))))
   "Increment value of option: " obarray (and icompletep  pred) 'must-confirm nil ; `completing-read' args
   (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history) nil nil
@@ -4956,7 +4956,7 @@ This command needs library `doremi.el'." ; Doc string
     (let ((sym                                     (intern var))
           ;; Restore this before we read number, since that might use completion.
           (icicle-must-pass-after-match-predicate  icicle-orig-must-pass-after-match-pred))
-      (icicle-doremi-increment-variable+ sym (icicle-read-number "Increment (amount): ") prefix-arg)
+      (icicle-doremi-increment-variable+ sym (icicle-read-number "Increment (amount): "))
       (message "`%s' is now `%s'" var (icicle-propertize (eval sym) 'face 'icicle-msg-emphasis))))
   "Increment value of variable: " obarray (and icompletep  pred) 'must-confirm nil ; `completing-read' args
   (if (boundp 'variable-name-history) 'variable-name-history 'icicle-variable-name-history) nil nil
@@ -4982,7 +4982,7 @@ This command needs library `doremi.el'." ; Doc string
   (unless (require 'doremi nil t)       ; First code
     (icicle-user-error "You need library `doremi.el' for this command")))
 
-(defun icicle-doremi-increment-variable+ (variable &optional increment optionp)
+(defun icicle-doremi-increment-variable+ (variable &optional increment)
   "Increment VARIABLE by INCREMENT (default 1).
 Use arrow key `up' or `down' or mouse wheel to increase or decrease.
 You can use the `Meta' key (e.g. `M-up') to increment in larger steps.
@@ -5010,8 +5010,7 @@ Raises an error if VARIABLE's value is not a number."
                                     (and symb  (symbol-name symb)) t))
            ;; Restore this before we read number, since that might use completion.
            (let ((icicle-must-pass-after-match-predicate  icicle-orig-must-pass-after-match-pred))
-             (icicle-read-number "Increment (amount): "))
-           current-prefix-arg)))
+             (icicle-read-number "Increment (amount): ")))))
   (unless (require 'doremi nil t) (icicle-user-error "You need library `doremi.el' for this command"))
   (unless increment (setq increment 1))
   (unless (numberp (symbol-value variable))
