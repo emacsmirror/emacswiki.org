@@ -9,6 +9,8 @@ As of 2013, last version is of 2005. You can also consider [[NxhtmlMode]] (and n
 
 The last official version on sourceforge mentioned here (1.3.2) does not work with Emacs 24 any longer because of some quirks with backquotes and other minor syntactical changes. These problems have been fixed, and the fixed version (called 1.4.1) is available on the Marmalade Lisp Repo at https://marmalade-repo.org/packages/psgml. (Except for these fixes, there are absolutely no differences to version 1.3.2.)
 
+Another version is hosted at GNU ELPA (http://elpa.gnu.org/packages/psgml.html).  That version has seen cosmetic but thorough changes to modernize the code.  As a result, it probably does not work in Emacs<24.
+
 The main PSGML web page (containing a manual) is at
 http://www.lysator.liu.se/~lenst/about_psgml/.
 
