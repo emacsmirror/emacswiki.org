@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 27 08:44:13 2017 (-0800)
+;; Last-Updated: Fri Jan 27 09:42:19 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1209
+;;     Update #: 1212
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -90,6 +90,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/01/27 dadams
+;;     find-dired-hook: Added tip to doc string about removing hook function.
+;;     find-dired-sentinel: Use with-current-buffer instead of save-excursion + set-buffer.
 ;; 2016/05/15 dadams
 ;;     Moved find after wdired-mode, in diredp-menu-bar-subdir-menu.
 ;; 2016/03/25 dadams
@@ -589,6 +592,8 @@ STRING is the string to insert."
 ;;
 ;; 1. Highlights file lines.
 ;; 2. Puts `find' in mode-line.
+;; 3. Runs hooks `find-dired-hook' and `dired-after-readin-hook'.
+;;
 (defun find-dired-sentinel (proc state)
   "Sentinel for \\[find-dired] processes.
 PROC is the process.
@@ -596,8 +601,7 @@ STATE is the state of process PROC."
   (let ((buf                (process-buffer proc))
         (inhibit-read-only  t))
     (when (buffer-name buf)
-      (save-excursion
-        (set-buffer buf)
+      (with-current-buffer buf
         (let ((buffer-read-only  nil))
           (save-excursion
             (goto-char (point-max))
