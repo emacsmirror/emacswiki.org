@@ -16,17 +16,24 @@ Packages written or co-written by me:
 * AutoRevertMode -- Automatically reloads buffer when file has been changed (bundled with Emacs)
 * FoldingMode -- Minor mode for folding sections of text using special markers (Co-authored with JamieLokier and JariAalto)
 
-=== Highlight-related ===
+=== Highlighting packages ===
 
 * CWarnMode -- Highlight suspicious C construct like assignment inside expressions (bundled with Emacs)
-* FontLockStudio -- Interactive debugger for FontLockMode keywords
 * [[e2ansi]] -- Syntax highlighting in "less" and other command line tools, powered by Emacs font-lock
 * CMakeFontLock -- Advanced highlight rules for [[CMake]]
 * LispExtraFontLock -- Highlight bound variables and quoted expressions in lisp
 * ObjcFontLock -- Highlight Objective-C method calls
 * [[PreprocFontLock]] -- Highlight C-style preprocessor directives, with multiline support
+* [[Highlight2Clipboard]] -- Copy highlighted text to the clipboard, for pasting into word processors or mail editors
+* [[NoComments]] -- Minor mode for hiding all comments.
+
+=== Tools for font-lock developers ===
+
+* FontLockStudio -- Interactive debugger for FontLockMode keywords
+* FontLockProfiler -- Coverage and timing tool for font-lock keywords
+* HighlightRefontification -- Visualize how Emacs refontifies a buffer
 * [[Faceup]] -- Regression test system for font-lock packages
-* [[Highlight2Clipboard]] -- Copy highlighted text to the clipboard, for pasting into word processors or mail editors.
+* FontLockRegressionSuite -- Collection of real-world source files in various languages and corresponding [[Faceup]] font-lock reference files.
 
 === Other ===
 
