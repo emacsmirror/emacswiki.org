@@ -761,7 +761,7 @@ Okay ''without external dependencies'' is no longer entirely true. If pdf files 
 
 If you do not give a regular expression it just searches for the files like 'find'.
 
-The code of <pre>elgrep</pre> has moved to https://github.com/TobiasZawada/elgrep.
+The code of ~elgrep~ has moved to https://github.com/TobiasZawada/elgrep.
 
 [new:DrewAdams:2010-07-30 14:23 UTC]
 Welcome to the wiki. -- DrewAdams
