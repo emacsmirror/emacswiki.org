@@ -1,0 +1,11 @@
+[https://github.com/Lindydancer/font-lock-regression-suite Font Lock Regression Suite], by [[AndersLindgren|Anders Lindgren]].
+
+This package contains a collection of example source files for a large number of programming languages, with ERT tests to ensure that syntax highlighting does not accidentally change.
+
+For each source file, font-lock reference files are provided for various Emacs versions.  The reference files contains a plain-text representation of source files with syntax highlighting, using the format [[Faceup]].
+
+Of course, the collection source file can be used for other kinds of testing, not limited to font-lock regression testing. Conretely, it is used to test the packages FontLockStudio and FontLockProfiler.
+
+== Getting the package ==
+
+The *Font Lock Regression Suite* package is located on [https://github.com/Lindydancer/font-lock-regression-suite Github].
