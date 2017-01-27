@@ -1,0 +1,9 @@
+[https://github.com/Lindydancer/highlight-refontification Highlight Refontification] is a tool for that visualizes the font-lock refontification process, written by [[AndersLindgren|Anders Lindgren]].
+
+This package provides a minor mode that visualizes how font-lock refontifies a buffer. This is useful when developing or debugging font-lock keywords, especially for keywords that span multiple lines.
+
+The background of the buffer is painted in a rainbow of colors, where each band in the rainbow represent a region of the buffer that has been refontified.  When the buffer is modified, the rainbow is updated.
+
+== Getting the package ==
+
+The *Highlight Refontification* package is located on [https://github.com/Lindydancer/highlight-refontification Github].
