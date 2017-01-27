@@ -1,0 +1,7 @@
+[https://github.com/Lindydancer/nocomments-mode NoComments Mode] is a package that temporarily hides all comments, written by [[AndersLindgren|Anders Lindgren]].
+
+This is accomplished by "painting over" all comments with the background color of the frame. The effect is that all comments are invisible, all other text stay where they originally were.
+
+== Getting the package ==
+
+The *NoComments Mode* package is located on [https://github.com/Lindydancer/nocomments-mode Github].
