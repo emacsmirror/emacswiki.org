@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:41:25 2017 (-0800)
+;; Last-Updated: Fri Jan 27 08:44:13 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1206
+;;     Update #: 1209
 ;; URL: http://www.emacswiki.org/find-dired+.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -244,7 +244,20 @@
   "Last arguments given to `find' by `\\[find-dired]'.")
 
 (defvar find-dired-hook nil
-  "*Hook to be run at the end of each `find-dired' execution.")
+  "*Hook to be run at the end of each `find-dired' execution.
+After this hook is run, hook `dired-after-readin-hook' is run.
+
+Note that if you add a function to either of those hooks, because you
+want it to act on the complete directory listing returned by the find
+operation, you will likely also want the function to remove itself
+from the hook when it is done.
+
+For example, you might add a function like this to the hook, to toggle
+marks after listing the files:
+
+ (defun my-toggle-marks ()
+    (dired-toggle-marks)
+    (remove-hook 'find-dired-hook 'my-toggle-marks))")
 
 (defvar find-diredp-repeating-search nil
   "Non-nil means `find-dired' was called using `revert-buffer-function'.")
