@@ -1,0 +1,9 @@
+[https://github.com/Lindydancer/font-lock-profiler Font Lock Profiler] is coverage and time measurement tool for font-lock developers.
+
+You can measure the time it takes to highlight a buffer or a region. Alternatively, you can start the measurement, edit the buffer, and stop.
+
+The result is presented in a table, which can be sorted. Initially, a summary of each keyword is presented. The table can be expanded so that each individual part (like matcher or face expression) can be inspected.
+
+== Getting the package ==
+
+The *Font Lock Profiler* package is located on [https://github.com/Lindydancer/font-lock-profiler Github].
