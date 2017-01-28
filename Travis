@@ -6,5 +6,8 @@
 
 [https://github.com/sshaw/build-status build-status] minor mode shows a buffer's build status in the mode line.
 
+
+Also see [[CircleCI]] and [[Jenkins]].
+
 ----
 CategoryCode
