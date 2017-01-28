@@ -1,5 +1,3 @@
-==Travis==
-
 [http://travis-ci.org Travis-ci.org] is a continuous integration service which can be used for automated testing of an Emacs Lisp library hosted on [[GitHub]].
 
 [http://github.com/rolandwalker/emacs-travis emacs-travis] is a recipe for testing your library under multiple versions of Emacs.
