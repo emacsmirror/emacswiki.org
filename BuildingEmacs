@@ -55,7 +55,7 @@ libc6-dev libjpeg62-dev libncurses5-dev libpng-dev libtiff3g-dev libungif4-dev x
 
 Fedora 20:
 
-glibc-devel libjpeg-turbo ncurses-libs libpng-devel libtiff-devel giflib Xaw3d-devel zlib-devel ice-devel libSM-devel libX11-devel libXext-devel libXi-devel libXmu-devel libXpm-devel libXrandr-devel libXt-devel libXtst-devel libXv-devel libX11-devel
+glibc-devel libjpeg-turbo ncurses-libs libpng-devel libtiff-devel giflib-devel Xaw3d-devel zlib-devel ice-devel libSM-devel libX11-devel libXext-devel libXi-devel libXmu-devel libXpm-devel libXrandr-devel libXt-devel libXtst-devel libXv-devel libX11-devel
 
 missing/unresolved libraries: libxtrap-dev  x-dev xlibs-static-dev
 
