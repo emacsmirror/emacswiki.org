@@ -2,6 +2,6 @@
 
 [https://github.com/sshaw/build-status build-status] is a minor mode that shows a buffer’s build status in the mode line
 
----
 
-See also [[Travis]] and [[Jenkins]]
+Also see [[Travis]] and [[Jenkins]].
+
