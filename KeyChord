@@ -102,7 +102,7 @@ That should catch most of the false positives.
 
 [new]
 There is a key-pair frequency table here:
-src: <nobr><nobr>http://english.stackexchange.com/questions/110576/what-are-the-most-common-letters-used-in-pairs-after-others-in-the-english-alpha</nobr></nobr>;
+http://english.stackexchange.com/questions/110576/what-are-the-most-common-letters-used-in-pairs-after-others-in-the-english-alpha
 
 [new]
 I adjusted key-chord to sample my current typing frequency. That helps to avoid most of the accidental chord activations. It is not merged with the most recent versions of key-chord.el, though. The main change is this:
