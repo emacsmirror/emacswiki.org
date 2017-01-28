@@ -2,9 +2,9 @@
 
 [http://travis-ci.org Travis-ci.org] is a continuous integration service which can be used for automated testing of an Emacs Lisp library hosted on [[GitHub]].
 
-A recipe for testing your library under multiple versions of Emacs is available on github:
+[http://github.com/rolandwalker/emacs-travis emacs-travis] is a recipe for testing your library under multiple versions of Emacs.
 
-[http://github.com/rolandwalker/emacs-travis emacs-travis]
+[https://github.com/sshaw/build-status build-status] minor mode shows a buffer's build status in the mode line.
 
 ----
 CategoryCode
