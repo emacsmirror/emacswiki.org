@@ -1,4 +1,4 @@
-[https://circleci.com CircleCI] is a web-based continuous integration and delivery service. 
+[https://circleci.com CircleCI] is a web-based continuous integration and delivery service that supports [[GitHub]] and [[Bitbucket]].
 
 [https://github.com/sshaw/build-status build-status] is a minor mode that shows a buffer’s build status in the mode line
 
