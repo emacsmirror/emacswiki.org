@@ -3,3 +3,5 @@ Jenkins in an open source automation server that supports building, deploying an
 [https://github.com/rmuslimov/jenkins.el jenkins.el] is a Jenkins UI in emacs
 
 [https://github.com/ataylor284/jenkins-watch jenkins-watch] Display jenkins/hudson build status on the emacs modeline
+
+Also see [[CircleCI]] and [[Travis]].
