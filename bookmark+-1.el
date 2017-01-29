@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jan 29 11:23:37 2017 (-0800)
+;; Last-Updated: Sun Jan 29 12:03:35 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 8272
+;;     Update #: 8273
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -746,11 +746,11 @@
 (defvar eww-data)                       ; In `eww.el' (Emacs 25+)
 (defvar gnus-article-current)           ; In `gnus-sum.el'
 (defvar icicle-candidate-properties-alist) ; In `icicles-var.el'
-(defvar icicle-completion-candidates)	; In `icicles-var.el'
+(defvar icicle-completion-candidates)   ; In `icicles-var.el'
 (defvar icicle-mode)                    ; In `icicle-mode.el'
-(defvar icicle-multi-completing-p)	; In `icicles-var.el'
+(defvar icicle-multi-completing-p)      ; In `icicles-var.el'
 (defvar icicle-saved-completion-candidates) ; In `icicles-var.el'
-(defvar icicle-searching-p)		; In `icicles-var.el'
+(defvar icicle-searching-p)             ; In `icicles-var.el'
 (defvar Info-current-node)              ; In `info.el'
 (defvar Info-current-file)              ; In `info.el'
 (defvar Man-arguments)                  ; In `man.el'
@@ -1893,8 +1893,8 @@ If the value is `edit' then open the annotation buffer in edit mode.
 Any other non-nil value opens it in read-only mode.
  This has the same effect as using command `bookmark-show-annotation'."
   :type '(choice
-	  (const :tag "Show annotation read-only"               t)
-	  (const :tag "Edit annotation"                         edit)
+          (const :tag "Show annotation read-only"               t)
+          (const :tag "Edit annotation"                         edit)
           (const :tag "Do not show annotation automatically"    nil))
   :group 'bookmark :group 'bookmark-plus)
 
@@ -2042,11 +2042,11 @@ bookmark file.  Saving the file depends on `bookmark-save-flag'."
 The default annotation text is simply some text explaining how to use
 annotations."
   (concat "#  Type the annotation for bookmark `" bookmark-name "' here.\n"
-	  "#  All lines that start with a `#' will be deleted.\n"
-	  "#  Type `C-c C-M-c' when done.\n#\n"
-	  "#  Author: " (user-full-name) " <" (user-login-name) "@"
-	  (system-name) ">\n"
-	  "#  Date:    " (current-time-string) "\n"))
+          "#  All lines that start with a `#' will be deleted.\n"
+          "#  Type `C-c C-M-c' when done.\n#\n"
+          "#  Author: " (user-full-name) " <" (user-login-name) "@"
+          (system-name) ">\n"
+          "#  Date:    " (current-time-string) "\n"))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el' (Emacs 24.4+).
@@ -4458,7 +4458,7 @@ Non-interactively, non-nil MSG-P means display a status message."
   "Read a Lisp expression from STRING.
 Raise an error if the entire string was not used."
   (let* ((read-data  (read-from-string string))
-	 (more-left (condition-case nil
+         (more-left (condition-case nil
                         ;; The call to `ignore' suppresses a compiler warning.
                         (progn (ignore (read-from-string (substring string (cdr read-data))))
                                t)
