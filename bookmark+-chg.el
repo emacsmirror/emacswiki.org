@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jan 10 16:03:02 2017 (-0800)
+;; Last-Updated: Sun Jan 29 10:30:10 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 16244
+;;     Update #: 16246
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2017/01/29 dadams
+;;     Added: bmkp-eww-url.
 ;; 2017/01/10 dadams
 ;;     Added:
 ;;       bmkp-eww-allow-multiple-buffers-flag, bmkp-eww-set-new-buffer-name, bmkp-jump-eww-new-buffer,
