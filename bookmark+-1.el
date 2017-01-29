@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jan 23 09:20:01 2017 (-0800)
+;; Last-Updated: Sun Jan 29 10:29:15 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 8261
+;;     Update #: 8266
 ;; URL: http://www.emacswiki.org/bookmark+-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -389,7 +389,8 @@
 ;;    `bmkp-end-position-pre-context', `bmkp-every',
 ;;    `bmkp-eww-alist-only' (Emacs 24.4+), `bmkp-eww-bookmark-p'
 ;;    (Emacs 24.4+), `bmkp-eww-cp', `bmkp-eww-set-new-buffer-name'
-;;    (Emacs 24.4+), `bmkp-ffap-guesser', `bmkp-file-alist-only',
+;;    (Emacs 24.4+), `bmkp-eww-url' (Emacs 24.4+),
+;;    `bmkp-ffap-guesser', `bmkp-file-alist-only',
 ;;    `bmkp-file-all-tags-alist-only',
 ;;    `bmkp-file-all-tags-regexp-alist-only', `bmkp-file-alpha-cp',
 ;;    `bmkp-file-attribute-0-cp', `bmkp-file-attribute-1-cp',
@@ -5869,11 +5870,7 @@ If it is a record then it need not belong to `bookmark-alist'."
          (or (and (not this-file)  (not bmk-file)  (equal (bmkp-get-buffer-name bookmark) (buffer-name)))
              (and this-file  bmk-file  (bmkp-same-file-p this-file bmk-file))))
        ;; If the buffer to check is from EWW (it is `*eww*'), the buffer URL must match the bookmark URL.
-       (or (not (eq major-mode 'eww-mode))
-           (equal (bookmark-location bookmark)
-                  (if (fboundp 'eww-current-url)
-                      (eww-current-url) ; Emacs 25+
-                    (and (boundp 'eww-current-url)  eww-current-url))))
+       (or (not (eq major-mode 'eww-mode))  (equal (bookmark-location bookmark) (bmkp-eww-url)))
        (not (bmkp-desktop-bookmark-p        bookmark))
        (not (bmkp-bookmark-file-bookmark-p  bookmark))
        (not (bmkp-sequence-bookmark-p       bookmark))
@@ -9550,14 +9547,19 @@ BOOKMARK is a bookmark name or a bookmark record."
 ;; EWW support
 (when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
+  (defun bmkp-eww-url ()
+    "Return the URL of the current buffer, assumed to be in `eww-mode'."
+    (if (fboundp 'eww-current-url)
+        (eww-current-url)               ; Emacs 25+
+      (and (boundp 'eww-current-url)  eww-current-url)))
+
   (defun bmkp-make-eww-record ()
     "Make a record for EWW buffers."
     (require 'eww)
-    (let ((eww-title  (if (boundp 'eww-data) (plist-get eww-data :title) eww-current-title))
-          (eww-url    (if (fboundp 'eww-current-url) (eww-current-url) eww-current-url)))
+    (let ((eww-title  (if (boundp 'eww-data) (plist-get eww-data :title) eww-current-title)))
       `(,eww-title
         ,@(bookmark-make-record-default 'NO-FILE)
-        (location . ,eww-url)
+        (location . ,(bmkp-eww-url))
         (handler . bmkp-jump-eww))))
 
   (add-hook 'eww-mode-hook (lambda () (set (make-local-variable 'bookmark-make-record-function)
