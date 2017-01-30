@@ -4,10 +4,10 @@ Read all about it at [http://json.org/ json.org]!
 
 You can decode and encode JSON from Emacs Lisp using [http://edward.oconnor.cx/2006/03/json.el json.el].  It is part of GNU Emacs since 23.1 (2008).
 
+==json-mode==
 Some highlighting support for editing json files is provided by [https://github.com/joshwnj/json-mode json-mode].
 
-
-If you have python or jsonlint installed, Flycheck can report errors, just do:
+If you have python or jsonlint installed, Flycheck can report errors in json-mode, just do:
 
   (add-hook 'json-mode-hook #'flycheck-mode)
 
