@@ -62,7 +62,7 @@ With these settings, you would be able to use the package 'unicode-math' in XeTe
 %%% End:
 </pre>
 
-If you are using AUCTeX you might need to use TeX-mode-hook
+If you are using AUCTeX you might need to use LaTeX-mode-hook
 
 <pre>
 
@@ -71,6 +71,19 @@ If you are using AUCTeX you might need to use TeX-mode-hook
               (append '((company-math-symbols-latex company-math-symbols-unicode))
                       company-backends)))
 
-(add-hook 'Tex-mode-hook 'my-latex-mode-setup)
+(add-hook 'LaTeX-mode-hook 'my-latex-mode-setup)
+(add-hook 'after-init-hook 'global-company-mode)
+</pre>
+and if you are using the package unicode-math, you can invert the default settings with something like,
+<pre>
+(defun my-latex-mode-setup ()
+  (setq-local company-math-allow-unicode-symbols-in-faces (quote (tex-math font-latex-math-face)))
+  (setq-local company-math-disallow-unicode-symbols-in-faces nil)
+  (setq-local company-math-allow-latex-symbols-in-faces nil)
+  (setq-local company-backends
+              (append '((company-math-symbols-latex company-math-symbols-unicode))
+                      company-backends)))
 
+(add-hook 'LaTeX-mode-hook 'my-latex-mode-setup)
+(add-hook 'after-init-hook 'global-company-mode)
 </pre>
