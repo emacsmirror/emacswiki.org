@@ -1,0 +1,76 @@
+The author of [[AutoCompleteSources|ac-math]] moved from AutoComplete to [[CompanyMode|Company backends]].
+
+Direct download at [[https://github.com/vspinu/company-math|company-math]].
+
+You can use MELPA to install the default settings.
+
+Three company backends, company-math-symbols-latex, company-math-symbols-unicode and company-latex-commands are proposed. 
+
+The unicode backend lets you insert a unicode character by using the TeX backslashed syntax, for example \beta in order to display β.
+
+By default, you will be allowed to insert unicode characters in normal text but not in a 'math' environment (for example inside two dollars '$ math italics $' in TeX or LaTeX, but also in other language like Org etc.). But it may not work and you could need a different setting.
+
+For example, if you want to get unicode symbols instead of tex symbols in math environment ($β$ instead of $\beta$) and disallow the use of math unicode characters in normal text (β), you need to inverse the default setting.
+
+== Inverting the default setting for package unicode-math ==
+The package [[https://www.ctan.org/pkg/unicode-math|unicode-math]] can be used for XeTeX and LuaTeX tex engines, but you need to change the default setting of company-math.
+
+At first, you need to know which font is used inside such a math environment: move your cursor to point (here under b in $\b$ ) and type 'C-u C-x ='. In addition to the position of your character, you will get information on the 'face' used in this math environment. For example, if you are using AUCTeX, you will probably get,
+<pre>
+...
+  name: LATIN SMALL LETTER B
+  general-category: Ll (Letter, Lowercase)
+  decomposition: (98) ('b')
+
+There are text properties here:
+  face                 (font-latex-math-face font-latex-sedate-face)
+  fontified            t
+</pre>
+The face font-latex-math-face is used by AUCTeX, otherwise tex-math is used. Once you know the face corresponding to your Emacs LaTeX mode, you can change the default setting of allow (company-math-allow-unicode-symbols-in-faces) from true to the corresponding face (or faces):
+<pre>
+(setq company-math-allow-unicode-symbols-in-faces (quote (tex-math font-latex-math-face))) ;
+</pre>
+If you kept the default setting of disallow unicode symbols to font-latex-math-face, by entering \b in math environment, only the ASCII representation \beta will be proposed instead of β, therefore you could change to nil
+<pre>
+(setq company-math-disallow-unicode-symbols-in-faces nil);
+</pre>
+
+Concerning what are called the latex symbols (ascii tex representations of TeX math symbols), you could change the default 'company-math-allow-latex-symbols-in-faces' which is set by default to (tex-math font-latex-math-face) to nil
+<pre>
+(setq company-math-allow-latex-symbols-in-faces nil);
+</pre>
+
+With these settings, you would be able to use the package 'unicode-math' in XeTeX, and get a smaller LaTeX source code for your maths!! Here is an example,
+<pre>
+\documentclass{article}
+ \usepackage{fontspec}
+ \usepackage{amsmath}
+ \usepackage{unicode-math}
+\begin{document}
+ I can't enter unicode math character in text but in a math environment, just after the backslash and letter 'b' a menu will invite me to complete with M-u (M-n) or entering 'et' to beta and a RET will enter $β$.
+\end{document}
+%
+% These lines tells gnu-emacs to typeset with the xetex engine
+% which requires Unicode encoding only (utf-8)
+% ^c^t^s for toggling synctex. 
+% ^-Shift-Click to move from pdf to source, Command-Shift-Click on OSX
+%%% Local Variables:
+%%% TeX-engine: xetex
+%%% TeX-source-correlate-method-active: synctex
+%%% ispell-local-dictionary: "american"
+%%% coding: utf-8
+%%% End:
+</pre>
+
+If you are using AUCTeX you might need to use TeX-mode-hook
+
+<pre>
+
+(defun my-latex-mode-setup ()
+  (setq-local company-backends
+              (append '((company-math-symbols-latex company-math-symbols-unicode))
+                      company-backends)))
+
+(add-hook 'Tex-mode-hook 'my-latex-mode-setup)
+
+</pre>
