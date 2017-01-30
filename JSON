@@ -6,6 +6,13 @@ You can decode and encode JSON from Emacs Lisp using [http://edward.oconnor.cx/2
 
 Some highlighting support for editing json files is provided by [https://github.com/joshwnj/json-mode json-mode].
 
+
+If you have python or jsonlint installed, Flycheck can report errors, just do:
+
+  (add-hook 'json-mode-hook #'flycheck-mode)
+
+([https://github.com/zaach/jsonlint jsonlint] can give schema-based validation, but the python-based validator is handy too for simply catching missing commas etc.)
+
 ----
 CategoryData
 CategoryExtensions
