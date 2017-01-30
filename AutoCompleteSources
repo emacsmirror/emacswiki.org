@@ -11,8 +11,9 @@ Lisp:ac-lilypond.el is my (finally working) contribution to LilyPond-mode source
 [[image:https://ac-math.googlecode.com/svn/trunk/latex-symbols.png]]
 [[image:https://ac-math.googlecode.com/svn/trunk/unicode-math.png]]
 
-The author of ac-math moved to [[company-math]]
-Direct download for the former autocomplete math is [[https://raw.github.com/vitoshka/ac-math/master/ac-math.el|ac-math.el]] (and for company math is [[https://github.com/vspinu/company-math|company-math]])
+The author of ac-math moved to [[company-math]].
+
+Direct download for the former autocomplete math is [[https://raw.github.com/vitoshka/ac-math/master/ac-math.el|ac-math.el]] (and for company math is [[https://github.com/vspinu/company-math|company-math]]).
 
 For Emacs24 and installing ac-math from Melpa (with list-packages), adding these lines in my init.el seems working with AucTeX already installed:
 <pre>
