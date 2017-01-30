@@ -206,6 +206,9 @@ https://ac-math.googlecode.com/svn/trunk/latex-symbols.png
 It allows for a context dependent completion of LaTeX tags and unicode symbols.
 In order to make full use of unicode functionality you need to use [http://tug.ctan.org/pkg/unicode-math unicode-math] package.
 
+=== Company-math ===
+The author of [[AutoCompleteSources|ac-math]] provides 'company-math' (get source at Melpa or [https://github.com/vspinu/company-math here]) which is an alternative autocompletion using [[CompanyMode]]. It is also nice to display unicode math symbols in Emacs LaTeX documents which can be texed with XeTeX or LuaTeX using the unicode-math package (see [[company-math]]).
+
 === Anything and LaCarte for Math Input ===
 [new:RedBlue:2010-06-26 09:37 UTC]
 LaCarte offers a great facility for navigating menus; [[Anything]] - fast display and reg-exp filtering. Combined and specialized for `Math' sub-menu give a  nifty symbol lookup and insertion mechanism.
