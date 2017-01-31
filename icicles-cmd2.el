@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Jan 17 09:09:56 2017 (-0800)
+;; Last-Updated: Tue Jan 31 14:58:56 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 7417
+;;     Update #: 7428
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -114,11 +114,12 @@
 ;;    (+)`icicle-Info-menu', (+)`icicle-Info-menu-cmd',
 ;;    `icicle-Info-virtual-book' (Emacs 22+),
 ;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-load-library'
-;;    (Emacs 21+), (+)`icicle-map', `icicle-next-font-lock-keywords'
-;;    (Emacs 22+), `icicle-next-font-lock-keywords-repeat' (Emacs
-;;    22+), `icicle-next-visible-thing',
-;;    `icicle-non-whitespace-string-p', (+)`icicle-object-action',
-;;    (+)`icicle-occur', (+)`icicle-occur-dired-marked',
+;;    (Emacs 21+), (+)`icicle-man' (Emacs 23+), (+)`icicle-map',
+;;    `icicle-next-font-lock-keywords' (Emacs 22+),
+;;    `icicle-next-font-lock-keywords-repeat' (Emacs 22+),
+;;    `icicle-next-visible-thing', `icicle-non-whitespace-string-p',
+;;    (+)`icicle-object-action', (+)`icicle-occur',
+;;    (+)`icicle-occur-dired-marked',
 ;;    (+)`icicle-occur-dired-marked-recursive',
 ;;    (+)`icicle-pick-color-by-name', (+)`icicle-plist',
 ;;    `icicle-previous-visible-thing', `icicle-read-color',
@@ -8469,6 +8470,14 @@ candidates to packages of different kinds."
           (when (fboundp 'Info-make-manuals-xref) ; In `help-fns+.el', for Emacs 23.2+.
             (Info-make-manuals-xref (concat (symbol-name package) " package")
                                     nil nil (not (called-interactively-p 'interactive)))))))))
+
+(when (> emacs-major-version 22)      ; `Man-completion-table'
+
+  (icicle-define-command icicle-man
+    "Multi-command version of `man'."
+    man "Manual entry: " 'Man-completion-table nil nil nil 'Man-topic-history (Man-default-man-entry))
+
+  )
 
 (defun icicle-buffer-narrowing (&optional variable not-buf-local-p set-var-p)
   "Choose a narrowing (buffer restriction) and apply it.
