@@ -87,3 +87,16 @@ and if you are using the package unicode-math, you can invert the default settin
 (add-hook 'LaTeX-mode-hook 'my-latex-mode-setup)
 (add-hook 'after-init-hook 'global-company-mode)
 </pre>
+You can verify the value of the variable company-backends (with an 's') by 'C-h v compagny-backends' and look at its
+'local' value.
+
+== company-math and other company-? backends ==
+The advantage of CompanyMode over AutoComplete is that backends can be loaded independently. The disadvantage is that company-backends made by different people may not be compatible.
+
+=== company-auctex ===
+company-auctex is another autocompletion mechanism for LaTeX. According to a discussion [https://github.com/vspinu/company-math/issues/9 here], the author of company gives the idea to group some backends of company-math with some backends of company-auctex, thus you could try to add auctex-macros and auctex-environments in the previous group:
+<pre>
+ (append '((company-math-symbols-latex company-math-symbols-unicode company-auctex-macros company-auctex-environments))
+                      company-backends)
+</pre>
+This grouping seems to work and if you enter \sec, it will be completed with \section{Title} with the cursor under the Title in order to enter the correct title.
