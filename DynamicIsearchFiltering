@@ -228,7 +228,7 @@ uses it for filtering.  For example:
 [:isearchp-near-before]
 [:isearchp-near-after]
 [:isearchp-movement-unit-alist]
-* '''`##C-z @##'''', '''`##C-z <##'''', and '''`##C-z >##'''' (`isearchp-near', `isearchp-near-before', and `isearchp-near-after') constrain searching to be within a given distance of ''near'') another search pattern.  For example, you can limit search hits to those whose end (or beginning, if searching backward) is within, say, 4 words of another search pattern.  You are prompted for the search pattern for the nearby text, the
+* '''`##C-z @##'''', '''`##C-z <##'''', and '''`##C-z >##'''' (`isearchp-near', `isearchp-near-before', and `isearchp-near-after') constrain searching to be within a given distance of (''near'') another search pattern.  For example, you can limit search hits to those whose end (or beginning, if searching backward) is within, say, 4 words of another search pattern.  You are prompted for the search pattern for the nearby text, the
 "near" distance, and the unit of distance measurement (default: characters).  You can define the list of acceptable
 units by customizing option '''`isearchp-movement-unit-alist''''.
 The default option value includes units character, word, [[sexp]],
