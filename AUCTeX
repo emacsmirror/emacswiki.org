@@ -361,7 +361,53 @@ Feel free to improve this function to suit your needs (for example by adding sup
 
 == Synctex and Zathura ==
 
-AUCTeX 11.89.3 has Zathura Pdf viewer ready in the TeX-view-program-selection. Just customize the output-pdf with Zathura instead of Evince. Verify that Zathura is compiled with WITH_SYNCTEX by testing the availability of the option --synctex-forward. Then pdftex or xetex or xelatex or whatever TeX engine to create a synctex pdf using option --synctex=1 from a Tex file foo.tex . Then, verify with command <code>zathura --synctex-forward 93:0:foo.tex foo.pdf</code> that zathura is opened, hilighting line 93. Then Ctrl_left click the pdf on an other line or page, it should open emacs with buffer foo.tex at the corresponding line of .tex source.
+AUCTeX 11.89.3+ has Zathura Pdf viewer ready in the TeX-view-program-selection. Just customize the output-pdf with Zathura instead of Evince. Verify that your Zathura implementation is compiled with WITH_SYNCTEX by testing the availability of the option --synctex-forward . The following command should not say that the option is unknown (some Linux distros do not include this option),
+<pre>
+$ zathura --synctex-forward
+</pre>
+Then with AUCTeX 'Tex-Source-Correlate enabled' (which corresponds to adding option --synctex=1 to the TeX engine) pdftex or xetex (or xelatex or whatever TeX engine) will create a 'synctex pdf' and a .synctex.gz file. Then, verify with a similar command 
+<pre>
+$ zathura --synctex-forward 1440:0:foo.tex foo.pdf
+</pre>
+that zathura is open and that line 1440 is highlighted. Then Ctrl_left click the pdf on an other line or page, it should open emacs with buffer foo.tex at the corresponding line of .tex source.
+
+This corresponds to the 'forward' mode or 'synctex view' which looks into file 'foo.synctex.gz' the position in the output foo.pdf corresponding to line 1440 and column 0 of input file 'foo.tex'. You get this information with
+<pre>
+$ synctex view -i 1440:0:foo.tex -o foo.pdf
+This is SyncTeX command line utility, version 1.2
+SyncTeX result begin
+Output:foo.pdf
+Page:38
+x:221.279541
+y:332.136200
+h:117.828148
+v:346.835083
+W:441.891846
+H:32.012672
+before:
+offset:0
+middle:
+after:
+SyncTeX result end
+</pre>
+Once you know the page number (38), the position x (221.279541) and y (332.136200), you can use the 'backward' mode with 'synctex edit' command
+<pre>
+$ synctex edit -o 38:221.279541:332.136200:foo.pdf
+This is SyncTeX command line utility, version 1.2
+SyncTeX result begin
+Output:foo.pdf
+Input:./foo.tex
+Line:1440
+Column:-1
+Offset:0
+Context:
+SyncTeX result end
+</pre> 
+The above command retrieves the corresponding line of the source tex file which will be opened by emacs at the correct line if you add the '-x editor command' option
+<pre>
+$ synctex edit -o 38:221.279541:332.136200:foo.pdf -x "emacsclient +%{line} %{input}"
+</pre> 
+The emacsclient should be installed and running. You can run it from emacs with the command "M-x server-start".
 
 == Synctex and Evince ==
 
