@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Tue Jan 31 14:58:56 2017 (-0800)
+;; Last-Updated: Wed Feb  1 07:41:59 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 7428
+;;     Update #: 7429
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -8471,11 +8471,12 @@ candidates to packages of different kinds."
             (Info-make-manuals-xref (concat (symbol-name package) " package")
                                     nil nil (not (called-interactively-p 'interactive)))))))))
 
-(when (> emacs-major-version 22)      ; `Man-completion-table'
+(when (> emacs-major-version 22)        ; `Man-completion-table'
 
   (icicle-define-command icicle-man
     "Multi-command version of `man'."
-    man "Manual entry: " 'Man-completion-table nil nil nil 'Man-topic-history (Man-default-man-entry))
+    man "Manual entry: " 'Man-completion-table nil nil nil 'Man-topic-history (Man-default-man-entry) nil nil
+    (require 'man))
 
   )
 
