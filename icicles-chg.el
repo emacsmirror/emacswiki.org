@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Jan 31 15:00:23 2017 (-0800)
+;; Last-Updated: Wed Feb  1 10:08:00 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 11683
+;;     Update #: 11684
 ;; URL: http://www.emacswiki.org/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -1178,6 +1178,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2017/02/01 dadams
+;;     Added: icicle-woman.
 ;; 2017/01/31 dadams
 ;;     Added: icicle-man.  Thx to Charles Roelli.
 ;; 2017/01/17 dadams
