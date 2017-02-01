@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Wed Feb  1 07:41:59 2017 (-0800)
+;; Last-Updated: Wed Feb  1 10:09:49 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 7429
+;;     Update #: 7434
 ;; URL: http://www.emacswiki.org/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -170,7 +170,8 @@
 ;;    (+)`icicle-show-only-faces', (+)`icicle-synonyms',
 ;;    (+)`icicle-tag-a-file', (+)`icicle-tags-search',
 ;;    (+)`icicle-untag-a-file', (+)`icicle-vardoc',
-;;    (+)`icicle-where-is', (+)`synonyms', (+)`what-which-how'.
+;;    (+)`icicle-where-is', (+)`icicle-woman' (Emacs 22+),
+;;    (+)`synonyms', (+)`what-which-how'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -454,6 +455,10 @@
 (defvar icicle-track-pt)                ; In `icicle-insert-thesaurus-entry'
 (defvar imenu-after-jump-hook)          ; In `imenu.el' (Emacs 22+)
 (defvar replace-count)                  ; In `replace.el'
+(defvar woman-expanded-directory-path)  ; In `woman.el'
+(defvar woman-manpath)                  ; In `woman.el'
+(defvar woman-path)                     ; In `woman.el'
+(defvar woman-topic-all-completions)    ; In `woman.el'
 (defvar zz-izones)                      ; In `zones.el'
 (defvar zz-lighter-narrowing-part)      ; In `zones.el'
 
@@ -8477,6 +8482,29 @@ candidates to packages of different kinds."
     "Multi-command version of `man'."
     man "Manual entry: " 'Man-completion-table nil nil nil 'Man-topic-history (Man-default-man-entry) nil nil
     (require 'man))
+
+  )
+
+(when (> emacs-major-version 21)
+
+  (icicle-define-command icicle-woman
+    "Multi-command version of `woman'."
+    woman "Manual entry: " woman-topic-all-completions nil 1 nil 'woman-topic-history
+    (let* ((word-at-point  (current-word))
+           (default        (and word-at-point
+                                (test-completion word-at-point woman-topic-all-completions)
+                                word-at-point)))
+      default)
+    nil nil
+    (when (require 'woman nil t)
+      (unless (or (and woman-expanded-directory-path  woman-topic-all-completions)
+                  (woman-read-directory-cache))
+        (message "Building list of manual directory expansions...")
+        (setq woman-expanded-directory-path  (woman-expand-directory-path woman-manpath woman-path))
+        (message "Building completion list of all manual topics...")
+        (setq woman-topic-all-completions  (woman-topic-all-completions woman-expanded-directory-path))
+        (message "Building completion list of all manual topics...done")
+        (woman-write-directory-cache))))
 
   )
 
