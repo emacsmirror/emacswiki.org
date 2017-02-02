@@ -43,7 +43,7 @@ git pull
 
 = Configuration =
 
-For a sample configuration have a look at the info documentation (info "(circe)Example Configuration") or its [http://www.jorgenschaefer.de/software/circe/ homepage].
+For a sample configuration have a look at the info documentation (info "(circe)Example Configuration") or its [https://github.com/jorgenschaefer/circe homepage].
 ----
 CategoryChatClient
 InternetRelayChat
