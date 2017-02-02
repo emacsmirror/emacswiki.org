@@ -195,5 +195,8 @@ As of January 2012 there's an IRC channel <code>#wanderlust</code> at irc.freeno
 * http://thread.gmane.org/gmane.mail.wanderlust.general.japanese/8534 -- Simple setup from the mailing list.
 * http://www.mail-archive.com/emacs-orgmode@gnu.org/msg20250/wlconfiguration.org -- Good config, in org-mode.
 
+=== Code snippets ===
+* https://gist.github.com/anonymous/9a5a37ea9868dda71db1f0f1ddc6b2fc -- A Wanderlust biff "hook" --- actually a timer --- that uses the system notifier to pop up a list of new email messages. It also plays a sound.
+
 ----
 CategoryMail
