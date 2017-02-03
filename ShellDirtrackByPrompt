@@ -89,4 +89,17 @@ Problems encountered:
 * <tt>dirtrack-list</tt> is <tt>buffer-local</tt> so setting that has to be inside the <tt>shell-mode</tt> hook.
 * If your prompt has color codes embedded, either turn off colors or update the regexp to include them.
 
+== Try without shell prompt change ==
+
+  (require 'dirtrack) ;change the method used to determine the current directory in a shell
+    (add-hook 'shell-mode-hook
+      (lambda ()
+        (shell-dirtrack-mode 0) ;stop the usual shell-dirtrack mode
+        ;(setq ssh-directory-tracking-mode 'ftp)
+        (setq dirtrack-list '(":*\\([A-Za-z]*:*~*[\/\\].*?\\)[^-+A-Za-z0-9_.()//\\ ]" 1)) ;for help making this regular expression you may want to use "M-x re-builder", where M is usually alt
+        ;(dirtrack-debug-mode) ;this shows any change in directory that dirtrack mode sees
+        (dirtrack-mode))) ;enable the more powerful dirtrack mode
+
+
+
 CategoryShell
