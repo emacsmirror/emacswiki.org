@@ -91,6 +91,8 @@ Problems encountered:
 
 == Try without shell prompt change ==
 
+Compatible with Windows and at least some Linux shells
+
   (require 'dirtrack) ;change the method used to determine the current directory in a shell
     (add-hook 'shell-mode-hook
       (lambda ()
