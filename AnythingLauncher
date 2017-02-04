@@ -131,27 +131,7 @@ with but I did not think anyone would be interested :)
 
 = Repository =
 
-I just put up the files here: http://github.com/brakjoller/anything-launcher
-
-Warning! The code is quite okay but there is no special prefix to all defuns, 
-so there might be name clashes with stuff you currently have (although if 
-you run this as I do not many files are being loaded).
-
-= Discussion =
-
-You should announce it on gnu.emacs.sources too, even if it's not polished, 
-because you can get ideas and contributors from there. Not everyone follows 
-the recent changes of EmacsWiki.
-
-[new]
-Maybe. I have double posted stuff here and over at g.e.s before and there 
-might be some benefit to it. We'll see... -- MaDa
-
-[new]
-Interesting! Where is the repository? -- [[rubikitch]]
-
-[new]
-See above. -- MaDa
+MELPA is pulling from this repository: http://repo.or.cz/anything-config.git
 
 ----
 [[Anything]]
