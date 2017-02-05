@@ -10,7 +10,7 @@ Did you ever narrow a [[buffer]] to some restriction (region), and then later na
 
 Narrowing always narrows to the current [[region]], which can be anywhere and have any size up to the buffer size. But command `widen' (`C-x n w') always restores the full buffer. There can be many different narrowings (one at a time), but there is only one widening: the whole buffer.
 
-Library '''[[Zones]]''' gives you the same fine-grained behavior for widening as for narrowing. In fact, the possible widening targets are the same restrictions that you created by previous narrowings (plus the whole buffer). Instead of only a single widening, you have '''''N''''' of them.
+Library '''[[Zones]]''' gives you the same fine-grained behavior for widening as for narrowing. In fact, the possible widening targets are the same restrictions that you created by previous narrowings (plus the whole buffer). Instead of only a single widening, you have ''N'' of them.
 
 
 
