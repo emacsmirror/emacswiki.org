@@ -271,10 +271,10 @@ Alt-b and Alt-f for navigating by word also works for your shell now.
 
 === Use Left Command as Meta Key under iTerm2 terminal emulator ===
 
-1. In iTerm2 go to Preferences > Keys
-2. Under Remap Modifier Keys, change Left Command Key to behave like Right Option
-3. Then go to Preferences > Profiles > $YourProfile > Keys
-4. On the bottom right of the screen click "Right option key acts as: +Esc"
+# In iTerm2 go to Preferences > Keys
+# Under Remap Modifier Keys, change Left Command Key to behave like Right Option
+# Then go to Preferences > Profiles > $YourProfile > Keys
+# On the bottom right of the screen click "Right option key acts as: +Esc"
 
 === Call AppleScript from Emacs ===
 
