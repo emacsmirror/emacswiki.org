@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jan 14 15:57:38 2017 (-0800)
+;; Last-Updated: Sun Feb  5 09:25:21 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 828
+;;     Update #: 830
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -335,6 +335,14 @@ sexps the string expects as arguments."
   :type '(choice
           (const :tag "Characters: \"_ chars\""
            (" %d chars" (abs (- (mark t) (point)))))
+          ;; Should we use this instead?  It can sometimes be costly.
+          ;; See http://emacs.stackexchange.com/a/29912/105.
+          ;; (const :tag "Bytes: \"_ bytes\""
+          ;;  (" %d bytes"
+          ;;   (if (fboundp 'bufferpos-to-filepos) ; Emacs 25+
+          ;;       (- (bufferpos-to-filepos (region-end) 'exact)
+          ;;          (bufferpos-to-filepos (region-beginning) 'exact))
+          ;;     (string-bytes (buffer-substring-no-propertiesw (region-beginning) (region-end))))))
           (const :tag "Bytes: \"_ bytes\""
            (" %d bytes" (string-bytes (buffer-substring-no-propertiesw (region-beginning) (region-end)))))
           (const :tag "Chars & Lines: \"_ ch, _ l\" or Rows & Columns: \"_ rows, _ cols\""
