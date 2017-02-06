@@ -94,8 +94,6 @@
 
   ;; base-style
   (c-set-style "stroustrup")
-  ;; set auto cr mode
-  (c-toggle-auto-hungry-state 1)
 
   ;; qt keywords and stuff ...
   ;; set up indenting correctly for new qt kewords
