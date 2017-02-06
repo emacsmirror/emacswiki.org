@@ -32,9 +32,9 @@ You can always save any preferences (options or faces) by inserting appropriate 
 
 A very useful command, which is not bound to any key sequence, by default, is `customize-unsaved'.  This command opens a Customize buffer with all of the preferences that you have changed in the current session but not yet saved. You can then look over the changes and save individual preferences.
 
-Another useful command (also not bound, by default) is `customize-save-customized' -- it saves '''''all''''' of the changes you have made in the current session.
+Another useful command (also not bound, by default) is `customize-save-customized' -- it saves ''all'' of the changes you have made in the current session.
 
-However, it is important to realize that both of these commands work only with the set of changes that Customize recognizes, and '''''not every preference change is recognized by Customize'''''. This is an important ''gotcha!!'' -- see next.
+However, it is important to realize that both of these commands work only with the set of changes that Customize recognizes, and ''not every preference change is recognized by Customize''. This is an important ''gotcha!!'' -- see next.
 
 
 
@@ -155,7 +155,7 @@ For that reason, there is a user option, '''`frame-parameters-to-exclude'''', wh
 
 # You use command '''`set-frame-alist-parameter-from-frame'''' to copy the `background-color' parameter from the frame you changed to `default-frame-alist'.
 
-# You save user option '''`default-frame-alist'''' in Customize (after using `customize-customized' to get to its Customize buffer).
+# You save user option '''`default-frame-alist'''' in Customize (after using `customize-unsaved' to get to its Customize buffer).
 
 (Each of the `set-*-frame-alist-*' commands takes care of letting Customize know that the frame-alist user option has been changed.)
 
@@ -178,7 +178,7 @@ But this split into two different kind of users is pretty artificial -- things a
 
 So, some folks figure that it would be good if ''all'' changes to user options and faces were ''automatically'' recognized as new preference settings by Customize (recognized, but not saved, by default).  The idea would be that you can change something anywhere and the change is taken into account elsewhere. See, for example, [[#CustomizePlus]].
 
-'''''What do you think?''''' Are there good reasons for Customize ''not'' to recognize changes to user options by `set-variable', `setq', and so on?
+''What do you think?'' Are there good reasons for Customize ''not'' to recognize changes to user options by `set-variable', `setq', and so on?
 
 Of course, even if everyone were to agree on the desirability of a closer integration, there might be problems implementing it. Stay tuned...
 
@@ -251,13 +251,13 @@ There is a detailed explanation of what that library does in the source-code com
 
 * Emacs informs you when you quit (`C-x C-c') if you have unsaved customizations. It asks if you want to review them.  If so, it opens a Customize buffer with all of your changes -- variables and faces.  This is analogous to Emacs asking you about files you've changed but not saved, before letting you exit.
 
-* Emacs does this by using '''`customize-customized'''' as a `kill-emacs-query-functions' hook -- or, rather, it uses a new version of `customize-customized' that does the following:
+* Emacs does this by using '''`customize-unsaved'''' as a `kill-emacs-query-functions' hook -- or, rather, it uses a new version of `customize-unsaved' that does the following:
 
-** It ignores any preferences listed in variable '''`customize-customized-ignore''''.  Typically, you list variables there that you modify frequently and don't care about saving. Examples are `case-fold-search' and `debug-on-error' -- you don't really care about saving their changes, and you certainly don't want to be asked whether or not you want to save them each you quit Emacs.  (A prefix argument to `customize-customized' lets you override this ignoring.)
+** It ignores any preferences listed in variable '''`customize-unsaved-ignore''''.  Typically, you list variables there that you modify frequently and don't care about saving. Examples are `case-fold-search' and `debug-on-error' -- you don't really care about saving their changes, and you certainly don't want to be asked whether or not you want to save them each you quit Emacs.  (A prefix argument to `customize-unsaved' lets you override this ignoring.)
 
 ** If not run interactively (e.g. when run as a `kill-emacs-query-functions' hook), it asks you for confirmation before proceeding.
 
-* All Customize buffers have been modified to provide buttons and menu items ('''Ignore Unsaved Changes''') to let you add preferences (variables and faces) to `customize-customized-ignore'.  You can, for instance, add every preference in a Customize buffer to the ignore list with one click -- just as you can save all changes in a Customize buffer with one click.
+* All Customize buffers have been modified to provide buttons and menu items ('''Ignore Unsaved Changes''') to let you add preferences (variables and faces) to `customize-unsaved-ignore'.  You can, for instance, add every preference in a Customize buffer to the ignore list with one click -- just as you can save all changes in a Customize buffer with one click.
 
 * New commands '''`customize-update-all-vars'''', '''`customize-update-all-faces'''', and '''`customize-update-all'''' (which does both of the first two) dig up all of the variables and faces that have been modified outside of Customize and tell Customize to consider them as having been modified inside Customize.  IOW, they bring everything that is outside of Customize into the Customize fold.  Using these commands, you can manually update Customize at any time, to synch Customize with the wider Emacs world.  These updating commands are also available as buttons and menu items ('''Set from External Changes''').
 
