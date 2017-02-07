@@ -8,9 +8,9 @@
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb  6 15:31:13 2017 (-0800)
+;; Last-Updated: Mon Feb  6 16:02:27 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1613
+;;     Update #: 1627
 ;; URL: http://www.emacswiki.org/cus-edit+.el
 ;; Doc URL: http://emacswiki.org/CustomizingAndSaving
 ;; Keywords: help, customize, help, faces
@@ -186,12 +186,12 @@
 ;;  be asked whether or not you want to save them each you quit Emacs.
 ;;
 ;;  To deal with that, a list of ignored preferences,
-;;  `customize-customized-ignore', is defined here.  Its preferences
+;;  `customize-unsaved-ignore', is defined here.  Its preferences
 ;;  (symbols) are not used by `customize-unsaved' at all (you can
 ;;  override that interactively with a prefix arg).  So, the other way
 ;;  to deal with the legacy Emacs preferences, besides just saving
 ;;  them in your custom file, is to add them to
-;;  `customize-customized-ignore' so `customize-unsaved' will ignore
+;;  `customize-unsaved-ignore' so `customize-unsaved' will ignore
 ;;  them.
 ;;
 ;;  To make it easy for you to add preferences to this ignore list,
@@ -301,8 +301,8 @@
 ;;  Options (variables) defined here:
 ;;
 ;;    `customp-buffer-create-hook', `custom-buffer-verbose-help'
-;;    (Emacs 20, 21 only), `customize-customized-ignore',
-;;    `customize-unsaved-confirm-exits-flag'.
+;;    (Emacs 20, 21 only), `customize-unsaved-confirm-exits-flag',
+;;    `customize-unsaved-ignore'.
 ;;
 ;;
 ;;  Commands defined here:
@@ -355,6 +355,7 @@
 ;;
 ;; 2017/01/06 dadams
 ;;     Added: customize-unsaved-confirm-exits-flag.
+;;     Renamed: customize-customized-ignore to customize-unsaved-ignore.  Latter is obsolete alias.
 ;;     customize-unsaved: Return customize-unsaved-confirm-exits-flag on confirmation.  Msg, no error.
 ;;     kill-emacs-query-functions:
 ;;       Add customize-unsaved, not same wrapped in condition-case...t (which always returns t).
@@ -532,11 +533,17 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "cus-edit+")
   )
 
-(defcustom customize-customized-ignore
+;; We do not use `define-obsolete-variable-alias' so that byte-compilation in older Emacs
+;; works for newer Emacs too.
+(when (fboundp 'defvaralias)            ; Emacs 22+
+  (defvaralias 'customize-customized-ignore 'customize-unsaved-ignore)
+  (make-obsolete-variable 'customize-customized-ignore 'customize-unsaved-ignore "2017-02-06"))
+
+(defcustom customize-unsaved-ignore
   (append (and (boundp 'savehist-minibuffer-history-variables)
                savehist-minibuffer-history-variables)
           '(case-fold-search debug-on-error))
-  "*User preferences to ignore in `customize-customized'.
+  "*User preferences to ignore in `customize-unsaved'.
 Items in this list are symbols naming faces or variables."
   :type '(repeat symbol) :group 'Custom-Plus
   :link '(url-link :tag "Other Libraries by Drew"
@@ -545,8 +552,32 @@ Items in this list are symbols naming faces or variables."
           "http://www.emacswiki.org/cus-edit+.el")
   :link '(url-link :tag "Description"
           "http://www.emacswiki.org/CustomizingAndSaving#CustomizePlus")
-  :link '(emacs-commentary-link :tag "Commentary" "cus-edit+")
-  )
+  :link '(emacs-commentary-link :tag "Commentary" "cus-edit+"))
+
+(defcustom customize-unsaved-confirm-exits-flag nil
+  "*Non-nil means exit Emacs after confirming to customize unsaved options.
+This option has an effect only when `customize-unsaved' is used on
+`kill-emacs-query-functions'.  Regardless of the option value, a `y'
+response when prompted shows unsaved customizations, and an `n'
+response does not show them.
+
+The functions on hook `kill-emacs-query-functions' are invoked in
+sequence, and if one of them returns `nil' then killing Emacs is
+canceled.  The option value is returned by `customize-unsaved' when
+you answer `y'.
+
+So if the option is `nil' then Emacs is not killed.  No subsequent
+functions on hook `kill-emacs-query-functions' are invoked.  If the
+value is non-`nil' then subsequent functions on the hook are invoked.
+If none of them returns `nil' then Emacs is killed.
+
+In general, if a subsequent function on the hook will prompt you then
+you might want to set the option value to non-`nil'.  That way, after
+responding with `y' to the `customize-unsaved' prompt you can
+immediately respond to the next prompt without needing to use `C-x
+C-c' again.  You can look at your customizations and use the next
+prompt to decide whether to quit."
+  :type 'boolean :group 'Custom-Plus)
 
 (when (< emacs-major-version 22)
   (defcustom custom-buffer-verbose-help t
@@ -776,31 +807,6 @@ the menu entry, ACTION is the function to call on the widget when the
 menu is selected, and FILTER is a predicate which takes a `custom-face'
 widget as an argument, and returns non-nil if ACTION is valid on that
 widget.  If FILTER is nil, ACTION is always valid.")
-
-(defcustom customize-unsaved-confirm-exits-flag nil
-  "*Non-nil means exit Emacs after confirming to customize unsaved options.
-This option has an effect only when `customize-unsaved' is used on
-`kill-emacs-query-functions'.  Regardless of the option value, a `y'
-response when prompted shows unsaved customizations, and an `n'
-response does not show them.
-
-The functions on hook `kill-emacs-query-functions' are invoked in
-sequence, and if one of them returns `nil' then killing Emacs is
-canceled.  The option value is returned by `customize-unsaved' when
-you answer `y'.
-
-So if the option is `nil' then Emacs is not killed.  No subsequent
-functions on hook `kill-emacs-query-functions' are invoked.  If the
-value is non-`nil' then subsequent functions on the hook are invoked.
-If none of them returns `nil' then Emacs is killed.
-
-In general, if a subsequent function on the hook will prompt you then
-you might want to set the option value to non-`nil'.  That way, after
-responding with `y' to the `customize-unsaved' prompt you can
-immediately respond to the next prompt without needing to use `C-x
-C-c' again.  You can look at your customizations and use the next
-prompt to decide whether to quit."
-  :type 'boolean :group 'Custom-Plus)
 
 
 ;; REPLACES ORIGINAL in `cus-edit.el'.
@@ -1114,8 +1120,8 @@ an integer value."
 
 ;; REPLACES ORIGINAL in `cus-edit.el'.
 ;;
-;; 1. By default, ignores preferences in `customize-customized-ignore'.
-;; 2. Added prefix arg to override `customize-customized-ignore'.
+;; 1. By default, ignores preferences in `customize-unsaved-ignore'.
+;; 2. Added prefix arg to override `customize-unsaved-ignore'.
 ;; 3. When not interactive and there are changes, ask for confirmation.
 ;; 4. Returns nil or non-nil as appropriate for `kill-emacs-query-functions', respecting
 ;;    `customize-unsaved-confirm-exits-flag'.
@@ -1124,7 +1130,7 @@ an integer value."
 ;;;###autoload
 (defun customize-unsaved (&optional check-all-p)
   "Open Customize to check all preferences currently set but not saved.
-Changes to preferences listed in `customize-customized-ignore'
+Changes to preferences listed in `customize-unsaved-ignore'
 are normally ignored here.  However, with non-`nil' CHECK-ALL-P (prefix
 argument), all changes are checked.
 
@@ -1159,11 +1165,11 @@ unsaved preferences or you respond `n' when asked to check them."
   (condition-case failure
       (let ((found  nil))
         (mapatoms (lambda (symbol)
-                    (and (or check-all-p  (not (memq symbol customize-customized-ignore)))
+                    (and (or check-all-p  (not (memq symbol customize-unsaved-ignore)))
                          (or (get symbol 'customized-face)  (get symbol 'customized-face-comment))
                          (custom-facep symbol)
                          (push (list symbol 'custom-face) found))
-                    (and (or check-all-p  (not (memq symbol customize-customized-ignore)))
+                    (and (or check-all-p  (not (memq symbol customize-unsaved-ignore)))
                          (or (get symbol 'customized-value)  (get symbol 'customized-variable-comment))
                          (boundp symbol)
                          (push (list symbol 'custom-variable) found))))
@@ -1318,13 +1324,13 @@ use `\\[toggle-customize-update-changes]."
 (defun Custom-ignore-unsaved (&rest _IGNORED)
   "Ignore all currently customized but unsaved preferences.
 The preferences that are currently customized but not saved are added
-to the list of preferences that `customize-customized' will ignore
-when checking for unsaved changes.
+to the list of preferences that `customize-unsaved' will ignore when
+checking for unsaved changes.
 
-NOTE: This list of preferences that `customize-customized' ignores is
+NOTE: This list of preferences that `customize-unsaved' ignores is
       updated here and saved to your customizations file.  To undo
       this change, use `\\[Custom-reset-standard]' on variable
-      `customize-customized-ignore'."
+      `customize-unsaved-ignore'."
   (interactive)
   (if (not (y-or-n-p "Unsaved changes to all of these preferences will be IGNORED \
 from now on.  Continue? "))
@@ -1335,8 +1341,8 @@ from now on.  Continue? "))
           (when (or (get symbol 'customized-value)  (get symbol 'customized-face))
             (message "Changes to `%s' will be IGNORED from now on." symbol))
           (sit-for 0)
-          (push symbol customize-customized-ignore))))
-    (customize-save-variable 'customize-customized-ignore customize-customized-ignore)
+          (push symbol customize-unsaved-ignore))))
+    (customize-save-variable 'customize-unsaved-ignore customize-unsaved-ignore)
     (message
      (substitute-command-keys "Changes to all of these preferences will be ignored. \
 Use `\\[Custom-reset-standard]' to undo."))))
@@ -1348,9 +1354,9 @@ Use `\\[Custom-reset-standard]' to undo."))))
 ;;
 (defun custom-ignore-unsaved-preference (widget)
   "Ignore any unsaved changes to this preference.
-Add it to the list of preferences that `customize-customized' will
-ignore when checking for unsaved changes.  Save that list in your
-custom file."
+Add it to the list of preferences that `customize-unsaved' ignores
+when checking for unsaved changes.  Save that list in your custom
+file."
   (let ((symbol  (widget-get-tag-or-value widget)))
     (unless (or (get symbol 'customized-value)  (get symbol 'customized-face))
       (error "No unsaved changes to `%s'" symbol))
@@ -1361,9 +1367,8 @@ custom file."
       (message "Changes to `%s' will be ignored from now on."
                (widget-get-tag-or-value widget))
       (sit-for 0)
-      (push symbol customize-customized-ignore)
-      (customize-save-variable 'customize-customized-ignore
-                               customize-customized-ignore))))
+      (push symbol customize-unsaved-ignore)
+      (customize-save-variable 'customize-unsaved-ignore customize-unsaved-ignore))))
 
 ;;;###autoload
 (defun Custom-consider-unchanged (&rest _IGNORED)
@@ -1631,8 +1636,8 @@ variable, since it was considered unchanged."
            "consider_unchanged"
            "Consider Unchanged")
           (" Ignore unsaved changes" Custom-ignore-unsaved t
-           "Add to the `customize-customized-ignore' preferences, whose changes \
-are ignored by `customize-customized'."
+           "Add to the `customize-unsaved-ignore' preferences, whose changes \
+are ignored by `customize-unsaved'."
            "ignore_unsaved"
            "Ignore Unsaved")
           (" Set from external changes" customize-update-all t
@@ -1849,8 +1854,8 @@ Treat changed preferences as if they were unchanged, without saving them."
     (widget-create 'push-button
                    :tag "Ignore Unsaved Changes"
                    :help-echo "\
-Add to the `customize-customized-ignore' preferences, whose changes \
-are ignored by `customize-customized'."
+Add to the `customize-unsaved-ignore' preferences, whose changes \
+are ignored by `customize-unsaved'."
                    :action (lambda (widget &optional event) (Custom-ignore-unsaved)))
     (widget-insert " ")
     (widget-create 'push-button
