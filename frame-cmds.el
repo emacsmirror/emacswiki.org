@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Sun Jan  1 09:52:52 2017 (-0800)
+;; Last-Updated: Tue Feb  7 10:42:57 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3053
+;;     Update #: 3063
 ;; URL: http://www.emacswiki.org/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -100,12 +100,14 @@
 ;;  Commands defined here:
 ;;
 ;;    `create-frame-tiled-horizontally',
-;;    `create-frame-tiled-vertically', `delete-1-window-frames-on',
+;;    `create-frame-tiled-vertically', `decrease-frame-transparency'
+;;    (Emacs 23+), `delete-1-window-frames-on',
 ;;    `delete/iconify-window', `delete/iconify-windows-on',
 ;;    `delete-other-frames', `delete-windows-for', `enlarge-font',
 ;;    `enlarge-frame', `enlarge-frame-horizontally',
 ;;    `hide-everything', `hide-frame', `iconify-everything',
 ;;    `iconify/map-frame', `iconify/show-frame',
+;;    `increase-frame-transparency' (Emacs 23+),
 ;;    `jump-to-frame-config-register', `maximize-frame',
 ;;    `maximize-frame-horizontally', `maximize-frame-vertically',
 ;;    `mouse-iconify/map-frame', `mouse-iconify/show-frame',
@@ -182,6 +184,8 @@
 ;;   (global-set-key [(control meta right)]         'enlarge-frame-horizontally)
 ;;   (global-set-key [(control meta up)]            'shrink-frame)
 ;;   (global-set-key [(control meta left)]          'shrink-frame-horizontally)
+;;   (global-set-key (kbd "C-M-S-<down>")           'increase-frame-transparency)
+;;   (global-set-key (kbd "C-M-S-<up>")             'decrease-frame-transparency)
 ;;   (global-set-key [(control ?x) (control ?z)]    'iconify-everything)
 ;;   (global-set-key [vertical-line S-down-mouse-1] 'iconify-everything)
 ;;   (global-set-key [(control ?z)]                 'iconify/show-frame)
@@ -279,6 +283,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/02/07 dadams
+;;     Added decrease-frame-transparency, increase-frame-transparency.  Suggest bind to C-M-up|down.
 ;; 2016/01/24 dadams
 ;;     Added: tear-off-window, tear-off-window-if-not-alone.
 ;; 2015/08/14 dadams
@@ -571,6 +577,7 @@
 
 ;; Quiet byte-compiler.
 (defvar 1on1-minibuffer-frame)          ; In `oneonone.el'
+(defvar frame-alpha-lower-limit)        ; Emacs 23+
 (defvar mac-tool-bar-display-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -1713,6 +1720,29 @@ visible) frame back onto the screen."
                        0)
                      (get-a-frame (read-frame "Frame: " nil 'EXISTING))))
   (modify-frame-parameters frame '((top . ,arg) (left . ,arg))))
+
+
+(when (> emacs-major-version 22)        ; Emacs 23+
+
+  (defun decrease-frame-transparency (&optional n frame) ; Suggested binding: `C-M-S-up'.
+    "Decrease the transparency of the selected frame.
+Decrease it by N percent, where N is the prefix arg.
+In Lisp code, FRAME is the frame to move."
+    (interactive "p")
+    (unless n (setq n  1))
+    (let* ((now  (or (frame-parameter frame 'alpha)  100))
+           (new  (+ now n)))
+      (when (> new 100) (setq new  frame-alpha-lower-limit))
+      (when (< new frame-alpha-lower-limit) (setq new  100))
+      (set-frame-parameter frame 'alpha new)))
+
+  (defun increase-frame-transparency (&optional n frame) ; Suggested binding: `C-M-S-down'.
+    "Increase the transparency of the selected frame.
+Same as `decrease-frame-transparency', except increase."
+    (interactive "p")
+    (unless n (setq n  1))
+    (decrease-frame-transparency (- n) frame))
+  )
 
 
 ;; This does not work 100% well.  For instance, set frame font to
