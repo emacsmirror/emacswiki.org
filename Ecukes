@@ -1,5 +1,3 @@
 Ecukes is a package that makes it possible to write Cucumber like tests for Emacs packages.
 
-* Website: http://ecukes.info/
 * Source: http://github.com/rejeep/ecukes
-* Blog post: http://blog.tuxicity.se/cucumber/elisp/emacs/testing/2010/04/01/ecukes-cucumber-for-emacs.html
