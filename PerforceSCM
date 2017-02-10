@@ -6,6 +6,18 @@ There are two packages that integrate Perforce with Emacs:
 
 * **vc-p4.el** is [http://public.perforce.com/wiki/Emacs_VC-P4 available from the Perforce Public Depot]. This package is suitable for users who are familiar with VersionControl in Emacs and want to work with Perforce in the same way. This integration makes all of the standard Emacs VC commands work with Perforce, and it is fully compatible with p4.el (that is, you can use both at the same time, for example if you need occasional access to the Perforce client features that don't map onto Emacs' VersionControl features). This package was originally written by [mailto:jik@kamens.brookline.ma.us Jonathan Kamens], has been contributed to by [mailto:dann@ics.uci.edu Dan Nicolaescu], and seems to be currently maintained by Magnus Henoch.
 
+p4.el has an [https://github.com/gareth-rees/p4.el/issues/235 issue with TRAMP] (it doesn't currently work over TRAMP, but still attempts to process TRAMP buffers). Here's a workaround:
+<code>
+ (defun p4-tramp-workaround-find-file-hook ()
+    "do not let p4.el process remote TRAMP buffers"
+    (when
+        (and (fboundp 'tramp-tramp-file-p)
+             (not (tramp-tramp-file-p buffer-file-name)))
+      (p4-update-status)))
+
+  (remove-hook 'find-file-hook 'p4-update-status)
+  (add-hook 'find-file-hooks 'p4-tramp-workaround-find-file-hook)
+<code>
 See also: Wiki:PerforceVersionControl.
 ----
 CategoryVersionControl
