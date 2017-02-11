@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Sun Jan  1 11:39:51 2017 (-0800)
+;;; Last-Updated: Fri Feb 10 19:24:17 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 564
+;;     Update #: 565
 ;; URL: http://www.emacswiki.org/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -65,6 +65,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/02/10 dadams
+;;     display-lines-containing: Quote minibuffer-history.
+;;     frame-alist: Use code for get-frame-name, not the function (in frame-fns.el).
+;;     Thx to Rubikitch.
 ;; 2105/08/05 dadams
 ;;     read-any-variable:
 ;;       Ensure SYMB is not just the symbol nil for default value to completing-read.
@@ -285,7 +289,7 @@ Interactively:
    (list (get-buffer-create "*Lines Containing*")
          (read-from-minibuffer "Lines containing: "
                                (current-line-string) nil nil
-                               (cons minibuffer-history 1))
+                               (cons 'minibuffer-history 1))
          current-prefix-arg))
   (setq buffer (get-buffer-create buffer)) ; Convert possible string to buffer.
   (let ((bufstring (buffer-string)))
@@ -627,7 +631,7 @@ is a variable, then return that by default."
   "Alist of (FR-NAME . FR) items.  FR-NAME names FR in `frame-list'.
 FR-NAME is a string.  The alist is sorted by ASCII code in reverse
 alphabetical order, and with case ignored."
-  (sort (mapcar (function (lambda (fr) (cons (get-frame-name fr) fr)))
+  (sort (mapcar (function (lambda (fr) (cons (frame-parameter fr 'name) fr)))
                 (frame-list))
         (function
          (lambda (f1f1n f2f2n)
