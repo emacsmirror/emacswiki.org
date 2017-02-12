@@ -116,7 +116,7 @@
     (font-lock-add-keywords 'c++-mode
                             '(("\\<SIGNAL\\|SLOT\\>" . 'qt-keywords-face)))
     (font-lock-add-keywords 'c++-mode
-                            '(("\\<Q[A-Z][A-Za-z]*" . 'qt-keywords-face)))
+                            '(("\\<Q[A-Z][A-Za-z]\\>" . 'qt-keywords-face)))
     ))
 
 (dolist (hook (list
