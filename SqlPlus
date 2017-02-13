@@ -225,6 +225,7 @@ To use kerberos, just enter "/" as user and leave password blank.  hth... don
 That'd be great if this would be somehow merged with sql.el -- in order to be used for MS SQL as well.
 with the IDE, it REALLY is STUNNING!  Felicidades...
 
+Something else: it'd be good to use the natural Comint shortcuts (C-c C-b to send buffer, C-c C-r to send region, etc.) as these are common to multiple modes (R buffer, etc.).
 
 ----
 CategorySql
