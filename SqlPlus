@@ -221,5 +221,10 @@ To use kerberos, just enter "/" as user and leave password blank.  hth... don
 [new]
 (defadvice switch-to-buffer...) breaks dired's switch-to-buffer now on ntemacs 24. Commenting out ad-activate underneath solved it
 
+[new]
+That'd be great if this would be somehow merged with sql.el -- in order to be used for MS SQL as well.
+with the IDE, it REALLY is STUNNING!  Felicidades...
+
+
 ----
 CategorySql
