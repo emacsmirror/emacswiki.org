@@ -185,15 +185,18 @@ Internals (you don't want to read this):
 
 == Force gdb-mi not to set windows as dedicated ==
 
-<code>gdb-mi.el</code> sets all its windows to be dedicated by default which meanst that if one tries to switch-buffer in one of <code>gdb-mi.el</code>'s dedicated windows selected the buffer will appear in a different window instead. When gdb-many-windows is disabled this is rather annoying so here's a quick fix using advice to override <code>gdb-mi.el</code>'s window dedication.
+<code>gdb-mi.el</code> sets all its windows to be dedicated by default which means that if one tries to switch-buffer in one of <code>gdb-mi.el</code>'s dedicated windows the buffer will appear in a different window instead. This can be rather annoying, so here's a quick fix using advice to override <code>gdb-mi.el</code>'s window dedication.
 
 {{{
 ;; Force gdb-mi to not dedicate any windows
-(defadvice gdb-display-buffer (after undedicate-gdb-display-buffer)
-  (set-window-dedicated-p ad-return-value nil))
-(ad-activate 'gdb-display-buffer)
+(advice-add 'gdb-display-buffer
+	    :around (lambda (orig-fun &rest r)
+		      (let ((window (apply orig-fun r)))
+			(set-window-dedicated-p window nil)
+			window)))
 
-(defadvice gdb-set-window-buffer (after undedicate-gdb-set-window-buffer (name &optional ignore-dedi window))
-  (set-window-dedicated-p window nil))
-(ad-activate 'gdb-set-window-buffer)
+(advice-add 'gdb-set-window-buffer
+	    :around (lambda (orig-fun name &optional ignore-dedicated window)
+		      (funcall orig-fun name ignore-dedicated window)
+		      (set-window-dedicated-p window nil)))
 }}}
