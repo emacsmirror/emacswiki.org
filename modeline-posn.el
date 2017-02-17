@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Feb  5 09:25:21 2017 (-0800)
+;; Last-Updated: Fri Feb 17 09:24:21 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 830
+;;     Update #: 833
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -259,7 +259,7 @@
 (defvar isearchp-reg-beg)                 ; In `isearch+.el'
 (defvar isearchp-reg-end)                 ; In `isearch+.el'
 (defvar isearchp-restrict-to-region-flag) ; In `isearch+.el'
-(defvar rectangle--string-preview-window) ; In `rect.el' for Emacs 24.4+
+(defvar rectangle--string-preview-window) ; In `rect.el' for Emacs 25+
 (defvar use-empty-active-region)          ; In `simple.el' for Emacs 23+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -308,7 +308,7 @@ It is the responsibility of individual commands to manage the value.
                                    (count-lines (region-beginning) (region-end))
                                  (abs (- (mark t) (point))))
                                (if modelinepos-rect-p
-                                   (if (fboundp 'rectangle--pos-cols) ; Emacs 24.4+
+                                   (if (fboundp 'rectangle--pos-cols) ; Emacs 25+
                                        (let ((rpc  (rectangle--pos-cols (region-beginning) (region-end))))
                                          (abs (- (car rpc) (cdr rpc))))
                                      (let ((start  (region-beginning))
@@ -351,7 +351,7 @@ sexps the string expects as arguments."
                 (count-lines (region-beginning) (region-end))
               (abs (- (mark t) (point))))
             (if modelinepos-rect-p
-                (if (fboundp 'rectangle--pos-cols) ; Emacs 24.4+
+                (if (fboundp 'rectangle--pos-cols) ; Emacs 25+
                     (let ((rpc  (rectangle--pos-cols (region-beginning) (region-end))))
                       (abs (- (car rpc) (cdr rpc))))
                   (let ((start  (region-beginning))
@@ -763,7 +763,7 @@ For some commands, it may be appropriate to ignore the value of
        (barf-if-buffer-read-only)
        (list start
              end
-             (if (fboundp 'rectangle--string-erase-preview) ; Emacs 24.4+
+             (if (fboundp 'rectangle--string-erase-preview) ; Emacs 25+
                  (minibuffer-with-setup-hook
                      (lambda ()
                        (setq rectangle--string-preview-window  win)
