@@ -121,7 +121,7 @@ With the default value of `icicle-top-level-key-bindings',
 * '''##‘ESC M-x’##''' -- [[LaCarte|‘lacarte-execute-command’]]
 * '''##‘M-`’##''', '''`f10'''' -- [[LaCarte|‘lacarte-execute-menu-command’]]
 * '''`M-x'''' -- [[Icicles - Multi M-x|‘icicle-execute-extended-command’]]
-* '''`C-x SPC'''' -- [[Icicles - Multi M-x#icicle-command-abbrev|‘icicle-command-abbrev’]]
+* '''`M-ESC C-x'''' (aka '''`ESC ESC C-x'''') -- [[Icicles - Multi M-x#icicle-command-abbrev|‘icicle-command-abbrev’]]
 * '''`C-x M-e'''' -- `icicle-execute-named-keyboard-macro'
 * '''`S-f4'''' -- `icicle-kmacro'
 * '''`pause'''' -- [[Icicles - Moving Between the Minibuffer and Other Buffers|‘icicle-switch-to/from-minibuffer’]]
