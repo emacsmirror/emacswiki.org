@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Jan  1 10:28:22 2017 (-0800)
+;; Last-Updated: Fri Feb 17 10:22:11 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 6167
+;;     Update #: 6173
 ;; URL: http://www.emacswiki.org/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4978,7 +4978,10 @@ toggle Icicle mode off and then back on."
     ("\C-c/"                       icicle-complete-thesaurus-entry ; `C-c /'
      (fboundp 'icicle-complete-thesaurus-entry))
     ("\C-x\M-e"                    icicle-execute-named-keyboard-macro t) ; `C-x M-e'
-    ("\C-x "                       icicle-command-abbrev               t) ; `C-x SPC'
+    ;; Emacs 25 stole `C-x SPC' for `rectangle-mark-mode'.
+    ;; ("\C-x "                    icicle-command-abbrev               t) ; `C-x SPC'
+    (,(kbd "ESC C-M-x")            icicle-command-abbrev               t) ; `M-ESC C-x'
+                                                                        ;;; =`ESC C-M-x' = `ESC ESC C-x'
     ("\C-x5o"                      icicle-select-frame                 t) ; `C-x 5 o'
     ("\C-h\C-o"                    icicle-describe-option-of-type      t) ; `C-h C-o'
     ,@(and (require 'kmacro nil t)      ; (Emacs 22+)
