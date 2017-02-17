@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jan  1 10:23:48 2017 (-0800)
+;; Last-Updated: Fri Feb 17 10:27:11 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 29956
+;;     Update #: 29958
 ;; URL: http://www.emacswiki.org/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5797,11 +5797,12 @@
 ;;  * User options `icicle-command-abbrev-match-all-parts-flag',
 ;;    `icicle-command-abbrev-priority-flag', and
 ;;    `icicle-command-abbrev-alist' control the behavior of
-;;    multi-command `icicle-command-abbrev' (`C-x SPC').  The first
-;;    determines whether an abbreviation must match all parts of a
-;;    command name.  The second controls whether command names or
-;;    abbreviations take precedence in case of conflict.  The third is
-;;    the persistent list of your command abbreviations.
+;;    multi-command `icicle-command-abbrev' (`M-ESC C-x', aka `ESC ESC
+;;    C-x').  The first option determines whether an abbreviation must
+;;    match all parts of a command name.  The second controls whether
+;;    command names or abbreviations take precedence in case of
+;;    conflict.  The third is the persistent list of your command
+;;    abbreviations.
 ;;
 ;;  * User options `icicle-S-TAB-completion-methods-alist' and
 ;;    `icicle-TAB-completion-methods' control which completion method
@@ -6933,7 +6934,7 @@
 ;;  * `ESC M-x'        - `lacarte-execute-command'
 ;;  * `M-`', `f10'     - `lacarte-execute-menu-command'
 ;;  * `M-x'            - `icicle-execute-extended-command'
-;;  * `C-x SPC'        - `icicle-command-abbrev'
+;;  * `M-ESC C-x' (aka `ESC ESC C-x') - `icicle-command-abbrev'
 ;;  * `C-x M-e'        - `icicle-execute-named-keyboard-macro'
 ;;  * `S-f4'           - `icicle-kmacro'
 ;;  * `pause'          - `icicle-switch-to/from-minibuffer'
