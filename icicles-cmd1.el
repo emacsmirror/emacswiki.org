@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Thu Jan 26 08:51:57 2017 (-0800)
+;; Last-Updated: Fri Feb 17 10:31:59 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 27500
+;;     Update #: 27505
 ;; URL: http://www.emacswiki.org/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4460,11 +4460,9 @@ then customize option `icicle-top-level-key-bindings'." ; Doc string
     ;; with `C-g', the last command entered with `C-RET'.
     (setq icicle-new-last-cmd  cmd)))
 
-;; Inspired by Emacs partial completion and by library `exec-abbrev-cmd.el' (Tassilo Horn
-;; <tassilo@member.fsf.org>).  The idea of command abbreviation is combined here with normal
-;; command invocation, in an Icicles multi-command.
+;; This combines the idea of command abbreviation with normal command invocation in an Icicles multi-command.
 ;;
-(icicle-define-command icicle-command-abbrev ; Bound to `C-x SPC' in Icicle mode.
+(icicle-define-command icicle-command-abbrev ; Bound to `M-ESC C-x' (= `ESC ESC C-x') in Icicle mode.
   "Read command name or its abbreviation, read command args, call command.
 Read input, then call `icicle-command-abbrev-action' to act on it.
 
