@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Jan  1 10:21:51 2017 (-0800)
+;; Last-Updated: Fri Feb 17 10:36:57 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 28526
+;;     Update #: 28532
 ;; URL: http://www.emacswiki.org/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7375,8 +7375,8 @@
 ;;  executing a single command, it would execute any number of
 ;;  commands.  This section describes two such multi-commands,
 ;;  `icicle-execute-extended-command' and `icicle-command-abbrev',
-;;  which by default are bound in Icicle mode to `M-x' and `C-x SPC',
-;;  respectively.  See Also:
+;;  which by default are bound in Icicle mode to `M-x' and `M-ESC C-x'
+;;  (aka `ESC ESC C-x'), respectively.  See Also:
 ;;  (@file :file-name "icicles-doc2.el" :to "Defining Icicles Multi `M-x'").
 ;;
 ;;(@* "Multi `M-x': `icicle-execute-extended-command'")
@@ -7527,9 +7527,9 @@
 ;;
 ;;  The second multi-command that you can use in place of
 ;;  `execute-extended-command' is `icicle-command-abbrev', bound in
-;;  Icicle mode to `C-x SPC'.  It is similar to `M-x'
-;;  (`icicle-execute-extended-command'), with the added twist that it
-;;  lets you input command abbreviations, as well as commands.
+;;  Icicle mode to `M-ESC C-x' (aka `ESC ESC C-x').  It is similar to
+;;  `M-x' (`icicle-execute-extended-command'), with the added twist
+;;  that it lets you input command abbreviations, as well as commands.
 ;;
 ;;  If option `icicle-add-proxy-candidates-flag' is non-`nil', then
 ;;  command abbreviations, as well as commands, are available as
@@ -7565,7 +7565,7 @@
 ;;
 ;;  One or more, that is - multi-command completion is available for
 ;;  both abbreviations and commands.  That is, you can invoke any
-;;  number of them within the same use of `C-x SPC'.
+;;  number of them within the same use of `M-ESC C-x' (`ESC ESC C-x').
 ;;
 ;;  What happens if your input matches a command name but it is also
 ;;  an abbreviation for other command names?  By default, command
