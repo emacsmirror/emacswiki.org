@@ -1483,7 +1483,7 @@ using '''`##C-`##'''' in the minibuffer.
 User options '''`icicle-command-abbrev-match-all-parts-flag'''',
 '''`icicle-command-abbrev-priority-flag'''', and
 '''`icicle-command-abbrev-alist'''' control the behavior of
-multi-command `icicle-command-abbrev' ('''`C-x SPC'''').  The first
+multi-command `icicle-command-abbrev' ('''`M-ESC C-x'''', aka '''`ESC ESC C-x'''').  The first option
 determines whether an abbreviation must match all parts of a
 command name.  The second controls whether command names or
 abbreviations take precedence in case of conflict.  The third is
