@@ -240,8 +240,6 @@ This is run before the process is cranked up."
   (setq major-mode 'qml-mode)
   (setq mode-name "qml")
 
-  (electric-indent-mode -1)
-
   (use-local-map qml-mode-map)
   (run-hooks 'qml-mode-hook)
   )
