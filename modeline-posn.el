@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Feb 17 09:24:21 2017 (-0800)
+;; Last-Updated: Sat Feb 18 09:51:23 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 833
+;;     Update #: 835
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -190,6 +190,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/02/18 dadams
+;;     rectangle-number-lines: Typo rectange -> rectangle.  Thx to Charles Roelli.
 ;; 2017/01/14 dadams
 ;;     Added vacuous defvars for isearchp-reg-end, isearchp-restrict-to-region-flag.
 ;; 2017/01/08 dadams
@@ -803,7 +805,7 @@ For some commands, it may be appropriate to ignore the value of
                   (start-at  (read-number "Number to count from: " 1)))
              (list start end
                    start-at
-                   (read-string "Format string: " (rectange--default-line-number-format start end start-at))))
+                   (read-string "Format string: " (rectangle--default-line-number-format start end start-at))))
          ;; (redisplay 'FORCE) (sit-for 0.7)
          (list (region-beginning) (region-end) 1 nil))))
     ad-do-it))
