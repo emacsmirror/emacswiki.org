@@ -306,25 +306,21 @@ The following is an approach for obtaining the complete list of possible expansi
         (set-buffer-modified-p buffer-modified)
         ;; Provide the options in the order in which they are normally generated.
         (delete he-search-string (reverse he-tried-table))))
-     
-    (defmacro my-ido-hippie-expand-with (hippie-expand-function)
-      "Generate an interactively-callable function that offers ido-based completion
-    using the specified hippie-expand function."
-      `(call-interactively
-        (lambda (&optional selection)
-          (interactive
-           (let ((options (my-hippie-expand-completions ,hippie-expand-function)))
-             (if options
-                 (list (ido-completing-read "Completions: " options)))))
-          (if selection
-              (he-substitute-string selection t)
-            (message "No expansion found")))))
-     
+    
+    (defun my-ido-hippie-expand-with (hippie-expand-function)
+      "Offer ido-based completion using the specified hippie-expand function."
+      (let* ((options (my-hippie-expand-completions hippie-expand-function))
+             (selection (and options
+                             (ido-completing-read "Completions: " options))))
+        (if selection
+            (he-substitute-string selection t)
+          (message "No expansion found"))))
+    
     (defun my-ido-hippie-expand ()
       "Offer ido-based completion for the word at point."
       (interactive)
       (my-ido-hippie-expand-with 'hippie-expand))
-     
+    
     (global-set-key (kbd "C-c /") 'my-ido-hippie-expand)
 
 [new]
@@ -335,7 +331,7 @@ This can easily be adapted to custom selections of hippie-expand compatible expa
       (interactive)
       (my-ido-hippie-expand-with
        (make-hippie-expand-function '(try-complete-file-name))))
-
+    
     (global-set-key (kbd "C-c C-f") 'my-ido-hippie-expand-filename)
 
 
