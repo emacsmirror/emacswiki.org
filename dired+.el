@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan 12 14:30:40 2017 (-0800)
+;; Last-Updated: Sun Feb 19 07:28:12 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 9728
+;;     Update #: 9729
 ;; URL: http://www.emacswiki.org/dired+.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
