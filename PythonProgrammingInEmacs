@@ -25,6 +25,10 @@ There is some built-in support for virtual environments in python.el, but these 
 * [https://github.com/porterjamesj/virtualenvwrapper.el virtualenvwrapper]
 * [https://github.com/aculich/virtualenv.el virtualenv.el] - deprecated. 
 
+To automatically activate virtual environment you can use:
+* [https://github.com/robert-zaremba/auto-virtualenvwrapper.el auto-virtualenvwrapper] - uses virtualenvwrapper
+* [https://github.com/marcwebbie/auto-virtualenv auto-virtualenv] - uses pyvenv
+
 ===Indentation===
 The defaults should see you compliant with PEP8 but see IndentingPython for detail.
 
