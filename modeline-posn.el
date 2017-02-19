@@ -8,9 +8,9 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb 18 09:51:23 2017 (-0800)
+;; Last-Updated: Sun Feb 19 07:56:41 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 835
+;;     Update #: 840
 ;; URL: http://www.emacswiki.org/modeline-posn.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
@@ -190,6 +190,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/02/19 dadams
+;;     isearch-query-replace-regexp:
+;;       Check that isearchp-reg-beg is boundp before using it in remove-hook.  Thx to Yuri D'Elia.
+;;       Ref: http://lists.gnu.org/archive/html/emacs-devel/2017-02/msg00637.html
 ;; 2017/02/18 dadams
 ;;     rectangle-number-lines: Typo rectange -> rectangle.  Thx to Charles Roelli.
 ;; 2017/01/14 dadams
@@ -881,7 +885,9 @@ For some commands, it may be appropriate to ignore the value of
            (push-mark isearchp-reg-end t 'ACTIVATE))
          ad-do-it)
     (when (boundp 'isearchp-restrict-to-region-flag)
-      (remove-hook 'isearch-mode-end-hook `(lambda () (setq modelinepos-region-acting-on  ',isearchp-reg-beg))))))
+      (remove-hook 'isearch-mode-end-hook
+                   `(lambda () (setq modelinepos-region-acting-on  ',(and (boundp 'isearchp-reg-beg)
+                                                                     isearchp-reg-beg)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
