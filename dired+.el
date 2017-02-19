@@ -5427,7 +5427,7 @@ along with the names of non-directories.
 Non-nil optional arg PREDICATE must be a function that accepts a
 file-name argument.  Only files (and possibly directories) that
 satisfy PREDICATE are included in the result."
-  ;; Bind `diredp-files-within-dirs-done' for use as a free var in `diredp-files-within-1'."
+  ;; Bind `diredp-files-within-dirs-done' for use as a free var in `diredp-files-within-1'.
   (let ((diredp-files-within-dirs-done  ()))
     (nreverse (diredp-files-within-1 file-list accum no-symlinks-p include-dirs-p predicate))))
 
