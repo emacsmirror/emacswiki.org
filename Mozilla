@@ -78,6 +78,12 @@ In recent versions of GNOME (3 or later) you need to use the gsettings tool to s
 
     gsettings set org.gnome.desktop.interface gtk-key-theme "Emacs"
 
+Recent versions of Firefox are compiled against GTK 3. If you are using Firefox, but not GNOME, you can configure Emacs key bindings by adding the following to your ~/.config/gtk-3.0/settings.ini:
+
+   # Get firefox to use emacs keybindings
+   [Settings]
+   gtk-key-theme-name = Emacs
+
 [new]
 Please feel free to save this as a file somewhere and replace the actual code here with a link.  I would have done so myself but I'm not sure where to put it - the Elisp area seems only for elisp.
 ----
