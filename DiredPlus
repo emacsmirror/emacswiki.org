@@ -185,36 +185,52 @@ Here are screenshots of the various '''Dired+''' menus. Using the menus is a goo
 
 `mouse-3' pops up a menu, which can take two forms, depending on whether the [[region]] is active.  If so, the menu is called '''Region''' and its items act on the files and directories in the region.  If not, the menu is called '''This File''' and its items act on the file or directory you pointed to when you clicked `mouse-3'.
 
+
+[:DiredPlusPopupThisFileMenu]
 ; '''This File''': [[image:DiredPlusPopupThisFileMenu]]
 
 
 The '''This File''' menu has submenu '''Bookmark''', which is the same submenu as for menu-bar menu '''[[#SingleBookmarkMenu|Immediate]]''' (aka '''Single'''). 
 
 
+[:DiredPlusPopupRegionMenu]
 ; '''Region''': [[image:DiredPlusPopupRegionMenu]]
 
 The '''Region''' menu you get depends on whether and how you use library <tt>[[mouse3.el]]</tt> -- see '''[[Mouse3]]'''.  The '''Region''' menu shown here has lots of submenus.
 
 The first submenu shown here, '''Dired/name''' corresponds exactly to the major-mode, and it has submenus corresponding to all of the menu-bar menus provided by '''Dired+'''.  The other submenus shown here (from library '''[[Mouse3]]''') are as follows.
 
+
+[:DiredPlusPopupRegionSelectedFilesMenu]
 ;; '''Selected Files''': [[image:DiredPlusPopupRegionSelectedFilesMenu]]
 
+
+[:DiredPlusPopupRegionRemoveRectMenu]
 ;; '''Remove/Replace Rectangle''' (available only in [[WDired]] mode, i.e., when Dired is writable): [[image:DiredPlusPopupRegionRemoveRectMenu]] 
 
+
+[:DiredPlusPopupRegionCopyMenu]
 ;; '''Copy''': [[image:DiredPlusPopupRegionCopyMenu]]
 
+[:DiredPlusPopupRegionRegisterMenu]
 ;; '''Register''': [[image:DiredPlusPopupRegionRegisterMenu]]
 
+[:DiredPlusPopupRegionRectangleMenu]
 ;; '''Rectangle''' (items except '''Copy to Register''' available only in [[WDired]] mode): [[image:DiredPlusPopupRegionRectangleMenu]]
 
+[:DiredPlusPopupRegionChangeTextMenu]
 ;; '''Change Text''' (available only in [[WDired]] mode): [[image:DiredPlusPopupRegionChangeTextMenu]]
 
+[:DiredPlusPopupRegionCheckCorrectMenu]
 ;; '''Check, Correct, Convert''' (items except the first three available only in [[WDired]] mode): [[image:DiredPlusPopupRegionCheckCorrectMenu]]
 
+[:DiredPlusPopupRegionHighlightMenu]
 ;; '''Highlight''': [[image:DiredPlusPopupRegionHighlightMenu]]
 
+[:DiredPlusPopupRegionPrintMenu]
 ;; '''Print''': [[image:DiredPlusPopupRegionPrintMenu]]
 
+[:DiredPlusPopupRegionMiscMenu]
 ;; '''Misc''': [[image:DiredPlusPopupRegionMiscMenu]]
 
 
