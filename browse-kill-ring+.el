@@ -8,10 +8,10 @@
 ;; Created: Tue May 25 16:35:05 2004
 ;; Version: 0
 ;; Package-Requires: ((browse-kill-ring "0"))
-;; Last-Updated: Sat Dec 24 17:01:11 2016 (-0800)
+;; Last-Updated: Tue Feb 21 07:57:49 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 972
-;; URL: http://www.emacswiki.org/browse-kill-ring+.el
+;;     Update #: 973
+;; URL: https://www.emacswiki.org/emacs/download/browse-kill-ring%2b.el
 ;; Doc URL: http://www.emacswiki.org/BrowseKillRing
 ;; Keywords: convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
