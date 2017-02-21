@@ -8,10 +8,10 @@
 ;; Created: Fri Sep 08 11:06:35 2006
 ;; Version: 0
 ;; Package-Requires: ((vline "0"))
-;; Last-Updated: Sat Dec 24 17:06:48 2016 (-0800)
+;; Last-Updated: Tue Feb 21 15:59:53 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 431
-;; URL: http://www.emacswiki.org/col-highlight.el
+;;     Update #: 433
+;; URL: https://www.emacswiki.org/emacs/download/col-highlight.el
 ;; Doc URL: http://emacswiki.org/emacs/HighlightCurrentColumn
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
