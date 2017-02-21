@@ -8,10 +8,10 @@
 ;; Created: Thu Oct 04 10:54:38 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 24 16:58:21 2016 (-0800)
+;; Last-Updated: Tue Feb 21 07:55:20 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 174
-;; URL: http://www.emacswiki.org/bindings+.el
+;;     Update #: 175
+;; URL: https://www.emacswiki.org/emacs/download/bindings%2b.el
 ;; Doc URL: http://emacswiki.org/ModeLineMinorModeMenu
 ;; Keywords: 
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
