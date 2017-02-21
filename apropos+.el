@@ -8,10 +8,10 @@
 ;; Created: Thu Jun 22 15:07:30 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 24 16:56:01 2016 (-0800)
+;; Last-Updated: Tue Feb 21 07:45:44 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 60
-;; URL: http://www.emacswiki.org/apropos+.el
+;;     Update #: 61
+;; URL: https://www.emacswiki.org/emacs/download/apropos%2b.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
