@@ -8,10 +8,10 @@
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 24 17:01:29 2016 (-0800)
+;; Last-Updated: Tue Feb 21 07:59:07 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 2846
-;; URL: http://www.emacswiki.org/buff-menu+.el
+;;     Update #: 2847
+;; URL: https://www.emacswiki.org/emacs/download/buff-menu%2b.el
 ;; Doc URL: http://www.emacswiki.org/BufferMenuPlus
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.1
