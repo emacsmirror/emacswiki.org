@@ -8,10 +8,10 @@
 ;; Created: Mon Nov 28 15:41:09 2005
 ;; Version:
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 24 16:56:24 2016 (-0800)
+;; Last-Updated: Tue Feb 21 07:48:00 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 405
-;; URL: http://www.emacswiki.org/apropos-fn+var.el
+;;     Update #: 406
+;; URL: https://www.emacswiki.org/emacs/download/apropos-fn%2bvar.el
 ;; Keywords: apropos
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
