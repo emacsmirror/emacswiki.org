@@ -8,10 +8,10 @@
 ;; Created: Wed Mar 19 15:45:38 1997
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 24 16:57:11 2016 (-0800)
+;; Last-Updated: Tue Feb 21 07:53:06 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 59
-;; URL: http://www.emacswiki.org/autoload+.el
+;;     Update #: 60
+;; URL: https://www.emacswiki.org/emacs/download/autoload%2b.el
 ;; Keywords: maint
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
