@@ -8,10 +8,10 @@
 ;; Created: Sat Oct 19 12:56:51 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jan 24 18:23:40 2017 (-0800)
+;; Last-Updated: Tue Feb 21 15:57:00 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 83
-;; URL: http://www.emacswiki.org/cmds-menu.el
+;;     Update #: 84
+;; URL: https://www.emacswiki.org/emacs/download/cmds-menu.el
 ;; Doc URL:
 ;; Keywords: convenience, command, menu
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x
