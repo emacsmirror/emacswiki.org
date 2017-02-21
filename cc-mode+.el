@@ -7,10 +7,10 @@
 ;; Copyright (C) 1999-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Aug 30 13:01:25 1999
 ;; Version: 0
-;; Last-Updated: Sat Dec 24 17:02:31 2016 (-0800)
+;; Last-Updated: Tue Feb 21 15:40:54 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 78
-;; URL: http://www.emacswiki.org/cc-mode+.el
+;;     Update #: 79
+;; URL: https://www.emacswiki.org/emacs/download/cc-mode%2b.el
 ;; Keywords: c, c++, programming
 ;; Compatibility: GNU Emacs 20.x
 ;;
