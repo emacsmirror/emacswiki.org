@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  9 12:40:31 2017 (-0800)
+;; Last-Updated: Mon Feb 20 16:05:05 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 5750
+;;     Update #: 5789
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -65,6 +65,7 @@
 ;;    `Info-follow-nearest-node-new-window', `Info-goto-node-web',
 ;;    `Info-history-clear', `info-manual', `Info-merge-subnodes',
 ;;    `Info-mouse-follow-nearest-node-new-window',
+;;    `Info-persist-history-mode' (Emacs 24.4+),
 ;;    `Info-save-current-node', `Info-set-breadcrumbs-depth',
 ;;    `Info-toggle-fontify-angle-bracketed',
 ;;    `Info-toggle-fontify-emphasis',
@@ -91,8 +92,8 @@
 ;;    `Info-fit-frame-flag', `Info-fontify-angle-bracketed-flag',
 ;;    `Info-fontify-emphasis-flag', `Info-fontify-quotations-flag',
 ;;    `Info-fontify-reference-items-flag',
-;;    `Info-fontify-single-quote-flag', `Info-saved-nodes',
-;;    `Info-subtree-separator'.
+;;    `Info-fontify-single-quote-flag', `Info-saved-history-file'
+;;    (Emacs 24.4+), `Info-saved-nodes', `Info-subtree-separator'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -102,7 +103,9 @@
 ;;
 ;;    `Info-display-node-default-header', `info-fontify-quotations',
 ;;    `info-fontify-reference-items',
-;;    `Info-insert-breadcrumbs-in-mode-line', `Info-isearch-search-p',
+;;    `Info-insert-breadcrumbs-in-mode-line',
+;;    `Info-restore-history-list' (Emacs 24.4+),
+;;    `Info-save-history-list' (Emacs 24.4+), `Info-isearch-search-p',
 ;;    `Info-search-beg', `Info-search-end'.
 ;;
 ;;  Internal variables defined here:
@@ -175,7 +178,7 @@
 ;;  Library `info+.el' extends the standard Emacs library `info.el' in
 ;;  several ways.  It provides:
 ;;
-;;  * Additional, finer-grained highlighting.  This makes a big
+;;  * Additional, finer-grained highlighting.  This can make a big
 ;;    difference in readability.
 ;;
 ;;    - Quoted names, like this: `name-stands-out' or
@@ -240,6 +243,14 @@
 ;;      are those saved in option `Info-virtual-book'.  With `C-u',
 ;;      bookmarked Info nodes are also included.  (If you use Icicles,
 ;;      see also `icicle-Info-virtual-book'.)
+;;
+;;    - `Info-persist-history-mode' - Enabling this minor mode saves
+;;      the list of your visited Info nodes between Emacs sessions.
+;;      This gives you a persistent virtual manual of the nodes you
+;;      have visited in the past.  If the mode is enabled, the list of
+;;      visited nodes is saved to the file named by option
+;;      `Info-saved-history-file' when you quit Emacs (not Info) or
+;;      when you kill an Info buffer.
 ;;
 ;;    - `Info-save-current-node' (bound to `.') – Save the name of the
 ;;      current node to list `Info-saved-nodes', for use by `v'
@@ -323,6 +334,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/02/20 dadams
+;;     Added: Info-saved-history-file, Info-persist-history-mode, Info-save-history-list,
+;;            Info-restore-history-list.
+;;     Added autoload cookies: Info-breadcrumbs-in-mode-line-mode, Info-set-breadcrumbs-depth,
+;;           Info-search, Info-mouse-follow-nearest-node, info-display-manual.
 ;; 2017/01/09 dadams
 ;;     Info-find-emacs-command-nodes: Updated for handle LINE-NUMBER (Emacs 24.5+).
 ;; 2016/12/13 dadams
@@ -740,10 +756,12 @@
 (defvar Info-next-link-keymap)
 (defvar Info-mode-line-node-keymap)
 (defvar Info-node-spec-re)
+(defvar Info-persist-history-mode)
 (defvar Info-point-loc)
 (defvar Info-prev-link-keymap)
 (defvar Info-read-node-completion-table)
 (defvar Info-refill-paragraphs)
+(defvar Info-saved-history-file)
 (defvar Info-saved-nodes)
 (defvar Info-search-case-fold)
 (defvar Info-search-history)
@@ -1051,6 +1069,14 @@ toggle the option value."
   "*Non-nil means `info' fontifies reference items such as \"Function:\"."
   :type 'boolean :group 'Info-Plus)
 
+(when (fboundp 'advice-add)             ; Emacs 24.4+
+
+  (defcustom Info-saved-history-file (locate-user-emacs-file "info-history" ".emacs.info-history")
+    "File where `Info-persist-history-mode' saves `Info-history-list'."
+    :type '(file :must-match t) :group 'Info-Plus)
+
+  )
+
 ;;;###autoload
 (defcustom Info-saved-nodes ()
   "*List of Info node names you can visit using `\\<Info-mode-map>\\[Info-virtual-book]'.
@@ -1182,9 +1208,58 @@ If ... contains > then that character must be backslashed.")
   (when (derived-mode-p 'Info-mode) (revert-buffer nil t))
   (when msgp (message "Info history cleared")))
 
+(when (fboundp 'advice-add)             ; Emacs 24.4+
+
+  (define-minor-mode Info-persist-history-mode
+      "Automatically persist the Info history in `Info-saved-history-file'."
+    :init-value nil :global t :group 'Info-Plus
+    (cond (Info-persist-history-mode
+           (add-hook 'kill-emacs-hook 'Info-save-history-list)
+           (advice-add 'Info-kill-buffer :before 'Info-save-history-list)
+           (advice-add 'Info-directory :after 'Info-restore-history-list))
+          (t
+           (remove-hook 'kill-emacs-hook 'Info-save-history-list)
+           (advice-remove 'Info-kill-buffer 'Info-save-history-list)
+           (advice-remove 'Info-directory 'Info-restore-history-list))))
+
+  (defun Info-save-history-list ()
+    "Save `Info-history-list' to `Info-saved-history-file'."
+    (when (and Info-persist-history-mode
+               (not (string= "" Info-saved-history-file))
+               (file-writable-p Info-saved-history-file)
+               (not (file-directory-p Info-saved-history-file)))
+      (let* ((ibuf  (catch 'Info-save-history-list
+                      (dolist (buf  (buffer-list))
+                        (with-current-buffer buf
+                          (when (derived-mode-p 'Info-mode) (throw 'Info-save-history-list buf))))
+                      nil))
+             (hist  (and ibuf  (with-current-buffer ibuf Info-history-list))))
+        (with-temp-file Info-saved-history-file
+          (print Info-history-list (current-buffer))))))
+
+  (defun Info-restore-history-list ()
+    "Restore `Info-history-list' from `Info-saved-history-file'."
+    (when (and Info-persist-history-mode
+               (not (string= "" Info-saved-history-file))
+               (file-readable-p Info-saved-history-file))
+      (let ((buf  (let ((enable-local-variables  ()))
+                    (find-file-noselect Info-saved-history-file)))
+            hist)
+        (unwind-protect
+             (with-current-buffer buf
+               (goto-char (point-min))
+               (setq hist  (ignore-errors (read (current-buffer)))))
+          (kill-buffer buf))
+        (when hist
+          (setq Info-history-list  hist)
+          (when Info-fontify-visited-nodes (Info-fontify-node))))))
+
+  )
+
 ;; I made this a global minor mode and turned it on by default, contrary to "the rules".
 ;; I did this so (a) users could easily customize it but (b) it would be on by default, otherwise.
 ;;
+;;;###autoload (autoload 'Info-breadcrumbs-in-mode-line-mode "info+")
 (define-minor-mode Info-breadcrumbs-in-mode-line-mode
     "Toggle the use of breadcrumbs in Info mode line.
 With arg, show breadcrumbs iff arg is positive.
@@ -3452,6 +3527,7 @@ If key's command cannot be found by looking in indexes, then
         (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
         (set-buffer-modified-p nil)))))
 
+;;;###autoload (autoload 'Info-set-breadcrumbs-depth "info+")
 (defun Info-set-breadcrumbs-depth ()
   "Set current breadcrumbs depth.
 Update breadcrumbs display in mode line accordingly.
@@ -3649,6 +3725,7 @@ variable by the command `isearch-toggle-lax-whitespace'.")
 ;; 2. Highlight the found regexp if `search-highlight'.
 ;; 3. Respect restriction to active region.
 ;;
+;;;###autoload (autoload 'Info-search "info+")
 (defun Info-search (regexp &optional bound _noerror _count direction)
   "Search for REGEXP, starting from point, and select node of search hit.
 If DIRECTION is `backward', search backward.
@@ -3791,6 +3868,7 @@ over.  To remove the highlighting, just start an incremental search:
 ;; REPLACES ORIGINAL in `info.el':
 ;; Added optional arg FORK.
 ;;
+;;;###autoload (autoload 'Info-mouse-follow-nearest-node "info+")
 (defun Info-mouse-follow-nearest-node (click &optional fork)
   "\\<Info-mode-map>Follow a node reference near point.
 Like \\[Info-menu], \\[Info-follow-reference], \\[Info-next], \\[Info-prev] or \\[Info-up] \
@@ -3969,6 +4047,7 @@ These are all of the current Info Mode bindings:
 ;;
 ;; Use completion for inputting the manual name, for all Emacs versions 23+.
 ;;
+;;;###autoload (autoload 'info-display-manual "info+")
 (defun info-display-manual (manual)
   "Display an Info buffer displaying MANUAL.
 If there is an existing Info buffer for MANUAL, display it.
