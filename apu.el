@@ -8,10 +8,10 @@
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 10 08:44:18 2016 (-0800)
+;; Last-Updated: Tue Feb 21 07:51:06 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 724
-;; URL: http://www.emacswiki.org/apu.el
+;;     Update #: 725
+;; URL: https://www.emacswiki.org/emacs/download/apu.el
 ;; Doc URL: http://www.emacswiki.org/AproposUnicode
 ;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
