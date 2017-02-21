@@ -1,6 +1,6 @@
 Library <tt>[[info+.el]]</tt> extends the standard Emacs library ##info.el## in several ways.  '''[::Info+]''' provides:
 
-* Additional, finer-grained highlighting.  This makes a '''''big''''' difference in readability.
+* Additional, finer-grained highlighting.  This can make a big difference in readability.
 ** Quoted names, like this: ##‘name-stands-out’## or ##`name-stands-out'##, and strings, like this: ##"string-stands-out"## are highlighted if '''`Info-fontify-quotations-flag'''' is non-`nil'.
 ** Angle-bracketed names, like this: ##<tab>##, are highlighted if '''`Info-fontify-angle-bracketed-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
 ** Isolated single quotes, like this: ##'foobar##, are highlighted if '''`Info-fontify-single-quote-flag'''' and `Info-fontify-quotations-flag' are non-`nil'.
