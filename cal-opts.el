@@ -7,10 +7,10 @@
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Wed Nov 15 12:47:13 1995
 ;; Version: 0
-;; Last-Updated: Sat Dec 24 17:01:51 2016 (-0800)
+;; Last-Updated: Tue Feb 21 15:37:21 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 125
-;; URL: http://www.emacswiki.org/cal-opts.el
+;;     Update #: 126
+;; URL: https://www.emacswiki.org/emacs/download/cal-opts.el
 ;; Keywords: calendar, local
 ;; Compatibility: GNU Emacs 20.x
 ;;
