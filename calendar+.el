@@ -7,10 +7,10 @@
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 13:11:46 1996
 ;; Version: 0
-;; Last-Updated: Sat Dec 24 17:02:10 2016 (-0800)
+;; Last-Updated: Tue Feb 21 15:39:43 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 851
-;; URL: http://www.emacswiki.org/calendar+.el
+;;     Update #: 852
+;; URL: https://www.emacswiki.org/emacs/download/calendar%2b.el
 ;; Keywords: calendar, mouse, local
 ;; Compatibility: GNU Emacs 20.x
 ;;
