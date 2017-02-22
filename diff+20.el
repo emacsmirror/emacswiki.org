@@ -7,10 +7,10 @@
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 15 09:33:29 1996
 ;; Version: 0
-;; Last-Updated: Sun Jan  1 09:16:41 2017 (-0800)
+;; Last-Updated: Tue Feb 21 16:18:44 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 637
-;; URL: http://www.emacswiki.org/diff+20.el
+;;     Update #: 638
+;; URL: https://www.emacswiki.org/emacs/download/diff%2b20.el
 ;; Doc URL: http://www.emacswiki.org/DiffEnhancements
 ;; Keywords: data, matching, tools, unix, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x
