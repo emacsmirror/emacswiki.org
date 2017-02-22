@@ -7,10 +7,10 @@
 ;; Copyright (C) 1999-2017, Drew Adams, all rights reserved.
 ;; Created: Thu Sep  2 13:39:51 1999
 ;; Version: 0
-;; Last-Updated: Sat Dec 24 17:08:20 2016 (-0800)
+;; Last-Updated: Tue Feb 21 16:07:42 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 197
-;; URL: http://www.emacswiki.org/compile-20.el
+;;     Update #: 198
+;; URL: https://www.emacswiki.org/emacs/download/compile-20.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs 20.x, GNU Emacs 21.x
