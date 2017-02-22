@@ -8,10 +8,10 @@
 ;; Created: Sat Jan 19 15:24:48 2013 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:31:07 2017 (-0800)
+;; Last-Updated: Tue Feb 21 16:39:14 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 372
-;; URL: http://www.emacswiki.org/emacsbug%2b.el
+;;     Update #: 373
+;; URL: https://www.emacswiki.org/emacs/download/emacsbug%2b.el
 ;; Keywords: report bug
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
