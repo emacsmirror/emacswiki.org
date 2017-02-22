@@ -8,10 +8,10 @@
 ;; Created: Thu Jan 26 11:14:34 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:28:37 2017 (-0800)
+;; Last-Updated: Tue Feb 21 16:37:03 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 129
-;; URL: http://www.emacswiki.org/ediff+.el
+;;     Update #: 131
+;; URL: https://www.emacswiki.org/emacs/download/ediff%2b.el
 ;; Doc URL: http://emacswiki.org/EdiffMode
 ;; Keywords: comparing, merging, patching, version control
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
