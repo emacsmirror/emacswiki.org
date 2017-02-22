@@ -8,10 +8,10 @@
 ;; Created: Tue Dec 20 13:33:01 2005
 ;; Version: 0
 ;; Package-Requires: ((dired-details "0"))
-;; Last-Updated: Sun Jan  1 09:20:36 2017 (-0800)
+;; Last-Updated: Tue Feb 21 16:29:40 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 229
-;; URL: http://www.emacswiki.org/dired-details+.el
+;;     Update #: 230
+;; URL: https://www.emacswiki.org/emacs/download/dired-details%2b.el
 ;; Doc URL: http://www.emacswiki.org/DiredDetails
 ;; Keywords: dired, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
