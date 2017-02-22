@@ -8,10 +8,10 @@
 ;; Created: Tue Aug 29 11:23:06 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 24 17:09:05 2016 (-0800)
+;; Last-Updated: Tue Feb 21 16:09:59 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 214
-;; URL: http://www.emacswiki.org/cursor-chg.el
+;;     Update #: 215
+;; URL: https://www.emacswiki.org/emacs/download/cursor-chg.el
 ;; Keywords: cursor, accessibility
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
