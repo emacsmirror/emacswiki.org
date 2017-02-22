@@ -8,10 +8,10 @@
 ;; Created: Thu Jul 07 12:39:36 2005
 ;; Version: 0
 ;; Package-Requires: ((dired-sort-menu "0"))
-;; Last-Updated: Sun Jan  1 09:26:23 2017 (-0800)
+;; Last-Updated: Tue Feb 21 16:30:46 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 134
-;; URL: http://www.emacswiki.org/dired-sort-menu+.el
+;;     Update #: 135
+;; URL: https://www.emacswiki.org/emacs/download/dired-sort-menu%2b.el
 ;; Doc URL: http://emacswiki.org/DiredSortMenu
 ;; Keywords: directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
