@@ -8,16 +8,18 @@
 ;; Created: Thu Nov 24 11:57:04 2011 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:14:13 2017 (-0800)
+;; Last-Updated: Tue Feb 21 16:16:22 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 314
-;; URL: http://www.emacswiki.org/descr-text+.el
+;;     Update #: 315
+;; URL: https://www.emacswiki.org/emacs/download/descr-text%2b.el
 ;; Keywords: help, characters, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `button', `cl', `cl-lib', `descr-text', `gv', `help-fns',
+;;   `help-fns+', `help-mode', `info', `macroexp', `naked',
+;;   `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
