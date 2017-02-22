@@ -9,10 +9,10 @@
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Jan 12 08:47:01 2017 (-0800)
+;; Last-Updated: Tue Feb 21 16:15:00 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 506
-;; URL: http://www.emacswiki.org/delsel.el
+;;     Update #: 507
+;; URL: https://www.emacswiki.org/emacs/download/delsel.el
 ;; Doc URL: http://emacswiki.org/DeleteSelectionMode
 ;; Keywords: abbrev, emulations, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
