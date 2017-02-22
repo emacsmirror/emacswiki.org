@@ -8,10 +8,10 @@
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:25:07 2017 (-0800)
+;; Last-Updated: Tue Feb 21 16:34:16 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1629
-;; URL: http://www.emacswiki.org/doremi.el
+;;     Update #: 1630
+;; URL: https://www.emacswiki.org/emacs/download/doremi.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: keys, cycle, repeat, higher-order
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
