@@ -8,10 +8,10 @@
 ;; Created: Tue Sep 14 16:45:30 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:24:18 2017 (-0800)
+;; Last-Updated: Tue Feb 21 16:33:29 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 222
-;; URL: http://www.emacswiki.org/doremi-mac.el
+;;     Update #: 223
+;; URL: https://www.emacswiki.org/emacs/download/doremi-mac.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: extensions, convenience, keys, repeat, cycle
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
