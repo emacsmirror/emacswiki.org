@@ -8,10 +8,10 @@
 ;; Created: Tue Sep 12 15:54:33 1995
 ;; Version: 0
 ;; Package-Requires: ((start "0"))
-;; Last-Updated: Thu Jan 12 08:39:52 2017 (-0800)
+;; Last-Updated: Tue Feb 21 16:38:14 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 2185
-;; URL: http://www.emacswiki.org/emacs-init.el
+;;     Update #: 2186
+;; URL: https://www.emacswiki.org/emacs/download/emacs-init.el
 ;; Keywords: init, .emacs, _emacs, dotemacs
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
