@@ -8,10 +8,10 @@
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0") (faces+ "0") (frame-fns "0") (hexrgb "0"))
-;; Last-Updated: Sun Jan  1 09:23:16 2017 (-0800)
+;; Last-Updated: Tue Feb 21 16:32:39 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3070
-;; URL: http://www.emacswiki.org/doremi-frm.el
+;;     Update #: 3071
+;; URL: https://www.emacswiki.org/emacs/download/doremi-frm.el
 ;; Doc URL: http://www.emacswiki.org/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
