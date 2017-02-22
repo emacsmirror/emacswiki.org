@@ -8,10 +8,10 @@
 ;; Created: Fri Mar 15 09:33:29 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:15:50 2017 (-0800)
+;; Last-Updated: Tue Feb 21 16:17:48 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 584
-;; URL: http://www.emacswiki.org/diff+.el
+;;     Update #: 585
+;; URL: https://www.emacswiki.org/emacs/download/diff%2b.el
 ;; Doc URL: http://emacswiki.org/DiffEnhancements
 ;; Keywords: data, matching, tools, unix, local
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x
