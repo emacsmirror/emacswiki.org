@@ -8,10 +8,10 @@
 ;; Created: Tue Nov 16 17:04:11 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 24 17:07:53 2016 (-0800)
+;; Last-Updated: Tue Feb 21 16:04:17 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 122
-;; URL: http://www.emacswiki.org/compile-.el
+;;     Update #: 123
+;; URL: https://www.emacswiki.org/emacs/download/compile-.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Doc URL: http://www.emacswiki.org/CompilationMode
 ;; Keywords: tools, processes
