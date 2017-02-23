@@ -8,10 +8,10 @@
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:48:37 2017 (-0800)
+;; Last-Updated: Wed Feb 22 17:54:20 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1386
-;; URL: http://www.emacswiki.org/fit-frame.el
+;;     Update #: 1387
+;; URL: https://www.emacswiki.org/emacs/download/fit-frame.el
 ;; Doc URL: http://www.emacswiki.org/Shrink-Wrapping_Frames
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
 ;; Keywords: internal, extensions, convenience, local
