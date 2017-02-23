@@ -8,10 +8,10 @@
 ;; Created: Fri Apr 12 16:42:12 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:51:57 2017 (-0800)
+;; Last-Updated: Wed Feb 22 17:57:25 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 265
-;; URL: http://www.emacswiki.org/frame+.el
+;;     Update #: 266
+;; URL: https://www.emacswiki.org/emacs/download/frame%2b.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
