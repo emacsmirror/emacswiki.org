@@ -8,10 +8,10 @@
 ;; Created: Sat Aug 17 13:59:36 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:12:20 2017 (-0800)
+;; Last-Updated: Thu Feb 23 07:42:22 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 52
-;; URL: http://www.emacswiki.org/highlight-fns.el
+;;     Update #: 53
+;; URL: https://www.emacswiki.org/emacs/download/highlight-fns.el
 ;; Doc URL: http://emacswiki.org/HighlightLispFunctions
 ;; Keywords: highlight, lisp, functions
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
