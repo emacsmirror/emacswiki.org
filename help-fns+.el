@@ -8,10 +8,10 @@
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:01:21 2017 (-0800)
+;; Last-Updated: Thu Feb 23 07:33:32 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 2225
-;; URL: http://www.emacswiki.org/help-fns+.el
+;;     Update #: 2226
+;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
