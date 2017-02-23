@@ -8,10 +8,10 @@
 ;; Created: Sat Aug 17 13:59:36 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:14:24 2017 (-0800)
+;; Last-Updated: Thu Feb 23 07:44:30 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 305
-;; URL: http://www.emacswiki.org/hl-defined.el
+;;     Update #: 306
+;; URL: https://www.emacswiki.org/emacs/download/hl-defined.el
 ;; Doc URL: http://emacswiki.org/HighlightLispFunctions
 ;; Keywords: highlight, lisp, functions
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
