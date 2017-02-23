@@ -8,10 +8,10 @@
 ;; Created: Wed May 11 07:11:30 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan 16 10:14:49 2017 (-0800)
+;; Last-Updated: Thu Feb 23 07:40:11 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 227
-;; URL: http://www.emacswiki.org/hide-comnt.el
+;;     Update #: 228
+;; URL: https://www.emacswiki.org/emacs/download/hide-comnt.el
 ;; Doc URL: http://www.emacswiki.org/HideOrIgnoreComments
 ;; Keywords: comment, hide, show
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
