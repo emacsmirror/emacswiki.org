@@ -8,10 +8,10 @@
 ;; Created: Fri Jun 28 15:07:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:37:33 2017 (-0800)
+;; Last-Updated: Wed Feb 22 17:45:28 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 302
-;; URL: http://www.emacswiki.org/faces+.el
+;;     Update #: 303
+;; URL: https://www.emacswiki.org/emacs/download/faces%2b.el
 ;; Keywords: faces, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
