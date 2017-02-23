@@ -8,10 +8,10 @@
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:11:26 2017 (-0800)
+;; Last-Updated: Thu Feb 23 07:41:08 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 232
-;; URL: http://www.emacswiki.org/highlight-chars.el
+;;     Update #: 233
+;; URL: https://www.emacswiki.org/emacs/download/highlight-chars.el
 ;; Doc URL: http://www.emacswiki.org/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
