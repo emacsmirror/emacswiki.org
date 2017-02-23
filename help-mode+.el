@@ -8,10 +8,10 @@
 ;; Created: Sat Nov 06 15:14:12 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:03:30 2017 (-0800)
+;; Last-Updated: Thu Feb 23 07:35:42 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 198
-;; URL: http://www.emacswiki.org/help-mode+.el
+;;     Update #: 204
+;; URL: https://www.emacswiki.org/emacs/download/help-mode%2b.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
