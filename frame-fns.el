@@ -8,10 +8,10 @@
 ;; Created: Tue Mar  5 16:15:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:53:35 2017 (-0800)
+;; Last-Updated: Wed Feb 22 17:59:11 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 229
-;; URL: http://www.emacswiki.org/frame-fns.el
+;;     Update #: 230
+;; URL: https://www.emacswiki.org/emacs/download/frame-fns.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Keywords: internal, extensions, local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
