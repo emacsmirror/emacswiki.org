@@ -9,10 +9,10 @@
 ;; Created: 1993, by Simon Marshall
 ;; Version: 1.04
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:54:57 2017 (-0800)
+;; Last-Updated: Wed Feb 22 18:00:15 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 189
-;; URL: http://www.emacswiki.org/fuzzy-match.el
+;;     Update #: 190
+;; URL: https://www.emacswiki.org/emacs/download/fuzzy-match.el
 ;; Doc URL: http://emacswiki.org/Icicles_-_Fuzzy_Completion
 ;; Keywords: matching completion string
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
