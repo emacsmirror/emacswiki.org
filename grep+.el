@@ -8,10 +8,10 @@
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:55:44 2017 (-0800)
+;; Last-Updated: Thu Feb 23 07:28:18 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 715
-;; URL: http://www.emacswiki.org/grep+.el
+;;     Update #: 717
+;; URL: https://www.emacswiki.org/emacs/download/grep%2b.el
 ;; Doc URL: http://www.emacswiki.org/GrepPlus
 ;; Keywords: tools, processes, compile
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
