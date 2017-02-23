@@ -8,10 +8,10 @@
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:35:29 2017 (-0800)
+;; Last-Updated: Wed Feb 22 17:43:31 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1952
-;; URL: http://www.emacswiki.org/facemenu+.el
+;;     Update #: 1953
+;; URL: https://www.emacswiki.org/emacs/download/facemenu%2b.el
 ;; Doc URL: http://www.emacswiki.org/CustomizingFaces
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, extensions, convenience, menus, local
