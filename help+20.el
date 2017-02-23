@@ -8,10 +8,10 @@
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan 15 11:13:44 2017 (-0800)
+;; Last-Updated: Thu Feb 23 07:32:34 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 2217
-;; URL: http://www.emacswiki.org/help+20.el
+;;     Update #: 2218
+;; URL: https://www.emacswiki.org/emacs/download/help%2b20.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
