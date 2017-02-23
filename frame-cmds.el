@@ -8,10 +8,10 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Tue Feb  7 10:42:57 2017 (-0800)
+;; Last-Updated: Wed Feb 22 17:58:18 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3063
-;; URL: http://www.emacswiki.org/frame-cmds.el
+;;     Update #: 3064
+;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
 ;; Doc URL: http://www.emacswiki.org/Frame_Tiling_Commands
