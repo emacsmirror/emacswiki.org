@@ -8,10 +8,10 @@
 ;; Created: Tue Sep 16 14:11:36 2008 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:40:17 2017 (-0800)
+;; Last-Updated: Wed Feb 22 17:49:11 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 53
-;; URL: http://www.emacswiki.org/filesets+.el
+;;     Update #: 55
+;; URL: https://www.emacswiki.org/emacs/download/filesets%2b.el
 ;; Doc URL: http://www.emacswiki.org/FileSets
 ;; Keywords:
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
