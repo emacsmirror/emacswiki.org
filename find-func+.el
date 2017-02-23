@@ -8,10 +8,10 @@
 ;; Created: Sun Sep  7 14:17:06 2008 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:46:55 2017 (-0800)
+;; Last-Updated: Wed Feb 22 17:52:18 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 40
-;; URL: http://www.emacswiki.org/find-func+.el
+;;     Update #: 41
+;; URL: https://www.emacswiki.org/emacs/download/find-func%2b.el
 ;; Keywords: emacs-lisp, functions, variables
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
 ;;
