@@ -8,10 +8,10 @@
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:16:02 2017 (-0800)
+;; Last-Updated: Thu Feb 23 07:46:19 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 476
-;; URL: http://www.emacswiki.org/hl-spotlight.el
+;;     Update #: 477
+;; URL: https://www.emacswiki.org/emacs/download/hl-spotlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
 ;; Keywords: highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
