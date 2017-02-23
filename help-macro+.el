@@ -8,10 +8,10 @@
 ;; Created: Tue Aug 24 15:36:18 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:02:28 2017 (-0800)
+;; Last-Updated: Thu Feb 23 07:34:41 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 125
-;; URL: http://www.emacswiki.org/help-macro+.el
+;;     Update #: 126
+;; URL: https://www.emacswiki.org/emacs/download/help-macro%2b.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
