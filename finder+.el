@@ -8,10 +8,10 @@
 ;; Created: Wed Mar 12 10:00:16 2008 (Pacific Standard Time)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:47:45 2017 (-0800)
+;; Last-Updated: Wed Feb 22 17:53:09 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 123
-;; URL: http://www.emacswiki.org/finder+.el
+;;     Update #: 124
+;; URL: https://www.emacswiki.org/emacs/download/finder%2b.el
 ;; Doc URL: http://emacswiki.org/FinderMode
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
