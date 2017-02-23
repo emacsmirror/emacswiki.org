@@ -11,10 +11,10 @@
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:57:02 2017 (-0800)
+;; Last-Updated: Thu Feb 23 07:29:25 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1948
-;; URL: http://www.emacswiki.org/header2.el
+;;     Update #: 1949
+;; URL: https://www.emacswiki.org/emacs/download/header2.el
 ;; Doc URL: http://emacswiki.org/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
