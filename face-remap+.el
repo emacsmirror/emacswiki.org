@@ -8,10 +8,10 @@
 ;; Created: Wed Jun 17 14:26:21 2009 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 09:34:07 2017 (-0800)
+;; Last-Updated: Wed Feb 22 17:42:08 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 174
-;; URL: http://www.emacswiki.org/face-remap+.el
+;;     Update #: 176
+;; URL: https://www.emacswiki.org/emacs/download/face-remap%2b.el
 ;; Doc URL: http://emacswiki.org/SetFonts
 ;; Keywords: window frame face font
 ;; Compatibility: GNU Emacs: 23.x, 24.x, 25.x
