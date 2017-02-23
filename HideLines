@@ -12,6 +12,13 @@ For similar functionality, check out HideRegion and also HighLight. For isearch-
 Does anyone knows why it doesn't work in shell-script-mode?
 
 [new]
+The buffer-invisibility-spec gets reset when changing major modes.  I had the same problem with other major modes, not just shell-script-mode.  hide-lines.el adds the 'hl symbol to the buffer-invisibility-spec via (add-to-invisibility-spec 'hl) when the package is loaded, but buffer-invisibility-spec automatically becomes buffer-local when set, and changing modes usually clears all local variables.  The simplest fix is to change (overlay-put overlay 'invisible 'hl) to (overlay-put overlay 'invisible 't) in hide-lines-add-overlay or add the following hook:
+
+  (add-hook 'after-change-major-mode-hook (lambda () (add-to-invisibility-spec 'hl)))
+
+-Roger
+
+[new]
 Why not make it reversely hidden, i.e. when the Regxp is found ,the correspoended line will be preserved,while other will be hidden, I find this feature in Multieditor
 
 [new]
