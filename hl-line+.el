@@ -8,10 +8,10 @@
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:15:12 2017 (-0800)
+;; Last-Updated: Thu Feb 23 07:45:32 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 500
-;; URL: http://www.emacswiki.org/hl-line+.el
+;;     Update #: 501
+;; URL: https://www.emacswiki.org/emacs/download/hl-line%2b.el
 ;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
 ;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
 ;; Keywords: highlight, cursor, accessibility
