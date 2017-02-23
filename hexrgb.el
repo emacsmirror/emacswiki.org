@@ -8,10 +8,10 @@
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:09:36 2017 (-0800)
+;; Last-Updated: Thu Feb 23 07:39:02 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 990
-;; URL: http://www.emacswiki.org/hexrgb.el
+;;     Update #: 991
+;; URL: https://www.emacswiki.org/emacs/download/hexrgb.el
 ;; Doc URL: http://www.emacswiki.org/SetColor
 ;; Doc URL: http://emacswiki.org/ColorPalette
 ;; Keywords: number, hex, rgb, color, background, frames, display
