@@ -203,6 +203,11 @@ I think it's fun to program in Emacs Lisp, a huge project with a long history in
 
  -- pro-emacs
 
+== someone in the future comments ==
+I am in the future, and here we first have Sublime Text become the absolute most popular editor with a Python interface, and then came Atom by Github in CoffeeScript / JavaScript, and VS Code by Microsoft in TypeScript. This is a future where JavaScript dominates. Lispy people can still extend Atom by ClojureScript, and some proclaim it be the Emacs of the new generation. The new trend is to do all UI stuff in Web terms, so that Atom's CSV extension comes with a full fledged table editor.
+
+ -- One from the future
+
 = EmacsLisp is not a general purpose language =
 Get over it. Emacs lisp is designed to be an extension language for Emacs editor. It is ridiculous to compare EmacsLisp to Haskel, Scheme and Common Lisp.
 
