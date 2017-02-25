@@ -370,6 +370,19 @@ That can be converted to advice, to make it more seamless.
   (ad-activate 'ibuffer)
 
 [new]
+Here's a snippet using the new advice system
+
+    (defun ninrod/ibuffer-recent-buffer (old-ibuffer &rest arguments) ()
+         "Open ibuffer with cursor pointed to most recent buffer name"
+         (let ((recent-buffer-name (buffer-name)))
+           (apply old-ibuffer arguments)
+           (ibuffer-jump-to-buffer recent-buffer-name)))
+  (advice-add #'ibuffer :around #'ninrod/ibuffer-recent-buffer)
+
+-- Ninrod
+
+
+[new]
 This will cause an error if you ever enter ibuffer from the minibuffer. Ibuffer complains about "No buffer with name  <code>*Minibuf-1*</code>". Here's my fix:
 
   (defadvice ibuffer (around ibuffer-point-to-most-recent) ()
