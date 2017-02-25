@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb 20 16:05:05 2017 (-0800)
+;; Last-Updated: Sat Feb 25 14:21:21 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 5789
+;;     Update #: 5793
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -246,11 +246,12 @@
 ;;
 ;;    - `Info-persist-history-mode' - Enabling this minor mode saves
 ;;      the list of your visited Info nodes between Emacs sessions.
-;;      This gives you a persistent virtual manual of the nodes you
-;;      have visited in the past.  If the mode is enabled, the list of
-;;      visited nodes is saved to the file named by option
-;;      `Info-saved-history-file' when you quit Emacs (not Info) or
-;;      when you kill an Info buffer.
+;;      Together with command `Info-history' (bound to `L' by
+;;      default), this gives you a persistent virtual manual of the
+;;      nodes you have visited in the past.  If the mode is enabled
+;;      then the list of visited nodes is saved to the file named by
+;;      option `Info-saved-history-file' when you quit Emacs (not
+;;      Info) or when you kill an Info buffer.
 ;;
 ;;    - `Info-save-current-node' (bound to `.') – Save the name of the
 ;;      current node to list `Info-saved-nodes', for use by `v'
