@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb 25 14:21:21 2017 (-0800)
+;; Last-Updated: Mon Feb 27 11:01:33 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 5793
+;;     Update #: 5795
 ;; URL: http://www.emacswiki.org/info+.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `fit-frame', `info', `info+', `misc-fns', `strings',
+;;   `fit-frame', `help-fns', `info', `info+', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -252,6 +252,10 @@
 ;;      then the list of visited nodes is saved to the file named by
 ;;      option `Info-saved-history-file' when you quit Emacs (not
 ;;      Info) or when you kill an Info buffer.
+;;
+;;      (If you also use library Bookmark+ then you can also bookmark
+;;      Info nodes, including automatically.  This records how many
+;;      times you have visited each node and when you last did so.)
 ;;
 ;;    - `Info-save-current-node' (bound to `.') – Save the name of the
 ;;      current node to list `Info-saved-nodes', for use by `v'
