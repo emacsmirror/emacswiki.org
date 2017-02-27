@@ -63,6 +63,7 @@ have visited in the past.  If the mode is enabled then the list of
 visited nodes is saved to the file named by option
 '''`Info-saved-history-file'''' when you quit Emacs (not Info) or
 when you kill an Info [[buffer]].
+(If you also use library '''[[Bookmark+]]''' then you can also bookmark Info nodes, including [[BookmarkPlus#AutomaticInfoBookmarking|automatically]].  This records how many times you have visited each node and when you last did so.)
 
 [:Info-save-current-node]
 ** '''`Info-save-current-node'''' (bound to '''`##.##'''') -- Save name of current node to list `Info-saved-nodes', for use by `v' (`Info-virtual-book').
