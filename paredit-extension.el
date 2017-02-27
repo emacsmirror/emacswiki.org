@@ -4,11 +4,11 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-07-28 16:32:52
-;; Version: 0.1
-;; Last-Updated: 2014-03-16 14:41:33
+;; Version: 0.2
+;; Last-Updated: 2017-02-27 23:36:08
 ;; URL: not distributed yet
 ;; Keywords: paredit
-;; Compatibility: GNU Emacs 23.0.60.1
+;; Compatibility: GNU Emacs 23.0.60.1 ~ GNU Emacs 26.0.50.1
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 
 ;; Features that might be required by this library:
 ;;
-;;  `paredit' `lazycat-toolkit'
+;;  `paredit' `lazycat-toolkit' `thingatpt'
 ;;
 
 ;;; Installation:
@@ -44,6 +44,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2017/02/23
+;;          Add `paredit-open-curly-smart'.
 ;;
 ;; 2014/03/16
 ;;          Add `paredit-kill+'.
@@ -64,6 +67,8 @@
 ;;
 
 ;;; Require
+
+(require 'thingatpt)
 (require 'lazycat-toolkit)
 (require 'paredit)
 
@@ -262,6 +267,14 @@ Will delete blank line after execute `paredit-splice-sexp'."
   (paredit-newline)
   (yank)
   (exchange-point-and-mark))
+
+(defun paredit-open-curly-smart ()
+  (interactive)
+  (paredit-open-curly)
+  (indent-to-left-margin)
+  (newline)
+  (open-newline-above 1)
+  )
 
 (provide 'paredit-extension)
 
