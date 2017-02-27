@@ -4,10 +4,10 @@
 ;; Description: Move current line or region with M-up or M-down.
 ;; Author: Jason M <jasonm23@gmail.com>
 ;; Extracted from basic-toolkit.el by Andy Stewart.
-;; Copyright (C) 2009, Andy Stewart, all rights reserved.
+;; Copyright (C) 2009 ~ 2017, Andy Stewart, all rights reserved.
 ;; Keywords: edit
-;; Compatibility: GNU Emacs 23.0.60.1
-;; Version: 1.0
+;; Compatibility: GNU Emacs 23.0.60.1 ~ GNU Emacs 26.0.50.1
+;; Version: 1.1
 ;;
 ;;; This file is NOT part of GNU Emacs
 
@@ -48,6 +48,12 @@
 ;; (move-text-default-bindings)
 ;;
 
+;;; Change log:
+;;
+;; 2017/02/27
+;;      * Make `move-text-up' works with Emacs 26.0.
+;;
+
 ;;; Acknowledgements:
 ;;
 ;;  Feature extracted from basid-edit-toolkit.el - by Andy Stewart. (LazyCat)
@@ -74,7 +80,20 @@
       (when (or (> arg 0) (not (bobp)))
         (forward-line)
         (when (or (< arg 0) (not (eobp)))
-          (transpose-lines arg))
+          (transpose-lines arg)
+          (when (and
+                 ;; Account for changes to transpose-lines in Emacs 24.3
+                 (eval-when-compile
+                   (not (version-list-<
+                         (version-to-list emacs-version)
+                         '(24 3 50 0))))
+                 ;; Make `move-text-up' works with Emacs 26.0
+                 (eval-when-compile
+                   (version-list-<
+                    (version-to-list emacs-version)
+                    '(26 0 50 1)))
+                 (< arg 0))
+            (forward-line -1)))
         (forward-line -1))
       (move-to-column column t)))))
 
@@ -91,12 +110,6 @@
   arg lines up."
   (interactive "*p")
   (move-text-internal (- arg)))
-
-;;;###autoload
-(defun move-text-default-bindings ()
-  "Bind `move-text-up' and `move-text-down' to M-up and M-down."
-  (global-set-key [M-up] 'move-text-up)
-  (global-set-key [M-down] 'move-text-down))
 
 (provide 'move-text)
 
