@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Feb 27 10:32:06 2017 (-0800)
+;; Last-Updated: Mon Feb 27 10:48:48 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 15216
+;;     Update #: 15220
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -3455,7 +3455,6 @@
 ;;  period of time (option `bmkp-auto-idle-bookmark-mode-delay').
 ;;  
 ;;
-;;
 ;;(@* Automatic Info Bookmarking)
 ;;  *** Automatic Info Bookmarking ***
 ;;
@@ -3488,6 +3487,17 @@
 ;;  Showing only Info bookmarks gives you the effect of a persistent
 ;;  mini-manual of just the visited Info nodes.  Turn the mode off
 ;;  anytime you do not want to record Info visits.
+;;
+;;  Also useful in this context, though not related to bookmarking, is
+;;  the ability to save your Info history persistently, so links to
+;;  visited nodes are shown using a different face.  This makes it
+;;  easy to see which parts of a manual you have already looked at.
+;;  (And checking a bookmark to a visited node shows you how much you
+;;  have visited it.)
+;;
+;;  If you use library `info+.el' then you have this complementary
+;;  ability save your Info history list persistently.  Just enable
+;;  minor mode `Info-persist-history-mode'.
 ;;
 ;;
 ;;(@* Automatic Idle-Period Bookmarking)
