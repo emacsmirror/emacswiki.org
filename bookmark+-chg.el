@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jan 29 11:25:38 2017 (-0800)
+;; Last-Updated: Sun Feb 26 18:17:29 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 16251
+;;     Update #: 16298
 ;; URL: http://www.emacswiki.org/bookmark+-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,28 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2017/02/26 dadams
+;;     Added:
+;;       bmkp-eww-rename-buffer, bmkp-eww-new-buffer-name, bmkp-eww-sans-pop-to-buffer,
+;;       bmkp-eww-buffer-handling (was ~bmkp-eww-allow-multiple-buffers-flag), 
+;;       bmkp-get-eww-mode-buffer, bmkp-eww-jumping-p, bmkp-eww-new-buf-name,
+;;       bmkp-jump-eww-in-buffer-*eww* (was ~bmkp-jump-eww-only-one-buffer),
+;;       bmkp-jump-eww-renaming-buffer (was ~bmkp-jump-eww-new-buffer), bmkp-info-auto-type,
+;;       bmkp-info-auto-bookmark-mode, bmkp-set-info-bookmark-with-node-name,
+;;       bmkp-toggle-info-auto-type.
+;;     Removed: bmkp-eww-allow-multiple-buffers-flag, bmkp-eww-set-new-buffer-name,
+;;              bmkp-jump-eww-new-buffer, bmkp-jump-eww-only-one-buffer.
+;;     bmkp-edit-bookmark-name-and-location: Don't consider changed-buffname-p if EWW bookmark.
+;;     bmkp-make-eww-record: Use bmkp-eww-new-buffer-name for buffer-name field.
+;;     Add bmkp-eww-rename-buffer to hooks eww-after-render-hook and eww-restore-history.
+;;     Support EWW only for Emacs 25+, not for 24.4+.  (E.g., bmkp-eww-title, bmkp-eww-url).
+;;     bookmark-show-all-annotations:
+;;       Use bookmark-maybe-load-default-file, to load bookmark file.
+;;       For Emacs 24+, call view-mode-enter with no args.  Thx to Alan Wehmann for bug report
+;;           and Martin Rudalics for info about the new signature.
+;;     bmkp-completing-read-1: Use single default, not list, for Emacs 20-22.
+;;     bmkp-default-bookmark-name:
+;;       Ensure use a single bname, not a list of names returned by bmkp-default-lighted.
 ;; 2017/01/29 dadams
 ;;     Added: bmkp-eww-title, bmkp-eww-url.
 ;;     bookmark-set, bmkp-this-buffer-p, bmkp-make-eww-record: Use bmkp-eww-title, bmkp-eww-url.
@@ -2160,8 +2182,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2017/02/26 dadams
+;;     Version 2017.02.26.  Added auto-bookmarking for Info.  Better EWW - thx to Charles Roelli.
 ;; 2016/11/14 dadams
-;;     Version 2016.11.14.  Added support for EWW bookmarks.  Thx to charles at aurox.ch.
+;;     Version 2016.11.14.  Added support for EWW bookmarks.  Thx to Charles Roelli.
 ;; 2015/02/22 dadams
 ;;     Version 2015.02.22.
 ;; 2015/02/08 dadams
