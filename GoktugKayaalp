@@ -1,0 +1,21 @@
+I'm GoktugKayaalp ([http://www.gkayaalp.com my homepage]).  Emacs is my OS, I do most of my computer tasks in it.
+
+== My Elisp programmes ==
+
+See my [http://www.gkayaalp.com/emacs.html Emacs page] for up-to-date information.
+
+* [http://www.gkayaalp.com/emacs.html#forecast.el forecast.el]:\\
+Weather forecast reports.  [http://www.gkayaalp.com/img/forecast-new.png A screenshot].  Available on [http://melpa.org/#/forecast MELPA] and [https://github.com/cadadr/forecast.el GitHub].
+
+* [http://www.gkayaalp.com/emacs.html#paper Paper]:\\
+A little, minimal emacs theme that is meant to be simple and consistent.  [http://www.gkayaalp.com/img/paper1.gif A screenshot]  Available on [http://melpa.org/#/paper-theme MELPA] and [https://github.com/cadadr/paper theme GitHub].
+
+== Input methods ==
+
+I use Emacs quail input methods all the time, and have created some (subjectively) convenient ones.  Here is a listing:
+
+* [http://www.gkayaalp.com/emacs.html#gk-unilat.el Universal Latin Input Method]:\\
+Meant to be a single input method for most (ideally all) variants of the Latin alphabet.  It's available on [http://www.gkayaalp.com/releases/ my website] and here at Lisp:gk-unilat.el.
+
+* [http://www.gkayaalp.com/emacs.html#gk-greek.el Transliterating input method for modern Greek]:\\
+Aimed to ease up typing *modern* Greek on Latin keyboards, this is a mapping from Latin transliterations of Greek letters to their original Greek versions.  Allows to type transliteration and obtain on-the-fly Greek text.  It's available on [http://www.gkayaalp.com/releases/ my website] and here at Lisp:gk-greek.el.
