@@ -3879,6 +3879,16 @@ Showing only Info bookmarks gives you the effect of a ''persistent
 mini-manual'' of just the visited Info nodes.  Turn the mode off anytime
 you do not want to record Info visits.
 
+Also useful in this context, though not related to bookmarking, is
+the ability to ''save your Info history persistently'', so links
+to ''visited nodes are shown using a different face''.  This makes it
+easy to see which parts of a manual you have already looked at.
+(And checking a bookmark to a visited node shows you how much you
+have visited it.)
+
+If you use library [[Info+]] (<tt>[[info+.el]]</tt>) then you have this complementary
+ability save your Info history list persistently.  Just enable
+minor mode `[[InfoPlus#Info-persist-history-mode|Info-persist-history-mode]]'.
 
 
 
