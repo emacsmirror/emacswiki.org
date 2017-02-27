@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jan  2 20:12:45 2017 (-0800)
+;; Last-Updated: Mon Feb 27 10:32:06 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 15183
+;;     Update #: 15216
 ;; URL: http://www.emacswiki.org/bookmark+-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -168,6 +168,8 @@
 ;;      (@> "Temporary Bookmarking Mode")
 ;;      (@> "Making Bookmarks Temporary")
 ;;    (@> "Automatic Bookmarking")
+;;      (@> "Automatic Info Bookmarking")
+;;      (@> "Automatic Idle-Period Bookmarking")
 ;;    (@> "Highlighting Bookmark Locations")
 ;;      (@> "Defining How to Highlight")
 ;;      (@> "Highlighting On Demand")
@@ -3445,11 +3447,55 @@
 ;;(@* "Automatic Bookmarking")
 ;;  ** Automatic Bookmarking **
 ;;
-;;  You might or might not find automatic bookmarking useful.  The
-;;  idea is that Emacs sets a bookmark for you automatically, whenever
-;;  you are idle for a given period of time (option
-;;  `bmkp-auto-idle-bookmark-mode-delay').  Then you can navigate
-;;  among those bookmarks to visit spots where you spent some time
+;;  You might find automatic bookmarking useful.  The idea is that
+;;  Emacs sets a bookmark for you automatically.
+;;
+;;  Bookmark+ can do this either when you perform some action (besides
+;;  explicitly bookmarking) or whenever you are idle for a given
+;;  period of time (option `bmkp-auto-idle-bookmark-mode-delay').
+;;  
+;;
+;;
+;;(@* Automatic Info Bookmarking)
+;;  *** Automatic Info Bookmarking ***
+;;
+;;  The former feature is currently limited to Info bookmarks.  When
+;;  global minor mode `bmkp-info-auto-bookmark-mode' is enabled, each
+;;  Info node you visit can be bookmarked automatically, using the
+;;  default bookmark name, which is the Info manual name plus the node
+;;  name.  For example, node `Lisp Data Types' in the Elisp manual
+;;  gives you a bookmark named `(elisp) Lisp Data Types'.
+;;
+;;  When the mode is enabled and an Info node is visited, an existing
+;;  such bookmark is always updated.  If no such bookmark exists then
+;;  a new one is created if option `bmkp-info-auto-type' has value
+;;  `create-or-replace'.  If it has value `update-only' then no new
+;;  bookmark is created.  The default option value is `update-only'.
+;;  You can toggle the value using command
+;;  `bmkp-toggle-info-auto-type'.
+;;
+;;  With mode `bmkp-info-auto-bookmark-mode' enabled, even if you
+;;  create Info bookmarks with the given names (i.e., the default
+;;  names) only manually, they are updated automatically.  In
+;;  particular, updating a bookmark increments the recorded number of
+;;  visits to the Info node and the time of the last visit.
+;;
+;;  You can sort bookmarks in the bookmark-list display by the time of
+;;  last visit, using `s d', or by the number of visits, using `s v'.
+;;
+;;  This gives you an easy way to see which parts of the manuals you
+;;  have visited most recently and how much you have visited them.
+;;  Showing only Info bookmarks gives you the effect of a persistent
+;;  mini-manual of just the visited Info nodes.  Turn the mode off
+;;  anytime you do not want to record Info visits.
+;;
+;;
+;;(@* Automatic Idle-Period Bookmarking)
+;;  *** Automatic Idle-Period Bookmarking ***
+;;
+;;  Automatic idle-period bookmarking uses autonamed bookmarks (see
+;;  (@> "Autonamed Bookmarks - Easy Come Easy Go")).  It lets you
+;;  navigate among them to visit spots where you spent some time
 ;;  (idly).
 ;;
 ;;  How many such automatic bookmarks would you want?  And where?
