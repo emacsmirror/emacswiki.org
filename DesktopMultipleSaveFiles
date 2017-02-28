@@ -14,7 +14,7 @@ M-x desktop-change-dir    # save current desktop and load a different one
 M-x desktop-revert        # revert to desktop previously loaded
 </pre>
 
-I found the following happy medium of starting emacs with a simple bash script that sets an environment variable, and adding a bit of code to my .emacs to, if that environment variable is set, set the desktop-path to its value.
+Thanks to the very helpful people on Freenode #emacs, I found the following happy medium of starting emacs with a simple bash script that sets an environment variable, and adding a bit of code to my .emacs to, if that environment variable is set, set the desktop-path to its value.
 
 It's not perfect.  It doesn't open with the emacs window on the same buffer I had open when I exited emacs, although that buffer is still in the list of open buffers.  Apparently that detail is saved somewhere other than the .emacs.desktop file.  Some research suggests looking into the  desktop-restore-frames documentation for that.
 
