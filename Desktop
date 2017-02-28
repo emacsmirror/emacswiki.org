@@ -310,6 +310,7 @@ When saving a desktop that contains <code>~/.emacs</code> and, let's say, the fi
 I'm not sure I understand your description, but I don't need to understand it.  This is not the place to report ##desktop.el## bugs (or enhancement requests).  The way to do that is to use `M-x report-emacs-bug'.  The Emacs developers will take a look at your report and let you know whether it is a bug, etc.  If they need more info from you they will ask for it. -- DrewAdams
 
 ----
+I added an entry for DesktopMultipleSaveFiles.  It's not the most elegant approach (uses an environment variable to set desktop-path) but it's simple and works sufficiently for my purposes.
 ----
 
 CategoryDotEmacs CategoryPersistence
