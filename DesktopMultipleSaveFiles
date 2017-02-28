@@ -9,7 +9,7 @@ However, I can't get it to actually work.  Either it's broken or the docs are mi
 These commands do work, but it's inconvenient to manually enter them every time.  I have to start emacs with --no-desktop (which is trivial) and then execute desktop-change-dir and then desktop-save-mode to activate desktop-save-mode.
 
 <pre>
-M-x desktop-save<enter>   ; saves the desktop
+M-x desktop-save          ; saves the desktop
 M-x desktop-change-dir    ; save current desktop and load a different one
 M-x desktop-revert        ; revert to desktop previously loaded
 </pre>
