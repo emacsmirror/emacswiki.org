@@ -4,8 +4,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-07-28 16:32:52
-;; Version: 0.2
-;; Last-Updated: 2017-02-27 23:36:08
+;; Version: 0.3
+;; Last-Updated: 2017-02-28 20:57:27
 ;; URL: not distributed yet
 ;; Keywords: paredit
 ;; Compatibility: GNU Emacs 23.0.60.1 ~ GNU Emacs 26.0.50.1
@@ -44,6 +44,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2017/02/24
+;;          Fixed `paredit-open-curly-smart' bug that indent wrong column.
 ;;
 ;; 2017/02/23
 ;;          Add `paredit-open-curly-smart'.
@@ -271,8 +274,8 @@ Will delete blank line after execute `paredit-splice-sexp'."
 (defun paredit-open-curly-smart ()
   (interactive)
   (paredit-open-curly)
-  (indent-to-left-margin)
-  (newline)
+  (indent-according-to-mode)
+  (comment-indent-new-line)
   (open-newline-above 1)
   )
 
