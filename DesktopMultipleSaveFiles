@@ -1,0 +1,54 @@
+Desktop Save Mode with multiple save files
+
+According to the docs you should be able to get different .emacs.desktop files by simply cd'ing into a different directory before starting emacs:
+
+https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Emacs-Sessions.html
+
+However, I can't get it to actually work.  Either it's broken or the docs are misleading, or I just haven't had enough coffee today.
+
+These commands do work, but it's inconvenient to manually enter them every time.  I have to start emacs with --no-desktop (which is trivial) and then execute desktop-change-dir and then desktop-save-mode to activate desktop-save-mode.
+
+<PRE>
+M-x desktop-save<enter>   # saves the desktop
+M-x desktop-change-dir    # save current desktop and load a different one
+M-x desktop-revert        # revert to desktop previously loaded
+</PRE>
+
+I found the following happy medium of starting emacs with a simple bash script that sets an environment variable, and adding a bit of code to my .emacs to, if that environment variable is set, set the desktop-path to its value.
+
+It's not perfect.  It doesn't open with the emacs window on the same buffer I had open when I exited emacs, although that buffer is still in the list of open buffers.  Apparently that detail is saved somewhere other than the .emacs.desktop file.  Some research suggests looking into the  desktop-restore-frames documentation for that.
+
+There's apparently no way / no easy way / no documented way to pass parameters in from the command line and use them in .emacs, but you *can* use elisp's getenv to get at environment variables.  So first make a little script to set an EMACSSAVEMODEDIR variable:
+
+<pre>
+#!/bin/bash
+echo "starting emacs with desktop-save from /home/username/myproject/.emacs.desktop"
+export EMACSSAVEMODEDIR="/home/username/myproject"
+cd /home/username/myproject
+/usr/bin/emacs24 --maximized 
+</pre>
+
+And then add a bit of elisp in .emacs to set desktop-path to the EMACSSAVEMODEDIR value, if EMACSSAVEMODEDIR exists.  
+
+Make sure you put it before the (desktop-save-mode 1) line, so desktop-path will be set properly when desktop-save-mode starts.
+
+I've included the entire desktop-save-mode section of my .emacs below.  This includes the my-desktop-save function, from https://www.emacswiki.org/emacs/Desktop.   
+
+The first two lines check for the existence of the environment variable EMACSSAVEMODEDIR, and if found, calls setq desktop-path.  I suppose I could be fancier here and, for example, retain any original desktop-path value and just prepend EMACSSAVEMODEDIR.  But I'd rather it simply break and tell me the .emacs.desktop file isn't there.
+
+<PRE>
+(when (getenv "EMACSSAVEMODEDIR")
+  (setq desktop-path (list (getenv "EMACSSAVEMODEDIR"))) )
+  
+(desktop-save-mode 1)
+
+; from http://www.emacswiki.org/emacs/Desktop#toc3
+; "add something like this to your init file to auto-save your desktop when Emacs is idle: – Doom"
+(require 'desktop)
+  (defun my-desktop-save ()
+    (interactive)
+    ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
+    (if (eq (desktop-owner) (emacs-pid))
+        (desktop-save desktop-dirname)))
+  (add-hook 'auto-save-hook 'my-desktop-save)
+</PRE>
