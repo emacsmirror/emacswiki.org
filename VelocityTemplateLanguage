@@ -5,7 +5,7 @@ It usually carries the extension .vm, or .vhtml.
 ==Mode to edit Velocity files in Emacs==
 
 There is vtl.el which does syntax coloring of the keywords, variables and functions. See:
-http://wiki.apache.org/jakarta-velocity/EmacsVtlMode
+https://wiki.apache.org/velocity/EmacsVtlMode
 
 This alone makes editing and detecting errors much more comfortable.
 
