@@ -8,10 +8,10 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb  7 21:49:26 2017 (-0800)
+;; Last-Updated: Fri Mar  3 15:03:38 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 5730
-;; URL: http://www.emacswiki.org/isearch+.el
+;;     Update #: 5731
+;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
 ;; Keywords: help, matching, internal, local
