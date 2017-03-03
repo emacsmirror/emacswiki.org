@@ -8,10 +8,10 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:36:15 2017 (-0800)
+;; Last-Updated: Fri Mar  3 15:04:36 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1413
-;; URL: http://www.emacswiki.org/isearch-prop.el
+;;     Update #: 1414
+;; URL: https://www.emacswiki.org/emacs/download/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
 ;; Compatibility: GNU Emacs: 23.2+, 24.x, 25.x
