@@ -8,10 +8,10 @@
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:31:35 2017 (-0800)
+;; Last-Updated: Fri Mar  3 14:57:23 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1044
-;; URL: http://www.emacswiki.org/imenu+.el
+;;     Update #: 1045
+;; URL: https://www.emacswiki.org/emacs/download/imenu%2b.el
 ;; Doc URL: http://emacswiki.org/ImenuMode
 ;; Keywords: tools, menus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
