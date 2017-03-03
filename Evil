@@ -289,7 +289,7 @@ The first thing I missed of Vim were the tabs. With elscreen.el and its dependen
 
     (load "elscreen" "ElScreen" t)
     (elscreen-start)
-    (define-key evil-normal-state-map (kbd "C-w t") 'elscreen-create) ;creat tab
+    (define-key evil-normal-state-map (kbd "C-w t") 'elscreen-create) ;create tab
     (define-key evil-normal-state-map (kbd "C-w x") 'elscreen-kill) ;kill tab
 
     (define-key evil-normal-state-map "gT" 'elscreen-previous) ;previous tab
