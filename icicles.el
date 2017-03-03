@@ -8,10 +8,10 @@
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2016.12.21
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:29:45 2017 (-0800)
+;; Last-Updated: Fri Mar  3 14:55:48 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 23709
-;; URL: http://www.emacswiki.org/icicles.el
+;;     Update #: 23710
+;; URL: https://www.emacswiki.org/emacs/download/icicles.el
 ;; Doc URL: http://emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
 ;;           keys, apropos, completion, matching, regexp, command
