@@ -384,6 +384,9 @@ Thanks for the comments, Mark.
 Multiple major modes are often not the best, but there are a lot of files that uses them.
 
 [new]
+The *files* don't use multiple modes, the programmers do. I find it's usually less of a hassle to do M-x html-mode, M-x javascript-mode, M-x php-mode etc.
+
+[new]
 How could I use c++ style comment as '//' instead of the old c style '/* */' to comment my codes?
 
 [new]
