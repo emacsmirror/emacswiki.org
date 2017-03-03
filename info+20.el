@@ -8,10 +8,10 @@
 ;; Created: Sun May  4 09:18:30 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:33:42 2017 (-0800)
+;; Last-Updated: Fri Mar  3 15:02:17 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 5239
-;; URL: http://www.emacswiki.org/info+20.el
+;;     Update #: 5240
+;; URL: https://www.emacswiki.org/emacs/download/info%2b20.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x
