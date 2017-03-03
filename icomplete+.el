@@ -8,10 +8,10 @@
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:30:35 2017 (-0800)
+;; Last-Updated: Fri Mar  3 14:56:32 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1701
-;; URL: http://www.emacswiki.org/icomplete+.el
+;;     Update #: 1702
+;; URL: https://www.emacswiki.org/emacs/download/icomplete%2b.el
 ;; Doc URL: http://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
