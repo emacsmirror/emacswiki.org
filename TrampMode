@@ -252,12 +252,6 @@ The trap here is that ##sudo::## /does/ actually appear to work -- /however/ whe
 
 In short, don't use ##::## when you multi-hop!
 
-=== Using su to edit stuff as root ===
-
-  C-x C-f /su::/etc/hosts RET
-
-Please note the double :
-
 === Using Tramp to open files sudo'd to root ===
 
 One lazy afternoon, one "sudo vi foo" too many (or rather "udo vi foo", while my term was blocked because of the stupid ^S handling), I came up with this and was, subsequently, happy:
