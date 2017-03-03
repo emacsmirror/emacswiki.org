@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
-;; Last-Updated: Wed Feb  1 10:09:49 2017 (-0800)
+;; Last-Updated: Fri Mar  3 14:44:41 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 7434
-;; URL: http://www.emacswiki.org/icicles-cmd2.el
+;;     Update #: 7435
+;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
