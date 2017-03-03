@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Feb 17 10:22:11 2017 (-0800)
+;; Last-Updated: Fri Mar  3 14:54:13 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 6173
-;; URL: http://www.emacswiki.org/icicles-opt.el
+;;     Update #: 6174
+;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
