@@ -8,17 +8,17 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb 27 11:01:33 2017 (-0800)
+;; Last-Updated: Fri Mar  3 15:01:19 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 5795
-;; URL: http://www.emacswiki.org/info+.el
+;;     Update #: 5797
+;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: http://www.emacswiki.org/InfoPlus
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `fit-frame', `help-fns', `info', `info+', `misc-fns', `strings',
+;;   `fit-frame', `info', `info+', `misc-fns', `strings',
 ;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
