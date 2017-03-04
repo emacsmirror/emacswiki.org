@@ -8,9 +8,9 @@
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 23 07:39:02 2017 (-0800)
+;; Last-Updated: Sat Mar  4 12:11:07 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 991
+;;     Update #: 1017
 ;; URL: https://www.emacswiki.org/emacs/download/hexrgb.el
 ;; Doc URL: http://www.emacswiki.org/SetColor
 ;; Doc URL: http://emacswiki.org/ColorPalette
@@ -606,12 +606,14 @@ Returns a list of RGB components of value 0.0 to 1.0, inclusive."
 
 (defun hexrgb-hsv-to-hex (hue saturation value &optional nb-digits)
   "Return the hex RBG color string for inputs HUE, SATURATION, VALUE.
-These inputs are each in the range 0 to 1.
-Optional arg NB-DIGITS is the number of hex digits per component,
-default: 4.
-The output string is `#' followed by `nb-digits' hex digits for each
-color component.  So for the default `nb-digits' value of 4, the form
-is \"#RRRRGGGGBBBB\"."
+Those inputs are each in the range 0.0 to 1.0, inclusive.
+
+Optional arg NB-DIGITS is the number of hex digits per component.  It
+should be 1, 2, 3, or 4 (default: 4).
+
+The output string is `#' followed by NB-DIGITS hex digits for each
+color component.  So for the default NB-DIGITS value of 4, the form is
+\"#RRRRGGGGBBBB\"."
   (setq nb-digits  (or nb-digits  4))
   (hexrgb-color-values-to-hex
    (mapcar (lambda (x) (floor (* x 65535.0))) (hexrgb-hsv-to-rgb hue saturation value))
@@ -619,12 +621,14 @@ is \"#RRRRGGGGBBBB\"."
 
 (defun hexrgb-rgb-to-hex (red green blue &optional nb-digits)
   "Return the hex RBG color string for inputs RED, GREEN, BLUE.
-These inputs are each in the range 0 to 1.
-Optional arg NB-DIGITS is the number of hex digits per component,
-default: 4.
-The output string is `#' followed by `nb-digits' hex digits for each
-color component.  So for the default `nb-digits' value of 4, the form
-is \"#RRRRGGGGBBBB\"."
+Those inputs are each in the range 0.0 to 1.0, inclusive.
+
+Optional arg NB-DIGITS is the number of hex digits per component.  It
+should be 1, 2, 3, or 4 (default: 4).
+
+The output string is `#' followed by NB-DIGITS hex digits for each
+color component.  So for the default NB-DIGITS value of 4, the form is
+\"#RRRRGGGGBBBB\"."
   (setq nb-digits  (or nb-digits  4))
   (hexrgb-color-values-to-hex
    (mapcar (lambda (x) (floor (* x 65535.0))) (list red green blue))
@@ -634,8 +638,8 @@ is \"#RRRRGGGGBBBB\"."
   "Return a list of HSV (hue, saturation, value) color components.
 Each component is a value from 0.0 to 1.0, inclusive.
 COLOR is a color name or a hex RGB string that starts with \"#\" and
-is followed by an equal number of hex digits for red, green, and blue
-components."
+is followed by an equal number (1 to 4) of hex digits for red, green,
+and blue components."
   (let ((rgb-components  (hexrgb-hex-to-rgb color)))
     (apply #'hexrgb-rgb-to-hsv rgb-components)))
 
@@ -643,8 +647,8 @@ components."
   "Return a list of RGB (red, green, blue) color components.
 Each component is a value from 0.0 to 1.0, inclusive.
 COLOR is a color name or a hex RGB string that starts with \"#\" and
-is followed by an equal number of hex digits for red, green, and blue
-components."
+is followed by an equal number (1 to 4) of hex digits for red, green,
+and blue components."
   (unless (hexrgb-rgb-hex-string-p color) (setq color  (hexrgb-color-name-to-hex color)))
   (let* ((len     (/ (1- (length color)) 3))
          (max-nb  (float (1- (expt 16 len)))))
@@ -655,14 +659,16 @@ components."
 (defun hexrgb-color-name-to-hex (color &optional nb-digits)
   "Return the RGB hex string, starting with \"#\", for the COLOR name.
 If COLOR is already a string starting with \"#\", then just return it.
-Optional arg NB-DIGITS is the number of hex digits per component,
-default: 4.
-\(This function relies on `x-color-values', which generally returns
-integers corresponding to 4 hex digits, so you probably do not want to
-pass an NB-DIGITS value greater than 4.)
-The output string is `#' followed by `nb-digits' hex digits for each
-color component.  So for the default `nb-digits' value of 4, the form
-is \"#RRRRGGGGBBBB\"."
+
+Optional arg NB-DIGITS is the number of hex digits per component.  It
+should be 1, 2, 3, or 4 (default: 4).  (This function relies on
+`x-color-values', which generally returns integers corresponding to 4
+hex digits, so you probably do not want to pass an NB-DIGITS value
+greater than 4.)
+
+The output string is `#' followed by NB-DIGITS hex digits for each
+color component.  So for the default NB-DIGITS value of 4, the form is
+\"#RRRRGGGGBBBB\"."
   (setq nb-digits  (or nb-digits  4))
   (let ((components  (or (x-color-values color)  (error "No such color: %S" color))))
     (unless (hexrgb-rgb-hex-string-p color)
@@ -676,11 +682,13 @@ is \"#RRRRGGGGBBBB\"."
   "Convert list of rgb color COMPONENTS to a hex RBG color string.
 Each X in the string is a hexadecimal digit.
 Input COMPONENTS is as for the output of `x-color-values'.
-Optional arg NB-DIGITS is the number of hex digits per component,
-default: 4.
-The output string is `#' followed by `nb-digits' hex digits for each
-color component.  So for the default `nb-digits' value of 4, the form
-is \"#RRRRGGGGBBBB\"."
+
+Optional arg NB-DIGITS is the number of hex digits per component.
+It should be 1, 2, 3, or 4 (default: 4).
+
+The output string is `#' followed by NB-DIGITS hex digits for each
+color component.  So for the default NB-DIGITS value of 4, the form is
+\"#RRRRGGGGBBBB\"."
   ;; 4 is the default because `x-color-values' produces appropriate integer values for 4.
   (unless components (error "`hexrgb-color-values-to-hex': null COMPONENTS argument"))
   (setq nb-digits  (or nb-digits  4))
@@ -863,15 +871,22 @@ The characters of HEX must be hex characters."
           (- ch (- ?a 10))
         (error "Invalid hex digit `%c'" ch)))))
 
-;; Originally, I used the code from `int-to-hex-string' in `float.el'.
+;; Originally, I used the code from `int-to-hex-string' in `float.el' of Emacs 22.
 ;; This version is thanks to Juri Linkov <juri@jurta.org>.
 ;;
 (defun hexrgb-int-to-hex (int &optional nb-digits)
   "Convert integer arg INT to a string of NB-DIGITS hexadecimal digits.
-If INT is too large to be represented with NB-DIGITS, then the result
-is truncated from the left.  So, for example, INT=256 and NB-DIGITS=2
+For use with color specs, NB-DIGITS should be 1, 2, 3, or 4.
+
+If INT is too large to be represented with NB-DIGITS then the result
+is truncated from the left.  For example, if INT=256 and NB-DIGITS=2
 returns \"00\", since the hex equivalent of 256 decimal is 100, which
-is more than 2 digits."
+is more than 2 digits.
+
+If you want to ensure that `hexrgb-int-to-hex' is not called with INT
+too large for NB-DIGITS, use something like this to check the args:
+
+ (<= (length (format (concat \"%X\") INT)) NB-DIGITS)"
   (setq nb-digits  (or nb-digits 4))
   (substring (format (concat "%0" (int-to-string nb-digits) "X") int) (- nb-digits)))
 
@@ -898,7 +913,7 @@ N must be an integer between 0 and 65535, or else an error is raised."
 
 (defun hexrgb-hex-to-hex (hex nb-digits)
   "Return a hex string of NB-DIGITS digits, rounded from hex string HEX.
-Raise an error if HEX represents a number > `most-positive-fixnum'
+Raise an error if HEX represents a number > `most-positive-fixnum'.
 HEX is a hex string, not an RGB string.  It does not start with `#'."
   (let* ((len      (length hex))
          (digdiff  (- nb-digits len)))
