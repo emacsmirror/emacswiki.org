@@ -22,6 +22,9 @@ There are two user interfaces:
 customization buffer.  Basically, it has the same options found in the
 menu and some extra options, all this on a buffer.
 
+: CUPS
+:: If you are running CUPS the ##cups-bsd## system-package provides an lpr interface.
+
 ##printing## is prepared to run on GNU, Unix and NT systems.
 
 On GNU or Unix system, ##printing## depends on ##gs## and ##gv## utilities.
