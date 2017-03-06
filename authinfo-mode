@@ -1,0 +1,6 @@
+Authinfo Mode is a mode to hide all but the current line of your ##~/.authinfo.gpg## file.
+
+* You can [https://github.com/kensanata/emacs-setup/blob/master/config/authinfo-conf.el find it on GitHub]
+
+----
+CategoryModes
