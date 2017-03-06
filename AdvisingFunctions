@@ -14,6 +14,20 @@ See AdviceVsHooks for a discussion of when to use advice. '''''Summary:''''' adv
    (ad-unadvise 'foo)
    (foo)
 
+== Simple Advising ==
+
+To advise a function, you use `advice-add`.  It takes the function you want to advise, quoted.  
+An advice combinator (around, before, after, etc).  And it takes the function you wrote to be run. 
+
+A simple piece of before advice looks like this: 
+
+    (defun my-message (&optional ARG PRED) 
+      (message "hello!"))
+    (advice-add 'save-some-buffers :before 'my-message)
+
+Something to note is the function signatures.  Functions used with `:before` and `:after` 
+will receive the same arguments as the functions they advise. 
+
 == Interactive functions ==
 
 Maintaining interactive-p inside an advised function can be a pain.
