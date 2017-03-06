@@ -6,6 +6,8 @@ To connect to password protected servers you need to store authentication inform
 
 Thus, simply save your information in ##~/.authinfo.gpg## and you're done.
 
+If you use this file for passwords elsewhere, you might be interested in [[authinfo-mode]].
+
 == GPG ==
 
 Ideally you already have GPG set up on your system.
