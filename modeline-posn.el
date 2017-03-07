@@ -8,10 +8,10 @@
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb 27 11:25:29 2017 (-0800)
+;; Last-Updated: Tue Mar  7 08:56:59 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 843
-;; URL: http://www.emacswiki.org/modeline-posn.el
+;;     Update #: 844
+;; URL: https://www.emacswiki.org/emacs/download/modeline-posn.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
