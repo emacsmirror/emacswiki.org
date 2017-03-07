@@ -3,7 +3,7 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams
 ;; Copyright (C) 1997, 2005, 2006, 2007  Free Software Foundation, Inc.
-
+;; URL: https://www.emacswiki.org/emacs/download/savehist-20%2b.el
 ;; Keywords: minibuffer history
 ;; Version: 24
 
