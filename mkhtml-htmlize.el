@@ -31,9 +31,9 @@
 ;; http://www.emacswiki.org/emacs/mkhtml.el in case it is useful for
 ;; some people, and in case someone wants to reuse some of the code,
 ;; bring it up to date, or extend it.  I post `mkhtml-htmlize.el' at
-;; http://www.emacswiki.org/emacs/mkhtml-htmlize.el for the same
-;; reason.  If `mkhtml.el' still works, then it needs this version of
-;; htmlize.el.  No guarantees.  HTH.  - Drew Adams, 2009.
+;; https://www.emacswiki.org/emacs/download/mkhtml-htmlize.el for the
+;; same reason.  If `mkhtml.el' still works, then it needs this
+;; version of htmlize.el.  No guarantees.  HTH.  - Drew Adams, 2009.
 ;;
 
 ;; This package analyses the text properties of the buffer and
