@@ -8,10 +8,10 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Sun Jan  1 11:06:58 2017 (-0800)
+;; Last-Updated: Tue Mar  7 09:33:08 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3092
-;; URL: http://www.emacswiki.org/oneonone.el
+;;     Update #: 3093
+;; URL: https://www.emacswiki.org/emacs/download/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
