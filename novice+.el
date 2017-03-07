@@ -8,10 +8,10 @@
 ;; Created: Thu Jul 11 17:10:39 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Sun Jan  1 11:05:50 2017 (-0800)
+;;; Last-Updated: Tue Mar  7 09:22:51 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 157
-;; URL: http://www.emacswiki.org/novice+.el
+;;     Update #: 158
+;; URL: https://www.emacswiki.org/emacs/download/novice%2b.el
 ;; Keywords: internal, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
