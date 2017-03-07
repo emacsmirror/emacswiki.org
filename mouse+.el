@@ -8,10 +8,10 @@
 ;; Created: Fri Jun 28 14:47:12 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 11:00:12 2017 (-0800)
+;; Last-Updated: Tue Mar  7 08:59:44 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 604
-;; URL: http://www.emacswiki.org/mouse+.el
+;;     Update #: 605
+;; URL: https://www.emacswiki.org/emacs/download/mouse%2b.el
 ;; Doc URL: http://emacswiki.org/MousePlus
 ;; Keywords: mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
