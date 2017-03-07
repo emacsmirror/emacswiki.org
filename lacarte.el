@@ -8,10 +8,10 @@
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:38:34 2017 (-0800)
+;; Last-Updated: Tue Mar  7 08:37:38 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 926
-;; URL: http://www.emacswiki.org/lacarte.el
+;;     Update #: 927
+;; URL: https://www.emacswiki.org/emacs/download/lacarte.el
 ;; Doc URL: http://www.emacswiki.org/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
 ;;           completion, matching, local, internal, extensions,
