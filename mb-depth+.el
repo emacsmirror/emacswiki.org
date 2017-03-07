@@ -8,10 +8,10 @@
 ;; Created: Sat Nov 18 16:37:53 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:48:39 2017 (-0800)
+;; Last-Updated: Tue Mar  7 08:44:40 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 84
-;; URL: http://www.emacswiki.org/mb-depth+.el
+;;     Update #: 86
+;; URL: https://www.emacswiki.org/emacs/download/mb-depth%2b.el
 ;; Doc URL: http://emacswiki.org/MinibufferDepthIndicator
 ;; Keywords: convenience
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
