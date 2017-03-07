@@ -8,10 +8,10 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 11:33:08 2017 (-0800)
+;; Last-Updated: Tue Mar  7 09:49:51 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1332
-;; URL: http://www.emacswiki.org/setup-keys.el
+;;     Update #: 1333
+;; URL: https://www.emacswiki.org/emacs/download/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
