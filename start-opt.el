@@ -8,10 +8,10 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 11:37:48 2017 (-0800)
+;; Last-Updated: Tue Mar  7 15:31:51 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 2005
-;; URL: http://www.emacswiki.org/start-opt.el
+;;     Update #: 2006
+;; URL: https://www.emacswiki.org/emacs/download/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
