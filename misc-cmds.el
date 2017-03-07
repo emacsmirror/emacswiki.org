@@ -8,10 +8,10 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jan 13 09:06:25 2017 (-0800)
+;; Last-Updated: Tue Mar  7 08:47:29 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3283
-;; URL: http://www.emacswiki.org/misc-cmds.el
+;;     Update #: 3284
+;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
