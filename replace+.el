@@ -8,10 +8,10 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 11:21:59 2017 (-0800)
+;; Last-Updated: Tue Mar  7 09:42:46 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1855
-;; URL: http://www.emacswiki.org/replace%2b.el
+;;     Update #: 1856
+;; URL: https://www.emacswiki.org/emacs/download/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
