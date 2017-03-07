@@ -8,10 +8,10 @@
 ;; Created: Tue Jul  7 10:52:36 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated:
-;;           By:
-;;     Update #: 163
-;; URL: http://www.emacswiki.org/modeline-char.el
+;; Last-Updated: Tue Mar  7 08:54:28 2017 (-0800)
+;;           By: dradams
+;;     Update #: 166
+;; URL: https://www.emacswiki.org/emacs/download/modeline-char.el
 ;; Doc URL: http://www.emacswiki.org/emacs/ModeLineCharacterInfo
 ;; Keywords: mode-line, character
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
