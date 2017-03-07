@@ -8,10 +8,10 @@
 ;; Created: Thu Nov 30 08:51:07 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Sun Jan  1 11:30:29 2017 (-0800)
+;;; Last-Updated: Tue Mar  7 09:47:45 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 179
-;; URL: http://www.emacswiki.org/setnu%2b.el
+;;     Update #: 180
+;; URL: https://www.emacswiki.org/emacs/download/setnu%2b.el
 ;; Doc URL: http://emacswiki.org/LineNumbers
 ;; Keywords: lines
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
