@@ -8,10 +8,10 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 11:38:36 2017 (-0800)
+;; Last-Updated: Tue Mar  7 15:32:38 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3064
-;; URL: http://www.emacswiki.org/start.el
+;;     Update #: 3065
+;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
