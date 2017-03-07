@@ -8,10 +8,10 @@
 ;; Created: Mon Apr 22 08:42:10 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Thu Dec 31 14:25:04 2015 (-0800)
+;;; Last-Updated: Tue Mar  7 08:43:24 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 193
-;; URL: http://www.emacswiki.org/macros+.el
+;;     Update #: 194
+;; URL: http://www.emacswiki.org/emacs/download/macros%2b.el
 ;; Keywords: abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
