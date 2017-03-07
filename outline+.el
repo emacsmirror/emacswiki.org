@@ -7,10 +7,10 @@
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 21 08:56:04 1996
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 11:09:52 2017 (-0800)
+;; Last-Updated: Tue Mar  7 09:35:37 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 338
-;; URL: http://www.emacswiki.org/outline+.el
+;;     Update #: 339
+;; URL: https://www.emacswiki.org/emacs/download/outline%2b.el
 ;; Keywords: abbrev, matching, local
 ;; Compatibility: GNU Emacs 20.x
 ;;
