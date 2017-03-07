@@ -7,10 +7,10 @@
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Sun Jan  1 11:46:31 2017 (-0800)
+;; Last-Updated: Tue Mar  7 15:39:52 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 2326
-;; URL: http://www.emacswiki.org/thingatpt%2b.el
+;;     Update #: 2328
+;; URL: https://www.emacswiki.org/emacs/download/thingatpt%2b.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
