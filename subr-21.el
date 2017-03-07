@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams
 ;; Created: Sun Oct 19 20:27:23 2003
 ;; Version: 20.0
-;; Last-Updated: Thu Aug 23 17:02:33 2012 (-0700)
+;; Last-Updated: Tue Mar  7 15:35:57 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 29
-;; URL: http://www.emacswiki.org/emacs-en/subr-21.el
+;;     Update #: 30
+;; URL: http://www.emacswiki.org/emacs-en/download/subr-21.el
 ;; Keywords: compatibility
 ;; Compatibility: Emacs 20.x
 ;; 
