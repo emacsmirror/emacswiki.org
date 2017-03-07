@@ -8,10 +8,10 @@
 ;; Created: Sat May 24 19:24:18 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 11:40:44 2017 (-0800)
+;; Last-Updated: Tue Mar  7 15:34:46 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 162
-;; URL: http://www.emacswiki.org/simple%2b.el
+;;     Update #: 163
+;; URL: https://www.emacswiki.org/emacs/download/subr%2b.el
 ;; Doc URL: http://www.emacswiki.org/SplittingStrings
 ;; Keywords: strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
