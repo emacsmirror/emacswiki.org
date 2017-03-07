@@ -8,10 +8,10 @@
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Fri Feb 10 19:24:17 2017 (-0800)
+;;; Last-Updated: Tue Mar  7 15:33:36 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 565
-;; URL: http://www.emacswiki.org/strings.el
+;;     Update #: 566
+;; URL: https://www.emacswiki.org/emacs/download/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
