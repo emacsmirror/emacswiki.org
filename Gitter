@@ -1,3 +1,5 @@
+== Channels ==
+
 Here are a few Emacs-related Gitter channels. You will need a Github account to participate.
 
 * https://gitter.im/clojure-emacs/
@@ -7,6 +9,11 @@ Here are a few Emacs-related Gitter channels. You will need a Github account to 
 * https://gitter.im/ensime/ensime-emacs
 
 [https://gitter.im/explore/tags/emacs Browse the "emacs" tag for more]
+
+
+== Connecting to gitter ==
+* there is a client for Emacs at https://github.com/xuchunyang/gitter.el 
+* you can connect with [[ERC|your favourite IRC client]] by getting a token at http://irc.gitter.im/
 
 
 
