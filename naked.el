@@ -8,10 +8,10 @@
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 11:03:02 2017 (-0800)
+;; Last-Updated: Tue Mar  7 09:20:46 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 177
-;; URL: http://www.emacswiki.org/naked.el
+;;     Update #: 178
+;; URL: https://www.emacswiki.org/emacs/download/naked.el
 ;; Doc URL: http://www.emacswiki.org/NaKeD
 ;; Keywords: lisp, key, print, format, help
 ;; Compatibility: GNU Emacs 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
