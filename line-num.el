@@ -9,10 +9,10 @@
 ;; Created: Wed Mar 31 16:18:24 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Sun Jan  1 10:41:57 2017 (-0800)
+;;; Last-Updated: Tue Mar  7 08:38:38 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 221
-;; URL: http://www.emacswiki.org/line-num.el
+;;     Update #: 222
+;; URL: https://www.emacswiki.org/emacs/download/line-num.el
 ;; Doc URL: http://emacswiki.org/LineNumbers
 ;; Keywords: local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
