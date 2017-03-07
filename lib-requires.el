@@ -8,10 +8,10 @@
 ;; Created: Thu Dec 30 12:29:29 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:41:05 2017 (-0800)
+;; Last-Updated: Tue Mar  7 08:55:46 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 756
-;; URL: http://www.emacswiki.org/lib-requires.el
+;;     Update #: 757
+;; URL: https://www.emacswiki.org/emacs/download/lib-requires.el
 ;; Doc URL: http://emacswiki.org/LibraryDependencies
 ;; Keywords: libraries, files
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
