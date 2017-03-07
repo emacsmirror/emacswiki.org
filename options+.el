@@ -7,10 +7,10 @@
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Feb  6 16:50:23 1996
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 11:08:25 2017 (-0800)
+;; Last-Updated: Tue Mar  7 09:34:25 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 96
-;; URL: http://www.emacswiki.org/options+.el
+;;     Update #: 97
+;; URL: https://www.emacswiki.org/emacs/download/options%2b.el
 ;; Keywords: docs, help, internal
 ;; Compatibility: GNU Emacs 20.x
 ;;
