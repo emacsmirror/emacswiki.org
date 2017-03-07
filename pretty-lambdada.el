@@ -10,10 +10,10 @@
 ;; Created: Sun Jun 14 11:07:04 2009 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 11:19:47 2017 (-0800)
+;; Last-Updated: Tue Mar  7 09:40:53 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 154
-;; URL: http://www.emacswiki.org/pretty-lambdada.el
+;;     Update #: 155
+;; URL: https://www.emacswiki.org/emacs/download/pretty-lambdada.el
 ;; Doc URL: http://www.emacswiki.org/PrettyLambda
 ;; Keywords: convenience display
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
