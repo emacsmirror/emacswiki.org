@@ -8,10 +8,10 @@
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:52:38 2017 (-0800)
+;; Last-Updated: Tue Mar  7 08:48:23 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 667
-;; URL: http://www.emacswiki.org/misc-fns.el
+;;     Update #: 668
+;; URL: https://www.emacswiki.org/emacs/download/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
