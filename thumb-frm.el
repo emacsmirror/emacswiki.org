@@ -8,10 +8,10 @@
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Sun Jan  1 11:47:41 2017 (-0800)
+;; Last-Updated: Tue Mar  7 15:41:14 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1793
-;; URL: http://www.emacswiki.org/thumb-frm.el
+;;     Update #: 1794
+;; URL: https://www.emacswiki.org/emacs/download/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
