@@ -7,10 +7,10 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Jul 18 13:11:51 2000
 ;; Version: 20.1
-;; Last-Updated: Sun Jan  1 10:55:33 2017 (-0800)
+;; Last-Updated: Tue Mar  7 08:51:08 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 2342
-;; URL: http://www.emacswiki.org/mkhtml.el
+;;     Update #: 2343
+;; URL: https://www.emacswiki.org/emacs/download/mkhtml.el
 ;; Doc URL: http://emacswiki.org/SaveAsHtml
 ;; Keywords: tools, hypermedia, www, info
 ;; Compatibility: Emacs 20.x
