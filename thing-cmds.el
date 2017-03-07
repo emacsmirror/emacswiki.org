@@ -8,10 +8,10 @@
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 0
 ;; Package-Requires: ((hide-comnt "0"))
-;; Last-Updated: Sun Jan  1 11:45:40 2017 (-0800)
+;; Last-Updated: Tue Mar  7 15:38:28 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 759
-;; URL: http://www.emacswiki.org/thing-cmds.el
+;;     Update #: 760
+;; URL: https://www.emacswiki.org/emacs/download/thing-cmds.el
 ;; Doc URL: http://www.emacswiki.org/ThingAtPointCommands
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
