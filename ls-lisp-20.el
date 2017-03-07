@@ -7,9 +7,9 @@
 ;; Author: Sebastian Kremer <sk@thp.uni-koeln.de>
 ;; Modified by: Francis J. Wright <F.J.Wright at qmul.ac.uk>
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Last-Updated: Sun Jan  1 10:46:09 2017 (-0800)
+;; Last-Updated: Tue Mar  7 08:42:09 2017 (-0800)
 ;;           By: dradams
-;; URL: http://www.emacswiki.org/ls-lisp.el
+;; URL: https://www.emacswiki.org/emacs/download/ls-lisp-20.el
 ;; Keywords: unix, dired, microsoft windows
 
 ;; This program is free software; you can redistribute it and/or
