@@ -8,10 +8,10 @@
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Sun Jan  1 11:11:15 2017 (-0800)
+;; Last-Updated: Tue Mar  7 09:36:45 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 917
-;; URL: http://www.emacswiki.org/palette.el
+;;     Update #: 918
+;; URL: https://www.emacswiki.org/emacs/download/palette.el
 ;; Doc URL: http://emacswiki.org/ColorPalette
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
