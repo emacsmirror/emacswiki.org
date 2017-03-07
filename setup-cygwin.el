@@ -8,10 +8,10 @@
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 0
 ;; Package-Requires: ((cygwin-mount "0"))
-;; Last-Updated: Sun Jan  1 11:31:02 2017 (-0800)
+;; Last-Updated: Tue Mar  7 09:48:54 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 180
-;; URL: http://www.emacswiki.org/setup-cygwin.el
+;;     Update #: 181
+;; URL: https://www.emacswiki.org/emacs/download/setup-cygwin.el
 ;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
