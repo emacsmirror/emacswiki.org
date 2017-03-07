@@ -8,10 +8,10 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:50:05 2017 (-0800)
+;; Last-Updated: Tue Mar  7 08:46:17 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3756
-;; URL: http://www.emacswiki.org/menu-bar+.el
+;;     Update #: 3757
+;; URL: https://www.emacswiki.org/emacs/download/menu-bar%2b.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
