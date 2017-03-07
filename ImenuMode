@@ -101,7 +101,7 @@ Then, modify imenu--split-menu:
 
  <       (when (imenu--subalist-p item)
  ---
- >       (when (and (not imenu-sort-submenus)
+ >       (when (and imenu-sort-submenus
  >                  (imenu--subalist-p item))
 
 [:IcicleImenu]
