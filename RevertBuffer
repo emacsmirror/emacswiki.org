@@ -98,9 +98,7 @@ Here is a version Chris Stuart made for use after checking out a new branch on G
 
 == Reverting but keeping undo ==
 
-Current trunk [[http://git.savannah.gnu.org/cgit/emacs.git/commit/?id=eae9bee8c5613935fdbe96785344bb6f71dd5553|already does this]], including the 24.4 pretests.
-
-Current Emacs releases [[http://lists.gnu.org/archive/html/bug-gnu-emacs/2011-04/msg00151.html|don't do this]].
+Current Emacs (since around 24.4) [[http://git.savannah.gnu.org/cgit/emacs.git/commit/?id=eae9bee8c5613935fdbe96785344bb6f71dd5553|already does this]], but older releases [[http://lists.gnu.org/archive/html/bug-gnu-emacs/2011-04/msg00151.html|don't]].
 
 This fixes that.
 {{{
