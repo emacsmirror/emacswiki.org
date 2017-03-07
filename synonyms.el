@@ -8,10 +8,10 @@
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 11:42:29 2017 (-0800)
+;; Last-Updated: Tue Mar  7 15:37:27 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 2551
-;; URL: http://www.emacswiki.org/synonyms.el
+;;     Update #: 2552
+;; URL: https://www.emacswiki.org/emacs/download/synonyms.el
 ;; Doc URL: http://www.emacswiki.org/ThesauriAndSynonyms
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
