@@ -8,10 +8,10 @@
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 0
 ;; Package-Requires: ((strings "0"))
-;;; Last-Updated: Sun Jan  1 11:36:03 2017 (-0800)
+;;; Last-Updated: Tue Mar  7 15:29:38 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 497
-;; URL: http://www.emacswiki.org/simple%2b.el
+;;     Update #: 498
+;; URL: https://www.emacswiki.org/emacs/download/simple%2b.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
