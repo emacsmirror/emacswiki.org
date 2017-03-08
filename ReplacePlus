@@ -52,7 +52,8 @@ Library <tt>[[replace+.el]]</tt> does not redefine either of the standard query-
 ** Negative (e.g. `C-- 2') -- Replace '''''regexp''''' matches, searching ''backward'' (like `query-replace-regexp' with a negative prefix arg)
 
 
-
+[:isearchp-set-region-flag]
+[:set-region-around-search-target]
 * If option '''`isearchp-set-region-flag'''' is non-`nil', then `query-replace-w-options' ''selects the last target'' occurrence; that is, it sets the region around it. You can also select the last target manually, using command `set-region-around-search-target'. This option and command `set-region-around-search-target' are defined in library <tt>[[isearch+.el]]</tt>.
 
 * If option '''`replace-w-completion-flag'''' is non-`nil', then you can use [[completion]] when reading the new and old text. (If you use completion, you can enter a space or tab character using `C-q'.) This option is defined in <tt>[[replace+.el]]</tt>.  Command '''`toggle-replace-w-completion'''' toggles option `replace-w-completion-flag'.
