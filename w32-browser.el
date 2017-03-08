@@ -8,10 +8,10 @@
 ;; Created: Thu Mar 11 13:40:52 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 11:56:53 2017 (-0800)
+;; Last-Updated: Wed Mar  8 15:19:10 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 243
-;; URL: http://www.emacswiki.org/w32-browser.el
+;;     Update #: 244
+;; URL: https://www.emacswiki.org/emacs/download/w32-browser.el
 ;; Doc URL: http://emacswiki.org/MsShellExecute
 ;; Keywords: mouse, dired, w32, explorer
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
