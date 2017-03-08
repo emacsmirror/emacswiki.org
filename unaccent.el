@@ -7,10 +7,10 @@
 ;; Copyright (C) 1999-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 11:02:14 1999
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 11:53:18 2017 (-0800)
+;; Last-Updated: Wed Mar  8 15:13:45 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 63
-;; URL: http://www.emacswiki.org/unaccent.el
+;;     Update #: 64
+;; URL: https://www.emacswiki.org/emacs/download/unaccent.el
 ;; Keywords: i18n, language, accents
 ;; Compatibility: GNU Emacs 20.x
 ;;
