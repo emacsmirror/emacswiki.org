@@ -539,49 +539,25 @@ After that put in your .emacs
 ;; ;;;;;;;;;;;;;;;;        LaTeX         ;;;;;;;;;;;;;;;;;
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; ##### Run emacs in server mode in order to be able to use
-;; ##### emacsclient in Okular. Don't forget to configure
+;; ##### Don't forget to configure
 ;; ##### Okular to use emacs in
 ;; ##### "Configuration/Configure Okular/Editor"
 ;; ##### => Editor => Emacsclient. (you should see
 ;; ##### emacsclient -a emacs --no-wait +%l %f
 ;; ##### in the field "Command".
-(server-start)
 
-(setq TeX-PDF-mode t) ;; use pdflatex instead of latex
-
+;; ##### Always ask for the master file
+;; ##### when creating a new TeX file.
 (setq-default TeX-master nil)
+
 ;; ##### Enable synctex correlation. From Okular just press
 ;; ##### Shift + Left click to go to the good line.
-(setq TeX-source-correlate-method 'synctex)
-;; ##### Enable synctex generation. Even though the command shows
-;; ##### as "latex" pdflatex is actually called
-(custom-set-variables '(LaTeX-command "latex -synctex=1") )
+(setq TeX-source-correlate-mode t
+      TeX-source-correlate-start-server t)
 
-;; ##### Use Okular to open your document at the good
-;; ##### point. It can detect the master file.
-(add-hook 'LaTeX-mode-hook '(lambda ()
-                  (add-to-list 'TeX-expand-list
-                       '("%u" Okular-make-url))))
-
-(defun Okular-make-url () (concat
-               "file://"
-               (expand-file-name (funcall file (TeX-output-extension) t)
-                         (file-name-directory (TeX-master-file)))
-               "#src:"
-               (TeX-current-line)
-               (expand-file-name (TeX-master-directory))
-               "./"
-               (TeX-current-file-name-master-relative)))
-
-;; ## Use these lines if you want a confirmation of the
-;; ## command line to run...
-;; (setq TeX-view-program-selection '((output-pdf "Okular")))
-;; (setq TeX-view-program-list '(("Okular" "okular --unique %u")))
-;; ## And theses if you don't want any confirmation.
+;; ### Set Okular as the default PDF viewer.
 (eval-after-load "tex"
-  '(add-to-list 'TeX-command-list 
-		'("View" "okular --unique %u" TeX-run-discard-or-function nil t :help "View file")))
+  '(setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Okular"))
 }}}
 
  
