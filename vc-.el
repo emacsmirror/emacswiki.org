@@ -7,10 +7,10 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 14 09:47:26 2000
 ;; Version: 20.0
-;; Last-Updated: Sun Jan  1 11:55:10 2017 (-0800)
+;; Last-Updated: Wed Mar  8 15:16:25 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 35
-;; URL: http://www.emacswiki.org/vc-.el
+;;     Update #: 36
+;; URL: https://www.emacswiki.org/emacs/download/vc-.el
 ;; Keywords: internal, tools, unix, local
 ;; Compatibility: GNU Emacs 20.x
 ;;
