@@ -8,10 +8,10 @@
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Sun Jan  1 12:03:19 2017 (-0800)
+;; Last-Updated: Thu Mar  9 14:39:19 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 340
-;; URL: http://www.emacswiki.org/zoom-frm.el
+;;     Update #: 341
+;; URL: https://www.emacswiki.org/emacs/download/zoom-frm.el
 ;; Doc URL: http://emacswiki.org/SetFonts
 ;; Keywords: frames, extensions, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
