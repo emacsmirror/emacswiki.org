@@ -8,10 +8,10 @@
 ;; Created: Thu Jan 25 14:22:13 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 12:00:53 2017 (-0800)
+;; Last-Updated: Thu Mar  9 14:37:56 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 215
-;; URL: http://www.emacswiki.org/window%2b.el
+;;     Update #: 216
+;; URL: https://www.emacswiki.org/emacs/download/window%2b.el
 ;; Doc URL: http://emacswiki.org/Delete_Frames_Easily_-_But_Not_Too_Easily
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
 ;; Keywords: internal, window
