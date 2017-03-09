@@ -9,10 +9,10 @@
 ;; Created: Wed Nov 22 14:57:17 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Dec  9 06:55:33 2016 (-0800)
+;; Last-Updated: Thu Mar  9 14:36:54 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 192
-;; URL: http://www.emacswiki.org/wimpy-del.el
+;;     Update #: 193
+;; URL: https://www.emacswiki.org/emacs/download/wimpy-del.el
 ;; Keywords: region, cut, kill, copy
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
