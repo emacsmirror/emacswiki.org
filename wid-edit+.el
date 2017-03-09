@@ -8,10 +8,10 @@
 ;; Created: Fri Dec 21 10:25:32 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 11:58:24 2017 (-0800)
+;; Last-Updated: Thu Mar  9 14:35:10 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 271
-;; URL: http://www.emacswiki.org/wid-edit%2b.el
+;;     Update #: 272
+;; URL: https://www.emacswiki.org/emacs/download/wid-edit%2b.el
 ;; Doc URL: http://emacswiki.org/UseCustomizeForKeyBindings
 ;; Keywords: widget, color
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
