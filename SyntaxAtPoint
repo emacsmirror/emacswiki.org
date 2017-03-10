@@ -1,4 +1,4 @@
-This page illustrates how you can define a new ThingAtPoint type ---  new ''things'', in this case, an '''integer'''.
+This page illustrates how you can define a new ThingAtPoint type ---  new ''things'', in this case, an '''syntax'''.
 
 To define a new thing by writing a "forward" function, consider syntax.  Emacs groups characters by syntax groups, as defined in an EmacsSyntaxTable.  Emacs has skip-syntax commands that make it easy to write a `forward-syntax' function.
 
