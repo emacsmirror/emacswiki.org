@@ -23,8 +23,8 @@ This tells thing-at-point about the new syntax thing.
 Backward:
 
   (defun syntax-backward-syntax (&optional arg)
-    (interactive "p")
     "Move ARG times to end of a set of the same syntax characters."
+    (interactive "p")
     (syntax-forward-syntax (- (or arg 1))))
 
 Defining `syntax-at-point', `beginning-of-syntax', `end-of-syntax', `bounds-of-syntax-at-point' is straightforward.
