@@ -7,10 +7,10 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Feb 26 18:09:11 2017 (-0800)
+;; Last-Updated: Sun Mar 12 11:29:05 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8436
-;; URL: http://www.emacswiki.org/bookmark+-1.el
+;;     Update #: 8438
+;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -12276,7 +12276,7 @@ If option `bmkp-info-auto-type' is `create-or-update' then such a
 bookmark is created for the node if none exists.  If the option value
 is `update-only' then no new bookmark is created automatically, but an
 existing bookmark is updated.  (Updating a bookmark increments the
-recorded number of visits.)  You can use toggle the option using
+recorded number of visits.)  You can toggle the option using
 `\\[bmkp-toggle-info-auto-type]'."
           :init-value nil :global t :group 'bookmark-plus :require 'bookmark+
           :lighter bmkp-auto-idle-bookmark-mode-lighter
