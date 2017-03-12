@@ -1,3 +1,4 @@
+[[es:Zone_Mode]]
 Zone Mode 'zones' Emacs out, choosing one of its random modes to obfuscate the current buffer, which can be used as a screensaver.
 
 Try it with `M-x zone'.
