@@ -6,10 +6,10 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010-2017, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sun Jan  8 18:06:51 2017 (-0800)
+;; Last-Updated: Sun Mar 12 11:34:13 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 950
-;; URL: http://www.emacswiki.org/bookmark+-lit.el
+;;     Update #: 951
+;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-lit.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
