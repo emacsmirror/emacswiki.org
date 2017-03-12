@@ -7,10 +7,10 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Jan 13 13:10:05 2017 (-0800)
+;; Last-Updated: Sun Mar 12 11:30:57 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 3923
-;; URL: http://www.emacswiki.org/bookmark+-bmu.el
+;;     Update #: 3924
+;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
