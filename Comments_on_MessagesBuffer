@@ -1,0 +1,13 @@
+Den Messages Buffer auszuschalten ist recht einfach
+
+einfach folgendes:
+<pre>
+; Disbale Messages Buffer
+(setq message-log-max nil)
+(kill-buffer "\*Messages\*")
+</pre>
+
+in der init.el ergänzen
+
+-- Unbekannt 2017-03-13 10:39 UTC
+
