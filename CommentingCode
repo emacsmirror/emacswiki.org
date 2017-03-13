@@ -75,7 +75,7 @@ Source: http://stackoverflow.com/a/20064658/243392
       (interactive)
       (let ((start (line-beginning-position))
             (end (line-end-position)))
-        (when (region-active-p)
+        (when (or (not transient-mark-mode) (region-active-p))
           (setq start (save-excursion
                         (goto-char (region-beginning))
                         (beginning-of-line)
