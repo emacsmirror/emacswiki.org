@@ -9,6 +9,7 @@ See also:
 * PerlPodGt -- helpers for <code>C<...></code> forms
 * PerlPodPreview -- previewing formatted POD output
 * TinyTools -- contains TinyPerl for vieving POD files.
+* [https://github.com/sshaw/copy-as-format copy-as-format] -- copy buffer locations as POD formatted code
 
 ----
 CategoryModes
