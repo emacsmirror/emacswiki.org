@@ -1,3 +1,59 @@
+I was told at SO, that the recommended configuration below is old, and all you need is something like:
+
+(require 'erlang-flymake)
+
+I'm using Aquamacs 3.3 and flymake for writing Erlang programs, and my preferences file, ~/Library/Preferences/Aquamacs\ Emacs/Preferences.el, looks like this:
+
+;; This is the Aquamacs Preferences file.
+;; Add Emacs-Lisp code here that should be executed whenever
+;; you start Aquamacs Emacs. If errors occur, Aquamacs will stop
+;; evaluating this file and print errors in the *Messages* buffer.
+;; Use this file in place of ~/.emacs (which is loaded as well.)
+
+
+;Confirm that this file is actually being read:
+(message "************ Aquamacs **************")
+
+;Make Erlang files open with line numbers:
+(add-hook 'erlang-mode-hook 
+  (lambda () 
+    (linum-mode 1)))
+
+;Set font size:
+;Doesn't work: 
+;(set-default-font "Monaco-14")
+;Works:
+(set-face-attribute 'default nil :font "Monaco-16" )
+;Also works: 
+;(set-frame-font "Monaco-16" nil t)
+
+;Erlang syntax highlighting/indenting:
+(setq load-path (cons  "/usr/local/lib/erlang/lib/tools-2.7.2/emacs"
+load-path))
+(setq erlang-root-dir "/usr/local/lib/erlang")
+(setq exec-path (cons "/usr/local/lib/erlang/bin" exec-path))
+(require 'erlang-start)
+
+;For flymake:
+(require 'erlang-flymake)
+
+;For flymake:
+(require 'erlang-flymake)
+
+The paths in the Erlang syntax highlighting/indenting section are based on where you Erlang install is located.  My Erlang install is at:
+
+           /usr/local/lib/erlang/
+
+You need to get the right version of tools in the path:
+
+         /usr/local/lib/erlang/lib/tools-2.7.2/emacs
+
+So check your /path/to/erlang/lib/ directory for the version of tools that's in there and use that version.
+
+
+--------------
+
+
 This description is based on [http://weblog.hypotheticalabs.com/?p=265 entry at Hypothetical Labs blog]
 
 To configure flymake to work with Erlang you need to add some elisp-code to your initialization file, and also create custom script, that will called from elisp code.
