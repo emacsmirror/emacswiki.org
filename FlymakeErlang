@@ -1,4 +1,6 @@
-I was told at SO, that the recommended configuration below is old, and all you need is something like:
+== Aquamacs configuration ==
+
+I was told at SO, that the recommended configuration in the "Emacs configuration" section below was old and that all you need is something like:
 <pre>
     (require 'erlang-flymake)
 </pre>
