@@ -1,6 +1,6 @@
 I was told at SO, that the recommended configuration below is old, and all you need is something like:
 
-(require 'erlang-flymake)
+```(require 'erlang-flymake)```
 
 I'm using Aquamacs 3.3 and flymake for writing Erlang programs, and my preferences file, ~/Library/Preferences/Aquamacs\ Emacs/Preferences.el, looks like this:
 
