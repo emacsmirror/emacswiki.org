@@ -1,6 +1,6 @@
 == Aquamacs configuration ==
 
-I was told at SO, that the recommended configuration in the "Emacs configuration" section below was old and that all you need is something like:
+I was told at SO, that the recommended configuration in the "Emacs configuration" section below was old and that all you need is:
 <pre>
     (require 'erlang-flymake)
 </pre>
