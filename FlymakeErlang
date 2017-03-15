@@ -3,7 +3,11 @@ I was told at SO, that the recommended configuration below is old, and all you n
     (require 'erlang-flymake)
 </pre>
 
-I'm using Aquamacs 3.3 and flymake for writing Erlang programs, and my preferences file, ~/Library/Preferences/Aquamacs\ Emacs/Preferences.el, looks like this:
+I'm using Aquamacs 3.3 and flymake for writing Erlang programs, and my preferences file:
+<pre>
+    ~/Library/Preferences/Aquamacs\ Emacs/Preferences.el
+</pre>
+looks like this:
 <pre>
 ;; This is the Aquamacs Preferences file.
 ;; Add Emacs-Lisp code here that should be executed whenever
@@ -21,12 +25,9 @@ I'm using Aquamacs 3.3 and flymake for writing Erlang programs, and my preferenc
     (linum-mode 1)))
 
 ;Set font size:
-;Doesn't work: 
-;(set-default-font "Monaco-14")
-;Works:
+;Doesn't work: (set-default-font "Monaco-14")
 (set-face-attribute 'default nil :font "Monaco-16" )
-;Also works: 
-;(set-frame-font "Monaco-16" nil t)
+;Also works: (set-frame-font "Monaco-16" nil t)
 
 ;Erlang syntax highlighting/indenting:
 (setq load-path (cons  "/usr/local/lib/erlang/lib/tools-2.7.2/emacs"
@@ -37,10 +38,8 @@ load-path))
 
 ;For flymake:
 (require 'erlang-flymake)
-
-;For flymake:
-(require 'erlang-flymake)
 </pre>
+
 The paths in the Erlang syntax highlighting/indenting section are based on where your Erlang install is located.  My Erlang install is at:
 <pre>
            /usr/local/lib/erlang/
