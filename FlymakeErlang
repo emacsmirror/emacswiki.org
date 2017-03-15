@@ -44,11 +44,11 @@ The paths in the Erlang syntax highlighting/indenting section are based on where
 <pre>
            /usr/local/lib/erlang/
 </pre>
-You need to get the right version of tools in the path:
+You also need to get the right version of tools in the path:
 <pre>
          /usr/local/lib/erlang/lib/tools-2.7.2/emacs
 </pre>
-So check your /path/to/erlang/lib/ directory for the version of tools that's in there and use that version.
+Check your /path/to/erlang/lib/ directory for the version of tools-X.X.X in there and use that version.
 
 
 --------------
