@@ -1,10 +1,10 @@
 ;;; 1040tt.el --- U.S. tax calculator for form 1040 filers
 
-;; Copyright (C) 2009, 2012  Aaron S. Hawley
+;; Copyright (C) 2009, 2012, 2017  Aaron S. Hawley
 
 ;; Author: Aaron S. Hawley
 ;; Keywords: games, financial
-;; Version: %Id: 1%
+;; Version: %Id: 2%
 ;; URL: http://www.emacswiki.org/elisp/1040tt.el
 ;; EmacsWiki: FormTenForty
 
@@ -25,7 +25,7 @@
 
 ;;; Commentary:
 
-;; Calculate the income tax in the year 2012 for filing one's 2011
+;; Calculate the income tax in the year 2017 for filing one's 2016
 ;; taxes with form 1040 from the U.S. Internal Revenue Service.
 ;; Provide your taxable income amount and "filing status" to generate
 ;; the tax table entry if it exists, else compute the exact tax.
@@ -34,7 +34,7 @@
 ;; Form 1040 to calculate your taxable income.
 
 ;; Based on tax table and worksheet in ''Instructions for Form 1040,
-;; U.S.  Individual Income Tax Return'' (i1040tt), 13 November, 2012.
+;; U.S.  Individual Income Tax Return'' (i1040tt), 15 December, 2016.
 ;; Internal Revenue Service.  http://www.irs.gov/
 
 ;;; Usage:
@@ -49,7 +49,7 @@
 ;; Evaluate as Emacs Lisp with
 
 ;; (1040tt-income-tax 22000 'single)
-;;   ==> 2903
+;;   ==> 2840
 
 ;; M-x 1040tt-income-tax-estimate
 
@@ -59,7 +59,7 @@
 ;; Evaluate as Emacs Lisp with
 
 ;; (1040tt-income-tax-estimate 22000 'single)
-;;   ==> 2898.75
+;;   ==> 2836.25
 
 ;;; History:
 
@@ -69,38 +69,42 @@
 
 (defvar 1040tt-tax-brackets
   '((single
-     ;; Schedule X from 1040 tax table instructions for 2012
-     (379150 . 0.35)
-     (174400 . 0.33)
-     ( 83600 . 0.28)
-     ( 34500 . 0.25)
-     (  8500 . 0.15)
+     ;; Schedule X from 1040 tax table instructions for 2017
+     (415050 . 0.396)
+     (413350 . 0.35)
+     (190150 . 0.33)
+     ( 91150 . 0.28)
+     ( 37650 . 0.25)
+     (  9275 . 0.15)
      (     0 . 0.1))
     (filing-jointly
-     ;; Schedule Y-1 from 1040 tax table instructions for 2012
-     (379150 . 0.35)
-     (212300 . 0.33)
-     (139350 . 0.28)
-     ( 69000 . 0.25)
-     ( 17000 . 0.15)
+     ;; Schedule Y-1 from 1040 tax table instructions for 2017
+     (466950 . 0.396)
+     (413350 . 0.35)
+     (231450 . 0.33)
+     (151900 . 0.28)
+     ( 75300 . 0.25)
+     ( 18550 . 0.15)
      (     0 . 0.1))
     (filing-separately
-     ;; Schedule Y-2 from 1040 tax table instructions for 2012
-     (189575 . 0.35)
-     (106150 . 0.33)
-     ( 69675 . 0.28)
-     ( 34500 . 0.25)
-     (  8500 . 0.15)
+     ;; Schedule Y-2 from 1040 tax table instructions for 2017
+     (233475 . 0.396)
+     (206675 . 0.35)
+     (115725 . 0.33)
+     ( 75950 . 0.28)
+     ( 37650 . 0.25)
+     (  9275 . 0.15)
      (     0 . 0.1))
     (head-of-household
-     ;; Schedule Z from 1040 tax table instructions for 2012
-     (379150 . 0.35)
-     (193350 . 0.33)
-     (119400 . 0.28)
-     ( 46250 . 0.25)
-     ( 12150 . 0.15)
+     ;; Schedule Z from 1040 tax table instructions for 2017
+     (441000 . 0.396)
+     (413350 . 0.35)
+     (210800 . 0.33)
+     (130150 . 0.28)
+     ( 50400 . 0.25)
+     ( 13250 . 0.15)
      (     0 . 0.1)))
-  "Tax schedule for 2012 form 1040.")
+  "Tax schedule for 2017 form 1040.")
 
 (defvar 1040tt-use-dynamic-programming nil
   "If non-nil compute with dynamic programming heuristic.
@@ -118,7 +122,7 @@ See `1040tt-use-dynamic-programming'.")
   "Compute tax for INCOME when filing as STATUS.
 
 If INCOME is in tax table, return tax for its entry.
-Otherwise, compute value using"
+Otherwise, compute value using `1040tt-income-tax-estimate'."
   (interactive
    (let ((i (read-number 1040tt-tax-prompt))
          (s (1040tt-read-filing-status)))
