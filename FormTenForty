@@ -23,6 +23,12 @@ Add the following to your InitFile to use it.
 \(fn income status)"
   'interactive)
 
+(autoload '1040tt-income-tax-estimate "1040tt"
+  "Compute tax for INCOME when filing as STATUS without tax tables."
+
+\(fn income status)"
+  'interactive)
+
 (autoload '1040tt-tax-rate "1040tt"
   "Display tax rate for INCOME when filing as STATUS.
 
