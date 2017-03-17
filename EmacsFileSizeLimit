@@ -18,7 +18,7 @@ Anyway, what follows is some technical background, based on the EmacsFaq and som
 
 == GNU Emacs ==
 
-Old versions (i.e., anything before 19.29) of GNU Emacs had problems editing files larger than 8 megabytes.  This limit was pushed further, first to 128MB (since 19.29), then 256MB, and 512MB (since 23.2).  On a 64bit system, the limit is much higher then anything you might reasonably be able to open for the foreseeable future.
+Old versions (i.e., anything before 19.29) of GNU Emacs had problems editing files larger than 8 megabytes.  This limit was pushed further, first to 128MB (since 19.29), then 256MB, and 512MB (since 23.2).  On a 64bit system, the limit is much higher than anything you might reasonably be able to open for the foreseeable future.
 
 David Gillespie explains how this problem crops up; while his numbers are true only for pre-19.29 versions of GNU Emacs, the theory remains the same with current versions.
 
