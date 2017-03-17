@@ -363,7 +363,12 @@ Lisp:ukrainian-holidays.el
         (holiday-fixed 1 6 "Driekoningen")
         (holiday-fixed 2 14 "Valentijnsdag")
         ;; (holiday-fixed 4 1 "Één April")
-        (holiday-fixed 4 30 "Koninginnedag")
+        ;; (holiday-fixed 4 30 "Koninginnedag") Changed since 2013 to:
+        (holiday-sexp
+         '(if (zerop (calendar-day-of-week (list 4 27 year)))
+              (list 4 26 year)
+            (list 4 27 year))
+         "Koningsdag")
         (holiday-fixed 5 1 "Dag van de Arbeid")
         (holiday-fixed 5 4 "Dodenherdenking")
         (holiday-fixed 5 5 "Bevrijdingsdag")
@@ -395,6 +400,7 @@ Lisp:ukrainian-holidays.el
 (setq holiday-bahai-holidays nil)
 (setq holiday-oriental-holidays nil)
 </pre>
+
 
 === Italian ===
 <pre>
