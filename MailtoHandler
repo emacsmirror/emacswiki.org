@@ -7,8 +7,6 @@ Name this script something like ##emacsmail##.
  #!/bin/bash
  emacsclient -c --eval "(browse-url-mail \"$@\")"  
 
-== Mu4e ==
-[[mu4e|Mu4e]] has a built-in function for opening mailto URLs: ##mu4e~compose-browse-url-mail##
 
 == Old / outdated manual mailto parsing ==
 Emacs has builtin functionality to parse a mailto link (which can include headers like subject and body) and populate the relevant fields in compose mail. Perhaps before this existed, people filled this page with code which did this separately. It makes sense to avoid this now. However, there may be some special behavior you want and this code could help you get it.
