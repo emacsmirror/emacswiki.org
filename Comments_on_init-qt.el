@@ -10,3 +10,10 @@ the error goes away. Note the change from add-to-alist to -->  add-to-list, alis
 
 -- Anonymous 2017-03-10 18:12 UTC
 
+
+----
+
+add-to-alist define at: https://www.emacswiki.org/emacs/basic-toolkit.el
+
+-- [http://www.emacswiki.org/emacs/AndyStewart AndyStewart] 2017-03-19 11:14 UTC
+
