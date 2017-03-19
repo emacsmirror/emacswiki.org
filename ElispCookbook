@@ -69,6 +69,16 @@ Buffers:
 
 === starts-with and ends-with predicates ===
 
+Standard functions:
+
+    (string-prefix-p "bull" "bulldozer")   ; optional ignore case argument too
+    ==> t
+
+    (string-suffix-p "dozer" "bulldozer")  ; optional ignore case argument too
+    ==> t
+
+Custom functions:
+
     (defun string/ends-with (s ending)
       "Return non-nil if string S ends with ENDING."
       (cond ((>= (length s) (length ending))
