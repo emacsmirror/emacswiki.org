@@ -333,3 +333,15 @@ What could be done, I guess, is adding detail pages for each section in the styl
 
 -- yordan.miladinov 2015-08-26 17:21 UTC
 
+
+----
+
+Under the serialization heading, should this code be added:
+
+    (setq buffer '("one" "two" "three"))
+    ==> ("one" "two" "three")
+    (mapconcat 'identity (nreverse buffer) "; ")  ; note the optional nreverse call to reverse the list
+    ==> "three; two; one"
+
+-- robbie 2017-03-19 19:22 UTC
+
