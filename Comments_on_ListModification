@@ -3,5 +3,13 @@ A list truncation example would be nice: truncate to the first ''n'' elements:
     (truncate-list n my-list)
     ==> ; potentially shortened list
 
+Perhaps something like:
+
+    (setq my-list '("one" "two" "three" "four" "five" "six" "seven" "eight" "nine"))
+    (if (> (length my-list) 5)
+        (setq my-list (subseq my-list 0 5))
+      my-list)
+    ==> ("one" "two" "three" "four" "five")
+
 -- robbie 2017-03-20 14:53 UTC
 
