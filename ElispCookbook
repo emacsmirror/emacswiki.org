@@ -69,7 +69,7 @@ Buffers:
 
 === starts-with and ends-with predicates ===
 
-Standard functions:
+Standard functions (version 24.4):
 
     (string-prefix-p "bull" "bulldozer")   ; optional ignore case argument too
     ==> t
