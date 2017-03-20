@@ -1,0 +1,7 @@
+A list truncation example would be nice: truncate to the first ''n'' elements:
+
+    (truncate-list n my-list)
+    ==> ; potentially shortened list
+
+-- robbie 2017-03-20 14:53 UTC
+
