@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar  3 15:03:38 2017 (-0800)
+;; Last-Updated: Tue Mar 21 13:06:43 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5731
+;;     Update #: 5732
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
@@ -5253,7 +5253,7 @@ Each is an advice of `isearch-filter-predicate'."
 
   ;;---
 
-  (defun isearchp-add-filter-predicate (predicate ; `C-z +'
+  (defun isearchp-add-filter-predicate (predicate ; `C-z &'
                                         &optional flip-read-name-p flip-read-prefix-p msgp)
     "Read a PREDICATE and add it to `isearch-filter-predicate'.
 PREDICATE can be a function symbol or a lambda form, but it must be
