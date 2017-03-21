@@ -69,7 +69,7 @@ Here are some [[Manual:Syntax Descriptors|syntax classes]] that can be used betw
 
   [:digit:]  a digit, same as [0-9]
   [:alpha:]  a letter (an alphabetic character)
-  [:alnum:]  a letter or adigit (an alphanumeric character ()
+  [:alnum:]  a letter or a digit (an alphanumeric character ()
   [:upper:]  a letter in uppercase
   [:space:]  a whitespace character, as defined by the syntax table
   [:xdigit:] an hexadecimal digit
