@@ -453,8 +453,16 @@ hth Memnon
 
 
 ===More integrated way of invoking the default browser under Mac OSX in Emacs 23===
-Emacs 23 comes with a way to execute applescript with a handy function.  It's used for instances where you want a new browser window as the default _open_ doesn't support a way to open new windows.
-[new]
+
+The simplest, most integrated way is to use the system utility `open', which uses the system's default browser:
+
+{{{
+(setq browse-url-browser-function (quote browse-url-generic))
+(setq browse-url-generic-program "open")
+}}}
+
+The default `open' loads the URL according to default browser behavior.  In instances where you want to force a new browser window, you can execute applescript from elisp (only in Emacs >23):
+
 {{{
 (defun browse-url-default-macosx-browser (url &optional new-window)
   (interactive (browse-url-interactive-arg "URL: "))
@@ -465,7 +473,6 @@ Emacs 23 comes with a way to execute applescript with a handy function.  It's us
     (start-process (concat "open " url) nil "open" url)))
 }}}
 
-[new]
 On the other hand, if you want the browser to reuse an existing tab if it has one already showing the URL, the applescript is somewhat more complicated.  [http://qwan.org/2011/09/01/reloading-a-page-in-chrome-from-aquamacs/ Instructions are here.]
 
 === Is there a package which makes URLs clickable? ===
