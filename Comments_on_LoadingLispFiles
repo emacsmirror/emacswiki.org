@@ -1,0 +1,4 @@
+The <code>load</code> function should also be discussed on this page.  For instance, what is the difference between <code>load</code> and <code>load-file</code>?
+
+-- robbie 2017-03-24 19:17 UTC
+
