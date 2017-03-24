@@ -1,0 +1,61 @@
+ESS integrates out of the box with `company-mode`.
+
+Two company backends are available `company-R-objects' and `company-R-args`.
+
+== Initialization ==
+
+From ESS company-mode is activated by default if you have auto-complete package installed. Change the value of `ess-use-company` if you don't want that.
+
+This activates company backends in both ESS and iESS buffers. If you want them only in your ESS buffers do:
+
+{{{
+(setq ess-use-company 'script-only)
+}}}
+
+== Quick help ==
+
+Make `M-h` to display quick help:
+
+{{{
+(define-key company-active-map (kbd "M-h") 'company-show-doc-buffer)
+}}}
+
+== Movement keys ==
+
+`company` binds M-n, and M-p for navigation. This is rather inconvenient if you use `company` in the inferior R buffer. Bind those to something else:
+
+{{{
+(define-key company-active-map (kbd "M-n") nil)
+(define-key company-active-map (kbd "M-p") nil)
+(define-key company-active-map (kbd "M-,") 'company-select-next)
+(define-key company-active-map (kbd "M-k") 'company-select-previous)
+}}}
+
+== Completion keys ==
+
+Company binds `RET` key to `company-complete-selection`. This is rather inconvenient in inferior R buffers. One solution is to use `TAB` to complete common part and `M-TAB` for full selection:
+
+{{{
+(define-key company-active-map [return] nil)
+(define-key company-active-map [tab] 'company-complete-common)
+(define-key company-active-map (kbd "TAB") 'company-complete-common)
+(define-key company-active-map (kbd "M-TAB") 'company-complete-selection)
+}}}
+
+
+== Misc customization ==
+
+Some company settings that I found useful:
+
+{{{
+(setq company-selection-wrap-around t
+      company-tooltip-align-annotations t
+      company-idle-delay 0.36
+      company-minimum-prefix-length 2
+      company-tooltip-limit 10)
+}}}
+
+----
+
+EmacsSpeaksStatistics
+AutoComplete
