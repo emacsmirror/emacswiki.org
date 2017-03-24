@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 08:58:36 2017 (-0800)
+;; Last-Updated: Fri Mar 24 10:42:17 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 1761
+;;     Update #: 1762
 ;; URL: https://www.emacswiki.org/emacs/download/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -1798,7 +1798,8 @@ is the menu title and PANE-TITLE is a submenu title.
 
 ;; REPLACE ORIGINAL in `mouse.el'.
 ;;
-;; Use `mouse3-second-click-command' to determine the action for a second `mouse-3' click.
+;; 1. Use `mouse3-second-click-command' to determine the action for a second `mouse-3' click.
+;; 2. Added optional arg PREFIX.
 ;;
 ;;;###autoload
 (defun mouse-save-then-kill (click &optional prefix)
