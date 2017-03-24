@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar 24 10:50:06 2017 (-0700)
+;; Last-Updated: Fri Mar 24 11:11:52 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 9781
+;;     Update #: 9784
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -1610,6 +1610,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar dired-details-state)                      ; In `dired-details+.el'
 (defvar dired-keep-marker-hardlink)               ; In `dired-x.el'
 (defvar dired-recursive-deletes)                  ; In `dired.el', Emacs 22+
+(defvar dired-shrink-to-fit)                      ; In `dired.el'
 (defvar dired-switches-alist)                     ; In `dired.el'
 (defvar dired-subdir-switches)                    ; In `dired.el'
 (defvar dired-touch-program)                      ; Emacs 22+
@@ -1618,6 +1619,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar diredp-hide-details-last-state)           ; Here, Emacs 24.4+
 (defvar diredp-hide-details-propagate-flag)       ; Here, Emacs 24.4+
 (defvar diredp-hide-details-toggled)              ; Here, Emacs 24.4+
+(defvar diredp-highlight-autofiles-mode)          ; Here, Emacs 22+
 (defvar diredp-menu-bar-immediate-bookmarks-menu) ; Here, if Bookmark+ is available
 (defvar filesets-data)                            ; In `filesets.el'
 (defvar grep-use-null-device)                     ; In `grep.el'
