@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 21 16:21:00 2017 (-0800)
+;; Last-Updated: Fri Mar 24 10:50:06 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 9774
+;;     Update #: 9781
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -655,6 +655,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/03/24 dadams
+;;     Added defalias for dired-read-regexp.
+;;     diredp-mouse-3-menu: Removed second arg to mouse-save-then-kill.
 ;; 2017/02/20 dadams
 ;;     diredp-(next|previous)-line, diredp-(next|prev)-dirline, diredp-(next|prev)-subdir:
 ;;       Update interactive spec to use (in effect) ^p for prefix arg (for shift-select-mode).
@@ -1620,6 +1623,8 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar grep-use-null-device)                     ; In `grep.el'
 (defvar header-line-format)                       ; Emacs 22+
 (defvar icicle-file-sort)                         ; In `icicles-opt.el'
+(defvar icicle-file-sort-first-time-p)            ; In `icicles-var.el'
+(defvar icicle-files-ido-like-flag)               ; In `icicles-opt.el'
 (defvar icicle-ignored-directories)               ; In `icicles-opt.el'
 (defvar icicle-sort-comparer)                     ; In `icicles-opt.el'
 (defvar image-dired-display-image-buffer)         ; In `image-dired.el'
@@ -1629,6 +1634,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar image-dired-thumb-height)                 ; In `image-dired.el'
 (defvar image-dired-thumb-width)                  ; In `image-dired.el'
 (defvar image-dired-widget-list)                  ; In `image-dired.el'
+(defvar ls-lisp-use-insert-directory-program)     ; In `ls-lisp.el'
 (defvar minibuffer-default-add-function)          ; In `simple.el', Emacs 23+
 (defvar mouse3-dired-function)                    ; In `mouse3.el'
 (defvar read-file-name-completion-ignore-case)    ; In `minibuffer.el', Emacs 23+.  In C code, Emacs 22.
@@ -2060,6 +2066,9 @@ Uses the `derived-mode-parent' property of the symbol to trace backwards."
   (defun dired-nondirectory-p (file)
     "Return non-nil if FILE is not a directory."
     (not (file-directory-p file))))
+
+(when (and (fboundp 'read-regexp)  (not (fboundp 'dired-read-regexp))) ; Only deprecated, for now.
+  (defalias 'dired-read-regexp 'read-regexp))
 
 
 ;;; Some of the redefinitions that follow are essentially unaltered vanilla Emacs code to be
@@ -10066,7 +10075,7 @@ With non-nil prefix arg, mark them instead."
     (unless (eq mouse3-dired-function 'mouse3-dired-use-menu)
       (funcall #'mouse3-dired-use-menu)
       (revert-buffer))
-    (let ((last-command  'mouse-save-then-kill)) (mouse-save-then-kill event 'IGNORE))))
+    (let ((last-command  'mouse-save-then-kill)) (mouse-save-then-kill event))))
 
 
 ;; REPLACE ORIGINAL in `dired.el' for Emacs 20.
