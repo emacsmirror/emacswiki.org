@@ -1,4 +1,4 @@
-The <code>load</code> function should also be discussed on this page.  For instance, what is the difference between <code>load</code> and <code>load-file</code>?
+The <code>load</code> function should also be discussed on this page.  For instance, what is the difference between <code>load</code> and <code>load-file</code>?  For instance, see here: http://emacs.stackexchange.com/questions/3310/difference-between-load-file-and-load
 
 -- robbie 2017-03-24 19:17 UTC
 
