@@ -15,6 +15,7 @@ Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 
 == Completion ==
 
+* [[ESS-company|company-mode ESS integration]] -- [part of ESS]
 * [[ESSAuto-complete|Auto-complete ESS integration]] -- [part of ESS]
 
 * [[ESSIciclesCompletion|Icicles Completion]] -- Completion for ESS.
