@@ -65,12 +65,15 @@ Characters are organized by category. Use ##C-u C-x =## to display the category 
   \cl      latin character
   \cg      greek character
 
-Here are some [[Manual:Syntax Descriptors|syntax classes]] that can be used between brackets, e.g. ##[[:upper:]\|[:digit:]\.]##.
+Here are some [[Manual:Syntax Descriptors|syntax classes]] (also known as character classes) that can be used between brackets, e.g. ##[[:upper:]\|[:digit:]\.]##.
 
   [:digit:]  a digit, same as [0-9]
   [:alpha:]  a letter (an alphabetic character)
   [:alnum:]  a letter or a digit (an alphanumeric character)
   [:upper:]  a letter in uppercase
+  [:lower:]  a letter in lowercase
+  [:graph:]  a visible character
+  [:print:]  a visible character plus the space character
   [:space:]  a whitespace character, as defined by the syntax table, but typically [ \t\r\n\v\f], which includes the newline character
   [:xdigit:] an hexadecimal digit
   [:cntrl:]  a control character
