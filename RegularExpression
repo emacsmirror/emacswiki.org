@@ -71,7 +71,7 @@ Here are some [[Manual:Syntax Descriptors|syntax classes]] that can be used betw
   [:alpha:]  a letter (an alphabetic character)
   [:alnum:]  a letter or a digit (an alphanumeric character ()
   [:upper:]  a letter in uppercase
-  [:space:]  a whitespace character, as defined by the syntax table
+  [:space:]  a whitespace character, as defined by the syntax table, but typically [ \t\r\n\v\f], which includes the newline character
   [:xdigit:] an hexadecimal digit
   [:cntrl:]  a control character
   [:ascii:]  an ascii character
