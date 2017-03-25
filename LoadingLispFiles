@@ -1,1 +1,75 @@
-%x
+== Loading from EmacsLisp ==
+
+In order to load a file from EmacsLisp, use `load'.  Example:
+
+ (load "~/elisp/foo")
+
+This will load the CompiledFile (having the ".elc" extension) if it
+exists, otherwise the source file (with ".el" extension).  If you have
+"~/elisp/" in your LoadPath, then you can use just <code>(load
+"foo")</code> instead.  
+
+To load the file only if it hasn't been loaded already, use `require':
+
+ (require 'foo)
+
+Using `require' adds a dependency: Not only must a file with the same name (plus ".el" or ".elc" extension) exist, but in that file, Emacs wants to see a statement such as this:
+
+ (provide 'foo)
+
+Thus, in your package, you can `require' several so-called
+<i>features</i>.  This will load the files with the same name, and
+these files must `provide' the feature.  These features are recorded
+in the `features' variable.
+
+You can check the values of variables using `C-h v'.
+
+Note that when you start using files in the LoadPath, you may end up having to deal with ConflictingLibraries.
+
+=== Load all files in a directory ===
+
+[http://www.cb1.com/~john/computing/emacs/lisp/basics/load-directory.el load-directory.el] can be used to load all the .el or .elc files in a directory:
+
+ (require 'load-directory)
+ (load-directory "~/.emacs.d/my-lisp")
+
+This snippet loads all *.el files in a directory.
+
+    (defun load-directory (dir)
+      (let ((load-it (lambda (f)
+		       (load-file (concat (file-name-as-directory dir) f)))
+		     ))
+	(mapc load-it (directory-files dir nil "\\.el$"))))
+    (load-directory "~/bunch/of/lisp/")
+
+=== Conditional loading ===
+
+Here's how to do stuff only if a library successfully loads.  A
+typical use is: you want to load a library, and then bind some
+function from that library to a key.  But you don't want to attempt
+the binding if the library wasn't present, because that will throw an
+error, or something.  This is particularly handy when you use the same
+.emacs on different machines, not all of which have the same libraries
+available.
+
+    (if (not (require 'tabbar nil t))
+        (message "`tabbar' not found")
+      (tabbar-mode)
+      (global-set-key [(control tab)]       'tabbar-forward)
+      (global-set-key [(control shift tab)] 'tabbar-backward)
+      (global-set-key [(control shift iso-lefttab)] 'tabbar-backward)
+      (global-set-key [(control f10)] 'tabbar-local-mode))
+
+In this example, if the library <tt>tabbar</tt> isn't available, Emacs
+will simply put a message in the echo area to that effect, and won't
+even try to call <tt>global-set-key</tt>.
+
+== Interactive loading ==
+
+To load a particular file, use <tt>M-x load-file path/to/file.el
+RET</tt>.  To load a file in your LoadPath, use <tt>M-x load-library
+file RET</tt>.
+
+----
+CategoryDotEmacs
+
