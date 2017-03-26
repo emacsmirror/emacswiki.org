@@ -1565,16 +1565,16 @@ If BROWSE-PAGE is non-nil, will browse page after post successful."
          (url-request-method "POST")
          (url-request-extra-headers
           '(("Content-type: application/x-www-form-urlencoded;")))
-         (url-request-data
-          (yaoddmuse-format (yaoddmuse-get-post-args wikiname)
-                            (yaoddmuse-get-coding wikiname)))
+         (text post-string)
          (yaoddmuse-minor (if yaoddmuse-minor "on" "off"))
          (yaoddmuse-wikiname wikiname)
          (yaoddmuse-pagename pagename)
-         (text post-string))
+         (url-request-data
+          (yaoddmuse-format (yaoddmuse-get-post-args wikiname)
+                            (yaoddmuse-get-coding wikiname))))
     (url-retrieve url
-                  'yaoddmuse-post-callback
-                  (list wikiname pagename browse-page))))
+            'yaoddmuse-post-callback
+            (list wikiname pagename browse-page))))
 
 (defun yaoddmuse-post-callback (&optional redirect wikiname pagename browse-page)
   "The callback function for `yaoddmuse-post'.
@@ -1932,6 +1932,8 @@ Substitute oddmuse format flags according to `yaoddmuse-pagename',
 `summary', `yaoddmuse-username',`yaoddmuse-password', `text'
 Each ARGS is url-encoded with CODING.
 If URL is `non-nil' return new url concat with ARGS."
+  (unless (and (boundp 'text) (boundp 'yaoddmuse-pagename))
+    (error "No `text' or `yaoddmuse-pagename'!"))
   (dolist (pair '(("%t" . yaoddmuse-pagename)
                   ("%u" . yaoddmuse-username)
                   ("%m" . yaoddmuse-minor)
