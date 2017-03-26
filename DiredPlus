@@ -133,6 +133,7 @@ And here is a screenshot showing the `mouse-3' popup menu available when no regi
 
 
 [:w32-browser]
+[:IfYouUseEmacsOnWindows]
 == If You Use Emacs on MS Windows ==
 
 * If you also use libraries <tt>[[files+.el]]</tt> and <tt>[[ls-lisp+.el]]</tt>, then you can use wildcards in the file names of a [[cons]] argument to `dired'.  This lets you open Dired on an explicit list of arbitrary files using wildcard patterns for any of the file names.  (Emacs 23+ only)
