@@ -138,7 +138,7 @@ And here is a screenshot showing the `mouse-3' popup menu available when no regi
 
 * If you also use libraries <tt>[[files+.el]]</tt> and <tt>[[ls-lisp+.el]]</tt>, then you can use wildcards in the file names of a [[cons]] argument to `dired'.  This lets you open Dired on an explicit list of arbitrary files using wildcard patterns for any of the file names.  (Emacs 23+ only)
 
-* '''Dired+''' loads library <tt>[[w32-browser.el]]</tt> if Emacs is running on Microsoft Windows, using it to extend Dired in a few ways.  (In addition to being bound to the keys indicate here, these operations are added to the '''Dired+''' menus, including the `mouse-3' context menu.)
+* '''Dired+''' loads library <tt>[[w32-browser.el]]</tt> if Emacs is running on Microsoft Windows, using it to extend Dired in a few ways.  (In addition to being bound to the keys indicated here, these operations are added to the '''Dired+''' menus, including the `mouse-3' context menu.)
 
 ** ('''`M-RET'''') You can use Windows ''file associations'' to act on a file or folder. For example, if you have the application Adobe Acrobat associated with *.pdf files, then clicking `mouse-2' on a ##*.pdf## file in Dired will open the file in Adobe Acrobat.
 
