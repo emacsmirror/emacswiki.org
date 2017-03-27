@@ -11,7 +11,7 @@ The echo area is also used for other informative messages -- those displayed by 
 
 == Changing the face ==
 
-    (with-current-buffer (get-buffer " *Echo Area 0*")
+    (with-current-buffer (get-buffer " *Echo Area 0*")                             ; the leading space character is correct
       (setq-local face-remapping-alist '((default (:height 0.9) variable-pitch)))) ; etc.
 
 
