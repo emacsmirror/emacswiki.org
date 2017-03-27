@@ -103,5 +103,22 @@ Edit: I've been using Joost's 'nothing-fancy' hook as above, but as of v24, this
 I tried Joosts hook just a moment ago, without noticing Tims update. I suggest updating Joosts example with nil return, or change to using the before-save-hook rather than write-file-hooks.
 
 --Lukas
+
+
+
+Another solution that does not affect Makefiles, and which you can disable with a simple setq:
+
+ (defvar untabify-this-buffer)
+ (defun untabify-all ()
+   "Untabify the current buffer, unless `untabify-this-buffer' is nil."
+   (and untabify-this-buffer (untabify (point-min) (point-max))))
+ (define-minor-mode untabify-mode
+   "Untabify buffer on save." nil " untab" nil
+   (make-variable-buffer-local 'untabify-this-buffer)
+   (setq untabify-this-buffer (not (derived-mode-p 'makefile-mode)))
+   (add-hook 'before-save-hook #'untabify-all))
+ (add-hook 'prog-mode-hook 'untabify-mode)
+--Nathan
+
 ----
 CategoryIndentation
