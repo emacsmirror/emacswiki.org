@@ -353,7 +353,7 @@ Put this in your Preferences.el:
 
 (setq inhibit-startup-echo-area-message t)
 
-== Color Theme Location ==
+== Color Themes Location ==
 
 /Applications/Aquamacs.app/Contents/Resources/lisp/aquamacs/color-theme-library.el 
 
