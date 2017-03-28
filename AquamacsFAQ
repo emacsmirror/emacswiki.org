@@ -145,8 +145,6 @@ This will disable the use of "Option" for the Emacs (Unix) Meta key. To avoid th
 
 == Change Aquamacs Meta key ==
 
-If your Option key suddenly stops working as the Meta key it's probably because you hit the key sequence <code>C-;</code>, which toggles the function of the Option key to instead enter special characters, like the symbol for pi.  To get your Meta key working again, hit <code>C-;</code> (note what it says in the minibuffer).  You can do the same thing through the menu:  <code>Options > Option, Command, Meta keys > Option is Meta</code>.
-
 The default Meta key in the Aquamacs distribution is Option (and also Esc). If this is unusable for you (your fingers are too well trained on other platforms), you can either press Apple-; (Options -> Option Key -> Option Key for Meta) to switch to Esc only, switch the right Command key only to Meta (same menu), or use the following commands in ~/Library/Preferences/Aquamacs Emacs/Preferences.el or your .emacs file:
 
  (setq mac-option-modifier 'meta) - Sets the option key as Meta (this is default)
@@ -359,3 +357,6 @@ Put this in your Preferences.el:
 
 /Applications/Aquamacs.app/Contents/Resources/lisp/aquamacs/color-theme-library.el 
 
+== Meta Key Not Working? Meta Key Entering Special Characters? ==
+
+If your <code>Option</code> key suddenly stops working as the Meta key it's probably because you hit the key sequence <code>C-;</code>, which toggles the function of the <code>Option</code> key to instead enter special characters, like the symbol for pi.  To get your Meta key working again, hit <code>C-;</code> (note what it says in the minibuffer).  You can do the same thing through the menu:  <code>Options > Option, Command, Meta keys > Option is Meta</code>.
