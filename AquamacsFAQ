@@ -352,3 +352,8 @@ In order to use the "aquamacs" and "emacsclient" command-line tools, from the Aq
 Put this in your Preferences.el:
 
 (setq inhibit-startup-echo-area-message t)
+
+== Color Theme Location ==
+
+/Applications/Aquamacs.app/Contents/Resources/lisp/aquamacs/color-theme-library.el 
+
