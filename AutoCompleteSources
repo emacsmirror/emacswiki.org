@@ -63,8 +63,8 @@ Completion for python using [[http://code.google.com/p/pysmell/|PySmell]].
   "Source for PySmell")
 
 (add-hook 'python-mode-hook
-          '(lambda ()             
-             (set (make-local-variable 'ac-sources) (append ac-sources '(ac-source-pysmell)))))
+          (lambda ()             
+            (set (make-local-variable 'ac-sources) (append ac-sources '(ac-source-pysmell)))))
 </pre>
 
 -- [[TiagoCamargo]]
@@ -266,14 +266,14 @@ An auto-complete source for the caml and tuareg modes, gets symbols from caml-he
 	  (when (string-match "\\([A-Za-z_][A-Za-z0-9_']*\\)[.]" prefix)
 	    (match-string 1 prefix))))
     (if module-name
-        (iter '(lambda (sym) (push (concat module-name "." sym) candidates))
+        (iter (lambda (sym) (push (concat module-name "." sym) candidates))
               (ocaml-module-symbols (assoc module-name (ocaml-module-alist))))
       (iter
-       '(lambda (mod)
-	  (iter '(lambda (sym) (push sym candidates))
-		(ocaml-module-symbols mod)))
+       (lambda (mod)
+	 (iter (lambda (sym) (push sym candidates))
+	       (ocaml-module-symbols mod)))
        (ocaml-visible-modules))
-      (iter '(lambda (mod) (push (car mod) candidates)) (ocaml-module-alist)))
+      (iter (lambda (mod) (push (car mod) candidates)) (ocaml-module-alist)))
     candidates))
         
 (ac-define-source ocaml
