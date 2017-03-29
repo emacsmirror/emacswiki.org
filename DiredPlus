@@ -20,10 +20,10 @@ Here are some of the things '''Dired+''' does:
 
 * Makes navigational commands wrap around (by default -- customize option '''`diredp-wrap-around-flag'''' if you do not want this feature).  For example, if you use `C-M-n' to go to the next inserted subdirectory and there is none, it wraps around to the first one.
 
-* Provides command `diredp-add-to-dired-buffer', bound globally to
-'''`C-x E'''' ("E" for extra files), which lets you add arbitrary files to an existing Dired buffer.
+* Provides commands `diredp-add-to-dired-buffer' and `diredp-add-to-dired-buffer-other-window', bound globally to
+'''`C-x D A'''' and '''`C-x 4 D A'''', which let you add arbitrary files to an existing Dired buffer.
 
-* Provides command `diredp-dired-union', bound globally to '''`C-x D'''', which lets you take the ''union'' of multiple Dired listings, or convert an ordinary Dired
+* Provides commands `diredp-dired-union' and `diredp-dired-union-other-window', bound globally to '''`C-x D U'''' and '''`C-x 4 D U'''', which let you take the ''union'' of multiple Dired listings, or convert an ordinary Dired
 listing to an explicit list of absolute file names.  That is, the new Dired buffer contains all of the files and subdirs listed in the Dired buffers you choose.   With a
 non-positive prefix arg, you can add extra files, just as for
 `diredp-add-to-dired-buffer'.  The chosen Dired listings are included in the order you choose
@@ -31,9 +31,9 @@ them, and each entry is listed only once in the new Dired buffer.  The
 union Dired listing respects the markings, subdirectory insertions, and
 hidden subdirectories of the chosen Dired listings.
 
-* Lets you open Dired on (only) the files in an Emacs [[fileset]] (commands `diredp-fileset' and `diredp-fileset-other-window', bound globally to '''`C-x F'''' and '''`C-x 4 F'''').
+* Lets you open Dired on (only) the files in an Emacs [[fileset]] (commands `diredp-fileset' and `diredp-fileset-other-window', bound globally to '''`C-x D S'''' and '''`C-x 4 D S'''').
 
-* Lets you open a Dired buffer that shows recently used directories (commands `diredp-dired-recent-dirs' and `diredp-dired-recent-dirs-other-window', bound globally to '''`C-x R'''' and '''`C-x 4 R'''').
+* Lets you open a Dired buffer that shows recently used directories (commands `diredp-dired-recent-dirs' and `diredp-dired-recent-dirs-other-window', bound globally to '''`C-x D R'''' and '''`C-x 4 D R'''').
 
 * Lets you use a single invocation of command `dired' to open Dired on any number of directories or sets of files (which you choose on the fly), if you use '''[[Icicles]]'''.
 
