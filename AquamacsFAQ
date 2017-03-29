@@ -359,7 +359,9 @@ If you enter:
 
     M-x custom-themes
 
-a buffer will open showing about fifteen custom themes. You can choose a custom theme by either clicking the checkbox in column 0 or putting your cursor anywhere on the line and hitting Return.  The default custom themes are located here:
+a buffer will open showing about fifteen custom themes. You can select a custom theme by either clicking the checkbox in column 0 or putting your cursor anywhere on the line and hitting Return.  You can deselect a custom them by clicking on the checkbox again or by putting your cursor on another custom theme and hitting Return.  
+
+The fifteen default custom themes are located here:
 
 /Applications/Aquamacs.app/Contents/Resources/lisp/aquamacs/color-theme-library.el
 
