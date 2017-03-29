@@ -359,7 +359,7 @@ If you type:
 
     M-x custom-themes
 
-a buffer will open showing about fifteen custom themes. You can select a custom theme by either clicking the checkbox in column zero or putting your cursor anywhere on the line and hitting Return.  You can deselect a custom them by clicking on the checkbox again or by putting your cursor on another custom theme and hitting Return.  
+a buffer will open showing about fifteen custom themes. You can select a custom theme by either clicking the checkbox in column zero or putting your cursor anywhere on the line and hitting Return.  You can deselect a custom theme by clicking on the checkbox again or by putting your cursor on another custom theme and hitting Return.  
 
 The fifteen default custom themes are located here:
 
