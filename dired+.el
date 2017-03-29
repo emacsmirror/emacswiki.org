@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Mar 29 11:08:10 2017 (-0700)
+;; Last-Updated: Wed Mar 29 15:49:15 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 9792
+;;     Update #: 9886
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -257,15 +257,15 @@
 ;;  `Dired+' adds commands for combining and augmenting Dired
 ;;  listings:
 ;;
-;;   * `diredp-add-to-dired-buffer', bound globally to `C-x E' ("E"
-;;     for extra files), lets you add arbitrary file and directory
-;;     names to an existing Dired buffer.
+;;   * `diredp-add-to-dired-buffer', bound globally to `C-x D A', lets
+;;     you add arbitrary file and directory names to an existing Dired
+;;     buffer.
 ;;
-;;   * `diredp-dired-union', bound globally to `C-x D', lets you take
-;;     the union of multiple Dired listings, or convert an ordinary
-;;     Dired listing to an explicit list of absolute file names.  With
-;;     a non-positive prefix arg, you can add extra file and directory
-;;     names, just as for `diredp-add-to-dired-buffer'.
+;;   * `diredp-dired-union', bound globally to `C-x D U', lets you
+;;     take the union of multiple Dired listings, or convert an
+;;     ordinary Dired listing to an explicit list of absolute file
+;;     names.  With a non-positive prefix arg, you can add extra file
+;;     and directory names, just as for `diredp-add-to-dired-buffer'.
 ;;
 ;;  You can optionally add a header line to a Dired buffer using
 ;;  toggle command `diredp-breadcrumbs-in-header-line-mode'.  (A
@@ -656,7 +656,14 @@
 ;;; Change Log:
 ;;
 ;; 2017/03/29 dadams
-;;     Bind diredp-w32-drives to :/.
+;;     Added: diredp-dired-union-other-window, diredp-add-to-dired-buffer-other-window.
+;;     diredp-dired-union-1: Added optional arg OTHERWIN.
+;;     diredp-dired-plus-description: Updated doc string.
+;;     diredp-menu-bar-subdir-menu: Added diredp-dired-for-files.
+;;     Bind diredp-w32-drives to :/, diredp-dired-inserted-subdirs to C-M-i.
+;;     Bind diredp-add-to-dired-buffer to C-x D A (not C-x E), diredp-dired-union to C-x D U (not C-x D),
+;;          diredp-fileset to C-x D S (not C-M-f), diredp-dired-recent-dirs to C-x D R (not C-x R),
+;;          diredp-dired-for-files to C-x D F, plus other-window versions.
 ;; 2017/03/24 dadams
 ;;     Added defalias for dired-read-regexp.
 ;;     diredp-mouse-3-menu: Removed second arg to mouse-save-then-kill.
@@ -3976,7 +3983,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-subdir-menu [diredp-dired-inserted-subdirs]
   '(menu-item "Dired Each Inserted Subdir..." diredp-dired-inserted-subdirs
     :enable (cdr dired-subdir-alist)    ; First elt is current dir.  Must have at least one more.
-    :help "Open Dired for each of the inserted subdirectories"))
+    :help "Open Dired separately for each of the inserted subdirectories"))
 (define-key diredp-menu-bar-subdir-menu [diredp-add-to-this-dired-buffer]
   '(menu-item "Add Entries Here..." diredp-add-to-this-dired-buffer
     :help "Add individual file and directory names to the listing"
@@ -3987,6 +3994,9 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-subdir-menu [diredp-fileset-other-window]
   '(menu-item "Dired Fileset..." diredp-fileset-other-window
     :enable (> emacs-major-version 21) :help "Open Dired on an Emacs fileset"))
+(define-key diredp-menu-bar-subdir-menu [diredp-dired-for-files]
+  '(menu-item "Dired Files Located Anywhere" diredp-dired-for-files
+    :help "Open Dired on specific files whose names you provide"))
 (define-key diredp-menu-bar-subdir-menu [diredp-marked-other-window]
   '(menu-item "Dired Marked Files in Other Window" diredp-marked-other-window
     :enable (save-excursion (goto-char (point-min))
@@ -4026,12 +4036,22 @@ If no one is selected, symmetric encryption will be performed.  "
 (when (memq (lookup-key dired-mode-map "\M-o") '(dired-omit-mode dired-omit-toggle))
   (define-key dired-mode-map "\M-o" nil))
 
-(define-key ctl-x-map   "D" 'diredp-dired-union)                           ; `C-x   D'
-(define-key ctl-x-map   "E" 'diredp-add-to-dired-buffer)                   ; `C-x   E'
-(define-key ctl-x-map   "\C-\M-f" 'diredp-fileset)                         ; `C-x   C-M-f'
-(define-key ctl-x-4-map "\C-\M-f" 'diredp-fileset-other-window)            ; `C-x 4 C-M-f'
-(define-key ctl-x-map   "R" 'diredp-dired-recent-dirs)                     ; `C-x   R'
-(define-key ctl-x-4-map "R" 'diredp-dired-recent-dirs-other-window)        ; `C-x 4 R'
+;; These are global, not just Dired mode.  They are on prefix key `C-x D'.
+(unless (lookup-key ctl-x-map "D")
+  (define-key ctl-x-map   "D" nil)      ; For Emacs 20
+  (define-key ctl-x-map   "DA" 'diredp-add-to-dired-buffer)                ; `C-x D A'
+  (define-key ctl-x-map   "DF" 'diredp-dired-for-files)                    ; `C-x D F'
+  (define-key ctl-x-map   "DR" 'diredp-dired-recent-dirs)                  ; `C-x D R'
+  (define-key ctl-x-map   "DS" 'diredp-fileset)                            ; `C-x D S'
+  (define-key ctl-x-map   "DU" 'diredp-dired-union))                       ; `C-x D U'
+
+(unless (lookup-key ctl-x-4-map "D")
+  (define-key ctl-x-4-map "D" nil)      ; For Emacs 20
+  (define-key ctl-x-4-map "DA" 'diredp-add-to-dired-buffer-other-window)   ; `C-x 4 D A'
+  (define-key ctl-x-4-map "DF" 'diredp-dired-for-files-other-window)       ; `C-x 4 D F'
+  (define-key ctl-x-4-map "DR" 'diredp-dired-recent-dirs-other-window)     ; `C-x 4 D R'
+  (define-key ctl-x-4-map "DS" 'diredp-fileset-other-window)               ; `C-x 4 D S'
+  (define-key ctl-x-4-map "DU" 'diredp-dired-union-other-window))          ; `C-x 4 D U'
 
 ;; Navigation
 (substitute-key-definition 'dired-up-directory 'diredp-up-directory dired-mode-map)
@@ -4079,6 +4099,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "\M-g"    'diredp-do-grep)                               ; `M-g'
 (when (fboundp 'mkhtml-dired-files)     ; In `mkhtml.el'.
   (define-key dired-mode-map "\M-h"  'mkhtml-dired-files))                          ; `M-h'
+(define-key dired-mode-map "\C-\M-i" 'diredp-dired-inserted-subdirs)                ; `C-M-i'
 (define-key dired-mode-map "\M-q"    (if (< emacs-major-version 21)
                                          'dired-do-query-replace
                                        'dired-do-query-replace-regexp))             ; `M-q'
@@ -4625,10 +4646,11 @@ In particular, inode number, number of hard links, and file size."
 ;;;   (dired-other-window arg switches))
 
 ;;;###autoload
-(defun diredp-dired-for-files (arg &optional switches) ; Not bound
+(defun diredp-dired-for-files (arg &optional switches) ; Bound to `C-x D F'
   "Dired file names that you enter, in a Dired buffer that you name.
 You are prompted for the name of the Dired buffer to use.
-You are then prompted for names of files and directories to list.
+You are then prompted for names of files and directories to list,
+ which can be located anywhere.
 Use `C-g' when you are done.
 
 With a prefix arg you are first prompted for the `ls' switches to use.
@@ -4639,14 +4661,14 @@ See also `dired' (including the advice)."
   (dired arg switches))
 
 ;;;###autoload
-(defun diredp-dired-for-files-other-window (arg &optional switches) ; Not bound
-  "Same as `diredp-dired-for-files' except uses another window."
+(defun diredp-dired-for-files-other-window (arg &optional switches) ; Bound to `C-x 4 D F'
+  "Same as `diredp-dired-for-files', except uses another window."
   (interactive (let ((current-prefix-arg  (if current-prefix-arg 0 -1)))
                  (dired-read-dir-and-switches "in other window " 'READ-EXTRA-FILES-P)))
   (dired-other-window arg switches))
 
 ;;;###autoload
-(defun diredp-dired-recent-dirs (buffer &optional arg) ; Bound to `C-x R'
+(defun diredp-dired-recent-dirs (buffer &optional arg) ; Bound to `C-x D R'
   "Open Dired in BUFFER, showing recently used directories.
 You are prompted for BUFFER.
 
@@ -4668,7 +4690,7 @@ When entering directories to include or exclude, use `C-g' to end."
     (dired (cons (generate-new-buffer-name buffer) (diredp-recent-dirs arg)) switches)))
 
 ;;;###autoload
-(defun diredp-dired-recent-dirs-other-window (buffer &optional arg) ; Bound to `C-x 4 R'
+(defun diredp-dired-recent-dirs-other-window (buffer &optional arg) ; Bound to `C-x 4 D R'
   "Same as `diredp-dired-recent-dirs', but use other window."
   (interactive (list (completing-read "Dired buffer name: " dired-buffers) current-prefix-arg))
   (unless (require 'recentf nil t) (error "This command requires library `recentf.el'"))
@@ -4762,7 +4784,7 @@ A new list is returned - list THINGS is not modified."
 ;;;         (read-string "Dired listing switches: " dired-listing-switches))))
 
 ;;;###autoload
-(defun diredp-dired-union (dired-name dirbufs &optional switches extra) ; Bound to `C-x D'
+(defun diredp-dired-union (dired-name dirbufs &optional switches extra) ; Bound to `C-x 4 D U'
   "Create a Dired buffer that is the union of some existing Dired buffers.
 With a non-negative prefix arg, you are prompted for `ls' switches.
 With a non-positive prefix arg, you are prompted for file and dir
@@ -4829,7 +4851,16 @@ From Lisp:
   (diredp-dired-union-1 dired-name dirbufs switches extra))
 
 ;;;###autoload
-(defun diredp-add-to-dired-buffer (dired-name to-add &optional switches) ; Bound to `C-x E'
+(defun diredp-dired-union-other-window (dired-name dirbufs &optional switches extra) ; Bound to `C-x 4 D U'
+  "Same as `diredp-dired-union', except use other window."
+  (interactive (diredp-dired-union-interactive-spec "UNION "
+                                                    nil
+                                                    (and current-prefix-arg
+                                                         (<= (prefix-numeric-value current-prefix-arg) 0))))
+  (diredp-dired-union-1 dired-name dirbufs switches extra 'OTHERWIN))
+
+;;;###autoload
+(defun diredp-add-to-dired-buffer (dired-name to-add &optional switches) ; Bound to `C-x D A'
   "Add individual file and directory names to a Dired buffer.
 You are prompted for the buffer name.
 With a prefix arg, you are also prompted for the `ls' switches.
@@ -4861,6 +4892,19 @@ From Lisp:
   (diredp-dired-union-1 dired-name () switches to-add))
 
 ;;;###autoload
+(defun diredp-add-to-dired-buffer-other-window (dired-name to-add &optional switches) ; Bound to `C-x 4 D A'
+  "Same as `diredp-add-to-dired-buffer', except use other window."
+  ;; Bind `current-prefix-arg' to force reading file/dir names.
+  ;; Read `ls' switches too, if user used prefix arg.
+  (interactive
+   (let* ((current-prefix-arg  (if current-prefix-arg 0 -1))
+          (all                 (diredp-dired-union-interactive-spec "add files/dirs "
+                                                                    'NO-DIRED-BUFS
+                                                                    'READ-EXTRA-FILES-P)))
+     (list (nth 0 all) (nth 3 all) (nth 2 all))))
+  (diredp-dired-union-1 dired-name () switches to-add 'OTHERWIN))
+
+;;;###autoload
 (defun diredp-add-to-this-dired-buffer (dired-name to-add &optional switches) ; Not bound by default
   "Same as `diredp-add-to-dired-buffer' for this Dired buffer."
   ;; Bind `current-prefix-arg' to force reading file/dir names.
@@ -4878,9 +4922,10 @@ From Lisp:
 ;; $$$$$ Maybe I should set `dired-sort-inhibit' to t for now (?),
 ;; since there is an Emacs bug (at least on Windows) that prevents
 ;; sorting from working for a Dired buffer with an explicit file list.
-(defun diredp-dired-union-1 (dired-name dirbufs switches extra)
+(defun diredp-dired-union-1 (dired-name dirbufs switches extra &optional otherwin)
   "Helper for `diredp-dired-union' and `diredp-add-to-dired-buffer'.
-See `diredp-dired-union' for the argument descriptions."
+Non-nil optional OTHERWIN means use other window for the Dired buffer.
+See `diredp-dired-union' for the other argument descriptions."
   (let ((dbuf         (get-buffer dired-name))
         (files        extra)
         (marked       ())
@@ -4999,7 +5044,7 @@ The name is expanded in the directory for the last directory change."
   )
 
 ;;;###autoload
-(defun diredp-fileset (flset-name)      ; Bound to `C-x F'
+(defun diredp-fileset (flset-name)      ; Bound to `C-x D S'
   "Open Dired on the files in fileset FLSET-NAME."
   (interactive
    (progn (unless (require 'filesets nil t) (error "Feature `filesets' not provided"))
@@ -5008,7 +5053,7 @@ The name is expanded in the directory for the last directory change."
   (diredp-fileset-1 flset-name))
 
 ;;;###autoload
-(defun diredp-fileset-other-window (flset-name) ; Bound to `C-x 4 F'
+(defun diredp-fileset-other-window (flset-name) ; Bound to `C-x 4 D S'
   "Open Dired in another window on the files in fileset FLSET-NAME."
   (interactive
    (progn (unless (require 'filesets nil t) (error "Feature `filesets' not provided"))
@@ -5061,8 +5106,9 @@ With a prefix arg:
       (dired-other-window this-subdir))))
 
 ;;;###autoload
-(defun diredp-dired-inserted-subdirs (&optional no-show-p msgp)
+(defun diredp-dired-inserted-subdirs (&optional no-show-p msgp) ; Bound to `C-M-i'
   "Open Dired for each of the subdirs inserted in this Dired buffer.
+A separate Dired buffer is used for each of them.
 With a prefix arg, create the Dired buffers but do not display them.
 Markings and current Dired switches are preserved."
   (interactive "P\np")
@@ -10645,263 +10691,267 @@ Many Dired+ actions are available from the menu-bar menus and the
 `mouse-3' context menu.  This may include commands shown here as not
 being bound to keys (i.e., listed as `M-x ...').
 
-General
--------
+General Here
+------------
 
 "
-
-    (and (fboundp 'dired-hide-details-mode)
-         "* \\[dired-hide-details-mode]\t\t- Hide/show details
-")
-
-"* \\[revert-buffer]\t\t- Refresh (sync and show all)
-* \\[diredp-toggle-find-file-reuse-dir]\t- Toggle reusing directories
-"
-
-    (and (featurep 'bookmark+)
-         "* \\[diredp-highlight-autofiles-mode]\t- Toggle autofile highlighting
-
-")
     (and (fboundp 'diredp-w32-drives)
-         "* \\[diredp-w32-drives]\t\t- Go up to a list of MS Windows drives
+         "  \\[diredp-w32-drives]\t\t- Go up to a list of MS Windows drives
+")
+    (and (fboundp 'dired-hide-details-mode)
+         "  \\[dired-hide-details-mode]\t\t- Hide/show details
+")
+
+    "  \\[revert-buffer]\t\t- Refresh (sync and show all)
+  \\[diredp-toggle-find-file-reuse-dir]\t- Toggle reusing directories
+"
+    "  \\[diredp-marked-other-window]\t\t- Open Dired on marked files here
+  \\[diredp-dired-inserted-subdirs]\t\t- Dired separately each subdir inserted here
+"    
+    (and (featurep 'bookmark+)
+         "  \\[diredp-highlight-autofiles-mode]\t- Toggle autofile highlighting
 
 ")
 
-    "* \\[diredp-marked-other-window]\t\t- Open Dired on marked
-* \\[diredp-fileset]\t- Open Dired on files in a fileset
-* \\[diredp-dired-for-files]\t- Open Dired on specific files
-* \\[diredp-dired-recent-dirs]\t\t- Open Dired on recently used dirs
-* \\[diredp-dired-union]\t\t- Create union of some Dired buffers
-* \\[diredp-dired-inserted-subdirs]\t- Dired each inserted subdir
+    "General Globally
+----------------
+
+\\<global-map>\
+  \\[diredp-add-to-dired-buffer]\t- Add files to a Dired buffer
+  \\[diredp-fileset]\t- Open Dired on files in a fileset
+  \\[diredp-dired-recent-dirs]\t- Open Dired on recently used dirs
+  \\[diredp-dired-union]\t- Create union of some Dired buffers
+  \\[diredp-dired-for-files]\t- Open Dired on files located anywhere
+\\<dired-mode-map>\
 
 Mouse
 -----
 
-* \\[diredp-mouse-3-menu]\t- Context-sensitive menu
+  \\[diredp-mouse-3-menu]\t- Context-sensitive menu
 "
 
     (and (where-is-internal 'diredp-mouse-describe-file dired-mode-map)
-         "* \\[diredp-mouse-describe-file]\t- Describe file
+         "  \\[diredp-mouse-describe-file]\t- Describe file
 ")
 
     (and (where-is-internal 'diredp-mouse-describe-autofile dired-mode-map)
-         "* \\[diredp-mouse-describe-autofile]\t- Describe autofile
+         "  \\[diredp-mouse-describe-autofile]\t- Describe autofile
 ")
 
-    "* \\[diredp-mouse-mark-region-files]\t\t- Mark all in region
+    "  \\[diredp-mouse-mark-region-files]\t\t- Mark all in region
 "
 
     (and (where-is-internal 'diredp-mouse-find-file dired-mode-map)
-         "* \\[diredp-mouse-find-file]\t- Open in this window
+         "  \\[diredp-mouse-find-file]\t- Open in this window
 ")
     (and (where-is-internal 'diredp-mouse-find-file-reuse-dir-buffer dired-mode-map)
-         "* \\[diredp-mouse-find-file-reuse-dir-buffer]\t- Open in this window
+         "  \\[diredp-mouse-find-file-reuse-dir-buffer]\t- Open in this window
 ")
 
     (and (where-is-internal 'dired-mouse-find-file-other-window dired-mode-map)
-         "* \\[dired-mouse-find-file-other-window]\t\t- Open in another window
+         "  \\[dired-mouse-find-file-other-window]\t\t- Open in another window
 ")
 
-    "* \\[diredp-mouse-find-file-other-frame]\t\t- Open in another frame
+    "  \\[diredp-mouse-find-file-other-frame]\t\t- Open in another frame
 "
 
     (and (fboundp 'dired-mouse-w32-browser) ; In `w32-browser.el'.
          (where-is-internal 'dired-mouse-w32-browser dired-mode-map)
-         "* \\[dired-mouse-w32-browser]\t\t- MS Windows `Open' action
+         "  \\[dired-mouse-w32-browser]\t\t- MS Windows `Open' action
 ")
 
     (and (fboundp 'dired-mouse-w32-browser-reuse-dir-buffer) ; In `w32-browser.el'.
          (where-is-internal 'dired-mouse-w32-browser-reuse-dir-buffer dired-mode-map)
-         "* \\[dired-mouse-w32-browser-reuse-dir-buffer]\t- MS Windows `Open' action
+         "  \\[dired-mouse-w32-browser-reuse-dir-buffer]\t- MS Windows `Open' action
 ")
 
     "
 Marking
 -------
 
-* \\[dired-mark]\t\t- Mark this file/dir
-* \\[dired-unmark]\t\t- Unmark this file/dir
-* \\[dired-toggle-marks]\t\t- Toggle marked/unmarked
-* \\[dired-mark-sexp]\t\t- Mark all satisfying a predicate
-* \\[dired-unmark-all-marks]\t\t- Unmark all
-* \\[diredp-mark/unmark-extension]\t\t- Mark/unmark all that have a given extension
+  \\[dired-mark]\t\t- Mark this file/dir
+  \\[dired-unmark]\t\t- Unmark this file/dir
+  \\[dired-toggle-marks]\t\t- Toggle marked/unmarked
+  \\[dired-mark-sexp]\t\t- Mark all satisfying a predicate
+  \\[dired-unmark-all-marks]\t\t- Unmark all
+  \\[diredp-mark/unmark-extension]\t\t- Mark/unmark all that have a given extension
 "
 
     (and (fboundp 'dired-mark-omitted)  ; In `dired-x.el'
-         "* \\[dired-mark-omitted]\t\t- Mark omitted
+         "  \\[dired-mark-omitted]\t\t- Mark omitted
 ")
 
-    "* \\[diredp-mark-files-tagged-regexp]\t\t- Mark those with a tag that matches a regexp
-* \\[diredp-unmark-files-tagged-regexp]\t\t- Unmark those with a tag that matches a regexp
-* \\[diredp-mark-files-tagged-all]\t\t- Mark those with all of the given tags
-* \\[diredp-unmark-files-tagged-all]\t\t- Unmark those with all of the given tags
-* \\[diredp-mark-files-tagged-some]\t\t- Mark those with some of the given tags
-* \\[diredp-unmark-files-tagged-some]\t\t- Unmark those with some of the given tags
-* \\[diredp-mark-files-tagged-not-all]\t- Mark those without some of the given tags
-* \\[diredp-unmark-files-tagged-not-all]\t- Unmark those without some of the given tags
-* \\[diredp-mark-files-tagged-none]\t- Mark those with none of the given tags
-* \\[diredp-unmark-files-tagged-none]\t- Unmark those with none of the given tags
+    "  \\[diredp-mark-files-tagged-regexp]\t\t- Mark those with a tag that matches a regexp
+  \\[diredp-unmark-files-tagged-regexp]\t\t- Unmark those with a tag that matches a regexp
+  \\[diredp-mark-files-tagged-all]\t\t- Mark those with all of the given tags
+  \\[diredp-unmark-files-tagged-all]\t\t- Unmark those with all of the given tags
+  \\[diredp-mark-files-tagged-some]\t\t- Mark those with some of the given tags
+  \\[diredp-unmark-files-tagged-some]\t\t- Unmark those with some of the given tags
+  \\[diredp-mark-files-tagged-not-all]\t- Mark those without some of the given tags
+  \\[diredp-unmark-files-tagged-not-all]\t- Unmark those without some of the given tags
+  \\[diredp-mark-files-tagged-none]\t- Mark those with none of the given tags
+  \\[diredp-unmark-files-tagged-none]\t- Unmark those with none of the given tags
 "
 
     "
 Current file/subdir (current line)
 ----------------------------------
 
-* \\[diredp-describe-file]\t- Describe
-* \\[diredp-byte-compile-this-file]\t\t- Byte-compile
-* \\[diredp-compress-this-file]\t\t- Compress/uncompress
-* \\[diredp-print-this-file]\t\t- Print
-* \\[diredp-relsymlink-this-file]\t\t- Create relative symlink
-* \\[diredp-delete-this-file]\t\t- Delete (with confirmation)
-* \\[diredp-rename-this-file]\t\t- Rename
-* \\[diredp-capitalize-this-file]\t\t- Capitalize (rename)
-* \\[diredp-upcase-this-file]\t\t- Rename to uppercase
-* \\[diredp-downcase-this-file]\t\t- Rename to lowercase
-* \\[diredp-ediff]\t\t- Ediff
+  \\[diredp-describe-file]\t- Describe
+  \\[diredp-byte-compile-this-file]\t\t- Byte-compile
+  \\[diredp-compress-this-file]\t\t- Compress/uncompress
+  \\[diredp-print-this-file]\t\t- Print
+  \\[diredp-relsymlink-this-file]\t\t- Create relative symlink
+  \\[diredp-delete-this-file]\t\t- Delete (with confirmation)
+  \\[diredp-rename-this-file]\t\t- Rename
+  \\[diredp-capitalize-this-file]\t\t- Capitalize (rename)
+  \\[diredp-upcase-this-file]\t\t- Rename to uppercase
+  \\[diredp-downcase-this-file]\t\t- Rename to lowercase
+  \\[diredp-ediff]\t\t- Ediff
 "
     (and (featurep 'bookmark+)
-         "* \\[diredp-tag-this-file]\t\t- Add some tags to this file/dir
-* \\[diredp-untag-this-file]\t\t- Remove some tags from this file/dir
-* \\[diredp-remove-all-tags-this-file]\t\t- Remove all tags from this file/dir
-* \\[diredp-copy-tags-this-file]\t\t- Copy the tags from this file/dir
-* \\[diredp-paste-add-tags-this-file]\t\t- Paste (add) copied tags to this file/dir
-* \\[diredp-paste-replace-tags-this-file]\t\t- Paste (replace) tags for this file/dir
-* \\[diredp-set-tag-value-this-file]\t\t- Set a tag value for this file/dir
+         "  \\[diredp-tag-this-file]\t\t- Add some tags to this file/dir
+  \\[diredp-untag-this-file]\t\t- Remove some tags from this file/dir
+  \\[diredp-remove-all-tags-this-file]\t\t- Remove all tags from this file/dir
+  \\[diredp-copy-tags-this-file]\t\t- Copy the tags from this file/dir
+  \\[diredp-paste-add-tags-this-file]\t\t- Paste (add) copied tags to this file/dir
+  \\[diredp-paste-replace-tags-this-file]\t\t- Paste (replace) tags for this file/dir
+  \\[diredp-set-tag-value-this-file]\t\t- Set a tag value for this file/dir
 ")
 
-    "* \\[diredp-bookmark-this-file]\t\t- Bookmark
+    "  \\[diredp-bookmark-this-file]\t\t- Bookmark
 "
 
     (and (fboundp 'dired-mouse-w32-browser) ; In `w32-browser.el'.
          (where-is-internal 'dired-mouse-w32-browser dired-mode-map)
-         "* \\[dired-mouse-w32-browser]\t- MS Windows `Open' action
-* \\[dired-w32explore]\t- MS Windows Explorer
+         "  \\[dired-mouse-w32-browser]\t- MS Windows `Open' action
+  \\[dired-w32explore]\t- MS Windows Explorer
 ")
 
     (and (fboundp 'dired-mouse-w32-browser-reuse-dir-buffer) ; In `w32-browser.el'.
          (where-is-internal 'dired-mouse-w32-browser-reuse-dir-buffer dired-mode-map)
-         "* \\[dired-mouse-w32-browser-reuse-dir-buffer]\t- MS Windows `Open' action
-* \\[dired-w32explore]\t- MS Windows Explorer
+         "  \\[dired-mouse-w32-browser-reuse-dir-buffer]\t- MS Windows `Open' action
+  \\[dired-w32explore]\t- MS Windows Explorer
 ")
 
     "
 Marked (or next prefix arg) files & subdirs here
 ------------------------------------------------
 
-* \\[diredp-list-marked]\t\t- List marked files and directories
-* \\[diredp-insert-subdirs]\t\t- Insert marked subdirectories
-* \\[dired-copy-filename-as-kill]\t\t- Copy names for pasting
-* \\[dired-do-find-marked-files]\t\t- Visit
-* \\[dired-do-copy]\t\t- Copy
-* \\[dired-do-rename]\t\t- Rename/move
-* \\[diredp-do-grep]\t\t- Run `grep'
-* \\[dired-do-search]\t\t- Search
+  \\[diredp-list-marked]\t\t- List marked files and directories
+  \\[diredp-insert-subdirs]\t\t- Insert marked subdirectories
+  \\[dired-copy-filename-as-kill]\t\t- Copy names for pasting
+  \\[dired-do-find-marked-files]\t\t- Visit
+  \\[dired-do-copy]\t\t- Copy
+  \\[dired-do-rename]\t\t- Rename/move
+  \\[diredp-do-grep]\t\t- Run `grep'
+  \\[dired-do-search]\t\t- Search
 "
     (and (fboundp 'dired-do-find-regexp) ; Emacs 25+
-         "* \\[dired-do-find-regexp]\t\t- Search using `find'
+         "  \\[dired-do-find-regexp]\t\t- Search using `find'
 ")
 
     (if (fboundp 'dired-do-query-replace-regexp) ; Emacs 22+
-        "* \\[dired-do-query-replace-regexp]\t\t- Query-replace
+        "  \\[dired-do-query-replace-regexp]\t\t- Query-replace
 "
-      "* \\[dired-do-query-replace]\t\t- Query-replace
+      "  \\[dired-do-query-replace]\t\t- Query-replace
 ")
 
     (and (fboundp 'dired-do-find-regexp-and-replace)
-         "* \\[dired-do-find-regexp-and-replace]\t\t- Query-replace using `find'
+         "  \\[dired-do-find-regexp-and-replace]\t\t- Query-replace using `find'
 ")
 
     (and (fboundp 'dired-do-isearch)
-         "* \\[dired-do-isearch]\t- Isearch
-* \\[dired-do-isearch-regexp]\t- Regexp isearch
+         "  \\[dired-do-isearch]\t- Isearch
+  \\[dired-do-isearch-regexp]\t- Regexp isearch
 ")
 
     (and (fboundp 'dired-do-async-shell-command)
-         "* \\[dired-do-async-shell-command]\t\t- Run shell command asynchronously
+         "  \\[dired-do-async-shell-command]\t\t- Run shell command asynchronously
 ")
 
-    "* \\[dired-do-shell-command]\t\t- Run shell command
-* \\[diredp-marked-other-window]\t\t- Dired
-* \\[diredp-do-apply-function]\t\t- Apply Lisp function
-* \\[dired-do-compress]\t\t- Compress
-* \\[dired-do-byte-compile]\t\t- Byte-compile
-* \\[dired-do-load]\t\t- Load (Emacs Lisp)
+    "  \\[dired-do-shell-command]\t\t- Run shell command
+  \\[diredp-marked-other-window]\t\t- Dired
+  \\[diredp-do-apply-function]\t\t- Apply Lisp function
+  \\[dired-do-compress]\t\t- Compress
+  \\[dired-do-byte-compile]\t\t- Byte-compile
+  \\[dired-do-load]\t\t- Load (Emacs Lisp)
 
-* \\[diredp-omit-marked]\t- Omit
-* \\[diredp-omit-unmarked]\t- Omit unmarked
+  \\[diredp-omit-marked]\t- Omit
+  \\[diredp-omit-unmarked]\t- Omit unmarked
 "
 
     (and (featurep 'bookmark+)
          "
-* \\[diredp-do-tag]\t\t- Add some tags to marked
-* \\[diredp-do-untag]\t\t- Remove some tags from marked
-* \\[diredp-do-remove-all-tags]\t\t- Remove all tags from marked
-* \\[diredp-do-paste-add-tags]\t- Paste (add) copied tags to marked
-* \\[diredp-do-paste-replace-tags]\t\t- Paste (replace) tags for marked
-* \\[diredp-do-set-tag-value]\t\t- Set a tag value for marked
-* \\[diredp-mark-files-tagged-regexp]\t\t- Mark those with a tag that matches a regexp
-* \\[diredp-mark-files-tagged-all]\t\t- Mark those with all of the given tags
-* \\[diredp-mark-files-tagged-some]\t\t- Mark those with some of the given tags
-* \\[diredp-mark-files-tagged-not-all]\t- Mark those without some of the given tags
-* \\[diredp-mark-files-tagged-none]\t- Mark those with none of the given tags
-* \\[diredp-unmark-files-tagged-regexp]\t\t- Unmark those with a tag that matches a regexp
-* \\[diredp-unmark-files-tagged-all]\t\t- Unmark those with all of the given tags
-* \\[diredp-unmark-files-tagged-some]\t\t- Unmark those with some of the given tags
-* \\[diredp-unmark-files-tagged-not-all]\t- Unmark those without some of the given tags
-* \\[diredp-unmark-files-tagged-none]\t- Unmark those with none of the given tags")
+  \\[diredp-do-tag]\t\t- Add some tags to marked
+  \\[diredp-do-untag]\t\t- Remove some tags from marked
+  \\[diredp-do-remove-all-tags]\t\t- Remove all tags from marked
+  \\[diredp-do-paste-add-tags]\t- Paste (add) copied tags to marked
+  \\[diredp-do-paste-replace-tags]\t\t- Paste (replace) tags for marked
+  \\[diredp-do-set-tag-value]\t\t- Set a tag value for marked
+  \\[diredp-mark-files-tagged-regexp]\t\t- Mark those with a tag that matches a regexp
+  \\[diredp-mark-files-tagged-all]\t\t- Mark those with all of the given tags
+  \\[diredp-mark-files-tagged-some]\t\t- Mark those with some of the given tags
+  \\[diredp-mark-files-tagged-not-all]\t- Mark those without some of the given tags
+  \\[diredp-mark-files-tagged-none]\t- Mark those with none of the given tags
+  \\[diredp-unmark-files-tagged-regexp]\t\t- Unmark those with a tag that matches a regexp
+  \\[diredp-unmark-files-tagged-all]\t\t- Unmark those with all of the given tags
+  \\[diredp-unmark-files-tagged-some]\t\t- Unmark those with some of the given tags
+  \\[diredp-unmark-files-tagged-not-all]\t- Unmark those without some of the given tags
+  \\[diredp-unmark-files-tagged-none]\t- Unmark those with none of the given tags")
 
     "
 
-* \\[diredp-do-bookmark]\t\t- Bookmark
+  \\[diredp-do-bookmark]\t\t- Bookmark
 "
 
     (and (featurep 'bookmark+)
-         "* \\[diredp-set-bookmark-file-bookmark-for-marked]\t\t- \
+         "  \\[diredp-set-bookmark-file-bookmark-for-marked]\t\t- \
 Bookmark and create bookmark-file bookmark
-* \\[diredp-do-bookmark-in-bookmark-file]\t- Bookmark in specific bookmark file
+  \\[diredp-do-bookmark-in-bookmark-file]\t- Bookmark in specific bookmark file
 ")
 
     (and (fboundp 'dired-multiple-w32-browser) ; In `w32-browser.el'.
          "
-* \\[dired-multiple-w32-browser]\t- MS Windows `Open' action
+  \\[dired-multiple-w32-browser]\t- MS Windows `Open' action
 ")
 
     "
 Marked files here and below (in marked subdirs)
 -----------------------------------------------
 
-* \\[diredp-list-marked-recursive]\t\t- List marked files and directories
-* \\[diredp-insert-subdirs-recursive]\t\t- Insert marked subdirectories
-* \\[diredp-copy-filename-as-kill-recursive]\t\t- Copy names for pasting
-* \\[diredp-do-find-marked-files-recursive]\t\t\t- Visit
-* \\[diredp-do-copy-recursive]\t\t\t- Copy
-* \\[diredp-do-move-recursive]\t\t\t- Move
-* \\[diredp-do-grep-recursive]\t\t- `grep'
-* \\[diredp-do-search-recursive]\t\t\t- Search
-* \\[diredp-do-query-replace-regexp-recursive]\t\t\t- Query-replace
-* \\[diredp-do-isearch-recursive]\t\t- Isearch
-* \\[diredp-do-isearch-regexp-recursive]\t- Regexp isearch
+  \\[diredp-list-marked-recursive]\t\t- List marked files and directories
+  \\[diredp-insert-subdirs-recursive]\t\t- Insert marked subdirectories
+  \\[diredp-copy-filename-as-kill-recursive]\t\t- Copy names for pasting
+  \\[diredp-do-find-marked-files-recursive]\t\t\t- Visit
+  \\[diredp-do-copy-recursive]\t\t\t- Copy
+  \\[diredp-do-move-recursive]\t\t\t- Move
+  \\[diredp-do-grep-recursive]\t\t- `grep'
+  \\[diredp-do-search-recursive]\t\t\t- Search
+  \\[diredp-do-query-replace-regexp-recursive]\t\t\t- Query-replace
+  \\[diredp-do-isearch-recursive]\t\t- Isearch
+  \\[diredp-do-isearch-regexp-recursive]\t- Regexp isearch
 "
 
     (and (fboundp 'diredp-do-async-shell-command-recursive) ; Emacs 23+
-         "* \\[diredp-do-async-shell-command-recursive]\t\t\t- Run shell command asynchronously
+         "  \\[diredp-do-async-shell-command-recursive]\t\t\t- Run shell command asynchronously
 ")
 
-    "* \\[diredp-do-shell-command-recursive]\t\t\t- Run shell command
-* \\[diredp-marked-recursive-other-window]\t\t- Dired
-* \\[diredp-list-marked-recursive]\t\t- List
-* \\[diredp-do-apply-function-recursive]\t\t\t- Apply Lisp function
+    "  \\[diredp-do-shell-command-recursive]\t\t\t- Run shell command
+  \\[diredp-marked-recursive-other-window]\t\t- Dired
+  \\[diredp-list-marked-recursive]\t\t- List
+  \\[diredp-do-apply-function-recursive]\t\t\t- Apply Lisp function
 
-* \\[diredp-do-bookmark-recursive]\t\t- Bookmark
+  \\[diredp-do-bookmark-recursive]\t\t- Bookmark
 "
     (and (featurep 'bookmark+)
-         "* \\[diredp-do-bookmark-in-bookmark-file-recursive]\t\t- Bookmark in bookmark file
-* \\[diredp-set-bookmark-file-bookmark-for-marked-recursive]\t\t- Create bookmark-file bookmark
+         "  \\[diredp-do-bookmark-in-bookmark-file-recursive]\t\t- Bookmark in bookmark file
+  \\[diredp-set-bookmark-file-bookmark-for-marked-recursive]\t\t- Create bookmark-file bookmark
 ")
 
     (and (fboundp 'dired-multiple-w32-browser) ; In `w32-browser.el'.
          "
-* \\[diredp-multiple-w32-browser-recursive]\t- MS Windows `Open'
+  \\[diredp-multiple-w32-browser-recursive]\t- MS Windows `Open'
 ")
 
 
@@ -10910,51 +10960,51 @@ Marked files here and below (in marked subdirs)
 Tagging
 -------
 
-* \\[diredp-tag-this-file]\t\t- Add some tags to this file/dir
-* \\[diredp-untag-this-file]\t\t- Remove some tags from this file/dir
-* \\[diredp-remove-all-tags-this-file]\t\t- Remove all tags from this file/dir
-* \\[diredp-copy-tags-this-file]\t\t- Copy the tags from this file/dir
-* \\[diredp-paste-add-tags-this-file]\t\t- Paste (add) copied tags to this file/dir
-* \\[diredp-paste-replace-tags-this-file]\t\t- Paste (replace) tags for this file/dir
-* \\[diredp-set-tag-value-this-file]\t\t- Set a tag value for this file/dir
-* \\[diredp-do-tag]\t\t- Add some tags to marked
-* \\[diredp-do-untag]\t\t- Remove some tags from marked
-* \\[diredp-do-remove-all-tags]\t\t- Remove all tags from marked
-* \\[diredp-do-paste-add-tags]\t- Paste (add) copied tags to marked
-* \\[diredp-do-paste-replace-tags]\t\t- Paste (replace) tags for marked
-* \\[diredp-do-set-tag-value]\t\t- Set a tag value for marked
-* \\[diredp-mark-files-tagged-regexp]\t\t- Mark those with a tag that matches a regexp
-* \\[diredp-mark-files-tagged-all]\t\t- Mark those with all of the given tags
-* \\[diredp-mark-files-tagged-some]\t\t- Mark those with some of the given tags
-* \\[diredp-mark-files-tagged-not-all]\t- Mark those without some of the given tags
-* \\[diredp-mark-files-tagged-none]\t- Mark those with none of the given tags
-* \\[diredp-unmark-files-tagged-regexp]\t\t- Unmark those with a tag that matches a regexp
-* \\[diredp-unmark-files-tagged-all]\t\t- Unmark those with all of the given tags
-* \\[diredp-unmark-files-tagged-some]\t\t- Unmark those with some of the given tags
-* \\[diredp-unmark-files-tagged-not-all]\t- Unmark those without some of the given tags
-* \\[diredp-unmark-files-tagged-none]\t- Unmark those with none of the given tags
+  \\[diredp-tag-this-file]\t\t- Add some tags to this file/dir
+  \\[diredp-untag-this-file]\t\t- Remove some tags from this file/dir
+  \\[diredp-remove-all-tags-this-file]\t\t- Remove all tags from this file/dir
+  \\[diredp-copy-tags-this-file]\t\t- Copy the tags from this file/dir
+  \\[diredp-paste-add-tags-this-file]\t\t- Paste (add) copied tags to this file/dir
+  \\[diredp-paste-replace-tags-this-file]\t\t- Paste (replace) tags for this file/dir
+  \\[diredp-set-tag-value-this-file]\t\t- Set a tag value for this file/dir
+  \\[diredp-do-tag]\t\t- Add some tags to marked
+  \\[diredp-do-untag]\t\t- Remove some tags from marked
+  \\[diredp-do-remove-all-tags]\t\t- Remove all tags from marked
+  \\[diredp-do-paste-add-tags]\t- Paste (add) copied tags to marked
+  \\[diredp-do-paste-replace-tags]\t\t- Paste (replace) tags for marked
+  \\[diredp-do-set-tag-value]\t\t- Set a tag value for marked
+  \\[diredp-mark-files-tagged-regexp]\t\t- Mark those with a tag that matches a regexp
+  \\[diredp-mark-files-tagged-all]\t\t- Mark those with all of the given tags
+  \\[diredp-mark-files-tagged-some]\t\t- Mark those with some of the given tags
+  \\[diredp-mark-files-tagged-not-all]\t- Mark those without some of the given tags
+  \\[diredp-mark-files-tagged-none]\t- Mark those with none of the given tags
+  \\[diredp-unmark-files-tagged-regexp]\t\t- Unmark those with a tag that matches a regexp
+  \\[diredp-unmark-files-tagged-all]\t\t- Unmark those with all of the given tags
+  \\[diredp-unmark-files-tagged-some]\t\t- Unmark those with some of the given tags
+  \\[diredp-unmark-files-tagged-not-all]\t- Unmark those without some of the given tags
+  \\[diredp-unmark-files-tagged-none]\t- Unmark those with none of the given tags
 ")
 
     "
 Bookmarking
 -----------
 
-* \\[diredp-bookmark-this-file]\t\t- Bookmark this file/dir
-* \\[diredp-do-bookmark]\t\t- Bookmark marked"
+  \\[diredp-bookmark-this-file]\t\t- Bookmark this file/dir
+  \\[diredp-do-bookmark]\t\t- Bookmark marked"
 
     (and (featurep 'bookmark+)
          "
-* \\[diredp-set-bookmark-file-bookmark-for-marked]\t\t- \
+  \\[diredp-set-bookmark-file-bookmark-for-marked]\t\t- \
 Bookmark marked and create bookmark-file bookmark
-* \\[diredp-do-bookmark-in-bookmark-file]\t- Bookmark marked, in specific bookmark file
+  \\[diredp-do-bookmark-in-bookmark-file]\t- Bookmark marked, in specific bookmark file
 ")
 
-    "* \\[diredp-do-bookmark-recursive]\t- Bookmark marked, here and below
+    "  \\[diredp-do-bookmark-recursive]\t- Bookmark marked, here and below
 "
     (and (featurep 'bookmark+)
-         "* \\[diredp-do-bookmark-in-bookmark-file-recursive]\t- \
+         "  \\[diredp-do-bookmark-in-bookmark-file-recursive]\t- \
 Bookmark marked, here and below, in specific file
-* \\[diredp-set-bookmark-file-bookmark-for-marked-recursive]\t- \
+  \\[diredp-set-bookmark-file-bookmark-for-marked-recursive]\t- \
 Set bookmark-file bookmark for marked here and below
 ")
 
