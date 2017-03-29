@@ -367,6 +367,6 @@ The fifteen default custom themes are located here:
 
  
 
-== Some Key Sequences Don't Work? Meta Key Not Working? Meta Key Entering Special Characters? ==
+== Some Key Sequences Won't Work? Meta Key Not Working? Meta Key Entering Special Characters? ==
 
 If some key sequences don't work, or your <code>Option</code> key suddenly stops working as the Meta key it's probably because you hit the key sequence <code>C-;</code>, which toggles the function of the <code>Option</code> key to instead enter special characters, like the symbol for pi.  To get your Meta key working again, hit <code>C-;</code> (note what it says in the minibuffer).  You can do the same thing through the Aquamacs menu:  <code>Options > Option, Command, Meta keys > Option is Meta</code>.
