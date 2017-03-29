@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar 24 11:11:52 2017 (-0700)
+;; Last-Updated: Wed Mar 29 11:08:10 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 9784
+;;     Update #: 9792
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -655,6 +655,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/03/29 dadams
+;;     Bind diredp-w32-drives to :/.
 ;; 2017/03/24 dadams
 ;;     Added defalias for dired-read-regexp.
 ;;     diredp-mouse-3-menu: Removed second arg to mouse-save-then-kill.
@@ -4057,6 +4059,11 @@ If no one is selected, symmetric encryption will be performed.  "
     (define-key dired-mode-map [(meta return)] 'dired-w32-browser)                  ; `M-RET'
     (define-key dired-mode-map [mouse-2] 'dired-mouse-w32-browser)))                ; `mouse-2'
 
+(when (fboundp 'diredp-w32-drives)
+  (when (< emacs-major-version 21) (define-key dired-mode-map ":"    nil)) ; For Emacs 20
+  (define-key dired-mode-map ":/"    'diredp-w32-drives))                            ; `:/'
+
+;; Other keyboard keys
 (define-key dired-mode-map "@"       'diredp-do-apply-function)                     ; `@'
 (define-key dired-mode-map "\$"      'diredp-hide-subdir-nomove)                    ; `$'
 (define-key dired-mode-map "\M-$"    'dired-hide-subdir)                            ; `M-$'
@@ -4085,7 +4092,7 @@ If no one is selected, symmetric encryption will be performed.  "
 ;;
 ;; NOTE: If this changes then need to update `dired-sort-menu+.el' to reflect the changes.
 ;;
-(define-key dired-mode-map "T"       nil) ; For Emacs20
+(define-key dired-mode-map "T"       nil) ; For Emacs 20
 (define-key dired-mode-map "T+"      'diredp-tag-this-file)                ; `T +'
 (define-key dired-mode-map "T-"      'diredp-untag-this-file)              ; `T -'
 (define-key dired-mode-map "T0"      'diredp-remove-all-tags-this-file)    ; `T 0'
@@ -8047,7 +8054,7 @@ choice described for `diredp-do-grep'."
 
 (when (memq system-type '(windows-nt ms-dos))
   (define-derived-mode diredp-w32-drives-mode fundamental-mode "Drives"
-    "Open Dired for an MS Windows drive (local or remote)."
+    "Mode for Dired buffer listing MS Windows drives (local or remote)."
     (setq buffer-read-only  t)))
 
 ;; The next two commands were originally taken from Emacs Wiki, page WThirtyTwoBrowseNetDrives:
@@ -8064,7 +8071,7 @@ This just invokes the Windows `NET USE' command."
     (display-buffer "*Shell Command Output*")))
 
 (when (memq system-type '(windows-nt ms-dos))
-  (defun diredp-w32-drives (&optional other-window-p) ; Not bound
+  (defun diredp-w32-drives (&optional other-window-p) ; Bound to `:/'
     "Visit a list of MS Windows drives for use by Dired.
 With a prefix argument use another window for the list.
 In the list, use `mouse-2' or `RET' to open Dired for a given drive.
@@ -10656,12 +10663,12 @@ General
 
 ")
     (and (fboundp 'diredp-w32-drives)
-         "* \\[diredp-w32-drives]\t- Go up to a list of MS Windows drives
+         "* \\[diredp-w32-drives]\t\t- Go up to a list of MS Windows drives
 
 ")
 
     "* \\[diredp-marked-other-window]\t\t- Open Dired on marked
-* \\[diredp-fileset]\t\t- Open Dired on files in a fileset
+* \\[diredp-fileset]\t- Open Dired on files in a fileset
 * \\[diredp-dired-for-files]\t- Open Dired on specific files
 * \\[diredp-dired-recent-dirs]\t\t- Open Dired on recently used dirs
 * \\[diredp-dired-union]\t\t- Create union of some Dired buffers
