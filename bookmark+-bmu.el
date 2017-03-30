@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Mar 12 11:30:57 2017 (-0700)
+;; Last-Updated: Thu Mar 30 12:43:12 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 3924
+;;     Update #: 3927
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2706,179 +2706,180 @@ Non-interactively:
     (when msg-p (if (= 1 count) (message "1 bookmark matched") (message "%d bookmarks matched" count)))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-autofile-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-autofile-bookmarks (&optional arg) ; Bound to `A M' in bookmark list
+(defun bmkp-bmenu-mark-autofile-bookmarks (&optional arg msgp) ; Bound to `A M' in bookmark list
   "Mark autofile bookmarks: those whose names are the same as their files.
 With a prefix arg you are prompted for a prefix that each bookmark
 name must have."
-  (interactive "P")
+  (interactive "P\np")
   (if (not arg)
-      (bmkp-bmenu-mark-bookmarks-satisfying #'bmkp-autofile-bookmark-p)
+      (bmkp-bmenu-mark-bookmarks-satisfying #'bmkp-autofile-bookmark-p nil msgp)
     (let ((prefix  (read-string "Prefix for bookmark names: " nil nil "")))
-      (bmkp-bmenu-mark-bookmarks-satisfying #'(lambda (bb) (bmkp-autofile-bookmark-p bb prefix))))))
+      (bmkp-bmenu-mark-bookmarks-satisfying
+       #'(lambda (bb) (bmkp-autofile-bookmark-p bb prefix)) nil msgp))))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-autonamed-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-autonamed-bookmarks () ; Bound to `# M' in bookmark list
+(defun bmkp-bmenu-mark-autonamed-bookmarks (&optional msgp) ; Bound to `# M' in bookmark list
   "Mark autonamed bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying #'bmkp-autonamed-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying #'bmkp-autonamed-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-bookmark-file-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-bookmark-file-bookmarks () ; Bound to `Y M' in bookmark list
+(defun bmkp-bmenu-mark-bookmark-file-bookmarks (&optional msgp) ; Bound to `Y M' in bookmark list
   "Mark bookmark-file bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-bookmark-file-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-bookmark-file-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-bookmark-list-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-bookmark-list-bookmarks () ; Bound to `Z M' in bookmark list
+(defun bmkp-bmenu-mark-bookmark-list-bookmarks (&optional msgp) ; Bound to `Z M' in bookmark list
   "Mark bookmark-list bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-bookmark-list-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-bookmark-list-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-desktop-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-desktop-bookmarks () ; Bound to `K M' in bookmark list
+(defun bmkp-bmenu-mark-desktop-bookmarks (&optional msgp) ; Bound to `K M' in bookmark list
   "Mark desktop bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-desktop-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-desktop-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-dired-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-dired-bookmarks () ; Bound to `M-d M-m' in bookmark list
+(defun bmkp-bmenu-mark-dired-bookmarks (&optional msgp) ; Bound to `M-d M-m' in bookmark list
   "Mark Dired bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-dired-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-dired-bookmark-p nil msgp))
 
 (when (fboundp 'bmkp-eww-bookmark-p)
 
   ;; ;;;###autoload (autoload 'bmkp-bmenu-mark-eww-bookmarks "bookmark+")
-  (defun bmkp-bmenu-mark-eww-bookmarks () ; Bound to `W E M' in bookmark list
+  (defun bmkp-bmenu-mark-eww-bookmarks (&optional msgp) ; Bound to `W E M' in bookmark list
     "Mark EWW (URL) bookmarks."
-    (interactive)
-    (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-eww-bookmark-p))
+    (interactive "p")
+    (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-eww-bookmark-p nil msgp))
 
   )
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-file-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-file-bookmarks (arg) ; Bound to `F M' in bookmark list
+(defun bmkp-bmenu-mark-file-bookmarks (&optional arg msgp) ; Bound to `F M' in bookmark list
   "Mark file bookmarks.
 With a prefix argument, do not mark remote files or directories."
-  (interactive "P")
+  (interactive "P\np")
   (bmkp-bmenu-mark-bookmarks-satisfying
-   (if arg 'bmkp-local-file-bookmark-p 'bmkp-file-bookmark-p)))
+   (if arg 'bmkp-local-file-bookmark-p 'bmkp-file-bookmark-p nil msgp)))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-function-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-function-bookmarks () ; Bound to `Q M' in bookmark list
+(defun bmkp-bmenu-mark-function-bookmarks (&optional msgp) ; Bound to `Q M' in bookmark list
   "Mark function bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying #'bmkp-function-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying #'bmkp-function-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-gnus-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-gnus-bookmarks () ; Bound to `G M' in bookmark list
+(defun bmkp-bmenu-mark-gnus-bookmarks (&optional msgp) ; Bound to `G M' in bookmark list
   "Mark Gnus bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-gnus-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-gnus-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-icicles-search-hits-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-icicles-search-hits-bookmarks () ; Bound to `i M' in bookmark list
+(defun bmkp-bmenu-mark-icicles-search-hits-bookmarks (&optional msgp) ; Bound to `i M' in bookmark list
   "Mark Icicles search-hit bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-icicles-search-hits-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-icicles-search-hits-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-image-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-image-bookmarks () ; Bound to `M-I M-M' in bookmark list
+(defun bmkp-bmenu-mark-image-bookmarks (&optional msgp) ; Bound to `M-I M-M' in bookmark list
   "Mark image-file bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-image-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-image-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-info-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-info-bookmarks () ; Bound to `I M' in bookmark list
+(defun bmkp-bmenu-mark-info-bookmarks (&optional msgp) ; Bound to `I M' in bookmark list
   "Mark Info bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-info-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-info-bookmark-p nil msgp))
 
 (when (featurep 'bookmark+-lit)
-  (defun bmkp-bmenu-mark-lighted-bookmarks () ; Bound to `H M' in bookmark list
+  (defun bmkp-bmenu-mark-lighted-bookmarks (&optional msgp) ; Bound to `H M' in bookmark list
     "Mark the highlighted bookmarks."
-    (interactive)
-    (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-lighted-p)))
+    (interactive "p")
+    (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-lighted-p nil msgp)))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-man-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-man-bookmarks () ; Bound to `M M' in bookmark list
+(defun bmkp-bmenu-mark-man-bookmarks (&optional msgp) ; Bound to `M M' in bookmark list
   "Mark `man' page bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-man-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-man-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-non-file-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-non-file-bookmarks () ; Bound to `B M' in bookmark list
+(defun bmkp-bmenu-mark-non-file-bookmarks (&optional msgp) ; Bound to `B M' in bookmark list
   "Mark non-file bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-non-file-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-non-file-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-non-invokable-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-non-invokable-bookmarks () ; Bound to `N M' in bookmark list
+(defun bmkp-bmenu-mark-non-invokable-bookmarks (&optional msgp) ; Bound to `N M' in bookmark list
   "Mark non-invokable bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-non-invokable-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-non-invokable-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-orphaned-local-file-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-orphaned-local-file-bookmarks (arg) ; Bound to `O M' in bookmark list
+(defun bmkp-bmenu-mark-orphaned-local-file-bookmarks (&optional arg msgp) ; Bound to `O M' in bookmark list
   "Mark orphaned local-file bookmarks (their recorded files are not readable).
 With a prefix argument, mark also remote orphaned files or directories."
-  (interactive "P")
+  (interactive "P\np")
   (bmkp-bmenu-mark-bookmarks-satisfying
-   (if arg 'bmkp-orphaned-file-bookmark-p 'bmkp-orphaned-local-file-bookmark-p)))
+   (if arg 'bmkp-orphaned-file-bookmark-p 'bmkp-orphaned-local-file-bookmark-p nil msgp)))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-region-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-region-bookmarks () ; Bound to `R M' in bookmark list
+(defun bmkp-bmenu-mark-region-bookmarks (&optional msgp) ; Bound to `R M' in bookmark list
   "Mark bookmarks that record a region."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-region-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-region-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-snippet-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-snippet-bookmarks () ; Bound to `w M' in bookmark list
+(defun bmkp-bmenu-mark-snippet-bookmarks (&optional msgp) ; Bound to `w M' in bookmark list
   "Mark snippet bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-snippet-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-snippet-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-specific-buffer-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-specific-buffer-bookmarks (&optional buffer) ; `= b M' in bookmark list
+(defun bmkp-bmenu-mark-specific-buffer-bookmarks (&optional buffer msgp) ; `= b M' in bookmark list
   "Mark bookmarks for BUFFER.
 Interactively, read the name of the buffer.
 If BUFFER is non-nil, set `bmkp-last-specific-buffer' to it."
-  (interactive (list (bmkp-completing-read-buffer-name)))
+  (interactive (list (bmkp-completing-read-buffer-name) t))
   (when buffer (setq bmkp-last-specific-buffer  buffer))
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-last-specific-buffer-p))
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-last-specific-buffer-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-specific-file-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-specific-file-bookmarks (&optional file) ; Bound to `= f M' in bookmark list
+(defun bmkp-bmenu-mark-specific-file-bookmarks (&optional file msgp) ; Bound to `= f M' in bookmark list
   "Mark bookmarks for FILE, an absolute file name.
 Interactively, read the file name.
 If FILE is non-nil, set `bmkp-last-specific-file' to it."
-  (interactive (list (bmkp-completing-read-file-name)))
+  (interactive (list (bmkp-completing-read-file-name) t))
   (when file (setq bmkp-last-specific-file  file))
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-last-specific-file-p))
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-last-specific-file-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-temporary-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-temporary-bookmarks () ; Bound to `X M' in bookmark list
+(defun bmkp-bmenu-mark-temporary-bookmarks (&optional msgp) ; Bound to `X M' in bookmark list
   "Mark temporary bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-temporary-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-temporary-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-variable-list-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-variable-list-bookmarks () ; Bound to `V M' in bookmark list
+(defun bmkp-bmenu-mark-variable-list-bookmarks (&optional msgp) ; Bound to `V M' in bookmark list
   "Mark variable-list bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-variable-list-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-variable-list-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-url-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-url-bookmarks () ; Bound to `M-u M-m' in bookmark list
+(defun bmkp-bmenu-mark-url-bookmarks (&optional msgp) ; Bound to `M-u M-m' in bookmark list
   "Mark URL bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-url-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-url-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-w3m-bookmarks "bookmark+")
-(defun bmkp-bmenu-mark-w3m-bookmarks () ; Bound to `W 3 M' in bookmark list
+(defun bmkp-bmenu-mark-w3m-bookmarks (&optional msgp) ; Bound to `W 3 M' in bookmark list
   "Mark W3M (URL) bookmarks."
-  (interactive)
-  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-w3m-bookmark-p))
+  (interactive "p")
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-w3m-bookmark-p nil msgp))
 
 ;;;###autoload (autoload 'bmkp-bmenu-mark-bookmarks-satisfying "bookmark+")
 (defun bmkp-bmenu-mark-bookmarks-satisfying (pred &optional no-re-sort-p msg-p) ; Not bound
@@ -2893,7 +2894,7 @@ first or last (`s >'), then re-sort.
 Non-interactively:
 * Non-nil optional arg NO-RE-SORT-P inhibits re-sorting.
 * Non-nil optional arg MSG-P means display a status message."
-  (interactive "aPredicate: \np")
+  (interactive "aPredicate: \ni\np")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (let ((count      0)
         (nb-marked  (length bmkp-bmenu-marked-bookmarks))
