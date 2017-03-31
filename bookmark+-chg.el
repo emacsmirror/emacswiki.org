@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Mar 12 11:31:58 2017 (-0700)
+;; Last-Updated: Fri Mar 31 07:16:43 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 16299
+;;     Update #: 16311
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2017/03/31 dadams
+;;     bmkp-goto-position: Error now mentions buffer name, not just file.
+;;     bmkp-cycle: If empty bmkp-nav-alist ask before setting it to bookmark-alist.
 ;; 2017/02/26 dadams
 ;;     Added:
 ;;       bmkp-eww-rename-buffer, bmkp-eww-new-buffer-name, bmkp-eww-sans-pop-to-buffer,
@@ -1298,6 +1301,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2017/03/30 dadams
+;;     bmkp-bmenu-mark-*-bookmarks:
+;;       Added optional arg MSGP.  Pass it to bmkp-bmenu-mark-bookmarks-satisfying.
+;;     bmkp-bmenu-mark-(orphaned-local-)file-bookmarks: Made argument ARG optional.
+;;     bmkp-bmenu-mark-bookmarks-satisfying: Added missing \ni to interactive spec.
 ;; 2017/01/10 dadams
 ;;     Renamed bmkp-toggle-allow-multi-tabs-for-w3m to bmkp-toggle-w3m-allow-multiple-buffers.
 ;;     bmkp-bmenu-toggle-menu: Added bmkp-toggle-eww-allow-multiple-buffers.
