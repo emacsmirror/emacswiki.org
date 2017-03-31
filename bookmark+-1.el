@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Mar 12 11:29:05 2017 (-0700)
+;; Last-Updated: Fri Mar 31 07:14:12 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8438
+;;     Update #: 8448
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -240,6 +240,10 @@
 ;;    `bmkp-ORIG-bookmark-insert', `bmkp-occur-target-set',
 ;;    `bmkp-occur-target-set-all', `bmkp-paste-add-tags',
 ;;    `bmkp-paste-replace-tags', `bmkp-previous-bookmark',
+;;    `bmkp-previous-autonamed-bookmark',
+;;    `bmkp-previous-autonamed-bookmark-repeat',
+;;    `bmkp-previous-bookmark-list-bookmark',
+;;    `bmkp-previous-bookmark-list-bookmark-repeat',
 ;;    `bmkp-previous-bookmark-repeat',
 ;;    `bmkp-previous-bookmark-this-buffer',
 ;;    `bmkp-previous-bookmark-this-buffer-repeat',
@@ -247,6 +251,39 @@
 ;;    `bmkp-previous-bookmark-this-file/buffer',
 ;;    `bmkp-previous-bookmark-this-file/buffer-repeat',
 ;;    `bmkp-previous-bookmark-this-file-repeat',
+;;    `bmkp-previous-bookmark-this-buffer-repeat',
+;;    `bmkp-previous-bookmark-this-file',
+;;    `bmkp-previous-bookmark-this-file/buffer',
+;;    `bmkp-previous-bookmark-this-file/buffer-repeat',
+;;    `bmkp-previous-bookmark-this-file-repeat',
+;;    `bmkp-previous-desktop-bookmark',
+;;    `bmkp-previous-desktop-bookmark-repeat',
+;;    `bmkp-previous-dired-bookmark',
+;;    `bmkp-previous-dired-bookmark-repeat',
+;;    `bmkp-previous-file-bookmark',
+;;    `bmkp-previous-file-bookmark-repeat',
+;;    `bmkp-previous-gnus-bookmark',
+;;    `bmkp-previous-gnus-bookmark-repeat',
+;;    `bmkp-previous-info-bookmark',
+;;    `bmkp-previous-info-bookmark-repeat',
+;;    `bmkp-previous-lighted-bookmark',
+;;    `bmkp-previous-lighted-bookmark-repeat',
+;;    `bmkp-previous-local-file-bookmark',
+;;    `bmkp-previous-local-file-bookmark-repeat',
+;;    `bmkp-previous-man-bookmark',
+;;    `bmkp-previous-man-bookmark-repeat',
+;;    `bmkp-previous-non-file-bookmark',
+;;    `bmkp-previous-non-file-bookmark-repeat',
+;;    `bmkp-previous-remote-file-bookmark',
+;;    `bmkp-previous-remote-file-bookmark-repeat',
+;;    `bmkp-previous-specific-buffers-bookmark',
+;;    `bmkp-previous-specific-buffers-bookmark-repeat',
+;;    `bmkp-previous-specific-files-bookmark',
+;;    `bmkp-previous-specific-files-bookmark-repeat',
+;;    `bmkp-previous-variable-list-bookmark',
+;;    `bmkp-previous-variable-list-bookmark-repeat',
+;;    `bmkp-previous-url-bookmark',
+;;    `bmkp-previous-url-bookmark-repeat',
 ;;    `bmkp-previous-bookmark-w32',
 ;;    `bmkp-previous-bookmark-w32-repeat',
 ;;    `bmkp-purge-notags-autofiles', `bmkp-read-bookmark-for-type',
@@ -8772,7 +8809,8 @@ name, recorded position, and the context strings for the position."
     ;; No file found.  See if a non-file buffer exists for this.  If not, raise error.
     (unless (or (and buf  (get-buffer buf))
                 (and bufname  (get-buffer bufname)  (not (string= buf bufname))))
-      (signal 'file-error `("Jumping to bookmark" "No such file or directory" ,file))))
+      (signal 'file-error `("Jumping to bookmark" ,(format "Cannot access file `%s' or buffer `%s'"
+                                                           file bufname)))))
   (set-buffer (or buf  bufname))
   (when bmkp-jump-display-function
     (save-current-buffer (funcall bmkp-jump-display-function (current-buffer))))
@@ -11506,10 +11544,11 @@ In Lisp code:
                  (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) nil startovr)))
   (unless bmkp-nav-alist
     (bookmark-maybe-load-default-file)
-    (setq bmkp-nav-alist  bookmark-alist)
-    (unless bmkp-nav-alist (error "No bookmarks"))
-    (setq bmkp-current-nav-bookmark  (car bmkp-nav-alist))
-    (message "Bookmark navigation list is now the global bookmark list") (sit-for 2))
+    (when (and bookmark-alist  (y-or-n-p "No navigation list.  Use whole bookmark list? "))
+      (setq bmkp-nav-alist  bookmark-alist)
+      (message "Navigation list is now the global bookmark list") (sit-for 2))
+    (unless bmkp-nav-alist (error "No bookmarks in navigation list"))
+    (setq bmkp-current-nav-bookmark  (car bmkp-nav-alist)))
   (unless (and bmkp-current-nav-bookmark  (not startoverp)
                (bookmark-get-bookmark bmkp-current-nav-bookmark 'NOERROR))
     (setq bmkp-current-nav-bookmark  (car bmkp-nav-alist)))
@@ -11903,6 +11942,7 @@ See `bmkp-next-bookmark-w32-repeat'."
 ;; `bmkp-cycle-specific-files', `bmkp-cycle-specific-files-other-window',
 ;; `bmkp-cycle-variable-list',
 ;; `bmkp-cycle-url', `bmkp-cycle-url-other-window',
+;;
 ;; `bmkp-next-autonamed-bookmark', `bmkp-next-autonamed-bookmark-repeat',
 ;; `bmkp-next-bookmark-list-bookmark', `bmkp-next-bookmark-list-bookmark-repeat',
 ;; `bmkp-next-desktop-bookmark', `bmkp-next-desktop-bookmark-repeat',
@@ -11920,6 +11960,22 @@ See `bmkp-next-bookmark-w32-repeat'."
 ;; `bmkp-next-variable-list-bookmark', `bmkp-next-variable-list-bookmark-repeat',
 ;; `bmkp-next-url-bookmark', `bmkp-next-url-bookmark-repeat'.
 ;;
+;; `bmkp-previous-autonamed-bookmark', `bmkp-previous-autonamed-bookmark-repeat',
+;; `bmkp-previous-bookmark-list-bookmark', `bmkp-previous-bookmark-list-bookmark-repeat',
+;; `bmkp-previous-desktop-bookmark', `bmkp-previous-desktop-bookmark-repeat',
+;; `bmkp-previous-dired-bookmark', `bmkp-previous-dired-bookmark-repeat',
+;; `bmkp-previous-file-bookmark', `bmkp-previous-file-bookmark-repeat',
+;; `bmkp-previous-gnus-bookmark', `bmkp-previous-gnus-bookmark-repeat',
+;; `bmkp-previous-info-bookmark', `bmkp-previous-info-bookmark-repeat',
+;; `bmkp-previous-lighted-bookmark', `bmkp-previous-lighted-bookmark-repeat',
+;; `bmkp-previous-local-file-bookmark', `bmkp-previous-local-file-bookmark-repeat',
+;; `bmkp-previous-man-bookmark', `bmkp-previous-man-bookmark-repeat',
+;; `bmkp-previous-non-file-bookmark', `bmkp-previous-non-file-bookmark-repeat',
+;; `bmkp-previous-remote-file-bookmark', `bmkp-previous-remote-file-bookmark-repeat',
+;; `bmkp-previous-specific-buffers-bookmark', `bmkp-previous-specific-buffers-bookmark-repeat',
+;; `bmkp-previous-specific-files-bookmark', `bmkp-previous-specific-files-bookmark-repeat',
+;; `bmkp-previous-variable-list-bookmark', `bmkp-previous-variable-list-bookmark-repeat',
+;; `bmkp-previous-url-bookmark', `bmkp-previous-url-bookmark-repeat'.
 (bmkp-define-cycle-command "autonamed")
 (bmkp-define-cycle-command "autonamed" 'OTHER-WINDOW)
 (bmkp-define-cycle-command "bookmark-list") ; No other-window version needed
