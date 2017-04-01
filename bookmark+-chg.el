@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Mar 31 07:16:43 2017 (-0700)
+;; Last-Updated: Fri Mar 31 18:49:14 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 16311
+;;     Update #: 16321
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -147,6 +147,9 @@
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
 ;; 2017/03/31 dadams
+;;     Added other-window versions of: bmkp-(next|previous)(TYPE)-bookmark(-repeat).
+;;     bmkp-autonamed-bookmark-p:
+;;       If BUFFER is nil then let ?B match any name - do not use current buffer for nil case.
 ;;     bmkp-goto-position: Error now mentions buffer name, not just file.
 ;;     bmkp-cycle: If empty bmkp-nav-alist ask before setting it to bookmark-alist.
 ;; 2017/02/26 dadams
@@ -2146,6 +2149,8 @@
 ;;       that depends on macros needs to be byte-compiled anew after loading the updated macros.
 ;; **************************************************************************************************
 ;;
+;; 2017/03/31 dadams
+;;     bmkp-define-next+prev-cycle-commands: Added optional arg OTHERP.
 ;; 2015/04/03 dadams
 ;;     bmkp-replace-regexp-in-string: Copied defn here - used to produce the macro code for
 ;;       bmkp-define-show-only-command and bmkp-define-sort-command.
@@ -2190,6 +2195,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2017/03/31 dadams
+;;     Version 2017.03.31.  Fixed cycling bookmarks across buffers.  Added other-window cycling cmds.
 ;; 2017/02/26 dadams
 ;;     Version 2017.02.26.  Added auto-bookmarking for Info.  Better EWW - thx to Charles Roelli.
 ;; 2016/11/14 dadams
