@@ -7,10 +7,10 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Version: 2017.02.26
-;; Last-Updated: Sun Mar 12 11:35:55 2017 (-0700)
+;; Version: 2017.03.31
+;; Last-Updated: Fri Mar 31 18:46:43 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 15038
+;;     Update #: 15039
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, projects, placeholders, annotations, search, info, url, eww, w3m, gnus
