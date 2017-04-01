@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Mar 31 07:14:12 2017 (-0700)
+;; Last-Updated: Fri Mar 31 15:39:35 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8448
+;;     Update #: 8467
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -4846,12 +4846,11 @@ This sets variable `bmkp-nav-alist'."
 
 (defun bmkp-autonamed-bookmark-p (bookmark &optional buffer)
   "Return non-nil if BOOKMARK is an autonamed bookmark for BUFFER.
-If BUFFER is nil then any buffer is OK. 
+If BUFFER is nil then any buffer is OK.
 BOOKMARK is a bookmark name or a bookmark record.
 BUFFER, if non-nil, is a buffer or a buffer name."
   (unless (stringp bookmark) (setq bookmark  (bmkp-bookmark-name-from-record bookmark)))
-  (unless buffer  (setq buffer  (buffer-name)))
-  (when (bufferp buffer) (setq buffer (buffer-name buffer)))
+  (when (bufferp buffer) (setq buffer  (buffer-name buffer)))
   (let ((nargs  0)
         (start  0))
     (save-match-data
@@ -4861,7 +4860,8 @@ BUFFER, if non-nil, is a buffer or a buffer name."
         (setq nargs  (1+ nargs)
               start  (match-end 0))))
     (bmkp-string-match-p
-     (apply #'format (bmkp-format-spec bmkp-autoname-format `((?B . ,(regexp-quote buffer))))
+     (apply #'format
+            (bmkp-format-spec bmkp-autoname-format `((?B . ,(if buffer (regexp-quote buffer) ".*"))))
             (make-list nargs ".*"))
      bookmark)))
 
@@ -11720,8 +11720,7 @@ See `bmkp-cycle' for descriptions of the arguments."
              (and bookmark-automatically-show-annotations  (not pop-up-frames))))
         (if other-window
             (bookmark-jump-other-window (bmkp-bookmark-name-from-record bmkp-current-nav-bookmark))
-          (save-selected-window (bmkp-bookmark-name-from-record
-                                 (bookmark-jump bmkp-current-nav-bookmark))))))
+          (save-selected-window (bmkp-bookmark-name-from-record (bookmark-jump bmkp-current-nav-bookmark))))))
     (and bookmark  bmkp-current-nav-bookmark))) ; Return nil if not a valid bookmark.
 
 ;; Same as `icicle-list-position' in `icicles-fn.el'.
@@ -11757,6 +11756,24 @@ See `bmkp-next-bookmark'."
                  (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
   (bmkp-cycle (- n) nil startoverp))
 
+;;;###autoload (autoload 'bmkp-next-bookmark-other-window "bookmark+")
+(defun bmkp-next-bookmark-other-window (n &optional startoverp) ; You can bind this to a repeatable key
+  "Jump to Nth next bookmark in bookmark navlist in another window.
+N defaults to 1, meaning the next bookmark.
+Plain `C-u' means start over at first bookmark.
+See also `bmkp-cycle'."
+  (interactive (let ((startovr  (consp current-prefix-arg)))
+                 (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
+  (bmkp-cycle n 'OTHER-WINDOW startoverp))
+
+;;;###autoload (autoload 'bmkp-previous-bookmark-other-window "bookmark+")
+(defun bmkp-previous-bookmark-other-window (n &optional startoverp) ; You can bind this to a repeatable key
+  "Jump to Nth previous bookmark in bookmark navlist in another window.
+See `bmkp-next-bookmark'."
+  (interactive (let ((startovr  (consp current-prefix-arg)))
+                 (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
+  (bmkp-cycle (- n) 'OTHER-WINDOW startoverp))
+
 ;;;###autoload (autoload 'bmkp-next-bookmark-repeat "bookmark+")
 (defun bmkp-next-bookmark-repeat (arg)  ; `C-x p right', `C-x p f', `C-x p C-f'
   "Jump to the Nth-next bookmark in the bookmark navigation list.
@@ -11774,6 +11791,24 @@ See `bmkp-next-bookmark-repeat'."
   (interactive "P")
   (require 'repeat)
   (bmkp-repeat-command 'bmkp-previous-bookmark))
+
+;;;###autoload (autoload 'bmkp-next-bookmark-other-window-repeat "bookmark+")
+(defun bmkp-next-bookmark-other-window-repeat (arg)  ; `C-x p right', `C-x p f', `C-x p C-f'
+  "Jump to Nth-next bookmark in bookmark navlist in another window.
+This is a repeatable version of `bmkp-next-bookmark'.
+N defaults to 1, meaning the next bookmark.
+Plain `C-u' means start over at the first bookmark (and no repeat)."
+  (interactive "P")
+  (require 'repeat)
+  (bmkp-repeat-command 'bmkp-next-bookmark-other-window))
+
+;;;###autoload (autoload 'bmkp-previous-bookmark-other-window-repeat "bookmark+")
+(defun bmkp-previous-bookmark-other-window-repeat (arg) ; `C-x p left', `C-x p b', `C-x p C-b'
+  "Jump to Nth-previous bookmark in bookmark navlist in another window.
+See `bmkp-next-bookmark-repeat'."
+  (interactive "P")
+  (require 'repeat)
+  (bmkp-repeat-command 'bmkp-previous-bookmark-other-window))
 
 ;;;###autoload (autoload 'bmkp-next-bookmark-this-file/buffer "bookmark+")
 (defun bmkp-next-bookmark-this-file/buffer (n &optional startoverp) ; Bind to repeatable key, e.g. `S-f2'
@@ -11943,39 +11978,6 @@ See `bmkp-next-bookmark-w32-repeat'."
 ;; `bmkp-cycle-variable-list',
 ;; `bmkp-cycle-url', `bmkp-cycle-url-other-window',
 ;;
-;; `bmkp-next-autonamed-bookmark', `bmkp-next-autonamed-bookmark-repeat',
-;; `bmkp-next-bookmark-list-bookmark', `bmkp-next-bookmark-list-bookmark-repeat',
-;; `bmkp-next-desktop-bookmark', `bmkp-next-desktop-bookmark-repeat',
-;; `bmkp-next-dired-bookmark', `bmkp-next-dired-bookmark-repeat',
-;; `bmkp-next-file-bookmark', `bmkp-next-file-bookmark-repeat',
-;; `bmkp-next-gnus-bookmark', `bmkp-next-gnus-bookmark-repeat',
-;; `bmkp-next-info-bookmark', `bmkp-next-info-bookmark-repeat',
-;; `bmkp-next-lighted-bookmark', `bmkp-next-lighted-bookmark-repeat',
-;; `bmkp-next-local-file-bookmark', `bmkp-next-local-file-bookmark-repeat',
-;; `bmkp-next-man-bookmark', `bmkp-next-man-bookmark-repeat',
-;; `bmkp-next-non-file-bookmark', `bmkp-next-non-file-bookmark-repeat',
-;; `bmkp-next-remote-file-bookmark', `bmkp-next-remote-file-bookmark-repeat',
-;; `bmkp-next-specific-buffers-bookmark', `bmkp-next-specific-buffers-bookmark-repeat',
-;; `bmkp-next-specific-files-bookmark', `bmkp-next-specific-files-bookmark-repeat',
-;; `bmkp-next-variable-list-bookmark', `bmkp-next-variable-list-bookmark-repeat',
-;; `bmkp-next-url-bookmark', `bmkp-next-url-bookmark-repeat'.
-;;
-;; `bmkp-previous-autonamed-bookmark', `bmkp-previous-autonamed-bookmark-repeat',
-;; `bmkp-previous-bookmark-list-bookmark', `bmkp-previous-bookmark-list-bookmark-repeat',
-;; `bmkp-previous-desktop-bookmark', `bmkp-previous-desktop-bookmark-repeat',
-;; `bmkp-previous-dired-bookmark', `bmkp-previous-dired-bookmark-repeat',
-;; `bmkp-previous-file-bookmark', `bmkp-previous-file-bookmark-repeat',
-;; `bmkp-previous-gnus-bookmark', `bmkp-previous-gnus-bookmark-repeat',
-;; `bmkp-previous-info-bookmark', `bmkp-previous-info-bookmark-repeat',
-;; `bmkp-previous-lighted-bookmark', `bmkp-previous-lighted-bookmark-repeat',
-;; `bmkp-previous-local-file-bookmark', `bmkp-previous-local-file-bookmark-repeat',
-;; `bmkp-previous-man-bookmark', `bmkp-previous-man-bookmark-repeat',
-;; `bmkp-previous-non-file-bookmark', `bmkp-previous-non-file-bookmark-repeat',
-;; `bmkp-previous-remote-file-bookmark', `bmkp-previous-remote-file-bookmark-repeat',
-;; `bmkp-previous-specific-buffers-bookmark', `bmkp-previous-specific-buffers-bookmark-repeat',
-;; `bmkp-previous-specific-files-bookmark', `bmkp-previous-specific-files-bookmark-repeat',
-;; `bmkp-previous-variable-list-bookmark', `bmkp-previous-variable-list-bookmark-repeat',
-;; `bmkp-previous-url-bookmark', `bmkp-previous-url-bookmark-repeat'.
 (bmkp-define-cycle-command "autonamed")
 (bmkp-define-cycle-command "autonamed" 'OTHER-WINDOW)
 (bmkp-define-cycle-command "bookmark-list") ; No other-window version needed
@@ -12007,22 +12009,163 @@ See `bmkp-next-bookmark-w32-repeat'."
 (bmkp-define-cycle-command "url")
 (bmkp-define-cycle-command "url" 'OTHER-WINDOW)
 
+;; `bmkp-next-autonamed-bookmark', `bmkp-next-autonamed-bookmark-other-window',
+;; `bmkp-next-autonamed-bookmark-repeat', `bmkp-next-autonamed-bookmark-other-window-repeat',
+;; `bmkp-next-bookmark-list-bookmark',
+;; `bmkp-next-bookmark-list-bookmark-repeat',
+;; `bmkp-next-bookmark-list-bookmark-other-window',
+;; `bmkp-next-bookmark-list-bookmark-other-window-repeat',
+;; `bmkp-next-desktop-bookmark',
+;; `bmkp-next-desktop-bookmark-repeat',
+;; `bmkp-next-desktop-bookmark-other-window',
+;; `bmkp-next-desktop-bookmark-other-window-repeat',
+;; `bmkp-next-dired-bookmark',
+;; `bmkp-next-dired-bookmark-repeat',
+;; `bmkp-next-dired-bookmark-other-window',
+;; `bmkp-next-dired-bookmark-other-window-repeat',
+;; `bmkp-next-file-bookmark',
+;; `bmkp-next-file-bookmark-repeat',
+;; `bmkp-next-file-bookmark-other-window',
+;; `bmkp-next-file-bookmark-other-window-repeat',
+;; `bmkp-next-gnus-bookmark',
+;; `bmkp-next-gnus-bookmark-repeat',
+;; `bmkp-next-gnus-bookmark-other-window',
+;; `bmkp-next-gnus-bookmark-other-window-repeat',
+;; `bmkp-next-info-bookmark',
+;; `bmkp-next-info-bookmark-repeat',
+;; `bmkp-next-info-bookmark-other-window',
+;; `bmkp-next-info-bookmark-other-window-repeat',
+;; `bmkp-next-lighted-bookmark',
+;; `bmkp-next-lighted-bookmark-repeat',
+;; `bmkp-next-lighted-bookmark-other-window',
+;; `bmkp-next-lighted-bookmark-other-window-repeat',
+;; `bmkp-next-local-file-bookmark',
+;; `bmkp-next-local-file-bookmark-repeat',
+;; `bmkp-next-local-file-bookmark-other-window',
+;; `bmkp-next-local-file-bookmark-other-window-repeat',
+;; `bmkp-next-man-bookmark',
+;; `bmkp-next-man-bookmark-repeat',
+;; `bmkp-next-man-bookmark-other-window',
+;; `bmkp-next-man-bookmark-other-window-repeat',
+;; `bmkp-next-non-file-bookmark',
+;; `bmkp-next-non-file-bookmark-repeat',
+;; `bmkp-next-non-file-bookmark-other-window',
+;; `bmkp-next-non-file-bookmark-other-window-repeat',
+;; `bmkp-next-remote-file-bookmark',
+;; `bmkp-next-remote-file-bookmark-repeat',
+;; `bmkp-next-remote-file-bookmark-other-window',
+;; `bmkp-next-remote-file-bookmark-other-window-repeat',
+;; `bmkp-next-specific-buffers-bookmark',
+;; `bmkp-next-specific-buffers-bookmark-repeat',
+;; `bmkp-next-specific-buffers-bookmark-other-window',
+;; `bmkp-next-specific-buffers-bookmark-other-window-repeat',
+;; `bmkp-next-specific-files-bookmark',
+;; `bmkp-next-specific-files-bookmark-repeat',
+;; `bmkp-next-specific-files-bookmark-other-window',
+;; `bmkp-next-specific-files-bookmark-other-window-repeat',
+;; `bmkp-next-variable-list-bookmark',
+;; `bmkp-next-variable-list-bookmark-repeat',
+;; `bmkp-next-variable-list-bookmark-other-window',
+;; `bmkp-next-variable-list-bookmark-other-window-repeat',
+;; `bmkp-next-url-bookmark',
+;; `bmkp-next-url-bookmark-repeat'.
+;; `bmkp-next-url-bookmark-other-window',
+;; `bmkp-next-url-bookmark-other-window-repeat'.
+;;
+;; `bmkp-previous-autonamed-bookmark',
+;; `bmkp-previous-autonamed-bookmark-repeat',
+;; `bmkp-previous-autonamed-bookmark-other-window',
+;; `bmkp-previous-autonamed-bookmark-other-window-repeat',
+;; `bmkp-previous-bookmark-list-bookmark',
+;; `bmkp-previous-bookmark-list-bookmark-repeat',
+;; `bmkp-previous-bookmark-list-bookmark-other-window',
+;; `bmkp-previous-bookmark-list-bookmark-other-window-repeat',
+;; `bmkp-previous-desktop-bookmark',
+;; `bmkp-previous-desktop-bookmark-repeat',
+;; `bmkp-previous-desktop-bookmark-other-window',
+;; `bmkp-previous-desktop-bookmark--other-windowrepeat',
+;; `bmkp-previous-dired-bookmark',
+;; `bmkp-previous-dired-bookmark-repeat',
+;; `bmkp-previous-dired-bookmark-other-window',
+;; `bmkp-previous-dired-bookmark-other-window-repeat',
+;; `bmkp-previous-file-bookmark',
+;; `bmkp-previous-file-bookmark-repeat',
+;; `bmkp-previous-file-bookmark-other-window',
+;; `bmkp-previous-file-bookmark-other-window-repeat',
+;; `bmkp-previous-gnus-bookmark',
+;; `bmkp-previous-gnus-bookmark-repeat',
+;; `bmkp-previous-gnus-bookmark-other-window',
+;; `bmkp-previous-gnus-bookmark-other-window-repeat',
+;; `bmkp-previous-info-bookmark',
+;; `bmkp-previous-info-bookmark-repeat',
+;; `bmkp-previous-info-bookmark-other-window',
+;; `bmkp-previous-info-bookmark-other-window-repeat',
+;; `bmkp-previous-lighted-bookmark',
+;; `bmkp-previous-lighted-bookmark-repeat',
+;; `bmkp-previous-lighted-bookmark-other-window',
+;; `bmkp-previous-lighted-bookmark-other-window-repeat',
+;; `bmkp-previous-local-file-bookmark',
+;; `bmkp-previous-local-file-bookmark-repeat',
+;; `bmkp-previous-local-file-bookmark-other-window',
+;; `bmkp-previous-local-file-bookmark-other-window-repeat',
+;; `bmkp-previous-man-bookmark',
+;; `bmkp-previous-man-bookmark-repeat',
+;; `bmkp-previous-man-bookmark-other-window',
+;; `bmkp-previous-man-bookmark-other-window-repeat',
+;; `bmkp-previous-non-file-bookmark',
+;; `bmkp-previous-non-file-bookmark-repeat',
+;; `bmkp-previous-non-file-bookmark-other-window',
+;; `bmkp-previous-non-file-bookmark-other-window-repeat',
+;; `bmkp-previous-remote-file-bookmark',
+;; `bmkp-previous-remote-file-bookmark-repeat',
+;; `bmkp-previous-remote-file-bookmark-other-window',
+;; `bmkp-previous-remote-file-bookmark--other-windowrepeat',
+;; `bmkp-previous-specific-buffers-bookmark',
+;; `bmkp-previous-specific-buffers-bookmark-repeat',
+;; `bmkp-previous-specific-buffers-bookmark-other-window',
+;; `bmkp-previous-specific-buffers-bookmark-other-window-repeat',
+;; `bmkp-previous-specific-files-bookmark',
+;; `bmkp-previous-specific-files-bookmark-repeat',
+;; `bmkp-previous-specific-files-bookmark-other-window',
+;; `bmkp-previous-specific-files-bookmark-other-window-repeat',
+;; `bmkp-previous-variable-list-bookmark',
+;; `bmkp-previous-variable-list-bookmark-repeat',
+;; `bmkp-previous-variable-list-bookmark-other-window',
+;; `bmkp-previous-variable-list-bookmark-other-window-repeat',
+;; `bmkp-previous-url-bookmark',
+;; `bmkp-previous-url-bookmark-repeat'.
+;; `bmkp-previous-url-bookmark-other-window',
+;; `bmkp-previous-url-bookmark-other-window-repeat'.
+;;
 (bmkp-define-next+prev-cycle-commands "autonamed")
+(bmkp-define-next+prev-cycle-commands "autonamed" 'OTHER-WINDOW)
 (bmkp-define-next+prev-cycle-commands "bookmark-list")
 (bmkp-define-next+prev-cycle-commands "desktop")
 (bmkp-define-next+prev-cycle-commands "dired")
+(bmkp-define-next+prev-cycle-commands "dired" 'OTHER-WINDOW)
 (bmkp-define-next+prev-cycle-commands "file")
+(bmkp-define-next+prev-cycle-commands "file" 'OTHER-WINDOW)
 (bmkp-define-next+prev-cycle-commands "gnus")
+(bmkp-define-next+prev-cycle-commands "gnus" 'OTHER-WINDOW)
 (bmkp-define-next+prev-cycle-commands "info")
+(bmkp-define-next+prev-cycle-commands "info" 'OTHER-WINDOW)
 (bmkp-define-next+prev-cycle-commands "lighted")
+(bmkp-define-next+prev-cycle-commands "lighted" 'OTHER-WINDOW)
 (bmkp-define-next+prev-cycle-commands "local-file")
+(bmkp-define-next+prev-cycle-commands "local-file" 'OTHER-WINDOW)
 (bmkp-define-next+prev-cycle-commands "man")
+(bmkp-define-next+prev-cycle-commands "man" 'OTHER-WINDOW)
 (bmkp-define-next+prev-cycle-commands "non-file")
+(bmkp-define-next+prev-cycle-commands "non-file" 'OTHER-WINDOW)
 (bmkp-define-next+prev-cycle-commands "remote-file")
+(bmkp-define-next+prev-cycle-commands "remote-file" 'OTHER-WINDOW)
 (bmkp-define-next+prev-cycle-commands "specific-buffers")
+(bmkp-define-next+prev-cycle-commands "specific-buffers" 'OTHER-WINDOW)
 (bmkp-define-next+prev-cycle-commands "specific-files")
+(bmkp-define-next+prev-cycle-commands "specific-files" 'OTHER-WINDOW)
 (bmkp-define-next+prev-cycle-commands "variable-list")
 (bmkp-define-next+prev-cycle-commands "url")
+(bmkp-define-next+prev-cycle-commands "url" 'OTHER-WINDOW)
 
 ;;;###autoload (autoload 'bmkp-toggle-autonamed-bookmark-set/delete "bookmark+")
 (defun bmkp-toggle-autonamed-bookmark-set/delete (&optional position allp)
