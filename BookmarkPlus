@@ -3411,7 +3411,7 @@ bookmarks?
 
 Commands '''`bmkp-next-bookmark'''' and
 '''`bmkp-previous-bookmark'''' cycle to the next and previous
-bookmark in the navigation list (with wraparound).
+bookmark in the navigation list (with wraparound).  (There are also other-[[window]] versions of these commands.)
 
 You can bind these to any keys you like, but it's obviously better
 to choose keys that are easily repeatable (e.g. by holding them
@@ -3488,7 +3488,7 @@ cycling.
 
 If you often want to cycle among the bookmarks of some other particular
 kind (e.g. only the autonamed bookmarks), then you can bind the
-relevant commands (e.g. `bmkp-next-autonamed-bookmark-repeat', `bmkp-previous-autonamed-bookmark-repeat') to handy keys.  Otherwise, you can just use the cycling commands without binding them.
+relevant commands (e.g. `bmkp-next-autonamed-bookmark-repeat', `bmkp-previous-autonamed-bookmark-repeat', or their other-[[window]] versions)) to handy keys.  Otherwise, you can just use the cycling commands without binding them.
 
 
 
