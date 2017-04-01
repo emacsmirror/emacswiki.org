@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Mar 12 11:32:41 2017 (-0700)
+;; Last-Updated: Fri Mar 31 18:52:00 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 15221
+;;     Update #: 15228
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -3077,7 +3077,8 @@
 ;;
 ;;  Commands `bmkp-next-bookmark' and `bmkp-previous-bookmark' cycle
 ;;  to the next and previous bookmark in the navigation list (with
-;;  wraparound).
+;;  wraparound).  (There are also other-window versions of these
+;;  commands.)
 ;;
 ;;  You can bind these to any keys you like, but it's obviously better
 ;;  to choose keys that are easily repeatable (e.g. by holding them
@@ -3124,7 +3125,7 @@
 ;;  bookmarks, which record a specific set of bookmarks and their sort
 ;;  order: to later choose given sets in different contexts for
 ;;  cycling.
-;;  
+;;
 ;;
 ;;(@* "Cycling Dynamic Sets of Bookmarks")
 ;; *** "Cycling Dynamic Sets of Bookmarks" ***
@@ -3149,9 +3150,9 @@
 ;;  particular kind (e.g. only the autonamed bookmarks), then you can
 ;;  bind the relevant commands
 ;;  (e.g. `bmkp-next-autonamed-bookmark-repeat',
-;;  `bmkp-previous-autonamed-bookmark-repeat') to handy keys.
-;;  Otherwise, you can just use the cycling commands without binding
-;;  them.
+;;  `bmkp-previous-autonamed-bookmark-repeat', or their other-window
+;;  versions) to handy keys.  Otherwise, you can just use the cycling
+;;  commands without binding them.
 ;;
 ;;
 ;;(@* "Cycling in the Current File/Buffer")
