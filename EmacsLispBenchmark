@@ -48,6 +48,14 @@ The compiled form of using Emacs's `sort' as in the very first example above doe
   (benchmark-run-compiled 512 (sort (number-sequence 1 512) '<))
   (0.258 5 0.043000000000006366)
 
+The simpler <code>benchmark-elapse</code> macro is also available:
+
+  (require 'benchmark)
+  (let* ((elapsed (benchmark-elapse (sit-for 2)))
+         (report  (format "%.1f seconds" elapsed)))
+    report)
+  ==> "2.0 seconds"
+
 See also
 EmacsLispProfiler,
 EmacsLispTracing,
