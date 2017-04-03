@@ -55,7 +55,7 @@ If you don't have Git, follow [https://github.com/emacs-evil/evil/archive/master
 
 Move Evil to ##~/.emacs.d/evil## (or somewhere else in your ##load-path##). Then add the following lines to ##~/.emacs##:
 
-    (push "~/.emacs.d/evil" 'load-path)
+    (add-to-list 'load-path "~/.emacs.d/evil")
     (require 'evil)
     (evil-mode 1)
 
