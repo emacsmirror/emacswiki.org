@@ -648,7 +648,7 @@ Here's an example:
       (match-strings-all str))
     ==> ("time help" "help")
 
-Another variant which does much the same thing:
+Another variant which does something similar, but without subexpressions:
 
     (defun regexp-list (regex string)
       "Return a list of all REGEXP matches in STRING."
