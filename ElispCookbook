@@ -663,7 +663,7 @@ Another variant which does much the same thing:
 
 And an example which locates HTML tags in the title of a publication:
 
-    (regexp-list "<[[:alnum:][:blank:]/=\"]*?>" "An article title concerning CO<sub>2</sub> emissions.")
+    (regexp-list "<[[:alnum:][:blank:]/=\"-]*?>" "An article title concerning CO<sub>2</sub> emissions.")
     ==> ("<sub>" "</sub>")
 
 == Code Comments ==
