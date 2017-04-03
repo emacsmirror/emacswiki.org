@@ -648,6 +648,24 @@ Here's an example:
       (match-strings-all str))
     ==> ("time help" "help")
 
+Another variant which does much the same thing:
+
+    (defun regexp-list (regex string)
+      "Return a list of all REGEXP matches in STRING."
+      ;; source: http://emacs.stackexchange.com/questions/7148/get-all-regexp-matches-in-buffer-as-a-list
+      (let ((pos 0)        ; string marker
+            (matches ()))  ; return list
+        (while (string-match regex string pos)
+          (push (match-string 0 string) matches)
+          (setq pos (match-end 0)))
+        (setq matches (reverse matches))
+        matches))
+
+And an example which locates HTML tags in the title of a publication:
+
+    (regexp-list "<[[:alnum:][:blank:]/=\"]*?>" "An article title concerning CO<sub>2</sub> emissions.")
+    ==> ("<sub>" "</sub>")
+
 == Code Comments ==
 
 Move to the beginning of the current comment:
