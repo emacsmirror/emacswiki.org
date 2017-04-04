@@ -182,7 +182,7 @@ current compiler).}}}
 
 Most languages only have lexical bindings for names.
 
-* EmacsLisp has dynamic binding only.  As of Emacs 24, lexical binding may be turned on for a file or buffer.
+* EmacsLisp as of 24.1 has both dynamic binding and lexical binding.  Lexical binding must be enabled explicitly for a file or buffer.  Individual variables can be `defvar'ed to make them "special" like in CommonLisp.
 * CommonLisp has both dynamic binding and lexical binding.  You get lexical binding by default, but you can ask for dynamic binding by `defvar'ing your name or `declare'ing it "special".
 
 [:Scheme]
@@ -202,23 +202,6 @@ See the [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Dynamic-Bindi
 
 == Moving towards lexical binding ==
 
-**Since April 1, 2011 (not an April fools joke), Emacs 24 has merged the lexical binding branch mentioned below.**
-The trunk code is moving along and becoming lexical-binding-tolerant.
-
-=== Lexical binding branch of Emacs ===
-
-I have implemented lexical binding support in EmacsLisp.  It is available in the `<tt>lexbind</tt>' branch of the official  Emacs CVS repository.  I keep this branch synced with the CVS trunk on a regular basis, so it should be "mostly" up-to-date.
-
-The status of this implementation:
-
-* Both the interpreter and byte-code engine support lexical binding (as well as dynamic binding) in a way that is backwards-compatible with old code (code must declare that it wants to use lexical binding).
-
-* The byte-code support is fairly low-level and quite fast, similar in spirit to what a native-code compiler might do -- lexically-bound local variables are just slots on the byte-code stack.
-
-* There is compiler support for byte-compiling code to use lexical binding, but it is unfinished:  Basic code works great, but the things that need more compiler analysis are unfinished or somewhat flaky (e.g., lexical closures work, but there are certainly still problems in that area).
-
-* I use (a variant of) this branch for my daily work, and it is quite solid.  There should be zero problems in normal usage, when using ordinary dynamic binding (remember, the lexical binding features are only used for code that explicitly asks for them, and existing code doesn't).
-
 To use lexical binding, an Emacs-lisp source file must set a file-variable `<tt>lexical-binding</tt>' to t in the file header, e.g., by using a first line like:
 
     ;;; -*- lexical-binding: t -*-
@@ -232,16 +215,16 @@ Much code written for normal elisp should work unchanged when using lexical bind
 === More about Emacs future lexical binding ===
 
 Today StefanMonnier told
-[http://lists.gnu.org/archive/html/emacs-devel/2010-09/msg00716.htmlmore about how the lexical binding in Emacs might behave]:
+[http://lists.gnu.org/archive/html/emacs-devel/2010-09/msg00716.html more about how the lexical binding in Emacs might behave]:
 
 * As you may have noticed, I have added a new warning to the byte-compiler for defvars of variables that don't have a prefix.  This is in preparation for the introduction of lexical scoping: in order not to
 have to rewrite all the code, the lexbind branch uses `let' both for dynamically-scoped let-bindings and for lexically-scoped let-bindings; where the distinction is based on whether or not a variable has
 been defvar'd.  This is the same system as used in CommonLisp and it works well in practice, but it requires a bit of care, because every defvar has a global effect: it declares that this variable will use dynamic-scoping wherever it gets let-bound.  So if a file uses `len' as a lexically-scoped variable and another file does a (defvar len), we get
 a conflict that results in the first file being evaluated with a different semantic than expected by the author.
 
-* So, the end result is that (defvar <prefix>-<foo> ) is OK because the "<prefix>-" ensures you only mess with your own variable, but (defvar <foo> ) is not OK because you may interfere with some other package.
+* So, the end result is that (defvar <prefix>-<foo>) is OK because the "<prefix>-" ensures you only mess with your own variable, but (defvar <foo> ) is not OK because you may interfere with some other package.
 
-* Now, we have a lot of offending (defvar <foo> ) in Emacs currently, so we will want to fix them, and to get things started, we want to fix the two predefined float constants `e' and `pi'.
+* Now, we have a lot of offending (defvar <foo>) in Emacs currently, so we will want to fix them, and to get things started, we want to fix the two predefined float constants `e' and `pi'.
 
 * In their case, the solution is to rename them to `float-e' and `float-pi', but this introduces a backward incompatibility. I figure we could define-obsolete-variable-alias (which leaves the
 problem of `e' and `pi' being dynamically scoped, but hopefully only for a few versions until we remove the obsolete name), but this means that every code that does (let ((e <foo> )) ...) would now get a stupid warning about using an obsolete variable `e'.
