@@ -9,6 +9,17 @@ The default locking behavior can be customized via `emacs-lock-default-locking-m
 
 Emacs Lock is included in Emacs 24.
 
+To protect the **scratch** buffer against accidental kill you can use the following code in .emacs or in init.el :
+
+	(with-current-buffer "*scratch*"
+	  (emacs-lock-mode 'kill))
+
+And to unprotect :
+
+	(with-current-buffer "*scratch*"
+	  (emacs-lock-mode -1))
+
+
 ==Protecting Buffers in XEmacs==
 
 To protect important buffers from accidental killing, use the following forms in [[XEmacs]]:
