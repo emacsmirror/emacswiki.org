@@ -1,26 +1,32 @@
-The ElispManual does a stand-up job of introducing some of the primitive functions for operating with association lists.  More significant tasks can be accomplished with the `alist' library that comes with [[APEL]].
-
-* GIT:a.el/alist.el
-
-To use the library in your code you must require it with:
-
-   (require 'alist)
-
-To change or add a key-value pair, use `set-alist'.
+The ElispManual does a stand-up job of introducing the builtin functions for operating with association lists, see [[Manual:Association Lists]] (elisp).  Modifying association lists can be done with `setf' with `alist-get' (often there is no need to modify an list though, just cons the new entry onto the list).
 
     (setq test-alist '((a . 0) (b . 1)))
     ==> ((a . 0) (b . 1))
     
-    (set-alist 'test-alist 'a 9)
-    ==> ((a . 9) (b . 1))
+    (setf (alist-get 'a test-alist) 9)
+    (setf (alist-get 'c test-alist) 3)
     
-    (set-alist 'test-alist 'c 3)
-    ==> ((c . 3) (a . 9) (b . 1))
+    test-alist ==> ((c . 3) (a . 9) (b . 1))
 
-To delete a key-value pair, use `remove-alist'.
+To delete a key-value pair, pass a non-nil `REMOVE' argument to `alist-get':
 
-    (remove-alist 'test-alist 'a)
-    ==> ((c . 3) (b . 1))
+    (setf (alist-get 'c test-alist nil t) nil)
+    
+    test-alist ==> ((c . 3) (b . 1))
+
+In older Emacs versions lacking `alist-get' the same things can be done with a bit more verbosity:
+
+    (let* ((entry (assq 'a test-alist)))
+      (if entry (setcdr entry 9)
+	(push (cons 'a 9) test-alist)))
+    
+    (let* ((entry (assq 'c test-alist)))
+      (if entry (setcdr entry 3)
+	(push (cons 'c 3) test-alist)))
+
+    (setq test-alist (assq-delete-all 'a test-alist))
+
+Alternatively, APEL provides [http://git.chise.org/gitweb/?p=elisp/apel.git;a=blob;f=alist.el;hb=apel-10_8 alist.el] with similar functionality, though with a slightly different interface (note that its `set-alist', `remove-alist', and `set-modified-alist' functions can only operate on dynamic variables, see [[Manual:Lexical Binding]]).
 
 See also AlistVsPlist.
 
