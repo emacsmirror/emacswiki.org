@@ -3,7 +3,7 @@
 
 ;; Copyright (C) 2006  Christian Neukirchen <purl.org/net/chneukirchen>
 ;; Authors: Christian Neukirchen
-;; URL: http://9thelm.com/blog
+;; http://driverrestore.com/
 ;; Created: 2007
 ;; Version: 20091230
 ;; Keywords:  9thelm 
