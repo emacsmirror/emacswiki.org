@@ -2,10 +2,6 @@
 
 This mode was renamed to BatMode which is part of core Emacs 24.4 and later.
 
-The archived version of DosMode is useful for older versions of Emacs:
-
-* Lisp:dos.el
-
 The DosScripts page compares alternative Emacs modes available for editing Dos scripts, including Lisp:batch-mode.el and CmdMode.
 
 Indentation for DosMode can be added with DosIndent
