@@ -20,7 +20,7 @@ Another option using gdrive (requires helm for completion)
      "location for storing org to gdocs exported files, use 'gdrive list  -t <foldername>' to find the id")
 
     (defun gdoc-export-buffer ()
-      "Export current buffer as google doc to folder irentified by gdocs-folder-id"
+      "Export current buffer as google doc to folder identified by gdocs-folder-id"
       (interactive)
       (shell-command
       (format "gdrive upload --convert --mimetype text/plain --parent %s --file %s"
