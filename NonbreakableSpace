@@ -1,6 +1,6 @@
 Czech and Polish typography rules (and probably in other Slavonic languages) requires avoiding one letter prepositions at line endings.  So they should be connected with the following words by nonbreakable space (space which cannot be converted into line break).  In TeX and LaTeX nonbreakable space is created using `~' (tilde) instead of whitespace character; in SGML (e.g. HTML) text <code>&nbsp;</code> is used. Unicode defines a "[http://en.wikipedia.org/wiki/Hard_space hard space]" at U+00A0; to insert it, type `‘C-x 8 SPC'.
 
-The rule that some words should be not left at line endings depends on the number of characters in line; for on-line HTML documents this rule usually should not be invoked.  See for example chapter about leaving words at line endings in [http://www.typografia.ogme.pl/r3_dzielenie.htm Typography Primer] (in Polish).
+The rule that some words should be not left at line endings depends on the number of characters in line; for on-line HTML documents this rule usually should not be invoked.  See for example chapter about leaving words at line endings in [https://web-beta.archive.org/web/20060924041336/http://www.typografia.ogme.pl:80/r3_dzielenie.htm Typography Primer] (in Polish).
 
 Non-breakable space (`~' in !LaTeX) is sometimes referred as /hard space/, but that name should refer to fixed width non-breakable space (`\ ' in !LaTeX).
 
