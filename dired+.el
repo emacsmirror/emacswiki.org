@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar 30 10:47:25 2017 (-0700)
+;; Last-Updated: Sun Apr  9 11:40:08 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 9907
+;;     Update #: 9956
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -550,7 +550,9 @@
 ;;    `diredp-menu-bar-operate-recursive-menu',
 ;;    `diredp-menu-bar-regexp-menu',
 ;;    `diredp-menu-bar-regexp-recursive-menu',
-;;    `diredp-menu-bar-subdir-menu', `diredp-navigate-menu',
+;;    `diredp-menu-bar-subdir-menu',
+;;    `diredp-multiple-move-copy-link-menu',
+;;    `diredp-multiple-rename-menu', `diredp-navigate-menu',
 ;;    `diredp-re-no-dot', `diredp-w32-drives-mode-map'.
 ;;
 ;;  Macros defined here:
@@ -655,6 +657,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/04/09 dadams
+;;     Added: diredp-multiple-move-copy-link-menu, diredp-multiple-rename-menu.  Moved single items there.
+;;     Added dired-do-rename to diredp-multiple-rename-menu.
 ;; 2017/03/30 dadams
 ;;     Moved key bindings to end of file.  Moved defgroup before defcustoms.
 ;;     Bind dired-multiple-w32-browser to C-M-RET, diredp-multiple-w32-browser-recursive to M-+ C-M-RET.
@@ -10102,39 +10107,6 @@ If no one is selected, symmetric encryption will be performed.  "
     :help "Delete current file or all marked files (not flagged files)"))
 (define-key diredp-menu-bar-operate-menu [separator-delete] '("--")) ; -------------------------
 
-(define-key diredp-menu-bar-operate-menu [hardlink]
-  '(menu-item "Hardlink to..." dired-do-hardlink
-    :help "Make hard links for current or marked files"))
-(if (not (fboundp 'dired-do-relsymlink))
-    (define-key diredp-menu-bar-operate-menu [symlink]
-      '(menu-item "Symlink to..." dired-do-symlink
-        :visible (fboundp 'make-symbolic-link)
-        :help "Make symbolic links for current or marked files"))
-  (define-key diredp-menu-bar-operate-menu [symlink]
-    '(menu-item "Symlink to (Absolute)..." dired-do-symlink
-      :help "Make absolute symbolic links for current or marked files"))
-  (define-key diredp-menu-bar-operate-menu [relsymlink] ; In `dired-x.el'.
-    '(menu-item "Symlink to (Relative)..." dired-do-relsymlink
-      :help "Make relative symbolic links for current or marked files")))
-(define-key diredp-menu-bar-operate-menu [copy]
-  '(menu-item "Copy to..." dired-do-copy :help "Copy current file or all marked files"))
-(define-key diredp-menu-bar-operate-menu [rename]
-  '(menu-item "Move to..." dired-do-rename :help "Rename current file or move marked files"))
-(define-key diredp-menu-bar-operate-menu [separator-rename] '("--")) ; -------------------------
-
-(define-key diredp-menu-bar-operate-menu [capitalize]
-  '(menu-item "Capitalize" diredp-capitalize
-    :help "Capitalize (initial caps) the names of all marked files"))
-(define-key diredp-menu-bar-operate-menu [downcase]
-  '(menu-item "Downcase" dired-downcase
-    :enable (or (not (fboundp 'msdos-long-file-names))  (msdos-long-file-names))
-    :help "Rename marked files to lowercase names"))
-(define-key diredp-menu-bar-operate-menu [upcase]
-  '(menu-item "Upcase" dired-upcase
-    :enable (or (not (fboundp 'msdos-long-file-names))  (msdos-long-file-names))
-    :help "Rename marked files to uppercase names"))
-(define-key diredp-menu-bar-operate-menu [separator-lettercase] '("--")) ; ---------------------
-
 (when (fboundp 'dired-copy-filename-as-kill)
   (define-key diredp-menu-bar-operate-menu [kill-ring]
     '(menu-item "Copy File Names (to Paste)" dired-copy-filename-as-kill
@@ -10166,6 +10138,56 @@ If no one is selected, symmetric encryption will be performed.  "
   (define-key diredp-menu-bar-operate-menu [find-files]
     '(menu-item "Open" dired-do-find-marked-files ; In `dired-x.el'.
       :help "Open each marked file for editing")))
+
+
+;; `Multiple' > `Rename' menu.
+;;
+(defvar diredp-multiple-rename-menu (make-sparse-keymap "Rename")
+  "`Rename' submenu for Dired menu-bar `Multiple' menu.")
+(define-key diredp-menu-bar-operate-menu [multiple-case] (cons "Rename" diredp-multiple-rename-menu))
+
+(define-key diredp-multiple-rename-menu [rename]
+  '(menu-item "Move to Dir... / Rename This..." dired-do-rename
+    :help "Move marked (or next N) files, or rename current file"))
+
+(define-key diredp-multiple-rename-menu [capitalize]
+  '(menu-item "Capitalize" diredp-capitalize
+    :help "Capitalize (initial caps) the names of all marked files"))
+(define-key diredp-multiple-rename-menu [downcase]
+  '(menu-item "Downcase" dired-downcase
+    :enable (or (not (fboundp 'msdos-long-file-names))  (msdos-long-file-names))
+    :help "Rename marked files to lowercase names"))
+(define-key diredp-multiple-rename-menu [upcase]
+  '(menu-item "Upcase" dired-upcase
+    :enable (or (not (fboundp 'msdos-long-file-names))  (msdos-long-file-names))
+    :help "Rename marked files to uppercase names"))
+
+
+;; `Multiple' > `Move / Copy / Link' menu.
+;;
+(defvar diredp-multiple-move-copy-link-menu (make-sparse-keymap "Move / Copy / Link")
+  "`Move / Copy / Link' submenu for Dired menu-bar `Multiple' menu.")
+(define-key diredp-menu-bar-operate-menu [multiple-move-copy-link]
+  (cons "Move / Copy / Link" diredp-multiple-move-copy-link-menu))
+
+(define-key diredp-multiple-move-copy-link-menu [hardlink]
+  '(menu-item "Hardlink to..." dired-do-hardlink
+    :help "Make hard links for current or marked files"))
+(if (not (fboundp 'dired-do-relsymlink))
+    (define-key diredp-multiple-move-copy-link-menu [symlink]
+      '(menu-item "Symlink to..." dired-do-symlink
+        :visible (fboundp 'make-symbolic-link)
+        :help "Make symbolic links for current or marked files"))
+  (define-key diredp-multiple-move-copy-link-menu [symlink]
+    '(menu-item "Symlink to (Absolute)..." dired-do-symlink
+      :help "Make absolute symbolic links for current or marked files"))
+  (define-key diredp-multiple-move-copy-link-menu [relsymlink] ; In `dired-x.el'.
+    '(menu-item "Symlink to (Relative)..." dired-do-relsymlink
+      :help "Make relative symbolic links for current or marked files")))
+(define-key diredp-multiple-move-copy-link-menu [copy]
+  '(menu-item "Copy to..." dired-do-copy :help "Copy current file or all marked files"))
+(define-key diredp-multiple-move-copy-link-menu [rename]
+  '(menu-item "Move to..." dired-do-rename :help "Rename current file or move marked files"))
 
 
 ;; `Multiple' > `Images' menu.
