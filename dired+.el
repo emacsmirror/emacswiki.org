@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr  9 11:40:08 2017 (-0700)
+;; Last-Updated: Sun Apr  9 14:34:08 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 9956
+;;     Update #: 9974
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -658,7 +658,8 @@
 ;;; Change Log:
 ;;
 ;; 2017/04/09 dadams
-;;     Added: diredp-multiple-move-copy-link-menu, diredp-multiple-rename-menu.  Moved single items there.
+;;     Added: diredp-multiple-move-copy-link-menu, diredp-multiple-rename-menu, diredp-multiple-dired-menu,
+;;            diredp-multiple-omit-menu, diredp-multiple-delete-menu.  Moved single menu items there.
 ;;     Added dired-do-rename to diredp-multiple-rename-menu.
 ;; 2017/03/30 dadams
 ;;     Moved key bindings to end of file.  Moved defgroup before defcustoms.
@@ -10099,14 +10100,6 @@ If no one is selected, symmetric encryption will be performed.  "
       :help "Create HTML files corresponding to marked files")))
 (define-key diredp-menu-bar-operate-menu [separator-misc] '("--")) ; ---------------------------
 
-(define-key diredp-menu-bar-operate-menu [delete-flagged]
-  '(menu-item "Delete Flagged" dired-do-flagged-delete
-    :help "Delete all files flagged for deletion (D)"))
-(define-key diredp-menu-bar-operate-menu [delete]
-  '(menu-item "Delete Marked (not Flagged)" dired-do-delete
-    :help "Delete current file or all marked files (not flagged files)"))
-(define-key diredp-menu-bar-operate-menu [separator-delete] '("--")) ; -------------------------
-
 (when (fboundp 'dired-copy-filename-as-kill)
   (define-key diredp-menu-bar-operate-menu [kill-ring]
     '(menu-item "Copy File Names (to Paste)" dired-copy-filename-as-kill
@@ -10117,18 +10110,6 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-operate-menu [diredp-insert-subdirs]
   '(menu-item "Insert Subdirs" diredp-insert-subdirs
     :help "Insert the marked subdirectories - like using `i' at each marked dir"))
-(define-key diredp-menu-bar-operate-menu [diredp-marked-other-window]
-  '(menu-item "Dired (Marked) in Other Window" diredp-marked-other-window
-    :enable (save-excursion (goto-char (point-min))
-                            (and (re-search-forward (dired-marker-regexp) nil t)
-                                 (re-search-forward (dired-marker-regexp) nil t)))
-    :help "Open Dired on marked files only, in other window"))
-(define-key diredp-menu-bar-operate-menu [diredp-marked]
-  '(menu-item "Dired (Marked)" diredp-marked
-    :enable (save-excursion (goto-char (point-min))
-                            (and (re-search-forward (dired-marker-regexp) nil t)
-                                 (re-search-forward (dired-marker-regexp) nil t)))
-    :help "Open Dired on marked files only"))
 ;; On Windows, bind more.
 (eval-after-load "w32-browser"
   '(define-key diredp-menu-bar-operate-menu [dired-multiple-w32-browser]
@@ -10138,6 +10119,57 @@ If no one is selected, symmetric encryption will be performed.  "
   (define-key diredp-menu-bar-operate-menu [find-files]
     '(menu-item "Open" dired-do-find-marked-files ; In `dired-x.el'.
       :help "Open each marked file for editing")))
+
+
+;; `Multiple' > `Dired' menu.
+;;
+(defvar diredp-multiple-dired-menu (make-sparse-keymap "Dired")
+  "`Dired' submenu for Dired menu-bar `Multiple' menu.")
+(define-key diredp-menu-bar-operate-menu [multiple-dired]
+  `(menu-item "Dired" ,diredp-multiple-dired-menu
+    :enable (save-excursion (goto-char (point-min))
+                            (and (re-search-forward (dired-marker-regexp) nil t)
+                                 (re-search-forward (dired-marker-regexp) nil t)))
+    :help "Open Dired on marked files and dirs only"))
+
+(define-key diredp-multiple-dired-menu [diredp-marked-other-window]
+  '(menu-item "Dired Marked in Other Window" diredp-marked-other-window
+    :enable (save-excursion (goto-char (point-min))
+                            (and (re-search-forward (dired-marker-regexp) nil t)
+                                 (re-search-forward (dired-marker-regexp) nil t)))
+    :help "Open Dired on marked files and dirs only, in other window"))
+(define-key diredp-multiple-dired-menu [diredp-marked]
+  '(menu-item "Dired Marked" diredp-marked
+    :enable (save-excursion (goto-char (point-min))
+                            (and (re-search-forward (dired-marker-regexp) nil t)
+                                 (re-search-forward (dired-marker-regexp) nil t)))
+    :help "Open Dired on marked files and dirs only"))
+
+
+;; `Multiple' > `Omit' menu.
+;;
+(defvar diredp-multiple-omit-menu (make-sparse-keymap "Omit")
+  "`Omit' submenu for Dired menu-bar `Multiple' menu.")
+(define-key diredp-menu-bar-operate-menu [multiple-omit] (cons "Omit" diredp-multiple-omit-menu))
+
+(define-key diredp-multiple-omit-menu [omit-unmarked]
+  '(menu-item "Omit Unmarked" diredp-omit-unmarked :help "Hide lines of unmarked files"))
+(define-key diredp-multiple-omit-menu [omit-marked]
+  '(menu-item "Omit Marked" diredp-omit-marked :help "Hide lines of marked files"))
+
+
+;; `Multiple' > `Delete' menu.
+;;
+(defvar diredp-multiple-delete-menu (make-sparse-keymap "Delete")
+  "`Delete' submenu for Dired menu-bar `Multiple' menu.")
+(define-key diredp-menu-bar-operate-menu [multiple-delete] (cons "Delete" diredp-multiple-delete-menu))
+
+(define-key diredp-multiple-delete-menu [delete-flagged]
+  '(menu-item "Delete Flagged" dired-do-flagged-delete
+    :help "Delete all files flagged for deletion (D)"))
+(define-key diredp-multiple-delete-menu [delete]
+  '(menu-item "Delete Marked (not Flagged)" dired-do-delete
+    :help "Delete current file or all marked files (not flagged files)"))
 
 
 ;; `Multiple' > `Rename' menu.
