@@ -55,6 +55,16 @@ The find and grep utilities from !GnuWin32 (below) are very old versions. To hav
    (getenv "PATH")))
 </pre>
 
+In recent git installations, using msys from git-bash
+<pre>
+(setenv "PATH"
+  (concat
+   ;; Change this with your path to MSYS bin directory
+   "c:\\Program Files\\Git\\usr\\bin;"
+   (getenv "PATH")))
+</pre>
+
+
 [:GnuWin32]
 === GnuWin32 ===
 
