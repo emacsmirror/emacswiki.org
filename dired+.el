@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2013.07.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr  9 14:34:08 2017 (-0700)
+;; Last-Updated: Sun Apr  9 14:40:32 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 9974
+;;     Update #: 9977
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -550,10 +550,12 @@
 ;;    `diredp-menu-bar-operate-recursive-menu',
 ;;    `diredp-menu-bar-regexp-menu',
 ;;    `diredp-menu-bar-regexp-recursive-menu',
-;;    `diredp-menu-bar-subdir-menu',
+;;    `diredp-menu-bar-subdir-menu', `diredp-multiple-delete-menu',
+;;    `diredp-multiple-dired-menu',
 ;;    `diredp-multiple-move-copy-link-menu',
-;;    `diredp-multiple-rename-menu', `diredp-navigate-menu',
-;;    `diredp-re-no-dot', `diredp-w32-drives-mode-map'.
+;;    `diredp-multiple-omit-menu', `diredp-multiple-rename-menu',
+;;    `diredp-navigate-menu', `diredp-re-no-dot',
+;;    `diredp-w32-drives-mode-map'.
 ;;
 ;;  Macros defined here:
 ;;
