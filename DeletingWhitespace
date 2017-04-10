@@ -54,19 +54,23 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
                       (delete-char trailnewlines)))))))
 
 === With PictureMode ===
+
 * PictureModeTrailingWhitespaceTrick. Simple and quick. Works in all GnuEmacs versions.
 
 === nuke-trailing-whitespace ===
+
 * `M-x nuke-trailing-whitespace'
 
 [new]
 : *Note:* I've had some corruption problems with `nuke-trailing-whitespace' and Unicode files. In addition to the trailing newlines getting deleted, a few non-whitespace characters get deleted too. I've done a quick fix by replacing the `delete-region' with `delete-blank-lines'.
 
 === whitespace.el ===
+
 * <tt>[http://www.splode.com/~friedman/software/emacs-lisp/src/whitespace.el whitespace.el]</tt>. -- GregFenton
 
 === Simple function ===
-* This commmand (e.g. bind to `C-x C-h'):
+
+* This command (e.g. bind to `C-x C-h'):
 
         (defun my-delete-leading-whitespace (start end)
           "Delete whitespace at the beginning of each line in region."
@@ -76,9 +80,11 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
             (delete-whitespace-rectangle (point) end nil)))
 
 === ethan-wspace ===
+
 * [http://github.com/glasserc/ethan-wspace ethan-wspace] - keeps whitespace clean in clean files while highlighting it in dirty files
 
 === DeleteNlSpaces ==
+
 * DeleteNlSpaces - a non intrusive minor mode for deleting needless spaces
 
 == Version control friendly options (modify only the lines you have edited) ==
@@ -122,7 +128,6 @@ To remove whitespace at the ''end of a document'', use any of the following:
 
 `C-x C-o' (`delete-blank-lines') also deletes any extra blank lines between two paragraphs, leaving just one blank line.
 
-
 == Prevent adding newlines at end of buffer ==
 
 To ''prevent adding newlines'' when you move the [[cursor]] forward at the end of the buffer, customize `next-line-add-newlines' to `nil'.
@@ -135,7 +140,6 @@ To ''indent'' (or ''unindent'') a block of lines together rigidly (adding or rem
 ## Ensure the TextCursor is at the beginning of the last line to indent.
 ## <code>C-u NUM C-x TAB</code> to indent <code>NUM</code> columns. A negative <code>NUM</code> (e.g., <code>C-- 4 C-x TAB</code>) un-indents, removing a rectangle of whitespace
 
-
 == Whitespace Aware `kill-line' ==
 
 This handles whitespace a little better when having indentation and you kill a line.
@@ -144,7 +148,6 @@ This handles whitespace a little better when having indentation and you kill a l
       "cleanup whitespace on kill-line"
       (if (not (bolp))
 	  (delete-region (point) (progn (skip-chars-forward " \t") (point)))))
-
 
 == Delete adjacent whitespace ==
 
