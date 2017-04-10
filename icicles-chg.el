@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Mar  3 14:42:00 2017 (-0800)
+;; Last-Updated: Sun Apr  9 18:30:24 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 11689
+;;     Update #: 11692
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6423,6 +6423,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2017/04/09 dadams
+;;     icicle-define-icicle-maps: Updated for new Dired+ names:
+;;       diredp-menu-bar-multiple-menu, diredp-menu-bar-dir-menu.
 ;; 2016/03/27 dadams
 ;;     icicle-(bind|restore)-completion-keys: Bind M-i to icicle-toggle-map and restore to nil.
 ;; 2016/02/28 dadams
