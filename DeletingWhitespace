@@ -2,13 +2,13 @@ Emacs has several commands to delete whitespace.
 
 == Just one space ==
 
-To make sure two words are separated by ''just one space'', use `M-SPC' (`just-one-space').
+To make sure two words are separated by ''just one space'', use `M-SPC' or `M-x just-one-space'.
 
 == Join two words ==
 
 To ''join two words'' (or any non-space characters) together by deleting all whitespace between them, use any of the following:
 
-* `##M-\##' (`delete-horizontal-space')
+* ##'M-\'## or `M-x delete-horizontal-space'
 
 * This command:
 
