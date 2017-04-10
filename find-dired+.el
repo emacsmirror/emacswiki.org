@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 22 17:50:18 2017 (-0800)
+;; Last-Updated: Sun Apr  9 18:33:23 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 1214
+;;     Update #: 1219
 ;; URL: https://www.emacswiki.org/emacs/download/find-dired%2b.el
 ;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -90,6 +90,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/04/09 dadams
+;;     Updated to new Dired+ menu name: diredp-menu-bar-dir-menu.
 ;; 2017/01/27 dadams
 ;;     find-dired-hook: Added tip to doc string about removing hook function.
 ;;     find-dired-sentinel: Use with-current-buffer instead of save-excursion + set-buffer.
@@ -225,7 +227,7 @@
 
 (require 'dired+ nil t) ;; (no error if not found):
                         ;; dired-insert-set-properties,
-                        ;; diredp-menu-bar-subdir-menu
+                        ;; diredp-menu-bar-dir-menu
  ;; Note: `dired+.el' does a (require 'dired): dired-mode-map
 
 (when (and (require 'thingatpt+ nil t);; (no error if not found)
@@ -235,6 +237,8 @@
  ;; region-or-non-nil-symbol-name-nearest-point
 
 ;; Quiet the byte-compiler.
+(defvar diredp-menu-bar-dir-menu)       ; In `dired+.el'
+(defvar diredp-menu-bar-subdir-menu)    ; In `dired+.el' (old name)
 (defvar find-ls-subdir-switches)        ; Emacs 22+
 (defvar find-name-arg)                  ; Emacs 22+
 (defvar find-program)                   ; Emacs 22+
@@ -776,13 +780,15 @@ If `encode-time' returns nil then the current time is returned."
 (when (boundp 'menu-bar-search-menu)
   (define-key dired-mode-map [menu-bar search separator-find] '("--"))
   (define-key dired-mode-map [menu-bar search find] '("Run `find' Command" . menu-bar-run-find-menu)))
+
 ;; Add it to Dired's `Dir' menu (called `Subdir' in `dired.el').
-(when (boundp 'diredp-menu-bar-subdir-menu) ; Defined in `dired+.el'.
-  (if (or (> emacs-major-version 21)  (fboundp 'wdired-change-to-wdired-mode))
-      (define-key-after diredp-menu-bar-subdir-menu [find]
-        '("Run `find' Command" . menu-bar-run-find-menu)
-        'wdired-mode)
-    (define-key diredp-menu-bar-subdir-menu [find] '("Run `find' Command" . menu-bar-run-find-menu))))
+(when (or (boundp 'diredp-menu-bar-dir-menu)  (boundp 'diredp-menu-bar-subdir-menu)) ; Defined in `dired+.el'.
+  (let ((menu  (if (boundp 'diredp-menu-bar-dir-menu) diredp-menu-bar-dir-menu diredp-menu-bar-subdir-menu))) ; Old name
+    (if (or (> emacs-major-version 21)  (fboundp 'wdired-change-to-wdired-mode))
+        (define-key-after menu [find]
+          '("Run `find' Command" . menu-bar-run-find-menu)
+          'wdired-mode)
+      (define-key menu [find] '("Run `find' Command" . menu-bar-run-find-menu)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
