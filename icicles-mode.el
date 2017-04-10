@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Fri Mar  3 14:53:22 2017 (-0800)
+;; Last-Updated: Sun Apr  9 18:26:37 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 10269
+;;     Update #: 10277
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -217,8 +217,9 @@
   ;; (no error if not found): minibuffer-depth-indicate-mode
 
 (require 'dired+ nil t) ;; (no error if not found):
-                        ;; diredp-menu-bar-operate-menu, diredp-menu-bar-recursive-marked-menu,
-                        ;; diredp-menu-bar-subdir-menu
+                        ;; diredp-menu-bar-multiple-menu, diredp-menu-bar-operate-menu,
+                        ;; diredp-menu-bar-recursive-marked-menu, diredp-menu-bar-dir-menu,
+;;                      ;; diredp-menu-bar-subdir-menu
 (require 'dired) ;; dired-mode-map
 (require 'menu-bar+ nil t) ;; (no error if not found):
   ;; menu-bar-apropos-menu, menu-bar-describe-menu, menu-bar-edit-menu, menu-bar-file-menu,
@@ -242,7 +243,11 @@
 (defvar crm-local-completion-map)       ; In `crm.el'.
 (defvar crm-local-must-match-map)       ; In `crm.el'.
 (defvar dired-mode-map)                 ; In `dired.el'.
+(defvar diredp-menu-bar-multiple-menu)  ; In `dired+.el'
+(defvar diredp-menu-bar-operate-menu)   ; In `dired+.el' (old name)
 (defvar diredp-menu-bar-recursive-marked-menu) ; In `dired+.el'
+(defvar diredp-menu-bar-dir-menu)       ; In `dired+.el'
+(defvar diredp-menu-bar-subdir-menu)    ; In `dired+.el' (old name)
 (defvar gud-minibuffer-local-map)       ; In `gud.el'.
 (defvar ibuffer-mode-map)               ; In `ibuffer.el'.
 (defvar ibuffer-mode-operate-map)       ; In `ibuffer.el'.
@@ -2052,9 +2057,13 @@ Used on `pre-command-hook'."
     (cond ((not icicle-touche-pas-aux-menus-flag)
            (defvar icicle-dired-multiple-menu-map (make-sparse-keymap)
              "`Icicles' submenu for Dired's `Multiple' (or `Operate') menu.")
-           (if (boundp 'diredp-menu-bar-operate-menu) ; In `dired+.el'.
-               (define-key diredp-menu-bar-operate-menu [icicles]
-                 (list 'menu-item "Icicles" icicle-dired-multiple-menu-map :visible 'icicle-mode))
+           (if (or (boundp 'diredp-menu-bar-multiple-menu) ; In `dired+.el'.
+                   (boundp 'diredp-menu-bar-operate-menu)) ; In `dired+.el' (old name).
+               (let ((menu  (if (boundp 'diredp-menu-bar-multiple-menu)
+                                diredp-menu-bar-multiple-menu
+                              diredp-menu-bar-operate-menu)))
+                 (define-key menu [icicles]
+                   (list 'menu-item "Icicles" icicle-dired-multiple-menu-map :visible 'icicle-mode)))
              (define-key dired-mode-map [menu-bar operate icicles]
                (list 'menu-item "Icicles" icicle-dired-multiple-menu-map :visible 'icicle-mode)))
 
@@ -2177,9 +2186,13 @@ Used on `pre-command-hook'."
     (cond ((not icicle-touche-pas-aux-menus-flag)
            (defvar icicle-dired-dir-menu-map (make-sparse-keymap)
              "`Icicles' submenu for Dired's `Dir' (or `Subdir') menu.")
-           (if (boundp 'diredp-menu-bar-subdir-menu) ; In `dired+.el'.
-               (define-key diredp-menu-bar-subdir-menu [icicles]
-                 (list 'menu-item "Icicles" icicle-dired-dir-menu-map :visible 'icicle-mode))
+           (if (or (boundp 'diredp-menu-bar-dir-menu) ; In `dired+.el'.
+                   (boundp 'diredp-menu-bar-subdir-menu)) ; In `dired+.el' (old name).
+               (let ((menu  (if (boundp 'diredp-menu-bar-dir-menu)
+                                diredp-menu-bar-dir-menu
+                              diredp-menu-bar-subdir-menu)))
+                 (define-key menu [icicles]
+                   (list 'menu-item "Icicles" icicle-dired-dir-menu-map :visible 'icicle-mode)))
              (define-key dired-mode-map [menu-bar subdir icicles]
                (list 'menu-item "Icicles" icicle-dired-dir-menu-map :visible 'icicle-mode))))
           (t
