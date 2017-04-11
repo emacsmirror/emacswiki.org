@@ -910,6 +910,29 @@ This is really just making a list for each number -- a "list of lists" -- which 
   (assq 3 (mapcar 'list '(8 3 1 7 3 6 9)))
   ==> (3)
 
+To group elements by a function:
+
+  (defun group-by-eq (f lst)
+    "Build `assq`-list based on result of F on Xs in LST."
+    (let ((alist))
+      (dolist (x lst)
+        (let* ((key (funcall f x))      ;; This should give an `eq`-able value.
+               (vals (assq key alist))) ;; Look for it in the association list.
+          (if (null vals)
+              (setq alist (cons (list key x) alist))
+            (setcdr vals (cons x (cdr vals))))))
+      (nreverse alist)))
+
+To group cons-cells by their car:
+
+    (group-by-eq 'car '((a 0) (b 0) (b 1)))
+    ==> ((a (a 0)) (b (b 1) (b 0)))
+
+To group a list of integers by their negativity:
+
+    (group-by-eq (lambda (x) (< x 0)) '(0 -1 2 -3 4 -5))
+    ==> ((t -5 -3 -1) (nil 4 2 0))
+
 === Vectors ===
 
 Vectors are fixed in size, and their elements can be accessed in constant time (neither of which is the case for lists).
