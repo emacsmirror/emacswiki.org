@@ -32,6 +32,7 @@ depend on plain text.
 
 == Using an API ==
 
+* [https://github.com/jdenen/mastodon.el mastodon.el] -- client for Mastodon
 * WebloggerMode -- for several blog APIs; Blogger, Metaweblog, Moveable Type, Live Journal, Wordpress
 * wpmail.el <http://github.com/thomas11/wpmail/tree/master> -- for posting to Wordpress via e-mail. Currently only tested with wordpress.com.
 * [[Tumblr]] -- implementation (currently only) for posting to Tumblr.
