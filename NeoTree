@@ -39,6 +39,7 @@ Open (toggle) NeoTree:
 * <code>C-c C-d</code> Delete a file or a directory.
 * <code>C-c C-r</code> Rename a file or a directory.
 * <code>C-c C-c</code> Change the root directory.
+* <code>C-c C-p</code> Copy a file or a directory.
 
 === Commands（Global） ===
 
