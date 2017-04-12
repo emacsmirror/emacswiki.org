@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 08:46:17 2017 (-0800)
+;; Last-Updated: Wed Apr 12 10:33:58 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 3757
+;;     Update #: 3765
 ;; URL: https://www.emacswiki.org/emacs/download/menu-bar%2b.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -128,6 +128,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/04/12 dadams
+;;     kill-this-buffer: Updated for more recent Emacs versions.
 ;; 2016/12/09 dadams
 ;;     Updated for Emacs 25: x-get-selection -> gui-get-selection,
 ;;                           x-select-enable-clipboard -> select-enable-clipboard.
@@ -787,13 +789,19 @@ submenu of the \"Help\" menu."))
 ;;
 ;;;###autoload
 (defun kill-this-buffer ()
-"Delete the current buffer and delete all of its windows."
+  "Delete the current buffer and delete all of its windows."
   (interactive)
-  (if (and (boundp 'sub-kill-buffer-and-its-windows) ; In `setup-keys.el'.
-           sub-kill-buffer-and-its-windows
-           (fboundp 'kill-buffer-and-its-windows))
-      (kill-buffer-and-its-windows (current-buffer)) ;`misc-cmds.el'
-    (kill-buffer (current-buffer))))    ; <-- original defn.
+  (cond ((and (fboundp 'menu-bar-menu-frame-live-and-visible-p) ; Emacs 22+
+              (not (menu-bar-menu-frame-live-and-visible-p))))
+        ((or (not (fboundp 'menu-bar-non-minibuffer-window-p))
+             (menu-bar-non-minibuffer-window-p)) ; Emacs 22+
+         (if (and (boundp 'sub-kill-buffer-and-its-windows) ; In `setup-keys.el'.
+                  sub-kill-buffer-and-its-windows
+                  (fboundp 'kill-buffer-and-its-windows))
+             (kill-buffer-and-its-windows (current-buffer)) ;`misc-cmds.el'
+           (kill-buffer (current-buffer))))
+        (t
+         (abort-recursive-edit))))
 
 
 ;; Remove search stuff from `Tools' menu, since we moved it to `Search' menu.
