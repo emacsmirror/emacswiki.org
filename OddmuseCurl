@@ -8,10 +8,10 @@ Cool features:
 
 == Download ==
 
-The code is maintained on Savannah using Git:
+The code is maintained on GitHub using [[Git]]:
 
-* [http://git.savannah.gnu.org/cgit/oddmuse.git/tree/contrib/oddmuse-curl.el oddmuse-curl.el]
-* [http://git.savannah.gnu.org/cgit/oddmuse.git/tree/contrib/vc-oddmuse.el vc-oddmuse.el]
+* [https://github.com/kensanata/emacs-setup/blob/master/lib/oddmuse-curl.el oddmuse-curl.el]
+* [https://github.com/kensanata/emacs-setup/blob/master/lib/vc-oddmuse.el vc-oddmuse.el]
 
 == Setup ==
 
