@@ -22,7 +22,7 @@ If you print A4 pages, the calendars are probably too wide for you.  I often pri
 =Printing a Hipster PDA=
 You can generate a [http://en.wikipedia.org/wiki/Hipster_PDA Hipster PDA] style printout with the data from your diary file. Use the following Makefile to generate a PDF. It requires the pdfjam package which you can find at http://www.warwick.ac.uk/go/pdfjam. Also make sure you set cal-tex-diary to true so that diary entries show up in the calendar.
 
-The Makefile is now maintained within the CONTRIB directory of [http://www.orgmode.org org-mode]. The latest version can be fetched from http://repo.or.cz/w/org-mode.git?a=blob;f=CONTRIB/scripts/org2hpda;hb=HEAD
+The Makefile is now maintained within the CONTRIB directory of [http://www.orgmode.org org-mode]. The latest version can be fetched from https://github.com/tkf/org-mode/blob/master/contrib/scripts/org2hpda.
 
 ----
 CategoryCalendar
