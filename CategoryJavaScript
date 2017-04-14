@@ -18,7 +18,7 @@ There are also a number of ways to integrate with javascript subprocesses:
 * [http://js-comint-el.sourceforge.net/ js-comint.el] is a lightweight [[ComintModes|comint]] integration package, that also seems to integrate with org-mode nicely. 
 * JavascriptShell A REPL for Windows Scripting Host, and a [[Lisp:jsshell-bundle.el]]. It does simple completion on JS objects.
 ** JavascriptShellServer
-* [https://github.com/nicolaspetton/jade Jade], a package that connects to a browser tab or nodejs process and provides many features for JavaScript development, including a REPL,
+* [https://github.com/nicolaspetton/indium Indium], a package that connects to a browser tab or nodejs process and provides many features for JavaScript development, including a REPL,
 an inspector and a stepping Debugger.
 
 * WshRepl A decrepit console into the Windows Scripting Host from within Emacs.  It does have a project on github, and is looking for a maintainer
