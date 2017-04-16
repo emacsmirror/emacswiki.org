@@ -1,7 +1,7 @@
 [[es:AutoGuardar]]
 By default, Emacs automatically saves your changes to a file intermittently. If anything should happen, you can recover a file with `M-x recover-file'. Auto-saving can be turned on globally or on a per-buffer basis with `M-x auto-save-mode'.  Note that auto-saving and backing up are different concepts and serve different purposes.
 
-See also the Emacs auto-save [http://www.gnu.org/software/emacs/manual/html_node/emacs/Auto-Save.html manual entry].
+See also the [[Manual:Auto Save]] (emacs) Emacs manual entry.
 
 == Placing all files in one directory ==
 
@@ -41,7 +41,7 @@ If placing your temp files in /tmp (in Linux) you will <b>not</b> be able to rec
 == Interlock symlinks and auto-save files ==
 
 Be aware that symbolic links of the form ".#*" are not auto-save files but interlocks to prevent the simultaneous editing of the same file.
-See the Emacs [http://www.gnu.org/software/emacs/manual/html_node/emacs/Interlocking.html#Interlocking manual entry] for details.
+See Manual:Interlocking in the EmacsManual for details.
 
 == Save on Loss of Input Focus ==
 
