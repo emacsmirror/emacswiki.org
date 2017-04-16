@@ -93,20 +93,3 @@ I like this. Also tried it with these settings, so that everything is just alway
 This works. However, I find it very annoying that the saving message is displayed every time I do anything. Thinking about it, continuous save should be silent. Also, it would be nice if there was a way to save a checkpoint that you could come back to. I often go off on an editing tangent, and then either undo until the "dirty" flag is cleared or just "M-x revert-buffer" to go back to before the madness - neither approach works when everything is always saved. I already use versioned backups in a separate directory; maybe the "checkpoint" could just be one of those. Bind "C-x C-s" to create a versioned backup (since manual saving is not needed) and provide a way to step back and forth through versions.
 
 So: 1. Silent continuous save;  2. A function to create a versioned backup on demand - bound to "C-x C-s";  3. A function or functions to step forward and backward through versioned backups. Anyone have thoughts on how to do these things, or if they are even the correct goal?
-
-[new]
-Automatically save your changes after an customizable interval. Can be selectively applied some modes.
-
-* http://www.litchie.net/programs/real-auto-save.html
-
-[new]
-I really like this idea, because it's dumb to make me hit C-x C-s all the time because of technical details of the computer's architecture, and almost everything I edit is under version control anyway. I like using auto-save-hook, and that seems to work well, but I want to save *all* the buffers, because if I switch away from a buffer before it autosaves, I want it to get saved when things next get saved after that. So I combined parts of the two above solutions (this is the first elisp code I've written, could have glaring problems):
-
-	(defun full-auto-save ()
-	  (interactive)
-	  (save-excursion
-		(dolist (buf (buffer-list))
-		  (set-buffer buf)
-		  (if (and (buffer-file-name) (buffer-modified-p))
-			  (basic-save-buffer)))))
-	(add-hook 'auto-save-hook 'full-auto-save)
