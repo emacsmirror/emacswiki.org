@@ -17,15 +17,13 @@ This will all place all auto-saves and [BackupDirectory backups] in the director
 Or even more dramatic:
 
     ;; Save all tempfiles in $TMPDIR/emacs$UID/                                                        
-    (defconst emacs-tmp-dir (format "%s/%s%s/" temporary-file-directory "emacs" (user-uid)))
+    (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
     (setq backup-directory-alist
         `((".*" . ,emacs-tmp-dir)))
     (setq auto-save-file-name-transforms
         `((".*" ,emacs-tmp-dir t)))
     (setq auto-save-list-file-prefix
         emacs-tmp-dir)
-
-EDIT: I think ##"%s/%s%s/"## should be replace by ##"%s%s%s/"## as `temporary-file-directory' comes with`/' already (tested 24.3.93 windows and linux).
 
 <b>CAREFUL  ATTENTION CAREFUL  ATTENTION </b>
 
