@@ -22,32 +22,12 @@ I visit EmacsWiki maybe once a year: my additions are in [[NealePickett]] under 
 [new]
 I looked at the ##spammer.log## file linked to from the WikiSpam page, listing the current "foiled" attempts at spamming the wiki. It lists time stamp, IP number, page name, and a message mentioning the regular expression triggered and the text matched. A quick review for the last month shows that all the "foiled" edits were probably legitimate edit attempts! Clearly, the false positives are a problem and I have therefore commented the [[BannedRegexps|problematic regular expressions]]. I hope this resolves the isse. :) -- Alex Schroeder
 
-== Having trouble editing elisp file (solved) ==
-
-I tried to make an update to [[yaoddmuse.el]], but I seem to have put it into a funny mode where it doesn't show the code in the page any more, just a link.  And I can't rollback because of the anti-spam regexps... :(
-
-[new]
-I fixed this, hopefully. First, I changed the regular expression such that numbers that look like a date such as 20160718 are no longer considered to be starting a phone number. Then I did the following to preserve your changes and change the page from containing an uploaded file back to a regular text:
-
-# I downloaded the current version of yaoddmuse.el
-# I visited [[yaoddmuse.el]] again
-# clicked Edit this page
-# clicked Replace file with text
-# pasted the current copy I had downloaded
-# saved the page
-
-Thus, you should be good to go. :)
-
--- Alex Schroeder
-
 == Spam-regex too restrictive ==
 
 I'm unable to edit the [[CategoryTemplates]] page, because it contains a "phone-number" in one of it's links to a template package.
 
 [new]
 I changed the code such that the regular expressions on BannedRegexps no longer apply to URLs because URLs have their own set of (more restrictive) regular expressions on BannedContent. -- [[Alex Schroeder]]
-
-
 
 ==Cannot find where file lives for change submission (solved) ==
 
