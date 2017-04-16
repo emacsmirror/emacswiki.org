@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Tue Mar  7 09:33:08 2017 (-0800)
+;; Last-Updated: Sun Apr 16 08:58:05 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 3093
+;;     Update #: 3094
 ;; URL: https://www.emacswiki.org/emacs/download/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -1435,11 +1435,11 @@ If `1on1-minibuffer-frame-flag' is non-nil, then create
    minibuffer-only frame, `1on1-minibuffer-frame', using
    `1on1-minibuffer-frame-alist'.
 
-If `1on1-separate-minibuffer-*Help*-flag' is non-nil, then use
-   special frame for *Help* buffer.
+If `1on1-*Help*-frame-flag' is non-nil, then use special frame for
+   *Help* buffer.
 
-If `1on1-separate-minibuffer-*Completions*-flag' is non-nil, then
-   use special frame for *Completions* buffer."
+If `1on1-*Completions*-frame-flag' is non-nil, then use special frame
+   for *Completions* buffer."
   (interactive)
   (unless (if (fboundp 'display-graphic-p) (display-graphic-p) window-system)
     (error "Use `1on1-emacs' only with a graphics display, not with a text terminal"))
@@ -1447,7 +1447,7 @@ If `1on1-separate-minibuffer-*Completions*-flag' is non-nil, then
         special-display-frame-alist  (append 1on1-special-display-frame-alist
                                              special-display-frame-alist))
 
-  ;; *Help* frame
+  ;; `*Help*' frame
   (if 1on1-*Help*-frame-flag
       (add-to-list
        'special-display-buffer-names
@@ -1460,7 +1460,7 @@ If `1on1-separate-minibuffer-*Completions*-flag' is non-nil, then
                                                           (equal "*Help*" (car elt)))
                                                         special-display-buffer-names)))
 
-  ;; *Completions* frame
+  ;; `*Completions*' frame
   ;; If `1on1-minibuffer-frame-flag' is non-nil, then *Completions* frame must be treated
   ;; specially, so that it gets focus from the minibuffer frame.  This is so, even if
   ;; `1on1-*Completions*-frame-flag' is nil.
