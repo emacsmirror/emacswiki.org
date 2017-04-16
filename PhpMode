@@ -2,8 +2,8 @@
 
 Major mode for editing PHP files.
 
-There is a long standing wish to develop a new and better php mode that can be included in Emacs.
-Unfortunately the current php-mode.el can not be used as a basis for this since not all contributors have been willing to sign papers for Emacs. Refer to Emacs devel mailing list for more details.
+There is a long standing wish to develop a new and better PHP mode that can be included in Emacs.
+Unfortunately the current php-mode.el can not be used as a basis for this since not all contributors have been willing to sign papers for Emacs. Refer to the Emacs developer mailing list for more details.
 
 Contributions to a new php-mode are very welcome!
 
@@ -15,7 +15,7 @@ Contributions to a new php-mode are very welcome!
 ** There is also Lisp:php-mode-improved.el, a version by DavidHouse branched from the version in nxhtml-mode that fixes a couple of annoying bugs (see the comments at the top of that file).
 ** In order to get this mode to work with Emacs 23 I had to add the following lines to my .emacs rather than the ones in php-mode.el.  See http://stackoverflow.com/questions/898063/making-php-mode-compatible-with-emacs-23 for more information.
 {{{
-(autoload 'php-mode "php-mode" "Major mode for editing php code." t)
+(autoload 'php-mode "php-mode" "Major mode for editing PHP code." t)
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
 }}}
@@ -23,16 +23,16 @@ Contributions to a new php-mode are very welcome!
 * http://www.loveshack.ukfsn.org/emacs/index.html#cc-php-js -- patch for CC mode from Emacs 22.1, and files byte-compiled for Emacs 21/22.  See http://www.loveshack.ukfsn.org/emacs/index.html#html-php.el for PHP embedded in HTML.
 * http://deboutv.free.fr/lisp/php/index.php - Deboutv php-mode, originally for Xemacs
 * http://mewde.googlecode.com/files/php-mode-new.el -- Mewde Project php-mode maintained by AhmetUsal; updated 2008-10-07
-** Based on the Deboutv Xemacs and Sourceforge php-mode.This is mixed mode.  [http://mewde.blogspot.com/2008/10/new-update-for-emacs-php-mode.html Details here.] Some big differences from Deboutv inheritance mode; code comments inserting Sourceforge php-mode style; php-templates doesn't automatic insert; Class-function templates has shortcuts; otherwise; M-x php-template-TAB list all options, then you can select and insert.  We don't have old "Sources" menu, etc.But we have natural Imenu and outline support with additional templates menu.
-Auto-completes PHP functions and handles indentation both Sourceforge php-mode and Deboutv php-mode style. It has templating support for class, functions, and loops. Plus; all Sourceforge php-mode features supporting. I tested with emacs23 environment; both vista and Ubuntu hardy; even works with yasnippet mode together; just disable abbrev-minor-mode, or if you are insert php template, function etc; after typing and tabbing completion; type M-Space then going on; it works fine...
-* https://github.com/ejmr/php-mode -- Maintained by EricJMRitz.  It is based on the mode from Sourcefourge with updates for new PHP features like traits and namespaces.
-* http://web-mode.org -- Maintained by François-Xavier Bois. For PHP templates files. Syntax Highligthing and indentation according to the type of bloc ( PHP/HTML/JS/CSS)
+** Based on the Deboutv Xemacs and SourceForge php-mode.This is mixed mode.  [http://mewde.blogspot.com/2008/10/new-update-for-emacs-php-mode.html Details here.] Some big differences from Deboutv inheritance mode; code comments inserting SourceForge php-mode style; php-templates doesn't automatic insert; Class-function templates has shortcuts; otherwise; M-x php-template-TAB list all options, then you can select and insert.  We don't have old "Sources" menu, etc.But we have natural Imenu and outline support with additional templates menu.
+Auto-completes PHP functions and handles indentation both SourceForge php-mode and Deboutv php-mode style. It has templating support for class, functions, and loops. Plus; all SourceForge php-mode features supporting. I tested with an Emacs 23 environment; both Windows&nbsp;Vista and Ubuntu hardy; even works with yasnippet mode together; just disable abbrev-minor-mode, or if you are insert PHP template, function, etc.; after typing and tabbing completion; type M-Space then going on; it works fine...
+* https://github.com/ejmr/php-mode -- Maintained by EricJMRitz.  It is based on the mode from SourceForge with updates for new PHP features like traits and namespaces.
+* http://web-mode.org -- Maintained by François-Xavier Bois. For PHP templates files. Syntax highlighting and indentation according to the type of bloc (PHP/HTML/JavaScript/CSS)
 
 == php-mode comparison ==
 
 * Which is better?
 
-(2010-05-26) After comparing the php-mode that comes with nxhtml vs php-mode-improved vs php-mode-new (included in Mewde Project), I found the following:
+(2010-05-26) After comparing the php-mode that comes with nxhtml vs. php-mode-improved vs. php-mode-new (included in Mewde Project), I found the following:
 
 ** *nXHTML variant*: Most up-to-date.  Plenty of bug fixes.
 ** *Mewde variant*: Includes a template menu that might be useful for new PHP programmers or could even serve as a quick reference.  Also includes helper menu for PHPDocumentor, etc.
@@ -51,7 +51,7 @@ Beside those php-mode there are the following possibilities to mix them with bet
 * Lisp:two-mode-mode.el
 * DrupalMode
 
-For example; I don't use any multiple major mode for php; I put all yasnipet html snippets to inside php snippets; and I use with new php-mode for complex php-html code pages.
+For example; I don't use any multiple major mode for PHP; I put all yasnipet HTML snippets to inside PHP snippets; and I use with new php-mode for complex php-html code pages.
 
 == Multiple modes with MuMaMo ==
 
@@ -129,12 +129,12 @@ Alternatively to the method above, I use the following snippet for switching bet
 (define-key html-mode-map [f5] 'php-mode)
 }}}
 
-These will use the 'f5' key to switch between php and html mode. The difference to Jonathan's above is that these keys are only used if php-mode or html-mode is the current major mode in the buffer you're in, rather than defining a global key.
+These will use the 'f5' key to switch between PHP and HTML mode. The difference to Jonathan's above is that these keys are only used if php-mode or html-mode is the current major mode in the buffer you're in, rather than defining a global key.
 
 - CodyReichert
 
-== ac-php : great auto-complete for php  ==
-;;  auto-complete for php 
+== ac-php: great auto-complete for PHP  ==
+;;  auto-complete for PHP 
 https://github.com/xcwen/ac-php  
 
 for system class  ,system function ,and user define.
@@ -145,7 +145,7 @@ https://raw.githubusercontent.com/xcwen/ac-php/master/images/ac-php.gif
 
 == Debugging ==
 
-[https://code.google.com/p/geben-on-emacs/ GEBEN] is a basic debug package that I just discovered and am in the process of trying out. It is a DBGp client (i.e. emacs debug mode using XDebug). -M
+[https://code.google.com/p/geben-on-emacs/ GEBEN] is a basic debug package that I just discovered and am in the process of trying out. It is a DBGp client (i.e. Emacs debug mode using XDebug). -M
 [new]
 I think this project is dead (and also doesn't work properly) - my posts to the mailing list have met with a deafening silence (a month now, with no activity on the list except my
 posts). I recommend removing mention of it from emascwiki.
@@ -155,12 +155,12 @@ Perhaps it is, but I have got a bug report for [NxhtmlMode nXhtml] from someone 
 And the latest release (version 0.26) was done 2010-03-30.
 
 [new:EngelkeEschner:2011-04-18 13:00 UTC]
-I'm using it occasionally and lack a better alternative for emacs, so I recommend keeping it. -- EngelkeEschner
+I'm using it occasionally and lack a better alternative for Emacs, so I recommend keeping it. -- EngelkeEschner
 
 I agree with EngelkeEschner.  I've just started using it, but so far it works smoothly. I've also updated the link. -- MattFlaschen
 
 [new:oschonrock:2016-11-04 09:00 UTC]
-GEBEN is still the only option for an emacs xdebug. Actually I found it to be easy to set-up and it worked nicely. The project has been migrated from code.google.com to github. [https://github.com/search?utf8=%E2%9C%93&q=geben-on-emacs Multiple times] it seems! Someone has been quite active on [https://github.com/fallchildren/geben-on-emacs this fork] (untested by me).
+GEBEN is still the only option for an Emacs xdebug. Actually I found it to be easy to set-up and it worked nicely. The project has been migrated from code.google.com to github. [https://github.com/search?utf8=%E2%9C%93&q=geben-on-emacs Multiple times] it seems! Someone has been quite active on [https://github.com/fallchildren/geben-on-emacs this fork] (untested by me).
 
 == Improved Imenu by Class ==
 
@@ -200,7 +200,7 @@ I didn't see such a feature in the php-mode I use so I whipped up a quick soluti
 
 == Quick documentation lookup with popup help ==
 
-Here's a variation of my quick documentation lookup above. It shows short help for the function under the cursor in the echo area if you press F1. It fetches the info from the official php site and it works for standard functions which documentation is properly tagged. You can press C-F1 for the same behavior as above if quick lookup failed or you want to read more about the function.
+Here's a variation of my quick documentation lookup above. It shows short help for the function under the cursor in the echo area if you press F1. It fetches the info from the official PHP site and it works for standard functions which documentation is properly tagged. You can press C-F1 for the same behavior as above if quick lookup failed or you want to read more about the function.
 
 <pre>
 (add-hook 'php-mode-hook 'my-php-mode-stuff)
@@ -255,7 +255,7 @@ Here's a variation of my quick documentation lookup above. It shows short help f
 
 == Collecting all functions for completion ==
 
-This code fetches all php function names from the net and stores it in a list. It can be used for completion with a completion frontend.
+This code fetches all PHP function names from the net and stores it in a list. It can be used for completion with a completion frontend.
 
 <pre>
 
