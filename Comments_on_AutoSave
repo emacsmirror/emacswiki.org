@@ -9,13 +9,6 @@ Reading the Auto-Saving section of the emacs manual I tried this method and it a
 
 ----
 
-In the section "Running save-buffer automatically", user BryanMurdock describes a problem with auto-save-visited-file-name in which the buffer is considered out of date and displays a warning.  Like joseghast above I just turned on auto-save-visited-file-name and it seems to work as I expect it to, with no warnings about the buffer being out of date.
-
--- jbyler 2015-05-06 19:18 UTC
-
-
-----
-
 Do not use
 find -name "#*#" | xargs rm
 or any other variation.
@@ -31,3 +24,89 @@ Is it possible to keep the auto-save functionality while not getting an auto-sav
 
 -- Kurt 2016-09-28 14:58 UTC
 
+----
+
+How do I turn on auto-saving globally or on a per-buffer basis?
+
+[new]
+See [[Manual:Auto Save Control]], it should be on by default, but you can turn it off in a buffer with `M-x auto-save-mode'. -- AaronHawley
+
+=== Problems with Tramp ===
+
+Hello, I'm trying to use emacs to edit a file across a locally-mounted network file system. There is a long latency across the connection, so I need to minimize file accesses over the network. However, if I open file "abcd", emacs creates files like .#abcd, .#abcd.2, etc, in the directory housing the file. This makes things take forever, because each file creation/access in that directory goes across the network. How do I tell emacs to either not create those files, or at the least to create them in /tmp rather than in the same directory as the file? -- BayleShanks
+
+[new] See auto-save-file-name-transforms. The default value matches all TRAMP URLs. With a little bit of tweaking, you can add another sexp for your locally-mounted network shares. I use the following incantation to save all my temporary files to another partition, as I occasionally have problems with my data partition.
+
+   (setq auto-save-file-name-transforms
+         '(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" "/tmp/\\2" t)
+          ("\\`/?\\([^/]*/\\)*\\([^/]*\\)\\'" "/usr/local/sacha-backup/\\2" t)))
+
+-- SachaChua
+
+=== Disabling Auto Save ===
+
+Every time I edit a file and then discard the changes emacs saves a ~/#filename# file. The next time I run emacs it warns me about it and advises me to recover the file. How can I disable this "feature" ?
+
+[new]
+: That is really two features, "auto save"(1) and "find-file warning messages"(2). Auto-save is easy to disable, just add (setq auto-save-default nil) to your .emacs file. The warning messages are a bit trickier to suppress. There's an optional parameter in find-file-noselect ...
+
+=== Running save-buffer automatically ===
+
+[new:calinb:2017-01-15 06:02 UTC]
+This is now an optional feature in emacs. It is controlled through `auto-save-visited-file-name'. Can we delete the hacks below? They misled me and will probably mislead others. (Through no fault of the authors, obviously.)
+
+[new:DrewAdams:2017-01-15 18:56 UTC]
+: No, we should ''not'' delete them.  Not everyone uses the release of Emacs that has this as an optional feature.  There are users of this site who use GnuEmacs releases going back to at least Emacs 20, not to mention those who use XEmacs.  We can delete or correct text that is incorrect.  And it is good that you added mention of this new feature.  And you can edit any of the text here to help people not to be misled as you were.  But the info that applies to older releases should remain, as it could presumably help someone. -- DrewAdams
+
+----
+
+All these new-fangled IDEs tout that they automatically save your files for you. I think this would be cool to try out (my c-x c-s muscles get tired sometimes). You can set auto-save-visited-file-name to a non-nil value and emacs auto-save will save your work in the file you are working on instead of a separate file, but then the buffer is considered out of date and you can't continue editing without an annoying warning message. Is there a way around this? -- BryanMurdock
+
+[new]
+: What about `M-x run-with-idle-timer RET SECONDS RET save-buffer RET'? If that's what you want, then find a way to roll some EmacsLisp to make it work for all your buffers associated with files. Then you can put that in your DotEmacs and smoke it. -- AaronHawley
+
+[new]
+My emacs lisp skills are feeble, but how does this look?
+
+   (defun save-buffer-if-visiting-file (&optional args)
+      "Save the current buffer only if it is visiting a file"
+      (interactive)
+      (if (and (buffer-file-name) (buffer-modified-p))
+          (save-buffer args)))
+
+   (add-hook 'auto-save-hook 'save-buffer-if-visiting-file)
+
+It seems to work for me with both regular files and file you visited with tramp. -- BryanMurdock
+
+[new]
+BryanMurdock describes a problem with auto-save-visited-file-name in which the buffer is considered out of date and displays a warning.  Like joseghast above I just turned on auto-save-visited-file-name and it seems to work as I expect it to, with no warnings about the buffer being out of date.
+
+-- jbyler 2015-05-06 19:18 UTC
+
+
+[new]
+I like this. Also tried it with these settings, so that everything is just always saved.
+
+    (setq auto-save-interval 1
+          auto-save-timeout 1)
+
+This works. However, I find it very annoying that the saving message is displayed every time I do anything. Thinking about it, continuous save should be silent. Also, it would be nice if there was a way to save a checkpoint that you could come back to. I often go off on an editing tangent, and then either undo until the "dirty" flag is cleared or just "M-x revert-buffer" to go back to before the madness - neither approach works when everything is always saved. I already use versioned backups in a separate directory; maybe the "checkpoint" could just be one of those. Bind "C-x C-s" to create a versioned backup (since manual saving is not needed) and provide a way to step back and forth through versions.
+
+So: 1. Silent continuous save;  2. A function to create a versioned backup on demand - bound to "C-x C-s";  3. A function or functions to step forward and backward through versioned backups. Anyone have thoughts on how to do these things, or if they are even the correct goal?
+
+[new]
+Automatically save your changes after an customizable interval. Can be selectively applied some modes.
+
+* http://www.litchie.net/programs/real-auto-save.html
+
+[new]
+I really like this idea, because it's dumb to make me hit C-x C-s all the time because of technical details of the computer's architecture, and almost everything I edit is under version control anyway. I like using auto-save-hook, and that seems to work well, but I want to save *all* the buffers, because if I switch away from a buffer before it autosaves, I want it to get saved when things next get saved after that. So I combined parts of the two above solutions (this is the first elisp code I've written, could have glaring problems):
+
+	(defun full-auto-save ()
+	  (interactive)
+	  (save-excursion
+		(dolist (buf (buffer-list))
+		  (set-buffer buf)
+		  (if (and (buffer-file-name) (buffer-modified-p))
+			  (basic-save-buffer)))))
+	(add-hook 'auto-save-hook 'full-auto-save)
