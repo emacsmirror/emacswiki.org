@@ -43,9 +43,41 @@ If placing your temp files in /tmp (in Linux) you will <b>not</b> be able to rec
 Be aware that symbolic links of the form ".#*" are not auto-save files but interlocks to prevent the simultaneous editing of the same file.
 See Manual:Interlocking in the EmacsManual for details.
 
-== Save on Loss of Input Focus ==
+== Running save-buffer Automatically ==
 
-=== Focus Hooks ===
+As written in [[Manual:Auto Save Files]] (emacs):
+[quote]
+  If you want auto-saving to be done in the visited file rather than
+in a separate auto-save file, set the variable
+`auto-save-visited-file-name' to a non-##nil## value.  In this
+mode, auto-saving is very similar to explicit saving.  However,
+differences still exist, in particular for modes which modify the
+buffer-saving process in non-trivial ways via various hooks
+([[Manual:Saving Buffers]] (elisp)).
+[/quote]
+
+The alternate methods below call the normal `save-buffer' so they don't have these differences (see also [[https://debbugs.gnu.org/cgi/bugreport.cgi?bug=25478 Bug#25478]]).
+
+=== After Some Time Interval via Idle Timers ===
+
+https://github.com/ChillarAnand/real-auto-save - Automatically save your all your buffers/files at regular intervals in Emacs!
+
+=== Save All Buffers on Auto-Save ===
+
+I like using `auto-save-hook', and that seems to work well, but I want to save all the buffers, because if I switch away from a buffer before it autosaves, I want it to get saved when things next get saved after that. So I combined parts of the two above solutions (this is the first elisp code I’ve written, could have glaring problems):
+
+{{{
+(defun full-auto-save ()
+  (interactive)
+  (save-excursion
+    (dolist (buf (buffer-list))
+      (set-buffer buf)
+      (if (and (buffer-file-name) (buffer-modified-p))
+          (basic-save-buffer)))))
+(add-hook 'auto-save-hook 'full-auto-save)
+}}}
+
+=== On Loss of Input Focus via Focus Hooks ===
 
 New hooks for gain/loss of focus were added in Gnu Emacs 24.4: <code>focus-in-hook</code> and <code>focus-out-hook</code>.
 
@@ -54,7 +86,7 @@ If you are running a version of Emacs with these hooks, you can add
   (defun save-all ()
     (interactive)
     (save-some-buffers t))
-
+  
   (add-hook 'focus-out-hook 'save-all)
 
 to your .emacs file and it should save all files on loss of focus.
@@ -65,22 +97,16 @@ These hooks fire when any Emacs frame gains or loses focus. This means that if y
 
 These hooks are intended for use by the end-user, not for use in packages. If you set these hooks for other people, they're likely to be annoyed. (Particularly if they are debugging Emacs itself or working in a "focus follows mouse" environment where merely mousing over a window switches focus to it.)
 
-=== User-Defined Signals ===
+=== On User-Defined Signals ===
 
-Another approach is tell emacs to do full-auto-save when it receives the USR1 signal.
+Another approach is tell emacs to do `full-auto-save' (defined above) when it receives the USR1 signal.
   
-  (define-key special-event-map [sigusr1]
-        (lambda ()
-          (interactive)
-          (full-auto-save)))
+  (define-key special-event-map [sigusr1] #'full-auto-save)
 
 Create a shell script to send the signal to emacs.
   
   #!/usr/bin/env sh
-  for a in $(ps -au "<name>" | gawk '/emacs/{print $1}')
-  do
-      kill -USR1 $a
-  done
+  pkill -USR1 emacs
 
 And tell your window manager to run the script whenever you switch windows.
 I use sawfish and so:
