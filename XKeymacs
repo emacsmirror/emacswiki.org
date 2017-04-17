@@ -71,5 +71,5 @@ http://en.sourceforge.jp/users/fujieda/pf/xkeymacs64/files/?id=224
 
 http://xkeymacs.sourceforge.jp/index.html.en   this seems to be the latest location.
 
-
+Update 04/17/2017: Just tried the 110830 version and it does appear to work in Win7 64-bit, although the system tray indicator doesn't seem to correctly reflect the state of xkeymacs for different processes - I assume when 64-bit processes have focus.  Will attempt to build it myself. --RobDavenport
 
