@@ -319,6 +319,17 @@ user.
 
 -- ChrisWebber
 
+Newer flymake seems to have an option to store temporary files in a tempdir:
+
+<pre>
+;; Nope, I want my copies in the system temp dir.
+(setq flymake-run-in-place nil)
+;; This lets me say where my temp dir is.
+(setq temporary-file-directory "~/.emacs.d/tmp/")
+</pre>
+
+Check https://github.com/flymake/emacs-flymake#use-the-system-temporary-directory-for-temp-files
+
 === Resource consumption? ===
 What about resource consumption ? Does it eat all the CPU or RAM ?
 How Emacs is running when this is activated ? Except these questions,
