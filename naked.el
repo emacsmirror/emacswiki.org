@@ -8,9 +8,9 @@
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 09:20:46 2017 (-0800)
+;; Last-Updated: Tue Apr 18 18:21:45 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 178
+;;     Update #: 181
 ;; URL: https://www.emacswiki.org/emacs/download/naked.el
 ;; Doc URL: http://www.emacswiki.org/NaKeD
 ;; Keywords: lisp, key, print, format, help
@@ -95,6 +95,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/04/18 dadams
+;;     Added forgotten compile-time require of cl.el, for macro loop.
 ;; 2013/02/26 dadams
 ;;     Added (put 'naked 'pure t)
 ;; 2012/12/01 dadams
@@ -129,6 +131,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
+
+(eval-when-compile (require 'cl)) ;; loop
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Same as `icicle-key-description' in `icicles-fn.el'.
 (defun naked-key-description (keys &optional prefix angles)
