@@ -5,7 +5,7 @@ Here's one way to load multiple files from a specified directory.
   ;; default xemacs configuration directory
   (defconst toc:xemacs-config-dir "~/.xemacs/xemacs_configs/" "")
 
-  ;; utility finction to auto-load my package configurations
+  ;; utility function to auto-load my package configurations
   (defun toc:load-config-file (filelist)
     (dolist (file filelist)
       (load (expand-file-name 
