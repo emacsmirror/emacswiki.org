@@ -73,3 +73,5 @@ http://xkeymacs.sourceforge.jp/index.html.en   this seems to be the latest locat
 
 Update 04/17/2017: Just tried the 110830 version and it does appear to work in Win7 64-bit, although the system tray indicator doesn't seem to correctly reflect the state of xkeymacs for different processes - I assume when 64-bit processes have focus.  Will attempt to build it myself. --RobDavenport
 
+Update 4/20/2017: Was able to build the latest code from Mr. Fujieda's 9/2014 git code, using VS2015, and it built and runs well - in 64-bit Windows 7 and Windows 10
+(https://osdn.net/projects/xkeymacs/scm/git/xkeymacs/). --RobDavenport
