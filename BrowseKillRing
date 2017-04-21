@@ -31,6 +31,10 @@ Similar to browse-kill-ring -- makes it easy to access and yank text from the ki
 ** You can toggle the display style (new command and key binding).
 ** Does the right thing when you use DeleteSelectionMode: deletes (replaces) the [[active region]] whenever you insert a kill.
 
+=== Helm ===
+
+[[Helm]] has build-in support for browsing the kill-ring when `helm-mode` is enabled.
+
 === Icicles ===
 
 [[Icicles]] -- You can clean up the ring selectively during completion, deleting entries on the fly. And you can sort completions in various ways.  All Icicles completion features are available, including [[progressive completion]].  Two ways:
