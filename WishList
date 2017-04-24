@@ -59,37 +59,6 @@ same way as ange-ftp or the url package.
 * Have Emacs always use VersionControl.
 ** this can be done using find-file-hooks and after-save-hook if you need it
 
-* It would be really cool, if the emacs display engine would support
-  the drawing of circles, lines, boxes. This would allow the creation
-  of vector graphics within emacs. It would be enough to have some
-  graphics only buffers for a start. With such an addition one could
-  write a xfig mode. Well, I am only dreaming. -- StefanReichoer
-** You can create images (using `create-image') and insert them into
-   buffers (using `put-image') within Emacs.  You could also fix the
-   Emacs redisplay engine such that stuff created via the
-   XlibInterface (see PixelDrawing) do not get erased on the next
-   redisplay. -- AlexSchroeder
-** Whatever you do, the Emacs display engine is line-oriented, for editing
-text.  It's clearly not suitable as a vector graphics editor, and why should
-it be?
-
-** Rather than asking emacs to become half vector-graphics editor, I'd like to see emacs support, as modules, buffers of types other than text.  --TomBreton
-
-** So in your vector-graphics example, you would write  
-your circle, box etc drawing code, and you'd write a data structure and tell emacs that it was a type of buffer and should be displayed via your display code, all without changing emacs itself.  
-
-** And if your extension was horrendous, nobody else is bothered; if it was a niche thing, others who like it can load it or link it in and still share the rest of emacs with everyone else; and if it's nice it's easy to include it later in emacs proper.
-
-** Some thoughts towards implementation:
-
-*** Each such module would supply its own data representation (Model) and display engine that would assume it was dealing with an emacs window (View), and data inspection and mutation primitives controlled via elisp (Controller). 
-
-***   Some existing buffer fields would be common to all buffer types (eg buffer name, save_modified, modtime, auto_save_modified, backed_up, etc), some would be heterogeneous but retain a common structure (eg undo_list, markers), and some would become specific to text buffers (eg last_window_start, display_table, syntax_table_v).
-
-*** Like buffer, window would share some existing fields (most), structurally share some (pointm, last_point, region_showing), and some would become specific to text (start, display_table, base_line_number, base_line_pos).
-
-*** C functions that now assume a buffer is a text-buffer would check buffer type before proceeding.  Fset_window_buffer (I think, looking at window.c) would know to call a non-text buffer's own display function. -- TomBreton
-
 * I want EmacsLisp to have more primitives to speed up. I think `replace-regexp-in-string' MUST BE primitive.
 
 * I want EmacsLisp to have Regexp object which contains compiled regexp.
@@ -521,6 +490,38 @@ own page.
 ** 2. This doesn't give you a list of '''''un'''''bound key sequences in the current major mode, but it at least gives you a list of ''bound'' key sequences, so it is better than `C-h k': `'''<code>describe-bindings</code>''''. -- DrewAdams
 ** Could you automate this fishing?  A cartesian join of possible key combinations in a database to come up with a Hugh Jass table, and a dash of code? --ChristopherSmith
 *** I've implemented this (with combinations determined by variables) as Lisp:unbound.el.  The interesting bit in the request is the word "simple", really.  --DavisHerring
+
+* It would be really cool, if the emacs display engine would support
+  the drawing of circles, lines, boxes. This would allow the creation
+  of vector graphics within emacs. It would be enough to have some
+  graphics only buffers for a start. With such an addition one could
+  write a xfig mode. Well, I am only dreaming. -- StefanReichoer
+** *Done:*  This has been implemented since 2007 in GNU Emacs 23.1 (see [[EmacsSvg]])
+** You can create images (using `create-image') and insert them into
+   buffers (using `put-image') within Emacs.  You could also fix the
+   Emacs redisplay engine such that stuff created via the
+   XlibInterface (see PixelDrawing) do not get erased on the next
+   redisplay. -- AlexSchroeder
+** Whatever you do, the Emacs display engine is line-oriented, for editing
+text.  It's clearly not suitable as a vector graphics editor, and why should
+it be?
+
+** Rather than asking emacs to become half vector-graphics editor, I'd like to see emacs support, as modules, buffers of types other than text.  --TomBreton
+
+** So in your vector-graphics example, you would write  
+your circle, box etc drawing code, and you'd write a data structure and tell emacs that it was a type of buffer and should be displayed via your display code, all without changing emacs itself.  
+
+** And if your extension was horrendous, nobody else is bothered; if it was a niche thing, others who like it can load it or link it in and still share the rest of emacs with everyone else; and if it's nice it's easy to include it later in emacs proper.
+
+** Some thoughts towards implementation:
+
+*** Each such module would supply its own data representation (Model) and display engine that would assume it was dealing with an emacs window (View), and data inspection and mutation primitives controlled via elisp (Controller). 
+
+***   Some existing buffer fields would be common to all buffer types (eg buffer name, save_modified, modtime, auto_save_modified, backed_up, etc), some would be heterogeneous but retain a common structure (eg undo_list, markers), and some would become specific to text buffers (eg last_window_start, display_table, syntax_table_v).
+
+*** Like buffer, window would share some existing fields (most), structurally share some (pointm, last_point, region_showing), and some would become specific to text (start, display_table, base_line_number, base_line_pos).
+
+*** C functions that now assume a buffer is a text-buffer would check buffer type before proceeding.  Fset_window_buffer (I think, looking at window.c) would know to call a non-text buffer's own display function. -- TomBreton
 
 ----
 CategoryWishList
