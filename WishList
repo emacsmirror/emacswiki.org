@@ -38,7 +38,10 @@ libraries written by others.  Web and version control features should be incorpo
   imap server, which would make switching pretty easy. I expect some
   metafunction could be written that would ask the user at startup where 
   to get the init files from. --bressen
+
 * Let's make a slimmed down version of GnuEmacs with only the bare-minimum EmacsLisp packages needed for quick editing.  Then we would make a small package-manager boot-strap that would update the list of available `interactive' functions with the associated file location.  When a user or the system attempts any such feature, the package would be seamlessly installed and loaded and the attempted function called.  We could use a profiler [what's the name of that one... unsafep.el?] to initially check unknown packages, and digital signatures to stamp those we finally determined 'safe'.   -- PatrickAnderson
+
+* GnuEmacs has a feature for describing variables and functions as obsolete (`make-obsolete' for functions and `make-obsolete-variable' for variables).  However this feature gets regularly abused by re-writes of core functionality and unhelpfully all Emacs does is tell the poor user that some feature they've used quite successfully in their ##~/.emacs## file, perhaps for decades, is now obsolete and all the help they're given is some often very lame explanatory text.  Wouldn't it be wonderful if this feature, particularly for variables, required the caller to provide a function which will transform the old form of usage into the new form! -- GregAWoods
 
 == Software Design Wishes ==
 
