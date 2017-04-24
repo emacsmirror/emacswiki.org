@@ -6,9 +6,9 @@ GregAWoods uses Emacs.
 
 Once upon a time was the PCL-CVS maintainer.
 
-Has used many different major and minor variants of Emacs and Emacs-like editors, but never XEmacs for some odd reason.
+Has used many different major and minor variants of Emacs and Emacs-like editors (starting with [[GoslingEmacs]] and [[MulticsEmacs]]), but never [[XEmacs]] for some odd reason.
 
-Most favourite ErsatzEmacs implementation is [[Jove]].  It is by far the most stable and bug-free of all small/micro Emacs implementations, though it has serious limitations.
+Most favourite [[ErsatzEmacs]] implementation is [[Jove]].  It is by far the most stable and bug-free of all small/micro Emacs implementations, though it has serious limitations.
 
 
 
