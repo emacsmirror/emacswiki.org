@@ -83,6 +83,7 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
 * IswitchBuffers -- Incremental picking of buffers, including the middle of names, i.e. entering "scr" can pick the "*scratch*" buffer.
 * [[InteractivelyDoThings]] (ido.el) is part of post-21.3 GNU Emacs and does like IswitchBuffers, but also for files.
 * [[Icicles]] -- Like IswitchBuffers and ##ido.el##, but with more: complete regexp matching of virtually any minibuffer input (files, buffers, commands...). Cycle completion candidates; perform actions on candidates, manipulate sets of candidates...
+* [[WorkgroupsForWindows]] - Remembers your opened files and window configuration. Save it under a name and load it later. Great if you work on multiple projects and need to switch between them.
 * RecentFiles -- A recent-files menu for GNU Emacs -- add ##(recentf-mode 1)## to your DotEmacs. Use [[Icicles]] to get a `find-file', completion+cycling interface to your recent files.
 * EdiffMode is the Emacs diff system; it is handy for viewing and merging differences, and shows word by word differences not just line by line.
 * Register jumping: `C-x r j e' to open DotEmacs, `C-x r j i' to open an `ideas' file:
