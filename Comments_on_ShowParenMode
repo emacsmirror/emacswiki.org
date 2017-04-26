@@ -1,0 +1,10 @@
+In the section How to show the matching paren when it is offscreen,
+the code is useful but will cause an error.
+I add the code in my .emacs and when I place the cursor after a curly brace,
+the minibuffer first show the correct content I want. But then it displayed an
+error message: Error running timer ‘show-paren-function’: (wrong-type-argument stringp t)
+I don't know elisp. I tried google, but I didn't find solution.
+Can anyone handle this and modify this page?
+
+-- 匿名者 2017-04-26 05:56 UTC
+
