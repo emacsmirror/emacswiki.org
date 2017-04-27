@@ -1,0 +1,11 @@
+An easy way to have an automated continuous view of the compiled pdf is to have a second buffer with auto-revert-mode. Thus, whenever running C-c C-c LaTeX <RET> the pdf will be recompiled automatically. You can also add this action to the save hook.
+
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (add-hook 'after-save-hook
+                        (lambda ()
+                          (TeX-command "LaTeX" 'TeX-master-file -1)
+                          ) nil 'local)))
+
+-- Kevin 2017-04-27 02:37 UTC
+
