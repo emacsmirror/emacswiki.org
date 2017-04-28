@@ -10,6 +10,10 @@
 
 == Externalized Brain ==
 
+=== Jump to percentage in buffer ===
+
+  M-4 M-< jumps to 40% of a buffer.
+
 === Revisit ===
 
 PlanetEmacsen
