@@ -300,7 +300,7 @@ characters long.  Do this so the summary listings displayed by
 
 Avoid using git hashes as references to previous commits.  These will
 break if we ever have to change version-control systems again; given
-that Emacs has been through no fewer that four VCSes in its lifetime,
+that Emacs has been through no fewer than four VCSes in its lifetime,
 it is not a good idea to depend on this never happening again.
 Instead, quote a distinguishing part of the comment for the commit,
 or write something like "last commit" when appropriate.
