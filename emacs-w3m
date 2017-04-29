@@ -7,9 +7,11 @@ with the [[w3]] or the [[eww]] web browsers written entirely in EmacsLisp.  Usin
 the Emacs interface to w3m is much faster than using w3, since the
 parsing and displaying is done by the external w3m process.
 
-You can download emacs-w3m from its homepage at
-http://emacs-w3m.namazu.org.  There is a mailing-list, that's to a
-large extent in Japanese, but not completely.  Its archives are
+Though you can download emacs-w3m from its homepage at
+http://emacs-w3m.namazu.org, please note that the official releases are extremely old. 
+It is best to download the CVS version from the homepage, or from an updated Git mirror such as https://github.com/ecbrown/emacs-w3m.
+
+There is a mailing-list, that's to a large extent in Japanese, but not completely.  Its archives are
 available at the website.  The list is also archived and gatewayed on
 Gmane, as <code>gmane.emacs.w3m</code>.  Emacs-w3m comes with a manual
 in TexInfo format, from which a normal, comfortable section of the manual in
