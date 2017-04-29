@@ -29,7 +29,7 @@ Custom distributions contain startup routines and tweaks to make Emacs' UI behav
 
 * [https://vigou3.github.io/emacs-modified-macos/ Emacs Modified for macOS] is a distribution based on the latest stable release of GNU Emacs with a few additions, most notably [CategoryESS ESS] and AUCTeX. Otherwise, this is a stock distribution of Emacs. Users of Emacs on other platforms will appreciate the similar look and feel of the application.
 
-* [https://bitbucket.org/mituharu/emacs-mac/ Mitsuharu Yamamoto's Mac port] is based on the latest stable release of GNU Emacs (25.2 as of 2016-Oct-01) and claims to incorporate most of the features of Carbon Emacs and the Carbon+AppKit port for Emacs 22.3. It has improved C-g support, an emulation of `select' that doesn't require periodic polling, full screen support, subpixel font rendering, and smooth (pixel) scrolling. See the [https://bitbucket.org/mituharu/emacs-mac/ readme] for more details. Available via [https://github.com/railwaycat/homebrew-emacsmacport Homebrew] and MacPorts (as emacs-mac-app), as discussed below, or [https://github.com/railwaycat/homebrew-emacsmacport/releases prebuilt binaries].
+* [https://bitbucket.org/mituharu/emacs-mac/ Mitsuharu Yamamoto's Mac port] is based on the latest stable release of GNU Emacs (25.2 as of 2017-04-20) and claims to incorporate most of the features of Carbon Emacs and the Carbon+AppKit port for Emacs 22.3. It has improved C-g support, an emulation of `select' that doesn't require periodic polling, full screen support, subpixel font rendering, and smooth (pixel) scrolling. See the [https://bitbucket.org/mituharu/emacs-mac/ readme] for more details. Available via [https://github.com/railwaycat/homebrew-emacsmacport Homebrew] and MacPorts (as emacs-mac-app), as discussed below, or [https://github.com/railwaycat/homebrew-emacsmacport/releases prebuilt binaries].
 
 * [http://homepage.mac.com/zenitani/emacs-e.html CarbonEmacsPackage] provides authentic look and feel of original Emacs, and is a Mac-friendly distribution based on an older version of Emacs, GNU Emacs 22.3. ([http://groups.google.com/group/carbon-emacs/browse_thread/thread/8d87f6babc1f3e29 Newer versions are not planned].) It uses the ".emacs" file under an user's home directory, making the migration from/to a UNIX/Linux environment easy and straightforward. It comes with tons of extra packages (including AUCTeX, ColorTheme, EmacsMuse, EmacsSession, EmacsSpeaksStatistics, HaskellMode, HowmMode, [[Mew]], [NxhtmlMode nXhtml], PhpMode, PoMode, PsgmlMode, PythonMode, RubyMode etc.)  Several Mac-friendly features are added; window-opacity, OSX keyboard shortcuts (MacKeyMode), cocoa-style print dialog (MacPrintMode) and support for filenames with accent signs.  A Universal Binary application is available.
 
@@ -146,7 +146,7 @@ This creates a symlink and not an alias. So Spotlight may not find it (tested on
 After installation, using the <tt>emacs</tt> command in the terminal or shell will run the <tt>-nw</tt> version of Emacs. If you want
 to run the Cocoa version using this command, you simply add a line to your <tt>.bash_profile</tt>.
 
-To instead use the Yamamoto Mitsuharu version of Emacs 25.1 (with more [https://bitbucket.org/mituharu/emacs-mac/ mac-specific features]):
+To instead use the Yamamoto Mitsuharu version of Emacs 25.2 (with more [https://bitbucket.org/mituharu/emacs-mac/ mac-specific features]):
 
 <pre>
 brew tap railwaycat/emacsmacport
