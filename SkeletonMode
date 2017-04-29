@@ -329,7 +329,7 @@ If you want to write test for your skeletons see SkeletonModeTests.
 
 == See also ==
 
-* [[Yasnippet] -- TextMate inspired template system that automatically expand abbreviations into function templates
+* [[Yasnippet]] -- TextMate inspired template system that automatically expand abbreviations into function templates
 * [[TempoSnippets]] -- a snippet.el-like interface for tempo templates
 
 ----
