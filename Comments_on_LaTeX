@@ -9,3 +9,19 @@ An easy way to have an automated continuous view of the compiled pdf is to have 
 
 -- Kevin 2017-04-27 02:37 UTC
 
+
+----
+
+I just use [http://mg.readthedocs.io/latexmk.html latexmk], which will keep recompiling automatically, and I use a PDF viewer that automatically reloads the file if it changes, e.g. [http://skim-app.sourceforge.net/ Skim].
+
+{{{
+;; limit to the commands I need
+(setq tex-compile-commands
+      '(("latexmk -pvc -view=none -bibtex- -pdf %f" t "%r.pdf")
+	("skim $f")
+	("pdflatex  %f" t "%r.pdf")
+	("makeindex %r" "%r.idx" "%r.ind")))
+}}}
+
+-- Anonymous 2017-04-30 01:09 UTC
+
