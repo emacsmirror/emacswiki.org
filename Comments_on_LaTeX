@@ -23,5 +23,5 @@ I just use [http://mg.readthedocs.io/latexmk.html latexmk], which will keep reco
 	("makeindex %r" "%r.idx" "%r.ind")))
 }}}
 
--- Anonymous 2017-04-30 01:09 UTC
+-- Alex Schroeder 2017-04-30 01:09 UTC
 
