@@ -1,18 +1,15 @@
 [[zh:Emacs开发版源码]]
-The Emacs development sources are kept in a [[Bazaar]] repository. [ConcurrentVersionsSystem CVS] is not used anymore. Once Emacs 24.4 has been released [[Git]] [EmacsFromGit will be used].
+Since Emacs 24.4, [[Git]] [EmacsFromGit is used for Emacs developlemnt].  Niether [[Bazaar]] nor [ConcurrentVersionsSystem CVS] are used anymore.
 
 Some people would like to use the new features available in the next release.  Others want to help contribute to Emacs by testing the development sources and maybe even report EmacsBugs.  Others are just interested in following Emacs's development.  Some other just like "living on the edge".
 
-For information on how to get them directly, see:
-
-* EmacsFromBazaar -- get sources using bzr -- the vcs choosen by the maintainers
-* EmacsFromGit -- get sources using git -- another popular vcs
+For information on how to get them directly, see EmacsFromGit.
 
 See BuildingEmacs for how to build Emacs from the source package.
 
 See EmacsDevelopmentFeatures to find out what the new features are.
 
-Binary packages built from Bazaar snapshots are available for various systems:
+Binary packages built from [[Git]] snapshots are available for various systems:
 
 * EmacsPretest -- sources snapshots made by the Emacs maintainers before a release.
 * CategoryWThirtyTwo -- has a list of unofficial Emacs binaries.
