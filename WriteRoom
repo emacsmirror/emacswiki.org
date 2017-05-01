@@ -1,5 +1,10 @@
-WriteRoom or !DarkRoom is a simple FullScreen distraction-free workspace [http://stevenpoole.net/blog/goodbye-cruel-word/ that some writers like].  The code below might make Emacs work similarly
-by getting rid of all the distractions.
+WriteRoom or !DarkRoom is a simple FullScreen distraction-free workspace [http://stevenpoole.net/blog/goodbye-cruel-word/ that some writers like]. There are a number of packages that provide a similar experience in Emacs. Alternatively, you could use the code below to configure your own version and make Emacs work similarly by getting rid of all the distractions.
+
+== Specialized modes ==
+
+* [https://github.com/joostkremers/writeroom-mode Writeroom-mode]
+* [https://github.com/joaotavora/darkroom Darkroom]
+* [https://github.com/rnkn/olivetti Olivetti]
 
 == Full Screen ==
 
