@@ -8,9 +8,9 @@
 ;; Created: Sat May 24 19:24:18 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 15:34:46 2017 (-0800)
+;; Last-Updated: Mon May  1 09:16:12 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 163
+;;     Update #: 167
 ;; URL: https://www.emacswiki.org/emacs/download/subr%2b.el
 ;; Doc URL: http://www.emacswiki.org/SplittingStrings
 ;; Keywords: strings, text
@@ -62,6 +62,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/05/01 dadams
+;;     split-string-by-regexp: Refer to split-string-by-regexp, not split-string, in doc string.
 ;; 2014/05/31 dadams
 ;;     Added: buffer-substring-of-*.
 ;;     split-string-by-property: Corrected second cond clause for FLIP case.
@@ -197,10 +199,11 @@ TRIM.  Making SEPARATORS match that whitespace gives incorrect results
 when there is whitespace at the start or end of STRING.  If you see
 such calls to `split-string', please fix them.
 
-Note that the effect of `(split-string STRING)' is the same as that of
-`(split-string STRING split-string-default-separators t)'.  In the
-rare case that you wish to retain empty substrings when splitting on
-whitespace, use `(split-string STRING split-string-default-separators)'.
+The effect of `(split-string-by-regexp STRING)' is the same as that of
+`(split-string-by-regexp STRING split-string-default-separators t)'.
+In the rare case that you want to retain empty substrings when
+splitting on whitespace, use `(split-string-by-regexp STRING
+split-string-default-separators)'.
 
 Modifies the match data; use `save-match-data' if necessary."
   (let* ((regexp    (or separators  split-string-default-separators))
