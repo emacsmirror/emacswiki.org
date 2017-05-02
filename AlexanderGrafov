@@ -1,15 +1,15 @@
 Alexander I.Grafov. My other names in different communities: Axel, Siberianlaika, Red Silence.
-My native language is Russian, I speak English (yet not so good as I wish) and know Esperanto a bit.
+My native language is Russian, I speak English (not so good as I wish) and know Esperanto a bit.
 
 == I use Emacs ==
 
-I use GNU/Emacs approximately since 2000. I use GNU/Linux (Gentoo, Debian, Ubuntu) with I3 WM and rxvt terminal. I used many programming  languages and like many of them but mostly love Lisp and Forth  (yes they so different but they both are real state of the computer art).
+I'm using GNU/Emacs approximately since 2000. I'm using GNU/Linux (Gentoo, Debian, Ubuntu, Guix) with I3 WM and rxvt terminal. I like programming and I had studied many programming languages. My mostly liked languages Lisp and Forth (yes they so different but they both are real state of the computer art).
 
 See [https://github.com/grafov] for my programming works.
 
 == Keymacs keyboard layout ==
 
-[https://github.com/keyboard-ergonomics/keymacs] It is experiment how to make ergonomic layout for Emacs on default keyboard. Instead of change keybindings in Emacs I reprogrammed a keyboard layout.
+[https://github.com/keyboard-ergonomics/keymacs] This is an experiment how get ergonomic layout for Emacs on a common keyboard. Instead of adapting keybindings inside Emacs I remapped whole keyboard. It solves the most of QWERTY flaws (for example Keymacs offers highly optimized home row) but contrary to other alternative layouts it also places many of default Emacs keys to convenient places (for example it gathered keys for cursor movement into single block under one hand).
 
 == My packages in MELPA ==
 
@@ -20,6 +20,10 @@ See [https://github.com/grafov] for my programming works.
 === rust-playground ===
 
 [https://github.com/grafov/rust-playground] It is like go-playground but for Rust programming language :)
+
+=== russian-holidays ===
+
+[https://github.com/grafov/russian-holidays] The simple dates list for the calendar with national holidays in Russian Federation.
 
 == Contacts ==
 
