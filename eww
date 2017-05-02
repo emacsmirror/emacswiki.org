@@ -1,5 +1,5 @@
 [[ja:eww-ja]]
-'''Emacs Web Wowser''' ('''[::EWW]''') is a Web browser written in elisp and based on shr.el.  It is part of the latest Emacs (24.4) release.  It supports some basic CSS and HTML5.
+'''Emacs Web Wowser''' ('''[::EWW]''') is a Web browser written in elisp and based on shr.el.  It is included in Emacs 24.4 and later.  It supports some basic CSS and HTML5.
 
 == Windows ==
 
