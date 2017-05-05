@@ -11,7 +11,7 @@ Note that this page is not about EmacsWikiMode.
 == How to change the page /name/? ==
 The page ReplaceRegexp is about using `(query-)replace-regexp' with specail lisp xpression in teh replacement, so the page title should better be something like ReplaceRegexpWithLispExpressions or ReplaceRegexpByondRegexps. - How can I change the /name/ of a page? -- [[halloleo]] 2017-05-05
 
-There is no dedicated feature. Just edit page A, cut the entire text, save, edit page B, paste, save. Sometimes -- but not in this case, you want to redirect from A to B, which requires you to start the page with ###REDIRECT [[B]]##. 
+There is no dedicated feature. Just edit page A, cut the entire text, save, edit page B, paste, save. Sometimes -- but not in this case, you want to redirect from A to B, which requires you to start the page with ###REDIRECT [[B]]##. -- Alex Schroeder
 
 == Text overflow in translated languages ==
 The navigation menus on the left of the site overflow into the page content in some languages such as a Russian. This can probably be fixed with a minor change in css.
@@ -23,6 +23,7 @@ I already added some comments to that same page (WThirtyTwoFilePropertiesDialog)
 Thanks in advance for your attention --
 2017-01-09
 
+Sadly, I have no idea. It looked like a GNU Win 32 package but I can't see anything on their [http://gnuwin32.sourceforge.net/packages.html package list]. If you look at their [http://gnuwin32.sourceforge.net/ main page], you'll that their stuff is really old, though. I'm afraid there is no good solution. -- Alex Schroeder
 
 == Spam-Regex still problematic ==
 
