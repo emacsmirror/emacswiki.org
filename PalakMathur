@@ -1,0 +1,12 @@
+Hello everyone.
+
+My name is Palak Mathur. I am an Indian living in USA. My Freenode nicks are aqualogic and systemhalted. I have a personal weblog: http://palakmathur.in.
+
+I have been using Emacs for quite a few years now but started really using it after reading [http://www.braveclojure.com/basic-emacs/ "Basic Emacs by Daniel Higginbotham"] last year that helped me configure my Emacs the way I wanted. I use Emacs for learning Haskell, checking and sending emails (as Gmail client) using [https://www.emacswiki.org/emacs/CategoryViewMail VM] and taking notes. I find [https://www.emacswiki.org emacswiki] very useful. 
+
+I work with Capital One as a Platform Architect for our Spring Batch infrastructure which runs highly customizedo Chronos + Mesosphere configuration and most of the time I need to be login into machine and maintaining the sanity of the systems and [https://www.emacswiki.org/emacs/CategoryShell Shell] comes to rescue here. I love the comfort of emacs. 
+
+My primary programming language is Java and for that I have not yet configured Emacs but I use Intellij IDEA which I try to use with Emacs key bindings (I switch between macOS keybindings and emacs keybindings). 
+
+Hope to spread the love of Emacs. 
+
