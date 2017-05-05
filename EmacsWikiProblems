@@ -11,6 +11,8 @@ Note that this page is not about EmacsWikiMode.
 == How to change the page /name/? ==
 The page ReplaceRegexp is about using `(query-)replace-regexp' with specail lisp xpression in teh replacement, so the page title should better be something like ReplaceRegexpWithLispExpressions or ReplaceRegexpByondRegexps. - How can I change the /name/ of a page? -- [[halloleo]] 2017-05-05
 
+There is no dedicated feature. Just edit page A, cut the entire text, save, edit page B, paste, save. Sometimes -- but not in this case, you want to redirect from A to B, which requires you to start the page with ###REDIRECT [[B]]##. 
+
 == Text overflow in translated languages ==
 The navigation menus on the left of the site overflow into the page content in some languages such as a Russian. This can probably be fixed with a minor change in css.
 -- Thanks for your attention --
