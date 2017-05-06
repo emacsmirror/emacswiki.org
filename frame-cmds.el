@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Wed Feb 22 17:58:18 2017 (-0800)
+;; Last-Updated: Sat May  6 09:46:33 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 3064
+;;     Update #: 3070
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -283,6 +283,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/05/06 dadams
+;;     maximize-frame: Sidestep nil frame parameters.
 ;; 2017/02/07 dadams
 ;;     Added decrease-frame-transparency, increase-frame-transparency.  Suggest bind to C-M-up|down.
 ;; 2016/01/24 dadams
@@ -1185,11 +1187,12 @@ In Lisp code:
         (fr-origin        (if (eq direction 'horizontal)
                               (car (frcmds-effective-screen-pixel-bounds))
                             (cadr (frcmds-effective-screen-pixel-bounds))))
-        (orig-left        (frame-parameter frame 'left))
-        (orig-top         (frame-parameter frame 'top))
-        (orig-width       (frame-parameter frame 'width))
-        (orig-height      (frame-parameter frame 'height)))
-    (let* ((borders     (* 2 (cdr (assq 'border-width (frame-parameters frame)))))
+        (orig-left        (or (frame-parameter frame 'left)  0))
+        (orig-top         (or (frame-parameter frame 'top)  0))
+        (orig-width       (or (frame-parameter frame 'width)  0))
+        (orig-height      (or (frame-parameter frame 'height)  0)))
+    (let* ((bord-width  (cdr (assq 'border-width (frame-parameters frame))))
+           (borders     (if bord-width (* 2 bord-width) 0))
            (new-left    (if (memq direction '(horizontal both)) 0 orig-left))
            (new-top     (if (memq direction '(vertical   both)) 0 orig-top))
            ;; Subtract borders, scroll bars, & title bar, then convert pixel sizes to char sizes.
