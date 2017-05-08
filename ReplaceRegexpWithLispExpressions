@@ -1,0 +1,152 @@
+This page is about executing Lisp code to get the replacement string in 
+`replace-regexp' and `query-replace-regexp' commands.
+This feature is available starting with Emacs version 22.
+For earlier versions of Emacs, use instead the
+ `query-replace-regexp-eval' command; see ReplaceCount for some examples.
+
+
+== Capitalize words ==
+
+  M-x replace-regexp
+  Replace regexp:  \(\w+\)
+  Replace regexp with:  \,(capitalize \1)
+
+This one serves to introduce you to replace-regexp. You probably want to use `M-x capitalize-region' or `M-x capitalize-word' instead, or build on it.
+
+Capitalize last letter:
+
+  M-x replace-regexp
+  Replace regexp:  \(\w+\)\(\w\)
+  Replace regexp with:  \1\,(capitalize \2)
+
+== Number lists ==
+
+Renumbering `grep' or `occur' matches like the following:
+
+   1987:Bogotá
+   5243:Fabergé
+
+Use:
+
+  M-x replace-regexp
+  Replace regexp: \(.+:\)
+  Replace regexp with \#. 
+
+(Note the space at the end of the replacement!)
+
+To start from one instead of of zero:
+
+  M-x replace-regexp
+  Replace regexp: \(.+:\)
+  Replace regexp with \,(1+ \#). 
+
+(Note the space at the end of the replacement!)
+
+== Renumber lists ==
+
+  M-x replace-regexp
+  Replace regexp: ^[0-9]+
+  Replace regexp with \,(1+ \#&)
+
+== From numerical to alphabetical numbering of lists ==
+
+  M-x replace-regexp
+  Replace regexp: ^\([0-9]+\)
+  Replace regexp with \,(string (+ ?a \#)))
+
+== Find files listed in a buffer ==
+
+  M-x replace-regexp
+  Replace regexp:  .+
+  Replace regexp with:  \,(find-file-noselect \&)
+
+== Promote header tags in HTML ==
+
+  M-x replace-regexp
+  Replace regexp:  <\(/?\)h\([0-9]\)>
+  Replace regexp with:  <\1h\,(1+ \#2)>
+
+== Swap values ==
+
+  M-x replace-regexp
+  Replace regexp: right\|left
+  Replace regexp with: \,(if (equal "right" \&) "left" "right")
+
+== Convert Shell-style comments to Lisp-style ==
+
+  M-x replace-regexp
+  Replace regexp: ^#+
+  Replace regexp with: \,(make-string (length \&) ?;)
+
+== Beep and kill word foo, slowly ==
+
+  M-x replace-regexp
+  Replace regexp: \<foo\>
+  Replace regexp with: \,(progn (beep)(sit-for 1) "")
+
+== Kill current buffer if it contains the word yop ==
+
+  M-x replace-regexp
+  Replace regexp: \<yop\>
+  Replace regexp with: \,(progn (kill-buffer nil) \&)
+
+== Copy email addresses in *scratch* buffer ==
+
+  M-x replace-regexp
+  Replace regexp:  \w+\(\.\w+\)?@\(\w\|\.\)+
+  Replace regexp with: \,(print \& (get-buffer "*scratch*"))
+
+== Open urls in browser ==
+
+  M-x replace-regexp
+  Replace regexp: http://\S-+
+  Replace regexp with: \,(browse-url \&)
+
+== Convert $$...$$ into [...] ==
+ 
+  M-x replace-regexp
+  Replace regexp: \$\$
+  Replace regexp with: \,(if (evenp \#) "[" "]")
+
+== Convert text quotes to Texinfo quotes ==
+ 
+  M-x replace-regexp
+  Replace regexp: "
+  Replace regexp with: \,(save-excursion (if (looking-at "\"")
+                       (delete-char 1) (delete-backward-char 1)) (let
+                       ((start (point))) (texinfo-insert-quote) (let
+                       ((quote (buffer-substring-no-properties start
+                       (point)))) (delete-region start (point))
+                       (insert ?") quote)))
+
+See TexinfoMode.
+
+== Rename bumpy-case identifiers ==
+
+Converting the first character of a match to uppercase.  Useful if you live in CamelCase hell.
+
+  M-x replace-regexp
+  Replace regexp: \(\w\)\(\w+\)Value(
+  Replace regexp with: get\,(upcase \1)\2(
+
+== Use with Anything ==
+'''[[Anything]]''' is a candidate selection framework.
+
+Start with `M-x anything-query-replace-regexp', show and narrow the matched lines by typing some patterns(multiple patterns are space-delimited string) then replace like M-%,
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+With C-z the selected line is displayed without quitting anything session.
+
+You can use `M-x anything-regexp' and press TAB to replace.
+== See also ==
+
+* [http://steve-yegge.blogspot.com/2006/06/shiny-and-new-emacs-22.html Shiny and New: Emacs 22] -- SteveYegge's wonderful blog post about `replace-regexp', which includes many of the examples above.
+* RegularExpressionHelp
+* [[Icicles - Search-And-Replace]] -- '''Icicles''''s search-and-replace lets you use any replacement constructs allowed by `query-replace-regexp' etc., and it provides some new kinds of regexp replacement.
+* ReplaceCount -- Increment numbers in a buffer, using query-replace-regexp-eval.
+* RenumberList -- Renumber lists using the renumber-list command provided there.
+* IncrementNumber -- Increment numbers using keyboard macros and registers.
+
+----
+CategorySearchAndReplace
+
+
