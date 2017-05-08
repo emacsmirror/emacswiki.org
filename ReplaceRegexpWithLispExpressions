@@ -147,6 +147,8 @@ You can use `M-x anything-regexp' and press TAB to replace.
 * IncrementNumber -- Increment numbers using keyboard macros and registers.
 
 ----
-CategorySearchAndReplace
+CategorySearchAndReplace,
+CategoryRegexp,
+CategoryCode
 
 
