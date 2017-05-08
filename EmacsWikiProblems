@@ -16,6 +16,17 @@ There is no dedicated feature. Just edit page A, cut the entire text, save, edit
 [new]
 Thanks Alex. Have created ReplaceRegexpWithLispExpressions. Put a redirect on old page just in case - or is there an easy way to check that there are no links pointing to the old page (ReplaceRegexp). -- [[halloleo]] 2017-05-08
 
+[new:DrewAdams:2017-05-08 14:22 UTC]
+You can click the title of the old page. That should show you all the pages that link to it. You can then edit each of those pages to correct/update the link. If there are only a few pages that link to the old page then this is pretty quick. -- DrewAdams
+
+
+
+
+
+
+
+
+
 
 == Text overflow in translated languages ==
 The navigation menus on the left of the site overflow into the page content in some languages such as a Russian. This can probably be fixed with a minor change in css.
