@@ -45,42 +45,6 @@ Thanks in advance for your attention --
 [new]
 Sadly, I have no idea. It looked like a GNU Win 32 package but I can't see anything on their [http://gnuwin32.sourceforge.net/packages.html package list]. If you look at their [http://gnuwin32.sourceforge.net/ main page], you'll that their stuff is really old, though. I'm afraid there is no good solution. -- Alex Schroeder
 
-== Spam-Regex still problematic ==
-
-Cannot edit [[GoodFonts]]. Ostensibly because of all the numbers :\
-I visit EmacsWiki maybe once a year: my additions are in [[NealePickett]] under "Variable Pitch", if someone would like to paste it in after the page can be edited. -- [[NealePickett]] 2016-11-01
-
-[new]
-I looked at the ##spammer.log## file linked to from the WikiSpam page, listing the current "foiled" attempts at spamming the wiki. It lists time stamp, IP number, page name, and a message mentioning the regular expression triggered and the text matched. A quick review for the last month shows that all the "foiled" edits were probably legitimate edit attempts! Clearly, the false positives are a problem and I have therefore commented the [[BannedRegexps|problematic regular expressions]]. I hope this resolves the isse. :) -- Alex Schroeder
-
-== Spam-regex too restrictive ==
-
-I'm unable to edit the [[CategoryTemplates]] page, because it contains a "phone-number" in one of it's links to a template package.
-
-[new]
-I changed the code such that the regular expressions on BannedRegexps no longer apply to URLs because URLs have their own set of (more restrictive) regular expressions on BannedContent. -- [[Alex Schroeder]]
-
-==Cannot find where file lives for change submission (solved) ==
-
-I would like to submit a change to the file found at https://www.emacswiki.org/emacs/perltidy.el, but I can't seem to figure out which repo to clone. Do I clone the emacs wiki repo or is there some other upstream repo to which I should submit my proposed changes?
-
--- MatthewPersico 2016-02-22
-
-Sadly, the wiki is not git and so you only have two options:
-
-# contact the maintainer via email (the elisp file names Kirill Babikhin and provides an email address)
-# or, edit the page and change it (replacing the maintainer with your own name)
-
--- AlexSchroeder
-
-==Problem editing pages on Firefox with KeeFox (solved) ==
-
-When I tried to edit a page in Firefox, it would show the correct page's text briefly, then refresh immediately to show the text for DocString. 
-
-It turned out to be due to KeeFox interacting oddly with the form - I had an entry for emacswiki.org with just my username, but when I removed the entry I could edit the page okay. No more switching to Chrome...
-
--- BrianBurns 2015-12-07
-
 ==RandomPage==
 
 This is not working.
