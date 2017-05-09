@@ -45,30 +45,6 @@ Thanks in advance for your attention --
 [new]
 Sadly, I have no idea. It looked like a GNU Win 32 package but I can't see anything on their [http://gnuwin32.sourceforge.net/packages.html package list]. If you look at their [http://gnuwin32.sourceforge.net/ main page], you'll that their stuff is really old, though. I'm afraid there is no good solution. -- Alex Schroeder
 
-==RandomPage==
-
-This is not working.
-
-The http://www.emacswiki.org/emacs?action=random link always takes me to PaulKinnucan
-
-[new]
-I guess that's because you're getting the cached random page. :)
-
-Perhaps it's time to retire the Random Page. Do you regularly click the Random Page link?
-
--- Alex Schroeder
-
-[new]
-It is not a cached page, as I get the same thing from different computers on different networks.
-
-I do use the random page from time to time to help me discover things I didn't know about emacs. It has come in use quite a few times. I really like having it.
-
-BTW: I had a hard time adding this comments because a few times the edit showed the previous version of the page, and I had to go into a Linux VM and for some reason that worked.
-
--- John Quillan
-
-[new]
-Weird. I tried clicking that RandomPage link a few times and got a different page every time. Then I figured, perhaps that's because of my cookie or something and I ran ##http://www.emacswiki.org/emacs?action=random## a few times. Same thing, however. I'm getting different pages every time. Is the issue fixed? -- Alex Schroeder
 
 == Revisioning Problems ==
 
