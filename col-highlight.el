@@ -8,9 +8,9 @@
 ;; Created: Fri Sep 08 11:06:35 2006
 ;; Version: 0
 ;; Package-Requires: ((vline "0"))
-;; Last-Updated: Tue Feb 21 15:59:53 2017 (-0800)
+;; Last-Updated: Wed May 10 15:43:34 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 433
+;;     Update #: 440
 ;; URL: https://www.emacswiki.org/emacs/download/col-highlight.el
 ;; Doc URL: http://emacswiki.org/emacs/HighlightCurrentColumn
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
@@ -129,6 +129,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/05/10 dadams
+;;     vline-show: Wrap arg to make-string with abs.  Not a fix, but bypasses error from not
+;;                 handling SPC char with display property value of (space :align-to N).
 ;; 2013/08/08 dadams
 ;;     Added: col-highlight-show-only, redefinition of vline-show.
 ;;     Removed defadvice of vline-show (replaced by redefinition).
@@ -270,7 +273,8 @@ Do NOT change this yourself; instead, use
 
 ;;  REPLACE ORIGINAL `vline-show' defined in `vline.el'.
 ;;
-;;  Respect options `col-highlight-overlay-priority' and `col-highlight-show-only'.
+;;  1. Respect options `col-highlight-overlay-priority' and `col-highlight-show-only'.
+;;  2. Tolerate SPC char with `display' property value (space :align-to N).
 ;;
 (defun vline-show (&optional point)
   (vline-clear)
@@ -323,7 +327,7 @@ Do NOT change this yourself; instead, use
                                     (> lcolumn (+ (current-column)
                                                   (- column cur-column)))))
                      ;; Consider a newline, tab and wide char.
-                     (str       (concat (make-string (- column cur-column) ?\  )
+                     (str       (concat (make-string (abs (- column cur-column)) ?\  )
                                         (if visual-p visual-line-str line-str)))
                      (char      (char-after)))
                 (unless ovr
