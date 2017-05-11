@@ -325,5 +325,10 @@ Like GNU Screen above, the ESC key may not work as expected when running emacs w
     set -s escape-time 0
 
 This fix was found on [https://stackoverflow.com/questions/23259366/emacs-evil-mode-ctrl-irritating-delay-switching-to-normal-mode|this page]
+
+Setting this to 0 causes issues with tmux keybindings beginning with alt.  This fixed it for me (same timeout as the screen timeout above):
+
+    set -s escape-time 5
+
 ----
 CategoryKeys CategoryEmulation
