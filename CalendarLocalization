@@ -189,6 +189,33 @@ See [https://github.com/xwl/cal-china-x cal-china-x].
 
 Modified version of the above using traditional Chinese characters (plus some nit picks): [http://github.com/stepnem/emacs-libraries/blob/master/cal-china-x.el cal-china-x.el]
 
+=== Colombia ===
+<pre>
+(setq holiday-other-holidays
+      '((holiday-fixed 1 1 "Año nuevo")
+	(holiday-sexp '(calendar-nth-named-day 1 1 1 year 6) "Día de Reyes")
+	(holiday-sexp '(calendar-nth-named-day 1 1 3 year 19) "Día de San José")
+	(holiday-easter-etc -3 "Jueves Santo")
+	(holiday-easter-etc -2 "Viernes Santo")
+	(holiday-fixed 5 1 "Día del trabajo")
+	(holiday-easter-etc +43 "Día de la ascención")
+	(holiday-sexp '(calendar-nth-named-day 1 1 6 year 29)
+		      "San Pedro y San Pablo")
+	(holiday-easter-etc +64 "Corpus Christi")
+	(holiday-easter-etc +71 "Sagrado corazón")
+	(holiday-fixed 7 20 "Día de la independencia")
+	(holiday-fixed 8 7 "Batalla de Boyacá")
+	(holiday-sexp '(calendar-nth-named-day 1 1 8 year 15)
+		      "Asunción de la virgen")
+	(holiday-sexp '(calendar-nth-named-day 1 1 10 year 12) "Día de la raza")
+	(holiday-sexp '(calendar-nth-named-day 1 1 11 year 1)
+		      "Todos los santos")
+	(holiday-sexp '(calendar-nth-named-day 1 1 11 year 11)
+		      "Independencia de Cartagena")
+	(holiday-fixed 12 25 "Navidad")
+	(holiday-fixed 12 8 "Inmaculada concepción")))
+</pre>
+
 === Costa Rica ===
 <pre>
 (setq holiday-local-holidays
