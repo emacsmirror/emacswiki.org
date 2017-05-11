@@ -35,3 +35,10 @@ Since the current Emacs includes eww, the list of required packages should also 
 
 -- KnutJackowski 2015-05-01 11:18 UTC
 
+
+----
+
+In my debian 8 installation I did not find libgnutls-dev but instead I used libgnutls28-dev which seems to work.
+
+-- Unbekannt 2017-05-11 07:41 UTC
+
