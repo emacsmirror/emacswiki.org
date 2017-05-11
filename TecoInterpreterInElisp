@@ -11,6 +11,4 @@ http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/app-emacs/teco/files/tec
 I've tested it with GNU Emacs 23.3 and 24.0.91. -- [[ulm]]
 
 [new]
-In Emacs 25, 'last-command-char' is renamed to 'last-command-event',
-you might want to modify 'teco.el' to get it work on the newer
-versions of Emacs. -- LdBeth
+`last-command-char' has been obsolete, in favor of `last-command-event', since at least Emacs 19.34.  `last-command-char' was an alias for `last-command-event' for a long time, but the former was removed altogether in Emacs 24.  You might want to modify ##teco.el## to get it work with the newer versions of Emacs. -- LdBeth
