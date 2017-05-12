@@ -1,3 +1,5 @@
+== [OUTDATED] Using GoogleCL ==
+//This method doesn't work anymore, because GoogleCL has been broken since 2015. See the official Google Announcment: https://code.google.com/archive/p/googlecl///
 You can use [http://code.google.com/p/googlecl/ this commandline program] to edit a Google Doc with your local EDITOR:
 
   google docs list
@@ -14,6 +16,7 @@ I put the following in my .bashrc:
 
 -- BayleShanks
 
+== Using GDrive ==
 Another option using gdrive (requires helm for completion)
 
     (defvar gdocs-folder-id "<gdrive folder for exported docs>"
