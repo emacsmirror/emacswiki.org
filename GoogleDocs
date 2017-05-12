@@ -5,8 +5,7 @@ In this page, we are providing methods/tools to interact with Google Drive Docs.
 Note that Google Doc files aren't plain-text. So, they have to be converted to a suitable format for editing by Emacs. A popular way to do this is to convert Google Docs to Markdown/rST using *pandoc* and then edit it using Emacs. After editing, it is then again converted back to Google Docs using *pandoc*.
 
 
-== [OUTDATED] Using GoogleCL ==
-//This method doesn't work anymore, because GoogleCL has been broken since 2015.// See the official Google Announcement: https://code.google.com/archive/p/googlecl/
+== Using GoogleCL ==
 
 You can use [http://code.google.com/p/googlecl/ this commandline program] to edit a Google Doc with your local EDITOR:
 
@@ -23,6 +22,12 @@ I put the following in my .bashrc:
     export EDITOR=/home/bshanks/bin/myemacsclient
 
 -- BayleShanks
+
+=== UPDATE (12 May 2017) ===
+GoogleCL has been broken since 2015. See the official Google Announcement: https://code.google.com/archive/p/googlecl/
+
+However, there is a fork of the project, which probably is working: https://github.com/vinitkumar/googlecl
+
 
 == Using GDrive ==
 Another option using [[https://github.com/prasmussen/gdrive gdrive]] (requires helm for completion)
