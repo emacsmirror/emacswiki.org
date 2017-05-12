@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Mar 31 18:49:14 2017 (-0700)
+;; Last-Updated: Fri May 12 16:30:33 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 16321
+;;     Update #: 16323
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2017/05/12 dadams
+;;     Added: bmkp-eww-auto-bookmark-mode, bmkp-set-eww-bookmark-here, bmkp-toggle-eww-auto-type,
+;;            bmkp-eww-auto-type.  Thx to Charles Roelli.
 ;; 2017/03/31 dadams
 ;;     Added other-window versions of: bmkp-(next|previous)(TYPE)-bookmark(-repeat).
 ;;     bmkp-autonamed-bookmark-p:
