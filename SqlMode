@@ -304,6 +304,36 @@ there is such a ''someone'' to do something similar for a Microsoft product.
 
 -- RolfUnger
 
+[new]
+There's a way to fix the interaction so that you can use Enter instead of C-j for a new line. For MSSQL, there's no prompt continuation regex in sql.el, and that causes errors when parsing the output of the tool.
+You can fix it by adding the same regex than for regular prompts, like this:
+{{{
+:prompt-regexp "^[0-9]*>" ;existing line
+:prompt-cont-regexp "^[0-9]*>" ;new line
+}}}
+There's probably a way to configure this, it's just that I got to sql.el by trying a different approach: I wrote my own command line tool for MSSQL interaction (in Python, then compiled). I was getting the prompt, which I hardcoded to "1>", but still query results were not returned as expected if the output was big enough. Turns out that sql-interactive-remove-continuation-prompt was breaking.
+
+Just in case, my current config for sqlcmd is:
+{{{
+(defcustom sql-ms-program "sqlcmd"
+  "Command to start ;osql; (replaced for sqlcmd) by Microsoft.
+
+Starts `sql-interactive-mode' after doing some setup."
+  :type 'file
+  :group 'SQL)
+
+(defcustom sql-ms-options '("-w" "30000" "-y" "79" "-s" "|" "-k")
+  ;; -W is the linesize
+  "List of additional options for `sql-ms-program'."
+  :type '(repeat string)
+  :version "22.1"
+  :group 'SQL)
+}}}
+
+Again, I saw in the sql.el comments that there are ways to configure the tool, etc. without actually touching the file, but since I was already fiddling with the file, that's how I got it working.
+
+-- SebastianMonia
+
 ----
 CategoryModes
 CategorySql
