@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Mar 31 15:39:35 2017 (-0700)
+;; Last-Updated: Fri May 12 16:32:21 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8467
+;;     Update #: 8474
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -156,6 +156,7 @@
 ;;    `bmkp-edit-tags-send', `bmkp-edit-this-annotation',
 ;;    `bmkp-empty-file', `bmkp-eww-jump' (Emacs 25+),
 ;;    `bmkp-eww-jump-other-window' (Emacs 25+),
+;;    `bmkp-eww-auto-bookmark-mode' (Emacs 25+),
 ;;    `bmkp-ffap-max-region-size', `bmkp-file-target-set',
 ;;    `bmkp-file-all-tags-jump',
 ;;    `bmkp-file-all-tags-jump-other-window',
@@ -304,6 +305,7 @@
 ;;    `bmkp-set-autonamed-regexp-region',
 ;;    `bmkp-set-bookmark-file-bookmark', `bmkp-set-desktop-bookmark',
 ;;    `bmkp-set-dired-bookmark-for-files',
+;;    `bmkp-set-eww-bookmark-here' (Emacs 25+),
 ;;    `bmkp-set-icicle-search-hits-bookmark',
 ;;    `bmkp-set-info-bookmark-with-node-name' (Emacs 22+),
 ;;    `bmkp-set-izones-bookmark', `bmkp-set-sequence-bookmark',
@@ -330,6 +332,7 @@
 ;;    `bmkp-toggle-autonamed-bookmark-set/delete',
 ;;    `bmkp-toggle-autotemp-on-set',
 ;;    `bmkp-toggle-bookmark-set-refreshes',
+;;    `bmkp-toggle-eww-auto-type' (Emacs 25+),
 ;;    `bmkp-toggle-info-auto-type' (Emacs 22+),
 ;;    `bmkp-toggle-saving-bookmark-file',
 ;;    `bmkp-toggle-saving-menu-list-state',
@@ -357,8 +360,9 @@
 ;;    `bmkp-default-handlers-for-file-types',
 ;;    `bmkp-desktop-default-directory',
 ;;    `bmkp-desktop-jump-save-before-flag.',
-;;    `bmkp-desktop-no-save-vars', `bmkp-eww-buffer-handling' (Emacs
-;;    25+), `bmkp-eww-replace-keys-flag' (Emacs 25+),
+;;    `bmkp-desktop-no-save-vars', `bmkp-eww-auto-type' (Emacs 25+),
+;;    `bmkp-eww-buffer-handling' (Emacs 25+),
+;;    `bmkp-eww-replace-keys-flag' (Emacs 25+),
 ;;    `bmkp-guess-default-handler-for-file-flag',
 ;;    `bmkp-handle-region-function', `bmkp-incremental-filter-delay',
 ;;    `bmkp-info-auto-type' (Emacs 22+),
@@ -761,6 +765,7 @@
 (defvar bmkp-edit-bookmark-record-mode-map) ; Here, via `define-derived-mode'
 (defvar bmkp-edit-bookmark-records-mode-map) ; Here, via `define-derived-mode'
 (defvar bmkp-edit-tags-mode-map)        ; Here, via `define-derived-mode'
+(defvar bmkp-eww-auto-type)             ; Here (Emacs 25+)
 (defvar bmkp-eww-buffer-handling)       ; Here (Emacs 25+)
 (defvar bmkp-eww-jumping-p)             ; Here (Emacs 25+)
 (defvar bmkp-eww-new-buf-name)          ; Here (Emacs 25+)
@@ -1058,6 +1063,14 @@ the save (only)."
 
 ;; EWW support
 (when (> emacs-major-version 24)        ; Emacs 25+
+
+  (defcustom bmkp-eww-auto-type 'update-only
+    "How `bmkp-eww-auto-bookmark-mode' behaves when enabled.
+You can toggle this option using `\\[bmkp-toggle-eww-auto-type]'."
+    :type '(choice
+            (const :tag "Create EWW bookmark or update existing EWW bookmark" create-or-update)
+            (const :tag "Update existing EWW bookmark (only)" update-only))
+    :group 'bookmark-plus)
 
   (defcustom bmkp-eww-buffer-handling nil
     "How to handle an EWW buffer.
@@ -9803,6 +9816,64 @@ then set variable `bmkp-eww-new-buf-name' to the buffer name, so that
           (error (if (and (buffer-live-p (get-buffer new-bname))  bmkp-eww-jumping-p)
                      (setq bmkp-eww-new-buf-name  new-bname) ; Save name for `bmkp-jump-eww-renaming-buffer'.
                    (error "%s" (error-message-string err))))))))
+
+  ;; Eval this so that even if the library is byte-compiled with Emacs 20,
+  ;; loading it into Emacs 22+ will define variable `bmkp-eww-auto-bookmark-mode'.
+  (eval '(define-minor-mode bmkp-eww-auto-bookmark-mode
+          "Toggle automatically setting a bookmark when you visit a URL with EWW.
+The bookmark name is the title of the web page.
+
+If option `bmkp-eww-auto-type' is `create-or-update' then such a
+bookmark is created for the node if none exists.  If the option value
+is `update-only' then no new bookmark is created automatically, but an
+existing bookmark is updated.  (Updating a bookmark increments the
+recorded number of visits.)  You can toggle the option using
+`\\[bmkp-toggle-eww-auto-type]'."
+          :init-value nil :global t :group 'bookmark-plus :require 'bookmark+
+          :lighter bmkp-auto-idle-bookmark-mode-lighter ; @@@@@ RENAME THIS?
+          :link `(url-link :tag "Send Bug Report"
+                  ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+Bookmark bug: \
+&body=Describe bug here, starting with `emacs -Q'.  \
+Don't forget to mention your Emacs and library versions."))
+          :link '(url-link :tag "Download" "http://www.emacswiki.org/bookmark+.el")
+          :link '(url-link :tag "Description" "http://www.emacswiki.org/BookmarkPlus")
+          :link '(emacs-commentary-link :tag "Commentary" "bookmark+")
+          (cond (bmkp-eww-auto-bookmark-mode
+                 (add-hook   'eww-after-render-hook      'bmkp-set-eww-bookmark-here)
+                 (advice-add 'eww-restore-history :after 'bmkp-set-eww-bookmark-here))
+                (t
+                 (remove-hook   'eww-after-render-hook   'bmkp-set-eww-bookmark-here)
+                 (advice-remove 'eww-restore-history     'bmkp-set-eww-bookmark-here)))
+          (when (interactive-p)
+            (message "Automatic EWW bookmarking is now %s" (if bmkp-eww-auto-bookmark-mode "ON" "OFF")))))
+
+  (defun bmkp-set-eww-bookmark-here (&optional nomsg)
+    "Set an EWW bookmark for the URL of the current EWW buffer.
+The current buffer is assumed to be in `eww-mode' and visiting a URL."
+    (interactive)
+    (let* ((bname   (bmkp-eww-title))
+           (url     (bmkp-eww-url))
+           (bmk     (bookmark-get-bookmark bname 'NO-ERROR))
+           (visits  (and bmk  (bookmark-prop-get bmk 'visits))))
+      (when bname
+        (cond ((and (not visits)  (eq bmkp-eww-auto-type 'create-or-update))
+               (bookmark-set bname)
+               (unless nomsg (message "Created EWW bookmark `%s'" bname)))
+              (visits
+               (bmkp-record-visit bname 'BATCHP)
+               (bmkp-refresh/rebuild-menu-list bname nil)
+               (bmkp-maybe-save-bookmarks)
+               (unless nomsg (message "Updated EWW bookmark `%s'" bname)))))))
+
+  (defun bmkp-toggle-eww-auto-type (&optional msgp)
+    "Toggle the value of option `bmkp-eww-auto-type'."
+    (interactive "p")
+    (setq bmkp-eww-auto-type  (if (eq bmkp-eww-auto-type 'create-or-update) 'update-only 'create-or-update))
+    (when msgp (message "`bmkp-eww-auto-bookmark-mode' now %s"
+                        (if (eq bmkp-eww-auto-type 'create-or-update)
+                            "CREATES, as well as updates, EWW bookmarks"
+                          "only UPDATES EXISTING EWW bookmarks"))))
 
 
   ;; You can use this to convert existing EWW bookmarks to Bookmark+ bookmarks.
