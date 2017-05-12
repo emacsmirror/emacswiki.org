@@ -1,4 +1,3 @@
-
 **Calc** is a calculator with many advanced features, once described as the poor man's Mathematica. It has been part of GNU Emacs since version 22. 
 
 
@@ -107,11 +106,126 @@ defun, then all operators will be replaced with their bignum
 equivalents.  Thus, you can now use < instead of math-lessp.
 
 [::elispexample]
-=== Example of calc used from EmacsLisp ===
+=== Examples of Calc used from EmacsLisp ===
 
-calc from EmacsLisp is quite hard to grok, NicFerrier used it in the BSON decoding implementation for mongo-el (MongoDb database adapter for EmacsLisp). 
+calc from EmacsLisp is quite hard to grok. NicFerrier used it in the BSON decoding implementation for mongo-el (MongoDb database adapter for EmacsLisp).
 
 [[https://github.com/nicferrier/mongo-el/blob/921ddc7185003d42f665659ce98a5bc54aacaac1/bson.el#L170|Here's a link to his implementation]]
+
+==== Date calculation ====
+
+While it is possible to do date calculations using the plain Elisp functions, Calc is more powerful. The following example implements a function that can be used to return a time duration between two dates. It seems that the more convenient Calc functions to use directly from Elisp are prefixed by `calcFunc-' and suffixed by their arithmetic name. For example, in the Calc info manual, the command to return the number of business days between two dates is shown as "‘t -’ (‘calc-business-days-minus’) [‘bsub’]". The arithmetic name of that function is thus "bsub" [1], which means we can use it from Elisp using `calcFunc-bsub'.
+
+[1] This is explained in the "info '(calc)Notations Used in This Manual'".
+
+===== Example without Calc ====
+
+The first example is implemented *without* Calc using Emacs date primitives such as `time-substract', `time-add', `date-to-time' and `time-to-number-of-days'. The implemented function `days-of-presence' can be used to calculate the number of days between two days, and optionally a number of periods of absence to exclude, as shown in the examples below.
+
+{{{
+(defun time-of-presence (start-time end-time &optional absence-periods-time)
+  (let ((absence-time
+         (seq-reduce #'time-add
+                     (mapcar (lambda (x)
+                               (time-subtract (cadr x) (car x)))
+                             absence-periods-time)
+                     '(0 0 0 0))))
+    
+    (seq-reduce #'time-subtract (list start-time absence-time) end-time)))
+
+(defun days-of-presence (start-date end-date &optional absence-periods)
+  "Return the number of days given a START-DATE, END-DATE and
+ABSENCES periods. All dates should be formatted as RFC822 date
+strings (e.g., \"Sat Sep 12 12:21:54 1998 +0200\") and
+ABSENCE-PERIODS should be a given as a list of two-tuples like
+\(\(START-ABSENCE-DATE END-ABSENCE-DATE\) ...\)"
+  (let ((absence-periods-time
+         (mapcar (lambda (x)
+                   (list (date-to-time (car x)) (date-to-time (cadr x))))
+                 absence-periods)))
+
+    (time-to-number-of-days (time-of-presence (date-to-time start-date)
+                                              (date-to-time end-date)
+                                              absence-periods-time))))
+;; Days of presence in 2015
+(days-of-presence "Fri Aug 14 00:00:00 2015 -0700"
+                  "Fri Dec 25 00:00:00 2015 -0700")
+;; => 133 days
+
+;; Days of presence in 2016
+(days-of-presence "Tue Jan 05 00:00:00 2016 -0700"
+                  "Sat Dec 31 00:00:00 2016 -0700"
+                  '(("Tue Oct 04 00:00:00 2016 -0700"
+                     "Tue Oct 11 00:00:00 2016 -0700")
+                    ("Fri Dec 23 00:00:00 2016 -0700"
+                     "Fri Dec 30 00:00:00 2016 -0700")))
+;; => 347 days
+}}}
+
+===== Example with Calc ====
+
+The second example shows how to use Calc functions `calcFunc-bsub' or `calcFunc-sub' and `calc-eval' to implement the same thing, with the added feature of being able to calculate both regular days or business days.
+
+{{{
+(require 'calc-ext)
+
+(defun calc-count-days (start-date end-date &optional absence-periods
+                                   exclude-weekends?)
+  "Return the number of days between START-DATE and END-DATE,
+minus any days covered in one or more ABSENCE-PERIODS. Dates
+should be entered a string such as \"YYYY, MM, DD\".
+ABSENCE-PERIODS should be a given as a list of pairs like
+\(\(START-ABSENCE-DATE END-ABSENCE-DATE\) ...\).
+EXCLUDE-WEEKENDS? can be set to `t' to exclude weekend days from
+the calculated number of days."
+  (let ((date-sub-func (if exclude-weekends? #'calcFunc-bsub #'calcFunc-sub)))
+    (defun eval-calc-date (calc-date-string)
+      (calc-eval (concat "(date(" calc-date-string "))") 'raw))
+
+    (defun eval-absence-periods (absence-periods)
+      (mapcar (lambda (x)
+                (list (eval-calc-date (car x))
+                      (eval-calc-date (cadr x))))
+              absence-periods))
+
+    (defun calculate-absent-days (absences)
+      (seq-reduce #'+
+                  (mapcar (lambda (x)
+                            (funcall date-sub-func (cadr x) (car x)))
+                          absences)
+                  0))
+
+    (let* ((start (eval-calc-date start-date))
+           (end (eval-calc-date end-date))
+           (absences (eval-absence-periods absence-periods))
+           (absent-days (calculate-absent-days absences)))
+      (calc-eval "$ - $$" nil (funcall date-sub-func end start) absent-days))))
+
+;; Days of presence in 2015
+(calc-count-days "2015, 08, 14" "2015, 12, 25")
+;; => 133 days
+
+;; Days of presence in 2016
+(calc-count-days "2016, 01, 05" "2016, 12, 31"
+                  '(("2016, 10, 04" "2016, 10, 11")
+                    ("2016, 12, 23" "2016, 12, 30")))
+;; => 347 days
+
+;; Days of presence in 2017
+(calc-count-days "2017, 01, 01" "2017, 06, 10"
+                 '(("2017, 03, 16" "2017, 04, 15")))
+;; => 130 days
+
+;; Days of work in 2015
+(calc-count-days "2015, 08, 14" "2015, 12, 25" nil t)
+;; => 95 days
+
+;; Days of work in 2016
+(calc-count-days "2016, 01, 05" "2016, 12, 31"
+                  '(("2016, 10, 04" "2016, 10, 11")
+                    ("2016, 12, 23" "2016, 12, 30")) t)
+;; => 249
+}}}
 
 == Defining Units ==
 
