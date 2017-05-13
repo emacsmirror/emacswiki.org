@@ -9,10 +9,6 @@
 ;; |Teco interpreter
 ;; |96-09-02|version 7|~/packages/teco.el.Z
 
-;;; Code
-(require 'backquote)
-(provide 'teco)
-
 ;; This code has been tested some, but no doubt contains a zillion bugs.
 ;; You have been warned.
 
@@ -96,6 +92,13 @@
 ;; Changed construction of teco:command-keymap to work in Emacs 19.30.
 ;; (This may be non-compatible with Emacs 18.)
 ;; Fixed minor bugs revealed by byte-compile.
+
+;; Version 8
+;; Change `last-command-char' to new `last-command-event'.
+;; Fixed some bugs revealed by byte-compile.
+;; Added support for evil, try to add the ability to remap
+;; teco:command-escape, which is one of the original feature
+;; of TECO.
 
 ;; To be able to invoke Teco directly, do:
 ;; (global-set-key "\C-z" 'teco:command)
@@ -303,16 +306,19 @@
 ;;   powerful, cryptic, and unforgiving.  In a word, Teco.
 ;; after Ed Post, "Real Programmers Don't Use Pascal", in Datamation,
 ;; July 1983, p. 264
- 
+
+;;; Code:
+;; (require 'backquote)
+
 ;; The version number
-(defvar teco-version "7"
+(defvar teco-version "7.9"
   "The version of Teco.")
 
 (defun teco-version ()
-  "Return string describing the version of Teco.  When called interactively,
-displays the version."
+  "Return string describing the version of Teco.
+When called interactively, displays the version."
   (interactive)
-  (if (interactive-p)
+  (if (called-interactively-p)
       (message "Teco version %s" (teco-version))
     teco-version))
 
@@ -341,13 +347,13 @@ displays the version."
 
 (defvar teco:et-flag 0
   "ET flags:
-	8	do not echo ^T input
-	32	do not wait for ^T input if no character is available.")
+8	do not echo ^T input
+32	do not wait for ^T input if no character is available.")
 
 (defvar teco:es-flag 0
   "ES flags:
-	1	leave pointer at end of found string after reverse search,
-		rather than at beginning.")
+1	leave pointer at end of found string after reverse search,
+rather than at beginning.")
 
 (defvar teco:ctrl-s 0
   "The negative of the length of the last string inserted or searched for.
@@ -443,166 +449,165 @@ not part of expression processing).")
 (defmacro teco:define-type-1 (char &rest body)
   "Define the code to process a type 1 character.
 Transforms
-	(teco:define-type-1 ?x
-	  code ...)
+  (teco:define-type-1 ?x
+    code ...)
 into
         (defun teco:type-1-x ()
-	  code ...)
+    code ...)
 and does
-	(aset teco:exec-1 ?x 'teco:type-1-x)"
+  (aset teco:exec-1 ?x 'teco:type-1-x)"
   (let ((s (intern (concat "teco:type-1-" (char-to-string char)))))
-    (` (progn
-	 (defun (, s) ()
-	   (,@ body))
-	 (aset teco:exec-1 (, char) '(, s))))))
+    `(progn
+       (defun ,s ()
+         ,@body)
+       (aset teco:exec-1 ,char (quote ,s)))))
 
 (defmacro teco:define-type-2 (char &rest body)
   "Define the code to process a type 2 character.
 Transforms
-	(teco:define-type-2 ?x
-	  code ...)
+  (teco:define-type-2 ?x
+    code ...)
 into
         (defun teco:type-2-x ()
-	  code ...)
+    code ...)
 and does
-	(aset teco:exec-2 ?x 'teco:type-2-x)"
+  (aset teco:exec-2 ?x 'teco:type-2-x)"
   (let ((s (intern (concat "teco:type-2-" (char-to-string char)))))
-    (` (progn
-	 (defun (, s) ()
-	   (,@ body))
-	 (aset teco:exec-2 (, char) '(, s))))))
+    `(progn
+       (defun ,s ()
+         ,@body)
+       (aset teco:exec-2 ,char (quote ,s)))))
 
 (defconst teco:char-types (make-vector 256 0)
   "Define the characteristics of characters, as tested by \":
-	1	alphabetic
-	2	alphabetic, $, or .
-	4	digit
-	8	alphabetic or digit
-	16	lower-case alphabetic
-	32	upper-case alphabetic")
+  1	alphabetic
+  2	alphabetic, $, or .
+  4	digit
+  8	alphabetic or digit
+  16	lower-case alphabetic
+  32	upper-case alphabetic")
 
-    (teco:set-elements teco:char-types ?0 ?9 (+ 4 8))
-    (teco:set-elements teco:char-types ?A ?Z (+ 1 2 8 32))
-    (teco:set-elements teco:char-types ?a ?z (+ 1 2 8 16))
-    (aset teco:char-types ?$ 2)
-    (aset teco:char-types ?. 2)
+(teco:set-elements teco:char-types ?0 ?9 (+ 4 8))
+(teco:set-elements teco:char-types ?A ?Z (+ 1 2 8 32))
+(teco:set-elements teco:char-types ?a ?z (+ 1 2 8 16))
+(aset teco:char-types ?$ 2)
+(aset teco:char-types ?. 2)
 
 (defconst teco:error-texts '(("BNI" . "> not in iteration")
-			     ("CPQ" . "Can't pop Q register")
-			     ("COF" . "Can't open output file ")
-			     ("FNF" . "File not found ")
-			     ("IEC" . "Invalid E character")
-			     ("IFC" . "Invalid F character")
-			     ("IIA" . "Invalid insert arg")
-			     ("ILL" . "Invalid command")
-			     ("ILN" . "Invalid number")
-			     ("IPA" . "Invalid P arg")
-			     ("IQC" . "Invalid \" character")
-			     ("IQN" . "Invalid Q-reg name")
-			     ("IRA" . "Invalid radix arg")
-			     ("ISA" . "Invalid search arg")
-			     ("ISS" . "Invalid search or text string")
-			     ("IUC" . "Invalid ^ character")
-			     ("LNF" . "Label not found")
-			     ("MEM" . "Insufficient memory available")
-			     ("MRP" . "Missing )")
-			     ("NAB" . "No arg before ^_")
-			     ("NAC" . "No arg before ,")
-			     ("NAE" . "No arg before =")
-			     ("NAP" . "No arg before )")
-			     ("NAQ" . "No arg before \"")
-			     ("NAS" . "No arg before ;")
-			     ("NAU" . "No arg before U")
-			     ("NFI" . "No file for input")
-			     ("NFO" . "No file for output")
-			     ("NYA" . "Numeric arg with Y")
-			     ("OFO" . "Output file already open")
-			     ("PDO" . "Pushdown list overflow")
-			     ("POP" . "Pointer off page")
-			     ("SNI" . "; not in iteration")
-			     ("SRH" . "Search failure ")
-			     ("STL" . "String too long")
-			     ("UTC" . "Unterminated command")
-			     ("UTM" . "Unterminated macro")
-			     ("XAB" . "Execution interrupted")
-			     ("YCA" . "Y command suppressed")
-			     ("IWA" . "Invalid W arg")
-			     ("NFR" . "Numeric arg with FR")
-			     ("INT" . "Internal error")
-			     ("EFI" . "EOF read from std input")
-			     ("IAA" . "Invalid A arg")
-			     ))
+                             ("CPQ" . "Can't pop Q register")
+                             ("COF" . "Can't open output file ")
+                             ("FNF" . "File not found ")
+                             ("IEC" . "Invalid E character")
+                             ("IFC" . "Invalid F character")
+                             ("IIA" . "Invalid insert arg")
+                             ("ILL" . "Invalid command")
+                             ("ILN" . "Invalid number")
+                             ("IPA" . "Invalid P arg")
+                             ("IQC" . "Invalid \" character")
+                             ("IQN" . "Invalid Q-reg name")
+                             ("IRA" . "Invalid radix arg")
+                             ("ISA" . "Invalid search arg")
+                             ("ISS" . "Invalid search or text string")
+                             ("IUC" . "Invalid ^ character")
+                             ("LNF" . "Label not found")
+                             ("MEM" . "Insufficient memory available")
+                             ("MRP" . "Missing )")
+                             ("NAB" . "No arg before ^_")
+                             ("NAC" . "No arg before ,")
+                             ("NAE" . "No arg before =")
+                             ("NAP" . "No arg before )")
+                             ("NAQ" . "No arg before \"")
+                             ("NAS" . "No arg before ;")
+                             ("NAU" . "No arg before U")
+                             ("NFI" . "No file for input")
+                             ("NFO" . "No file for output")
+                             ("NYA" . "Numeric arg with Y")
+                             ("OFO" . "Output file already open")
+                             ("PDO" . "Pushdown list overflow")
+                             ("POP" . "Pointer off page")
+                             ("SNI" . "; not in iteration")
+                             ("SRH" . "Search failure ")
+                             ("STL" . "String too long")
+                             ("UTC" . "Unterminated command")
+                             ("UTM" . "Unterminated macro")
+                             ("XAB" . "Execution interrupted")
+                             ("YCA" . "Y command suppressed")
+                             ("IWA" . "Invalid W arg")
+                             ("NFR" . "Numeric arg with FR")
+                             ("INT" . "Internal error")
+                             ("EFI" . "EOF read from std input")
+                             ("IAA" . "Invalid A arg")
+                             ))
 
 (defconst teco:spec-chars
-  [
-   0          1          0          0	; ^@ ^A ^B ^C
-   0          64         0          0	; ^D ^E ^F ^G
-   0          2          128        128	; ^H ^I ^J ^K
-   128        0          64         0	; ^L ^M ^N ^O
-   0          64         64         64	; ^P ^Q ^R ^S
-   0          34         0          0	; ^T ^U ^V ^W
-   64         0          0          0	; ^X ^Y ^Z ^\[
-   0          0          1          0	; ^\ ^\] ^^ ^_
-   0          1025       1040       0	;    !  \"  #
-   0          0          0          1040; $  %  &  '
-   0          0          0          0	; \(  \)  *  +
-   0          0          0          0	; ,  -  .  /
-   0          0          0          0	; 0  1  2  3
-   0          0          0          0	; 4  5  6  7
-   0          0          0          0	; 8  9  :  ;
-   1040       0          1040       0	; <  =  >  ?
-   1          0          12         0	; @  A  B  C
-   0          9          1          32	; D  E  F  G
-   0          2          0          0	; H  I  J  K
-   0          32         10         1026; L  M  N  O
-   0          32         8          514	; P  Q  R  S
-   0          32         0          4	; T  U  V  W
-   32         0          0          32	; X  Y  Z  \[
-   0          32         1          2	; \  \]  ^  _
-   0          0          12         0	; `  a  b  c
-   0          9          1          32	; d  e  f  g
-   0          2          0          0	; h  i  j  k
-   0          32         10         1026; l  m  n  o
-   0          32         8          514	; p  q  r  s
-   0          32         0          4	; t  u  v  w
-   32         0          0          0	; x  y  z  {
-   16         0          0          0	; |  }  ~  DEL
-   ]
+  [0          1          0          0	; ^@ ^A ^B ^C
+              0          64         0          0	; ^D ^E ^F ^G
+              0          2          128        128	; ^H ^I ^J ^K
+              128        0          64         0	; ^L ^M ^N ^O
+              0          64         64         64	; ^P ^Q ^R ^S
+              0          34         0          0	; ^T ^U ^V ^W
+              64         0          0          0	; ^X ^Y ^Z ^\[
+              0          0          1          0	; ^\ ^\] ^^ ^_
+              0          1025       1040       0	;    !  \"  #
+              0          0          0          1040; $  %  &  '
+              0          0          0          0	; \(  \)  *  +
+              0          0          0          0	; ,  -  .  /
+              0          0          0          0	; 0  1  2  3
+              0          0          0          0	; 4  5  6  7
+              0          0          0          0	; 8  9  :  ;
+              1040       0          1040       0	; <  =  >  ?
+              1          0          12         0	; @  A  B  C
+              0          9          1          32	; D  E  F  G
+              0          2          0          0	; H  I  J  K
+              0          32         10         1026; L  M  N  O
+              0          32         8          514	; P  Q  R  S
+              0          32         0          4	; T  U  V  W
+              32         0          0          32	; X  Y  Z  \[
+              0          32         1          2	; \  \]  ^  _
+              0          0          12         0	; `  a  b  c
+              0          9          1          32	; d  e  f  g
+              0          2          0          0	; h  i  j  k
+              0          32         10         1026; l  m  n  o
+              0          32         8          514	; p  q  r  s
+              0          32         0          4	; t  u  v  w
+              32         0          0          0	; x  y  z  {
+              16         0          0          0	; |  }  ~  DEL
+              ]
   "The special properties of characters:
-	1	skipto() special character
-	2	command with std text argument
-	4	E<char> takes a text argument
-	8	F<char> takes a text argument
-	16	char causes skipto() to exit
-	32	command with q-register argument
-	64	special char in search string
-	128	character is a line separator
-	256	command with a double text argument
-	512	F<char> takes a double text argument
-	1024	transfer of control command")
+  1	skipto() special character
+  2	command with std text argument
+  4	E<char> takes a text argument
+  8	F<char> takes a text argument
+  16	char causes skipto() to exit
+  32	command with q-register argument
+  64	special char in search string
+  128	character is a line separator
+  256	command with a double text argument
+  512	F<char> takes a double text argument
+  1024	transfer of control command")
 
- 
+
 (defun teco:execute-command (string)
   "Execute teco command string."
   ;; Initialize everything
   (let ((teco:command-string string)
-	(teco:command-pointer 0)
-	(teco:digit-switch nil)
-	(teco:exp-exp nil)
-	(teco:exp-val1 nil)
-	(teco:exp-val2 nil)
-	(teco:exp-flag1 nil)
-	(teco:exp-flag2 nil)
-	(teco:exp-op 'start)
-	(teco:trace nil)
-	(teco:at-flag nil)
-	(teco:colon-flag nil)
-	(teco:iteration-stack nil)
-	(teco:cond-stack nil)
-	(teco:exp-stack nil)
-	(teco:macro-stack nil)
-	(teco:qreg-stack nil)
-	(teco:search-result 0))
+        (teco:command-pointer 0)
+        (teco:digit-switch nil)
+        (teco:exp-exp nil)
+        (teco:exp-val1 nil)
+        (teco:exp-val2 nil)
+        (teco:exp-flag1 nil)
+        (teco:exp-flag2 nil)
+        (teco:exp-op 'start)
+        (teco:trace nil)
+        (teco:at-flag nil)
+        (teco:colon-flag nil)
+        (teco:iteration-stack nil)
+        (teco:cond-stack nil)
+        (teco:exp-stack nil)
+        (teco:macro-stack nil)
+        (teco:qreg-stack nil)
+        (teco:search-result 0))
     ;; save command string
     (aset teco:qreg-text ?* (aref teco:qreg-text ?#))
     (aset teco:qreg-text ?# string)
@@ -611,73 +616,73 @@ and does
     ;; execute commands
     (catch 'teco:exit
       (while t
-	;; get next command character
-	(let ((cmdc (teco:get-command0 teco:trace)))
-	  ;; if it's ^, interpret the next character as a control character
-	  (if (eq cmdc ?^)
-	      (setq cmdc (logand (teco:get-command teco:trace) 31)))
-	  (if (and (<= ?0 cmdc) (<= cmdc ?9))
-	      ;; process a number
-	      (progn
-		(setq cmdc (- cmdc ?0))
-		;; check for invalid digit
-		(if (>= cmdc teco:ctrl-r)
-		    (teco:error "ILN"))
-		(if teco:digit-switch
-		    ;; later digits
-		    (setq teco:exp-val1
-			  (+ (* teco:exp-val1 teco:ctrl-r) cmdc))
-		  ;; first digit
-		  (setq teco:exp-val1 cmdc)
-		  (setq teco:digit-switch t))
-		;; indicate a value was read in
-		(setq teco:exp-flag1 t))
-	    ;; not a digit
-	    (setq teco:digit-switch nil)
-	    ;; cannonicalize the case
-	    (setq cmdc (aref teco:mapch-l cmdc))
-	    ;; dispatch on the character, if it is a type 1 character
-	    (let ((r (aref teco:exec-1 cmdc)))
-	      (if r
-		  (funcall r)
-		;; if a value has been entered, process any pending operation
-		(if teco:exp-flag1
-		    (cond ((eq teco:exp-op 'start)
-			   nil)
-			  ((eq teco:exp-op 'add)
-			   (setq teco:exp-val1 (+ teco:exp-exp teco:exp-val1))
-			   (setq teco:exp-op 'start))
-			  ((eq teco:exp-op 'sub)
-			   (setq teco:exp-val1 (- teco:exp-exp teco:exp-val1))
-			   (setq teco:exp-op 'start))
-			  ((eq teco:exp-op 'mult)
-			   (setq teco:exp-val1 (* teco:exp-exp teco:exp-val1))
-			   (setq teco:exp-op 'start))
-			  ((eq teco:exp-op 'div)
-			   (setq teco:exp-val1
-				 (if (/= teco:exp-val1 0)
-				     (/ teco:exp-exp teco:exp-val1)
-				   0))
-			   (setq teco:exp-op 'start))
-			  ((eq teco:exp-op 'and)
-			   (setq teco:exp-val1
-				 (logand teco:exp-exp teco:exp-val1))
-			   (setq teco:exp-op 'start))
-			  ((eq teco:exp-op 'or)
-			   (setq teco:exp-val1
-				 (logior teco:exp-exp teco:exp-val1))
-			   (setq teco:exp-op 'start)))
-		  ;; a solitary '-' yields -1
-		  (if (eq teco:exp-op 'sub)
-		      (setq teco:exp-val1 -1
-			    teco:exp-op 'start
-			    teco:exp-flag1 t)))
-		;; dispatch on a type 2 character
-		(let ((r (aref teco:exec-2 cmdc)))
-		  (if r
-		      (funcall r)
-		    (teco:error "ILL")))))))))))
- 
+        ;; get next command character
+        (let ((cmdc (teco:get-command0 teco:trace)))
+          ;; if it's ^, interpret the next character as a control character
+          (if (eq cmdc ?^)
+              (setq cmdc (logand (teco:get-command teco:trace) 31)))
+          (if (and (<= ?0 cmdc) (<= cmdc ?9))
+              ;; process a number
+              (progn
+                (setq cmdc (- cmdc ?0))
+                ;; check for invalid digit
+                (if (>= cmdc teco:ctrl-r)
+                    (teco:error "ILN"))
+                (if teco:digit-switch
+                    ;; later digits
+                    (setq teco:exp-val1
+                          (+ (* teco:exp-val1 teco:ctrl-r) cmdc))
+                  ;; first digit
+                  (setq teco:exp-val1 cmdc)
+                  (setq teco:digit-switch t))
+                ;; indicate a value was read in
+                (setq teco:exp-flag1 t))
+            ;; not a digit
+            (setq teco:digit-switch nil)
+            ;; cannonicalize the case
+            (setq cmdc (aref teco:mapch-l cmdc))
+            ;; dispatch on the character, if it is a type 1 character
+            (let ((r (aref teco:exec-1 cmdc)))
+              (if r
+                  (funcall r)
+                ;; if a value has been entered, process any pending operation
+                (if teco:exp-flag1
+                    (cond ((eq teco:exp-op 'start)
+                           nil)
+                          ((eq teco:exp-op 'add)
+                           (setq teco:exp-val1 (+ teco:exp-exp teco:exp-val1))
+                           (setq teco:exp-op 'start))
+                          ((eq teco:exp-op 'sub)
+                           (setq teco:exp-val1 (- teco:exp-exp teco:exp-val1))
+                           (setq teco:exp-op 'start))
+                          ((eq teco:exp-op 'mult)
+                           (setq teco:exp-val1 (* teco:exp-exp teco:exp-val1))
+                           (setq teco:exp-op 'start))
+                          ((eq teco:exp-op 'div)
+                           (setq teco:exp-val1
+                                 (if (/= teco:exp-val1 0)
+                                     (/ teco:exp-exp teco:exp-val1)
+                                   0))
+                           (setq teco:exp-op 'start))
+                          ((eq teco:exp-op 'and)
+                           (setq teco:exp-val1
+                                 (logand teco:exp-exp teco:exp-val1))
+                           (setq teco:exp-op 'start))
+                          ((eq teco:exp-op 'or)
+                           (setq teco:exp-val1
+                                 (logior teco:exp-exp teco:exp-val1))
+                           (setq teco:exp-op 'start)))
+                  ;; a solitary '-' yields -1
+                  (if (eq teco:exp-op 'sub)
+                      (setq teco:exp-val1 -1
+                            teco:exp-op 'start
+                            teco:exp-flag1 t)))
+                ;; dispatch on a type 2 character
+                (let ((r (aref teco:exec-2 cmdc)))
+                  (if r
+                      (funcall r)
+                    (teco:error "ILL")))))))))))
+
 ;; Type 1 commands
 
 (teco:define-type-1
@@ -707,8 +712,8 @@ and does
      (teco:pop-macro-stack)
    ;; otherwise, consume arguments
    (setq teco:exp-flag1 nil
-	 teco:exp-flag2 nil
-	 teco:exp-op 'start)))
+         teco:exp-flag2 nil
+         teco:exp-op 'start)))
 
 (teco:define-type-1
  ?!					; !
@@ -794,7 +799,7 @@ and does
  (setq teco:exp-val1 (teco:get-command teco:trace)
        teco:exp-flag1 t))
 
- 
+
 ;; Type 2 commands
 (teco:define-type-2
  ?+					; +
@@ -839,7 +844,7 @@ and does
  (let ((v teco:exp-val1))
    (teco:pop-exp-stack)
    (setq teco:exp-val1 v
-	 teco:exp-flag1 t)))
+         teco:exp-flag1 t)))
 
 (teco:define-type-2
  ?,					; ,
@@ -876,16 +881,16 @@ and does
    (if teco:exp-flag1
        ;; set radix
        (progn
-	 (if (and (/= teco:exp-val1 8)
-		  (/= teco:exp-val1 10)
-		  (/= teco:exp-val1 16))
-	     (teco:error "IRA"))
-	 (setq teco:ctrl-r teco:exp-val1
-	       teco:exp-flag1 nil
-	       teco:exp-op 'start))
+         (if (and (/= teco:exp-val1 8)
+                  (/= teco:exp-val1 10)
+                  (/= teco:exp-val1 16))
+             (teco:error "IRA"))
+         (setq teco:ctrl-r teco:exp-val1
+               teco:exp-flag1 nil
+               teco:exp-op 'start))
      ;; get radix
      (setq teco:exp-val1 teco:ctrl-r
-	   teco:exp-flag1 t))))
+           teco:exp-flag1 t))))
 
 (teco:define-type-2
  ?\^c					; ^c
@@ -908,10 +913,10 @@ and does
 (teco:define-type-2
  ?m					; m
  (let ((macro-name (teco:get-qspec nil
-				   (teco:get-command teco:trace))))
+                                   (teco:get-command teco:trace))))
    (teco:push-macro-stack)
    (setq teco:command-string (aref teco:qreg-text macro-name)
-	 teco:command-pointer 0)))
+         teco:command-pointer 0)))
 
 (teco:define-type-2
  ?<					; <
@@ -922,10 +927,10 @@ and does
      (teco:find-enditer)
    ;; push iteration stack
    (teco:push-iter-stack teco:command-pointer
-			 teco:exp-flag1 teco:exp-val1)
+                         teco:exp-flag1 teco:exp-val1)
    ;; consume the argument
    (setq teco:exp-flag1 nil
-	 teco:at-flag nil)))
+         teco:at-flag nil)))
 
 (teco:define-type-2
  ?>					; >
@@ -947,9 +952,9 @@ and does
      (teco:error "SNI"))
  ;; if exit
  (if (if (>= (if teco:exp-flag1
-		 teco:exp-val1
-	       teco:search-result) 0)
-	 (not teco:colon-flag)
+                 teco:exp-val1
+               teco:search-result) 0)
+         (not teco:colon-flag)
        teco:colon-flag)
      (progn
        (teco:find-enditer)
@@ -968,56 +973,56 @@ and does
  (setq teco:exp-flag1 nil
        teco:exp-op 'start)
  (let* (;; get the test specification
-	(c (aref teco:mapch-l (teco:get-command teco:trace)))
-	;; determine whether the test is true
-	(test (cond ((eq c ?a)
-		     (/= (logand (aref teco:char-types teco:exp-val1)
-				 1) 0))
-		    ((eq c ?c)
-		     (/= (logand (aref teco:char-types teco:exp-val1)
-				 2) 0))
-		    ((eq c ?d)
-		     (/= (logand (aref teco:char-types teco:exp-val1)
-				 4) 0))
-		    ((or (eq c ?e) (eq c ?f) (eq c ?u) (eq c ?=))
-		     (= teco:exp-val1 0))
-		    ((or (eq c ?g) (eq c ?>))
-		     (> teco:exp-val1 0))
-		    ((or (eq c ?l) (eq c ?s) (eq c ?t) (eq c ?<))
-		     (< teco:exp-val1 0))
-		    ((eq c ?n)
-		     (/= teco:exp-val1 0))
-		    ((eq c ?r)
-		     (/= (logand (aref teco:char-types teco:exp-val1)
-				 8) 0))
-		    ((eq c ?v)
-		     (/= (logand (aref teco:char-types teco:exp-val1)
-				 16) 0))
-		    ((eq c ?w)
-		     (/= (logand (aref teco:char-types teco:exp-val1)
-				 32) 0))
-		    (t
-		     (teco:error "IQC")))))
+        (c (aref teco:mapch-l (teco:get-command teco:trace)))
+        ;; determine whether the test is true
+        (test (cond ((eq c ?a)
+                     (/= (logand (aref teco:char-types teco:exp-val1)
+                                 1) 0))
+                    ((eq c ?c)
+                     (/= (logand (aref teco:char-types teco:exp-val1)
+                                 2) 0))
+                    ((eq c ?d)
+                     (/= (logand (aref teco:char-types teco:exp-val1)
+                                 4) 0))
+                    ((or (eq c ?e) (eq c ?f) (eq c ?u) (eq c ?=))
+                     (= teco:exp-val1 0))
+                    ((or (eq c ?g) (eq c ?>))
+                     (> teco:exp-val1 0))
+                    ((or (eq c ?l) (eq c ?s) (eq c ?t) (eq c ?<))
+                     (< teco:exp-val1 0))
+                    ((eq c ?n)
+                     (/= teco:exp-val1 0))
+                    ((eq c ?r)
+                     (/= (logand (aref teco:char-types teco:exp-val1)
+                                 8) 0))
+                    ((eq c ?v)
+                     (/= (logand (aref teco:char-types teco:exp-val1)
+                                 16) 0))
+                    ((eq c ?w)
+                     (/= (logand (aref teco:char-types teco:exp-val1)
+                                 32) 0))
+                    (t
+                     (teco:error "IQC")))))
    (if (not test)
        ;; if the conditional isn't satisfied, read
        ;; to matching | or '
        ;; ll counts the number of conditionals we are inside of
        (let ((ll 1)
-	     c)
-	 (while (> ll 0)
-	   ;; skip to the next significant character
-	   (while (progn (setq c (teco:skipto))
-			 (and (/= c ?\")
-			      (/= c ?|)
-			      (/= c ?\')))
-	     nil)
-	   (if (= c ?\")
-	       (setq ll (1+ ll))
-	     (if (= c ?\')
-		 (setq ll (1- ll))
-	       (if (= ll 1)
-		   (setq ll 0)		; for immediate exit if | at ll=1
-		 ))))))
+             c)
+         (while (> ll 0)
+           ;; skip to the next significant character
+           (while (progn (setq c (teco:skipto))
+                         (and (/= c ?\")
+                              (/= c ?|)
+                              (/= c ?\')))
+             nil)
+           (if (= c ?\")
+               (setq ll (1+ ll))
+             (if (= c ?\')
+                 (setq ll (1- ll))
+               (if (= ll 1)
+                   (setq ll 0)		; for immediate exit if | at ll=1
+                 ))))))
    ;; clear at-flag
    (setq teco:at-flag nil)))
 
@@ -1033,11 +1038,11 @@ and does
        c)
    (while (> ll 0)
      (while (progn (setq c (teco:skipto))
-		   (and (/= c ?\")
-			(/= c ?\')))
+                   (and (/= c ?\")
+                        (/= c ?\')))
        nil)
      (if (= c ?\")
-	 (setq ll (1+ ll))
+         (setq ll (1+ ll))
        (setq ll (1- ll))))))
 
 (teco:define-type-2
@@ -1056,29 +1061,29 @@ and does
  ?q					; q
  ;; Qn is numeric val, :Qn is # of chars, mQn is mth char
  (let ((mm (teco:get-qspec (or teco:colon-flag teco:exp-flag1)
-			   (teco:get-command teco:trace))))
+                           (teco:get-command teco:trace))))
    (if (not teco:exp-flag1)
        (setq teco:exp-val1 (if teco:colon-flag
-			       ;; :Qn
-			       (length (aref teco:qreg-text mm))
-			     ;; Qn
-			     (aref teco:qreg-number mm))
-	     teco:exp-flag1 t)
+                               ;; :Qn
+                               (length (aref teco:qreg-text mm))
+                             ;; Qn
+                             (aref teco:qreg-number mm))
+             teco:exp-flag1 t)
      ;; mQn
      (let ((v (aref teco:qreg-text mm)))
        (setq teco:exp-val1 (condition-case nil
-			       (aref v teco:exp-val1)
-			     (error -1))
-	     teco:exp-op 'start)))
+                               (aref v teco:exp-val1)
+                             (error -1))
+             teco:exp-op 'start)))
    (setq teco:colon-flag nil)))
 
 (teco:define-type-2
  ?%					; %
  (let* ((mm (teco:get-qspec nil (teco:get-command teco:trace)))
-	(v (+ (aref teco:qreg-number mm) (teco:get-value 1))))
+        (v (+ (aref teco:qreg-number mm) (teco:get-value 1))))
    (aset teco:qreg-number mm v)
    (setq teco:exp-val1 v
-	 teco:exp-flag1 t)))
+         teco:exp-flag1 t)))
 
 (teco:define-type-2
  ?c					; c
@@ -1103,13 +1108,13 @@ and does
        (teco:error "POP")
      (goto-char p)
      (setq teco:exp-flag1 nil
-	   teco:exp-flag2 nil))))
+           teco:exp-flag2 nil))))
 
 (teco:define-type-2
  ?l					; l
  ;; move forward by lines
  (let* ((ll (teco:line-args))
-	(p (+ (car ll) (cdr ll) (- (point)))))
+        (p (+ (car ll) (cdr ll) (- (point)))))
    (if (or (< p (point-min)) (> p (point-max)))
        (teco:error "POP")
      (goto-char p))))
@@ -1126,23 +1131,23 @@ and does
  (if (not teco:exp-flag1)
      (teco:error "NAE"))
  (teco:output (format
-	       (if (teco:peek-command ?=)
-		   ;; at least one more =
-		   (progn
-		     ;; read past it
-		     (teco:get-command teco:trace)
-		     (if (teco:peek-command ?=)
-			 ;; another?
-			 (progn
-			   ;; read it too
-			   (teco:get-command teco:trace)
-			   ;; print in hex
-			   "%x")
-		       ;; print in octal
-		       "%o"))
-		 ;; print in decimal
-		 "%d")
-	       teco:exp-val1))
+               (if (teco:peek-command ?=)
+                   ;; at least one more =
+                   (progn
+                     ;; read past it
+                     (teco:get-command teco:trace)
+                     (if (teco:peek-command ?=)
+                         ;; another?
+                         (progn
+                           ;; read it too
+                           (teco:get-command teco:trace)
+                           ;; print in hex
+                           "%x")
+                       ;; print in octal
+                       "%o"))
+                 ;; print in decimal
+                 "%d")
+               teco:exp-val1))
  ;; add newline if no colon
  (if (not teco:colon-flag)
      (teco:output ?\n))
@@ -1170,20 +1175,20 @@ and does
    (if teco:exp-flag1
        ;; if a nI$ command
        (progn
-	 ;; text argument must be null
-	 (or (string-equal text "") (teco:error "IIA"))
-	 ;; insert the character
-	 (insert teco:exp-val1)
-	 (setq teco:ctrl-s -1)
-	 ;; consume argument
-	 (setq teco:exp-op 'start))
+         ;; text argument must be null
+         (or (string-equal text "") (teco:error "IIA"))
+         ;; insert the character
+         (insert teco:exp-val1)
+         (setq teco:ctrl-s -1)
+         ;; consume argument
+         (setq teco:exp-op 'start))
      ;; otherwise, insert the text
      (insert text)
      (setq teco:ctrl-s (- (length text))))
    ;; clear arguments
    (setq teco:colon-flag nil
-	 teco:exp-flag1 nil
-	 teco:exp-flag2 nil)))
+         teco:exp-flag1 nil
+         teco:exp-flag2 nil)))
 
 (teco:define-type-2
  ?t					; t
@@ -1194,7 +1199,7 @@ and does
  ?v					; v
  (let ((ll (teco:get-value 1)))
    (teco:output (buffer-substring (+ (point) (teco:lines (- 1 ll)))
-				  (+ (point) (teco:lines ll))))))
+                                  (+ (point) (teco:lines ll))))))
 
 (teco:define-type-2
  ?\C-a					; ^a
@@ -1222,34 +1227,34 @@ and does
 (teco:define-type-2
  ?\C-u					; ^u
  (let* ((mm (teco:get-qspec nil (teco:get-command teco:trace)))
-	(text-arg (teco:get-text-arg))
-	(text (if (not teco:exp-flag1)
-		  text-arg
-		(if (string-equal text-arg "")
-		    (char-to-string teco:exp-val1)
-		  (teco:error "IIA")))))
+        (text-arg (teco:get-text-arg))
+        (text (if (not teco:exp-flag1)
+                  text-arg
+                (if (string-equal text-arg "")
+                    (char-to-string teco:exp-val1)
+                  (teco:error "IIA")))))
    ;; if :, append to the register
    (aset teco:qreg-text mm (if teco:colon-flag
-			       (concat (aref teco:qreg-text mm) text)
-			     text))
+                               (concat (aref teco:qreg-text mm) text)
+                             text))
    ;; clear various flags
    (setq teco:exp-flag1 nil
-	 teco:at-flag nil
-	 teco:colon-flag nil
-	 teco:exp-flag1 nil)))
+         teco:at-flag nil
+         teco:colon-flag nil
+         teco:exp-flag1 nil)))
 
 (teco:define-type-2
  ?x					; x
  (let* ((mm (teco:get-qspec nil (teco:get-command teco:trace)))
-	(args (teco:line-args))
-	(text (buffer-substring (car args) (cdr args))))
+        (args (teco:line-args))
+        (text (buffer-substring (car args) (cdr args))))
    ;; if :, append to the register
    (aset teco:qreg-text mm (if teco:colon-flag
-			       (concat (aref teco:qreg-text mm) text)
-			     text))
+                               (concat (aref teco:qreg-text mm) text)
+                             text))
    ;; clear various flags
    (setq teco:at-flag nil
-	 teco:colon-flag nil)))
+         teco:colon-flag nil)))
 
 (teco:define-type-2
  ?g					; g
@@ -1265,21 +1270,21 @@ and does
  ?\[					; \[
  (let ((mm (teco:get-qspec t (teco:get-command teco:trace))))
    (setq teco:qreg-stack
-	 (cons (cons (aref teco:qreg-text mm)
-		     (aref teco:qreg-number mm))
-	       teco:qreg-stack))))
+         (cons (cons (aref teco:qreg-text mm)
+                     (aref teco:qreg-number mm))
+               teco:qreg-stack))))
 
 (teco:define-type-2
  ?\]					; \]
  (let ((mm (teco:get-qspec t (teco:get-command teco:trace))))
    (if teco:colon-flag
        (setq teco:exp-flag1 t
-	     teco:exp-val1 (if teco:qreg-stack -1 0))
+             teco:exp-val1 (if teco:qreg-stack -1 0))
      (if teco:qreg-stack
-	 (let ((pop (car teco:qreg-stack)))
-	   (aset teco:qreg-text mm (car pop))
-	   (aset teco:qreg-number mm (cdr pop))
-	   (setq teco:qreg-stack (cdr teco:qreg-stack)))
+         (let ((pop (car teco:qreg-stack)))
+           (aset teco:qreg-text mm (car pop))
+           (aset teco:qreg-number mm (cdr pop))
+           (setq teco:qreg-stack (cdr teco:qreg-stack)))
        (teco:error "CPQ")))
    (setq teco:colon-flag nil)))
 
@@ -1288,59 +1293,59 @@ and does
  (if (not teco:exp-flag1)
      ;; no argument; read number
      (let ((p (point))
-	   (sign +1)
-	   (n 0)
-	   c)
+           (sign +1)
+           (n 0)
+           c)
        (setq c (char-after p))
        (if c
-	   (if (= c ?+)
-	       (setq p (1+ p))
-	     (if (= c ?-)
-		 (setq p (1+ p)
-		       sign -1))))
+           (if (= c ?+)
+               (setq p (1+ p))
+             (if (= c ?-)
+                 (setq p (1+ p)
+                       sign -1))))
        (cond
-	((= teco:ctrl-r 8)
-	 (while (progn
-		  (setq c (char-after p))
-		  (and c (>= c ?0) (<= c ?7)))
-	   (setq p (1+ p)
-		 n (+ c -48 (* n 8)))))
-	((= teco:ctrl-r 10)
-	 (while (progn
-		  (setq c (char-after p))
-		  (and c (>= c ?0) (<= c ?9)))
-	   (setq p (1+ p)
-		 n (+ c -48 (* n 10)))))
-	(t
-	 (while (progn
-		  (setq c (char-after p))
-		  (and c
-		       (or
-			(and (>= c ?0) (<= c ?9))
-			(and (>= c ?a) (<= c ?f))
-			(and (>= c ?A) (<= c ?F)))))
-	   (setq p (1+ p)
-		 n (+ c (if (> c ?F)
-			    ;; convert 'a' to 10
-			    -87
-			  (if (> c ?9)
-			      ;; convert 'A' to 10
-			      -55
-			    ;; convert '0' to 0
-			    -48))
-		      (* n 16))))))
+        ((= teco:ctrl-r 8)
+         (while (progn
+                  (setq c (char-after p))
+                  (and c (>= c ?0) (<= c ?7)))
+           (setq p (1+ p)
+                 n (+ c -48 (* n 8)))))
+        ((= teco:ctrl-r 10)
+         (while (progn
+                  (setq c (char-after p))
+                  (and c (>= c ?0) (<= c ?9)))
+           (setq p (1+ p)
+                 n (+ c -48 (* n 10)))))
+        (t
+         (while (progn
+                  (setq c (char-after p))
+                  (and c
+                       (or
+                        (and (>= c ?0) (<= c ?9))
+                        (and (>= c ?a) (<= c ?f))
+                        (and (>= c ?A) (<= c ?F)))))
+           (setq p (1+ p)
+                 n (+ c (if (> c ?F)
+                            ;; convert 'a' to 10
+                            -87
+                          (if (> c ?9)
+                              ;; convert 'A' to 10
+                              -55
+                            ;; convert '0' to 0
+                            -48))
+                      (* n 16))))))
        (setq teco:exp-val1 (* n sign)
-	     teco:exp-flag1 t
-	     teco:ctrl-s (- (point) p))
+             teco:exp-flag1 t
+             teco:ctrl-s (- (point) p))
        (goto-char p))
    ;; argument: insert it as a digit string
    (insert (format (cond
-		    ((= teco:ctrl-r 8) "%o")
-		    ((= teco:ctrl-r 10) "%d")
-		    (t "%x"))
-		   teco:exp-val1))
+                    ((= teco:ctrl-r 8) "%o")
+                    ((= teco:ctrl-r 10) "%d")
+                    (t "%x"))
+                   teco:exp-val1))
    (setq teco:exp-flag1 nil
-	 teco:exp-op 'start)))
+         teco:exp-op 'start)))
 
 (teco:define-type-2
  ?\C-t					; ^t
@@ -1351,17 +1356,17 @@ and does
        (setq teco:exp-flag1 nil))
    ;; input a character
    (if (or (= (logand teco:et-flag 32) 0)
-	   (input-pending-p))
+           (input-pending-p))
        ;; input is pending, or we must wait
        (let* ((echo-keystrokes 0)
-	      (c (read-char)))
-	 (if (= (logand teco:et-flag 8) 0)
-	     (teco:output c))
-	 (setq teco:exp-val1 c
-	       teco:exp-flag1 t))
+              (c (read-char)))
+         (if (= (logand teco:et-flag 8) 0)
+             (teco:output c))
+         (setq teco:exp-val1 c
+               teco:exp-flag1 t))
      ;; no input is pending, and ET bit 32 is set
      (setq teco:exp-val1 -1
-	   teco:exp-flag1 t))))
+           teco:exp-flag1 t))))
 
 (teco:define-type-2
  ?w					; w
@@ -1379,52 +1384,52 @@ and does
    (if (string-equal arg "")
        ;; Retrieve last search string
        (setq regexp teco:last-search-regexp
-	     arg (aref teco:qreg-text ?_))
+             arg (aref teco:qreg-text ?_))
      ;; Store this search string
      (setq regexp (teco:parse-search-string arg)
-	   teco:last-search-regexp regexp)
+           teco:last-search-regexp regexp)
      (aset teco:qreg-text ?_ arg))
    (let ((result (cond
-		  ((eq teco:colon-flag 2)
-		   (looking-at regexp))
-		  ((> count 0)
-		   (re-search-forward regexp nil t count))
-		  ((< count 0)
-		   (re-search-backward regexp nil t (- count)))
-		  (t
-		   ;; 0s is always successful
-		   t))))
+                  ((eq teco:colon-flag 2)
+                   (looking-at regexp))
+                  ((> count 0)
+                   (re-search-forward regexp nil t count))
+                  ((< count 0)
+                   (re-search-backward regexp nil t (- count)))
+                  (t
+                   ;; 0s is always successful
+                   t))))
      (if (and result
-	      (< count 0)
-	      (= (logand teco:es-flag 1) 1))
-	 (goto-char (match-end 0)))
+              (< count 0)
+              (= (logand teco:es-flag 1) 1))
+         (goto-char (match-end 0)))
      ;; set ctrl-s, if the match was successful
      (if (and result
-	      (or (/= count 0) (eq teco:colon-flag 2)))
-	 (setq teco:ctrl-s (- (match-beginning 0) (match-end 0))))
+              (or (/= count 0) (eq teco:colon-flag 2)))
+         (setq teco:ctrl-s (- (match-beginning 0) (match-end 0))))
      ;; save result for later ';'
      (setq teco:search-result (if result -1 0))
      ;; if no real or implied colon, error if not found
      (if (and (not result)
-	      (not teco:colon-flag)
-	      (not (teco:peek-command 59)))
-	 (teco:error "SRH"))
+              (not teco:colon-flag)
+              (not (teco:peek-command 59)))
+         (teco:error "SRH"))
      ;; set return results
      (if teco:colon-flag
-	 (setq teco:exp-flag1 t
-	       teco:exp-val1 teco:search-result)
+         (setq teco:exp-flag1 t
+               teco:exp-val1 teco:search-result)
        (setq teco:exp-flag1 nil))
      ;; clear other flags
      (setq teco:exp-flag2 nil
-	   teco:colon-flag nil
-	   teco:at-flag nil
-	   teco:exp-op 'start))))
+           teco:colon-flag nil
+           teco:at-flag nil
+           teco:exp-op 'start))))
 
 (defun teco:parse-search-string (s)
   (let ((i 0)
-	(l (length s))
-	(r "")
-	c)
+        (l (length s))
+        (r "")
+        c)
     (while (< i l)
       (setq r (concat r (teco:parse-search-string-1))))
     r))
@@ -1502,21 +1507,21 @@ and does
   (setq c (aref s i))
   (setq i (1+ i))
   (let* ((q (aref teco:qreg-text c))
-	 (len (length q))
-	 (null (= len 0))
-	 (one-char (= len 1))
-	 (dash-present (string-match "-" q))
-	 (caret-present (string-match "\\^" q))
-	 (outbracket-present (string-match "]" q))
-	 p)
+         (len (length q))
+         (null (= len 0))
+         (one-char (= len 1))
+         (dash-present (string-match "-" q))
+         (caret-present (string-match "\\^" q))
+         (outbracket-present (string-match "]" q))
+         p)
     (cond
      (null
       "[^\000-\377]")
      (one-char
       (teco:parse-search-string-char c))
      (t
-      (while (setq p (string-match "^]\\^"))
-	(setq q (concat (substring q 1 p) (substring q (1+ p)))))
+      (while (setq p (string-match "^]\\^" q)) ;FIXME
+        (setq q (concat (substring q 1 p) (substring q (1+ p)))))
       (concat
        "["
        (if outbracket-present "]" "")
@@ -1529,28 +1534,28 @@ and does
     (cond
      ((= (aref p 0) ?\[)
       (if (= (aref p 1) ?^)
-	  ;; complement character set
-	  (if (= (length p) 4)
-	      ;; complement of one character
-	      (teco:parse-search-string-char (aref p 2))
-	    ;; complement of more than one character
-	    (concat "[" (substring p 2)))
-	;; character set - invert it
-      (concat "[^" (substring p 1))))
+          ;; complement character set
+          (if (= (length p) 4)
+              ;; complement of one character
+              (teco:parse-search-string-char (aref p 2))
+            ;; complement of more than one character
+            (concat "[" (substring p 2)))
+        ;; character set - invert it
+        (concat "[^" (substring p 1))))
      ((= (aref p 0) ?\\)
       ;; single quoted character
       (concat "[^" (substring p 1) "]"))
      (t
       ;; single character
       (if (string-equal p "-")
-	  "[^---]"
-	(concat "[^" p "]"))))))
+          "[^---]"
+        (concat "[^" p "]"))))))
 
 (defun teco:substitute-text-string (s)
   (let ((i 0)
-	(l (length s))
-	(r "")
-	c)
+        (l (length s))
+        (r "")
+        c)
     (while (< i l)
       (setq r (concat r (teco:substitute-text-string-1))))
     r))
@@ -1601,49 +1606,49 @@ and does
    ;; handle computed goto by extracting the proper label
    (if index
        (if (< index 0)
-	   ;; argument < 0 is a noop
-	   (setq label "")
-	 ;; otherwise, find the n-th label (0-origin)
-	 (setq label (concat label ","))
-	 (let ((p 0)
-	       q)
-	   (while (and (> index 0)
-		       (setq p (string-match "," label p))
-		       (setq p (1+ p)))
-	     (setq index (1- index)))
-	   (setq q (string-match "," label p))
-	   (setq label (substring label p q)))))
+           ;; argument < 0 is a noop
+           (setq label "")
+         ;; otherwise, find the n-th label (0-origin)
+         (setq label (concat label ","))
+         (let ((p 0)
+               q)
+           (while (and (> index 0)
+                       (setq p (string-match "," label p))
+                       (setq p (1+ p)))
+             (setq index (1- index)))
+           (setq q (string-match "," label p))
+           (setq label (substring label p q)))))
    ;; if the label is non-null, find the correct label
    ;; start from beginning of iteration or macro, and look for tag
    (setq teco:command-pointer
-	 (if teco:iteration-stack
-	     ;; if in iteration, start at beginning of iteration
-	     (aref (car teco:iteration-stack) 0)
-	   ;; if not in iteration, start at beginning of command or macro
-	   0))
+         (if teco:iteration-stack
+             ;; if in iteration, start at beginning of iteration
+             (aref (car teco:iteration-stack) 0)
+           ;; if not in iteration, start at beginning of command or macro
+           0))
    ;; search for tag
    (catch 'label
      (let ((level 0)
-	   c p l)
+           c p l)
        ;; look for interesting things, including !
        (while t
-	 (setq c (teco:skipto t))
-	 (cond
-	  ((= c ?<)			; start of iteration
-	   (setq level (1+ level)))
-	  ((= c ?>)			; end of iteration
-	   (if (= level 0)
-	       (teco:pop-iter-stack t)
-	     (setq level (1- level))))
-	  ((= c ?!)			; start of tag
-	   (setq p (string-match "!" teco:command-string teco:command-pointer))
-	   (if (and p
-		    (string-equal label (substring teco:command-string
-						   teco:command-pointer
-						   p)))
-	       (progn
-		 (setq teco:command-pointer (1+ p))
-		 (throw 'label nil))))))))))
+         (setq c (teco:skipto t))
+         (cond
+          ((= c ?<)			; start of iteration
+           (setq level (1+ level)))
+          ((= c ?>)			; end of iteration
+           (if (= level 0)
+               (teco:pop-iter-stack t)
+             (setq level (1- level))))
+          ((= c ?!)			; start of tag
+           (setq p (string-match "!" teco:command-string teco:command-pointer))
+           (if (and p
+                    (string-equal label (substring teco:command-string
+                                                   teco:command-pointer
+                                                   p)))
+               (progn
+                 (setq teco:command-pointer (1+ p))
+                 (throw 'label nil))))))))))
 
 (teco:define-type-2
  ?a					; :a
@@ -1651,11 +1656,11 @@ and does
  (if (and teco:exp-flag1 teco:colon-flag)
      (let ((char (+ (point) teco:exp-val1)))
        (setq teco:exp-val1
-	     (if (and (>= char (point-min))
-		      (< char (point-max)))
-		 (char-after char)
-	       -1)
-	     teco:colon-flag nil))
+             (if (and (>= char (point-min))
+                      (< char (point-max)))
+                 (char-after char)
+               -1)
+             teco:colon-flag nil))
    (teco:error "ILL")))
 
 (teco:define-type-2
@@ -1677,26 +1682,29 @@ and does
     ((= c ?w) (teco:fw-command))
     (t (teco:error "IFC")))))
 
-(defun teco:fe-command ()		; fe
+(defun teco:fe-command ()
+  "Aka fe."
   (let ((text (teco:substitute-text-string (teco:get-text-arg))))
     (prin1-to-string (eval (read text)))))
 
-(defun teco:fl-command ()		; fl
+(defun teco:fl-command ()
+  "Aka fl."
   (let ((count (teco:get-value 1))
-	(start (point)))
+        (start (point)))
     ;; argument 0 is a no-op
     (if (/= count 0)
-	(forward-sexp count))
+        (forward-sexp count))
     ;; get the result values into the arguments
     (setq teco:exp-val2 start
-	  teco:exp-flag2 t
-	  teco:exp-val1 (point)
-	  teco:exp-flag1 t
-	  teco:colon-flag nil)
+          teco:exp-flag2 t
+          teco:exp-val1 (point)
+          teco:exp-flag1 t
+          teco:colon-flag nil)
     ;; don't move the point
     (goto-char start)))
 
-(defun teco:fr-command ()		; fr
+(defun teco:fr-command ()
+  "Aka fr."
   (let ((text (teco:get-text-arg)))
     ;; delete the previous match
     (delete-char teco:ctrl-s)
@@ -1705,76 +1713,78 @@ and does
     ;; set ^S for the insertion
     (setq teco:ctrl-s (- (length text)))))
 
-(defun teco:fs-command ()		; fs
- (let* ((args (teco:get-two-text-args))
-	(search (car args))
-	(replace (car (cdr args)))
-	regexp)
-   (if (string-equal search "")
-       ;; Retrieve last search string
-       (setq regexp teco:last-search-regexp
-	     search (aref teco:qreg-text ?_))
-     ;; Store this search string
-     (setq regexp (teco:parse-search-string search)
-	   teco:last-search-regexp regexp)
-     (aset teco:qreg-text ?_ search))
-   (let ((result (re-search-forward regexp nil t)))
-     ;; save result for later ';'
-     (setq teco:search-result (if result -1 0))
-     ;; if no real or implied colon, error if not found
-     (if (and (not result)
-	      (not teco:colon-flag)
-	      (not (teco:peek-command 59)))
-	 (teco:error "SRH"))
-     ;; set return results
-     (if teco:colon-flag
-	 (setq teco:exp-flag1 t
-	       teco:exp-val1 teco:search-result)
-       (setq teco:exp-flag1 nil))
-     ;; clear other flags
-     (setq teco:exp-flag2 nil
-	   teco:colon-flag nil
-	   teco:at-flag nil
-	   teco:exp-op 'start)
-     (if result
-	 (progn
-	   ;; delete the match
-	   (delete-backward-char (- (match-end 0) (match-beginning 0)))
-	   ;; insert the argument
-	   (insert replace)
-	   ;; set ^S for the insertion
-	   (setq teco:ctrl-s (- (length replace))))))))
+(defun teco:fs-command ()
+  "Aka fs."
+  (let* ((args (teco:get-two-text-args))
+         (search (car args))
+         (replace (car (cdr args)))
+         regexp)
+    (if (string-equal search "")
+        ;; Retrieve last search string
+        (setq regexp teco:last-search-regexp
+              search (aref teco:qreg-text ?_))
+      ;; Store this search string
+      (setq regexp (teco:parse-search-string search)
+            teco:last-search-regexp regexp)
+      (aset teco:qreg-text ?_ search))
+    (let ((result (re-search-forward regexp nil t)))
+      ;; save result for later ';'
+      (setq teco:search-result (if result -1 0))
+      ;; if no real or implied colon, error if not found
+      (if (and (not result)
+               (not teco:colon-flag)
+               (not (teco:peek-command 59)))
+          (teco:error "SRH"))
+      ;; set return results
+      (if teco:colon-flag
+          (setq teco:exp-flag1 t
+                teco:exp-val1 teco:search-result)
+        (setq teco:exp-flag1 nil))
+      ;; clear other flags
+      (setq teco:exp-flag2 nil
+            teco:colon-flag nil
+            teco:at-flag nil
+            teco:exp-op 'start)
+      (if result
+          (progn
+            ;; delete the match
+            (delete-char (- (match-end 0) (match-beginning 0)))
+            ;; insert the argument
+            (insert replace)
+            ;; set ^S for the insertion
+            (setq teco:ctrl-s (- (length replace))))))))
 
-(defun teco:fw-command ()		; fw
+(defun teco:fw-command ()
+  "Aka fw."
   (let ((count (teco:get-value 1))
-	(start (point)))
+        (start (point)))
     ;; argument 0 is a no-op
     (if (/= count 0)
-	(progn
-	  (forward-word count)
-	  ;; If : is present, back off to the near side of the last word
-	  ;; found.  Make sure we don't run past the starting position.
-	  (if teco:colon-flag
-	      (if (> count 0)
-		  ;; Searching forward
-		  (progn
-		    (forward-word -1)
-		    (if (< (point) start)
-			(goto-char start)))
-		;; Searching backward
-		(progn
-		  (forward-word 1)
-		  (if (> (point) start)
-		      (goto-char start)))))))
+        (progn
+          (forward-word count)
+          ;; If : is present, back off to the near side of the last word
+          ;; found.  Make sure we don't run past the starting position.
+          (if teco:colon-flag
+              (if (> count 0)
+                  ;; Searching forward
+                  (progn
+                    (forward-word -1)
+                    (if (< (point) start)
+                        (goto-char start)))
+                ;; Searching backward
+                (progn
+                  (forward-word 1)
+                  (if (> (point) start)
+                      (goto-char start)))))))
     ;; get the result values into the arguments
     (setq teco:exp-val2 start
-	  teco:exp-flag2 t
-	  teco:exp-val1 (point)
-	  teco:exp-flag1 t
-	  teco:colon-flag nil)
+          teco:exp-flag2 t
+          teco:exp-val1 (point)
+          teco:exp-flag1 t
+          teco:colon-flag nil)
     ;; don't move the point
     (goto-char start)))
- 
+
 ;; Routines to get next character from command buffer
 ;; getcmdc0, when reading beyond command string, pops
 ;; macro stack and continues.
@@ -1783,14 +1793,14 @@ and does
 ;; routines type characters as read, if argument != 0.
 
 (defun teco:get-command0 (trace)
-  ;; get the next character
+  "Get the next character TRACE."
   (let (char)
     (while (not (condition-case nil
-		    (setq char (aref teco:command-string teco:command-pointer))
-		  ;; if we've exhausted the string, pop the macro stack
-		  ;; if we exhaust the macro stack, exit
-		  (error (teco:pop-macro-stack)
-			 nil))))
+                    (setq char (aref teco:command-string teco:command-pointer))
+                  ;; if we've exhausted the string, pop the macro stack
+                  ;; if we exhaust the macro stack, exit
+                  (error (teco:pop-macro-stack)
+                         nil))))
     ;; bump the command pointer
     (setq teco:command-pointer (1+ teco:command-pointer))
     ;; trace, if requested
@@ -1799,12 +1809,12 @@ and does
     char))
 
 (defun teco:get-command (trace)
-  ;; get the next character
+  "Get the next character TRACE."
   (let ((char (condition-case nil
-		  (aref teco:command-string teco:command-pointer)
-		;; if we've exhausted the string, give error
-		(error
-		 (teco:error (if teco:macro-stack "UTM" "UTC"))))))
+                  (aref teco:command-string teco:command-pointer)
+                ;; if we've exhausted the string, give error
+                (error
+                 (teco:error (if teco:macro-stack "UTM" "UTC"))))))
     ;; bump the command pointer
     (setq teco:command-pointer (1+ teco:command-pointer))
     ;; trace, if requested
@@ -1818,90 +1828,90 @@ and does
 (defun teco:peek-command (arg)
   (condition-case nil
       (eq (aref teco:mapch-l (aref teco:command-string teco:command-pointer))
-	  (aref teco:mapch-l arg))
+          (aref teco:mapch-l arg))
     (error nil)))
 
 (defun teco:get-text-arg (&optional term-char default-term-char)
   ;; figure out what the terminating character is
   (setq teco:term-char (or term-char
-			   (if teco:at-flag
-			       (teco:get-command teco:trace)
-			     (or default-term-char
-				 ?\e)))
-	teco:at-flag nil)
+                           (if teco:at-flag
+                               (teco:get-command teco:trace)
+                             (or default-term-char
+                                 ?\e)))
+        teco:at-flag nil)
   (let ((s "")
-	c)
+        c)
     (while (progn
-	     (setq c (teco:get-command teco:trace))
-	     (/= c teco:term-char))
+             (setq c (teco:get-command teco:trace))
+             (/= c teco:term-char))
       (setq s (concat s (char-to-string c))))
     s))
 
 (defun teco:get-two-text-args (&optional term-char default-term-char)
   ;; figure out what the terminating character is
   (setq teco:term-char (or term-char
-			   (if teco:at-flag
-			       (teco:get-command teco:trace)
-			     (or default-term-char
-				 ?\e)))
-	teco:at-flag nil)
+                           (if teco:at-flag
+                               (teco:get-command teco:trace)
+                             (or default-term-char
+                                 ?\e)))
+        teco:at-flag nil)
   (let ((s1 "")
-	(s2 "")
-	c)
+        (s2 "")
+        c)
     (while (progn
-	     (setq c (teco:get-command teco:trace))
-	     (/= c teco:term-char))
+             (setq c (teco:get-command teco:trace))
+             (/= c teco:term-char))
       (setq s1 (concat s1 (char-to-string c))))
     (while (progn
-	     (setq c (teco:get-command teco:trace))
-	     (/= c teco:term-char))
+             (setq c (teco:get-command teco:trace))
+             (/= c teco:term-char))
       (setq s2 (concat s2 (char-to-string c))))
     (list s1 s2)))
- 
+
 ;; Routines to manipulate the stacks
 
 ;; Pop the macro stack.  Throw to 'teco:exit' if the stack is empty.
 (defun teco:pop-macro-stack ()
   (if teco:macro-stack
       (let ((frame (car teco:macro-stack)))
-	(setq teco:macro-stack (cdr teco:macro-stack)
-	      teco:command-string (aref frame 0)
-	      teco:command-pointer (aref frame 1)
-	      teco:iteration-stack (aref frame 2)
-	      teco:cond-stack (aref frame 3)
-	      teco:at-flag nil))
+        (setq teco:macro-stack (cdr teco:macro-stack)
+              teco:command-string (aref frame 0)
+              teco:command-pointer (aref frame 1)
+              teco:iteration-stack (aref frame 2)
+              teco:cond-stack (aref frame 3)
+              teco:at-flag nil))
     (throw 'teco:exit nil)))
 
 ;; Push the macro stack.
 (defun teco:push-macro-stack ()
   (setq teco:macro-stack
-	(cons (vector teco:command-string
-		      teco:command-pointer
-		      teco:iteration-stack
-		      teco:cond-stack)
-	      teco:macro-stack)))
+        (cons (vector teco:command-string
+                      teco:command-pointer
+                      teco:iteration-stack
+                      teco:cond-stack)
+              teco:macro-stack)))
 
 ;; Pop the expression stack.
 (defun teco:pop-exp-stack ()
   (let ((frame (car teco:exp-stack)))
     (setq teco:exp-stack (cdr teco:exp-stack)
-	  teco:exp-val1 (aref frame 0)
-	  teco:exp-flag1 (aref frame 1)
-	  teco:exp-val2 (aref frame 2)
-	  teco:exp-flag2 (aref frame 3)
-	  teco:exp-exp (aref frame 4)
-	  teco:exp-op (aref frame 5))))
+          teco:exp-val1 (aref frame 0)
+          teco:exp-flag1 (aref frame 1)
+          teco:exp-val2 (aref frame 2)
+          teco:exp-flag2 (aref frame 3)
+          teco:exp-exp (aref frame 4)
+          teco:exp-op (aref frame 5))))
 
 ;; Push the expression stack.
 (defun teco:push-exp-stack ()
   (setq teco:exp-stack
-	(cons (vector teco:exp-val1
-		      teco:exp-flag1
-		      teco:exp-val2
-		      teco:exp-flag2
-		      teco:exp-exp
-		      teco:exp-op)
-	      teco:exp-stack)))
+        (cons (vector teco:exp-val1
+                      teco:exp-flag1
+                      teco:exp-val2
+                      teco:exp-flag2
+                      teco:exp-exp
+                      teco:exp-op)
+              teco:exp-stack)))
 
 ;; Pop the iteration stack
 ;; if arg t, exit unconditionally
@@ -1909,49 +1919,48 @@ and does
 (defun teco:pop-iter-stack (arg)
   (let ((frame (car teco:iteration-stack)))
     (if (or arg
-	    (and ;; without argument, iterate indefinitely
-		 (aref frame 1)
-		 ;; test against 1, since one iteration has already been done
-		 (<= (aref frame 2) 1)))
-	;; exit iteration
-	(setq teco:iteration-stack (cdr teco:iteration-stack))
+            (and ;; without argument, iterate indefinitely
+             (aref frame 1)
+             ;; test against 1, since one iteration has already been done
+             (<= (aref frame 2) 1)))
+        ;; exit iteration
+        (setq teco:iteration-stack (cdr teco:iteration-stack))
       ;; continue with iteration
       ;; decrement count
       (and (aref frame 1)
-	   (aset frame 2 (1- (aref frame 2))))
+           (aset frame 2 (1- (aref frame 2))))
       ;; reset command pointer
       (setq teco:command-pointer (aref frame 0)))))
 
 ;; Push the iteration stack
 (defun teco:push-iter-stack (pointer flag count)
   (setq teco:iteration-stack
-	(cons (vector pointer
-		      flag
-		      count)
-	      teco:iteration-stack)))
+        (cons (vector pointer
+                      flag
+                      count)
+              teco:iteration-stack)))
 
 (defun teco:find-enditer ()
   (let ((icnt 1)
-	c)
+        c)
     (while (> icnt 0)
       (while (progn (setq c (teco:skipto))
-		    (and (/= c ?<)
-			 (/= c ?>))))
+                    (and (/= c ?<)
+                         (/= c ?>))))
       (if (= c ?<)
-	  (setq icnt (1+ icnt))
-	(setq icnt (1- icnt))))))
+          (setq icnt (1+ icnt))
+        (setq icnt (1- icnt))))))
 
- 
+
 ;; I/O routines
 
 (defvar teco:output-buffer (get-buffer-create "*Teco Output*")
   "The buffer into which Teco output is written.")
 
 (defun teco:out-init ()
-  ;; Recreate the teco output buffer, if necessary
+  "Recreate the teco output buffer, if necessary."
   (setq teco:output-buffer (get-buffer-create "*Teco Output*"))
-  (save-excursion
-    (set-buffer teco:output-buffer)
+  (with-current-buffer teco:output-buffer
     ;; get a fresh line in output buffer
     (goto-char (point-max))
     (insert ?\n)
@@ -1964,78 +1973,77 @@ and does
     ;; if output is visible, position it correctly
     (let ((w (get-buffer-window teco:output-buffer)))
       (if w
-	  (progn
-	    (set-window-start w teco:output-start)
-	    (set-window-point w teco:output-start))))))
+          (progn
+            (set-window-start w teco:output-start)
+            (set-window-point w teco:output-start))))))
 
 (defun teco:output (s)
   ;; Do no work if output is "".  Also, this avoids an error condition.
   (if (not (and (stringp s) (string-equal s "")))
       (let ((w (get-buffer-window teco:output-buffer))
-	    (b (current-buffer))
-	    (sw (selected-window)))
-	;; Put the text in the output buffer
-	(set-buffer teco:output-buffer)
-	(goto-char (point-max))
-	(insert s)
-	(let ((p (point)))
-	  (set-buffer b)
-	  (if w
-	      ;; if output is visible, move the window point to the end
-	      (set-window-point w p)
-	    ;; Otherwise, we have to figure out how to display the text
-	    ;; Has a newline followed by another character been added to the
-	    ;; output buffer?  If so, we have to make the output buffer
-	    ;; visible.
-	    (if (save-excursion
-		  (set-buffer teco:output-buffer)
-		  (backward-char 1)
-		  (search-backward "\n" teco:output-start t))
-		;; a newline has been seen, clear the minibuffer and make the
-		;; output buffer visible
-		(progn
-		  (save-window-excursion
-		    (select-window (minibuffer-window))
-		    (erase-buffer))
-		  (let ((pop-up-windows t))
-		    (pop-to-buffer teco:output-buffer)
-		    (goto-char p)
-		    (set-window-start w teco:output-start)
-		    (set-window-point w p)
-		    (select-window sw)))
-	      ;; a newline has not been seen, add output to minibuffer
-	      (save-window-excursion
-		(select-window (minibuffer-window))
-		(goto-char (point-max))
-		(insert s))))))))
+            (b (current-buffer))
+            (sw (selected-window)))
+        ;; Put the text in the output buffer
+        (set-buffer teco:output-buffer)
+        (goto-char (point-max))
+        (insert s)
+        (let ((p (point)))
+          (set-buffer b)
+          (if w
+              ;; if output is visible, move the window point to the end
+              (set-window-point w p)
+            ;; Otherwise, we have to figure out how to display the text
+            ;; Has a newline followed by another character been added to the
+            ;; output buffer?  If so, we have to make the output buffer
+            ;; visible.
+            (if (with-current-buffer teco:output-buffer
+                  (backward-char 1)
+                  (search-backward "\n" teco:output-start t))
+                ;; a newline has been seen, clear the minibuffer and make the
+                ;; output buffer visible
+                (progn
+                  (save-window-excursion
+                    (select-window (minibuffer-window))
+                    (erase-buffer))
+                  (let ((pop-up-windows t))
+                    (pop-to-buffer teco:output-buffer)
+                    (goto-char p)
+                    (set-window-start w teco:output-start)
+                    (set-window-point w p)
+                    (select-window sw)))
+              ;; a newline has not been seen, add output to minibuffer
+              (save-window-excursion
+                (select-window (minibuffer-window))
+                (goto-char (point-max))
+                (insert s))))))))
 
 ;; Output a character of tracing information
 (defun teco:trace-type (c)
   (teco:output (if (= c ?\e)
-		?$
-		c)))
+                   ?$
+                 c)))
 
 ;; Report an error
 (defun teco:error (code)
   ;; save the command with the error
   (aset teco:qreg-text ?%
-	(substring teco:command-string 0 teco:command-pointer))
+        (substring teco:command-string 0 teco:command-pointer))
   (let ((text (cdr (assoc code teco:error-texts))))
-    (teco:output (concat (if (save-excursion (set-buffer teco:output-buffer)
-					     (/= (point) teco:output-start))
-			     "\n"
-			   "")
-			 ;; due to the test in teco:output and Emacs' handling
-			 ;; of trailing newlines in the minibuffer-window,
-			 ;; we can have a newline at the end of the error
-			 ;; message and it will not force the output display
-			 ;; from the minibuffer into the Teco output buffer
-			 "? " code " " text "\n"))
+    (teco:output (concat (if (with-current-buffer teco:output-buffer
+                               (/= (point) teco:output-start))
+                             "\n"
+                           "")
+                         ;; due to the test in teco:output and Emacs' handling
+                         ;; of trailing newlines in the minibuffer-window,
+                         ;; we can have a newline at the end of the error
+                         ;; message and it will not force the output display
+                         ;; from the minibuffer into the Teco output buffer
+                         "? " code " " text "\n"))
     (beep)
     (if debug-on-error (debug nil code text))
     (throw 'teco:exit nil)))
 
- 
+
 ;; Utility routines
 
 ;; Convert character to q-register name
@@ -2053,43 +2061,43 @@ and does
   ;; If there is an argument, then set the variable
   (if teco:exp-flag1
       (progn
-	(set variable
-	     (if teco:exp-flag2
-		 ;; If there are two arguments, then they are bits to clear
-		 ;; and bits to set
-		 (logior (logand (lognot (symbol-value variable))
-				 teco:exp-val2)
-			 teco:exp-val1)
-	       ;; One argument is the new value alone
-	       teco:exp-val1))
-	(setq teco:exp-flag1 nil
-	      teco:exp-flag2 nil))
+        (set variable
+             (if teco:exp-flag2
+                 ;; If there are two arguments, then they are bits to clear
+                 ;; and bits to set
+                 (logior (logand (lognot (symbol-value variable))
+                                 teco:exp-val2)
+                         teco:exp-val1)
+               ;; One argument is the new value alone
+               teco:exp-val1))
+        (setq teco:exp-flag1 nil
+              teco:exp-flag2 nil))
     ;; No arguments mean to fetch the variable's value
     (setq teco:exp-val1 (symbol-value variable)
-	  teco:exp-flag1 t)))
+          teco:exp-flag1 t)))
 
 ;; Get numeric argument
 (defun teco:get-value (default)
   (prog1
       (if teco:exp-flag1
-	  teco:exp-val1
-	(if (eq teco:exp-op 'sub)
-	    (- default)
-	  default))
+          teco:exp-val1
+        (if (eq teco:exp-op 'sub)
+            (- default)
+          default))
     ;; consume argument
     (setq teco:exp-flag1 nil
-	  teco:exp-op 'start)))
+          teco:exp-op 'start)))
 
 ;; Get argument measuring in lines
 (defun teco:lines (r)
   (- (save-excursion
        (if (> r 0)
-	   (if (search-forward "\n" nil t r)
-	       (point)
-	     (point-max))
-	 (if (search-backward "\n" nil t (- 1 r))
-	     (1+ (point))
-	   (point-min))))
+           (if (search-forward "\n" nil t r)
+               (point)
+             (point-max))
+         (if (search-backward "\n" nil t (- 1 r))
+             (1+ (point))
+           (point-min))))
      (point)))
 
 ;; routine to handle args for K, T, X, etc.
@@ -2098,12 +2106,12 @@ and does
 (defun teco:line-args ()
   (prog1
       (if teco:exp-flag2
-	  (cons teco:exp-val1 teco:exp-val2)
-	(cons (point) (+ (point) (teco:lines (if teco:exp-flag1
-						 teco:exp-val1
-					       1)))))
+          (cons teco:exp-val1 teco:exp-val2)
+        (cons (point) (+ (point) (teco:lines (if teco:exp-flag1
+                                                 teco:exp-val1
+                                               1)))))
     (setq teco:exp-flag1 nil
-	  teco:exp-flag2 nil)))
+          teco:exp-flag2 nil)))
 
 ;; routine to skip to next ", ', |, <, or >
 ;; skips over these chars embedded in text strings
@@ -2112,90 +2120,90 @@ and does
 (defun teco:skipto (&optional arg)
   (catch 'teco:skip
     (let (;; "at" prefix
-	  (atsw nil)
-	  ;; temp attributes
-	  ta
-	  ;; terminator
-	  term
-	  skipc)
+          (atsw nil)
+          ;; temp attributes
+          ta
+          ;; terminator
+          term
+          skipc)
       (while t				; forever
-	(while (progn
-		 (setq skipc (teco:get-command nil)
-		       ta (aref teco:spec-chars skipc))
-		 (cond
-		  ;; if char is ^, treat next char as control
-		  ((eq skipc ?^)
-		   (setq skipc (logand 31 (teco:get-command nil))
-			   ta (aref teco:spec-chars skipc)))
-		  ;; if char is E or F, pick up next char and interpret the
-		  ;; two-character sequence
-		  ((eq skipc ?e)
-		   (setq skipc (teco:get-command nil)
-			 ta (logand -259 (aref teco:spec-chars skipc)))
-		   (if (/= (logand ta 4) 0)
-		       (setq ta (logior ta 2))))
-		  ((eq skipc ?f)
-		   (setq skipc (teco:get-command nil)
-			 ta (logand -259 (aref teco:spec-chars skipc)))
-		   (if (/= (logand ta 8) 0)
-		       (setq ta (logior ta 2)))
-		   (if (/= (logand ta 512) 0)
-		       (setq ta (logior ta 256)))))
-		 (= (logand ta 307) 0))	; read until something interesting
-					; found
-	  nil)
-	(if (/= (logand ta 32) 0)
-	    (teco:get-command nil))	; if command takes a Q spec,
-					; skip the spec
-	(if (/= (logand ta 16) 0)	; sought char found: quit
-	    (progn
-	      (if (= skipc ?\")		; quote must skip next char
-		  (teco:get-command nil))
-	      (throw 'teco:skip skipc)))
-	(if (/= (logand ta 1) 0)	; other special char
-	    (cond
-	     ((eq skipc ?@)		; use alternative text terminator
-	      (setq atsw t))
-	     ((eq skipc ?\C-^)		; ^^ is value of next char
-					; skip that char
-	      (teco:get-command nil))
-	     ((eq skipc ?\C-a)		; type text
-	      (setq term (if atsw (teco:get-command nil) ?\C-a)
-		    atsw nil)
-	      (while (/= (teco:get-command nil) term)
-		nil))			; skip text
-	     ((eq skipc ?!)		; tag
-	      (if arg
-		  (throw 'teco:skip skipc))
-	      (while (/= (teco:get-command nil) ?!)
-		nil))			; skip until next !
-	     ((or (eq skipc ?e)
-		  (eq skipc ?f))	; first char of two-letter E or F
-					; command
-	      nil)))			; not implemented
-	(if (/= (logand ta 2) 0)	; command with a text
-					; argument
-	    (progn
-	      (setq term (if atsw (teco:get-command nil) ?\e)
-		    atsw nil)
-	      (while (/= (teco:get-command nil) term)
-		nil)			; skip text
-	      ))
-	(if (/= (logand ta 256) 0)	; command with a double text
-					; argument
-	    (progn
-	      (setq term (if atsw (teco:get-command nil) ?\e)
-		    atsw nil)
-	      (while (/= (teco:get-command nil) term)
-		nil)			; skip text
-	      (while (/= (teco:get-command nil) term)
-		nil)			; skip second text
-	(if (/= (logand ta 1024) 0)
-	    (setq atsw nil))		; transfer command clears @-flag
-					; after executing
-	      ))))))
+        (while (progn
+                 (setq skipc (teco:get-command nil)
+                       ta (aref teco:spec-chars skipc))
+                 (cond
+                  ;; if char is ^, treat next char as control
+                  ((eq skipc ?^)
+                   (setq skipc (logand 31 (teco:get-command nil))
+                         ta (aref teco:spec-chars skipc)))
+                  ;; if char is E or F, pick up next char and interpret the
+                  ;; two-character sequence
+                  ((eq skipc ?e)
+                   (setq skipc (teco:get-command nil)
+                         ta (logand -259 (aref teco:spec-chars skipc)))
+                   (if (/= (logand ta 4) 0)
+                       (setq ta (logior ta 2))))
+                  ((eq skipc ?f)
+                   (setq skipc (teco:get-command nil)
+                         ta (logand -259 (aref teco:spec-chars skipc)))
+                   (if (/= (logand ta 8) 0)
+                       (setq ta (logior ta 2)))
+                   (if (/= (logand ta 512) 0)
+                       (setq ta (logior ta 256)))))
+                 (= (logand ta 307) 0))	; read until something interesting
+                                        ; found
+          nil)
+        (if (/= (logand ta 32) 0)
+            (teco:get-command nil))	; if command takes a Q spec,
+                                        ; skip the spec
+        (if (/= (logand ta 16) 0)	; sought char found: quit
+            (progn
+              (if (= skipc ?\")		; quote must skip next char
+                  (teco:get-command nil))
+              (throw 'teco:skip skipc)))
+        (if (/= (logand ta 1) 0)	; other special char
+            (cond
+             ((eq skipc ?@)		; use alternative text terminator
+              (setq atsw t))
+             ((eq skipc ?\C-^)		; ^^ is value of next char
+                                        ; skip that char
+              (teco:get-command nil))
+             ((eq skipc ?\C-a)		; type text
+              (setq term (if atsw (teco:get-command nil) ?\C-a)
+                    atsw nil)
+              (while (/= (teco:get-command nil) term)
+                nil))			; skip text
+             ((eq skipc ?!)		; tag
+              (if arg
+                  (throw 'teco:skip skipc))
+              (while (/= (teco:get-command nil) ?!)
+                nil))			; skip until next !
+             ((or (eq skipc ?e)
+                  (eq skipc ?f))	; first char of two-letter E or F
+                                        ; command
+              nil)))			; not implemented
+        (if (/= (logand ta 2) 0)	; command with a text
+                                        ; argument
+            (progn
+              (setq term (if atsw (teco:get-command nil) ?\e)
+                    atsw nil)
+              (while (/= (teco:get-command nil) term)
+                nil)			; skip text
+              ))
+        (if (/= (logand ta 256) 0)	; command with a double text
+                                        ; argument
+            (progn
+              (setq term (if atsw (teco:get-command nil) ?\e)
+                    atsw nil)
+              (while (/= (teco:get-command nil) term)
+                nil)			; skip text
+              (while (/= (teco:get-command nil) term)
+                nil)			; skip second text
+              (if (/= (logand ta 1024) 0)
+                  (setq atsw nil))		; transfer command clears @-flag
+                                        ; after executing
+              ))))))
 
- 
+
 ;; Input handling
 
 (defvar teco:command-keymap
@@ -2213,9 +2221,11 @@ and does
 (define-key teco:command-keymap "/" 'teco:command-slash)
 (define-key teco:command-keymap "*" 'teco:command-star)
 
-(defvar teco:command-escapes nil
-  "Records where ESCs are, since they are represented in the command buffer
-by $.")
+(defvar teco:command-display-table
+  (let ((table (make-display-table)))
+    (aset table ?\e [?$])
+    table)
+  "Display table used while reading teco commands.")
 
 (defun teco:copy-to-q-reg (char start end)
   "Copy region into Teco q-reg REG.
@@ -2233,30 +2243,25 @@ START and END are buffer positions indicating what to copy."
   (interactive)
   (let ((command (teco:read-command)))
     (if command
-	(progn
-	  (setq teco:output-buffer (get-buffer-create "*Teco Output*"))
-	  (save-excursion
-	    (set-buffer teco:output-buffer)
-	    (goto-char (point-max))
-	    (insert teco:prompt command))
-	  (teco:execute-command command)))))
-(fset 'teco (symbol-function 'teco:command))
+        (progn
+          (setq teco:output-buffer (get-buffer-create "*Teco Output*"))
+          (with-current-buffer teco:output-buffer
+            (goto-char (point-max))
+            (insert teco:prompt command))
+          (teco:execute-command command)))))
+(defalias 'teco 'teco:command)
 
 (defun teco:read-command ()
   "Read a teco command string from the user."
-  (let* ((teco:command-escapes nil)
-	 (command (catch 'teco:command-quit
-		    (read-from-minibuffer teco:prompt nil
-					  teco:command-keymap))))
-    (if command
-	(while teco:command-escapes
-	  (aset command (car teco:command-escapes) ?\e)
-	  (setq teco:command-escapes (cdr teco:command-escapes))))
-    command))
+  (minibuffer-with-setup-hook
+      (lambda ()
+        (setq buffer-display-table teco:command-display-table))
+    (catch 'teco:command-quit
+      (read-from-minibuffer teco:prompt nil teco:command-keymap))))
 
 (defun teco:command-self-insert ()
   (interactive)
-  (teco:command-insert-character last-command-char))
+  (teco:command-insert-character last-command-event))
 
 (defun teco:command-quit ()
   (interactive)
@@ -2269,41 +2274,35 @@ START and END are buffer positions indicating what to copy."
 
 (defun teco:command-return ()
   (interactive)
-  (setq last-command-char ?\n)
+  (setq last-command-event ?\n)
   (teco:command-self-insert))
 
 (defun teco:command-escape ()
   (interactive)
   ;; Two ESCs in a row terminate the command string
   (if (eq last-command 'teco:command-escape)
-      (throw 'teco:command-quit (buffer-string)))
-  (teco:command-insert-character last-command-char))
+      (throw 'teco:command-quit (minibuffer-contents-no-properties)))
+  (teco:command-insert-character 27))
 
 (defun teco:command-ctrl-u ()
   (interactive)
   ;; delete the characters
   (kill-line 0)
-  ;; forget that they were ESCs
-  (while (and teco:command-escapes (<= (point) (car teco:command-escapes)))
-      (setq teco:command-escapes (cdr teco:command-escapes)))
   ;; decide whether to shrink the window
   (while (let ((a (insert ?\n))
-	       (b (pos-visible-in-window-p))
-	       (c (backward-delete-char 1)))
-	   b)
+               (b (pos-visible-in-window-p))
+               (c (backward-delete-char 1)))
+           b)
     (shrink-window 1)))
 
 (defun teco:command-delete ()
   (interactive)
   ;; delete the character
   (backward-delete-char 1)
-  ;; forget that it was an ESC
-  (if (and teco:command-escapes (= (1- (point)) (car teco:command-escapes)))
-      (setq teco:command-escapes (cdr teco:command-escapes)))
   ;; decide whether to shrink the window
   (insert ?\n)
   (if (prog1 (pos-visible-in-window-p)
-	(backward-delete-char 1))
+        (backward-delete-char 1))
       (shrink-window 1)))
 
 (defun teco:command-query ()
@@ -2312,11 +2311,11 @@ START and END are buffer positions indicating what to copy."
   (if (eq last-command t)
       ;; if first character of command, insert erroneous command
       (let* ((s (aref teco:qreg-text ?%))
-	     (l (length s))
-	     (i 0))
-	(while (< i l)
-	  (teco:command-insert-character (aref s i))
-	  (setq i (1+ i))))
+             (l (length s))
+             (i 0))
+        (while (< i l)
+          (teco:command-insert-character (aref s i))
+          (setq i (1+ i))))
     ;; otherwise, just insert the character
     (teco:command-self-insert)))
 
@@ -2326,11 +2325,11 @@ START and END are buffer positions indicating what to copy."
   (if (eq last-command t)
       ;; if first character of command, insert last command
       (let* ((s (aref teco:qreg-text ?#))
-	     (l (length s))
-	     (i 0))
-	(while (< i l)
-	  (teco:command-insert-character (aref s i))
-	  (setq i (1+ i))))
+             (l (length s))
+             (i 0))
+        (while (< i l)
+          (teco:command-insert-character (aref s i))
+          (setq i (1+ i))))
     ;; otherwise, just insert the character
     (teco:command-self-insert)))
 
@@ -2341,32 +2340,30 @@ START and END are buffer positions indicating what to copy."
       ;; if first character of command, offer to save previous command in
       ;; q-register
       (progn
-	;; insert the * into the buffer
-	(teco:command-insert-character last-command-char)
-	;; read the next character
-	(let ((c (read-char))
-	      c1)
-	  ;; test if it is a valid q-reg name
-	  (setq c1 (aref teco:mapch-l c))
-	  (if (/= (logand (aref teco:qspec-valid c1) 1) 0)
-	      ;; if so, store the command, give a message, and abort command
-	      (progn
-		(aset teco:qreg-text c1 (aref teco:qreg-text ?#))
-		(message "Last Teco command stored in q-register %c" c1)
-		(throw 'teco:command-quit nil))
-	    ;; if q-reg name is invalid, just insert the character
-	    (beep)
-	    (teco:command-insert-character c))))
+        ;; insert the * into the buffer
+        (teco:command-insert-character last-command-event)
+        ;; read the next character
+        (let ((c (read-char))
+              c1)
+          ;; test if it is a valid q-reg name
+          (setq c1 (aref teco:mapch-l c))
+          (if (/= (logand (aref teco:qspec-valid c1) 1) 0)
+              ;; if so, store the command, give a message, and abort command
+              (progn
+                (aset teco:qreg-text c1 (aref teco:qreg-text ?#))
+                (message "Last Teco command stored in q-register %c" c1)
+                (throw 'teco:command-quit nil))
+            ;; if q-reg name is invalid, just insert the character
+            (beep)
+            (teco:command-insert-character c))))
     ;; otherwise, just insert the character
     (teco:command-self-insert)))
 
 ;; Insert a single command character
 (defun teco:command-insert-character (c)
-  (if (eq c ?\e)
-      (setq teco:command-escapes (cons (1- (point)) teco:command-escapes)
-	    c ?$))
   (insert c)
   (if (not (pos-visible-in-window-p))
       (enlarge-window 1)))
 
+(provide 'teco)
 ;;; teco.el ends here
