@@ -1,21 +1,17 @@
 If you often edit source code residing in subdirectories relative to your Makefile, you can use this to directly (re)build:
 
 <pre>
-(defun get-above-makefile () (expand-file-name
-	   "Makefile" (loop as d = default-directory then (expand-file-name
-	   ".." d) if (file-exists-p (expand-file-name "Makefile" d)) return
-	   (shell-quote-argument d))))
+(defun get-above-makefile ()
+  (let ((dir (locate-dominating-file "." "Makefile")))
+    (when dir
+      (concat dir "Makefile"))))
 
 ;; bind compiling with get-above-makefile to f5
 (global-set-key [f5] (lambda () (interactive) (compile (format
 	   "make -f %s" (get-above-makefile)))))
 </pre>
 
-coded by bpalmer
-
-
-
-if all the straight upward parent directories do not contain Makefile, the codes above unfortunately would fall into infinitely loop. the codes below would resolve this problem, and you can use the list to find multiple filename format.
+The codes below is an alternative, and you can use the list to find multiple filename format.
 
 <pre>
 (setq compilation-filenames '("Makefile" "makefile"))
