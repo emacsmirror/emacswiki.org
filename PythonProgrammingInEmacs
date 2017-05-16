@@ -160,7 +160,7 @@ This should work with any recent IPython, including on Windows.
 [https://github.com/donkirkby/live-py-plugin live-py-mode] is a Python minor mode supporting live coding, inspired by Bret Victor's [https://vimeo.com/36579366 "Inventing on Principle"] .
 
 ===Cell-mode===
-Some packages provide MATLAB-like cells support.
+Some packages provide MATLAB-like cells support: navigation between cell code blocks and evaluation.
 
 [https://github.com/wavexx/python-x.el python-x] also provides some additional features
 
