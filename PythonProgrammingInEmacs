@@ -143,9 +143,9 @@ To debug a script run the Emacs command "M-x pdb" and invoke Python's pdb as
 In Emacs's native python-mode, use:
 {{{
   (setq python-shell-interpreter "ipython"
-        python-shell-interpreter-args "--simple-prompt -i")
+       python-shell-interpreter-args "-i")
 }}}
-This should work with any recent IPython (5+), including on Windows.
+This should work with any recent IPython, including on Windows.
 
 [ProgrammingWithPythonModeDotEl python-mode.el] also comes with IPython support. 
 ====Emacs IPython Notebook (EIN)====
