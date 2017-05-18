@@ -3,3 +3,6 @@ Welcome to the backup site!
 This is a copy resurrected from backups.
 More info on [https://alexschroeder.ch/wiki/2017-05-18_Emacs_Wiki_Down my blog].
 For now, it's read-only until I've figured out what to do next.
+
+[new]
+OK, things seem to be working. Let's see whether git integration works? Remember the [[Emacsmirror]].
