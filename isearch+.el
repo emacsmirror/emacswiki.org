@@ -8,20 +8,21 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar 21 13:06:43 2017 (-0700)
+;; Last-Updated: Thu May 18 13:58:37 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5732
+;;     Update #: 5838
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
-;; Doc URL: http://www.emacswiki.org/IsearchPlus
-;; Doc URL: http://www.emacswiki.org/DynamicIsearchFiltering
+;; Doc URL: https://www.emacswiki.org/IsearchPlus
+;; Doc URL: https://www.emacswiki.org/DynamicIsearchFiltering
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
-;;   `hexrgb', `isearch-prop', `macroexp', `misc-cmds', `misc-fns',
-;;   `strings', `thingatpt', `thingatpt+', `zones'.
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
+;;   `cl-lib', `color', `frame-fns', `gv', `help-fns', `hexrgb',
+;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -162,7 +163,7 @@
 ;;
 ;;  Macros defined here:
 ;;
-;;    `isearchp-user-error'.
+;;    `isearchp-define-in/out-filter', `isearchp-user-error'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -200,6 +201,20 @@
 ;;    `isearchp-near-after-predicate' (Emacs 24.4+),
 ;;    `isearchp-near-before-predicate' (Emacs 24.4+),
 ;;    `isearchp-near-predicate' (Emacs 24.4+), `isearchp-not-pred'
+;;    (Emacs 24.4+), `isearchp-not-in-color-p' (Emacs 24.4+),
+;;    `isearchp-not-in-decimal-number-p' (Emacs 24.4+),
+;;    `isearchp-not-in-defun-p' (Emacs 24.4+),
+;;    `isearchp-not-in-email-address-p' (Emacs 24.4+),
+;;    `isearchp-not-in-file-name-p' (Emacs 24.4+),
+;;    `isearchp-not-in-hex-number-p' (Emacs 24.4+),
+;;    `isearchp-not-in-line-p' (Emacs 24.4+), `isearchp-not-in-list-p'
+;;    (Emacs 24.4+), `isearchp-not-in-number-p' (Emacs 24.4+),
+;;    `isearchp-not-in-page-p' (Emacs 24.4+),
+;;    `isearchp-not-in-paragraph-p' (Emacs 24.4+),
+;;    `isearchp-not-in-sentence-p' (Emacs 24.4+),
+;;    `isearchp-not-in-sexp-p' (Emacs 24.4+),
+;;    `isearchp-not-in-symbol-p' (Emacs 24.4+),
+;;    `isearchp-not-in-url-p' (Emacs 24.4+), `isearchp-not-in-word-p'
 ;;    (Emacs 24.4+), `isearchp-not-predicate' (Emacs 24.4+),
 ;;    `isearchp-oddp', `isearchp-or-predicates' (Emacs 24.4+),
 ;;    `isearchp-or-preds' (Emacs 24.4+), `isearchp-read-face-names',
@@ -609,7 +624,7 @@
 ;;
 ;;      You can also use functions `isearch-near-predicate',
 ;;      `isearchp-near-before-predicate', and
-;;      `isearchp-near-before-predicate' to define your own nearness
+;;      `isearchp-near-after-predicate' to define your own nearness
 ;;      predicates, which incorporate particular patterns and
 ;;      distances. You can then simply add such a predicate using `C-z
 ;;      &' (no prompting for pattern or distance).
@@ -699,10 +714,13 @@
 ;;    naming convention is used:
 ;;
 ;;    * Bracketed names (`[...]') stand for predicates that check that
-;;      the search hit is within something.  For example, name `[;]'
-;;      tests whether it is inside a comment (`;' is the Emacs-Lisp
-;;      comment-start character), and name `[defun]' tests whether it
-;;      is inside a defun.
+;;      the search hit is (entirely) within something.  For example,
+;;      name `[;]' means that each filtered search hit must be inside
+;;      a comment (`;' is the Emacs-Lisp comment-start character), and
+;;      name `[defun]' means each search hit must be inside a defun.
+;;
+;;    * A `~' in front of a name means "not".  For example, `~[;]'
+;;      means the filtered search hits must not be in comments.
 ;;
 ;;    * Names that end in `...' indicate candidates that prompt you
 ;;      for more information.  These names represent, not filter
@@ -1139,6 +1157,13 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2017/05/18 dadams
+;;     Added:
+;;      isearchp-define-in/out-filter,
+;;      isearchp-not-in-(color|(decimal-|hex-)number|defun|email-address|file-name|line|list|page|pargraph|
+;;                       sentence|sentence|sexp|symbol|url|word)-p.
+;;     Use isearchp-define-in/out-filter to define existing in (but not thing) predicates.
+;;     isearchp-filter-predicates-alist: Added entries for new not-in predicates, using ~ prefix.
 ;; 2017/02/07 dadams
 ;;     isearch-lazy-highlight-search:
 ;;       Use symbol lazy-highlight, not obsolete variable lazy-highlight-face.  Thx to Tino Calancha.
@@ -2271,8 +2296,8 @@ See also option `isearchp-deactivate-region-flag'."
   )
 
 
-;; Dynamic search filtering.
-;;
+;;; Dynamic search filtering.
+;;;
 (when (or (> emacs-major-version 24)    ; Emacs 24.4+
           (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
@@ -2284,29 +2309,51 @@ subsequent searches in this Emacs session when you exit Isearch'."
 
   (defcustom isearchp-filter-predicates-alist
     `(
-      ("[color]"      isearchp-in-color-p             "[COLOR]")
-      ("[;]"          isearchp-in-comment-p           "[;]")
-      ("[;+]"         isearchp-in-comment-or-delim-p  "[;+]")
-      ("[defun]"      isearchp-in-defun-p             "[DEFUN]")
-      ("[email]"      isearchp-in-email-address-p     "[EMAIL]")
-      ("[file]"       isearchp-in-file-name-p         "[FILE]")
-      ("[file|url])"  isearchp-in-file-or-url-p       "[FILE|URL])")
-      ("[line]"       isearchp-in-line-p              "[LINE]")
-      ("[()]"         isearchp-in-list-p              "[()]")
-      ("[#]"          isearchp-in-number-p            "[#]")
-      ("[page]"       isearchp-in-page-p              "[PAGE]")
-      ("[para]"       isearchp-in-paragraph-p         "[PARA]")
-      ("[sent]"       isearchp-in-sentence-p          "[SENT]")
-      ("[sexp]"       isearchp-in-sexp-p              "[SEXP]")
-      ("[\"|;]"       isearchp-in-string-or-comment-p "[\"|;]")
-      ("[\"]"         isearchp-in-string-p            "[\"]")
-      ("[symb]"       isearchp-in-symbol-p            "[SYMB]")
-      ("[url]"        isearchp-in-url-p               "[URL]")
-      ("[var]"        isearchp-in-lisp-variable-p     "[VAR]")
-      ("[word]"       isearchp-in-word-p              "[WORD]")
+      ( "[color]"     isearchp-in-color-p                 "[COLOR]")
+      ("~[color]"     isearchp-not-in-color-p             "~[COLOR]")
+      ( "[;]"         isearchp-in-comment-p               "[;]")
+      ("~[;]"         isearchp-not-in-comment-p           "~[;]")
+      ( "[;+]"        isearchp-in-comment-or-delim-p      "[;+]")
+      ("~[;+]"        isearchp-not-in-comment-or-delim-p  "~[;+]")
+      ( "[defun]"     isearchp-in-defun-p                 "[DEFUN]")
+      ("~[defun]"     isearchp-not-in-defun-p             "~[DEFUN]")
+      ( "[email]"     isearchp-in-email-address-p         "[EMAIL]")
+      ("~[email]"     isearchp-not-in-email-address-p     "~[EMAIL]")
+      ( "[file]"      isearchp-in-file-name-p             "[FILE]")
+      ("~[file]"      isearchp-not-in-file-name-p         "~[FILE]")
+      ( "[file|url])" isearchp-in-file-or-url-p           "[FILE|URL])")
+      ("~[file|url])" isearchp-not-in-file-or-url-p       "~[FILE|URL])")
+      ( "[line]"      isearchp-in-line-p                  "[LINE]")
+      ("~[line]"      isearchp-not-in-line-p              "~[LINE]")
+      ( "[()]"        isearchp-in-list-p                  "[()]")
+      ("~[()]"        isearchp-not-in-list-p              "~[()]")
+      ( "[#]"         isearchp-in-number-p                "[#]")
+      ("~[#]"         isearchp-not-in-number-p            "~[#]")
+      ( "[page]"      isearchp-in-page-p                  "[PAGE]")
+      ("~[page]"      isearchp-not-in-page-p              "~[PAGE]")
+      ( "[para]"      isearchp-in-paragraph-p             "[PARA]")
+      ("~[para]"      isearchp-not-in-paragraph-p         "~[PARA]")
+      ( "[sent]"      isearchp-in-sentence-p              "[SENT]")
+      ("~[sent]"      isearchp-not-in-sentence-p          "~[SENT]")
+      ( "[sexp]"      isearchp-in-sexp-p                  "[SEXP]")
+      ("~[sexp]"      isearchp-not-in-sexp-p              "~[SEXP]")
+      ( "[symb]"      isearchp-in-symbol-p                "[SYMB]")
+      ("~[symb]"      isearchp-not-in-symbol-p            "~[SYMB]")
+      ( "[\"|;]"      isearchp-in-string-or-comment-p     "[\"|;]")
+      ("~[\"|;]"      isearchp-not-in-string-or-comment-p "~[\"|;]")
+      ( "[\"]"        isearchp-in-string-p                "[\"]")
+      ("~[\"]"        isearchp-not-in-string-p            "~[\"]")
+      ( "[url]"       isearchp-in-url-p                   "[URL]")
+      ("~[url]"       isearchp-not-in-url-p               "~[URL]")
+      ( "[var]"       isearchp-in-lisp-variable-p         "[VAR]")
+      ("~[var]"       isearchp-not-in-lisp-variable-p     "~[VAR]")
+      ( "[word]"      isearchp-in-word-p                  "[WORD]")
+      ("~[word]"      isearchp-not-in-word-p              "~[WORD]")
       ,@(and (featurep 'thingatpt+)
-             '(("[#09]" isearchp-in-decimal-number-p  "[#09]")
-               ("[#0F]" isearchp-in-hex-number-p      "[#0F]")))
+             '(( "[#09]" isearchp-in-decimal-number-p      "[#09]")
+               ("~[#09]" isearchp-not-in-decimal-number-p "~[#09]")
+               ( "[#0F]" isearchp-in-hex-number-p          "[#0F]")
+               ("~[#0F]" isearchp-not-in-hex-number-p      "~[#0F]")))
       ,@(and (featurep 'crosshairs)
              '(("crosshairs" isearchp-show-hit-w-crosshairs)))
       ("near<..."     isearchp-near-before-predicate)
@@ -2329,9 +2376,11 @@ value of `isearch-filter-predicate'.
 * (FUNCTION PREFIX)
 * (FUNCTION)
 
-NAME is typically a short name for FUNCTION.  You can use it, for
-example, to remove FUNCTION from `isearch-filter-predicate', using
-`C-z -'.
+NAME is typically a short name for FUNCTION.  NAME is used as input
+\(with completion) by \\<isearch-mode-map>`\\[isearchp-add-filter-predicate]' and other filtering commands.  \
+You can
+use it with `\\[isearchp-remove-filter-predicate]', for example, to remove FUNCTION from
+`isearch-filter-predicate'.
 
 FUNCTION can also be a function symbol that is invoked with no
 arguments, and that then returns a predicate suitable for
@@ -2350,6 +2399,15 @@ predicate.  If NAME is present for an entry then it is the completion
 candidate that your input must match, and FUNCTION is shown next to it
 as an annotation in buffer `*Completions*'.  If NAME is not present
 then FUNCTION itself is the candidate.
+
+The NAME of a predefined prefix for a predicate that tests whether the
+search-hit chars are within some kind of text object follows this
+convention, where `...' is something that stands for the kind of text:
+
+  [...] means search hits must be in the text object
+ ~[...] means search hits must not be in the text object
+
+For example, ~[;] means hits must not be inside a comment.
 
 See function `isearchp-read-predicate' for more information."
     :type '(repeat
@@ -2614,7 +2672,8 @@ to `C-M-`' during Isearch.")
 
   )
 
-;; Dynamic search filtering.
+;;; Dynamic search filtering.
+;;;
 (when (or (> emacs-major-version 24)    ; Emacs 24.4+
           (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
@@ -2654,6 +2713,50 @@ This variable has an effect only for the current search.")
 (defmacro isearchp-user-error (&rest args)
   "`user-error' if defined, otherwise `error'."
   `(if (fboundp 'user-error) (user-error ,@args) (error ,@args)))
+
+(defmacro isearchp-define-in/out-filter (name in-type filt-exp &optional doc notp replace-doc-p)
+  "Define a filter predicate for being in or out of some piece of text.
+The name of the predicate is `isearchp-in-NAME-p'.
+If NOTP is non-nil then the name is `isearchp-not-in-NAME-p'.
+The predicate accepts parameters BEG and END.
+
+IN-TYPE is a string used in the first line of the doc string.  It
+completes the sentence \"Return t if all chars in the search hit are
+in ____.\" (or \"not in ____\").
+
+FILT-EXP is a sexp that can refer to filter arguments BEG and END.  If
+it evaluates to true at each position from BEG to END, inclusive, then
+the filter returns t (nil if NOTP), otherwise, it returns nil (t if
+NOTP).
+
+The first line of the doc string is based on IN-TYPE and NOTP, unless
+REPLACE-DOC-P is non-nil.  Optional arg DOC provides the rest of the
+doc string or, if REPLACE-DOC-P is non-nil, the full doc string.
+
+The doc string also describes parameters BEG and END."
+  (let ((fn-name  (intern (format "isearchp-%sin-%s-p" (if notp 'not- "") name))))
+    `(defun ,fn-name (beg end)
+       ,(format "%s
+BEG and END are the search-hit limits.
+
+%s"
+                (if replace-doc-p
+                    doc
+                  (format "Return t if all chars in the search hit are %sin %s." 
+                          (if notp "not " "")
+                          in-type))
+                (or (and (not replace-doc-p)  doc)  ""))
+       (let ((result  t)
+             (pos     beg))
+         (save-excursion
+           (goto-char pos)
+           (setq result  (catch ',fn-name
+                           (while (<= pos end)
+                             (,(if notp 'when 'unless)
+                               ,filt-exp
+                               (throw ',fn-name nil))
+                             (setq pos  (1+ pos)))
+                           t)))))))
 
 
 ;; REPLACE ORIGINAL in `isearch.el'.
@@ -3102,7 +3205,9 @@ Toggles between nil and the last non-nil value."
   (sit-for 1)
   (isearch-update))
 
-;; Dynamic search filtering.
+
+;;; Dynamic search filtering.
+;;;
 (when (or (> emacs-major-version 24)    ; Emacs 24.4+
           (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
@@ -3113,7 +3218,8 @@ Note that turning it off does not reset `isearch-filter-predicate'.
 Use \\<isearch-mode-map>`\\[isearchp-reset-filter-predicate]' to do that."
     (interactive)
     (setq isearchp-auto-keep-filter-predicate-flag  (not isearchp-auto-keep-filter-predicate-flag))
-    (when isearchp-auto-keep-filter-predicate-flag (setq isearchp-kept-filter-predicate  isearch-filter-predicate))
+    (when isearchp-auto-keep-filter-predicate-flag
+      (setq isearchp-kept-filter-predicate  isearch-filter-predicate))
     (message "Automatic saving of filter-predicate changes (for this Emacs session) is now %s"
              (if isearchp-auto-keep-filter-predicate-flag 'ON 'OFF))
     (sit-for 1)
@@ -4169,7 +4275,9 @@ Non-nil argument REGEXP-FUNCTION:
   "Reset `ring-bell-function' to `isearchp-orig-ring-bell-fn'."
   (setq ring-bell-function  isearchp-orig-ring-bell-fn))
 
-;; Dynamic search filtering.
+
+;;; Dynamic search filtering.
+;;;
 (when (or (> emacs-major-version 24)    ; Emacs 24.4+
           (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
@@ -5224,7 +5332,8 @@ Attempt to do the search exactly the way the pending Isearch would."
   )
 
 
-;; Dynamic search filtering.
+;;; Dynamic search filtering.
+;;;
 (when (or (> emacs-major-version 24)    ; Emacs 24.4+
           (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
@@ -5685,13 +5794,14 @@ subsequent searches (as if you had also used `\\[isearchp-keep-filter-predicate]
       (when isearchp-update-filter-predicates-alist-flag
         (customize-set-value 'isearchp-filter-predicates-alist isearchp-current-filter-preds-alist)
         (setq isearchp-current-filter-preds-alist  ()))
-      (when msgp (message "Filter predicate `%S' defined%s" function-symbol
-                          (cond ((and write-p  keep-p) (format ", set, kept current, and saved to file `%s'" file))
-                                (write-p               (format ", set and saved to file `%s'" file))
-                                ((and set-p  keep-p)           ", set, and kept")
-                                (set-p                         " and set")
-                                (keep-p                        " and kept")
-                                (t ""))))))
+      (when msgp
+        (message "Filter predicate `%S' defined%s" function-symbol
+                 (cond ((and write-p  keep-p) (format ", set, kept current, and saved to file `%s'" file))
+                       (write-p               (format ", set and saved to file `%s'" file))
+                       ((and set-p  keep-p)           ", set, and kept")
+                       (set-p                         " and set")
+                       (keep-p                        " and kept")
+                       (t ""))))))
 
   (defun isearchp-keep-filter-predicate (&optional msgp) ; `C-z s'
     "Keep current filter predicate for subsequent searches in this session.
@@ -5911,70 +6021,64 @@ This function requires library `crosshairs.el'."
     (unless isearchp-in-lazy-highlight-update-p (crosshairs))
     t)
 
-  (defun isearchp-in-comment-p (beg end)
-    "Return t if all chars in the search hit are in the same comment.
-BEG and END are the search-hit limits.
 
-The comment delimiters are not considered to be in the comment.  See
+;;; In and out filters.
+
+  ;; `isearchp-in-comment-p'
+  (isearchp-define-in/out-filter comment "the same comment"
+                                 (nth 4 (syntax-ppss pos))
+                                 "The comment delimiters are not considered to be in the comment.  See
+`isearchp-in-comment-or-delim-p' for a predicate that includes the
+delimiters, `comment-start' and `comment-end'.")
+
+  ;; `isearchp-not-in-comment-p'
+  (isearchp-define-in/out-filter comment "the same comment"
+                                 (nth 4 (syntax-ppss pos))
+                                 "The comment delimiters are not considered to be in the comment.  See
 `isearchp-in-comment-or-delim-p' for a predicate that includes the
 delimiters, `comment-start' and `comment-end'."
-    (let ((result  t)
-          (pos     beg))
-      (save-excursion
-        (goto-char pos)
-        (setq result  (catch 'isearchp-in-comment-p
-                        (while (<= pos end)
-                          (unless (nth 4 (syntax-ppss pos))
-                            (throw 'isearchp-in-comment-p nil))
-                          (setq pos  (1+ pos)))
-                        t)))))
+                                 'NOT)
 
-  (defun isearchp-in-comment-or-delim-p (beg end)
-    "Like `isearchp-in-comment-p', plus `comment-start' and `comment-end'.
-BEG and END are the search-hit limits."
-    (let ((result  t)
-          (pos     beg))
-      (save-excursion
-        (goto-char pos)
-        (setq result  (catch 'isearchp-in-comment-or-delim-p
-                        (while (<= pos end)
-                          (unless (or (nth 4 (syntax-ppss pos))
-                                      (and comment-start-skip  (looking-at comment-start-skip)))
+  ;; `isearchp-in-comment-or-delim-p'
+  (isearchp-define-in/out-filter comment-or-delim nil
+                                 (or (nth 4 (syntax-ppss pos))
+                                     (and comment-start-skip  (looking-at comment-start-skip)))
 ;;; (and comment-end-skip  (looking-at comment-end-skip))
-                            (throw 'isearchp-in-comment-or-delim-p nil))
-                          (setq pos  (1+ pos)))
-                        t)))))
+                                 "Like `isearchp-in-comment-p', plus `comment-start' and `comment-end'."
+                                 nil
+                                 'REPLACE-DOC)
 
-  (defun isearchp-in-string-p (beg end)
-    "Return t if all chars in the search hit are in the same string.
-\(The string delimiters are not considered to be in the string.)
-BEG and END are the search-hit limits."
-    (let ((result  t)
-          (pos     beg))
-      (save-excursion
-        (goto-char pos)
-        (setq result  (catch 'isearchp-in-string-p
-                        (while (<= pos end)
-                          (unless (nth 3 (syntax-ppss pos))
-                            (throw 'isearchp-in-string-p nil))
-                          (setq pos  (1+ pos)))
-                        t)))))
+  ;; `isearchp-not-in-comment-or-delim-p'
+  (isearchp-define-in/out-filter comment-or-delim nil 
+                                 (or (nth 4 (syntax-ppss pos))
+                                     (and comment-start-skip  (looking-at comment-start-skip)))
+                                 "Return t unless `isearchp-in-comment-or-delim-p'."
+                                 'NOT
+                                 'REPLACE-DOC)
 
-  (defun isearchp-in-string-or-comment-p (beg end)
-    "Return t if all chars in the search hit are in a string or in a comment.
-\(The string and comment delimiters are not considered to be in the
-string or comment, respectively.)
-BEG and END are the search-hit limits."
-    (let ((result  t)
-          (pos     beg))
-      (save-excursion
-        (goto-char pos)
-        (setq result  (catch 'isearchp-in-string-or-comment-p
-                        (while (<= pos end)
-                          (unless (nth 8 (syntax-ppss pos))
-                            (throw 'isearchp-in-string-or-comment-p nil))
-                          (setq pos  (1+ pos)))
-                        t)))))
+  ;; `isearchp-in-string-p'
+  (isearchp-define-in/out-filter string "the same string"
+                                 (nth 3 (syntax-ppss pos))
+                                 "(The string delimiters are not considered to be in the string.)")
+
+  ;; `isearchp-not-in-string-p'
+  (isearchp-define-in/out-filter string "the same string"
+                                 (nth 3 (syntax-ppss pos))
+                                 "(The string delimiters are not considered to be in the string.)"
+                                 'NOT)
+
+  ;; `isearchp-in-string-or-comment-p'
+  (isearchp-define-in/out-filter string-or-comment "a string or in a comment"
+                                 (nth 8 (syntax-ppss pos))
+                                 "(The string and comment delimiters are not considered to be in
+the string or comment, respectively.)")
+
+  ;; `isearchp-not-in-string-or-comment-p'
+  (isearchp-define-in/out-filter string-or-comment "a string or in a comment"
+                                 (nth 8 (syntax-ppss pos))
+                                 "(The string and comment delimiters are not considered to be in
+the string or comment, respectively.)"
+                                 'NOT)
 
   (defvar isearchp-ffap-max-region-size 1024 ; See also Emacs bug #25243.
     "Max size of active region used to obtain file-name defaults.
@@ -5988,36 +6092,19 @@ An active region larger than this many characters prevents
          (let ((mark-active  (and mark-active  (< (buffer-size) isearchp-ffap-max-region-size))))
            (ffap-guesser))))
 
-  (defun isearchp-in-file-or-url-p (beg end)
-    "Return t if all chars in the search hit are in the same URL.
-\(This is quite lax; it uses `isearchp-ffap-guesser'.)
-BEG and END are the search-hit limits."
-    (require 'ffap)
-    (let ((result  t)
-          (pos     beg))
-      (save-excursion
-        (goto-char pos)
-        (setq result  (catch 'isearchp-in-file-or-url-p
-                        (while (<= pos end)
-                          (unless (save-match-data (isearchp-ffap-guesser))
-                            (throw 'isearchp-in-file-or-url-p nil))
-                          (setq pos  (1+ pos)))
-                        t)))))
+  ;; `isearchp-in-file-or-url-p'
+  (isearchp-define-in/out-filter file-or-url "the same URL"
+                                 (save-match-data (isearchp-ffap-guesser))
+                                 "\(This is quite lax; it uses `isearchp-ffap-guesser'.)")
 
-  (defun isearchp-in-list-p (beg end)
-    "Return t if all chars in the search hit are in the same list.
-BEG and END are the search-hit limits."
-    (let ((result  t)
-          (pos     beg))
-      (save-excursion
-        (goto-char pos)
-        (setq result  (catch 'isearchp-in-list-p
-                        (while (<= pos end)
-                          (when (= 0 (nth 0 (syntax-ppss pos)))
-                            (throw 'isearchp-in-list-p nil))
-                          (setq pos  (1+ pos)))
-                        t)))))
+  ;; `isearchp-not-in-file-or-url-p'
+  (isearchp-define-in/out-filter file-or-url "the same URL"
+                                 (save-match-data (isearchp-ffap-guesser))
+                                 "\(This is quite lax; it uses `isearchp-ffap-guesser'.)"
+                                 'NOT)
 
+  ;; Do not use macro `isearchp-define-in/out-filter' for `isearchp-in-lisp-variable-p'.
+  ;;
   (defun isearchp-in-lisp-variable-p (__%$_BEG_+-*&__ __%$_END_+-*&__)
     "Return t if all chars in the search hit are in the same Lisp variable.
 BEG and END are the search-hit limits."
@@ -6032,19 +6119,31 @@ BEG and END are the search-hit limits."
           (setq __%$_BEG_+-*&__  (1+ __%$_BEG_+-*&__)))
         t)))
 
-  (defun isearchp-in-list-p (beg end)
-    "Return t if all chars in the search hit are in the same list.
+  ;; `isearchp-in-list-p'
+  (isearchp-define-in/out-filter list "the same list" (not (= 0 (nth 0 (syntax-ppss pos)))))
+
+  ;; `isearchp-not-in-list-p'
+  (isearchp-define-in/out-filter list "the same list" (not (= 0 (nth 0 (syntax-ppss pos)))) nil 'NOT)
+
+;; Do not use macro `isearchp-define-in/out-filter' for `isearchp-not-in-lisp-variable-p'.
+;;
+(defun isearchp-not-in-lisp-variable-p (__%$_BEG_+-*&__ __%$_END_+-*&__)
+  "Return t if all chars in the search hit are not in the same Lisp variable.
 BEG and END are the search-hit limits."
-    (let ((result  t)
-          (pos     beg))
-      (save-excursion
-        (goto-char pos)
-        (setq result  (catch 'isearchp-in-list-p
-                        (while (<= pos end)
-                          (when (= 0 (nth 0 (syntax-ppss pos)))
-                            (throw 'isearchp-in-list-p nil))
-                          (setq pos  (1+ pos)))
-                        t)))))
+  ;; Just ignore the arguments, as variables (dumb, ugly hack, but good enough).
+  (save-excursion
+    (goto-char __%$_BEG_+-*&__)
+    (catch 'isearchp-in-lisp-variable-p
+      (while (<= __%$_BEG_+-*&__ __%$_END_+-*&__)
+        (when (and (symbolp (variable-at-point))
+                   (not (memq (variable-at-point) '(__%$_BEG_+-*&__ __%$_END_+-*&__))))
+          (throw 'isearchp-in-lisp-variable-p nil))
+        (setq __%$_BEG_+-*&__  (1+ __%$_BEG_+-*&__)))
+      t)))
+
+
+;;; In and out thing filters
+
 
   (defun isearchp-in-thing-p (thing beg end)
     "Return t if chars from BEG through END are in the same THING."
@@ -6064,75 +6163,135 @@ Such a name is any that satisfies `color-defined-p', which includes
 BEG and END are the search-hit limits."
     (isearchp-in-thing-p 'color beg end))
 
-  (defun isearchp-in-email-address-p (beg end)
-    "Return t if all chars in the search hit are in the same email address.
-BEG and END are the search-hit limits."
-    (isearchp-in-thing-p 'email beg end))
-
-  (defun isearchp-in-url-p (beg end)
-    "Return t if all chars in the search hit are in the same URL.
-BEG and END are the search-hit limits."
-    (isearchp-in-thing-p 'url beg end))
-
-  (defun isearchp-in-file-name-p (beg end)
-    "Return t if all chars in the search hit are in the same file name.
-BEG and END are the search-hit limits."
-    (isearchp-in-thing-p 'filename beg end))
-
-  (defun isearchp-in-defun-p (beg end)
-    "Return t if all chars in the search hit are in the same defun.
-BEG and END are the search-hit limits."
-    (isearchp-in-thing-p 'defun beg end))
-
-  (defun isearchp-in-sentence-p (beg end)
-    "Return t if all chars in the search hit are in the same sentence.
-BEG and END are the search-hit limits."
-    (isearchp-in-thing-p 'sentence beg end))
-
-  (defun isearchp-in-paragraph-p (beg end)
-    "Return t if all chars in the search hit are in the same paragraph.
-BEG and END are the search-hit limits."
-    (isearchp-in-thing-p 'paragraph beg end))
-
-  (defun isearchp-in-line-p (beg end)
-    "Return t if all chars in the search hit are in the same line.
-BEG and END are the search-hit limits."
-    (isearchp-in-thing-p 'line beg end))
-
-  (defun isearchp-in-page-p (beg end)
-    "Return t if all chars in the search hit are in the same page.
-BEG and END are the search-hit limits."
-    (isearchp-in-thing-p 'page beg end))
-
-  (defun isearchp-in-sexp-p (beg end)
-    "Return t if all chars in the search hit are in the same sexp.
-BEG and END are the search-hit limits."
-    (isearchp-in-thing-p 'sexp beg end))
-
-  (defun isearchp-in-symbol-p (beg end)
-    "Return t if all chars in the search hit are in the same symbol.
-BEG and END are the search-hit limits."
-    (isearchp-in-thing-p 'symbol beg end))
-
-  (defun isearchp-in-word-p (beg end)
-    "Return t if all chars in the search hit are in the same word.
-BEG and END are the search-hit limits."
-    (isearchp-in-thing-p 'word beg end))
-
-  (defun isearchp-in-number-p (beg end)
-    "Return t if all chars in the search hit are in the same number.
-BEG and END are the search-hit limits."
-    (isearchp-in-thing-p 'number beg end))
+  (defun isearchp-not-in-color-p (beg end)
+    "Return t if `isearchp-in-color-p' is false."
+    (not (isearchp-in-color-p beg end)))
 
   (defun isearchp-in-decimal-number-p (beg end)
     "Return t if all chars in the search hit are in the same number.
 BEG and END are the search-hit limits."
     (isearchp-in-thing-p 'decimal-number beg end))
 
+  (defun isearchp-not-in-decimal-number-p (beg end)
+    "Return t if `isearchp-in-decimal-number-p' is false."
+    (not (isearchp-in-decimal-number-p beg end)))
+
+  (defun isearchp-in-defun-p (beg end)
+    "Return t if all chars in the search hit are in the same defun.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'defun beg end))
+
+  (defun isearchp-not-in-defun-p (beg end)
+    "Return t if `isearchp-in-defun-p' is false."
+    (not (isearchp-in-defun-p beg end)))
+
+  (defun isearchp-in-email-address-p (beg end)
+    "Return t if all chars in the search hit are in the same email address.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'email beg end))
+
+  (defun isearchp-not-in-email-address-p (beg end)
+    "Return t if `isearchp-in-email-address-p' is false."
+    (not (isearchp-in-email-address-p beg end)))
+
+  (defun isearchp-in-file-name-p (beg end)
+    "Return t if all chars in the search hit are in the same file name.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'filename beg end))
+
+  (defun isearchp-not-in-file-name-p (beg end)
+    "Return t if `isearchp-in-file-name-p' is false."
+    (not (isearchp-in-file-name-p beg end)))
+
   (defun isearchp-in-hex-number-p (beg end)
     "Return t if all search-hit chars are in the same hexadecimal number.
 BEG and END are the search-hit limits."
     (isearchp-in-thing-p 'hex-number beg end))
+
+  (defun isearchp-not-in-hex-number-p (beg end)
+    "Return t if `isearchp-in-hex-number-p' is false."
+    (not (isearchp-in-hex-number-p beg end)))
+
+  (defun isearchp-in-line-p (beg end)
+    "Return t if all chars in the search hit are in the same line.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'line beg end))
+
+  (defun isearchp-not-in-line-p (beg end)
+    "Return t if `isearchp-in-line-p' is false."
+    (not (isearchp-in-line-p beg end)))
+
+  (defun isearchp-in-number-p (beg end)
+    "Return t if all chars in the search hit are in the same number.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'number beg end))
+
+  (defun isearchp-not-in-number-p (beg end)
+    "Return t if `isearchp-in-number-p' is false."
+    (not (isearchp-in-number-p beg end)))
+
+  (defun isearchp-in-page-p (beg end)
+    "Return t if all chars in the search hit are in the same page.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'page beg end))
+
+  (defun isearchp-not-in-page-p (beg end)
+    "Return t if `isearchp-in-page-p' is false."
+    (not (isearchp-in-page-p beg end)))
+
+  (defun isearchp-in-paragraph-p (beg end)
+    "Return t if all chars in the search hit are in the same paragraph.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'paragraph beg end))
+
+  (defun isearchp-not-in-paragraph-p (beg end)
+    "Return t if `isearchp-in-paragraph-p' is false."
+    (not (isearchp-in-paragraph-p beg end)))
+
+  (defun isearchp-in-sentence-p (beg end)
+    "Return t if all chars in the search hit are in the same sentence.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'sentence beg end))
+
+  (defun isearchp-not-in-sentence-p (beg end)
+    "Return t if `isearchp-in-sentence-p' is false."
+    (not (isearchp-in-sentence-p beg end)))
+
+  (defun isearchp-in-sexp-p (beg end)
+    "Return t if all chars in the search hit are in the same sexp.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'sexp beg end))
+
+  (defun isearchp-not-in-sexp-p (beg end)
+    "Return t if `isearchp-in-sexp-p' is false."
+    (not (isearchp-in-sexp-p beg end)))
+
+  (defun isearchp-in-symbol-p (beg end)
+    "Return t if all chars in the search hit are in the same symbol.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'symbol beg end))
+
+  (defun isearchp-not-in-symbol-p (beg end)
+    "Return t if `isearchp-in-symbol-p' is false."
+    (not (isearchp-in-symbol-p beg end)))
+
+  (defun isearchp-in-url-p (beg end)
+    "Return t if all chars in the search hit are in the same URL.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'url beg end))
+
+  (defun isearchp-not-in-url-p (beg end)
+    "Return t if `isearchp-in-url-p' is false."
+    (not (isearchp-in-url-p beg end)))
+
+  (defun isearchp-in-word-p (beg end)
+    "Return t if all chars in the search hit are in the same word.
+BEG and END are the search-hit limits."
+    (isearchp-in-thing-p 'word beg end))
+
+  (defun isearchp-not-in-word-p (beg end)
+    "Return t if `isearchp-in-word-p' is false."
+    (not (isearchp-in-word-p beg end)))
 
 
   (when (featurep 'bookmark+)
@@ -6175,9 +6334,9 @@ You need library `bookmark+.el' for this."
         (when msgp (message "Bookmarked current filter as bookmark `%s'" bookmark-name))
         bmk))
 
-    )
+    ) ;; End bookmark stuff
 
-  )
+  ) ;; End dynamic-search stuff
 
 
 ;; Miscellaneous
