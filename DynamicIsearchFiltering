@@ -233,7 +233,7 @@ uses it for filtering.  For example:
 units by customizing option '''`isearchp-movement-unit-alist''''.
 The default option value includes units character, word, [[sexp]],
 list, and sentence.
-You can also use functions `isearch-near-predicate', `isearchp-near-before-predicate', and `isearchp-near-before-predicate' to define your own nearness predicates, which incorporate particular patterns and distances.  You can then simply add such a predicate using `##C-z &##' (no prompting for pattern or distance).
+You can also use functions `isearch-near-predicate', `isearchp-near-before-predicate', and `isearchp-near-after-predicate' to define your own nearness predicates, which incorporate particular patterns and distances.  You can then simply add such a predicate using `##C-z &##' (no prompting for pattern or distance).
 
 Typically you add (`##C-z &##', `##C-z %##', etc.) a filter predicate to
 those already active, or you remove one (`##C-z -##').  Adding is
@@ -308,9 +308,10 @@ For the completion candidates that are predefined, this
 naming convention is used:
 
 * Bracketed names ('''`##[...]##'''') stand for predicates that check that
-the search hit is within something.  For example, name `##[;]##'
-tests whether it is inside a comment (`##;##' is the EmacsLisp comment-start character), and name `##[defun]##' tests whether it
-is inside a defun.
+the search hit is (entirely) within something.  For example, name `##[;]##'
+means each search hit must be inside a comment (`##;##' is the EmacsLisp comment-start character), and name `##[defun]##' means each search hit must be inside a defun.
+
+* A '''`##~##'''' in front of a name means ''"not"''.  For example, '''`##~[;]##'''' means the filtered search hits must '''not''' be in comments.
 
 * Names that end in '''`##...##'''' indicate candidates that prompt you
 for more information.  These names represent, not filter
