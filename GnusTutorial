@@ -1254,6 +1254,39 @@ statement.
 (global-set-key (kbd "C-c f") 'gnus-loop-from)
 [/code]
 
+I've made what is for me a slightly more useful version of this:
+
+[code]
+(setq my-email-addresses '(...))
+
+(defun bsb/loop-from ()
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward
+           "^From: *\\([^<\n]*?\\) *\\(<\\([^>\n]*\\)>\\)?$" nil t)
+      (let* ((no-name (null (match-string 2)))
+             (name (if no-name user-full-name (match-string 1)))
+             (address (match-string (if no-name 1 3))))
+        (replace-match (concat "From: " name
+                               " <" (bsb/next-address address) ">"))))))
+
+(defun bsb/next-address (address)
+  (let ((found (member address bsb/email-addresses)))
+    (if found
+        (if (cdr found)
+            (cadr found)
+          (car bsb/email-addresses))
+      (if (eq last-command this-command)
+          (setq bsb/from-selected-index
+                (mod (+ bsb/from-selected-index 1) (length bsb/email-addresses)))
+        (setq bsb/from-selected-index 0))
+      (nth bsb/from-selected-index bsb/email-addresses))))
+[/code]
+
+This replaces an address with the next one in the list rather than starting from the first.  Of course, if the From: line does not have a recognised address it just behaves as before.  Also it preserves any friendly name that
+might be on the line and the save-excursion prevents the point from jumping about as the address length changes.
+
 == Reading articles ==
 
 Gnus has hundreds of commands and keybindings that allow you to do all
