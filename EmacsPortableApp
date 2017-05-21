@@ -1,16 +1,23 @@
-== Variations ==
+The standard MS-Windows binaries is already portable, in that you can just unzip it anywhere and run it directly.
+To keep your ##.emacs.d## in a directory called ##emacshome## on your USB stick next to the unzipped Emacs, create a ##runemacs.bat## file in Emacs' ##bin/## directory with contents:
+{{{
+set HOME=%~dp0..\..\emacshome
+"%~dp0runemacs.exe" %*
+}}}
+and then use that instead of ##runemacs.exe##.
 
-* https://github.com/mlf176f2/EmacsPortable.App - under active development as of 2013.11
-** http://mlf176f2.github.io/EmacsPortable.App/
-* An answer to the Stack Overflow question [http://stackoverflow.com/questions/350345/how-can-i-have-a-portable-emacs "How can I have a portable Emacs?"] points out that ''the "normal" Emacs distribution for Windows is precompiled and just runs without having to do any install. Just get one of the *.zip files from the usual place, unpack it onto a USB disk, and you can use it directly. (The actual binary is inside the "bin/" directory.)''
+=== References ===
+
+* http://stackoverflow.com/questions/350345/how-can-i-have-a-portable-emacs
 * http://theblackdragon.wordpress.com/2006/05/12/portable-emacs/
 * http://pigpog.com/2007/10/22/portable-emacs-onna-stick/
-* http://code.google.com/p/clt-dotemacs/wiki/EmacsPortable
+* http://stackoverflow.com/questions/112055/what-does-d0-mean-in-a-windows-batch-file
 
-* http://esnm.sourceforge.net/download.html
-** By MatthewFidler, but moved to github
+== Prebuilt ==
+* http://mattfidler.github.io/EmacsPortable.App/ - Latest download is for 24.3, but claims to support automatic upgrading.\\
+Comes with some extra features: registering extensions, fonts...
+** http://esnm.sourceforge.net/EmacsPortable.html - Older version (23.1) from the same author
 
 ----
-* CategoryNeedsAttention
 * CategoryWThirtyTwo
 * CategoryPorts
