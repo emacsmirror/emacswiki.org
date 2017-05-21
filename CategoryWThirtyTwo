@@ -1,92 +1,66 @@
 [[ja:カテゴリ・WThirtyTwo]]
 Click on the header to search for pages about EmacsForWindows.
 
-Where to get it:
-
-* **Official supported binaries** - http://www.gnu.org/software/emacs/windows/faq2.html#where-precompiled
-
-** stable
-*** ftp://ftp.gnu.org/gnu/emacs/windows/
-*** http://ftp.gnu.org/gnu/emacs/windows/
-*** Note that most people will want the bin file, not the barebin file. The barebin file includes only the compiled binaries, not the rest of Emacs. (It's intended for people who downloaded the source and then changed their mind about compiling it themselves.)
-
-** weekly builds
-*** http://alpha.gnu.org/gnu/emacs/windows/
-
-** pretests
-*** ftp://alpha.gnu.org/gnu/emacs/pretest/windows/
-*** http://alpha.gnu.org/gnu/emacs/pretest/windows/
-
-----
-
-* **Unofficial/Development binaries** (normally very stable):
-
-** **2014-11-15** **Emacs-w64** -- Native 64-bit build -- http://emacsbinw64.sourceforge.net/
-*** Unmodified source code from git mirror.
-*** Includes development snapshot, pretests, and release builds.
-*** Supports JPEG, GIF, PNG, TIFF, SVG, and XML2.
-*** Compiled with optimization.
-*** Also available as a [https://chocolatey.org/packages/emacs64 Chocolatey package].
-
-** **2014-11-08** **emacs-bin** Binary distributions of GNU Emacs. https://sourceforge.net/projects/emacs-bin
-
-** **2017-01-11** **Emacs Modified for Windows** (https://vigou3.github.io/emacs-modified-windows/) -- Emacs 25.1-2 with a few modifications, most notably an installer, AUCTeX, ESS and image libraries.
-
-** **2012-08-25** **ntemacs** -- http://ntemacs.sourceforge.net/ -- **Emacs bzr for w32** [24.2.50.1]
-*** Clean, optimized w32 build of latest Emacs development trunk (Bazaar).
-*** Support for images enabled: giflib jpeg libpng libtiff libxpm zlib gnutls libxml2
-*** Built with MinGW32/GCC-4.7.0, optimized for Prescott and above.
-*** Uses 7z for distribution. Decompress the bin package anywhere (preferably C: or D: root) and run addpm.exe in \ntemacs24\bin.
-
-** **2011-12-23** **Precompiled Emacs for Windows binaries** -- http://code.google.com/p/emacs-for-windows/
-*** Source code checked out from latest Bazaar repository
-*** Both stable and bleeding edge nightly build binaries
-
-** **2009-11-04** -- Emacs 23.1.50.1 CVS [[EmacsW32]]
-*** Does some extra setup to work better on MS-Windows and includes some unix programs (grep etc) from gnuwin32 and image libraries. It is also slightly patched for the same reason.
-*** For other reasons the packages also includes [NxmlMode nXhtml].
-*** Untested versions of EmacsW32 (I use them myself though I am not satisfied enough with them) is uploaded more often to http://ourcomments.org/Emacs/DL/EmacsW32/test/.
-
-** **2007-10-08** -- Emacs 22 -- http://www.crasseux.com/emacs
-** **2007-07-07** -- Emacs 22.0.50 -- ftp://alpha.gnu.org/gnu/auctex/ -- Includes a preconfigured AUCTeX and preview-latex. (gone)
-** **2005-06-26** -- Emacs 22 -- http://nqmacs.sf.net
-** See [[Meadow]] below on this page for a Japanese-oriented fork. (looks like it is gone)
-** It seems that LucasBonnet also maintains a build. Search for "win32" or "EmacsCVS" on his page. (gone)
-
-----
-
-or build it yourself - see BuildingOnWindowsTableofContents.
-
-
-Help:
+== Help ==
 
 * FAQ http://www.gnu.org/software/emacs/windows/ntemacs.html (considerably outdated because there is no maintainer currently)
 * Mailling list http://mail.gnu.org/archive/html/help-emacs-windows/
 
-Installation:
+== Installation ==
 
-* [[EmacsW32]] -- an enhancement and an installation program for Emacs on MS-Windows. '''Note 1:''' It is also a run time environment including keyboard adjustments, printing etc. '''Note 2:''' It can also extract the Emacs MS-Windows binaries .tar.gz file (using 7-zip internally).
-* [[EmacsPortableApp]] -- Another enhancement and installation program for Emacs on MS-windows especially customized for PortableApplications.  
+http://www.gnu.org/software/emacs/windows/faq2.html#where-precompiled
+
+=== Official Releases ===
+==== Stable ====
+* ftp://ftp.gnu.org/gnu/emacs/windows/
+* http://ftp.gnu.org/gnu/emacs/windows/
+** Note that most people will want the bin file, not the barebin file. The barebin file includes only the compiled binaries, not the rest of Emacs. (It's intended for people who downloaded the source and then changed their mind about compiling it themselves.)
+
+==== Weekly builds ====
+* http://alpha.gnu.org/gnu/emacs/windows/
+
+==== Pretests ====
+* ftp://alpha.gnu.org/gnu/emacs/pretest/windows/
+* http://alpha.gnu.org/gnu/emacs/pretest/windows/
+
+=== Helpful things for Installation ===
+
 * MsWindowsInstallation -- Installation guidelines when not using !EmacsW32
 * MsWindowsDotEmacs -- About the .emacs (or _emacs) initialization file on MS-Windows
 * The free (GNU LGPL) open source program [http://www.7-zip.org/ 7-zip] is a good choice for extracting <tt>.tar.gz</tt> files.  You can also use [http://cheeso.members.winisp.net/srcview.aspx?dir=Tar&file=Tar.cs this simple Tar program in C#]
+* Build it yourself - see BuildingOnWindowsTableofContents.
+* [[EmacsPortableApp]] -- Install to USB stick
 
-Customization:
+=== Unofficial Releases ===
+* [https://vigou3.github.io/emacs-modified-windows/ Emacs Modified for Windows] -- Emacs 25.2 with a few modifications, most notably an installer, AUCTeX, ESS and image libraries.
 
-* MsWindowsCustomize -- overview of Emacs customization on Microsoft Windows
-* MsWindowsRegistry -- using the MS-Windows Registry for customizing the initial window (font, window position, window size) like a .Xdefaults file
-* MsWindowsGnuClient -- opening .txt files with Emacs
-* MsWindowsGlobalContextMenu -- adds Emacs to the menu you see when right-clicking on a file (and, if you select it, opens the file in Emacs)
-* See also [http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Easymacs/ Easymacs]. It can use any recent CVS Emacs (see them above).
+==== Older, mostly Obsolete ====
 
-MS Tips and Tricks:
+* **2014-11-15** **Emacs-w64** -- Native 64-bit build -- http://emacsbinw64.sourceforge.net/
+** Unmodified source code from git mirror.
+** Includes development snapshot, pretests, and release builds.
+** Supports JPEG, GIF, PNG, TIFF, SVG, and XML2.
+** Compiled with optimization.
+** Also available as a [https://chocolatey.org/packages/emacs64 Chocolatey package].
+
+* **2014-11-08** **emacs-bin** Binary distributions of GNU Emacs. https://sourceforge.net/projects/emacs-bin
+
+* **2012-08-25** **ntemacs** -- http://ntemacs.sourceforge.net/ -- **Emacs bzr for w32** [24.2.50.1]
+** Clean, optimized w32 build of latest Emacs development trunk (Bazaar).
+** Support for images enabled: giflib jpeg libpng libtiff libxpm zlib gnutls libxml2
+** Built with MinGW32/GCC-4.7.0, optimized for Prescott and above.
+** Uses 7z for distribution. Decompress the bin package anywhere (preferably C: or D: root) and run addpm.exe in \ntemacs24\bin.
+
+* **2007-10-08** -- Emacs 22 -- http://www.crasseux.com/emacs
+* **2005-06-26** -- Emacs 22 -- http://nqmacs.sf.net
+
+== MS Tips and Tricks ==
 
 * [[BookmarkPlus|Bookmark+]] -- open bookmarked files using their Windows file associations
 * [[DiredPlus|Dired+]] -- open files from Dired using their Windows file associations
 * DiredHtmlMoveLikeWThirtyTwo -- a way to make dired behave like Windows Explorer with regard to moving HTML files (while moving or deleting foo.htm MS-Windows also includes the directory foo_files which contains associated images, css etc.)
 * MsShellExecute -- `w32-browser' and its variants: execute MS-Windows applications associated with file types
 * MsWindowsDiredContextMenu -- display Explorer's context menu
-* VisEmacs - Use emacs as the text editor for VisualStudio
 * WThirtyTwoNetSend -- send messages using the NT command net send
 * WThirtyTwoSwitchToWindows -- switch to a window by its name
 * MsdnHelp -- Get MSDN help right from Emacs.
@@ -97,26 +71,39 @@ MS Tips and Tricks:
 * WThirtyTwoFindDired -- simple Windows-version of find-dired
 * WThirtyTwoFindDiredWithUnixUtils -- find-dired on win32 using "real" unix find
 * WThirtyTwoSymlinks -- parse .lnk files
-* IEViewSource -- Use emacs as the Internet Explorer "View Source" application
-* WThirtyTwoMailtoRegistry -- Registry keys to open mailto: links in an Emacs Buffer
 * WThirtyTwoSendMAPI -- Use MAPI to send mail from emacs <nowiki>*mail*</nowiki> buffers
 * WThirtyTwoTelnetPlink -- Use Plink (the command-line interface to PuTTY) as an emacs telnet client.
 * SshWithNTEmacs - Use cygwin SSH within Emacs
 * WThirtyTwoSendSysCommand -- list of commands to use with `w32-send-sys-command'
-* w32-toggle-lock-key function (included in Emacs) -- toggle 'Caps Lock', 'Scroll Lock' and 'Num Lock' keys from within elisp
 * CatagoryIntellimouse -- Information about using an !IntelliMouse with emacs
 * WThirtyTwoHardDrivesMenu -- provides menu with all currently available local drives (useful in dired)
-* WThirtyTwoMetaRightLeftNotWorking -- some programs prevent M-Right and M-Left from working
-* WThirtyTwoCtrlShiftNotWorking -- Windows "language bar" shortcuts prevent certain keyboard shortcuts like C-S-)
 * WThirtyTwoServerMode -- How to use Emacs server mode on Windows.
 
-MS applications:
+=== Customization ===
+
+* `w32-toggle-lock-key' function (included in Emacs) -- toggle 'Caps Lock', 'Scroll Lock' and 'Num Lock' keys from within elisp
+* MsWindowsCustomize -- overview of Emacs customization on Microsoft Windows
+* MsWindowsRegistry -- using the MS-Windows Registry for customizing the initial window (font, window position, window size) like a .Xdefaults file
+* WThirtyTwoMailtoRegistry -- Registry keys to open mailto: links in an Emacs Buffer
+* MsWindowsGnuClient -- opening .txt files with Emacs
+* MsWindowsGlobalContextMenu -- adds Emacs to the menu you see when right-clicking on a file (and, if you select it, opens the file in Emacs)
+
+=== Special problems on w32 ===
+
+* WThirtyTwoMetaRightLeftNotWorking -- some programs prevent M-Right and M-Left from working
+* WThirtyTwoCtrlShiftNotWorking -- Windows "language bar" shortcuts prevent certain keyboard shortcuts like ##C-S-)##
+* [[http://lists.gnu.org/archive/html/help-emacs-windows/2011-02/msg00000.html Growl for windows uses Alt-X by default]] - but you can customize it.
+* There is a small bug due to incomplete MS documentation of the !ClearType api which causes text glitches during scrolling.  As such, !ClearType support is disabled in 21.3.  The buggy version is enabled in 21.1 and may be a useful alternative for those who don't mind the occasional display bug and being a few versions behind.
+
+=== MS applications ===
 
 * MsOutlook -- use Emacs as the editor for Microsoft Outlook
+* VisEmacs -- Use emacs as the text editor for VisualStudio
+* IEViewSource -- Use emacs as the Internet Explorer "View Source" application
 * XKeymacs --  use the Emacs keybindings everywhere
 * PowerShell -- run Windows Powershell as an inferior shell within Emacs.
 
-MS shell:
+=== MS shell ===
 * WThirtyTwoShellExecute -- execute any of the 'Explorer verbs' available for a file or directory.
 * MsShellExecute -- more Shell Execute stuff
 * ContextMenu -- adding "Open with Emacs" to the MS-Windows context menu
@@ -125,7 +112,7 @@ MS shell:
 * WThirtyTwoUtl -- utility functions
 * WThirtyTwoFilePropertiesDialog -- opens Windows "File Properties" dialog box for specified file or directory
 
-Printing:
+=== Printing ===
 
 * PrintWithWebBrowser
 * See also the Ghostscript tip on PrintingFromEmacs.
@@ -134,7 +121,12 @@ See also http://lists.gnu.org/archive/html/emacs-devel/2006-05/msg01022.html
 * From Explorer: PrintFromWindowsExplorer
 * From Word (as straight text or converting to RTF): PrintUsingWord
 
-MS-Windows development:
+=== Reading proprietary file formats ===
+
+* UnDoc -- view MS Word files in Emacs
+* AntiWord -- interfacing with the antiword program
+
+== MS-Windows development ==
 
 * MSVisualStudio -- Dev Env Command Line builds
 * CygWin -- using Emacs with (or within) Cygwin
@@ -145,21 +137,3 @@ MS-Windows development:
 * CSharpMode - major mode for editing C# code
 * [http://www.emacswiki.org/emacs/PowerShell#toc2 Powershell mode] - mode for editing powershell code
 * [http://www.emacswiki.org/emacs/MSTFS MS TFS] - commands for checkout/checkin to TFS from emacs (via TF.exe)
-* [http://code.google.com/p/jslint-for-wsh/ JSLint for WSH] - Run the canonical Javascript lint tool using WScript.exe. includes an elisp module to make it work nicely with Flymake.
-
-Reading proprietary file formats:
-
-* UnDoc -- view MS Word files in Emacs
-* AntiWord -- interfacing with the antiword program
-
-Font Smoothing, also known as !ClearType:
-
-* There is a small bug due to incomplete MS documentation of the !ClearType api which causes text glitches during scrolling.  As such, !ClearType support is disabled in 21.3.  The buggy version is enabled in 21.1 and may be a useful alternative for those who don't mind the occasional display bug and being a few versions behind.
-
-Forks: Other Windows32 Emacs applications
-
-* [[Meadow]] - [http://www.meadowy.org/meadow/ Meadow home page (in Japanese)] -- the '''m'''ultilingual '''e'''nhancement to GNU Emacs with '''ad'''vantages '''o'''ver '''w'''indows. A Japanese-language oriented GNU Emacs fork with Cygwin like installer.
-
-Special problems on w32:
-
-* [[http://lists.gnu.org/archive/html/help-emacs-windows/2011-02/msg00000.html Growl for windows uses Alt-X by default]] - but you can customize it.
