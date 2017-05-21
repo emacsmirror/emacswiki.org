@@ -1,13 +1,1 @@
-Arch is a sophisticated modern source-control system (see ArchVersionControl for more details).
-
-MilesBader maintains a regularly synched Arch copy of the Gnus CVS tree.
-
-To use tla to get the Gnus sources, use these commands:
-
-    tla register-archive http://mirrors.sourcecontrol.net/miles@gnu.org--gnu-2005
-
-    tla get miles@gnu.org--gnu-2005/gnus--devo--0 gnus
-
-That will checkout Gnus into a directory called "gnus".
-
-The above branch ("gnus--devo--0") is the Gnus development branch; also available is the Gnus 5.10 "stable" branch (which the version of Gnus included in the current GNU Emacs development tree); that branch is available using the arch name: miles@gnu.org--gnu-2005/gnus--rel--5.10
+DeletedPage
