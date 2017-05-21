@@ -1,3 +1,5 @@
+== For MS-Windows ==
+
 The standard MS-Windows binaries is already portable, in that you can just unzip it anywhere and run it directly.
 To keep your ##.emacs.d## in a directory called ##emacshome## on your USB stick next to the unzipped Emacs, create a ##runemacs.bat## file in Emacs' ##bin/## directory with contents:
 {{{
@@ -6,14 +8,14 @@ set HOME=%~dp0..\..\emacshome
 }}}
 and then use that instead of ##runemacs.exe##.
 
-=== References ===
+==== References ====
 
 * http://stackoverflow.com/questions/350345/how-can-i-have-a-portable-emacs
 * http://theblackdragon.wordpress.com/2006/05/12/portable-emacs/
 * http://pigpog.com/2007/10/22/portable-emacs-onna-stick/
 * http://stackoverflow.com/questions/112055/what-does-d0-mean-in-a-windows-batch-file
 
-== Prebuilt ==
+=== Prebuilt ===
 * http://mattfidler.github.io/EmacsPortable.App/ - Latest download is for 24.3, but claims to support automatic upgrading.\\
 Comes with some extra features: registering extensions, fonts...
 ** http://esnm.sourceforge.net/EmacsPortable.html - Older version (23.1) from the same author
