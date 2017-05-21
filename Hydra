@@ -5,7 +5,7 @@ Hydra may refer to:
 
 See the sections below for more information.
 
-== Hydra, the keybinding package ==
+= Hydra, the keybinding package =
 
 Project page: https://github.com/abo-abo/hydra
 
@@ -22,7 +22,7 @@ CategoryKeys
 
 == Hydra, the Nix-based continuous build system ==
 
-View the Continuous Integration status of Emacs at http://hydra.nixos.org/jobset/gnu/emacs-trunk
+View the Continuous Integration status of Emacs at http://hydra.nixos.org/jobset/gnu/emacs-trunk, or the [http://lists.gnu.org/mailman/listinfo/emacs-buildstatus emacs-buildstatus] mailing list [http://lists.gnu.org/archive/html/emacs-buildstatus/ archive].
 
 You can find other Emacs branches at http://hydra.nixos.org/project/gnu .
 
