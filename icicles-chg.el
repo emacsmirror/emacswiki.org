@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Apr  9 18:30:24 2017 (-0700)
+;; Last-Updated: Mon May 22 14:47:25 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 11692
+;;     Update #: 11695
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4628,6 +4628,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2017/05/22 dadams
+;;     Added: icicle-keep-buffer-cands-for-modified, icicle-remove-buffer-cands-for-modified,
+;;            icicle-keep/remove-buffer-cands-for-modified.
 ;; 2017/01/15 dadams
 ;;     icicle-delete-windows-on:
 ;;       Do not prevent deletion if no minibuffer frame parameter and minibuffer is not active.
@@ -7741,6 +7744,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2017/05/22 dadams
+;;     icicle-buffer-candidate-key-bindings: Added C-x * +, C-x * - (keep/remove modified).
+;;     Require cl.el when compile (for incf).
 ;; 2017/02/17 dadams
 ;;     icicle-top-level-key-bindings: Changed binding of icicle-command-abbrev to M-ESC C-x.
 ;; 2016/12/21 dadams
