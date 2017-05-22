@@ -60,7 +60,7 @@ is, toggle [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-
 is, toggle option '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-recent-files-nflag|icicle-buffer-include-recent-files-nflag]]</tt>''''.  A prefix argument sets the option value to the numeric prefix value.
 
 [:icicle-bookmark-non-file-other-window]
-* '''`C-x m'''' ('''`icicle-bookmark-non-file-other-window'''') to visit a
+* '''`C-x m'''' ('''`icicle-bookmark-non-file-other-window'''') Visit a
   [[BookmarkPlus#AdditionalTypes|bookmarked buffer]].  This is available only if you use library
   '''[[Bookmark+]]'''.  This too is a [[multi-command]], so you can actually
   visit any number of buffer bookmarks with one use of `C-x m'.  When finished, you can
@@ -68,36 +68,41 @@ is, toggle option '''`<tt>[[Icicles - Customization and General Tips#icicle-buff
 
 
 [:icicle-remove-buffer-cands-for-derived-mode]
-* '''`C-x C-m -'''' ('''`icicle-remove-buffer-cands-for-derived-mode'''') to ''remove'' the
+* '''`C-x C-m -'''' ('''`icicle-remove-buffer-cands-for-derived-mode'''') ''Remove'' the
   buffer-name candidates with a major
   mode that is ''derived from'' a given ''mode''.  You are prompted for the mode.  You can repeat this key to narrow buffer candidates by mode.  (`C-m' is the same key as `RET'.)
 
 [:icicle-keep-only-buffer-cands-for-derived-mode]
-* '''`##C-x C-m +##'''' ('''`icicle-keep-only-buffer-cands-for-derived-mode'''') to ''keep only'' the
+* '''`##C-x C-m +##'''' ('''`icicle-keep-only-buffer-cands-for-derived-mode'''') ''Keep only'' the
   buffer-name candidates with a major
   mode that is ''derived from'' a given ''mode''.  You are prompted for the mode.   (`C-m' is the same key as `RET'.)
 
 
 [:icicle-remove-buffer-cands-for-mode]
-* '''`C-x M -'''' ('''`icicle-remove-buffer-cands-for-mode'''') -- same as `C-x C-m -', but excludes ancestor modes.
+* '''`C-x M -'''' ('''`icicle-remove-buffer-cands-for-mode'''') Same as `C-x C-m -', but excludes ancestor modes.
 
 [:icicle-keep-only-buffer-cands-for-mode]
-* '''`##C-x M +##'''' ('''`icicle-keep-only-buffer-cands-for-mode'''') -- same as `##C-x C-m +##', but excludes ancestor modes.
+* '''`##C-x M +##'''' ('''`icicle-keep-only-buffer-cands-for-mode'''') Same as `##C-x C-m +##', but excludes ancestor modes.
+
+[:icicle-remove-buffer-cands-for-modified]
+* '''`C-x * -'''' ('''`icicle-remove-buffer-cands-for-modified'''')  ''Remove''
+the candidate buffers that are ''modified''.
+
+[:icicle-keep-only-buffer-cands-for-modified]
+* '''`##C-x * +##'''' ('''`icicle-keep-only-buffer-cands-for-modified'''') ''Keep
+only'' the candidate buffers that are ''modified''.
 
 [:icicle-remove-buffer-cands-for-visible]
-* '''`C-x v -'''' ('''`icicle-remove-buffer-cands-for-visible'''') to ''remove''
+* '''`C-x v -'''' ('''`icicle-remove-buffer-cands-for-visible'''') ''Remove''
 the candidate buffers that are ''visible''.  This includes buffers
 that are in iconified frames.
 
 [:icicle-keep-only-buffer-cands-for-visible]
-* '''`##C-x v +##'''' ('''`icicle-keep-only-buffer-cands-for-visible'''') to ''keep
+* '''`##C-x v +##'''' ('''`icicle-keep-only-buffer-cands-for-visible'''') ''Keep
 only'' the candidate buffers that are ''visible''.  This includes
 buffers that are in iconified frames.
 
-
-
-
-* '''`S-delete'''' to ''kill'' the buffer named by the current completion
+* '''`S-delete'''' ''Kill'' the buffer named by the current completion
   candidate.
 
 When cached or recently used file names are included as candidates, option '''`<tt>[[Icicles - Customization and General Tips#icicle-file-skip-functions|icicle-file-skip-functions]]</tt>'''' is used to exclude
