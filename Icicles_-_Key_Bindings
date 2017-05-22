@@ -611,6 +611,10 @@ are
 defined by user option '''<tt>‘[[Icicles - Customization and General Tips#icicle-buffer-candidate-key-bindings|icicle-buffer-candidate-key-bindings]]’</tt>'''.  By
 default, they are the following:
 
+* '''`C-x F''''      -- Toggle whether to include cached files (i.e.,  toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-buffer-include-cached-files-nflag|icicle-buffer-include-cached-files-nflag]]’</tt>)
+
+* '''`C-x R''''         -- Toggle whether to include recent files (i.e., toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-buffer-include-recent-files-nflag|icicle-buffer-include-recent-files-nflag]]’</tt>)
+
 * '''`C-x m'''' -- `icicle-bookmark-non-file-other-window': Visit a [[BookmarkPlus#AdditionalTypes|buffer (non-file) bookmark]].  See also [[Icicles - More About Multi-Commands#AccessingBookmarks|Accessing Saved Locations (Bookmarks) on the Fly]].  (Available only if you use '''[[Bookmark+]]'''.)
 
 * '''`C-x C-m -'''' -- `icicle-remove-buffer-cands-for-derived-mode': ''Remove'' buffer-name candidates with a [[major mode]] that is ''derived'' from a given ''mode''.  Repeat to filter progressively.  (`C-m' is the same key as `RET'.)
@@ -621,15 +625,14 @@ default, they are the following:
 
 * '''##‘C-x M +’##''' -- `icicle-keep-only-buffer-cands-for-mode': Same as ##‘C-x C-m +’##, but excludes ancestor modes.
 
+* '''`C-x * -''''  -- `icicle-remove-buffer-cands-for-modified': ''Remove'' buffers that are ''modified''.
+
+* '''##‘C-x * +’##'''  -- `icicle-keep-only-buffer-cands-for-modified': ''Keep'' only buffers that are ''modified''.
 
 * '''`C-x v -''''  -- `icicle-remove-buffer-cands-for-visible': ''Remove'' buffers that are ''visible''.  Includes
 buffers in iconified frames.
 
 * '''##‘C-x v +’##'''  -- `icicle-keep-only-buffer-cands-for-visible': ''Keep'' only buffers that are ''visible''.  Includes buffers in iconified frames.
-
-* '''`C-x F''''      -- Toggle whether to include cached files (i.e.,  toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-buffer-include-cached-files-nflag|icicle-buffer-include-cached-files-nflag]]’</tt>)
-
-* '''`C-x R''''         -- Toggle whether to include recent files (i.e., toggle option <tt>‘[[Icicles - Customization and General Tips#icicle-buffer-include-recent-files-nflag|icicle-buffer-include-recent-files-nflag]]’</tt>)
 
 
 
