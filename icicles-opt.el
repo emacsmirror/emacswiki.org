@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Mar  3 14:54:13 2017 (-0800)
+;; Last-Updated: Mon May 22 14:30:08 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 6174
+;;     Update #: 6178
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -295,6 +295,8 @@
 ;; so there seems no way around this, short of coding without push and dolist.
 ;; This MUST be `eval-and-compile', even though in principle `eval-when-compile' should be enough.
 (eval-and-compile (when (< emacs-major-version 21) (require 'cl))) ;; dolist, push
+
+(eval-when-compile (require 'cl))       ; incf
 
 (require 'thingatpt)        ;; symbol-at-point, thing-at-point, thing-at-point-url-at-point
 
@@ -1017,6 +1019,8 @@ Remember that you can use multi-command `icicle-toggle-option' anytime
   `(
     (,(icicle-kbd "C-x m")         icicle-bookmark-non-file-other-window             ; `C-x m'
      (require 'bookmark+ nil t))
+    (,(icicle-kbd "C-x * -")       icicle-remove-buffer-cands-for-modified        t) ; `C-x * -'
+    (,(icicle-kbd "C-x * +")       icicle-keep-only-buffer-cands-for-modified     t) ; `C-x * +'
     (,(icicle-kbd "C-x M -")       icicle-remove-buffer-cands-for-mode            t) ; `C-x M -'
     (,(icicle-kbd "C-x M +")       icicle-keep-only-buffer-cands-for-mode         t) ; `C-x M +'
     (,(icicle-kbd "C-x C-m -")     icicle-remove-buffer-cands-for-derived-mode    t) ; `C-x C-m -'
