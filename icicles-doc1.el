@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Mar  3 14:46:57 2017 (-0800)
+;; Last-Updated: Mon May 22 14:57:25 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 28535
+;;     Update #: 28541
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -8252,39 +8252,45 @@
 ;;    `icicle-buffer-include-recent-files-nflag'.  A prefix argument
 ;;    sets the option value to the numeric prefix value.
 ;;
-;;  * `C-x m' (`icicle-bookmark-non-file-other-window') to visit a
+;;  * `C-x m' (`icicle-bookmark-non-file-other-window') Visit a
 ;;    bookmarked buffer.  This is available only if you use library
 ;;    `bookmark+.el'.  This too is a multi-command, so you can
 ;;    actually visit any number of buffer bookmarks with one use of
 ;;    `C-x m'.  When finished, you can continue with non-bookmark
 ;;    buffer-name completion.
 ;;
-;;  * `C-x C-m -' (`icicle-remove-buffer-cands-for-derived-mode') to
-;;    remove the buffer-name candidates with a major mode that is
+;;  * `C-x C-m -' (`icicle-remove-buffer-cands-for-derived-mode')
+;;    Remove the buffer-name candidates with a major mode that is
 ;;    derived from a given mode.  You are prompted for the mode.  You
 ;;    can repeat this key to narrow buffer candidates by mode.  (`C-m'
 ;;    is the same key as `RET'.)
 ;;
 ;;  * `C-x C-m +' (`icicle-keep-only-buffer-cands-for-derived-mode')
-;;    to keep only the buffer-name candidates with a major mode that
-;;    is derived from a given mode.  You are prompted for the mode.
+;;    Keep only the buffer-name candidates with a major mode that is
+;;    derived from a given mode.  You are prompted for the mode.
 ;;    (`C-m' is the same key as `RET'.)
 ;;
-;;  * `C-x M -' (`icicle-remove-buffer-cands-for-mode') - same as
+;;  * `C-x M -' (`icicle-remove-buffer-cands-for-mode') Same as
 ;;    `C-x C-m -', but excludes ancestor modes.
 ;;
-;;  * `C-x M +' (`icicle-keep-only-buffer-cands-for-mode') - same as
+;;  * `C-x M +' (`icicle-keep-only-buffer-cands-for-mode') Same as
 ;;    `C-x C-m +', but excludes ancestor modes.
 ;;
-;;  * `C-x v -' (`icicle-remove-buffer-cands-for-visible') to remove
-;;    the candidate buffers that are visible.  This includes buffers
-;;    that are in iconified frames.
+;;  * `C-x * -' (`icicle-remove-buffer-cands-for-modified') Remove the
+;;    buffer-name candidates for modified buffers.
 ;;
-;;  * `C-x v +' (`icicle-keep-only-buffer-cands-for-visible') to keep
+;;  * `C-x * +' (`icicle-keep-buffer-cands-for-modified') Keep only
+;;    the buffer-name candidates for modified buffers.
+;;
+;;  * `C-x v -' (`icicle-remove-buffer-cands-for-visible') Remove the
+;;    candidate buffers that are visible.  This includes buffers that
+;;    are in iconified frames.
+;;
+;;  * `C-x v +' (`icicle-keep-only-buffer-cands-for-visible') Keep
 ;;    only the candidate buffers that are visible.  This includes
 ;;    buffers that are in iconified frames.
 ;;
-;;  * `S-delete' to kill the buffer named by the current completion
+;;  * `S-delete' Kill the buffer named by the current completion
 ;;    candidate.
 ;;
 ;;  When cached or recently used file names are included as
