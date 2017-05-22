@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Mar  3 14:52:20 2017 (-0800)
+;; Last-Updated: Mon May 22 14:32:12 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 19780
+;;     Update #: 19784
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -130,6 +130,7 @@
 ;;    (+)`icicle-isearch-history-insert',
 ;;    `icicle-keep-only-buffer-cands-for-derived-mode',
 ;;    `icicle-keep-only-buffer-cands-for-mode',
+;;    `icicle-keep-buffer-cands-for-modified',
 ;;    `icicle-keep-only-buffer-cands-for-visible',
 ;;    `icicle-keep-only-past-inputs', `icicle-kill-line',
 ;;    `icicle-kill-paragraph', `icicle-kill-region',
@@ -187,6 +188,7 @@
 ;;    `icicle-regexp-quote-input', `icicle-remove-candidate',
 ;;    `icicle-remove-buffer-cands-for-derived-mode',
 ;;    `icicle-remove-buffer-cands-for-mode',
+;;    `icicle-remove-buffer-cands-for-modified',
 ;;    `icicle-remove-buffer-cands-for-visible',
 ;;    `icicle-remove-Completions-window', `icicle-resolve-file-name',
 ;;    `icicle-retrieve-last-input', `icicle-retrieve-next-input',
@@ -309,6 +311,7 @@
 ;;    `icicle-input-is-a-completion-p',
 ;;    `icicle-insert-candidate-action', `icicle-insert-dot',
 ;;    `icicle-insert-input', `icicle-insert-thing',
+;;    `icicle-keep/remove-buffer-cands-for-modified',
 ;;    `icicle-keep/remove-buffer-cands-for-visible',
 ;;    `icicle-looking-at-p', `icicle-markers-to-readable',
 ;;    `icicle-maybe-multi-completion-completing-p',
@@ -9377,7 +9380,28 @@ This includes buffers in iconified frames."
   (interactive)
   (icicle-keep/remove-buffer-cands-for-visible 'KEEP-P))
 
+(defun icicle-keep/remove-buffer-cands-for-modified (&optional keep-p)
+  "Keep/remove buffer-name candidates for modified buffers.
+Non-nil KEEP-P means keep only such candidates.  Else remove them."
+  (let ((new-pred  (if keep-p
+                       `(lambda (buf) (icicle-buffer-modified-p buf))
+                     `(lambda (buf) (not (icicle-buffer-modified-p buf))))))
+    (setq icicle-must-pass-after-match-predicate
+          (if icicle-must-pass-after-match-predicate
+              (lexical-let ((curr-pred  icicle-must-pass-after-match-predicate))
+                `(lambda (buf) (and (funcall ',curr-pred buf)  (funcall ',new-pred buf))))
+            new-pred)))
+  (icicle-complete-again-update))
 
+(defun icicle-remove-buffer-cands-for-modified ()
+  "Remove buffer-name candidates for modified buffers."
+  (interactive)
+  (icicle-keep/remove-buffer-cands-for-modified))
+
+(defun icicle-keep-only-buffer-cands-for-modified ()
+  "Keep only buffer-name candidates for modified buffers."
+  (interactive)
+  (icicle-keep/remove-buffer-cands-for-modified 'KEEP-P))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
