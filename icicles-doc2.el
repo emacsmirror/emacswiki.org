@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Mar  3 14:48:28 2017 (-0800)
+;; Last-Updated: Mon May 22 14:44:17 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 29959
+;;     Update #: 29962
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7384,6 +7384,14 @@
 ;;  defined by user option `icicle-buffer-candidate-key-bindings'.  By
 ;;  default, they are the following:
 ;;
+;;    `C-x F'         - Toggle whether to include cached files (i.e.,
+;;                      toggle option
+;;                      `icicle-buffer-include-cached-files-nflag')
+;;
+;;    `C-x R'         - Toggle whether to include recent files (i.e.,
+;;                      toggle option
+;;                      `icicle-buffer-include-recent-files-nflag')
+;;
 ;;    `C-x m'         - `icicle-bookmark-non-file-other-window':
 ;;                      Visit a buffer (non-file) bookmark.  See also
 ;;  (@file :file-name "icicles-doc1.el" :to "Accessing Saved Locations (Bookmarks) on the Fly").
@@ -7405,6 +7413,12 @@
 ;;    `C-x M +'       - `icicle-keep-only-buffer-cands-for-mode': Same
 ;;                      as `C-x C-m +', but excludes ancestor modes.
 ;;
+;;    `C-x * -'       - `icicle-remove-buffer-cands-for-modified':
+;;                      Remove modified buffers.
+;;
+;;    `C-x * +'       - `icicle-keep-buffer-cands-for-modified'): Keep
+;;                      only modified buffers.
+;;
 ;;    `C-x v -'       - `icicle-remove-buffer-cands-for-visible':
 ;;                      Remove buffers that are visible.  Includes
 ;;                      buffers in iconified frames.
@@ -7412,14 +7426,6 @@
 ;;    `C-x v +'       - `icicle-keep-only-buffer-cands-for-visible':
 ;;                      Keep only buffers that are visible.  Includes
 ;;                      buffers in iconified frames.
-;;
-;;    `C-x F'         - Toggle whether to include cached files (i.e.,
-;;                      toggle option
-;;                      `icicle-buffer-include-cached-files-nflag')
-;;
-;;    `C-x R'         - Toggle whether to include recent files (i.e.,
-;;                      toggle option
-;;                      `icicle-buffer-include-recent-files-nflag')
 ;;
 ;;  The following minibuffer binding during completion refreshes the
 ;;  `*Completions*' display.
