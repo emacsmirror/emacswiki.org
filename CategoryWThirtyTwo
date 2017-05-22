@@ -76,6 +76,7 @@ http://www.gnu.org/software/emacs/windows/faq2.html#where-precompiled
 * SshWithNTEmacs - Use cygwin SSH within Emacs
 * WThirtyTwoSendSysCommand -- list of commands to use with `w32-send-sys-command'
 * CatagoryIntellimouse -- Information about using an !IntelliMouse with emacs
+* [[DiredPlus#w32-browser|`^' in Dired+: Windows drives in Dired Dired]]
 * WThirtyTwoHardDrivesMenu -- provides menu with all currently available local drives (useful in dired)
 * WThirtyTwoServerMode -- How to use Emacs server mode on Windows.
 
