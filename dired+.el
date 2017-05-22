@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.04.09
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr  9 18:23:14 2017 (-0700)
+;; Last-Updated: Mon May 22 09:16:57 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 10133
+;;     Update #: 10141
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -529,9 +529,10 @@
 ;;    `diredp-remove-if', `diredp-remove-if-not',
 ;;    `diredp-root-directory-p', `diredp-set-header-line-breadcrumbs'
 ;;    (Emacs 22+), `diredp-set-tag-value', `diredp-set-union',
-;;    `diredp-string-match-p', `diredp-tag',
-;;    `diredp-this-file-marked-p', `diredp-this-file-unmarked-p',
-;;    `diredp-this-subdir', `diredp-untag', `diredp-y-or-n-files-p'.
+;;    `direp--set-up-font-locking', `diredp-string-match-p',
+;;    `diredp-tag', `diredp-this-file-marked-p',
+;;    `diredp-this-file-unmarked-p', `diredp-this-subdir',
+;;    `diredp-untag', `diredp-y-or-n-files-p'.
 ;;
 ;;  Variables defined here:
 ;;
@@ -658,6 +659,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/05/22 dadams
+;;     Added: direp--set-up-font-locking.
+;;     Use direp--set-up-font-locking instead of lambda in dired-mode-hook.
 ;; 2017/04/09 dadams
 ;;     Version 2017.04.09.
 ;;     Added: diredp-multiple-move-copy-link-menu, diredp-multiple-rename-menu, diredp-multiple-dired-menu,
@@ -3266,19 +3270,21 @@ In particular, inode number, number of hard links, and file size."
    ) "2nd level of Dired highlighting.  See `font-lock-maximum-decoration'.")
 
 
+(defun direp--set-up-font-locking ()
+  "Add this to `dired-mode-hook' to provide for second-level fontifying."
+  (set (make-local-variable 'font-lock-defaults)
+       ;; Two levels.  Use 3-element list, since it is standard to have one more
+       ;; than the number of levels.  This is necessary for it to work with
+       ;; `font(-lock)-menus.el'.
+       '((dired-font-lock-keywords
+          dired-font-lock-keywords
+          diredp-font-lock-keywords-1)
+         t nil nil beginning-of-line))
+  ;; Refresh `font-lock-keywords' from `font-lock-defaults'
+  (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults)))
+
 ;;; Provide for the second level of fontifying.
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (set (make-local-variable 'font-lock-defaults)
-                 ;; Two levels.  Use 3-element list, since it is standard to have one more
-                 ;; than the number of levels.  This is necessary for it to work with
-                 ;; `font(-lock)-menus.el'.
-                 '((dired-font-lock-keywords
-                    dired-font-lock-keywords
-                    diredp-font-lock-keywords-1)
-                   t nil nil beginning-of-line))
-            ;; Refresh `font-lock-keywords' from `font-lock-defaults'
-            (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))))
+(add-hook 'dired-mode-hook 'direp--set-up-font-locking)
 
 ;; Ensure that Dired buffers are refontified when you use `g' or otherwise read in the file list.
 (defun diredp-refontify-buffer ()
