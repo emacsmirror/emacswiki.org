@@ -34,5 +34,22 @@ look at ls-lisp-human-size in ls-lisp.el.
 The code is ugly and depressing slow, i would be happy if someone find
 a better solution
     
-
+The following seems to work be fast and reliable. I also believe it to be more adaptable, but the proof is in the pudding I suppose. Improvements welcome.
                 
+    (defun file-size (filename)
+      "Return size of file FILENAME in bytes."
+      (file-attribute-size
+       (file-attributes filename)))
+    
+    (defun file-size-total (filename-list)
+      "Return the total size of FILENAME-LIST."
+      (apply '+
+    	 (mapcar 'file-size
+    		 filename-list)))
+    
+    (defun dired-size-of-marked-files ()
+      "Return the total size of marked files."
+      (interactive)
+      (message "%d"
+    	   (file-size-total (dired-get-marked-files))))
+    
