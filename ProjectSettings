@@ -32,10 +32,9 @@ KimStorm suggested to store the stuff in a function.
 Note how the function executes everytime C mode runs.
 
 == Helper code based on existing files and subdirectories: project-root.el ==
-2014-11-12: project-root.el appears to have disappeared off the net, these locations don't work anymore.
 
-[http://www.shellarchive.co.uk/content/emacs.html project-root.el]
-(Updated version with new features: [http://solovyov.net/project-root/ project-root.el])
+Updated version with new features (link works but no .el file): [http://solovyov.net/project-root/ project-root.el]
+(Updated version on BitBucket: [https://bitbucket.org/piranha/project-root/src/fcd9df2eadcabd24df5d4af5e21ef37474b94c73/project-root.el?fileviewer=file-view-default project-root.el])
 
 Project-root is a very simple module that allows you to define
 projects like this:
