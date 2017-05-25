@@ -117,6 +117,16 @@ I think the original function contains an error. Should it not end something lik
             pid))))))
 }}}
 
+[new:sylvainbougerel:2017-05-25 08:55 UTC]
+Since none of the above are fully portable (I use a combination of MacOS, Linux and BSD), I choose to reduce my implementation to the following. This has a caveat: since most OS recycle process IDs after a while, it may end up giving an incorrect result. But most times it is sufficient, however, and it is portable:
+{{{
+(require 'desktop)
+(advice-add #'desktop-owner :around
+              '(lambda (original &rest args)
+                 (let ((owner (apply original args)))
+                   (if owner
+                       (car (member owner (list-system-processes)))))))
+}}}
 
 == Minimal Setup ==
 
