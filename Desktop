@@ -117,15 +117,22 @@ I think the original function contains an error. Should it not end something lik
             pid))))))
 }}}
 
-[new:sylvainbougerel:2017-05-25 08:55 UTC]
-Since none of the above are fully portable (I use a combination of MacOS, Linux and BSD), I choose to reduce my implementation to the following. This has a caveat: since most OS recycle process IDs after a while, it may end up giving an incorrect result. But most times it is sufficient, however, and it is portable:
+[new:SylvainBougerel:2017-05-25 08:55 UTC]
+Since none of the above are really fully portable (I use a combination of MacOS, Linux and Windows), I choose to combine them into the following implementation which seem to work across all systems even if they don't support 'process-attributes':
 {{{
-(require 'desktop)
-(advice-add #'desktop-owner :around
-              '(lambda (original &rest args)
-                 (let ((owner (apply original args)))
-                   (if owner
-                       (car (member owner (list-system-processes)))))))
+  (defun sylvain/desktop-owner-advice (original &rest args)
+    (let ((owner (apply original args)))
+      (if (and owner (/= owner (emacs-pid)))
+          (and (car (member owner (list-system-processes)))
+               (let (cmd (attrlist (process-attributes owner)))
+                 (if (not attrlist) owner
+                   (dolist (attr attrlist)
+                     (and (string= "comm" (car attr))
+                          (setq cmd (car attr))))
+                   (and cmd (string-match-p "[Ee]macs" cmd) owner))))
+        owner)))
+  ;; Ensure that dead system processes don't own it.
+  (advice-add #'desktop-owner :around #'sylvain/desktop-owner-advice)
 }}}
 
 == Minimal Setup ==
