@@ -19,8 +19,7 @@ Or [NxhtmlMode nXhtml]/MuMaMo which takes a different approach on this. Comments
 = Toolkits =
 UI independent layer would be better.  Gtk2 support is available since Emacs-22.
 
-– It would be nice to have an Emacs←→Tcl/Tk-Interfacing API, or even a split code between „Emacs backend” (which would be the current „emacs server daemon” and able to let any GUI type connect) and an „Emacs UI frontend”.
-
+– It would be nice to have an Emacs←→Tcl/Tk-Interfacing API, or even a split code between „Emacs backend” (which would be the current „emacs server daemon” and able to let any GUI type connect) and an „Emacs UI frontend”. --mangledmind
 
 = Fonts =
 * Emacs suports anti-aliased fonts since Emacs-23.
@@ -61,6 +60,8 @@ To make this work pleasantly for most user, the menu and toolbar of the IDE (or 
 If what's wanted is just to have emacs into another software, urxvt does this (see its -embed option). -- p4bl0
 [new]
 Emacs-23 supports the XEmbed specification.  Here is the NEWS entry: "You can embed Emacs in another application on X11.  The new command line option --parent-id is used to pass the parent window id to Emacs.  See http://standards.freedesktop.org/xembed-spec/xembed-spec-latest.html for details about XEmbed." --JoachimNilsson
+
+Sorry, but this is absolutely NOT true.  Emacs does *not* support XEmbed, merely a very limited subset of it, mostly for embedding GTK3 widgets in emacs frames (ie., Emacs supports GTK3 embedding, not X embedding, which is definitely NOT the same).  I cannot embed Emacs 23 thru 25.2 in any window, like I can do with many other programs, like xterm or gv, no matter whether I explicitly set the according switches at configure and compile time or not. --mangledmind
 
 = Integrated :) =
 * Build system, properly integrated into Emacs, with notion of "project" that's buildable and runnable debuggable and what have you, (maybe EDE is that, but I didn't have time to try it, especially given non-existant documentation)
