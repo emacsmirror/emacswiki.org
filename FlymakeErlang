@@ -5,7 +5,7 @@ I was told at SO that the recommended configuration in the "Emacs configuration"
     (require 'erlang-flymake)
 </pre>
 
-I'm using Aquamacs 3.3 and flymake for writing Erlang programs, and my preferences file:
+I'm using Aquamacs 3.3 and flymake for writing Erlang programs.  My preferences file:
 <pre>
     ~/Library/Preferences/Aquamacs\ Emacs/Preferences.el
 </pre>
@@ -52,6 +52,7 @@ You also need to get the right version of tools in the path:
 </pre>
 Check your /path/to/erlang/lib/ directory for the version of tools-X.X.X in there and use that version.
 
+Edit: Erlang-mode is terrible and does not indent "end" correctly, which makes it almost useless.  Aquamacs with Erlang-mode is not a practical combination for editing Erlang programs.  Look elsewhere.
 
 --------------
 
