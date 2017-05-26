@@ -31,6 +31,8 @@ the buffer.  In the case of Gtk+, there is GtkTextView which (besides from rende
 also renders Gtk+ Widgets themselves.  The Emacs buffer capabilities could go in this way.  
 Make emacs buffer to embed Gtk+ (or whatever the toolkit) widgets.
 
+Use Tcl/tk, because you can easily script them and don't have to use weird C++/XML engines as intermediary to be able to use them.  --mangledmind
+
 
 = Simple Configuration UI =
 M-x .... Oh My! Emacs is highly configurable and there are a lot to tweak.  But 
