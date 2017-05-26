@@ -127,10 +127,15 @@ then
   unsetopt zle
   unsetopt prompt_cr
   unsetopt prompt_subst
-  unfunction precmd
-  unfunction preexec
+  if whence -w precmd >/dev/null; then
+      unfunction precmd
+  fi
+  if whence -w preexec >/dev/null; then
+      unfunction preexec
+  fi
   PS1='$ '
 fi
+
 }}}
 
 [new:EzeBirman:2013-01-12 07:40 UTC]
