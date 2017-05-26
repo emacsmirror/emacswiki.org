@@ -19,6 +19,9 @@ Or [NxhtmlMode nXhtml]/MuMaMo which takes a different approach on this. Comments
 = Toolkits =
 UI independent layer would be better.  Gtk2 support is available since Emacs-22.
 
+– It would be nice to have an Emacs←→Tcl/Tk-Interfacing API, or even a split code between „Emacs backend” (which would be the current „emacs server daemon” and able to let any GUI type connect) and an „Emacs UI frontend”.
+
+
 = Fonts =
 * Emacs suports anti-aliased fonts since Emacs-23.
 * Font selection dialog supported since Emacs-23.
