@@ -65,6 +65,8 @@ Emacs-23 supports the XEmbed specification.  Here is the NEWS entry: "You can em
 
 Sorry, but this is absolutely NOT true.  Emacs does *not* support XEmbed, merely a very limited subset of it, mostly for embedding GTK3 widgets in emacs frames (ie., Emacs supports GTK3 embedding, not X embedding, which is definitely NOT the same).  I cannot embed Emacs 23 thru 25.2 in any window, like I can do with many other programs, like xterm or gv, no matter whether I explicitly set the according switches at configure and compile time or not. --mangledmind
 
+* update (mangledmind): just found somethind weird… if you use the decimal pwinid and a GTK version of Emacs, you can embed.  If you use the hex pwinid from a program's output via an intermediary file or a pipe, emacs crashes or exits with an X error.  If you use a non-GTK X version, it does not work at all (emacs 25.2-lucid hangs in an infinite loop, doesn't respond except to a SIGKILL and loads 35% onto a CPU).  *this* *is* *not* *X* *embedding*.  It is GTK specific embedding of a GTK pane widget. ––mangledmind
+
 = Integrated :) =
 * Build system, properly integrated into Emacs, with notion of "project" that's buildable and runnable debuggable and what have you, (maybe EDE is that, but I didn't have time to try it, especially given non-existant documentation)
 * Refactoring browser! Bring it on!
