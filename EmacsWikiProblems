@@ -8,6 +8,10 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== Info Manual links give 500 Internal Server Error ==
+
+E.g. from EmacsManual https://www.emacswiki.org/info-ref?find=show-paren-mode => 500
+
 == Can't edit EmacsW32 ==
 
 I get a page saying just ##Cannot write /home/nicferrier/emacswiki.org/spammer.log: No such file or directory## after hitting the "Preview" button.
