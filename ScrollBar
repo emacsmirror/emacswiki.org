@@ -12,17 +12,8 @@ or this, for [[XEmacs]]:
 }}}
 ----
 
-`M-x scroll-bar-mode` toggles scroll bars in all [[Frame]]s. This is usually not what I want.
-To turn on scrollbars on a per-frame basis instead, you can put this handy function in your InitFile:
-
-    (defun scroll-bars-in-this-frame (&optional off)
-      (interactive)
-      (modify-frame-parameters (selected-frame)
- 			   `((vertical-scroll-bars . ,(if off
-							 nil
-						       'left)))))
-
-Or use `M-x toggle-scroll-bar'.
+`M-x scroll-bar-mode' toggles scroll bars in all [[Frame]]s.  To toggle on a per-frame basis instead, use `M-x toggle-scroll-bar'.
+See [https://www.gnu.org/software/emacs/manual/html_node/elisp/Scroll-Bars.html (elisp) Scroll Bars] for more details, including controlling scroll bars per-window and per-buffer.
 
 ----
 
@@ -42,7 +33,7 @@ and for [[XEmacs]]:
 To use a colored scroll bar (good to have good constrast) you can ./configure gnu emacs with "--with-x-toolkit=motif"  See `system-configuration-options' variable to see how is your running emacs configured.
 
 Apparently with only that toolkit you can 
-(set-face-background'scroll-bar "red")
+<code>(set-face-background 'scroll-bar "red")</code>
 
 Alternatively, users of the GTK toolkit can style scrollbars by putting something like this in ~/.gtkrc-2.0:
 <pre>
@@ -97,16 +88,6 @@ The Windows/NT ./configure script cannot deal with <code>--without-toolkit-scrol
 [new]
 try <code>./configure --without-toolkit-scroll-bars --with-x-toolkit=yes</code>
 this way I get native scroll bars with whatever x-toolkit I want on my debian system. Maybe it works like that on windows NT too.
-
-----
-
-
-Is it possible to (de)activate the scrollbar only in one buffer? -- Michael
-
-[new:DrewAdams:2010-07-03 21:40 UTC]
-Nope.  You can request that this feature be added, however, via `M-x send-emacs-bug-report'. 
-
-Scroll bars are used or not used for all windows of a frame.  The most you can do is turn scroll bars on/off for a given frame, using `toggle-scroll-bar'. -- DrewAdams
 
 ----
 See also MenuBar, ToolBar, ScrollAllMode
