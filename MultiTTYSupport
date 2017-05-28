@@ -1,9 +1,23 @@
-*Please note that the mtty branch has been merged into Emacs CVS.*
-
-For more information on getting and building it, see EmacsFromCVS.
-
-Use the multiple tty if you need one process that displays on tty and X
+Use the multiple tty feature if you need one process that displays on tty and X
 at the same time.
+
+From ##etc/NEWS.23##:
+<pre>
+* Changes in Emacs 23.1
+
+** Improved X Window System support
+
+*** Emacs now supports using both X displays and ttys in one session.
+With an Emacs server active (M-x server-start), `emacsclient -t'
+creates a tty frame connected to the running emacs server.  You can
+use any number of different ttys.  `emacsclient -c' creates a new X11
+frame on the current $DISPLAY (or a tty frame if $DISPLAY is not set).
+There may be problems if a display exits unexpectedly and Emacs is compiled
+with Gtk+, see etc/PROBLEMS.
+
+You can test for the presence of this feature in your Lisp code by
+testing for the `multi-tty' feature.
+</pre>
 
 == Usage ==
 
@@ -26,86 +40,8 @@ Using Control-Z as the command key is great.  By convention, it's a keystroke th
 
 This latter means that you don't have to worry about the exact number of times you hit Control-Z.  If you might have hit too many and you don't know what the context is, just hit RET (which is a null-op for the shell, and reprints the last message for Screen).
 
-== Build Instructions ==
-
-*This section will be deleted eventually. It only applies to Emacs 21.*
-
-If you use KarolyLorentey's multi-tty branch (available as an arch
-branch and as conventional patches), you can create frames on multiple
-tty devices from the same Emacs session using EmacsClient. What's
-better, you can have an Emacs session that has both X and tty mode
-frames!
-
-The homepage for this branch is
-* http://lorentey.hu/project/emacs.html.en
-
-To get the branch of emacs that supports multiple terminals, get a copy of
-tla installed from
-* http://www.gnu.org/software/gnu-arch
-
-If you have tla 1.3.5 or greater, then run
-
-    tla grab http://lorentey.hu/grab/multi-tty
-
-Otherwise, run
-
-    tla register-archive -f http://aszt.inf.elte.hu/~lorentey/mirror/arch/2004
-    tla get lorentey@elte.hu--2004/emacs--multi-tty--0 multi-tty
-
-To build it, just do a normal Emacs build:
-
-    cd multi-tty
-    ./configure ...your favorite flags here...
-    make bootstrap
-    make install
-
-(To avoid crashes, it is best to compile Emacs without GTK support.
-Current versions of GTK do not truly support multiple displays.
-Lucid works fine.)
-
-Debian Packages are available for apt source.list
-
-   # Multi-tty Emacs
-   deb http://aszt.inf.elte.hu/~lorentey/mirror/apt sid main
-   deb-src http://aszt.inf.elte.hu/~lorentey/mirror/apt sid main
-
-Note that the Debian packages are now signed against Károly's GnuPg key. To add
-his key in the Debian trusted apt keys, use the following command:
-
-   curl http://lorentey.hu/rolam/gpg | apt-key add -
-
-Please see the homepage for further instructions.
-
-There is a mailing list on http://lists.fnord.hu/mailman/listinfo/multi-tty for general discussion on the branch.
-An archive of prior postings to the list is on http://lists.fnord.hu/pipermail/multi-tty
-
-On 2007-05-13 the multi-tty work was merged to the Savannah GNU Emacs CVS, as branch "multi-tty".
-
-As of 2007-09-04, the multi-tty branch was part of CVS Trunk.[http://lists.gnu.org/archive/html/emacs-devel/2007-09/msg00266.html]
-
-[new]
-This will take up several hundred megabytes on your hard drive (good old Arch!) so it might be worth looking at shrink-library in tlacontrib, which will delete the old revisions. -- TimAnderson
-
-: Be fair here, a full Emacs build will take up 300 !MiB all by itself anyway.  Arch's contributions are in most cases negligible.  If you are critically low on disk space, don't create a local mirror, and don't enable revision libraries. -- KarolyLorentey
-
-[new]
-2008-07-03  I use Emacs 23.0.60.1 (from the orebokech snapshot).  I keep it running on my server for Gnus; when I'm away, I ssh in and then use emacsclient.emacs-snapshot -c to give me an Emacs frame under X.  This is perfectly functional, but the font looks large and ugly, completely different from when I'm running the same program under X directly on the server.
-
-Solution:
-
-  $ echo "Emacs.font:-*-terminus-*-r-*-*-14-*-*-*-*-*-iso8859-*" >> ~/.Xresources
-  $ xrdb -merge ~/.Xresources
-
-Is there a way to solve this without resorting to Xresources?  Why do the graphical frames initiated by emacsclient disobey the custom-set-faces definitions in the first place?
-
-Somebody explained that the X specific custom-set-faces stuff gets effectively discarded by emacs when it loads the initfile, because running --daemon doesn't fire up the graphical systems.  To do the equivalent of setting Xresources, you can push '(font . "FooFont-9") to default-frame-alist, or, to get the full capabilities of the face properties, you can use the after-make-frame-functions hook to check for window system and if it's present, use set-face-attribute to get what you would've gotten via custom-set-faces.  For example:
-
-  (add-hook 'after-make-frame-functions
-    (lambda (frame)
-      (if window-system (set-face-attribute 'default nil :height 70 :width 'normal :family "DejaVu Sans Mono"))))
-
-
 ----
 CategoryDisplay
 CategoryPatches
+
 
