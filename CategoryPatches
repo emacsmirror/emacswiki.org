@@ -2,7 +2,7 @@ Click on the header to list the pages related to the patching of Emacs.
 Such patches are necessary when extensions are added on the C level.
 
 * ApplyingPatches -- Beginner information on working with patches.
-* SecurEmacs -- extend Emacs with GNU TLS
+* SecurEmacs -- extend Emacs 21 with GNU TLS
 * DynamicallyExtendingEmacs -- let Emacs load shared libraries (so/dll)
 * PixelDrawing -- draw pixels from Lisp
 * HackerGuide -- introduction to Emacs core
@@ -11,4 +11,4 @@ Such patches are necessary when extensions are added on the C level.
 ** PostGreSQL
 * MultiTTYSupport -- support for multiple display devices in GnuEmacs
 
-Also see EmacsFromArch for some Emacs branches available using ArchVersionControl.
+Also see EmacsFromGit for some Emacs branches available using [[Git]].
