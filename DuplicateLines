@@ -2,7 +2,7 @@ The following gives multiple approaches in EmacsLisp code for managing duplicate
 
 == delete-duplicate-lines ==
 
-See this blog post by Bozhidar Batsov on how to use `delete-duplicate-lines`:
+See this blog post by Bozhidar Batsov on how to use `delete-duplicate-lines':
 
 http://emacsredux.com/blog/2014/03/01/a-peek-at-emacs-24-dot-4-delete-duplicate-lines/
 
