@@ -4,13 +4,9 @@ TRAMP [:TRAMP] (Transparent Remote Access, Multiple Protocols) is a package for 
 Tramp was formerly called RCP or rcp.el.
 
 It allows you transparent access to files on remote access.  "Transparent" means that usually the user doesn't have to worry about anything.  All that changes is the filename convention to indicate that the file resides on a remote system.
+One of the neat things about using Tramp via a remote shell, is that Emacs will then automatically invoke other remote shell commands directly on that server, e.g. when viewing a remote file, try <code>M-x shell</code>, <code>M-x rgrep</code>, etc.
 
 You can speed up Tramp by using ssh's "ControlMaster" feature — see http://linux.com/feature/54498 . (Note that this is used automatically in recent versions of Tramp.)
-
-A good alternative to Tramp that doesn't do anything at the Emacs level is sshfs. Sshfs allows mounting on the fly a remote filesystem via ssh on a local mount point and to copy from it (see https://wiki.archlinux.org/index.php/Sshfs). It could be as simple (under emacs): 
- 'sshfs host: localmountpoint'
-or, if username, id and gid are different as complex as 
- 'sshfs usernameathost@host: localmountpoint -o idmapfile,uidfile=uid,gidfile=gid'.
 
 Tramp Documentation:
 
@@ -42,6 +38,13 @@ Windows with Cygwin tools installed, assuming no password is required:
 == Windows ==
 
 Windows issues are discussed on a separate page: [[Tramp on Windows]].
+
+== Alternatives ==
+
+A good alternative to Tramp that doesn't do anything at the Emacs level is sshfs. Sshfs allows mounting on the fly a remote filesystem via ssh on a local mount point and to copy from it (see https://wiki.archlinux.org/index.php/Sshfs). It could be as simple (under emacs): 
+ 'sshfs host: localmountpoint'
+or, if username, id and gid are different as complex as 
+ 'sshfs usernameathost@host: localmountpoint -o idmapfile,uidfile=uid,gidfile=gid'.
 
 == Troubleshooting ==
 
@@ -745,54 +748,6 @@ in your ##~/.ssh/config## file.
 Because tramp uses plink to login with all putty variants, and ssh to login with all openssh variants, its not possible to use psftp or sftp connection using Tramp.  There's not a way to override the tramp-login-program aspect of the alist tramp-methods.  Unfortunately, nothing's changed since 2004.[http://lists.gnu.org/archive/html/tramp-devel/2004-03/msg00046.html][http://lists.gnu.org/archive/html/tramp-devel/2004-03/msg00047.html]  Tramp can only do SFTP over SSH, and AngeFtp doesn't currently support SFTP, and with no plans to handle it, since Tramp supports SFTP over SSH.
 
 This is problematic with hosting accounts where access is only via sftp... other protocols (such as ssh) are disabled.
-
-=== Using tramp with archive-mode under Windows/Cygwin ===
-
-Does anyone have a working configuration that combines tramp and archive-mode?
-I can open the remote archive but when I try to open a file within the archive I get:
-
- byte-code: Opening output file: no such file or directory, c:/archive.tmp4324x-f/arc-mode.4324xFU
-
-This is using the following config:
-
- ; tramp
- ;(setq archive-tmpdir "/temp")
- (setq temporary-file-directory "/")
- ;(prefer-coding-system 'utf-8-unix)
- ;(add-untranslated-filesystem "/sshx:")
- (add-to-list 'load-path "~/src/emacs/tramp-2.1.14/lisp/")
- ;(setq vc-handled-backends nil)
- (require 'tramp)
- (setq tramp-default-method "scpwrapper")
- ; for tramp 2.2.14:
- (add-to-list 'tramp-methods
-	      '("scpwrapper"
-		(tramp-login-program "ssh")
-		(tramp-login-args
-		 (("%h")
-		  ("-l" "%u")
-		  ("-p" "%p")
-		  ("-q")
-		  ("-e" "none" "-t" "-t" "/bin/sh")))
-		(tramp-remote-sh "/bin/sh")
-		(tramp-copy-program "scpwrapper")
-		(tramp-copy-args
-		 (("-p" "%k")))
-		(tramp-copy-keep-date t)
-		(tramp-password-end-of-line nil)
-		(tramp-gw-args
-		 (("-o" "GlobalKnownHostsFile=/dev/null")
-		  ("-o" "UserKnownHostsFile=/dev/null")
-		  ("-o" "StrictHostKeyChecking=no")))
-		(tramp-default-port 22)))
-
-scpwrapper is just a script that converts arguments of the form ##"c:/"## to ##"/cygdrive/c"##.
-
-Fixed to make this question Windows/Cygwin-specific - in GNU Emacs 24.2, I can view /ssh:...:....zip (and also .tar.gz, which isn't archive-mode) files, and view files inside them, out-of-the-box with no configuration, and I think this has been the case for some time. -- DavidOShea
-
-----
-
-One of the neat things about using TRAMP via a remote shell, is that emacs will then automatically invoke other remote shell commands directly on that server. e.g. When viewing a remote file, try <code>M-x shell</code>, <code>M-x rgrep</code>, etc...
 
 === Using tramp to quickly edit files as root ===
 
