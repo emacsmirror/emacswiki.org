@@ -94,6 +94,10 @@ Somehow I always fail to see the point.  Every programmer who doesn't already kn
 
 --[http://www.emacswiki.org/cgi-bin/wiki/Rick_Bielawski RGB]
 
+[new]
+I can only agree with Mr. Bielawski.  1) ELisp is a LISP, hence mostly standard, like Scheme/Guile or Common Lisp dialects are mostly standard and in some parts proprietary.  2) You suggested using Guile and CLisp –– meaning you know how to program in Lisp, or did you simply grab any language name?  3) Any change in the scripting language as a whole would mean a complete re-write of Emacs in that language (except for the core interpreter and the UI most parts are written in ELisp).  And there are two issues with that: first, it is a MAJOR task for which a massive group of programmers is needed to get it done in a few years (even if you can convince them to do it).  Second, why change the language when ELisp is currently partly re-worked to adopt/implement more features from CL? (E)Lisp is still the best choice there is, no other existing language is as flexible.
+--mangledmind
+
 = Improved debugger integration =
 Right now, gud-mode is a bit rough around the edges and I never found it that robust. In particular the gdb interaction window is flaky and I found it easy to screw up. Why do I even need to interact with the gdb command line directly? It'd be nice if this was fully graphical and emacsified.
 [new]
