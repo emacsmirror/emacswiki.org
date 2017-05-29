@@ -175,6 +175,11 @@ of writing).
 
 ** I get the impression it cannot be done currently. Unlike the mode-line, it looks like all mouse buttons have the same effect wrt ToolBar buttons. I took a look in `bindings.el' and in various C source files (dispextern.c, xdisp.c, w32term.c, macterm.c), but I don't see a way to fiddle with this. The C function that handles mouse clicks in the ToolBar seems to be `<code>[w32]handle_tool_bar_click</code>, and it looks like the only thing tested is the <code>down_modifier</code> for any mouse button -- all buttons are treated alike.
 On the other hand, the click event seems to be stored as a <code>TOOL_BAR_EVENT</code> along with its [[modifier key]]s (Control, Meta etc.), so maybe I'm reading the code wrong and there is a way to get at this info. I tried binding [tool-bar mouse-2] etc., but to no avail. The ToolBar seems to be treated half-way between how the MenuBar and the ModeLine are treated: the menu-bar doesn't even recognize keyboard modifiers; the mode-line recognizes mouse buttons and keyboard modifiers. -- DrewAdams
+
+[new]
+* That ought to be possible; usually (speaking of the X11 code and C), there is an assignment somewhere stating with which mouse „ears” the buttonPress action is associated (if it is omitted, the default implies „all mouse buttons”, like with the modifiers –– if omitted, means „none and any modifier”).  So it should be quite easy to insert code which differentiates between the mouse ears.  Concerning the ELisp side, the handler scripts ought to be updated/modified accordingly.
+––mangledmind
+
 ----
 * TextMate has a nice feature where you can bind the same key to different commands in different contexts (they call them "[http://macromates.com/textmate/manual/scope_selectors scope selectors]").  For example, M-d could delete a whole sexp when on a paren, a whole word when in a non-comment word, and a whole comment when in a comment.  This sort of DWIM could free up a lot of simple key combinations.  Widgets and a few other packages already do somethign similar, but it would be nice to have an infrastructure tied in to text properties and/or font-lock to simplify users' creating such bindings.
 
