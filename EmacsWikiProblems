@@ -12,6 +12,10 @@ Note that this page is not about EmacsWikiMode.
 
 E.g. from EmacsManual https://www.emacswiki.org/info-ref?find=show-paren-mode => 500
 
+[new]
+Thanks for the heads up. This broke during the move to the new server. It should work now, but when I update the database, I get an error I don't quite understand.
+Visit [https://www.emacswiki.org/info-ref info-ref] and click on the _update_ link and you'll see "HTML parser error : Comment not terminated" for the [http://www.gnu.org/software/emacs/manual/html_node/emacs/index.html Index of the Emacs Manual], but when I look at the sources, they look OK. Weird. -- Alex Schroeder
+
 == Can't edit EmacsW32 ==
 
 I get a page saying just ##Cannot write /home/nicferrier/emacswiki.org/spammer.log: No such file or directory## after hitting the "Preview" button.
