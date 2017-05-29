@@ -1,0 +1,182 @@
+This discussion was copied here from [[TrampMode|Tramp Mode]].
+
+[new]
+To get this to work, here are some of the things I noticed,
+* You have to create your keys and stuff and after putting them into memory, run NTEmacs from the cygwin shell.
+* You have to use sshx as the tramp-default-method otherwise it complains about a terminal or something.
+
+[new]
+With putty, this finally seems to work.
+
+* First, use the puttygen to generate your keys (Apparently, the authentication agent called paegant needs them with some kind of comments and stuff).
+* Start paegant which is the authentication agent with the putty suite and load the keys.
+* Then connect using the pscp method. This seems to work.
+
+-- NoufalIbrahim
+
+[new:WeyHan:Thu May 22 18:20:19 UTC 2008]
+vbscript way to launch emacs from a shortcut (don't need to be in cygwin prompt or putty) and still work:
+
+# Make sure that the login script in your cygwin home (.bashrc or .bash_profile) sets up the ssh-agent env. Example: I have a batch script that I use to load keychain and the keys upon login and in my .bashrc, I source the file ~/.keychain/<host>-sh to setup the env.
+
+# Create a emacs.vbs with your **FAVORITE** editor. Paste the following line in the file (change the files location as necessary):
+##WScript.CreateObject("WScript.Shell").Run "c:\cygwin\bin\bash -l -c /usr/local/emacs/22.2/bin/emacs", 0, false##
+
+# Place the file on your desktop, start menu, quick menu, or whatever place convenient.
+
+# Click or double click (depending on where you place it) on emacs.vbs to launch emacs.
+
+# tramp away!
+
+One fair warning is that it may not work with every env. I have an office notebook that wonÃ¢ÂÂt work with the above method. However, that is because it also wonÃ¢ÂÂt work even if I start emacs from cygwin command prompt. It must be that particular cygwin installation that is causing the problem. YMMV -- WeyHan
+
+[new:DrewAdams:2004-12-25 18:58 UTC]
+Could both recipes be made clearer? What is meant by "you have to create your keys and stuff" and "put them in memory"? What is puttygen and how to use it? How to start paegant and load keys? -- DrewAdams
+
+[new]
+: Creating keys refers to generating them. It's done on Cygwin using ssh-keygen (IIRC) and with puTTY using PuTTYgen.
+: Putting them into memory is when you enter your passphrase once and it stores it in memory. An agent runs (ssh-agent on cygwin and Pageant with puTTY) which applications can contact to get the passphrase. This is necessary so that you don't have to enter your passphrase when tramp tries to connect.
+
+[new:DrewAdams:2004-12-25 18:58 UTC]
+I tried using the nqmacs build (21.3.50, from 2004/07/26) on Windows XP, which apparently uses Tramp, not ange-ftp, by default. I wasn't successful connecting to Linux with Tramp. Advice on what to check (at both ends: Linux and Windows)? I tried with `tramp-default-method' as "ssh" and as "sshx". I tried starting Emacs from a Cygwin shell also. -- DrewAdams
+
+[new]
+: The first thing would be to make sure that you can connect without a password prompt from a shell. That would mean that your authentication agent and keyrings are setup fine. After that, it's just a matter of getting Emacs to use a command line program to fetch the file which is not a problem.
+
+[new]
+The following commands, from the cygwin shell, have worked for me with ntemacs-21.2, winXP-SP2, tramp-2.1.3:
+
+  $ eval `ssh-agent`
+  $ ssh-add
+  $ (/cygdrive/c/emacs-21.2/bin/emacs &)
+
+[new]
+The most common problem with ntemacs and cygwins openssh is the following:
+"Pseudo-terminal will not be allocated because stdin is not a terminal."
+This is solved by adding:
+
+{{{
+(setq tramp-default-method "ssh")
+
+(nconc (cadr (assq 'tramp-login-args (assoc "ssh" tramp-methods)))
+       '(("bash" "-i")))
+(setcdr (assq 'tramp-remote-sh (assoc "ssh" tramp-methods))
+	'("bash -i"))
+}}}
+
+-- Kvasi
+
+The above also helped me solve that /bin/sh doesn't expand tilde (~) correctly in Solaris. Either set it to bash like above (which might or might not be installed), or ksh. -- HenrikHolmboe
+
+[new]
+Getting tramp to work on windows 2000 was a pain!  So, I wrote a tutorial. Hope it helps.
+
+http://www.jeremyenglish.org/docs/tramp_ntmacs.pdf
+
+
+[new]
+FWIW, here is my Windows shortcut target for launching Emacs via Cygwin, and having it inherit Cygwin's environment variables. %APPDATA% is the Windows equivalent of $HOME, and is where NTEmacs would look for .emacs etc by default when launching outside of cygwin, so this keeps things consistent.
+
+  C:\cygwin\bin\bash.exe --login -c "env HOME=\"`cygpath '%APPDATA%'`\" /cygdrive/c/emacs/emacs-23.1/bin/runemacs.exe"
+
+If your cygwin bash profile manages your ssh-agent for you, then this approach makes TRAMP via the sshx method pretty seamless.
+
+[new]
+And yet another take on the same problem, after trying all of the above: SshWithNTEmacs. If anyone else is struggling, I suggest we take the conversation over to there. -- JeremyMoore
+
+=== Tramp on emacs, ssh and cygwin/X ===
+
+Tramp-mode can be made to operate within the cygwin/X environment as an alternative to NTEmacs. In this approach, emacs is installed as a cygwin package and can be run in the cmd bash shell, rxvt, or under X-windows. In order for tramp-mode to function, the following should be added to your .emacs file:
+
+{{{
+;; tramp support
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/")
+(require 'tramp)
+(setq tramp-default-method "sshx")
+}}}
+
+This was tested on Windows XP using:
+
+{{{
+GNU Emacs 21.2.1 (i686-pc-cygwin, X toolkit) of 2004-03-23 on cm-test
+CYGWIN_NT-5.1 diogenes 1.5.19(0.150/4/2) 2006-01-20 13:28 i686 Cygwin
+}}}
+
+This approach works with or without ssh-agent / keychain. It also works using the stock cygwin.bat, with [http://www.soe.ucsc.edu/~you/notes/cygwin-install.html#mozTocId306872 "tty and binmode"] cygwin.bat, with [http://www.soe.ucsc.edu/~you/notes/cygwin-install.html#mozTocId333576 rxvt], or under X-windows.
+
+--CarsonReynolds
+
+=== Problem with a "plink -telnet" method on nqmacs (to AIX) ===
+
+I'm trying to use tramp on a Windows box to connect to an AIX machine
+("porco") via telnet because I can't install ssh on porco, and I'm
+having to use "plink -telnet" because the default telnet client is
+broken - both "telnet" and "plink -telnet" work when I run them in DOS
+or 4NT windows, but "telnet" exits immediately when invoked inside a
+"M-x shell" buffer...
+
+This is a log from an M-x shell buffer, with hostnames and usernames
+changed to protect me from sysadmin paranoia:
+
+    [c:\edrx\edrx]plink -telnet porco
+
+    telnet (porco)
+
+    AIX Version 4
+    (C) Copyrights by IBM and by others 1982, 1996.
+    login: aixuser
+    aixuser's Password:
+    *****************************************************************************
+    *                                                                           *
+    *  Welcome to AIX Version 4.3!                                              *
+    *                                                                           *
+    *  Please see the README file in /usr/lpp/bos for information pertinent to  *
+    *  this release of the AIX Operating System.                                *
+    *                                                                           *
+    *****************************************************************************
+    Last unsuccessful login: Mon Dec 12 19:12:33 GRNLNDST 2005 on /dev/pts/2 from bla.bla.net.br
+    Last login: Tue Dec 13 15:56:18 GRNLNDST 2005 on /dev/pts/36 from 10.0.0.22
+
+    Sending nohup output to nohup.out.
+    $ echo $SHELL
+    /bin/ksh
+    $ /us1/ston/pro/edrx/usrc/bash-3.0/bash
+    bash-3.00$
+}}}
+
+Shouldn't the code below work? Am I missing something obvious?
+
+{{{
+(require 'tramp)
+(setq tramp-verbose 10)
+(setq tramp-default-method "plinkt")
+(setq tramp-debug-buffer t)
+(add-to-alist 'tramp-methods
+	      '("plinkt"
+		(tramp-connection-function tramp-open-connection-telnet)
+		(tramp-login-program "plink")
+		(tramp-copy-program nil)
+		;; (tramp-remote-sh "/bin/sh")
+		(tramp-remote-sh "/us1/ston/pro/edrx/usrc/bash-3.0/bash")
+		(tramp-login-args ("-telnet"))
+		(tramp-copy-args nil)
+		(tramp-copy-keep-date-arg nil)
+		(tramp-password-end-of-line "xy")))
+
+(find-file "/aixuser@porco:/us1/")
+}}}
+
+The output in the buffer *tramp/plink aixuser@porco* is terribly
+brief: just
+
+    FATAL ERROR: Network error: Connection refused
+
+    Process *tramp/plink aixuser@porco* exited abnormally with code 1
+
+Any hints on how to debug that? Thanks, cheers, EduardoOchs (2005-12-13)
+
+[new]
+By the way, I'm using nqmacs ("GNU Emacs 22.0.50.1
+(i386-mingw-nt5.0.2195) of 2005-06-26") on Windows 2000...
+[new]
+I get the plinkt work with 23.0.94.1 on windows XP. My configuration is almost the same as yours except: 1, (tramp-login-args (("-telnet") ("%h"))); 2, I didn't configure tramp-password-end-of-line. -- lgfang
