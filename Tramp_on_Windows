@@ -19,3 +19,6 @@ Or you can put it all together like this such that your init file will work for 
 }}}
 
 For general information and troubleshooting, see [[TrampMode|Tramp Mode]].
+
+----
+CategoryExternalUtilities CategoryFiles CategoryRemoteEmacs
