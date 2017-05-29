@@ -2,6 +2,8 @@ The following is a feature wish list related to [[Eshell]], the Emacs shell.
 
 Broader wishes for Emacs should be wished at WishList. 
 
+Bugs should be reported like other EmacsBugs.  [https://debbugs.gnu.org/cgi/pkgreport.cgi?package=emacs;include=subject%3Aeshell Check if it's already been reported].
+
 ----
 
 * Why not save the history for each new-named eshell-buffer?  -- MarcoWahl
@@ -17,59 +19,6 @@ Broader wishes for Emacs should be wished at WishList.
 * Eshell should have better support for terminfo and ncurses, so programs like aptitude would open and look just as nice, as in, say, gnome-terminal.
 
 * It'd be nice if eshell would do what call-interactively does with (interactive) declarations in functions.  When I type elisp-function [space] [tab] on the command line, I'd like the completions to be chosen on the basis of the arguments defined in elisp-function's (interactive "...") form.  -- JoeE
-
-** That's likely going to be really nasty to do.  You'd have to "read" the
-<code>(interactive "...")</code> form from the byte-compiled function.
-And then do your own completion based on the results.
-You have further problems, in that you don't know which 
-<code>INTERACTIVE</code> spec you need to pull out.  Oh, and this approach
-won't work for builtin functions at all, since they don't have byte-code.
-Of course, I could be wrong, and there might be a far easier way of doing it.
-Perhaps you could hack eshell's command completion to call
-<code>CALL-INTERACTIVELY</code> on commands to complete the arguments.  --
-LawrenceMitchell
-
-Here's a really ugly proof-of-concept bit of code:
-<pre>
-    (defun my-get-interactive-spec (fn)
-      "Return FN's interactive spec.
-
-    i.e. return the string from the (interactive \"...\") part of FN's
-    definition."
-      (unless (fboundp fn)
-        (error "%s is not a function"
-               (upcase (symbol-name fn))))
-      (unless (commandp fn)
-        (error "%s is not an interactive function"
-               (upcase (symbol-name fn))))
-      (let ((fn-spec (symbol-function fn)))
-        (typecase fn-spec
-          (subr (error "%s is a builtin" 
-                       (upcase (symbol-name fn))))
-          (compiled-function
-           (aref fn-spec (1- (length fn-spec))))
-          (cons
-           (first (nreverse (if (stringp (third fn-spec))
-                                (fourth fn-spec)
-                                (third fn-spec)))))
-          (otherwise (error "Shouldn't be reached")))))
-</pre>
-
-Note that <code>TYPECASE</code> is part of the CommonLisp package.
-
-
-Uh, what?
-
-<pre>
-interactive-form is a built-in function in `C source code'.
-(interactive-form CMD)
-
-Return the interactive form of CMD or nil if none.
-If CMD is not a command, the return value is nil.
-Value, if non-nil, is a list (interactive SPEC).
-
-[back]
-</pre>
 
 * Documentation for eshell -- see EshellManual.
 
