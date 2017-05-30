@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.04.09
 ;; Package-Requires: ()
-;; Last-Updated: Mon May 22 09:16:57 2017 (-0700)
+;; Last-Updated: Tue May 30 10:22:48 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 10141
+;;     Update #: 10144
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -529,7 +529,7 @@
 ;;    `diredp-remove-if', `diredp-remove-if-not',
 ;;    `diredp-root-directory-p', `diredp-set-header-line-breadcrumbs'
 ;;    (Emacs 22+), `diredp-set-tag-value', `diredp-set-union',
-;;    `direp--set-up-font-locking', `diredp-string-match-p',
+;;    `diredp--set-up-font-locking', `diredp-string-match-p',
 ;;    `diredp-tag', `diredp-this-file-marked-p',
 ;;    `diredp-this-file-unmarked-p', `diredp-this-subdir',
 ;;    `diredp-untag', `diredp-y-or-n-files-p'.
@@ -659,6 +659,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/05/30 dadams
+;;     Fixed typo: direp--set-up-font-locking -> diredp--set-up-font-locking.
 ;; 2017/05/22 dadams
 ;;     Added: direp--set-up-font-locking.
 ;;     Use direp--set-up-font-locking instead of lambda in dired-mode-hook.
@@ -3270,7 +3272,7 @@ In particular, inode number, number of hard links, and file size."
    ) "2nd level of Dired highlighting.  See `font-lock-maximum-decoration'.")
 
 
-(defun direp--set-up-font-locking ()
+(defun diredp--set-up-font-locking ()
   "Add this to `dired-mode-hook' to provide for second-level fontifying."
   (set (make-local-variable 'font-lock-defaults)
        ;; Two levels.  Use 3-element list, since it is standard to have one more
@@ -3284,7 +3286,7 @@ In particular, inode number, number of hard links, and file size."
   (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults)))
 
 ;;; Provide for the second level of fontifying.
-(add-hook 'dired-mode-hook 'direp--set-up-font-locking)
+(add-hook 'dired-mode-hook 'diredp--set-up-font-locking)
 
 ;; Ensure that Dired buffers are refontified when you use `g' or otherwise read in the file list.
 (defun diredp-refontify-buffer ()
