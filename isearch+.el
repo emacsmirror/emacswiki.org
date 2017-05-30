@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu May 18 13:58:37 2017 (-0700)
+;; Last-Updated: Mon May 29 17:58:48 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5838
+;;     Update #: 5843
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/DynamicIsearchFiltering
@@ -19,10 +19,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
-;;   `cl-lib', `color', `frame-fns', `gv', `help-fns', `hexrgb',
-;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
-;;   `thingatpt', `thingatpt+', `zones'.
+;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
+;;   `hexrgb', `isearch-prop', `macroexp', `misc-cmds', `misc-fns',
+;;   `strings', `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1157,6 +1156,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2017/05/29 dadams
+;;     isearch-mouse-2: Put overriding-terminal-local-map binding around only 2nd part of if.  See bug #23007.
 ;; 2017/05/18 dadams
 ;;     Added:
 ;;      isearchp-define-in/out-filter,
@@ -4386,7 +4387,7 @@ Use `isearch-exit' to quit without signaling."
 ;;
 ;; 2. Works for older Emacs versions too: Set X selection, so `x-get-selection' returns non-nil.
 ;;
-(defun isearch-mouse-2 (click)          ; Bound to `mouse-2' in `isearch-mode-map'.
+(defun isearch-mouse-2 (click) ; Bound to `mouse-2' in `isearch-mode-map'.
   "Handle `mouse-2' in Isearch mode.
 If `isearchp-mouse-2-flag' is non-nil, yank the X selection.
 If `isearchp-mouse-2-flag' is nil, yank it only if the `mouse-2' click
@@ -4404,12 +4405,13 @@ outside of Isearch."
   ;;
   (if (and isearchp-mouse-2-flag  (mark))
       (when (/= (region-beginning) (region-end)) (isearchp-set-sel-and-yank))
-    (let ((win                            (posn-window (event-start click)))
-          (overriding-terminal-local-map  nil)
-          (binding                        (key-binding (this-command-keys-vector) t)))
-      (if (and (window-minibuffer-p win)  (not (minibuffer-window-active-p win)) ; In echo area
-               (mark))
-          (isearchp-set-sel-and-yank)
+    (if (let ((win  (posn-window (event-start click))))
+          (and (window-minibuffer-p win)
+               (not (minibuffer-window-active-p win)) ; In echo area
+               (mark)))
+        (isearchp-set-sel-and-yank)
+      (let* ((overriding-terminal-local-map  nil)
+             (binding                        (key-binding (this-command-keys-vector) t)))
         (when (functionp binding) (call-interactively binding))))))
 
 (defun isearchp-set-sel-and-yank ()
