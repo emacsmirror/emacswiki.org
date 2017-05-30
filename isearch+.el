@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon May 29 17:58:48 2017 (-0700)
+;; Last-Updated: Mon May 29 19:07:01 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5843
+;;     Update #: 5845
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/DynamicIsearchFiltering
@@ -1157,7 +1157,7 @@
 ;;(@* "Change log")
 ;;
 ;; 2017/05/29 dadams
-;;     isearch-mouse-2: Put overriding-terminal-local-map binding around only 2nd part of if.  See bug #23007.
+;;     isearch-mouse-2: Put overriding-terminal-local-map binding around only the binding of BINDING.  See bug #23007.
 ;; 2017/05/18 dadams
 ;;     Added:
 ;;      isearchp-define-in/out-filter,
@@ -4410,8 +4410,8 @@ outside of Isearch."
                (not (minibuffer-window-active-p win)) ; In echo area
                (mark)))
         (isearchp-set-sel-and-yank)
-      (let* ((overriding-terminal-local-map  nil)
-             (binding                        (key-binding (this-command-keys-vector) t)))
+      (let ((binding  (let ((overriding-terminal-local-map  nil))
+                        (key-binding (this-command-keys-vector) t))))
         (when (functionp binding) (call-interactively binding))))))
 
 (defun isearchp-set-sel-and-yank ()
