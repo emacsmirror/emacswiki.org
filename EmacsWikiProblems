@@ -19,6 +19,9 @@ Thanks for the heads up. This broke during the move to the new server. It should
 
 I get a page saying just ##Cannot write /home/nicferrier/emacswiki.org/spammer.log: No such file or directory## after hitting the "Preview" button.
 
+[new]
+Thanks for the heads up. This broke during the move to the new server, directory names changed. It should work now. I also removed a longer discussion which seemed resolved to me. It was triggering the spam filter, which is why you got the message in the first place. -- Alex Schroeder
+
 == How to change the page /name/? ==
 The page ReplaceRegexp is about using `(query-)replace-regexp' with specail lisp xpression in teh replacement, so the page title should better be something like ReplaceRegexpWithLispExpressions or ReplaceRegexpByondRegexps. - How can I change the /name/ of a page? -- [[halloleo]] 2017-05-05
 
