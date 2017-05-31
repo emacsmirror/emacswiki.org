@@ -8,24 +8,30 @@ Mainstream GNU Emacs and derivates:
 Other implementations still alive:
 * GNU [[Zile]] -- a tiny Emacs clone.
 * [[Climacs]] -- based on CommonLisp.
-* EdWin -- based on [[Scheme]].
+* EdWin -- based on [[Scheme]], included in GNU/MIT Scheme.
 * EfunsEditor -- based on ObjectiveCaml.
 * [[Mg]] -- a lightweight public domain Emacs clone
 * [[Ymacs]] -- an Emacs-like editor for the Web
 
 Other more or less obscure implementations:
-* [[EINE]]
 * ErlangEmacs
 * GuileEmacs
-* HemLock
 * JavaEmacs
 * [[Jove]]
 * MicroEmacs
-* MulticsEmacs
 * [[QEmacs]]
-* TecoEmacs
+* Climacs, the Common Lisp Emacs
+* Second Climacs (successor to Climacs, in development)
+
+* [[PortableHemlock]]
+
+Historic implementations and predecessors to modern Emacsen:
+* TecoEmacs (one of the earliest implementations; RMS wrote his initial Editor MACroS in TECOs cryptic scripting language)
+* [[EINE]] „EINE Is Not Emacs” (intended pun: eine is German for one)
+* [[ZWEI]] „ZWEI Was EINE Initially” (intended pun: zwei is German for two)
+* MulticsEmacs
+* HemLock, included in CMU Common Lisp (often known as cmucl)
 * [[Zmacs]]
-* [[ZWEI]]
 
 Not locally documented:
 * EmACT at http://www.eligis.com/emacs comes with Win32 binaries.
