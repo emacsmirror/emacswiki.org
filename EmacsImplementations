@@ -6,12 +6,18 @@ Mainstream GNU Emacs and derivates:
 * [[SXEmacs]] -- a fork of [[XEmacs]]
 
 Other implementations still alive:
+* µEmacs (aka. memacs aka. MicroEmacs) --- a small, light-weight console Emacs
+** Jasspa MicroEmacs --- a semi-commercial development of MicroEmacs
 * GNU [[Zile]] -- a tiny Emacs clone.
-* [[Climacs]] -- based on CommonLisp.
 * EdWin -- based on [[Scheme]], included in GNU/MIT Scheme.
 * EfunsEditor -- based on ObjectiveCaml.
 * [[Mg]] -- a lightweight public domain Emacs clone
-* [[Ymacs]] -- an Emacs-like editor for the Web
+* [[Ymacs]] -- an Emacs-like AJAX language editor for the Web (ie., embedded in webpages)
+* [[9ne]], an HTML/Java-embedded light-weight Emacs
+* CommonLisp variants:
+** [[Climacs]], a Common Lisp Implementation of Emacs
+** Second Climacs (successor to Climacs, in development)
+** [[PortableHemlock]], a Common Lisp variant of Hemlock „to free Hemlock from its CMUCL prison”
 
 Other more or less obscure implementations:
 * ErlangEmacs
@@ -20,17 +26,13 @@ Other more or less obscure implementations:
 * [[Jove]]
 * MicroEmacs
 * [[QEmacs]]
-* Climacs, the Common Lisp Emacs
-* Second Climacs (successor to Climacs, in development)
-
-* [[PortableHemlock]]
 
 Historic implementations and predecessors to modern Emacsen:
-* TecoEmacs (one of the earliest implementations; RMS wrote his initial Editor MACroS in TECOs cryptic scripting language)
+* TecoEmacs (one of the earliest implementations; RMS wrote his initial „Editor MACroS” in TECOs cryptic scripting language)
 * [[EINE]] „EINE Is Not Emacs” (intended pun: eine is German for one)
 * [[ZWEI]] „ZWEI Was EINE Initially” (intended pun: zwei is German for two)
 * MulticsEmacs
-* HemLock, included in CMU Common Lisp (often known as cmucl)
+* HemLock, included in CMU Common Lisp as (ed)
 * [[Zmacs]]
 
 Not locally documented:
