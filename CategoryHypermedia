@@ -6,9 +6,11 @@ Note that this list is neither exhaustive nor complete; feel free to add anythin
 Examples:
 
 == integrated into Emacs ==
-* BookMarks -- Remember places in files.
+* BookMarks -- Remember places in files, URLs,…
 * InfoMode -- `Info', the hypertext documentation system in Emacs, was one of the first online help systems. 
 * OrgMode --- can be used as a personal wiki, either in one big file or in many interlinked files. Pages can exported individually to html or published collectively as a website.
+* [[eww]] --- a light-weight configurable web browser
+* [[w3]] --- another web browser (not to be confused with w3m/emacs-w3m!)
 
 = Web/HTML/XML related ==
 * CategoryWebBrowser -- Browsing in Emacs, interacting with external web browsers.
@@ -28,6 +30,8 @@ Examples:
 ** ElServ -- Another HTTP server embedded in Emacs.
 ** Simple-Server -- [http://github.com/eschulte/simple-server/tree/master simple-server.el], yet another HTTP server embedded in Emacs.
 ** Phase -- [http://synthcode.com/emacs/ phase.el], a development server supporting CGI and embedded Emacs Lisp.
+* [[emacs-server]] --- an HTTP server in ELisp
+* [[emacs-w3m]] --- an integration mode for the w3m text mode browser, with graphics
 
 == Wiki modes ==
 * WikiModes -- Comparing emacs-wiki.el and wiki.el (which see).
@@ -59,7 +63,8 @@ Examples:
 * EmacsMuse --  Emacs Muse is a project-based authoring and publishing environment for Emacs. It simplifies the process of writings documents and publishing them to various output formats.
 * FreeMind -- transforming between org-mode and /FreeMind/ mindmapping files.
 * FreexMode -- A personal wiki on steroids - interfaces with a sqlite database to store your metadata, automatically creates hyperlinks to existing pages and provides a sophisticated tagging mechanism
-* Hyperbole/Koutliner –– a workspace management, pan-document-hypertext and outliner system
+* [[Hyperbole]] --- a workspace management, pan-document-hypertext system
+** [[Koutliner]] --- part of Hyperbole, outliner/layouter; works well along with org mode
 
 == Package/Language documentation modes ==
 * LangHelp -- Integrated help system in EmacsRuby.
@@ -74,4 +79,4 @@ Examples:
 going to be a real mess. Suggestions on what we could do ? -- XavierMaillard
 
 [new]
-How is this for a start?
+How is this for a start?  I took the liberty to put a few categories here and add a bit of useful stuff. ––mangledmind
