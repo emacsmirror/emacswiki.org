@@ -1,26 +1,35 @@
 [[ja:カテゴリ・ハイパーメディア]]
 Click on the title to list all pages in the hypermedia category.
 
+Note that this list is neither exhaustive nor complete; feel free to add anything missing here.
+
 Examples:
 
+== integrated into Emacs ==
+* BookMarks -- Remember places in files.
+* InfoMode -- `Info', the hypertext documentation system in Emacs, was one of the first online help systems. 
+* Hyperbole/Koutliner –– a workspace management, pan-document-hypertext and outliner system
+
+= Web/HTML/XML related ==
 * CategoryWebBrowser -- Browsing in Emacs, interacting with external web browsers.
 * [[Anything]] -- Open URL via `M-x anything-find-files'
 * BrowseURN -- Resolving URNs with Emacs.
-* EevMode -- E-script environment, the ULTIMATE hyperlink and memo system.
-* LangHelp -- Integrated help system in EmacsRuby.
-* BookMarks -- Remember places in files.
 * CascadingStyleSheetMode -- Simple mode for editing CSS style sheets.
-* InfoMode -- `Info', the hypertext documentation system in Emacs, was one of the first online help systems. 
-* [[Synonyms]] -- Browse a hyperlinked thesaurus. Use any comma-separated values (CSV) file as a hyperlinked document, without writing any code.
 * HtmlAccent -- Replaces special char by their html representation.
 * HtmlMode -- Editing HTML with Emacs.
 ** HtmlHelperMode -- HTML editing mode with more features.
 * TexDrive -- easily include TeX-formula in HTML pages.
 * [NxhtmlMode nXhtml] -- Editing XHTML files. Includes nxhtml-mode which is based on NxmlMode, but with enhanced completion for XHTML and support for multiple major modes (MuMaMo).
 * AtomBlogger -- Creating/Editting Blogger posts.
-* BbCode -- Hacks for helping write in a Web forum markup 
-* EmacsMuse --  Emacs Muse is a project-based authoring and publishing environment for Emacs. It simplifies the process of writings documents and publishing them to various output formats.
-* EmacsAtomApi -- Editing blog posts, and even writing them in EmacsMuse.
+* SaveAsHtml, HtmlFontify -- Save files in HTML format.
+* HtmlLite -- Construct html pages with sexps.
+* HttpServer
+** EmacsHttpd -- HTTP server embedded in the Emacs.
+** ElServ -- Another HTTP server embedded in Emacs.
+** Simple-Server -- [http://github.com/eschulte/simple-server/tree/master simple-server.el], yet another HTTP server embedded in Emacs.
+** Phase -- [http://synthcode.com/emacs/ phase.el], a development server supporting CGI and embedded Emacs Lisp.
+
+== Wiki modes ==
 * WikiModes -- Comparing emacs-wiki.el and wiki.el (which see).
 ** WikiMode -- wiki.el, the original mode to edit and navigate files with wiki syntax, and to translate these into static HTML pages.
 ** OddmuseMode -- A mode for editing pages in an OddMuse Wiki, including the EmacsWiki.
@@ -35,25 +44,34 @@ Examples:
 ** WikipediaAlternative
 ** WikipediaMode
 ** WikipediaFs
-* MultiLingualHyperTextLibraries
-* SaveAsHtml, HtmlFontify -- Save files in HTML format.
-* HtmlLite -- Construct html pages with sexps.
-* HttpServer
-** EmacsHttpd -- HTTP server embedded in the Emacs.
-** ElServ -- Another HTTP server embedded in Emacs.
-** Simple-Server -- [http://github.com/eschulte/simple-server/tree/master simple-server.el], yet another HTTP server embedded in Emacs.
-** Phase -- [http://synthcode.com/emacs/ phase.el], a development server supporting CGI and embedded Emacs Lisp.
-* WebBot -- Framework for automatic text substitution if you load and save a file.
-* LinkdMode -- A system for recognizing special s-expressions in all kinds of text files, and causing these "lisp hot spots" to become interactive
-* FreexMode -- A personal wiki on steroids - interfaces with a sqlite database to store your metadata, automatically creates hyperlinks to existing pages and provides a sophisticated tagging mechanism
-* FreeMind -- transforming between org-mode and /FreeMind/ mindmapping files.
-* SpartanWiki --- a really spartan personal wiki
-* OrgMode --- can be used as a personal wiki, either in one big file or in many interlinked files. Pages can exported individually to html or published collectively as a website.
-* [[N3Mode]] --- Emacs major mode for Notation 3 RDF
+* BbCode -- Hacks for helping write in a Web forum markup 
+* EmacsAtomApi -- Editing blog posts, and even writing them in EmacsMuse.
 * WikiNavMode --- navigate files via &#91;&#91;wiki-style&#93;&#93; double-bracketed links
+* SpartanWiki --- a really spartan personal wiki
+
+== Hypertext systems ==
+* [[Synonyms]] -- Browse a hyperlinked thesaurus. Use any comma-separated values (CSV) file as a hyperlinked document, without writing any code.
+* EevMode -- E-script environment, the ULTIMATE hyperlink and memo system.
+* MultiLingualHyperTextLibraries
+* WebBot -- Framework for automatic text substitution if you load and save a file.
+
+== Organizer/Documentation systems ==
+* EmacsMuse --  Emacs Muse is a project-based authoring and publishing environment for Emacs. It simplifies the process of writings documents and publishing them to various output formats.
+* OrgMode --- can be used as a personal wiki, either in one big file or in many interlinked files. Pages can exported individually to html or published collectively as a website.
+* FreeMind -- transforming between org-mode and /FreeMind/ mindmapping files.
+* FreexMode -- A personal wiki on steroids - interfaces with a sqlite database to store your metadata, automatically creates hyperlinks to existing pages and provides a sophisticated tagging mechanism
+
+== Package/Language documentation modes ==
+* LangHelp -- Integrated help system in EmacsRuby.
+
+== Misc ==
+* LinkdMode -- A system for recognizing special s-expressions in all kinds of text files, and causing these "lisp hot spots" to become interactive
+* [[N3Mode]] --- Emacs major mode for Notation 3 RDF
 * ButtonLockMode --- define clickable text based on regular expressions
 
 ----
 [new] We need to organize this page and clean it up a little. It is
 going to be a real mess. Suggestions on what we could do ? -- XavierMaillard
 
+[new]
+How is this for a start?
