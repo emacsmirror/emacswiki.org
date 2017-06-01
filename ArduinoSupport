@@ -1,3 +1,4 @@
+[[fr:SupportArduino]]
 [http://arduino.cc/ Arduino] is "an open-source electronics prototyping platform based on flexible, easy-to-use hardware and software. It's intended for artists, designers, hobbyists, and anyone interested in creating interactive objects or environments."
 
 The Arduino IDE is useful for beginners, but Emacs is better.
