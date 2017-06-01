@@ -52,5 +52,6 @@ New control of windowing, if as described, may be very exciting.  Exact position
 
 [new]
 A merger of Org, Hyperbole/Koutline, Muse, and Info modes would be perfect, sort of a „unified documentation project mode”, or a replacement for the very aged and limited Info system.
+* afterthought: not necessarily a replacement of info, merely an additional, modern implementation which can directly interlink any relevant documentation (and completely casually can serve as a demonstration of the concepts and power of the system as a whole, showing off Org/Hyperbole in real action, with options to „Muse” docu into web-form or PDFs).
 ----
 CategoryPersonalInformationManager
