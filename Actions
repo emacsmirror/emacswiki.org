@@ -1,0 +1,70 @@
+This page describes package Lisp:actions.el, by ViniciusJoseLatorre.
+
+: .:: ''v0.5'' ::.
+
+== About actions ==
+
+This package provides an action menu which items are visible depending on
+the point context.
+
+
+== Using actions ==
+
+To use Lisp:actions.el insert in your ##~/.emacs## file (or ##c:/_emacs##, if you're
+using Windows 9x/NT or MS-DOS):
+
+   (require 'actions)
+
+
+== Options ==
+
+Below it's shown a brief description of `actions' options, please, see the
+options declaration in the code for a long documentation.
+
+; `actions-menu' : Define a submenu the same way as `easy-menu-define' does it.
+
+; `actions-options' : Alist for tool options (see tool manual).
+
+To set the above options you may:
+
+[new]
+a) insert the code in your ~/.emacs, like:
+
+   (setq actions-menu '("Action" ["Option" (action) :visible t]))
+
+This way always keep your default settings when you enter a new Emacs session.
+
+[new]
+b) or use `set-variable' in your Emacs session, like:
+
+   M-x set-variable RET actions-menu RET
+   '("Action" ["Option" (action) :visible t]) RET
+
+This way keep your settings only during the current Emacs session.
+
+[new]
+c) or use customization, for example:
+
+# click on MenuBar ##Help## option,
+# then click on ##Customize##,
+# then click on ##Browse Customization Groups##,
+# expand ##Tools## group,
+# expand ##Actions## group
+# and then customize Actions options.
+
+Through this way, you may choose if the settings are kept or not when
+you leave out the current Emacs session.
+
+[new]
+d) or see the option value:
+
+   C-h v actions-menu RET
+
+and click the ##customize## hypertext button.
+Through this way, you may choose if the settings are kept or not when
+you leave out the current Emacs session.
+
+
+----
+
+CategoryProgrammerUtils
