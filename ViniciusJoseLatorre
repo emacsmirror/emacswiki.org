@@ -31,15 +31,18 @@ Please, put your doubt, suggestion, improvement, etc. at end of the
 [[#Inbox or Something]] section.
 
 
-[new]
 <pre>
 
 </pre>
-[new]
 == My Emacs Lisp Stuff ==
 
 ; ([Self:action=history;id=.emacs-ViniciusJoseLatorre.el history]) Download:.emacs-ViniciusJoseLatorre.el  (EmacsViniciusJoseLatorre) : Minimal Emacs initialization file.
 : .:: ''v1.0'' ::.
+<pre>
+
+</pre>
+; ([Self:action=history;id=actions.el history])  Download:actions.el  (Actions) : Actions utilities.
+: .:: ''v0.5'' ::.
 <pre>
 
 </pre>
@@ -55,7 +58,7 @@ Please, put your doubt, suggestion, improvement, etc. at end of the
 <pre>
 
 </pre>
-; ([Self:action=history;id=chill-modee.el history])  Download:chill-modee.el (ChillModePackage) : Major mode for editing CHILL
+; ([Self:action=history;id=chill-modee.el history])  Download:chill-modee.el  (ChillModePackage) : Major mode for editing CHILL
 code.
 : It is based on CCITT Z.200/92 recommendation (COM X-R 34-E).
 : .:: ''v3.1'' ::.
@@ -140,11 +143,9 @@ code.
 : .:: ''v3.0'' ::.
 
 
-[new]
 <pre>
 
 </pre>
-[new]
 == Links for ebnf2ps package ==
 
 ABNF :: [http://en.wikipedia.org/wiki/ABNF Augmented BNF for Syntax Specifications: ABNF] :: [http://tools.ietf.org/html/rfc5234 RFC-5234]
@@ -164,21 +165,17 @@ BNF :: [http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form Backus Naur Form]
 [http://en.wikipedia.org/wiki/Syntax_diagram Syntax Diagram]
 
 
-[new]
 <pre>
 
 </pre>
-[new]
 == Links for spell-number package ==
 
 ISO 3166 :: [http://archive.dante.net/np/ds/osi/iso-3166.txt Codes from ISO 3166 (Country Codes)] :: [http://en.wikipedia.org/wiki/ISO3166 ISO-3166]
 
 
-[new]
 <pre>
 
 </pre>
-[new]
 == Links for printing package ==
 
 ; [http://people.ssh.fi/mtr/genscript/ enscript] : .:: ''GNU/Linux'' :: ''Unix'' :: ''Windows'' ::.
@@ -246,11 +243,9 @@ standard X fonts.
 (POSIX) libraries. You'll need ANSI C++ and C compilers to compile it.
 
 
-[new]
 <pre>
 
 </pre>
-[new]
 [:Emacs Links]
 == Emacs Links ==
 
@@ -437,11 +432,9 @@ books.
 ; Lisp:timid.el : Cool package! A little shy. ;)
 
 
-[new]
 <pre>
 
 </pre>
-[new]
 == Emacs Homepages ==
 
 Aurélien Tisné :: <code>http:</code><code>//aurelien.tisne.free.fr/emacs-pages/emacs.html</code>
@@ -475,11 +468,9 @@ TamasPatrovics
 //See also// CategoryHomepage.
 
 
-[new]
 <pre>
 
 </pre>
-[new]
 [:Inbox or Something]
 == Inbox or Something ==
 
