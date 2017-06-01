@@ -7,6 +7,12 @@ This page describes package Lisp:actions.el, by ViniciusJoseLatorre.
 This package provides an action menu which items are visible depending on
 the point context.
 
+As an usage example, it can be used with DiredMode to expand ##.tar.gz##
+files, or view/edit an image file by just clicking ##M-F6## on file, then an
+menu with defined actions is shown.
+
+Or grep a word by clicking ##M-F6## on the word.
+
 
 == Using actions ==
 
