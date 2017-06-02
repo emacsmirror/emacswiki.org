@@ -3,9 +3,7 @@ Click on the title to list all pages in the hypermedia category.
 
 Note that this list is neither exhaustive nor complete; feel free to add anything missing here.
 
-Examples:
-
-== integrated into Emacs ==
+== Integrated into Emacs ==
 * BookMarks -- Remember places in files, URLs,…
 * InfoMode -- `Info', the hypertext documentation system in Emacs, was one of the first online help systems. 
 * OrgMode --- can be used as a personal wiki, either in one big file or in many interlinked files. Pages can exported individually to html or published collectively as a website.
