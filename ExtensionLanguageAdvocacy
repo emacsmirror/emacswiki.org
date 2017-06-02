@@ -118,9 +118,13 @@ some dozend lines of perl.
 
 Andreas Politz
 
+[new]
+Just to add to these rants ;-)
+* Note a: since Emacs 23, there's the possibility to compile Emacs with Modules support.  Meaning, anybody who wants to can write an extension in C which adds language support for his favourite scripting language as EmacsLisp plug-in which are represented as ELisp primitives –– enabling two-way communication Elixp←→X.
+* Note b: AFAIK, some of the most important things regarding multithreading, concurrency and useful features from Scheme and CL are already being worked at; at least, there are several hints and notes in the Emacs documentation in Emacs 24 and 25 (etc directory).
+* and, finally, note 3: if you use Eclipse IDE, you have to cope with its java and perl scripting.  When you use vim, you have to cope with VScript.  When you use foo, you have to cope with fooscript.  So why don't you all just shut up with your complaints and accept that Emacs uses Elisp and get used to it if you want to use Emacs?
 
-
-
+––mangledmind
 
 
 
