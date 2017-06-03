@@ -4,13 +4,15 @@ Here is a translation to/from Emacs-speak:
 
 ||'''Common Term'''||'''Emacs Term'''||
 ||selection||[[region]]||
-||cut||kill||
-||paste||yank||
+||cut||[[KillingAndYanking|kill]]||
+||paste||[[KillingAndYanking|yank]]||
 ||window||[[frame]]||
 ||pane||[[window]]||
 ||workspace or document||[[buffer]]||
 ||shortcut||[[key sequence]]||
-||wrap||fill||
+||wrap||[[CategoryFilling|fill]]||
+||syntax highlighting||[[FontLockMode|font-lock]]||
+
 
 In Emacs terms:
 
