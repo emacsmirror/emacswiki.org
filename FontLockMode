@@ -18,7 +18,7 @@ You can debug Font Lock keywords using FontLockStudio and [[Icicles]] [[multi-co
 
 == Font-Locking Is Incompatible with Other Highlighting - Fixed ==
 
-Library <tt>[[font-lock+.el]]</tt> provides a fix for the Emacs bug that font-locking overrides all other highlighting.  You need only add [[text property]] '''`font-lock-ignore'''' to any text that you have highlighted, to effectively tell font-lock "'''''Hands off!'''''" that text.  For example, this lets you use [[face]] `link' on a link and have the link be visible as such even without the mouse being over it.
+Library <tt>[[font-lock+.el]]</tt> provides a fix for the Emacs bug that font-locking overrides all other highlighting.  You need only add [[text property]] '''`font-lock-ignore'''' to any text that you have highlighted, to effectively tell font-lock "<b><i>Hands off!</i></b>" that text.  For example, this lets you use [[face]] `link' on a link and have the link be visible as such even without the mouse being over it.
 
 ----
 CategoryFaces
