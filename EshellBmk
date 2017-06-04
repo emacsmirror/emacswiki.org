@@ -43,7 +43,7 @@ Completion is available."))
          (error "%s is not a bookmark" bookmark))))))
 </pre>
 ----
-I read the above great code and improve by adding the options to show the bookmark list and to delete the bookmark entry. The code is below. About the usage refer to the help comment showed by executing the command with no arguments. -- KatsuyukiKiso
+I read the above great code and improve by adding the options to show the bookmark list and to delete the bookmark entry. The code is below. About the usage refer to the help comment showed by invoking the command with `-h' or `--help'. -- KatsuyukiKiso
 
 <include gist "https://gist.github.com/fa930411a86169c3bb1f03337d4af280">
 
