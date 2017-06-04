@@ -39,6 +39,12 @@ identifying number: `Narrow-1', `Narrow-2', and so on.
 `mouse-2' on the `-NUM' part uses `zz-narrow-repeat' to cycle to
 the next restriction.
 
+If option '''`zz-narrowing-use-fringe-flag'''' is non-nil, which it is
+by default, then the face of the selected frame's [[fringe]] is set to
+'''`zz-fringe-for-narrowing'''' whenever the buffer is narrowed.  This
+shows you that the current buffer is narrowed even if the
+mode-line does not.
+
 Emacs [[marker]]s are used to record narrowing limits, so the same buffer
 restriction is available even if you modify its context.  If for any reason `zz-izones' ever has any entries
 that use buffer positions (numbers) instead of markers, invoking
