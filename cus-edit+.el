@@ -8,9 +8,9 @@
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Feb  6 16:02:27 2017 (-0800)
+;; Last-Updated: Sun Jun  4 08:31:26 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 1627
+;;     Update #: 1633
 ;; URL: http://www.emacswiki.org/cus-edit+.el
 ;; Doc URL: http://emacswiki.org/CustomizingAndSaving
 ;; Keywords: help, customize, help, faces
@@ -353,6 +353,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/06/04 dadams
+;;     custom-magic-alist: Use newer face names (which are aliased to the old ones).
 ;; 2017/01/06 dadams
 ;;     Added: customize-unsaved-confirm-exits-flag.
 ;;     Renamed: customize-customized-ignore to customize-unsaved-ignore.  Latter is obsolete alias.
@@ -612,31 +614,52 @@ use etags instead.  Etags support is not as robust as imenu support."
 ;; Changed text for saved, to not give impression that preference
 ;; was necessarily set and saved.
 ;;
-(defconst custom-magic-alist '((nil "#" underline "\
+(defconst custom-magic-alist `((nil "#" underline "\
 UNINITIALIZED - you should not see this.")
                                (unknown "?" italic "\
 UNKNOWN - you should not see this.")
                                (hidden "-" default "\
 HIDDEN - invoke \"Show\" in the previous line to show." "\
 The group is now hidden - invoke \"Show\" to show it.")
-                               (invalid "x" custom-invalid-face "\
+                               (invalid
+                                "x"
+                                ,(if (> emacs-major-version 21) 'custom-invalid-face 'custom-invalid)
+                                "\
 INVALID - the %c cannot be set to the value shown.")
-                               (modified "*" custom-modified-face "\
+                               (modified
+                                "*"
+                                (if (> emacs-major-version 21) 'custom-modified-face 'custom-modified)
+                                "\
 EDITED - your changes for this %c take effect only when you set or save it." "\
 You have edited something in this group, but not set it.")
-                               (set "+" custom-set-face "\
+                               (set
+                                "+"
+                                (if (> emacs-major-version 21) 'custom-set-face 'custom-set)
+                                "\
 SET - your changes for this %c are for this session only, unless you also save them." "\
 Something in this group has been set, but not saved.")
-                               (changed ":" custom-changed-face "\
+                               (changed
+                                ":"
+                                (if (> emacs-major-version 21) 'custom-changed-face 'custom-changed)
+                                "\
 CHANGED OUTSIDE - this %c has been changed outside buffer *Customize*." "\
 Something in this group has been changed outside customize.")
-                               (saved "!" custom-saved-face "\
+                               (saved
+                                "!"
+                                (if (> emacs-major-version 21) 'custom-saved-face 'custom-saved)
+                                "\
 UNCHANGED - this %c is unchanged from the SAVED (startup) setting." "\
 Something in this group is unchanged from the saved (startup) setting.")
-                               (themed "o" custom-themed "\
+                               (themed
+                                "o"
+                                (if (> emacs-major-version 21) 'custom-themed-face 'custom-themed)
+                                "\
 THEMED - this %c has been set by a theme." "\
 Visible group members are all at standard values.")
-                               (rogue "@" custom-rogue-face "\
+                               (rogue
+                                "@"
+                                (if (> emacs-major-version 21) 'custom-rogue-face 'custom-rogue)
+                                "\
 NO CUSTOMIZATION DATA - this %c has NOT been changed using Customize." "\
 Something in this group is not prepared for customization.")
                                (standard " " nil "\
