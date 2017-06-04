@@ -8,9 +8,9 @@
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 23 07:45:32 2017 (-0800)
+;; Last-Updated: Sun Jun  4 15:26:09 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 501
+;;     Update #: 549
 ;; URL: https://www.emacswiki.org/emacs/download/hl-line%2b.el
 ;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
 ;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
@@ -79,10 +79,6 @@
 ;;    type when Emacs is idle.
 ;;
 ;;
-;;  Faces defined here:
-;;
-;;    `hl-line'.
-;;
 ;;  User options defined here:
 ;;
 ;;    `hl-line-flash-show-period',
@@ -101,8 +97,8 @@
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `hl-line-idle-interval', `hl-line-idle-timer',
-;;    `hl-line-when-idle-p'.
+;;    `hl-line-flash-timer', `hl-line-idle-interval',
+;;    `hl-line-idle-timer', `hl-line-when-idle-p'.
 ;;
 ;;
 ;;  ***** NOTE: The following non-interactive functions defined in
@@ -115,6 +111,17 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/06/04 dadams
+;;     Added: hl-line-flash-timer.
+;;     hl-line-flash-show-period: Allow non-integer non-negative numbers.
+;;     hl-line-(un)highlight-now: Added optional BUFFER arg.
+;;                                Use hl-line-(un)highlight, not global-hl-line-mode.
+;;     hl-line-highlight-now: No-op if hl-line-mode, also.
+;;     hl-line-unhighlight-now: No-op if in highlighting mode.
+;;     hl-line-flash: No-op if already highlighting or if highlighting inhibited.
+;;                    Cancel existing flash timer.
+;;     Removed vestigial settings of face hl-line and hl-line-face.
+;;     Thx to Vladimir Sedach.
 ;; 2014/05/17 dadams
 ;;     hl-line-overlay-priority: Set default value to -50 (work around Emacs bug #16192 fix).
 ;; 2014/05/20 dadams
@@ -184,17 +191,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; This will be ignored, since this is now defined by default in Emacs 22.
-;; I include it here as a different face definition that you might want to try.
 ;;;###autoload
-(defface hl-line '((t (:background "SlateGray3"))) ; Try also (:underline "Yellow")
-  "*Face to use for `hl-line-face'." :group 'hl-line)
-(setq hl-line-face 'hl-line)
-
-;;;###autoload
-(defcustom hl-line-flash-show-period 1
+(defcustom hl-line-flash-show-period 1.0
   "*Number of seconds for `hl-line-flash' to highlight the line."
-  :type 'integer :group 'cursor :group 'hl-line)
+  :type '(restricted-sexp
+          :match-alternatives ((lambda (x) (and (numberp x)  (>= x 0.0))))
+          :value [ignore])
+  :group 'cursor :group 'hl-line)
 
 ;; Possible value: `(Info-mode help-mode view-mode Man-mode)'
 ;;;###autoload
@@ -214,22 +217,23 @@ other overlays that might exist."
           (integer :tag "Priority"  -50))
   :group 'hl-line)
 
+(defvar hl-line-flash-timer nil "Timer for `hl-line-flash'.")
+(make-variable-buffer-local 'hl-line-flash-timer)
+
 (defvar hl-line-idle-interval 5
-  "Number of seconds to wait before turning on `global-hl-line-mode'.
+  "Number of seconds to wait before highlighting current line.
 Do NOT change this yourself to change the wait period; instead, use
 `\\[hl-line-when-idle-interval]'.")
 
 (defvar hl-line-idle-timer
-  (progn                                ; Cancel to prevent duplication.
-    (when (boundp 'hl-line-idle-timer) (cancel-timer hl-line-idle-timer))
-    (run-with-idle-timer hl-line-idle-interval t 'hl-line-highlight-now))
-  "Timer used to turn on `global-hl-line-mode' whenever Emacs is idle.")
-
-;; Turn it off, by default.  You must use `toggle-hl-line-when-idle' to turn it on.
-(cancel-timer hl-line-idle-timer)
+  (let ((timer  (run-with-idle-timer hl-line-idle-interval t 'hl-line-highlight-now)))
+    (cancel-timer timer)
+    timer)
+  "Timer used to highlight current line whenever Emacs is idle.
+Use `toggle-hl-line-when-idle' to turn it on.")
 
 (defvar hl-line-when-idle-p nil
-  "Non-nil means to turn on `global-hl-line-mode' whenever Emacs is idle.
+  "Non-nil means highlight current line whenever Emacs is idle.
 Do NOT change this yourself; instead, use `\\[toggle-hl-line-when-idle]'.")
 
 (defadvice hl-line-highlight (after set-priority activate)
@@ -250,8 +254,7 @@ Respect option `hl-line-inhibit-highlighting-for-modes'."
 (defalias 'toggle-hl-line-when-idle 'hl-line-toggle-when-idle)
 ;;;###autoload
 (defun hl-line-toggle-when-idle (&optional arg msgp)
-  "Turn on or off using `global-hl-line-mode' when Emacs is idle.
-When on, use `global-hl-line-mode' whenever Emacs is idle.
+  "Toggle highlighting the current line when Emacs is idle.
 With prefix argument, turn on if ARG > 0; else turn off.
 
 In Lisp code, non-nil optional second arg MSGP means display a message
@@ -261,48 +264,55 @@ showing the new value."
         (if arg (> (prefix-numeric-value arg) 0) (not hl-line-when-idle-p)))
   (cond (hl-line-when-idle-p
          (timer-activate-when-idle hl-line-idle-timer)
-         (when msgp (message "Turned ON using `global-hl-line-mode' when Emacs is idle.")))
+         (when msgp (message "Idle highlighting of current line is now ON")))
         (t
          (cancel-timer hl-line-idle-timer)
-         (when msgp (message "Turned OFF using `global-hl-line-mode' when Emacs is idle.")))))
+         (when msgp (message "Idle highlighting of current line is now OFF")))))
 
 ;;;###autoload
 (defun hl-line-when-idle-interval (secs)
-  "Set wait until using `global-hl-line-mode' when Emacs is idle.
-Whenever Emacs is idle for this many seconds, `global-hl-line-mode'
-will be turned on.
+  "Set the idle wait for highlighting of current line.
+Whenever Emacs is idle for this many seconds, `hl-line-highlight' is
+called to highlight the current line.
 
-To turn on or off using `global-hl-line-mode' when idle,
-use `\\[toggle-hl-line-when-idle]."
-  (interactive "nSeconds to idle, before using `global-hl-line-mode': ")
+Use `\\[toggle-hl-line-when-idle] to toggle this idle highlighting."
+  (interactive "nIdle seconds to wait, before highlighting current line: ")
   (timer-set-idle-time hl-line-idle-timer (setq hl-line-idle-interval secs) t))
 
-(defun hl-line-highlight-now ()
-  "Turn on `global-hl-line-mode' and highlight current line now."
-  (unless (or global-hl-line-mode
-              (member major-mode hl-line-inhibit-highlighting-for-modes))
-    (global-hl-line-mode 1)
-    (global-hl-line-highlight)
-    (add-hook 'pre-command-hook 'hl-line-unhighlight-now)))
+(defun hl-line-highlight-now (&optional buffer)
+  "Highlight the current line in BUFFER.
+BUFFER defaults to the current buffer."
+  (with-current-buffer (or buffer  (current-buffer))
+    (unless (or hl-line-mode
+                global-hl-line-mode
+                (member major-mode hl-line-inhibit-highlighting-for-modes))
+      (let ((hl-line-mode  t)) (hl-line-highlight))
+      (add-hook 'pre-command-hook 'hl-line-unhighlight-now))))
 
-(defun hl-line-unhighlight-now ()
-  "Turn off `global-hl-line-mode' and unhighlight current line now."
-  (global-hl-line-mode -1)
-  ;; $$$$$$ Do we need to worry about `global-hl-line-unhighlight-all' here?
-  (global-hl-line-unhighlight)
-  (remove-hook 'pre-command-hook 'hl-line-unhighlight-now))
+(defun hl-line-unhighlight-now (&optional buffer)
+  "Unhighlight the current line in BUFFER.
+BUFFER defaults to the current buffer."
+  (with-current-buffer (or buffer  (current-buffer))
+    (unless (or hl-line-mode  global-hl-line-mode) (hl-line-unhighlight))
+    (remove-hook 'pre-command-hook 'hl-line-unhighlight-now)))
 
 ;;;###autoload
 (defalias 'flash-line-highlight 'hl-line-flash)
 ;;;###autoload
-(defun hl-line-flash (&optional arg)
-  "Highlight the current line for `hl-line-flash-show-period' seconds.
-With a prefix argument, highlight for that many seconds."
-  (interactive "P")
-  (hl-line-highlight-now)
-  (let ((line-period  hl-line-flash-show-period))
-    (when arg (setq line-period  (prefix-numeric-value arg)))
-    (run-at-time line-period nil #'hl-line-unhighlight-now)))
+(defun hl-line-flash (&optional seconds)
+  "Flash highlighting of current line for `hl-line-flash-show-period' sec.
+With a prefix argument, flash for that many seconds."
+  (interactive (and current-prefix-arg  (prefix-numeric-value current-prefix-arg)))
+  (unless (or hl-line-mode  global-hl-line-mode
+              (member major-mode hl-line-inhibit-highlighting-for-modes))
+    (unless seconds (setq seconds  hl-line-flash-show-period))
+    (if (not hl-line-flash-timer)
+        (setq hl-line-flash-timer  (run-at-time seconds nil #'hl-line-unhighlight-now
+                                                (current-buffer)))
+      (cancel-timer hl-line-flash-timer)
+      (timer-set-time hl-line-flash-timer (timer-relative-time (current-time) seconds))
+      (timer-activate hl-line-flash-timer))
+    (hl-line-highlight-now)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
