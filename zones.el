@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar  9 14:40:45 2017 (-0800)
+;; Last-Updated: Sun Jun  4 11:16:44 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 1729
+;;     Update #: 1744
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -69,6 +69,14 @@
 ;;    `zz-narrow-repeat', `zz-select-region',
 ;;    `zz-select-region-repeat', `zz-set-izones-var',
 ;;    `zz-unite-zones'.
+;;
+;;  User options defined here:
+;;
+;;    `zz-narrowing-use-fringe-flag'.
+;;
+;;  Faces defined here:
+;;
+;;    `zz-fringe-for-narrowing'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -357,6 +365,12 @@
 ;;  `-NUM' part uses `zz-narrow-repeat' to cycle to the next
 ;;  narrowing.
 ;;
+;;  If option `zz-narrowing-use-fringe-flag' is non-nil, which it is
+;;  by default, then the face of the selected frame's fringe is set to
+;;  `zz-fringe-for-narrowing' whenever the buffer is narrowed.  This
+;;  shows you that the current buffer is narrowed even if the
+;;  mode-line does not.
+;;
 ;;
 ;;(@* "Define Your Own Commands")
 ;;  ** Define Your Own Commands **
@@ -407,6 +421,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2017/06/04 dadams
+;;     Added: zz-narrowing-use-fringe-flag, zz-fringe-for-narrowing, zz-set-fringe-for-narrowing.
 ;; 2016/02/09 dadams
 ;;     zz-zones-complement: Removed unused optional BUFFER arg.  Use zz-marker-from-object on BEG and END.
 ;; 2015/09/07 dadams
@@ -639,6 +655,34 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Download" "http://www.emacswiki.org/zones.el")
   :link '(url-link :tag "Description" "http://www.emacswiki.org/Zones")
   :link '(emacs-commentary-link :tag "Commentary" "zones"))
+
+(when (fboundp 'face-spec-set-2)        ; Emacs 23+
+
+  (defface zz-fringe-for-narrowing 
+      '((((background dark)) (:background "#FFFF2429FC15")) ; a dark magenta
+        (t (:background "LightGreen")))
+    "*Face used for fringe when buffer is narrowed."
+    :group 'zones :group 'faces)
+
+  (defcustom zz-narrowing-use-fringe-flag t
+    "Non-nil means use fringe face `zz-fringe-for-narrowing' when narrowed."
+    :type 'boolean :group 'zones
+    :set (lambda (sym defs)
+           (custom-set-default sym defs)
+           (if (symbol-value sym)
+               (add-hook 'post-command-hook 'zz-set-fringe-for-narrowing)
+             (remove-hook 'post-command-hook 'zz-set-fringe-for-narrowing))))
+
+  (defun zz-set-fringe-for-narrowing ()
+    "Set fringe face to `zz-fringe-for-narrowing' if buffer is narrowed.
+Reset it if buffer is not narrowed."
+    (if (buffer-narrowed-p)
+        (face-spec-set-2 'fringe (selected-frame) (face-spec-choose
+                                                   (get 'zz-fringe-for-narrowing 'face-defface-spec)
+                                                   (selected-frame)))
+      (face-spec-set 'fringe (get 'fringe 'face-defface-spec) 'reset)))
+
+  )
 
 (defvar zz-lighter-narrowing-part ""
   "String to append to \" Narrow\" in mode-line lighter or messages.")
