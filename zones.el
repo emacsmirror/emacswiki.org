@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun  4 11:16:44 2017 (-0700)
+;; Last-Updated: Mon Jun  5 10:46:01 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 1744
+;;     Update #: 1752
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -421,6 +421,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2017/06/05 dadams
+;;     zz-set-fringe-for-narrowing: Use copy-face, not face-spec-set-2.  OK for Emacs 24.4+
 ;; 2017/06/04 dadams
 ;;     Added: zz-narrowing-use-fringe-flag, zz-fringe-for-narrowing, zz-set-fringe-for-narrowing.
 ;; 2016/02/09 dadams
@@ -656,7 +658,8 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Description" "http://www.emacswiki.org/Zones")
   :link '(emacs-commentary-link :tag "Commentary" "zones"))
 
-(when (fboundp 'face-spec-set-2)        ; Emacs 23+
+(when (or (> emacs-major-version 24)    ; Emacs 24.4+
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3))) ; `reset' arg to `face-spec-set'.
 
   (defface zz-fringe-for-narrowing 
       '((((background dark)) (:background "#FFFF2429FC15")) ; a dark magenta
@@ -674,12 +677,9 @@ Don't forget to mention your Emacs and library versions."))
              (remove-hook 'post-command-hook 'zz-set-fringe-for-narrowing))))
 
   (defun zz-set-fringe-for-narrowing ()
-    "Set fringe face to `zz-fringe-for-narrowing' if buffer is narrowed.
-Reset it if buffer is not narrowed."
+    "Set fringe face if buffer is narrowed."
     (if (buffer-narrowed-p)
-        (face-spec-set-2 'fringe (selected-frame) (face-spec-choose
-                                                   (get 'zz-fringe-for-narrowing 'face-defface-spec)
-                                                   (selected-frame)))
+        (copy-face 'zz-fringe-for-narrowing 'fringe (selected-frame))
       (face-spec-set 'fringe (get 'fringe 'face-defface-spec) 'reset)))
 
   )
