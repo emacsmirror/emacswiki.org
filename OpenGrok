@@ -13,6 +13,10 @@ https://github.com/youngker/eopengrok.el
 
 -- [[youngker]]
 
+=== And one more, with a Helm interface: ===
+
+https://github.com/zhenya1007/helm-opengrok
+
 ----
 CategoryProgrammerUtils
 CategoryExternalUtilities
