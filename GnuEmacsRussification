@@ -270,3 +270,9 @@ ValeriyaA
   (eval `(define-key key-translation-map (kbd ,(concat "M-" (string from))) (kbd ,(concat "M-" (string to))))))
 </pre>
 Это не распространяется на последовательности клавиш, содержащие буквы без модификаторов (такие как C-x b), но хоть что-то. --YuriKhan
+
+
+Можно поставить из Melpa плагин [https://github.com/a13/reverse-im.el reverse-im] и сделать что-нибудь вроде:
+<pre>
+(reverse-im-activate "russian-computer")
+</pre> ——
