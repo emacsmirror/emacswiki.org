@@ -1,187 +1,339 @@
-#FILE text/x-emacs-lisp 
-Ozs7IGFjdGlvbnMuZWwgLS0tIGFjdGlvbnMgdXRpbGl0aWVzCgo7OyBDb3B5cmlnaHQgKEMpIDIw
-MTEsIDIwMTIsIDIwMTMsIDIwMTQsIDIwMTUsIDIwMTYsIDIwMTcgVmluaWNpdXMgSm9zZSBMYXRv
-cnJlCgo7OyBBdXRob3I6IFZpbmljaXVzIEpvc2UgTGF0b3JyZSA8dmluaWNpdXNqbC5nbnVAZ21h
-aWwuY29tPgo7OyBNYWludGFpbmVyOiBWaW5pY2l1cyBKb3NlIExhdG9ycmUgPHZpbmljaXVzamwu
-Z251QGdtYWlsLmNvbT4KOzsgS2V5d29yZHM6IGNvbnZlbmllbmNlCjs7IFZlcnNpb246IDAuNQo7
-OyBYLVVSTDogaHR0cDovL3d3dy5lbWFjc3dpa2kub3JnL2NnaS1iaW4vd2lraS9WaW5pY2l1c0pv
-c2VMYXRvcnJlCgooZGVmY29uc3QgYWN0aW9ucy12ZXJzaW9uICIwLjUiCiAgImFjdGlvbnMuZWws
-IHYgMC41IDwyMDE3LzA1LzMxIHZpbmljaXVzPgoKUGxlYXNlIHNlbmQgYWxsIGJ1ZyBmaXhlcyBh
-bmQgZW5oYW5jZW1lbnRzIHRvCglWaW5pY2l1cyBKb3NlIExhdG9ycmUgPHZpbmljaXVzamwuZ251
-QGdtYWlsLmNvbT4KIikKCjs7IFRoaXMgZmlsZSBpcyAqTk9UKiAoeWV0PykgcGFydCBvZiBHTlUg
-RW1hY3MuCgo7OyBUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3Ry
-aWJ1dGUgaXQgYW5kL29yIG1vZGlmeSBpdAo7OyB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBH
-ZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieSB0aGUgRnJlZQo7OyBTb2Z0d2Fy
-ZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAzLCBvciAoYXQgeW91ciBvcHRpb24pIGFueSBs
-YXRlcgo7OyB2ZXJzaW9uLgoKOzsgVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBo
-b3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsIGJ1dCBXSVRIT1VUCjs7IEFOWSBXQVJSQU5UWTsg
-d2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mIE1FUkNIQU5UQUJJTElUWSBvcgo7
-OyBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUgR05VIEdlbmVyYWwg
-UHVibGljIExpY2Vuc2UgZm9yCjs7IG1vcmUgZGV0YWlscy4KCjs7IFlvdSBzaG91bGQgaGF2ZSBy
-ZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFsb25nIHdp
-dGgKOzsgR05VIEVtYWNzOyBzZWUgdGhlIGZpbGUgQ09QWUlORy4gIElmIG5vdCwgd3JpdGUgdG8g
-dGhlIEZyZWUgU29mdHdhcmUKOzsgRm91bmRhdGlvbiwgSW5jLiwgNTEgRnJhbmtsaW4gU3RyZWV0
-LCBGaWZ0aCBGbG9vciwgQm9zdG9uLCBNQSAwMjExMC0xMzAxLAo7OyBVU0EuCgo7OzsgQ29tbWVu
-dGFyeToKCjs7IDs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzsKOzsgSW50cm9kdWN0aW9uCjs7IC0tLS0tLS0tLS0t
-LQo7Owo7OyBUaGlzIHBhY2thZ2UgcHJvdmlkZXMgYW4gYWN0aW9uIG1lbnUgd2hpY2ggaXRlbXMg
-YXJlIHZpc2libGUgZGVwZW5kaW5nIG9uCjs7IHRoZSBwb2ludCBjb250ZXh0Lgo7Owo7OyBBcyBh
-biB1c2FnZSBleGFtcGxlLCBpdCBjYW4gYmUgdXNlZCB3aXRoIGBkaXJlZC1tb2RlJyB0byBleHBh
-bmQgLnRhci5nego7OyBmaWxlcywgb3Igdmlldy9lZGl0IGFuIGltYWdlIGZpbGUgYnkganVzdCBj
-bGlja2luZyBgTS1GNicgb24gZmlsZSwgdGhlbiBhbgo7OyBtZW51IHdpdGggZGVmaW5lZCBhY3Rp
-b25zIGlzIHNob3duLgo7Owo7OyBPciBncmVwIGEgd29yZCBieSBjbGlja2luZyBgTS1GNicgb24g
-dGhlIHdvcmQuCjs7Cjs7Cjs7IFVzaW5nIGBhY3Rpb25zJwo7OyAtLS0tLS0tLS0tLS0tLS0KOzsK
-OzsgVG8gdXNlIGBhY3Rpb25zJyBpbnNlcnQgaW4geW91ciB+Ly5lbWFjcyBmaWxlIChvciBjOi9f
-ZW1hY3MsIGlmIHlvdSdyZQo7OyB1c2luZyBXaW5kb3dzIDl4L05UIG9yIE1TLURPUyk6Cjs7Cjs7
-ICAgIChyZXF1aXJlICdhY3Rpb25zKQo7Owo7Owo7OyBPcHRpb25zCjs7IC0tLS0tLS0KOzsKOzsg
-QmVsb3cgaXQncyBzaG93biBhIGJyaWVmIGRlc2NyaXB0aW9uIG9mIGBhY3Rpb25zJyBvcHRpb25z
-LCBwbGVhc2UsIHNlZSB0aGUKOzsgb3B0aW9ucyBkZWNsYXJhdGlvbiBpbiB0aGUgY29kZSBmb3Ig
-YSBsb25nIGRvY3VtZW50YXRpb24uCjs7Cjs7IGBhY3Rpb25zLW1lbnUnCURlZmluZSBhIHN1Ym1l
-bnUgdGhlIHNhbWUgd2F5IGFzCjs7CQkJYGVhc3ktbWVudS1kZWZpbmUnIGRvZXMgaXQuCjs7Cjs7
-IGBhY3Rpb25zLW9wdGlvbnMnCUFsaXN0IGZvciB0b29sIG9wdGlvbnMgKHNlZSB0b29sIG1hbnVh
-bCkuCjs7Cjs7IFRvIHNldCB0aGUgYWJvdmUgb3B0aW9ucyB5b3UgbWF5Ogo7Owo7OyBhKSBpbnNl
-cnQgdGhlIGNvZGUgaW4geW91ciB+Ly5lbWFjcywgbGlrZToKOzsKOzsJIChzZXRxIGFjdGlvbnMt
-bWVudSAnKCJBY3Rpb24iIFsiT3B0aW9uIiAoYWN0aW9uKSA6dmlzaWJsZSB0XSkpCjs7Cjs7ICAg
-IFRoaXMgd2F5IGFsd2F5cyBrZWVwIHlvdXIgZGVmYXVsdCBzZXR0aW5ncyB3aGVuIHlvdSBlbnRl
-ciBhIG5ldyBFbWFjcwo7OyAgICBzZXNzaW9uLgo7Owo7OyBiKSBvciB1c2UgYHNldC12YXJpYWJs
-ZScgaW4geW91ciBFbWFjcyBzZXNzaW9uLCBsaWtlOgo7Owo7OwkgTS14IHNldC12YXJpYWJsZSBS
-RVQgYWN0aW9ucy1tZW51IFJFVAo7OyAgICAgICAnKCJBY3Rpb24iIFsiT3B0aW9uIiAoYWN0aW9u
-KSA6dmlzaWJsZSB0XSkgUkVUCjs7Cjs7ICAgIFRoaXMgd2F5IGtlZXAgeW91ciBzZXR0aW5ncyBv
-bmx5IGR1cmluZyB0aGUgY3VycmVudCBFbWFjcyBzZXNzaW9uLgo7Owo7OyBjKSBvciB1c2UgY3Vz
-dG9taXphdGlvbiwgZm9yIGV4YW1wbGU6Cjs7CSBjbGljayBvbiBtZW51LWJhciAqSGVscCogb3B0
-aW9uLAo7OwkgdGhlbiBjbGljayBvbiAqQ3VzdG9taXplKiwKOzsJIHRoZW4gY2xpY2sgb24gKkJy
-b3dzZSBDdXN0b21pemF0aW9uIEdyb3VwcyosCjs7CSBleHBhbmQgKlRvb2xzKiBncm91cCwKOzsJ
-IGV4cGFuZCAqQWN0aW9ucyogZ3JvdXAKOzsJIGFuZCB0aGVuIGN1c3RvbWl6ZSBgYWN0aW9ucycg
-b3B0aW9ucy4KOzsgICAgVGhyb3VnaCB0aGlzIHdheSwgeW91IG1heSBjaG9vc2UgaWYgdGhlIHNl
-dHRpbmdzIGFyZSBrZXB0IG9yIG5vdCB3aGVuCjs7ICAgIHlvdSBsZWF2ZSBvdXQgdGhlIGN1cnJl
-bnQgRW1hY3Mgc2Vzc2lvbi4KOzsKOzsgZCkgb3Igc2VlIHRoZSBvcHRpb24gdmFsdWU6Cjs7Cjs7
-CSBDLWggdiBhY3Rpb25zLW1lbnUgUkVUCjs7Cjs7ICAgIGFuZCBjbGljayB0aGUgKmN1c3RvbWl6
-ZSogaHlwZXJ0ZXh0IGJ1dHRvbi4KOzsgICAgVGhyb3VnaCB0aGlzIHdheSwgeW91IG1heSBjaG9v
-c2UgaWYgdGhlIHNldHRpbmdzIGFyZSBrZXB0IG9yIG5vdCB3aGVuCjs7ICAgIHlvdSBsZWF2ZSBv
-dXQgdGhlIGN1cnJlbnQgRW1hY3Mgc2Vzc2lvbi4KOzsKOzsKOzsgOzs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OwoKOzs7
-IENvZGU6CgoKKHJlcXVpcmUgJ2Vhc3ltZW51KQoKCih1bmxlc3MgKGZib3VuZHAgJ3JlZ2lvbi1h
-Y3RpdmUtcCkKICAoZGVmdW4gcmVnaW9uLWFjdGl2ZS1wICgpCiAgICAoYW5kIHRyYW5zaWVudC1t
-YXJrLW1vZGUgbWFyay1hY3RpdmUpKSkKCgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsKOzsgVXNlciBkZWZp
-bmVkCgooZGVmY3VzdG9tIGFjdGlvbnMtbWVudQogICcoIkFjdGlvbiIgOmFjdGl2ZSB0CiAgICBb
-IkV4cGFuZCAudGFyIiAgICAgKGFjdGlvbnMtdW50YXIpCiAgICAgOnZpc2libGUgKGFjdGlvbnMt
-ZmlsZS1wICJcXC50YXIkIildCiAgICBbIkV4cGFuZCAudGFyLioqKiIgKGFjdGlvbnMtdW50YXIp
-CiAgICAgOnZpc2libGUgKGFjdGlvbnMtZmlsZS1wICJcXC50YXJcXC5cXChnelxcfHRnelxcfHRh
-elxcfFpcXHx0YVpcXHxiejJcXHx0ejJcXHx0YnoyXFx8dGJ6XFx8bHpcXHxsem1hXFx8dGx6XFx8
-bHpvXFx8eHpcXCkkIildCiAgICBbIkV4cGFuZCAuZ3oiICAgICAgKGFjdGlvbnMtY2FsbCAiZ3Vu
-emlwIikKICAgICA6dmlzaWJsZSAoYWN0aW9ucy1maWxlLXAgIlxcLmd6JCIpXQogICAgWyJFeHBh
-bmQgLnppcCIgICAgIChhY3Rpb25zLWNhbGwgInVuemlwIikKICAgICA6dmlzaWJsZSAoYWN0aW9u
-cy1maWxlLXAgIlxcLnppcCQiKV0KICAgIFsiRXhwYW5kIC5yYXIiICAgICAoYWN0aW9ucy1jYWxs
-ICJ1bnJhciIpCiAgICAgOnZpc2libGUgKGFjdGlvbnMtZmlsZS1wICJcXC5yYXIkIildCiAgICBb
-IlJlYWQgUERGIiAgICAgICAgKGFjdGlvbnMtY2FsbCAieHBkZiIpCiAgICAgOnZpc2libGUgKGFj
-dGlvbnMtZmlsZS1wICJcXC5cXChwZGZcXHxQREZcXCkkIildCiAgICBbIlF0IERlc2lnbmVyIiAg
-ICAgKGFjdGlvbnMtY2FsbCAiZGVzaWduZXIiKQogICAgIDp2aXNpYmxlIChhY3Rpb25zLWZpbGUt
-cCAiXFwudWkkIildCiAgICAoIkltYWdlIiA6dmlzaWJsZSAoYWN0aW9ucy1maWxlLXAgIlxcLlxc
-KEpQR1xcfEpQRUdcXHxQTkdcXHxqcGdcXHxqcGVnXFx8cG5nXFx8Z2lmXFx8dGlmZlxcfHN2Z1xc
-fHhjZlxcKSQiKQogICAgIFsiR0lNUCBJbWFnZSIgICAgIChhY3Rpb25zLWNhbGwgImdpbXAiKSA6
-dmlzaWJsZSB0XQogICAgIFsiR0VFUUlFIEltYWdlIiAgIChhY3Rpb25zLWNhbGwgImdlZXFpZSIp
-CiAgICAgIDp2aXNpYmxlIChhY3Rpb25zLWZpbGUtcCAiXFwuXFwoSlBHXFx8SlBFR1xcfFBOR1xc
-fGpwZ1xcfGpwZWdcXHxwbmdcXHxnaWZcXHx0aWZmXFx8c3ZnXFwpJCIpXSkKICAgICgiZ3JlcCBy
-ZWN1cnNpdmVseSIgOnZpc2libGUgKHJlZ2lvbi1hY3RpdmUtcCkKICAgICBbImNhc2Ugc2Vuc2l0
-aXZlIiAgIChhY3Rpb25zLWdyZXAtcikgOnZpc2libGUgdF0KICAgICBbImNhc2UgaW5zZW5zaXRp
-dmUiIChhY3Rpb25zLWdyZXAtciAiLWkiKSA6dmlzaWJsZSB0XSkKICAgICgiZ3JlcCBwcm9tcHQi
-IDp2aXNpYmxlIHQKICAgICBbImNhc2Ugc2Vuc2l0aXZlIiAgIChhY3Rpb25zLWdyZXAtcHJvbXB0
-LXIpIDp2aXNpYmxlIHRdCiAgICAgWyJjYXNlIGluc2Vuc2l0aXZlIiAoYWN0aW9ucy1ncmVwLXBy
-b21wdC1yICItaSIpIDp2aXNpYmxlIHRdKQogICAgKQogICJEZWZpbmUgYSBzdWJtZW51IHRoZSBz
-YW1lIHdheSBhcyBgZWFzeS1tZW51LWRlZmluZScgZG9lcyBpdC4KCkl0IGlzIHVzZWQgYnkgYGFj
-dGlvbnMtYWN0aW9uJy4iCiAgOnR5cGUgJyhsaXN0IDp0YWcgIkFjdGlvbiBNZW51IgoJICAgICAg
-IChjb25zdCA6dGFnICJBY3Rpb24gTWVudSIgIkFjdGlvbiIpCgkgICAgICAgKGNvbnN0IDp0YWcg
-ImFjdGl2ZSIgOmFjdGl2ZSkKCSAgICAgICAoY29uc3QgOnRhZyAiYWx3YXlzIiB0KQoJICAgICAg
-IChyZXBlYXQgOnRhZyAiTWVudSBJdGVtcyIgOmlubGluZSB0CgkJICAgICAgIChjaG9pY2UgOnRh
-ZyAiSXRlbSIKCQkJKHZlY3RvciA6dGFnICJNZW51IEl0ZW0iCgkJCQkoc3RyaW5nIDp0YWcgIk9w
-dGlvbiIpCgkJCQkoc2V4cCA6dGFnICJBY3Rpb24iKQoJCQkJKGNvbnN0IDp0YWcgInZpc2libGUg
-aWYiIDp2aXNpYmxlKQoJCQkJKHNleHAgOnRhZyAiVmlzaWJpbGl0eSBDcml0ZXJpYSIpKQoJCQko
-bGlzdCA6dGFnICJTdWJNZW51IgoJCQkgICAgICAoc3RyaW5nIDp0YWcgIlN1Yk1lbnUiKQoJCQkg
-ICAgICAoY29uc3QgOnRhZyAidmlzaWJsZSBpZiIgOnZpc2libGUpCgkJCSAgICAgIChzZXhwIDp0
-YWcgIlZpc2liaWxpdHkgQ3JpdGVyaWEiKQoJCQkgICAgICAocmVwZWF0IDp0YWcgIlN1Yk1lbnUg
-SXRlbXMiIDppbmxpbmUgdAoJCQkJICAgICAgKHZlY3RvcgoJCQkJICAgICAgIDp0YWcgIlN1Yk1l
-bnUgSXRlbSIKCQkJCSAgICAgICAoc3RyaW5nIDp0YWcgIk9wdGlvbiIpCgkJCQkgICAgICAgKHNl
-eHAgOnRhZyAiQWN0aW9uIikKCQkJCSAgICAgICAoY29uc3QgOnRhZyAidmlzaWJsZSBpZiIgOnZp
-c2libGUpCgkJCQkgICAgICAgKHNleHAgOnRhZyAiVmlzaWJpbGl0eSBDcml0ZXJpYSIpKSkpKSkp
-CiAgOmdyb3VwICdjb252ZW5pZW5jZSkKCgooZGVmY3VzdG9tIGFjdGlvbnMtb3B0aW9ucwogICco
-KCJncmVwIgogICAgICgiLS1leGNsdWRlLWRpcj0iCiAgICAgICIuc3ZuIiAidG1wIiAiLmNjY2Mi
-KQogICAgICgiLS1leGNsdWRlPSIKICAgICAgImxpYioiICIqLnVpIiAiKi50eHQiICIqLmxvZyIg
-IiouaHRtbCIgIk1ha2VmaWxlKiIgIm1ha2VmaWxlKiIpCiAgICAgKQogICAgICgieHBkZiIKICAg
-ICAgKCIteiBoZWlnaHQiKSkKICAgICAoInVucmFyIgogICAgICAoInggLXIgLXYiKSkpCiAgIkFs
-aXN0IGZvciBhY3Rpb24gdG9vbCBvcHRpb25zIChzZWUgdG9vbCBtYW51YWwpLgoKVGhlIGFsaXN0
-IGVsZW1lbnQgaGFzIHRoZSBmb2xsb3dpbmcgZm9ybToKCiAgIChUT09MIChPUFRJT04gQVJHLi4u
-KS4uLikKCldoZXJlOgoKICAgVE9PTAkJaXMgYSBzdHJpbmcuIEl0IGlzIHRoZSB0b29sIG5hbWUu
-CgogICBPUFRJT04JaXMgYSBzdHJpbmcuIEl0IGlzIHRoZSB0b29sIG9wdGlvbi4KCiAgIEFSRwkJ
-aXMgYSBzdHJpbmcgZm9yIHRoZSBvcHRpb24gYXJndW1lbnQuCgkJSXQgaXMgdXNlZCBpZiB0aGUg
-b3B0aW9uIHNob3VsZCBoYXZlIGFuIGFyZ3VtZW50LiIKICA6dHlwZSAnKHJlcGVhdCA6dGFnICJB
-Y3Rpb24gVG9vbCBPcHRpb25zIgoJCSAobGlzdAoJCSAgKHN0cmluZyA6dGFnICJUb29sIikKCQkg
-IChyZXBlYXQgOnRhZyAiVG9vbCBPcHRpb25zIiA6aW5saW5lIHQKCQkJICAobGlzdAoJCQkgICAo
-c3RyaW5nIDp0YWcgIk9wdGlvbiIpCgkJCSAgIChyZXBlYXQgOmlubGluZSB0CgkJCQkgICAoc3Ry
-aW5nIDp0YWcgIk9wdGlvbiBBcmciKSkpKSkpCiAgOmdyb3VwICdjb252ZW5pZW5jZSkKCgo7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7OzsKOzsgS2V5IGJpbmRpbmdzCgo7OzsoZ2xvYmFsLXNldC1rZXkgW2Y2XSAg
-ICAgICAgICAgICd4dGFncy1maW5kLXRhZykJOyBGNgo7OzsoZ2xvYmFsLXNldC1rZXkgW0MtZjZd
-ICAgICAgICAgICd4dGFncy1jcmVhdGUpCQk7IEMtRjYKKGdsb2JhbC1zZXQta2V5IFtNLWY2XSAg
-ICAgICAgICAnYWN0aW9ucy1hY3Rpb24pCTsgTS1GNgo7OzsoZ2xvYmFsLXNldC1rZXkgW1MtZjZd
-ICAgICAgICAgICdzd2l0Y2gtY2MtdG8taCkJOyBTLUY2Cjs7OyhnbG9iYWwtc2V0LWtleSBbQy1T
-LWY2XSAgICAgICAgJ3VuYm91bmQta2V5KQk7IEMtUy1GNgo7OzsoZ2xvYmFsLXNldC1rZXkgW00t
-Uy1mNl0gICAgICAgICd1bmJvdW5kLWtleSkJOyBNLVMtRjYKCgo7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzsK
-OzsgQWN0aW9ucwoKKGRlZnVuIGFjdGlvbnMtY2FsbCAoY29tbWFuZCkKICAiQ2FsbCBDT01NQU5E
-IHZpYSBgc2hlbGwtY29tbWFuZCcgd2l0aCBjdXJyZW50IGZpbGUgaW4gYGRpcmVkLW1vZGUnIGFz
-IGFyZy4iCiAgKHNoZWxsLWNvbW1hbmQKICAgKGZvcm1hdCAiJXMgJXMgJyVzJyAmIgoJICAgY29t
-bWFuZCAoYWN0aW9ucy1vcHRpb25zIGNvbW1hbmQpIChkaXJlZC1nZXQtZmlsZS1mb3ItdmlzaXQp
-KSkpCgoKKGRlZnVuIGFjdGlvbnMtdW50YXIgKCZvcHRpb25hbCBjb21wcmVzcykKICAiVW50YXIg
-Y3VycmVudCBmaWxlIGluIGBkaXJlZC1tb2RlJy4KCk9wdGlvbmFsIGFyZyBDT01QUkVTUyBpbmRp
-Y2F0ZXMgd2hpY2ggdW5jb21wcmVzcyBtZXRob2QgdG8gdXNlIChzZWUgdGFyCm1hbnVhbCkuICBG
-b3IgZXhhbXBsZSwgXCJ6XCIgZm9yIGd6aXA7IFwialwiIGZvciBiejIuIgogIChhY3Rpb25zLWNh
-bGwgKGZvcm1hdCAidGFyIHglc3ZmIiBjb21wcmVzcykpKQoKCihkZWZ1biBhY3Rpb25zLWZpbGUt
-cCAocmVnZXhwKQogICJSZXR1cm5zIHQgaWYgY3VycmVudCBsaW5lIGluIGBkaXJlZC1tb2RlJyBt
-YXRjaGVzIFJFR0VYUCBhbmQgaXQgaXMgYSBmaWxlLiIKICAoYW5kIChlcSBtYWpvci1tb2RlICdk
-aXJlZC1tb2RlKQogICAgICAgKG5vdCAoY2FyIChmaWxlLWF0dHJpYnV0ZXMgKGRpcmVkLWdldC1m
-aWxlLWZvci12aXNpdCkpKSkKICAgICAgIChzdHJpbmctbWF0Y2ggcmVnZXhwIChkaXJlZC1nZXQt
-ZmlsZS1mb3ItdmlzaXQpKSkpCgoKKGRlZnZhciBhY3Rpb25zLWdyZXAtaGlzdG9yeSBuaWwpCgoo
-ZGVmdW4gYWN0aW9ucy1ncmVwLXByb21wdC1yICgmb3B0aW9uYWwgZXh0cmEtYXJnKQogICJQcm9t
-cHQgZm9yIHN0cmluZyB0byBncmVwIGJlZm9yZSBncmVwcGluZyByZWN1cnNpdmVseS4KCk9wdGlv
-bmFsIGFyZyBFWFRSQS1BUkcgaGFzIGFuIGV4dHJhIGFyZyBmb3IgZ3JlcC4iCiAgKGxldCAoKHBy
-b21wdCAoZm9ybWF0ICJHcmVwJXMgZm9yOiAiCgkJCShpZiBleHRyYS1hcmcKCQkJICAgIChmb3Jt
-YXQgIiAoJXMpIiBleHRyYS1hcmcpCgkJCSAgIiIpKSkpCiAgICAoYWN0aW9ucy1kby1ncmVwLXIK
-ICAgICAocmVhZC1zdHJpbmcgcHJvbXB0IG5pbCAnYWN0aW9ucy1ncmVwLWhpc3RvcnkpCiAgICAg
-ZXh0cmEtYXJnKSkpCgoKKGRlZnVuIGFjdGlvbnMtZ3JlcC1yICgmb3B0aW9uYWwgZXh0cmEtYXJn
-KQogICJHcmVwIHJlY3Vyc2l2ZWx5IGZvciBjdXJyZW50IHRleHQgcmVnaW9uLgoKT3B0aW9uYWwg
-YXJnIEVYVFJBLUFSRyBoYXMgYW4gZXh0cmEgYXJnIGZvciBncmVwLiIKICAoYWN0aW9ucy1kby1n
-cmVwLXIgKGJ1ZmZlci1zdWJzdHJpbmcgKHJlZ2lvbi1iZWdpbm5pbmcpIChyZWdpb24tZW5kKSkK
-CQkgICBleHRyYS1hcmcpKQoKCihkZWZ1biBhY3Rpb25zLW9wdGlvbnMgKHRvb2wpCiAgIlJldHVy
-biBUT09MIGRlZmF1bHQgb3B0aW9ucyAoc2VlIGBhY3Rpb25zLW9wdGlvbnMnIHZhcikuIgogICht
-YXBjb25jYXQgKGxhbWJkYSAob3B0aW9uKQoJICAgICAgIChsZXQgKChuYW1lIChjYXIgb3B0aW9u
-KSkKCQkgICAgIChhcmdzIChjZHIgb3B0aW9uKSkpCgkJIChjb25jYXQgIiAiCgkJCSAoaWYgYXJn
-cwoJCQkgICAgIChtYXBjb25jYXQgKGxhbWJkYSAoYXJnKQoJCQkJCSAgKGNvbmNhdCBuYW1lIGFy
-ZykpCgkJCQkJYXJncwoJCQkJCSIgIikKCQkJICAgbmFtZSkpKSkKCSAgICAgKGNkciAoYXNzb2Mg
-dG9vbCBhY3Rpb25zLW9wdGlvbnMpKQoJICAgICAiIikpCgoKKGRlZnVuIGFjdGlvbnMtZG8tZ3Jl
-cC1yIChyZWdleHAgJm9wdGlvbmFsIGV4dHJhLWFyZykKICAiR3JlcCBmb3IgUkVHRVhQIHdpdGgg
-b3B0aW9uYWwgRVhUUkEtQVJHLgoKT3B0aW9uIGBhY3Rpb25zLS1vcHRpb25zJyBoYXMgZGVmYXVs
-dCBhcmd1bWVudHMgZm9yIGdyZXAuIgogIChncmVwIChjb25jYXQgImdyZXAgLW5IIC1yICIJCSA7
-IGxpbmUgbnVtYmVyLCBmaWxlIG5hbWUsIHJlY3Vyc2l2ZQoJCWV4dHJhLWFyZwkJIDsgZXh0cmEg
-YXJnIChjYXNlIGluc2VudGl2ZSwgZXRjLikKCQkoYWN0aW9ucy1vcHRpb25zICJncmVwIikgOyBk
-ZWZhdWx0IG9wdGlvbnM6IGV4Y2x1ZGUgZGlyL2ZpbGUKCQkiIC1lICciCQkJIDsgcmVndWxhciBl
-eHByZXNzaW9uIGZvciBmaW5kaW5nCgkJcmVnZXhwCgkJIicgKiIpKSkKCgooZGVmdmFyIGFjdGlv
-bnMtbWVudS1wb3B1cCBuaWwpCgooZGVmdW4gYWN0aW9ucy1hY3Rpb24gKCZvcHRpb25hbCBmb3Jj
-ZSkKICAiQWN0aXZhdGUgdGhlIGBhY3Rpb25zLW1lbnUnIG1lbnUgYW5kIGV4ZWN1dGUgdGhlIGNo
-b29zZW4gYWN0aW9uLgoKVGhlIGBhY3Rpb25zLW1lbnUnIG1lbnUgaXMgZXZhbHVhdGVkIGlmIGl0
-IHdhcyBub3QgZXZhbHVhdGVkIG9yCmlmIEZPUkNFIGlzIG5vbi1uaWwuIgogIChpbnRlcmFjdGl2
-ZSkKICAoaWYgKG9yIGZvcmNlIChub3QgYWN0aW9ucy1tZW51LXBvcHVwKSkKICAgICAgKGVhc3kt
-bWVudS1kZWZpbmUKCWFjdGlvbnMtbWVudS1wb3B1cCBnbG9iYWwtbWFwICJhY3Rpb25zIG1lbnUg
-YWN0aW9uIgoJYWN0aW9ucy1tZW51KSkKICAobGV0ICgoY29tbWFuZAoJIChsb29rdXAta2V5IGFj
-dGlvbnMtbWVudS1wb3B1cAoJCSAgICAgKHZjb25jYXQgKHgtcG9wdXAtbWVudSAoYWN0aW9ucy1w
-b3NpdGlvbi1waXhlbCkKCQkJCQkgICAgYWN0aW9ucy1tZW51LXBvcHVwKSkpKSkKICAgIChpZiAo
-ZmJvdW5kcCBjb21tYW5kKQoJKGZ1bmNhbGwgY29tbWFuZCkKICAgICAgKGV2YWwgY29tbWFuZCkp
-KSkKCgooZGVmdW4gYWN0aW9ucy1wb3NpdGlvbi1waXhlbCAoKQogICJSZXR1cm4gcG9zaXRpb24g
-aW4gcGl4ZWwganVzdCBiZWxvdyB0aGUgY3VycmVudCBwb2ludCBwb3NpdGlvbi4iCiAgKGxldCAo
-KHgteSAgIChwb3NuLXgteSAocG9zbi1hdC1wb2ludCkpKQoJKGVkZ2VzICh3aW5kb3ctaW5zaWRl
-LXBpeGVsLWVkZ2VzKSkpCiAgICAobGlzdAogICAgIChsaXN0ICgrIChjYXIgeC15KSAobnRoIDAg
-ZWRnZXMpKQk7IFgKCSAgICgrIChjZHIgeC15KSAobnRoIDEgZWRnZXMpCTsgWQoJICAgICAgKGZy
-YW1lLWNoYXItaGVpZ2h0KSkpCiAgICAgKHNlbGVjdGVkLWZyYW1lKSkpKQkJOyBmcmFtZQoKCjs7
-Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7
-Ozs7Ozs7Ozs7Ozs7Ozs7OwoKCihwcm92aWRlICdhY3Rpb25zKQoKCjs7OyBhY3Rpb25zLmVsIGVu
-ZHMgaGVyZQo=
+;;; actions.el --- actions utilities
+
+;; Copyright (C) 2011, 2012, 2013, 2014, 2015, 2016, 2017 Vinicius Jose Latorre
+
+;; Author: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Maintainer: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+;; Keywords: convenience
+;; Version: 0.5
+;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
+
+(defconst actions-version "0.5"
+  "actions.el, v 0.5 <2017/05/31 vinicius>
+
+Please send all bug fixes and enhancements to
+	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
+")
+
+;; This file is *NOT* (yet?) part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by the Free
+;; Software Foundation; either version 3, or (at your option) any later
+;; version.
+
+;; This program is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+;; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+;; more details.
+
+;; You should have received a copy of the GNU General Public License along with
+;; GNU Emacs; see the file COPYING.  If not, write to the Free Software
+;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+;; USA.
+
+;;; Commentary:
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Introduction
+;; ------------
+;;
+;; This package provides an action menu which items are visible depending on
+;; the point context.
+;;
+;; As an usage example, it can be used with `dired-mode' to expand .tar.gz
+;; files, or view/edit an image file by just clicking `M-F6' on file, then an
+;; menu with defined actions is shown.
+;;
+;; Or grep a word by clicking `M-F6' on the word.
+;;
+;;
+;; Using `actions'
+;; ---------------
+;;
+;; To use `actions' insert in your ~/.emacs file (or c:/_emacs, if you're
+;; using Windows 9x/NT or MS-DOS):
+;;
+;;    (require 'actions)
+;;
+;;
+;; Options
+;; -------
+;;
+;; Below it's shown a brief description of `actions' options, please, see the
+;; options declaration in the code for a long documentation.
+;;
+;; `actions-menu'	Define a submenu the same way as
+;;			`easy-menu-define' does it.
+;;
+;; `actions-options'	Alist for tool options (see tool manual).
+;;
+;; To set the above options you may:
+;;
+;; a) insert the code in your ~/.emacs, like:
+;;
+;;	 (setq actions-menu '("Action" ["Option" (action) :visible t]))
+;;
+;;    This way always keep your default settings when you enter a new Emacs
+;;    session.
+;;
+;; b) or use `set-variable' in your Emacs session, like:
+;;
+;;	 M-x set-variable RET actions-menu RET
+;;       '("Action" ["Option" (action) :visible t]) RET
+;;
+;;    This way keep your settings only during the current Emacs session.
+;;
+;; c) or use customization, for example:
+;;	 click on menu-bar *Help* option,
+;;	 then click on *Customize*,
+;;	 then click on *Browse Customization Groups*,
+;;	 expand *Tools* group,
+;;	 expand *Actions* group
+;;	 and then customize `actions' options.
+;;    Through this way, you may choose if the settings are kept or not when
+;;    you leave out the current Emacs session.
+;;
+;; d) or see the option value:
+;;
+;;	 C-h v actions-menu RET
+;;
+;;    and click the *customize* hypertext button.
+;;    Through this way, you may choose if the settings are kept or not when
+;;    you leave out the current Emacs session.
+;;
+;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; Code:
+
+
+(require 'easymenu)
+
+
+(unless (fboundp 'region-active-p)
+  (defun region-active-p ()
+    (and transient-mark-mode mark-active)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; User defined
+
+(defcustom actions-menu
+  '("Action" :active t
+    ["Expand .tar"     (actions-untar)
+     :visible (actions-file-p "\\.tar$")]
+    ["Expand .tar.***" (actions-untar)
+     :visible (actions-file-p "\\.tar\\.\\(gz\\|tgz\\|taz\\|Z\\|taZ\\|bz2\\|tz2\\|tbz2\\|tbz\\|lz\\|lzma\\|tlz\\|lzo\\|xz\\)$")]
+    ["Expand .gz"      (actions-call "gunzip")
+     :visible (actions-file-p "\\.gz$")]
+    ["Expand .zip"     (actions-call "unzip")
+     :visible (actions-file-p "\\.zip$")]
+    ["Expand .rar"     (actions-call "unrar")
+     :visible (actions-file-p "\\.rar$")]
+    ["Read PDF"        (actions-call "xpdf")
+     :visible (actions-file-p "\\.\\(pdf\\|PDF\\)$")]
+    ["Qt Designer"     (actions-call "designer")
+     :visible (actions-file-p "\\.ui$")]
+    ("Image" :visible (actions-file-p "\\.\\(JPG\\|JPEG\\|PNG\\|jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\|xcf\\)$")
+     ["GIMP Image"     (actions-call "gimp") :visible t]
+     ["GEEQIE Image"   (actions-call "geeqie")
+      :visible (actions-file-p "\\.\\(JPG\\|JPEG\\|PNG\\|jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\)$")])
+    ("grep recursively" :visible (region-active-p)
+     ["case sensitive"   (actions-grep-r) :visible t]
+     ["case insensitive" (actions-grep-r "-i") :visible t])
+    ("grep prompt" :visible t
+     ["case sensitive"   (actions-grep-prompt-r) :visible t]
+     ["case insensitive" (actions-grep-prompt-r "-i") :visible t])
+    )
+  "Define a submenu the same way as `easy-menu-define' does it.
+
+It is used by `actions-action'."
+  :type '(list :tag "Action Menu"
+	       (const :tag "Action Menu" "Action")
+	       (const :tag "active" :active)
+	       (const :tag "always" t)
+	       (repeat :tag "Menu Items" :inline t
+		       (choice :tag "Item"
+			(vector :tag "Menu Item"
+				(string :tag "Option")
+				(sexp :tag "Action")
+				(const :tag "visible if" :visible)
+				(sexp :tag "Visibility Criteria"))
+			(list :tag "SubMenu"
+			      (string :tag "SubMenu")
+			      (const :tag "visible if" :visible)
+			      (sexp :tag "Visibility Criteria")
+			      (repeat :tag "SubMenu Items" :inline t
+				      (vector
+				       :tag "SubMenu Item"
+				       (string :tag "Option")
+				       (sexp :tag "Action")
+				       (const :tag "visible if" :visible)
+				       (sexp :tag "Visibility Criteria")))))))
+  :group 'convenience)
+
+
+(defcustom actions-options
+  '(("grep"
+     ("--exclude-dir="
+      ".svn" "tmp" ".cccc")
+     ("--exclude="
+      "lib*" "*.ui" "*.txt" "*.log" "*.html" "Makefile*" "makefile*")
+     )
+     ("xpdf"
+      ("-z height"))
+     ("unrar"
+      ("x -r -v")))
+  "Alist for action tool options (see tool manual).
+
+The alist element has the following form:
+
+   (TOOL (OPTION ARG...)...)
+
+Where:
+
+   TOOL		is a string. It is the tool name.
+
+   OPTION	is a string. It is the tool option.
+
+   ARG		is a string for the option argument.
+		It is used if the option should have an argument."
+  :type '(repeat :tag "Action Tool Options"
+		 (list
+		  (string :tag "Tool")
+		  (repeat :tag "Tool Options" :inline t
+			  (list
+			   (string :tag "Option")
+			   (repeat :inline t
+				   (string :tag "Option Arg"))))))
+  :group 'convenience)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Key bindings
+
+;;;(global-set-key [f6]            'xtags-find-tag)	; F6
+;;;(global-set-key [C-f6]          'xtags-create)		; C-F6
+(global-set-key [M-f6]          'actions-action)	; M-F6
+;;;(global-set-key [S-f6]          'switch-cc-to-h)	; S-F6
+;;;(global-set-key [C-S-f6]        'unbound-key)	; C-S-F6
+;;;(global-set-key [M-S-f6]        'unbound-key)	; M-S-F6
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Actions
+
+(defun actions-call (command)
+  "Call COMMAND via `shell-command' with current file in `dired-mode' as arg."
+  (shell-command
+   (format "%s %s '%s' &"
+	   command (actions-options command) (dired-get-file-for-visit))))
+
+
+(defun actions-untar (&optional compress)
+  "Untar current file in `dired-mode'.
+
+Optional arg COMPRESS indicates which uncompress method to use (see tar
+manual).  For example, \"z\" for gzip; \"j\" for bz2."
+  (actions-call (format "tar x%svf" compress)))
+
+
+(defun actions-file-p (regexp)
+  "Returns t if current line in `dired-mode' matches REGEXP and it is a file."
+  (and (eq major-mode 'dired-mode)
+       (not (car (file-attributes (dired-get-file-for-visit))))
+       (string-match regexp (dired-get-file-for-visit))))
+
+
+(defvar actions-grep-history nil)
+
+(defun actions-grep-prompt-r (&optional extra-arg)
+  "Prompt for string to grep before grepping recursively.
+
+Optional arg EXTRA-ARG has an extra arg for grep."
+  (let ((prompt (format "Grep%s for: "
+			(if extra-arg
+			    (format " (%s)" extra-arg)
+			  ""))))
+    (actions-do-grep-r
+     (read-string prompt nil 'actions-grep-history)
+     extra-arg)))
+
+
+(defun actions-grep-r (&optional extra-arg)
+  "Grep recursively for current text region.
+
+Optional arg EXTRA-ARG has an extra arg for grep."
+  (actions-do-grep-r (buffer-substring (region-beginning) (region-end))
+		   extra-arg))
+
+
+(defun actions-options (tool)
+  "Return TOOL default options (see `actions-options' var)."
+  (mapconcat (lambda (option)
+	       (let ((name (car option))
+		     (args (cdr option)))
+		 (concat " "
+			 (if args
+			     (mapconcat (lambda (arg)
+					  (concat name arg))
+					args
+					" ")
+			   name))))
+	     (cdr (assoc tool actions-options))
+	     ""))
+
+
+(defun actions-do-grep-r (regexp &optional extra-arg)
+  "Grep for REGEXP with optional EXTRA-ARG.
+
+Option `actions--options' has default arguments for grep."
+  (grep (concat "grep -nH -r "		 ; line number, file name, recursive
+		extra-arg		 ; extra arg (case insentive, etc.)
+		(actions-options "grep") ; default options: exclude dir/file
+		" -e '"			 ; regular expression for finding
+		regexp
+		"' *")))
+
+
+(defvar actions-menu-popup nil)
+
+(defun actions-action (&optional force)
+  "Activate the `actions-menu' menu and execute the choosen action.
+
+The `actions-menu' menu is evaluated if it was not evaluated or
+if FORCE is non-nil."
+  (interactive)
+  (if (or force (not actions-menu-popup))
+      (easy-menu-define
+	actions-menu-popup global-map "actions menu action"
+	actions-menu))
+  (let ((command
+	 (lookup-key actions-menu-popup
+		     (vconcat (x-popup-menu (actions-position-pixel)
+					    actions-menu-popup)))))
+    (if (fboundp command)
+	(funcall command)
+      (eval command))))
+
+
+(defun actions-position-pixel ()
+  "Return position in pixel just below the current point position."
+  (let ((x-y   (posn-x-y (posn-at-point)))
+	(edges (window-inside-pixel-edges)))
+    (list
+     (list (+ (car x-y) (nth 0 edges))	; X
+	   (+ (cdr x-y) (nth 1 edges)	; Y
+	      (frame-char-height)))
+     (selected-frame))))		; frame
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(provide 'actions)
+
+
+;;; actions.el ends here
