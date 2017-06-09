@@ -379,9 +379,19 @@ commands that read absolute file names.  For them, a prefix
 argument has a different meaning.)
 
 You can use option '''`<tt>[[Icicles - Customization and General Tips#icicle-file-skip-functions|icicle-file-skip-functions]]</tt>'''' to specify patterns for file names to exclude from content-searching
-when you provide a content-matching pattern.
+when you provide a content-matching pattern.  By default, image files and
+byte-compiled [[EmacsLisp|Emacs-Lisp]] files are ignored for content-searching.
 
-In [[Dired]], there are related content-matching multi-commands that you can use to visit marked files and subdirectories whose content matches a [[regexp]].
+If your input contains a content-matching part then, by default,
+it is ignored for completion of a directory-name candidate.  The
+behavior is governed by options `find-file-run-dired' and
+'''`<tt>[[Icicles - Customization and General Tips#icicle-file-search-dir-as-dired-flag|icicle-file-search-dir-as-dired-flag]]</tt>''''.  If both of these options
+are non-`nil' then the directory is visited in [[Dired]] mode during
+completion, and the Dired listing is searched as the content.
+
+In a [[Dired]] buffer, there are related content-matching
+multi-commands that you can use to visit marked files and
+subdirectories whose content matches a [[regexp]].
 
 * `icicle-visit-marked-file-of-content', bound to `C-S-f', aka '''`C-F'''', and `C-M-S-f', aka '''`C-M-F'''', for other-window
 
