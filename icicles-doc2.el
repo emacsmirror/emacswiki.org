@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon May 22 14:44:17 2017 (-0700)
+;; Last-Updated: Fri Jun  9 10:24:21 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 29962
+;;     Update #: 29971
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6114,6 +6114,16 @@
 ;;    function returns non-`nil' then the buffer or file content is
 ;;    not searched.  This is relevant only when your multi-completion
 ;;    input has a second, content-matching part.
+;;
+;;  * If options `icicle-file-search-dir-as-dired-flag' and
+;;    `find-file-run-dired' are both non-`nil', and if your input to
+;;    an Icicles file-finding command such as `icicle-file' has a
+;;    content-matching part, then completion of a directory name
+;;    visits the directory in Dired mode, and the Dired listing is
+;;    searched as the content.  Otherwise, the content-matching part
+;;    is ignored for a directory-name candidate.  By default,
+;;    `icicle-file-search-dir-as-dired-flag' is `nil', preventing such
+;;    searching.
 ;;
 ;;  * Option `icicle-ignored-directories' is a list of directories
 ;;    that are ignored by various Icicles commands, including
