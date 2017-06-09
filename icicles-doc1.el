@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon May 22 14:57:25 2017 (-0700)
+;; Last-Updated: Fri Jun  9 10:16:44 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 28541
+;;     Update #: 28550
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -8671,11 +8671,19 @@
 ;;
 ;;  You can use option `icicle-file-skip-functions' to specify
 ;;  patterns for file names to exclude from content-searching when you
-;;  provide a content-matching pattern.
+;;  provide a content-matching pattern.  By default, image files and
+;;  byte-compiled Emacs-Lisp files are ignored for content-searching.
 ;;
-;;  In Dired, there are related content-matching multi-commands that
-;;  you can use to visit marked files and subdirectories whose content
-;;  matches a regexp.
+;;  If your input contains a content-matching part then, by default,
+;;  it is ignored for completion of a directory-name candidate.  The
+;;  behavior is governed by options `find-file-run-dired' and
+;;  `icicle-file-search-dir-as-dired-flag'.  If both of these options
+;;  are non-`nil' then the directory is visited in Dired mode during
+;;  completion, and the Dired listing is searched as the content.
+;;
+;;  In a Dired buffer, there are related content-matching
+;;  multi-commands that you can use to visit marked files and
+;;  subdirectories whose content matches a regexp.
 ;;
 ;;  * `icicle-visit-marked-file-of-content', bound to `C-S-f', aka
 ;;    `C-F', and `C-M-S-f', aka `C-M-F', for other-window
