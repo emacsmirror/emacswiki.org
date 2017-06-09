@@ -1940,6 +1940,24 @@ input has a second, content-matching part.
 
 
 
+
+----
+[:icicle-file-search-dir-as-dired-flag]
+[:find-file-run-dired]
+==== Option icicle-file-search-dir-as-dired-flag ====
+
+If options '''`icicle-file-search-dir-as-dired-flag'''' and
+`find-file-run-dired' are both non-`nil', and if your input to an
+'''Icicles''' file-finding command such as `icicle-file' has a
+''content-matching'' part, then completion of a ''directory'' name
+visits the directory in [[Dired]] mode, and the Dired listing is
+searched as the content.  Otherwise, the content-matching part
+is ignored for a directory-name candidate.  By default,
+`icicle-file-search-dir-as-dired-flag' is `nil', preventing such searching.
+
+
+
+
 ----
 [:icicle-ignored-directories]
 ==== Option icicle-ignored-directories ====
