@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon May 22 14:47:25 2017 (-0700)
+;; Last-Updated: Fri Jun  9 09:10:15 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 11695
+;;     Update #: 11703
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2017/06/09 dadams
+;;     icicle-file-of-content-apropos-complete-match:
+;;       Raise use of icicle-file-skip-functions: do not lose image-file etc. candidate if skipping.
+;;       Use icicle-file-search-dir-as-dired-flag, in addition to find-file-run-dired (no Dired content
+;;        search, by default).  
 ;; 2017/01/26 dadams
 ;;     icicle-doremi-increment-variable+: Removed optional arg OPTIONP (prefix-arg only interactive).
 ;; 2016/11/18 dadams
@@ -7744,6 +7749,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2017/06/09 dadams
+;;     Added: icicle-file-search-dir-as-dired-flag.
 ;; 2017/05/22 dadams
 ;;     icicle-buffer-candidate-key-bindings: Added C-x * +, C-x * - (keep/remove modified).
 ;;     Require cl.el when compile (for incf).
