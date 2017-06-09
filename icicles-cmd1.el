@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Mar  3 14:43:30 2017 (-0800)
+;; Last-Updated: Fri Jun  9 09:12:15 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 27508
+;;     Update #: 27513
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -9602,10 +9602,10 @@ Return non-nil if the current multi-completion INPUT matches FILE-NAME."
            ;; Do this to ensure we visit only the `icicle-completion-candidates' already determined so far.
            (or (not icicle-narrow-regexp)  (icicle-string-match-p icicle-narrow-regexp file))
            (or (not date-pat)  (not date)  (icicle-string-match-p date-pat date))
-           (or find-file-run-dired  (not (file-directory-p file)))
+           (or (and find-file-run-dired  icicle-file-search-dir-as-dired-flag)  (not (file-directory-p file)))
            (or (equal "" content-pat)
-               (and (not (run-hook-with-args-until-success 'icicle-file-skip-functions file))
-                    (let* ((dir-p   (file-directory-p file))
+               (run-hook-with-args-until-success 'icicle-file-skip-functions file)
+               (and (let* ((dir-p   (file-directory-p file))
                            (exists  nil)
                            (buf     (if dir-p
                                         (find-file-noselect file)
