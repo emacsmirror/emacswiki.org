@@ -59,7 +59,8 @@ Here's how to do it, based on the icon file:
 == Showing faces ==
 
 Gnus should set the variable `gnus-treat-display-xface' to the symbol
-`head' if it detects the command `uncompface' in your path.
+`head' if it detects both the command `uncompface' (included in `compface')
+ and `icontopbm' (included in `netpbm') in your path.
 
 == Not showing faces ==
 
