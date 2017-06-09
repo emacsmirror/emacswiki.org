@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Mon May 22 14:30:08 2017 (-0700)
+;; Last-Updated: Fri Jun  9 08:59:39 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 6178
+;;     Update #: 6180
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -126,6 +126,7 @@
 ;;    `icicle-expand-input-to-common-match-alt', `icicle-file-extras',
 ;;    `icicle-file-match-regexp', `icicle-file-no-match-regexp',
 ;;    `icicle-file-predicate', `icicle-file-require-match-flag',
+;;    `icicle-file-search-dir-as-dired-flag',
 ;;    `icicle-file-skip-functions', `icicle-file-sort',
 ;;    `icicle-files-ido-like-flag',
 ;;    `icicle-filesets-as-saved-completion-sets-flag',
@@ -2904,6 +2905,26 @@ completion candidates are replaced by the contents of the directory.
 You can toggle this option at any time from the minibuffer using
 `\\<minibuffer-local-completion-map>\\[icicle-toggle-expand-directory]'."
   :type 'boolean :group 'Icicles-Files :group 'Icicles-Miscellaneous)
+
+(defcustom icicle-file-search-dir-as-dired-flag nil
+  "Non-nil means `icicle-file' searches directories as Dired listings.
+This applies to `icicle-file' and similar multi-completion commands
+that let you match file content as well as file names.
+
+The option has no effect if your input has no content-matching part.
+
+The default value of nil prevents a command from visiting a directory
+in Dired mode to search for the content-matching part of your
+multi-completion input.
+
+A non-nil value means that such Dired visiting and searching is
+governed instead by the value of option `find-file-run-dired'.
+
+Option `icicle-file-search-dir-as-dired-flag' is specifically for
+content-matching.  A nil value lets you prevent content matching but
+still allow file-finding commands to visit a directory in Dired (by
+way of non-nil `find-file-run-dired')."
+  :type 'boolean :group 'Icicles-Files :group 'Icicles-Matching :group 'Icicles-Searching)
 
 (defcustom icicle-file-skip-functions '(icicle-image-file-p icicle-file-elc-p)
   "*Hook run by file-visiting commands on each matching file name.
