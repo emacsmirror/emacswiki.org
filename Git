@@ -22,7 +22,9 @@ These third-party packages are neither part of Git nor Emacs. These front ends s
 
 * [http://github.com/tsgates/git-emacs git-emacs] is advertised as "yet another git mode on emacs for newbies".
 
-* DistributedVersionControl (DVC) is a generic front end similar to VC but specialized to modern dvcs like Git. 
+* DistributedVersionControl (DVC) is a generic front end similar to VC but specialized to modern dvcs like Git.
+
+* [https://elpa.gnu.org/packages/gited.html Gited] is a Git front end with a dired-like interface.
 
 
 == Extensions ==
