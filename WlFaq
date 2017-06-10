@@ -421,6 +421,8 @@ non-nil, add `dmj/wl-send-html-message' to
 }}}
 
 
+`org-mime-org-buffer-htmlize' also works fine, you need to have
+`org-plus-contrib' installed and set `org-mime-library' to `semi'.
 
 
 == How can I change which headers wl displays when viewing a message? ==
