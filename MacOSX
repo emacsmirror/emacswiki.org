@@ -7,7 +7,7 @@ This page is about internals.  A list of implementations is at EmacsForMacOS.
 
 Mac OS X is buzzword-intensive.  Here's a short glossary:
 
-* *Darwin*:  /Darwin/ is to Mac OS X as Linux is to GNU/Linux.  It's the kernel.  Unlike Linux, it uses a microkernel architecture based on CMU's Mach (same as the GNU HURD).  Userland is mostly from FreeBSD.
+* *Darwin*:  /Darwin/ is the open-source operating system underlying Mac OS X.  It includes the kernel and core system utilities.  The kernel is /XNU/, a derivative of CMU Mach and BSD, with a unique object-oriented driver subsystem called /IOKit/.  Darwin's userland is mostly from FreeBSD, with various pieces borrowed from GNU and other projects.
 
 * *Quartz*:  /Quartz/ is the display engine.  Its role falls somewhere between, say, the XRender extension, and the whole X server.  And of course, like Microsoft Windows, it can't display across the network by itself.
 
