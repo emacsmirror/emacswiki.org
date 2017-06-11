@@ -4,6 +4,27 @@ See the Elisp manual, node [http://www.gnu.org/software/emacs/manual/html_node/e
 
 For a more consistent and extensive interface to hash tables, see the library ht - https://github.com/Wilfred/ht.el. 
 
+== Comparing Hash Tables ==
+
+`equal' is the same as `eq' for hash tables, to check if two hash tables define the same set of key => value mappings, use:
+
+{{{
+(defconst hash-table-equal--sentinel (make-symbol "hash-table-equal--sentinel"))
+
+(defun hash-table-equal-p (h1 h2)
+  "Return non-nil if hash-table H1 has same keys & values as H2."
+  (and (= (hash-table-count h1)
+          (hash-table-count h2))
+       (catch 'equal
+         (maphash
+          (lambda (k v)
+            (unless (equal v (gethash k h2 hash-table-equal--sentinel))
+              (throw 'equal nil)))
+          h2)
+         t)))
+}}}
+
+The ht library mentioned above provides a similar `ht-equal-p' predicate.
 
 == Examining a Hash Map ==
 
