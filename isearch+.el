@@ -8,20 +8,21 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon May 29 19:07:01 2017 (-0700)
+;; Last-Updated: Wed Jun 14 09:27:12 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5845
+;;     Update #: 5846
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
-;; Doc URL: https://www.emacswiki.org/IsearchPlus
-;; Doc URL: https://www.emacswiki.org/DynamicIsearchFiltering
+;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
+;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `cl-lib', `color', `frame-fns', `gv', `help-fns',
-;;   `hexrgb', `isearch-prop', `macroexp', `misc-cmds', `misc-fns',
-;;   `strings', `thingatpt', `thingatpt+', `zones'.
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
+;;   `cl-lib', `color', `frame-fns', `gv', `help-fns', `hexrgb',
+;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
