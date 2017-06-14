@@ -164,6 +164,8 @@ git clone https://github.com/manateelazycat/deepin-emacs
 
 *** Lisp:haskell-extension.el -- Some enhanced functions for [[HaskellMode]].
 
+*** Lisp:moccur-at-pointer.el -- Search anything around pointer with moccur-grep-find-pwd, don't need type command 'moccur-grep-find-pwd' and input search content manually.
+
 ** [[Anything]]:
 
 *** Lisp:anything-extension.el -- Some enhanced functions for [[Anything]], more extensions see Lisp:anything-config.el.
