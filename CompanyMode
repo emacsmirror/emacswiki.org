@@ -128,6 +128,8 @@ Depending on the emphasis, one of these:
 
 ==== Yasnippet integration ====
 
+If the two fixes below don't work for you, you can try: https://gist.github.com/sebastiencs/a16ea58b2d23e2ea52f62fcce70f4073
+
 Company interferes with Yasnippet's native behaviour.
 Here's a quick fix: http://gist.github.com/265010
 
