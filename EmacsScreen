@@ -7,6 +7,8 @@ by NoahFriedman is modeled after
 DanDebertin recommends ElScreen instead.
 BarryWarsaw wrote WinRing instead, a very light implementation of this.
 
+* dmh has built a this helm wrapper on top of escreen that allows the use of escreen along with helm (for easily naming a locating escreens): https://github.com/dmh43/helm-escreen
+
 ----
 CategoryEmulation
 CategoryWindows
