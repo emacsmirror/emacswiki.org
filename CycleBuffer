@@ -4,6 +4,8 @@ Cycle-Buffer package:
   ;; Created: 05 June 1996
   ;; Keywords: switch-to-buffer, cycle buffer list
 
+Get it from the authors [https://github.com/VladimirAlexiev/emacs elisp repository] or Lisp:cycle-buffer.el.
+
 For alternatives ways to cycle buffers, see '''[[SwitchingBuffers#BufferCycling]]'''.
 
 I have been using the cycle-buffer package for a few years now and for the way that I normally work it is better than any of the alternatives I have tried. Fast! You press a key and you immediately see the next buffer in the current frame, no waiting for confirmation.
@@ -25,7 +27,6 @@ For dealing with buffer clutter I also bind the shifted versions of those keys a
 
 For general principles of key bindings and other tips see CategoryKeys.
 
-Lisp:cycle-buffer.el
 
 ----
 CategoryBufferSwitching
