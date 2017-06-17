@@ -41,4 +41,6 @@ Instead [NxhtmlMode nXhtml] now contains a version of ControlTABbufferCycling ba
 
 By mistake I used `swbuff-switch-to-previous-buffer' but what I really wanted to use was `swbuff-switch-to-next-buffer'. -- MaDa
 
+You can control swbuff by clicking on the buffer name in the mode line. 
+
 CategoryBufferSwitching
