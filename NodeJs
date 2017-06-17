@@ -12,7 +12,7 @@ The simplest method is to just use Emacs's Comint mode:
 
 "The simplest way to have node.js as an inferior shell under Emacs is to use the [[https://github.com/redguardtoo/js-comint|js-comint package]]. The command <code>M-x run-js</code> will then open the interpreter."
 
-If you start a repl using "js-comint-repl", you can then later send code to the repl using "js-comint-send-region". (Please note original commands liek `js-run` and `js-send-region` are alias of new `js-comint-xxxx` commands).
+If you start a repl using "js-comint-repl", you can then later send code to the repl using "js-comint-send-region". (Please note original commands like `js-run` and `js-send-region` are alias of new `js-comint-xxxx` commands).
 
 == Using nodejs-repl ==
 
