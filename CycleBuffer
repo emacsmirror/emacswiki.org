@@ -4,7 +4,7 @@ Cycle-Buffer package:
   ;; Created: 05 June 1996
   ;; Keywords: switch-to-buffer, cycle buffer list
 
-Get it from the authors [https://github.com/VladimirAlexiev/emacs elisp repository] or Lisp:cycle-buffer.el.
+Get it from the author's [https://github.com/VladimirAlexiev/emacs elisp repository] or Lisp:cycle-buffer.el.
 
 For alternatives ways to cycle buffers, see '''[[SwitchingBuffers#BufferCycling]]'''.
 
