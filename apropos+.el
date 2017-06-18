@@ -8,9 +8,9 @@
 ;; Created: Thu Jun 22 15:07:30 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 21 07:45:44 2017 (-0800)
+;; Last-Updated: Sun Jun 18 13:50:35 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 61
+;;     Update #: 83
 ;; URL: https://www.emacswiki.org/emacs/download/apropos%2b.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -23,14 +23,19 @@
 ;;
 ;;; Commentary:
 ;;
-;; New command `apropos-user-options'.
+;;  Commands defined here:
 ;;
-;;  It lists only user-definable variables.
+;;    `apropos-local-value', `apropos-local-variable',
+;;    `apropos-user-option' (Emacs < 24.4).
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2017/06/18 dadams
+;;     Added: apropos-local-value, apropos-local-variable.
+;;     Renamed apropos-user-options to apropos-user-option.  Define it only
+;;       if it does not already exist.  Removed autoload cookie for it.
 ;; 2007/11/27 dadams
 ;;     apropos-user-options: If available, use icicle-read-string-completing.
 ;;
@@ -59,16 +64,67 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun apropos-local-variable (pattern &optional buffer)
+  "Show buffer-local variables that match PATTERN.
+Optional arg BUFFER (default: current buffer) is the buffer to check.
 
-;;;###autoload
-(defun apropos-user-options (regexp)
-  "Show user variables that match REGEXP."
-  (interactive
-   (list (if (fboundp 'icicle-read-string-completing)
-             (icicle-read-string-completing "Apropos user options (regexp): ")
-           (read-string "Apropos user options (regexp): "))))
-  (let ((apropos-do-all nil))
-    (apropos-variable regexp)))
+The output includes variables that are not yet set in BUFFER, but that
+will be buffer-local when set."
+  (interactive (list (if (fboundp 'apropos-read-pattern)
+                         (apropos-read-pattern "buffer-local variable")
+                       (read-string "Apropos buffer-local variable: "))))
+  (unless buffer (setq buffer  (current-buffer)))
+  (apropos-command pattern nil
+                   (lambda (symbol)
+                     (and (boundp symbol)
+                          (local-variable-if-set-p symbol)
+                          (get symbol 'variable-documentation)))))
+
+(defun apropos-local-value (pattern &optional buffer)
+  "Show buffer-local variables whose values match PATTERN.
+This is like `apropos-value', but for only buffer-local variables.
+
+Optional arg BUFFER (default: current buffer) is the buffer to check."
+  (interactive (list (if (fboundp 'apropos-read-pattern)
+                         (apropos-read-pattern "value of buffer-local variable")
+                       (read-string "Apropos value of buffer-local variable: "))))
+  (unless buffer (setq buffer  (current-buffer)))
+  (if (fboundp 'apropos-parse-pattern)
+      (apropos-parse-pattern pattern)   ; Emacs 21+
+    (setq apropos-regexp  pattern))     ; Emacs 20
+  (setq apropos-accumulator  ())
+  (let ((var             nil))
+    (mapatoms
+     (lambda (symb)
+       (unless (memq symb '(apropos-regexp apropos-pattern apropos-all-words-regexp
+                            apropos-words apropos-all-words apropos-accumulator symb var))
+         (setq var  (apropos-value-internal 'local-variable-if-set-p symb 'symbol-value)))
+       (when (and (fboundp 'apropos-false-hit-str)  (apropos-false-hit-str var))
+         (setq var nil))
+       (when var
+         (setq apropos-accumulator (cons (if (> emacs-major-version 20)
+                                             (list symb (apropos-score-str var) nil var)
+                                           (list symb nil var))
+                                         apropos-accumulator))))))
+  (let ((apropos-multi-type  nil))
+    (if (> emacs-major-version 20)
+        (apropos-print
+         nil "\n----------------\n"
+         (format "Buffer `%s' has the following local variables\nmatching %s`%s':"
+                 (buffer-name buffer)
+                 (if (consp pattern) "keywords " "")
+                 pattern))
+      (apropos-print nil "\n----------------\n"))))
+
+(unless (fboundp 'apropos-user-option)  ; For Emacs prior to 24.4 only.
+  (defun apropos-user-option (regexp)
+    "Show user variables that match REGEXP."
+    (interactive
+     (list (if (fboundp 'icicle-read-string-completing)
+               (icicle-read-string-completing "Apropos user options (regexp): ")
+             (read-string "Apropos user options (regexp): "))))
+    (let ((apropos-do-all nil))
+      (apropos-variable regexp))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
