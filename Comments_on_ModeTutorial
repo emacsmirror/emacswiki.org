@@ -18,3 +18,10 @@ http://ergoemacs.org/emacs/elisp_create_major_mode_keymap.html
 
 -- Ceamorecash 2017-06-18 07:43 UTC
 
+
+----
+
+Worked for me.  Were you in `wpdl-mode' when you pressed `C-j'?
+
+-- npostavs 2017-06-18 12:13 UTC
+
