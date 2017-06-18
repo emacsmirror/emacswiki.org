@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Apr 12 10:33:58 2017 (-0700)
+;; Last-Updated: Sun Jun 18 14:11:58 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 3765
+;;     Update #: 3781
 ;; URL: https://www.emacswiki.org/emacs/download/menu-bar%2b.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
@@ -128,6 +128,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/06/18 dadams
+;;     menu-bar-apropos-menu: Added apropos-local-(value|variable).
+;;     Renamed apropos-user-options to apropos-user-option.
 ;; 2017/04/12 dadams
 ;;     kill-this-buffer: Updated for more recent Emacs versions.
 ;; 2016/12/09 dadams
@@ -424,7 +427,7 @@
 (require 'misc-cmds nil t) ;; (no error if not found): kill-buffer-and-its-windows
 (require 'second-sel nil t) ;; (no error if not found):
                             ;; primary-to-secondary, secondary-to-primary, yank-secondary
-(require 'apropos+ nil t) ;; (no error if not found): apropos-user-options
+(require 'apropos+ nil t);; (no error if not found): apropos-local-value, apropos-local-variable
 
 (when (> emacs-major-version 20)
   (require 'cmds-menu nil t)) ;; (no error if not found): recent-cmds-menu
@@ -1409,18 +1412,26 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 (define-key menu-bar-apropos-menu [apropos] nil)
 (define-key menu-bar-apropos-menu [apropos-symbol]
   '(menu-item "Symbols..." apropos :help "Find symbols whose name matches a regexp"))
+(when (fboundp 'apropos-local-variable)
+  (define-key menu-bar-apropos-menu [apropos-local-value]
+    '(menu-item "Buffer-Local Variable Values..." apropos-local-value
+      :help "Find buffer-local variables whose values match a pattern")))
+(when (fboundp 'apropos-local-variable)
+  (define-key menu-bar-apropos-menu [apropos-local-variable]
+    '(menu-item "Buffer-local Variables..." apropos-local-variable
+      :help "Find buffer-local variables whose names match a pattern")))
 (define-key menu-bar-apropos-menu [apropos-value] nil)
 (define-key menu-bar-apropos-menu [apropos-var-value]
   '(menu-item "Variable Values..." apropos-value
-    :help "Find variables whose values match a regexp"))
+    :help "Find variables whose values match a pattern"))
 (define-key menu-bar-apropos-menu [apropos-variables] nil)
 (define-key menu-bar-apropos-menu [apropos-variable]
   '(menu-item "All Variables..." apropos-variable
-    :help "Find variables whose name matches a regexp"))
-(when (fboundp 'apropos-user-options)
-  (define-key menu-bar-apropos-menu [apropos-user-options]
-    '(menu-item "User Options..." apropos-user-options
-      :help "Find user options (variables you can change) whose name matches a regexp")))
+    :help "Find variables whose names match a pattern"))
+(when (fboundp 'apropos-user-option)
+  (define-key menu-bar-apropos-menu [apropos-user-option]
+    '(menu-item "User Options..." apropos-user-option
+      :help "Find user options (variables you can change) whose names match a pattern")))
 (define-key menu-bar-apropos-menu [apropos-commands] nil)
 (define-key menu-bar-apropos-menu [apropos-command]
   '(menu-item "Commands..." apropos-command :help "Find commands whose name matches a regexp"))
