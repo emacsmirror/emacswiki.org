@@ -1,0 +1,20 @@
+I just tried to use this way of setting my mode map, and it failed
+
+I switched 
+
+
+   (define-key map "\C-j" 'newline-and-indent)
+
+
+to 
+ 
+   (define-key map "\C-j" 'org-mode)
+
+
+and it didn't do anything (\C-j did not start org-mode)
+
+this mode map tutorial is more up to date
+http://ergoemacs.org/emacs/elisp_create_major_mode_keymap.html
+
+-- Ceamorecash 2017-06-18 07:43 UTC
+
