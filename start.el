@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 15:32:38 2017 (-0800)
+;; Last-Updated: Sun Jun 18 13:45:59 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 3065
+;;     Update #: 3072
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -84,6 +84,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2017/06/18 dadams
+;;     Autoload apropos+ for apropos-local-variable and apropos-local-value.
 ;; 2016/07/01 dadams
 ;;     Do not require bm.el (Bookmark+ does everything it does, and better.)
 ;; 2015/09/20 dadams
@@ -587,7 +589,9 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (autoload 'make-regexp "make-regexp" "Return a regexp to match a string item in STRINGS.")
 (autoload 'make-regexps "make-regexp" "Return a regexp to REGEXPS.")
 
-(autoload 'apropos-user-options "apropos+" "Show user options that match REGEXP." t)
+(autoload 'apropos-local-value    "apropos+"
+  "Show buffer-local variables whose values match PATTERN." t)
+(autoload 'apropos-local-variable "apropos+" "Show buffer-local variables that match PATTERN." t)
 (autoload 'erase-nonempty-inactive-minibuffer "strings"
   "Erase the minibuffer, if inactive and `minibuffer-empty-p'." t)
 (autoload 'update-file-autoloads "autoload+"
