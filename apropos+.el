@@ -8,9 +8,9 @@
 ;; Created: Thu Jun 22 15:07:30 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 18 13:50:35 2017 (-0700)
+;; Last-Updated: Sun Jun 18 14:18:48 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 83
+;;     Update #: 84
 ;; URL: https://www.emacswiki.org/emacs/download/apropos%2b.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -76,8 +76,7 @@ will be buffer-local when set."
   (unless buffer (setq buffer  (current-buffer)))
   (apropos-command pattern nil
                    (lambda (symbol)
-                     (and (boundp symbol)
-                          (local-variable-if-set-p symbol)
+                     (and (local-variable-if-set-p symbol)
                           (get symbol 'variable-documentation)))))
 
 (defun apropos-local-value (pattern &optional buffer)
