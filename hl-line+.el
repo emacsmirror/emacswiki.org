@@ -8,12 +8,12 @@
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun  4 15:26:09 2017 (-0700)
+;; Last-Updated: Wed Jun 21 07:33:43 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 549
+;;     Update #: 555
 ;; URL: https://www.emacswiki.org/emacs/download/hl-line%2b.el
-;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
-;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
+;; Doc URL: https://www.emacswiki.org/emacs/HighlightCurrentLine
+;; Doc URL: https://www.emacswiki.org/emacs/CrosshairHighlighting
 ;; Keywords: highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
 ;;
@@ -111,6 +111,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/06/21 dadams
+;;     hl-line-highlight-now: Inhibit highlighting if selected window is minibuffer window.
 ;; 2017/06/04 dadams
 ;;     Added: hl-line-flash-timer.
 ;;     hl-line-flash-show-period: Allow non-integer non-negative numbers.
@@ -285,6 +287,7 @@ BUFFER defaults to the current buffer."
   (with-current-buffer (or buffer  (current-buffer))
     (unless (or hl-line-mode
                 global-hl-line-mode
+                (window-minibuffer-p)
                 (member major-mode hl-line-inhibit-highlighting-for-modes))
       (let ((hl-line-mode  t)) (hl-line-highlight))
       (add-hook 'pre-command-hook 'hl-line-unhighlight-now))))
