@@ -5,6 +5,12 @@ SqlBeautify is a shell utility which uses blancoSqlFormatter as a backend.
 
 See [SqlBeautify](https://github.com/ldeck/SqlBeautify) on github.
 
+Note: It seems like the underlying ant script for the repo above is broken. An alternative is to install a ruby gem called anbt-sql-formatter. You can run the following command to install the cli tool:
+
+<pre>
+gem install anbt-sql-formatter
+</pre>
+
 SqlBeautify is quick and easy to install and use.
 
 Example usage:
@@ -28,6 +34,8 @@ Write following definitions to .emacs:
   (interactive "r")
   (save-excursion
     (shell-command-on-region beg end "sqlbeautify" nil t)))
+    ;; change sqlbeautify to anbt-sql-formatter if you
+    ;;ended up using the ruby gem
 
 (defun sql-beautify-buffer ()
  "Beautify SQL in buffer."
