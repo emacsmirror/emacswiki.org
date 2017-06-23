@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.04.09
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun 23 09:10:19 2017 (-0700)
+;; Last-Updated: Fri Jun 23 09:52:42 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 10151
+;;     Update #: 10153
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -660,6 +660,7 @@
 ;;; Change Log:
 ;;
 ;; 2017/06/23 dadams
+;;     diredp-marked-here: Bind dired-marker-char to ?*.
 ;;     diredp-mark-files-regexp-recursive: Better msgs - show total count.
 ;; 2017/05/30 dadams
 ;;     Fixed typo: direp--set-up-font-locking -> diredp--set-up-font-locking.
@@ -3943,9 +3944,10 @@ Non-nil optional arg ONLY-MARKED-P means return nil if none are
 marked."
   ;; If no file is marked, exclude `(FILENAME)': the unmarked file at cursor.
   ;; If there are no marked files as a result, return all files and subdirs in the dir.
-  (let ((ff  (condition-case nil ; Ignore error if on `.' or `..' and no file is marked.
-                 (dired-get-marked-files nil nil nil 'DISTINGUISH-ONE-MARKED)
-               (error nil))))
+  (let* ((dired-marker-char  ?*)
+         (ff                 (condition-case nil ; Ignore error if on `.' or `..' and no file is marked.
+                                 (dired-get-marked-files nil nil nil 'DISTINGUISH-ONE-MARKED)
+                               (error nil))))
     (cond ((eq t (car ff))  (cdr ff))   ; Single marked
           ((cadr ff)        ff)         ; Multiple marked
           (t                (and (not only-marked-p) ; None marked
