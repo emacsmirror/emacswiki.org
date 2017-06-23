@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.04.09
 ;; Package-Requires: ()
-;; Last-Updated: Tue May 30 10:22:48 2017 (-0700)
+;; Last-Updated: Fri Jun 23 08:45:37 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 10144
+;;     Update #: 10146
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -8015,7 +8015,12 @@ absolute names gives you more flexibility.
 REGEXP is an Emacs regexp, not a shell wildcard.  Thus, use `\\.o$'
 for object files--just `.o' might mark more than you might expect.
 
-REGEXP is added to `regexp-search-ring', for regexp search."
+REGEXP is added to `regexp-search-ring', for regexp search.
+
+Non-interactively:
+ MARKER-CHAR is the marker character - used for `dired-marker-char'.
+ LOCALP is passed to `dired-get-filename'.  It determines the form of
+   filename that is matched against REGEXP."
   (interactive (let* ((raw      current-prefix-arg)
                       (C-u      (and (consp raw)  (= 4 (car raw))))
                       (C-u-C-u  (and (consp raw)  (= 16 (car raw))))
