@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.04.09
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun 23 08:45:37 2017 (-0700)
+;; Last-Updated: Fri Jun 23 09:10:19 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 10146
+;;     Update #: 10151
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: http://www.emacswiki.org/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -659,6 +659,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/06/23 dadams
+;;     diredp-mark-files-regexp-recursive: Better msgs - show total count.
 ;; 2017/05/30 dadams
 ;;     Fixed typo: direp--set-up-font-locking -> diredp--set-up-font-locking.
 ;; 2017/05/22 dadams
@@ -4979,16 +4981,18 @@ then only the first such is used."
   (let ((dired-marker-char  (or marker-char  dired-marker-char))
         (sdirs              (diredp-get-subdirs ignore-marks-p))
         (total-count        0))
+    (message "%s matching files..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking"))
     (dolist (dir  (cons default-directory sdirs))
       (when (dired-buffers-for-dir (expand-file-name dir)) ; Dirs with Dired buffers only.
         (with-current-buffer (car (dired-buffers-for-dir (expand-file-name dir)))
-          (setq total-count  
-                (dired-mark-if (and (not (looking-at dired-re-dot))
-                                    (not (eolp)) ; Empty line
-                                    (let ((fn  (dired-get-filename nil 'NO-ERROR)))
-                                      (and fn  (diredp-string-match-p regexp fn))))
-                               "matching file")))))
-    (message "%s %ss..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking") "matching file")))
+          (setq total-count
+                (+ total-count (or (dired-mark-if (and (not (looking-at dired-re-dot))
+                                                       (not (eolp)) ; Empty line
+                                                       (let ((fn  (dired-get-filename nil 'NO-ERROR)))
+                                                         (and fn  (diredp-string-match-p regexp fn))))
+                                                  "matching file")
+                                   0))))))
+    (message "%s %d matching files" (if (eq ?\040 dired-marker-char) "UNmarked" "Marked") total-count)))
 
 ;;;###autoload
 (defun diredp-capitalize-recursive (&optional ignore-marks-p) ; Bound to `M-+ % c'
