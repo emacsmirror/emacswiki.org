@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Jun  9 08:59:39 2017 (-0700)
+;; Last-Updated: Sun Jun 25 08:25:41 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 6180
+;;     Update #: 6185
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -493,10 +493,12 @@
        (next-TAB menu-item "Next TAB Completion Method"
         icicle-next-TAB-completion-method
         :visible (not current-prefix-arg))
-       (using-~-for-home menu-item "Toggle Using `~' for $HOME"
-        icicle-toggle-~-for-home-dir)
+       (comp-mode-keys menu-item "Completion Mode Keys"
+        icicle-toggle-completion-mode-keys)
        (using-C-for-actions menu-item "Toggle Using `C-' for Actions"
         icicle-toggle-C-for-actions)
+       (using-~-for-home menu-item "Toggle Using `~' for $HOME"
+        icicle-toggle-~-for-home-dir)
        (removing-dups menu-item "Toggle Duplicate Removal" icicle-toggle-transforming)
        (proxy-candidates menu-item "Toggle Including Proxy Candidates"
         icicle-toggle-proxy-candidates)
@@ -2070,6 +2072,7 @@ the full candidate object.")
     (,(icicle-kbd "C-*")       icicle-candidate-set-intersection t)                   ; `C-*'
     (,(icicle-kbd "C->")       icicle-candidate-set-save-more t)                      ; `C->'
     (,(icicle-kbd "C-M->")     icicle-candidate-set-save t)                           ; `C-M->'
+    (,(icicle-kbd "C-S-<tab>") icicle-toggle-completion-mode-keys t)                  ; `C-S-<tab>'
     (,(icicle-kbd "C-(")       icicle-next-TAB-completion-method t)                   ; `C-('
     (,(icicle-kbd "C-M-(")     icicle-next-completion-style-set
      (fboundp 'icicle-next-completion-style-set))                                     ; `C-M-('
