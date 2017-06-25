@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Jun  9 10:24:21 2017 (-0700)
+;; Last-Updated: Sun Jun 25 11:11:46 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 29971
+;;     Update #: 29984
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7856,6 +7856,25 @@
 ;;    Apropos-complete without showing `*Completions*'.
 ;;  * `icicle-word-completion-keys'                          (`M-SPC')
 ;;    Prefix-complete your input a word at a time.
+;;
+;;  Options `icicle-apropos-complete-keys' and
+;;  `icicle-apropos-complete-no-display-keys' go together, as do
+;;  options `icicle-prefix-complete-keys' and
+;;  `icicle-prefix-complete-no-display-keys'.  The first perform
+;;  apropos completion; the second perform prefix completion.
+;;
+;;  By default, Icicles reflects vanilla Emacs by associating `TAB'
+;;  with prefix completion.  But you might prefer to associate it with
+;;  apropos completion.  Or you might want to switch back and forth.
+;;
+;;  Besides customizing those completion-mode key options
+;;  individually, you can easily swap the keys that for apropos
+;;  completion with those for prefix completion, at any time.  For
+;;  that, use command `icicle-toggle-completion-mode-keys', which is
+;;  bound to `C-S-TAB' during completion.  When it switches away from
+;;  whatever persistent values you have for these options, it asks you
+;;  whether you want to save the new values.  This command also
+;;  toggles the value of option `icicle-default-cycling-mode'.
 ;;
 ;;  The following options, with names ending in `-keys', cover
 ;;  miscellaneous actions that make use of the minibuffer in some way.
