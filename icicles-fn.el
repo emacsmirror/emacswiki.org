@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Fri Mar  3 14:50:15 2017 (-0800)
+;; Last-Updated: Sun Jun 25 07:44:54 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 15223
+;;     Update #: 15225
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -108,11 +108,12 @@
 ;;    `icicle-completion-setup-function',
 ;;    `icicle-completion--embedded-envvar-table',
 ;;    `icicle-completion-try-completion', `icicle-create-thumb',
-;;    `icicle-current-TAB-method', `icicle-custom-type',
-;;    `icicle-custom-variable-p', `icicle-defaults-at-point',
-;;    `icicle-define-crm-completion-map', `icicle-defined-thing-p',
-;;    `icicle-delete-alist-dups', `icicle-delete-count',
-;;    `icicle-delete-dups', `icicle-delete-whitespace-from-string',
+;;    `icicle-current-TAB-method', `icicle-custom-rogue-p',
+;;    `icicle-custom-type', `icicle-custom-variable-p',
+;;    `icicle-defaults-at-point', `icicle-define-crm-completion-map',
+;;    `icicle-defined-thing-p', `icicle-delete-alist-dups',
+;;    `icicle-delete-count', `icicle-delete-dups',
+;;    `icicle-delete-whitespace-from-string',
 ;;    `icicle-dired-read-shell-command',
 ;;    `icicle-dir-prefix-wo-wildcards',
 ;;    `icicle-dirs-and-latest-use-first-p', `icicle-dirs-first-p',
@@ -6832,6 +6833,15 @@ argument, so we drop that arg in that case."
   (condition-case nil                   ; Emacs 23.2+ has no 4th parameter.
       (all-completions string collection predicate hide-spaces)
     (wrong-number-of-arguments (all-completions string collection predicate))))
+
+(defun icicle-custom-rogue-p (symbol)
+  "Return non-nil if SYMBOL value differs from persistent/customized value."
+  (let ((cval (or (get symbol 'customized-value) ; User changed it in Customize
+                  (get symbol 'saved-value)      ; User saved it
+                  (get symbol 'standard-value)))) ; Predefined value
+    (and cval
+         (default-boundp symbol)        ; Just to be sure.
+         (not (equal (eval (car cval)) (default-value symbol))))))
 
 (defun icicle-bounds-of-thing-at-point (thing &optional syntax-table)
   "`thingatpt+.el' version of `bounds-of-thing-at-point', if possible.
