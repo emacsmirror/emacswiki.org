@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Jun  9 09:10:15 2017 (-0700)
+;; Last-Updated: Sun Jun 25 10:56:02 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 11703
+;;     Update #: 11715
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2279,6 +2279,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2017/06/25 dadams
+;;     Added: icicle-custom-rogue-p.
 ;; 2017/01/15 dadams
 ;;     Use icicle-string-match-p, not its expansion, everywhere.
 ;; 2016/12/21 dadams
@@ -4633,6 +4635,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2017/06/25 dadams
+;;     Added: icicle-toggle-completion-mode-keys.
+;;     icicle-help-string-completion: Added icicle-toggle-completion-mode-keys.
 ;; 2017/05/22 dadams
 ;;     Added: icicle-keep-buffer-cands-for-modified, icicle-remove-buffer-cands-for-modified,
 ;;            icicle-keep/remove-buffer-cands-for-modified.
@@ -6431,6 +6436,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2017/06/25 dadams
+;;     icicle-options-toggle-menu-map: Added icicle-toggle-completion-mode-keys.
 ;; 2017/04/09 dadams
 ;;     icicle-define-icicle-maps: Updated for new Dired+ names:
 ;;       diredp-menu-bar-multiple-menu, diredp-menu-bar-dir-menu.
@@ -7749,6 +7756,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2017/06/25 dadams
+;;     icicle-Completions-toggle-submenu: Added: icicle-toggle-completion-mode-keys.
+;;     icicle-completion-key-bindings: Bind icicle-toggle-completion-mode-keys to C-S-TAB.
 ;; 2017/06/09 dadams
 ;;     Added: icicle-file-search-dir-as-dired-flag.
 ;; 2017/05/22 dadams
@@ -8712,6 +8722,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2017/06/25 dadams
+;;     icicle-toggle-map: Bind TAB to icicle-toggle-completion-mode-keys.
 ;; 2016/10/07 dadams
 ;;     icicle-read-expression-map: Bind icicle-lisp-complete-symbol, not alias lisp-complete-symbol.
 ;; 2016/06/12 dadams
