@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sun Apr  9 18:26:37 2017 (-0700)
+;; Last-Updated: Sun Jun 25 08:55:30 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 10277
+;;     Update #: 10284
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mode.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -929,6 +929,9 @@ Used on `pre-command-hook'."
     (define-key icicle-options-menu-map [toggle]
       (list 'menu-item "Toggle" icicle-options-toggle-menu-map :visible 'icicle-mode))
 
+    (define-key icicle-options-toggle-menu-map [icicle-toggle-completion-mode-keys]
+      '(menu-item "Completion Mode Keys" icicle-toggle-completion-mode-keys :keys "C-S-<tab>"
+        :help "Toggle keys between apropos and prefix completion"))
     (define-key icicle-options-toggle-menu-map [icicle-toggle-C-for-actions]
       '(menu-item "Using `C-' for Actions" icicle-toggle-C-for-actions :keys "M-g"
         :help "Toggle option `icicle-use-C-for-actions-flag'"))
