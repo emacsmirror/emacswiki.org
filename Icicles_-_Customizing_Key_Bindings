@@ -171,6 +171,30 @@ Apropos-complete your input.
 
 
 
+[:icicle-toggle-completion-mode-keys]
+Options `icicle-apropos-complete-keys' and `icicle-apropos-complete-no-display-keys' go together, as do
+options `icicle-prefix-complete-keys' and 
+`icicle-prefix-complete-no-display-keys'.  The first perform
+apropos completion; the second perform prefix completion.
+
+By default, '''Icicles''' reflects vanilla Emacs by associating `TAB'
+with prefix completion.  But you might prefer to associate it with
+apropos completion.  Or you might want to switch back and forth.
+
+Besides customizing those completion-mode key options
+individually, you can easily swap the keys that for apropos
+completion with those for prefix completion, at any time.  For
+that, use command '''`icicle-toggle-completion-mode-keys'''', which is
+bound to '''`C-S-TAB'''' during completion.  When it switches away from
+whatever persistent values you have for these options, it asks you
+whether you want to save the new values.  This command also
+toggles the value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-default-cycling-mode|icicle-default-cycling-mode]]</tt>''''.
+
+
+
+
+
+
 [:icicle-key-complete-keys]
 [:icicle-key-complete-keys-for-minibuffer]
 [:icicle-completing-read+insert-keys]
