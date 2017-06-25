@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Fri Mar  3 14:55:00 2017 (-0800)
+;; Last-Updated: Sun Jun 25 09:45:42 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 1870
+;;     Update #: 1876
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1462,7 +1462,7 @@ This points to the current function in the list.")
 Active only during completion in Icicle mode.")
 
 (define-prefix-command 'icicle-toggle-map)
-(define-key icicle-toggle-map (icicle-kbd "M-i") 'icicle-toggle-option) ; not bound, `M-i'
+(define-key icicle-toggle-map (icicle-kbd "M-i") 'icicle-toggle-option) ; not bound, M-i
 (define-key icicle-toggle-map (icicle-kbd "a") 'icicle-toggle-annotation) ; C-x C-a, `a'
 (define-key icicle-toggle-map (icicle-kbd "A") 'icicle-toggle-case-sensitivity) ; C-A, `A'
 (define-key icicle-toggle-map "F" 'icicle-toggle-include-cached-files) ; C-x F, `F'
@@ -1486,18 +1486,19 @@ Active only during completion in Icicle mode.")
 (define-key icicle-toggle-map ":" 'icicle-toggle-network-drives-as-remote) ; C-x :, `:'
 (define-key icicle-toggle-map "$" 'icicle-toggle-transforming) ; C-$, `$'
 (define-key icicle-toggle-map "^" 'icicle-dispatch-C-^) ; C-^ via, `^'
-(define-key icicle-toggle-map "\M-^" 'icicle-toggle-completions-format) ; C-M-^, `M-^'
+(define-key icicle-toggle-map "\M-^" 'icicle-toggle-completions-format) ; C-M-^, `M-^
 (define-key icicle-toggle-map "." 'icicle-dispatch-C-.) ; C-., `.'
-(define-key icicle-toggle-map (icicle-kbd "M-.") 'icicle-toggle-dot) ; C-M-., `M-.'
+(define-key icicle-toggle-map (icicle-kbd "M-.") 'icicle-toggle-dot) ; C-M-., M-.'
 (define-key icicle-toggle-map "_" 'icicle-dispatch-M-_) ; M-_, `_'
 (define-key icicle-toggle-map "`" 'icicle-toggle-literal-replacement) ; C-M-`, ``'
 (define-key icicle-toggle-map (icicle-kbd "C-`") 'icicle-toggle-regexp-quote) ; C-`, `C-`'
 (define-key icicle-toggle-map ";" 'icicle-toggle-ignoring-comments) ; C-M-; `;'
 (define-key icicle-toggle-map "\M-;" 'icicle-toggle-search-replace-common-match) ; M-;, `M-;'
 (define-key icicle-toggle-map "~" 'icicle-toggle-search-complementing-domain) ; C-M-~, `~'
-(define-key icicle-toggle-map "\M-~" 'icicle-toggle-~-for-home-dir) ; M-~, `M-~'
+(define-key icicle-toggle-map "\M-~" 'icicle-toggle-~-for-home-dir) ; M-~
 (define-key icicle-toggle-map (icicle-kbd "pause")
   'icicle-toggle-highlight-historical-candidates) ; C-pause, `pause'
+(define-key icicle-toggle-map "\t" 'icicle-toggle-completion-mode-keys) ; TAB
 
 (defvar icicle-toggle-transforming-message "Completion-candidate transformation is now %s"
   "Message used by `icicle-toggle-transforming'.
