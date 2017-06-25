@@ -1000,8 +1000,24 @@ See [[Icicles - Completions Display]] for more about using the `##*Completions*#
 == Prefix Completion and Apropos Completion ==
 
 You can get the standard Emacs ''[[prefix completion]]'', instead of
-the ''[[apropos completion]]'' just described, by using `TAB' instead of `S-TAB'.  You
-can ''cycle'' prefix-completion candidates by using the '''`end'''' and
+the ''[[apropos completion]]'' just described, by using `TAB' instead of `S-TAB'.
+
+'''Icicles''' documentation always refers to the key that does this as
+`TAB'.  But actually it is only `TAB' by default.  You can
+customize it, using [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-keys|icicle-prefix-complete-keys]]</tt>''''.
+Similarly, you can customize which keys perform apropos completion
+using option '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>'''' (`S-TAB' by default).
+
+You can also swap the keys used for these two modes of completion
+dynamically, using command '''`icicle-toggle-completion-mode-keys'''',
+which is bound to '''`C-S-TAB'''' during completion.  This also toggles
+the value of option `icicle-default-cycling-mode' (see next).
+When it switches away from whatever persistent values you have for
+the completion-mode key options, it asks you whether you want to
+save the new values.  (That means that using `C-S-TAB' is an easy
+way to customize all five of these options.)
+
+You can ''cycle'' prefix-completion candidates by using the '''`end'''' and
 '''`home'''' keys instead of `next' and `prior'.  (All four of
 these keys are typically together in a central keypad to the right
 of the main keyboard.)
