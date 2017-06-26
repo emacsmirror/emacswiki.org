@@ -5,11 +5,11 @@
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
-;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
+;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jun 25 19:41:49 2017 (-0700)
+;; Last-Updated: Sun Jun 25 20:34:11 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8487
+;;     Update #: 8492
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -808,6 +808,8 @@
 (defvar icicle-searching-p)             ; In `icicles-var.el'
 (defvar Info-current-node)              ; In `info.el'
 (defvar Info-current-file)              ; In `info.el'
+(defvar kmacro-counter)                 ; In `kmacro.el'
+(defvar kmacro-counter-format-start)    ; In `kmacro.el'
 (defvar kmacro-ring)                    ; In `kmacro.el'
 (defvar Man-arguments)                  ; In `man.el'
 (defvar org-store-link-functions)       ; In `org.el'
@@ -9681,6 +9683,8 @@ BOOKMARK is a bookmark name or a bookmark record."
         (setq buf (current-buffer)))
       (with-current-buffer buf
         (let ((kmacs  kbd-macs))
+          (when last-kbd-macro
+            (kmacro-push-ring (list last-kbd-macro kmacro-counter kmacro-counter-format-start)))
           (kmacro-split-ring-element (pop kmacs))
           (dolist (kmac  kmacs) (kmacro-push-ring kmac))))
       (message "Keyboard macros restored in buffer `%s': %S" buf (mapcar #'car kbd-macs))
