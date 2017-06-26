@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jun 25 20:03:06 2017 (-0700)
+;; Last-Updated: Sun Jun 25 20:04:47 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 15234
+;;     Update #: 15235
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -1353,8 +1353,8 @@
 ;;  You can also create a function bookmark directly from a keyboard
 ;;  macro, using command `bmkp-set-kmacro-bookmark'.  And you can save
 ;;  the current set of keyboard macros as a bookmark, using command
-;;  `bmkp-set-kmacro-list-bookmark - jumping to it restores all of the
-;;  macros'.
+;;  `bmkp-set-kmacro-list-bookmark' - jumping to it restores all of
+;;  the macros'.
 ;;
 ;;  A variable-list bookmark saves and restores the values of a set of
 ;;  variables.  Command `bmkp-set-variable-list-bookmark' prompts you
