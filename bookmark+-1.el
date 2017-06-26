@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jun 25 19:31:23 2017 (-0700)
+;; Last-Updated: Sun Jun 25 19:41:49 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8484
+;;     Update #: 8487
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -808,6 +808,7 @@
 (defvar icicle-searching-p)             ; In `icicles-var.el'
 (defvar Info-current-node)              ; In `info.el'
 (defvar Info-current-file)              ; In `info.el'
+(defvar kmacro-ring)                    ; In `kmacro.el'
 (defvar Man-arguments)                  ; In `man.el'
 (defvar org-store-link-functions)       ; In `org.el'
 (defvar read-file-name-completion-ignore-case) ; Emacs 23+
