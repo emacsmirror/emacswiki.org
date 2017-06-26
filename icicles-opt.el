@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Jun 25 08:25:41 2017 (-0700)
+;; Last-Updated: Sun Jun 25 18:49:53 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 6185
+;;     Update #: 6187
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3539,7 +3539,7 @@ However, note that for some commands a prefix argument can reverse the
 sense of this flag."
   :type 'boolean :group 'Icicles-Buffers :group 'Icicles-Files :group 'Icicles-Matching)
 
-(when (boundp 'kmacro-ring)             ; Emacs 22+
+(when (require 'kmacro nil t)           ; Emacs 22+
   (defcustom icicle-kmacro-ring-max (if (boundp 'most-positive-fixnum)
                                         most-positive-fixnum
                                       67108863) ; 1/2 of `most-positive-fixnum' on Windows.
