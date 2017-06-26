@@ -70,8 +70,10 @@ Not a lot of people use w3m in Emacs to edit this Wiki, EmacsWiki.  More often p
 
 [new]
 Are there people who happily use emacs-w3m for editing pages on EmacsWiki? -- AaronHawley
+
 [new]
 There are people who tried getting past the captcha many times and gave up editing emacswiki because emacs-w3m simply does not work for it.  This is the first I heard of oddmusemode.  There are also people who have caching problems where recent changes does not show edits made in another browser.  --
+
 [new]
 Yeah, the reCaptcha extension was added on [[2008-09-05]].  That's a bummer it doesn't work for w3m visitors.
 
