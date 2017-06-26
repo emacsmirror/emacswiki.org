@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Sun Jun 25 09:45:42 2017 (-0700)
+;; Last-Updated: Sun Jun 25 18:56:22 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 1876
+;;     Update #: 1879
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-var.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -894,7 +894,7 @@ Nil means no match failure is known.")
 
 (defvar icicle-kill-history nil "History of kill-ring entries.")
 
-(when (boundp 'kmacro-ring)             ; Emacs 22+
+(when (require 'kmacro nil t)           ; Emacs 22+
   (defvar icicle-kmacro-alist nil
     "Alist with elements (CANDIDATE-NAME . RING-ITEM).
 CANDIDATE-NAME is 1, 2, 3....
@@ -1233,7 +1233,7 @@ Used for completion in `icicle-candidate-set-retrieve-from-variable'.")
 (defvar icicle-saved-ignored-extensions nil
   "Local copy of `icicle-ignored-extensions', so we can restore it.")
 
-(when (boundp 'kmacro-ring)             ; Emacs 22+
+(when (require 'kmacro nil t)           ; Emacs 22+
   (defvar icicle-saved-kmacro-ring-max kmacro-ring-max
     "Saved value of `kmacro-ring-max', so it can be restored."))
 
