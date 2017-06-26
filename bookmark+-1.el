@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri May 12 16:32:21 2017 (-0700)
+;; Last-Updated: Sun Jun 25 19:31:23 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8474
+;;     Update #: 8484
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -308,9 +308,10 @@
 ;;    `bmkp-set-eww-bookmark-here' (Emacs 25+),
 ;;    `bmkp-set-icicle-search-hits-bookmark',
 ;;    `bmkp-set-info-bookmark-with-node-name' (Emacs 22+),
-;;    `bmkp-set-izones-bookmark', `bmkp-set-sequence-bookmark',
-;;    `bmkp-set-snippet-bookmark', `bmkp-set-tag-value',
-;;    `bmkp-set-tag-value-for-navlist',
+;;    `bmkp-set-izones-bookmark', `bmkp-set-kmacro-bookmark' (Emacs
+;;    22+), `bmkp-set-kmacro-list-bookmark' (Emacs 22+),
+;;    `bmkp-set-sequence-bookmark', `bmkp-set-snippet-bookmark',
+;;    `bmkp-set-tag-value', `bmkp-set-tag-value-for-navlist',
 ;;    `bmkp-set-variable-list-bookmark',
 ;;    `bmkp-show-this-annotation-read-only',
 ;;    `bmkp-snippet-to-kill-ring', `bmkp-some-tags-jump',
@@ -476,11 +477,12 @@
 ;;    25+), `bmkp-jump-eww-in-buffer-*eww*' (Emacs 25+),
 ;;    `bmkp-jump-eww-renaming-buffer' (Emacs 25+),
 ;;    `bmkp-jump-function', `bmkp-jump-gnus',
-;;    `bmkp-jump-icicle-search-hits', `bmkp-jump-man',
-;;    `bmkp-jump-sequence', `bmkp-jump-snippet',
-;;    `bmkp-jump-url-browse', `bmkp-jump-variable-list',
-;;    `bmkp-jump-w3m', `bmkp-jump-w3m-new-buffer',
-;;    `bmkp-jump-w3m-new-buffer', `bmkp-jump-w3m-only-one-buffer',
+;;    `bmkp-jump-icicle-search-hits', `bmkp-jump-kmacro-list' (Emacs
+;;    22+), `bmkp-jump-man', `bmkp-jump-sequence',
+;;    `bmkp-jump-snippet', `bmkp-jump-url-browse',
+;;    `bmkp-jump-variable-list', `bmkp-jump-w3m',
+;;    `bmkp-jump-w3m-new-buffer', `bmkp-jump-w3m-new-buffer',
+;;    `bmkp-jump-w3m-only-one-buffer',
 ;;    `bmkp-jump-w3m-only-one-buffer', `bmkp-jump-woman',
 ;;    `bmkp-last-specific-buffer-alist-only',
 ;;    `bmkp-last-specific-buffer-p',
@@ -497,6 +499,7 @@
 ;;    `bmkp-make-bookmark-list-record', `bmkp-make-desktop-record',
 ;;    `bmkp-make-dired-record', `bmkp-make-eww-record' (Emacs 25+),
 ;;    `bmkp-make-gnus-record', `bmkp-make-icicle-search-hits-record',
+;;    `bmkp-make-kmacro-list-record' (Emacs 22+),
 ;;    `bmkp-make-man-record', `bmkp-make-plain-predicate',
 ;;    `bmkp-make-record-for-target-file', `bmkp-make-sequence-record',
 ;;    `bmkp-make-url-browse-record', `bmkp-make-variable-list-record',
@@ -9508,6 +9511,52 @@ sequence."
                    (handler  . bmkp-jump-sequence))))
     record))
 
+(when (require 'kmacro nil t)           ; Emacs 22+
+
+  (defun bmkp-set-kmacro-bookmark (bookmark-name keyboard-macro &optional msg-p)
+    "Create a function bookmark named BOOKMARK-NAME from KEYBOARD-MACRO.
+Prompt for BOOKMARK-NAME and the name of the keyboard macro to use.
+With a prefix arg, use `last-kbd-macro' as the keyboard macro."
+    (interactive
+     (let ((bname  (bmkp-completing-read-lax "Bookmark"))
+           (kmac   (if current-prefix-arg
+                       last-kbd-macro
+                     (symbol-function (intern (completing-read "Keyboard macro name: "
+                                                               obarray
+                                                               (lambda (elt)
+                                                                 (and (fboundp elt)
+                                                                      (or (stringp (symbol-function elt))
+                                                                          (vectorp (symbol-function elt))
+                                                                          (get elt 'kmacro))))
+                                                               t))))))
+       (list bname kmac 'MSG)))
+    (let* ((bmk     (bmkp-get-bookmark-in-alist bookmark-name 'NOERROR))
+           (exists  (and bmk  (bmkp-function-bookmark-p bmk))))
+      (bmkp-make-function-bookmark bookmark-name (read-kbd-macro keyboard-macro 'NEED-VECTOR) msg-p)
+      (when msg-p
+        (message "Function bookmark `%s' %s" bookmark-name (if exists "replaced" "created")))))
+
+  (defun bmkp-set-kmacro-list-bookmark (bookmark-name)
+    "Save all current keyboard macros as a kmacro-list bookmark."
+    (interactive (list (bmkp-completing-read-lax "Bookmark")))
+    (let ((bookmark-make-record-function  (lambda ()
+                                            (bmkp-make-kmacro-list-record
+                                             (cons (kmacro-ring-head) kmacro-ring)))))
+      (bookmark-set bookmark-name)))
+
+  (defun bmkp-make-kmacro-list-record (kmacros)
+    "Create and return a kmacro-list bookmark record.
+KMACROS is the list of kmacros to save.  It has the same form as
+`kmacro-ring'.
+
+Each entry in KMACROS thus has the form (MACRO COUNTER FORMAT)."
+    (let ((record  `(,@(bookmark-make-record-default 'NO-FILE 'NO-CONTEXT nil nil 'NO-REGION)
+                     (kmacros      . ,kmacros)
+                     (handler      . bmkp-jump-kmacro-list))))
+      record))
+
+  )
+
 ;;;###autoload (autoload 'bmkp-set-variable-list-bookmark "bookmark+")
 (defun bmkp-set-variable-list-bookmark (variables)
   "Save a list of variables as a bookmark.
@@ -9615,7 +9664,28 @@ VARIABLES is the list of variables.  Each entry in VARIABLES is either
                    (prin1 value (current-buffer)) ; Print value into a buffer and try to read back.
                    (read (point-min-marker))
                    t)
-               (error nil))))))         ; Could not print and read back.  
+               (error nil))))))         ; Could not print and read back.
+
+(when (require 'kmacro nil t)           ; Emacs 22
+
+  (defun bmkp-jump-kmacro-list (bookmark)
+    "Jump to kmacro-list bookmark BOOKMARK, restoring the keyboard macros.
+Handler function for record returned by
+`bmkp-make-kmacro-list-record'.
+BOOKMARK is a bookmark name or a bookmark record."
+    (let ((buf       (bmkp-get-buffer-name bookmark))
+          (kbd-macs  (bookmark-prop-get bookmark 'kmacros)))
+      (unless (and buf  (get-buffer buf))
+        (message "Bookmarked for non-existent buffer `%s', so using current buffer" buf) (sit-for 3)
+        (setq buf (current-buffer)))
+      (with-current-buffer buf
+        (let ((kmacs  kbd-macs))
+          (kmacro-split-ring-element (pop kmacs))
+          (dolist (kmac  kmacs) (kmacro-push-ring kmac))))
+      (message "Keyboard macros restored in buffer `%s': %S" buf (mapcar #'car kbd-macs))
+      (sit-for 3)))
+
+  )
 
 (defun bmkp-jump-variable-list (bookmark)
   "Jump to variable-list bookmark BOOKMARK, restoring the recorded values.
