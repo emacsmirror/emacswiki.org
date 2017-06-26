@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jun 25 20:34:11 2017 (-0700)
+;; Last-Updated: Mon Jun 26 08:38:42 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8492
+;;     Update #: 8502
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -17,7 +17,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `bookmark+-1', `ffap', `pp', `thingatpt',
+;;   `bookmark', `bookmark+-1', `ffap', `kmacro', `pp', `thingatpt',
 ;;   `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -484,6 +484,7 @@
 ;;    `bmkp-jump-w3m-new-buffer', `bmkp-jump-w3m-new-buffer',
 ;;    `bmkp-jump-w3m-only-one-buffer',
 ;;    `bmkp-jump-w3m-only-one-buffer', `bmkp-jump-woman',
+;;    `bmkp-kmacro-list-bookmark-p',
 ;;    `bmkp-last-specific-buffer-alist-only',
 ;;    `bmkp-last-specific-buffer-p',
 ;;    `bmkp-last-specific-file-alist-only',
@@ -5794,6 +5795,12 @@ If it is a record then it need not belong to `bookmark-alist'."
            (or (string= "*info*" (bmkp-get-buffer-name bookmark))
                (bookmark-prop-get bookmark 'info-node))))) ; Emacs 20-21 - no `buffer-name' entry.
 
+(defun bmkp-kmacro-list-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is a kmacro-list bookmark.
+BOOKMARK is a bookmark name or a bookmark record.
+If it is a record then it need not belong to `bookmark-alist'."
+  (eq (bookmark-get-handler bookmark) 'bmkp-jump-kmacro-list))
+
 (defun bmkp-local-directory-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a local directory.
 BOOKMARK is a bookmark name or a bookmark record.
@@ -8471,6 +8478,7 @@ the file is an image file then the description includes the following:
         (tags             (mapcar #'bmkp-tag-name (bmkp-get-tags bookmark)))
         (sequence-p       (bmkp-sequence-bookmark-p bookmark))
         (function-p       (bmkp-function-bookmark-p bookmark))
+        (kmacro-p         (bmkp-kmacro-list-bookmark-p bookmark))
         (variable-list-p  (bmkp-variable-list-bookmark-p bookmark))
         (search-hits-p    (bmkp-icicles-search-hits-bookmark-p bookmark))
         (non-invokable-p  (bmkp-non-invokable-bookmark-p bookmark))
@@ -8489,7 +8497,7 @@ the file is an image file then the description includes the following:
         non-file-p no-position-p)
     (setq non-file-p     (equal file bmkp-non-file-filename)
           no-position-p  (not start))
-    (when (or sequence-p  function-p  variable-list-p  search-hits-p) (setq no-position-p  t))
+    (when (or sequence-p  function-p  variable-list-p  kmacro-p  search-hits-p) (setq no-position-p  t))
     (let* ((temp-text  (if temp-p "TEMPORARY " ""))
            (help-text
             (concat
@@ -8508,6 +8516,8 @@ the file is an image file then the description includes the following:
                                            (format "Function:\t\t%s\n" fn)
                                          (format "Function:\n%s\n"
                                                  (pp-to-string (bookmark-prop-get bookmark 'function))))))
+                   (kmacro-p         (format "Keyboard Macro List (MACRO COUNT COUNT-FORMAT):\n\n%s\n"
+                                             (pp-to-string (bookmark-prop-get bookmark 'kmacros))))
                    (variable-list-p  (format "Variable list:\n%s\n"
                                              (pp-to-string (bookmark-prop-get bookmark 'variables))))
                    (search-hits-p    (format "Icicles search hits:\n%s\n\n"
