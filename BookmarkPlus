@@ -308,10 +308,11 @@ you "jump" to the bookmark.
 * '''[[#FunctionSequenceVarlistBookmarks|Sequence]] (composite) bookmarks.'''  A bookmark can represent a ''sequence'' of
 other bookmarks.
 
+* '''Keyboard-macro''' bookmarks, bookmarks for sets of keyboard
+macros, and sequence bookmarks that combine another bookmark
+with a keyboard macro.
+
 * '''Lisp [[#FunctionSequenceVarlistBookmarks|variable]] bookmarks.'''  A bookmark can represent a set of ''[[variable]]s'' and their values.
-
-
-
 
 
 [:SnippetBookmarks]
@@ -1442,6 +1443,11 @@ together.    This
 provides an alternative to inserting all of the relevant
 subdirectories into the same Dired buffer.  With a [[prefix argument]], all of the descendent Dired
 buffers are included, whether or not they are marked.
+
+You can also create a function bookmark directly from a keyboard
+macro, using command '''`bmkp-set-kmacro-bookmark''''.  And you can save
+the current set of keyboard macros as a bookmark, using command
+'''`bmkp-set-kmacro-list-bookmark'''' - jumping to it restores all of the macros.
 
 
 A '''variable-list''' bookmark saves and restores the values of a set of
