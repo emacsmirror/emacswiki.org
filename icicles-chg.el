@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jun 25 10:56:02 2017 (-0700)
+;; Last-Updated: Sun Jun 25 19:11:40 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 11715
+;;     Update #: 11723
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2017/06/25 dadams
+;;     icicle-kmacro, icicle-kmacro-action: Soft-require kmacro.el.
 ;; 2017/06/09 dadams
 ;;     icicle-file-of-content-apropos-complete-match:
 ;;       Raise use of icicle-file-skip-functions: do not lose image-file etc. candidate if skipping.
@@ -7759,6 +7761,7 @@
 ;; 2017/06/25 dadams
 ;;     icicle-Completions-toggle-submenu: Added: icicle-toggle-completion-mode-keys.
 ;;     icicle-completion-key-bindings: Bind icicle-toggle-completion-mode-keys to C-S-TAB.
+;;     icicle-kmacro-ring-max: Soft-require kmacro.el.
 ;; 2017/06/09 dadams
 ;;     Added: icicle-file-search-dir-as-dired-flag.
 ;; 2017/05/22 dadams
@@ -8724,6 +8727,7 @@
 ;;
 ;; 2017/06/25 dadams
 ;;     icicle-toggle-map: Bind TAB to icicle-toggle-completion-mode-keys.
+;;     icicle-kmacro-alist, icicle-kmacro-history, icicle-saved-kmacro-ring-max: Soft-require kmacro.el
 ;; 2016/10/07 dadams
 ;;     icicle-read-expression-map: Bind icicle-lisp-complete-symbol, not alias lisp-complete-symbol.
 ;; 2016/06/12 dadams
