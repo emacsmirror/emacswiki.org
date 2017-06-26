@@ -8,9 +8,9 @@
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 0
 ;; Package-Requires: ((hl-line+ "0") (col-highlight "0") (vline "0"))
-;; Last-Updated: Tue Feb 21 16:08:55 2017 (-0800)
+;; Last-Updated: Mon Jun 26 15:48:30 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 507
+;;     Update #: 511
 ;; URL: http://www.emacswiki.org/emacs/download/crosshairs.el
 ;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
@@ -97,6 +97,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/06/26 dadams
+;;     crosshairs-flash:
+;;       Use hl-line-unhighlight-now, not global-hl-line-unhighlight, for
+;;       crosshairs-flash-line-timer.  Thx to Dan Harms.
 ;; 2014/11/28 dadams
 ;;     crosshairs-mode: Call global-hl-line-unhighlight-all (Emacs 24.4+).
 ;;     crosshairs-highlight:
@@ -296,7 +300,7 @@ both for SECONDS seconds."
       ;; $$$$$$ Do we need to worry about `global-hl-line-unhighlight-all' here?
       (setq crosshairs-flash-line-timer (run-at-time
                                          line-period nil
-                                         #'global-hl-line-unhighlight)
+                                         #'hl-line-unhighlight-now)
             crosshairs-flash-col-timer  (run-at-time
                                          column-period nil
                                          #'col-highlight-unhighlight t)))))
