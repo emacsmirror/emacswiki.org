@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Mar 31 18:52:00 2017 (-0700)
+;; Last-Updated: Sun Jun 25 20:03:06 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 15228
+;;     Update #: 15234
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -379,6 +379,10 @@
 ;;
 ;;     - Sequence (composite) bookmarks.  A bookmark can represent a
 ;;       sequence of other bookmarks.
+;;
+;;     - Keyboard-macro bookmarks, bookmarks for sets of keyboard
+;;       macros, and sequence bookmarks that combine another bookmark
+;;       with a keyboard macro.
 ;;
 ;;     - Lisp variable bookmarks.  A bookmark can represent a set of
 ;;       variables and their values.
@@ -1345,6 +1349,12 @@
 ;;  subdirectories into the same Dired buffer.  With a prefix arg, all
 ;;  of the descendent Dired buffers are included, whether or not they
 ;;  are marked.
+;;
+;;  You can also create a function bookmark directly from a keyboard
+;;  macro, using command `bmkp-set-kmacro-bookmark'.  And you can save
+;;  the current set of keyboard macros as a bookmark, using command
+;;  `bmkp-set-kmacro-list-bookmark - jumping to it restores all of the
+;;  macros'.
 ;;
 ;;  A variable-list bookmark saves and restores the values of a set of
 ;;  variables.  Command `bmkp-set-variable-list-bookmark' prompts you
