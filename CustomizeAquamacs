@@ -234,7 +234,7 @@ Put the following function in ~/.bashrc; then `amacs file.txt` will behave more 
      # Create the files as needed -- not as good as raw emacs, but acceptable
      for f in "$@"
      do
- 	test -e $f || touch $f
+ 	test -e "$f" || touch "$f"
      done
      open -a /Applications/Aquamacs.app "$@"
  }
