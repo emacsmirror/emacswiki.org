@@ -282,6 +282,11 @@ Mike, it opens a dedicated window for multi-term. You can read about dedicated w
   (term-send-raw-string "\C-k"))
 }}} -- EstOwnya
 
+[new]
+[https://github.com/shrir/emacs-multi-term-stickiness Sticky mode]: show/hide all (multi-term) terminals on screen
+
+--Shri
+
 ----
 CategoryShell
 
