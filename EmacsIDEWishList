@@ -15,7 +15,7 @@ I think [http://mmm-mode.sourceforge.net mmm-mode] is exactly for doing that. --
 
 Or [NxhtmlMode nXhtml]/MuMaMo which takes a different approach on this. Comments are welcome. --LennartBorgman
 
-''Today (2017) you'd use web-mode``
+''Today (2017) you'd use web-mode''
 
 = Toolkits =
 UI independent layer would be better.  Gtk2 support is available since Emacs-22.
