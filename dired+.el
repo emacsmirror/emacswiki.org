@@ -8,11 +8,11 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.04.09
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun 23 16:20:45 2017 (-0700)
+;; Last-Updated: Wed Jun 28 15:06:15 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 10274
+;;     Update #: 10275
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
-;; Doc URL: http://www.emacswiki.org/DiredPlus
+;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
@@ -23,10 +23,10 @@
 ;;   `bookmark+-lit', `dired', `dired+', `dired-aux', `dired-x',
 ;;   `easymenu', `ffap', `fit-frame', `frame-fns', `help+20',
 ;;   `highlight', `image-dired', `image-file', `info', `info+20',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp',
-;;   `pp+', `second-sel', `strings', `subr-21', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `kmacro', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `naked', `pp', `pp+', `second-sel', `strings', `subr-21',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
