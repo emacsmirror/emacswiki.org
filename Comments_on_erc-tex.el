@@ -1,5 +1,5 @@
 The code has an error:
-</code>
+{{{
 Debugger entered--Lisp error: (args-out-of-range #<buffer #emacs> 0 27)
   delete-region(0 27)
   (let (start end) (delete-region (match-beginning 0) (match-end 0)) (setq start (point)) (insert-image descp match) (setq end (point)) (put-text-property start end 'keymap erc-tex-image-keymap))
@@ -12,7 +12,7 @@ Debugger entered--Lisp error: (args-out-of-range #<buffer #emacs> 0 27)
   erc-tex-render-send()
   run-hooks(erc-send-modify-hook)
   erc-display-msg("Test ERC TeX fontify: $y = sin(x)$ ")
-</code>
+}}}
 
 -- [https://github.io/stardiviner stardiviner] 2017-06-28 15:45 UTC
 
