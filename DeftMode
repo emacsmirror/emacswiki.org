@@ -39,5 +39,7 @@ I see some blocking behaviour with defts autosave feature after having emacs ope
 Thanks for pointing this out.  I believe this is fixed now, by [http://jblevins.org/git/deft.git/commit/?id=d45bfd76c95e0439175dc17dc22fe6864c39c769
  this commit].  It will be in the next release, but it's a one-line patch if you'd like to apply it yourself. --JasonBlevins
 
+[new:]
+It is a powerful tool to manage my journal and blogs. But is there any way to manage multiple projects with deft-mode? -- LdBeth
 ----
 CategoryWriting
