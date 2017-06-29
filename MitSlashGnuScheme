@@ -3,7 +3,8 @@ MIT/GNU Scheme is an implementation of the [[Scheme]] programming language.  Dev
 The package provides an interpreter, the compiler named Liar, a source-code debugger, an integrated [[Emacsen]] editor called EdWin, and a large runtime library.
 
 * [http://www.gnu.org/software/mit-scheme/ MIT/GNU Scheme Home Page]
-* [http://lists.gnu.org/archive/html/mit-scheme-users/2005-01/msg00006.html Chris Hanson on MIT/GNU Scheme's development status] - Post to the mit-scheme-users mailing list.
-
+* [http://lists.gnu.org/archive/html/mit-scheme-users/2005-01/msg00006.html Chris Hanson on MIT/GNU Scheme's 2005 development status] - Post to the mit-scheme-users mailing list.
+* [https://groups.csail.mit.edu/mac/users/gjs/6.945/dont-panic/ Don't Panic!] - An walkthrough on setting up MIT/GNU Scheme 
+* [http://lists.gnu.org/archive/html/mit-scheme-devel/2016-01/msg00001.html Chris Hanson on MIT/GNU Scheme's 2016 development status] - Post to the mit-scheme-devel mailing list.
 ----
 CategoryExtensionLanguage
