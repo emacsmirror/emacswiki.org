@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 23 07:43:19 2017 (-0800)
+;; Last-Updated: Fri Jun 30 13:41:37 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 4088
+;;     Update #: 4095
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -761,6 +761,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2017/06/30 dadams
+;;     hlt-highlight-regions: Define it even if zones.el is not loaded.  Uses zones.el only for interactive.
 ;; 2016/12/23 dadams
 ;;     Added: hlt-string-match-p.
 ;;     Faces hlt-regexp-level-*: Do not inherit.
@@ -1851,17 +1853,23 @@ Optional 6th arg BUFFERS is the list of buffers to highlight.
                        (if mbufs (format " in `%s'"  (buffer-name buf)) "")
                        remove-msg))))))))
 
-(when (fboundp 'zz-izone-limits)
-
   ;; No need to use (zz-izone-limits nil nil 'ONLY-THIS-BUFFER), since `hlt-highlight-region' DTRT.
-  (defun hlt-highlight-regions (&optional regions face msgp mousep buffers)
-    "Apply `hlt-highlight-region' to each zone in `zz-izones'.
+(defun hlt-highlight-regions (&optional regions face msgp mousep buffers)
+  "Apply `hlt-highlight-region' to each zone in `zz-izones'.
+You need library `zones.el' to use this command interactively.
 Non-interactively, REGIONS is a list of (START END) region limits.
 The other args are passed to `hlt-highlight-region'.
 You need library `zones.el' for this command."
-    (interactive (list (zz-izone-limits) nil t current-prefix-arg))
-    (dolist (start+end  regions)
-      (hlt-highlight-region (nth 0 start+end) (nth 1 start+end) face msgp mousep buffers)))
+  (interactive (list (if (require 'zones nil t)
+                         (zz-izone-limits)
+                       (error "You need library `zones.el' to use this command interactively"))
+                     nil
+                     t
+                     current-prefix-arg))
+  (dolist (start+end  regions)
+    (hlt-highlight-region (nth 0 start+end) (nth 1 start+end) face msgp mousep buffers)))
+
+(when (fboundp 'zz-izone-limits)
 
   (defun hlt-highlight-regions-in-buffers (buffers &optional regions msgp)
     "Use `hlt-highlight-regions' in each buffer of list BUFFERS.
