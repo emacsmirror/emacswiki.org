@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.04.09
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun 28 15:06:15 2017 (-0700)
+;; Last-Updated: Fri Jun 30 07:51:17 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 10275
+;;     Update #: 10338
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -334,6 +334,41 @@
 ;;  behavior.
 ;;
 ;;
+;;  If You Use Dired+ in Terminal Mode
+;;  ----------------------------------
+;;
+;;  By default, Dired+ binds some keys that can be problematic in some
+;;  terminals when you use Emacs in terminal mode (i.e., `emacs -nw').
+;;  This is controlled by option
+;;  `diredp-bind-problematic-terminal-keys'.
+;;
+;;  In particular, keys that use modifiers Meta and Shift together can
+;;  be problematic.  If you use Dired+ in terminal mode, and you find
+;;  that your terminal does not support such keys then you might want
+;;  to customize the option to set the value to `nil', and then bind
+;;  the commands to some other keys, which your terminal supports.
+;;  
+;;  Regardless of the option value, unless Emacs is in terminal mode
+;;  the keys are bound by default.  The problematic keys used by
+;;  Dired+ include these:
+;;
+;;    `M-M'   (aka `M-S-m')   - `diredp-chmod-this-file'
+;;    `M-O'   (aka `M-S-o')   - `diredp-chown-this-file'
+;;    `M-T'   (aka `M-S-t')   - `diredp-touch-this-file'
+;;    `C-M-B' (aka `C-M-S-b') - `diredp-do-bookmark-in-bookmark-file'
+;;    `C-M-G' (aka `C-M-S-g') - `diredp-chgrp-this-file'
+;;    `C-M-R' (aka `C-M-S-r') - `diredp-toggle-find-file-reuse-dir'
+;;    `C-M-T' (aka `C-M-S-t') - `dired-do-touch'
+;;    `M-+ M-B'   (aka `M-+ M-S-b') -
+;;        `diredp-do-bookmark-dirs-recursive'
+;;    `M-+ C-M-B' (aka `M-+ C-M-S-b') -
+;;        `diredp-do-bookmark-in-bookmark-file-recursive'
+;;    `M-+ C-M-T' (aka `M-+ C-M-S-t') - `diredp-do-touch-recursive'
+;;
+;;  (See also `(info "(org) TTY keys")' for more information about
+;;  keys that can be problematic in terminal mode.)
+;;
+;;
 ;;  Faces defined here:
 ;;
 ;;    `diredp-autofile-name', `diredp-compressed-file-suffix',
@@ -484,6 +519,7 @@
 ;;  User options defined here:
 ;;
 ;;    `diredp-auto-focus-frame-for-thumbnail-tooltip-flag',
+;;    `diredp-bind-problematic-terminal-keys',
 ;;    `diredp-compressed-extensions', `diredp-dwim-any-frame-flag'
 ;;    (Emacs 22+), `diredp-image-preview-in-tooltip', `diff-switches',
 ;;    `diredp-hide-details-initially-flag' (Emacs 24.4+),
@@ -503,12 +539,13 @@
 ;;    `diredp-dired-plus-description',
 ;;    `diredp-dired-plus-description+links',
 ;;    `diredp-dired-plus-help-link', `diredp-dired-union-1',
-;;    `diredp-dired-union-interactive-spec', `diredp-display-image'
-;;    (Emacs 22+), `diredp-do-chxxx-recursive',
-;;    `diredp-do-create-files-recursive', `diredp-do-grep-1',
-;;    `diredp-ensure-bookmark+', `diredp-ensure-mode',
-;;    `diredp-existing-dired-buffer-p', `diredp-fewer-than-2-files-p',
-;;    `diredp-fileset-1', `diredp-find-a-file-read-args',
+;;    `diredp-dired-union-interactive-spec',
+;;    `diredp-display-graphic-p', `diredp-display-image' (Emacs 22+),
+;;    `diredp-do-chxxx-recursive', `diredp-do-create-files-recursive',
+;;    `diredp-do-grep-1', `diredp-ensure-bookmark+',
+;;    `diredp-ensure-mode', `diredp-existing-dired-buffer-p',
+;;    `diredp-fewer-than-2-files-p', `diredp-fileset-1',
+;;    `diredp-find-a-file-read-args',
 ;;    `diredp-file-for-compilation-hit-at-point' (Emacs 24+),
 ;;    `diredp-files-within', `diredp-files-within-1',
 ;;    `diredp-fit-frame-unless-buffer-narrowed' (Emacs 24.4+),
@@ -661,6 +698,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/06/30 dadams
+;;     Added: diredp-bind-problematic-terminal-keys, diredp-display-graphic-p.
+;;     Guard bindings of problematic keys with diredp-display-graphic-p & diredp-bind-problematic-terminal-keys.
+;;     Documented problematic keys for terminal mode in commentary.
 ;; 2017/06/23 dadams
 ;;     Added: diredp-read-regexp (removed alias to read-regexp), diredp-marks-recursive-menu,
 ;;       diredp-mark-executables-recursive (bound to M-+ * *),
@@ -989,7 +1030,7 @@
 ;; 2014/04/05 dadams
 ;;     Added: diredp-do-bookmark-dirs-recursive.
 ;;            Renamed from bmkp-create-dired-bookmarks-recursive in bookmark+-1.el (removed).
-;;       Bound to M-B (M-S-b).
+;;       Bound to M-B (aka M-S-b).
 ;;       Added to menus *-subdir-menu, *-operate-bookmarks-menu, *-bookmarks-menu.
 ;;     diredp-get-confirmation-recursive: Added optional TYPE arg.
 ;;     diredp-insert-subdirs-recursive: Call diredp-get-confirmation-recursive with TYPE arg.
@@ -1192,7 +1233,7 @@
 ;; 2012/05/05 dadams
 ;;     Added: diredp-do-bookmark-recursive, diredp-do-bookmark-in-bookmark-file-recursive,
 ;;            diredp-set-bookmark-file-bookmark-for-marked-recursive.
-;;              Bound to M-+ M-b, M-+ C-M-B, M-+ C-M-b, respectively.  Added to menus.
+;;              Bound to M-+ M-b, M-+ C-M-B (aka C-M-S-b), M-+ C-M-b, respectively.  Added to menus.
 ;;     diredp-bookmark: Added optional arg FILE.
 ;;     diredp-do-bookmark-in-bookmark-file: Added optional arg FILES.
 ;;     diredp-dired-plus-description: Updated.
@@ -1397,7 +1438,7 @@
 ;;       Use error-message-string to get failure msg.
 ;; 2010/07/11 dadams
 ;;     Added: diredp-set-bookmark-file-bookmark-for-marked (C-M-b), diredp-mouse-do-bookmark,
-;;            diredp-do-bookmark-in-bookmark-file (C-M-S-b), diredp-read-bookmark-file-args.
+;;            diredp-do-bookmark-in-bookmark-file (C-M-B, aka C-M-S-b), diredp-read-bookmark-file-args.
 ;;     Added them to the operate menu.  Added diredp-do-bookmark to mouse-3 menu.
 ;; 2010/07/07 dadams
 ;;     dired-do-*: Updated doc strings for prefix arg treatment from dired-map-over-marks-check.
@@ -1747,6 +1788,14 @@ It also has no effect for Emacs versions prior to Emacs 22."
   :type 'boolean :group 'Dired-Plus)
 
 ;;;###autoload
+(defcustom diredp-bind-problematic-terminal-keys t
+  "*Non-nil means bind some keys that might not work in terminal mode.
+This applies to keys that use modifiers Meta and Shift together.
+If you use Emacs in terminal mode (`emacs -nw') and your terminal does
+not support the use of such keys then customize this option to nil."
+  :type 'boolean :group 'Dired-Plus)
+
+;;;###autoload
 (defcustom diredp-compressed-extensions '(".tar" ".taz" ".tgz" ".arj" ".lzh"
                                           ".lzma" ".xz" ".zip" ".z" ".Z" ".gz" ".bz2")
   "*List of compressed-file extensions, for highlighting."
@@ -2055,6 +2104,12 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
 (put 'diredp-with-help-window 'common-lisp-indent-function '(4 &body))
  
 ;;; Utility functions
+
+(if (fboundp 'display-graphic-p)        ; Emacs 22+
+    (defalias 'diredp-display-graphic-p 'display-graphic-p)
+  (defun diredp-display-graphic-p ()
+    "`display-graphic-p' for Emacs 22+.  `window-system' for older Emacs."
+    window-system))
 
 ;; Same as `tap-string-match-p' in `thingatpt+.el'.
 (if (fboundp 'string-match-p)
@@ -4733,7 +4788,7 @@ You need library `Bookmark+' for this command."
     (bmkp-refresh/rebuild-menu-list nil)))
 
 ;;;###autoload
-(defun diredp-do-bookmark-in-bookmark-file-recursive (bookmark-file ; Bound to `M-+ C-M-B')
+(defun diredp-do-bookmark-in-bookmark-file-recursive (bookmark-file ; Bound to `M-+ C-M-B', aka `M-+ C-M-S-b')
                                                       &optional prefix ignore-marks-p
                                                       bfile-bookmarkp)
   "Bookmark files here and below in BOOKMARK-FILE and save BOOKMARK-FILE.
@@ -11303,8 +11358,9 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "\M-a"    'dired-do-search)                              ; `M-a'
 (define-key dired-mode-map "\M-b"    'diredp-do-bookmark)                           ; `M-b'
 (define-key dired-mode-map "\C-\M-b" 'diredp-set-bookmark-file-bookmark-for-marked) ; `C-M-b'
-(define-key dired-mode-map [(control meta shift ?b)]                                ; `C-M-B' (aka `C-M-S-b')
-  'diredp-do-bookmark-in-bookmark-file)
+(when (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys)
+  (define-key dired-mode-map [(control meta shift ?b)]                              ; `C-M-B' (aka `C-M-S-b')
+    'diredp-do-bookmark-in-bookmark-file))
 (define-key dired-mode-map "\M-g"    'diredp-do-grep)                               ; `M-g'
 (when (fboundp 'mkhtml-dired-files)     ; In `mkhtml.el'.
   (define-key dired-mode-map "\M-h"  'mkhtml-dired-files))                          ; `M-h'
@@ -11312,8 +11368,9 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "\M-q"    (if (< emacs-major-version 21)
                                          'dired-do-query-replace
                                        'dired-do-query-replace-regexp))             ; `M-q'
-(define-key dired-mode-map [(control meta shift ?r)]                                ; `C-M-R' (aka `C-M-S-r')
-  'diredp-toggle-find-file-reuse-dir)
+(when (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys)
+  (define-key dired-mode-map [(control meta shift ?r)]                              ; `C-M-R' (aka `C-M-S-r')
+    'diredp-toggle-find-file-reuse-dir))
 (define-key dired-mode-map "U"       'dired-unmark-all-marks)                       ; `U'
 (substitute-key-definition 'describe-mode 'diredp-describe-mode                     ; `h', `C-h m'
                            dired-mode-map (current-global-map))
@@ -11375,22 +11432,26 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "b"       'diredp-byte-compile-this-file)        ; `b'
 (define-key dired-mode-map [(control shift ?b)] 'diredp-bookmark-this-file) ; `C-B'
 (define-key dired-mode-map "\M-c"    'diredp-capitalize-this-file)          ; `M-c'
-(when (fboundp 'diredp-chgrp-this-file)
-  (define-key dired-mode-map [(control meta shift ?g)] 'diredp-chgrp-this-file)) ; `C-M-G'
+(when (and (fboundp 'diredp-chgrp-this-file)
+           (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys))
+  (define-key dired-mode-map [(control meta shift ?g)] 'diredp-chgrp-this-file)) ; `C-M-G' (aka `C-M-S-g')
 (define-key dired-mode-map "\M-i"    'diredp-insert-subdirs)                ; `M-i'
 (define-key dired-mode-map "\M-l"    'diredp-downcase-this-file)            ; `M-l'
 (define-key dired-mode-map "\C-\M-l" 'diredp-list-marked)                   ; `C-M-l'
-(define-key dired-mode-map [(meta shift ?m)] 'diredp-chmod-this-file)       ; `M-M'
+(when (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys)
+  (define-key dired-mode-map [(meta shift ?m)] 'diredp-chmod-this-file))    ; `M-M' (aka `M-S-m')
 (define-key dired-mode-map "\C-o"    'diredp-find-file-other-frame)         ; `C-o'
-(when (fboundp 'diredp-chown-this-file)
-  (define-key dired-mode-map [(meta shift ?o)] 'diredp-chown-this-file))    ; `M-O'
+(when (and (fboundp 'diredp-chown-this-file)
+           (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys))
+  (define-key dired-mode-map [(meta shift ?o)] 'diredp-chown-this-file))    ; `M-O' (aka `M-S-o')
 (define-key dired-mode-map "\C-\M-o" 'dired-display-file)                   ; `C-M-o' (not `C-o')
 (define-key dired-mode-map "\M-p"    'diredp-print-this-file)               ; `M-p'
 (define-key dired-mode-map "r"       'diredp-rename-this-file)              ; `r'
 (when (fboundp 'image-dired-dired-display-image)
   (define-key dired-mode-map "\C-tI"   'diredp-image-show-this-file))       ; `C-t I'
-(define-key dired-mode-map [(meta shift ?t)] 'diredp-touch-this-file)       ; `M-T'
-(define-key dired-mode-map [(control meta shift ?t)] 'dired-do-touch)       ; `C-M-T'
+(when (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys)
+  (define-key dired-mode-map [(meta shift ?t)] 'diredp-touch-this-file)     ; `M-T' (aka `M-S-t')
+  (define-key dired-mode-map [(control meta shift ?t)] 'dired-do-touch))    ; `C-M-T' (aka `C-M-S-t')
 (define-key dired-mode-map "\M-u"    'diredp-upcase-this-file)              ; `M-u'
 (define-key dired-mode-map "y"       'diredp-relsymlink-this-file)          ; `y'
 (define-key dired-mode-map "z"       'diredp-compress-this-file)            ; `z'
@@ -11429,11 +11490,14 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-recursive-map (kbd "C-M-*") 'diredp-marked-recursive-other-window)   ; `C-M-*'
 (define-key diredp-recursive-map "A"           'diredp-do-search-recursive)             ; `A'
 (define-key diredp-recursive-map "\M-b"        'diredp-do-bookmark-recursive)           ; `M-b'
-(define-key diredp-recursive-map [(meta shift ?b)] 'diredp-do-bookmark-dirs-recursive)  ; `M-B'
+(when (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys)
+  (define-key diredp-recursive-map [(meta shift ?b)]                                    ; `M-B' (aka `M-S-b')
+    'diredp-do-bookmark-dirs-recursive))
 (define-key diredp-recursive-map (kbd "C-M-b")                                          ; `C-M-b'
   'diredp-set-bookmark-file-bookmark-for-marked-recursive)
-(define-key diredp-recursive-map [(control meta shift ?b)]                             ; `C-M-B' (aka `C-M-S-b')
-  'diredp-do-bookmark-in-bookmark-file-recursive)
+(when (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys)
+  (define-key diredp-recursive-map [(control meta shift ?b)]                            ; `C-M-B' (aka `C-M-S-b')
+    'diredp-do-bookmark-in-bookmark-file-recursive))
 (define-key diredp-recursive-map "C"           'diredp-do-copy-recursive)               ; `C'
 (define-key diredp-recursive-map "D"           'diredp-do-delete-recursive)             ; `D'
 (define-key diredp-recursive-map "F"           'diredp-do-find-marked-files-recursive)  ; `F'
@@ -11450,11 +11514,13 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-recursive-map "Q"         'diredp-do-query-replace-regexp-recursive) ; `Q'
 (define-key diredp-recursive-map "R"           'diredp-do-move-recursive)               ; `R'
 (define-key diredp-recursive-map "S"           'diredp-do-symlink-recursive)            ; `S'
-(define-key diredp-recursive-map (kbd "M-s a C-s")                                ; `M-s a C-s'
+(define-key diredp-recursive-map (kbd "M-s a C-s")                                      ; `M-s a C-s'
   'diredp-do-isearch-recursive)
-(define-key diredp-recursive-map (kbd "M-s a C-M-s")                              ; `M-s a C-M-s'
+(define-key diredp-recursive-map (kbd "M-s a C-M-s")                                    ; `M-s a C-M-s'
   'diredp-do-isearch-regexp-recursive)
-(define-key diredp-recursive-map [(control meta shift ?t)] 'diredp-do-touch-recursive)  ; `C-M-T'
+(when (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys)
+  (define-key diredp-recursive-map [(control meta shift ?t)]
+    'diredp-do-touch-recursive))                                                        ; `C-M-T' (aka `C-M-S-t')
 (define-key diredp-recursive-map "\C-tc"   'diredp-image-dired-comment-files-recursive) ; `C-t c'
 (define-key diredp-recursive-map "\C-td"  'diredp-image-dired-display-thumbs-recursive) ; `C-t d'
 (define-key diredp-recursive-map "\C-tr"      'diredp-image-dired-delete-tag-recursive) ; `C-t r'
