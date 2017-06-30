@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun 30 13:41:37 2017 (-0700)
+;; Last-Updated: Fri Jun 30 14:19:48 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 4095
+;;     Update #: 4103
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -441,14 +441,15 @@
 ;;  you can use `C-x n a' (command `zz-add-zone') to add the current
 ;;  region to the same variable.
 ;;
-;;  You can use command `hlt-highlight-regions' to highlight the
-;;  `zz-izones' zones, and you can use command
-;;  `hlt-highlight-regions-in-buffers' to highlight all zones recorded
-;;  for a given set of buffers.  You can use commands
-;;  `hlt-unhighlight-regions' and `hlt-unhighlight-regions-in-buffers'
-;;  to unhighlight them.  If option `hlt-auto-faces-flag' is non-nil
-;;  then each zone gets a different face.  Otherwise, all of them are
-;;  highlighted with the same face.
+;;  You can use command `hlt-highlight-regions' to highlight buffer
+;;  zones, as defined by their limits (interactively, `zz-izones'),
+;;  and you can use command `hlt-highlight-regions-in-buffers' to
+;;  highlight all zones recorded for a given set of buffers.  You can
+;;  use commands `hlt-unhighlight-regions' and
+;;  `hlt-unhighlight-regions-in-buffers' to unhighlight them.  If
+;;  option `hlt-auto-faces-flag' is non-nil then each zone gets a
+;;  different face.  Otherwise, all of them are highlighted with the
+;;  same face.
 ;;
 ;;  From Isearch you can highlight the search-pattern matches.  You
 ;;  can do this across multiple buffers being searched together.
@@ -762,7 +763,7 @@
 ;;(@* "Change log")
 ;;
 ;; 2017/06/30 dadams
-;;     hlt-highlight-regions: Define it even if zones.el is not loaded.  Uses zones.el only for interactive.
+;;     hlt-(un)highlight-regions: Define even if zones.el is not loaded.  Uses zones.el only for interactive.
 ;; 2016/12/23 dadams
 ;;     Added: hlt-string-match-p.
 ;;     Faces hlt-regexp-level-*: Do not inherit.
@@ -1853,13 +1854,12 @@ Optional 6th arg BUFFERS is the list of buffers to highlight.
                        (if mbufs (format " in `%s'"  (buffer-name buf)) "")
                        remove-msg))))))))
 
-  ;; No need to use (zz-izone-limits nil nil 'ONLY-THIS-BUFFER), since `hlt-highlight-region' DTRT.
+;; No need to use (zz-izone-limits nil nil 'ONLY-THIS-BUFFER), since `hlt-highlight-region' DTRT.
 (defun hlt-highlight-regions (&optional regions face msgp mousep buffers)
   "Apply `hlt-highlight-region' to each zone in `zz-izones'.
 You need library `zones.el' to use this command interactively.
 Non-interactively, REGIONS is a list of (START END) region limits.
-The other args are passed to `hlt-highlight-region'.
-You need library `zones.el' for this command."
+The other args are passed to `hlt-highlight-region'."
   (interactive (list (if (require 'zones nil t)
                          (zz-izone-limits)
                        (error "You need library `zones.el' to use this command interactively"))
@@ -1868,6 +1868,21 @@ You need library `zones.el' for this command."
                      current-prefix-arg))
   (dolist (start+end  regions)
     (hlt-highlight-region (nth 0 start+end) (nth 1 start+end) face msgp mousep buffers)))
+
+;; No need to use (zz-izone-limits nil nil 'ONLY-THIS-BUFFER), since `hlt-unhighlight-region' DTRT.
+(defun hlt-unhighlight-regions (&optional regions face msgp mousep buffers)
+  "Apply `hlt-unhighlight-region' to each zone in `zz-izones'.
+You need library `zones.el' to use this command interactively.
+Non-interactively, REGIONS is a list of (START END) region limits.
+The other args are passed to `hlt-unhighlight-region'."
+  (interactive (list (if (require 'zones nil t)
+                         (zz-izone-limits)
+                       (error "You need library `zones.el' to use this command interactively"))
+                     nil
+                     t
+                     current-prefix-arg))
+  (dolist (start+end  regions)
+    (hlt-unhighlight-region (car start+end) (cadr start+end) face msgp mousep buffers)))
 
 (when (fboundp 'zz-izone-limits)
 
@@ -1890,16 +1905,6 @@ Non-nil optional arg MSGP means show status messages."
     (hlt-highlight-regions (zz-izone-limits-in-bufs buffers) nil msgp
                            (and current-prefix-arg  (>= (prefix-numeric-value current-prefix-arg) 0))
                            buffers))
-
-  ;; No need to use (zz-izone-limits nil nil 'ONLY-THIS-BUFFER), since `hlt-unhighlight-region' DTRT.
-  (defun hlt-unhighlight-regions (&optional regions face msgp mousep buffers)
-    "Apply `hlt-unhighlight-region' to each zone in `zz-izones'.
-Non-interactively, REGIONS is a list of (START END) region limits.
-The other args are passed to `hlt-unhighlight-region'.
-You need library `zones.el' for this command."
-    (interactive (list (zz-izone-limits) nil t current-prefix-arg))
-    (dolist (start+end  regions)
-      (hlt-unhighlight-region (car start+end) (cadr start+end) face msgp mousep buffers)))
 
   (defun hlt-unhighlight-regions-in-buffers (buffers &optional regions msgp)
     "Use `hlt-unhighlight-regions' in each buffer of list BUFFERS.
