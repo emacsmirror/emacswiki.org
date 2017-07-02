@@ -8,11 +8,11 @@
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 09:46:47 2017 (-0800)
+;; Last-Updated: Sun Jul  2 07:27:00 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 602
+;;     Update #: 605
 ;; URL: https://www.emacswiki.org/emacs/download/second-sel.el
-;; Doc URL: http://emacswiki.org/SecondarySelection
+;; Doc URL: https://emacswiki.org/emacs/SecondarySelection#second-sel.el
 ;; Keywords: region, selection, yank, paste, edit
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
