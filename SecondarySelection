@@ -1,6 +1,6 @@
 Emacs has a primary selection, called the [[region]]. It also has a '''[::secondary selection]'''. What for?
 
-Use the secondary selection for, well, a second selection. This lets you use the region for other things, while keeping another selection available for [[yank|yanking]] etc. In other words, think of the secondary selection as something less ephemeral than the region, something that is unaffected by changes in the region.
+Use the secondary selection for, well, a second selection. This lets you use the region for other things, while keeping another selection available for [[yank|yanking]] etc. In other words, think of the secondary selection as something less ephemeral than the region, something that is ''unaffected by changes in the region'', i.e., a selection that stays put even as you move the [[cursor]] to a different position ([[point]]).
 
 == Using the Secondary Selection (Vanilla Emacs) ==
 
