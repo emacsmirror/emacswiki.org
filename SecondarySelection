@@ -47,37 +47,6 @@ to my .emacs file; I don't know if this is good or not, but it worked for me.  -
 
 
 
-
-== Using a Touchpad with the Secondary Selection ==
-
-If you're using a touchpad (this is on CentOS 7.2), some actions are easy to remember:
-
-* One way to select the region:
-** Meta tap on the location of one end of the region.
-** Meta two-finger-tap on the other end of the region.  Can be before or after the first.
-** Meta three-finger-tap at the location you want to paste.  The previously marked region is still is still in place and still highlighted.  Pasting in this way can be done multiple times.
-
-* Other ways to select the region using a touchpad:
-** Meta double-tap-and-drag.  That is, hold down the Meta key (generally "Alt") and tap-tap-drag from one end of the region to the other.
-** Meta double-tap on a word to make that one word the region.
-
-* Once you have a region selected, you can change the beginning and/or end of it:
-** If you initially select the region using Meta two-finger-tap, changing an endpoint of that region will be selected in whole word units only, i.e., an endpoint of the region won't fall in the middle of a word.  If, on the other hand, you initially designate the beginning of the region with Meta tap, a subsequent Meta double-tap (tap-tap) will designate where the pointer is at that time, even in the middle of a word.
-** Meta two-finger-tap at a location before the current region to expand the region to that location.  
-** Meta two-finger-tap at a location after the current region to expand the region to that location below.
-** Either of the above two actions can be performed multiple times, each time changing the beginning or end points of the region, respectively.
-
-If something happens which you don't want, you can do C-/ to undo-- multiple times, if desired.
-
-
-
-
-
-
-
-
-
-
 [:secondary-sel.el]
 [:second-sel.el]
 == Library `second-sel.el' - Secondary Selection Enhancements ==
@@ -169,6 +138,34 @@ The <tt>[[second-sel.el]]</tt> sections above show that you can use the keyboard
 
 
 
+
+
+
+
+
+
+
+
+== Using a Touchpad with the Secondary Selection ==
+
+If you're using a touchpad (this is on CentOS 7.2), some actions are easy to remember:
+
+* One way to select the region:
+** Meta tap on the location of one end of the region.
+** Meta two-finger-tap on the other end of the region.  Can be before or after the first.
+** Meta three-finger-tap at the location you want to paste.  The previously marked region is still is still in place and still highlighted.  Pasting in this way can be done multiple times.
+
+* Other ways to select the region using a touchpad:
+** Meta double-tap-and-drag.  That is, hold down the Meta key (generally "Alt") and tap-tap-drag from one end of the region to the other.
+** Meta double-tap on a word to make that one word the region.
+
+* Once you have a region selected, you can change the beginning and/or end of it:
+** If you initially select the region using Meta two-finger-tap, changing an endpoint of that region will be selected in whole word units only, i.e., an endpoint of the region won't fall in the middle of a word.  If, on the other hand, you initially designate the beginning of the region with Meta tap, a subsequent Meta double-tap (tap-tap) will designate where the pointer is at that time, even in the middle of a word.
+** Meta two-finger-tap at a location before the current region to expand the region to that location.  
+** Meta two-finger-tap at a location after the current region to expand the region to that location below.
+** Either of the above two actions can be performed multiple times, each time changing the beginning or end points of the region, respectively.
+
+If something happens which you don't want, you can do C-/ to undo-- multiple times, if desired.
 
 
 
