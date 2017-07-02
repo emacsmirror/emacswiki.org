@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun 30 14:19:48 2017 (-0700)
+;; Last-Updated: Sun Jul  2 07:11:50 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 4103
+;;     Update #: 4104
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; Doc URL: http://www.emacswiki.org/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -1726,7 +1726,7 @@ This is several commands rolled into one, depending on the prefix arg:
 * Positive prefix arg (`C-1'): highlight regexp matches
 * Negative prefix arg (`C--'): UNhighlight regexp matches
 
-You can also used the individual commands:
+You can also use the individual commands:
 
 * `hlt-highlight-region'          - same as no prefix arg
 * `hlt-unhighlight-region'        - same as `C-u' or `C-0'
