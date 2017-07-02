@@ -8,11 +8,11 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul  2 07:11:50 2017 (-0700)
+;; Last-Updated: Sun Jul  2 07:31:05 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 4104
+;;     Update #: 4105
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
-;; Doc URL: http://www.emacswiki.org/HighlightLibrary
+;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
