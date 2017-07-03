@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jun 26 08:38:42 2017 (-0700)
+;; Last-Updated: Mon Jul  3 10:50:20 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8502
+;;     Update #: 8506
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -469,8 +469,9 @@
 ;;    `bmkp-icicles-search-hits-alist-only',
 ;;    `bmkp-icicles-search-hits-bookmark-p', `bmkp-image-alist-only',
 ;;    `bmkp-image-bookmark-p', `bmkp-info-alist-only',
-;;    `bmkp-info-bookmark-p', `bmkp-info-cp', `bmkp-isearch-bookmarks'
-;;    (Emacs 23+), `bmkp-isearch-bookmarks-regexp' (Emacs 23+),
+;;    `bmkp-info-bookmark-p', `bmkp-info-node-name-cp',
+;;    `bmkp-info-position-cp', `bmkp-isearch-bookmarks' (Emacs 23+),
+;;    `bmkp-isearch-bookmarks-regexp' (Emacs 23+),
 ;;    `bmkp-isearch-next-bookmark-buffer' (Emacs 23+), `bmkp-jump-1',
 ;;    `bmkp-jump-bookmark-file', `bmkp-jump-bookmark-list',
 ;;    `bmkp-jump-desktop', `bmkp-jump-dired', `bmkp-jump-eww' (Emacs
@@ -1285,7 +1286,7 @@ If nil show only beginning of region."
   :type 'boolean :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-sort-comparer "bookmark+")
-(defcustom bmkp-sort-comparer '((bmkp-info-cp bmkp-gnus-cp bmkp-url-cp bmkp-local-file-type-cp)
+(defcustom bmkp-sort-comparer '((bmkp-info-node-name-cp bmkp-gnus-cp bmkp-url-cp bmkp-local-file-type-cp)
                                 bmkp-alpha-p) ; This corresponds to `s k'.
   ;; $$$$$$ An alternative default value: `bmkp-alpha-p', which corresponds to `s n'.
   "*Predicate or predicates for sorting (comparing) bookmarks.
@@ -7336,7 +7337,7 @@ If either is a record then it need not belong to `bookmark-alist'."
           (h2                           '(nil))
           (t                            nil))))
 
-(defun bmkp-info-cp (b1 b2)
+(defun bmkp-info-node-name-cp (b1 b2)
   "True if bookmark B1 sorts as an Info bookmark before B2.
 Return nil if neither sorts before the other.
 
@@ -7353,8 +7354,8 @@ If either is a record then it need not belong to `bookmark-alist'."
   (let ((i1  (bmkp-info-bookmark-p b1))
         (i2  (bmkp-info-bookmark-p b2)))
     (cond ((and i1 i2)
-           (setq i1  (abbreviate-file-name (bookmark-get-filename b1))
-                 i2  (abbreviate-file-name (bookmark-get-filename b2)))
+           (setq i1  (file-name-nondirectory (bookmark-get-filename b1))
+                 i2  (file-name-nondirectory (bookmark-get-filename b2)))
            (when case-fold-search (setq i1  (bmkp-upcase i1)
                                         i2  (bmkp-upcase i2)))
            (cond ((string-lessp i1 i2)                  '(t)) ; Compare manuals (file names).
@@ -7370,6 +7371,39 @@ If either is a record then it need not belong to `bookmark-alist'."
                          (cond ((or (not i1) (not i2))  '(t)) ; Fallback if no `position' entry.
                                ((<= i1 i2)              '(t))
                                ((< i2 i1)               '(nil))))))))
+          (i1                                           '(t))
+          (i2                                           '(nil))
+          (t                                            nil))))
+
+(defun bmkp-info-position-cp (b1 b2)
+  "True if bookmark B1 sorts as Info bookmark before B2 in book order.
+Return nil if neither sorts before the other.
+
+Two Info bookmarks are compared first by file name (corresponding to
+the manual), then by position in the file.
+True also if B1 is an Info bookmark but B2 is not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+
+B1 and B2 are full bookmarks (records) or bookmark names.
+If either is a record then it need not belong to `bookmark-alist'."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
+  (let ((i1  (bmkp-info-bookmark-p b1))
+        (i2  (bmkp-info-bookmark-p b2)))
+    (cond ((and i1 i2)
+           (setq i1  (file-name-nondirectory (bookmark-get-filename b1))
+                 i2  (file-name-nondirectory (bookmark-get-filename b2)))
+           (when case-fold-search (setq i1  (bmkp-upcase i1)
+                                        i2  (bmkp-upcase i2)))
+           (cond ((string-lessp i1 i2)                  '(t)) ; Compare manuals (file names).
+                 ((string-lessp i2 i1)                  '(nil))
+                 (t                     ; Compare positions.
+                  (setq i1  (bookmark-get-position b1)
+                        i2  (bookmark-get-position b2))
+                  (cond ((or (not i1) (not i2))  '(t)) ; Fallback if no `position' entry.
+                        ((<= i1 i2)              '(t))
+                        ((< i2 i1)               '(nil))))))
           (i1                                           '(t))
           (i2                                           '(nil))
           (t                                            nil))))
