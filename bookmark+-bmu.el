@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Thu Mar 30 12:43:12 2017 (-0700)
+;; Last-Updated: Mon Jul  3 11:00:01 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 3927
+;;     Update #: 3946
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -205,7 +205,8 @@
 ;;    `bmkp-bmenu-sort-by-creation-time',
 ;;    `bmkp-bmenu-sort-by-file-name',
 ;;    `bmkp-bmenu-sort-by-Gnus-thread',
-;;    `bmkp-bmenu-sort-by-Info-location',
+;;    `bmkp-bmenu-sort-by-Info-node-name',
+;;    `bmkp-bmenu-sort-by-Info-position',
 ;;    `bmkp-bmenu-sort-by-last-bookmark-access',
 ;;    `bmkp-bmenu-sort-by-last-buffer-or-file-access',
 ;;    `bmkp-bmenu-sort-by-last-local-file-access',
@@ -419,7 +420,8 @@ Elements of ALIST that are not conses are ignored."
 ;; bookmark-get-bookmark, bmkp-get-buffer-name, bmkp-get-tags,
 ;; bmkp-gnus-bookmark-p, bmkp-gnus-cp, bmkp-handler-cp,
 ;; bmkp-incremental-filter-delay, bmkp-image-bookmark-p,
-;; bmkp-info-bookmark-p, bmkp-info-cp, bmkp-isearch-bookmarks,
+;; bmkp-info-bookmark-p, bmkp-info-node-name-cp,
+;; bmkp-info-position-cp, bmkp-isearch-bookmarks,
 ;; bmkp-isearch-bookmarks-regexp, bmkp-jump-1,
 ;; bmkp-last-bookmark-file, bmkp-last-specific-buffer,
 ;; bmkp-last-specific-file, bmkp-latest-bookmark-alist,
@@ -436,12 +438,12 @@ Elements of ALIST that are not conses are ignored."
 ;; bmkp-reverse-sort-p, bmkp-root-or-sudo-logged-p, bmkp-same-file-p,
 ;; bmkp-save-menu-list-state, bmkp-sequence-bookmark-p,
 ;; bmkp-set-tag-value, bmkp-set-tag-value-for-bookmarks,
-;; bmkp-set-union, bmkp-snippet-alist-only, bmkp-snippet-bookmark-p, bmkp-some, bmkp-some-marked-p,
-;; bmkp-some-unmarked-p, bmkp-sort-omit, bmkp-sort-comparer,
-;; bmkp-sorted-alist, bmkp-su-or-sudo-regexp, bmkp-tag-name,
-;; bmkp-tags-list, bmkp-url-bookmark-p, bmkp-url-cp,
-;; bmkp-unmarked-bookmarks-only, bmkp-variable-list-bookmark-p,
-;; bmkp-visited-more-cp
+;; bmkp-set-union, bmkp-snippet-alist-only, bmkp-snippet-bookmark-p,
+;; bmkp-some, bmkp-some-marked-p, bmkp-some-unmarked-p,
+;; bmkp-sort-omit, bmkp-sort-comparer, bmkp-sorted-alist,
+;; bmkp-su-or-sudo-regexp, bmkp-tag-name, bmkp-tags-list,
+;; bmkp-url-bookmark-p, bmkp-url-cp, bmkp-unmarked-bookmarks-only,
+;; bmkp-variable-list-bookmark-p, bmkp-visited-more-cp
 
 ;; (eval-when-compile (require 'bookmark+-lit nil t))
 ;; bmkp-get-lighting
@@ -1704,7 +1706,8 @@ to cycle)
 access
 \\[bmkp-bmenu-sort-by-last-bookmark-access]\t- Sort by last bookmark access time
 \\[bmkp-bmenu-sort-by-Gnus-thread]\t- Sort by Gnus thread: group, article, message
-\\[bmkp-bmenu-sort-by-Info-location]\t- Sort by Info manual, node, position
+\\[bmkp-bmenu-sort-by-Info-node-name]\t- Sort by Info manual, node, position in node
+\\[bmkp-bmenu-sort-by-Info-position]\t- Sort by Info manual, position in manual
 \\[bmkp-bmenu-sort-by-bookmark-type]\t- Sort by bookmark type
 \\[bmkp-bmenu-sort-by-bookmark-name]\t- Sort by bookmark name
 \\[bmkp-bmenu-sort-by-url]\t- Sort by URL
@@ -5089,7 +5092,7 @@ use it."
 
 (bmkp-define-sort-command               ; Bound to `s k' in bookmark list (`k' for "kind")
  "by bookmark type"                     ; `bmkp-bmenu-sort-by-bookmark-type'
- ((bmkp-info-cp bmkp-url-cp bmkp-gnus-cp bmkp-local-file-type-cp bmkp-handler-cp)
+ ((bmkp-info-node-name-cp bmkp-url-cp bmkp-gnus-cp bmkp-local-file-type-cp bmkp-handler-cp)
   bmkp-alpha-p)
  "Sort bookmarks by type: Info, URL, Gnus, files, other (by handler name).")
 
@@ -5126,9 +5129,16 @@ When two bookmarks are not comparable this way, compare them by
 bookmark name.")
 
 (bmkp-define-sort-command               ; Bound to `s i' in bookmark list
- "by Info location"                     ; `bmkp-bmenu-sort-by-Info-location'
- ((bmkp-info-cp) bmkp-alpha-p)
- "Sort Info bookmarks by file name, then node name, then position.
+ "by Info node name"                    ; `bmkp-bmenu-sort-by-Info-node-name'
+ ((bmkp-info-node-name-cp) bmkp-alpha-p)
+ "Sort Info bookmarks by manual (file) name, then node name, then position.
+When two bookmarks are not comparable this way, compare them by
+bookmark name.")
+
+(bmkp-define-sort-command               ; Bound to `s I' in bookmark list
+ "by Info position"                     ; `bmkp-bmenu-sort-by-Info-position'
+ ((bmkp-info-position-cp) bmkp-alpha-p)
+ "Sort Info bookmarks by manual (file) name, then position (order in book).
 When two bookmarks are not comparable this way, compare them by
 bookmark name.")
 
@@ -5516,7 +5526,8 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "sfs"                  'bmkp-bmenu-sort-by-local-file-size)
 (define-key bookmark-bmenu-mode-map "sfu"                  'bmkp-bmenu-sort-by-last-local-file-update)
 (define-key bookmark-bmenu-mode-map "sg"                   'bmkp-bmenu-sort-by-Gnus-thread)
-(define-key bookmark-bmenu-mode-map "si"                   'bmkp-bmenu-sort-by-Info-location)
+(define-key bookmark-bmenu-mode-map "si"                   'bmkp-bmenu-sort-by-Info-node-name)
+(define-key bookmark-bmenu-mode-map "sI"                   'bmkp-bmenu-sort-by-Info-position)
 (define-key bookmark-bmenu-mode-map "sk"                   'bmkp-bmenu-sort-by-bookmark-type)
 (define-key bookmark-bmenu-mode-map "sn"                   'bmkp-bmenu-sort-by-bookmark-name)
 (define-key bookmark-bmenu-mode-map "sr"                   'bmkp-reverse-sort-order)
@@ -6044,9 +6055,12 @@ are marked or ALLP is non-nil."
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-Gnus-thread]
   '(menu-item "By Gnus Thread" bmkp-bmenu-sort-by-Gnus-thread
     :help "Sort Gnus bookmarks by group, then by article, then by message"))
-(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-Info-location]
-  '(menu-item "By Info Node" bmkp-bmenu-sort-by-Info-location
-    :help "Sort Info bookmarks by file name, then node name, then position"))
+(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-Info-node-name]
+  '(menu-item "By Info Node Name" bmkp-bmenu-sort-by-Info-node-name
+    :help "Sort Info bookmarks by manual (file) name, then node name, then position"))
+(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-Info-position]
+  '(menu-item "By Info Book Order" bmkp-bmenu-sort-by-Info-position
+    :help "Sort Info bookmarks by manual (file) name, then position (order in book)"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-last-local-file-update]
   '(menu-item "By Last Local File Update" bmkp-bmenu-sort-by-last-local-file-update
     :help "Sort bookmarks by last local file update time"))
