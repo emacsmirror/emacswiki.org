@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jul  3 10:50:20 2017 (-0700)
+;; Last-Updated: Mon Jul  3 14:24:29 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8506
+;;     Update #: 8519
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -367,6 +367,7 @@
 ;;    `bmkp-guess-default-handler-for-file-flag',
 ;;    `bmkp-handle-region-function', `bmkp-incremental-filter-delay',
 ;;    `bmkp-info-auto-type' (Emacs 22+),
+;;    `bmkp-info-sort-ignores-directories-flag',
 ;;    `bmkp-last-as-first-bookmark-file',
 ;;    `bmkp-menu-popup-max-length', `bmkp-new-bookmark-default-names',
 ;;    `bmkp-other-window-pop-to-flag', `bmkp-prompt-for-tags-flag',
@@ -1137,6 +1138,14 @@ the change to take effect."
 (defcustom bmkp-handle-region-function 'bmkp-handle-region-default
   "*Function to handle a bookmarked region."
   :type 'function :group 'bookmark-plus)
+
+;;;###autoload (autoload 'bmkp-info-sort-ignores-directories-flag "bookmark+")
+(defcustom bmkp-info-sort-ignores-directories-flag t
+  "*Non-nil means Info-bookmark sorting uses manual names, not file locations.
+If nil, the absolute file names of the manuals are used.  This can be
+useful if you have bookmarks for multiple Emacs releases, and you want
+the bookmarks for a given release to appear together."
+  :type 'boolean :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-incremental-filter-delay "bookmark+")
 (defcustom bmkp-incremental-filter-delay (if (boundp 'bookmark-search-delay)
@@ -7341,8 +7350,13 @@ If either is a record then it need not belong to `bookmark-alist'."
   "True if bookmark B1 sorts as an Info bookmark before B2.
 Return nil if neither sorts before the other.
 
-Two Info bookmarks are compared first by file name (corresponding to
-the manual), then by node name, then by position.
+Two Info bookmarks are compared first by manual name, then by node
+name, then by position.
+
+If `bmkp-info-sort-ignores-directories-flag' is non-nil then manual
+names are used.  If it is nil then absolute file names for the manuals
+are used.
+
 True also if B1 is an Info bookmark but B2 is not.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
@@ -7352,10 +7366,11 @@ If either is a record then it need not belong to `bookmark-alist'."
   (setq b1  (bookmark-get-bookmark b1)
         b2  (bookmark-get-bookmark b2))
   (let ((i1  (bmkp-info-bookmark-p b1))
-        (i2  (bmkp-info-bookmark-p b2)))
+        (i2  (bmkp-info-bookmark-p b2))
+        (fn  (if bmkp-info-sort-ignores-directories-flag #'file-name-nondirectory #'abbreviate-file-name)))
     (cond ((and i1 i2)
-           (setq i1  (file-name-nondirectory (bookmark-get-filename b1))
-                 i2  (file-name-nondirectory (bookmark-get-filename b2)))
+           (setq i1  (funcall fn (bookmark-get-filename b1))
+                 i2  (funcall fn (bookmark-get-filename b2)))
            (when case-fold-search (setq i1  (bmkp-upcase i1)
                                         i2  (bmkp-upcase i2)))
            (cond ((string-lessp i1 i2)                  '(t)) ; Compare manuals (file names).
@@ -7379,8 +7394,13 @@ If either is a record then it need not belong to `bookmark-alist'."
   "True if bookmark B1 sorts as Info bookmark before B2 in book order.
 Return nil if neither sorts before the other.
 
-Two Info bookmarks are compared first by file name (corresponding to
-the manual), then by position in the file.
+Two Info bookmarks are compared first by manual name, then by position
+in the file.
+
+If `bmkp-info-sort-ignores-directories-flag' is non-nil then manual
+names are used.  If it is nil then absolute file names for the manuals
+are used.
+
 True also if B1 is an Info bookmark but B2 is not.
 Reverse the roles of B1 and B2 for a false value.
 A true value is returned as `(t)', a false value as `(nil)'.
@@ -7390,10 +7410,11 @@ If either is a record then it need not belong to `bookmark-alist'."
   (setq b1  (bookmark-get-bookmark b1)
         b2  (bookmark-get-bookmark b2))
   (let ((i1  (bmkp-info-bookmark-p b1))
-        (i2  (bmkp-info-bookmark-p b2)))
+        (i2  (bmkp-info-bookmark-p b2))
+        (fn  (if bmkp-info-sort-ignores-directories-flag #'file-name-nondirectory #'abbreviate-file-name)))
     (cond ((and i1 i2)
-           (setq i1  (file-name-nondirectory (bookmark-get-filename b1))
-                 i2  (file-name-nondirectory (bookmark-get-filename b2)))
+           (setq i1  (funcall fn (bookmark-get-filename b1))
+                 i2  (funcall fn (bookmark-get-filename b2)))
            (when case-fold-search (setq i1  (bmkp-upcase i1)
                                         i2  (bmkp-upcase i2)))
            (cond ((string-lessp i1 i2)                  '(t)) ; Compare manuals (file names).
