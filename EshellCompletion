@@ -47,6 +47,22 @@ Note that completion of "cd /su::/" still works because this is
 handled by tramp-file-name-handler.
 
 Perhaps there are better ways of doing this? -- Matt Hodges
+== Subcommand completions ==
+In default subcommands are not completed, so I make the completion functions for the some commands
+(systemctl, pacman, sudo) which have subcommands. Since pcomplete is effective on eshell, created
+the completion functions having  the corresponding commands' names.
+
+<include gist "https://gist.github.com/ede09142b817f2e3b97e87ce8bc93736">
+
+Other distribution users who don't use <code>pacman</code> should exclude
+the <code>pacman</code> completion codes and the pacman-related parts
+within <code>sudo</code> completion.
+
+Completed subcommands on <code>systemctl</code> are set
+<code>disable</code>, <code>enable</code>, <code>status</code>, <code>start</code>,
+<code>restart</code>, <code>stop</code>, but if needed, you can add other subcommands.
+
+-- KatsuyukiKiso
 
 == Miscellaneous ==
 
