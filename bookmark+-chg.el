@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jun 26 08:36:45 2017 (-0700)
+;; Last-Updated: Mon Jul  3 11:18:04 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 16327
+;;     Update #: 16340
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2017/07/03 dadams
+;;     Added: bmkp-info-position-cp.
+;;     Renamed: bmkp-info-cp to bmkp-info-node-name-cp.
+;;     bmkp-sort-comparer: Applied renaming of bmkp-info-cp.
+;;     bmkp-info-node-name-cp: Use file-name-nondirectory (manual names), not abbreviate-file-name.
 ;; 2017/06/26 dadams
 ;;     Added: bmkp-kmacro-list-bookmark-p.
 ;;     bmkp-bookmark-description: Handle bmkp-kmacro-list-bookmark-p.
@@ -1313,6 +1318,15 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2017/07/03 dadams
+;;     Added: bmkp-bmenu-sort-by-Info-position.
+;;     Renamed bmkp-bmenu-sort-by-Info-location to bmkp-bmenu-sort-by-Info-node-name.
+;;     bookmark-bmenu-mode: Updated doc string for Info-bookmark sorting.
+;;     bmkp-bmenu-sort-by-bookmark-type, bmkp-bmenu-sort-by-Info-node-name:
+;;       Applied renaming of bmkp-info-cp to bmkp-info-node-name-cp.
+;;     Bind bmkp-bmenu-sort-by-Info-position to s I.
+;;     bmkp-bmenu-sort-menu:
+;;       Added bmkp-bmenu-sort-by-Info-position.  Renamed By Info Node to By Info Node Name.
 ;; 2017/03/30 dadams
 ;;     bmkp-bmenu-mark-*-bookmarks:
 ;;       Added optional arg MSGP.  Pass it to bmkp-bmenu-mark-bookmarks-satisfying.
