@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Jun 25 19:11:40 2017 (-0700)
+;; Last-Updated: Tue Jul  4 14:56:05 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 11723
+;;     Update #: 11725
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4637,6 +4637,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2017/07/04 dadams
+;;     icicle-add/update-saved-completion-set: By default, use last set name and its file.
 ;; 2017/06/25 dadams
 ;;     Added: icicle-toggle-completion-mode-keys.
 ;;     icicle-help-string-completion: Added icicle-toggle-completion-mode-keys.
