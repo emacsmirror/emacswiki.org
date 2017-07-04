@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Jun 25 10:49:26 2017 (-0700)
+;; Last-Updated: Tue Jul  4 14:58:22 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 19821
+;;     Update #: 19827
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: http://www.emacswiki.org/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7971,26 +7971,29 @@ without spaces, and with file extension `icy'.  List
 set and file names.  Return the cache-file name."
   (interactive)
   (let* ((icicle-whole-candidate-as-text-prop-p  nil)
+         (last-set-name                          (caar icicle-saved-completion-sets))
+         (last-set-file                          (cdar icicle-saved-completion-sets))
          (set-name                               (icicle-substring-no-properties
-                                                  (completing-read
-                                                   "Saved completion set: "
-                                                   icicle-saved-completion-sets nil nil nil
-                                                   'icicle-completion-set-history)))
+                                                  (completing-read "Saved completion set: "
+                                                                   icicle-saved-completion-sets nil nil nil
+                                                                   'icicle-completion-set-history
+                                                                   last-set-name)))
          (file-name                              ""))
     (setq file-name  (expand-file-name
                       (read-file-name "Cache file for the set: " default-directory nil nil
-                                      (concat (icicle-delete-whitespace-from-string set-name) ".icy"))))
+                                      (if (equal set-name last-set-name)
+                                          last-set-file
+                                        (concat (icicle-delete-whitespace-from-string set-name) ".icy")))))
     (while (not (icicle-file-writable-p file-name))
       (setq file-name  (expand-file-name
-                        (read-file-name
-                         "Cannot write to that file. Cache file: " default-directory nil nil
-                         (concat (icicle-delete-whitespace-from-string set-name) ".icy")))))
+                        (read-file-name "Cannot write to that file. Cache file: " default-directory nil nil
+                                        (if (equal set-name last-set-name)
+                                            last-set-file
+                                          (concat (icicle-delete-whitespace-from-string set-name) ".icy"))))))
     (setq icicle-saved-completion-sets  ; Remove any old definition of this set.
           (icicle-assoc-delete-all set-name icicle-saved-completion-sets))
     (push (cons set-name file-name) icicle-saved-completion-sets) ; Add new set definition.
-    (funcall icicle-customize-save-variable-function
-             'icicle-saved-completion-sets
-             icicle-saved-completion-sets)
+    (funcall icicle-customize-save-variable-function 'icicle-saved-completion-sets icicle-saved-completion-sets)
     (message "Added set to `icicle-saved-completion-sets': `%s'" set-name)
     file-name))                         ; Return cache-file name.
 
