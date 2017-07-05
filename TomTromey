@@ -20,7 +20,10 @@ Here's my Emacs wish-list.  Parts of it are more like my personal to-do list.
 ** Could rewrite the zenity hack in Python, then put all the Python code directly into the .el file.
 
 * It should be possible to embed another X application into a buffer.  This would be handy for things like gnuplot mode.
-
+[new:]
+In Emacs 25 XWidget is added. 
+-- LdBeth
+[new] 
 * ERC
 ** ERC could use a buffer-menu-like mode.  But maybe ibuffer can do this -- need to look.
 ** ERC could use a C-x C-o binding to delete all the "server gunk" between the current input location and the last non-server-line.  That is, delete all the messages about people entering and leaving the channel, leaving just the conversation.
