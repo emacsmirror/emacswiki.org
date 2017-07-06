@@ -49,7 +49,7 @@ handled by tramp-file-name-handler.
 Perhaps there are better ways of doing this? -- Matt Hodges
 == Subcommand completions ==
 In default subcommands are not completed, so I make the completion functions for the some commands
-(systemctl, pacman, sudo) which have subcommands. Since pcomplete is effective on eshell, created
+(systemctl, pacman, sudo, man) which have subcommands. Since pcomplete is effective on eshell, created
 the completion functions having  the corresponding commands' names.
 
 <include gist "https://gist.github.com/ede09142b817f2e3b97e87ce8bc93736">
