@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Jul  7 05:47:04 2017 (-0700)
+;; Last-Updated: Fri Jul  7 10:47:30 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 19834
+;;     Update #: 19835
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -3616,9 +3616,7 @@ is as follows.
 
   Yes, this means you need to know when the particular ALTERNATIVES
   function that you want is coming up next, and use, say, `C-9' just
-  before hitting `M-.' for that alternative.  So if, e.g., you want to
-  evaluate the active region and insert the value, then you use
-  `M-. C-9 M-.', since it is the second `M-.' that grabs the region.
+  before hitting `M-.' for that alternative.
 
 * If the FORWARD-THING is being used, then the prefix arg determines
   the number of things to grab, and the direction of grabbing.: A
