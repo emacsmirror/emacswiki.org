@@ -192,9 +192,10 @@ right.
 * If `##M-.##' would normally grab an alternative thing of a different
 type, then numeric ''N'' tells '''Icicles''' to grab the particular thing
 at point and then evaluate it as a Lisp [[sexp]] and insert the
-result of that evaluation in the minibuffer.
+result of that evaluation in the minibuffer.  (The use of a numeric prefix arg to evaluate a Lisp sexp does
+require that you know when the particular thing-grabbing function that you want is coming up next.)
 
-So for example, returning to the example above, with the cursor is
+So for example, returning to the example above, with the cursor 
 at the beginning of the word "use" in the first paragraph of this section,
 if you used `##M-- M-. M-. M-.##', then the successive insertions in the example above would be as follows:
 
@@ -205,12 +206,7 @@ if you used `##M-- M-. M-. M-.##', then the successive insertions in the example
 
 And if you instead used `##M--3 M-.##', then you would immediately insert `##differently if you##'.
 
-The use of a numeric prefix arg to evaluate a Lisp sexp does
-require that you know when the particular thing-grabbing function
-that you want is coming up next.  So if, for example, you want to
-evaluate the [[active region]] and insert the resulting value, then
-you use `##M-. C-9 M-.##', since (by default) it is the second `##M-.##'
-that grabs the region text.
+
 
 There are thus lots of possibilities when you use `##M-.##'
 repeatedly.  You need not bother with them until you need them.
