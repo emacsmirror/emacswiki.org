@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Tue Jul  4 14:56:05 2017 (-0700)
+;; Last-Updated: Fri Jul  7 06:08:22 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 11725
+;;     Update #: 11727
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
-;; Doc URL: http://www.emacswiki.org/Icicles
+;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -9203,6 +9203,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2017/07/07 dadams
+;;     Version 2017.07.07
 ;; 2016/12/21 dadams
 ;;     Version 2016.12.21.
 ;; 2016/06/12 dadams
