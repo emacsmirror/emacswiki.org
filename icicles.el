@@ -6,13 +6,13 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2016.12.21
+;; Version: 2017.07.07
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar  3 14:55:48 2017 (-0800)
+;; Last-Updated: Fri Jul  7 06:08:52 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 23710
+;;     Update #: 23711
 ;; URL: https://www.emacswiki.org/emacs/download/icicles.el
-;; Doc URL: http://emacswiki.org/Icicles
+;; Doc URL: https://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
