@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Jul  7 05:59:29 2017 (-0700)
+;; Last-Updated: Fri Jul  7 11:04:46 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 28575
+;;     Update #: 28580
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2352,10 +2352,13 @@
 ;;  * If `M-.' would normally grab an alternative thing of a different
 ;;    type, then numeric N tells Icicles to grab the particular thing
 ;;    at point and then evaluate it as a Lisp sexp and insert the
-;;    result of that evaluation in the minibuffer.
+;;    result of that evaluation in the minibuffer.  (The use of a
+;;    numeric prefix arg to evaluate a Lisp sexp does require that you
+;;    know when the particular thing-grabbing function that you want
+;;    is coming up next.)
 ;;
-;;  So for example, returning to the example above, with the cursor is
-;;  at the beginning of the word "use" in the first paragraph of this
+;;  So for example, returning to the example above, with the cursor at
+;;  the beginning of the word "use" in the first paragraph of this
 ;;  section, if you used `M-- M-. M-. M-.', then the successive
 ;;  insertions would be as follows:
 ;;
@@ -2366,13 +2369,6 @@
 ;;
 ;;  And if you instead used `M--3 M-.', then you would immediately
 ;;  insert `differently if you'.
-;;
-;;  The use of a numeric prefix arg to evaluate a Lisp sexp does
-;;  require that you know when the particular thing-grabbing function
-;;  that you want is coming up next.  So if, for example, you want to
-;;  evaluate the active region and insert the resulting value, then
-;;  you use `M-. C-9 M-.', since (by default) it is the second `M-.'
-;;  that grabs the region text.
 ;;
 ;;  There are thus lots of possibilities when you use `M-.'
 ;;  repeatedly.  You need not bother with them until you need them.
