@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Sun Jun 25 08:55:30 2017 (-0700)
+;; Last-Updated: Fri Jul  7 06:05:26 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 10284
+;;     Update #: 10288
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mode.el
-;; Doc URL: http://www.emacswiki.org/Icicles
+;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -1135,7 +1135,7 @@ Used on `pre-command-hook'."
     (define-key icicle-menu-map [icicle-add/update-saved-completion-set]
       '(menu-item "Add/Update Saved Candidate Set..." icicle-add/update-saved-completion-set
         :help "Add or update an entry in `icicle-saved-completion-sets'"))
-    (when (fboundp 'icicle-kmacro)
+    (when (fboundp 'icicle-kmacro)      ; Emacs 22+
       (define-key icicle-menu-map [icicle-kmacro]
         '(menu-item "+ Execute Nth Keyboard Macro..." icicle-kmacro
           :enable (or (kmacro-ring-head)  kmacro-ring)
@@ -3868,7 +3868,7 @@ Non-nil NO-FILE-P means do not include the buffer's file name."
           search-ring-max                      icicle-search-ring-max
           icicle-saved-regexp-search-ring-max  regexp-search-ring-max ; Save it.
           regexp-search-ring-max               icicle-regexp-search-ring-max))
-  (when (boundp 'icicle-kmacro-ring-max)
+  (when (boundp 'icicle-kmacro-ring-max) ; Emacs 22+
     (setq icicle-saved-kmacro-ring-max  kmacro-ring-max ; Save it.
           kmacro-ring-max               icicle-kmacro-ring-max)))
 
