@@ -325,6 +325,9 @@ Many other application wikis use a sans serif font, not to mention Wikipedia its
 There's a [https://github.com/bburns/emacswiki-light-theme github repo] for the new css, so I think that it would be better to place your suggestion there.
 Personally, though, I don't agree and I think that looking like the other wikis out there is not a goal. But I'll leave it to the author of the theme we're using.
 Also note that you can use your own [[CSS]].
+Perhaps you want that [https://www.emacswiki.org/emacs?action=browse;id=CSS;css=/css/pedia.css Wikipedia theme]?
+
+-- Alex Schroeder
 
 ----
 CategoryEmacsWikiSite
