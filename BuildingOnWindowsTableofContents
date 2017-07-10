@@ -11,7 +11,7 @@ There seem to be eight(!) different ways of building GNU Emacs on Windows; this 
 * Win32 Emacs
 ** 21.3
 *** built with CygWin: BuildingTwentyOneThreeWThirtyTwoCygwin
-*** built with MSVC: BuildingTwentyOneThreeWThirtyTwoMsvc
+*** built with MSVC: BuildingTwentyOneThreeWThirtyTwoMsvc (no longer supported)
 *** built with MinGW: BuildingTwentyOneThreeWThirtyTwoMingw
 ** recent CVS
 *** built with CygWin: BuildingCvsWThirtyTwoCygwin
