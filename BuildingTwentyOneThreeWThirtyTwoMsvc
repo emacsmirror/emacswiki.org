@@ -1,16 +1,14 @@
-I haven't checked recently, but it's always worked fine out of the box.
+This method is no longer supported in emacs-26 (from git as of 10 July 2017)
 
----------------------------------------------------------
+cmd shell on Windows 10
 
-I've just downloaded emacs-21.4 leim-21.4 unpacked them
-gone to cmd shell on Windows XP
+> vcvars64.bat
+> cd emacs/nt
+> .\configure
 
-> vcvars32.bat
-> cd emacs-21.4/nt
-> ./configure
-> nmake
-> nmake install INSTALL_DIR=c:\pf\emacs
+****************************************************************
+*** THIS METHOD OF BUILDING EMACS IS NO LONGER SUPPORTED.     **
+*** INSTEAD, FOLLOW THE INSTRUCTIONS IN THE FILE INSTALL.     **
+*** IN THE SAME DIRECTORY AS THIS BATCH FILE.                 **
+****************************************************************
 
-and voi la! emacs is running.
-
--Anton Tagunov October 2006
