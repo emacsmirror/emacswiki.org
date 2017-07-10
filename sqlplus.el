@@ -401,7 +401,7 @@ Mode Specific Bindings:
   (unless (assq 'orcl-mode minor-mode-map-alist)
     (push (cons 'orcl-mode orcl-mode-map) minor-mode-map-alist)))
 
-(defvar sqlplus-user-variables (makehash 'equal))
+(defvar sqlplus-user-variables (make-hash-table :test 'equal))
 
 (defvar sqlplus-user-variables-history nil)
 
