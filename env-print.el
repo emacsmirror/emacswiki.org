@@ -1,25 +1,25 @@
 ;;; env-print.el -- print an envelope
-;;; Version: 0.1
-;;; Author: Hans Halvorson (www.princeton.edu/~hhalvors)
-;;; Time-stamp: <2007-04-24 09:38:55 hhalvors>
-;;;
-;;; This is free software -- you may redistribute it under the GNU
-;;; General Public License, but it comes with ABSOLUTELY NO WARRANTY.
-;;;
-;;; some parts based on Gregory Spath's "envelope" Perl script
-;;; (http://freefall.homeip.net/code/)
 
-;;; Usage:
-;;;
-;;; The function `env-print' takes a list of strings and prints a
-;;; postscript envelope through lpr-buffer.  It is likely that you will
-;;; have to tune the custom variables for your printer.
-;;;
-;;; The interactive function `env-from-bbdb' prints an envelope from
-;;; the bbdb record at the point.  It currently defaults to the first
-;;; address in the record, and it has only been tested for US
-;;; addresses.
+;; Author: Hans Halvorson (www.princeton.edu/~hhalvors)
+;; Version: 0.1
 
+;; This file is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published
+;; by the Free Software Foundation.
+
+;; Some parts are based on Gregory Spath's "envelope" Perl script
+;; (http://freefall.homeip.net/code/).
+
+;;; Commentary:
+;;
+;; The function `env-print' takes a list of strings and prints a
+;; postscript envelope through lpr-buffer.  It is likely that you will
+;; have to tune the custom variables for your printer.
+;;
+;; The interactive function `env-from-bbdb' prints an envelope from
+;; the bbdb record at the point.  It currently defaults to the first
+;; address in the record, and it has only been tested for US
+;; addresses.
 
 ;;; Code:
 
