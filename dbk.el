@@ -1,9 +1,10 @@
 ;;; dbk.el --- convert docbook to muse
+
 ;; Copyright (C) 2006 Elena Pomohaci (epomulet)
 
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License.
-
+;; This file is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published
+;; by the Free Software Foundation.
 
 ;;; Code:
 
