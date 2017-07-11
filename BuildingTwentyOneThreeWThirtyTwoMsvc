@@ -6,9 +6,10 @@ cmd shell on Windows 10
 > cd emacs/nt
 > .\configure
 
+<pre>
 ****************************************************************
 *** THIS METHOD OF BUILDING EMACS IS NO LONGER SUPPORTED.     **
 *** INSTEAD, FOLLOW THE INSTRUCTIONS IN THE FILE INSTALL.     **
 *** IN THE SAME DIRECTORY AS THIS BATCH FILE.                 **
 ****************************************************************
-
+</pre>
