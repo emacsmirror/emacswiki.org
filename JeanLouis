@@ -17,3 +17,65 @@ I have been using GNU Emacs for my everyday work and programming, but it was lit
 It is my main tool for operating on a GNU system.
 
 All my employees must go through GNU Emacs tutorial, and they do it within one hour, and later they edit text, and it works. Basic editing functions are simple and usable just by everyone.
+
+== units.el ==
+
+{{{
+;;;; units.el interfaces with GNU Units http://www.gnu.org/software/units
+;;;; Very much used in our program http://www.StartYourOwnGoldMine.com
+
+(defun units-value (from to)
+  "Returns the result from units program"
+  (string-trim-right
+   (shell-command-to-string
+    (format "units -t '%s' '%s'" from to))))
+
+(defun list-of-lists (&rest args)
+  "Helper function for units completion"
+  (let ((list '()))
+    (dolist (item args)
+      (push (cons item item) list))
+    list))
+
+;;; This is the completion list. You can simply add items which you use the most.
+
+(setq units-completion-list
+        (list-of-lists "usdollar" "euro"
+                       "croatiakuna" "bosniaconvertiblemark" "serbiadinar"
+                       "denmarkkrona" "norwaykrone" "swedenkrona" "finlandmarkka"
+                       "tanzaniashilling" "ugandaschilling" "kenyaschilling"
+                       "meter" "inch" "feet" "foot" "cm" "mm"
+                       "mesh" "micron"))
+
+(setq *units-register* 55) ;; number 7, you can set it on other key here
+
+(defun units-complete (prompt)
+  "Completion for units"
+  (completing-read prompt units-completion-list nil t nil))
+
+(defun units ()
+  "Interfaces with units program and prints results into buffer"
+  (interactive)
+  (let* ((current-word (current-word :strict t))
+         (register-char (char-to-string *units-register*))
+           (from (if current-word current-word
+                   (format "%s %s"
+                           (string-trim (read-from-minibuffer "How much:"))
+                           (units-complete "Unit:"))))
+           (initial-unit (when current-word
+                           (units-complete
+                            (format "You have %s of what:" current-word))))
+           (to (units-complete "You want:"))
+           (result (if current-word
+                       (units-value (concat from " " initial-unit) to)
+                     (units-value from to))))
+       (unless (or (string-empty-p (string-trim from))
+                   (string-empty-p (string-trim to)))
+         (set-register *units-register* (string-trim-right result))
+         (message (format "%s %s -- value is on register for key %s" result to register-char)))))
+
+(global-set-key (kbd "C-x 7 u") 'units)
+
+;;; You can change register 
+
+}}}
