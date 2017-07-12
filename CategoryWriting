@@ -7,6 +7,7 @@ Clicking the title heading to search for pages about writing in natural language
 * DictEm -- another dict server querier, using the <code>dict</code> program
 * <tt>[[wordnik.el]]</tt> -- look up word definitions on [[http://WordNik.com|WordNik.com]], and display them.
 * LookUp -- "Lookup provides the simple and unified search interface for the commercial electric dictionary as well as the network dictionary server ."  Available as the debian package lookup-el, woody onwards. 
+* [https://github.com/gromnitsky/wordnut Wordnut] is major mode interface to Wordnet dictionary and programs
 * Hachette (hachette.el) -- looks up online French dictionaries.
 * !RDictCc -- is an english-german (and vice versa) dictionary written in Ruby. It includes an emacs module which integrates it into emacs. Get it from apps section at the author's [http://www.tsdh.de homepage].
 * ThesauriAndSynonyms -- Finding roughly equivalent words in natural languages.  Lists applications to other related information and tasks.
