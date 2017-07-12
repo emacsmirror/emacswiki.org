@@ -1,0 +1,19 @@
+== How I found out about GNU Emacs ==
+
+GNU Emacs editor I know since 1999, as that was the first time I learned directly about the GNU Operating System. In fact I was so much frustrated with the non-functioning Windoze, that I went out in the evening looking for GNU.
+
+I did not look for "Linux", I looked for GNU. At one time in past I have seen GNU is Not Unix CD-ROM somewhere on a bookshelf in bookstore in Stuttgart, Germany. I have tried to understand what it means, and my understanding was wrong. I understood that GNU is Unix, and I understood that GNU GPL license is yet another proprietary license, which I did not like. I was copying software without obeying any type of licenses. And I was convinced that due to that proprietary GNU GPL license, the CD-ROM was pretty expensive, something like 160 Deutschmarks.
+
+Still, one thing I knew, as once back in time, I have seen UNIX Terminals, and main computer in a closed, window kind of a room, elevated from ground to avoid even possible floods, and from that visit to military facilities, I knew that UNIX has multi-tasking abilities. That is what I knew and that was reason why I was searching for GNU. Windoze totally blocked after 1 day of Internet downloading, as my intention was to make a search engine.
+
+It was too late for me that day to find GNU, the large bookstore Wittwer was closed. So I went to the train station, and there was one bookstore still open. I did not know what is Linux, I was basically sick and tired of proprietary software. But I did find Linux book with CD-ROM and references to GNU, so I paid about 100 Deutschmarks, I was sweating to spit this much money out, but I hoped to change for better.
+
+Later I did find out by reading the licenses and understanding that I have actually got free software.
+
+And most of information I have got directly from GNU Emacs and manifesto of Dr. Richard Stallman.
+
+I have been using GNU Emacs for my everyday work and programming, but it was little clumsy, it blocked sometimes, crashed often, but I could save sessions. For some time I avoided using it, and used Vim editor and it was usable pretty much, but not as flexible. Later in time I switched back to GNU Emacs, and I am using it today, but I can switch easily to VI mode and use any vi-like editor or any Emacs-like editor.
+
+It is my main tool for operating on a GNU system.
+
+All my employees must go through GNU Emacs tutorial, and they do it within one hour, and later they edit text, and it works. Basic editing functions are simple and usable just by everyone.
