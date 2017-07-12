@@ -20,6 +20,10 @@ All my employees must go through GNU Emacs tutorial, and they do it within one h
 
 == units.el ==
 
+Let us say I need to quickly calculate US dollar conversion to Tanzanian shilling, so I am pressing C-x 7 u and Emacs is asking me how much? I say 100, and it asks me 100 of what? So I complete the answer as usdollar and then it asks me to what I wish to convert? I complete the answer and get Tanzanian shilling. The answer is stored in register, I keep it on number 7. Now if I want to enter the answer into the buffer, I do C-x r i 7 and I have it. Otherwise I have read the answer in the mini buffer.
+
+If the cursor is on some number, you can use that number to convert it to some other unit.
+
 {{{
 ;;;; units.el interfaces with GNU Units http://www.gnu.org/software/units
 ;;;; Very much used in our program http://www.StartYourOwnGoldMine.com
