@@ -36,6 +36,7 @@ There are several ways to get a working `grep' and `find' on MS Windows.
 * CygWin -- see <tt>[[cygwin-mount.el]]</tt> and <tt>[[setup-cygwin.el]]</tt>
 * [[#GnuWin32]]
 * [[#MSYS]]
+* [[#Cmder]]
 * [[#ernie]]
 
 Copy ##grep.exe## and ##find.exe## (as well as any necessary ##.dll## files) to Emacs' ##bin## directory. Emacs will then use these files over any other executables with the same name, including Windows' own ##find## utility.
@@ -100,6 +101,22 @@ It looks like dots and tilde characters needs to be escaped for `rgrep', `dired-
 	         "\\([\\.~]\\)"
 	         "\\\\\\1"
 	         ad-return-value)))))
+
+[:Cmder]
+=== Cmder ===
+
+[http://cmder.net/ Cmder] provides a console emulator for Windows that comes, among others, with Bash and all its base utilities.  Including `grep' and `find'.  Like for `MSYS' and `GnuWin32', add the right directory to the PATH, with the following code in your `.emacs' file:
+
+<pre>
+;; add cmder <http://cmder.net/> bin directory to the path
+(setenv "PATH"
+  (concat
+   ;; adapt "C:\\tools\\cmder" if you changed cmder default dir
+   "C:\\tools\\cmder\\vendor\\git-for-windows\\usr\\bin;"
+   (getenv "PATH")))
+</pre>
+
+If you installed Cmder via [https://chocolatey.org/ Chocolatey], it installs by default under `c:\tools\cmder'.  You will need to adapt the path in the code above if it is installed somewhere else on your system.  If you are not sure, execute `where grep` from a Bash tab in Cmder.
 
 [:ernie]
 === ernie ===
