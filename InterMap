@@ -7,14 +7,14 @@ EmacsWiki stuff:
  EmacsWiki /emacs?
  Self /emacs?
  English /emacs/%s?interface=en
- Français /emacs-fr?
- Deutsch /emacs-de?
- 日本語 /emacs-ja?
- Español /emacs-es?
- Português /emacs-pt?
- Русский /emacs-ru?
- 中文 /emacs-zh?
- Svenska /emacs-se?
+ Français /emacs/%s?interface=fr
+ Deutsch /emacs/%s?interface=de
+ 日本語 /emacs/%s?interface=ja
+ Español /emacs/%s?interface=es
+ Português /emacs/%s?interface=pt
+ Русский /emacs/%s?interface=ru
+ 中文 /emacs/%s?interface=zh
+ Svenska /emacs/%s?interface=se
  Download /emacs/download/
  Category /emacs/Category
 
