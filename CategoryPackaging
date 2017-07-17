@@ -19,7 +19,7 @@ These are the three main sources for Emacs packages:
 * [[MELPA]] -- an ELPA-compatible repository, built automatically on their server from upstream sources using recipes
 * [[Marmalade]] -- an ELPA-compatible repository, where users upload their own packages
 
-These repositories are connected to old Emacs packaging systems.
+These repositories are connected to alternative Emacs packaging systems.
 * [[DELPS]] -- Distributed Emacs Lisp Package System used by the alternate package manager [[Epackage]].  Install [[Git]] packaged repositories.
 * [[Emacsmirror]] -- Collects packages and distributes them as [[Git]] repositories.
 * [[el-get]] -- one regularly sees packages that claim to be available via el-get, but not via any ELPA-compatible repository.
