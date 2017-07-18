@@ -15,20 +15,8 @@ The helpful people from the Cygwin mailing list suggest that it is an NTEmacs pr
 [new:DrewAdams:2014-10-14 16:51 UTC]
 Still a problem as of October 2014, with all Emacs versions (starting with Emacs 20, at least), including Emacs 25 dev snapshots. -- DrewAdams
 
-[new:dkulp:2016-05-19 01:54 UTC]
-This is a non-issue. At least as of 2016, simply install emacs-w32. Problem solved.
-Fast. Mouse support. Shell fully functional. No cygwin-mount issues. It just works. -- [[dkulp]] 2016-05-18
-
-[new:DrewAdams:2016-05-19 05:08 UTC]
-I don't think that is true. I've seen recent reports of the problem (about a month ago).  Unless perhaps you mean something special by "emacs-w32", in which case please be specific about that.
-
-"Simply install emacs-w32" means nothing, to me at least. "Installing" Emacs for Windows just means picking up an executable for it, or building Emacs yourself. That does not give you Cygwin. The problem reported is using native Emacs on Windows (not Cygwin Emacs) together with recent (not even so recent anymore) Cygwin versions.
-
-If you want to convince people there is no such problem, or you really want to help people, please consider providing a step-by-step recipe for your "simply" solution, instead of just "simply install emacs-w32". -- DrewAdams 2016-05-18
 [new]
-
-
-Workarounds: 
+Workarounds:
 # Use Cygwin Emacs (package emacs-w32 uses the windows GUI, there are also X11 and console packages)
 # Don't upgrade Cygwin above, I think Cygwin1.dll, version 1.7.9.
 
