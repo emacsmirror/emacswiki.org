@@ -1,6 +1,6 @@
 When Emacs reads a file, it determines the encoding, reads the file, decodes it into an internal representation, and stores the coding-system used in a variable to be used when saving the file.  When saving, the buffer is encoded using the stored coding-system and written to the file again.
 
-You can change the encoding to use for the file when saving using `C-x C-m f'.  You can also force this immediately by using ##‘C-x C-m c <encoding> RET C-x C-w RET’##.
+You can change the encoding to use for the file when saving using `C-x C-m f'.  You can also force this immediately by using ##‘C-x C-m c <encoding> RET C-x C-w RET’##. You can list all available encodings with `M-x list-coding-systems'.
 
 You can force Emacs to read a file in a specific encoding with `C-x RET c C-x C-f'.  If you opened a file and EMACS determined the encoding incorrectly, you can use `M-x revert-buffer-with-coding-system', to reload the file with a named encoding.
 
