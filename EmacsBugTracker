@@ -12,6 +12,8 @@ Here are some useful preset queries of the bug database.
 
 * [http://debbugs.gnu.org/cgi/pkgreport.cgi?package=emacs;exclude=severity:wishlist;exclude=pending:done;exclude=tags:wontfix Non-wishlist bugs the developers have confirmed]
 
+* [http://debbugs.gnu.org/cgi/pkgreport.cgi?users=emacs;tag=documentation Docmentation bugs]
+
 * [http://debbugs.gnu.org/cgi/pkgreport.cgi?package=emacs;include=severity:wishlist;exclude=pending:done;exclude=tags:wontfix Wishlist items under consideration]
 
 * [http://debbugs.gnu.org/cgi/pkgreport.cgi?package=emacs;include=tags:patch;exclude=tags:wontfix Submitted patches]
@@ -21,6 +23,43 @@ Discussions about bug counts on the [[emacs-devel]] mailing list:
 * 2010-06-23: [http://lists.gnu.org/archive/html/emacs-devel/2010-06/msg00932.html Bug statistics] by Glenn Morris
 ** [http://lists.gnu.org/archive/html/emacs-devel/2010-06/msg00942.html continued] [http://lists.gnu.org/archive/html/emacs-devel/2010-06/msg00951.html continued]
 
+== Using the Bug Tracker ==
+
+The current bug tracking system for Emacs is controlled by e-mail.  The [http://elpa.gnu.org/packages/debbugs.html debbugs.el] GNU ELPA package has some commands to help with this.  A brief overview of the email interface follows:
+
+===Reporting bugs===
+To send a bug report about Emacs, open Emacs and hit `M-x report-emacs-bug'.  Fill in the gaps and send the e-mail.  You may also copy the contents of the mail buffer and use your mail client of choice, it doesn't really matter where you send it from.
+
+===Sending patches and other things===
+To send a patch to Emacs, send an e-mail to the bug tracking system at bug-gnu-emacs@gnu.org (this is the same as what `M-x report-emacs-bug' does).  The leading part of the e-mail should contain a few magic words which the system will recognize and tag the generated report with.
+
+====Example====
+The following is an example of a patch sent to the bug tracking system regarding [[rcirc]].
+
+<pre>
+Severity: wishlist
+Tags: patch
+
+My irc proxy (irssi-proxy) wants a password before allowing connections,
+so I added support for this to rcirc.  The patch is attached.
+
+[attached file]
+</pre>
+
+The system will recognize that the severity of this report should be "wishlist", which basically means "feature request".  The report is also tagged with "patch".  This will let it show in the submitted patches list, linked above.
+
+===Updating reports===
+To update a report, send an e-mail to control@debbugs.gnu.org.  The leading part of the e-mail, similar to when adding reports, should contain keywords that tell the system how to update the report.
+
+* <code>severity 3923 minor</code> sets the severity of bug report #3923 to "minor". The possible severities are ##critical##, ##grave##, ##serious##, ##important##, ##normal##, ##minor##, and ##wishlist##.
+* <code>tags 3923 + patch unreproducible</code> adds the ##patch## and ##unreproducible## tags to bug report 3923. Use a hyphen (##-##) instead of a plus to remove tags. Use an equals sign (##=##) to set exactly what tags the report should have.
+*  Mark bug#3923 as a "documentation" bug, so that is shows up in the documentation bug list mentioned above:
+<pre>user emacs
+usertag 3923 documentation
+</pre>
+
+For the full list of commands, see https://debbugs.gnu.org/server-control.html
 
 ----
 CategoryWishList
+EmacsBugs
