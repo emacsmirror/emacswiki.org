@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jul  3 14:24:29 2017 (-0700)
+;; Last-Updated: Wed Jul 19 21:43:11 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8519
+;;     Update #: 8521
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -7345,6 +7345,10 @@ If either is a record then it need not belong to `bookmark-alist'."
           (h1                           '(t))
           (h2                           '(nil))
           (t                            nil))))
+
+;; Keep the alias for a while, in case someone has it referenced in a state file.
+(defalias 'bmkp-info-cp 'bmkp-info-node-name-cp)
+(make-obsolete 'bmkp-info-cp 'bmkp-info-node-name-cp)
 
 (defun bmkp-info-node-name-cp (b1 b2)
   "True if bookmark B1 sorts as an Info bookmark before B2.
