@@ -113,9 +113,7 @@ Or put the following in your InitFile to override this behaviour.
 * ##[^## ... ##]## matches all characters not in the list, even newlines.
 Put a newline in the list if you want it not to be matched.
 You can enter a newline character using `C-o',
-`C-q C-j', or `C-q 012 RET'. Note also that 
-##\s-## matches space, tab, newline and carriage return.
-This can be handy in a ##[^## ... ##]## construct.
+`C-q C-j', `C-q 012 RET', or as "\n" within an Emacs Lisp string. Note also that ##\s-## matches whitespace, sometimes including newlines, but is mode-dependent.
 
 * Default case handling for replacing commands executes case conversion.
 This means that both upper and lower case match in the 
