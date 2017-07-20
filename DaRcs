@@ -59,5 +59,21 @@ properly (and changes to generalize it have been rejected).
   code that doesn't seem to add anything significant over darcsum
   and/or VC.
 
+== Conflict merging ==
+
+Here's some code for using ediff to merge conflicts based on the conflict markers
+
+{{{
+ (defun darcs-resolve-conflict ()
+  (interactive)
+  (darcs-convert-conflict-markers)
+  (smerge-ediff))
+
+(defun darcs-convert-conflict-markers ()
+  (goto-char (point-min))
+  (while (re-search-forward "^v v v v v v v\n\\(\\(?:.*\n\\)*\\)=============\n\\(\\(?:.*\n\\)*\\)[*]\\{13\\}\n\\(\\(?:.*\n\\)*\\)^ ^ ^ ^ ^ ^ ^" nil t)
+    (replace-match "<<<<<<< first\n\\2||||||| initial\n\\1=======\n\\3>>>>>>> second")))
+}}}
+
 ----
 CategoryVersionControl
