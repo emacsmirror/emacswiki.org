@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jun 14 09:27:12 2017 (-0700)
+;; Last-Updated: Sun Jul 23 08:35:23 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5846
+;;     Update #: 5854
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -19,10 +19,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-extra',
-;;   `cl-lib', `color', `frame-fns', `gv', `help-fns', `hexrgb',
-;;   `isearch-prop', `macroexp', `misc-cmds', `misc-fns', `strings',
-;;   `thingatpt', `thingatpt+', `zones'.
+;;   `avoid', `backquote', `button', `bytecomp', `cconv', `cl',
+;;   `cl-extra', `cl-lib', `color', `frame-fns', `gv', `help-mode',
+;;   `hexrgb', `isearch-prop', `macroexp', `misc-cmds', `misc-fns',
+;;   `strings', `thingatpt', `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1157,6 +1157,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2017/07/23 dadams
+;;     isearch-repeat: Typo: Was testing emacs-minor-version not emacs-major-version.
 ;; 2017/05/29 dadams
 ;;     isearch-mouse-2: Put overriding-terminal-local-map binding around only the binding of BINDING.  See bug #23007.
 ;; 2017/05/18 dadams
@@ -2995,7 +2997,7 @@ Note: You cannot use `DEL' (Backspace) to remove the failed portion of
     (if (or isearch-success  isearchp--repeat-search-if-fail-repeated)
         (setq isearchp--repeat-search-if-fail-repeated  nil)
       (unless isearchp--repeat-search-if-fail-repeated
-        (setq isearch-wrapped                     t
+        (setq isearch-wrapped                           t
               isearchp--repeat-search-if-fail-repeated  t)
         (if isearch-wrap-function
             (funcall isearch-wrap-function)
@@ -4299,8 +4301,7 @@ If `isearchp-auto-keep-filter-predicate-flag' is non-nil then set
 ;;
 ;; Restore cursor position relative to window (`isearchp-win-pt-line').  Fixes Emacs bug #12253.
 ;;
-(cond ((or (> emacs-major-version 23)   ; Emacs 23.2+
-           (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
+(cond ((or (> emacs-major-version 23)  (and (= emacs-major-version 23)  (> emacs-minor-version 1))) ; Emacs 23.2+
        (defun isearch-cancel ()
          "Terminate the search and go back to the starting point."
          (interactive)
@@ -4662,7 +4663,7 @@ If SPACE-BEFORE is non-nil,  put a space before, instead of after it."
 ;; 1. Highlight message according to search characteristics.
 ;; 2. Reverse the order of the filter prefixes.
 ;;
-(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 2))) ; Emacs 24.3+
 
   (defun isearch-message-prefix (&optional ellipsis nonincremental)
     ;; If about to search, and previous search regexp was invalid, check that it still is.
@@ -5027,7 +5028,7 @@ You need library `character-fold+.el' for this command."
   )
 
 
-(when (< emacs-minor-version 24)        ; OK for Emacs 20-23, so far.
+(when (< emacs-major-version 24)        ; OK for Emacs 20-23, so far.
 
 
   ;; REPLACE ORIGINAL in `isearch.el'.
@@ -6625,9 +6626,7 @@ This is used only for Transient Mark mode."
        'minor-mode-alist
        `(isearch-mode ,(cond ((and isearch-wrapped  (facep 'isearchp-overwrapped)
                                    (not isearch-wrap-function)
-                                   (if isearch-forward
-                                       (> (point) isearch-opoint)
-                                     (< (point) isearch-opoint)))
+                                   (if isearch-forward (> (point) isearch-opoint) (< (point) isearch-opoint)))
                               (propertize lighter 'face 'isearchp-overwrapped))
                              ((and isearch-wrapped  (facep 'isearchp-wrapped))
                               (propertize lighter 'face 'isearchp-wrapped))
