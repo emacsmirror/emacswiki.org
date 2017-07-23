@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 23 13:02:23 2017 (-0700)
+;; Last-Updated: Sun Jul 23 14:51:56 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5869
+;;     Update #: 5882
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -1159,9 +1159,10 @@
 ;;(@* "Change log")
 ;;
 ;; 2017/07/23 dadams
-;;     Added: isearchp-constrain-to-rectangular-region.
-;;     isearch-mode: Use isearchp-constrain-to-rectangular-region.
+;;     Added: isearchp-constrain-to-rectangular-region, isearchp--lazy-hlt-filter-failures-p.
+;;     isearch-mode: Use isearchp-constrain-to-rectangular-region.  Set isearchp--lazy-hlt-filter-failures-p to t.
 ;;     isearch-repeat: Typo: Was testing emacs-minor-version not emacs-major-version.
+;;     isearch-lazy-highlight-search: Do not dim unless isearchp--lazy-hlt-filter-failures-p is non-nil.
 ;; 2017/05/29 dadams
 ;;     isearch-mouse-2: Put overriding-terminal-local-map binding around only the binding of BINDING.  See bug #23007.
 ;; 2017/05/18 dadams
@@ -2614,6 +2615,9 @@ option.  Currently this means `M-s i' (`isearch-toggle-invisible') and
 
 (defvar isearchp-last-quit-regexp-search nil
   "Last successful search regexp when you hit `C-g' to quit regexp Isearch.")
+
+(defvar isearchp--lazy-hlt-filter-failures-p t ; Used only for Emacs 25+
+  "Non-nil means lazy-highlight filter failures.")
 
 (when (> emacs-major-version 21)
 
@@ -4174,6 +4178,7 @@ This has no effect if `isearchp-restrict-to-region-flag' is nil or the region is
         (let ((isearchp-prompt-for-filter-name               nil)
               (isearchp-prompt-for-prompt-prefix-flag        nil)
               (isearchp-update-filter-predicates-alist-flag  nil))
+          (setq isearchp-lazy-highlight-filter-failures-p  nil)
           (isearchp-add-filter-predicate (isearchp-columns-p min max)))))))
 
 
@@ -4203,65 +4208,66 @@ Non-nil argument REGEXP-FUNCTION:
 
  * If not a function (or if Emacs < 25), search for a sequence of
    words, ignoring punctuation."
-  (setq isearch-forward                  forward ; Initialize global vars.
-        isearch-regexp                   (or regexp  (and (not regexp-function)
-                                                          (boundp 'search-default-regexp-mode)
-                                                          (eq t search-default-regexp-mode)))
-        isearch-regexp-function          (or regexp-function  (and (boundp 'search-default-regexp-mode)
-                                                                   (functionp search-default-regexp-mode)
-                                                                   (not regexp)
-                                                                   search-default-regexp-mode))
-        isearch-op-fun                   op-fun
-        isearch-last-case-fold-search    isearch-case-fold-search
-        isearch-case-fold-search         case-fold-search
-        isearch-invisible                search-invisible
-        isearch-string                   ""
-        isearch-message                  ""
-        isearch-cmds                     ()
-        isearch-success                  t
-        isearch-wrapped                  nil
-        isearch-barrier                  (point)
-        isearch-adjusted                 nil
-        isearch-yank-flag                nil
-        isearch-invalid-regexp           nil ; Only for Emacs < 22.
-        isearch-within-brackets          nil ; Only for Emacs < 22.
-        isearch-error                    nil
-        isearch-slow-terminal-mode       (and (<= baud-rate search-slow-speed)
-                                              (> (window-height) (* 4 (abs search-slow-window-lines))))
-        isearch-other-end                nil
-        isearch-small-window             nil
-        isearch-just-started             t
-        isearch-start-hscroll            (window-hscroll)
-        isearch-opoint                   (point)
-        isearchp-win-pt-line             (- (line-number-at-pos) (line-number-at-pos (window-start)))
-        isearchp-reg-beg                 (save-restriction
-                                           (widen)
-                                           (if (and (boundp 'isearchp-restrict-to-region-flag)
-                                                    isearchp-restrict-to-region-flag
-                                                    (use-region-p))
-                                               (region-beginning)
-                                             nil))
-        isearchp-reg-end                 (save-restriction
-                                           (widen)
-                                           (if (and (boundp 'isearchp-restrict-to-region-flag)
-                                                    isearchp-restrict-to-region-flag
-                                                    (use-region-p))
-                                               (region-end)
-                                             nil))
-        search-ring-yank-pointer         nil
-        isearch-opened-overlays          ()
-        isearch-input-method-function    input-method-function
-        isearch-input-method-local-p     (local-variable-p 'input-method-function)
-        regexp-search-ring-yank-pointer  nil
+  (setq isearch-forward                              forward ; Initialize global vars.
+        isearch-regexp                               (or regexp  (and (not regexp-function)
+                                                                      (boundp 'search-default-regexp-mode)
+                                                                      (eq t search-default-regexp-mode)))
+        isearch-regexp-function                      (or regexp-function  (and (boundp 'search-default-regexp-mode)
+                                                                               (functionp search-default-regexp-mode)
+                                                                               (not regexp)
+                                                                               search-default-regexp-mode))
+        isearch-op-fun                               op-fun
+        isearch-last-case-fold-search                isearch-case-fold-search
+        isearch-case-fold-search                     case-fold-search
+        isearch-invisible                            search-invisible
+        isearch-string                               ""
+        isearch-message                              ""
+        isearch-cmds                                 ()
+        isearch-success                              t
+        isearch-wrapped                              nil
+        isearch-barrier                              (point)
+        isearch-adjusted                             nil
+        isearch-yank-flag                            nil
+        isearch-invalid-regexp                       nil ; Only for Emacs < 22.
+        isearch-within-brackets                      nil ; Only for Emacs < 22.
+        isearch-error                                nil
+        isearch-slow-terminal-mode                   (and (<= baud-rate search-slow-speed)
+                                                          (> (window-height) (* 4 (abs search-slow-window-lines))))
+        isearch-other-end                            nil
+        isearch-small-window                         nil
+        isearch-just-started                         t
+        isearch-start-hscroll                        (window-hscroll)
+        isearch-opoint                               (point)
+        isearchp-win-pt-line                         (- (line-number-at-pos) (line-number-at-pos (window-start)))
+        isearchp-reg-beg                             (save-restriction
+                                                       (widen)
+                                                       (if (and (boundp 'isearchp-restrict-to-region-flag)
+                                                                isearchp-restrict-to-region-flag
+                                                                (use-region-p))
+                                                           (region-beginning)
+                                                         nil))
+        isearchp-reg-end                             (save-restriction
+                                                       (widen)
+                                                       (if (and (boundp 'isearchp-restrict-to-region-flag)
+                                                                isearchp-restrict-to-region-flag
+                                                                (use-region-p))
+                                                           (region-end)
+                                                         nil))
+        search-ring-yank-pointer                     nil
+        isearch-opened-overlays                      ()
+        isearch-input-method-function                input-method-function
+        isearch-input-method-local-p                 (local-variable-p 'input-method-function)
+        regexp-search-ring-yank-pointer              nil
         ;; Save original value of `ring-bell-function', then set it to `isearchp-ring-bell-function'.
-        isearchp-orig-ring-bell-fn       ring-bell-function
-        ring-bell-function               isearchp-ring-bell-function
+        isearchp-orig-ring-bell-fn                   ring-bell-function
+        ring-bell-function                           isearchp-ring-bell-function
         ;; Save original value of `minibuffer-message-timeout'.
         ;; Then reset it to nil, so Isearch messages do not time-out.
-        isearch-original-minibuffer-message-timeout (and (boundp 'minibuffer-message-timeout)
-                                                         minibuffer-message-timeout)
-        minibuffer-message-timeout       nil)
-  (when (fboundp 'isearchp-constrain-to-rectangular-region) (isearchp-constrain-to-rectangular-region)) ; Emacs 25+
+        isearch-original-minibuffer-message-timeout  (and (boundp 'minibuffer-message-timeout)
+                                                          minibuffer-message-timeout)
+        minibuffer-message-timeout                   nil
+        isearchp--lazy-hlt-filter-failures-p         t)
+  (when (fboundp 'isearchp-constrain-to-rectangular-region) (isearchp-constrain-to-rectangular-region))
   (when (and (boundp 'isearchp-deactivate-region-flag)  isearchp-deactivate-region-flag) ; Emacs 24.3+
     (deactivate-mark))
   ;; Bypass input method while reading key.  When a user types a printable char, appropriate
@@ -5232,11 +5238,14 @@ Attempt to do the search exactly the way the pending Isearch would."
               ;; Check filter predicate.  If `isearchp-lazy-dim-filter-failures-flag' is non-nil
               ;; then set face according to filter success.  Otherwise, clear RETRY if filter succeeded. 
               (setq filter-OK  (funcall isearch-filter-predicate (match-beginning 0) (match-end 0)))
-              (if (and (boundp 'isearchp-lazy-dim-filter-failures-flag)
-                       isearchp-lazy-dim-filter-failures-flag)
-                  (setq isearchp-lazy-highlight-face  (if filter-OK 'lazy-highlight dim-face))
-                (setq isearchp-lazy-highlight-face  'lazy-highlight)
-                (when filter-OK (setq retry  nil)))))
+              (let ((dimming  (and (boundp 'isearchp-lazy-dim-filter-failures-flag)
+                                   isearchp-lazy-dim-filter-failures-flag)))
+                (setq isearchp-lazy-highlight-face  (if dimming
+                                                        (if filter-OK
+                                                            'lazy-highlight
+                                                          (and isearchp--lazy-hlt-filter-failures-p  dim-face))
+                                                      'lazy-highlight))
+                (when (and (not dimming)  filter-OK) (setq retry  nil)))))
           success)
       (error nil)))
 
