@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 23 10:15:51 2017 (-0700)
+;; Last-Updated: Sun Jul 23 13:02:23 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5861
+;;     Update #: 5869
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -4171,8 +4171,9 @@ This has no effect if `isearchp-restrict-to-region-flag' is nil or the region is
                 max  (max max (cdr c1.c2))))
         (setq min  (save-excursion (goto-char min) (current-column))
               max  (save-excursion (goto-char max) (current-column)))
-        (let ((isearchp-prompt-for-filter-name         nil)
-              (isearchp-prompt-for-prompt-prefix-flag  nil))
+        (let ((isearchp-prompt-for-filter-name               nil)
+              (isearchp-prompt-for-prompt-prefix-flag        nil)
+              (isearchp-update-filter-predicates-alist-flag  nil))
           (isearchp-add-filter-predicate (isearchp-columns-p min max)))))))
 
 
