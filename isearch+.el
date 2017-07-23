@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 23 08:35:23 2017 (-0700)
+;; Last-Updated: Sun Jul 23 10:15:51 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5854
+;;     Update #: 5861
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -171,6 +171,7 @@
 ;;    `isearchp-assoc-delete-all', `isearchp-barf-if-use-minibuffer',
 ;;    `isearchp-columns-p' (Emacs 24.4+),
 ;;    `isearchp-complete-past-string',
+;;    `isearchp-constrain-to-rectangular-region' (Emacs 25+),
 ;;    `isearchp-current-filter-predicates' (Emacs 24.4+),
 ;;    `isearchp-fail-pos', `isearchp-ffap-guesser' (Emacs 24.4+),
 ;;    `isearchp-filter-bookmark-alist-only' (Emacs 24.4+),
@@ -1158,6 +1159,8 @@
 ;;(@* "Change log")
 ;;
 ;; 2017/07/23 dadams
+;;     Added: isearchp-constrain-to-rectangular-region.
+;;     isearch-mode: Use isearchp-constrain-to-rectangular-region.
 ;;     isearch-repeat: Typo: Was testing emacs-minor-version not emacs-major-version.
 ;; 2017/05/29 dadams
 ;;     isearch-mouse-2: Put overriding-terminal-local-map binding around only the binding of BINDING.  See bug #23007.
@@ -4154,6 +4157,24 @@ See command `isearch-forward-regexp' for more information."
            (call-interactively #'multi-isearch-buffers-regexp))
           (t (isearch-mode nil (null arg) nil (not no-recursive-edit))))))
 
+(when (fboundp 'region-noncontiguous-p) ; Emacs 25+
+  (defun isearchp-constrain-to-rectangular-region ()
+    "Advise search not to match outside active rectangular region.
+This has no effect if `isearchp-restrict-to-region-flag' is nil or the region is contiguous."
+    (when (and isearchp-reg-beg  (fboundp 'region-noncontiguous-p)  (region-noncontiguous-p))
+      (let ((region-bounds  (mapcar (lambda (posn) (cons (copy-marker (car posn)) (copy-marker (cdr posn))))
+                                    (funcall region-extract-function 'bounds)))
+            (min            most-positive-fixnum)
+            (max            0))
+        (dolist (c1.c2  region-bounds)
+          (setq min  (min min (car c1.c2))
+                max  (max max (cdr c1.c2))))
+        (setq min  (save-excursion (goto-char min) (current-column))
+              max  (save-excursion (goto-char max) (current-column)))
+        (let ((isearchp-prompt-for-filter-name         nil)
+              (isearchp-prompt-for-prompt-prefix-flag  nil))
+          (isearchp-add-filter-predicate (isearchp-columns-p min max)))))))
+
 
 ;; REPLACE ORIGINAL in `isearch.el'.
 ;;
@@ -4239,6 +4260,7 @@ Non-nil argument REGEXP-FUNCTION:
         isearch-original-minibuffer-message-timeout (and (boundp 'minibuffer-message-timeout)
                                                          minibuffer-message-timeout)
         minibuffer-message-timeout       nil)
+  (when (fboundp 'isearchp-constrain-to-rectangular-region) (isearchp-constrain-to-rectangular-region)) ; Emacs 25+
   (when (and (boundp 'isearchp-deactivate-region-flag)  isearchp-deactivate-region-flag) ; Emacs 24.3+
     (deactivate-mark))
   ;; Bypass input method while reading key.  When a user types a printable char, appropriate
@@ -5981,8 +6003,8 @@ DISTANCE is a cons returned by function `isearchp-read-measure'."
            (save-match-data (re-search-forward ,pattern (min (point-max) unit-pos) t))))))
 
   (defun isearchp-columns (min max &optional flip-read-name-p flip-read-prefix-p msgp) ; `C-z c'
-    "Add a predicate that restrict searching between two columns (inclusive).
-You are prompted for the minumum and maximum columns, in that order.
+    "Add predicate that restricts search between two columns (inclusive).
+You are prompted for the minimum and maximum columns, in that order.
 Defaults: 0 for the minimum, largest integer for the maximum.
 Example: Enter 71 as min, default as max, to search past column 70.
 
