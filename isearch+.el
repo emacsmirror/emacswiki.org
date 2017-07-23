@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 23 14:51:56 2017 (-0700)
+;; Last-Updated: Sun Jul 23 15:05:48 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5882
+;;     Update #: 5887
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -788,8 +788,13 @@
 ;;    `isearchp-toggle-region-restriction') during search to toggle
 ;;    `isearchp-restrict-to-region-flag'.
 ;;
-;;    NOTE: For search to be limited to the active region in Info, you
-;;    must also use library `info+.el'.
+;;    Restriction of Isearch to the region works also for a
+;;    rectangular region (which you create using `M-x
+;;    rectangle-mark-mode').  The region is always deactivated in this
+;;    case.
+;;
+;;    NOTE: For search to be limited to the region in Info, you must
+;;    also use library `info+.el'.
 ;;
 ;;  * Option and commands to let you select the last target occurrence
 ;;    (set the region around it):
