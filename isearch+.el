@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 23 18:16:30 2017 (-0700)
+;; Last-Updated: Sun Jul 23 18:26:12 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5888
+;;     Update #: 5891
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -780,9 +780,9 @@
 ;;    search: regexp, word, multiple-buffer, and whether searching has
 ;;    wrapped around the buffer (Emacs 22+ only).
 ;;
-;;  * Optional limiting of search to the active region, controlled by
-;;    option `isearchp-restrict-to-region-flag'.  Deactivation of the
-;;    active region is controlled by option
+;;  * Optional restriction of search to the active region, controlled
+;;    by option `isearchp-restrict-to-region-flag'.  Deactivation of
+;;    the active region is controlled by option
 ;;    `isearchp-deactivate-region-flag'.  Both of these are available
 ;;    for Emacs 24.3 and later.  You can use `C-x n' (command
 ;;    `isearchp-toggle-region-restriction') during search to toggle
@@ -790,8 +790,7 @@
 ;;
 ;;    Restriction of Isearch to the region works also for a
 ;;    rectangular region (which you create using `M-x
-;;    rectangle-mark-mode').  The region is always deactivated in this
-;;    case.
+;;    rectangle-mark-mode').
 ;;
 ;;    NOTE: For search to be limited to the region in Info, you must
 ;;    also use library `info+.el'.
