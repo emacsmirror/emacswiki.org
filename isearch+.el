@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 23 15:05:48 2017 (-0700)
+;; Last-Updated: Sun Jul 23 18:16:30 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5887
+;;     Update #: 5888
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -4183,7 +4183,7 @@ This has no effect if `isearchp-restrict-to-region-flag' is nil or the region is
         (let ((isearchp-prompt-for-filter-name               nil)
               (isearchp-prompt-for-prompt-prefix-flag        nil)
               (isearchp-update-filter-predicates-alist-flag  nil))
-          (setq isearchp-lazy-highlight-filter-failures-p  nil)
+          (setq isearchp--lazy-hlt-filter-failures-p  nil)
           (isearchp-add-filter-predicate (isearchp-columns-p min max)))))))
 
 
