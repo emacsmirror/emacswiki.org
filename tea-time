@@ -1,6 +1,6 @@
 = Note =
-Functionality of this package was integrated into org-mode (edge on May 2009).
-Check http://orgmode.org/Changes.html#sec-1.4.2 for details.
+As of May 2009, the functionality of this package was integrated into org-mode.
+See the documentation for <code>org-timer-set-timer</code> for details.
 
 = Tea-time =
 Tea-time is an extension to emacs.
