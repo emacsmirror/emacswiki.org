@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Jul  7 06:08:22 2017 (-0700)
+;; Last-Updated: Wed Jul 26 08:22:53 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 11727
+;;     Update #: 11729
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -69,7 +69,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://www.emacswiki.org/emacs/download/linkd.el.
+;;  https://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;  (@> "CHANGE LOG FOR `icicles-cmd2.el'")
@@ -9203,6 +9203,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2017/07/26 dadams
+;;     Version 2017.07.26
 ;; 2017/07/07 dadams
 ;;     Version 2017.07.07
 ;; 2016/12/21 dadams
