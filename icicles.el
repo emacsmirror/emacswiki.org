@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2017.07.07
+;; Version: 2017.07.26
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jul  7 06:08:52 2017 (-0700)
+;; Last-Updated: Wed Jul 26 08:22:24 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 23711
+;;     Update #: 23714
 ;; URL: https://www.emacswiki.org/emacs/download/icicles.el
 ;; Doc URL: https://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -64,10 +64,10 @@
 ;;  Files `icicles-doc1.el' and `icicles-doc2.el' contain the doc for
 ;;  Icicles, including how to install and use Icicles.  You can also
 ;;  read the Icicles doc, in formatted form, on the Emacs-Wiki Web
-;;  site: http://www.emacswiki.org/Icicles.  Emacs Wiki also has a few
-;;  addtional pages about Icicles.  In particular, if you are new to
-;;  Emacs, as well as Icicles, see this page:
-;;  http://www.emacswiki.org/EmacsNewbieWithIcicles.
+;;  site: https://www.emacswiki.org/emacs/Icicles.  Emacs Wiki also
+;;  has a few addtional pages about Icicles.  In particular, if you
+;;  are new to Emacs, as well as Icicles, see this page:
+;;  https://www.emacswiki.org/emacs/EmacsNewbieWithIcicles.
 ;;
 ;;  See also: Library `lacarte.el', which lets you execute menu
 ;;  commands, cycling and completing them.  It is not part of Icicles,
@@ -83,7 +83,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://www.emacswiki.org/emacs/download/linkd.el.
+;;  https://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Things Defined in Icicles")
 ;;  (@> "Miscellaneous")
