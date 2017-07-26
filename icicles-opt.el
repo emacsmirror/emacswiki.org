@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Fri Jul  7 05:47:28 2017 (-0700)
+;; Last-Updated: Wed Jul 26 08:21:13 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 6188
+;;     Update #: 6189
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -266,7 +266,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://www.emacswiki.org/emacs/download/linkd.el.
+;;  https://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Constants used to define user options")
 ;;  (@> "User options, organized alphabetically, except for dependencies")
@@ -2962,7 +2962,7 @@ See also option `icicle-buffer-skip-functions'."
     ,@(and (fboundp 'completion-pcm--all-completions) '(completion-pcm--all-completions))
 
     ;; Uncomment `dired-read-shell-command' and `read-shell-command' if you want Icicles completion for
-    ;; shell commands.  See http://www.emacswiki.org/Icicles_-_Shell-Command_Enhancements.
+    ;; shell commands.  See https://www.emacswiki.org/emacs/Icicles_-_Shell-Command_Enhancements.
     ;; dired-read-shell-command             read-shell-command
 
     ess-complete-object-name             gud-gdb-complete-command
