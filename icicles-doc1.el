@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Fri Jul  7 11:04:46 2017 (-0700)
+;; Last-Updated: Wed Jul 26 08:39:34 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 28580
+;;     Update #: 28589
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -28,10 +28,10 @@
 ;;  Files `icicles-doc1.el' and `icicles-doc2.el' contain the doc for
 ;;  Icicles, including how to install and use Icicles.  You can also
 ;;  read the Icicles doc, in formatted form, on the Emacs-Wiki Web
-;;  site: http://www.emacswiki.org/Icicles.  Emacs Wiki also has a few
-;;  addtional pages about Icicles.  In particular, if you are new to
-;;  Emacs, as well as Icicles, see this page:
-;;  http://www.emacswiki.org/EmacsNewbieWithIcicles.
+;;  site: https://www.emacswiki.org/emacs/Icicles.  Emacs Wiki also
+;;  has a few addtional pages about Icicles.  In particular, if you
+;;  are new to Emacs, as well as Icicles, see this page:
+;;  https://www.emacswiki.org/emacs/EmacsNewbieWithIcicles.
  
 ;;(@* "Installing Icicles")
 ;;
@@ -65,7 +65,8 @@
 ;;    The following libraries are recommended but optional (loaded by
 ;;    `icicles.el' if in your `load-path').  They are enhanced by
 ;;    Icicles, or Icicles is enhanced by them, or both.  They are all
-;;    available at Emacs Wiki, http://www.emacswiki.org/ElispArea.
+;;    available at Emacs Wiki,
+;;    https://www.emacswiki.org/emacs/ElispArea.
 ;;
 ;;     `apropos-fn+var.el' - Apropos enhancements for fns and vars.
 ;;     `bookmark+.el' etc. - Many bookmark enhancements.  Includes:
@@ -166,7 +167,7 @@
 ;;  highlight this Index and render it more readable.  Likewise, for
 ;;  the cross-references and section headings throughout this file.
 ;;  You can get `linkd.el' here:
-;;  http://www.emacswiki.org/linkd.el.
+;;  https://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@* "Documentation in File `icicles-doc1.el'")
 ;;  ----------------------------------------------
@@ -3920,7 +3921,7 @@
 ;;  * (@file :file-name "icicles-doc2.el" :to "Completion Methods and Styles")
 ;;  * (@> "Special Characters in Input Patterns")
 ;;  * (@> "Prefix Completion and Apropos Completion")
-;;  * http://www.emacswiki.org/emacs/IciclesDiscussion#IdoAndIcicles
+;;  * https://www.emacswiki.org/emacs/IciclesDiscussion#IdoAndIcicles
 ;;    (out-of-date discussion, but it might be helpful)
  
 ;;(@* "*Completions* Display")
