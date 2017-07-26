@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
-;; Last-Updated: Fri Jul  7 05:46:12 2017 (-0700)
+;; Last-Updated: Wed Jul 26 08:18:37 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 732
+;;     Update #: 744
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-face.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -73,7 +73,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://www.emacswiki.org/emacs/download/linkd.el.
+;;  https://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Icicles Commands for Other Packages")
 ;;  (@> "Groups, Organized Alphabetically")
@@ -117,11 +117,11 @@
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and Icicles library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/icicles.el")
+          "https://www.emacswiki.org/emacs/download/icicles.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/Icicles")
+          "https://www.emacswiki.org/emacs/Icicles")
   :link '(emacs-commentary-link :tag "Doc-Part2" "icicles-doc2")
   :link '(emacs-commentary-link :tag "Doc-Part1" "icicles-doc1")
   )
@@ -135,11 +135,11 @@ Don't forget to mention your Emacs and Icicles library versions."))
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and Icicles library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/icicles.el")
+          "https://www.emacswiki.org/emacs/download/icicles.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/Icicles")
+          "https://www.emacswiki.org/emacs/Icicles")
   :link '(emacs-commentary-link :tag "Doc-Part2" "icicles-doc2")
   :link '(emacs-commentary-link :tag "Doc-Part1" "icicles-doc1")
   )
@@ -153,11 +153,11 @@ Don't forget to mention your Emacs and Icicles library versions."))
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and Icicles library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/icicles.el")
+          "https://www.emacswiki.org/emacs/download/icicles.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/Icicles")
+          "https://www.emacswiki.org/emacs/Icicles")
   :link '(emacs-commentary-link :tag "Doc-Part2" "icicles-doc2")
   :link '(emacs-commentary-link :tag "Doc-Part1" "icicles-doc1")
   )
@@ -171,11 +171,11 @@ Don't forget to mention your Emacs and Icicles library versions."))
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and Icicles library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/icicles.el")
+          "https://www.emacswiki.org/emacs/download/icicles.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/Icicles")
+          "https://www.emacswiki.org/emacs/Icicles")
   :link '(emacs-commentary-link :tag "Doc-Part2" "icicles-doc2")
   :link '(emacs-commentary-link :tag "Doc-Part1" "icicles-doc1")
   )
@@ -189,11 +189,11 @@ Don't forget to mention your Emacs and Icicles library versions."))
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and Icicles library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/icicles.el")
+          "https://www.emacswiki.org/emacs/download/icicles.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/Icicles")
+          "https://www.emacswiki.org/emacs/Icicles")
   :link '(emacs-commentary-link :tag "Doc-Part2" "icicles-doc2")
   :link '(emacs-commentary-link :tag "Doc-Part1" "icicles-doc1")
   )
@@ -207,11 +207,11 @@ Don't forget to mention your Emacs and Icicles library versions."))
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and Icicles library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/icicles.el")
+          "https://www.emacswiki.org/emacs/download/icicles.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/Icicles")
+          "https://www.emacswiki.org/emacs/Icicles")
   :link '(emacs-commentary-link :tag "Doc-Part2" "icicles-doc2")
   :link '(emacs-commentary-link :tag "Doc-Part1" "icicles-doc1")
   )
@@ -225,11 +225,11 @@ Don't forget to mention your Emacs and Icicles library versions."))
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and Icicles library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/icicles.el")
+          "https://www.emacswiki.org/emacs/download/icicles.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/Icicles")
+          "https://www.emacswiki.org/emacs/Icicles")
   :link '(emacs-commentary-link :tag "Doc-Part2" "icicles-doc2")
   :link '(emacs-commentary-link :tag "Doc-Part1" "icicles-doc1")
   )
@@ -243,11 +243,11 @@ Don't forget to mention your Emacs and Icicles library versions."))
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and Icicles library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/icicles.el")
+          "https://www.emacswiki.org/emacs/download/icicles.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/Icicles")
+          "https://www.emacswiki.org/emacs/Icicles")
   :link '(emacs-commentary-link :tag "Doc-Part2" "icicles-doc2")
   :link '(emacs-commentary-link :tag "Doc-Part1" "icicles-doc1")
   )
@@ -261,11 +261,11 @@ Don't forget to mention your Emacs and Icicles library versions."))
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and Icicles library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/icicles.el")
+          "https://www.emacswiki.org/emacs/download/icicles.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/Icicles")
+          "https://www.emacswiki.org/emacs/Icicles")
   :link '(emacs-commentary-link :tag "Doc-Part2" "icicles-doc2")
   :link '(emacs-commentary-link :tag "Doc-Part1" "icicles-doc1")
   )
@@ -279,11 +279,11 @@ Don't forget to mention your Emacs and Icicles library versions."))
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and Icicles library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/icicles.el")
+          "https://www.emacswiki.org/emacs/download/icicles.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/Icicles")
+          "https://www.emacswiki.org/emacs/Icicles")
   :link '(emacs-commentary-link :tag "Doc-Part2" "icicles-doc2")
   :link '(emacs-commentary-link :tag "Doc-Part1" "icicles-doc1")
   )
