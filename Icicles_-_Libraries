@@ -119,7 +119,7 @@ problems: both '''Icicles''' and Viper try to control the minibuffer).
 
 == Checking What Has Changed ==
 
-Here's one way to check which '''Icicles''' libraries have changed recently: '''[http://www.emacswiki.org/cgi-bin/emacs?action=rc;match=%5Cicicles.*.el?$;days=28;all=1;showedit=1 Latest Icicles Changes]'''
+Here's one way to check which '''Icicles''' libraries have changed recently: '''[https://www.emacswiki.org/emacs?action=rc;match=%5Cicicles.*.el?$;days=28;all=1;showedit=1 Latest Icicles Changes]'''
 
 
 
@@ -209,9 +209,9 @@ sketchy". -- DarrenYin)
 
 '''6.''' '''Using `wget' directly :''' 
 * Required libraries:
-##wget http://www.emacswiki.org/emacs/download/icicles{,-chg,-cmd1,-cmd2,-doc1,-doc2,-face,-fn,-mac,-mcmd,-mode,-opt,-var}.el##
+##wget https://www.emacswiki.org/emacs/download/icicles{,-chg,-cmd1,-cmd2,-doc1,-doc2,-face,-fn,-mac,-mcmd,-mode,-opt,-var}.el##
 * Optional libraries:
-##wget http://www.emacswiki.org/emacs/download/{apropos-fn%2bvar,bookmark%2b,col-highlight,crosshairs,doremi,doremi-frm,frame-cmds,fuzzy-match,hexrgb,hl-line%2b,icomplete%2b,info%2b,lacarte,mb-depth%2b,pp%2b,synonyms,thingatpt%2b,vline}.el##
+##wget https://www.emacswiki.org/emacs/download/{apropos-fn%2bvar,bookmark%2b,col-highlight,crosshairs,doremi,doremi-frm,frame-cmds,fuzzy-match,hexrgb,hl-line%2b,icomplete%2b,info%2b,lacarte,mb-depth%2b,pp%2b,synonyms,thingatpt%2b,vline}.el##
 
 -- JoniDiMontago
 
