@@ -4,8 +4,8 @@
 
 ;; Author: Taiki SUGAWARA <buzz.taiki@gmail.com>
 ;; Keywords: anything, helm, etags
-;; Version: 1.1.0
-;; Time-stamp: <29-Nov-2013 13:46:17>
+;; Version: 1.2.0
+;; Time-stamp: <27-Jul-2017 09:58:03>
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/helm-yaetags.el
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -48,6 +48,8 @@
 ;;   * initial release.
 ;; 2013-11-29  Jeremy Moore
 ;;   * direct port from anything to helm
+;; 2017-07-27  Jeremy Moore
+;;   * replace obsolete candidates-in-buffer call
        
 ;;; Code:
 
@@ -73,11 +75,9 @@ See. `helm-yaetags-visit-tags-table'")
   tag tag-info file-label file-path goto-func)
 
 (defvar helm-source-yaetags-select
-  '((name . "YaETags")
-    (init . (helm-yaetags-init))
-    (candidates-in-buffer)
-    (action
-     ("Select Tag" . helm-yaetags-select))))
+  (helm-build-in-buffer-source "YaETags"
+    :init 'helm-yaetags-init
+    :action (helm-make-actions "Select Tag" 'helm-yaetags-select)))
 
 (defun helm-yaetags-tags-file-valid-p (tags-file)
   "Return non-nil if TAGS-FILE is valid."
