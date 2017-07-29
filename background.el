@@ -1,20 +1,14 @@
-;;; background.el --- Background jobs in GNU Emacs
-
-;; Copyright (C) 1998  Joe Keane <jgk@jgk.org>
-;; Copyright (c) 2010  rubikitch <rubikitch@ruby-lang.org>
-
-;;; Commentary:
-
-;; The package allows running jobs in the background.
+;;; Background jobs in GNU Emacs
+;; Copyright (C) 1998 Joe Keane <jgk@jgk.org>
+;;               2010 rubikitch <rubikitch@ruby-lang.org>
+;; This file is public domain.
 
 ;; Suggested usage:
-;;
 ;; (global-set-key "\M-!" 'background)
 ;; (autoload 'background "background" nil t)
 
-;;; Code:
-
 (require 'shell)
+(provide 'background)
 
 ;; define global variables
 (defvar background-minibuffer-map (make-sparse-keymap)
@@ -36,9 +30,9 @@
 (defvar background-search-quote-char ?\C-q)
 
 ;; add bindings to shell-mode-map
-;; (define-key shell-mode-map "\C-c\C-k" 'background-kill-subjob)
-;; (define-key shell-mode-map "\C-c\C-m" 'background-continue-subjob)
-;; (define-key shell-mode-map "\C-c\C-z" 'background-stop-subjob)
+;(define-key shell-mode-map "\C-c\C-k" 'background-kill-subjob)
+;(define-key shell-mode-map "\C-c\C-m" 'background-continue-subjob)
+;(define-key shell-mode-map "\C-c\C-z" 'background-stop-subjob)
 
 ;; add bindings to background-minibuffer-map
 (define-key background-minibuffer-map "\C-g" 'abort-recursive-edit)
@@ -364,7 +358,3 @@ argument suggests a job number, which is useful to store output."
 		    (< (setq index (1+ index)) background-history-size)))
 	      (setq background-history-vector new-vector)))))
        (aset background-history-vector background-history-size command)))))
-
-(provide 'background)
-
-;;; background.el ends here
