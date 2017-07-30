@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Jul 29 21:02:46 2017 (-0700)
+;; Last-Updated: Sun Jul 30 12:16:54 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5905
+;;     Update #: 5920
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -368,6 +368,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/07/30 dadams
+;;     Info-bookmark-for-node, Info-bookmark-named-at-point: Include manual name in bookmark name.
 ;; 2017/07/29 dadams
 ;;     Added: Info-fontify-bookmarked-xrefs-flag, face info-xref-bookmarked, Info-describe-bookmark,
 ;;            Info-bookmark-for-node, Info-bookmark-name-at-point, Info-bookmark-named-at-point,
@@ -4332,23 +4334,38 @@ currently visited manuals."
 (when (require 'bookmark+ nil t)
 
   (defun Info-bookmark-for-node (node)
-    "Return Info bookmark for NODE."
-    (bmkp-get-bookmark-in-alist node t (bmkp-info-alist-only)))
+    "Return Info bookmark for NODE, or nil if none.
+See `Info-bookmark-name-for-node' for the form of the bookmark name."
+    (let* ((file  (and (stringp Info-current-file)
+                       (file-name-sans-extension (file-name-nondirectory Info-current-file))))
+           (bname  (if file (concat "(" file ") " node) node)))
+      (bmkp-get-bookmark-in-alist bname t (bmkp-info-alist-only))))
 
   (defun Info-bookmark-name-for-node (node)
-    "Return name of Info bookmark for NODE."
+    "Return name of Info bookmark for NODE, or nil if none.
+The name of the bookmark must be the default name that
+`Info-bookmark-make-record' would use.  This is normally the full node
+name, `(MANUAL) NODE', where MANUAL is the lowercase name of the Info
+manual.  For example, node `Modes' in the Emacs manual has full
+name `(emacs) Modes', and the bookmark must have that same name."
     (let ((bmk   (Info-bookmark-for-node node)))
       (and bmk  (bmkp-bookmark-name-from-record bmk))))
 
   ;; Not used yet
   (defun Info-bookmark-named-at-point ()
-    "Return Info bookmark for node named at point."
-    (let ((node   (Info-node-name-at-point)))
-      (and node  (bmkp-get-bookmark-in-alist node t (bmkp-info-alist-only)))))
+    "Return Info bookmark for node named at point, or nil if none.
+See `Info-bookmark-name-for-node' for the form of the bookmark name."
+    (let ((node  (Info-node-name-at-point)))
+      (and node
+           (let* ((file  (and (stringp Info-current-file)
+                              (file-name-sans-extension (file-name-nondirectory Info-current-file))))
+                  (bname  (if file (concat "(" file ") " node) node)))
+             (bmkp-get-bookmark-in-alist bname t (bmkp-info-alist-only))))))
 
   ;; Not used yet
   (defun Info-bookmark-name-at-point ()
-    "Return name of Info bookmark for node named at point."
+    "Return name of Info bookmark for node named at point, or nil if none.
+See `Info-bookmark-name-for-node' for the form of the bookmark name."
     (let ((bmk   (Info-bookmark-named-at-point)))
       (and bmk  (bmkp-bookmark-name-from-record bmk))))
 
