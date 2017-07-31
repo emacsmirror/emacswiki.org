@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jun 25 20:04:47 2017 (-0700)
+;; Last-Updated: Sun Jul 30 18:20:14 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 15235
+;;     Update #: 15238
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -2012,6 +2012,14 @@
 ;;  * `file-cache-add-file-list'
 ;;
 ;;  See the Emacs manual, node `File Name Cache'.
+;;
+;;  If option `bmkp-autofile-access-invokes-bookmark-flag' is
+;;  non-`nil' then regular access of a file (e.g. `find-file') invokes
+;;  the associated autofile bookmark, if there is one.  This has the
+;;  effect of updating the bookmark data, such as the number of
+;;  visits.  The default value of the option is `nil'.  To set the
+;;  option value, either use Customize interactively or use a
+;;  Customize function.
 ;;
 ;;  Finally, if you use libraries `Dired+' and `highlight.el' then
 ;;  autofiles are highlighted specially in Dired, and the highlighting
