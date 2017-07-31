@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Jul 19 21:43:11 2017 (-0700)
+;; Last-Updated: Sun Jul 30 16:57:39 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8521
+;;     Update #: 8525
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -3840,8 +3840,8 @@ This function is like `bookmark-get-bookmark', except that
 only when it is a string (a bookmark name, not a full bookmark).  When
 BOOKMARK is a full bookmark `bookmark-get-bookmark' is thus not a test
 for its existence, as is `bmkp-get-bookmark-in-alist'."
-  (cond ((consp bookmark) (and (memq bookmark bookmark-alist)  bookmark))
-        ((stringp bookmark) (bmkp-bookmark-record-from-name bookmark noerror 'MEMP))
+  (cond ((consp bookmark) (and (memq bookmark (or alist  bookmark-alist))  bookmark))
+        ((stringp bookmark) (bmkp-bookmark-record-from-name bookmark noerror 'MEMP alist))
         (t (and (not noerror)  (error "Invalid bookmark: `%s'" bookmark)))))
 
 (defun bmkp-default-bookmark-file ()
