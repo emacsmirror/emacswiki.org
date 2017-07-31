@@ -1,0 +1,13 @@
+== Installing Emacs 25 in WSL ==
+
+With Windows 10, Microsoft offers a 'Windows Subsystem for Linux (WSL)' that runs a BASH Shell and quite a few classic Linux/Unix Tools, among them Emacs.
+
+By default its based on an Ubuntu Image from Canonical, but for Experts there is a choice between 3 distros.
+
+WSL is working quite well, but still considered Beta. Without some excellent Blog posts I would not have been able to successfully install (and use and update) Emacs 25. So here is the recipe (and the links) I used.
+
+= Activate WSL =
+= Install Emacs 25 =
+= Workaround for Package Bug =
+
+
