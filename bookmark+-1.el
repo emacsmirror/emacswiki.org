@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jul 30 18:14:20 2017 (-0700)
+;; Last-Updated: Mon Jul 31 16:51:09 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8532
+;;     Update #: 8534
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -7963,7 +7963,8 @@ visits."
                                                 (bmkp-autofile-alist-only)))
          (bmk-file  (and bmk  (bookmark-get-filename bmk))))
     (when (and bmk-file  (bmkp-same-file-p buf-file bmk-file))
-      (bookmark--jump-via bmk 'ignore))))
+      (let ((bmkp-autofile-access-invokes-bookmark-flag  nil)) ; Just to be sure.
+        (bookmark--jump-via bmk 'ignore)))))
 
 ;;;###autoload (autoload 'bmkp-bookmark-a-file "bookmark+")
 (defalias 'bmkp-bookmark-a-file 'bmkp-autofile-set)
