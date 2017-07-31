@@ -2187,6 +2187,15 @@ function, directly or indirectly:
 
 See FileNameCache and the Emacs manual, node [[Manual:File Name Cache|`File Name Cache']].
 
+If option '''`bmkp-autofile-access-invokes-bookmark-flag'''' is
+non-`nil' then regular access of a file (e.g. `find-file') invokes the
+associated autofile bookmark, if there is one.  This has the
+effect of updating the bookmark data, such as the number of
+visits.  The default value of the option is `nil'.  To set the
+option value, either use [[Customize]] interactively or use a
+Customize function.
+
+
 
 Finally, if you use libraries '''[[Dired+]]''' and '''[[HighlightLibrary|Highlight]]''' (<tt>[[highlight.el]]</tt>) then
 autofiles are highlighted specially in [[Dired]], and the highlighting
