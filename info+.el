@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 30 12:16:54 2017 (-0700)
+;; Last-Updated: Sun Jul 30 21:43:12 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5920
+;;     Update #: 5944
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -75,13 +75,13 @@
 ;;    `Info-mouse-follow-nearest-node-new-window',
 ;;    `Info-persist-history-mode' (Emacs 24.4+),
 ;;    `Info-save-current-node', `Info-set-breadcrumbs-depth',
-;;    `Info-toggle-follow-bookmarked-xrefs' (Emacs 24.2+),
+;;    `Info-toggle-breadcrumbs-in-header',
 ;;    `Info-toggle-fontify-angle-bracketed',
 ;;    `Info-toggle-fontify-bookmarked-xrefs' (Emacs 24.2+),
 ;;    `Info-toggle-fontify-emphasis',
 ;;    `Info-toggle-fontify-quotations',
 ;;    `Info-toggle-fontify-single-quote',
-;;    `Info-toggle-breadcrumbs-in-header', `Info-url-for-node',
+;;    `Info-toggle-node-access-invokes-bookmark', `Info-url-for-node',
 ;;    `Info-virtual-book'.
 ;;
 ;;  Faces defined here:
@@ -99,13 +99,14 @@
 ;;
 ;;    `Info-breadcrumbs-in-header-flag',
 ;;    `Info-display-node-header-fn', `Info-emphasis-regexp',
-;;    `Info-fit-frame-flag', `Info-follow-xref-bookmarks-flag' (Emacs
-;;    24.2+), `Info-fontify-angle-bracketed-flag',
+;;    `Info-fit-frame-flag', `Info-fontify-angle-bracketed-flag',
 ;;    `Info-fontify-bookmarked-xrefs-flag' (Emacs 24.2+),
 ;;    `Info-fontify-emphasis-flag', `Info-fontify-quotations-flag',
 ;;    `Info-fontify-reference-items-flag',
-;;    `Info-fontify-single-quote-flag', `Info-saved-history-file'
-;;    (Emacs 24.4+), `Info-saved-nodes', `Info-subtree-separator'.
+;;    `Info-fontify-single-quote-flag',
+;;    `Info-node-access-invokes-bookmark-flag',
+;;    `Info-saved-history-file' (Emacs 24.4+), `Info-saved-nodes',
+;;    `Info-subtree-separator'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -171,6 +172,8 @@
 ;;     1. Added optional arg MSGP.
 ;;     2. If key's command not found, then `Info-search's for key
 ;;        sequence in text and displays message about repeating.
+;;  `Info-goto-node' - Respect option
+;;     `Info-node-access-invokes-bookmark-flag'.
 ;;  `Info-history' - A prefix arg clears the history.
 ;;  `Info-insert-dir' -
 ;;     Added optional arg NOMSG to inhibit showing progress msgs.
@@ -181,9 +184,6 @@
 ;;  `Info-set-mode-line' - Handles breadcrumbs in the mode line.
 ;;  `Info-mouse-follow-nearest-node' - With prefix arg, show node in
 ;;                                     a new Info buffer.
-;;  `Info-follow-nearest-node', `Info-try-follow-nearest-node' -
-;;     Invoke bookmark when follow bookmarked-node link, so  bookmark
-;;     data gets updated.
 ;;  `Info-isearch-search' - Respect restriction to active region.
 ;;  `Info-isearch-wrap' - Respect restriction to active region.
  
@@ -202,10 +202,11 @@
 ;;    the number of times you have visited it.  You need library
 ;;    Bookmark+ for this feature.
 ;;
-;;  * If option `Info-follow-xref-bookmarks-flag' is non-nil then
-;;    following the link of a bookmarked node invokes the bookmark to
-;;    get to the node, so bookmark data gets updated.  Command
-;;    `Info-toggle-follow-bookmarked-xrefs' toggles the option value.
+;;  * If option `Info-node-access-invokes-bookmark-flag' is non-nil
+;;    then going to a bookmarked Info node invokes the bookmark, so
+;;    bookmark data gets updated.  Command
+;;    `Info-toggle-node-access-invokes-bookmark' toggles the option
+;;    value.
 ;;
 ;;  * Additional, finer-grained highlighting.  This can make a big
 ;;    difference in readability.
@@ -369,6 +370,10 @@
 ;;; Change Log:
 ;;
 ;; 2017/07/30 dadams
+;;     Added advice of Info-goto-node, to respect Info-node-access-invokes-bookmark-flag.
+;;     Removed redefinitions of Info-follow-nearest-node, Info-try-follow-nearest-node.
+;;     Replaced Info-follow-xref-bookmarks-flag by Info-node-access-invokes-bookmark-flag.
+;;     Replaced Info-toggle-follow-bookmarked-xrefs by Info-toggle-node-access-invokes-bookmark.
 ;;     Info-bookmark-for-node, Info-bookmark-named-at-point: Include manual name in bookmark name.
 ;; 2017/07/29 dadams
 ;;     Added: Info-fontify-bookmarked-xrefs-flag, face info-xref-bookmarked, Info-describe-bookmark,
@@ -789,7 +794,6 @@
 (defvar Info-breadcrumbs-in-mode-line-mode)
 (defvar Info-current-node-virtual)
 (defvar isearch-filter-predicate)
-(defvar Info-follow-xref-bookmarks-flag)    ; Here, Emacs 24.2+, with Bookmark+.
 (defvar Info-fontify-bookmarked-xrefs-flag) ; Here, Emacs 24.2+, with Bookmark+.
 (defvar Info-fontify-visited-nodes)
 (defvar Info-hide-note-references)
@@ -1063,14 +1067,18 @@ Note that any value can be problematic for some Info text - see
   "*Non-nil means call `fit-frame' on Info buffer."
   :type 'boolean :group 'Info-Plus :group 'Fit-Frame)
 
-(when (and (require 'bookmark+ nil t) ; Emacs 24.2+ (do not bother for prior)
-           (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
+;;;###autoload
+(defcustom Info-node-access-invokes-bookmark-flag t
+  "*Non-nil means invoke the bookmark when you access an Info node.
+This applies to Info bookmarks whose names correspond to the default
+name.  This is normally the full node name, `(MANUAL) NODE', where
+MANUAL is the lowercase name of the Info manual.  For example, node
+`Modes' in the Emacs manual has full name `(emacs) Modes', and the
+bookmark must have that same name.
 
-  (defcustom Info-follow-xref-bookmarks-flag t
-    "Non-nil means follow references to bookmarked nodes using bookmarks."
-    :type 'boolean :group 'Info-Plus)
-
-  )
+This automatic bookmark invocation can be useful to update the
+bookmark data, such as the number of visits to the node."
+  :type 'boolean :group 'Info-Plus)
 
 ;;;###autoload
 (defcustom Info-fontify-angle-bracketed-flag t
@@ -1332,20 +1340,20 @@ line from non-nil `Info-use-header-line'."
 (make-obsolete 'Info-toggle-breadcrumbs-in-header-line 'Info-toggle-breadcrumbs-in-header "2014/03/04")
 
 
-(when (and (require 'bookmark+ nil t) ; Emacs 24.2+ (do not bother for prior)
-           (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
-
-  (defun Info-toggle-follow-bookmarked-xrefs (&optional msgp)
-    "Toggle option `Info-follow-xref-bookmarks-flag'."
+(defun Info-toggle-node-access-invokes-bookmark (&optional msgp)
+    "Toggle option `Info-node-access-invokes-bookmark-flag'."
     (interactive "p")
-    (setq Info-follow-xref-bookmarks-flag  (not Info-follow-xref-bookmarks-flag))
+    (setq Info-node-access-invokes-bookmark-flag  (not Info-node-access-invokes-bookmark-flag))
     (when (eq major-mode 'Info-mode)
       (font-lock-defontify)
       (let ((modp               (buffer-modified-p))
             (inhibit-read-only  t))
         (Info-fontify-node))
-      (when msgp (message "`Info-follow-xref-bookmarks-flag' is now %s"
-                          (if Info-follow-xref-bookmarks-flag 'ON 'OFF)))))
+      (when msgp (message "`Info-node-access-invokes-bookmark-flag' is now %s"
+                          (if Info-node-access-invokes-bookmark-flag 'ON 'OFF)))))
+
+(when (and (require 'bookmark+ nil t) ; Emacs 24.2+ (do not bother for prior)
+           (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
 
   (defun Info-toggle-fontify-bookmarked-xrefs (&optional msgp)
     "Toggle option `Info-fontify-bookmarked-xrefs-flag'."
@@ -1837,6 +1845,22 @@ candidates."
       ad-do-it
     (when (equal "*History*" Info-current-file) (Info-up))
     (call-interactively #'Info-history-clear)))
+
+
+;; REPLACE ORIGINAL in `info.el':
+;;
+;; Respect option `Info-node-access-invokes-bookmark-flag'.
+;;
+(defadvice Info-goto-node (around bmkp-invoke-Info-bookmark activate)
+  "Respect option `Info-node-access-invokes-bookmark-flag'.
+If the option is non-nil then a bookmark for the node is invoked when
+the node is visited, provided that the bookmark name has the default
+form: `(MANUAL) NODE' (e.g.,`(emacs) Modes'). "
+  (if Info-node-access-invokes-bookmark-flag
+      (let* ((node  (ad-get-arg 0))
+             (bmk   (and Info-node-access-invokes-bookmark-flag  (Info-bookmark-for-node node))))
+        (if bmk (bookmark-jump bmk) ad-do-it))
+    ad-do-it))
 
 
 ;; REPLACE ORIGINAL in `info.el':
@@ -3997,102 +4021,6 @@ With a prefix argument, open the node in a separate window."
   (and (not (Info-try-follow-nearest-node fork))
        (save-excursion (forward-line 1) (eobp))
        (Info-next-preorder)))
-
-
-(when (and (boundp 'Info-follow-xref-bookmarks-flag)  Info-follow-xref-bookmarks-flag)
-
-
-  ;; REPLACES ORIGINAL in `info.el':
-  ;;
-  ;; Invoke bookmark when follow bookmarked-node link, so bookmark data gets updated.
-  ;;
-  (defun Info-follow-nearest-node (&optional fork)
-    "Follow a node reference near point.
-If point is on a reference, follow that reference.  Otherwise,
-if point is in a menu item description, follow that menu item.
-
-If FORK is non-nil (interactively with a prefix arg), show the node in
-a new Info buffer.
-If FORK is a string, it is the name to use for the new buffer."
-    (interactive "P")
-    (or (Info-try-follow-nearest-node fork)
-        (when (save-excursion
-                (search-backward "\n* menu:" nil t))
-          (save-excursion
-            (beginning-of-line)
-            (while (not (or (bobp) (looking-at "[^ \t]\\|[ \t]*$")))
-              (beginning-of-line 0))
-            (when (looking-at "\\* +\\([^\t\n]*\\):")
-              (let* ((node  (Info-extract-menu-item (match-string-no-properties 1)))
-                     (bmk   (and Info-follow-xref-bookmarks-flag  (Info-bookmark-for-node node))))
-                (if bmk (bookmark-jump bmk) (Info-goto-node node fork)))
-              t)))
-        (and (eq this-command 'Info-mouse-follow-nearest-node)
-             ;; Raise no error when `mouse-1' is bound to this - often used to just select the window or frame.
-             (eq 'mouse-1 (event-basic-type last-input-event)))
-        (user-error "Point neither on reference nor in menu item description")))
-
-
-  ;; REPLACES ORIGINAL in `info.el':
-  ;;
-  ;; Invoke bookmark when follow bookmarked-node link, so bookmark data gets updated.
-  ;;
-  (defun Info-try-follow-nearest-node (&optional fork)
-    "Follow a node reference near point.  Return non-nil if successful.
-If FORK is non-nil, it is passed to `Info-goto-node'."
-    (let (node)
-      (cond
-        ((setq node  (Info-get-token (point) "[hf]t?tps?://"
-                                     "\\([hf]t?tps?://[^ \t\n\"`({<>})']+\\)"))
-         (browse-url node)
-         (setq node  t))
-        ((setq node  (Info-get-token (point) "\\*note[ \n\t]+"
-                                     "\\*note[ \n\t]+\\([^:]*\\):\\(:\\|[ \n\t]*(\\)?"))
-         (let ((bmk  (and Info-follow-xref-bookmarks-flag  (Info-bookmark-for-node node))))
-           (if bmk (bookmark-jump bmk) (Info-follow-reference node fork))))
-        ;; footnote
-        ((setq node  (Info-get-token (point) "(" "\\(([0-9]+)\\)"))
-         (let ((old-point (point)) new-point)
-           (save-excursion
-             (goto-char (point-min))
-             (when (re-search-forward "^[ \t]*-+ Footnotes -+$" nil t)
-               (setq  new-point (if (< old-point (point))
-                                    ;; Go to footnote reference
-                                    (and (search-forward node nil t)
-                                         ;; Put point at beginning of link
-                                         (match-beginning 0))
-                                  ;; Go to footnote definition
-                                  (search-backward node nil t)))))
-           (if new-point
-               (progn
-                 (goto-char new-point)
-                 (setq node  t))
-             (setq node  nil))))
-        ;; menu item: node name
-        ((setq node  (Info-get-token (point) "\\* +" "\\* +\\([^:]*\\)::"))
-         (let ((bmk  (and Info-follow-xref-bookmarks-flag  (Info-bookmark-for-node node))))
-           (if bmk (bookmark-jump bmk) (Info-goto-node node fork))))
-        ;; menu item: node name or index entry
-        ((Info-get-token (point) "\\* +" "\\* +\\(.*\\): ")
-         (beginning-of-line)
-         (forward-char 2)
-         (setq node  (Info-extract-menu-node-name nil (Info-index-node)))
-         (let ((bmk  (and Info-follow-xref-bookmarks-flag  (Info-bookmark-for-node node))))
-           (if bmk (bookmark-jump bmk) (Info-goto-node node fork))))
-        ((setq node  (Info-get-token (point) "Up: " "Up: \\([^,\n\t]*\\)"))
-         (let ((bmk  (and Info-follow-xref-bookmarks-flag  (Info-bookmark-for-node node))))
-           (if bmk (bookmark-jump bmk) (Info-goto-node node fork))))
-        ((setq node  (Info-get-token (point) "Next: " "Next: \\([^,\n\t]*\\)"))
-         (let ((bmk  (and Info-follow-xref-bookmarks-flag  (Info-bookmark-for-node node))))
-           (if bmk (bookmark-jump bmk) (Info-goto-node node fork))))
-        ((setq node  (Info-get-token (point) "File: " "File: \\([^,\n\t]*\\)"))
-         (Info-goto-node "Top" fork))
-        ((setq node  (Info-get-token (point) "Prev: " "Prev: \\([^,\n\t]*\\)"))
-         (let ((bmk  (and Info-follow-xref-bookmarks-flag  (Info-bookmark-for-node node))))
-           (if bmk (bookmark-jump bmk) (Info-goto-node node fork)))))
-      node))
-
-  )
 
 
 ;; REPLACES ORIGINAL in `info.el':
