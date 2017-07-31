@@ -1,4 +1,4 @@
-== Installing Emacs 25 in WSL ==
+== About Emacs 25 in WSL ==
 
 With Windows 10, Microsoft offers a 'Windows Subsystem for Linux (WSL)' that runs a BASH Shell and quite a few classic Linux/Unix Tools, among them Emacs.
 
@@ -7,7 +7,47 @@ By default its based on an Ubuntu Image from Canonical, but for Experts there is
 WSL is working quite well, but still considered Beta. Without some excellent Blog posts I would not have been able to successfully install (and use and update) Emacs 25. So here is the recipe (and the links) I used.
 
 = Activate WSL =
-= Install Emacs 25 =
-= Workaround for Package Bug =
 
+Use this MSN Installation Guide:
+https://msdn.microsoft.com/de-de/commandline/wsl/install_guide
+
+Check OS Type and Build of you System, there are minimal requirements. You need to activate developer mode. There is a choice between Linux distros.
+
+In case you have forgotten:
+https://www.digitalocean.com/community/tutorials/how-to-create-a-sudo-user-on-ubuntu-quickstart
+
+= Install a graphical Linux environment = 
+Allthough WSL is geared only towards Linux commandline tools, and Emacs is run as 'emacs -nw', you will need this for a workaround that enables you to use the Emacs package manager.
+
+Follow the instructions on this page:
+https://solarianprogrammer.com/2017/04/16/windows-susbsystem-for-linux-xfce-4/
+
+The X Server for Windows is downloaded here:
+https://sourceforge.net/projects/vcxsrv/
+
+and installed by executing the installer like any other Windows program.
+
+Most likely, you will get (DBus) errors (like I did) when trying XFCE4 with VcXsrv, i.e. by doing XLaunch (starting the X Server from the Windows Icon) and then calling 'xfce4-session' on the BASH command line.
+
+Therefore you need to follow points 2 and 3 of the instructions on this page:
+
+https://www.reddit.com/r/Windows10/comments/4rsmzp/bash_on_windows_getting_dbus_and_x_server_working/
+
+DISCLAIMER: doing point 3 (fixing dbus) is entirely at you own risk! It worked for me, but in the comment section of the linked page, one commenter reports that WLAN stopped working and he had to reinstall Windows 10 after this.
+
+At the time of this writing, you need all this to make the Emacs package manager work. Running the installed Emacs 25 as -nw works just fine without X environment, but then you have to figure out yourself how to get your favorite packages.
+
+= Install Emacs 25 =
+
+Follow the instructions on this page (a big THANKS  to SolarianProgrammer for his excellents Blog Posts):
+
+https://solarianprogrammer.com/2017/05/18/emacs-windows-subsystem-linux/
+
+With the preparations above, I have
+* a running 'emacs -nw' in WSL for doing real work.
+* a graphical Linux environment that allows me to call 'emacs' (the graphical version) and use it to install packages (and only that) via 'M-x list-packages'. 
+
+Funny enough, the graphical Emacs only accepted keyboard input 'M-x' after I once opened the Menu with F10 or so ...
+
+Furthermore, one has to answer a prompt where to put the ELPA directory. I'm not yet settled on this decision, since this is a critical point (accidentally editing Linux files with Windows Tools might corrupt the whole system, its recommended to make those files (maybe edited by both systems) Window files under /mnt or so (see last paragraph of the installation guide: https://msdn.microsoft.com/de-de/commandline/wsl/install_guide) 
 
