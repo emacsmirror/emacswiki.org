@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Jul 30 16:57:39 2017 (-0700)
+;; Last-Updated: Sun Jul 30 18:14:20 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8525
+;;     Update #: 8532
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -827,6 +827,25 @@
  
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
+
+;;;###autoload (autoload 'bmkp-autofile-access-invokes-bookmark-flag "bookmark+")
+(defcustom bmkp-autofile-access-invokes-bookmark-flag nil
+  "*Non-nil means invoke the bookmark when you access an autofile.
+That is, if a file has an associated autofile bookmark then functions
+such as `find-file' will automatically jump to the bookmark.  The
+buffer position of an autofile bookmark is not important, but this can
+be useful to update the bookmark data, such as the number of visits.
+
+If you change the option value in Lisp code without using a Customize
+function, then add/remove `bmkp-find-file-invoke-bookmark-if-autofile'
+to/from `find-file-hook'."
+  :set (lambda (sym new-val)
+         (custom-set-default sym new-val)
+         (let ((hook-var  (if (< emacs-major-version 22) 'find-file-hooks 'find-file-hook)))
+           (if bmkp-autofile-access-invokes-bookmark-flag
+               (add-hook hook-var 'bmkp-find-file-invoke-bookmark-if-autofile)
+             (remove-hook hook-var 'bmkp-find-file-invoke-bookmark-if-autofile))))
+  :type 'boolean :group 'bookmark-plus)
 
 ;;;###autoload (autoload 'bmkp-autofile-filecache "bookmark+")
 (defcustom bmkp-autofile-filecache 'cache-only
@@ -7930,6 +7949,21 @@ The bookmarked position will be the beginning of the file."
               'NO-REFRESH-P 'MSG-P)))
           ((eq bmkp-autofile-filecache  'cache-only)
            ad-do-it))))
+
+(defun bmkp-find-file-invoke-bookmark-if-autofile ()
+  "Invoke the autofile bookmark associated with the visited file.
+This is added to `find-file-hook' when option
+`bmkp-autofile-access-invokes-bookmark-flag' is non-nil.  When invoked
+it causes regular file access to invoke the associated bookmark.  This
+has the effect of updating the bookmark data, such as the number of
+visits."
+  (let* ((buf-file  (buffer-file-name))
+         (bmk       (bmkp-get-bookmark-in-alist (file-name-nondirectory buf-file)
+                                                t
+                                                (bmkp-autofile-alist-only)))
+         (bmk-file  (and bmk  (bookmark-get-filename bmk))))
+    (when (and bmk-file  (bmkp-same-file-p buf-file bmk-file))
+      (bookmark--jump-via bmk 'ignore))))
 
 ;;;###autoload (autoload 'bmkp-bookmark-a-file "bookmark+")
 (defalias 'bmkp-bookmark-a-file 'bmkp-autofile-set)
