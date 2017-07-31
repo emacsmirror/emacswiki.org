@@ -17,7 +17,7 @@ In case you have forgotten:
 https://www.digitalocean.com/community/tutorials/how-to-create-a-sudo-user-on-ubuntu-quickstart
 
 = Install a graphical Linux environment = 
-Allthough WSL is geared only towards Linux commandline tools, and Emacs is run as 'emacs -nw', you will need this for a workaround that enables you to use the Emacs package manager.
+Although WSL is geared only towards Linux commandline tools, and Emacs is run as 'emacs -nw', you will need this for a workaround that enables you to use the Emacs package manager.
 
 Follow the instructions on this page:
 https://solarianprogrammer.com/2017/04/16/windows-susbsystem-for-linux-xfce-4/
@@ -49,5 +49,5 @@ With the preparations above, I have
 
 Funny enough, the graphical Emacs only accepted keyboard input 'M-x' after I once opened the Menu with F10 or so ...
 
-Furthermore, one has to answer a prompt where to put the ELPA directory. I'm not yet settled on this decision, since this is a critical point (accidentally editing Linux files with Windows Tools might corrupt the whole system, its recommended to make those files (maybe edited by both systems) Window files under /mnt or so (see last paragraph of the installation guide: https://msdn.microsoft.com/de-de/commandline/wsl/install_guide) 
+Furthermore, one has to answer a prompt where to put the ELPA directory. I'm not yet settled on this decision, since this is a critical point (accidentally editing Linux files with Windows Tools might corrupt the whole system, its recommended to make those files (maybe edited by both systems) Windows files under /mnt or so (see last paragraph of the installation guide: https://msdn.microsoft.com/de-de/commandline/wsl/install_guide) 
 
