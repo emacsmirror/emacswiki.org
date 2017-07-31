@@ -7,10 +7,10 @@ controls whether this is done.  You can use '''`C-h C-b'''' to
 the number of times you have visited it.  You need library
 [[Bookmark+]] for this feature.
 
-* If option '''`Info-follow-xref-bookmarks-flag'''' is non-`nil' then
-following the link of a bookmarked node invokes the bookmark to
-get to the node, so bookmark data gets updated.  Command
-'''`Info-toggle-follow-bookmarked-xrefs'''' toggles the option value.
+* If option '''`Info-node-access-invokes-bookmark-flag'''' is non-`nil' then going to a bookmarked Info node invokes the bookmark, so
+bookmark data gets updated.  Command
+'''`Info-toggle-node-access-invokes-bookmark'''' toggles the option value.  You need library
+[[Bookmark+]] for this feature.
 
 * Additional, finer-grained highlighting.  This can make a big difference in readability.
 ** Quoted names, like this: ##‘name-stands-out’## or ##`name-stands-out'##, and strings, like this: ##"string-stands-out"## are highlighted if '''`Info-fontify-quotations-flag'''' is non-`nil'.
