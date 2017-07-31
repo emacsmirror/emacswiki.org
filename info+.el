@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 30 21:43:12 2017 (-0700)
+;; Last-Updated: Sun Jul 30 21:47:17 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5944
+;;     Update #: 5945
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -206,7 +206,7 @@
 ;;    then going to a bookmarked Info node invokes the bookmark, so
 ;;    bookmark data gets updated.  Command
 ;;    `Info-toggle-node-access-invokes-bookmark' toggles the option
-;;    value.
+;;    value.  You need library Bookmark+ for this feature.
 ;;
 ;;  * Additional, finer-grained highlighting.  This can make a big
 ;;    difference in readability.
