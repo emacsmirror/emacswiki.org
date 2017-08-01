@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 09:42:46 2017 (-0800)
+;; Last-Updated: Mon Jul 31 21:19:07 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 1856
+;;     Update #: 1886
 ;; URL: https://www.emacswiki.org/emacs/download/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -141,6 +141,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/07/31 dadams
+;;     query-replace-w-options, query-replace(-regexp) (defadvice):
+;;       Update for Emacs 25: Added arg REGION-NONCONTIGUOUS-P.
 ;; 2016/12/24 dadams
 ;;    Support highlighting of regexp groups (option isearchp-highlight-regexp-group-levels-flag):
 ;;      Added redefinitions of replace-highlight and replace-dehighlight.
@@ -810,7 +813,7 @@ insert a `SPC' or `TAB' character, you will need to precede it by \
 ;;    2. The default regexps are provided by `search/replace-default'.
 ;;
 ;;;###autoload
-(defun query-replace-w-options (old new &optional kind start end msgp)
+(defun query-replace-w-options (old new &optional kind start end msgp region-noncontiguous-p)
   "Replace some occurrences of OLD text with NEW text.
 This is like `query-replace' or `query-replace-regexp'.  A prefix arg
 determines what kind of matches to replace, as follows:
@@ -833,9 +836,8 @@ insert a SPC or TAB character, you will need to precede it by \
 If option `isearchp-set-region-flag' is non-nil, then select the last
 replacement."
   (interactive
-   (let* ((emacs24.4+   (or (> emacs-major-version 24)
-                            (and (= emacs-major-version 24)
-                                 (not (version< emacs-version "24.3.50")))))
+   (let* ((emacs25+     (> emacs-major-version 24))
+          (emacs24.4+   (or emacs25+  (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
           (qr-kind      (cond ((consp current-prefix-arg) " WORD") ; `C-u'
                               ((and emacs24.4+  (eq `- current-prefix-arg)) " STRING BACKWARD") ; `-'
                               ((and emacs24.4+
@@ -858,24 +860,36 @@ replacement."
            qr-kind
            (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))  (region-beginning))
            (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))  (region-end))
-           'MSGP)))
+           'MSGP
+           (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                (fboundp 'region-noncontiguous-p)  (region-noncontiguous-p)))))
   (case (intern kind)
     (\ WORD
      (if (< emacs-major-version 21)
          (query-replace old new t)
-       (query-replace old new t start end)))
+       (if (> emacs-major-version 24)
+           (query-replace old new t start end nil region-noncontiguous-p)
+         (query-replace old new t start end))))
     (\ REGEXP
      (if (< emacs-major-version 21)
          (query-replace-regexp old new)
-       (perform-replace old new t t nil nil nil start end)))
+       (if (> emacs-major-version 24)
+           (perform-replace old new t t nil nil nil start end nil region-noncontiguous-p)
+         (perform-replace old new t t nil nil nil start end))))
     (\ STRING
      (if (< emacs-major-version 21)
          (query-replace old new)
-       (query-replace old new nil start end)))
+       (if (> emacs-major-version 24)
+           (query-replace old new nil start end nil region-noncontiguous-p)
+         (query-replace old new nil start end))))
     (\ REGEXP\ BACKWARD
-     (perform-replace old new t t nil nil nil start end 'BACKWARD))
+     (if (> emacs-major-version 24)
+         (perform-replace old new t t nil nil nil start end 'BACKWARD region-noncontiguous-p)
+       (perform-replace old new t t nil nil nil start end 'BACKWARD)))
     (\ STRING\ BACKWARD
-     (query-replace old new nil start end 'BACKWARD)))
+     (if (> emacs-major-version 24)
+         (query-replace old new nil start end 'BACKWARD region-noncontiguous-p)
+       (query-replace old new nil start end 'BACKWARD))))
   (when msgp (message "query-replace %s `%s' by `%s'...done"
                       kind
                       (replacep-propertize old 'face 'replacep-msg-emphasis)
@@ -892,10 +906,8 @@ replacement."
 (when (> emacs-major-version 21)
   (defadvice query-replace (before respect-search/replace-region-as-default-flag activate)
     (interactive
-     (let* ((emacs24.4+  (or (> emacs-major-version 24)
-                             (and (= emacs-major-version 24)
-                                  (not (version< emacs-version "24.3.50")))))
-
+     (let* ((emacs25+    (> emacs-major-version 24))
+            (emacs24.4+  (or emacs25+  (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
             (common      (query-replace-read-args (concat "Query replace"
                                                           (and current-prefix-arg
                                                                (if (and emacs24.4+
@@ -916,9 +928,13 @@ replacement."
                               (region-beginning)))
             (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
                               (region-end))))
-       (if emacs24.4+
-           (list from to delimited start end (nth 3 common))
-         (list from to delimited start end))))))
+       (if emacs25+
+           (list from to delimited start end (nth 3 common)
+                 (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                      (fboundp 'region-noncontiguous-p)  (region-noncontiguous-p)))
+         (if emacs24.4+
+             (list from to delimited start end (nth 3 common))
+           (list from to delimited start end)))))))
 
 
 
@@ -929,9 +945,8 @@ replacement."
 (when (> emacs-major-version 21)
   (defadvice query-replace-regexp (before respect-search/replace-region-as-default-flag activate)
     (interactive
-     (let* ((emacs24.4+  (or (> emacs-major-version 24)
-                             (and (= emacs-major-version 24)
-                                  (not (version< emacs-version "24.3.50")))))
+     (let* ((emacs25+    (> emacs-major-version 24))
+            (emacs24.4+  (or emacs25+  (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
             (common      (query-replace-read-args (concat "Query replace"
                                                           (and current-prefix-arg
                                                                (if (and emacs24.4+
@@ -953,9 +968,13 @@ replacement."
                               (region-beginning)))
             (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
                               (region-end))))
-       (if emacs24.4+
-           (list regexp to delimited start end (nth 3 common))
-         (list regexp to delimited start end))))))
+       (if emacs25+
+           (list regexp to delimited start end (nth 3 common)
+                 (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                      (fboundp 'region-noncontiguous-p)  (region-noncontiguous-p)))
+         (if emacs24.4+
+             (list regexp to delimited start end (nth 3 common))
+           (list regexp to delimited start end)))))))
 
 
 
@@ -967,8 +986,7 @@ replacement."
   (defadvice replace-string (before respect-search/replace-region-as-default-flag activate)
     (interactive
      (let* ((emacs24.4+  (or (> emacs-major-version 24)
-                             (and (= emacs-major-version 24)
-                                  (not (version< emacs-version "24.3.50")))))
+                             (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
             (common      (query-replace-read-args (concat "Replace"
                                                           (and current-prefix-arg
                                                                (if (and emacs24.4+
@@ -1004,8 +1022,7 @@ replacement."
   (defadvice replace-regexp (before respect-search/replace-region-as-default-flag activate)
     (interactive
      (let* ((emacs24.4+  (or (> emacs-major-version 24)
-                             (and (= emacs-major-version 24)
-                                  (not (version< emacs-version "24.3.50")))))
+                             (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
             (common      (query-replace-read-args (concat "Replace"
                                                           (and current-prefix-arg
                                                                (if (and emacs24.4+
