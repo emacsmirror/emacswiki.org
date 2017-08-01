@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jun  5 10:46:01 2017 (-0700)
+;; Last-Updated: Tue Aug  1 16:31:25 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 1752
+;;     Update #: 1764
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -66,7 +66,8 @@
 ;;    `zz-add-zone-and-unite', `zz-clone-and-coalesce-zones',
 ;;    `zz-clone-and-unite-zones', `zz-clone-zones',
 ;;    `zz-coalesce-zones', `zz-delete-zone', `zz-narrow',
-;;    `zz-narrow-repeat', `zz-select-region',
+;;    `zz-narrow-repeat', `zz-query-replace-zones' (Emacs 25+),
+;;    `zz-query-replace-regexp-zones' (Emacs 25+), `zz-select-region',
 ;;    `zz-select-region-repeat', `zz-set-izones-var',
 ;;    `zz-unite-zones'.
 ;;
@@ -133,7 +134,8 @@
 ;;
 ;;  Some of the functions defined here are not available for Emacs
 ;;  versions prior to Emacs 22.  Others are not available for versions
-;;  prior to Emacs 23.  This is mentioned where applicable.
+;;  prior to Emacs 23.  Still others are available only starting with
+;;  Emacs 25.  This is mentioned where applicable.
 ;;
 ;;
 ;;(@* "Zones")
@@ -244,6 +246,8 @@
 ;;    bookmark to restore it in a subsequent Emacs session.  For this
 ;;    you need library `bookmark+.el'.
 ;;
+;;  * Query-replace over them (Emacs 25 and later).
+;;
 ;;
 ;;(@* "Izone List Variables")
 ;;  ** Izone List Variables **
@@ -298,7 +302,7 @@
 ;;(@* "Keys")
 ;;  ** Keys **
 ;;
-;;  Most of the commands that manipulate izones are bound on keymap
+;;  Many of the commands that manipulate izones are bound on keymap
 ;;  `narrow-map'.  They are available on prefix key `C-x n', along
 ;;  with the narrowing/widening keys `C-x n d', `C-x n n', `C-x n p',
 ;;  and `C-x n w':
@@ -421,6 +425,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2017/08/01 dadams
+;;     Added: zz-query-replace-zones, zz-query-replace-regexp-zones - Emacs 25+ only.
 ;; 2017/06/05 dadams
 ;;     zz-set-fringe-for-narrowing: Use copy-face, not face-spec-set-2.  OK for Emacs 24.4+
 ;; 2017/06/04 dadams
@@ -1770,6 +1776,145 @@ that is the value of `zz-izones-var' can be modified."
                   (point))))
       (when (or (interactive-p)  zz-add-zone-anyway-p) (zz-add-zone beg end nil nil nil 'MSG))
       (narrow-to-region beg end))))
+
+
+(when (> emacs-major-version 24)
+
+  (defun zz-query-replace-zones (from-string to-string &optional delimited start end backward zones)
+    "`query-replace' in the zones currently defined in the current buffer.
+The value of variable `zz-izones' defines the zones."
+    (interactive
+     (let* ((common  (query-replace-read-args
+                      (concat "Query replace"
+                              (if current-prefix-arg
+                                  (if (eq current-prefix-arg '-) " backward" " word")
+                                "")
+                              (if (use-region-p) " in region" ""))
+                      nil))
+            (beg     (point-max))
+            (end     (point-min))
+            zs)
+       (dolist  (zone  (zz-izone-limits (zz-unite-zones zz-izones-var)))
+         (setq beg  (min beg (car zone))
+               end  (max end (cadr zone)))
+         (push (cons (car zone) (cadr zone)) zs))
+       (setq zs  (nreverse zs))
+       (list (nth 0 common) (nth 1 common) (nth 2 common)
+             beg
+             end
+             (nth 3 common)
+             zs)))
+    (unless zones (error "No zones to search"))
+    (let ((region-extract-function  (lambda (_ignore) zones)))
+      (query-replace from-string to-string delimited start end backward t)))
+
+  (defun zz-query-replace-regexp-zones (regexp to-string &optional delimited start end backward zones)
+    "`query-replace-regexp' in the zones currently defined in the current buffer.
+The value of variable `zz-izones' defines the zones."
+    (interactive
+     (let* ((common  (query-replace-read-args
+                      (concat "Query replace"
+                              (if current-prefix-arg
+                                  (if (eq current-prefix-arg '-) " backward" " word")
+                                "")
+                              (if (use-region-p) " in region" ""))
+                      nil))
+            (beg     (point-max))
+            (end     (point-min))
+            zs)
+       (dolist  (zone  (zz-izone-limits (zz-unite-zones zz-izones-var)))
+         (setq beg  (min beg (car zone))
+               end  (max end (cadr zone)))
+         (push (cons (car zone) (cadr zone)) zs))
+       (setq zs  (nreverse zs))
+       (list (nth 0 common) (nth 1 common) (nth 2 common)
+             beg
+             end
+             (nth 3 common)
+             zs)))
+    (unless zones (error "No zones to search"))
+    (let ((region-extract-function  (lambda (_ignore) zones)))
+      (query-replace-regexp regexp to-string delimited start end backward t)))
+
+  ;; The next three will wait until vanilla Emacs adds handling of noncontiguous regions to
+  ;; `map-query-replace-regexp', `replace-string', and `replace-regexp' - see bug #27897.
+  
+  ;;   (defun zz-map-query-replace-regexp-zones (regexp to-strings &optional n start end zones)
+  ;;     "`map-query-replace-regexp' in the zones currently defined in the current buffer.
+  ;; The value of variable `zz-izones' defines the zones."
+  ;;     (interactive
+  ;;      (let* ((from  (read-regexp "Map query replace (regexp): " nil
+  ;;                                 query-replace-from-history-variable))
+  ;;             (to    (read-from-minibuffer
+  ;;                     (format "Query replace %s with (space-separated strings): "
+  ;;                             (query-replace-descr from))
+  ;;                     nil nil nil
+  ;;                     query-replace-to-history-variable from t))
+  ;;             (beg   (point-max))
+  ;;             (end   (point-min))
+  ;;             zs)
+  ;;        (dolist  (zone  (zz-izone-limits (zz-unite-zones zz-izones-var)))
+  ;;          (setq beg  (min beg (car zone))
+  ;;                end  (max end (cadr zone)))
+  ;;          (push (cons (car zone) (cadr zone)) zs))
+  ;;        (setq zs  (nreverse zs))
+  ;;        (list from to
+  ;;              (and current-prefix-arg  (prefix-numeric-value current-prefix-arg))
+  ;;              beg
+  ;;              end
+  ;;              zs)))
+  ;;     (unless zones (error "No zones to search"))
+  ;;     (let ((region-extract-function  (lambda (_ignore) zones)))
+  ;;       (map-query-replace-regexp regexp to-strings n start end t)))
+  
+  ;;   (defun zz-replace-string-zones (from-string to-string &optional delimited start end backward zones)
+  ;;     "`replace-string' in the zones currently defined in the current buffer.
+  ;; The value of variable `zz-izones' defines the zones."
+  ;;     (declare (interactive-only "use `search-forward' and `replace-match' instead."))
+  ;;     (interactive
+  ;;      (let ((common  (query-replace-read-args
+  ;;                      (concat "Replace"
+  ;;                              (if current-prefix-arg
+  ;;                                  (if (eq current-prefix-arg '-) " backward" " word")
+  ;;                                "")
+  ;;                              " string"
+  ;;                              (if (use-region-p) " in region" ""))
+  ;;                      nil))
+  ;;            (beg     (point-max))
+  ;;            (end     (point-min))
+  ;;            zs)
+  ;;        (dolist  (zone  (zz-izone-limits (zz-unite-zones zz-izones-var)))
+  ;;          (setq beg  (min beg (car zone))
+  ;;                end  (max end (cadr zone)))
+  ;;          (push (cons (car zone) (cadr zone)) zs))
+  ;;        (setq zs  (nreverse zs))
+  ;;        (list (nth 0 common) (nth 1 common) (nth 2 common) beg end (nth 3 common) zs)))
+  ;;     (unless zones (error "No zones to search"))
+  ;;     (let ((region-extract-function  (lambda (_ignore) zones)))
+  ;;       (replace-string from-string to-string delimited start end backward t)))
+
+  ;;   (defun replace-regexp (regexp to-string &optional delimited start end backward zones)
+  ;;     "`replace-regexp' in the zones currently defined in the current buffer.
+  ;; The value of variable `zz-izones' defines the zones."
+  ;;     (declare (interactive-only "use `re-search-forward' and `replace-match' instead."))
+  ;;     (interactive
+  ;;      (let ((common  (query-replace-read-args
+  ;;                      (concat "Replace"
+  ;;                              (if current-prefix-arg
+  ;;                                  (if (eq current-prefix-arg '-) " backward" " word")
+  ;;                                "")
+  ;;                              " regexp"
+  ;;                              (if (use-region-p) " in region" ""))
+  ;;                      t))
+  ;;            (beg     (point-max))
+  ;;            (end     (point-min))
+  ;;            zs)
+  ;;        (list (nth 0 common) (nth 1 common) (nth 2 common) beg end (nth 3 common) zs)))
+  ;;     (unless zones (error "No zones to search"))
+  ;;     (let ((region-extract-function  (lambda (_ignore) zones)))
+  ;;       (replace-regexp regexp to-string delimited start end backward t)))
+  
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
