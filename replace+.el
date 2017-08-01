@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 31 21:19:07 2017 (-0700)
+;; Last-Updated: Mon Jul 31 21:48:18 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 1886
+;;     Update #: 1893
 ;; URL: https://www.emacswiki.org/emacs/download/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -142,7 +142,7 @@
 ;;; Change Log:
 ;;
 ;; 2017/07/31 dadams
-;;     query-replace-w-options, query-replace(-regexp) (defadvice):
+;;     query-replace-w-options, query-replace(-regexp), replace-(string|regexp):
 ;;       Update for Emacs 25: Added arg REGION-NONCONTIGUOUS-P.
 ;; 2016/12/24 dadams
 ;;    Support highlighting of regexp groups (option isearchp-highlight-regexp-group-levels-flag):
@@ -985,8 +985,8 @@ replacement."
 (when (> emacs-major-version 21)
   (defadvice replace-string (before respect-search/replace-region-as-default-flag activate)
     (interactive
-     (let* ((emacs24.4+  (or (> emacs-major-version 24)
-                             (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
+     (let* ((emacs25+    (> emacs-major-version 24))
+            (emacs24.4+  (or emacs25+  (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
             (common      (query-replace-read-args (concat "Replace"
                                                           (and current-prefix-arg
                                                                (if (and emacs24.4+
@@ -1008,9 +1008,13 @@ replacement."
                               (region-beginning)))
             (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
                               (region-end))))
-       (if emacs24.4+
-           (list from to delimited start end (nth 3 common))
-         (list from to delimited start end))))))
+       (if emacs25+
+           (list from to delimited start end (nth 3 common)
+                 (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                      (fboundp 'region-noncontiguous-p)  (region-noncontiguous-p)))
+         (if emacs24.4+
+             (list from to delimited start end (nth 3 common))
+           (list from to delimited start end)))))))
 
 
 
@@ -1021,8 +1025,8 @@ replacement."
 (when (> emacs-major-version 21)
   (defadvice replace-regexp (before respect-search/replace-region-as-default-flag activate)
     (interactive
-     (let* ((emacs24.4+  (or (> emacs-major-version 24)
-                             (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
+     (let* ((emacs25+    (> emacs-major-version 24))
+            (emacs24.4+  (or emacs25+  (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
             (common      (query-replace-read-args (concat "Replace"
                                                           (and current-prefix-arg
                                                                (if (and emacs24.4+
@@ -1044,9 +1048,13 @@ replacement."
                               (region-beginning)))
             (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
                               (region-end))))
-       (if emacs24.4+
-           (list regexp to delimited start end (nth 3 common))
-         (list regexp to delimited start end))))))
+       (if emacs25+
+           (list from to delimited start end (nth 3 common)
+                 (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
+                      (fboundp 'region-noncontiguous-p)  (region-noncontiguous-p)))
+         (if emacs24.4+
+             (list regexp to delimited start end (nth 3 common))
+           (list regexp to delimited start end)))))))
 
 
 
@@ -1103,6 +1111,7 @@ the last replacement regexp."
 (when (boundp 'isearchp-highlight-regexp-group-levels-flag) ; In `isearch+.el', Emacs 24.4+.
 
 
+
   ;; REPLACE ORIGINAL in `replace.el'
   ;;
   ;; Highlight regexp groups also, if `isearchp-highlight-regexp-group-levels-flag' is non-nil.
@@ -1153,6 +1162,7 @@ then highlight each regexp group differently."
             (isearch-other-end              match-beg)
             (isearch-error                  nil))
         (isearch-lazy-highlight-new-loop range-beg range-end))))
+
 
 
   ;; REPLACE ORIGINAL in `replace.el'
