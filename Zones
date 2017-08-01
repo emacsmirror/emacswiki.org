@@ -34,6 +34,11 @@ zones.
 bookmark to restore it in a subsequent Emacs session.  For this
 you need library [[Bookmark+]].
 
+* Query-replace over them (Emacs 25 and later).
+
+
+
+
 
 
 [:zz-add-zone]
@@ -51,7 +56,8 @@ you need library [[Bookmark+]].
 [:zz-set-izones-var]
 [:widen]
 [:zz-narrow-repeat]
-Zone commands are bound to keys on keymap `narrow-map' (prefix key `C-x n'):
+Many of the commands that manipulate zones are bound on keymap '''`narrow-map''''.  They are available on prefix key '''`C-x n'''', along with the narrowing/widening keys `C-x n d', `C-x n n', `C-x n p', and `C-x n w':
+
 
 * '''`C-x n a''''   (`zz-add-zone') -- Add the active [[region]] to the current list of zones.
 * '''`C-x n A''''   (`zz-add-zone-and-unite') -- Add the region to the current list of zones, and then unite (coalesce) them.
