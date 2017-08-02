@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Aug  2 14:27:19 2017 (-0700)
+;; Last-Updated: Wed Aug  2 14:55:21 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5947
+;;     Update #: 5961
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -369,6 +369,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/08/02 dadams
+;;     Info-goto-node: Define only if can soft-require bookmark+.el.
+;;                     No-op if NODE is in Info-index-nodes.
+;;                     Bind Info-node-access-invokes-bookmark-flag to nil while invoking bookmark.
+;;                     Use bookmark--jump-via with ignore as display function, instead of bookmark-jump.
 ;; 2017/07/30 dadams
 ;;     Added advice of Info-goto-node, to respect Info-node-access-invokes-bookmark-flag.
 ;;     Removed redefinitions of Info-follow-nearest-node, Info-try-follow-nearest-node.
@@ -1068,7 +1073,7 @@ Note that any value can be problematic for some Info text - see
   :type 'boolean :group 'Info-Plus :group 'Fit-Frame)
 
 ;;;###autoload
-(defcustom Info-node-access-invokes-bookmark-flag nil
+(defcustom Info-node-access-invokes-bookmark-flag t
   "*Non-nil means invoke the bookmark when you access an Info node.
 This applies to Info bookmarks whose names correspond to the default
 name.  This is normally the full node name, `(MANUAL) NODE', where
@@ -1851,16 +1856,24 @@ candidates."
 ;;
 ;; Respect option `Info-node-access-invokes-bookmark-flag'.
 ;;
-(defadvice Info-goto-node (around bmkp-invoke-Info-bookmark activate)
-  "Respect option `Info-node-access-invokes-bookmark-flag'.
+(when (require 'bookmark+ nil t)
+
+  (defadvice Info-goto-node (around bmkp-invoke-Info-bookmark activate)
+    "Respect option `Info-node-access-invokes-bookmark-flag'.
 If the option is non-nil then a bookmark for the node is invoked when
 the node is visited, provided that the bookmark name has the default
-form: `(MANUAL) NODE' (e.g.,`(emacs) Modes'). "
-  (if Info-node-access-invokes-bookmark-flag
-      (let* ((node  (ad-get-arg 0))
-             (bmk   (and Info-node-access-invokes-bookmark-flag  (Info-bookmark-for-node node))))
-        (if bmk (bookmark-jump bmk) ad-do-it))
-    ad-do-it))
+form: `(MANUAL) NODE' (e.g.,`(emacs) Modes')."
+    (if Info-node-access-invokes-bookmark-flag
+        (let ((node  (ad-get-arg 0)))
+          (if (member node (Info-index-nodes))
+              ad-do-it
+            (let ((bmk  (and Info-node-access-invokes-bookmark-flag  (Info-bookmark-for-node node))))
+              (if bmk
+                  (let ((Info-node-access-invokes-bookmark-flag  nil)) (bookmark--jump-via bmk 'ignore))
+                ad-do-it))))
+      ad-do-it))
+
+  )
 
 
 ;; REPLACE ORIGINAL in `info.el':
