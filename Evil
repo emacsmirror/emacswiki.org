@@ -49,7 +49,7 @@ Evil can be alternatively downloaded and installed with:
 
 Evil lives in a Git repository. To download Evil, do:
 
-    git clone https://github.com/emacs-evil/evil
+    git clone https://github.com/emacs-evil/evil.git
 
 If you don't have Git, follow [https://github.com/emacs-evil/evil/archive/master.tar.gz this] link to download snapshot of master (extract with ##tar -xzf master.tar.gz##).
 
