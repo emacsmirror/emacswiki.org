@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 30 21:47:17 2017 (-0700)
+;; Last-Updated: Wed Aug  2 14:27:19 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5945
+;;     Update #: 5947
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -1068,7 +1068,7 @@ Note that any value can be problematic for some Info text - see
   :type 'boolean :group 'Info-Plus :group 'Fit-Frame)
 
 ;;;###autoload
-(defcustom Info-node-access-invokes-bookmark-flag t
+(defcustom Info-node-access-invokes-bookmark-flag nil
   "*Non-nil means invoke the bookmark when you access an Info node.
 This applies to Info bookmarks whose names correspond to the default
 name.  This is normally the full node name, `(MANUAL) NODE', where
