@@ -8,9 +8,9 @@
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jul 31 21:48:18 2017 (-0700)
+;; Last-Updated: Tue Aug  1 19:46:11 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 1893
+;;     Update #: 1895
 ;; URL: https://www.emacswiki.org/emacs/download/replace%2b.el
 ;; Doc URL: http://www.emacswiki.org/ReplacePlus
 ;; Keywords: matching, help, internal, tools, local
@@ -1049,7 +1049,7 @@ replacement."
             (end         (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
                               (region-end))))
        (if emacs25+
-           (list from to delimited start end (nth 3 common)
+           (list regexp to delimited start end (nth 3 common)
                  (and transient-mark-mode  mark-active  (> (region-end) (region-beginning))
                       (fboundp 'region-noncontiguous-p)  (region-noncontiguous-p)))
          (if emacs24.4+
@@ -1412,8 +1412,7 @@ See options `search/replace-region-as-default-flag',
                     (or first (zerop nlines) (insert "--------\n"))
                     (setq first  nil)
 
-                    ;; Insert matching text including context lines from
-                    ;; source buffer into *Occur*
+                    ;; Insert matching text including context lines from source buffer into *Occur*
                     (set-marker text-beg (point))
                     (setq insertion-start  (point))
                     (insert-buffer-substring buffer start end)
