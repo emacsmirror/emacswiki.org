@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug  1 16:31:25 2017 (-0700)
+;; Last-Updated: Wed Aug  2 14:05:04 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 1764
+;;     Update #: 1783
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: http://www.emacswiki.org/Zones
 ;; Doc URL: http://www.emacswiki.org/MultipleNarrowings
@@ -81,15 +81,17 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `zz-buffer-of-markers', `zz-car-<', `zz-every',
+;;    `zz-buffer-of-markers', `zz-car-<', `zz-dot-pairs', `zz-every',
 ;;    `zz-izone-has-other-buffer-marker-p', `zz-izone-limits',
-;;    `zz-izone-limits-in-bufs', `zz-izones', `zz-izones-from-zones',
-;;    `zz-izones-p', `zz-izones-renumber', `zz-marker-from-object',
-;;    `zz-markerize', `zz-max', `zz-min', `zz-narrowing-lighter',
-;;    `zz-number-or-marker-p', `zz-rassoc-delete-all',
-;;    `zz-readable-marker', `zz-readable-marker-p',
-;;    `zz-read-any-variable', `zz-read-bufs', `zz-regexp-car-member',
-;;    `zz-remove-if', `zz-remove-if-not',
+;;    `zz-izone-limits-in-bufs', `zz-izones',
+;;    `zz-izones-from-noncontiguous-region' (Emacs 25+),
+;;    `zz-izones-from-zones', `zz-izones-p', `zz-izones-renumber',
+;;    `zz-marker-from-object', `zz-markerize', `zz-max', `zz-min',
+;;    `zz-narrowing-lighter', `zz-noncontiguous-region-from-izones',
+;;    `zz-noncontiguous-region-from-zones', `zz-number-or-marker-p',
+;;    `zz-rassoc-delete-all', `zz-readable-marker',
+;;    `zz-readable-marker-p', `zz-read-any-variable', `zz-read-bufs',
+;;    `zz-regexp-car-member', `zz-remove-if', `zz-remove-if-not',
 ;;    `zz-remove-izones-w-other-buffer-markers',
 ;;    `zz-remove-zones-w-other-buffer-markers', `zz-repeat-command',
 ;;    `zz-set-intersection', `zz-set-union', `zz-some',
@@ -97,8 +99,9 @@
 ;;    `zz-two-zone-union', `zz-zones-complement',
 ;;    `zz-zone-has-other-buffer-marker-p', `zz-zone-intersection',
 ;;    `zz-zone-intersection-1', `zz-zone-ordered',
-;;    `zz-zones-overlap-p', `zz-zones-same-buffer-p',
-;;    `zz-zone-union', `zz-zone-union-1'.
+;;    `zz-zones-from-noncontiguous-region' (Emacs 25+),
+;;    `zz-zones-overlap-p', `zz-zones-same-buffer-p', `zz-zone-union',
+;;    `zz-zone-union-1'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -425,6 +428,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2017/08/02 dadams
+;;     Added: zz-izones-from-noncontiguous-region, zz-zones-from-noncontiguous-region,
+;;            zz-noncontiguous-region-from-izones, zz-noncontiguous-region-from-zones, zz-dot-pairs.
 ;; 2017/08/01 dadams
 ;;     Added: zz-query-replace-zones, zz-query-replace-regexp-zones - Emacs 25+ only.
 ;; 2017/06/05 dadams
@@ -648,6 +654,7 @@
 ;; Quiet the byte-compiler.
 (defvar mode-line-modes)                ; Emacs 22+
 (defvar narrow-map)                     ; Emacs 23+
+(defvar region-extract-function)        ; Emacs 25+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -1913,8 +1920,40 @@ The value of variable `zz-izones' defines the zones."
   ;;     (unless zones (error "No zones to search"))
   ;;     (let ((region-extract-function  (lambda (_ignore) zones)))
   ;;       (replace-regexp regexp to-string delimited start end backward t)))
-  
+
+
+  (defun zz-izones-from-noncontiguous-region ()
+    "Return a list if izones from `region-extract-function' bounds."
+    (let ((ii  0))
+      (mapcar (lambda (posn) (cons (setq ii  (1+ ii)) (list (copy-marker (car posn)) (copy-marker (cdr posn)))))
+              (funcall region-extract-function 'bounds))))
+         
+  (defun zz-zones-from-noncontiguous-region ()
+    "Return a list if basic zones from `region-extract-function' bounds."
+    (mapcar (lambda (posn) (list (copy-marker (car posn)) (copy-marker (cdr posn))))
+            (funcall region-extract-function 'bounds)))
+
   )
+
+(defun zz-noncontiguous-region-from-izones ()
+  "Return a noncontiguous region from value of value of `zz-izones-var'.
+An Emacs \"noncontiguous region\" (Emacs 25+) is what the value of
+`region-extract-function' returns.  It is like a list of basic zones,
+but the entry pairs are dotted: `(beg . end)', not `(beg end)'."
+  (nreverse (zz-izone-limits (zz-unite-zones zz-izones-var))))
+
+(defun zz-noncontiguous-region-from-zones (basic-zones)
+  "Return a noncontiguous region from a list of BASIC-ZONES.
+An Emacs \"noncontiguous region\" (Emacs 25+) is what the value of
+`region-extract-function' returns.  It is like a list of basic zones,
+but the entry pairs are dotted: `(beg . end)', not `(beg end)'."
+  (mapcar #'zz-dot-pairs (zz-zone-union basic-zones)))
+
+(defun zz-dot-pairs (pairs)
+  "Dot PAIRS, a list of lists, each of which has at least two elements."
+  (mapcar (lambda (b-e) (cons (car b-e) (cadr b-e))) pairs))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
