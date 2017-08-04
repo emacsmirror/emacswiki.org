@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Aug  2 14:55:21 2017 (-0700)
+;; Last-Updated: Fri Aug  4 15:28:43 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5961
+;;     Update #: 5980
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -69,9 +69,10 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `Info-breadcrumbs-in-mode-line-mode', `Info-describe-bookmark',
-;;    `Info-follow-nearest-node-new-window', `Info-goto-node-web',
-;;    `Info-history-clear', `info-manual', `Info-merge-subnodes',
+;;    `Info-breadcrumbs-in-mode-line-mode', `Info-describe-bookmark'
+;;    (Emacs 24.2+), `Info-follow-nearest-node-new-window',
+;;    `Info-goto-node-web', `Info-history-clear', `info-manual',
+;;    `Info-merge-subnodes',
 ;;    `Info-mouse-follow-nearest-node-new-window',
 ;;    `Info-persist-history-mode' (Emacs 24.4+),
 ;;    `Info-save-current-node', `Info-set-breadcrumbs-depth',
@@ -173,7 +174,7 @@
 ;;     2. If key's command not found, then `Info-search's for key
 ;;        sequence in text and displays message about repeating.
 ;;  `Info-goto-node' - Respect option
-;;     `Info-node-access-invokes-bookmark-flag'.
+;;     `Info-node-access-invokes-bookmark-flag' (Emacs 24.2+).
 ;;  `Info-history' - A prefix arg clears the history.
 ;;  `Info-insert-dir' -
 ;;     Added optional arg NOMSG to inhibit showing progress msgs.
@@ -369,6 +370,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/08/04 dadams
+;;     Info-describe-bookmark: Use Info-bookmark-name-at-point, not Info-node-name-at-point.
+;;     Info-goto-node: Do it only for Emacs 24.2+.
 ;; 2017/08/02 dadams
 ;;     Info-goto-node: Define only if can soft-require bookmark+.el.
 ;;                     No-op if NODE is in Info-index-nodes.
@@ -1444,7 +1448,7 @@ line from non-nil `Info-use-header-line'."
     "Describe bookmark for NODE.
 By default, NODE is the node named at point.
 With a prefix argument, show the internal definition of the bookmark."
-    (interactive (list (or (Info-node-name-at-point)  (Info-read-node-name "Node: " Info-current-node))
+    (interactive (list (or (Info-bookmark-name-at-point)  (Info-read-node-name "Node: " Info-current-node))
                        current-prefix-arg))
     (let* ((alist  (bmkp-info-alist-only))
            (bmk    (or (bmkp-get-bookmark-in-alist node t alist)
@@ -1856,7 +1860,9 @@ candidates."
 ;;
 ;; Respect option `Info-node-access-invokes-bookmark-flag'.
 ;;
-(when (require 'bookmark+ nil t)
+(when (and (require 'bookmark+ nil t)
+           (or (> emacs-major-version 24) ; Emacs 24.2+ (do not bother for Emacs 23-24.1)
+               (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
 
   (defadvice Info-goto-node (around bmkp-invoke-Info-bookmark activate)
     "Respect option `Info-node-access-invokes-bookmark-flag'.
@@ -4277,8 +4283,8 @@ currently visited manuals."
   (defun Info-bookmark-for-node (node)
     "Return Info bookmark for NODE, or nil if none.
 See `Info-bookmark-name-for-node' for the form of the bookmark name."
-    (let* ((file  (and (stringp Info-current-file)
-                       (file-name-sans-extension (file-name-nondirectory Info-current-file))))
+    (let* ((file   (and (stringp Info-current-file)
+                        (file-name-sans-extension (file-name-nondirectory Info-current-file))))
            (bname  (if file (concat "(" file ") " node) node)))
       (bmkp-get-bookmark-in-alist bname t (bmkp-info-alist-only))))
 
