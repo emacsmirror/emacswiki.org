@@ -122,3 +122,22 @@ Dmitri Minaev.
 
 ----
 EmacsNiftyTricks
+
+[new]
+Cool idea. I am not sure yet if I really want to use Emacs as a desktop background, but I played with idea and achieved
+your setup (or very close to), with wmctrl. I use Compiz as WM manager (no desktop environment such as kde, gnome & co).
+
+Following wmctrl setts Emacs in a fullscreen and below all other windows:
+
+wmctrl -r Emacs -b toggle,fullscreen,below,skip_pager,skip_taskbar
+
+I also had to turn off automatic window rasing for a focused window in Compiz.
+
+Screenshots:
+
+[http://imgur.com/a/rUcXc Just background with above script.]
+
+[http://imgur.com/a/0JfUB With Firefox and terminal.]
+
+
+
