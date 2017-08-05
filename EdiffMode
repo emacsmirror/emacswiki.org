@@ -40,6 +40,7 @@ You can ignore whitespace or case sensitivity in two ways:
 ** Whitespace insensitivity -- Include `-w' in `ediff-diff-options'.
 ** Case insensitivity -- Include `-i' in `ediff-diff-options'.
 
+See also [[#DiscussionOfWhitespace]]
 
 
 = From The Command Line =
@@ -298,6 +299,14 @@ as the interactive conflict resolution tool please see my blog post at: http://z
 [new]
 
 I've used fink to get Emacs 23.1-104 installed on Mac OSX 10.6.4, and I use X11.  Most of the time I try to access a file, it works as normal where I enter text in the minibuffer, but I am having problems using ediff.  For some reason ediff launches a GUI file selector window which hangs intermittently, sometimes completely. Prior implementations of ediff just allowed me to enter the text of the two files in the mini-buffer.   Does anyone how to either a) get back to the old method, or b) fix whatever is hanging in the communication between the OS, emacs, and the file server?  Thank - Mark
+
+[new]
+[:DiscussionOfWhitespace]
+I don't understand the advice about whitespace, particularly the interactive toggling.  Here's an example: I have used ediff to compare 2 files, one of which has been edited and saved on Windows.  Because of the carriage returns the whole file is one big diff.  OK, I toggle whitespace with "##" and now I have one big /ignored/ diff!  That's not what I wanted/expected -- I wanted ediff to re-run the diff with -w and give me a useful diff.
+
+The discussion of ignoring whitespace differences above seems to conflate "ignoring whitespace diffs that have been computed" and "ignoring whitespace when computing," so is not as helpful as it could be.
+
+-- RobertPGoldman
 
 ----
 
