@@ -10,7 +10,7 @@ Download ##csv-mode.el## from:
 
 The commands include sorting numerically or alphabetically on a particular field, cutting and pasting columns of fields, padding to align fields, or removing padding.
 
-The default format used is a comma separator (##,##) and double quotes (##""##) for field quoting.  This can be customized, for instance with a different separator for European locales (where a comma is a decimal point).
+The default format used is a comma separator (##,##) and double quotes (##""##) for field quoting.  This can be customized, for instance with a different separator for European locales (where a comma is the decimal separator).
 
 See also,
 
