@@ -60,6 +60,5 @@ If "sudo emacs -nw" works, but "emacs -nw" results in:
 this workaround (as discovered here too https://alexschroeder.ch/wiki/2015-09-18_Emacs_and_TTY) should help:
 
 "sudo chmod go+rw /dev/tty"
-(actually g+rw doesn't work, so whats needed is o+rw)
 
 DISCLAIMER: It's left to your own judgement if this opens any security issues or not (I don't know).
