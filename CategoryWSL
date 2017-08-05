@@ -51,3 +51,15 @@ Funny enough, the graphical Emacs only accepted keyboard input 'M-x' after I onc
 
 Furthermore, one has to answer a prompt where to put the ELPA directory. I'm not yet settled on this decision, since this is a critical point (accidentally editing Linux files with Windows Tools might corrupt the whole system, its recommended to make those files (maybe edited by both systems) Windows files under /mnt or so (see last paragraph of the installation guide: https://msdn.microsoft.com/de-de/commandline/wsl/install_guide) 
 
+= Fix /dev/tty problem =
+
+If "sudo emacs -nw" works, but "emacs -nw" results in:
+
+"emacs: Could not open file: /dev/tty"
+
+this workaround (as discovered here too https://alexschroeder.ch/wiki/2015-09-18_Emacs_and_TTY) should help:
+
+"sudo chmod go+rw /dev/tty"
+(actually g+rw doesn't work, so whats needed is o+rw)
+
+DISCLAIMER: It's left to your own judgement if this opens any security issues or not (I don't know).
