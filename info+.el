@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug  4 15:28:43 2017 (-0700)
+;; Last-Updated: Sun Aug  6 16:37:15 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5980
+;;     Update #: 6046
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -76,6 +76,7 @@
 ;;    `Info-mouse-follow-nearest-node-new-window',
 ;;    `Info-persist-history-mode' (Emacs 24.4+),
 ;;    `Info-save-current-node', `Info-set-breadcrumbs-depth',
+;;    `Info-set-face-for-bookmarked-xref' (Emacs 24.2+),
 ;;    `Info-toggle-breadcrumbs-in-header',
 ;;    `Info-toggle-fontify-angle-bracketed',
 ;;    `Info-toggle-fontify-bookmarked-xrefs' (Emacs 24.2+),
@@ -98,6 +99,7 @@
 ;;
 ;;  Options (user variables) defined here:
 ;;
+;;    `Info-bookmarked-node-xref-faces' (Emacs 24.2+),
 ;;    `Info-breadcrumbs-in-header-flag',
 ;;    `Info-display-node-header-fn', `Info-emphasis-regexp',
 ;;    `Info-fit-frame-flag', `Info-fontify-angle-bracketed-flag',
@@ -119,10 +121,11 @@
 ;;    `Info-bookmark-named-at-point', `Info-bookmark-name-for-node',
 ;;    `Info-display-node-default-header', `info-fontify-quotations',
 ;;    `info-fontify-reference-items',
-;;    `Info-insert-breadcrumbs-in-mode-line',
-;;    `Info-node-name-at-point', `Info-restore-history-list' (Emacs
-;;    24.4+), `Info-save-history-list' (Emacs 24.4+),
-;;    `Info-isearch-search-p', `Info-search-beg', `Info-search-end'.
+;;    `Info-insert-breadcrumbs-in-mode-line', `Info-isearch-search-p',
+;;    `Info-node-name-at-point', `Info-read-bookmarked-node-name',
+;;    `Info-restore-history-list' (Emacs 24.4+),
+;;    `Info-save-history-list' (Emacs 24.4+), `Info-search-beg',
+;;    `Info-search-end'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -198,10 +201,16 @@
 ;;
 ;;  * Coloring of links for nodes that have associated bookmarks using
 ;;    a different face.  Option `Info-fontify-bookmarked-xrefs-flag'
-;;    controls whether this is done.  You can use `C-h C-b' to
-;;    describe the bookmark, which shows the tags for that node and
-;;    the number of times you have visited it.  You need library
+;;    controls whether this is done.  The face is
+;;    `info-xref-bookmarked', by default, but you can set the face to
+;;    use for a given Info bookmark using `C-x f' (command
+;;    `Info-set-face-for-bookmarked-xref').  You need library
 ;;    Bookmark+ for this feature.
+;;
+;;  * You can use `C-h C-b' to describe the bookmark targeted by a
+;;    link.  This shows all of the bookmark information, including the
+;;    tags for that node and the number of times you have visited it.
+;;    You need library Bookmark+ for this feature.
 ;;
 ;;  * If option `Info-node-access-invokes-bookmark-flag' is non-nil
 ;;    then going to a bookmarked Info node invokes the bookmark, so
@@ -370,6 +379,14 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/08/06 dadams
+;;     Added: Info-bookmarked-node-xref-faces, Info-read-bookmarked-node-name,
+;;            Info-set-face-for-bookmarked-xref.
+;;     Bind Info-set-face-for-bookmarked-xref to C-x f.
+;;     Info-describe-bookmark: If no bookmarked node name at point, use Info-read-bookmarked-node-name.
+;;     Info-bookmark-for-node: Made NODE arg optional - if nil then read the node name.  Added LOCALP arg.
+;;     Info-fontify-node (Emacs 24.2+): Get face for bookmarked xref from bmkp-info-face tag value, if any.
+;;                                      Call Info-bookmark-for-node with arg LOCALP.
 ;; 2017/08/04 dadams
 ;;     Info-describe-bookmark: Use Info-bookmark-name-at-point, not Info-node-name-at-point.
 ;;     Info-goto-node: Do it only for Emacs 24.2+.
@@ -803,6 +820,7 @@
 (defvar Info-breadcrumbs-in-mode-line-mode)
 (defvar Info-current-node-virtual)
 (defvar isearch-filter-predicate)
+(defvar Info-bookmarked-node-xref-faces) ; Here, Emacs 24.2+, with Bookmark+.
 (defvar Info-fontify-bookmarked-xrefs-flag) ; Here, Emacs 24.2+, with Bookmark+.
 (defvar Info-fontify-visited-nodes)
 (defvar Info-hide-note-references)
@@ -1023,9 +1041,8 @@ Don't forget to mention your Emacs and library versions."))
   "*Face used for \"Variable:\" reference items in `info' manual."
   :group 'Info-Plus :group 'faces)
 
-(when (and (require 'bookmark+ nil t)
-           (or (> emacs-major-version 24) ; Emacs 24.2+ (do not bother for Emacs 23-24.1)
-               (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
+(when (and (require 'bookmark+ nil t) ; Emacs 24.2+ (do not bother for Emacs 23-24.1)
+           (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
 
   (defface info-xref-bookmarked
       '((((background dark)) (:foreground "violet"))
@@ -1106,6 +1123,16 @@ toggle the option value."
 
 (when (and (require 'bookmark+ nil t) ; Emacs 24.2+ (do not bother for prior)
            (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
+
+  (defcustom Info-bookmarked-node-xref-faces '()
+    "List of faces to use to classify bookmarked nodes.
+The faces are used for links to bookmarked nodes.  They classify nodes
+by serving as the values of bookmark tag \"bmkp-info-face\".
+
+You can use any face for such a link.  The faces in this option list
+are just provided as defaults when you are asked to enter a face for a
+node link. "
+    :type '(repeat face) :group 'Info-Plus)
 
   (defcustom Info-fontify-bookmarked-xrefs-flag t
     "Non-nil means fontify references to bookmarked nodes.
@@ -1364,6 +1391,31 @@ line from non-nil `Info-use-header-line'."
 (when (and (require 'bookmark+ nil t) ; Emacs 24.2+ (do not bother for prior)
            (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
 
+  (defun Info-set-face-for-bookmarked-xref (node)
+    "Specify the face to use for Info links to bookmarked NODE.
+Sets the value of bookmark tag \"bmkp-info-face\" to a face symbol you
+name.
+
+If option `Info-bookmarked-node-xref-faces' is non-nil then only the
+faces in that list are available for completion, but you can enter any
+face name.  If that option is nil then all faces are available for
+completion.
+
+NODE defaults to the bookmarked node named at point.  If none then you
+are prompted for NODE."
+    (interactive (list (or (Info-bookmark-name-at-point)  (Info-read-bookmarked-node-name))))
+    (let* ((alist  (bmkp-info-alist-only))
+           (bmk    (bmkp-get-bookmark-in-alist node t alist)))
+      (unless bmk (error "No Info bookmark for node `%s'" node))
+      (bmkp-set-tag-value bmk "bmkp-info-face"
+                          (if Info-bookmarked-node-xref-faces
+                              (intern (completing-read "Face: " Info-bookmarked-node-xref-faces
+                                                       (lambda (ff) (memq ff (face-list)))))
+                            (read-face-name "Face" 'info-xref-bookmarked)))))
+
+  (define-key Info-mode-map (kbd "C-x f") 'Info-set-face-for-bookmarked-xref)
+
+
   (defun Info-toggle-fontify-bookmarked-xrefs (&optional msgp)
     "Toggle option `Info-fontify-bookmarked-xrefs-flag'."
     (interactive "p")
@@ -1445,15 +1497,39 @@ line from non-nil `Info-use-header-line'."
 (when (require 'bookmark+ nil t)
 
   (defun Info-describe-bookmark (&optional node show-definition-p)
-    "Describe bookmark for NODE.
-By default, NODE is the node named at point.
-With a prefix argument, show the internal definition of the bookmark."
-    (interactive (list (or (Info-bookmark-name-at-point)  (Info-read-node-name "Node: " Info-current-node))
-                       current-prefix-arg))
+    "Describe bookmark for NODE (default: bookmarked node named at point).
+With a prefix argument, show the internal definition of the bookmark.
+
+If there is no bookmarked node named at point then you are prompted
+for the name of one.
+
+When called from Lisp, NODE is a full node name: `(MANUAL) NODE'.
+That is, it corresponds to a default Info bookmark name."
+    (interactive
+     (list (or (Info-bookmark-name-at-point)  (Info-read-bookmarked-node-name))
+           current-prefix-arg))
     (let* ((alist  (bmkp-info-alist-only))
            (bmk    (or (bmkp-get-bookmark-in-alist node t alist)
                        (bmkp-read-bookmark-for-type "Info" alist nil nil 'bmkp-info-history "Describe "))))
       (bmkp-describe-bookmark bmk show-definition-p)))
+
+  (defun Info-read-bookmarked-node-name (&optional localp)
+    "Read and return the name of a bookmarked Info node.
+A bookmarked node name has the form \"(MANUAL) NODE\", referring to
+NODE in MANUAL.
+Optional arg LOCALP means read a node name from the current manual."
+    (let* ((completion-ignore-case  t)
+           (bmks                    (remove-if-not
+                                     (lambda (bmk) (bmkp-string-match-p (if (and localp  Info-current-file)
+                                                                       (format "\\`(%s) "
+                                                                               (file-name-sans-extension
+                                                                                (file-name-nondirectory Info-current-file)))
+                                                                     "(\\([^)]+\\)) \\([^)]*\\)")
+                                                                   (bmkp-bookmark-name-from-record bmk)))
+                                     (bmkp-info-alist-only)))
+           (bmk                     (completing-read "Bookmarked node: " bmks nil t nil 'bmkp-info-history)))
+      (while (equal bmk "") (setq bmk  (completing-read "Bookmarked node: " bmks nil t nil 'bmkp-info-history)))
+      bmk))
 
   )
 
@@ -3535,9 +3611,10 @@ If key's command cannot be found by looking in indexes, then
                                                   hl   nil)
                                           (setq hl  (cdr hl))))
                                       res)))))
-                       (if (and fontify-bookmarked-p  (Info-bookmark-name-for-node node))
-                           'info-xref-bookmarked
-                         'info-xref-visited)
+                       (let ((bmk  (and fontify-bookmarked-p  (Info-bookmark-for-node node 'LOCALP))))
+                         (if bmk
+                             (or (bmkp-get-tag-value bmk "bmkp-info-face")  'info-xref-bookmarked)
+                           'info-xref-visited))
                      'info-xref)))
                 (save-excursion ; For multiline ref, unfontify newline and surrounding whitespace
                   (goto-char rbeg)
@@ -3637,9 +3714,10 @@ If key's command cannot be found by looking in indexes, then
                                                     hl   nil)
                                             (setq hl  (cdr hl))))
                                         res)))))
-                         (if (and fontify-bookmarked-p  (Info-bookmark-name-for-node node))
-                             'info-xref-bookmarked
-                           'info-xref-visited)
+                         (let ((bmk  (and fontify-bookmarked-p  (Info-bookmark-for-node node 'LOCALP))))
+                           (if bmk
+                               (or (bmkp-get-tag-value bmk "bmkp-info-face")  'info-xref-bookmarked)
+                             'info-xref-visited))
                        'info-xref))))
                 (when (and not-fontified-p
                            (memq Info-hide-note-references '(t hide))
@@ -4280,25 +4358,27 @@ currently visited manuals."
 
 (when (require 'bookmark+ nil t)
 
-  (defun Info-bookmark-for-node (node)
+  (defun Info-bookmark-for-node (&optional node localp)
     "Return Info bookmark for NODE, or nil if none.
-See `Info-bookmark-name-for-node' for the form of the bookmark name."
-    (let* ((file   (and (stringp Info-current-file)
-                        (file-name-sans-extension (file-name-nondirectory Info-current-file))))
-           (bname  (if file (concat "(" file ") " node) node)))
-      (bmkp-get-bookmark-in-alist bname t (bmkp-info-alist-only))))
+Non-nil NODE can have the form `NODE' or `(MANUAL) NODE'.
+If NODE is nil then read the node name.  If optional arg LOCALP is
+non-nil then read the node name only from the current manual."
+    (when (and node  (stringp Info-current-file)  (not (bmkp-string-match-p "(\\([^)]+\\)) \\([^)]*\\)" node)))
+      (setq node  (concat "(" (file-name-sans-extension (file-name-nondirectory Info-current-file)) ") " node)))
+    (unless node (setq node  (Info-read-bookmarked-node-name localp)))
+    (bmkp-get-bookmark-in-alist node t (bmkp-info-alist-only)))
 
   (defun Info-bookmark-name-for-node (node)
-    "Return name of Info bookmark for NODE, or nil if none.
+    "Return the name of an Info bookmark for NODE, or nil if none.
+Non-nil NODE can have the form `NODE' or `(MANUAL) NODE'.
 The name of the bookmark must be the default name that
 `Info-bookmark-make-record' would use.  This is normally the full node
 name, `(MANUAL) NODE', where MANUAL is the lowercase name of the Info
 manual.  For example, node `Modes' in the Emacs manual has full
 name `(emacs) Modes', and the bookmark must have that same name."
-    (let ((bmk   (Info-bookmark-for-node node)))
+    (let ((bmk  (Info-bookmark-for-node node)))
       (and bmk  (bmkp-bookmark-name-from-record bmk))))
 
-  ;; Not used yet
   (defun Info-bookmark-named-at-point ()
     "Return Info bookmark for node named at point, or nil if none.
 See `Info-bookmark-name-for-node' for the form of the bookmark name."
@@ -4309,7 +4389,6 @@ See `Info-bookmark-name-for-node' for the form of the bookmark name."
                   (bname  (if file (concat "(" file ") " node) node)))
              (bmkp-get-bookmark-in-alist bname t (bmkp-info-alist-only))))))
 
-  ;; Not used yet
   (defun Info-bookmark-name-at-point ()
     "Return name of Info bookmark for node named at point, or nil if none.
 See `Info-bookmark-name-for-node' for the form of the bookmark name."
