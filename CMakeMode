@@ -1,4 +1,4 @@
-[http://www.cmake.org/ CMake] is text-based build system by [http://www.kitware.com Kitware] that can generate a number of build systems, including UNIX Makefiles, Visual Studio projects, and XCode projects.
+[http://www.cmake.org/ CMake] is text-based build system by [http://www.kitware.com Kitware] that can generate a number of build systems, including UNIX Makefiles, Visual Studio projects, and Xcode projects.
 
 == Major Mode ==
 
