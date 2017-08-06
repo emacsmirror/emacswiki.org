@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug  6 16:37:15 2017 (-0700)
+;; Last-Updated: Sun Aug  6 16:42:11 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 6046
+;;     Update #: 6047
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -203,7 +203,7 @@
 ;;    a different face.  Option `Info-fontify-bookmarked-xrefs-flag'
 ;;    controls whether this is done.  The face is
 ;;    `info-xref-bookmarked', by default, but you can set the face to
-;;    use for a given Info bookmark using `C-x f' (command
+;;    use a given Info bookmark using `C-x f' (command
 ;;    `Info-set-face-for-bookmarked-xref').  You need library
 ;;    Bookmark+ for this feature.
 ;;
