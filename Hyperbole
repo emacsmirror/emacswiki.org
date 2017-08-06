@@ -2,7 +2,7 @@ From its documentation:
 
 : //GNU Hyperbole (pronounced Hi-per-bo-lee) is a mature, efficient, and programmable hypertextual information management and outliner system for GNU Emacs.//
 
-The project home page is https://www.gnu.org/software/hyperbole. That page includes screenshots, download and installation instructions, and resource links.
+GNU Hyperbole is available from GNU [[ELPA]]. The project home page is https://www.gnu.org/software/hyperbole. That page includes screenshots, download and installation instructions, and resource links.
 
 Hyperbole has the following features:
  
