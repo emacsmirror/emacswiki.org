@@ -140,8 +140,9 @@ For those of us using earlier versions, use the PictureModeTrailingWhitespaceTri
     ;; quiet, please! No dinging!
     (setq visible-bell nil)
     (setq ring-bell-function `(lambda ()
-                            (set-face-background 'default "DodgerBlue")
-                            (set-face-background 'default "black")))
+                            (let ((face-background (face-background 'default)))
+                              (set-face-background 'default "DodgerBlue")
+                              (set-face-background 'default face-background)))
 
 * Removing interface bars: customize ##(tool-bar-mode -1)##, ##(scroll-bar-mode -1)##  and ##(menu-bar-mode -1)## permanently hide them. See ActiveMenu for for another less persistent solution for menu bar. To get rid of title bar given by OS, run Emacs in full screen by commandline option -fs or --fullscreen. See the page FullScreen for more details and, for example, Windows specific methods.
 * To remove start-up messages, put ##(setq inhibit-splash-screen t)## and (setq inhibit-startup-echo-area-message "YOUR-USER-NAME") in your init-file.  Or just add
