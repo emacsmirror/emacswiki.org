@@ -1,5 +1,7 @@
 ERC is fully equipped to connect to SSL/TLS-enabled servers (e.g. OFTC and [[Freenode]]) however, Certificate Authentication support is rather untested.
 
+Note added August, 2017: `M-x erc-tls' might just work without further configuration. Be sure to use the server's TLS port, e.g. 6697 for freenode.
+
 For the purposes of this guide, head on over to the following OFTC page to get an idea on how to create the necessary certificates
 
 * http://www.oftc.net/oftc/NickServ/CertFP#AddCertFPtoNS/
