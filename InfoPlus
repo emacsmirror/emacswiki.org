@@ -2,7 +2,13 @@ Library <tt>[[info+.el]]</tt> extends the standard Emacs library ##info.el## in 
 
 * Coloring of links for nodes that have associated [[bookmark|bookmarks]] using
 a different face.  [[option|Option]] '''`Info-fontify-bookmarked-xrefs-flag''''
-controls whether this is done.  You can use '''`C-h C-b'''' to
+controls whether this is done.   The face is
+`info-xref-bookmarked', by default, but you can set the face to
+use a given Info bookmark using '''`C-x f'''' (command
+`Info-set-face-for-bookmarked-xref').  You need library
+[[Bookmark+]] for this feature.
+
+* You can use '''`C-h C-b'''' to
 ''describe'' the bookmark, which shows the tags for that node and
 the number of times you have visited it.  You need library
 [[Bookmark+]] for this feature.
