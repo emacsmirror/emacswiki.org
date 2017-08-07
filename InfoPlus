@@ -7,7 +7,7 @@ In many ways an Info node and its default bookmark can be
 thought of as the same animal.
 
 ** Rich node metadata.  In particular, you can tag nodes with any
-number of arbitrary '''tags''', to classify them in different and
+number of arbitrary '''[[BookmarkPlus#BookmarkTags|tags]]''', to classify them in different and
 overlapping ways.  You can also annotate them (in [[Org]] mode, by
 default).
 
