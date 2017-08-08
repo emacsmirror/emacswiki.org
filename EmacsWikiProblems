@@ -8,6 +8,10 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+== New targets for links to http://www.emacswiki.org/elisp/Foobar? ==
+
+[[ERC]]'s module buttons links references to "EmacsWiki:Foo" to http://www.emacswiki.org/cgi-bin/wiki.pl?Foo and "Lisp:foo.el" to http://www.emacswiki.org/elisp/foo.el.  The former type of URLs needs to be updated to point to https://www.emacswiki.org/emacs/Foo, but I am uncertain where the latter type should point to.  [[ElispArea]] says that such links in this wiki will point to http://www.emacswiki.org/emacs/foo.el (i. e., no difference to other links).  Does that mean that ERC should link both "EmacsWiki:word" and "Lisp:word" to the same URL?  --Tim Landscheidt
+
 == Info Manual links give 500 Internal Server Error ==
 
 E.g. from EmacsManual https://www.emacswiki.org/info-ref?find=show-paren-mode => 500
