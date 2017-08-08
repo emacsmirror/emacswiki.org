@@ -8,7 +8,7 @@ Some people (such as JerameyCrawford and JeremyCowgar) don't much care for how o
       (end-of-line)
       (open-line arg)
       (next-line 1)
-      (when newline-and-indent
+      (when `newline-and-indent
         (indent-according-to-mode)))
 
     (global-set-key (kbd "C-o") 'open-next-line)
@@ -20,7 +20,7 @@ Some people (such as JerameyCrawford and JeremyCowgar) don't much care for how o
       (interactive "p")
       (beginning-of-line)
       (open-line arg)
-      (when newline-and-indent
+      (when `newline-and-indent
         (indent-according-to-mode)))
 
     (global-set-key (kbd "M-o") 'open-previous-line)
