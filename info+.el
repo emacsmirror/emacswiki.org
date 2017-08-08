@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug  6 19:31:04 2017 (-0700)
+;; Last-Updated: Mon Aug  7 21:11:47 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 6088
+;;     Update #: 6098
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -71,7 +71,8 @@
 ;;
 ;;    `Info-breadcrumbs-in-mode-line-mode', `Info-describe-bookmark'
 ;;    (Emacs 24.2+), `Info-follow-nearest-node-new-window',
-;;    `Info-goto-node-web', `Info-history-clear', `info-manual',
+;;    `Info-goto-node-web', `Info-history-clear',
+;;    `Info-make-node-unvisited', `info-manual',
 ;;    `Info-merge-subnodes',
 ;;    `Info-mouse-follow-nearest-node-new-window',
 ;;    `Info-persist-history-mode' (Emacs 24.4+),
@@ -325,6 +326,12 @@
 ;;      nodes, including automatically.  This records how many times
 ;;      you have visited each node and when you last did so.)
 ;;
+;;    - `Info-make-node-unvisited' (bound to `C-x DEL') - Reset the
+;;      visited status of a node to unvisited.  Useful if you use
+;;      `Info-fontify-visited-nodes' to show you which nodes you have
+;;      visited and you want to consider that you have not yet visited
+;;      some.
+;;
 ;;    - `Info-save-current-node' (bound to `.') – Save the name of the
 ;;      current node to list `Info-saved-nodes', for use by `v'
 ;;      (`Info-virtual-book').
@@ -407,6 +414,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/08/07 dadams
+;;     Added: Info-make-node-unvisited.  Bound to C-x DEL.
 ;; 2017/08/06 dadams
 ;;     Added: Info-bookmarked-node-xref-faces, Info-read-bookmarked-node-name,
 ;;            Info-set-face-for-bookmarked-xref.
@@ -906,6 +915,7 @@
 (define-key Info-mode-map "a"               'info-apropos)
 (define-key Info-mode-map "G"               'Info-goto-node-web)
 (define-key Info-mode-map "v"               'Info-virtual-book)
+(define-key Info-mode-map (kbd "C-x DEL")   'Info-make-node-unvisited)
 ;; Mouse back and forward buttons
 (define-key Info-mode-map [S-down-mouse-2]  'Info-mouse-follow-nearest-node-new-window)
 (define-key Info-mode-map [S-return]        'Info-follow-nearest-node-new-window)
@@ -1372,6 +1382,34 @@ If ... contains > then that character must be backslashed.")
            (advice-remove 'Info-directory 'Info-restore-history-list))))
 
   )
+
+;;;###autoload (autoload 'Info-make-node-unvisited "info+")
+(defun Info-make-node-unvisited (node &optional msgp)
+  "Reset the visited status of NODE to unvisited."
+  (interactive (list (or (Info-node-name-at-point)  (Info-read-node-name "Node: " Info-current-node))
+                     t))
+  (let (file trim)
+    (save-match-data
+      (string-match "\\s *\\((\\s *\\([^\t)]*\\)\\s *)\\s *\\|\\)\\(.*\\)" node)
+      (setq file  (if (= (match-beginning 1) (match-end 1)) "" (match-string 2 node))
+            node  (match-string 3 node)
+            trim  (string-match "\\s +\\'" file))
+      (when trim (setq file  (substring file 0 trim)))
+      (setq trim  (string-match "\\s +\\'" node)))
+    (when trim (setq node  (substring node 0 trim)))
+    (when (or (not node)  (string= node "")) (setq node  "Top"))
+    (when (or (not file)  (string= file "")) (setq file  Info-current-file))
+    (setq file               (Info-find-file file)
+          Info-history-list  (remove (list file (substring-no-properties node)) Info-history-list))
+    ;; Emacs 23 has brain-dead `kill-buffer', which is invoked by `revert-buffer' and deletes the window/frame if dedicated.
+    (when (and (> emacs-major-version 23)  (derived-mode-p 'Info-mode)) (revert-buffer nil t))
+    (when msgp (message "Node %sis now unvisited" 
+                        (if (string= "dir" Info-current-file) ""
+                          (format "`%s%s' "
+                                  (if (equal file Info-current-file)
+                                      ""
+                                    (format "(%s) " (file-name-nondirectory file)))
+                                  node))))))
 
 ;; I made this a global minor mode and turned it on by default, contrary to "the rules".
 ;; I did this so (a) users could easily customize it but (b) it would be on by default, otherwise.
