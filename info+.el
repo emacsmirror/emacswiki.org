@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Aug  7 21:11:47 2017 (-0700)
+;; Last-Updated: Thu Aug 10 11:24:32 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 6098
+;;     Update #: 6111
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -414,6 +414,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/08/10 dadams
+;;     Info-goto-node: Define it for Emacs 23 also.
+;;     Info-mode-menu: Add menu items for Info-toggle-node-access-invokes-bookmark, Info-toggle-fontify-bookmarked-xrefs.
 ;; 2017/08/07 dadams
 ;;     Added: Info-make-node-unvisited.  Bound to C-x DEL.
 ;; 2017/08/06 dadams
@@ -1935,6 +1938,14 @@ candidates."
      ["Highlighting Single '" Info-toggle-fontify-single-quote
       :style toggle :selected Info-fontify-single-quote-flag
       :help "Toggle option `Info-fontify-single-quote-flag'"]
+     ["Highlighting Bookmarked Links" Info-toggle-fontify-bookmarked-xrefs
+      :style toggle :selected (and (boundp 'Info-fontify-bookmarked-xrefs-flag)  Info-fontify-bookmarked-xrefs-flag)
+      :visible (fboundp 'Info-toggle-fontify-bookmarked-xrefs)
+      :help "Toggle option `Info-fontify-bookmarked-xrefs-flag'"]
+     ["Bookmark Access On Visit" Info-toggle-node-access-invokes-bookmark
+      :style toggle :selected (and (boundp 'Info-node-access-invokes-bookmark-flag)  Info-node-access-invokes-bookmark-flag)
+      :visible (fboundp 'Info-toggle-node-access-invokes-bookmark)
+      :help "Toggle option `Info-node-access-invokes-bookmark-flag'"]
      ["Breadcrumbs in Mode Line" Info-breadcrumbs-in-mode-line-mode
       :style toggle :selected Info-breadcrumbs-in-mode-line-mode
       :help "Toggle showing breadcrumbs in the mode line"]
@@ -2002,9 +2013,7 @@ candidates."
 ;;
 ;; Respect option `Info-node-access-invokes-bookmark-flag'.
 ;;
-(when (and (require 'bookmark+ nil t)
-           (or (> emacs-major-version 24) ; Emacs 24.2+ (do not bother for Emacs 23-24.1)
-               (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
+(when (require 'bookmark+ nil t)
 
   (defadvice Info-goto-node (around bmkp-invoke-Info-bookmark activate)
     "Respect option `Info-node-access-invokes-bookmark-flag'.
