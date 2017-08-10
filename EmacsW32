@@ -1,13 +1,9 @@
 [new]
-*Latest News:*
-Released version 1.58.
-It will be that for a long while.
-I do not change the /EmacsW32/ version number though I upload versions of %%Emacs+EmacsW32%% based on the latest CVS Emacs.
+%%EmacsW32%% is no longer available, see CategoryWThirtyTwo for alternatives.
 
 [new]
 /Tip for editing here: ms windows file names and the name EmacsW32 upsets this wiki software. Put %%...%% around those things./
 
-[new]
 == EmacsW32 Home Page ==
 
 For more information, and for downloadable packages, look at the '''home page:
