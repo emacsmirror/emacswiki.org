@@ -1,5 +1,10 @@
 The Light Table editor, shown at http://www.kickstarter.com/projects/ibdknox/light-table/, has some pretty neat ideas on coding, in part inspired by http://vimeo.com/36579366. Emacs wouldn't be Emacs if it wasn't constantly amassing the features of every other real or potential editor in the multiverse, so how can these ideas be implemented in Emacs?
 
+==Existing packages==
+https://github.com/Fuco1/litable and https://github.com/Fuco1/blablabla try to give live coding / live programming in Emacs.
+
+(https://github.com/Wilfred/suggest.el seems relevant too)
+
 ==docstrings as you type==
 Already exists in e.g. auto-complete-mode, slime.
 
