@@ -4,7 +4,7 @@ Lexical and dynamic binding refer to how variables are looked up by their names.
 
 == Binding ==
 
-A "Binding" is a relationship of correspondence between a name and a (memory) location.
+A binding is a correspondence between a name and its value.
 
 In Lisp you can create a binding using `let':
 
@@ -63,7 +63,7 @@ Two regimes for handling variable binding emerged:
 
 ; dynamic: All variable names and their values live in one global table.
 
-; lexical: Every binding scope (function, let syntax, ...) creates a new table of variable names and values, organised in a hierarchy called "the environment".
+; lexical: Each binding scope (function, let syntax, ...) creates a new table of variable names and values, organised in a hierarchy called "the environment".
 
 For the simple examples given above both lexical and dynamic binding return the same results.  But
 consider this piece of code:
@@ -182,40 +182,37 @@ current compiler).}}}
 
 Most languages only have lexical bindings for names.
 
-* EmacsLisp as of 24.1 has both dynamic binding and lexical binding.  Lexical binding must be enabled explicitly for a file or buffer.  Individual variables can be `defvar'ed to make them "special" like in CommonLisp.
-* CommonLisp has both dynamic binding and lexical binding.  You get lexical binding by default, but you can ask for dynamic binding by `defvar'ing your name or `declare'ing it "special".
+* EmacsLisp as of 24.1 has both dynamic binding and lexical binding.  Lexical binding must be enabled explicitly for a file or buffer.  Individual variables can be `defvar'ed to make them "special", like in CommonLisp.
+* CommonLisp has both dynamic binding and lexical binding.  You get lexical binding by default, but you can ask for dynamic binding by `defvar'ing or `declare'ing a variable "special".
 
 [:Scheme]
-* [[Scheme]] was the first language to introduce lexical binding.  Many [[Scheme]] implementations today support both kinds of behaviour, although dynamic binding is not specified by the [http://www.schemers.org/Documents/Standards/R5RS/HTML/r5rs.html Scheme Standard].   Variables subject to dynamic binding are usually refered to as "fluid variables" or "parameters" on these systems.
-[new]
-: Actually, ALGOL 60 had lexical scoping a decade earlier. C inherited it from ALGOL, and most pop languages got it from C. Scheme was the first Lisp with lexical scoping.
-:: Scheme was however the first language with lexical /closures/ which is probably what confused the original author.
+* [[Scheme]] was the first Lisp dialect to introduce lexical binding and closures.  Many Scheme implementations today support both kinds of behavior, although dynamic binding is not specified by the [http://www.schemers.org/Documents/Standards/R5RS/HTML/r5rs.html Scheme Standard]. Variables subject to dynamic binding are usually referred to as "fluid variables" or "parameters" on these systems.
 
-== Why Emacs has dynamic binding ==
+
+== Why Emacs has Dynamic Binding ==
 
 RichardStallman wrote a paper describing the design of the original
-Emacs and the lessons to be learned from it.  It also contains a [http://www.gnu.org/software/emacs/emacs-paper.html#SEC17 section
+Emacs and the lessons to be learned from it.  It also contains a great [http://www.gnu.org/software/emacs/emacs-paper.html#SEC17 section
 on dynamic binding].
 
-See the [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Dynamic-Binding.html|node Dynamic Binding]] in the EmacsLispReference.
+See node [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Dynamic-Binding.html|Dynamic Binding]] in the EmacsLispReference.
 
 
-== Moving towards lexical binding ==
+== Moving Towards Lexical Binding ==
 
-To use lexical binding, an Emacs-lisp source file must set a file-variable `<tt>lexical-binding</tt>' to t in the file header, e.g., by using a first line like:
+To use lexical binding, an Emacs-lisp source file must set a file-local variable `lexical-binding' to `t' in the file header, e.g., by using a first line such as this:
 
     ;;; -*- lexical-binding: t -*-
 
-Even in a source file that uses lexical binding, global variables declared with `<tt>defvar</tt>' are always dynamically bound.
+Even in a source file that uses lexical binding, global variables declared with `defvar' are always dynamically scoped.
 
-Much code written for normal elisp should work unchanged when using lexical binding (except that it will be a bit faster and safer), because good elisp programming practice tends to discourage the sort of code that would expose the difference (e.g., let-binding an undeclared variable intending that the value be seen by a called function).
+Much code written for normal EmacsLisp should work unchanged when using lexical binding, because good Lisp programming practice tends to discourage the sort of code that would expose the difference (e.g., `let'-binding an undeclared variable and intending that the value be seen by a called function).
 
-- MilesBader
 
-=== More about Emacs future lexical binding ===
+=== Emacs Future lexical Binding ===
 
-Today StefanMonnier told
-[http://lists.gnu.org/archive/html/emacs-devel/2010-09/msg00716.html more about how the lexical binding in Emacs might behave]:
+StefanMonnier has said
+[http://lists.gnu.org/archive/html/emacs-devel/2010-09/msg00716.html more about how lexical binding in Emacs could behave]:
 
 * As you may have noticed, I have added a new warning to the byte-compiler for defvars of variables that don't have a prefix.  This is in preparation for the introduction of lexical scoping: in order not to
 have to rewrite all the code, the lexbind branch uses `let' both for dynamically-scoped let-bindings and for lexically-scoped let-bindings; where the distinction is based on whether or not a variable has
@@ -237,15 +234,15 @@ problem of `e' and `pi' being dynamically scoped, but hopefully only for a few v
 
 * Why not strictly force the lexical behavior of let regardless of whether a global value exists? The programmer can always (setq global-variable ...) if `global-variable` is not currently shadowed. Living with the fear that one's code might clobber another vital global variable and hoping that all packages adhere strictly to some naming convention seems problematic and unnecessary. If this new `let` does not have a fixed, predictable behavior and instead will act differently depending on dynamic states that are far beyond the author's control, this is going to cause a lot of headaches for a lot of people for many years to come.
 
-=== More radical approaches ===
+=== More Radical Approaches ===
 
 DownWithEmacsLisp
 
-== Simulating lexical binding in Emacs ==
+== Simulating Lexical Binding in older Emacs Versions ==
 
 See this page: [[FakeClosures]]. Other tips are given below.
 
-If you (require 'cl) then you can make lexical bindings with the
+If you `(require 'cl)' then you can make lexical bindings with the
 `lexical-let' macro:
 
     (lexical-let ((foo 1))
@@ -262,10 +259,10 @@ If you (require 'cl) then you can make lexical bindings with the
     (foo-test)
       => 2
 
-[Please actually use <code>(eval-when-compile (require 'cl))</code> if you intend to distribute such code, to avoid runtime dependence on <code>cl</code> in the compiled code.]
+[Use `(eval-when-compile (require 'cl))' if you intend to distribute such code, to avoid runtime dependence on `cl' in the compiled code.]
 
-How can it be?  foo-test actually references a shared, hidden value slot.
-That's because the '''cl''' package uses macro hackery to simulate
+How can it be?  `foo-test' actually references a shared, hidden value slot.
+That's because library '''cl''' uses macro hackery to simulate
 lexical binding.  Examine it yourself:
 
     (with-output-to-temp-buffer (pp (symbol-function 'foo-test)))
@@ -278,13 +275,11 @@ lexical binding.  Examine it yourself:
 	    '--foo-- --cl-rest--))
          nil
 
-But it works.
 
-Note that this isn't at all the same thing as actually having lexical variables in the language.
+Note that this isn't the same thing as actually having lexical variables in the language.
 
-
-Note that it's also possible to use a macro to facilitate writing higher-order functions using 
-lexical closures.  First, let's look at a simple example of a higher-order function using lexical-let:
+It's also possible to use a macro to facilitate writing higher-order functions using 
+lexical closures.  First, let's look at a simple example of a higher-order function using `lexical-let':
 
 <pre>
 (defun compose (f g)
@@ -294,7 +289,7 @@ lexical closures.  First, let's look at a simple example of a higher-order funct
       (funcall f (funcall g x)))))
 </pre>
 
-It is a chore to write the lexical-let part of it, but defmacro can help.
+It is a chore to write the `lexical-let' part of it, but `defmacro' can help.
 
 <pre>
 ;; Defun with lexically-scoped parameters.  Could also be called
@@ -315,7 +310,7 @@ Now we can write:
           (funcall f (funcall g x))))
 </pre>
 
-Our macro can also help us write a higher-order function that does currying, i.e., making a new function from f by filling in some of f's arguments and allowing the rest to be provided later.
+Our macro can also help us write a higher-order function that does currying, i.e., making a new function from `f' by filling in some of `f's arguments and allowing the rest to be provided later.
 
 <pre>
 (lexdef curry (f &rest args)
