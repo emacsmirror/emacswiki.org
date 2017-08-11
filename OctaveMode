@@ -1,3 +1,11 @@
+==Octave-mode in Emacs version higher or equal to v21==
+
+There is no need anymore to add the following line to your .emacs:
+
+    (autoload 'octave-mode "octave-mod" nil t)
+
+(source: https://lists.gnu.org/archive/html/help-octave/2015-07/msg00291.html)
+
 ==Octave-mode for Xemacs on WIN32==
 
 Here is my init.el part for Xemacs for WIN32:
