@@ -8,13 +8,6 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
-== New targets for links to http://www.emacswiki.org/elisp/Foobar? ==
-
-[[ERC]]'s module buttons links references to "EmacsWiki:Foo" to http://www.emacswiki.org/cgi-bin/wiki.pl?Foo and "Lisp:foo.el" to http://www.emacswiki.org/elisp/foo.el.  The former type of URLs needs to be updated to point to https://www.emacswiki.org/emacs/Foo, but I am uncertain where the latter type should point to.  [[ElispArea]] says that such links in this wiki will point to http://www.emacswiki.org/emacs/foo.el (i. e., no difference to other links).  Does that mean that ERC should link both "EmacsWiki:word" and "Lisp:word" to the same URL?  --Tim Landscheidt
-
-[new]
-Thanks for the heads up. This broke during the move to the new server. It should work now. -- Alex Schroeder
-
 == How to change the page /name/? ==
 The page ReplaceRegexp is about using `(query-)replace-regexp' with specail lisp xpression in teh replacement, so the page title should better be something like ReplaceRegexpWithLispExpressions or ReplaceRegexpByondRegexps. - How can I change the /name/ of a page? -- [[halloleo]] 2017-05-05
 
