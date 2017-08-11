@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Jul 26 08:22:53 2017 (-0700)
+;; Last-Updated: Fri Aug 11 10:10:42 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 11729
+;;     Update #: 11731
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2017/08/11 dadams
+;;     icicle-file-of-content-apropos-complete-match: Corrected for dir matching with no content input.
 ;; 2017/06/25 dadams
 ;;     icicle-kmacro, icicle-kmacro-action: Soft-require kmacro.el.
 ;; 2017/06/09 dadams
