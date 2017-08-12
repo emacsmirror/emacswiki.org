@@ -95,15 +95,6 @@ If you run inferior-octave and emacs becomes frozen, consider setting the same p
     Add (setq inferior-octave-prompt ">> ") to ~/.emacs
 
 
-==Location==
-
-Kurt.Hornik says: Octave-mode (octave-mod.el, octave-inf.el
-octave-hlp.el) is part of the GNU emacs distribution, but I don't know
-in which archive-file. I loaded the three files from:
-http://www.koders.com/
-
-Best Regards, stefan@pofahl.de (www.jpberlin.de/st.pofahl/xemacs)
-
 ==Completion==
 
 Yasuto.Takenaka says:
