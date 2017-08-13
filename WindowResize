@@ -126,7 +126,7 @@ See also [https://github.com/ramnes/move-border move-border] for an extended ver
 
 = Interactively Resizing Windows =
 
-Note: For CVS Emacs (version 22) you may want to try winsize.el that is part of [NxhtmlMode nXhtml] or windresize.el from http://www.cognition.ens.fr/~guerry/u/windresize.el
+Note: For CVS Emacs (version 22) you may want to try winsize.el that is part of [NxhtmlMode nXhtml] or windresize.el from http://web.archive.org/web/20120422020045id_/http://lumiere.ens.fr:80/~guerry/u/windresize.el
 
 Here's a minor mode I threw together to resize the height of a window interactively:
 
