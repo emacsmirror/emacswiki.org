@@ -38,16 +38,16 @@ The following packages are available through apt-get/aptitude and might need to 
 * libgif-dev
 * libtiff-dev
 * libm17n-dev
-* libpng12-dev or newer (e.g. libpng-dev in Debian SID is as of 2016-01-16 at version 1.6.26 and works)
+* libpng-dev -- if this doesn't work on older Debian versions (prior to 2016), try libpng12-dev
 * librsvg2-dev
 * libotf-dev
-* libgnutls-dev
+* libgnutls28-dev
 * libxml2-dev -- necessary for the eww-browser
 
 Copy and paste this for easy apt-get lines:
 
 {{{
-autoconf automake libtool texinfo build-essential xorg-dev libgtk2.0-dev libjpeg-dev libncurses5-dev libdbus-1-dev libgif-dev libtiff-dev libm17n-dev libpng12-dev librsvg2-dev libotf-dev libgnutls-dev libxml2-dev
+autoconf automake libtool texinfo build-essential xorg-dev libgtk2.0-dev libjpeg-dev libncurses5-dev libdbus-1-dev libgif-dev libtiff-dev libm17n-dev libpng-dev librsvg2-dev libotf-dev libgnutls28-dev libxml2-dev
 }}}
 
 === Building from the source ===
