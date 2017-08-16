@@ -34,7 +34,7 @@ Lets you select noncontiguous regions with mouse or by regular expression.  Prov
 
 === multi-region.el ===
 
-http://purl.org/NET/wence/multi-region.el -- LawrenceMitchell
+https://github.com/wence-/elisp/blob/master/multi-region.el -- LawrenceMitchell
 
 [new]
 Cool, but I tried (in [[XEmacs]] version) to avoid naroving, which causes
