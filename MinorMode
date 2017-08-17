@@ -36,12 +36,9 @@ Test the value of the mode variable. Example: ##(if delete-selection-mode ...)##
 [new:RobbieMorrison:2012-08-22 12:00 UTC]
 The mode variable might not be known, so you can add this protection:
 <pre>
-(if (boundp 'unknown-mode)
-  (if unknown-mode)
-    ...))
+(if (bound-and-true-p 'unknown-mode)
+    ...)
 </pre>
-
-''Caution'': I am 99% sure of this idiom, but can someone check it and then remove this notice.
 
 [new:rubikitch:2009-02-25 15:15 UTC]
 But some minor modes don't have a variable, e.g., auto-fill-mode. -- [[rubikitch]]
