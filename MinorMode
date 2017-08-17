@@ -36,7 +36,7 @@ Test the value of the mode variable. Example: ##(if delete-selection-mode ...)##
 [new:RobbieMorrison:2012-08-22 12:00 UTC]
 The mode variable might not be known, so you can add this protection:
 <pre>
-(if (bound-and-true-p 'unknown-mode)
+(if (bound-and-true-p unknown-mode)
     ...)
 </pre>
 
