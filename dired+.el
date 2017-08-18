@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.04.09
 ;; Package-Requires: ()
-;; Last-Updated: Fri Jun 30 07:51:17 2017 (-0700)
+;; Last-Updated: Fri Aug 18 14:10:39 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 10338
+;;     Update #: 10354
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -698,6 +698,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/08/18 dadams
+;;     Fixed emacswiki URLs everywhere.  They changed the locations and changed http to https.
 ;; 2017/06/30 dadams
 ;;     Added: diredp-bind-problematic-terminal-keys, diredp-display-graphic-p.
 ;;     Guard bindings of problematic keys with diredp-display-graphic-p & diredp-bind-problematic-terminal-keys.
@@ -1636,7 +1638,7 @@
 (require 'autofit-frame nil t) ;; (no error if not found) fit-frame-if-one-window
 (require 'bookmark+ nil t) ;; (no error if not found)
  ;; bmkp-autofile-add-tags, bmkp-autofile-remove-tags, bmkp-autofile-set, bmkp-copied-tags,
- ;; bmkp-current-bookmark-file, bmkp-empty-file, bmkp-get-autofile-bookmark,
+ ;; bmkp-current-bookmark-file, bmkp-describe-bookmark, bmkp-empty-file, bmkp-get-autofile-bookmark,
  ;; bmkp-get-bookmark-in-alist, bmkp-get-tags, bmkp-read-tag-completing,
  ;; bmkp-read-tags-completing, bmkp-refresh/rebuild-menu-list, bmkp-remove-all-tags,
  ;; bmkp-same-file-p, bmkp-set-bookmark-file-bookmark, bmkp-set-sequence-bookmark,
@@ -1757,11 +1759,11 @@ dired+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/dired+.el")
+          "https://www.emacswiki.org/emacs/dired+.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/DiredPlus")
+          "https://www.emacswiki.org/emacs/DiredPlus")
   :link '(emacs-commentary-link :tag "Commentary" "dired+"))
  
 ;;; Variables
@@ -6219,7 +6221,6 @@ You need library `bookmark+.el' to use this command."
                           (and fname  (bmkp-get-autofile-bookmark fname))))
                    "autofile")))
 
-
 (when (and (fboundp 'bmkp-get-autofile-bookmark) ; Defined in `bookmark+-1.el'.
            (fboundp 'hlt-highlight-region)) ; Defined in `highlight.el'.
 
@@ -6970,7 +6971,7 @@ choice described for `diredp-do-grep'."
     (setq buffer-read-only  t)))
 
 ;; The next two commands were originally taken from Emacs Wiki, page WThirtyTwoBrowseNetDrives:
-;; http://www.emacswiki.org/emacs/WThirtyTwoBrowseNetDrives.  They are referred to there as
+;; https://www.emacswiki.org/emacs/WThirtyTwoBrowseNetDrives.  They are referred to there as
 ;; commands `show-net-connections' and `netdir'.  I am hoping that the contributor (anonymous)
 ;; does not mind my adapting them and including them in `Dired+'.
 
@@ -9528,7 +9529,7 @@ For just the latter, use \\<dired-mode-map>`\\[diredp-dired-plus-help]'."
            (get 'help-xref 'button-category-symbol)) ; `button.el'
   (define-button-type 'diredp-help-button
       :supertype 'help-xref
-      'help-function #'(lambda () (browse-url "http://www.emacswiki.org/DiredPlus"))
+      'help-function #'(lambda () (browse-url "https://www.emacswiki.org/emacs/DiredPlus"))
       'help-echo
       (purecopy "mouse-2, RET: Dired+ documentation on the Emacs Wiki (requires \
 Internet access)")))
