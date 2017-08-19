@@ -21,7 +21,7 @@ These are the three main sources for Emacs packages:
 
 These repositories are connected to alternative Emacs packaging systems.
 * [[DELPS]] -- Distributed Emacs Lisp Package System used by the alternate package manager [[Epackage]].  Install [[Git]] packaged repositories.
-* [[Emacsmirror]] -- Collects packages and distributes them as [[Git]] repositories.
+* [[Emacsmirror]] -- Collects packages and distributes them as [[Git]] repositories, browsable with [https://github.com/emacscollective/epkg epkg], installable via [https://github.com/emacscollective/borg Borg] (recommended to combine with [https://github.com/tarsius/auto-compile auto-compile], and [[UsePackage]] for configuration).
 * [[el-get]] -- one regularly sees packages that claim to be available via el-get, but not via any ELPA-compatible repository.
 
 
