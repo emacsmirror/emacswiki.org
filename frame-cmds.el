@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Sat May  6 09:46:33 2017 (-0700)
+;; Last-Updated: Sat Aug 19 13:53:49 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 3070
+;;     Update #: 3072
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
@@ -283,6 +283,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/08/19 dadams
+;;     delete-window: Use with-selected-window for Emacs 22+.
 ;; 2017/05/06 dadams
 ;;     maximize-frame: Sidestep nil frame parameters.
 ;; 2017/02/07 dadams
@@ -809,9 +811,13 @@ A negative prefix arg deiconifies all iconified frames."
 ;; If WINDOW is the only one in its frame, `delete-frame'.
 (defadvice delete-window (around delete-frame-if-one-win activate)
   "If WINDOW is the only one in its frame, then `delete-frame' too."
-  (save-current-buffer
-    (select-window (or (ad-get-arg 0)  (selected-window)))
-    (if (one-window-p t) (delete-frame) ad-do-it)))
+  (if (fboundp 'with-selected-window)   ; Emacs 22+
+      (with-selected-window
+          (or (ad-get-arg 0)  (selected-window))
+        (if (one-window-p t) (delete-frame) ad-do-it))
+    (save-current-buffer
+      (select-window (or (ad-get-arg 0)  (selected-window)))
+      (if (one-window-p t) (delete-frame) ad-do-it))))
 
 ;;;###autoload
 (defun delete-windows-for (&optional buffer)
