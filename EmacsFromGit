@@ -37,9 +37,8 @@ git clone git://git.savannah.gnu.org/emacs/elpa.git
 == Also see ==
 
 * [[Git]] -- for information about Git and various front ends and extensions
-* GitForEmacsDevs and GitQuickStartForEmacsDevs -- for how to work on Emacs once the switch is made
-* BzrForEmacsDevs and BzrQuickStartForEmacsDevs -- for what you are currently expected to do
-* BuildingEmacs -- for how to build Emacs once you have fetched it using Git or Bazaar
+* GitForEmacsDevs and GitQuickStartForEmacsDevs -- for how to work on Emacs
+* BuildingEmacs -- for how to build Emacs once you have the sources
 
 ----
 [[Git]] CategoryVersionControl
