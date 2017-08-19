@@ -34,10 +34,6 @@ You can clone (download) the repository with this command:
 git clone git://git.savannah.gnu.org/emacs/elpa.git
 </pre>
 
-== Alternatives ==
-
-A mirror of the old Bazaar repository (please check to see if this is now pegged to git) available at http://repo.or.cz/w/emacs.git and a mirror of that mirror at https://github.com/emacs-mirror/emacs.
-
 == Also see ==
 
 * [[Git]] -- for information about Git and various front ends and extensions
