@@ -1,6 +1,6 @@
 //Jambunathan K// is an Emacs user.  He has authored the following Emacs lisp files.  
 
-; [[http://orgmode.org/w/?p=org-mode.git;a=blob_plain;f=lisp/ox-odt.el  ox-odt.el]]:  Export Org mode files to OpenDocumentText format. [[https://github.com/kjambunathan/org-mode-ox-odt His authoritative //fork// on GitHub]], improves the stock exporter in very many useful ways. 
+; [[http://orgmode.org/w/?p=org-mode.git;a=blob_plain;f=lisp/ox-odt.el  ox-odt.el]]:  Export Org mode files to OpenDocumentText format. [[https://github.com/kjambunathan/org-mode-ox-odt His authoritative //fork// on GitHub]][sup][[https://www.reddit.com/r/orgmode/comments/6q25qb/i_have_started_working_on_orgmode_odt_exporter/dkv0qwy/?context=2  (faq)]][/sup] improves the stock exporter in very many useful ways. 
 ; [[https://github.com/kjambunathan/fontmenu fontmenu.el]]: Examine how a text is rendered in different fonts.  (**Note**: This file works as documented on Emacs 24.5.1. But it is broken on Emacs 25.1.1.  See [[https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=845754 Bug#845754]])
 
 
