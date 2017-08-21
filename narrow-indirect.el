@@ -8,11 +8,11 @@
 ;; Created: Sun May 11 08:05:59 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 09:21:47 2017 (-0800)
+;; Last-Updated: Sun Aug 20 17:47:00 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 204
+;;     Update #: 205
 ;; URL: https://www.emacswiki.org/emacs/download/narrow-indirect.el
-;; Doc URL: http://www.emacswiki.org/NarrowIndirect
+;; Doc URL: https://www.emacswiki.org/emacs/NarrowIndirect
 ;; Keywords: narrow indirect buffer clone view multiple-modes
 ;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
 ;;
@@ -180,9 +180,9 @@
 narrow-indirect.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
-  :link '(url-link :tag "Other Libraries by Drew" "http://www.emacswiki.org/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/narrow-indirect.el")
-  :link '(url-link :tag "Description" "http://www.emacswiki.org/NarrowIndirect")
+  :link '(url-link :tag "Other Libraries by Drew" "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/narrow-indirect.el")
+  :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/NarrowIndirect")
   :link '(emacs-commentary-link :tag "Commentary" "narrow-indirect"))
 
 (defcustom ni-narrowed-buf-name-max 60
