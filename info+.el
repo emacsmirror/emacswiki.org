@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Aug 10 11:24:32 2017 (-0700)
+;; Last-Updated: Tue Aug 22 15:57:39 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 6111
+;;     Update #: 6126
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -84,8 +84,8 @@
 ;;    `Info-toggle-fontify-emphasis',
 ;;    `Info-toggle-fontify-quotations',
 ;;    `Info-toggle-fontify-single-quote',
-;;    `Info-toggle-node-access-invokes-bookmark', `Info-url-for-node',
-;;    `Info-virtual-book'.
+;;    `Info-toggle-node-access-invokes-bookmark' (Emacs 24.4+),
+;;    `Info-url-for-node', `Info-virtual-book'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -108,7 +108,7 @@
 ;;    `Info-fontify-emphasis-flag', `Info-fontify-quotations-flag',
 ;;    `Info-fontify-reference-items-flag',
 ;;    `Info-fontify-single-quote-flag',
-;;    `Info-node-access-invokes-bookmark-flag',
+;;    `Info-node-access-invokes-bookmark-flag' (Emacs 24.4+),
 ;;    `Info-saved-history-file' (Emacs 24.4+), `Info-saved-nodes',
 ;;    `Info-subtree-separator'.
 ;;
@@ -178,7 +178,7 @@
 ;;     2. If key's command not found, then `Info-search's for key
 ;;        sequence in text and displays message about repeating.
 ;;  `Info-goto-node' - Respect option
-;;     `Info-node-access-invokes-bookmark-flag' (Emacs 24.2+).
+;;     `Info-node-access-invokes-bookmark-flag' (Emacs 24.4+).
 ;;  `Info-history' - A prefix arg clears the history.
 ;;  `Info-insert-dir' -
 ;;     Added optional arg NOMSG to inhibit showing progress msgs.
@@ -414,6 +414,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/08/22 dadams
+;;     Info-node-access-invokes-bookmark-flag, Info-toggle-node-access-invokes-bookmark, Info-goto-node advice:
+;;       Reserve for Emacs 24.4+.
 ;; 2017/08/10 dadams
 ;;     Info-goto-node: Define it for Emacs 23 also.
 ;;     Info-mode-menu: Add menu items for Info-toggle-node-access-invokes-bookmark, Info-toggle-fontify-bookmarked-xrefs.
@@ -1134,9 +1137,11 @@ Note that any value can be problematic for some Info text - see
   "*Non-nil means call `fit-frame' on Info buffer."
   :type 'boolean :group 'Info-Plus :group 'Fit-Frame)
 
-;;;###autoload
-(defcustom Info-node-access-invokes-bookmark-flag t
-  "*Non-nil means invoke the bookmark when you access an Info node.
+(when (and (require 'bookmark+ nil t)   ; Emacs 24.4+
+           (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3))))
+
+  (defcustom Info-node-access-invokes-bookmark-flag t
+    "*Non-nil means invoke the bookmark when you access an Info node.
 This applies to Info bookmarks whose names correspond to the default
 name.  This is normally the full node name, `(MANUAL) NODE', where
 MANUAL is the lowercase name of the Info manual.  For example, node
@@ -1145,7 +1150,9 @@ bookmark must have that same name.
 
 This automatic bookmark invocation can be useful to update the
 bookmark data, such as the number of visits to the node."
-  :type 'boolean :group 'Info-Plus)
+    :type 'boolean :group 'Info-Plus)
+
+  )
 
 ;;;###autoload
 (defcustom Info-fontify-angle-bracketed-flag t
@@ -1445,7 +1452,9 @@ line from non-nil `Info-use-header-line'."
 (make-obsolete 'Info-toggle-breadcrumbs-in-header-line 'Info-toggle-breadcrumbs-in-header "2014/03/04")
 
 
-(defun Info-toggle-node-access-invokes-bookmark (&optional msgp)
+(when (boundp 'Info-node-access-invokes-bookmark-flag) ; Emacs 24.4+
+
+  (defun Info-toggle-node-access-invokes-bookmark (&optional msgp)
     "Toggle option `Info-node-access-invokes-bookmark-flag'."
     (interactive "p")
     (setq Info-node-access-invokes-bookmark-flag  (not Info-node-access-invokes-bookmark-flag))
@@ -1456,6 +1465,8 @@ line from non-nil `Info-use-header-line'."
         (Info-fontify-node))
       (when msgp (message "`Info-node-access-invokes-bookmark-flag' is now %s"
                           (if Info-node-access-invokes-bookmark-flag 'ON 'OFF)))))
+
+  )
 
 (when (and (require 'bookmark+ nil t) ; Emacs 24.2+ (do not bother for prior)
            (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 1))))
@@ -2013,7 +2024,7 @@ candidates."
 ;;
 ;; Respect option `Info-node-access-invokes-bookmark-flag'.
 ;;
-(when (require 'bookmark+ nil t)
+(when (boundp 'Info-node-access-invokes-bookmark-flag) ; Emacs 24.4+
 
   (defadvice Info-goto-node (around bmkp-invoke-Info-bookmark activate)
     "Respect option `Info-node-access-invokes-bookmark-flag'.
