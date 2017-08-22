@@ -8,7 +8,7 @@ Mu uses ComintMode to do its job.  This has the added benefit of providing you w
 
 Before you can open new connections, you must customize `mu-worlds'.  As soon as you have done that, use `mu-open' to play.
 
-Get it from https://github.com/aidalgol/mu.el
+Get it from https://gitlab.com/aidalgol/mu.el
 
 mu.el was written by AlexSchroeder (still available here: Lisp:mu.el), and [[aidalgol|AidanGauland]] forked it in 2013.
 
