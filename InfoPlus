@@ -1,5 +1,8 @@
 Library <tt>[[info+.el]]</tt> extends the standard Emacs library ##info.el## in several ways.  '''[::Info+]''' provides:
 
+
+
+
 [:bookmarking-enhancements]
 * Association of additional information (metadata) with Info
 nodes.  You do this by ''[[bookmark|bookmarking]]'' the nodes.  Library '''[[Bookmark+]]'''
@@ -53,7 +56,7 @@ much you have visited them.
 
 
 
-
+[:editable-outline-TOCs]
 * ''Editable, outline-enabled tables of contents'' (TOCs).  Command
 '''`Info-toc-outline'''' (bound to '''`O'''') opens a separate Info buffer
 showing the table of contents (TOC).  This is similar to the
