@@ -1,0 +1,8 @@
+This is a nice addition to emacs. I had difficulty getting it to work initially because emacs could not find mogrify.  This was because of the setting of the variable eimp-mogrify-program.  eimp.el describes the variable as:
+
+"Name of mogrify program. Should be in PATH."
+
+I used <code>(setq eimp-mogrify-program "/usr/local/bin/mogrify")</code> in my .emacs file to get it to work.
+
+-- Anonymous 2017-08-23 14:12 UTC
+
