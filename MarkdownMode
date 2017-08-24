@@ -6,7 +6,7 @@ markdown-mode version 2.2 was released on May 26, 2017.  Release notes can be fo
 
 http://jblevins.org/projects/markdown-mode/rev-2-2
 
-Debian have `elpa-markdown-mode' package.
+Debian offers the `elpa-markdown-mode' package.
 
 On Mac OSX Unix (with [http://brew.sh homebrew] installed), type
 <pre>
