@@ -412,6 +412,17 @@ $ synctex edit -o 38:221.279541:332.136200:foo.pdf -x "emacsclient +%{line} %{in
 
 The emacsclient should be installed and running. You can run it from emacs with the command "M-x server-start".
 
+If you have multiple emacs daemons running, use the following to make sure the emacsclient connects to the correct instance:
+<pre>
+(add-to-list 'TeX-expand-list
+             '("%sn" (lambda () server-name)))
+(add-to-list 'TeX-view-program-list
+             '("Zathura"
+               ("zathura %o"
+                (mode-io-correlate " --synctex-forward %n:0:%b -x \"emacsclient --socket-name=%sn --no-wait +%{line} %{input}\""))
+               "zathura"))
+</pre>
+
 == Synctex and Evince ==
 
 Recent versions of the document reader Evince (since 2.32) have support for backward search; i.e. you press Ctrl
