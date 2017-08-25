@@ -58,7 +58,7 @@
   (setq index 0)
   ;;; create html_files & book_txt after storing existing directories
   (shell-command (concat "mkdir " working_folder "/htm_files"))
-  (shell-command (concat "mkdir " working_folder " /book_text"))
+  (shell-command (concat "mkdir " working_folder "/book_text"))
 
   (while (/= index count)
     ;;;need to find the folders with html docs in it
