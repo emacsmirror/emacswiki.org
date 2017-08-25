@@ -77,7 +77,7 @@ hidden Info text (e.g. markup text such as '''`*note'''' ... '''`::''''
 surrounding links) is kept hidden.
 
 :: Especially when combined with '''`<tt>[[#Info-persist-history-mode]]</tt>'''',
-command '''`<tt>[[#Info-make-node-unvisited]]</tt>'''' ('''`C-x DEL''''), and
+command '''`<tt>[[#Info-change-visited-status]]</tt>'''' ('''`C-x DEL''''), and
 the '''Info+''' [[#bookmarking-enhancements|bookmarking enhancements]] (e.g., special link highlighting and
 persistently tracking the number of visits per node),
 `Info-toc-outline' gives you a way to organize access and
@@ -178,12 +178,9 @@ when you kill an Info [[buffer]].
 (If you also use library '''[[Bookmark+]]''' then you can also bookmark Info nodes, including [[BookmarkPlus#AutomaticInfoBookmarking|automatically]].  This records how many times you have visited each node and when you last did so.)
 
 
-[:Info-make-node-unvisited]
-** '''`Info-make-node-unvisited'''' (bound to '''`C-x DEL'''') -- Reset the
-visited status of a node to unvisited.  Useful if you use
-'''`Info-fontify-visited-nodes'''' to show you which nodes you have
-visited and you want to consider that you have not yet visited
-some.
+[:Info-change-visited-status]
+** '''`Info-change-visited-status'''' (bound to '''`C-x DEL'''') -- Toggle or set the visited status of the node at [[point]] or the nodes in the active [[region]].  Useful if you use
+'''`Info-fontify-visited-nodes'''' to show you which nodes you have visited.  No prefix arg: toggle.  Non-negative prefix arg: set to visited.  Negative prefix arg: set to unvisited.
 
 
 
