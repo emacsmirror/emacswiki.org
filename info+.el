@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Aug 22 19:36:14 2017 (-0700)
+;; Last-Updated: Fri Aug 25 09:22:11 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 6181
+;;     Update #: 6204
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -69,10 +69,11 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `Info-breadcrumbs-in-mode-line-mode', `Info-describe-bookmark'
-;;    (Emacs 24.2+), `Info-follow-nearest-node-new-window',
-;;    `Info-goto-node-web', `Info-history-clear',
-;;    `Info-make-node-unvisited', `info-manual',
+;;    `Info-breadcrumbs-in-mode-line-mode',
+;;    `Info-change-visited-status' (Emacs 24+),
+;;    `Info-describe-bookmark' (Emacs 24.2+),
+;;    `Info-follow-nearest-node-new-window', `Info-goto-node-web',
+;;    `Info-history-clear', `Info-make-node-unvisited', `info-manual',
 ;;    `Info-merge-subnodes',
 ;;    `Info-mouse-follow-nearest-node-new-window',
 ;;    `Info-outline-demote', `Info-outline-promote',
@@ -277,7 +278,7 @@
 ;;    as `*note'...`::' surrounding links) is kept hidden.
 ;;
 ;;    Especially when combined with `Info-persist-history-mode',
-;;    command `Info-make-node-unvisited' (`C-x DEL', see below), and
+;;    command `Info-change-visited-status' (`C-x DEL', see below), and
 ;;    the Info+ bookmarking enhancements (e.g., special link
 ;;    highlighting and persistently tracking the number of visits per
 ;;    node), `Info-toc-outline' gives you a way to organize access and
@@ -362,11 +363,12 @@
 ;;      nodes, including automatically.  This records how many times
 ;;      you have visited each node and when you last did so.)
 ;;
-;;    - `Info-make-node-unvisited' (bound to `C-x DEL') - Reset the
-;;      visited status of a node to unvisited.  Useful if you use
+;;    - `Info-change-visited-status' (bound to `C-x DEL') - Toggle or
+;;      set the visited status of the node at point or the nodes in
+;;      the active region.  Useful if you use
 ;;      `Info-fontify-visited-nodes' to show you which nodes you have
-;;      visited and you want to consider that you have not yet visited
-;;      some.
+;;      visited.  No prefix arg: toggle.  Non-negative prefix arg: set
+;;      to visited.  Negative prefix arg: set to unvisited.
 ;;
 ;;    - `Info-save-current-node' (bound to `.') – Save the name of the
 ;;      current node to list `Info-saved-nodes', for use by `v'
@@ -451,6 +453,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/08/25 dadams
+;;     Added: Info-change-visited-status.  Bound to `C-x DEL (instead of Info-make-node-unvisited).
+;;     Info-node-name-at-point: Replace newline chars by spaces.
 ;; 2017/08/22 dadams
 ;;     Added: Info-toc-outline, Info-outline-demote, Info-outline-promote, Info-toc-outline-no-redundancy-flag,
 ;;            Info-toc-outline-find-node, Info-toc-outline-map, Info-toc-outline-refontify-links, redefinition of
@@ -965,7 +970,7 @@
 (define-key Info-mode-map "G"               'Info-goto-node-web)
 (define-key Info-mode-map "O"               'Info-toc-outline)
 (define-key Info-mode-map "v"               'Info-virtual-book)
-(define-key Info-mode-map (kbd "C-x DEL")   'Info-make-node-unvisited)
+(define-key Info-mode-map (kbd "C-x DEL")   'Info-change-visited-status)
 ;; Mouse back and forward buttons
 (define-key Info-mode-map [S-down-mouse-2]  'Info-mouse-follow-nearest-node-new-window)
 (define-key Info-mode-map [S-return]        'Info-follow-nearest-node-new-window)
@@ -1448,6 +1453,56 @@ If ... contains > then that character must be backslashed.")
 
   )
 
+(when (> emacs-major-version 23) ; Emacs 23 `revert-buffer' invokes a brain-dead `kill-buffer' etc.
+
+  (defun Info-change-visited-status (start end &optional arg)
+    "Change whether the nodes in the region have been visited.
+If the region is not active then act on only the node at point.
+No prefix arg means toggle the visited status of each node.
+A non-negative prefix arg means consider the nodes visited.
+A negative prefix arg means consider the nodes not visited."
+    (interactive "r\nP")
+    (let ((toggle   (not arg))
+          (visit    (and arg  (natnump (prefix-numeric-value arg))))
+          (unvisit  (and arg  (not (natnump (prefix-numeric-value arg)))))
+          (opoint   (point))
+          (omark    (mark))
+          (active   mark-active)
+          (file     (Info-find-file Info-current-file))
+          node visitedp trim)
+      (unless mark-active (setq start  (setq end  (point))))
+      (save-excursion
+        (goto-char start)
+        (while (<= (point) end)
+          (unless (setq node  (Info-node-name-at-point)) (Info-next-reference))
+          (when (setq node  (Info-node-name-at-point))
+            (save-match-data
+              (string-match "\\s *\\((\\s *\\([^\t)]*\\)\\s *)\\s *\\|\\)\\(.*\\)" node)
+              (setq node  (match-string 3 node))
+              (setq trim  (string-match "\\s +\\'" node)))
+            (when trim (setq node  (substring node 0 trim)))
+            (when (or (not node)  (string= node "")) (setq node  "Top"))
+            (setq visitedp  (member (list file node) Info-history-list))
+            (if (and visitedp  (or toggle  unvisit))
+                (setq Info-history-list  (delete (list file node) Info-history-list))
+              (if (and (not visitedp)  (or toggle  visit))
+                  (setq Info-history-list  (cons (list file node) Info-history-list)))))
+          (when (> (forward-line 1) 0) (go-to-char (point-max)))))
+      (when (derived-mode-p 'Info-mode) (revert-buffer nil t))
+      (when omark (set-mark omark))
+      (goto-char opoint)
+      (message (if toggle
+                   "Node visited status toggled"
+                 (format "Node visited status is now %s" (if visit 'VISITED 'UNvisited))))
+      (if (not active)
+          (deactivate-mark)
+        (activate-mark)
+        (setq deactivate-mark  nil))))
+
+  )
+
+;; Not bound.  Use `Info-change-visited-status' instead.
+;;
 ;;;###autoload (autoload 'Info-make-node-unvisited "info+")
 (defun Info-make-node-unvisited (node &optional msgp)
   "Reset the visited status of NODE to unvisited."
@@ -4797,17 +4852,17 @@ currently visited manuals."
 (defun Info-node-name-at-point ()
   "Return the Info node named at point, or nil if none."
   (save-match-data
-    (cond ((Info-get-token (point) "\\*note[ \n\t]+"
-                           "\\*note[ \n\t]+\\([^:]*\\):\\(:\\|[ \n\t]*(\\)?"))
-          ((Info-get-token (point) "\\* +" "\\* +\\([^:]*\\)::")) ; Menu item: node name
-          ((Info-get-token (point) "\\* +" "\\* +\\(.*\\): ") ; menu item: node name or index entry
-           (beginning-of-line)
-           (forward-char 2)
-           (Info-extract-menu-node-name nil (Info-index-node)))
-          ((Info-get-token (point) "Up: " "Up: \\([^,\n\t]*\\)"))
-          ((Info-get-token (point) "Next: " "Next: \\([^,\n\t]*\\)"))
-          ((Info-get-token (point) "File: " "File: \\([^,\n\t]*\\)"))
-          ((Info-get-token (point) "Prev: " "Prev: \\([^,\n\t]*\\)")))))
+    (let ((name  (cond ((Info-get-token (point) "\\*note[ \n\t]+" "\\*note[ \n\t]+\\([^:]*\\):\\(:\\|[ \n\t]*(\\)?"))
+                       ((Info-get-token (point) "\\* +" "\\* +\\([^:]*\\)::")) ; Menu item: node name
+                       ((Info-get-token (point) "\\* +" "\\* +\\(.*\\): ") ; menu item: node name or index entry
+                        (beginning-of-line)
+                        (forward-char 2)
+                        (Info-extract-menu-node-name nil (Info-index-node)))
+                       ((Info-get-token (point) "Up: " "Up: \\([^,\n\t]*\\)"))
+                       ((Info-get-token (point) "Next: " "Next: \\([^,\n\t]*\\)"))
+                       ((Info-get-token (point) "File: " "File: \\([^,\n\t]*\\)"))
+                       ((Info-get-token (point) "Prev: " "Prev: \\([^,\n\t]*\\)")))))
+      (and name  (replace-regexp-in-string "[\n]+" " " name)))))
 
 (when (require 'bookmark+ nil t)
 
