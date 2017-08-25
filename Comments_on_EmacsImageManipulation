@@ -6,3 +6,16 @@ I used <code>(setq eimp-mogrify-program "/usr/local/bin/mogrify")</code> in my .
 
 -- Anonymous 2017-08-23 14:12 UTC
 
+
+----
+
+I've started using eimp to view images in emacs, but often don't want to save the changes it makes when I fit the image to the window.  I also often want to look at the image quickly, kill it, and then delete the associated window.  The following can be added to eimp.el to get this functionality:
+
+<code>(defun eimp-kill ()
+  (interactive)
+  (set-buffer-modified-p nil)
+  (kill-this-buffer)
+  (delete-window)) </code>
+
+-- Anonymous 2017-08-25 14:05 UTC
+
