@@ -75,6 +75,7 @@ Here are some [[Manual:Syntax Descriptors|syntax classes]], also known as charac
   [:graph:]  a visible character
   [:print:]  a visible character plus the space character
   [:space:]  a whitespace character, as defined by the syntax table, but typically [ \t\r\n\v\f], which includes the newline character
+  [:blank:]  a space or tab character
   [:xdigit:] an hexadecimal digit
   [:cntrl:]  a control character
   [:ascii:]  an ascii character
