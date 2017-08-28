@@ -21,3 +21,8 @@ Handling windows and pop-ups:
 * '''`C-x 0'''' - If a window cannot be closed by '''`q'''', it can be closed by '''`C-x 0''''
 * '''`C-x 1'''' - If the window you want to close does not have focus, you can use '''`C-x 1'''' to close all other windows
 * '''`ESC ESC ESC'''' - Similar to '''`C-x 1'''', but closes all other frames too
+
+
+----
+
+CategoryHelp
