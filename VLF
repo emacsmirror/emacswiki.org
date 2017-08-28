@@ -11,9 +11,7 @@ A small hack to View Large Files in Emacs. From the Commentary:
  ;; future:
  ;; ...
 
-Get the code here:
-
-http://elpa.gnu.org/packages/vlf
+More info [http://elpa.gnu.org/packages/vlf.html on ELPA].
 
 [[image:VLFScreenShot]]
 
