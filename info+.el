@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 25 15:37:57 2017 (-0700)
+;; Last-Updated: Mon Aug 28 10:34:16 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 6214
+;;     Update #: 6246
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -72,7 +72,8 @@
 ;;    `Info-breadcrumbs-in-mode-line-mode',
 ;;    `Info-change-visited-status' (Emacs 24+),
 ;;    `Info-describe-bookmark' (Emacs 24.2+),
-;;    `Info-follow-nearest-node-new-window', `Info-goto-node-web',
+;;    `Info-follow-nearest-node-new-window',
+;;    `Info-refontify-toc-outline-region', `Info-goto-node-web',
 ;;    `Info-history-clear', `Info-make-node-unvisited', `info-manual',
 ;;    `Info-merge-subnodes',
 ;;    `Info-mouse-follow-nearest-node-new-window',
@@ -453,6 +454,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/08/28 dadams
+;;     Added: Info-refontify-toc-outline-region.
+;;     Info-refontify-toc-outline-region: Add Info-refontify-toc-outline-region to post-command-hook and bind to C-x M-l.
+;;     Info-toc-outline: Turn off Info-breadcrumbs-in-mode-line-mode in TOC buffer.
+;;     Info-change-visited-status: Typo: go-to-char.
 ;; 2017/08/25 dadams
 ;;     Added: Info-change-visited-status.  Bound to `C-x DEL (instead of Info-make-node-unvisited).
 ;;     Info-node-name-at-point: Replace newline chars by spaces.
@@ -1488,7 +1494,7 @@ A negative prefix arg means consider the nodes not visited."
                 (setq Info-history-list  (delete (list file node) Info-history-list))
               (if (and (not visitedp)  (or toggle  visit))
                   (setq Info-history-list  (cons (list file node) Info-history-list)))))
-          (when (> (forward-line 1) 0) (go-to-char (point-max)))))
+          (when (> (forward-line 1) 0) (goto-char (point-max)))))
       (when (derived-mode-p 'Info-mode) (revert-buffer nil t))
       (when omark (set-mark omark))
       (goto-char opoint)
@@ -1768,6 +1774,7 @@ possible.
       (pop-to-buffer (format "*TOC Outline* (%s)" (file-name-nondirectory Info-current-file)))
     (when (or (not arg)  (eq arg 'clone))
       (clone-buffer (format "*TOC Outline* (%s)" (file-name-nondirectory Info-current-file)) t))
+    (Info-breadcrumbs-in-mode-line-mode -1)
     (setq mark-ring  ()) ;`clone-buffer' causes this to be needed, if `*info*' buffer has no mark.
     (Info-find-node Info-current-file (format "*TOC Outline* (%s)" (file-name-nondirectory Info-current-file)))
     (let ((prev-node  (nth 1 (car Info-history)))
@@ -1790,7 +1797,7 @@ possible.
     (Info-toc-insert (nth 3 (assoc "Top" node-list)) node-list 0 curr-file) ; `Top' nodes
     (unless (bobp)
       (let ((Info-hide-note-references   'hide)
-	    (Info-fontify-visited-nodes  ()))
+	    (Info-fontify-visited-nodes  nil))
 	(setq Info-current-file  filename
               Info-current-node  (format "*TOC Outline* (%s)" (file-name-nondirectory curr-file)))
 	(goto-char (point-min))
@@ -1825,10 +1832,33 @@ possible.
   (outline-minor-mode 1)
   (define-key Info-toc-outline-map [remap outline-promote] 'Info-outline-promote)
   (define-key Info-toc-outline-map [remap outline-demote]  'Info-outline-demote)
+  (define-key Info-toc-outline-map "\C-x\M-l" 'Info-refontify-toc-outline-region)
   (use-local-map Info-toc-outline-map)
   (setq outline-regexp  "[\t]*[*]Note ") ; Include no "^" here.
   (set (make-local-variable 'Info-hide-note-references) 'hide)
+  (add-hook 'post-command-hook 'Info-refontify-toc-outline-region nil 'LOCAL)
   (buffer-enable-undo))
+
+;;;###autoload (autoload 'Info-refontify-toc-outline-region "info+")
+(defun Info-refontify-toc-outline-region (&optional start end forcep)
+  "In Info `*TOC Outline*' buffer, refontify region.
+Interactively, if region is not active or is empty, refontify buffer.
+From Lisp:
+ * Do nothing if not in a `*TOC Outline* buffer or if buffer has not
+   been modified.
+ * START defaults to `point-min', END defaults to `point-max'."
+  (interactive (let* ((regionp  (use-region-p))
+                      (st       (if regionp (region-beginning) (point-min)))
+                      (en       (if regionp (region-end) (point-max))))
+                 (list st en t)))
+  (setq start  (or start  (point-min))
+        end    (or end    (point-max)))
+  (let ((buff  (buffer-name)))
+    (when (or forcep  (and buff
+                           (buffer-modified-p)
+                           (string-match-p "\\`\\*TOC Outline\\* ([^)]+)" buff)
+                           (derived-mode-p 'Info-mode)))
+      (Info-toc-outline-refontify-links start end))))
 
 ;;;###autoload (autoload 'Info-outline-promote "info+")
 (defun Info-outline-promote (&optional which)
@@ -2032,6 +2062,8 @@ refontifies the buffer to hide link prefix `*Note'."
     (skip-chars-backward "\n") ; Hide any empty lines at the end of the node.
     (when (< (1+ (point)) (point-max)) (put-text-property (1+ (point)) (point-max) 'invisible t))
     (set-buffer-modified-p nil)))
+
+
 
 
 ;; Note: This is not super-clean code (it's kind of a hack job).
@@ -2276,7 +2308,7 @@ argument says to include Info nodes recorded as bookmarks."
           (setq nodes  (cdr nodes))))
       (unless (bobp)
         (let ((Info-hide-note-references   'hide)
-              (Info-fontify-visited-nodes  ()))
+              (Info-fontify-visited-nodes  nil))
           (Info-mode)
           (setq Info-current-file  'toc Info-current-node "Top")
           (goto-char (point-min))
