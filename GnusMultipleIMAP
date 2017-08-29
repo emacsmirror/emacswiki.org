@@ -1,40 +1,40 @@
 Get your mail from multiple mailbox at the same time
 
-;; SMTP for GMX & GANDI                                                                                                     
-
-(setq gnus-select-method '(nnimap "gmx"                                                                               
-                                  (nnimap-address "pop.gmx.com")                                                      
-                                  (nnimap-server-port 110)))                                                          
-(setq mail-sources                                                                                                    
-      '((pop :server "pop.gmx.com"                                                                                    
-             :port 110                                                                                                
-             :user "youraccout@gmx.com")))                                                                              
-
-(setq gnus-secondary-select-methods                        
-        '((nnimap "mail.gandi.net"                                    
-                  (nnimap-address "your@account")     
-                  (nnimap-server-port 110))))
-
-(load-library "starttls")                                                                                             
-(setq gnus-select-method '(nntp "news.gmane.org")                                                                     
-      gnus-secondary-select-methods '((nnml ""))                                                                      
-      message-send-mail-function 'smtpmail-send-it                                                                    
-      smtpmail-starttls-credentials '(("mail.gandi.net" 587 nil nil))                                                   
-      smtpmail-auth-credentials '(("mail.gandi.net" 587 "your@account" nil))                                        
-      smtpmail-default-smtp-server "mail.gandi.net"                                                                     
-      smtpmail-smtp-server "mail.gandi.net"                                                                             
-      smtpmail-smtp-service 587                                                                                       
-      user-mail-address "your@account")                                                                           
-                                                                                                                      
-;; Tell gnus which method to use for archives (nnfolder)                                                              
- (setq gnus-message-archive-method                                                                                    
-       '(nnfolder "archive"                                                                                           
-                  (nnfolder-directory   "~/Mail/archive")                                                             
-                  (nnfolder-active-file "~/Mail/archive/active")                                                      
-                  (nnfolder-get-new-mail nil)                                                                         
-                  (nnfolder-inhibit-expiry t)))                                                                       
-;; Tell gnus into which group to store messages                                                                       
- (setq gnus-message-archive-group                                                                                     
-       '((if (message-news-p)                                                                                         
-             "misc-news"                                                                                              
-           (concat "mail." (format-time-string "%Y-%m" (current-time))))))
+    ;; SMTP for GMX & GANDI                                                                                                     
+    
+    (setq gnus-select-method '(nnimap "gmx"
+                                      (nnimap-address "pop.gmx.com")
+                                      (nnimap-server-port 110)))
+    (setq mail-sources
+          '((pop :server "pop.gmx.com"
+                 :port 110
+                 :user "youraccout@gmx.com")))
+    
+    (setq gnus-secondary-select-methods
+          '((nnimap "mail.gandi.net"
+                    (nnimap-address "your@account")
+                    (nnimap-server-port 110))))
+    
+    (load-library "starttls")
+    (setq gnus-select-method '(nntp "news.gmane.org")
+          gnus-secondary-select-methods '((nnml ""))
+          message-send-mail-function 'smtpmail-send-it
+          smtpmail-starttls-credentials '(("mail.gandi.net" 587 nil nil))
+          smtpmail-auth-credentials '(("mail.gandi.net" 587 "your@account" nil))
+          smtpmail-default-smtp-server "mail.gandi.net"
+          smtpmail-smtp-server "mail.gandi.net"
+          smtpmail-smtp-service 587
+          user-mail-address "your@account")
+    
+    ;; Tell gnus which method to use for archives (nnfolder)
+    (setq gnus-message-archive-method
+          '(nnfolder "archive"
+                     (nnfolder-directory   "~/Mail/archive")
+                     (nnfolder-active-file "~/Mail/archive/active")
+                     (nnfolder-get-new-mail nil)
+                     (nnfolder-inhibit-expiry t)))
+    ;; Tell gnus into which group to store messages
+    (setq gnus-message-archive-group
+          '((if (message-news-p)
+                "misc-news"
+              (concat "mail." (format-time-string "%Y-%m" (current-time))))))
