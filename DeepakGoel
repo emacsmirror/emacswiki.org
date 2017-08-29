@@ -50,16 +50,6 @@ JonasBernoulli
 
 ----
 
-On XEmacs:
-
-Fire up xemacs (xemacs21 from debian stable here), and see the help tab at the top right. In XEmacs'
-"Help: About XEmacs" section, xemacs lists contributors, which expands to a "Legion of Contributors to
-XEmacs" page with some 614 lines.. with links to separate pages for each contributor. Not once on any of those pages do they see it fit to mention, even in passing, the person (RMS) who probably wrote a very large percentage (or, for that matter, the organization (FSF) that probably wrote an even larger percentage) of the code?  When you mention the authors of a software, isn't it disingenuous to skip the primary (or, at least, "a major") author? They helpfully mention, "We have no doubt forgotten someone; we apologize!" They also list the various organizations that supported XEmacs, but fail to mention that perhaps the largest code-base was written with support from FSF, or that XEmacs was derived/forked from GNU Emacs. They say instead, "XEmacs is related to GNU Emacs."  Personally, I had been warming to the idea of exploring XEmacs because of various reasons, but this sort of dishonesty turns me off.    (I would be really surprised if it were true that FSF is not a major code contributor for XEmacs.  Judging from xemacs' cvs sources, even after the fork,  many .c files are full of comments like "sync with FSF", and many do say "Original Authorship: FSF [Emacs].)")
--- [[deego]]
-
-
-----
-[[XEmacs]]
 
 
 
