@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Aug 28 10:34:16 2017 (-0700)
+;; Last-Updated: Wed Aug 30 11:03:57 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 6246
+;;     Update #: 6254
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -72,8 +72,7 @@
 ;;    `Info-breadcrumbs-in-mode-line-mode',
 ;;    `Info-change-visited-status' (Emacs 24+),
 ;;    `Info-describe-bookmark' (Emacs 24.2+),
-;;    `Info-follow-nearest-node-new-window',
-;;    `Info-refontify-toc-outline-region', `Info-goto-node-web',
+;;    `Info-follow-nearest-node-new-window', `Info-goto-node-web',
 ;;    `Info-history-clear', `Info-make-node-unvisited', `info-manual',
 ;;    `Info-merge-subnodes',
 ;;    `Info-mouse-follow-nearest-node-new-window',
@@ -88,7 +87,8 @@
 ;;    `Info-toggle-fontify-quotations',
 ;;    `Info-toggle-fontify-single-quote',
 ;;    `Info-toggle-node-access-invokes-bookmark' (Emacs 24.4+),
-;;    `Info-toc-outline', `Info-url-for-node', `Info-virtual-book'.
+;;    `Info-toc-outline', `Info-toc-outline-refontify-region',
+;;    `Info-url-for-node', `Info-virtual-book'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -454,6 +454,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/08/30 dadams
+;;     Renamed: Info-refontify-toc-outline-region to Info-toc-outline-refontify-region.
 ;; 2017/08/28 dadams
 ;;     Added: Info-refontify-toc-outline-region.
 ;;     Info-refontify-toc-outline-region: Add Info-refontify-toc-outline-region to post-command-hook and bind to C-x M-l.
@@ -1759,7 +1761,7 @@ possible.
 * With a plain prefix arg (`C-u'):
 
   Pop to a new TOC buffer, `*TOC Outline* (MANUAL)' (or `*TOC
-  Outline*<N>', N=1,2,3...) for the current manual.
+  Outline*<N> (MANUAL)', N=1,2,3...), for the current MANUAL.
 
 * With any other prefix arg (e.g. `M--'):
 
@@ -1832,15 +1834,15 @@ possible.
   (outline-minor-mode 1)
   (define-key Info-toc-outline-map [remap outline-promote] 'Info-outline-promote)
   (define-key Info-toc-outline-map [remap outline-demote]  'Info-outline-demote)
-  (define-key Info-toc-outline-map "\C-x\M-l" 'Info-refontify-toc-outline-region)
+  (define-key Info-toc-outline-map "\C-x\M-l" 'Info-toc-outline-refontify-region)
   (use-local-map Info-toc-outline-map)
   (setq outline-regexp  "[\t]*[*]Note ") ; Include no "^" here.
   (set (make-local-variable 'Info-hide-note-references) 'hide)
-  (add-hook 'post-command-hook 'Info-refontify-toc-outline-region nil 'LOCAL)
+  (add-hook 'post-command-hook 'Info-toc-outline-refontify-region nil 'LOCAL)
   (buffer-enable-undo))
 
-;;;###autoload (autoload 'Info-refontify-toc-outline-region "info+")
-(defun Info-refontify-toc-outline-region (&optional start end forcep)
+;;;###autoload (autoload 'Info-toc-outline-refontify-region "info+")
+(defun Info-toc-outline-refontify-region (&optional start end forcep)
   "In Info `*TOC Outline*' buffer, refontify region.
 Interactively, if region is not active or is empty, refontify buffer.
 From Lisp:
