@@ -28,6 +28,8 @@ So perhaps you can not compare what adaptive-fill-mode does to what filladapt do
 
 I think filladapt.el needs a bit rewriting to fit into Emacs today.
 
+//What does the above statement refer to? Could there be more details regarding why?//
+
 == Mechanism ==
 
 Filladapt works by matching prefix patterns from <code>filladapt-token-table</code>.  That table has for example <code>//</code> for C++ comments.  Lines with the same prefix, or same multiple prefixes, are considered a paragraph.  You can see this process in action dynamically with <code>filladapt-debug</code>.
