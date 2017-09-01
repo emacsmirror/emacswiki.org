@@ -248,3 +248,14 @@ Does anyone know if twittering mode allows for embedded images (Twitter allows u
 
 -- Anonymous 2017-05-09 11:14 UTC
 
+
+----
+
+I'm getting this error and it will not display icons. If I turn off icons it works fine. Any ideas?
+
+<code>failure: /usr/bin/curl exited abnormally (exit-status=23) for GET http://pbs.twig.com/porfile_images/(random numbers and letters)/pBeeJQDQ_normal.png</code>
+
+Using Emacs 25.2.1
+
+-- irishmac473 2017-09-01 23:05 UTC
+
