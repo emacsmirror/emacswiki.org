@@ -1,3 +1,5 @@
+https://github.com/bastibe/annotate.el provides an annote mode for Emacs.  It can add annotations to arbitrary files without changing the files themselves as they are stored in an external file.
+
 Note: This doesn't exist (as far as I know.)
 
 I really wish I had something that for lack of a better term, I'll call %%AnnotationMode%%.
