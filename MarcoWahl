@@ -10,6 +10,10 @@
 
 == Externalized Brain ==
 
+=== AutoInsertMode ===
+
+AutoInsertMode
+
 === Jump to percentage in buffer ===
 
   M-4 M-< 
