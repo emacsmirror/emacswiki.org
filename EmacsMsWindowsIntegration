@@ -42,6 +42,45 @@ Use Windows command-line commands `ftype' and `assoc':
     assoc .c=CodeFile
     assoc .h=CodeFile
 
+== Explorer Integration RIGHT Klick Options "Emacs open as ..." ==
+
+It is based on tests with Windows10 and Emacs64 25.2. 
+
+Save the following text to a file emacsexplorerintegration.reg and double klick it.
+
+{{{
+Windows Registry Editor Version 5.00
+;; Search and Replace X:\\path\\to\\emacs with the right Path on your system
+[HKEY_CLASSES_ROOT\*\shell]
+
+;; Starts emacs as a daemon. Not necessary if you run it at startup
+[HKEY_CLASSES_ROOT\*\shell\emacsstartdeamon]
+@="&Emacs 1) start daemon"
+"icon"="X:\\path\\to\\emacs\\bin\\emacsclientw.exe"
+[HKEY_CLASSES_ROOT\*\shell\emacsstartdeamon\command]
+@="X:\\path\\to\\emacs\\bin\\runemacs.exe --daemon"
+;; Open in new frame
+[HKEY_CLASSES_ROOT\*\shell\emacsopennewframe]
+@="&Emacs 2a) edit in new Frame"
+"icon"="X:\\path\\to\\emacs\\bin\\emacsclientw.exe"
+[HKEY_CLASSES_ROOT\*\shell\emacsopennewframe\command]
+@="X:\\path\\to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"X:\\path\\to\\emacs\\bin\\emacsclient.exe\" -c -n \"%1\""
+;; open in last active frame
+[HKEY_CLASSES_ROOT\*\shell\emacsopensameframe]
+@="&Emacs 2b) edit in existing Frame"
+"icon"="X:\\path\\to\\emacs\\bin\\emacsclientw.exe"
+[HKEY_CLASSES_ROOT\*\shell\emacsopensameframe\command]
+@="X:\\path\\to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"X:\\path\\to\\emacs\\bin\\emacsclient.exe\" -n \"%1\""
+
+;; 
+[HKEY_CLASSES_ROOT\Directory\shell\emacsopensameframe]
+@="Edit &with Emacs in existing Frame"
+"icon"="X:\\path\\to\\emacs\\bin\\emacsclientw.exe"
+[HKEY_CLASSES_ROOT\Directory\shell\emacsopensameframe\command]
+@="X:\\path\\to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"X:\\path\\to\\emacs\\bin\\emacsclient.exe\" -n \"%1\""
+}}}
+
+You should immediately see the options if you right klick any file in explorer
 
 == Set `emacsclient' as Your Editor ==
 
@@ -97,6 +136,8 @@ Close the ##Properties## dialog and rename your shortcut to just: ##emacs##
 Drag your newly created shortcut to your startbar, or desktop or wherever you wish to have it.
 
 OBS: No need to edit your .emacs file and add server line to it.
+
+
 
 == Send-To Context Menu ==
 Press ##Win+r## and in Run dialog type ##shell:sendto##. Copy your newly created shortcut to emacs client to folder that just opened. This will create an entry in ##send to## context menu so you can right click on any document and choose to open it in Emacs.
