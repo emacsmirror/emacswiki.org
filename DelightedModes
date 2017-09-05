@@ -81,8 +81,9 @@ DelightedPowerLine is a small library implementing this behaviour for PowerLine 
 
 ==Configuration with use-package==
 
-##use-package## supports delight.el so you can also delight modes as part of your package configurations. The following is quoted from https://github.com/jwiegley/use-package :
+The popular [https://github.com/jwiegley/use-package use-package] macro supports delight.el so you can also delight modes as part of your package configurations. The following is quoted from the use-package README file:
 
+[quote]
 delight is invoked with the ##:delight## keyword, which is passed a minor mode symbol, a replacement string or quoted mode-line data (in which case the minor mode symbol is guessed to be the package name with "-mode" appended at the end), both of these, or several lists of both. If no arguments are provided, the default mode name is hidden completely.
 
  ;; Don't show anything for rainbow-mode.
@@ -103,3 +104,4 @@ delight is invoked with the ##:delight## keyword, which is passed a minor mode s
   :delight
   (auto-fill-function " AF")
   (visual-line-mode))
+[/quote]
