@@ -12,6 +12,11 @@ Once up, it would allow the creation and maintenance of notes, which it would sy
 
 Thoughts? -- MichaelWilson
 
+[new:EricPement:2017-09-07 12:25 UTC]
+Google the term "descript.ion"; narrow by adding "file descriptions". Hidden "descript.ion" files were a feature of a popular utility 4DOS, NDOS, and later [[http://www.jpsoft.com|Take Command]]. They allowed a way to [[https://jpsoft.com/help/describe.htm|describe files]] so that the descriptions persisted when the files were copied, renamed, or moved. There are a number of third-party utilities, often Directory mangers or Norton Commander clones, which offered an integrated interface to these files---[[http://www.dopus.com|Directory Opus]] provided a way to edit the "descript.ion" files, though they preferred [[https://www.gpsoft.com.au/help/opus11/index.html#!Documents/File_Descriptions.htm|NTFS comments]] in the Alternate Data Stream. Since you are considering a file annotation system, it would be nice to link it to an existing standard.
+-- EricPement
+
+
 This idea was implemented several different times in the late 90s, culminating in a whole rebranding of Emacs that focused on making a hyperlinked "knowledge database" complete with shadowed annotations and everything (can't remember the name off-hand).  I tried them all, and they were all failures.  In fact, to this day I've never had a good annotation system on any platform. -- JohnWiegley
 
 JohnWiegley - you are talking about [[Hyperbole]] -- TerrenceBrannon
