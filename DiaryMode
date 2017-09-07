@@ -384,7 +384,7 @@ Is it possible to "invert" the meaning of the ampersand (Emacs 21.2)?  That is, 
 
 Thanks to BruceDurlingDotEmacs, I found the answer to my own question: Why aren't my diary entries sorted when they are displayed? -- ats
 
-* The answer: As usual, it's optional. Add the following to .emacs and enjoy a nicely-sorted diary display, even when you mix time and date formats in your diary (N.B.: the doc string for `sort-diary-entries' says that it is obsolete since 23.1, and that you should use `diary-sort-entries' instead; the same goes for `list-diary-entries-hook', which should be replaced by `diary-list-entries-hook'): 
+* The answer: As usual, it's optional. Add the following to .emacs and enjoy a nicely-sorted diary display, even when you mix time and date formats in your diary (N.B.: the doc string for `sort-diary-entries' says that it is obsolete since 23.1, and that you should use `diary-sort-entries' instead; the same goes for `list-diary-entries-hook', which should be replaced with `diary-list-entries-hook'): 
 
     (add-hook 'list-diary-entries-hook 'sort-diary-entries t)
 
