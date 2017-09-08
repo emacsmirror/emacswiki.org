@@ -7,9 +7,13 @@ Use the menu:
 
 This saves the font to .emacs.
 
-Or add it to .emacs directly:
+Optionally, you can add some code to init.el directly:
 
 ##(set-face-attribute 'default nil :font "Andale Mono-12")##
+
+or this, which works quite well for Emacs on Windows:
+
+##(set-face-attribute 'default nil :family "Consolas" :height 110)##
 
 = For older Emacs-versions = 
 
