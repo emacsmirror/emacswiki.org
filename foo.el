@@ -1,4 +1,4 @@
-;;; foo.el --- example file
+;;; foo.el -- example file
 
 ;; this is an example file
 
