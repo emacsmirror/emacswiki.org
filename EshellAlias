@@ -104,6 +104,11 @@ That line takes only 0m0.007s so I don't mind running it each time I open bash.
 
 -- 2.m7.2010 [[DanielClemente]]
 
+… And if you're using zsh, try this cryptic line, it handles all the strange cases with quotes, at least all the ones in my file, and you can debug it by stopping in the intermediate pipes:
+
+    alias | sed 's/^alias //' | sed -E "s/^([^=]+)='(.+?)'$/\1=\2/" | sed "s/'\\\\''/'/g" | sed "s/'\\\\$/'/;" | grep \' | sed -E 's/^([^=]+)=(.+)$/alias \1 \2/' >~/.emacs.d/eshell/alias
+
+-- 10.m9.2017 [[DanielClemente]]
 
 ==Reading directly from ~/.bash_aliases==
 
