@@ -7,6 +7,7 @@ There are several modes to help you track the time spent on various activities a
 * Alan Shutko's [http://web.springies.com/~ats/emacs/project.el|project.el]
 * [s][http://github.com/chrisdone/emacsworktracker/|worktracker.el] - timeclock-alike with helpful ido prompts and emphasis on hitting quick keys for dealing with being interrupted. -- ChrisDone[/s] -- Github page is missing 2016-10-16
 * BufferTimer - Automatically track time spent on projects based on your time spent in each buffer/file/etc.
+* [https://github.com/ensc/tk|ensc/tk] -- daemon which logs buffer + window events into a database plus clients for emacs + awesome
 
 PlannerMode has a quite useful feature to time your tasks using timeclock.
 
