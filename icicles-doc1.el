@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Wed Jul 26 08:39:34 2017 (-0700)
+;; Last-Updated: Sun Sep 10 17:10:48 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 28589
+;;     Update #: 28597
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6844,10 +6844,12 @@
 ;;  That is, you do not need to first type part of a key sequence to
 ;;  use it - you can start with it.  Hit `S-TAB' at any time, and
 ;;  you're completing a key sequence, even if you have not yet hit any
-;;  keys.  This lets you see all key sequences that are available in a
-;;  given context.  For example, in Dired, keys special to that mode
-;;  are included (and are highlighted as local bindings - see
-;;  (@> "Local Bindings and Menu Items Are Highlighted")).
+;;  keys.
+;;
+;;  This lets you see all key sequences that are available in a given
+;;  context.  For example, in Dired, keys special to that mode are
+;;  included (and are highlighted as local bindings - see (@> "Local
+;;  Bindings and Menu Items Are Highlighted")).
 ;;
 ;;  When completing a key sequence, you can type part of a command
 ;;  name, then hit `S-TAB' to apropos-complete against the command
@@ -6993,6 +6995,16 @@
 ;;    `^\.').
 ;;
 ;;  * Cycle to candidate `..'.
+;;
+;;  TIP: During minibuffer completion for something other than a key,
+;;       `S-TAB' does not, of course, initiate key completion - it
+;;       performs apropos completion for the current set of completion
+;;       candidates.  But you can fake it: Use `C-x S-TAB .. RET'.
+;;       That is, use `C-x' (which is OK because Icicles provides some
+;;       minibuffer key bindings with prefix `C-x').  Then hit `S-TAB'
+;;       to see completions of `C-x'.  Then choose the
+;;       pseudo-candidate `..', to go up a level and show all key
+;;       bindings, not just those with prefix `C-x'.
 ;;
 ;;(@* "Local Bindings and Menu Items Are Highlighted")
 ;;  ** Local Bindings and Menu Items Are Highlighted **
