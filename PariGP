@@ -2,13 +2,13 @@
 
 Emacs things related to Pari/GP include
 
-* [http://math.univ-lille1.fr/~ramare/ServeurPerso/GP-PARI/index.html PariEmacs] -- GP script mode and interactive GP sub-process
+* [http://iml.univ-mrs.fr/~ramare/ServeurPerso/GP-PARI/index.html PariEmacs] -- GP script mode and interactive GP sub-process
 * [http://user42.tuxfamily.org/pariemacs/index.html Debian package] of <nowiki>PariEmacs</nowiki>
 * [http://www.ma.utexas.edu/users/villegas/cnt/emacs.html gp.el] -- interactive GP sub-process
 * [http://user42.tuxfamily.org/filladapt-pat/index.html filladapt-pat.el] -- GP <code>\\</code> comment prefix for FillAdapt
 * [http://user42.tuxfamily.org/pari-gp-inline/index.html gp-inline] -- pass GP test lines to <nowiki>PariEmacs</nowiki>
 
-<nowiki>PariEmacs</nowiki> was included with Pari/GP but is now separate.  It has help display using <code>gphelp</code> and a help browser.  <code>gp.el</code> is another interactive mode using ComintMode.  Some function names clash between <nowiki>PariEmacs</nowiki> and <code>gp.el</code>, so can't be used together.
+<nowiki>PariEmacs</nowiki> was included with Pari/GP in the past but is now separate.  It has help display using <code>gphelp</code> and a help browser.  <code>gp.el</code> is another interactive mode using ComintMode.  Some function names clash between <nowiki>PariEmacs</nowiki> and <code>gp.el</code> so can't be used together.
 
 ----
 ComputerAlgebraSystems
