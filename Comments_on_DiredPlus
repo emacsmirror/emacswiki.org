@@ -48,3 +48,14 @@ Is there a way to remove a line from a Dired+ buffer, the way C-x D A adds files
 
 -- user2867994 2017-09-13 13:17 UTC
 
+
+----
+
+@user2867994: 
+
+1. You can use `k' (command `dired-do-kill-lines') to do that. Provide a prefix arg for the number of lines (starting with point), or mark the lines to remove.
+
+2. You can also mark files and dirs in the listing, and then use command command `diredp-omit-marked' to ''omit'' them (also on menu-bar menu `Marks' > `Omit' > `Omit Marked').
+
+-- DrewAdams 2017-09-13 14:32 UTC
+
