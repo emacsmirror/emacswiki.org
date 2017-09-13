@@ -8,9 +8,9 @@
 ;; Created: Sat Jan 19 15:24:48 2013 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 21 16:39:14 2017 (-0800)
+;; Last-Updated: Wed Sep 13 07:49:51 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 373
+;;     Update #: 389
 ;; URL: https://www.emacswiki.org/emacs/download/emacsbug%2b.el
 ;; Keywords: report bug
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -60,6 +60,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/09/13 dadams
+;;     ebp-insert-*: Added optional arg FORCE (prefix arg).
 ;; 2016/02/29 dadams
 ;;     ebp-insert-version: Change field label to Repository version from Bzr revision.
 ;; 2013/01/20 dadams
@@ -152,27 +154,33 @@ your bug report."
   :group 'emacsbug-plus :group 'convenience)
 
 ;;;###autoload
-(defun ebp-insert-all ()
+(defun ebp-insert-all (&optional force)
   "Insert all optional info at point in bug report buffer.
 This is the same as using all of the other `ebp-insert-*' commands.
 It has the same effect as the default value of option
-`ebp-report-emacs-bug-included-fields'."
-  (interactive)
-  (ebp-insert-version)
-  (ebp-insert-settings)
-  (ebp-insert-major-mode)
-  (when (boundp 'minor-mode-list) (ebp-insert-minor-modes))
-  (ebp-insert-recent-input)
-  (ebp-insert-recent-messages)
+`ebp-report-emacs-bug-included-fields'.
+
+When used interactively, a prefix arg is passed to each of the
+`ebp-insert-*' commands, forcing inclusion of all fields, regardless
+of the value of `ebp-report-emacs-bug-included-fields'."
+  (interactive "P")
+  (ebp-insert-version force)
+  (ebp-insert-settings force)
+  (ebp-insert-major-mode force)
+  (when (boundp 'minor-mode-list) (ebp-insert-minor-modes force))
+  (ebp-insert-recent-input force)
+  (ebp-insert-recent-messages force)
   (when (or (> emacs-major-version 23)  (and (= emacs-major-version 23)  (> emacs-minor-version 1)))
-    (ebp-insert-load-path-shadows))
-  (ebp-insert-features))
+    (ebp-insert-load-path-shadows force))
+  (ebp-insert-features force))
 
 ;;;###autoload
-(defun ebp-insert-version ()
-  "Insert Emacs version info at point in bug report buffer."
-  (interactive)
-  (when (and (interactive-p)  (member 'version ebp-report-emacs-bug-included-fields))
+(defun ebp-insert-version (&optional force)
+  "Insert Emacs version info at point in bug report buffer.
+When used interactively, do nothing if `version' is a member of
+`ebp-report-emacs-bug-included-fields', unless you use a prefix arg."
+  (interactive "P")
+  (when (and (interactive-p)  (not force)  (member 'version ebp-report-emacs-bug-included-fields))
     (error "Version info is already included"))
   (insert "\n\nIn " (emacs-version) "\n")
   (when (and (boundp 'emacs-bzr-version)  (stringp emacs-bzr-version))
@@ -193,10 +201,12 @@ It has the same effect as the default value of option
     (fill-region (line-beginning-position -1) (point))))
 
 ;;;###autoload
-(defun ebp-insert-settings ()
-  "Insert important Emacs settings info at point in bug report buffer."
-  (interactive)
-  (when (and (interactive-p)  (member 'settings ebp-report-emacs-bug-included-fields))
+(defun ebp-insert-settings (&optional force)
+  "Insert important Emacs settings info at point in bug report buffer.
+When used interactively, do nothing if `settings' is a member of
+`ebp-report-emacs-bug-included-fields', unless you use a prefix arg."
+  (interactive "P")
+  (when (and (interactive-p)  (not force)  (member 'settings ebp-report-emacs-bug-included-fields))
     (error "Settings info is already included"))
   (insert "Important settings:\n")
   (mapc (lambda (var)
@@ -210,10 +220,14 @@ It has the same effect as the default value of option
   (insert "\n"))
 
 ;;;###autoload
-(defun ebp-insert-major-mode ()
-  "Insert major-mode info at point in bug report buffer."
-  (interactive)
-  (when (and (interactive-p)  (member 'major-mode ebp-report-emacs-bug-included-fields))
+(defun ebp-insert-major-mode (&optional force)
+  "Insert major-mode info at point in bug report buffer.
+When used interactively, do nothing if `major-mode' is a member of
+`ebp-report-emacs-bug-included-fields', unless you use a prefix arg."
+  (interactive "P")
+  (when (and (interactive-p)
+             (not force)
+             (member 'major-mode ebp-report-emacs-bug-included-fields))
     (error "Major-mode info is already included"))
   (insert (format "Major mode: %s\n"
                   (if (fboundp 'format-mode-line)
@@ -223,10 +237,14 @@ It has the same effect as the default value of option
   (insert "\n"))
 
 ;;;###autoload
-(defun ebp-insert-minor-modes ()
-  "Insert info about enabled minor modes at point in bug report buffer."
-  (interactive)
-  (when (and (interactive-p)  (member 'minor-modes ebp-report-emacs-bug-included-fields))
+(defun ebp-insert-minor-modes (&optional force)
+  "Insert info about enabled minor modes at point in bug report buffer.
+When used interactively, do nothing if `minor-modes' is a member of
+`ebp-report-emacs-bug-included-fields', unless you use a prefix arg."
+  (interactive "P")
+  (when (and (interactive-p)
+             (not force)
+             (member 'minor-modes ebp-report-emacs-bug-included-fields))
     (error "Minor-modes info is already included"))
   (insert "Minor modes in effect:\n")
   (dolist (mode  minor-mode-list)
@@ -235,10 +253,14 @@ It has the same effect as the default value of option
   (insert "\n"))
 
 ;;;###autoload
-(defun ebp-insert-recent-input ()
-  "Insert recent input log at point in bug report buffer."
-  (interactive)
-  (when (and (interactive-p)  (member 'recent-input ebp-report-emacs-bug-included-fields))
+(defun ebp-insert-recent-input (&optional force)
+  "Insert recent input log at point in bug report buffer.
+When used interactively, do nothing if `recent-input' is a member of
+`ebp-report-emacs-bug-included-fields', unless you use a prefix arg."
+  (interactive "P")
+  (when (and (interactive-p)
+             (not force)
+             (member 'recent-input ebp-report-emacs-bug-included-fields))
     (error "Recent input info is already included"))
   (insert "Recent input:\n")
   (let ((before-keys  (point)))
@@ -255,10 +277,15 @@ It has the same effect as the default value of option
                         (insert "\n")))))
 
 ;;;###autoload
-(defun ebp-insert-recent-messages ()
-  "Insert log of recent Emacs messages at point in bug report buffer."
-  (interactive)
-  (when (and (interactive-p)  (member 'recent-messages ebp-report-emacs-bug-included-fields))
+(defun ebp-insert-recent-messages (&optional force)
+  "Insert log of recent Emacs messages at point in bug report buffer.
+When used interactively, do nothing if `recent-messages' is a member
+of `ebp-report-emacs-bug-included-fields', unless you use a prefix
+arg."
+  (interactive "P")
+  (when (and (interactive-p)
+             (not force)
+             (member 'recent-messages ebp-report-emacs-bug-included-fields))
     (error "Recent messages are already included"))
   (let ((message-buf  (get-buffer "*Messages*")))
     (when message-buf
@@ -275,10 +302,14 @@ It has the same effect as the default value of option
   (insert "\n"))
 
 ;;;###autoload
-(defun ebp-insert-load-path-shadows ()
-  "Insert info about `load-path' shadows at point in bug report buffer."
-  (interactive)
-  (when (and (interactive-p)  (member 'load-shadows ebp-report-emacs-bug-included-fields))
+(defun ebp-insert-load-path-shadows (&optional force)
+  "Insert info about `load-path' shadows at point in bug report buffer.
+When used interactively, do nothing if `load-shadows' is a member of
+`ebp-report-emacs-bug-included-fields', unless you use a prefix arg."
+  (interactive "P")
+  (when (and (interactive-p)
+             (not force)
+             (member 'load-shadows ebp-report-emacs-bug-included-fields))
     (error "`load-path' shadowing info is already included"))
   (insert "Load-path shadows:\n")
   (let* ((msg      "Checking for load-path shadows...")
@@ -291,10 +322,12 @@ It has the same effect as the default value of option
     (insert (if (zerop (length shadows))  "None found.\n"  shadows))))
 
 ;;;###autoload
-(defun ebp-insert-features ()
-  "Insert the list of loaded features at point in bug report buffer."
-  (interactive)
-  (when (and (interactive-p)  (member 'featuers ebp-report-emacs-bug-included-fields))
+(defun ebp-insert-features (&optional force)
+  "Insert the list of loaded features at point in bug report buffer.
+When used interactively, do nothing if `features' is a member of
+`ebp-report-emacs-bug-included-fields', unless you use a prefix arg."
+  (interactive "P")
+  (when (and (interactive-p)  (not force)  (member 'features ebp-report-emacs-bug-included-fields))
     (error "Loaded-features list is already included"))
   (insert (format "\nFeatures:\n%s\n" features))
   (fill-region (line-beginning-position 0) (point)))
