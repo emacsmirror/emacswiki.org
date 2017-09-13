@@ -11,7 +11,9 @@ Packages at [[http://emacs.naquadah.org/|http://emacs.naquadah.org/]] are no lon
 
 == Ubuntu packages ==
 
-The [[https://launchpad.net/~ubuntu-elisp|“Ubuntu Emacs Lisp” team]] maintain [[https://launchpad.net/~ubuntu-elisp/+archive/ubuntu/ppa|The Official ;-) Ubuntu Emacs Daily Snapshot PPA]]
+The [[https://launchpad.net/~ubuntu-elisp|“Ubuntu Emacs Lisp” team]] maintain [[https://launchpad.net/~ubuntu-elisp/+archive/ubuntu/ppa|The Official ;-) Ubuntu Emacs Daily Snapshot PPA]].
+
+Unofficial packages built from stable releases are available in [[https://launchpad.net/~kelleyk/+archive/ubuntu/emacs|ppa:kelleyk/emacs]].
 
 == Installing from source on Debian and similar ==
 
