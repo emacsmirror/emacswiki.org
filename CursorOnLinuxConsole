@@ -113,6 +113,8 @@ Recompiling the term entry to enable the software cursor works provided I stay o
 I had same problem with two cursors described above, the solution is to tell the kernel not to use hardware cursor (it was foun on http://www.friendlyarm.net/forum/topic/2998). It can be done by passing kernel parameter vt.cur_default=1 on boot up. For LiLo you need to add it to 'append' parameter list in /etc/lilo.conf, for me corresponding line looks like this:
 append=" vt.default_utf8=1 vt.cur_default=1"
 don't forget to put space character at the beginning of param list. Alternatively it may be vt.global_cursor_default=0 (didn't work for me, cursor was invisible when I boot thoughblinking hw cursor appeared again when I switched to X and back). then do #lilo -v and reboot for the change to take effect. -- Bad Blue Bull
+-* update *- unfortunately second cursor appears after all, I can't figure out what exact circumstances are. Now working solution for 80x25 text mode console: give such params to kernel: vt.cur_default=170064 vt.global_cursor_default=1. Underscore cursor still appears after switching from X to tty with Emacs running, but if you switch to another vt with login prompt and then switch back to Emacs then second cursor goes away, it's slightly inconvenient of course but it's working. Meanwhile there's no problem with second cursor when boot in 640x480 video mode.
+
 ----
 Easier if root
 
