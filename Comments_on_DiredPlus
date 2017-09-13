@@ -41,3 +41,10 @@ OK, thanks. Done. https://www.emacswiki.org/emacs/download/dired%2b.el
 
 -- DrewAdams 2016-10-12 21:00 UTC
 
+
+----
+
+Is there a way to remove a line from a Dired+ buffer, the way C-x D A adds files to a Dired+ buffer?
+
+-- user2867994 2017-09-13 13:17 UTC
+
