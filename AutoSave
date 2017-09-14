@@ -12,7 +12,7 @@ By default, auto-save files are stored in the current directory with a file name
     (setq auto-save-file-name-transforms
           `((".*" ,temporary-file-directory t)))
 
-This will all place all auto-saves and [BackupDirectory backups] in the directory pointed to by ##temporary-file-directory## (e.g., ##C:/Temp/## on Windows).
+This will place all auto-saves and [BackupDirectory backups] in the directory pointed to by ##temporary-file-directory## (e.g., ##C:/Temp/## on Windows).
 
 Or even more dramatic:
 
