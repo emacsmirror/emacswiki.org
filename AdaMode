@@ -2,13 +2,11 @@ A MajorMode for editing [WikiPedia:Ada_%28programming_language%29 Ada] programs 
 
 Project page:
 
-* http://stephe-leake.org/emacs/ada-mode/emacs-ada-mode.html
+* http://www.nongnu.org/ada-mode/
 
-The current [::ada-mode] maintainer is StephenLeake,[http://stephe-leake.org/] who maintains the code in GNU Emacs and periodically publishes updated versions on the project page.
+The current [::ada-mode] maintainer is StephenLeake, [http://stephe-leake.org/] who maintains the code in GNU ELPA and periodically publishes updated versions on the project page.
 
-The ada-mode distribution contains gpr-mode.el, a major mode for editing GNAT project files (.gpr).
-
-ElseMode comes with templates for writing Ada source code.
+The ada-mode package also contains gpr-mode.el, a major mode for editing GNAT project files (.gpr).
 
 ----
 CategoryModes
