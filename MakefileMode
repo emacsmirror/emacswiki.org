@@ -1,4 +1,4 @@
-A major mode for editing Makefiles. Part of GNU Emacs and XEmacs.
+A major mode for editing Makefiles. Part of [https://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/progmodes/make-mode.el GNU Emacs] and XEmacs.
 
 Here are things extending <code>makefile-mode</code>,
 
