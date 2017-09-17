@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Wed Jul 26 08:19:05 2017 (-0700)
+;; Last-Updated: Sun Sep 17 09:36:04 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 15227
+;;     Update #: 15238
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7355,8 +7355,8 @@ candidates."
       (setq s1  (icicle-upcase s1)
             s2  (icicle-upcase s2)))
     (or (and s1-special  (not s2-special))
-        (and s1-special  s2-special  (icicle-case-string-less-p s1 s2))
-        (and (not s1-special)  (not s2-special)  (icicle-case-string-less-p s1 s2)))))
+        (and (not s1-special)  (not s2-special)  (icicle-case-string-less-p s1 s2))
+        (and      s1-special        s2-special   (icicle-case-string-less-p s1 s2)))))
 
 (defun icicle-extra-candidates-first-p (s1 s2)
   "Non-nil if S1 is an extra candidate and S2 is not or S1<S2 (alphabet).
@@ -8515,6 +8515,14 @@ face `icicle-special-candidate'."
       (and (stringp candidate)
            (stringp icicle-special-candidate-regexp)
            (icicle-string-match-p icicle-special-candidate-regexp candidate))
+      ;; UGLY hack.  Unfortunately, it is `icicle-display-candidates-in-Completions' that puts face
+      ;; `icicle-special-candidate' on elements of `icicle-completion-candidates', and it is called
+      ;; AFTER `icicle-(prefix|apropos)-candidates' is called, and it is there that sorting is done.
+      (and (stringp candidate)
+           (let ((symb   (intern-soft candidate))
+                 (alist  (or icicle-candidates-alist  icicle-complete-keys-alist)))
+             (and symb  (assq symb alist)  (get symb 'icicle-special-candidate))))
+      ;; Keep this anyway, at least for now.
       (and (stringp candidate)
            (let ((fprop  (get-text-property 0 'face candidate)))
              (if (consp fprop)
