@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Fri Aug 11 10:10:42 2017 (-0700)
+;; Last-Updated: Sun Sep 17 09:42:12 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 11731
+;;     Update #: 11734
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2283,6 +2283,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2017/09/17 dadams
+;;     icicle-special-candidate-p:
+;;       If string with no *special* face, test its symbol in alist.  Fixes old sorting bug with
+;;       icicle-special-candidates-first-p.
 ;; 2017/06/25 dadams
 ;;     Added: icicle-custom-rogue-p.
 ;; 2017/01/15 dadams
