@@ -379,6 +379,52 @@ input using completion.  And you can of course use [[progressive completion]] to
 `M-S-TAB' is a great way to see what they are in any given
 context.
 
+Here are some screenshots taken after `M-x', with local key bindings sorted first.
+
+The first (shrunk), shows all of the local bindings. As you can see, there are '''lots''' of them.
+
+[[image:IciclesKeyCompsMiniAllLocal]]
+
+The rest show the matches you see if you type some text in the minibuffer: 
+
+Cycling commands -- match ''<tt>next</tt>'':
+
+[[image:IciclesKeyCompsMiniMatchNext]]
+
+
+Help commands -- match ''<tt>help</tt>'':
+
+[[image:IciclesKeyCompsMiniMatchHelp]]
+
+
+Toggle commands -- match ''<tt>toggle</tt>'':
+
+[[image:IciclesKeyCompsMiniMatchToggle]]
+
+
+Completion commands -- match ''<tt>complete</tt>'':
+
+[[image:IciclesKeyCompsMiniMatchComplete]]
+
+
+Control-Meta prefix -- match ''<tt>C-M-</tt>'':
+
+[[image:IciclesKeyCompsMiniMatchCM]]
+
+
+Meta-key prefix -- apropos-match ''<tt>^M-</tt>'':
+
+[[image:IciclesKeyCompsMiniMatchM]]
+
+
+Alternative action commands -- match ''<tt>C-S-</tt>'':
+
+[[image:IciclesKeyCompsMiniMatchCS]]
+
+
+Candidate action commands -- match ''<tt>candidate</tt>'' but not ''<tt>next</tt>'' and not ''<tt>previous</tt>'' (progressive completion):
+
+[[image:IciclesKeyCompsMiniMatchCandidateOnly]]
 
 
 
