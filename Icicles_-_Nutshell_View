@@ -16,7 +16,7 @@ Load library '''<tt>[[icicles.el]]</tt>''', turn on ''Icicle'' mode, and you're 
 Beyond that, the most important thing to know about '''Icicles''' is that you can get help on ''Icicle'' mode during [[minibuffer]] input.  You can do that by using item '''Help''' of the [[menu bar]] '''Icicles''' menu or '''Minibuf''' menu, or by hitting '''`##M-?##'''' (`icicle-minibuffer-help').
 
 In addition to `##M-?##', you can get help on all of the ''keys'' that
-Icicles binds when you are in the ''minibuffer''.  This is important,
+'''Icicles''' binds when you are in the ''minibuffer''.  This is important,
 particularly during ''[[completion]]'', because keys are available that
 change the behavior of completion or that provide additional help
 on completion candidates.  To see the keys bound in the
@@ -25,6 +25,10 @@ minibuffer, so you can use it also as an entry point to executing
 commands whose keys or names you don't recall.  (If your window
 manager steals `M-S-TAB' then try '''`ESC S-TAB'''' or customize [[option]]
 '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys-for-minibuffer|icicle-key-complete-keys-for-minibuffer]]</tt>''''.)
+
+So ''just remember those two keys'', '''`##M-?##''' and '''`M-S-TAB'''', to be able
+to remind yourself about all of the crazy stuff that '''Icicles''' lets
+you do in the minibuffer.
 
 You now know enough to use '''Icicles'''. If you have doc-phobia or are easily overwhelmed by explanations, then ''read no more'' -- just try it!  
 
