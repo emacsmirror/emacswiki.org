@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Sep 17 10:14:28 2017 (-0700)
+;; Last-Updated: Sun Sep 17 13:50:12 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 28601
+;;     Update #: 28609
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -7005,16 +7005,6 @@
 ;;
 ;;  * Cycle to candidate `..'.
 ;;
-;;  TIP: During minibuffer completion for something other than a key,
-;;       `S-TAB' does not, of course, initiate key completion - it
-;;       performs apropos completion for the current set of completion
-;;       candidates.  But you can fake it: Use `C-x S-TAB .. RET'.
-;;       That is, use `C-x' (which is OK because Icicles provides some
-;;       minibuffer key bindings with prefix `C-x').  Then hit `S-TAB'
-;;       to see completions of `C-x'.  Then choose the
-;;       pseudo-candidate `..', to go up a level and show all key
-;;       bindings, not just those with prefix `C-x'.
-;;
 ;;(@* "Local Bindings and Menu Items Are Highlighted")
 ;;  ** Local Bindings and Menu Items Are Highlighted **
 ;;
@@ -7171,6 +7161,13 @@
 ;;  the minibuffer: It is actually the keys defined by option
 ;;  `icicle-key-complete-keys-for-minibuffer' that are used -
 ;;  `M-S-TAB' is just the key used by default.
+;;
+;;  `M-S-TAB' works in any minibuffer, whether or not it is reading
+;;  input using completion.  And you can of course use progressive
+;;  completion to pare down the set of matches.  There are lots of
+;;  Icicles minibuffer keys - too many for most people to remember.
+;;  `M-S-TAB' is a great way to see what they are in any given
+;;  context.
 ;;
 ;;(@* "Three-Key Emacs")
 ;;  ** Three-Key Emacs **
