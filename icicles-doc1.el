@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Sep 10 17:10:48 2017 (-0700)
+;; Last-Updated: Sun Sep 17 10:14:28 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 28597
+;;     Update #: 28601
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -504,11 +504,20 @@
 ;;  can do that by using item Help of the menu-bar Icicles menu or
 ;;  Minibuf menu, or by hitting `M-?' (`icicle-minibuffer-help').
 ;;
-;;  (To see the keys that are bound when you are in the minibuffer,
-;;  you can also use `M-S-TAB', which completes keys in the
-;;  minibuffer.  If your window manager steals `M-S-TAB' then try `ESC
-;;  S-TAB' or customize option
+;;  In addition to `M-?', you can get help on all of the keys that
+;;  Icicles binds when you are in the minibuffer.  This is important,
+;;  particularly during completion, because keys are available that
+;;  change the behavior of completion or that provide additional help
+;;  on completion candidates.  To see the keys bound in the
+;;  minibuffer, use `M-S-TAB'.  This actually *completes* keys in the
+;;  minibuffer, so you can use it also as an entry point to executing
+;;  commands whose keys or names you don't recall.  (If your window
+;;  manager steals `M-S-TAB' then try `ESC S-TAB' or customize option
 ;;  `icicle-key-complete-keys-for-minibuffer'.)
+;;
+;;  So just remember those two keys, `M-?' and `M-S-TAB', to be able
+;;  to remind yourself about all of the crazy stuff that Icicles lets
+;;  you do in the minibuffer.
 ;;
 ;;  You now know enough to use Icicles.  If you have doc-phobia or are
 ;;  easily overwhelmed by explanations, then *read no more* - just try
