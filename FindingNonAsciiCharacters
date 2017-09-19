@@ -1,7 +1,7 @@
 Occasionally, you may have a big file which refuses to save as ASCII.
 Here is how to find the non-ASCII character.
 
-The recommended way to search for non-ASCII characters is to use the regexp <code>[[:nonascii:]]</code>.  
+The recommended way to search for non-ASCII characters is to use the regexp '''<code>[[:nonascii:]]</code>'''.  (If you have Emacs 20 or earlier, you can use the regexp <tt>[^\000-\177]</tt> in code. Interactively, you can use `##C-M-s [ ^ C-q 0 0 0 RET - C-q 1 7 7 RET ]##'.)
 
 You can also use this function which takes advantage of the char-charset function.  This probably only works in GnuEmacs, fixes for [[XEmacs]] welcome.
 
