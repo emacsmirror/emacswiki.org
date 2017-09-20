@@ -3,7 +3,7 @@ This page lists major modes used to edit data.
 * CsvMode -- comma separated files, <code>.csv</code>
 * MoMode -- gettext <code>.mo</code> compiled message catalogues
 * YamlMode -- YAML <code>.yml</code> files
-
+* X12Mode -- X12 data format
 ----
 CategoryModes
 CategoryData
