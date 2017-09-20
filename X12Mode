@@ -1,4 +1,4 @@
 = x12-mode: X12 Editing mode =
 
-The X12 editing mode simplifies editing data files in X12 format with colorization, navigation, segmentation, etc. - see [http://x12-mode.sourceforge.net documentation]. You can read installation instructions there or directly [https://sourceforge.net/projects/x12-mode/files/x12-mode/1.0/x12-mode.el/download download] the Lisp source from [https://sourceforge.net/projects/x12-mode SourceForge], where project is hosted.
+The X12 editing mode simplifies editing data files in X12 format with colorization, navigation, segment splitting, etc. - see [http://x12-mode.sourceforge.net documentation]. You can read installation instructions there or directly [https://sourceforge.net/projects/x12-mode/files/x12-mode/1.0/x12-mode.el/download download] the Lisp source from [https://sourceforge.net/projects/x12-mode SourceForge], where project is hosted.
 
