@@ -160,6 +160,7 @@ Other pages (could this please be split in major and minor modes?):
 * WorklogMode
 * WrapMode -- word wrapping like typical word processors 
 * WriteOrDieMode -- Minor mode emulating some of the behaviour from [http://lab.drwicked.com/writeordie.html Dr. Wicked's webapp] of the same name.
+* [[X12Mode]] -- Major mode for editing X12 files.
 * XResourceGenericMode
 * XSymbolMode
 * YangMode -- edit YANG files, RFC 6020 compliant
