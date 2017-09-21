@@ -4,7 +4,7 @@
 
 First install Maxima: http://maxima.sourceforge.net/
 
-Maxima is bundled with three modes for emacs: maxima, imaxima and emaxima. Imaxima is like plain maxima but outputs pretty answers to buffer with LaTeX support. For imaxima check http://members3.jcom.home.ne.jp/imaxima/Site/System_Requirements.html
+Maxima is bundled with three modes for emacs: maxima, imaxima and emaxima. Imaxima is like plain maxima but outputs pretty answers to buffer with LaTeX support. For imaxima check https://sites.google.com/site/imaximaimath/
 
 Imaxima uses breqn.sty. Get http://members3.jcom.home.ne.jp/imaxima/breqn097a.zip and unzip it to your ~/texmf/tex/latex and run texhash.
 
