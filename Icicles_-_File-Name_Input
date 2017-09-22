@@ -186,7 +186,7 @@ first, using `M-k'.
 With `read-file-name', you can thus use [[apropos completion]] to match a file-name ''substring'', without needing to prefix the
 substring with `'''<tt>.*</tt>'''' in the minibuffer.  For example, to
 match the file named `##favorite-foo-file.bar##' in directory
-`/some/path/to/my/', you need ''not'' use `##/some/path/to/my/##'''<tt>.*</tt>'''##foo##'; it
+`/some/path/to/my/', you need ''not'' use `##/some/path/to/my/.*foo##'; it
 is sufficient to use either `foo' or `/some/path/to/my/foo'.
 
 
