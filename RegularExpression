@@ -31,7 +31,7 @@ Many characters are special when they follow a backslash -- see below.
   .        any character (but newline)
   *        previous character or group, repeated 0 or more time
   +        previous character or group, repeated 1 or more time
-  ?        previous character or group, repeated 0 or 1 time  
+  ?        previous character or group, repeated 0 or 1 time
   ^        start of line
   $        end of line
   [...]    any character between brackets
