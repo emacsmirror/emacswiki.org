@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Aug 30 11:03:57 2017 (-0700)
+;; Last-Updated: Sat Sep 23 19:28:50 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 6254
+;;     Update #: 6259
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -454,6 +454,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/09/23 dadams
+;;     Info-url-for-node: Fix per TeXInfo manual - encode embedded hyphens etc.
 ;; 2017/08/30 dadams
 ;;     Renamed: Info-refontify-toc-outline-region to Info-toc-outline-refontify-region.
 ;; 2017/08/28 dadams
@@ -2337,6 +2339,36 @@ manual.  Empty NODE in (MANUAL) defaults to the `Top' node."
                                                  (not browse-url-new-window-flag)
                                                browse-url-new-window-flag))))
 
+;; See https://www.gnu.org/software/texinfo/manual/texinfo/html_node/
+;;             HTML-Xref-Node-Name-Expansion.html
+;;
+;; 1. The standard ASCII letters (a-z and A-Z) are not modified. All
+;;    other characters may be changed as specified below.
+;;
+;; 2. The standard ASCII numbers (0-9) are not modified except when a
+;;    number is the first character of the node name. In that case, see
+;;    below.
+;;
+;; 3. Multiple consecutive space, tab and newline characters are
+;;    transformed into just one space. (It’s not possible to have
+;;    newlines in node names with the current implementation, but we
+;;    specify it anyway, just in case.)
+;;
+;; 4. Leading and trailing spaces are removed.
+;;
+;; 5. After the above has been applied, each remaining space character is
+;;    converted into a ‘-’ character.
+;;
+;; 6. Other ASCII 7-bit characters are transformed into ‘_00xx’, where xx
+;;    is the ASCII character code in (lowercase) hexadecimal. This includes
+;;    ‘_’, which is mapped to ‘_005f’.
+;;
+;; 7. If the node name does not begin with a letter, the literal string
+;;    ‘g_t’ is prefixed to the result. (Due to the rules above, that
+;;    string can never occur otherwise; it is an arbitrary choice,
+;;    standing for “GNU Texinfo”.) This is necessary because XHTML
+;;    requires that identifiers begin with a letter.
+;;
 ;;;###autoload (autoload 'Info-url-for-node "info+")
 (defun Info-url-for-node (node)
   "Return a URL for NODE, a node in the GNU Emacs or Elisp manual.
@@ -2358,9 +2390,20 @@ manual.  Empty NODE in (MANUAL) defaults to the `Top' node."
     (setq file  (file-name-sans-extension (file-name-nondirectory file)))
     (unless (member file '("emacs" "elisp"))
       (error "Manual cannot be `%s'; it can only be `emacs' or `elisp'" file))
-    (setq node  (replace-regexp-in-string "[ \t]+" "-" node t t)
-          url       (concat "http://www.gnu.org/software/emacs/manual/html_node/"
-                            file "/" node ".html"))
+    (setq node  (mapconcat (lambda (ch)
+                             (if (or (< ch 32) ; ^@^A-^Z^[^\^]^^^-
+                                     (and (<= 33 ch)   (<= ch 47)) ; !"#$%&'()*+,-./
+                                     (and (<= 58 ch)   (<= ch 64)) ; :;<=>?@
+                                     (and (<= 91 ch)   (<= ch 96)) ; [\]_`
+                                     (and (<= 123 ch)  (<= ch 127))) ; {|}~ DEL
+                                 (format "_00%x" ch)
+                               (char-to-string ch)))
+                           node
+                           ""))
+    (setq node  (replace-regexp-in-string "[ \t]+" "-" node t t))
+    (unless (string-match-p "[[:alpha:]]" node) (setq node  (concat "g_t" node)))
+    (setq url  (concat "http://www.gnu.org/software/emacs/manual/html_node/"
+                       file "/" node ".html"))
     (message "URL: %s" url)
     url))
 
