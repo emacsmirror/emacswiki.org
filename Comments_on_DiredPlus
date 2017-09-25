@@ -110,3 +110,14 @@ Is this the right place to post the Dired+ install question, or should it be pos
 
 -- user2867994 2017-09-25 02:22 UTC
 
+
+----
+
+@user2867994: I don't know Spacemacs, so I can't help with that.  
+
+"Installing" Dired+ is simple - you probably did it correctly.  (You really need only to put `dired+.el' in your `load-path' and `require' it.  But you can of course use the package manager to "install" it if you prefer.)
+
+For such detailed questions, it's better to email me (see the file header). And for questions about files named `#something#' see the the Emacs manual, node `Auto Save' and its subnodes.  Those are auto-save files.
+
+-- DrewAdams 2017-09-25 14:05 UTC
+
