@@ -59,3 +59,54 @@ Is there a way to remove a line from a Dired+ buffer, the way C-x D A adds files
 
 -- DrewAdams 2017-09-13 14:32 UTC
 
+
+----
+
+How to use Dired+ on Spacemacs?
+
+Last week I installed Dired+ and used it to successfully create two fileset files.
+Today I try again but running into some issues. This is what I did:
+    C-x D A
+    select a file
+    C-g
+    SPC f c (copy-file)
+    enter file name: .fs_Code
+
+Looking at the directory from the terminal:
+    ls -A
+    #.fs_Code#
+What do the #s mean?
+
+I try to rename #.fs_Code# to .fs_Code:
+    open file #.fs_Code#
+    SPC f R (rename-current-buffer-file)
+    enter new file name: .fs_Code
+Emacs says that the file already exists.
+
+I try to use Dired+ again to create a fileset file:
+    C-x
+But this time 'D' is missing from the Spacemacs menu.
+
+I am still new to Emacs, so maybe I am doing it wrong.  And I don't fully understand the manuals.
+
+Or maybe I installed Dired+ the wrong way.  Although the Dired+ help displays as expected:
+    M-x diredp-dired-plus-help
+
+From my .spacemacs file:
+
+(defun dotspacemacs/layers ()
+  (setq-default
+..
+   dotspacemacs-additional-packages '(dired+)
+)
+..
+(custom-set-variables
+ '(package-selected-packages
+   (quote
+    (disaster dired+
+
+
+Is this the right place to post the Dired+ install question, or should it be posted on the Spacemaces forum?
+
+-- user2867994 2017-09-25 02:22 UTC
+
