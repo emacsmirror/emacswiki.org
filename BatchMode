@@ -112,6 +112,8 @@ example-emacs-script.
 
 (Note: Unfortunately these links are all dead. Wouldn't be possible to put the code on EmacsWiki itself?)
 
+(See: https://lists.gnu.org/archive/html/gnu-emacs-sources/2005-01/msg00013.html)
+
 If active Emacs developers are reading this, we'd like to point out that
 (princ) in batch-mode prints to stdout, as opposed to stderr, which is
 not what the EmacsLispReference says.  On the other hand, that is the only
