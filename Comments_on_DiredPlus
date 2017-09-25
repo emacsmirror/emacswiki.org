@@ -94,16 +94,16 @@ Or maybe I installed Dired+ the wrong way.  Although the Dired+ help displays as
 
 From my .spacemacs file:
 
-(defun dotspacemacs/layers ()
-  (setq-default
-..
-   dotspacemacs-additional-packages '(dired+)
-)
-..
-(custom-set-variables
- '(package-selected-packages
-   (quote
-    (disaster dired+
+    (defun dotspacemacs/layers ()
+      (setq-default
+    ..
+       dotspacemacs-additional-packages '(dired+)
+    )
+    ..
+    (custom-set-variables
+     '(package-selected-packages
+       (quote
+        (disaster dired+
 
 
 Is this the right place to post the Dired+ install question, or should it be posted on the Spacemaces forum?
@@ -117,7 +117,7 @@ Is this the right place to post the Dired+ install question, or should it be pos
 
 "Installing" Dired+ is simple - you probably did it correctly.  (You really need only to put `dired+.el' in your `load-path' and `require' it.  But you can of course use the package manager to "install" it if you prefer.)
 
-For such detailed questions, it's better to email me (see the file header). And for questions about files named `#something#' see the the Emacs manual, node `Auto Save' and its subnodes.  Those are auto-save files.
+For such detailed questions, it's better to email me (see the file header). And for questions about files named `###something# ##' see the the Emacs manual, node `Auto Save' and its subnodes.  Those are auto-save files.
 
 -- DrewAdams 2017-09-25 14:05 UTC
 
