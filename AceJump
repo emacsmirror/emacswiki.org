@@ -25,7 +25,7 @@ character/word/line almost directly.
 
 [:WhatDoYouImplement]
 = What is implemented now ? =
-I have not implemented everything from !EasyMotion. Because I what to make it as simple as possible, you don't 
+I have not implemented everything from !EasyMotion. Because I want to make it as simple as possible, you don't 
 need to spend more than 2 minutes to learn how to use it. Right now, there are only three commands, which can 
 help you to quick move to a specific character, word and (non-empty) line. Enjoy it!
 
