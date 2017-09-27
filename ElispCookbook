@@ -176,26 +176,30 @@ See SplitString.
 
 === Joining strings ===
 
-With Emacs version >= 25, you can use `string-join':
+Use `mapconcat' to join strings, interpolating a separator string and possibly transforming each string before joining.
 
-  (string-join '("foo" "bar" "baz") ", ")
-    ==> "foo, bar, baz"
-
-In older versions, use `mapconcat' to join a list of strings using a separator string between them.
-
-Example:
+For no transformation (`identity'), use this:
 
   (mapconcat 'identity '("" "home" "alex " "elisp" "erc") "/")
     ==> "/home/alex /elisp/erc"
 
-If the separator is empty, use `apply':
+If you have an Emacs version greater than 25.3 then you can alternatively use `string-join' for that simple case:
 
-  (apply #'concat '("hello, " "world"))
+  (string-join '("foo" "bar" "baz") ", ")
+    ==> "foo, bar, baz"
+
+(`string-join' is just `mapconcat' with `identity' for the transformation.)
+
+For the even simpler case where you have no separator (it is ##""##, you can just use `concat' or `format':
+
+  (concat "hello, " "world")
     ==> "hello, world"
 
+  (format "%s%s" "hello, " "world")
+    ==> "hello, world"
 
-[new:DrewAdams:2015-05-10 20:20 UTC]
-: If the separator is empty then `concat' (or `format') is sufficient - no need for `apply' to join the strings: ##(concat "hello, " "world")## ==> ##"hello, world"##  (If the strings are available only as an explicit list, then of course you will want to use `apply' or an equivalent.) -- DrewAdams
+  (format "%s, %s" "hello" "world")
+    ==> "hello, world"
 
 === Serialization ===
 
