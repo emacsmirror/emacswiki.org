@@ -216,6 +216,17 @@ If I add a word during a flyspell session, it's still marked up as misspelled.  
 
 -kd
 
+[new]
+
+Found a working solution at https://www.reddit.com/r/emacs/comments/4oc7pg/spellcheck_flyspellmode_underlines_disappear_when/:
+
+<pre>
+(defun flyspell-buffer-after-pdict-save (&rest _)
+  (flyspell-buffer))
+
+(advice-add 'ispell-pdict-save :after #'flyspell-buffer-after-pdict-save)
+</pre>
+
 == Flyspell with subword-mode ==
 [new]
 
