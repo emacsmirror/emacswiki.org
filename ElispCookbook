@@ -176,7 +176,12 @@ See SplitString.
 
 === Joining strings ===
 
-Use `mapconcat' to join a list of strings using a separator string between them.
+With Emacs version >= 25, you can use `string-join':
+
+  (string-join '("foo" "bar" "baz") ", ")
+    ==> "foo, bar, baz"
+
+In older versions, use `mapconcat' to join a list of strings using a separator string between them.
 
 Example:
 
