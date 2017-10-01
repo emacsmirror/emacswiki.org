@@ -1,0 +1,89 @@
+This page is about package '''Yes-No''' (library <tt>[[yes-no.el]]</tt>), which lets a user decide, for any given yes/no confirmation prompt,
+whether it should use `y-or-n-p' or `yes-or-no-p' from then on.
+
+Emacs has two simple functions to prompt a user for yes/no
+confirmation: `y-or-n-p' and `yes-or-no-p'.  It is a judgment call
+which is more appropriate to use in any given context.
+
+'''`y-or-n-p'''' acts as soon as the user hits key `y' or key `n'.
+'''`yes-or-no-p'''' requires the user to type `yes' or `no' and then hit
+`RET'.
+
+`y-or-n-p' is generally used for quick interaction where
+the consequences of mistaken input are not too important.
+`yes-or-no-p' is generally used for interaction where the user is
+expected to reply carefully, especially if the consequences of a
+mistaken reply could be important.
+
+In order to allow faster interaction, some users have customized
+Emacs to simply replace the `yes-or-no-p' behavior by that of
+`y-or-n-p'.  That might be appropriate for some users, but it is
+probably ''not'' a great idea in general.
+
+Which of the two functions a Lisp programmer chooses for a given
+context ''might not be'' what any given user prefers for that context.  A missing feature is to let users in on the design of a given interaction.
+
+Library '''Yes-No''' lets a user decide, for any given function that
+prompts with one of these confirmation functions, which of the
+behaviors to use.  It does this by allowing, besides the y/n and
+yes/no responses, a response that says '''Switch to using the other
+prompting method from now on'''.  It thus lets users change the
+prompting function interactively, for the given calling function.
+
+To provide this feature, the code that prompts needs to know which
+function is currently calling the yes/no prompting function.  For
+that, `y-or-n-p' and `yes-or-no-p' are redefined so that they
+include an optional argument ''CALLER'', which is the symbol that
+names the function that is calling.  As long as the ''CALLER''
+argument is supplied, users can choose, on demand, which function
+to be prompted with.
+
+'''When argument ''CALLER'' is provided:'''
+
+* If '''`y-or-n-p'''' is called, a user response of character '''`e'''',
+  instead of `y' or `n', switches to `yes-or-no-p', and from then
+  on `yes-or-no-p' is used for `y-or-n-p' calls from ''CALLER''.
+
+* If '''`yes-or-no-p'''' is called, a user response of '''`use-y-or-n'''',
+  instead of `yes' or `no', switches to `y-or-n-p', and from then
+  on `y-or-n-p' is used for `yes-or-no-p' calls from ''CALLER''.
+
+* In addition, if a particular prompting behavior has been decided
+  for a given ''CALLER'', a user can choose to return that ''CALLER'' to
+  the default behavior (no redirection).  If currently prompted by
+  `yes-or-no-p' then a user does this with a response of
+  '''`reset-to-default''''.  If prompted by `y-or-n-p' then a user does
+  it using character '''`##^##''''.
+
+When `yes-or-no-p' prompts and either `use-y-or-n' or
+`reset-to-default' is available as a response, ''completion is
+available'' for these inputs.  In addition, if option
+'''`yn-allow-completion-for-yes/no-flag'''' is non-nil then
+`yes-or-no-p' provides completion for `yes' and `no' also.
+
+Examples of use: the first sexp here does not change the behavior
+-- there is no ''CALLER'' arg.  The others let the user switch between
+the two functions if either is called from
+`help-mode-revert-buffer'.
+
+    (yes-or-no-p "Agree? ") ; No change in behavior.
+    (yes-or-no-p "Agree? " 'help-mode-revert-buffer) ; Let user switch
+    (y-or-n-p    "Agree? " 'help-mode-revert-buffer) ; Let user switch
+
+To take advantage of this library, consider adding ''CALLER'' to your
+calls of `yes-or-no-p' and `y-or-n-p'.
+
+As a user, you can persist your preference for a given ''CALLER'' by
+adding this to your init file, where ''VALUE'' is the prompting
+function you prefer for ''CALLER'':
+
+    (put CALLER 'yes/no-prompting VALUE)
+
+For example, to prefer `y-or-n-p' for the prompting done by
+`help-mode-revert-buffer' you would use this:
+
+    (put 'help-mode-revert-buffer 'yes/no-prompting 'y-or-n-p)
+
+----
+
+CategoryCode
