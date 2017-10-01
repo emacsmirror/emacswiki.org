@@ -113,6 +113,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[thumb-frm.el]]</tt> -- thumbnail frames: a fisheye view of your frames and an alternative to iconifying; see also '''FisheyeWithThumbs'''
 * <tt>[[tool-bar+.el]]</tt> -- extensions to standard library `toolbar'; see also '''ToolBar'''
 * <tt>[[ucs-cmds.el]]</tt> -- macro to define commands that insert Unicode characters
+* <tt>[[yes-no.el]]</tt> -- let your users specify use of `y-or-n-p' or `yes-or-no-p' on a case-by-case basis
 * <tt>[[zones.el]]</tt> -- zones of text -- like multiple [[region]]s -- see [[Zones]] and MultipleNarrowings
 * <tt>[[zoom-frm.el]]</tt> -- commands to zoom a frame or buffer (change its font size) -- see also <tt>[[doremi-frm.el]]</tt> for alternatives
 
@@ -244,7 +245,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[modeline-posn.el]]</tt> -- enhanced [[mode line]] information -- see '''ModeLinePosition'''
 * <tt>[[narrow-indirect.el]]</tt> -- narrow using an indirect buffer that is a clone of the current buffer
 * <tt>[[palette.el]]</tt> -- examine color properties or choose colors -- see '''ColorPalette''' (see also <tt>[[eyedropper.el]]</tt>)
-
+* <tt>[[yes-no.el]]</tt> -- let your users specify use of `y-or-n-p' or `yes-or-no-p' on a case-by-case basis
 
 
 
@@ -352,6 +353,15 @@ These libraries have been deprecated. In many cases, they have simply been renam
 * <tt>[[wthreetwobrowser-dlgopen.el]]</tt> -- replaced by '''<tt>[[w32browser-dlgopen.el]]</tt>'''
 * <tt>[[window-plus.el]]</tt> -- replaced by '''<tt>[[window+.el]]</tt>'''
 
+
+
+
+
+
+
+
+
+
 [:LibraryNames]
 === Library Names ===
 
@@ -360,10 +370,24 @@ In many cases, I wrote an extension of a standard GNU library (or sometimes an e
 In a couple of cases, I wrote a library to be loaded ''before'' a standard library; these libraries are named with a `-', as in <code>foo-.el</code>. 
 ----
 
+
+
+
+
+
+
+
 [:HowToUseDrewsLibraries]
 == How To Use My Libraries ==
 
 '''See Also:''' [[#LibraryNames]] for information on the library naming conventions used.
+
+
+
+
+
+
+
 
 [:TryItAll]
 === Try It All! ===
@@ -384,11 +408,23 @@ In particular:
 
 '''''Note:''''' Library <tt>[[emacs-init.el]]</tt> is not 100% up-to-date, but it should get you started. Let me know of any problems you have with it.
 
+
+
+
+
+
+
+
 === Try Some Of It ===
 
 See [[#TryItAll]], then uncomment or comment-out blocks of code in <tt>[[emacs-init.el]]</tt>. Really, that's the best way to go.
 
 For finer tuning, change other user variables, besides those in <tt>[[emacs-init.el]]</tt>. You'll find them in the various library files (see [[#DrewsLibraries]]).
+
+
+
+
+
 
 
 [:LibraryDependencies]
@@ -412,6 +448,14 @@ One way to do that is to load the library and see what missing-feature errors yo
 
 That said, I encourage you to try the fully-loaded versions of my libraries. 
 I think you'll find that the time you spend downloading the additional libraries that are not strictly required was time well spent.
+
+
+
+
+
+
+
+
 
 
 
@@ -1025,7 +1069,7 @@ I've removed the spurious `4' - thanks.  The version number (`0') is correct. Th
 [:AllLibraries]
 All libraries referenced here: 
 
-Lisp:apropos+.el, Lisp:apropos-fn+var.el, Lisp:autofit-frame.el, Lisp:autoload+.el, Lisp:bindings+.el, Lisp:bookmark+.el, Lisp:browse-kill-ring+.el, Lisp:buff-menu+.el, Lisp:col-highlight.el, Lisp:compile-.el, Lisp:compile-20.el, Lisp:compile+.el, Lisp:compile+20.el, Lisp:crosshairs.el, Lisp:cursor-chg.el, Lisp:cus-edit+.el, Lisp:def-face-const.el, Lisp:delsel.el, Lisp:diff+.el, Lisp:diff+20.el, Lisp:diff-mode-.el, Lisp:dired+.el, Lisp:dired-details+.el, Lisp:dired-sort-menu+.el, Lisp:doremi.el, Lisp:doremi-cmd.el, Lisp:doremi-frm.el, Lisp:doremi-mac.el, Lisp:ediff+.el, Lisp:emacsbug+.el, Lisp:emacs-init.el, Lisp:eyedropper.el, Lisp:facemenu+.el, Lisp:faces+.el, Lisp:ffap-.el, Lisp:files+.el, Lisp:find-dired-.el, Lisp:find-dired+.el, Lisp:finder+.el, Lisp:find-func+.el, Lisp:fit-frame.el, Lisp:font-lock+.el, Lisp:frame-cmds.el, Lisp:frame-fns.el, Lisp:frame+.el, Lisp:grep+.el, Lisp:header2.el, Lisp:help+.el, Lisp:help-fns+.el, Lisp:help-macro+.el, Lisp:help-mode+.el, Lisp:hexrgb.el, Lisp:highlight.el, Lisp:hl-line+.el, Lisp:hl-spotlight.el, Lisp:icicles.el, Lisp:icomplete+.el, Lisp:imenu+.el, Lisp:info+.el, Lisp:isearch+.el, Lisp:lib-requires.el, Lisp:line-num.el, Lisp:ls-lisp+.el, Lisp:macros+.el, Lisp:menu-bar+.el, Lisp:misc-cmds.el, Lisp:misc-fns.el, Lisp:mkhtml.el, Lisp:modeline-posn.el, Lisp:mouse+.el, Lisp:novice+.el, Lisp:oneonone.el, Lisp:options+.el, Lisp:outline+.el, Lisp:pp+.el, Lisp:pp-c-l.el, Lisp:replace+.el, Lisp:ring+.el, Lisp:savehist-20+.el, Lisp:second-sel.el, Lisp:setnu+.el, Lisp:setup.el, Lisp:setup-cygwin.el, Lisp:setup-info.el, Lisp:setup-keys.el, Lisp:highlight-chars.el, Lisp:simple+.el, Lisp:sort+.el, Lisp:start.el, Lisp:start-opt.el, Lisp:strings.el, Lisp:synonyms.el, Lisp:thingatpt+.el, Lisp:thumb-frm.el, Lisp:timer+.el, Lisp:tool-bar+.el, Lisp:ucs-cmds.el, Lisp:unaccent.el, Lisp:vc-.el, Lisp:vc-hooks+.el, Lisp:vc+.el, Lisp:w32-browser.el, Lisp:w32browser-dlgopen.el, Lisp:wimpy-del.el, Lisp:window+.el, Lisp:zoom-frm.el
+Lisp:apropos+.el, Lisp:apropos-fn+var.el, Lisp:autofit-frame.el, Lisp:autoload+.el, Lisp:bindings+.el, Lisp:bookmark+.el, Lisp:browse-kill-ring+.el, Lisp:buff-menu+.el, Lisp:col-highlight.el, Lisp:compile-.el, Lisp:compile-20.el, Lisp:compile+.el, Lisp:compile+20.el, Lisp:crosshairs.el, Lisp:cursor-chg.el, Lisp:cus-edit+.el, Lisp:def-face-const.el, Lisp:delsel.el, Lisp:diff+.el, Lisp:diff+20.el, Lisp:diff-mode-.el, Lisp:dired+.el, Lisp:dired-details+.el, Lisp:dired-sort-menu+.el, Lisp:doremi.el, Lisp:doremi-cmd.el, Lisp:doremi-frm.el, Lisp:doremi-mac.el, Lisp:ediff+.el, Lisp:emacsbug+.el, Lisp:emacs-init.el, Lisp:eyedropper.el, Lisp:facemenu+.el, Lisp:faces+.el, Lisp:ffap-.el, Lisp:files+.el, Lisp:find-dired-.el, Lisp:find-dired+.el, Lisp:finder+.el, Lisp:find-func+.el, Lisp:fit-frame.el, Lisp:font-lock+.el, Lisp:frame-cmds.el, Lisp:frame-fns.el, Lisp:frame+.el, Lisp:grep+.el, Lisp:header2.el, Lisp:help+.el, Lisp:help-fns+.el, Lisp:help-macro+.el, Lisp:help-mode+.el, Lisp:hexrgb.el, Lisp:highlight.el, Lisp:hl-line+.el, Lisp:hl-spotlight.el, Lisp:icicles.el, Lisp:icomplete+.el, Lisp:imenu+.el, Lisp:info+.el, Lisp:isearch+.el, Lisp:lib-requires.el, Lisp:line-num.el, Lisp:ls-lisp+.el, Lisp:macros+.el, Lisp:menu-bar+.el, Lisp:misc-cmds.el, Lisp:misc-fns.el, Lisp:mkhtml.el, Lisp:modeline-posn.el, Lisp:mouse+.el, Lisp:novice+.el, Lisp:oneonone.el, Lisp:options+.el, Lisp:outline+.el, Lisp:pp+.el, Lisp:pp-c-l.el, Lisp:replace+.el, Lisp:ring+.el, Lisp:savehist-20+.el, Lisp:second-sel.el, Lisp:setnu+.el, Lisp:setup.el, Lisp:setup-cygwin.el, Lisp:setup-info.el, Lisp:setup-keys.el, Lisp:highlight-chars.el, Lisp:simple+.el, Lisp:sort+.el, Lisp:start.el, Lisp:start-opt.el, Lisp:strings.el, Lisp:synonyms.el, Lisp:thingatpt+.el, Lisp:thumb-frm.el, Lisp:timer+.el, Lisp:tool-bar+.el, Lisp:ucs-cmds.el, Lisp:unaccent.el, Lisp:vc-.el, Lisp:vc-hooks+.el, Lisp:vc+.el, Lisp:w32-browser.el, Lisp:w32browser-dlgopen.el, Lisp:wimpy-del.el, Lisp:window+.el, Lisp:yes-no.el, Lisp:zones.el, Lisp:zoom-frm.el
 
 
 
