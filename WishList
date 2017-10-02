@@ -28,6 +28,7 @@ for shell scripting.  I'd prefer elisp with (require 'cl) over scsh.
 ** On that note, I'd like to see Emacs support the type of [[CollaborativeEditing]] that [http://www.codingmonkeys.de/subethaedit/ SubEthaEdit] has. I know there have been attempts, but they seem to have gone to ground all. [[SummerOfCode]] 2010?
 [new]
 *** This type of collaborative editing is possible in Emacs with [[Rudel]]. Currently the obby protocol (introduced by the [http://gobby.0x539.de/trac/ Gobby] collaborative editor) is supported. Support for the protocol used by [[SubEthaEdit]] is under development.  -- JanMoringen (disclaimer: Rudel author)
+* I'd like to be able to make the *scratch* buffer persist between sessions.  I realise that it is meant for things I don't want to save.  But every few months, I get interrupted or distracted, and realise I have quit emacs or rebooted a machine while there was something significant in *scratch*.  To know that I wouldn't lose stuff when that happened, I'd happily pay the price of having to flush the buffer occasionally.
 ----
 
 == Configuration Wishes ==
