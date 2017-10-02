@@ -186,6 +186,5 @@
 	    (current-indentation))
 	0))))
   
-(provide 'basic-mode)
 (provide 'basic)
 ;;; basic.el ends here
