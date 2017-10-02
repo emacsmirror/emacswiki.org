@@ -6,8 +6,7 @@ The most important info first. Here's how to change the default font in your Ini
 [:InspectingAndChangingFonts]
 == Inspecting and Changing Fonts ==
 
-* Use `<code>S-down-mouse-1</code>' to see the font and fontset menu. Emacs starts
-with the startup fontset.
+* Use `<code>S-down-mouse-1</code>' or `<code>M-x menu-set-font</code>' to see the font and fontset menu. Emacs starts with the startup fontset.
 
 * Use `<code>M-x describe-font</code>' to see the requested font and actual font being used.
 
