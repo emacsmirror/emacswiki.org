@@ -5,11 +5,11 @@
 ;; Author: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Maintainer: Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
 ;; Keywords: convenience
-;; Version: 0.5
+;; Version: 0.6
 ;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
-(defconst actions-version "0.5"
-  "actions.el, v 0.5 <2017/05/31 vinicius>
+(defconst actions-version "0.6"
+  "actions.el, v 0.6 <2017/10/02 vinicius>
 
 Please send all bug fixes and enhancements to
 	Vinicius Jose Latorre <viniciusjl.gnu@gmail.com>
@@ -134,12 +134,16 @@ Please send all bug fixes and enhancements to
      :visible (actions-file-p "\\.rar$")]
     ["Read PDF"        (actions-call "xpdf")
      :visible (actions-file-p "\\.\\(pdf\\|PDF\\)$")]
+    ["Read PS"         (actions-call "gv")
+     :visible (actions-file-p "\\.\\(ps\\|PS\\)$")]
+    ["Read PS.GZ"      (actions-call "gv")
+     :visible (actions-file-p "\\.\\(ps\\|PS\\)\\.\\(gz\\|GZ\\)$")]
     ["Qt Designer"     (actions-call "designer")
      :visible (actions-file-p "\\.ui$")]
-    ("Image" :visible (actions-file-p "\\.\\(JPG\\|JPEG\\|PNG\\|jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\|xcf\\)$")
+    ("Image" :visible (actions-file-p "\\.\\(JPG\\|JPEG\\|PNG\\|GIF\\|TIFF\\|SVG\\|XCF\\|jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\|xcf\\)$")
      ["GIMP Image"     (actions-call "gimp") :visible t]
      ["GEEQIE Image"   (actions-call "geeqie")
-      :visible (actions-file-p "\\.\\(JPG\\|JPEG\\|PNG\\|jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\)$")])
+      :visible (actions-file-p "\\.\\(JPG\\|JPEG\\|PNG\\|GIF\\|TIFF\\|SVG\\|jpg\\|jpeg\\|png\\|gif\\|tiff\\|svg\\)$")])
     ("grep recursively" :visible (region-active-p)
      ["case sensitive"   (actions-grep-r) :visible t]
      ["case insensitive" (actions-grep-r "-i") :visible t])
