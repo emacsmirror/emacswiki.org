@@ -164,6 +164,12 @@ Then, calling ##(execvp "touch" "'a'" "b" "$x")## creates files called `a', `b',
 
 Is it possible (desirable?) to automatically close buffer ##*Shell Command Output##* for commands that report `##Shell command succeeded with no output##'?
 
+Answer:
+<pre>
+Quick solution: Use module execute ([1]) and edit it commenting the line
+      (display-buffer (process-buffer proc-obj))
+</pre>
+
 === Passwords ===
 
 How can you use `shell-command' with programs that require input such as passords? Kind of annoying having to open a new buffer just to `scp' a file.
