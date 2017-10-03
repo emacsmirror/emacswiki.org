@@ -166,7 +166,7 @@ Is it possible (desirable?) to automatically close buffer ##*Shell Command Outpu
 
 Answer:
 <pre>
-Quick solution: Use module execute ([1]) and edit it commenting the line
+Quick solution: Use module execute.el and comment the line
       (display-buffer (process-buffer proc-obj))
 </pre>
 
