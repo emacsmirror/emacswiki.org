@@ -29,11 +29,11 @@ This is [https://lists.gnu.org/archive/html/help-gnu-emacs/2006-06/msg00101.html
 
 == use-hard-newlines ==
 
-emacs has a [MinorMode minor mode] ##use-hard-newlines## which provides support for a related feature: the ability to distinguish between "hard" and "soft" newlines.  Lines separated by a soft newline can be reflowed to any width, whereas hard newlines always cause a linebreak.  This feature is enabled via ##M-x use-hard-newlines##.
+emacs has a MinorMode called ##use-hard-newlines## which provides support for a related feature: the ability to distinguish between "hard" and "soft" newlines using TextProperties.  Lines separated by a soft newline can be reflowed to any width, whereas hard newlines always cause a linebreak.  This feature is enabled via ##M-x use-hard-newlines##.
 
 Gnus couples this feature with ##format=flowed##, so that its support for ##format=flowed## is only enabled when ##use-hard-newlines## is set - see GnusFormatFlowed for the details.
 
-There is also a [https://github.com/legoscia/messages-are-flowing messages-are-flowing] package (available from [[MELPA]]) which provides visual indication of hard newlines when ##use-hard-newlines## is enabled.
+There is also a [https://github.com/legoscia/messages-are-flowing messages-are-flowing] package (available from [[MELPA]]) which enables ##use-hard-newlines## (thereby supporting ##format=flowed## within Gnus) and more importantly provides visual indication of where hard newlines exist within a buffer.  However [https://github.com/legoscia/messages-are-flowing/issues/2 it does not provide any extra support for format=flowed outside Gnus]. 
 
 ----
 CategoryMail
