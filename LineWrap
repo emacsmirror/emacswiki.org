@@ -4,6 +4,7 @@
 # Modes such as AutoFillMode insert a [line ending] after the last word that occurs before the value of [[option]] `fill-column' (a column number).
 # Modes such as LongLines wrap a line after the last word before `fill-column', but ultimately they do not alter the buffer text. Long-line wrapping is essentially a display effect.
 # Modes such as VisualLineMode wrap a line right before the window edge, but ultimately they do not alter the buffer text. VisualLineMode wrapping is essentially a display effect.
+# Mail read or written within Emacs can take advantage of FormatFlowed
 
 By default, when a line extends past the width of the window, Emacs wraps it,
 either displaying a backslash (`\') in the buffer or placing
