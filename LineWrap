@@ -20,6 +20,8 @@ Modes such as Long Lines wrap lines on word boundaries as you type, by inserting
 
 Of these three flavors, only Auto Fill mode actually changes your file (saved buffer). The default behavior of line-wrapping or truncating (#1) changes only the way your text appears, and Long Lines mode (#3) changes your text only temporarily.
 
+http://emacshorrors.com/posts/longlines-mode.html is an informative article which compares and contrasts some of the above approaches.
+
 [new]
 There is now a fourth flavor that kind of obsoletes Long Lines mode -- Kim Storm's word-wrap patch has landed in CVS (uh, I think early August or September 2008).  This patch changes the redisplay engine to wrap on \s+ (i.e., whitespace) and now Longlines/Notepad-like wrapping is available everywhere.  The line-number remains accurate, but you can use movement keys to scroll to the next displayed line without actually changing lines.  M-e and M-a also work better (I had problems in Latex with them).  It also has the benefit that when you resize, all the text goes with it, and it makes vertical splitting MUCH more readable, and no more backslashes to break up the text.
 
