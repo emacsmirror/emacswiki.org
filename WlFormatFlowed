@@ -1,4 +1,4 @@
-To read flowed formated messages in Wanderlust put the following in your .wl file (you need flow-fill.el which included in the current emacs release):
+To read [FormatFlowed flow-formatted] messages in Wanderlust put the following in your .wl file (you need flow-fill.el which included in the current emacs release):
 
  ;; Reading f=f
  (autoload 'fill-flowed "flow-fill")
