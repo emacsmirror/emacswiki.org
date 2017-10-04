@@ -16,6 +16,10 @@ See WlFormatFlowed.
 
 See GnusFormatFlowed.
 
+=== mu4e ===
+
+This is covered in the [https://www.djcbsoftware.nl/code/mu/mu4e/Writing-messages.html#Writing-messages mu4e FAQ].
+
 === Using emacs as the editor for an external MUA ===
 
 This is [https://lists.gnu.org/archive/html/help-gnu-emacs/2006-06/msg00101.html still] less well supported than with Gnus or Wanderlust, but there are still options, e.g.
