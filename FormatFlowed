@@ -6,6 +6,8 @@ The message is sent wrapped (to the 66th column if following RFC3676's suggestio
 
 The advantage of flowed text (if an entire conversation is handled with ##format=flowed##) is the improved handling of text paragraphs (both quoted and unquoted), since each paragraph is a single logical line that gets re-wrapped by the client dynamically.  Or that's the theory, at least.  In practice difficulties arise when mail clients don't handle it correctly; for example, Gmail's lack of support is covered [https://mathiasbynens.be/notes/gmail-plain-text here] and [https://productforums.google.com/forum/#!topic/gmail/Z42NibAOzjc here].
 
+This [https://joeclark.org/ffaq.html format=flowed FAQ] has a lot more helpful information.
+
 == Support for flowed text in emacs ==
 
 === Wanderlust ===
