@@ -2,7 +2,7 @@
 
 ##format=flowed## is defined in [http://www.faqs.org/rfcs/rfc3676.html RFC3676] and enables mail clients to support the distinction between physical and logical lines, while still supporting older clients.
 
-The message is sent wrapped (usually to the 66th column), with newlines encoded with an extra space at the end of the previous line.  Graphical clients can unwrap the message back to its original form, performing word-wrapping at window's margins.  Older clients can simply disregard newline information, and display the wrapped message.
+The message is sent wrapped (to the 66th column if following RFC3676's suggestion), with newlines encoded with an extra space at the end of the previous line.  Graphical clients can unwrap the message back to its original form, performing word-wrapping at window's margins.  Older clients can simply disregard newline information, and display the wrapped message.
 
 The advantage of flowed text (if an entire conversation is handled with ##format=flowed##) is the improved handling of text paragraphs (both quoted and unquoted), since each paragraph is a single logical line that gets re-wrapped by the client dynamically.  Or that's the theory, at least.  In practice difficulties arise when mail clients don't handle it correctly; for example, Gmail's lack of support is covered [https://mathiasbynens.be/notes/gmail-plain-text here] and [https://productforums.google.com/forum/#!topic/gmail/Z42NibAOzjc here].
 
