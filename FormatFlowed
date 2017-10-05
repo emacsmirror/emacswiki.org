@@ -29,6 +29,8 @@ This is [https://lists.gnu.org/archive/html/help-gnu-emacs/2006-06/msg00101.html
 * https://emacs.stackexchange.com/questions/19296/retooling-fill-paragraph-to-append-trailing-spaces
 * https://stackoverflow.com/questions/41299350/how-can-i-send-messages-with-format-flowed-with-the-notmuch-message-client
 
+Since it's not trivial for a machine to reliably decide which paragraphs should be reflowed (or maybe not even possible without AI), the approach of hooking into ##fill-paragraph## is maybe better, since then the user can review the reflowing prior to saving the buffer and sending the message.
+
 == use-hard-newlines ==
 
 emacs has a MinorMode called ##use-hard-newlines## which provides support for a related feature: [https://www.gnu.org/software/emacs/manual/html_node/emacs/Hard-and-Soft-Newlines.html the ability to distinguish between "hard" and "soft" newlines] using TextProperties (also used by EnrichedMode).  Lines separated by a soft newline can be reflowed to any width, whereas hard newlines always cause a linebreak.  This feature is enabled via ##M-x use-hard-newlines##.
