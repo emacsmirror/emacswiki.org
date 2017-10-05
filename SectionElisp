@@ -4,8 +4,8 @@ La SectionElisp contient des logiciels libres écrits en EmacsLisp (en).
 * http://www.emacswiki.org/elisp/index.html -- liste tous les fichiers par ordre alphabétique
 * http://www.emacswiki.org/elisp/changelog.html -- liste tous les fichiers par date de modification
 
-Pour transférer de nouveaux fichiers, veuillez simplesment copier le text du fichier sur une page.
-Voiez les conventions sur ElispAreaConventions (en Anglais).
+Pour transférer de nouveaux fichiers, veuillez simplement copier le texte du fichier sur une page.
+Voyez les conventions sur ElispAreaConventions (en Anglais).
 
 Pas besoin ni d'authentification, ni de ftp, ni de mot de passe.
 C'est aussi simple que le wiki lui-même. Cela signifie aussi que
@@ -20,11 +20,11 @@ semaines.
 
 == Documentation ==
 
-Merci de decrire les fichiers que vous ajoutez a ce wiki -- si vous ne le
+Merci de décrire les fichiers que vous ajoutez a ce wiki -- si vous ne le
 faites pas, personne ne trouvera vos fichiers.
 De telles descriptions peuvent être ajoutées a des pages existantes ou a des pages nouvelles.
 
-== Publier des packages qui ne sont pas en elisp où des archives tar ==
+== Publier des packages qui ne sont pas en elisp ou des archives tar ==
 
 Vous pouvez stocker des logiciels libres sur Savannah:
 
@@ -32,7 +32,7 @@ Vous pouvez stocker des logiciels libres sur Savannah:
 
 == Interface Emacs ==
 
-Allez voir Lisp:wikiarea.el si vous désirez un moyen pour utiliser Emacs lui-même pour être au courant des modificatons des différents fichiers présents ici.
+Allez voir Lisp:wikiarea.el si vous désirez un moyen pour utiliser Emacs lui-même pour être au courant des modifications des différents fichiers présents ici.
 
 == Extraits de Code ==
 
