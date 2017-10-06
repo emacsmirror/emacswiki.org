@@ -34,5 +34,8 @@ See also EmacsImplementations.
 Perhaps a section on AddingExtensionLanguages would be good?
 
 ----
+Perhaps an example of how to use other languages via syscalls/file-exec from elisp would be more purposeful.
+
+----
 CategoryCode
 
