@@ -1,25 +1,37 @@
-`y-or-n-p' Emacs's way of asking a yes-or-no question, usually to get your confirmation for something you requested.
+'''`y-or-n-p'''' is one way that Emacs asks a yes-or-no question, usually to get your confirmation for something you requested.
 
-`yes-or-no-p' is Emacs's way of asking an ''important'' yes-or-no question.  You must type a full `yes' or `no' to answer.  See Manual:yes-or-no-p.
+'''`yes-or-no-p'''' is another way that Emacs uses to do this.  It is typically used for more ''important'' yes-or-no questions, that is, questions where the answer might have more serious consequences.  You must type a full `yes' or `no' to answer `yes-or-no-p'.  See the Elisp manual doc for [[Manual:yes-or-no-p]].
 
-The Emacs designers decided which questions are important enough to make you answer with a full word. They based their decisions on years of experience with user problems. You are asked to type a full word not to annoy you but to save you from shooting yourself in the foot.
+The author of a function prompts users for a yes-or-no answer decides which of these prompting functions to use.  For functions delivered as part of vanilla Emacs, the designers of Emacs have presumably based their decisions on years of experience with user problems. You are asked to type a full word not to annoy you but to save you from shooting yourself in the foot.
 
-However, Emacs design decisions need to be relatively conservative, and they need to fit the needs of the average user, as well as the EmacsNewbie. Some people feel that `yes-or-no-p' questions are never important enough to warrant typing two or three characters, and they prefer to substitute `y-or-n-p' for `yes-or-no-p' everywhere to save one or two characters. If you want to do that, put this in your init file (##~/.emacs##):
+
+
+
+== Some Users Want to Always Use `y-or-n-p', Never `yes-or-no-p' ==
+
+However, Emacs design decisions need to be relatively conservative, and they need to fit the needs of the average user, as well as the EmacsNewbie.
+
+Some users apparently feel that no `yes-or-no-p' prompts are important enough to warrant typing two or three characters, and they prefer to substitute `y-or-n-p' for `yes-or-no-p' everywhere, to save typing one or two characters. If you want to do that, put this in your init file (##~/.emacs##):
 
     (defalias 'yes-or-no-p 'y-or-n-p)
 
-Some specific `yes-or-no-p' questions can be disabled.  For example, RevertBuffer asks before re-reading a file, but you can set user option `revert-without-query' to record files that you want to be able to revert without confirming.
+Is that a good idea?  Depends on the user, presumably.
 
-And you can always use `defadvice' (see AdvisingFunctions) to modify a command, inhibiting it from asking yes or no.  But if you do this, be careful that it doesn't also catch lower-level questions. And see also AdviceVsHooks before you decide to advise a function.
 
-    (defadvice WHATEVER (around stfu compile activate)
+
+
+== Auto-Confirmation: Automatically Saying Yes ==
+
+Some `yes-or-no-p' prompts can be disabled.  For example, RevertBuffer asks before rereading a file, but you can set user option `revert-without-query' to record files that you want to be able to revert without confirming.
+
+And you can advise a function (see AdvisingFunctions) to prevent it from asking yes or no and just assume yes.  But if you do this, be careful that it doesn't also catch lower-level questions. And see also AdviceVsHooks before you decide to advise a function.
+
+    (defadvice SOME-FUNCTION (around auto-confirm compile activate)
       (flet ((yes-or-no-p (&rest args) t)
              (y-or-n-p (&rest args) t))
         ad-do-it))
 
-
-
-On modern emacs versions with lexical scoping, avoiding flet:
+Without advising, here's another way to force a function to act (assume yes) without asking for confirmation: use ##(no-confirm SOME-FUNCTION)##.
 
   (cl-flet ((always-yes (&rest _) t))
     (defun no-confirm (fun &rest args)
@@ -29,16 +41,18 @@ On modern emacs versions with lexical scoping, avoiding flet:
          (apply fun args))))
 
 
-Or you can predefine the answers for yes-or-no-p so you can select them with M-p.
+
+
+== Responding To `yes-or-no-p' Prompts Without Typing ==
+
+You can predefine the `yes' and `no' answers for `yes-or-no-p' so you can select them (retrieving them as past inputs) using `M-p'.
 
     (mapcar (lambda (elt) (add-to-list 'yes-or-no-p-history elt))
             '("no" "yes"))
 
-The inconvenience can be having to type "no" to cancel `yes-or-no-p'.
 
 If you would prefer to have an empty response (hitting `RET') or any
-other input to be "no" and still require the full word "yes" use this
-function as an alias for `yes-or-no-p'.
+other input to act as `no', but still require the full word `yes' to confirm, you can use this function as an alias for `yes-or-no-p'.
 
   (defun my-yes-or-mumble-p (prompt)
     "PROMPT user with a yes-or-no question, but only test for yes."
@@ -51,10 +65,68 @@ function as an alias for `yes-or-no-p'.
   
     (defalias 'yes-or-no-p 'my-yes-or-mumble-p)
 
-Other possibilities:
+
+
+
+== Library `yes-no.el': Let Users Choose ==
+
+For Lisp code that you write, you make a good judgment about whether to use `yes-or-no-p' or `y-or-n-p' for each confirmation prompt context.  Still, users can have different preferences in this regard.
+
+You can give users a way to override your choices on a calling function-by-function basis, by using library '''<tt>[[yes-no.el]]</tt>'''.  All you need to do, to give them the choice, is to add the calling function as an extra argument when you call either `yes-or-no-p' or `y-or-n-p' in your code.
+
+E.g., instead of writing this confirmation prompt, in the definition of function `foo':
+
+    (yes-or-no-p "Agree? ")
+
+You write this one:
+
+    (yes-or-no-p "Agree? " 'foo)
+
+Or if your judgment tells you that `y-or-n-p' is probably more appropriate, you write this one:
+
+    (y-or-n-p "Agree? " 'foo)
+
+Either way, you give users the choice.  You provide, in effect, a default prompting behavior for caller `foo', but users can override your prompting choice.
+
+Library '''<tt>[[yes-no.el]]</tt>''' redefines functions `yes-or-no-p' and `y-or-n-p' to provide for the extra ##CALLER## argument (e.g. `foo').
+
+Users can respond to the prompt using, as before, `yes' or `no' -- or `y' or `n'.  But they can also interrupt answering to tell Emacs to change to the other prompting style from now on, whenever prompting is done by the given caller.  (If they've already done that then they can also tell Emacs to revert to the default, programmer-defined prompting.)
+
+How does it work? When a ##CALLER## (e.g. `foo') arg is provided to one of the prompting functions:
+
+* If '''`yes-or-no-p'''' is called then a user response of '''`use-y-or-n'''',
+instead of `yes' or `no', switches to `y-or-n-p', and from then
+on `y-or-n-p' is used for `yes-or-no-p' calls from ##CALLER##.
+
+* If '''`y-or-n-p'''' is called then a user response of character '''`e'''',
+instead of `y' or `n', switches to `yes-or-no-p', and from then
+on `yes-or-no-p' is used for `y-or-n-p' calls from ##CALLER##.
+
+
+* In addition, if a particular prompting behavior has been decided
+for a given ##CALLER##, a user can choose to return that ##CALLER## to
+the default behavior (no redirection).  If currently prompted by
+`yes-or-no-p' then a user does this with a response of
+'''`reset-to-default''''.  If prompted by `y-or-n-p' then a user does it using character '''`##^##''''.
+
+When `yes-or-no-p' prompts and either `use-y-or-n' or
+`reset-to-default' is available as a response, completion is
+available for these inputs.  (In addition, if [[option]]
+'''`yn-allow-completion-for-yes/no-flag'''' is non-nil then
+`yes-or-no-p' provides completion for `yes' and `no' also.)
+
+Use choices are saved persistently, in [[option]] '''`yn-prompting-alist''''.  Users can of course customize the option directly, to define calling function-specific prompting behavior.
+
+
+
+
+
+
+
+== Other Possibilities ==
 
 * QuickYes -- add shortcuts <code>M-y</code> and <code>M-n</code>
 * LoggingYesOrNoP -- ideas about recording what you answered most often (and thus perhaps don't need to be asked at all)
 
 ----
-CategoryKeys
+CategoryKeys CategoryCode
