@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Mon Jul  3 11:00:01 2017 (-0700)
+;; Last-Updated: Sun Oct  8 15:26:40 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 3946
+;;     Update #: 3948
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -5354,9 +5354,12 @@ prefix arg, any that are marked are included."
   (bmkp-with-help-window "*Help*"
     (dolist (bmk  (bmkp-sort-omit (bmkp-bmenu-marked-or-this-or-all nil include-omitted-p)))
       (if defn
-          (let* ((bname      (bmkp-bookmark-name-from-record bmk))
-                 (help-text  (format "%s\n%s\n\n%s"
-                                     bname (make-string (length bname) ?-) (pp-to-string bmk))))
+          (let* ((bname         (bmkp-bookmark-name-from-record bmk))
+                 (print-circle  bmkp-propertize-bookmark-names-flag) ; For `pp-to-string'
+                 (print-length  nil)    ; For `pp-to-string'
+                 (print-level   nil)    ; For `pp-to-string'
+                 (help-text     (format "%s\n%s\n\n%s"
+                                        bname (make-string (length bname) ?-) (pp-to-string bmk))))
             (princ help-text) (terpri))
         (princ (bmkp-bookmark-description bmk)) (terpri)))))
 
