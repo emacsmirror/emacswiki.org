@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 09:38:49 2017 (-0800)
+;; Last-Updated: Sun Oct  8 16:05:00 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 420
+;;     Update #: 439
 ;; URL: https://www.emacswiki.org/emacs/download/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -101,6 +101,7 @@
 ;;
 ;;  User options defined here:
 ;;
+;;    `pp-eval-expression-print-circle',
 ;;    `pp-eval-expression-print-length',
 ;;    `pp-eval-expression-print-level', `pp-max-tooltip-size' (Emacs
 ;;    24+).
@@ -136,6 +137,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/10/08 dadams
+;;     Added: pp-eval-expression-print-circle.
+;;     pp-show-tooltip, pp-eval-last-sexp-with(out)-tooltip, pp-eval-last-sexp:
+;;       Bind print-(circle|length|level) so pp-to-string prints all.
 ;; 2016/11/14 dadams
 ;;     pp-max-tooltip-size: Mention in doc that if point is off-screen then tooltip not used.
 ;;     pp-display-expression: If point is off-screen then do not try to use tooltip.
@@ -241,6 +246,12 @@
     (setq pp-read-expression-map  map)))
 
 ;;;###autoload
+(defcustom pp-eval-expression-print-circle nil
+  "*Value for `print-circle' while printing value in `pp-eval-expression'.
+Non-nil means print recursive structures using #N= and #N# syntax."
+  :group 'pp :group 'lisp :type 'boolean)
+
+;;;###autoload
 (defcustom pp-eval-expression-print-length nil
   "*Value for `print-length' while printing value in `pp-eval-expression'.
 A value of nil means no limit."
@@ -343,7 +354,10 @@ Optional arg FACE defaults to `pp-tooltip'."
                                         (internal-border-width . 2)
                                         (border-width . 1)
                                         (left ,@ left)
-                                        (top  ,@ top))))
+                                        (top  ,@ top)))
+           (print-length              pp-eval-expression-print-length)
+           (print-level               pp-eval-expression-print-level)
+           (print-circle              pp-eval-expression-print-circle))
       (pp-tooltip-show (pp-to-string value))
       value))
 
@@ -400,7 +414,11 @@ This is `pp-eval-last-sexp' with `pp-max-tooltip-size' bound to
 buffer `*Pp Eval Output*'."
     (interactive "P")
     (if arg
-        (insert (pp-to-string (eval (pp-last-sexp) lexical-binding)))
+        (let ((print-length  pp-eval-expression-print-length)
+              (print-level   pp-eval-expression-print-level)
+              (print-circle  (and (boundp 'print-circle) ; Emacs 22+
+                                  pp-eval-expression-print-circle)))
+          (insert (pp-to-string (eval (pp-last-sexp) lexical-binding))))
       (let ((pp-max-tooltip-size  x-max-tooltip-size))
         (pp-eval-expression (pp-last-sexp)))))
 
@@ -409,7 +427,11 @@ buffer `*Pp Eval Output*'."
 This is `pp-eval-expression' with `pp-max-tooltip-size' bound to `nil'."
     (interactive "P")
     (if arg
-        (insert (pp-to-string (eval (pp-last-sexp) lexical-binding)))
+        (let ((print-length  pp-eval-expression-print-length)
+              (print-level   pp-eval-expression-print-level)
+              (print-circle  (and (boundp 'print-circle) ; Emacs 22+
+                                  pp-eval-expression-print-circle)))
+          (insert (pp-to-string (eval (pp-last-sexp) lexical-binding))))
       (let ((pp-max-tooltip-size  nil))
         (pp-eval-expression (pp-last-sexp)))))
 
@@ -528,8 +550,12 @@ This command respects user options `pp-eval-expression-print-length',
             (pp-eval-last-sexp-with-tooltip nil)
           (pp-eval-last-sexp-without-tooltip nil))
       (if insert-value
-          (insert (pp-to-string (eval (pp-last-sexp) lexical-binding)))
+          (let ((print-length  pp-eval-expression-print-length)
+                (print-level   pp-eval-expression-print-level)
+                (print-circle  pp-eval-expression-print-circle))
+            (insert (pp-to-string (eval (pp-last-sexp) lexical-binding))))
         (pp-eval-expression (pp-last-sexp)))))
+
   )
 
 
