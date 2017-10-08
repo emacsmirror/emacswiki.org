@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jul 31 16:50:07 2017 (-0700)
+;; Last-Updated: Sun Oct  8 15:33:24 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 16346
+;;     Update #: 16351
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2017/10/08 dadams
+;;     bmkp-bookmark-description, bmkp-describe-bookmark-internals:
+;;       Bind print-(circle|length|level) so pp-to-string prints all.
 ;; 2017/07/31 dadams
 ;;     bmkp-find-file-invoke-bookmark-if-autofile:
 ;;       Bind bmkp-autofile-access-invokes-bookmark-flag to nil while jumping to the bookmark.
@@ -1326,6 +1329,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2017/10/08 dadams
+;;     bmkp-bmenu-describe-marked: Bind print-(circle|length|level) so pp-to-string prints all.
 ;; 2017/07/03 dadams
 ;;     Added: bmkp-bmenu-sort-by-Info-position.
 ;;     Renamed bmkp-bmenu-sort-by-Info-location to bmkp-bmenu-sort-by-Info-node-name.
