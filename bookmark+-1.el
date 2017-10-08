@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jul 31 16:51:09 2017 (-0700)
+;; Last-Updated: Sun Oct  8 15:24:55 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 8534
+;;     Update #: 8542
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -8559,7 +8559,10 @@ the file is an image file then the description includes the following:
   standard Emacs library `image-dired.el' for more information about
   `exiftool'."
   (setq bookmark  (bookmark-get-bookmark bookmark))
-  (let ((bname            (bmkp-bookmark-name-from-record bookmark))
+  (let ((print-circle     bmkp-propertize-bookmark-names-flag) ; For `pp-to-string'
+        (print-length     nil)          ; For `pp-to-string'
+        (print-level      nil)          ; For `pp-to-string'
+        (bname            (bmkp-bookmark-name-from-record bookmark))
         (buf              (bmkp-get-buffer-name bookmark))
         (file             (bookmark-get-filename bookmark))
         (image-p          (bmkp-image-bookmark-p bookmark))
@@ -8605,7 +8608,7 @@ the file is an image file then the description includes the following:
                                                         (bookmark-prop-get bookmark 'sequence)
                                                         "\n\t")
                                              "\n"))
-                   (function-p       (let ((fn  (bookmark-prop-get bookmark 'function)))
+                   (function-p       (let ((fn            (bookmark-prop-get bookmark 'function)))
                                        (if (symbolp fn)
                                            (format "Function:\t\t%s\n" fn)
                                          (format "Function:\n%s\n"
@@ -8718,11 +8721,14 @@ If it is a record then it need not belong to `bookmark-alist'."
   ;; Work with a copy of the bookmark, so we can unpropertize the name.
   (setq bookmark  (copy-sequence (bookmark-get-bookmark bookmark)))
   (help-setup-xref (list #'bmkp-describe-bookmark-internals bookmark) (interactive-p))
-  (let* ((bname      (copy-sequence (bmkp-bookmark-name-from-record bookmark)))
-         (IGNORE     (set-text-properties 0 (length bname) nil bname)) ; Strip properties from name.
-         (bmk        (cons bname (bmkp-bookmark-data-from-record bookmark))) ; Fake bmk with stripped name.
-         (help-text  (format "Bookmark `%s'\n%s\n\n%s" bname (make-string (+ 11 (length bname)) ?-)
-                             (pp-to-string bmk))))
+  (let* ((bname         (copy-sequence (bmkp-bookmark-name-from-record bookmark)))
+         (IGNORE        (set-text-properties 0 (length bname) nil bname)) ; Strip properties from name.
+         (bmk           (cons bname (bmkp-bookmark-data-from-record bookmark))) ; Fake bmk with stripped name.
+         (print-circle  bmkp-propertize-bookmark-names-flag) ; For `pp-to-string'
+         (print-length  nil)            ; For `pp-to-string'
+         (print-level   nil)            ; For `pp-to-string'
+         (help-text     (format "Bookmark `%s'\n%s\n\n%s" bname (make-string (+ 11 (length bname)) ?-)
+                                (pp-to-string bmk))))
     (bmkp-with-help-window "*Help*" (princ help-text))
     help-text))
 
