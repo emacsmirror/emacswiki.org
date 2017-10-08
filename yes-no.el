@@ -8,9 +8,9 @@
 ;; Created: Thu Aug 17 11:12:21 2017 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct  1 15:05:27 2017 (-0700)
+;; Last-Updated: Sat Oct  7 20:49:54 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 498
+;;     Update #: 504
 ;; URL: https://www.emacswiki.org/emacs/download/yes-no.el
 ;; Doc URL: 
 ;; Keywords: help
@@ -99,22 +99,19 @@
 ;;  To take advantage of this library, consider adding CALLER to your
 ;;  calls of `yes-or-no-p' and `y-or-n-p'.
 ;;
-;;  As a user, you can persist your preference for a given CALLER by
-;;  adding this to your init file, where VALUE is the prompting
-;;  function you prefer for CALLER:
-;;
-;;  (put CALLER 'yes/no-prompting VALUE)
+;;  As a user, you can set your prompting preference for any callers
+;;  you like, by customizing option `yn-prompting-alist'.  The entries
+;;  in this alist associate a caller with a prompting function
+;;  (`yes-or-no-p' or `y-or-n-p').
 ;;
 ;;  For example, to prefer `y-or-n-p' for the prompting done by
-;;  `help-mode-revert-buffer' you would use this:
-;;
-;;  (put 'help-mode-revert-buffer 'yes/no-prompting 'y-or-n-p)
-;;
+;;  `help-mode-revert-buffer' you would customize the option so that
+;;  it has this entry: (help-mode-revert-buffer . y-or-n-p).
 ;;
 ;;  User options defined here:
 ;;
 ;;    `yn-allow-caller-specific-yes/no-flag',
-;;    `yn-allow-completion-for-yes/no-flag'.
+;;    `yn-allow-completion-for-yes/no-flag', `yn-prompting-alist'.
 ;;
 ;;
 ;;  ***** NOTE: The following predefined functions have been REDEFINED
@@ -128,6 +125,8 @@
 ;; 
 ;;(@* "Change log")
 ;;
+;; 2017/10/08 dadams
+;;     Added option yn-prompting-alist.  Change from using a symbol property to using an alist.
 ;; 2017/10/01 dadams
 ;;     Created.
 ;;
@@ -172,8 +171,9 @@ Don't forget to mention your Emacs and library versions."))
   "*Non-nil means let users specify yes/no prompting for a given caller.
 This means that an invocation of `yes-or-no-p' or `y-or-n-p' that
 passes a second, function-symbol CALLER argument uses whichever of
-those prompting functions is the value of symbol CALLER's
-`yes/no-prompting' property.
+those prompting functions is the value of symbol CALLER's entry in
+option `yn-prompting-alist'.  If there is no CALLER entry in that
+option value then there no change to the yes/no prompting in CALLER.
 
 A nil value means use the default yes/no prompting behavior for all
 callers; ignore any optional CALLER function for `yes-or-no-p' and
@@ -187,6 +187,26 @@ See also option `yn-allow-completion-for-yes/no-flag'."
 Note that if `yn-allow-caller-specific-yes/no-flag' is non-nil then
 completion is allowed for answers other than `yes' and `no'."
   :type 'boolean :group 'yes-no)
+
+(defcustom yn-prompting-alist ()
+  "Alist defining prompting for specific caller functions.
+Entries have the form (CALLER . PROMPT-FUNCTION), where CALLER is a
+function defined to call prompting function `yes-or-no-p' or
+`y-or-n-p' and PROMPT-FUNCTION is one of those prompting functions.
+
+The effect of entry (CALLER . PROMPT-FUNCTION) is to use
+PROMPT-FUNCTION in CALLER, in place of whatever yes/no prompt function
+was defined for it.
+
+PROMPT-FUNCTION can also be nil, which acts the same as if
+\(CALLER . nil) is absent."
+  :group 'yes-no
+  :type '(alist
+          :key-type   (symbol :tag "Caller function")
+          :value-type (choice
+                       (const :tag "Prompt using `yes-or-no-p'"             yes-or-no-p)
+                       (const :tag "Prompt using `y-or-n-p'"                y-or-n-p)
+                       (const :tag "Default - Prompt as originally defined" nil))))
 
 (defun yes-or-no-p (prompt &optional caller)
   "Ask user a yes-or-no question.
@@ -204,22 +224,27 @@ is nil and `use-dialog-box' is non-nil.
 If CALLER is non-nil then it is the symbol of a function that calls
 `yes-or-no-p'.  In this case:
 
-* If CALLER has property `yes/no-prompting' with value `y-or-n-p' then
-  just call `y-or-n-p'.  That property value means that CALLER should
-  interpret `yes-or-no-p' as `y-or-n-p'.
+* If the value of CALLER in option `yn-prompting-alist' is `y-or-n-p'
+  then just call `y-or-n-p'.  This means that CALLER should interpret
+  `yes-or-no-p' as `y-or-n-p'.
 
-* If CALLER has property `yes/no-prompting' with value `yes-or-no-p'
-  then the user can also answer `reset-to-default', meaning reset the
-  value of property `yes/no-prompting' for CALLER to nil, restoring
-  CALLER to the default behavior.
+* If the value of CALLER in option `yn-prompting-alist' is
+  `yes-or-no-p' then the user can also answer `reset-to-default',
+  meaning remove any CALLER entry from `yn-prompting-alist', restoring
+  CALLER to the default prompting behavior.
 
-* Otherwise, the user can also answer `use-y-or-n', meaning put
-  property `yes/no-prompting' on CALLER with value `y-or-n-p' and call
-  `y-or-n-p' immediately.  That is, answer `use-y-or-n' means function
-  `yes-or-no-p' uses `y-or-n-p' for CALLER from now on."
+* Otherwise, the user can also answer `use-y-or-n', meaning update
+  option `yn-prompting-alist' to give CALLER the value `y-or-n-p'
+  there, and call `y-or-n-p' immediately.  That is, answer
+  `use-y-or-n' means that function `yes-or-no-p' uses `y-or-n-p' for
+  CALLER from now on.
+
+Whenever the value of option `yn-prompting-alist' is changed it is
+also saved.  That is, the effect is persistent between Emacs
+sessions."
   (let* ((allow-y-n  (and caller  yn-allow-caller-specific-yes/no-flag))
-         (allow-def  (and allow-y-n  (eq (get caller 'yes/no-prompting) 'yes-or-no-p))))
-    (if (and allow-y-n  (eq (get caller 'yes/no-prompting) 'y-or-n-p))
+         (allow-def  (and allow-y-n  (eq 'yes-or-no-p (cdr (assq caller yn-prompting-alist))))))
+    (if (and allow-y-n  (eq 'y-or-n-p (cdr (assq caller yn-prompting-alist))))
         (y-or-n-p prompt caller)
       (let ((msg-will-use-def  (and allow-def
                                     (format "Function `%s' will use DEFAULT yes/no prompting from now on" caller)))
@@ -239,10 +264,14 @@ If CALLER is non-nil then it is the symbol of a function that calls
               (cond ((and (eq answer 'backup)  msg-will-use-def)
                      (message msg-will-use-def)
                      (sit-for 3.0)
-                     (put caller 'yes/no-prompting nil)
+                     (customize-save-variable 'yn-prompting-alist
+                                              (delete (assq caller yn-prompting-alist) yn-prompting-alist))
                      (yes-or-no-p prompt))
                     ((and (eq answer 'edit-replacement)  msg-will-use-y)
-                     (put caller 'yes/no-prompting 'y-or-n-p)
+                     (setq-default yn-prompting-alist
+                                   (delete (assq caller yn-prompting-alist) yn-prompting-alist))
+                     (customize-save-variable 'yn-prompting-alist
+                                              (push (cons caller 'y-or-n-p) yn-prompting-alist))
                      (message msg-will-use-y)
                      (sit-for 3.0)
                      (y-or-n-p prompt caller))
@@ -273,12 +302,16 @@ If CALLER is non-nil then it is the symbol of a function that calls
                   ((and msg-will-use-def  (eq input 'reset-to-default))
                    (message msg-will-use-def)
                    (sit-for 3.0)
-                   (put caller 'yes/no-prompting nil)
+                   (customize-save-variable 'yn-prompting-alist
+                                            (delete (assq caller yn-prompting-alist) yn-prompting-alist))
                    (yes-or-no-p prompt))
                   ((and msg-will-use-y  (eq input 'use-y-or-n))
                    (message msg-will-use-y)
                    (sit-for 3.0)
-                   (put caller 'yes/no-prompting 'y-or-n-p)
+                   (setq-default yn-prompting-alist
+                                 (delete (assq caller yn-prompting-alist) yn-prompting-alist))
+                   (customize-save-variable 'yn-prompting-alist
+                                            (push (cons caller 'y-or-n-p) yn-prompting-alist))
                    (y-or-n-p prompt caller)))))))))
 
 
@@ -323,39 +356,30 @@ Under a windowing system, a dialog box is used if `last-nonmenu-event'
 is nil and `use-dialog-box' is non-nil.
 
 If CALLER is non-nil then it is the symbol of a function that calls
-`yes-or-no-p'.  In this case:
-
-* If CALLER has property `yes/no-prompting' with value `yes-or-no-p'
-  then just call `yes-or-no-p'.  That property value means that CALLER
-  should interpret `y-or-n-p' as `yes-or-no-p'.
-
-* If CALLER has property `yes/no-prompting' with value `y-or-n-p' then
-  the user can also answer \"^\", meaning reset the value of property
-  `yes/no-prompting' for CALLER to nil, restoring CALLER to the
-  default behavior.
-
-* Otherwise, the user can also answer \"e\", meaning put property
-  `yes/no-prompting' on CALLER with value `yes-or-no-p' and call
-  `yes-or-no-p' immediately.  That is, answer \"e\" means function
-  `y-or-n-p' uses `yes-or-no-p' for CALLER from now on.
-
-
-
-
-If CALLER is non-nil then it is the symbol of a function that calls
 `y-or-n-p'.  In this case:
 
-* The answer can also be \"e\", meaning from now on use `yes-or-no-p'
-  instead of`y-or-n-p', for CALLER.  (In this case, `yes-or-no-p' is
-  called immediately.)
+* If the value of CALLER in option `yn-prompting-alist' is
+  `yes-or-no-p' then just call `yes-or-no-p'.  This means that CALLER
+  should interpret `y-or-n-p' as `yes-or-no-p'.
 
-* If function `yes-or-no-p' has been redirected for CALLER to use
-  `y-or-no-p' then the answer can also be \"^\", meaning reset CALLER
-  to the default behavior (no redirection)."
-  (if (and caller  (eq (get caller 'yes/no-prompting) 'yes-or-no-p)  yn-allow-caller-specific-yes/no-flag)
+* If the value of CALLER in option `yn-prompting-alist' is `y-or-n-p'
+  then the user can also answer \"^\", meaning remove any CALLER entry
+  from `yn-prompting-alist', restoring CALLER to the default behavior.
+
+* Otherwise, the user can also answer \"e\", meaning update option
+  `yn-prompting-alist' to give CALLER the value `yes-or-no-p' there,
+  and call `yes-or-no-p' immediately.  That is, answer \"e\" means
+  that function `y-or-n-p' uses `yes-or-no-p' for CALLER from now on.
+
+Whenever the value of option `yn-prompting-alist' is changed it is
+also saved.  That is, the effect is persistent between Emacs
+sessions."
+  (if (and caller
+           (eq 'yes-or-no-p (cdr (assq caller yn-prompting-alist)))
+           yn-allow-caller-specific-yes/no-flag)
       (yes-or-no-p prompt caller)
     (let* ((allow-y-n  (and caller  yn-allow-caller-specific-yes/no-flag))
-           (allow-def  (and allow-y-n  (eq (get caller 'yes/no-prompting) 'y-or-n-p)))
+           (allow-def  (and allow-y-n  (eq 'y-or-n-p (cdr (assq caller yn-prompting-alist)))))
            (answer     'recenter)
            (oprompt    prompt)
            (padded     (lambda (prompt &optional dialog)
@@ -376,9 +400,13 @@ If CALLER is non-nil then it is the symbol of a function that calls
                          ((and allow-def  (string= str "^"))
                           (message "Function `%s' will use DEFAULT yes/no prompting from now on" caller)
                           (sit-for 3.0)
-                          (put caller 'yes/no-prompting nil))
+                          (customize-save-variable 'yn-prompting-alist
+                                                   (delete (assq caller yn-prompting-alist) yn-prompting-alist)))
                          ((and allow-y-n  (member str '("e" "E")))
-                          (put caller 'yes/no-prompting 'yes-or-no-p)
+                          (setq-default yn-prompting-alist
+                                        (delete (assq caller yn-prompting-alist) yn-prompting-alist))
+                          (customize-save-variable 'yn-prompting-alist
+                                                   (push (cons caller 'yes-or-no-p) yn-prompting-alist))
                           (message "Function `%s' will use `YES-OR-NO-P' prompting from now on" caller)
                           (sit-for 3.0)
                           (setq answer      'exit
@@ -404,10 +432,14 @@ If CALLER is non-nil then it is the symbol of a function that calls
              (cond ((and allow-def  (eq answer 'backup))
                     (message "Function `%s' will use DEFAULT yes/no prompting from now on" caller)
                     (sit-for 3.0)
-                    (put caller 'yes/no-prompting nil)
+                    (customize-save-variable 'yn-prompting-alist
+                                             (delete (assq caller yn-prompting-alist) yn-prompting-alist))
                     (y-or-n-p oprompt))
                    ((and allow-y-n  (eq answer 'edit-replacement))
-                    (put caller 'yes/no-prompting 'yes-or-no-p)
+                    (setq-default yn-prompting-alist
+                                  (delete (assq caller yn-prompting-alist) yn-prompting-alist))
+                    (customize-save-variable 'yn-prompting-alist
+                                             (push (cons caller 'yes-or-no-p) yn-prompting-alist))
                     (message "Function `%s' will use `YES-OR-NO-P' prompting from now on" caller)
                     (sit-for 3.0)
                     (setq answer  'exit)
@@ -436,10 +468,14 @@ If CALLER is non-nil then it is the symbol of a function that calls
                       (cond ((and allow-def  (eq answer 'backup))
                              (message "Function `%s' will use DEFAULT yes/no prompting from now on" caller)
                              (sit-for 3.0)
-                             (put caller 'yes/no-prompting nil)
+                             (customize-save-variable 'yn-prompting-alist
+                                                      (delete (assq caller yn-prompting-alist) yn-prompting-alist))
                              (y-or-n-p oprompt))
                             ((and allow-y-n  (eq answer 'edit-replacement))
-                             (put caller 'yes/no-prompting 'yes-or-no-p)
+                             (setq-default yn-prompting-alist
+                                           (delete (assq caller yn-prompting-alist) yn-prompting-alist))
+                             (customize-save-variable 'yn-prompting-alist
+                                                      (push (cons caller 'yes-or-no-p) yn-prompting-alist))
                              (message "Function `%s' will use `YES-OR-NO-P' prompting from now on" caller)
                              (sit-for 3.0)
                              (setq answer  'exit)
