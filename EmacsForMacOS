@@ -481,7 +481,7 @@ $ mv nextstep/Emacs.app /Applications
  
 === Changing the Scrollbar Appearance ===
 
-The size of the "knob" in a given window's scrollbar is proportional to how much of the buffer is displayed in the window.  When the whole buffer is displayed in the window, the knob takes up the entire scrollbar.  I find this distracting (not too mention aesthetically objectionable), and much prefer the behavior of applications like iTerm that show an empty scrollbar slot in such cases.  
+The size of the "knob" in a given window's scrollbar is proportional to how much of the buffer is displayed in the window.  When the whole buffer is displayed in the window, the knob takes up the entire scrollbar.  I find this distracting (not to mention aesthetically objectionable), and much prefer the behavior of applications like iTerm that show an empty scrollbar slot in such cases.  
 
 You can get that effect in Emacs by making a small change to src/nsterm.m.   Look for this bit of code:
 
