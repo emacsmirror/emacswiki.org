@@ -8,9 +8,9 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 09:50:41 2017 (-0800)
+;; Last-Updated: Wed Oct 11 08:55:12 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 798
+;;     Update #: 799
 ;; URL: https://www.emacswiki.org/emacs/download/setup.el
 ;; Keywords: internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -51,6 +51,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/10/11 dadams
+;;     Do not turn on icomplete-mode.
 ;; 2015/09/27 dadams
 ;;     lisp-indentation-hack:
 ;;       Use common-lisp-indent-function from flet & labels for cl-flet & cl-labels.
@@ -243,7 +245,8 @@
 (column-number-mode 1)
 (when (fboundp 'size-indication-mode) (size-indication-mode 1)) ; Emacs 21 and 22.
 
-(eval-after-load "icomplete+" '(icomplete-mode 99))
+;; Removed 2017-10-11.
+;; (eval-after-load "icomplete+" '(icomplete-mode 99))
 
 (when (fboundp 'echo-bell-mode) (echo-bell-mode 1)) ; Turn on visual bell in echo area.
 
