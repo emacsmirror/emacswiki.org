@@ -8,9 +8,9 @@
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 15:31:51 2017 (-0800)
+;; Last-Updated: Wed Oct 11 08:54:40 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 2006
+;;     Update #: 2007
 ;; URL: https://www.emacswiki.org/emacs/download/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -58,6 +58,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/10/11 dadams
+;;     Do not turn on icomplete-mode.
 ;; 2016/03/16 dadams
 ;;     Do not use latex-mode for *.log files.
 ;; 2015/03/26 dadams
@@ -341,7 +343,8 @@
 ;;;                        (delete-1-window-frames-on ediff-control-buffer)))))
 ;;; (setq ediff-split-window-function 'ediff-use-separate-frames)
 
-(eval-after-load "icomplete+" '(icomplete-mode 99))
+;; Removed 2017-10-11.
+;; (eval-after-load "icomplete+" '(icomplete-mode 99))
 
 ;;; VC stuff.  I no longer use VC.
 ;;; (eval-after-load "vc"
