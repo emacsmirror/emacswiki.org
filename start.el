@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun 18 13:45:59 2017 (-0700)
+;; Last-Updated: Wed Oct 11 08:57:38 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 3072
+;;     Update #: 3075
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -35,7 +35,7 @@
 ;;   `font-lock-menus', `frame-cmds', `frame-fns', `fuzzy-match',
 ;;   `header2', `help+20', `hexrgb', `highlight', `highlight-chars',
 ;;   `icomplete', `icomplete+', `image-dired', `image-file', `imenu',
-;;   `imenu+', `info', `info+20', `isearch+', `iso-transl',
+;;   `imenu+', `info', `info+20', `isearch+', `iso-transl', `kmacro',
 ;;   `lacarte', `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
 ;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
@@ -84,6 +84,8 @@
 ;;
 ;; Change Log:
 ;;
+;; 2017/10/11 dadams
+;;    Load icomplete+.el only if icomplete.el is loaded.
 ;; 2017/06/18 dadams
 ;;     Autoload apropos+ for apropos-local-variable and apropos-local-value.
 ;; 2016/07/01 dadams
@@ -682,7 +684,7 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (require 'lacarte nil t)                ; Menu-bar menu-command completion and execution via keyboard.
 (require 'synonyms nil t)               ; Thesaurus.
 (when (> emacs-major-version 20) (require 'tool-bar+ nil t)) ; Extensions to `tool-bar.el'.
-(require 'icomplete+ nil t)             ; Sorted, colored icompletion
+(eval-after-load "icomplete" '(require 'icomplete+ nil t)) ; Sorted, colored icompletion
 ;;; (when (< emacs-major-version 21)
 ;;;   (require 'mkhtml nil t)               ; Create HTML from Emacs buffers/files.
 ;;;   (require 'cal-opts nil t)             ; Calendar and diary options.
