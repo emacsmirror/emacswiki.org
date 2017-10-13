@@ -16,7 +16,7 @@ with Emacs, see CommonLisp and [[Scheme]].
 
 EmacsLispReference is the official Emacs Lisp documentation. It is built into the Emacs Info pages and is the go-to for most Elisp programmers. It is shipped with Emacs and can be accessed by the menu bar, with `M-x menu-bar-read-lispref', or from the top page of InfoMode.
 
-EmacsLispIntro is a book for non-programmers available from the FreeSoftwareFoundation and is shipped with Emacs. Its command is `M-x menu-bar-read-lispinfo'. 
+EmacsLispIntro is a book for non-programmers available from the FreeSoftwareFoundation and is shipped with Emacs. Its command is `M-x menu-bar-read-lispintro'. 
 
 == Getting Started == 
 The links below will help you get started creating your own ideal text editor. 
