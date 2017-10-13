@@ -4,10 +4,8 @@ There are good Debian and Ubuntu packages that provide emacs versions newer than
 
 Bleeding-edge snapshots are generated weekly for amd64 Debian/unstable. Packages available here: [[http://emacs.secretsauce.net/|http://emacs.secretsauce.net/]]
 
-For Debian unstable, testing, stable and oldstable you can find packages built directly from Emacs git here:
-[[http://londo.ganneff.de/|http://londo.ganneff.de/]] (snapshots have been generated at least through 2016-09)
-
-Packages at [[http://emacs.naquadah.org/|http://emacs.naquadah.org/]] are no longer maintained as of 11 Jan 2014. They are reportedly maintained by Dima Kogan at [[http://emacs.secretsauce.net/|http://emacs.secretsauce.net/]].
+For Debian testing, stable and oldstable you can find packages built directly from Emacs git master here:
+[[http://emacs.ganneff.de/|http://emacs.ganneff.de/]] - Build status can be seen at [[https://git.nsb-software.de/joerg/emacs/pipelines||https://git.nsb-software.de/joerg/emacs/pipelines]]
 
 == Ubuntu packages ==
 
