@@ -56,6 +56,55 @@ alias semac="sudo emacsclient -t"                # used to be "sudo emacs -nw"
 alias emacsc="emacsclient -c -a emacs"           # new - opens the GUI with alternate non-daemon
 </pre>
 
+
+=== Multiple XServers (DISPLAYs) + emacsclient ===
+Each emacs shell have its own environment variables, which is loaded from the frame-parameters which opened that shell.
+When working on this shell process from more than one DISPLAYs, it occurs that emacsclient is opened on the DISPLAY from the original frame which created that shell.
+To fix this problem we will hook the frame creation function to make sure emacsclient will be opened on the right DISPLAY.
+
+init.el:
+<pre>
+; patches the call at server.el:1237
+(defun server-create-window-system-frame-hook(orig-fun &rest args)
+  (let (
+        (expected-display (car-safe args))
+        (frame-display (frame-parameter (selected-frame) 'display))
+        (other-arguments (cdr-safe args))
+        )
+;  (message "Create server params: %S, frame params: %S" args frame-display)
+;  (message "CAR %S is iq %S" expected-display (string-equal (car-safe args) "localhost:current"))
+;  (message "CDR %S" other-arguments)
+;  (message "REJOIN %S" (cons frame-display other-arguments))
+  (if (null frame-display)
+      (if (string-equal expected-display "localhost:current")
+          (apply orig-fun (cons (getenv "DISPLAY") other-arguments))
+        (apply orig-fun args)
+        )
+    
+    (if (string-equal expected-display "localhost:current")
+        (apply orig-fun (cons frame-display other-arguments))
+      (apply orig-fun args)
+      )
+    )
+  )
+  
+  )
+
+(advice-add 'server-create-window-system-frame :around #'server-create-window-system-frame-hook)
+
+
+</pre>
+
+.bashrc:
+
+<pre>
+export VISUAL="emacsclient -c --display=localhost:current -a emacs"
+
+</pre>
+
+Known issues - trying to run emacsclient from DISPLAY with no previous emacsclients, where there is a different DISPLAY with existing emacsclients, the emacsclient still opens in the wrong DISPLAY. Fixing it would probably require recompilation of emacsclient to make it send BOTH the needed DISPLAY to show the frame and the localhost:current flag.
+
+
 === Comprehensive init script ===
 
 Here a little init script for GNU Debian/Ubuntu
