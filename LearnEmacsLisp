@@ -23,7 +23,7 @@ Don't worry - even if you're an EmacsNewbie, you can get the hang of it. Learnin
 * Read the ''Emacs Lisp Introduction'': EmacsLispIntro. Use `C-h i', then choose `Emacs Lisp Intro'.  You can also read this manual [[https://www.gnu.org/software/emacs/manual/html_node/eintr/index.html on the Web]].
 * Read the ''Emacs Lisp Reference'' manual: EmacsLispReference. Use `C-h i', then choose `Elisp'. You can also read this manual [[https://www.gnu.org/software/emacs/manual/html_node/elisp/index.html on the Web]].
 * [http://steve-yegge.blogspot.com/2008/01/emergency-elisp.html Emergency Elisp]: Good for people with programming backgrounds - by SteveYegge
-* [http://emacs-doctor.com/learn-emacs-lisp-in-15-minutes.html Learn Emacs Lisp in 15 Minutes]
+* [http://emacs-doctor.com/learn-emacs-lisp-in-15-minutes.html Learn Emacs Lisp in 15 Minutes] - by BastienGuerry, Org mode Maintainer.
 * [https://github.com/chrisdone/elisp-guide A quick guide to Emacs Lisp programming]
 * [http://emacslife.com/how-to-read-emacs-lisp.html Read Lisp, Tweak Emacs]
 * [https://github.com/caiorss/Emacs-Elisp-Programming Emacs - Elisp Programming and Customization]
