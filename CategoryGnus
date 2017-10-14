@@ -170,7 +170,7 @@ I use https://github.com/vapniks/org-dotemacs to store my gnus config code which
 
 == Getting Gnus ==
 
-TODO explain how to get it from git.  Preferably without creating a new page.
+Gnus is now developed as part of Emacs, the latest copy is in Emacs' git repository (see EmacsFromGit).
 
 == Merchandise ==
 
