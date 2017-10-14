@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Oct  8 15:26:40 2017 (-0700)
+;; Last-Updated: Sat Oct 14 13:33:26 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 3948
+;;     Update #: 3953
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2242,7 +2242,7 @@ for confirmation."
                                bmkp-variable-list-alist-only)                                 ; `V S'
 (bmkp-define-show-only-command snippet "Display (only) the snippet bookmarks."
                                bmkp-snippet-alist-only)                                       ; `w S'
-(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+(when (fboundp 'bmkp-eww-bookmark-p)    ; Emacs 25+
   (bmkp-define-show-only-command eww "Display (only) the EWW URL bookmarks."
                                  bmkp-eww-alist-only))                                        ; `W E S'
 (bmkp-define-show-only-command w3m "Display (only) the W3M URL bookmarks."
@@ -2750,7 +2750,7 @@ name must have."
   (interactive "p")
   (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-dired-bookmark-p nil msgp))
 
-(when (fboundp 'bmkp-eww-bookmark-p)
+(when (fboundp 'bmkp-eww-bookmark-p)    ; Emacs 25+
 
   ;; ;;;###autoload (autoload 'bmkp-bmenu-mark-eww-bookmarks "bookmark+")
   (defun bmkp-bmenu-mark-eww-bookmarks (&optional msgp) ; Bound to `W E M' in bookmark list
@@ -5600,7 +5600,7 @@ are marked or ALLP is non-nil."
 (define-key bookmark-bmenu-mode-map "W3M"                  'bmkp-bmenu-mark-w3m-bookmarks)
 (define-key bookmark-bmenu-mode-map "W3S"                  'bmkp-bmenu-show-only-w3m-bookmarks)
 
-(when (fboundp 'bmkp-bmenu-mark-eww-bookmarks)
+(when (fboundp 'bmkp-bmenu-mark-eww-bookmarks) ; Emacs 25+
   (define-key bookmark-bmenu-mode-map "WEM"                'bmkp-bmenu-mark-eww-bookmarks)
   (define-key bookmark-bmenu-mode-map "WES"                'bmkp-bmenu-show-only-eww-bookmarks)
   )
@@ -5842,7 +5842,7 @@ are marked or ALLP is non-nil."
                              "Using Multiple Buffers for W3M"
                              "Using a new buffer when jumping to a W3M bookmark is now %s"
                              "Toggle the value of option `bmkp-w3m-allow-multiple-buffers-flag'"))
-(when (boundp 'bmkp-eww-allow-multiple-buffers-flag) ; Emacs 24.4+
+(when (boundp 'bmkp-eww-allow-multiple-buffers-flag) ; Emacs 25+
   (define-key bmkp-bmenu-toggle-menu [bmkp-toggle-eww-allow-multiple-buffers]
     (bmkp-menu-bar-make-toggle bmkp-toggle-eww-allow-multiple-buffers bmkp-eww-allow-multiple-buffers-flag
                                "Using Multiple Buffers for EWW"
