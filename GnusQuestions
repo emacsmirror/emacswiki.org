@@ -1,8 +1,8 @@
 == Where to find the FAQs (frequently asked questions)==
 
 They are included with Gnus. Use <code>C-h i m gnus RET</code> to see Gnus' info page.
-You can also see the list of questions on-line in [http://gnus.org/manual/gnus_toc.html Gnus manual] (look for section 10.9 or so).
-If you download the CVS version ([[GnusCvs]]), the FAQs are in the file gnus-faq.texi.
+You can also see the list of questions on-line in the [https://www.gnu.org/software/emacs/manual/html_node/gnus/Frequently-Asked-Questions.html Gnus manual].
+If you download the git version (EmacsFromGit), the FAQs are in the file [http://git.savannah.gnu.org/cgit/emacs.git/tree/doc/misc/gnus-faq.texi doc/misc/gnus-faq.texi].
 
 == Some Newbie Questions of a long-time VM user ==
 Many, many pieces of documentation are living in the web concerning Gnus.  Funny, though, that they always seem to show the same thing.  Currently I'm not so sure, whether I am just plain stupid, or the questions that I've got are too far from the real world.  So I won't open a new wiki page for the moment and instead collect them here.
