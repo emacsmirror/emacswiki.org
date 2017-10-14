@@ -8,9 +8,9 @@
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
 ;; Version: 2017.03.31
-;; Last-Updated: Fri Mar 31 18:46:43 2017 (-0700)
+;; Last-Updated: Sat Oct 14 13:26:45 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 15039
+;;     Update #: 15040
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, projects, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -21,10 +21,10 @@
 ;;   `apropos', `apropos+', `avoid', `bookmark', `bookmark+-1',
 ;;   `bookmark+-bmu', `bookmark+-key', `bookmark+-lit', `ffap',
 ;;   `fit-frame', `frame-fns', `help+20', `info', `info+20',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked', `pp',
-;;   `pp+', `second-sel', `strings', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `kmacro', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `naked', `pp', `pp+', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -169,7 +169,7 @@
 (require 'bookmark)                     ; Vanilla Emacs.
 
 ;;;###autoload (autoload 'bmkp-version-number "bookmark+")
-(defconst bmkp-version-number "2013.04.13")
+(defconst bmkp-version-number "2017.10.14")
 
 ;;;###autoload (autoload 'bmkp-version "bookmark+")
 (defun bmkp-version ()
