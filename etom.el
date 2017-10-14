@@ -1,12 +1,22 @@
 ;;; etom.el --- Emacs to Maya communication
 
 ;; Copyright (C) 2007 Slavomir Kaslev
+;; Copyright (C) 2009 Koichi Tamura
+;; Copyright (C) 2017 Michael Abrahams
 
 ;; Author: Slavomir Kaslev <slavomir.kaslev@gmail.com>
-;; Maintainer: Slavomir Kaslev <slavomir.kaslev@gmail.com>
+;; Maintainer: Michael Abrahams <miabraha@gmail.com>
 ;; Created: 17 Jun 2007
-;; Version: etom.el 0.02 dated 07/07/03 at 16:45:51
-;; Keywords: emacs, maya, mel
+;; Version: etom.el 0.1, 13/10/2017
+;; Keywords: Emacs, Maya, MEL, Python
+
+;; Modified the original script by Slavomir Kaslev to send Python scripts
+;; Modified By: Koichi Tamura <hohehohe2@gmail.com>
+;; Date: 28 Jun 2009
+
+;; Modified to remove broken MEL support.
+;; Michael Abrahams <miabraha@gmail.com>
+;; Datee: 13 Oct 2017
 
 ;; This file is NOT part of Emacs.
 ;;
@@ -27,23 +37,37 @@
 
 ;; Commentary:
 
-;; This package is used for communication between emacs and Maya. For
-;; example you can use it together with Shuji Narazaki's mel-mode to
-;; send pieces of mel code to Maya and get the results back in emacs.
+;; This package is used for communication between Emacs and Maya.
+;; It supports Python only.
 
-;; To use this, insert in your ~/.emacs file:
+;; To open a command port in Maya, use this code.
+;;
+;; Python (userSetup.py):
+;; maya.cmds.commandPort(name=":7002", sourceType="python", echoOutput=True)
+;;
+;; MEL (userSetup.mel):
+;; commandPort -name ":7002" -sourceType "python" -echoOutput;
+
+;; To automatically load EtoM for Python, insert in your ~/.emacs file:
 ;; (add-hook
-;;  'mel-mode-hook
+;;  'python-mode-hook
 ;;  (lambda ()
 ;;    (require 'etom)
 ;;    (setq etom-default-host "localhost")
-;;    (setq etom-default-port 2222)
+;;    (setq etom-default-port 7002)
 ;;    (local-set-key (kbd "C-c C-r") 'etom-send-region)
 ;;    (local-set-key (kbd "C-c C-c") 'etom-send-buffer)
 ;;    (local-set-key (kbd "C-c C-l") 'etom-send-buffer)
 ;;    (local-set-key (kbd "C-c C-z") 'etom-show-buffer)))
 
- 
+
+;; Note about MEL support.
+;; A previous version of this code attempted to provide both MEL and Python
+;; support by opening a MEL commandport and sending Python calls by wrapping
+;; them in the function python(). Some undocumented changes in Maya's
+;; commandport broke MEL support, and only Python currently works.
+
+
 ;;; Code:
 
 (require 'comint)
@@ -53,7 +77,7 @@
   :type 'string
   :group 'etom)
 
-(defcustom etom-default-port 2222
+(defcustom etom-default-port 7002
   "Default port number to connect to Maya."
   :type 'integer
   :group 'etom)
@@ -70,6 +94,19 @@
 
 (defvar etom-buffer nil
   "Buffer used for communication with Maya.")
+
+(defvar etom-cmd-template
+  (concat
+   "import __main__\n"
+   "f = open(\"%s\")\n"
+   "try:\n"
+   "  c = f.read()\n"
+   "  exec(c,  __main__.__dict__, __main__.__dict__)\n"
+   "finally:\n"
+   "  f.close()"
+   )
+  "Python command template to execute a script file.")
+
 
 (defun etom-show-buffer ()
   "Make sure `etom-buffer' is being displayed."
@@ -116,33 +153,33 @@
       (setq prompt-found (and (etom-prompt-line) (not (= (count-lines (point-min) (point-max)) last-prompt)))))))
 
 (defun etom-send-current-line ()
-  "Send current line to Maya."
+  "Send current line to Maya as Python."
   (interactive)
   (let ((start (save-excursion (beginning-of-line) (point)))
         (end (save-excursion (end-of-line) (point))))
     (etom-send-region start end)))
 
 (defun etom-send-region (start end)
-  "Send region to Maya."
+  "Send region to Maya as Python."
   (interactive "r")
   (if (not (etom-connected))
       (etom-connect))
   (if etom-always-show
       (etom-show-buffer))
-  (let ((tempfile (make-temp-file "etom-")))
+  (let* ((tempfile (make-temp-file "etom-"))
+         (tempfile-slashes (replace-regexp-in-string "\\\\" "\\\\\\\\" tempfile ))
+         (pycmd (format etom-cmd-template tempfile-slashes tempfile-slashes)))
     (write-region start end tempfile)
-    ;; send source(tempfile)
+    ;; Send temporary file
     (with-current-buffer etom-buffer
       (let ((last-prompt (count-lines (point-min) (point-max))))
         (goto-char (point-max))
-        (comint-simple-send (get-buffer-process (current-buffer))
-                            (format "source \"%s\";"
-                                    (replace-in-string tempfile "\\\\" "\\\\\\\\" )))
+        (comint-simple-send (get-buffer-process (current-buffer)) pycmd)
         (etom-wait-for-prompt last-prompt)
         (delete-file tempfile)))))
 
 (defun etom-send-region-2 (start end)
-  "Send region to Maya."
+  "Send region to Maya as Python."
   (interactive "r")
   (if (not (etom-connected))
       (etom-connect))
@@ -152,7 +189,7 @@
                       (buffer-substring start end)))
 
 (defun etom-send-buffer ()
-  "Send whole buffer to Maya."
+  "Send whole buffer to Maya as Python."
   (interactive)
   (etom-send-region (point-min) (point-max)))
 
