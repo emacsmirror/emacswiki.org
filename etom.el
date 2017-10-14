@@ -16,7 +16,7 @@
 
 ;; Modified to remove broken MEL support.
 ;; Michael Abrahams <miabraha@gmail.com>
-;; Datee: 13 Oct 2017
+;; Date: 13 Oct 2017
 
 ;; This file is NOT part of Emacs.
 ;;
@@ -43,10 +43,10 @@
 ;; To open a command port in Maya, use this code.
 ;;
 ;; Python (userSetup.py):
-;; maya.cmds.commandPort(name=":7002", sourceType="python", echoOutput=True)
+;; maya.cmds.commandPort(name=":2222", sourceType="python", echoOutput=True)
 ;;
 ;; MEL (userSetup.mel):
-;; commandPort -name ":7002" -sourceType "python" -echoOutput;
+;; commandPort -name ":2222" -sourceType "python" -echoOutput;
 
 ;; To automatically load EtoM for Python, insert in your ~/.emacs file:
 ;; (add-hook
@@ -54,7 +54,7 @@
 ;;  (lambda ()
 ;;    (require 'etom)
 ;;    (setq etom-default-host "localhost")
-;;    (setq etom-default-port 7002)
+;;    (setq etom-default-port 2222)
 ;;    (local-set-key (kbd "C-c C-r") 'etom-send-region)
 ;;    (local-set-key (kbd "C-c C-c") 'etom-send-buffer)
 ;;    (local-set-key (kbd "C-c C-l") 'etom-send-buffer)
@@ -77,7 +77,7 @@
   :type 'string
   :group 'etom)
 
-(defcustom etom-default-port 7002
+(defcustom etom-default-port 2222
   "Default port number to connect to Maya."
   :type 'integer
   :group 'etom)
