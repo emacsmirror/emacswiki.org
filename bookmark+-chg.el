@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Oct  8 15:33:24 2017 (-0700)
+;; Last-Updated: Sat Oct 14 13:35:57 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 16351
+;;     Update #: 16353
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1329,6 +1329,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2017/10/14 dadams
+;;     All EWW stuff is for Emacs 25+, not Emacs 24.4+.
 ;; 2017/10/08 dadams
 ;;     bmkp-bmenu-describe-marked: Bind print-(circle|length|level) so pp-to-string prints all.
 ;; 2017/07/03 dadams
@@ -1960,6 +1962,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-key.el'")
 ;;
+;; 2017/10/14 dadams
+;;     All EWW stuff is for Emacs 25+, not Emacs 24.4+.
 ;; 2017/01/10 dadams
 ;;     Applied renaming: bmkp-replace-eww-keys-flag to bmkp-eww-replace-keys-flag.
 ;; 2017/01/02 dadams
