@@ -8,8 +8,8 @@ You can try the #gnus channel on Freenode, if you want to talk about Gnus on Int
 
 It seems that this website hosted formerly the Gnus frequently asked questions (see [[GnusQuestions]]).
 The FAQs are now part of the Gnus distribution and you can read them in the info page: use <code>C-h i m gnus RET</code> to get there.
-You can also find them in their section at the [http://gnus.org/manual/gnus_toc.html Gnus manual].
-The FAQs are in the file gnus-faq.texi from the Gnus CVS repository ([http://gnus.org/distribution.html]); see it here: [http://quimby.gnus.org/cgi-bin/cvsweb.cgi/gnus/texi/gnus-faq.texi gnus-faq.texi]
+You can also find them in [their section at the https://www.gnu.org/software/emacs/manual/html_node/gnus/Frequently-Asked-Questions.html Gnus manual].
+The FAQs are in the file gnus-faq.texi from the Emacs git repository; see it here: [http://git.savannah.gnu.org/cgit/emacs.git/tree/doc/misc/gnus-faq.texi]
 
 ----
 CategoryGnus
