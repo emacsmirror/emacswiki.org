@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2010-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  1 15:34:50 2011 (-0700)
-;; Last-Updated: Sun Mar 12 11:33:27 2017 (-0700)
+;; Last-Updated: Sat Oct 14 13:21:54 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 790
+;;     Update #: 793
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-key.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -182,7 +182,7 @@ Each value of the list is a prefix key bound to keymap
 (defvar bmkp-bmenu-menubar-menu)        ; In `bookmark+-bmu.el'.
 (defvar bmkp-bmenu-toggle-menu)         ; In `bookmark+-bmu.el'.
 (defvar bmkp-crosshairs-flag)           ; In `bookmark+-1.el'.
-(defvar bmkp-eww-replace-keys-flag)     ; In `bookmark+-1.el' (Emacs 24.4+).
+(defvar bmkp-eww-replace-keys-flag)     ; In `bookmark+-1.el' (Emacs 25+).
 (defvar bmkp-prompt-for-tags-flag)      ; In `bookmark+-1.el'.
 (defvar bmkp-save-new-location-flag)    ; In `bookmark+-1.el'.
 (defvar diredp-bookmark-menu)           ; In `dired+.el'.
@@ -418,17 +418,15 @@ Each value of the list is a prefix key bound to keymap
 (define-key bmkp-jump-other-window-map "d"    'bmkp-dired-jump-other-window)              ; `C-x 4 j d'
 
 (eval-after-load "eww"
-  '(when (or (> emacs-major-version 24)  (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
+  '(when (> emacs-major-version 24)     ; Emacs 25+
     (when bmkp-eww-replace-keys-flag
       (bmkp-remap 'eww-add-bookmark       'bookmark-set                eww-mode-map)
       (bmkp-remap 'eww-list-bookmarks     'bookmark-bmenu-list         eww-mode-map)
       (bmkp-remap 'eww-next-bookmark      'bmkp-previous-url-bookmark  eww-mode-map)
-      (bmkp-remap 'eww-previous-bookmark  'bmkp-previous-url-bookmark  eww-mode-map))))
+      (bmkp-remap 'eww-previous-bookmark  'bmkp-previous-url-bookmark  eww-mode-map))
+    (define-key bmkp-jump-map              "e"  'bmkp-eww-jump)                             ; `C-x j e'
+    (define-key bmkp-jump-other-window-map "e"  'bmkp-eww-jump-other-window)))            ; `C-x 4 j e'
 
-(when (fboundp 'bmkp-eww-jump)          ; Emacs 24.4+
-  (define-key bmkp-jump-map              "e"  'bmkp-eww-jump)                               ; `C-x j e'
-  (define-key bmkp-jump-other-window-map "e"  'bmkp-eww-jump-other-window)                ; `C-x 4 j e'
-  )
 (define-key bmkp-jump-map              "f"    'bmkp-file-jump)                              ; `C-x j f'
 (define-key bmkp-jump-other-window-map "f"    'bmkp-file-jump-other-window)               ; `C-x 4 j f'
 (define-key bmkp-jump-map              "\C-f" 'bmkp-find-file)                            ; `C-x j C-f'
