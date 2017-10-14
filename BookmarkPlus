@@ -94,6 +94,18 @@ libraries <tt>[[col-highlight.el]]</tt>, ##hl-line##, <tt>[[hl-line+.el]]</tt>, 
 [:ObtainingBookmarkPlus]
 === Where to Obtain Bookmark+ Files ===
 
+'''UPDATE, 2017-10:'''
+
+----
+
+[[MELPA]] has decided to no longer accept Lisp libraries from Emacs Wiki.  This includes my libraries, even though these libraries are read-only (administrator lock on the wiki pages).  Too bad.  This means that you ''must download '''Bookmark+''' only from Emacs Wiki.  Sorry about that.  I upload '''Bookmark+''' files only to to the wiki.
+
+JonasBernoulli 's GitHub mirror for '''Bookmark+''' is also apparently not being updated, or at least not frequently.
+
+The ''following information is therefore out-of-date'', though you might still be able to get an old version of '''Bookmark+''' these ways.
+
+----
+
 Besides the %%EmacsWiki%% ElispArea, which always has the latest source files for '''Bookmark+''' you can the get '''Bookmark+''' files in the following ways:
 
 * You can download '''Bookmark+''' from [[MELPA]].  If you use Emacs 24 or later, you can both download and install it from within Emacs, easily.  To do that, you first need to add `melpa' to list `package-archives'.  Then use `M-x list-packages' and click `bookmark+' in the list of available packages.  Use code like this to add `melpa' to the list of available archives:
