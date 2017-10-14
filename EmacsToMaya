@@ -13,7 +13,7 @@ Download Lisp:etom.el and add this to your ~/.emacs file:
  (lambda ()
    (require 'etom)
    (setq etom-default-host "localhost")
-   (setq etom-default-port 7002)
+   (setq etom-default-port 2222)
    (local-set-key (kbd "C-c C-r") 'etom-send-region)
    (local-set-key (kbd "C-c C-c") 'etom-send-buffer)
    (local-set-key (kbd "C-c C-l") 'etom-send-buffer)
@@ -23,7 +23,7 @@ Download Lisp:etom.el and add this to your ~/.emacs file:
 You should also have an open command port in Maya. To do this execute
 
 <pre>
-maya.cmds.commandPort(name=":7002", sourceType="python", echoOutput=True)
+maya.cmds.commandPort(name=":2222", sourceType="python", echoOutput=True)
 </pre>
 
 or add it to you Maya startup file.
