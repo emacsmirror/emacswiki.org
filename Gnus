@@ -1,7 +1,8 @@
 [[es:Gnus-es]]
 The official home for Gnus is http://www.gnus.org.
 
-That's the place where you can get the latest copy of Gnus.  You can find pointers to all sorts of Gnus information in other languages there as well.
+You can find pointers to all sorts of Gnus information in other languages there as well.
+Gnus is now developed as part of Emacs, you can get the latest copy of Gnus from Emacs' git repository (see EmacsFromGit).
 
 The list of topics relating to Gnus is in the page '''[[CategoryGnus]]'''.
 
