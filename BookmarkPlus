@@ -98,7 +98,10 @@ libraries <tt>[[col-highlight.el]]</tt>, ##hl-line##, <tt>[[hl-line+.el]]</tt>, 
 
 ----
 
-[[MELPA]] has decided to no longer accept Lisp libraries from Emacs Wiki.  This includes my libraries, even though these libraries are read-only (administrator lock on the wiki pages).  Too bad.  This means that you ''must download '''Bookmark+''' only from Emacs Wiki.  Sorry about that.  I upload '''Bookmark+''' files only to to the wiki.
+[new:DrewAdams:2017-10-14 22:53 UTC]
+'''Bookmark+''', as well as my other libraries that are on %%EmacsWiki%%, used to be obtainable also from [[MELPA]].  You may still find some of them there, but they are likely ''not up-to-date''.
+
+[[MELPA]] has decided to no longer accept Lisp libraries from %%EmacsWiki%%.  This includes my libraries, even though these libraries are read-only (administrator lock on the wiki pages).  Too bad.  This means that you ''must download '''Bookmark+''' and my other libraries only from Emacs Wiki.  Sorry about that.  I upload '''Bookmark+''' files only to the wiki.
 
 JonasBernoulli 's GitHub mirror for '''Bookmark+''' is also apparently not being updated, or at least not frequently.
 
