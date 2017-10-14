@@ -31,7 +31,7 @@ Don't worry - even if you're an EmacsNewbie, you can get the hang of it. Learnin
 * Mitch Fincher's 50-point summary of the language: [http://www.fincher.org/tips/Languages/Emacs.shtml]
 * Check out examples in ElispCookbook
 
-== General Lisp resources ==
+== General Lisp Resources ==
 
 Emacs lisp belong to the lisp family (WikiPedia:Lisp_programming_language), and learning it will teach you lisp concepts, as well as learning lisp concepts will help you with Emacs lisp.
 
