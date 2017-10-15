@@ -8,9 +8,9 @@
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul  2 07:31:05 2017 (-0700)
+;; Last-Updated: Sun Oct 15 16:21:27 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 4105
+;;     Update #: 4122
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
 ;; Keywords: faces, help, local
@@ -61,6 +61,7 @@
 ;;    (@> "Commands That Won't Work in Emacs 20")
 ;;    (@> "To Do")
 ;;  (@> "Change log")
+;;  (@> "Macros")
 ;;  (@> "Key Bindings")
 ;;  (@> "Menus")
 ;;  (@> "Variables and Faces")
@@ -74,6 +75,10 @@
 ;;
 ;;  Things Defined Here
 ;;  -------------------
+;;
+;;  Macros defined here:
+;;
+;;    `hlt-user-error'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -762,6 +767,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2017/10/15 dadams
+;;     Added: hlt-user-error.  Use it for user errors.
+;;     hlt-highlighter, hlt-eraser: Better error message if drag out of window.
 ;; 2017/06/30 dadams
 ;;     hlt-(un)highlight-regions: Define even if zones.el is not loaded.  Uses zones.el only for interactive.
 ;; 2016/12/23 dadams
@@ -1079,7 +1087,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+ 
+;;(@* "Macros")
 
+;;; Macros -----------------------------------------------------------
+
+(defmacro hlt-user-error (&rest args)
+  "`user-error' if defined, otherwise `error'."
+  `(if (fboundp 'user-error) (user-error ,@args) (error ,@args)))
  
 ;;(@* "Key Bindings")
 
@@ -1574,6 +1589,7 @@ of `hlt-auto-face-backgrounds' (uses `hlt-next-face')."
                               (memq (car-safe event) '(switch-frame select-window))))
               (unless (memq (car-safe event) '(switch-frame select-window))
                 (setq end-point  (posn-point (event-end event))))
+              (unless (integer-or-marker-p end-point) (hlt-user-error "Mouse dragged out of window"))
               (cond (hlt-use-overlays-flag
                      (setq overlay  (move-overlay overlay start-point end-point))
                      (overlay-put overlay hlt-face-prop  hlt-last-face)
@@ -1631,6 +1647,7 @@ erase the face represented by the Nth entry of
                               (memq (car-safe event) '(switch-frame select-window))))
               (unless (memq (car-safe event) '(switch-frame select-window))
                 (let ((posn-point  (posn-point (event-end event))))
+                  (unless (integer-or-marker-p posn-point) (hlt-user-error "Mouse dragged out of window"))
                   (setq end    (max end posn-point)
                         start  (min start posn-point))))
               (when hlt-use-overlays-flag ; Erase overlay properties
@@ -1862,7 +1879,7 @@ Non-interactively, REGIONS is a list of (START END) region limits.
 The other args are passed to `hlt-highlight-region'."
   (interactive (list (if (require 'zones nil t)
                          (zz-izone-limits)
-                       (error "You need library `zones.el' to use this command interactively"))
+                       (hlt-user-error "You need library `zones.el' to use this command interactively"))
                      nil
                      t
                      current-prefix-arg))
@@ -1877,7 +1894,7 @@ Non-interactively, REGIONS is a list of (START END) region limits.
 The other args are passed to `hlt-unhighlight-region'."
   (interactive (list (if (require 'zones nil t)
                          (zz-izone-limits)
-                       (error "You need library `zones.el' to use this command interactively"))
+                       (hlt-user-error "You need library `zones.el' to use this command interactively"))
                      nil
                      t
                      current-prefix-arg))
@@ -2170,7 +2187,7 @@ If UNHIGHLIGHTP:
                                                 (format "Lots of highlighting slows things down.  Do you \
 really want to highlight up to %d chars?  "
                                                         reg-size))))))
-                (error "OK, highlighting cancelled"))))
+                (hlt-user-error "OK, highlighting cancelled"))))
           (when (eq t msgp)
             (message "%sighlighting occurrences of `%s'%s..."
                      (if unhighlightp "UNh" "H")
@@ -2390,7 +2407,8 @@ When called from Lisp:
      (when (listp last-nonmenu-event)
        (mouse-set-point last-nonmenu-event))
      (let ((symb  (symbol-at-point)))
-       (unless symb (error "No symbol %s" (if (listp last-nonmenu-event) "under mouse pointer" "at point")))
+       (unless symb
+         (hlt-user-error "No symbol %s" (if (listp last-nonmenu-event) "under mouse pointer" "at point")))
        (list symb current-prefix-arg))))
   (let ((hlt-auto-faces-flag  (not face))
         (regexp               (format (if (> emacs-major-version 21) "\\_<%s\\_>" "%s") symbol))
@@ -2424,7 +2442,8 @@ When called from Lisp:
      (when (listp last-nonmenu-event)
        (mouse-set-point last-nonmenu-event))
      (let ((symb  (symbol-at-point)))
-       (unless symb (error "No symbol %s" (if (listp last-nonmenu-event) "under mouse pointer" "at point")))
+       (unless symb
+         (hlt-user-error "No symbol %s" (if (listp last-nonmenu-event) "under mouse pointer" "at point")))
        (list symb current-prefix-arg))))
   (let ((hlt-auto-faces-flag  (not face))
         (regexp               (format (if (> emacs-major-version 21) "\\_<%s\\_>" "%s") symbol))
@@ -2597,8 +2616,7 @@ NOTE: If the list of copied text properties is empty, then yanking
       provides an easy way to UNpropertize text."
   (interactive "r\nP\np")
   ;; Do nothing if no active region.
-  (unless (or (hlt-nonempty-region-p)  (not msgp))
-    (error "No region to paste properties to"))
+  (unless (or (hlt-nonempty-region-p)  (not msgp)) (hlt-user-error "No region to paste properties to"))
   (let ((read-only                           buffer-read-only)
         (modified-p                          (buffer-modified-p))
         (inhibit-modification-hooks          t)
@@ -2966,7 +2984,7 @@ When called non-interactively:
           (setq beg  start) (goto-char beg)))
       (unless (or (and (equal face face-found)  (not (eq (point) orig-point)))  no-error-p)
         (goto-char orig-point)
-        (error "No %s highlight with face `%s'" (if backward-p "previous" "next") face)))
+        (hlt-user-error "No %s highlight with face `%s'" (if backward-p "previous" "next") face)))
     (unless (interactive-p)
       (cons (point)
             (next-single-char-property-change (point) (if mousep 'mouse-face hlt-face-prop)
