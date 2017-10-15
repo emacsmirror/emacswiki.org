@@ -8,11 +8,8 @@ Read more:
 * http://www.fossil-scm.org/index.html/doc/tip/www/quickstart.wiki - quickstart.
 * http://en.wikipedia.org/wiki/Fossil_%28software%29 - Wikipedia article.
 
-Fossil currently not supported by [[VC]], but job in progress - http://www.mail-archive.com/fossil-users@lists.fossil-scm.org/msg00742.html
+[[VC]] support for fossil is available as [https://melpa.org/#/vc-fossil vc-fossil] from MELPA
+* Source (fossil repository): http://chiselapp.com/user/venks/repository/emacs-fossil
+* Github mirror: https://github.com/venks1/emacs-fossil (MELPA uses this one)
 
-A fossil repository for vc-fossil.el to use [[VC]] is here: http://chiselapp.com/user/venks/repository/emacs-fossil
-Login as anonymous to download.
 
-----
-alternately, download vc-fossil from MELPA.
-––mangledmind
