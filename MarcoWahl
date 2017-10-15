@@ -12,7 +12,11 @@
 
 === AutoInsertMode ===
 
-&#8707; AutoInsertMode
+&#8707; AutoInsertMode.  Consider
+
+  M-x auto-insert
+
+when starting to edit a new file.
 
 === Jump to percentage in buffer ===
 
