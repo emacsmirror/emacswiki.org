@@ -13,3 +13,6 @@ Fossil currently not supported by [[VC]], but job in progress - http://www.mail-
 A fossil repository for vc-fossil.el to use [[VC]] is here: http://chiselapp.com/user/venks/repository/emacs-fossil
 Login as anonymous to download.
 
+----
+alternately, download vc-fossil from MELPA.
+––mangledmind
