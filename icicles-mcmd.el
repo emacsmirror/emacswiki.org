@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Jul 26 08:20:27 2017 (-0700)
+;; Last-Updated: Sun Oct 15 16:48:31 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 19836
+;;     Update #: 19843
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -478,6 +478,7 @@
 ;; Some defvars to quiet byte-compiler a bit:
 
 (when (< emacs-major-version 22)
+  (defvar icomplete-mode)               ; In `icomplete.el'
   (defvar icicle-Info-highlight-visited-nodes) ; In `icicles-opt.el' (for Emacs 22+)
   (defvar read-file-name-completion-ignore-case) ; In `minibuffer.el'
   (defvar read-file-name-predicate)
@@ -4451,7 +4452,6 @@ Optional argument WORD-P non-nil means complete only a word at a time."
     (setq icicle-completion-style-set  (car icicle-completion-style-sets)))
   (let ((ipc1-was-cycling-p  icicle-cycling-p)
         (completion-styles   (and (boundp 'icicle-completion-style-sets)  icicle-completion-style-set)))
-    (setq icicle-mode-line-help  nil)
     (setq icicle-current-input                   (if (and icicle-last-input
                                                           icicle-cycling-p
                                                           (not icicle-TAB/S-TAB-only-completes-flag)
@@ -4471,7 +4471,8 @@ Optional argument WORD-P non-nil means complete only a word at a time."
           icicle-current-completion-mode         'prefix
           icicle-next-apropos-complete-cycles-p  nil
           icicle-input-fail-pos                  nil
-          icicle-cycling-p                       nil)
+          icicle-cycling-p                       nil
+          icicle-mode-line-help                  nil)
     (when icicle-edit-update-p (setq icicle-next-prefix-complete-cycles-p  nil))
     (let ((word-complete-input      "")
           (input-before-completion  icicle-current-input)
@@ -4882,7 +4883,6 @@ message either.  NO-DISPLAY-P is passed to
 `icicle-display-candidates-in-Completions' as its second arg."
   (let ((iac1-was-cycling-p  icicle-cycling-p)
         input-before-completion)
-    (setq icicle-mode-line-help  nil)
     (setq icicle-current-input                  (if (and icicle-last-input
                                                          icicle-cycling-p
                                                          (not icicle-edit-update-p)
@@ -4897,7 +4897,8 @@ message either.  NO-DISPLAY-P is passed to
           icicle-current-completion-mode        'apropos
           icicle-next-prefix-complete-cycles-p  nil
           icicle-input-fail-pos                 nil
-          icicle-cycling-p                      nil)
+          icicle-cycling-p                      nil
+          icicle-mode-line-help                 nil)
     (when icicle-edit-update-p (setq icicle-next-apropos-complete-cycles-p  nil))
     (when (icicle-file-name-input-p)
       (setq icicle-current-input  (abbreviate-file-name
