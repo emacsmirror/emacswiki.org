@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Sep 17 13:50:12 2017 (-0700)
+;; Last-Updated: Mon Oct 16 06:35:00 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 28609
+;;     Update #: 28613
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -6473,12 +6473,11 @@
 ;;
 ;;  For example, here are some multi-inputs in a minibuffer:
 ;;
-;;    ici*.el "my file.txt" bookmark+.el
+;;    ici*.el bookmark+.el
 ;;
 ;;  After reading, these are the multi-inputs that can be acted on:
 ;;
 ;;    ici*.el
-;;    my file.txt
 ;;    bookmark+.el
 ;;
 ;;  With `C-x C-f' (`icicle-file'), `M-R' opens each of those input
@@ -6489,6 +6488,14 @@
 ;;  With this feature you can, for instance, select an existing list
 ;;  of file names, yank it into the minibuffer of a file-processing
 ;;  command such as `C-x C-f', and act on each of the files.
+;;
+;;  Since whitespace characters are used to separate multiple inputs,
+;;  what to do if you want an input that includes whitespace
+;;  characters?  For that, just use a prefix argument with `M-R'.  For
+;;  example, to include a file named `my file.txt' you would use this
+;;  and then use `C-u M-R':
+;;
+;;    ici*.el "my file.txt" bookmark+.el
 ;;
 ;;  `M-R' can be used with any minibuffer, not just one that is used
 ;;  for completion.  But the command that reads from the minibuffer
