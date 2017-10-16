@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Mon Oct 16 06:35:00 2017 (-0700)
+;; Last-Updated: Mon Oct 16 06:50:02 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 28613
+;;     Update #: 28617
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -764,12 +764,18 @@
 ;;  `ici*.el' files, file `my file.txt', and file `bookmark+.el', just
 ;;  as if you had used `C-x 4 f' three separate times [*]:
 ;;
-;;    C-x 4 f  ici*.el  "my file.txt"  bookmark+.el  M-R  C-g
+;;    C-x 4 f  ici*.el  "my file.txt"  bookmark+.el  C-u M-R  C-g
 ;;
 ;;  Your multi-input here is split into separate file-name patterns,
-;;  which are then acted on individually.  You wrap the second pattern
-;;  with "..." because the file name contains a space character, which
-;;  is otherwise used to separate patterns.
+;;  which are then acted on individually.  You use `C-u' with `M-R',
+;;  and you wrap the second pattern with "...", because the file name
+;;  contains a space character, which is otherwise used to separate
+;;  patterns.
+;;
+;;  The prefix argument (`C-u') for `M-R' tells Icicles to respect the
+;;  use of double-quote chars.  Without it, `M-R' would open two
+;;  separate files, `"my' and `file.txt"' (yes, file names can include
+;;  double-quote chars).
 ;;
 ;;  The `C-g' at the end just ends the command.  Without it you can
 ;;  continue to enter the names of more files to visit.  This is
