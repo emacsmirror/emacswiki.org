@@ -14,8 +14,15 @@
 (define-coding-system-alias 'koi8-u 'koi8-r)
 (set-terminal-coding-system 'koi8-r)
 (set-keyboard-coding-system 'koi8-r)
+
+;; следующие две строки использовать с осторожностью:
+;; не рекомендую глобально менять значения coding-system-for-read & coding-system-for-write,
+;; например, это может отразиться на кодировке при общении по сети. 
+;; эти переменные обычно используются только для конкретных I/O операций.
+;; см. документацию и bug #28780
 (setq-default coding-system-for-read 'koi8-r)
 (setq-default coding-system-for-write 'koi8-r)
+
 (setq selection-coding-system 'koi8-r)
 (setq default-process-coding-system
    (if (string> (substring emacs-version 0 2) "21") '(koi8-r . koi8-r) 'koi8-r))
