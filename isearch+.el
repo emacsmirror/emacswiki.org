@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jul 23 18:26:12 2017 (-0700)
+;; Last-Updated: Tue Oct 17 10:37:32 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 5891
+;;     Update #: 5903
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -19,10 +19,8 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `button', `bytecomp', `cconv', `cl',
-;;   `cl-extra', `cl-lib', `color', `frame-fns', `gv', `help-mode',
-;;   `hexrgb', `isearch-prop', `macroexp', `misc-cmds', `misc-fns',
-;;   `strings', `thingatpt', `thingatpt+', `zones'.
+;;   `avoid', `cl', `frame-fns', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -457,14 +455,14 @@
 ;;
 ;;    If you search the Emacs Lisp source code, you will find only two
 ;;    uses, so far, of variable `isearch-filter-predicate', even
-;;    though such filtering has been around since Emacs 23.  It’s
+;;    though such filtering has been around since Emacs 23.  It's
 ;;    hardly ever used.  Why?
 ;;
-;;    Because it’s not so easy to use, out of the box.  And it’s not
+;;    Because it's not so easy to use, out of the box.  And it's not
 ;;    thought of as a way to *refine* searches, but rather as a way to
 ;;    *wall off* certain areas from searching.
 ;;
-;;    Yes, those are in fact the same thing, but I don’t think people
+;;    Yes, those are in fact the same thing, but I don't think people
 ;;    think this way ... because Isearch does not make it particularly
 ;;    easy to use filters.  Isearch+ tries to do that, to let you
 ;;    refine searches by adding filters incrementally.
@@ -1162,6 +1160,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2017/10/17 dadams
+;;     lazy-highlight-cleanup: Added optional arg PROCRASTINATE (added by Emacs 26).
 ;; 2017/07/23 dadams
 ;;     Added: isearchp-constrain-to-rectangular-region, isearchp--lazy-hlt-filter-failures-p.
 ;;     isearch-mode: Use isearchp-constrain-to-rectangular-region.  Set isearchp--lazy-hlt-filter-failures-p to t.
@@ -3961,7 +3961,7 @@ Options
 `isearchp-initiate-edit-commands'\t- keys that edit, not exit
 `isearchp-mouse-2-flag'\t\t- `mouse-2' anywhere yanks selection?
 `isearchp-movement-unit-alist'\t- units and their movement functions
-`isearchp-on-demand-action-function'\t- on-demand action function​
+`isearchp-on-demand-action-function'\t- on-demand action function?
 `isearchp-prompt-for-filter-name'\t- when to ask for filter name
 `isearchp-prompt-for-prompt-prefix-flag'\t- prompt for prefix?
 `isearchp-regexp-quote-yank-flag'\t- regexp-quote yanked text?
@@ -4956,13 +4956,15 @@ Bound to `C-M-`' during Isearch."
   ;;
   ;; Delete also `isearchp-lazy-regexp-level-overlays'.
   ;;
-  (defun lazy-highlight-cleanup (&optional force)
+  (defun lazy-highlight-cleanup (&optional force procrastinate)
     "Stop lazy highlighting and remove extra highlighting from current buffer.
 FORCE non-nil means do it whether or not `lazy-highlight-cleanup'
-is nil.  This function is called when exiting an incremental search if
+  is nil.
+PROCRASTINATE non-nil means postpone cleanup to a later time.
+This function is called when exiting an incremental search if
 `lazy-highlight-cleanup' is non-nil."
     (interactive '(t))
-    (when (or force lazy-highlight-cleanup)
+    (when (and (or force  lazy-highlight-cleanup)  (not procrastinate))
       (while isearch-lazy-highlight-overlays
         (delete-overlay (car isearch-lazy-highlight-overlays))
         (setq isearch-lazy-highlight-overlays
