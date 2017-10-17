@@ -35,6 +35,11 @@
   devanagari.el.
 
 
+You might want to modify sentence settings to include the poorna virama -
+<pre>
+(setq sentence-end-base "[.?!।][]\"'”)}]*")
+</pre>
+-- contrapunctus
 
 
 == Printing your buffer == 
@@ -117,5 +122,61 @@ Emacs.Fontset-0:-xos4-terminus-*-r-normal-*-*-*-*-*-*-*-iso10646-1, \
 
 If you install m17n-lib 1.5 or above [www.m17n.org] along with lohit devanagari font, emacs can
 display hindi very well [[image:emacs-gnus-hindi]]
+
+== devangari-itrans tweaks ==
+If you're typing Hindi, "nh" and "ld" don't give you what you probably expect, as of Emacs v24.5.1.
+
+"nh" gives you "ऩ्", while you probably wanted "न्ह्"; "ld" gives you "ळ्", while you probably wanted "ल्द्" (I'm told these "unwanted" ones see more use in Marathi, which (TIL) is also written in Devanagari.) 
+
+This is some slightly messy code which may make your life easier, and make it possible to type some common words which use these letters. (Or, you can use devanagari-inscript, which doesn't have these problems but has more of a learning curve)
+
+<pre>
+(with-eval-after-load 'ind-util
+  ;; after making such changes, re-evaluate the call to
+  ;; quail-define-indian-trans-package in indian.el.gz
+
+  (remhash "ऩ्" (car indian-dev-itrans-v5-hash))
+  (remhash "nh" (cdr indian-dev-itrans-v5-hash))
+  (maphash (lambda (key val)
+             (if (string-match-p "^ld" key)
+                 (remhash key (cdr indian-dev-itrans-v5-hash))))
+           (cdr indian-dev-itrans-v5-hash))
+  (maphash (lambda (key val)
+             (when (string-match-p "^ऩ" key)
+               (remhash key (car indian-dev-itrans-v5-hash))))
+           (car indian-dev-itrans-v5-hash))
+  (maphash (lambda (key val)
+             (when (string-match-p "^nh" key)
+               (remhash key (cdr indian-dev-itrans-v5-hash))))
+           (cdr indian-dev-itrans-v5-hash))
+  (mapc (lambda (elt)
+          (let ((lat (car elt))
+                (dev (cdr elt)))
+            (puthash dev lat
+                     (car indian-dev-itrans-v5-hash))
+            (puthash lat dev
+                     (cdr indian-dev-itrans-v5-hash))))
+        '(("nh"  . "न्ह्")
+          ("nha" . "न्ह") ("nhaa" . "न्हा") ("nhA" . "न्हा")
+          ("nhi" . "न्हि") ("nhii" . "न्ही") ("nhI" . "न्ही")
+          ("nhu" . "न्हु") ("nhuu" . "न्हू") ("nhU" . "न्हू")
+          ("nhe" . "न्हे") ("nhai" . "न्है")
+
+          ("ld"  . "ल्द्")
+          ("lda" . "ल्द") ("ldaa" . "ल्दा") ("ldA" . "ल्दा")
+          ("ldi" . "ल्दि") ("ldii" . "ल्दी") ("ldI" . "ल्दी")
+          ("ldu" . "ल्दु") ("lduu" . "ल्दू") ("ldU"  . "ल्दू")
+          ("lde" . "ल्दे") ("ldai" . "ल्दै"))))
+</pre>
+
+If you make these changes after starting Emacs, your changes probably won't take effect until you open indian.el.gz and evaluate the following function call (I tried copying this call elsewhere to evaluate it more conveniently, but it inexplicably didn't work) -
+<pre>
+(quail-define-inscript-package
+ indian-dev-base-table inscript-dev-keytable
+ "devanagari-inscript" "Devanagari" "DevIS"
+ "Devanagari keyboard Inscript.")
+</pre>
+
+-- contrapunctus
 -----
 CategoryInternationalization
