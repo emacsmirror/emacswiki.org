@@ -6,7 +6,7 @@ See https://github.com/Silex/docker.el
 
 === Edit Dockerfile ===
 
-See https://github.com/spotify/dockerfile-mode or https://github.com/emacs-pe/dockerfile.el
+See https://github.com/spotify/dockerfile-mode
 
 === Tramp integration ===
 
