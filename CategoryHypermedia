@@ -28,7 +28,7 @@ Note that this list is neither exhaustive nor complete; feel free to add anythin
 ** ElServ -- Another HTTP server embedded in Emacs.
 ** Simple-Server -- [http://github.com/eschulte/simple-server/tree/master simple-server.el], yet another HTTP server embedded in Emacs.
 ** Phase -- [http://synthcode.com/emacs/ phase.el], a development server supporting CGI and embedded Emacs Lisp.
-* [[emacs-server]] --- an HTTP server in ELisp
+** [[emacs-server]] --- an HTTP server in ELisp
 * [[emacs-w3m]] --- an integration mode for the w3m text mode browser, with graphics
 
 == Wiki modes ==
