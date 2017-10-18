@@ -128,7 +128,7 @@ If you're typing Hindi, "nh" and "ld" don't give you what you probably expect, a
 
 "nh" gives you "ऩ्", while you probably wanted "न्ह्"; "ld" gives you "ळ्", while you probably wanted "ल्द्" (I'm told these "unwanted" ones see more use in Marathi, which (TIL) is also written in Devanagari.) 
 
-This is some slightly messy code which may make your life easier, and make it possible to type some common words which use these letters. (Or, you can use devanagari-inscript, which doesn't have these problems but has more of a learning curve)
+This is some slightly messy (and probably incomplete) code which may make your life easier, and make it possible to type some common words which use these letters. (Or, you can use devanagari-inscript, which doesn't have these problems but has more of a learning curve)
 
 <pre>
 (with-eval-after-load 'ind-util
