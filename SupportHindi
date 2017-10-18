@@ -132,9 +132,6 @@ This is some slightly messy code which may make your life easier, and make it po
 
 <pre>
 (with-eval-after-load 'ind-util
-  ;; after making such changes, re-evaluate the call to
-  ;; quail-define-indian-trans-package in indian.el.gz
-
   (remhash "ऩ्" (car indian-dev-itrans-v5-hash))
   (remhash "nh" (cdr indian-dev-itrans-v5-hash))
   (maphash (lambda (key val)
@@ -169,7 +166,7 @@ This is some slightly messy code which may make your life easier, and make it po
           ("lde" . "ल्दे") ("ldai" . "ल्दै"))))
 </pre>
 
-If you make these changes after starting Emacs, your changes probably won't take effect until you open indian.el.gz and evaluate the following function call (I tried copying this call elsewhere to evaluate it more conveniently, but it inexplicably didn't work) -
+If you make these changes after starting Emacs, your changes probably won't take effect until you (find-library "indian.el.gz") and evaluate the following function call (I tried copying this call elsewhere to evaluate it more conveniently, but it inexplicably didn't work) -
 <pre>
 (quail-define-inscript-package
  indian-dev-base-table inscript-dev-keytable
