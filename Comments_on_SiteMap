@@ -259,3 +259,12 @@ Again, never mind. I found my answer on the [[CSS|CSS]] page.
 
 -- JimThompson
 
+
+----
+
+==thoughts on new sections==
+* shouldn't this wiki also have a major category for „newbie”- and „full blown”-packages, like EmacsStarterKit, and for „Vim/Emacs-conversions” like Spacemacs or DoomEmacs?  Where would that need to be put in the current hierarchy?
+* this wiki definitely misses a category on „most widely used”, „recommended” and „must-have” elisp packages (as un-biased as possible, of course), sort of as an overview of the most useful and most common additions to vanilla Emacs.
+
+-- mangledmind 2017-10-18 15:41 UTC
+
