@@ -2461,7 +2461,7 @@ files based on their tags.
 [:UsingMultipleBookmarkFiles]
 == Using Multiple Bookmark Files ==
 
-Bookmark-list views (see [[#BookmarkListViews|Bookmark-List Views]]
+Bookmark-list views (see [[#BookmarkListViews|Bookmark-List Views]] )
 provide
 one way to switch among various sets of bookmarks that you use.
 But that feature affects only the bookmarks that you see displayed
