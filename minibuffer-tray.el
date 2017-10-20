@@ -6,8 +6,8 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2014, Andy Stewart, all rights reserved.
 ;; Created: 2014-01-26 01:00:18
-;; Version: 0.4
-;; Last-Updated: 2014-10-11 09:20:04
+;; Version: 0.5
+;; Last-Updated: 2017-10-20 10:47:34
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/minibuffer-tray.el
 ;; Keywords:
@@ -54,6 +54,7 @@
 ;; NOTE: just minibuffer-tray.el can't work, you need install below depends first:
 ;;       * PyQt5:       http://www.riverbankcomputing.co.uk/software/pyqt/intro
 ;;       * Python-Xlib: https://pypi.python.org/pypi/python-xlib
+;;       * python-dbus
 ;;
 ;; Detail description please look: http://www.emacswiki.org/emacs/MiniBufferTray
 ;;
@@ -80,6 +81,9 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2017/10/20
+;;      * Add `minibuffer-tray-stop-kill-buffer' hook to avoid minibuffer tray's buffer kill by command `kill-buffer'.
 ;;
 ;; 2014/10/11
 ;;      * Add customize options.
@@ -144,7 +148,7 @@ Default is t."
 (defun minibuffer-tray-call (method &rest args)
   (with-demoted-errors "minibuffer-tray-call ERROR: %s"
     (apply 'dbus-call-method
-           :session                      ; use the session (not system) bus
+           :session                 ; use the session (not system) bus
            "com.deepin.minibuffer_tray"  ; service name
            "/com/deepin/minibuffer_tray" ; path name
            "com.deepin.minibuffer_tray"  ; interface name
@@ -201,6 +205,7 @@ Default is t."
                minibuffer-tray-name
                minibuffer-tray-name
                "python" (list minibuffer-tray-python-file (minibuffer-tray-get-emacs-xid) (format "%s" minibuffer-tray-height))))
+  (add-hook 'kill-buffer-query-functions 'minibuffer-tray-stop-kill-buffer)
   (set-process-query-on-exit-flag minibuffer-tray-process nil)
   (set-process-sentinel
    minibuffer-tray-process
@@ -208,6 +213,16 @@ Default is t."
        (message (format "%s %s" process event))
        ))
   )
+
+(defun minibuffer-tray-stop-kill-buffer ()
+  "Don't kill minibuffer tray buffer but burry buffer."
+  (cond
+   ((equal (buffer-name (current-buffer)) minibuffer-tray-name)
+    (progn
+      (bury-buffer)
+      nil))
+   (t)
+   ))
 
 (defun minibuffer-tray-stop-process ()
   (delete-process minibuffer-tray-process)
