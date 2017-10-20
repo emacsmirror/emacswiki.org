@@ -23,7 +23,7 @@ PyQt5/DBus solution just need hide mode-line with customize face, not need hacki
 ==How to install it ?==
 You need install [http://www.riverbankcomputing.co.uk/software/pyqt/intro PyQt5]/[https://pypi.python.org/pypi/python-xlib PythonXlib] first.
 
-Then download minibuffer-tray source code from : https://gitcafe.com/Deepin/deepin-emacs/tree/master/site-lisp/extensions/minibuffer-tray
+Then download minibuffer-tray source code from : https://github.com/manateelazycat/deepin-emacs/tree/master/site-lisp/extensions/minibuffer-tray
 
 Last add minibuffer-tray.el.el in your load-path and add 
 {{{
