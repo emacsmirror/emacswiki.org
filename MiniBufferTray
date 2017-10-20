@@ -25,7 +25,7 @@ You need install [http://www.riverbankcomputing.co.uk/software/pyqt/intro PyQt5]
 
 Then download minibuffer-tray source code from : https://github.com/manateelazycat/deepin-emacs/tree/master/site-lisp/extensions/minibuffer-tray
 
-Last add minibuffer-tray.el.el in your load-path and add 
+Last add [https://www.emacswiki.org/emacs/minibuffer-tray.el minibuffer-tray.el.el] in your load-path and add 
 {{{
 (require 'minibuffer-tray)
 (minibuffer-tray-mode 1)
