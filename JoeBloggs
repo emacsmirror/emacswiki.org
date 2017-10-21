@@ -56,6 +56,7 @@ Here is a list of things that I would like to see at some point, but haven't got
 If anyone decides to implement one of these, or finds an already existing implementation please let me know (leave a message on this page).
 
 * Ability to colorize/format cells in org-tables - this would make it possible to see which cells are generated from formulas for example. The colorized cells should still work in formulas. Even better would be if the coloring could be made persistent (perhaps using enriched mode, or maybe as part of the cell formula). 
+* Ability to split org-table formulas over several lines (they can get very messy).
 * Even better would be persistent colo
 * A general framework for marking and selecting items in a buffer a la DiredMode. I had to write my own code for this for Lisp:simple-call-tree+.el, and have come across a few other libraries that do this kind of thing (e.g. [https://github.com/rejeep/prodigy.el prodigy]). I'm guessing it would be useful in for other libraries yet to be written. If we could be consistent with keybindings as well that would be great.
 * A function to make it easy to format text in different colours/faces, e.g. (format+ "%y, %y, %y" '("red" :foreground "red") '("blue" :background "blue") '("function" 'font-lock-function-name-face))
