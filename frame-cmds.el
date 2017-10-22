@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Sat Aug 19 13:57:40 2017 (-0700)
+;; Last-Updated: Sun Oct 22 14:29:09 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 3074
+;;     Update #: 3094
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -283,6 +283,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/10/22 dadams
+;;     remove-windows-on: Added optional arg ALL-FRAMES.
+;;                        Just repeat get-buffer-window with ALL-FRAMES until no window.
+;;     delete/iconify-windows-on: Removed second arg to frames-on.
 ;; 2017/08/19 dadams
 ;;     delete-window: Use with-selected-window for Emacs 22+.
 ;;     Updated Emacs-Wiki URLs.
@@ -912,15 +916,18 @@ Only displayed buffers are completion candidates."
 (defalias 'remove-window 'delete-window)
 
 ;;;###autoload
-(defun remove-windows-on (buffer)
-  "Remove all windows showing BUFFER.  This calls `remove-window'
-on each window showing BUFFER."
+(defun remove-windows-on (buffer &optional all-frames)
+  "Remove all windows showing BUFFER.
+This calls `remove-window' on each window showing BUFFER.
+
+When called from Lisp, optional arg ALL-FRAMES controls which frames
+are considered.  See `get-buffer-window' for its interpretation."
   (interactive
-   (list (read-buffer "Remove all windows showing buffer: " (current-buffer) 'existing)))
-  (setq buffer  (get-buffer buffer))     ; Convert to buffer.
+   (list (read-buffer "Remove all windows showing buffer: " (current-buffer) 'existing)
+         t))
+  (setq buffer  (get-buffer buffer))    ; Convert to buffer.
   (when buffer                          ; Do nothing if null BUFFER.
-    (dolist (fr (frames-on buffer t))
-      (remove-window (get-buffer-window buffer t)))))
+    (let (win) (while (setq win  (get-buffer-window buffer all-frames)) (remove-window win)))))
 
 ;;;###autoload
 (defun mouse-remove-window (event)
@@ -1003,10 +1010,9 @@ Interactively, FRAME is nil, and FRAME-P depends on the prefix arg:
            'window-dedicated-p)))
   (setq buffer  (get-buffer buffer))     ; Convert to buffer.
   (when buffer                          ; Do nothing if null BUFFER.
-    ;; `get-buffer-window' interprets FRAME oppositely for t and nil,
-    ;; so switch.
+    ;; `get-buffer-window' interprets FRAME oppositely for t and nil, so switch.
     (setq frame  (if (eq t frame) nil (if (eq nil frame) t frame)))
-    (dolist (fr (frames-on buffer frame))
+    (dolist (fr  (frames-on buffer))
       (delete/iconify-window (get-buffer-window buffer frame) frame-p))))
 
 ;;;###autoload
@@ -1142,7 +1148,7 @@ BUFFER may be a buffer or its name (a string)."
   (setq buffer  (get-buffer buffer))
   (save-excursion
     (when (buffer-live-p buffer)        ; Do nothing if dead buffer.
-      (dolist (fr (frames-on buffer))   ; Is it better to search through
+      (dolist (fr  (frames-on buffer))   ; Is it better to search through
         (save-window-excursion          ; `frames-on' or `get-buffer-window-list'?
           (select-frame fr)
           (when (one-window-p t fr) (delete-frame)))))))
