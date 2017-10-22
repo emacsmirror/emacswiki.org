@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Oct 15 16:48:31 2017 (-0700)
+;; Last-Updated: Sun Oct 22 14:07:38 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 19843
+;;     Update #: 19844
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -9295,7 +9295,7 @@ it is the only frame or a standalone minibuffer frame."
   (setq buffer  (get-buffer buffer))    ; Convert to buffer.
   (when buffer                          ; Do nothing if null BUFFER.
     ;; Avoid error message "Attempt to delete minibuffer or sole ordinary window".
-    (let* ((this-buffer-frames  (icicle-frames-on buffer t))
+    (let* ((this-buffer-frames  (icicle-frames-on buffer))
            (this-frame          (car this-buffer-frames))
            mini-param)
       (unless (and this-frame
