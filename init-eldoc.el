@@ -7,8 +7,8 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-10-20 09:32:12
 ;; Version: 0.1
-;; Last-Updated: 2008-10-20 09:32:14
-;;           By: Andy Stewart
+;; Last-Updated: 2017-10-22 23:33:00
+;;           By: Reuben Thomas
 ;; URL:
 ;; Keywords: eldoc
 ;; Compatibility: GNU Emacs 23.0.60.1
@@ -83,7 +83,6 @@
                'message-mode-hook
                'Info-mode-hook
                'erc-mode-hook
-               'org-mode-hook
                ))
   (add-hook hook '(lambda ()
                     (progn
