@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:15:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 22 17:59:11 2017 (-0800)
+;; Last-Updated: Sun Oct 22 14:15:54 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 230
+;;     Update #: 234
 ;; URL: https://www.emacswiki.org/emacs/download/frame-fns.el
 ;; Doc URL: http://emacswiki.org/FrameModes
 ;; Keywords: internal, extensions, local, frames
@@ -38,6 +38,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/10/22 dadams
+;;     frames-on: Removed (unused) second arg.
 ;; 2011/01/04 dadams
 ;;     Removed autoload cookies from non-interactive functions.
 ;; 2010/01/12 dadams
@@ -265,10 +267,9 @@ existing frames."
                    ;; `frame-name-history' is defined in `frame.el'.
                    nil existing nil '(frame-name-history . 2) default))
 
-(defun frames-on (buffer &optional frame)
-  "List of all live frames showing BUFFER (a buffer or its name).
-The optional FRAME argument is as for function `get-buffer-window'."
-  (filtered-frame-list (function (lambda (fr) (get-buffer-window buffer fr)))))
+(defun frames-on (buffer)
+  "List of all live frames showing BUFFER (a buffer or its name)."
+  (filtered-frame-list (lambda (fr) (get-buffer-window buffer fr))))
 
 (defun 1-window-frames-on (buffer)
   "List of all visible 1-window frames showing BUFFER."
@@ -277,7 +278,6 @@ The optional FRAME argument is as for function `get-buffer-window'."
     (let ((frs  ()))
       (with-current-buffer buffer
         (when (buffer-live-p buffer)    ; Do nothing if dead buffer.
-          ;; $$$$$$ Is it better to search through frames-on or windows-on?
           (dolist (fr  (frames-on buffer))
             (save-window-excursion (select-frame fr)
                                    (when (one-window-p t fr) (push fr frs))))))
@@ -290,7 +290,6 @@ The optional FRAME argument is as for function `get-buffer-window'."
     (let ((frs  ()))
       (with-current-buffer buffer
         (when (buffer-live-p buffer)    ; Do nothing if dead buffer.
-          ;; $$$$$$ Is it better to search through frames-on or windows-on?
           (dolist (fr  (frames-on buffer))
             (save-window-excursion (select-frame fr)
                                    (unless (one-window-p t fr)
