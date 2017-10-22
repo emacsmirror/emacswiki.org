@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Sep 17 09:36:04 2017 (-0700)
+;; Last-Updated: Sun Oct 22 14:06:28 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 15238
+;;     Update #: 15240
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -5152,10 +5152,9 @@ Optional args MINIBUF and ALL-FRAMES are as for `get-buffer-window-list'."
     (dolist (x xs) (when (funcall pred x) (push x result)))
     (nreverse result)))
 
-(defun icicle-frames-on (buffer &optional frame) ; From `frames-on' in `frame-fns.el'.
-  "List of all live frames showing BUFFER (a buffer or its name).
-The optional FRAME argument is as for function `get-buffer-window'."
-  (filtered-frame-list (function (lambda (fr) (get-buffer-window buffer fr)))))
+(defun icicle-frames-on (buffer)        ; From `frames-on' in `frame-fns.el'.
+  "List of all live frames showing BUFFER (a buffer or its name)."
+  (filtered-frame-list (lambda (fr) (get-buffer-window buffer fr))))
 
 (defun icicle-candidate-set-1 (set-fn msg)
   "Helper function for defining Icicle set commands.
