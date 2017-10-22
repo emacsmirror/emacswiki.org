@@ -8,17 +8,17 @@
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar  3 14:56:32 2017 (-0800)
+;; Last-Updated: Sun Oct 22 09:44:06 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 1702
+;;     Update #: 1706
 ;; URL: https://www.emacswiki.org/emacs/download/icomplete%2b.el
-;; Doc URL: http://emacswiki.org/IcompleteMode
+;; Doc URL: https://emacswiki.org/IcompleteMode
 ;; Keywords: help, abbrev, internal, extensions, local, completion, matching
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `icomplete'.
+;;   `icomplete', `icomplete+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1165,8 +1165,7 @@ If SORT-FUNCTION is nil, sort per `completion-all-sorted-completions':
 
 
 (when (or (> emacs-major-version 24)    ; Emacs 24.4+
-          (and (= emacs-major-version 24)  (> emacs-minor-version 3))
-          (and (= emacs-major-version 24)  (string-match-p "24.3.50" emacs-version))) ;@@@@ TO REMOVE
+          (and (= emacs-major-version 24)  (> emacs-minor-version 3)))
 
 
   ;; REPLACES ORIGINAL defined in `icomplete.el':
