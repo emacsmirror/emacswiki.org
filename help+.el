@@ -8,9 +8,9 @@
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 23 07:30:56 2017 (-0800)
+;; Last-Updated: Sat Oct 21 17:12:48 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 2189
+;;     Update #: 2200
 ;; URL: https://www.emacswiki.org/emacs/download/help%2b.el
 ;; Doc URL: http://emacswiki.org/HelpPlus
 ;; Keywords: help
@@ -18,9 +18,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `fit-frame', `frame-fns', `help-fns',
-;;   `help-macro', `help-macro+', `info', `info+', `misc-fns',
-;;   `naked', `strings', `thingatpt', `thingatpt+'.
+;;   `avoid', `backquote', `fit-frame', `frame-fns', `help-macro',
+;;   `help-macro+', `info', `info+20', `misc-fns', `naked',
+;;   `strings', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -51,7 +51,7 @@
 ;;  ***** NOTE: The following functions defined in `help.el' have
 ;;              been REDEFINED HERE:
 ;;
-;;  `describe-key', `where-is'.
+;;  `describe-key' (Emacs 22-25), `where-is'.
 ;;
 ;;
 ;;  ***** NOTE: The doc string for `help-for-help' has been
@@ -77,6 +77,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/10/21 dadams
+;;     describe-key: Do not redefine for Emacs 26+ (not worth it).
+;;     help-on-click/key-lookup: Use help--analyze-key, if defined, instead of describe-key.
 ;; 2015/07/02 dadams
 ;;     help-on-click/key: Removed part of doc string that said that C-g is not in manual index.
 ;; 2014/05/04 dadams
@@ -163,11 +166,12 @@
 
 
 ;; REPLACES ORIGINAL in `help.el':
+;;
 ;; Return nil if KEY is undefined; else return t.
 ;;
-;;;###autoload
-(defun describe-key (&optional key untranslated up-event)
-  "Describe the command that a keyboard/menu/mouse sequence invokes.
+(unless (fboundp 'help--analyze-key)    ; Emacs 26+
+  (defun describe-key (&optional key untranslated up-event)
+    "Describe the command that a keyboard/menu/mouse sequence invokes.
 KEY can be any kind of a key sequence; it can include keyboard events,
 mouse events, and/or menu events.  When calling from a program,
 pass KEY as a string or a vector.
@@ -180,96 +184,128 @@ UP-EVENT is the up-event that was discarded by reading KEY, or nil.
 If KEY is a menu item or a tool-bar button that is disabled, this command
 temporarily enables it to allow getting help on disabled items and buttons.
 Return nil if KEY is undefined; else return t."
-  (interactive
-   (let ((enable-disabled-menus-and-buttons  t)
-         (cursor-in-echo-area                t)
-         saved-yank-menu)
-     (unwind-protect
-          (let (key)
-            ;; If yank-menu is empty, populate it temporarily, so that
-            ;; "Select and Paste" menu can generate a complete event.
-            (when (null (cdr yank-menu))
-              (setq saved-yank-menu  (copy-sequence yank-menu))
-              (menu-bar-update-yank-menu "(any string)" nil))
-            (setq key  (read-key-sequence "Describe key (or click or menu item): "))
-            (list key
-                  (prefix-numeric-value current-prefix-arg)
-                  ;; If KEY is a down-event, read and include the
-                  ;; corresponding up-event.  Note that there are also
-                  ;; down-events on scroll bars and mode lines: the actual
-                  ;; event then is in the second element of the vector.
-                  (and (vectorp key)
-                       (let ((last-idx  (1- (length key))))
-                         (and (eventp (aref key last-idx))
-                              (memq 'down (event-modifiers (aref key last-idx)))))
-                       (or (and (eventp (aref key 0))
-                                (memq 'down (event-modifiers (aref key 0)))
-                                ;; However, for the C-down-mouse-2 popup
-                                ;; menu, there is no subsequent up-event.  In
-                                ;; this case, the up-event is the next
-                                ;; element in the supplied vector.
-                                (= (length key) 1))
-                           (and (> (length key) 1)
-                                (eventp (aref key 1))
-                                (memq 'down (event-modifiers (aref key 1)))))
-                       (read-event))))
-       ;; Put yank-menu back as it was, if we changed it.
-       (when saved-yank-menu
-         (setq yank-menu  (copy-sequence saved-yank-menu))
-         (fset 'yank-menu (cons 'keymap yank-menu))))))
-  (when (numberp untranslated) (setq untranslated  (this-single-command-raw-keys)))
-  (let* ((event      (aref key (if (and (symbolp (aref key 0))
-                                        (> (length key) 1)
-                                        (consp (aref key 1)))
-                                   1
-                                 0)))
-         (modifiers  (event-modifiers event))
-         (mouse-msg  (if (or (memq 'click modifiers)
-                             (memq 'down modifiers)
-                             (memq 'drag modifiers))
-                         " at that spot"
-                       ""))
-         (defn       (key-binding key t))
-         defn-up defn-up-tricky ev-type mouse-1-remapped mouse-1-tricky)
+    (interactive
+     (let ((enable-disabled-menus-and-buttons  t)
+           (cursor-in-echo-area                t)
+           saved-yank-menu)
+       (unwind-protect
+            (let (key)
+              ;; If yank-menu is empty, populate it temporarily, so that
+              ;; "Select and Paste" menu can generate a complete event.
+              (when (null (cdr yank-menu))
+                (setq saved-yank-menu  (copy-sequence yank-menu))
+                (menu-bar-update-yank-menu "(any string)" nil))
+              (setq key  (read-key-sequence "Describe key (or click or menu item): "))
+              (list key
+                    (prefix-numeric-value current-prefix-arg)
+                    ;; If KEY is a down-event, read and include the
+                    ;; corresponding up-event.  Note that there are also
+                    ;; down-events on scroll bars and mode lines: the actual
+                    ;; event then is in the second element of the vector.
+                    (and (vectorp key)
+                         (let ((last-idx  (1- (length key))))
+                           (and (eventp (aref key last-idx))
+                                (memq 'down (event-modifiers (aref key last-idx)))))
+                         (or (and (eventp (aref key 0))
+                                  (memq 'down (event-modifiers (aref key 0)))
+                                  ;; However, for the C-down-mouse-2 popup
+                                  ;; menu, there is no subsequent up-event.  In
+                                  ;; this case, the up-event is the next
+                                  ;; element in the supplied vector.
+                                  (= (length key) 1))
+                             (and (> (length key) 1)
+                                  (eventp (aref key 1))
+                                  (memq 'down (event-modifiers (aref key 1)))))
+                         (read-event))))
+         ;; Put yank-menu back as it was, if we changed it.
+         (when saved-yank-menu
+           (setq yank-menu  (copy-sequence saved-yank-menu))
+           (fset 'yank-menu (cons 'keymap yank-menu))))))
+    (when (numberp untranslated) (setq untranslated  (this-single-command-raw-keys)))
+    (let* ((event      (aref key (if (and (symbolp (aref key 0))
+                                          (> (length key) 1)
+                                          (consp (aref key 1)))
+                                     1
+                                   0)))
+           (modifiers  (event-modifiers event))
+           (mouse-msg  (if (or (memq 'click modifiers)
+                               (memq 'down modifiers)
+                               (memq 'drag modifiers))
+                           " at that spot"
+                         ""))
+           (defn       (key-binding key t))
+           defn-up defn-up-tricky ev-type mouse-1-remapped mouse-1-tricky)
 
-    ;; Handle the case where we faked an entry in "Select and Paste" menu.
-    (when (and (eq defn nil)
-               (stringp (aref key (1- (length key))))
-               (eq (key-binding (substring key 0 -1)) 'yank-menu))
-      (setq defn  'menu-bar-select-yank))
-    (cond ((or (null defn)  (integerp defn)  (equal defn 'undefined))
-           (message "%s%s is undefined" (help-key-description key untranslated) mouse-msg)
-           nil)                         ; Return nil: undefined.
-          (t
-           (help-setup-xref (list #'describe-function defn) (interactive-p))
-           ;; Don't bother user with strings from (e.g.) the select-paste menu.
-           (when (stringp (aref key (1- (length key))))
-             (aset key (1- (length key)) "(any string)"))
-           (when (and untranslated  (stringp (aref untranslated (1- (length untranslated)))))
-             (aset untranslated (1- (length untranslated))
-                   "(any string)"))
-           ;; Need to do this before erasing *Help* buffer in case event
-           ;; is a mouse click in an existing *Help* buffer.
-           (when up-event
-             (setq ev-type  (event-basic-type up-event))
-             (let ((sequence  (vector up-event)))
-               (when (and (eq ev-type 'mouse-1)
-                          mouse-1-click-follows-link
-                          (not (eq mouse-1-click-follows-link 'double))
-                          (setq mouse-1-remapped  (mouse-on-link-p (event-start up-event))))
-                 (setq mouse-1-tricky  (and (integerp mouse-1-click-follows-link)
-                                            (> mouse-1-click-follows-link 0)))
-                 (cond ((stringp mouse-1-remapped) (setq sequence  mouse-1-remapped))
-                       ((vectorp mouse-1-remapped) (setcar up-event (elt mouse-1-remapped 0)))
-                       (t (setcar up-event 'mouse-2))))
-               (setq defn-up  (key-binding sequence nil nil (event-start up-event)))
-               (when mouse-1-tricky
-                 (setq sequence  (vector up-event))
-                 (aset sequence 0 'mouse-1)
-                 (setq defn-up-tricky  (key-binding sequence nil nil
-                                                    (event-start up-event))))))
-           (if (fboundp 'with-help-window)
-               (with-help-window (help-buffer)
+      ;; Handle the case where we faked an entry in "Select and Paste" menu.
+      (when (and (eq defn nil)
+                 (stringp (aref key (1- (length key))))
+                 (eq (key-binding (substring key 0 -1)) 'yank-menu))
+        (setq defn  'menu-bar-select-yank))
+      (cond ((or (null defn)  (integerp defn)  (equal defn 'undefined))
+             (message "%s%s is undefined" (help-key-description key untranslated) mouse-msg)
+             nil)                       ; Return nil: undefined.
+            (t
+             (help-setup-xref (list #'describe-function defn) (interactive-p))
+             ;; Don't bother user with strings from (e.g.) the select-paste menu.
+             (when (stringp (aref key (1- (length key))))
+               (aset key (1- (length key)) "(any string)"))
+             (when (and untranslated  (stringp (aref untranslated (1- (length untranslated)))))
+               (aset untranslated (1- (length untranslated))
+                     "(any string)"))
+             ;; Need to do this before erasing *Help* buffer in case event
+             ;; is a mouse click in an existing *Help* buffer.
+             (when up-event
+               (setq ev-type  (event-basic-type up-event))
+               (let ((sequence  (vector up-event)))
+                 (when (and (eq ev-type 'mouse-1)
+                            mouse-1-click-follows-link
+                            (not (eq mouse-1-click-follows-link 'double))
+                            (setq mouse-1-remapped  (mouse-on-link-p (event-start up-event))))
+                   (setq mouse-1-tricky  (and (integerp mouse-1-click-follows-link)
+                                              (> mouse-1-click-follows-link 0)))
+                   (cond ((stringp mouse-1-remapped) (setq sequence  mouse-1-remapped))
+                         ((vectorp mouse-1-remapped) (setcar up-event (elt mouse-1-remapped 0)))
+                         (t (setcar up-event 'mouse-2))))
+                 (setq defn-up  (key-binding sequence nil nil (event-start up-event)))
+                 (when mouse-1-tricky
+                   (setq sequence  (vector up-event))
+                   (aset sequence 0 'mouse-1)
+                   (setq defn-up-tricky  (key-binding sequence nil nil
+                                                      (event-start up-event))))))
+             (if (fboundp 'with-help-window)
+                 (with-help-window (help-buffer)
+                   (princ (help-key-description key untranslated))
+                   (princ (format "\
+%s runs the command %S, which is "
+                                  mouse-msg defn))
+                   (describe-function-1 defn)
+                   (when up-event
+                     (unless (or (null defn-up)  (integerp defn-up)  (equal defn-up 'undefined))
+                       (princ (format "
+
+----------------- up-event %s----------------
+
+<%S>%s%s runs the command %S, which is "
+                                      (if mouse-1-tricky "(short click) " "")
+                                      ev-type mouse-msg
+                                      (if mouse-1-remapped " is remapped to <mouse-2>, which" "")
+                                      defn-up))
+                       (describe-function-1 defn-up))
+                     (unless (or (null defn-up-tricky)
+                                 (integerp defn-up-tricky)
+                                 (eq defn-up-tricky 'undefined))
+                       (princ (format "
+
+----------------- up-event (long click) ----------------
+
+Pressing <%S>%s for longer than %d milli-seconds
+runs the command %S, which is "
+                                      ev-type mouse-msg
+                                      mouse-1-click-follows-link
+                                      defn-up-tricky))
+                       (describe-function-1 defn-up-tricky)))
+                   (print-help-return-message))
+               (with-output-to-temp-buffer (help-buffer) ; Emacs 22-24.3.
                  (princ (help-key-description key untranslated))
                  (princ (format "\
 %s runs the command %S, which is "
@@ -300,39 +336,7 @@ runs the command %S, which is "
                                     mouse-1-click-follows-link
                                     defn-up-tricky))
                      (describe-function-1 defn-up-tricky)))
-                 (print-help-return-message))
-             (with-output-to-temp-buffer (help-buffer) ; Emacs 22-24.3.
-               (princ (help-key-description key untranslated))
-               (princ (format "\
-%s runs the command %S, which is "
-                              mouse-msg defn))
-               (describe-function-1 defn)
-               (when up-event
-                 (unless (or (null defn-up)  (integerp defn-up)  (equal defn-up 'undefined))
-                   (princ (format "
-
------------------ up-event %s----------------
-
-<%S>%s%s runs the command %S, which is "
-                                  (if mouse-1-tricky "(short click) " "")
-                                  ev-type mouse-msg
-                                  (if mouse-1-remapped " is remapped to <mouse-2>, which" "")
-                                  defn-up))
-                   (describe-function-1 defn-up))
-                 (unless (or (null defn-up-tricky)
-                             (integerp defn-up-tricky)
-                             (eq defn-up-tricky 'undefined))
-                   (princ (format "
-
------------------ up-event (long click) ----------------
-
-Pressing <%S>%s for longer than %d milli-seconds
-runs the command %S, which is "
-                                  ev-type mouse-msg
-                                  mouse-1-click-follows-link
-                                  defn-up-tricky))
-                   (describe-function-1 defn-up-tricky)))
-               (print-help-return-message))))))) ; Return t: defined.
+                 (print-help-return-message)))))))) ; Return t: defined.
 
 
 ;; REPLACES ORIGINAL in `help.el':
@@ -486,7 +490,9 @@ Function `Info-goto-emacs-key-command-node' is used to look up KEY."
         pp-key  (or pp-key  (if (fboundp 'naked-key-description)
                                 (naked-key-description key)
                               (key-description key))))
-  (let* ((described-p   (describe-key key))
+  (let* ((described-p   (if (fboundp 'help--analyze-key) ; Emacs 26+
+                            (cadr (help--analyze-key key nil))
+                          (describe-key key)))
          ;; The version of `Info-goto-emacs-key-command-node' defined in `info+.el' returns
          ;; non-nil if Info doc is found.  The standard version defined `info.el' will not.
          (documented-p  (Info-goto-emacs-key-command-node key))) ; nil if have only std version
