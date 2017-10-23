@@ -16,11 +16,13 @@
 
 ** org-tree-to-indirect-buffer C-c C-x b - отобразить текущее дерево подразделов в новом буфере.
 
-То какой режим отображения будет при загрузке .org файла задается для всей файлов переменной org-startup-folded, если для каждого файла свой режим отображения то в буфер вносится 
-#+STARTUP: overview
-#+STARTUP: content
-#+STARTUP: showall
-#+STARTUP: showeverything
+То какой режим отображения будет при загрузке .org файла задается для всей файлов переменной org-startup-folded, если для каждого файла свой режим отображения то в буфер вносится одна из этих записей:
+* #+STARTUP: overview
+* #+STARTUP: content
+* #+STARTUP: showall
+* #+STARTUP: showeverything
+
+Что бы вернуться к заданному отображению используют команду org-set-startup-visibility (C-u C-u TAB)
 
 == Перемещение по буферу ==
 * C-c C-n org-next-visible-heading Следующий заголовок.
