@@ -12,6 +12,10 @@
 
 ** org-global-cycle Чередование отображения всего буфера (Global cycling) Shift-TAB или C-u TAB - последовательное нажатие этой кнопки приводит к отображению краткого_описания-содержания-показать_все 
 
+** outline-show-all Показать все C-u C-u C-u TAB 
+
+** org-tree-to-indirect-buffer C-c C-x b - отобразить текущее дерево подразделов в новом буфере
+
 == Перемещение по буферу ==
 * C-c C-n org-next-visible-heading Следующий заголовок.
 * C-c C-p org-previous-visible-heading Предыдущий заголовок.
