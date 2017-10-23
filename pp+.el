@@ -8,9 +8,9 @@
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct  8 16:05:00 2017 (-0700)
+;; Last-Updated: Mon Oct 23 14:48:58 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 439
+;;     Update #: 444
 ;; URL: https://www.emacswiki.org/emacs/download/pp%2b.el
 ;; Doc URL: http://emacswiki.org/EvaluatingExpressions
 ;; Keywords: lisp
@@ -137,6 +137,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/10/23 dadams
+;;     pp-show-tooltip, pp-expression-size, pp-display-expression:
+;;       Wrap calls to posn-* with save-excursion.
 ;; 2017/10/08 dadams
 ;;     Added: pp-eval-expression-print-circle.
 ;;     pp-show-tooltip, pp-eval-last-sexp-with(out)-tooltip, pp-eval-last-sexp:
@@ -302,8 +305,8 @@ expression that moves point off-screen."
             (const :tag "Do not use a tooltip" nil)
             (const :tag "Always use a tooltip, and clip value if too big" t)
             (cons  :tag "Use a tooltip only if smaller than WIDTH x HEIGHT"
-             (integer :tag "Width (characters)"  :value ,(car x-max-tooltip-size))
-             (integer :tag "Height (characters)" :value ,(cdr x-max-tooltip-size))))
+                   (integer :tag "Width (characters)"  :value ,(car x-max-tooltip-size))
+                   (integer :tag "Height (characters)" :value ,(cdr x-max-tooltip-size))))
     :group 'pp :group 'lisp)
 
   (defface pp-tooltip
@@ -345,21 +348,22 @@ Optional arg FACE defaults to `pp-tooltip'."
 
   (defun pp-show-tooltip (value)
     "Show Lisp VALUE in a tooltip at point using face `pp-tooltip'."
-    (let* ((posn-at-pt                (posn-at-point))
-           (x-y                       (and posn-at-pt  (posn-x-y posn-at-pt)))
-           (win-edges                 (and x-y  (window-inside-absolute-pixel-edges)))
-           (left                      (and x-y  (+ (car x-y) (car win-edges))))
-           (top                       (and x-y  (+ (cdr x-y) (cadr win-edges))))
-           (tooltip-frame-parameters  `((name . "tooltip")
-                                        (internal-border-width . 2)
-                                        (border-width . 1)
-                                        (left ,@ left)
-                                        (top  ,@ top)))
-           (print-length              pp-eval-expression-print-length)
-           (print-level               pp-eval-expression-print-level)
-           (print-circle              pp-eval-expression-print-circle))
-      (pp-tooltip-show (pp-to-string value))
-      value))
+    (save-excursion
+      (let* ((posn-at-pt                (posn-at-point))
+             (x-y                       (and posn-at-pt  (posn-x-y posn-at-pt)))
+             (win-edges                 (and x-y  (window-inside-absolute-pixel-edges)))
+             (left                      (and x-y  (+ (car x-y) (car win-edges))))
+             (top                       (and x-y  (+ (cdr x-y) (cadr win-edges))))
+             (tooltip-frame-parameters  `((name . "tooltip")
+                                          (internal-border-width . 2)
+                                          (border-width . 1)
+                                          (left ,@ left)
+                                          (top  ,@ top)))
+             (print-length              pp-eval-expression-print-length)
+             (print-level               pp-eval-expression-print-level)
+             (print-circle              pp-eval-expression-print-circle))
+        (pp-tooltip-show (pp-to-string value))
+        value)))
 
   (defun pp-expression-size (value buffer)
     "Return the size in characters needed to pretty-print Lisp VALUE.
@@ -367,21 +371,22 @@ Pretty-print VALUE in BUFFER in a temporary invisible frame, then
 return the value of `posn-col-row'.  If the value is non-`nil', it is
 a cons (COLUMNS . ROWS) of the rectangle needed for the result of
 pretty-printing."
-    (let ((buf  (get-buffer-create buffer))
-          posn)
-      (with-current-buffer buf
-        (erase-buffer)
-        (let* ((special-display-buffer-names  ())
-               (special-display-regexps       ())
-               (invis-frame                   (make-frame '((visibility . nil))))
-               (win                           (display-buffer buf nil invis-frame)))
-          (pp value buf)
-          (with-selected-frame invis-frame
-            (select-window win)
-            (goto-char (point-max))
-            (setq posn  (posn-at-point))
-            (prog1 (and posn  (posn-col-row posn))
-              (delete-frame)))))))
+    (save-excursion
+      (let ((buf  (get-buffer-create buffer))
+            posn)
+        (with-current-buffer buf
+          (erase-buffer)
+          (let* ((special-display-buffer-names  ())
+                 (special-display-regexps       ())
+                 (invis-frame                   (make-frame '((visibility . nil))))
+                 (win                           (display-buffer buf nil invis-frame)))
+            (pp value buf)
+            (with-selected-frame invis-frame
+              (select-window win)
+              (goto-char (point-max))
+              (setq posn  (posn-at-point))
+              (prog1 (and posn  (posn-col-row posn))
+                (delete-frame))))))))
 
   (defun pp-eval-expression-with-tooltip (expression &optional insert-value)
     "This is `pp-eval-expression', but using a tooltip when possible.
@@ -579,7 +584,7 @@ Else show it in buffer OUT-BUFFER-NAME."
          (use-tooltip  (or use-tooltip  (and sexp-size
                                              (<= (car sexp-size) (car pp-max-tooltip-size))
                                              (<= (cdr sexp-size) (cdr pp-max-tooltip-size))))))
-    (if (and use-tooltip  (posn-at-point)) ; Ensure that point is on-screen now.
+    (if (and use-tooltip  (save-excursion (posn-at-point))) ; Ensure that point is on-screen now.
         (progn (pp-show-tooltip expression) (message nil))
       (let* ((old-show-function  temp-buffer-show-function)
              (temp-buffer-show-function
