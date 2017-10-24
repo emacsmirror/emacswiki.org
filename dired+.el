@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 23 21:05:09 2017 (-0700)
+;; Last-Updated: Mon Oct 23 21:45:10 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 10424
+;;     Update #: 10432
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -63,8 +63,8 @@
 ;;    `diredp-prev-subdir'   - `C-M-p'
 ;;
 ;;
-;;  Fontification
-;;  -------------
+;;  Font-Lock Highlighting
+;;  ----------------------
 ;;
 ;;  If you want a maximum or minimum fontification for Dired mode,
 ;;  then customize option `font-lock-maximum-decoration'.  If you want
@@ -334,6 +334,27 @@
 ;;  behavior.
 ;;
 ;;
+;;  Mode-Line
+;;  ---------
+;;
+;;  The number of files and dirs that are marked with `*', and the
+;;  number that are flagged for deletion (marked `D') are indicated in
+;;  the mode-line.  When the cursor is on such a line the indication
+;;  tells you how many more there are.  For example, if the cursor is
+;;  on the line of the third file that is marked `*', and there are
+;;  seven of them total, then the mode-line shows `3/7*'.
+;;
+;;  The mode-line also indicates, for the current listing (which could
+;;  be a subdir listing), how many files and dirs are listed.  If the
+;;  cursor is on the 27th file in a listing of 78 files then the
+;;  mode-line shows 27/78.
+;;
+;;  For counting files and dirs in a listing, option
+;;  `diredp-count-.-and-..-flag' controls whether to count the lines
+;;  for `.' and `..'.  By default it is nil, meaning they are not
+;;  counted.
+;;
+;;
 ;;  If You Use Dired+ in Terminal Mode
 ;;  ----------------------------------
 ;;
@@ -519,8 +540,9 @@
 ;;
 ;;    `diredp-auto-focus-frame-for-thumbnail-tooltip-flag',
 ;;    `diredp-bind-problematic-terminal-keys',
-;;    `diredp-compressed-extensions', `diredp-dwim-any-frame-flag'
-;;    (Emacs 22+), `diredp-image-preview-in-tooltip', `diff-switches',
+;;    `diredp-compressed-extensions', `diredp-count-.-and-..-flag'
+;;    (Emacs 22+), `diredp-dwim-any-frame-flag' (Emacs 22+),
+;;    `diredp-image-preview-in-tooltip', `diff-switches',
 ;;    `diredp-hide-details-initially-flag' (Emacs 24.4+),
 ;;    `diredp-highlight-autofiles-mode',
 ;;    `diredp-hide-details-propagate-flag' (Emacs 24.4+),
@@ -564,9 +586,9 @@
 ;;    `diredp-read-bookmark-file-args', `diredp-read-include/exclude',
 ;;    `diredp-read-regexp', `diredp-recent-dirs',
 ;;    `diredp-refontify-buffer', `diredp-remove-if',
-;;    `diredp-remove-if-not', `diredp-root-directory-p',
-;;    `diredp-set-header-line-breadcrumbs' (Emacs 22+),
-;;    `diredp-set-tag-value', `diredp-set-union',
+;;    `diredp-remove-if-not', `diredp--reuse-dir-buffer-helper',
+;;    `diredp-root-directory-p', `diredp-set-header-line-breadcrumbs'
+;;    (Emacs 22+), `diredp-set-tag-value', `diredp-set-union',
 ;;    `diredp--set-up-font-locking', `diredp-string-match-p',
 ;;    `diredp-tag', `diredp-this-file-marked-p',
 ;;    `diredp-this-file-unmarked-p', `diredp-this-subdir',
@@ -3202,12 +3224,12 @@ This means the `.' plus the file extension.  Example: `.elc'."
 (when (> emacs-major-version 21)
   (defface diredp-mode-line-marked
       '((t (:foreground "DarkViolet")))
-    "*Face for marked number in mode line `mode-name' for Dired buffers."
+    "*Face for marked number in mode-line `mode-name' for Dired buffers."
     :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 
   (defface diredp-mode-line-flagged
       '((t (:foreground "Red")))
-    "*Face for flagged number in mode line `mode-name' for Dired buffers."
+    "*Face for flagged number in mode-line `mode-name' for Dired buffers."
     :group 'Dired-Plus :group 'font-lock-highlighting-faces))
 
 (defface diredp-no-priv
