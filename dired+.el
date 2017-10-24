@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1999-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
-;; Version: 2017.04.09
+;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Fri Aug 18 14:10:39 2017 (-0700)
+;; Last-Updated: Mon Oct 23 21:05:09 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 10354
+;;     Update #: 10424
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -480,7 +480,6 @@
 ;;    `diredp-mouse-do-shell-command', `diredp-mouse-do-symlink',
 ;;    `diredp-mouse-do-tag', `diredp-mouse-do-untag',
 ;;    `diredp-mouse-downcase', `diredp-mouse-ediff',
-;;    `diredp-mouse-find-file',
 ;;    `diredp-mouse-find-line-file-other-window',
 ;;    `diredp-mouse-find-file-other-frame',
 ;;    `diredp-mouse-find-file-reuse-dir-buffer',
@@ -698,6 +697,19 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/10/23 dadams
+;;     Added: diredp-count-.-and-..-flag, diredp--reuse-dir-buffer-helper.
+;;     Removed: diredp-mouse-find-file.
+;;     diredp-find-file-reuse-dir-buffer, diredp-mouse-find-file-reuse-dir-buffer,
+;;       diredp-up-directory-reuse-dir-buffer:
+;;         Use diredp--reuse-dir-buffer-helper.
+;;     diredp-find-file-reuse-dir-buffer: Changed logic: do find-alternate-file only if target is a dir not in
+;;                                        Dired and current Dired buffer is in only this window.
+;;     diredp-mouse-find-file-reuse-dir-buffer: Added optional args FIND-FILE-FUNC and  FIND-DIR-FUNC.
+;;     diredp-up-directory, diredp-up-directory-reuse-dir-buffer: Pass OTHER-WINDOW arg to diredp-w32-drives.
+;;     diredp-nb-marked-in-mode-name: Show also number of lines in current listing, and listing-relative lineno,
+;;                                    respecting diredp-count-.-and-..-flag.
+;;     diredp-find-a-file*: Added autoload cookies.
 ;; 2017/08/18 dadams
 ;;     Fixed emacswiki URLs everywhere.  They changed the locations and changed http to https.
 ;; 2017/06/30 dadams
@@ -1694,6 +1706,27 @@ rather than FUN itself, to `minibuffer-setup-hook'."
               (progn (add-hook 'minibuffer-setup-hook ,hook) ,@body)
            (remove-hook 'minibuffer-setup-hook ,hook)))))))
 
+;; Define these for Emacs 20 and 21.
+(unless (fboundp 'dired-get-file-for-visit) ; Emacs 22+
+  (defun dired-get-file-for-visit ()    ; Not bound
+    "Get the current line's file name, with an error if file does not exist."
+    (interactive)
+    (let ((raw  (dired-get-filename nil t)) ; Pass t for second arg so no error for `.' and `..'.
+          file-name)
+      (unless raw (error "No file on this line"))
+      (setq file-name  (file-name-sans-versions raw t))
+      (if (file-exists-p file-name)
+          file-name
+        (if (file-symlink-p file-name)
+            (error "File is a symlink to a nonexistent target")
+          (error "File no longer exists; type `g' to update Dired buffer")))))
+
+  (defun dired-find-alternate-file ()   ; Not bound
+    "In Dired, visit this file or directory instead of the Dired buffer."
+    (interactive)
+    (set-buffer-modified-p nil)
+    (find-alternate-file (dired-get-file-for-visit))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -1706,6 +1739,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar bookmark-default-file)                    ; In `bookmark.el'
 (defvar compilation-current-error)                ; In `compile.el'
 (defvar delete-by-moving-to-trash)                ; Built-in, Emacs 23+
+(defvar dired-auto-revert-buffer)                 ; In `dired.el', Emacs 23+
 (defvar dired-details-state)                      ; In `dired-details+.el'
 (defvar dired-keep-marker-hardlink)               ; In `dired-x.el'
 (defvar dired-recursive-deletes)                  ; In `dired.el', Emacs 22+
@@ -1714,6 +1748,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar dired-subdir-switches)                    ; In `dired.el'
 (defvar dired-touch-program)                      ; Emacs 22+
 (defvar dired-use-ls-dired)                       ; Emacs 22+
+(defvar diredp-count-.-and-..-flag)               ; Here, Emacs 22+
 (defvar diredp-hide-details-initially-flag)       ; Here, Emacs 24.4+
 (defvar diredp-hide-details-last-state)           ; Here, Emacs 24.4+
 (defvar diredp-hide-details-propagate-flag)       ; Here, Emacs 24.4+
@@ -1744,6 +1779,7 @@ rather than FUN itself, to `minibuffer-setup-hook'."
 (defvar mouse3-dired-function)                    ; In `mouse3.el'
 (defvar read-file-name-completion-ignore-case)    ; In `minibuffer.el', Emacs 23+.  In C code, Emacs 22.
 (defvar recentf-list)                             ; In `recentf.el'
+(defvar switch-to-buffer-preserve-window-point)   ; In `window.el', Emacs 24+
 (defvar tooltip-mode)                             ; In `tooltip.el'
 (defvar vc-directory-exclusion-list)              ; In `vc'
 (defvar w32-browser-wait-time)                    ; In `w32-browser.el'
@@ -1802,6 +1838,11 @@ not support the use of such keys then customize this option to nil."
                                           ".lzma" ".xz" ".zip" ".z" ".Z" ".gz" ".bz2")
   "*List of compressed-file extensions, for highlighting."
   :type '(repeat string) :group 'Dired-Plus)
+
+(when (> emacs-major-version 21)        ; Emacs 22+
+  (defcustom diredp-count-.-and-..-flag nil
+    "Non-nil means count `.' and `..' when counting files for mode-line."
+    :type 'boolean :group 'Dired-Plus))
 
 ;;;###autoload
 (defcustom diredp-dwim-any-frame-flag pop-up-frames
@@ -6538,83 +6579,114 @@ As a side effect, killed Dired buffers for DIR are removed from
     result))
 
 
-;; These functions let you use the file on the current line as the default.
-;; They are useful only in Emacs 22 or later.
+;; If you use library `files+.el', you need not use these commands
+;; explicitly, because that library redefines `find-file-read-args' to
+;; do the same thing, in Dired mode.  These are provided here in case
+;; you want to bind them directly - for example, in case your code
+;; does not use `find-file-read-args'.
 ;;
-;; However, if you use library `files+.el', you need not use these commands explicitly,
-;; because that library redefines `find-file-read-args' to do the same thing, in Dired mode.
-;; These are provided here in case you want to bind them directly - for example, in case your
-;; code does not use `find-file-read-args'.
-;;
-(when (fboundp 'dired-get-file-for-visit) ; Defined in Emacs 22.
-  (defun diredp-find-a-file (filename &optional wildcards) ; Not bound
-    "`find-file', but use file on current line as default (`M-n')."
-    (interactive (diredp-find-a-file-read-args "Find file: " nil))
-    (find-file filename wildcards))
+;;;###autoload
+(defun diredp-find-a-file (filename &optional wildcards) ; Not bound
+  "`find-file', but use file on current line as default (`M-n')."
+  (interactive (diredp-find-a-file-read-args "Find file: " nil))
+  (find-file filename wildcards))
 
-  (defun diredp-find-a-file-other-frame (filename &optional wildcards) ; Not bound
-    "`find-file-other-frame', but use file under cursor as default (`M-n')."
-    (interactive (diredp-find-a-file-read-args "Find file: " nil))
-    (find-file-other-frame filename wildcards))
+;;;###autoload
+(defun diredp-find-a-file-other-frame (filename &optional wildcards) ; Not bound
+  "`find-file-other-frame', but use file under cursor as default (`M-n')."
+  (interactive (diredp-find-a-file-read-args "Find file: " nil))
+  (find-file-other-frame filename wildcards))
 
-  (defun diredp-find-a-file-other-window (filename &optional wildcards) ; Not bound
-    "`find-file-other-window', but use file under cursor as default (`M-n')."
-    (interactive (diredp-find-a-file-read-args "Find file: " nil))
-    (find-file-other-window filename wildcards))
+;;;###autoload
+(defun diredp-find-a-file-other-window (filename &optional wildcards) ; Not bound
+  "`find-file-other-window', but use file under cursor as default (`M-n')."
+  (interactive (diredp-find-a-file-read-args "Find file: " nil))
+  (find-file-other-window filename wildcards))
 
-  (defun diredp-find-a-file-read-args (prompt mustmatch) ; Not bound
-    (list (lexical-let ((find-file-default  (abbreviate-file-name (dired-get-file-for-visit))))
-            (minibuffer-with-setup-hook (lambda ()
-                                          (setq minibuffer-default  find-file-default))
-                                        (read-file-name prompt nil default-directory mustmatch)))
-          t)))
-
-;; Define these for Emacs 20 and 21.
-(unless (fboundp 'dired-get-file-for-visit) ; Defined in Emacs 22.
-  (defun dired-get-file-for-visit () ; Not bound
-    "Get the current line's file name, with an error if file does not exist."
-    (interactive)
-    ;; We pass t for second arg so that we don't get error for `.' and `..'.
-    (let ((raw  (dired-get-filename nil t))
-          file-name)
-      (unless raw (error "No file on this line"))
-      (setq file-name  (file-name-sans-versions raw t))
-      (if (file-exists-p file-name)
-          file-name
-        (if (file-symlink-p file-name)
-            (error "File is a symlink to a nonexistent target")
-          (error "File no longer exists; type `g' to update Dired buffer")))))
-
-  (defun dired-find-alternate-file () ; Not bound
-    "In Dired, visit this file or directory instead of the Dired buffer."
-    (interactive)
-    (set-buffer-modified-p nil)
-    (find-alternate-file (dired-get-file-for-visit))))
+;;;###autoload
+(defun diredp-find-a-file-read-args (prompt mustmatch) ; Not bound
+  (list (lexical-let ((find-file-default  (abbreviate-file-name (dired-get-file-for-visit))))
+          (minibuffer-with-setup-hook (lambda ()
+                                        (setq minibuffer-default  find-file-default))
+                                      (read-file-name prompt nil default-directory mustmatch)))
+        t))
 
 ;;;###autoload
 (defun diredp-find-file-reuse-dir-buffer () ; Not bound
   "Like `dired-find-file', but reuse Dired buffers.
 Unlike `dired-find-alternate-file' this does not use
-`find-alternate-file' if the target is not a directory."
+`find-alternate-file' unless (1) the target is a directory that is not
+yet visited as a Dired buffer, and (2) the current (Dired) buffer is
+not visited also in some other window (possibly in an iconified
+frame)."
   (interactive)
   (set-buffer-modified-p nil)
   (let ((file  (dired-get-file-for-visit)))
-    (if (file-directory-p file) (find-alternate-file file) (find-file file))))
+    (diredp--reuse-dir-buffer-helper file)))
 
 ;;;###autoload
-(defun diredp-mouse-find-file-reuse-dir-buffer (event) ; Not bound
-  "Like `diredp-mouse-find-file', but reuse Dired buffers.
+(defun diredp-mouse-find-file-reuse-dir-buffer (event &optional find-file-func find-dir-func) ; Not bound
+  "Like `dired-mouse-find-file', but reuse Dired buffers.
 Unlike `dired-find-alternate-file' this does not use
-`find-alternate-file' if the target is not a directory."
+`find-alternate-file' unless (1) the target is a directory that is not
+yet visited as a Dired buffer, and (2) the current (Dired) buffer is
+not visited also in some other window (possibly in an iconified
+frame).
+
+Non-nil optional args FIND-FILE-FUNC and FIND-DIR-FUNC specify
+functions to visit the file and directory, respectively.
+Defaults: `find-file' and `dired', respectively."
   (interactive "e")
-  (let (file)
-    (with-current-buffer (window-buffer (posn-window (event-end event)))
-      (save-excursion (goto-char (posn-point (event-end event)))
-                      (setq file  (dired-get-file-for-visit))))
-    (select-window (posn-window (event-end event)))
-    (if (file-directory-p file)
-        (find-alternate-file (file-name-sans-versions file t))
-      (find-file (file-name-sans-versions file t)))))
+  (let (window pos file)
+    (save-excursion
+      (setq window  (posn-window (event-end event))
+	    pos     (posn-point (event-end event)))
+      (unless (windowp window) (error "No file chosen"))
+      (set-buffer (window-buffer window))
+      (goto-char pos)
+      (setq file  (dired-get-file-for-visit)))
+    (select-window window)
+    (diredp--reuse-dir-buffer-helper file find-file-func find-dir-func)))
+
+(defun diredp--reuse-dir-buffer-helper (file &optional find-file-func find-dir-func other-window)
+  "Helper for commands `diredp-*-reuse-dir-buffer' commands.
+Non-nil optional args FIND-FILE-FUNC and FIND-DIR-FUNC specify
+functions to visit the file and directory, respectively.
+Defaults: `find-file' and `dired', respectively.
+
+Unlike `dired-find-alternate-file' this does not use
+`find-alternate-file' unless (1) the target is a directory that is not
+yet visited as a Dired buffer, and (2) the current (Dired) buffer is
+not visited also in some other window (possibly in an iconified
+frame)."
+  (setq find-file-func  (or find-file-func (if other-window #'find-file-other-window #'find-file))
+        find-dir-func   (or find-dir-func  (if other-window #'dired-other-window #'dired)))
+  (let (;; This binding prevents problems with preserving point in windows displaying Dired buffers, because
+        ;; reverting a Dired buffer empties it, which changes the places where the markers used by
+        ;; `switch-to-buffer-preserve-window-point' point.
+        (switch-to-buffer-preserve-window-point  (and (boundp 'switch-to-buffer-preserve-window-point) ; Emacs 24+
+                                                      (or (not (boundp 'dired-auto-revert-buffer))
+                                                          (not dired-auto-revert-buffer))
+                                                      switch-to-buffer-preserve-window-point))
+        (find-file-run-dired                     t)
+        (wins                                    ())
+        (alt-find-file-func                      (if other-window
+                                                     #'find-alternate-file-other-window
+                                                   #'find-alternate-file))
+        dir-bufs)
+    (if (or (not (file-directory-p file)) ; New is a not a directory
+            (dired-buffers-for-dir file) ; or there is a Dired buffer for it, even as a subdir.
+            (and (setq dir-bufs  (dired-buffers-for-dir default-directory)) ; Dired bufs for current (old).
+                 (progn
+                   (dolist (buf  dir-bufs)
+                     (setq wins  (append wins (get-buffer-window-list buf 'NOMINI 0))))
+                   (setq wins  (delq nil wins))
+                   (cdr wins))))        ; More than one window showing current Dired buffer.
+        (if (file-directory-p file)
+	    (or (and (cdr dired-subdir-alist)  (dired-goto-subdir file)) ; New is a subdir inserted in current
+	        (funcall find-dir-func file))
+          (funcall find-file-func (file-name-sans-versions file t)))
+      (funcall alt-find-file-func (file-name-sans-versions file t)))))
 
 ;;;###autoload
 (defalias 'toggle-diredp-find-file-reuse-dir 'diredp-toggle-find-file-reuse-dir)
@@ -6635,13 +6707,13 @@ your ~/.emacs, where VALUE is 1 to reuse or -1 to not reuse:
 Note: This affects only these commands:
 
   `dired-find-file'
-  `diredp-mouse-find-file'
+  `dired-mouse-find-file'
 
 It does not affect the corresponding `-other-window' commands.  Note
 too that, by default, mouse clicks to open files or directories open
 in another window: command `diredp-mouse-find-file-other-window', not
-`diredp-mouse-find-file'.  If you want a mouse click to reuse a
-directory then bind `mouse-2' to `diredp-mouse-find-file' instead."
+`dired-mouse-find-file'.  If you want a mouse click to reuse a
+directory then bind `mouse-2' to `dired-mouse-find-file' instead."
   (interactive "P")
   (if force-p                           ; Force.
       (if (natnump (prefix-numeric-value force-p))
@@ -6653,30 +6725,22 @@ directory then bind `mouse-2' to `diredp-mouse-find-file' instead."
 
 (defun diredp-make-find-file-keys-reuse-dirs ()
   "Make find-file keys reuse Dired buffers."
-  (substitute-key-definition 'diredp-up-directory 'diredp-up-directory-reuse-dir-buffer
-   dired-mode-map)
+  (substitute-key-definition 'diredp-up-directory 'diredp-up-directory-reuse-dir-buffer dired-mode-map)
   (substitute-key-definition 'dired-find-file 'diredp-find-file-reuse-dir-buffer dired-mode-map)
-  (substitute-key-definition 'diredp-mouse-find-file
-                             'diredp-mouse-find-file-reuse-dir-buffer dired-mode-map)
+  (substitute-key-definition 'dired-mouse-find-file 'diredp-mouse-find-file-reuse-dir-buffer dired-mode-map)
   ;; These commands are defined in `w32-browser.el' (for use with MS Windows).
-  (substitute-key-definition 'dired-w32-browser
-                             'dired-w32-browser-reuse-dir-buffer dired-mode-map)
-  (substitute-key-definition 'dired-mouse-w32-browser
-                             'dired-mouse-w32-browser-reuse-dir-buffer dired-mode-map)
+  (substitute-key-definition 'dired-w32-browser 'dired-w32-browser-reuse-dir-buffer dired-mode-map)
+  (substitute-key-definition 'dired-mouse-w32-browser 'dired-mouse-w32-browser-reuse-dir-buffer dired-mode-map)
   (message "Reusing Dired buffers is now ON"))
 
 (defun diredp-make-find-file-keys-not-reuse-dirs ()
   "Make find-file keys not reuse Dired buffers (i.e. act normally)."
-  (substitute-key-definition 'diredp-up-directory-reuse-dir-buffer 'diredp-up-directory
-   dired-mode-map)
+  (substitute-key-definition 'diredp-up-directory-reuse-dir-buffer 'diredp-up-directory dired-mode-map)
   (substitute-key-definition 'diredp-find-file-reuse-dir-buffer 'dired-find-file dired-mode-map)
-  (substitute-key-definition 'diredp-mouse-find-file-reuse-dir-buffer
-                             'diredp-mouse-find-file dired-mode-map)
+  (substitute-key-definition 'diredp-mouse-find-file-reuse-dir-buffer 'dired-mouse-find-file dired-mode-map)
   ;; These commands are defined in `w32-browser.el' (for use with MS Windows).
-  (substitute-key-definition 'dired-w32-browser-reuse-dir-buffer
-                             'dired-w32-browser dired-mode-map)
-  (substitute-key-definition 'dired-mouse-w32-browser-reuse-dir-buffer
-                             'dired-mouse-w32-browser dired-mode-map)
+  (substitute-key-definition 'dired-w32-browser-reuse-dir-buffer 'dired-w32-browser dired-mode-map)
+  (substitute-key-definition 'dired-mouse-w32-browser-reuse-dir-buffer 'dired-mouse-w32-browser dired-mode-map)
   (message "Reusing Dired buffers is now OFF"))
 
 ;;;###autoload
@@ -7615,22 +7679,25 @@ On MS Windows, if you are already at the root directory, invoke
         (and (cdr dired-subdir-alist)  (dired-goto-subdir up))
         (progn (if other-window (dired-other-window up) (dired up))
                (dired-goto-file dir))
-        (and (memq system-type '(windows-nt ms-dos))  (diredp-w32-drives)))))
+        (and (memq system-type '(windows-nt ms-dos))  (diredp-w32-drives other-window)))))
 
 ;;;###autoload
 (defun diredp-up-directory-reuse-dir-buffer (&optional other-window) ; Not bound
   "Like `diredp-up-directory', but reuse Dired buffers.
-With a prefix arg, Dired the parent directory in another window.  But
-in this case there is no buffer reuse."
+With a prefix arg, Dired the parent directory in another window.
+
+On MS Windows, moving up from a root Dired buffer does not kill that
+buffer (the Windows drives buffer is not really a Dired buffer)."
   (interactive "P")
-  (let* ((dir  (dired-current-directory))
-         (up   (file-name-directory (directory-file-name dir))))
-    (or (dired-goto-file (directory-file-name dir))
+  (let* ((dir      (dired-current-directory))
+         (dirfile  (directory-file-name dir))
+         (up       (file-name-directory dirfile)))
+    (or (dired-goto-file dirfile)
         ;; Only try `dired-goto-subdir' if buffer has more than one dir.
-        (and (cdr dired-subdir-alist)  (dired-goto-subdir up))
-        (progn (if other-window (find-alternate-file-other-window up) (find-alternate-file up))
+        (and (cdr dired-subdir-alist)  (dired-goto-subdir up)) ; It is a subdir inserted in current Dired.
+        (progn (diredp--reuse-dir-buffer-helper up nil nil other-window)
                (dired-goto-file dir))
-        (and (memq system-type '(windows-nt ms-dos))  (diredp-w32-drives)))))
+        (and (memq system-type '(windows-nt ms-dos))  (diredp-w32-drives other-window)))))
 
 ;; Differs from `dired-next-line' in both wraparound and respect of `goal-column'.
 ;;
@@ -9052,20 +9119,6 @@ With non-nil prefix arg, mark them instead."
     (select-window (posn-window (event-end event)))
     (find-file-other-window (file-name-sans-versions file t))))
 
-;; But be aware that `dired-sort-menu.el' binds `S-mouse-2' to `dired-sort-menu-popup'.
-;;
-;;;###autoload
-(defun diredp-mouse-find-file (event)   ; Bound to `S-mouse-2'
-  "Replace Dired in its window by this file or directory."
-  (interactive "e")
-  (let (file)
-    (with-current-buffer (window-buffer (posn-window (event-end event)))
-      (save-excursion (goto-char (posn-point (event-end event)))
-                      (setq file  (dired-get-filename nil t))))
-    (unless (stringp file) (error "No file here"))
-    (select-window (posn-window (event-end event)))
-    (find-file (file-name-sans-versions file t))))
-
 ;;;###autoload
 (defun diredp-mouse-view-file (event)   ; Not bound
   "Examine this file in view mode, returning to Dired when done.
@@ -9624,8 +9677,8 @@ Mouse
          "  \\[dired-mouse-w32-browser-reuse-dir-buffer]\t- MS Windows `Open' action
 ")
 
-    (and (where-is-internal 'diredp-mouse-find-file dired-mode-map)
-         "  \\[diredp-mouse-find-file]\t- Open in this window
+    (and (where-is-internal 'dired-mouse-find-file dired-mode-map)
+         "  \\[dired-mouse-find-file]\t- Open in this window
 ")
     (and (where-is-internal 'diredp-mouse-find-file-reuse-dir-buffer dired-mode-map)
          "  \\[diredp-mouse-find-file-reuse-dir-buffer]\t- Open in this window
@@ -9886,12 +9939,17 @@ Set bookmark-file bookmark for marked here and below
 
 (when (> emacs-major-version 21)
   (defun diredp-nb-marked-in-mode-name ()
-    "Add number of marked and flagged lines to mode name in the mode line.
+    "Show number of marked, flagged, and current-list lines in mode-line.
 \(Flagged means flagged for deletion.)
 If the current line is marked/flagged and there are others
-marked/flagged after it then show `N/M', where N is the number
-marked/flagged through the current line and M is the total number
+marked/flagged after it then show `N/M', where `N' is the number
+marked/flagged through the current line and `M' is the total number
 marked/flagged.
+
+If the current line is for a file then show `L/T', where `L' is the
+line number in the current listing and `T' is the number of files in
+that listing.  If option `diredp-count-.-and-..-flag' is non-nil then
+count also `.' and `..'.
 
 Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
     (let ((mname  (format-mode-line mode-name)))
@@ -9938,7 +9996,27 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
                                                                (point-min) (point))))
                                           ""))
                                       nb-flagged)
-                              'face 'diredp-mode-line-flagged))))))))))
+                              'face 'diredp-mode-line-flagged))))
+                  (:eval (let ((this    0)
+                               (total   0)
+                               (o-pt    (line-beginning-position))
+                               (e-pt    (or (condition-case nil
+                                                (let ((diredp-wrap-around-flag  nil))
+                                                  (save-excursion
+                                                    (diredp-next-subdir 1)
+                                                    (line-beginning-position)))
+                                              (error nil))
+                                            (save-excursion (goto-char (point-max)) (line-beginning-position)))))
+                           (dired-goto-subdir (dired-current-directory))
+                           (while (and (<= (point) e-pt)
+                                       (< (point) (point-max))) ; Hack to work around an Emacs display-engine bug.
+                             (when (condition-case nil
+                                       (dired-get-filename nil diredp-count-.-and-..-flag)
+                                     (error nil))
+                               (when (<= (line-beginning-position) o-pt) (setq this  (1+ this)))
+                               (setq total  (1+ total)))
+                             (forward-line 1))
+                           (if (not (> this 0)) (format " %d" total) (format " %d/%d" this total))))))))))
 
   (add-hook 'dired-after-readin-hook 'diredp-nb-marked-in-mode-name)
   ;; This one is needed for `find-dired', because it does not call `dired-readin'.
@@ -11331,7 +11409,8 @@ If no one is selected, symmetric encryption will be performed.  "
 ;; for selecting (marking) files.
 (define-key dired-mode-map [S-mouse-1] 'diredp-mouse-mark-region-files)     ; `S-mouse-1'
 (define-key dired-mode-map [mouse-2] 'dired-mouse-find-file-other-window)   ; `mouse-2'
-(define-key dired-mode-map [S-down-mouse-2] 'diredp-mouse-find-file)        ; `S-mouse-2'
+;; But be aware that `dired-sort-menu.el' binds `S-mouse-2' to `dired-sort-menu-popup'.
+(define-key dired-mode-map [S-down-mouse-2] 'dired-mouse-find-file)         ; `S-mouse-2'
 (define-key dired-mode-map [S-mouse-2] 'ignore)
 (define-key dired-mode-map [M-mouse-2] 'diredp-mouse-find-file-other-frame) ; `M-mouse-2'
 
