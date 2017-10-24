@@ -9,6 +9,13 @@ Here are some of the things '''Dired+''' does:
 
 * Changes some key bindings and enhances some menus.
 * Adds many new commands. Enhances some existing commands.
+* Shows you, in the [[mode-line]] how many files and dirs are marked (with '''`*'''') and flagged for deletion (with '''`D'''').  It also shows you how many files and dirs there are in the current listing (a subdir listing or the main listing). (Option `##diredp-count-.-and-..-flag##' controls whether to count lines `##.##' and `##..##'.) For example, if:
+
+** the cursor is on the 4th marked (`*') file in the buffer, 
+** there are 18 files total that are marked, 
+** there are 6 files flagged (`D') for deletion, 
+** the cursor is on the 35th file of its listing, and
+** that listing shows 107 files, then the mode-line shows `4/18* 6D 35/107'.
 
 * Lets you act not only on the marked files and subdirs in the current Dired buffer but also on the marked files and subdirs within any Dired buffers for the marked subdirs, ''recursively''.  (Separate commands are available for this.)
 
@@ -34,6 +41,8 @@ hidden subdirectories of the chosen Dired listings.
 * Lets you open Dired on (only) the files in an Emacs [[fileset]] (commands `diredp-fileset' and `diredp-fileset-other-window', bound globally to '''`C-x D S'''' and '''`C-x 4 D S'''').
 
 * Lets you open a Dired buffer that shows recently used directories (commands `diredp-dired-recent-dirs' and `diredp-dired-recent-dirs-other-window', bound globally to '''`C-x D R'''' and '''`C-x 4 D R'''').
+
+* Lets you reuse Dired buffers (`C-M-R', aka `C-M-S-r' toggles this behavior, so you don't accumulate lots of them that you don't want to keep around. If the current Dired buffer is already showing in another window, or if the target for a find-file operation is a directory that is already in a Dired buffer, then there is no reuse (the current Dired buffer is not killed when you visit the target).
 
 * Lets you use a single invocation of command `dired' to open Dired on any number of directories or sets of files (which you choose on the fly), if you use '''[[Icicles]]'''.
 
