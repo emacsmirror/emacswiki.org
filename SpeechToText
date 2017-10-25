@@ -2,10 +2,11 @@
 === Speech Recognition Engines ===
 
 These are the programs implementing the actual speech recognition:
-* !DragonDictate (Windows only) http://www.ddwin.com/dictate.htm
-* Dragon !NaturallySpeaking (Windows only) http://www.ddwin.com/natural.htm
+* !DragonDictate (proprietary license, Windows only) http://www.ddwin.com/dictate.htm
+* Dragon !NaturallySpeaking (proprietary license, Windows only) http://www.ddwin.com/natural.htm
 ** Natlink is a Python library that interfaces with it. http://qh.antenna.nl/unimacro/index.html
-* CMU Sphinx http://www.speech.cs.cmu.edu/sphinx 
+* CMU Sphinx http://www.speech.cs.cmu.edu/sphinx
+* Julius http://julius.osdn.jp/en_index.php
 
 === Interfaces for Emacs ===
 
@@ -15,15 +16,15 @@ There are several packages for driving Emacs through voice input, including:
 Allows use of !DragonDictate from an X window system.
 http://www.cl.cam.ac.uk/a2x-voice/a2x-faq.html
 
-==== voicekey ====
-A voice-controlled keyboard for GNU/Linux built on sphinx. 
-http://sourceforge.net/projects/voicekey/
-
 ==== VoiceCode ====
 VoiceCode is an Emacs interface to Dragon !NaturallySpeaking (uses Natlink).
 http://sourceforge.net/apps/mediawiki/voicecode/
 
 ==== Dormant ====
+
+==== voicekey ====
+A voice-controlled keyboard for GNU/Linux built on sphinx. 
+http://sourceforge.net/projects/voicekey/ (unmaintained since August 2013, see https://sourceforge.net/p/voicekey/voicekey/ci/329cc8daac480349a3308121d9e8d35a01725ed4/)
 
 ===== vr-mode =====
 Emacs interface to Dragon !NaturallySpeaking. 
