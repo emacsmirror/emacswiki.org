@@ -172,9 +172,9 @@ See these wiki pages for related features.
 * DiredSortMenu -- Sort Dired listings in various ways using menus
 * DiredDetails -- Hide/show details in a Dired listing, so all you see (and all that IncrementalSearch sees) are the file names
 
+[:secondHeaderLine]
 * <tt>[[ls-lisp+.el]]</tt> and <tt>[[files+.el]]</tt>: They add the number of files to DiredMode's second header line, like this:
-
-::  '''##files 691##''' ##space used 49439 available 56233408##
+:  '''##files 691##''' ##space used 49439 available 56233408##
 
 * <tt>[[wuxch-dired.el]]</tt>, <tt>[[wuxch-dired-copy-paste.el]]</tt> -- libraries by WuXiaochun that build on Dired Plus
 
