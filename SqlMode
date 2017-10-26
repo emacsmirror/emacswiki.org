@@ -56,7 +56,7 @@ To interact with the interpreter from a window already in SQL mode, execute the 
 
     M-x sql-set-sqli-buffer RET *SQL* RET
 
-Want to save you history between sessions?  Consider adding this hook to your [[.emacs]].  It saves the history in a separate file for each SQL "product".  You'll need to run `##M-x make-directory RET ~/.emacs.d/sql/ RET##'
+Want to save your history between sessions?  Consider adding this hook to your [[.emacs]].  It saves the history in a separate file for each SQL "product".  You'll need to run `##M-x make-directory RET ~/.emacs.d/sql/ RET##'
 
   (defun my-sql-save-history-hook ()
     (let ((lval 'sql-input-ring-file-name)
