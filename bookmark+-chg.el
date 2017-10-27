@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Oct 14 13:35:57 2017 (-0700)
+;; Last-Updated: Fri Oct 27 14:14:47 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 16353
+;;     Update #: 16354
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -1329,6 +1329,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2017/10/27 dadams
+;;     bookmark-bmenu-mode: Added to doc string: bmkp-bmenu-paste-(add|replace)-tags.
 ;; 2017/10/14 dadams
 ;;     All EWW stuff is for Emacs 25+, not Emacs 24.4+.
 ;; 2017/10/08 dadams
