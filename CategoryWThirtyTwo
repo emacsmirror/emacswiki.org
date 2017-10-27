@@ -36,6 +36,13 @@ http://www.gnu.org/software/emacs/windows/faq2.html#where-precompiled
 
 ==== Older, mostly Obsolete ====
 
+* **2017-10-21** **ntemacs/emax64** -- https://ntemacs.sourceforge.io/ -- **Emacs for w64** [27.0.50]
+** Clean, optimized 64-bit build of latest Emacs git clone.
+** Support for images enabled: giflib jpeg libpng libtiff libxpm zlib gnutls libxml2
+** Optimized for speed, TLS support enabled. MELPA works.
+** Uses 7z for distribution. Decompress the bin package anywhere (preferably C: or D: root) and run addpm.exe in \emax64\bin.
+** Available on Github too - https://github.com/m-parashar/emax64/releases
+
 * **2014-11-15** **Emacs-w64** -- Native 64-bit build -- http://emacsbinw64.sourceforge.net/
 ** Unmodified source code from git mirror.
 ** Includes development snapshot, pretests, and release builds.
@@ -44,12 +51,6 @@ http://www.gnu.org/software/emacs/windows/faq2.html#where-precompiled
 ** Also available as a [https://chocolatey.org/packages/emacs64 Chocolatey package].
 
 * **2014-11-08** **emacs-bin** Binary distributions of GNU Emacs. https://sourceforge.net/projects/emacs-bin
-
-* **2012-08-25** **ntemacs** -- http://ntemacs.sourceforge.net/ -- **Emacs bzr for w32** [24.2.50.1]
-** Clean, optimized w32 build of latest Emacs development trunk (Bazaar).
-** Support for images enabled: giflib jpeg libpng libtiff libxpm zlib gnutls libxml2
-** Built with MinGW32/GCC-4.7.0, optimized for Prescott and above.
-** Uses 7z for distribution. Decompress the bin package anywhere (preferably C: or D: root) and run addpm.exe in \ntemacs24\bin.
 
 * **2007-10-08** -- Emacs 22 -- http://www.crasseux.com/emacs
 * **2005-06-26** -- Emacs 22 -- http://nqmacs.sf.net
