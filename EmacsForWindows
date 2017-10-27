@@ -14,7 +14,7 @@ Project ntemacs at (http://ntemacs.sourceforge.net/) provides clean, optimized b
 == Resources ==
 
 If you want to install Emacs on MS-Windows using a simple installer, you may have a look at the following resources:
-* [http://ntemacs.sourceforge.net/ ntemacs]
+* [https://ntemacs.sourceforge.io/ ntemacs / emax64]
 * [http://emacs-win.sourceforge.net/ emacs-win (portuguese)]
 * [[EmacsW32]]
 * [https://sourceforge.net/projects/emacs-bin/files/snapshots/ Latest Precompiled Emacs for Windows]
