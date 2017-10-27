@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sat Oct 14 13:33:26 2017 (-0700)
+;; Last-Updated: Fri Oct 27 14:06:30 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 3953
+;;     Update #: 3957
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1606,6 +1606,8 @@ Bookmark Tags
 Here:
 
 \\[bmkp-bmenu-copy-tags]\t- Copy tags from this bookmark (for subsequent pasting)
+\\[bmkp-bmenu-paste-add-tags]\t- Paste tags (copied from another) to this bookmark
+\\[bmkp-bmenu-paste-replace-tags]\t- Replace tags for this bookmark (with those copied)
 \\[bmkp-add-tags]\t- Add some tags to a bookmark
 \\[bmkp-remove-tags]\t- Remove some tags from a bookmark (`C-u': from all bookmarks)
 \\[bmkp-remove-all-tags]\t- Remove all tags from a bookmark
