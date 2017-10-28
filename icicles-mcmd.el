@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Oct 22 14:07:38 2017 (-0700)
+;; Last-Updated: Sat Oct 28 11:57:39 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 19844
+;;     Update #: 19847
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -9301,8 +9301,11 @@ it is the only frame or a standalone minibuffer frame."
       (unless (and this-frame
                    (frame-visible-p this-frame)
                    (null (cdr this-buffer-frames)) ; Only one frame shows BUFFER.
-                   (setq mini-param  (cdr (assoc 'minibuffer (frame-parameters this-frame)))) ; Has mini param.
-                   (eq mini-param (active-minibuffer-window)) ; Has an active minibuffer.
+                   (if (fboundp 'minibuffer-selected-window)
+                       (eq (minibuffer-selected-window) (frame-selected-window this-frame))
+                     ;; See Emacs bug #28978.  This branch worked up till Emacs 26.
+                     (setq mini-param  (cdr (assoc 'minibuffer (frame-parameters this-frame))))
+                     (eq mini-param (active-minibuffer-window))) ; Has an active minibuffer.
                    (save-window-excursion
                      (select-frame this-frame)
                      (one-window-p t 'SELECTED-FRAME-ONLY))) ; Only one window.
