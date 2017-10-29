@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Oct 28 12:10:50 2017 (-0700)
+;; Last-Updated: Sun Oct 29 16:52:30 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 11738
+;;     Update #: 11739
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -4645,8 +4645,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
-;; 2017/10/28 dadams
-;;     icicle-delete-windows-on: Emacs 26.1 changed meaning of frame parameter minibuffer (bug #28978).
+;; 2017/10/29 dadams
+;;     icicle-delete-windows-on:
+;;       Simpler test for whether frame has the active minibuffer window.
+;;       (Emacs 26.1 changed meaning of frame parameter minibuffer - bug #28978.)
 ;; 2017/10/22 dadams
 ;;     icicle-delete-windows-on: Removed second arg to icicle-frames-on.
 ;; 2017/07/04 dadams
