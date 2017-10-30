@@ -8,11 +8,11 @@
 ;; Created: Thu Feb 08 20:28:09 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 09:40:01 2017 (-0800)
+;; Last-Updated: Sun Oct 29 17:22:11 2017 (-0700)
 ;;           By: dradams
-;;     Update #: 216
+;;     Update #: 224
 ;; URL: https://www.emacswiki.org/emacs/download/pp-c-l.el
-;; Doc URL: http://emacswiki.org/PrettyControlL
+;; Doc URL: https://emacswiki.org/PrettyControlL
 ;; Keywords: display, convenience, faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
@@ -62,6 +62,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/10/29 dadams
+;;     Address Emacs bug #29050:
+;;       pretty-control-l-mode: Add refresh-pretty-control-l to window-size-change-functions too.
+;;       refresh-pretty-control-l: Added unused optional arg.
 ;; 2011/01/04 dadams
 ;;     Removed autoloads: non def* sexps & non-interactive fns.  Added for defalias.
 ;; 2010/04/28 dadams
@@ -131,10 +135,10 @@
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/pp-c-l.el")
+          "https://www.emacswiki.org/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/pp-c-l.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/PrettyControlL")
+          "https://www.emacswiki.org/PrettyControlL")
   :link '(emacs-commentary-link :tag "Commentary" "pp-c-l"))
 
 ;;;###autoload
@@ -221,9 +225,14 @@ Don't forget to mention your Emacs and library versions."))
             :link '(url-link :tag "Description"
                     "http://www.emacswiki.org/PrettyControlL")
             :link '(emacs-commentary-link :tag "Commentary" "pp-c-l")
-            (if pretty-control-l-mode
-                (add-hook 'window-configuration-change-hook 'refresh-pretty-control-l)
-              (remove-hook 'window-configuration-change-hook 'refresh-pretty-control-l))
+            (cond (pretty-control-l-mode
+                   (add-hook 'window-configuration-change-hook 'refresh-pretty-control-l)
+                   (when (boundp 'window-size-change-functions)
+                     (add-hook 'window-size-change-functions 'refresh-pretty-control-l)))
+                  (t
+                   (remove-hook 'window-configuration-change-hook 'refresh-pretty-control-l)
+                   (when (boundp 'window-size-change-functions)
+                     (remove-hook 'window-size-change-functions 'refresh-pretty-control-l))))
             (walk-windows
              (lambda (window)
                (let ((display-table  (or (window-display-table window)
@@ -254,7 +263,7 @@ With ARG, turn pretty display of `^L' on if and only if ARG is positive."
      'visible)))
 
 ;;;###autoload
-(defun refresh-pretty-control-l ()
+(defun refresh-pretty-control-l (&optional _frame)
   "Reinitialize `pretty-control-l-mode', if on, to update the display."
   (interactive)
   (when pretty-control-l-mode (pretty-control-l-mode t)))
