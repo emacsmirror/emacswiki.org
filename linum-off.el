@@ -9,7 +9,7 @@
 ;; Last-Updated: Tue Feb  8 10:41:27 2011 (-0600)
 ;;           By: Matthew L. Fidler
 ;;     Update #: 42
-;; URL:  http://www.emacswiki.org/emacs/auto-indent-mode.el
+;; URL:  https://www.emacswiki.org/emacs/linum-off.el
 ;; Keywords: Line Numbering
 ;; Compatibility: Unknown.
 ;;
