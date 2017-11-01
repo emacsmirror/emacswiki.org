@@ -365,6 +365,13 @@ example usage:
   )
 </pre>
 
+Example to bind the <code>mac-right-option-modifier</code> to <code>'none</code> so you can still use it to [http://osxdaily.com/2017/03/22/type-accents-mac-easy/ write accents]:
+
+<pre>
+(when (eq system-type 'darwin)
+  (setq mac-right-option-modifier 'none))
+</pre>
+
 === Emacs keybindings in Cocoa Apps ===
 
 This information does not regard the actual use of emacs, but I think many people will be happy to find out that some cursor movement / text editing keybindings can be used in Cocoa Apps. If you ever happen to use any other application on your Mac ... You can also set up additional keybindings as described in [http://developer.apple.com/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html this document].
