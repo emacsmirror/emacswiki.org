@@ -44,7 +44,7 @@ Even when there is no menu bar, you can access the menu as a popup, using `C-mou
 
 Starting with GnuEmacs 21, you can disable the menu bar but still have it available on a popup menu:
 
-* `<code>(menu-bar-mode -99)</code>' -- disable the menu-bar
+* ##(menu-bar-mode -99)## -- disable the menu-bar
 * Use `C-mouse-3' to pop up the entire menu-bar as a popup menu.
 
 For a similar popup functionality for the [[tool bar]], see '''[[ToolBar#Tool-Bar Plus|ToolBarPlus]]'''.
