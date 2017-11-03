@@ -28,7 +28,7 @@ To disable the menu bar.
 
 Add ##(menu-bar-mode -1)## to your [[init file]].
 
-== Disable the Menu Bar on [[XEmacs]] ==
+== Disable the Menu Bar on XEmacs ==
 
 Add ##(set-specifier menubar-visible-p nil)## to your init file, or use ##(set-menubar nil)##. However, this does not work for buffer-local menu bars (and some things might fail when there is no menu bar).
 
