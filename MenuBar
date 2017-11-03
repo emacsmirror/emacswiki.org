@@ -74,7 +74,7 @@ For a similar popup functionality for the [[tool bar]], see '''[[ToolBar#Tool-Ba
 * HelpMenuBarPlus -- Enhancements to '''Help''' menu.
 * DiredPlus -- Enhancements to the menu-bar menus in [[DiredMode]].
 * OneOnOneEmacs -- Use of menu-bar menus in one-buffer-one-frame setup.
-** SaveAsHtml -- Additions to the '''Info''' menu for saving Info text to HTML.
+* SaveAsHtml -- Additions to the '''Info''' menu for saving Info text to HTML.
 * '''File''' menu '''Open File''' item: dialog box for specific systems.
 ** <tt>[[w32browser-dlgopen.el]]</tt> -- for Microsoft Windows (see MsShellExecute)
 ** MacOSTweaks -- for MacOS
