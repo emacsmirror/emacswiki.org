@@ -32,7 +32,7 @@ Add ##(menu-bar-mode -1)## to your [[init file]].
 
 Add ##(set-specifier menubar-visible-p nil)## to your init file, or use ##(set-menubar nil)##. However, this does not work for buffer-local menu bars (and some things might fail when there is no menu bar).
 
- ** ActiveMenu - Displays the menu bar only when the mouse is close to it.
+* ActiveMenu - Displays the menu bar only when the mouse is close to it.
 
 == Access Menu When Disabled ==
 
@@ -74,7 +74,7 @@ For a similar popup functionality for the [[tool bar]], see '''[[ToolBar#Tool-Ba
 * HelpMenuBarPlus -- Enhancements to '''Help''' menu.
 * DiredPlus -- Enhancements to the menu-bar menus in [[DiredMode]].
 * OneOnOneEmacs -- Use of menu-bar menus in one-buffer-one-frame setup.
-* * SaveAsHtml -- Additions to the '''Info''' menu for saving Info text to HTML.
+** SaveAsHtml -- Additions to the '''Info''' menu for saving Info text to HTML.
 * '''File''' menu '''Open File''' item: dialog box for specific systems.
 ** <tt>[[w32browser-dlgopen.el]]</tt> -- for Microsoft Windows (see MsShellExecute)
 ** MacOSTweaks -- for MacOS
