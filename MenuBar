@@ -63,6 +63,7 @@ For a similar popup functionality for the [[tool bar]], see '''[[ToolBar#Tool-Ba
 [:MenuBarPlus]
 * MenuBarPlus -- Menu bar enhancements.
 * HelpMenuBarPlus -- Enhancements to '''Help''' menu.
+* LaCarte -- Navigate menu-bar menus with or without the menu bar.
 * DiredPlus -- Enhancements to the menu-bar menus in [[DiredMode]].
 * OneOnOneEmacs -- Use of menu-bar menus in one-buffer-one-frame setup.
 * SaveAsHtml -- Additions to the '''Info''' menu for saving Info text to HTML.
