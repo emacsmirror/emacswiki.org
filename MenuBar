@@ -1,28 +1,45 @@
-The '''[::menu bar]''' is a set of menus at the top of each Emacs [[frame]]. It is available only when [::MenuBarMode] is on, which it is by default.
+The '''[::menu bar]''' is a set of menus at the top of each Emacs [[frame]]. 
 
-See also ToolBar and ScrollBar.
+== Menu Bar ==
 
-== Disabling the Menu Bar ==
-
-You can disable the menu bar. Even when there is no menu bar, you can access the menu as a popup, using `C-mouse-3'.
-
-To disable the menu bar:
-
-* GnuEmacs: Add ##(menu-bar-mode -1)## to your [[init file]].
-
-* [[XEmacs]]:
-
-** Add ##(set-specifier menubar-visible-p nil)## to your init file, or use ##(set-menubar nil)##. However, this does not work for buffer-local menu bars (and some things might fail when there is no menu bar).
-
-** ActiveMenu -- Displays the menu bar only when the mouse is close to it.
-
-before:
+Emacs with the Menu Bar enabled:
 
 http://i.imgur.com/wm5qo.png
 
-After: 
+Emacs with the Menu Bar disabled: 
 
 http://i.imgur.com/gkGC4.png
+
+
+== Enable the Menu Bar ==
+
+The menu bar is enabled by default. 
+
+You can type the command ##M-x menu-bar-mode## to toggle it on and off temporarily.
+
+To enable it permanently
+
+Add ##(menu-bar-mode 1)## to the end of your [[init file]].
+
+
+== Disable the Menu Bar ==
+
+To disable the menu bar. 
+
+Add ##(menu-bar-mode -1)## to your [[init file]].
+
+== Disable the Menu Bar on [[XEmacs]] ==
+
+Add ##(set-specifier menubar-visible-p nil)## to your init file, or use ##(set-menubar nil)##. However, this does not work for buffer-local menu bars (and some things might fail when there is no menu bar).
+
+ ** ActiveMenu - Displays the menu bar only when the mouse is close to it.
+
+== Access Menu When Disabled ==
+
+Even when there is no menu bar, you can access the menu as a popup, using `C-mouse-3'.
+
+
+
 == Popup Menu Bar ==
 
 Starting with GnuEmacs 21, you can disable the menu bar but still have it available on a popup menu:
@@ -31,7 +48,6 @@ Starting with GnuEmacs 21, you can disable the menu bar but still have it availa
 * Use `C-mouse-3' to pop up the entire menu-bar as a popup menu.
 
 For a similar popup functionality for the [[tool bar]], see '''[[ToolBar#Tool-Bar Plus|ToolBarPlus]]'''.
-
 
 
 == Customizing the Menu Bar ==
@@ -49,6 +65,8 @@ For a similar popup functionality for the [[tool bar]], see '''[[ToolBar#Tool-Ba
 
 == See Also ==
 
+* ToolBar 
+* ScrollBar
 * EasyMenu -- Defining menu-bar menus (and other menus).
 * ImenuMode -- Buffer-specific menu-bar menus.
 [:MenuBarPlus]
