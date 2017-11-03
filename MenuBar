@@ -36,16 +36,7 @@ Add ##(set-specifier menubar-visible-p nil)## to your init file, or use ##(set-m
 
 == Access Menu When Disabled ==
 
-Even when there is no menu bar, you can access the menu as a popup, using `C-mouse-3'.
-
-
-
-== Popup Menu Bar ==
-
-Starting with GnuEmacs 21, you can disable the menu bar but still have it available on a popup menu:
-
-* ##(menu-bar-mode -99)## -- disable the menu-bar
-* Use `C-mouse-3' to pop up the entire menu-bar as a popup menu.
+Starting with GnuEmacs 21, you can access the menu as a popup, even when it's disabled, using `C-mouse-3'.
 
 For a similar popup functionality for the [[tool bar]], see '''[[ToolBar#Tool-Bar Plus|ToolBarPlus]]'''.
 
