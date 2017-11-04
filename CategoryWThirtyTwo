@@ -4,17 +4,18 @@ Click on the header to search for pages about EmacsForWindows.
 == Help ==
 
 * FAQ http://www.gnu.org/software/emacs/windows/ntemacs.html (considerably outdated because there is no maintainer currently)
-* Mailling list http://mail.gnu.org/archive/html/help-emacs-windows/
+* Mailing list http://mail.gnu.org/archive/html/help-emacs-windows/
 
 == Installation ==
 
-http://www.gnu.org/software/emacs/windows/faq2.html#where-precompiled
+https://www.gnu.org/software/emacs/download.html#windows
 
 === Official Releases ===
 ==== Stable ====
 * ftp://ftp.gnu.org/gnu/emacs/windows/
 * http://ftp.gnu.org/gnu/emacs/windows/
-** Note that most people will want the bin file, not the barebin file. The barebin file includes only the compiled binaries, not the rest of Emacs. (It's intended for people who downloaded the source and then changed their mind about compiling it themselves.)
+
+The latest version is near the bottom, emacs-XX.y-i686.zip for 32bit machines, emacs-XX.y-x86_64.zip for 64bit.
 
 ==== Weekly builds ====
 * http://alpha.gnu.org/gnu/emacs/windows/
@@ -34,14 +35,14 @@ http://www.gnu.org/software/emacs/windows/faq2.html#where-precompiled
 === Unofficial Releases ===
 * [https://vigou3.github.io/emacs-modified-windows/ Emacs Modified for Windows] -- Emacs 25.2 with a few modifications, most notably an installer, AUCTeX, ESS and image libraries.
 
-==== Older, mostly Obsolete ====
-
 * **2017-10-21** **ntemacs/emax64** -- https://ntemacs.sourceforge.io/ -- **Emacs for w64** [27.0.50]
 ** Clean, optimized 64-bit build of latest Emacs git clone.
 ** Support for images enabled: giflib jpeg libpng libtiff libxpm zlib gnutls libxml2
 ** Optimized for speed, TLS support enabled. MELPA works.
 ** Uses 7z for distribution. Decompress the bin package anywhere (preferably C: or D: root) and run addpm.exe in \emax64\bin.
 ** Available on Github too - https://github.com/m-parashar/emax64/releases
+
+==== Older, mostly Obsolete ====
 
 * **2014-11-15** **Emacs-w64** -- Native 64-bit build -- http://emacsbinw64.sourceforge.net/
 ** Unmodified source code from git mirror.
