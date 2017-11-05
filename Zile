@@ -7,5 +7,7 @@ Zile Lisp is a tiny subset of Emacs Lisp that consists of the Zile commands plus
 
 * http://www.gnu.org/software/zile/
 
+Note: there are seemingly two variants of Zile (or possibly two different branches of this project), one being a „light-weight” Emacs and the other being a LUA-based framework for developing editors.
+
 ----
 EmacsImplementations CategoryExtensionLanguage
