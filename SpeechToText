@@ -16,11 +16,12 @@ There are several packages for driving Emacs through voice input, including:
 Allows use of !DragonDictate from an X window system.
 http://www.cl.cam.ac.uk/a2x-voice/a2x-faq.html
 
+==== Dormant ====
+
 ==== VoiceCode ====
 VoiceCode is an Emacs interface to Dragon !NaturallySpeaking (uses Natlink).
-http://sourceforge.net/apps/mediawiki/voicecode/
-
-==== Dormant ====
+https://sourceforge.net/projects/voicecode/
+The last update to the SVN repository was in 2013.
 
 ==== voicekey ====
 A voice-controlled keyboard for GNU/Linux built on sphinx. 
