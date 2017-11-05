@@ -6,7 +6,8 @@ Mainstream GNU Emacs and derivates:
 * [[SXEmacs]] -- a fork of [[XEmacs]]
 
 Other implementations still alive:
-* µEmacs (aka. memacs aka. MicroEmacs) --- a small, light-weight console Emacs
+* µEmacs (aka. aka. uemacs aka. MicroEmacs) --- a small, light-weight console Emacs
+** memacs --- a Japanese variant of µemacs
 ** Jasspa MicroEmacs --- a semi-commercial development of MicroEmacs
 * GNU [[Zile]] -- a tiny Emacs clone.
 * EdWin -- based on [[Scheme]], included in GNU/MIT Scheme.
