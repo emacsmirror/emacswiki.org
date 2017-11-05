@@ -18,12 +18,12 @@ http://www.cl.cam.ac.uk/a2x-voice/a2x-faq.html
 
 ==== Dormant ====
 
-==== VoiceCode ====
+===== VoiceCode =====
 VoiceCode is an Emacs interface to Dragon !NaturallySpeaking (uses Natlink).
 https://sourceforge.net/projects/voicecode/
 The last update to the SVN repository was in 2013.
 
-==== voicekey ====
+===== voicekey =====
 A voice-controlled keyboard for GNU/Linux built on sphinx. 
 http://sourceforge.net/projects/voicekey/ (unmaintained since August 2013, see https://sourceforge.net/p/voicekey/voicekey/ci/329cc8daac480349a3308121d9e8d35a01725ed4/)
 
