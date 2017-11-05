@@ -241,6 +241,35 @@ You can see the popup menus for '''Dired+''' [[DiredPlus#Mouse3PopupMenus|here]]
 
 
 
+== Default Menus with Text Selected ==
+
+When text is selected (i.e., with an [[active region]]), the default `mouse-3' menu has title '''Region'''.
+
+[[image:RegionMenu]]
+
+It has several submenus, the first of which is the major-mode menu ('''Emacs-Lisp''' mode, here), provided [[option]] `mouse3-popup-include-global-menus-flag' is non-`nil'.
+
+[[image:RegionRemoveReplaceRectangleMenu]]
+
+[[image:RegionCopyMenu]]
+
+[[image:RegionRegisterMenu]]
+
+[[image:RegionRectangleMenu]]
+
+[[image:RegionChangeTextMenu]]
+
+[[image:RegionCheckCorrectConvertMenu]]
+
+[[image:RegionHighlightMenu]]
+
+[[image:RegionPrintMenu]]
+
+[[image:RegionMiscMenu]]
+
+
+
+
 == Context-Specific Behavior (for Emacs-Lisp Programmers) ==
 
 As mentioned [[#Icicles|above]], '''Icicles''' provides an example of a program
