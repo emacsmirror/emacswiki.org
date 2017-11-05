@@ -241,9 +241,30 @@ You can see the popup menus for '''Dired+''' [[DiredPlus#Mouse3PopupMenus|here]]
 
 
 
+
+
+
+== Default Menu with No Text Selected ==
+
+When no text selected (i.e., no non-empty [[active region]]), the default `mouse-3' menu has title '''No Region'''.  Different menu items are enabled depending on the type of thing under the [[mouse pointer]].
+
+[[image:NoRegionThingAtPointerMenu]]
+
+(For menu items '''Highlight Symbol''' and '''Unhighlight Symbol''' you need library <tt> [[highlight.el]]</tt>.)
+
+
+
+
+
+
+
 == Default Menus with Text Selected ==
 
-When text is selected (i.e., with an [[active region]]), the default `mouse-3' menu has title '''Region'''.
+When text is selected (i.e., with an [[active region]]), the default `mouse-3' menu has title '''Region'''.  By default it has only one submenu, '''Thing at Pointer''', apart from the major-mode menu ('''Emacs-Lisp''' mode, here), which is included if [[option]] `mouse3-popup-include-global-menus-flag' is non-`nil'.
+
+
+
+
 
 [[image:RegionMenu]]
 
@@ -263,9 +284,17 @@ It has several submenus, the first of which is the major-mode menu ('''Emacs-Lis
 
 [[image:RegionHighlightMenu]]
 
+(Submenu '''Highlight''' is available by default only if you use library <tt> [[highlight.el]]</tt>.)
+
 [[image:RegionPrintMenu]]
 
 [[image:RegionMiscMenu]]
+
+
+
+
+
+
 
 
 
