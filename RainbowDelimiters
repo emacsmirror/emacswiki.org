@@ -48,7 +48,7 @@ M-x byte-compile-file <location of rainbow-delimiters.el>
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 </pre>
 
-- Enabling *use Emacs-wide* has had problems with conflicting with other major modes, and so the <code>global-rainbow-delimiters-mode</code> has been removed. </pre>
+- Enabling *use Emacs-wide* has had problems with conflicting with other major modes, and so the <code>global-rainbow-delimiters-mode</code> has been removed.
 
 To /toggle/ rainbow-delimiters mode while Emacs is running:
 
