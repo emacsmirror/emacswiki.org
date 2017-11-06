@@ -11,9 +11,7 @@ buffers.
 
 = Download =
 
-Lisp:pabbrev.el
-
-This version is now updated for Emacs 24. 
+Pabbrev is now part of GNU ELPA, so the best way to install it is via `M-x list-packages', tho you can also get it from its main web page at https://elpa.gnu.org/packages/pabbrev.html
 
 == Customizations ==
 Normally hitting ##TAB## a second time after a completion will take you to a suggestions buffer where you can select from alternate completions.  This bit of elisp hackery will instead use a pop-up list via auto-competion mode.  Make sure this is executed **after** ##pabbrev## is loaded.
