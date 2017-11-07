@@ -86,7 +86,7 @@ You should immediately see the options if you right klick any file in explorer
 
 This almost works:
 {{{
-  git config --global core.editor "emacsclient -a emacs -nw '%*'"
+  git config --global core.editor "emacsclient -a emacs '%*'"
 }}}
 
 Do ''not'' use ##emacsclientw## here; it doesn't wait.
