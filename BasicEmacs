@@ -8,7 +8,7 @@ Moving around in text is done with:
 
 '''`C-g'''' is your 'panic' command, it can be used anywhere. It will cancel any other command, incomplete keybinding, or running function. It will exit the minibar if it has focus.
 
-Instead of keybindings, you can also run commands by name; type '''`M-x'''' followed by the name of the command. Note that while it is named '''`M-x'''', it is much easier to type as '''`ESC x''''.
+Instead of keybindings, you can also run commands by name; type '''`M-x'''' followed by the name of the command. Note that while it is named '''`M-x'''', it may be easier to type as '''`ESC x''''.
 
 Many commands are best learned by their name rather than their keybinding. The most useful ones to learn are:
 * describe-key - find the name of any command bound to a keybinding you know
