@@ -783,3 +783,7 @@ doh@bummer ~/ $ emacsclient -nc
 
 NOTE: One other possible way to get the server restarted would be to connect to the process with gdb and then call some function to execute lisp code to restart the server. If anyone knows how to do that I would be very interested in learning how it is done.
 
+
+== "/tmp/emacs1000 not safe" ==
+
+Emacs won't start the daemon if its permissions aren't secure. If you receive an error that /tmp/emacs1000 (or another number) isn't safe, do `ls -l /tmp`. The entry for the emacs1000 directory will probably look like `drwxr-x---`. Simply do a `chmod 700 /tmp/emacs1000` to set them to the correct `drwx------` and start the daemon again.
