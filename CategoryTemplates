@@ -13,7 +13,7 @@ Overall, emacs templates packages can be divided into those whose syntax for def
 
 * TemplatesMode -- Primarily designed for the insertion of whole file. Create templates for certain file names (eg. README) or extensions (eg. html) and add markers to it. Also contains commands for comment decoration and for file header automatic update.
 
-* ElseMode -- templates available for Ada, C, Python, Emacs Lisp, Java, C++ (last two should be used as a starting point only - they are very early stage); the example definitions look hairy but powerful: You define *a cascade of markers and templates*, eg. a template of an if statement that contains a marker for the else part.  This else part can then be expanded in turn.  This cascading of template seems to be the forte. 
+* ElseMode -- templates available for Ada, C, Python, Emacs Lisp, Java, C++ (last two should be used as a starting point only - they are very early stage); the example definitions look hairy but powerful: You define *a cascade of markers and templates*, eg. a template of an if statement that contains a marker for the else part.  This else part can then be expanded in turn.  This cascading of template seems to be the forte. Major advantage over other templating systems: placeholders are visual and persistent across edit sessions!
 
 * SnippetMode -- based on TextMate's snippets feature. First released in 2005. Functionality similar to MsfAbbrev.
 
