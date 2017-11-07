@@ -4,7 +4,7 @@ Moving around in text is done with:
 * '''`C-b'''', '''`C-f'''' - Move left or right by one character
 * '''`M-b'''', '''`M-f'''' - Move left or right by one word
 * '''`C-a'''', '''`C-e'''' - Beginning of line, end of line
-* '''`C-s'''', '''`C-r'''' - Incremental search; while searching both '''`C-s'''' and '''`C-r'''' are available. After exiting, '''`C-x C-x'''' will move the cursor back to where you started the search.
+* '''`C-s'''', '''`C-r'''' - Incremental search; while searching, both '''`C-s'''' and '''`C-r'''' are available. After exiting, '''`C-x C-x'''' will move the cursor back to where you started the search.
 
 '''`C-g'''' is your 'panic' command, it can be used anywhere. It will cancel any other command, incomplete keybinding, or running function. It will exit the minibar if it has focus.
 
