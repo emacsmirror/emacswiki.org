@@ -123,7 +123,7 @@ rem set CYGWIN=
 You can then customize your startx and .xinitrc to launch whatever
 programs (xterm, emacs, etc) you want.
 
-You may also launch emacs or any other compatible executable without going through a console window, by means of a batch file like the following (found here):
+You may also launch emacs or any other compatible executable without going through a console window, by means of a batch file like the following:
 <pre>
 @echo off
 C:\cygwin64\bin\run.exe --quote /usr/bin/bash.exe --login -c "/usr/bin/startx /usr/bin/emacs -g 90x37+150+0 -- /usr/bin/X :0 -multiwindow -clipboard"
