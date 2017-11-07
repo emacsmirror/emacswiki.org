@@ -23,6 +23,13 @@ Handling windows and pop-ups:
 * '''`C-x 1'''' - If the window you want to close does not have focus, you can use '''`C-x 1'''' to close all other windows
 * '''`ESC ESC ESC'''' - Similar to '''`C-x 1'''', but closes all other frames too
 
+Opening, closing, saving files:
+
+* '''`C-x C-f'''' - Open (or 'find') a file. You will be prompted to enter the path to a file, relative to your current working directory
+* '''`C-x C-s'''' - Save the current buffer back to the file it was loaded from
+* '''`C-x s'''' - Save multiple buffers. You will be asked whether to save each modified buffer in turn.
+* '''`C-x C-w'''' - Write file ('Save as'). Saves the current buffer to a file you specify.
+* '''`C-x k'''' - Kill buffer. Close the current frontmost buffer (or another you specify in the minubuffer)
 
 ----
 
