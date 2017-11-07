@@ -1,18 +1,21 @@
 PeterMilliken wrote ELSE, the Emacs Language Sensitive Editor---a minor mode
 for Emacs.  He claims that using it requires no lisp knowledge (unlike SkeletonMode and TempoMode).
 
-It comes with a 40+ page users manual.
+It comes with a 20+ page users manual.
 It allows the generation of textual templates from either abbreviations or
 other mechanisms i.e. does the same job as tempo or skeleton but you don't
 have to understand EmacsLisp to get it working. You don't have to read the code
 either.
 
-You can get it from here:
+version 1.22 (works with Emacs 19 - 24):
 * https://github.com/stefanhusmann/emacs-else.git
 
 Douglas Harter has made some additional templates here:
 
 * http://www.winpaw.com/Else
+
+version 2 (works with Emacs 25+) - a complete re-write - available here:
+* https://github.com/peter-milliken/ELSE.git
 
 RonLusk writes: I used /Vax LSE/ for years, and my first task when encountering a new language was 
 writing an LSE template for it. (The meta-first-task was writing an LSE template for LSE, which I see is /not/
