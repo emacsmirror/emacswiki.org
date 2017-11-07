@@ -86,12 +86,10 @@ You should immediately see the options if you right klick any file in explorer
 
 This almost works:
 {{{
-  git config --global core.editor "emacsclient -a runemacs '%*'"
+  git config --global core.editor "emacsclient -a emacs -nw '%*'"
 }}}
 
-If Emacs is not already running then it starts Emacs OK, but it returns right away -- doesn't wait.  So the ##git## commit fails (because the default message is unchanged).
-
-Anyone know how to make emacsclient wait in the case where it has to start the alternate editor?  (Do ''not'' use ##emacsclientw## here; it doesn't wait.)
+Do ''not'' use ##emacsclientw## here; it doesn't wait.
 
 
 == Replace `notepad.exe` calls ==
