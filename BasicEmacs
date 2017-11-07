@@ -1,7 +1,8 @@
 Note: this page is a Work in Progress, do not link to it yet.
 
 Moving around in text is done with:
-* '''`C-Left'''', '''`C-Right'''' - Move left or right by one word
+* '''`C-b'''', '''`C-f'''' - Move left or right by one character
+* '''`M-b'''', '''`M-f'''' - Move left or right by one word
 * '''`C-a'''', '''`C-e'''' - Beginning of line, end of line
 * '''`C-s'''', '''`C-r'''' - Incremental search; while searching both '''`C-s'''' and '''`C-r'''' are available. After exiting, '''`C-x C-x'''' will move the cursor back to where you started the search.
 
