@@ -59,5 +59,7 @@ Other (La)!TeX editors (free software only)
 * For [http://www.eclipse.org/ Eclipse] there are [http://etex.sourceforge.net/ ecleTeX], [http://texlipse.sourceforge.net/ TeXlipse] and [http://www.eclipse-plugins.info/eclipse/plugin_details.jsp?id=467 LatEc] plugins
 * For [http://www.jedsoft.org/jed/ Jed] there is [http://www.ctan.org/tex-archive/support/jed/ latex4jed], enhanced !LaTeX mode for the Jed editor
 
+ is this section really appropriate on EMACS Wiki?!? This is not TeX wiki, mind you… –– mangledmind
+
 ----
 CategoryModes
