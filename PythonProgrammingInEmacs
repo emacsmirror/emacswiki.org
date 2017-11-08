@@ -24,10 +24,12 @@ There is some built-in support for virtual environments in python.el, but these 
 * [https://github.com/proofit404/pyenv-mode pyenv-mode] - uses [https://github.com/yyuu/pyenv pyenv], written by the author of anaconda-mode.
 * [https://github.com/porterjamesj/virtualenvwrapper.el virtualenvwrapper]
 * [https://github.com/aculich/virtualenv.el virtualenv.el] - deprecated. 
+* [https://github.com/necaris/conda.el conda.el] - for working with conda environments.
 
 To automatically activate virtual environment you can use:
 * [https://github.com/robert-zaremba/auto-virtualenvwrapper.el auto-virtualenvwrapper] - uses virtualenvwrapper
 * [https://github.com/marcwebbie/auto-virtualenv auto-virtualenv] - uses pyvenv
+* [https://github.com/necaris/conda.el conda.el] and its minor mode conda-env-autoactivate-mode.
 
 ===Indentation===
 The defaults should see you compliant with PEP8 but see IndentingPython for detail.
@@ -39,7 +41,7 @@ If you have `transient-mark-mode' on, you can just use `comment-dwim': select a 
 
 ===Completion===
 
-Note that some IDE packages provide completion, e.g. Elpy provides completion using either jedi or rope as a backend to CompanyMode.
+Note that some IDE packages provide completion, e.g. Elpy provides completion using either jedi or rope as a backend to CompanyMode, and anaconda-mode provides completion via CompanyMode or AutoComplete.
 
 You can also configure completion by using either jedi or rope as a backend to either CompanyMode or AutoComplete.
 
@@ -70,6 +72,9 @@ as used by [http://www.sphinx-doc.org Sphinx].
 ====python-docstring====
 [https://melpa.org/#/python-docstring python-docstring] is a minor mode for intelligently
 reformatting (refilling) and highlighting Python docstrings. It understands both epytext and Sphinx formats (even intermingled!), so it knows how to reflow them correctly. It will also highlight markup in your docstrings, including epytext and reStructuredText.
+====org-recipes====
+[https://github.com/tuhdo/org-recipes org-recipes] A code snippet manager with Org and Helm. It is not specific to python and does not expand snippets like yasnippet does, but has the added benefit of combining text with org-mode source blocks that can then be inserted in a buffer via Helm.
+
 ===Lint, style and syntax checkers===
 Both [[Flycheck]] and [[FlyMake]] can be used to wrap checkers such as pep8, pyflakes (flake8 includes both), pylint and pychecker.
 ====Flycheck====
@@ -115,6 +120,8 @@ Both [https://melpa.org/#/py-autopep8 py-autopep8] and [https://github.com/jorge
 [http://melpa.org/#/py-isort py-isort] using [https://pypi.python.org/pypi/isort isort].
 
 Elpy supports using [https://pypi.python.org/pypi/importmagic importmagic].
+
+[https://github.com/anachronic/importmagic.el importmagic.el] automatically insert missing imports using [https://pypi.python.org/pypi/importmagic importmagic].
 
 ===Running tests===
 [https://melpa.org/#/nose nose] and [https://bitbucket.org/durin42/nosemacs nosemacs] support running nose tests.
