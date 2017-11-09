@@ -138,6 +138,9 @@ at the beggining of the new line if inside of a comment."
 </pre>
 
 -------
+Nov 2017. This package hasn't been updated in a while. If you just want Doxygen special command syntax highlighting, see https://emacs.stackexchange.com/questions/31392/syntax-highlight-doxygen-comments-in-c-c-c-doc-comment-style/36637#36637
+
+-------
 == See also ==
 
 DoxyMacsYard can be used to create YARD comments in Ruby buffers and
