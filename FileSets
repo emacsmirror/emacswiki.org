@@ -31,8 +31,7 @@ File...''' (otherwise, it appears as a separate [[menu bar|menu-bar]] menu):
 * `filesets-menu-path'   -- value should be ##("file")##
 * `filesets-menu-before' -- value should be ##"Open File..."##
 
-I reported the bug and fix to Emacs development on 2008-09-13 [http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=976], so hopefully it will be corrected in Emacs 23. ;-)
-
+I reported the bug and fix to Emacs development on 2008-09-13 [https://debbugs.gnu.org/cgi/bugreport.cgi?bug=976], so hopefully it will be corrected in Emacs 23. ;-)
 
 == Icicles and Filesets ==
 
