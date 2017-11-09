@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Sep 23 19:28:50 2017 (-0700)
+;; Last-Updated: Thu Nov  9 15:39:20 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 6259
+;;     Update #: 6266
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -454,6 +454,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/11/09 dadams
+;;     info-quotation-regexp, info-quoted+<>-regexp: Added \\ to first alternative of each ... type, to exclude \ from it.
 ;; 2017/09/23 dadams
 ;;     Info-url-for-node: Fix per TeXInfo manual - encode embedded hyphens etc.
 ;; 2017/08/30 dadams
@@ -1394,25 +1396,25 @@ If nil then emphasis is never fontified, regardless of that flag.")
 ;;
 (defvar info-quotation-regexp
   (concat
-   "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
-   "`\\(?:[^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"      ; `...'
-   "‘\\(?:[^’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|"      ; ‘...’
-   "\“\\(?:[^”]\\|\\\\\\(.\\|[\n]\\)\\)*”"        ; “...”
+   "\"\\(?:[^\\\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|" ; "..."
+   "`\\(?:[^\\']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"      ; `...'
+   "‘\\(?:[^\\’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|"      ; ‘...’
+   "\“\\(?:[^\\”]\\|\\\\\\(.\\|[\n]\\)\\)*”"        ; “...”
    )
   "Regexp to match `...', ‘...’, “...”, \"...\", or just '.
-If ... contains \" or ' then that character must be backslashed.")
+If ... contains an end char then that char must be backslashed.")
 
 
 (defvar info-quoted+<>-regexp
   (concat
-   "\"\\(?:[^\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|"           ; "..."
-   "`\\(?:[^']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"                ; `...'
-   "‘\\(?:[^’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|"                ; ‘...’
-   "\“\\(?:[^”]\\|\\\\\\(.\\|[\n]\\)\\)*”\\|"               ; “...”
-   "<\\(?:[[:alpha:]][^>]*\\|\\(\\\\\\(.\\|[\n]\\)\\)*\\)>" ; <...>
+   "\"\\(?:[^\\\"]\\|\\\\\\(?:.\\|[\n]\\)\\)*\"\\|"           ; "..."
+   "`\\(?:[^\\']\\|\\\\\\(.\\|[\n]\\)\\)*'\\|"                ; `...'
+   "‘\\(?:[^\\’]\\|\\\\\\(.\\|[\n]\\)\\)*’\\|"                ; ‘...’
+   "\“\\(?:[^\\”]\\|\\\\\\(.\\|[\n]\\)\\)*”\\|"               ; “...”
+   "<\\(?:[[:alpha:]][^\\>]*\\|\\(\\\\\\(.\\|[\n]\\)\\)*\\)>" ; <...>
    )
   "Same as `info-quotation-regexp', but matches also <...>.
-If ... contains > then that character must be backslashed.")
+If ... contains an end char then that char must be backslashed.")
 
 (defvar Info-toc-outline-map (let ((map  (make-sparse-keymap))) (set-keymap-parent map Info-mode-map))
   "Keymap for Info TOC with outlining.")
