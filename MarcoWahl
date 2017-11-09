@@ -16,7 +16,7 @@
 
   M-x auto-insert
 
-on an empty file, particularly for a new .el file.
+on an file, particularly for a new .el file to get a suitable skeleton.
 
 === Jump to percentage in buffer ===
 
