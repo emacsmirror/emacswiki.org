@@ -13,6 +13,8 @@ Sample usage (init file):
    (global-set-key [(control ?.)] 'goto-last-change)
    (global-set-key [(control ?,)] 'goto-last-change-reverse)
 
+In evil-mode (as in vim), this is bound to `g;`
+
 Alternatives:
 
 Another package that do a similar thing is /goto-last-change.el/ (GotoLastChange) by Kevin Rodgers. (If used repeatedly, to go back to earlier edits, it may misalign the position, not accounting for changes that have shorten or lengthen the text before that point.)
