@@ -8,9 +8,9 @@
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Aug 23 08:41:41 2017 (-0700)
+;; Last-Updated: Fri Nov 10 07:51:56 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3292
+;;     Update #: 3293
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
@@ -442,7 +442,7 @@ This is similar to `end-of-line', but:
 ;;;###autoload
 (defun beginning-of-line+ (&optional n)
   "Move cursor to beginning of current line or next line if repeated.
-This is the similar to `beginning-of-line', but:
+This is similar to `beginning-of-line', but:
 1. With arg N, the direction is the opposite: this command moves
    backward, not forward, N lines.
 2. If called interactively with no prefix arg:
