@@ -11,14 +11,14 @@ on my blog http://jmmcd.net/2017/10/13/mosel-mode.html.
   '("model" "end-model" "uses" "declarations" "end-declarations" "maximise" "minimise" "writeln" "XPRS_OPT" "XPRS_UNF" "XPRS_INF" "XPRS_UNB" "XPRS_OTH" "case" "end-case" "forall" "sum" "in" "array" "of") ;; keywords
   '(
 	("(!.*?\\(\n.*?\\)*?!)" . 'font-lock-comment-face) ;; the RE is right but it seems to fail for blocks longer than a few lines
-	(";" . 'font-lock-builtin)
-	(":=" . 'font-lock-builtin)
-	("::" . 'font-lock-builtin)
-	("\\.\\." . 'font-lock-builtin)
-	("<=" . 'font-lock-builtin)
-	(">=" . 'font-lock-builtin)
-	("=" . 'font-lock-builtin)
-	(":" . 'font-lock-builtin)
+	(";" . 'font-lock-builtin-face)
+	(":=" . 'font-lock-builtin-face)
+	("::" . 'font-lock-builtin-face)
+	("\\.\\." . 'font-lock-builtin-face)
+	("<=" . 'font-lock-builtin-face)
+	(">=" . 'font-lock-builtin-face)
+	("=" . 'font-lock-builtin-face)
+	(":" . 'font-lock-builtin-face)
 	("linctr" . 'font-lock-function-name-face)
 	("mpvar" . 'font-lock-function-name-face)
 	("real" . 'font-lock-function-name-face)
