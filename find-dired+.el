@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov 11 13:22:59 2017 (-0800)
+;; Last-Updated: Sat Nov 11 13:38:27 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1227
+;;     Update #: 1228
 ;; URL: https://www.emacswiki.org/emacs/download/find-dired%2b.el
 ;; Doc URL: https://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -467,7 +467,7 @@ When both optional args are non-nil, the `find' command run is this:
 ;;
 ;;;###autoload
 (defun find-name-dired (directory pattern &optional depth-limits excluded-paths)
-  "Run `dired' on all files under DIRECTORY that match globbing PATTERN.
+  "Use Dired on files under DIRECTORY whose name matches globbing PATTERN.
 PATTERN can use shell wildcards, and it need not be quoted.  It is not
 an Emacs regexp.
 
