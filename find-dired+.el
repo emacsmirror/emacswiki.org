@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov 11 13:38:27 2017 (-0800)
+;; Last-Updated: Sat Nov 11 14:54:46 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1228
+;;     Update #: 1238
 ;; URL: https://www.emacswiki.org/emacs/download/find-dired%2b.el
 ;; Doc URL: https://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -90,6 +90,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/11/11 dadams
+;;     find(-name|-grep|-time)-dired: Clarified use of EXCLUDED-PATHS in doc string.
 ;; 2017/04/09 dadams
 ;;     Updated to new Dired+ menu name: diredp-menu-bar-dir-menu.
 ;; 2017/01/27 dadams
@@ -365,8 +367,10 @@ Optional args:
 When both optional args are non-nil, the `find' command run is this:
 
   find . -mindepth MIN-DEPTH -maxdepth MAX-DEPTH
-         \\( -path \*edir1\* -o -path \*edir2\* ... \\)
-         -prune -o \\( ARGS \\) LS-SWITCHES"
+         \\( -path EXCLUDE1 -o -path EXCLUDE2 ... \\)
+         -prune -o \\( ARGS \\) LS-SWITCHES
+
+where EXCLUDE1, EXCLUDE2... are the EXCLUDED-PATHS, but shell-quoted."
   (interactive
    (let ((default  (and (functionp find-diredp-default-fn) (funcall find-diredp-default-fn))))
      (list (funcall (if (fboundp 'read-directory-name) 'read-directory-name 'read-file-name)
@@ -487,8 +491,10 @@ Optional arg EXCLUDED-PATHS is a list of strings that match paths to
 When both optional args are non-nil, the `find' command run is this:
 
   find . -mindepth MIN-DEPTH -maxdepth MAX-DEPTH
-         \\( -path \*edir1\* -o -path \*edir2\* ... \\)
-         -prune -o name 'PATTERN' \\( ARGS \\) LS-SWITCHES"
+         \\( -path EXCLUDE1 -o -path EXCLUDE2 ... \\)
+         -prune -o name 'PATTERN' \\( ARGS \\) LS-SWITCHES
+
+where EXCLUDE1, EXCLUDE2... are the EXCLUDED-PATHS, but shell-quoted."
   (interactive
    (let ((default  (and (functionp find-diredp-default-fn) (funcall find-diredp-default-fn))))
      (list (if (fboundp 'read-directory-name) ; Emacs 22+
@@ -527,9 +533,11 @@ When both optional args are non-nil, the `find' command run is this:
 
   find .
     -mindepth MIN-DEPTH -maxdepth MAX-DEPTH
-    \\( -path \*edir1\* -o -path \*edir2\* ... \\)
+    \\( -path EXCLUDE1 -o -path EXCLUDE2 ... \\)
     -prune -o -exec grep-program find-grep-options -e REGEXP {} \\\;
-    LS-SWITCHES"
+    LS-SWITCHES
+
+where EXCLUDE1, EXCLUDE2... are the EXCLUDED-PATHS, but shell-quoted."
   (interactive
    (let ((default  (and (functionp find-diredp-default-fn) (funcall find-diredp-default-fn))))
      (list (read-file-name "Find-grep (directory): " nil "" t)
@@ -651,12 +659,13 @@ If args DEPTH-LIMITS and EXCLUDED-PATHS are both non-nil then the
 command run is essentially the following:
 
     find . -mindepth MIN-DEPTH -maxdepth MAX-DEPTH
-           \\( -path \*edir1\* -o -path \*edir2\* ... \\)
+           \\( -path EXCLUDE1 -o -path EXCLUDE2 ... \\)
            -prune -o \\( -TIME-SWITCH -SINCE-MIN -TIME-SWITCH +SINCE-MAX \\)
            LS-SWITCHES
 
 where:
 
+* EXCLUDE1, EXCLUDE2... are the EXCLUDED-PATHS, but shell-quoted.
 * TIME-SWITCH is `find-diredp-time-prefix' concatenated with \"min\".
 * SINCE-MIN is the elapsed time since MIN-TIME in minutes.
 * SINCE-MAX is the elapsed time since MAX-TIME in minutes.
