@@ -10,11 +10,11 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Apr  9 18:33:23 2017 (-0700)
+;; Last-Updated: Sat Nov 11 13:22:59 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1219
+;;     Update #: 1227
 ;; URL: https://www.emacswiki.org/emacs/download/find-dired%2b.el
-;; Doc URL: http://emacswiki.org/LocateFilesAnywhere
+;; Doc URL: https://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
 ;; Compatibility: GNU Emacs 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
@@ -25,9 +25,9 @@
 ;;   `bookmark+-lit', `dired', `dired+', `dired-aux', `dired-x',
 ;;   `easymenu', `ffap', `find-dired', `fit-frame', `frame-fns',
 ;;   `help+20', `highlight', `image-dired', `image-file', `info',
-;;   `info+20', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `pp', `pp+', `second-sel', `strings', `subr-21',
-;;   `thingatpt', `thingatpt+', `time-date', `unaccent',
+;;   `info+20', `kmacro', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `naked', `pp', `pp+', `second-sel', `strings',
+;;   `subr-21', `thingatpt', `thingatpt+', `time-date', `unaccent',
 ;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
 ;;   `widget'.
 ;;
@@ -316,7 +316,7 @@ If a command uses more chars than this then it is shown only in buffer
 
 ;; REPLACES ORIGINAL in `find-dired.el':
 ;;
-;; Use `dired-listing-switches' for Windows.
+;; Use `dired-listing-switches' for MS Windows.
 ;;
 ;; Note: `defconst' is necessary here because this is preloaded by Emacs.
 ;;       It is not sufficient to do a defvar before loading `find-dired.el'.
@@ -508,12 +508,12 @@ When both optional args are non-nil, the `find' command run is this:
 ;;
 ;;;###autoload
 (defun find-grep-dired (dir regexp &optional depth-limits excluded-paths)
-  "Find files in DIR containing a regexp REGEXP.
-The output is in a Dired buffer.
+  "Use Dired on the list of files in DIR whose contents match REGEXP.
 The `find' command run (after changing into DIR) is essentially this,
 where LS-SWITCHES is `(car find-ls-option)':
 
-  find . -exec grep find-grep-options REGEXP {} \\\; LS-SWITCHES
+  find . \\( -type f -exec grep grep-program find-grep-options \\
+    -e REGEXP {} \\; \\) LS-SWITCHES
 
 Thus REGEXP can also contain additional grep options.
 
@@ -525,10 +525,11 @@ Optional arg EXCLUDED-PATHS is a list of strings that match paths to
 
 When both optional args are non-nil, the `find' command run is this:
 
-  find . -mindepth MIN-DEPTH -maxdepth MAX-DEPTH
-         \\( -path \*edir1\* -o -path \*edir2\* ... \\)
-         -prune -o -exec grep find-grep-options REGEXP {} \\\;
-         LS-SWITCHES"
+  find .
+    -mindepth MIN-DEPTH -maxdepth MAX-DEPTH
+    \\( -path \*edir1\* -o -path \*edir2\* ... \\)
+    -prune -o -exec grep-program find-grep-options -e REGEXP {} \\\;
+    LS-SWITCHES"
   (interactive
    (let ((default  (and (functionp find-diredp-default-fn) (funcall find-diredp-default-fn))))
      (list (read-file-name "Find-grep (directory): " nil "" t)
