@@ -823,12 +823,23 @@ recorded for the display state, the recorded state is ignored.
 === Automatic Saving ===
 
 Before getting into the topic of automatic saving, let me say this
-clearly once: ''Back up your bookmark file(s)!''
+clearly once: '''Back up your bookmark file(s)!'''
+
+('''Bookmark+''' creates backups when your bookmark file is saved.
+Until bug #12507 is fixed, vanilla Emacs does not.)
 
 I recommend that you set option '''`bookmark-version-control'''' to `t',
-so that you get numbered backups.  See also nodes `##Backup Names##'
-and `##Backup Deletion##' in the Emacs manual.  ('''Bookmark+''' creates backups when your bookmark file is saved.
-Until bug #12507 is fixed, vanilla Emacs does not.)
+so that you get ''numbered backups''.
+
+If you do use numbered backups then you might also want to
+customize option '''`delete-old-versions'''', setting the value to `t',
+so that you are not bothered by this prompt each time bookmarks
+are saved:
+
+: ##Delete excess backup versions of <YOUR-INIT-FILE>? (y or n)##
+
+See also nodes `##Backup Names##'
+and `##Backup Deletion##' in the Emacs manual. 
 
 User option '''`bookmark-save-flag'''' controls whether and how often to
 automatically save the bookmark list to the bookmark file.  You
