@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jul 30 18:20:14 2017 (-0700)
+;; Last-Updated: Sat Nov 11 10:24:36 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 15238
+;;     Update #: 15243
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
@@ -754,13 +754,23 @@
 ;;  *** Automatic Saving ***
 ;;
 ;;  Before getting into the topic of automatic saving, let me say this
-;;  clearly once: BACK UP YOUR BOOKMARK FILE(S)!  I recommend that you
-;;  set option `bookmark-version-control' to `t', so that you get
-;;  numbered backups.  See also nodes `Backup Names' and `Backup
-;;  Deletion' in the Emacs manual.
+;;  clearly once: BACK UP YOUR BOOKMARK FILE(S)!
 ;;
 ;;  (Bookmark+ creates backups when your bookmark file is saved.
 ;;  Until bug #12507 is fixed, vanilla Emacs does not.)
+;;
+;;  I recommend that you set option `bookmark-version-control' to `t',
+;;  so that you get numbered backups.
+;;
+;;  If you do use numbered backups then you might also want to
+;;  customize option `delete-old-versions', setting the value to `t',
+;;  so that you are not bothered by this prompt each time bookmarks
+;;  are saved:
+;;
+;;    Delete excess backup versions of <YOUR-INIT-FILE>? (y or n)
+;;
+;;  See also nodes `Backup Names' and `Backup Deletion' in the Emacs
+;;  manual.
 ;;
 ;;  User option `bookmark-save-flag' controls whether and how often to
 ;;  automatically save the bookmark list to the bookmark file, thus
