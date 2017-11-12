@@ -3,7 +3,10 @@ To get %%MuMaMo%% you have to get [NxhtmlMode nXhtml].
 
 mumamo requires Emacs 22 or later.
 
-Note: *The recommended and supported way to use mumamo is by loading nXhtml.*
+
+*Warning*: Mumamo is not actively maintained.  See MultipleModes for alternatives.
+
+Note: The recommended and supported way to use mumamo is by loading nXhtml.
 
 ----
 = Overview =
