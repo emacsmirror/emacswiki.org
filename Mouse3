@@ -16,7 +16,7 @@ For example, double-click `mouse-1' on a word, then click `mouse-3' on a differe
 
 
 
-
+[:LibraryMouse3]
 == Library mouse3.el ==
 
 Perhaps you know about `C-mouse-3' in Emacs.  It pops up a context-sensitive menu.  The sensitivity only goes as far as the major mode, however.
