@@ -8,9 +8,9 @@
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar 24 10:42:17 2017 (-0700)
+;; Last-Updated: Sun Nov 12 21:26:21 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1762
+;;     Update #: 1807
 ;; URL: https://www.emacswiki.org/emacs/download/mouse3.el
 ;; Doc URL: http://www.emacswiki.org/Mouse3
 ;; Keywords: mouse menu keymap kill rectangle region
@@ -300,6 +300,7 @@
 ;;   `mouse3-region-popup-register-submenu',
 ;;   `mouse3-region-popup-remove/replace-items',
 ;;   `mouse3-region-popup-remove/replace-rect-submenu',
+;;   `mouse3-region-popup-search/replace-submenu',
 ;;   `mouse3-save-then-kill-command'.
 ;;
 ;;
@@ -313,6 +314,11 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/11/12 dadams
+;;     Added: mouse3-region-popup-search/replace-submenu.
+;;     mouse3-region-popup-x-popup-panes: Added Search/Replace entries.
+;;     mouse3-region-popup-entries: Added mouse3-region-popup-search/replace-submenu.
+;;     Soft-require isearch+.el.
 ;; 2016/12/21 dadams
 ;;     Added: mouse3-ffap-max-region-size, mouse3-ffap-guesser.
 ;;     mouse3-file-or-dir, mouse3-noregion-popup-misc-submenu: Use mouse3-ffap-guesser, not ffap-guesser.
@@ -426,6 +432,8 @@
 ;;; Code:
 
 (require 'naked nil t) ;; (no error if not found): naked-key-description
+(require 'isearch+ nil t) ;; (no error if not found):
+                          ;; isearchp-forward-regexp-region, isearchp-forward-regexp-region
 
 ;; Quiet the byte-compiler.
 (defvar picture-killed-rectangle)
@@ -593,7 +601,13 @@ If nil, or if both `mouse3-region-popup-x-popup-panes' and
 ;; Another good reason to use the standard format instead.
 ;;;###autoload
 (defcustom mouse3-region-popup-x-popup-panes
-  `(("Remove/Replace"
+  `(("Search/Replace"
+     ,@`(,@(and (fboundp 'isearchp-forward-region)
+                '(("Isearch"                    . isearchp-forward-region)
+                  ("Isearch Regexp"             . isearchp-forward-regexp-region)))
+         ("Query Replace"                       . query-replace)
+         ("Query Replace Regexp"                . query-replace-regexp)))
+    ("Remove/Replace"
      ,@`(("Kill"                                . kill-region)
          ("Delete"                              . delete-region)
          ("Yank (Replace)"                      . (lambda (start end)
@@ -1020,6 +1034,21 @@ not use this option.  Instead, set option
       (hlt-yank-props menu-item "Yank Copied Text Properties" hlt-yank-props ; Defined in `highlight.el'.
        :visible (and (not buffer-read-only)  (fboundp 'hlt-yank-props)  hlt-copied-props)))
   "Menu items for removing or replacing the mouse selection.")
+
+(defconst mouse3-region-popup-search/replace-submenu
+    `(search-replace-menu
+      menu-item
+      "Search/Replace"
+      (keymap
+       (isearch             menu-item "Isearch" isearchp-forward-region
+        :visible (fboundp 'isearchp-forward-region))
+       (isearch-regexp      menu-item "Isearch Regexp" isearchp-forward-regexp-region
+        :visible (fboundp 'isearchp-forward-regexp-region))
+       (query-replace       menu-item "Query Replace" query-replace
+        :enable (and (not buffer-read-only)  (mouse3-nonempty-region-p)))
+       (query-replaceregexp menu-item "Query Replace Regexp" query-replace-regexp
+        :enable (and (not buffer-read-only)  (mouse3-nonempty-region-p)))))
+  "Submenu for searching or replacing text in the region by the mouse.")
 
 (defconst mouse3-region-popup-remove/replace-rect-submenu
     '(remove/replace-rect-menu
@@ -1478,6 +1507,7 @@ restore it by yanking."
 (defcustom mouse3-region-popup-entries `(,@mouse3-region-popup-remove/replace-items
                                          (sep1-std-entries menu-item "--" nil
                                           :visible (not buffer-read-only))
+                                         ,mouse3-region-popup-search/replace-submenu
                                          ,mouse3-region-popup-remove/replace-rect-submenu
                                          ,mouse3-region-popup-copy-submenu
                                          ,mouse3-region-popup-register-submenu
