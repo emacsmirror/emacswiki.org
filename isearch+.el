@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Oct 17 10:37:32 2017 (-0700)
+;; Last-Updated: Sun Nov 12 21:15:34 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 5903
+;;     Update #: 5908
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
@@ -19,8 +19,10 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `cl', `frame-fns', `misc-cmds', `misc-fns', `strings',
-;;   `thingatpt', `thingatpt+'.
+;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-lib',
+;;   `color', `frame-fns', `gv', `hexrgb', `isearch-prop',
+;;   `macroexp', `misc-cmds', `misc-fns', `strings', `thingatpt',
+;;   `thingatpt+', `zones'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -88,7 +90,8 @@
 ;;    `isearchp-defun-filter-predicate' (Emacs 24.4+),
 ;;    `isearchp-describe-prefix-bindings',
 ;;    `isearchp-eval-sexp-and-insert' (Emacs 22+),
-;;    `isearchp-fontify-buffer-now', `isearchp-init-edit',
+;;    `isearchp-fontify-buffer-now', `isearchp-forward-regexp-region',
+;;    `isearchp-forward-region', `isearchp-init-edit',
 ;;    `isearchp-keep-filter-predicate' (Emacs 24.4+), `isearchp-near'
 ;;    (Emacs 24.4+), `isearchp-near-after' (Emacs 24.4+),
 ;;    `isearchp-near-before' (Emacs 24.4+),
@@ -1160,6 +1163,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2017/11/12 dadams
+;;     Added: isearchp-forward-region, isearchp-forward-regexp-region (Emacs 24.4+).
 ;; 2017/10/17 dadams
 ;;     lazy-highlight-cleanup: Added optional arg PROCRASTINATE (added by Emacs 26).
 ;; 2017/07/23 dadams
@@ -4164,6 +4169,22 @@ See command `isearch-forward-regexp' for more information."
           ((and arg  (fboundp 'multi-isearch-buffers)  (< numarg 0))
            (call-interactively #'multi-isearch-buffers-regexp))
           (t (isearch-mode nil (null arg) nil (not no-recursive-edit))))))
+
+(when (boundp 'isearchp-restrict-to-region-flag) ; Emacs 24.4+
+
+  (defun isearchp-forward-region ()
+    "Isearch region forward, after putting point before mark."
+    (interactive)
+    (when (< (mark) (point)) (exchange-point-and-mark))
+    (call-interactively #'isearch-forward))
+
+  (defun isearchp-forward-regexp-region ()
+    "Regexp isearch region forward, after putting point before mark."
+    (interactive)
+    (when (< (mark) (point)) (exchange-point-and-mark))
+    (call-interactively #'isearch-forward-regexp))
+
+  )
 
 (when (fboundp 'region-noncontiguous-p) ; Emacs 25+
   (defun isearchp-constrain-to-rectangular-region ()
