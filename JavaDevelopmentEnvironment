@@ -9,7 +9,10 @@ Project site: https://github.com/jdee-emacs/jdee
 
 ==Alternatives==
 
-[[EmacsEclim]], which provides Eclipse-like features for Java development.
+[http://eclim.org/ Eclim] uses Eclipse as a backend to provide intelligent Java completion and coding support in Emacs
+
+[http://github.com/espenhw/malabar-mode malabar-mode] was an effort to create a better Java mode for Emacs.  It has been [folded into JDEE https://github.com/m0smith/malabar-mode/commit/e8a1725f26f80d1f4edc0a1dabd5b5502ab69695].
+
 
 ==Download==
 JDEE is available from MELPA.
@@ -351,16 +354,6 @@ here is my init file...  There a few 'tricks' in here:
 
 Did you install it correctly as documented?
 The website says: "Nearly all the JDEE problems that I have seen are caused by faulty setups," and "Most problems reported by users are installation/setup problems."  See the [http://jdee.sunsite.dk/trouble-shooting.htm Trouble Shooting Guide] (Dead link).
-
-== Alternatives ==
-
-=== malabar-mode ===
-[http://github.com/espenhw/malabar-mode malabar-mode] was an effort to create a better Java mode for Emacs.  It has been [folded into JDEE https://github.com/m0smith/malabar-mode/commit/e8a1725f26f80d1f4edc0a1dabd5b5502ab69695].
-
-=== Eclim ===
-
-[http://eclim.org/ Eclim] uses Eclipse as a backend to provide intelligent Java completion and coding support in Emacs
-
 
 == Comments ==
 moved to the [EmacsWiki:Comments_on_JavaDevelopmentEnvironment Talk page]
