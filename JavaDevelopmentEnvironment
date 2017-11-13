@@ -355,7 +355,7 @@ The website says: "Nearly all the JDEE problems that I have seen are caused by f
 == Alternatives ==
 
 === malabar-mode ===
-[http://github.com/espenhw/malabar-mode malabar-mode] is an effort to create a better Java mode for Emacs.
+[http://github.com/espenhw/malabar-mode malabar-mode] was an effort to create a better Java mode for Emacs.  It has been [folded into JDEE https://github.com/m0smith/malabar-mode/commit/e8a1725f26f80d1f4edc0a1dabd5b5502ab69695].
 
 === Eclim ===
 
