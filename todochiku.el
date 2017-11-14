@@ -98,6 +98,8 @@
 ;; - Build better backend support.
 
 ;;; CHANGELOG:
+;; V0.0.9 - Fixed compilation-mode-hook, `compilation-finish-functions'
+;;          doesn't have to be a list
 ;; V0.0.8 - Fixed broken `todochiku-icons-directory' definition that made it impossible to change through Customize.
 ;; V0.0.7b - Added support for sticky messages for libnotify and growl.
 ;; V0.0.7  - Added YaOddMuse interface
@@ -289,8 +291,11 @@ This would be better done through a customization probably."
 (if todochiku-compile-message
 	(add-hook 'compilation-mode-hook
 			  (lambda ()
+				(when (not (listp compilation-finish-functions))
+				  (setq compilation-finish-functions (list compilation-finish-functions)))
 				(add-to-list 'compilation-finish-functions
 							 (lambda (buf finish) (todochiku-message "Compilation Finished" finish (todochiku-icon 'compile)))))))
+
 
 ;;* external
 (defun growl-rcirc-print-hook (process sender response target text)
