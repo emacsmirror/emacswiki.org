@@ -1,8 +1,8 @@
-The latest version of the Completion User Interface (0.11.11, released January 2012) can be obtained from:
+The latest version of the Completion User Interface (0.12, released February 2013) can be obtained from:
 
 * Completion User Interface package download: http://www.dr-qubit.org/download.php?file=predictive/completion-ui.tar.gz
 * Completion User Interface git repository: <code>http://www.dr-qubit.org/git/predictive.git</code>
-* Web-site: http://www.dr-qubit.org/emacs.php#completion
+* Web-site: http://www.dr-qubit.org/completion-UI.html
 
 The development version is hosted in the same git repository as PredictiveMode. Note that the git repository URL is a git repository, ''*not*'' a web-site. You cannot view it in a web browser. To grab the latest development version, clone the repository using:
 
