@@ -154,61 +154,6 @@ After loading auto-complete,
 If I'm editing [[OrgMode]] files, I can start AutoComplete (using \M-/ and not auto start), but if I don't want to make any of the completions, ESC-ESC-ESC doesn't kill the menu. I don't see this problem in other emacs files. Any debugging hints?
 ----
 [new]
-AutoComplete version 0.3.0 alpha doesn't work with YASnippet 0.6.1b. Only solution I've found: disable yasnippet as source for completion.
-----
-[new]
-Sorry for inconvenience. Could you check update auto-complete.el and auto-complete-config.el?
---[[Matsuyama]]
-----
-[new]
-I can confirm it still doesnt work(updated version of auto-complete.el and auto-complete-config.el) with latest version of yasnippet. Plus setting it globally doesnt enable it even AC appearing in the mode line.
---[[GlauberPrado]]
-----
-[new]
-Final version of auto-complete-yasnippet.el, tested in both 23.0 and 23.1:
-
-<pre>
-(require 'auto-complete)
-(require 'yasnippet)
-
-(defun ac-yasnippet-candidate ()
-  (let ((table (yas/get-snippet-tables major-mode)))
-    (if table
-      (let (candidates (list))
-            (mapcar (lambda (mode)          
-              (maphash (lambda (key value)    
-                (push key candidates))          
-              (yas/snippet-table-hash mode))) 
-            table)
-        (all-completions ac-prefix candidates)))))
-
-(defface ac-yasnippet-candidate-face
-  '((t (:background "sandybrown" :foreground "black")))
-  "Face for yasnippet candidate.")
-
-(defface ac-yasnippet-selection-face
-  '((t (:background "coral3" :foreground "white"))) 
-  "Face for the yasnippet selected candidate.")
-
-(defvar ac-source-yasnippet
-  '((candidates . ac-yasnippet-candidate)
-    (action . yas/expand)
-    (limit . 3)
-    (candidate-face . ac-yasnippet-candidate-face)
-    (selection-face . ac-yasnippet-selection-face)) 
-  "Source for Yasnippet.")
-
-(provide 'auto-complete-yasnippet)
-
-P.S. I apologize for extra patch on auto-complete.el, it wasn't required. To those who patched: please use original version.
-</pre>
-
-----
-[new]
-Thanks so much! I fixed the problem and commit to the repository. Please check it in the project page.
---[[Matsuyama]]
-----
-[new]
 What about completion with candidates from other buffers? I've tried to add ac-source-words-in-all-buffer to ac-sources, but that didn't give any effect :(
 
 [new]
@@ -277,24 +222,6 @@ Is it possible to use auto-complete to translate words with a lookup at dict.cc 
 [new]
 Yes, of course. auto-complete is a frame work for completion. But you have to give it the sources to complete from and take care of the output from completion.
 (You could of course use Emacs default completion frame work too. Or Icicles etc.)
-
-----
-[new]
-BUG: Entering two forward slashes (for example to add a comment in C++) causes a delay of several minutes during which one can do nothing else with emacs.
-
-Comment: I tried this with auto-complete 1.3.1 and don't witness the issue.  The first time I type // there's a noticible delay of less than a second.
-
-[new]
-I am seeing this same issue.  I am using auto-complete 1.3.1, emacs 24.3.1 (i686-pc-cygwin) on Windows 7 x64.  Typing the first forward slash gives me an auto-complete suggestion of "/bin". Typing the second forward slash make emacs unresponsive for around 30 seconds.  Interestingly, Windows does not report the program as "not responding" during this time, even though everything from text entry to cursor movement to drop-down menu items is completely frozen.
---nispio
-
-[new]
-I've had the same issue. It is fixed in https://github.com/auto-complete/auto-complete/pull/48. Solved for me by installing the latest from github
---yhager
-
-[new]
-I have fixed this issue https://github.com/auto-complete/auto-complete/issues/321. Please upgrade.
---syohex
 
 ----
 [new]
