@@ -102,6 +102,7 @@
     (modify-syntax-entry ?:  ". 12" st)
     (modify-syntax-entry ?\n ">" st)
     (modify-syntax-entry ?%  "." st)
+    (modify-syntax-entry ?=  "." st)
     st)
   "Syntax table used while in Batch mode.")
 
