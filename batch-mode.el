@@ -1,4 +1,4 @@
-;;; batch-mode.el --- major mode for editing ESRI batch scrips
+;;; batch-mode.el --- major mode for editing batch scrips
 ;;; Copyright (C) 2002, Agnar Renolen <agnar.renolen@emap.no>
 ;;; Modified (c) 2009, Matthew Fidler <matthew.fidler at gmail.com>
 ;;; Fixed indents (and labels)
@@ -113,7 +113,7 @@
   (interactive)
   (kill-all-local-variables)
   (setq major-mode 'batch-mode)
-  (setq mode-name "Avenue")
+  (setq mode-name "Batch")
   (set (make-local-variable 'indent-line-function) 'batch-indent-line)
   (set (make-local-variable 'comment-start) "rem")
   (set (make-local-variable 'comment-end)   "")
