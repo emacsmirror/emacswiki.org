@@ -10,13 +10,11 @@ Hyperbole's major capabilities include:
  
 * Info Management: an interactive, unstructured textual information management interface
 * HyControl: the fastest and easiest-to-use window and frame control
-[new]
 * HyRolo: a hierarchical contact manager with free-form records and fast retrieval
 * KoutlineMode: advanced outliner with multi-level autonumbering
 * Button Types: set of hyper-button types which supply core hypertext and other behaviors
 * Programming Library: library classes for system developers who want to integrate with Hyperbole.
 
-[new]
 I would like to see a comparison between the various Information Management tools and [[Hyperbole]].  Could anyone comment on this?
 
 From RSW, author of GNU Hyperbole:
@@ -46,7 +44,6 @@ People often ask us about the differences between Org mode and Hyperbole.  Altho
 
 * Hyperbole also has features that speed code browsing and structured code editing and support for using the mouse keys as Control and Meta modifiers so you can point and operate on screen entities quickly.
 
-[new]
 Am I right if I assume that the major components of Hyperbole are something similar to outline minor mode + the ability to create links to different places (a position in a file for example)?
 
 In that case I think that OrgMode can do the same things very good. And that already comes with Emacs 22.
