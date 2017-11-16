@@ -8,9 +8,7 @@ not alter the terminal modes, and it does not expect to be outputting
 to an erasable screen.  The idea is that you specify Lisp programs to
 run; when they are finished, Emacs should exit.'' [...]
 
-: ''Any Lisp program output that would normally go to the echo area,
-either using `message', or using `prin1', etc., with `t' as the stream,
-goes instead to Emacs's standard error descriptor when in batch mode.
+: ''Any Lisp program output that would normally go to the echo area, either using message, or using prin1, etc., with t as the stream, goes instead to Emacs’s standard descriptors when in batch mode: message writes to the standard error descriptor, while prin1 and other print functions write to the standard output.
 Similarly, input that would normally come from the minibuffer is read
 from the standard input descriptor.  Thus, Emacs behaves much like a
 noninteractive application program.''  [...]
