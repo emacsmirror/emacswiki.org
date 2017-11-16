@@ -128,6 +128,9 @@ mode the output goes to the echo area. In batch mode it is directed to the norma
 The message function prints to stderr in batch mode. Perhaps there is an error in the
 documentation you referenced above (I have not checked)
 
+''It seems to have been corrected:''
+: ''Any Lisp program output that would normally go to the echo area, either using message, or using prin1, etc., with t as the stream, goes instead to Emacs's standard descriptors when in batch mode: message writes to the standard error descriptor, while prin1 and other print functions write to the standard output.''
+
 ==Prompts in w32 cmd-files==
 Example:
 
