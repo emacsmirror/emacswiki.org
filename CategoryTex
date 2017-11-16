@@ -48,18 +48,5 @@ Other
 * LatexMk -- specialized make alike for !LaTeX; refresh preview on save
 * LaTeXManual -- Free [[Texinfo]] manual for !LaTeX
 
-Other (La)!TeX editors (free software only)
-* [http://www.lyx.org LyX] -- pseudo-WYSIWYG editor, using !LaTeX as typesetting engine
-* [http://www.texmacs.org/ GNU TeXmacs] -- free scientific text editor, with Scheme plugin system. Has export to and requires !LaTeX
-* [http://kile.sourceforge.net Kile], <b>K</b>DE <b>I</b>ntegrated <b>L</b>aTeX <b>E</b>ditor
-* [http://www.xm1math.net/texmaker/ Texmaker], Qt free cross-platform LaTeX editor
-* [http://www.latexeditor.org/ LEd], <b>L</b>aTeX <b>Ed</b>itor, free IDE for MS Windows
-* [http://winefish.berlios.de/ Winefish], GTK+ !LaTeX editor based on Bluefish HTML editor
-* For [http://www.vim.org VIM] there are [http://vim-latex.sourceforge.net/ Vim-LaTeX Suite] (for VIM version at least 6.0) and [http://www.vimoutliner.org/ Vim Outliner]
-* For [http://www.eclipse.org/ Eclipse] there are [http://etex.sourceforge.net/ ecleTeX], [http://texlipse.sourceforge.net/ TeXlipse] and [http://www.eclipse-plugins.info/eclipse/plugin_details.jsp?id=467 LatEc] plugins
-* For [http://www.jedsoft.org/jed/ Jed] there is [http://www.ctan.org/tex-archive/support/jed/ latex4jed], enhanced !LaTeX mode for the Jed editor
-
- is this section really appropriate on EMACS Wiki?!? This is not TeX wiki, mind you… –– mangledmind
-
 ----
 CategoryModes
