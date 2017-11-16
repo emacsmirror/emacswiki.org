@@ -14,7 +14,7 @@ nick again.
 
 You need to customize `erc-ignore-list', or set it as follows:
 
-    (setq erc-ignore-list '("kensanata"))
+    (setq erc-ignore-list '("lamer"))
 
 The list contains regular expressions which are matched against "nick!login@host", so you might also set it as follows:
 
