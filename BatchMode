@@ -154,6 +154,14 @@ Nothing else special is required, except the package directory (which is {{{~/.e
 
 It does seem that this would be a useful additional startup option, batch but with your packages and not your config.
 
+==Passing args to emacs lisp functions from the command line==
+If an interactive function takes an argument, Emacs will print the minibuffer prompt and wait for input at the command line. But if you give it something on STDIN, Emacs will use that instead. So you can have a script like
+{{{
+#!/bin/sh
+echo "$@" | emacs --batch -l ~/.emacs.d/lisp/mything.el -f mything
+}}}
+
+that can be called like `mything.sh "here's some input"` to have "here's some input" passed to the mything function defined in mything.el. I used to maintain two versions of some things for use from emacs and from command line but now porting everything to elisp and making stub scripts like this.
 
 ==Discussion==
 
