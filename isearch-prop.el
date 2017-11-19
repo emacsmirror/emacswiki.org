@@ -8,9 +8,9 @@
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar  3 15:04:36 2017 (-0800)
+;; Last-Updated: Sun Nov 19 10:34:35 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1414
+;;     Update #: 1423
 ;; URL: https://www.emacswiki.org/emacs/download/isearch-prop.el
 ;; Doc URL: http://www.emacswiki.org/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
@@ -355,6 +355,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/11/19 dadams
+;;     isearchp-narrow-to-lazy-highlights:
+;;       Added isearchp-restore-pred-and-remove-dimming to isearch-mode-end-hook.
 ;; 2016/11/17 dadams
 ;;     isearchp-add/remove-dim-overlay: Ensure that OBEG and OEND are numbers before using them.
 ;; 2016/08/27 dadams
@@ -1522,6 +1525,7 @@ from the new search."
       (put-text-property beg end 'isearchp-lazy-highlight nil)
       (isearchp-mark-lazy-highlights beg end)))
   (when msgp (message "Updated lazy-highlighting"))
+  (add-hook 'isearch-mode-end-hook 'isearchp-restore-pred-and-remove-dimming)
   (setq isearch-string   ""
         isearch-message  ""))
 
