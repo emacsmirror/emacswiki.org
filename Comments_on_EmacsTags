@@ -1,0 +1,4 @@
+I tried running the “find-file-upwards” code to find the TAGS file (evaluating the definition first, then the whole nested “let” function), and I got an error message saying “Symbol's function definition is void: labels”.
+
+-- [http://tinakellyrussell.com Tina Russell] 2017-11-20 03:51 UTC
+
