@@ -120,9 +120,19 @@ Yes, I have seen it after having asked it here ... -- [[XavierMaillard]]
 ----
 
 
-[Unanswered](please remove after answering)
-
 I already have a directory of notes. Can howm-mode take it from there ? [[ychaouche]]
+
+[[ychaouche]]
+
+Answere from [[khi]]:
+
+<pre>
+; howm-mode :)
+;; search other directories in addition to `howm-directory'.
+(setq howm-search-path '("/path/to/notes/directory" "/path/to/other/notes/directory"))
+(setq howm-search-other-dir t)
+</pre>
+
 
 == Tips ==
 
