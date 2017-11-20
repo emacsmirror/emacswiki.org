@@ -1,41 +1,12 @@
 [new]
-----
-<b><i>
-Current version is 2.08 - please upgrade if you have an older version!
-</i></b>
-----
-
-[new]
-http://ourcomments.org/Emacs/nXhtml/doc/img/use-nXhtml-trans2.png
-
-<b>This page should really be named /nXhtml/ since it is about the whole nXhtml package. nxhtml-mode is just a part of that package.</b>
-
-[new]
-: To download nXhtml go to [http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html nXhtml homepage]. It is also included in [[EmacsW32]].
-: You can also download nXhtml directly from the repository (without bzr). To do that download the file [http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/web-vcs.el web-vcs.el] and eval it (i.e. open the file and do <b>M-x eval-buffer</b>). Then do <b>M-x web-vcs-nxhtml</b>. This can be used both for initial download and updating.
-: With the web download I now recommend downloading part by part if you like it. I have the impression that many wanted a smaller download than the whole of nXhtml. Here you have it!
-: To report a bug go to https://bugs.launchpad.net/nxhtml.
-
-[new]
-**Newest features** (see [http://ourcomments.org/Emacs/nXhtml/doc/nxhtml-changes.html#latest changelog]):
-* A new library bibhlp.el to make it easy to handle bibliographic references in for example org-mode. Only in the repository yet. (Yes, it has nothing to do with web-development and it will move on later I hope... ;-)
-* Web download directly from Emacs (without bzr, instead using *web-vcs.el*, see above)
-* Support for the new JavaScriptMode mode in CVS Emacs (called js-mode, formerly known as Espresso mode).
-* Chunks in chunks
-* Inline images for html, org-mode, css-mode etc.
-* Preview as you type in Firefox (but rather slow - additions are welcome), find out where an element is in Firefox
-* You can now use hi-lock with Mumamo multi major modes.
-* Mumamo region chunks, which is temporarily chunks you add yourself with any major mode. You just hilight the region and decide what major mode it should have.
-* Fetch and start using the latest development version of [EmacsCodeBrowser ECB] right now!
-
-
+This package is no longer being developed since (last commit in 2012, see also https://answers.launchpad.net/nxhtml/+question/236477).  The old webpage is no longer up, but may still be found at archive.org; the code may be found at https://github.com/emacsmirror/nxhtml or https://code.launchpad.net/nxhtml.
 
 == Description ==
 
 '''nXhtml''' is a package that may help for web development, but it also contains a lot of other things.
-For an overview see [http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html nXhtml home
+For an overview see [https://web.archive.org/web/20150416162438/http://ourcomments.org:80/Emacs/nXhtml/doc/nxhtml.html nXhtml home
 page].
-You may also find the [http://ourcomments.org/Emacs/nXhtml/tut/tutorials.html tutorials] useful.
+You may also find the [https://web.archive.org/web/20150407040752/http://ourcomments.org/Emacs/nXhtml/tut/tutorials.html tutorials] useful.
 
 One of the main parts is the major mode nxhtml-mode for editing XHTML files (based on NxmlMode).
 This gives XHTML completion of tags and attributes also in for example php files (even if they do not contain XML + DTD specifications).
@@ -50,18 +21,6 @@ Those modes handle inlined style sheets and javascript, php, jsp etc, which are 
 There are a lot of other features like simple search and replace in directory trees, simple file upload, etc.
 The only way to find out is to download nXhtml and try.
 
-[new]
-[:ScreenShots]
-Some images showing a bit of the nXhtml functionality (try it out if you wonder more):
-
-http://ourcomments.org/Emacs/nXhtml/doc/img/php-in-nxhtml-2.png
-http://ourcomments.org/Emacs/nXhtml/doc/img/links-appmenu.png
-http://ourcomments.org/Emacs/nXhtml/doc/img/region-selected-completion.png
-http://ourcomments.org/Emacs/nXhtml/doc/img/nxml-where.png
-http://ourcomments.org/Emacs/nXhtml/doc/img/foldit-closed.png
-http://ourcomments.org/Emacs/nXhtml/doc/img/foldit-temp-opened.png
-
-
 === Quick Start ===
 
 Installation is easy, just unzip the archive and (just as README.txt says) add one line to your .emacs:
@@ -70,11 +29,9 @@ Installation is easy, just unzip the archive and (just as README.txt says) add o
 
 After this nXhtml is ready for use.
 However for a little more and where to download it see
-[http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html#qg the Quick Guide to nXhtml].
-See [http://ourcomments.org/Emacs/nXhtml/doc/nxhtml-changes.html nXhtml Notes and Changes]
-for a list of changes. You can also [http://ourcomments.org/Emacs/DL/elisp/nxhtml/beta/ try a beta].
-
-Note that if you have [[EmacsW32]] then nXhtml is already included, but you have to turn it on. And you may want to update to a more recent version of nXhtml. (If you do just put it in the same location where the old version was.)
+[https://web.archive.org/web/20150416162438/http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html#qg the Quick Guide to nXhtml].
+See [https://web.archive.org/web/20150416162438/http://ourcomments.org/Emacs/nXhtml/doc/nxhtml-changes.html nXhtml Notes and Changes]
+for a list of changes.
 
 You need **Emacs 22** or later to use nXhtml.
 
