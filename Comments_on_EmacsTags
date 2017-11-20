@@ -2,3 +2,10 @@ I tried running the “find-file-upwards” code to find the TAGS file (evaluati
 
 -- [http://tinakellyrussell.com Tina Russell] 2017-11-20 03:51 UTC
 
+
+----
+
+It was missing (require 'cl), but anyway that function is just duplicating the builtin locate-dominating-file, so I replaced it.
+
+-- npostavs 2017-11-20 13:46 UTC
+
