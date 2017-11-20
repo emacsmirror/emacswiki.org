@@ -26,7 +26,7 @@ These products (xrefactory c/java, xrefactory c++) seems to be abandoned. The c+
 [new]
 Vittek (where and whoever he is) release a C/Java version into GPL in 2006 on Sourceforge. I've tried to revive this excellent tool, but could really use some help as the code is in poor shape and it's an entangled web of legacy code ;-)
 
-Fully working version for C and Java is on [http:/github.com/thoni56/c-xrefactory GitHub].
+Fully working version for C and Java is on [http:/github.com/thoni56/c-xrefactory GitHub]. Also available as an el-get package for easy installation.
 
 ----
 CategoryProgrammerUtils
