@@ -26,7 +26,7 @@ The latest version is near the bottom, emacs-XX.y-i686.zip for 32bit machines, e
 
 === Helpful things for Installation ===
 
-* MsWindowsInstallation -- Installation guidelines when not using !EmacsW32
+* MsWindowsInstallation -- Installation guidelines
 * MsWindowsDotEmacs -- About the .emacs (or _emacs) initialization file on MS-Windows
 * The free (GNU LGPL) open source program [http://www.7-zip.org/ 7-zip] is a good choice for extracting <tt>.tar.gz</tt> files.  You can also use [http://cheeso.members.winisp.net/srcview.aspx?dir=Tar&file=Tar.cs this simple Tar program in C#]
 * Build it yourself - see BuildingOnWindowsTableofContents.
