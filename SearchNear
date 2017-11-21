@@ -62,7 +62,7 @@ Is there an easy way to do "search near" in Emacs? This should take three argume
    (let* ((phrase1
            (read-string "1st phrase (regexp, lowercase means case insens.):"))
           (phrase2
-           (read-string "2nd phrase (regexp, lowercased means case insens.):"))
+           (read-string "2nd phrase (regexp, lowercase means case insens.):"))
           (max-distance
            (read-number "Distance (max. number of chars between):" 160))
           (maxdist-anychars-including-newlines-regexp
