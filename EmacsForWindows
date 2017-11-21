@@ -7,22 +7,11 @@ The [http://www.gnu.org/software/emacs/windows/ntemacs.html official MS-Windows 
 treats many issues concerning Emacs and MS-Windows.
 The page has also links to the precompiled binaries for MS-Windows of the current Emacs or earlier versions. 
 
-If you want precompiled binaries for the latest Emacses (version 24.4 is officially released stable), please see CategoryWThirtyTwo.
+If you want precompiled binaries for the latest Emacses (version 25.3 is officially released stable), please see CategoryWThirtyTwo.
 
 Project ntemacs/emax64 at (https://ntemacs.sourceforge.io/) provides clean, optimized binary builds of the latest Emacs source, with image support enabled and necessary dependencies bundled in the package.
 
-== Resources ==
-
-If you want to install Emacs on MS-Windows using a simple installer, you may have a look at the following resources:
-* [https://ntemacs.sourceforge.io/ ntemacs / emax64]
-* [http://emacs-win.sourceforge.net/ emacs-win (portuguese)]
-* [[EmacsW32]]
-* [https://sourceforge.net/projects/emacs-bin/files/snapshots/ Latest Precompiled Emacs for Windows]
-
-See CategoryWThirtyTwo for a lot more.
 
 ----
-See also
-CategoryPorts
-[http://emacro.sourceforge.net/ EMacro: .emacs configuration system for Emacs]
+See also CategoryPorts
 
