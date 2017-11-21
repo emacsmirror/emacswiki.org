@@ -51,6 +51,29 @@ Is there an easy way to do "search near" in Emacs? This should take three argume
     	  (num (read-number "Distance:" 1)))
         (find-near word1 word2 num)))
 
+::: Maybe the function below is an enhancement of the previous (<i>Thank You for it!</i>), now allowing <b>search across multiple lines</b>! Now the (maximal) <i>distance</i> has to be specified as <i>character number</i> (not word number). -- MathiasErhart
+::: Note: The <i>two search phrases</i> are <i>regexp</i>s, due to their unmodified use in "occur"! So using an unescaped "." means "any char" etcetera.
+
+ (defun near-search ()
+   "Show occurences of two search phrases in a text (a single occurence may
+ span multiple lines). A maximal distance is given in characters (including
+ newlines and maybe other special chars)."
+   (interactive)
+   (let* ((phrase1
+           (read-string "1st phrase (regexp, lowercase means case insens.):"))
+          (phrase2
+           (read-string "2nd phrase (regexp, lowercased means case insens.):"))
+          (max-distance
+           (read-number "Distance (max. number of chars between):" 160))
+          (maxdist-anychars-including-newlines-regexp
+           (concat "\\(.\\|\n\\)" "\\{," (number-to-string max-distance) "\\}")))
+     (occur
+      (concat  
+       "\\(" phrase1 maxdist-anychars-including-newlines-regexp phrase2
+       "\\|" phrase2 maxdist-anychars-including-newlines-regexp phrase1 "\\)"))
+     ))
+
+
 ----
 CategoryRegexp
 SearchAndReplace
