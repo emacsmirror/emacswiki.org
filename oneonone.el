@@ -8,9 +8,9 @@
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Sun Apr 16 08:58:05 2017 (-0700)
+;; Last-Updated: Mon Nov 20 16:57:09 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 3094
+;;     Update #: 3161
 ;; URL: https://www.emacswiki.org/emacs/download/oneonone.el
 ;; Doc URL: http://emacswiki.org/OneOnOneEmacs
 ;; Keywords: local, frames
@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `frame-cmds', `frame-fns', `hexrgb', `misc-fns',
+;;   `avoid', `cl', `frame-cmds', `frame-fns', `hexrgb', `misc-fns',
 ;;   `oneonone', `strings', `thingatpt', `thingatpt+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -298,6 +298,9 @@
  
 ;;; Change Log:
 ;;
+;; 2017/11/20 dadams
+;;     1on1-change-cursor-on-input-method: Use color from 1on1-minibuffer-frame-alist before
+;;                                         that or 1on1-minibuffer-frame-cursor-color.
 ;; 2016/12/30 dadams
 ;;     y-or-n-p: Return to Isearch color if searching.
 ;; 2015/08/21 dadams
@@ -1571,7 +1574,8 @@ show/hide: hold CTRL + click in window"))
               ((string= "*Completions*" bufname)
                (set-cursor-color 1on1-completions-frame-mouse+cursor-color))
               ((eq 1on1-minibuffer-frame (selected-frame))
-               (set-cursor-color 1on1-minibuffer-frame-cursor-color))
+               (or (cdr (assq 'cursor-color 1on1-minibuffer-frame-alist))
+                   1on1-minibuffer-frame-cursor-color))
               ((special-display-p bufname)
                (set-cursor-color 1on1-special-frame-cursor-color))
               ;; Do not set it if there is no setting for it in `default-frame-alist'.
