@@ -1,38 +1,36 @@
-== GNU Emacs on MS Windows other than Emacs W32 ==
+== GNU Emacs on MS Windows ==
 
-Apart from [[EmacsW32]] there are several distributions of binaries of Gnu-Emacs for
+There are several distributions of binaries of Gnu-Emacs for
 MS-Windows to choose from:
 
-* So-called *CVS-versions* that are currently in development but are actually quite stable
-  now. These are located on !SourceForge. There are currently two versions to choose from,
-  22.1.50.1 and 23.0.0.1. Installation guidelines are below.
+* So-called *snapshot* versions that are currently in development. 
+  These are located on !SourceForge.  The current development version is 27.0.50.
+  Installation guidelines are below.
 
-* *The official stable binaries.* These have version 22.1.1 which is a little out-dated
-  (one notices e.g. that the tool-bar is black-and-white). But the resulting Emacs runs
-  well with MS-Windows and Cygwin, and guidelines for installation are given below.
+* *The official stable binaries.* The latest stable version is 25.3, 
+guidelines for installation are given below.
 
 * *Versions available through Cygwin setup.* These have drawbacks as detailed [[#below]],
   and installation guidelines will not be given here.
 
 ==Guidelines for installing Emacs on MS Windows==
 
-If installing the *CVS versions* from !SourceForge:
+If installing the *snapshot* version from !SourceForge:
 
-: Visit the site http://ntemacs.sourceforge.net and download one of the .exe files marked
-  "binary" near the bottom (both are about 20 Mb). Once downloaded, run the file (it is a
-  self-extracting zip file). Answer "Extract to" with a directory (or folder) of your
-  choice (e.g. ##c:\\packages##). A directory named ntemacs22 or ntemacs23 will be created
+: Visit the site https://ntemacs.sourceforge.io/ and download the .7z file marked
+  "binary" near the bottom.  Once downloaded, unzip it to a directory of your
+  choice (e.g. ##c:\\packages##).  A directory named emaxw64 will be created
   therein.
 
 Otherwise, to install the *official stable binaries*:
 
 : Visit the site ftp://ftp.gnu.org/gnu/emacs/windows/ (or one of the mirrors listed at
   http://www.gnu.org/order/ftp.html; once at a mirror site select emacs and
-  windows). Download the last zip-file listed (currently emacs-22.1-bin-i386.zip, 37
-  Mb). You might also want to read the README file at the same site (not the one inside
+  windows).  Download the last zip-file ending in x86_64.zip for 64 bit or i686.zip for 32 bit listed (currently
+  emacs-25.3_1-x86_64.zip and emacs-25.3-i686.zip, respectively). You might also want to read the README file at the same site (not the one inside
   the zip-file). Once the zip-file is downloaded, open it using Explorer (slow) or 7zip
   (faster) and extract all the files into a directory of your choice
-  (e.g. ##c:\packages\emacs-22.1.1##).
+  (e.g. ##c:\packages\emacs-25.3##).
 
 A subdirectory of the one just created will be /bin/
 (e.g. ##c:\packages\ntemacs23\bin##). Enter this bin-directory and run ##addpm.exe##
