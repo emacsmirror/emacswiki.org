@@ -1,4 +1,4 @@
-PPINDENT indents C-preprossor statements depending on the current #if..., #el.., #endif level. It only modifies lines with "#" as the first non-blank character and therefore does not conflict with the normal C indentation. Unlike a true indent, it inserts the requisite number of spaces after, rather than before the "#" character. This type of preprocesor indent is commonly used to provide the most compatibility with different C-compilers.
+Lisp:ppindent.el indents C-preprossor statements depending on the current #if..., #el.., #endif level. It only modifies lines with "#" as the first non-blank character and therefore does not conflict with the normal C indentation. Unlike a true indent, it inserts the requisite number of spaces after, rather than before the "#" character. This type of preprocesor indent is commonly used to provide the most compatibility with different C-compilers.
 
 Example:
 
@@ -36,3 +36,5 @@ Two functions are provided: PPINDENT-C indents as described above. PPINDENT-H do
 
 You can customize PPINDENT-INCREMENT if you want to use something other than 2 spaces for the indent.
 
+----
+CategoryIndentation CategoryProgramming
