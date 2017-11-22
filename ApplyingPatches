@@ -11,5 +11,26 @@ And also DiffMode and [[Ediff]] are well documented for Emacs.
  
 See also InstallingPackages
 
+//
+
+To interactively apply a patch file, bit by bit, using Diff Mode in Emacs:
+* Get your patch file (e.g., output from 'diff') with relative pathnames.
+* Open that file in Emacs.
+* Do *M-xdiff-mode* to get into Diff Mode.
+* Do *M-n* to get to the first hunk.
+* Do *C-cC-a* to "apply" the hunk.  At this point Emacs assumes that the pathnames in the diff apply from the same directory that the patch file was opened.  But it prompts, and the path can be edited to indicate the file you wish to actually patch.
+* Continue to *C-cC-a* to apply following hunks.  If/when you get to a hunk from another file, the modified path prefix is used so that files are found in the new place.
+* At the end save your modified files.
+
+Diff Mode can be used to selectively _remove_ changes from a file.  This can be if you have already applied a patch.  It can also be with respect to revision control, when you want to selectively back out some recently committed changes.  In that case a patch can be provided by the revision control tool, or from the Emacs \*vc-change-log\* buffer if using VC mode in Emacs.
+* Get your patch file that applies to the file(s) you will edit.
+* Open the patch file in Emacs.
+* Do *M-xdiff-mode* to get into Diff Mode.
+* Do *M-n* to get to the first hunk.
+* Here, if you do *C-cC-a* (apply hunk), you will see "Hunk already applied."
+* If you wish to back out the change in this hunk, do *C-uC-cC-a* to "un-apply" the hunk.
+* Continue as desired.
+
+
 ----
 CategoryPatches
