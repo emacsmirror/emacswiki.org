@@ -75,36 +75,49 @@ See also [https://github.com/nonsequitur/smex/pull/4 Update smex after function 
 === Using acronyms ===
 You can see mnemonical commands (within completion) before the others with this code snippet:
 {{{
-;;; Filters ido-matches setting acronynm matches in front of the results
 (defadvice ido-set-matches-1 (after ido-smex-acronym-matches activate)
-  (if (and (fboundp 'smex-already-running) (smex-already-running)
-           (> (length ido-text) 1))
+  "Filters ITEMS by setting acronynms first."
+  (if (and (fboundp 'smex-already-running) (smex-already-running) (> (length ido-text) 1))
+
+      ;; We use a hash table for the matches, <type> => <list of items>, where
+      ;; <type> can be one of (e.g. `ido-text' is "ff"):
+      ;; - strict: strict acronym match (i.e. "^f[^-]*-f[^-]*$");
+      ;; - relaxed: for relaxed match (i.e. "^f[^-]*-f[^-]*");
+      ;; - start: the text start with (i.e. "^ff.*");
+      ;; - contains: the text contains (i.e. ".*ff.*");
       (let ((regex (concat "^" (mapconcat 'char-to-string ido-text "[^-]*-")))
-            (acronym-matches (list))
-            (remove-regexes '("-menu-")))
-        ;; Creating the list of the results to be set as first
+            (matches (make-hash-table :test 'eq)))
+
+        ;; Filtering
         (dolist (item items)
-          (if (string-match ido-text item) ;; exact match
-              (add-to-list 'acronym-matches item)
-            (if (string-match (concat regex "[^-]*$") item) ;; strict match
-                (add-to-list 'acronym-matches item)
-              (if (string-match regex item) ;; appending relaxed match
-                  (add-to-list 'acronym-matches item t)))))
+          (let ((key))
+            (cond
+             ;; strict match
+             ((string-match (concat regex "[^-]*$") item)
+              (setq key 'strict))
 
-        ;; Filtering ad-return-value
-        (dolist (to_remove remove-regexes)
-          (setq ad-return-value
-                (delete-if (lambda (item)
-                             (string-match to_remove item))
-                           ad-return-value)))
+             ;; relaxed match
+             ((string-match regex item)
+              (setq key 'relaxed))
 
-        ;; Creating resulting list
-        (setq ad-return-value
-              (append acronym-matches
-                      ad-return-value))
+             ;; text that start with ido-text
+             ((string-match (concat "^" ido-text) item)
+              (setq key 'start))
 
-        (delete-dups ad-return-value)
-        (reverse ad-return-value))))
+             ;; text that contains ido-text
+             ((string-match ido-text item)
+              (setq key 'contains)))
+
+            (when key
+              ;; We have a winner! Update its list.
+              (let ((list (gethash key matches ())))
+                (puthash key (push item list) matches)))))
+
+        ;; Finally, we can order and return the results
+        (setq ad-return-value (append (gethash 'strict matches)
+                                      (gethash 'relaxed matches)
+                                      (gethash 'start matches)
+                                      (gethash 'contains matches))))))
 }}}
 e.g. <b>without</b> this code the completion of 'ffow' shows:
 <pre>
