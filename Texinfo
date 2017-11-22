@@ -3,6 +3,8 @@
 * http://www.gnu.org/software/texinfo/
 * TexinfoManual - In particular, read the chapter about TexinfoMode.
 * http://www.linuxjournal.com/article/2840
+* http://lists.gnu.org/archive/html/emacs-devel/2017-11/msg00525.html - "Texinfo 101" by EliZaretskii.
+
 
 See TexinfoMode for help when working with Texinfo in Emacs.
 
