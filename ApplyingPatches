@@ -15,7 +15,7 @@ See also InstallingPackages
 
 To interactively apply a patch file, bit by bit, using Diff Mode in Emacs:
 * Get your patch file (e.g., output from 'diff') with relative pathnames.
-* Open that file in Emacs.
+* Open the patch file in Emacs.
 * Do *M-xdiff-mode* to get into Diff Mode.
 * Do *M-n* to get to the first hunk.
 * Do *C-cC-a* to "apply" the hunk.  At this point Emacs assumes that the pathnames in the diff apply from the same directory that the patch file was opened.  But it prompts, and the path can be edited to indicate the file you wish to actually patch.
