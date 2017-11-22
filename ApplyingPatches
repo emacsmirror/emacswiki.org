@@ -22,7 +22,7 @@ To interactively apply a patch file, bit by bit, using Diff Mode in Emacs:
 * Continue to *C-cC-a* to apply following hunks.  If/when you get to a hunk from another file, the modified path prefix is used so that files are found in the new place.
 * At the end save your modified files.
 
-Diff Mode can be used to selectively _remove_ changes from a file.  This can be if you have already applied a patch.  It can also be with respect to revision control, when you want to selectively back out some recently committed changes.  In that case a patch can be provided by the revision control tool, or this can be done from the Emacs %%*vc-change-log*%% buffer (which is already in Diff Mode) if using VC mode in Emacs.
+Diff Mode can be used to selectively _remove_ changes from a file.  This can be if you have already applied a patch.  It can also be with respect to revision control, when you want to selectively back out some recently committed changes.  In that case a patch can be provided by the revision control tool, or this can be done from the Emacs %%*vc-diff*%% buffer (which is already in Diff Mode) if using VC mode in Emacs.
 * Get your patch file that applies to the file(s) you will edit.
 * Open the patch file in Emacs.
 * Do *M-xdiff-mode* to get into Diff Mode.
