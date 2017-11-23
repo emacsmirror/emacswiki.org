@@ -14,39 +14,6 @@ http://github.com/nonsequitur/smex/blob/master/smex.el?raw=true
 http://github.com/nonsequitur/smex/
 
 == Customization/Hacks ==
-=== Delayed Initiation ===
-
-I install smex with the following code to make emacs startup a little faster.  This delays initializing smex until it's needed.  IMO, smex should load without this hack.  Just have smex call 'smex-initialize' when it's needed instead of having the user do it. --LeWang
-
-{{{
-(global-set-key [(meta x)] (lambda ()
-                             (interactive)
-                             (or (boundp 'smex-cache)
-                                 (smex-initialize))
-                             (global-set-key [(meta x)] 'smex)
-                             (smex)))
-
-(global-set-key [(shift meta x)] (lambda ()
-                                   (interactive)
-                                   (or (boundp 'smex-cache)
-                                       (smex-initialize))
-                                   (global-set-key [(shift meta x)] 'smex-major-mode-commands)
-                                   (smex-major-mode-commands)))
-
-}}}
-
-[new:targzeta:2014-02-17 21:18 UTC]
-
-You can also use:
-{{{
-;;; Smex
-(autoload 'smex "smex"
-  "Smex is a M-x enhancement for Emacs, it provides a convenient interface to
-your recently and most frequently used commands.")
-
-(global-set-key (kbd "M-x") 'smex)
-}}}
-
 === Hyphen on Space ===
 How to modify smex so that typing a space will insert a hyphen ‘-’ like in normal M-x?
 {{{
