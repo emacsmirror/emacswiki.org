@@ -42,7 +42,7 @@ See also [https://github.com/nonsequitur/smex/pull/4 Update smex after function 
 === Using acronyms ===
 You can see mnemonical commands (within completion) before the others with this code snippet:
 {{{
-(defadvice ido-set-matches-1 (after ido-smex-acronym-matches activate)
+(defadvice ido-set-matches-1 (around ido-smex-acronym-matches activate)
   "Filters ITEMS by setting acronynms first."
   (if (and (fboundp 'smex-already-running) (smex-already-running) (> (length ido-text) 1))
 
@@ -84,7 +84,10 @@ You can see mnemonical commands (within completion) before the others with this 
         (setq ad-return-value (append (gethash 'strict matches)
                                       (gethash 'relaxed matches)
                                       (gethash 'start matches)
-                                      (gethash 'contains matches))))))
+                                      (gethash 'contains matches))))
+
+    ;; ...else, run the original ido-set-matches-1
+    ad-do-it))
 }}}
 e.g. <b>without</b> this code the completion of 'ffow' shows:
 <pre>
@@ -94,4 +97,7 @@ e.g. <b>without</b> this code the completion of 'ffow' shows:
 <pre>
 { find-file-other-window | find-function-other-window | ediff-show-registry ...
 </pre>
+
+See also [https://github.com/nonsequitur/smex/pull/73 smex with acronyms]
+
 [[targzeta]]
