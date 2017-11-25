@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 23 21:45:10 2017 (-0700)
+;; Last-Updated: Sat Nov 25 09:45:11 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 10432
+;;     Update #: 10437
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -719,6 +719,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/11/25 dadams
+;;     diredp-nb-marked-in-mode-name: Wrap last :eval sexp in save-excursion.
+;;                                    Protect Call dired-current-directory only when dired-subdir-alist.
 ;; 2017/10/23 dadams
 ;;     Added: diredp-count-.-and-..-flag, diredp--reuse-dir-buffer-helper.
 ;;     Removed: diredp-mouse-find-file.
@@ -10019,26 +10022,27 @@ Also abbreviate `mode-name', using \"Dired/\" instead of \"Dired by\"."
                                           ""))
                                       nb-flagged)
                               'face 'diredp-mode-line-flagged))))
-                  (:eval (let ((this    0)
-                               (total   0)
-                               (o-pt    (line-beginning-position))
-                               (e-pt    (or (condition-case nil
-                                                (let ((diredp-wrap-around-flag  nil))
-                                                  (save-excursion
-                                                    (diredp-next-subdir 1)
-                                                    (line-beginning-position)))
-                                              (error nil))
-                                            (save-excursion (goto-char (point-max)) (line-beginning-position)))))
-                           (dired-goto-subdir (dired-current-directory))
-                           (while (and (<= (point) e-pt)
-                                       (< (point) (point-max))) ; Hack to work around an Emacs display-engine bug.
-                             (when (condition-case nil
-                                       (dired-get-filename nil diredp-count-.-and-..-flag)
-                                     (error nil))
-                               (when (<= (line-beginning-position) o-pt) (setq this  (1+ this)))
-                               (setq total  (1+ total)))
-                             (forward-line 1))
-                           (if (not (> this 0)) (format " %d" total) (format " %d/%d" this total))))))))))
+                  (:eval (save-excursion
+                           (let ((this   0)
+                                 (total  0)
+                                 (o-pt   (line-beginning-position))
+                                 (e-pt   (or (condition-case nil
+                                                 (let ((diredp-wrap-around-flag  nil))
+                                                   (save-excursion
+                                                     (diredp-next-subdir 1)
+                                                     (line-beginning-position)))
+                                               (error nil))
+                                             (save-excursion (goto-char (point-max)) (line-beginning-position)))))
+                             (when dired-subdir-alist (dired-goto-subdir (dired-current-directory)))
+                             (while (and (<= (point) e-pt)
+                                         (< (point) (point-max))) ; Hack to work around an Emacs display-engine bug.
+                               (when (condition-case nil
+                                         (dired-get-filename nil diredp-count-.-and-..-flag)
+                                       (error nil))
+                                 (when (<= (line-beginning-position) o-pt) (setq this  (1+ this)))
+                                 (setq total  (1+ total)))
+                               (forward-line 1))
+                             (if (not (> this 0)) (format " %d" total) (format " %d/%d" this total)))))))))))
 
   (add-hook 'dired-after-readin-hook 'diredp-nb-marked-in-mode-name)
   ;; This one is needed for `find-dired', because it does not call `dired-readin'.
