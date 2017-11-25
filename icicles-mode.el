@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
-;; Last-Updated: Wed Jul 26 08:20:50 2017 (-0700)
+;; Last-Updated: Sat Nov 25 09:13:54 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 10289
+;;     Update #: 10292
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mode.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -27,10 +27,10 @@
 ;;   `fuzzy-match', `help+20', `hexrgb', `highlight', `icicles-cmd1',
 ;;   `icicles-cmd2', `icicles-fn', `icicles-mcmd', `icicles-opt',
 ;;   `icicles-var', `image-dired', `image-file', `info', `info+20',
-;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
-;;   `misc-fns', `mouse3', `mwheel', `naked', `package', `pp', `pp+',
-;;   `regexp-opt', `ring', `second-sel', `strings', `subr-21',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `isearch+', `kmacro', `levenshtein', `menu-bar', `menu-bar+',
+;;   `misc-cmds', `misc-fns', `mouse3', `mwheel', `naked', `package',
+;;   `pp', `pp+', `regexp-opt', `ring', `second-sel', `strings',
+;;   `subr-21', `thingatpt', `thingatpt+', `unaccent', `w32-browser',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3431,11 +3431,12 @@ Usually run by inclusion in `minibuffer-setup-hook'."
     (run-hooks 'icicle-minibuffer-setup-hook)))
 
 (defun icicle-last-non-minibuffer-buffer ()
-  "Return the most recently used non-minibuffer buffer."
-  (if (fboundp 'minibufferp)            ; Emacs 22+
-      (let ((bufs  (icicle-remove-if 'minibufferp (buffer-list))))
-        (or (car bufs)  (car (buffer-list))))
-    (cadr (buffer-list))))              ; Punt - but could be just a higher-level minibuffer.
+  "Return the most recently used non-minibuffer live buffer."
+  (let ((live-bufs  (icicle-remove-if (lambda (buf) (not (buffer-live-p buf))) (buffer-list))))
+    (if (fboundp 'minibufferp)          ; Emacs 22+
+        (let ((bufs  (icicle-remove-if 'minibufferp live-bufs)))
+          (or (car bufs)  (car live-bufs)))
+      (cadr live-bufs))))               ; Punt - but could be just a higher-level minibuffer.
 
 (defun icicle-define-cycling-keys (map)
   "Define keys for cycling candidates.
