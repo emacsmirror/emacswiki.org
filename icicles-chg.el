@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Oct 29 16:52:30 2017 (-0700)
+;; Last-Updated: Sat Nov 25 09:13:05 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 11739
+;;     Update #: 11740
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6454,6 +6454,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2017/11/25 dadams
+;;     icicle-last-non-minibuffer-buffer: Exclude killed buffers.
 ;; 2017/06/25 dadams
 ;;     icicle-options-toggle-menu-map: Added icicle-toggle-completion-mode-keys.
 ;; 2017/04/09 dadams
