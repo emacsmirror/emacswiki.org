@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Oct 27 14:14:47 2017 (-0700)
+;; Last-Updated: Mon Nov 27 15:04:44 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 16354
+;;     Update #: 16364
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2017/11/27 dadams
+;;     bookmark-write-file:
+;;       Corrected change made on 2017/01/10 (fix for bug #25365).
+;;       Bind Lisp mode hooks to nil, to avoid inserting a Lisp file header for existing empty file.
+;; 2017/10/31 dadams
+;;     bookmark-send-edited-annotation: test using following-char, not bmkp-looking-at-p.
+;;     bookmark-save: Non-nil FILE now means use FILE, regardless of PARG value.
 ;; 2017/10/08 dadams
 ;;     bmkp-bookmark-description, bmkp-describe-bookmark-internals:
 ;;       Bind print-(circle|length|level) so pp-to-string prints all.
