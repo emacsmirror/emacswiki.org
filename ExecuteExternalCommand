@@ -100,7 +100,7 @@ Alternatively, you can use the package Dizzee at [[https://github.com/davidmille
 
 == Executing external programs as their own process ==
 
-* Using ##shell-command## runs the app as a child, even when done asynchronously
+* Using ##shell-command## runs the program as a child, even when done asynchronously
 * ##start-process## also runs as a child process
 
 Both commands result in the child process being killed when emacs is shutdown. For a command to have the ability to stay alive past that point you'll need to use ##call-process## to start the program as its own distinct process.
