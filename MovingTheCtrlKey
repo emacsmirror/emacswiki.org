@@ -4,7 +4,7 @@ This page explains how to move the Control key. Some users find that this can he
 But note that some users find that doing this <i>causes</i> Emacs pinky because you're extending your left pinky to hit Ctrl all the time. Better to keep the standard layout and press the Ctrl keys on either side of the keyboard with either the tip of your pinky (fan out your fingers and rotate your wrist toward the center of your body), your pinky fingernail (curl it under) or the knuckle at the base of the pinky (open your hand and slam it down). Get used to them all; the first word in RepeatedStrainInjury is Repeated.
 
 == Introduction ==
-For some, swapping Control and CapsLock is very important; the virtually useless CapsLock is far easier to press Control, crucial to Emacs yet really awkwardly located.
+For some, swapping Control and CapsLock is very important; the virtually useless CapsLock is far easier to press than Control, crucial to Emacs yet really awkwardly located.
 
 == GNU/Linux ==
 
