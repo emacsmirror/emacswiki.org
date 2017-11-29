@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Wed Nov 29 15:00:51 2017 (-0800)
+;; Last-Updated: Wed Nov 29 15:18:32 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 29992
+;;     Update #: 29998
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc2.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2622,6 +2622,11 @@
 ;;  things you can do in Dired.  In addition, be aware also of the
 ;;  other direction: during file-name completion you can use `M-|' to
 ;;  open all of the matching files in a Dired buffer.
+;;
+;;  See also (@> "Open Dired for a Set of File and Dir Names"), below,
+;;  which opens Dired for a set of file names that you have saved
+;;  (persistently or not) during Icicles completion.  That lets you
+;;  reuse the same set of file names multiple times for Dired.
 ;;
 ;;  Icicles can help with Dired in these ways:
 ;;
