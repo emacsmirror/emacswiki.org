@@ -6,6 +6,10 @@
 
 == Icicles Dired Enhancements ==
 
+This page describes enhancements to [[Dired]] behavior, that is,
+things you can do in Dired.  In addition, be aware also of the other direction: ''during
+file-name completion you can use '''`##M-|##'''' to open all of the matching
+files in a Dired buffer.''
 
 '''Icicles''' can help with DiredMode in these ways:
 
