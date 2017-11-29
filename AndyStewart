@@ -262,7 +262,7 @@ git clone https://github.com/manateelazycat/deepin-emacs
 
 * Programming:
 
-** Lisp:init-rtags.el -- Configure for rtags.
+** Lisp:init-rtags.el -- Configure for [https://github.com/Andersbakken/rtags rtags]
 ** Lisp:init-golang.el -- Configure for [http://golang.org/ golang]
 ** Lisp:init-qt.el -- Configure for Qt/C++.
 
