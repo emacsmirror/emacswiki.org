@@ -11,6 +11,8 @@ things you can do in Dired.  In addition, be aware also of the other direction: 
 file-name completion you can use '''`##M-|##'''' to open all of the matching
 files in a Dired buffer.''
 
+See also [[#OpenDiredOnSavedFiles]], below, which opens Dired for a set of file names that you have [[#SaveFilesAsCandidates|saved]] (persistently or not) during '''Icicles''' completion.  That lets you reuse the same set of file names multiple times for Dired.
+
 '''Icicles''' can help with DiredMode in these ways:
 
 * Commands `dired' and `dired-other-window' are [[multi-command]]s.
