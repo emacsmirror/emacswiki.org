@@ -86,7 +86,7 @@ The code is loosely based on code on the AutoPairs page:
 
 == ParEdit, ElDoc, Show-Paren and "Electric RETURN" ==
 
-Here's a '''[http://img8.imageshack.us/img8/9479/openparen.gif short video demonstration]'''
+Here's a '''[https://web.archive.org/web/20121024123050/http://img8.imageshack.us/img8/9479/openparen.gif]'''
 of %%ParEdit%% working with %%ElDoc%% and %%Show-Paren%% minor modes along with the electric ##RETURN## function defined above.
 
 Adding this code to your <tt>[InitFile .emacs]</tt> will set the modes as in the video: 
