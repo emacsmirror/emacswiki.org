@@ -120,17 +120,21 @@ Save in /etc/init.d/emacs
 ### END INIT INFO
 
 #change this
-USERNAME=YourUserName
+#USERNAME=YourUserName
+USERNAME=`id 1000 -un`
 eval USERHOME=~$USERNAME
 DESC="Run the emacs daemon."
 NAME=emacs
 #change this
-DAEMON=/opt/emacs23/bin/$NAME
+#DAEMON=/opt/emacs23/bin/$NAME
+DAEMON=`which emacs`
 DAEMON_ARGS="--daemon"
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 #change this
-EMACSCLIENT=/opt/emacs23/bin/emacsclient
+#EMACSCLIENT=/opt/emacs23/bin/emacsclient
+EMACSCLIENT=`which emacsclient`
+
 EVALEXIT="(progn (kill-emacs))"
 
 # Exit if the package is not installed
