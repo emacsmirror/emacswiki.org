@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Nov 25 23:14:49 2017 (-0800)
+;; Last-Updated: Sun Dec  3 15:54:34 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 8572
+;;     Update #: 8583
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: http://www.emacswiki.org/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -1733,7 +1733,7 @@ Use that function to update the value.")
 ;; Doc string reflects `Bookmark+' enhancements.
 ;;
 (put 'bookmark-alist 'variable-documentation
-     "Association list of bookmarks and their records.
+     "Current list of bookmarks (bookmark records).
 Bookmark functions update the value automatically.
 You probably do not want to change the value yourself.
 
@@ -1742,10 +1742,9 @@ The value is an alist with entries of the form
 or the deprecated form (BOOKMARK-NAME PARAM-ALIST).
 
  BOOKMARK-NAME is the name you gave to the bookmark when creating it.
- PARAM-ALIST is an alist of bookmark information.  The order of the
-  entries in PARAM-ALIST is not important.  The possible entries are
-  described below.  An entry with a key but null value means the entry
-  is not used.
+ PARAM-ALIST is an alist of bookmark data.  The order of the entries
+  in PARAM-ALIST is not important.  The possible entries are described
+  below.
 
 Bookmarks created using vanilla Emacs (`bookmark.el'):
 
