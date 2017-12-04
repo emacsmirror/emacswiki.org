@@ -37,7 +37,7 @@ You can also use the cl-parsing-keywords (cl--parsing-keywords in newer Emacsen)
    "`foobar' takes keyword arguments of :foo and :bar like this:
   (foobar :foo 23)
   (foobar :bar 42)"
-   (cl-parsing-keywords ((:foo nil) (:bar nil)) nil
+   (cl--parsing-keywords ((:foo nil) (:bar nil)) nil
      (format "cl-foo is %S and cl-bar is %S" cl-foo cl-bar)))
 
 '''See Also:''' [http://ccrma.stanford.edu/courses/220b/cltl/clm/node64.html] ''Common Lisp the Language'' for more on keyword parameters.
