@@ -1,52 +1,45 @@
-[h2]Warning[/h2]
+Some CommonLisp functions and macros can be used in EmacsLisp programs.  
+For GNU Emacs version 24.3 and above, just add the following to your program:
 
-This article is outdated. The elisp manual now clearly states new coding conventions:
+    (require 'cl-lib)
 
-<pre>
-If you need Common Lisp extensions, use the cl-lib library rather than the old cl library. The latter does not use a clean namespace (i.e., its definitions do not start with a ‘cl-’ prefix). If your package loads cl at run time, that could cause name clashes for users who don't use that package.
+For earlier GNU Emacs and XEmacs, `cl-lib.el' can be downloaded from GNU ELPA: https://elpa.gnu.org/packages/cl-lib.html
 
-There is no problem with using the cl package at compile time, with (eval-when-compile (require 'cl)). That's sufficient for using the macros in the cl package, because the compiler expands them before generating the byte-code. It is still better to use the more modern cl-lib in this case, though. 
-</pre>
-
-so please *require cl-lib, not cl* !!!
-
-----------------------------------------
-
-Some CommonLisp functions and macros can be used in EmacsLisp programs.
-
-It is already loaded when you start XEmacs.  For GNU Emacs, you need to add the following to your ~/.emacs file:
-
-    (require 'cl)
-
-There is a separate InfoMode manual for this package.  See Info node (cl).  Some
+There is a separate InfoMode manual for this package.  See [[https://www.gnu.org/software/emacs/manual/html_node/cl/ Info node (cl)]].  Some
 aspects of EmacsLisp can't be changed or emulated transparently: you
-don't get packages, you don't get lexical scoping unless you
-ask for it with `lexical-let', you don't get keyword arguments unless
-you define your function with `defun*' and so on.  See the Info node
-(cl)Common Lisp Compatibility.
+don't get packages, you don't get LexicalBinding unless you
+ask for it with <code>-*- lexical-binding: t -*-</code>, you don't get KeywordArguments unless
+you define your function with `cl-defun' and so on.  See the Info node
+[[https://www.gnu.org/software/emacs/manual/html_node/cl/Common-Lisp-Compatibility.html Common Lisp Compatibility]] (cl).
 
-Here are some things extending <code>cl.el</code>,
+Here are some things extending <code>cl-lib.el</code>,
 
-* ArrayExtension -- for <code>cl-array.el</code> multi-dimensional arrays
-* struct+.el / defstruct+.el -- enhancing <code>defstruct</code> (gone?)
 * [http://user42.tuxfamily.org/cl-loop-aplist/index.html cl-loop-aplist.el] -- <code>loop</code> over alists and plists
 * If you want to highlighting cl functions for coding conventions, you
 can use Lisp:highlight-cl.el package.
+* ArrayExtension -- for <code>cl-array.el</code> multi-dimensional arrays
+** NOTE: This works with the older cl.el, and will define the functions in the global namespace, not the `cl-*' one.
 
-Packages distributed within GNU Emacs don't use cl at runtime (on account of its size, and potential future namespace clashes), only via byte-compiled macros (see the introduction to the cl manual on this).[http://lists.gnu.org/archive/html/emacs-devel/2007-09/msg01472.html]  That doesn't mean you must avoid cl altogether if you aspire to get code into Emacs, indeed major packages like CcMode and [[Gnus]] happily use cl; just ensure it's only through macro forms (such as `push', `setf', `defun*', `loop').  The easiest way to do that is
+=== Usage of cl.el in older Emacs ===
 
-  (eval-when-compile (require 'cl))
+As noted above, GNU Emacs earlier than 24.3 and XEmacs don't come with cl-lib.el.  They instead have cl.el which provides the same functions, but is somewhat problematic as it defines them in the global namespace rather than prefixing with `cl-'.  See [[Manual:Coding Conventions]] (elisp):
 
-instead of
-  
-  (require 'cl)
+<pre>
+   • If you need Common Lisp extensions, use the ‘cl-lib’ library rather
+     than the old ‘cl’ library.  The latter does not use a clean
+     namespace (i.e., its definitions do not start with a ‘cl-’ prefix).
+     If your package loads ‘cl’ at run time, that could cause name
+     clashes for users who don’t use that package.
 
-The <code>eval-when-compile</code> gets cl loaded when compiling, and the macros expand at that time, leaving no reference to cl in the <code>.elc</code> (if only macros forms are used).  If running uncompiled cl is loaded, but that's ok since there are currently no technical issues.
+     There is no problem with using the ‘cl’ package at _compile_ time,
+     with ‘(eval-when-compile (require 'cl))’.  That’s sufficient for
+     using the macros in the ‘cl’ package, because the compiler expands
+     them before generating the byte-code.  It is still better to use
+     the more modern ‘cl-lib’ in this case, though.
+</pre>
 
+----
 EmacsCommonLisp is (or will soon be) a full implementation of CommonLisp.
-
-[new:XueFuqiao:2012-12-29 14:02 UTC]
-CL's main entry has been (require 'cl-lib) since GNU Emacs 24.3. -- XueFuqiao
 
 ----
 CategoryCode
