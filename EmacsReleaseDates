@@ -249,6 +249,9 @@ Calendar is unable to compute the date of its own final release".
 # Emacs 23 released on 2009-07-29 (179 days in pretest)
 # First pretest for Emacs 24 released on 2011-09-25 [http://lists.gnu.org/archive/html/emacs-devel/2011-09/msg00613.html]
 # Emacs 24 released on 2012-06-10 (260 days in pretest)
+# First pretest for Emacs 25 released on 2016-01-30 [http://lists.gnu.org/archive/html/emacs-devel/2016-01/msg01745.html]
+# Emacs 25 released on 2016-09-17 (245 days in pretest)
+# First pretest for Emacs 26 released on 2017-10-11 [http://lists.gnu.org/archive/html/emacs-devel/2017-10/msg00408.html]
 # ...
 
 ----
