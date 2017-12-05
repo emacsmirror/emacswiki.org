@@ -29,15 +29,14 @@ In this case, the comparison function `equal' will override the default comparis
 
 * In CommonLisp, you can supply any comparison function for ##:test## -- it need not be one of those that are mentioned above as predefined for `make-hash-table': `eq', `eql', and `equal'. This is also true for Emacs-Lisp's  `make-hash-table', but in that case you will need to use `define-hash-table-test' to define your own key-comparison function for hash tables. In the usual case, you can just use `defun' to define a comparison function.
 
+You can also use `cl-defun' from [CommonLispForEmacs `cl-lib'] to define functions which take keywords:
 
-You can also use the cl-parsing-keywords (cl--parsing-keywords in newer Emacsen) as defined in the common lisp compatibility library in Emacs:
-
-
- (defun foobar (&rest cl-keys)
-   "`foobar' takes keyword arguments of :foo and :bar like this:
-  (foobar :foo 23)
-  (foobar :bar 42)"
-   (cl--parsing-keywords ((:foo nil) (:bar nil)) nil
-     (format "cl-foo is %S and cl-bar is %S" cl-foo cl-bar)))
+{{{
+(cl-defun foobar (&key foo bar)
+  "`foobar' takes keyword arguments of :foo and :bar like this:
+\(foobar :foo 23)
+\(foobar :bar 42)"
+  (format "foo is %S and bar is %S" foo bar))
+}}}
 
 '''See Also:''' [http://ccrma.stanford.edu/courses/220b/cltl/clm/node64.html] ''Common Lisp the Language'' for more on keyword parameters.
