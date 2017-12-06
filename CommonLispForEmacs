@@ -1,11 +1,17 @@
 Some CommonLisp functions and macros can be used in EmacsLisp programs.  
-For GNU Emacs version 24.3 and above, just add the following to your program:
+For GNU Emacs version 24.3 and above, you can just add the following to your program:
 
     (require 'cl-lib)
 
-For earlier GNU Emacs and XEmacs, `cl-lib.el' can be downloaded from GNU ELPA: https://elpa.gnu.org/packages/cl-lib.html
+For earlier GNU Emacs and XEmacs, `##cl-lib.el##' can be downloaded from GNU ELPA: https://elpa.gnu.org/packages/cl-lib.html
 
-There is a separate InfoMode manual for this package.  See [[https://www.gnu.org/software/emacs/manual/html_node/cl/ Info node (cl)]].  Some
+There is a separate InfoMode manual for library `##cl-lib.el##'.  See [[https://www.gnu.org/software/emacs/manual/html_node/cl/ Info node (cl)]]. 
+
+If you need only Common Lisp macros, that is, you do not need any Common Lisp functions at runtime, then you can just require library `##cl-lib.el##' (or library `##cl.el##') a compile time, like this:
+
+    (eval-when-compile (require 'cl-lib))
+
+Some
 aspects of EmacsLisp can't be changed or emulated transparently: you
 don't get packages, you don't get LexicalBinding unless you
 ask for it with <code>-*- lexical-binding: t -*-</code>, you don't get KeywordArguments unless
