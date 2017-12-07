@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Wed Jul 26 08:19:26 2017 (-0700)
+;; Last-Updated: Wed Dec  6 16:00:54 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1274
+;;     Update #: 1275
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -118,6 +118,7 @@
 (defvar icicle-buffer-completing-p)
 (defvar icicle-file-completing-p)
 (defvar icicle-inhibit-try-switch-buffer)
+(defvar icomplete-mode)                 ; In `icomplete.el'
 (defvar read-file-name-completion-ignore-case)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
