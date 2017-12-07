@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sat Nov 25 09:13:05 2017 (-0800)
+;; Last-Updated: Wed Dec  6 15:48:51 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 11740
+;;     Update #: 11741
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2017/12/07 dadams
+;;     icicle-find-file-no-search-1: Bind icicle-pref-arg before prompt.
 ;; 2017/08/11 dadams
 ;;     icicle-file-of-content-apropos-complete-match: Corrected for dir matching with no content input.
 ;; 2017/06/25 dadams
