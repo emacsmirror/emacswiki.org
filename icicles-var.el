@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Wed Jul 26 08:21:37 2017 (-0700)
+;; Last-Updated: Wed Dec  6 16:02:18 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1881
+;;     Update #: 1882
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-var.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -23,9 +23,9 @@
 ;;   `ffap-', `fit-frame', `frame-fns', `fuzzy', `fuzzy-match',
 ;;   `help+20', `hexrgb', `icicles-opt', `info', `info+20', `kmacro',
 ;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `naked', `package', `pp', `pp+', `regexp-opt', `second-sel',
-;;   `strings', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `naked', `package', `pp', `pp+', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -214,6 +214,7 @@
 (require 'icicles-opt) ;; icicle-kbd, icicle-sort-comparer
 
 ;;; Defvars to quiet byte-compiler:
+(defvar icomplete-mode)                 ; In `icomplete.el'
 (defvar kmacro-ring-max)                ; Defined in `kmacro.el' in Emacs 22+.
 (defvar minibuffer-confirm-exit-commands) ; Defined in `minibuffer.el' in Emacs 23+.
 (defvar minibuffer-local-filename-completion-map)
