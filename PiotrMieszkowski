@@ -21,7 +21,7 @@ Things I find very useful:
 * OccurMode, hi-lock
 * DeskTop
 * SavePlace
-* Anything (esp. when used with custom extensions!)
+* [[Anything]] (esp. when used with custom extensions!)
 
 Two of these, while used together, allow you to make your Emacs the best environment you could ever try. DeskTop saves lists of buffers with files associated to them across Emacs sessions and SavePlace saves your [[Point]] across sessions. Why remember which files you were editing, if Emacs could do it for you? :)
 
