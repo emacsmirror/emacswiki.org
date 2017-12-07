@@ -1,12 +1,14 @@
 : ''Is it possible to edit encrypted files from inside Emacs? I'd like to keep a file encrypted on disk, and even better, never have the decrypted parts swapped out to disk. Has this already been done? --ShaeErisson''
 
-There are a few solutions for this.
+There are a few solutions for this listed below; note that among them, EasyPG is the only one which is bundled with Emacs and is a supported part of current Emacs releases.
 
 == EasyPG Assistant ==
 
 EasyPG is an all-in-one !GnuPG interface for Emacs. It has two aspects: convenient tools which allow to use !GnuPG from Emacs (!EasyPG Assistant), and a fully functional interface library to !GnuPG (!EasyPG Library).
 
-This library worked out of the box for me. In contrast to most other approaches discussed here, easy-pg does not change the major mode. 
+EasyPG disables auto-save by default, and does not write unencrypted contents to disk.
+
+This library worked out of the box for me. In contrast to most other approaches discussed here, easy-pg does not change the major mode.
 
 EasyPG Assistant is bundled with Emacs since version 23.1; it handles gpg encrypted files out-of-the-box so (my) mc-gpg-file-mode is now obsolete.
 
@@ -115,6 +117,7 @@ Now, simply open a file you want to encrypt and save (C-x C-w) with "cpt" extens
 
 * The AllOut outline mode that comes with Emacs 22.1 supports encryption of topics.
 ** It will also trash non-ASCII text.
+* Similarly, OrgMode (which handles outlines and much more), also bundled with Emacs 22.1, supports encryption of specific entries.  It uses EasyPG.
 
 ----
 CategoryFiles CategoryCryptography
