@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Oct 22 14:06:28 2017 (-0700)
+;; Last-Updated: Wed Dec  6 16:00:12 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 15240
+;;     Update #: 15241
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -24,9 +24,9 @@
 ;;   `fuzzy-match', `help+20', `hexrgb', `icicles-opt',
 ;;   `icicles-var', `info', `info+20', `kmacro', `levenshtein',
 ;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `naked',
-;;   `package', `pp', `pp+', `regexp-opt', `second-sel', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `package', `pp', `pp+', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -524,6 +524,7 @@
 (defvar icicle-Info-index-nodes)        ; In `icicles-cmd2.el'
 (defvar icicle-Info-manual)             ; In `icicles-cmd2.el'
 (defvar icicle-read-char-history)       ; In `icicles-var.el' for Emacs 23+.
+(defvar icomplete-mode)                 ; In `icomplete.el'
 (defvar image-dired-thumb-height)       ; In `image-dired.el'.
 (defvar image-dired-thumb-width)        ; In `image-dired.el'.
 (defvar last-repeatable-command)        ; Defined in `repeat.el'.
