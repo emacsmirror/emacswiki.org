@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Fri Aug 11 10:06:06 2017 (-0700)
+;; Last-Updated: Wed Dec  6 16:15:40 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 27536
+;;     Update #: 27541
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -24,12 +24,12 @@
 ;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `flx',
 ;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `help+20',
 ;;   `hexrgb', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `image-dired', `info', `info+20', `kmacro',
-;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mouse3', `mwheel', `naked', `package', `pp', `pp+',
-;;   `regexp-opt', `ring', `second-sel', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `icicles-var', `image-dired', `info', `info+20', `isearch+',
+;;   `kmacro', `levenshtein', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `mouse3', `mwheel', `naked', `package', `pp', `pp+',
+;;   `ring', `second-sel', `strings', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -641,6 +641,7 @@
 (defvar icicle-custom-themes-update-flag) ; In `icicles-opt.el' (Emacs 24+)
 (defvar icicle--last-toggle-transforming-msg) ; Here
 (defvar icicle-window-alist)            ; In `icicle-select-window'
+(defvar icomplete-mode)                 ; In `icomplete.el'
 (defvar lexical-binding)                ; Emacs 24+
 (defvar locate-make-command-line)       ; In `locate.el'
 (defvar proced-signal-list)             ; In `proced.el' (Emacs 23+)
@@ -8411,9 +8412,8 @@ toggle this hiding using `\\[icicle-dispatch-C-x.]'."
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ;Emacs 23.
   nil nil
   (icicle-file-bindings                 ; Bindings
-   ((prompt                             (concat "File or directory" (and icicle-pref-arg
-                                                                         " (read-only)") ": "))
-    (icicle-pref-arg                    current-prefix-arg)
+   ((icicle-pref-arg                    current-prefix-arg)
+    (prompt                             (concat "File or directory" (and icicle-pref-arg  " (read-only)") ": "))
     (icicle-all-candidates-list-alt-action-fn ; `M-|'
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
