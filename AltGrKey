@@ -105,5 +105,13 @@ Esc-Ctrl-@, for example, will work for this on every platform. (Aidan Kehoe, Mon
 Unfortunately it will not work at all if you are using Viper.
 And you have the same problem with Alt Gr here.
 
+[new]
+-----
+On Linux, if you don't need AltGr, you can remap it to Alt for use in text-mode Emacs by using the loadkeys command. For Example:
+    
+    # loadkeys /usr/share/kbd/keymaps/i386/qwerty/uk.map.gz /usr/share/kbd/keymaps/i386/include/linux-with-two-alt-keys.inc
 
+This sets the keymap to UK, including a file mapping AltGr to Alt.
+Alternatively, for a more permanent change, edit your existing keymap file and add:
 
+    keycode 100 = Alt
