@@ -7,9 +7,11 @@ Something like this:
 
 Where `python-mode' is a function that is either AutoLoad""ed or already defined.
 
-Note that ##\'## matches the end of a string, where as ##$## matches the empty string before a newline.
+Note that ##\'## matches the end of a string, whereas ##$## matches the empty string before a newline.
 Thus, ##$## may lead to unexpected behavior when dealing with filenames containing newlines.
-(Should be pretty rare...  ;))
+(Should be pretty rare...  ;)) 
+
+The ##\.## matches '.' (a period); '.' must be escaped by a backslash because the period is a special character in Regular Expressions. 
 
 If you write your own major mode that associate with a file extension,
 here is what you do:
@@ -28,7 +30,7 @@ to figure out what file this will be.  The last parameter says that
 foo-mode is interactive.  Most major modes are.
 
 The add-to-list expression associates the .foo extension with foo-mode.
-The ##\\'## matches the end of the filename; a $ would match newlines within
+As mentioned above, the ##\\'## matches the end of the filename; a $ would match newlines within
 filenames (true, this should be rare...  ;)).
 
 == Recipes ==
