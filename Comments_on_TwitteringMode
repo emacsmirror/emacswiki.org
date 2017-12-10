@@ -269,7 +269,7 @@ I'm facing same issue < cannot display icons with exit-status 23(curl).
 
 ----
 
-I have the same problem wrt curl error. It's due some change in curl v7.55 [https://www.reddit.com/r/emacs/comments/7irnst/twittering_mode_curl_errors/].
+I have the same problem wrt curl error. It's due a change in curl v7.55 [https://www.reddit.com/r/emacs/comments/7irnst/twittering_mode_curl_errors/].
 
 A simple fix is to change the program which fetches contents from internet, i.e. use /wget/ instead of /curl/ customizing /twittering-connection-type-order/ variable.
 
