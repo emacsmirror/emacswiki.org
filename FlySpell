@@ -273,7 +273,7 @@ and put this in your init file:
       '(progn
          (fset 'flyspell-emacs-popup 'flyspell-emacs-popup-textual)))
 </pre>
-Now calling "flyspell-correct-word-before-point" or middle-clicking a word will create a textual popup.
+Now calling "flyspell-correct-word-before-point" or middle-clicking a word will create a textual popup. When working from the terminal, this will prevent the dreaded "This command requires pop-up dialogs" error.
 
 == Automatically displaying a textual popup in a terminal while using the usual emacs menu in the GUI ==
 [new]
