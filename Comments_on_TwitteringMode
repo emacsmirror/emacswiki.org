@@ -275,5 +275,5 @@ A simple fix is to change the program which fetches contents from internet, i.e.
 
 Something like this could suffice: <code>(setq twittering-connection-type-order '(wget curl urllib-http native urllib-https))</code>
 
--- IñigoSerna 2017-12-10 13:08 UTC
+-- InigoSerna 2017-12-10 13:08 UTC
 
