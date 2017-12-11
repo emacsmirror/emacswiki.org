@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Sun Dec 10 21:35:33 2017 (-0800)
+;; Last-Updated: Sun Dec 10 22:54:14 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1284
+;;     Update #: 1285
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -342,7 +342,7 @@ created after the others."
         (if (eq 'use-default icicle-buffer-prefix-arg-filtering)
             (if (not icicle-pref-arg)
                 (buffer-list)
-              (cond ((and (consp icicle-pref-arg)  (eq icicle-pref-arg '-)) ; `C--', modified
+              (cond ((eq icicle-pref-arg '-) ; `C--', modified
                      (icicle-remove-if (lambda (bf) (not (buffer-modified-p bf))) (buffer-list)))
                     ((and (consp icicle-pref-arg)
                           (> (prefix-numeric-value icicle-pref-arg) 16)) ; `C-u C-u C-u', invisible
