@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Wed Dec  6 15:48:51 2017 (-0800)
+;; Last-Updated: Sun Dec 10 21:59:48 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 11741
+;;     Update #: 11785
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2017/12/10 dadams
+;;     icicle-buffer-name-prompt: Added new case: plain minus (-) for modified buffers.
+;;     icicle-default-buffer-names:
+;;       Use icicle-bufflist only if consp.  Emacs < 23: first name (not buffer) of icicle-bufflist.
+;;     icicle-buffer-multi-complete: Use icicle-bufflist only if listp.
 ;; 2017/12/07 dadams
 ;;     icicle-find-file-no-search-1: Bind icicle-pref-arg before prompt.
 ;; 2017/08/11 dadams
@@ -2285,7 +2290,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
-; 2017/10/22 dadams
+;; 2017/12/10 dadams
+;;     icicle-read-buffer: If icicle-buffer-complete-fn is nil use icicle-bufflist if it is a list.
+;; 2017/10/22 dadams
 ;;    icicle-frames-on: Remove (unused) second arg.
 ;; 2017/09/17 dadams
 ;;     icicle-special-candidate-p:
@@ -4391,6 +4398,12 @@
 ;;       macros needs to be byte-compiled anew after loading the updated macros.
 ;; ****************************************************************************************************
 ;;
+;; 2017/12/10 dadams
+;;     icicle-buffer-bindings:
+;;       Bind icicle-pref-arg and use it, not current-prefix-arg.
+;;       Do not bind icicle-buffer-complete-fn (prevented prefix-arg filtering in icicle-kill-buffer).
+;;       Added case for prefix arg = -, for modified buffers.
+;;       For non use-default case, corrected to use cadr, not cdr (not dotted).
 ;; 2015/01/21 dadams
 ;;     icicle-define-sort-command: Removed extra %s in call to message.
 ;; 2014/11/07 dadams
@@ -7778,6 +7791,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2017/12/10 dadams
+;;     icicle-buffer-prefix-arg-filtering: Updated doc string for modified case (-).
 ;; 2017/06/25 dadams
 ;;     icicle-Completions-toggle-submenu: Added: icicle-toggle-completion-mode-keys.
 ;;     icicle-completion-key-bindings: Bind icicle-toggle-completion-mode-keys to C-S-TAB.
@@ -8745,6 +8760,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2017/12/10 dadams
+;;     icicle-bufflist:
+;;        Changed default value to a non-list, to distinguish from () when this is not used.
+;;     icicle-bufflist, icicle-buffer-complete-fn: Improved doc strings.
 ;; 2017/06/25 dadams
 ;;     icicle-toggle-map: Bind TAB to icicle-toggle-completion-mode-keys.
 ;;     icicle-kmacro-alist, icicle-kmacro-history, icicle-saved-kmacro-ring-max: Soft-require kmacro.el
@@ -9221,10 +9240,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2017/12/10 dadams
+;;     Version 2017.12.10.
 ;; 2017/07/26 dadams
-;;     Version 2017.07.26
+;;     Version 2017.07.26.
 ;; 2017/07/07 dadams
-;;     Version 2017.07.07
+;;     Version 2017.07.07.
 ;; 2016/12/21 dadams
 ;;     Version 2016.12.21.
 ;; 2016/06/12 dadams
