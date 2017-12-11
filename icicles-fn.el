@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Wed Dec  6 16:00:12 2017 (-0800)
+;; Last-Updated: Sun Dec 10 19:28:58 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 15241
+;;     Update #: 15243
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1963,8 +1963,10 @@ This binds variable `icicle-buffer-name-input-p' to non-nil."
                                 'internal-complete-buffer) ; Emacs 22+
                                (icicle-buffer-complete-fn)
                                (t
-                                (mapcar (lambda (buf) (and (buffer-live-p buf)  (list (buffer-name buf))))
-                                        (buffer-list))))
+                                (if (listp 'icicle-bufflist)
+                                    icicle-bufflist
+                                  (mapcar (lambda (buf) (and (buffer-live-p buf)  (list (buffer-name buf))))
+                                          (buffer-list)))))
                          nil require-match nil 'buffer-name-history default nil)))))
 
 
