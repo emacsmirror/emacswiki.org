@@ -16,11 +16,12 @@ prefix argument that matters  Candidates are only the buffers that
 satisfy these conditions:
 
 * '''Plain `C-u'''': whose ''[[major mode|mode]]'' is ''derived'' from the current buffer mode
-* '''`C-u C-u'''' ('''double'''): ''visible'' (possibly in an iconified frame)
+* '''`C-u C-u'''' ('''double'''): are ''visible'' (possibly in an iconified frame)
 * '''`C-u C-u C-u'''' ('''triple'''): ''invisible''
-* '''Zero:''' whose ''mode'' is the ''same'' as the current buffer mode
-* '''Positive:''' visiting ''files''
-* '''Negative:''' associated with the selected ''[[frame]]''
+* '''`-'''' (plain `-'): are modified (unsaved)
+* '''= 0''': whose ''mode'' is the ''same'' as the current buffer mode
+* '''> 0''': are visiting ''files''
+* '''< 0''' (and '''not''' plain `-'): are associated with the selected ''[[frame]]''
 
 Those are the default behaviors, but you can change them using
 [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-prefix-arg-filtering|icicle-buffer-prefix-arg-filtering]]</tt>'''' 
