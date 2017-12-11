@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
-;; Last-Updated: Wed Dec  6 16:00:54 2017 (-0800)
+;; Last-Updated: Sun Dec 10 21:35:33 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1275
+;;     Update #: 1284
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mac.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -288,9 +288,11 @@ created after the others."
   ;; in later Emacs releases.
   `,(append
      pre-bindings
-     `((icicle-buffer-name-input-p                  t) ; But must also be non-nil for non multi-commands.
-       (icicle-buffer-complete-fn                   (and (fboundp 'internal-complete-buffer)
-                                                     'internal-complete-buffer))
+     `((icicle-pref-arg                             current-prefix-arg)
+       (icicle-buffer-name-input-p                  t) ; But must also be non-nil for non multi-commands.
+       ;; Do NOT bind `icicle-buffer-complete-fn'.
+       ;; (icicle-buffer-complete-fn                   (and (fboundp 'internal-complete-buffer)
+       ;;                                                   'internal-complete-buffer))
        (completion-ignore-case                      (or (and (boundp 'read-buffer-completion-ignore-case)
                                                          read-buffer-completion-ignore-case)
                                                      completion-ignore-case))
@@ -338,35 +340,37 @@ created after the others."
         (or icicle-all-candidates-list-alt-action-fn  (icicle-alt-act-fn-for-type "buffer")))
        (icicle-bufflist
         (if (eq 'use-default icicle-buffer-prefix-arg-filtering)
-            (if (not current-prefix-arg)
+            (if (not icicle-pref-arg)
                 (buffer-list)
-              (cond ((and (consp current-prefix-arg)
-                          (> (prefix-numeric-value current-prefix-arg) 16)) ; `C-u C-u C-u'
+              (cond ((and (consp icicle-pref-arg)  (eq icicle-pref-arg '-)) ; `C--', modified
+                     (icicle-remove-if (lambda (bf) (not (buffer-modified-p bf))) (buffer-list)))
+                    ((and (consp icicle-pref-arg)
+                          (> (prefix-numeric-value icicle-pref-arg) 16)) ; `C-u C-u C-u', invisible
                      (icicle-remove-if (lambda (bf) (get-buffer-window bf 0)) (buffer-list)))
-                    ((and (consp current-prefix-arg)
-                          (> (prefix-numeric-value current-prefix-arg) 4)) ; `C-u C-u'
+                    ((and (consp icicle-pref-arg)
+                          (> (prefix-numeric-value icicle-pref-arg) 4)) ; `C-u C-u', visible
                      (icicle-remove-if-not (lambda (bf) (get-buffer-window bf 0)) (buffer-list)))
-                    ((and (consp current-prefix-arg)  (fboundp 'derived-mode-p)) ; `C-u'
+                    ((and (consp icicle-pref-arg)  (fboundp 'derived-mode-p)) ; `C-u', derived mode
                      (icicle-remove-if-not (lambda (bf)
                                              (derived-mode-p (with-current-buffer bf major-mode)))
                                            (buffer-list)))
-                    ((zerop (prefix-numeric-value current-prefix-arg)) ; `C-0'
+                    ((zerop (prefix-numeric-value icicle-pref-arg)) ; `C-0', same mode
                      (let ((this-mode  major-mode))
                        (icicle-remove-if-not `(lambda (bf)
                                                (with-current-buffer bf (eq major-mode ',this-mode)))
                                              (buffer-list))))
-                    ((< (prefix-numeric-value current-prefix-arg) 0) ; `C--'
+                    ((< (prefix-numeric-value icicle-pref-arg) 0) ; `C-- 1', same frame
                      (cdr (assq 'buffer-list (frame-parameters))))
-                    (t                  ; `C-1'
+                    (t                  ; `C-1', file or directory
                      (icicle-remove-if-not (lambda (bf)
                                              (or (buffer-file-name bf)
                                                  (with-current-buffer bf (eq major-mode 'dired-mode))))
                                            (buffer-list)))))
           (catch 'icicle-buffer-bindings
             (dolist (entry  icicle-buffer-prefix-arg-filtering)
-              (when (funcall (car entry) current-prefix-arg)
+              (when (funcall (car entry) icicle-pref-arg)
                 (throw 'icicle-buffer-bindings
-                  (if (cdr entry) (icicle-remove-if (cdr entry) (buffer-list)) (buffer-list)))))
+                  (if (cadr entry) (icicle-remove-if (cadr entry) (buffer-list)) (buffer-list)))))
             (buffer-list))))
        (icicle-bufflist
         (icicle-remove-if
