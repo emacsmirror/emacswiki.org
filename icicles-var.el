@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
-;; Last-Updated: Wed Dec  6 16:02:18 2017 (-0800)
+;; Last-Updated: Sun Dec 10 19:09:11 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1882
+;;     Update #: 1885
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-var.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -313,12 +313,18 @@ are equivalent and stand for the set of all bookmarks (of any type).")
 
 (defvar icicle-buffer-complete-fn nil
   "If the value is non-nil then it is a buffer-name completion function.
-The function is used as the COLLECTION argument to `completing-read'.
+The function is used by `icicle-read-buffer' as the COLLECTION
+argument to `completing-read'.
 
 However, if the value is `internal-complete-buffer' then it is used
 only if `icicle-buffer-ignore-space-prefix-flag' is non-nil.
 
-Otherwise, all buffer names are used as candidates.")
+Most Icicles predefined commands that read buffer names bind this to
+function `icicle-buffer-multi-complete'.
+
+If the value is nil then:
+* If `icicle-bufflist' is a list of buffers then it is used.
+* Otherwise, the list of all buffer names is used.")
 
 (defvar icicle-buffer-config-history nil "History for buffer configuration names.")
 
@@ -328,8 +334,17 @@ Otherwise, all buffer names are used as candidates.")
 (defvar icicle-buffer-sort-first-time-p t
   "Non-nil means buffer-name completion has not yet been used.")
 
-(defvar icicle-bufflist nil
-  "List of buffers defined by macro `icicle-buffer-bindings'.")
+(defvar icicle-bufflist 'icicle-bufflist--NOT-A-LIST
+  "List of buffers used as completion candidates for `icicle-read-buffer'.
+Bound usually by macro `icicle-buffer-bindings'.
+
+Used in commands such as `icicle-buffer' that let you filter the list
+of buffer-name candidates on the fly.  You can customize the keys and
+commands used for such filtering -- see option
+`icicle-buffer-candidate-key-bindings'.
+
+If the value is not a list then all buffer names are used as
+completion candidates.")
 
 (defvar icicle-candidate-action-fn nil
   "Action function to apply to current completion candidate.
