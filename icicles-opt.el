@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Sun Dec 10 21:17:30 2017 (-0800)
+;; Last-Updated: Sun Dec 10 22:45:43 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 6200
+;;     Update #: 6203
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -1174,9 +1174,7 @@ provides the same behavior as value `use-default' (but it is slower):
       (null cpa))
     nil)                                          ; Any (no filtering)
 
-   ((lambda (cpa)                                 ; `-'
-      (and (consp cpa)
-           (> (prefix-numeric-value cpa) 64)))
+   ((lambda (cpa) (and (consp cpa)  (eq cpa '-))) ; `-'
     (lambda (bf) (not (buffer-modified-p bf))))   ; Modified (unsaved)
 
    ((lambda (cpa)                                 ; `C-u C-u C-u'
