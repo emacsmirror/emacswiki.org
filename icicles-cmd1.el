@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Wed Dec  6 16:15:40 2017 (-0800)
+;; Last-Updated: Sun Dec 10 21:44:45 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 27541
+;;     Update #: 27565
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7019,6 +7019,8 @@ ACTION is the command action, a string.  It starts the prompt.
 Non-nil OTHER-WINDOW-P appends \" in other window\" to the prompt."
   (concat  (cond ((null current-prefix-arg)
                   (format "%s buffer" action))
+                 ((eq current-prefix-arg '-) ; `-'
+                  (format "%s modified buffer" action))
                  ((and (consp current-prefix-arg)  (> (prefix-numeric-value current-prefix-arg) 16)) ; 3 `C-u'
                   (format "%s invisible buffer" action))
                  ((and (consp current-prefix-arg)  (> (prefix-numeric-value current-prefix-arg) 4)) ; `C-u C-u'
@@ -7027,7 +7029,7 @@ Non-nil OTHER-WINDOW-P appends \" in other window\" to the prompt."
                   (format "%s buffer with same or ancestor mode" action))
                  ((zerop (prefix-numeric-value current-prefix-arg)) ; `C-0'
                   (format "%s buffer with same mode" action))
-                 ((< (prefix-numeric-value current-prefix-arg) 0) ; `C--'
+                 ((< (prefix-numeric-value current-prefix-arg) 0) ; `C-- 1'
                   (format "%s buffer for same frame" action))
                  (t                     ; `C-1'
                   (format "%s file buffer" action)))
@@ -7183,8 +7185,7 @@ the behavior."                          ; Doc string
     (icicle-apropos-complete-match-fn       nil)
     (icicle-last-apropos-complete-match-fn  'icicle-buffer-apropos-complete-match)
     ;; `icicle-bufflist' is FREE here.
-    (icicle-bufflist                        (setq icicle-bufflist
-                                                  (delete icicle-orig-buff icicle-bufflist)))))
+    (icicle-bufflist                        (setq icicle-bufflist  (delete icicle-orig-buff icicle-bufflist)))))
   (progn (icicle-bind-buffer-candidate-keys)
          (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
          (icicle-highlight-lighter)
@@ -7213,14 +7214,14 @@ completion candidates:
 
 In any case, the current buffer is always excluded."
   (if (< emacs-major-version 23)
-      (let ((bname  (buffer-name (if (fboundp 'another-buffer) ; In `misc-fns.el'.
-                                     (another-buffer nil t)
-                                   (other-buffer (current-buffer))))))
-        (if (and icicle-bufflist  (not (member bname icicle-bufflist)))
-            (car icicle-bufflist)
-          bname))
+      (let* ((bname    (buffer-name (if (fboundp 'another-buffer) ; In `misc-fns.el'.
+                                        (another-buffer nil t)
+                                      (other-buffer (current-buffer)))))
+             (ibnames  (and (consp icicle-bufflist)  (mapcar #'buffer-name icicle-bufflist))))
+        (if (or (not ibnames)  (member bname ibnames)) bname (car ibnames)))
     ;; Emacs 23 accepts a list of default values.  ; Just keep the first 4.  (This could be an option.)
-    (let ((bfnames  (mapcar #'buffer-name (delete (current-buffer) (or icicle-bufflist  (buffer-list))))))
+    (let ((bfnames  (mapcar #'buffer-name (delete (current-buffer)
+                                                  (if (consp icicle-bufflist) icicle-bufflist (buffer-list))))))
       (when icicle-buffer-ignore-space-prefix-flag
         (setq bfnames  (icicle-remove-if (lambda (bfname) (icicle-string-match-p "^ " bfname)) bfnames)))
       (let ((six  (icicle-first-N 6 bfnames)))
@@ -7286,7 +7287,8 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                  (concat "^" (regexp-quote name-pat))))
                  (content-pat  (let ((icicle-list-use-nth-parts  '(2)))
                                  (icicle-transform-multi-completion strg)))
-                 (bufs         (delq nil (mapcar (lambda (buf) (buffer-name buf)) icicle-bufflist)))
+                 (bufs         (delq nil (mapcar #'buffer-name
+                                                 (if (listp icicle-bufflist) icicle-bufflist (buffer-list)))))
                  (bufs         (if icicle-buffer-ignore-space-prefix-flag
                                    (icicle-remove-if (lambda (buf) (icicle-string-match-p "^ " buf)) bufs)
                                  bufs))
@@ -7312,7 +7314,7 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                                 ;; Bound in `icicle-visit-marked-file-of-content-1'.
                                                 (IGNORE  (unless (memq (setq buf  (get-buffer buf))
                                                                        icicle-existing-bufs)
-                                                          (add-to-list 'icicle-new-bufs-to-kill buf)))
+                                                           (add-to-list 'icicle-new-bufs-to-kill buf)))
                                                 (found   (with-current-buffer buf
                                                            (save-excursion
                                                              (goto-char (point-min))
