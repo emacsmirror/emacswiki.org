@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2017.07.26
+;; Version: 2017.12.10
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jul 26 08:22:24 2017 (-0700)
+;; Last-Updated: Sun Dec 10 21:58:31 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 23714
+;;     Update #: 23716
 ;; URL: https://www.emacswiki.org/emacs/download/icicles.el
 ;; Doc URL: https://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -29,9 +29,9 @@
 ;;   `fuzzy-match', `help+20', `hexrgb', `highlight', `icicles-cmd1',
 ;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
 ;;   `icicles-mode', `icicles-opt', `icicles-var', `image-dired',
-;;   `image-file', `info', `info+20', `kmacro', `levenshtein',
-;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mouse3',
-;;   `mwheel', `naked', `package', `pp', `pp+', `regexp-opt', `ring',
+;;   `image-file', `info', `info+20', `isearch+', `kmacro',
+;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
+;;   `mouse3', `mwheel', `naked', `package', `pp', `pp+', `ring',
 ;;   `second-sel', `strings', `subr-21', `thingatpt', `thingatpt+',
 ;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
 ;;   `wid-edit+', `widget'.
