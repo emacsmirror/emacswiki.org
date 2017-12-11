@@ -378,9 +378,11 @@ As far as i know that space under the numbers is the "default" face and there is
 
 
 == Linum: highlight the current line number ==
-[[https://gist.github.com/targzeta/b3e463753b4f1fb8a7f5 linum-highligth-current-line-number.el]] implements a little function to highlight the current line number with a customizable face (linum group).
+[[https://github.com/targzeta/linum-highlight-current-line-number linum-highligth-current-line-number]] implements a little function to highlight the current line number with a customizable face (linum group).
 
 [[image:linum-highlight-current-line]]
+
+[[targzeta]]
 
 == Linum: fix margins when font is scaled ==
 [new:PabloMachon:2015-10-18 19:50 CEST]
