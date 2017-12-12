@@ -7144,6 +7144,8 @@ You can use these additional keys during completion:
 * `C-x C-m -' Remove candidate buffers whose mode is derived from a
               given mode.  Repeatable.  (`C-m' = `RET'.)
 * `C-x C-m +' Keep only buffers in a mode derived from a given mode.
+* `C-x * -'   Remove buffers that are modified (unsaved)
+* `C-x * +'   Keep only buffers that are modified (unsaved)
 * `C-x v -'   Remove buffers that are visible (maybe iconified).
 * `C-x v +'   Keep only buffers that are visible (maybe iconified).
 * `\\[icicle-delete-candidate-object]'  Kill the buffer named by a completion candidate.
