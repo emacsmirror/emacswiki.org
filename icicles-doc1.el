@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Sun Dec 10 21:51:35 2017 (-0800)
+;; Last-Updated: Tue Dec 12 11:01:43 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 28621
+;;     Update #: 28627
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -8277,9 +8277,21 @@
 ;;    C-x b C-M-j toto      ; Match buffer contents against `toto'
 ;;    C-x b foo C-M-j toto  ; Match both buffer name and contents
 ;;
+;;  (Options `icicle-buffer-include-cached-files-nflag' and
+;;  `icicle-buffer-include-recent-files-nflag' have no effect on
+;;  command `icicle-kill-buffer'.  Its candidates are only existing
+;;  buffer names.)
+;;
 ;;  You can use option `icicle-buffer-skip-functions' to specify
 ;;  patterns for buffer names to exclude from content-searching when
 ;;  you provide a content-matching pattern to `icicle-buffer'.
+;;
+;;  Remember that you can use all of the usual Icicles multi-command
+;;  keys.  In particular, you can use `C-!' to act on all matching
+;;  buffers.  So for example, you can use `C-x k'
+;;  (`icicle-kill-buffer'), filter buffer-name candidates in various
+;;  ways (including progressive completion), and then use `C-!' to
+;;  kill all of the remaining candidate buffers.
 ;;
 ;;  In addition to the usual Icicles key bindings, during buffer-name
 ;;  completion you can use additional keys, which are defined by
