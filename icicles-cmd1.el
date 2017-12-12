@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Sun Dec 10 21:44:45 2017 (-0800)
+;; Last-Updated: Tue Dec 12 10:44:55 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 27565
+;;     Update #: 27577
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -6989,18 +6989,20 @@ want this remapping, then customize option
       (icicle-remove-Completions-window)
     (if bufferp (icicle-delete-windows) (delete-window))))
 
+
+(put 'icicle-kill-buffer 'icicle-Completions-window-max-height 200)
 (icicle-define-command icicle-kill-buffer ; Bound to `C-x k' in Icicle mode.
-  "Kill a buffer.
+  "Kill a buffer, matching its name, its content, or both.
 See `icicle-buffer' for more information, including about buffer-name
-completion candidates, default values, and additional key bindings.
+completion candidates, default values, the use of a prefix argument,
+and additional key bindings for filtering and acting on candidates.
 
 By default, Icicle mode remaps all key sequences that are normally
 bound to `kill-buffer' to `icicle-kill-buffer'.  If you do not want
 this remapping, then customize option
 `icicle-top-level-key-bindings'."       ; Doc string
   icicle-kill-a-buffer-and-update-completions ; Action function
-  (icicle-buffer-name-prompt "Kill")    ; `completing-read' args
-  (mapcar (lambda (buf) (list (buffer-name buf))) icicle-bufflist) nil ; `icicle-bufflist' is free here.
+  prompt 'icicle-buffer-multi-complete nil ; `completing-read' args
   (and (fboundp 'confirm-nonexistent-file-or-buffer)  (confirm-nonexistent-file-or-buffer)) ; Emacs 23.
   nil 'buffer-name-history (if (< emacs-major-version 23)
                                (buffer-name (current-buffer))
@@ -7008,8 +7010,23 @@ this remapping, then customize option
                                    (icicle-default-buffer-names current-prefix-arg)))
   nil
   (icicle-buffer-bindings               ; Bindings
-   ((icicle-use-candidates-only-once-flag  t)))
-  (icicle-bind-buffer-candidate-keys)   ; First code
+   ((prompt                                 (icicle-buffer-name-prompt "Kill"))
+    (icicle-use-candidates-only-once-flag   t)
+    (icicle-show-multi-completion-flag      t) ; Override user setting.
+    (icicle-multi-completing-p              t)
+    (icicle-list-use-nth-parts              '(1))
+    (icicle-candidate-help-fn               'icicle-buffer-cand-help))
+   ((icicle-buffer-complete-fn              'icicle-buffer-multi-complete)
+    ;; Bind `icicle-apropos-complete-match-fn' to nil to prevent automatic input matching in
+    ;; `icicle-unsorted-apropos-candidates' etc., because `icicle-buffer-multi-complete' does everything.
+    (icicle-apropos-complete-match-fn       nil)
+    (icicle-last-apropos-complete-match-fn  'icicle-buffer-apropos-complete-match)
+    ;; `icicle-bufflist' is FREE here.
+    (icicle-bufflist                        (setq icicle-bufflist  (delete icicle-orig-buff icicle-bufflist)))))
+  (progn (icicle-bind-buffer-candidate-keys)
+         (put-text-property 0 1 'icicle-fancy-candidates t prompt) ; First code
+         (icicle-highlight-lighter)
+         (message "Matching buffer contents..."))
   nil                                   ; Undo code
   (icicle-unbind-buffer-candidate-keys)) ; Last code
 
@@ -7098,13 +7115,15 @@ The buffer-name portion of completion candidates is as follows,
 depending on the prefix arg:
 
 * No prefix arg: all buffers
-* Numeric arg > 0: buffers visiting files or directories (Dired)
-* Numeric arg < 0: buffers associated with the selected frame
-* Numeric arg = 0: buffers with the same mode as the current buffer
 * Plain prefix arg (`C-u'): buffers with the same mode as current,
   or with a mode that the current mode is derived from
 * Double plain (`C-u C-u'): visible buffers (possibly iconified)
 * Triple plain (`C-u C-u C-u'): invisible buffers
+* Plain `-': buffers that have been modifed (unsaved)
+* Numeric arg = 0: buffers with the same mode as the current buffer
+* Numeric arg < 0 (and not plain `-'): buffers associated with the
+  selected frame
+* Numeric arg > 0: buffers visiting files or directories (Dired)
 
 Those are the default prefix-argument behaviors, but you can change
 them using option `icicle-buffer-prefix-arg-filtering'.
