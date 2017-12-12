@@ -38,9 +38,22 @@ matches buffer content.  So for example:
 
 : '''##C-x b##'''## f o o ##'''##C-M-j##'''## t o t o## -> Match both buffer name and contents
 
-You can use [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-skip-functions|icicle-buffer-skip-functions]]</tt>'''' to specify patterns
+
+([[option|Options]] '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-cached-files-nflag|icicle-buffer-include-cached-files-nflag]]</tt>'''' and
+'''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-include-recent-files-nflag|icicle-buffer-include-recent-files-nflag]]</tt>'''' have no effect on
+command `icicle-kill-buffer'.  Its candidates are only existing
+buffer names.)
+
+You can use option '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-skip-functions|icicle-buffer-skip-functions]]</tt>'''' to specify patterns
 for buffer names to exclude from content-searching when you
 provide a content-matching pattern to `icicle-buffer'.
+
+Remember that you can use all of the usual Icicles multi-command
+keys.  In particular, you can use '''`##C-!##'''' to ''act on all'' matching
+buffers.  So for example, you can use `C-x k'
+(`icicle-kill-buffer'), filter buffer-name candidates in various
+ways (including [[progressive completion]]), and then use `##C-!##' to
+kill all of the remaining candidate buffers.
 
 
 In addition to the usual '''Icicles''' key bindings, during buffer-name
