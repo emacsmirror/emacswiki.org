@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Sun Dec 10 21:59:48 2017 (-0800)
+;; Last-Updated: Tue Dec 12 10:42:26 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 11785
+;;     Update #: 11791
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -85,6 +85,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2017/12/12 dadams
+;;     icicle-kill-buffer: Use icicle-buffer behavior: multi-completions, filtering keys, etc.
+;;                         Put icicle-Completions-window-max-height 200.
+;;     icicle-buffer-multi-complete: Use icicle-buffer-easy-files only if bound.
 ;; 2017/12/10 dadams
 ;;     icicle-buffer-name-prompt: Added new case: plain minus (-) for modified buffers.
 ;;     icicle-default-buffer-names:
