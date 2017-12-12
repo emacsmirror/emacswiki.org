@@ -211,6 +211,12 @@ If you're trying to use MS SQL Server in sql-mode, and the Microsoft command-lin
 
 Another option for users lacking access to osql/isql is sqsh, another Java-based command-line SQL client. The primary advantage to sqsh is that it is in the Debian/Ubuntu repositories (I can't speak for Fedora, etc.) making it easier to install. When using sqsh to connect to SQL Server, use M-x sql-sybase, not sql-ms. Otherwise, Emacs won't pass the right command-line parameters and it won't connect.
 
+[new]
+I wrote a Python utility that is a drop in replacement for sqlcmd/osql as far as SQLi is concerned. You can find it in https://github.com/sebasmonia/sqlcmdline. It uses ODBC so in theory should work in platforms other than Windows.
+customize-group SQL, change Sql Ms Program to "/path/to/sqlcmdline" (or compiled/batch if under Windows), and for Emacs up to version 25 you still need to fix the prompt-regex as mentioned below.
+
+-- SebastianMonia
+
 ----
 The different command line terminals that come with MS SQL server can give you
 some troubles:
@@ -330,7 +336,7 @@ Starts `sql-interactive-mode' after doing some setup."
   :group 'SQL)
 }}}
 
-Again, I saw in the sql.el comments that there are ways to configure the tool, etc. without actually touching the file, but since I was already fiddling with the file, that's how I got it working.
+Again, I saw in the sql.el comments that there are ways to configure the tool, etc. without actually touching the file, but since I was already fiddling with it, that's how I got it working.
 
 -- SebastianMonia
 
