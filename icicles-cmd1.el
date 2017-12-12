@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Tue Dec 12 10:44:55 2017 (-0800)
+;; Last-Updated: Tue Dec 12 11:10:32 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 27577
+;;     Update #: 27580
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -7397,7 +7397,8 @@ Used as the value of `icicle-buffer-complete-fn' and hence as
                                            found)))
                                   filnames))))
     ;; `icicle-buffer-easy-files' is FREE here - bound in `icicle-buffer(-other-window)'.
-    (setq bufs  (append bufs (setq icicle-buffer-easy-files  filnames)))
+    (when (boundp 'icicle-buffer-easy-files)
+      (setq bufs  (append bufs (setq icicle-buffer-easy-files  filnames))))
     (cond ((and (eq 'metadata completion-mode)  (> emacs-major-version 23))
            '(metadata (category . buffer)))
           (completion-mode
