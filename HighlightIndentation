@@ -43,5 +43,9 @@ https://github.com/ran9er/init.emacs/blob/master/20_aux-line.el
 
 That link to ran9er's !GitHub repo seemed to have moved to [https://github.com/ran9er/init.emacs/blob/master/_lib/indent-hint.el indent-hint.el].
 
+[new]
+
+For a more complex approach, see [https://github.com/DarthFennec/highlight-indent-guides highlight-indent-guides]
+
 ----
 CategoryDisplay
