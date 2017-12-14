@@ -658,6 +658,23 @@ On very new versions of Wanderlust, setting ##process-connection-type## should n
 
 This depends on having a command, ##xdg-open##, that can deal with all types of files. This should be present on modern Linux desktops. I believe there is a similar command on a Mac.
 
+== Wanderlust is asking me all these questions about how to save (extract) an attachment! How do I make Wanderlust just save it? ==
+
+To stop Wanderlust from asking if you want to ##wl-mime-save-content## or ##mime-save-content##, try
+{{{
+
+;; Shut up, I just want to save the thing.
+(defun mime-preview-extract-current-entity (&optional ignore-examples)
+  "Extract current entity into file (maybe).
+It decodes current entity to call internal or external method as
+\"extract\" mode.  The method is selected from variable
+`mime-acting-condition'."
+  (interactive "P")
+  (cl-letf (((symbol-function #'mime-play-entity)
+             (lambda (entity &optional situation ignored-method)
+               (mime-save-content entity situation))))
+    (mime-preview-play-current-entity ignore-examples "extract")))
+}}}
 == See Also ==
 WanderLust
 
