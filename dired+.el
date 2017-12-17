@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov 25 09:45:11 2017 (-0800)
+;; Last-Updated: Sun Dec 17 14:34:23 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 10437
+;;     Update #: 10454
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -364,14 +364,13 @@
 ;;  `diredp-bind-problematic-terminal-keys'.
 ;;
 ;;  In particular, keys that use modifiers Meta and Shift together can
-;;  be problematic.  If you use Dired+ in terminal mode, and you find
-;;  that your terminal does not support such keys then you might want
-;;  to customize the option to set the value to `nil', and then bind
-;;  the commands to some other keys, which your terminal supports.
+;;  be problematic.  If you use Dired+ in text-only terminal, and you
+;;  find that your terminal does not support such keys, then you might
+;;  want to customize the option to set the value to `nil', and then
+;;  bind the commands to some other keys, which your terminal
+;;  supports.
 ;;  
-;;  Regardless of the option value, unless Emacs is in terminal mode
-;;  the keys are bound by default.  The problematic keys used by
-;;  Dired+ include these:
+;;  The problematic keys used by Dired+ include these:
 ;;
 ;;    `M-M'   (aka `M-S-m')   - `diredp-chmod-this-file'
 ;;    `M-O'   (aka `M-S-o')   - `diredp-chown-this-file'
@@ -387,7 +386,7 @@
 ;;    `M-+ C-M-T' (aka `M-+ C-M-S-t') - `diredp-do-touch-recursive'
 ;;
 ;;  (See also `(info "(org) TTY keys")' for more information about
-;;  keys that can be problematic in terminal mode.)
+;;  keys that can be problematic in a text-only terminal.)
 ;;
 ;;
 ;;  Faces defined here:
@@ -560,13 +559,12 @@
 ;;    `diredp-dired-plus-description',
 ;;    `diredp-dired-plus-description+links',
 ;;    `diredp-dired-plus-help-link', `diredp-dired-union-1',
-;;    `diredp-dired-union-interactive-spec',
-;;    `diredp-display-graphic-p', `diredp-display-image' (Emacs 22+),
-;;    `diredp-do-chxxx-recursive', `diredp-do-create-files-recursive',
-;;    `diredp-do-grep-1', `diredp-ensure-bookmark+',
-;;    `diredp-ensure-mode', `diredp-existing-dired-buffer-p',
-;;    `diredp-fewer-than-2-files-p', `diredp-fileset-1',
-;;    `diredp-find-a-file-read-args',
+;;    `diredp-dired-union-interactive-spec', `diredp-display-image'
+;;    (Emacs 22+), `diredp-do-chxxx-recursive',
+;;    `diredp-do-create-files-recursive', `diredp-do-grep-1',
+;;    `diredp-ensure-bookmark+', `diredp-ensure-mode',
+;;    `diredp-existing-dired-buffer-p', `diredp-fewer-than-2-files-p',
+;;    `diredp-fileset-1', `diredp-find-a-file-read-args',
 ;;    `diredp-file-for-compilation-hit-at-point' (Emacs 24+),
 ;;    `diredp-files-within', `diredp-files-within-1',
 ;;    `diredp-fit-frame-unless-buffer-narrowed' (Emacs 24.4+),
@@ -719,6 +717,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/12/17 dadams
+;;     Removed: diredp-display-graphic-p.
+;;     Do not use diredp-display-graphic-p to allow binding diredp-bind-problematic-terminal-keys by default.
 ;; 2017/11/25 dadams
 ;;     diredp-nb-marked-in-mode-name: Wrap last :eval sexp in save-excursion.
 ;;                                    Protect Call dired-current-directory only when dired-subdir-alist.
@@ -1852,10 +1853,10 @@ It also has no effect for Emacs versions prior to Emacs 22."
 
 ;;;###autoload
 (defcustom diredp-bind-problematic-terminal-keys t
-  "*Non-nil means bind some keys that might not work in terminal mode.
+  "*Non-nil means bind some keys that might not work in a text-only terminal.
 This applies to keys that use modifiers Meta and Shift together.
-If you use Emacs in terminal mode (`emacs -nw') and your terminal does
-not support the use of such keys then customize this option to nil."
+If you use Emacs in text-only terminal and your terminal does not
+support the use of such keys then customize this option to nil."
   :type 'boolean :group 'Dired-Plus)
 
 ;;;###autoload
@@ -2172,12 +2173,6 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
 (put 'diredp-with-help-window 'common-lisp-indent-function '(4 &body))
  
 ;;; Utility functions
-
-(if (fboundp 'display-graphic-p)        ; Emacs 22+
-    (defalias 'diredp-display-graphic-p 'display-graphic-p)
-  (defun diredp-display-graphic-p ()
-    "`display-graphic-p' for Emacs 22+.  `window-system' for older Emacs."
-    window-system))
 
 ;; Same as `tap-string-match-p' in `thingatpt+.el'.
 (if (fboundp 'string-match-p)
@@ -11464,7 +11459,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "\M-a"    'dired-do-search)                              ; `M-a'
 (define-key dired-mode-map "\M-b"    'diredp-do-bookmark)                           ; `M-b'
 (define-key dired-mode-map "\C-\M-b" 'diredp-set-bookmark-file-bookmark-for-marked) ; `C-M-b'
-(when (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys)
+(when diredp-bind-problematic-terminal-keys
   (define-key dired-mode-map [(control meta shift ?b)]                              ; `C-M-B' (aka `C-M-S-b')
     'diredp-do-bookmark-in-bookmark-file))
 (define-key dired-mode-map "\M-g"    'diredp-do-grep)                               ; `M-g'
@@ -11474,7 +11469,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "\M-q"    (if (< emacs-major-version 21)
                                          'dired-do-query-replace
                                        'dired-do-query-replace-regexp))             ; `M-q'
-(when (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys)
+(when diredp-bind-problematic-terminal-keys
   (define-key dired-mode-map [(control meta shift ?r)]                              ; `C-M-R' (aka `C-M-S-r')
     'diredp-toggle-find-file-reuse-dir))
 (define-key dired-mode-map "U"       'dired-unmark-all-marks)                       ; `U'
@@ -11538,24 +11533,22 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key dired-mode-map "b"       'diredp-byte-compile-this-file)        ; `b'
 (define-key dired-mode-map [(control shift ?b)] 'diredp-bookmark-this-file) ; `C-B'
 (define-key dired-mode-map "\M-c"    'diredp-capitalize-this-file)          ; `M-c'
-(when (and (fboundp 'diredp-chgrp-this-file)
-           (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys))
+(when (and (fboundp 'diredp-chgrp-this-file)  diredp-bind-problematic-terminal-keys)
   (define-key dired-mode-map [(control meta shift ?g)] 'diredp-chgrp-this-file)) ; `C-M-G' (aka `C-M-S-g')
 (define-key dired-mode-map "\M-i"    'diredp-insert-subdirs)                ; `M-i'
 (define-key dired-mode-map "\M-l"    'diredp-downcase-this-file)            ; `M-l'
 (define-key dired-mode-map "\C-\M-l" 'diredp-list-marked)                   ; `C-M-l'
-(when (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys)
+(when diredp-bind-problematic-terminal-keys
   (define-key dired-mode-map [(meta shift ?m)] 'diredp-chmod-this-file))    ; `M-M' (aka `M-S-m')
 (define-key dired-mode-map "\C-o"    'diredp-find-file-other-frame)         ; `C-o'
-(when (and (fboundp 'diredp-chown-this-file)
-           (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys))
+(when (and (fboundp 'diredp-chown-this-file)  diredp-bind-problematic-terminal-keys)
   (define-key dired-mode-map [(meta shift ?o)] 'diredp-chown-this-file))    ; `M-O' (aka `M-S-o')
 (define-key dired-mode-map "\C-\M-o" 'dired-display-file)                   ; `C-M-o' (not `C-o')
 (define-key dired-mode-map "\M-p"    'diredp-print-this-file)               ; `M-p'
 (define-key dired-mode-map "r"       'diredp-rename-this-file)              ; `r'
 (when (fboundp 'image-dired-dired-display-image)
   (define-key dired-mode-map "\C-tI"   'diredp-image-show-this-file))       ; `C-t I'
-(when (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys)
+(when diredp-bind-problematic-terminal-keys
   (define-key dired-mode-map [(meta shift ?t)] 'diredp-touch-this-file)     ; `M-T' (aka `M-S-t')
   (define-key dired-mode-map [(control meta shift ?t)] 'dired-do-touch))    ; `C-M-T' (aka `C-M-S-t')
 (define-key dired-mode-map "\M-u"    'diredp-upcase-this-file)              ; `M-u'
@@ -11596,12 +11589,12 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-recursive-map (kbd "C-M-*") 'diredp-marked-recursive-other-window)   ; `C-M-*'
 (define-key diredp-recursive-map "A"           'diredp-do-search-recursive)             ; `A'
 (define-key diredp-recursive-map "\M-b"        'diredp-do-bookmark-recursive)           ; `M-b'
-(when (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys)
+(when diredp-bind-problematic-terminal-keys
   (define-key diredp-recursive-map [(meta shift ?b)]                                    ; `M-B' (aka `M-S-b')
     'diredp-do-bookmark-dirs-recursive))
 (define-key diredp-recursive-map (kbd "C-M-b")                                          ; `C-M-b'
   'diredp-set-bookmark-file-bookmark-for-marked-recursive)
-(when (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys)
+(when diredp-bind-problematic-terminal-keys
   (define-key diredp-recursive-map [(control meta shift ?b)]                            ; `C-M-B' (aka `C-M-S-b')
     'diredp-do-bookmark-in-bookmark-file-recursive))
 (define-key diredp-recursive-map "C"           'diredp-do-copy-recursive)               ; `C'
@@ -11624,7 +11617,7 @@ If no one is selected, symmetric encryption will be performed.  "
   'diredp-do-isearch-recursive)
 (define-key diredp-recursive-map (kbd "M-s a C-M-s")                                    ; `M-s a C-M-s'
   'diredp-do-isearch-regexp-recursive)
-(when (or (diredp-display-graphic-p)  diredp-bind-problematic-terminal-keys)
+(when diredp-bind-problematic-terminal-keys
   (define-key diredp-recursive-map [(control meta shift ?t)]
     'diredp-do-touch-recursive))                                                        ; `C-M-T' (aka `C-M-S-t')
 (define-key diredp-recursive-map "\C-tc"   'diredp-image-dired-comment-files-recursive) ; `C-t c'
