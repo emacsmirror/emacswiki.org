@@ -1,5 +1,5 @@
 [[zh:Emacs开发版源码]]
-Since Emacs 24.4, [[Git]] [EmacsFromGit is used for Emacs developlemnt].  Neither [[Bazaar]] nor [ConcurrentVersionsSystem CVS] are used anymore.
+Since Emacs 24.4, [[Git]] [EmacsFromGit is used for Emacs development].  Neither [[Bazaar]] nor [ConcurrentVersionsSystem CVS] are used anymore.
 
 Some people would like to use the new features available in the next release.  Others want to help contribute to Emacs by testing the development sources and maybe even report EmacsBugs.  Others are just interested in following Emacs's development.  Some other just like "living on the edge".
 
