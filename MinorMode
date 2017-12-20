@@ -59,4 +59,10 @@ So I guess the answer is: (1) file a bug, (2) volunteer to fix the code. ;-) -- 
 I filed a bug: [http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=2470|#2470]. -- DrewAdams
 
 ----
+
+How do I ensure that a mode is always active/enabled? For example, I'd like electric-pair-mode to always be on.
+
+-- wickedjargon 2017-12-20 05:10 UTC
+
+----
 CategoryGlossary
