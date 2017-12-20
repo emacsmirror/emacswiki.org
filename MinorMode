@@ -26,43 +26,5 @@ Some minor modes do not have a single-point of entry but set a variable to indic
 
 The easy way to define a minor mode is with the ##define-minor-mode## macro from ##easy-mmode.el##.
 
-== Discussion ==
-
-How to check if a minor mode is active?
-
-[new:DrewAdams:2009-02-25 15:08 UTC]
-Test the value of the mode variable. Example: ##(if delete-selection-mode ...)##
-
-[new:RobbieMorrison:2012-08-22 12:00 UTC]
-The mode variable might not be known, so you can add this protection:
-<pre>
-(if (bound-and-true-p unknown-mode)
-    ...)
-</pre>
-
-[new:rubikitch:2009-02-25 15:15 UTC]
-But some minor modes don't have a variable, e.g., auto-fill-mode. -- [[rubikitch]]
-
-[new:DrewAdams:2009-02-25 17:45 UTC]
-True. I was going to say "File a bug", but checking the code defining `auto-fill-mode' I see this comment:
-
-<pre>
-(put 'auto-fill-function :minor-mode-function 'auto-fill-mode)
-;; FIXME: turn into a proper minor mode.
-;; Add a global minor mode version of it.
-(defun auto-fill-mode (&optional arg)
-...
-</pre>
-So I guess the answer is: (1) file a bug, (2) volunteer to fix the code. ;-) -- DrewAdams
-
-[new:DrewAdams:2009-02-25 18:03 UTC]
-I filed a bug: [http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=2470|#2470]. -- DrewAdams
-
-----
-
-How do I ensure that a mode is always active/enabled? For example, I'd like electric-pair-mode to always be on.
-
--- wickedjargon 2017-12-20 05:10 UTC
-
 ----
 CategoryGlossary
