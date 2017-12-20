@@ -1,4 +1,4 @@
-[[Hyperbole]] includes the fastest, easiest-to-use Emacs window and frame management system available, HyControl.  If you use a lot of Emacs windows or frames (typically, window system windows) then this chapter is for you.
+HyControl is part of the GNU [[Hyperbole]] package.  It includes the fastest, easiest-to-use Emacs window and frame management system available, HyControl.  If you use a lot of Emacs windows or frames (typically, window system windows) then this chapter is for you.
 
 HyControl interactively adjusts the layout of your windows and frames down to the pixel-level if desired.  You adjust the location, size and display elements of your windows and frames until they look as you like and then simply quit HyControl and go back to work.
 
