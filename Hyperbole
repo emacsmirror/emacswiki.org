@@ -24,9 +24,10 @@ People often ask us about the differences between Org mode and Hyperbole.  Altho
 * Org-mode is a major-mode that works on structured files built atop Emacs outlining mode.
 * Hyperbole is a system that spans across much of Emacs' functionality, providing quick access keys and hyperbuttons wherever needed.
 
+
 * Org-mode's outliner is like Emacs outliner.
 * Hyperbole's Koutliner is unique; every node/paragraph has a unique id and settable attributes plus a relative id that is auto-updated as you move trees around the outline, so you know that node 2b4 is a child of 2b and is the next sibling of the 2b3 node.
-
+<br>
 * Org-mode has explicit hyperlinks that you create and a limited form of implicit links (links recognized contextually from just the text of a file).
 * Hyperbole has these too, allowing you to create them in any type of text file, with simple drags between windows.  But Hyperbole also recognizes hyperlinks embedded in many different types of files and buffers and can easily support new types.  You simply press one button and Hyperbole figures out what to do in dozens of contexts.
 
