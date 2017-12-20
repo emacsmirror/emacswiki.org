@@ -9,3 +9,15 @@ How do I ensure that a mode is always active/enabled? For example, I'd like elec
 
 -- wickedjargon 2017-12-20 05:10 UTC
 
+
+----
+
+From the manual: "Some minor modes are global: while enabled, they affect everything
+you do in the Emacs session, in all buffers.  Other minor modes are
+buffer-local; they apply only to the current buffer, so you can enable
+the mode in certain buffers and not others."
+
+Some modes offer both, ##some-mode## and ##global-some-mode##. If the minor mode you are interested in does not offer that, you could still add it to a hook. One very generic hook would be ##find-file-hook##, for example.
+
+-- Alex Schroeder 2017-12-20 06:23 UTC
+
