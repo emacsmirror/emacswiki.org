@@ -1,5 +1,7 @@
 HyRolo is a fast, hierarchical record-based contact manager that is part
-of the GNU [[Hyperbole]] package.
+of the GNU [[Hyperbole]] package.  The text of each record is completely
+free-form and full-text searches are done during lookups so any record
+with a matching term is always found.
 
 HyRolo manages and searches rolo files.  A "rolo file" consists of an
 optional header that starts and ends with a line of equal signs (at
@@ -31,7 +33,7 @@ entries alphabetized as you enter them.  Then you can sort the entries
 if you ever need.  This ordering is what the rolo will use if you accept
 the default entry with which it prompts you when adding a new entry.
 
-   Any search done on the rolo scans the full text of each entry.
+Any search done on the rolo scans the full text of each entry.
 During a search, the rolo file header separator lines and anything in
 between are appended to the buffer of matched entries before any entries
 are retrieved from the file.  Whenever an entry is matched, it and all
