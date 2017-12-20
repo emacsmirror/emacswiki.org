@@ -1,0 +1,52 @@
+HyRolo is a fast, hierarchical record-based contact manager that is part
+of the GNU [[Hyperbole]] package.
+
+HyRolo manages and searches rolo files.  A "rolo file" consists of an
+optional header that starts and ends with a line of equal signs (at
+least three equal signs starting at the beginning of a line), followed
+by zero or more rolo records.  You must manually add a header to any
+rolo file if you want it to have one.
+
+Here is an example of a simple rolo file.  The date at the end is
+automatically added by HyRolo whenever a new record is added.
+
+     ==================================================================
+                               PERSONAL ROLO
+     <Last-Name>, <First>  <Email>        W<Work#>       F<Fax#>
+     ==================================================================
+     *   Smith, John       <js@hiho.com> W708-555-2001  F708-321-1492
+             Chief Ether Maintainer, HiHo Industries
+             05/24/2017
+
+We call rolo records, "entries".  Entries begin with a delimiter of
+one or more '*' characters at the beginning of a line.  Entries may be
+arranged in a hierarchy, where child entries start with one more '*'
+character than do their parents.  Top-level entries begin with a single
+'*'.
+
+Beyond this initial delimiter, entries are completely free-form text.
+It is best to use a "lastname, firstname" format, however, when adding
+contact entries into a rolo.  Then HyRolo will automatically keep your
+entries alphabetized as you enter them.  Then you can sort the entries
+if you ever need.  This ordering is what the rolo will use if you accept
+the default entry with which it prompts you when adding a new entry.
+
+   Any search done on the rolo scans the full text of each entry.
+During a search, the rolo file header separator lines and anything in
+between are appended to the buffer of matched entries before any entries
+are retrieved from the file.  Whenever an entry is matched, it and all
+of its descendant entries are retrieved.  If your emacs version supports
+textual highlighting, each search match is highlighted for quick, visual
+location.
+
+For example, a search on "Company" could retrieve the following:
+
+     ==================================================================
+                             COMPANY ROLO
+     ==================================================================
+     *    Company
+     **     Manager
+     ***      Staffer
+
+Thus, searching for Company retrieves all listed employees.  Searching
+for Manager turns up all Staffer entries.
