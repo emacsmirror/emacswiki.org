@@ -15,44 +15,42 @@ Hyperbole's major capabilities include:
 * Button Types: set of hyper-button types which supply core hypertext and other behaviors
 * Programming Library: library classes for system developers who want to integrate with Hyperbole.
 
-I would like to see a comparison between the various Information Management tools and [[Hyperbole]].  Could anyone comment on this?
+----
 
 From RSW, author of GNU Hyperbole:
 
 People often ask us about the differences between Org mode and Hyperbole.  Although on the surface this comes up a lot, once you use both of these, you'll quickly see how different they are.  Hyperbole and Org mode can be used together, e.g. Hyperbole's Smart Keys work in Org mode, or separately; there is no need to choose.  Here is a contrast of the two, for those interested.
 
-* Org-mode is a major-mode that works on structured files built atop Emacs outlining mode.
-* Hyperbole is a system that spans across much of Emacs' functionality, providing quick access keys and hyperbuttons wherever needed.
+  * Org-mode is a major-mode that works on structured files built atop Emacs outlining mode.
+  * Hyperbole is a system that spans across much of Emacs' functionality, providing quick access keys and hyperbuttons wherever needed.
 
+  * Org-mode's outliner is like Emacs outliner.
+  * Hyperbole's Koutliner is unique; every node/paragraph has a unique id and settable attributes plus a relative id that is auto-updated as you move trees around the outline, so you know that node 2b4 is a child of 2b and is the next sibling of the 2b3 node.
 
-* Org-mode's outliner is like Emacs outliner.
-* Hyperbole's Koutliner is unique; every node/paragraph has a unique id and settable attributes plus a relative id that is auto-updated as you move trees around the outline, so you know that node 2b4 is a child of 2b and is the next sibling of the 2b3 node.
-<br>
-* Org-mode has explicit hyperlinks that you create and a limited form of implicit links (links recognized contextually from just the text of a file).
-* Hyperbole has these too, allowing you to create them in any type of text file, with simple drags between windows.  But Hyperbole also recognizes hyperlinks embedded in many different types of files and buffers and can easily support new types.  You simply press one button and Hyperbole figures out what to do in dozens of contexts.
+  * Org-mode has explicit hyperlinks that you create and a limited form of implicit links (links recognized contextually from just the text of a file).
+  * Hyperbole has these too, allowing you to create them in any type of text file, with simple drags between windows.  But Hyperbole also recognizes hyperlinks embedded in many different types of files and buffers and can easily support new types.  You simply press one button and Hyperbole figures out what to do in dozens of contexts.
 
-* Org-mode manages todos, time entries and some basic project management.
-* Hyperbole does none of this but allows you can integrate with whatever todo management you like.
+  * Org-mode manages todos, time entries and some basic project management.
+  * Hyperbole does none of this but allows you can integrate with whatever todo management you like.
 
-* Org-mode doesn't have any contact management builtin, only through add-on packages.
-* Hyperbole has an integrated, fast, effective hierarchical contact manager.
+  * Org-mode doesn't have any contact management builtin, only through add-on packages.
+  * Hyperbole has an integrated, fast, effective hierarchical contact manager.
 
-* Org-mode does nothing with your buffers, windows and frames since it is just a major mode.
-* Hyperbole has a fast, thoughtfully designed window and frame manager that lets you quickly arrange your Emacs artifacts as you like.  Eventually, these window and frame configurations will be saveable and will be able to be the target of links, so you can have quick access buttons that arrange things for different work tasks (similar to Workspaces but integrated with all of Hyperbole's other features).
+  * Org-mode does nothing with your buffers, windows and frames since it is just a major mode.
+  * Hyperbole has a fast, thoughtfully designed window and frame manager that lets you quickly arrange your Emacs artifacts as you like.  Eventually, these window and frame configurations will be saveable and will be able to be the target of links, so you can have quick access buttons that arrange things for different work tasks (similar to Workspaces but integrated with all of Hyperbole's other features).
 
-* Org-mode does nothing for management of libraries of information.
-* Hyperbole helps organize, link, search and retrieve libraries of text files.
+  * Org-mode does nothing for management of libraries of information.
+  * Hyperbole helps organize, link, search and retrieve libraries of text files.
 
-* Hyperbole also has features that speed code browsing and structured code editing and support for using the mouse keys as Control and Meta modifiers so you can point and operate on screen entities quickly.
+  * Hyperbole also has features that speed code browsing and structured code editing and support for using the mouse keys as Control and Meta modifiers so you can point and operate on screen entities quickly.
 
-Am I right if I assume that the major components of Hyperbole are something similar to outline minor mode + the ability to create links to different places (a position in a file for example)?
+----
 
-In that case I think that OrgMode can do the same things very good. And that already comes with Emacs 22.
+Q: I would like to see a comparison between the various Information Management tools and [[Hyperbole]].  Could anyone comment on this?
 
-[new]
-New control of windowing, if as described, may be very exciting.  Exact position of windows and such.  As of the libraries of text files, I think I've used files of Org links for that, but never got them to "search and retrieve" as described.  I doubt the new incarnation of Hyperbole would replace Org, but if they merge as the above kind of predicts, this could be very useful.
+Q: Am I right if I assume that the major components of Hyperbole are something similar to outline minor mode + the ability to create links to different places (a position in a file for example)?
+In that case I think that OrgMode can do the same things very good. And that already comes with Emacs 22.  New control of windowing, if as described, may be very exciting.  Exact position of windows and such.  As of the libraries of text files, I think I've used files of Org links for that, but never got them to "search and retrieve" as described.  I doubt the new incarnation of Hyperbole would replace Org, but if they merge as the above kind of predicts, this could be very useful.
 
-[new]
 A merger of Org, Hyperbole/Koutline, Muse, and Info modes would be perfect, sort of a „unified documentation project mode”, or a replacement for the very aged and limited Info system.
 * afterthought: not necessarily a replacement of info, merely an additional, modern implementation which can directly interlink any relevant documentation (and completely casually can serve as a demonstration of the concepts and power of the system as a whole, showing off Org/Hyperbole in real action, with options to „Muse” docu into web-form or PDFs).
 ----
