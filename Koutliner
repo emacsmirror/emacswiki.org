@@ -1,0 +1,74 @@
+The Koutliner is part of GNU [[Hyperbole]].  It is a multi-level,
+autonumbered, hypertextual outliner implemented as an Emacs major
+mode.  Its outlining capabilities are much more advanced and visual
+than [[OrgMode]] but Org Mode has much broader output formatting
+and structured document capabilities.
+
+
+The Koutliner (pronounced Kay-outliner) is an advanced outliner with
+multi-level autonumbering, e.g. 1b3
+or 1.2.3, and permanent ids attached to each outline node for
+use as hypertext link anchors, per node properties and flexible
+view specifications that can be embedded within links or used
+interactively.
+
+It produces structured, autonumbered documents composed of hierarchies of
+cells.  Each "cell" has two identifiers, a "relative identifier"
+indicating its present position within the outline and a "permanent
+identifier" called an "idstamp", suitable for use within hyperlink
+references to the cell.  The idstamp is typically not displayed but is
+available when needed.
+
+Cells also store their time of creation and the user who created the
+cell.  User-defined attributes may also be added to cells.
+
+Hyperbole includes the (##EXAMPLE.kotl##) file, a Koutline that demonstrates
+usage of the major Koutliner features.  You can test out the viewing,
+editing and motion commands with this file since a personal copy is made
+when you use it.
+
+As you create, delete, promote or demote cells within the outline, the labels
+preceding the contents of each cell automatically update to reflect the new
+structure.  These labels are also known as "autonumbers" and as "relative ids"
+because they change as the structure changes.
+
+The outline structure is shown by these labels and by the indentation
+of each outline level.  Normally, each deeper level is indented another
+three characters, to reflect the nesting.
+
+The default autonumbers are called "alphanumeric labels" because they
+alternate between using numbers and letters to distinguish each
+successive level.  Each alphanumeric label uniquely identifies a cell's
+position in an outline, so that there is no need to scan back to prior
+cells to see what the current section number of an outline is.  This is
+similar to a legal numbering scheme but without all the period
+characters between level numbers.  As an example, 1b3 is equivalent to a
+legal label of 1.2.3.  Both refer to the 3rd cell at level 3, below the
+2nd child of the first cell at level 1.  Said another way, this is the
+3rd child of the 1st cell's 2nd child.  In other words, it is easier to
+visualize hierarchies than to talk about them.
+
+Alphanumeric labels are the default because they are shorter and
+easier to read aloud than equivalent legal ones.  They also simplify
+distinguishing between even and odd level labels because of the
+alternating character set.
+
+Idstamps (permanent ids) are also associated with each cell.  They maintain
+hyperlinks as cells are reordered within a koutline.  Idstamps may be displayed
+in place of the outline level relative ids.
+
+An idstamp counter for each outline starts at 0 and is incremented by
+one each time a cell is added to the outline.  This idstamp stays with
+the cell no matter where it is moved within the outline.  If the cell is
+deleted, its idstamp is not reused.
+
+The 0 idstamp is always assigned to the root node of the entire
+outline.  This node is never visible within the outline, but is used so
+that the outline may be treated as a single tree when needed.  Idstamps
+always begin with a 0, as in 012, to distinguish them from relative ids.
+
+[new]
+This has some neat features that I have not seen elsewhere such as auto-numbering.  It has been around many years. (AllOut also does auto-numbering but likely only single level numbering, not multi-level as in legal outlines, nor does it have permanent hyperlinkable ids for each node).
+
+----
+CategoryOutline
