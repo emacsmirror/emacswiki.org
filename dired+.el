@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Dec 17 14:34:23 2017 (-0800)
+;; Last-Updated: Thu Dec 21 14:50:17 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 10454
+;;     Update #: 10458
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -717,6 +717,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/12/21 dadams
+;;     Added: diredp-mark-recursive-1.  Forgot to add it last June.
 ;; 2017/12/17 dadams
 ;;     Removed: diredp-display-graphic-p.
 ;;     Do not use diredp-display-graphic-p to allow binding diredp-bind-problematic-terminal-keys by default.
@@ -5231,6 +5233,22 @@ instead on ALL subdirs.  That is, mark all in this directory and all
 descendant directories."
   (interactive "P")
   (diredp-mark-recursive-1 arg "symlinks" "symbolic link" '(diredp-looking-at-p dired-re-sym)))
+
+(defun diredp-mark-recursive-1 (arg plural singular predicate-sexp)
+  "Helper for `diredp-mark-*-recursive' commands."
+  (let* ((numarg             (and arg  (prefix-numeric-value arg)))
+         (unmark             (and numarg  (>= numarg 0)))
+         (ignorep            (and numarg  (<= numarg 0)))
+         (dired-marker-char  (if unmark ?\040 dired-marker-char))
+         (sdirs              (diredp-get-subdirs ignorep))
+         (total-count        0))
+    (message "%s %s..." (if (eq ?\040 dired-marker-char) "UNmarking" "Marking") plural)
+    (dolist (dir  (cons default-directory sdirs))
+      (when (dired-buffers-for-dir (expand-file-name dir)) ; Dirs with Dired buffers only.
+        (with-current-buffer (car (dired-buffers-for-dir (expand-file-name dir)))
+          (setq total-count
+                (+ total-count (or (dired-mark-if (eval predicate-sexp) singular)  0))))))
+    (message "%s %d %s" (if (eq ?\040 dired-marker-char) "UNmarked" "Marked") total-count plural)))
 
 ;;;###autoload
 (defun diredp-capitalize-recursive (&optional ignore-marks-p) ; Bound to `M-+ % c'
