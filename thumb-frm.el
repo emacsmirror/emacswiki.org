@@ -8,9 +8,9 @@
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Tue Mar  7 15:41:14 2017 (-0800)
+;; Last-Updated: Thu Dec 21 11:23:01 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1794
+;;     Update #: 1797
 ;; URL: https://www.emacswiki.org/emacs/download/thumb-frm.el
 ;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
 ;; Keywords: frame, icon
@@ -280,6 +280,10 @@
 ;;
 ;;; Change Log:
 ;;
+;;
+;; 2017/12/21 dadams
+;;     thumfr-thumbify-frame:
+;;       Change to thumfr-frame-parameters before changing font size.  Needed for Emacs 25+.
 ;; 2015/09/13 dadams
 ;;     thumfr-frame-parameters: Added alpha parameter to default value.
 ;;     thumfr-thumbify-frame: Added (alpha . 100) to NON-TF-PARAMS, if absent from FRAME.
@@ -674,6 +678,9 @@ which frame parameters (such as `menu-bar-lines') to remove."
       (set-frame-parameter frame 'thumfr-non-thumbnail-frame nil)
       (condition-case thumfr-thumbify-frame
           (progn
+            ;; Change to `thumfr-frame-parameters' first.  Needed for Emacs 25+.
+            ;; Otherwise, the thumbified frame is too tall.
+            (modify-frame-parameters frame thumfr-frame-parameters)
             (enlarge-font (- thumfr-font-difference) frame) ; In `frame-cmds.el'.
             (when tf-params (modify-frame-parameters frame tf-params))
             (when thumfr-next-stack-xoffset
@@ -681,7 +688,9 @@ which frame parameters (such as `menu-bar-lines') to remove."
                                   thumfr-next-stack-yoffset)
               (setq thumfr-next-stack-xoffset  nil
                     thumfr-next-stack-yoffset  nil))
-            (modify-frame-parameters frame thumfr-frame-parameters))
+            ;; See comment above.  Can no longer do this after changing font size.
+            ;; (modify-frame-parameters frame thumfr-frame-parameters)
+            )
         (font-too-small                 ; Try again, with a larger font.
          (set-frame-parameter frame 'thumfr-non-thumbnail-frame tf-params)
          (set-frame-parameter frame 'thumfr-thumbnail-frame     nil)
