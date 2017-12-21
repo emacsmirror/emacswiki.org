@@ -146,7 +146,7 @@ There's a bunch of type predicates macros:
 === Defining functions ===
 
 There is a <code>DEFUN</code> macro in <code>lisp.h:1987</code>. Have a look at the manual,
-it's pretty well written. [[Writing Emacs Primitives]]
+it's pretty well written. [[Manual:Writing Emacs Primitives]] (elisp)
 
 === Idioms ===
 
