@@ -1,3 +1,5 @@
+*Update:* I am pleased to see that this simple system for keeping a personal diary in Emacs was found to be useful by so many, that it has since been extended to a larger project that integrates with the powerful Org mode. While you can continue using this code if your needs are met by it, for a more featureful solution, I will direct you to [OrgJournal org-journal] (source repository hosted on [https://github.com/bastibe/org-journal GitHub]), which effectively supersedes the journal-mode provided here. --- mtvoid
+----
 I use Emacs to maintain a journal to note down my thoughts. I found many different applications that could be used to do so, but none that exactly fitted my needs. I wanted a system that was very simple and easy to use and maintain, so I made my own. All journal entries are stored as plain text files in a single directory, using the date as their filename (e.g. journal/20100620, journal/20090114). This makes it easy to manage the journal, e.g. if you are away from your computer, you can write a journal entry, save it as a text file with the proper filename, and later just copy that file into your journal directory. Each journal entry begins with the date and the time on a new line (subsequent entries on the same day are appended to the same file with their own timestamp).
 
 Apart from the basic functions to write journal entries, I have also added some more functions allowing one to browse earlier entries conveniently through the calendar in Emacs. Journal entries are edited in their own major mode which is suited for text editing, and one can also specify a different font (if the Emacs you are using supports it).
@@ -6,7 +8,7 @@ I've tried to document most of the code in the comments. You can save the code b
 
 /Tip:/ I have created a ##.dir-locals.el## file in my journal directory with the contents ##((nil . ((buffer-read-only . t))))##, to prevent accidentally editing prior journal entries when opening them in Emacs. This is entirely optional, of course.
 
-I'd appreciate your feedback. Do tell if you find it useful or if you want to propose any changes and improvements to the code! - mtvoid
+I'd appreciate your feedback. Do tell if you find it useful or if you want to propose any changes and improvements to the code! --- mtvoid
 
 CategoryWriting
 ----
