@@ -3,7 +3,7 @@
 Emacs has its own terminology for these concepts:
 
 || *Common Name* || *Common Key* || *Emacs Name*   || *Emacs Key* ||
-|| Cut           || ##C-x##      || Kill           || ##C-w##     ||
+|| Cut           || ##C-x##      || Kill-region    || ##C-w##     ||
 || Copy          || ##C-c##      || Kill-ring-save || ##M-w##     ||
 || Paste         || ##C-v##      || Yank           || ##C-y##     ||
 || —             || —            || Yank next      || ##M-y##     ||
