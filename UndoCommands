@@ -28,7 +28,7 @@ By default, Emacs keeps only a few dozen undo entries.  You can control how many
 
 Having once undone a change with `C-x u' or `##C-_##' or `C-/', you can repeat the undo command by pressing `C-x z', which is `repeat'.  So the overall sequence of `C-x u C-x z z z z z' undoes changes back through time, and may be easier to type than `##C-_ C-_## ...'.
 
-Binding undo to `C-z' makes it easier to use (and the iconify Emacs command is still available on `C-z x').
+Binding undo to `C-z' makes it easier to use (and the command `suspend-frame' is still available on `C-x C-z').
 {{{
 (global-unset-key "\C-z")
 (global-set-key "\C-z" 'advertised-undo)
