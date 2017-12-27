@@ -19,6 +19,14 @@ A few user options control the behavior:
 against events that you do not want to show, for
  `showkey-tooltip-mode' and `showkey-log-mode', respectively.
 
+* '''`showkey-tooltip-sleep-time'''' is the number of seconds to pause
+while showing the tooltip.  This is zero by default, but you
+might want to use a positive integer when playing back a
+recorded keyboard macro.
+
+* '''`showkey-tooltip-timeout'''' is the number of seconds to show the tooltip, before hiding it.  It is also hidden upon any user event, such as hitting another key, but it is always shown for
+at least `showkey-tooltip-sleep-time' seconds.
+
 * '''`showkey-log-frame-alist'''' is an a list of frame parameters for
 the logging frame.  (It is not used for `showkey-tooltip-mode'.)
 
@@ -26,7 +34,6 @@ the logging frame.  (It is not used for `showkey-tooltip-mode'.)
 restart logging, that is, erase the log and start it over.  For example, if you add the `RET' key to it (`?\r') then each time it is pressed the log is restarted from scratch.  By default, the list is empty.  (It
 is not used for `showkey-tooltip-mode'.)
 
-* '''`showkey-tooltip-timeout'''' is the number of seconds to show the tooltip, before hiding it.  (It is also hidden upon any user event, such as hitting another key.)
 
 
 
