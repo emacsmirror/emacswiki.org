@@ -8,11 +8,11 @@
 ;; Created: Sun Mar 22 16:24:39 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 15:28:38 2017 (-0800)
+;; Last-Updated: Wed Dec 27 09:16:53 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 138
+;;     Update #: 151
 ;; URL: https://www.emacswiki.org/emacs/download/showkey.el
-;; Doc URL: http://www.emacswiki.org/ShowKey
+;; Doc URL: https://www.emacswiki.org/emacs/ShowKey
 ;; Keywords: help keys mouse
 ;; Compatibility: GNU Emacs: 23.x, 24.x, 25.x
 ;; 
@@ -59,9 +59,15 @@
 ;;  * `showkey-tooltip-key-only-flag' non-nil means show only the key
 ;;    used, not also its description.  The default value is nil.
 ;;
+;;  * `showkey-tooltip-sleep-time' is the number of seconds to pause
+;;    while showing the tooltip.  This is zero by default, but you
+;;    might want to use a positive integer when playing back a
+;;    recorded keyboard macro.
+;;
 ;;  * `showkey-tooltip-timeout' is the number of seconds to show the
-;;    tooltip, before hiding it.  (It is also hidden upon any user
-;;    event, such as hitting another key.)
+;;    tooltip, before hiding it.  It is also hidden upon any user
+;;    event, such as hitting another key, but it is always shown for
+;;    at least `showkey-tooltip-sleep-time' seconds.
 ;;
 ;;
 ;;
@@ -94,6 +100,9 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2017/12/27 dadams
+;;     Added: showkey-tooltip-sleep-time.
+;;     showkey-show-tooltip: Use showkey-tooltip-sleep-time.
 ;; 2016/10/27 dadams
 ;;     Added: showkey-tooltip-timeout.
 ;;     showkey-show-tooltip: Use showkey-tooltip-timeout.
@@ -120,7 +129,7 @@
 ;; General Public License for more details.
 ;; 
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
+;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -140,9 +149,9 @@ showkey.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/showkey.el")
-  :link '(url-link :tag "Description" "http://www.emacswiki.org/ShowKey")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/showkey.el")
+  :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/ShowKey")
   :link '(emacs-commentary-link :tag "Commentary" "showkey"))
 
 (defface showkey-log-latest '((t (:foreground "Red")))
@@ -207,9 +216,15 @@ angle brackets.  Example: \"^<mouse-movement>\"."
   "Non-nil means show only the key used, not also its description."
   :type 'boolean :group 'Show-Key)
 
+(defcustom showkey-tooltip-sleep-time 0
+  "Minimum number of seconds to pause while showing the tooltip."
+  :type 'integer :group 'Show-Key)
+
 (defcustom showkey-tooltip-timeout 5
   "Hide tooltip after this many seconds.
-\(It is also hidden upon any user event, such as hitting another key.)"
+It is also hidden upon any user event, such as hitting another key,
+but it is always shown for at least `showkey-tooltip-sleep-time'
+seconds."
   :type 'integer :group 'Show-Key)
 
 (defvar showkey-nb-consecutives 1
@@ -242,7 +257,9 @@ are not logged."
 
 (defun showkey-show-tooltip ()
   "Global minor mode that shows the keys you use in a tooltip.
-See option `showkey-tooltip-ignored-events'.
+See options `showkey-tooltip-height',
+`showkey-tooltip-ignored-events', `showkey-tooltip-key-only-flag',
+`showkey-tooltip-sleep-time', and `showkey-tooltip-timeout'.
 
 Note that keys such as `C-g' that quit, and keys that raise an error,
 are not indicated."
@@ -290,7 +307,9 @@ are not indicated."
                                 'face `(:foreground "red" :height ,showkey-tooltip-height))
                     nil
                     nil
-                    showkey-tooltip-timeout)))))
+                    showkey-tooltip-timeout)
+        (sleep-for showkey-tooltip-sleep-time)))))
+
 ;;;###autoload
 (define-minor-mode showkey-log-mode
     "Global minor mode that logs the keys you use.
