@@ -6,7 +6,7 @@ Hi, my name is Vinicius José Latorre and you can reach me by email at
 /viniciusjl DOT gnu AT gmail DOT com/, aka. [::viniciusjl].
 
 I have been using GNU Emacs since 1992 and I am impressed on what you can do
-with Emacs. I use it as often as possible. :D
+with Emacs. I use it as often as possible. :)
 
 My very first contribution for Emacs was some modification in PsPrintPackage
 around 1996.  In 1997, Jacques Duthen was the PsPrintPackage maintainer and, as
@@ -491,9 +491,9 @@ Mais páginas Portuguesas! :) -- AlexSchroeder
 Hi, I noticed AsciiMode is duplicating ##ascii package##, and BlankMode likewise ##blank-mode package##.  You might like to merge or zap or redirect or whatever to have just one each.  (I guess the mixed case is sort of usual, but they're your packages obviously.)  -- KevinRyde
 
 [new]
-/Thanks people!/ :D
+/Thanks people!/ :)
 
-/Muito obrigado por tudo, pessoal!/ :D
+/Muito obrigado por tudo, pessoal!/ :)
 
 AsciiMode and BlankMode are old pages and it seems that they are part of a discussion about ways for displaying ASCII code and highlighting spaces and tabs. ##ascii package## and ##blank-mode package## are new pages about Lisp:ascii.el and Lisp:blank-mode.el documentation. -- ViniciusJoseLatorre
 
