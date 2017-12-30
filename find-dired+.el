@@ -10,9 +10,9 @@
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Nov 11 14:54:46 2017 (-0800)
+;; Last-Updated: Sat Dec 30 09:16:48 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 1238
+;;     Update #: 1242
 ;; URL: https://www.emacswiki.org/emacs/download/find-dired%2b.el
 ;; Doc URL: https://emacswiki.org/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
@@ -90,6 +90,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/12/30 dadams
+;;     find-dired-filter: Updated for Emacs bug #29803, for better alignment with human-readable file sizes.
 ;; 2017/11/11 dadams
 ;;     find(-name|-grep|-time)-dired: Clarified use of EXCLUDED-PATHS in doc string.
 ;; 2017/04/09 dadams
@@ -554,7 +556,9 @@ where EXCLUDE1, EXCLUDE2... are the EXCLUDED-PATHS, but shell-quoted."
 
 
 ;; REPLACES ORIGINAL in `find-dired.el':
+;;
 ;; Removes lines that just list a file.
+;;
 (defun find-dired-filter (proc string)
   "Filter for \\[find-dired] processes.
 PROC is the process.
@@ -569,7 +573,10 @@ STRING is the string to insert."
               (let ((buffer-read-only  nil)
                     (beg               (point-max))
                     (l-opt             (and (consp find-ls-option)  (string-match "l" (cdr find-ls-option))))
-                    (ls-regexp         "^ +[^ \t\r\n]+\\( +[^ \t\r\n]+\\) +[^ \t\r\n]+ +[^ \t\r\n]+\\( +[0-9]+\\)"))
+                    (ls-regexp         (concat "^ +[^ \t\r\n]+\\( +[^ \t\r\n]+\\) +"
+                                               (if (> emacs-major-version 21)
+                                                   "[^ \t\r\n]+ +[^ \t\r\n]+\\( +[^[:space:]]+\\)"
+                                                 "[^ \t\r\n]+ +[^ \t\r\n]+\\( +[0-9]+\\)"))))
                 (goto-char beg)
                 (insert string)
                 (goto-char beg)
