@@ -5,3 +5,11 @@ orphan mode used only by manpage writers?
 
 -- admin 2013-11-25 19:41 UTC
 
+
+----
+
+obviously in emacs Nroff-mode really is used only by manpage writers as we easily see regarding the 'preview as man page' option. Thus real nroff documents can't me previewed because the are lacking the typical manpage macros.
+I hope  one day I'll find a better nroff-mode.el.
+
+-- dodona 2017-12-31 20:05 UTC
+
