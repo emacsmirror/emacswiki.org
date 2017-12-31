@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Sun Dec 31 13:51:22 2017 (-0800)
+;; Last-Updated: Sun Dec 31 14:00:51 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 10527
+;;     Update #: 10530
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -742,6 +742,7 @@
 ;;; Change Log:
 ;;
 ;; 2017/12/31 dadams
+;;     diredp-get-files-for-dir: Pass non-nil NO-DOT-DOT-P arg to diredp-marked-here.
 ;;     dired-get-marked-files: Allow use of FILTER and DISTINGUISH-ONE-MARKED together.
 ;;     diredp-marked-here: Added optional arg NO-DOT-DOT-P.
 ;;     diredp-change-marks-recursive, diredp-unmark-all-files-recursive: Removed unused vars include-dirs, files.
@@ -4116,7 +4117,7 @@ error."
                    (unless (equal directory default-directory) (setcar askp  t))
                    (with-current-buffer (car (dired-buffers-for-dir
                                               (expand-file-name directory)))
-                     (diredp-marked-here only-marked-p))))
+                     (diredp-marked-here only-marked-p 'NO-DOT-DOT))))
     (if (not (file-directory-p file))
         (setcdr (last accum) (list file))
       (when include-dirs-p (setcdr (last accum) (list file)))
