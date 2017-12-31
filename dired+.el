@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 30 19:48:53 2017 (-0800)
+;; Last-Updated: Sun Dec 31 13:51:22 2017 (-0800)
 ;;           By: dradams
-;;     Update #: 10514
+;;     Update #: 10527
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -741,6 +741,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2017/12/31 dadams
+;;     dired-get-marked-files: Allow use of FILTER and DISTINGUISH-ONE-MARKED together.
+;;     diredp-marked-here: Added optional arg NO-DOT-DOT-P.
+;;     diredp-change-marks-recursive, diredp-unmark-all-files-recursive: Removed unused vars include-dirs, files.
 ;; 2017/12/30 dadams
 ;;     Added: diredp-change-marks-recursive, diredp-unmark-all-files-recursive, diredp-unmark-all-marks-recursive.
 ;;            Bound to M-+ * c, M-+ M-DEL, M-+ U, respectively.
@@ -2312,6 +2316,7 @@ Uses the `derived-mode-parent' property of the symbol to trace backwards."
 ;;
 ;; 1. Pass non-nil second arg to `dired-get-filename' so we can include `.' and `..'.
 ;; 2. Doc string is updated to reflect the new ARG behavior.
+;; 3. Allow, unlike vanilla Emacs, use of FILTER and DISTINGUISH-ONE-MARKED together.
 ;;
 (defun dired-get-marked-files (&optional localp arg filter distinguish-one-marked)
   "Return names of the marked files and directories as a list of strings.
@@ -2333,18 +2338,28 @@ Optional third argument FILTER, if non-nil, is a function to select
  some of the files: those for which (funcall FILTER FILENAME) is
  non-nil.
 If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
- of (FILENAME), if only one file is marked.  Do not use non-nil
- DISTINGUISH-ONE-MARKED together with FILTER."
-  (let ((all-of-them  (delq nil
-                            (save-excursion
-                              (dired-map-over-marks
-                               (dired-get-filename localp t)
-                               arg nil distinguish-one-marked))))
+ of (FILENAME) if only one file is marked (after any filtering by
+ FILTER).
+
+Note that the Dired+ version of this function differs from the vanilla
+version in these respects:
+
+* There are more possibilities for argument ARG (prefix argument).
+* Directories `.' and `..' can be included as marked.
+* You can use arguments FILTER and DISTINGUISH-ONE-MARKED together."
+  (let ((all  (delq nil (save-excursion
+                          (dired-map-over-marks (dired-get-filename localp t)
+                                                arg nil distinguish-one-marked))))
         result)
-    (if (not filter)
-        (if (and distinguish-one-marked  (eq (car all-of-them) t)) all-of-them (nreverse all-of-them))
-      (dolist (file  all-of-them) (when (funcall filter file) (push file result)))
-      result)))
+    (if (and distinguish-one-marked  (eq (car all) t))
+        (if (not filter)
+            all
+          (and (funcall filter (cadr all))  (list t (cadr all))))
+      (dolist (file  all)
+        (when (or (not filter)  (funcall filter file)) (push file result)))
+      (if (and distinguish-one-marked  (= 1 (length result)))
+          (cons t result)
+        result))))
 
 
 ;; REPLACE ORIGINAL in `dired-aux.el'.
@@ -4107,15 +4122,19 @@ error."
       (when include-dirs-p (setcdr (last accum) (list file)))
       (diredp-get-files-for-dir file accum askp include-dirs-p only-marked-p))))
 
-(defun diredp-marked-here (&optional only-marked-p)
+(defun diredp-marked-here (&optional only-marked-p no-dot-dot-p)
   "Marked files and subdirs in this Dired buffer, or all if none are marked.
 Non-nil optional arg ONLY-MARKED-P means return nil if none are
-marked."
+marked.
+Non-nil optional arg NO-DOT-DOT-P means do not include marked `..'."
   ;; If no file is marked, exclude `(FILENAME)': the unmarked file at cursor.
   ;; If there are no marked files as a result, return all files and subdirs in the dir.
   (let* ((dired-marker-char  ?*)
          (ff                 (condition-case nil ; Ignore error if on `.' or `..' and no file is marked.
-                                 (dired-get-marked-files nil nil nil 'DISTINGUISH-ONE-MARKED)
+                                 (dired-get-marked-files
+                                  nil nil (and no-dot-dot-p
+                                               (lambda (mf) (not (diredp-string-match-p "/\.\.?$" mf))))
+                                  'DISTINGUISH-ONE-MARKED)
                                (error nil))))
     (cond ((eq t (car ff))  (cdr ff))   ; Single marked
           ((cadr ff)        ff)         ; Multiple marked
@@ -5099,8 +5118,6 @@ Act on only the files for which it returns non-nil."
     (let* ((numarg             (and arg  (prefix-numeric-value arg)))
            (nosubs             (natnump numarg))
            (ignore-marks       (and numarg  (<= numarg 0)))
-           (include-dirs       (and numarg  (not (zerop numarg))))
-           (files              (diredp-get-files ignore-marks predicate include-dirs))
            (dired-marker-char  new)
            (sdirs              (diredp-get-subdirs ignore-marks))
            (old-strg           (format "\n%c" old))
@@ -5162,8 +5179,6 @@ Act on only the files for which it returns non-nil."
     (let* ((numarg             (and arg  (prefix-numeric-value arg)))
            (nosubs             (natnump numarg))
            (ignore-marks       (and numarg  (<= numarg 0)))
-           (include-dirs       (and numarg  (not (zerop numarg))))
-           (files              (diredp-get-files ignore-marks predicate include-dirs))
            (dired-marker-char  ?\  )    ; Unmark
            (sdirs              (diredp-get-subdirs ignore-marks))
            (mrk-strg           (format "\n%c" mark))
