@@ -374,7 +374,7 @@ Example to bind the <code>mac-right-option-modifier</code> to <code>'none</code>
 
 === Emacs keybindings in Cocoa Apps ===
 
-This information does not regard the actual use of emacs, but I think many people will be happy to find out that some cursor movement / text editing keybindings can be used in Cocoa Apps. If you ever happen to use any other application on your Mac ... You can also set up additional keybindings as described in [http://developer.apple.com/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html this document].
+This information does not regard the actual use of emacs, but I think many people will be happy to find out that some cursor movement / text editing keybindings can be used in Cocoa Apps. If you ever happen to use any other application on your Mac ... You can also set up additional keybindings as described in [https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html this document].
 
 http://www.lorax.com/FreeStuff/TextExtras.html provides additional Emacs like features to every Cocoa application like alt-/ completion
 
