@@ -5,19 +5,19 @@
 ;; Author: Lynn Slater
 ;;         Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 1989 Free Software Foundation, Inc.
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 23 07:29:25 2017 (-0800)
+;; Last-Updated: Mon Jan  1 11:51:07 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1949
+;;     Update #: 1954
 ;; URL: https://www.emacswiki.org/emacs/download/header2.el
-;; Doc URL: http://emacswiki.org/AutomaticFileHeaders
+;; Doc URL: https://emacswiki.org/emacs/AutomaticFileHeaders
 ;; Keywords: tools, docs, maint, abbrev, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -28,7 +28,7 @@
 ;; Some of this code and commentary were originally written by Lynn
 ;; Slater as file `header.el'.  Drew Adams updated it and maintains it
 ;; as `header2.el'.  The original is here:
-;; `http://www.emacswiki.org/download/OriginalHeaderEl'.
+;; `https://www.emacswiki.org/emacs/download/OriginalHeaderEl'.
 ;;
 ;; Commands (interactive functions) defined here:
 ;;
@@ -378,11 +378,11 @@ header2.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/header2.el")
+          "https://www.emacswiki.org/emacs/download/header2.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/AutomaticFileHeaders#header2")
+          "https://www.emacswiki.org/emacs/AutomaticFileHeaders#header2")
   :link '(emacs-commentary-link :tag "Commentary" "header2")
   )
 
@@ -485,7 +485,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>."
+along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>."
 
   "*Text saying that this is free software"
   :type 'string :group 'Automatic-File-Header)
