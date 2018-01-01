@@ -4,17 +4,17 @@
 ;; Description: Set up `mode-line-position'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 08:56:59 2017 (-0800)
+;; Last-Updated: Mon Jan  1 15:01:52 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 844
+;;     Update #: 846
 ;; URL: https://www.emacswiki.org/emacs/download/modeline-posn.el
-;; Doc URL: http://www.emacswiki.org/emacs/ModeLinePosition
+;; Doc URL: https://www.emacswiki.org/emacs/ModeLinePosition
 ;; Keywords: mode-line, region, column
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -195,7 +195,7 @@
 ;; 2017/02/19 dadams
 ;;     isearch-query-replace-regexp:
 ;;       Check that isearchp-reg-beg is boundp before using it in remove-hook.  Thx to Yuri D'Elia.
-;;       Ref: http://lists.gnu.org/archive/html/emacs-devel/2017-02/msg00637.html
+;;       Ref: https://lists.gnu.org/archive/html/emacs-devel/2017-02/msg00637.html
 ;; 2017/02/18 dadams
 ;;     rectangle-number-lines: Typo rectange -> rectangle.  Thx to Charles Roelli.
 ;; 2017/01/14 dadams
@@ -345,7 +345,7 @@ sexps the string expects as arguments."
           (const :tag "Characters: \"_ chars\""
            (" %d chars" (abs (- (mark t) (point)))))
           ;; Should we use this instead?  It can sometimes be costly.
-          ;; See http://emacs.stackexchange.com/a/29912/105.
+          ;; See https://emacs.stackexchange.com/a/29912/105.
           ;; (const :tag "Bytes: \"_ bytes\""
           ;;  (" %d bytes"
           ;;   (if (fboundp 'bufferpos-to-filepos) ; Emacs 25+
