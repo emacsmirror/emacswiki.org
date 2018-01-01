@@ -4,17 +4,17 @@
 ;; Description: Highlighting commands.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2018, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 15 16:21:27 2017 (-0700)
+;; Last-Updated: Mon Jan  1 13:42:09 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 4122
+;;     Update #: 4131
 ;; URL: https://www.emacswiki.org/emacs/download/highlight.el
 ;; Doc URL: https://www.emacswiki.org/emacs/HighlightLibrary
 ;; Keywords: faces, help, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -42,7 +42,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://www.emacswiki.org/emacs/download/linkd.el.
+;;  https://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Things Defined Here")
 ;;  (@> "Documentation")
@@ -571,8 +571,8 @@
 ;;  The other hide and show commands depend on your also using
 ;;  Icicles, which is a set of libraries that offer enhanced
 ;;  completion.  Complete information about Icicles is here:
-;;  `http://www.emacswiki.org/emacs/Icicles'.  You can obtain Icicles
-;;  here: `http://www.emacswiki.org/emacs/Icicles_-_Libraries'.
+;;  `https://www.emacswiki.org/emacs/Icicles'.  You can obtain Icicles
+;;  here: `https://www.emacswiki.org/emacs/Icicles_-_Libraries'.
 ;;
 ;;  The Icicles commands defined for `highlight.el' are the following:
 ;;
@@ -722,13 +722,13 @@
 ;;  * `highlight-chars.el' - Provides ways to highlight different sets
 ;;    of characters, including whitespace and Unicode characters.  It
 ;;    is available here:
-;;    http://www.emacswiki.org/highlight-chars.el              (code)
-;;    http://www.emacswiki.org/ShowWhiteSpace#HighlightChars   (doc)
+;;    https://www.emacswiki.org/emacs/download/highlight-chars.el (code)
+;;    https://www.emacswiki.org/emacs/ShowWhiteSpace#HighlightChars (doc)
 ;;
 ;;  * `hi-lock.el' - The features of `highlight.el' are complementary
 ;;    to those of vanilla Emacs library `hi-lock.el', so you can use
 ;;    the two libraries together.  See this page for a comparison:
-;;    http://www.emacswiki.org/HighlightTemporarily.
+;;    https://www.emacswiki.org/emacs/HighlightTemporarily.
 ;;
 ;;(@* "Commands That Won't Work in Emacs 20")
 ;;  ** Commands That Won't Work in Emacs 20 **
@@ -1213,8 +1213,8 @@
 highlight.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/highlight.el")
-  :link '(url-link :tag "Description" "http://www.emacswiki.org/HighLight")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/highlight.el")
+  :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/HighLight")
   :link '(emacs-commentary-link :tag "Commentary" "highlight"))
 
 (defface hlt-regexp-level-1 '((((background dark)) (:background "#071F473A0000")) ; a dark green
