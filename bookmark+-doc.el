@@ -4,16 +4,16 @@
 ;; Description: Documentation for package Bookmark+
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Nov 11 10:24:36 2017 (-0800)
+;; Last-Updated: Mon Jan  1 09:50:42 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 15243
+;;     Update #: 15247
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-doc.el
-;; Doc URL: http://www.emacswiki.org/BookmarkPlus
+;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, eww, w3m, gnus
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -47,7 +47,7 @@
 ;;       Web'.
 ;;
 ;;    2. From the Emacs-Wiki Web site:
-;;       http://www.emacswiki.org/BookmarkPlus.
+;;       https://www.emacswiki.org/emacs/BookmarkPlus.
 ;;    
 ;;    3. From the Bookmark+ group customization buffer:
 ;;       `M-x customize-group bookmark-plus', then click link
@@ -117,7 +117,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://www.emacswiki.org/emacs/download/linkd.el.
+;;  https://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Documentation")
 ;;    (@> "Installing Bookmark+")
@@ -215,7 +215,7 @@
 ;;  `crosshairs.el', which in turn requires libraries `col-highlight',
 ;;  `hl-line', `hl-line+', and `vline'.  Library `hl-line' comes with
 ;;  vanilla Emacs.  The others are available from the Emacs Wiki web
-;;  site: http://www.emacswiki.org/.  You also need Emacs 22 or later
+;;  site: https://www.emacswiki.org/.  You also need Emacs 22 or later
 ;;  for this feature.
 ;;
 ;;
@@ -614,7 +614,7 @@
 ;;         customize-group bookmark-plus'), click button `Commentary'.
 ;;
 ;;       . From the Emacs-Wiki Web site,
-;;         http://www.emacswiki.org/BookmarkPlus.
+;;         https://www.emacswiki.org/emacs/BookmarkPlus.
 ;;
 ;;     - It is easy to recognize orphaned and invalid bookmarks.
 ;;
@@ -659,7 +659,7 @@
 ;;       jumping (visiting), setting, and help.  It gives you a
 ;;       bookmark browser, and lets you bookmark and tag files on the
 ;;       fly.  See (@> "Use Bookmark+ with Icicles") and
-;;       http://www.emacswiki.org/Icicles.
+;;       https://www.emacswiki.org/emacs/Icicles.
  
 ;;(@* "Bookmark Basics")
 ;;  ** Bookmark Basics **
@@ -1055,7 +1055,7 @@
 ;;  classify or characterize it.  Tags are metadata about an object.
 ;;  This notion of tagging is sometimes called "delicious" tagging
 ;;  after the Web site www.delicious.com that popularized it
-;;  (`http://en.wikipedia.org/wiki/Delicious_(website)').
+;;  (`https://en.wikipedia.org/wiki/Delicious_(website)').
 ;;
 ;;  Be aware that there is another notion of "tag" associated with
 ;;  Emacs: that involving Emacs tags files, which record the locations
@@ -3835,7 +3835,7 @@
 ;;  face `link', even in a font-locked buffer.  (Library
 ;;  `font-lock+.el' just provides this feature of allowing
 ;;  non-font-lock highlighting in a font-locked buffer.  See
-;;  http://lists.gnu.org/archive/html/emacs-devel/2014-08/msg00540.html.)
+;;  https://lists.gnu.org/archive/html/emacs-devel/2014-08/msg00540.html.)
 ;;
 ;;  The links you create this way are not persistent, but you can of
 ;;  course re-create them using Lisp.
@@ -3873,8 +3873,8 @@
 ;;(@* "Use Bookmark+ with Icicles")
 ;;  ** Use Bookmark+ with Icicles **
 ;;
-;;  `Icicles' (http://www.emacswiki.org/Icicles) enhances your use of
-;;  Bookmark+ in several ways.
+;;  `Icicles' (https://www.emacswiki.org/emacs/Icicles) enhances your
+;;  use of Bookmark+ in several ways.
 ;;
 ;;  When jumping to a bookmark, you can narrow the completion
 ;;  candidates to bookmarks of a particular type (e.g. Info, using
