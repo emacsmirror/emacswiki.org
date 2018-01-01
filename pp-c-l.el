@@ -4,17 +4,17 @@
 ;; Description: Display Control-l characters in a buffer in a pretty way
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Feb 08 20:28:09 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Oct 29 17:22:11 2017 (-0700)
+;; Last-Updated: Mon Jan  1 15:23:21 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 224
+;;     Update #: 228
 ;; URL: https://www.emacswiki.org/emacs/download/pp-c-l.el
-;; Doc URL: https://emacswiki.org/PrettyControlL
+;; Doc URL: https://emacswiki.org/emacs/PrettyControlL
 ;; Keywords: display, convenience, faces
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -135,10 +135,10 @@
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "https://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/pp-c-l.el")
   :link '(url-link :tag "Description"
-          "https://www.emacswiki.org/PrettyControlL")
+          "https://www.emacswiki.org/emacs/PrettyControlL")
   :link '(emacs-commentary-link :tag "Commentary" "pp-c-l"))
 
 ;;;###autoload
@@ -219,11 +219,11 @@ pp-c-l.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
             :link '(url-link :tag "Other Libraries by Drew"
-                    "http://www.emacswiki.org/DrewsElispLibraries")
+                    "https://www.emacswiki.org/emacs/DrewsElispLibraries")
             :link '(url-link :tag "Download"
-                    "http://www.emacswiki.org/pp-c-l.el")
+                    "https://www.emacswiki.org/emacs/download/pp-c-l.el")
             :link '(url-link :tag "Description"
-                    "http://www.emacswiki.org/PrettyControlL")
+                    "https://www.emacswiki.org/emacs/PrettyControlL")
             :link '(emacs-commentary-link :tag "Commentary" "pp-c-l")
             (cond (pretty-control-l-mode
                    (add-hook 'window-configuration-change-hook 'refresh-pretty-control-l)
