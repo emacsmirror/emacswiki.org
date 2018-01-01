@@ -4,17 +4,17 @@
 ;; Description: Highlight specified sets of characters, including whitespace.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Nov 16 08:37:04 2012 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 23 07:41:08 2017 (-0800)
+;; Last-Updated: Mon Jan  1 13:35:56 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 233
+;;     Update #: 238
 ;; URL: https://www.emacswiki.org/emacs/download/highlight-chars.el
-;; Doc URL: http://www.emacswiki.org/ShowWhiteSpace#HighlightChars
+;; Doc URL: https://www.emacswiki.org/emacs/ShowWhiteSpace#HighlightChars
 ;; Keywords: highlight, whitespace, characters, Unicode
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -189,8 +189,8 @@
 ;;
 ;; * Library `highlight.el' for ways to highlight text more generally,
 ;;   not just specific characters.  It is available here:
-;;   http://www.emacswiki.org/highlight.el     (code)
-;;   http://www.emacswiki.org/HighlightLibrary (doc)
+;;   https://www.emacswiki.org/emacs/download/highlight.el (code)
+;;   https://www.emacswiki.org/emacs/HighlightLibrary (doc)
 ;;
 ;; * Standard library `whitespace.el' for other ways to highlight
 ;;   whitespace characters.
@@ -394,11 +394,11 @@ highlight-chars.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/highlight-chars.el")
+          "https://www.emacswiki.org/emacs/download/highlight-chars.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/ShowWhiteSpace#HighlightChars")
+          "https://www.emacswiki.org/emacs/ShowWhiteSpace#HighlightChars")
   :link '(emacs-commentary-link :tag "Commentary" "highlight-chars")
   )
 
