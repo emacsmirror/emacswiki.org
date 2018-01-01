@@ -4,15 +4,15 @@
 ;; Description: Extensions to `character-fold.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2015-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2015-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Nov 27 09:12:01 2015 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Feb 27 15:05:20 2016 (-0800)
+;; Last-Updated: Mon Jan  1 10:11:21 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 93
-;; URL: http://www.emacswiki.org/character-fold+.el
-;; Doc URL: http://emacswiki.org/CharacterFoldPlus
+;;     Update #: 101
+;; URL: https://www.emacswiki.org/emacs/download/character-fold%2b.el
+;; Doc URL: https://emacswiki.org/emacs/CharacterFoldPlus
 ;; Keywords: isearch, search, unicode
 ;; Compatibility: GNU Emacs: 25.x builds ON OR BEFORE 2015-12-10 
 ;;
@@ -151,7 +151,7 @@
 ;; General Public License for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
+;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
