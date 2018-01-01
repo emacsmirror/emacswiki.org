@@ -4,18 +4,18 @@
 ;; Description: Extensions to `compile.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 16 17:04:11 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 21 16:04:17 2017 (-0800)
+;; Last-Updated: Mon Jan  1 10:22:54 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 123
+;;     Update #: 126
 ;; URL: https://www.emacswiki.org/emacs/download/compile-.el
-;; Doc URL: http://www.emacswiki.org/GrepPlus
-;; Doc URL: http://www.emacswiki.org/CompilationMode
+;; Doc URL: https://www.emacswiki.org/emacs/GrepPlus
+;; Doc URL: https://www.emacswiki.org/emacs/CompilationMode
 ;; Keywords: tools, processes
-;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
