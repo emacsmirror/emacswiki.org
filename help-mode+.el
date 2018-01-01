@@ -4,17 +4,17 @@
 ;; Description: Extensions to `help-mode.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
 ;; Created: Sat Nov 06 15:14:12 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 23 07:35:42 2017 (-0800)
+;; Last-Updated: Mon Jan  1 13:28:45 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 204
+;;     Update #: 215
 ;; URL: https://www.emacswiki.org/emacs/download/help-mode%2b.el
-;; Doc URL: http://emacswiki.org/HelpPlus
+;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -44,6 +44,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/01/1 dadams
+;;     help-make-xrefs:
+;;       Bug #12686: Promote type tests after cond tests to be inside them with the match tests.
 ;; 2014/01/17 dadams
 ;;     Do not redefine help-mode for Emacs 24+.
 ;; 2012/10/25 dadams
@@ -117,8 +120,9 @@ Commands:
 ;; REPLACES ORIGINAL IN `help-mode.el'.
 ;;
 ;; Show all doc possible for a symbol that is any 2 or 3 of fn, var, and face.
-;;
 ;; See Emacs bug #12686.
+;;
+;; Also a partial fix for Emacs bug #24842.
 ;;
 ;;;###autoload
 (defun help-make-xrefs (&optional buffer)
@@ -174,6 +178,8 @@ that."
                  ;; Mule related keywords.  Do this before trying
                  ;; `help-xref-symbol-regexp' because some of Mule
                  ;; keywords have variable or function definitions.
+
+                 ;; $$$$$ Should I do it here too?  (Have not done so yet.)
                  (when help-xref-mule-regexp
                    (save-excursion
                      (while (re-search-forward help-xref-mule-regexp nil t)
@@ -212,17 +218,17 @@ that."
                                          (facep sym)))
                                 ;; Var, function, or face -- doc all, if possible.
                                 (help-xref-button 8 'help-symbol sym))
-                               ((match-string 3) ; `variable' &c
-                                (and (or (boundp sym) ; `variable' doesn't ensure
+                               ((and (match-string 3) ; `variable' &c
+                                     (or (boundp sym) ; `variable' doesn't ensure
                                         ; it's actually bound
-                                         (get sym 'variable-documentation))
-                                     (help-xref-button 8 'help-variable sym)))
-                               ((match-string 4) ; `function' &c
-                                (and (fboundp sym) ; similarly
-                                     (help-xref-button 8 'help-function sym)))
-                               ((match-string 5) ; `face'
-                                (and (facep sym)
-                                     (help-xref-button 8 'help-face sym)))
+                                         (get sym 'variable-documentation)))
+                                (help-xref-button 8 'help-variable sym))
+                               ((and (match-string 4) ; `function' &c
+                                     (fboundp sym))   ; similarly
+                                (help-xref-button 8 'help-function sym))
+                               ((and (match-string 5) ; `face'
+                                     (facep sym))
+                                (help-xref-button 8 'help-face sym))
                                ((match-string 6)) ; nothing for `symbol'
                                ((match-string 7)
                                 ;; this used:
@@ -231,9 +237,8 @@ that."
                                 ;;       (pop-to-buffer (car location))
                                 ;; 	(goto-char (cdr location))))
                                 (help-xref-button 8 'help-function-def sym))
-                               ((and
-                                 (facep sym)
-                                 (save-match-data (looking-at "[ \t\n]+face\\W")))
+                               ((and (facep sym)
+                                     (save-match-data (looking-at "[ \t\n]+face\\W")))
                                 (help-xref-button 8 'help-face sym))
                                ((and
                                  (or (boundp sym)  (get sym 'variable-documentation))
