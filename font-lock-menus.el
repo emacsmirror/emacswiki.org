@@ -5,17 +5,17 @@
 ;; Author: Francis J. Wright, Simon Marshal, Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000 Francis J. Wright
-;; Copyright (C) 2012-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2012-2018, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 26 07:06:14 2012 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 22 17:56:26 2017 (-0800)
+;; Last-Updated: Mon Jan  1 11:41:06 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 214
+;;     Update #: 216
 ;; URL: https://www.emacswiki.org/emacs/download/font-lock-menus.el
 ;; Doc URL:
 ;; Keywords: font, highlighting, syntax, decoration
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -130,7 +130,8 @@
 font-lock-menus.el bug: \
 &body=Describe bug here, starting with `emacs -Q'.  \
 Don't forget to mention your Emacs and library versions."))
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/font-lock-menus.el")
+  :link '(url-link :tag "Download"
+          "https://www.emacswiki.org/emacs/download/font-lock-menus.el")
   :link '(emacs-commentary-link :tag "Commentary" "font-lock-menus"))
 
 (defvar flm-font-lock-fontify-level nil	; For less/more fontification.
