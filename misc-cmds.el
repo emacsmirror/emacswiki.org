@@ -4,16 +4,16 @@
 ;; Description: Miscellaneous commands (interactive functions).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Nov 10 07:51:56 2017 (-0800)
+;; Last-Updated: Mon Jan  1 14:54:08 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 3293
+;;     Update #: 3295
 ;; URL: https://www.emacswiki.org/emacs/download/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -1548,7 +1548,7 @@ See `compare-windows' - this is the same, except repeatable."
   "View file `/usr/lib/X11/rgb.txt', which lists available X11 colors."
   (interactive) (view-file-other-window "/usr/lib/X11/rgb.txt")) ; In `view.el'.
 
-;; Inspired from code at http://www.masteringemacs.org/.
+;; Inspired from code at https://www.masteringemacs.org/.
 (when (> emacs-major-version 23)        ; Needs variable `list-colors-sort'.
   (defun list-colors-nearest (color &optional use-hsv-p)
     "List colors, in order of distance from COLOR.
