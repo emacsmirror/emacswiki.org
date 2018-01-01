@@ -4,16 +4,16 @@
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Tue Dec 12 11:10:32 2017 (-0800)
+;; Last-Updated: Mon Jan  1 13:57:15 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 27580
+;;     Update #: 27588
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-cmd1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -1530,7 +1530,7 @@ Vanilla `dabbrev--abbrev-at-point' raises an error if no match."
 ;; saving it for restoration when you toggle `icicle-mode'.
 ;;
 ;; BBDB Version 3.1, the Insidious Big Brother Database, is available from these locations:
-;; * http://download.savannah.gnu.org/releases/bbdb/
+;; * https://download.savannah.gnu.org/releases/bbdb/
 ;; * http://melpa.milkbox.net/
 ;;
 ;; Uses Icicles completion when there are multiple candidates.
