@@ -4,22 +4,22 @@
 ;; Description: Extensions to `help-fns.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 23 07:33:32 2017 (-0800)
+;; Last-Updated: Mon Jan  1 13:13:48 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 2226
+;;     Update #: 2227
 ;; URL: https://www.emacswiki.org/emacs/download/help-fns%2b.el
-;; Doc URL: http://emacswiki.org/HelpPlus
+;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help, faces, characters, packages, description
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `button', `cl', `cl-lib', `gv', `help-fns', `help-mode', `info',
-;;   `macroexp', `naked', `wid-edit', `wid-edit+'.
+;;   `button', `cl', `help-fns', `help-mode', `naked', `view',
+;;   `wid-edit', `wid-edit+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
