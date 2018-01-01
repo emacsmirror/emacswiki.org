@@ -1,7 +1,7 @@
 ;;; savehist-20+.el --- Save minibuffer history.
 ;; Author: Hrvoje Niksic <hniksic@xemacs.org>
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2017, Drew Adams
+;; Copyright (C) 2007-2018, Drew Adams
 ;; Copyright (C) 1997, 2005, 2006, 2007  Free Software Foundation, Inc.
 ;; URL: https://www.emacswiki.org/emacs/download/savehist-20%2b.el
 ;; Keywords: minibuffer history
@@ -20,7 +20,7 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
+;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
