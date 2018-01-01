@@ -4,16 +4,16 @@
 ;; Description: Non-interactive functions for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Sun Dec 10 19:28:58 2017 (-0800)
+;; Last-Updated: Mon Jan  1 14:12:24 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 15243
+;;     Update #: 15250
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -1957,17 +1957,16 @@ This binds variable `icicle-buffer-name-input-p' to non-nil."
       (let ((completion-ignore-case  (if (boundp 'read-buffer-completion-ignore-case)
                                          read-buffer-completion-ignore-case
                                        completion-ignore-case)))
-        (completing-read prompt
-                         (cond ((and (eq icicle-buffer-complete-fn 'internal-complete-buffer)
-                                     icicle-buffer-ignore-space-prefix-flag)
-                                'internal-complete-buffer) ; Emacs 22+
-                               (icicle-buffer-complete-fn)
-                               (t
-                                (if (listp 'icicle-bufflist)
-                                    icicle-bufflist
-                                  (mapcar (lambda (buf) (and (buffer-live-p buf)  (list (buffer-name buf))))
-                                          (buffer-list)))))
-                         nil require-match nil 'buffer-name-history default nil)))))
+        (completing-read
+         prompt
+         (cond ((and (eq icicle-buffer-complete-fn 'internal-complete-buffer)
+                     icicle-buffer-ignore-space-prefix-flag)
+                'internal-complete-buffer) ; Emacs 22+
+               (icicle-buffer-complete-fn)
+               (t
+                (let ((bufs  (if (listp icicle-bufflist) icicle-bufflist (buffer-list))))
+                  (mapcar (lambda (buf) (and (buffer-live-p buf)  (list (buffer-name buf)))) bufs))))
+         nil require-match nil 'buffer-name-history default nil)))))
 
 
 ;; REPLACE ORIGINAL `read-number' defined in `subr.el',
