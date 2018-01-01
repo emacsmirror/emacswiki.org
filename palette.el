@@ -4,17 +4,17 @@
 ;; Description: Color palette useful with RGB, HSV, and color names
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2018, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 0
 ;; Package-Requires: ((hexrgb "0"))
-;; Last-Updated: Tue Mar  7 09:36:45 2017 (-0800)
+;; Last-Updated: Mon Jan  1 15:19:41 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 918
+;;     Update #: 923
 ;; URL: https://www.emacswiki.org/emacs/download/palette.el
-;; Doc URL: http://emacswiki.org/ColorPalette
+;; Doc URL: https://emacswiki.org/emacs/ColorPalette
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -35,7 +35,7 @@
 ;;
 ;;    You will also need my library `hexrgb.el'; it is loaded
 ;;    automatically by `palette.el'.  Get it here:
-;;    http://www.emacswiki.org/hexrgb.el.
+;;    https://www.emacswiki.org/emacs/download/hexrgb.el.
 ;;
 ;;  After loading, use command `palette' to display a color palette in
 ;;  Color Palette mode (`palette-mode').  This has three sub-palettes
@@ -129,7 +129,7 @@
 ;;    then your font is probably too large.  In that case, customize
 ;;    option `palette-font' - see it for more information.  Here is a
 ;;    screenshot of how the palette should appear:
-;;    http://www.emacswiki.org/ColorPalette.el.
+;;    https://www.emacswiki.org/emacs/ColorPalette.el.
 ;;
 ;;  * By default, information about the color at any location is only
 ;;    available upon demand, by clicking `mouse-1' or `mouse-2', or
@@ -517,11 +517,11 @@ palette.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/palette.el")
+          "https://www.emacswiki.org/emacs/download/palette.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/ColorPalette")
+          "https://www.emacswiki.org/emacs/ColorPalette")
   :link '(emacs-commentary-link :tag "Commentary" "palette"))
 
 ;;;###autoload
