@@ -4,18 +4,18 @@
 ;; Description: Execute menu items as commands, with completion.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 08:37:38 2017 (-0800)
+;; Last-Updated: Mon Jan  1 14:38:30 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 927
+;;     Update #: 932
 ;; URL: https://www.emacswiki.org/emacs/download/lacarte.el
-;; Doc URL: http://www.emacswiki.org/LaCarte
+;; Doc URL: https://www.emacswiki.org/emacs/LaCarte
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
 ;;           completion, matching, local, internal, extensions,
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -167,7 +167,7 @@
 ;;  entire menu prefix to the item, from the top of the menu on down.
 ;;  With Icicles, you can directly match any parts of a menu item and
 ;;  its hierarchy path.  Icicles is here:
-;;  http://www.emacswiki.org/Icicles.
+;;  https://www.emacswiki.org/emacs/Icicles.
 ;;
 ;;  Type any part of a menu-item, then use the Page Up and Page Down
 ;;  keys (`prior' and `next') to cycle through all menu commands that
@@ -252,7 +252,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://www.emacswiki.org/emacs/download/linkd.el.
+;;  https://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Change log")
 ;;  (@> "User Options")
@@ -406,9 +406,9 @@ lacarte.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/lacarte.el")
-  :link '(url-link :tag "Description" "http://www.emacswiki.org/LaCarte")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/lacarte.el")
+  :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/LaCarte")
   :link '(emacs-commentary-link :tag "Commentary" "lacarte.el"))
 
 ;;;###autoload
