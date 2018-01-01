@@ -4,18 +4,18 @@
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 2017.12.10
 ;; Package-Requires: ()
-;; Last-Updated: Sun Dec 10 21:58:31 2017 (-0800)
+;; Last-Updated: Mon Jan  1 14:21:09 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 23716
+;;     Update #: 23717
 ;; URL: https://www.emacswiki.org/emacs/download/icicles.el
 ;; Doc URL: https://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
