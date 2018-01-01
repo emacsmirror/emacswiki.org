@@ -4,18 +4,18 @@
 ;; Description: fuzzy matching
 ;; Author: Simon Marshall (concat "simon" "@" "gnu" ".org")
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 1993, 1994 Simon Marshall, all rights reserved.
 ;; Created: 1993, by Simon Marshall
 ;; Version: 1.04
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 22 18:00:15 2017 (-0800)
+;; Last-Updated: Mon Jan  1 11:46:46 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 190
+;;     Update #: 193
 ;; URL: https://www.emacswiki.org/emacs/download/fuzzy-match.el
-;; Doc URL: http://emacswiki.org/Icicles_-_Fuzzy_Completion
+;; Doc URL: https://emacswiki.org/emacs/Icicles_-_Fuzzy_Completion
 ;; Keywords: matching completion string
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -165,7 +165,7 @@
 ;;
 ;;  If you like `fuzzy-match.el', you might also be interested in
 ;;  Icicles, which lets you use the same fuzzy matching for minibuffer
-;;  input completion: http://www.emacswiki.org/Icicles.
+;;  input completion: https://www.emacswiki.org/emacs/Icicles.
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
