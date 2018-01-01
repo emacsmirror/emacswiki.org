@@ -4,16 +4,16 @@
 ;; Description: Extensions to `emacsbug.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2013-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2013-2018, Drew Adams, all rights reserved.
 ;; Created: Sat Jan 19 15:24:48 2013 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Sep 13 07:49:51 2017 (-0700)
+;; Last-Updated: Mon Jan  1 11:13:19 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 389
+;;     Update #: 393
 ;; URL: https://www.emacswiki.org/emacs/download/emacsbug%2b.el
 ;; Keywords: report bug
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -130,9 +130,9 @@ emacsbug+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/emacsbug+.el"))
+          "https://www.emacswiki.org/emacs/download/emacsbug%2b.el"))
 
 ;;;###autoload
 (defcustom ebp-report-emacs-bug-included-fields '(version settings major-mode
@@ -399,7 +399,7 @@ Prompts for bug subject.  Leaves you in a mail buffer."
               'face 'link
               'help-echo (concat "mouse-2, RET: Follow this link")
               'action (lambda (button)
-                        (browse-url "http://lists.gnu.org/archive/html/bug-gnu-emacs/"))
+                        (browse-url "https://lists.gnu.org/archive/html/bug-gnu-emacs/"))
               'follow-link t)
              (insert " mailing list\nand the GNU bug tracker at ")
              (insert-text-button
@@ -407,7 +407,7 @@ Prompts for bug subject.  Leaves you in a mail buffer."
               'face 'link
               'help-echo (concat "mouse-2, RET: Follow this link")
               'action (lambda (button)
-                        (browse-url "http://debbugs.gnu.org/"))
+                        (browse-url "https://debbugs.gnu.org/"))
               'follow-link t)
              (insert ".\n\n")))
       (insert "Please ensure that the `From:' line contains a valid email address.\n")
