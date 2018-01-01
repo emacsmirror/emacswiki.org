@@ -4,17 +4,17 @@
 ;; Description: Enhancements to library `dired-details+.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 13:33:01 2005
 ;; Version: 0
 ;; Package-Requires: ((dired-details "0"))
-;; Last-Updated: Sun Sep  3 12:27:15 2017 (-0700)
+;; Last-Updated: Mon Jan  1 10:52:44 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 234
+;;     Update #: 238
 ;; URL: https://www.emacswiki.org/emacs/download/dired-details%2b.el
-;; Doc URL: http://www.emacswiki.org/DiredDetails
+;; Doc URL: https://www.emacswiki.org/emacs/DiredDetails
 ;; Keywords: dired, frames
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -29,7 +29,7 @@
 ;;
 ;;
 ;;    NOTE: If you use Emacs 24.4 or later, and if you use library
-;;          `dired+.el', then you do not need this library or library
+;;          `dired+.el', THEN YOU DO NOT NEED THIS library or library
 ;;          `dired-details.el'.
 ;;
 ;;          Instead, you can use `dired-hide-details-mode'.  Library
