@@ -7,13 +7,13 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Oct 27 14:06:30 2017 (-0700)
+;; Last-Updated: Mon Jan  1 09:44:28 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 3957
+;;     Update #: 3960
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-bmu.el
-;; Doc URL: http://www.emacswiki.org/BookmarkPlus
+;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -52,7 +52,7 @@
 ;;       Web'.
 ;;
 ;;    2. From the Emacs-Wiki Web site:
-;;       http://www.emacswiki.org/BookmarkPlus.
+;;       https://www.emacswiki.org/emacs/BookmarkPlus.
 ;;
 ;;    3. From the Bookmark+ group customization buffer:
 ;;       `M-x customize-group bookmark-plus', then click link
@@ -71,7 +71,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://www.emacswiki.org/emacs/download/linkd.el.
+;;  https://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Things Defined Here")
 ;;  (@> "Utility Functions")
@@ -514,8 +514,8 @@ whatever OLD is bound to in MAP, or in OLDMAP, if provided."
 Bookmark+ bug: \
 &body=Describe bug here, starting with `emacs -Q'.  \
 Don't forget to mention your Emacs and library versions."))
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/bookmark+.el")
-  :link '(url-link :tag "Description" "http://www.emacswiki.org/BookmarkPlus")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/bookmark%2b.el")
+  :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/BookmarkPlus")
   :link '(emacs-commentary-link :tag "Commentary" "bookmark+"))
 
 (defface bmkp->-mark '((((background dark)) (:foreground "Yellow"))
@@ -757,7 +757,7 @@ that supports images, is 24x24 pixels.  That wastes vertical space, so
 you probably want to use something smaller.
 
 If you don't have another image that you prefer, try this one (16x16):
-http://www.emacswiki.org/emacs/BookmarkPlusImageFileDefaultIcon"
+https://www.emacswiki.org/emacs/BookmarkPlusImageFileDefaultIcon"
   :type '(choice
           (file  :tag "Use iconic image file")
           (const :tag "Show no image"))
@@ -4321,7 +4321,7 @@ Autosave bookmarks:\t%s\nAutosave list display:\t%s\n\n\n"
            (get 'help-xref 'button-category-symbol)) ; In `button.el'
   (define-button-type 'bmkp-help-button
       :supertype 'help-xref
-      'help-function #'(lambda () (browse-url "http://www.emacswiki.org/emacs/BookmarkPlus"))
+      'help-function #'(lambda () (browse-url "https://www.emacswiki.org/emacs/BookmarkPlus"))
       'help-echo
       (purecopy "mouse-2, RET: Bookmark+ documentation on the Emacs Wiki (requires Internet access)"))
   (define-button-type 'bmkp-commentary-button
