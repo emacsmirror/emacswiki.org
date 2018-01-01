@@ -4,13 +4,13 @@
 ;; Description: Automatically resize one-window frames to fit.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 10:06:18 2000
 ;; Version: 0
 ;; Package-Requires: ((fit-frame "0"))
-;; Last-Updated: Tue Feb 21 07:52:06 2017 (-0800)
+;; Last-Updated: Mon Jan  1 09:29:01 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 711
+;;     Update #: 712
 ;; URL: https://www.emacswiki.org/emacs/download/autofit-frame.el
 ;; Doc URL: http://www.emacswiki.org/emacs/Shrink-Wrapping_Frames
 ;; Keywords: internal, extensions, convenience, local
