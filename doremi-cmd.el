@@ -4,17 +4,17 @@
 ;; Description: Miscellaneous Do Re Mi commands
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0"))
-;; Last-Updated: Tue Feb 21 16:31:48 2017 (-0800)
+;; Last-Updated: Mon Jan  1 11:01:31 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 504
+;;     Update #: 510
 ;; URL: https://www.emacswiki.org/emacs/download/doremi-cmd.el
-;; Doc URL: http://www.emacswiki.org/DoReMi
+;; Doc URL: https://www.emacswiki.org/emacs/DoReMi
 ;; Keywords: keys, cycle, repeat
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -256,11 +256,11 @@ doremi-cmd.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/doremi-cmd.el")
+          "https://www.emacswiki.org/emacs/download/doremi-cmd.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/Doremi")
+          "https://www.emacswiki.org/emacs/Doremi")
   :link '(emacs-commentary-link :tag "Commentary" "doremi-cmd")
   )
 
@@ -394,7 +394,7 @@ flips the option value for the current invocation of the command.
 
 To use this command, you must have loaded library `color-theme.el',
 available from http://www.nongnu.org/color-theme.  See also:
-http://www.emacswiki.org/ColorTheme."
+https://www.emacswiki.org/emacs/ColorTheme."
   (interactive "P")
   (unless (prog1 (require 'color-theme nil t)
             (when (and (fboundp 'color-theme-initialize)
