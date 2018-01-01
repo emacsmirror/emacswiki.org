@@ -4,17 +4,17 @@
 ;; Description: Extensions to `mouse.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 14:47:12 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 08:59:44 2017 (-0800)
+;; Last-Updated: Mon Jan  1 15:05:43 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 605
+;;     Update #: 607
 ;; URL: https://www.emacswiki.org/emacs/download/mouse%2b.el
-;; Doc URL: http://emacswiki.org/MousePlus
+;; Doc URL: https://emacswiki.org/emacs/MousePlus
 ;; Keywords: mouse
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
