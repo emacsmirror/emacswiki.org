@@ -4,15 +4,15 @@
 ;; Description: Extensions to `info.el' for Emacs 20-22.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Sun May  4 09:18:30 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar  3 15:02:17 2017 (-0800)
+;; Last-Updated: Mon Jan  1 14:31:05 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 5240
+;;     Update #: 5244
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b20.el
-;; Doc URL: http://www.emacswiki.org/InfoPlus
+;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x
 ;; 
@@ -621,9 +621,9 @@ info+20.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/info+20.el")
-  :link '(url-link :tag "Description" "http://www.emacswiki.org/InfoPlus")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/info%2b20.el")
+  :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/InfoPlus")
   :link '(emacs-commentary-link :tag "Commentary" "info+20")
   )
 
@@ -1667,7 +1667,7 @@ it says do not attempt further (recursive) error recovery."
                          ;; Shouldn't really happen, but sometimes does,
                          ;; eg on Debian systems with buggy packages;
                          ;; so may as well try it.
-                         ;; http://lists.gnu.org/archive/html/emacs-devel/2012-03/msg00005.html
+                         ;; https://lists.gnu.org/archive/html/emacs-devel/2012-03/msg00005.html
                          (progn (setq file (expand-file-name "dir.gz" truename))
                                 (file-attributes file)))))
                   (setq dirs-done
