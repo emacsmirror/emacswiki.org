@@ -6,17 +6,17 @@
 ;;      Sebastian Kremer <sk@thp.uni-koeln.de>,
 ;;      Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Dec 30 09:16:48 2017 (-0800)
+;; Last-Updated: Mon Jan  1 11:31:09 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1242
+;;     Update #: 1245
 ;; URL: https://www.emacswiki.org/emacs/download/find-dired%2b.el
-;; Doc URL: https://emacswiki.org/LocateFilesAnywhere
+;; Doc URL: https://emacswiki.org/emacs/LocateFilesAnywhere
 ;; Keywords: internal, unix, tools, matching, local
-;; Compatibility: GNU Emacs 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
