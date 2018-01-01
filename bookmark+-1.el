@@ -7,13 +7,13 @@
 ;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Dec  3 15:54:34 2017 (-0800)
+;; Last-Updated: Mon Jan  1 09:41:15 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 8583
+;;     Update #: 8591
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
-;; Doc URL: http://www.emacswiki.org/BookmarkPlus
+;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -46,7 +46,7 @@
 ;;       Web'.
 ;;
 ;;    2. From the Emacs-Wiki Web site:
-;;       http://www.emacswiki.org/BookmarkPlus.
+;;       https://www.emacswiki.org/emacs/BookmarkPlus.
 ;;
 ;;    3. From the Bookmark+ group customization buffer:
 ;;       `M-x customize-group bookmark-plus', then click link
@@ -65,7 +65,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://www.emacswiki.org/emacs/download/linkd.el.
+;;  https://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Things Defined Here")
 ;;  (@> "User Options (Customizable)")
@@ -10030,8 +10030,8 @@ recorded number of visits.)  You can toggle the option using
 Bookmark bug: \
 &body=Describe bug here, starting with `emacs -Q'.  \
 Don't forget to mention your Emacs and library versions."))
-          :link '(url-link :tag "Download" "http://www.emacswiki.org/bookmark+.el")
-          :link '(url-link :tag "Description" "http://www.emacswiki.org/BookmarkPlus")
+          :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/bookmark%2b.el")
+          :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/BookmarkPlus")
           :link '(emacs-commentary-link :tag "Commentary" "bookmark+")
           (cond (bmkp-eww-auto-bookmark-mode
                  (add-hook   'eww-after-render-hook      'bmkp-set-eww-bookmark-here)
@@ -12623,8 +12623,8 @@ NOTE: If you use Emacs 21 then there is no global version of the mode
 Bookmark bug: \
 &body=Describe bug here, starting with `emacs -Q'.  \
 Don't forget to mention your Emacs and library versions."))
-               :link '(url-link :tag "Download" "http://www.emacswiki.org/bookmark+.el")
-               :link '(url-link :tag "Description" "http://www.emacswiki.org/BookmarkPlus")
+               :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/bookmark%2b.el")
+               :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/BookmarkPlus")
                :link '(emacs-commentary-link :tag "Commentary" "bookmark+")
                (when bmkp-auto-idle-bookmark-mode-timer
                  (cancel-timer bmkp-auto-idle-bookmark-mode-timer)
@@ -12749,8 +12749,8 @@ recorded number of visits.)  You can toggle the option using
 Bookmark bug: \
 &body=Describe bug here, starting with `emacs -Q'.  \
 Don't forget to mention your Emacs and library versions."))
-          :link '(url-link :tag "Download" "http://www.emacswiki.org/bookmark+.el")
-          :link '(url-link :tag "Description" "http://www.emacswiki.org/BookmarkPlus")
+          :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/bookmark%2b.el")
+          :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/BookmarkPlus")
           :link '(emacs-commentary-link :tag "Commentary" "bookmark+")
           (if bmkp-info-auto-bookmark-mode
               (add-hook 'Info-selection-hook 'bmkp-set-info-bookmark-with-node-name)
@@ -12828,8 +12828,8 @@ positive.  Non-interactively there is no prompt for confirmation."
 Bookmark bug: \
 &body=Describe bug here, starting with `emacs -Q'.  \
 Don't forget to mention your Emacs and library versions."))
-            :link '(url-link :tag "Download" "http://www.emacswiki.org/bookmark+.el")
-            :link '(url-link :tag "Description" "http://www.emacswiki.org/BookmarkPlus")
+            :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/bookmark%2b.el")
+            :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/BookmarkPlus")
             :link '(emacs-commentary-link :tag "Commentary" "bookmark+")
             (cond ((not bmkp-temporary-bookmarking-mode) ; Turn off.
                    (when (fboundp 'bmkp-unlight-bookmarks) ; In `bookmark+-lit.el'.
