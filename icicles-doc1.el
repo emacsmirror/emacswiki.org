@@ -4,16 +4,16 @@
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Last-Updated: Tue Dec 12 11:01:43 2017 (-0800)
+;; Last-Updated: Mon Jan  1 14:03:44 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 28627
+;;     Update #: 28632
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-doc1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -6066,9 +6066,9 @@
 ;;  matched any character *except* a newline character (aka `^J', aka
 ;;  `C-j').  Recent languages typically have an additional mode in
 ;;  which `.' can match any character, including a newline.  See, for
-;;  example, http://www.regular-expressions.info/dot.html and this
+;;  example, https://www.regular-expressions.info/dot.html and this
 ;;  language comparison for regexp features:
-;;  http://www.regular-expressions.info/refflavors.html.
+;;  https://www.regular-expressions.info/refflavors.html.
 ;;
 ;;  It is not unusual to manipulate multi-line completion candidates
 ;;  in Icicles, in which case it can be handy to let `.' match any
