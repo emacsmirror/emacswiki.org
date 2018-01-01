@@ -4,17 +4,17 @@
 ;; Description: Progressively reveal text after the cursor.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2014-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2014-2018, Drew Adams, all rights reserved.
 ;; Created: Fri May 16 07:28:05 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 11:23:04 2017 (-0800)
+;; Last-Updated: Mon Jan  1 15:32:11 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 29
-;; URL: http://www.emacswiki.org/reveal-next.el
-;; Doc URL: http://www.emacswiki.org/RevealNextTextMode
+;;     Update #: 33
+;; URL: https://www.emacswiki.org/emacs/download/reveal-next.el
+;; Doc URL: https://www.emacswiki.org/emacs/RevealNextTextMode
 ;; Keywords: hide show invisible learning
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -57,7 +57,7 @@
 ;;
 ;;
 ;; This library was inspired by this Stack Overflow question:
-;; http://stackoverflow.com/q/23677844/729907
+;; https://stackoverflow.com/q/23677844/729907
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
