@@ -4,17 +4,17 @@
 ;; Description: Search text-property or overlay-property contexts.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2011-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2018, Drew Adams, all rights reserved.
 ;; Created: Sun Sep  8 11:51:41 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 19 10:34:35 2017 (-0800)
+;; Last-Updated: Mon Jan  1 14:35:33 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1423
+;;     Update #: 1427
 ;; URL: https://www.emacswiki.org/emacs/download/isearch-prop.el
-;; Doc URL: http://www.emacswiki.org/IsearchPlus
+;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Keywords: search, matching, invisible, thing, help
-;; Compatibility: GNU Emacs: 23.2+, 24.x, 25.x
+;; Compatibility: GNU Emacs: 23.2+, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -38,7 +38,8 @@
 ;;  but those features will be unavailable without it.
 ;;
 ;;  Some of the features provided by this library are based on similar
-;;  features introduced by Icicles (http://www.emacswiki.org/Icicles).
+;;  features introduced by Icicles
+;;  (https://www.emacswiki.org/emacs/Icicles).
 ;;
 ;;  More description below - see Overview of Features.
 ;;
@@ -51,7 +52,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://www.emacswiki.org/emacs/download/linkd.el.
+;;  https://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Overview of Features")
 ;;  (@> "Macros")
