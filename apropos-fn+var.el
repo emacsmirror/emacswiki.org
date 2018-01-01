@@ -4,13 +4,13 @@
 ;; Description: Apropos for functions and variables
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Nov 28 15:41:09 2005
 ;; Version:
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 21 07:48:00 2017 (-0800)
+;; Last-Updated: Mon Jan  1 09:22:27 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 406
+;;     Update #: 407
 ;; URL: https://www.emacswiki.org/emacs/download/apropos-fn%2bvar.el
 ;; Keywords: apropos
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
