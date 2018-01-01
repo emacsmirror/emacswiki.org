@@ -4,17 +4,17 @@
 ;; Description: Highlight called Lisp functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2013-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2013-2018, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 17 13:59:36 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 23 07:42:22 2017 (-0800)
+;; Last-Updated: Mon Jan  1 13:38:29 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 53
+;;     Update #: 57
 ;; URL: https://www.emacswiki.org/emacs/download/highlight-fns.el
-;; Doc URL: http://emacswiki.org/HighlightLispFunctions
+;; Doc URL: https://emacswiki.org/emacs/HighlightLispFunctions
 ;; Keywords: highlight, lisp, functions
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -108,8 +108,10 @@ With prefix ARG, turn the mode on if ARG is positive, off otherwise."
 highlight-fns.el bug: \
 &body=Describe bug here, starting with `emacs -Q'.  \
 Don't forget to mention your Emacs and library versions."))
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/highlight-fns.el")
-  :link '(url-link :tag "Description" "http://emacswiki.org/HighlightLispFunctions")
+  :link '(url-link :tag "Download"
+          "https://www.emacswiki.org/emacs/download/highlight-fns.el")
+  :link '(url-link :tag "Description"
+          "https://emacswiki.org/emacs/HighlightLispFunctions")
   :link '(emacs-commentary-link :tag "Commentary" "highlight-fns")
   (if highlight-lisp-fns-mode
       (font-lock-add-keywords nil '((highlight-lisp-fns . 'highlight-lisp-fns))
