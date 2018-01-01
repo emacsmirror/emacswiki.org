@@ -4,17 +4,17 @@
 ;; Description: Extensions to `dired-sort-menu.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 07 12:39:36 2005
 ;; Version: 0
 ;; Package-Requires: ((dired-sort-menu "0"))
-;; Last-Updated: Tue Feb 21 16:30:46 2017 (-0800)
+;; Last-Updated: Mon Jan  1 10:56:51 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 135
+;;     Update #: 138
 ;; URL: https://www.emacswiki.org/emacs/download/dired-sort-menu%2b.el
-;; Doc URL: http://emacswiki.org/DiredSortMenu
+;; Doc URL: https://emacswiki.org/emacs/DiredSortMenu
 ;; Keywords: directories, diredp, dired
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -27,7 +27,10 @@
 ;;    Extensions to `dired-sort-menu.el'
 ;;
 ;; Francis J. Wright <F.J.Wright@maths.qmw.ac.uk> wrote library
-;; `dired-sort-menu.el' (http://centaur.maths.qmw.ac.uk/Emacs/).
+;; `dired-sort-menu.el'
+;; (https://www.emacswiki.org/emacs/dired-sort-menu.el, originally
+;; http://centaur.maths.qmw.ac.uk/Emacs/).
+;;
 ;; Library `dired-sort-menu+.el' modifies `dired-sort-menu.el' to play
 ;; better with other libraries from Drew Adams.
 ;;
