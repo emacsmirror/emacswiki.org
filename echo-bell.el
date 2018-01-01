@@ -5,16 +5,16 @@
 ;; Author: Miles Bader <miles@gnu.org>
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2009, Miles Bader, all rights reserved.
-;; Copyright (C) 2009-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2009-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 27 20:32:14 2009 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 21 16:35:30 2017 (-0800)
+;; Last-Updated: Mon Jan  1 11:07:11 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 125
+;;     Update #: 128
 ;; URL: https://www.emacswiki.org/emacs/download/echo-bell.el
 ;; Keywords: echo area, bell, ding
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;; 
 ;; Features that might be required by this library:
 ;;
@@ -34,7 +34,7 @@
 ;;  * `echo-bell-delay' is the number of seconds to show it.
 ;;  * `echo-bell-background' is the background color to use.
 ;; 
-;; Initial code was from http://www.emacswiki.org/emacs/MilesBader.
+;; Initial code was from https://www.emacswiki.org/emacs/MilesBader.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -52,7 +52,7 @@
 ;; 2009/02/28 dadams
 ;;     Added: echo-bell-background.
 ;;     Changed default value of echo-bell-string from ding.
-;;     Created from post at http://www.emacswiki.org/emacs/MilesBader.
+;;     Created from post at https://www.emacswiki.org/emacs/MilesBader.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
