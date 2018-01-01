@@ -4,17 +4,17 @@
 ;; Description: Extensions to `browse-kill-ring.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2018, Drew Adams, all rights reserved.
 ;; Created: Tue May 25 16:35:05 2004
 ;; Version: 0
 ;; Package-Requires: ((browse-kill-ring "0"))
-;; Last-Updated: Tue Feb 21 07:57:49 2017 (-0800)
+;; Last-Updated: Mon Jan  1 10:03:09 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 973
+;;     Update #: 974
 ;; URL: https://www.emacswiki.org/emacs/download/browse-kill-ring%2b.el
-;; Doc URL: http://www.emacswiki.org/BrowseKillRing
+;; Doc URL: https://www.emacswiki.org/emacs/BrowseKillRing
 ;; Keywords: convenience
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
