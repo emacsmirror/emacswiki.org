@@ -4,17 +4,17 @@
 ;; Description: Provide for naked key descriptions: no angle brackets.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2011-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Oct  7 13:12:52 2011 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Apr 18 18:21:45 2017 (-0700)
+;; Last-Updated: Mon Jan  1 15:09:07 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 181
+;;     Update #: 183
 ;; URL: https://www.emacswiki.org/emacs/download/naked.el
-;; Doc URL: http://www.emacswiki.org/NaKeD
+;; Doc URL: https://www.emacswiki.org/emacs/NaKeD
 ;; Keywords: lisp, key, print, format, help
-;; Compatibility: GNU Emacs 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
