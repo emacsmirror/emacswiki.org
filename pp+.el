@@ -4,17 +4,17 @@
 ;; Description: Extensions to `pp.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Oct 23 14:48:58 2017 (-0700)
+;; Last-Updated: Mon Jan  1 15:21:16 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 444
+;;     Update #: 446
 ;; URL: https://www.emacswiki.org/emacs/download/pp%2b.el
-;; Doc URL: http://emacswiki.org/EvaluatingExpressions
+;; Doc URL: https://emacswiki.org/emacs/EvaluatingExpressions
 ;; Keywords: lisp
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
