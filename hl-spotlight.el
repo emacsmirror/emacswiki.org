@@ -4,17 +4,17 @@
 ;; Description: Extension of hl-line.el to spotlight current few lines.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2009-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2009-2018, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 23 07:46:19 2017 (-0800)
+;; Last-Updated: Mon Jan  1 13:48:00 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 477
+;;     Update #: 480
 ;; URL: https://www.emacswiki.org/emacs/download/hl-spotlight.el
-;; Doc URL: http://www.emacswiki.org/HighlightCurrentLine
+;; Doc URL: https://www.emacswiki.org/emacs/HighlightCurrentLine
 ;; Keywords: highlight, cursor, accessibility
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -37,7 +37,7 @@
 ;;  reading text (as opposed to code).  This is controlled by user
 ;;  option `hl-spotlight-keep-centered-flag'. You can obtain library
 ;;  `centered-cursor-mode.el' here:
-;;  http://www.emacswiki.org/emacs/centered-cursor-mode.el.
+;;  https://www.emacswiki.org/emacs/download/centered-cursor-mode.el.
 ;;
 ;;  If you want the spotlight to automatically move down the page
 ;;  progressively, use command `hl-spotlight-scan'.  You might find
