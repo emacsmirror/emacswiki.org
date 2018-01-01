@@ -4,18 +4,18 @@
 ;; Description: Apropos Unicode characters.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2015-2016, Drew Adams, all rights reserved.
+;; Copyright (C) 2015-2018, Drew Adams, all rights reserved.
 ;; Created: Thu May  7 14:08:38 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 21 07:51:06 2017 (-0800)
+;; Last-Updated: Mon Jan  1 09:26:45 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 725
+;;     Update #: 728
 ;; URL: https://www.emacswiki.org/emacs/download/apu.el
-;; Doc URL: http://www.emacswiki.org/AproposUnicode
-;; Other URL: http://en.wikipedia.org/wiki/The_World_of_Apu ;-)
+;; Doc URL: https://www.emacswiki.org/emacs/AproposUnicode
+;; Other URL: https://en.wikipedia.org/wiki/The_World_of_Apu ;-)
 ;; Keywords: unicode, characters, encoding, commands, ucs-names
-;; Compatibility: GNU Emacs: 24.x, 25.x
+;; Compatibility: GNU Emacs: 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -204,7 +204,7 @@
 ;; General Public License for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
+;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -225,8 +225,8 @@
 apu.el bug: \
 &body=Describe bug here, starting with `emacs -Q'.  \
 Don't forget to mention your Emacs and library versions."))
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/apu.el")
-  :link '(url-link :tag "Description" "http://www.emacswiki.org/AproposUnicode")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/apu.el")
+  :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/AproposUnicode")
   :link '(emacs-commentary-link :tag "Commentary" "apu"))
 
 (defcustom apu-match-only-displayable-chars-flag t
