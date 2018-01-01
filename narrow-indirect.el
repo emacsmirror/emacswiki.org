@@ -4,17 +4,17 @@
 ;; Description: Narrow using an indirect buffer that is a clone
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2014-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2014-2018, Drew Adams, all rights reserved.
 ;; Created: Sun May 11 08:05:59 2014 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Aug 20 17:47:00 2017 (-0700)
+;; Last-Updated: Mon Jan  1 15:11:12 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 205
+;;     Update #: 208
 ;; URL: https://www.emacswiki.org/emacs/download/narrow-indirect.el
 ;; Doc URL: https://www.emacswiki.org/emacs/NarrowIndirect
 ;; Keywords: narrow indirect buffer clone view multiple-modes
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -115,7 +115,7 @@
 ;;
 ;;   The idea and original code for a command that combines narrowing
 ;;   with cloning a buffer as an indirect-buffer is due to Zane Ashby:
-;;   http://demonastery.org/2013/04/emacs-narrow-to-region-indirect/.
+;;   https://demonastery.org/2013/04/emacs-narrow-to-region-indirect/.
 ;;
 ;;   In Emacs bug thread #17401, Phil Sainty proposed adding three
 ;;   commands to Emacs based on this approach.  Lennart Borgman
@@ -181,7 +181,7 @@ narrow-indirect.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew" "https://www.emacswiki.org/emacs/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/narrow-indirect.el")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/narrow-indirect.el")
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/NarrowIndirect")
   :link '(emacs-commentary-link :tag "Commentary" "narrow-indirect"))
 
