@@ -4,17 +4,17 @@
 ;; Description: Extensions to `imenu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Fri Mar  3 14:57:23 2017 (-0800)
+;; Last-Updated: Mon Jan  1 14:25:10 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1045
+;;     Update #: 1048
 ;; URL: https://www.emacswiki.org/emacs/download/imenu%2b.el
-;; Doc URL: http://emacswiki.org/ImenuMode
+;; Doc URL: https://emacswiki.org/emacs/ImenuMode
 ;; Keywords: tools, menus
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -226,9 +226,9 @@ imenu+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/imenu+.el")
-  :link '(url-link :tag "Description" "http://www.emacswiki.org/ImenuMode#ImenuPlus")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/imenu+.el")
+  :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/ImenuMode#ImenuPlus")
   :link '(emacs-commentary-link :tag "Commentary" "imenu+"))
 
 (when (fboundp 'syntax-ppss)            ; Emacs 22+.
