@@ -4,17 +4,17 @@
 ;; Description: Commands to list Emacs Lisp library dependencies.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 30 12:29:29 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 08:55:46 2017 (-0800)
+;; Last-Updated: Mon Jan  1 14:40:14 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 757
+;;     Update #: 760
 ;; URL: https://www.emacswiki.org/emacs/download/lib-requires.el
-;; Doc URL: http://emacswiki.org/LibraryDependencies
+;; Doc URL: https://emacswiki.org/emacs/LibraryDependencies
 ;; Keywords: libraries, files
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -139,11 +139,11 @@ lib-requires.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/lib-requires.el")
+          "https://www.emacswiki.org/emacs/download/lib-requires.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/LibraryDependencies#LibRequires")
+          "https://www.emacswiki.org/emacs/LibraryDependencies#LibRequires")
   :link '(emacs-commentary-link :tag "Commentary" "lib-requires")
   )
 
