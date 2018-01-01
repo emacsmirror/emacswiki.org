@@ -4,25 +4,23 @@
 ;; Description: Extensions to `isearch.el' (incremental search).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Nov 12 21:15:34 2017 (-0800)
+;; Last-Updated: Mon Jan  1 14:33:36 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 5908
+;;     Update #: 5913
 ;; URL: https://www.emacswiki.org/emacs/download/isearch%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/IsearchPlus
 ;; Doc URL: https://www.emacswiki.org/emacs/DynamicIsearchFiltering
 ;; Keywords: help, matching, internal, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `backquote', `bytecomp', `cconv', `cl', `cl-lib',
-;;   `color', `frame-fns', `gv', `hexrgb', `isearch-prop',
-;;   `macroexp', `misc-cmds', `misc-fns', `strings', `thingatpt',
-;;   `thingatpt+', `zones'.
+;;   `avoid', `cl', `frame-fns', `misc-cmds', `misc-fns', `strings',
+;;   `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -65,7 +63,7 @@
 ;;  navigate around the sections of this doc.  Linkd mode will
 ;;  highlight this Index, as well as the cross-references and section
 ;;  headings throughout this file.  You can get `linkd.el' here:
-;;  http://www.emacswiki.org/emacs/download/linkd.el.
+;;  https://www.emacswiki.org/emacs/download/linkd.el.
 ;;
 ;;  (@> "Overview of Features")
 ;;  (@> "Change log")
@@ -1911,8 +1909,8 @@
 Isearch+ bug: \
 &body=Describe bug here, starting with `emacs -Q'.  \
 Don't forget to mention your Emacs and library versions."))
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/isearch+.el")
-  :link '(url-link :tag "Description" "http://www.emacswiki.org/IsearchPlus")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/isearch%2b.el")
+  :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/IsearchPlus")
   :link '(emacs-commentary-link :tag "Commentary" "isearch+"))
 
 ;; Needed only for Emacs < 22.
@@ -3361,7 +3359,7 @@ The following additional command keys are active while editing.
                                     nil t)
               isearch-new-message  (mapconcat 'isearch-text-char-description isearch-new-string "")))))
 
-  ;; Suggested by Juri Linkov: http://lists.gnu.org/archive/html/emacs-devel/2012-12/msg00281.html.
+  ;; Suggested by Juri Linkov: https://lists.gnu.org/archive/html/emacs-devel/2012-12/msg00281.html.
   ;;
   (defun isearchp-open-recursive-edit () ; Bound to `C-x o' in `isearch-mode-map'.
     "Invoke the editor command loop recursively, during Isearch.
