@@ -4,17 +4,17 @@
 ;; Description:  Highlight buffer name in mode line for selected window.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2015-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2015-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Jul 10 09:37:03 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jan  1 10:59:12 2017 (-0800)
+;; Last-Updated: Mon Jan  1 15:04:08 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 36
-;; URL: http://www.emacswiki.org/modeline-win.el
-;; Doc URL: http://www.emacswiki.org/emacs/ModeLineSelectedWindow
+;;     Update #: 39
+;; URL: https://www.emacswiki.org/emacs/download/modeline-win.el
+;; Doc URL: https://www.emacswiki.org/emacs/ModeLineSelectedWindow
 ;; Keywords: mode-line, buffer, window
-;; Compatibility: GNU Emacs: 24.4+, 25.x
+;; Compatibility: GNU Emacs: 24.4+, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -71,7 +71,7 @@
 ;; General Public License for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
+;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
