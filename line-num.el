@@ -4,18 +4,18 @@
 ;; Description: Display line numbers in left-margin of buffer.
 ;; Author: (Darryl Okahata) darrylo@hpsrdmo, Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 1989, Hewlett-Packard, all rights reserved.
 ;; Created: Wed Mar 31 16:18:24 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Tue Mar  7 08:38:38 2017 (-0800)
+;;; Last-Updated: Mon Jan  1 14:41:36 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 222
+;;     Update #: 224
 ;; URL: https://www.emacswiki.org/emacs/download/line-num.el
-;; Doc URL: http://emacswiki.org/LineNumbers
+;; Doc URL: https://emacswiki.org/emacs/LineNumbers
 ;; Keywords: local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
