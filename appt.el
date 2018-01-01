@@ -6,12 +6,12 @@
 ;;      Drew Adams
 ;; Maintainer: Drew Adams 
 ;; Copyright (C) 1989, 1990, 1994, 1998 Free Software Foundation, Inc.
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Aug  3 18:14:22 1995
 ;; Version: 0
-;; Last-Updated: Tue Feb 21 15:38:40 2017 (-0800)
+;; Last-Updated: Mon Jan  1 09:17:52 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 693
+;;     Update #: 697
 ;; URL: https://www.emacswiki.org/emacs/download/appt.el
 ;; Keywords: calendar, local
 ;; Compatibility: GNU Emacs 20.x
@@ -29,8 +29,8 @@
 ;;
 ;;    Notification of today's appointments from your diary file.
 ;;
-;; Note: This code is quite old, and is likely obsolete now.  You
-;;       might find it useful in some way to mine - or not. ;-)
+;; Note: This code is quite old, and is no doubt obsolete now.  You
+;;       might find it useful in some way - or not. ;-)
 ;;
 ;; -------------------------------------------------------------------
 ;;
