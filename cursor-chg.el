@@ -4,16 +4,17 @@
 ;; Description: Change cursor dynamically, depending on the context.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Aug 29 11:23:06 2006
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 21 16:09:59 2017 (-0800)
+;; Last-Updated: Mon Jan  1 10:31:16 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 215
+;;     Update #: 217
 ;; URL: https://www.emacswiki.org/emacs/download/cursor-chg.el
+;; Doc URL: https://www.emacswiki.org/emacs/ChangingCursorDynamically
 ;; Keywords: cursor, accessibility
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -272,10 +273,10 @@ cursor-chg.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
       :link '(url-link :tag "Other Libraries by Drew"
-              "http://www.emacswiki.org/DrewsElispLibraries")
-      :link '(url-link :tag "Download" "http://www.emacswiki.org/cursor-chg.el")
+              "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+      :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/cursor-chg.el")
       :link '(url-link :tag "Description"
-              "http://www.emacswiki.org/ChangingCursorDynamically")
+              "https://www.emacswiki.org/emacs/ChangingCursorDynamically")
       :link '(emacs-commentary-link :tag "Commentary" "cursor-chg")
       (cond (change-cursor-mode
              (if curchg-change-cursor-on-overwrite/read-only-flag
