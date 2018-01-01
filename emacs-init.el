@@ -4,16 +4,16 @@
 ;; Description: Emacs init file for use with libraries from Drew Adams
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 15:54:33 1995
 ;; Version: 0
 ;; Package-Requires: ((start "0"))
-;; Last-Updated: Tue Feb 21 16:38:14 2017 (-0800)
+;; Last-Updated: Mon Jan  1 11:10:54 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 2186
+;;     Update #: 2188
 ;; URL: https://www.emacswiki.org/emacs/download/emacs-init.el
 ;; Keywords: init, .emacs, _emacs, dotemacs
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -38,24 +38,23 @@
 ;;   `fuzzy', `fuzzy-match', `header2', `help+20', `hexrgb',
 ;;   `highlight', `highlight-chars', `icicles', `icicles-cmd1',
 ;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
-;;   `icicles-mode', `icicles-opt', `icicles-var', `icomplete',
-;;   `icomplete+', `image-dired', `image-file', `imenu', `imenu+',
-;;   `info', `info+20', `isearch+', `iso-transl', `kmacro',
-;;   `lacarte', `levenshtein', `lib-requires', `lisp-mnt',
-;;   `loadhist', `local-lpr', `local-ps-print', `lpr', `ls-lisp',
-;;   `ls-lisp+', `ls-lisp-verbosity', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `moccur-edit', `mouse', `mouse+',
-;;   `mouse3', `mwheel', `naked', `occur-schroeder', `oneonone',
-;;   `package', `paren', `pcmpl-auto', `pp', `pp+', `pp-c-l',
-;;   `printing', `ps-print', `regexp-opt', `replace+', `ring',
-;;   `ring+', `savehist-20+', `second-sel', `sendmail', `setup',
-;;   `setup-cygwin', `setup-keys', `simple+', `speedbar', `start',
-;;   `start-opt', `strings', `subr+', `subr-21', `swiss-move',
-;;   `synonyms', `thing-cmds', `thingatpt', `thingatpt+',
-;;   `thumb-frm', `time-date', `timer', `timer+', `unaccent', `vc',
-;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
-;;   `wimpy-del', `window+', `zones', `zoom-frm'.
+;;   `icicles-mode', `icicles-opt', `icicles-var', `image-dired',
+;;   `image-file', `imenu', `imenu+', `info', `info+20', `isearch+',
+;;   `iso-transl', `kmacro', `lacarte', `levenshtein',
+;;   `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
+;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
+;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
+;;   `misc-fns', `moccur-edit', `mouse', `mouse+', `mouse3',
+;;   `mwheel', `naked', `occur-schroeder', `oneonone', `package',
+;;   `paren', `pcmpl-auto', `pp', `pp+', `pp-c-l', `printing',
+;;   `ps-print', `replace+', `ring', `ring+', `savehist-20+',
+;;   `second-sel', `sendmail', `setup', `setup-cygwin', `setup-keys',
+;;   `simple+', `speedbar', `start', `start-opt', `strings', `subr+',
+;;   `subr-21', `swiss-move', `synonyms', `thing-cmds', `thingatpt',
+;;   `thingatpt+', `thumb-frm', `time-date', `timer', `timer+',
+;;   `unaccent', `vc', `vc+', `vc-', `vc-hooks', `vc-hooks+',
+;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget', `wimpy-del', `window+', `zones', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
