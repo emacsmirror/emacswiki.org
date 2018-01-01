@@ -4,17 +4,17 @@
 ;; Description: `Recent Commands' submenu for the menu-bar `Tools' menu.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2013-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2013-2018, Drew Adams, all rights reserved.
 ;; Created: Sat Oct 19 12:56:51 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 21 15:57:00 2017 (-0800)
+;; Last-Updated: Mon Jan  1 10:14:48 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 84
+;;     Update #: 87
 ;; URL: https://www.emacswiki.org/emacs/download/cmds-menu.el
-;; Doc URL:
+;; Doc URL: https://www.emacswiki.org/emacs/RecentCommandsMenu
 ;; Keywords: convenience, command, menu
-;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
