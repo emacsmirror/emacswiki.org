@@ -3,20 +3,20 @@
 ;; Filename: pretty-lambdada.el
 ;; Description: Show the word `lambda' as the Greek letter.
 ;; Author: Drew Adams
-;;         See http://www.emacswiki.org/emacs/PrettyLambda for the original
+;;         See https://www.emacswiki.org/emacs/PrettyLambda for the original
 ;;         code snippet and its history.
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2009-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2009-2018, Drew Adams, all rights reserved.
 ;; Created: Sun Jun 14 11:07:04 2009 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 09:40:53 2017 (-0800)
+;; Last-Updated: Mon Jan  1 15:26:53 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 155
+;;     Update #: 161
 ;; URL: https://www.emacswiki.org/emacs/download/pretty-lambdada.el
-;; Doc URL: http://www.emacswiki.org/PrettyLambda
+;; Doc URL: https://www.emacswiki.org/emacs/PrettyLambda
 ;; Keywords: convenience display
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -78,7 +78,7 @@
 ;;            pretty-lambda-for-modes, pretty-lambda-auto-modes,
 ;;            turn-(on|off)-pretty-lambda-mode.
 ;;     pretty-lambda: Added optional MODE arg (required arg in some existing code).
-;;     Created from code snippet at http://www.emacswiki.org/emacs/PrettyLambda.
+;;     Created from code snippet at https://www.emacswiki.org/emacs/PrettyLambda.
 ;;
 ;;     Called this pretty-lambdada.el, where the last "da" is Drew Adams.
 ;;     Luke Gorrie has already used the name pretty-lambda.el:
@@ -162,7 +162,7 @@ With ARG, turn mode on if ARG is positive, off otherwise."
     "Global minor mode to display the word `lambda' as the Greek letter.
 With ARG, turn mode on if ARG is positive, off otherwise.")
 
-;; This was originally from <URL: http://www.emacswiki.org/emacs/PrettyLambda>.
+;; This was originally from <URL: https://www.emacswiki.org/emacs/PrettyLambda>.
 ;; See that page for the history of this code snippet.  I just added MODE as an
 ;; optional argument.
 (defun pretty-lambda (&optional mode)
