@@ -4,17 +4,17 @@
 ;; Description:
 ;; Author: Markus Hoenika
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 0
 ;; Package-Requires: ((cygwin-mount "0"))
-;; Last-Updated: Tue Mar  7 09:48:54 2017 (-0800)
+;; Last-Updated: Mon Jan  1 15:39:51 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 181
+;;     Update #: 185
 ;; URL: https://www.emacswiki.org/emacs/download/setup-cygwin.el
-;; Doc URL: http://www.emacswiki.org/NTEmacsWithCygwin
+;; Doc URL: https://www.emacswiki.org/emacs/NTEmacsWithCygwin
 ;; Keywords: os, unix, cygwin
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -145,7 +145,7 @@ other hooks, such as major mode hooks, can do the job."
 setup-cygwin.el bug: \
 &body=Describe bug here, starting with `emacs -Q'.  \
 Don't forget to mention your Emacs and library versions."))
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/setup-cygwin.el")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/setup-cygwin.el")
   :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/NTEmacsWithCygwin")
   :link '(emacs-commentary-link :tag "Commentary" "setup-cygwin"))
 
@@ -188,7 +188,7 @@ loaded as such.)"
 (add-hook 'find-file-hooks 'follow-cygwin-symlink)
 
 ;;; Use Unix-style line endings.
-;; Per Eli Z. http://debbugs.gnu.org/cgi/bugreport.cgi?bug=21780#40:
+;; Per Eli Z. https://debbugs.gnu.org/cgi/bugreport.cgi?bug=21780#40:
 ;;
 ;; $$$$$$ (setq-default buffer-file-coding-system 'undecided-unix)
 (setq-default buffer-file-coding-system (coding-system-change-eol-conversion
