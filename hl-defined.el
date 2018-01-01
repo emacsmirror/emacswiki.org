@@ -4,17 +4,17 @@
 ;; Description: Highlight defined or undefined symbols in Emacs-Lisp.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2013-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2013-2018, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 17 13:59:36 2013 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Feb 23 07:44:30 2017 (-0800)
+;; Last-Updated: Mon Jan  1 13:44:18 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 306
+;;     Update #: 310
 ;; URL: https://www.emacswiki.org/emacs/download/hl-defined.el
-;; Doc URL: http://emacswiki.org/HighlightLispFunctions
+;; Doc URL: https://emacswiki.org/emacs/HighlightLispFunctions
 ;; Keywords: highlight, lisp, functions
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -121,9 +121,10 @@ hl-defined.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/hl-defined.el")
-  :link '(url-link :tag "Description" "http://emacswiki.org/HighlightLispFunctions")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+  :link '(url-link :tag "Download"
+          "https://www.emacswiki.org/emacs/download/hl-defined.el")
+  :link '(url-link :tag "Description" "https://emacswiki.org/emacs/HighlightLispFunctions")
   :link '(emacs-commentary-link :tag "Commentary" "hl-defined"))
 
 (defface hdefd-functions
