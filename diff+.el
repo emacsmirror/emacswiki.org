@@ -4,17 +4,17 @@
 ;; Description: Extensions to `diff.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 15 09:33:29 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 21 16:17:48 2017 (-0800)
+;; Last-Updated: Mon Jan  1 10:45:41 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 585
+;;     Update #: 586
 ;; URL: https://www.emacswiki.org/emacs/download/diff%2b.el
-;; Doc URL: http://emacswiki.org/DiffEnhancements
+;; Doc URL: https://emacswiki.org/emacs/DiffEnhancements
 ;; Keywords: data, matching, tools, unix, local
-;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
