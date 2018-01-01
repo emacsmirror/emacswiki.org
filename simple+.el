@@ -4,16 +4,16 @@
 ;; Description: Extensions to standard library `simple.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 0
 ;; Package-Requires: ((strings "0"))
-;;; Last-Updated: Tue Mar  7 15:29:38 2017 (-0800)
+;;; Last-Updated: Mon Jan  1 15:47:07 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 498
+;;     Update #: 499
 ;; URL: https://www.emacswiki.org/emacs/download/simple%2b.el
 ;; Keywords: internal, lisp, extensions, abbrev
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
