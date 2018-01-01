@@ -4,18 +4,18 @@
 ;; Description: Delete the region (selection) upon char insertion or DEL.
 ;; Author: Matthieu Devin <devin@lucid.com>, Drew Adams
 ;; Maintainer: D. ADAMS (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 1992 Free Software Foundation, Inc.
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 21 16:15:00 2017 (-0800)
+;; Last-Updated: Mon Jan  1 10:39:32 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 507
+;;     Update #: 510
 ;; URL: https://www.emacswiki.org/emacs/download/delsel.el
-;; Doc URL: http://emacswiki.org/DeleteSelectionMode
+;; Doc URL: https://emacswiki.org/emacs/DeleteSelectionMode
 ;; Keywords: abbrev, emulations, local, convenience
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
