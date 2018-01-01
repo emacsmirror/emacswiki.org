@@ -4,17 +4,17 @@
 ;; Description: Incrementally adjust face attributes and frame parameters.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 0
 ;; Package-Requires: ((doremi "0") (faces+ "0") (frame-fns "0") (hexrgb "0"))
-;; Last-Updated: Tue Feb 21 16:32:39 2017 (-0800)
+;; Last-Updated: Mon Jan  1 11:03:28 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 3071
+;;     Update #: 3074
 ;; URL: https://www.emacswiki.org/emacs/download/doremi-frm.el
-;; Doc URL: http://www.emacswiki.org/DoReMi
+;; Doc URL: https://www.emacswiki.org/emacs/DoReMi
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -661,11 +661,11 @@ doremi-frm.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/doremi-frm.el")
+          "https://www.emacswiki.org/emacs/download/doremi-frm.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/Doremi")
+          "https://www.emacswiki.org/emacs/Doremi")
   :link '(emacs-commentary-link :tag "Commentary" "doremi-frm")
   )
 
