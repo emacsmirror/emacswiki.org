@@ -4,17 +4,17 @@
 ;; Description: Highlight the current line and column.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2006-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 0
 ;; Package-Requires: ((hl-line+ "0") (col-highlight "0") (vline "0"))
-;; Last-Updated: Mon Jun 26 15:48:30 2017 (-0700)
+;; Last-Updated: Mon Jan  1 10:27:45 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 511
-;; URL: http://www.emacswiki.org/emacs/download/crosshairs.el
-;; Doc URL: http://www.emacswiki.org/CrosshairHighlighting
+;;     Update #: 516
+;; URL: https://www.emacswiki.org/emacs/download/crosshairs.el
+;; Doc URL: https://www.emacswiki.org/emacs/CrosshairHighlighting
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -57,7 +57,7 @@
 ;;  You can use command `flash-crosshairs' to do what its name says
 ;;  when you switch buffers or windows.  Here is how one user did it
 ;;  (rejoin the split URL):
-;;  http://unix.stackexchange.com/questions/83167/emacs-finding-the-
+;;  https://unix.stackexchange.com/questions/83167/emacs-finding-the-
 ;;  cursor-in-multiple-windows
 ;;
 ;;
@@ -192,9 +192,9 @@ crosshairs.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/crosshairs.el"))
+          "https://www.emacswiki.org/emacs/download/crosshairs.el"))
 
 (defvar crosshairs-highlight-when-idle-p nil
   "Non-nil means highlight current line and column when Emacs is idle.
@@ -218,11 +218,11 @@ crosshairs.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/crosshairs.el")
+          "https://www.emacswiki.org/emacs/download/crosshairs.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/ChangingCursorDynamically")
+          "https://www.emacswiki.org/emacs/ChangingCursorDynamically")
   :link '(emacs-commentary-link :tag "Commentary" "crosshairs")
   ;; If both were already on or off, reflect that as the previous crosshairs state.
   (unless arg
