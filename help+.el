@@ -4,17 +4,17 @@
 ;; Description: Extensions to `help.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1999-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct 21 17:12:48 2017 (-0700)
+;; Last-Updated: Mon Jan  1 13:10:54 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 2200
+;;     Update #: 2201
 ;; URL: https://www.emacswiki.org/emacs/download/help%2b.el
-;; Doc URL: http://emacswiki.org/HelpPlus
+;; Doc URL: https://emacswiki.org/emacs/HelpPlus
 ;; Keywords: help
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
