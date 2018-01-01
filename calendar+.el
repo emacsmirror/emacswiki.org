@@ -4,12 +4,12 @@
 ;; Description: Calendar, diary and appointments stuff.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 13:11:46 1996
 ;; Version: 0
-;; Last-Updated: Tue Feb 21 15:39:43 2017 (-0800)
+;; Last-Updated: Mon Jan  1 10:05:32 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 852
+;;     Update #: 853
 ;; URL: https://www.emacswiki.org/emacs/download/calendar%2b.el
 ;; Keywords: calendar, mouse, local
 ;; Compatibility: GNU Emacs 20.x
