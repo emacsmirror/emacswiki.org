@@ -4,16 +4,16 @@
 ;; Description: Extensions to `descr-text.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2011-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2011-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 24 11:57:04 2011 (-0800)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 21 16:16:22 2017 (-0800)
+;; Last-Updated: Mon Jan  1 10:42:43 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 315
+;;     Update #: 317
 ;; URL: https://www.emacswiki.org/emacs/download/descr-text%2b.el
 ;; Keywords: help, characters, description
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -74,7 +74,7 @@
 ;;     describe-char: Added optional arg WIDTH.  Use it instead of function window-width.
 ;; 2012/01/25 dadams
 ;;     describe-char: Apply Kenichi H's Emacs 24 enhancement:
-;;       http://lists.gnu.org/archive/html/emacs-devel/2012-01/msg00785.html
+;;       https://lists.gnu.org/archive/html/emacs-devel/2012-01/msg00785.html
 ;; 2011/11/30
 ;;     Added compile-time require of mule.el for Emacs 22 (charset-description was a macro).
 ;; 2011/11/24 dadams
