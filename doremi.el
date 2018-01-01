@@ -4,17 +4,17 @@
 ;; Description: Incremental change using arrow keys or mouse wheel.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Feb 21 16:34:16 2017 (-0800)
+;; Last-Updated: Mon Jan  1 11:05:23 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1630
+;;     Update #: 1632
 ;; URL: https://www.emacswiki.org/emacs/download/doremi.el
-;; Doc URL: http://www.emacswiki.org/DoReMi
+;; Doc URL: https://www.emacswiki.org/emacs/DoReMi
 ;; Keywords: keys, cycle, repeat, higher-order
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -235,11 +235,11 @@ doremi.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/doremi.el")
+          "https://www.emacswiki.org/emacs/download/doremi.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/Doremi")
+          "https://www.emacswiki.org/emacs/Doremi")
   :link '(emacs-commentary-link :tag "Commentary" "doremi"))
 
 ;;;###autoload
