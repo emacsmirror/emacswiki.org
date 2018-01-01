@@ -4,17 +4,17 @@
 ;; Description: Enhancements to cus-edit.el.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sun Jun  4 08:31:26 2017 (-0700)
+;; Last-Updated: Mon Jan  1 10:35:51 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1633
-;; URL: http://www.emacswiki.org/cus-edit+.el
-;; Doc URL: http://emacswiki.org/CustomizingAndSaving
+;;     Update #: 1641
+;; URL: https://www.emacswiki.org/emacs/download/cus-edit%2b.el
+;; Doc URL: https://emacswiki.org/emacs/CustomizingAndSaving
 ;; Keywords: help, customize, help, faces
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -528,10 +528,10 @@ cus-edit+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/cus-edit+.el")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/cus-edit%2b.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/CustomizingAndSaving#CustomizePlus")
+          "https://www.emacswiki.org/emacs/CustomizingAndSaving#CustomizePlus")
   :link '(emacs-commentary-link :tag "Commentary" "cus-edit+")
   )
 
@@ -549,11 +549,11 @@ Don't forget to mention your Emacs and library versions."))
 Items in this list are symbols naming faces or variables."
   :type '(repeat symbol) :group 'Custom-Plus
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/cus-edit+.el")
+          "https://www.emacswiki.org/emacs/download/cus-edit%2b.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/CustomizingAndSaving#CustomizePlus")
+          "https://www.emacswiki.org/emacs/CustomizingAndSaving#CustomizePlus")
   :link '(emacs-commentary-link :tag "Commentary" "cus-edit+"))
 
 (defcustom customize-unsaved-confirm-exits-flag nil
@@ -845,7 +845,7 @@ widget.  If FILTER is nil, ACTION is always valid.")
       ;; init-file-user rather than user-init-file.  This is in case
       ;; cus-edit is loaded by something in site-start.el, because
       ;; user-init-file is not set at that stage.
-      ;; http://lists.gnu.org/archive/html/emacs-devel/2007-10/msg00310.html
+      ;; https://lists.gnu.org/archive/html/emacs-devel/2007-10/msg00310.html
       ,@(when
          (or custom-file  init-file-user)
          '(("Save for Future Sessions" custom-variable-save
