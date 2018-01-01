@@ -4,18 +4,18 @@
 ;; Description: Resize a frame.  In particular, fit a frame to its buffers.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Feb 22 17:54:20 2017 (-0800)
+;; Last-Updated: Mon Jan  1 11:37:27 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1387
+;;     Update #: 1390
 ;; URL: https://www.emacswiki.org/emacs/download/fit-frame.el
-;; Doc URL: http://www.emacswiki.org/Shrink-Wrapping_Frames
-;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
+;; Doc URL: https://www.emacswiki.org/emacs/Shrink-Wrapping_Frames
+;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
 ;; Keywords: internal, extensions, convenience, local
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -310,11 +310,11 @@ fit-frame.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/fit-frame.el")
+          "https://www.emacswiki.org/emacs/download/fit-frame.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/Shrink-Wrapping_Frames")
+          "https://www.emacswiki.org/emacs/Shrink-Wrapping_Frames")
   :link '(emacs-commentary-link :tag "Commentary" "fit-frame"))
 
 ;;;###autoload
