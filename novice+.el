@@ -4,16 +4,16 @@
 ;; Description: Extensions to `novice.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 11 17:10:39 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;;; Last-Updated: Tue Mar  7 09:22:51 2017 (-0800)
+;;; Last-Updated: Mon Jan  1 15:12:50 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 158
+;;     Update #: 159
 ;; URL: https://www.emacswiki.org/emacs/download/novice%2b.el
 ;; Keywords: internal, help
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
