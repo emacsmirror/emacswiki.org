@@ -4,16 +4,16 @@
 ;; Description: Main Emacs startup file: require/autoload other files.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1995-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2018, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Wed Oct 11 08:57:38 2017 (-0700)
+;; Last-Updated: Mon Jan  1 15:52:42 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 3075
+;;     Update #: 3078
 ;; URL: https://www.emacswiki.org/emacs/download/start.el
 ;; Keywords: abbrev, internal, local, init
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -34,9 +34,9 @@
 ;;   `finder', `finder+', `finder-inf', `fit-frame', `font-lock',
 ;;   `font-lock-menus', `frame-cmds', `frame-fns', `fuzzy-match',
 ;;   `header2', `help+20', `hexrgb', `highlight', `highlight-chars',
-;;   `icomplete', `icomplete+', `image-dired', `image-file', `imenu',
-;;   `imenu+', `info', `info+20', `isearch+', `iso-transl', `kmacro',
-;;   `lacarte', `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
+;;   `image-dired', `image-file', `imenu', `imenu+', `info',
+;;   `info+20', `isearch+', `iso-transl', `kmacro', `lacarte',
+;;   `lib-requires', `lisp-mnt', `loadhist', `local-lpr',
 ;;   `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `moccur-edit', `mouse', `mouse+', `mwheel', `naked',
@@ -449,8 +449,8 @@
 (require 'zones nil t)                  ; Ring/stack of buffer zones (including narrowings).
 ;;; ;; Use my update to Francis Wright's version of `ls-lisp.el', if available.
 ;;; (when (and (< emacs-major-version 21) (memq system-type '(windows-nt ms-dos macos)))
-;;;   ;; If you don't have my version, from http://www.emacswiki.org/emacs/ls-lisp.el, and you use
-;;;   ;; Emacs 20, then you will need to do this, because FJW's `ls-lisp.el' uses `mapc':
+;;;   ;; If you don't have my version, from https://www.emacswiki.org/emacs/download/ls-lisp.el, and
+;;    ;; you use Emacs 20, then you will need to do this, because FJW's `ls-lisp.el' uses `mapc':
 ;;;   ;;(require 'cl)
 ;;;   (load-library "ls-lisp")) ; Don't use `require', so get FJW's version, not vanilla version.
 (unless (and (memq system-type '(windows-nt ms-dos macos)) ; Redefinitions.
@@ -482,7 +482,7 @@
 (require 'pcmpl-auto nil t)             ; Pcomplete
 
 ;; `ls-lisp-verbosity.el' is essentially `leo-toggle-ls-lisp-verbosity'
-;;     from (http://www.emacswiki.org/LsLispToggleVerbosity)
+;;     from (https://www.emacswiki.org/emacs/LsLispToggleVerbosity)
 (require 'ls-lisp-verbosity nil t)
 
 ;; Dired-X:
