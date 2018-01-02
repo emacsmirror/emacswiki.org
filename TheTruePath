@@ -6,27 +6,31 @@ I have heard that, too. BTW, EDLIN.COM is available in !FreeDos and [http://www.
 
 == The True Path ==
 
-    From: PatrickJLoPresti
-    Subject: The True Path (long)
-    Date: 11 Jul 91 03:17:31 GMT
-    Newsgroups: news:alt.religion.emacs, news:alt.slack
-    Organization: Massachusetts Institute of Technology
+{{{
+From: PatrickJLoPresti
+Subject: The True Path (long)
+Date: 11 Jul 91 03:17:31 GMT
+Newsgroups: news:alt.religion.emacs, news:alt.slack
+Organization: Massachusetts Institute of Technology
+}}}
 
 When I log into my Xenix system with my 110 baud teletype, both vi *and* Emacs are just too damn slow.  They print useless messages like, 'C-h for help' and '"foo" File is read only'.  So I use the editor that doesn't waste my VALUABLE time.
 
- Ed, man!  !man ed
+{{{
+Ed, man!  !man ed
 
- ED(1)               UNIX Programmer's Manual                ED(1)
+ED(1)               UNIX Programmer's Manual                ED(1)
 
- NAME
+NAME
       ed - text editor
 
- SYNOPSIS
+SYNOPSIS
       ed [ - ] [ -x ] [ name ]
- DESCRIPTION
+DESCRIPTION
       Ed is the standard text editor.
 
 ---
+}}}
 
 Computer Scientists love ed, not just because it comes first alphabetically, but because it's the standard.  Everyone else loves ed because it's ED!
 
@@ -34,9 +38,11 @@ Computer Scientists love ed, not just because it comes first alphabetically, but
 
 And ed doesn't waste space on my Timex Sinclair.  Just look:
 
- -rwxr-xr-x  1 root          24 Oct 29  1929 /bin/ed
- -rwxr-xr-t  4 root     1310720 Jan  1  1970 /usr/ucb/vi
- -rwxr-xr-x  1 root  5.89824e37 Oct 22  1990 /usr/bin/emacs
+{{{
+-rwxr-xr-x  1 root          24 Oct 29  1929 /bin/ed
+-rwxr-xr-t  4 root     1310720 Jan  1  1970 /usr/ucb/vi
+-rwxr-xr-x  1 root  5.89824e37 Oct 22  1990 /usr/bin/emacs
+}}}
 
 Of course, on the system *I* administer, vi is symlinked to ed.  Emacs has been replaced by a shell script which 1) Generates a syslog message at level LOG_EMERG; 2) reduces the user's disk quota by 100K; and 3) RUNS ED!!!!!!
 
@@ -44,31 +50,33 @@ Of course, on the system *I* administer, vi is symlinked to ed.  Emacs has been 
 
 Let's look at a typical novice's session with the mighty ed:
 
- golem> ed
+{{{
+golem> ed
 
- ?
- help
- ?
- ?
- ?
- quit
- ?
- exit
- ?
- bye
- ?
- hello?
- ?
- eat flaming death
- ?
- ^C
- ?
- ^C
- ?
- ^D
- ?
+?
+help
+?
+?
+?
+quit
+?
+exit
+?
+bye
+?
+hello?
+?
+eat flaming death
+?
+^C
+?
+^C
+?
+^D
+?
 
 ---
+}}}
 
 Note the consistent user interface and error reportage.  Ed is generous enough to flag errors, yet prudent enough not to overwhelm the novice with verbosity.
 
