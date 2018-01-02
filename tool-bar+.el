@@ -4,17 +4,17 @@
 ;; Description: Extensions to standard library tool-bar.el
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Oct 05 17:02:16 2004
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 15:43:20 2017 (-0800)
+;; Last-Updated: Mon Jan  1 16:11:33 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 249
+;;     Update #: 253
 ;; URL: https://www.emacswiki.org/emacs/download/tool-bar%2b.el
-;; Doc URL: http://emacswiki.org/ToolBar
+;; Doc URL: https://emacswiki.org/emacs/ToolBar
 ;; Keywords: tool-bar, convenience, mouse, button, frame
-;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -126,10 +126,11 @@ tool-bar+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/tool-bar+.el")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+  :link '(url-link :tag "Download"
+          "https://www.emacswiki.org/emacs/download/tool-bar%2b.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/ToolBar#Tool-Bar%20Plus")
+          "https://www.emacswiki.org/emacs/ToolBar#Tool-Bar%20Plus")
   :link '(emacs-commentary-link :tag "Commentary" "tool-bar+")
   (and (display-images-p)
        (let ((lines (if tool-bar-here-mode 1 0)))
