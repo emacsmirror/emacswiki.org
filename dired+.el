@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 10:49:48 2018 (-0800)
+;; Last-Updated: Tue Jan  2 08:34:13 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 10532
+;;     Update #: 10540
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -741,6 +741,9 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/01/02 dadams
+;;     diredp-get-file-or-dir-name, diredp-marked-here: Doubled backslashes to escape dots.
+;;     diredp-marked-here: Fixed regexp to match only double-dot, not single-dot.
 ;; 2017/12/31 dadams
 ;;     diredp-get-files-for-dir: Pass non-nil NO-DOT-DOT-P arg to diredp-marked-here.
 ;;     dired-get-marked-files: Allow use of FILTER and DISTINGUISH-ONE-MARKED together.
@@ -2107,8 +2110,8 @@ Argument ARG:
       (setq fname  (dired-get-filename t t))
       (when (and fname  (or (not arg)  (eq arg 'all-files-no-dirs))  (file-directory-p fname))
         (setq fname  nil))
-      (when (and fname  (eq arg 'all-files-no-dots)
-                 (or (member fname '("." ".."))  (diredp-string-match-p "/\.\.?$" fname)))
+      (when (and fname  (eq arg 'all-files-no-dots)  (or (member fname '("." ".."))
+                                                         (diredp-string-match-p "/\\.\\.?$" fname)))
         (setq fname  nil))
       (forward-line 1))
     (forward-line -1)
@@ -4134,7 +4137,7 @@ Non-nil optional arg NO-DOT-DOT-P means do not include marked `..'."
          (ff                 (condition-case nil ; Ignore error if on `.' or `..' and no file is marked.
                                  (dired-get-marked-files
                                   nil nil (and no-dot-dot-p
-                                               (lambda (mf) (not (diredp-string-match-p "/\.\.?$" mf))))
+                                               (lambda (mf) (not (diredp-string-match-p "/\\.\\.$" mf))))
                                   'DISTINGUISH-ONE-MARKED)
                                (error nil))))
     (cond ((eq t (car ff))  (cdr ff))   ; Single marked
