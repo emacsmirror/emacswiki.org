@@ -4,18 +4,18 @@
 ;; Description: Extensions to `window.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 25 14:22:13 1996
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar  9 14:37:56 2017 (-0800)
+;; Last-Updated: Mon Jan  1 16:24:31 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 216
+;;     Update #: 219
 ;; URL: https://www.emacswiki.org/emacs/download/window%2b.el
-;; Doc URL: http://emacswiki.org/Delete_Frames_Easily_-_But_Not_Too_Easily
-;; Doc URL: http://www.emacswiki.org/OneOnOneEmacs
+;; Doc URL: https://emacswiki.org/emacs/Delete_Frames_Easily_-_But_Not_Too_Easily
+;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
 ;; Keywords: internal, window
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
