@@ -4,17 +4,17 @@
 ;; Description: Commands to zoom frame font size.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Thu Mar  9 14:39:19 2017 (-0800)
+;; Last-Updated: Mon Jan  1 16:31:06 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 341
+;;     Update #: 344
 ;; URL: https://www.emacswiki.org/emacs/download/zoom-frm.el
-;; Doc URL: http://emacswiki.org/SetFonts
+;; Doc URL: https://emacswiki.org/emacs/SetFonts
 ;; Keywords: frames, extensions, convenience
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -238,11 +238,11 @@ zoom-frm.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "http://www.emacswiki.org/emacs-en/download/zoom-frm.el")
+          "https://www.emacswiki.org/emacs/download/zoom-frm.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/SetFonts#ChangingFontSize")
+          "https://www.emacswiki.org/emacs/SetFonts#ChangingFontSize")
   :link '(emacs-commentary-link :tag "Commentary" "zoom-frm"))
 
 ;;;###autoload
