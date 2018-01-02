@@ -4,17 +4,17 @@
 ;; Description: Extensions to standard library `wid-edit.el'.
 ;; Author: Drew Adams, Lennart Borgman
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2007-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 21 10:25:32 2007
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar  9 14:35:10 2017 (-0800)
+;; Last-Updated: Mon Jan  1 16:21:39 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 272
+;;     Update #: 274
 ;; URL: https://www.emacswiki.org/emacs/download/wid-edit%2b.el
-;; Doc URL: http://emacswiki.org/UseCustomizeForKeyBindings
+;; Doc URL: https://emacswiki.org/emacs/UseCustomizeForKeyBindings
 ;; Keywords: widget, color
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
