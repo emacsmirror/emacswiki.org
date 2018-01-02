@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jan  2 10:03:26 2018 (-0800)
+;; Last-Updated: Tue Jan  2 13:07:38 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 10542
+;;     Update #: 10586
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -480,6 +480,7 @@
 ;;    `diredp-find-file-other-frame',
 ;;    `diredp-find-file-reuse-dir-buffer',
 ;;    `diredp-find-line-file-other-window',
+;;    `diredp-flag-auto-save-files-recursive',
 ;;    `diredp-flag-region-files-for-deletion',
 ;;    `diredp-grepped-files-other-window', `diredp-grep-this-file',
 ;;    `diredp-hardlink-this-file', `diredp-highlight-autofiles-mode',
@@ -742,8 +743,11 @@
 ;;; Change Log:
 ;;
 ;; 2018/01/02 dadams
+;;     Added: diredp-flag-auto-save-files-recursive.  Bound to M-+ #.
 ;;     diredp-get-file-or-dir-name, diredp-marked-here: Doubled backslashes to escape dots.
 ;;     diredp-marked-here: Fixed regexp to match only double-dot, not single-dot.
+;;     diredp-flag-auto-save-files-recursive: Updated to include more M-+ keys.
+;;     diredp-marks-recursive-menu: Added diredp-flag-auto-save-files-recursive.
 ;; 2017/12/31 dadams
 ;;     diredp-get-files-for-dir: Pass non-nil NO-DOT-DOT-P arg to diredp-marked-here.
 ;;     dired-get-marked-files: Allow use of FILTER and DISTINGUISH-ONE-MARKED together.
@@ -5093,6 +5097,17 @@ List only the files for which it returns non-nil."
    (progn (diredp-ensure-mode) (list current-prefix-arg)))
   (let ((files  (diredp-get-files ignore-marks-p predicate))) (diredp-list-files files)))
 
+;;;###autoload
+(defun diredp-flag-auto-save-files-recursive (&optional arg) ; `M-+ #'
+  "Flag all auto-save files for deletion, including in marked subdirs.
+A non-negative prefix arg means to unmark (unflag) them instead.
+
+A non-positive prefix arg means to ignore subdir markings and act
+instead on ALL subdirs.  That is, flag all in this directory and all
+descendant directories."
+  (interactive "P")
+  (let ((dired-marker-char  dired-del-marker))
+    (diredp-mark-recursive-1 arg "auto-save files" "auto-save file" '(diredp-looking-at-p "^.* #.+#$"))))
 
 (when (fboundp 'char-displayable-p)     ; Emacs 22+
 
@@ -10051,8 +10066,8 @@ Bookmark and create bookmark-file bookmark
 ")
 
     "
-Marked files here and below (in marked subdirs)
------------------------------------------------
+Here and below (in marked subdirs)
+----------------------------------
 "
     (and (fboundp 'dired-multiple-w32-browser) ; In `w32-browser.el'.
          "
@@ -10063,23 +10078,50 @@ Marked files here and below (in marked subdirs)
   \\[diredp-insert-subdirs-recursive]\t\t- Insert marked subdirectories
   \\[diredp-copy-filename-as-kill-recursive]\t\t- Copy names for pasting
   \\[diredp-do-find-marked-files-recursive]\t\t\t- Visit
+  \\[diredp-do-print-recursive]\t\t\t- Print
   \\[diredp-do-copy-recursive]\t\t\t- Copy
   \\[diredp-do-move-recursive]\t\t\t- Move
+  \\[diredp-do-touch-recursive]\t\t- Touch (update timestamp)
+  \\[diredp-do-chmod-recursive]\t\t\t- Change mode
+
+  \\[diredp-do-symlink-recursive]\t\t\t- Add symbolic links
+  \\[diredp-do-relsymlink-recursive]\t\t\t- Add relative symbolic links
+  \\[diredp-do-hardlink-recursive]\t\t\t- Add hard links
+
+  \\[diredp-capitalize-recursive]\t\t- Capitalize
+  \\[diredp-downcase-recursive]\t\t- Downcase
+  \\[diredp-upcase-recursive]\t\t- Upcase
+"
+  (and (fboundp 'epa-dired-do-encrypt)   ; Emacs 23+
+       "
+  \\[diredp-do-encrypt-recursive]\t\t- Encrypt
+  \\[diredp-do-decrypt-recursive]\t\t- Decrypt
+  \\[diredp-do-sign-recursive]\t\t- Sign
+  \\[diredp-do-verify-recursive]\t\t- Verify
+")
+
+  "
   \\[diredp-do-grep-recursive]\t\t- `grep'
   \\[diredp-do-search-recursive]\t\t\t- Search
   \\[diredp-do-query-replace-regexp-recursive]\t\t\t- Query-replace
   \\[diredp-do-isearch-recursive]\t\t- Isearch
   \\[diredp-do-isearch-regexp-recursive]\t- Regexp isearch
 "
-
     (and (fboundp 'diredp-do-async-shell-command-recursive) ; Emacs 23+
-         "  \\[diredp-do-async-shell-command-recursive]\t\t\t- Run shell command asynchronously
+         "
+  \\[diredp-do-async-shell-command-recursive]\t\t\t- Run shell command asynchronously
 ")
 
     "  \\[diredp-do-shell-command-recursive]\t\t\t- Run shell command
+  \\[diredp-do-apply-function-recursive]\t\t\t- Apply Lisp function
+
   \\[diredp-marked-recursive-other-window]\t\t- Dired
   \\[diredp-list-marked-recursive]\t\t- List
-  \\[diredp-do-apply-function-recursive]\t\t\t- Apply Lisp function
+
+  \\[diredp-image-dired-comment-files-recursive]\t\t- Add image comment
+  \\[diredp-image-dired-display-thumbs-recursive]\t\t- Show thumbnail images
+  \\[diredp-image-dired-tag-files-recursive]\t\t- Tag images
+  \\[diredp-image-dired-delete-tag-recursive]\t\t- Delete image tags
 
   \\[diredp-do-bookmark-recursive]\t\t- Bookmark
 "
@@ -10088,9 +10130,24 @@ Marked files here and below (in marked subdirs)
   \\[diredp-set-bookmark-file-bookmark-for-marked-recursive]\t\t- Create bookmark-file bookmark
 ")
 
-
+    "
+  \\[diredp-mark-directories-recursive]\t\t- Mark directories
+  \\[diredp-mark-executables-recursive]\t\t- Mark executables
+  \\[diredp-mark-symlinks-recursive]\t\t- Mark symbolic links
+  \\[diredp-mark-files-regexp-recursive]\t\t- Mark regexp matches
+"
     (and (featurep 'bookmark+)
-         "
+         "  \\[diredp-mark-autofiles-recursive]\t\t- Mark autofiles
+")
+    "  \\[diredp-flag-auto-save-files-recursive]\t\t\t- Flag auto-save
+  \\[diredp-do-delete-recursive]\t\t\t- Delete marked (not flagged)
+  \\[diredp-change-marks-recursive]\t\t- Change marks
+  \\[diredp-unmark-all-files-recursive]\t\t- Remove a given mark
+  \\[diredp-unmark-all-marks-recursive]\t\t\t- Remove all marks
+"
+    (and (featurep 'bookmark+)
+"
+
 Tagging
 -------
 
@@ -11412,6 +11469,9 @@ If no one is selected, symmetric encryption will be performed.  "
 (define-key diredp-menu-bar-marks-menu [mark-recursive]
   (cons "Here and Below" diredp-marks-recursive-menu))
 
+(define-key diredp-marks-recursive-menu [diredp-flag-auto-save-files-recursive]
+    '(menu-item "Flag Auto-Save Files..." diredp-flag-auto-save-files-recursive
+      :help "Flag all auto-save files for deletion, including those in marked subdirs"))
 (when (fboundp 'diredp-unmark-all-marks-recursive) ; Emacs 22+
   (define-key diredp-marks-recursive-menu [diredp-change-marks-recursive]
     '(menu-item "Change Mark..." diredp-change-marks-recursive
@@ -11781,6 +11841,7 @@ If no one is selected, symmetric encryption will be performed.  "
 (when (fboundp 'char-displayable-p)     ; Emacs 22+
   (define-key diredp-recursive-map "\M-\C-?"   'diredp-unmark-all-files-recursive))     ; `M-DEL'
 (define-key diredp-recursive-map "@"           'diredp-do-apply-function-recursive)     ; `@'
+(define-key diredp-recursive-map "#"           'diredp-flag-auto-save-files-recursive)  ; `#'
 (define-key diredp-recursive-map "*@"          'diredp-mark-symlinks-recursive)         ; `* @'
 (define-key diredp-recursive-map "**"          'diredp-mark-executables-recursive)      ; `* *'
 (define-key diredp-recursive-map "*/"          'diredp-mark-directories-recursive)      ; `* /'
