@@ -4,17 +4,17 @@
 ;; Description: Look up synonyms for a word or phrase in a thesaurus.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2005-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Tue Mar  7 15:37:27 2017 (-0800)
+;; Last-Updated: Mon Jan  1 16:00:01 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 2552
+;;     Update #: 2560
 ;; URL: https://www.emacswiki.org/emacs/download/synonyms.el
-;; Doc URL: http://www.emacswiki.org/ThesauriAndSynonyms
+;; Doc URL: https://www.emacswiki.org/emacs/ThesauriAndSynonyms
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -199,7 +199,7 @@
 ;;  library `Icicles to complete a partial word in a text buffer into a
 ;;  word or phrase in the thesaurus.  If you use both libraries then
 ;;  load Icicles after Synonyms.  For more information on Icicles, see
-;;  `http://www.emacswiki.org/Icicles'.
+;;  `https://www.emacswiki.org/emacs/Icicles'.
 ;;
 ;;  ** Minibuffer Input Completion **
 ;;
@@ -460,7 +460,7 @@
 ;;     filtering by part of speech (verb vs adjective etc.), and so
 ;;     on.  A good example of what I'd really like to have is provided
 ;;     by the free Windows program WordWeb (available here:
-;;     http://wordweb.info/).  Combining that functionality with
+;;     https://wordweb.info/).  Combining that functionality with
 ;;     Icicles completion features would provide a great tool, IMO.
 ;;
 ;;     `synonyms-definition*' goes a long way toward providing this,
@@ -613,9 +613,9 @@ synonyms.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/synonyms.el")
-  :link '(url-link :tag "Description" "http://www.emacswiki.org/Synonyms")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/synonyms.el")
+  :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/Synonyms")
   :link '(emacs-commentary-link :tag "Commentary" "synonyms"))
 
 ;;;###autoload
@@ -713,14 +713,14 @@ See also `synonyms-dictionaries-url'."
   :type 'string :group 'Synonyms)
 
 ;;;###autoload
-(defcustom synonyms-dictionary-alternate-url "http://www.onelook.com/?ls=b&w="
+(defcustom synonyms-dictionary-alternate-url "https://www.onelook.com/?ls=b&w="
   "*URL of a Web dictionary lookup.  Text to look up is appended to this.
 The default value, \"http://www.onelook.com/?ls=b&w=\" lets you use `?'
 and `*' as wildcards in the terms you look up.  These are not used as
 regexp wildcards, however.  `?' stands for any single character, and
 `*' stands for any sequence of characters.  In terms of regexp syntax,
 `?' here is equivalent to the regexp `.', and `*' is equivalent to the
-regexp `.*'.  See http://www.onelook.com/?c=faq#patterns for more
+regexp `.*'.  See https://www.onelook.com/?c=faq#patterns for more
 information on the allowed wildcard patterns.
 See also `synonyms-dictionary-url'."
   :type 'string :group 'Synonyms)
