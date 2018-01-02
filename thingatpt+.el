@@ -4,16 +4,16 @@
 ;; Description: Extensions to `thingatpt.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 0
-;; Last-Updated: Tue Mar  7 15:39:52 2017 (-0800)
+;; Last-Updated: Mon Jan  1 16:05:56 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 2328
+;;     Update #: 2334
 ;; URL: https://www.emacswiki.org/emacs/download/thingatpt%2b.el
-;; Doc URL: http://www.emacswiki.org/ThingAtPointPlus#ThingAtPoint%2b
+;; Doc URL: https://www.emacswiki.org/emacs/ThingAtPointPlus#ThingAtPoint%2b
 ;; Keywords: extensions, matching, mouse
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -464,8 +464,8 @@
 Thingatpt+ bug: \
 &body=Describe bug here, starting with `emacs -Q'.  \
 Don't forget to mention your Emacs and library versions."))
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/thingatpt+.el")
-  :link '(url-link :tag "Description" "http://www.emacswiki.org/ThingAtPointPlus")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/thingatpt%2b.el")
+  :link '(url-link :tag "Description" "https://www.emacswiki.org/emacs/ThingAtPointPlus")
   :link '(emacs-commentary-link :tag "Commentary" "thingatpt+"))
 
 ;;;###autoload
@@ -1796,7 +1796,7 @@ Return the signed number of chars moved if /= ARG, else return nil."
       (and (< (abs max) (abs arg))
            max))))
 
-;; Inspired by `find-thing-at-point' at `http://www.emacswiki.org/SeanO'.
+;; Inspired by `find-thing-at-point' at `https://www.emacswiki.org/emacs/SeanO'.
 ;;;###autoload
 (defun find-fn-or-var-nearest-point (&optional confirmp)
   "Go to the definition of the function or variable nearest the cursor.
