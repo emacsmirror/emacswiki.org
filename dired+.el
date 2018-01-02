@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jan  2 08:34:13 2018 (-0800)
+;; Last-Updated: Tue Jan  2 10:03:26 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 10540
+;;     Update #: 10542
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -5260,10 +5260,6 @@ subdirectories are handled recursively in the same way."
   "Mark all files matching REGEXP, including those in marked subdirs.
 Like `dired-mark-files-regexp' but act recursively on marked subdirs.
 
-The files included are those that are marked in the current Dired
-buffer, or all files in the directory if none are marked.  Marked
-subdirectories are handled recursively in the same way.
-
 The file names to be matched by this command are always absolute -
 they include the full directory.  Note that this does NOT correspond
 to the default behavior for `dired-mark-files-regexp'.  The other
@@ -5312,10 +5308,6 @@ then only the first such is used."
   "Mark all files with a certain EXTENSION, including in marked subdirs.
 A `.' is not automatically prepended to the string entered.
 
-The files included are those that are marked in the current Dired
-buffer, or all files in the directory if none are marked.  Marked
-subdirectories are handled recursively in the same way.
-
 This is like `diredp-mark/unmark-extension', but this acts recursively
 on marked subdirs, and a non-positive prefix arg acts differently.
 
@@ -5344,7 +5336,8 @@ Optional argument ARG is the prefix arg."
 
 ;;;###autoload
 (defun diredp-mark-autofiles-recursive (&optional arg) ; Bound to `M-+ * B'
-  "Mark all autofiles, that is, files that have an autofile bookmark.
+  "Mark all autofiles, including in marked subdirs.
+Autofiles are files that have an autofile bookmark.
 A non-negative prefix arg means to unmark them instead.
 
 A non-positive prefix arg means to ignore subdir markings and act
