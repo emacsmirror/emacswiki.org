@@ -4,17 +4,17 @@
 ;; Description: Specify use of `y-or-n-p' or `yes-or-no-p' on a case-by-case basis
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2017-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 11:12:21 2017 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct  7 20:49:54 2017 (-0700)
+;; Last-Updated: Mon Jan  1 16:26:36 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 504
+;;     Update #: 507
 ;; URL: https://www.emacswiki.org/emacs/download/yes-no.el
 ;; Doc URL: 
 ;; Keywords: help
-;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 22.x, 23.x, 24.x, 25.x, 26.x
 ;; 
 ;; Features that might be required by this library:
 ;;
@@ -143,7 +143,7 @@
 ;; General Public License for more details.
 ;; 
 ;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
+;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -165,7 +165,7 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
           "https://www.emacswiki.org/emacs/DrewsElispLibraries")
   :link '(url-link :tag "Download"
-          "https://www.emacswiki.org/emacs/yes-no.el"))
+          "https://www.emacswiki.org/emacs/download/yes-no.el"))
 
 (defcustom yn-allow-caller-specific-yes/no-flag t
   "*Non-nil means let users specify yes/no prompting for a given caller.
