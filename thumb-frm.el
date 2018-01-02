@@ -4,17 +4,17 @@
 ;; Description: Commands for thumbnail frames.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2004-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 10 16:44:55 2004
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0") (frame-cmds "0"))
-;; Last-Updated: Thu Dec 21 11:23:01 2017 (-0800)
+;; Last-Updated: Mon Jan  1 16:07:43 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1797
+;;     Update #: 1801
 ;; URL: https://www.emacswiki.org/emacs/download/thumb-frm.el
-;; Doc URL: http://www.emacswiki.org/FisheyeWithThumbs
+;; Doc URL: https://www.emacswiki.org/emacs/FisheyeWithThumbs
 ;; Keywords: frame, icon
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -465,10 +465,10 @@ thumb-frm.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Other Libraries by Drew"
-          "http://www.emacswiki.org/DrewsElispLibraries")
-  :link '(url-link :tag "Download" "http://www.emacswiki.org/thumb-frm.el")
+          "https://www.emacswiki.org/emacs/DrewsElispLibraries")
+  :link '(url-link :tag "Download" "https://www.emacswiki.org/emacs/download/thumb-frm.el")
   :link '(url-link :tag "Description"
-          "http://www.emacswiki.org/FisheyeWithThumbs")
+          "https://www.emacswiki.org/emacs/FisheyeWithThumbs")
   :link '(emacs-commentary-link :tag "Commentary" "thumb-frm"))
 
 ;;;###autoload
