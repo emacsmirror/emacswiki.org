@@ -4,17 +4,17 @@
 ;; Description:  Use w32browser with standard Windows Open File box.
 ;; Author: Binu Jose Philip, Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2017, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Thu Mar  9 14:33:48 2017 (-0800)
+;; Last-Updated: Mon Jan  1 16:20:22 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 193
+;;     Update #: 195
 ;; URL: https://www.emacswiki.org/emacs/download/w32browser-dlgopen.el
-;; Doc URL: http://emacswiki.org/MsShellExecute
+;; Doc URL: https://emacswiki.org/emacs/MsShellExecute
 ;; Keywords: files, extensions, convenience, dialog
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x, 26.x
 ;;
 ;; Features that might be required by this library:
 ;;
