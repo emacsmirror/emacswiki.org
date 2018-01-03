@@ -153,12 +153,12 @@ names.
 
 
 === Spanish (Castillian) ===
-Week starts with Monday, use also spanish weekday and month names. Editor specially dislikes Jueves. :)
+Week starts with monday, use also Spanish weekday and month names. Editor specially dislikes jueves. :)
 
     (setq calendar-week-start-day 1
           calendar-day-name-array ["domingo" "lunes" "martes" "miércoles"
                                    "jueves" "viernes" "sábado"]
-          calendar-month-name-array ["enero" "febrero" "marzo" "Aaril" "mayo"
+          calendar-month-name-array ["enero" "febrero" "marzo" "abril" "mayo"
                                      "junio" "julio" "agosto" "septiembre"
                                      "octubre" "noviembre" "diciembre"])
 
