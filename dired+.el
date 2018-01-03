@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jan  2 13:07:38 2018 (-0800)
+;; Last-Updated: Wed Jan  3 08:03:38 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 10586
+;;     Update #: 10593
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -742,6 +742,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/01/03 dadams
+;;     dired-mark-files-regexp: Corrected doc string wrt prefix args.  Thx to John Mastro.
 ;; 2018/01/02 dadams
 ;;     Added: diredp-flag-auto-save-files-recursive.  Bound to M-+ #.
 ;;     diredp-get-file-or-dir-name, diredp-marked-here: Doubled backslashes to escape dots.
@@ -8476,8 +8478,8 @@ vanilla Emacs (marking or unmarking, respectively): matching against
 names that are relative to the `default-directory'.
 
 What Dired+ offers in addition is the possibility to match against
-names that are relative (have no directory part - `M--' or `M-0', to
-mark or unmark, respectively) or absolute (no prefix arg or `C-u',
+names that are relative (have no directory part - no prefix arg or
+`C-u' to mark and unmark, respectively) or absolute (`M--' or `M-0',
 respectively).  The default behavior uses relative names because this
 is likely to be the more common use case.  But matching against
 absolute names gives you more flexibility.
