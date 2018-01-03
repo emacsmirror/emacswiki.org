@@ -8,9 +8,9 @@
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 2017.10.23
 ;; Package-Requires: ()
-;; Last-Updated: Wed Jan  3 08:03:38 2018 (-0800)
+;; Last-Updated: Wed Jan  3 09:41:27 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 10593
+;;     Update #: 10621
 ;; URL: https://www.emacswiki.org/emacs/download/dired%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/DiredPlus
 ;; Keywords: unix, mouse, directories, diredp, dired
@@ -744,6 +744,8 @@
 ;;
 ;; 2018/01/03 dadams
 ;;     dired-mark-files-regexp: Corrected doc string wrt prefix args.  Thx to John Mastro.
+;;     diredp-do-grep-recursive: Removed unused optional arg IGNORE-MARKS-P.
+;;     diredp-marked-recursive(-other-window): Moved handling of optional arg from interactive spec to body.
 ;; 2018/01/02 dadams
 ;;     Added: diredp-flag-auto-save-files-recursive.  Bound to M-+ #.
 ;;     diredp-get-file-or-dir-name, diredp-marked-here: Doubled backslashes to escape dots.
@@ -4642,8 +4644,7 @@ Dired buffer and all subdirs, recursively.
 
 For absolute symlinks, use \\[diredp-do-symlink-recursive]."
     (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
-    (diredp-do-create-files-recursive #'dired-make-relative-symlink "RelSymLink"
-                                      ignore-marks-p)))
+    (diredp-do-create-files-recursive #'dired-make-relative-symlink "RelSymLink" ignore-marks-p)))
 
 ;;;###autoload
 (defun diredp-do-hardlink-recursive (&optional ignore-marks-p) ; Bound to `M-+ H'
@@ -4676,9 +4677,8 @@ Dired buffer and all subdirs, recursively."
   (let* ((file-list  (diredp-get-files ignore-marks-p))
          (command    (dired-mark-read-string
                       "Print %s with: "
-                      (mapconcat #'identity (cons lpr-command (if (stringp lpr-switches)
-                                                                  (list lpr-switches)
-                                                                lpr-switches))
+                      (mapconcat #'identity
+                                 (cons lpr-command (if (stringp lpr-switches) (list lpr-switches) lpr-switches))
                                  " ")
                       'print nil file-list)))
     (dired-run-shell-command (dired-shell-stuff-it command file-list nil))))
@@ -4738,8 +4738,7 @@ Dired buffer and all subdirs, recursively."
                       (diredp-get-confirmation-recursive)
                       (list current-prefix-arg)))
   (let ((tag  (read-string "Tags to add (separate tags with a semicolon): ")))
-    (image-dired-write-tags (mapcar (lambda (x) (cons x tag))
-                                    (diredp-get-files ignore-marks-p)))))
+    (image-dired-write-tags (mapcar (lambda (x) (cons x tag)) (diredp-get-files ignore-marks-p)))))
 
 ;;;###autoload
 (defun diredp-image-dired-delete-tag-recursive (&optional ignore-marks-p) ; Bound to `M-+ C-t r'
@@ -4947,8 +4946,7 @@ Dired buffer and all subdirs, recursively."
   (interactive (progn (diredp-get-confirmation-recursive)
                       (diredp-read-bookmark-file-args)))
   (diredp-ensure-bookmark+)
-  (diredp-do-bookmark-in-bookmark-file-recursive bookmark-file prefix arg
-                                                 'CREATE-BOOKMARK-FILE-BOOKMARK))
+  (diredp-do-bookmark-in-bookmark-file-recursive bookmark-file prefix arg 'CREATE-BOOKMARK-FILE-BOOKMARK))
 
 ;;;###autoload
 (defun diredp-do-find-marked-files-recursive (&optional arg) ; Bound to `M-+ F'
@@ -5039,7 +5037,7 @@ using `\\[tags-loop-continue]'."
     (tags-query-replace from to delimited `',files)))
 
 ;;;###autoload
-(defun diredp-do-grep-recursive (command-args &optional ignore-marks-p) ; Bound to `M+ M-g'
+(defun diredp-do-grep-recursive (command-args) ; Bound to `M+ M-g'
   "Run `grep' on marked files, including those in marked subdirs.
 Like `diredp-do-grep', but act recursively on subdirs.
 The files included are those that are marked in the current Dired
@@ -5053,31 +5051,30 @@ Dired buffer and all subdirs, recursively."
                                   grep-command
                                 (and grep-command  (or (not grep-use-null-device)  (eq grep-use-null-device t))))
                         (grep-compute-defaults))
-                      (list (diredp-do-grep-1 (diredp-get-files current-prefix-arg))
-                            current-prefix-arg)))
+                      (list (diredp-do-grep-1 (diredp-get-files current-prefix-arg)))))
   (grep command-args))
 
 ;;;###autoload
-(defun diredp-marked-recursive (dirname &optional ignore-marked-p) ; Not bound to a key
+(defun diredp-marked-recursive (dirname &optional ignore-marks-p) ; Not bound to a key
   "Open Dired on marked files, including those in marked subdirs.
 Like `diredp-marked', but act recursively on subdirs.
 
 See `diredp-do-find-marked-files-recursive' for a description of the
 files included.  In particular, if no files are marked here or in a
-marked subdir, then all files in the directory are included."
-  (interactive (progn (diredp-get-confirmation-recursive)
-                      (list (cons (generate-new-buffer-name (buffer-name))
-                                  (diredp-get-files current-prefix-arg)))))
-  (dired dirname))
+marked subdir, then all files in the directory are included.
+
+When called from Lisp, DIRNAME here must be a string, not a cons.  It
+is used as the name of the new Dired buffer."
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (let ((cons-dirname  (cons (generate-new-buffer-name (buffer-name)) (diredp-get-files ignore-marks-p))))
+    (dired cons-dirname)))
 
 ;;;###autoload
-(defun diredp-marked-recursive-other-window (dirname &optional ignore-marked-p)
-                                        ; Bound to `M-+ C-M-*'
+(defun diredp-marked-recursive-other-window (dirname &optional ignore-marks-p) ; Bound to `M-+ C-M-*'
   "Same as `diredp-marked-recursive', but uses a different window."
-  (interactive (progn (diredp-get-confirmation-recursive)
-                      (list (cons (generate-new-buffer-name (buffer-name))
-                                  (diredp-get-files current-prefix-arg)))))
-  (dired-other-window dirname))
+  (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
+  (let ((cons-dirname  (cons (generate-new-buffer-name (buffer-name)) (diredp-get-files ignore-marks-p))))
+    (dired-other-window cons-dirname)))
 
 ;;;###autoload
 (defun diredp-list-marked-recursive (&optional ignore-marks-p predicate) ; Bound to `M-+ C-M-l'
@@ -5228,7 +5225,7 @@ Act on only the files for which it returns non-nil."
   )
 
 (when (and (memq system-type '(windows-nt ms-dos))  (fboundp 'w32-browser))
-  (defun diredp-multiple-w32-browser-recursive (&optional ignore-marked-p)
+  (defun diredp-multiple-w32-browser-recursive (&optional ignore-marks-p)
     "Run Windows apps for with marked files, including those in marked subdirs.
 Like `dired-multiple-w32-browser', but act recursively on subdirs.
 
@@ -5236,7 +5233,7 @@ See `diredp-do-find-marked-files-recursive' for a description of the
 files included.  In particular, if no files are marked here or in a
 marked subdir, then all files in the directory are included."
     (interactive (progn (diredp-get-confirmation-recursive) (list current-prefix-arg)))
-    (let ((files  (diredp-get-files ignore-marked-p)))
+    (let ((files  (diredp-get-files ignore-marks-p)))
       (while files
         (w32-browser (car files))
         (sleep-for w32-browser-wait-time)
@@ -5641,8 +5638,8 @@ Dired buffer and all subdirs, recursively."
      ;; `dired-file-marker', which only works in the current Dired directory.
      ?*)))
 
-(defun diredp-create-files-non-directory-recursive (file-creator basename-constructor
-                                                    operation &optional ignore-marks-p)
+(defun diredp-create-files-non-directory-recursive (file-creator basename-constructor operation
+                                                    &optional ignore-marks-p)
   "Apply FILE-CREATOR + BASENAME-CONSTRUCTOR to non-dir part of marked names.
 Like `dired-create-files-non-directory', but act recursively on subdirs.
 
@@ -5672,8 +5669,7 @@ Type SPC or `y' to %s one file, DEL or `n' to skip to next,
      ;; `dired-file-marker', which only works in the current Dired directory.
      ?*)))
 
-(defun diredp-do-chxxx-recursive (attribute-name program op-symbol
-                                  &optional ignore-marks-p default)
+(defun diredp-do-chxxx-recursive (attribute-name program op-symbol &optional ignore-marks-p default)
   "Change attributes of the marked files, including those in marked subdirs.
 Refresh their file lines.
 
@@ -8939,7 +8935,7 @@ Another limitation is that the uid field is needed for the
 function to work correctly.  In particular, the field is not
 present for some values of `ls-lisp-emulation'.
 
-This function operates only on the buffer content and does not
+This function operates only on the Dired buffer content.  It does not
 refer at all to the underlying file system.  Contrast this with
 `find-dired', which might be preferable for the task at hand."
 
