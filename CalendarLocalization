@@ -152,15 +152,15 @@ names.
 
 
 
-=== Spanish ===
+=== Spanish (Castillian) ===
 Week starts with Monday, use also spanish weekday and month names. Editor specially dislikes Jueves. :)
 
     (setq calendar-week-start-day 1
-          calendar-day-name-array ["Domingo" "Lunes" "Martes" "Miércoles"
-                                   "Jueves" "Viernes" "Sábado"]
-          calendar-month-name-array ["Enero" "Febrero" "Marzo" "Abril" "Mayo"
-                                     "Junio" "Julio" "Agosto" "Septiembre"
-                                     "Octubre" "Noviembre" "Diciembre"])
+          calendar-day-name-array ["domingo" "lunes" "martes" "miércoles"
+                                   "jueves" "viernes" "sábado"]
+          calendar-month-name-array ["enero" "febrero" "marzo" "Aaril" "mayo"
+                                     "junio" "julio" "agosto" "septiembre"
+                                     "octubre" "noviembre" "diciembre"])
 
 === Swedish ===
 See [http://bigwalter.net/daniel/elisp/sv-kalender.el sv-kalender.el]
