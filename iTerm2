@@ -85,7 +85,7 @@ You can do a quick preview of an image with <code>imgcat</code>, which outputs t
 
 http://www.philadelinquency.com/emacs/iterm2imgcat.png
 
-If you have to maintain a remote web server and make post-op edits these tools can come in handy.   These tools work by sending proprietary terminal escape codes which iTerm2 understands and reacts to.  File transfers might be a tad slow, but it's amazing that it works at all, given the terminal display technology from the 1970s that lies underneath.
+If you have to maintain a remote web server and make post-op edits these tools can come in handy.   These tools work by sending proprietary terminal escape codes which iTerm2 understands and reacts to.  File transfers might be a tad slow, but it's amazing that it works at all—given the terminal display technology from the 1970s that lies underneath.  The same techniques were used in the 1970s, 80s and early 90s to send files using programs like [https://alioth.debian.org/scm/?group_id=30018 Minicom] and [http://www.columbia.edu/kermit/ck90.html kermit] and the X, Y and Z-modem protocols found in bulletin board systems.
 
 = Getting the Super and Hyper Keys working in iTerm2 =
 http://redgrittybrick.org/images/vt102.png
