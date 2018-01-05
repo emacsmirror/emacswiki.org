@@ -40,6 +40,12 @@ https://philadelinquency.com/emacs/iterm2_mouse.png
 
 You can now resize Emacs windows using your mouse, as well as clicking on hyperlinks (but you don't NEED a mouse to do that, don't you?)
 
+= Rendering Powerline arrows in iTerm2 =
+
+https://philadelinquency.com/emacs/iterm2powerline.png
+
+Go to the [https://github.com/powerline/fonts Powerline font patch] site on GitHub and install the fonts on your Mac, and switch iTerm2 to use one of the "(Font Name) for Powerline" fonts.   Powerline will now render with proper separators.
+
 = Emacs Frames =
 
 Emacs in terminal mode makes frames a very useful feature.  These behave like screen/tmux screens.
