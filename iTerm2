@@ -71,6 +71,21 @@ Install [https://melpa.org/#/emojify emojify] and [https://melpa.org/#/company-e
 
 https://www.philadelinquency.com/emacs/iterm2emoji.png
 
+= File transfers and remote image display in iTerm2 sessions =
+
+https://www.philadelinquency.com/emacs/iterm2shell.gif
+
+iTerm2 comes with some installable scripts you can put on the remote computer that make it quite useful.   You can do that under the iTerm2 menu, here:
+
+https://www.philadelinquency.com/emacs/iterm2installshell.png
+
+Some of my favorite commands to run on the remote host are <code>it2ul</code> to upload a file, <code>itdl</code>, which downloads a file.
+
+You can do a quick preview of an image with <code>imgcat</code>, which outputs the picture to your terminal:
+
+http://www.philadelinquency.com/emacs/iterm2imgcat.png
+
+If you have to maintain a remote web server and make post-op edits these tools can come in handy.   These tools work by sending proprietary terminal escape codes which iTerm2 understands and reacts to.  File transfers might be a tad slow, but it's amazing that it works at all, given the terminal display technology from the 1970s that lies underneath.
 
 = Getting the Super and Hyper Keys working in iTerm2 =
 http://redgrittybrick.org/images/vt102.png
@@ -101,7 +116,7 @@ Let's see how the Latin letter O works when pressed with modifier keys.
 
 * And when I press SHIFT+ALT+o, I get <code>^[O</code>
 
-These combos are being read by the remote machine and being fed to STDIN to cat (and cat is reading them back as output).  They're also the most basic escape sequences, as ^ is the code for COMMAND, and ^[ is for ALT/META.   If your keyboard has a D-pad, try hitting <up> <down> <right> and <left>.  Usually these will be <code>^[[A</code>, <code>^[[B</code>, <code>^[[C</code> and <code>^[[D</code>, respectively.
+These combos are being read by the remote machine and being fed to STDIN to cat (and cat is reading them back as output).  They're also the most basic escape sequences, as ^ is the code for COMMAND, and ^[ is for ALT/META, known as the escape sequence (<code>^[</code]).  For terminals and IBM PCs, the ^[ signifies some sort of terminal code, signifying a keypress or some action to be taken on the terminal or the remote.   If your keyboard has a D-pad, try hitting <up> <down> <right> and <left>.  Usually these will be <code>^[[A</code>, <code>^[[B</code>, <code>^[[C</code> and <code>^[[D</code>, respectively.
 
 You can press C-c to get out of <code>cat</code>.
 
