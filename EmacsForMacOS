@@ -231,6 +231,10 @@ or (if you prefer a -- usually more recent-- development version)
 
 It's also possible to build the development version of GNU Emacs with ATSUI -- Apple Type Services for Unicode Imaging. 
 
+== Terminal Emulation ==
+
+Read up on [[iTerm2]] if you want to spend most of your time in ssh using emacs rather than the GUI.
+
 == Tips ==
 
 === Visit Mac files with native Mac app in dired ===
@@ -298,9 +302,6 @@ For iTerm2: Go to Preferences > Profiles > Keys > Left/Right option key acts as:
 If you want to use Option key for both international characters and [MetaKeyProblems Meta key] in Emacs, see [http://swissarmyhammer.wordpress.com/2010/06/07/osx-terminal-meta-key-national-characters/ this page] for iTerm 0.10.x patch and/or binary.
 
 Alt-b and Alt-f for navigating by word also works for your shell now.
-
-=== Super/Hyper in iTerm2 OSX ===
-[iTerm2 Read this] if you would like to use the Super or Hyper key in remote Emacs sessions.
 
 === Use Left Command as Meta Key under iTerm2 terminal emulator ===
 
