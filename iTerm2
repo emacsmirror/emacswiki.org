@@ -1,1 +1,143 @@
-* Editing this page (in progress)
+= What is iTerm2 =
+iTerm2 is a feature-rich terminal emulation replacement for Terminal.app on OSX machines.  It is [https://en.wikipedia.org/wiki/Donationware donationware] and is under the [https://www.iterm2.com/license.txt GPL v2] license.
+
+If you use OSX on a regular basis but prefer to interact with Emacs running somewhere else, iTerm2's features will get you as close as possible to feeling as if you were running the Emacs GUI on your local machine.
+
+= Where to download =
+You can get it from [https://www.iterm2.com/ here].
+
+= Advantages over Terminal.app =
+== While OSX's default Terminal.app is fairly feature-rich, it comes with limitations. ==
+# It doesn't support complicated key bindings, which makes it hard to get the <super> and <hyper> keys working in Emacs
+
+# Emoji support is limited (it's there, but it's limited)
+
+# Minute font-adjustments are a bit clunky (albeit less clinky than the font-face rendering and customization in Emacs itself)
+
+== iTerm2 has some notable features, namely: ==
+* '''Full rollover key support'''  Any key chord can be made to spit out an escape sequence through the terminal, and with some Emacs Lisp code you can receive the escape sequence and map it to a key, a key chord and then use it as a binding
+
+* '''Mouse support'''  Yes, you can send mouse clicks and drags to Emacs (24 or later) and have Emacs respond.  Even if the host is Linux but iTerm is running locally on OSX.
+
+* '''Image support'''  You can install packages to a remote Linux/OSX host and then have images catted back out via your terminal
+
+* '''The best font rendering'''  Fonts like [https://github.com/powerline/fonts Inconsolata for Powerline] look beautiful; font kerning and line spacing can be microscopically adjusted so the text looks perfect, whether you're a person who likes characters squished together so you can fit as much text in a line as possible, or you need letters spaced further apart and line spacing adjusted [http://dyslexiahelp.umich.edu/sites/default/files/good_fonts_for_dyslexia_study.pdf for autism or dyslexia]
+
+= Mouse support =
+Believe it or not, you can get basic mouse functions working in iTerm2 pretty easily.   Try this in your ~/.emacs file:
+
+    ;; ITERM2 MOUSE SUPPORT
+    (unless window-system
+      (require 'mouse)
+      (xterm-mouse-mode t)
+      (defun track-mouse (e)) 
+      (setq mouse-sel-mode t)
+    )
+
+And then make sure you enable mouse support in your iTerm2 connection profile, like this:
+
+https://philadelinquency.com/emacs/iterm2_mouse.png
+
+= Getting the Super and Hyper Keys working in iTerm2 =
+http://redgrittybrick.org/images/vt102.png
+
+First, let's explain why getting Super and Hyper working in a terminal is not straightforward:
+
+Emacs users over ssh terminals have a notorious time trying to get the Super (s) and Hyper (H) keys working to expand the possible local and global keybindings available.  The reason for this has to do a lot with [https://en.wikipedia.org/wiki/VT100 DEC terminal history] and the keys that were available in some of the earliest possible terminals, in particular the DEC VT-100 terminal which was one of the most popular serial displays for Unix machines and was adapted for time-sharing and remote communication.  Consequently the DEC terminal became the default basis of emulation for most software.
+
+Contrast this with the [https://en.wikipedia.org/wiki/Space-cadet_keyboard Space-cadet keyboard] that influenced the design of Emacs, made for MIT Lisp machines.  It included several modifier keys which allowed multiple character sets as well as a large macro space for binding commands to key combinations.  Two modifier keys to the left of the space bar on the Space-cadet keyboard include the Super and Hyper keys.  While insanely useful for the experienced user, fewer people worked on Lisp machines compared to the widespread availability of VT-series character terminals.   All command line and serial-terminal interaction you'll ever find supports VT-100.
+
+In GUI mode most emacsen will bind the Windows or Option key to Super.  Or if you're a Mac user, you might have swapped Super with ⌘ so the Meta key is closest to the spacebar and easier to reach.
+
+When you press a key on your keyboard your terminal emulator will send a character or an escape sequence down the connection.  For DEC or xterm terminals, some keys may not send signals such as <f13>-<f24>, <print>, etc.  Or, if you have a custom keyboard or a keyboard with media keys (like Play, Stop, Fast-forward) those may not be sent down the connection either.  iTerm2 can make use of any key that OSX will respond to and you can customize it to run commands locally, remotely or send signals down the terminal connection to the remote machine.
+
+So, let's do an exercise to send some custom signals down the terminal connection and bind them so Emacs can detect the key, and then bind that key to a command.
+
+= Testing escape codes =
+
+First, connect your remote machine and issue the <code>cat</code> command with no parameters. Depending on your OS, termcap on the remote and the codepage your keyboard is set to, you'll see either a character or an escape sequence when you type something.
+
+Let's see how the Latin letter O works when pressed with modifier keys.
+
+* When I press "o", I get an o.
+
+* But when I press ALT+o, I get <code>^[o</code>
+
+* When I press CTRL+ALT+o, I get <code>^[^O</code>
+
+* And when I press SHIFT+ALT+o, I get <code>^[O</code>
+
+These combos are being read by the remote machine and being fed to STDIN to cat (and cat is reading them back as output).  They're also the most basic escape sequences, as ^ is the code for COMMAND, and ^[ is for ALT/META.   If your keyboard has a D-pad, try hitting <up> <down> <right> and <left>.  Usually these will be <code>^[[A</code>, <code>^[[B</code>, <code>^[[C</code> and <code>^[[D</code>, respectively.
+
+You can press C-c to get out of <code>cat</code>.
+
+Now let's try sending a more complicated escape sequence using some keys on your keyboard and fool Emacs on the remote into thinking you pressed a Hyper key combo.   Go into your iTerm2 settings for your connection profile.  In the Keys panel, let's set a key combo for Ctrl+⌘+Option+A, which is the three leftmost keys next to the space bar plus the letter A.  I'm pretty confident your remote termcap probably does not have an entry for <code>^[[1;P9</code>, so let's start off with that code.  Your setting should look like this:
+
+https://www.philadelinquency.com/emacs/iterm2binding.png
+
+Let's get Emacs to listen for this key.  Evaluate the following Lisp code in an Emacs session (I took the liberty of adding escapes for the rest of the keys):
+
+     ;; TERMINAL MAPPINGS TO SUPPORT ITERM2 FOR MAC
+     (progn
+     (let ((map (if (boundp 'input-decode-map)
+                 input-decode-map
+     function-key-map)))
+     (define-key map "\e[1;P9"  (kbd "H-a"))
+     (define-key map "\e[1;P10" (kbd "H-b"))
+     (define-key map "\e[1;P11" (kbd "H-c"))
+     (define-key map "\e[1;P12" (kbd "H-d"))
+     (define-key map "\e[1;P13" (kbd "H-e"))
+     (define-key map "\e[1;P14" (kbd "H-f"))
+     (define-key map "\e[1;P15" (kbd "H-g"))
+     (define-key map "\e[1;P16" (kbd "H-h"))
+     (define-key map "\e[1;P17" (kbd "H-i"))
+     (define-key map "\e[1;P18" (kbd "H-j"))
+     (define-key map "\e[1;P19" (kbd "H-k"))
+     (define-key map "\e[1;P20" (kbd "H-l"))
+     (define-key map "\e[1;P21" (kbd "H-m"))
+     (define-key map "\e[1;P22" (kbd "H-n"))
+     (define-key map "\e[1;P23" (kbd "H-o"))
+     (define-key map "\e[1;P24" (kbd "H-p"))
+     (define-key map "\e[1;P25" (kbd "H-q"))
+     (define-key map "\e[1;P26" (kbd "H-r"))
+     (define-key map "\e[1;P27" (kbd "H-s"))
+     (define-key map "\e[1;P28" (kbd "H-t"))
+     (define-key map "\e[1;P29" (kbd "H-u"))
+     (define-key map "\e[1;P30" (kbd "H-v"))
+     (define-key map "\e[1;P31" (kbd "H-w"))
+     (define-key map "\e[1;P32" (kbd "H-x"))
+     (define-key map "\e[1;P33" (kbd "H-y"))
+     (define-key map "\e[1;P34" (kbd "H-z"))
+     (define-key map "\e[1;P35" (kbd "H-0"))
+     (define-key map "\e[1;P36" (kbd "H-1"))
+     (define-key map "\e[1;P37" (kbd "H-2"))
+     (define-key map "\e[1;P38" (kbd "H-3"))
+     (define-key map "\e[1;P39" (kbd "H-4"))
+     (define-key map "\e[1;P40" (kbd "H-5"))
+     (define-key map "\e[1;P41" (kbd "H-6"))
+     (define-key map "\e[1;P42" (kbd "H-7"))
+     (define-key map "\e[1;P43" (kbd "H-8"))
+     (define-key map "\e[1;P44" (kbd "H-9"))
+     (define-key map "\e[1;P45" (kbd "H-<f1>"))
+     (define-key map "\e[1;P46" (kbd "H-<f2>"))
+     (define-key map "\e[1;P47" (kbd "H-<f3>"))
+     (define-key map "\e[1;P48" (kbd "H-<f4>"))
+     (define-key map "\e[1;P49" (kbd "H-<f5>"))
+     (define-key map "\e[1;P50" (kbd "H-<f6>"))
+     (define-key map "\e[1;P51" (kbd "H-<f7>"))
+     (define-key map "\e[1;P52" (kbd "H-<f8>"))
+     (define-key map "\e[1;P53" (kbd "H-<f9>"))
+     (define-key map "\e[1;P54" (kbd "H-<f10>"))
+     (define-key map "\e[1;P55" (kbd "H-<f11>"))
+     (define-key map "\e[1;P56" (kbd "H-<f12>"))
+     ))
+
+Now we can bind Hyper to something.  Let's try this:
+
+     (global-set-key (kbd "H-<f5>") 'dired)
+
+Now when you press Ctrl+⌘+Option+A, *dired* should pop up.
+
+You can also make combinations with Control and META such as C-c H-o with this technique.  For C-c H-o you would hit C-c and then release the keys, then Ctrl+⌘+Option+H for the H-o part.
+
+Now you can make loads more keybindings for all your favorite Emacs commands.
