@@ -134,9 +134,9 @@ Let's get Emacs to listen for this key.  Evaluate the following Lisp code in an 
 
 Now we can bind Hyper to something.  Let's try this:
 
-     (global-set-key (kbd "H-<f5>") 'dired)
+     (global-set-key (kbd "H-a") 'dired)
 
-Now when you press Ctrl+⌘+Option+A, *dired* should pop up.
+Now when you press Ctrl+⌘+Option+A, *dired* should pop up.   Proceed with adding the rest of the keys and escape codes in your iTerm2 setup.  Also, you can use the <code>cat</code> command to check your work and ensure that the proper escape sequences are reaching the remote machine.
 
 You can also make combinations with Control and META such as C-c H-o with this technique.  For C-c H-o you would hit C-c and then release the keys, then Ctrl+⌘+Option+H for the H-o part.
 
