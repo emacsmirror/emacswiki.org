@@ -299,6 +299,9 @@ If you want to use Option key for both international characters and [MetaKeyProb
 
 Alt-b and Alt-f for navigating by word also works for your shell now.
 
+== Super/Hyper in iTerm2 OSX ==
+[iTerm2 Read this] if you would like to use the Super or Hyper key in remote Emacs sessions.
+
 === Use Left Command as Meta Key under iTerm2 terminal emulator ===
 
 # In iTerm2 go to Preferences > Keys
