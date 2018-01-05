@@ -38,6 +38,40 @@ And then make sure you enable mouse support in your iTerm2 connection profile, l
 
 https://philadelinquency.com/emacs/iterm2_mouse.png
 
+You can now resize Emacs windows using your mouse, as well as clicking on hyperlinks (but you don't NEED a mouse to do that, don't you?)
+
+= Emacs Frames =
+
+Emacs in terminal mode makes frames a very useful feature.  These behave like screen/tmux screens.
+
+C-x 5 2 creates a new frame.  Emacs will add a full-screen window to the frame and use the buffer of whatever you had focused on in the previous frame.
+
+C-x 5 o will cycle frames (or <code>M-x other-frame</code>)
+
+C-x 0 deletes the frame you're looking at.  The buffer that you were working on is still around, but no longer visible.
+
+C-x 1 will wipe all the other Emacs frames you're not looking at.
+
+Let's demonstrate this behavior:
+
+Start Emacs in your remote session.  Then press C-x 2 to split the window horizontally.
+Use C-x C-b or C-x b to switch one of the windows to another buffer, like *Messages*
+
+Now press C-x 5 2 (which is Control-X followed by 5 then 2).  You will now see a new screen with the buffer you were working on displayed in full.
+
+Now, press C-x 5 o (Control-X, then 5 and the letter o).  This sends you back to the frame you were on previously.   Press C-x 5 o again to switch back to the second frame.
+
+Since I like to have a lot of half-screen buffers open at once and I switch between them a lot, I bind *other-frame* to F12.  For instance, one frame has all the IRC channels I am watching, another frame has Slack channels I am on, another frame will be the current code files I'm editing, another frame is where I am comparing source code with git, and so on.
+
+= Emoji Support =
+
+iTerm2 supports the full range of Unicode (provided you have the fonts installed), including emoji.
+
+Install [https://melpa.org/#/emojify emojify] and [https://melpa.org/#/company-emoji company-emoji] from the MELPA repository.  If you use company-mode (and who doesn't?), typing a colon (:) and the first two letters of the emoji's common name will yield this:
+
+https://www.philadelinquency.com/emacs/iterm2emoji.png
+
+
 = Getting the Super and Hyper Keys working in iTerm2 =
 http://redgrittybrick.org/images/vt102.png
 
