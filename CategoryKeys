@@ -82,6 +82,7 @@ MenuAccessFromKeyboard provides info about using menus from the keyboard (withou
 * BindingControlReturn -- How to bind Control-Return in a local mode
 * OpeningQuote -- How to type `this' easily on keyboards where only ' is easily accessed
 * TabKey -- How to change the behaviour of the TAB key
+* iTerm2 -- For OSX users who use ssh, allows you to bind custom keys to escape sequences really easily
 * [[Accelerate]] -- Change the behaviour of a command when its key is auto-repeated
 * Lisp:speedkey.el -- Create a set of keybindings easily, with a help text
 * Binding <code><return></code> to `RET' -- If your version of Emacs does not bind <code><return></code> to anything, do this:  -- AlexSchroeder
