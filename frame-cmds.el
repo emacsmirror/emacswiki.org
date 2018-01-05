@@ -8,9 +8,9 @@
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 0
 ;; Package-Requires: ((frame-fns "0"))
-;; Last-Updated: Thu Jan  4 08:11:30 2018 (-0800)
+;; Last-Updated: Fri Jan  5 14:39:57 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 3099
+;;     Update #: 3120
 ;; URL: https://www.emacswiki.org/emacs/download/frame-cmds.el
 ;; Doc URL: https://emacswiki.org/emacs/FrameModes
 ;; Doc URL: https://www.emacswiki.org/emacs/OneOnOneEmacs
@@ -283,6 +283,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2018/01/05 dadams
+;;     frcmds-available-screen-pixel-bounds:
+;;       Use display-monitor-attributes-list to compute, if option is nil.
+;;     frcmds-new-frame-position: Correct for use with multiple monitors.
 ;; 2018/01/02 dadams
 ;;     available-screen-pixel-bounds: Change :type to allow nil.
 ;; 2017/10/22 dadams
@@ -1547,7 +1551,23 @@ This represents the currently available screen area."
   (or available-screen-pixel-bounds     ; Use the option value, if available.
       (if (fboundp 'mac-display-available-pixel-bounds) ; Mac-OS-specific.
           (mac-display-available-pixel-bounds)
-        (list 0 0 (x-display-pixel-width) (x-display-pixel-height)))))
+        (if (fboundp 'display-monitor-attributes-list) ; Emacs 24.4+
+            (let ((attss  (display-monitor-attributes-list))
+                  (x0     most-positive-fixnum)
+                  (y0     most-positive-fixnum)
+                  (x1     0)
+                  (y1     0)
+                  geom)
+              (dolist (atts  attss)
+                (setq geom  (cdr (assq 'geometry atts))
+                      x0    (min x0 (nth 0 geom))
+                      y0    (min y0 (nth 1 geom))
+                      x1    (max x1 (nth 2 geom))
+                      ;; Use `max' for the height too, but it does not account for taskbar etc.
+                      y1    (max y1 (nth 3 geom))))
+              (list x0 y0 x1 y1))
+          ;; Punt.  Assume only one monitor.
+          (list 0 0 (x-display-pixel-width) (x-display-pixel-height))))))
 
 ; Emacs 20 doesn't have `butlast'.  Define it to avoid requiring `cl.el' at runtime.  From `subr.el'.
 (unless (fboundp 'butlast)
@@ -1664,17 +1684,19 @@ Same as `move-frame-right', except movement is to the left."
   "Return the new TYPE position of FRAME, incremented by INCR.
 TYPE is `left' or `top'.
 INCR is the increment to use when changing the position."
-  (let ((new-pos            (+ incr (cadr (frame-geom-value-cons
-                                           type (cdr (assq type (frame-parameters frame)))))))
-        (display-dimension  (if (eq 'left type)
-                                (frcmds-available-screen-pixel-width t)
-                              (frcmds-available-screen-pixel-height t)))
-        (frame-dimension    (if (eq 'left type) (frame-pixel-width frame) (frame-pixel-height frame))))
+  (let* ((f-dim      (if (eq 'left type) (frame-pixel-width frame) (frame-pixel-height frame)))
+         (f-min      (cadr (frame-geom-value-cons type (cdr (assq type (frame-parameters frame))))))
+         (f-max      (+ f-min f-dim))
+         (new-f-min  (+ incr f-min))
+         (new-f-max  (+ incr f-max))
+         (d-bnds     (frcmds-available-screen-pixel-bounds))
+         (d-min      (if (eq 'left type) (nth 0 d-bnds) (nth 1 d-bnds)))
+         (d-max      (if (eq 'left type) (nth 2 d-bnds) (nth 3 d-bnds))))
     (if (not move-frame-wrap-within-display-flag)
-        new-pos
-      (when (< new-pos (- frame-dimension)) (setq new-pos  display-dimension))
-      (when (> new-pos display-dimension)   (setq new-pos  (- frame-dimension)))
-      new-pos)))
+        new-f-min
+      (when (< new-f-max d-min) (setq new-f-min  d-max))
+      (when (> new-f-min d-max) (setq new-f-min  (- d-min (- f-max f-min))))
+      new-f-min)))
 
 ;;;###autoload
 (defun move-frame-to-screen-top (arg &optional frame) ; Suggested binding: `M-S-v'.
