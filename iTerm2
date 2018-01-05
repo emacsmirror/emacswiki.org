@@ -81,7 +81,7 @@ Emacs users over ssh terminals have a notorious time trying to get the Super (s)
 
 Contrast this with the [https://en.wikipedia.org/wiki/Space-cadet_keyboard Space-cadet keyboard] that influenced the design of Emacs, made for MIT Lisp machines.  It included several modifier keys which allowed multiple character sets as well as a large macro space for binding commands to key combinations.  Two modifier keys to the left of the space bar on the Space-cadet keyboard include the Super and Hyper keys.  While insanely useful for the experienced user, fewer people worked on Lisp machines compared to the widespread availability of VT-series character terminals.   All command line and serial-terminal interaction you'll ever find supports VT-100.
 
-In GUI mode most emacsen will bind the Windows or Option key to Super.  Or if you're a Mac user, you might have swapped Super with ⌘ so the Meta key is closest to the spacebar and easier to reach.
+In GUI mode most emacsen will bind the Windows or Option key to Super.  Or if you're a Mac user, you might have swapped Alt and ⌘ so the Meta key is closest to the spacebar and easier to reach.
 
 When you press a key on your keyboard your terminal emulator will send a character or an escape sequence down the connection.  For DEC or xterm terminals, some keys may not send signals such as <f13>-<f24>, <print>, etc.  Or, if you have a custom keyboard or a keyboard with media keys (like Play, Stop, Fast-forward) those may not be sent down the connection either.  iTerm2 can make use of any key that OSX will respond to and you can customize it to run commands locally, remotely or send signals down the terminal connection to the remote machine.
 
