@@ -12,7 +12,7 @@ You can get it from [https://www.iterm2.com/ here].
 
 # Emoji support is limited (it's there, but it's limited)
 
-# Minute font-adjustments are a bit clunky (albeit less clinky than the font-face rendering and customization in Emacs itself)
+# Minute font-adjustments are a bit clunky (albeit less clunky than the font-face rendering and customization in Emacs itself)
 
 == iTerm2 has some notable features, namely: ==
 * '''Full rollover key support'''  Any key chord can be made to spit out an escape sequence through the terminal, and with some Emacs Lisp code you can receive the escape sequence and map it to a key, a key chord and then use it as a binding
