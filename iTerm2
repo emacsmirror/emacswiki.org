@@ -67,7 +67,7 @@ Since I like to have a lot of half-screen buffers open at once and I switch betw
 
 iTerm2 supports the full range of Unicode (provided you have the fonts installed), including emoji.
 
-Install [https://melpa.org/#/emojify emojify] and [https://melpa.org/#/company-emoji company-emoji] from the MELPA repository.  If you use company-mode (and who doesn't?), typing a colon (:) and the first two letters of the emoji's common name will yield this:
+Install [https://melpa.org/#/emojify emojify] and [https://melpa.org/#/company-emoji company-emoji] from the MELPA repository.  If you use company-mode (and who doesn't?), typing a colon and the first two letters of the emoji's common name will yield this:
 
 https://www.philadelinquency.com/emacs/iterm2emoji.png
 
