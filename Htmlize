@@ -1,8 +1,8 @@
-<code>htmlize.el</code> by HrvojeNiksic is a package for exporting the contents of an Emacs buffer to HTML while respecting display properties such as colors, fonts, underlining, invisibility, etc. Get it from,
+<code>htmlize.el</code> by HrvojeNiksic is a package for exporting the contents of an Emacs buffer to HTML while respecting display properties such as colors, fonts, underlining, invisibility, etc. Get it from:
 
-* The author at http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el.cgi
-* On [[Debian]] in DebianPackage:emacs-goodies-el
-* Already in [[XEmacs]] elisp packages collection, in the text-modes package
+* The author at https://github.com/hniksic/emacs-htmlize,
+* on [[Debian]] in DebianPackage:emacs-goodies-el, or
+* already in [[XEmacs]] elisp packages collection, in the text-modes package.
 
 The conversion is quite sophisticated, it understands non-ascii characters, looks up colours in the X11 RGB database, and can generate either <code>css</code> or old style <code>font</code> bits.
 
