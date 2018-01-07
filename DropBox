@@ -1,4 +1,4 @@
-[[https://www.dropbox.com/ DropBox]] is a "free" (as in beer, not as in speech) service for file storage and synchronization.
+[[https://www.dropbox.com/ Dropbox]] is a "free" (as in beer, not as in speech) service for file storage and synchronization.
 
 Q: What emacs files can be stored on dropbox to share between computers running Emacs? config files? site-lisp? home directory? ELPA packages?
 ** This would presume that the same Emacs version is running on all machines connected to that Dropbox (or do not care about a particular Emacs folder, or are not running shared byte-compiled code).
