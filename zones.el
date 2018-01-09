@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Tue Jan  9 13:44:11 2018 (-0800)
+;; Last-Updated: Tue Jan  9 14:51:56 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1792
+;;     Update #: 1813
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
 ;; Doc URL: https://www.emacswiki.org/emacs/MultipleNarrowings
@@ -429,7 +429,9 @@
 ;;(@* "Change log")
 ;;
 ;; 2018/01/09 dadams
-;;     zz-readable-marker: If already a readable marker then just return it (idempotent).
+;;     zz-readable-marker:
+;;       If arg is already a readable marker just return it (idempotent).  If it is a marker then use its buffer.
+;;       If it is a number then use it as is, using BUFFER arg or current buffer name.
 ;; 2017/08/02 dadams
 ;;     Added: zz-izones-from-noncontiguous-region, zz-zones-from-noncontiguous-region,
 ;;            zz-noncontiguous-region-from-izones, zz-noncontiguous-region-from-zones, zz-dot-pairs.
@@ -1266,29 +1268,32 @@ OBJECT is returned."
        (eq 'marker (nth 0 object))  (stringp (nth 1 object))  (numberp (nth 2 object))
        object))
 
-(defun zz-readable-marker (number-or-marker &optional buffer)
-  "Return a readable-marker object equivalent to NUMBER-OR-MARKER, or nil.
+(defun zz-readable-marker (number-or-marker &optional num-buffer)
+  "Return a readable marker equivalent to NUMBER-OR-MARKER, or nil.
 Return nil if NUMBER-OR-MARKER is not `number-or-marker-p'.
 \(If NUMBER-OR-MARKER is already a readable marker then return it.)
 
-This is a non-destructive operation.
+A readable marker satisfies `zz-readable-marker-p'.  It has the form
+\(marker BUFFER POSITION), where BUFFER is a buffer name (string) and
+POSITION is a buffer position (number).
 
-Optional arg BUFFER is a buffer or a buffer name (default: name of
-current buffer).  It is used as the marker buffer when
-`number-or-marker-p' is a number.
+If NUMBER-OR-MARKER is itself a readable marker then return it.
 
-A readable-marker object is a sexp of form (marker BUFFER POSITION),
-where BUFFER is a buffer name (string) and POSITION is buffer
-position (number)."
-  (if (zz-readable-marker-p number-or-marker)
-      number-or-marker
-    (let* ((buf   (get-buffer (or buffer  (current-buffer))))
-           (buf   (and buf  (buffer-name buf)))
-           (mrkr  (and (number-or-marker-p number-or-marker)
-                       (if (markerp number-or-marker)
-                           number-or-marker
-                         (with-current-buffer buf (copy-marker number-or-marker))))))
-      (and mrkr  `(marker ,buf ,(marker-position mrkr))))))
+If NUMBER-OR-MARKER is a marker then its buffer is used as BUFFER.
+
+If NUMBER-OR-MARKER is a number then:
+ If   NUM-BUFFER names an existing buffer then it is used as BUFFER.
+ Else the name of the current buffer is used as BUFFER.
+
+This is a non-destructive operation."
+  (cond ((zz-readable-marker-p number-or-marker) number-or-marker)
+        ((markerp number-or-marker)
+         `(marker ,(marker-buffer number-or-marker) ,(marker-position number-or-marker)))
+        ((numberp number-or-marker)
+         `(marker
+           ,(buffer-name (or (and (stringp num-buffer)  (get-buffer num-buffer))  (current-buffer)))
+           ,number-or-marker))
+        (t nil)))
 
 (defun zz-izones-p (value)
   "Return non-nil if VALUE is a (possibly empty) list of izones.
