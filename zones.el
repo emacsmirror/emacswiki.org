@@ -8,9 +8,9 @@
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 2015-08-16
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 16:29:27 2018 (-0800)
+;; Last-Updated: Tue Jan  9 13:44:11 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 1788
+;;     Update #: 1792
 ;; URL: https://www.emacswiki.org/emacs/download/zones.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Zones
 ;; Doc URL: https://www.emacswiki.org/emacs/MultipleNarrowings
@@ -428,6 +428,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2018/01/09 dadams
+;;     zz-readable-marker: If already a readable marker then just return it (idempotent).
 ;; 2017/08/02 dadams
 ;;     Added: zz-izones-from-noncontiguous-region, zz-zones-from-noncontiguous-region,
 ;;            zz-noncontiguous-region-from-izones, zz-noncontiguous-region-from-zones, zz-dot-pairs.
@@ -1267,6 +1269,7 @@ OBJECT is returned."
 (defun zz-readable-marker (number-or-marker &optional buffer)
   "Return a readable-marker object equivalent to NUMBER-OR-MARKER, or nil.
 Return nil if NUMBER-OR-MARKER is not `number-or-marker-p'.
+\(If NUMBER-OR-MARKER is already a readable marker then return it.)
 
 This is a non-destructive operation.
 
@@ -1277,13 +1280,15 @@ current buffer).  It is used as the marker buffer when
 A readable-marker object is a sexp of form (marker BUFFER POSITION),
 where BUFFER is a buffer name (string) and POSITION is buffer
 position (number)."
-  (let* ((buf   (get-buffer (or buffer  (current-buffer))))
-         (buf   (and buf  (buffer-name buf)))
-         (mrkr  (and (number-or-marker-p number-or-marker)
-                     (if (markerp number-or-marker)
-                         number-or-marker
-                       (with-current-buffer buf (copy-marker number-or-marker))))))
-    (and mrkr  `(marker ,buf ,(marker-position mrkr)))))
+  (if (zz-readable-marker-p number-or-marker)
+      number-or-marker
+    (let* ((buf   (get-buffer (or buffer  (current-buffer))))
+           (buf   (and buf  (buffer-name buf)))
+           (mrkr  (and (number-or-marker-p number-or-marker)
+                       (if (markerp number-or-marker)
+                           number-or-marker
+                         (with-current-buffer buf (copy-marker number-or-marker))))))
+      (and mrkr  `(marker ,buf ,(marker-position mrkr))))))
 
 (defun zz-izones-p (value)
   "Return non-nil if VALUE is a (possibly empty) list of izones.
