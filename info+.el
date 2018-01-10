@@ -8,9 +8,9 @@
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 14:27:35 2018 (-0800)
+;; Last-Updated: Wed Jan 10 10:18:09 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 6278
+;;     Update #: 6280
 ;; URL: https://www.emacswiki.org/emacs/download/info%2b.el
 ;; Doc URL: https://www.emacswiki.org/emacs/InfoPlus
 ;; Keywords: help, docs, internal
@@ -1443,7 +1443,7 @@ If ... contains an end char then that char must be backslashed.")
   (interactive)
   (Info-follow-nearest-node t))
 
-;;;###autoload (autoload 'Info-clear "info+")
+;;;###autoload (autoload 'Info-history-clear "info+")
 (defun Info-history-clear (&optional msgp)
   "Clear Info history and reload current manual."
   (interactive (progn (unless (y-or-n-p "Clear the Info history? ") (info-user-error "OK, canceled"))
