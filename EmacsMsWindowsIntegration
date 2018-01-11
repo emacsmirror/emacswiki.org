@@ -81,25 +81,26 @@ Windows Registry Editor Version 5.00
 ;; Be sure to set the correct path to Emacs on your system
 [HKEY_CLASSES_ROOT\*\shell]
 
-;; Open in new frame
+;; Open file in new frame
 [HKEY_CLASSES_ROOT\*\shell\emacsopennewframe]
 @="&Emacs: Edit in new window"
-"icon"="C:\\path_to\\emacs\\bin\\emacsclientw.exe"
+"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
 [HKEY_CLASSES_ROOT\*\shell\emacsopennewframe\command]
-@="C:\\path_to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"C:\\path_to\\emacs\\bin\\emacsclient.exe\" -c -n \"%1\""
-;; open in last active frame
+@="c:\\path_to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -c -n \"%1\""
+
+;; Open file in existing frame
 [HKEY_CLASSES_ROOT\*\shell\emacsopensameframe]
 @="&Emacs: Edit in existing window"
-"icon"="C:\\path_to\\emacs\\bin\\emacsclientw.exe"
+"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
 [HKEY_CLASSES_ROOT\*\shell\emacsopensameframe\command]
-@="C:\\path_to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"C:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%1\""
+@="c:\\path_to\\emacs\\bin\\emacsclientw.exe -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%1\""
 
-;; 
+;; Dired support
 [HKEY_CLASSES_ROOT\Directory\shell\emacsopensameframe]
-@="&Emacs: Edit in existing window"
-"icon"="C:\\path_to\\emacs\\bin\\emacsclientw.exe"
+@="&Emacs: Open in dired"
+"icon"="c:\\path_to\\emacs\\bin\\emacsclientw.exe"
 [HKEY_CLASSES_ROOT\Directory\shell\emacsopensameframe\command]
-@="C:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"C:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%1\""
+@="c:\\path_to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"c:\\path_to\\emacs\\bin\\emacsclient.exe\" -n \"%1\""
 }}}
 
 You should immediately see the options if you right click any file in explorer.
