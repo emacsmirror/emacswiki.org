@@ -42,6 +42,36 @@ Use Windows command-line commands `ftype' and `assoc':
     assoc .c=CodeFile
     assoc .h=CodeFile
 
+== "Edit with Emacs" Right Click Context Menu ==
+
+Save the following text to a file explorer-edit-with-emacs.reg, fix the paths, then double-click it.
+
+{{{
+Windows Registry Editor Version 5.00
+;; Search and replace C:\\path\\to\\emacs with the right path on your system
+
+;; If emacs isn't running and server isn't running, will open directly in emacs
+;; If emacs is running with server, opens using emacsclientw (C-# when done)
+
+;; To automatically start server, add to ~/.emacs, remove semicolons:
+;; (cond ((eq system-type 'windows-nt)
+;;        (require 'server)
+;;        (unless (server-running-p)
+;;          (server-start))))
+
+[HKEY_CLASSES_ROOT\*\shell\openwemacs]
+@="&Edit with Emacs"
+"icon"="C:\\path\\to\\emacs\\bin\\emacsclientw.exe"
+
+[HKEY_CLASSES_ROOT\*\shell\openwemacs\command]
+@="C:\\path\\to\\emacs\\bin\\emacsclientw.exe -a C:\\path\\to\\emacs\\bin\\runemacs.exe \"%1\""
+"icon"="C:\\path\\to\\emacs\\bin\\emacsclientw.exe"
+}}}
+
+Right-click a file in Windows Explorer to see "Edit with Emacs."
+
+Tested with Windows 7 and Emacs 24.5.1.
+
 == Explorer Integration RIGHT Klick Options "Emacs open as ..." ==
 
 It is based on tests with Windows10 and Emacs64 25.2. 
@@ -90,7 +120,6 @@ This almost works:
 }}}
 
 Do ''not'' use ##emacsclientw## here; it doesn't wait.
-
 
 == Replace `notepad.exe` calls ==
 
