@@ -30,7 +30,7 @@ And, more important thing: you have to put the ##(server-start)## declaration in
 
 == Create File Associations ==
 
-Use Windows command-line commands `ftype' and `assoc':
+To open text files with the emacs daemon, run cmd.exe as administrator use the commands and `ftype' and `assoc':
 
     ftype txtfile=emacsclientw -na runemacs "%1"
     ftype EmacsLisp=emacsclientw -na runemacs "%1"
@@ -38,9 +38,11 @@ Use Windows command-line commands `ftype' and `assoc':
     assoc .txt=txtfile
     assoc .text=txtfile
     assoc .log=txtfile
+    assoc .org=txtfile
     assoc .el=EmacsLisp
     assoc .c=CodeFile
     assoc .h=CodeFile
+
 
 == Context Menu "Edit with Emacs," Windows 7 or earlier==
 
@@ -74,7 +76,7 @@ Tested with Windows 7 and Emacs 24.5.1.
 
 == Context Menu "Edit with Emacs," Windows 10 ==
 
-Save the following text to a file with emacs_explorer_integration.reg and double click the file to add it to the registry.
+Save the following text to a file with emacs_explorer_integration.reg, replace the paths to Emacs binaries to match the location on your system. Double click the file and confirm the security warning to add this to the registry.
 
 {{{
 Windows Registry Editor Version 5.00
