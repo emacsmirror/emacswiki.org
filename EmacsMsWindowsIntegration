@@ -42,7 +42,7 @@ Use Windows command-line commands `ftype' and `assoc':
     assoc .c=CodeFile
     assoc .h=CodeFile
 
-== "Edit with Emacs" Right Click Context Menu ==
+== Context Menu "Edit with Emacs," Windows 7 or earlier==
 
 Save the following text to a file explorer-edit-with-emacs.reg, fix the paths, then double-click it.
 
@@ -72,11 +72,9 @@ Right-click a file in Windows Explorer to see "Edit with Emacs."
 
 Tested with Windows 7 and Emacs 24.5.1.
 
-== Explorer Integration RIGHT Klick Options "Emacs open as ..." ==
+== Context Menu "Edit with Emacs," Windows 10 ==
 
-It is based on tests with Windows10 and Emacs64 25.2. 
-
-Save the following text to a file emacsexplorerintegration.reg and double klick it.
+Save the following text to a file with emacs_explorer_integration.reg and double click the file to add it to the registry.
 
 {{{
 Windows Registry Editor Version 5.00
@@ -110,7 +108,7 @@ Windows Registry Editor Version 5.00
 @="X:\\path\\to\\emacs\\bin\\emacsclientw.exe  -n --alternate-editor=\"X:\\path\\to\\emacs\\bin\\emacsclient.exe\" -n \"%1\""
 }}}
 
-You should immediately see the options if you right klick any file in explorer
+You should immediately see the options if you right click any file in explorer.
 
 == Set `emacsclient' as Your Editor ==
 
