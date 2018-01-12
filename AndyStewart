@@ -309,6 +309,7 @@ git clone https://github.com/manateelazycat/deepin-emacs
 ** Lisp:init-visual-regexp.el -- Some configuration for [https://github.com/benma/visual-regexp.el VisualRegexp].
 
 ** Lisp:init-smex.el -- Some configuration for [https://github.com/nonsequitur/smex/ smex].
+** Lisp:init-auto-sudoedit.el -- Some configuration for [http://elpa.zilongshanren.com/melpa/auto-sudoedit-20171227.156.el auto-sudoedit], prompt user input password before edit system file.
 
 * Spell Check:
 
