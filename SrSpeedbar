@@ -150,5 +150,19 @@ Hope it helps.
 }}}
 
 ----
+* Sr-speedbar doesn't appear to control Speedbar:*
 
+I had this problem using Emacs on OSX (25.1) and found the solution here: http://emacs-leuven.readthedocs.io/en/stable/#speedbar-frames
+
+With a little modification from their code, put this in your init.el:
+{{{
+(require 'sr-speedbar)
+;; fix so speedbar is in same window
+(with-eval-after-load "speedbar"
+  (autoload 'sr-speedbar-toggle "sr-speedbar" nil t)
+  (global-set-key (kbd "s-s") 'sr-speedbar-toggle)
+  )
+}}}
+
+----
 CategoryNavigation
