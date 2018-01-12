@@ -150,7 +150,7 @@ Hope it helps.
 }}}
 
 ----
-* Sr-speedbar doesn't appear to control Speedbar:*
+*Sr-speedbar doesn't appear to control Speedbar:*
 
 I had this problem using Emacs on OSX (25.1) and found the solution here: http://emacs-leuven.readthedocs.io/en/stable/#speedbar-frames
 
