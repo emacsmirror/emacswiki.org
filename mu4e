@@ -24,5 +24,35 @@ To quote Prof. Shirky: /It's not information overload. It's filter failure/. mu4
 
 mu4e's first release is as part of mu 0.9.8, end of January 2012, and the most recent one is 0.9.18, released in December 2016 (see https://github.com/djcb/mu/releases).
 
+== Recipes ==
+=== Context templates ===
+Defining [http://www.djcbsoftware.nl/code/mu/mu4e/Contexts-example.html mu4e contexts] for multiple email addresses that only differ in the "from" field and maybe signature, while automatically matching their corresponding address using their ##:match-func## can quickly get pretty verbose and clunky. To keep it lean and avoid code duplication, one can define a function to build a context based on a template:
+
+  (defun my-make-mu4e-context (name address signature)
+    "Return a mu4e context named NAME with :match-func matching
+  its ADDRESS in From or CC fields of the parent message. The
+  context's `user-mail-address' is set to ADDRESS and its
+  `mu4e-compose-signature' to SIGNATURE."
+    (lexical-let ((addr-lex address))
+      (make-mu4e-context :name name
+                         :vars `((user-mail-address . ,address)
+                                 (mu4e-compose-signature . ,signature))
+                         :match-func
+                         (lambda (msg)
+                           (when msg
+                             (or (mu4e-message-contact-field-matches msg :to addr-lex)
+                                 (mu4e-message-contact-field-matches msg :cc addr-lex)))))))
+
+Then, easily define contexts:
+
+    (setq mu4e-contexts
+        `( ,(my-make-mu4e-context "main" "me@example.com"
+                                  "Emacs is awesome.")
+           ,(my-make-mu4e-context "work" "me@work-example.com"
+                                  "A very professional signature.")
+           ,(my-make-mu4e-context "other" "activist@example.com"
+                                  "Plain text mail forever.")))
+
+
 ----
 CategoryMail
