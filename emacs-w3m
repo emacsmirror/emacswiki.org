@@ -430,4 +430,198 @@ So you can yank in `org-mode' buffer to get `org-mode' style content."
     (while (previous-single-property-change (point) 'w3m-anchor-sequence) ;jump to previous anchor
       (goto-char (previous-single-property-change (point) 'w3m-anchor-sequence))
       (when (w3m-anchor (point))        ;return point when current is valid link
-        (throw 'reach n
+        (throw 'reach nil))))
+  (point))
+
+
+(defun w3m-no-next-link-p ()
+  "Return t if no next link after cursor.
+Otherwise, return nil."
+  (save-excursion
+    (equal (point) (w3m-get-next-link-start))))
+
+(defun w3m-no-prev-link-p ()
+  "Return t if no prevoius link after cursor.
+Otherwise, return nil."
+  (save-excursion
+    (equal (point) (w3m-get-prev-link-start))))
+
+</pre>
+
+My binding looks like this
+
+<pre>
+(define-key w3m-minor-mode-map (kbd "M-w") 'w3m-get-buffer-with-org-style)
+</pre>
+
+18 Nov 2008 : gnus in cvs (emacs 23) rgr : change - emacs 23 article mode
+
+<pre>
+define-key gnus-article-mode-map (kbd "M-w") 'w3m-get-buffer-with-org-style)
+</pre>
+
+
+= org-w3m =
+
+I have create `org-w3m.el' in org-mode, now you can use function `org-w3m-copy-for-org-mode' do same thing.
+Or press "C-c C-x M-w" in w3m buffer.
+Enjoy! :)                                        -- AndyStewart
+
+
+== Bookmarking ==
+
+* [[Anything]] -- `M-x anything-w3m-bookmarks', narrow the list by typing some patterns(multiple patterns are space-delimited string),
+select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
+With `TAB' actions can be selected if the selected bookmark has more than one possible action.
+With `C-z' the contents of bookmark is displayed without quitting anything session.
+
+* Regular Emacs bookmarks to URLs, for W3M.
+** [[Bookmark+]]
+** BookmarkExtension
+
+* Bookmark to delicious using `curl' and Lisp:anything-delicious.el (see `auth-source' to configure).
+
+<pre>
+        (defun w3m-add-delicious-bookmark (description tag)
+          "Add a bookmark to delicious from w3m"
+          (interactive (list (read-from-minibuffer "Description: "
+                                                   nil nil nil nil
+                                                   w3m-current-title)
+                             (completing-read "Tag: "
+                                              (anything-delicious-get-all-tags-from-cache))))
+          (setq description
+                (replace-regexp-in-string " " "+" description))
+          (let* ((url     w3m-current-url)
+                 (url-api (format anything-c-delicious-api-url-add
+                                  url
+                                  description
+                                  tag))
+                 anything-delicious-user
+                 anything-delicious-password
+                 auth)
+            (unless (and anything-delicious-user anything-delicious-password)
+              (anything-delicious-authentify))
+            (setq auth (concat anything-delicious-user ":" anything-delicious-password))
+            (with-temp-buffer
+              (apply #'call-process "curl" nil t nil
+                     `("-u"
+                       ,auth
+                       ,url-api))
+              (buffer-string)
+              (goto-char (point-min))
+              (if (re-search-forward "<result code=\"done\" />" nil t)
+                  (unwind-protect
+                       (progn
+                         (message "%s added to delicious" description)
+                         (when current-prefix-arg
+                           (w3m-bookmark-write-file url
+                                                    (replace-regexp-in-string "\+"
+                                                                              " "
+                                                                              description)
+                                                    tag)
+                           (message "%s added to delicious and to w3m-bookmarks" description)))
+                    (anything-wget-retrieve-delicious))
+                  (message "Fail to add bookmark to delicious")
+                  (when current-prefix-arg
+                    (if (y-or-n-p "Add anyway to w3m-bookmarks?")
+                        (progn
+                          (w3m-bookmark-write-file url
+                                                   (replace-regexp-in-string "\+" " "
+                                                                             description)
+                                                   tag)
+                          (message "%s added to w3m-bookmarks" description))))))))
+
+        (define-key w3m-mode-map "\C-x\C-a" 'w3m-add-delicious-bookmark)
+</pre>
+
+-- ThierryVolpiatto
+
+:: Not as simple now that OAuth is used; compare  http://delicious.com/help/api and http://delicious.com/help/oauthapi  --[[jcorneli]]
+
+[new]
+::: Don't know what is OAuth, i will have a look. However the actual above code of Lisp:anything-delicious.el work fine.
+I have updated it. -- ThierryVolpiatto
+
+= w3m in Emacs 23 (on Debian and Ubuntu 9.10) =
+
+The `w3m-el' package is not fully compatible with Emacs 23. Installing `w3m-el-snapshot' instead worked for me. No additional setup like ##(require 'w3m-load)## was necessary.
+
+<pre>
+sudo aptitude install w3m-el-snapshot
+</pre>
+
+If you already have `w3m-el', it will be removed.
+
+-- MarcoPiedra
+
+I confirm it. If you are on Ubuntu 9.10 and running Emacs 23, install w3m-el-snapshot. It works. Thank you, MarcoPiedra
+
+--JeongtaeRoh
+
+= w3m in Emacs23 (Cygwin) =
+As with Debian and Ubuntu, above, the official w3m-el installed with Cygwin doesn't seem to work with Emacs 23, the error message being "Cannot open load file: w3m-e22". One solution is to get the latest emacs-w3m source code from CVS (see the instructions at http://emacs-w3m.namazu.org/) and build and install it (see the README for instructions).
+
+-- jiri
+
+
+==Browse url on other window==
+add this into the configuraion file of the emacs, it would make the emacs work as *help* buffer. This would help if you use w3m to check document
+<pre>
+(setq browse-url-browser-function 'w3m-browse-url-other-window)
+
+(defun w3m-browse-url-other-window (url &optional newwin)
+  (let ((w3m-pop-up-windows t))
+    (if (one-window-p) (split-window))
+    (other-window 1)
+    (w3m-browse-url url newwin)))
+</pre>
+
+DennyZhang:
+Please note, emacs23 has the functions of ffap-other-window/ffap-other-frame.
+If you always browse url in w3m, I think these functions are good enough.
+
+However, I usually leverage external web browser, and sometimes I may use w3m for some simple web pages.
+
+So my variable of browse-url-browser-function is not set as w3m way.
+Thus, I define below standalone function, for the case that we want to browse url in a seperate window of *w3m* mode.
+
+<pre>
+(defun ffap-w3m-other-window (url &optional new-session)
+  "Browse url in w3m.
+  If current frame has only one window, create a new window and browse the webpage"
+  (interactive (progn
+                 (require 'browse-url)
+                 (browse-url-interactive-arg "Emacs-w3m URL: ")))
+  (let ((w3m-pop-up-windows t))
+    (if (one-window-p) (split-window))
+    (other-window 1)
+    (w3m-browse-url url new-session)))
+</pre>
+
+==Improving w3m-browse-*==
+
+Some w3m-browse-* functions (e.g. w3m-browse-generic) rely on finding urls via browse-url-url-at-point, which in turn relies on (thing-at-point 'url). However, thing-at-point does not seem to find urls for w3m's links. That's because a w3m link contains the url in the w3m-href-anchor text property. I use the following piece of advice to make sure that browse-url finds w3m's own links.
+
+<pre>
+;; make browse-url-url-at-point use w3m links if they exist
+(defadvice browse-url-url-at-point (after w3m-anchor-at-point activate)
+	"Browse the url at point. If w3m-anchor finds a url, use it."
+	(setq ad-return-value 
+				(or
+				 (w3m-anchor)
+				 (ad-return-value))))
+</pre>
+
+-ghf
+
+[:EmacsW3WithGmail]
+==Working with Gmail==
+
+To work with Gmail, w3m requires a one-line  [[https://productforums.google.com/forum/#!topic/gmail/EKJfMizvywY patch]].
+After this, emacs-w3m works well with Gmail in Basic HTML mode.  In particular, compared e.g. with mu4e, new mail is seen instantaneously, without needing to be fetched first by e.g. offlineimap.
+
+----
+CategoryExternalUtilities
+CategoryHypermedia
+)
+                (
