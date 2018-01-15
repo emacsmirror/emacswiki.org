@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2007-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
-;; Last-Updated: Mon Jan  1 13:51:25 2018 (-0800)
+;; Last-Updated: Mon Jan 15 15:22:24 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 11792
+;;     Update #: 11805
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
@@ -2294,6 +2294,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2018/01/15 dadams
+;;     Added: icicle-SPC-scatter-match, icicle-SPC-scatter-re.
+;;     Renamed: icicle-scatter to icicle-scatter-re.
+;;     icicle-scatter-match: Applied renaming of icicle-scatter.  Added it as obsolete alias.
 ;; 2017/12/10 dadams
 ;;     icicle-read-buffer: If icicle-buffer-complete-fn is nil use icicle-bufflist if it is a list.
 ;; 2017/10/22 dadams
@@ -4664,6 +4668,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2018/01/15 dadams
+;;     icicle-display-candidates-in-Completions:
+;;       Added highlighting for icicle-SPC-scatter-match.
+;;       Applied renaming icicle-scatter -> icicle-scatter-re.
 ;; 2017/10/29 dadams
 ;;     icicle-delete-windows-on:
 ;;       Simpler test for whether frame has the active minibuffer window.
@@ -7795,6 +7803,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2018/01/15 dadams
+;;     icicle-S-TAB-completion-methods-(alist|per-command): Added icicle-SPC-scatter-match.
+;;     icicle-S-TAB-completion-methods-(alist|per-command),
+;;       icicle-TAB-completion-methods(-per-command):
+;;         Mention in doc string that they don't apply to icicle-buffer and icicle-file etc.
 ;; 2017/12/10 dadams
 ;;     icicle-buffer-prefix-arg-filtering: Updated doc string for modified case (-).
 ;; 2017/06/25 dadams
@@ -9244,6 +9257,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles.el'")
 ;;
+;; 2018/01/15 dadams
+;;     Version 2018.01.15.
 ;; 2017/12/10 dadams
 ;;     Version 2017.12.10.
 ;; 2017/07/26 dadams
