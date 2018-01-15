@@ -59,7 +59,9 @@ option '''`<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|
 then the total number of candidates before truncation is also
 shown -- e.g. `##149/567 shown##'.
 
-* The current completion method: ##vanilla##, ##basic##, ##fuzzy##, ##swank (fuzzy symbol)##, ##apropos##, ##scatter##, ##Levenshtein##, ##Levenshtein strict##, or ##Jaro-Winkler##.  See [[Icicles - Completion Methods and Styles]] and [[user option]]s `<tt>[[Icicles - Customization and General Tips#icicle-TAB-completion-methods|icicle-TAB-completion-methods]]</tt>' and `<tt>[[Icicles - Customization and General Tips#icicle-S-TAB-completion-methods-alist|icicle-S-TAB-completion-methods-alist]]</tt>'.
+* The current completion method: ##vanilla##, ##basic##, ##fuzzy##, ##swank (fuzzy symbol)##, ##apropos##, ##scatter##, ##SPC scatter##, ##Levenshtein##, ##Levenshtein strict##, or ##Jaro-Winkler##.  (However, this
+indication is meaningless for a few Icicles multi-completion
+commands, such as `icicle-buffer' and `icicle-file'.)  See [[Icicles - Completion Methods and Styles]] and [[user option]]s `<tt>[[Icicles - Customization and General Tips#icicle-TAB-completion-methods|icicle-TAB-completion-methods]]</tt>' and `<tt>[[Icicles - Customization and General Tips#icicle-S-TAB-completion-methods-alist|icicle-S-TAB-completion-methods-alist]]</tt>'.
 
 * The current sort order, and whether it is reversed.  See [[Icicles - Sorting Candidates]].
 
