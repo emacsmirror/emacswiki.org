@@ -264,82 +264,6 @@ I try to use:
 
 But it also changes the action of mouse-1. Ideas?
 
-== Not working with Emacs 23 ? ==
-
-I am using GnuEmacs version 23 and emacs-w3m as of 1.4.4 refuses to
-load. What is the correct way to use it then ?
-
-Try this (as suggested to me by EduardoOchs when I asked in EmacsChannel):
-<pre>
-(require 'w3m-e21)
-(provide 'w3m-e23)
-</pre>
-Works for me. :)
-[new]
-The current CVS version works out of the box with GnuEmacs 23 (as of 2007-05-09.) --ZedLopez
-
-If you installed w3m from a package, you might need to recompile the bytecode, as bytecode compiled by GnuEmacs 22 is not compatible with GnuEmacs 23
-
-== Not working with Emacs 23 and emacs-w3m from the CVS ? ==
-
-With Emacs 23 from the CVS the follow code can help you to use Emacs23
-and Emacs22 without any problem
-
-<pre>
-(if (= emacs-major-version 23)
-	(require 'w3m-ems)
-  (require 'w3m))
-</pre>
-
-This will load w3m-ems which is the proper package to load with the
-latest version of emacs-w3m from the CVS.
-[new]
-
-
-== Avoiding Some Problems with emacs-23 and emacs-w3m from cvs ==
-
-* build emacs-23 and then make sure it is the first emacs found in your $PATH. by typing "which emacs", you can find out which emacs the system finds first
-
-
-* this is important since you want to build emacs-w3m from cvs <b>with emacs23</b>, not with emacs22 if it is also installed on your system. if you compile it with emacs22, it won't work in emacs23.
-
-here is the .emacs snippet i use to load w3m (note your installation path may be different):
-
-<pre>
-(if (= emacs-major-version 23)
-    (progn
-      (add-to-list 'load-path "~/.el/emacs-w3m/share/emacs/site-lisp/w3m")
-      (require 'w3m-load))
-  (require 'w3m))
-</pre>
-
-if you don't know how to force your system to find emacs23 first, try:
-
-<pre>
-export PATH=/path/to/emacs23:$PATH
-</pre>
-
-
-as of june 16, 2008, this works
-
-BradClawsie
-
-= Emacs 23 from CVS and W3M in Debian - Internationalization and code pages =
-
-RichardRiley, 20 Oct 2008.
-
-What fixed it for me in Debian was to uninstall the w3m package and install w3mmee. All internationalization then worked. Load w3m in the normal manner.
-
-In a shell:
-
-<pre>
-sudo apt-get remove w3m
-sudo apt-get install w3mmee w3mmee-img
-</pre>
-
-Load w3m in the normal manner. Thanks to Andy Stewart for help via email and in the #emacs irc channel.
-
-If you use debian sid or testing you will not have w3mmee and w3mee-img but you can install w3m-el-snapshot.
 
 = W3M, HTML articles and org-mode =
 
@@ -542,28 +466,6 @@ With `C-z' the contents of bookmark is displayed without quitting anything sessi
 ::: Don't know what is OAuth, i will have a look. However the actual above code of Lisp:anything-delicious.el work fine.
 I have updated it. -- ThierryVolpiatto
 
-= w3m in Emacs 23 (on Debian and Ubuntu 9.10) =
-
-The `w3m-el' package is not fully compatible with Emacs 23. Installing `w3m-el-snapshot' instead worked for me. No additional setup like ##(require 'w3m-load)## was necessary.
-
-<pre>
-sudo aptitude install w3m-el-snapshot
-</pre>
-
-If you already have `w3m-el', it will be removed.
-
--- MarcoPiedra
-
-I confirm it. If you are on Ubuntu 9.10 and running Emacs 23, install w3m-el-snapshot. It works. Thank you, MarcoPiedra
-
---JeongtaeRoh
-
-= w3m in Emacs23 (Cygwin) =
-As with Debian and Ubuntu, above, the official w3m-el installed with Cygwin doesn't seem to work with Emacs 23, the error message being "Cannot open load file: w3m-e22". One solution is to get the latest emacs-w3m source code from CVS (see the instructions at http://emacs-w3m.namazu.org/) and build and install it (see the README for instructions).
-
--- jiri
-
-
 ==Browse url on other window==
 add this into the configuraion file of the emacs, it would make the emacs work as *help* buffer. This would help if you use w3m to check document
 <pre>
@@ -619,6 +521,107 @@ Some w3m-browse-* functions (e.g. w3m-browse-generic) rely on finding urls via b
 
 To work with Gmail, w3m requires a one-line  [[https://productforums.google.com/forum/#!topic/gmail/EKJfMizvywY patch]].
 After this, emacs-w3m works well with Gmail in Basic HTML mode.  In particular, compared e.g. with mu4e, new mail is seen instantaneously, without needing to be fetched first by e.g. offlineimap.
+
+==Specific to Emacs23==
+===Not working with Emacs 23 ?===
+
+I am using GnuEmacs version 23 and emacs-w3m as of 1.4.4 refuses to
+load. What is the correct way to use it then ?
+
+Try this (as suggested to me by EduardoOchs when I asked in EmacsChannel):
+<pre>
+(require 'w3m-e21)
+(provide 'w3m-e23)
+</pre>
+Works for me. :)
+[new]
+The current CVS version works out of the box with GnuEmacs 23 (as of 2007-05-09.) --ZedLopez
+
+If you installed w3m from a package, you might need to recompile the bytecode, as bytecode compiled by GnuEmacs 22 is not compatible with GnuEmacs 23
+
+===Not working with Emacs 23 and emacs-w3m from the CVS ?===
+
+With Emacs 23 from the CVS the follow code can help you to use Emacs23
+and Emacs22 without any problem
+
+<pre>
+(if (= emacs-major-version 23)
+	(require 'w3m-ems)
+  (require 'w3m))
+</pre>
+
+This will load w3m-ems which is the proper package to load with the
+latest version of emacs-w3m from the CVS.
+[new]
+
+
+===Avoiding Some Problems with emacs-23 and emacs-w3m from cvs===
+
+* build emacs-23 and then make sure it is the first emacs found in your $PATH. by typing "which emacs", you can find out which emacs the system finds first
+
+
+* this is important since you want to build emacs-w3m from cvs <b>with emacs23</b>, not with emacs22 if it is also installed on your system. if you compile it with emacs22, it won't work in emacs23.
+
+here is the .emacs snippet i use to load w3m (note your installation path may be different):
+
+<pre>
+(if (= emacs-major-version 23)
+    (progn
+      (add-to-list 'load-path "~/.el/emacs-w3m/share/emacs/site-lisp/w3m")
+      (require 'w3m-load))
+  (require 'w3m))
+</pre>
+
+if you don't know how to force your system to find emacs23 first, try:
+
+<pre>
+export PATH=/path/to/emacs23:$PATH
+</pre>
+
+
+as of june 16, 2008, this works
+
+BradClawsie
+
+===Emacs 23 from CVS and W3M in Debian - Internationalization and code pages===
+
+RichardRiley, 20 Oct 2008.
+
+What fixed it for me in Debian was to uninstall the w3m package and install w3mmee. All internationalization then worked. Load w3m in the normal manner.
+
+In a shell:
+
+<pre>
+sudo apt-get remove w3m
+sudo apt-get install w3mmee w3mmee-img
+</pre>
+
+Load w3m in the normal manner. Thanks to Andy Stewart for help via email and in the #emacs irc channel.
+
+If you use debian sid or testing you will not have w3mmee and w3mee-img but you can install w3m-el-snapshot.
+
+===w3m in Emacs 23 (on Debian and Ubuntu 9.10)===
+
+The `w3m-el' package is not fully compatible with Emacs 23. Installing `w3m-el-snapshot' instead worked for me. No additional setup like ##(require 'w3m-load)## was necessary.
+
+<pre>
+sudo aptitude install w3m-el-snapshot
+</pre>
+
+If you already have `w3m-el', it will be removed.
+
+-- MarcoPiedra
+
+I confirm it. If you are on Ubuntu 9.10 and running Emacs 23, install w3m-el-snapshot. It works. Thank you, MarcoPiedra
+
+--JeongtaeRoh
+
+===w3m in Emacs23 (Cygwin)===
+As with Debian and Ubuntu, above, the official w3m-el installed with Cygwin doesn't seem to work with Emacs 23, the error message being "Cannot open load file: w3m-e22". One solution is to get the latest emacs-w3m source code from CVS (see the instructions at http://emacs-w3m.namazu.org/) and build and install it (see the README for instructions).
+
+-- jiri
+
+
 
 ----
 CategoryExternalUtilities
