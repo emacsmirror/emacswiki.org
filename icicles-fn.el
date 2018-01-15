@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
-;; Last-Updated: Mon Jan  1 14:12:24 2018 (-0800)
+;; Last-Updated: Sun Jan 14 16:52:36 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 15250
+;;     Update #: 15259
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-fn.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -238,10 +238,11 @@
 ;;    `icicle-restore-standard-options',
 ;;    `icicle-restore-std-completion-fns', `icicle-reversible-sort',
 ;;    `icicle-saved-fileset-p', `icicle-save-or-restore-input',
-;;    `icicle-save-raw-input', `icicle-scatter',
+;;    `icicle-save-raw-input', `icicle-scatter-re',
 ;;    `icicle-scatter-match', `icicle-scroll-or-update-Completions',
 ;;    `icicle-set-difference', `icicle-set-intersection',
-;;    `icicle-set-union', `icicle-some', `icicle-special-candidate-p',
+;;    `icicle-set-union', `icicle-some', `icicle-SPC-scatter-match',
+;;    `icicle-SPC-scatter-re', `icicle-special-candidate-p',
 ;;    `icicle-special-candidates-first-p', `icicle-special-display-p',
 ;;    `icicle-special-variable-p',
 ;;    `icicle-start-of-candidates-in-Completions',
@@ -4245,9 +4246,13 @@ This means that all of the characters in STRING are also in string
 COMPLETION, in the same order, but perhaps scattered among other
 characters.  For example, STRING = \"ure\" matches COMPLETION
 \"curried\"."
-  (string-match (icicle-scatter string) completion))
+  (string-match (icicle-scatter-re string) completion))
 
-(defun icicle-scatter (string)
+
+(defalias 'icicle-scatter 'icicle-scatter-re)
+(make-obsolete 'icicle-scatter 'icicle-scatter-re) ; 2018-01-14
+
+(defun icicle-scatter-re (string)
   "Returns a regexp that matches a scattered version of STRING.
 The regexp will match any string that contains the characters in
 STRING, in the same order, but possibly with other characters as well.
@@ -4266,6 +4271,36 @@ Returns, e.g., \"a[^b]*b[^c]*c[^d]*d\" for input string \"abcd\"."
                    (regexp-quote (string ch))))
                string
                "")))
+
+(defun icicle-SPC-scatter-match (string completion)
+  "Returns non-nil if SPC chars in STRING scatter-match COMPLETION.
+This means that all of the characters in STRING except SPC are also in
+string COMPLETION, in the same order, and that there can be other
+characters except newline in COMPLETION wherever SPC occurs in STRING.
+
+The effect is as if regexp `.*' were inserted in place of each
+substring of SPC chars in STRING."
+  (string-match (icicle-SPC-scatter-re string) completion))
+
+(defun icicle-SPC-scatter-re (string)
+  "Return a SPC-scatter regexp for STRING.
+Return a copy of STRING but with each sequence of one or more SPC
+chars in it replaced by one less SPC char followed by `.*'."
+  (let ((max-char-in-name  0)
+        (repl-char         0))          ; NULL char: ?\^@
+    ;; Set REPL-CHAR to 1+ the highest char code used in STRING, or NULL if that is not possible.
+    (dolist (char  (append string ()))  ; `string-to-list'
+      (when (> char max-char-in-name) (setq max-char-in-name  char)))
+    ;; Make sure we do not go past the max allowable char for Emacs.  If so, just use NULL char.
+    ;; Emacs 20-22 has no `max-char' function, so just try adding 1 and see if result is valid.
+    (when (or (and (fboundp 'max-char)  (< (1+ max-char-in-name) (max-char))) ; Emacs 23+
+              (char-valid-p (1+ max-char-in-name))) ; Emacs 20-22.
+      (setq repl-char  (1+ max-char-in-name)))
+    (let* ((one-spc   (replace-regexp-in-string "\\([^ ]\\|\\`\\)\\( \\)\\([^ ]\\|\\'\\)" ".*"
+                                                string 'FIXEDCASE 'LITERAL 2))
+           (mult-spc  (replace-regexp-in-string " \\{1,\\}\\( \\)" ".*"
+                                                one-spc 'FIXEDCASE 'LITERAL 1)))
+      mult-spc)))
 
 (defun icicle-levenshtein-strict-match (s1 s2)
   "String S1 is within `icicle-levenshtein-distance' of string S2.
