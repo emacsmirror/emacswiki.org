@@ -380,6 +380,23 @@ See [[Icicles - Searching Named Containers]] for more about this.
 
 
 
+
+
+
+[:HardCodedCompletion]
+== Some Icicles Commands Hard-Code Completion Methods ==
+
+Some '''Icicles''' commands that allow for multi-completion input ignore
+your current choices of `TAB' and `S-TAB' completion method.  In
+particular, this is the case for commands `icicle-file' and
+`icicle-buffer' and similar.  Such commands use their own way of
+matching the multi-completion parts.
+
+
+
+
+
+
 '''See Also:'''
 
 * [[Icicles - Multi-Commands]]
@@ -394,6 +411,8 @@ multi-completions using EmacsLisp code.
 * [[Icicles - Sorting Candidates]]
 
 * [[Icicles - Progressive Completion]]
+
+* [[Icicles - Completion Methods and Styles]]
 
 
 
