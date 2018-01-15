@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
-;; Last-Updated: Mon Jan  1 14:18:25 2018 (-0800)
+;; Last-Updated: Mon Jan 15 10:37:26 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 6204
+;;     Update #: 6211
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-opt.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -4601,6 +4601,7 @@ The candidates are highlighted in buffer `*Completions*' using face
 (defcustom icicle-S-TAB-completion-methods-alist ; Cycle with `M-('.
   `(("apropos" . string-match)
     ("scatter" . icicle-scatter-match)
+    ("SPC scatter" . icicle-SPC-scatter-match)
     ,@(and (require 'fuzzy nil t)       ; `fuzzy.el', part of library Autocomplete.
            '(("Jaro-Winkler" . fuzzy-match)))
     ,@(and (require 'levenshtein nil t)
@@ -4613,6 +4614,10 @@ messages to indicate the type of completion matching.
 
 By default, `S-TAB' is the key for this completion. The actual keys
 used are the value of option `icicle-apropos-complete-keys'.
+
+NOTE: This option has no effect on some Icicles commands, in
+particular commands that allow for multi-completion input, such as
+`icicle-buffer' and `icicle-file'.
 
 See also options `icicle-TAB-completion-methods' and
 `icicle-S-TAB-completion-methods-per-command'."
@@ -4637,7 +4642,11 @@ for `TAB' completion.  The default behavior is provided by option
 NOTE: If you remove an entry from this list, that does NOT remove the
 advice for that command.  To do that you will need to explicitly
 invoke command `icicle-set-S-TAB-methods-for-command' using a negative
-prefix argument (or else start a new Emacs session)."
+prefix argument (or else start a new Emacs session).
+
+NOTE: This option has no effect on some Icicles commands, in
+particular commands that allow for multi-completion input, such as
+`icicle-buffer' and `icicle-file'."
   :type (let ((methods  ()))
           (when (require 'levenshtein nil t)
             (push '(const :tag "Levenshtein strict"
@@ -4648,6 +4657,7 @@ prefix argument (or else start a new Emacs session)."
           (when (require 'fuzzy nil t)  ; `fuzzy.el', part of library Autocomplete.
             (push '(const :tag "Jaro-Winkler" ("Jaro-Winkler" . fuzzy-match)) methods))
           (push '(const :tag "scatter" ("scatter" . icicle-scatter-match)) methods)
+          (push '(const :tag "SPC scatter" ("SRC scatter" . icicle-SPC-scatter-match)) methods)
           (push '(const :tag "apropos" ("apropos" . string-match)) methods)
           `(alist
             :key-type   (restricted-sexp
@@ -4747,7 +4757,6 @@ completion produces no match when you think it should, remember that
 you can use `\\[icicle-next-TAB-completion-method]' on the fly to \
 change the completion method.
 
-
 If you do not customize `icicle-TAB-completion-methods', then the
 default value (that is, the available `TAB' completion methods) will
 reflect your current Emacs version and whether you have loaded
@@ -4755,6 +4764,10 @@ libraries `fuzzy-match.el' and `el-swank-fuzzy.el'.
 
 By default, `TAB' is the key for this completion. The actual keys
 used are the value of option `icicle-prefix-complete-keys'.
+
+NOTE: This option has no effect on some Icicles commands, in
+particular commands that allow for multi-completion input, such as
+`icicle-buffer' and `icicle-file'.
 
 See also options `icicle-TAB-completion-methods-per-command'
 `icicle-S-TAB-completion-methods-alist'."
@@ -4787,7 +4800,11 @@ option `icicle-TAB-completion-methods' (and
 NOTE: If you remove an entry from this list, that does NOT remove the
 advice for that command.  To do that you will need to explicitly
 invoke command `icicle-set-TAB-methods-for-command' using a negative
-prefix argument (or else start a new Emacs session)."
+prefix argument (or else start a new Emacs session).
+
+NOTE: This option has no effect on some Icicles commands, in
+particular commands that allow for multi-completion input, such as
+`icicle-buffer' and `icicle-file'."
   :type (let ((methods  ()))
           ;; Unfortunately, `el-swankfuzzy.el' requires `cl.el' at runtime.
           ;; Comment this first sexp out if you do not want that.
