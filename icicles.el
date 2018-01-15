@@ -6,11 +6,11 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
-;; Version: 2017.12.10
+;; Version: 2018.01.15
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 14:21:09 2018 (-0800)
+;; Last-Updated: Mon Jan 15 15:19:34 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 23717
+;;     Update #: 23720
 ;; URL: https://www.emacswiki.org/emacs/download/icicles.el
 ;; Doc URL: https://emacswiki.org/emacs/Icicles
 ;; Keywords: extensions, help, abbrev, local, minibuffer, projects,
@@ -1358,7 +1358,8 @@
 ;;    `icicle-show-current-help-in-mode-line',
 ;;    `icicle-show-help-in-mode-line', `icicle-show-in-mode-line',
 ;;    `icicle-signum', `icicle-S-iso-lefttab-to-S-TAB',
-;;    `icicle-sit-for', `icicle-some', `icicle-special-candidate-p',
+;;    `icicle-sit-for', `icicle-some', `icicle-SPC-scatter-match',
+;;    `icicle-SPC-scatter-re', `icicle-special-candidate-p',
 ;;    `icicle-special-candidates-first-p', `icicle-special-display-p',
 ;;    `icicle-special-variable-p', `icicle-split-input',
 ;;    `icicle-start-of-candidates-in-Completions',
