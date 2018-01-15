@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 1996-2018, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
-;; Last-Updated: Mon Jan  1 14:15:18 2018 (-0800)
+;; Last-Updated: Sun Jan 14 16:45:03 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 19850
+;;     Update #: 19852
 ;; URL: https://www.emacswiki.org/emacs/download/icicles-mcmd.el
 ;; Doc URL: https://www.emacswiki.org/emacs/Icicles
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
@@ -2468,7 +2468,10 @@ By default, this is bound to `C-x C-M-l' during completion."
                                           (case icicle-apropos-complete-match-fn
                                             (icicle-scatter-match
                                              (lambda (input bound noerr)
-                                               (re-search-forward (icicle-scatter input) bound noerr)))
+                                               (re-search-forward (icicle-scatter-re input) bound noerr)))
+                                            (icicle-SPC-scatter-match
+                                             (lambda (input bound noerr)
+                                               (re-search-forward (icicle-SPC-scatter-re input) bound noerr)))
                                             (icicle-levenshtein-match
                                              (if (= icicle-levenshtein-distance 1)
                                                  (lambda (input bound noerr)
