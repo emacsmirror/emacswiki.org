@@ -5,14 +5,19 @@ See also the [[Manual:Auto Save]] (emacs) Emacs manual entry.
 
 == Placing all files in one directory ==
 
-By default, auto-save files are stored in the current directory with a file name on the form <tt>#<i>file</i>#</tt>. If you don't want to clutter up your file tree with Emacs' backup files, you can save them to the system's "##temp##" directory:
+By default, auto-save files are stored in the current directory with a file name on the form <tt>#<i>file</i>#</tt>. If you don't want to clutter up your file tree with Emacs' backup files, you can save them to a dedicated directory:
+
+    (setq backup-directory-alist
+          `(("." . ,(concat user-emacs-directory "backups"))))
+
+Saving to the system's "##temp##" directory is also an option, though a dangerous one, since in regular Linux setups there's no guarantee that you will see those backups again:
 
     (setq backup-directory-alist
           `((".*" . ,temporary-file-directory)))
     (setq auto-save-file-name-transforms
           `((".*" ,temporary-file-directory t)))
 
-This will place all auto-saves and [BackupDirectory backups] in the directory pointed to by ##temporary-file-directory## (e.g., ##C:/Temp/## on Windows).
+This will place all auto-saves and [BackupDirectory backups] in the directory pointed to by ##temporary-file-directory## (e.g., ##C:/Temp/## on Windows, ##/tmp/## on Linux).
 
 Or even more dramatic:
 
@@ -24,10 +29,6 @@ Or even more dramatic:
         `((".*" ,emacs-tmp-dir t)))
     (setq auto-save-list-file-prefix
         emacs-tmp-dir)
-
-<b>CAREFUL  ATTENTION CAREFUL  ATTENTION </b>
-
-If placing your temp files in /tmp (in Linux) you will <b>not</b> be able to recover a crashed session if your computer also crashes.
 
 
 == Delete auto-save files == 
