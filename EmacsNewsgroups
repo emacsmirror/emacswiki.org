@@ -5,7 +5,7 @@ A bunch of Usenet groups exist for Emacs.
 ; [::comp.emacs.xemacs], news:comp.emacs.xemacs: XEmacs related stuff.  [http://groups.google.com/groups?group=comp.emacs.xemacs archive at Google]
 ; [::gnu.emacs.help], news:gnu.emacs.help: Emacs related stuff.  Non free stuff is frowned upon (such as recommendations for certain books).  [http://mail.gnu.org/pipermail/help-gnu-emacs/ Archive], [http://groups.google.com/group/gnu.emacs.help/topics?lnk=srg archive at Google]
 ; [::gnu.emacs.sources], news:gnu.emacs.sources: Emacs Lisp source code for Emacs.  Discussion is discouraged.  [http://mail.gnu.org/pipermail/gnu-emacs-sources/ Archive], [http://groups.google.com/groups?group=gnu.emacs.sources archive at Google]
-; [::gnu.emacs.bugs], news:gnu.emacs.bugs: Bug reports and feature requests, see also EmacsMailingLists.  [http://groups.google.com/groups?group=gnu.emacs.bug archive at Google]
+; [::gnu.emacs.bug], news:gnu.emacs.bug: Bug reports and feature requests, see also EmacsMailingLists.  [http://groups.google.com/groups?group=gnu.emacs.bug archive at Google]
 ; [::alt.religion.emacs], news:alt.religion.emacs: This group is dedicated to Emacs as a philosophy or religion.  See CategoryHumor.  [http://groups.google.com/groups?group=alt.religion.emacs archive at Google]
 
 == Some groups specific to Emacs packages ==
