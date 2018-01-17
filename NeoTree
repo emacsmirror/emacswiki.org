@@ -47,7 +47,7 @@ Open (toggle) NeoTree:
 * <code>neotree-show</code> or <code>neotree</code> show NeoTree window using current directory as its root
 * <code>neotree-hide</code> Hide NeoTree window
 * <code>neotree-toggle</code> toggle/hide NeoTree window
-* <code>neotree-find</code>  show NeoTree window and use the file of current buffer as its root
+* <code>neotree-find</code>  show NeoTree window and use the directory of current buffer as its root
 
 === Command（Only in NeoTree Buffer） ===
 
