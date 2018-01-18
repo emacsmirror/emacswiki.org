@@ -8,7 +8,7 @@ http://jblevins.org/projects/markdown-mode/rev-2-2
 
 Debian offers the `elpa-markdown-mode' package.
 
-On Mac OSX Unix (with [http://brew.sh homebrew] installed), type
+On Mac OS X Unix (with [http://brew.sh homebrew] installed), type
 <pre>
 $ brew install homebrew/emacs/markdown-mode
 </pre>
@@ -31,10 +31,8 @@ on GitHub.
 
 Once installed with the other Emacs info files, it may be viewed from
 within Emacs or with the command-line `info' utility. As it has a
-[https://github.com/daniel-birket/markdown-mode-texinfo/blob/master/markdown-mode.texi Texinfo source]
-, it is also available as a
-[https://github.com/daniel-birket/markdown-mode-texinfo/blob/master/markdown-mode.pdf typeset PDF]
-and other formats.
+[https://github.com/daniel-birket/markdown-mode-texinfo/blob/master/markdown-mode.texi Texinfo source], it is also available as a
+[https://github.com/daniel-birket/markdown-mode-texinfo/blob/master/markdown-mode.pdf typeset PDF] and other formats.
 
 This manual is *not* authorized by the author of `markdown-mode',
 Jason Blevins. It is based upon his program's documentation and is
