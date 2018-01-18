@@ -1,3 +1,4 @@
+<pre>
 ;; .emacs, fichier de configuration d'emacs de Dom
 ;;
 ;; MODE D'EMPLOI
@@ -941,3 +942,4 @@ bien après avoir fait \\[git-gutter+-stage-hunks])."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         (pointemacs-progression "Chargement du .emacs terminé")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+</pre>
