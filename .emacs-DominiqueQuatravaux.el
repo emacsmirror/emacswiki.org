@@ -1,6 +1,8 @@
 <pre>
 ;; .emacs, fichier de configuration d'emacs de Dom
 ;;
+;; Disponible aussi ici : https://gist.github.com/81a47ddf251c638a26aadf8e53ccc28e
+;;
 ;; MODE D'EMPLOI
 ;;
 ;; Ce .emacs ambitionne de fonctionner tel quel sur toute installation fraîche
