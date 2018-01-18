@@ -1214,7 +1214,13 @@ want to look at old messages and use C-u <RET> or C-u M-g, as described
 above. (Be aware that putting fetch-old-headers to t will take an long time to download
 [http://www.emacswiki.org/emacs/ColinBaxter ColinBaxter])
 
+==== Marking messages read on the server with nnimap ====
 
+When reading mail from several different clients (a home and work computer, for example),
+it can be nice to have read mail marked as read on the server, so that the messages
+appear read when reading from another client.
+
+FIXME: Does anyone know how to do this?
 
 === Archiving Mail ===
 
