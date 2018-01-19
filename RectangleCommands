@@ -38,6 +38,7 @@ and ColumnNumberMode.
 * Delete the selected rectangle: delete-rectangle `C-x r d'
 * Insert a whitespace rectangle into the region: open-rectangle `C-x r o'
 * Number lines in rectangle: number-to-register `C-x r N'. This command also inserts a column of spaces after numbers.
+* Toggle Rectangle Mark mode (rectangle-mark-mode): `C-x SPC'. Introduced in Emacs version 24.4. From the manual: "When this mode is active, the region-rectangle is highlighted and can be shrunk/grown, and the standard kill and yank commands operate on it."
 
 == Use case: Copying tables from a Web browser ==
 
