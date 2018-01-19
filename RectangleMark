@@ -51,5 +51,8 @@ following to your ~/.emacs:
     (autoload 'rm-kill-ring-save "rect-mark"
       "Copy a rectangular region to the kill ring." t)
 
+[new]
+Emacs 24.4 and later now include something similar: Rectangle Mark mode.  After a region is active, type `C-x SPC' to toggle it on and off.
+
 ----
 CategoryRegion
