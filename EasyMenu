@@ -17,7 +17,7 @@ symbol used to identify your menu, and `my-mode-map' identifies the [[keymap]] f
 			("Sub Menu"
 			 ["My subentry" my-obscure-function t])))
 
-== XEmacs Requirement ==
+=== XEmacs Requirement ===
 
 If you are using GNU Emacs, you are done
 with this piece of code.  [[XEmacs]], however, requires you to 
