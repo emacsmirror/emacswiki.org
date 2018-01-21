@@ -20,18 +20,18 @@ Various features that can be added to or improved in Emacs.  Note that the IDE p
 ===Virtual Environments==
 There is some built-in support for virtual environments in python.el, but these packages provide more features.
 * [https://github.com/jorgenschaefer/pyvenv pyvenv] - used in elpy, written by the same author. 
-* [https://github.com/tkf/emacs-python-environment python-environment] - used in jedi, written by the same author 
+* [https://github.com/tkf/emacs-python-environment python-environment] - used in jedi, written by the same author.
 * [https://github.com/proofit404/pyenv-mode pyenv-mode] - uses [https://github.com/yyuu/pyenv pyenv], written by the author of anaconda-mode.
 * [https://github.com/pwalsh/pipenv.el pipenv.el] - A [https://docs.pipenv.org/ Pipenv] porcelain inside Emacs. 
-* [https://github.com/porterjamesj/virtualenvwrapper.el virtualenvwrapper]
+* [https://github.com/porterjamesj/virtualenvwrapper.el virtualenvwrapper].
 * [https://github.com/aculich/virtualenv.el virtualenv.el] - deprecated. 
 * [https://github.com/necaris/conda.el conda.el] - for working with conda environments.
 
 To automatically activate virtual environment you can use:
-* [https://github.com/robert-zaremba/auto-virtualenvwrapper.el auto-virtualenvwrapper] - uses virtualenvwrapper
-* [https://github.com/marcwebbie/auto-virtualenv auto-virtualenv] - uses pyvenv
+* [https://github.com/robert-zaremba/auto-virtualenvwrapper.el auto-virtualenvwrapper] - uses virtualenvwrapper.
+* [https://github.com/marcwebbie/auto-virtualenv auto-virtualenv] - uses pyvenv.
 * [https://github.com/necaris/conda.el conda.el] and its minor mode conda-env-autoactivate-mode.
-* [https://github.com/pwalsh/pipenv.el pipenv.el] - with [http://batsov.com/projectile/ Projectile]
+* [https://github.com/pwalsh/pipenv.el pipenv.el] - with [http://batsov.com/projectile/ Projectile].
 
 ===Indentation===
 The defaults should see you compliant with PEP8 but see IndentingPython for detail.
