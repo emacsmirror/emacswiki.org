@@ -390,7 +390,7 @@ If you're running Emacs 23, you can run Emacs As Daemon via OS X's launchd.  The
 
 This can then be installed in ##~/Library/LaunchAgents## and loaded via:
 
-    sudo launchctl load -w ~/Library/LaunchAgents/gnu.emacs.daemon.plist
+   launchctl load -w ~/Library/LaunchAgents/gnu.emacs.daemon.plist
 
 For further instructions see [http://cubiclemuses.com/cm/articles/2009/08/06/emacs-and-os-x-launchd/]
 
