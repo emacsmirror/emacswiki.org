@@ -3,7 +3,7 @@
 ;; Copyright (C) 2001 Alexander Vigodner
 
 ;; Created: 03.01 2001
-;; Version: 2.1.27quad [Vincent Bela�che evolution, 22/06/2009]
+;; Version: 2.1.27quad [Vincent Belaïche evolution, 22/06/2009]
 ;; Author: Alexander Vigodner <avigodner@bloomberg.com>>
 
 ;;This program is free software; you can redistribute it and/or
@@ -1137,7 +1137,7 @@ Argument LIMIT is the maximum distance to scan."
 "m6pcchna" "m6permuto" "m6prevn2p" "m6prevn2st" "m6prfmatch" "m6relax" 
 "m6saveg" "m6sconcom" "m6showg" "m6showns" "m6showp" "m6ta2lpd" 
 "m6ta2lpu" "m6tconex" "m6transc" "m6umtree" "m6umtree1" "m6visitor" "macr2lst" 
-"matrix" "max" "maxi" "mclearerr" "mclose" "mean" "meof" "mfprintf" "mfscanf" 
+"matrix" "max" "maxi" "mclearerr" "mclose" "mean" "median" "meof" "mfprintf" "mfscanf" 
 "mget" "mgeti" "mgetstr" "min" "mini" "mlist" "mode" "mopen" "mprintf" "mput" 
 "mputstr" "mscanf" "mseek" "msprintf" "msscanf" "mtell" "mtlb_mode" 
 "mtlb_sparse" "mulf" "netclose" "netwindow" "netwindows" "newfun" "nnz" "norm" 
