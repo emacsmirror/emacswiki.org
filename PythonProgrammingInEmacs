@@ -156,6 +156,18 @@ In Emacs's native python-mode, use:
 }}}
 This should work with any recent IPython, including on Windows.
 
+ 37
+down vote
+accepted
+	
+
+Since IPython 5 it has a new terminal interface, which is not compatible with Emacs' inferior shells. To fix it, add the --simple-prompt flag to the IPython command:
+
+{{{
+  (setq python-shell-interpreter "ipython"
+        python-shell-interpreter-args "--simple-prompt -i")
+}}}
+
 [ProgrammingWithPythonModeDotEl python-mode.el] also comes with IPython support. 
 ====Emacs IPython Notebook (EIN)====
 [https://github.com/millejoh/emacs-ipython-notebook Emacs IPython Notebook (EIN)] provides a IPython Notebook client and integrated REPL (like SLIME) in Emacs. It is available on MELPA as 'ein'.  Replaces [https://github.com/tkf/emacs-ipython-notebook tkf's EIN], which it was [https://github.com/tkf/emacs-ipython-notebook/issues/156 forked from] to keep up with IPython/Jupyter development. 
