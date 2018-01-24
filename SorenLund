@@ -2,7 +2,9 @@ Been an Emacs user since the early nineties (around version 18.something).
 
 Always used the GNU/Emacs version never XEmacs or other variants (besides the NTEmacs on windows).
 
-See http://soren.github.com/elisp/ , http://soren.lund.org/ , http://twitter.com/slu or email me at:
+Find (some of) my elisp stuff here: http://hub.369.dk/elisp/ 
+
+Find out more about me here: https://about.me/slu or email me at:
 {{{
 (replace-regexp-in-string "^http://\\([a-z]+\\)\.\\([a-z\.]+\\)/" "\\1@\\2" "http://soren.lund.org/")
 }}}
