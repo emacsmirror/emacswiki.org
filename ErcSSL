@@ -96,5 +96,17 @@ A workaround (found on stack overflow): to not use the built-in GnuTLS support b
     nil)
 
 ~~Manoj
+
+=== Emacs 25 bugfix ===
+
+In emacs 25.2 `erc-open-tls-stream' doesn't work because it uses `open-network-stream' instead of `open-tls-stream'.
+This version works for me:
+
+    (defun erc-open-tls-stream (name buffer host port)
+      "Open an TLS stream to an IRC server.
+    The process will be given the name NAME, its target buffer will be
+    BUFFER.  HOST and PORT specify the connection target."
+      (open-tls-stream name buffer host port))
+
 ----
 [[ERC]]
