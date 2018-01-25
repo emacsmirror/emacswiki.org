@@ -1,0 +1,34 @@
+I am an Emacs user from China. I used the name Chris Zheng when I contributed to the software community.
+
+My blog (in Chinese): https://chriszheng.science/
+
+== How do I learn Emacs? ==
+
+I use Emacs since 2012. One reason I want to learn Emacs is to follow the saint ([https://en.wikipedia.org/wiki/Editor_war#Humor Church of Emacs]). The other reason is that I can’t remember how to quit Vi(m), while Emacs has no editing modes plus I can use the mouse in Emacs. In 2012, the environment for learning and using Emacs in China was worse than today. I tried GNU Emacs and XEmacs at the same time. At that time, GNU Emacs was already in the era of 23.x, so that the Unicode support was already good, and XEmacs was not updated for years. I chose GNU Emacs admittedly.
+
+My learning starts with the tutorial (`C-h t'). After learning the tutorial, [http://ergoemacs.org/emacs/emacs.html Xah Lee’s tutorial] helps me a lot. I absorb every knowledge about Emacs. This even improves my English. I’m not patient enough to read the manuals ([https://www.gnu.org/software/emacs/manual/html_node/emacs/index.html Emacs manual], [https://www.gnu.org/software/emacs/manual/html_node/eintr/index.html Emacs Lisp Introduction], and [https://www.gnu.org/software/emacs/manual/html_node/elisp/index.html Emacs Lisp Reference Manual]). I think the manual may help me, but also slow my learning. I forced myself to use Emacs day to night and got to be skilled in about half a year. Living in Emacs is not only a habit but the best method for learning Emacs.
+
+== What do Emacs bring to me? ==
+
+I think the productivity of Emacs is exaggerated because it requires extra learning costs. It is still useful in the long term but is less useful than the specialized tools such as integrated development environment. What Emacs brings to me is the mental pleasure, the hobby.
+
+Forgot to say, I am not a programmer, I am a researcher. Fancy development tools are not useful to me, Emacs provides the editing environment and integrated interfaces for many command-line tools. I think it is useful for me.
+
+== My project — Emacs-w64 and more ==
+
+I mainly use MS-Windows. In 2012 the 64-bit Windows is becoming popular. Because very few people use Emacs under MS-Windows, plus the fact that 64-bit program isn’t better than 32-bit one, you can hardly find a 64-bit Emacs for Windows at that time. The only one I know is Fabrice Popineau’s, which is patched and outdated. One opportunity is that [http://www.msys2.org/ MSYS2] which includes a 64-bit compiling environment [https://github.com/Alexpux/MINGW-packages/ MinGW-w64] appears.  Based on Eli Zaretskii’s irreplaceable job, I managed to build 64-bit Emacs for Windows using the combination MSYS2/MinGW-w64. The project than named Emacs-w64 ([https://sourceforge.net/projects/emacsbinw64/ On SourceForge] and [https://github.com/zklhp/emacs-w64 On GitHub]). Today I feels unmotivated to update Emacs-w64 since the official version is better than mine. However, Emacs-w64 did have its place. It promoted the development of 64-bit version. Moreover, [https://sourceforge.net/p/emacsbinw64/wiki/Build%20guideline%20for%20MSYS2-MinGW-w64%20system/ my guideline] was organized into the [http://git.savannah.gnu.org/cgit/emacs.git/tree/nt/INSTALL.W64 official guide] by Brian Burns.
+
+Since I am interested in building Emacs under Windows, I have fixed some bugs in Emacs and some packages. As I said, I learned Emacs in a not-good way. My personal dotEmacs is copied from everywhere on the Internet and is not well-organized. Reading configurations of famous kit such as Spacemacs is definitely better. But if you will, please see
+
+https://coding.net/u/Chris_Zheng/p/dotEmacs/git
+
+I wrote some packages for my own use. You can find them at
+
+https://github.com/zklhp/some-utils
+
+What deserves to mention is [https://github.com/zklhp/some-utils/blob/master/SHELX-mode.el SHELX-mode]. It’s for the crystal structure program [http://shelx.uni-goettingen.de/ SHELX]. But it has bugs.
+
+This is my story. Thank you for your reading.
+
+----
+CategoryHomepage
