@@ -272,16 +272,21 @@ Function `org-w3m-copy-for-org-mode' is bound by default to "C-c C-x M-w" in ema
 
 == Bookmarking ==
 
+In addition to emacs-w3m native support for bookmarking, the following external extensions are available:
+
 * [[Anything]] -- `M-x anything-w3m-bookmarks', narrow the list by typing some patterns(multiple patterns are space-delimited string),
 select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
 With `TAB' actions can be selected if the selected bookmark has more than one possible action.
 With `C-z' the contents of bookmark is displayed without quitting anything session.
 
+
 * Regular Emacs bookmarks to URLs, for W3M.
 ** [[Bookmark+]]
 ** BookmarkExtension
 
-* Bookmark to delicious using `curl' and Lisp:anything-delicious.el (see `auth-source' to configure).
+=== Bookmark to delicious ===
+
+The following uses `curl' and Lisp:anything-delicious.el (see `auth-source' to configure).
 
 <pre>
         (defun w3m-add-delicious-bookmark (description tag)
@@ -340,7 +345,6 @@ With `C-z' the contents of bookmark is displayed without quitting anything sessi
 
 :: Not as simple now that OAuth is used; compare  http://delicious.com/help/api and http://delicious.com/help/oauthapi  --[[jcorneli]]
 
-[new]
 ::: Don't know what is OAuth, i will have a look. However the actual above code of Lisp:anything-delicious.el work fine.
 I have updated it. -- ThierryVolpiatto
 
