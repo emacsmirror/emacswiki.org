@@ -1,8 +1,8 @@
 = Description =
 
-This page is dedicated to the '''emacs-w3m''', also known on this wiki as [::WThreeM],
-an Emacs interface to
-the [[w3m]] text browser.  Note that it has nothing to do
+'''emacs-w3m''', also known on this wiki as [::WThreeM],
+is an emacs internet browser and interface to
+the [[w3m]] text browser.  It supports tabs (ie. multiple buffers), images, https, cookies, history, bookmarks, asynchronous operation, session management, a form of "filtering" similar to firefox's greasemonkey, and more.  Note that it has nothing to do
 with the [[w3]] or the [[eww]] web browsers written entirely in EmacsLisp.  Using
 the Emacs interface to w3m is much faster than using w3, since the
 parsing and displaying is done by the external w3m process.
