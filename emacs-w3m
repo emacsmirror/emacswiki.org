@@ -247,16 +247,14 @@ If W3M keeps hanging, try this:
 
 (add-to-list 'w3m-command-environment '("GC_NPROCS" . "1"))[http://emacs-w3m.namazu.org/ml/msg09797.html]
 
-==Searching emacswiki.org does not work with emacs/w3m==
-however, it does work from within xterm w3m
-
-	 Yes, it does if you put this in your .emacs file:
+==Searching emacswiki.org==
+Put this in your .emacs file:
 
    (require 'w3m-search)
    (add-to-list 'w3m-search-engine-alist
 		'("emacs-wiki" "http://www.emacswiki.org/cgi-bin/wiki.pl?search=%s"))
 
-	-- kruhft
+-- kruhft
 == Middle click to open url in a new sesstion (tab) ==
 I try to use:
 
