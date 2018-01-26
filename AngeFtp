@@ -91,6 +91,18 @@ A better solution would be including support for Windows hosts in Ange-Ftp (poss
 
 I had to invert the `msdos' condition in the above hook, because sending the "site dirstyle" command to check which style is active actually toggles it.  So if the above does not work for you, try changing it to `(if (not msdos) ...'.
 
+
+Alternative hook that needs no hosts configuration:
+
+{{{
+(defun u/ange-ftp-process-startup-hook ()
+  (with-current-buffer (process-buffer (ange-ftp-get-process ange-ftp-this-host ange-ftp-this-user))
+	(when (save-excursion (search-backward "Microsoft FTP Service" nil t))
+	  (let ((result (ange-ftp-send-cmd ange-ftp-this-host ange-ftp-this-user '(quote "site dirstyle"))))
+		(when (and (car result) (string-match-p "200 .+ on" (cdr result)))
+		  (ange-ftp-send-cmd ange-ftp-this-host ange-ftp-this-user '(quote "site dirstyle")))))))
+}}}
+
 = Gateway =
 
 Put the following code in your ~/.emacs file. Modify values according to your network configuration.
