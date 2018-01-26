@@ -448,7 +448,7 @@ When pianobar is expecting you to type something normal comint input will work.
 Customization: Entry to this mode runs the hooks on comint-mode-hook and
  pianobar-mode-hook (in that order).
 
-You can send text to the inferior pianobar process from othber buffers containing
+You can send text to the inferior pianobar process from other buffers containing
 pianobar source.
     switch-to-pianobar switches the current buffer to the pianobar process buffer.
     pianobar-send-region sends the current region to the pianobar process.
