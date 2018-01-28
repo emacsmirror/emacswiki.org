@@ -122,6 +122,7 @@ Suggestions:
 * GnusAdBannerWashing -- Using gnus-article-address-banner-alist to remove ad banners
 * GnusGmail -- Set up gnus for GMail
 * GnusICalAppIntegration -- Extracting iCalendar event invites from Gnus into OS X's iCal
+* GnusIMAP -- using an IMAP server
 * GnusMultipleIMAP -- multiple mailboxes
 * GnusNiftyTricks -- Nifty Gnus tricks
 * GnusSpeed -- Is Gnus slow? Discussion and tricks to make it faster
