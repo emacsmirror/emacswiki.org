@@ -5,8 +5,7 @@ Many modern editors and IDEs can graphically indicate the location of the fill c
 <b>Please note:</b>  There is a small incompatibility between this package and the
 Emacs relase v24.3.  A bug in Emacs's internal display
 routine that was introduced shortly before that release can cause vertical
-motion commands to skip blank lines when fci-mode is active.  This has
-been fixed in Emacs trunk.  See this [http://github.com/alpaker/Fill-Column-Indicator/issues/31 discussion]
+motion commands to skip blank lines when fci-mode is active.  See this [http://github.com/alpaker/Fill-Column-Indicator/issues/31 discussion]
 for further information.
 
 == Installation and Activation ==
