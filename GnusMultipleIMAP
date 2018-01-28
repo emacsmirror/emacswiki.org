@@ -38,3 +38,6 @@ Get your mail from multiple mailbox at the same time
           '((if (message-news-p)
                 "misc-news"
               (concat "mail." (format-time-string "%Y-%m" (current-time))))))
+
+----
+CategoryGnus
