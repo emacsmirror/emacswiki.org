@@ -4,9 +4,17 @@ There is a flex-mode.el to be found here:
 
 * http://ftp.sunet.se/pub/gnu/emacs-lisp/incoming/flex-mode.el
 
-I have a copy, but I'm not sure about uploading it.  There is no licence statement.
+I have a copy, but I'm not sure about uploading it.  There is no license statement.
 
 That is very unfortunate, because then we cannot distribute it.  Does it have an email address or something?  The upload script will only accept free software, too.
+
+Update: 2018-01-28
+
+Unfortunately, SUNET no longer mirrors GNU software. After some searching I found the Emacs modes here
+
+* ftp://ftp.cse.ohio-state.edu/pub/emacs-lisp/incoming/
+
+Look for flex-mode.el and bison-mode.el there.
 
 The link works now, so I guess this is no longer needed.
 * Actually the link above works, but the important one which is in that page and points to the .el file does not as of 2005-04-05.
