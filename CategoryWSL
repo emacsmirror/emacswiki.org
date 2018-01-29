@@ -4,32 +4,28 @@ With Windows 10, Microsoft offers a 'Windows Subsystem for Linux (WSL)' that run
 
 By default its based on an Ubuntu Image from Canonical, but for Experts there is a choice between 3 distros.
 
-WSL is working quite well, but still considered Beta. Without some excellent Blog posts I would not have been able to successfully install (and use and update) Emacs 25. So here is the recipe (and the links) I used.
+WSL is working quite well, though you may encounter the occasional issue, in which case, please search and (if not found) file an issue on the WSL team's GitHub Issues Repo: https://github.com/microsoft/wsl.
+
+Without some excellent Blog posts I would not have been able to successfully install (and use and update) Emacs 25. So here is the recipe (and the links) I used.
 
 = Activate WSL =
 
-Use this MSN Installation Guide:
+The official WSL Installation Guide:
 https://msdn.microsoft.com/de-de/commandline/wsl/install_guide
 
-Check OS Type and Build of you System, there are minimal requirements. You need to activate developer mode. There is a choice between Linux distros.
+Check OS Type and Build of you System, there are minimal requirements. There is a choice between Linux distros.
 
-In case you have forgotten:
-https://www.digitalocean.com/community/tutorials/how-to-create-a-sudo-user-on-ubuntu-quickstart
+Be sure to specify a non-su username and password when prompted - Linux usernames and password are separate from your Windows username and password.
 
 = Install a graphical Linux environment = 
-Although WSL is geared only towards Linux commandline tools, and Emacs is run as 'emacs -nw', you will need this for a workaround that enables you to use the Emacs package manager.
-
-Follow the instructions on this page:
+Although only Linux commandline tools are officially supported on WSL, you may want to install a Linux GUI/desktop, follow the instructions on this page:
 https://solarianprogrammer.com/2017/04/16/windows-susbsystem-for-linux-xfce-4/
 
-The X Server for Windows is downloaded here:
-https://sourceforge.net/projects/vcxsrv/
+There are several X Servers for Windows, some of which include:
+* https://sourceforge.net/projects/vcxsrv/
+* https://sourceforge.net/projects/xming/
 
-and installed by executing the installer like any other Windows program.
-
-Most likely, you will get (DBus) errors (like I did) when trying XFCE4 with VcXsrv, i.e. by doing XLaunch (starting the X Server from the Windows Icon) and then calling 'xfce4-session' on the BASH command line.
-
-Therefore you need to follow points 2 and 3 of the instructions on this page:
+Most likely, you will get (DBus) errors (like I did) when trying XFCE4 with VcXsrv, i.e. by doing XLaunch (starting the X Server from the Windows Icon) and then calling 'xfce4-session' on the BASH command line. If so, follow points 2 and 3 of the instructions on this page:
 
 https://www.reddit.com/r/Windows10/comments/4rsmzp/bash_on_windows_getting_dbus_and_x_server_working/
 
