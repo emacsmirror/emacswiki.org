@@ -83,7 +83,7 @@ of the ideas or even code?
 
 : Of course I'm awared!  XWEM even uses some sawfish aproaches, but main purpose of XWEM is to use/extend all Emacs power, i.e. use emacs packages that already written, in window managing tasks.  Emacs stuff that already used/extended are comint, edmacro, strokes, iswitchb, worklog, icomplete, gnus, etc --ZajcevEvgeny
 
-Are you aware of [http://tomas.styblo.name/wmctrl/ wmctrl]. It is a command line tool to interact with an EWMH/NetWM compatible X Window Manager (Gnome, KDE, much more). It can be used, for example, to get information about the window manager, to get a detailed list of desktops and managed windows, to switch and resize desktops, to make windows full-screen, always-above or sticky, and to activate, close, move, resize, maximize and minimize them ... . Maybe a interface to wmctrl is enough.
+Are you aware of [http://tripie.sweb.cz/utils/wmctrl/ wmctrl]. It is a command line tool to interact with an EWMH/NetWM compatible X Window Manager (Gnome, KDE, much more). It can be used, for example, to get information about the window manager, to get a detailed list of desktops and managed windows, to switch and resize desktops, to make windows full-screen, always-above or sticky, and to activate, close, move, resize, maximize and minimize them ... . Maybe a interface to wmctrl is enough.
 
 ----
 CategoryRelated
