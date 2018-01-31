@@ -8,6 +8,11 @@ Note that this page is not about EmacsWikiMode.
 
 '''Add your problem descriptions below this line''' (ie, newest on top, oldest on bottom)
 
+==  "List the users of..." page produces http 404 errors ==
+Each of the links (for Emacs, XEmacs, Aquamacs, & TecoEmacs) are broken.  [[KamʻIʻi]]
+
+
+
 == How to change the page /name/? ==
 The page ReplaceRegexp is about using `(query-)replace-regexp' with specail lisp xpression in teh replacement, so the page title should better be something like ReplaceRegexpWithLispExpressions or ReplaceRegexpByondRegexps. - How can I change the /name/ of a page? -- [[halloleo]] 2017-05-05
 
