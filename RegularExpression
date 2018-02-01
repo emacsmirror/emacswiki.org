@@ -42,10 +42,10 @@ Many characters are special when they follow a backslash -- see below.
   \w       word constituent
   \b       word boundary
   \sc      character with c syntax (e.g. \s- for whitespace char)
-  \( \)    start\end of group
-  \< \>    start\end of word (faulty rendering: backslash + less-than and backslash + greater-than)
-  \_< \_>  start\end of symbol
-  \` \'    start\end of buffer\string
+  \( \)    start/end of group
+  \< \>    start/end of word (faulty rendering: backslash + less-than and backslash + greater-than)
+  \_< \_>  start/end of symbol
+  \` \'    start/end of buffer/string
   \1       string matched by the first group
   \n       string matched by the nth group
   \{3\}    previous character or group, repeated 3 times
