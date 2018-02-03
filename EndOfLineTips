@@ -4,12 +4,11 @@ If you see '''##^M##''' in your file, you may have opened a file with DOS-style
 line endings (carriage return + line feed) while Emacs assumes it has
 Unix-style line endings (line feed only).  (The carriage-return character, sometimes abbreviated as ##CR##, is '''##^M##'''.  The line-feed character, sometimes abbreviated as ##LF##, is '''##^J##'''.)
 
-You can reopen the file with
-the correct line ending with a command like `M-x revert-buffer-with-coding-system utf-8-dos'. If your file is not in
-Unicode, be sure to specify the correct encoding system instead of
-`utf-8-dos'.
+You can reopen the file with the correct line ending with a command like `C-x C-m r dos'.
 
 If you have a mix of lines that end in ##^M## and lines that don't, you can  use `M-x replace-string RET C-q C-m RET' to remove the ##^M##'s.  '''`C-q'''' quotes the key you press right after it, letting you insert a ##^M## character.  Typing `C-m' won't work -- you have to hold down `Control' while hitting `q' followed by `m'.
+
+If you prefer seeing the '''##^M##''' instead of Emacs autodetecting the file as having dos line endings, then set `inhibit-eol-conversion' to non-`nil' (see [[Manual:Recognize Coding]] in the Emacs manual).
 
 ----
 
@@ -19,9 +18,9 @@ You can see an example from Elisp in SeijiZenitaniDotEmacs;
 
 Here are the specific codes:
 
-* `M-x set-buffer-file-coding-system utf-8-unix'  (for ##LF##)
-* `M-x set-buffer-file-coding-system utf-8-mac'   (for ##CR##)
-* `M-x set-buffer-file-coding-system utf-8-dos'   (for ##CR+LF##)
+* `C-x C-m f unix'  (for ##LF##)
+* `C-x C-m f mac'   (for ##CR##)
+* `C-x C-m f dos'   (for ##CR+LF##)
 
 ----
 
@@ -86,9 +85,6 @@ And this handles both -mac and -dos codings:
           (set-buffer-file-coding-system (intern coding-str)) )))
 
     (add-hook 'find-file-hooks 'no-junk-please-were-unixish)
-
-----
-The variable <code>inhibit-eol-conversion</code> might also be of interest.
 
 
 ----
