@@ -152,7 +152,7 @@ Copy your newly created link to Emacs server into opened directory. Emacs will s
 
 In your Emacs/bin directory, create a new shortcut file to ##emacsclientw.exe##.
 Open Properties for newly created shortcut and in ##Target## type: 
-##X:\path\to\emacs\bin\emacsclientw.exe -na "X:\path\to\emacs\bin\emacsclientw.exe" -c -n##
+##X:\path\to\emacs\bin\emacsclientw.exe -na "X:\path\to\emacs\bin\runemacs.exe" -c -n##
 In ##Open in## field, type ##%Documents%## or whatever your choice for default directory is.
 Close the ##Properties## dialog and rename your shortcut to just: ##emacs##
 Drag your newly created shortcut to your startbar, or desktop or wherever you wish to have it.
