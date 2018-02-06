@@ -13,7 +13,7 @@ However SHIFT plus _two_ normal keys might be a "key chord".)
 
 -- DavidAndersson
 
-Note: With key-chord, order doesn't matter: <code>ab</code> is the same chord as <code>ba</code>. If you want to define chords where the order of keys matter, check out <nobr><nobr>https://github.com/vlevit/key-seq.el</nobr></nobr>; .
+Note: With key-chord, order doesn't matter: <code>ab</code> is the same chord as <code>ba</code>. If you want to define chords where the order of keys matter, check out [https://github.com/vlevit/key-seq.el key-seq.el].
 
 == Settings ==
 
