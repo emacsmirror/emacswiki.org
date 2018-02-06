@@ -198,6 +198,11 @@ LaTeX label definitions also are automatically recognized by PredictiveMode, so 
 
 
 == Mathematical Symbols ==
+=== LaTeX-math-mode ===
+AUCTeX has a built-in way to enter math symbols quickly: see the [https://www.gnu.org/software/auctex/manual/auctex/Mathematics.html#Mathematics Entering Mathematics] section of the manual.
+
+One downside is that it doesn't insert Unicode symbols. [https://gist.github.com/akalin/b524942b0b3776dfd26c45841253ee4a This gist] lets you define which symbols insert Unicode symbols, so e.g. <code>` a</code> would insert <code>α</code> instead of <code>\alpha</code>.
+
 === Auto-Completion ===
 Several ac-sources for the marvelous  [http://www.emacswiki.org/emacs/AutoComplete auto-completion] package are available [http://code.google.com/p/ac-math/ here].
 
