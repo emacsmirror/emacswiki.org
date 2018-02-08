@@ -8,8 +8,12 @@ I am also known as [::tadsan] on Twitter. GitHub and Packagist account is [::zon
 
 * [https://github.com/ejmr/php-mode PHP Mode] - Maintainer
 * [https://github.com/emacs-php Friends of Emacs-PHP development] - Owner
+* [https://github.com/emacs-jp Emacs JP] - Member
+* [https://github.com/nlamirault/phpunit.el] - Contributor
 
 == Code ==
+
+My Lisp packages available in [[MELPA]]: https://melpa.org/#/?q=zonuexe
 
 * https://github.com/zonuexe/right-click-context - ContextMenu implementation
 * https://github.com/zonuexe/copyit - Yanking / Clipboard CopyAndPaste
