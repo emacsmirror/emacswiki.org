@@ -2,17 +2,18 @@ portrait:http://technomancy.us/i/headshot.jpg
 
 Hacker errant and bumbling cyberneticist. I go by [::technomancy] on IRC.
 
+I created my own ergonomic mechanical keyboard to use with Emacs: https://atreus.technomancy.us
+
 I've written a few fun modes:
 
-* [http://github.com/technomancy/conspire Conspire], a system for collaborative editing.
-* Rinari, a mode for RubyOnRails (now maintained by Eric Schulte)
-* [http://github.com/technomancy/emacs-starter-kit the Starter Kit], a set of better defaults and bundled libraries.
-* [http://github.com/technomancy/relax.el relax.el], a UI for CouchDB.
-* [https://github.com/technomancy/zossima Zossima], for jumping to ruby method definitions via inf-ruby
+* [[FindFileInProject]]
+* [[IdleHighlight]]
+* [https://p.hagelb.org/ scpaste]
+* [https://github.com/technomancy/better-defaults better-defaults]
 
 I've contributed to some others:
 
-* [http://github.com/technomancy/clojure-mode Clojure Mode] and [http://github.com/kingtim/nrepl.el nrepl.el]
+* [https://github.com/technomancy/clojure-mode Clojure Mode] and [https://github.com/sanel/monroe monroe]
 * [[Rudel]] for collaborative editing.
 * [http://bit.ly/pkg-el package.el], a package manager.
 * ErtTestLibrary for automated testing.
@@ -21,12 +22,15 @@ I've contributed to some others:
 
 Deprecated:
 
+* [https://github.com/technomancy/conspire Conspire], a system for collaborative editing.
+* Rinari, a mode for RubyOnRails (now maintained by Eric Schulte)
+* [https://github.com/technomancy/emacs-starter-kit the Starter Kit], a set of better defaults and bundled libraries.
+* [https://github.com/technomancy/relax.el relax.el], a UI for CouchDB.
+* [https://github.com/technomancy/zossima Zossima], for jumping to ruby method definitions via inf-ruby
 * ebby, a mode for CollaborativeEditing. Sadly subject to bitrot under recent versions of Obby. (use conspire instead)
 * Lisp:elunit.el (ElUnit), a mode for UnitTesting (use ERT instead)
 
-My older elisp code can be found in [http://github.com/technomancy/dotfiles my public dotfiles repo].
-
-Blog is at http://technomancy.us
+Blog is at https://technomancy.us
 
 ----
 
