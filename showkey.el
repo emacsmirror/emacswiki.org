@@ -8,9 +8,9 @@
 ;; Created: Sun Mar 22 16:24:39 2015 (-0700)
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Mon Jan  1 15:45:42 2018 (-0800)
+;; Last-Updated: Sat Feb 10 08:39:55 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 153
+;;     Update #: 157
 ;; URL: https://www.emacswiki.org/emacs/download/showkey.el
 ;; Doc URL: https://www.emacswiki.org/emacs/ShowKey
 ;; Keywords: help keys mouse
@@ -100,6 +100,9 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2018/02/10 dadams
+;;     showkey-show-tooltip:
+;;       Use selected-frame, not nil, as second arg to x-show-tip.  See Emacs bug #30399.
 ;; 2017/12/27 dadams
 ;;     Added: showkey-tooltip-sleep-time.
 ;;     showkey-show-tooltip: Use showkey-tooltip-sleep-time.
@@ -305,7 +308,7 @@ are not indicated."
             (set-mouse-position (selected-frame) (+ 3 x) (+ 2 y))))
         (x-show-tip (propertize cmd-desc
                                 'face `(:foreground "red" :height ,showkey-tooltip-height))
-                    nil
+                    (selected-frame)    ; Emacs bug #30399 says nil is broken for Emacs < 27
                     nil
                     showkey-tooltip-timeout)
         (sleep-for showkey-tooltip-sleep-time)))))
