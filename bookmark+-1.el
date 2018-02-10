@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Mon Jan  1 09:53:19 2018 (-0800)
+;; Last-Updated: Sat Feb 10 09:58:58 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 8592
+;;     Update #: 8597
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -2417,8 +2417,10 @@ property.  Point is irrelevant and unaffected."
     ;; Do this regardless of Emacs version and `bmkp-propertize-bookmark-names-flag'.
     ;; If property needs to be stripped, that will be done when saving.
     (unless do-not-propertize-p
-      (dolist (bmk  bmks)
-        (put-text-property 0 (length (car bmk)) 'bmkp-full-record bmk (car bmk))))
+      (let (bname)
+        (dolist (bmk  bmks)
+          (setq bname  (bmkp-bookmark-name-from-record bmk))
+          (put-text-property 0 (length bname) 'bmkp-full-record bmk bname))))
     bmks))
 
 
@@ -3086,14 +3088,8 @@ candidate."
 ;;;             (define-key now-map  "\C-w" 'bookmark-yank-word)
 ;;;             now-map)
 ;;;           nil 'bookmark-history))))
-
     (when newname
-      (bookmark-set-name old newname)
-      ;; Put the bookmark on the name as property `bmkp-full-record'.
-      ;; Do this regardless of Emacs version and `bmkp-propertize-bookmark-names-flag'.
-      ;; If it needs to be stripped, that will be done when saving.
-      (put-text-property 0 (length newname) 'bmkp-full-record (bmkp-bookmark-record-from-name newname)
-                         newname)
+      (bookmark-set-name old newname)   ; (This also puts `bmkp-full-record' on bookmark name.)
       (bmkp-rename-for-marked-and-omitted-lists old newname) ; Rename in marked & omitted lists, if present.
       (setq bookmark-current-bookmark  newname)
       (unless batchp
