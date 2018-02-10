@@ -1,158 +1,104 @@
-;; -*- emacs-lisp -*-
-;;; gnus-notify.el --- use the modeline to indicate groups with new messages
-
-;; Author: Mark Triggs <mark@dishevelled.net>
-;;
-;; Contributions from: Frederic Couchet <fcouchet AT april.org>
-
-;; This file is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
-;; any later version.
-
-;; This file is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with GNU Emacs; see the file COPYING.  If not, write to
-;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-;; Boston, MA 02111-1307, USA.
-
-;;; Commentary:
-
-;; This code provides modeline notification of when certain groups contain
-;; unread messages. Groups for whom unread messages should be indicated are
-;; chosen by setting a group parameter.
-
-;; Clicking on a group in the modeline will enter that group and view the new
-;; message.
-
-;; Code:
-
-(require 'cl-lib)
-
-(defvar gnus-notify-show-unread-counts t
-  "If true, show the number of unread messages in the modeline in addition to shortened group names.")
-
-
-(when (fboundp 'gnus-define-group-parameter)
-  (gnus-define-group-parameter
-   modeline-notify
-   :type bool
-   :parameter-type '(const :tag "Notify of new messages for this group." t)
-   :parameter-document "\
-
-If this is set, the name of this group will be placed on the modeline when it
-contains new messages"))
-
-(defvar gnus-mst-display-new-messages "")
-(defvar gnus-mst-notify-groups '())
-(defvar gnus-notify-jump-to-group-hook '()
-  "This hook is invoked before jumping to a gnus group with unread messages.
-  Each hook should take a single argument - the GROUP to be selected")
-
-
-(add-hook 'gnus-exit-gnus-hook
-          (lambda ()
-            (setq gnus-mst-display-new-messages "")))
-
-
-(defun gnus-mst-notify-modeline-form ()
-  gnus-mst-display-new-messages)
-
-
-(if (featurep 'xemacs)
-    (unless (member 'gnus-mst-display-new-messages global-mode-string)
-      (if (null global-mode-string)
-          (setq global-mode-string '("" gnus-mst-display-new-messages))
-        (setq global-mode-string
-              (append global-mode-string
-                      '(gnus-mst-display-new-messages)))))
-  (unless (member '(:eval (gnus-mst-notify-modeline-form)) global-mode-string)
-    (setq global-mode-string
-          (append global-mode-string
-                  (list '(:eval (gnus-mst-notify-modeline-form)))))))
-
-
-(defun gnus-mst-notify-shorten-group-name (group)
-  "shorten the group name to make it better fit on the modeline"
-  (let ((name (if (string-match ":" group)
-                  (cadr (split-string group "[:]"))
-                group)))
-    (mapconcat 'identity
-               (mapcar
-                (lambda (segment)
-                  (string (elt segment 0)))
-                (split-string name "[\\./]"))
-               ".")))
-
-
-(defun gnus-mst-notify-update-modeline ()
-  "Update the modeline to show groups containing new messages"
-  (if gnus-mst-notify-groups
-      (setq gnus-mst-display-new-messages
-            (append (list " [m: ")
-                    (cl-maplist
-                     (lambda (sublist)
-                       (let ((group (car sublist))
-                             (map (make-sparse-keymap)))
-                         (define-key map [mode-line mouse-1]
-                           `(lambda ()
-                              (interactive)
-                              (run-hook-with-args
-                               'gnus-notify-jump-to-group-hook ,group)
-                              (gnus-group-read-group nil nil ,group)))
-                         (cl-list*
-                          (list ':propertize
-                                (if gnus-notify-show-unread-counts
-                                    (format "[%s %s]"
-                                            (gnus-mst-notify-shorten-group-name
-                                             (car sublist))
-                                            (gnus-group-unread (car sublist)))
-                                  (format "%s"
-                                          (gnus-mst-notify-shorten-group-name
-                                           (car sublist))))
-                                'face 'bold
-                                'keymap map
-                                'help-echo "Visit this group")
-                          (if (cdr sublist)
-                              (list ", ")
-                            nil))))
-                     gnus-mst-notify-groups)
-                    (list "] ")))
-    (setq gnus-mst-display-new-messages "")))
-
-
-(defun gnus-mst-notify-group (group)
-  "Add notification for this group"
-  (unless (member group gnus-mst-notify-groups)
-    (add-to-list 'gnus-mst-notify-groups group)
-    (gnus-mst-notify-update-modeline)))
-
-
-(defun gnus-mst-show-groups-with-new-messages (&rest ignored)
-  (interactive)
-  (setq gnus-mst-notify-groups '())
-  (gnus-mst-notify-update-modeline)
-  (mapc '(lambda (g)
-           (let* ((group (car g))
-                  (unread (gnus-group-unread group)))
-             (when (and (cdr (assoc 'modeline-notify
-                                    (gnus-group-find-parameter group)))
-                        (and (numberp unread) (> unread 0)))
-               (gnus-mst-notify-group group))))
-        gnus-newsrc-alist))
-
-
-(add-hook 'gnus-after-getting-new-news-hook
-          'gnus-mst-show-groups-with-new-messages)
-
-
-(add-hook 'gnus-summary-exit-hook
-          'gnus-mst-show-groups-with-new-messages)
-
-
-(provide 'gnus-notify)
-;;; gnus-notify.el ends here
+#FILE text/x-emacs-lisp 
+OzsgLSotIGVtYWNzLWxpc3AgLSotCjs7OyBnbnVzLW5vdGlmeS5lbCAtLS0gdXNlIHRoZSBtb2Rl
+bGluZSB0byBpbmRpY2F0ZSBncm91cHMgd2l0aCBuZXcgbWVzc2FnZXMKCjs7IEF1dGhvcjogTWFy
+ayBUcmlnZ3MgPG1hcmtAZGlzaGV2ZWxsZWQubmV0Pgo7Owo7OyBDb250cmlidXRpb25zIGZyb206
+IEZyZWRlcmljIENvdWNoZXQgPGZjb3VjaGV0IEFUIGFwcmlsLm9yZz4KCjs7IFRoaXMgZmlsZSBp
+cyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5Cjs7
+IGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMg
+cHVibGlzaGVkIGJ5Cjs7IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJz
+aW9uIDIsIG9yIChhdCB5b3VyIG9wdGlvbikKOzsgYW55IGxhdGVyIHZlcnNpb24uCgo7OyBUaGlz
+IGZpbGUgaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwK
+OzsgYnV0IFdJVEhPVVQgQU5ZIFdBUlJBTlRZOyB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2Fy
+cmFudHkgb2YKOzsgTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQ
+VVJQT1NFLiAgU2VlIHRoZQo7OyBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBk
+ZXRhaWxzLgoKOzsgWW91IHNob3VsZCBoYXZlIHJlY2VpdmVkIGEgY29weSBvZiB0aGUgR05VIEdl
+bmVyYWwgUHVibGljIExpY2Vuc2UKOzsgYWxvbmcgd2l0aCBHTlUgRW1hY3M7IHNlZSB0aGUgZmls
+ZSBDT1BZSU5HLiAgSWYgbm90LCB3cml0ZSB0bwo7OyB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0
+aW9uLCBJbmMuLCA1OSBUZW1wbGUgUGxhY2UgLSBTdWl0ZSAzMzAsCjs7IEJvc3RvbiwgTUEgMDIx
+MTEtMTMwNywgVVNBLgoKOzs7IENvbW1lbnRhcnk6Cgo7OyBUaGlzIGNvZGUgcHJvdmlkZXMgbW9k
+ZWxpbmUgbm90aWZpY2F0aW9uIG9mIHdoZW4gY2VydGFpbiBncm91cHMgY29udGFpbgo7OyB1bnJl
+YWQgbWVzc2FnZXMuIEdyb3VwcyBmb3Igd2hvbSB1bnJlYWQgbWVzc2FnZXMgc2hvdWxkIGJlIGlu
+ZGljYXRlZCBhcmUKOzsgY2hvc2VuIGJ5IHNldHRpbmcgYSBncm91cCBwYXJhbWV0ZXIuCgo7OyBD
+bGlja2luZyBvbiBhIGdyb3VwIGluIHRoZSBtb2RlbGluZSB3aWxsIGVudGVyIHRoYXQgZ3JvdXAg
+YW5kIHZpZXcgdGhlIG5ldwo7OyBtZXNzYWdlLgoKOzsgQ29kZToKCihyZXF1aXJlICdjbC1saWIp
+CgooZGVmdmFyIGdudXMtbm90aWZ5LXNob3ctdW5yZWFkLWNvdW50cyB0CiAgIklmIHRydWUsIHNo
+b3cgdGhlIG51bWJlciBvZiB1bnJlYWQgbWVzc2FnZXMgaW4gdGhlIG1vZGVsaW5lIGluIGFkZGl0
+aW9uIHRvIHNob3J0ZW5lZCBncm91cCBuYW1lcy4iKQoKCih3aGVuIChmYm91bmRwICdnbnVzLWRl
+ZmluZS1ncm91cC1wYXJhbWV0ZXIpCiAgKGdudXMtZGVmaW5lLWdyb3VwLXBhcmFtZXRlcgogICBt
+b2RlbGluZS1ub3RpZnkKICAgOnR5cGUgYm9vbAogICA6cGFyYW1ldGVyLXR5cGUgJyhjb25zdCA6
+dGFnICJOb3RpZnkgb2YgbmV3IG1lc3NhZ2VzIGZvciB0aGlzIGdyb3VwLiIgdCkKICAgOnBhcmFt
+ZXRlci1kb2N1bWVudCAiXAoKSWYgdGhpcyBpcyBzZXQsIHRoZSBuYW1lIG9mIHRoaXMgZ3JvdXAg
+d2lsbCBiZSBwbGFjZWQgb24gdGhlIG1vZGVsaW5lIHdoZW4gaXQKY29udGFpbnMgbmV3IG1lc3Nh
+Z2VzIikpCgooZGVmdmFyIGdudXMtbXN0LWRpc3BsYXktbmV3LW1lc3NhZ2VzICIiKQooZGVmdmFy
+IGdudXMtbXN0LW5vdGlmeS1ncm91cHMgJygpKQooZGVmdmFyIGdudXMtbm90aWZ5LWp1bXAtdG8t
+Z3JvdXAtaG9vayAnKCkKICAiVGhpcyBob29rIGlzIGludm9rZWQgYmVmb3JlIGp1bXBpbmcgdG8g
+YSBnbnVzIGdyb3VwIHdpdGggdW5yZWFkIG1lc3NhZ2VzLgogIEVhY2ggaG9vayBzaG91bGQgdGFr
+ZSBhIHNpbmdsZSBhcmd1bWVudCAtIHRoZSBHUk9VUCB0byBiZSBzZWxlY3RlZCIpCgoKKGFkZC1o
+b29rICdnbnVzLWV4aXQtZ251cy1ob29rCiAgICAgICAgICAobGFtYmRhICgpCiAgICAgICAgICAg
+IChzZXRxIGdudXMtbXN0LWRpc3BsYXktbmV3LW1lc3NhZ2VzICIiKSkpCgoKKGRlZnVuIGdudXMt
+bXN0LW5vdGlmeS1tb2RlbGluZS1mb3JtICgpCiAgZ251cy1tc3QtZGlzcGxheS1uZXctbWVzc2Fn
+ZXMpCgoKKGlmIChmZWF0dXJlcCAneGVtYWNzKQogICAgKHVubGVzcyAobWVtYmVyICdnbnVzLW1z
+dC1kaXNwbGF5LW5ldy1tZXNzYWdlcyBnbG9iYWwtbW9kZS1zdHJpbmcpCiAgICAgIChpZiAobnVs
+bCBnbG9iYWwtbW9kZS1zdHJpbmcpCiAgICAgICAgICAoc2V0cSBnbG9iYWwtbW9kZS1zdHJpbmcg
+JygiIiBnbnVzLW1zdC1kaXNwbGF5LW5ldy1tZXNzYWdlcykpCiAgICAgICAgKHNldHEgZ2xvYmFs
+LW1vZGUtc3RyaW5nCiAgICAgICAgICAgICAgKGFwcGVuZCBnbG9iYWwtbW9kZS1zdHJpbmcKICAg
+ICAgICAgICAgICAgICAgICAgICcoZ251cy1tc3QtZGlzcGxheS1uZXctbWVzc2FnZXMpKSkpKQog
+ICh1bmxlc3MgKG1lbWJlciAnKDpldmFsIChnbnVzLW1zdC1ub3RpZnktbW9kZWxpbmUtZm9ybSkp
+IGdsb2JhbC1tb2RlLXN0cmluZykKICAgIChzZXRxIGdsb2JhbC1tb2RlLXN0cmluZwogICAgICAg
+ICAgKGFwcGVuZCBnbG9iYWwtbW9kZS1zdHJpbmcKICAgICAgICAgICAgICAgICAgKGxpc3QgJyg6
+ZXZhbCAoZ251cy1tc3Qtbm90aWZ5LW1vZGVsaW5lLWZvcm0pKSkpKSkpCgoKKGRlZnVuIGdudXMt
+bXN0LW5vdGlmeS1zaG9ydGVuLWdyb3VwLW5hbWUgKGdyb3VwKQogICJzaG9ydGVuIHRoZSBncm91
+cCBuYW1lIHRvIG1ha2UgaXQgYmV0dGVyIGZpdCBvbiB0aGUgbW9kZWxpbmUiCiAgKGxldCAoKG5h
+bWUgKGlmIChzdHJpbmctbWF0Y2ggIjoiIGdyb3VwKQogICAgICAgICAgICAgICAgICAoY2FkciAo
+c3BsaXQtc3RyaW5nIGdyb3VwICJbOl0iKSkKICAgICAgICAgICAgICAgIGdyb3VwKSkpCiAgICAo
+bWFwY29uY2F0ICdpZGVudGl0eQogICAgICAgICAgICAgICAobWFwY2FyCiAgICAgICAgICAgICAg
+ICAobGFtYmRhIChzZWdtZW50KQogICAgICAgICAgICAgICAgICAoc3RyaW5nIChlbHQgc2VnbWVu
+dCAwKSkpCiAgICAgICAgICAgICAgICAoc3BsaXQtc3RyaW5nIG5hbWUgIltcXC4vXSIpKQogICAg
+ICAgICAgICAgICAiLiIpKSkKCgooZGVmdW4gZ251cy1tc3Qtbm90aWZ5LXVwZGF0ZS1tb2RlbGlu
+ZSAoKQogICJVcGRhdGUgdGhlIG1vZGVsaW5lIHRvIHNob3cgZ3JvdXBzIGNvbnRhaW5pbmcgbmV3
+IG1lc3NhZ2VzIgogIChpZiBnbnVzLW1zdC1ub3RpZnktZ3JvdXBzCiAgICAgIChzZXRxIGdudXMt
+bXN0LWRpc3BsYXktbmV3LW1lc3NhZ2VzCiAgICAgICAgICAgIChhcHBlbmQgKGxpc3QgIiBbbTog
+IikKICAgICAgICAgICAgICAgICAgICAoY2wtbWFwbGlzdAogICAgICAgICAgICAgICAgICAgICAo
+bGFtYmRhIChzdWJsaXN0KQogICAgICAgICAgICAgICAgICAgICAgIChsZXQgKChncm91cCAoY2Fy
+IHN1Ymxpc3QpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgIChtYXAgKG1ha2Utc3BhcnNl
+LWtleW1hcCkpKQogICAgICAgICAgICAgICAgICAgICAgICAgKGRlZmluZS1rZXkgbWFwIFttb2Rl
+LWxpbmUgbW91c2UtMV0KICAgICAgICAgICAgICAgICAgICAgICAgICAgYChsYW1iZGEgKCkKICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKGludGVyYWN0aXZlKQogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAocnVuLWhvb2std2l0aC1hcmdzCiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAnZ251cy1ub3RpZnktanVtcC10by1ncm91cC1ob29rICxncm91cCkKICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgKGdudXMtZ3JvdXAtcmVhZC1ncm91cCBuaWwgbmlsICxncm91
+cCkpKQogICAgICAgICAgICAgICAgICAgICAgICAgKGNsLWxpc3QqCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgKGxpc3QgJzpwcm9wZXJ0aXplCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKGlmIGdudXMtbm90aWZ5LXNob3ctdW5yZWFkLWNvdW50cwogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAoZm9ybWF0ICJbJXMgJXNdIgogICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIChnbnVzLW1zdC1ub3RpZnktc2hvcnRlbi1ncm91cC1uYW1l
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChjYXIgc3VibGlz
+dCkpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGdudXMtZ3Jv
+dXAtdW5yZWFkIChjYXIgc3VibGlzdCkpKQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKGZvcm1hdCAiJXMiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IChnbnVzLW1zdC1ub3RpZnktc2hvcnRlbi1ncm91cC1uYW1lCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAoY2FyIHN1Ymxpc3QpKSkpCiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgJ2ZhY2UgJ2JvbGQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAna2V5bWFwIG1hcAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICdoZWxwLWVjaG8g
+IlZpc2l0IHRoaXMgZ3JvdXAiKQogICAgICAgICAgICAgICAgICAgICAgICAgIChpZiAoY2RyIHN1
+Ymxpc3QpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChsaXN0ICIsICIpCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBuaWwpKSkpCiAgICAgICAgICAgICAgICAgICAgIGdudXMtbXN0
+LW5vdGlmeS1ncm91cHMpCiAgICAgICAgICAgICAgICAgICAgKGxpc3QgIl0gIikpKQogICAgKHNl
+dHEgZ251cy1tc3QtZGlzcGxheS1uZXctbWVzc2FnZXMgIiIpKSkKCgooZGVmdW4gZ251cy1tc3Qt
+bm90aWZ5LWdyb3VwIChncm91cCkKICAiQWRkIG5vdGlmaWNhdGlvbiBmb3IgdGhpcyBncm91cCIK
+ICAodW5sZXNzIChtZW1iZXIgZ3JvdXAgZ251cy1tc3Qtbm90aWZ5LWdyb3VwcykKICAgIChhZGQt
+dG8tbGlzdCAnZ251cy1tc3Qtbm90aWZ5LWdyb3VwcyBncm91cCkKICAgIChnbnVzLW1zdC1ub3Rp
+ZnktdXBkYXRlLW1vZGVsaW5lKSkpCgoKKGRlZnVuIGdudXMtbXN0LXNob3ctZ3JvdXBzLXdpdGgt
+bmV3LW1lc3NhZ2VzICgmcmVzdCBpZ25vcmVkKQogIChpbnRlcmFjdGl2ZSkKICAoc2V0cSBnbnVz
+LW1zdC1ub3RpZnktZ3JvdXBzICcoKSkKICAoZ251cy1tc3Qtbm90aWZ5LXVwZGF0ZS1tb2RlbGlu
+ZSkKICAobWFwYyAnKGxhbWJkYSAoZykKICAgICAgICAgICAobGV0KiAoKGdyb3VwIChjYXIgZykp
+CiAgICAgICAgICAgICAgICAgICh1bnJlYWQgKGdudXMtZ3JvdXAtdW5yZWFkIGdyb3VwKSkpCiAg
+ICAgICAgICAgICAod2hlbiAoYW5kIChjZHIgKGFzc29jICdtb2RlbGluZS1ub3RpZnkKICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGdudXMtZ3JvdXAtZmluZC1wYXJhbWV0ZXIg
+Z3JvdXApKSkKICAgICAgICAgICAgICAgICAgICAgICAgKGFuZCAobnVtYmVycCB1bnJlYWQpICg+
+IHVucmVhZCAwKSkpCiAgICAgICAgICAgICAgIChnbnVzLW1zdC1ub3RpZnktZ3JvdXAgZ3JvdXAp
+KSkpCiAgICAgICAgZ251cy1uZXdzcmMtYWxpc3QpKQoKCihhZGQtaG9vayAnZ251cy1hZnRlci1n
+ZXR0aW5nLW5ldy1uZXdzLWhvb2sKICAgICAgICAgICdnbnVzLW1zdC1zaG93LWdyb3Vwcy13aXRo
+LW5ldy1tZXNzYWdlcykKCgooYWRkLWhvb2sgJ2dudXMtc3VtbWFyeS1leGl0LWhvb2sKICAgICAg
+ICAgICdnbnVzLW1zdC1zaG93LWdyb3Vwcy13aXRoLW5ldy1tZXNzYWdlcykKCgoocHJvdmlkZSAn
+Z251cy1ub3RpZnkpCjs7OyBnbnVzLW5vdGlmeS5lbCBlbmRzIGhlcmUK
