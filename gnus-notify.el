@@ -1,3 +1,4 @@
+;; -*- emacs-lisp -*-
 ;;; gnus-notify.el --- use the modeline to indicate groups with new messages
 
 ;; Author: Mark Triggs <mark@dishevelled.net>
@@ -30,6 +31,8 @@
 
 ;; Code:
 
+(require 'cl-lib)
+
 (defvar gnus-notify-show-unread-counts t
   "If true, show the number of unread messages in the modeline in addition to shortened group names.")
 
@@ -50,8 +53,6 @@ contains new messages"))
   "This hook is invoked before jumping to a gnus group with unread messages.
   Each hook should take a single argument - the GROUP to be selected")
 
-(defvar gnus-mst-notify-face 'gnus-group-mail-3-empty
-  "Face used to gnus notification message in modeline")
 
 (add-hook 'gnus-exit-gnus-hook
           (lambda ()
@@ -92,33 +93,33 @@ contains new messages"))
   "Update the modeline to show groups containing new messages"
   (if gnus-mst-notify-groups
       (setq gnus-mst-display-new-messages
-            (append (list " [m:")
-                    (maplist
-                     #'(lambda (sublist)
-                         (let ((group (car sublist))
-                               (map (make-sparse-keymap)))
-                           (define-key map [mode-line mouse-1]
-                             `(lambda ()
-                                (interactive)
-                                (run-hook-with-args
-                                 'gnus-notify-jump-to-group-hook ,group)
-                                (gnus-group-read-group nil nil ,group)))
-                           (list*
-                            (list ':propertize
-                                  (if gnus-notify-show-unread-counts
-                                      (format "[%s%s]"
-                                              (gnus-mst-notify-shorten-group-name
-                                               (car sublist))
-                                              (gnus-group-unread (car sublist)))
-                                    (format "%s"
+            (append (list " [m: ")
+                    (cl-maplist
+                     (lambda (sublist)
+                       (let ((group (car sublist))
+                             (map (make-sparse-keymap)))
+                         (define-key map [mode-line mouse-1]
+                           `(lambda ()
+                              (interactive)
+                              (run-hook-with-args
+                               'gnus-notify-jump-to-group-hook ,group)
+                              (gnus-group-read-group nil nil ,group)))
+                         (cl-list*
+                          (list ':propertize
+                                (if gnus-notify-show-unread-counts
+                                    (format "[%s %s]"
                                             (gnus-mst-notify-shorten-group-name
-                                             (car sublist))))
-                                  'face gnus-mst-notify-face
-                                  'keymap map
-                                  'help-echo "Visit this group")
-                            (if (cdr sublist)
-                                (list ", ")
-                              nil))))
+                                             (car sublist))
+                                            (gnus-group-unread (car sublist)))
+                                  (format "%s"
+                                          (gnus-mst-notify-shorten-group-name
+                                           (car sublist))))
+                                'face 'bold
+                                'keymap map
+                                'help-echo "Visit this group")
+                          (if (cdr sublist)
+                              (list ", ")
+                            nil))))
                      gnus-mst-notify-groups)
                     (list "] ")))
     (setq gnus-mst-display-new-messages "")))
