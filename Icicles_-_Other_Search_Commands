@@ -133,7 +133,7 @@ choose among multiple candidates that have the same name.)
 
 
 
-
+[:TypeSpecificImenuCommands]
 ==== Type-Specific Imenu Commands ====
 
 In addition, '''Icicles''' provides specializations of `icicle-imenu' to find only definitions of particular types:
