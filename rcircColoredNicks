@@ -270,41 +270,32 @@ Then combine them using sRGB constants (rounded to 4 places):
 -- [https://stackoverflow.com/questions/3116260/given-a-background-color-how-to-get-a-foreground-color-that-makes-it-readable-o#3118280 answered by Michael Zuschlag]
 [/quote]
 
-Here's how to translate this into Emacs Lisp:
+Here's how to translate this into Emacs Lisp. The code waits until
+rcirc is actually loaded before preparing the colors so that we can be
+reasonably sure any themes or other settings affecting the default
+background color have already taken effect.
 
 {{{
-;; prepare a suitable list of colors
-;; https://stackoverflow.com/questions/3116260/given-a-background-color-how-to-get-a-foreground-color-that-makes-it-readable-o#3118280
-(require 'cl)
-(defun rcirc-colors-Y (color)
-  (let ((gamma 2.2))
-    (destructuring-bind (r g b) (color-name-to-rgb color)
-      (let* ((r1 (expt r gamma))
-	     (g1 (expt g gamma))
-	     (b1 (expt b gamma)))
-	(+ (* r1 0.2126)
-	   (* 0.7151 g1)
-	   (* 0.0721 b1))))))
-
 ;; To check out the list, evaluate (list-colors-display rcirc-colors)
 ;; To reset map (setq rcirc-color-mapping (make-hash-table :test 'equal))
-(setq rcirc-colors
-      (let ((candidates nil)
-	    (color nil)
-	    (y1 (rcirc-colors-Y (face-background 'default))))
-        (dolist (item color-name-rgb-alist)
-	  (setq color (car item))
-	  (unless (color-gray-p color)
-	    (let ((y2 (rcirc-colors-Y color)))
-	      ;; Contrast ration is (Y(b) + 0.05) / (Y(d) + 0.05) where
-	      ;; Y(b) is the brightness (luminance) of the brighter
-	      ;; color and Y(d) is the brightness of the darker color.
-	      (when (< 4.5
-		       (apply '/
-			      (mapcar (lambda (n) (+ n 0.05))
-				      (sort (list y1 y2) '>))))
-		(setq candidates (cons color candidates))))))
-	  candidates))
+(eval-after-load 'rcirc
+  '(setq rcirc-colors
+	 (let ((candidates nil)
+	       (color nil)
+	       (y1 (rcirc-colors-Y (face-background 'default))))
+	   (dolist (item color-name-rgb-alist)
+	     (setq color (car item))
+	     (unless (color-gray-p color)
+	       ;; Contrast ration is (Y(b) + 0.05) / (Y(d) + 0.05) where
+	       ;; Y(b) is the brightness (luminance) of the brighter
+	       ;; color and Y(d) is the brightness of the darker color.
+	       (let* ((y2 (rcirc-colors-Y color))
+		      (r (if (> y1 y2)
+			     (/ (+ y1 0.05) (+ y2 0.05))
+			   (/ (+ y2 0.05) (+ y1 0.05)))))
+		 (when (> r 4.5)
+		   (setq candidates (cons color candidates))))))
+	   candidates)))
 }}}
 
 ----
