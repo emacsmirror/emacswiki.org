@@ -90,3 +90,15 @@ You can bind them to keys by adding them to the comint-mode-hook like this:
 
 If you are using Emacs 20, take a look at ComintPatched if you are
 interested in recovering multiline statements from the history.
+
+== Problems ==
+
+If you find that the input prompt does not redisplay after output has been received try adding a function to `comint-output-filter-functions' to pause a short while:
+
+  (add-hook 'comint-output-filter-functions (lambda (arg) (sleep-for 0.05)) t)
+
+It can be removed by evaluating the following form:
+
+  (remove-hook 'comint-output-filter-functions (lambda (arg) (sleep-for 0.05)))
+
+-- JoeBloggs
