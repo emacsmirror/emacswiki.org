@@ -4583,7 +4583,7 @@ $\\|//\\)"))))
  You wil have variable `scilab-shell-command-switches' for this"
  :group 'scilab-shell
  :group 'scilab-setup
- :type 'string)
+ :type 'file)
 
 (defcustom scilab-shell-command-switches 
  '("-nw")
