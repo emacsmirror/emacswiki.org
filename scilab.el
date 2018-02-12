@@ -4778,12 +4778,13 @@ This name will have *'s surrounding it.")
  ;; Scilab shell does not work by default on the Windows platform.  Only
  ;; permit it's operation when the shell command string is different from
  ;; the default value.  (True when the engine program is running.)
- (if (and (memq window-system '(pc w32 ns))
-	  (string= (file-name-sans-extension (file-name-nondirectory scilab-shell-command))
-		   "scilab")
-	  (null (member "-nw" scilab-shell-command-switches)))
-     (error "Scilab cannot be run as a inferior process.  \
+ (and (memq window-system '(pc w32))
+      (string= (file-name-sans-extension (file-name-nondirectory scilab-shell-command))
+	       "scilab")
+      (null (member "-nw" scilab-shell-command-switches))
+      (error "Scilab cannot be run as a inferior process.  \
 Try C-h f scilab-shell RET"))
+
 
  (require 'shell)
  (require 'term)
