@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Feb 10 09:58:58 2018 (-0800)
+;; Last-Updated: Mon Feb 12 12:19:34 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 8597
+;;     Update #: 8602
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-1.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, eww, w3m, gnus
@@ -3290,7 +3290,7 @@ contain a `%s' construct, so that it can be passed along with FILE to
         (goto-char (if (eq add 'append) end start)))
       (dolist (bmk  bookmark-alist)
         (unless (bmkp-temporary-bookmark-p bmk)
-          (setq bname  (car bmk)
+          (setq bname  (bookmark-name-from-full-record bmk)
                 fname  (bookmark-get-filename bmk))
           (cond (rem-all-p              ; Remove text properties from bookmark name and file name.
                  (set-text-properties 0 (length bname) () bname)
@@ -3316,9 +3316,9 @@ contain a `%s' construct, so that it can be passed along with FILE to
             (if (not (and rem-all-p  (bmkp-sequence-bookmark-p bmk)))
                 (pp bmk (current-buffer))
               ;; Remove text properties from bookmark names in the `sequence' entry of sequence bookmark.
-              (insert "(\"" (let ((sname  (copy-sequence (car bmk))))
-                              (set-text-properties 0 (length sname) () sname)
-                              sname)
+              (insert "(\"" (let ((seqbname  (copy-sequence (bookmark-name-from-full-record bmk))))
+                              (set-text-properties 0 (length seqbname) () seqbname)
+                              seqbname)
                       "\"\n")
               (dolist (prop  (cdr bmk))
                 (if (not (eq 'sequence (car prop)))
@@ -3725,8 +3725,7 @@ If nil then use `regexp-history'."
                                              (list (bmkp-find-tag-default-as-regexp)
                                                    (car regexp-search-ring)
                                                    (regexp-quote (or (car search-ring)  ""))
-                                                   (car (symbol-value
-                                                         query-replace-from-history-variable))))))
+                                                   (car (symbol-value query-replace-from-history-variable))))))
                (suggestions            (and (> emacs-major-version 22)
                                             (delete-dups (delq nil (delete "" suggestions)))))
                (history-add-new-input  nil) ; Do not automatically add default to history for empty input.
@@ -6467,7 +6466,8 @@ A new list is returned (no side effects)."
 (defun bmkp-regexp-filtered-bookmark-name-alist-only ()
   "`bookmark-alist' for bookmarks matching `bmkp-bmenu-filter-pattern'."
   (bookmark-maybe-load-default-file)
-  (bmkp-remove-if-not (lambda (bmk) (bmkp-string-match-p bmkp-bmenu-filter-pattern (car bmk)))
+  (bmkp-remove-if-not (lambda (bmk)
+                        (bmkp-string-match-p bmkp-bmenu-filter-pattern (bookmark-name-from-full-record bmk)))
                       bookmark-alist))
 
 (defun bmkp-regexp-filtered-file-name-alist-only ()
