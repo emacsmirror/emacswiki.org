@@ -5049,7 +5049,7 @@ Keymap:
    ["Resume" scilab-continue-subjob :included(scilab-shell-active-p)
     :active(scilab-shell-active-p)]
    "----"
-   ["Start" *"null (scilab-shell-active-p))]
+   ["Start" scilab-shell ( null (scilab-shell-active-p))]
    ["Restart" scilab-shell-restart (scilab-shell-active-p)]
    ["Exit" scilab-shell-exit (scilab-shell-active-p)]
    ["Quit" comint-quit-subjob (scilab-shell-active-p)]
