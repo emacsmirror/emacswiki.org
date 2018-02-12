@@ -4588,7 +4588,8 @@ $\\|//\\)"))))
 (defcustom scilab-shell-command-switches 
  '("-nw")
  "*Command line parameters run with `scilab-shell-command'. The standard
- flag is \"-nw\". If you remove it you will not launch scilab into emacs.
+ flag is \"-nw\".  If you remove it you will not launch scilab into
+ emacs for standard command scilab (you will need scilex or scilab-cli).
  You can add here your flags"
  :group 'scilab-shell
  :group 'scilab-setup
@@ -4777,8 +4778,10 @@ This name will have *'s surrounding it.")
  ;; Scilab shell does not work by default on the Windows platform.  Only
  ;; permit it's operation when the shell command string is different from
  ;; the default value.  (True when the engine program is running.)
- (if (and (or (eq window-system 'pc) (eq window-system 'w32))
-      (string= scilab-shell-command "scilab"))
+ (if (and (memq window-system '(pc w32 ns))
+	  (string= (file-name-sans-extension (file-name-nondirectory scilab-shell-command))
+		   "scilab")
+	  (null (member "-nw" scilab-shell-command-switches)))
      (error "Scilab cannot be run as a inferior process.  \
 Try C-h f scilab-shell RET"))
 
@@ -4793,8 +4796,15 @@ Try C-h f scilab-shell RET"))
 ;    (message "Sorry, your emacs cannot use the Scilab Shell GUD features.")
    (setq scilab-shell-enable-gud-flag nil))
 
- (let ((buffer (get-buffer-create (concat "*" scilab-shell-buffer-name "*"))))
-   (set-buffer buffer)
+ (let ((buffer (get-buffer-create (concat "*" scilab-shell-buffer-name "*")))
+       (command-switches
+	(if (string= (file-name-sans-extension (file-name-nondirectory scilab-shell-command))
+		     "scilab-cli")
+	    (let ((-nw (car-safe (member "-nw" scilab-shell-command-switches))))
+	      (if -nw (delq -nw (copy-sequence scilab-shell-command-switches))
+		scilab-shell-command-switches))
+	    scilab-shell-command-switches)))
+  (set-buffer buffer)
    (unless  (comint-check-proc buffer)
      ;; Build keymap here in case someone never uses comint mode
      (unless  scilab-shell-mode-map
@@ -4810,7 +4820,7 @@ Try C-h f scilab-shell RET"))
         buffer 
         scilab-shell-command
         nil ; no start file
-        scilab-shell-command-switches)
+        command-switches)
      (if running-xemacs 
      (setq system-uses-terminfo scilab-system-uses-terminfo))
      (comint-mode)
@@ -5038,7 +5048,7 @@ Keymap:
    ["Resume" scilab-continue-subjob :included(scilab-shell-active-p)
     :active(scilab-shell-active-p)]
    "----"
-   ["Start" scilab-shell (null (scilab-shell-active-p))]
+   ["Start" *"null (scilab-shell-active-p))]
    ["Restart" scilab-shell-restart (scilab-shell-active-p)]
    ["Exit" scilab-shell-exit (scilab-shell-active-p)]
    ["Quit" comint-quit-subjob (scilab-shell-active-p)]
