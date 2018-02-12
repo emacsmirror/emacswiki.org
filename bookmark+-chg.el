@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2018, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Feb 10 09:57:30 2018 (-0800)
+;; Last-Updated: Mon Feb 12 12:24:44 2018 (-0800)
 ;;           By: dradams
-;;     Update #: 16370
+;;     Update #: 16372
 ;; URL: https://www.emacswiki.org/emacs/download/bookmark%2b-chg.el
 ;; Doc URL: https://www.emacswiki.org/emacs/BookmarkPlus
 ;; Keywords: bookmarks, bookmark+
@@ -146,6 +146,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2018/02/12 dadams
+;;     bookmark-write-file, bmkp-regexp-filtered-bookmark-name-alist-only:
+;;      Use bookmark-name-from-full-record, not car.
 ;; 2018/02/10 dadams
 ;;     bookmark-rename: No need to propertize name here - done in call to bookmark-set-name.
 ;;     bookmark-alist-from-buffer: Use bmkp-bookmark-name-from-record, not car.
